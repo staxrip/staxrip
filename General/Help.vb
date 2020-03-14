@@ -121,7 +121,7 @@ Public Class ConsoleHelp
 
     Shared ReadOnly Property DosCodePage As Integer
         Get
-            If DosCodePageValue = 0 Then DosCodePageValue = Regex.Match(ProcessHelp.GetStdOut("cmd.exe", "/C CHCP"), "\d+").Value.ToInt
+            If DosCodePageValue = 0 Then DosCodePageValue = Regex.Match(ProcessHelp.GetConsoleOutput("cmd.exe", "/C CHCP"), "\d+").Value.ToInt
             Return DosCodePageValue
         End Get
     End Property
@@ -130,48 +130,59 @@ End Class
 Public Class FileHelp
     Shared Sub Move(src As String, dest As String)
         If File.Exists(src) Then
-            If File.Exists(dest) Then Delete(dest)
+            If File.Exists(dest) Then
+                Delete(dest)
+            End If
+
             FileSystem.MoveFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
         End If
     End Sub
 
     Shared Sub Copy(src As String, dest As String, Optional opt As UIOption = UIOption.OnlyErrorDialogs)
-        If Not File.Exists(src) Then Exit Sub
-        If File.Exists(dest) Then Delete(dest)
+        If Not File.Exists(src) Then
+            Exit Sub
+        End If
+
+        If File.Exists(dest) Then
+            Delete(dest)
+        End If
+
         FileSystem.CopyFile(src, dest, opt, UICancelOption.DoNothing)
     End Sub
 
     Shared Sub Delete(path As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
-        If File.Exists(path) Then FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
+        If File.Exists(path) Then
+            FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
+        End If
     End Sub
 End Class
 
 Public Class ProcessHelp
-    Shared Function GetStdOut(file As String, arguments As String) As String
-        Dim ret = ""
-        Dim proc As New Process
-        proc.StartInfo.UseShellExecute = False
-        proc.StartInfo.CreateNoWindow = True
-        proc.StartInfo.RedirectStandardOutput = True
-        proc.StartInfo.FileName = file
-        proc.StartInfo.Arguments = arguments
-        proc.Start()
-        ret = proc.StandardOutput.ReadToEnd()
-        proc.WaitForExit()
-        Return ret
-    End Function
+    Shared Function GetConsoleOutput(
+        file As String, arguments As String,
+        Optional stderr As Boolean = False) As String
 
-    Shared Function GetErrOut(file As String, arguments As String) As String
         Dim ret = ""
-        Dim proc As New Process
-        proc.StartInfo.UseShellExecute = False
-        proc.StartInfo.CreateNoWindow = True
-        proc.StartInfo.RedirectStandardError = True
-        proc.StartInfo.FileName = file
-        proc.StartInfo.Arguments = arguments
-        proc.Start()
-        ret = proc.StandardError.ReadToEnd()
-        proc.WaitForExit()
+
+        Using proc As New Process
+            proc.StartInfo.UseShellExecute = False
+            proc.StartInfo.CreateNoWindow = True
+            proc.StartInfo.FileName = file
+            proc.StartInfo.Arguments = arguments
+
+            If stderr Then
+                proc.StartInfo.RedirectStandardError = True
+                proc.Start()
+                ret = proc.StandardError.ReadToEnd()
+            Else
+                proc.StartInfo.RedirectStandardOutput = True
+                proc.Start()
+                ret = proc.StandardOutput.ReadToEnd()
+            End If
+
+            proc.WaitForExit()
+        End Using
+
         Return ret
     End Function
 
@@ -202,7 +213,7 @@ Public Class ProcessHelp
 End Class
 
 Public Class CommandLineHelp
-    Public Shared Function ConvertText(val As String) As String
+    Shared Function ConvertText(val As String) As String
         If val = "" Then Return ""
         Return Macro.Expand(val).Replace("""", "'").Trim
     End Function

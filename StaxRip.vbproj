@@ -67,7 +67,7 @@
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\</OutputPath>
@@ -78,10 +78,8 @@
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>
-    </DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\</OutputPath>
     <WarningLevel>1</WarningLevel>
     <NoWarn>41998,42004,42024,42025,42026,42029,42030,42031,42099,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
@@ -89,10 +87,11 @@
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>
-    </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DirectN, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\DirectN.1.5.0\lib\net451\DirectN.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic">
       <Name>Microsoft.VisualBasic</Name>
     </Reference>
@@ -115,6 +114,7 @@
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.PowerShell.5.ReferenceAssemblies.1.1.0\lib\net4\System.Management.Automation.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Security">
       <Name>System.Security</Name>
@@ -177,12 +177,16 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\Extras.vb" />
+    <Compile Include="General\FrameServer.vb" />
     <Compile Include="General\Job.vb" />
     <Compile Include="General\LogBuilder.vb" />
     <Compile Include="General\GlobalClass.vb" />
     <Compile Include="General\GlobalCommands.vb" />
     <Compile Include="General\Automation.vb" />
     <Compile Include="General\ProcController.vb" />
+    <Compile Include="General\Update.vb" />
+    <Compile Include="General\Test.vb" />
+    <Compile Include="General\VideoRenderer.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
@@ -263,7 +267,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\Audio.vb" />
-    <Compile Include="General\Late Binding.vb" />
     <Compile Include="General\CommandLine.vb" />
     <Compile Include="UI\ImageUtils.vb" />
     <Compile Include="Encoding\x265Enc.vb" />
@@ -273,7 +276,6 @@
     <Compile Include="UI\Controls\SimpleUI.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="General\VideoDrawer.vb" />
     <Compile Include="UI\Controls\SearchTextBox.vb">
       <SubType>UserControl</SubType>
     </Compile>
@@ -303,7 +305,6 @@
     <Compile Include="General\VideoScript.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="General\AVIFile.vb" />
     <Compile Include="General\Help.vb" />
     <Compile Include="General\MediaInfo.vb">
     </Compile>
@@ -408,9 +409,7 @@
     <Content Include="License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Changelog.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Changelog.md" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>

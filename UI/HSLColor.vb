@@ -121,7 +121,7 @@
         Return temp2
     End Function
 
-    Public Shared Function Convert(c As Color) As HSLColor
+    Shared Function Convert(c As Color) As HSLColor
         Dim r As New HSLColor()
 
         r.HueValue = c.GetHue() / 360.0

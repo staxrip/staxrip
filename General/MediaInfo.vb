@@ -10,13 +10,16 @@ Public Class MediaInfo
 
     Sub New(path As String)
         If Not Loaded Then
-            Loaded = True
             Native.LoadLibrary(Package.MediaInfo.Path)
+            Loaded = True
         End If
 
         Handle = MediaInfo_New()
         MediaInfo_Open(Handle, path)
-        If Registry.CurrentUser.GetBoolean("Software\" + Application.ProductName, "DevMode") Then MediaInfo_Option(Handle, "Language", "raw")
+
+        If Registry.CurrentUser.GetBoolean("Software\" + Application.ProductName, "DevMode") Then
+            MediaInfo_Option(Handle, "Language", "raw")
+        End If
     End Sub
 
     Private VideoStreamsValue As List(Of VideoStream)
@@ -70,20 +73,12 @@ Public Class MediaInfo
                     at.Lossy = GetAudio(index, "Compression_Mode") = "Lossy"
                     at.SamplingRate = GetAudio(index, "SamplingRate").ToInt
                     at.BitDepth = GetAudio(index, "BitDepth").ToInt
-                    at.FormatString = GetAudio(index, "Format/String")
                     at.Format = GetAudio(index, "Format")
+                    at.FormatString = GetAudio(index, "Format/String")
                     at.FormatProfile = GetAudio(index, "Format_Profile")
                     at.Title = GetAudio(index, "Title").Trim
                     at.Forced = GetAudio(index, "Forced") = "Yes"
                     at.Default = GetAudio(index, "Default") = "Yes"
-
-                    If at.Title.ContainsAny({"IsoMedia", "GPAC", "PID ", "Surround ", "Stereo", "3/2+1", "2/0"}) Then
-                        at.Title = ""
-                    End If
-
-                    If Not FilePath.IsValidFileSystemName(at.Title) Then
-                        at.Title = FilePath.RemoveIllegalCharsFromName(at.Title)
-                    End If
 
                     Dim lm = GetAudio(index, "Language_More")
 
@@ -203,7 +198,6 @@ Public Class MediaInfo
         If ret.Contains("Encoded_Library_Settings") Then ret = Regex.Replace(ret, "Encoded_Library_Settings +: .+\n", "")
         If ret.Contains("Encoding settings") Then ret = Regex.Replace(ret, "Encoding settings +: .+\n", "")
         If ret.Contains("Format settings, ") Then ret = ret.Replace("Format settings, ", "Format, ")
-
         Return ret.FormatColumn(":").Trim
     End Function
 
@@ -263,13 +257,37 @@ Public Class MediaInfo
     End Function
 
     Function GetFrameRate(Optional defaultValue As Double = 25) As Double
-        Dim num = GetVideo("FrameRate_Num").ToInt
-        Dim den = GetVideo("FrameRate_Den").ToInt
-        If num > 0 AndAlso den > 0 Then Return num / den
-        Dim ret = GetVideo("FrameRate")
-        If ret = "" Then ret = GetVideo("FrameRate_Original")
-        If ret = "" Then ret = GetVideo("FrameRate_Nominal")
-        If ret.IsDouble Then Return ret.ToDouble Else Return defaultValue
+        Dim ret = GetVideo("FrameRate_Num").ToInt / GetVideo("FrameRate_Den").ToInt
+
+        If Calc.IsValidFrameRate(ret) Then
+            Return ret
+        End If
+
+        ret = GetVideo("FrameRate_Original_Num").ToInt / GetVideo("FrameRate_Original_Den").ToInt
+
+        If Calc.IsValidFrameRate(ret) Then
+            Return ret
+        End If
+
+        ret = GetVideo("FrameRate").ToDouble
+
+        If Calc.IsValidFrameRate(ret) Then
+            Return ret
+        End If
+
+        ret = GetVideo("FrameRate_Original").ToDouble
+
+        If Calc.IsValidFrameRate(ret) Then
+            Return ret
+        End If
+
+        ret = GetVideo("FrameRate_Nominal").ToDouble
+
+        If Calc.IsValidFrameRate(ret) Then
+            Return ret
+        End If
+
+        Return defaultValue
     End Function
 
     Shared Function GetFrameRate(path As String, Optional defaultValue As Double = 25) As Double

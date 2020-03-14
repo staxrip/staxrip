@@ -1,14 +1,18 @@
-﻿Imports System.ComponentModel
+﻿
+Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Reflection
 Imports System.Text
-Imports System.Text.RegularExpressions
+
+Imports Microsoft.Win32
 Imports StaxRip.UI
 
 Public Class GlobalCommands
     <Command("Shows the log file with the built in log file viewer.")>
     Sub ShowLogFile()
-        If Not File.Exists(p.Log.GetPath()) Then Exit Sub
+        If Not File.Exists(p.Log.GetPath()) Then
+            Exit Sub
+        End If
 
         Using form As New LogForm
             form.Path = p.Log.GetPath()
@@ -53,10 +57,10 @@ Public Class GlobalCommands
 
                 Using td As New TaskDialog(Of Demuxer)
                     td.MainInstruction = "Select a demuxer."
-                    If sourceFile.Edit.Text.Ext = "mkv" Then td.AddCommandLink("mkvextract", New mkvDemuxer)
-                    If sourceFile.Edit.Text.Ext.EqualsAny("mp4", "flv") Then td.AddCommandLink("MP4Box", New MP4BoxDemuxer)
-                    td.AddCommandLink("ffmpeg", New ffmpegDemuxer)
-                    td.AddCommandLink("eac3to", New eac3toDemuxer)
+                    If sourceFile.Edit.Text.Ext = "mkv" Then td.AddCommand("mkvextract", New mkvDemuxer)
+                    If sourceFile.Edit.Text.Ext.EqualsAny("mp4", "flv") Then td.AddCommand("MP4Box", New MP4BoxDemuxer)
+                    td.AddCommand("ffmpeg", New ffmpegDemuxer)
+                    td.AddCommand("eac3to", New eac3toDemuxer)
 
                     Dim proj As New Project
                     proj.Init()
@@ -81,44 +85,46 @@ Public Class GlobalCommands
 
     <Command("Shows a command prompt with the temp directory of the current project.")>
     Sub ShowCommandPrompt()
-        Dim batchCode = ""
+        Dim path = Environment.GetEnvironmentVariable("path")
 
         For Each pack In Package.Items.Values
-            If TypeOf pack Is PluginPackage Then Continue For
-            Dim dir = pack.GetDir
-            If Not Directory.Exists(dir) Then Continue For
-            If Not dir.Contains(Folder.Startup) Then Continue For
+            If Not pack.Filename.Ext = "exe" OrElse Not pack.Path.FileExists Then
+                Continue For
+            End If
 
-            batchCode += "@set PATH=" + dir + ";%PATH%" + BR
+            path = pack.Directory + ";" + path
         Next
 
-        Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
-        Proc.WriteBatchFile(batchPath, batchCode)
-
-        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
-
-        Dim batchProcess As New Process
-        batchProcess.StartInfo.FileName = "cmd.exe"
-        batchProcess.StartInfo.Arguments = "/k """ + batchPath + """"
-        batchProcess.StartInfo.WorkingDirectory = p.TempDir
-        batchProcess.Start()
+        Using proc As New Process
+            proc.StartInfo.UseShellExecute = False
+            proc.StartInfo.FileName = "cmd.exe"
+            proc.StartInfo.Arguments = "/k"
+            proc.StartInfo.WorkingDirectory = p.TempDir
+            proc.StartInfo.EnvironmentVariables("path") = path
+            proc.Start()
+        End Using
     End Sub
 
     <Command("Shows the powershell with aliases for all tools staxrip includes.")>
     Sub ShowPowerShell()
-        Dim val As String
+        Dim path = Environment.GetEnvironmentVariable("path")
 
         For Each pack In Package.Items.Values
-            If pack.Path <> "" AndAlso pack.Filename.Ext = "exe" AndAlso Not pack.Name.Contains(" ") Then
-                Dim name = pack.Name.Replace(" ", "")
-                Dim filename = pack.Filename.Replace(" ", "")
-                val += "set-alias " + name + " \""" + pack.Path + "\"";"
-                If name <> filename Then val += "set-alias " + filename + " \""" + pack.Path + "\"";"
+            If Not pack.Filename.Ext = "exe" OrElse Not pack.Path.FileExists Then
+                Continue For
             End If
+
+            path = pack.Directory + ";" + path
         Next
 
-        If p.TempDir <> "" Then val += "cd \""" + p.TempDir + """"
-        g.StartProcess("powershell.exe", "-noexit -command " + val)
+        Using proc As New Process
+            proc.StartInfo.UseShellExecute = False
+            proc.StartInfo.FileName = "powershell.exe"
+            proc.StartInfo.Arguments = "-noexit -nologo"
+            proc.StartInfo.WorkingDirectory = p.TempDir
+            proc.StartInfo.EnvironmentVariables("path") = path
+            proc.Start()
+        End Using
     End Sub
 
     <Command("Executes command lines separated by a line break line by line. Macros are solved and passed as environment variables.")>
@@ -132,7 +138,7 @@ Public Class GlobalCommands
         DefaultValue(False)>
         waitForExit As Boolean,
         <DispName("Show Process Window"),
-        Description("Redirects the output of command line apps to the process window."),
+        Description("Redirects the output of console apps to the process window."),
         DefaultValue(False)>
         showProcessWindow As Boolean,
         <DispName("Batch Mode"),
@@ -244,7 +250,7 @@ Public Class GlobalCommands
 
         If File.Exists(filepath) Then
             If filepath.Ext = "ps1" Then
-                ExecutePowerShellScript(File.ReadAllText(filepath))
+                ExecutePowerShellScript(filepath.ReadAllText)
             Else
                 MsgError("Only PowerShell (*.ps1) is supported.")
             End If
@@ -258,135 +264,49 @@ Public Class GlobalCommands
                   <Description("Tool name as shown in the app manage dialog.")>
                   name As String)
         Try
-            If Package.Items(name).VerifyOK Then Package.Items(name).StartAction?.Invoke
+            If Package.Items(name).VerifyOK Then Package.Items(name).LaunchAction?.Invoke
         Catch ex As Exception
             g.ShowException(ex)
         End Try
     End Sub
 
     <Command("Executes PowerShell script code.")>
-    Sub ExecutePowerShellScript(<DispName("Script Code")>
-                                <Description("PowerShell script code to be executed.")>
-                                <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
-                                scriptCode As String)
+    Sub ExecutePowerShellScript(
+        <DispName("Script Code")>
+        <Description("PowerShell script code to be executed.")>
+        <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
+        code As String,
+        <DispName("Use External Shell")>
+        <Description("Execute in StaxRip to automate StaxRip or in external Shell.")>
+        Optional externalShell As Boolean = False)
 
-        Scripting.RunPowershell(scriptCode)
+        If externalShell Then
+            Dim path = Folder.Temp + "temp.ps1"
+            code.WriteFileUtf8(path)
+            g.StartProcess("powershell.exe", "-nologo -noexit -file " + path.Escape)
+        Else
+            Scripting.RunPowershell(code)
+        End If
     End Sub
 
     <Command("Test")>
     Sub Test()
         Dim msg = ""
 
-        Dim nvExcept = "--help --version --check-device --avsw --input-analyze 
-            --input-format --output-format --video-streamid --video-track --vpp-delogo
-            --vpp-delogo-cb --vpp-delogo-cr --vpp-delogo-depth --vpp-delogo-pos
-            --vpp-delogo-select --vpp-delogo-y --check-avversion --check-codecs --caption2ass
-            --check-encoders --check-decoders --check-formats --check-protocols --bref-mode
-            --check-filters --input --output --raw --avs --vpy --vpy-mt --key-on-chapter
-            --avcuvid-analyze --audio-source --audio-file --seek --format --audio-copy
-            --audio-copy --audio-codec --vpp-perf-monitor --avi --audio-profile --check-profiles
-            --audio-bitrate --audio-ignore --audio-ignore --audio-samplerate --audio-resampler --audio-stream
-            --audio-stream --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
-            --avsync --mux-option --input-res --fps --dar --audio-ignore-decode-error --audio-ignore-notrack-error
-            --log --log-framelist --vpp-colorspace".Split((" " + BR).ToCharArray())
+        msg += NVEnc.Test
+        msg += QSVEnc.Test
+        'msg += Rav1e.Test
+        'msg += VCEEnc.Test
+        msg += x264Enc.Test
+        msg += x265Enc.Test
 
-        File.WriteAllText(Package.NVEnc.GetDir + "\help.txt", ProcessHelp.GetStdOut(Package.NVEnc.Path, "-h"))
-        Dim nvHelp = File.ReadAllText(Package.NVEnc.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
-        Dim nvHelpSwitches = Regex.Matches(nvHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim nvCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\nvenc.vb").Replace("--no-", "--")
-        Dim nvPresent = Regex.Matches(nvCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim nvMissing = nvPresent.Where(Function(arg) Not nvHelpSwitches.Contains(arg))
-        Dim nvUnknown = nvHelpSwitches.Where(Function(x) Not nvPresent.Contains(x) AndAlso Not nvExcept.Contains(x)).ToList()
-        nvUnknown.Sort()
-        Dim nvNoNeedToExcept = nvExcept.Where(Function(arg) nvPresent.Contains(arg))
-        If nvNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary NVEnc Exception:" + BR2 + nvNoNeedToExcept.Join(" ")
-        If nvMissing.Count > 0 Then msg += BR2 + "# Removed from NVEnc" + BR2 + nvMissing.Join(" ")
-        If nvUnknown.Count > 0 Then msg += BR2 + "# NVEnc Todo" + BR2 + nvUnknown.Join(" ")
-
-        Dim amdExcept = "--audio-bitrate --audio-codec --audio-copy --audio-file
-            --audio-filter --avsw --device --input-analyze --caption2ass
-            --audio-ignore-decode-error --audio-ignore-notrack-error --audio-resampler
-            --audio-samplerate --audio-source --audio-stream --avs --avvce-analyze
-            --check-avversion --check-codecs --check-decoders --check-encoders --check-filters
-            --check-formats --check-protocols --dar --format --fps --help --input-file
-            --input-res --log-framelist --mux-option --output-file --raw --seek --skip-frame
-            --sub-copy --version --video-streamid --video-track --vpy --vpy-mt".Split((" " + BR).ToCharArray())
-
-        File.WriteAllText(Package.VCEEnc.GetDir + "\help.txt", ProcessHelp.GetStdOut(Package.VCEEnc.Path, "-h"))
-        Dim amdHelp = File.ReadAllText(".\Apps\Encoders\VCEEnc\help.txt").Replace("(no-)", "").Replace("--no-", "--")
-        Dim amdHelpSwitches = Regex.Matches(amdHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim amdCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\vceenc.vb").Replace("--no-", "--")
-        Dim amdPresent = Regex.Matches(amdCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim amdMissing = amdPresent.Where(Function(arg) Not amdHelpSwitches.Contains(arg))
-        Dim amdUnknown = amdHelpSwitches.Where(Function(x) Not amdPresent.Contains(x) AndAlso Not amdExcept.Contains(x)).ToList()
-        amdUnknown.Sort()
-        Dim amdNoNeedToExcept = amdExcept.Where(Function(arg) amdPresent.Contains(arg))
-        If amdNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary VCEEnc Exception" + BR2 + amdNoNeedToExcept.Join(" ")
-        If amdMissing.Count > 0 Then msg += BR2 + "# Removed from VCEEnc" + BR2 + amdMissing.Join(" ")
-        If amdUnknown.Count > 0 Then msg += BR2 + "# VCEEnc Todo" + BR2 + amdUnknown.Join(" ")
-
-        Dim qsExcept = "--help --version --check-lib --check-device --video-streamid --video-track
-            --check-avversion --check-codecs --check-encoders --check-decoders --check-formats
-            --check-protocols --chapter-no-trim --check-filters --device --input --output
-            --raw --avs --vpy --vpy-mt --audio-source --audio-file --seek --format --caption2ass
-            --audio-copy --audio-copy --audio-codec --audio-bitrate --audio-ignore --avhw --check-profiles
-            --audio-ignore --audio-samplerate --audio-resampler --audio-stream --audio-stream
-            --audio-stream --audio-stream --audio-filter --chapter-copy --chapter --sub-copy
-            --avsync --mux-option --input-res --fps --dar --avqsv-analyze --benchmark
-            --bench-quality --log --log-framelist --audio-thread --avi --avqsv --input-file
-            --audio-ignore-decode-error --audio-ignore-notrack-error --nv12 --output-file
-            --check-features-html --perf-monitor --perf-monitor-plot --perf-monitor-interval
-            --python --qvbr-quality --sharpness --vpp-delogo --vpp-delogo-select --audio-profile
-            --vpp-delogo-pos --vpp-delogo-depth --vpp-delogo-y --vpp-delogo-cb --vpp-delogo-cr
-            --vpp-delogo-add --vpp-half-turn --input-analyze --input-format --output-format
-            ".Split((" " + BR).ToCharArray())
-
-        File.WriteAllText(Package.QSVEnc.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.QSVEnc.Path, "-h"))
-        Dim qsHelp = File.ReadAllText(Package.QSVEnc.GetDir + "help.txt").Replace("(no-)", "").Replace("--no-", "--")
-        Dim qsHelpSwitches = Regex.Matches(qsHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim qsCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\qsvenc.vb").Replace("--no-", "--")
-        Dim qsPresent = Regex.Matches(qsCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim qsMissing = qsPresent.Where(Function(arg) Not qsHelpSwitches.Contains(arg))
-        Dim qsUnknown = qsHelpSwitches.Where(Function(x) Not qsPresent.Contains(x) AndAlso Not qsExcept.Contains(x)).ToList()
-        qsUnknown.Sort()
-        Dim qsNoNeedToExcept = qsExcept.Where(Function(arg) qsPresent.Contains(arg))
-        If qsNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary QSVEnc Exception:" + BR2 + qsNoNeedToExcept.Join(" ")
-        If qsMissing.Count > 0 Then msg += BR2 + "# Removed from QSVEnc" + BR2 + qsMissing.Join(" ")
-        If qsUnknown.Count > 0 Then msg += BR2 + "# QSVEnc Todo" + BR2 + qsUnknown.Join(" ")
-
-        File.WriteAllText(Package.x264.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.x264.Path, "--fullhelp"))
-
-        Dim x265Except = "--crop-rect--fast-cbf --frame-skip --help
-            --input --input-res --lft --ratetol --recon-y4m-exec --total-frames --version --no-scenecut
-            --no-progress --pbration --fullhelp ---hrd-concat".Split((" " + BR).ToCharArray())
-
-        Dim x265RemoveExcept = "--numa-pools --rdoq --cip --qblur --cplxblur --cu-stats --dhdr10-info --display-window 
-            --opt-qp-pps --opt-ref-list-length-pps --single-sei --hrd-concat
-            --dhdr10-opt --crop --pb-factor --ip-factor --level --log".Split((" " + BR).ToCharArray())
-
-        Dim x265Help = ProcessHelp.GetStdOut(Package.x265.Path, "--log-level full --fullhelp").Replace("--[no-]", "--")
-        Dim x265HelpSwitches = Regex.Matches(x265Help, "--[\w-]+").OfType(Of Match).Select(Function(val) val.Value)
-        Dim x265Code = File.ReadAllText(Folder.Startup.Parent + "Encoding\x265Enc.vb").Replace("--no-", "--")
-        File.WriteAllText(Package.x265.GetDir + "help.txt", x265Help)
-        Dim x265Present As New HashSet(Of String)
-
-        For Each switch In Regex.Matches(x265Code, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-            x265Present.Add(switch)
-        Next
-
-        Dim x265Missing = x265Present.Where(Function(arg) Not x265HelpSwitches.Contains(arg) AndAlso Not x265RemoveExcept.Contains(arg))
-        Dim x265Unknown = x265HelpSwitches.Where(Function(x) Not x265Present.Contains(x) AndAlso Not x265Except.Contains(x)).ToList()
-        x265Unknown.Sort()
-        Dim x265NoNeedToExcept = x265Except.Where(Function(arg) x265Present.Contains(arg))
-        If x265NoNeedToExcept.Count > 0 Then MsgInfo("Unnecessary x265 Exception:", x265NoNeedToExcept.Join(" "))
-        If x265Missing.Count > 0 Then msg += BR2 + "# Removed from x265" + BR2 + x265Missing.Join(" ")
-        If x265Unknown.Count > 0 Then msg += BR2 + "# x265 Todo" + BR2 + x265Unknown.Join(" ")
+        '//////////////////// aom
 
         'Dim aomCodeExcept = "".Split((" " + BR).ToCharArray())
 
         'Dim aomExcept = "--output --help".Split((" " + BR).ToCharArray())
         'Dim aomCodeExcept = "--y4m --help".Split((" " + BR).ToCharArray())
-        'Dim aomHelp = ProcessHelp.GetStdOut(Package.AOMEnc.Path, "--help")
+        'Dim aomHelp = ProcessHelp.GetConsoleOutput(Package.AOMEnc.Path, "--help")
         'File.WriteAllText(Package.AOMEnc.GetDir + "aomenc.txt", aomHelp)
         'aomHelp = aomHelp.Replace("(no-)", "").Replace("--no-", "--")
         'Dim aomHelpSwitches = Regex.Matches(aomHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
@@ -400,31 +320,14 @@ Public Class GlobalCommands
         'If aomMissing.Count > 0 Then msg += BR2 + "# Removed from aomenc" + BR2 + aomMissing.Join(" ")
         'If aomUnknown.Count > 0 Then msg += BR2 + "# aomenc Todo" + BR2 + aomUnknown.Join(" ")
 
-        Dim RavExcept = "--output --help --psnr --version --verbose".Split((" " + BR).ToCharArray())
-        Dim RavCodeExcept = "--y4m --help --version --verbose".Split((" " + BR).ToCharArray())
-        Dim RavHelp = ProcessHelp.GetStdOut(Package.Rav1e.Path, "--help")
-        File.WriteAllText(Package.Rav1e.GetDir + "help.txt", RavHelp)
-        RavHelp = RavHelp.Replace("(no-)", "").Replace("--no-", "--")
-        Dim RavHelpSwitches = Regex.Matches(RavHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim RavCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\Rav1e.vb").Replace("--no-", "--")
-        Dim RavPresentInCode = Regex.Matches(RavCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        Dim RavMissing = RavPresentInCode.Where(Function(arg) Not RavHelpSwitches.Contains(arg) AndAlso Not RavCodeExcept.Contains(arg))
-        Dim RavUnknown = RavHelpSwitches.Where(Function(x) Not RavPresentInCode.Contains(x) AndAlso Not RavExcept.Contains(x)).ToList()
-        RavUnknown.Sort()
-        Dim RavNoNeedToExcept = RavExcept.Where(Function(arg) RavPresentInCode.Contains(arg))
-        If RavNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary Rav1e Exception:" + BR2 + RavNoNeedToExcept.Join(" ")
-        If RavMissing.Count > 0 Then msg += BR2 + "# Removed from Rav1e" + BR2 + RavMissing.Join(" ")
-        If RavUnknown.Count > 0 Then msg += BR2 + "# Rav1e Todo" + BR2 + RavUnknown.Join(" ")
-
-        File.WriteAllText(Package.fdkaac.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.fdkaac.Path, "-h"))
-        File.WriteAllText(Package.PNGopt.GetDir + "help.txt", ProcessHelp.GetStdOut(Package.PNGopt.Path, Nothing))
+        Package.fdkaac.CreateHelpfile()
 
         For Each pack In Package.Items.Values
-            If pack.HelpFile.Ext = "md" Then
+            If pack.HelpFilename.Ext = "md" Then
                 msg += BR2 + "# local MD file for " + pack.Name
             End If
 
-            If Not pack.IgnoreIfMissing Then
+            If pack.IsIncluded Then
                 If pack.Path = "" Then
                     msg += BR2 + "# path missing for " + pack.Name
                 ElseIf Not pack.IgnoreVersion Then
@@ -436,8 +339,8 @@ Public Class GlobalCommands
                 End If
 
                 'does help file exist?
-                If pack.Path <> "" AndAlso pack.HelpFile <> "" Then
-                    If Not File.Exists(pack.GetDir + pack.HelpFile) Then
+                If pack.Path <> "" AndAlso pack.HelpFilename <> "" Then
+                    If Not File.Exists(pack.Directory + pack.HelpFilename) Then
                         msg += BR2 + $"# Help file of {pack.Name} don't exist!"
                     End If
                 End If
@@ -478,10 +381,10 @@ Public Class GlobalCommands
             End If
         Next
 
-        supportedTools.WriteUTF8File("..\docs\tools.rst")
+        supportedTools.WriteFileUtf8(Folder.Startup + "..\docs\tools.rst")
 
         Dim screenshots = "Screenshots" + BR + "===========" + BR2 + ".. contents::" + BR2
-        Dim screenshotFiles = Directory.GetFiles("..\docs\screenshots").ToList
+        Dim screenshotFiles = Directory.GetFiles(Folder.Startup + "..\docs\screenshots").ToList
         screenshotFiles.Sort(New StringLogicalComparer)
 
         For Each i In screenshotFiles
@@ -489,7 +392,7 @@ Public Class GlobalCommands
             screenshots += name + BR + "-".Multiply(name.Length) + BR2 + ".. image:: screenshots/" + i.FileName + BR2
         Next
 
-        screenshots.WriteUTF8File("..\docs\screenshots.rst")
+        screenshots.WriteFileUtf8(Folder.Startup + "..\docs\screenshots.rst")
 
         Dim macros = "Macros" + BR + "======" + BR2
 
@@ -497,7 +400,7 @@ Public Class GlobalCommands
             macros += "``" + i.Name + "``" + BR2 + i.Value + BR2
         Next
 
-        macros.WriteUTF8File("..\docs\macros.rst")
+        macros.WriteFileUtf8(Folder.Startup + "..\docs\macros.rst")
 
         Dim powershell = "PowerShell Scripting
 ====================
@@ -534,27 +437,27 @@ Default Scripts
 ---------------
 
 "
-        Dim psdir = "..\docs\powershell"
+        Dim psdir = Folder.Startup + "..\docs\powershell"
         DirectoryHelp.Delete(psdir)
         Directory.CreateDirectory(psdir)
 
-        For Each i In Directory.GetFiles(".\Apps\Scripts")
+        For Each i In Directory.GetFiles(Folder.Startup + "Apps\Scripts")
             FileHelp.Copy(i, psdir + "\" + i.FileName)
             Dim filename = i.FileName
             powershell += filename + BR + "~".Multiply(filename.Length) + BR2
             powershell += ".. literalinclude:: " + "powershell/" + i.FileName + BR + "   :language: powershell" + BR2
         Next
 
-        powershell.WriteUTF8File("..\docs\powershell.rst")
+        powershell.WriteFileUtf8(Folder.Startup + "..\docs\powershell.rst")
 
         Dim switches = "Command Line Interface
 ======================
 
 Switches are processed in the order they appear in the command line.
 
-The command line interface, the customizable main menu and Event Commands features are built with a shared command system.
+The command line interface, the customizable main menu and Event Command features are built with a shared command system.
 
-There is a special mode where only the MediaInfo window is shown using -mediainfo , this is useful for Windows File Explorer integration with an app like Open++.
+There is a special mode where only the MediaInfo window is shown using -mediainfo , this is useful for File Explorer integration with an app like Open++.
 
 
 Examples
@@ -614,22 +517,18 @@ Switches
             switches += command.Attribute.Description + BR2 + BR
         Next
 
-        switches.WriteUTF8File("..\docs\cli.rst")
+        switches.WriteFileUtf8(Folder.Startup + "..\docs\cli.rst")
 
         If msg <> "" Then
-            Dim fs = Folder.Temp + "staxrip todo.txt"
-            File.WriteAllText(fs, msg)
+            Dim fs = Folder.Temp + "staxrip test.txt"
+            File.WriteAllText(fs, BR + msg.Trim + BR)
             g.StartProcess(fs)
         Else
             MsgInfo("No issues found.")
         End If
     End Sub
 
-    'This method is called by pressing F11 in the main form.
-    'It creates the release 7zip files on the desktop.
-    'If version.Revision is not 0 then it's a test build
-    'and it's copied to dropbox and onedrive folders.
-    <Command("Test")>
+    <Command("Release")>
     Sub Release()
         Try
             Dim sourceDir = Application.StartupPath + "\"
@@ -641,37 +540,52 @@ Switches
 
             Dim version = Assembly.LoadFile(sourceDir + "StaxRip.exe").GetName.Version
             Dim releaseType = "-stable"
-            If version.Revision <> 0 Then releaseType = "-test"
 
-            If Not Directory.Exists(sourceDir) Then Throw New Exception("Source directory not found." + BR2 + sourceDir)
+            If version.Revision <> 0 Then
+                releaseType = "-beta"
+            End If
+
+            If Not Directory.Exists(sourceDir) Then
+                Throw New Exception("Source directory not found." + BR2 + sourceDir)
+            End If
 
             Dim info = FileVersionInfo.GetVersionInfo(sourceDir + "StaxRip.exe")
             Dim targetDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                                         "StaxRip-x64-" + info.FileVersion + releaseType)
+                "StaxRip-x64-" + info.FileVersion + releaseType)
 
             DirectoryHelp.Delete(targetDir)
             DirectoryHelp.Copy(sourceDir, targetDir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
 
             For Each i In Directory.GetDirectories(targetDir + "\Apps\Plugins\VS")
                 Dim cacheDir = i + "\__pycache__"
-                If Directory.Exists(cacheDir) Then DirectoryHelp.Delete(cacheDir)
+
+                If Directory.Exists(cacheDir) Then
+                    DirectoryHelp.Delete(cacheDir)
+                End If
             Next
 
             DirectoryHelp.Delete(targetDir + "\.vs")
             DirectoryHelp.Delete(targetDir + "\Apps\Plugins\VS\Scripts\__pycache__")
             DirectoryHelp.Delete(targetDir + "\Apps\Audio\qaac\QTfiles64")
 
-            FileHelp.Delete(targetDir + "\Debug.log")
             FileHelp.Delete(targetDir + "\_StaxRip.log")
-            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe")
-            FileHelp.Delete(targetDir + "\StaxRip.vshost.sln")
-            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe.config")
-            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe.manifest")
             FileHelp.Delete(targetDir + "\Apps\Audio\eac3to\log.txt")
+            FileHelp.Delete(targetDir + "\Apps\Support\AVSMeter\AVSMeter.ini")
+            FileHelp.Delete(targetDir + "\Apps\Support\chapterEditor\chapterEditor.ini")
             FileHelp.Delete(targetDir + "\Apps\Support\DGIndex\DGIndex.ini")
             FileHelp.Delete(targetDir + "\Apps\Support\MKVToolNix\mkvtoolnix.ini")
             FileHelp.Delete(targetDir + "\Apps\Support\MKVToolNix\mkvtoolnix-gui.ini")
-            FileHelp.Delete(targetDir + "\Apps\Support\AVSMeter\AVSMeter.ini")
+            FileHelp.Delete(targetDir + "\Debug.log")
+            FileHelp.Delete(targetDir + "\FrameServer.exp")
+            FileHelp.Delete(targetDir + "\FrameServer.exp")
+            FileHelp.Delete(targetDir + "\FrameServer.exp")
+            FileHelp.Delete(targetDir + "\FrameServer.ilk")
+            FileHelp.Delete(targetDir + "\FrameServer.lib")
+            FileHelp.Delete(targetDir + "\FrameServer.pdb")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe.config")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.exe.manifest")
+            FileHelp.Delete(targetDir + "\StaxRip.vshost.sln")
 
             For Each i In Directory.GetFiles(targetDir, "*.ini", IO.SearchOption.AllDirectories)
                 Throw New Exception("ini file found:" + BR2 + i)
@@ -682,18 +596,25 @@ Switches
                 p.StartInfo.Arguments = $"a -t7z -mx9 ""{targetDir}.7z"" -r ""{targetDir}\*"""
                 p.Start()
                 p.WaitForExit()
-                If p.ExitCode > 0 Then Throw New Exception($"7zip exit code: {p.ExitCode}")
+
+                If p.ExitCode > 0 Then
+                    Throw New Exception($"7zip exit code: {p.ExitCode}")
+                End If
             End Using
 
-            If releaseType = "-test" Then
+            If releaseType = "-beta" Then
                 Dim outputDirectories = {
-                    "C:\Users\frank\OneDrive\StaxRip\TestBuilds\",
-                    "C:\Users\frank\Dropbox\public\StaxRip\Builds\"}
+                    "C:\Users\frank\Dropbox\public\StaxRip\Builds",
+                    "C:\Users\frank\OneDrive\StaxRip\Builds"}
 
-                For Each i In outputDirectories
-                    If Not Directory.Exists(i) Then Continue For
-                    FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z", i + DirPath.GetName(targetDir) + ".7z", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
-                    Process.Start(i)
+                For Each outDir In outputDirectories
+                    If Directory.Exists(outDir) Then
+                        FileHelp.Copy(targetDir.TrimEnd("\"c) + ".7z",
+                                      outDir + "\" + DirPath.GetName(targetDir) + ".7z",
+                                      Microsoft.VisualBasic.FileIO.UIOption.AllDialogs)
+
+                        Process.Start(outDir)
+                    End If
                 Next
             End If
         Catch ex As Exception
@@ -727,7 +648,7 @@ Switches
                 f.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
                 f.Doc.WriteP("Thanks for icon artwork: Freepik www.flaticon.com, ilko-k, nulledone, vanontom")
                 Dim licensePath = Folder.Startup + "License.txt"
-                If File.Exists(licensePath) Then f.Doc.WriteP(File.ReadAllText(licensePath), True)
+                If File.Exists(licensePath) Then f.Doc.WriteP(licensePath.ReadAllText, True)
             Case "CRF Value"
                 f.Doc.WriteStart("CRF Value")
                 f.Doc.WriteP("Low values produce high quality, large file size, large value produces small file size And poor quality. A balanced value Is 23 which Is the defalt In x264. Common values are 18-26 where 18 produces near transparent quality at the cost Of a huge file size. The quality 26 produces Is rather poor so such a high value should only be used When a small file size Is the only criterium.")
@@ -773,7 +694,13 @@ Switches
         filepath = Macro.Expand(filepath)
 
         If File.Exists(filepath) Then
-            g.StartProcess(Application.ExecutablePath, "-mediainfo " + filepath.Escape)
+            Dim path = Registry.CurrentUser.GetString("Software\Microsoft\Windows\CurrentVersion\App Paths\MediaInfoNET.exe", Nothing)
+
+            If File.Exists(path) Then
+                g.StartProcess(path, filepath.Escape)
+            Else
+                g.StartProcess(Application.ExecutablePath, "-mediainfo " + filepath.Escape)
+            End If
         Else
             MsgWarn("No file found.")
         End If
@@ -862,7 +789,7 @@ Switches
                       <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
                       path As String)
 
-        p.TargetFile = Macro.Expand(path)
+        g.MainForm.BeginInvoke(Sub() p.TargetFile = Macro.Expand(path))
     End Sub
 
     <Command("Loads the source file.")>

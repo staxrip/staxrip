@@ -333,7 +333,11 @@ Public Class SubtitleControl
             subtitle.Subtitle.Title = subtitle.Title
             subtitle.Subtitle.Forced = subtitle.Forced
             subtitle.Subtitle.Default = subtitle.Default
-            If subtitle.Subtitle.Title Is Nothing Then subtitle.Subtitle.Title = ""
+
+            If subtitle.Subtitle.Title Is Nothing Then
+                subtitle.Subtitle.Title = ""
+            End If
+
             muxer.Subtitles.Add(subtitle.Subtitle)
         Next
     End Sub
@@ -421,31 +425,29 @@ Public Class SubtitleControl
         If Not Package.mpvnet.VerifyOK(True) Then Exit Sub
 
         Dim st = Items(dgv.CurrentRow.Index).Subtitle
-        Dim fp = st.Path
+        Dim filepath = st.Path
 
         If st.Path.Ext = "idx" Then
-            fp = p.TempDir + p.TargetFile.Base + "_play.idx"
-
-            Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " +
-                            st.IndexIDX.ToString).WriteANSIFile(fp)
-
-            FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
+            filepath = p.TempDir + p.TargetFile.Base + "_play.idx"
+            Regex.Replace(st.Path.ReadAllText, "langidx: \d+", "langidx: " +
+                          st.IndexIDX.ToString).WriteFileDefault(filepath)
+            FileHelp.Copy(st.Path.DirAndBase + ".sub", filepath.DirAndBase + ".sub")
         End If
 
-        If FileTypes.SubtitleExludingContainers.Contains(fp.Ext) Then
-            g.StartProcess(Package.mpvnet.Path, "--sub-file=" + fp.Escape + " " + p.FirstOriginalSourceFile.Escape)
-        ElseIf p.FirstOriginalSourceFile = fp Then
-            g.StartProcess(Package.mpvnet.Path, "--sub=" & (st.Index + 1) & " " + fp.Escape)
+        If FileTypes.SubtitleExludingContainers.Contains(filepath.Ext) Then
+            g.StartProcess(Package.mpvnet.Path, "--sub-file=" + filepath.Escape + " " + p.FirstOriginalSourceFile.Escape)
+        ElseIf p.FirstOriginalSourceFile = filepath Then
+            g.StartProcess(Package.mpvnet.Path, "--sub=" & (st.Index + 1) & " " + filepath.Escape)
         End If
     End Sub
 
     Private Sub bnSetNames_Click(sender As Object, e As EventArgs) Handles bnSetNames.Click
         Using td As New TaskDialog(Of Integer)
             td.MainInstruction = "Set names for all streams."
-            td.AddCommandLink("Set language in English", 1)
+            td.AddCommand("Set language in English", 1)
 
             If CultureInfo.CurrentCulture.NeutralCulture.TwoLetterISOLanguageName <> "en" Then
-                td.AddCommandLink("Set language in " + CultureInfo.CurrentCulture.NeutralCulture.DisplayName, 2)
+                td.AddCommand("Set language in " + CultureInfo.CurrentCulture.NeutralCulture.DisplayName, 2)
             End If
 
             Select Case td.Show
@@ -478,7 +480,7 @@ Public Class SubtitleControl
 
             If fp.Ext = "idx" Then
                 fp = p.TempDir + p.TargetFile.Base + "_temp.idx"
-                Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " + st.IndexIDX.ToString).WriteANSIFile(fp)
+                Regex.Replace(st.Path.ReadAllText, "langidx: \d+", "langidx: " + st.IndexIDX.ToString).WriteFileDefault(fp)
                 FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
             End If
 
@@ -495,7 +497,7 @@ Public Class SubtitleControl
 
             If fp.ExtFull = ".idx" Then
                 fp = p.TempDir + p.TargetFile.Base + "_temp.idx"
-                Regex.Replace(File.ReadAllText(st.Path), "langidx: \d+", "langidx: " + st.IndexIDX.ToString).WriteANSIFile(fp)
+                Regex.Replace(st.Path.ReadAllText, "langidx: \d+", "langidx: " + st.IndexIDX.ToString).WriteFileDefault(fp)
                 FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
             End If
 

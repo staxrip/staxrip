@@ -162,6 +162,18 @@ Public MustInherit Class AudioProfile
     Overridable Sub OnStreamChanged()
     End Sub
 
+    Function GetDuration() As TimeSpan
+        If IO.File.Exists(File) Then
+            If Stream Is Nothing Then
+                Return TimeSpan.FromMilliseconds(MediaInfo.GetAudio(File, "Duration").ToDouble)
+            Else
+                Using mi As New MediaInfo(File)
+                    Return TimeSpan.FromMilliseconds(mi.GetAudio(Stream.Index, "Duration").ToDouble)
+                End Using
+            End If
+        End If
+    End Function
+
     Function GetAudioText(stream As AudioStream, path As String) As String
         For Each i In Language.Languages
             If path.Contains(i.CultureInfo.EnglishName) Then
@@ -317,7 +329,7 @@ Public Class BatchAudioProfile
             Package.eac3to,
             Package.qaac}.
             Where(Function(pack) cl.ToLower.Contains(pack.Name.ToLower)).
-            Select(Function(pack) "set PATH=%PATH%;" + pack.GetDir).
+            Select(Function(pack) "set PATH=%PATH%;" + pack.Directory).
             Join(BR) + BR2 + "cd /D " + p.TempDir.Escape + BR2 + cl
     End Function
 
@@ -659,6 +671,7 @@ Public Class GUIAudioProfile
                     proc.Package = Package.ffmpeg
                     proc.SkipStrings = {"frame=", "size="}
                     proc.Encoding = Encoding.UTF8
+                    proc.Duration = GetDuration()
                 End If
 
                 proc.Start()
@@ -864,8 +877,12 @@ Public Class GUIAudioProfile
                 ret += " --cbr " & CInt(Bitrate)
         End Select
 
-        If Params.qaacHE Then ret += " --he"
+        If Params.qaacHE AndAlso {1, 2, 3}.Contains(Params.qaacRateMode) Then
+            ret += " --he"
+        End If
+
         If Delay <> 0 Then ret += " --delay " + (Delay / 1000).ToInvariantString
+        If Params.Normalize Then ret += " --normalize"
         If Params.qaacQuality <> 2 Then ret += " --quality " & Params.qaacQuality
         If Params.SamplingRate <> 0 Then ret += " --rate " & Params.SamplingRate
         If Params.qaacLowpass <> 0 Then ret += " --lowpass " & Params.qaacLowpass

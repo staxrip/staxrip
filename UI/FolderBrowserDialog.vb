@@ -1,4 +1,3 @@
-'TODO: shrink down huge waste of bytes
 
 Imports System.Text
 Imports System.ComponentModel
@@ -624,7 +623,6 @@ Public Class FolderBrowserDialog
 
     <ComImport(), Guid(IIDGuid.IFileDialogControlEvents), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IFileDialogControlEvents
-
         <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub OnItemSelected(<[In](), MarshalAs(UnmanagedType.[Interface])> pfdc As IFileDialogCustomize, <[In]()> dwIDCtl As Integer, <[In]()> dwIDItem As Integer)
         <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
@@ -714,6 +712,7 @@ Public Class FolderBrowserDialog
 
     Friend Class SafeModuleHandle
         Inherits SafeHandle
+
         Public Sub New()
             MyBase.New(IntPtr.Zero, True)
         End Sub
@@ -754,7 +753,7 @@ Public Class FolderBrowserDialog
         End Function
 
         <DllImport("uxtheme.dll", CharSet:=CharSet.Unicode)>
-        Public Shared Function SetWindowTheme(hWnd As IntPtr, pszSubAppName As String, pszSubIdList As String) As Integer
+        Shared Function SetWindowTheme(hWnd As IntPtr, pszSubAppName As String, pszSubIdList As String) As Integer
         End Function
 
 #Region "General Definitions"
@@ -915,31 +914,36 @@ Public Class FolderBrowserDialog
 
         Friend Const ERROR_CANCELLED As Integer = &H800704C7
 
-        <DllImport("kernel32.dll", CharSet:=CharSet.Unicode, SetLastError:=True)>
-        Public Shared Function LoadLibrary(name As String) As SafeModuleHandle
+        <DllImport("kernel32.dll", CharSet:=CharSet.Unicode)>
+        Shared Function LoadLibrary(name As String) As SafeModuleHandle
         End Function
 
-        <DllImport("kernel32.dll", SetLastError:=True)>
-        Public Shared Function FreeLibrary(hModule As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
+        <DllImport("kernel32.dll")>
+        Shared Function FreeLibrary(hModule As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
         End Function
 
-        <DllImport("user32.dll", SetLastError:=True, CharSet:=CharSet.Unicode)>
-        Public Shared Function LoadString(hInstance As SafeModuleHandle, uID As UInteger, lpBuffer As StringBuilder, nBufferMax As Integer) As Integer
+        <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
+        Shared Function LoadString(hInstance As SafeModuleHandle, uID As UInteger, lpBuffer As StringBuilder, nBufferMax As Integer) As Integer
         End Function
 
         <DllImport("shell32.dll", CharSet:=CharSet.Unicode)>
-        Public Shared Function SHCreateItemFromParsingName(pszPath As String,
-                                                           pbc As IntPtr,
-                                                           ByRef riid As Guid,
-                                                           <MarshalAs(UnmanagedType.IUnknown)> ByRef ppv As Object) As Integer
+        Shared Function SHCreateItemFromParsingName(
+            pszPath As String,
+            pbc As IntPtr,
+            ByRef riid As Guid,
+            <MarshalAs(UnmanagedType.IUnknown)> ByRef ppv As Object) As Integer
         End Function
 
-        Public Shared Function CreateItemFromParsingName(path As String) As IShellItem
+        Shared Function CreateItemFromParsingName(path As String) As IShellItem
             Dim item As Object = Nothing
             Dim guid As New Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")
             ' IID_IShellItem
             Dim hr = NativeMethods.SHCreateItemFromParsingName(path, IntPtr.Zero, guid, item)
-            If hr <> 0 Then Throw New Win32Exception(hr)
+
+            If hr <> 0 Then
+                Throw New Win32Exception(hr)
+            End If
+
             Return DirectCast(item, IShellItem)
         End Function
     End Class
@@ -948,7 +952,7 @@ Public Class FolderBrowserDialog
         Private Sub New()
         End Sub
 
-        ' IID GUID strings for relevant COM interfaces
+        'IID GUID strings for relevant COM interfaces
         Friend Const IModalWindow As String = "b4db1657-70d7-485e-8e3e-6fcb5a5c1802"
         Friend Const IFileDialog As String = "42f85136-db7e-439c-85f1-e4075d135fc8"
         Friend Const IFileOpenDialog As String = "d57c7288-d4ad-4768-be02-9d969532d960"

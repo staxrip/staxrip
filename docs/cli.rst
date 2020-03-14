@@ -3,9 +3,9 @@
 
 Switches are processed in the order they appear in the command line.
 
-The command line interface, the customizable main menu and Event Commands features are built with a shared command system.
+The command line interface, the customizable main menu and Event Command features are built with a shared command system.
 
-There is a special mode where only the MediaInfo window is shown using -mediainfo , this is useful for Windows File Explorer integration with an app like Open++.
+There is a special mode where only the MediaInfo window is shown using -mediainfo , this is useful for File Explorer integration with an app like Open++.
 
 
 Examples
@@ -86,17 +86,19 @@ commandLines: One or more command lines to be executed or if batch mode is used 
 
 waitForExit: This will halt the main thread until the command line returns.
 
-showProcessWindow: Redirects the output of command line apps to the process window.
+showProcessWindow: Redirects the output of console apps to the process window.
 
 asBatch: Alternative mode that creats a BAT file to execute.
 
 Executes command lines separated by a line break line by line. Macros are solved and passed as environment variables.
 
 
--ExecutePowerShellScript:scriptCode
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-ExecutePowerShellScript:code,externalShell
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-scriptCode: PowerShell script code to be executed.
+code: PowerShell script code to be executed.
+
+externalShell: Execute in StaxRip to automate StaxRip or in external Shell.
 
 Executes PowerShell script code.
 
@@ -170,7 +172,7 @@ Plays a mp3, wav Or wmv sound file.
 -Release
 ~~~~~~~~
 
-Test
+Release
 
 
 -ResetSettings
@@ -441,6 +443,12 @@ Shows the powershell with aliases for all tools staxrip includes.
 ~~~~~~~~~~~~
 
 Dialog to preview or cut the video.
+
+
+-ShowScriptInfo
+~~~~~~~~~~~~~~~
+
+Shows script info using various console tools.
 
 
 -ShowSettingsDialog

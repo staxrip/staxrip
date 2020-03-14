@@ -1,4 +1,5 @@
-﻿Imports System.Drawing.Imaging
+﻿
+Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Runtime.ExceptionServices
 Imports System.Text
@@ -82,17 +83,10 @@ Public Class GlobalClass
 
             Log.WriteHeader(If(p.Script.Engine = ScriptEngine.AviSynth, "AviSynth Script", "VapourSynth Script"))
             Log.WriteLine(p.Script.GetFullScript)
-            Log.WriteHeader("Script Properties")
-
-            Dim props =
-                "Source Frame Count: " & p.SourceScript.GetFrames & BR +
-                "Source Frame Rate: " & p.SourceScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
-                "Source Duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.SourceScript.GetFrames / p.SourceScript.GetFramerate)).ToString + BR +
-                "Target Frame Count: " & p.Script.GetFrames & BR +
-                "Target Frame Rate: " & p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + BR +
-                "Target Duration: " + TimeSpan.FromSeconds(g.Get0ForInfinityOrNaN(p.Script.GetFrames / p.Script.GetFramerate)).ToString
-
-            Log.WriteLine(props.FormatColumn(":"))
+            Log.WriteHeader("Source Script Information")
+            Log.WriteLine(p.SourceScript.GetInfo().GetInfoText(-1))
+            Log.WriteHeader("Target Script Information")
+            Log.WriteLine(p.Script.GetInfo().GetInfoText(-1))
 
             g.MainForm.Hide()
 
@@ -116,11 +110,11 @@ Public Class GlobalClass
                             End Sub)
             End If
 
-            For Each i In p.AudioTracks
-                Dim temp = i
+            For Each track In p.AudioTracks
+                Dim temp = track
 
-                If p.SkipAudioEncoding AndAlso File.Exists(i.GetOutputFile) Then
-                    i.File = i.GetOutputFile()
+                If p.SkipAudioEncoding AndAlso File.Exists(track.GetOutputFile) Then
+                    track.File = track.GetOutputFile()
                 Else
                     actions.Add(Sub()
                                     Audio.Process(temp)
@@ -141,9 +135,17 @@ Public Class GlobalClass
             Log.Save()
             p.VideoEncoder.Muxer.Mux()
 
-            If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile, p)
-            If p.MTN Then MTN.Thumbnails(p.TargetFile, p)
-            If p.MKVHDR Then MKVInfo.MetadataHDR(p.TargetFile, p)
+            If p.SaveThumbnails Then
+                Thumbnails.SaveThumbnails(p.TargetFile, p)
+            End If
+
+            If p.MTN Then
+                MTN.Thumbnails(p.TargetFile, p)
+            End If
+
+            If p.MKVHDR Then
+                MKVInfo.MetadataHDR(p.TargetFile, p)
+            End If
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
@@ -153,11 +155,14 @@ Public Class GlobalClass
             g.DeleteTempFiles()
             g.RaiseAppEvent(ApplicationEvent.JobProcessed)
             Job.RemoveJob(jobPath)
-            If jobPath.StartsWith(Folder.Settings + "Batch Projects\") Then File.Delete(jobPath)
+
+            If jobPath.StartsWith(Folder.Settings + "Batch Projects\") Then
+                File.Delete(jobPath)
+            End If
         Catch ex As ErrorAbortException
             Log.Save()
-            g.ShowException(ex, Nothing, 50)
-            g.StartProcess(g.GetTextEditor(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
+            g.ShowException(ex, Nothing, Nothing, 50)
+            g.StartProcess(g.GetTextEditorPath(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
             ProcController.Aborted = False
         End Try
     End Sub
@@ -287,37 +292,26 @@ Public Class GlobalClass
     End Function
 
     Function ShowVideoSourceWarnings(files As IEnumerable(Of String)) As Boolean
-        For Each i In files
-            If Not i.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+        For Each file In files
+            If System.Text.Encoding.Default.CodePage <> 65001 AndAlso
+                Not file.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+
                 MsgError(Strings.NoUnicode)
                 Return True
             End If
 
-            If i.Contains("#") Then
-                If i.Ext = "mp4" OrElse MediaInfo.GetGeneral(i, "Audio_Codec_List").Contains("AAC") Then
-                    MsgError("Character # can't be processed by MP4Box, please rename." + BR2 + i)
+            If file.Contains("#") Then
+                If file.Ext = "mp4" OrElse MediaInfo.GetGeneral(file, "Audio_Codec_List").Contains("AAC") Then
+                    MsgError("Character # can't be processed by MP4Box, please rename." + BR2 + file)
                     Return True
                 End If
             End If
 
-            If i.Ext = "dga" Then
+            If file.Ext = "dga" Then
                 MsgError("There is no properly working x64 source filters available for DGA. There are several newer and faster x64 source filters available.")
                 Return True
             End If
-
-            If i.Ext = "dgi" AndAlso File.ReadAllText(i).Contains("DGIndexIM") Then
-                MsgError("Please rename the file extension from dgi to dgim.")
-                Return True
-            End If
         Next
-    End Function
-
-    Function Get0ForInfinityOrNaN(arg As Double) As Double
-        If Double.IsNaN(arg) OrElse Double.IsInfinity(arg) Then
-            Return 0
-        Else
-            Return arg
-        End If
     End Function
 
     Sub PlayAudio(ap As AudioProfile)
@@ -332,45 +326,86 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub PlayScript(doc As VideoScript)
-        If File.Exists(p.Audio0.File) AndAlso FileTypes.Audio.Contains(p.Audio0.File.Ext) Then
-            PlayScript(doc, p.Audio0)
-        ElseIf File.Exists(p.Audio1.File) AndAlso FileTypes.Audio.Contains(p.Audio1.File.Ext) Then
-            PlayScript(doc, p.Audio1)
+    Sub PlayScript(script As VideoScript)
+        If script.Engine = ScriptEngine.AviSynth Then
+            PlayScriptWithMPV(script)
         Else
-            PlayScript(doc, Nothing)
+            PlayScriptWithMPC(script)
         End If
     End Sub
 
-    Sub PlayScript(doc As VideoScript, ap As AudioProfile)
-        If Not Package.mpvnet.VerifyOK(True) Then Exit Sub
+    Function GetAudioProfileForScriptPlayback() As AudioProfile
+        If File.Exists(p.Audio0.File) AndAlso FileTypes.Audio.Contains(p.Audio0.File.Ext) Then
+            Return p.Audio0
+        ElseIf File.Exists(p.Audio1.File) AndAlso FileTypes.Audio.Contains(p.Audio1.File.Ext) Then
+            Return p.Audio1
+        End If
+    End Function
 
-        If doc.Engine = ScriptEngine.VapourSynth Then
-            MsgError("VapourSynth scripts are not supported by the mpv player.")
+    Sub PlayScriptWithMPC(script As VideoScript, Optional cliArgs As String = Nothing)
+        If script Is Nothing Then
             Exit Sub
         End If
 
-        Dim script As New VideoScript
-        script.Engine = doc.Engine
-        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
-        script.Filters = doc.GetFiltersCopy
+        script.Synchronize()
+        Dim playerPath = Package.MpcBE.Path
 
-        If script.Engine = ScriptEngine.AviSynth Then
-            If Calc.IsARSignalingRequired Then
-                Dim targetWidth = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
-                script.Filters.Add(New VideoFilter("LanczosResize(" & targetWidth & "," & p.TargetHeight & ")"))
-            End If
-        Else
-            If Calc.IsARSignalingRequired Then
-                Dim targetWidth = CInt((p.TargetHeight * Calc.GetTargetDAR) / 4) * 4
-                script.Filters.Add(New VideoFilter("clip = core.resize.Bicubic(clip, " & targetWidth & "," & p.TargetHeight & ")"))
-            End If
+        If Not File.Exists(playerPath) Then
+            playerPath = Package.MpcHC.Path
         End If
 
-        script.Synchronize(False)
-        Dim args = script.Path.Escape
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) Then args = "--audio-files=" + ap.File.Escape + " " + args
-        g.StartProcess(Package.mpvnet.Path, args)
+        If Not File.Exists(playerPath) AndAlso Package.MpcBE.VerifyOK(True) Then
+            playerPath = Package.MpcBE.Path
+        End If
+
+        If Not File.Exists(playerPath) Then
+            Exit Sub
+        End If
+
+        Dim args As String
+
+        If cliArgs <> "" Then
+            args += " " + cliArgs
+        End If
+
+        Dim ap = GetAudioProfileForScriptPlayback()
+
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso
+            p.Ranges.Count = 0 Then
+
+            args += " /dub " + ap.File.Escape
+        End If
+
+        args += " " + script.Path.Escape
+        g.StartProcess(playerPath, args.Trim)
+    End Sub
+
+    Sub PlayScriptWithMPV(script As VideoScript, Optional cliArgs As String = Nothing)
+        If script Is Nothing Then
+            Exit Sub
+        End If
+
+        script.Synchronize()
+        Dim args As String
+
+        If cliArgs <> "" Then
+            args += " " + cliArgs
+        End If
+
+        If Calc.IsARSignalingRequired Then
+            args += " --video-aspect=" + Calc.GetTargetDAR.ToInvariantString.Shorten(8)
+        End If
+
+        Dim ap = GetAudioProfileForScriptPlayback()
+
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso
+            p.Ranges.Count = 0 Then
+
+            args += " --audio-files=" + ap.File.Escape
+        End If
+
+        args += " " + script.Path.Escape
+        g.StartProcess(Package.mpvnet.Path, args.Trim)
     End Sub
 
     Function ExtractDelay(value As String) As Integer
@@ -405,7 +440,7 @@ Public Class GlobalClass
 
                 For Each iItem As ToolStripItem In l
                     If i < a.Length - 1 Then
-                        If iItem.Text = a(i) Then
+                        If iItem.Text = a(i) + "     " Then
                             found = True
                             l = DirectCast(iItem, ToolStripMenuItem).DropDownItems
                         End If
@@ -414,11 +449,11 @@ Public Class GlobalClass
 
                 If Not found Then
                     If i = a.Length - 1 Then
-                        Dim item As New ActionMenuItem(a(i), Sub() loadAction(iProfile))
+                        Dim item As New ActionMenuItem(a(i) + "     ", Sub() loadAction(iProfile))
                         l.Add(item)
                         l = item.DropDownItems
                     Else
-                        Dim item As New MenuItemEx(a(i))
+                        Dim item As New MenuItemEx(a(i) + "     ")
                         l.Add(item)
                         l = item.DropDownItems
                     End If
@@ -456,32 +491,41 @@ Public Class GlobalClass
     End Function
 
     Function GetPreviewPosMS() As Integer
-        Dim fr = p.Script.GetFramerate
-        If fr = 0 Then fr = 25
-        Return CInt((s.LastPosition / fr) * 1000)
+        Return CInt((s.LastPosition / p.Script.GetFramerate) * 1000)
     End Function
 
-    Function GetTextEditor() As String
-        Dim ret = GetAssociatedApplication(".txt")
-        If ret <> "" Then Return ret
+    Function GetTextEditorPath() As String
+        Dim ret = GetAppPathForExtension("txt")
+
+        If ret <> "" Then
+            Return ret
+        End If
+
         Return "notepad.exe"
     End Function
 
-    Function GetAssociatedApplication(ext As String) As String
-        Dim c = 0UI
+    Function GetAppPathForExtension(ParamArray extensions As String()) As String
+        For Each extension In extensions
+            If Not extension.StartsWith(".") Then
+                extension = "." + extension
+            End If
 
-        'ASSOCF_VERIFY, ASSOCSTR_EXECUTABLE
-        If 1 = Native.AssocQueryString(&H40, 2, ext, Nothing, Nothing, c) Then
-            If c > 0 Then
-                Dim sb As New StringBuilder(CInt(c))
+            Dim c = 0UI
 
-                'ASSOCF_VERIFY, ASSOCSTR_EXECUTABLE
-                If 0 = Native.AssocQueryString(&H40, 2, ext, Nothing, sb, c) Then
-                    Dim ret = sb.ToString
-                    If File.Exists(ret) Then Return ret
+            If Native.AssocQueryString(&H40, 2, extension, Nothing, Nothing, c) = 1 Then
+                If c > 0 Then
+                    Dim sb As New StringBuilder(CInt(c))
+
+                    If 0 = Native.AssocQueryString(&H40, 2, extension, Nothing, sb, c) Then
+                        Dim ret = sb.ToString
+
+                        If File.Exists(ret) Then
+                            Return ret
+                        End If
+                    End If
                 End If
             End If
-        End If
+        Next
     End Function
 
     Sub SaveSettings()
@@ -631,14 +675,14 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowCommandLinePreview(title As String, value As String)
-        Using f As New StringEditorForm
-            f.Text = title
-            f.rtb.ReadOnly = True
-            f.cbWrap.Checked = Not value.Contains(BR)
-            f.rtb.Text = value
-            f.bnOK.Visible = False
-            f.bnCancel.Text = "Close"
-            f.ShowDialog()
+        Using form As New StringEditorForm
+            form.Text = title
+            form.rtb.ReadOnly = True
+            form.cbWrap.Checked = Not value.Contains(BR)
+            form.rtb.Text = value
+            form.bnOK.Visible = False
+            form.bnCancel.Text = "Close"
+            form.ShowDialog()
         End Using
     End Sub
 
@@ -655,7 +699,7 @@ Public Class GlobalClass
                 proc.SkipString = "Indexing, please wait..."
                 If proj Is Nothing Then proj = p
                 proc.Project = proj
-                proc.File = Package.ffms2.GetDir + "ffmsindex.exe"
+                proc.File = Package.ffms2.Directory + "ffmsindex.exe"
                 proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Escape + " " + cachePath.Escape
                 proc.Start()
             End Using
@@ -663,16 +707,13 @@ Public Class GlobalClass
     End Sub
 
     Function IsValidSource(Optional warn As Boolean = True) As Boolean
-        If p.SourceScript.GetFrames = 0 Then
-            If warn Then
-                MsgWarn("Failed to load source.")
-            End If
-
+        If p.SourceScript.GetFrameCount = 0 Then
+            If warn Then MsgWarn("Failed to load source.")
             Return False
         End If
 
-        If Not p.SourceScript.GetErrorMessage Is Nothing Then
-            MsgError(p.SourceScript.GetErrorMessage)
+        If p.SourceScript.GetError <> "" Then
+            MsgError("Script Error", p.SourceScript.GetError)
             Return False
         End If
 
@@ -756,38 +797,39 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub ShowException(e As Exception,
-                      Optional msg As String = Nothing,
+    Sub ShowException(ex As Exception,
+                      Optional mainInstruction As String = Nothing,
+                      Optional content As String = Nothing,
                       Optional timeout As Integer = 0)
         Try
             Using td As New TaskDialog(Of String)
-                If msg = "" Then
-                    If TypeOf e Is ErrorAbortException Then
-                        td.MainInstruction = DirectCast(e, ErrorAbortException).Title + $" ({Application.ProductVersion})"
+                If mainInstruction = "" Then
+                    If TypeOf ex Is ErrorAbortException Then
+                        td.MainInstruction = DirectCast(ex, ErrorAbortException).Title + $" ({Application.ProductVersion})"
                     Else
-                        td.MainInstruction = e.GetType.Name + $" ({Application.ProductVersion})"
+                        td.MainInstruction = ex.GetType.Name + $" ({Application.ProductVersion})"
                     End If
                 Else
-                    td.MainInstruction = msg
+                    td.MainInstruction = mainInstruction
                 End If
 
                 td.Timeout = timeout
-                td.Content = e.Message
+                td.Content = (ex.Message + BR2 + content).Trim
                 td.MainIcon = TaskDialogIcon.Error
-                td.ExpandedInformation = e.ToString
+                td.ExpandedInformation = ex.ToString
                 td.Footer = Strings.TaskDialogFooter
                 td.Show()
             End Using
         Catch
             Dim title As String
 
-            If TypeOf e Is ErrorAbortException Then
-                title = DirectCast(e, ErrorAbortException).Title
+            If TypeOf ex Is ErrorAbortException Then
+                title = DirectCast(ex, ErrorAbortException).Title
             Else
-                title = e.GetType.Name
+                title = ex.GetType.Name
             End If
 
-            VB6.MsgBox(title + BR2 + e.Message + BR2 + e.ToString, VB6.MsgBoxStyle.Critical)
+            VB6.MsgBox(title + BR2 + ex.Message + BR2 + ex.ToString, VB6.MsgBoxStyle.Critical)
         End Try
     End Sub
 
@@ -819,59 +861,55 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowCommandLineHelp(package As Package, switch As String)
-        Dim helpPath = package.GetHelpPath
-        If Not File.Exists(helpPath) Then Exit Sub
-        Dim helpContent = File.ReadAllText(helpPath)
-        Dim find As String
+        Dim content = package.CreateHelpfile
 
-        If helpContent.Contains(switch) Then
-            find = switch
-        ElseIf helpContent.Contains(switch.Replace("--", "--(no-)")) Then
-            find = switch.Replace("--", "--(no-)")
+        If package Is StaxRip.Package.x264 Then
+            Dim match = Regex.Match(content, "Presets:.+Frame-type options:", RegexOptions.Singleline)
+
+            If match.Success Then
+                content = content.Replace(match.Value, BR)
+            End If
         End If
 
-        If find = "" Then Exit Sub
+        Dim find As String
 
-        Dim form As New TextHelpForm(helpContent, find)
+        If content.Contains(switch.Replace("--", "--(no-)") + " ") Then
+            find = switch.Replace("--", "--(no-)") + " "
+        ElseIf content.Contains(switch.Replace("--", "--(no-)")) Then
+            find = switch.Replace("--", "--(no-)")
+        ElseIf content.Contains(switch.Replace("--", "--[no-]") + " ") Then
+            find = switch.Replace("--", "--[no-]") + " "
+        ElseIf content.Contains(switch.Replace("--", "--[no-]")) Then
+            find = switch.Replace("--", "--[no-]")
+        ElseIf content.Contains("  " + switch + " ") Then
+            find = "  " + switch + " "
+        ElseIf content.Contains(",  " + switch + " ") Then
+            find = ",  " + switch + " "
+        ElseIf content.Contains(switch + " ") Then
+            find = switch + " "
+        ElseIf content.Contains(switch) Then
+            find = switch
+        End If
+
+        If find = "" Then
+            Exit Sub
+        End If
+
+        Dim form As New TextHelpForm(content, find)
         form.Text = package.Name + " Help"
         form.Show()
     End Sub
 
-    Sub StartProcess(cmd As String, Optional args As String = Nothing)
+    Sub StartProcess(fileName As String, Optional arguments As String = Nothing)
         Try
-            Process.Start(cmd, args)
+            Process.Start(fileName, arguments)
         Catch ex As Exception
-            If cmd Like "http*://*" Then
-                MsgError("Failed to open URL with browser." + BR2 + cmd, ex.Message)
-            ElseIf File.Exists(cmd) Then
-                MsgError("Failed to launch file." + BR2 + cmd, ex.Message)
-            ElseIf Directory.Exists(cmd) Then
-                MsgError("Failed to launch directory." + BR2 + cmd, ex.Message)
-            Else
-                g.ShowException(ex, "Failed to execute command:" + BR2 + cmd + BR2 + "Arguments:" + BR2 + args)
-            End If
+            g.ShowException(ex, "Failed to start process", "Filename:" + BR2 + fileName + BR2 + "Arguments:" + BR2 + arguments)
         End Try
     End Sub
 
-    Sub OpenDirAndSelectFile(filepath As String, handle As IntPtr)
-        If File.Exists(filepath) Then
-            g.StartProcess(StaxRip.FilePath.GetDir(filepath))
-
-            Try
-                For x = 0 To 9
-                    Thread.Sleep(300)
-                    Application.DoEvents()
-
-                    If handle <> Native.GetForegroundWindow Then
-                        ExplorerHelp.SelectFile(Native.GetForegroundWindow, filepath)
-                        Exit For
-                    End If
-                Next
-            Catch
-            End Try
-        ElseIf Directory.Exists(StaxRip.FilePath.GetDir(filepath)) Then
-            g.StartProcess(StaxRip.FilePath.GetDir(filepath))
-        End If
+    Sub SelectFileWithExplorer(filepath As String)
+        g.StartProcess("explorer.exe", "/n, /select, " + filepath.Escape)
     End Sub
 
     Sub OnUnhandledException(sender As Object, e As ThreadExceptionEventArgs)
@@ -914,8 +952,8 @@ Public Class GlobalClass
 
         Log.Save(p)
         Dim fp = Log.GetPath
-        g.OpenDirAndSelectFile(fp, g.MainForm.Handle)
-        g.StartProcess(g.GetTextEditor(), """" + fp + """")
+        g.SelectFileWithExplorer(fp)
+        g.StartProcess(g.GetTextEditorPath(), """" + fp + """")
         g.StartProcess("https://github.com/staxrip/staxrip/issues")
     End Sub
 
@@ -953,11 +991,11 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Function EnableFilter(cat As String) As Boolean
-        For Each i In p.Script.Filters
-            If i.Category = cat Then
-                If Not i.Active Then
-                    i.Active = True
+    Function EnableFilter(search As String) As Boolean
+        For Each filter In p.Script.Filters
+            If filter.Category = search Then
+                If Not filter.Active Then
+                    filter.Active = True
                     g.MainForm.FiltersListView.Load()
                 End If
 
@@ -966,29 +1004,43 @@ Public Class GlobalClass
         Next
     End Function
 
-    Function BrowseFile(filter As String, Optional defaultFilepath As String = Nothing) As String
-        Using d As New System.Windows.Forms.OpenFileDialog
+    Function BrowseFile(filter As String) As String
+        Using d As New OpenFileDialog
             d.Filter = filter
-
-            If File.Exists(defaultFilepath) Then
-                d.InitialDirectory = FilePath.GetDir(defaultFilepath)
-                d.FileName = FilePath.GetName(defaultFilepath)
-            End If
-
+            d.SetInitDir(p.TempDir)
             If d.ShowDialog = DialogResult.OK Then Return d.FileName
         End Using
     End Function
 
     Sub CodePreview(code As String)
-        Using f As New StringEditorForm
-            f.rtb.ReadOnly = True
-            f.cbWrap.Checked = False
-            f.cbWrap.Visible = False
-            f.rtb.Text = code
-            f.Text = "Code Preview"
-            f.bnOK.Visible = False
-            f.bnCancel.Text = "Close"
-            f.ShowDialog()
+        Using form As New StringEditorForm
+            form.rtb.ReadOnly = True
+            form.cbWrap.Checked = False
+            form.cbWrap.Visible = False
+            form.rtb.Text = code
+            form.Text = "Code Preview"
+            form.bnOK.Visible = False
+            form.bnCancel.Text = "Close"
+            form.ShowDialog()
+        End Using
+    End Sub
+
+    Sub ShowScriptInfo(script As VideoScript)
+        script.Synchronize()
+        Dim text = If(script.Error = "", script.Info.GetInfoText(-1), script.Error)
+        text = BR + "  " + text.FixBreak.Replace(BR, BR + "  ") + BR
+
+        Using form As New StringEditorForm
+            form.ScaleClientSize(25, 15)
+            form.MaximizeBox = False
+            form.rtb.ReadOnly = True
+            form.cbWrap.Checked = False
+            form.cbWrap.Visible = False
+            form.rtb.Text = text
+            form.Text = script.Path
+            form.bnOK.Visible = False
+            form.bnCancel.Text = "Close"
+            form.ShowDialog()
         End Using
     End Sub
 
@@ -1015,21 +1067,20 @@ Public Class GlobalClass
         Next
     End Sub
 
-    Sub RunAutoCrop()
-        g.WriteDebugLog("AutoCrop start")
-        p.SourceScript.Synchronize(True)
+    Sub RunAutoCrop(progressAction As Action(Of Double))
+        p.SourceScript.Synchronize(True, True, True)
 
-        Using avi As New AVIFile(p.SourceScript.Path)
-            Dim segmentCount = 20
+        Using server As New FrameServer(p.SourceScript.Path)
+            Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)
+            Dim crops(s.CropFrameCount - 1) As AutoCrop
+            Dim pos As Integer
 
-            Dim len = avi.FrameCount \ (segmentCount + 1)
-            Dim crops(segmentCount - 1) As AutoCrop
+            For x = 1 To s.CropFrameCount
+                progressAction?.Invoke((x - 1) / s.CropFrameCount * 100)
+                pos = len * x
 
-            For x = 1 To segmentCount
-                avi.Position = len * x
-
-                Using bmp = avi.GetBitmap
-                    crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), avi.Position)
+                Using bmp = BitmapUtil.CreateBitmap(server, pos)
+                    crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), pos)
                 End Using
             Next
 
@@ -1047,8 +1098,6 @@ Public Class GlobalClass
 
             CorrectCropMod()
         End Using
-
-        g.WriteDebugLog("AutoCrop end")
     End Sub
 
     Sub SmartCrop()
@@ -1174,6 +1223,51 @@ Public Class GlobalClass
 
     Function GetTimeString(sec As Double) As String
         Dim ts = TimeSpan.FromSeconds(sec)
-        Return CInt(Math.Floor(ts.TotalMinutes)).ToString("00") + ":" + CInt(Math.Floor(ts.Seconds)).ToString("00")
+
+        Return CInt(Math.Floor(ts.TotalMinutes)).ToString("00") + ":" +
+            CInt(Math.Floor(ts.Seconds)).ToString("00")
     End Function
+
+    Sub ShowAdvancedScriptInfo(script As VideoScript)
+        If script.Engine = ScriptEngine.AviSynth Then
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "Choose below"
+                td.AddCommand("Info()")
+                td.AddCommand("avsmeter benchmark")
+                td.AddCommand("avsmeter info")
+                td.AddCommand("avs2pipemod info")
+
+                Select Case td.Show()
+                    Case "avs2pipemod info"
+                        g.DefaultCommands.ExecutePowerShellScript(
+                            $"""`n{Package.avs2pipemod.Name} {Package.avs2pipemod.Version}""; & '{Package.avs2pipemod.Path}' -info '{script.Path}'", True)
+                    Case "avsmeter benchmark"
+                        g.DefaultCommands.ExecutePowerShellScript(
+                            $"& '{Package.AVSMeter.Path}' '{script.Path}'", True)
+                    Case "avsmeter info"
+                        g.DefaultCommands.ExecutePowerShellScript(
+                            $"& '{Package.AVSMeter.Path}' -info '{script.Path}';""""", True)
+                    Case "avsmeter"
+                        g.DefaultCommands.ExecutePowerShellScript(
+                            $"& '{Package.AVSMeter.Path}' '{script.Path}'", True)
+                    Case "Info()"
+                        Dim infoScript = New VideoScript
+                        infoScript.AddFilter(New VideoFilter($"Import(""{script.Path}"")"))
+                        Dim infoCode = $"Info(size={(script.GetInfo().Height * 0.07).ToInvariantString()})"
+                        infoScript.AddFilter(New VideoFilter(infoCode))
+                        infoScript.Path = p.TempDir + p.TargetFile.Base + $"_info." + script.FileType
+
+                        If infoScript.GetError() <> "" Then
+                            MsgError("Script Error", infoScript.GetError())
+                            Exit Sub
+                        End If
+
+                        g.PlayScriptWithMPV(infoScript, "--pause=yes --osc=no --osd-level=0")
+                End Select
+            End Using
+        Else
+            g.DefaultCommands.ExecutePowerShellScript(
+                $"""`n{Package.vspipe.Name} {Package.vspipe.Version}`n""; & '{Package.vspipe.Path}' --info '{script.Path}' -;""""", True)
+        End If
+    End Sub
 End Class

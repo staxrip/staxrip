@@ -1,12 +1,15 @@
-﻿Imports System.Runtime.InteropServices
+﻿
+Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
 
-Public Delegate Function PFTASKDIALOGCALLBACK(hwnd As IntPtr,
-                                              msg As UInteger,
-                                              wParam As IntPtr,
-                                              lParam As IntPtr,
-                                              lpRefData As IntPtr) As Integer
+Public Delegate Function PFTASKDIALOGCALLBACK(
+    hwnd As IntPtr,
+    msg As UInteger,
+    wParam As IntPtr,
+    lParam As IntPtr,
+    lpRefData As IntPtr) As Integer
+
 Public Class TaskDialog(Of T)
     Inherits TaskDialog
     Implements IDisposable
@@ -17,45 +20,49 @@ Public Class TaskDialog(Of T)
     Private ButtonArray As IntPtr, RadioButtonArray As IntPtr
     Private Buttons As New List(Of TASKDIALOG_BUTTON)
     Private RadioButtons As New List(Of TASKDIALOG_BUTTON)
-
     Private Config As TASKDIALOGCONFIG
 
     Sub New()
         Config = New TASKDIALOGCONFIG()
 
         Config.cbSize = CUInt(Marshal.SizeOf(Config))
-        Config.hwndParent = GetHandle()
-        Config.hInstance = IntPtr.Zero
-        Config.dwFlags = Flags.TDF_ALLOW_DIALOG_CANCELLATION
-        Config.dwCommonButtons = TaskDialogButtons.None
-        Config.MainIcon = New TASKDIALOGCONFIG_ICON_UNION(0)
-        Config.FooterIcon = New TASKDIALOGCONFIG_ICON_UNION(0)
-        Config.cxWidth = 0
-
         Config.cButtons = 0
         Config.cRadioButtons = 0
-        Config.pButtons = IntPtr.Zero
-        Config.pRadioButtons = IntPtr.Zero
+        Config.cxWidth = 0
+        Config.dwCommonButtons = TaskDialogButtons.None
+        Config.dwFlags = Flags.TDF_ALLOW_DIALOG_CANCELLATION
+        Config.FooterIcon = New TASKDIALOGCONFIG_ICON_UNION(0)
+        Config.hInstance = IntPtr.Zero
+        Config.hwndParent = GetHandle()
+        Config.MainIcon = New TASKDIALOGCONFIG_ICON_UNION(0)
         Config.nDefaultButton = 0
         Config.nDefaultRadioButton = 0
-
-        Config.pszWindowTitle = Application.ProductName
-        Config.pszMainInstruction = ""
-        Config.pszContent = ""
-        Config.pszVerificationText = Nothing
-        Config.pszExpandedInformation = Nothing
-        Config.pszExpandedControlText = Nothing
-        Config.pszCollapsedControlText = Nothing
-        Config.pszFooter = Nothing
-
+        Config.pButtons = IntPtr.Zero
         Config.pfCallback = New PFTASKDIALOGCALLBACK(AddressOf DialogProc)
+        Config.pRadioButtons = IntPtr.Zero
+        Config.pszCollapsedControlText = Nothing
+        Config.pszContent = ""
+        Config.pszExpandedControlText = Nothing
+        Config.pszExpandedInformation = Nothing
+        Config.pszFooter = Nothing
+        Config.pszMainInstruction = ""
+        Config.pszVerificationText = Nothing
+        Config.pszWindowTitle = Application.ProductName
+    End Sub
+
+    Sub New(handle As IntPtr)
+        Me.New()
+        Config.hwndParent = handle
     End Sub
 
     Function GetHandle() As IntPtr
-        Dim r As New StringBuilder(260)
+        Dim sb As New StringBuilder(260)
         Dim h = Native.GetForegroundWindow
-        Native.GetWindowModuleFileName(h, r, 260)
-        If r.ToString.Replace(".vshost", "").Base = Application.ExecutablePath.Base Then Return h
+        Native.GetWindowModuleFileName(h, sb, 260)
+
+        If sb.ToString.Replace(".vshost", "").Base = Application.ExecutablePath.Base Then
+            Return h
+        End If
     End Function
 
 #Region "Constants"
@@ -184,7 +191,10 @@ Public Class TaskDialog(Of T)
 
     Property SelectedValue() As T
         Get
-            If IdValueDic.ContainsKey(SelectedID) Then Return IdValueDic(SelectedID)
+            If IdValueDic.ContainsKey(SelectedID) Then
+                Return IdValueDic(SelectedID)
+            End If
+
             Return SelectedValueValue
         End Get
         Set(value As T)
@@ -266,7 +276,7 @@ Public Class TaskDialog(Of T)
         Return value
     End Function
 
-    Sub AddCommandLink(text As String, Optional value As T = Nothing)
+    Sub AddCommand(text As String, Optional value As T = Nothing)
         Dim id = 1000 + IdValueDic.Count + 1
         Dim temp As Object = text
         IdValueDic(id) = If(value Is Nothing, CType(temp, T), value)
@@ -415,7 +425,7 @@ Public Class TaskDialog(Of T)
 End Class
 
 Public Class TaskDialog
-    <DllImport("comctl32", CharSet:=CharSet.Unicode, SetLastError:=True)>
+    <DllImport("comctl32.dll", CharSet:=CharSet.Unicode)>
     Shared Function TaskDialogIndirect(<[In]()> pTaskConfig As TASKDIALOGCONFIG, <Out()> ByRef pnButton As Integer, <Out()> ByRef pnRadioButton As Integer, <MarshalAs(UnmanagedType.Bool)> <Out()> ByRef pVerificationFlagChecked As Boolean) As Integer
     End Function
 

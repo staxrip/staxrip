@@ -1,4 +1,5 @@
-﻿Imports StaxRip.UI
+﻿
+Imports StaxRip.UI
 Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
 
@@ -31,12 +32,24 @@ Public Class CodeEditor
         Select Case e.KeyData
             Case Keys.F5
                 VideoPreview()
+            Case Keys.F9
+                PlayScriptWithMPVt()
+            Case Keys.F10
+                PlayScriptWithMPC()
             Case Keys.Control Or Keys.Delete
                 If Not ActiveTable Is Nothing Then ActiveTable.RemoveClick()
             Case Keys.Control Or Keys.Up
                 If Not ActiveTable Is Nothing Then ActiveTable.MoveUp()
             Case Keys.Control Or Keys.Down
                 If Not ActiveTable Is Nothing Then ActiveTable.MoveDown()
+            Case Keys.Control Or Keys.I
+                ShowInfo()
+            Case Keys.Control Or Keys.J
+                JoinFilters()
+            Case Keys.Control Or Keys.P
+                g.MainForm.ShowFilterProfilesDialog()
+            Case Keys.Control Or Keys.M
+                MacrosForm.ShowDialogForm()
         End Select
 
         MyBase.OnKeyDown(e)
@@ -59,46 +72,84 @@ Public Class CodeEditor
     Function GetFilters() As List(Of VideoFilter)
         Dim ret As New List(Of VideoFilter)
 
-        For Each i As FilterTable In MainFlowLayoutPanel.Controls
-            Dim f As New VideoFilter()
-            f.Active = i.cbActive.Checked
-            f.Category = i.cbActive.Text
-            f.Path = i.tbName.Text
-            f.Script = i.rtbScript.Text.FixBreak.Trim
-            ret.Add(f)
+        For Each table As FilterTable In MainFlowLayoutPanel.Controls
+            Dim filter As New VideoFilter()
+            filter.Active = table.cbActive.Checked
+            filter.Category = table.cbActive.Text
+            filter.Path = table.tbName.Text
+            filter.Script = table.rtbScript.Text.FixBreak.Trim
+            ret.Add(filter)
         Next
 
         Return ret
     End Function
 
-    Sub Play()
-        If p.SourceFile = "" Then Exit Sub
-        Dim doc As New VideoScript
-        doc.Engine = Engine
-        doc.Path = p.TempDir + p.TargetFile.Base + "_scriptEditor." + doc.FileType
-        doc.Filters = GetFilters()
-        g.PlayScript(doc)
+    Function CreateTempScript() As VideoScript
+        Dim script As New VideoScript
+        script.Engine = Engine
+        script.Path = p.TempDir + p.TargetFile.Base + $"_temp." + script.FileType
+        script.Filters = GetFilters()
+
+        If script.GetError <> "" Then
+            MsgError("Script Error", script.GetError)
+            Exit Function
+        End If
+
+        Return script
+    End Function
+
+    Sub PlayScriptWithMPVt()
+        g.PlayScriptWithMPV(CreateTempScript())
+    End Sub
+
+    Sub PlayScriptWithMPC()
+        g.PlayScriptWithMPC(CreateTempScript())
     End Sub
 
     Sub VideoPreview()
-        If p.SourceFile = "" Then Exit Sub
-        Dim doc As New VideoScript
-        doc.Engine = Engine
-        doc.Path = p.TempDir + p.TargetFile.Base + "_editor." + doc.FileType
-        doc.Filters = GetFilters()
-
-        Dim errMsg = doc.GetErrorMessage
-
-        If Not errMsg Is Nothing Then
-            MsgError(errMsg)
+        If p.SourceFile = "" Then
             Exit Sub
         End If
 
-        doc.Synchronize(True)
+        Dim script = CreateTempScript()
 
-        Dim f As New PreviewForm(doc)
-        f.Owner = g.MainForm
-        f.Show()
+        If script Is Nothing Then
+            Exit Sub
+        End If
+
+        script.RemoveFilter("Cutting")
+
+        Dim form As New PreviewForm(script)
+        form.Owner = g.MainForm
+        form.Show()
+    End Sub
+
+    Sub ShowInfo()
+        Dim script = CreateTempScript()
+
+        If Not script Is Nothing Then
+            g.ShowScriptInfo(script)
+        End If
+    End Sub
+
+    Sub ShowAdvancedInfo()
+        Dim script = CreateTempScript()
+
+        If script Is Nothing Then
+            Exit Sub
+        End If
+
+        g.ShowAdvancedScriptInfo(script)
+    End Sub
+
+    Sub JoinFilters()
+        Dim firstTable = DirectCast(MainFlowLayoutPanel.Controls(0), FilterTable)
+        firstTable.tbName.Text = "merged"
+        firstTable.rtbScript.Text = MainFlowLayoutPanel.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, "# " + BR))).Join(BR) + BR2 + BR2
+
+        For x = MainFlowLayoutPanel.Controls.Count - 1 To 1 Step -1
+            MainFlowLayoutPanel.Controls.RemoveAt(x)
+        Next
     End Sub
 
     Sub MainFlowLayoutPanelLayout(sender As Object, e As LayoutEventArgs)
@@ -116,10 +167,10 @@ Public Class CodeEditor
     End Sub
 
     Private Sub CodeEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        form.Show()
     End Sub
 
     Public Class FilterTable
@@ -256,7 +307,9 @@ Public Class CodeEditor
                 Dim skip = False
 
                 For Each parameter In parameters.Parameters
-                    If argument Like "*" + parameter.Name + "*=*" Then
+                    If argument.ToLower.RemoveChars(" ").Contains(
+                        parameter.Name.ToLower.RemoveChars(" ") + "=") Then
+
                         skip = True
                     End If
                 Next
@@ -265,7 +318,13 @@ Public Class CodeEditor
             Next
 
             For Each parameter In parameters.Parameters
-                newParameters.Add(parameter.Name + " = " + parameter.Value)
+                Dim value = parameter.Value
+
+                If Editor.Engine = ScriptEngine.VapourSynth Then
+                    value = value.Replace("""", "'")
+                End If
+
+                newParameters.Add(parameter.Name + "=" + value)
             Next
 
             rtbScript.Text = Regex.Replace(code, parameters.FunctionName + "\((.+)\)",
@@ -273,7 +332,10 @@ Public Class CodeEditor
         End Sub
 
         Sub HandleMouseUp(sender As Object, e As MouseEventArgs)
-            If e.Button <> MouseButtons.Right Then Exit Sub
+            If e.Button <> MouseButtons.Right Then
+                Exit Sub
+            End If
+
             Menu.Items.ClearAndDisplose
             Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
             Dim code = rtbScript.Text.FixBreak
@@ -284,8 +346,6 @@ Public Class CodeEditor
                     If match.Success Then ActionMenuItem.Add(Menu.Items, i.Text, AddressOf SetParameters, i)
                 End If
             Next
-
-            If Menu.Items.Count > 0 Then Menu.Add("-")
 
             For Each i In filterProfiles
                 If i.Name = cbActive.Text Then
@@ -299,66 +359,66 @@ Public Class CodeEditor
                 End If
             Next
 
-            ActionMenuItem.Add(Menu.Items, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""))
+            Dim filterMenuItem = Menu.Add("Add, insert or replace a filter")
+            filterMenuItem.SetImage(Symbol.Filter)
 
-            Menu.Add("-")
+            ActionMenuItem.Add(filterMenuItem.DropDownItems, "Empty Filter", AddressOf FilterClick, New VideoFilter("Misc", "", ""), "Filter with empty values.")
 
-            Dim replace = Menu.Add("Replace")
-            Dim insert = Menu.Add("Insert")
-
-            ActionMenuItem.Add(replace.DropDownItems, "Blank", AddressOf ReplaceClick, New VideoFilter("Misc", "", ""))
-            ActionMenuItem.Add(insert.DropDownItems, "Blank", AddressOf InsertClick, New VideoFilter("Misc", "", ""))
-
-            For Each i In filterProfiles
-                For Each i2 In i.Filters
-                    Dim tip = i2.Script
-                    ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2.GetCopy, tip)
+            For Each filterCategory In filterProfiles
+                For Each filter In filterCategory.Filters
+                    Dim tip = filter.Script
+                    ActionMenuItem.Add(filterMenuItem.DropDownItems, filterCategory.Name + " | " + filter.Path, AddressOf FilterClick, filter.GetCopy, tip)
                 Next
             Next
-
-            For Each i In filterProfiles
-                For Each i2 In i.Filters
-                    Dim tip = i2.Script
-                    ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2.GetCopy, tip)
-                Next
-            Next
-
-            Dim add = Menu.Add("Add")
-            add.SetImage(Symbol.Add)
-
-            ActionMenuItem.Add(add.DropDownItems, "Blank", AddressOf AddClick, New VideoFilter("Misc", "", ""))
-
-            For Each i In filterProfiles
-                For Each i2 In i.Filters
-                    Dim tip = i2.Script
-                    ActionMenuItem.Add(add.DropDownItems, i.Name + " | " + i2.Path, AddressOf AddClick, i2.GetCopy, tip)
-                Next
-            Next
-
-            Menu.Add("-")
 
             Dim removeMenuItem = Menu.Add("Remove", AddressOf RemoveClick)
-            removeMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Delete)
+            removeMenuItem.ShortcutKeyDisplayString = "Ctrl+Delete"
             removeMenuItem.SetImage(Symbol.Remove)
 
-            Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
-            Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to edit profiles.").SetImage(Symbol.CalculatorPercentage)
-            Menu.Add("Preview Code...", AddressOf CodePreview, "Previews the script with solved macros.").SetImage(Symbol.Code)
-            Menu.Add("Join Filters", AddressOf JoinFilters, "Joins all filters into one filter.").Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
-
-            Dim previewMenuItem = Menu.Add("Video Preview...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
+            Dim previewMenuItem = Menu.Add("Preview Video...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
             previewMenuItem.Enabled = p.SourceFile <> ""
             previewMenuItem.ShortcutKeyDisplayString = "F5"
+            previewMenuItem.SetImage(Symbol.Photo)
 
-            Menu.Add("Play", AddressOf Editor.Play, p.SourceFile <> "", "Plays the current script with a media player.").SetImage(Symbol.Play)
+            Dim mpvnetMenuItem = Menu.Add("Play with mpv.net", AddressOf Editor.PlayScriptWithMPVt, "Plays the current script with mpv.net.")
+            mpvnetMenuItem.Enabled = p.SourceFile <> ""
+            mpvnetMenuItem.ShortcutKeyDisplayString = "F9"
+            mpvnetMenuItem.SetImage(Symbol.Play)
+
+            Dim mpcMenuItem = Menu.Add("Play with mpc", AddressOf Editor.PlayScriptWithMPC, "Plays the current script with MPC.")
+            mpcMenuItem.Enabled = p.SourceFile <> ""
+            mpcMenuItem.ShortcutKeyDisplayString = "F10"
+            mpcMenuItem.SetImage(Symbol.Play)
+
+            Menu.Add("Preview Code...", AddressOf CodePreview, "Previews the script with solved macros.").SetImage(Symbol.Code)
+
+            Dim infoMenuItem = Menu.Add("Info...", AddressOf Editor.ShowInfo, "Previews script parameters such as framecount and colorspace.")
+            infoMenuItem.SetImage(Symbol.Info)
+            infoMenuItem.ShortcutKeyDisplayString = "Ctrl+I"
+            infoMenuItem.Enabled = p.SourceFile <> ""
+
+            Menu.Add("Advanced Info...", AddressOf Editor.ShowAdvancedInfo, p.SourceFile <> "").SetImage(Symbol.Lightbulb)
+
+            Dim joinMenuItem = Menu.Add("Join Filters", AddressOf Editor.JoinFilters, "Joins all filters into one filter.")
+            joinMenuItem.Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
+            joinMenuItem.ShortcutKeyDisplayString = "Ctrl+J"
+
+            Dim profilesMenuItem = Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
+            profilesMenuItem.ShortcutKeyDisplayString = "Ctrl+P"
+            profilesMenuItem.SetImage(Symbol.FavoriteStar)
+
+            Dim macrosMenuItem = Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to choose macros.")
+            macrosMenuItem.ShortcutKeyDisplayString = "Ctrl+M"
+            macrosMenuItem.SetImage(Symbol.CalculatorPercentage)
+
             Menu.Add("-")
 
             Dim moveUpMenuItem = Menu.Add("Move Up", AddressOf MoveUp)
-            moveUpMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Up)
+            moveUpMenuItem.ShortcutKeyDisplayString = "Ctrl+Up"
             moveUpMenuItem.SetImage(Symbol.Up)
 
             Dim moveDownMenuItem = Menu.Add("Move Down", AddressOf MoveDown)
-            moveDownMenuItem.ShortcutKeyDisplayString = KeysHelp.GetKeyString(Keys.Control Or Keys.Down)
+            moveDownMenuItem.ShortcutKeyDisplayString = "Ctrl+Down"
             moveDownMenuItem.SetImage(Symbol.Down)
 
             Menu.Add("-")
@@ -375,9 +435,17 @@ Public Class CodeEditor
                                   rtbScript.ScrollToCaret()
                               End Sub
 
-            Menu.Add("Cut", cutAction, rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly).SetImage(Symbol.Cut)
-            Menu.Add("Copy", copyAction, rtbScript.SelectionLength > 0).SetImage(Symbol.Copy)
-            Menu.Add("Paste", pasteAction, Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly).SetImage(Symbol.Paste)
+            Dim cutMenuItem = Menu.Add("Cut", cutAction, rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly)
+            cutMenuItem.SetImage(Symbol.Cut)
+            cutMenuItem.ShortcutKeyDisplayString = "Ctrl+X"
+
+            Dim copyMenuItem = Menu.Add("Copy", copyAction, rtbScript.SelectionLength > 0)
+            copyMenuItem.SetImage(Symbol.Copy)
+            copyMenuItem.ShortcutKeyDisplayString = "Ctrl+C"
+
+            Dim pasteMenuItem = Menu.Add("Paste", pasteAction, Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly)
+            pasteMenuItem.SetImage(Symbol.Paste)
+            pasteMenuItem.ShortcutKeyDisplayString = "Ctrl+V"
 
             Menu.Add("-")
             Dim helpMenuItem = Menu.Add("Help")
@@ -385,12 +453,15 @@ Public Class CodeEditor
             Dim helpTempMenuItem = Menu.Add("Help | temp")
 
             Dim helpAction = Sub()
-                                 For Each i In Package.Items.Values.OfType(Of PluginPackage)()
-                                     If Not i.AvsFilterNames Is Nothing Then
-                                         For Each i2 In i.AvsFilterNames
-                                             If rtbScript.Text.Contains(i2) Then
-                                                 Dim path = i.GetHelpPath()
-                                                 If path <> "" Then Menu.Add("Help | " + i.Name, Sub() g.StartProcess(path), path)
+                                 For Each pluginPack In Package.Items.Values.OfType(Of PluginPackage)()
+                                     If Not pluginPack.AvsFilterNames Is Nothing Then
+                                         For Each avsFilterName In pluginPack.AvsFilterNames
+                                             If rtbScript.Text.Contains(avsFilterName) Then
+                                                 Dim helpPath = pluginPack.HelpFileOrURL
+
+                                                 If helpPath <> "" Then
+                                                     Menu.Add("Help | " + pluginPack.Name, Sub() pluginPack.ShowHelp(), pluginPack.Description)
+                                                 End If
                                              End If
                                          Next
                                      End If
@@ -415,29 +486,26 @@ Public Class CodeEditor
                                          Menu.Add("Help | AviSynth local", Sub() g.StartProcess(helpIndex), helpIndex)
                                      End If
 
-                                     Menu.Add("Help | AviSynth.nl", Sub() g.StartProcess("http://avisynth.nl"), "http://avisynth.nl")
-                                     Menu.Add("Help | AviSynth+", Sub() g.StartProcess("http://avisynth.nl/index.php/AviSynth%2B"), "http://avisynth.nl/index.php/AviSynth%2B")
-                                     Menu.Add("Help | AviSynth+ plugins", Sub() g.StartProcess("http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins"), "http://avisynth.nl/index.php/AviSynth%2B#AviSynth.2B_x64_plugins")
+                                     Menu.Add("Help | AviSynth Help", Sub() g.StartProcess("http://avisynth.nl"), "http://avisynth.nl")
                                      Menu.Add("Help | -")
 
-                                     For Each i In Package.Items.Values.OfType(Of PluginPackage)
-                                         Dim helpPath = i.GetHelpPath
+                                     For Each pluginPack In Package.Items.Values.OfType(Of PluginPackage)
+                                         Dim helpPath = pluginPack.HelpFileOrURL
 
-                                         If helpPath <> "" AndAlso Not i.AvsFilterNames Is Nothing Then
-                                             Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.StartProcess(helpPath), i.Description)
+                                         If helpPath <> "" AndAlso Not pluginPack.AvsFilterNames Is Nothing Then
+                                             Menu.Add("Help | " + pluginPack.Name.Substring(0, 1).ToUpper + " | " + pluginPack.Name, Sub() pluginPack.ShowHelp(), pluginPack.Description)
                                              Application.DoEvents()
                                          End If
                                      Next
                                  Else
-                                     Menu.Add("Help | vapoursynth.com", Sub() g.StartProcess("http://www.vapoursynth.com"), "http://www.vapoursynth.com")
-                                     Menu.Add("Help | VapourSynth plugins", Sub() g.StartProcess("http://www.vapoursynth.com/doc/pluginlist.html"), "http://www.vapoursynth.com/doc/pluginlist.html")
+                                     Menu.Add("Help | VapourSynth Help", Sub() Package.VapourSynth.ShowHelp(), Package.VapourSynth.HelpFileOrURL)
                                      Menu.Add("Help | -")
 
-                                     For Each i In Package.Items.Values.OfType(Of PluginPackage)
-                                         Dim helpPath = i.GetHelpPath
+                                     For Each pluginPack In Package.Items.Values.OfType(Of PluginPackage)
+                                         Dim helpPath = pluginPack.HelpFileOrURL
 
-                                         If helpPath <> "" AndAlso Not i.VSFilterNames Is Nothing Then
-                                             Menu.Add("Help | " + i.Name.Substring(0, 1).ToUpper + " | " + i.Name, Sub() g.StartProcess(helpPath), i.Description)
+                                         If helpPath <> "" AndAlso Not pluginPack.VSFilterNames Is Nothing Then
+                                             Menu.Add("Help | " + pluginPack.Name.Substring(0, 1).ToUpper + " | " + pluginPack.Name, Sub() pluginPack.ShowHelp(), pluginPack.Description)
                                              Application.DoEvents()
                                          End If
                                      Next
@@ -445,29 +513,25 @@ Public Class CodeEditor
                              End Sub
 
             AddHandler helpMenuItem.DropDownOpened, Sub()
-                                                        If helpMenuItem.DropDownItems.Count > 1 Then Exit Sub
+                                                        If helpMenuItem.DropDownItems.Count > 1 Then
+                                                            Exit Sub
+                                                        End If
+
                                                         helpTempMenuItem.Visible = False
                                                         helpAction()
                                                     End Sub
             Menu.Show(rtbScript, e.Location)
         End Sub
 
-        Sub JoinFilters()
-            Dim flow = DirectCast(Parent, FlowLayoutPanel)
-            Dim firstTable = DirectCast(flow.Controls(0), FilterTable)
-            firstTable.tbName.Text = "merged"
-            firstTable.rtbScript.Text = flow.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, "# " + BR))).Join(BR) + BR2 + BR2 + "#"
-
-            For x = flow.Controls.Count - 1 To 1 Step -1
-                flow.Controls.RemoveAt(x)
-            Next
-        End Sub
-
         Sub MoveUp()
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim index = flow.Controls.IndexOf(Me)
             index -= 1
-            If index < 0 Then index = 0
+
+            If index < 0 Then
+                index = 0
+            End If
+
             flow.Controls.SetChildIndex(Me, index)
         End Sub
 
@@ -496,6 +560,82 @@ Public Class CodeEditor
             End If
         End Sub
 
+        Sub FilterClick(filter As VideoFilter)
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "Choose action"
+                td.AddCommand("Replace selection", "Replace")
+                td.AddCommand("Insert at selection", "Insert")
+                td.AddCommand("Add to end", "Add")
+
+                Select Case td.Show
+                    Case "Replace"
+                        Dim tup = Macro.ExpandGUI(filter.Script)
+                        If tup.Cancel Then Exit Sub
+                        cbActive.Checked = filter.Active
+                        cbActive.Text = filter.Category
+
+                        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+                            If filter.Script.StartsWith("$") Then
+                                tbName.Text = tup.Caption
+                            Else
+                                tbName.Text = filter.Name.Replace("...", "") + " " + tup.Caption
+                            End If
+                        Else
+                            tbName.Text = filter.Name
+                        End If
+
+                        rtbScript.Text = tup.Value.TrimEnd + BR
+                        rtbScript.SelectionStart = rtbScript.Text.Length
+                        Application.DoEvents()
+                        Menu.Items.ClearAndDisplose
+                    Case "Insert"
+                        Dim tup = Macro.ExpandGUI(filter.Script)
+                        If tup.Cancel Then Exit Sub
+
+                        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+                            If filter.Script.StartsWith("$") Then
+                                filter.Path = tup.Caption
+                            Else
+                                filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+                            End If
+                        End If
+
+                        filter.Script = tup.Value
+                        Dim flow = DirectCast(Parent, FlowLayoutPanel)
+                        Dim index = flow.Controls.IndexOf(Me)
+                        Dim filterTable = CodeEditor.CreateFilterTable(filter)
+                        flow.SuspendLayout()
+                        flow.Controls.Add(filterTable)
+                        flow.Controls.SetChildIndex(filterTable, index)
+                        flow.ResumeLayout()
+                        filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
+                        filterTable.rtbScript.Focus()
+                        Application.DoEvents()
+                        Menu.Items.ClearAndDisplose
+                    Case "Add"
+                        Dim tup = Macro.ExpandGUI(filter.Script)
+                        If tup.Cancel Then Exit Sub
+
+                        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
+                            If filter.Script.StartsWith("$") Then
+                                filter.Path = tup.Caption
+                            Else
+                                filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+                            End If
+                        End If
+
+                        filter.Script = tup.Value
+                        Dim flow = DirectCast(Parent, FlowLayoutPanel)
+                        Dim filterTable = CodeEditor.CreateFilterTable(filter)
+                        flow.Controls.Add(filterTable)
+                        filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
+                        filterTable.rtbScript.Focus()
+                        Application.DoEvents()
+                        Menu.Items.ClearAndDisplose
+                End Select
+            End Using
+        End Sub
+
         Sub ReplaceClick(filter As VideoFilter)
             Dim tup = Macro.ExpandGUI(filter.Script)
             If tup.Cancel Then Exit Sub
@@ -514,54 +654,6 @@ Public Class CodeEditor
 
             rtbScript.Text = tup.Value.TrimEnd + BR
             rtbScript.SelectionStart = rtbScript.Text.Length
-            Application.DoEvents()
-            Menu.Items.ClearAndDisplose
-        End Sub
-
-        Sub InsertClick(filter As VideoFilter)
-            Dim tup = Macro.ExpandGUI(filter.Script)
-            If tup.Cancel Then Exit Sub
-
-            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-                If filter.Script.StartsWith("$") Then
-                    filter.Path = tup.Caption
-                Else
-                    filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
-                End If
-            End If
-
-            filter.Script = tup.Value
-            Dim flow = DirectCast(Parent, FlowLayoutPanel)
-            Dim index = flow.Controls.IndexOf(Me)
-            Dim filterTable = CodeEditor.CreateFilterTable(filter)
-            flow.SuspendLayout()
-            flow.Controls.Add(filterTable)
-            flow.Controls.SetChildIndex(filterTable, index)
-            flow.ResumeLayout()
-            filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
-            filterTable.rtbScript.Focus()
-            Application.DoEvents()
-            Menu.Items.ClearAndDisplose
-        End Sub
-
-        Sub AddClick(filter As VideoFilter)
-            Dim tup = Macro.ExpandGUI(filter.Script)
-            If tup.Cancel Then Exit Sub
-
-            If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-                If filter.Script.StartsWith("$") Then
-                    filter.Path = tup.Caption
-                Else
-                    filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
-                End If
-            End If
-
-            filter.Script = tup.Value
-            Dim flow = DirectCast(Parent, FlowLayoutPanel)
-            Dim filterTable = CodeEditor.CreateFilterTable(filter)
-            flow.Controls.Add(filterTable)
-            filterTable.rtbScript.SelectionStart = filterTable.rtbScript.Text.Length
-            filterTable.rtbScript.Focus()
             Application.DoEvents()
             Menu.Items.ClearAndDisplose
         End Sub

@@ -184,10 +184,10 @@ Class MTN
 End Class
 
 Public Class MKVInfo
-
     Shared Sub MetadataInfo(inputFile As String, proj As Project)
-        If Not File.Exists(inputFile) Then Exit Sub
-        If Not Package.mkvinfo.VerifyOK(True) Then Exit Sub
+        If Not File.Exists(inputFile) Then
+            Exit Sub
+        End If
 
         If proj Is Nothing Then
             proj = New Project
@@ -195,18 +195,18 @@ Public Class MKVInfo
             proj.SourceFile = inputFile
         End If
 
-        g.DefaultCommands.ExecuteCommandLine(Package.Items("mkvinfo").Path.Escape + " " + """" + inputFile + """" + BR + "pause", False, False, True)
-
+        g.DefaultCommands.ExecuteCommandLine(Package.mkvinfo.Path.Escape +
+            " " + inputFile.Escape + BR + "pause", False, False, True)
     End Sub
 
     Shared Sub MetadataHDR(inputFile As String, proj As Project)
-        If Not File.Exists(inputFile) Then Exit Sub
-        If Not Package.mkvmerge.VerifyOK(True) Then Exit Sub
+        If Not File.Exists(inputFile) Then
+            Exit Sub
+        End If
 
         Dim HDR = MediaInfo.GetVideo(inputFile, "transfer_characteristics")
 
         If HDR = "PQ" Then
-
             Using Proc As New Proc
                 Proc.Header = "Adding HDR Metadata"
                 Proc.SkipStrings = {"Progress", "The file", "The cue", "Multiplexing"}
@@ -215,9 +215,7 @@ Public Class MKVInfo
                 Proc.Arguments = "-o " + """" + inputFile + "_HDR10.mkv" + """" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + """" + inputFile + """"
                 Proc.Start()
             End Using
-
         ElseIf HDR = "HLG" Then
-
             Using Proc As New Proc
                 Proc.Header = "Adding HDR Metadata"
                 Proc.SkipStrings = {"Progress", "The file", "The cue", "Multiplexing"}

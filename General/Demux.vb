@@ -1,6 +1,8 @@
-Imports System.Text.RegularExpressions
-Imports VB6 = Microsoft.VisualBasic
+
 Imports System.Text
+Imports System.Text.RegularExpressions
+
+Imports VB6 = Microsoft.VisualBasic
 
 <Serializable()>
 Public MustInherit Class Demuxer
@@ -122,28 +124,6 @@ Public MustInherit Class Demuxer
         dgnvDemux.Active = False
         ret.Add(dgnvDemux)
 
-        Dim dgimNoDemux As New CommandLineDemuxer
-        dgimNoDemux.Name = "DGIndexIM: Index, No Demux"
-        dgimNoDemux.InputExtensions = {"264", "h264", "avc", "mkv", "mp4"}
-        dgimNoDemux.OutputExtensions = {"dgim"}
-        dgimNoDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
-        dgimNoDemux.Command = "%app:DGIndexIM%"
-        dgimNoDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgim"" -h"
-        dgimNoDemux.SourceFilters = {"DGSourceIM"}
-        dgimNoDemux.Active = False
-        ret.Add(dgimNoDemux)
-
-        Dim dgimDemux As New CommandLineDemuxer
-        dgimDemux.Name = "DGIndexIM: Demux & Index"
-        dgimDemux.InputExtensions = {"mpg", "vob", "ts", "m2ts", "mts", "m2t"}
-        dgimDemux.OutputExtensions = {"dgim"}
-        dgimDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
-        dgimDemux.Command = "%app:DGIndexIM%"
-        dgimDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgim"" -a -h"
-        dgimDemux.SourceFilters = {"DGSourceIM"}
-        dgimDemux.Active = False
-        ret.Add(dgimDemux)
-
         Return ret
     End Function
 End Class
@@ -173,9 +153,6 @@ Public Class CommandLineDemuxer
                 If Not Package.DGIndexNV.VerifyOK(True) Then Throw New AbortException
                 proc.Package = Package.DGIndexNV
                 proc.SkipPatterns = {"^\d+$"}
-            ElseIf Command?.Contains("DGIndexIM") Then
-                If Not Package.DGIndexIM.VerifyOK(True) Then Throw New AbortException
-                proc.Package = Package.DGIndexIM
             ElseIf Command?.Contains("ffmpeg") Then
                 proc.Package = Package.ffmpeg
                 proc.SkipStrings = {"frame=", "size="}
@@ -317,7 +294,11 @@ Public Class ffmpegDemuxer
 
     Shared Sub DemuxVideo(proj As Project)
         Dim streams = MediaInfo.GetVideoStreams(proj.SourceFile)
-        If streams.Count = 0 Then Exit Sub
+
+        If streams.Count = 0 OrElse streams(0).Ext = "" Then
+            Exit Sub
+        End If
+
         Dim outPath = proj.TempDir + proj.SourceFile.Base + streams(0).ExtFull
         If outPath = proj.SourceFile Then Exit Sub
         Dim args = "-i " + proj.SourceFile.Escape
@@ -538,7 +519,11 @@ Public Class MP4BoxDemuxer
 
     Shared Sub DemuxVideo(proj As Project)
         Dim streams = MediaInfo.GetVideoStreams(proj.SourceFile)
-        If streams.Count = 0 Then Exit Sub
+
+        If streams.Count = 0 OrElse streams(0).Ext = "" Then
+            Exit Sub
+        End If
+
         Dim outpath = proj.TempDir + proj.SourceFile.Base + streams(0).ExtFull
         If outpath = proj.SourceFile Then Exit Sub
         Dim args = If(streams(0).Ext = "avi", "-avi ", "-raw ")
@@ -627,7 +612,7 @@ Public Class mkvDemuxer
     Overrides Sub Run(proj As Project)
         Dim audioStreams As List(Of AudioStream)
         Dim subtitles As List(Of Subtitle)
-        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify --ui-language en " + proj.SourceFile.Escape)
+        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify --ui-language en " + proj.SourceFile.Escape)
 
         Dim demuxAudio = (Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
             TypeOf proj.Audio1 Is NullAudioProfile)) AndAlso
@@ -697,9 +682,8 @@ Public Class mkvDemuxer
                 proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = proj.SourceFile.Escape + " attachments " +
-                    enabledAttachments.Select(Function(val) val.ID & ":" + GetAttachmentPath(
-                    proj.TempDir, val.Name).Escape).Join(" ")
+                proc.Arguments = proj.SourceFile.Escape + " attachments " + enabledAttachments.Select(
+                    Function(val) val.ID & ":" + GetAttachmentPath(proj, val.Name).Escape).Join(" ")
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
             End Using
@@ -740,28 +724,50 @@ Public Class mkvDemuxer
                      onlyEnabled As Boolean,
                      videoDemuxing As Boolean)
 
-        If audioStreams Is Nothing Then audioStreams = New List(Of AudioStream)
-        If subtitles Is Nothing Then subtitles = New List(Of Subtitle)
+        If audioStreams Is Nothing Then
+            audioStreams = New List(Of AudioStream)
+        End If
+
+        If subtitles Is Nothing Then
+            subtitles = New List(Of Subtitle)
+        End If
 
         If onlyEnabled Then audioStreams = audioStreams.Where(Function(arg) arg.Enabled)
         subtitles = subtitles.Where(Function(subtitle) subtitle.Enabled)
 
-        If audioStreams.Count = 0 AndAlso subtitles.Count = 0 AndAlso Not videoDemuxing Then Exit Sub
+        If audioStreams.Count = 0 AndAlso subtitles.Count = 0 AndAlso Not videoDemuxing Then
+            Exit Sub
+        End If
 
         Dim args = sourcefile.Escape + " tracks"
 
         If videoDemuxing Then
-            Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)
+            Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)
             Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
-            Dim outpath = proj.TempDir + sourcefile.Base + MediaInfo.GetVideoStreams(sourcefile)(0).ExtFull
-            If outpath <> sourcefile Then args += " " & id & ":" + outpath.Escape
+            Dim videoStreams = MediaInfo.GetVideoStreams(sourcefile)
+
+            If videoStreams.Count > 0 Then
+                Dim outpath = proj.TempDir + sourcefile.Base + videoStreams(0).ExtFull
+
+                If outpath <> sourcefile Then
+                    args += " " & id & ":" + outpath.Escape
+                End If
+            End If
         End If
 
         For Each subtitle In subtitles
-            If Not subtitle.Enabled Then Continue For
+            If Not subtitle.Enabled Then
+                Continue For
+            End If
+
             Dim forced = If(subtitle.Forced, "_forced", "")
             Dim outpath = proj.TempDir + sourcefile.Base + " " + subtitle.Filename + forced + subtitle.ExtFull
-            If outpath.Length > 259 Then outpath = proj.TempDir + sourcefile.Base.Shorten(10) + " " + subtitle.Filename.Shorten(10) + forced + subtitle.ExtFull
+
+            If outpath.Length > 259 Then
+                outpath = proj.TempDir + sourcefile.Base.Shorten(10) + " " +
+                    subtitle.Filename.Shorten(10) + forced + subtitle.ExtFull
+            End If
+
             args += " " & subtitle.StreamOrder & ":" + outpath.Escape
         Next
 
@@ -823,10 +829,10 @@ Public Class mkvDemuxer
         Next
     End Sub
 
-    Shared Function GetAttachmentPath(dir As String, name As String) As String
-        Dim prefix = If(name.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land"), "", "_attachment_")
-        Dim ret = dir + prefix + name.Base + name.ExtFull
-        If ret.Length > 260 Then ret = dir + prefix + name.Base.Shorten(10) + name.ExtFull
+    Shared Function GetAttachmentPath(proj As Project, name As String) As String
+        Dim prefix = If(name.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land"), "", proj.SourceFile.Base + "_attachment_")
+        Dim ret = proj.TempDir + prefix + name.Base + name.ExtFull
+        If ret.Length > 260 Then ret = proj.TempDir + prefix + name.Base.Shorten(10) + name.ExtFull
         Return ret
     End Function
 
@@ -836,9 +842,10 @@ Public Class mkvDemuxer
         For Each i In stdout.SplitLinesNoEmpty
             If i.StartsWith("Attachment ID ") Then
                 Dim match = Regex.Match(i, "Attachment ID (\d+):.+, file name '(.+)'")
+
                 If match.Success Then ret.Add(New Attachment With {
-                                              .ID = match.Groups(1).Value.ToInt,
-                                              .Name = match.Groups(2).Value})
+                    .ID = match.Groups(1).Value.ToInt,
+                    .Name = match.Groups(2).Value})
             End If
         Next
 

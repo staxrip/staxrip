@@ -107,15 +107,15 @@ Public Class x265Control
         components = New System.ComponentModel.Container()
 
         QualityDefinitions = New List(Of QualityItem) From {
-            New QualityItem(12, "Super High", "Super high quality and file size (-crf 12)"),
-            New QualityItem(14, "Very High", "Very high quality and file size (-crf 14)"),
-            New QualityItem(16, "Higher", "Higher quality and file size (-crf 16)"),
-            New QualityItem(18, "High", "High quality and file size (-crf 18)"),
-            New QualityItem(20, "Medium", "Medium quality and file size (-crf 20)"),
-            New QualityItem(22, "Low", "Low quality and file size (-crf 22)"),
-            New QualityItem(24, "Lower", "Lower quality and file size (-crf 24)"),
-            New QualityItem(26, "Very Low", "Very low quality and file size (-crf 26)"),
-            New QualityItem(28, "Super Low", "Super low quality and file size (-rf 28)")}
+            New QualityItem(10, "Super High", "Super high quality and file size)"),
+            New QualityItem(12, "Very High", "Very high quality and file size)"),
+            New QualityItem(14, "Higher", "Higher quality and file size)"),
+            New QualityItem(16, "High", "High quality and file size)"),
+            New QualityItem(18, "Medium", "Medium quality and file size)"),
+            New QualityItem(20, "Low", "Low quality and file size)"),
+            New QualityItem(22, "Lower", "Lower quality and file size)"),
+            New QualityItem(24, "Very Low", "Very low quality and file size)"),
+            New QualityItem(26, "Super Low", "Super low quality and file size)")}
 
         Encoder = enc
         Params = Encoder.Params
@@ -161,20 +161,18 @@ Public Class x265Control
             Select Case lv.SelectedIndices(0)
                 Case 0 - offset
                     For Each i In QualityDefinitions
-                        cms.Items.Add(New ActionMenuItem(i.Value & " - " + i.Text, Sub() SetQuality(i.Value), i.Tooltip) With {.Font = If(Params.Quant.Value = i.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
+                        cms.Items.Add(New ActionMenuItem(i.Value & " - " + i.Text + "      ", Sub() SetQuality(i.Value), i.Tooltip) With {.Font = If(Params.Quant.Value = i.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
                 Case 1 - offset
                     For x = 0 To Params.Preset.Options.Length - 1
                         Dim temp = x
-                        cms.Items.Add(New ActionMenuItem(
-                                      Params.Preset.Options(x), Sub() SetPreset(temp),
-                                      "Use values between Fast and Slower otherwise the quality and compression will either be poor or the encoding will be painful slow. Slower is three times slower than Medium, Veryslow is 6 times slower than Medium with little gains compared to Slower.") With {.Font = If(Params.Preset.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
+                        Dim presetMenuItem = New ActionMenuItem(Params.Preset.Options(x) + "      ", Sub() SetPreset(temp), "x264 slower compares to x265 medium") With {.Font = If(Params.Preset.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))}
+                        cms.Items.Add(presetMenuItem)
                     Next
                 Case 2 - offset
                     For x = 0 To Params.Tune.Options.Length - 1
                         Dim temp = x
-                        cms.Items.Add(New ActionMenuItem(
-                                      Params.Tune.Options(x), Sub() SetTune(temp)) With {.Font = If(Params.Tune.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
+                        cms.Items.Add(New ActionMenuItem(Params.Tune.Options(x) + "      ", Sub() SetTune(temp)) With {.Font = If(Params.Tune.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
             End Select
         End If

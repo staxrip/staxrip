@@ -75,6 +75,10 @@ Audio delay of the first audio track.
 
 Audio delay of the second audio track.
 
+``%dpi%``
+
+DPI value of the main dialog.
+
 ``%encoder_ext%``
 
 File extension of the format the encoder of the active project outputs.
@@ -155,6 +159,10 @@ Start position of the first selecion in the preview.
 
 Path of the settings direcory.
 
+``%source_dar%``
+
+Source display aspect ratio.
+
 ``%source_dir%``
 
 Directory of the source file.
@@ -199,6 +207,14 @@ Image height of the source video.
 
 The name of the source file without file extension.
 
+``%source_par_x%``
+
+Source pixel/sample aspect ratio.
+
+``%source_par_y%``
+
+Source pixel/sample aspect ratio.
+
 ``%source_seconds%``
 
 Length in seconds of the source video.
@@ -218,6 +234,10 @@ Directory of the application.
 ``%system_dir%``
 
 System directory.
+
+``%target_dar%``
+
+Target display aspect ratio.
 
 ``%target_dir%``
 
@@ -243,9 +263,13 @@ Image height of the target video.
 
 Name of the target file without file extension.
 
-``%target_sar%``
+``%target_par_x%``
 
-Target sample aspect ratio (also known as PAR (pixel aspect ratio)).
+Target pixel/sample aspect ratio.
+
+``%target_par_y%``
+
+Target pixel/sample aspect ratio.
 
 ``%target_seconds%``
 
@@ -262,6 +286,10 @@ File located in the temp directory using the same name as the target file.
 ``%target_width%``
 
 Image width of the target video.
+
+``%temp_dir%``
+
+Directory of the source file or the temp directory if enabled.
 
 ``%temp_file%``
 
@@ -311,9 +339,17 @@ File path to AutoAdjust
 
 File path to Average
 
-``%app:AviSynth+%``
+``%app:AviSynth%``
 
-File path to AviSynth+
+File path to AviSynth
+
+``%app:AviSynthShader AVSI%``
+
+File path to AviSynthShader AVSI
+
+``%app:AviSynthShader DLL%``
+
+File path to AviSynthShader DLL
 
 ``%app:avs2pipemod%``
 
@@ -331,10 +367,6 @@ File path to AvsResize
 
 File path to AVSTP
 
-``%app:aWarpSharp2%``
-
-File path to aWarpSharp2
-
 ``%app:AWarpSharp2%``
 
 File path to AWarpSharp2
@@ -347,6 +379,14 @@ File path to BDSup2Sub++
 
 File path to BM3D
 
+``%app:Bwdif%``
+
+File path to Bwdif
+
+``%app:chapterEditor%``
+
+File path to chapterEditor
+
 ``%app:checkmate%``
 
 File path to checkmate
@@ -358,6 +398,10 @@ File path to CNR2
 ``%app:CNR2%``
 
 File path to CNR2
+
+``%app:CropResize%``
+
+File path to CropResize
 
 ``%app:CTMF%``
 
@@ -443,21 +487,17 @@ File path to DFTTest
 
 File path to DFTTest
 
-``%app:DGDecodeIM%``
-
-File path to DGDecodeIM
-
 ``%app:DGDecodeNV%``
 
 File path to DGDecodeNV
 
+``%app:DGHDRtoSDR%``
+
+File path to DGHDRtoSDR
+
 ``%app:DGIndex%``
 
 File path to DGIndex
-
-``%app:DGIndexIM%``
-
-File path to DGIndexIM
 
 ``%app:DGIndexNV%``
 
@@ -466,6 +506,10 @@ File path to DGIndexNV
 ``%app:DGTonemap%``
 
 File path to DGTonemap
+
+``%app:DirectX 9%``
+
+File path to DirectX 9
 
 ``%app:Dither AVSI%``
 
@@ -707,6 +751,14 @@ File path to modPlus
 
 File path to MP4Box
 
+``%app:MPC-BE%``
+
+File path to MPC-BE
+
+``%app:MPC-HC%``
+
+File path to MPC-HC
+
 ``%app:MPEG2DecPlus%``
 
 File path to MPEG2DecPlus
@@ -851,14 +903,6 @@ File path to SangNom2
 
 File path to scenechange
 
-``%app:Shader AVSI%``
-
-File path to Shader AVSI
-
-``%app:Shader DLL%``
-
-File path to Shader DLL
-
 ``%app:SMDegrain%``
 
 File path to SMDegrain
@@ -875,9 +919,9 @@ File path to SmoothD2
 
 File path to SmoothD2c
 
-``%app:SubtitleEdit%``
+``%app:Subtitle Edit%``
 
-File path to SubtitleEdit
+File path to Subtitle Edit
 
 ``%app:SVPFlow 1%``
 
@@ -995,9 +1039,9 @@ File path to Visual C++ 2012
 
 File path to Visual C++ 2013
 
-``%app:Visual C++ 2017%``
+``%app:Visual C++ 2019%``
 
-File path to Visual C++ 2017
+File path to Visual C++ 2019
 
 ``%app:vsCube%``
 
@@ -1071,9 +1115,17 @@ Folder path to AutoAdjust
 
 Folder path to Average
 
-``%app_dir:AviSynth+%``
+``%app_dir:AviSynth%``
 
-Folder path to AviSynth+
+Folder path to AviSynth
+
+``%app_dir:AviSynthShader AVSI%``
+
+Folder path to AviSynthShader AVSI
+
+``%app_dir:AviSynthShader DLL%``
+
+Folder path to AviSynthShader DLL
 
 ``%app_dir:avs2pipemod%``
 
@@ -1091,10 +1143,6 @@ Folder path to AvsResize
 
 Folder path to AVSTP
 
-``%app_dir:aWarpSharp2%``
-
-Folder path to aWarpSharp2
-
 ``%app_dir:AWarpSharp2%``
 
 Folder path to AWarpSharp2
@@ -1107,6 +1155,14 @@ Folder path to BDSup2Sub++
 
 Folder path to BM3D
 
+``%app_dir:Bwdif%``
+
+Folder path to Bwdif
+
+``%app_dir:chapterEditor%``
+
+Folder path to chapterEditor
+
 ``%app_dir:checkmate%``
 
 Folder path to checkmate
@@ -1118,6 +1174,10 @@ Folder path to CNR2
 ``%app_dir:CNR2%``
 
 Folder path to CNR2
+
+``%app_dir:CropResize%``
+
+Folder path to CropResize
 
 ``%app_dir:CTMF%``
 
@@ -1203,21 +1263,17 @@ Folder path to DFTTest
 
 Folder path to DFTTest
 
-``%app_dir:DGDecodeIM%``
-
-Folder path to DGDecodeIM
-
 ``%app_dir:DGDecodeNV%``
 
 Folder path to DGDecodeNV
 
+``%app_dir:DGHDRtoSDR%``
+
+Folder path to DGHDRtoSDR
+
 ``%app_dir:DGIndex%``
 
 Folder path to DGIndex
-
-``%app_dir:DGIndexIM%``
-
-Folder path to DGIndexIM
 
 ``%app_dir:DGIndexNV%``
 
@@ -1226,6 +1282,10 @@ Folder path to DGIndexNV
 ``%app_dir:DGTonemap%``
 
 Folder path to DGTonemap
+
+``%app_dir:DirectX 9%``
+
+Folder path to DirectX 9
 
 ``%app_dir:Dither AVSI%``
 
@@ -1467,6 +1527,14 @@ Folder path to modPlus
 
 Folder path to MP4Box
 
+``%app_dir:MPC-BE%``
+
+Folder path to MPC-BE
+
+``%app_dir:MPC-HC%``
+
+Folder path to MPC-HC
+
 ``%app_dir:MPEG2DecPlus%``
 
 Folder path to MPEG2DecPlus
@@ -1611,14 +1679,6 @@ Folder path to SangNom2
 
 Folder path to scenechange
 
-``%app_dir:Shader AVSI%``
-
-Folder path to Shader AVSI
-
-``%app_dir:Shader DLL%``
-
-Folder path to Shader DLL
-
 ``%app_dir:SMDegrain%``
 
 Folder path to SMDegrain
@@ -1635,9 +1695,9 @@ Folder path to SmoothD2
 
 Folder path to SmoothD2c
 
-``%app_dir:SubtitleEdit%``
+``%app_dir:Subtitle Edit%``
 
-Folder path to SubtitleEdit
+Folder path to Subtitle Edit
 
 ``%app_dir:SVPFlow 1%``
 
@@ -1755,9 +1815,9 @@ Folder path to Visual C++ 2012
 
 Folder path to Visual C++ 2013
 
-``%app_dir:Visual C++ 2017%``
+``%app_dir:Visual C++ 2019%``
 
-Folder path to Visual C++ 2017
+Folder path to Visual C++ 2019
 
 ``%app_dir:vsCube%``
 

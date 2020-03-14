@@ -758,7 +758,7 @@ Public Class eac3toForm
         If Output = "" Then
             MsgWarn("eac3to output was empty")
             Cancel()
-        ElseIf Output.ContainsAll({"left eye", "right eye"}) Then
+        ElseIf Output.ContainsAll("left eye", "right eye") Then
             MsgError("3D demuxing isn't supported.")
             Cancel()
         ElseIf Output <> "" Then
@@ -1013,7 +1013,7 @@ Public Class eac3toForm
     End Sub
 
     Private Sub cmdlOptions_ValueChanged(value As String) Handles cmdlOptions.ValueChanged
-        If cmdlOptions.tb.Focused OrElse cmdlOptions.bu.Focused Then
+        If cmdlOptions.tb.Focused OrElse cmdlOptions.bn.Focused Then
             Dim ms = GetSelectedStream()
 
             If Not ms Is Nothing Then

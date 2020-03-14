@@ -1,3 +1,4 @@
+
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Drawing.Imaging
@@ -36,13 +37,20 @@ Public Class Range
 End Class
 
 Public Class Calc
+    Shared Function IsValidFrameRate(value As Double) As Boolean
+        Return Not (Double.IsNaN(value) OrElse Double.IsInfinity(value) OrElse
+            value < 1 OrElse value > 500)
+    End Function
+
     Shared Function GetYFromTwoPointForm(x1 As Single, y1 As Single, x2 As Single, y2 As Single, x As Single) As Integer
-        'Zweipunkteform nach y aufgelöst
         Return CInt((((y2 - y1) / (x2 - x1)) * (x - x1)) + y1)
     End Function
 
     Shared Function GetPercent() As Double
-        If p.Compressibility = 0 Then Return 0
+        If p.Compressibility = 0 Then
+            Return 0
+        End If
+
         Return (GetBPF() / p.Compressibility) * 100
     End Function
 
@@ -61,6 +69,7 @@ Public Class Calc
             GetSubtitleKBytes() + Calc.GetOverheadKBytes()) / 1024
 
         If ret < 1 Then ret = 1
+
         Return ret
     End Function
 
@@ -82,7 +91,7 @@ Public Class Calc
 
     Shared Function GetOverheadKBytes() As Double
         Dim ret As Double
-        Dim frames = p.Script.GetFrames
+        Dim frames = p.Script.GetFrameCount
 
         If {"avi", "divx"}.Contains(p.VideoEncoder.Muxer.OutputExt) Then
             ret += frames * 0.024
@@ -354,7 +363,7 @@ Public Class Calc
             Dim xval As String
 
             If x = 8 OrElse x = -8 Then
-                xval = "±8"
+                xval = "ï¿½8"
             ElseIf x > 0 Then
                 xval = "+" & x
             Else
@@ -365,7 +374,7 @@ Public Class Calc
             Dim yval As String
 
             If y = 8 OrElse y = -8 Then
-                yval = "±8"
+                yval = "ï¿½8"
             ElseIf y > 0 Then
                 yval = "+" & y
             Else
@@ -896,6 +905,7 @@ Public Class Macro
         ret.Add(New Macro("crop_width", "Crop Width", GetType(Integer), "Crop width."))
         ret.Add(New Macro("delay", "Audio Delay 1", GetType(Integer), "Audio delay of the first audio track."))
         ret.Add(New Macro("delay2", "Audio Delay 2", GetType(Integer), "Audio delay of the second audio track."))
+        ret.Add(New Macro("dpi", "Main Dialog DPI", GetType(Integer), "DPI value of the main dialog."))
         ret.Add(New Macro("encoder_ext", "Encoder File Extension", GetType(String), "File extension of the format the encoder of the active project outputs."))
         ret.Add(New Macro("encoder_out_file", "Encoder Output File", GetType(String), "Output file of the video encoder."))
         ret.Add(New Macro("muxer_ext", "Muxer Extension", GetType(String), "Output extension of the active muxer."))
@@ -911,6 +921,7 @@ Public Class Macro
         ret.Add(New Macro("sel_end", "Selection End", GetType(Integer), "End position of the first selecion in the preview."))
         ret.Add(New Macro("sel_start", "Selection Start", GetType(Integer), "Start position of the first selecion in the preview."))
         ret.Add(New Macro("settings_dir", "Settings Directory", GetType(String), "Path of the settings direcory."))
+        ret.Add(New Macro("source_dar", "Source Display Aspect Ratio", GetType(String), "Source display aspect ratio."))
         ret.Add(New Macro("source_dir", "Source Directory", GetType(String), "Directory of the source file."))
         ret.Add(New Macro("source_dir_name", "Source Directory Name", GetType(String), "Name of the source file directory."))
         ret.Add(New Macro("source_dir_parent", "Source Directory Parent", GetType(String), "Parent directory of the source file directory."))
@@ -922,22 +933,27 @@ Public Class Macro
         ret.Add(New Macro("source_frames", "Source Frames", GetType(Integer), "Length in frames of the source video."))
         ret.Add(New Macro("source_height", "Source Image Height", GetType(Integer), "Image height of the source video."))
         ret.Add(New Macro("source_name", "Source Filename Without Extension", GetType(String), "The name of the source file without file extension."))
+        ret.Add(New Macro("source_par_x", "Source Pixel Aspect Ratio X", GetType(String), "Source pixel/sample aspect ratio."))
+        ret.Add(New Macro("source_par_y", "Source Pixel Aspect Ratio Y", GetType(String), "Source pixel/sample aspect ratio."))
         ret.Add(New Macro("source_seconds", "Source Seconds", GetType(Integer), "Length in seconds of the source video."))
         ret.Add(New Macro("source_temp_file", "Source Temp File", GetType(String), "File located in the temp directory using the same name as the source file."))
         ret.Add(New Macro("source_width", "Source Image Width", GetType(Integer), "Image width of the source video."))
         ret.Add(New Macro("startup_dir", "Startup Directory", GetType(String), "Directory of the application."))
         ret.Add(New Macro("system_dir", "System Directory", GetType(String), "System directory."))
+        ret.Add(New Macro("target_dar", "Target Display Aspect Ratio", GetType(String), "Target display aspect ratio."))
         ret.Add(New Macro("target_dir", "Target Directory", GetType(String), "Directory of the target file."))
         ret.Add(New Macro("target_file", "Target File Path", GetType(String), "File path of the target file."))
         ret.Add(New Macro("target_framerate", "Target Framerate", GetType(Integer), "Frame rate of the target video."))
         ret.Add(New Macro("target_frames", "Target Frames", GetType(Integer), "Length in frames of the target video."))
         ret.Add(New Macro("target_height", "Target Image Height", GetType(Integer), "Image height of the target video."))
         ret.Add(New Macro("target_name", "Target Filename Without Extension", GetType(String), "Name of the target file without file extension."))
-        ret.Add(New Macro("target_sar", "Target Sample Aspect Ratio", GetType(String), "Target sample aspect ratio (also known as PAR (pixel aspect ratio))."))
+        ret.Add(New Macro("target_par_x", "Target Pixel Aspect Ratio X", GetType(String), "Target pixel/sample aspect ratio."))
+        ret.Add(New Macro("target_par_y", "Target Pixel Aspect Ratio Y", GetType(String), "Target pixel/sample aspect ratio."))
         ret.Add(New Macro("target_seconds", "Target Seconds", GetType(Integer), "Length in seconds of the target video."))
         ret.Add(New Macro("target_size", "Target Size", GetType(Integer), "Size of the target video in kilo bytes."))
         ret.Add(New Macro("target_temp_file", "Target Temp File", GetType(String), "File located in the temp directory using the same name as the target file."))
         ret.Add(New Macro("target_width", "Target Image Width", GetType(Integer), "Image width of the target video."))
+        ret.Add(New Macro("temp_dir", "Temp Directory", GetType(String), "Directory of the source file or the temp directory if enabled."))
         ret.Add(New Macro("temp_file", "Temp File", GetType(String), "File located in the temp directory using the same name as the source file."))
         ret.Add(New Macro("template_name", "Template Name", GetType(String), "Name of the template the active project is based on."))
         ret.Add(New Macro("text_editor", "Text Editor", GetType(String), "Path of the application currently associated with TXT files."))
@@ -1031,9 +1047,9 @@ Public Class Macro
 
                         For Each iItem As String In items
                             If iItem.Contains("|") Then
-                                td.AddCommandLink(iItem.Left("|"), iItem.Right("|"))
+                                td.AddCommand(iItem.Left("|"), iItem.Right("|"))
                             Else
-                                td.AddCommandLink(iItem, iItem)
+                                td.AddCommand(iItem, iItem)
                             End If
                         Next
 
@@ -1061,6 +1077,9 @@ Public Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%working_dir%") Then value = value.Replace("%working_dir%", p.TempDir)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%temp_dir%") Then value = value.Replace("%temp_dir%", p.TempDir)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%temp_file%") Then value = value.Replace("%temp_file%", p.TempDir + p.SourceFile.Base)
@@ -1114,7 +1133,7 @@ Public Class Macro
         If value.Contains("%target_seconds%") Then value = value.Replace("%target_seconds%", p.TargetSeconds.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", p.Script.GetFrames.ToString)
+        If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", p.Script.GetFrameCount.ToString)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
@@ -1132,9 +1151,39 @@ Public Class Macro
         If value.Contains("%target_name%") Then value = value.Replace("%target_name%", p.TargetFile.Base)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_sar%") Then
+        If value.Contains("%source_par_x%") Then
+            Dim par = Calc.GetSourcePAR
+            value = value.Replace("%source_par_x%", par.X.ToString)
+            If Not value.Contains("%") Then Return value
+        End If
+
+        If value.Contains("%source_par_y%") Then
+            Dim par = Calc.GetSourcePAR
+            value = value.Replace("%source_par_y%", par.Y.ToString)
+            If Not value.Contains("%") Then Return value
+        End If
+
+        If value.Contains("%target_par_x%") Then
             Dim par = Calc.GetTargetPAR
-            value = value.Replace("%target_sar%", par.X & ":" & par.Y)
+            value = value.Replace("%target_par_x%", par.X.ToString)
+            If Not value.Contains("%") Then Return value
+        End If
+
+        If value.Contains("%target_par_y%") Then
+            Dim par = Calc.GetTargetPAR
+            value = value.Replace("%target_par_y%", par.Y.ToString)
+            If Not value.Contains("%") Then Return value
+        End If
+
+        If value.Contains("%source_dar%") Then
+            Dim dar = Calc.GetSourceDAR
+            value = value.Replace("%source_dar%", dar.ToString("f9", CultureInfo.InvariantCulture))
+            If Not value.Contains("%") Then Return value
+        End If
+
+        If value.Contains("%target_dar%") Then
+            Dim dar = Calc.GetTargetDAR
+            value = value.Replace("%target_dar%", dar.ToString("f9", CultureInfo.InvariantCulture))
             If Not value.Contains("%") Then Return value
         End If
 
@@ -1222,13 +1271,16 @@ Public Class Macro
         If value.Contains("%player%") Then value = value.Replace("%player%", Package.mpvnet.Path)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%text_editor%") Then value = value.Replace("%text_editor%", g.GetTextEditor)
+        If value.Contains("%text_editor%") Then value = value.Replace("%text_editor%", g.GetTextEditorPath)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%processing%") Then value = value.Replace("%processing%", g.IsProcessing.ToString)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%video_encoder%") Then value = value.Replace("%video_encoder%", TryCast(p.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage.Name)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%dpi%") Then value = value.Replace("%dpi%", g.MainForm.DeviceDpi.ToString())
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%script_file%") Then
@@ -1338,7 +1390,9 @@ Public Class Macro
         End If
 
         For Each i In OS.EnvVars
-            If value = "" OrElse i = "" Then Continue For
+            If value = "" OrElse i = "" Then
+                Continue For
+            End If
 
             If value.ToLowerInvariant.Contains("%" + i.ToLowerInvariant + "%") Then
                 value = Environment.ExpandEnvironmentVariables(value)
@@ -1357,6 +1411,7 @@ Public Class ObjectStorage
     Private IntDictionary As New Dictionary(Of String, Integer)
     Private DoubleDictionary As New Dictionary(Of String, Double)
     Private BoolDictionaryValue As Dictionary(Of String, Boolean)
+
     ReadOnly Property BoolDictionary() As Dictionary(Of String, Boolean)
         Get
             If BoolDictionaryValue Is Nothing Then
@@ -1632,13 +1687,13 @@ Public Class AudioStream
     ReadOnly Property Extension() As String
         Get
             Select Case FormatString
-                Case "AAC LC", "AAC LC-SBR", "AAC LC-SBR-PS"
+                Case "AAC LC", "AAC LC-SBR", "AAC LC-SBR-PS", "AAC LC SBR"
                     Return ".m4a"
                 Case "AC3", "AC-3"
                     Return ".ac3"
                 Case "DTS"
                     Return ".dts"
-                Case "DTS-HD", "DTS XLL", "DTS XLL X"
+                Case "DTS-HD", "DTS XLL", "DTS XLL X", "DTS XBR", "DTS ES XLL"
                     Return ".dtshd"
                 Case "PCM", "ADPCM"
                     Return ".wav"
@@ -1657,7 +1712,7 @@ Public Class AudioStream
                     Return ".ogg"
                 Case "Opus"
                     Return ".opus"
-                Case "TrueHD", "Atmos / TrueHD"
+                Case "TrueHD", "Atmos / TrueHD", "MLP FBA 16-ch"
                     Return ".thd"
                 Case "AC3+", "E-AC-3"
                     Return ".eac3"
@@ -1696,10 +1751,10 @@ Public Class VideoStream
                     Return "avi"
                 Case "HEVC"
                     Return "h265"
-                Case "AV1"
+                Case "AV1", "VP8", "VP9"
                     Return "ivf"
                 Case Else
-                    Throw New NotImplementedException("Video format " + Format + " is not supported.")
+                    Return ""
             End Select
         End Get
     End Property
@@ -1741,10 +1796,8 @@ Public Class Subtitle
             ret += " " + Language.Name
 
             If Title <> "" AndAlso Title <> " " AndAlso p.SourceFile <> "" AndAlso p.SourceFile.Length < 200 Then
-                ret += " {" + Title.Shorten(50) + "}"
+                ret += " {" + Title.Shorten(50).EscapeIllegalFileSysChars + "}"
             End If
-
-            If Not FilePath.IsValidFileSystemName(ret) Then ret = FilePath.RemoveIllegalCharsFromName(ret)
 
             Return ret
         End Get
@@ -1781,20 +1834,23 @@ Public Class Subtitle
 
     Shared Function Create(path As String) As List(Of Subtitle)
         Dim ret As New List(Of Subtitle)
-        If New FileInfo(path).Length = 0 Then Return ret
+
+        If New FileInfo(path).Length = 0 Then
+            Return ret
+        End If
 
         If path.Ext = "idx" Then
             Dim indexData As Integer
             Dim st As Subtitle = Nothing
 
-            For Each i In File.ReadAllText(path).SplitLinesNoEmpty
-                If i.StartsWith("id: ") AndAlso i Like "id: ??, index: *" Then
+            For Each line In path.ReadAllText.SplitLinesNoEmpty
+                If line.StartsWith("id: ") AndAlso line Like "id: ??, index: *" Then
                     st = New Subtitle
 
                     If path.Contains("forced") Then st.Forced = True
 
                     Try
-                        st.Language = New Language(New CultureInfo(i.Substring(4, 2)))
+                        st.Language = New Language(New CultureInfo(line.Substring(4, 2)))
                     Catch
                         st.Language = New Language(CultureInfo.InvariantCulture)
                     End Try
@@ -1803,11 +1859,11 @@ Public Class Subtitle
                     st.Enabled = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
 
                     If Not st Is Nothing Then
-                        st.IndexIDX = CInt(Regex.Match(i, ", index: (\d+)").Groups(1).Value)
+                        st.IndexIDX = CInt(Regex.Match(line, ", index: (\d+)").Groups(1).Value)
                     End If
                 End If
 
-                If Not st Is Nothing AndAlso i.StartsWith("timestamp: ") Then
+                If Not st Is Nothing AndAlso line.StartsWith("timestamp: ") Then
                     st.StreamOrder = indexData
                     st.Path = path
                     indexData += 1
@@ -1849,7 +1905,7 @@ Public Class Subtitle
 
             If path.Contains("{") Then
                 Dim title = path.Right("{")
-                st.Title = title.Left("}")
+                st.Title = title.Left("}").UnescapeIllegalFileSysChars
             End If
 
             Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
@@ -1901,7 +1957,9 @@ Public Class Subtitle
 
             If Not inSub.Enabled OrElse Not File.Exists(inSub.Path) OrElse inSub.Path.Contains("_cut_") Then Continue For
             Dim aviPath = p.TempDir + inSub.Path.Base + "_cut_mm.avi"
-            Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0}:r={1} -y -hide_banner -c:v copy " + aviPath.Escape, (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture))
+            Dim d = (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture)
+            Dim r = p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture)
+            Dim args = $"-f lavfi -i color=c=black:s=16x16:d={d}:r={r} -y -hide_banner -c:v copy " + aviPath.Escape
 
             Using proc As New Proc
                 proc.Header = "Create avi file for subtitle cutting"
@@ -2057,18 +2115,23 @@ Public Class OSVersion
 End Class
 
 Public Class OS
-    Public Shared EnvVars As String() = {"ALLUSERSPROFILE", "APPDATA", "CD", "CMDCMDLINE", "CMDEXTVERSION", "CommonProgramFiles", "CommonProgramFiles(x86)", "CommonProgramW6432", "COMPUTERNAME", "COMSPEC", "DATE", "ERRORLEVEL", "HOMEDRIVE", "HOMEPATH", "LOCALAPPDATA", "LOGONSERVER", "NUMBER_OF_PROCESSORS", "OS", "PATH", "PATHEXT", "PROCESSOR_ARCHITECTURE", "PROCESSOR_IDENTIFIER", "PROCESSOR_LEVEL", "PROCESSOR_REVISION", "ProgramData", "ProgramFiles", "ProgramFiles(x86)", "ProgramW6432", "PROMPT", "PSModulePath", "PUBLIC", "RANDOM", "SessionName", "SystemDrive", "SystemRoot", "TEMP", "TIME", "TMP", "USERDOMAIN", "USERDOMAIN_ROAMINGPROFILE", "USERNAME", "USERPROFILE", "WINDIR"}
-End Class
+    Public Shared EnvVars As String() = {"ALLUSERSPROFILE", "APPDATA", "CD", "CMDCMDLINE",
+        "CMDEXTVERSION", "CommonProgramFiles", "CommonProgramFiles(x86)", "CommonProgramW6432",
+        "COMPUTERNAME", "COMSPEC", "DATE", "ERRORLEVEL", "HOMEDRIVE", "HOMEPATH", "LOCALAPPDATA",
+        "LOGONSERVER", "NUMBER_OF_PROCESSORS", "OS", "PATH", "PATHEXT", "PROCESSOR_ARCHITECTURE",
+        "PROCESSOR_IDENTIFIER", "PROCESSOR_LEVEL", "PROCESSOR_REVISION", "ProgramData",
+        "ProgramFiles", "ProgramFiles(x86)", "ProgramW6432", "PROMPT", "PSModulePath", "PUBLIC",
+        "RANDOM", "SessionName", "SystemDrive", "SystemRoot", "TEMP", "TIME", "TMP", "USERDOMAIN",
+        "USERDOMAIN_ROAMINGPROFILE", "USERNAME", "USERPROFILE", "WINDIR"}
 
-Public Class SystemHelp
-    Private Shared VideoControllersValue As IEnumerable(Of String)
+    Private Shared VideoControllersValue As String()
 
-    Public Shared ReadOnly Property VideoControllers As IEnumerable(Of String)
+    Public Shared ReadOnly Property VideoControllers As String()
         Get
             If VideoControllersValue Is Nothing Then
-                Try 'one bug report received
+                Try 'bug report received
                     Dim mc As New ManagementClass("Win32_VideoController")
-                    VideoControllersValue = From i2 In mc.GetInstances().OfType(Of ManagementBaseObject)() Select CStr(i2("Caption"))
+                    VideoControllersValue = mc.GetInstances().OfType(Of ManagementBaseObject)().Select(Function(val) CStr(val("Caption"))).ToArray
                 Catch ex As Exception
                     Return {"WMI Error"}
                 End Try
@@ -2102,6 +2165,17 @@ Public Class BitmapUtil
     Property Data As Byte()
     Property BitmapData As BitmapData
 
+    Function GetPixel(x As Integer, y As Integer) As Color
+        Dim pos = y * BitmapData.Stride + x * 4
+        Return Color.FromArgb(Data(pos), Data(pos + 1), Data(pos + 2))
+    End Function
+
+    Function GetMax(x As Integer, y As Integer) As Integer
+        Dim col = GetPixel(x, y)
+        Dim max = Math.Max(col.R, col.G)
+        Return Math.Max(max, col.B)
+    End Function
+
     Shared Function Create(bmp As Bitmap) As BitmapUtil
         Dim util As New BitmapUtil
         Dim rect As New Rectangle(0, 0, bmp.Width, bmp.Height)
@@ -2114,15 +2188,14 @@ Public Class BitmapUtil
         Return util
     End Function
 
-    Function GetPixel(x As Integer, y As Integer) As Color
-        Dim pos = y * BitmapData.Stride + x * 4
-        Return Color.FromArgb(Data(pos), Data(pos + 1), Data(pos + 2))
-    End Function
+    Shared Function CreateBitmap(server As FrameServer, position As Integer) As Bitmap
+        Dim pitch As Integer
+        Dim data As IntPtr
 
-    Function GetMax(x As Integer, y As Integer) As Integer
-        Dim col = GetPixel(x, y)
-        Dim max = Math.Max(col.R, col.G)
-        Return Math.Max(max, col.B)
+        If server.NativeServer.GetFrame(position, data, pitch) = 0 Then
+            Return New Bitmap(server.Info.Width, server.Info.Height,
+                pitch, PixelFormat.Format32bppArgb, data)
+        End If
     End Function
 End Class
 
@@ -2216,7 +2289,7 @@ Public Class StringLogicalComparer
     Implements IComparer, IComparer(Of String)
 
     <DllImport("shlwapi.dll", CharSet:=CharSet.Unicode)>
-    Public Shared Function StrCmpLogical(x As String, y As String) As Integer
+    Shared Function StrCmpLogical(x As String, y As String) As Integer
     End Function
 
     Private Function IComparer_Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
@@ -3317,6 +3390,7 @@ Public Enum Symbol
     SliderThumb = &HEC13
     Slideshow = &HE786
     SlideshowLegacy = &HE173
+    SlowMotionOn = &HEA79
     Smartcard = &HE963
     SmartcardVirtual = &HE964
     SolidStarLegacy = &HE1CF

@@ -1,4 +1,5 @@
-﻿Imports System.Runtime.InteropServices
+﻿
+Imports System.Runtime.InteropServices
 Imports System.Threading
 Imports System.Threading.Tasks
 
@@ -31,7 +32,6 @@ Public Class ProcController
 
         ProgressBar.Dock = DockStyle.Fill
         ProgressBar.Font = New Font("Consolas", 9 * s.UIScaleFactor)
-        ProgressBar.ProgressColor = ControlPaint.LightLight(ControlPaint.Light(ToolStripRendererEx.ColorBorder, 0.4))
 
         LogTextBox.ScrollBars = ScrollBars.Both
         LogTextBox.Multiline = True
@@ -50,9 +50,15 @@ Public Class ProcController
     End Sub
 
     Sub DataReceived(sender As Object, e As DataReceivedEventArgs)
-        If e.Data = "" Then Exit Sub
+        If e.Data = "" Then
+            Exit Sub
+        End If
+
         Dim ret = Proc.ProcessData(e.Data)
-        If ret.Data = "" Then Exit Sub
+
+        If ret.Data = "" Then
+            Exit Sub
+        End If
 
         If ret.Skip Then
             ProcForm.BeginInvoke(StatusAction, {ret.Data})
@@ -72,7 +78,7 @@ Public Class ProcController
         SetProgress(value)
     End Sub
 
-    Shared LastProgress As Single
+    Shared LastProgress As Double
 
     Sub SetProgress(value As String)
         If Proc.IsSilent Then Exit Sub
@@ -83,8 +89,25 @@ Public Class ProcController
             If value.Contains("[") Then value = value.Right("[")
             If value.Contains(" ") Then value = value.RightLast(" ")
 
-            If value.IsSingle Then
-                Dim val = value.ToSingle
+            If value.IsDouble Then
+                Dim val = value.ToDouble
+
+                If LastProgress <> val Then
+                    ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                    ProcForm.Taskbar?.SetValue(val, 100)
+                    ProcForm.NotifyIcon.Text = val & "%"
+                    ProgressBar.Value = val
+                    LastProgress = val
+                End If
+
+                Exit Sub
+            End If
+        ElseIf Proc.Duration <> TimeSpan.Zero AndAlso value.Contains(" time=") Then
+            Dim tokens = value.Right(" time=").Left(" ").Split(":"c)
+
+            If tokens.Length = 3 Then
+                Dim ts As New TimeSpan(tokens(0).ToInt, tokens(1).ToInt, tokens(2).ToInt)
+                Dim val = 100 / Proc.Duration.TotalSeconds * ts.TotalSeconds
 
                 If LastProgress <> val Then
                     ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
@@ -110,24 +133,40 @@ Public Class ProcController
 
             Exit Sub
         ElseIf Proc.Frames > 0 AndAlso value.Contains("frame=") AndAlso value.Contains("fps=") Then
-            Dim right = value.Left("fps=").Right("frame=")
+            Dim frameString = value.Left("fps=").Right("frame=")
 
-            If right.IsInt Then
-                Dim frame = right.ToInt
+            If frameString.IsInt Then
+                Dim frame = frameString.ToInt
 
                 If frame < Proc.Frames Then
-                    Dim val = CSng(frame / Proc.Frames * 100)
+                    Dim progressValue = CSng(frame / Proc.Frames * 100)
 
-                    If LastProgress <> val Then
+                    If LastProgress <> progressValue Then
                         ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
-                        ProcForm.Taskbar?.SetValue(val, 100)
-                        ProcForm.NotifyIcon.Text = val & "%"
-                        ProgressBar.Value = val
-                        LastProgress = val
+                        ProcForm.Taskbar?.SetValue(progressValue, 100)
+                        ProcForm.NotifyIcon.Text = progressValue & "%"
+                        ProgressBar.Value = progressValue
+                        LastProgress = progressValue
                     End If
 
                     Exit Sub
                 End If
+            End If
+        ElseIf value.Contains("/100)") Then
+            Dim percentString = value.Right("(").Left("/")
+
+            If percentString.IsInt Then
+                Dim percent = percentString.ToInt
+
+                If LastProgress <> percent Then
+                    ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                    ProcForm.Taskbar?.SetValue(percent, 100)
+                    ProcForm.NotifyIcon.Text = percent & "%"
+                    ProgressBar.Value = percent
+                    LastProgress = percent
+                End If
+
+                Exit Sub
             End If
         End If
 
@@ -221,53 +260,49 @@ Public Class ProcController
                 i.Deactivate()
             Next
 
-            If Procs.Count > 0 Then Procs(0).Activate()
+            If Procs.Count > 0 Then
+                Procs(0).Activate()
+            End If
         End SyncLock
 
-        If Not Proc.Succeeded Then Abort()
+        If Not Proc.Succeeded Then
+            Abort()
+        End If
 
         Task.Run(Sub()
                      Thread.Sleep(500)
 
                      SyncLock Procs
                          If Procs.Count = 0 AndAlso Not g.IsProcessing Then
-                             g.WriteDebugLog("ProcController.Cleanup about to call Finished")
                              Finished()
-                             g.WriteDebugLog("ProcController.Cleanup after Finished")
                          End If
                      End SyncLock
-
-                     g.WriteDebugLog("ProcController.Cleanup " + Proc.Header + "; procs count: " & Procs.Count & ";isprocessing: " & g.IsProcessing)
                  End Sub)
     End Sub
 
     Shared Sub Finished()
         If Not g.ProcForm Is Nothing Then
             If g.ProcForm.tlpMain.InvokeRequired Then
-                g.WriteDebugLog("ProcController.Finished ProcForm InvokeRequired")
                 g.ProcForm.BeginInvoke(Sub() g.ProcForm.HideForm())
             Else
-                g.WriteDebugLog("ProcController.Finished ProcForm no InvokeRequired")
                 g.ProcForm.HideForm()
             End If
         End If
 
-        If g.MainForm.Disposing OrElse g.MainForm.IsDisposed Then Exit Sub
+        If g.MainForm.Disposing OrElse g.MainForm.IsDisposed Then
+            Exit Sub
+        End If
 
         Dim mainSub = Sub()
-                          g.WriteDebugLog("ProcController.Finished MainForm start")
                           BlockActivation = False
                           g.MainForm.Show()
                           g.MainForm.Refresh()
                           Aborted = False
-                          g.WriteDebugLog("ProcController.Finished MainForm end")
                       End Sub
 
         If g.MainForm.tlpMain.InvokeRequired Then
-            g.WriteDebugLog("ProcController.Finished MainForm InvokeRequired")
             g.MainForm.BeginInvoke(mainSub)
         Else
-            g.WriteDebugLog("ProcController.Finished MainForm no InvokeRequired")
             mainSub.Invoke
         End If
     End Sub
@@ -303,8 +338,13 @@ Public Class ProcController
     End Sub
 
     Shared Sub Start(proc As Proc)
-        If Aborted Then Throw New AbortException
-        If g.MainForm.Visible Then g.MainForm.Hide()
+        If Aborted Then
+            Throw New AbortException
+        End If
+
+        If g.MainForm.Visible Then
+            g.MainForm.Hide()
+        End If
 
         SyncLock Procs
             If g.ProcForm Is Nothing Then
@@ -334,7 +374,6 @@ Public Class ProcController
                               g.ProcForm.UpdateControls()
                           End Sub)
 
-        g.WriteDebugLog("ProcController Start " + proc.Header)
     End Sub
 
     <DllImport("kernel32.dll")>

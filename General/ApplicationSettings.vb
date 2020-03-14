@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 <Serializable()>
@@ -7,10 +8,16 @@ Public Class ApplicationSettings
     Public AudioProfiles As List(Of AudioProfile)
     Public AviSynthFilterPreferences As StringPairList
     Public AviSynthProfiles As List(Of FilterCategory)
+    Public CheckForUpdates As Boolean
+    Public CheckForUpdatesDismissed As String
+    Public CheckForUpdatesLastRequest As DateTime
+    Public CheckForUpdatesQuestion As Boolean
     Public CmdlPresetsEac3to As String
     Public CmdlPresetsMKV As String
     Public CmdlPresetsMP4 As String
     Public CmdlPresetsX264 As String
+    Public ConvertChromaSubsampling As Boolean = True
+    Public CropFrameCount As Integer
     Public CustomMenuCrop As CustomMenuItem
     Public CustomMenuMainForm As CustomMenuItem
     Public CustomMenuPreview As CustomMenuItem
@@ -23,18 +30,19 @@ Public Class ApplicationSettings
     Public EventCommands As List(Of EventCommand)
     Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public HidePreviewButtons As Boolean
+    Public IconFile As String
     Public LastPosition As Integer
     Public LastSourceDir As String
     Public LogFileNum As Integer = 50
     Public MinimizeToTray As Boolean
     Public MinimumDiskSpace As Integer = 20
+    Public MinPreviewSize As Integer = 70
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
     Public ParallelProcsNum As Integer = 2
     Public ParMenu As String
     Public PreventStandby As Boolean = True
     Public PreviewFormBorderStyle As FormBorderStyle
-    Public PreviewToggleInfos As Boolean
     Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.Idle
     Public ProjectsMruNum As Integer = 10
     Public RecentFramePositions As List(Of String)
@@ -42,6 +50,7 @@ Public Class ApplicationSettings
     Public RecentProjects As List(Of String)
     Public ReverseVideoScrollDirection As Boolean
     Public ShowPathsInCommandLine As Boolean
+    Public ShowPreviewInfo As Boolean
     Public ShowTemplateSelection As Boolean
     Public ShutdownTimeout As Integer
     Public StartupTemplate As String
@@ -49,7 +58,8 @@ Public Class ApplicationSettings
     Public StringDictionary As Dictionary(Of String, String)
     Public StringList As List(Of String)
     Public TargetImageSizeMenu As String
-    Public ToolStripRenderModeEx As ToolStripRenderModeEx
+    Public ThumbnailBackgroundColor As Color = Color.AliceBlue
+    Public ToolStripRenderModeEx As ToolStripRenderModeEx = ToolStripRenderModeEx.SystemDefault
     Public UIScaleFactor As Single = 1
     Public VapourSynthFilterPreferences As StringPairList
     Public VapourSynthProfiles As List(Of FilterCategory)
@@ -59,9 +69,6 @@ Public Class ApplicationSettings
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
     Public WriteDebugLog As Boolean
-    Public ThumbnailBackgroundColor As Color = Color.AliceBlue
-    Public MinPreviewSize As Integer = 60
-    Public IconFile As String
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -146,6 +153,10 @@ Public Class ApplicationSettings
             VapourSynthFilterPreferences.Add("dgi", "DGSource")
         End If
 
+        If Check(ToolStripRenderModeEx, "menu style", 1) Then
+            ToolStripRenderModeEx = ToolStripRenderModeEx.SystemDefault
+        End If
+
         If Check(eac3toProfiles, "eac3to Audio Stream Profiles", 4) Then
             eac3toProfiles = New List(Of eac3toProfile)
         End If
@@ -215,16 +226,18 @@ Public Class ApplicationSettings
 
         If RecentFramePositions Is Nothing Then RecentFramePositions = New List(Of String)
 
+        If CropFrameCount = 0 Then CropFrameCount = 10
+
         If Check(CustomMenuCrop, "Menu in crop dialog", 17) Then
             CustomMenuCrop = CropForm.GetDefaultMenuCrop
         End If
 
         If Check(CustomMenuMainForm, "Main menu in main window", 163) Then
-            CustomMenuMainForm = MainForm.GetDefaultMenuMain
+            CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 
         If Check(CustomMenuPreview, "Menu in preview dialog", 53) Then
-            CustomMenuPreview = PreviewForm.GetDefaultMenuPreview
+            CustomMenuPreview = PreviewForm.GetDefaultMenu()
         End If
 
         If Check(CustomMenuSize, "Target size menu in main dialog", 31) Then

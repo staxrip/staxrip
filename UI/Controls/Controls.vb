@@ -173,7 +173,7 @@ Namespace UI
                 Dim found = False
 
                 For Each iNode As TreeNode In currentNodeList
-                    If iNode.Text = iNodeName Then
+                    If iNode.Text = " " + iNodeName Then
                         ret = iNode
                         currentNodeList = iNode.Nodes
                         found = True
@@ -182,7 +182,7 @@ Namespace UI
 
                 If Not found Then
                     ret = New TreeNode
-                    ret.Text = iNodeName
+                    ret.Text = " " + iNodeName
                     currentNodeList.Add(ret)
                     currentNodeList = ret.Nodes
                 End If
@@ -455,20 +455,34 @@ Namespace UI
         End Sub
 
         Sub New(createMenu As Boolean)
-            If createMenu Then InitMenu()
-            If VisualStyleInformation.IsEnabledByUser Then BorderStyle = BorderStyle.None
+            If createMenu Then
+                InitMenu()
+            End If
+
+            If VisualStyleInformation.IsEnabledByUser Then
+                BorderStyle = BorderStyle.None
+            End If
         End Sub
 
         Sub InitMenu()
-            If DesignHelp.IsDesignMode Then Exit Sub
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
 
             Dim cms As New ContextMenuStripEx()
+
             Dim cutItem = cms.Add("Cut")
             cutItem.SetImage(Symbol.Cut)
+            cutItem.ShortcutKeyDisplayString = "Ctrl+X"
+
             Dim copyItem = cms.Add("Copy", Sub() Clipboard.SetText(SelectedText))
             copyItem.SetImage(Symbol.Copy)
+            copyItem.ShortcutKeyDisplayString = "Ctrl+C"
+
             Dim pasteItem = cms.Add("Paste")
             pasteItem.SetImage(Symbol.Paste)
+            pasteItem.ShortcutKeyDisplayString = "Ctrl+V"
+
             cms.Add("Copy Everything", Sub() Clipboard.SetText(Text))
 
             AddHandler cutItem.Click, Sub()
@@ -490,6 +504,11 @@ Namespace UI
             ContextMenuStrip = cms
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            MyBase.Dispose(disposing)
+            ContextMenuStrip?.Dispose()
+        End Sub
+
         Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
             If e.KeyData = (Keys.Control Or Keys.V) Then
                 e.SuppressKeyPress = True
@@ -506,7 +525,9 @@ Namespace UI
 
             Select Case m.Msg
                 Case 15, 20 'WM_PAINT, WM_ERASEBKGND
-                    If BlockPaint Then Exit Sub
+                    If BlockPaint Then
+                        Exit Sub
+                    End If
                 Case Else
             End Select
 
@@ -523,7 +544,9 @@ Namespace UI
         End Sub
 
         Private Sub WmNccalcsize(ByRef m As Message)
-            If Not VisualStyleInformation.IsEnabledByUser Then Return
+            If Not VisualStyleInformation.IsEnabledByUser Then
+                Return
+            End If
 
             Dim par As New Native.NCCALCSIZE_PARAMS()
             Dim windowRect As Native.RECT
@@ -560,23 +583,25 @@ Namespace UI
         End Sub
 
         Private Sub WmNcpaint(ByRef m As Message)
-            If Not VisualStyleInformation.IsEnabledByUser Then Return
+            If Not VisualStyleInformation.IsEnabledByUser Then
+                Return
+            End If
 
-            Dim r As Native.RECT
-            Native.GetWindowRect(Handle, r)
+            Dim rect As Native.RECT
+            Native.GetWindowRect(Handle, rect)
 
-            r.Right -= r.Left
-            r.Bottom -= r.Top
-            r.Top = 0
-            r.Left = 0
+            rect.Right -= rect.Left
+            rect.Bottom -= rect.Top
+            rect.Top = 0
+            rect.Left = 0
 
-            r.Left += BorderRect.Left
-            r.Top += BorderRect.Top
-            r.Right -= BorderRect.Right
-            r.Bottom -= BorderRect.Bottom
+            rect.Left += BorderRect.Left
+            rect.Top += BorderRect.Top
+            rect.Right -= BorderRect.Right
+            rect.Bottom -= BorderRect.Bottom
 
             Dim hDC = Native.GetWindowDC(Handle)
-            Native.ExcludeClipRect(hDC, r.Left, r.Top, r.Right, r.Bottom)
+            Native.ExcludeClipRect(hDC, rect.Left, rect.Top, rect.Right, rect.Bottom)
 
             Using g = Graphics.FromHdc(hDC)
                 g.Clear(Color.CadetBlue)
@@ -731,6 +756,10 @@ Namespace UI
                 Return Label.Text
             End Get
             Set(value As String)
+                If Not value.EndsWith(" ") Then
+                    value += " "
+                End If
+
                 Label.Text = value
             End Set
         End Property
@@ -874,7 +903,9 @@ Namespace UI
         Property LastCommandLine As String
 
         Sub SetText(commandLine As String)
-            If commandLine = LastCommandLine Then Exit Sub
+            If commandLine = LastCommandLine Then
+                Exit Sub
+            End If
 
             If commandLine = "" Then
                 Text = ""
@@ -930,13 +961,15 @@ Namespace UI
         End Function
 
         Function ReverseString(value As String) As String
-            Dim a = value.ToCharArray
-            Array.Reverse(a)
-            Return New String(a)
+            Dim chars = value.ToCharArray
+            Array.Reverse(chars)
+            Return New String(chars)
         End Function
 
         Private Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated
-            If Not DesignMode Then Font = New Font("Consolas", 10 * s.UIScaleFactor)
+            If Not DesignMode Then
+                Font = New Font("Consolas", 10 * s.UIScaleFactor)
+            End If
         End Sub
 
         Sub UpdateHeight()
@@ -1036,6 +1069,9 @@ Namespace UI
     Public Class ButtonEx
         Inherits Button
 
+        <DefaultValue(ButtonSymbol.None)>
+        Property Symbol As ButtonSymbol
+
         <DefaultValue(False)>
         Property ShowMenuSymbol As Boolean
 
@@ -1102,6 +1138,170 @@ Namespace UI
                 Dim brush = If(Enabled, Brushes.Black, SystemBrushes.GrayText)
                 e.Graphics.DrawString(_text, _font, brush, CSng(x), CSng(y))
             End If
+
+            If Symbol <> ButtonSymbol.None Then
+                e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
+
+                Dim p = New Pen(Brushes.Black)
+                p = New Pen(Brushes.Black)
+                p.Alignment = Drawing2D.PenAlignment.Center
+                p.EndCap = Drawing2D.LineCap.Round
+                p.StartCap = Drawing2D.LineCap.Round
+                p.Width = Height \ 12
+
+                Dim d As New SymbolDrawer()
+                d.Graphics = e.Graphics
+                d.Pen = p
+
+                d.Point1.Width = ClientSize.Width
+                d.Point2.Width = ClientSize.Width
+                d.Point1.Height = ClientSize.Height
+                d.Point2.Height = ClientSize.Height
+
+                Select Case Symbol
+                    Case ButtonSymbol.Open
+                        d.Point1.MoveRight(0.6)
+                        d.Point1.MoveDown(0.3)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.4)
+                        d.Draw()
+                        d.Point1.MoveDown(0.4)
+                        d.Point2.MoveDown(0.4)
+                        d.Draw()
+                        d.Point1.MoveLeft(0.2)
+                        d.Point1.MoveUp(0.4)
+                        d.Draw()
+                    Case ButtonSymbol.Close
+                        d.Point1.MoveRight(0.6)
+                        d.Point1.MoveDown(0.3)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.4)
+                        d.Draw()
+                        d.Point1.MoveDown(0.4)
+                        d.Point2.MoveDown(0.4)
+                        d.Draw()
+                        d.Point2.MoveRight(0.2)
+                        d.Point2.MoveUp(0.4)
+                        d.Draw()
+                    Case ButtonSymbol.Left3
+                        d.Point1.MoveRight(0.2)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.4)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Reset()
+                        d.Point1.MoveRight(0.2)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.7)
+                        d.Point2.MoveRight(0.4)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                    Case ButtonSymbol.Left2
+                        d.Point1.MoveRight(0.3)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.5)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Reset()
+                        d.Point1.MoveRight(0.3)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.7)
+                        d.Point2.MoveRight(0.5)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                    Case ButtonSymbol.Left1
+                        d.Point1.MoveRight(0.4)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.6)
+                        d.Draw()
+                        d.Point2.MoveDown(0.4)
+                        d.Draw()
+                    Case ButtonSymbol.Right1
+                        d.Point1.MoveRight(0.6)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.4)
+                        d.Draw()
+                        d.Point2.MoveDown(0.4)
+                        d.Draw()
+                    Case ButtonSymbol.Right2
+                        d.Point1.MoveRight(0.5)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.3)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Reset()
+                        d.Point1.MoveRight(0.5)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.7)
+                        d.Point2.MoveRight(0.3)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                    Case ButtonSymbol.Right3
+                        d.Point1.MoveRight(0.4)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.3)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Reset()
+                        d.Point1.MoveRight(0.4)
+                        d.Point1.MoveDown(0.5)
+                        d.Point2.MoveDown(0.7)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                        d.Point1.MoveRight(0.2)
+                        d.Point2.MoveRight(0.2)
+                        d.Draw()
+                    Case ButtonSymbol.Delete
+                        d.Point1.MoveRight(0.3)
+                        d.Point1.MoveDown(0.3)
+                        d.Point2.MoveRight(0.7)
+                        d.Point2.MoveDown(0.7)
+                        d.Draw()
+                        d.Point1.MoveRight(0.4)
+                        d.Point2.MoveLeft(0.4)
+                        d.Draw()
+                    Case ButtonSymbol.Menu
+                        d.Point1.MoveRight(0.2)
+                        d.Point1.MoveDown(0.35)
+                        d.Point2.MoveRight(0.5)
+                        d.Point2.MoveDown(0.65)
+                        d.Draw()
+                        d.Point1.MoveRight(0.6)
+                        d.Draw()
+                End Select
+            End If
         End Sub
 
         Sub ShowBold()
@@ -1114,6 +1314,61 @@ Namespace UI
 
             Font = New Font(Font, FontStyle.Regular)
         End Sub
+
+        Enum ButtonSymbol
+            None
+            Left1
+            Left2
+            Left3
+            Right1
+            Right2
+            Right3
+            Open
+            Close
+            Delete
+            Menu
+        End Enum
+
+        Class SymbolDrawer
+            Property Point1 As New Point
+            Property Point2 As New Point
+            Property Pen As Pen
+            Property Graphics As Graphics
+
+            Sub Draw()
+                Graphics.DrawLine(Pen, Point1.X, Point1.Y, Point2.X, Point2.Y)
+            End Sub
+
+            Sub Reset()
+                Point1.X = 0
+                Point2.X = 0
+                Point1.Y = 0
+                Point2.Y = 0
+            End Sub
+
+            Class Point
+                Property Width As Single
+                Property Height As Single
+                Property X As Single
+                Property Y As Single
+
+                Sub MoveLeft(value As Single)
+                    X -= Width * value
+                End Sub
+
+                Sub MoveRight(value As Single)
+                    X += Width * value
+                End Sub
+
+                Sub MoveUp(value As Single)
+                    Y -= Height * value
+                End Sub
+
+                Sub MoveDown(value As Single)
+                    Y += Height * value
+                End Sub
+            End Class
+        End Class
     End Class
 
     Public Class ListBoxEx
@@ -1129,13 +1384,8 @@ Namespace UI
         Private KeyText As String = ""
         Private BlockOnSelectedIndexChanged As Boolean
 
-        Private ColorBorder As Color
-        Private ColorTop As Color
-        Private ColorBottom As Color
-
         Public Sub New()
             DrawMode = DrawMode.OwnerDrawFixed
-            InitAero()
         End Sub
 
         Protected Overrides Sub OnFontChanged(e As EventArgs)
@@ -1155,13 +1405,9 @@ Namespace UI
                 r.Width -= 1
                 r.Height -= 1
 
-                Using p As New Pen(ColorBorder)
-                    g.DrawRectangle(p, r)
-                End Using
-
                 r.Inflate(-1, -1)
 
-                Using b As New SolidBrush(ColorBottom)
+                Using b As New SolidBrush(Color.FromArgb(&HFFB2DFFF))
                     g.FillRectangle(b, r)
                 End Using
             Else
@@ -1192,49 +1438,6 @@ Namespace UI
 
             e.Graphics.DrawString(caption, Font, Brushes.Black, r2, sf)
         End Sub
-
-        Sub InitAero()
-            Dim argb = CInt(Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", 0))
-            If argb = 0 Then argb = Color.Orange.ToArgb
-            InitColors(Color.FromArgb(argb))
-        End Sub
-
-        Sub InitColors(c As Color)
-            Dim border = HSLColor.Convert(c)
-            border.Luminosity = 50
-
-            Dim top = border
-            Dim bottom = border
-
-            top.Luminosity = 240
-            bottom.Luminosity = 220
-
-            ColorBorder = border.ToColor
-            ColorTop = top.ToColor
-            ColorBottom = bottom.ToColor
-        End Sub
-
-        Public Shared Function CreateRoundRectangle(r As Rectangle, radius As Integer) As GraphicsPath
-            Dim path As New GraphicsPath()
-
-            Dim l = r.Left
-            Dim t = r.Top
-            Dim w = r.Width
-            Dim h = r.Height
-            Dim d = radius << 1
-
-            path.AddArc(l, t, d, d, 180, 90)
-            path.AddLine(l + radius, t, l + w - radius, t)
-            path.AddArc(l + w - d, t, d, d, 270, 90)
-            path.AddLine(l + w, t + radius, l + w, t + h - radius)
-            path.AddArc(l + w - d, t + h - d, d, d, 0, 90)
-            path.AddLine(l + w - radius, t + h, l + radius, t + h)
-            path.AddArc(l, t + h - d, d, d, 90, 90)
-            path.AddLine(l, t + h - radius, l, t + radius)
-            path.CloseFigure()
-
-            Return path
-        End Function
 
         Sub UpdateSelection()
             If SelectedIndex > -1 Then
@@ -1281,7 +1484,7 @@ Namespace UI
                     End If
 
                     Items.RemoveAt(index)
-                    UpdateButtons()
+                    UpdateControls()
                 Else
                     Dim iFirst = SelectedIndex
 
@@ -1350,23 +1553,25 @@ Namespace UI
                 If Not UpButton Is Nothing Then UpButton.AddClickAction(AddressOf MoveSelectionUp)
                 If Not DownButton Is Nothing Then DownButton.AddClickAction(AddressOf MoveSelectionDown)
                 If Not RemoveButton Is Nothing Then RemoveButton.AddClickAction(AddressOf RemoveSelection)
-                UpdateButtons()
+                UpdateControls()
             End If
         End Sub
 
         Protected Overrides Sub OnSelectedIndexChanged(e As EventArgs)
             If Not BlockOnSelectedIndexChanged Then
                 MyBase.OnSelectedIndexChanged(e)
-                UpdateButtons()
+                UpdateControls()
             End If
         End Sub
 
-        Sub UpdateButtons()
+        Sub UpdateControls()
             If Not RemoveButton Is Nothing Then RemoveButton.Enabled = Not SelectedItem Is Nothing
             If Not UpButton Is Nothing Then UpButton.Enabled = SelectedIndex > 0
             If Not DownButton Is Nothing Then DownButton.Enabled = SelectedIndex > -1 AndAlso SelectedIndex < Items.Count - 1
             If Not Button1 Is Nothing Then Button1.Enabled = Not SelectedItem Is Nothing
             If Not Button2 Is Nothing Then Button2.Enabled = Not SelectedItem Is Nothing
+
+            If SelectedIndex = -1 AndAlso Items.Count > 0 Then SelectedIndex = 0
         End Sub
     End Class
 
@@ -1668,7 +1873,7 @@ Namespace UI
 
         Private TextValue As String
 
-        <BrowsableAttribute(True)>
+        <Browsable(True)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
         Overrides Property Text As String
             Get
@@ -1803,12 +2008,22 @@ Namespace UI
     Public Class LabelProgressBar
         Inherits Control
 
-        Property ProgressColor As Color = Color.Silver
+        Property ProgressColor As Color
 
         Public Sub New()
             SetStyle(ControlStyles.ResizeRedraw, True)
             SetStyle(ControlStyles.Selectable, False)
             SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
+
+            If BackColor.GetBrightness > 0.5 Then
+                ForeColor = Color.FromArgb(10, 10, 10)
+                BackColor = Color.FromArgb(240, 240, 240)
+                ProgressColor = Color.FromArgb(180, 180, 180)
+            Else
+                ForeColor = Color.FromArgb(240, 240, 240)
+                BackColor = Color.FromArgb(10, 10, 10)
+                ProgressColor = Color.FromArgb(100, 100, 100)
+            End If
         End Sub
 
         Private _Minimum As Double
@@ -1867,9 +2082,11 @@ Namespace UI
             Dim g = e.Graphics
             g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
 
-            Using br = New SolidBrush(ProgressColor)
-                g.FillRectangle(br, New RectangleF(0, 0, CSng(Width * (Value - Minimum) / Maximum), Height))
-                g.DrawString(Text, Font, SystemBrushes.ControlText, 0, CInt((Height - FontHeight) / 2))
+            Using foreBrush = New SolidBrush(ForeColor)
+                Using progressBrush = New SolidBrush(ProgressColor)
+                    g.FillRectangle(progressBrush, New RectangleF(0, 0, CSng(Width * (Value - Minimum) / Maximum), Height))
+                    g.DrawString(Text, Font, foreBrush, 0, CInt((Height - FontHeight) / 2))
+                End Using
             End Using
 
             MyBase.OnPaint(e)

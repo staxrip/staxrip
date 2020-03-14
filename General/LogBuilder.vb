@@ -73,11 +73,6 @@ Public Class LogBuilder
     Shared EnvironmentString As String 'cached due to bug report
 
     Sub WriteEnvironment()
-
-        'Dim Memory = My.Computer.Info.TotalPhysicalMemory \ 1073741824
-        'Dim MemoryF = Math.Ceiling(My.Computer.Info.TotalPhysicalMemory * 100D) / 100D
-        '"Memory:" + MemoryF.ToString.Shorten(2) + " GB" + BR +
-
         If ToString.Contains("- System Environment -") Then Exit Sub
         WriteHeader("System Environment")
 
@@ -86,7 +81,7 @@ Public Class LogBuilder
             "Windows:" + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + " " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") + BR +
             "Language:" + CultureInfo.CurrentCulture.EnglishName + BR +
             "CPU:" + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + BR +
-            "GPU:" + String.Join(", ", SystemHelp.VideoControllers) + BR +
+            "GPU:" + String.Join(", ", OS.VideoControllers) + BR +
             "Resolution:" & Screen.PrimaryScreen.Bounds.Width & " x " & Screen.PrimaryScreen.Bounds.Height & BR +
             "DPI:" & g.MainForm.DeviceDpi
 
@@ -121,7 +116,7 @@ Public Class LogBuilder
         If proj Is Nothing Then proj = p
 
         SyncLock Log
-            Log.ToString.WriteUTF8File(GetPath(proj))
+            Log.ToString.WriteFileUtf8(GetPath(proj))
         End SyncLock
     End Sub
 

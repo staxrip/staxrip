@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class FiltersListView
@@ -47,7 +48,13 @@ Public Class FiltersListView
             item.Tag = i
             item.Checked = i.Active
             item.SubItems.Add(i.Category)
-            If i.Name = "" Then item.SubItems.Add(i.Script) Else item.SubItems.Add(i.Name)
+
+            If i.Name = "" Then
+                item.SubItems.Add(i.Script)
+            Else
+                item.SubItems.Add(i.Name)
+            End If
+
             item.SubItems.Add(i.Script)
             Items.Add(item)
         Next
@@ -65,21 +72,23 @@ Public Class FiltersListView
         Dim sep0 = New ToolStripSeparator
         Menu.Items.Add(sep0)
 
-        Dim replace = Menu.Add("Replace")
-        replace.VisibleFunc = selectedFunc
+        Dim replaceMenuItem = Menu.Add("Replace")
+        replaceMenuItem.SetImage(Symbol.Switch)
+        replaceMenuItem.VisibleFunc = selectedFunc
 
         For Each i In filterProfiles
             For Each i2 In i.Filters
-                ActionMenuItem.Add(replace.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2, i2.Script)
+                ActionMenuItem.Add(replaceMenuItem.DropDownItems, i.Name + " | " + i2.Path, AddressOf ReplaceClick, i2, i2.Script)
             Next
         Next
 
-        Dim insert = Menu.Add("Insert")
-        insert.VisibleFunc = selectedFunc
+        Dim insertMenuItem = Menu.Add("Insert")
+        insertMenuItem.SetImage(Symbol.LeftArrowKeyTime0)
+        insertMenuItem.VisibleFunc = selectedFunc
 
         For Each i In filterProfiles
             For Each i2 In i.Filters
-                ActionMenuItem.Add(insert.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2, i2.Script)
+                ActionMenuItem.Add(insertMenuItem.DropDownItems, i.Name + " | " + i2.Path, AddressOf InsertClick, i2, i2.Script)
             Next
         Next
 
@@ -99,8 +108,9 @@ Public Class FiltersListView
 
         Menu.Add("Edit Code...", AddressOf ShowEditor, "Dialog to edit filters.").SetImage(Symbol.Code)
         Menu.Add("Preview Code...", Sub() g.CodePreview(p.Script.GetFullScript), "Script code preview.")
+        Menu.Add("Info...", Sub() g.ShowScriptInfo(p.Script), Function() p.SourceFile <> "", "Shows script parameters.").SetImage(Symbol.Info)
         Menu.Add("Play", Sub() g.PlayScript(p.Script), Function() p.SourceFile <> "", "Plays the script with the AVI player.").SetImage(Symbol.Play)
-        Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
+        Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.").SetImage(Symbol.FavoriteStar)
 
         Menu.Add("-")
 
@@ -121,7 +131,11 @@ Public Class FiltersListView
                                      Dim active = DirectCast(Menu.Items(0), ActionMenuItem)
                                      active.DropDownItems.ClearAndDisplose
                                      sep0.Visible = SelectedItems.Count > 0
-                                     If SelectedItems.Count = 0 Then Exit Sub
+
+                                     If SelectedItems.Count = 0 Then
+                                         Exit Sub
+                                     End If
+
                                      Dim selectedFilter = DirectCast(SelectedItems(0).Tag, VideoFilter)
                                      active.Text = selectedFilter.Category
 
@@ -136,9 +150,16 @@ Public Class FiltersListView
     End Sub
 
     Sub MoveUp()
-        If SelectedItems.Count = 0 Then Exit Sub
+        If SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+
         Dim index = SelectedItems(0).Index
-        If index = 0 Then Exit Sub
+
+        If index = 0 Then
+            Exit Sub
+        End If
+
         Dim sel = p.Script.Filters(index)
         p.Script.Filters.Remove(sel)
         p.Script.Filters.Insert(index - 1, sel)
@@ -147,9 +168,16 @@ Public Class FiltersListView
     End Sub
 
     Sub MoveDown()
-        If SelectedItems.Count = 0 Then Exit Sub
+        If SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
+
         Dim index = SelectedItems(0).Index
-        If index = p.Script.Filters.Count - 1 Then Exit Sub
+
+        If index = p.Script.Filters.Count - 1 Then
+            Exit Sub
+        End If
+
         Dim sel = p.Script.Filters(index)
         p.Script.Filters.Remove(sel)
         p.Script.Filters.Insert(index + 1, sel)
@@ -158,19 +186,30 @@ Public Class FiltersListView
     End Sub
 
     Sub ShowEditor()
-        If p.Script.Edit = DialogResult.OK Then OnChanged()
+        If p.Script.Edit = DialogResult.OK Then
+            OnChanged()
+        End If
     End Sub
 
     Sub ReplaceClick(filter As VideoFilter)
         filter = filter.GetCopy
-        Dim tup = Macro.ExpandGUI(filter.Script)
-        If tup.Cancel Then Exit Sub
+        Dim val = Macro.ExpandGUI(filter.Script)
 
-        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-            filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+        If val.Cancel Then
+            Exit Sub
         End If
 
-        filter.Script = tup.Value
+        If val.Value <> filter.Script AndAlso val.Caption <> "" Then
+            Dim path = filter.Path.Replace("...", "")
+
+            If val.Caption.EndsWith(path) Then
+                filter.Path = val.Caption
+            Else
+                filter.Path = path + " " + val.Caption
+            End If
+        End If
+
+        filter.Script = val.Value
         Dim index = SelectedItems(0).Index
         p.Script.SetFilter(index, filter)
         Items(index).Selected = True
@@ -178,14 +217,23 @@ Public Class FiltersListView
 
     Private Sub InsertClick(filter As VideoFilter)
         filter = filter.GetCopy
-        Dim tup = Macro.ExpandGUI(filter.Script)
-        If tup.Cancel Then Exit Sub
+        Dim val = Macro.ExpandGUI(filter.Script)
 
-        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-            filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+        If val.Cancel Then
+            Exit Sub
         End If
 
-        filter.Script = tup.Value
+        If val.Value <> filter.Script AndAlso val.Caption <> "" Then
+            Dim path = filter.Path.Replace("...", "")
+
+            If val.Caption.EndsWith(path) Then
+                filter.Path = val.Caption
+            Else
+                filter.Path = path + " " + val.Caption
+            End If
+        End If
+
+        filter.Script = val.Value
         Dim index = SelectedItems(0).Index
         p.Script.InsertFilter(index, filter)
         Items(index).Selected = True
@@ -193,20 +241,32 @@ Public Class FiltersListView
 
     Private Sub AddClick(filter As VideoFilter)
         filter = filter.GetCopy
-        Dim tup = Macro.ExpandGUI(filter.Script)
-        If tup.Cancel Then Exit Sub
+        Dim val = Macro.ExpandGUI(filter.Script)
 
-        If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
-            filter.Path = filter.Path.Replace("...", "") + " " + tup.Caption
+        If val.Cancel Then
+            Exit Sub
         End If
 
-        filter.Script = tup.Value
+        If val.Value <> filter.Script AndAlso val.Caption <> "" Then
+            Dim path = filter.Path.Replace("...", "")
+
+            If val.Caption.EndsWith(path) Then
+                filter.Path = val.Caption
+            Else
+                filter.Path = path + " " + val.Caption
+            End If
+        End If
+
+        filter.Script = val.Value
         p.Script.AddFilter(filter)
         Items(Items.Count - 1).Selected = True
     End Sub
 
     Sub OnChanged()
-        If IsLoading Then Exit Sub
+        If IsLoading Then
+            Exit Sub
+        End If
+
         Load()
         RaiseEvent Changed()
     End Sub
@@ -221,7 +281,9 @@ Public Class FiltersListView
     End Sub
 
     Private Sub RemoveClick()
-        If Items.Count > 1 Then p.Script.RemoveFilterAt(SelectedItems(0).Index)
+        If SelectedItems.Count > 0 Then
+            p.Script.RemoveFilterAt(SelectedItems(0).Index)
+        End If
     End Sub
 
     Sub UpdateDocument()
@@ -251,6 +313,14 @@ Public Class FiltersListView
         UpdateDocument()
     End Sub
 
+    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
+        MyBase.OnKeyDown(e)
+
+        If e.KeyData = Keys.Delete Then
+            RemoveClick()
+        End If
+    End Sub
+
     Protected Overrides Sub OnItemCheck(e As ItemCheckEventArgs)
         MyBase.OnItemCheck(e)
 
@@ -258,9 +328,9 @@ Public Class FiltersListView
             Dim filter = DirectCast(Items(e.Index).Tag, VideoFilter)
 
             If e.NewValue = CheckState.Checked AndAlso filter.Category = "Resize" Then
-                Dim f = FindForm()
+                Dim form = FindForm()
 
-                If Not f Is Nothing AndAlso TypeOf f Is MainForm Then
+                If Not form Is Nothing AndAlso TypeOf form Is MainForm Then
                     g.MainForm.SetTargetImageSize(p.TargetWidth, 0)
                 End If
             End If

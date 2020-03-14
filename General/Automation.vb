@@ -1,4 +1,6 @@
-﻿Imports System.Management.Automation.Runspaces
+﻿
+Imports System.Management.Automation.Runspaces
+
 Imports StaxRip.UI
 
 Public Class Scripting
@@ -38,7 +40,7 @@ Using namespace System.Windows.Forms;
                 End Using
             End Using
         Catch ex As Exception
-            g.ShowException(ex, "Failed to execute PowerShell script." + BR2 + "Install PowerShell 5.1 or higher.")
+            g.ShowException(ex, "Failed to execute PowerShell script", "Install PowerShell 5.1 or higher.")
         End Try
     End Function
 End Class

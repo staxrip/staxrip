@@ -1,3 +1,4 @@
+
 Imports System.Text.RegularExpressions
 Imports System.Text
 Imports System.ComponentModel
@@ -20,6 +21,7 @@ Public Class Proc
     Property RemoveChars As Char()
     Property ExitCode As Integer
     Property Frames As Integer
+    Property Duration As TimeSpan
     Property Log As New LogBuilder
     Property Succeeded As Boolean
     Property Header As String
@@ -289,44 +291,31 @@ Public Class Proc
                 Process.WaitForExit()
                 ExitCode = Process.ExitCode
 
-                If Abort Then Throw New AbortException
+                If Abort Then
+                    Throw New AbortException
+                End If
 
                 If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCode) Then
-                    Dim ntdllHandle = Native.LoadLibrary("NTDLL.DLL")
-                    Dim systemErrorMessage As String
+                    Dim interpretation As String
+                    Dim systemError = New Win32Exception(ExitCode).Message
 
-                    Dim retval = Native.FormatMessage(Native.FORMAT_MESSAGE_ALLOCATE_BUFFER Or
-                                                      Native.FORMAT_MESSAGE_FROM_SYSTEM Or
-                                                      Native.FORMAT_MESSAGE_FROM_HMODULE,
-                                                      ntdllHandle, ExitCode, 0, systemErrorMessage,
-                                                      0, IntPtr.Zero)
-                    Native.FreeLibrary(ntdllHandle)
-
-                    Const ERROR_MR_MID_NOT_FOUND = 317
-
-                    If retval = 0 AndAlso Marshal.GetLastWin32Error <> ERROR_MR_MID_NOT_FOUND Then
-                        Throw New Win32Exception(Marshal.GetLastWin32Error)
+                    If systemError <> "" AndAlso Not systemError?.StartsWith("Unknown error") Then
+                        interpretation = "It's unclear what the exit code means, in case it's a Windows system error then it possibly means:" + BR2 + systemError
+                    Else
+                        Try
+                            Marshal.ThrowExceptionForHR(ExitCode)
+                        Catch ex As Exception
+                            If ex.Message <> "" AndAlso Not ex.Message?.StartsWith("Exception from HRESULT: 0x") Then
+                                interpretation = "It's unclear what the exit code means, in case it's a COM error then it possibly means:" + BR2 + ex.Message
+                            End If
+                        End Try
                     End If
 
-                    Dim errorMessage = Header + " failed with exit code: " & ExitCode & " (" + "0x" + ExitCode.ToString("X") + ")"
+                    Dim errorMessage = Header + " failed with exit code: " & ExitCode &
+                        " (" + "0x" + ExitCode.ToString("X") + ")"
 
-                    If systemErrorMessage <> "" Then
-                        errorMessage += BR2 + "The exit code might be a system error code: " + systemErrorMessage.Trim
-                    End If
-
-                    systemErrorMessage = Nothing
-
-                    retval = Native.FormatMessage(Native.FORMAT_MESSAGE_ALLOCATE_BUFFER Or
-                                                  Native.FORMAT_MESSAGE_FROM_SYSTEM,
-                                                  IntPtr.Zero, ExitCode, 0, systemErrorMessage,
-                                                  0, IntPtr.Zero)
-
-                    If retval = 0 AndAlso Marshal.GetLastWin32Error <> ERROR_MR_MID_NOT_FOUND Then
-                        Throw New Win32Exception(Marshal.GetLastWin32Error)
-                    End If
-
-                    If systemErrorMessage <> "" Then
-                        errorMessage += BR2 + "The exit code might be a system error code: " + systemErrorMessage.Trim
+                    If interpretation <> "" Then
+                        errorMessage += BR2 + interpretation
                     End If
 
                     errorMessage += BR2 + Log.ToString() + BR
@@ -339,7 +328,9 @@ Public Class Proc
             Throw e
         End Try
 
-        If Abort Then Throw New AbortException
+        If Abort Then
+            Throw New AbortException
+        End If
     End Sub
 
     Private DisposedValue As Boolean = False

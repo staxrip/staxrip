@@ -4,9 +4,9 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyTitle("StaxRip")>
 <Assembly: AssemblyCompany("StaxRip authors")>
 <Assembly: AssemblyProduct("StaxRip")>
-<Assembly: AssemblyCopyright("2002-2019 StaxRip authors")>
+<Assembly: AssemblyCopyright("Copyright (C) 2002-2020 StaxRip authors")>
 <Assembly: ComVisible(False)> 
 <Assembly: Guid("54d5dc0f-6ba7-42f0-a82f-9c71d561cb8b")>
-<Assembly: AssemblyVersion("2.0.4.0")>
-<Assembly: AssemblyFileVersion("2.0.4.0")>
+<Assembly: AssemblyVersion("2.0.8.0")>
+<Assembly: AssemblyFileVersion("2.0.8.0")>
 <Assembly: AssemblyDescription("Video encoding app")>

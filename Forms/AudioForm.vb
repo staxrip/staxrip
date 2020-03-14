@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class AudioForm
@@ -709,7 +710,7 @@ Public Class AudioForm
         cms.Add("-")
         cms.Add("Help", AddressOf ShowHelp).SetImage(Symbol.Help)
         cms.Add("eac3to Help", Sub() g.StartProcess("http://en.wikibooks.org/wiki/Eac3to"))
-        cms.Add("ffmpeg Help", Sub() g.StartProcess(Package.ffmpeg.GetHelpPath))
+        cms.Add("ffmpeg Help", Sub() Package.ffmpeg.ShowHelp())
 
         TipProvider.SetTip("Profile name that is auto generated when undefined.", laProfileName)
         TipProvider.SetTip("Language used by the muxer. Saved in projects/templates but not in profiles.", mbLanguage, lLanguage)
@@ -884,6 +885,7 @@ Public Class AudioForm
 
     Private Sub mbLanguage_ValueChanged() Handles mbLanguage.ValueChangedUser
         TempProfile.Language = mbLanguage.GetValue(Of Language)()
+        mbLanguage.Text = TempProfile.Language.Name
         UpdateControls()
     End Sub
 
@@ -1296,13 +1298,13 @@ Public Class AudioForm
             n = ui.AddNum()
             n.Text = "Target Peak"
             n.Help = helpUrl
-            n.Config = {0, 0, 0.1, 2}
+            n.Config = {0, 0, 0.05, 2}
             n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormP)
 
             n = ui.AddNum()
             n.Text = "Max gain factor"
             n.Help = helpUrl
-            n.Config = {1, 100, 1, 1}
+            n.Config = {1, 100, 5, 1}
             n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormM)
 
             n = ui.AddNum()

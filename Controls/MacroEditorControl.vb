@@ -1,3 +1,4 @@
+
 Imports System.ComponentModel
 Imports StaxRip.UI
 
@@ -65,7 +66,7 @@ Public Class MacroEditorControl
         Me.TabControl.Location = New System.Drawing.Point(3, 3)
         Me.TabControl.Name = "TabControl"
         Me.TabControl.SelectedIndex = 0
-        Me.TabControl.Size = New System.Drawing.Size(608, 464)
+        Me.TabControl.Size = New System.Drawing.Size(608, 441)
         Me.TabControl.TabIndex = 0
         '
         'tpEdit
@@ -73,7 +74,7 @@ Public Class MacroEditorControl
         Me.tpEdit.Controls.Add(Me.rtbEdit)
         Me.tpEdit.Location = New System.Drawing.Point(12, 58)
         Me.tpEdit.Name = "tpEdit"
-        Me.tpEdit.Size = New System.Drawing.Size(584, 394)
+        Me.tpEdit.Size = New System.Drawing.Size(584, 371)
         Me.tpEdit.TabIndex = 0
         Me.tpEdit.Text = "   Edit   "
         '
@@ -84,7 +85,7 @@ Public Class MacroEditorControl
         Me.rtbEdit.Dock = System.Windows.Forms.DockStyle.Fill
         Me.rtbEdit.Location = New System.Drawing.Point(0, 0)
         Me.rtbEdit.Name = "rtbEdit"
-        Me.rtbEdit.Size = New System.Drawing.Size(584, 394)
+        Me.rtbEdit.Size = New System.Drawing.Size(584, 371)
         Me.rtbEdit.TabIndex = 0
         Me.rtbEdit.Text = ""
         '
@@ -159,19 +160,20 @@ Public Class MacroEditorControl
         Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.FlowLayoutPanel1.Controls.Add(Me.llMacros)
         Me.FlowLayoutPanel1.Controls.Add(Me.llHelp)
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(0, 470)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(0, 447)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(216, 37)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(295, 60)
         Me.FlowLayoutPanel1.TabIndex = 1
         '
         'llMacros
         '
         Me.llMacros.AutoSize = True
+        Me.llMacros.Font = New System.Drawing.Font("Segoe UI", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.llMacros.LinkColor = System.Drawing.Color.Empty
         Me.llMacros.Location = New System.Drawing.Point(3, 0)
         Me.llMacros.Name = "llMacros"
-        Me.llMacros.Size = New System.Drawing.Size(122, 37)
+        Me.llMacros.Size = New System.Drawing.Size(167, 60)
         Me.llMacros.TabIndex = 0
         Me.llMacros.TabStop = True
         Me.llMacros.Text = "Macros"
@@ -179,10 +181,11 @@ Public Class MacroEditorControl
         'llHelp
         '
         Me.llHelp.AutoSize = True
+        Me.llHelp.Font = New System.Drawing.Font("Segoe UI", 11.0!)
         Me.llHelp.LinkColor = System.Drawing.Color.Empty
-        Me.llHelp.Location = New System.Drawing.Point(131, 0)
+        Me.llHelp.Location = New System.Drawing.Point(176, 0)
         Me.llHelp.Name = "llHelp"
-        Me.llHelp.Size = New System.Drawing.Size(82, 37)
+        Me.llHelp.Size = New System.Drawing.Size(116, 60)
         Me.llHelp.TabIndex = 2
         Me.llHelp.TabStop = True
         Me.llHelp.Text = "Help"
@@ -251,7 +254,10 @@ Public Class MacroEditorControl
         End Get
         Set(value As String)
             rtbEdit.Text = value
-            If IsCommandLineMode Then EditTextChanged(Nothing, Nothing)
+
+            If IsCommandLineMode Then
+                EditTextChanged(Nothing, Nothing)
+            End If
         End Set
     End Property
 
@@ -341,12 +347,12 @@ Public Class MacroEditorControl
         HelpPaths.Clear()
         Dim caption As String
 
-        For Each i In Package.Items.Values
-            If editText.Contains(i.Name) Then
-                If i.GetHelpPath() <> "" Then
+        For Each pack In Package.Items.Values
+            If editText.Contains(pack.Name) Then
+                If pack.HelpFileOrURL <> "" Then
                     llHelp.Visible = True
-                    caption += ", " + i.Name
-                    HelpPaths.Add(i.GetHelpPath())
+                    caption += ", " + pack.Name
+                    HelpPaths.Add(pack.HelpFileOrURL)
                 End If
             End If
         Next

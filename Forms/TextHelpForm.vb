@@ -1,4 +1,5 @@
-﻿Public Class TextHelpForm
+﻿
+Public Class TextHelpForm
     Property Find As String
 
     Public Sub New(text As String, find As String)

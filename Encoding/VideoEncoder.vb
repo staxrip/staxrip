@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 Imports StaxRip.CommandLine
 Imports System.Text.RegularExpressions
@@ -29,8 +30,6 @@ Public MustInherit Class VideoEncoder
         End Get
     End Property
 
-    Private OutputPathValue As String
-
     Overridable ReadOnly Property OutputPath() As String
         Get
             If TypeOf Muxer Is NullMuxer Then
@@ -48,50 +47,72 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Sub SetMetaData(sourceFile As String)
-        If Not p.ImportVUIMetadata Then Exit Sub
+        If Not p.ImportVUIMetadata Then
+            Exit Sub
+        End If
 
         Dim cl As String
-
         Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
-        Dim height = MediaInfo.GetVideo(sourceFile, "Height").ToInt
 
         Select Case colour_primaries
             Case "BT.2020"
-                If colour_primaries.Contains("BT.2020") Then cl += " --colorprim bt2020"
+                If colour_primaries.Contains("BT.2020") Then
+                    cl += " --colorprim bt2020"
+                End If
             Case "BT.709"
-                If colour_primaries.Contains("BT.709") Then cl += " --colorprim bt709"
+                If colour_primaries.Contains("BT.709") Then
+                    cl += " --colorprim bt709"
+                End If
             Case "BT.601 NTSC"
-                If colour_primaries.Contains("BT.601 NTSC") Then cl += " --colorprim bt470m"
+                If colour_primaries.Contains("BT.601 NTSC") Then
+                    cl += " --colorprim bt470m"
+                End If
             Case "BT.601 PAL"
-                If colour_primaries.Contains("BT.601 PAL") Then cl += " --colorprim bt470bg"
+                If colour_primaries.Contains("BT.601 PAL") Then
+                    cl += " --colorprim bt470bg"
+                End If
         End Select
 
         Dim transfer_characteristics = MediaInfo.GetVideo(sourceFile, "transfer_characteristics")
 
         Select Case transfer_characteristics
             Case "PQ", "SMPTE ST 2084"
-                If transfer_characteristics.Contains("SMPTE ST 2084") Or transfer_characteristics.Contains("PQ") Then cl += " --transfer smpte2084"
+                If transfer_characteristics.Contains("SMPTE ST 2084") Or transfer_characteristics.Contains("PQ") Then
+                    cl += " --transfer smpte2084"
+                End If
             Case "BT.709"
-                If transfer_characteristics.Contains("BT.709") Then cl += " --transfer bt709"
+                If transfer_characteristics.Contains("BT.709") Then
+                    cl += " --transfer bt709"
+                End If
             Case "HLG"
                 cl += " --transfer arib-std-b67"
             Case "BT.601 NTSC"
-                If transfer_characteristics.Contains("BT.601 NTSC") Then cl += " --transfer bt470m"
+                If transfer_characteristics.Contains("BT.601 NTSC") Then
+                    cl += " --transfer bt470m"
+                End If
             Case "BT.601 PAL"
-                If transfer_characteristics.Contains("BT.601 PAL") Then cl += " --transfer bt470bg"
+                If transfer_characteristics.Contains("BT.601 PAL") Then
+                    cl += " --transfer bt470bg"
+                End If
         End Select
 
         Dim matrix_coefficients = MediaInfo.GetVideo(sourceFile, "matrix_coefficients")
 
         Select Case matrix_coefficients
             Case "BT.2020 non-constant"
-                If matrix_coefficients.Contains("BT.2020 non-constant") Then cl += " --colormatrix bt2020nc"
+                If matrix_coefficients.Contains("BT.2020 non-constant") Then
+                    cl += " --colormatrix bt2020nc"
+                End If
             Case "BT.709"
                 cl += " --colormatrix bt709"
             Case "BT.601 NTSC"
-                If matrix_coefficients.Contains("BT.601 NTSC") Then cl += " --colormatrix bt470m"
+                If matrix_coefficients.Contains("BT.601 NTSC") Then
+                    cl += " --colormatrix bt470m"
+                End If
             Case "BT.601 PAL"
-                If matrix_coefficients.Contains("BT.601 PAL") Then cl += " --colormatrix bt470bg"
+                If matrix_coefficients.Contains("BT.601 PAL") Then
+                    cl += " --colormatrix bt470bg"
+                End If
         End Select
 
         Dim color_range = MediaInfo.GetVideo(sourceFile, "colour_range")
@@ -101,64 +122,58 @@ Public MustInherit Class VideoEncoder
                 cl += " --range limited"
             Case "Full"
                 cl += " --range full"
-
         End Select
 
         Dim MasteringDisplay_ColorPrimaries = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_ColorPrimaries")
         Dim MasteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
 
         If MasteringDisplay_ColorPrimaries <> "" AndAlso MasteringDisplay_Luminance <> "" Then
-            Dim BT2020 = Regex.Match(MasteringDisplay_ColorPrimaries, "(BT.2020)")
-            Dim MaxCL = Regex.Match(MasteringDisplay_Luminance, "min: ([0-9\.]+) cd/m2, max: ([0-9\.]+) cd/m2")
-            Dim DisplayP3 = Regex.Match(MasteringDisplay_ColorPrimaries, "(Display P3)")
-            Dim DCIP3 = Regex.Match(MasteringDisplay_ColorPrimaries, "(DCI P3)")
+            Dim luminanceMatch = Regex.Match(MasteringDisplay_Luminance, "min: ([\d\.]+) cd/m2, max: ([\d\.]+) cd/m2")
 
-            ''DisPlay-P3
-            If DisplayP3.Success AndAlso MaxCL.Success Then
-                'Dim Export = MaxCL.Groups.OfType(Of Group).Skip(1).Select(Function(group) CInt(group.Value.ToDouble * 10000).ToString)
-                ''Not Sure if These^ string Values are Needed anymore, Since MediaInfo Does Not Use this Format anymore. Removed all Ones Below and 
-                '' Left this One Intact Just Incase it's Needed.
-                cl += " --output-depth 10"
-                cl += " --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L(10000000,1)"""
-                cl += " --hdr"
-                cl += " --repeat-headers"
-                cl += " --range limited"
-                cl += " --hrd"
-                cl += " --aud"
-            End If
+            If luminanceMatch.Success Then
+                Dim luminanceMin = luminanceMatch.Groups(1).Value.ToDouble * 10000
+                Dim luminanceMax = luminanceMatch.Groups(2).Value.ToDouble * 10000
 
-            ''DCI-P3
-            If DCIP3.Success AndAlso MaxCL.Success Then
-                'Removed String Value.
-                cl += " --output-depth 10"
-                cl += " --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15700,17550)L(10000000,1)"""
-                cl += " --hdr"
-                cl += " --repeat-headers"
-                cl += " --range limited"
-                cl += " --hrd"
-                cl += " --aud"
-            End If
+                If MasteringDisplay_ColorPrimaries.Contains("Display P3") Then
+                    cl += " --output-depth 10"
+                    cl += $" --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
+                    cl += " --hdr"
+                    cl += " --repeat-headers"
+                    cl += " --range limited"
+                    cl += " --hrd"
+                    cl += " --aud"
+                End If
 
-            ''BT.2020
-            If BT2020.Success AndAlso MaxCL.Success Then
-                'Removed String Value.
-                cl += " --output-depth 10"
-                cl += " --master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L(10000000,1)"""
-                cl += " --hdr"
-                cl += " --repeat-headers"
-                cl += " --range limited"
-                cl += " --hrd"
-                cl += " --aud"
+                If MasteringDisplay_ColorPrimaries.Contains("DCI P3") Then
+                    cl += " --output-depth 10"
+                    cl += $" --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15700,17550)L({luminanceMax},{luminanceMin})"""
+                    cl += " --hdr"
+                    cl += " --repeat-headers"
+                    cl += " --range limited"
+                    cl += " --hrd"
+                    cl += " --aud"
+                End If
 
+                If MasteringDisplay_ColorPrimaries.Contains("BT.2020") Then
+                    cl += " --output-depth 10"
+                    cl += $" --master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
+                    cl += " --hdr"
+                    cl += " --repeat-headers"
+                    cl += " --range limited"
+                    cl += " --hrd"
+                    cl += " --aud"
+                End If
             End If
         End If
 
         Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
         Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
 
-        If MaxCLL <> 0 OrElse MaxFALL <> 0 Then cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
-        ImportCommandLine(cl)
+        If MaxCLL <> 0 OrElse MaxFALL <> 0 Then
+            cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
+        End If
 
+        ImportCommandLine(cl)
     End Sub
 
     Sub AfterEncoding()
@@ -172,6 +187,7 @@ Public MustInherit Class VideoEncoder
     Overrides Function CreateEditControl() As Control
         Dim ret As New ToolStripEx
 
+        ret.Renderer = New ToolStripRendererEx(ToolStripRenderModeEx.SystemDefault)
         ret.ShowItemToolTips = False
         ret.GripStyle = ToolStripGripStyle.Hidden
         ret.BackColor = SystemColors.Window
@@ -283,11 +299,11 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Function OpenMuxerProfilesDialog() As DialogResult
-        Using f As New ProfilesForm("Muxer Profiles", s.MuxerProfiles,
-                                    AddressOf LoadMuxer,
-                                    AddressOf GetMuxerProfile,
-                                    AddressOf Muxer.GetDefaults)
-            Return f.ShowDialog()
+        Using form As New ProfilesForm("Muxer Profiles", s.MuxerProfiles,
+                                       AddressOf LoadMuxer,
+                                       AddressOf GetMuxerProfile,
+                                       AddressOf Muxer.GetDefaults)
+            Return form.ShowDialog()
         End Using
     End Function
 
@@ -359,7 +375,7 @@ Public MustInherit Class VideoEncoder
         xvid.Name = "XviD"
         xvid.Muxer = New ffmpegMuxer("AVI")
         xvid.QualityMode = True
-        xvid.CommandLines = "xvid_encraw -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_sar%"
+        xvid.CommandLines = "xvid_encraw -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_par_x%:%target_par_y%"
         ret.Add(xvid)
 
         ret.Add(New NullEncoder())
@@ -394,9 +410,9 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Overrides Function Edit() As DialogResult
-        Using f As New ControlHostForm(Name)
-            f.AddControl(CreateEditControl, Nothing)
-            f.ShowDialog()
+        Using form As New ControlHostForm(Name)
+            form.AddControl(CreateEditControl, Nothing)
+            form.ShowDialog()
         End Using
 
         Return DialogResult.OK
@@ -427,7 +443,10 @@ Public MustInherit Class BasicVideoEncoder
 
             For Each i In {"tune", "preset", "profile"}
                 Dim match = Regex.Match(commandLine, "(.*)(--" + i + "\s\w+)(.*)")
-                If match.Success Then commandLine = match.Groups(2).Value + " " + match.Groups(1).Value + " " + match.Groups(3).Value
+
+                If match.Success Then
+                    commandLine = match.Groups(2).Value + " " + match.Groups(1).Value + " " + match.Groups(3).Value
+                End If
             Next
 
             Dim a = commandLine.SplitNoEmptyAndWhiteSpace(" ")
@@ -437,7 +456,7 @@ Public MustInherit Class BasicVideoEncoder
                     If Not param.ImportAction Is Nothing AndAlso
                         param.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
 
-                        param.ImportAction.Invoke(a(x + 1))
+                        param.ImportAction.Invoke(a(x), a(x + 1))
                         params.RaiseValueChanged(param)
                         Exit For
                     End If
@@ -463,30 +482,47 @@ Public MustInherit Class BasicVideoEncoder
                     ElseIf TypeOf param Is OptionParam Then
                         Dim optionParam = DirectCast(param, OptionParam)
 
-                        If optionParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
+                        If optionParam.GetSwitches.Contains(a(x)) Then
                             Dim exitFor As Boolean
 
-                            If optionParam.IntegerValue Then
-                                For xOpt = 0 To optionParam.Options.Length - 1
-                                    If a(x + 1) = xOpt.ToString Then
-                                        optionParam.Value = xOpt
-                                        params.RaiseValueChanged(param)
-                                        exitFor = True
-                                        Exit For
-                                    End If
-                                Next
-                            Else
-                                For xOpt = 0 To optionParam.Options.Length - 1
-                                    If a(x + 1).Trim(""""c).ToLower = optionParam.Options(xOpt).ToLower.Replace(" ", "") Then
-                                        optionParam.Value = xOpt
-                                        params.RaiseValueChanged(param)
-                                        exitFor = True
-                                        Exit For
-                                    End If
-                                Next
-                            End If
+                            If a.Length - 1 > x Then
+                                If optionParam.IntegerValue Then
+                                    For xOpt = 0 To optionParam.Options.Length - 1
+                                        If a(x + 1) = xOpt.ToString Then
+                                            optionParam.Value = xOpt
+                                            params.RaiseValueChanged(param)
+                                            exitFor = True
+                                            Exit For
+                                        End If
+                                    Next
+                                Else
+                                    For xOpt = 0 To optionParam.Options.Length - 1
+                                        Dim values = If(optionParam.Values.NothingOrEmpty, optionParam.Options, optionParam.Values)
 
-                            If exitFor Then Exit For
+                                        If a(x + 1).Trim(""""c).ToLower = values(xOpt).ToLower.Replace(" ", "") Then
+                                            optionParam.Value = xOpt
+                                            params.RaiseValueChanged(param)
+                                            exitFor = True
+                                            Exit For
+                                        End If
+                                    Next
+                                End If
+
+                                If exitFor Then
+                                    Exit For
+                                End If
+                            ElseIf a.Length - 1 = x Then
+                                If Not optionParam.Values Is Nothing Then
+                                    For xOpt = 0 To optionParam.Values.Length - 1
+                                        If a(x) = optionParam.Values(xOpt) AndAlso optionParam.Values(xOpt).StartsWith("--") Then
+                                            optionParam.Value = xOpt
+                                            params.RaiseValueChanged(param)
+                                            exitFor = True
+                                            Exit For
+                                        End If
+                                    Next
+                                End If
+                            End If
                         End If
                     ElseIf TypeOf param Is StringParam Then
                         Dim stringParam = DirectCast(param, StringParam)
@@ -559,12 +595,13 @@ Public Class BatchEncoder
             Return {" [ETA ", ", eta ", "frames: ", "frame= "}
         End If
     End Function
+
     Function GetBatchCode(value As String) As String
         Dim ret = ""
 
         For Each pack In Package.Items.Values
             If TypeOf pack Is PluginPackage Then Continue For
-            Dim dir = pack.GetDir
+            Dim dir = pack.Directory
             If Not Directory.Exists(dir) Then Continue For
             If Not dir.Contains(Folder.Startup) Then Continue For
 
@@ -649,7 +686,7 @@ Public Class BatchEncoder
         End Using
 
         Dim bits = (New FileInfo(p.TempDir + p.TargetFile.Base + "_CompCheck." + OutputExt).Length) * 8
-        p.Compressibility = (bits / script.GetFrames) / (p.TargetWidth * p.TargetHeight)
+        p.Compressibility = (bits / script.GetFrameCount) / (p.TargetWidth * p.TargetHeight)
 
         OnAfterCompCheck()
 
@@ -694,7 +731,11 @@ Public Class NullEncoder
                 Select Case sourceFile.Ext
                     Case "mkv"
                         Dim streams = MediaInfo.GetVideoStreams(sourceFile)
-                        If streams.Count = 0 Then Return sourceFile
+
+                        If streams.Count = 0 Then
+                            Return sourceFile
+                        End If
+
                         Return p.TempDir + sourceFile.Base + streams(0).ExtFull
                 End Select
             End If

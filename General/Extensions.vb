@@ -1,9 +1,11 @@
-﻿Imports System.Drawing.Drawing2D
+﻿
+Imports System.Drawing.Drawing2D
 Imports System.Globalization
 Imports System.Reflection
 Imports System.Runtime.CompilerServices
 Imports System.Security.Cryptography
 Imports System.Text
+Imports System.Text.RegularExpressions
 Imports Microsoft.Win32
 Imports VB6 = Microsoft.VisualBasic
 
@@ -35,23 +37,36 @@ Module StringExtensions
 
     <Extension>
     Function IsDosCompatible(instance As String) As Boolean
-        If instance = "" Then Return True
+        If instance = "" Then
+            Return True
+        End If
+
         Dim bytes = Encoding.Convert(Encoding.Unicode, Encoding.GetEncoding(ConsoleHelp.DosCodePage), Encoding.Unicode.GetBytes(instance))
         Return instance = Encoding.Unicode.GetString(Encoding.Convert(Encoding.GetEncoding(ConsoleHelp.DosCodePage), Encoding.Unicode, bytes))
     End Function
 
     <Extension>
     Function IsANSICompatible(instance As String) As Boolean
-        If instance = "" Then Return True
+        If instance = "" Then
+            Return True
+        End If
+
         Dim bytes = Encoding.Convert(Encoding.Unicode, Encoding.Default, Encoding.Unicode.GetBytes(instance))
         Return instance = Encoding.Unicode.GetString(Encoding.Convert(Encoding.Default, Encoding.Unicode, bytes))
     End Function
 
     <Extension()>
     Function FileName(instance As String) As String
-        If instance = "" Then Return ""
+        If instance = "" Then
+            Return ""
+        End If
+
         Dim index = instance.LastIndexOf(Path.DirectorySeparatorChar)
-        If index > -1 Then Return instance.Substring(index + 1)
+
+        If index > -1 Then
+            Return instance.Substring(index + 1)
+        End If
+
         Return instance
     End Function
 
@@ -77,10 +92,14 @@ Module StringExtensions
 
     <Extension()>
     Function Escape(instance As String) As String
-        If instance = "" Then Return ""
+        If instance = "" Then
+            Return ""
+        End If
 
-        For Each i In " ()&"
-            If instance.Contains(i) Then Return """" + instance + """"
+        For Each i In " ;=~*$%()&"
+            If instance.Contains(i) Then
+                Return """" + instance + """"
+            End If
         Next
 
         Return instance
@@ -105,6 +124,16 @@ Module StringExtensions
     <Extension()>
     Function Ext(instance As String) As String
         Return FilePath.GetExt(instance)
+    End Function
+
+    <Extension()>
+    Function FileExists(instance As String) As Boolean
+        Return File.Exists(instance)
+    End Function
+
+    <Extension()>
+    Function DirExists(instance As String) As Boolean
+        Return Directory.Exists(instance)
     End Function
 
     <Extension()>
@@ -133,12 +162,12 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function ContainsAll(instance As String, all As IEnumerable(Of String)) As Boolean
+    Function ContainsAll(instance As String, ParamArray all As String()) As Boolean
         If instance <> "" Then Return all.All(Function(arg) instance.Contains(arg))
     End Function
 
     <Extension()>
-    Function ContainsAny(instance As String, any As IEnumerable(Of String)) As Boolean
+    Function ContainsAny(instance As String, ParamArray any As String()) As Boolean
         If instance <> "" Then Return any.Any(Function(arg) instance.Contains(arg))
     End Function
 
@@ -150,13 +179,18 @@ Module StringExtensions
 
     <Extension()>
     Function FixDir(instance As String) As String
-        If instance = "" Then Return ""
+        If instance = "" Then
+            Return ""
+        End If
 
-        While instance.EndsWith(DirPath.Separator + DirPath.Separator)
-            instance = instance.Substring(0, instance.Length - 1)
+        While instance.Contains(DirPath.Separator + DirPath.Separator)
+            instance = instance.Replace(DirPath.Separator + DirPath.Separator, DirPath.Separator)
         End While
 
-        If instance.EndsWith(DirPath.Separator) Then Return instance
+        If instance.EndsWith(DirPath.Separator) Then
+            Return instance
+        End If
+
         Return instance + DirPath.Separator
     End Function
 
@@ -189,7 +223,10 @@ Module StringExtensions
 
     <Extension()>
     Function ToInt(value As String, Optional defaultValue As Integer = 0) As Integer
-        If Not Integer.TryParse(value, Nothing) Then Return defaultValue
+        If Not Integer.TryParse(value, Nothing) Then
+            Return defaultValue
+        End If
+
         Return CInt(value)
     End Function
 
@@ -220,26 +257,24 @@ Module StringExtensions
     <Extension()>
     Function IsDouble(value As String) As Boolean
         If value <> "" Then
-            If value.Contains(",") Then value = value.Replace(",", ".")
+            If value.Contains(",") Then
+                value = value.Replace(",", ".")
+            End If
 
-            Return Double.TryParse(value,
-                                   NumberStyles.Float Or NumberStyles.AllowThousands,
-                                   CultureInfo.InvariantCulture,
-                                   Nothing)
+            Return Double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, Nothing)
         End If
     End Function
 
     <Extension()>
     Function ToDouble(value As String, Optional defaultValue As Single = 0) As Double
         If value <> "" Then
-            If value.Contains(",") Then value = value.Replace(",", ".")
+            If value.Contains(",") Then
+                value = value.Replace(",", ".")
+            End If
 
             Dim ret As Double
 
-            If Double.TryParse(value,
-                               NumberStyles.Float Or NumberStyles.AllowThousands,
-                               CultureInfo.InvariantCulture,
-                               ret) Then
+            If Double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, ret) Then
                 Return ret
             End If
         End If
@@ -280,13 +315,23 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Sub WriteANSIFile(instance As String, path As String)
+    Function ReadAllText(instance As String) As String 'auto detects encoding
+        Return File.ReadAllText(instance)
+    End Function
+
+    <Extension()>
+    Function ReadAllTextDefault(instance As String) As String 'auto detects encoding
+        Return File.ReadAllText(instance, Encoding.Default)
+    End Function
+
+    <Extension()>
+    Sub WriteFileDefault(instance As String, path As String)
         WriteFile(instance, path, Encoding.Default)
     End Sub
 
     <Extension()>
-    Sub WriteUTF8File(instance As String, path As String)
-        WriteFile(instance, path, Encoding.UTF8)
+    Sub WriteFileUtf8(instance As String, path As String)
+        WriteFile(instance, path, Encoding.UTF8) 'adds BOM
     End Sub
 
     <Extension()>
@@ -345,6 +390,30 @@ Module StringExtensions
         End If
 
         Return value.Substring(0, maxLength)
+    End Function
+
+    <Extension()>
+    Function EscapeIllegalFileSysChars(value As String) As String
+        If value = "" Then Return ""
+
+        For Each i In value
+            If Not FilePath.IsValidFileSystemName(i) Then
+                value = value.Replace(i, "__" + Uri.EscapeDataString(i).TrimStart("%"c) + "__")
+            End If
+        Next
+
+        Return value
+    End Function
+
+    <Extension()>
+    Function UnescapeIllegalFileSysChars(value As String) As String
+        If value = "" Then Return ""
+
+        For Each match As Match In Regex.Matches(value, "__(\w\w)__")
+            value = value.Replace(match.Value, Uri.UnescapeDataString("%" + match.Groups(1).Value))
+        Next
+
+        Return value
     End Function
 
     <Extension()>
@@ -409,6 +478,19 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function ReplaceRecursive(value As String, find As String, replace As String) As String
+        If value = "" Then
+            Return ""
+        End If
+
+        While value.Contains(find)
+            value = value.Replace(find, replace)
+        End While
+
+        Return value
+    End Function
+
+    <Extension()>
     Function SHA512Hash(value As String) As String
         Dim crypt = SHA512CryptoServiceProvider.Create()
         Dim hash = crypt.ComputeHash(ASCIIEncoding.ASCII.GetBytes(value))
@@ -431,21 +513,18 @@ Module StringExtensions
     End Sub
 End Module
 
+Module NumericExtensions
+    <Extension()>
+    Function ToInvariantString(value As Double, format As String) As String
+        Return value.ToString(format, CultureInfo.InvariantCulture)
+    End Function
+End Module
+
 Module MiscExtensions
     <Extension()>
-    Function ToInvariantString(instance As Double, format As String) As String
-        Dim ret = instance.ToString(format, CultureInfo.InvariantCulture)
-
-        If (ret.Contains(".") OrElse ret.Contains(",")) AndAlso ret.EndsWith("0") Then
-            ret = ret.TrimEnd("0"c)
-        End If
-
-        Return ret
-    End Function
-
-    <Extension()>
     Function ToInvariantString(instance As IConvertible) As String
-        If Not instance Is Nothing Then Return instance.ToString(CultureInfo.InvariantCulture)
+        If instance Is Nothing Then Return ""
+        Return instance.ToString(CultureInfo.InvariantCulture)
     End Function
 
     <Extension()>
@@ -504,24 +583,19 @@ Module MiscExtensions
     End Function
 
     <Extension()>
-    Function EnsureRange(value As Integer, min As Integer, max As Integer) As Integer
-        If value < min Then
-            value = min
-        ElseIf value > max Then
-            value = max
-        End If
-
-        Return value
-    End Function
-
-    <Extension()>
     Function NeutralCulture(ci As CultureInfo) As CultureInfo
-        If ci.IsNeutralCulture Then Return ci Else Return ci.Parent
+        If ci.IsNeutralCulture Then
+            Return ci
+        Else
+            Return ci.Parent
+        End If
     End Function
 
     <Extension()>
     Function NothingOrEmpty(strings As IEnumerable(Of String)) As Boolean
-        If strings Is Nothing OrElse strings.Count = 0 Then Return True
+        If strings Is Nothing OrElse strings.Count = 0 Then
+            Return True
+        End If
 
         For Each i In strings
             If i = "" Then Return True
@@ -539,15 +613,15 @@ Module MiscExtensions
 End Module
 
 Module RegistryKeyExtensions
-    Private Function GetValue(Of T)(rootKey As RegistryKey, key As String, name As String) As T
-        Using k = rootKey.OpenSubKey(key)
-            If Not k Is Nothing Then
-                Dim r = k.GetValue(name)
+    Private Function GetValue(Of T)(rootKey As RegistryKey, subKeyName As String, valueName As String) As T
+        Using subKey = rootKey.OpenSubKey(subKeyName)
+            If Not subKey Is Nothing Then
+                Dim value = subKey.GetValue(valueName)
 
-                If Not r Is Nothing Then
+                If Not value Is Nothing Then
                     Try
-                        Return CType(r, T)
-                    Catch ex As Exception
+                        Return CType(value, T)
+                    Catch
                     End Try
                 End If
             End If
@@ -555,52 +629,39 @@ Module RegistryKeyExtensions
     End Function
 
     <Extension()>
-    Function GetString(rootKey As RegistryKey, subKey As String, name As String) As String
-        Return GetValue(Of String)(rootKey, subKey, name)
+    Function GetString(rootKey As RegistryKey, subKeyName As String, valueName As String) As String
+        Return GetValue(Of String)(rootKey, subKeyName, valueName)
     End Function
 
     <Extension()>
-    Function GetInt(rootKey As RegistryKey, subKey As String, name As String) As Integer
-        Return GetValue(Of Integer)(rootKey, subKey, name)
+    Function GetInt(rootKey As RegistryKey, subKeyName As String, valueName As String) As Integer
+        Return GetValue(Of Integer)(rootKey, subKeyName, valueName)
     End Function
 
     <Extension()>
-    Function GetBoolean(rootKey As RegistryKey, subKey As String, name As String) As Boolean
-        Return GetValue(Of Boolean)(rootKey, subKey, name)
+    Function GetBoolean(rootKey As RegistryKey, subKeyName As String, valueName As String) As Boolean
+        Return GetValue(Of Boolean)(rootKey, subKeyName, valueName)
     End Function
 
     <Extension()>
-    Function GetValueNames(rootKey As RegistryKey, subKeyName As String) As IEnumerable(Of String)
-        Using k = rootKey.OpenSubKey(subKeyName)
-            If Not k Is Nothing Then
-                Return k.GetValueNames
-            End If
+    Function GetValueNames(rootKey As RegistryKey, subKeyName As String) As String()
+        Using subKey = rootKey.OpenSubKey(subKeyName)
+            If Not subKey Is Nothing Then Return subKey.GetValueNames
         End Using
 
         Return {}
     End Function
 
     <Extension()>
-    Sub GetSubKeys(rootKey As RegistryKey, keys As List(Of RegistryKey))
-        If Not rootKey Is Nothing Then
-            keys.Add(rootKey)
+    Sub Write(rootKey As RegistryKey, subKeyName As String, valueName As String, valueValue As Object)
+        Dim subKey = rootKey.OpenSubKey(subKeyName, True)
 
-            For Each i In rootKey.GetSubKeyNames
-                GetSubKeys(rootKey.OpenSubKey(i), keys)
-            Next
-        End If
-    End Sub
-
-    <Extension()>
-    Sub Write(rootKey As RegistryKey, subKey As String, valueName As String, valueValue As Object)
-        Dim k = rootKey.OpenSubKey(subKey, True)
-
-        If k Is Nothing Then
-            k = rootKey.CreateSubKey(subKey, RegistryKeyPermissionCheck.ReadWriteSubTree)
+        If subKey Is Nothing Then
+            subKey = rootKey.CreateSubKey(subKeyName, RegistryKeyPermissionCheck.ReadWriteSubTree)
         End If
 
-        k.SetValue(valueName, valueValue)
-        k.Close()
+        subKey.SetValue(valueName, valueValue)
+        subKey.Close()
     End Sub
 
     <Extension()>
@@ -697,12 +758,14 @@ Module UIExtensions
     End Sub
 
     <Extension()>
-    Sub SetInitDir(d As FileDialog, ParamArray paths As String())
-        For Each i In paths
-            If Not Directory.Exists(i) Then i = i.ExistingParent
+    Sub SetInitDir(dialog As FileDialog, ParamArray paths As String())
+        For Each path In paths
+            If Not Directory.Exists(path) Then
+                path = path.ExistingParent
+            End If
 
-            If Directory.Exists(i) Then
-                d.InitialDirectory = i
+            If Directory.Exists(path) Then
+                dialog.InitialDirectory = path
                 Exit For
             End If
         Next

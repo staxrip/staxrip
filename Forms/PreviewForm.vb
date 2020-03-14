@@ -1,3 +1,4 @@
+
 Imports System.ComponentModel
 Imports System.Drawing.Imaging
 
@@ -18,224 +19,188 @@ Public Class PreviewForm
 
     Private components As System.ComponentModel.IContainer
 
-    Friend WithEvents pVideo As System.Windows.Forms.Panel
+    Friend WithEvents pnVideo As System.Windows.Forms.Panel
     Friend WithEvents pnTrack As System.Windows.Forms.Panel
-    Private WithEvents bnDeleteRange As System.Windows.Forms.Button
-    Private WithEvents bnForward1 As System.Windows.Forms.Button
-    Private WithEvents bnRangeStart As System.Windows.Forms.Button
-    Private WithEvents bnRangeEnd As System.Windows.Forms.Button
-    Private WithEvents bnForward10 As System.Windows.Forms.Button
-    Private WithEvents bnBackward10 As System.Windows.Forms.Button
-    Private WithEvents bExtras As ButtonEx
-    Private WithEvents bnForward100 As System.Windows.Forms.Button
-    Private WithEvents bnBackward100 As System.Windows.Forms.Button
-    Private WithEvents bnBackward1 As System.Windows.Forms.Button
+    Private WithEvents bnDelete As ButtonEx
+    Private WithEvents bnRight1 As ButtonEx
+    Private WithEvents bnStartCutRange As ButtonEx
+    Private WithEvents bnEndCutRange As ButtonEx
+    Private WithEvents bnRight2 As ButtonEx
+    Private WithEvents bnLeft2 As ButtonEx
+    Private WithEvents bnMenu As ButtonEx
+    Private WithEvents bnRight3 As ButtonEx
+    Private WithEvents bnLeft3 As ButtonEx
+    Private WithEvents bnLeft1 As ButtonEx
     Friend WithEvents cmsMain As ContextMenuStripEx
     Friend WithEvents ToolTip As System.Windows.Forms.ToolTip
 
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(PreviewForm))
-        Me.bnDeleteRange = New System.Windows.Forms.Button()
-        Me.bnForward1 = New System.Windows.Forms.Button()
-        Me.bnBackward1 = New System.Windows.Forms.Button()
-        Me.bnRangeStart = New System.Windows.Forms.Button()
-        Me.bnRangeEnd = New System.Windows.Forms.Button()
-        Me.bnForward10 = New System.Windows.Forms.Button()
-        Me.bnBackward10 = New System.Windows.Forms.Button()
-        Me.bExtras = New StaxRip.UI.ButtonEx()
-        Me.bnForward100 = New System.Windows.Forms.Button()
-        Me.bnBackward100 = New System.Windows.Forms.Button()
-        Me.pVideo = New System.Windows.Forms.Panel()
+        Me.bnDelete = New StaxRip.UI.ButtonEx()
+        Me.bnRight1 = New StaxRip.UI.ButtonEx()
+        Me.bnLeft1 = New StaxRip.UI.ButtonEx()
+        Me.bnStartCutRange = New StaxRip.UI.ButtonEx()
+        Me.bnEndCutRange = New StaxRip.UI.ButtonEx()
+        Me.bnRight2 = New StaxRip.UI.ButtonEx()
+        Me.bnLeft2 = New StaxRip.UI.ButtonEx()
+        Me.bnMenu = New StaxRip.UI.ButtonEx()
+        Me.bnRight3 = New StaxRip.UI.ButtonEx()
+        Me.bnLeft3 = New StaxRip.UI.ButtonEx()
+        Me.pnVideo = New System.Windows.Forms.Panel()
         Me.cmsMain = New StaxRip.UI.ContextMenuStripEx(Me.components)
         Me.pnTrack = New System.Windows.Forms.Panel()
         Me.ToolTip = New System.Windows.Forms.ToolTip(Me.components)
-        Me.pVideo.SuspendLayout()
+        Me.pnVideo.SuspendLayout()
         Me.SuspendLayout()
         '
-        'bnDeleteRange
+        'bnDelete
         '
-        Me.bnDeleteRange.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnDeleteRange.BackColor = System.Drawing.Color.White
-        Me.bnDeleteRange.BackgroundImage = Global.StaxRip.My.Resources.Resources.X
-        Me.bnDeleteRange.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnDeleteRange.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bnDeleteRange.Location = New System.Drawing.Point(332, 432)
-        Me.bnDeleteRange.Margin = New System.Windows.Forms.Padding(2)
-        Me.bnDeleteRange.Name = "bnDeleteRange"
-        Me.bnDeleteRange.Size = New System.Drawing.Size(25, 26)
-        Me.bnDeleteRange.TabIndex = 47
-        Me.bnDeleteRange.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnDeleteRange, "Deletes the cut selection that encloses the current position.")
-        Me.bnDeleteRange.UseVisualStyleBackColor = False
+        Me.bnDelete.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnDelete.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnDelete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.bnDelete.Location = New System.Drawing.Point(671, 629)
+        Me.bnDelete.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnDelete.Size = New System.Drawing.Size(70, 70)
+        Me.bnDelete.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Delete
+        Me.bnDelete.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnDelete, "Deletes the cut selection that encloses the current position.")
         '
-        'bnForward1
+        'bnRight1
         '
-        Me.bnForward1.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnForward1.BackColor = System.Drawing.Color.White
-        Me.bnForward1.BackgroundImage = Global.StaxRip.My.Resources.Resources.Right1
-        Me.bnForward1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnForward1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bnForward1.Location = New System.Drawing.Point(251, 432)
-        Me.bnForward1.Margin = New System.Windows.Forms.Padding(2)
-        Me.bnForward1.Name = "bnForward1"
-        Me.bnForward1.Size = New System.Drawing.Size(25, 26)
-        Me.bnForward1.TabIndex = 46
-        Me.bnForward1.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnForward1, "Forward 1 Frames")
-        Me.bnForward1.UseVisualStyleBackColor = False
+        Me.bnRight1.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnRight1.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnRight1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.bnRight1.Location = New System.Drawing.Point(425, 629)
+        Me.bnRight1.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnRight1.Size = New System.Drawing.Size(70, 70)
+        Me.bnRight1.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Right1
+        Me.bnRight1.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnRight1, "Forward 1 Frames")
         '
-        'bnBackward1
+        'bnLeft1
         '
-        Me.bnBackward1.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnBackward1.BackColor = System.Drawing.Color.White
-        Me.bnBackward1.BackgroundImage = Global.StaxRip.My.Resources.Resources.Left1
-        Me.bnBackward1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnBackward1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bnBackward1.Location = New System.Drawing.Point(170, 432)
-        Me.bnBackward1.Margin = New System.Windows.Forms.Padding(2)
-        Me.bnBackward1.Name = "bnBackward1"
-        Me.bnBackward1.Size = New System.Drawing.Size(25, 26)
-        Me.bnBackward1.TabIndex = 45
-        Me.bnBackward1.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnBackward1, "Backward 1 Frame")
-        Me.bnBackward1.UseVisualStyleBackColor = False
+        Me.bnLeft1.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnLeft1.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnLeft1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.bnLeft1.Location = New System.Drawing.Point(179, 629)
+        Me.bnLeft1.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnLeft1.Size = New System.Drawing.Size(70, 70)
+        Me.bnLeft1.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Left1
+        Me.bnLeft1.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnLeft1, "Backward 1 Frame")
         '
-        'bnRangeStart
+        'bnOpen
         '
-        Me.bnRangeStart.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnRangeStart.BackColor = System.Drawing.Color.White
-        Me.bnRangeStart.BackgroundImage = Global.StaxRip.My.Resources.Resources.BracketOpen
-        Me.bnRangeStart.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnRangeStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bnRangeStart.Location = New System.Drawing.Point(197, 432)
-        Me.bnRangeStart.Margin = New System.Windows.Forms.Padding(2)
-        Me.bnRangeStart.Name = "bnRangeStart"
-        Me.bnRangeStart.Size = New System.Drawing.Size(25, 26)
-        Me.bnRangeStart.TabIndex = 44
-        Me.bnRangeStart.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnRangeStart, "Sets a start cut point. Press F1 for help about cutting")
-        Me.bnRangeStart.UseVisualStyleBackColor = False
+        Me.bnStartCutRange.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnStartCutRange.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnStartCutRange.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.bnStartCutRange.Location = New System.Drawing.Point(261, 629)
+        Me.bnStartCutRange.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnStartCutRange.Size = New System.Drawing.Size(70, 70)
+        Me.bnStartCutRange.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Open
+        Me.bnStartCutRange.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnStartCutRange, "Sets a start cut point. Press F1 for help about cutting")
         '
-        'bnRangeEnd
+        'bnClose
         '
-        Me.bnRangeEnd.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnRangeEnd.BackColor = System.Drawing.Color.White
-        Me.bnRangeEnd.BackgroundImage = Global.StaxRip.My.Resources.Resources.BracketClose
-        Me.bnRangeEnd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnRangeEnd.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bnRangeEnd.Location = New System.Drawing.Point(224, 432)
-        Me.bnRangeEnd.Margin = New System.Windows.Forms.Padding(2)
-        Me.bnRangeEnd.Name = "bnRangeEnd"
-        Me.bnRangeEnd.Size = New System.Drawing.Size(25, 26)
-        Me.bnRangeEnd.TabIndex = 43
-        Me.bnRangeEnd.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnRangeEnd, "Sets a end cut point. Press F1 for help about cutting")
-        Me.bnRangeEnd.UseVisualStyleBackColor = False
+        Me.bnEndCutRange.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnEndCutRange.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnEndCutRange.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.bnEndCutRange.Location = New System.Drawing.Point(343, 629)
+        Me.bnEndCutRange.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnEndCutRange.Size = New System.Drawing.Size(70, 70)
+        Me.bnEndCutRange.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Close
+        Me.bnEndCutRange.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnEndCutRange, "Sets a end cut point. Press F1 for help about cutting")
         '
-        'bnForward10
+        'bnRight2
         '
-        Me.bnForward10.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnForward10.BackColor = System.Drawing.Color.White
-        Me.bnForward10.BackgroundImage = Global.StaxRip.My.Resources.Resources.Right2
-        Me.bnForward10.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnForward10.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bnForward10.Location = New System.Drawing.Point(278, 432)
-        Me.bnForward10.Margin = New System.Windows.Forms.Padding(2)
-        Me.bnForward10.Name = "bnForward10"
-        Me.bnForward10.Size = New System.Drawing.Size(25, 26)
-        Me.bnForward10.TabIndex = 42
-        Me.bnForward10.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnForward10, "Forward 10 Frames")
-        Me.bnForward10.UseVisualStyleBackColor = False
+        Me.bnRight2.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnRight2.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnRight2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.bnRight2.Location = New System.Drawing.Point(507, 629)
+        Me.bnRight2.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnRight2.Size = New System.Drawing.Size(70, 70)
+        Me.bnRight2.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Right2
+        Me.bnRight2.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnRight2, "Forward 10 Frames")
         '
-        'bnBackward10
+        'bnLeft2
         '
-        Me.bnBackward10.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnBackward10.BackColor = System.Drawing.Color.White
-        Me.bnBackward10.BackgroundImage = CType(resources.GetObject("bnBackward10.BackgroundImage"), System.Drawing.Image)
-        Me.bnBackward10.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnBackward10.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bnBackward10.Location = New System.Drawing.Point(143, 432)
-        Me.bnBackward10.Margin = New System.Windows.Forms.Padding(2)
-        Me.bnBackward10.Name = "bnBackward10"
-        Me.bnBackward10.Size = New System.Drawing.Size(25, 26)
-        Me.bnBackward10.TabIndex = 41
-        Me.bnBackward10.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnBackward10, "Backward 10 Frames")
-        Me.bnBackward10.UseVisualStyleBackColor = False
+        Me.bnLeft2.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnLeft2.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnLeft2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.bnLeft2.Location = New System.Drawing.Point(97, 629)
+        Me.bnLeft2.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnLeft2.Size = New System.Drawing.Size(70, 70)
+        Me.bnLeft2.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Left2
+        Me.bnLeft2.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnLeft2, "Backward 10 Frames")
         '
-        'bExtras
+        'bnMenu
         '
-        Me.bExtras.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bExtras.BackColor = System.Drawing.Color.White
-        Me.bExtras.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bExtras.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.bExtras.Location = New System.Drawing.Point(359, 432)
-        Me.bExtras.Margin = New System.Windows.Forms.Padding(2)
-        Me.bExtras.ShowMenuSymbol = True
-        Me.bExtras.Size = New System.Drawing.Size(25, 26)
-        Me.bExtras.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bExtras, "Shows the menu")
+        Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnMenu.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnMenu.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.bnMenu.Location = New System.Drawing.Point(753, 629)
+        Me.bnMenu.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
+        Me.bnMenu.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Menu
+        Me.bnMenu.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnMenu, "Shows the menu")
         '
-        'bnForward100
+        'bnRight3
         '
-        Me.bnForward100.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnForward100.BackColor = System.Drawing.Color.White
-        Me.bnForward100.BackgroundImage = Global.StaxRip.My.Resources.Resources.Right3
-        Me.bnForward100.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnForward100.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bnForward100.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.bnForward100.Location = New System.Drawing.Point(305, 432)
-        Me.bnForward100.Margin = New System.Windows.Forms.Padding(2)
-        Me.bnForward100.Name = "bnForward100"
-        Me.bnForward100.Size = New System.Drawing.Size(25, 26)
-        Me.bnForward100.TabIndex = 49
-        Me.bnForward100.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnForward100, "Forward 100 Frames")
-        Me.bnForward100.UseVisualStyleBackColor = False
+        Me.bnRight3.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnRight3.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnRight3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.bnRight3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.bnRight3.Location = New System.Drawing.Point(589, 629)
+        Me.bnRight3.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnRight3.Size = New System.Drawing.Size(70, 70)
+        Me.bnRight3.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Right3
+        Me.bnRight3.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnRight3, "Forward 100 Frames")
         '
-        'bnBackward100
+        'bnLeft3
         '
-        Me.bnBackward100.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.bnBackward100.BackColor = System.Drawing.Color.White
-        Me.bnBackward100.BackgroundImage = CType(resources.GetObject("bnBackward100.BackgroundImage"), System.Drawing.Image)
-        Me.bnBackward100.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnBackward100.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bnBackward100.Font = New System.Drawing.Font("Segoe UI", 4.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.bnBackward100.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.bnBackward100.Location = New System.Drawing.Point(116, 432)
-        Me.bnBackward100.Margin = New System.Windows.Forms.Padding(2)
-        Me.bnBackward100.Name = "bnBackward100"
-        Me.bnBackward100.Size = New System.Drawing.Size(25, 26)
-        Me.bnBackward100.TabIndex = 48
-        Me.bnBackward100.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnBackward100, "Backward 100 Frames")
-        Me.bnBackward100.UseVisualStyleBackColor = False
+        Me.bnLeft3.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.bnLeft3.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.bnLeft3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.bnLeft3.Font = New System.Drawing.Font("Segoe UI", 4.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.bnLeft3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.bnLeft3.Location = New System.Drawing.Point(15, 629)
+        Me.bnLeft3.Margin = New System.Windows.Forms.Padding(6)
+        Me.bnLeft3.Size = New System.Drawing.Size(70, 70)
+        Me.bnLeft3.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Left3
+        Me.bnLeft3.TabStop = False
+        Me.ToolTip.SetToolTip(Me.bnLeft3, "Backward 100 Frames")
         '
-        'pVideo
+        'pnVideo
         '
-        Me.pVideo.ContextMenuStrip = Me.cmsMain
-        Me.pVideo.Controls.Add(Me.bnForward100)
-        Me.pVideo.Controls.Add(Me.bnDeleteRange)
-        Me.pVideo.Controls.Add(Me.bnForward10)
-        Me.pVideo.Controls.Add(Me.bExtras)
-        Me.pVideo.Controls.Add(Me.bnForward1)
-        Me.pVideo.Controls.Add(Me.bnRangeEnd)
-        Me.pVideo.Controls.Add(Me.bnRangeStart)
-        Me.pVideo.Controls.Add(Me.bnBackward1)
-        Me.pVideo.Controls.Add(Me.bnBackward10)
-        Me.pVideo.Controls.Add(Me.bnBackward100)
-        Me.pVideo.Controls.Add(Me.pnTrack)
-        Me.pVideo.Location = New System.Drawing.Point(64, 25)
-        Me.pVideo.Margin = New System.Windows.Forms.Padding(2)
-        Me.pVideo.Name = "pVideo"
-        Me.pVideo.Size = New System.Drawing.Size(500, 462)
-        Me.pVideo.TabIndex = 50
+        Me.pnVideo.ContextMenuStrip = Me.cmsMain
+        Me.pnVideo.Controls.Add(Me.bnMenu)
+        Me.pnVideo.Controls.Add(Me.bnDelete)
+        Me.pnVideo.Controls.Add(Me.bnRight3)
+        Me.pnVideo.Controls.Add(Me.bnRight2)
+        Me.pnVideo.Controls.Add(Me.bnRight1)
+        Me.pnVideo.Controls.Add(Me.bnEndCutRange)
+        Me.pnVideo.Controls.Add(Me.bnStartCutRange)
+        Me.pnVideo.Controls.Add(Me.bnLeft1)
+        Me.pnVideo.Controls.Add(Me.bnLeft2)
+        Me.pnVideo.Controls.Add(Me.bnLeft3)
+        Me.pnVideo.Controls.Add(Me.pnTrack)
+        Me.pnVideo.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnVideo.Location = New System.Drawing.Point(0, 0)
+        Me.pnVideo.Margin = New System.Windows.Forms.Padding(2)
+        Me.pnVideo.Name = "pnVideo"
+        Me.pnVideo.Size = New System.Drawing.Size(837, 714)
+        Me.pnVideo.TabIndex = 50
         '
         'cmsMain
         '
+        Me.cmsMain.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.cmsMain.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.cmsMain.Name = "cmsMain"
         Me.cmsMain.Size = New System.Drawing.Size(61, 4)
@@ -246,10 +211,10 @@ Public Class PreviewForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnTrack.BackColor = System.Drawing.SystemColors.Control
         Me.pnTrack.Cursor = System.Windows.Forms.Cursors.SizeNS
-        Me.pnTrack.Location = New System.Drawing.Point(5, 416)
+        Me.pnTrack.Location = New System.Drawing.Point(15, 587)
         Me.pnTrack.Margin = New System.Windows.Forms.Padding(2)
         Me.pnTrack.Name = "pnTrack"
-        Me.pnTrack.Size = New System.Drawing.Size(490, 12)
+        Me.pnTrack.Size = New System.Drawing.Size(807, 25)
         Me.pnTrack.TabIndex = 51
         '
         'ToolTip
@@ -261,30 +226,31 @@ Public Class PreviewForm
         '
         'PreviewForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.Black
-        Me.ClientSize = New System.Drawing.Size(640, 513)
-        Me.Controls.Add(Me.pVideo)
+        Me.ClientSize = New System.Drawing.Size(837, 714)
+        Me.Controls.Add(Me.pnVideo)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "PreviewForm"
+        Me.ShowInTaskbar = True
         Me.Text = "Preview"
-        Me.pVideo.ResumeLayout(False)
+        Me.pnVideo.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
 
 #End Region
 
-    Public AVI As AVIFile
-    Public RangeStart As Integer = -1
-
-    Private AviSynthDocument As VideoScript
+    Private FrameServer As FrameServer
+    Private Renderer As VideoRenderer
+    Private StartRange As Integer = -1
+    Private EndRange As Integer = -1
+    Private PreviewScript As VideoScript
     Private SizeFactor As Double = 1
-    Private TargetFrames As Integer
     Private WithEvents GenericMenu As CustomMenu
     Private CommandManager As New CommandManager
-    Private Drawer As VideoDrawer
 
     Private Const TrackBarBorder As Integer = 1
     Private Const TrackBarGap As Integer = 1
@@ -292,7 +258,7 @@ Public Class PreviewForm
 
     Private Shared Instances As New List(Of PreviewForm)
 
-    Sub New(aviSynthDocument As VideoScript)
+    Sub New(script As VideoScript)
         MyBase.New()
         InitializeComponent()
         Icon = g.Icon
@@ -300,7 +266,7 @@ Public Class PreviewForm
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)
 
-        GenericMenu = New CustomMenu(AddressOf GetDefaultMenuPreview,
+        GenericMenu = New CustomMenu(AddressOf GetDefaultMenu,
             s.CustomMenuPreview, CommandManager, cmsMain)
 
         GenericMenu.AddKeyDownHandler(Me)
@@ -308,32 +274,38 @@ Public Class PreviewForm
 
         Instances.Add(Me)
 
-        If Instances.Count > 1 Then
-            For Each i In Instances
-                i.ShowInTaskbar = True
-            Next
-        End If
-
-        Me.AviSynthDocument = aviSynthDocument
-
+        PreviewScript = script
         NormalRectangle.Size = Size
         NormalRectangle.Location = Location
     End Sub
 
     Sub RefreshScript()
-        TargetFrames = p.Script.GetFrames
-        If Not AVI Is Nothing Then AVI.Dispose()
-        AVI = New AVIFile(AviSynthDocument.Path)
-        Drawer = New VideoDrawer(pVideo, AVI)
-        Drawer.ShowInfos = s.PreviewToggleInfos
-        Dim wa = Screen.FromControl(Me).WorkingArea
+        If Not Renderer Is Nothing Then
+            Renderer.Dispose()
+        End If
 
-        While GetNormalSize.Width < wa.Width * (s.MinPreviewSize / 100) AndAlso GetNormalSize.Height < wa.Height * (s.MinPreviewSize / 100)
+        If Not FrameServer Is Nothing Then
+            FrameServer.Dispose()
+        End If
+
+        PreviewScript.Synchronize()
+        PreviewScript.Synchronize(True, True, True)
+        FrameServer = New FrameServer(PreviewScript.Path)
+        Renderer = New VideoRenderer(pnVideo, FrameServer)
+        Renderer.Info = PreviewScript.OriginalInfo
+        Renderer.ShowInfo = s.ShowPreviewInfo
+        Dim workingArea = Screen.FromControl(Me).WorkingArea
+
+        While GetNormalSize.Width < workingArea.Width * (s.MinPreviewSize / 100) AndAlso
+            GetNormalSize.Height < workingArea.Height * (s.MinPreviewSize / 100)
+
             SizeFactor += 0.05
             SizeFactor = Math.Round(SizeFactor, 2)
         End While
 
-        While GetNormalSize.Width > wa.Width * 0.95 OrElse GetNormalSize.Height > wa.Height * 0.95
+        While GetNormalSize.Width > workingArea.Width * 0.95 OrElse
+            GetNormalSize.Height > workingArea.Height * 0.95
+
             SizeFactor -= 0.05
             SizeFactor = Math.Round(SizeFactor, 2)
         End While
@@ -344,10 +316,12 @@ Public Class PreviewForm
             NormalScreen()
         End If
 
-        If s.LastPosition < AVI.FrameCount - 1 Then AVI.Position = s.LastPosition
+        If s.LastPosition < FrameServer.Info.FrameCount - 1 Then
+            Renderer.Position = s.LastPosition
+        End If
+
         AfterPositionChanged()
         ShowButtons(Not s.HidePreviewButtons)
-        Refresh()
     End Sub
 
     Public NormalRectangle As Rectangle
@@ -363,25 +337,25 @@ Public Class PreviewForm
         If Calc.IsARSignalingRequired Then
             ratio = Calc.GetTargetDAR
         Else
-            ratio = AVI.FrameSize.Width / AVI.FrameSize.Height
+            ratio = FrameServer.Info.Width / FrameServer.Info.Height
         End If
 
         Dim b = Screen.FromControl(Me).Bounds
 
-        pVideo.Dock = DockStyle.None
+        pnVideo.Dock = DockStyle.None
 
         If ratio > b.Width / b.Height Then
             Dim h = CInt(b.Width / ratio)
-            pVideo.Left = 0
-            pVideo.Top = CInt((b.Height - h) / 2)
-            pVideo.Width = b.Width
-            pVideo.Height = h
+            pnVideo.Left = 0
+            pnVideo.Top = CInt((b.Height - h) / 2)
+            pnVideo.Width = b.Width
+            pnVideo.Height = h
         Else
             Dim w = CInt(b.Height * ratio)
-            pVideo.Left = CInt((b.Width - w) / 2)
-            pVideo.Top = 0
-            pVideo.Width = w
-            pVideo.Height = b.Height
+            pnVideo.Left = CInt((b.Width - w) / 2)
+            pnVideo.Top = 0
+            pnVideo.Width = w
+            pnVideo.Height = b.Height
         End If
 
         pnTrack.Visible = trackVisible
@@ -391,22 +365,26 @@ Public Class PreviewForm
         FormBorderStyle = FormBorderStyle.FixedDialog
         s.PreviewFormBorderStyle = FormBorderStyle
         WindowState = FormWindowState.Normal
-        pVideo.Dock = DockStyle.Fill
+        pnVideo.Dock = DockStyle.Fill
         ClientSize = GetNormalSize()
         Dim wa = Screen.FromControl(Me).WorkingArea
-        If Left + Width > wa.Width OrElse Top + Height > wa.Height Then WindowPositions.CenterScreen(Me)
+
+        If Left + Width > wa.Width OrElse Top + Height > wa.Height Then
+            WindowPositions.CenterScreen(Me)
+        End If
+
         If Left < 0 Then Left = 0
         If Top < 0 Then Top = 0
     End Sub
 
     Function GetNormalSize() As Size
         Dim ret As Size
-        Dim frameHeight = AVI.FrameSize.Height
+        Dim frameHeight = FrameServer.Info.Height
 
         If Calc.IsARSignalingRequired Then
             ret = New Size(CInt(frameHeight * SizeFactor * Calc.GetTargetDAR), CInt(frameHeight * SizeFactor))
         Else
-            ret = New Size(CInt(AVI.FrameSize.Width * SizeFactor), CInt(frameHeight * SizeFactor))
+            ret = New Size(CInt(FrameServer.Info.Width * SizeFactor), CInt(frameHeight * SizeFactor))
         End If
 
         Return ret
@@ -414,84 +392,83 @@ Public Class PreviewForm
 
     <Command("Switches the window state between full and normal.")>
     Sub SwitchWindowState()
+        ShowButtons(False)
+
         If FormBorderStyle = FormBorderStyle.None Then
             NormalScreen()
         Else
             Fullscreen()
         End If
 
+        ShowButtons(Not s.HidePreviewButtons)
         AfterPositionChanged()
     End Sub
 
     Sub ShowButtons(vis As Boolean)
-        bnForward1.Visible = vis
-        bnBackward1.Visible = vis
-        bnRangeStart.Visible = vis
-        bnRangeEnd.Visible = vis
-        bnDeleteRange.Visible = vis
-        bnForward10.Visible = vis
-        bnBackward10.Visible = vis
-        bnForward100.Visible = vis
-        bnBackward100.Visible = vis
-        bExtras.Visible = vis
+        bnRight1.Visible = vis
+        bnLeft1.Visible = vis
+        bnStartCutRange.Visible = vis
+        bnEndCutRange.Visible = vis
+        bnDelete.Visible = vis
+        bnRight2.Visible = vis
+        bnLeft2.Visible = vis
+        bnRight3.Visible = vis
+        bnLeft3.Visible = vis
+        bnMenu.Visible = vis
     End Sub
 
-    Private Sub bnForward1_Click() Handles bnForward1.Click
+    Private Sub bnRight1_Click() Handles bnRight1.Click
         For Each i As PreviewForm In Instances
             SetRelativePos(1)
         Next
     End Sub
 
-    Private Sub bnBackward1_Click() Handles bnBackward1.Click
+    Private Sub bnLeft1_Click() Handles bnLeft1.Click
         For Each i As PreviewForm In Instances
             SetRelativePos(-1)
         Next
     End Sub
 
-    Private Sub bnRangeStart_Click() Handles bnRangeStart.Click
+    Private Sub bnStartCutRange_Click() Handles bnStartCutRange.Click
         For Each i As PreviewForm In Instances
             SetRangeStart()
         Next
     End Sub
 
-    Private Sub bnRangeEnd_Click() Handles bnRangeEnd.Click
+    Private Sub bnEndCutRange_Click() Handles bnEndCutRange.Click
         For Each i As PreviewForm In Instances
             SetRangeEnd()
         Next
     End Sub
 
-    Private Sub bnBackward10_Click() Handles bnBackward10.Click
+    Private Sub bnLeft2_Click() Handles bnLeft2.Click
         For Each i As PreviewForm In Instances
             SetRelativePos(-10)
         Next
     End Sub
 
-    Private Sub bnForward10_Click() Handles bnForward10.Click
+    Private Sub bnRight2_Click() Handles bnRight2.Click
         For Each i As PreviewForm In Instances
             SetRelativePos(10)
         Next
     End Sub
 
-    Private Sub bnDeleteRange_Click() Handles bnDeleteRange.Click
+    Private Sub bnDelete_Click() Handles bnDelete.Click
         For Each i As PreviewForm In Instances
             DeleteRange()
         Next
     End Sub
 
-    Private Sub bnBackward100_Click() Handles bnBackward100.Click
+    Private Sub bnLeft3_Click() Handles bnLeft3.Click
         For Each i As PreviewForm In Instances
             i.SetRelativePos(-100)
         Next
     End Sub
 
-    Private Sub bnForward100_Click() Handles bnForward100.Click
+    Private Sub bnRight3_Click() Handles bnRight3.Click
         For Each i As PreviewForm In Instances
             SetRelativePos(100)
         Next
-    End Sub
-
-    Private Sub PreviewForm_Shown() Handles Me.Shown
-        GenericMenu.Check("ToggleInfos", s.PreviewToggleInfos)
     End Sub
 
     Private Sub Wheel(sender As Object, e As MouseEventArgs) Handles MyBase.MouseWheel
@@ -528,44 +505,52 @@ Public Class PreviewForm
                 Using rangePen As New Pen(c, trackHeight)
                     g.DrawLine(rangePen, GetDrawPos(p.Ranges(x).Start) - CInt(TrackBarPosition / 2),
                         pnTrack.Height \ 2, GetDrawPos(p.Ranges(x).End) + CInt(TrackBarPosition / 2),
-                               pnTrack.Height \ 2)
+                        pnTrack.Height \ 2)
                 End Using
             Next
         End If
 
         Using rangeSetPen As New Pen(Color.DarkOrange, trackHeight)
-            If RangeStart > -1 AndAlso RangeStart <= AVI.Position Then
-                g.DrawLine(rangeSetPen, GetDrawPos(RangeStart) - CInt(TrackBarPosition / 2),
-                    pnTrack.Height \ 2, GetDrawPos(AVI.Position) +
+            If StartRange > -1 AndAlso StartRange <= Renderer.Position Then
+                g.DrawLine(rangeSetPen, GetDrawPos(StartRange) - CInt(TrackBarPosition / 2),
+                    pnTrack.Height \ 2, GetDrawPos(Renderer.Position) +
+                    CInt(TrackBarPosition / 2), pnTrack.Height \ 2)
+            End If
+        End Using
+
+        Using rangeSetPen As New Pen(Color.DarkOrange, trackHeight)
+            If EndRange > -1 AndAlso EndRange >= Renderer.Position Then
+                g.DrawLine(rangeSetPen, GetDrawPos(EndRange) - CInt(TrackBarPosition / 2),
+                    pnTrack.Height \ 2, GetDrawPos(Renderer.Position) +
                     CInt(TrackBarPosition / 2), pnTrack.Height \ 2)
             End If
         End Using
 
         Dim posPen As Pen
 
-        If RangeStart > -1 Then
+        If StartRange > -1 OrElse EndRange > -1 Then
             posPen = New Pen(Color.DarkOrange, trackHeight)
         Else
-            posPen = New Pen(Color.Blue, trackHeight)
+            posPen = New Pen(Color.Black, trackHeight)
         End If
 
         posPen.Alignment = Drawing2D.PenAlignment.Center
 
-        Dim pos = GetDrawPos(AVI.Position)
+        Dim pos = GetDrawPos(Renderer.Position)
 
-        g.DrawLine(posPen, pos - CInt(TrackBarPosition / 2),
+        g.DrawLine(posPen,
+                   pos - CInt(TrackBarPosition / 2),
                    pnTrack.Height \ 2,
                    pos + CInt(TrackBarPosition / 2),
                    pnTrack.Height \ 2)
 
         posPen.Dispose()
-
         g.Dispose()
     End Sub
 
     Private Function GetDrawPos(frame As Integer) As Integer
         Dim values = TrackBarBorder * 2 + TrackBarGap * 2 + TrackBarPosition
-        Dim width = CInt(((pnTrack.Width - values) / CInt(TargetFrames - 1)) * frame)
+        Dim width = CInt(((pnTrack.Width - values) / CInt(PreviewScript.Info.FrameCount - 1)) * frame)
         Return width + CInt(values / 2)
     End Function
 
@@ -578,21 +563,24 @@ Public Class PreviewForm
     End Sub
 
     Private Sub HandleMouseOntrackBar()
-        Dim pos = CInt((TargetFrames / pnTrack.Width) * pnTrack.PointToClient(Control.MousePosition).X)
+        Dim pos = CInt((PreviewScript.Info.FrameCount / pnTrack.Width) * pnTrack.PointToClient(Control.MousePosition).X)
         Dim remainder = pos Mod 4
-        If remainder <> 0 Then pos -= remainder
+
+        If remainder <> 0 Then
+            pos -= remainder
+        End If
 
         For Each i In Instances
             i.SetAbsolutePos(pos)
         Next
     End Sub
 
-    Private Sub pTrack_Paint(sender As Object, e As PaintEventArgs) Handles pnTrack.Paint
+    Private Sub pnTrack_Paint(sender As Object, e As PaintEventArgs) Handles pnTrack.Paint
         DrawTrack()
     End Sub
 
-    Private Sub bExtras_Click() Handles bExtras.Click
-        cmsMain.Show(bExtras, New Point(1, bExtras.Height))
+    Private Sub bnExtras_Click() Handles bnMenu.Click
+        cmsMain.Show(bnMenu, New Point(1, bnMenu.Height))
     End Sub
 
     <Command("Jumps to a given frame.")>
@@ -605,19 +593,19 @@ Public Class PreviewForm
         Description("Frames to jump, negative values jump backward.")>
         pos As Integer)
 
-        SetPos(AVI.Position + pos)
+        SetPos(Renderer.Position + pos)
     End Sub
 
     Sub SetPos(pos As Integer)
-        AVI.Position = pos
-        Drawer.Draw()
+        Renderer.Position = pos
+        Renderer.Draw()
         AfterPositionChanged()
     End Sub
 
     Private Sub AfterPositionChanged()
-        s.LastPosition = AVI.Position
+        s.LastPosition = Renderer.Position
         DrawTrack()
-        Dim time = TimeSpan.FromSeconds(AVI.Position / AVI.FrameRate).ToString.Shorten(12)
+        Dim time = TimeSpan.FromSeconds(Renderer.Position / FrameServer.FrameRate).ToString.Shorten(12)
         If time.StartsWith("00") Then time = time.Substring(3)
         Text = "Preview  " & s.LastPosition & "  " + time
     End Sub
@@ -625,13 +613,13 @@ Public Class PreviewForm
     <Command("Dialog to jump to a specific time.")>
     Sub GoToTime()
         Dim d As Date
-        d = d.AddSeconds(AVI.Position / AVI.FrameRate)
+        d = d.AddSeconds(Renderer.Position / FrameServer.FrameRate)
         Dim value = InputBox.Show("Time:", "Go To Time", d.ToString("HH:mm:ss.fff"))
 
         If value <> "" Then
             Try
-                AVI.Position = CInt((TimeSpan.Parse(value).TotalMilliseconds / 1000) * AVI.FrameRate)
-                Drawer.Draw()
+                Renderer.Position = CInt((TimeSpan.Parse(value).TotalMilliseconds / 1000) * FrameServer.FrameRate)
+                Renderer.Draw()
                 AfterPositionChanged()
             Catch
             End Try
@@ -640,12 +628,12 @@ Public Class PreviewForm
 
     <Command("Dialog to jump to a specific frame.")>
     Sub GoToFrame()
-        Dim value = InputBox.Show("Frame:", "Go To Frame", AVI.Position.ToString)
+        Dim value = InputBox.Show("Frame:", "Go To Frame", Renderer.Position.ToString)
         Dim pos As Integer
 
         If Integer.TryParse(value, pos) Then
-            AVI.Position = pos
-            Drawer.Draw()
+            Renderer.Position = pos
+            Renderer.Draw()
             AfterPositionChanged()
         End If
     End Sub
@@ -658,22 +646,31 @@ Public Class PreviewForm
 
     <Command("Opens the help.")>
     Sub OpenHelp()
-        Dim f As New HelpForm
-        f.Doc.WriteStart("Preview")
-        f.Doc.WriteP("The preview dialog allows to preview and cut the video. Cutting can be achieved by selecting the sections that should be kept. Selected sections appear green in the trackbar. Everything not green will be trimmed off. It's possible to open more than one instance of the preview for filter comparisons.")
-        f.Doc.WriteTips(GenericMenu.GetTips)
-        f.Doc.WriteTable("Shortcut Keys", GenericMenu.GetKeys, False)
-        f.Show()
+        Dim form As New HelpForm
+        form.Doc.WriteStart("Preview")
+        form.Doc.WriteP("The preview dialog allows to preview and cut the video. It's possible to open more than one instance of the preview for filter comparisons.")
+        form.Doc.WriteH2("Cutting")
+        form.Doc.WriteP("Cutting can be achieved by selecting the sections that should be kept. Selected sections appear green in the trackbar. Cutting in muxing mode without video encoding works only with mkv muxer (using the nearest key frames).")
+        form.Doc.WriteTips(GenericMenu.GetTips)
+        form.Doc.WriteTable("Shortcut Keys", GenericMenu.GetKeys, False)
+        form.Show()
     End Sub
 
     <Command("Sets the start cut position.")>
     Sub SetRangeStart()
-        Dim r = GetCurrentRange()
-
-        If r Is Nothing OrElse AVI.Position = r.End Then
-            RangeStart = AVI.Position
+        If EndRange > -1 Then
+            p.Ranges.Add(New Range(Renderer.Position, EndRange))
+            p.Ranges.Sort()
+            EndRange = -1
         Else
-            r.Start = AVI.Position
+            Dim currentRange = GetCurrentRange()
+
+            If currentRange Is Nothing OrElse Renderer.Position = currentRange.End Then
+                StartRange = Renderer.Position
+            Else
+                currentRange.Start = Renderer.Position
+                EndRange = -1
+            End If
         End If
 
         MergeRanges()
@@ -682,16 +679,18 @@ Public Class PreviewForm
 
     <Command("Sets the end cut position.")>
     Sub SetRangeEnd()
-        If RangeStart > -1 Then
-            p.Ranges.Add(New Range(RangeStart, AVI.Position))
+        If StartRange > -1 Then
+            p.Ranges.Add(New Range(StartRange, Renderer.Position))
             p.Ranges.Sort()
-            RangeStart = -1
+            StartRange = -1
         Else
-            Dim r = GetCurrentRange()
+            Dim currentRange = GetCurrentRange()
 
-            If Not r Is Nothing Then
-                r.End = AVI.Position
-                RangeStart = -1
+            If currentRange Is Nothing Then
+                EndRange = Renderer.Position
+            Else
+                currentRange.End = Renderer.Position
+                StartRange = -1
             End If
         End If
 
@@ -721,13 +720,13 @@ Public Class PreviewForm
     <Command("Splits the clip or selection into two selections.")>
     Sub SplitRange()
         If p.Ranges.Count = 0 Then
-            p.Ranges.Add(New Range(0, AVI.FrameCount - 1))
+            p.Ranges.Add(New Range(0, FrameServer.Info.FrameCount - 1))
         End If
 
         For Each i In p.Ranges.ToArray
-            If i.Start < AVI.Position AndAlso i.End > AVI.Position Then
-                p.Ranges.Add(New Range(i.Start, AVI.Position))
-                p.Ranges.Add(New Range(AVI.Position + 1, i.End))
+            If i.Start < Renderer.Position AndAlso i.End > Renderer.Position Then
+                p.Ranges.Add(New Range(i.Start, Renderer.Position))
+                p.Ranges.Add(New Range(Renderer.Position + 1, i.End))
                 p.Ranges.Remove(i)
                 Exit For
             End If
@@ -747,7 +746,7 @@ Public Class PreviewForm
     <Command("Deletes the range that encloses the current position.")>
     Sub DeleteRange()
         For Each i As Range In p.Ranges.ToArray
-            If AVI.Position >= i.Start AndAlso AVI.Position <= i.End Then
+            If Renderer.Position >= i.Start AndAlso Renderer.Position <= i.End Then
                 p.Ranges.Remove(i)
             End If
         Next
@@ -780,15 +779,33 @@ Public Class PreviewForm
 
     <Command("Shows/hides various infos.")>
     Sub ToggleInfos()
-        s.PreviewToggleInfos = Not s.PreviewToggleInfos
-        Drawer.ShowInfos = s.PreviewToggleInfos
-        Drawer.Draw()
+        s.ShowPreviewInfo = Not s.ShowPreviewInfo
+        Renderer.ShowInfo = s.ShowPreviewInfo
+        Renderer.Draw()
     End Sub
 
-    <Command("Shows the AviSynth script using the player currently associated with AVI files.")>
+    <Command("Plays the script with a player.")>
     Sub ShowExternalPlayer()
-        UpdateTrim()
-        g.PlayScript(p.Script)
+        Dim script = PreviewScript.GetNewScript()
+        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        UpdateTrim(script)
+        g.PlayScript(script)
+    End Sub
+
+    <Command("Plays the script with mpv.net.")>
+    Sub PlayWithMpvnet()
+        Dim script = PreviewScript.GetNewScript()
+        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        UpdateTrim(script)
+        g.PlayScriptWithMPV(script, "--start=" + GetPlayPosition.ToString)
+    End Sub
+
+    <Command("Plays the script with MPC.")>
+    Sub PlayWithMPC()
+        Dim script = PreviewScript.GetNewScript()
+        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        UpdateTrim(script)
+        g.PlayScriptWithMPC(script, "/start " & GetPlayPosition.TotalMilliseconds)
     End Sub
 
     <Command("Reloads the script.")>
@@ -802,17 +819,6 @@ Public Class PreviewForm
         Close()
     End Sub
 
-    Private Sub pVideo_DoubleClick() Handles pVideo.DoubleClick
-        SwitchWindowState()
-    End Sub
-
-    Private Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pVideo.MouseMove
-        If Not WindowState = FormWindowState.Maximized AndAlso e.Button = MouseButtons.Left Then
-            Native.ReleaseCapture()
-            Native.PostMessage(Handle, &HA1, New IntPtr(2), IntPtr.Zero) 'WM_NCLBUTTONDOWN, HTCAPTION
-        End If
-    End Sub
-
     <Command("Jumps to the previous cut point.")>
     Sub JumpToThePreviousRangePos()
         Dim list As New List(Of Object)
@@ -822,15 +828,15 @@ Public Class PreviewForm
             list.Add(i.End)
         Next
 
-        list.Add(AVI.Position - 1)
+        list.Add(Renderer.Position - 1)
 
         list.Sort()
 
-        Dim index = list.IndexOf(AVI.Position - 1) - 1
+        Dim index = list.IndexOf(Renderer.Position - 1) - 1
 
         If index >= 0 AndAlso index < list.Count Then
-            AVI.Position = CInt(list(index))
-            Drawer.Draw()
+            Renderer.Position = CInt(list(index))
+            Renderer.Draw()
             AfterPositionChanged()
         End If
     End Sub
@@ -838,7 +844,7 @@ Public Class PreviewForm
     <Command("Copies the time of the current position.")>
     Sub CopyTime()
         Dim d As Date
-        d = d.AddSeconds(AVI.Position / AVI.FrameRate)
+        d = d.AddSeconds(Renderer.Position / FrameServer.FrameRate)
         Clipboard.SetText(d.ToString("HH:mm:ss.fff"))
     End Sub
 
@@ -851,14 +857,14 @@ Public Class PreviewForm
             list.Add(i.End)
         Next
 
-        list.Add(AVI.Position + 1)
+        list.Add(Renderer.Position + 1)
         list.Sort()
 
-        Dim index = list.IndexOf(AVI.Position + 1) + 1
+        Dim index = list.IndexOf(Renderer.Position + 1) + 1
 
         If index >= 0 AndAlso index < list.Count Then
-            AVI.Position = CInt(list(index))
-            Drawer.Draw()
+            Renderer.Position = CInt(list(index))
+            Renderer.Draw()
             AfterPositionChanged()
         End If
     End Sub
@@ -867,10 +873,10 @@ Public Class PreviewForm
     Sub SaveBitmap()
         Using d As New SaveFileDialog
             d.SetFilter({"bmp"})
-            d.FileName = p.TargetFile.Base + " - " & AVI.Position
+            d.FileName = p.TargetFile.Base + " - " & Renderer.Position
 
             If d.ShowDialog = DialogResult.OK Then
-                AVI.GetBitmap.Save(d.FileName, Imaging.ImageFormat.Bmp)
+                BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(d.FileName, ImageFormat.Bmp)
             End If
         End Using
     End Sub
@@ -879,10 +885,10 @@ Public Class PreviewForm
     Sub SavePng()
         Using d As New SaveFileDialog
             d.SetFilter({"png"})
-            d.FileName = p.TargetFile.Base + " - " & AVI.Position
+            d.FileName = p.TargetFile.Base + " - " & Renderer.Position
 
             If d.ShowDialog = DialogResult.OK Then
-                AVI.GetBitmap.Save(d.FileName, Imaging.ImageFormat.Png)
+                BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(d.FileName, ImageFormat.Png)
             End If
         End Using
     End Sub
@@ -900,7 +906,7 @@ Public Class PreviewForm
             Dim params = New EncoderParameters(1)
             params.Param(0) = New EncoderParameter(Encoder.Quality, q.ToInt)
             Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Jpeg.Guid).First
-            AVI.GetBitmap.Save(path, info, params)
+            BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(path, info, params)
         End If
     End Sub
 
@@ -908,7 +914,7 @@ Public Class PreviewForm
     Sub SaveJPG()
         Using d As New SaveFileDialog
             d.DefaultExt = "jpg"
-            d.FileName = p.TargetFile.Base + " - " & AVI.Position
+            d.FileName = p.TargetFile.Base + " - " & Renderer.Position
 
             If d.ShowDialog = DialogResult.OK Then SaveJpgByPath(d.FileName)
         End Using
@@ -929,18 +935,18 @@ Public Class PreviewForm
             For Each i In File.ReadAllLines(fp)
                 Dim left = i.Left("=")
                 If left.Length <> 9 Then Continue For
-                td.AddCommandLink(left.Substring(7) + "   " + i.Right("="), i.Right("="))
+                td.AddCommand(left.Substring(7) + "   " + i.Right("="), i.Right("="))
             Next
 
             If td.Show() <> "" Then
-                AVI.Position = CInt((TimeSpan.Parse(td.SelectedValue).TotalMilliseconds / 1000) * AVI.FrameRate)
-                Drawer.Draw()
+                Renderer.Position = CInt((TimeSpan.Parse(td.SelectedValue).TotalMilliseconds / 1000) * FrameServer.FrameRate)
+                Renderer.Draw()
                 AfterPositionChanged()
             End If
         End Using
     End Sub
 
-    Shared Function GetDefaultMenuPreview() As CustomMenuItem
+    Shared Function GetDefaultMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
         ret.Add("Navigation|Go To Start", NameOf(SetAbsolutePos), Keys.Control Or Keys.Left, {0})
@@ -971,23 +977,24 @@ Public Class PreviewForm
         ret.Add("Cut|Delete Selection", NameOf(DeleteRange), Keys.Delete, Symbol.Delete)
         ret.Add("Cut|Delete All Selections", NameOf(ClearAllRanges), Keys.Control Or Keys.Delete)
 
-        ret.Add("View|Infos", NameOf(ToggleInfos), Keys.I, Symbol.Info)
+        ret.Add("View|Info", NameOf(ToggleInfos), Keys.I, Symbol.Info)
         ret.Add("View|Fullscreen", NameOf(SwitchWindowState), Keys.Enter, Symbol.FullScreen)
         ret.Add("View|-")
-        ret.Add("View|Zoom In", NameOf(Zoom), Keys.OemMinus, Symbol.ZoomIn, {-0.25F})
-        ret.Add("View|Zoom Out", NameOf(Zoom), Keys.Oemplus, Symbol.ZoomOut, {0.25F})
+        ret.Add("View|Zoom In", NameOf(Zoom), Keys.Oemplus, Symbol.ZoomIn, {0.25F})
+        ret.Add("View|Zoom Out", NameOf(Zoom), Keys.OemMinus, Symbol.ZoomOut, {-0.25F})
         ret.Add("View|-")
         ret.Add("View|Buttons", NameOf(ShowHideButtons), Keys.B)
         ret.Add("View|Trackbar", NameOf(ShowHideTrackbar), Keys.Control Or Keys.T)
 
         ret.Add("Tools|Reload", NameOf(Reload), Keys.R, Symbol.Refresh)
-        ret.Add("Tools|External Player", NameOf(ShowExternalPlayer), Keys.E, Symbol.Play)
+        ret.Add("Tools|Play with mpv.net", NameOf(PlayWithMpvnet), Keys.F9, Symbol.Play)
+        ret.Add("Tools|Play with mpc", NameOf(PlayWithMPC), Keys.F10, Symbol.Play)
         ret.Add("Tools|-")
         ret.Add("Tools|Copy Frame Number", NameOf(g.DefaultCommands.CopyToClipboard), {"%pos_frame%"})
         ret.Add("Tools|Copy Time", NameOf(CopyTime))
         ret.Add("Tools|-")
         ret.Add("Tools|Save Png", NameOf(SavePng), Keys.Control Or Keys.P, Symbol.Save)
-        ret.Add("Tools|Save Bitmap", NameOf(SaveBitmap), Keys.Control Or Keys.S, Symbol.SaveAs)
+        ret.Add("Tools|Save Bitmap", NameOf(SaveBitmap), Keys.Control Or Keys.S, Symbol.Save)
 
         ret.Add("Edit Menu...", NameOf(OpenMenuEditor), Keys.M)
         ret.Add("Help...", NameOf(OpenHelp), Keys.F1, Symbol.Help)
@@ -996,8 +1003,34 @@ Public Class PreviewForm
         Return ret
     End Function
 
-    Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pVideo.Paint
-        Drawer.Draw(e.Graphics)
+    Sub RefreshControls()
+        bnLeft1.Refresh()
+        bnLeft2.Refresh()
+        bnLeft3.Refresh()
+        bnStartCutRange.Refresh()
+        bnEndCutRange.Refresh()
+        bnRight1.Refresh()
+        bnRight2.Refresh()
+        bnRight3.Refresh()
+        bnDelete.Refresh()
+        bnMenu.Refresh()
+        pnTrack.Refresh()
+    End Sub
+
+    Private Sub pVideo_DoubleClick() Handles pnVideo.DoubleClick
+        SwitchWindowState()
+    End Sub
+
+    Private Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseMove
+        If Not WindowState = FormWindowState.Maximized AndAlso e.Button = MouseButtons.Left Then
+            Native.ReleaseCapture()
+            Native.PostMessage(Handle, &HA1, New IntPtr(2), IntPtr.Zero) 'WM_NCLBUTTONDOWN, HTCAPTION
+        End If
+    End Sub
+
+    Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pnVideo.Paint
+        RefreshControls()
+        Renderer.Draw()
     End Sub
 
     Private Sub GenericMenu_Command(e As CustomMenuItemEventArgs) Handles GenericMenu.Command
@@ -1023,33 +1056,26 @@ Public Class PreviewForm
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
-
         Instances.Remove(Me)
-        s.LastPosition = AVI.Position
-        AVI.Dispose()
-        UpdateTrim()
+        UpdateTrim(p.Script)
+        s.LastPosition = Renderer.Position
+        p.CutFrameCount = FrameServer.Info.FrameCount
+        p.CutFrameRate = FrameServer.FrameRate
         g.MainForm.UpdateFilters()
+        Renderer.Dispose()
+        FrameServer.Dispose()
     End Sub
 
-    Sub UpdateTrim()
-        p.CutFrameCount = AviSynthDocument.GetFrames
-        p.CutFrameRate = AviSynthDocument.GetFramerate
+    Sub UpdateTrim(script As VideoScript)
+        script.RemoveFilter("Cutting")
 
-        Dim cut = p.Script.GetFilter("Cutting")
-
-        If p.Ranges.Count = 0 Then
-            If Not cut Is Nothing Then
-                p.Script.Filters.Remove(cut)
-            End If
-        Else
-            If cut Is Nothing Then
-                cut = New VideoFilter
-                cut.Path = "Cutting"
-                cut.Category = "Cutting"
-                cut.Script = GetTrim()
-                cut.Active = True
-                p.Script.Filters.Add(cut)
-            End If
+        If p.Ranges.Count > 0 Then
+            Dim cutFilter As New VideoFilter
+            cutFilter.Path = "Cutting"
+            cutFilter.Category = "Cutting"
+            cutFilter.Script = GetTrim()
+            cutFilter.Active = True
+            script.Filters.Add(cutFilter)
         End If
     End Sub
 
@@ -1057,9 +1083,11 @@ Public Class PreviewForm
         Dim ret As String
 
         For Each i In p.Ranges
-            If ret <> "" Then ret += " + "
+            If ret <> "" Then
+                ret += " + "
+            End If
 
-            If p.Script.Engine = ScriptEngine.AviSynth Then
+            If PreviewScript.Engine = ScriptEngine.AviSynth Then
                 ret += "Trim(" & i.Start & ", " & i.End - 1 & ")"
 
                 If p.TrimCode <> "" Then
@@ -1070,23 +1098,45 @@ Public Class PreviewForm
             End If
         Next
 
-        If p.Script.Engine = ScriptEngine.AviSynth Then
+        If PreviewScript.Engine = ScriptEngine.AviSynth Then
             Return ret
         Else
             Return "clip = " + ret
         End If
     End Function
 
-    Private Sub Control_Enter() Handles bnBackward100.Enter, bnBackward10.Enter, bnBackward1.Enter, bnForward1.Enter, bnForward10.Enter, bnForward100.Enter, bnRangeEnd.Enter, bnRangeStart.Enter, bnDeleteRange.Enter, bExtras.Enter
+    Private Sub Control_Enter() Handles bnLeft3.Enter, bnLeft2.Enter, bnLeft1.Enter, bnRight1.Enter, bnRight2.Enter, bnRight3.Enter, bnEndCutRange.Enter, bnStartCutRange.Enter, bnDelete.Enter, bnMenu.Enter
         ActiveControl = Nothing
     End Sub
 
     Function GetCurrentRange() As Range
         For Each i In p.Ranges
-            If AVI.Position >= i.Start AndAlso AVI.Position <= i.End Then
+            If Renderer.Position >= i.Start AndAlso Renderer.Position <= i.End Then
                 Return i
             End If
         Next
+    End Function
+
+    Function GetPlayPosition() As TimeSpan
+        If p.Ranges.Count = 0 Then
+            Return TimeSpan.FromSeconds(Renderer.Position / FrameServer.FrameRate)
+        Else
+            If GetCurrentRange() Is Nothing Then
+                Return TimeSpan.Zero
+            Else
+                Dim frames As Integer
+
+                For x = 0 To p.Ranges.Count - 1
+                    Dim current = p.Ranges(x)
+
+                    If current.End < Renderer.Position Then
+                        frames += current.End - current.Start
+                    Else
+                        Return TimeSpan.FromSeconds((frames + (Renderer.Position - current.Start)) / FrameServer.FrameRate)
+                    End If
+                Next
+            End If
+        End If
     End Function
 
     Protected Overrides Sub OnHelpButtonClicked(e As CancelEventArgs)
@@ -1095,10 +1145,25 @@ Public Class PreviewForm
         OpenHelp()
     End Sub
 
-    Private Sub pVideo_MouseDown(sender As Object, e As MouseEventArgs) Handles pVideo.MouseDown
+    Private Sub pVideo_MouseDown(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseDown
         Dim sb = Screen.FromControl(Me).Bounds
         Dim p1 = New Point(sb.Width, 0)
         Dim p2 = PointToScreen(e.Location)
-        If Math.Abs(p1.X - p2.X) < 10 AndAlso Math.Abs(p1.Y - p2.Y) < 10 Then Close()
+
+        If Math.Abs(p1.X - p2.X) < 10 AndAlso Math.Abs(p1.Y - p2.Y) < 10 Then
+            Close()
+        End If
+    End Sub
+
+    Private Sub pVideo_MouseClick(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseClick
+        If pnVideo.Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
+            Close()
+        End If
+    End Sub
+
+    Private Sub PreviewForm_MouseClick(sender As Object, e As MouseEventArgs) Handles Me.MouseClick
+        If Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
+            Close()
+        End If
     End Sub
 End Class

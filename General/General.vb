@@ -1,3 +1,4 @@
+
 Imports System.Runtime.Serialization
 Imports System.ComponentModel
 Imports System.Runtime.Serialization.Formatters.Binary
@@ -14,9 +15,6 @@ Imports VB6 = Microsoft.VisualBasic
 Imports Microsoft.Win32
 
 Public Class Folder
-
-#Region "System"
-
     Shared ReadOnly Property Desktop() As String
         Get
             Return Environment.GetFolderPath(Environment.SpecialFolder.Desktop).FixDir
@@ -29,11 +27,27 @@ Public Class Folder
         End Get
     End Property
 
+    Private Shared StartupValue As String
+
     Shared ReadOnly Property Startup() As String
         Get
-            Return Application.StartupPath.FixDir
+            If StartupValue Is Nothing Then
+                Dim buffer As New StringBuilder(500)
+                QueryFullProcessImageName(Process.GetCurrentProcess.Handle, 0, buffer, buffer.Capacity)
+                StartupValue = buffer.ToString.Dir
+            End If
+
+            Return StartupValue
         End Get
     End Property
+
+    <DllImport("kernel32.dll")>
+    Private Shared Function QueryFullProcessImageName(
+        hProcess As IntPtr,
+        dwFlags As Integer,
+        lpExeName As StringBuilder,
+        ByRef lpdwSize As Integer) As Boolean
+    End Function
 
     Shared ReadOnly Property Current() As String
         Get
@@ -89,10 +103,6 @@ Public Class Folder
         End Get
     End Property
 
-#End Region
-
-#Region "StaxRip"
-
     Shared ReadOnly Property Apps As String
         Get
             Return Folder.Startup + "Apps\"
@@ -136,9 +146,9 @@ Public Class Folder
                     td.MainInstruction = "Settings Directory"
                     td.Content = "Select the location of the settings directory."
 
-                    td.AddCommandLink(Folder.AppDataRoaming + "StaxRip")
-                    td.AddCommandLink(Folder.Startup + "Settings")
-                    td.AddCommandLink("Browse for custom directory", "custom")
+                    td.AddCommand(Folder.AppDataRoaming + "StaxRip")
+                    td.AddCommand(Folder.Startup + "Settings")
+                    td.AddCommand("Browse for custom directory", "custom")
 
                     Dim dir = td.Show
 
@@ -237,8 +247,6 @@ Public Class Folder
         End Get
     End Property
 
-#End Region
-
     <DllImport("shfolder.dll", CharSet:=CharSet.Unicode)>
     Private Shared Function SHGetFolderPath(hwndOwner As IntPtr, nFolder As Integer, hToken As IntPtr, dwFlags As Integer, lpszPath As StringBuilder) As Integer
     End Function
@@ -277,26 +285,6 @@ Public Class PathBase
         Next
 
         Return True
-    End Function
-
-    Shared Function RemoveIllegalCharsFromName(name As String) As String
-        If name = "" Then Return ""
-
-        Dim chars = """*/:<>?\|^".ToCharArray
-
-        For Each i In name.ToCharArray
-            If chars.Contains(i) Then
-                name = name.Replace(i, "_")
-            End If
-        Next
-
-        For x = 1 To 31
-            If name.Contains(Convert.ToChar(x)) Then
-                name = name.Replace(Convert.ToChar(x), "_"c)
-            End If
-        Next
-
-        Return name
     End Function
 End Class
 
@@ -362,8 +350,14 @@ Public Class FilePath
     End Sub
 
     Shared Function GetDir(path As String) As String
-        If path = "" Then Return ""
-        If path.Contains("\") Then path = path.LeftLast("\") + "\"
+        If path = "" Then
+            Return ""
+        End If
+
+        If path.Contains("\") Then
+            path = path.LeftLast("\") + "\"
+        End If
+
         Return path
     End Function
 
@@ -391,13 +385,21 @@ Public Class FilePath
         Return GetExt(filepath, False)
     End Function
 
-    Shared Function GetExt(filepath As String, dot As Boolean) As String
-        If filepath = "" Then Return ""
-        Dim chars = filepath.ToCharArray
+    Shared Function GetExt(filepath As String, includeDot As Boolean) As String
+        If filepath = "" Then
+            Return ""
+        End If
+
+        Dim chars = filepath.ToCharArray()
 
         For x = filepath.Length - 1 To 0 Step -1
-            If chars(x) = Separator Then Return ""
-            If chars(x) = "."c Then Return filepath.Substring(x + If(dot, 0, 1)).ToLower
+            If chars(x) = Separator Then
+                Return ""
+            End If
+
+            If chars(x) = "."c Then
+                Return filepath.Substring(x + If(includeDot, 0, 1)).ToLower()
+            End If
         Next
 
         Return ""
@@ -515,6 +517,7 @@ Public Class SafeSerialization
     Private Shared Function IsSimpleType(t As Type) As Boolean
         Return t.IsPrimitive OrElse
             t Is GetType(String) OrElse
+            t Is GetType(DateTime) OrElse
             t Is GetType(SettingBag(Of String)) OrElse
             t Is GetType(SettingBag(Of Boolean)) OrElse
             t Is GetType(SettingBag(Of Integer)) OrElse
@@ -649,16 +652,24 @@ table {
         Writer.WriteEndElement() 'head
         Writer.WriteStartElement("body")
 
-        If showTitle Then Writer.WriteElementString("h1", title)
+        If showTitle Then
+            Writer.WriteElementString("h1", title)
+        End If
     End Sub
 
     Sub WriteP(rawText As String, Optional convert As Boolean = False)
-        If convert Then rawText = ConvertChars(rawText)
+        If convert Then
+            rawText = ConvertChars(rawText)
+        End If
+
         WriteElement("p", rawText)
     End Sub
 
     Sub WriteP(title As String, rawText As String, Optional convert As Boolean = False)
-        If convert Then rawText = ConvertChars(rawText)
+        If convert Then
+            rawText = ConvertChars(rawText)
+        End If
+
         WriteElement("h2", title)
         WriteElement("p", rawText)
     End Sub
@@ -672,7 +683,9 @@ table {
     End Sub
 
     Sub WriteElement(elementName As String, rawText As String)
-        If rawText = "" Then Exit Sub
+        If rawText = "" Then
+            Exit Sub
+        End If
 
         Writer.WriteStartElement(elementName)
 
@@ -687,9 +700,19 @@ table {
 
     Shared Function ConvertChars(value As String) As String
         value = value.FixBreak
-        If value.Contains("<") Then value = value.Replace("<", "&lt;")
-        If value.Contains(">") Then value = value.Replace(">", "&gt;")
-        If value.Contains(BR) Then value = value.Replace(BR, "<br>")
+
+        If value.Contains("<") Then
+            value = value.Replace("<", "&lt;")
+        End If
+
+        If value.Contains(">") Then
+            value = value.Replace(">", "&gt;")
+        End If
+
+        If value.Contains(BR) Then
+            value = value.Replace(BR, "<br>")
+        End If
+
         Return value
     End Function
 
@@ -697,12 +720,18 @@ table {
         If stripOnly Then
             If value.Contains("[") Then
                 Dim re As New Regex("\[(.+?) (.+?)\]")
-                If re.IsMatch(value) Then value = re.Replace(value, "$2")
+
+                If re.IsMatch(value) Then
+                    value = re.Replace(value, "$2")
+                End If
             End If
 
             If value.Contains("'''") Then
                 Dim re As New Regex("'''(.+?)'''")
-                If re.IsMatch(value) Then value = re.Replace(value, "$1")
+
+                If re.IsMatch(value) Then
+                    value = re.Replace(value, "$1")
+                End If
             End If
         Else
             If value.Contains("[") Then
@@ -734,17 +763,19 @@ table {
     End Function
 
     Sub WriteTips(ParamArray tips As StringPairList())
-        If tips.NothingOrEmpty Then Exit Sub
+        If tips.NothingOrEmpty Then
+            Exit Sub
+        End If
 
-        Dim l As New StringPairList
+        Dim list As New StringPairList
 
         For Each i In tips
-            l.AddRange(i)
+            list.AddRange(i)
         Next
 
-        l.Sort()
+        list.Sort()
 
-        For Each i In l
+        For Each i In list
             WriteH3(HelpDocument.ConvertChars(i.Name))
             WriteP(HelpDocument.ConvertChars(i.Value))
         Next
@@ -753,7 +784,7 @@ table {
     Sub WriteList(ParamArray values As String())
         Writer.WriteStartElement("ul")
 
-        For Each i As String In values
+        For Each i In values
             Writer.WriteStartElement("li")
             Writer.WriteRaw(ConvertMarkup(i, False))
             Writer.WriteEndElement()
@@ -783,7 +814,9 @@ table {
     End Sub
 
     Private Sub WriteTable(title As String, text As String, list As StringPairList, sort As Boolean)
-        If sort Then list.Sort()
+        If sort Then
+            list.Sort()
+        End If
 
         If Not title Is Nothing Then
             Writer.WriteElementString("h2", title)
@@ -810,17 +843,17 @@ table {
         Writer.WriteAttributeString("style", "width: 60%")
         Writer.WriteEndElement()
 
-        For Each i As StringPair In list
+        For Each pair In list
             Writer.WriteStartElement("tr")
             Writer.WriteStartElement("td")
-            WriteElement("p", HelpDocument.ConvertChars(i.Name))
+            WriteElement("p", HelpDocument.ConvertChars(pair.Name))
             Writer.WriteEndElement() 'td
             Writer.WriteStartElement("td")
 
-            If i.Value Is Nothing Then
+            If pair.Value Is Nothing Then
                 WriteElement("p", "&nbsp;")
             Else
-                WriteElement("p", HelpDocument.ConvertChars(i.Value))
+                WriteElement("p", HelpDocument.ConvertChars(pair.Value))
             End If
 
             Writer.WriteEndElement() 'td
@@ -895,10 +928,10 @@ Public Class ReflectionSettingBag(Of T)
 
     Overrides Property Value() As T
         Get
-            Dim f = Obj.GetType.GetField(Name, BindingFlags.Public Or BindingFlags.NonPublic Or BindingFlags.Instance)
+            Dim field = Obj.GetType.GetField(Name, BindingFlags.Public Or BindingFlags.NonPublic Or BindingFlags.Instance)
 
-            If Not f Is Nothing Then
-                Return DirectCast(f.GetValue(Obj), T)
+            If Not field Is Nothing Then
+                Return DirectCast(field.GetValue(Obj), T)
             Else
                 Return DirectCast(Obj.GetType.GetProperty(Name).GetValue(Obj, Nothing), T)
             End If
@@ -925,9 +958,9 @@ Public Class StringPair
     Sub New()
     End Sub
 
-    Sub New(name As String, text As String)
+    Sub New(name As String, value As String)
         Me.Name = name
-        Me.Value = text
+        Me.Value = value
     End Sub
 
     Function CompareTo(other As StringPair) As Integer Implements System.IComparable(Of StringPair).CompareTo
@@ -1296,6 +1329,7 @@ End Class
 Public Module MainModule
     Public Const BR As String = VB6.vbCrLf
     Public Const BR2 As String = VB6.vbCrLf + VB6.vbCrLf
+    Public Const BR3 As String = VB6.vbCrLf + VB6.vbCrLf + VB6.vbCrLf
     Public Log As LogBuilder
 
     Sub MsgInfo(text As String, Optional content As String = Nothing)
@@ -1513,11 +1547,11 @@ Public Enum ShutdownMode
 End Enum
 
 Public Enum ToolStripRenderModeEx
-    <DispName("System Window Color")> SystemAuto
+    <DispName("System Theme Color")> SystemAuto
     <DispName("System Default Color")> SystemDefault
-    <DispName("Win 7 Window Color")> Win7Auto
+    <DispName("Win 7 Theme Color")> Win7Auto
     <DispName("Win 7 Default Color")> Win7Default
-    <DispName("Win 10 Window Color")> Win10Auto
+    <DispName("Win 10 Theme Color")> Win10Auto
     <DispName("Win 10 Default Color")> Win10Default
 End Enum
 
@@ -1572,15 +1606,15 @@ Public Class PowerRequest
         PowerRequestExecutionRequired
     End Enum
 
-    <DllImport("kernel32.dll", SetLastError:=True)>
+    <DllImport("kernel32.dll")>
     Shared Function PowerCreateRequest(ByRef Context As POWER_REQUEST_CONTEXT) As IntPtr
     End Function
 
-    <DllImport("kernel32.dll", SetLastError:=True)>
+    <DllImport("kernel32.dll")>
     Shared Function PowerSetRequest(PowerRequestHandle As IntPtr, RequestType As PowerRequestType) As Boolean
     End Function
 
-    <DllImport("kernel32.dll", SetLastError:=True)>
+    <DllImport("kernel32.dll")>
     Shared Function PowerClearRequest(PowerRequestHandle As IntPtr, RequestType As PowerRequestType) As Boolean
     End Function
 

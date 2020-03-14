@@ -1,4 +1,5 @@
-﻿Imports System.Text
+﻿
+Imports System.Text
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -67,6 +68,7 @@ Public Class Rav1e
         r.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
         Return r
     End Function
+
     Overrides Sub ShowConfigDialog()
 
         Dim newParams As New Rav1eParams
@@ -93,6 +95,7 @@ Public Class Rav1e
             End If
         End Using
     End Sub
+
     Overrides Property QualityMode() As Boolean
         Get
             Return Params.Mode.OptionText.EqualsAny("Quality")
@@ -100,11 +103,23 @@ Public Class Rav1e
         Set(Value As Boolean)
         End Set
     End Property
+
     Public Overrides ReadOnly Property CommandLineParams As CommandLineParams
         Get
             Return Params
         End Get
     End Property
+
+    Shared Function Test() As String
+        Dim tester As New ConsolAppTester
+
+        tester.IgnoredSwitches = "fullhelp output help psnr version verbose"
+        tester.UndocumentedSwitches = "y4m help version verbose"
+        tester.Package = Package.Rav1e
+        tester.CodeFile = Folder.Startup.Parent + "Encoding\Rav1e.vb"
+
+        Return tester.Test
+    End Function
 End Class
 
 Public Class Rav1eParams
@@ -120,14 +135,12 @@ Public Class Rav1eParams
         .Switch = "--tune",
         .Path = "Basic",
         .Options = {"PSNR", "Psychovisual"},
-        .Values = {"psnr", "psychovisual"},
-        .InitValue = 0}
+        .Values = {"psnr", "psychovisual"}}
 
     Property Limit As New NumParam With {
         .Text = "Limit",
         .Help = "Maximum number of frames to encode",
         .Switch = "--limit",
-        .Init = 0,
         .Path = "Basic"}
 
     Property Mode As New OptionParam With {
@@ -135,50 +148,47 @@ Public Class Rav1eParams
         .Path = "Basic",
         .AlwaysOn = True,
         .Options = {"Speed", "Bitrate"},
-        .Values = {"--speed", "--bitrate"},
-        .InitValue = 0}
+        .Values = {"--speed", "--bitrate"}}
 
     Property Bitrate As New NumParam With {
         .Text = "Bitrate",
         .Path = "Basic",
         .Config = {0, 9999},
         .ArgsFunc = Function() "" & Bitrate.Value,
-    .VisibleFunc = Function() Mode.Value = 1}
+        .VisibleFunc = Function() Mode.Value = 1}
 
     Property Passes As New OptionParam With {
         .Text = "Passes",
         .Path = "Basic",
         .Options = {"One Pass", "Two Passes"},
         .Values = {"--pass 1", "--pass 2"},
-        .InitValue = 0,
         .VisibleFunc = Function() Mode.Value = 1}
 
     Property Range As New OptionParam With {
         .Text = "Range",
         .Path = "VUI",
         .Switch = "--range",
-        .InitValue = 0,
         .Options = {"Unspecified", "Limited", "Full"}}
 
     Property Prime As New OptionParam With {
         .Text = "Primaries",
         .Path = "VUI",
         .Switch = "--primaries",
-        .InitValue = 1,
+        .Init = 1,
         .Options = {"BT709", "Unspecified", "BT470M", "BT470BG", "ST170M", "ST240M", "Film", "BT2020", "ST428", "P3DCI", "P3Display", "Tech3213"}}
 
     Property Matrix As New OptionParam With {
         .Text = "Matrix",
         .Path = "VUI",
         .Switch = "--matrix",
-        .InitValue = 2,
+        .Init = 2,
         .Options = {"Identity", "BT709", "Unspecified", "BT470M", "BT470BG", "ST170M", "ST240M", "YCgCo", "BT2020NonConstantLuminance", "BT2020ConstantLuminance", "ST2085", "ChromaticityDerivedNonConstantLuminance", "ChromaticityDerivedConstantLuminance", "ICtCp"}}
 
     Property Transfer As New OptionParam With {
         .Text = "Transfer",
         .Path = "VUI",
         .Switch = "--transfer",
-        .InitValue = 1,
+        .Init = 1,
         .Options = {"BT1886", "Unspecified", "BT470M", "BT470BG", "ST170M", "ST240M", "Linear", "Logarithmic100", "Logarithmic316", "XVYCC", "BT1361E", "SRGB", "BT2020Ten", "BT2020Twelve", "PerceptualQuantizer", "ST428", "HybridLogGamma"}}
 
     Property Speed As New NumParam With {
@@ -217,26 +227,25 @@ Public Class Rav1eParams
         .Switch = "--content_light",
         .Path = "VUI",
         .Config = {0, Integer.MaxValue, 50},
-        .ImportAction = Sub(arg As String)
+        .ArgsFunc = Function() If(Light.Value <> 0 OrElse MaxFALL.Value <> 0, "--content_light """ & Light.Value & "," & MaxFALL.Value & """", ""),
+        .ImportAction = Sub(param, arg)
                             If arg = "" Then Exit Sub
                             Dim a = arg.Trim(""""c).Split(","c)
                             Light.Value = a(0).ToInt
                             MaxFALL.Value = a(1).ToInt
-                        End Sub,
-        .ArgsFunc = Function() If(Light.Value <> 0 OrElse MaxFALL.Value <> 0, "--content_light """ & Light.Value & "," & MaxFALL.Value & """", "")}
+                        End Sub}
 
     Property MaxFALL As New NumParam With {
+        .Switches = {"--content_light"},
+        .Text = "Maximum FALL",
         .Path = "VUI",
-        .Config = {0, Integer.MaxValue, 50},
-        .ArgsFunc = Function() "",
-        .Text = "Maximum FALL"}
+        .Config = {0, Integer.MaxValue, 50}}
 
     Property Threads As New NumParam With {
         .Text = "Threads",
         .Switch = "--threads",
         .Path = "Basic",
-        .Config = {0, 20},
-        .Init = 0}
+        .Config = {0, 20}}
 
     Property Custom As New StringParam With {
         .Text = "Custom",
@@ -298,7 +307,7 @@ Public Class Rav1eParams
         Dim sb As New StringBuilder
 
         If includePaths AndAlso includeExecutable Then
-            sb.Append(Package.ffmpeg.Path.Escape + $" -y -loglevel fatal -hide_banner{If(script.Path.Ext = "vpy", " -f vapoursynth", "")} -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 - | " + Package.Rav1e.Path.Escape)
+            sb.Append(Package.ffmpeg.Path.Escape + $" -loglevel fatal -hide_banner{If(script.Path.Ext = "vpy", " -f vapoursynth", "")} -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 - | " + Package.Rav1e.Path.Escape)
         End If
 
         Dim q = From i In Items Where i.GetArgs <> ""
@@ -307,10 +316,10 @@ Public Class Rav1eParams
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))
     End Function
+
     Public Overrides Function GetPackage() As Package
         Return Package.Rav1e
     End Function
-
 End Class
 
 Public Enum Rav1eRateMode

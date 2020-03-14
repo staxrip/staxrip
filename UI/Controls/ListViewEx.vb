@@ -1,4 +1,5 @@
-﻿Imports System.ComponentModel
+﻿
+Imports System.ComponentModel
 Imports System.Reflection
 
 Namespace UI
@@ -144,6 +145,7 @@ Namespace UI
         End Sub
 
         Sub MoveSelectionUp()
+            BeginUpdate()
             If Not CanMoveUp() Then Exit Sub
             Dim indexAbove = SelectedIndices(0) - 1
             If indexAbove = -1 Then Exit Sub
@@ -154,9 +156,11 @@ Namespace UI
             UpdateControls()
             OnItemsChanged()
             EnsureVisible(indexAbove)
+            EndUpdate()
         End Sub
 
         Sub MoveSelectionDown()
+            BeginUpdate()
             If Not CanMoveDown() Then Exit Sub
             Dim indexBelow = SelectedIndices(SelectedIndices.Count - 1) + 1
             If indexBelow >= Items.Count Then Exit Sub
@@ -167,6 +171,7 @@ Namespace UI
             UpdateControls()
             OnItemsChanged()
             EnsureVisible(indexBelow)
+            EndUpdate()
         End Sub
 
         Sub RemoveSelection()

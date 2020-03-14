@@ -1,8 +1,11 @@
+
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Globalization
 Imports System.Xml.Linq
 Imports vb6 = Microsoft.VisualBasic
+Imports System.ComponentModel
+Imports System.Runtime.Serialization
 
 <Serializable()>
 Public MustInherit Class Muxer
@@ -10,8 +13,9 @@ Public MustInherit Class Muxer
 
     Property CoverFile As String = ""
     Property ChapterFile As String = ""
+    Property TagFile As String = ""
     Property TimestampsFile As String = ""
-    Property Tags As String = ""
+    Property VideoTrackName As String = ""
 
     MustOverride Sub Mux()
 
@@ -24,6 +28,20 @@ Public MustInherit Class Muxer
         MyBase.New(name)
         CanEditValue = True
     End Sub
+
+    Private TagsValue As BindingList(Of StringPair)
+
+    Property Tags As BindingList(Of StringPair)
+        Get
+            If TagsValue Is Nothing Then
+                TagsValue = New BindingList(Of StringPair)
+            End If
+            Return TagsValue
+        End Get
+        Set(value As BindingList(Of StringPair))
+            TagsValue = value
+        End Set
+    End Property
 
     ReadOnly Property OutputExtFull As String
         Get
@@ -39,7 +57,7 @@ Public MustInherit Class Muxer
 
     Private AdditionalSwitchesValue As String
 
-    Property AdditionalSwitches() As String
+    Property AdditionalSwitches As String
         Get
             Return AdditionalSwitchesValue
         End Get
@@ -56,7 +74,10 @@ Public MustInherit Class Muxer
 
     Property Subtitles() As List(Of Subtitle)
         Get
-            If SubtitlesValue Is Nothing Then SubtitlesValue = New List(Of Subtitle)
+            If SubtitlesValue Is Nothing Then
+                SubtitlesValue = New List(Of Subtitle)
+            End If
+
             Return SubtitlesValue
         End Get
         Set(value As List(Of Subtitle))
@@ -64,19 +85,52 @@ Public MustInherit Class Muxer
         End Set
     End Property
 
+    Private AttachmentsValue As List(Of String)
+
+    Property Attachments As List(Of String)
+        Get
+            If AttachmentsValue Is Nothing Then
+                AttachmentsValue = New List(Of String)
+            End If
+
+            AttachmentsValue.Sort()
+            Return AttachmentsValue
+        End Get
+        Set(value As List(Of String))
+            AttachmentsValue = value
+        End Set
+    End Property
+
+    <OnDeserialized>
+    Sub OnDeserialized(context As StreamingContext)
+        If TagFile Is Nothing Then
+            TagFile = ""
+        End If
+    End Sub
+
     Overrides Sub Clean()
         Subtitles = Nothing
         ChapterFile = Nothing
+        TagFile = Nothing
         TimestampsFile = Nothing
         Tags = Nothing
+        Attachments = Nothing
     End Sub
 
     Protected Sub ExpandMacros()
         For Each i In Subtitles
             If i.Title?.Contains("%") Then
-                If i.Title.Contains("%language_native%") Then i.Title = i.Title.Replace("%language_native%", i.Language.CultureInfo.NativeName)
-                If i.Title.Contains("%language_english%") Then i.Title = i.Title.Replace("%language_english%", i.Language.Name)
-                If i.Title.Contains("%") Then i.Title = Macro.Expand(i.Title)
+                If i.Title.Contains("%language_native%") Then
+                    i.Title = i.Title.Replace("%language_native%", i.Language.CultureInfo.NativeName)
+                End If
+
+                If i.Title.Contains("%language_english%") Then
+                    i.Title = i.Title.Replace("%language_english%", i.Language.Name)
+                End If
+
+                If i.Title.Contains("%") Then
+                    i.Title = Macro.Expand(i.Title)
+                End If
             End If
         Next
     End Sub
@@ -90,36 +144,52 @@ Public MustInherit Class Muxer
     End Function
 
     Overridable Sub Init()
-        If Not File.Exists(p.SourceFile) Then Exit Sub
+        If Not File.Exists(p.SourceFile) Then
+            Exit Sub
+        End If
+
         Dim files = g.GetFilesInTempDirAndParent
         files.Sort(New StringLogicalComparer)
 
-        For Each file1 In files
-            If file1.Ext = "idx" Then
-                Dim v = File.ReadAllText(file1, Encoding.Default)
+        If File.Exists(p.FirstOriginalSourceFile.DirAndBase + ".nfo") Then
+            Try
+                Dim fieldNames = "title originaltitle showtitle studio genre director season episode premiered aired outline plot tagline".Split(" "c)
+                Dim root = XElement.Parse((p.FirstOriginalSourceFile.DirAndBase + ".nfo").ReadAllText)
+                Dim elements = root.Elements.Where(Function(x) fieldNames.Contains(x.Name.ToString()) AndAlso x.Value <> "")
+
+                For Each i In elements
+                    Tags.Add(New StringPair(i.Name.ToString, i.Value))
+                Next
+            Catch
+            End Try
+        End If
+
+        For Each fp In files
+            If fp.Ext = "idx" Then
+                Dim v = fp.ReadAllTextDefault
 
                 If v.Contains(vb6.ChrW(&HA) + vb6.ChrW(&H0) + vb6.ChrW(&HD) + vb6.ChrW(&HA)) Then
                     v = v.FixBreak
                     v = v.Replace(BR + vb6.ChrW(&H0) + BR, BR + "langidx: 0" + BR)
-                    File.WriteAllText(file1, v, Encoding.Default)
+                    File.WriteAllText(fp, v, Encoding.Default)
                 End If
             End If
 
-            If FileTypes.SubtitleExludingContainers.Contains(file1.Ext) AndAlso
-                g.IsSourceSameOrSimilar(file1) AndAlso Not file1.Contains("_Preview.") AndAlso
-                Not file1.Contains("_Temp.") Then
+            If FileTypes.SubtitleExludingContainers.Contains(fp.Ext) AndAlso
+                g.IsSourceSameOrSimilar(fp) AndAlso Not fp.Contains("_Preview.") AndAlso
+                Not fp.Contains("_Temp.") Then
 
-                If p.ConvertSup2Sub AndAlso file1.Ext = "sup" Then
+                If p.ConvertSup2Sub AndAlso fp.Ext = "sup" Then
                     Continue For
                 End If
 
-                If TypeOf Me Is MP4Muxer AndAlso Not {"idx", "srt"}.Contains(file1.Ext) Then
+                If TypeOf Me Is MP4Muxer AndAlso Not {"idx", "srt"}.Contains(fp.Ext) Then
                     Continue For
                 End If
 
-                For Each iSubtitle In Subtitle.Create(file1)
+                For Each iSubtitle In Subtitle.Create(fp)
                     If p.PreferredSubtitles <> "" Then
-                        If file1.Contains("_forced") Then iSubtitle.Forced = True
+                        If fp.Contains("_forced") Then iSubtitle.Forced = True
                         Subtitles.Add(iSubtitle)
                     End If
                 Next
@@ -141,16 +211,20 @@ Public MustInherit Class Muxer
 
                     If lower.Contains("chapters") Then
                         If TypeOf Me Is MP4Muxer Then
-                            If lower.Ext = "txt" Then ChapterFile = i
+                            If i.Ext = "txt" Then
+                                ChapterFile = i
+                            End If
                         Else
-                            If ChapterFile.Ext <> "xml" Then ChapterFile = i
+                            If i.Ext.EqualsAny("txt", "xml") Then
+                                ChapterFile = i
+                            End If
                         End If
                     End If
                 End If
             End If
 
             If TypeOf Me Is MkvMuxer AndAlso i.Contains("_attachment_") Then
-                AdditionalSwitches += " --attachment-name " + i.Right("_attachment_").Escape + " --attach-file " + i.Escape
+                Attachments.Add(i)
             End If
         Next
 
@@ -193,7 +267,6 @@ Public Class MP4Muxer
 
     Sub New(name As String)
         MyBase.New(name)
-        Tags = "encoder=""StaxRip %version%"""
     End Sub
 
     Overrides ReadOnly Property OutputExt As String
@@ -219,17 +292,29 @@ Public Class MP4Muxer
             args.Append(" -fps " + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
         End If
 
-        Dim temp = ""
+        Dim videoParams = ""
 
         If PAR <> "" Then
             Dim val = Calc.ParseCustomAR(PAR, 0, 0)
-            If val.X <> 0 Then temp = ":par=" & val.X & ":" & val.Y
+
+            If val.X <> 0 Then
+                videoParams = ":par=" & val.X & ":" & val.Y
+            End If
         ElseIf Calc.IsARSignalingRequired Then
             Dim par = Calc.GetTargetPAR
-            If TypeOf p.VideoEncoder Is NullEncoder Then temp = ":par=" & par.X & ":" & par.Y
+
+            If TypeOf p.VideoEncoder Is NullEncoder Then
+                videoParams = ":par=" & par.X & ":" & par.Y
+            End If
         End If
 
-        args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + temp).Escape)
+        videoParams += ":name="
+
+        If VideoTrackName <> "" Then
+            videoParams += Macro.Expand(VideoTrackName)
+        End If
+
+        args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + videoParams).Escape)
 
         AddAudio(p.Audio0, args)
         AddAudio(p.Audio1, args)
@@ -255,8 +340,8 @@ Public Class MP4Muxer
 
         Dim tagList As New List(Of String)
         If CoverFile <> "" AndAlso File.Exists(CoverFile) Then tagList.Add("cover=" + CoverFile.Escape)
-        If Tags <> "" Then tagList.Add(Macro.Expand(Tags))
-        If tagList.Count > 0 Then args.Append(" -itags " + String.Join(":", tagList))
+        If Tags.Count > 0 Then tagList.AddRange(Tags.Select(Function(val) val.Name + "=" + val.Value))
+        If tagList.Count > 0 Then args.Append(" -itags " + Macro.Expand(String.Join(":", tagList)))
         args.Append(" -new " + p.TargetFile.Escape)
 
         Return args.ToString.Trim
@@ -306,7 +391,7 @@ Public Class MP4Muxer
         Get
             Return {"ts", "m2ts", "ivf",
                     "mpg", "m2v",
-                    "avi", "ac3",
+                    "avi", "ac3", "opus",
                     "mp4", "m4a", "aac", "mov",
                     "264", "h264", "avc",
                     "265", "h265", "hevc", "hvc",
@@ -428,14 +513,12 @@ End Class
 Public Class MkvMuxer
     Inherits Muxer
 
-    Property VideoTrackName As String = ""
     Property VideoTrackLanguage As New Language(CultureInfo.InvariantCulture)
     Property Title As String = ""
     Property DAR As String = ""
 
     Sub New()
         Name = "MKV (mkvmerge)"
-        Tags = "Writing frontend: StaxRip v%version%"
     End Sub
 
     Sub New(name As String)
@@ -470,18 +553,39 @@ Public Class MkvMuxer
     End Sub
 
     Overrides Sub Mux()
+        WriteTagfile()
+
         Using proc As New Proc
             proc.Header = "Muxing"
             proc.SkipStrings = {"Progress: ", "+-> Pre-parsing"}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.mkvmerge
-            proc.Arguments = GetArgs(True)
+            proc.Arguments = GetArgs()
             proc.AllowedExitCodes = {0, 1}
             proc.Start()
         End Using
 
         If Not g.FileExists(p.TargetFile) Then Log.Write("Error MKV output file is missing", p.TargetFile)
         Log.WriteLine(MediaInfo.GetSummary(p.TargetFile))
+    End Sub
+
+    Sub WriteTagfile()
+        If Tags.Count = 0 Then Exit Sub
+
+        Dim xml = <Tags>
+                      <%= From tag In Tags Select
+                        <Tag>
+                            <Simple>
+                                <Name><%= Macro.Expand(tag.Name) %></Name>
+                                <String><%= Macro.Expand(tag.Value) %></String>
+                            </Simple>
+                        </Tag>
+                      %>
+                  </Tags>
+
+        Dim filepath = p.TempDir + p.TargetFile.Base + "_tags.xml"
+        xml.Save(filepath)
+        TagFile = filepath
     End Sub
 
     Overrides Function GetCommandLine() As String
@@ -492,10 +596,10 @@ Public Class MkvMuxer
         Return CommandLineHelp.ConvertText(val)
     End Function
 
-    Private Function GetArgs(Optional writeTag As Boolean = False) As String
+    Private Function GetArgs() As String
         Dim args = "-o " + p.TargetFile.Escape
 
-        Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + p.VideoEncoder.OutputPath.Escape)
+        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + p.VideoEncoder.OutputPath.Escape)
         Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
 
         If Not FileTypes.VideoOnly.Contains(p.VideoEncoder.OutputPath.Ext) Then
@@ -557,24 +661,29 @@ Public Class MkvMuxer
                 args += " " + subtitle.Path.Escape
             End If
         Next
-        
+
         If Not TypeOf Me Is WebMMuxer AndAlso File.Exists(ChapterFile) Then
-            If p.Ranges.Count > 0 Then
+            If p.Ranges.Count > 0 AndAlso ChapterFile.Ext = "xml" Then
                 Dim xDoc = XDocument.Load(ChapterFile)
                 Dim lstTimeRanges As New List(Of (StartTime As TimeSpan, EndTime As TimeSpan, Offset As TimeSpan))
-                Dim OffsetRecord As TimeSpan
+                Dim offsetRecord As TimeSpan
                 Dim lstValidChapterAtoms As New List(Of XElement)
+
                 For Each r In p.Ranges
                     lstTimeRanges.Add((
                         New TimeSpan(CLng(10000000L * r.Start / p.CutFrameRate)),
                         New TimeSpan(CLng(10000000L * r.End / p.CutFrameRate)),
-                        OffsetRecord
+                        offsetRecord
                     ))
-                    OffsetRecord += lstTimeRanges.Last.EndTime - lstTimeRanges.Last.StartTime
+
+                    offsetRecord += lstTimeRanges.Last.EndTime - lstTimeRanges.Last.StartTime
+
                     For Each elAtom In xDoc.Descendants("ChapterAtom")
                         Dim elChapterTimeStart = elAtom.Element("ChapterTimeStart")
+
                         If Not lstValidChapterAtoms.Contains(elAtom) Then
                             Dim tsStart = TimeSpan.Parse(Left(elAtom.Element("ChapterTimeStart").Value, 16))
+
                             If tsStart >= lstTimeRanges.Last.StartTime And tsStart <= lstTimeRanges.Last.EndTime Then
                                 elAtom.Element("ChapterTimeStart").Value = (lstTimeRanges.Last.Offset + (tsStart - lstTimeRanges.Last.StartTime)).ToString()
                                 lstValidChapterAtoms.Add(elAtom)
@@ -582,47 +691,50 @@ Public Class MkvMuxer
                         End If
                     Next
                 Next
+
                 xDoc.Descendants("ChapterAtom").Where(Function(Atom) Not lstValidChapterAtoms.Contains(Atom)).Remove()
-                Dim CutChapterFile = Path.Combine(Path.GetDirectoryName(ChapterFile), "cut_cpt" + ".xml")
-                xDoc.Save(CutChapterFile)
-                args += " --chapters " + CutChapterFile.Escape
+
+                If xDoc.Descendants("ChapterAtom").Count > 0 Then
+                    Dim CutChapterFile = Path.Combine(Path.GetDirectoryName(ChapterFile), "cut_cpt" + ".xml")
+                    xDoc.Save(CutChapterFile)
+                    args += " --chapters " + CutChapterFile.Escape
+                End If
             Else
                 args += " --chapters " + ChapterFile.Escape
             End If
         End If
 
-        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then args += " --attach-file " + CoverFile.Escape
-        If Title <> "" Then args += " --title """ + Convert(Title) + """"
+        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then
+            args += " --attach-file " + CoverFile.Escape
+        End If
+
+        If Title <> "" Then
+            args += " --title """ + Convert(Title) + """"
+        End If
 
         If TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges.Count > 0 Then
             args += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
         End If
 
-        Try
-            Dim tags = Me.Tags.SplitNoEmptyAndWhiteSpace(";")
-
-            If writeTag Then
-                Dim xml = <Tags>
-                              <%= From tag In tags Select
-                                <Tag>
-                                    <Simple>
-                                        <Name><%= Macro.Expand(tag.Left(":").Trim) %></Name>
-                                        <String><%= Macro.Expand(tag.Right(":").Trim) %></String>
-                                    </Simple>
-                                </Tag>
-                              %>
-                          </Tags>
-
-                Dim tagsPath = p.TempDir + p.TargetFile.Base + "_tags.xml"
-                xml.Save(tagsPath)
-                args += " --global-tags " + tagsPath.Escape
-            End If
-        Catch ex As Exception
-            Throw New ErrorAbortException("Error writing tags", ex.Message)
-        End Try
+        If File.Exists(TagFile) Then
+            args += " --global-tags " + TagFile.Escape
+        End If
 
         args += " --ui-language en"
-        If AdditionalSwitches <> "" Then args += " " + Macro.Expand(AdditionalSwitches)
+
+        If AdditionalSwitches <> "" Then
+            args += " " + Macro.Expand(AdditionalSwitches)
+        End If
+
+        For Each i In Attachments
+            Dim name = Path.GetFileName(i)
+
+            If i.Contains("_attachment_") Then
+                name = i.Right("_attachment_")
+            End If
+
+            args += $" --attachment-name {name.Escape} --attach-file {i.Escape}"
+        Next
 
         Return args
     End Function
@@ -636,7 +748,7 @@ Public Class MkvMuxer
                 tid = ap.Stream.StreamOrder
                 isCombo = ap.Stream.Name.Contains("THD+AC3")
 
-                Dim stdout = ProcessHelp.GetStdOut(Package.mkvmerge.Path, "--identify " + ap.File.Escape)
+                Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + ap.File.Escape)
                 Dim values = Regex.Matches(stdout, "Track ID (\d+): audio").OfType(Of Match).Select(Function(match) match.Groups(1).Value.ToInt)
                 If values.Count = ap.Streams.Count Then tid = values(ap.Stream.Index)
             Else

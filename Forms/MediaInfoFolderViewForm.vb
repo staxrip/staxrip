@@ -108,7 +108,7 @@ Public Class MediaInfoFolderViewForm
         Dim pathFunc = Function() DirectCast(lv.SelectedItems(0), ListViewItemEx).Path
 
         cms.Add("Show Media Info", AddressOf ShowMediaInfo, Keys.I, enabledFunc)
-        cms.Add("Show in File Explorer", Sub() g.OpenDirAndSelectFile(pathFunc(), Handle), Keys.E, enabledFunc)
+        cms.Add("Show in File Explorer", Sub() g.SelectFileWithExplorer(pathFunc()), Keys.E, enabledFunc)
         cms.Add("Play", Sub() g.Play(pathFunc()), Keys.P, enabledFunc)
         cms.Add("Copy path to clipboard", Sub() Clipboard.SetText(pathFunc()), Keys.C, enabledFunc)
         cms.Add("Open with StaxRip", Sub() g.MainForm.OpenVideoSourceFile(pathFunc()), Keys.O, enabledFunc)
@@ -180,20 +180,19 @@ Public Class MediaInfoFolderViewForm
 
     Sub SaveCSV()
         Dim sb As New StringBuilder
-
         sb.Append(lv.Columns.Cast(Of ColumnHeader).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + BR)
 
-        For Each i As ListViewItem In lv.Items
-            sb.Append(i.SubItems.Cast(Of ListViewItem.ListViewSubItem).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + BR)
+        For Each item As ListViewItem In lv.Items
+            sb.Append(item.SubItems.Cast(Of ListViewItem.ListViewSubItem).Select(Function(arg) If(arg.Text.Contains(","), """" + arg.Text + """", arg.Text)).Join(",") + BR)
         Next
 
-        Using f As New SaveFileDialog()
-            f.AddExtension = True
-            f.DefaultExt = "csv"
-            f.FileName = "MediaInfo.csv"
+        Using dialog As New SaveFileDialog()
+            dialog.AddExtension = True
+            dialog.DefaultExt = "csv"
+            dialog.FileName = "MediaInfo.csv"
 
-            If f.ShowDialog = DialogResult.OK Then
-                File.WriteAllText(f.FileName, sb.ToString)
+            If dialog.ShowDialog = DialogResult.OK Then
+                File.WriteAllText(dialog.FileName, sb.ToString)
             End If
         End Using
     End Sub

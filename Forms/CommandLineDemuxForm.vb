@@ -296,7 +296,7 @@ Public Class CommandLineDemuxForm
         Me.Label1.Size = New System.Drawing.Size(249, 48)
         Me.Label1.TabIndex = 26
         Me.Label1.Text = "Input Formats:"
-        Me.TipProvider.SetTipText(Me.Label1, "Formats the demuxer handles (vc1 mpeg2 avc, hevc)")
+        Me.TipProvider.SetTipText(Me.Label1, "Formats the demuxer handles (vc1 mpeg2 avc hevc)")
         '
         'Label7
         '
@@ -390,10 +390,10 @@ Public Class CommandLineDemuxForm
     End Sub
 
     Private Sub HelpToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HelpToolStripMenuItem.Click
-        For Each i In Package.Items.Values
-            If tbName.Text = i.Name Then
-                If i.GetHelpPath <> "" Then
-                    g.StartProcess(i.GetHelpPath)
+        For Each pack In Package.Items.Values
+            If tbName.Text = pack.Name Then
+                If pack.HelpFileOrURL <> "" Then
+                    pack.ShowHelp()
                 Else
                     MsgWarn("There is no help available for this app.")
                 End If

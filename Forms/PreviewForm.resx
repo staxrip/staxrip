@@ -118,28 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <metadata name="ToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>167, 17</value>
+    <value>37, 9</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="bnBackward10.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vQAADr0BR/uQrQAAABh0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC41ZYUyZQAAAIVJREFUSEvFjVEK
-        wDAMQnv/S2dLxwpl5rUflj0wHxq0RcRRSdMpaTolTaek6ZQ0nXrOmnyqHstsd+AtUI+UbQ1QAWWd1QAV
-        UDagASqgbKIaoALKPvw2kFARZRM0kFARZYPVQEJFlHV2BhIqomx7IClLbspsDJyUNJ2SplPSdEqaTknT
-        p2gXenToQo25sTQAAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="bnBackward100.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAABh0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC41ZYUyZQAAAJRJREFUSEu9jgsO
-        wCAIQ3f/Sztx4rcKJnUvaTKfYPeEEK4GSmagZAZKZqBkBkpm6gdGLtDl1ut7VkEazmkxvaegDKdTxeWt
-        Ah3sZMTtdwU6WETmyK8KdPC7rbh986OJ3wsEXegnz319dygQVktHflcgwKWI21sFwrSUcXlPgVAWBkw/
-        FdwKlMxAyQyUzEDJDJS8hOcFtZNR5xGrVXYAAAAASUVORK5CYII=
-</value>
-  </data>
   <metadata name="cmsMain.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>290, 17</value>
+    <value>287, 14</value>
   </metadata>
 </root>

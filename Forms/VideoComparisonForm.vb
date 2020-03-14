@@ -1,4 +1,5 @@
-﻿Imports System.Drawing.Drawing2D
+﻿
+Imports System.Drawing.Drawing2D
 Imports System.Drawing.Imaging
 
 Imports StaxRip.UI
@@ -42,17 +43,19 @@ Public Class VideoComparisonForm
     End Sub
 
     Sub Add()
-        If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
+        If Not Package.AviSynth.VerifyOK(True) Then
+            Exit Sub
+        End If
 
-        Using f As New OpenFileDialog
-            f.SetFilter(FileTypes.Video)
-            f.Multiselect = True
-            f.SetInitDir(s.Storage.GetString("video comparison folder"))
+        Using dialog As New OpenFileDialog
+            dialog.SetFilter(FileTypes.Video)
+            dialog.Multiselect = True
+            dialog.SetInitDir(s.Storage.GetString("video comparison folder"))
 
-            If f.ShowDialog() = DialogResult.OK Then
-                s.Storage.SetString("video comparison folder", FilePath.GetDir(f.FileName))
+            If dialog.ShowDialog() = DialogResult.OK Then
+                s.Storage.SetString("video comparison folder", FilePath.GetDir(dialog.FileName))
 
-                For Each i In f.FileNames
+                For Each i In dialog.FileNames
                     Add(i)
                 Next
             End If
@@ -70,7 +73,6 @@ Public Class VideoComparisonForm
 
     Private Sub Save()
         For Each i As VideoTab In TabControl.TabPages
-            i.AVI.Position = Pos
             Dim outputPath = i.SourceFile.Dir & Pos & " " + i.SourceFile.Base + ".png"
 
             Using b = i.GetBitmap
@@ -112,18 +114,24 @@ Public Class VideoComparisonForm
     End Sub
 
     Sub Help()
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteP("In the statistic tab of the x265 dialog select Log Level Frame and enable CSV log file creation, the video comparison tool can displays containing frame info.")
-        f.Doc.WriteTips(Menu.GetTips)
-        f.Doc.WriteTable("Shortcut Keys", Menu.GetKeys, False)
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteP("In the statistic tab of the x265 dialog select Log Level Frame and enable CSV log file creation, the video comparison tool can displays containing frame info.")
+        form.Doc.WriteTips(Menu.GetTips)
+        form.Doc.WriteTable("Shortcut Keys", Menu.GetKeys, False)
+        form.Show()
     End Sub
 
     Private Sub NextTab()
         Dim index = TabControl.SelectedIndex + 1
-        If index >= TabControl.TabPages.Count Then index = 0
-        If index <> TabControl.SelectedIndex Then TabControl.SelectedIndex = index
+
+        If index >= TabControl.TabPages.Count Then
+            index = 0
+        End If
+
+        If index <> TabControl.SelectedIndex Then
+            TabControl.SelectedIndex = index
+        End If
     End Sub
 
     Sub Reload()
@@ -134,13 +142,10 @@ Public Class VideoComparisonForm
 
     Private Sub TabControl_Selected(sender As Object, e As TabControlEventArgs) Handles TabControl.Selected
         Dim tab = DirectCast(TabControl.SelectedTab, VideoTab)
-        If Not tab Is Nothing Then tab.TrackBarValueChanged()
-    End Sub
 
-    Private Sub TabControl_Deselecting(sender As Object, e As TabControlCancelEventArgs) Handles TabControl.Deselecting
-        For Each i As VideoTab In TabControl.TabPages
-            i.AVI.Position = Pos
-        Next
+        If Not tab Is Nothing Then
+            tab.TrackBarValueChanged()
+        End If
     End Sub
 
     Private Sub CodecComparisonForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
@@ -206,12 +211,12 @@ Public Class VideoComparisonForm
     Private Sub GoToTime()
         Dim tab = DirectCast(TabControl.SelectedTab, VideoTab)
         Dim d As Date
-        d = d.AddSeconds(tab.AVI.Position / tab.AVI.FrameRate)
+        d = d.AddSeconds(Pos / tab.Server.FrameRate)
         Dim value = InputBox.Show("Time:", "Go To Time", d.ToString("HH:mm:ss.fff"))
         Dim time As TimeSpan
 
         If value <> "" AndAlso TimeSpan.TryParse(value, time) Then
-            TrackBar.Value = CInt((time.TotalMilliseconds / 1000) * tab.AVI.FrameRate)
+            TrackBar.Value = CInt((time.TotalMilliseconds / 1000) * tab.Server.FrameRate)
         End If
     End Sub
 
@@ -222,7 +227,7 @@ Public Class VideoComparisonForm
     Public Class VideoTab
         Inherits TabPage
 
-        Property AVI As AVIFile
+        Property Server As FrameServer
         Property Form As VideoComparisonForm
         Property SourceFile As String
 
@@ -233,7 +238,7 @@ Public Class VideoComparisonForm
         End Sub
 
         Sub Reload()
-            AVI.Dispose()
+            Server.Dispose()
             Open(SourceFile)
         End Sub
 
@@ -241,59 +246,47 @@ Public Class VideoComparisonForm
             Text = FilePath.GetBase(sourePath)
             SourceFile = sourePath
 
-            Dim avs As New VideoScript
-            avs.Engine = ScriptEngine.AviSynth
-            avs.Path = Folder.Temp + Guid.NewGuid.ToString + ".avs"
-            AddHandler Disposed, Sub() FileHelp.Delete(avs.Path)
+            Dim script As New VideoScript
+            script.Engine = ScriptEngine.AviSynth
+            script.Path = Folder.Temp + Guid.NewGuid.ToString + ".avs"
+            AddHandler Disposed, Sub() FileHelp.Delete(script.Path)
 
-            avs.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
+            script.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
 
             If sourePath.Ext = "png" Then
-                avs.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
+                script.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
             Else
                 Try
                     Dim cachePath = Folder.Temp + Guid.NewGuid.ToString + ".ffindex"
                     AddHandler Disposed, Sub() FileHelp.Delete(cachePath)
-                Catch ex As Exception
+                Catch
                 End Try
 
                 If sourePath.EndsWith("mp4") Then
-                    avs.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourePath + "" + """, format = ""YV12"")"))
+                    script.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourePath + "" + """, format = ""YV12"")"))
                 Else
-                    avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + "" + """, colorspace = ""YV12"")"))
+                    script.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + "" + """, colorspace = ""YV12"")"))
                 End If
-                'avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """)"))
-
-                '    Dim proj As New Project
-                '    proj.Init()
-
-                '    Try
-                '        g.ffmsindex(sourePath, cachePath, False, proj)
-                '    Catch ex As AbortException
-                '        Return False
-                '    Finally
-                '        Form.Activate()
-                '    End Try               
             End If
 
             If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
-                avs.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
+                script.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
             End If
 
             If Form.Zoom <> 100 Then
-                avs.Filters.Add(New VideoFilter("Spline64Resize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
+                script.Filters.Add(New VideoFilter("Spline64Resize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
             End If
 
-            avs.Synchronize(True)
-            AVI = New AVIFile(avs.Path)
+            script.Synchronize(True)
+            Server = New FrameServer(script.Path)
 
             Try
                 FileHelp.Delete(sourePath + ".ffindex")
             Catch ex As Exception
             End Try
 
-            If Form.TrackBar.Maximum < AVI.FrameCount - 1 Then
-                Form.TrackBar.Maximum = AVI.FrameCount - 1
+            If Form.TrackBar.Maximum < Server.Info.FrameCount - 1 Then
+                Form.TrackBar.Maximum = Server.Info.FrameCount - 1
             End If
 
             Dim csvFile = sourePath.DirAndBase + ".csv"
@@ -327,11 +320,13 @@ Public Class VideoComparisonForm
 
         Sub Draw()
             Dim padding As Padding
-            Dim sizeToFit = New Size(AVI.FrameSize.Width, AVI.FrameSize.Height)
+            Dim sizeToFit = New Size(Server.Info.Width, Server.Info.Height)
 
-            Dim rect As New Rectangle(padding.Left, padding.Top,
-                                      Width - padding.Horizontal,
-                                      Height - padding.Vertical)
+            Dim rect As New Rectangle(
+                padding.Left, padding.Top,
+                Width - padding.Horizontal,
+                Height - padding.Vertical)
+
             Dim targetPoint As Point
             Dim targetSize As Size
             Dim ar1 = rect.Width / rect.Height
@@ -361,13 +356,18 @@ Public Class VideoComparisonForm
         End Sub
 
         Function GetBitmap() As Bitmap
-            Dim ret = AVI.GetBitmap
+            Dim ret = BitmapUtil.CreateBitmap(Server, Pos)
+            ret.RotateFlip(RotateFlipType.RotateNoneFlipY)
 
             Using g = Graphics.FromImage(ret)
                 g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
                 Dim text = FilePath.GetBase(SourceFile)
                 Dim fontSize = ret.Height \ 100
-                If fontSize < 10 Then fontSize = 10
+
+                If fontSize < 10 Then
+                    fontSize = 10
+                End If
+
                 Dim font = New Font("Arial", fontSize)
                 Dim size = g.MeasureString(text, font)
                 Dim rect = New RectangleF(font.Height \ 2, font.Height \ 2, size.Width, size.Height)
@@ -379,7 +379,7 @@ Public Class VideoComparisonForm
         End Function
 
         Sub TrackBarValueChanged()
-            AVI.Position = Form.TrackBar.Value
+            Pos = Form.TrackBar.Value
 
             Try
                 Draw()
@@ -397,8 +397,8 @@ Public Class VideoComparisonForm
                 Form.lInfo.Text = FrameInfo(Form.TrackBar.Value)
             Else
                 Dim d As Date
-                d = d.AddSeconds(AVI.Position / AVI.FrameRate)
-                Form.lInfo.Text = "Position: " & AVI.Position & ", Time: " + d.ToString("HH:mm:ss.fff") + ", Size: " & AVI.FrameSize.Width & " x " & AVI.FrameSize.Height
+                d = d.AddSeconds(Pos / Server.FrameRate)
+                Form.lInfo.Text = "Position: " & Pos & ", Time: " + d.ToString("HH:mm:ss.fff") + ", Size: " & Server.Info.Width & " x " & Server.Info.Height
             End If
 
             Form.lInfo.Refresh()
@@ -410,7 +410,10 @@ Public Class VideoComparisonForm
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
-            If Not AVI Is Nothing Then AVI.Dispose()
+            If Not Server Is Nothing Then
+                Server.Dispose()
+            End If
+
             MyBase.Dispose(disposing)
         End Sub
     End Class

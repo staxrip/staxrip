@@ -55,10 +55,8 @@ Public Class Audio
         If stream.Language.TwoLetterCode <> "iv" Then ret += " " + stream.Language.ToString
 
         If Not shorten AndAlso path.Length < 200 AndAlso stream.Title <> "" Then
-            ret += " {" + stream.Title.Shorten(50) + "}"
+            ret += " {" + stream.Title.Shorten(50).EscapeIllegalFileSysChars + "}"
         End If
-
-        If Not FilePath.IsValidFileSystemName(ret) Then ret = FilePath.RemoveIllegalCharsFromName(ret)
 
         Return ret
     End Function
@@ -369,7 +367,7 @@ Public Class Audio
         d.RemoveFilter("Cutting")
         Dim outPath = p.TempDir + ap.File.Base + "_convFFAudioSource." + ap.ConvertExt
         d.Path = p.TempDir + ap.File.Base + "_DecodeFFAudioSource.avs"
-        d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))
+        d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile=""" + cachefile + """))"))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
@@ -435,7 +433,7 @@ Public Class Audio
         d.Filters.AddRange(p.Script.Filters)
         Dim wavPath = p.TempDir + ap.File.Base + "_cut_ff.wav"
         d.Path = p.TempDir + ap.File.Base + "_cut_ff.avs"
-        d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile = """ + cachefile + """))"))
+        d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile=""" + cachefile + """))"))
         If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
         d.Synchronize()
 
@@ -464,7 +462,9 @@ Public Class Audio
         If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
 
         Dim aviPath = p.TempDir + ap.File.Base + "_cut_mm.avi"
-        Dim args = String.Format("-f lavfi -i color=c=black:s=16x16:d={0}:r={1} -y -hide_banner -c:v copy " + aviPath.Escape, (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture), p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture))
+        Dim d = (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture)
+        Dim r = p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture)
+        Dim args = $"-f lavfi -i color=c=black:s=16x16:d={d}:r={r} -y -hide_banner -c:v copy " + aviPath.Escape
 
         Using proc As New Proc
             proc.Header = "Create avi file for audio cutting"

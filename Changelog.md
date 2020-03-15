@@ -1,5 +1,14 @@
 
-### 2.0.8.11 Beta not yet released
+### 2.0.8.13 Beta not yet released
+
+
+
+### 2.0.8.12 Beta
+
+- fix: external avs/vpy scripts that use relative instead of
+       absolute paths failed to load
+
+### 2.0.8.11 Beta
 
 - new: Version is shown in main dialog title bar
 

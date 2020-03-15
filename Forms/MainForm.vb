@@ -1869,11 +1869,6 @@ Public Class MainForm
                     If match.Success Then
                         Dim path = match.Groups(2).Value
 
-                        If Not path.Contains("\") AndAlso File.Exists(p.SourceFile.Dir + path) Then
-                            p.TempDir = p.SourceFile.Dir
-                            path = p.SourceFile.Dir + path
-                        End If
-
                         If File.Exists(path) AndAlso FileTypes.Video.Contains(path.Ext) Then
                             If FileTypes.VideoIndex.Contains(path.Ext) Then
                                 path = GetPathFromIndexFile(path)
@@ -4052,7 +4047,10 @@ Public Class MainForm
 
             Dim tempDirFunc = Function()
                                   Dim tempDir = g.BrowseFolder(p.TempDir)
-                                  If tempDir <> "" Then Return tempDir.FixDir + "%source_name%_temp"
+
+                                  If tempDir <> "" Then
+                                      Return tempDir.FixDir + "%source_name%_temp"
+                                  End If
                               End Function
 
             tm = ui.AddTextMenu(pathPage)
@@ -4154,8 +4152,13 @@ Public Class MainForm
             If form.ShowDialog() = DialogResult.OK Then
                 ui.Save()
 
-                If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then p.CompCheckRange = 5
-                If p.TempDir <> "" Then p.TempDir = p.TempDir.FixDir
+                If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then
+                    p.CompCheckRange = 5
+                End If
+
+                If p.TempDir <> "" Then
+                    p.TempDir = p.TempDir.FixDir
+                End If
 
                 UpdateSizeOrBitrate()
                 tbBitrate_TextChanged()

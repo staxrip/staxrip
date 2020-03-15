@@ -1255,24 +1255,26 @@ Public Class AudioForm
             ffmpegNormalize.Text = "Normalize Method:"
             ffmpegNormalize.Property = NameOf(TempProfile.Params.ffNormalizeMode)
 
-            ui.AddLabel("EBU R128 loudness normalization (loudnorm):")
+            ui.CreateFlowPage("ffmpeg | loudnorm", True)
+
+            ui.AddLabel("EBU R128 Loudness Normalization")
 
             Dim helpUrl = "https://www.ffmpeg.org/ffmpeg-filters.html#loudnorm"
 
             Dim n = ui.AddNum()
-            n.Text = "   Integrated"
+            n.Text = "Integrated"
             n.Help = helpUrl
             n.Config = {0, 0, 0.1, 1}
             n.Property = NameOf(TempProfile.Params.ffmpegLoudnormIntegrated)
 
             n = ui.AddNum()
-            n.Text = "   True Peak"
+            n.Text = "True Peak"
             n.Help = helpUrl
             n.Config = {0, 0, 0.1, 1}
             n.Property = NameOf(TempProfile.Params.ffmpegLoudnormTruePeak)
 
             n = ui.AddNum()
-            n.Text = "   LRA"
+            n.Text = "LRA"
             n.Help = helpUrl
             n.Config = {0, 0, 0.1, 1}
             n.Property = NameOf(TempProfile.Params.ffmpegLoudnormLRA)

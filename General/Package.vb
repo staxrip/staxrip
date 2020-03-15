@@ -1779,7 +1779,9 @@ Public Class Package
                 Next
             Next
         Catch ex As Exception
-            g.ShowException(ex)
+            MsgError("You are running a StaxRip version that don't has any apps included!" + BR2 +
+                     "Please download and use a StaxRip version that has all required apps included." + BR2 +
+                     "The Apps are expected to be located in a directory called 'Apps' in the startup folder besides the StaxRip executable.")
         End Try
     End Sub
 

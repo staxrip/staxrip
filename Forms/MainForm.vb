@@ -1579,11 +1579,13 @@ Public Class MainForm
 
         Log = p.Log
 
-        If File.Exists(Folder.Temp + "staxrip.log") Then FileHelp.Delete(Folder.Temp + "staxrip.log")
+        If File.Exists(Folder.Temp + "staxrip.log") Then
+            FileHelp.Delete(Folder.Temp + "staxrip.log")
+        End If
 
         SetBindings(p, True)
 
-        Text = Application.ProductName + " - " + path.Base
+        Text = path.Base + " - " + Application.ProductName + " " + Application.ProductVersion
         SkipAssistant = True
 
         If path.StartsWith(Folder.Template) Then
@@ -3486,7 +3488,7 @@ Public Class MainForm
         Try
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
-            Text = Application.ProductName + " x64 - " + path.Base
+            Text = path.Base + " - " + Application.ProductName + " " + Application.ProductVersion
             s.UpdateRecentProjects(path)
             UpdateRecentProjectsMenu()
         Catch ex As Exception

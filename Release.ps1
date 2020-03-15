@@ -51,7 +51,19 @@ if ($LastExitCode)
     throw $LastExitCode
 }
 
-$releaseType = if ($versionInfo.FilePrivatePart -ne 0) { 'beta' } else { 'stable' }
+if ($versionInfo.FilePrivatePart -gt 9)
+{
+    $releaseType = 'beta-without-apps'
+}
+elseif ($versionInfo.FilePrivatePart -ne 0)
+{
+    $releaseType = 'beta'
+}
+else
+{
+    $releaseType = 'stable'
+}
+
 $desktopDir  = [Environment]::GetFolderPath('Desktop')
 $targetDir   = $desktopDir + '\StaxRip-x64-' + $versionInfo.FileVersion + '-' + $releaseType
 
@@ -95,6 +107,12 @@ foreach ($item in (Get-ChildItem $targetDir -Recurse))
 }
 
 Get-ChildItem $targetDir -Filter *.ini -Recurse | foreach { throw $_ }
+
+if ($versionInfo.FilePrivatePart -gt 9)
+{
+    Remove-Item ($targetDir + '\Apps') -Recurse
+}
+
 $7z = 'C:\Program Files\7-Zip\7z.exe'
 & $7z a -t7z -mx9 "$targetDir.7z" -r "$targetDir\*"
 
@@ -103,7 +121,7 @@ if ($LastExitCode)
     throw $LastExitCode
 }
 
-if ($releaseType -eq 'beta')
+if ($releaseType -eq 'beta' -or $releaseType -eq 'beta-without-apps')
 {
     if (Test-Path 'D:\Projekte\VB\StaxRip')
     {
@@ -127,6 +145,11 @@ if ($releaseType -eq 'beta')
             }
 
             Copy-Item "$targetDir.7z" $targetFile
+            explorer.exe $outputDirectory
         }
+
+        Set-Clipboard ($versionInfo.FileVersion + "`n`n" +
+            'https://github.com/staxrip/staxrip/blob/master/Changelog.md' + "`n`n" +
+            'https://staxrip.readthedocs.io/intro.html#download')
     }
 }

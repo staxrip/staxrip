@@ -1,6 +1,8 @@
 
 ### 2.0.8.11 Stable
 
+- new: Version is shown in main dialog title bar
+
 - fix: event command issue
 
 ### 2.0.8.0 Stable

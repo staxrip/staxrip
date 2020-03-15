@@ -1,5 +1,5 @@
 
-### 2.0.8.11 Stable
+### 2.0.8.11 Beta not yet released
 
 - new: Version is shown in main dialog title bar
 

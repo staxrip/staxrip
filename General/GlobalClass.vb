@@ -133,6 +133,8 @@ Public Class GlobalClass
             End Try
 
             Log.Save()
+
+            g.RaiseAppEvent(ApplicationEvent.VideoEncoded)
             p.VideoEncoder.Muxer.Mux()
 
             If p.SaveThumbnails Then
@@ -231,7 +233,6 @@ Public Class GlobalClass
             End If
 
             p.VideoEncoder.Encode()
-            g.RaiseAppEvent(ApplicationEvent.VideoEncoded)
         End If
     End Sub
 

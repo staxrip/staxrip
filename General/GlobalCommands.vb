@@ -695,7 +695,7 @@ Switches
                       <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
                       path As String)
 
-        g.MainForm.BeginInvoke(Sub() p.TargetFile = Macro.Expand(path))
+        p.TargetFile = Macro.Expand(path)
     End Sub
 
     <Command("Loads the source file.")>

@@ -1,4 +1,8 @@
 
+### 2.0.8.11 Stable
+
+- fix: event command issue
+
 ### 2.0.8.0 Stable
 
 - fix: using Event Command After Encoded with SetTargetFile

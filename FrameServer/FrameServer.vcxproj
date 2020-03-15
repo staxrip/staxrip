@@ -46,7 +46,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\bin</OutDir>
+    <OutDir>..\bin\</OutDir>
     <IncludePath>C:\Users\frank\AppData\Local\Programs\VapourSynth\sdk\include\vapoursynth;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -54,7 +54,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\Users\frank\AppData\Local\Programs\VapourSynth\sdk\include\vapoursynth;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
-    <OutDir>..\bin</OutDir>
+    <OutDir>..\bin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

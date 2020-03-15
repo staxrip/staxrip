@@ -363,7 +363,7 @@ Public Class Calc
             Dim xval As String
 
             If x = 8 OrElse x = -8 Then
-                xval = "�8"
+                xval = "8"
             ElseIf x > 0 Then
                 xval = "+" & x
             Else
@@ -374,7 +374,7 @@ Public Class Calc
             Dim yval As String
 
             If y = 8 OrElse y = -8 Then
-                yval = "�8"
+                yval = "8"
             ElseIf y > 0 Then
                 yval = "+" & y
             Else

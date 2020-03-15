@@ -372,7 +372,7 @@ Public Class Package
         .Name = "vinverse",
         .Filename = "vinverse.dll",
         .WebURL = "http://avisynth.nl/index.php/Vinverse",
-        .Description = "A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Did�e and then written as a plugin by tritical.",
+        .Description = "Simple but effective plugin to remove residual combing.",
         .AvsFilterNames = {"vinverse", "vinverse2"},
         .AvsFiltersFunc = Function() {New VideoFilter("Restoration", "RCR | Vinverse", "$select:Vinverse|vinverse(sstr=2.7, amnt=255, uv=3, scl=0.25);Vinverse2|vinverse2(sstr=2.7, amnt=255, uv=3, scl=0.25)$")}})
 
@@ -1190,7 +1190,7 @@ Public Class Package
             .Name = "QTGMC",
             .Filename = "QTGMC.avsi",
             .WebURL = "http://avisynth.nl/index.php/QTGMC",
-            .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Did�e.",
+            .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Dide.",
             .AvsFilterNames = {"QTGMC"},
             .AvsFiltersFunc = Function() {
                 New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(preset=""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, sourceMatch=3, sharpness=0.2, tr2=2, ediThreads=8)"),

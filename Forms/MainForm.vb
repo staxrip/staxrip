@@ -4334,7 +4334,6 @@ Public Class MainForm
         ret.Add("Tools|Advanced", Symbol.More)
 
         If Application.StartupPath.EndsWith("\bin") Then
-            ret.Add("Tools|Advanced|Release...", NameOf(g.DefaultCommands.Release), Keys.F11)
             ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         End If
 

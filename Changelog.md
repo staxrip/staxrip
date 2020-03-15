@@ -4,6 +4,7 @@
 - new: Version is shown in main dialog title bar
 
 - fix: event command issue
+- fix: layout and usability issue in audio dialog (Patman)
 
 ### 2.0.8.0 Stable
 

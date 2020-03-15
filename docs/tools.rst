@@ -1261,7 +1261,7 @@ http://avisynth.nl/index.php/PSharpen
 QTGMC
 ~~~~~
 
-A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Did�e.
+A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Dide.
 
 Filters: QTGMC
 
@@ -1477,7 +1477,7 @@ http://avisynth.nl/index.php/VapourSource
 vinverse
 ~~~~~~~~
 
-A modern rewrite of a simple but effective plugin to remove residual combing originally based on an AviSynth script by Did�e and then written as a plugin by tritical.
+Simple but effective plugin to remove residual combing.
 
 Filters: vinverse, vinverse2
 

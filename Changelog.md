@@ -1,14 +1,23 @@
 
-### 2.0.8.13 Beta not yet released
+### 2.0.8.14 Beta not yet released
 
 
 
-### 2.0.8.12 Beta
+### 2.0.8.13 Beta without apps
+
+- new: Check for Updates added to main menu in Help section
+
+- fix: QTGMC did not work on systems without AVX2
+- fix: Window position of the main dialog was not remembered
+- fix: FrameServer.dll again released as debug build because
+       of a bug in the new release script
+
+### 2.0.8.12 Beta without apps
 
 - fix: external avs/vpy scripts that use relative instead of
        absolute paths failed to load
 
-### 2.0.8.11 Beta
+### 2.0.8.11 Beta without apps
 
 - new: Version is shown in main dialog title bar
 

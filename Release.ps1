@@ -44,7 +44,7 @@ $versionInfo = [Diagnostics.FileVersionInfo]::GetVersionInfo($exeFile)
 $vsDir       = 'C:\Program Files (x86)\Microsoft Visual Studio\2019'
 $msBuild     = $vsDir + '\Community\MSBuild\Current\Bin\MSBuild.exe'
 
-& $msBuild ($PSScriptRoot + '\StaxRip.sln') /p:Configuration=Release /p:Platform=x64
+& $msBuild ($PSScriptRoot + '\StaxRip.sln') -t:Rebuild -p:Configuration=Release -p:Platform=x64
 
 if ($LastExitCode)
 {

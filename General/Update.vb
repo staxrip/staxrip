@@ -13,11 +13,13 @@ Public Class Update
         End If
     End Sub
 
-    Shared Async Sub CheckForUpdates()
+    Shared Async Sub CheckForUpdate(Optional force As Boolean = False)
         Try
-            If Not s.CheckForUpdates Then Exit Sub
+            If Not s.CheckForUpdates AndAlso Not force Then
+                Exit Sub
+            End If
 
-            If (DateTime.Now - s.CheckForUpdatesLastRequest).TotalHours > 24 Then
+            If (DateTime.Now - s.CheckForUpdatesLastRequest).TotalHours > 24 OrElse force Then
                 Dim response = Await HttpClient.GetAsync("https://github.com/staxrip/staxrip/releases")
                 response.EnsureSuccessStatusCode()
                 Dim content = Await response.Content.ReadAsStringAsync()
@@ -26,7 +28,7 @@ Public Class Update
                 Dim currentVersion = Reflection.Assembly.GetEntryAssembly.GetName.Version
 
                 If onlineVersion > currentVersion AndAlso (s.CheckForUpdatesDismissed = "" OrElse
-                    Version.Parse(s.CheckForUpdatesDismissed) <> onlineVersion) Then
+                    Version.Parse(s.CheckForUpdatesDismissed) <> onlineVersion OrElse force) Then
 
                     Using td As New TaskDialog(Of String)
                         td.MainInstruction = "A newer version was found online: " + match.Groups(1).Value
@@ -40,6 +42,8 @@ Public Class Update
                                 s.CheckForUpdatesDismissed = onlineVersion.ToString
                         End Select
                     End Using
+                ElseIf force Then
+                    MsgInfo("No update available.")
                 End If
 
                 s.CheckForUpdatesLastRequest = DateTime.Now

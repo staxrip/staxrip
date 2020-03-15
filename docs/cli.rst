@@ -169,12 +169,6 @@ Filepath: Filepath To a mp3, wav Or wmv sound file.
 Plays a mp3, wav Or wmv sound file.
 
 
--Release
-~~~~~~~~
-
-Release
-
-
 -ResetSettings
 ~~~~~~~~~~~~~~
 

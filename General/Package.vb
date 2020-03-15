@@ -579,13 +579,14 @@ Public Class Package
                                    DCTFilter.Required OrElse
                                    DCTFilterF.Required OrElse
                                    DCTFilterVS.Required OrElse
-                                   DFTTest.Required OrElse
                                    DFTTestAvs.Required OrElse
+                                   DFTTestVS.Required OrElse
                                    FFT3DFilter.Required OrElse
                                    FFT3DGPU.Required OrElse
                                    havsfunc.Required OrElse
                                    MCTemporalDenoise.Required OrElse
                                    muvsfunc.Required OrElse
+                                   QTGMC.Required OrElse
                                    SMDegrain.Required
                         End Function,
         .SetupAction = Sub()
@@ -613,6 +614,16 @@ Public Class Package
         .VSFiltersFunc = Function() {
             New VideoFilter("Field", "QTGMC | QTGMC", $"clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF{BR}clip = havsfunc.QTGMC(clip, TFF=True, Preset='$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$', InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2)"),
             New VideoFilter("Field", "QTGMC | QTGMC with Repair", $"clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF{BR}QTGMC1 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=2){BR}QTGMC2 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=3){BR}clip = core.rgvs.Repair(QTGMC1,QTGMC2, mode=1)")}})
+
+    Shared Property QTGMC As Package = Add(New PluginPackage With {
+        .Name = "QTGMC",
+        .Filename = "QTGMC.avsi",
+        .WebURL = "http://avisynth.nl/index.php/QTGMC",
+        .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Dide.",
+        .AvsFilterNames = {"QTGMC"},
+        .AvsFiltersFunc = Function() {
+            New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(preset=""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, sourceMatch=3, sharpness=0.2, tr2=2, ediThreads=8)"),
+            New VideoFilter("Field", "QTGMC | QTGMC With Repair", "QTGMC1 = QTGMC(preset=""Slower"", inputType=2)" + BR + "QTGMC2 = QTGMC(preset=""Slower"", inputType=3, prevGlobals=""Reuse"")" + BR + "$select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Repair16(QTGMC1, QTGMC2, 1)$")}})
 
     Shared Property LSmashWorks As Package = Add(New PluginPackage With {
         .Name = "L-SMASH-Works",
@@ -682,7 +693,7 @@ Public Class Package
             New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain With Motion Vectors", "super_search = Dither_Luma_Rebuild(S0=1.0, c=0.0625).MSuper(rfilter=4)" + BR + "bv2 = super_search.MAnalyse(isb=true,  delta=2, overlap=4)" + BR + "bv1 = super_search.MAnalyse(isb=true,  delta=1, overlap=4)" + BR + "fv1 = super_search.MAnalyse(isb=false, delta=1, overlap=4)" + BR + "fv2 = super_search.MAnalyse(isb=false, delta=2, overlap=4)" + BR + "MDegrain2(MSuper(levels=1), bv1, fv1, bv2, fv2, thSAD=300, thSADC=150)"),
             New VideoFilter("Noise", "RemoveGrain | SMDegrain | SMDGrain 16Bit", "sharp=last" + BR + "dfttest(tbsize=1, sigma=10, lsb=True)" + BR + "SMDegrain(tr=3, thSAD=300, CClip=sharp, lsb_in=True, lsb_out=True)")}})
 
-    Shared Property DFTTest As Package = Add(New PluginPackage With {
+    Shared Property DFTTestVS As Package = Add(New PluginPackage With {
         .Name = "DFTTest",
         .Filename = "DFTTest.dll",
         .Description = "VapourSynth port of dfttest.",
@@ -1185,16 +1196,6 @@ Public Class Package
             .HelpFilename = "Readme.txt",
             .AvsFilterNames = {"MSharpen"},
             .AvsFiltersFunc = Function() {New VideoFilter("Line", "Sharpen | MSharpen", "MSharpen(threshold=10, strength=100, highq=true, mask=false)")}})
-
-        Add(New PluginPackage With {
-            .Name = "QTGMC",
-            .Filename = "QTGMC.avsi",
-            .WebURL = "http://avisynth.nl/index.php/QTGMC",
-            .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Dide.",
-            .AvsFilterNames = {"QTGMC"},
-            .AvsFiltersFunc = Function() {
-                New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(preset=""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, sourceMatch=3, sharpness=0.2, tr2=2, ediThreads=8)"),
-                New VideoFilter("Field", "QTGMC | QTGMC With Repair", "QTGMC1 = QTGMC(preset=""Slower"", inputType=2)" + BR + "QTGMC2 = QTGMC(preset=""Slower"", inputType=3, prevGlobals=""Reuse"")" + BR + "$select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Repair16(QTGMC1, QTGMC2, 1)$")}})
 
         Add(New PluginPackage With {
             .Name = "mClean",

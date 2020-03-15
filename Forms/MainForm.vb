@@ -3036,7 +3036,10 @@ Public Class MainForm
 
     Function AbortDueToLowDiskSpace() As Boolean
         Try 'crashes with network shares
-            If p.TargetFile = "" OrElse p.TargetFile.StartsWith("\\") Then Exit Function
+            If p.TargetFile = "" OrElse p.TargetFile.StartsWith("\\") Then
+                Exit Function
+            End If
+
             Dim di As New DriveInfo(p.TargetFile.Dir)
 
             If di.AvailableFreeSpace / 1024 ^ 3 < s.MinimumDiskSpace Then
@@ -4336,6 +4339,8 @@ Public Class MainForm
         ret.Add("Tools|Folders|Temp", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%temp_dir%"""})
         ret.Add("Tools|Folders|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%working_dir%"""})
 
+        ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
+
         ret.Add("Tools|Advanced", Symbol.More)
 
         If Application.StartupPath.EndsWith("\bin") Then
@@ -4350,7 +4355,6 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
         ret.Add("Tools|Advanced|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_terminal)
 
-        ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
 
@@ -4378,6 +4382,7 @@ Public Class MainForm
         ret.Add("Help|Docs", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Lightbulb, {"http://staxrip.readthedocs.io"})
         ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Globe, {"https://github.com/staxrip/staxrip"})
         ret.Add("Help|Apps", NameOf(DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
+        ret.Add("Help|Check for Updates", NameOf(g.DefaultCommands.CheckForUpdate))
         ret.Add("Help|-")
         ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})
 
@@ -6075,7 +6080,7 @@ Public Class MainForm
         Refresh()
         ProcessCommandLine(Environment.GetCommandLineArgs)
         StaxRip.Update.ShowUpdateQuestion()
-        StaxRip.Update.CheckForUpdates()
+        StaxRip.Update.CheckForUpdate()
         MyBase.OnShown(e)
     End Sub
 

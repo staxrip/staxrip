@@ -8,6 +8,11 @@ Imports Microsoft.Win32
 Imports StaxRip.UI
 
 Public Class GlobalCommands
+    <Command("Checks if a update is available.")>
+    Sub CheckForUpdate()
+        Update.CheckForUpdate(True)
+    End Sub
+
     <Command("Shows the log file with the built in log file viewer.")>
     Sub ShowLogFile()
         If Not File.Exists(p.Log.GetPath()) Then

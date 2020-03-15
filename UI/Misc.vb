@@ -170,17 +170,19 @@ Namespace UI
         Public Positions As New Dictionary(Of String, Point)
         Private WindowStates As New Dictionary(Of String, FormWindowState)
 
-        Sub Save(f As Form)
-            SavePosition(f)
-            SaveWindowState(f)
+        Sub Save(form As Form)
+            SavePosition(form)
+            SaveWindowState(form)
         End Sub
 
-        Private Sub SavePosition(f As Form)
-            If f.WindowState = FormWindowState.Normal Then Positions(GetKey(f)) = f.Location
+        Private Sub SavePosition(form As Form)
+            If form.WindowState = FormWindowState.Normal Then
+                Positions(GetKey(form)) = form.Location
+            End If
         End Sub
 
-        Private Sub SaveWindowState(f As Form)
-            WindowStates(GetKey(f)) = f.WindowState
+        Private Sub SaveWindowState(form As Form)
+            WindowStates(GetKey(form)) = form.WindowState
         End Sub
 
         Private Sub RestorePositionInternal(form As Form)
@@ -200,10 +202,6 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub RestoreWindowState(f As Form)
-            If WindowStates.ContainsKey(GetKey(f)) Then f.WindowState = WindowStates(GetKey(f))
-        End Sub
-
         Shared Sub CenterScreen(form As Form)
             form.StartPosition = FormStartPosition.Manual
             Dim wa = Screen.FromControl(form).WorkingArea
@@ -212,11 +210,11 @@ Namespace UI
         End Sub
 
         Sub RestorePosition(form As Form)
-            Dim v = GetText(form)
+            Dim text = GetText(form)
 
             If Not s.WindowPositionsCenterScreen.NothingOrEmpty AndAlso Not TypeOf form Is InputBoxForm Then
                 For Each i In s.WindowPositionsCenterScreen
-                    If v.StartsWith(i) OrElse i = "all" Then
+                    If text.StartsWith(i) OrElse i = "all" Then
                         CenterScreen(form)
                         Exit For
                     End If
@@ -225,7 +223,7 @@ Namespace UI
 
             If Not s.WindowPositionsRemembered.NothingOrEmpty AndAlso Not TypeOf form Is InputBoxForm Then
                 For Each i In s.WindowPositionsRemembered
-                    If v.StartsWith(i) OrElse i = "all" Then
+                    If text.StartsWith(i) OrElse i = "all" Then
                         RestorePositionInternal(form)
                         Exit For
                     End If
@@ -233,14 +231,20 @@ Namespace UI
             End If
         End Sub
 
-        Function GetKey(f As Form) As String
-            Return f.Name + f.GetType().FullName + GetText(f)
+        Function GetKey(form As Form) As String
+            Return form.Name + form.GetType().FullName + GetText(form)
         End Function
 
-        Function GetText(f As Form) As String
-            If TypeOf f Is HelpForm Then Return "Help"
-            If TypeOf f Is PreviewForm Then Return "Preview"
-            Return f.Text
+        Function GetText(form As Form) As String
+            If TypeOf form Is HelpForm Then
+                Return "Help"
+            ElseIf TypeOf form Is PreviewForm Then
+                Return "Preview"
+            ElseIf TypeOf form Is MainForm Then
+                Return "StaxRip"
+            End If
+
+            Return form.Text
         End Function
     End Class
 

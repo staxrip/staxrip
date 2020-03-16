@@ -809,7 +809,7 @@ Public Class AppsForm
                 form.bnCancel.Visible = False
                 form.LineControl.Visible = False
                 form.HelpButton = False
-                form.Height = CInt(form.FontHeight * 3.4 * paths.Count + form.FontHeight * 2.5)
+                form.Height = CInt(form.FontHeight * 3.6 * paths.Count + form.FontHeight * 2.5)
 
                 Dim ui = form.SimpleUI
 

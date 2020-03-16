@@ -1,7 +1,9 @@
 
-todo: voidtools Everything integration into Apps dialog
+### 2.0.9.?? Beta not yet released
 
-### 2.0.9.11 Beta not yet released
+
+
+### 2.0.9.11 Beta without apps
 
 - fix: the app verification reported that a old tool version
        was found when actually it was a new version

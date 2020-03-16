@@ -383,7 +383,9 @@ Namespace UI
         Private BlockOnTextChanged As Boolean
 
         Protected Overrides Sub OnTextChanged(e As EventArgs)
-            If Not BlockOnTextChanged Then MyBase.OnTextChanged(e)
+            If Not BlockOnTextChanged Then
+                MyBase.OnTextChanged(e)
+            End If
         End Sub
     End Class
 

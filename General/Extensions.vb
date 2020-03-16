@@ -183,8 +183,8 @@ Module StringExtensions
             Return ""
         End If
 
-        While instance.Contains(DirPath.Separator + DirPath.Separator)
-            instance = instance.Replace(DirPath.Separator + DirPath.Separator, DirPath.Separator)
+        While instance.EndsWith(DirPath.Separator + DirPath.Separator)
+            instance = instance.Substring(0, instance.Length - 1)
         End While
 
         If instance.EndsWith(DirPath.Separator) Then

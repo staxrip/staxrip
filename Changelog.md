@@ -1,7 +1,11 @@
 
-### 2.0.9.10 Beta not yet released
+### 2.0.9.11 Beta not yet released
 
 
+
+### 2.0.9.10 Beta without apps
+
+- fix: issue with network paths
 
 ### 2.0.9.1 Beta
 

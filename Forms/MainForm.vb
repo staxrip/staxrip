@@ -1670,7 +1670,9 @@ Public Class MainForm
     Function GetPathFromIndexFile(sourcePath As String) As String
         For Each i In File.ReadAllLines(sourcePath)
             If i.Contains(":\") OrElse i.StartsWith("\\") Then
-                If Regex.IsMatch(i, "^.+ \d+$") Then i = i.LeftLast(" ")
+                If Regex.IsMatch(i, "^.+ \d+$") Then
+                    i = i.LeftLast(" ")
+                End If
 
                 If File.Exists(i) AndAlso FileTypes.Video.Contains(i.Ext) Then
                     Return i

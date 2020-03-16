@@ -797,7 +797,7 @@ Public Class PreviewForm
         Dim script = PreviewScript.GetNewScript()
         script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
         UpdateTrim(script)
-        g.PlayScriptWithMPV(script, "--start=" + GetPlayPosition.ToString)
+        g.PlayScriptWithMPV(script, "--start=" + GetPlayPosition.ToString.TrimEnd("0"c))
     End Sub
 
     <Command("Plays the script with MPC.")>
@@ -1132,7 +1132,13 @@ Public Class PreviewForm
                     If current.End < Renderer.Position Then
                         frames += current.End - current.Start
                     Else
-                        Return TimeSpan.FromSeconds((frames + (Renderer.Position - current.Start)) / FrameServer.FrameRate)
+                        Dim pos = Renderer.Position
+
+                        If pos = current.End AndAlso x = p.Ranges.Count - 1 Then
+                            pos -= 2
+                        End If
+
+                        Return TimeSpan.FromSeconds((frames + (pos - current.Start)) / FrameServer.FrameRate)
                     End If
                 Next
             End If

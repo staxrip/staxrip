@@ -1119,7 +1119,13 @@ Public Class PreviewForm
 
     Function GetPlayPosition() As TimeSpan
         If p.Ranges.Count = 0 Then
-            Return TimeSpan.FromSeconds(Renderer.Position / FrameServer.FrameRate)
+            Dim pos = Renderer.Position
+
+            If pos = FrameServer.Info.FrameCount - 1 Then
+                pos -= 2
+            End If
+
+            Return TimeSpan.FromSeconds(pos / FrameServer.FrameRate)
         Else
             If GetCurrentRange() Is Nothing Then
                 Return TimeSpan.Zero

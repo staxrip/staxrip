@@ -1470,11 +1470,7 @@ Public Class ObjectStorage
         DoubleDictionary(key) = value
     End Sub
 
-    Function GetString(key As String) As String
-        Return GetString(key, Nothing)
-    End Function
-
-    Function GetString(key As String, defaultValue As String) As String
+    Function GetString(key As String, Optional defaultValue As String = Nothing) As String
         If StringDictionary.ContainsKey(key) Then
             Return StringDictionary(key)
         End If
@@ -1483,9 +1479,16 @@ Public Class ObjectStorage
     End Function
 
     Sub SetString(key As String, value As String)
-        StringDictionary(key) = value
+        If value Is Nothing Then
+            If StringDictionary.ContainsKey(key) Then
+                StringDictionary.Remove(key)
+            End If
+        Else
+            StringDictionary(key) = value
+        End If
     End Sub
 End Class
+
 Public Enum CompCheckAction
     [Nothing]
     <DispName("image size")> AdjustImageSize

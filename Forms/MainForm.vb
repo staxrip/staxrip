@@ -3791,6 +3791,7 @@ Public Class MainForm
 
             ui.CreateFlowPage("Image", True)
 
+            'TODO:
             'Dim b = ui.AddBool()
             'Dim b = ui.AddBool()
             'b.Text = "Save Thumbnails"
@@ -4927,7 +4928,7 @@ Public Class MainForm
 
                         For Each i In a
                             If i.Contains(BR) Then
-                                td2.AddCommandLink(i.Left(BR).Trim, i.Right(BR).TrimEnd, a.IndexOf(i) + 1)
+                                td2.AddCommand(i.Left(BR).Trim, i.Right(BR).TrimEnd, a.IndexOf(i) + 1)
                             End If
                         Next
 

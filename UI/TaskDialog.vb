@@ -285,10 +285,8 @@ Public Class TaskDialog(Of T)
         Config.dwFlags = Config.dwFlags Or Flags.TDF_USE_COMMAND_LINKS
     End Sub
 
-    Sub AddCommandLink(text As String,
-                       description As String,
-                       value As T,
-                       Optional setShield As Boolean = False)
+    Sub AddCommand(text As String, description As String, value As T,
+                   Optional setShield As Boolean = False)
 
         Dim id = 1000 + IdValueDic.Count + 1
         IdValueDic(id) = value
@@ -306,11 +304,18 @@ Public Class TaskDialog(Of T)
 
     Function Show() As T
         MarshalDialogControlStructs()
-        Dim isChecked As Boolean
-        Dim hr = TaskDialogIndirect(Config, Nothing, Nothing, isChecked)
-        CheckBoxChecked = isChecked
-        If hr < 0 Then Marshal.ThrowExceptionForHR(hr)
-        If TypeOf SelectedValue Is DialogResult Then SelectedValue = DirectCast(CObj(SelectedID), T)
+        Dim checked As Boolean
+        Dim hr = TaskDialogIndirect(Config, Nothing, Nothing, checked)
+        CheckBoxChecked = checked
+
+        If hr < 0 Then
+            Marshal.ThrowExceptionForHR(hr)
+        End If
+
+        If TypeOf SelectedValue Is DialogResult Then
+            SelectedValue = DirectCast(CObj(SelectedID), T)
+        End If
+
         Return SelectedValue
     End Function
 

@@ -1,8 +1,13 @@
 
+todo: voidtools Everything integration into Apps dialog
+
 ### 2.0.9.11 Beta not yet released
 
 - fix: the app verification reported that a old tool version
        was found when actually it was a new version
+
+- new: the Apps dialog allows to clear custom paths
+- new: the Apps dialog allows to locate files via Everything
 
 ### 2.0.9.10 Beta without apps
 

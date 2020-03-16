@@ -1,4 +1,5 @@
-﻿Imports StaxRip.UI
+﻿
+Imports StaxRip.UI
 
 Public Class SimpleSettingsForm
     Inherits DialogBase
@@ -7,7 +8,7 @@ Public Class SimpleSettingsForm
 
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents SimpleUI As StaxRip.SimpleUI
-    Friend WithEvents LineControl1 As StaxRip.UI.LineControl
+    Friend WithEvents LineControl As StaxRip.UI.LineControl
     Private components As System.ComponentModel.IContainer
     Friend WithEvents tlpMain As TableLayoutPanel
     Friend WithEvents flpButtons As FlowLayoutPanel
@@ -17,7 +18,7 @@ Public Class SimpleSettingsForm
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.SimpleUI = New StaxRip.SimpleUI()
-        Me.LineControl1 = New StaxRip.UI.LineControl()
+        Me.LineControl = New StaxRip.UI.LineControl()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
         Me.tlpMain.SuspendLayout()
@@ -55,20 +56,20 @@ Public Class SimpleSettingsForm
         '
         'LineControl1
         '
-        Me.LineControl1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.LineControl.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LineControl1.Location = New System.Drawing.Point(15, 682)
-        Me.LineControl1.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
-        Me.LineControl1.Name = "LineControl1"
-        Me.LineControl1.Size = New System.Drawing.Size(1161, 30)
-        Me.LineControl1.TabIndex = 5
+        Me.LineControl.Location = New System.Drawing.Point(15, 682)
+        Me.LineControl.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
+        Me.LineControl.Name = "LineControl1"
+        Me.LineControl.Size = New System.Drawing.Size(1161, 30)
+        Me.LineControl.TabIndex = 5
         '
         'tlpMain
         '
         Me.tlpMain.ColumnCount = 1
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.Controls.Add(Me.SimpleUI, 0, 0)
-        Me.tlpMain.Controls.Add(Me.LineControl1, 0, 1)
+        Me.tlpMain.Controls.Add(Me.LineControl, 0, 1)
         Me.tlpMain.Controls.Add(Me.flpButtons, 0, 2)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
@@ -124,19 +125,19 @@ Public Class SimpleSettingsForm
     End Sub
 
     Private Sub SimpleSettingsForm_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
 
         If Not HelpParagraphs Is Nothing Then
             For Each i As String In HelpParagraphs
-                f.Doc.WriteP(i)
+                form.Doc.WriteP(i)
             Next
         End If
 
         If Not SimpleUI.ActivePage.TipProvider Is Nothing Then
-            f.Doc.WriteTips(SimpleUI.ActivePage.TipProvider.GetTips)
+            form.Doc.WriteTips(SimpleUI.ActivePage.TipProvider.GetTips)
         End If
 
-        f.Show()
+        form.Show()
     End Sub
 End Class

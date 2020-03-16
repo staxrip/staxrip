@@ -232,6 +232,15 @@ Public Class SimpleUI
         Return ret
     End Function
 
+    Function AddButton(Optional parent As FlowLayoutPanelEx = Nothing) As ButtonBlock
+        If parent Is Nothing Then parent = GetActiveFlowPage()
+        Dim ret As New ButtonBlock(Me)
+        ret.AutoSize = True
+        ret.UseParenWidth = True
+        parent.Controls.Add(ret)
+        Return ret
+    End Function
+
     Function AddTextButton(Optional parent As FlowLayoutPanelEx = Nothing) As TextButtonBlock
         If parent Is Nothing Then parent = GetActiveFlowPage()
         Dim ret As New TextButtonBlock(Me)
@@ -537,6 +546,13 @@ Public Class SimpleUI
         End Sub
     End Class
 
+    Public Class SimpleUIButton
+        Inherits ButtonEx
+        Implements SimpleUIControl
+
+        Property Expand As Boolean Implements SimpleUIControl.Expand
+    End Class
+
     Public Class SimpleUITextEdit
         Inherits TextEdit
         Implements SimpleUIControl
@@ -769,8 +785,8 @@ Public Class SimpleUI
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            For Each i As Control In Controls
-                i.Margin = New Padding(FontHeight \ 15)
+            For Each ctrl As Control In Controls
+                ctrl.Margin = New Padding(FontHeight \ 15)
             Next
 
             MyBase.OnLayout(levent)
@@ -863,6 +879,17 @@ Public Class SimpleUI
             End If
 
             MyBase.OnLayout(levent)
+        End Sub
+    End Class
+
+    Public Class ButtonBlock
+        Inherits EmptyBlock
+
+        Property Button As SimpleUIButton
+
+        Sub New(ui As SimpleUI)
+            Button = New SimpleUIButton
+            Controls.Add(Button)
         End Sub
     End Class
 

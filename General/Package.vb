@@ -2006,7 +2006,7 @@ Public Class Package
             If FixedDir <> "" Then
                 Return "App not found at '" + FixedDir.TrimEnd("\"c) + "'"
             Else
-                Return "App not found, click 'Path' (F11) to locate the App."
+                Return "App not found, use the Path menu to locate the App."
             End If
         End If
 
@@ -2055,6 +2055,10 @@ Public Class Package
 
         Return Registry.CurrentUser.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
     End Function
+
+    Sub SetStoredPath(value As String)
+        s.Storage.SetString(Name + "custom path", value)
+    End Sub
 
     Function GetStoredPath() As String
         Dim ret As String

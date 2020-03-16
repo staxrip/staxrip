@@ -1,7 +1,8 @@
 
 ### 2.0.9.11 Beta not yet released
 
-
+- fix: the app verification reported that a old tool version
+       was found when actually it was a new version
 
 ### 2.0.9.10 Beta without apps
 

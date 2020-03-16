@@ -997,7 +997,7 @@ http://avisynth.nl/index.php/JincResize
 JPSDR
 ~~~~~
 
-Merge of AutoYUY2, NNEDI3, HDRTools, aWarpSharpMT and ResampleMT
+Merge of AutoYUY2, NNEDI3, HDRTools, aWarpSharpMT and ResampleMT. Included is the W7 AVX variant.
 
 Filters: aBlur, aSobel, AutoYUY2, aWarp, aWarp4, aWarpSharp2, BicubicResizeMT, BilinearResizeMT, BlackmanResizeMT, ConvertLinearRGBtoYUV, ConvertRGB_Hable_HDRtoSDR, ConvertRGB_Mobius_HDRtoSDR, ConvertRGB_Reinhard_HDRtoSDR, ConvertRGBtoXYZ, ConvertXYZ_Hable_HDRtoSDR, ConvertXYZ_Mobius_HDRtoSDR, ConvertXYZ_Reinhard_HDRtoSDR, ConvertXYZ_Scale_HDRtoSDR, ConvertXYZ_Scale_SDRtoHDR, ConvertXYZtoRGB, ConvertXYZtoYUV, ConvertYUVtoLinearRGB, ConvertYUVtoXYZ, DeBicubicResizeMT, DeBilinearResizeMT, DeBlackmanResizeMT, DeGaussResizeMT, DeLanczos4ResizeMT, DeLanczosResizeMT, DeSincResizeMT, DeSpline16ResizeMT, DeSpline36ResizeMT, DeSpline64ResizeMT, GaussResizeMT, Lanczos4ResizeMT, LanczosResizeMT, nnedi3, PointResizeMT, SincResizeMT, Spline16ResizeMT, Spline36ResizeMT, Spline64ResizeMT
 

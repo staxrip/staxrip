@@ -58,7 +58,7 @@ Public Class Package
         .WebURL = "http://www.python.org",
         .HelpSwitch = "-h",
         .Description = "Python is required by VapourSynth.",
-        .SetupFilename = "Installers\python-3.7.6-amd64-webinstall.exe",
+        .SetupFilename = "Installers\python-3.7.7-amd64-webinstall.exe",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirectories = {GetPythonHintDir()}})
 
@@ -1967,10 +1967,14 @@ Public Class Package
         Dim ret As String
 
         If Not IsCorrectVersion() AndAlso Not IgnoreVersion Then
-            If IsOldVersion() AndAlso Not AllowOldVersion Then
-                ret = $"The currently used version of {Name} is not compatible (too old)."
+            If IsOldVersion() Then
+                If Not AllowOldVersion Then
+                    ret = $"The currently used version of {Name} is not compatible (too old)."
+                Else
+                    ret = $"An old {Name} version was found, edit the version by clicking on 'Version' (F12)."
+                End If
             Else
-                ret = $"An old {Name} version was found, edit the version by clicking on 'Version' (F12) if necessary."
+                ret = $"An new {Name} version was found, edit the version by clicking on 'Version' (F12)."
             End If
 
             If SetupFilename <> "" Then

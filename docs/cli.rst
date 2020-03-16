@@ -37,6 +37,12 @@ templateName: Name of the template to be loaded after the job was added. Empty t
 Adds a job to the job list.
 
 
+-CheckForUpdate
+~~~~~~~~~~~~~~~
+
+Checks if a update is available.
+
+
 -ClearJobs
 ~~~~~~~~~~
 

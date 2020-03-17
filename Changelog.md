@@ -1,7 +1,11 @@
 
-### 2.0.9.?? Beta not yet released
+### 2.0.9.13 Beta not yet released
 
 
+
+### 2.0.9.12 Beta without apps
+
+- fix: play issue in prieview
 
 ### 2.0.9.11 Beta without apps
 

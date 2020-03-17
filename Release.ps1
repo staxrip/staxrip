@@ -125,10 +125,8 @@ if ($releaseType -eq 'beta' -or $releaseType -eq 'beta-without-apps')
 {
     if (Test-Path 'D:\Projekte\VB\StaxRip')
     {
-        $outputDirectories = @(
-            "C:\Users\frank\Dropbox\public\StaxRip\Builds",
-            "C:\Users\frank\OneDrive\StaxRip\Builds"
-        )
+        $outputDirectories = 'C:\Users\frank\Dropbox\public\StaxRip\Builds',
+                             'C:\Users\frank\OneDrive\StaxRip\Builds'
 
         foreach ($outputDirectory in $outputDirectories)
         {
@@ -145,11 +143,13 @@ if ($releaseType -eq 'beta' -or $releaseType -eq 'beta-without-apps')
             }
 
             Copy-Item "$targetDir.7z" $targetFile
-            explorer.exe $outputDirectory
+            Invoke-Item $outputDirectory
         }
-
-        Set-Clipboard ($versionInfo.FileVersion + "`n`n" +
-            'https://github.com/staxrip/staxrip/blob/master/Changelog.md' + "`n`n" +
-            'https://staxrip.readthedocs.io/intro.html#download')
     }
 }
+
+Set-Clipboard ($versionInfo.FileVersion + "`n`n" +
+    'https://github.com/staxrip/staxrip/blob/master/Changelog.md' + "`n`n" +
+    'https://staxrip.readthedocs.io/intro.html#download')
+
+Write-Host 'successfully finished' -ForegroundColor Green

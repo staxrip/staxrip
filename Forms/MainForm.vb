@@ -1342,20 +1342,26 @@ Public Class MainForm
     End Function
 
     Sub UpdateRecentProjectsMenu()
-        If Disposing OrElse IsDisposed Then Exit Sub
+        If Disposing OrElse IsDisposed Then
+            Exit Sub
+        End If
 
-        For Each i In CustomMainMenu.MenuItems
-            If i.CustomMenuItem?.MethodName = "DynamicMenuItem" AndAlso
-                i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.RecentProjects) Then
+        For Each mi In CustomMainMenu.MenuItems
+            If mi.CustomMenuItem?.MethodName = "DynamicMenuItem" AndAlso
+                mi.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.RecentProjects) Then
 
-                i.DropDownItems.ClearAndDisplose
+                mi.DropDownItems.ClearAndDisplose
 
                 SyncLock s.RecentProjects
-                    For Each i2 In s.RecentProjects
-                        If File.Exists(i2) AndAlso Not i2.Base = "recover" Then
-                            Dim name = i2
-                            If i2.Length > 70 Then name = "..." + name.Remove(0, name.Length - 70)
-                            i.DropDownItems.Add(New ActionMenuItem(name, Sub() LoadProject(i2)))
+                    For Each recentProj In s.RecentProjects
+                        If File.Exists(recentProj) AndAlso Not recentProj.Base = "recover" Then
+                            Dim name = recentProj
+
+                            If recentProj.Length > 70 Then
+                                name = "..." + name.Remove(0, name.Length - 70)
+                            End If
+
+                            mi.DropDownItems.Add(New ActionMenuItem(name, Sub() LoadProject(recentProj)))
                         End If
                     Next
                 End SyncLock

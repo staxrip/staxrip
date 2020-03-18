@@ -259,7 +259,7 @@ Python
 
 Python is required by VapourSynth.
 
-Used Version: 3.7.6
+Used Version: 3.7.7
 
 http://www.python.org
 

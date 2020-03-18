@@ -69,6 +69,7 @@ Public Class ApplicationSettings
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
     Public WriteDebugLog As Boolean
+    Public LogEventCommand As Boolean
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

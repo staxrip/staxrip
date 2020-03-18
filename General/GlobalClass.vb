@@ -39,11 +39,11 @@ Public Class GlobalClass
             jobs = Job.GetJobs
 
             If jobs.Count = 0 Then
-                g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
+                g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
                 g.ShutdownPC()
             ElseIf Job.ActiveJobs.Count = 0 Then
                 If Process.GetProcessesByName("StaxRip").Count = 1 Then
-                    g.RaiseAppEvent(ApplicationEvent.JobsEncoded)
+                    g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
                     g.ShutdownPC()
                 End If
             Else
@@ -72,6 +72,7 @@ Public Class GlobalClass
     Sub ProcessJob(jobPath As String)
         Try
             g.RaiseAppEvent(ApplicationEvent.BeforeJobProcessed)
+
             Dim startTime = DateTime.Now
 
             If p.BatchMode Then
@@ -135,7 +136,10 @@ Public Class GlobalClass
             Log.Save()
 
             g.RaiseAppEvent(ApplicationEvent.VideoEncoded)
+
             p.VideoEncoder.Muxer.Mux()
+
+            g.RaiseAppEvent(ApplicationEvent.JobMuxed)
 
             If p.SaveThumbnails Then
                 Thumbnails.SaveThumbnails(p.TargetFile, p)
@@ -533,7 +537,11 @@ Public Class GlobalClass
         Try
             SafeSerialization.Serialize(s, g.SettingsFile)
             Dim backupPath = Folder.Settings + "Backup\"
-            If Not Directory.Exists(backupPath) Then Directory.CreateDirectory(backupPath)
+
+            If Not Directory.Exists(backupPath) Then
+                Directory.CreateDirectory(backupPath)
+            End If
+
             FileHelp.Copy(g.SettingsFile, backupPath + "Settings(" + Application.ProductVersion + ").dat")
         Catch ex As Exception
             g.ShowException(ex)
@@ -593,15 +601,21 @@ Public Class GlobalClass
 
     Sub RaiseAppEvent(appEvent As ApplicationEvent)
         Dim scriptPath = Folder.Settings + "Scripts\" + appEvent.ToString + ".ps1"
-        If File.Exists(scriptPath) Then g.DefaultCommands.ExecuteScriptFile(scriptPath)
+
+        If File.Exists(scriptPath) Then
+            g.DefaultCommands.ExecuteScriptFile(scriptPath)
+        End If
 
         For Each i In s.EventCommands
             If i.Enabled AndAlso i.Event = appEvent Then
                 Dim matches = 0
 
-                For Each i2 In i.CriteriaList
-                    i2.PropertyString = Macro.Expand(i2.Macro)
-                    If i2.Eval Then matches += 1
+                For Each criteria In i.CriteriaList
+                    criteria.PropertyString = Macro.Expand(criteria.Macro)
+
+                    If criteria.Eval Then
+                        matches += 1
+                    End If
                 Next
 
                 If (i.CriteriaList.Count = 0 OrElse (i.OrOnly AndAlso matches > 0) OrElse
@@ -610,8 +624,8 @@ Public Class GlobalClass
 
                     Dim command = g.MainForm.CustomMainMenu.CommandManager.GetCommand(i.CommandParameters.MethodName)
 
-                    If p.SourceFile <> "" Then
-                        Log.WriteHeader("Event Command " + i.Name)
+                    If s.LogEventCommand AndAlso p.SourceFile <> "" Then
+                        Log.WriteHeader("Event Command: " + i.Name)
                         Log.WriteLine("Event: " + DispNameAttribute.GetValueForEnum(i.Event))
                         Log.WriteLine("Command: " + command.MethodInfo.Name)
                         Log.WriteLine(command.GetParameterHelp(i.CommandParameters.Parameters))

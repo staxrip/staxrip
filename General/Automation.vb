@@ -47,11 +47,12 @@ End Class
 
 Public Enum ApplicationEvent
     <DispName("After Project Loaded")> ProjectLoaded
-    <DispName("After Project Processed")> JobProcessed
+    <DispName("After Job Processed")> JobProcessed
     <DispName("After Video Encoded")> VideoEncoded
     <DispName("Before Job Processed")> BeforeJobProcessed
     <DispName("After Source Loaded")> AfterSourceLoaded
     <DispName("Application Exit")> ApplicationExit
     <DispName("After Project Or Source Loaded")> ProjectOrSourceLoaded
-    <DispName("After Jobs Encoded")> JobsEncoded
+    <DispName("After Jobs Processed")> JobsProcessed
+    <DispName("After Job Muxed")> JobMuxed
 End Enum

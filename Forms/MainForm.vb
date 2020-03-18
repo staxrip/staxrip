@@ -3227,7 +3227,9 @@ Public Class MainForm
             td.AddCommand(FilePath.GetBase(i), i)
         Next
 
-        If td.Show <> "" Then Return OpenProject(td.SelectedValue, True)
+        If td.Show <> "" Then
+            Return OpenProject(td.SelectedValue, True)
+        End If
     End Function
 
     <Command(Strings.EventCommands)>
@@ -3264,6 +3266,10 @@ Public Class MainForm
             b = ui.AddBool()
             b.Text = "Reverse mouse wheel video seek direction"
             b.Field = NameOf(s.ReverseVideoScrollDirection)
+
+            b = ui.AddBool()
+            b.Text = "Write Event Commands to log file"
+            b.Field = NameOf(s.LogEventCommand)
 
             b = ui.AddBool()
             b.Text = "Enable debug logging"

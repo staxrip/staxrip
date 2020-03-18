@@ -629,13 +629,13 @@ Switches
 
     <Command("Writes a log message to the process window.")>
     Sub WriteLog(
-        <DispName("Header"), Description("Header is optional.")>
+        <DispName("Header"), Description("Header is optional and may contain macros.")>
         header As String,
         <DispName("Message"), Description("Message is optional and may contain macros."),
         Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
         message As String)
 
-        Log.WriteHeader(header)
+        Log.WriteHeader(Macro.Expand(header))
         Log.WriteLine(Macro.Expand(message))
     End Sub
 

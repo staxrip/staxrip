@@ -1971,10 +1971,10 @@ Public Class Package
                 If Not AllowOldVersion Then
                     ret = $"The currently used version of {Name} is not compatible (too old)."
                 Else
-                    ret = $"An old {Name} version was found, edit the version by clicking on 'Version' (F12)."
+                    ret = $"An old {Name} version was found, edit the version by clicking on Version (F12)."
                 End If
             Else
-                ret = $"An new {Name} version was found, edit the version by clicking on 'Version' (F12)."
+                ret = $"An new {Name} version was found, edit the version by clicking on Version (F12)."
             End If
 
             If SetupFilename <> "" Then

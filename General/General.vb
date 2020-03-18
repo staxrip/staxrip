@@ -1031,7 +1031,11 @@ Public Class ErrorAbortException
 
     Sub New(title As String, message As String, Optional proj As Project = Nothing)
         MyBase.New(message)
-        If proj Is Nothing Then proj = p
+
+        If proj Is Nothing Then
+            proj = p
+        End If
+
         Me.Title = title
         proj.Log.WriteHeader(title)
         proj.Log.WriteLine(message)

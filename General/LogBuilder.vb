@@ -57,10 +57,13 @@ Public Class LogBuilder
     End Property
 
     Sub WriteHeader(value As String)
-        StartTime = DateTime.Now
-
         If value <> "" Then
-            If Not EndsWith(BR2) Then Append(BR)
+            StartTime = DateTime.Now
+
+            If Not EndsWith(BR2) Then
+                Append(BR)
+            End If
+
             Append(FormatHeader(value))
         End If
     End Sub
@@ -73,7 +76,10 @@ Public Class LogBuilder
     Shared EnvironmentString As String 'cached due to bug report
 
     Sub WriteEnvironment()
-        If ToString.Contains("- System Environment -") Then Exit Sub
+        If ToString.Contains("- System Environment -") Then
+            Exit Sub
+        End If
+
         WriteHeader("System Environment")
 
         If EnvironmentString = "" Then EnvironmentString =

@@ -1,9 +1,12 @@
 
 ### 2.0.9.13 Beta not yet released
 
+ -fix: Change default values of Early Skip and Psy-RDOQ
+       for various presets (tnatiuk17piano)
+
 - new: when a Event Command executes it writes a log entry,
-       this is now disabled by default but there is a new setting:
-       'Write Event Commands to log file'
+       this is now disabled by default but there is
+       a new setting: 'Write Event Commands to log file'
 
 ### 2.0.9.12 Beta without apps
 

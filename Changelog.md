@@ -1,8 +1,9 @@
 
 todo:
 
-Jobs dialog misses context menu.
-Jobs dialog misses feature to check/uncheck selected list items.
+Jobs dialog misses context menu
+Jobs dialog misses feature to check/uncheck selected list items
+Issue template needs work, maybe learn from mpv
 
 ### 2.0.9.13 Beta not yet released
 

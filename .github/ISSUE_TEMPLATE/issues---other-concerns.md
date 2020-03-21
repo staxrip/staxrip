@@ -1,11 +1,23 @@
----
-name: Issues & Other Concerns
-about: Creating a Report
 
 ---
+name: How to reuest support
+about: How to make a bug report or a feature request
+---
+
+**How to make a bug**
+
+Test if the problem happens only with a particular source file or source file type, if so then upload a sample file. If you cannot upload the file then please install the application [MediaInfo.NET](https://github.com/stax76/MediaInfo.NET) and post media info about the source file.
+
+If the issue happens only under special conditions then please describe how this conditions can be reproduced.
+
+If there is a error message than copy the message if possible, if not then make a screenshot. Ater that search for the log file because it should not only contain the error message but also additional useful debug information. The log file is located in the temp folder and the temp folder is located in the same directory as the source file. The log file ends with _staxrip.log. Visit the wesite pastebin.com and paste the log file content there, use the auto expire feature and set it to one year.
+
+**How to request a feature**
+
+Explain why the feature matters to you and how it should work.
+
 **Notes Before Posting**
 - Only Open an issue if it's tied to Staxrip, If issues is tied to external program or filter. Head to Resp page for that project and open an issue there. 
-- Beta Releases are Not Covered, Beta Are Pre-Releases and Could Contain Bugs. This is the Risk Your Willing to Take When using Beta releases. Beta Concerns should be posted in the forums.
 - If you Require Help with one of the FrameServers, Programs or Scripting Post in the Forums, Rather then opening a ticket here.
   Link: https://forum.doom9.org/showthread.php?t=175845
 - Check your CPU Specs as Well. Many newer Filters are AVX2 Enabled with no AVX1 support(This is espeically True on VapourSynth side. Which will crash the software if your CPU doesn't support it.

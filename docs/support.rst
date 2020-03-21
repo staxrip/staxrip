@@ -1,7 +1,9 @@
 Support
 =======
 
-For bug reports and feature requests please use the `Issue Tracker <https://github.com/staxrip/staxrip/issues>`_. Search for past issues before opening a new issue. Before making a bug report please try the newest Beta Build:
+For bug reports and feature requests please use the `Issue Tracker <https://github.com/staxrip/staxrip/issues>`_.
+
+Before making a bug report please try the newest Beta Build:
 
 https://staxrip.readthedocs.io/intro.html#download
 

@@ -490,6 +490,7 @@ Module StringExtensions
         Return value
     End Function
 
+    'TODO: replace with MD5
     <Extension()>
     Function SHA512Hash(value As String) As String
         Dim crypt = SHA512CryptoServiceProvider.Create()

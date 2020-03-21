@@ -1,4 +1,9 @@
 
+todo:
+
+Jobs dialog misses context menu.
+Jobs dialog misses feature to check/uncheck selected list items.
+
 ### 2.0.9.13 Beta not yet released
 
  -fix: Change default values of Early Skip and Psy-RDOQ

@@ -1,6 +1,8 @@
-Imports StaxRip.UI
+
 Imports System.Threading.Tasks
 Imports System.Text
+
+Imports StaxRip.UI
 
 Public Class MediaInfoFolderViewForm
     Inherits DialogBase
@@ -56,7 +58,6 @@ Public Class MediaInfoFolderViewForm
     Dim Completed As Boolean
     Dim Abort As Boolean
     Dim Files As New List(Of String)
-    Dim Folder As String
 
     Sub New(folder As String)
         MyBase.New()
@@ -81,23 +82,25 @@ Public Class MediaInfoFolderViewForm
             lv.Columns.Add(i)
         Next
 
-        For Each i As ColumnHeader In lv.Columns
-            i.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize)
+        For Each columnHeader As ColumnHeader In lv.Columns
+            columnHeader.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize)
         Next
-
-        Me.Folder = folder
 
         Dim hs As New HashSet(Of String)
 
-        For Each i In Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories)
-            If FileTypes.Audio.Contains(i.Ext) OrElse FileTypes.Video.Contains(i.Ext) Then
-                Files.Add(i)
+        For Each file In Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories)
+            If FileTypes.Audio.Contains(file.Ext) OrElse FileTypes.Video.Contains(file.Ext) Then
+                Files.Add(file)
             Else
-                If i.Ext <> "ini" Then hs.Add(i.Ext)
+                If file.Ext <> "ini" Then
+                    hs.Add(file.Ext)
+                End If
             End If
         Next
 
-        If hs.Count > 0 Then MsgWarn("Unknown file type(s): " + BR2 + hs.Join(", "))
+        If hs.Count > 0 Then
+            MsgWarn("Unknown file type(s): " + BR2 + hs.Join(", "))
+        End If
 
         Dim cms As New ContextMenuStripEx()
         cms.Form = Me
@@ -117,36 +120,30 @@ Public Class MediaInfoFolderViewForm
 
     Sub Populate()
         For x = 0 To Files.Count - 1
-            If Abort Then Exit For
+            If Abort Then
+                Exit For
+            End If
 
-            Dim fp = Files(x)
-            Dim codec = MediaInfo.GetVideoCodec(fp)
-            If codec = "" Then Continue For
+            Dim videoFile = Files(x)
+            Dim videoFormat = MediaInfo.GetVideoFormat(videoFile)
 
-            Using mi As New MediaInfo(fp)
-                Dim audioCodecs = MediaInfo.GetAudioCodecs(fp).Replace(" ", "")
+            If videoFormat = "" Then
+                Continue For
+            End If
+
+            Using mi As New MediaInfo(videoFile)
+                Dim audioCodecs = MediaInfo.GetAudioCodecs(videoFile).Replace(" ", "")
 
                 Dim item As New ListViewItemEx
-                item.Text = " " + fp + " "
+                item.Text = " " + videoFile + " "
                 item.Tag = item.Text
-                item.Path = fp
+                item.Path = videoFile
 
                 Dim width = mi.GetInfo(MediaInfoStreamKind.Video, "Width")
                 Dim height = mi.GetInfo(MediaInfoStreamKind.Video, "Height")
 
-                'If mi.GetAudioCount = 1 Then
-                '    item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Audio, "StreamOrder") + " "))
-                '    item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Audio, "ID") + " "))
-                'ElseIf mi.GetAudioCount > 1 Then
-                '    item.SubItems.Add(GetSubItem(" " + mi.GetAudio(0, "StreamOrder") + " " + mi.GetAudio(1, "StreamOrder") + " "))
-                '    item.SubItems.Add(GetSubItem(" " + mi.GetAudio(0, "ID") + " " + mi.GetAudio(1, "ID") + " "))
-                'Else
-                '    item.SubItems.Add(GetSubItem(" "))
-                '    item.SubItems.Add(GetSubItem(" "))
-                'End If
-
-                item.SubItems.Add(GetSubItem(" " + fp.Ext + " "))
-                item.SubItems.Add(GetSubItem(" " + codec + " "))
+                item.SubItems.Add(GetSubItem(" " + videoFile.Ext + " "))
+                item.SubItems.Add(GetSubItem(" " + videoFormat + " "))
                 item.SubItems.Add(GetSubItem(" " + mi.GetInfo(MediaInfoStreamKind.Video, "DisplayAspectRatio") + " "))
                 item.SubItems.Add(GetSubItem(" " + width, width.ToInt))
                 item.SubItems.Add(GetSubItem(" " + height, height.ToInt))
@@ -165,7 +162,10 @@ Public Class MediaInfoFolderViewForm
 
                 BeginInvoke(Sub()
                                 lv.Items.Add(item)
-                                If lv.Items.Count = 9 Then lv.AutoResizeColumns(False)
+
+                                If lv.Items.Count = 9 Then
+                                    lv.AutoResizeColumns(False)
+                                End If
                             End Sub)
             End Using
         Next
@@ -174,7 +174,10 @@ Public Class MediaInfoFolderViewForm
                    lv.ListViewItemSorter = New ListViewEx.ColumnSorter
                    lv.AutoResizeColumns(False)
                    Completed = True
-                   If Abort Then Close()
+
+                   If Abort Then
+                       Close()
+                   End If
                End Sub)
     End Sub
 
@@ -198,10 +201,12 @@ Public Class MediaInfoFolderViewForm
     End Sub
 
     Sub ShowMediaInfo()
-        If lv.SelectedItems.Count = 0 Then Exit Sub
+        If lv.SelectedItems.Count = 0 Then
+            Exit Sub
+        End If
 
-        Using f As New MediaInfoForm(DirectCast(lv.SelectedItems(0), ListViewItemEx).Path)
-            f.ShowDialog()
+        Using form As New MediaInfoForm(DirectCast(lv.SelectedItems(0), ListViewItemEx).Path)
+            form.ShowDialog()
         End Using
     End Sub
 
@@ -225,7 +230,10 @@ Public Class MediaInfoFolderViewForm
 
     Private Sub MediaInfoFolderViewForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         Abort = True
-        If Not Completed Then e.Cancel = True
+
+        If Not Completed Then
+            e.Cancel = True
+        End If
     End Sub
 
     Public Class ListViewItemEx

@@ -20,7 +20,7 @@ Friend Class JobsForm
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()>
-    Private Sub InitializeComponent()
+    Sub InitializeComponent()
         Me.bnDown = New StaxRip.UI.ButtonEx()
         Me.bnUp = New StaxRip.UI.ButtonEx()
         Me.bnStart = New StaxRip.UI.ButtonEx()
@@ -207,6 +207,7 @@ Friend Class JobsForm
         Dim cms As New ContextMenuStripEx()
         cms.Form = Me
         bnMenu.ContextMenuStrip = cms
+        lv.ContextMenuStrip = cms
 
         AddHandler Disposed, Sub()
                                  FileWatcher.Dispose()
@@ -215,12 +216,16 @@ Friend Class JobsForm
 
         AddHandler lv.ItemRemoved, Sub(item)
                                        Dim fp = DirectCast(item.Tag, StringBooleanPair).Key
-                                       If fp.StartsWith(Folder.Settings + "Batch Projects\") Then FileHelp.Delete(fp)
+
+                                       If fp.StartsWith(Folder.Settings + "Batch Projects\") Then
+                                           FileHelp.Delete(fp)
+                                       End If
                                    End Sub
 
         cms.Add("Select All", Sub() SelectAll(), Keys.Control Or Keys.A, Function() lv.Items.Count > lv.SelectedItems.Count)
         cms.Add("Select None", Sub() SelectNone(), Keys.Shift Or Keys.A, Function() lv.SelectedItems.Count > 0)
         cms.Add("-")
+        cms.Add("Check Selection", Sub() CheckSelection(), Keys.None, Function() lv.SelectedItems.Count > lv.CheckedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count)
         cms.Add("Check All", Sub() CheckAll(), Keys.Control Or Keys.Space, Function() lv.Items.Count > lv.CheckedItems.Count)
         cms.Add("Check None", Sub() CheckNone(), Keys.Shift Or Keys.Space, Function() lv.CheckedItems.Count > 0)
         cms.Add("-")
@@ -244,25 +249,31 @@ Friend Class JobsForm
         FileWatcher.EnableRaisingEvents = True
     End Sub
 
-    Private Sub CheckNone()
+    Sub CheckNone()
         For Each i As ListViewItem In lv.Items
             i.Checked = False
         Next
     End Sub
 
-    Private Sub CheckAll()
+    Sub CheckAll()
         For Each i As ListViewItem In lv.Items
             i.Checked = True
         Next
     End Sub
 
-    Private Sub SelectNone()
+    Sub CheckSelection()
+        For Each i As ListViewItem In lv.SelectedItems
+            i.Checked = True
+        Next
+    End Sub
+
+    Sub SelectNone()
         For Each i As ListViewItem In lv.Items
             i.Selected = False
         Next
     End Sub
 
-    Private Sub SelectAll()
+    Sub SelectAll()
         For Each i As ListViewItem In lv.Items
             i.Selected = True
         Next
@@ -275,7 +286,10 @@ Friend Class JobsForm
 
     Sub Reload(sender As Object, e As FileSystemEventArgs)
         Invoke(Sub()
-                   If IsDisposed Then Exit Sub
+                   If IsDisposed Then
+                       Exit Sub
+                   End If
+
                    IsLoading = True
                    lv.Items.Clear()
                    lv.AddItems(Job.GetJobs())
@@ -285,7 +299,7 @@ Friend Class JobsForm
                End Sub)
     End Sub
 
-    Private Sub UpdateControls()
+    Sub UpdateControls()
         Dim activeJobs = From item In lv.Items.OfType(Of ListViewItem)
                          Where DirectCast(item.Tag, StringBooleanPair).Value
 
@@ -297,11 +311,14 @@ Friend Class JobsForm
     End Sub
 
     Sub SaveJobs()
-        If IsLoading Then Exit Sub
+        If IsLoading Then
+            Exit Sub
+        End If
+
         Dim jobs As New List(Of StringBooleanPair)
 
-        For Each i As ListViewItem In lv.Items
-            jobs.Add(DirectCast(i.Tag, StringBooleanPair))
+        For Each item As ListViewItem In lv.Items
+            jobs.Add(DirectCast(item.Tag, StringBooleanPair))
         Next
 
         FileWatcher.EnableRaisingEvents = False
@@ -309,7 +326,7 @@ Friend Class JobsForm
         FileWatcher.EnableRaisingEvents = True
     End Sub
 
-    Private Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
+    Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
         If Not s.Storage.GetBool("proc form help") Then
             ShowHelp()
             s.Storage.SetBool("proc form help", True)
@@ -327,7 +344,7 @@ Friend Class JobsForm
         End If
     End Sub
 
-    Private Sub bnLoad_Click(sender As Object, e As EventArgs) Handles bnLoad.Click
+    Sub bnLoad_Click(sender As Object, e As EventArgs) Handles bnLoad.Click
         g.MainForm.LoadProject(lv.SelectedItem.ToString)
         Close()
     End Sub
@@ -339,7 +356,7 @@ Friend Class JobsForm
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged
     End Sub
 
-    Private Sub JobsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+    Sub JobsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         ShowHelp()
     End Sub
 

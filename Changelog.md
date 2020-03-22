@@ -1,18 +1,21 @@
 
-todo:
+### 2.1.0.2 Beta not yet released
 
-Jobs dialog misses context menu
-Jobs dialog misses feature to check/uncheck selected list items
-Issue template needs work, maybe learn from mpv
+### 2.1.0.1 Beta
 
-### 2.0.9.13 Beta not yet released
+- fix: MediaInfo Folder View was broken and main window
+       did not show the video codec, both had the same reason
 
- -fix: Change default values of Early Skip and Psy-RDOQ
+- fix: Change default values of Early Skip and Psy-RDOQ
        for various presets (tnatiuk17piano)
 
 - new: when a Event Command executes it writes a log entry,
        this is now disabled by default but there is
        a new setting: 'Write Event Commands to log file'
+
+- new: in the Jobs dialog there is a button that shows a menu,
+       this menu now also shows as context menu via right-click
+       and it has a new menu item to check the selected list items
 
 ### 2.0.9.12 Beta without apps
 

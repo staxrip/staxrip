@@ -1905,7 +1905,7 @@ Public Class MainForm
                 p.SourcePAR.Y = 1000
             End If
 
-            p.Codec = MediaInfo.GetVideoCodec(p.LastOriginalSourceFile)
+            p.Codec = MediaInfo.GetVideoFormat(p.LastOriginalSourceFile)
             p.CodecProfile = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format_Profile")
             p.BitDepth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitDepth").ToInt
             p.ColorSpace = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ColorSpace")
@@ -6046,14 +6046,14 @@ Public Class MainForm
 
     <Command("Presents MediaInfo of all files in a folder in a list view.")>
     Sub ShowMediaInfoFolderViewDialog()
-        Using d As New FolderBrowserDialog
-            d.ShowNewFolderButton = False
-            d.SetSelectedPath(s.Storage.GetString("MediaInfo Folder View folder"))
+        Using dialog As New FolderBrowserDialog
+            dialog.ShowNewFolderButton = False
+            dialog.SetSelectedPath(s.Storage.GetString("MediaInfo Folder View folder"))
 
-            If d.ShowDialog = DialogResult.OK Then
-                s.Storage.SetString("MediaInfo Folder View folder", d.SelectedPath)
-                Dim f As New MediaInfoFolderViewForm(d.SelectedPath.FixDir)
-                f.Show()
+            If dialog.ShowDialog = DialogResult.OK Then
+                s.Storage.SetString("MediaInfo Folder View folder", dialog.SelectedPath)
+                Dim form As New MediaInfoFolderViewForm(dialog.SelectedPath.FixDir)
+                form.Show()
             End If
         End Using
     End Sub

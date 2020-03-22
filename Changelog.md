@@ -14,8 +14,9 @@
        a new setting: 'Write Event Commands to log file'
 
 - new: in the Jobs dialog there is a button that shows a menu,
-       this menu now also shows as context menu via right-click
-       and it has a new menu item to check the selected list items
+       this menu can now also be shown as context menu via right-click
+       on the jobs list and it has a new menu item to check the
+       selected jobs
 
 ### 2.0.9.12 Beta without apps
 

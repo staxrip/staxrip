@@ -1477,7 +1477,7 @@ Public Class x265Params
         MinCuSize.DefaultValue = 2
         PBRatio.DefaultValue = 1.3
         PsyRD.DefaultValue = 2.0
-        PsyRDOQ.DefaultValue = 1
+        PsyRDOQ.DefaultValue = 0
         QComp.DefaultValue = 0.6
 
         Select Case Preset.Value
@@ -1624,7 +1624,7 @@ Public Class x265Params
                 BIntra.DefaultValue = False
                 CUtree.DefaultValue = True
                 Deblock.DefaultValue = True
-                EarlySkip.DefaultValue = False
+                EarlySkip.DefaultValue = True
                 FastIntra.DefaultValue = False
                 MaxMerge.DefaultValue = 2
                 MErange.DefaultValue = 57
@@ -1655,6 +1655,7 @@ Public Class x265Params
                 LookaheadSlices.DefaultValue = 4
                 MaxMerge.DefaultValue = 3
                 MErange.DefaultValue = 57
+                PsyRDOQ.DefaultValue = 1
                 RCLookahead.DefaultValue = 25
                 RD.DefaultValue = 4
                 rdoqLevel.DefaultValue = 2
@@ -1684,6 +1685,7 @@ Public Class x265Params
                 LookaheadSlices.DefaultValue = 4
                 MaxMerge.DefaultValue = 3
                 MErange.DefaultValue = 57
+                PsyRDOQ.DefaultValue = 1
                 RCLookahead.DefaultValue = 30
                 RD.DefaultValue = 6
                 rdoqLevel.DefaultValue = 2
@@ -1712,6 +1714,7 @@ Public Class x265Params
                 LookaheadSlices.DefaultValue = 4
                 MaxMerge.DefaultValue = 4
                 MErange.DefaultValue = 57
+                PsyRDOQ.DefaultValue = 1
                 RCLookahead.DefaultValue = 40
                 RD.DefaultValue = 6
                 rdoqLevel.DefaultValue = 2

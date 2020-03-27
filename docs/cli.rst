@@ -528,7 +528,7 @@ Test
 -WriteLog:header,message
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-header: Header is optional.
+header: Header is optional and may contain macros.
 
 message: Message is optional and may contain macros.
 

@@ -314,7 +314,7 @@ Public Class Proc
                         End Try
                     End If
 
-                    Dim errorMessage = Header + " failed with exit code: " & ExitCode &
+                    Dim errorMessage = Header + " returned error exit code: " & ExitCode &
                         " (" + "0x" + ExitCode.ToString("X") + ")"
 
                     If interpretation <> "" Then

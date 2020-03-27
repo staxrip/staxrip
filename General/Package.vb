@@ -1971,16 +1971,16 @@ Public Class Package
                 If Not AllowOldVersion Then
                     ret = $"The currently used version of {Name} is not compatible (too old)."
                 Else
-                    ret = $"An old {Name} version was found, edit the version by clicking on Version (F12)."
+                    ret = $"An old {Name} version was found, click on Version (F12) and enter the name of this version or better install a newer version."
+                End If
+
+                If SetupFilename <> "" Then
+                    ret += BR + "Install a new version."
+                ElseIf DownloadURL <> "" Then
+                    ret += BR + "Download and install a new version."
                 End If
             Else
-                ret = $"An new {Name} version was found, edit the version by clicking on Version (F12)."
-            End If
-
-            If SetupFilename <> "" Then
-                ret += BR + "Install the required version."
-            ElseIf DownloadURL <> "" Then
-                ret += BR + "Download and install the required version."
+                ret = $"A new {Name} version was found, new versions are usually compatible, click on Version (F12) and enter the name of this version."
             End If
         End If
 

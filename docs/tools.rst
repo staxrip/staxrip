@@ -349,7 +349,7 @@ Visual C++ 2019
 
 Visual C++ Redistributable is required by many tools used by StaxRip.
 
-Used Version: 14.24.28127.4
+Used Version: 14.25.28508.3
 
 
 

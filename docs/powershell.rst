@@ -10,13 +10,14 @@ Events
 In order to run scripts on certain events the following events are available:
 
 - ``ProjectLoaded`` After Project Loaded
-- ``JobProcessed`` After Project Processed
+- ``JobProcessed`` After Job Processed
 - ``VideoEncoded`` After Video Encoded
 - ``BeforeJobProcessed`` Before Job Processed
 - ``AfterSourceLoaded`` After Source Loaded
 - ``ApplicationExit`` Application Exit
 - ``ProjectOrSourceLoaded`` After Project Or Source Loaded
-- ``JobsEncoded`` After Jobs Encoded
+- ``JobsProcessed`` After Jobs Processed
+- ``JobMuxed`` After Job Muxed
 
 Assign to an event by saving a script file in the scripting folder using the event name as file name.
 
@@ -33,7 +34,8 @@ Use one of the following file names:
 - AfterSourceLoaded.ps1
 - ApplicationExit.ps1
 - ProjectOrSourceLoaded.ps1
-- JobsEncoded.ps1
+- JobsProcessed.ps1
+- JobMuxed.ps1
 
 Support
 -------

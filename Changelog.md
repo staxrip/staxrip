@@ -1,6 +1,8 @@
 
 ### 2.1.0.2 Beta not yet released
 
+- fix: UNC path issue fix (AMED)
+
 ### 2.1.0.1 Beta
 
 - fix: MediaInfo Folder View was broken and main window

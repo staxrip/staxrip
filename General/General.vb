@@ -15,89 +15,79 @@ Imports VB6 = Microsoft.VisualBasic
 Imports Microsoft.Win32
 
 Public Class Folder
-    Shared ReadOnly Property Desktop() As String
+    Shared ReadOnly Property Desktop As String
         Get
             Return Environment.GetFolderPath(Environment.SpecialFolder.Desktop).FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property Fonts() As String
+    Shared ReadOnly Property Fonts As String
         Get
             Return Environment.GetFolderPath(Environment.SpecialFolder.Fonts).FixDir
         End Get
     End Property
 
-    Private Shared StartupValue As String
+    Shared StartupValue As String
 
-    Shared ReadOnly Property Startup() As String
+    Shared ReadOnly Property Startup As String
         Get
             If StartupValue Is Nothing Then
-                Dim buffer As New StringBuilder(500)
-                QueryFullProcessImageName(Process.GetCurrentProcess.Handle, 0, buffer, buffer.Capacity)
-                StartupValue = buffer.ToString.Dir
+                StartupValue = Application.StartupPath.FixDir
             End If
 
             Return StartupValue
         End Get
     End Property
 
-    <DllImport("kernel32.dll")>
-    Private Shared Function QueryFullProcessImageName(
-        hProcess As IntPtr,
-        dwFlags As Integer,
-        lpExeName As StringBuilder,
-        ByRef lpdwSize As Integer) As Boolean
-    End Function
-
-    Shared ReadOnly Property Current() As String
+    Shared ReadOnly Property Current As String
         Get
             Return Environment.CurrentDirectory.FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property Temp() As String
+    Shared ReadOnly Property Temp As String
         Get
             Return Path.GetTempPath.FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property System() As String
+    Shared ReadOnly Property System As String
         Get
             Return Environment.SystemDirectory.FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property Programs() As String
+    Shared ReadOnly Property Programs As String
         Get
             Return GetFolderPath(Environment.SpecialFolder.ProgramFiles).FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property Home() As String
+    Shared ReadOnly Property Home As String
         Get
             Return GetFolderPath(Environment.SpecialFolder.UserProfile).FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property AppDataCommon() As String
+    Shared ReadOnly Property AppDataCommon As String
         Get
             Return GetFolderPath(Environment.SpecialFolder.CommonApplicationData).FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property AppDataLocal() As String
+    Shared ReadOnly Property AppDataLocal As String
         Get
             Return GetFolderPath(Environment.SpecialFolder.LocalApplicationData).FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property AppDataRoaming() As String
+    Shared ReadOnly Property AppDataRoaming As String
         Get
             Return GetFolderPath(Environment.SpecialFolder.ApplicationData).FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property Windows() As String
+    Shared ReadOnly Property Windows As String
         Get
             Return GetFolderPath(Environment.SpecialFolder.Windows).FixDir
         End Get
@@ -252,6 +242,7 @@ Public Class Folder
     End Function
 
     Private Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String
+        'TODO: max path can theoretically be longer...
         Dim sb As New StringBuilder(260)
         SHGetFolderPath(IntPtr.Zero, CInt(folder), IntPtr.Zero, 0, sb)
         Dim ret = sb.ToString.FixDir '.NET fails on 'D:'

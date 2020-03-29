@@ -134,6 +134,16 @@ Used Version: 3.3.8
 http://www.fftw.org
 
 
+Get-MediaInfo
+~~~~~~~~~~~~~
+
+PowerShell MediaInfo solution.
+
+Used Version: 2.0
+
+https://github.com/stax76/Get-MediaInfo
+
+
 Haali Splitter
 ~~~~~~~~~~~~~~
 
@@ -259,7 +269,7 @@ Python
 
 Python is required by VapourSynth.
 
-Used Version: 3.7.7
+Used Version: 3.8.2
 
 http://www.python.org
 
@@ -309,7 +319,7 @@ VapourSynth
 
 StaxRip supports both AviSynth and VapourSynth as video processing tool.
 
-Used Version: R48
+Used Version: R49
 
 http://www.vapoursynth.com
 
@@ -359,7 +369,7 @@ vspipe
 
 vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.
 
-Used Version: R48
+Used Version: R49
 
 
 
@@ -389,7 +399,7 @@ x265
 
 H.265 video encoding console app.
 
-Used Version: 3.3+2-gbe2d82093 GCC 9.2.0 Patman
+Used Version: 3.3+10-g08d895bb6-gcc9.3.0 Patman
 
 http://x265.org
 

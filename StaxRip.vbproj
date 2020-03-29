@@ -226,9 +226,6 @@
     <Compile Include="Forms\MediaInfoForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MediaInfoFolderViewForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\eac3toForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -514,9 +511,6 @@
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MediaInfoFolderViewForm.resx">
-      <DependentUpon>MediaInfoFolderViewForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MuxerForm.resx">
       <DependentUpon>MuxerForm.vb</DependentUpon>

@@ -58,7 +58,7 @@ Public Class Package
         .WebURL = "http://www.python.org",
         .HelpSwitch = "-h",
         .Description = "Python is required by VapourSynth.",
-        .SetupFilename = "Installers\python-3.7.7-amd64-webinstall.exe",
+        .SetupFilename = "Installers\python-3.8.2-amd64-webinstall.exe",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirectories = {GetPythonHintDir()}})
 
@@ -209,6 +209,13 @@ Public Class Package
         .WebURL = "http://forum.doom9.org/showthread.php?t=174797",
         .HelpSwitch = ""})
 
+    Shared Property GetMediaInfo As Package = Add(New Package With {
+        .Name = "Get-MediaInfo",
+        .Location = "support\Get-MediaInfo",
+        .Filename = "Get-MediaInfo.ps1",
+        .Description = "PowerShell MediaInfo solution.",
+        .WebURL = "https://github.com/stax76/Get-MediaInfo"})
+
     Shared Property vspipe As Package = Add(New Package With {
         .Name = "vspipe",
         .Filename = "vspipe.exe",
@@ -224,7 +231,7 @@ Public Class Package
         .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
-        .SetupFilename = "Installers\VapourSynth64-R48.exe",
+        .SetupFilename = "Installers\VapourSynth64-R49.exe",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = AddressOf Package.GetVapourSynthHintDir})
 

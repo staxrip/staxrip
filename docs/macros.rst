@@ -635,6 +635,10 @@ File path to fvsfunc
 
 File path to G41Fun
 
+``%app:Get-MediaInfo%``
+
+File path to Get-MediaInfo
+
 ``%app:GradFun2DB%``
 
 File path to GradFun2DB
@@ -1410,6 +1414,10 @@ Folder path to fvsfunc
 ``%app_dir:G41Fun%``
 
 Folder path to G41Fun
+
+``%app_dir:Get-MediaInfo%``
+
+Folder path to Get-MediaInfo
 
 ``%app_dir:GradFun2DB%``
 

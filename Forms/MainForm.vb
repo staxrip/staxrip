@@ -6052,8 +6052,9 @@ Public Class MainForm
 
             If dialog.ShowDialog = DialogResult.OK Then
                 s.Storage.SetString("MediaInfo Folder View folder", dialog.SelectedPath)
-                Dim form As New MediaInfoFolderViewForm(dialog.SelectedPath.FixDir)
-                form.Show()
+
+                Dim code = $"Get-ChildItem '{dialog.SelectedPath.FixDir}' | Get-MediaInfo | Out-GridView"
+                g.StartProcess("powershell.exe", "-nologo -noexit -command " + code.Escape)
             End If
         End Using
     End Sub

@@ -1,7 +1,18 @@
 
-### 2.1.0.2 Beta not yet released
+### 2.1.0.3 Beta not yet released
 
+### 2.1.0.2 Beta
+
+- new: the MediaInfo folder view was replaced with a new powershell based
+       dialog that supports caching for fast startup perforance
+
+- fix: install instruction for wrong versions in the Apps dialog were improved
 - fix: UNC path issue fix (AMED)
+- fix: x265 --hdr-opt renamed to --hdr10-opt
+
+- update: x265 3.3+10-g08d895bb6-gcc9.3.0 Patman
+- update: Python 3.8.2
+- update: VapourSynth R49
 
 ### 2.1.0.1 Beta
 

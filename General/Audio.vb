@@ -1,21 +1,34 @@
-﻿Imports System.Text
+﻿
+Imports System.Text
 Imports System.Globalization
 
 Imports VB6 = Microsoft.VisualBasic
 
 Public Class Audio
     Shared Sub Process(ap As AudioProfile)
-        If Not File.Exists(ap.File) OrElse TypeOf ap Is NullAudioProfile Then Exit Sub
-        If Not Directory.Exists(p.TempDir) Then p.TempDir = ap.File.Dir
+        If Not File.Exists(ap.File) OrElse TypeOf ap Is NullAudioProfile Then
+            Exit Sub
+        End If
 
-        If ap.File <> p.SourceFile Then Log.Write("MediaInfo Audio Source " & ap.GetTrackID, MediaInfo.GetSummary(ap.File))
+        If Not Directory.Exists(p.TempDir) Then
+            p.TempDir = ap.File.Dir
+        End If
+
+        If ap.File <> p.SourceFile Then
+            Log.Write("MediaInfo Audio Source " & ap.GetTrackID, MediaInfo.GetSummary(ap.File))
+        End If
 
         If TypeOf ap Is GUIAudioProfile Then
             Dim gap = DirectCast(ap, GUIAudioProfile)
-            If gap.CommandLines.Contains("ffmpeg") Then gap.NormalizeFF()
+
+            If gap.CommandLines.Contains("ffmpeg") Then
+                gap.NormalizeFF()
+            End If
         End If
 
-        If ap.Decoder <> AudioDecoderMode.Automatic Then Convert(ap)
+        If ap.Decoder <> AudioDecoderMode.Automatic Then
+            Convert(ap)
+        End If
 
         If ap.HasStream Then
             Dim cutting = p.Ranges.Count > 0
@@ -45,7 +58,9 @@ Public Class Audio
 
         Cut(ap)
 
-        If Not TypeOf ap Is MuxAudioProfile AndAlso Not ap.IsInputSupported Then Convert(ap)
+        If Not TypeOf ap Is MuxAudioProfile AndAlso Not ap.IsInputSupported Then
+            Convert(ap)
+        End If
     End Sub
 
     Shared Function GetBaseNameForStream(path As String, stream As AudioStream, Optional shorten As Boolean = False) As String
@@ -62,7 +77,9 @@ Public Class Audio
     End Function
 
     Shared Sub Convert(ap As AudioProfile)
-        If ap.File.Ext = ap.ConvertExt Then Exit Sub
+        If ap.File.Ext = ap.ConvertExt Then
+            Exit Sub
+        End If
 
         If ap.File.Ext = "avs" Then
             Dim outPath = ap.File.DirAndBase + "." + ap.ConvertExt
@@ -255,14 +272,23 @@ Public Class Audio
     End Sub
 
     Shared Sub ConvertFF(ap As AudioProfile)
-        If ap.File.Ext = ap.ConvertExt Then Exit Sub
+        If ap.File.Ext = ap.ConvertExt Then
+            Exit Sub
+        End If
+
         Dim gap = TryCast(ap, GUIAudioProfile)
         gap?.NormalizeFF()
         Dim outPath = p.TempDir + ap.File.Base + "." + ap.ConvertExt
         If ap.File = outPath Then outPath += "." + ap.ConvertExt
         Dim args = "-i " + ap.File.Escape
-        If Not ap.Stream Is Nothing Then args += " -map 0:" & ap.Stream.StreamOrder
-        If ap.Gain <> 0 Then args += " -af volume=" + ap.Gain.ToInvariantString + "dB"
+
+        If Not ap.Stream Is Nothing Then
+            args += " -map 0:" & ap.Stream.StreamOrder
+        End If
+
+        If ap.Gain <> 0 Then
+            args += " -af volume=" + ap.Gain.ToInvariantString + "dB"
+        End If
 
         If gap?.Params.Normalize Then
             If gap.Params.ffNormalizeMode = ffNormalizeMode.dynaudnorm Then
@@ -458,8 +484,13 @@ Public Class Audio
     End Sub
 
     Shared Sub CutMkvmerge(ap As AudioProfile)
-        If ap.File.Contains("_cut_") Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If ap.File.Contains("_cut_") Then
+            Exit Sub
+        End If
+
+        If Not Package.AviSynth.VerifyOK(True) Then
+            Throw New AbortException
+        End If
 
         Dim aviPath = p.TempDir + ap.File.Base + "_cut_mm.avi"
         Dim d = (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture)
@@ -516,7 +547,10 @@ Public Class Audio
         If fail AndAlso TypeOf ap Is GUIAudioProfile AndAlso Not ap.File.Ext = "wav" Then
             Log.Write("Error", "no output found")
             Convert(ap)
-            If ap.File.Ext = "wav" Then Cut(ap)
+
+            If ap.File.Ext = "wav" Then
+                Cut(ap)
+            End If
         End If
     End Sub
 

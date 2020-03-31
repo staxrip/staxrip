@@ -1,6 +1,9 @@
 
 ### 2.1.0.3 Beta not yet released
 
+- new: check added that blocks source files with too long path or filename,
+       accepted are max 150 chars for the path and 75 for the filename
+
 ### 2.1.0.2 Beta
 
 - new: the MediaInfo folder view was replaced with a new powershell based

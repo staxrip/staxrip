@@ -202,15 +202,6 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function ContainsUnicode(value As String) As Boolean
-        If value = "" Then Return False
-
-        For Each i In value
-            If Convert.ToInt32(i) > 255 Then Return True
-        Next
-    End Function
-
-    <Extension()>
     Function ToTitleCase(value As String) As String
         'TextInfo.ToTitleCase won't work on all upper strings
         Return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLower)

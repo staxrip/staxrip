@@ -2629,19 +2629,6 @@ Public Class MainForm
                 End If
             End If
 
-            Dim audioTracks = p.GetAudioTracks
-
-            For Each i In audioTracks
-                If i.File = p.TargetFile Then
-                    If ProcessTip("The audio source and target filepath is identical.") Then
-                        g.Highlight(True, tbTargetFile)
-                        gbAssistant.Text = "Invalid Targetpath"
-                        CanIgnoreTip = False
-                        Return False
-                    End If
-                End If
-            Next
-
             If p.RemindToCrop AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
                 ProcessTip("Click here to open the crop dialog. When done continue with Next.") Then
 
@@ -2682,19 +2669,37 @@ Public Class MainForm
                 End If
             End If
 
-            For Each i In audioTracks
-                If Math.Abs(i.Delay) > 2000 Then
+            For Each ap In p.GetAudioTracks
+                If ap.Decoder <> AudioDecoderMode.Automatic AndAlso
+                    ap.DecodingMode = AudioDecodingMode.FLAC AndAlso
+                    p.Ranges.Count > 0 Then
+
+                    If ProcessTip("Audio decoding is enabled with FLAC as output format which mkvmerge cannot cut. Either disable decoding or set the decoding format from FLAC to W64.") Then
+                        gbAssistant.Text = "Incompatible Audio Settings"
+                        CanIgnoreTip = False
+                        Return False
+                    End If
+                End If
+
+                If ap.File = p.TargetFile Then
+                    If ProcessTip("The audio source and target filepath is identical.") Then
+                        g.Highlight(True, tbTargetFile)
+                        gbAssistant.Text = "Invalid Targetpath"
+                        CanIgnoreTip = False
+                        Return False
+                    End If
+                End If
+
+                If Math.Abs(ap.Delay) > 2000 Then
                     If ProcessTip("The audio delay is unusual high indicating a sync problem, MakeMKV and ProjectX can prevent this problem.") Then
                         g.Highlight(True, tbAudioFile0)
                         gbAssistant.Text = "Unusual high audio delay"
                         Return False
                     End If
                 End If
-            Next
 
-            For Each i In audioTracks
-                If i.File <> "" AndAlso Not p.VideoEncoder.Muxer.IsSupported(i.OutputFileType) AndAlso Not i.OutputFileType = "ignore" Then
-                    If ProcessTip("The audio format is '" + i.OutputFileType + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ". Select another audio profile or another container.") Then
+                If ap.File <> "" AndAlso Not p.VideoEncoder.Muxer.IsSupported(ap.OutputFileType) AndAlso Not ap.OutputFileType = "ignore" Then
+                    If ProcessTip("The audio format is '" + ap.OutputFileType + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ". Select another audio profile or another container.") Then
                         g.Highlight(True, llMuxer)
                         gbAssistant.Text = "Audio format conflicts with container"
                         CanIgnoreTip = False
@@ -2971,7 +2976,7 @@ Public Class MainForm
 
     Sub bnSkip_Click() Handles bnNext.Click
         If Not CanIgnoreTip Then
-            MsgWarn("The current assistant instruction or warning cannot be skipped.")
+            MsgWarn("The current assistant warning cannot be skipped.")
             Exit Sub
         End If
 

@@ -770,9 +770,8 @@ Public Class AppsForm
         Dim paths As New List(Of String)
 
         Dim run = Sub()
-                      Dim index As UInt32
                       Dim size = 500
-                      Dim str As New StringBuilder(size)
+                      Dim sb As New StringBuilder(size)
 
                       Try
                           Everything_SetSearch(CurrentPackage.Filename)
@@ -780,8 +779,8 @@ Public Class AppsForm
                           Everything_Query(True)
 
                           For x = 0 To Everything_GetNumResults() - 1
-                              Everything_GetResultFullPathName(CUInt(x), str, CUInt(size))
-                              Dim path = str.ToString
+                              Everything_GetResultFullPathName(CUInt(x), sb, CUInt(size))
+                              Dim path = sb.ToString
 
                               If path.FileName.ToLower = CurrentPackage.Filename.ToLower Then
                                   paths.Add(path)
@@ -835,8 +834,8 @@ Public Class AppsForm
         End If
     End Sub
 
-    Const EVERYTHING_REQUEST_FILE_NAME As Integer = &H1
-    Const EVERYTHING_REQUEST_PATH As Integer = &H2
+    Const EVERYTHING_REQUEST_FILE_NAME As Integer = 1
+    Const EVERYTHING_REQUEST_PATH As Integer = 2
 
     <DllImport("Everything.dll", CharSet:=CharSet.Unicode)>
     Public Shared Function Everything_SetSearch(lpSearchString As String) As Integer

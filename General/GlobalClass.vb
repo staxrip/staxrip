@@ -298,10 +298,17 @@ Public Class GlobalClass
 
     Function ShowVideoSourceWarnings(files As IEnumerable(Of String)) As Boolean
         For Each file In files
-            If System.Text.Encoding.Default.CodePage <> 65001 AndAlso
+            If Encoding.Default.CodePage <> 65001 AndAlso
                 Not file.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
 
                 MsgError(Strings.NoUnicode)
+                Return True
+            End If
+
+            If file.Length > 150 OrElse Path.GetFileName(file).Length > 75 Then
+                MsgError("Source file path or filename is too long",
+                    "In theory Windows 10 supports long paths, there are technical reasons why this will never work in StaxRip.")
+
                 Return True
             End If
 

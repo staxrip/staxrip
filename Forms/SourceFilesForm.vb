@@ -236,7 +236,10 @@ Public Class SourceFilesForm
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         If DialogResult = DialogResult.OK Then
             Dim files = GetFiles()
-            If g.ShowVideoSourceWarnings(GetFiles) Then e.Cancel = True
+
+            If g.ShowVideoSourceWarnings(GetFiles) Then
+                e.Cancel = True
+            End If
         End If
 
         MyBase.OnFormClosing(e)

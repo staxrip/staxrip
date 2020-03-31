@@ -2670,9 +2670,8 @@ Public Class MainForm
             End If
 
             For Each ap In p.GetAudioTracks
-                If ap.Decoder <> AudioDecoderMode.Automatic AndAlso
-                    ap.DecodingMode = AudioDecodingMode.FLAC AndAlso
-                    p.Ranges.Count > 0 Then
+                If p.CuttingMode = CuttingMode.mkvmerge AndAlso ap.Decoder <> AudioDecoderMode.Automatic AndAlso
+                    ap.DecodingMode = AudioDecodingMode.FLAC AndAlso p.Ranges.Count > 0 Then
 
                     If ProcessTip("Audio decoding is enabled with FLAC as output format which mkvmerge cannot cut. Either disable decoding or set the decoding format from FLAC to W64.") Then
                         gbAssistant.Text = "Incompatible Audio Settings"
@@ -3237,7 +3236,7 @@ Public Class MainForm
         End If
     End Function
 
-    <Command(Strings.EventCommands)>
+    <Command("Shows the Event Command dialog.")>
     Sub ShowEventCommandsDialog()
         Using f As New EventCommandsEditor(s.EventCommands)
             If f.ShowDialog() = DialogResult.OK Then

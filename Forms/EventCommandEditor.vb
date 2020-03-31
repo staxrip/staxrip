@@ -490,14 +490,14 @@ Public Class EventCommandEditor
     End Sub
 
     Private Sub EventCommandEditor_HelpRequested() Handles Me.HelpRequested
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteP(Strings.EventCommands)
-        f.Doc.WriteTips(TipProvider.GetTips)
-        f.Doc.WriteTable("Properties", Macro.GetTipsFriendly(False))
-        f.Doc.WriteTable("Commands", g.MainForm.CustomMainMenu.CommandManager.GetTips)
-        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteP(Strings.EventCommands)
+        form.Doc.WriteTips(TipProvider.GetTips)
+        form.Doc.WriteTable("Properties", Macro.GetTipsFriendly(False))
+        form.Doc.WriteTable("Commands", g.MainForm.CustomMainMenu.CommandManager.GetTips)
+        form.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        form.Show()
     End Sub
 
     Private Sub pgParameters_PropertyValueChanged(s As Object, e As PropertyValueChangedEventArgs) Handles pgParameters.PropertyValueChanged

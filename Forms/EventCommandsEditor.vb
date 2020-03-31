@@ -257,16 +257,18 @@ Public Class EventCommandsEditor
     Private Sub bnAdd_Click() Handles bnAdd.Click
         Dim ec As New EventCommand
 
-        Using f As New EventCommandEditor(ec)
-            If f.ShowDialog = DialogResult.OK Then lv.AddItem(ec).Selected = True
+        Using editor As New EventCommandEditor(ec)
+            If editor.ShowDialog = DialogResult.OK Then
+                lv.AddItem(ec).Selected = True
+            End If
         End Using
     End Sub
 
     Private Sub EventCommandsEditor_HelpRequested() Handles Me.HelpRequested
-        Dim f As New HelpForm
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteP(Strings.EventCommands)
-        f.Show()
+        Dim form As New HelpForm
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteP(Strings.EventCommands)
+        form.Show()
     End Sub
 
     Private Sub bnClone_Click() Handles bnClone.Click

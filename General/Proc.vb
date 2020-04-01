@@ -3,6 +3,7 @@ Imports System.Text.RegularExpressions
 Imports System.Text
 Imports System.ComponentModel
 Imports System.Runtime.InteropServices
+Imports System.Collections.Specialized
 
 Public Class Proc
     Implements IDisposable
@@ -193,6 +194,12 @@ Public Class Proc
         End Set
     End Property
 
+    ReadOnly Property EnvironmentVariables As StringDictionary
+        Get
+            Return Process.StartInfo.EnvironmentVariables
+        End Get
+    End Property
+
     Property Arguments() As String
         Get
             Return Process.StartInfo.Arguments
@@ -367,27 +374,39 @@ Public Class Proc
     End Sub
 
     Function ProcessData(value As String) As (Data As String, Skip As Boolean)
-        If value = "" Then Return ("", False)
+        If value = "" Then
+            Return ("", False)
+        End If
 
         If Not RemoveChars Is Nothing Then
             For Each i In RemoveChars
-                If value.Contains(i) Then value = value.Replace(i, "")
+                If value.Contains(i) Then
+                    value = value.Replace(i, "")
+                End If
             Next
         End If
 
-        If Not TrimChars Is Nothing Then value = value.Trim(TrimChars)
+        If Not TrimChars Is Nothing Then
+            value = value.Trim(TrimChars)
+        End If
 
         If SkipString <> "" Then
-            If value.Contains(SkipString) Then Return (value, True)
+            If value.Contains(SkipString) Then
+                Return (value, True)
+            End If
         ElseIf Not SkipStrings Is Nothing Then
             For Each i In SkipStrings
-                If value.Contains(i) Then Return (value, True)
+                If value.Contains(i) Then
+                    Return (value, True)
+                End If
             Next
         End If
 
         If Not SkipPatterns Is Nothing Then
             For Each i In SkipPatterns
-                If Regex.IsMatch(value, i) Then Return (value, True)
+                If Regex.IsMatch(value, i) Then
+                    Return (value, True)
+                End If
             Next
         End If
 

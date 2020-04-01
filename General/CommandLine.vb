@@ -1,4 +1,5 @@
-﻿Imports StaxRip.UI
+﻿
+Imports StaxRip.UI
 
 Namespace CommandLine
     Public MustInherit Class CommandLineParams
@@ -8,9 +9,10 @@ Namespace CommandLine
         Event ValueChanged(item As CommandLineParam)
         MustOverride ReadOnly Property Items As List(Of CommandLineParam)
 
-        MustOverride Function GetCommandLine(includePaths As Boolean,
-                                             includeExecutable As Boolean,
-                                             Optional pass As Integer = 1) As String
+        MustOverride Function GetCommandLine(
+            includePaths As Boolean,
+            includeExecutable As Boolean,
+            Optional pass As Integer = 1) As String
 
         MustOverride Function GetPackage() As Package
 

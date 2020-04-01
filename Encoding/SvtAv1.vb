@@ -1,15 +1,16 @@
-﻿Imports StaxRip.CommandLine
+﻿
+Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 <Serializable()>
-Public Class SvtAv1
+Public Class SVTAV1
     Inherits BasicVideoEncoder
 
     Property ParamsStore As New PrimitiveStore
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "More | SVT-AV1"
+            Return "SVT-AV1"
         End Get
     End Property
 
@@ -37,7 +38,7 @@ Public Class SvtAv1
 
         Using form As New CommandLineForm(encParams)
             Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of SvtAv1)(Me)
+                                        Dim enc = ObjectHelp.GetCopy(Of SVTAV1)(Me)
                                         Dim encParamsCopy As New EncoderParams
                                         Dim storeCopy = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
                                         encParamsCopy.Init(storeCopy)
@@ -58,7 +59,7 @@ Public Class SvtAv1
 
     Overrides ReadOnly Property OutputExt() As String
         Get
-            'Return Params.Codec.ValueText
+            Return "ivf"
         End Get
     End Property
 
@@ -67,8 +68,8 @@ Public Class SvtAv1
 
         Using proc As New Proc
             proc.Header = "Video encoding"
-            proc.Package = Package.SvtAv1
-            'proc.SkipStrings = {"%]", " frames: "}
+            proc.Package = Package.SVTAV1
+            proc.RemoveChars = {Convert.ToChar(8)} 'back space
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
             proc.Start()
@@ -78,15 +79,15 @@ Public Class SvtAv1
     End Sub
 
     Overrides Function GetMenu() As MenuList
-        Dim r As New MenuList
-        r.Add("Encoder Options", AddressOf ShowConfigDialog)
-        r.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
-        Return r
+        Dim ret As New MenuList
+        ret.Add("Encoder Options", AddressOf ShowConfigDialog)
+        ret.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
+        Return ret
     End Function
 
     Overrides Property QualityMode() As Boolean
         Get
-            'Return Params.Mode.Value = 0
+            Return True
         End Get
         Set(Value As Boolean)
         End Set
@@ -102,21 +103,29 @@ Public Class SvtAv1
         Inherits CommandLineParams
 
         Sub New()
-            Title = "SvtAv1 Options"
+            Title = "SVT-AV1 Options"
         End Sub
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
-                    Add("Basic")
-                    Add("Advanced")
-                    Add("Rate Control")
+                    Add("Basic",
+                        New OptionParam With {.Switch = "--rc", .Text = "Mode", .Options = {"CQP", "VBR", "CVBR"}},
+                        New OptionParam With {.Switch = "-enc-mode", .Text = "Preset", .Init = 8, .IntegerValue = True, .Options = {"Very Slow", "Slower", "Slow", "Medium", "Fast", "Faster", "Very Fast", "Super Fast", "Ultra Fast"}},
+                        New NumParam With {.Switch = "-q", .Text = "QP", .Config = {0, 63, 1}, .Init = 50})
 
                     For Each item In ItemsValue
-                        If item.HelpSwitch <> "" Then Continue For
+                        If item.HelpSwitch <> "" Then
+                            Continue For
+                        End If
+
                         Dim switches = item.GetSwitches
-                        If switches.NothingOrEmpty Then Continue For
+
+                        If switches.NothingOrEmpty Then
+                            Continue For
+                        End If
+
                         item.HelpSwitch = switches(0)
                     Next
                 End If
@@ -126,67 +135,40 @@ Public Class SvtAv1
         End Property
 
         Public Overrides Sub ShowHelp(switch As String)
-            g.ShowCommandLineHelp(Package.SvtAv1, switch)
+            g.ShowCommandLineHelp(Package.SVTAV1, switch)
         End Sub
 
-        Overrides Function GetCommandLine(includePaths As Boolean,
-                                          includeExecutable As Boolean,
-                                          Optional pass As Integer = 1) As String
-            Dim ret As String
-            Dim sourcePath As String
-            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
-            If includePaths AndAlso includeExecutable Then ret = Package.SvtAv1.Path.Escape
+        Overrides Function GetCommandLine(
+            includePaths As Boolean,
+            includeExecutable As Boolean,
+            Optional pass As Integer = 1) As String
 
-            'Select Case Decoder.ValueText
-            '    Case "avs"
-            '        sourcePath = p.Script.Path
-            '    Case "qs"
-            '        sourcePath = "-"
-            '        If includePaths Then ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.SvtAv1.Path.Escape, "SvtAv1C64")
-            '    Case "ffdxva"
-            '        sourcePath = "-"
-            '        If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal - | " + If(includePaths, Package.SvtAv1.Path.Escape, "SvtAv1C64")
-            '    Case "ffqsv"
-            '        sourcePath = "-"
-            '        If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal - | " + If(includePaths, Package.SvtAv1.Path.Escape, "SvtAv1C64")
-            '    Case "vce"
-            '        sourcePath = p.LastOriginalSourceFile
-            '        ret += " --avhw"
-            'End Select
+            Dim ret = ""
+            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
+
+            If includePaths AndAlso includeExecutable Then
+                ret = Package.ffmpeg.Path.Escape +
+                    If(p.Script.Engine = ScriptEngine.VapourSynth, " -f vapoursynth", "") +
+                    " -i " + p.Script.Path.Escape +
+                    " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | " +
+                    Package.SVTAV1.Path.Escape
+            End If
 
             Dim q = From i In Items Where i.GetArgs <> ""
-            If q.Count > 0 Then ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
 
-            'Select Case Mode.Value
-            '    Case 0
-            '        ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
-            '    Case 1
-            '        ret += " --cbr " & p.VideoBitrate
-            '    Case 2
-            '        ret += " --vbr " & p.VideoBitrate
-            'End Select
+            If q.Count > 0 Then
+                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+            End If
 
-            'If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
-            '    (p.Script.IsFilterActive("Crop", "Hardware Encoder") OrElse
-            '    (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop"))) Then
-
-            '    ret += " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom
-            'End If
-
-            'If p.Script.IsFilterActive("Resize", "Hardware Encoder") OrElse
-            '    (Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Resize")) Then
-
-            '    ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
-            'End If
-
-            If sourcePath = "-" Then ret += " --y4m"
-            If includePaths Then ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
+            If includePaths Then
+                ret += " -n " & p.Script.GetFrameCount & " -i stdin -b " + targetPath.Escape
+            End If
 
             Return ret.Trim
         End Function
 
         Public Overrides Function GetPackage() As Package
-            Return Package.SvtAv1
+            Return Package.SVTAV1
         End Function
     End Class
 End Class

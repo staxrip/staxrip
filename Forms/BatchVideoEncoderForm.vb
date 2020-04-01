@@ -90,7 +90,7 @@ Public Class BatchVideoEncoderForm
         Me.EncodingCliControl.Name = "EncodingCliControl"
         Me.EncodingCliControl.Size = New System.Drawing.Size(1234, 251)
         Me.EncodingCliControl.TabIndex = 0
-        Me.EncodingCliControl.Text = "Encoding Batch"
+        Me.EncodingCliControl.Text = "Command Line"
         '
         'lPercent
         '
@@ -198,12 +198,12 @@ Public Class BatchVideoEncoderForm
     End Sub
 
     Private Sub BatchEncoderForm_HelpRequested() Handles Me.HelpRequested
-        Dim f As New HelpForm
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteP("The batch encoder allows executing a command line. If there is a piping symbol or line break then it's executed as batch file.")
-        f.Doc.WriteTips(TipProvider.GetTips, EncodingCliControl.TipProvider.GetTips)
-        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
-        f.Show()
+        Dim form As New HelpForm
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteP("The batch encoder allows executing a command line. If there is a piping symbol or line break then it's executed as batch file.")
+        form.Doc.WriteTips(TipProvider.GetTips, EncodingCliControl.TipProvider.GetTips)
+        form.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        form.Show()
     End Sub
 
     Private Sub cbQualityMode_CheckedChanged(sender As Object, e As EventArgs) Handles cbQualityMode.CheckedChanged

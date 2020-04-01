@@ -1016,19 +1016,21 @@ Public Class x265Params
         MyBase.OnValueChanged(item)
     End Sub
 
-    Overloads Overrides Function GetCommandLine(includePaths As Boolean,
-                                                includeExecutable As Boolean,
-                                                Optional pass As Integer = 1) As String
+    Overloads Overrides Function GetCommandLine(
+        includePaths As Boolean,
+        includeExecutable As Boolean,
+        Optional pass As Integer = 1) As String
 
         Return GetArgs(1, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
-                       p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
+            p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
     End Function
 
-    Overloads Function GetArgs(pass As Integer,
-                               script As VideoScript,
-                               targetPath As String,
-                               includePaths As Boolean,
-                               includeExecutable As Boolean) As String
+    Overloads Function GetArgs(
+        pass As Integer,
+        script As VideoScript,
+        targetPath As String,
+        includePaths As Boolean,
+        includeExecutable As Boolean) As String
 
         ApplyPresetDefaultValues()
         ApplyTuneDefaultValues()

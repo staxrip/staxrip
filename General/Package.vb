@@ -416,6 +416,14 @@ Public Class Package
         .HelpFilename = "x265 Help.txt",
         .Description = "H.265 video encoding console app."})
 
+    Shared Property SVTAV1 As Package = Add(New Package With {
+        .Name = "SVT-AV1",
+        .Location = "Encoders\SVT-AV1",
+        .Filename = "SvtAv1EncApp.exe",
+        .WebURL = "https://github.com/OpenVisualCloud/SVT-AV1",
+        .HelpURL = "https://github.com/OpenVisualCloud/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
+        .Description = "Intel AV1 encoder."})
+
     Shared Property mkvmerge As Package = Add(New Package With {
         .Name = "mkvmerge",
         .Filename = "mkvmerge.exe",

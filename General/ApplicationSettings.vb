@@ -53,6 +53,7 @@ Public Class ApplicationSettings
     Public ShowPreviewInfo As Boolean
     Public ShowTemplateSelection As Boolean
     Public ShutdownTimeout As Integer
+    Public CharacterLimit As Integer
     Public StartupTemplate As String
     Public Storage As ObjectStorage
     Public StringDictionary As Dictionary(Of String, String)
@@ -286,7 +287,14 @@ Public Class ApplicationSettings
             FilterSetupProfiles = VideoScript.GetDefaults
         End If
 
-        If LastSourceDir = "" Then LastSourceDir = ""
+        If LastSourceDir = "" Then
+            LastSourceDir = ""
+        End If
+
+        If CharacterLimit < 150 Then
+            CharacterLimit = 150
+        End If
+
         Migrate()
     End Sub
 

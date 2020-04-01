@@ -1,8 +1,12 @@
 
 ### 2.1.0.3 Beta not yet released
 
-- new: check added that blocks source files with too long path or filename,
-       accepted are max 150 chars for the path and 75 for the filename
+- new: check added that blocks source files with too long path or filename. A setting
+       that allows to change the limit exists and there is also a explanation as tooltip:
+       In theory Windows supports paths that are longer than 260 characters, in reality
+       neither Windows, nor the .NET Framework or the used tools have full long path support.
+- new: in order to support unicode the command line based encoder used by XviD uses
+       now cmd.exe directly without creating a batch file
 
 ### 2.1.0.2 Beta
 

@@ -81,13 +81,20 @@ Public Class ProcController
     Shared LastProgress As Double
 
     Sub SetProgress(value As String)
-        If Proc.IsSilent Then Exit Sub
+        If Proc.IsSilent Then
+            Exit Sub
+        End If
 
         If value.Contains("%") Then
             value = value.Left("%")
 
-            If value.Contains("[") Then value = value.Right("[")
-            If value.Contains(" ") Then value = value.RightLast(" ")
+            If value.Contains("[") Then
+                value = value.Right("[")
+            End If
+
+            If value.Contains(" ") Then
+                value = value.RightLast(" ")
+            End If
 
             If value.IsDouble Then
                 Dim val = value.ToDouble

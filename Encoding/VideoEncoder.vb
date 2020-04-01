@@ -342,6 +342,7 @@ Public MustInherit Class VideoEncoder
         ret.Add(New x265Enc)
 
         ret.Add(New Rav1e)
+        ret.Add(New SVTAV1)
 
         Dim nvidia264 As New NVEnc()
         ret.Add(nvidia264)
@@ -557,14 +558,17 @@ Public Class BatchEncoder
 
     Overrides ReadOnly Property OutputExt As String
         Get
-            If OutputFileTypeValue = "" Then OutputFileTypeValue = "h264"
+            If OutputFileTypeValue = "" Then
+                OutputFileTypeValue = "h264"
+            End If
+
             Return OutputFileTypeValue
         End Get
     End Property
 
     Overrides Sub ShowConfigDialog()
-        Using f As New BatchVideoEncoderForm(Me)
-            If f.ShowDialog() = DialogResult.OK Then
+        Using form As New BatchVideoEncoderForm(Me)
+            If form.ShowDialog() = DialogResult.OK Then
                 OnStateChange()
             End If
         End Using
@@ -596,45 +600,27 @@ Public Class BatchEncoder
         End If
     End Function
 
-    Function GetBatchCode(value As String) As String
-        Dim ret = ""
-
-        For Each pack In Package.Items.Values
-            If TypeOf pack Is PluginPackage Then Continue For
-            Dim dir = pack.Directory
-            If Not Directory.Exists(dir) Then Continue For
-            If Not dir.Contains(Folder.Startup) Then Continue For
-
-            If value.ToLower.Contains(pack.Name.ToLower) Then
-                ret += "@set PATH=" + dir + ";%PATH%" + BR
-            End If
-        Next
-
-        Return ret + BR + value
-    End Function
-
     Overrides Sub Encode()
         p.Script.Synchronize()
 
-        Dim batchPath = p.TempDir + p.TargetFile.Base + "_encode.bat"
-        Dim batchCode = Proc.WriteBatchFile(batchPath, GetBatchCode(Macro.Expand(CommandLines).Trim))
+        For Each line In Macro.Expand(CommandLines).SplitLinesNoEmpty
+            Using proc As New Proc
+                proc.Header = "Video encoding command line encoder: " + Name
+                proc.SkipStrings = GetSkipStrings(CommandLines)
+                proc.File = "cmd.exe"
+                proc.Arguments = "/S /C """ + line + """"
+                proc.EnvironmentVariables("path") = g.GetPathEnvVar
 
-        Using proc As New Proc
-            proc.Header = "Video encoding command line encoder: " + Name
-            proc.SkipStrings = GetSkipStrings(CommandLines)
-            proc.WriteLog(batchCode + BR2)
-            proc.File = "cmd.exe"
-            proc.Arguments = "/C call """ + batchPath + """"
-
-            Try
-                proc.Start()
-            Catch ex As AbortException
-                Throw ex
-            Catch ex As Exception
-                g.ShowException(ex)
-                Throw New AbortException
-            End Try
-        End Using
+                Try
+                    proc.Start()
+                Catch ex As AbortException
+                    Throw ex
+                Catch ex As Exception
+                    g.ShowException(ex)
+                    Throw New AbortException
+                End Try
+            End Using
+        Next
     End Sub
 
     Overrides Sub RunCompCheck()
@@ -664,16 +650,15 @@ Public Class BatchEncoder
         script.Path = p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType
         script.Synchronize()
 
-        Dim batchPath = p.TempDir + p.TargetFile.Base + "_CompCheck.bat"
-        Dim batchCode = Proc.WriteBatchFile(batchPath, GetBatchCode(Macro.Expand(CompCheckCommandLines)))
+        Dim line = Macro.Expand(CompCheckCommandLines)
 
         Using proc As New Proc
             proc.Header = "Compressibility Check"
             proc.WriteLog(code + BR2)
-            proc.WriteLog(batchCode + BR2)                                                                                                            
-            proc.SkipStrings = GetSkipStrings(batchCode)
+            proc.SkipStrings = GetSkipStrings(line)
             proc.File = "cmd.exe"
-            proc.Arguments = "/C call """ + batchPath + """"
+            proc.Arguments = "/S /C """ + line + """"
+            proc.EnvironmentVariables("path") = g.GetPathEnvVar
 
             Try
                 proc.Start()

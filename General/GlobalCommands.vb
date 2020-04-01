@@ -90,44 +90,24 @@ Public Class GlobalCommands
 
     <Command("Shows a command prompt with the temp directory of the current project.")>
     Sub ShowCommandPrompt()
-        Dim path = Environment.GetEnvironmentVariable("path")
-
-        For Each pack In Package.Items.Values
-            If Not pack.Filename.Ext = "exe" OrElse Not pack.Path.FileExists Then
-                Continue For
-            End If
-
-            path = pack.Directory + ";" + path
-        Next
-
         Using proc As New Process
             proc.StartInfo.UseShellExecute = False
             proc.StartInfo.FileName = "cmd.exe"
             proc.StartInfo.Arguments = "/k"
             proc.StartInfo.WorkingDirectory = p.TempDir
-            proc.StartInfo.EnvironmentVariables("path") = path
+            proc.StartInfo.EnvironmentVariables("path") = g.GetPathEnvVar
             proc.Start()
         End Using
     End Sub
 
     <Command("Shows the powershell with aliases for all tools staxrip includes.")>
     Sub ShowPowerShell()
-        Dim path = Environment.GetEnvironmentVariable("path")
-
-        For Each pack In Package.Items.Values
-            If Not pack.Filename.Ext = "exe" OrElse Not pack.Path.FileExists Then
-                Continue For
-            End If
-
-            path = pack.Directory + ";" + path
-        Next
-
         Using proc As New Process
             proc.StartInfo.UseShellExecute = False
             proc.StartInfo.FileName = "powershell.exe"
             proc.StartInfo.Arguments = "-noexit -nologo"
             proc.StartInfo.WorkingDirectory = p.TempDir
-            proc.StartInfo.EnvironmentVariables("path") = path
+            proc.StartInfo.EnvironmentVariables("path") = g.GetPathEnvVar
             proc.Start()
         End Using
     End Sub

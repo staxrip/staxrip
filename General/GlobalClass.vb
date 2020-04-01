@@ -305,10 +305,8 @@ Public Class GlobalClass
                 Return True
             End If
 
-            If file.Length > 150 OrElse file.FileName.Length > 75 Then
-                MsgError("Source file path or filename is too long",
-                    "In theory Windows supports long paths, in reality neither Windows, the .NET Framework or the used tools have full long path support.")
-
+            If file.Length > s.CharacterLimit OrElse file.FileName.Length > s.CharacterLimit \ 2 Then
+                MsgError("Source file path or filename is too long", Strings.CharacterLimitReason)
                 Return True
             End If
 
@@ -1288,4 +1286,18 @@ Public Class GlobalClass
                 $"""`n{Package.vspipe.Name} {Package.vspipe.Version}`n""; & '{Package.vspipe.Path}' --info '{script.Path}' -;""""", True)
         End If
     End Sub
+
+    Public Function GetPathEnvVar() As String
+        Dim path = Environment.GetEnvironmentVariable("path")
+
+        For Each pack In Package.Items.Values
+            If Not pack.Filename.Ext = "exe" OrElse Not pack.Path.FileExists Then
+                Continue For
+            End If
+
+            path = pack.Directory + ";" + path
+        Next
+
+        Return path
+    End Function
 End Class

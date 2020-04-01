@@ -3376,6 +3376,12 @@ Public Class MainForm
             n.Help = "Timeout in seconds before the shutdown is executed."
             n.Field = NameOf(s.ShutdownTimeout)
 
+            n = ui.AddNum
+            n.Text = "Path Character Limit"
+            n.Help = "Character limit of source file paths and half of it as filename limit. " + Strings.CharacterLimitReason
+            n.Config = {150, 1000, 10}
+            n.Field = NameOf(s.CharacterLimit)
+
             b = ui.AddBool
             b.Text = "Prevent system entering standby mode while encoding"
             b.Field = NameOf(s.PreventStandby)

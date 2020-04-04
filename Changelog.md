@@ -7,6 +7,7 @@
        neither Windows, nor the .NET Framework or the used tools have full long path support.
 - new: in order to support unicode the command line based encoder used by XviD uses
        now cmd.exe directly without creating a batch file
+- new: SVT-AV1 encoder with basic GUI
 
 ### 2.1.0.2 Beta
 

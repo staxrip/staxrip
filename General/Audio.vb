@@ -257,7 +257,6 @@ Public Class Audio
             proc.Package = Package.eac3to
             proc.Arguments = args
             proc.TrimChars = {"-"c, " "c}
-            proc.RemoveChars = {VB6.ChrW(8)} 'backspace
             proc.SkipStrings = {"process:", "analyze:"}
             proc.AllowedExitCodes = {0, 1}
             proc.Start()

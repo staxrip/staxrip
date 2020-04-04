@@ -15,7 +15,7 @@ Public Class LogForm
     Sub Init()
         rtb.Text = Path.ReadAllText
 
-        For Each match As Match In Regex.Matches(rtb.Text, "----- (.+) -----")
+        For Each match As Match In Regex.Matches(rtb.Text, "^-+ (.+) -+", RegexOptions.Multiline)
             Dim val = match.Groups(1).Value
             Dim match2 = Regex.Match(val, " \d+\.+.+")
 

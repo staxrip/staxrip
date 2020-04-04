@@ -101,11 +101,11 @@ Public Class ffmpegEnc
         Using proc As New Proc
             proc.Header = "Video encoding " + Params.Codec.OptionText
             proc.SkipStrings = {"frame=", "size="}
+            proc.Frames = p.Script.GetFrameCount
             proc.Encoding = Encoding.UTF8
             proc.WorkingDirectory = p.TempDir
             proc.Package = Package.ffmpeg
             proc.Arguments = args
-            If args.Contains(p.Script.Path) Then proc.Frames = p.Script.GetFrameCount
             proc.Start()
         End Using
     End Sub

@@ -666,7 +666,6 @@ Public Class GUIAudioProfile
                     proc.Package = Package.eac3to
                     proc.SkipStrings = {"process: ", "analyze: "}
                     proc.TrimChars = {"-"c, " "c}
-                    proc.RemoveChars = {VB6.ChrW(8)} 'backspace
                 ElseIf cl.Contains("ffmpeg.exe") Then
                     proc.Package = Package.ffmpeg
                     proc.SkipStrings = {"frame=", "size="}

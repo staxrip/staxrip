@@ -709,19 +709,19 @@ Public Class eac3toForm
             Project.Log.Write("Process playlist file using eac3to", Package.eac3to.Path.Escape + " " + args + BR2)
         End If
 
-        Using o As New Process
-            AddHandler o.OutputDataReceived, AddressOf OutputDataReceived
-            o.StartInfo.FileName = Package.eac3to.Path
-            o.StartInfo.Arguments = args
-            o.StartInfo.CreateNoWindow = True
-            o.StartInfo.UseShellExecute = False
-            o.StartInfo.RedirectStandardOutput = True
-            o.Start()
-            o.BeginOutputReadLine()
-            o.WaitForExit()
+        Using pr As New Process
+            AddHandler pr.OutputDataReceived, AddressOf OutputDataReceived
+            pr.StartInfo.FileName = Package.eac3to.Path
+            pr.StartInfo.Arguments = args
+            pr.StartInfo.CreateNoWindow = True
+            pr.StartInfo.UseShellExecute = False
+            pr.StartInfo.RedirectStandardOutput = True
+            pr.Start()
+            pr.BeginOutputReadLine()
+            pr.WaitForExit()
 
-            If o.ExitCode <> 0 Then
-                Dim exitCode = o.ExitCode
+            If pr.ExitCode <> 0 Then
+                Dim exitCode = pr.ExitCode
 
                 BeginInvoke(Sub()
                                 MsgError("eac3to failed with error code " & exitCode, Output)

@@ -1,9 +1,9 @@
 
-Imports System.Text.RegularExpressions
-Imports System.Text
+Imports System.Collections.Specialized
 Imports System.ComponentModel
 Imports System.Runtime.InteropServices
-Imports System.Collections.Specialized
+Imports System.Text
+Imports System.Text.RegularExpressions
 
 Public Class Proc
     Implements IDisposable
@@ -17,9 +17,7 @@ Public Class Proc
     Property BeginOutputReadLine As Boolean
     Property SkipString As String
     Property SkipStrings As String()
-    Property SkipPatterns As String()
     Property TrimChars As Char()
-    Property RemoveChars As Char()
     Property ExitCode As Integer
     Property Frames As Integer
     Property Duration As TimeSpan
@@ -27,10 +25,16 @@ Public Class Proc
     Property Succeeded As Boolean
     Property Header As String
     Property Package As Package
+    Property OutputReader As AsyncStreamReader
+    Property ErrorReader As AsyncStreamReader
+    Property IntegerFrameOutput As Boolean
+    Property IntegerPercentOutput As Boolean
 
     Private LogItems As List(Of String)
 
     Event ProcDisposed()
+    Event OutputDataReceived(value As String)
+    Event ErrorDataReceived(value As String)
 
     Sub New(Optional readOutput As Boolean = True)
         Me.ReadOutput = readOutput
@@ -60,7 +64,10 @@ Public Class Proc
 
     Property Project As Project
         Get
-            If ProjectValue Is Nothing Then ProjectValue = p
+            If ProjectValue Is Nothing Then
+                ProjectValue = p
+            End If
+
             Return ProjectValue
         End Get
         Set(value As Project)
@@ -77,30 +84,45 @@ Public Class Proc
             Return Process.StartInfo.WorkingDirectory
         End Get
         Set(Value As String)
-            If Directory.Exists(Value) Then Process.StartInfo.WorkingDirectory = Value
+            If Directory.Exists(Value) Then
+                Process.StartInfo.WorkingDirectory = Value
+            End If
         End Set
     End Property
 
     ReadOnly Property Title As String
         Get
-            If Not Package Is Nothing Then Return Package.Name
+            If Not Package Is Nothing Then
+                Return Package.Name
+            End If
+
             Dim header = ""
-            If Me.Header <> "" Then header = Me.Header.ToLower
+
+            If Me.Header <> "" Then
+                header = Me.Header.ToLower
+            End If
+
             Dim ret = ""
 
             For Each i In Package.Items.Values
-                If header?.Contains(i.Name.ToLower) OrElse Arguments?.Contains(i.Filename) Then ret += " | " + i.Name
+                If header?.Contains(i.Name.ToLower) OrElse Arguments?.Contains(i.Filename) Then
+                    ret += " | " + i.Name
+                End If
             Next
 
-            If ret = "" Then ret = File.Base
+            If ret = "" Then
+                ret = File.Base
+            End If
+
             Return ret.TrimStart(" |".ToCharArray)
         End Get
     End Property
 
-    Shared Sub ExecuteBatch(batchCode As String,
-                            header As String,
-                            suffix As String,
-                            skipStrings As String())
+    Shared Sub ExecuteBatch(
+        batchCode As String,
+        header As String,
+        suffix As String,
+        skipStrings As String())
 
         If batchCode.Contains(BR) Then
             Dim batchPath = p.TempDir + p.TargetFile.Base + suffix + ".bat"
@@ -146,8 +168,7 @@ Public Class Proc
             For Each i In content
                 If Convert.ToInt32(i) > 137 Then
                     Throw New ErrorAbortException("Unsupported Windows Version",
-                                                  "Executing batch files with character '" & i &
-                                                  "' requires minimum Windows 8.")
+                        "Executing batch files with character '" & i & "' requires minimum Windows 8.")
                 End If
             Next
         End If
@@ -225,7 +246,10 @@ Public Class Proc
     End Property
 
     Sub WriteLog(value As String)
-        If LogItems Is Nothing Then LogItems = New List(Of String)
+        If LogItems Is Nothing Then
+            LogItems = New List(Of String)
+        End If
+
         LogItems.Add(value)
     End Sub
 
@@ -247,8 +271,18 @@ Public Class Proc
         End Try
     End Sub
 
+    Sub OutputReadNotifyUser(value As String)
+        RaiseEvent OutputDataReceived(value)
+    End Sub
+
+    Sub ErrorReadNotifyUser(value As String)
+        RaiseEvent ErrorDataReceived(value)
+    End Sub
+
     Sub Start()
-        If ProcController.Aborted Then Throw New AbortException
+        If ProcController.Aborted Then
+            Throw New AbortException
+        End If
 
         Try
             If Header <> "" Then
@@ -259,7 +293,9 @@ Public Class Proc
                 Log.WriteHeader(Header)
             End If
 
-            If Process.StartInfo.FileName = "" Then Process.StartInfo.FileName = Package.Path
+            If Process.StartInfo.FileName = "" Then
+                Process.StartInfo.FileName = Package.Path
+            End If
 
             If ReadOutput Then
                 ProcController.Start(Me)
@@ -280,15 +316,32 @@ Public Class Proc
             Process.Start()
 
             If ReadOutput Then
-                Process.BeginOutputReadLine()
-                Process.BeginErrorReadLine()
+                OutputReader = New AsyncStreamReader(
+                    Process.StandardOutput.BaseStream,
+                    AddressOf OutputReadNotifyUser,
+                    Process.StandardOutput.CurrentEncoding)
+
+                ErrorReader = New AsyncStreamReader(
+                    Process.StandardError.BaseStream,
+                    AddressOf ErrorReadNotifyUser,
+                    Process.StandardError.CurrentEncoding)
+
+                OutputReader.BeginReadLine()
+                ErrorReader.BeginReadLine()
             End If
         Catch ex As AbortException
             Throw ex
         Catch ex As Exception
             Dim msg = ex.Message
-            If File <> "" Then msg += BR2 + "File: " + File
-            If Arguments <> "" Then msg += BR2 + "Arguments: " + Arguments
+
+            If File <> "" Then
+                msg += BR2 + "File: " + File
+            End If
+
+            If Arguments <> "" Then
+                msg += BR2 + "Arguments: " + Arguments
+            End If
+
             MsgError(msg)
         End Try
 
@@ -299,6 +352,9 @@ Public Class Proc
 
             If Wait Then
                 Process.WaitForExit()
+                OutputReader?.WaitUtilEOF()
+                ErrorReader?.WaitUtilEOF()
+
                 ExitCode = Process.ExitCode
 
                 If Abort Then
@@ -360,7 +416,10 @@ Public Class Proc
                     Project.Log.Save(Project)
                 End If
 
-                If Not Process Is Nothing Then Process.Dispose()
+                Process?.Dispose()
+                OutputReader?.Dispose()
+                ErrorReader?.Dispose()
+
                 RaiseEvent ProcDisposed()
             End If
         End If
@@ -378,23 +437,15 @@ Public Class Proc
             Return ("", False)
         End If
 
-        If Not RemoveChars Is Nothing Then
-            For Each i In RemoveChars
-                If value.Contains(i) Then
-                    value = value.Replace(i, "")
-                End If
-            Next
-        End If
-
         If Not TrimChars Is Nothing Then
             value = value.Trim(TrimChars)
         End If
 
-        If SkipString <> "" Then
-            If value.Contains(SkipString) Then
-                Return (value, True)
-            End If
-        ElseIf Not SkipStrings Is Nothing Then
+        If SkipString <> "" AndAlso value.Contains(SkipString) Then
+            Return (value, True)
+        End If
+
+        If Not SkipStrings Is Nothing Then
             For Each i In SkipStrings
                 If value.Contains(i) Then
                     Return (value, True)
@@ -402,14 +453,14 @@ Public Class Proc
             Next
         End If
 
-        If Not SkipPatterns Is Nothing Then
-            For Each i In SkipPatterns
-                If Regex.IsMatch(value, i) Then
-                    Return (value, True)
-                End If
-            Next
+        If IntegerFrameOutput AndAlso value.Trim.IsInt Then
+            Return (value.Trim, True)
         End If
 
-        Return (value.Trim, False)
+        If IntegerPercentOutput AndAlso value.IsInt Then
+            Return (value, True)
+        End If
+
+        Return (value, False)
     End Function
 End Class

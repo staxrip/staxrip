@@ -157,13 +157,13 @@ Public Class GlobalCommands
                 End Try
             End Using
         Else
-            For Each i In Macro.Expand(commandLines).SplitLinesNoEmpty
+            For Each line In Macro.Expand(commandLines).SplitLinesNoEmpty
                 Using proc As New Proc(showProcessWindow)
                     proc.Header = "Execute Command Line"
-                    proc.CommandLine = i
+                    proc.CommandLine = line
                     proc.Wait = waitForExit
 
-                    If i.Ext = "exe" Then
+                    If line.Ext = "exe" Then
                         proc.Process.StartInfo.UseShellExecute = False
 
                         For Each i2 In Macro.GetMacros

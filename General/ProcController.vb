@@ -45,22 +45,30 @@ Public Class ProcController
         ProcForm.flpNav.Controls.Add(CheckBox)
 
         AddHandler proc.ProcDisposed, AddressOf ProcDisposed
-        AddHandler proc.Process.OutputDataReceived, AddressOf DataReceived
-        AddHandler proc.Process.ErrorDataReceived, AddressOf DataReceived
+        AddHandler proc.OutputDataReceived, AddressOf DataReceived
+        AddHandler proc.ErrorDataReceived, AddressOf DataReceived
     End Sub
 
-    Sub DataReceived(sender As Object, e As DataReceivedEventArgs)
-        If e.Data = "" Then
+    Sub DataReceived(value As String)
+        If value = "" Then
             Exit Sub
         End If
 
-        Dim ret = Proc.ProcessData(e.Data)
+        Dim ret = Proc.ProcessData(value)
 
         If ret.Data = "" Then
             Exit Sub
         End If
 
         If ret.Skip Then
+            If Proc.IntegerFrameOutput AndAlso Proc.Frames > 0 AndAlso ret.Data.IsInt Then
+                ret.Data = "Progress: " + (ret.Data.ToInt / Proc.Frames * 100).ToString("0.00") + "%"
+            End If
+
+            If Proc.IntegerPercentOutput AndAlso ret.Data.IsInt Then
+                ret.Data = "Progress: " + ret.Data + "%"
+            End If
+
             ProcForm.BeginInvoke(StatusAction, {ret.Data})
         Else
             Proc.Log.WriteLine(ret.Data)
@@ -126,19 +134,6 @@ Public Class ProcController
 
                 Exit Sub
             End If
-        ElseIf value.IsInt Then
-            Dim val = value.ToInt
-
-            If LastProgress <> val Then
-                ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
-                ProcForm.Taskbar?.SetValue(val, 100)
-                ProcForm.NotifyIcon.Text = val & "%"
-                ProgressBar.Value = val
-                ProgressBar.Text = val & "%"
-                LastProgress = val
-            End If
-
-            Exit Sub
         ElseIf Proc.Frames > 0 AndAlso value.Contains("frame=") AndAlso value.Contains("fps=") Then
             Dim frameString = value.Left("fps=").Right("frame=")
 
@@ -252,8 +247,8 @@ Public Class ProcController
             Procs.Remove(Me)
 
             RemoveHandler Proc.ProcDisposed, AddressOf ProcDisposed
-            RemoveHandler Proc.Process.OutputDataReceived, AddressOf DataReceived
-            RemoveHandler Proc.Process.ErrorDataReceived, AddressOf DataReceived
+            RemoveHandler Proc.OutputDataReceived, AddressOf DataReceived
+            RemoveHandler Proc.ErrorDataReceived, AddressOf DataReceived
 
             ProcForm.flpNav.Controls.Remove(CheckBox)
             ProcForm.pnLogHost.Controls.Remove(LogTextBox)

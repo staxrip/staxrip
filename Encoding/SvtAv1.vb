@@ -69,7 +69,8 @@ Public Class SVTAV1
         Using proc As New Proc
             proc.Header = "Video encoding"
             proc.Package = Package.SVTAV1
-            proc.RemoveChars = {Convert.ToChar(8)} 'back space
+            proc.IntegerFrameOutput = True
+            proc.Frames = p.Script.GetFrameCount
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
             proc.Start()

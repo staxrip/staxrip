@@ -150,20 +150,28 @@ Public Class CommandLineDemuxer
     Overrides Sub Run(proj As Project)
         Using proc As New Proc
             If Command?.Contains("DGIndexNV") Then
-                If Not Package.DGIndexNV.VerifyOK(True) Then Throw New AbortException
+                If Not Package.DGIndexNV.VerifyOK(True) Then
+                    Throw New AbortException
+                End If
+
                 proc.Package = Package.DGIndexNV
-                proc.SkipPatterns = {"^\d+$"}
+                proc.IntegerPercentOutput = True
             ElseIf Command?.Contains("ffmpeg") Then
                 proc.Package = Package.ffmpeg
                 proc.SkipStrings = {"frame=", "size="}
             ElseIf Command?.Contains("DGIndex") Then
-                If Not Package.DGIndex.VerifyOK(True) Then Throw New AbortException
+                If Not Package.DGIndex.VerifyOK(True) Then
+                    Throw New AbortException
+                End If
+
                 proc.Package = Package.DGIndex
-                proc.SkipPatterns = {"^\d+$"}
+                proc.IntegerPercentOutput = True
             ElseIf Command?.Contains("dsmux") Then
-                If Not Package.Haali.VerifyOK(True) Then Throw New AbortException
+                If Not Package.Haali.VerifyOK(True) Then
+                    Throw New AbortException
+                End If
+
                 proc.SkipString = "Muxing..."
-            ElseIf Command?.Contains("Java") Then
             End If
 
             proc.Header = Name
@@ -209,7 +217,6 @@ Public Class eac3toDemuxer
                     proc.Project = proj
                     proc.SkipStrings = {"analyze: ", "process: "}
                     proc.TrimChars = {"-"c, " "c}
-                    proc.RemoveChars = {CChar(VB6.vbBack)}
                     proc.Header = "Demux M2TS"
                     proc.Package = Package.eac3to
                     proc.Arguments = form.GetArgs(proj.SourceFile.Escape, proj.SourceFile.Base)

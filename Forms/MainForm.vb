@@ -5020,7 +5020,6 @@ Public Class MainForm
                     Using proc As New Proc
                         proc.Header = "Demux M2TS"
                         proc.TrimChars = {"-"c, " "c}
-                        proc.RemoveChars = {CChar(VB6.vbBack)}
                         proc.SkipStrings = {"analyze: ", "process: "}
                         proc.Package = Package.eac3to
                         proc.Process.StartInfo.Arguments = form.GetArgs(

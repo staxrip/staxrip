@@ -158,7 +158,7 @@ Public Class Package
         .HelpURL = "http://avisynth.nl",
         .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
         .FixedDir = Folder.System,
-        .SetupFilename = "Installers\AviSynthPlus_3.5.0_20200302.exe",
+        .SetupFilename = "Installers\AviSynthPlus-3.5.1_20200402.exe",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth})
 
     Shared Property chapterEditor As Package = Add(New Package With {
@@ -906,7 +906,7 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/TDeint",
             .Description = "TDeint is a bi-directionally, motion adaptive, sharp deinterlacer.",
             .AvsFilterNames = {"TDeint"},
-            .AvsFiltersFunc = Function() {New VideoFilter("Field", "TDent", "TDeint()")}})
+            .AvsFiltersFunc = Function() {New VideoFilter("Field", "TDeint", "TDeint()")}})
 
         Add(New PluginPackage With {
             .Name = "FineDehalo",

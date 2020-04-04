@@ -9,7 +9,7 @@ AviSynth
 
 StaxRip supports both AviSynth and VapourSynth as video processing tool.
 
-Used Version: 3.5.0
+Used Version: 3.5.1
 
 https://github.com/AviSynth/AviSynthPlus
 
@@ -119,7 +119,7 @@ ffmpeg
 
 Versatile audio video convertor.
 
-Used Version: N-96788 GCC 9.2.0 Patman
+Used Version: N-97107-g33c106d411-g72be5d4661+2-gcc9.3.0 Patman
 
 http://ffmpeg.org
 
@@ -159,7 +159,7 @@ MediaInfo
 
 MediaInfo is used by StaxRip to read infos from media files.
 
-Used Version: 19.09
+Used Version: 20.03
 
 http://mediaarea.net/en/MediaInfo
 
@@ -312,6 +312,16 @@ Subtitle Edit is a open source subtitle editor.
 Used Version: 3.5.14
 
 http://www.nikse.dk/SubtitleEdit
+
+
+SVT-AV1
+~~~~~~~
+
+Intel AV1 encoder.
+
+Used Version: 0.8.1
+
+https://github.com/OpenVisualCloud/SVT-AV1
 
 
 VapourSynth

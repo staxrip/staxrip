@@ -1,13 +1,22 @@
 
-### 2.1.0.3 Beta not yet released
+### 2.1.0.4 Beta not yet released
+
+### 2.1.0.3 Beta
 
 - new: check added that blocks source files with too long path or filename. A setting
        that allows to change the limit exists and there is also a explanation as tooltip:
        In theory Windows supports paths that are longer than 260 characters, in reality
        neither Windows, nor the .NET Framework or the used tools have full long path support.
 - new: in order to support unicode the command line based encoder used by XviD uses
-       now cmd.exe directly without creating a batch file
-- new: SVT-AV1 encoder with basic GUI
+       now cmd.exe directly without creating a batch file. This command line based encoder
+       is not only useful for XviD but can be used for any command line based encoder
+- new: very basic SVT-AV1 encoder support added
+
+- update: MediaInfo 20.03
+- update: AviSynth 3.5.1
+- update: ffmpeg N-97107-g33c106d411-g72be5d4661+2-gcc9.3.0 Patman
+
+- fix: 2 reported typos
 
 ### 2.1.0.2 Beta
 

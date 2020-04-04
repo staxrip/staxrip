@@ -324,7 +324,7 @@ Dialog to manage encoder profiles.
 -ShowEventCommandsDialog
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-A Event Command allows to define a command to be executed on a defined event. Furthermore criteria can be defined to execute the command only if certain criteria is matched.
+Shows the Event Command dialog.
 
 
 -ShowFileBrowserToOpenProject

@@ -834,7 +834,7 @@ Public Class x264Params
                     New OptionParam With {.Switch = "--alternative-transfer", .Text = "Alternative Transfer", .Options = {"Undefined", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}},
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"Undefined", "Show", "Crop"}},
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"Auto", "TV", "PC"}},
-                    New OptionParam With {.Switch = "--nal-hrd", .Text = "Signal HDR Info", .Options = {"None", "VBR", "CBR"}},
+                    New OptionParam With {.Switch = "--nal-hrd", .Text = "Signal HRD Info", .Options = {"None", "VBR", "CBR"}},
                     New NumParam With {.Switch = "--chromaloc", .Text = "Chromaloc", .Config = {0, 5}},
                     New BoolParam With {.Switch = "--filler", .Text = "Force hard-CBR and generate filler"},
                     New BoolParam With {.Switch = "--pic-struct", .Text = "Force pic_struct in Picture Timing SEI"})

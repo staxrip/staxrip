@@ -158,11 +158,6 @@ Public Class VCEEnc
             .VisibleFunc = Function() Mode.Value = 0,
             .Config = {0, 51}}
 
-        Property Custom As New StringParam With {
-            .Text = "Custom",
-            .Quotes = QuotesMode.Never,
-            .AlwaysOn = True}
-
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
@@ -196,9 +191,9 @@ Public Class VCEEnc
                         New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-SRD-B67", "Auto", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 2084", "SMPTE 428"}},
                         New BoolParam With {.Switch = "--enforce-hrd", .Text = "Enforce HRD compatibility"})
                     Add("Other",
+                        New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
                         New StringParam With {.Switch = "--chapter", .Text = "Chapters", .BrowseFile = True},
                         New StringParam With {.Switch = "--log", .Text = "Log File", .BrowseFile = True},
-                        Custom,
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .Options = {"Main", "High"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New OptionParam With {.Switch = "--motion-est", .Text = "Motion Estimation", .Options = {"Q-pel", "Full-pel", "Half-pel"}},

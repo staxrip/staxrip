@@ -70,7 +70,7 @@ Public Class SVTAV1
             proc.Header = "Video encoding"
             proc.Package = Package.SVTAV1
             proc.IntegerFrameOutput = True
-            proc.Frames = p.Script.GetFrameCount
+            proc.FrameCount = p.Script.GetFrameCount
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
             proc.Start()
@@ -88,7 +88,7 @@ Public Class SVTAV1
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return True
+            Return Params.Mode.Value = 0
         End Get
         Set(Value As Boolean)
         End Set
@@ -107,12 +107,21 @@ Public Class SVTAV1
             Title = "SVT-AV1 Options"
         End Sub
 
+        Property Mode As New OptionParam With {
+            .Switch = "-rc",
+            .Switches = {"-tbr"},
+            .Text = "Mode",
+            .IntegerValue = True,
+            .Options = {"CQP", "VBR", "CVBR"}}
+
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
+
                     Add("Basic",
-                        New OptionParam With {.Switch = "--rc", .Text = "Mode", .Options = {"CQP", "VBR", "CVBR"}},
+                        New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
+                        Mode,
                         New OptionParam With {.Switch = "-enc-mode", .Text = "Preset", .Init = 8, .IntegerValue = True, .Options = {"Very Slow", "Slower", "Slow", "Medium", "Fast", "Faster", "Very Fast", "Super Fast", "Ultra Fast"}},
                         New NumParam With {.Switch = "-q", .Text = "QP", .Config = {0, 63, 1}, .Init = 50})
 
@@ -159,6 +168,10 @@ Public Class SVTAV1
 
             If q.Count > 0 Then
                 ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+            End If
+
+            If Mode.Value <> 0 Then
+                ret += " -tbr " & p.VideoBitrate
             End If
 
             If includePaths Then

@@ -943,6 +943,10 @@ File path to SVPFlow 2
 
 File path to SVPFlow 2
 
+``%app:SVT-AV1%``
+
+File path to SVT-AV1
+
 ``%app:taa%``
 
 File path to taa
@@ -1722,6 +1726,10 @@ Folder path to SVPFlow 2
 ``%app_dir:SVPFlow 2%``
 
 Folder path to SVPFlow 2
+
+``%app_dir:SVT-AV1%``
+
+Folder path to SVT-AV1
 
 ``%app_dir:taa%``
 

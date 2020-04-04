@@ -61,8 +61,8 @@ Public Class ProcController
         End If
 
         If ret.Skip Then
-            If Proc.IntegerFrameOutput AndAlso Proc.Frames > 0 AndAlso ret.Data.IsInt Then
-                ret.Data = "Progress: " + (ret.Data.ToInt / Proc.Frames * 100).ToString("0.00") + "%"
+            If Proc.IntegerFrameOutput AndAlso Proc.FrameCount > 0 AndAlso ret.Data.IsInt Then
+                ret.Data = "Progress: " + (ret.Data.ToInt / Proc.FrameCount * 100).ToString("0.00") + "%"
             End If
 
             If Proc.IntegerPercentOutput AndAlso ret.Data.IsInt Then
@@ -134,14 +134,14 @@ Public Class ProcController
 
                 Exit Sub
             End If
-        ElseIf Proc.Frames > 0 AndAlso value.Contains("frame=") AndAlso value.Contains("fps=") Then
+        ElseIf Proc.FrameCount > 0 AndAlso value.Contains("frame=") AndAlso value.Contains("fps=") Then
             Dim frameString = value.Left("fps=").Right("frame=")
 
             If frameString.IsInt Then
                 Dim frame = frameString.ToInt
 
-                If frame < Proc.Frames Then
-                    Dim progressValue = CSng(frame / Proc.Frames * 100)
+                If frame < Proc.FrameCount Then
+                    Dim progressValue = CSng(frame / Proc.FrameCount * 100)
 
                     If LastProgress <> progressValue Then
                         ProcForm.Taskbar?.SetState(TaskbarStates.Normal)

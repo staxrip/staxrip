@@ -19,7 +19,7 @@ Public Class Proc
     Property SkipStrings As String()
     Property TrimChars As Char()
     Property ExitCode As Integer
-    Property Frames As Integer
+    Property FrameCount As Integer
     Property Duration As TimeSpan
     Property Log As New LogBuilder
     Property Succeeded As Boolean

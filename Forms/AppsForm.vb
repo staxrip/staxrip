@@ -587,7 +587,6 @@ Public Class AppsForm
 
         Dim input = InputBox.Show(
             "What's the name of this version?" + BR2 +
-            "Enter anything if you don't know or care." + BR2 +
             "File Data (often incorrect or empty):" + BR2 +
             "Version: " + FileVersionInfo.GetVersionInfo(CurrentPackage.Path).FileVersion,
             "StaxRip", CurrentPackage.Version)

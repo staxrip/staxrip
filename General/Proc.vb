@@ -221,6 +221,12 @@ Public Class Proc
         End Get
     End Property
 
+    Sub SetMacrosAsEnvVars()
+        For Each mac In Macro.GetMacros(False, False)
+            EnvironmentVariables(mac.Name.Trim("%"c)) = Macro.Expand(mac.Name)
+        Next
+    End Sub
+
     Property Arguments() As String
         Get
             Return Process.StartInfo.Arguments

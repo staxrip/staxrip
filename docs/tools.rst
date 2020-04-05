@@ -157,7 +157,7 @@ http://haali.su/mkv
 MediaInfo
 ~~~~~~~~~
 
-MediaInfo is used by StaxRip to read infos from media files.
+Used to retrieve info from media files.
 
 Used Version: 20.03
 
@@ -169,7 +169,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 44.0.0
+Used Version: 45.0.0
 
 https://mkvtoolnix.download/
 
@@ -177,9 +177,9 @@ https://mkvtoolnix.download/
 mkvinfo
 ~~~~~~~
 
-MKV muxing tool.
+MKV info tool.
 
-Used Version: 44.0.0
+Used Version: 45.0.0
 
 https://mkvtoolnix.download/
 
@@ -189,7 +189,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 44.0.0
+Used Version: 45.0.0
 
 https://mkvtoolnix.download/
 
@@ -249,7 +249,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.68
+Used Version: 4.69
 
 http://github.com/rigaya/NVEnc
 
@@ -709,7 +709,7 @@ DFTTest
 
 Filters: dfttest
 
-Used Version: 190410
+Used Version: 1.9.5 Clang
 
 https://github.com/299792458m/dfttest_mod
 
@@ -841,7 +841,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: FFVideoSource, FFAudioSource
 
-Used Version: 2019-08-30 StvG
+Used Version: 89bd1e1 StvG
 
 http://github.com/FFMS/ffms2
 
@@ -1069,9 +1069,9 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: LSMASHVideoSource, LSMASHAudioSource, LWLibavVideoSource, LWLibavAudioSource
 
-Used Version: 20200207 HolyWu
+Used Version: 2020-03-22 HolyWu
 
-http://avisynth.nl/index.php/LSMASHSource
+https://github.com/HolyWu/L-SMASH-Works
 
 
 MAA2Mod
@@ -1791,7 +1791,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: ffms2
 
-Used Version: 2019-08-30 StvG
+Used Version: 89bd1e1 StvG
 
 http://github.com/FFMS/ffms2
 
@@ -1947,9 +1947,9 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
 
-Used Version: 20200207 HolyWu
+Used Version: 2020-03-22 HolyWu
 
-http://avisynth.nl/index.php/LSMASHSource
+https://github.com/HolyWu/L-SMASH-Works
 
 
 mcdegrainsharp

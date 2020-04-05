@@ -140,7 +140,8 @@ Public Class Package
         .Filename = "MediaInfo.dll",
         .Location = "Support\MediaInfo",
         .WebURL = "http://mediaarea.net/en/MediaInfo",
-        .Description = "MediaInfo is used by StaxRip to read infos from media files."})
+        .DownloadURL = "https://mediaarea.net/en/MediaInfo/Download/Windows",
+        .Description = "Used to retrieve info from media files."})
 
     Shared Property MP4Box As Package = Add(New Package With {
         .Name = "MP4Box",
@@ -448,7 +449,7 @@ Public Class Package
         .Location = "Support\MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .Description = "MKV muxing tool."})
+        .Description = "MKV info tool."})
 
     Shared Property PNGopt As Package = Add(New Package With {
         .Name = "PNGopt",
@@ -466,6 +467,7 @@ Public Class Package
         .HelpSwitch = "-h",
         .WebURL = "http://github.com/rigaya/NVEnc",
         .HelpURL = "https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md",
+        .DownloadURL = "https://github.com/rigaya/NVEnc/releases",
         .Description = "NVIDIA hardware video encoder.",
         .HelpFilename = "NVEnc Help.txt"})
 
@@ -644,9 +646,9 @@ Public Class Package
         .Name = "L-SMASH-Works",
         .Filename = "LSMASHSource.dll",
         .Description = "AviSynth and VapourSynth source filter based on Libav supporting a wide range of input formats.",
-        .WebURL = "http://avisynth.nl/index.php/LSMASHSource",
-        .HelpUrlAviSynth = "http://github.com/VFR-maniac/L-SMASH-Works/blob/master/AviSynth/README",
-        .HelpUrlVapourSynth = "https://github.com/VFR-maniac/L-SMASH-Works/blob/master/VapourSynth/README",
+        .WebURL = "https://github.com/HolyWu/L-SMASH-Works",
+        .HelpUrlAviSynth = "https://github.com/HolyWu/L-SMASH-Works/blob/master/AviSynth/README",
+        .HelpUrlVapourSynth = "https://github.com/HolyWu/L-SMASH-Works/blob/master/VapourSynth/README",
         .AvsFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
         .AvsFiltersFunc = Function() {
             New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")" + BR + "#AssumeFPS(25)"),
@@ -677,7 +679,7 @@ Public Class Package
         .Name = "DFTTest",
         .Filename = "dfttest.dll",
         .Description = "2D/3D frequency domain denoiser using Discrete Fourier transform.",
-        .HelpFilename = "Readme.txt",
+        .HelpFilename = "dfttest - README.txt",
         .WebURL = "https://github.com/299792458m/dfttest_mod",
         .AvsFilterNames = {"dfttest"},
         .AvsFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest", "dfttest($select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong|sigma=64, tbsize=1$,$select:msg:Enable High Bit Depth?;True|lsb_in=true, lsb=true;False|lsb_in=false, lsb=false$)")}})

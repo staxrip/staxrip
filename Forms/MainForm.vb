@@ -2254,7 +2254,6 @@ Public Class MainForm
         End If
 
         If p.ChromaSubsampling <> "4:2:0" AndAlso s.ConvertChromaSubsampling Then
-            'chroma
             If editVS Then
                 Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
                 Dim matrix As String
@@ -2266,21 +2265,10 @@ Public Class MainForm
                 End If
 
                 p.Script.GetFilter("Source").Script += BR + "clip = clip.resize.Bicubic(matrix_s = '" + matrix + "', format = vs.YUV420P8)"
-            ElseIf editAVS AndAlso Not sourceFilter.Script.Contains("ConvertToYV12") Then
-                Dim format = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format")
-                Dim matrix As String
+            ElseIf editAVS AndAlso Not sourceFilter.Script.Contains("ConvertToYV12") AndAlso
+                Not sourceFilter.Script.Contains("ConvertToYUV420") Then
 
-                If format = "RGB" OrElse p.SourceFile.Ext = "vdr" Then
-                    Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
-
-                    If sourceHeight > 576 Then
-                        matrix = "matrix = ""Rec709"""
-                    Else
-                        matrix = "matrix = ""Rec601"""
-                    End If
-                End If
-
-                p.Script.GetFilter("Source").Script += BR + "ConvertToYV12(" + matrix + ")"
+                p.Script.GetFilter("Source").Script += BR + "ConvertToYUV420()"
             End If
         End If
 
@@ -6062,7 +6050,7 @@ Public Class MainForm
             If dialog.ShowDialog = DialogResult.OK Then
                 s.Storage.SetString("MediaInfo Folder View folder", dialog.SelectedPath)
 
-                Dim code = $"Get-ChildItem '{dialog.SelectedPath.FixDir}' | Get-MediaInfo | Out-GridView"
+                Dim code = $". '{Package.GetMediaInfo.Path}'; Get-ChildItem '{dialog.SelectedPath.FixDir}' | Get-MediaInfo | Out-GridView"
                 g.StartProcess("powershell.exe", "-nologo -noexit -command " + code.Escape)
             End If
         End Using

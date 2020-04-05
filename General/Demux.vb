@@ -142,41 +142,45 @@ Public Class CommandLineDemuxer
     End Property
 
     Overrides Function ShowConfigDialog() As DialogResult
-        Using f As New CommandLineDemuxForm(Me)
-            Return f.ShowDialog
+        Using form As New CommandLineDemuxForm(Me)
+            Return form.ShowDialog
         End Using
     End Function
 
     Overrides Sub Run(proj As Project)
         Using proc As New Proc
-            If Command?.Contains("DGIndexNV") Then
+            If Command?.Contains("DGIndexNV") OrElse Arguments?.Contains("DGIndexNV") Then
                 If Not Package.DGIndexNV.VerifyOK(True) Then
                     Throw New AbortException
                 End If
 
                 proc.Package = Package.DGIndexNV
                 proc.IntegerPercentOutput = True
-            ElseIf Command?.Contains("ffmpeg") Then
-                proc.Package = Package.ffmpeg
-                proc.SkipStrings = {"frame=", "size="}
-            ElseIf Command?.Contains("DGIndex") Then
+            ElseIf Command?.Contains("DGIndex") OrElse Arguments?.Contains("DGIndex") Then
                 If Not Package.DGIndex.VerifyOK(True) Then
                     Throw New AbortException
                 End If
 
                 proc.Package = Package.DGIndex
                 proc.IntegerPercentOutput = True
-            ElseIf Command?.Contains("dsmux") Then
+            ElseIf Command?.Contains("ffmpeg") OrElse Arguments?.Contains("ffmpeg") Then
+                proc.Package = Package.ffmpeg
+                proc.SkipStrings = {"frame=", "size="}
+            ElseIf Command?.Contains("dsmux") OrElse Arguments?.Contains("dsmux") Then
                 If Not Package.Haali.VerifyOK(True) Then
                     Throw New AbortException
                 End If
 
                 proc.SkipString = "Muxing..."
+            ElseIf Command?.Contains("cmd") OrElse Command?.Contains("powershell") Then
+                proc.SkipStrings = {"frame=", "size="}
             End If
 
             proc.Header = Name
             proc.File = Macro.Expand(Command)
             proc.Arguments = Macro.Expand(Arguments)
+            proc.EnvironmentVariables("path") = g.GetPathEnvVar
+            proc.SetMacrosAsEnvVars()
             proc.Start()
 
             If Command?.Contains("DGIndex") Then

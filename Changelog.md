@@ -1,5 +1,23 @@
 
-### 2.1.0.4 Beta not yet released
+### 2.1.0.5 Beta not yet released
+
+### 2.1.0.4 Beta
+
+- new: the global setting 'Add filter to convert chroma subsampling to 4:2:0'
+       uses now ConvertToYUV420 instead of ConverttoYV12
+- new: in custom command line based demuxers and in the ExecuteCommandLine
+       command the path environment variable of the process has all exe tools
+       added and all macros are available as environment variables
+- new: AviSynth filter profile using ColorYUV function
+
+- update: mkvtoolnix 45.0.0
+- update: nvenc 4.69
+- update: DFTTest 1.9.5 Clang
+- update: L-Smash-Works 2020-03-22 HolyWu
+- update: ffms2 89bd1e1 StvG
+
+- fix: the MediaInfo Folder view did not work unless Get-MediaInfo was installed,
+       now it should work even without being installed, please try and give feedback
 
 ### 2.1.0.3 Beta
 

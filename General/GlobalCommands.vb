@@ -144,10 +144,8 @@ Public Class GlobalCommands
                 proc.Arguments = "/C call """ + batchPath + """"
                 proc.Wait = waitForExit
                 proc.Process.StartInfo.UseShellExecute = False
-
-                For Each i In Macro.GetMacros
-                    proc.Process.StartInfo.EnvironmentVariables(i.Name.Trim("%"c)) = Macro.Expand(i.Name)
-                Next
+                proc.SetMacrosAsEnvVars()
+                proc.EnvironmentVariables("path") = g.GetPathEnvVar
 
                 Try
                     proc.Start()
@@ -161,14 +159,12 @@ Public Class GlobalCommands
                 Using proc As New Proc(showProcessWindow)
                     proc.Header = "Execute Command Line"
                     proc.CommandLine = line
+                    proc.SetMacrosAsEnvVars()
+                    proc.EnvironmentVariables("path") = g.GetPathEnvVar
                     proc.Wait = waitForExit
 
                     If line.Ext = "exe" Then
                         proc.Process.StartInfo.UseShellExecute = False
-
-                        For Each i2 In Macro.GetMacros
-                            proc.Process.StartInfo.EnvironmentVariables(i2.Name.Trim("%"c)) = Macro.Expand(i2.Name)
-                        Next
                     End If
 
                     Try

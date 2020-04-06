@@ -132,6 +132,7 @@ Public Class Package
         .Location = "Encoders\ffmpeg",
         .WebURL = "http://ffmpeg.org",
         .HelpURL = "http://www.ffmpeg.org/ffmpeg-all.html",
+        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpSwitch = "-h",
         .Description = "Versatile audio video convertor."})
 
@@ -175,8 +176,11 @@ Public Class Package
         .Location = "Encoders\xvid_encraw",
         .Filename = "xvid_encraw.exe",
         .Description = "XviD console encoder",
-        .HelpSwitch = "-h",
-        .WebURL = "http://www.xvid.com"})
+        .WebURL = "https://www.xvid.com",
+        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
+        .RequiredFunc = Function() TypeOf p.VideoEncoder Is BatchEncoder AndAlso DirectCast(p.VideoEncoder, BatchEncoder).CommandLines.Contains("xvid_encraw"),
+        .IsIncluded = False,
+        .HelpSwitch = "-h"})
 
     Shared Property Decomb As Package = Add(New PluginPackage With {
         .Name = "Decomb",
@@ -215,7 +219,8 @@ Public Class Package
         .Location = "support\Get-MediaInfo",
         .Filename = "Get-MediaInfo.ps1",
         .Description = "PowerShell MediaInfo solution.",
-        .WebURL = "https://github.com/stax76/Get-MediaInfo"})
+        .WebURL = "https://github.com/stax76/Get-MediaInfo",
+        .DownloadURL = "https://github.com/stax76/Get-MediaInfo/releases"})
 
     Shared Property vspipe As Package = Add(New Package With {
         .Name = "vspipe",
@@ -423,6 +428,7 @@ Public Class Package
         .Filename = "SvtAv1EncApp.exe",
         .WebURL = "https://github.com/OpenVisualCloud/SVT-AV1",
         .HelpURL = "https://github.com/OpenVisualCloud/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
+        .HelpSwitch = "",
         .Description = "Intel AV1 encoder."})
 
     Shared Property mkvmerge As Package = Add(New Package With {
@@ -478,6 +484,7 @@ Public Class Package
         .Description = "Intel hardware video encoder.",
         .HelpFilename = "QSVEnc Help.txt",
         .WebURL = "http://github.com/rigaya/QSVEnc",
+        .DownloadURL = "https://github.com/rigaya/QSVEnc/releases",
         .HelpURL = "https://github.com/rigaya/QSVEnc/blob/master/QSVEncC_Options.en.md",
         .HelpSwitch = "-h"})
 
@@ -647,6 +654,7 @@ Public Class Package
         .Filename = "LSMASHSource.dll",
         .Description = "AviSynth and VapourSynth source filter based on Libav supporting a wide range of input formats.",
         .WebURL = "https://github.com/HolyWu/L-SMASH-Works",
+        .DownloadURL = "https://github.com/HolyWu/L-SMASH-Works/releases",
         .HelpUrlAviSynth = "https://github.com/HolyWu/L-SMASH-Works/blob/master/AviSynth/README",
         .HelpUrlVapourSynth = "https://github.com/HolyWu/L-SMASH-Works/blob/master/VapourSynth/README",
         .AvsFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
@@ -680,7 +688,8 @@ Public Class Package
         .Filename = "dfttest.dll",
         .Description = "2D/3D frequency domain denoiser using Discrete Fourier transform.",
         .HelpFilename = "dfttest - README.txt",
-        .WebURL = "https://github.com/299792458m/dfttest_mod",
+        .WebURL = "https://github.com/pinterf/dfttest",
+        .DownloadURL = "https://github.com/pinterf/dfttest/releases",
         .AvsFilterNames = {"dfttest"},
         .AvsFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest", "dfttest($select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong|sigma=64, tbsize=1$,$select:msg:Enable High Bit Depth?;True|lsb_in=true, lsb=true;False|lsb_in=false, lsb=false$)")}})
 

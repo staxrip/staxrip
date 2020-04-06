@@ -215,16 +215,8 @@ Public Class Proc
         End Set
     End Property
 
-    ReadOnly Property EnvironmentVariables As StringDictionary
-        Get
-            Return Process.StartInfo.EnvironmentVariables
-        End Get
-    End Property
-
-    Sub SetMacrosAsEnvVars()
-        For Each mac In Macro.GetMacros(False, False)
-            EnvironmentVariables(mac.Name.Trim("%"c)) = Macro.Expand(mac.Name)
-        Next
+    Sub SetEnvironmentVariables()
+        g.SetEnvironmentVariables(Process.StartInfo.EnvironmentVariables)
     End Sub
 
     Property Arguments() As String

@@ -2927,7 +2927,7 @@ Public Class MainForm
                         ap.Delay = g.ExtractDelay(ap.File)
                     End If
 
-                    If ap.File.Contains("{") Then
+                    If ap.StreamName = "" AndAlso ap.File.Contains("{") Then
                         Dim title = ap.File.Right("{")
                         ap.StreamName = title.Left("}").UnescapeIllegalFileSysChars
                     End If

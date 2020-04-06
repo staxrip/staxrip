@@ -3,7 +3,7 @@ Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Reflection
 Imports System.Text
-
+Imports DirectN
 Imports Microsoft.Win32
 Imports StaxRip.UI
 
@@ -95,19 +95,26 @@ Public Class GlobalCommands
             proc.StartInfo.FileName = "cmd.exe"
             proc.StartInfo.Arguments = "/k"
             proc.StartInfo.WorkingDirectory = p.TempDir
-            proc.StartInfo.EnvironmentVariables("path") = g.GetPathEnvVar
+            g.SetEnvironmentVariables(proc.StartInfo.EnvironmentVariables)
             proc.Start()
         End Using
     End Sub
 
     <Command("Shows the powershell with aliases for all tools staxrip includes.")>
     Sub ShowPowerShell()
+        Try
+            ShowTerminal("wt.exe")
+        Catch
+            ShowTerminal("powershell.exe")
+        End Try
+    End Sub
+
+    Sub ShowTerminal(fileName As String)
         Using proc As New Process
             proc.StartInfo.UseShellExecute = False
-            proc.StartInfo.FileName = "powershell.exe"
-            proc.StartInfo.Arguments = "-noexit -nologo"
-            proc.StartInfo.WorkingDirectory = p.TempDir
-            proc.StartInfo.EnvironmentVariables("path") = g.GetPathEnvVar
+            proc.StartInfo.FileName = fileName
+            proc.StartInfo.WorkingDirectory = If(p.TempDir = "", Folder.Desktop, p.TempDir)
+            g.SetEnvironmentVariables(proc.StartInfo.EnvironmentVariables)
             proc.Start()
         End Using
     End Sub
@@ -144,8 +151,7 @@ Public Class GlobalCommands
                 proc.Arguments = "/C call """ + batchPath + """"
                 proc.Wait = waitForExit
                 proc.Process.StartInfo.UseShellExecute = False
-                proc.SetMacrosAsEnvVars()
-                proc.EnvironmentVariables("path") = g.GetPathEnvVar
+                proc.SetEnvironmentVariables()
 
                 Try
                     proc.Start()
@@ -159,12 +165,11 @@ Public Class GlobalCommands
                 Using proc As New Proc(showProcessWindow)
                     proc.Header = "Execute Command Line"
                     proc.CommandLine = line
-                    proc.SetMacrosAsEnvVars()
-                    proc.EnvironmentVariables("path") = g.GetPathEnvVar
                     proc.Wait = waitForExit
 
                     If line.Ext = "exe" Then
                         proc.Process.StartInfo.UseShellExecute = False
+                        proc.SetEnvironmentVariables()
                     End If
 
                     Try
@@ -264,7 +269,12 @@ Public Class GlobalCommands
         If externalShell Then
             Dim path = Folder.Temp + "temp.ps1"
             code.WriteFileUtf8(path)
-            g.StartProcess("powershell.exe", "-nologo -noexit -file " + path.Escape)
+
+            Try
+                g.StartProcess("wt.exe", "powershell.exe -nologo -noexit -file " + path.Escape)
+            Catch
+                g.StartProcess("powershell.exe", "-nologo -noexit -file " + path.Escape)
+            End Try
         Else
             Scripting.RunPowershell(code)
         End If

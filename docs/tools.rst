@@ -119,7 +119,7 @@ ffmpeg
 
 Versatile audio video convertor.
 
-Used Version: N-97107-g33c106d411-g72be5d4661+2-gcc9.3.0 Patman
+Used Version: N-97107 g33c106d411 GCC 9.3.0 Patman
 
 http://ffmpeg.org
 
@@ -289,7 +289,7 @@ QSVEnc
 
 Intel hardware video encoder.
 
-Used Version: 3.33
+Used Version: 4.00
 
 http://github.com/rigaya/QSVEnc
 
@@ -421,7 +421,7 @@ XviD console encoder
 
 Used Version: 1.3.5
 
-http://www.xvid.com
+https://www.xvid.com
 
 
 AviSynth Plugins
@@ -709,9 +709,9 @@ DFTTest
 
 Filters: dfttest
 
-Used Version: 1.9.5 Clang
+Used Version: 1.9.6 Clang
 
-https://github.com/299792458m/dfttest_mod
+https://github.com/pinterf/dfttest
 
 
 DGDecodeNV
@@ -1069,7 +1069,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: LSMASHVideoSource, LSMASHAudioSource, LWLibavVideoSource, LWLibavAudioSource
 
-Used Version: 2020-03-22 HolyWu
+Used Version: 2020-03-28 HolyWu
 
 https://github.com/HolyWu/L-SMASH-Works
 
@@ -1947,7 +1947,7 @@ AviSynth and VapourSynth source filter based on Libav supporting a wide range of
 
 Filters: lsmas.LibavSMASHSource, lsmas.LWLibavSource
 
-Used Version: 2020-03-22 HolyWu
+Used Version: 2020-03-28 HolyWu
 
 https://github.com/HolyWu/L-SMASH-Works
 

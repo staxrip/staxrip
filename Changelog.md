@@ -1,7 +1,18 @@
 
-### 2.1.0.5 Beta not yet released
+2.1.0.6 Beta (not yet available)
+------------
 
-### 2.1.0.4 Beta
+new
+~~~
+
+- clicking the launch button in the Apps dialog for a console tool
+  shows its help in a console using Windows Terminal when available.
+  Main Menu > Tools > Advanced > PowerShell is shown with
+  Windows Terminal, console tools are in the path env var and macros
+  are available as env vars.
+
+
+### 2.1.0.5 Beta
 
 - new: the global setting 'Add filter to convert chroma subsampling to 4:2:0'
        uses now ConvertToYUV420 instead of ConverttoYV12

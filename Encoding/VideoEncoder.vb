@@ -558,10 +558,6 @@ Public Class BatchEncoder
 
     Overrides ReadOnly Property OutputExt As String
         Get
-            If OutputFileTypeValue = "" Then
-                OutputFileTypeValue = "h264"
-            End If
-
             Return OutputFileTypeValue
         End Get
     End Property
@@ -609,7 +605,7 @@ Public Class BatchEncoder
                 proc.SkipStrings = GetSkipStrings(CommandLines)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/S /C """ + line + """"
-                proc.EnvironmentVariables("path") = g.GetPathEnvVar
+                proc.SetEnvironmentVariables()
 
                 Try
                     proc.Start()
@@ -658,7 +654,7 @@ Public Class BatchEncoder
             proc.SkipStrings = GetSkipStrings(line)
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + line + """"
-            proc.EnvironmentVariables("path") = g.GetPathEnvVar
+            proc.SetEnvironmentVariables()
 
             Try
                 proc.Start()

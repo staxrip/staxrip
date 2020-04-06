@@ -179,8 +179,7 @@ Public Class CommandLineDemuxer
             proc.Header = Name
             proc.File = Macro.Expand(Command)
             proc.Arguments = Macro.Expand(Arguments)
-            proc.EnvironmentVariables("path") = g.GetPathEnvVar
-            proc.SetMacrosAsEnvVars()
+            proc.SetEnvironmentVariables()
             proc.Start()
 
             If Command?.Contains("DGIndex") Then

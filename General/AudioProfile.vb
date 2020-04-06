@@ -1,8 +1,8 @@
-Imports StaxRip.UI
 
-Imports VB6 = Microsoft.VisualBasic
 Imports System.Text.RegularExpressions
 Imports System.Text
+
+Imports StaxRip.UI
 
 <Serializable()>
 Public MustInherit Class AudioProfile
@@ -75,9 +75,12 @@ Public MustInherit Class AudioProfile
                     End If
 
                     Language = Stream.Language
-                    StreamName = Stream.Title
                     Forced = Stream.Forced
-                    [Default] = Stream.Default
+                    Me.Default = Stream.Default
+
+                    If StreamName = "" AndAlso Stream.Title <> "" Then
+                        StreamName = Stream.Title
+                    End If
                 End If
 
                 OnStreamChanged()

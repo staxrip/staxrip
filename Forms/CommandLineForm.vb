@@ -75,15 +75,20 @@ Public Class CommandLineForm
             End If
 
             Dim help As String = Nothing
-            Dim switches = param.Switches
 
             If param.Switch <> "" Then
                 help += param.Switch + BR
             End If
 
+            If param.Switch2 <> "" Then
+                help += param.Switch2 + BR
+            End If
+
             If param.NoSwitch <> "" Then
                 help += param.NoSwitch + BR
             End If
+
+            Dim switches = param.Switches
 
             If Not switches.NothingOrEmpty Then
                 help += switches.Join(BR) + BR
@@ -289,7 +294,7 @@ Public Class CommandLineForm
 
         If find.Length > 1 Then
             For Each item In Items
-                If item.Param.Switch = cbGoTo.Text Then
+                If item.Param.Switch = cbGoTo.Text OrElse item.Param.Switch2 = cbGoTo.Text Then
                     matchedItems.Add(item)
                 End If
 
@@ -303,8 +308,9 @@ Public Class CommandLineForm
             Next
 
             For Each item In Items
-                If item.Param.NoSwitch?.ToLower?.Contains(find) Then matchedItems.Add(item)
                 If item.Param.Switch?.ToLower?.Contains(find) Then matchedItems.Add(item)
+                If item.Param.Switch2?.ToLower?.Contains(find) Then matchedItems.Add(item)
+                If item.Param.NoSwitch?.ToLower?.Contains(find) Then matchedItems.Add(item)
                 If item.Param.Help?.ToLower?.Contains(find) Then matchedItems.Add(item)
                 If item.Param.Text?.ToLower?.Contains(find) Then matchedItems.Add(item)
 
@@ -388,12 +394,18 @@ Public Class CommandLineForm
             If i.Param.Visible Then
                 If Not i.Param.Switches Is Nothing Then
                     For Each switch In i.Param.Switches
-                        If Not cbGoTo.Items.Contains(switch) Then cbGoTo.Items.Add(switch)
+                        If Not cbGoTo.Items.Contains(switch) Then
+                            cbGoTo.Items.Add(switch)
+                        End If
                     Next
                 End If
 
                 If i.Param.Switch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.Switch) Then
                     cbGoTo.Items.Add(i.Param.Switch)
+                End If
+
+                If i.Param.Switch2 <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.Switch2) Then
+                    cbGoTo.Items.Add(i.Param.Switch2)
                 End If
 
                 If i.Param.NoSwitch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.NoSwitch) Then

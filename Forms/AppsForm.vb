@@ -381,7 +381,7 @@ Public Class AppsForm
 
         Contents("Status").Text = CurrentPackage.GetStatusDisplay()
 
-        If CurrentPackage.GetStatus <> "" Then
+        If CurrentPackage.GetStatus <> "" AndAlso CurrentPackage.Required Then
             Contents("Status").ForeColor = Color.Red
         Else
             Contents("Status").ForeColor = Color.Black
@@ -585,11 +585,24 @@ Public Class AppsForm
             Exit Sub
         End If
 
-        Dim input = InputBox.Show(
-            "What's the name of this version?" + BR2 +
-            "File Data (often incorrect or empty):" + BR2 +
-            "Version: " + FileVersionInfo.GetVersionInfo(CurrentPackage.Path).FileVersion,
-            "StaxRip", CurrentPackage.Version)
+        Dim msg = "What's the name of this version?"
+        Dim version = FileVersionInfo.GetVersionInfo(CurrentPackage.Path)
+
+        Dim fileVersionString = version.FileMajorPart & "." & version.FileMinorPart & "." &
+                                version.FileBuildPart & "." & version.FilePrivatePart
+
+        Dim productVersionString = version.ProductMajorPart & "." & version.ProductMinorPart & "." &
+                                   version.ProductBuildPart & "." & version.ProductPrivatePart
+
+        If fileVersionString <> "0.0.0.0" Then
+            msg += BR2 + "File Version: " + fileVersionString + " (often not correct!)"
+        End If
+
+        If productVersionString <> "0.0.0.0" Then
+            msg += BR2 + "Product Version: " + productVersionString + " (often not correct!)"
+        End If
+
+        Dim input = InputBox.Show(msg, "StaxRip", CurrentPackage.Version)
 
         If input <> "" Then
             input = input.Replace(";", "_")

@@ -85,18 +85,19 @@ Namespace CommandLine
         Property AlwaysOn As Boolean
         Property ArgsFunc As Func(Of String)
         Property Help As String
+        Property HelpSwitch As String
+        Property ImportAction As Action(Of String, String)
+        Property Label As String
         Property LeftMargin As Double
         Property Name As String
         Property NoSwitch As String
         Property Path As String
         Property Switch As String
-        Property HelpSwitch As String
-        Property Label As String
+        Property Switch2 As String
         Property Switches As IEnumerable(Of String)
         Property Text As String
         Property URLs As List(Of String)
         Property VisibleFunc As Func(Of Boolean)
-        Property ImportAction As Action(Of String, String)
 
         Friend Store As PrimitiveStore
         Friend Params As CommandLineParams
@@ -111,12 +112,15 @@ Namespace CommandLine
             Dim ret As New HashSet(Of String)
 
             If Switch <> "" Then ret.Add(Switch)
+            If Switch2 <> "" Then ret.Add(Switch2)
             If NoSwitch <> "" Then ret.Add(NoSwitch)
             If HelpSwitch <> "" Then ret.Add(HelpSwitch)
 
             If Not Switches.NothingOrEmpty Then
                 For Each i In Switches
-                    If i <> "" Then ret.Add(i)
+                    If i <> "" Then
+                        ret.Add(i)
+                    End If
                 Next
             End If
 

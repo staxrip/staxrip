@@ -232,13 +232,6 @@ Public Class x264Params
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
         .Value = 2}
 
-    Property Depth As New OptionParam With {
-        .Switch = "--output-depth",
-        .Text = "Depth",
-        .Options = {"8-Bit", "10-Bit"},
-        .Values = {"8", "10"},
-        .Value = 1}
-
     Property CompCheck As New NumParam With {
         .Name = "CompCheckQuant",
         .Text = "Comp. Check",
@@ -350,7 +343,7 @@ Public Class x264Params
     Property Profile As New OptionParam With {
         .Switch = "--profile",
         .Text = "Profile",
-        .Options = {"Unrestricted", "Baseline", "Main", "High", "High 10", "High 422", "High 444"}}
+        .Options = {"Automatic", "Baseline", "Main", "High", "High 10", "High 422", "High 444"}}
 
     Property CQM As New OptionParam With {
         .Switch = "--cqm",
@@ -741,8 +734,8 @@ Public Class x264Params
                     Preset,
                     Tune,
                     Profile,
-                    New OptionParam With {.Switch = "--level", .Text = "Level", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
-                    Depth,
+                    New OptionParam With {.Switch = "--level", .Text = "Level", .Options = {"Automatic", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
+                    New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
                     Quant)
                 Add("Analysis",
                     Trellis,

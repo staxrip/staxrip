@@ -1,4 +1,5 @@
 ﻿
+Imports System.Collections.Specialized
 Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Runtime.ExceptionServices
@@ -1287,7 +1288,11 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Public Function GetPathEnvVar() As String
+    Public Sub SetEnvironmentVariables(dic As StringDictionary)
+        For Each mac In Macro.GetMacros(False, False)
+            dic(mac.Name.Trim("%"c)) = Macro.Expand(mac.Name)
+        Next
+
         Dim path = Environment.GetEnvironmentVariable("path")
 
         For Each pack In Package.Items.Values
@@ -1298,6 +1303,6 @@ Public Class GlobalClass
             path = pack.Directory + ";" + path
         Next
 
-        Return path
-    End Function
+        dic("path") = path
+    End Sub
 End Class

@@ -13,22 +13,24 @@ Public Class Scripting
 
                 Using pipeline = runspace.CreatePipeline()
                     pipeline.Commands.AddScript(
-"Using namespace StaxRip;
-Using namespace StaxRip.UI;
-Using namespace System;
-Using namespace System.Windows.Forms;
-[System.Reflection.Assembly]::LoadWithPartialName(""StaxRip"")")
+                        "Using namespace StaxRip;" + BR +
+                        "Using namespace StaxRip.UI;" + BR +
+                        "Using namespace System;" + BR +
+                        "Using namespace System.Windows.Forms;" + BR +
+                        "[Reflection.Assembly]::LoadWithPartialName(""StaxRip"")")
 
                     pipeline.Commands.AddScript(code)
 
                     Try
-                        Dim ret = pipeline.Invoke()
-                        If ret.Count > 0 Then Return ret(0)
+                        Return pipeline.Invoke()
                     Catch ex As Exception
                         Try
                             Using pipeline2 = runspace.CreatePipeline()
                                 pipeline2.Commands.AddScript("$PSVersionTable.PSVersion.Major * 10 + $PSVersionTable.PSVersion.Minor")
-                                If pipeline2.Invoke()(0).ToString.ToInt < 51 Then Throw New Exception()
+
+                                If pipeline2.Invoke()(0).ToString.ToInt < 51 Then
+                                    Throw New Exception()
+                                End If
                             End Using
                         Catch
                             MsgError("PowerShell Setup Problem", "Ensure you have at least PowerShell 5.1 installed.")

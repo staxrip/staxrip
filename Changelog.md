@@ -1,9 +1,9 @@
 
 2.1.0.6 Beta (not yet available)
-------------
+============
 
 new
-~~~
+---
 
 - clicking the launch button in the Apps dialog for a console tool
   shows its help in a console using Windows Terminal when available.
@@ -12,23 +12,36 @@ new
   are available as env vars.
 
 
-### 2.1.0.5 Beta
+2.1.0.5 Beta
+============
 
-- new: the global setting 'Add filter to convert chroma subsampling to 4:2:0'
-       uses now ConvertToYUV420 instead of ConverttoYV12
-- new: in custom command line based demuxers and in the ExecuteCommandLine
-       command the path environment variable of the process has all exe tools
-       added and all macros are available as environment variables
-- new: AviSynth filter profile using ColorYUV function
+new
+---
 
-- update: mkvtoolnix 45.0.0
-- update: nvenc 4.69
-- update: DFTTest 1.9.5 Clang
-- update: L-Smash-Works 2020-03-22 HolyWu
-- update: ffms2 89bd1e1 StvG
+- the global setting 'Add filter to convert chroma subsampling to 4:2:0'
+  uses now ConvertToYUV420 instead of ConverttoYV12
+- in custom command line based demuxers and in the ExecuteCommandLine
+  command the path environment variable of the process has all exe tools
+  added and all macros are available as environment variables
+- AviSynth filter profile using ColorYUV function
 
-- fix: the MediaInfo Folder view did not work unless Get-MediaInfo was installed,
-       now it should work even without being installed, please try and give feedback
+
+update
+------
+
+- mkvtoolnix 45.0.0
+- nvenc 4.69
+- DFTTest 1.9.5 Clang
+- L-Smash-Works 2020-03-22 HolyWu
+- ffms2 89bd1e1 StvG
+
+
+fix
+---
+
+- the MediaInfo Folder view did not work unless Get-MediaInfo was installed,
+  now it should work even without being installed, please try and give feedback
+
 
 ### 2.1.0.3 Beta
 

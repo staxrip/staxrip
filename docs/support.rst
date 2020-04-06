@@ -17,6 +17,6 @@ https://forum.videohelp.com/threads/369913-StaxRip-support-thread
 
 
 User Chat
--------
+---------
 
 https://discord.gg/rRn7vGU

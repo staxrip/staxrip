@@ -612,11 +612,11 @@ Public Class GlobalClass
             g.DefaultCommands.ExecuteScriptFile(scriptPath)
         End If
 
-        For Each i In s.EventCommands
-            If i.Enabled AndAlso i.Event = appEvent Then
+        For Each ec In s.EventCommands
+            If ec.Enabled AndAlso ec.Event = appEvent Then
                 Dim matches = 0
 
-                For Each criteria In i.CriteriaList
+                For Each criteria In ec.CriteriaList
                     criteria.PropertyString = Macro.Expand(criteria.Macro)
 
                     If criteria.Eval Then
@@ -624,20 +624,20 @@ Public Class GlobalClass
                     End If
                 Next
 
-                If (i.CriteriaList.Count = 0 OrElse (i.OrOnly AndAlso matches > 0) OrElse
-                    (Not i.OrOnly AndAlso matches = i.CriteriaList.Count)) AndAlso
-                    Not i.CommandParameters Is Nothing Then
+                If (ec.CriteriaList.Count = 0 OrElse (ec.OrOnly AndAlso matches > 0) OrElse
+                    (Not ec.OrOnly AndAlso matches = ec.CriteriaList.Count)) AndAlso
+                    Not ec.CommandParameters Is Nothing Then
 
-                    Dim command = g.MainForm.CustomMainMenu.CommandManager.GetCommand(i.CommandParameters.MethodName)
+                    Dim command = g.MainForm.CustomMainMenu.CommandManager.GetCommand(ec.CommandParameters.MethodName)
 
                     If s.LogEventCommand AndAlso p.SourceFile <> "" Then
-                        Log.WriteHeader("Event Command: " + i.Name)
-                        Log.WriteLine("Event: " + DispNameAttribute.GetValueForEnum(i.Event))
+                        Log.WriteHeader("Event Command: " + ec.Name)
+                        Log.WriteLine("Event: " + DispNameAttribute.GetValueForEnum(ec.Event))
                         Log.WriteLine("Command: " + command.MethodInfo.Name)
-                        Log.WriteLine(command.GetParameterHelp(i.CommandParameters.Parameters))
+                        Log.WriteLine(command.GetParameterHelp(ec.CommandParameters.Parameters))
                     End If
 
-                    g.MainForm.CustomMainMenu.CommandManager.Process(i.CommandParameters)
+                    g.MainForm.CustomMainMenu.CommandManager.Process(ec.CommandParameters)
                 End If
             End If
         Next

@@ -1380,11 +1380,14 @@ Public Class Macro
 
         If value.Contains("%eval_ps:") Then
             If Not value.Contains("%eval_ps:<expression>%") AndAlso Not value.Contains("%eval_ps:expression%") Then
-                Dim mc = Regex.Matches(value, "%eval_ps:(.+?)%")
+                Dim matches = Regex.Matches(value, "%eval_ps:(.+?)%")
 
-                For Each i As Match In mc
-                    value = value.Replace(i.Value, Scripting.RunPowershell(i.Groups(1).Value)?.ToString)
-                    If Not value.Contains("%") Then Return value
+                For Each ma As Match In matches
+                    value = value.Replace(ma.Value, Scripting.RunPowershell(ma.Groups(1).Value)?.ToString)
+
+                    If Not value.Contains("%") Then
+                        Return value
+                    End If
                 Next
             End If
         End If

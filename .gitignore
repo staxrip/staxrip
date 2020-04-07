@@ -11,3 +11,4 @@
 /FrameServer/.vs
 /FrameServer/FrameServer.vcxproj.user
 /docs/_build
+*.yml_

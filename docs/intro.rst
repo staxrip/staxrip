@@ -24,6 +24,7 @@ Normal User
 
 `VidCoder <https://vidcoder.net>`_ 
 
+
 Power User
 ----------
 
@@ -32,8 +33,6 @@ Power User
 `RipBot264 <https://forum.doom9.org/showthread.php?t=127611>`_ 
 
 `Hybrid <http://www.selur.de/>`_ 
-
-`StaxRip <https://github.com/staxrip/staxrip>`_ 
 
 
 Feature Highlights

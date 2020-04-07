@@ -88,32 +88,29 @@ Public Class GlobalCommands
         g.ProcessJobs()
     End Sub
 
-    <Command("Shows a command prompt with the temp directory of the current project.")>
+    <Command("Shows a command prompt.")>
     Sub ShowCommandPrompt()
-        Using proc As New Process
-            proc.StartInfo.UseShellExecute = False
-            proc.StartInfo.FileName = "cmd.exe"
-            proc.StartInfo.Arguments = "/k"
-            proc.StartInfo.WorkingDirectory = p.TempDir
-            g.SetEnvironmentVariables(proc.StartInfo.EnvironmentVariables)
-            proc.Start()
-        End Using
+        Try
+            ShowTerminal("wt.exe", "cmd.exe")
+        Catch
+            ShowTerminal("cmd.exe")
+        End Try
     End Sub
 
-    <Command("Shows the powershell with aliases for all tools staxrip includes.")>
+    <Command("Shows a powershell terminal.")>
     Sub ShowPowerShell()
         Try
-            ShowTerminal("wt.exe")
+            ShowTerminal("wt.exe", "powershell.exe -nologo")
         Catch
             ShowTerminal("powershell.exe")
         End Try
     End Sub
 
-    Sub ShowTerminal(fileName As String)
+    Sub ShowTerminal(fileName As String, Optional arguments As String = Nothing)
         Using proc As New Process
             proc.StartInfo.UseShellExecute = False
             proc.StartInfo.FileName = fileName
-            proc.StartInfo.WorkingDirectory = If(p.TempDir = "", Folder.Desktop, p.TempDir)
+            proc.StartInfo.Arguments = arguments
             g.SetEnvironmentVariables(proc.StartInfo.EnvironmentVariables)
             proc.Start()
         End Using

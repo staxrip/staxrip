@@ -5,11 +5,9 @@
 new
 ---
 
-- clicking the launch button in the Apps dialog for a console tool
-  shows its help in a console using Windows Terminal when available.
-  Main Menu > Tools > Advanced > PowerShell is shown with
-  Windows Terminal, console tools are in the path env var and macros
-  are available as env vars.
+- clicking the launch button in the Apps dialog for a console tool shows its help via Windows Terminal
+- Main Menu > Tools > Advanced > Command Prompt and PowerShell are shown via Windows Terminal
+- Show Command Line in video encoder dialogs is shown via Windows Terminal
 
 
 2.1.0.5 Beta

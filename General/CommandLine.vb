@@ -73,11 +73,11 @@ Namespace CommandLine
         End Function
 
         Sub Execute()
-            Dim batchProc As New Process
-            batchProc.StartInfo.FileName = "cmd.exe"
-            batchProc.StartInfo.Arguments = "/k """ + GetCommandLine(True, True) + """"
-            batchProc.StartInfo.WorkingDirectory = p.TempDir
-            batchProc.Start()
+            Try
+                Process.Start("wt.exe", "cmd.exe /k """ + GetCommandLine(True, True) + """")
+            Catch ex As Exception
+                g.StartProcess("cmd.exe", "/k """ + GetCommandLine(True, True) + """")
+            End Try
         End Sub
     End Class
 

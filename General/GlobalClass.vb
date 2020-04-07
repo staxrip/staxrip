@@ -23,7 +23,21 @@ Public Class GlobalClass
     Property IsProcessing As Boolean
 
     Sub WriteDebugLog(value As String)
-        If s?.WriteDebugLog Then Trace.TraceInformation(value)
+        If s?.WriteDebugLog Then
+            Trace.TraceInformation(value)
+        End If
+    End Sub
+
+    Sub InvokePowerShellCode(code As String)
+        InvokePowerShellCode(code, Nothing, Nothing)
+    End Sub
+
+    Sub InvokePowerShellCode(code As String, varName As String, varValue As Object)
+        Try
+            PowerShell.Invoke(code, varName, varValue)
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
     End Sub
 
     Sub ProcessJobs()

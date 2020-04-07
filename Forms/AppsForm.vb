@@ -31,7 +31,7 @@ Public Class AppsForm
     Friend WithEvents tsbDownload As ToolStripButton
     Friend WithEvents tsbVersion As ToolStripButton
     Friend WithEvents ddbTools As ToolStripDropDownButton
-    Friend WithEvents miCSV As ToolStripMenuItem
+    Friend WithEvents miShowGridView As ToolStripMenuItem
     Friend WithEvents miStatus As ToolStripMenuItem
     Friend WithEvents ddbPath As ToolStripDropDownButton
     Friend WithEvents miBrowsePath As ToolStripMenuItem
@@ -52,7 +52,7 @@ Public Class AppsForm
         Me.miClearCustomPath = New System.Windows.Forms.ToolStripMenuItem()
         Me.miSearchUsingEverything = New System.Windows.Forms.ToolStripMenuItem()
         Me.ddbTools = New System.Windows.Forms.ToolStripDropDownButton()
-        Me.miCSV = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miShowGridView = New System.Windows.Forms.ToolStripMenuItem()
         Me.miStatus = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsbHelp = New System.Windows.Forms.ToolStripButton()
         Me.flp = New System.Windows.Forms.FlowLayoutPanel()
@@ -175,22 +175,22 @@ Public Class AppsForm
         Me.miSearchUsingEverything.Size = New System.Drawing.Size(738, 66)
         Me.miSearchUsingEverything.Text = "Search using Everything..."
         '
-        'ddTools
+        'ddbTools
         '
         Me.ddbTools.AutoToolTip = False
         Me.ddbTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miCSV, Me.miStatus})
-        Me.ddbTools.Image = CType(resources.GetObject("ddTools.Image"), System.Drawing.Image)
+        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miShowGridView, Me.miStatus})
+        Me.ddbTools.Image = CType(resources.GetObject("ddbTools.Image"), System.Drawing.Image)
         Me.ddbTools.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ddbTools.Name = "ddTools"
+        Me.ddbTools.Name = "ddbTools"
         Me.ddbTools.Size = New System.Drawing.Size(152, 69)
         Me.ddbTools.Text = " Tools "
         '
-        'miCSV
+        'miShowGridView
         '
-        Me.miCSV.Name = "miCSV"
-        Me.miCSV.Size = New System.Drawing.Size(737, 66)
-        Me.miCSV.Text = "Create CSV file listing all tools"
+        Me.miShowGridView.Name = "miShowGridView"
+        Me.miShowGridView.Size = New System.Drawing.Size(737, 66)
+        Me.miShowGridView.Text = "Show all tools in grid view"
         '
         'miStatus
         '
@@ -620,107 +620,82 @@ Public Class AppsForm
             Next
 
             If Directory.Exists(Folder.Apps) Then
-                txt.FormatColumn("=").WriteFileUtf8(Folder.Apps + "Versions.txt")
+                txt.FormatColumn("=").WriteFileUTF8BOM(Folder.Apps + "Versions.txt")
             End If
 
             ShowActivePackage()
         End If
     End Sub
 
-    Private Sub miCSV_Click(sender As Object, e As EventArgs) Handles miCSV.Click
-        Dim rows As New List(Of List(Of String))
-        Dim headings = {"Name", "Type", "Filename", "Version", "Modified Date", "Folder"}
-        rows.Add(New List(Of String)(headings))
+    Sub miShowGridView_Click(sender As Object, e As EventArgs) Handles miShowGridView.Click
+        Dim rows As New List(Of Object)
 
-        Dim add = Function(value As String) As String
-                      If value Is Nothing Then
-                          value = ""
-                      End If
-
-                      If value.Contains("""") Then
-                          value = value.Replace("""", """""")
-                      End If
-
-                      If value.Contains(";") OrElse value.Contains("""") Then
-                          value = """" + value + """"
-                      End If
-
-                      Return value
-                  End Function
-
-        For Each pair In Package.Items.OrderBy(Function(val) val.Value.Path)
-            Dim row As New List(Of String)
-            Dim pack = pair.Value
-            Dim path = pack.Path
-
+        For Each pack In Package.Items.Values.OrderBy(Function(i) i.Path)
+            Dim row = New With {.Name = "", .Type = "", .Filename = "", .Version = "",
+                                .ModifiedDate = "", .Folder = ""}
             'Name
-            row.Add(add(pack.Name))
+            row.Name = pack.Name
 
             'Type
             If Not pack.HelpSwitch Is Nothing Then
-                row.Add("Console App")
+                row.Type = "Console App"
             ElseIf pack.IsGUI Then
-                row.Add("GUI App")
+                row.Type = "GUI App"
             ElseIf TypeOf pack Is PluginPackage Then
                 Dim plugin = DirectCast(pack, PluginPackage)
 
                 If Not plugin.AvsFilterNames.NothingOrEmpty Then
                     If plugin.Filename.Ext = "dll" Then
-                        row.Add("AviSynth Plugin")
+                        row.Type = "AviSynth Plugin"
                     ElseIf plugin.Filename.Ext.EqualsAny("avs", "avsi") Then
-                        row.Add("AviSynth Script")
-                    Else
-                        Throw New Exception()
+                        row.Type = "AviSynth Script"
                     End If
                 ElseIf Not plugin.VSFilterNames.NothingOrEmpty Then
                     If plugin.Filename.Ext = "dll" Then
-                        row.Add("VapourSynth Plugin")
+                        row.Type = "VapourSynth Plugin"
                     ElseIf plugin.Filename.Ext = "py" Then
-                        row.Add("VapourSynth Script")
-                    Else
-                        row.Add("")
+                        row.Type = "VapourSynth Script"
                     End If
-                Else
-                    row.Add("")
                 End If
             ElseIf pack.Filename.Ext = "dll" Then
-                row.Add("Library")
+                row.Type = "Library"
             Else
-                row.Add("Misc")
+                row.Type = "Misc"
             End If
 
             'Filename
-            row.Add(add(pack.Filename))
+            row.Filename = pack.Filename
 
             'Version
             If pack.IsCorrectVersion Then
-                row.Add(add("'" + pack.Version + "'"))
-            Else
-                row.Add("")
+                row.Version = "'" + pack.Version + "'"
             End If
 
             'Modified Date
-            If File.Exists(path) Then
-                row.Add(File.GetLastWriteTime(path).ToShortDateString())
-            Else
-                row.Add("")
+            If File.Exists(pack.Path) Then
+                row.ModifiedDate = File.GetLastWriteTime(pack.Path).ToShortDateString()
             End If
 
             'Folder
-            row.Add(add(pack.Directory))
+            row.Folder = pack.Directory
 
             rows.Add(row)
         Next
 
-        Dim text As String
+        Using td As New TaskDialog(Of String)
+            td.MainInstruction = "Choose how to show"
+            td.AddCommand("Show as CSV file", "csv")
+            td.AddCommand("Show using PowerShell", "ogv")
 
-        For Each rowList In rows
-            text += String.Join(";", rowList) + BR
-        Next
-
-        Dim csvFile = Folder.Temp + "staxrip tools.csv"
-        text.WriteFileUtf8(csvFile)
-        g.StartProcess(g.GetAppPathForExtension("csv", "txt"), csvFile.Escape)
+            Select Case td.Show
+                Case "csv"
+                    Dim csvFile = Folder.Temp + "staxrip tools.csv"
+                    PowerShell.ConvertToCSV(rows).WriteFileUTF8(csvFile)
+                    g.StartProcess(g.GetAppPathForExtension("csv", "txt"), csvFile.Escape)
+                Case "ogv"
+                    g.InvokePowerShellCode($"$objects | Out-GridView", "objects", rows)
+            End Select
+        End Using
     End Sub
 
     Private Sub miStatus_Click(sender As Object, e As EventArgs) Handles miStatus.Click

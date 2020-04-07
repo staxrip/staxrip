@@ -1082,6 +1082,12 @@ Public Class MainForm
         g.MainForm = Me
         LoadSettings()
 
+        PowerShell.InitCode =
+            "Using namespace System.Windows.Forms;" + BR +
+            "Using namespace StaxRip;" + BR +
+            "Using namespace StaxRip.UI;" + BR +
+            "[Reflection.Assembly]::LoadWithPartialName(""StaxRip"")"
+
         If s.WriteDebugLog Then
             Dim filePath = Folder.Startup + "Debug.log"
             If File.Exists(filePath) Then File.Delete(filePath)

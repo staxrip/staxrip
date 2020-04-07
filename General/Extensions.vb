@@ -321,14 +321,19 @@ Module StringExtensions
     End Sub
 
     <Extension()>
-    Sub WriteFileUtf8(instance As String, path As String)
-        WriteFile(instance, path, Encoding.UTF8) 'adds BOM
+    Sub WriteFileUTF8(instance As String, path As String)
+        WriteFile(instance, path, New UTF8Encoding(False))
     End Sub
 
     <Extension()>
-    Sub WriteFile(value As String, path As String, encoding As Encoding)
+    Sub WriteFileUTF8BOM(instance As String, path As String)
+        WriteFile(instance, path, New UTF8Encoding(True))
+    End Sub
+
+    <Extension()>
+    Sub WriteFile(instance As String, path As String, encoding As Encoding)
         Try
-            File.WriteAllText(path, value, encoding)
+            File.WriteAllText(path, instance, encoding)
         Catch ex As Exception
             g.ShowException(ex)
         End Try

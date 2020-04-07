@@ -1383,7 +1383,11 @@ Public Class Macro
                 Dim matches = Regex.Matches(value, "%eval_ps:(.+?)%")
 
                 For Each ma As Match In matches
-                    value = value.Replace(ma.Value, Scripting.RunPowershell(ma.Groups(1).Value)?.ToString)
+                    Try
+                        value = value.Replace(ma.Value, PowerShell.InvokeAndConvert(ma.Groups(1).Value))
+                    Catch ex As Exception
+                        value = value.Replace(ma.Value, ex.ToString)
+                    End Try
 
                     If Not value.Contains("%") Then
                         Return value
@@ -4421,4 +4425,16 @@ Public Enum QuotesMode
     Auto
     Always
     Never
+End Enum
+
+Public Enum ApplicationEvent
+    <DispName("After Project Loaded")> ProjectLoaded
+    <DispName("After Job Processed")> JobProcessed
+    <DispName("After Video Encoded")> VideoEncoded
+    <DispName("Before Job Processed")> BeforeJobProcessed
+    <DispName("After Source Loaded")> AfterSourceLoaded
+    <DispName("Application Exit")> ApplicationExit
+    <DispName("After Project Or Source Loaded")> ProjectOrSourceLoaded
+    <DispName("After Jobs Processed")> JobsProcessed
+    <DispName("After Job Muxed")> JobMuxed
 End Enum

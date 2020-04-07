@@ -122,7 +122,7 @@ Public Class LogBuilder
         If proj Is Nothing Then proj = p
 
         SyncLock Log
-            Log.ToString.WriteFileUtf8(GetPath(proj))
+            Log.ToString.WriteFileUTF8BOM(GetPath(proj))
         End SyncLock
     End Sub
 

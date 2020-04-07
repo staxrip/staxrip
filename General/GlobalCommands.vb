@@ -111,6 +111,7 @@ Public Class GlobalCommands
             proc.StartInfo.UseShellExecute = False
             proc.StartInfo.FileName = fileName
             proc.StartInfo.Arguments = arguments
+            proc.StartInfo.WorkingDirectory = Folder.Desktop
             g.SetEnvironmentVariables(proc.StartInfo.EnvironmentVariables)
             proc.Start()
         End Using
@@ -247,7 +248,9 @@ Public Class GlobalCommands
                   <Description("Tool name as shown in the app manage dialog.")>
                   name As String)
         Try
-            If Package.Items(name).VerifyOK Then Package.Items(name).LaunchAction?.Invoke
+            If Package.Items(name).VerifyOK Then
+                Package.Items(name).LaunchAction?.Invoke
+            End If
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -260,12 +263,12 @@ Public Class GlobalCommands
         <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
         code As String,
         <DispName("Use External Shell")>
-        <Description("Execute in StaxRip to automate StaxRip or in external Shell.")>
+        <Description("Execute in StaxRip to automate StaxRip or use external shell.")>
         Optional externalShell As Boolean = False)
 
         If externalShell Then
             Dim path = Folder.Temp + "temp.ps1"
-            code.WriteFileUtf8(path)
+            code.WriteFileUTF8BOM(path)
 
             Try
                 g.StartProcess("wt.exe", "powershell.exe -nologo -noexit -file " + path.Escape)
@@ -273,7 +276,7 @@ Public Class GlobalCommands
                 g.StartProcess("powershell.exe", "-nologo -noexit -file " + path.Escape)
             End Try
         Else
-            Scripting.RunPowershell(code)
+            g.InvokePowerShellCode(code)
         End If
     End Sub
 
@@ -369,7 +372,7 @@ Public Class GlobalCommands
             End If
         Next
 
-        supportedTools.WriteFileUtf8(Folder.Startup + "..\docs\tools.rst")
+        supportedTools.WriteFileUTF8BOM(Folder.Startup + "..\docs\tools.rst")
 
         Dim screenshots = "Screenshots" + BR + "===========" + BR2 + ".. contents::" + BR2
         Dim screenshotFiles = Directory.GetFiles(Folder.Startup + "..\docs\screenshots").ToList
@@ -380,7 +383,7 @@ Public Class GlobalCommands
             screenshots += name + BR + "-".Multiply(name.Length) + BR2 + ".. image:: screenshots/" + i.FileName + BR2
         Next
 
-        screenshots.WriteFileUtf8(Folder.Startup + "..\docs\screenshots.rst")
+        screenshots.WriteFileUTF8BOM(Folder.Startup + "..\docs\screenshots.rst")
 
         Dim macros = "Macros" + BR + "======" + BR2
 
@@ -388,7 +391,7 @@ Public Class GlobalCommands
             macros += "``" + i.Name + "``" + BR2 + i.Value + BR2
         Next
 
-        macros.WriteFileUtf8(Folder.Startup + "..\docs\macros.rst")
+        macros.WriteFileUTF8BOM(Folder.Startup + "..\docs\macros.rst")
 
         Dim powershell = "PowerShell Scripting
 ====================
@@ -436,7 +439,7 @@ Default Scripts
             powershell += ".. literalinclude:: " + "powershell/" + i.FileName + BR + "   :language: powershell" + BR2
         Next
 
-        powershell.WriteFileUtf8(Folder.Startup + "..\docs\powershell.rst")
+        powershell.WriteFileUTF8BOM(Folder.Startup + "..\docs\powershell.rst")
 
         Dim switches = "Command Line Interface
 ======================
@@ -505,7 +508,7 @@ Switches
             switches += command.Attribute.Description + BR2 + BR
         Next
 
-        switches.WriteFileUtf8(Folder.Startup + "..\docs\cli.rst")
+        switches.WriteFileUTF8BOM(Folder.Startup + "..\docs\cli.rst")
 
         If msg <> "" Then
             Dim fs = Folder.Temp + "staxrip test.txt"

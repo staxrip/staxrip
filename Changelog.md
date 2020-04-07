@@ -5,9 +5,23 @@
 new
 ---
 
-- clicking the launch button in the Apps dialog for a console tool shows its help via Windows Terminal
+- the launch button in the Apps dialog for a console tool shows its help via Windows Terminal
 - Main Menu > Tools > Advanced > Command Prompt and PowerShell are shown via Windows Terminal
-- Show Command Line in video encoder dialogs is shown via Windows Terminal
+- Execute Command Line in video encoder dialogs is shown via Windows Terminal
+- in the Apps dialog the tools can be shown using PowerShell Out-GridView
+
+
+fix
+---
+
+- CSV file creation possibly incompatible with Excel in certain locales
+
+
+internal
+--------
+
+- CSV is generated with PowerShell
+- PowerShell class no longer references StaxRip 
 
 
 2.1.0.5 Beta

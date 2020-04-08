@@ -21,7 +21,7 @@ Support
 Changelog
 ---------
 
-<https://github.com/staxrip/staxrip/blob/master/Changelog.md>
+<Changelog.md>
 
 
 Download

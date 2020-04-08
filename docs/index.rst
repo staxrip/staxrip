@@ -5,15 +5,15 @@ StaxRip Documentation
 .. toctree::
    :maxdepth: 3
 
-   intro
-   screenshots
+   introduction
+   generated/screenshots
    usage
    support
    macros
    cli
    powershell
    faq
-   tools
+   generated/tools
 
 
 Indices and tables

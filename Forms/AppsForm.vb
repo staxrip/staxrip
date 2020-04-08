@@ -631,53 +631,21 @@ Public Class AppsForm
         Dim rows As New List(Of Object)
 
         For Each pack In Package.Items.Values.OrderBy(Function(i) i.Path)
-            Dim row = New With {.Name = "", .Type = "", .Filename = "", .Version = "",
-                                .ModifiedDate = "", .Folder = ""}
-            'Name
+            Dim row = New With {.Name = "", .Type = "", .Filename = "",
+                .Version = "", .ModifiedDate = "", .Folder = ""}
+
             row.Name = pack.Name
-
-            'Type
-            If Not pack.HelpSwitch Is Nothing Then
-                row.Type = "Console App"
-            ElseIf pack.IsGUI Then
-                row.Type = "GUI App"
-            ElseIf TypeOf pack Is PluginPackage Then
-                Dim plugin = DirectCast(pack, PluginPackage)
-
-                If Not plugin.AvsFilterNames.NothingOrEmpty Then
-                    If plugin.Filename.Ext = "dll" Then
-                        row.Type = "AviSynth Plugin"
-                    ElseIf plugin.Filename.Ext.EqualsAny("avs", "avsi") Then
-                        row.Type = "AviSynth Script"
-                    End If
-                ElseIf Not plugin.VSFilterNames.NothingOrEmpty Then
-                    If plugin.Filename.Ext = "dll" Then
-                        row.Type = "VapourSynth Plugin"
-                    ElseIf plugin.Filename.Ext = "py" Then
-                        row.Type = "VapourSynth Script"
-                    End If
-                End If
-            ElseIf pack.Filename.Ext = "dll" Then
-                row.Type = "Library"
-            Else
-                row.Type = "Misc"
-            End If
-
-            'Filename
+            row.Type = pack.GetTypeName
             row.Filename = pack.Filename
+            row.Folder = pack.Directory
 
-            'Version
             If pack.IsCorrectVersion Then
                 row.Version = "'" + pack.Version + "'"
             End If
 
-            'Modified Date
             If File.Exists(pack.Path) Then
                 row.ModifiedDate = File.GetLastWriteTime(pack.Path).ToShortDateString()
             End If
-
-            'Folder
-            row.Folder = pack.Directory
 
             rows.Add(row)
         Next

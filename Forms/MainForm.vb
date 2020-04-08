@@ -4363,7 +4363,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced", Symbol.More)
 
         If Application.StartupPath.EndsWith("\bin") Then
-            ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
+            ret.Add("Tools|Advanced|Test and create files...", NameOf(g.DefaultCommands.TestAndDynamicFileCreation), Keys.F12)
         End If
 
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))

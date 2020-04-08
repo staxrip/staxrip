@@ -269,8 +269,10 @@ Public Class GlobalCommands
         End If
     End Sub
 
-    <Command("Test")>
-    Sub Test()
+    <Command("Development tests and creation of doc files")>
+    Sub TestAndDynamicFileCreation()
+        Documentation.GenerateDynamicFiles()
+
         Dim msg = ""
 
         msg += NVEnc.Test
@@ -331,8 +333,6 @@ Public Class GlobalCommands
                 End If
             End If
         Next
-
-        Documentation.GenerateDynamicFiles()
 
         If msg <> "" Then
             Dim fs = Folder.Temp + "staxrip test.txt"

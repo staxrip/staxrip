@@ -34,23 +34,6 @@ Public Class Package
 
     Shared Property Items As New SortedDictionary(Of String, Package)
 
-    Private SetupActionValue As Action
-
-    Property SetupAction As Action
-        Get
-            If SetupActionValue Is Nothing AndAlso SetupFilename <> "" AndAlso
-                File.Exists(Folder.Apps + SetupFilename) Then
-
-                SetupActionValue = Sub() g.StartProcess(Folder.Apps + SetupFilename)
-            End If
-
-            Return SetupActionValue
-        End Get
-        Set(value As Action)
-            SetupActionValue = value
-        End Set
-    End Property
-
     Shared Property Python As Package = Add(New Package With {
         .Name = "Python",
         .Filename = "python.exe",
@@ -734,11 +717,6 @@ Public Class Package
         .HelpFilename = "Readme.txt",
         .AvsFilterNames = {"FFT3DGPU"},
         .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter | FFT3DGPU", "FFT3DGPU(sigma=1.5, bt=5, bw=32, bh=32, ow=16, oh=16, sharpen=0.4, NVPerf=$select:msg:Enable Nvidia Function;True;False$)")}})
-
-    Shared Function Add(pack As Package) As Package
-        Items(pack.ID) = pack
-        Return pack
-    End Function
 
     Shared Sub New()
         Add(New PluginPackage With {
@@ -1812,6 +1790,28 @@ Public Class Package
         End Try
     End Sub
 
+    Shared Function Add(pack As Package) As Package
+        Items(pack.ID) = pack
+        Return pack
+    End Function
+
+    Private SetupActionValue As Action
+
+    Property SetupAction As Action
+        Get
+            If SetupActionValue Is Nothing AndAlso SetupFilename <> "" AndAlso
+                File.Exists(Folder.Apps + SetupFilename) Then
+
+                SetupActionValue = Sub() g.StartProcess(Folder.Apps + SetupFilename)
+            End If
+
+            Return SetupActionValue
+        End Get
+        Set(value As Action)
+            SetupActionValue = value
+        End Set
+    End Property
+
     ReadOnly Property ID As String
         Get
             If TypeOf Me Is PluginPackage Then
@@ -1866,6 +1866,34 @@ Public Class Package
             RequiredValue = value
         End Set
     End Property
+
+    Function GetTypeName() As String
+        If Not HelpSwitch Is Nothing Then
+            Return "Console App"
+        ElseIf IsGUI Then
+            Return "GUI App"
+        ElseIf TypeOf Me Is PluginPackage Then
+            Dim plugin = DirectCast(Me, PluginPackage)
+
+            If Not plugin.AvsFilterNames.NothingOrEmpty Then
+                If plugin.Filename.Ext = "dll" Then
+                    Return "AviSynth Plugin"
+                ElseIf plugin.Filename.Ext.EqualsAny("avs", "avsi") Then
+                    Return "AviSynth Script"
+                End If
+            ElseIf Not plugin.VSFilterNames.NothingOrEmpty Then
+                If plugin.Filename.Ext = "dll" Then
+                    Return "VapourSynth Plugin"
+                ElseIf plugin.Filename.Ext = "py" Then
+                    Return "VapourSynth Script"
+                End If
+            End If
+        ElseIf Filename.Ext = "dll" Then
+            Return "Library"
+        Else
+            Return "Misc"
+        End If
+    End Function
 
     Sub ShowHelp()
         Dim dic As New SortedDictionary(Of String, String)

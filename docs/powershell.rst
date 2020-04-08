@@ -1,3 +1,4 @@
+
 PowerShell Scripting
 ====================
 
@@ -9,66 +10,17 @@ Events
 
 In order to run scripts on certain events the following events are available:
 
-- ``ProjectLoaded`` After Project Loaded
-- ``JobProcessed`` After Job Processed
-- ``VideoEncoded`` After Video Encoded
-- ``BeforeJobProcessed`` Before Job Processed
-- ``AfterSourceLoaded`` After Source Loaded
-- ``ApplicationExit`` Application Exit
-- ``ProjectOrSourceLoaded`` After Project Or Source Loaded
-- ``JobsProcessed`` After Jobs Processed
-- ``JobMuxed`` After Job Muxed
+.. include:: generated/events.rst
+
 
 Assign to an event by saving a script file in the scripting folder using the event name as file name.
 
 The scripting folder can be opened with:
 
-Main Menu > Tools > Scripts > Open script folder
-
-Use one of the following file names:
-
-- ProjectLoaded.ps1
-- JobProcessed.ps1
-- VideoEncoded.ps1
-- BeforeJobProcessed.ps1
-- AfterSourceLoaded.ps1
-- ApplicationExit.ps1
-- ProjectOrSourceLoaded.ps1
-- JobsProcessed.ps1
-- JobMuxed.ps1
-
-Support
--------
-
-If you have questions feel free to ask here:
-
-https://github.com/stax76/staxrip/issues/200
+``Main Menu > Tools > Scripts > Open Script Folder``
 
 
-Default Scripts
+Example Scripts
 ---------------
 
-HDR to 10bit 1000nits(Rec.2100)AVS.ps1
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. literalinclude:: powershell/HDR to 10bit 1000nits(Rec.2100)AVS.ps1
-   :language: powershell
-
-HDR to 10bit 1000nits(Rec.2100)VS.ps1
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. literalinclude:: powershell/HDR to 10bit 1000nits(Rec.2100)VS.ps1
-   :language: powershell
-
-Re-mux v4.ps1
-~~~~~~~~~~~~~
-
-.. literalinclude:: powershell/Re-mux v4.ps1
-   :language: powershell
-
-_AfterSourceLoaded.ps1
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. literalinclude:: powershell/_AfterSourceLoaded.ps1
-   :language: powershell
-
+`https://github.com/staxrip/staxrip/tree/master/Scripts <https://github.com/staxrip/staxrip/tree/master/Scripts>`_ 

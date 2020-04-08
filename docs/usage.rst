@@ -1,5 +1,8 @@
+
 Usage
 =====
+
+.. note::  This section is currently under construction. Meanwhile you can request usage support on the `Issue Tracker <https://github.com/staxrip/staxrip/issues>`_ 
 
 Preprocessing
 -------------

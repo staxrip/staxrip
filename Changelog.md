@@ -2,6 +2,7 @@
 2.1.0.6 Beta (not yet available)
 ============
 
+
 new
 ---
 
@@ -9,7 +10,8 @@ new
 - Main Menu > Tools > Advanced > Command Prompt and PowerShell are shown via Windows Terminal
 - Execute Command Line in video encoder dialogs is shown via Windows Terminal
 - in the Apps dialog the tools can be shown using PowerShell Out-GridView
-- the [macros docs page](https://staxrip.readthedocs.io/macros.html) was improved and can be called from the macros dialog
+- the [documentation](https://staxrip.readthedocs.io) has been improved
+- one time tip messages added to inform about otherwise unknown functionality
 
 
 fix
@@ -20,6 +22,7 @@ fix
 
 2.1.0.5 Beta
 ============
+
 
 new
 ---

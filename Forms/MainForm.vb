@@ -2413,7 +2413,7 @@ Public Class MainForm
             message = message.FixBreak.Replace(BR2, BR)
         End If
 
-        CurrentAssistantTipKey = message.SHA512Hash
+        CurrentAssistantTipKey = message.MD5Hash
 
         If Not p.SkippedAssistantTips.Contains(CurrentAssistantTipKey) Then
             If message <> "" Then

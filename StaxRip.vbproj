@@ -178,7 +178,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\AsyncStreamReader.vb" />
-    <Compile Include="General\Docs.vb" />
+    <Compile Include="General\Documentation.vb" />
     <Compile Include="General\Extras.vb" />
     <Compile Include="General\FrameServer.vb" />
     <Compile Include="General\Job.vb" />

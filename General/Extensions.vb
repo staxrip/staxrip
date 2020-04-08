@@ -6,6 +6,7 @@ Imports System.Runtime.CompilerServices
 Imports System.Security.Cryptography
 Imports System.Text
 Imports System.Text.RegularExpressions
+
 Imports Microsoft.Win32
 Imports VB6 = Microsoft.VisualBasic
 
@@ -494,18 +495,13 @@ Module StringExtensions
         Return value
     End Function
 
-    'TODO: replace with MD5
     <Extension()>
-    Function SHA512Hash(value As String) As String
-        Dim crypt = SHA512CryptoServiceProvider.Create()
-        Dim hash = crypt.ComputeHash(ASCIIEncoding.ASCII.GetBytes(value))
-        Dim sb As New StringBuilder()
-
-        For Each i In hash
-            sb.Append(i.ToString("x2"))
-        Next
-
-        Return sb.ToString()
+    Function MD5Hash(instance As String) As String
+        Using m = MD5.Create()
+            Dim inputBuffer = Encoding.UTF8.GetBytes(instance)
+            Dim hashBuffer = m.ComputeHash(inputBuffer)
+            Return BitConverter.ToString(m.ComputeHash(inputBuffer))
+        End Using
     End Function
 
     <Extension()>

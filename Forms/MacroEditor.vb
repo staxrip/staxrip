@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class MacroEditorDialog
@@ -141,12 +142,12 @@ Public Class MacroEditorDialog
     End Sub
 
     Private Sub UniversalEditor_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteP(HelpText)
-        f.Doc.WriteTips(MacroEditorControl.TipProvider.GetTips)
-        f.Doc.WriteTable("Macros", Macro.GetTips())
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteP(HelpText)
+        form.Doc.WriteTips(MacroEditorControl.TipProvider.GetTips)
+        form.Doc.WriteTable("Macros", Macro.GetTips())
+        form.Show()
     End Sub
 
     Protected Overrides Sub OnLoad(e As EventArgs)
@@ -155,7 +156,13 @@ Public Class MacroEditorDialog
         Dim editorControl = MacroEditorControl
         Dim textSize = TextRenderer.MeasureText(editorControl.rtbEdit.Text, editorControl.rtbEdit.Font)
         Dim workingArea = Screen.FromControl(Me).WorkingArea
-        If Width > workingArea.Width * 0.7 Then Width = CInt(workingArea.Width * 0.7)
-        If Height > workingArea.Height * 0.9 Then Height = CInt(workingArea.Height * 0.9)
+
+        If Width > workingArea.Width * 0.7 Then
+            Width = CInt(workingArea.Width * 0.7)
+        End If
+
+        If Height > workingArea.Height * 0.9 Then
+            Height = CInt(workingArea.Height * 0.9)
+        End If
     End Sub
 End Class

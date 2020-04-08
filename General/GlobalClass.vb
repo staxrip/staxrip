@@ -40,6 +40,19 @@ Public Class GlobalClass
         End Try
     End Sub
 
+    Sub ShowTerminal(fileName As String, Optional arguments As String = Nothing)
+        Documentation.ShowTip("Apps are added to the path environment variable and macros are added as environment variables.")
+
+        Using proc As New Process
+            proc.StartInfo.UseShellExecute = False
+            proc.StartInfo.FileName = fileName
+            proc.StartInfo.Arguments = arguments
+            proc.StartInfo.WorkingDirectory = Folder.Desktop
+            g.SetEnvironmentVariables(proc.StartInfo.EnvironmentVariables)
+            proc.Start()
+        End Using
+    End Sub
+
     Sub ProcessJobs()
         Dim jobs = Job.ActiveJobs
         If jobs.Count = 0 Then Exit Sub

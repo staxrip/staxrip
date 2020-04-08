@@ -181,6 +181,7 @@ Friend Class JobsForm
 
     Private FileWatcher As New FileSystemWatcher
     Private IsLoading As Boolean
+    Private Tip As String = "Please note that the job list can be processed by multiple StaxRip instances in parallel."
 
     Sub New()
         MyBase.New()
@@ -327,11 +328,7 @@ Friend Class JobsForm
     End Sub
 
     Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
-        If Not s.Storage.GetBool("proc form help") Then
-            ShowHelp()
-            s.Storage.SetBool("proc form help", True)
-        End If
-
+        Documentation.ShowTip(Tip)
         Close()
 
         If g.IsProcessing Then
@@ -356,12 +353,7 @@ Friend Class JobsForm
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged
     End Sub
 
-    Sub JobsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        ShowHelp()
-    End Sub
-
-    Sub ShowHelp()
-        MsgInfo("Please note that the job list can be processed by multiple StaxRip instances in parallel." + BR2 +
-                "Multiple instances work most efficiently when the files are located on different HDDs.")
+    Sub JobsForm_HelpRequested(sender As Object, ea As HelpEventArgs) Handles Me.HelpRequested
+        MsgInfo(Tip)
     End Sub
 End Class

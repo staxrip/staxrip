@@ -91,30 +91,19 @@ Public Class GlobalCommands
     <Command("Shows a command prompt.")>
     Sub ShowCommandPrompt()
         Try
-            ShowTerminal("wt.exe", "cmd.exe")
+            g.ShowTerminal("wt.exe", "cmd.exe")
         Catch
-            ShowTerminal("cmd.exe")
+            g.ShowTerminal("cmd.exe")
         End Try
     End Sub
 
     <Command("Shows a powershell terminal.")>
     Sub ShowPowerShell()
         Try
-            ShowTerminal("wt.exe", "powershell.exe -nologo")
+            g.ShowTerminal("wt.exe", "powershell.exe -nologo")
         Catch
-            ShowTerminal("powershell.exe")
+            g.ShowTerminal("powershell.exe")
         End Try
-    End Sub
-
-    Sub ShowTerminal(fileName As String, Optional arguments As String = Nothing)
-        Using proc As New Process
-            proc.StartInfo.UseShellExecute = False
-            proc.StartInfo.FileName = fileName
-            proc.StartInfo.Arguments = arguments
-            proc.StartInfo.WorkingDirectory = Folder.Desktop
-            g.SetEnvironmentVariables(proc.StartInfo.EnvironmentVariables)
-            proc.Start()
-        End Using
     End Sub
 
     <Command("Executes command lines separated by a line break line by line. Macros are solved and passed as environment variables.")>
@@ -267,13 +256,13 @@ Public Class GlobalCommands
         Optional externalShell As Boolean = False)
 
         If externalShell Then
-            Dim path = Folder.Temp + "temp.ps1"
-            code.WriteFileUTF8BOM(path)
+            Dim ps1Path = Folder.Temp + "temp.ps1"
+            code.WriteFileUTF8BOM(ps1Path)
 
             Try
-                g.StartProcess("wt.exe", "powershell.exe -nologo -noexit -file " + path.Escape)
+                g.ShowTerminal("wt.exe", "powershell.exe -nologo -noexit -file " + ps1Path.Escape)
             Catch
-                g.StartProcess("powershell.exe", "-nologo -noexit -file " + path.Escape)
+                g.ShowTerminal("powershell.exe", "-nologo -noexit -file " + ps1Path.Escape)
             End Try
         Else
             g.InvokePowerShellCode(code)
@@ -343,7 +332,7 @@ Public Class GlobalCommands
             End If
         Next
 
-        Docs.GenerateDynamicFiles()
+        Documentation.GenerateDynamicFiles()
 
         If msg <> "" Then
             Dim fs = Folder.Temp + "staxrip test.txt"

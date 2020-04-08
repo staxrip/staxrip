@@ -1,15 +1,15 @@
+
+Imports System.ComponentModel
 Imports System.Globalization
+Imports System.Management
 Imports System.Reflection
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Text
-Imports System.ComponentModel
-
-Imports Microsoft.VisualBasic.FileIO
-Imports System.Management
 Imports System.Text.RegularExpressions
 
+Imports Microsoft.VisualBasic.FileIO
+
 Public Class ObjectHelp
-    'parse recursive serializable fields and lists 
     Shared Function GetCompareString(obj As Object) As String
         Dim sb As New StringBuilder
         ParseCompareString(obj, Nothing, sb)

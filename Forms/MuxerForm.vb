@@ -818,19 +818,22 @@ Public Class MuxerForm
     End Sub
 
     Private Sub MuxerForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteP(Strings.Muxer)
-        f.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
-        f.Doc.WriteTable("Macros", Macro.GetTips())
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteP(Strings.Muxer)
+        form.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
+        form.Doc.WriteTable("Macros", Macro.GetTips())
+        form.Show()
     End Sub
 
     Public Class AttachmentContainer
         Property Filepath As String
 
         Public Overrides Function ToString() As String
-            If Filepath.Contains("_attachment_") Then Return Filepath.Right("_attachment_")
+            If Filepath.Contains("_attachment_") Then
+                Return Filepath.Right("_attachment_")
+            End If
+
             Return Path.GetFileName(Filepath)
         End Function
     End Class

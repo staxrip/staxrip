@@ -9,7 +9,8 @@ new
 - Main Menu > Tools > Advanced > Command Prompt and PowerShell are shown via Windows Terminal
 - Execute Command Line in video encoder dialogs is shown via Windows Terminal
 - in the Apps dialog the tools can be shown using PowerShell Out-GridView
-
+- the macros docs page was improved and can be called from the macros dialog
+  https://staxrip.readthedocs.io/macros.html
 
 fix
 ---

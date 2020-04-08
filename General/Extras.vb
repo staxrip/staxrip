@@ -1,4 +1,5 @@
-﻿Imports System.Text
+﻿
+Imports System.Text
 
 Public Class Animation
     Shared Sub GIF(inputFile As String, proj As Project)

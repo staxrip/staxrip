@@ -535,26 +535,26 @@ Public Class BatchAudioEncoderForm
     End Sub
 
     Sub ShowHelp()
-        Dim f As New HelpForm()
+        Dim form As New HelpForm()
 
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteP("The batch audio settings define audio conversion batch code.")
-        f.Doc.WriteTips(TipProvider.GetTips, EditControl.TipProvider.GetTips)
-        f.Doc.WriteP("Macros")
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteP("The batch audio settings define audio conversion batch code.")
+        form.Doc.WriteTips(TipProvider.GetTips, EditControl.TipProvider.GetTips)
+        form.Doc.WriteP("Macros")
 
-        Dim l As New StringPairList
+        Dim macroList As New StringPairList
 
-        l.Add("%input%", "Audio source file")
-        l.Add("%output%", "Audio target File")
-        l.Add("%bitrate%", "Audio bitrate")
-        l.Add("%delay%", "Audio delay")
-        l.Add("%channels%", "Audio channels count")
-        l.Add("%language_native%", "Native language name")
-        l.Add("%language_english%", "English language name")
+        macroList.Add("%input%", "Audio source file")
+        macroList.Add("%output%", "Audio target File")
+        macroList.Add("%bitrate%", "Audio bitrate")
+        macroList.Add("%delay%", "Audio delay")
+        macroList.Add("%channels%", "Audio channels count")
+        macroList.Add("%language_native%", "Native language name")
+        macroList.Add("%language_english%", "English language name")
 
-        f.Doc.WriteTable("Batch Audio Settings Macros", "The macros below are only available in the batch audio settings dialog and override global macros with the same name in case they are defined in both scopes.", l)
-        f.Doc.WriteTable("Global Macros", Macro.GetTips())
-        f.Show()
+        form.Doc.WriteTable("Batch Audio Settings Macros", "The macros below are only available in the batch audio settings dialog and override global macros with the same name in case they are defined in both scopes.", macroList)
+        form.Doc.WriteTable("Global Macros", Macro.GetTips())
+        form.Show()
     End Sub
 
     Private Sub BatchAudioEncoderForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown

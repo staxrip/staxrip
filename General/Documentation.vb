@@ -3,7 +3,7 @@ Imports System.ComponentModel
 Imports System.Reflection
 Imports StaxRip.UI
 
-Public Class Docs
+Public Class Documentation
     Shared Sub GenerateDynamicFiles()
         GenerateMacroTableFile()
         GenerateMiscFiles()
@@ -185,6 +185,15 @@ Switches
 
         If content <> currentContent Then
             content.WriteFileUTF8(filepath)
+        End If
+    End Sub
+
+    Shared Sub ShowTip(message As String)
+        Dim hash = message.MD5Hash
+
+        If Not s.Storage.GetBool(hash) Then
+            MsgInfo("Tip", message)
+            s.Storage.SetBool(hash, True)
         End If
     End Sub
 End Class

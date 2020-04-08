@@ -1,23 +1,30 @@
 ![Main Window](https://github.com/staxrip/staxrip/blob/master/docs/screenshots/_Main.png)
 
-# About
+About
+=====
 
-StaxRip is a video encoding app for Windows with a unrivaled feature set and usability.
+StaxRip is a video encoding GUI for Windows, it executes and controls console apps like x265, mkvmerge and ffmpeg and uses the scripting based frame servers AviSynth+ and VapourSynth for video processing.
 
 
-
-## Documentation
+Documentation
+-------------
 
 <https://staxrip.readthedocs.io>
 
-## Support
+
+Support
+-------
 
 <https://staxrip.readthedocs.io/support.html>
 
-## Changelog
+
+Changelog
+---------
 
 <https://github.com/staxrip/staxrip/blob/master/Changelog.md>
 
-## Download
+
+Download
+--------
 
 <https://staxrip.readthedocs.io/intro.html#download>

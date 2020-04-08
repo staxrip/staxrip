@@ -9,20 +9,13 @@ new
 - Main Menu > Tools > Advanced > Command Prompt and PowerShell are shown via Windows Terminal
 - Execute Command Line in video encoder dialogs is shown via Windows Terminal
 - in the Apps dialog the tools can be shown using PowerShell Out-GridView
-- the macros docs page was improved and can be called from the macros dialog
-  https://staxrip.readthedocs.io/macros.html
+- the [macros docs page](https://staxrip.readthedocs.io/macros.html) was improved and can be called from the macros dialog
+
 
 fix
 ---
 
 - CSV file creation possibly incompatible with Excel in certain locales
-
-
-internal
---------
-
-- CSV is generated with PowerShell
-- PowerShell class no longer references StaxRip 
 
 
 2.1.0.5 Beta

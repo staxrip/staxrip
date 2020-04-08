@@ -21,7 +21,7 @@ Support
 Changelog
 ---------
 
-<#Changelog.md>
+[Changelog](Changelog.md)
 
 
 Download

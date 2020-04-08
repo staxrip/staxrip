@@ -540,7 +540,7 @@ Public Class BatchAudioEncoderForm
         f.Doc.WriteStart(Text)
         f.Doc.WriteP("The batch audio settings define audio conversion batch code.")
         f.Doc.WriteTips(TipProvider.GetTips, EditControl.TipProvider.GetTips)
-        f.Doc.WriteP("Macros", Strings.MacrosHelp)
+        f.Doc.WriteP("Macros")
 
         Dim l As New StringPairList
 

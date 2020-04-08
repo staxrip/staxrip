@@ -169,7 +169,7 @@ Public Class CodeEditor
     Private Sub CodeEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
-        form.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        form.Doc.WriteTable("Macros", Macro.GetTips())
         form.Show()
     End Sub
 

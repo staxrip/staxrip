@@ -1,4 +1,4 @@
-﻿Supported Tools
+Supported Tools
 ===============
 
 Tools

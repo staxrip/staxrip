@@ -38,6 +38,14 @@ extensions = []
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
+html_static_path = ['_static']
+
+html_context = {
+    'css_files': [
+        '_static/theme_overrides.css',  # override wide tables in RTD theme
+        ],
+     }
+
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
@@ -49,8 +57,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'StaxRip'
-copyright = '2018, Revan654'
-author = 'Revan654'
+copyright = '2002-2020, StaxRip authors'
+author = 'StaxRip authors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -145,7 +153,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'StaxRip.tex', 'StaxRip Documentation',
-     'Revan654', 'manual'),
+     'StaxRip authors', 'manual'),
 ]
 
 

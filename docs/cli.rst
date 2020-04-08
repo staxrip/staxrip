@@ -1,4 +1,4 @@
-﻿Command Line Interface
+Command Line Interface
 ======================
 
 Switches are processed in the order they appear in the command line.
@@ -104,7 +104,7 @@ Executes command lines separated by a line break line by line. Macros are solved
 
 code: PowerShell script code to be executed.
 
-externalShell: Execute in StaxRip to automate StaxRip or in external Shell.
+externalShell: Execute in StaxRip to automate StaxRip or use external shell.
 
 Executes PowerShell script code.
 
@@ -300,7 +300,7 @@ Shows a dialog to generate thumbnails.
 -ShowCommandPrompt
 ~~~~~~~~~~~~~~~~~~
 
-Shows a command prompt with the temp directory of the current project.
+Shows a command prompt.
 
 
 -ShowCropDialog
@@ -436,7 +436,7 @@ Dialog to configure project options.
 -ShowPowerShell
 ~~~~~~~~~~~~~~~
 
-Shows the powershell with aliases for all tools staxrip includes.
+Shows a powershell terminal.
 
 
 -ShowPreview

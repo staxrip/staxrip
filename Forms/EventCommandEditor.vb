@@ -496,7 +496,7 @@ Public Class EventCommandEditor
         form.Doc.WriteTips(TipProvider.GetTips)
         form.Doc.WriteTable("Properties", Macro.GetTipsFriendly(False))
         form.Doc.WriteTable("Commands", g.MainForm.CustomMainMenu.CommandManager.GetTips)
-        form.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        form.Doc.WriteTable("Macros", Macro.GetTips())
         form.Show()
     End Sub
 

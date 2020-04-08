@@ -303,7 +303,7 @@ Public Class MacrosForm
     Private Sub MacrosForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         Dim f As New HelpForm()
         f.Doc.WriteStart(Text)
-        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        f.Doc.WriteTable("Macros", Macro.GetTips())
         f.Show()
     End Sub
 

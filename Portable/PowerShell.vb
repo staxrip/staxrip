@@ -53,8 +53,8 @@ Public Class PowerShell
         Return String.Join(Environment.NewLine, lines)
     End Function
 
-    Shared Function ConvertToCSV(objects As IEnumerable(Of Object)) As String
-        Dim code = "$inputVar | ConvertTo-Csv -Delimiter ';' -NoTypeInformation"
-        Return "sep=;" + Environment.NewLine + InvokeAndConvert(code, "inputVar", objects)
+    Shared Function ConvertToCSV(delimiter As String, objects As IEnumerable(Of Object)) As String
+        Dim code = $"$inputVar | ConvertTo-Csv -Delimiter '{delimiter}' -NoTypeInformation"
+        Return $"sep={delimiter}" + Environment.NewLine + InvokeAndConvert(code, "inputVar", objects)
     End Function
 End Class

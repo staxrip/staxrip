@@ -306,12 +306,20 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function ReadAllText(instance As String) As String 'auto detects encoding
+    Function ReadAllText(instance As String) As String
+        If Not File.Exists(instance) Then
+            Return ""
+        End If
+
         Return File.ReadAllText(instance)
     End Function
 
     <Extension()>
-    Function ReadAllTextDefault(instance As String) As String 'auto detects encoding
+    Function ReadAllTextDefault(instance As String) As String
+        If Not File.Exists(instance) Then
+            Return ""
+        End If
+
         Return File.ReadAllText(instance, Encoding.Default)
     End Function
 

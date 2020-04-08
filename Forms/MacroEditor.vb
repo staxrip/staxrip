@@ -145,7 +145,7 @@ Public Class MacroEditorDialog
         f.Doc.WriteStart(Text)
         f.Doc.WriteP(HelpText)
         f.Doc.WriteTips(MacroEditorControl.TipProvider.GetTips)
-        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        f.Doc.WriteTable("Macros", Macro.GetTips())
         f.Show()
     End Sub
 

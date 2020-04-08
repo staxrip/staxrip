@@ -833,7 +833,9 @@ Public Class Macro
 
     Property Description() As String
         Get
-            If DescriptionValue Is Nothing Then DescriptionValue = ""
+            If DescriptionValue Is Nothing Then
+                DescriptionValue = ""
+            End If
 
             Return DescriptionValue
         End Get
@@ -845,7 +847,7 @@ Public Class Macro
     Shared Function GetTips() As StringPairList
         Dim ret As New StringPairList
 
-        For Each i In GetMacros(True, True)
+        For Each i In GetMacros(True, False)
             ret.Add(i.Name, i.Description)
         Next
 
@@ -883,7 +885,7 @@ Public Class Macro
             ret.Add(New Macro("$browse_file$", "Browse For File", GetType(String), "Filepath returned from a file browser."))
             ret.Add(New Macro("$enter_text$", "Enter Text", GetType(String), "Text entered in a input box."))
             ret.Add(New Macro("$enter_text:prompt$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
-            ret.Add(New Macro("$select:param1;param2;param...$", "Select", GetType(String), "String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value." + BR2 + "Example: $select:msg:hello;cap1|val1;cap2|val2$"))
+            ret.Add(New Macro("$select:param1;param2;param...$", "Select", GetType(String), "String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value. Example: $select:msg:hello;caption1|value1;caption2|value2$"))
             ret.Add(New Macro("app:name", "Application File Path", GetType(String), "Returns the path of a aplication."))
             ret.Add(New Macro("app_dir:name", "Application Directory", GetType(String), "Returns the directory of a aplication."))
             ret.Add(New Macro("eval:expression", "Eval Math Expression", GetType(String), "Evaluates a math expression which may contain default macros."))

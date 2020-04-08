@@ -202,7 +202,7 @@ Public Class BatchVideoEncoderForm
         form.Doc.WriteStart(Text)
         form.Doc.WriteP("The batch encoder allows executing a command line. If there is a piping symbol or line break then it's executed as batch file.")
         form.Doc.WriteTips(TipProvider.GetTips, EncodingCliControl.TipProvider.GetTips)
-        form.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        form.Doc.WriteTable("Macros", Macro.GetTips())
         form.Show()
     End Sub
 

@@ -822,7 +822,7 @@ Public Class MuxerForm
         f.Doc.WriteStart(Text)
         f.Doc.WriteP(Strings.Muxer)
         f.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
-        f.Doc.WriteTable("Macros", Strings.MacrosHelp, Macro.GetTips())
+        f.Doc.WriteTable("Macros", Macro.GetTips())
         f.Show()
     End Sub
 

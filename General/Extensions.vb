@@ -12,8 +12,29 @@ Imports VB6 = Microsoft.VisualBasic
 
 Module StringExtensions
     <Extension>
-    Public Function Multiply(instance As String, multiplier As Integer) As String
-        If multiplier < 1 Then multiplier = 1
+    Function IndentLines(instance As String, value As String) As String
+        If instance = "" Then
+            Return ""
+        End If
+
+        instance = value + instance
+        instance = instance.Replace(BR, BR + value)
+        Return instance
+    End Function
+
+    <Extension>
+    Sub ThrowIfContainsNewLine(instance As String)
+        If instance?.Contains(BR) Then
+            Throw New Exception("String contains a line break char: " + instance)
+        End If
+    End Sub
+
+    <Extension>
+    Function Multiply(instance As String, multiplier As Integer) As String
+        If multiplier < 1 Then
+            multiplier = 1
+        End If
+
         Dim sb As New StringBuilder(multiplier * instance.Length)
 
         For i = 0 To multiplier - 1
@@ -25,7 +46,10 @@ Module StringExtensions
 
     <Extension>
     Function IsValidFileName(instance As String) As Boolean
-        If instance = "" Then Return False
+        If instance = "" Then
+            Return False
+        End If
+
         Dim chars = """*/:<>?\|"
 
         For Each i In instance
@@ -383,9 +407,8 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function EqualIgnoreCase(a As String, b As String) As Boolean
-        If a = "" OrElse b = "" Then Return False
-        Return String.Compare(a, b, StringComparison.OrdinalIgnoreCase) = 0
+    Function EqualIgnoreCase(value1 As String, value2 As String) As Boolean
+        Return String.Compare(value1, value2, StringComparison.OrdinalIgnoreCase) = 0
     End Function
 
     <Extension()>

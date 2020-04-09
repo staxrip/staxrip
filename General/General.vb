@@ -1224,11 +1224,31 @@ Public Class CommandManager
     Property Commands As New Dictionary(Of String, Command)
 
     Function HasCommand(name As String) As Boolean
-        Return Not name Is Nothing AndAlso Commands.ContainsKey(name)
+        If name = "" Then
+            Return False
+        End If
+
+        If Commands.ContainsKey(name) Then
+            Return True
+        End If
+
+        For Each i In Commands.Keys
+            If i.EqualIgnoreCase(name) Then
+                Return True
+            End If
+        Next
     End Function
 
     Function GetCommand(name As String) As Command
-        If HasCommand(name) Then Return Commands(name)
+        If HasCommand(name) AndAlso Commands.ContainsKey(name) Then
+            Return Commands(name)
+        End If
+
+        For Each i In Commands.Keys
+            If i.EqualIgnoreCase(name) Then
+                Return Commands(i)
+            End If
+        Next
     End Function
 
     Sub AddCommandsFromObject(obj As Object)
@@ -1254,15 +1274,21 @@ Public Class CommandManager
     End Sub
 
     Sub Process(cp As CommandParameters)
-        If Not cp Is Nothing Then Process(cp.MethodName, cp.Parameters)
+        If Not cp Is Nothing Then
+            Process(cp.MethodName, cp.Parameters)
+        End If
     End Sub
 
     Sub Process(name As String, params As List(Of Object))
-        If HasCommand(name) Then Process(GetCommand(name), params)
+        If HasCommand(name) Then
+            Process(GetCommand(name), params)
+        End If
     End Sub
 
     Sub Process(name As String, ParamArray params As Object())
-        If HasCommand(name) Then Process(GetCommand(name), params.ToList)
+        If HasCommand(name) Then
+            Process(GetCommand(name), params.ToList)
+        End If
     End Sub
 
     Sub Process(command As Command, params As List(Of Object))
@@ -1271,7 +1297,9 @@ Public Class CommandManager
         Catch ex As TargetParameterCountException
             MsgError("Parameter mismatch, for the command :" + command.MethodInfo.Name)
         Catch ex As Exception
-            If Not TypeOf ex.InnerException Is AbortException Then g.ShowException(ex)
+            If Not TypeOf ex.InnerException Is AbortException Then
+                g.ShowException(ex)
+            End If
         End Try
     End Sub
 

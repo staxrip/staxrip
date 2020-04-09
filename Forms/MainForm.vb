@@ -3550,7 +3550,7 @@ Public Class MainForm
         Close()
     End Sub
 
-    <Command("Dialog to manage external applications.")>
+    <Command("Dialog to manage external tools.")>
     Sub ShowAppsDialog()
         Using f As New AppsForm
             Dim found As Boolean
@@ -3571,14 +3571,15 @@ Public Class MainForm
         End Using
     End Sub
 
-    <Command("Dialog to manage encoder profiles.")>
+    <Command("Shows a dialog to manage video encoder profiles.")>
     Sub ShowEncoderProfilesDialog()
-        Using f As New ProfilesForm("Encoder Profiles", s.VideoEncoderProfiles,
-                                    AddressOf g.LoadVideoEncoder,
-                                    AddressOf GetNewVideoEncoderProfile,
-                                    AddressOf VideoEncoder.GetDefaults)
+        Using form As New ProfilesForm(
+            "Encoder Profiles", s.VideoEncoderProfiles,
+            AddressOf g.LoadVideoEncoder,
+            AddressOf GetNewVideoEncoderProfile,
+            AddressOf VideoEncoder.GetDefaults)
 
-            If f.ShowDialog() = DialogResult.OK Then
+            If form.ShowDialog() = DialogResult.OK Then
                 PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
             End If
         End Using
@@ -3639,7 +3640,7 @@ Public Class MainForm
         Next
     End Sub
 
-    <Command("Dialog to crop borders.")>
+    <Command("Shows the crop dialog to crop borders.")>
     Sub ShowCropDialog()
         If p.SourceFile = "" Then
             ShowOpenSourceDialog()
@@ -3775,7 +3776,7 @@ Public Class MainForm
         If templateName <> "" Then LoadProject(Folder.Template + templateName + ".srip")
     End Sub
 
-    <Command("Compare and extract images for video comparisons.")>
+    <Command("Shows a dialog to compare different videos.")>
     Sub ShowVideoComparison()
         Dim f As New VideoComparisonForm
         f.Show()
@@ -4354,7 +4355,7 @@ Public Class MainForm
         ret.Add("Tools|Folders|Startup", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%startup_dir%"""})
         ret.Add("Tools|Folders|System", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%system_dir%"""})
         ret.Add("Tools|Folders|Target", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%target_dir%"""})
-        ret.Add("Tools|Folders|Templates", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%TemplatesV2"""})
+        ret.Add("Tools|Folders|Templates", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%Templates"""})
         ret.Add("Tools|Folders|Temp", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%temp_dir%"""})
         ret.Add("Tools|Folders|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%working_dir%"""})
 
@@ -4370,26 +4371,26 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
         ret.Add("Tools|Advanced|Add Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
         ret.Add("Tools|Advanced|Event Command...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
-        ret.Add("Tools|Advanced|Reset Setting", NameOf(ResetSettings))
+        ret.Add("Tools|Advanced|Reset Setting", NameOf(g.DefaultCommands.ResetSettings))
         ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
         ret.Add("Tools|Advanced|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_terminal)
 
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
 
-        ret.Add("Apps|Media Info|MKVInfo", NameOf(MediainfoMKV))
-        ret.Add("Apps|Media Info|MediaInfo File", NameOf(MediaInfoShowMedia))
-        ret.Add("Apps|Media Info|MediaInfo Folder", NameOf(ShowMediaInfoFolderViewDialog))
-        ret.Add("Apps|Media Info|Ingest HDR", NameOf(SaveMKVHDR))
+        ret.Add("Apps|Media Info|mkvinfo", NameOf(g.DefaultCommands.ShowMkvInfo))
+        ret.Add("Apps|Media Info|MediaInfo File", NameOf(g.DefaultCommands.ShowMediaInfo))
+        ret.Add("Apps|Media Info|MediaInfo Folder", NameOf(g.DefaultCommands.ShowMediaInfoFolderViewDialog))
+        ret.Add("Apps|Media Info|Ingest HDR", NameOf(g.DefaultCommands.SaveMKVHDR))
         ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|DGIndex|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
         ret.Add("Apps|Players|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpv.net"})
         ret.Add("Apps|Players|MPC-BE", NameOf(g.DefaultCommands.StartTool), {"MPC-BE"})
         ret.Add("Apps|Players|MPC-HC", NameOf(g.DefaultCommands.StartTool), {"MPC-HC"})
-        ret.Add("Apps|Thumbnails|MTN Thumbnailer", NameOf(SaveMTN))
-        ret.Add("Apps|Thumbnails|StaxRip Thumbnailer", NameOf(ShowBatchGenerateThumbnailsDialog))
-        ret.Add("Apps|Animation|Animated GIF", NameOf(SaveGif))
-        ret.Add("Apps|Animation|Animated PNG", NameOf(SavePNG))
+        ret.Add("Apps|Thumbnails|MTN Thumbnailer", NameOf(g.DefaultCommands.SaveMTN))
+        ret.Add("Apps|Thumbnails|StaxRip Thumbnailer", NameOf(g.DefaultCommands.ShowBatchGenerateThumbnailsDialog))
+        ret.Add("Apps|Animation|Animated GIF", NameOf(g.DefaultCommands.SaveGIF))
+        ret.Add("Apps|Animation|Animated PNG", NameOf(g.DefaultCommands.SavePNG))
         ret.Add("Apps|Subtitles|Subtitle Edit", NameOf(g.DefaultCommands.StartTool), {"Subtitle Edit"})
         ret.Add("Apps|Subtitles|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
         ret.Add("Apps|Subtitles|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
@@ -4398,7 +4399,7 @@ Public Class MainForm
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
 
-        ret.Add("Help|Docs", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Lightbulb, {"http://staxrip.readthedocs.io"})
+        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Help, {"http://staxrip.readthedocs.io"})
         ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Globe, {"https://github.com/staxrip/staxrip"})
         ret.Add("Help|Apps", NameOf(DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
         ret.Add("Help|Check for Updates", NameOf(g.DefaultCommands.CheckForUpdate))
@@ -4736,8 +4737,7 @@ Public Class MainForm
         FiltersListView.RebuildMenu()
     End Sub
 
-    'removed 2020 from defaults
-    <Command("Shows LAV Filters video decoder configuration")>
+    <Command("This functionality was deprecated in 2020 and might get removed any time. Shows LAV Filters video decoder configuration")>
     Private Sub ShowLAVFiltersConfigDialog()
         Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.LAVVideoDecoder.ToString + "\InprocServer32", Nothing)
 
@@ -4792,12 +4792,12 @@ Public Class MainForm
         p.NoDialogs = hide
     End Sub
 
-    <Command("Puts PC in standby mode.")>
+    <Command("Standby PC.")>
     Private Sub Standby()
         g.ShutdownPC(ShutdownMode.Standby)
     End Sub
 
-    <Command("Shuts PC down.")>
+    <Command("Shut down PC.")>
     Private Sub Shutdown()
         g.ShutdownPC(ShutdownMode.Shutdown)
     End Sub
@@ -5162,40 +5162,18 @@ Public Class MainForm
         tbAudioFile1_DoubleClick()
     End Sub
 
-    <Command("Shows a dialog allowing to reset various settings.")>
-    Sub ResetSettings()
-        Dim sb As New SelectionBox(Of String)
-
-        sb.Title = "Reset Settings"
-        sb.Text = "Please select a setting to reset."
-
-        Dim appSettings As New ApplicationSettings
-        appSettings.Init()
-
-        For Each i In appSettings.Versions.Keys
-            sb.AddItem(i)
-        Next
-
-        sb.Items.Sort()
-
-        If sb.Show = DialogResult.OK Then
-            s.Versions(sb.SelectedValue) = 0
-            MsgInfo("Will be reseted on next startup.")
-        End If
-    End Sub
-
     <Command("Dialog to manage audio profiles.")>
-    Sub ShowAudioProfilesDialog(<DispName("Track Number")> number As Integer)
-        Dim f As ProfilesForm
+    Sub ShowAudioProfilesDialog(<DispName("Track Number (0 or 1)")> number As Integer)
+        Dim form As ProfilesForm
 
         If number = 0 Then
-            f = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile0, AddressOf GetAudioProfile0, AddressOf AudioProfile.GetDefaults)
+            form = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile0, AddressOf GetAudioProfile0, AddressOf AudioProfile.GetDefaults)
         Else
-            f = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile1, AddressOf GetAudioProfile1, AddressOf AudioProfile.GetDefaults)
+            form = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile1, AddressOf GetAudioProfile1, AddressOf AudioProfile.GetDefaults)
         End If
 
-        f.ShowDialog()
-        f.Dispose()
+        form.ShowDialog()
+        form.Dispose()
 
         UpdateAudioMenu()
         PopulateProfileMenu(DynamicMenuItemID.Audio1Profiles)
@@ -5575,491 +5553,6 @@ Public Class MainForm
         SourceFileMenu.Items.Add("-")
         SourceFileMenu.Add("Copy", Sub() tbSourceFile.Copy(), tbSourceFile.Text <> "", "Copies the selected text to the clipboard.").SetImage(Symbol.Copy)
         SourceFileMenu.Add("Paste", Sub() tbSourceFile.Paste(), Clipboard.GetText.Trim <> "", "Copies the full source file path to the clipboard.").SetImage(Symbol.Paste)
-    End Sub
-
-    <Command("View the Metadata of any Selected File")>
-    Private Sub MediaInfoShowMedia()
-        Using fd As New OpenFileDialog
-            fd.Title = "Select files"
-            fd.Multiselect = False
-            If fd.ShowDialog = DialogResult.OK Then
-                g.DefaultCommands.ShowMediaInfo(fd.FileName)
-            End If
-        End Using
-    End Sub
-
-    <Command("Shows the Metadata Information for MKV file including HDR10 data.")>
-    Sub MediainfoMKV()
-        Using fd As New OpenFileDialog
-            fd.Title = "Select file"
-            fd.Filter = "mkv|*.mkv"
-            fd.SetFilter(FileTypes.Video)
-            fd.Multiselect = False
-
-            If fd.ShowDialog = DialogResult.OK Then
-                For Each i In fd.FileNames
-                    Try
-                        MKVInfo.MetadataInfo(i, Nothing)
-                    Catch ex As Exception
-                        g.ShowException(ex)
-                    End Try
-                Next
-            End If
-        End Using
-    End Sub
-
-    <Command("Adds the Remaining HDR10 Metadata to MKV file.")>
-    Sub SaveMKVHDR()
-        Using fd As New OpenFileDialog
-            fd.Title = "Select file"
-            fd.SetFilter(FileTypes.Video)
-            fd.Multiselect = False
-            fd.Filter = "mkv|*.mkv"
-
-            If fd.ShowDialog = DialogResult.OK Then
-                For Each i In fd.FileNames
-                    Try
-                        MKVInfo.MetadataHDR(i, Nothing)
-                    Catch ex As Exception
-                        g.ShowException(ex)
-                    End Try
-                Next
-            End If
-        End Using
-    End Sub
-
-    <Command("Generates a Short Gif Based on Input data.")>
-    Sub SaveGif()
-        Using fd As New OpenFileDialog
-            fd.Title = "Select files"
-            fd.Multiselect = True
-            If fd.ShowDialog = DialogResult.OK Then
-                Using f As New SimpleSettingsForm("Gif Options")
-                    f.ScaleClientSize(27, 18)
-
-                    Dim ui = f.SimpleUI
-                    Dim page = ui.CreateFlowPage("main page")
-                    ui.Store = s
-                    page.SuspendLayout()
-
-                    Dim paletteGen = ui.AddMenu(Of String)
-                    Dim compression = ui.AddMenu(Of String)
-                    Dim paletteUse = ui.AddMenu(Of String)
-
-                    Dim time = ui.AddNum()
-                    time.Text = "Starting Time:"
-                    time.Config = {1.0, 3600.0, 0.2, 1}
-                    time.Help = "The Time Position Where the Animation Should start at in Seconds"
-                    time.NumEdit.Value = s.Storage.GetDouble("GifTime", 15.0)
-                    time.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("GifTime", value)
-
-                    Dim length = ui.AddNum()
-                    length.Text = "Length:"
-                    length.Config = {1.0, 9.0, 0.2, 1}
-                    length.Help = "The Length of the Animation in Seconds"
-                    length.NumEdit.Value = s.Storage.GetDouble("GifLength", 4.2)
-                    length.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("GifLength", value)
-
-                    Dim frameRate = ui.AddNum()
-                    frameRate.Text = "Framerate:"
-                    frameRate.Config = {15, 60}
-                    frameRate.NumEdit.Value = s.Storage.GetInt("GifFrameRate", 15)
-                    frameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifFrameRate", CInt(value))
-
-                    Dim scale = ui.AddNum()
-                    scale.Text = "Scale:"
-                    scale.Config = {240, 2160}
-                    scale.NumEdit.Value = s.Storage.GetInt("GifScale", 480)
-                    scale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifScale", CInt(value))
-
-                    paletteGen.Text = "Statistics Mode:"
-                    paletteGen.Add("Full", "full")
-                    paletteGen.Add("Difference", "diff")
-                    paletteGen.Button.Value = s.Storage.GetString("PaletteGen", "diff")
-                    paletteGen.Button.SaveAction = Sub(value) s.Storage.SetString("PaletteGen", value)
-
-                    paletteUse.Text = "Diff Mode:"
-                    paletteUse.Add("Rectangle", "rectangle")
-                    paletteUse.Add("None", "none")
-                    paletteUse.Button.Value = s.Storage.GetString("PaletteUse", "rectangle")
-                    paletteUse.Button.SaveAction = Sub(value) s.Storage.SetString("PaletteUse", value)
-
-                    compression.Text = "Dither:"
-                    compression.Add("Bayer Scale", "dither=bayer:bayer_scale=5")
-                    compression.Add("Heckbert", "dither=heckbert")
-                    compression.Add("Floyd Steinberg", "dither=floyd_steinberg")
-                    compression.Add("Sierra 2", "dither=sierra2")
-                    compression.Add("Sierra 2_4a", "dither=sierra2_4a")
-                    compression.Add("None", "dither=none")
-                    compression.Button.Value = s.Storage.GetString("GifDither", "dither=floyd_steinberg")
-                    compression.Button.SaveAction = Sub(value) s.Storage.SetString("GifDither", value)
-
-                    Dim output = ui.AddBool()
-                    output.Text = "Output Path"
-                    output.Checked = s.Storage.GetBool("GifOutput", False)
-                    output.SaveAction = Sub(value) s.Storage.SetBool("GifOutput", value)
-
-                    Dim customDirectory = ui.AddTextMenu() 'Custom Output Folder
-                    customDirectory.Label.Visible = False
-                    customDirectory.Edit.Text = s.Storage.GetString("GifDirectory", p.DefaultTargetFolder)
-                    customDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("GifDirectory", value)
-                    customDirectory.AddMenu("Browse Folder...", Function() g.BrowseFolder(p.DefaultTargetFolder))
-
-                    AddHandler output.CheckStateChanged, Sub() customDirectory.Visible = output.Checked = True
-
-                    customDirectory.Visible = output.Checked = True
-
-                    page.ResumeLayout()
-
-                    If f.ShowDialog() = DialogResult.OK Then
-                        ui.Save()
-
-                        For Each i In fd.FileNames
-                            Try
-                                Animation.GIF(i, Nothing)
-                            Catch ex As Exception
-                                g.ShowException(ex)
-                            End Try
-                        Next
-                    End If
-                End Using
-            End If
-        End Using
-    End Sub
-
-    <Command("Generate Thumbnails Using MTN Engine")>
-    Sub SaveMTN()
-        Using fd As New OpenFileDialog
-            fd.Title = "Select files"
-            fd.Multiselect = True
-
-            If fd.ShowDialog = DialogResult.OK Then
-                Using f As New SimpleSettingsForm("Thumbnail Options")
-                    f.ScaleClientSize(27, 15)
-
-                    Dim ui = f.SimpleUI
-                    Dim page = ui.CreateFlowPage("main page")
-                    ui.Store = s
-                    page.SuspendLayout()
-
-                    Dim Column = ui.AddNum()
-                    Column.Text = "Columns:"
-                    Column.Config = {1, 12}
-                    Column.NumEdit.Value = s.Storage.GetInt("MTNColumn", 4)
-                    Column.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNColumn", CInt(value))
-
-                    Dim Row = ui.AddNum()
-                    Row.Text = "Rows:"
-                    Row.Config = {1, 12}
-                    Row.NumEdit.Value = s.Storage.GetInt("MTNRow", 6)
-                    Row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNRow", CInt(value))
-
-                    Dim Quality = ui.AddNum()
-                    Quality.Text = "Quality:"
-                    Quality.Config = {25, 100}
-                    Quality.NumEdit.Value = s.Storage.GetInt("MTNQuality", 95)
-                    Quality.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNQuality", CInt(value))
-
-                    Dim Height = ui.AddNum()
-                    Height.Text = "Height:"
-                    Height.Config = {150, 500}
-                    Height.NumEdit.Value = s.Storage.GetInt("MTNHeight", 250)
-                    Height.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNHeight", CInt(value))
-
-                    Dim Width = ui.AddNum()
-                    Width.Text = "Width:"
-                    Width.Config = {960, 2000}
-                    Width.NumEdit.Value = s.Storage.GetInt("MTNWidth", 1920)
-                    Width.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNWidth", CInt(value))
-
-                    Dim Depth = ui.AddNum()
-                    Depth.Text = "Depth:"
-                    Depth.Config = {4, 12}
-                    Depth.NumEdit.Value = s.Storage.GetInt("MTNDepth", 12)
-                    Depth.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNDepth", CInt(value))
-
-                    Dim Output = ui.AddBool()
-                    Output.Text = "Custom Output"
-                    Output.Checked = s.Storage.GetBool("MTNOutput", False)
-                    Output.SaveAction = Sub(value) s.Storage.SetBool("MTNOutput", value)
-
-
-                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
-                    CustomDirectory.Label.Visible = False
-                    CustomDirectory.Edit.Text = s.Storage.GetString("MTNDirectory", p.DefaultTargetFolder)
-                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("MTNDirectory", value)
-                    CustomDirectory.AddMenu("Browse Folder...", Function() g.BrowseFolder(p.DefaultTargetFolder))
-
-                    AddHandler Output.CheckStateChanged, Sub()
-                                                             CustomDirectory.Visible = Output.Checked = True
-                                                         End Sub
-
-                    CustomDirectory.Visible = Output.Checked = True
-
-                    page.ResumeLayout()
-
-                    If f.ShowDialog() = DialogResult.OK Then
-                        ui.Save()
-
-                        For Each i In fd.FileNames
-                            Try
-                                MTN.Thumbnails(i, Nothing)
-                            Catch ex As Exception
-                                g.ShowException(ex)
-                            End Try
-                        Next
-
-                    End If
-                End Using
-            End If
-        End Using
-    End Sub
-
-    <Command("Creates Very High Quality Animations in the Form of PNG.")>
-    Sub SavePNG()
-        Using fd As New OpenFileDialog
-            fd.Title = "Select files"
-            fd.Multiselect = True
-
-            If fd.ShowDialog = DialogResult.OK Then
-                Using f As New SimpleSettingsForm("PNG Options")
-                    f.ScaleClientSize(27, 15)
-
-                    Dim ui = f.SimpleUI
-                    Dim page = ui.CreateFlowPage("main page")
-                    ui.Store = s
-                    page.SuspendLayout()
-
-                    Dim Opt = ui.AddMenu(Of String)
-
-                    Dim PNGTime = ui.AddNum()
-                    PNGTime.Text = "Starting Time:"
-                    PNGTime.Config = {1.0, 3600.0, 0.2, 1}
-                    PNGTime.Help = "The Time Position Where the Animation Should start at in Seconds"
-                    PNGTime.NumEdit.Value = s.Storage.GetDouble("PNGTime", 15.0)
-                    PNGTime.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("PNGTime", value)
-
-                    Dim PNGLength = ui.AddNum()
-                    PNGLength.Text = "Length:"
-                    PNGLength.Config = {1.0, 9.0, 0.2, 1}
-                    PNGLength.Help = "The Length of the Animation in Seconds"
-                    PNGLength.NumEdit.Value = s.Storage.GetDouble("PNGLength", 3.8)
-                    PNGLength.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("PNGLength", value)
-
-                    Dim PNGFrameRate = ui.AddNum()
-                    PNGFrameRate.Text = "FrameRate:"
-                    PNGFrameRate.Config = {15, 60}
-                    PNGFrameRate.NumEdit.Value = s.Storage.GetInt("PNGFrameRate", 15)
-                    PNGFrameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGFrameRate", CInt(value))
-
-                    Dim PNGScale = ui.AddNum()
-                    PNGScale.Text = "Scale:"
-                    PNGScale.Config = {240, 2160}
-                    PNGScale.Help = "The Size to Scale the Resolution to"
-                    PNGScale.NumEdit.Value = s.Storage.GetInt("PNGScale", 480)
-                    PNGScale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGScale", CInt(value))
-
-                    Dim OptSettings = ui.AddBool()
-                    OptSettings.Text = "Enable Opt"
-                    OptSettings.Help = "Enable or Disable the Usage of PNG Opt"
-                    OptSettings.Checked = s.Storage.GetBool("OptSetting", False)
-                    OptSettings.SaveAction = Sub(value) s.Storage.SetBool("OptSetting", value)
-                    AddHandler OptSettings.CheckStateChanged, Sub()
-                                                                  Opt.Visible = OptSettings.Checked = True
-                                                              End Sub
-
-                    Opt.Text = "Opt Settings:"
-                    Opt.Add("Zlib", "-z0")
-                    Opt.Add("7zip", "-z1")
-                    Opt.Add("Zopfli", "-z2")
-                    Opt.Help = "Compression and Optimization Method Used" + BR + "ZLib = Fastest" + BR + "7Zip = Balance" + BR + "Zopfli = Slowest"
-                    Opt.Button.Value = s.Storage.GetString("PNGopt", "-z1")
-                    Opt.Button.SaveAction = Sub(value) s.Storage.SetString("PNGopt", value)
-
-                    Opt.Visible = OptSettings.Checked = True
-
-                    Dim Output = ui.AddBool()
-                    Output.Text = "Output Path"
-                    Output.Checked = s.Storage.GetBool("PNGOutput", False)
-                    Output.SaveAction = Sub(value) s.Storage.SetBool("PNGOutput", value)
-
-
-                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
-                    CustomDirectory.Label.Visible = False
-                    CustomDirectory.Edit.Text = s.Storage.GetString("PNGDirectory", p.DefaultTargetFolder)
-                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("PNGDirectory", value)
-                    CustomDirectory.AddMenu("Browse Folder...", Function() g.BrowseFolder(p.DefaultTargetFolder))
-
-                    AddHandler Output.CheckStateChanged, Sub()
-                                                             CustomDirectory.Visible = Output.Checked = True
-                                                         End Sub
-
-                    CustomDirectory.Visible = Output.Checked = True
-
-                    page.ResumeLayout()
-
-                    If f.ShowDialog() = DialogResult.OK Then
-                        ui.Save()
-
-                        For Each i In fd.FileNames
-                            Try
-                                Animation.aPNG(i, Nothing)
-                            Catch ex As Exception
-                                g.ShowException(ex)
-                            End Try
-                        Next
-                    End If
-                End Using
-            End If
-        End Using
-    End Sub
-
-    <Command("Shows a dialog to generate thumbnails.")>
-    Sub ShowBatchGenerateThumbnailsDialog()
-        Using fd As New OpenFileDialog
-            fd.Title = "Select files"
-            fd.SetFilter(FileTypes.Video)
-            fd.Multiselect = True
-
-            If fd.ShowDialog = DialogResult.OK Then
-                Using form As New SimpleSettingsForm("Thumbnail Options")
-                    form.ScaleClientSize(27, 20)
-
-                    Dim ui = form.SimpleUI
-                    Dim page = ui.CreateFlowPage("main page")
-                    ui.Store = s
-                    page.SuspendLayout()
-
-                    Dim row As SimpleUI.NumBlock
-                    Dim interval As SimpleUI.NumBlock
-
-                    Dim mode = ui.AddMenu(Of Integer)
-                    mode.Text = "Row Count Mode"
-                    mode.Expandet = True
-                    mode.Add("Manual", 0)
-                    mode.Add("Row count is calculated based on time interval", 1)
-                    mode.Button.Value = s.Storage.GetInt("Thumbnail Mode")
-                    mode.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Mode", value)
-
-                    AddHandler mode.Button.ValueChangedUser, Sub()
-                                                                 row.Visible = mode.Button.Value = 0
-                                                                 interval.Visible = mode.Button.Value = 1
-                                                             End Sub
-                    Dim m = ui.AddMenu(Of Integer)
-                    m.Text = "Timestamp Position"
-                    m.Add("Left Top", 0)
-                    m.Add("Right Top", 1)
-                    m.Add("Left Bottom", 2)
-                    m.Add("Right Bottom", 3)
-                    m.Button.Value = s.Storage.GetInt("Thumbnail Position", 3)
-                    m.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Position", value)
-
-                    Dim k = ui.AddMenu(Of String)
-                    k.Text = "Picture Format:"
-                    k.Add("JPG", "jpg")
-                    k.Add("PNG", "png")
-                    k.Add("TIFF", "tiff")
-                    k.Add("BMP", "bmp")
-                    k.Button.Value = s.Storage.GetString("Picture Format", "png")
-                    k.Button.SaveAction = Sub(value) s.Storage.SetString("Picture Format", CStr(value))
-
-                    Dim cp = ui.AddColorPicker()
-                    cp.Text = "Background Color"
-                    cp.Field = NameOf(s.ThumbnailBackgroundColor)
-
-                    Dim nb = ui.AddNum()
-                    nb.Text = "Thumbnail Width:"
-                    nb.Config = {200, 4000, 10}
-                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 500)
-                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Width", CInt(value))
-
-                    nb = ui.AddNum()
-                    nb.Text = "Column Count:"
-                    nb.Config = {1, 20}
-                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Columns", 4)
-                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Columns", CInt(value))
-
-                    row = ui.AddNum()
-                    row.Text = "Row Count:"
-                    row.Config = {1, 20}
-                    row.NumEdit.Value = s.Storage.GetInt("Thumbnail Rows", 6)
-                    row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Rows", CInt(value))
-
-                    interval = ui.AddNum()
-                    interval.Text = "Interval (seconds):"
-                    interval.NumEdit.Value = s.Storage.GetInt("Thumbnail Interval")
-                    interval.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Interval", CInt(value))
-
-                    row.Visible = mode.Button.Value = 0
-                    interval.Visible = mode.Button.Value = 1
-
-                    Dim margin = ui.AddNum()
-                    margin.Text = "Margin:"
-                    margin.Config = {0, 100}
-                    margin.NumEdit.Value = s.Storage.GetInt("Thumbnail Margin", 5)
-                    margin.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Margin", CInt(value))
-
-                    Dim cq = ui.AddNum()
-                    cq.Text = "Compression Quality:"
-                    cq.Config = {1, 100}
-                    cq.NumEdit.Value = s.Storage.GetInt("Thumbnail Compression Quality", 95)
-                    cq.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Compression Quality", CInt(value))
-                    AddHandler k.Button.ValueChangedUser, Sub() cq.Visible = k.Button.Value = "jpg"
-
-                    Dim logo = ui.AddBool()
-                    logo.Text = "Disable StaxRip Logo"
-                    logo.Help = "Enable or disable the StaxRip Watermark"
-                    logo.Checked = s.Storage.GetBool("Logo", False)
-                    logo.SaveAction = Sub(value) s.Storage.SetBool("Logo", CBool(value))
-
-                    Dim output = ui.AddBool()
-                    output.Text = "Output Path"
-                    output.Checked = s.Storage.GetBool("StaxRipOutput", False)
-                    output.SaveAction = Sub(value) s.Storage.SetBool("StaxRipOutput", value)
-
-                    Dim customDir = ui.AddTextButton()
-                    customDir.Visible = output.Checked
-                    customDir.Expandet = True
-                    customDir.Label.Visible = False
-                    customDir.Edit.Text = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
-                    customDir.Edit.SaveAction = Sub(value) s.Storage.SetString("StaxRipDirectory", value)
-                    customDir.BrowseFolder()
-
-                    AddHandler output.CheckStateChanged, Sub() customDir.Visible = output.Checked = True
-
-                    page.ResumeLayout()
-
-                    If form.ShowDialog() = DialogResult.OK Then
-                        ui.Save()
-
-                        For Each i In fd.FileNames
-                            Try
-                                Thumbnails.SaveThumbnails(i, Nothing)
-                            Catch ex As Exception
-                                g.ShowException(ex)
-                            End Try
-                        Next
-
-                        MsgInfo("Thumbnails have been created.")
-                    End If
-                End Using
-            End If
-        End Using
-    End Sub
-
-    <Command("Presents MediaInfo of all files in a folder in a list view.")>
-    Sub ShowMediaInfoFolderViewDialog()
-        Using dialog As New FolderBrowserDialog
-            dialog.ShowNewFolderButton = False
-            dialog.SetSelectedPath(s.Storage.GetString("MediaInfo Folder View folder"))
-
-            If dialog.ShowDialog = DialogResult.OK Then
-                s.Storage.SetString("MediaInfo Folder View folder", dialog.SelectedPath)
-
-                Dim code = $". '{Package.GetMediaInfo.Path}'; Get-ChildItem '{dialog.SelectedPath.FixDir}' | Get-MediaInfo | Out-GridView"
-                g.StartProcess("powershell.exe", "-nologo -noexit -command " + code.Escape)
-            End If
-        End Using
     End Sub
 
     Protected Overrides Sub OnDragEnter(e As DragEventArgs)

@@ -2,26 +2,32 @@
 Command Line Interface
 ======================
 
-Switches are processed in the order they appear in the command line.
+.. note:: Switches are processed in the order they appear in the command line.
 
-The command line interface, the customizable main menu and Event Command features are built with a shared command system.
-
-There is a special mode where only the MediaInfo window is shown using -mediainfo , this is useful for File Explorer integration with an app like Open++.
+The command line interface, the customizable main menu and the Event Command feature are built on top of a common command system.
 
 
 Examples
 --------
 
-StaxRip C:\\Movie\\project.srip
+.. code::
 
-StaxRip C:\\Movie\\VTS_01_1.VOB C:\\Movie 2\\VTS_01_2.VOB
+    StaxRip C:\Movie\project.srip
+    
+    StaxRip C:\Movie\VTS_01_1.VOB C:\Movie 2\VTS_01_2.VOB
+    
+    StaxRip -LoadTemplate:DVB C:\Movie\capture.mpg -StartEncoding -Standby
+    
+    StaxRip -ShowMessageBox:"title ...","text ...",info
 
-StaxRip -LoadTemplate:DVB C:\\Movie\\capture.mpg -StartEncoding -Standby
 
-StaxRip -ShowMessageBox:"main text...","text ...",info
+Rules
+-----
+
+Strings don't have to be enclosed in quotes unless they contain spaces.
 
 
-Switches
+Commands
 --------
 
 .. include:: generated/switches.rst

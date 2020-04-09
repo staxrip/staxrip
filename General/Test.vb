@@ -7,7 +7,7 @@ Public Class ConsolAppTester
     Property Package As Package
     Property CodeFile As String
 
-    Public Function Test() As String
+    Function Test() As String
         Dim log = BR
         log += "ignored switches" + BR
         log += "----------------" + BR

@@ -294,7 +294,6 @@ Public Class AppsForm
             mi.Height = CInt(FontHeight * 1.5)
         Next
 
-        Text = $"{Package.Items.Count} tools"
         SearchTextBox_TextChanged()
 
         tv.Scrollable = True

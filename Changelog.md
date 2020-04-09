@@ -2,7 +2,6 @@
 2.1.0.6 Beta (not yet available)
 ============
 
-
 new
 ---
 
@@ -10,19 +9,21 @@ new
 - Main Menu > Tools > Advanced > Command Prompt and PowerShell are shown via Windows Terminal
 - Execute Command Line in video encoder dialogs is shown via Windows Terminal
 - in the Apps dialog the tools can be shown using PowerShell Out-GridView
-- the [documentation](https://staxrip.readthedocs.io) has been improved
 - one time tip messages added to inform about otherwise unknown functionality
+- a Shell Execute flag was added to the command ExecuteCommandLine
+- the [Command Line Interface doc page](https://staxrip.readthedocs.io/cli.html) was significantly improved
 
 
 fix
 ---
 
 - CSV file creation possibly incompatible with Excel in certain locales
+- the command ExecuteBatchScript was marked as deprecated,
+  any feature that relies on bat files will likely be deprecated
 
 
 2.1.0.5 Beta
 ============
-
 
 new
 ---
@@ -44,7 +45,6 @@ update
 - L-Smash-Works 2020-03-22 HolyWu
 - ffms2 89bd1e1 StvG
 
-
 fix
 ---
 
@@ -52,7 +52,8 @@ fix
   now it should work even without being installed, please try and give feedback
 
 
-### 2.1.0.3 Beta
+2.1.0.3 Beta
+------------
 
 - new: check added that blocks source files with too long path or filename. A setting
        that allows to change the limit exists and there is also a explanation as tooltip:

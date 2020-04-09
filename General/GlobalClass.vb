@@ -1,7 +1,9 @@
 ﻿
+Imports System.Collections.ObjectModel
 Imports System.Collections.Specialized
 Imports System.Drawing.Imaging
 Imports System.Globalization
+Imports System.Management.Automation
 Imports System.Runtime.ExceptionServices
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -28,34 +30,64 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub InvokePowerShellCode(code As String)
-        InvokePowerShellCode(code, Nothing, Nothing)
-    End Sub
+    Function InvokePowerShellCode(code As String) As Collection(Of PSObject)
+        Return InvokePowerShellCode(code, Nothing, Nothing)
+    End Function
 
-    Sub InvokePowerShellCode(code As String, varName As String, varValue As Object)
+    Function InvokePowerShellCode(code As String, varName As String, varValue As Object) As Collection(Of PSObject)
         Try
-            PowerShell.Invoke(code, varName, varValue)
+            Return PowerShell.Invoke(code, varName, varValue)
         Catch ex As Exception
-            g.ShowException(ex)
+            ShowException(ex)
+        End Try
+    End Function
+
+    Sub RunCodeInTerminal(code As String)
+        Dim base64String = Convert.ToBase64String(Encoding.Unicode.GetBytes(code)) 'UTF16LE
+
+        Try
+            RunCommandInTerminal("wt.exe", $"powershell.exe -nologo -noexit -EncodedCommand ""{base64String}""")
+        Catch
+            RunCommandInTerminal("powershell.exe", $"-nologo -noexit -EncodedCommand ""{base64String}""")
         End Try
     End Sub
 
-    Sub ShowTerminal(fileName As String, Optional arguments As String = Nothing)
-        Documentation.ShowTip("Apps are added to the path environment variable and macros are added as environment variables.")
+    Sub RunCommandInTerminal(fileName As String, Optional arguments As String = Nothing)
+        Documentation.ShowTip("Console apps are added to the path environment variable and macros are added as environment variables.")
 
         Using proc As New Process
             proc.StartInfo.UseShellExecute = False
             proc.StartInfo.FileName = fileName
             proc.StartInfo.Arguments = arguments
             proc.StartInfo.WorkingDirectory = Folder.Desktop
-            g.SetEnvironmentVariables(proc.StartInfo.EnvironmentVariables)
+            SetEnvironmentVariables(proc.StartInfo.EnvironmentVariables)
             proc.Start()
         End Using
     End Sub
 
+    Sub SetEnvironmentVariables(dic As StringDictionary)
+        For Each mac In Macro.GetMacros(False, False)
+            dic(mac.Name.Trim("%"c)) = Macro.Expand(mac.Name)
+        Next
+
+        Dim path = Environment.GetEnvironmentVariable("path")
+
+        For Each pack In Package.Items.Values
+            If Not pack.HelpSwitch Is Nothing AndAlso pack.Path.FileExists Then
+                path = pack.Directory + ";" + path
+            End If
+        Next
+
+        dic("path") = path
+    End Sub
+
     Sub ProcessJobs()
         Dim jobs = Job.ActiveJobs
-        If jobs.Count = 0 Then Exit Sub
+
+        If jobs.Count = 0 Then
+            Exit Sub
+        End If
+
         g.IsProcessing = True
         Dim jobPath = jobs(0).Key
 
@@ -1283,21 +1315,15 @@ Public Class GlobalClass
 
                 Select Case td.Show()
                     Case "avs2pipemod info"
-                        g.DefaultCommands.ExecutePowerShellScript(
-                            $"""`n{Package.avs2pipemod.Name} {Package.avs2pipemod.Version}""; & '{Package.avs2pipemod.Path}' -info '{script.Path}'", True)
+                        g.RunCodeInTerminal($"""`n{Package.avs2pipemod.Name} {Package.avs2pipemod.Version}""; & '{Package.avs2pipemod.Path}' -info '{script.Path}'")
                     Case "avsmeter benchmark"
-                        g.DefaultCommands.ExecutePowerShellScript(
-                            $"& '{Package.AVSMeter.Path}' '{script.Path}'", True)
+                        g.RunCodeInTerminal($"& '{Package.AVSMeter.Path}' '{script.Path}'")
                     Case "avsmeter info"
-                        g.DefaultCommands.ExecutePowerShellScript(
-                            $"& '{Package.AVSMeter.Path}' -info '{script.Path}';""""", True)
-                    Case "avsmeter"
-                        g.DefaultCommands.ExecutePowerShellScript(
-                            $"& '{Package.AVSMeter.Path}' '{script.Path}'", True)
+                        g.RunCodeInTerminal($"& '{Package.AVSMeter.Path}' -info '{script.Path}';""""")
                     Case "Info()"
                         Dim infoScript = New VideoScript
                         infoScript.AddFilter(New VideoFilter($"Import(""{script.Path}"")"))
-                        Dim infoCode = $"Info(size={(script.GetInfo().Height * 0.07).ToInvariantString()})"
+                        Dim infoCode = $"Info(size={(script.GetInfo().Height * 0.05).ToInvariantString()})"
                         infoScript.AddFilter(New VideoFilter(infoCode))
                         infoScript.Path = p.TempDir + p.TargetFile.Base + $"_info." + script.FileType
 
@@ -1310,26 +1336,7 @@ Public Class GlobalClass
                 End Select
             End Using
         Else
-            g.DefaultCommands.ExecutePowerShellScript(
-                $"""`n{Package.vspipe.Name} {Package.vspipe.Version}`n""; & '{Package.vspipe.Path}' --info '{script.Path}' -;""""", True)
+            g.RunCodeInTerminal($"""`n{Package.vspipe.Name} {Package.vspipe.Version}`n""; & '{Package.vspipe.Path}' --info '{script.Path}' -;""""")
         End If
-    End Sub
-
-    Public Sub SetEnvironmentVariables(dic As StringDictionary)
-        For Each mac In Macro.GetMacros(False, False)
-            dic(mac.Name.Trim("%"c)) = Macro.Expand(mac.Name)
-        Next
-
-        Dim path = Environment.GetEnvironmentVariable("path")
-
-        For Each pack In Package.Items.Values
-            If Not pack.Filename.Ext = "exe" OrElse Not pack.Path.FileExists Then
-                Continue For
-            End If
-
-            path = pack.Directory + ";" + path
-        Next
-
-        dic("path") = path
     End Sub
 End Class

@@ -135,7 +135,7 @@ Public Class Documentation
     End Sub
 
     Shared Sub GenerateCliFile()
-        Dim switches = ""
+        Dim sb As New StringBuilder
 
         Dim commands As New List(Of Command)(g.MainForm.CommandManager.Commands.Values)
         commands.Sort()
@@ -151,33 +151,70 @@ Public Class Documentation
             Next
 
             switch = switch.TrimEnd(",:".ToCharArray)
-            switches += switch + BR + "~".Multiply(switch.Length) + BR2
+            sb.Append(".. option:: " + switch + BR2)
+            sb.Append(command.Attribute.Description.IndentLines("    ") + BR2)
 
-            For Each param In params
-                Dim d = param.GetCustomAttribute(Of DescriptionAttribute)
+            If params.Length > 0 Then
+                sb.Append(".. list-table::" + BR)
+                sb.Append("    :widths: auto" + BR2)
 
-                If Not d Is Nothing Then
-                    switches += param.Name + ": " + param.GetCustomAttribute(Of DescriptionAttribute).Description + BR2
-                End If
-            Next
+                Dim hasDescription = False
 
-            Dim enumList As New List(Of String)
+                For Each param In params
+                    Dim descAttrib = param.GetCustomAttribute(Of DescriptionAttribute)
 
-            For Each param In params
-                If param.ParameterType.IsEnum Then
-                    enumList.Add(param.ParameterType.Name + ": " +
-                                 System.Enum.GetNames(param.ParameterType).Join(", "))
-                End If
-            Next
+                    If Not descAttrib Is Nothing AndAlso descAttrib.Description <> "" Then
+                        hasDescription = True
+                    End If
 
-            For Each en In enumList
-                switches += en + BR2
-            Next
+                    Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
 
-            switches += command.Attribute.Description + BR2 + BR
+                    If Not nameAttrib Is Nothing AndAlso
+                        Not nameAttrib.DisplayName.EqualIgnoreCase(param.Name) Then
+
+                        hasDescription = True
+                    End If
+                Next
+
+                For Each param In params
+                    sb.Append($"    * - {param.Name} <{param.ParameterType.Name.ToLower}>{BR}")
+
+                    If hasDescription OrElse param.ParameterType.IsEnum Then
+                        sb.Append($"      - ")
+
+                        Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
+                        Dim hasName = False
+
+                        If Not nameAttrib Is Nothing AndAlso
+                            Not nameAttrib.DisplayName.EqualIgnoreCase(param.Name) Then
+                            sb.Append(nameAttrib.DisplayName)
+                            hasName = True
+                        End If
+
+                        Dim descAttrib = param.GetCustomAttribute(Of DescriptionAttribute)
+
+                        If Not descAttrib Is Nothing Then
+                            If hasName Then
+                                sb.Append(": ")
+                            End If
+
+                            sb.Append(descAttrib.Description)
+                            descAttrib.Description.ThrowIfContainsNewLine
+                        End If
+
+                        If param.ParameterType.IsEnum Then
+                            sb.Append(" " + System.Enum.GetNames(param.ParameterType).Join(", "))
+                        End If
+
+                        sb.Append(BR)
+                    End If
+                Next
+
+                sb.Append(BR)
+            End If
         Next
 
-        switches.WriteFileUTF8(Folder.Startup + "..\docs\generated\switches.rst")
+        UpdateFile(Folder.Startup + "..\docs\generated\switches.rst", sb.ToString)
     End Sub
 
     Shared Sub UpdateFile(filepath As String, content As String)

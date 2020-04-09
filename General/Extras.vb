@@ -185,21 +185,6 @@ Class MTN
 End Class
 
 Public Class MKVInfo
-    Shared Sub MetadataInfo(inputFile As String, proj As Project)
-        If Not File.Exists(inputFile) Then
-            Exit Sub
-        End If
-
-        If proj Is Nothing Then
-            proj = New Project
-            proj.Init()
-            proj.SourceFile = inputFile
-        End If
-
-        g.DefaultCommands.ExecuteCommandLine(Package.mkvinfo.Path.Escape +
-            " " + inputFile.Escape + BR + "pause", False, False, True)
-    End Sub
-
     Shared Sub MetadataHDR(inputFile As String, proj As Project)
         If Not File.Exists(inputFile) Then
             Exit Sub

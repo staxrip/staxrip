@@ -59,6 +59,14 @@ MKV demuxing tool.
 https://mkvtoolnix.download/
 
 
+mkvinfo
+~~~~~~~
+
+MKV info tool.
+
+https://mkvtoolnix.download/
+
+
 mkvmerge
 ~~~~~~~~
 

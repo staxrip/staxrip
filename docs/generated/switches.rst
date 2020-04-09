@@ -1,512 +1,520 @@
--AddFilter:active,name,category,script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. option:: -AddFilter:active,name,category,script
 
-Adds a filter at the end of the script.
+    Adds a filter at the end of the script.
 
+.. list-table::
+    :widths: auto
 
--AddJob:showConfirmation,templateName
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    * - active <boolean>
+    * - name <string>
+    * - category <string>
+    * - script <string>
 
-templateName: Name of the template to be loaded after the job was added. Empty to load no template.
+.. option:: -AddJob:showConfirmation,templateName
 
-Adds a job to the job list.
+    Adds a job to the job list.
 
+.. list-table::
+    :widths: auto
 
--CheckForUpdate
-~~~~~~~~~~~~~~~
+    * - showConfirmation <boolean>
+      - Show Confirmation
+    * - templateName <string>
+      - Template Name: Name of the template to be loaded after the job was added. Empty to load no template.
 
-Checks if a update is available.
+.. option:: -CheckForUpdate
 
+    Checks if a update is available.
 
--ClearJobs
-~~~~~~~~~~
+.. option:: -ClearJobs
 
-Clears the job list.
+    Clears the job list.
 
+.. option:: -CopyToClipboard:value
 
--CopyToClipboard:value
-~~~~~~~~~~~~~~~~~~~~~~
+    Copies a string to the clipboard.
 
-value: Copies the text to the clipboard. The text may contain macros.
+.. list-table::
+    :widths: auto
 
-Copies a string to the clipboard.
+    * - value <string>
+      - Copies text to the clipboard. May contain macros.
 
+.. option:: -DeleteFiles:dir,filter
 
--DeleteFiles:dir,filter
-~~~~~~~~~~~~~~~~~~~~~~~
+    Deletes files in a given directory.
 
-dir: Directory in which to delete files.
+.. list-table::
+    :widths: auto
 
-filter: Example: '.txt .log'
+    * - dir <string>
+      - Directory: Directory in which to delete files.
+    * - filter <string>
+      - Example: '.txt .log'
 
-Deletes files in a given directory.
+.. option:: -DynamicMenuItem:id
 
+    Placeholder for dynamically updated menu items.
 
--DynamicMenuItem:id
-~~~~~~~~~~~~~~~~~~~
+.. list-table::
+    :widths: auto
 
-DynamicMenuItemID: Audio1Profiles, Audio2Profiles, EncoderProfiles, FilterSetupProfiles, MuxerProfiles, RecentProjects, TemplateProjects, HelpApplications, Scripts
+    * - id <dynamicmenuitemid>
+      -  Audio1Profiles, Audio2Profiles, EncoderProfiles, FilterSetupProfiles, MuxerProfiles, RecentProjects, TemplateProjects, HelpApplications, Scripts
 
-Placeholder for dynamically updated menu items.
+.. option:: -ExecuteBatchScript:batchScript
 
+    This functionality was deprecated in 2020 and might get removed any time. Saves a batch script as bat file and executes it. Macros are solved as well as passed in as environment variables.
 
--ExecuteBatchScript:batchScript,interpretOutput
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. list-table::
+    :widths: auto
 
-batchScript: Batch script code to be executed. Macros are solved as well as passed in as environment variables.
+    * - batchScript <string>
+      - Batch Script Code: Batch script code to be executed. Macros are solved as well as passed in as environment variables.
 
-interpretOutput: Interprets each output line as StaxRip command.
+.. option:: -ExecuteCommandLine:commandLine,waitForExit,showProcessWindow,useShellExecute
 
-Saves a batch script as bat file and executes it. Macros are solved as well as passed in as environment variables.
+    Executes a command line. If Shell Execute is disabled then macros are passed in as environment variables.
 
+.. list-table::
+    :widths: auto
 
--ExecuteCommandLine:commandLines,waitForExit,showProcessWindow,asBatch
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    * - commandLine <string>
+      - Command Line: The command line to be executed. Macros are solved.
+    * - waitForExit <boolean>
+      - Wait For Exit: Halt until the command line returns.
+    * - showProcessWindow <boolean>
+      - Show Process Window: Redirects the output of console apps to StaxRips process window. Disables Shell Execute.
+    * - useShellExecute <boolean>
+      - Shell Execute: Executes the command line using the shell. Available when the Show Process Window option is disabled.
 
-commandLines: One or more command lines to be executed or if batch mode is used content of the batch file. Macros are solved as well as passed in as environment variables.
+.. option:: -ExecutePowerShellScript:code,externalShell
 
-waitForExit: This will halt the main thread until the command line returns.
+    Executes PowerShell script code.
 
-showProcessWindow: Redirects the output of console apps to the process window.
+.. list-table::
+    :widths: auto
 
-asBatch: Alternative mode that creats a BAT file to execute.
+    * - code <string>
+      - Script Code: PowerShell script code to be executed.
+    * - externalShell <boolean>
+      - Use External Shell: Execute in StaxRip to automate StaxRip or use external shell.
 
-Executes command lines separated by a line break line by line. Macros are solved and passed as environment variables.
+.. option:: -ExecuteScriptFile:filepath
 
+    Executes a PowerShell PS1 script file.
 
--ExecutePowerShellScript:code,externalShell
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. list-table::
+    :widths: auto
 
-code: PowerShell script code to be executed.
+    * - filepath <string>
+      - File Path: Filepath to a PowerShell PS1 script file. May contain macros.
 
-externalShell: Execute in StaxRip to automate StaxRip or use external shell.
+.. option:: -Exit
 
-Executes PowerShell script code.
+    Exits StaxRip
 
+.. option:: -ImportVideoEncoderCommandLine:commandLine
 
--ExecuteScriptFile:filepath
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Changes video encoder settings.
 
-filepath: Filepath to a PowerShell script, the path may contain macros.
+.. list-table::
+    :widths: auto
 
-Executes a PowerShell script.
+    * - commandLine <string>
+      - Command Line
 
+.. option:: -LoadProfile:videoProfile,audioProfile1,audioProfile2
 
--Exit
-~~~~~
+    Loads a audio or video profile.
 
-Exits StaxRip
+.. list-table::
+    :widths: auto
 
+    * - videoProfile <string>
+      - Video
+    * - audioProfile1 <string>
+      - Audio 1
+    * - audioProfile2 <string>
+      - Audio 2
 
--ImportVideoEncoderCommandLine:commandLine
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. option:: -LoadSourceFile:path
 
-Changes the video encoders settings.
+    Loads a source file.
 
+.. list-table::
+    :widths: auto
 
--LoadProfile:videoProfile,audioProfile1,audioProfile2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    * - path <string>
+      - Source File Path
 
-Loads a audio or video profile.
+.. option:: -LoadTemplate:name
 
+    Loads a template.
 
--LoadSourceFile:path
-~~~~~~~~~~~~~~~~~~~~
+.. list-table::
+    :widths: auto
 
-Loads the source file.
+    * - name <string>
 
+.. option:: -MediainfoMKV
 
--LoadTemplate:name
-~~~~~~~~~~~~~~~~~~
+    This functionality was deprecated 2020 and might get removed at any time. Use ShowMkvInfo instead.
 
-Loads a template.
+.. option:: -MediaInfoShowMedia
 
+    This functionality was deprecated 2020 and might get removed at any time. Use ShowMediaInfoBrowse instead.
 
--MediainfoMKV
-~~~~~~~~~~~~~
+.. option:: -OpenHelpTopic:topic
 
-Shows the Metadata Information for MKV file including HDR10 data.
+    Opens a given help topic In the help browser.
 
+.. list-table::
+    :widths: auto
 
--MediaInfoShowMedia
-~~~~~~~~~~~~~~~~~~~
+    * - topic <string>
+      - Help Topic: Name Of the help topic To be opened.
 
-View the Metadata of any Selected File
+.. option:: -PlaySound:FilePath,Volume
 
+    Plays a mp3, wav Or wmv sound file.
 
--OpenHelpTopic:topic
-~~~~~~~~~~~~~~~~~~~~
+.. list-table::
+    :widths: auto
 
-topic: Name Of the help topic To be opened.
+    * - FilePath <string>
+      - Filepath to a mp3, wav or wmv sound file.
+    * - Volume <int32>
+      - Volume (%)
 
-Opens a given help topic In the help browser.
+.. option:: -ResetSettings
 
+    Shows a dialog allowing to reset specific settings.
 
--PlaySound:Filepath,Volume
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. option:: -SaveGIF
 
-Filepath: Filepath To a mp3, wav Or wmv sound file.
+    Shows a Open File dialog to generate a short GIF.
 
-Plays a mp3, wav Or wmv sound file.
+.. option:: -SaveMKVHDR
 
+    Shows a Open File dialog to add the remaining HDR10 Metadata to a MKV file.
 
--ResetSettings
-~~~~~~~~~~~~~~
+.. option:: -SaveMTN
 
-Shows a dialog allowing to reset various settings.
+    Shows a Open File dialog to generate thumbnails using mtn engine
 
+.. option:: -SavePNG
 
--SaveGif
-~~~~~~~~
+    Shows a open file dialog to create a high quality PNG animation.
 
-Generates a Short Gif Based on Input data.
+.. option:: -SaveProject
 
+    Saves the current project.
 
--SaveMKVHDR
-~~~~~~~~~~~
+.. option:: -SaveProjectAs
 
-Adds the Remaining HDR10 Metadata to MKV file.
+    Saves the current project.
 
+.. option:: -SaveProjectAsTemplate
 
--SaveMTN
-~~~~~~~~
+    Saves the current project as template.
 
-Generate Thumbnails Using MTN Engine
+.. option:: -SaveProjectPath:path
 
+    Saves the current project at the specified path.
 
--SavePNG
-~~~~~~~~
+.. list-table::
+    :widths: auto
 
-Creates Very High Quality Animations in the Form of PNG.
+    * - path <string>
+      - The path may contain macros.
 
+.. option:: -SetBitrate:bitrate
 
--SaveProject
-~~~~~~~~~~~~
+    Sets the target video bitrate in Kbps.
 
-Saves the current project.
+.. list-table::
+    :widths: auto
 
+    * - bitrate <int32>
+      - Target Video Bitrate
 
--SaveProjectAs
-~~~~~~~~~~~~~~
+.. option:: -SetFilter:name,category,script
 
-Saves the current project.
+    Sets a filter replacing a existing filter of same category.
 
+.. list-table::
+    :widths: auto
 
--SaveProjectAsTemplate
-~~~~~~~~~~~~~~~~~~~~~~
+    * - name <string>
+    * - category <string>
+    * - script <string>
 
-Saves the current project as template.
+.. option:: -SetHideDialogsOption:hide
 
+    Sets the project option 'Hide dialogs asking to demux, source filter etc.'
 
--SaveProjectPath:path
-~~~~~~~~~~~~~~~~~~~~~
+.. list-table::
+    :widths: auto
 
-path: The path may contain macros.
+    * - hide <boolean>
 
-Saves the current project at the specified path.
+.. option:: -SetPercent:value
 
+    Sets the bitrate according to the compressibility.
 
--SetBitrate:bitrate
-~~~~~~~~~~~~~~~~~~~
+.. list-table::
+    :widths: auto
 
-Sets the target video bitrate in Kbps.
+    * - value <int32>
+      - Percent Value
 
+.. option:: -SetSize:targetSize
 
--SetFilter:name,category,script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Sets the target file size in MB.
 
-Sets a filter replacing a existing filter of same category.
+.. list-table::
+    :widths: auto
 
+    * - targetSize <int32>
+      - Target File Size
 
--SetHideDialogsOption:hide
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. option:: -SetTargetFile:path
 
-Sets the project option 'Hide dialogs asking to demux, source filter etc.'
+    Sets the file path of the target file.
 
+.. list-table::
+    :widths: auto
 
--SetPercent:value
-~~~~~~~~~~~~~~~~~
+    * - path <string>
+      - Target File Path
 
-Sets the bitrate according to the compressibility.
+.. option:: -SetTargetImageSize:width,height
 
+    Sets the target image size.
 
--SetSize:targetSize
-~~~~~~~~~~~~~~~~~~~
+.. list-table::
+    :widths: auto
 
-Sets the target file size in MB.
+    * - width <int32>
+    * - height <int32>
 
+.. option:: -SetTargetImageSizeByPixel:pixel
 
--SetTargetFile:path
-~~~~~~~~~~~~~~~~~~~
+    Sets the target image size by pixels (width x height).
 
-Sets the file path of the target file.
+.. list-table::
+    :widths: auto
 
+    * - pixel <int32>
 
--SetTargetImageSize:width,height
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. option:: -ShowAppsDialog
 
-Sets the target image size.
+    Dialog to manage external tools.
 
+.. option:: -ShowAudioProfilesDialog:number
 
--SetTargetImageSizeByPixel:pixel
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Dialog to manage audio profiles.
 
-Sets the target image size by pixels (width x height).
+.. list-table::
+    :widths: auto
 
+    * - number <int32>
+      - Track Number (0 or 1)
 
--ShowAppsDialog
-~~~~~~~~~~~~~~~
+.. option:: -ShowBatchGenerateThumbnailsDialog
 
-Dialog to manage external applications.
+    Shows a dialog to generate thumbnails.
 
+.. option:: -ShowCommandPrompt
 
--ShowAudioProfilesDialog:number
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Shows a command prompt. Console apps are added to the path environment variable and macros are added as environment variables.
 
-Dialog to manage audio profiles.
+.. option:: -ShowCropDialog
 
+    Shows the crop dialog to crop borders.
 
--ShowBatchGenerateThumbnailsDialog
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. option:: -ShowDemuxTool
 
-Shows a dialog to generate thumbnails.
+    Allows to use StaxRip's demuxing GUIs independently.
 
+.. option:: -ShowEncoderProfilesDialog
 
--ShowCommandPrompt
-~~~~~~~~~~~~~~~~~~
+    Shows a dialog to manage video encoder profiles.
 
-Shows a command prompt.
+.. option:: -ShowEventCommandsDialog
 
+    Shows the Event Command dialog.
 
--ShowCropDialog
-~~~~~~~~~~~~~~~
+.. option:: -ShowFileBrowserToOpenProject
 
-Dialog to crop borders.
+    Shows a file browser to open a project file.
 
+.. option:: -ShowFilterProfilesDialog
 
--ShowDemuxTool
-~~~~~~~~~~~~~~
+    Dialog to configure AviSynth filter profiles.
 
-Allows to use StaxRip's demuxing GUIs independently.
+.. option:: -ShowFiltersEditor
 
+    Dialog to edit filters.
 
--ShowEncoderProfilesDialog
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. option:: -ShowFilterSetupProfilesDialog
 
-Dialog to manage encoder profiles.
+    Dialog to configure filter setup profiles.
 
+.. option:: -ShowHardcodedSubtitleDialog
 
--ShowEventCommandsDialog
-~~~~~~~~~~~~~~~~~~~~~~~~
+    Shows a dialog to add a hardcoded subtitle.
 
-Shows the Event Command dialog.
+.. option:: -ShowHelpURL:url
 
+    Opens a given URL or local file in the help browser.
 
--ShowFileBrowserToOpenProject
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. list-table::
+    :widths: auto
 
-Shows a file browser to open a project file.
+    * - url <string>
+      - URL or local file to be shown in the internet explorer powered help browser.
 
+.. option:: -ShowJobsDialog
 
--ShowFilterProfilesDialog
-~~~~~~~~~~~~~~~~~~~~~~~~~
+    Dialog to manage batch jobs.
 
-Dialog to configure AviSynth filter profiles.
+.. option:: -ShowLAVFiltersConfigDialog
 
+    This functionality was deprecated in 2020 and might get removed any time. Shows LAV Filters video decoder configuration
 
--ShowFiltersEditor
-~~~~~~~~~~~~~~~~~~
+.. option:: -ShowLogFile
 
-Dialog to edit filters.
+    Shows the log file with the built-in log file viewer.
 
+.. option:: -ShowMainMenuEditor
 
--ShowFilterSetupProfilesDialog
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Dialog to configure the main menu.
 
-Dialog to configure filter setup profiles.
+.. option:: -ShowMediaInfo:filepath
 
+    Shows media info on a given file.
 
--ShowHardcodedSubtitleDialog
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. list-table::
+    :widths: auto
 
-Shows a dialog to add a hardcoded subtitle.
+    * - filepath <string>
+      - The filepath may contain macros.
 
+.. option:: -ShowMediaInfoBrowse
 
--ShowHelpURL:url
-~~~~~~~~~~~~~~~~
+    Shows a Open File dialog to show media info.
 
-url: URL or local file to be shown in the internet explorer powered help browser.
+.. option:: -ShowMediaInfoFolderViewDialog
 
-Opens a given URL or local file in the help browser.
+    Presents MediaInfo of all files in a folder in a list view.
 
+.. option:: -ShowMessageBox:mainInstruction,content,icon
 
--ShowJobsDialog
-~~~~~~~~~~~~~~~
+    Shows a message box.
 
-Dialog to manage batch jobs.
+.. list-table::
+    :widths: auto
 
+    * - mainInstruction <string>
+      - Main Instruction: Main instruction may contain macros.
+    * - content <string>
+      - May contain macros.
+    * - icon <msgicon>
+      -  None, Error, Question, Warning, Info
 
--ShowLAVFiltersConfigDialog
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. option:: -ShowMkvInfo
 
-Shows LAV Filters video decoder configuration
+    Shows a Open File dialog to open a file to be shown by the console tool mkvinfo.
 
+.. option:: -ShowMuxerProfilesDialog
 
--ShowLogFile
-~~~~~~~~~~~~
+    Dialog to manage Muxer profiles.
 
-Shows the log file with the built in log file viewer.
+.. option:: -ShowOpenSourceDialog
 
+    Dialog to open source files.
 
--ShowMainMenuEditor
-~~~~~~~~~~~~~~~~~~~
+.. option:: -ShowOptionsDialog
 
-Dialog to configure the main menu.
+    Dialog to configure project options.
 
+.. option:: -ShowPowerShell
 
--ShowMediaInfo:filepath
-~~~~~~~~~~~~~~~~~~~~~~~
+    Shows a PowerShell terminal. Console apps are added to the path environment variable and macros are added as environment variables.
 
-filepath: The filepath may contain macros.
+.. option:: -ShowPreview
 
-Shows media info on a given file.
+    Dialog to preview or cut the video.
 
+.. option:: -ShowScriptInfo
 
--ShowMediaInfoFolderViewDialog
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Shows script info using various console tools.
 
-Presents MediaInfo of all files in a folder in a list view.
+.. option:: -ShowSettingsDialog
 
+    Shows the settings dialog.
 
--ShowMessageBox:mainInstruction,content,icon
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. option:: -ShowSizeMenuEditor
 
-mainInstruction: Main instruction may contain macros.
+    Menu editor for the size menu.
 
-content: Content may contain macros.
+.. option:: -ShowVideoComparison
 
-MsgIcon: None, Error, Question, Warning, Info
+    Shows a dialog to compare different videos.
 
-Shows a message box.
+.. option:: -Shutdown
 
+    Shut down PC.
 
--ShowMuxerProfilesDialog
-~~~~~~~~~~~~~~~~~~~~~~~~
+.. option:: -Standby
 
-Dialog to manage Muxer profiles.
+    Standby PC.
 
+.. option:: -StartAutoCrop
 
--ShowOpenSourceDialog
-~~~~~~~~~~~~~~~~~~~~~
+    Crops borders automatically.
 
-Dialog to open source files.
+.. option:: -StartCompCheck
 
+    Starts the compressibility check.
 
--ShowOptionsDialog
-~~~~~~~~~~~~~~~~~~
+.. option:: -StartEncoding
 
-Dialog to configure project options.
+    Creates a job and runs the job list.
 
+.. option:: -StartJobs
 
--ShowPowerShell
-~~~~~~~~~~~~~~~
+    Runs all active jobs of the job list.
 
-Shows a powershell terminal.
+.. option:: -StartSmartCrop
 
+    Crops borders automatically until the proper aspect ratio is found.
 
--ShowPreview
-~~~~~~~~~~~~
+.. option:: -StartTool:name
 
-Dialog to preview or cut the video.
+    Starts a tool by name as shown in the app manage dialog.
 
+.. list-table::
+    :widths: auto
 
--ShowScriptInfo
-~~~~~~~~~~~~~~~
+    * - name <string>
+      - Tool Name: Tool name as shown in the app manage dialog.
 
-Shows script info using various console tools.
+.. option:: -TestAndDynamicFileCreation
 
+    Development tests and creation of doc files.
 
--ShowSettingsDialog
-~~~~~~~~~~~~~~~~~~~
+.. option:: -WriteLog:header,message
 
-Shows the settings dialog.
+    Writes a log message to the log file.
 
+.. list-table::
+    :widths: auto
 
--ShowSizeMenuEditor
-~~~~~~~~~~~~~~~~~~~
-
-Menu editor for the size menu.
-
-
--ShowVideoComparison
-~~~~~~~~~~~~~~~~~~~~
-
-Compare and extract images for video comparisons.
-
-
--Shutdown
-~~~~~~~~~
-
-Shuts PC down.
-
-
--Standby
-~~~~~~~~
-
-Puts PC in standby mode.
-
-
--StartAutoCrop
-~~~~~~~~~~~~~~
-
-Crops borders automatically.
-
-
--StartCompCheck
-~~~~~~~~~~~~~~~
-
-Starts the compressibility check.
-
-
--StartEncoding
-~~~~~~~~~~~~~~
-
-Creates a job and runs the job list.
-
-
--StartJobs
-~~~~~~~~~~
-
-Runs all active jobs of the job list.
-
-
--StartSmartCrop
-~~~~~~~~~~~~~~~
-
-Crops borders automatically until the proper aspect ratio is found.
-
-
--StartTool:name
-~~~~~~~~~~~~~~~
-
-name: Tool name as shown in the app manage dialog.
-
-Starts a tool by name as shown in the app manage dialog.
-
-
--TestAndDynamicFileCreation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Development tests and creation of doc files
-
-
--WriteLog:header,message
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-header: Header is optional and may contain macros.
-
-message: Message is optional and may contain macros.
-
-Writes a log message to the process window.
-
+    * - header <string>
+      - Header is optional and may contain macros.
+    * - message <string>
+      - Message is optional and may contain macros.
 

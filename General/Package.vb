@@ -438,6 +438,7 @@ Public Class Package
         .Location = "Support\MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
+        .HelpSwitch = "",
         .Description = "MKV info tool."})
 
     Shared Property PNGopt As Package = Add(New Package With {
@@ -1968,7 +1969,7 @@ Public Class Package
         End Get
     End Property
 
-    Public Function CreateHelpfile() As String
+    Function CreateHelpfile() As String
         If File.Exists(HelpFile) Then
             Return HelpFile.ReadAllText
         End If

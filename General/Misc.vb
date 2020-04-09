@@ -887,8 +887,8 @@ Public Class Macro
             ret.Add(New Macro("$enter_text$", "Enter Text", GetType(String), "Text entered in a input box."))
             ret.Add(New Macro("$enter_text:prompt$", "Enter Text (Params)", GetType(String), "Text entered in a input box."))
             ret.Add(New Macro("$select:param1;param2;...$", "Select", GetType(String), "String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value. Example: $select:msg:hello;caption1|value1;caption2|value2$"))
-            ret.Add(New Macro("app:name", "Application File Path", GetType(String), "Returns the path of a aplication."))
-            ret.Add(New Macro("app_dir:name", "Application Directory", GetType(String), "Returns the directory of a aplication."))
+            ret.Add(New Macro("app:name", "Application File Path", GetType(String), "Returns the path of a tool, it can be any type of tool found in the Apps dialog. Example: %app:qtgmc%"))
+            ret.Add(New Macro("app_dir:name", "Application Directory", GetType(String), "Returns the directory of a tool, it can be any type of tool found in the Apps dialog. Example: %app_dir:x265%"))
             ret.Add(New Macro("eval:expression", "Eval Math Expression", GetType(String), "Evaluates a math expression which may contain default macros."))
             ret.Add(New Macro("eval_ps:expression", "Eval PowerShell Expression", GetType(String), "Evaluates a PowerShell expression which may contain default macros."))
             ret.Add(New Macro("filter:name", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
@@ -1312,25 +1312,34 @@ Public Class Macro
         If value.Contains("%app:") Then
             Dim mc = Regex.Matches(value, "%app:(.+?)%")
 
-            For Each i As Match In mc
-                Dim package = StaxRip.Package.Items.Values.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
+            For Each match As Match In mc
+                Dim package = StaxRip.Package.Items.Values.FirstOrDefault(
+                    Function(pack) pack.Name.ToLower = match.Groups(1).Value.ToLower)
+
                 Dim path = package?.Path
 
                 If path <> "" Then
-                    value = value.Replace(i.Value, path)
-                    If Not value.Contains("%") Then Return value
+                    value = value.Replace(match.Value, path)
+
+                    If Not value.Contains("%") Then
+                        Return value
+                    End If
                 End If
             Next
         End If
 
         If value.Contains("%app_dir:") Then
-            For Each i As Match In Regex.Matches(value, "%app_dir:(.+?)%")
-                Dim package = StaxRip.Package.Items.Values.FirstOrDefault(Function(a) a.Name = i.Groups(1).Value)
+            For Each match As Match In Regex.Matches(value, "%app_dir:(.+?)%")
+                Dim package = StaxRip.Package.Items.Values.FirstOrDefault(
+                    Function(pack) pack.Name.ToLower = match.Groups(1).Value.ToLower)
+
                 Dim path = package?.Path
 
                 If path <> "" Then
-                    value = value.Replace(i.Value, FilePath.GetDir(path))
-                    If Not value.Contains("%") Then Return value
+                    value = value.Replace(match.Value, FilePath.GetDir(path))
+                    If Not value.Contains("%") Then
+                        Return value
+                    End If
                 End If
             Next
         End If
@@ -2325,7 +2334,7 @@ Public Class Comparer(Of T)
         Me.Ascending = ascending
     End Sub
 
-    Public Function Compare(x As T, y As T) As Integer Implements IComparer(Of T).Compare
+    Function Compare(x As T, y As T) As Integer Implements IComparer(Of T).Compare
         If Not Ascending Then
             Dim x1 = x
             x = y

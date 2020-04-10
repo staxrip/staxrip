@@ -26,8 +26,6 @@ fix
 ---
 
 - CSV file creation possibly incompatible with Excel in certain locales
-- the command ExecuteBatchScript was marked as deprecated,
-  any feature that relies on bat files will likely be deprecated
 
 
 2.1.0.5 Beta

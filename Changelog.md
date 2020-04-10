@@ -1,5 +1,10 @@
 
-2.1.0.6 Beta (not yet available)
+2.1.0.7 Beta (not yet available)
+============
+
+
+
+2.1.0.6 Beta
 ============
 
 new
@@ -10,7 +15,10 @@ new
 - Execute Command Line in video encoder dialogs is shown via Windows Terminal
 - in the Apps dialog the tools can be shown using PowerShell Out-GridView
 - one time tip messages added to inform about otherwise unknown functionality
-- a Shell Execute flag was added to the command ExecuteCommandLine
+- a Shell Execute flag was added to the command [ExecuteCommandLine](https://staxrip.readthedocs.io/cli.html#cmdoption-executecommandline-commandline-waitforexit-showprocesswindow-useshellexecute), this is a setting in the
+  process class of dotnet, it causes the usage of the ShellExecute Win32 API instead of
+  CreateProcess, this APIs have different feature sets like CreateProcess accepting only exe
+  files and being able to pass in environment variables and use redirection
 - the [Command Line Interface doc page](https://staxrip.readthedocs.io/cli.html) was significantly improved
 
 

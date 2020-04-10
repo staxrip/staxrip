@@ -642,9 +642,9 @@ Public Class eac3toForm
         End If
 
         cms.Items.Add(New ActionMenuItem("Audio Stream Profiles...", AddressOf ShowAudioStreamProfiles))
-        cms.Items.Add(New ActionMenuItem("Show eac3to wikibook", Sub() g.StartProcess("http://en.wikibooks.org/wiki/Eac3to")))
-        cms.Items.Add(New ActionMenuItem("Show eac3to support forum", Sub() g.StartProcess("http://forum.doom9.org/showthread.php?t=125966")))
-        cms.Items.Add(New ActionMenuItem("Execute eac3to.exe -test", Sub() g.StartProcess("cmd.exe", "/k """ + Package.eac3to.Path + """ -test")))
+        cms.Items.Add(New ActionMenuItem("Show eac3to wikibook", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to")))
+        cms.Items.Add(New ActionMenuItem("Show eac3to support forum", Sub() g.ShellExecute("http://forum.doom9.org/showthread.php?t=125966")))
+        cms.Items.Add(New ActionMenuItem("Execute eac3to.exe -test", Sub() g.ShellExecute("cmd.exe", "/k """ + Package.eac3to.Path + """ -test")))
 
         ActiveControl = Nothing
     End Sub

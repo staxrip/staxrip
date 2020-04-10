@@ -314,7 +314,7 @@ Public Class AppsForm
         SetupButton.TextImageRelation = TextImageRelation.ImageBeforeText
         SetupButton.Image = StockIcon.GetSmallImage(StockIconIdentifier.Shield)
 
-        AddHandler DownloadButton.Click, Sub() g.StartProcess(CurrentPackage.DownloadURL)
+        AddHandler DownloadButton.Click, Sub() g.ShellExecute(CurrentPackage.DownloadURL)
         DownloadButton.AutoSize = True
         DownloadButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
         DownloadButton.Font = New Font("Segoe UI", 10)
@@ -482,7 +482,7 @@ Public Class AppsForm
                 Dim fp = Folder.Startup + "changelog.md"
 
                 If File.Exists(fp) Then
-                    g.StartProcess(fp)
+                    g.ShellExecute(fp)
                 End If
             Case Keys.F11
                 miBrowsePath.PerformClick()
@@ -572,11 +572,11 @@ Public Class AppsForm
     End Sub
 
     Private Sub tsbWebsite_Click(sender As Object, e As EventArgs) Handles tsbWebsite.Click
-        g.StartProcess(CurrentPackage.WebURL)
+        g.ShellExecute(CurrentPackage.WebURL)
     End Sub
 
     Private Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
-        g.StartProcess(CurrentPackage.DownloadURL)
+        g.ShellExecute(CurrentPackage.DownloadURL)
     End Sub
 
     Private Sub tsbVersion_Click(sender As Object, e As EventArgs) Handles tsbVersion.Click
@@ -658,7 +658,7 @@ Public Class AppsForm
                 Case "csv"
                     Dim csvFile = Folder.Temp + "staxrip tools.csv"
                     PowerShell.ConvertToCSV(";", rows).WriteFileUTF8(csvFile)
-                    g.StartProcess(g.GetAppPathForExtension("csv", "txt"), csvFile.Escape)
+                    g.ShellExecute(g.GetAppPathForExtension("csv", "txt"), csvFile.Escape)
                 Case "ogv"
                     g.InvokePowerShellCode($"$objects | Out-GridView", "objects", rows)
             End Select
@@ -745,7 +745,7 @@ Public Class AppsForm
                               End If
                           Next
                       Catch
-                          g.StartProcess("https://www.voidtools.com")
+                          g.ShellExecute("https://www.voidtools.com")
                       End Try
                   End Sub
 
@@ -796,11 +796,11 @@ Public Class AppsForm
     End Function
 
     <DllImport("Everything.dll")>
-    Public Shared Sub Everything_SetRequestFlags(dwRequestFlags As UInt32)
+    Shared Sub Everything_SetRequestFlags(dwRequestFlags As UInt32)
     End Sub
 
     <DllImport("Everything.dll")>
-    Public Shared Sub Everything_SetSort(dwSortType As UInt32)
+    Shared Sub Everything_SetSort(dwSortType As UInt32)
     End Sub
 
     <DllImport("Everything.dll", CharSet:=CharSet.Unicode)>
@@ -808,7 +808,7 @@ Public Class AppsForm
     End Function
 
     <DllImport("Everything.dll", CharSet:=CharSet.Unicode)>
-    Public Shared Sub Everything_GetResultFullPathName(nIndex As UInt32, lpString As StringBuilder, nMaxCount As UInt32)
+    Shared Sub Everything_GetResultFullPathName(nIndex As UInt32, lpString As StringBuilder, nMaxCount As UInt32)
     End Sub
 
     <DllImport("Everything.dll")>

@@ -7,11 +7,103 @@ Imports StaxRip.UI
 Public Class Documentation
     Shared Sub GenerateDynamicFiles()
         GenerateMacroTableFile()
-        GenerateCliFile()
         GenerateToolFile()
         GenerateScreenshotsFile()
         GenerateEventsFile()
+
+        UpdateFile(Folder.Startup + "..\docs\generated\switches.rst", GetCommands(True))
+        UpdateFile(Folder.Startup + "..\docs\generated\commands.rst", GetCommands(False))
     End Sub
+
+    Shared Function GetCommands(cli As Boolean) As String
+        Dim sb As New StringBuilder
+
+        Dim commands As New List(Of Command)(g.MainForm.CommandManager.Commands.Values)
+        commands.Sort()
+
+        For Each command In commands
+            If command.Attribute.Description.StartsWith("This command is obsolete") Then
+                Continue For
+            End If
+
+            Dim params = command.MethodInfo.GetParameters
+            Dim title = command.MethodInfo.Name
+
+            If cli Then
+                title = "-" + title + ":"
+
+                For Each param In params
+                    title += param.Name + ","
+                Next
+
+                title = title.TrimEnd(",:".ToCharArray)
+            End If
+
+            sb.Append(".. option:: " + title + BR2)
+            sb.Append(command.Attribute.Description.IndentLines("    ") + BR2)
+
+            If params.Length > 0 Then
+                sb.Append(".. list-table::" + BR)
+                sb.Append("    :widths: auto" + BR2)
+
+                Dim hasDescription = False
+
+                For Each param In params
+                    Dim descAttrib = param.GetCustomAttribute(Of DescriptionAttribute)
+
+                    If Not descAttrib Is Nothing AndAlso descAttrib.Description <> "" Then
+                        hasDescription = True
+                    End If
+
+                    Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
+
+                    If Not nameAttrib Is Nothing AndAlso
+                        Not nameAttrib.DisplayName.EqualIgnoreCase(param.Name) Then
+
+                        hasDescription = True
+                    End If
+                Next
+
+                For Each param In params
+                    sb.Append($"    * - {param.Name} <{param.ParameterType.Name.ToLower.Replace("int32", "integer")}>{BR}")
+
+                    If hasDescription OrElse param.ParameterType.IsEnum Then
+                        sb.Append($"      - ")
+
+                        Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
+                        Dim hasName = False
+
+                        If Not nameAttrib Is Nothing AndAlso
+                            Not nameAttrib.DisplayName.EqualIgnoreCase(param.Name) Then
+                            sb.Append(nameAttrib.DisplayName)
+                            hasName = True
+                        End If
+
+                        Dim descAttrib = param.GetCustomAttribute(Of DescriptionAttribute)
+
+                        If Not descAttrib Is Nothing Then
+                            If hasName Then
+                                sb.Append(": ")
+                            End If
+
+                            sb.Append(descAttrib.Description)
+                            descAttrib.Description.ThrowIfContainsNewLine
+                        End If
+
+                        If param.ParameterType.IsEnum Then
+                            sb.Append(" " + System.Enum.GetNames(param.ParameterType).Join(", "))
+                        End If
+
+                        sb.Append(BR)
+                    End If
+                Next
+
+                sb.Append(BR)
+            End If
+        Next
+
+        Return sb.ToString
+    End Function
 
     Shared Sub GenerateMacroTableFile()
         Dim text =
@@ -132,89 +224,6 @@ Public Class Documentation
         Next
 
         UpdateFile(Folder.Startup + "..\docs\generated\events.rst", events)
-    End Sub
-
-    Shared Sub GenerateCliFile()
-        Dim sb As New StringBuilder
-
-        Dim commands As New List(Of Command)(g.MainForm.CommandManager.Commands.Values)
-        commands.Sort()
-
-        Dim commandList As New StringPairList
-
-        For Each command In commands
-            Dim params = command.MethodInfo.GetParameters
-            Dim switch = "-" + command.MethodInfo.Name + ":"
-
-            For Each param In params
-                switch += param.Name + ","
-            Next
-
-            switch = switch.TrimEnd(",:".ToCharArray)
-            sb.Append(".. option:: " + switch + BR2)
-            sb.Append(command.Attribute.Description.IndentLines("    ") + BR2)
-
-            If params.Length > 0 Then
-                sb.Append(".. list-table::" + BR)
-                sb.Append("    :widths: auto" + BR2)
-
-                Dim hasDescription = False
-
-                For Each param In params
-                    Dim descAttrib = param.GetCustomAttribute(Of DescriptionAttribute)
-
-                    If Not descAttrib Is Nothing AndAlso descAttrib.Description <> "" Then
-                        hasDescription = True
-                    End If
-
-                    Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
-
-                    If Not nameAttrib Is Nothing AndAlso
-                        Not nameAttrib.DisplayName.EqualIgnoreCase(param.Name) Then
-
-                        hasDescription = True
-                    End If
-                Next
-
-                For Each param In params
-                    sb.Append($"    * - {param.Name} <{param.ParameterType.Name.ToLower}>{BR}")
-
-                    If hasDescription OrElse param.ParameterType.IsEnum Then
-                        sb.Append($"      - ")
-
-                        Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
-                        Dim hasName = False
-
-                        If Not nameAttrib Is Nothing AndAlso
-                            Not nameAttrib.DisplayName.EqualIgnoreCase(param.Name) Then
-                            sb.Append(nameAttrib.DisplayName)
-                            hasName = True
-                        End If
-
-                        Dim descAttrib = param.GetCustomAttribute(Of DescriptionAttribute)
-
-                        If Not descAttrib Is Nothing Then
-                            If hasName Then
-                                sb.Append(": ")
-                            End If
-
-                            sb.Append(descAttrib.Description)
-                            descAttrib.Description.ThrowIfContainsNewLine
-                        End If
-
-                        If param.ParameterType.IsEnum Then
-                            sb.Append(" " + System.Enum.GetNames(param.ParameterType).Join(", "))
-                        End If
-
-                        sb.Append(BR)
-                    End If
-                Next
-
-                sb.Append(BR)
-            End If
-        Next
-
-        UpdateFile(Folder.Startup + "..\docs\generated\switches.rst", sb.ToString)
     End Sub
 
     Shared Sub UpdateFile(filepath As String, content As String)

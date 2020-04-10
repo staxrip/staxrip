@@ -738,7 +738,7 @@ Public Class MuxerForm
         mb.Help = "Chapter file to be muxed."
         mb.Property = NameOf(Muxer.ChapterFile)
         mb.AddMenu("Browse File...", Function() g.BrowseFile("txt, xml|*.txt;*.xml"))
-        mb.AddMenu("Edit with chapterEditor...", Sub() g.StartProcess(Package.chapterEditor.Path, Muxer.ChapterFile.Escape))
+        mb.AddMenu("Edit with chapterEditor...", Sub() g.ShellExecute(Package.chapterEditor.Path, Muxer.ChapterFile.Escape))
 
         If TypeOf Muxer Is MkvMuxer Then
             CmdlControl.Presets = s.CmdlPresetsMKV
@@ -749,7 +749,7 @@ Public Class MuxerForm
             mb.Help = "Tag file to be muxed."
             mb.Property = NameOf(Muxer.TagFile)
             mb.AddMenu("Browse File...", Function() g.BrowseFile("xml|*.xml"))
-            mb.AddMenu("Edit File...", Sub() g.StartProcess(g.GetAppPathForExtension("xml", "txt"), Muxer.TagFile.Escape))
+            mb.AddMenu("Edit File...", Sub() g.ShellExecute(g.GetAppPathForExtension("xml", "txt"), Muxer.TagFile.Escape))
 
             tb = UI.AddTextButton()
             tb.Text = "Timestamps"

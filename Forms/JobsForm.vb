@@ -332,7 +332,7 @@ Friend Class JobsForm
         Close()
 
         If g.IsProcessing Then
-            g.StartProcess(Application.ExecutablePath, "-StartJobs")
+            g.ShellExecute(Application.ExecutablePath, "-StartJobs")
         Else
             Task.Run(Sub()
                          Thread.Sleep(500)

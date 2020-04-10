@@ -45,11 +45,11 @@ Public Class GlobalClass
     Sub RunCodeInTerminal(code As String)
         Dim base64String = Convert.ToBase64String(Encoding.Unicode.GetBytes(code)) 'UTF16LE
 
-        Try
+        If g.IsWindowsTerminalAvailable Then
             RunCommandInTerminal("wt.exe", $"powershell.exe -nologo -noexit -EncodedCommand ""{base64String}""")
-        Catch
+        Else
             RunCommandInTerminal("powershell.exe", $"-nologo -noexit -EncodedCommand ""{base64String}""")
-        End Try
+        End If
     End Sub
 
     Sub RunCommandInTerminal(fileName As String, Optional arguments As String = Nothing)
@@ -108,7 +108,7 @@ Public Class GlobalClass
                 End If
             Else
                 If Process.GetCurrentProcess.PrivateMemorySize64 / 1024 ^ 2 > 1500 Then
-                    g.StartProcess(Application.ExecutablePath, "-StartJobs")
+                    g.ShellExecute(Application.ExecutablePath, "-StartJobs")
                     g.MainForm.SetSavedProject()
                     g.MainForm.Close()
                 Else
@@ -228,7 +228,7 @@ Public Class GlobalClass
         Catch ex As ErrorAbortException
             Log.Save()
             g.ShowException(ex, Nothing, Nothing, 50)
-            g.StartProcess(g.GetTextEditorPath(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
+            g.ShellExecute(g.GetTextEditorPath(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
             ProcController.Aborted = False
         End Try
     End Sub
@@ -386,11 +386,11 @@ Public Class GlobalClass
 
     Sub PlayAudio(ap As AudioProfile)
         If FileTypes.AudioRaw.Contains(ap.File.Ext) Then
-            g.StartProcess(Package.mpvnet.Path, ap.File.Escape)
+            g.ShellExecute(Package.mpvnet.Path, ap.File.Escape)
         ElseIf ap.File = p.FirstOriginalSourceFile AndAlso ap.Streams.Count > 0 Then
-            g.StartProcess(Package.mpvnet.Path, "--audio=" & (ap.Stream.Index + 1) & " " + p.FirstOriginalSourceFile.Escape)
+            g.ShellExecute(Package.mpvnet.Path, "--audio=" & (ap.Stream.Index + 1) & " " + p.FirstOriginalSourceFile.Escape)
         ElseIf FileTypes.Audio.Contains(ap.File.Ext) Then
-            g.StartProcess(Package.mpvnet.Path, "--audio-delay=" + (g.ExtractDelay(ap.File) / 1000).ToInvariantString.Shorten(9) + " --audio-files=" + ap.File.Escape + " " + p.FirstOriginalSourceFile.Escape)
+            g.ShellExecute(Package.mpvnet.Path, "--audio-delay=" + (g.ExtractDelay(ap.File) / 1000).ToInvariantString.Shorten(9) + " --audio-files=" + ap.File.Escape + " " + p.FirstOriginalSourceFile.Escape)
         Else
             MsgError("Unable to play audio.")
         End If
@@ -447,7 +447,7 @@ Public Class GlobalClass
         End If
 
         args += " " + script.Path.Escape
-        g.StartProcess(playerPath, args.Trim)
+        g.ShellExecute(playerPath, args.Trim)
     End Sub
 
     Sub PlayScriptWithMPV(script As VideoScript, Optional cliArgs As String = Nothing)
@@ -475,7 +475,7 @@ Public Class GlobalClass
         End If
 
         args += " " + script.Path.Escape
-        g.StartProcess(Package.mpvnet.Path, args.Trim)
+        g.ShellExecute(Package.mpvnet.Path, args.Trim)
     End Sub
 
     Function ExtractDelay(value As String) As Integer
@@ -933,7 +933,7 @@ Public Class GlobalClass
     End Sub
 
     Sub Play(file As String)
-        g.StartProcess(Package.mpvnet.Path.Escape, file.Escape)
+        g.ShellExecute(Package.mpvnet.Path.Escape, file.Escape)
     End Sub
 
     Sub ShowCommandLineHelp(package As Package, switch As String)
@@ -976,7 +976,11 @@ Public Class GlobalClass
         form.Show()
     End Sub
 
-    Sub StartProcess(fileName As String, Optional arguments As String = Nothing)
+    Sub ShowPage(page As String)
+        ShellExecute($"https://staxrip.readthedocs.io/{page}.html")
+    End Sub
+
+    Sub ShellExecute(fileName As String, Optional arguments As String = Nothing)
         Try
             Process.Start(fileName, arguments)
         Catch ex As Exception
@@ -985,7 +989,7 @@ Public Class GlobalClass
     End Sub
 
     Sub SelectFileWithExplorer(filepath As String)
-        g.StartProcess("explorer.exe", "/n, /select, " + filepath.Escape)
+        g.ShellExecute("explorer.exe", "/n, /select, " + filepath.Escape)
     End Sub
 
     Sub OnUnhandledException(sender As Object, e As ThreadExceptionEventArgs)
@@ -1029,8 +1033,8 @@ Public Class GlobalClass
         Log.Save(p)
         Dim fp = Log.GetPath
         g.SelectFileWithExplorer(fp)
-        g.StartProcess(g.GetTextEditorPath(), """" + fp + """")
-        g.StartProcess("https://github.com/staxrip/staxrip/issues")
+        g.ShellExecute(g.GetTextEditorPath(), """" + fp + """")
+        g.ShellExecute("https://github.com/staxrip/staxrip/issues")
     End Sub
 
     Function FileExists(path As String) As Boolean
@@ -1339,4 +1343,8 @@ Public Class GlobalClass
             g.RunCodeInTerminal($"""`n{Package.vspipe.Name} {Package.vspipe.Version}`n""; & '{Package.vspipe.Path}' --info '{script.Path}' -;""""")
         End If
     End Sub
+
+    Function IsWindowsTerminalAvailable() As Boolean
+        Return File.Exists(Folder.AppDataLocal + "Microsoft\WindowsApps\wt.exe")
+    End Function
 End Class

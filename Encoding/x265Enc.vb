@@ -990,7 +990,7 @@ Public Class x265Params
 
     Public Overrides Sub ShowHelp(id As String)
         If Control.ModifierKeys = Keys.Control OrElse Control.ModifierKeys = Keys.Shift Then
-            g.StartProcess("https://x265.readthedocs.io/en/latest/cli.html#cmdoption-" + id.TrimStart("-"c))
+            g.ShellExecute("https://x265.readthedocs.io/en/latest/cli.html#cmdoption-" + id.TrimStart("-"c))
         Else
             g.ShowCommandLineHelp(Package.x265, id)
         End If

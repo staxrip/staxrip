@@ -54,14 +54,17 @@ if ($LastExitCode)
 if ($versionInfo.FilePrivatePart -gt 9)
 {
     $releaseType = 'beta-without-apps'
+    $downloadURL = 'https://staxrip.readthedocs.io/introduction.html#beta'
 }
 elseif ($versionInfo.FilePrivatePart -ne 0)
 {
     $releaseType = 'beta'
+    $downloadURL = 'https://staxrip.readthedocs.io/introduction.html#beta'
 }
 else
 {
     $releaseType = 'stable'
+    $downloadURL = 'https://staxrip.readthedocs.io/introduction.html#stable'
 }
 
 $desktopDir  = [Environment]::GetFolderPath('Desktop')
@@ -148,8 +151,9 @@ if ($releaseType -eq 'beta' -or $releaseType -eq 'beta-without-apps')
     }
 }
 
-Set-Clipboard ($versionInfo.FileVersion + "`n`n" +
-    'https://github.com/staxrip/staxrip/blob/master/Changelog.md' + "`n`n" +
-    'https://staxrip.readthedocs.io/intro.html#download')
+Set-Clipboard ('[B]' + $versionInfo.FileVersion + $releaseType[0].ToString().ToUpper() +
+    $releaseType.Substring(1) + "[/B]`n`n`nChangelog`n`n" +
+    'https://github.com/staxrip/staxrip/blob/master/Changelog.md' +
+    "`n`n`nDownload`n`n" + $downloadURL)
 
 Write-Host 'successfully finished' -ForegroundColor Green

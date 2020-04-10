@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class EventCommandEditor
@@ -416,12 +417,12 @@ Public Class EventCommandEditor
         TipProvider.SetTip("Name of the Event Command.", tbName, gbName)
     End Sub
 
-    Private Sub MenuClick(c As Command)
+    Sub MenuClick(c As Command)
         CommandParameters = New CommandParameters(c.MethodInfo.Name, c.GetDefaultParameters.ToArray)
         SetCommandParameters(CommandParameters)
     End Sub
 
-    Private Sub SetCommandParameters(cp As CommandParameters)
+    Sub SetCommandParameters(cp As CommandParameters)
         If cp Is Nothing Then
             pgParameters.Visible = False
             lParameters.Visible = False
@@ -479,7 +480,7 @@ Public Class EventCommandEditor
         SetSplitter()
     End Sub
 
-    Private Sub EventCommandEditor_FormClosed() Handles Me.FormClosed
+    Sub EventCommandEditor_FormClosed() Handles Me.FormClosed
         If DialogResult = DialogResult.OK Then
             EventCommandValue.Name = tbName.Text
             EventCommandValue.Event = ListBag(Of ApplicationEvent).GetValue(cbEvent)
@@ -489,18 +490,11 @@ Public Class EventCommandEditor
         End If
     End Sub
 
-    Private Sub EventCommandEditor_HelpRequested() Handles Me.HelpRequested
-        Dim form As New HelpForm()
-        form.Doc.WriteStart(Text)
-        form.Doc.WriteP(Strings.EventCommands)
-        form.Doc.WriteTips(TipProvider.GetTips)
-        form.Doc.WriteTable("Properties", Macro.GetTipsFriendly(False))
-        form.Doc.WriteTable("Commands", g.MainForm.CustomMainMenu.CommandManager.GetTips)
-        form.Doc.WriteTable("Macros", Macro.GetTips())
-        form.Show()
+    Sub EventCommandEditor_HelpRequested() Handles Me.HelpRequested
+        g.ShowPage("commands")
     End Sub
 
-    Private Sub pgParameters_PropertyValueChanged(s As Object, e As PropertyValueChangedEventArgs) Handles pgParameters.PropertyValueChanged
+    Sub pgParameters_PropertyValueChanged(s As Object, e As PropertyValueChangedEventArgs) Handles pgParameters.PropertyValueChanged
         CommandParameters.Parameters.Clear()
 
         For Each i As DictionaryEntry In GridTypeDescriptor.Items
@@ -508,11 +502,11 @@ Public Class EventCommandEditor
         Next
     End Sub
 
-    Private Sub EventCommandEditor_Shown() Handles Me.Shown
+    Sub EventCommandEditor_Shown() Handles Me.Shown
         SetSplitter()
     End Sub
 
-    Private Sub EventCommandEditor_SizeChanged() Handles Me.SizeChanged
+    Sub EventCommandEditor_SizeChanged() Handles Me.SizeChanged
         SetSplitter()
     End Sub
 
@@ -520,7 +514,7 @@ Public Class EventCommandEditor
         pgParameters.MoveSplitter(pgParameters.Width \ 3)
     End Sub
 
-    Private Sub bnAdd_Click(sender As Object, e As EventArgs) Handles bnAdd.Click
+    Sub bnAdd_Click(sender As Object, e As EventArgs) Handles bnAdd.Click
         CriteriaControl.AddItem(Nothing)
     End Sub
 End Class

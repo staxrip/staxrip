@@ -1803,7 +1803,7 @@ Public Class Package
             If SetupActionValue Is Nothing AndAlso SetupFilename <> "" AndAlso
                 File.Exists(Folder.Apps + SetupFilename) Then
 
-                SetupActionValue = Sub() g.StartProcess(Folder.Apps + SetupFilename)
+                SetupActionValue = Sub() g.ShellExecute(Folder.Apps + SetupFilename)
             End If
 
             Return SetupActionValue
@@ -1839,7 +1839,7 @@ Public Class Package
         Get
             If LaunchActionValue Is Nothing Then
                 If IsGUI Then
-                    LaunchActionValue = Sub() g.StartProcess(Path)
+                    LaunchActionValue = Sub() g.ShellExecute(Path)
                 ElseIf Not HelpSwitch Is Nothing Then
                     LaunchActionValue = Sub() g.DefaultCommands.ExecutePowerShellScript(
                         $"& '{Path}' {If(HelpSwitch = "stderr", "", HelpSwitch)}", True)
@@ -2233,12 +2233,12 @@ Public Class Package
             Dim broswer = FindEverywhere("chrome.exe", "firefox.exe")
 
             If broswer <> "" Then
-                g.StartProcess(broswer, path.Escape)
+                g.ShellExecute(broswer, path.Escape)
                 Exit Sub
             End If
         End If
 
-        g.StartProcess(path)
+        g.ShellExecute(path)
     End Sub
 
     Shared Function FindEverywhere(ParamArray fileNames As String()) As String

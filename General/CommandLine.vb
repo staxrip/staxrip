@@ -73,11 +73,11 @@ Namespace CommandLine
         End Function
 
         Sub Execute()
-            Try
+            If g.IsWindowsTerminalAvailable Then
                 Process.Start("wt.exe", "cmd.exe /k """ + GetCommandLine(True, True) + """")
-            Catch ex As Exception
-                g.StartProcess("cmd.exe", "/k """ + GetCommandLine(True, True) + """")
-            End Try
+            Else
+                g.ShellExecute("cmd.exe", "/k """ + GetCommandLine(True, True) + """")
+            End If
         End Sub
     End Class
 

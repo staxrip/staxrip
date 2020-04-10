@@ -112,7 +112,7 @@ Public Class HelpForm
     Private Sub Browser_Navigating(sender As Object, e As WebBrowserNavigatingEventArgs) Handles Browser.Navigating
         If e.Url.AbsoluteUri.StartsWith("http") Then
             e.Cancel = True
-            g.StartProcess(e.Url.ToString)
+            g.ShellExecute(e.Url.ToString)
         End If
     End Sub
 End Class

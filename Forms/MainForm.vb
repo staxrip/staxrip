@@ -1451,7 +1451,7 @@ Public Class MainForm
                     Next
 
                     menuItem.DropDownItems.Add(New ToolStripSeparator)
-                    ActionMenuItem.Add(menuItem.DropDownItems, "Open Scripts Folder", Sub() g.StartProcess(Folder.Script))
+                    ActionMenuItem.Add(menuItem.DropDownItems, "Open Scripts Folder", Sub() g.ShellExecute(Folder.Script))
                 End If
             End If
         Next
@@ -1487,7 +1487,7 @@ Public Class MainForm
                 Next
 
                 i.DropDownItems.Add("-")
-                ActionMenuItem.Add(i.DropDownItems, "Explore", Sub() g.StartProcess(Folder.Template), "Opens the directory containing the templates.")
+                ActionMenuItem.Add(i.DropDownItems, "Explore", Sub() g.ShellExecute(Folder.Template), "Opens the directory containing the templates.")
                 ActionMenuItem.Add(i.DropDownItems, "Restore", AddressOf ResetTemplates, "Restores the default templates.")
 
                 Exit For
@@ -2906,7 +2906,7 @@ Public Class MainForm
     End Function
 
     Private Sub OpenTargetFolder()
-        g.StartProcess(FilePath.GetDir(p.TargetFile))
+        g.ShellExecute(FilePath.GetDir(p.TargetFile))
     End Sub
 
     Dim BlockAudioTextChanged As Boolean
@@ -4372,8 +4372,11 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Add Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
         ret.Add("Tools|Advanced|Event Command...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
         ret.Add("Tools|Advanced|Reset Setting", NameOf(g.DefaultCommands.ResetSettings))
-        ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.fa_terminal)
-        ret.Add("Tools|Advanced|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_terminal)
+        ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_terminal, {"cmd.exe", False, False, False, Folder.Desktop})
+
+        If g.IsWindowsTerminalAvailable Then
+            ret.Add("Tools|Advanced|Windows Terminal", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.Control Or Keys.T, Symbol.fa_terminal, {"wt.exe", False, False, False, Folder.Desktop})
+        End If
 
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
@@ -4735,28 +4738,6 @@ Public Class MainForm
         End If
 
         FiltersListView.RebuildMenu()
-    End Sub
-
-    <Command("This functionality was deprecated in 2020 and might get removed any time. Shows LAV Filters video decoder configuration")>
-    Private Sub ShowLAVFiltersConfigDialog()
-        Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.LAVVideoDecoder.ToString + "\InprocServer32", Nothing)
-
-        If File.Exists(ret) Then
-            Static loaded As Boolean
-
-            If Not loaded Then
-                Native.LoadLibrary(ret)
-                loaded = True
-            End If
-
-            OpenConfiguration(Nothing, Nothing, Nothing, Nothing)
-        Else
-            MsgError("The LAV Filters video decoder library could not be located.")
-        End If
-    End Sub
-
-    <DllImport("LAVVideo.ax")>
-    Public Shared Sub OpenConfiguration(hwnd As IntPtr, hinst As IntPtr, lpszCmdLine As String, nCmdShow As Integer)
     End Sub
 
     Private Sub ProcessCommandLine(a As String())

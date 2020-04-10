@@ -975,29 +975,6 @@ Public Class Misc
         End Try
     End Sub
 
-    Shared Function Eval(value As String) As String
-        Static dt As New DataTable()
-        Static dr As DataRow = dt.Rows.Add()
-        Static dc As DataColumn = dt.Columns.Add()
-
-        dc.Expression = value
-        Dim r = dr(0).ToString
-
-        If r.Contains(",") Then
-            r = r.Replace(",", ".")
-        End If
-
-        Return r
-    End Function
-
-    Private Shared Function EvalMatch(match As Match) As String
-        If match.Groups(1).Value.Contains("http://") Then
-            Return "[url=" + match.Groups(1).Value + "]" + match.Groups(2).Value + "[/url]"
-        Else
-            Return match.Groups(2).Value
-        End If
-    End Function
-
     Shared Sub SendPaste(value As String)
         Dim tmp = Clipboard.GetText()
         value.ToClipboard()

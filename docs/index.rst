@@ -9,6 +9,7 @@ StaxRip Documentation
    generated/screenshots
    usage
    support
+   commands
    macros
    cli
    powershell

@@ -4,8 +4,6 @@ Command Line Interface
 
 .. note:: Switches are processed in the order they appear in the command line.
 
-The command line interface, the customizable main menu and the Event Command feature are built on top of a common command system.
-
 
 Examples
 --------

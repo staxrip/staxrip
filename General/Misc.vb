@@ -889,8 +889,8 @@ Public Class Macro
             ret.Add(New Macro("$select:param1;param2;...$", "Select", GetType(String), "String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value. Example: $select:msg:hello;caption1|value1;caption2|value2$"))
             ret.Add(New Macro("app:name", "Application File Path", GetType(String), "Returns the path of a tool, it can be any type of tool found in the Apps dialog. Example: %app:qtgmc%"))
             ret.Add(New Macro("app_dir:name", "Application Directory", GetType(String), "Returns the directory of a tool, it can be any type of tool found in the Apps dialog. Example: %app_dir:x265%"))
-            ret.Add(New Macro("eval:expression", "Eval Math Expression", GetType(String), "Evaluates a math expression which may contain default macros."))
-            ret.Add(New Macro("eval_ps:expression", "Eval PowerShell Expression", GetType(String), "Evaluates a PowerShell expression which may contain default macros."))
+            ret.Add(New Macro("eval:expression", "Eval Math Expression", GetType(String), "Evaluates a PowerShell expression which may contain macros."))
+            ret.Add(New Macro("eval_ps:expression", "Eval PowerShell Expression", GetType(String), "This macro is obsolete since 2020."))
             ret.Add(New Macro("filter:name", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
             ret.Add(New Macro("media_info_audio:property", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
             ret.Add(New Macro("media_info_video:property", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
@@ -980,23 +980,25 @@ Public Class Macro
         Return ret
     End Function
 
-    Shared Function ExpandGUI(value As String,
-                              Optional throwIfCancel As Boolean = False) As (Value As String,
-                                                                             Caption As String,
-                                                                             Cancel As Boolean)
+    Shared Function ExpandGUI(
+        value As String,
+        Optional throwIfCancel As Boolean = False) As (Value As String, Caption As String, Cancel As Boolean)
 
         Dim ret As (Value As String, Caption As String, Cancel As Boolean) = (value, "", False)
-        If ret.Value = "" Then Return ret
+
+        If ret.Value = "" Then
+            Return ret
+        End If
 
         If ret.Value.Contains("$browse_file$") Then
-            Using d As New OpenFileDialog
-                ret.Cancel = d.ShowDialog <> DialogResult.OK
+            Using dialog As New OpenFileDialog
+                ret.Cancel = dialog.ShowDialog <> DialogResult.OK
 
                 If ret.Cancel Then
                     If throwIfCancel Then Throw New AbortException
                     Return ret
                 Else
-                    ret.Value = ret.Value.Replace("$browse_file$", d.FileName)
+                    ret.Value = ret.Value.Replace("$browse_file$", dialog.FileName)
                 End If
             End Using
         End If
@@ -1371,21 +1373,27 @@ Public Class Macro
                 Next
 
                 value = value.Replace(i.Value, "")
-                If Not value.Contains("%") Then Return value
+
+                If Not value.Contains("%") Then
+                    Return value
+                End If
             Next
         End If
 
         If value.Contains("%eval:") Then
-            If Not value.Contains("%eval:<expression>%") Then
-                Dim mc = Regex.Matches(value, "%eval:(.+?)%")
+            If Not value.Contains("%eval:<expression>%") AndAlso Not value.Contains("%eval:expression%") Then
+                Dim matches = Regex.Matches(value, "%eval:(.+?)%")
 
-                For Each i As Match In mc
+                For Each ma As Match In matches
                     Try
-                        value = value.Replace(i.Value, Misc.Eval(i.Groups(1).Value).ToString)
-                        If Not value.Contains("%") Then Return value
+                        value = value.Replace(ma.Value, PowerShell.InvokeAndConvert(ma.Groups(1).Value))
                     Catch ex As Exception
-                        MsgError("Failed to solve macro '" + i.Value + "': " + BR2 + ex.Message)
+                        value = value.Replace(ma.Value, ex.ToString)
                     End Try
+
+                    If Not value.Contains("%") Then
+                        Return value
+                    End If
                 Next
             End If
         End If
@@ -1408,14 +1416,18 @@ Public Class Macro
             End If
         End If
 
-        For Each i In OS.EnvVars
-            If value = "" OrElse i = "" Then
+        For Each var In OS.EnvVars
+            If value = "" OrElse var = "" Then
                 Continue For
             End If
 
-            If value.ToLowerInvariant.Contains("%" + i.ToLowerInvariant + "%") Then
+            If value.ToLowerInvariant.Contains("%" + var.ToLowerInvariant + "%") Then
                 value = Environment.ExpandEnvironmentVariables(value)
-                If Not value.Contains("%") Then Return value
+
+                If Not value.Contains("%") Then
+                    Return value
+                End If
+
                 Exit For
             End If
         Next

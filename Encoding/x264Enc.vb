@@ -906,7 +906,7 @@ Public Class x264Params
 
     Public Overrides Sub ShowHelp(id As String)
         If Control.ModifierKeys = Keys.Control OrElse Control.ModifierKeys = Keys.Shift Then
-            g.StartProcess("http://www.chaneru.com/Roku/HLS/X264_Settings.htm#" + id.TrimStart("-"c))
+            g.ShellExecute("http://www.chaneru.com/Roku/HLS/X264_Settings.htm#" + id.TrimStart("-"c))
         Else
             g.ShowCommandLineHelp(Package.x264, id)
         End If

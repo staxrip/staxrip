@@ -709,7 +709,7 @@ Public Class AudioForm
         cms.Add("Save Profile...", AddressOf SaveProfile, "Saves the current settings as profile").SetImage(Symbol.Save)
         cms.Add("-")
         cms.Add("Help", AddressOf ShowHelp).SetImage(Symbol.Help)
-        cms.Add("eac3to Help", Sub() g.StartProcess("http://en.wikibooks.org/wiki/Eac3to"))
+        cms.Add("eac3to Help", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to"))
         cms.Add("ffmpeg Help", Sub() Package.ffmpeg.ShowHelp())
 
         TipProvider.SetTip("Profile name that is auto generated when undefined.", laProfileName)

@@ -2,6 +2,17 @@
 2.1.0.7 Beta (not yet available)
 ============
 
+new
+---
+
+- a new documentation page [Commands](https://staxrip.readthedocs.io/commands.html) was created
+
+
+fix
+---
+
+- issue with `Main Menu > Tools > Advanced > Command Prompt and PowerShell`,
+  only people that reset the main menu will see the fix
 
 
 2.1.0.6 Beta

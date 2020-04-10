@@ -435,9 +435,9 @@ Public Class SubtitleControl
         End If
 
         If FileTypes.SubtitleExludingContainers.Contains(filepath.Ext) Then
-            g.StartProcess(Package.mpvnet.Path, "--sub-file=" + filepath.Escape + " " + p.FirstOriginalSourceFile.Escape)
+            g.ShellExecute(Package.mpvnet.Path, "--sub-file=" + filepath.Escape + " " + p.FirstOriginalSourceFile.Escape)
         ElseIf p.FirstOriginalSourceFile = filepath Then
-            g.StartProcess(Package.mpvnet.Path, "--sub=" & (st.Index + 1) & " " + filepath.Escape)
+            g.ShellExecute(Package.mpvnet.Path, "--sub=" & (st.Index + 1) & " " + filepath.Escape)
         End If
     End Sub
 
@@ -484,7 +484,7 @@ Public Class SubtitleControl
                 FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
             End If
 
-            g.StartProcess(Package.BDSup2SubPP.Path, """" + fp + """")
+            g.ShellExecute(Package.BDSup2SubPP.Path, """" + fp + """")
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -501,7 +501,7 @@ Public Class SubtitleControl
                 FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
             End If
 
-            g.StartProcess(Package.SubtitleEdit.Path, fp.Escape)
+            g.ShellExecute(Package.SubtitleEdit.Path, fp.Escape)
         Catch ex As Exception
             g.ShowException(ex)
         End Try

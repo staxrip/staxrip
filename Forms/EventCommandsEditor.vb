@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class EventCommandsEditor
@@ -254,7 +255,7 @@ Public Class EventCommandsEditor
         Next
     End Sub
 
-    Private Sub bnAdd_Click() Handles bnAdd.Click
+    Sub bnAdd_Click() Handles bnAdd.Click
         Dim ec As New EventCommand
 
         Using editor As New EventCommandEditor(ec)
@@ -264,18 +265,15 @@ Public Class EventCommandsEditor
         End Using
     End Sub
 
-    Private Sub EventCommandsEditor_HelpRequested() Handles Me.HelpRequested
-        Dim form As New HelpForm
-        form.Doc.WriteStart(Text)
-        form.Doc.WriteP(Strings.EventCommands)
-        form.Show()
+    Sub EventCommandsEditor_HelpRequested() Handles Me.HelpRequested
+        g.ShowPage("commands")
     End Sub
 
-    Private Sub bnClone_Click() Handles bnClone.Click
+    Sub bnClone_Click() Handles bnClone.Click
         lv.AddItem(ObjectHelp.GetCopy(lv.SelectedItem)).Selected = True
     End Sub
 
-    Private Sub bnEdit_Click(sender As Object, e As EventArgs) Handles bnEdit.Click
+    Sub bnEdit_Click(sender As Object, e As EventArgs) Handles bnEdit.Click
         Using f As New EventCommandEditor(lv.SelectedItem(Of EventCommand))
             If f.ShowDialog = DialogResult.OK Then lv.RefreshSelection()
         End Using

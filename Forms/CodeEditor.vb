@@ -477,16 +477,16 @@ Public Class CodeEditor
                                      Dim filterPath = installDir + "\Docs\English\corefilters\" + helpText + ".htm"
 
                                      If File.Exists(filterPath) Then
-                                         Menu.Add("Help | " + helpText, Sub() g.StartProcess(filterPath), filterPath)
+                                         Menu.Add("Help | " + helpText, Sub() g.ShellExecute(filterPath), filterPath)
                                      End If
 
                                      Dim helpIndex = installDir + "\Docs\English\overview.htm"
 
                                      If File.Exists(helpIndex) Then
-                                         Menu.Add("Help | AviSynth local", Sub() g.StartProcess(helpIndex), helpIndex)
+                                         Menu.Add("Help | AviSynth local", Sub() g.ShellExecute(helpIndex), helpIndex)
                                      End If
 
-                                     Menu.Add("Help | AviSynth Help", Sub() g.StartProcess("http://avisynth.nl"), "http://avisynth.nl")
+                                     Menu.Add("Help | AviSynth Help", Sub() g.ShellExecute("http://avisynth.nl"), "http://avisynth.nl")
                                      Menu.Add("Help | -")
 
                                      For Each pluginPack In Package.Items.Values.OfType(Of PluginPackage)

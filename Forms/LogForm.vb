@@ -33,7 +33,7 @@ Public Class LogForm
         If lb.SelectedItem Is Nothing Then Exit Sub
 
         If lb.SelectedItem.ToString.StartsWith("Open with") Then
-            g.StartProcess(g.GetTextEditorPath, p.Log.GetPath.Escape)
+            g.ShellExecute(g.GetTextEditorPath, p.Log.GetPath.Escape)
         Else
             rtb.Find(lb.SelectedItem.ToString)
             rtb.ScrollToCaret()

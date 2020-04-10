@@ -1,4 +1,4 @@
-.. option:: -AddFilter:active,name,category,script
+.. option:: AddFilter
 
     Adds a filter at the end of the script.
 
@@ -10,7 +10,7 @@
     * - category <string>
     * - script <string>
 
-.. option:: -AddJob:showConfirmation,templateName
+.. option:: AddJob
 
     Adds a job to the job list.
 
@@ -22,15 +22,15 @@
     * - templateName <string>
       - Template Name: Name of the template to be loaded after the job was added. Empty to load no template.
 
-.. option:: -CheckForUpdate
+.. option:: CheckForUpdate
 
     Checks if a update is available.
 
-.. option:: -ClearJobs
+.. option:: ClearJobs
 
     Clears the job list.
 
-.. option:: -CopyToClipboard:value
+.. option:: CopyToClipboard
 
     Copies a string to the clipboard.
 
@@ -40,7 +40,7 @@
     * - value <string>
       - Copies text to the clipboard. May contain macros.
 
-.. option:: -DeleteFiles:dir,filter
+.. option:: DeleteFiles
 
     Deletes files in a given directory.
 
@@ -52,7 +52,7 @@
     * - filter <string>
       - Example: '.txt .log'
 
-.. option:: -DynamicMenuItem:id
+.. option:: DynamicMenuItem
 
     Placeholder for dynamically updated menu items.
 
@@ -62,7 +62,7 @@
     * - id <dynamicmenuitemid>
       -  Audio1Profiles, Audio2Profiles, EncoderProfiles, FilterSetupProfiles, MuxerProfiles, RecentProjects, TemplateProjects, HelpApplications, Scripts
 
-.. option:: -ExecuteCommandLine:commandLine,waitForExit,showProcessWindow,useShellExecute,workingDirectory
+.. option:: ExecuteCommandLine
 
     Executes a command line. If Shell Execute is disabled then macros are passed in as environment variables.
 
@@ -80,7 +80,7 @@
     * - workingDirectory <string>
       - Working Directory: Working directory the process will use.
 
-.. option:: -ExecutePowerShellScript:code,externalShell
+.. option:: ExecutePowerShellScript
 
     Executes PowerShell script code.
 
@@ -92,7 +92,7 @@
     * - externalShell <boolean>
       - Use External Shell: Execute in StaxRip to automate StaxRip or use external shell.
 
-.. option:: -ExecuteScriptFile:filepath
+.. option:: ExecuteScriptFile
 
     Executes a PowerShell PS1 script file.
 
@@ -102,11 +102,11 @@
     * - filepath <string>
       - File Path: Filepath to a PowerShell PS1 script file. May contain macros.
 
-.. option:: -Exit
+.. option:: Exit
 
     Exits StaxRip
 
-.. option:: -ImportVideoEncoderCommandLine:commandLine
+.. option:: ImportVideoEncoderCommandLine
 
     Changes video encoder settings.
 
@@ -116,7 +116,7 @@
     * - commandLine <string>
       - Command Line
 
-.. option:: -LoadProfile:videoProfile,audioProfile1,audioProfile2
+.. option:: LoadProfile
 
     Loads a audio or video profile.
 
@@ -130,7 +130,7 @@
     * - audioProfile2 <string>
       - Audio 2
 
-.. option:: -LoadSourceFile:path
+.. option:: LoadSourceFile
 
     Loads a source file.
 
@@ -140,7 +140,7 @@
     * - path <string>
       - Source File Path
 
-.. option:: -LoadTemplate:name
+.. option:: LoadTemplate
 
     Loads a template.
 
@@ -149,7 +149,7 @@
 
     * - name <string>
 
-.. option:: -OpenHelpTopic:topic
+.. option:: OpenHelpTopic
 
     Opens a given help topic In the help browser.
 
@@ -159,7 +159,7 @@
     * - topic <string>
       - Help Topic: Name Of the help topic To be opened.
 
-.. option:: -PlaySound:FilePath,Volume
+.. option:: PlaySound
 
     Plays a mp3, wav Or wmv sound file.
 
@@ -171,39 +171,39 @@
     * - Volume <integer>
       - Volume (%)
 
-.. option:: -ResetSettings
+.. option:: ResetSettings
 
     Shows a dialog allowing to reset specific settings.
 
-.. option:: -SaveGIF
+.. option:: SaveGIF
 
     Shows a Open File dialog to generate a short GIF.
 
-.. option:: -SaveMKVHDR
+.. option:: SaveMKVHDR
 
     Shows a Open File dialog to add the remaining HDR10 Metadata to a MKV file.
 
-.. option:: -SaveMTN
+.. option:: SaveMTN
 
     Shows a Open File dialog to generate thumbnails using mtn engine
 
-.. option:: -SavePNG
+.. option:: SavePNG
 
     Shows a open file dialog to create a high quality PNG animation.
 
-.. option:: -SaveProject
+.. option:: SaveProject
 
     Saves the current project.
 
-.. option:: -SaveProjectAs
+.. option:: SaveProjectAs
 
     Saves the current project.
 
-.. option:: -SaveProjectAsTemplate
+.. option:: SaveProjectAsTemplate
 
     Saves the current project as template.
 
-.. option:: -SaveProjectPath:path
+.. option:: SaveProjectPath
 
     Saves the current project at the specified path.
 
@@ -213,7 +213,7 @@
     * - path <string>
       - The path may contain macros.
 
-.. option:: -SetBitrate:bitrate
+.. option:: SetBitrate
 
     Sets the target video bitrate in Kbps.
 
@@ -223,7 +223,7 @@
     * - bitrate <integer>
       - Target Video Bitrate
 
-.. option:: -SetFilter:name,category,script
+.. option:: SetFilter
 
     Sets a filter replacing a existing filter of same category.
 
@@ -234,7 +234,7 @@
     * - category <string>
     * - script <string>
 
-.. option:: -SetHideDialogsOption:hide
+.. option:: SetHideDialogsOption
 
     Sets the project option 'Hide dialogs asking to demux, source filter etc.'
 
@@ -243,7 +243,7 @@
 
     * - hide <boolean>
 
-.. option:: -SetPercent:value
+.. option:: SetPercent
 
     Sets the bitrate according to the compressibility.
 
@@ -253,7 +253,7 @@
     * - value <integer>
       - Percent Value
 
-.. option:: -SetSize:targetSize
+.. option:: SetSize
 
     Sets the target file size in MB.
 
@@ -263,7 +263,7 @@
     * - targetSize <integer>
       - Target File Size
 
-.. option:: -SetTargetFile:path
+.. option:: SetTargetFile
 
     Sets the file path of the target file.
 
@@ -273,7 +273,7 @@
     * - path <string>
       - Target File Path
 
-.. option:: -SetTargetImageSize:width,height
+.. option:: SetTargetImageSize
 
     Sets the target image size.
 
@@ -283,7 +283,7 @@
     * - width <integer>
     * - height <integer>
 
-.. option:: -SetTargetImageSizeByPixel:pixel
+.. option:: SetTargetImageSizeByPixel
 
     Sets the target image size by pixels (width x height).
 
@@ -292,11 +292,11 @@
 
     * - pixel <integer>
 
-.. option:: -ShowAppsDialog
+.. option:: ShowAppsDialog
 
     Dialog to manage external tools.
 
-.. option:: -ShowAudioProfilesDialog:number
+.. option:: ShowAudioProfilesDialog
 
     Dialog to manage audio profiles.
 
@@ -306,47 +306,47 @@
     * - number <integer>
       - Track Number (0 or 1)
 
-.. option:: -ShowBatchGenerateThumbnailsDialog
+.. option:: ShowBatchGenerateThumbnailsDialog
 
     Shows a dialog to generate thumbnails.
 
-.. option:: -ShowCropDialog
+.. option:: ShowCropDialog
 
     Shows the crop dialog to crop borders.
 
-.. option:: -ShowDemuxTool
+.. option:: ShowDemuxTool
 
     Allows to use StaxRip's demuxing GUIs independently.
 
-.. option:: -ShowEncoderProfilesDialog
+.. option:: ShowEncoderProfilesDialog
 
     Shows a dialog to manage video encoder profiles.
 
-.. option:: -ShowEventCommandsDialog
+.. option:: ShowEventCommandsDialog
 
     Shows the Event Command dialog.
 
-.. option:: -ShowFileBrowserToOpenProject
+.. option:: ShowFileBrowserToOpenProject
 
     Shows a file browser to open a project file.
 
-.. option:: -ShowFilterProfilesDialog
+.. option:: ShowFilterProfilesDialog
 
     Dialog to configure AviSynth filter profiles.
 
-.. option:: -ShowFiltersEditor
+.. option:: ShowFiltersEditor
 
     Dialog to edit filters.
 
-.. option:: -ShowFilterSetupProfilesDialog
+.. option:: ShowFilterSetupProfilesDialog
 
     Dialog to configure filter setup profiles.
 
-.. option:: -ShowHardcodedSubtitleDialog
+.. option:: ShowHardcodedSubtitleDialog
 
     Shows a dialog to add a hardcoded subtitle.
 
-.. option:: -ShowHelpURL:url
+.. option:: ShowHelpURL
 
     Opens a given URL or local file in the help browser.
 
@@ -356,19 +356,19 @@
     * - url <string>
       - URL or local file to be shown in the internet explorer powered help browser.
 
-.. option:: -ShowJobsDialog
+.. option:: ShowJobsDialog
 
     Dialog to manage batch jobs.
 
-.. option:: -ShowLogFile
+.. option:: ShowLogFile
 
     Shows the log file with the built-in log file viewer.
 
-.. option:: -ShowMainMenuEditor
+.. option:: ShowMainMenuEditor
 
     Dialog to configure the main menu.
 
-.. option:: -ShowMediaInfo:filepath
+.. option:: ShowMediaInfo
 
     Shows media info on a given file.
 
@@ -378,15 +378,15 @@
     * - filepath <string>
       - The filepath may contain macros.
 
-.. option:: -ShowMediaInfoBrowse
+.. option:: ShowMediaInfoBrowse
 
     Shows a Open File dialog to show media info.
 
-.. option:: -ShowMediaInfoFolderViewDialog
+.. option:: ShowMediaInfoFolderViewDialog
 
     Presents MediaInfo of all files in a folder in a list view.
 
-.. option:: -ShowMessageBox:mainInstruction,content,icon
+.. option:: ShowMessageBox
 
     Shows a message box.
 
@@ -400,71 +400,71 @@
     * - icon <msgicon>
       -  None, Error, Question, Warning, Info
 
-.. option:: -ShowMkvInfo
+.. option:: ShowMkvInfo
 
     Shows a Open File dialog to open a file to be shown by the console tool mkvinfo.
 
-.. option:: -ShowMuxerProfilesDialog
+.. option:: ShowMuxerProfilesDialog
 
     Dialog to manage Muxer profiles.
 
-.. option:: -ShowOpenSourceDialog
+.. option:: ShowOpenSourceDialog
 
     Dialog to open source files.
 
-.. option:: -ShowOptionsDialog
+.. option:: ShowOptionsDialog
 
     Dialog to configure project options.
 
-.. option:: -ShowPreview
+.. option:: ShowPreview
 
     Dialog to preview or cut the video.
 
-.. option:: -ShowScriptInfo
+.. option:: ShowScriptInfo
 
     Shows script info using various console tools.
 
-.. option:: -ShowSettingsDialog
+.. option:: ShowSettingsDialog
 
     Shows the settings dialog.
 
-.. option:: -ShowSizeMenuEditor
+.. option:: ShowSizeMenuEditor
 
     Menu editor for the size menu.
 
-.. option:: -ShowVideoComparison
+.. option:: ShowVideoComparison
 
     Shows a dialog to compare different videos.
 
-.. option:: -Shutdown
+.. option:: Shutdown
 
     Shut down PC.
 
-.. option:: -Standby
+.. option:: Standby
 
     Standby PC.
 
-.. option:: -StartAutoCrop
+.. option:: StartAutoCrop
 
     Crops borders automatically.
 
-.. option:: -StartCompCheck
+.. option:: StartCompCheck
 
     Starts the compressibility check.
 
-.. option:: -StartEncoding
+.. option:: StartEncoding
 
     Creates a job and runs the job list.
 
-.. option:: -StartJobs
+.. option:: StartJobs
 
     Runs all active jobs of the job list.
 
-.. option:: -StartSmartCrop
+.. option:: StartSmartCrop
 
     Crops borders automatically until the proper aspect ratio is found.
 
-.. option:: -StartTool:name
+.. option:: StartTool
 
     Starts a tool by name as shown in the app manage dialog.
 
@@ -474,11 +474,11 @@
     * - name <string>
       - Tool Name: Tool name as shown in the app manage dialog.
 
-.. option:: -TestAndDynamicFileCreation
+.. option:: TestAndDynamicFileCreation
 
     Development tests and creation of doc files.
 
-.. option:: -WriteLog:header,message
+.. option:: WriteLog
 
     Writes a log message to the log file.
 

@@ -2,6 +2,7 @@
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Reflection
+Imports System.Runtime.InteropServices
 Imports System.Text
 Imports DirectN
 Imports Microsoft.Win32
@@ -88,24 +89,6 @@ Public Class GlobalCommands
         g.ProcessJobs()
     End Sub
 
-    <Command("Shows a command prompt. Console apps are added to the path environment variable and macros are added as environment variables.")>
-    Sub ShowCommandPrompt()
-        Try
-            g.RunCommandInTerminal("wt.exe", "cmd.exe")
-        Catch
-            g.RunCommandInTerminal("cmd.exe")
-        End Try
-    End Sub
-
-    <Command("Shows a PowerShell terminal. Console apps are added to the path environment variable and macros are added as environment variables.")>
-    Sub ShowPowerShell()
-        Try
-            g.RunCommandInTerminal("wt.exe", "powershell.exe -nologo")
-        Catch
-            g.RunCommandInTerminal("powershell.exe")
-        End Try
-    End Sub
-
     <Command("Executes a command line. If Shell Execute is disabled then macros are passed in as environment variables.")>
     Sub ExecuteCommandLine(
         <DispName("Command Line"),
@@ -120,10 +103,13 @@ Public Class GlobalCommands
         Description("Redirects the output of console apps to StaxRips process window. Disables Shell Execute."),
         DefaultValue(False)>
         showProcessWindow As Boolean,
-        <DispName("Shell Execute"),
+        <DispName("Use Shell Execute"),
         Description("Executes the command line using the shell. Available when the Show Process Window option is disabled."),
         DefaultValue(True)>
-        Optional useShellExecute As Boolean = True)
+        useShellExecute As Boolean,
+        <DispName("Working Directory"),
+        Description("Working directory the process will use.")>
+        workingDirectory As String)
 
         commandLine = Macro.Expand(commandLine)
 
@@ -131,44 +117,12 @@ Public Class GlobalCommands
             proc.Header = "Execute Command Line"
             proc.CommandLine = commandLine
             proc.Wait = waitForExit
+            proc.WorkingDirectory = workingDirectory
 
             If showProcessWindow OrElse Not useShellExecute Then
                 proc.Process.StartInfo.UseShellExecute = False
                 proc.SetEnvironmentVariables()
             End If
-
-            Try
-                proc.Start()
-            Catch ex As Exception
-                g.ShowException(ex)
-                Log.WriteLine(ex.Message)
-            End Try
-        End Using
-    End Sub
-
-    <Command("This functionality was deprecated in 2020 and might get removed any time. Saves a batch script as bat file and executes it. Macros are solved as well as passed in as environment variables.")>
-    Sub ExecuteBatchScript(
-        <DispName("Batch Script Code"),
-        Description("Batch script code to be executed. Macros are solved as well as passed in as environment variables."),
-        Editor(GetType(CommandLineTypeEditor), GetType(UITypeEditor))>
-        batchScript As String)
-
-        Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
-        Dim batchCode = Macro.Expand(batchScript)
-        File.WriteAllText(batchPath, batchCode, Encoding.Default)
-        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
-
-        Using proc As New Proc
-            proc.Header = "Execute Batch Script"
-            proc.WriteLog(batchCode + BR2)
-            proc.File = "cmd.exe"
-            proc.Arguments = "/C call """ + batchPath + """"
-            proc.Wait = True
-            proc.Process.StartInfo.UseShellExecute = False
-
-            For Each i In Macro.GetMacros
-                proc.Process.StartInfo.EnvironmentVariables(i.Name.Trim("%"c)) = Macro.Expand(i.Name)
-            Next
 
             Try
                 proc.Start()
@@ -295,7 +249,7 @@ Public Class GlobalCommands
         If msg <> "" Then
             Dim fs = Folder.Temp + "staxrip test.txt"
             File.WriteAllText(fs, BR + msg.Trim + BR)
-            g.StartProcess(fs)
+            g.ShellExecute(fs)
         Else
             MsgInfo("No issues found.")
         End If
@@ -389,9 +343,9 @@ Public Class GlobalCommands
             Dim path = Registry.CurrentUser.GetString("Software\Microsoft\Windows\CurrentVersion\App Paths\MediaInfoNET.exe", Nothing)
 
             If File.Exists(path) Then
-                g.StartProcess(path, filepath.Escape)
+                g.ShellExecute(path, filepath.Escape)
             Else
-                g.StartProcess(Application.ExecutablePath, "-mediainfo " + filepath.Escape)
+                g.ShellExecute(Application.ExecutablePath, "-mediainfo " + filepath.Escape)
             End If
         Else
             MsgWarn("No file found.")
@@ -489,11 +443,6 @@ Public Class GlobalCommands
         g.MainForm.OpenVideoSourceFile(path)
     End Sub
 
-    <Command("This functionality was deprecated 2020 and might get removed at any time. Use ShowMkvInfo instead.")>
-    Sub MediainfoMKV()
-        ShowMkvInfo()
-    End Sub
-
     <Command("Shows a Open File dialog to open a file to be shown by the console tool mkvinfo.")>
     Sub ShowMkvInfo()
         Using dialog As New OpenFileDialog
@@ -503,11 +452,6 @@ Public Class GlobalCommands
                 g.RunCodeInTerminal($"& '{Package.mkvinfo.Path}' '{dialog.FileName}'")
             End If
         End Using
-    End Sub
-
-    <Command("This functionality was deprecated 2020 and might get removed at any time. Use ShowMediaInfoBrowse instead.")>
-    Private Sub MediaInfoShowMedia()
-        ShowMediaInfoBrowse()
     End Sub
 
     <Command("Shows a Open File dialog to add the remaining HDR10 Metadata to a MKV file.")>
@@ -949,7 +893,7 @@ Public Class GlobalCommands
                 s.Storage.SetString("MediaInfo Folder View folder", dialog.SelectedPath)
 
                 Dim code = $". '{Package.GetMediaInfo.Path}'; Get-ChildItem '{dialog.SelectedPath.FixDir}' | Get-MediaInfo | Out-GridView"
-                g.StartProcess("powershell.exe", "-nologo -noexit -command " + code.Escape)
+                g.ShellExecute("powershell.exe", "-nologo -noexit -command " + code.Escape)
             End If
         End Using
     End Sub
@@ -974,5 +918,80 @@ Public Class GlobalCommands
             s.Versions(sb.SelectedValue) = 0
             MsgInfo("Will be reseted on next startup.")
         End If
+    End Sub
+
+    <Command("This command is obsolete since 2020.")>
+    Private Sub ShowLAVFiltersConfigDialog()
+        Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.LAVVideoDecoder.ToString + "\InprocServer32", Nothing)
+
+        If File.Exists(ret) Then
+            Static loaded As Boolean
+
+            If Not loaded Then
+                Native.LoadLibrary(ret)
+                loaded = True
+            End If
+
+            OpenConfiguration(Nothing, Nothing, Nothing, Nothing)
+        Else
+            MsgError("The LAV Filters video decoder library could not be located.")
+        End If
+    End Sub
+
+    <DllImport("LAVVideo.ax")>
+    Shared Sub OpenConfiguration(hwnd As IntPtr, hinst As IntPtr, lpszCmdLine As String, nCmdShow As Integer)
+    End Sub
+
+    <Command("This command is obsolete since 2020.")>
+    Sub ShowCommandPrompt()
+        g.RunCommandInTerminal("cmd.exe")
+    End Sub
+
+    <Command("This command is obsolete since 2020.")>
+    Sub ShowPowerShell()
+        g.RunCommandInTerminal("powershell.exe")
+    End Sub
+
+    <Command("This command is obsolete since 2020.")>
+    Sub ExecuteBatchScript(
+        <DispName("Batch Script Code"),
+        Description("Batch script code to be executed. Macros are solved as well as passed in as environment variables."),
+        Editor(GetType(CommandLineTypeEditor), GetType(UITypeEditor))>
+        batchScript As String)
+
+        Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
+        Dim batchCode = Macro.Expand(batchScript)
+        File.WriteAllText(batchPath, batchCode, Encoding.Default)
+        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
+
+        Using proc As New Proc
+            proc.Header = "Execute Batch Script"
+            proc.WriteLog(batchCode + BR2)
+            proc.File = "cmd.exe"
+            proc.Arguments = "/C call """ + batchPath + """"
+            proc.Wait = True
+            proc.Process.StartInfo.UseShellExecute = False
+
+            For Each i In Macro.GetMacros
+                proc.Process.StartInfo.EnvironmentVariables(i.Name.Trim("%"c)) = Macro.Expand(i.Name)
+            Next
+
+            Try
+                proc.Start()
+            Catch ex As Exception
+                g.ShowException(ex)
+                Log.WriteLine(ex.Message)
+            End Try
+        End Using
+    End Sub
+
+    <Command("This command is obsolete since 2020.")>
+    Sub MediainfoMKV()
+        ShowMkvInfo()
+    End Sub
+
+    <Command("This command is obsolete since 2020.")>
+    Private Sub MediaInfoShowMedia()
+        ShowMediaInfoBrowse()
     End Sub
 End Class

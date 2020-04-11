@@ -122,10 +122,26 @@ Public Class Package
     Shared Property MediaInfo As Package = Add(New Package With {
         .Name = "MediaInfo",
         .Filename = "MediaInfo.dll",
-        .Location = "Support\MediaInfo",
+        .Location = "Support\MediaInfo.NET",
         .WebURL = "http://mediaarea.net/en/MediaInfo",
         .DownloadURL = "https://mediaarea.net/en/MediaInfo/Download/Windows",
         .Description = "Used to retrieve info from media files."})
+
+    Shared Property MediaInfoNET As Package = Add(New Package With {
+        .Name = "MediaInfo.NET",
+        .Filename = "MediaInfoNET.exe",
+        .Location = "Support\MediaInfo.NET",
+        .WebURL = "https://github.com/stax76/MediaInfo.NET",
+        .DownloadURL = "https://github.com/stax76/MediaInfo.NET/releases",
+        .Description = "Used to retrieve info from media files."})
+
+    Shared Property GetMediaInfo As Package = Add(New Package With {
+        .Name = "Get-MediaInfo",
+        .Location = "support\MediaInfo.NET",
+        .Filename = "Get-MediaInfo.ps1",
+        .Description = "Complete PowerShell MediaInfo solution.",
+        .WebURL = "https://github.com/stax76/Get-MediaInfo",
+        .DownloadURL = "https://github.com/stax76/Get-MediaInfo/releases"})
 
     Shared Property MP4Box As Package = Add(New Package With {
         .Name = "MP4Box",
@@ -196,14 +212,6 @@ Public Class Package
         .HelpFilename = "doc\AVSMeter.html",
         .WebURL = "http://forum.doom9.org/showthread.php?t=174797",
         .HelpSwitch = ""})
-
-    Shared Property GetMediaInfo As Package = Add(New Package With {
-        .Name = "Get-MediaInfo",
-        .Location = "support\Get-MediaInfo",
-        .Filename = "Get-MediaInfo.ps1",
-        .Description = "PowerShell MediaInfo solution.",
-        .WebURL = "https://github.com/stax76/Get-MediaInfo",
-        .DownloadURL = "https://github.com/stax76/Get-MediaInfo/releases"})
 
     Shared Property vspipe As Package = Add(New Package With {
         .Name = "vspipe",

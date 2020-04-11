@@ -1557,20 +1557,12 @@ Public Class Startup
     Shared Sub Main()
         AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
         Application.EnableVisualStyles()
-        'use new GDI/TextRenderer by default instead of old GDI+/Graphics.DrawString
         Application.SetCompatibleTextRenderingDefault(False)
-        Dim args = Environment.GetCommandLineArgs.Skip(1)
-
-        If args.Count = 2 AndAlso args(0) = "-mediainfo" Then
-            ToolStripManager.Renderer = New ToolStripRendererEx(ToolStripRenderModeEx.SystemDefault)
-            Application.Run(New MediaInfoForm(args(1)) With {.ShowInTaskbar = True})
-        Else
-            Application.Run(New MainForm())
-        End If
+        Application.Run(New MainForm())
     End Sub
 End Class
 
-'not used since minimum 2017 
+'obsolete since 2017 
 <Serializable()>
 Public Class Dummy
 End Class

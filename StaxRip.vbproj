@@ -226,9 +226,6 @@
     <Compile Include="Forms\SimpleSettingsForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MediaInfoForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\eac3toForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -489,9 +486,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CommandLineDemuxForm.resx">
       <DependentUpon>CommandLineDemuxForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MediaInfoForm.resx">
-      <DependentUpon>MediaInfoForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\eac3toForm.resx">
       <DependentUpon>eac3toForm.vb</DependentUpon>

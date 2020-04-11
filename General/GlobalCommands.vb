@@ -333,22 +333,20 @@ Public Class GlobalCommands
     <Command("Shows media info on a given file.")>
     Sub ShowMediaInfo(
         <DispName("Filepath")>
-        <Description("The filepath may contain macros.")>
+        <Description("May contain macros.")>
         <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
         filepath As String)
 
         filepath = Macro.Expand(filepath)
 
         If File.Exists(filepath) Then
-            Dim path = Registry.CurrentUser.GetString("Software\Microsoft\Windows\CurrentVersion\App Paths\MediaInfoNET.exe", Nothing)
-
-            If File.Exists(path) Then
-                g.ShellExecute(path, filepath.Escape)
-            Else
-                g.ShellExecute(Application.ExecutablePath, "-mediainfo " + filepath.Escape)
-            End If
+            g.ShellExecute(Package.MediaInfoNET.Path, filepath.Escape)
         Else
-            MsgWarn("No file found.")
+            Using dialog As New OpenFileDialog
+                If dialog.ShowDialog = DialogResult.OK Then
+                    ShowMediaInfo(dialog.FileName)
+                End If
+            End Using
         End If
     End Sub
 
@@ -891,9 +889,7 @@ Public Class GlobalCommands
 
             If dialog.ShowDialog = DialogResult.OK Then
                 s.Storage.SetString("MediaInfo Folder View folder", dialog.SelectedPath)
-
-                Dim code = $". '{Package.GetMediaInfo.Path}'; Get-ChildItem '{dialog.SelectedPath.FixDir}' | Get-MediaInfo | Out-GridView"
-                g.ShellExecute("powershell.exe", "-nologo -noexit -command " + code.Escape)
+                g.InvokePowerShellCode($". '{Package.GetMediaInfo.Path}'; Get-ChildItem '{dialog.SelectedPath}' | Get-MediaInfo | Out-GridView")
             End If
         End Using
     End Sub

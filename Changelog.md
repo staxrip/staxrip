@@ -10,7 +10,8 @@ new
   which was ported to good old .NET Framework 4.8. StaxRip includes only one MediaInfo.dll
   and it's located in the MediaInfo.NET folder and there is also only one Get-MediaInfo.ps1 also
   located in the MediaInfo.NET folder. The folder view now uses the internal PowerShell instead
-  of showing a terminal. Get-MediaInfo.ps1 was updated to 3.0.
+  of showing a terminal. Get-MediaInfo.ps1 was updated to 3.0
+- much improved issue templates on the [github issue tracker](https://github.com/staxrip/staxrip/issues/new/choose)
 
 
 fix

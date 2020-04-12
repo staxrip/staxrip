@@ -6,6 +6,11 @@ new
 ---
 
 - a new documentation page [Commands](https://staxrip.readthedocs.io/commands.html) was created
+- internal MediaInfo GUI replaced with external MediaInfo.NET app
+  which was ported to good old .NET Framework 4.8. StaxRip includes only one MediaInfo.dll
+  and it's located in the MediaInfo.NET folder and there is also only one Get-MediaInfo.ps1 also
+  located in the MediaInfo.NET folder. The folder view now uses the internal PowerShell instead
+  of showing a terminal. Get-MediaInfo.ps1 was updated to 3.0.
 
 
 fix

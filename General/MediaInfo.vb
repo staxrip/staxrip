@@ -1,7 +1,6 @@
 
 Imports System.Runtime.InteropServices
 Imports System.Text.RegularExpressions
-Imports Microsoft.Win32
 
 Public Class MediaInfo
     Implements IDisposable
@@ -17,10 +16,6 @@ Public Class MediaInfo
 
         Handle = MediaInfo_New()
         MediaInfo_Open(Handle, path)
-
-        If Registry.CurrentUser.GetBoolean("Software\" + Application.ProductName, "DevMode") Then
-            MediaInfo_Option(Handle, "Language", "raw")
-        End If
     End Sub
 
     Private VideoStreamsValue As List(Of VideoStream)

@@ -2,8 +2,6 @@
 Imports System.Text
 Imports System.Text.RegularExpressions
 
-Imports VB6 = Microsoft.VisualBasic
-
 <Serializable()>
 Public MustInherit Class Demuxer
     MustOverride Sub Run(proj As Project)

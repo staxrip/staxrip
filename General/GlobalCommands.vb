@@ -881,7 +881,7 @@ Public Class GlobalCommands
         End Using
     End Sub
 
-    <Command("Presents MediaInfo of all files in a folder in a list view.")>
+    <Command("Presents MediaInfo of all files in a folder in a grid view.")>
     Sub ShowMediaInfoFolderViewDialog()
         Using dialog As New FolderBrowserDialog
             dialog.ShowNewFolderButton = False

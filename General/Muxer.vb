@@ -3,7 +3,7 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Globalization
 Imports System.Xml.Linq
-Imports vb6 = Microsoft.VisualBasic
+Imports VB6 = Microsoft.VisualBasic
 Imports System.ComponentModel
 Imports System.Runtime.Serialization
 
@@ -168,9 +168,9 @@ Public MustInherit Class Muxer
             If fp.Ext = "idx" Then
                 Dim v = fp.ReadAllTextDefault
 
-                If v.Contains(vb6.ChrW(&HA) + vb6.ChrW(&H0) + vb6.ChrW(&HD) + vb6.ChrW(&HA)) Then
+                If v.Contains(VB6.ChrW(&HA) + VB6.ChrW(&H0) + VB6.ChrW(&HD) + VB6.ChrW(&HA)) Then
                     v = v.FixBreak
-                    v = v.Replace(BR + vb6.ChrW(&H0) + BR, BR + "langidx: 0" + BR)
+                    v = v.Replace(BR + VB6.ChrW(&H0) + BR, BR + "langidx: 0" + BR)
                     File.WriteAllText(fp, v, Encoding.Default)
                 End If
             End If
@@ -798,7 +798,7 @@ Public Class MkvMuxer
                     "mp2", "mpa", "mp3",
                     "ogg", "ogm",
                     "dts", "dtsma", "dtshr", "dtshd",
-                    "mpg", "m2v", "mpv",
+                    "mpg", "m2v", "mpv", "vob", "mpeg",
                     "ts", "m2ts",
                     "opus", "flac"}
         End Get

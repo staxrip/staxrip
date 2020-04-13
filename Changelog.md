@@ -5,20 +5,21 @@
 new
 ---
 
-- a new documentation page [Commands](https://staxrip.readthedocs.io/commands.html) was created
-- internal MediaInfo GUI replaced with external MediaInfo.NET app
-  which was ported to good old .NET Framework 4.8. StaxRip includes only one MediaInfo.dll
-  and it's located in the MediaInfo.NET folder and there is also only one Get-MediaInfo.ps1 also
-  located in the MediaInfo.NET folder. The folder view now uses the internal PowerShell instead
-  of showing a terminal. Get-MediaInfo.ps1 was updated to 3.0
-- much improved issue templates on the [github issue tracker](https://github.com/staxrip/staxrip/issues/new/choose)
+- a new documentation page [Commands](https://staxrip.readthedocs.io/commands.html) was created.
+- the built-in MediaInfo GUI was replaced with MediaInfo.NET which was ported to .NET Framework 4.8.
+- the MediaInfo folder view powered by Get-MediaInfo.ps1 v3.0 is shown
+  without starting a terminal and it has few bugs fixed.
+- the issue templates on the [github issue tracker](https://github.com/staxrip/staxrip/issues/new/choose) were improved
 
 
 fix
 ---
 
-- issue with `Main Menu > Tools > Advanced > Command Prompt and PowerShell`,
-  only people that reset the main menu will see the fix
+- `Main Menu > Tools > Advanced > Command Prompt and PowerShell` can be configured in
+  the menu editor because it's based on the ExecuteCommandLine command, it has better
+  default values. Only people who reset or manually config the main menu will see the change.
+- the ExecuteCommandLine command has a new Working Directory parameter.
+- issue causing audio to be silently ignored instead of muxed
 
 
 2.1.0.6 Beta

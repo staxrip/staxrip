@@ -154,7 +154,10 @@ Public MustInherit Class AudioProfile
                     Throw New NotImplementedException
             End Select
 
-            If Not SupportedInput.Contains(ret) Then ret = "wav"
+            If Not SupportedInput.Contains(ret) Then
+                ret = "wav"
+            End If
+
             Return ret
         End Get
     End Property
@@ -1094,9 +1097,13 @@ Public Class GUIAudioProfile
                 Case GuiAudioEncoder.Eac3to
                     Return FileTypes.eac3toInput
                 Case GuiAudioEncoder.qaac
-                    If DecodingMode <> AudioDecodingMode.Pipe Then Return FileTypes.qaacInput
+                    If DecodingMode <> AudioDecodingMode.Pipe Then
+                        Return FileTypes.qaacInput
+                    End If
                 Case GuiAudioEncoder.fdkaac
-                    If DecodingMode <> AudioDecodingMode.Pipe Then Return {"wav"}
+                    If DecodingMode <> AudioDecodingMode.Pipe Then
+                        Return {"wav"}
+                    End If
             End Select
 
             Return {}

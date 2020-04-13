@@ -2,8 +2,6 @@
 Imports System.Text
 Imports System.Globalization
 
-Imports VB6 = Microsoft.VisualBasic
-
 Public Class Audio
     Shared Sub Process(ap As AudioProfile)
         If Not File.Exists(ap.File) OrElse TypeOf ap Is NullAudioProfile Then
@@ -35,10 +33,15 @@ Public Class Audio
 
             Dim directMux = TypeOf ap Is MuxAudioProfile AndAlso
                 p.VideoEncoder.Muxer.IsSupported(ap.Stream.Extension.TrimStart("."c)) AndAlso
-                p.VideoEncoder.Muxer.IsSupported(ap.File.Ext) AndAlso
-                Not cutting
+                p.VideoEncoder.Muxer.IsSupported(ap.File.Ext) AndAlso Not cutting
 
-            If (cutting OrElse Not ap.IsInputSupported) AndAlso Not directMux Then
+            Dim trackIsSupportedButNotContainer = TypeOf ap Is MuxAudioProfile AndAlso
+                p.VideoEncoder.Muxer.IsSupported(ap.Stream.Extension.TrimStart("."c)) AndAlso
+                Not p.VideoEncoder.Muxer.IsSupported(ap.File.Ext)
+
+            If ((cutting OrElse Not ap.IsInputSupported) AndAlso Not directMux) OrElse
+                trackIsSupportedButNotContainer Then
+
                 Select Case ap.File.ExtFull
                     Case ".mkv", ".webm"
                         mkvDemuxer.Demux(ap.File, {ap.Stream}, Nothing, ap, p, False, False)

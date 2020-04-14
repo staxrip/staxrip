@@ -1,5 +1,10 @@
 
-2.1.0.7 Beta (not yet available)
+2.1.0.8 Beta (not yet available)
+
+
+
+
+2.1.0.7 Beta
 ============
 
 new
@@ -9,17 +14,18 @@ new
 - the built-in MediaInfo GUI was replaced with MediaInfo.NET which was ported to .NET Framework 4.8.
 - the MediaInfo folder view powered by Get-MediaInfo.ps1 v3.0 is shown
   without starting a terminal and it has few bugs fixed.
-- the issue templates on the [github issue tracker](https://github.com/staxrip/staxrip/issues/new/choose) were improved
+- the issue templates on the [github issue tracker](https://github.com/staxrip/staxrip/issues/new/choose) were improved.
+- `Main Menu > Tools > Advanced > Command Prompt` can be configured in
+  the menu editor because it's based on the ExecuteCommandLine command.
+  Only people who reset or manually config the main menu will see the change.
+- the ExecuteCommandLine command has a new Working Directory parameter.
 
 
 fix
 ---
 
-- `Main Menu > Tools > Advanced > Command Prompt and PowerShell` can be configured in
-  the menu editor because it's based on the ExecuteCommandLine command, it has better
-  default values. Only people who reset or manually config the main menu will see the change.
-- the ExecuteCommandLine command has a new Working Directory parameter.
 - issue causing audio to be silently ignored instead of muxed
+- since v2.1.0.5 DGDecNV usage triggered stack overflow causing staxrip to die silently
 
 
 2.1.0.6 Beta

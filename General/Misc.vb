@@ -1288,11 +1288,8 @@ Public Class Macro
         If value.Contains("%dpi%") Then value = value.Replace("%dpi%", g.MainForm.DeviceDpi.ToString())
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%script_file%") Then
-            p.Script.Synchronize()
-            value = value.Replace("%script_file%", p.Script.Path)
-            If Not value.Contains("%") Then Return value
-        End If
+        If value.Contains("%script_file%") Then value = value.Replace("%script_file%", p.Script.Path)
+        If Not value.Contains("%") Then Return value
 
         If p.Ranges.Count > 0 Then
             If value.Contains("%sel_start%") Then value = value.Replace("%sel_start%", p.Ranges(0).Start.ToString)

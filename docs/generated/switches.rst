@@ -376,7 +376,7 @@
     :widths: auto
 
     * - filepath <string>
-      - The filepath may contain macros.
+      - May contain macros.
 
 .. option:: -ShowMediaInfoBrowse
 
@@ -384,7 +384,7 @@
 
 .. option:: -ShowMediaInfoFolderViewDialog
 
-    Presents MediaInfo of all files in a folder in a list view.
+    Presents MediaInfo of all files in a folder in a grid view.
 
 .. option:: -ShowMessageBox:mainInstruction,content,icon
 

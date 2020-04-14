@@ -3135,7 +3135,10 @@ Public Class MainForm
     End Sub
 
     Sub Indexing()
-        If p.SourceFile.Ext.EqualsAny("avs", "vpy") Then Exit Sub
+        If p.SourceFile.Ext.EqualsAny("avs", "vpy") Then
+            Exit Sub
+        End If
+
         Dim codeLower = p.Script.GetFilter("Source").Script.ToLower
 
         If codeLower.Contains("ffvideosource(") OrElse codeLower.Contains("ffms2.source") Then
@@ -3191,10 +3194,21 @@ Public Class MainForm
                 BlockSourceTextBoxTextChanged = False
             End If
         ElseIf codeLower.Contains("dgsource(") AndAlso Not p.SourceFile.Ext = "dgi" Then
-            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
+            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
+                p.SourceFile = p.LastOriginalSourceFile
+            End If
+
             Dim dgIndexNV = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexNV: Index, No Demux")
             Dim outFile = p.TempDir + p.SourceFile.Base + ".dgi"
-            If Not File.Exists(outFile) Then dgIndexNV.Run(p)
+
+            If Not File.Exists(outFile) Then
+                Static wasIndexed As Boolean = False
+
+                If Not wasIndexed Then
+                    wasIndexed = True
+                    dgIndexNV.Run(p)
+                End If
+            End If
 
             If File.Exists(outFile) Then
                 p.SourceFile = outFile

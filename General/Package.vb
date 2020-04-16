@@ -45,17 +45,34 @@ Public Class Package
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirectories = {GetPythonHintDir()}})
 
+    Shared Property DGIndex As Package = Add(New Package With {
+        .Name = "DGIndex",
+        .Filename = "DGIndex.exe",
+        .Description = "MPEG-2 demuxing and indexing app.",
+        .IsGUI = True,
+        .IsIncluded = False,
+        .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:DGIndex%")})
+
     Shared Property DGIndexNV As Package = Add(New Package With {
         .Name = "DGIndexNV",
         .Filename = "DGIndexNV.exe",
-        .Location = "Support\DGIndexNV",
         .Description = "Shareware indexer and demuxer.",
-        .WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html",
-        .HelpFilename = "DGIndexNVManual.html",
         .IsGUI = True,
         .IsIncluded = False,
         .HintDirFunc = Function() DGDecodeNV.GetStoredPath.Dir,
         .RequiredFunc = Function() CommandLineDemuxer.IsActive("DGIndexNV")})
+
+    Shared Property DGDecodeNV As Package = Add(New PluginPackage With {
+        .Name = "DGDecodeNV",
+        .Filename = "DGDecodeNV.dll",
+        .Description = "Shareware source filter.",
+        .IsIncluded = False,
+        .HintDirFunc = Function() DGIndexNV.GetStoredPath.Dir,
+        .RequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource("),
+        .AvsFilterNames = {"DGSource"},
+        .VSFilterNames = {"DGSource"},
+        .AvsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")},
+        .VSFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r""%source_file%"")")}})
 
     Shared Property dsmux As Package = Add(New Package With {
         .Name = "dsmux",
@@ -231,15 +248,6 @@ Public Class Package
         .SetupFilename = "Installers\VapourSynth64-R49.exe",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = AddressOf Package.GetVapourSynthHintDir})
-
-    Shared Property DGIndex As Package = Add(New Package With {
-        .Name = "DGIndex",
-        .Filename = "DGIndex.exe",
-        .IsGUI = True,
-        .Location = "Support\DGIndex",
-        .HelpFilename = "DGIndexManual.html",
-        .Description = "MPEG-2 demuxing and indexing app.",
-        .WebURL = "http://rationalqm.us/dgmpgdec/dgmpgdec.html"})
 
     Shared Property BDSup2SubPP As Package = Add(New Package With {
         .Name = "BDSup2Sub++",
@@ -488,21 +496,6 @@ Public Class Package
         .HelpFilename = "VCEEnc Help.txt",
         .HelpSwitch = "-h",
         .WebURL = "http://github.com/rigaya/VCEEnc"})
-
-    Shared Property DGDecodeNV As Package = Add(New PluginPackage With {
-        .Name = "DGDecodeNV",
-        .Filename = "DGDecodeNV.dll",
-        .WebURL = "http://rationalqm.us/dgdecnv/dgdecnv.html",
-        .Description = "Shareware source filter with NVIDIA hardware acceleration and reliable transport stream support.",
-        .Location = "Support\DGIndexNV",
-        .HelpFilename = "DGDecodeNVManual.html",
-        .IsIncluded = False,
-        .HintDirFunc = Function() DGIndexNV.GetStoredPath.Dir,
-        .RequiredFunc = Function() p.Script.Filters(0).Script.StartsWith("DGSource("),
-        .AvsFilterNames = {"DGSource"},
-        .VSFilterNames = {"DGSource"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")},
-        .VSFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r""%source_file%"")")}})
 
     Shared Property FFT3DFilter As Package = Add(New PluginPackage With {
         .Name = "FFT3DFilter",
@@ -796,14 +789,6 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/VagueDenoiser",
             .AvsFilterNames = {"VagueDenoiser"},
             .AvsFiltersFunc = Function() {New VideoFilter("Noise", "VagueDenoiser", "VagueDenoiser(threshold=0.8, method=1, nsteps=6, chromaT=0.8)")}})
-
-        Add(New PluginPackage With {
-            .Name = "DGTonemap",
-            .Filename = "DGTonemap.dll",
-            .WebURL = "http://rationalqm.us/mine.html",
-            .HelpFilename = "Readme.txt",
-            .Description = "DGTonemap provides filters for HDR Tonemapping Reinhard and Hable.",
-            .AvsFilterNames = {"DGReinhard", "DGHable"}})
 
         Add(New PluginPackage With {
             .Name = "AnimeIVTC",
@@ -1725,17 +1710,6 @@ Public Class Package
             .WebURL = "https://forum.videohelp.com/threads/393752-CropResize-Cropping-resizing-script",
             .AvsFilterNames = {"CropResize"},
             .AvsFiltersFunc = Function() {New VideoFilter("Resize", "Advanced | CropResize", $"CropResize(%target_width%, %target_height%, \{BR}    %crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%, \{BR}    InDAR=%source_dar%, OutDAR=%target_dar%, Info=true)")}})
-
-        Add(New PluginPackage With {
-            .Name = "DGHDRtoSDR",
-            .Filename = "DGHDRtoSDR.dll",
-            .Description = "Convert UHD BluRay HDR10 to SDR (CUDA).",
-            .WebURL = "http://rationalqm.us/mine.html",
-            .HelpFilename = "DGHDRtoSDR.txt",
-            .AvsFilterNames = {"DGHDRtoSDR"},
-            .AvsFiltersFunc = Function() {New VideoFilter("Color", "DGHDRtoSDR", "DGHDRtoSDR()")},
-            .VSFilterNames = {"DGHDRtoSDR"},
-            .VSFiltersFunc = Function() {New VideoFilter("Color", "DGHDRtoSDR", "clip = core.dghdrtosdr.DGHDRtoSDR(clip, fulldepth=True)")}})
 
         Add(New Package With {
             .Name = "Visual C++ 2012",

@@ -308,7 +308,7 @@ Public Class QSVEnc
                         New StringParam With {.Switch = "--sub-source", .Text = "Subtitle File", .BrowseFile = True, .BrowseFileFilter = FileTypes.GetFilter(FileTypes.SubtitleExludingContainers)},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option"},
-                        New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Undefined", "TFF, BFF"}},
+                        New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Undefined", "TFF", "BFF"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Init = 3},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},

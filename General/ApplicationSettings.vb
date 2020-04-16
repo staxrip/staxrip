@@ -136,7 +136,6 @@ Public Class ApplicationSettings
             AviSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("d2v", "MPEG2Source")
             AviSynthFilterPreferences.Add("dgi", "DGSource")
-            AviSynthFilterPreferences.Add("dgim", "DGSourceIM")
             AviSynthFilterPreferences.Add("mp4 m4v mov", "LSMASHVideoSource")
             AviSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("wmv", "DSS2")

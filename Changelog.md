@@ -1,7 +1,16 @@
 
-2.1.0.8 Beta (not yet available)
+2.1.0.9 Beta (not yet available)
 
 
+
+2.1.0.8 Beta "The Power Of Walking Awäy"
+========================================
+
+new
+---
+
+- VapourSynth filter spline64 added (Patman)
+- DG* tools binaries and urls removed according to author request
 
 
 2.1.0.7 Beta

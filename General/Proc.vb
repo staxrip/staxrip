@@ -1,5 +1,4 @@
 
-Imports System.Collections.Specialized
 Imports System.ComponentModel
 Imports System.Runtime.InteropServices
 Imports System.Text
@@ -118,6 +117,7 @@ Public Class Proc
         End Get
     End Property
 
+    'TODO: should probably be removed
     Shared Sub ExecuteBatch(
         batchCode As String,
         header As String,
@@ -163,6 +163,7 @@ Public Class Proc
         End If
     End Sub
 
+    'TODO: should probably be removed
     Shared Function WriteBatchFile(path As String, content As String) As String
         If OSVersion.Current = OSVersion.Windows7 Then
             For Each i In content

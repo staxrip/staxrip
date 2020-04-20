@@ -397,11 +397,7 @@ Public Class GlobalClass
     End Sub
 
     Sub PlayScript(script As VideoScript)
-        If script.Engine = ScriptEngine.AviSynth Then
-            PlayScriptWithMPV(script)
-        Else
-            PlayScriptWithMPC(script)
-        End If
+        PlayScriptWithMPV(script)
     End Sub
 
     Function GetAudioProfileForScriptPlayback() As AudioProfile

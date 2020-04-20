@@ -7,10 +7,19 @@ Public Class FrameServer
     Property Info As ServerInfo
     Property NativeServer As IFrameServer
 
+    Shared WasInitialized As Boolean
+
     Sub New(path As String)
         If path.EndsWith(".avs") Then
             NativeServer = CreateAviSynthServer()
         Else
+            If Not WasInitialized Then
+                Environment.SetEnvironmentVariable("path",
+                    Package.Python.Directory + ";" + Environment.GetEnvironmentVariable("path"))
+
+                WasInitialized = True
+            End If
+
             NativeServer = CreateVapourSynthServer()
         End If
 

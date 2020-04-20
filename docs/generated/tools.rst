@@ -3,6 +3,14 @@ Tools
 
 Console App
 -----------
+AutoCrop
+~~~~~~~~
+
+AutoCrop console tool.
+
+
+
+
 avs2pipemod
 ~~~~~~~~~~~
 
@@ -210,7 +218,7 @@ DGIndex
 
 MPEG-2 demuxing and indexing app.
 
-http://rationalqm.us/dgmpgdec/dgmpgdec.html
+
 
 
 DGIndexNV
@@ -218,7 +226,7 @@ DGIndexNV
 
 Shareware indexer and demuxer.
 
-http://rationalqm.us/dgdecnv/dgdecnv.html
+
 
 
 MPC-BE
@@ -416,31 +424,11 @@ https://github.com/pinterf/dfttest
 DGDecodeNV
 ~~~~~~~~~~
 
-Shareware source filter with NVIDIA hardware acceleration and reliable transport stream support.
+Shareware source filter.
 
 Filters: DGSource
 
-http://rationalqm.us/dgdecnv/dgdecnv.html
 
-
-DGHDRtoSDR
-~~~~~~~~~~
-
-Convert UHD BluRay HDR10 to SDR (CUDA).
-
-Filters: DGHDRtoSDR
-
-http://rationalqm.us/mine.html
-
-
-DGTonemap
-~~~~~~~~~
-
-DGTonemap provides filters for HDR Tonemapping Reinhard and Hable.
-
-Filters: DGReinhard, DGHable
-
-http://rationalqm.us/mine.html
 
 
 Dither DLL

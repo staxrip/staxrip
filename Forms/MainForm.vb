@@ -2,13 +2,11 @@
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Globalization
-Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
 
-Imports Microsoft.Win32
 Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
 
@@ -2139,20 +2137,44 @@ Public Class MainForm
             ExtractForcedVobSubSubtitles()
             p.VideoEncoder.Muxer.Init()
 
-            If p.HarcodedSubtitle Then g.AddHardcodedSubtitle()
+            If p.HarcodedSubtitle Then
+                g.AddHardcodedSubtitle()
+            End If
 
             Dim isCropActive = p.Script.IsFilterActive("Crop")
 
             If isCropActive AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
-                g.RunAutoCrop(Nothing)
-                DisableCropFilter()
+                p.SourceScript.Synchronize(True, True, True)
+
+                Using proc As New Proc
+                    proc.Header = "Auto Crop"
+                    proc.SkipString = "%"
+                    proc.Package = Package.AutoCrop
+                    proc.Arguments = p.SourceScript.Path.Escape + " " & s.CropFrameCount
+                    proc.Start()
+
+                    Dim output = proc.Log.ToString
+                    Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
+
+                    If match.Success Then
+                        p.CropLeft = match.Groups(1).Value.ToInt
+                        p.CropTop = match.Groups(2).Value.ToInt
+                        p.CropRight = match.Groups(3).Value.ToInt
+                        p.CropBottom = match.Groups(4).Value.ToInt
+                        g.CorrectCropMod()
+                        DisableCropFilter()
+                    End If
+                End Using
             End If
 
             AutoResize()
 
             If isCropActive Then
                 g.OvercropWidth()
-                If p.AutoSmartCrop Then g.SmartCrop()
+
+                If p.AutoSmartCrop Then
+                    g.SmartCrop()
+                End If
             End If
 
             If p.AutoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled Then p.VideoEncoder.RunCompCheck()

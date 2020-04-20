@@ -18,6 +18,7 @@ Public Class Package
     Property HintDirFunc As Func(Of String)
     Property IgnoreNewVersion As Boolean
     Property IgnoreVersion As Boolean
+    Property IgnorePath As String
     Property IsGUI As Boolean
     Property IsIncluded As Boolean = True
     Property Location As String
@@ -42,8 +43,9 @@ Public Class Package
         .HelpSwitch = "-h",
         .Description = "Python is required by VapourSynth.",
         .SetupFilename = "Installers\python-3.8.2-amd64-webinstall.exe",
+        .IgnorePath = "\WindowsApps\",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirectories = {GetPythonHintDir()}})
+        .HintDirFunc = Function() GetPythonHintDir()})
 
     Shared Property DGIndex As Package = Add(New Package With {
         .Name = "DGIndex",
@@ -456,6 +458,13 @@ Public Class Package
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .HelpSwitch = "",
         .Description = "MKV info tool."})
+
+    Shared Property AutoCrop As Package = Add(New Package With {
+        .Name = "AutoCrop",
+        .Filename = "AutoCrop.exe",
+        .Location = "Support\AutoCrop",
+        .HelpSwitch = "",
+        .Description = "AutoCrop console tool."})
 
     Shared Property PNGopt As Package = Add(New Package With {
         .Name = "PNGopt",
@@ -1973,9 +1982,9 @@ Public Class Package
 
     Function VerifyOK(Optional showEvenIfNotRequired As Boolean = False) As Boolean
         If (Required() OrElse showEvenIfNotRequired) AndAlso (Required AndAlso GetStatus() <> "") Then
-            Using f As New AppsForm
-                f.ShowPackage(Me)
-                f.ShowDialog()
+            Using form As New AppsForm
+                form.ShowPackage(Me)
+                form.ShowDialog()
             End Using
 
             If Required AndAlso GetStatus() <> "" Then
@@ -2037,7 +2046,7 @@ Public Class Package
 
         If pathVar = "" Then
             If SetupFilename <> "" Then
-                Return "Please install " + Name + "."
+                Return "Please install " + Name + " or click on Path to define the location. After that, restart StaxRip."
             End If
 
             If FixedDir <> "" Then
@@ -2116,7 +2125,7 @@ Public Class Package
     End Function
 
     Shared Function GetPythonHintDir() As String
-        For x = 7 To 9
+        For Each x In {8, 9, 7}
             For Each exePath In {
                 Registry.CurrentUser.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath"),
                 Registry.LocalMachine.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath")}
@@ -2127,10 +2136,10 @@ Public Class Package
             Next
         Next
 
-        Dim path = FindEverywhere("python.exe")
+        Dim fp = FindEverywhere({"python.exe"}, Python.IgnorePath)
 
-        If path <> "" Then
-            Return path
+        If fp <> "" Then
+            Return fp.Dir
         End If
     End Function
 
@@ -2202,7 +2211,7 @@ Public Class Package
                 Return ret
             End If
 
-            ret = FindEverywhere(Filename)
+            ret = FindEverywhere({Filename}, IgnorePath)
 
             If ret <> "" Then
                 Return ret
@@ -2212,7 +2221,7 @@ Public Class Package
 
     Sub StartProcess(path As String)
         If path.Ext.EqualsAny("htm", "html") Then
-            Dim broswer = FindEverywhere("chrome.exe", "firefox.exe")
+            Dim broswer = FindEverywhere({"chrome.exe", "firefox.exe"})
 
             If broswer <> "" Then
                 g.ShellExecute(broswer, path.Escape)
@@ -2223,27 +2232,31 @@ Public Class Package
         g.ShellExecute(path)
     End Sub
 
-    Shared Function FindEverywhere(ParamArray fileNames As String()) As String
+    Shared Function IsNotEmptyOrIgnored(filePath As String, ignorePath As String) As Boolean
+        Return filePath <> "" AndAlso (ignorePath = Nothing OrElse Not filePath.Contains(ignorePath))
+    End Function
+
+    Shared Function FindEverywhere(fileNames As String(), Optional ignorePath As String = Nothing) As String
         Dim ret As String
 
         For Each fn In fileNames
             If fn.Ext = "exe" Then
                 ret = FindInMuiCacheKey(fn)
 
-                If ret <> "" Then
+                If IsNotEmptyOrIgnored(ret, ignorePath) Then
                     Return ret
                 End If
 
                 ret = FindInAppKey(fn)
 
-                If ret <> "" Then
+                If IsNotEmptyOrIgnored(ret, ignorePath) Then
                     Return ret
                 End If
             End If
 
             ret = FindInPathEnvVar(fn)
 
-            If ret <> "" Then
+            If IsNotEmptyOrIgnored(ret, ignorePath) Then
                 Return ret
             End If
         Next

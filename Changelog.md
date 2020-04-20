@@ -1,7 +1,22 @@
 
-2.1.0.9 Beta (not yet available)
+2.1.1.1 Beta (not yet available)
+============
 
-- some SVT-AV1 switches added
+2.1.0.9 Beta
+============
+
+- detection of Python location improved
+- VapourSynth works even if Python nor VapourSynth are in path environment variable
+- new x265, NVEnc and SVT-AV1 switches added
+- fixed GUI being hidden while auto crop
+- DGIndex disabled by default
+- mpv.net 5.4.4.3
+- SVT-AV1 0.8.2
+- NVEnc 5.0
+- VCEEnc 6.0
+- MP4Box 0.9.0-DEV-rev0-g81b4481e1-gcc10.0.1 Patman
+- x265 3.3+19-gcaf9d4dbe-gcc10.0.1 Patman
+- ffmpeg N-97384-gcc9ba91bec-g4457f75c65-gcc9.3.0 Patman
 
 
 2.1.0.8 Beta "The Power Of Walking Away"

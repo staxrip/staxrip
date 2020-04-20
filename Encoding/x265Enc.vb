@@ -962,6 +962,7 @@ Public Class x265Params
                     New StringParam With {.Switch = "--lambda-file", .Text = "Lambda File", .BrowseFile = True},
                     New StringParam With {.Switch = "--qpfile", .Text = "QP File", .BrowseFile = True},
                     New StringParam With {.Switch = "--recon", .Switches = {"-r"}, .Text = "Recon File", .BrowseFile = True},
+                    New StringParam With {.Switch = "--abr-ladder", .Text = "ABR Ladder File", .BrowseFile = True},
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List"},
                     New OptionParam With {.Switch = "--high-tier", .NoSwitch = "--no-high-tier", .Text = "High Tier", .Options = {"Undefined", "Yes", "No"}, .Values = {"", "--high-tier", "--no-high-tier"}},
                     Decoder, PipingTool, PsyRD, CompCheck, CompCheckAimedQuality,

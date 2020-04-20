@@ -112,7 +112,7 @@ Public Class SVTAV1
             .Switches = {"-tbr"},
             .Text = "Mode",
             .IntegerValue = True,
-            .Options = {"CQP", "VBR", "CVBR"}}
+            .Options = {"0: CQP", "1: VBR", "2: CVBR"}}
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
@@ -122,8 +122,12 @@ Public Class SVTAV1
                     Add("Basic",
                         New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
                         Mode,
-                        New OptionParam With {.Switch = "-enc-mode", .Text = "Preset", .Init = 8, .IntegerValue = True, .Options = {"0: Very Slow", "1: Slower", "2: Slow", "3: Medium", "4: Fast", "5: Faster", "6: Very Fast", "7: Super Fast", "8: Ultra Fast"}},
-                        New NumParam With {.Switch = "-q", .Text = "QP", .Config = {0, 63, 1}, .Init = 50})
+                        New OptionParam With {.Switch = "--preset", .Text = "Preset", .Init = 8, .IntegerValue = True, .Options = {"0: Very Slow", "1: Slower", "2: Slow", "3: Medium", "4: Fast", "5: Faster", "6: Very Fast", "7: Super Fast", "8: Ultra Fast"}},
+                        New OptionParam With {.Switch = "--profile", .Text = "Profile", .IntegerValue = True, .Options = {"0: Main", "1: High", "2: Professional"}},
+                        New OptionParam With {.Switch = "--scm", .Text = "Screen Content Mode", .IntegerValue = True, .Options = {"0: OFF", "1: ON", "2: Content Based Detection"}},
+                        New OptionParam With {.Switch = "--irefresh-type", .Text = "Intra Refresh Type", .Options = {"1: CRA (Open GOP)", "2: IDR (Closed GOP)"}, .Values = {"1", "2"}},
+                        New NumParam With {.Switch = "--keyint", .Text = "Intra Period", .Init = -1, .Config = {-2, 255, 1}},
+                        New NumParam With {.Switch = "-q", .Text = "QP", .Init = 50, .Config = {0, 63, 1}})
 
                     For Each item In ItemsValue
                         If item.HelpSwitch <> "" Then

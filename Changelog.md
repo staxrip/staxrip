@@ -1,9 +1,10 @@
 
 2.1.0.9 Beta (not yet available)
 
+- some SVT-AV1 switches added
 
 
-2.1.0.8 Beta "The Power Of Walking Awäy"
+2.1.0.8 Beta "The Power Of Walking Away"
 ========================================
 
 new

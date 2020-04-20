@@ -98,6 +98,7 @@ Public MustInherit Class Demuxer
         dgIndex.Command = "%app:DGIndex%"
         dgIndex.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -o ""%temp_file%"" -hide -exit"
         dgIndex.SourceFilters = {"MPEG2Source", "d2v.Source"}
+        dgIndex.Active = False
         ret.Add(dgIndex)
 
         Dim dgnvNoDemux As New CommandLineDemuxer

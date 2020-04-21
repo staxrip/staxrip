@@ -45,7 +45,7 @@ Public Class Package
         .SetupFilename = "Installers\python-3.8.2-amd64-webinstall.exe",
         .IgnorePath = "\WindowsApps\",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = Function() GetPythonHintDir()})
+        .HintDirFunc = AddressOf GetPythonHintDir})
 
     Shared Property DGIndex As Package = Add(New Package With {
         .Name = "DGIndex",
@@ -2126,9 +2126,8 @@ Public Class Package
 
     Shared Function GetPythonHintDir() As String
         For Each x In {8, 9, 7}
-            For Each exePath In {
-                Registry.CurrentUser.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath"),
-                Registry.LocalMachine.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath")}
+            For Each rootKey In {Registry.CurrentUser, Registry.LocalMachine}
+                Dim exePath = rootKey.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath")
 
                 If File.Exists(exePath) Then
                     Return exePath.Dir

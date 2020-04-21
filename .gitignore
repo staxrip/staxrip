@@ -5,11 +5,9 @@
 /VideoData
 /packages
 /.vs
-/_config.yml
 /StaxRip.vbproj.user
 /FrameServer/x64
 /FrameServer/.vs
 /FrameServer/FrameServer.vcxproj.user
 /docs/_build
-*.yml_
-/Tools/AutoCrop/obj/Debug
+/Tools/AutoCrop/obj

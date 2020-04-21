@@ -8,4 +8,4 @@ StaxRip is a video encoding GUI for Windows, it executes and controls console ap
 
 ## [Support](https://staxrip.readthedocs.io/support.html)
 
-## [Download](https://staxrip.readthedocs.io/intro.html#download)
+## [Download](https://staxrip.readthedocs.io/introduction.html#download)

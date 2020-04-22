@@ -2,7 +2,8 @@
 2.1.1.1 Beta (not yet available)
 ============
 
-- the command line audio encoder uses cmd.exe directly without creating a bat file
+- the command line audio encoder uses cmd.exe directly without creating a bat file,
+  this avoids creating a temporary bat file and adds full unicode support
 
 
 2.1.0.9 Beta

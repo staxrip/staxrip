@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class CommandLineVideoEncoderForm
@@ -156,8 +157,8 @@ Public Class CommandLineVideoEncoderForm
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(0, 0)
-        Me.Name = "BatchEncoderForm"
-        Me.Text = "Batch Encoder"
+        Me.Name = "CommandLineEncoderForm"
+        Me.Text = "Command Line Encoder"
         Me.tlp.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -187,7 +188,7 @@ Public Class CommandLineVideoEncoderForm
         TipProvider.SetTip("Adjusts the target file size or image size after the compressibility check accordingly.", numPercent, lPercent)
     End Sub
 
-    Private Sub CmdlEncoderForm_FormClosed() Handles Me.FormClosed
+    Private Sub CommandLineVideoEncoderForm_FormClosed() Handles Me.FormClosed
         If DialogResult = DialogResult.OK Then
             Encoder.OutputFileTypeValue = tbType.Text
             Encoder.CommandLines = EncodingCliControl.Value
@@ -197,10 +198,10 @@ Public Class CommandLineVideoEncoderForm
         End If
     End Sub
 
-    Private Sub BatchEncoderForm_HelpRequested() Handles Me.HelpRequested
+    Private Sub CommandLineVideoEncoderForm_HelpRequested() Handles Me.HelpRequested
         Dim form As New HelpForm
         form.Doc.WriteStart(Text)
-        form.Doc.WriteP("The batch encoder allows executing a command line. If there is a piping symbol or line break then it's executed as batch file.")
+        form.Doc.WriteP("The command line encoder executes command lines.")
         form.Doc.WriteTips(TipProvider.GetTips, EncodingCliControl.TipProvider.GetTips)
         form.Doc.WriteTable("Macros", Macro.GetTips())
         form.Show()

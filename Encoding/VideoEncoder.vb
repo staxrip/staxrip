@@ -371,13 +371,13 @@ Public MustInherit Class VideoEncoder
             ret.Add(ffmpeg2)
         Next
 
-        Dim xvid As New BatchEncoder()
-        xvid.OutputFileTypeValue = "avi"
-        xvid.Name = "XviD"
-        xvid.Muxer = New ffmpegMuxer("AVI")
-        xvid.QualityMode = True
-        xvid.CommandLines = "xvid_encraw -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_par_x%:%target_par_y%"
-        ret.Add(xvid)
+        Dim cmdl As New BatchEncoder()
+        cmdl.OutputFileTypeValue = "avi"
+        cmdl.Name = "Command Line"
+        cmdl.Muxer = New ffmpegMuxer("AVI")
+        cmdl.QualityMode = True
+        cmdl.CommandLines = "%app:xvid_encraw% -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_par_x%:%target_par_y%"
+        ret.Add(cmdl)
 
         ret.Add(New NullEncoder())
 

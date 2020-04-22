@@ -117,51 +117,28 @@ Public Class Proc
         End Get
     End Property
 
-    'TODO: should probably be removed
-    Shared Sub ExecuteBatch(
-        batchCode As String,
-        header As String,
-        suffix As String,
-        skipStrings As String())
+    Shared Function GetSkipStrings(commands As String) As String()
+        commands = commands.ToLower
 
-        If batchCode.Contains(BR) Then
-            Dim batchPath = p.TempDir + p.TargetFile.Base + suffix + ".bat"
-            batchCode = WriteBatchFile(batchPath, batchCode)
-
-            Using proc As New Proc
-                proc.Header = header
-                proc.SkipStrings = skipStrings
-                proc.WriteLog(batchCode + BR2)
-                proc.File = "cmd.exe"
-                proc.Arguments = "/C call """ + batchPath + """"
-
-                Try
-                    proc.Start()
-                Catch ex As AbortException
-                    Throw ex
-                Catch ex As Exception
-                    g.ShowException(ex)
-                    Throw New AbortException
-                End Try
-            End Using
+        If commands.Contains("xvid_encraw") Then
+            Return {"key=", "frames("}
+        ElseIf commands.Contains("x264") OrElse commands.Contains("x265") Then
+            Return {"%]"}
+        ElseIf commands.Contains("nvenc") Then
+            Return {"frames: "}
+        ElseIf commands.Contains("qaac") Then
+            Return {", ETA ", "x)"}
+        ElseIf commands.Contains("fdkaac") Then
+            Return {"%]", "x)"}
+        ElseIf commands.Contains("eac3to") Then
+            Return {"process: ", "analyze: "}
+        ElseIf commands.Contains("ffmpeg") Then
+            Return {"frame=", "size="}
         Else
-            Using proc As New Proc
-                proc.Header = header
-                proc.SkipStrings = skipStrings
-                proc.File = "cmd.exe"
-                proc.Arguments = "/S /C """ + batchCode + """"
-
-                Try
-                    proc.Start()
-                Catch ex As AbortException
-                    Throw ex
-                Catch ex As Exception
-                    g.ShowException(ex)
-                    Throw New AbortException
-                End Try
-            End Using
+            Return {" [ETA ", ", eta ", "frames: ", "Maximum Gain Found",
+                "transcoding ...", "process: ", "analyze: "}
         End If
-    End Sub
+    End Function
 
     'TODO: should probably be removed
     Shared Function WriteBatchFile(path As String, content As String) As String

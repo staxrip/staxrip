@@ -563,7 +563,7 @@ Public Class BatchEncoder
     End Property
 
     Overrides Sub ShowConfigDialog()
-        Using form As New BatchVideoEncoderForm(Me)
+        Using form As New CommandLineVideoEncoderForm(Me)
             If form.ShowDialog() = DialogResult.OK Then
                 OnStateChange()
             End If
@@ -584,25 +584,13 @@ Public Class BatchEncoder
         Return ret
     End Function
 
-    Function GetSkipStrings(commands As String) As String()
-        If commands.Contains("xvid_encraw") Then
-            Return {"key=", "frames("}
-        ElseIf commands.Contains("x264") Then
-            Return {"%]"}
-        ElseIf commands.Contains("NVEnc") Then
-            Return {"frames: "}
-        Else
-            Return {" [ETA ", ", eta ", "frames: ", "frame= "}
-        End If
-    End Function
-
     Overrides Sub Encode()
         p.Script.Synchronize()
 
         For Each line In Macro.Expand(CommandLines).SplitLinesNoEmpty
             Using proc As New Proc
                 proc.Header = "Video encoding command line encoder: " + Name
-                proc.SkipStrings = GetSkipStrings(CommandLines)
+                proc.SkipStrings = Proc.GetSkipStrings(CommandLines)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/S /C """ + line + """"
                 proc.SetEnvironmentVariables()
@@ -651,7 +639,7 @@ Public Class BatchEncoder
         Using proc As New Proc
             proc.Header = "Compressibility Check"
             proc.WriteLog(code + BR2)
-            proc.SkipStrings = GetSkipStrings(line)
+            proc.SkipStrings = Proc.GetSkipStrings(line)
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + line + """"
             proc.SetEnvironmentVariables()

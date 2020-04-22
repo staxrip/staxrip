@@ -277,7 +277,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\Dynamic.vb" />
-    <Compile Include="Forms\BatchVideoEncoderForm.vb">
+    <Compile Include="Forms\CommandLineVideoEncoderForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\EventCommandEditor.vb">
@@ -308,7 +308,7 @@
     <Compile Include="General\General.vb" />
     <Compile Include="General\Proc.vb" />
     <Compile Include="General\Native.vb" />
-    <Compile Include="Forms\BatchAudioEncoderForm.vb">
+    <Compile Include="Forms\CommandLineAudioEncoderForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\CropForm.vb">
@@ -472,11 +472,11 @@
     <EmbeddedResource Include="Forms\SimpleSettingsForm.resx">
       <DependentUpon>SimpleSettingsForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\BatchAudioEncoderForm.resx">
-      <DependentUpon>BatchAudioEncoderForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\CommandLineAudioEncoderForm.resx">
+      <DependentUpon>CommandLineAudioEncoderForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\BatchVideoEncoderForm.resx">
-      <DependentUpon>BatchVideoEncoderForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\CommandLineVideoEncoderForm.resx">
+      <DependentUpon>CommandLineVideoEncoderForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ControlHostForm.resx">
       <DependentUpon>ControlHostForm.vb</DependentUpon>

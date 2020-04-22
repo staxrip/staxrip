@@ -1,6 +1,7 @@
+
 Imports StaxRip.UI
 
-Public Class BatchAudioEncoderForm
+Public Class CommandLineAudioEncoderForm
     Inherits DialogBase
 
 #Region " Designer "
@@ -186,7 +187,7 @@ Public Class BatchAudioEncoderForm
         Me.EditControl.Name = "EditControl"
         Me.EditControl.Size = New System.Drawing.Size(1734, 377)
         Me.EditControl.TabIndex = 5
-        Me.EditControl.Text = "Batch Code"
+        Me.EditControl.Text = "Command Lines"
         '
         'lStreamName
         '
@@ -379,7 +380,7 @@ Public Class BatchAudioEncoderForm
         Me.tlpMain.Size = New System.Drawing.Size(1764, 797)
         Me.tlpMain.TabIndex = 20
         '
-        'BatchAudioEncoderForm
+        'CommandLineAudioEncoderForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
@@ -388,8 +389,8 @@ Public Class BatchAudioEncoderForm
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
-        Me.Name = "BatchAudioEncoderForm"
-        Me.Text = "Batch Audio Settings"
+        Me.Name = "CommandLineAudioEncoderForm"
+        Me.Text = "Audio Command Lines"
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel1.PerformLayout()
         Me.tlpBitrateEtcValues.ResumeLayout(False)
@@ -446,9 +447,8 @@ Public Class BatchAudioEncoderForm
         TipProvider.SetTip("Track name used by the muxer. The track name may contain macros.", tbStreamName, lStreamName)
         TipProvider.SetTip("If no name is defined StaxRip auto generate the name.", laProfileName, tbProfileName)
 
-        cms.Add("Execute Batch Code", AddressOf Execute, TempProfile.File <> "").SetImage(Symbol.fa_terminal)
-        cms.Add("Copy Batch Code", Sub() Clipboard.SetText(TempProfile.GetCode))
-        cms.Add("Show Batch Code...", Sub() g.ShowCommandLinePreview("Batch Code", TempProfile.GetCode))
+        cms.Add("Copy Command Line", Sub() Clipboard.SetText(TempProfile.GetCode))
+        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Lines", TempProfile.GetCode))
         cms.Add("Save Profile...", AddressOf SaveProfile, "Saves the current settings as profile").SetImage(Symbol.Save)
         cms.Add("Help", AddressOf ShowHelp).SetImage(Symbol.Help)
 
@@ -466,17 +466,7 @@ Public Class BatchAudioEncoderForm
         End If
     End Sub
 
-    Sub Execute()
-        Dim batchPath = p.TempDir + p.TargetFile.Base + "_aexe.bat"
-        Dim batchCode = Proc.WriteBatchFile(batchPath, TempProfile.GetCode)
-        Dim batchProc As New Process
-        batchProc.StartInfo.FileName = "cmd.exe"
-        batchProc.StartInfo.Arguments = "/k """ + batchPath + """"
-        batchProc.StartInfo.WorkingDirectory = p.TempDir
-        batchProc.Start()
-    End Sub
-
-    Private Sub CommandLineAudioSettingsForm_FormClosed() Handles Me.FormClosed
+    Sub CommandLineAudioSettingsForm_FormClosed() Handles Me.FormClosed
         If DialogResult = DialogResult.OK Then
             Profile.SupportedInput = TempProfile.SupportedInput
             Profile.OutputFileType = TempProfile.OutputFileType
@@ -538,7 +528,6 @@ Public Class BatchAudioEncoderForm
         Dim form As New HelpForm()
 
         form.Doc.WriteStart(Text)
-        form.Doc.WriteP("The batch audio settings define audio conversion batch code.")
         form.Doc.WriteTips(TipProvider.GetTips, EditControl.TipProvider.GetTips)
         form.Doc.WriteP("Macros")
 
@@ -552,12 +541,12 @@ Public Class BatchAudioEncoderForm
         macroList.Add("%language_native%", "Native language name")
         macroList.Add("%language_english%", "English language name")
 
-        form.Doc.WriteTable("Batch Audio Settings Macros", "The macros below are only available in the batch audio settings dialog and override global macros with the same name in case they are defined in both scopes.", macroList)
+        form.Doc.WriteTable("Command Line Audio Settings Macros", "The macros below are only available in the command line audio settings dialog and override global macros with the same name in case they are defined in both scopes.", macroList)
         form.Doc.WriteTable("Global Macros", Macro.GetTips())
         form.Show()
     End Sub
 
-    Private Sub BatchAudioEncoderForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+    Private Sub CommandLineAudioEncoderForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         Refresh()
 
         For Each i In Language.Languages
@@ -571,7 +560,7 @@ Public Class BatchAudioEncoderForm
         mbLanguage.Value = TempProfile.Language
     End Sub
 
-    Private Sub BatchAudioEncoderForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+    Private Sub CommandLineAudioEncoderForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         ShowHelp()
     End Sub
 End Class

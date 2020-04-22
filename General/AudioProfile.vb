@@ -310,45 +310,50 @@ Public Class BatchAudioProfile
             input As String(),
             fileType As String,
             channels As Integer,
-            batchCode As String)
+            commandLines As String)
 
         MyBase.New("Command Line", bitrate, input, fileType, channels)
-        Me.CommandLines = batchCode
+        Me.CommandLines = commandLines
         CanEditValue = True
     End Sub
 
     Overrides Function Edit() As DialogResult
-        Using f As New BatchAudioEncoderForm(Me)
-            f.mbLanguage.Enabled = False
-            f.lLanguage.Enabled = False
-            f.tbDelay.Enabled = False
-            f.lDelay.Enabled = False
-            Return f.ShowDialog()
+        Using form As New CommandLineAudioEncoderForm(Me)
+            form.mbLanguage.Enabled = False
+            form.lLanguage.Enabled = False
+            form.tbDelay.Enabled = False
+            form.lDelay.Enabled = False
+            Return form.ShowDialog()
         End Using
     End Function
 
     Function GetCode() As String
-        Dim cl = ExpandMacros(CommandLines).Trim
-
-        Return {
-            Package.ffmpeg,
-            Package.eac3to,
-            Package.qaac}.
-            Where(Function(pack) cl.ToLower.Contains(pack.Name.ToLower)).
-            Select(Function(pack) "set PATH=%PATH%;" + pack.Directory).
-            Join(BR) + BR2 + "cd /D " + p.TempDir.Escape + BR2 + cl
+        Return ExpandMacros(CommandLines).Trim
     End Function
 
-    Public Overrides Sub Encode()
+    Overrides Sub Encode()
         If File <> "" Then
             Dim bitrateBefore = p.VideoBitrate
             Dim targetPath = GetOutputFile()
 
-            Proc.ExecuteBatch(
-                GetCode(),
-                "Audio encoding: " + Name,
-                "_a" & GetTrackID(),
-                {"Maximum Gain Found", "transcoding ...", "size=", "process: ", "analyze: "})
+            For Each line In Macro.Expand(GetCode).SplitLinesNoEmpty
+                Using proc As New Proc
+                    proc.Header = "Audio Encoding: " + Name
+                    proc.SkipStrings = Proc.GetSkipStrings(CommandLines)
+                    proc.File = "cmd.exe"
+                    proc.Arguments = "/S /C """ + line + """"
+                    proc.SetEnvironmentVariables()
+
+                    Try
+                        proc.Start()
+                    Catch ex As AbortException
+                        Throw ex
+                    Catch ex As Exception
+                        g.ShowException(ex)
+                        Throw New AbortException
+                    End Try
+                End Using
+            Next
 
             If g.FileExists(targetPath) Then
                 File = targetPath
@@ -375,7 +380,7 @@ Public Class BatchAudioProfile
     End Sub
 
     Overrides Sub EditProject()
-        Using f As New BatchAudioEncoderForm(Me)
+        Using f As New CommandLineAudioEncoderForm(Me)
             f.ShowDialog()
         End Using
     End Sub
@@ -662,17 +667,17 @@ Public Class GUIAudioProfile
                     proc.CommandLine = cl
                 End If
 
-                If cl.Contains("qaac64.exe") Then
+                If cl.Contains("qaac64") Then
                     proc.Package = Package.qaac
                     proc.SkipStrings = {", ETA ", "x)"}
-                ElseIf cl.Contains("fdkaac.exe") Then
+                ElseIf cl.Contains("fdkaac") Then
                     proc.Package = Package.fdkaac
                     proc.SkipStrings = {"%]", "x)"}
-                ElseIf cl.Contains("eac3to.exe") Then
+                ElseIf cl.Contains("eac3to") Then
                     proc.Package = Package.eac3to
                     proc.SkipStrings = {"process: ", "analyze: "}
                     proc.TrimChars = {"-"c, " "c}
-                ElseIf cl.Contains("ffmpeg.exe") Then
+                ElseIf cl.Contains("ffmpeg") Then
                     proc.Package = Package.ffmpeg
                     proc.SkipStrings = {"frame=", "size="}
                     proc.Encoding = Encoding.UTF8

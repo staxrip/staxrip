@@ -716,11 +716,11 @@ Public Class NVEnc
             If Tweak.Value Then
                 Dim ret = ""
 
-                If vppbrightness.Value <> vppbrightness.DefaultValue Then ret += "brightness=" & vppbrightness.Value
-                If vppcontrast.Value <> vppcontrast.DefaultValue Then ret += ",contrast=" & vppcontrast.Value
-                If vppsaturation.Value <> vppsaturation.DefaultValue Then ret += ",saturation=" & vppsaturation.Value
-                If vppgamma.Value <> vppgamma.DefaultValue Then ret += ",gamma=" & vppgamma.Value
-                If vpphue.Value <> vpphue.DefaultValue Then ret += ",hue=" & vpphue.Value
+                If vppbrightness.Value <> vppbrightness.DefaultValue Then ret += "brightness=" & vppbrightness.Value.ToInvariantString
+                If vppcontrast.Value <> vppcontrast.DefaultValue Then ret += ",contrast=" & vppcontrast.Value.ToInvariantString
+                If vppsaturation.Value <> vppsaturation.DefaultValue Then ret += ",saturation=" & vppsaturation.Value.ToInvariantString
+                If vppgamma.Value <> vppgamma.DefaultValue Then ret += ",gamma=" & vppgamma.Value.ToInvariantString
+                If vpphue.Value <> vpphue.DefaultValue Then ret += ",hue=" & vpphue.Value.ToInvariantString
 
                 If ret <> "" Then
                     Return "--vpp-tweak " + ret.TrimStart(","c)
@@ -782,7 +782,7 @@ Public Class NVEnc
             Dim ret = ""
 
             If VppUnsharpRadius.Value <> VppUnsharpRadius.DefaultValue Then ret += "radius=" & VppUnsharpRadius.Value
-            If VppUnsharpWeight.Value <> VppUnsharpWeight.DefaultValue Then ret += ",weight=" & VppUnsharpWeight.Value
+            If VppUnsharpWeight.Value <> VppUnsharpWeight.DefaultValue Then ret += ",weight=" & VppUnsharpWeight.Value.ToInvariantString
             If VppUnsharpThreshold.Value <> VppUnsharpThreshold.DefaultValue Then ret += ",threshold=" & VppUnsharpThreshold.Value
 
             If VppUnsharp.Value Then Return ("--vpp-unsharp " + ret.TrimStart(","c)).TrimEnd

@@ -63,14 +63,6 @@ Public MustInherit Class VideoEncoder
                 If colour_primaries.Contains("BT.709") Then
                     cl += " --colorprim bt709"
                 End If
-            Case "BT.601 NTSC"
-                If colour_primaries.Contains("BT.601 NTSC") Then
-                    cl += " --colorprim bt470m"
-                End If
-            Case "BT.601 PAL"
-                If colour_primaries.Contains("BT.601 PAL") Then
-                    cl += " --colorprim bt470bg"
-                End If
         End Select
 
         Dim transfer_characteristics = MediaInfo.GetVideo(sourceFile, "transfer_characteristics")
@@ -86,14 +78,6 @@ Public MustInherit Class VideoEncoder
                 End If
             Case "HLG"
                 cl += " --transfer arib-std-b67"
-            Case "BT.601 NTSC"
-                If transfer_characteristics.Contains("BT.601 NTSC") Then
-                    cl += " --transfer bt470m"
-                End If
-            Case "BT.601 PAL"
-                If transfer_characteristics.Contains("BT.601 PAL") Then
-                    cl += " --transfer bt470bg"
-                End If
         End Select
 
         Dim matrix_coefficients = MediaInfo.GetVideo(sourceFile, "matrix_coefficients")
@@ -105,14 +89,6 @@ Public MustInherit Class VideoEncoder
                 End If
             Case "BT.709"
                 cl += " --colormatrix bt709"
-            Case "BT.601 NTSC"
-                If matrix_coefficients.Contains("BT.601 NTSC") Then
-                    cl += " --colormatrix bt470m"
-                End If
-            Case "BT.601 PAL"
-                If matrix_coefficients.Contains("BT.601 PAL") Then
-                    cl += " --colormatrix bt470bg"
-                End If
         End Select
 
         Dim color_range = MediaInfo.GetVideo(sourceFile, "colour_range")

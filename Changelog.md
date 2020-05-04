@@ -7,6 +7,10 @@
 - MediaInfo.NET 6.3.0.0
 - fix invalid nvenc command line generation (Patman86)
 - fix crash doing multi select drag operation in jobs dialog
+- x265 preset fix (Dendraspis)
+- fix taskbar indication of values below 1 (Dendraspis)
+- avisynth portable support added, mpv and mpc don't seem to support it though,
+  successfully tested were staxrip, avs2pipemod and x265
 
 
 2.1.0.9 Beta

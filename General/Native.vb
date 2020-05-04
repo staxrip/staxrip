@@ -247,7 +247,7 @@ Public Class Taskbar
     End Sub
 
     Public Sub SetValue(progressValue As Double, progressMax As Double)
-        Taskbar.SetProgressValue(Handle, CULng(Math.Truncate(progressValue)), CULng(Math.Truncate(progressMax)))
+        Taskbar.SetProgressValue(Handle, CULng(Math.Max( 1, Math.Truncate(progressValue)), CULng(Math.Truncate(progressMax)))
     End Sub
 End Class
 

@@ -5,6 +5,8 @@
 - the command line audio encoder uses cmd.exe directly without creating a bat file,
   this avoids creating a temporary bat file and adds full unicode support
 - MediaInfo.NET 6.3.0.0
+- fix invalid nvenc command line generation (Patman86)
+- fix crash doing multi select drag operation in jobs dialog
 
 
 2.1.0.9 Beta

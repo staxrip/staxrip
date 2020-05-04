@@ -344,7 +344,7 @@ Namespace UI
 
         Protected Overrides Sub OnItemDrag(e As ItemDragEventArgs)
             If SelectedItems.Count > 1 Then
-                Throw New NotImplementedException("multiselect drag is not implemented")
+                Exit Sub
             End If
 
             DoDragDrop(e.Item, DragDropEffects.Move)

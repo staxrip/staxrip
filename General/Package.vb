@@ -177,7 +177,7 @@ Public Class Package
         .WebURL = "https://github.com/AviSynth/AviSynthPlus",
         .HelpURL = "http://avisynth.nl",
         .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
-        .FixedDir = Folder.System,
+        .HintDirectories = {Folder.System},
         .SetupFilename = "Installers\AviSynthPlus-3.5.1_20200402.exe",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth})
 
@@ -1886,6 +1886,13 @@ Public Class Package
             Return "Misc"
         End If
     End Function
+
+    Sub AddToPath()
+        If Path.FileExists Then
+            Environment.SetEnvironmentVariable("path", Directory + ";" +
+                Environment.GetEnvironmentVariable("path"))
+        End If
+    End Sub
 
     Sub ShowHelp()
         Dim dic As New SortedDictionary(Of String, String)

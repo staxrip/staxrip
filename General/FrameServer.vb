@@ -10,16 +10,16 @@ Public Class FrameServer
     Shared WasInitialized As Boolean
 
     Sub New(path As String)
+        If Not WasInitialized Then
+            Package.Python.AddToPath()
+            Package.AviSynth.AddToPath()
+            Package.VapourSynth.AddToPath()
+            WasInitialized = True
+        End If
+
         If path.EndsWith(".avs") Then
             NativeServer = CreateAviSynthServer()
         Else
-            If Not WasInitialized Then
-                Environment.SetEnvironmentVariable("path",
-                    Package.Python.Directory + ";" + Environment.GetEnvironmentVariable("path"))
-
-                WasInitialized = True
-            End If
-
             NativeServer = CreateVapourSynthServer()
         End If
 

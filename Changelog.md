@@ -9,8 +9,8 @@
 - fix crash doing multi select drag operation in jobs dialog
 - x265 preset fix (Dendraspis)
 - fix taskbar indication of values below 1 (Dendraspis)
-- avisynth portable support added, mpv and mpc don't seem to support it though,
-  successfully tested were staxrip, avs2pipemod and x265
+- AviSynth and VapourSynth portable mode support added, many tools don't support
+  portable mode however, only tool authors can fix it
 
 
 2.1.0.9 Beta

@@ -289,6 +289,7 @@ Public Class Package
     Shared Property mpvnet As Package = Add(New Package With {
         .Name = "mpv.net",
         .Filename = "mpvnet.exe",
+        .Location = "Support\mpv.net",
         .IsGUI = True,
         .WebURL = "https://github.com/stax76/mpv.net",
         .Description = "libmpv based media player."})

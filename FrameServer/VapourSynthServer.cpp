@@ -43,27 +43,7 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
 {
     try
     {
-        WCHAR dllPath[512];
-        DWORD dllPathSize = sizeof(dllPath);
-
-        auto result = RegGetValue(
-            HKEY_LOCAL_MACHINE, L"Software\\VapourSynth", L"VSScriptDLL",
-            RRF_RT_REG_SZ, NULL, dllPath, &dllPathSize);
-
-        if (result)
-        {
-            result = RegGetValue(
-                HKEY_CURRENT_USER, L"Software\\VapourSynth", L"VSScriptDLL",
-                RRF_RT_REG_SZ, NULL, dllPath, &dllPathSize);
-        }
-
-        if (result)
-            throw std::exception("VapourSynth location not found in registry");
-
-        static HMODULE dll = LoadLibrary(dllPath);
-
-        if (!dll)
-            dll = LoadLibrary(dllPath);
+        static HMODULE dll = LoadLibrary(L"VSScript.dll");
 
         if (!dll)
         {

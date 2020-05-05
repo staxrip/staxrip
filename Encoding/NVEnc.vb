@@ -435,6 +435,10 @@ Public Class NVEnc
         Property VppSelectEveryValue As New NumParam With {.Text = "     value", .HelpSwitch = "--vpp-select-every", .Init = 2}
         Property VppSelectEveryOffsets As New StringParam With {.Text = "     offsets", .HelpSwitch = "--vpp-select-every", .Expand = False}
 
+        Property VppTransformFlipX As New BoolParam With {.Text = "flip_x", .Label = "Transform", .LeftMargin = g.MainForm.FontHeight * 1.5, .Switches = {"--vpp-transform"}, .ArgsFunc = AddressOf GetTransform}
+        Property VppTransformFlipY As New BoolParam With {.Text = "flip_y", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
+        Property VppTransformTranspose As New BoolParam With {.Text = "transpose", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
+
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
@@ -500,7 +504,7 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--chromaloc", .Text = "Chromaloc", .Config = {0, 5}},
                         New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
                         New BoolParam With {.Switch = "--aud", .Text = "AUD"})
-                    Add("VPP",
+                    Add("VPP | Misc",
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw"), .Options = {"None", "Adaptive", "Bob"}},
@@ -519,10 +523,25 @@ Public Class NVEnc
                         VppSelectEvery,
                         VppSelectEveryValue,
                         VppSelectEveryOffsets)
-                    Add("VPP 2 | Denoise",
+                    Add("VPP | Misc 2",
+                        Tweak,
+                        vppbrightness,
+                        vppcontrast,
+                        vppsaturation,
+                        vppgamma,
+                        vpphue,
+                        Pad,
+                        PadLeft,
+                        PadTop,
+                        PadRight,
+                        PadBottom,
+                        VppTransformFlipX,
+                        VppTransformFlipY,
+                        VppTransformTranspose)
+                    Add("VPP | Denoise",
                         KNN, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
                         PMD, PmdApplyCount, PmdStrength, PmdThreshold)
-                    Add("VPP 2 | Deband",
+                    Add("VPP | Deband",
                         Deband,
                         Deband_range,
                         Deband_sample,
@@ -536,7 +555,7 @@ Public Class NVEnc
                         Deband_seed,
                         Deband_blurfirst,
                         Deband_rand_each_frame)
-                    Add("VPP 2 | Deinterlace",
+                    Add("VPP | Deinterlace",
                         VppNnedi,
                         VppNnediField,
                         VppNnediNns,
@@ -547,7 +566,7 @@ Public Class NVEnc
                         VppNnediPrec,
                         VppNnediWeightfile,
                         New OptionParam With {.Switch = "--vpp-yadif", .Text = "Yadif", .Options = {"disabled", "auto", "tff", "bff", "bob", "bob_tff", "bob_bff"}, .Values = {"", "", "mode=tff", "mode=bff", "mode=bob", "mode=bob_tff", "mode=bob_bff"}})
-                    Add("VPP 2 | AFS 1",
+                    Add("VPP | AFS 1",
                         AFS,
                         AFSINI,
                         AFSPreset,
@@ -562,7 +581,7 @@ Public Class NVEnc
                         AFSthre_motion_y,
                         AFSthre_motion_c,
                         AFSlevel)
-                    Add("VPP 2 | AFS 2",
+                    Add("VPP | AFS 2",
                         AFSshift,
                         AFSdrop,
                         AFSsmooth,
@@ -571,18 +590,6 @@ Public Class NVEnc
                         AFSrff,
                         AFStimecode,
                         AFSlog)
-                    Add("VPP 2 | Tweak",
-                        Tweak,
-                        vppbrightness,
-                        vppcontrast,
-                        vppsaturation,
-                        vppgamma,
-                        vpphue,
-                        Pad,
-                        PadLeft,
-                        PadTop,
-                        PadRight,
-                        PadBottom)
                     Add("Statistic",
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
@@ -797,6 +804,18 @@ Public Class NVEnc
             If VppEdgelevelWhite.Value <> VppEdgelevelWhite.DefaultValue Then ret += ",white=" & VppEdgelevelWhite.Value
 
             If VppEdgelevel.Value Then Return ("--vpp-edgelevel " + ret.TrimStart(","c)).TrimEnd
+        End Function
+
+        Function GetTransform() As String
+            Dim ret = ""
+
+            If VppTransformFlipX.Value Then ret += "flip_x=true"
+            If VppTransformFlipY.Value Then ret += ",flip_y=true"
+            If VppTransformTranspose.Value Then ret += ",transpose=true"
+
+            If ret <> "" Then
+                Return ("--vpp-transform " + ret.TrimStart(","c)).TrimEnd
+            End If
         End Function
 
         Function GetSelectEvery() As String

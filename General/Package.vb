@@ -174,6 +174,7 @@ Public Class Package
     Shared Property AviSynth As Package = Add(New Package With {
         .Name = "AviSynth",
         .Filename = "AviSynth.dll",
+        .Location = "Support\AviSynth",
         .WebURL = "https://github.com/AviSynth/AviSynthPlus",
         .HelpURL = "http://avisynth.nl",
         .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
@@ -244,10 +245,11 @@ Public Class Package
     Shared Property VapourSynth As Package = Add(New Package With {
         .Name = "VapourSynth",
         .Filename = "vapoursynth.dll",
+        .Location = "Support\VapourSynth",
         .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
-        .SetupFilename = "Installers\VapourSynth64-R49.exe",
+        .SetupFilename = "Installers\VapourSynth64-R50-RC2.exe",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = AddressOf Package.GetVapourSynthHintDir})
 
@@ -2025,13 +2027,7 @@ Public Class Package
                 If Not AllowOldVersion Then
                     ret = $"The currently used version of {Name} is not compatible (too old)."
                 Else
-                    ret = $"An old {Name} version was found, click on Version (F12) and enter the name of this version or better install a newer version."
-                End If
-
-                If SetupFilename <> "" Then
-                    ret += BR + "Install a new version."
-                ElseIf DownloadURL <> "" Then
-                    ret += BR + "Download and install a new version."
+                    ret = $"An old {Name} version was found, click on Version (F12) and enter the name of this version or install a newer version."
                 End If
             Else
                 ret = $"A new {Name} version was found, new versions are usually compatible, click on Version (F12) and enter the name of this version."

@@ -1,4 +1,7 @@
 
+
+todo: feature list doc page vs avs portable
+
 2.1.1.1 Beta (not yet available)
 ============
 
@@ -9,8 +12,10 @@
 - fix crash doing multi select drag operation in jobs dialog
 - x265 preset fix (Dendraspis)
 - fix taskbar indication of values below 1 (Dendraspis)
-- AviSynth and VapourSynth portable mode support added, many tools don't support
-  portable mode however, only tool authors can fix it
+- AviSynth and VapourSynth portable mode support added, many tools
+  don't support portable mode, only tool authors can fix it
+- nvenc --vpp-transform
+- mpv.net 5.4.6.0
 
 
 2.1.0.9 Beta

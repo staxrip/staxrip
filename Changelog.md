@@ -8,6 +8,7 @@ todo: feature list doc page avisynth vapoursynth portable
 - mpv.net 5.4.6.0
 - MediaInfo.NET 6.3.0.0
 - fix invalid nvenc command line generation (Patman86)
+- fix import of invalid color metadata into encoder VUI settings (Patman86)
 - fix crash doing multi select drag operation in jobs dialog
 - fix taskbar indication of values below 1 (Dendraspis)
 - fix showing the Apps dialog for a tool with non OK status in endless loop

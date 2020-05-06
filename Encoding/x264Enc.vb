@@ -212,7 +212,7 @@ Public Class x264Params
         .Name = "Quant",
         .Text = "Quality",
         .Init = 22,
-        .Config = {0, 69, 1, 1}}
+        .Config = {0, 69, 0.5, 1}}
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",

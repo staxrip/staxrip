@@ -58,7 +58,7 @@ Public Class Documentation
                     Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
 
                     If Not nameAttrib Is Nothing AndAlso
-                        Not nameAttrib.DisplayName.EqualIgnoreCase(param.Name) Then
+                        Not nameAttrib.DisplayName.IsEqualIgnoreCase(param.Name) Then
 
                         hasDescription = True
                     End If
@@ -74,7 +74,7 @@ Public Class Documentation
                         Dim hasName = False
 
                         If Not nameAttrib Is Nothing AndAlso
-                            Not nameAttrib.DisplayName.EqualIgnoreCase(param.Name) Then
+                            Not nameAttrib.DisplayName.IsEqualIgnoreCase(param.Name) Then
                             sb.Append(nameAttrib.DisplayName)
                             hasName = True
                         End If

@@ -7,15 +7,8 @@ Public Class FrameServer
     Property Info As ServerInfo
     Property NativeServer As IFrameServer
 
-    Shared WasInitialized As Boolean
-
     Sub New(path As String)
-        If Not WasInitialized Then
-            Package.Python.AddToPath()
-            Package.AviSynth.AddToPath()
-            Package.VapourSynth.AddToPath()
-            WasInitialized = True
-        End If
+        g.InitFrameServer()
 
         If path.EndsWith(".avs") Then
             NativeServer = CreateAviSynthServer()

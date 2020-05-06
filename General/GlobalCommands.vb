@@ -238,11 +238,6 @@ Public Class GlobalCommands
                         msg += BR2 + $"# Help file of {pack.Name} don't exist!"
                     End If
                 End If
-
-                'does setup file exist?
-                If pack.SetupFilename <> "" AndAlso Not File.Exists(Folder.Apps + pack.SetupFilename) Then
-                    msg += BR2 + $"Setup file of {pack.Name} don't exist!"
-                End If
             End If
         Next
 

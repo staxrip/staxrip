@@ -14,17 +14,17 @@ Public Class Package
     Property HelpURL As String
     Property HelpUrlAviSynth As String
     Property HelpUrlVapourSynth As String
-    Property HintDirectories As String()
     Property HintDirFunc As Func(Of String)
     Property IgnoreNewVersion As Boolean
-    Property IgnoreVersion As Boolean
     Property IgnorePath As String
+    Property IgnoreVersion As Boolean
     Property IsGUI As Boolean
     Property IsIncluded As Boolean = True
     Property Location As String
+    Property Locations As String()
     Property Name As String
     Property RequiredFunc As Func(Of Boolean)
-    Property SetupFilename As String
+    Property SetupAction As Action
     Property StatusFunc As Func(Of String)
     Property TreePath As String
     Property Version As String
@@ -42,7 +42,6 @@ Public Class Package
         .WebURL = "http://www.python.org",
         .HelpSwitch = "-h",
         .Description = "Python is required by VapourSynth.",
-        .SetupFilename = "Installers\python-3.8.2-amd64-webinstall.exe",
         .IgnorePath = "\WindowsApps\",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = AddressOf GetPythonHintDir})
@@ -84,7 +83,7 @@ Public Class Package
         .HelpSwitch = "-h",
         .Required = False,
         .IsIncluded = False,
-        .HintDirectories = {Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing).Dir},
+        .Locations = {Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing).Dir},
         .RequiredFunc = Function() CommandLineDemuxer.IsActive("dsmux")})
 
     Shared Property Haali As Package = Add(New Package With {
@@ -94,7 +93,7 @@ Public Class Package
         .Description = "Haali Splitter is used by eac3to and dsmux to write MKV files.",
         .Required = False,
         .IsIncluded = False,
-        .HintDirectories = {Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing).Dir}})
+        .Locations = {Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing).Dir}})
 
     Shared Property NicAudio As Package = Add(New PluginPackage With {
         .Name = "NicAudio",
@@ -156,7 +155,7 @@ Public Class Package
 
     Shared Property GetMediaInfo As Package = Add(New Package With {
         .Name = "Get-MediaInfo",
-        .Location = "support\MediaInfo.NET",
+        .Location = "Support\MediaInfo.NET",
         .Filename = "Get-MediaInfo.ps1",
         .Description = "Complete PowerShell MediaInfo solution.",
         .WebURL = "https://github.com/stax76/Get-MediaInfo",
@@ -174,13 +173,30 @@ Public Class Package
     Shared Property AviSynth As Package = Add(New Package With {
         .Name = "AviSynth",
         .Filename = "AviSynth.dll",
-        .Location = "Support\AviSynth",
         .WebURL = "https://github.com/AviSynth/AviSynthPlus",
         .HelpURL = "http://avisynth.nl",
         .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
-        .HintDirectories = {Folder.System},
-        .SetupFilename = "Installers\AviSynthPlus-3.5.1_20200402.exe",
+        .Locations = {"FrameServer\AviSynth", Folder.System},
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth})
+
+    Shared Property VapourSynth As Package = Add(New Package With {
+        .Name = "VapourSynth",
+        .Filename = "vapoursynth.dll",
+        .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
+        .WebURL = "http://www.vapoursynth.com",
+        .HelpURL = "http://www.vapoursynth.com/doc",
+        .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthHintDir})
+
+    Shared Property vspipe As Package = Add(New Package With {
+        .Name = "vspipe",
+        .Filename = "vspipe.exe",
+        .Location = "Support\VapourSynth",
+        .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
+        .HelpURL = "http://www.vapoursynth.com/doc/vspipe.html",
+        .HelpSwitch = "",
+        .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthHintDir})
 
     Shared Property chapterEditor As Package = Add(New Package With {
         .Name = "chapterEditor",
@@ -226,32 +242,12 @@ Public Class Package
 
     Shared Property AVSMeter As Package = Add(New Package With {
         .Name = "AVSMeter",
-        .Location = "support\AVSMeter",
+        .Location = "Support\AVSMeter",
         .Filename = "AVSMeter64.exe",
         .Description = "AVSMeter displays AviSynth script clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.",
         .HelpFilename = "doc\AVSMeter.html",
         .WebURL = "http://forum.doom9.org/showthread.php?t=174797",
         .HelpSwitch = ""})
-
-    Shared Property vspipe As Package = Add(New Package With {
-        .Name = "vspipe",
-        .Filename = "vspipe.exe",
-        .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
-        .HelpURL = "http://www.vapoursynth.com/doc/vspipe.html",
-        .HelpSwitch = "",
-        .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = AddressOf Package.GetVapourSynthHintDir})
-
-    Shared Property VapourSynth As Package = Add(New Package With {
-        .Name = "VapourSynth",
-        .Filename = "vapoursynth.dll",
-        .Location = "Support\VapourSynth",
-        .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
-        .WebURL = "http://www.vapoursynth.com",
-        .HelpURL = "http://www.vapoursynth.com/doc",
-        .SetupFilename = "Installers\VapourSynth64-R50-RC2.exe",
-        .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = AddressOf Package.GetVapourSynthHintDir})
 
     Shared Property BDSup2SubPP As Package = Add(New Package With {
         .Name = "BDSup2Sub++",
@@ -305,7 +301,7 @@ Public Class Package
         .Required = False,
         .WebURL = "https://sourceforge.net/projects/mpcbe/",
         .Description = "DirectShow based media player.",
-        .HintDirectories = {Registry.LocalMachine.GetString("SOFTWARE\MPC-BE", "ExePath").Dir, Folder.Programs + "MPC-BE x64\"}})
+        .Locations = {Registry.LocalMachine.GetString("SOFTWARE\MPC-BE", "ExePath").Dir, Folder.Programs + "MPC-BE x64\"}})
 
     Shared Property MpcHC As Package = Add(New Package With {
         .Name = "MPC-HC",
@@ -316,7 +312,7 @@ Public Class Package
         .Required = False,
         .WebURL = "https://mpc-hc.org/",
         .Description = "DirectShow based media player.",
-        .HintDirectories = {Registry.CurrentUser.GetString("Software\MPC-HC\MPC-HC", "ExePath").Dir, Folder.Programs + "MPC-HC\"}})
+        .Locations = {Registry.CurrentUser.GetString("Software\MPC-HC\MPC-HC", "ExePath").Dir, Folder.Programs + "MPC-HC\"}})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
         .Name = "modPlus",
@@ -371,7 +367,7 @@ Public Class Package
     Shared Property VSRip As Package = Add(New Package With {
         .Name = "VSRip",
         .Filename = "VSRip.exe",
-        .Location = "subtitles\VSRip",
+        .Location = "Subtitles\VSRip",
         .Description = "VSRip rips VobSub subtitles.",
         .IsGUI = True,
         .WebURL = "http://sourceforge.net/projects/guliverkli"})
@@ -584,45 +580,10 @@ Public Class Package
 
     Shared Property FFTW As Package = Add(New Package With {
         .Name = "FFTW",
-        .Location = "support\FFTW",
+        .Location = "Support\FFTW",
         .Filename = "libfftw3-3.dll",
         .Description = "Library required by various AviSynth and VapourSynth plugins.",
-        .WebURL = "http://www.fftw.org",
-        .FixedDir = Folder.System,
-        .RequiredFunc = Function()
-                            For Each filter In p.Script.Filters
-                                If filter.Script.ContainsAny("fft", "FFT") Then
-                                    Return True
-                                End If
-                            Next
-
-                            Return BM3D.Required OrElse
-                                   DCTFilter.Required OrElse
-                                   DCTFilterF.Required OrElse
-                                   DCTFilterVS.Required OrElse
-                                   DFTTestAvs.Required OrElse
-                                   DFTTestVS.Required OrElse
-                                   FFT3DFilter.Required OrElse
-                                   FFT3DGPU.Required OrElse
-                                   havsfunc.Required OrElse
-                                   MCTemporalDenoise.Required OrElse
-                                   muvsfunc.Required OrElse
-                                   QTGMC.Required OrElse
-                                   SMDegrain.Required
-                        End Function,
-        .SetupAction = Sub()
-                           Using proc As New Process
-                               proc.StartInfo.FileName = "xcopy.exe"
-                               proc.StartInfo.Arguments = $"""{Folder.Apps + "\support\FFTW\"}*ff*"" ""{Folder.System}"" /Y"
-                               proc.StartInfo.Verb = "runas"
-                               proc.Start()
-                               proc.WaitForExit()
-
-                               If proc.ExitCode <> 0 Then
-                                   MsgError("FFTW returned an error.")
-                               End If
-                           End Using
-                       End Sub})
+        .WebURL = "http://www.fftw.org"})
 
     Shared Property havsfunc As Package = Add(New PluginPackage With {
         .Name = "havsfunc",
@@ -1790,23 +1751,6 @@ Public Class Package
         Return pack
     End Function
 
-    Private SetupActionValue As Action
-
-    Property SetupAction As Action
-        Get
-            If SetupActionValue Is Nothing AndAlso SetupFilename <> "" AndAlso
-                File.Exists(Folder.Apps + SetupFilename) Then
-
-                SetupActionValue = Sub() g.ShellExecute(Folder.Apps + SetupFilename)
-            End If
-
-            Return SetupActionValue
-        End Get
-        Set(value As Action)
-            SetupActionValue = value
-        End Set
-    End Property
-
     ReadOnly Property ID As String
         Get
             If TypeOf Me Is PluginPackage Then
@@ -1889,13 +1833,6 @@ Public Class Package
             Return "Misc"
         End If
     End Function
-
-    Sub AddToPath()
-        If Path.FileExists Then
-            Environment.SetEnvironmentVariable("path", Directory + ";" +
-                Environment.GetEnvironmentVariable("path"))
-        End If
-    End Sub
 
     Sub ShowHelp()
         Dim dic As New SortedDictionary(Of String, String)
@@ -1995,6 +1932,10 @@ Public Class Package
             Using form As New AppsForm
                 form.ShowPackage(Me)
                 form.ShowDialog()
+
+                If GetStatus() <> "" Then
+                    Throw New AbortException()
+                End If
             End Using
 
             If Required AndAlso GetStatus() <> "" Then
@@ -2049,10 +1990,6 @@ Public Class Package
         Dim pathVar = Path
 
         If pathVar = "" Then
-            If SetupFilename <> "" Then
-                Return "Please install " + Name + " or click on Path to define the location. After that, restart StaxRip."
-            End If
-
             If FixedDir <> "" Then
                 Return "App not found at '" + FixedDir.TrimEnd("\"c) + "'"
             Else
@@ -2096,8 +2033,14 @@ Public Class Package
         End Get
     End Property
 
-    Shared Function GetVapourSynthHintDir() As String
-        Dim ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
+    Function GetVapourSynthHintDir() As String
+        Dim ret = GetPathFromLocation("FrameServer\VapourSynth")
+
+        If ret <> "" Then
+            Return ret.Dir
+        End If
+
+        ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
 
         If File.Exists(ret + "VapourSynth.dll") Then
             Return ret
@@ -2129,6 +2072,10 @@ Public Class Package
     End Function
 
     Shared Function GetPythonHintDir() As String
+        If (Folder.Apps + "FrameServer\VapourSynth\python.exe").FileExists Then
+            Return Folder.Apps + "FrameServer\VapourSynth\"
+        End If
+
         For Each x In {8, 9, 7}
             For Each rootKey In {Registry.CurrentUser, Registry.LocalMachine}
                 Dim exePath = rootKey.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath")
@@ -2162,16 +2109,16 @@ Public Class Package
                 Return Nothing
             End If
 
-            If Location <> "" AndAlso File.Exists(Folder.Apps + Location + "\" + Filename) Then
-                Return Folder.Apps + Location + "\" + Filename
+            ret = GetPathFromLocation(Location)
+
+            If File.Exists(ret) Then
+                Return ret
             End If
 
-            If Not HintDirectories.NothingOrEmpty Then
-                For Each hintDir In HintDirectories
-                    If File.Exists(hintDir + Filename) Then
-                        Return hintDir + Filename
-                    End If
-                Next
+            ret = GetPathFromLocation(Locations)
+
+            If File.Exists(ret) Then
+                Return ret
             End If
 
             If Not HintDirFunc Is Nothing Then
@@ -2221,6 +2168,20 @@ Public Class Package
             End If
         End Get
     End Property
+
+    Function GetPathFromLocation(ParamArray dirs As String()) As String
+        If Not dirs.NothingOrEmpty Then
+            For Each hintDir In dirs
+                If Not hintDir.Contains(":\") AndAlso Not hintDir.StartsWith("\\") Then
+                    hintDir = Folder.Apps + hintDir
+                End If
+
+                If File.Exists(hintDir.FixDir + Filename) Then
+                    Return hintDir.FixDir + Filename
+                End If
+            Next
+        End If
+    End Function
 
     Sub StartProcess(path As String)
         If path.Ext.EqualsAny("htm", "html") Then
@@ -2303,7 +2264,7 @@ Public Class Package
         For Each folder In paths
             Dim filepath = folder.FixDir + filename
 
-            If File.Exists(filepath) Then
+            If File.Exists(filepath) AndAlso Not New FileInfo(filepath).Length = 0 Then
                 Return filepath
             End If
         Next

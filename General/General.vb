@@ -196,7 +196,7 @@ Public Class Folder
                     Directory.CreateDirectory(ret + "Backup")
 
                     For Each i In files
-                        FileHelp.Move(i, FilePath.GetDir(i) + "Backup\" + FilePath.GetName(i))
+                        FileHelp.Move(i, i.Dir + "Backup\" + i.FileName)
                     Next
                 End If
 
@@ -248,180 +248,6 @@ Public Class Folder
         Dim ret = sb.ToString.FixDir '.NET fails on 'D:'
         Call New FileIOPermission(FileIOPermissionAccess.PathDiscovery, ret).Demand()
         Return ret
-    End Function
-End Class
-
-Public Class PathBase
-    Shared ReadOnly Property Separator() As Char
-        Get
-            Return Path.DirectorySeparatorChar
-        End Get
-    End Property
-
-    Shared Function IsSameBase(a As String, b As String) As Boolean
-        Return FilePath.GetBase(a).EqualIgnoreCase(FilePath.GetBase(b))
-    End Function
-
-    Shared Function IsSameDir(a As String, b As String) As Boolean
-        Return FilePath.GetDir(a).EqualIgnoreCase(FilePath.GetDir(b))
-    End Function
-
-    Shared Function IsValidFileSystemName(name As String) As Boolean
-        If name = "" Then Return False
-        Dim chars = """*/:<>?\|^".ToCharArray
-
-        For Each i In name.ToCharArray
-            If chars.Contains(i) Then Return False
-            If Convert.ToInt32(i) < 32 Then Return False
-        Next
-
-        Return True
-    End Function
-End Class
-
-Public Class DirPath
-    Inherits PathBase
-
-    Shared Function TrimTrailingSeparator(path As String) As String
-        If path = "" Then Return ""
-
-        If path.EndsWith(Separator) AndAlso Not path.Length <= 3 Then
-            Return path.TrimEnd(Separator)
-        End If
-
-        Return path
-    End Function
-
-    Shared Function FixSeperator(path As String) As String
-        If path.Contains("\") AndAlso Separator <> "\" Then
-            path = path.Replace("\", Separator)
-        End If
-
-        If path.Contains("/") AndAlso Separator <> "/" Then
-            path = path.Replace("/", Separator)
-        End If
-
-        Return path
-    End Function
-
-    Shared Function GetParent(path As String) As String
-        If path = "" Then Return ""
-        Dim temp = TrimTrailingSeparator(path)
-        If temp.Contains(Separator) Then path = temp.LeftLast(Separator) + Separator
-        Return path
-    End Function
-
-    Shared Function GetName(path As String) As String
-        If path = "" Then Return ""
-        path = TrimTrailingSeparator(path)
-        Return path.RightLast(Separator)
-    End Function
-
-    Shared Function IsInSysDir(path As String) As Boolean
-        If path = "" Then Return False
-        If Not path.EndsWith("\") Then path += "\"
-        Return path.ToUpper.Contains(Folder.Programs.ToUpper)
-    End Function
-
-    Shared Function IsFixedDrive(path As String) As Boolean
-        Try
-            If path <> "" Then Return New DriveInfo(path).DriveType = DriveType.Fixed
-        Catch ex As Exception
-        End Try
-    End Function
-End Class
-
-Public Class FilePath
-    Inherits PathBase
-
-    Private Value As String
-
-    Sub New(path As String)
-        Value = path
-    End Sub
-
-    Shared Function GetDir(path As String) As String
-        If path = "" Then
-            Return ""
-        End If
-
-        If path.Contains("\") Then
-            path = path.LeftLast("\") + "\"
-        End If
-
-        Return path
-    End Function
-
-    Shared Function GetDirAndBase(path As String) As String
-        Return GetDir(path) + GetBase(path)
-    End Function
-
-    Shared Function GetName(path As String) As String
-        If Not path Is Nothing Then
-            Dim index = path.LastIndexOf(IO.Path.DirectorySeparatorChar)
-
-            If index > -1 Then
-                Return path.Substring(index + 1)
-            End If
-        End If
-
-        Return path
-    End Function
-
-    Shared Function GetExtFull(filepath As String) As String
-        Return GetExt(filepath, True)
-    End Function
-
-    Shared Function GetExt(filepath As String) As String
-        Return GetExt(filepath, False)
-    End Function
-
-    Shared Function GetExt(filepath As String, includeDot As Boolean) As String
-        If filepath = "" Then
-            Return ""
-        End If
-
-        Dim chars = filepath.ToCharArray()
-
-        For x = filepath.Length - 1 To 0 Step -1
-            If chars(x) = Separator Then
-                Return ""
-            End If
-
-            If chars(x) = "."c Then
-                Return filepath.Substring(x + If(includeDot, 0, 1)).ToLower()
-            End If
-        Next
-
-        Return ""
-    End Function
-
-    Shared Function GetDirNoSep(path As String) As String
-        path = GetDir(path)
-        If path.EndsWith(Separator) Then path = TrimSep(path)
-        Return path
-    End Function
-
-    Shared Function GetBase(path As String) As String
-        If path = "" Then Return ""
-        Dim ret = path
-        If ret.Contains(Separator) Then ret = ret.RightLast(Separator)
-        If ret.Contains(".") Then ret = ret.LeftLast(".")
-        Return ret
-    End Function
-
-    Shared Function TrimSep(path As String) As String
-        If path = "" Then Return ""
-
-        If path.EndsWith(Separator) AndAlso Not path.EndsWith(":" + Separator) Then
-            Return path.TrimEnd(Separator)
-        End If
-
-        Return path
-    End Function
-
-    Shared Function GetDirNameOnly(path As String) As String
-        Return FilePath.GetDirNoSep(path).RightLast("\")
     End Function
 End Class
 
@@ -954,7 +780,7 @@ Public Class StringPair
         Me.Value = value
     End Sub
 
-    Function CompareTo(other As StringPair) As Integer Implements System.IComparable(Of StringPair).CompareTo
+    Function CompareTo(other As StringPair) As Integer Implements IComparable(Of StringPair).CompareTo
         Return Name.CompareTo(other.Name)
     End Function
 End Class
@@ -1210,7 +1036,7 @@ Public Class CommandManager
         End If
 
         For Each i In Commands.Keys
-            If i.EqualIgnoreCase(name) Then
+            If i.IsEqualIgnoreCase(name) Then
                 Return True
             End If
         Next
@@ -1222,7 +1048,7 @@ Public Class CommandManager
         End If
 
         For Each i In Commands.Keys
-            If i.EqualIgnoreCase(name) Then
+            If i.IsEqualIgnoreCase(name) Then
                 Return Commands(i)
             End If
         Next

@@ -511,10 +511,19 @@ Public Class x264Params
         .Switch = "--slow-firstpass",
         .Text = "Slow Firstpass"}
 
-    Property PipingTool As New OptionParam With {
+    Property PipingToolAVS As New OptionParam With {
         .Text = "Piping Tool",
-        .Options = {"Automatic", "None", "vspipe", "avs2pipemod", "ffmpeg"},
-        .Values = {"auto", "none", "vspipe", "avs2pipemod", "ffmpeg"}}
+        .Name = "PipingToolAVS",
+        .VisibleFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
+        .Options = {"Automatic", "None", "avs2pipemod", "ffmpeg"},
+        .Values = {"auto", "none", "avs2pipemod", "ffmpeg"}}
+
+    Property PipingToolVS As New OptionParam With {
+        .Text = "Piping Tool",
+        .Name = "PipingToolVS",
+        .VisibleFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .Options = {"Automatic", "None", "vspipe", "ffmpeg"},
+        .Values = {"auto", "none", "vspipe", "ffmpeg"}}
 
     Sub ApplyValues(isDefault As Boolean)
         Dim setVal = Sub(param As CommandLineParam, value As Object)
@@ -876,7 +885,8 @@ Public Class x264Params
                     New BoolParam With {.Switch = "--dts-compress", .Text = "Eliminate initial delay with container DTS hack"})
                 Add("Other",
                     New StringParam With {.Switch = "--video-filter", .Switches = {"--vf"}, .Text = "Video Filter"},
-                    PipingTool,
+                    PipingToolAVS,
+                    PipingToolVS,
                     New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                     New OptionParam With {.Switch = "--frame-packing", .Text = "Frame Packing", .IntegerValue = True, .Options = {"Checkerboard", "Column Alternation", "Row Alternation", "Side By Side", "Top Bottom", "Frame Alternation", "Mono", "Tile Format"}},
                     Deblock,
@@ -942,37 +952,39 @@ Public Class x264Params
                        p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
     End Function
 
-    Overloads Function GetArgs(pass As Integer,
-                               script As VideoScript,
-                               targetPath As String,
-                               includePaths As Boolean,
-                               includeExecutable As Boolean) As String
+    Overloads Function GetArgs(
+        pass As Integer,
+        script As VideoScript,
+        targetPath As String,
+        includePaths As Boolean,
+        includeExecutable As Boolean) As String
+
         ApplyValues(True)
 
         Dim args As String
 
         If includePaths AndAlso includeExecutable Then
-            Dim pipeString = ""
-            Dim pipeTool = PipingTool.ValueText
+            Dim pipeCmd = ""
+            Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS).ValueText
 
             If pipeTool = "auto" Then
-                If p.Script.Engine = ScriptEngine.VapourSynth Then
-                    pipeTool = "vspipe"
-                Else
+                If p.Script.Engine = ScriptEngine.AviSynth Then
                     pipeTool = "avs2pipemod"
+                Else
+                    pipeTool = "vspipe"
                 End If
             End If
 
             Select Case pipeTool
                 Case "vspipe"
-                    pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | "
+                    pipeCmd = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | "
                 Case "avs2pipemod"
-                    pipeString = Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | "
+                    pipeCmd = Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | "
                 Case "ffmpeg"
-                    pipeString = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
+                    pipeCmd = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
             End Select
 
-            args += pipeString + Package.x264.Path.Escape
+            args += pipeCmd + Package.x264.Path.Escape
         End If
 
         If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
@@ -1010,7 +1022,8 @@ Public Class x264Params
         End If
 
         If includePaths Then
-            Dim input = If(PipingTool.ValueText = "none", script.Path.Escape, "-")
+            Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS)
+            Dim input = If(pipeTool.ValueText = "none", script.Path.Escape, "-")
 
             If input = "-" Then
                 args += " --demuxer y4m --frames " & script.GetFrameCount

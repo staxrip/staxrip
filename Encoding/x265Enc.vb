@@ -212,10 +212,19 @@ Public Class x265Params
         .Options = {"AviSynth/VapourSynth", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
         .Values = {"script", "qs", "ffqsv", "ffdxva"}}
 
-    Property PipingTool As New OptionParam With {
+    Property PipingToolAVS As New OptionParam With {
         .Text = "Piping Tool",
-        .Options = {"Automatic", "None", "vspipe", "avs2pipemod", "ffmpeg"},
-        .Values = {"auto", "none", "vspipe", "avs2pipemod", "ffmpeg"}}
+        .Name = "PipingToolAVS",
+        .VisibleFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
+        .Options = {"Automatic", "None", "avs2pipemod", "ffmpeg"},
+        .Values = {"auto", "none", "avs2pipemod", "ffmpeg"}}
+
+    Property PipingToolVS As New OptionParam With {
+        .Text = "Piping Tool",
+        .Name = "PipingToolVS",
+        .VisibleFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .Options = {"Automatic", "None", "vspipe", "ffmpeg"},
+        .Values = {"auto", "none", "vspipe", "ffmpeg"}}
 
     Property Quant As New NumParam With {
         .Switches = {"--crf", "--qp", "-q"},
@@ -965,7 +974,7 @@ Public Class x265Params
                     New StringParam With {.Switch = "--abr-ladder", .Text = "ABR Ladder File", .BrowseFile = True},
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List"},
                     New OptionParam With {.Switch = "--high-tier", .NoSwitch = "--no-high-tier", .Text = "High Tier", .Options = {"Undefined", "Yes", "No"}, .Values = {"", "--high-tier", "--no-high-tier"}},
-                    Decoder, PipingTool, PsyRD, CompCheck, CompCheckAimedQuality,
+                    Decoder, PipingToolAVS, PipingToolVS, PsyRD, CompCheck, CompCheckAimedQuality,
                     New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth"},
                     RDpenalty, MaxAuSizeFactor)
                 Add("Other 2",
@@ -1045,13 +1054,13 @@ Public Class x265Params
             Select Case Decoder.ValueText
                 Case "script"
                     Dim pipeString = ""
-                    Dim pipeTool = PipingTool.ValueText
+                    Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS).ValueText
 
                     If pipeTool = "auto" Then
-                        If p.Script.Engine = ScriptEngine.VapourSynth Then
-                            pipeTool = "vspipe"
-                        Else
+                        If p.Script.Engine = ScriptEngine.AviSynth Then
                             pipeTool = "avs2pipemod"
+                        Else
+                            pipeTool = "vspipe"
                         End If
                     End If
 
@@ -1116,7 +1125,9 @@ Public Class x265Params
         End If
 
         If includePaths Then
-            If PipingTool.ValueText <> "none" Then
+            Dim pipingTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS)
+
+            If pipingTool.ValueText <> "none" Then
                 If Frames.Value = 0 AndAlso Not IsCustom(pass, "--frames") Then
                     sb.Append(" --frames " & script.GetFrameCount)
                 End If
@@ -1128,7 +1139,8 @@ Public Class x265Params
                 sb.Append(" --stats " + (p.TempDir + p.TargetFile.Base + ".stats").Escape)
             End If
 
-            Dim input = If(PipingTool.ValueText = "none", script.Path.Escape, "-")
+            Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS)
+            Dim input = If(pipeTool.ValueText = "none", script.Path.Escape, "-")
 
             If (Mode.Value = x265RateMode.ThreePass AndAlso pass < 3) OrElse
                 Mode.Value = x265RateMode.TwoPass AndAlso pass = 1 Then

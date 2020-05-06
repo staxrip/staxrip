@@ -273,7 +273,7 @@ Public Class Project
 
             Dim filter As New VideoFilter
             filter.Category = "Subtitle"
-            filter.Path = FilePath.GetName(path)
+            filter.Path = path.FileName
             filter.Active = True
             filter.Script = filterName + "(""" + path + """)"
             Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")
@@ -307,7 +307,7 @@ Public Class Project
 
             Dim filter As New VideoFilter
             filter.Category = "Subtitle"
-            filter.Path = FilePath.GetName(path)
+            filter.Path = path.FileName
             filter.Active = True
             filter.Script = "clip = " + filterName + "(clip, file = r""" + path + """)"
             Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")

@@ -11,6 +11,36 @@ Imports Microsoft.Win32
 Imports VB6 = Microsoft.VisualBasic
 
 Module StringExtensions
+    Private Separator As Char = Path.DirectorySeparatorChar
+
+    <Extension>
+    Function TrimTrailingSeparator(instance As String) As String
+        If instance = "" Then
+            Return ""
+        End If
+
+        If instance.EndsWith(Separator) AndAlso Not instance.Length <= 3 Then
+            Return instance.TrimEnd(Separator)
+        End If
+
+        Return instance
+    End Function
+
+    <Extension()>
+    Function Parent(path As String) As String
+        If path = "" Then
+            Return ""
+        End If
+
+        Dim temp = TrimTrailingSeparator(path)
+
+        If temp.Contains(Separator) Then
+            path = temp.LeftLast(Separator) + Separator
+        End If
+
+        Return path
+    End Function
+
     <Extension>
     Function IndentLines(instance As String, value As String) As String
         If instance = "" Then
@@ -131,11 +161,6 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function Parent(instance As String) As String
-        Return DirPath.GetParent(instance)
-    End Function
-
-    <Extension()>
     Function ExistingParent(instance As String) As String
         Dim ret = instance.Parent
         If Not Directory.Exists(ret) Then ret = ret.Parent Else Return ret
@@ -144,11 +169,6 @@ Module StringExtensions
         If Not Directory.Exists(ret) Then ret = ret.Parent Else Return ret
         If Not Directory.Exists(ret) Then ret = ret.Parent Else Return ret
         Return ret
-    End Function
-
-    <Extension()>
-    Function Ext(instance As String) As String
-        Return FilePath.GetExt(instance)
     End Function
 
     <Extension()>
@@ -162,28 +182,91 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function Ext(instance As String) As String
+        Return GetExt(instance, False)
+    End Function
+
+    <Extension()>
     Function ExtFull(instance As String) As String
-        Return FilePath.GetExtFull(instance)
+        Return GetExt(instance, True)
+    End Function
+
+    Function GetExt(filepath As String, includeDot As Boolean) As String
+        If filepath = "" Then
+            Return ""
+        End If
+
+        Dim chars = filepath.ToCharArray()
+
+        For x = filepath.Length - 1 To 0 Step -1
+            If chars(x) = Separator Then
+                Return ""
+            End If
+
+            If chars(x) = "."c Then
+                Return filepath.Substring(x + If(includeDot, 0, 1)).ToLower()
+            End If
+        Next
+
+        Return ""
     End Function
 
     <Extension()>
     Function Base(instance As String) As String
-        Return FilePath.GetBase(instance)
+        If instance = "" Then
+            Return ""
+        End If
+
+        Dim ret = instance
+
+        If ret.Contains(Separator) Then
+            ret = ret.RightLast(Separator)
+        End If
+
+        If ret.Contains(".") Then
+            ret = ret.LeftLast(".")
+        End If
+
+        Return ret
     End Function
 
     <Extension()>
     Function Dir(instance As String) As String
-        Return FilePath.GetDir(instance)
+        If instance = "" Then
+            Return ""
+        End If
+
+        If instance.Contains("\") Then
+            instance = instance.LeftLast("\") + "\"
+        End If
+
+        Return instance
+    End Function
+
+    <Extension()>
+    Function DirNoSep(instance As String) As String
+        instance = instance.Dir
+
+        If instance.EndsWith(Separator) Then
+            instance = instance.TrimTrailingSeparator
+        End If
+
+        Return instance
     End Function
 
     <Extension()>
     Function DirName(instance As String) As String
-        Return DirPath.GetName(instance)
+        If instance = "" Then
+            Return ""
+        End If
+
+        instance = TrimTrailingSeparator(instance)
+        Return instance.RightLast(Separator)
     End Function
 
     <Extension()>
-    Function DirAndBase(instance As String) As String
-        Return FilePath.GetDirAndBase(instance)
+    Function DirAndBase(path As String) As String
+        Return path.Dir + path.Base
     End Function
 
     <Extension()>
@@ -208,15 +291,15 @@ Module StringExtensions
             Return ""
         End If
 
-        While instance.EndsWith(DirPath.Separator + DirPath.Separator)
+        While instance.EndsWith(Separator + Separator)
             instance = instance.Substring(0, instance.Length - 1)
         End While
 
-        If instance.EndsWith(DirPath.Separator) Then
+        If instance.EndsWith(Separator) Then
             Return instance
         End If
 
-        Return instance + DirPath.Separator
+        Return instance + Separator
     End Function
 
     <Extension()>
@@ -401,13 +484,19 @@ Module StringExtensions
 
     <Extension()>
     Function RightLast(value As String, start As String) As String
-        If value = "" OrElse start = "" Then Return ""
-        If Not value.Contains(start) Then Return ""
+        If value = "" OrElse start = "" Then
+            Return ""
+        End If
+
+        If Not value.Contains(start) Then
+            Return ""
+        End If
+
         Return value.Substring(value.LastIndexOf(start) + start.Length)
     End Function
 
     <Extension()>
-    Function EqualIgnoreCase(value1 As String, value2 As String) As Boolean
+    Function IsEqualIgnoreCase(value1 As String, value2 As String) As Boolean
         Return String.Compare(value1, value2, StringComparison.OrdinalIgnoreCase) = 0
     End Function
 
@@ -421,11 +510,37 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function IsValidFileSystemName(instance As String) As Boolean
+        If instance = "" Then
+            Return False
+        End If
+
+        Dim chars = """*/:<>?\|^".ToCharArray
+
+        For Each i In instance.ToCharArray
+            If chars.Contains(i) Then
+                Return False
+            End If
+
+            If Convert.ToInt32(i) < 32 Then
+                Return False
+            End If
+        Next
+
+        Return True
+    End Function
+
+    <Extension()>
+    Function IsSameBase(instance As String, b As String) As Boolean
+        Return instance.Base.IsEqualIgnoreCase(b.Base)
+    End Function
+
+    <Extension()>
     Function EscapeIllegalFileSysChars(value As String) As String
         If value = "" Then Return ""
 
         For Each i In value
-            If Not FilePath.IsValidFileSystemName(i) Then
+            If Not IsValidFileSystemName(i) Then
                 value = value.Replace(i, "__" + Uri.EscapeDataString(i).TrimStart("%"c) + "__")
             End If
         Next

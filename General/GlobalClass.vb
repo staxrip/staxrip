@@ -73,13 +73,34 @@ Public Class GlobalClass
         Dim path = Environment.GetEnvironmentVariable("path")
 
         For Each pack In Package.Items.Values
-            If Not pack.HelpSwitch Is Nothing AndAlso pack.Path.FileExists Then
+            If pack.Path.Ext = "exe" AndAlso pack.Path.FileExists Then
                 path = pack.Directory + ";" + path
             End If
         Next
 
         dic("path") = path
     End Sub
+
+    Sub AddToPath(ParamArray dirs As String())
+        Dim path = Environment.GetEnvironmentVariable("path")
+
+        For Each d In dirs
+            If d.DirExists AndAlso Not d.StartsWith(Folder.System) Then
+                path = d + ";" + path
+            End If
+        Next
+
+        Environment.SetEnvironmentVariable("path", path)
+    End Sub
+
+    Function IsFixedDrive(path As String) As Boolean
+        Try
+            If path <> "" Then
+                Return New DriveInfo(path).DriveType = DriveType.Fixed
+            End If
+        Catch
+        End Try
+    End Function
 
     Sub ProcessJobs()
         Dim jobs = Job.ActiveJobs
@@ -801,16 +822,22 @@ Public Class GlobalClass
     End Function
 
     Function IsSourceSame(path As String) As Boolean
-        Return FilePath.GetBase(path).StartsWith(FilePath.GetBase(p.SourceFile))
+        Return path.Base.StartsWith(p.SourceFile.Base)
     End Function
 
     Function GetFilesInTempDirAndParent() As List(Of String)
         Dim ret As New List(Of String)
         Dim dirs As New HashSet(Of String)
 
-        If p.TempDir <> "" Then dirs.Add(p.TempDir)
-        If p.TempDir?.EndsWith("_temp\") Then dirs.Add(DirPath.GetParent(p.TempDir))
-        dirs.Add(FilePath.GetDir(p.FirstOriginalSourceFile))
+        If p.TempDir <> "" Then
+            dirs.Add(p.TempDir)
+        End If
+
+        If p.TempDir?.EndsWith("_temp\") Then
+            dirs.Add(p.TempDir.Parent)
+        End If
+
+        dirs.Add(p.FirstOriginalSourceFile.Dir)
 
         For Each i In dirs
             ret.AddRange(Directory.GetFiles(i))
@@ -821,13 +848,13 @@ Public Class GlobalClass
 
     Function IsSourceSimilar(path As String) As Boolean
         If p.SourceFile.Contains("_") Then
-            Dim src = FilePath.GetBase(p.SourceFile)
+            Dim sourceBase = p.SourceFile.Base
 
-            While src.Length > 2 AndAlso src.ToCharArray.Last.IsDigit
-                src = src.DeleteRight(1)
+            While sourceBase.Length > 2 AndAlso sourceBase.ToCharArray.Last.IsDigit
+                sourceBase = sourceBase.DeleteRight(1)
             End While
 
-            If src.EndsWith("_") AndAlso FilePath.GetBase(path).StartsWith(src.TrimEnd("_"c)) Then
+            If sourceBase.EndsWith("_") AndAlso path.Base.StartsWith(sourceBase.TrimEnd("_"c)) Then
                 Return True
             End If
         End If
@@ -851,7 +878,7 @@ Public Class GlobalClass
                 If File.Exists(p.SourceFile) Then
                     Dim name = p.TargetFile.Base
                     If name = "" Then name = p.SourceFile.Base
-                    Dim path = FilePath.GetDir(p.SourceFile) + "recovery.srip"
+                    Dim path = p.SourceFile.Dir + "recovery.srip"
                     g.MainForm.SaveProjectPath(path)
                 End If
 
@@ -1081,15 +1108,19 @@ Public Class GlobalClass
     End Function
 
     Function BrowseFile(filter As String) As String
-        Using d As New OpenFileDialog
-            d.Filter = filter
-            d.SetInitDir(p.TempDir)
-            If d.ShowDialog = DialogResult.OK Then Return d.FileName
+        Using dialog As New OpenFileDialog
+            dialog.Filter = filter
+            dialog.SetInitDir(p.TempDir)
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                Return dialog.FileName
+            End If
         End Using
     End Function
 
     Sub CodePreview(code As String)
         Using form As New StringEditorForm
+            form.ScaleClientSize(50, 30)
             form.rtb.ReadOnly = True
             form.cbWrap.Checked = False
             form.cbWrap.Visible = False
@@ -1343,4 +1374,67 @@ Public Class GlobalClass
     Function IsWindowsTerminalAvailable() As Boolean
         Return File.Exists(Folder.AppDataLocal + "Microsoft\WindowsApps\wt.exe")
     End Function
+
+    Shared WasFrameServerInitialized As Boolean
+
+    Sub InitFrameServer()
+        If Not WasFrameServerInitialized Then
+            'TODO:?
+            'Dim dirs = Package.Items.Values.Select(Function(pack) pack.Path.Dir)
+
+            'dirs = dirs.Concat({Folder.Startup, Package.Python.Directory,
+            '    Package.AviSynth.Directory, Package.VapourSynth.Directory})
+
+            'g.AddToPath(dirs.ToArray)
+
+            g.AddToPath(Folder.Startup, Package.Python.Directory, Package.AviSynth.Directory,
+                        Package.VapourSynth.Directory, Package.FFTW.Directory)
+
+            MakeSymLinks()
+            WasFrameServerInitialized = True
+        End If
+    End Sub
+
+    Sub MakeSymLinks()
+        'name, source,target
+        Dim links As New List(Of (String, String, String))
+
+        If Package.AviSynth.Path.StartsWith(Folder.Startup) AndAlso
+            Package.ffmpeg.Path.StartsWith(Folder.Startup) Then
+
+            links.Add(("ffmpeg avisynth", Package.ffmpeg.Directory + "AviSynth.dll", Package.AviSynth.Path))
+        End If
+
+        links.Add(("libfftw3  vs fftw", Package.DCTFilterVS.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
+        links.Add(("libfftw3f vs fftw", Package.DCTFilterVS.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
+
+        links.Add(("libfftw3  vs fftw", Package.BM3D.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
+        links.Add(("libfftw3f vs fftw", Package.BM3D.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
+
+        links.Add(("libfftw3  vs fftw", Package.DFTTestVS.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
+        links.Add(("libfftw3f vs fftw", Package.DFTTestVS.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
+
+        For Each i In links
+            If Not i.Item3.FileExists Then
+                Continue For
+            End If
+
+            Dim hash = (i.Item2 & i.Item3 & New FileInfo(i.Item3).Length & Folder.Startup).MD5Hash
+
+            If s.Storage.GetString(i.Item1 + "symlinkhash") <> hash OrElse Not i.Item2.FileExists Then
+                FileHelp.Delete(i.Item2)
+                Dim cmd = $"mklink {i.Item2.Escape} {i.Item3.Escape}"
+
+                Using cmdProc As New Process
+                    cmdProc.StartInfo.UseShellExecute = False
+                    cmdProc.StartInfo.CreateNoWindow = True
+                    cmdProc.StartInfo.FileName = "cmd.exe"
+                    cmdProc.StartInfo.Arguments = $"/s /c ""{cmd}"""
+                    cmdProc.Start()
+                End Using
+
+                s.Storage.SetString(i.Item1 + "symlinkhash", hash)
+            End If
+        Next
+    End Sub
 End Class

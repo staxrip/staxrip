@@ -116,6 +116,7 @@ Public Class DirectoryHelp
     End Function
 End Class
 
+'TODO:remove?
 Public Class ConsoleHelp
     Private Shared DosCodePageValue As Integer
 

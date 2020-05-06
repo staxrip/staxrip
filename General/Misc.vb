@@ -1120,13 +1120,13 @@ Public Class Macro
         If value.Contains("%source_framerate%") Then value = value.Replace("%source_framerate%", p.SourceFrameRate.ToString("f6", CultureInfo.InvariantCulture))
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_dir%") Then value = value.Replace("%source_dir%", FilePath.GetDir(p.SourceFile))
+        If value.Contains("%source_dir%") Then value = value.Replace("%source_dir%", p.SourceFile.Dir)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_dir_parent%") Then value = value.Replace("%source_dir_parent%", DirPath.GetParent(FilePath.GetDir(p.SourceFile)))
+        If value.Contains("%source_dir_parent%") Then value = value.Replace("%source_dir_parent%", p.SourceFile.Dir.Parent)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_dir_name%") Then value = value.Replace("%source_dir_name%", DirPath.GetName(FilePath.GetDir(p.SourceFile)))
+        If value.Contains("%source_dir_name%") Then value = value.Replace("%source_dir_name%", p.SourceFile.Dir.DirName)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_width%") Then value = value.Replace("%target_width%", p.TargetWidth.ToString)
@@ -1150,7 +1150,7 @@ Public Class Macro
         If value.Contains("%target_file%") Then value = value.Replace("%target_file%", p.TargetFile)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_dir%") Then value = value.Replace("%target_dir%", FilePath.GetDir(p.TargetFile))
+        If value.Contains("%target_dir%") Then value = value.Replace("%target_dir%", p.TargetFile.Dir)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_name%") Then value = value.Replace("%target_name%", p.TargetFile.Base)
@@ -1335,7 +1335,7 @@ Public Class Macro
                 Dim path = package?.Path
 
                 If path <> "" Then
-                    value = value.Replace(match.Value, FilePath.GetDir(path))
+                    value = value.Replace(match.Value, path.Dir)
                     If Not value.Contains("%") Then
                         Return value
                     End If

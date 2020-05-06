@@ -400,7 +400,7 @@ Public Class SubtitleControl
                 item.ID = id
                 item.TypeName = i.TypeName
                 item.Size = size
-                item.Filename = FilePath.GetName(i.Path)
+                item.Filename = i.Path.FileName
                 item.Subtitle = i
 
                 Items.Add(item)

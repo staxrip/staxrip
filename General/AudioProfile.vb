@@ -101,7 +101,7 @@ Public MustInherit Class AudioProfile
                     ret = File.FileName
                 End If
             Else
-                ret = Stream.Name + " (" + FilePath.GetExt(File) + ")"
+                ret = Stream.Name + " (" + File.Ext + ")"
             End If
 
             Return ret
@@ -198,7 +198,7 @@ Public MustInherit Class AudioProfile
         If File.Base = p.SourceFile.Base Then
             Return name + " (" + File.Ext + ")"
         Else
-            Return name + " (" + FilePath.GetName(File) + ")"
+            Return name + " (" + File.FileName + ")"
         End If
     End Function
 

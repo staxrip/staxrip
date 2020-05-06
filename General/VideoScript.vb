@@ -226,7 +226,7 @@ clipname.set_output()
             End If
 
             If Me.Error <> "" OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
-                If Directory.Exists(FilePath.GetDir(Path)) Then
+                If Path.Dir.DirExists Then
                     If Engine = ScriptEngine.VapourSynth Then
                         ModifyScript(code, Engine).WriteFile(Path, Encoding.UTF8)
                     Else

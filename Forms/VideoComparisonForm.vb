@@ -53,7 +53,7 @@ Public Class VideoComparisonForm
             dialog.SetInitDir(s.Storage.GetString("video comparison folder"))
 
             If dialog.ShowDialog() = DialogResult.OK Then
-                s.Storage.SetString("video comparison folder", FilePath.GetDir(dialog.FileName))
+                s.Storage.SetString("video comparison folder", dialog.FileName.Dir)
 
                 For Each i In dialog.FileNames
                     Add(i)
@@ -243,7 +243,7 @@ Public Class VideoComparisonForm
         End Sub
 
         Function Open(sourePath As String) As Boolean
-            Text = FilePath.GetBase(sourePath)
+            Text = sourePath.Base
             SourceFile = sourePath
 
             Dim script As New VideoScript
@@ -361,7 +361,7 @@ Public Class VideoComparisonForm
 
             Using g = Graphics.FromImage(ret)
                 g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
-                Dim text = FilePath.GetBase(SourceFile)
+                Dim text = SourceFile.Base
                 Dim fontSize = ret.Height \ 100
 
                 If fontSize < 10 Then

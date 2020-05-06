@@ -99,7 +99,7 @@ Public Class HelpForm
         If Browser.DocumentTitle <> "" Then
             Text = Browser.DocumentTitle
         ElseIf File.Exists(e.Url.LocalPath) Then
-            Text = FilePath.GetBase(e.Url.LocalPath)
+            Text = e.Url.LocalPath.Base
         End If
     End Sub
 

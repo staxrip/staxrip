@@ -699,7 +699,7 @@ Public Class NullEncoder
         Dim sourceFile = GetSourceFile()
 
         If Not p.VideoEncoder.Muxer.IsSupported(sourceFile.Ext) Then
-            Select Case FilePath.GetExt(sourceFile)
+            Select Case sourceFile.Ext
                 Case "mkv"
                     mkvDemuxer.Demux(sourceFile, Nothing, Nothing, Nothing, p, False, True)
             End Select

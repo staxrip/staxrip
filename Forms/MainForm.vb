@@ -1215,10 +1215,17 @@ Public Class MainForm
     End Sub
 
     Function GetIfoFile() As String
-        Dim ret = FilePath.GetDir(p.SourceFile)
-        If ret.EndsWith("_temp\") Then ret = DirPath.GetParent(ret)
-        ret = ret + FilePath.GetName(p.SourceFile).DeleteRight(5) + "0.ifo"
-        If File.Exists(ret) Then Return ret
+        Dim ret = p.SourceFile.Dir
+
+        If ret.EndsWith("_temp\") Then
+            ret = ret.Parent
+        End If
+
+        ret = ret + p.SourceFile.FileName.DeleteRight(5) + "0.ifo"
+
+        If File.Exists(ret) Then
+            Return ret
+        End If
     End Function
 
     Sub RenameDVDTracks()
@@ -1238,7 +1245,7 @@ Public Class MainForm
                         For x = 0 To mi.AudioStreams.Count - 1
                             If mi.GetAudio(x, "ID/String").Contains(" (0x" & dgID & ")") Then
                                 Dim stream = mi.AudioStreams(x)
-                                Dim base = FilePath.GetBase(i)
+                                Dim base = i.Base
                                 base = regex.Replace(base, " ID" & x & " ")
 
                                 If base.Contains("2_0ch") Then base = base.Replace("2_0ch", "2ch")
@@ -1285,7 +1292,7 @@ Public Class MainForm
                 If track = 0 AndAlso iPath.Base = p.Audio1.File.Base Then Continue For
 
                 If tbOther.Text = iPath Then Continue For
-                If Not FilePath.GetExt(iPath) = iExt Then Continue For
+                If Not iPath.Ext = iExt Then Continue For
                 If iPath.Contains("_cut_") Then Continue For
                 If iPath.Contains("_out") Then Continue For
                 If Not g.IsSourceSame(iPath) Then Continue For
@@ -1305,7 +1312,7 @@ Public Class MainForm
                     If Not iPath.Contains(lng.Name) Then Continue For
                 End If
 
-                If iPath.Ext = "mp4" AndAlso FilePath.IsSameBase(p.SourceFile, iPath) Then
+                If iPath.Ext = "mp4" AndAlso p.SourceFile.IsSameBase(iPath) Then
                     Continue For
                 End If
 
@@ -1786,7 +1793,7 @@ Public Class MainForm
             End If
 
             For Each i In files
-                Dim name = FilePath.GetName(i)
+                Dim name = i.FileName
 
                 If name.ToUpper Like "VTS_0#_0.VOB" Then
                     If MsgQuestion("Are you sure you want to open the file " + name + "," + BR +
@@ -1947,10 +1954,16 @@ Public Class MainForm
                 End If
             End If
 
-            If Not Directory.Exists(targetDir) Then targetDir = p.SourceFile.Dir
+            If Not Directory.Exists(targetDir) Then
+                targetDir = p.SourceFile.Dir
+            End If
+
             Dim targetName = Macro.Expand(p.DefaultTargetName)
 
-            If Not FilePath.IsValidFileSystemName(targetName) Then targetName = p.SourceFile.Base
+            If Not targetName.IsValidFileSystemName Then
+                targetName = p.SourceFile.Base
+            End If
+
             tbTargetFile.Text = targetDir + targetName + p.VideoEncoder.Muxer.OutputExtFull
 
             If p.SourceFile = p.TargetFile OrElse
@@ -1980,7 +1993,7 @@ Public Class MainForm
             Demux()
 
             If p.LastOriginalSourceFile <> p.SourceFile AndAlso
-                Not FileTypes.VideoText.Contains(FilePath.GetExt(p.SourceFile)) Then
+                Not FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
 
                 p.LastOriginalSourceFile = p.SourceFile
             End If
@@ -2009,7 +2022,7 @@ Public Class MainForm
 
             RenameDVDTracks()
 
-            If FileTypes.VideoAudio.Contains(FilePath.GetExt(p.LastOriginalSourceFile)) Then
+            If FileTypes.VideoAudio.Contains(p.LastOriginalSourceFile.Ext) Then
                 p.Audio0.Streams = MediaInfo.GetAudioStreams(p.LastOriginalSourceFile)
                 p.Audio1.Streams = p.Audio0.Streams
             End If
@@ -2094,7 +2107,7 @@ Public Class MainForm
             Else
                 If p.Audio0.File = "" AndAlso p.Audio1.File = "" Then
                     If Not TypeOf p.Audio0 Is NullAudioProfile AndAlso
-                        Not FileTypes.VideoText.Contains(FilePath.GetExt(p.LastOriginalSourceFile)) Then
+                        Not FileTypes.VideoText.Contains(p.LastOriginalSourceFile.Ext) Then
 
                         tbAudioFile0.Text = p.LastOriginalSourceFile
                         If p.Audio0.Streams.Count = 0 Then tbAudioFile0.Text = ""
@@ -2111,7 +2124,7 @@ Public Class MainForm
                                     If p.Audio0.Stream.StreamOrder = p.Audio1.Stream.StreamOrder Then
                                         For Each i2 In p.Audio1.Streams
                                             If i2.StreamOrder <> p.Audio1.Stream.StreamOrder Then
-                                                tbAudioFile1.Text = i2.Name + " (" + FilePath.GetExt(p.Audio1.File) + ")"
+                                                tbAudioFile1.Text = i2.Name + " (" + p.Audio1.File.Ext + ")"
                                                 p.Audio1.Stream = i2
                                                 UpdateSizeOrBitrate()
                                                 Exit For
@@ -2222,7 +2235,7 @@ Public Class MainForm
                     For Each i In iPref
                         Dim name = i.Name.SplitNoEmptyAndWhiteSpace({",", " "})
 
-                        If name.Contains(FilePath.GetExt(p.SourceFile)) Then
+                        If name.Contains(p.SourceFile.Ext) Then
                             Dim filters = scriptingProfiles.Where(
                                     Function(v) v.Name = "Source").First.Filters.Where(
                                     Function(v) v.Name = i.Value)
@@ -2363,7 +2376,7 @@ Public Class MainForm
                 Using proc As New Proc
                     proc.Header = "Extract forced subtitles if existing"
                     proc.SkipString = "# "
-                    proc.WriteLog(FilePath.GetName(path) + BR2)
+                    proc.WriteLog(path.FileName + BR2)
                     proc.File = Package.BDSup2SubPP.Path
                     proc.Arguments = "--forced-only -o " + (path.DirAndBase + "_forced.idx").Escape + " " + path.Escape
                     proc.AllowedExitCodes = {}
@@ -2374,7 +2387,7 @@ Public Class MainForm
     End Sub
 
     Sub DemuxVobSubSubtitles()
-        If Not {"vob", "m2v"}.Contains(FilePath.GetExt(p.LastOriginalSourceFile)) Then Exit Sub
+        If Not {"vob", "m2v"}.Contains(p.LastOriginalSourceFile.Ext) Then Exit Sub
         Dim ifoPath = GetIfoFile()
         If ifoPath = "" Then Exit Sub
         If File.Exists(p.TempDir + p.SourceFile.Base + ".idx") Then Exit Sub
@@ -2793,7 +2806,7 @@ Public Class MainForm
             End If
 
             If File.Exists(p.TargetFile) Then
-                If FileTypes.VideoText.Contains(FilePath.GetExt(p.SourceFile)) AndAlso
+                If FileTypes.VideoText.Contains(p.SourceFile.Ext) AndAlso
                     p.SourceFile.ReadAllText.Contains(p.TargetFile) Then
 
                     If ProcessTip("Source and target name are identical, please select another target name.") Then
@@ -2928,7 +2941,7 @@ Public Class MainForm
     End Function
 
     Private Sub OpenTargetFolder()
-        g.ShellExecute(FilePath.GetDir(p.TargetFile))
+        g.ShellExecute(p.TargetFile.Dir)
     End Sub
 
     Dim BlockAudioTextChanged As Boolean
@@ -3185,7 +3198,7 @@ Public Class MainForm
             End If
 
             If Not File.Exists(p.SourceFile + ".lwi") AndAlso Not File.Exists(p.TempDir + p.SourceFile.Base + ".lwi") AndAlso
-                File.Exists(p.Script.Path) AndAlso Not FileTypes.VideoText.Contains(FilePath.GetExt(p.SourceFile)) Then
+                File.Exists(p.Script.Path) AndAlso Not FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
 
                 Using proc As New Proc
                     proc.Header = "Index LWLibav"
@@ -3258,7 +3271,7 @@ Public Class MainForm
         td.MainInstruction = "Please select a template"
 
         For Each i In Directory.GetFiles(Folder.Template, "*.srip")
-            td.AddCommand(FilePath.GetBase(i), i)
+            td.AddCommand(i.Base, i)
         Next
 
         If td.Show <> "" Then
@@ -4865,7 +4878,7 @@ Public Class MainForm
                     If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
                         Dim files = form.GetFiles
 
-                        Select Case FilePath.GetExt(files(0))
+                        Select Case files(0).Ext
                             Case "mpg", "vob"
                                 OpenVideoSourceFiles(files)
                             Case Else
@@ -4990,7 +5003,7 @@ Public Class MainForm
                 workDir += title
             End If
 
-            If Not DirPath.IsFixedDrive(workDir) Then
+            If Not g.IsFixedDrive(workDir) Then
                 Using d As New FolderBrowserDialog
                     d.Description = "Please select a folder for temporary files on a fixed local drive."
                     d.SetSelectedPath(s.Storage.GetString("last blu-ray target folder").Parent)
@@ -5015,7 +5028,7 @@ Public Class MainForm
                     End Try
                 End If
 
-                If Not DirPath.IsFixedDrive(form.OutputFolder) Then
+                If Not g.IsFixedDrive(form.OutputFolder) Then
                     MsgError("Only fixed local drives are supported as temp dir.")
                     Exit Sub
                 End If
@@ -5513,9 +5526,9 @@ Public Class MainForm
                     Dim temp = i
 
                     If audioFiles.Count > 10 Then
-                        m.Add("Files | " + FilePath.GetName(i), Sub() tb.Text = temp)
+                        m.Add("Files | " + i.FileName, Sub() tb.Text = temp)
                     Else
-                        m.Add(FilePath.GetName(i), Sub() tb.Text = temp)
+                        m.Add(i.FileName, Sub() tb.Text = temp)
                     End If
                 Next
 
@@ -5561,7 +5574,7 @@ Public Class MainForm
 
     Sub UpdateSourceFileMenu()
         SourceFileMenu.Items.ClearAndDisplose
-        Dim isIndex = FileTypes.VideoIndex.Contains(FilePath.GetExt(p.LastOriginalSourceFile))
+        Dim isIndex = FileTypes.VideoIndex.Contains(p.LastOriginalSourceFile.Ext)
 
         SourceFileMenu.Add("Open...", AddressOf ShowOpenSourceDialog, "Open source files").SetImage(Symbol.OpenFile)
         SourceFileMenu.Add("Play", Sub() g.Play(p.LastOriginalSourceFile), File.Exists(p.LastOriginalSourceFile) AndAlso Not isIndex, "Play the source file.").SetImage(Symbol.Play)

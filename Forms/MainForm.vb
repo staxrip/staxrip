@@ -1582,97 +1582,106 @@ Public Class MainForm
     End Function
 
     Function OpenProject(path As String, saveCurrent As Boolean) As Boolean
-        If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then Return False
-        SetBindings(p, False)
-        If path = "" OrElse Not File.Exists(path) Then path = g.StartupTemplatePath
-
         Try
-            p = SafeSerialization.Deserialize(New Project, path)
+            If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then
+                Return False
+            End If
+
+            SetBindings(p, False)
+
+            If path = "" OrElse Not File.Exists(path) Then
+                path = g.StartupTemplatePath
+            End If
+
+            Try
+                p = SafeSerialization.Deserialize(New Project, path)
+            Catch ex As Exception
+                g.ShowException(ex, "Project file failed to load", "It will be reset to defaults." + BR2 + path)
+                p = New Project
+                p.Init()
+            End Try
+
+            Log = p.Log
+
+            If File.Exists(Folder.Temp + "staxrip.log") Then
+                FileHelp.Delete(Folder.Temp + "staxrip.log")
+            End If
+
+            SetBindings(p, True)
+
+            Text = path.Base + " - " + Application.ProductName + " " + Application.ProductVersion
+            SkipAssistant = True
+
+            If path.StartsWith(Folder.Template) Then
+                g.ProjectPath = Nothing
+                p.TemplateName = path.Base
+            Else
+                g.ProjectPath = path
+            End If
+
+            g.SetTempDir()
+
+            Dim width = p.TargetWidth
+            Dim height = p.TargetHeight
+            Dim size = p.TargetSize
+            Dim bitrate = p.VideoBitrate
+
+            FiltersListView.Load()
+            FiltersListView.Items(0).Selected = True
+            p.VideoEncoder.OnStateChange()
+
+            Dim targetPath = p.TargetFile
+
+            Dim audio0 = p.Audio0.File
+            Dim audio1 = p.Audio1.File
+
+            Dim delay0 = p.Audio0.Delay
+            Dim delay1 = p.Audio1.Delay
+
+            BlockSourceTextBoxTextChanged = True
+            tbSourceFile.Text = p.SourceFile
+            BlockSourceTextBoxTextChanged = False
+
+            If p.SourceFile <> "" Then
+                s.LastSourceDir = p.SourceFile.Dir
+            End If
+
+            tbAudioFile0.Text = audio0
+            tbAudioFile1.Text = audio1
+
+            llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
+            llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
+
+            p.Audio0.Delay = delay0
+            p.Audio1.Delay = delay1
+
+            If p.BitrateIsFixed Then
+                tbBitrate.Text = ""
+                tbBitrate.Text = bitrate.ToString
+            Else
+                tbTargetSize.Text = ""
+                tbTargetSize.Text = size.ToString()
+            End If
+
+            SetSlider()
+
+            tbTargetWidth.Text = width.ToString
+            tbTargetHeight.Text = height.ToString
+
+            SetSavedProject()
+
+            SkipAssistant = False
+
+            Assistant()
+            s.UpdateRecentProjects(path)
+            UpdateRecentProjectsMenu()
+            g.RaiseAppEvent(ApplicationEvent.ProjectLoaded)
+            g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
+            FiltersListView.RebuildMenu()
+            Return True
         Catch ex As Exception
-            g.ShowException(ex, "Project file failed to load", "It will be reset to defaults." + BR2 + path)
-            p = New Project
-            p.Init()
+            OpenProject(g.StartupTemplatePath)
         End Try
-
-        Log = p.Log
-
-        If File.Exists(Folder.Temp + "staxrip.log") Then
-            FileHelp.Delete(Folder.Temp + "staxrip.log")
-        End If
-
-        SetBindings(p, True)
-
-        Text = path.Base + " - " + Application.ProductName + " " + Application.ProductVersion
-        SkipAssistant = True
-
-        If path.StartsWith(Folder.Template) Then
-            g.ProjectPath = Nothing
-            p.TemplateName = path.Base
-        Else
-            g.ProjectPath = path
-        End If
-
-        g.SetTempDir()
-
-        Dim width = p.TargetWidth
-        Dim height = p.TargetHeight
-        Dim size = p.TargetSize
-        Dim bitrate = p.VideoBitrate
-
-        FiltersListView.Load()
-        FiltersListView.Items(0).Selected = True
-        p.VideoEncoder.OnStateChange()
-
-        Dim targetPath = p.TargetFile
-
-        Dim audio0 = p.Audio0.File
-        Dim audio1 = p.Audio1.File
-
-        Dim delay0 = p.Audio0.Delay
-        Dim delay1 = p.Audio1.Delay
-
-        BlockSourceTextBoxTextChanged = True
-        tbSourceFile.Text = p.SourceFile
-        BlockSourceTextBoxTextChanged = False
-
-        If p.SourceFile <> "" Then
-            s.LastSourceDir = p.SourceFile.Dir
-        End If
-
-        tbAudioFile0.Text = audio0
-        tbAudioFile1.Text = audio1
-
-        llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
-        llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
-
-        p.Audio0.Delay = delay0
-        p.Audio1.Delay = delay1
-
-        If p.BitrateIsFixed Then
-            tbBitrate.Text = ""
-            tbBitrate.Text = bitrate.ToString
-        Else
-            tbTargetSize.Text = ""
-            tbTargetSize.Text = size.ToString()
-        End If
-
-        SetSlider()
-
-        tbTargetWidth.Text = width.ToString
-        tbTargetHeight.Text = height.ToString
-
-        SetSavedProject()
-
-        SkipAssistant = False
-
-        Assistant()
-        s.UpdateRecentProjects(path)
-        UpdateRecentProjectsMenu()
-        g.RaiseAppEvent(ApplicationEvent.ProjectLoaded)
-        g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
-        FiltersListView.RebuildMenu()
-
-        Return True
     End Function
 
     Sub SetSlider()
@@ -1813,12 +1822,18 @@ Public Class MainForm
                 Dim templates = Directory.GetFiles(Folder.Template, "*.srip")
 
                 If templates.Length = 1 Then
-                    If Not OpenProject(templates(0), True) Then Throw New AbortException
+                    If Not OpenProject(templates(0), True) Then
+                        Throw New AbortException
+                    End If
                 Else
                     If s.ShowTemplateSelection Then
-                        If Not LoadTemplateWithSelectionDialog() Then Throw New AbortException
+                        If Not LoadTemplateWithSelectionDialog() Then
+                            Throw New AbortException
+                        End If
                     Else
-                        If Not OpenProject() Then Throw New AbortException
+                        If Not OpenProject() Then
+                            Throw New AbortException
+                        End If
                     End If
                 End If
             End If
@@ -1854,7 +1869,9 @@ Public Class MainForm
                         p.Script = VideoScript.GetDefaults()(1)
                     End If
                 Else
-                    If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+                    If Not Package.AviSynth.VerifyOK(True) Then
+                        Throw New AbortException
+                    End If
 
                     If p.Script.Engine = ScriptEngine.VapourSynth Then
                         p.Script = VideoScript.GetDefaults()(0)
@@ -2201,7 +2218,10 @@ Public Class MainForm
             OpenProject(recoverProjectPath)
             Text = recoverText
             g.ProjectPath = recoverPath
-            If isEncoding Then Throw New AbortException
+
+            If isEncoding Then
+                Throw New AbortException
+            End If
         Catch ex As Exception
             g.OnException(ex)
             OpenProject("", False)
@@ -3256,12 +3276,12 @@ Public Class MainForm
 
     <Command("Shows a file browser to open a project file.")>
     Sub ShowFileBrowserToOpenProject()
-        Using d As New OpenFileDialog
-            d.Filter = "Project Files|*.srip"
+        Using dialog As New OpenFileDialog
+            dialog.Filter = "Project Files|*.srip"
 
-            If d.ShowDialog() = DialogResult.OK Then
+            If dialog.ShowDialog() = DialogResult.OK Then
                 Refresh()
-                OpenProject(d.FileName)
+                OpenProject(dialog.FileName)
             End If
         End Using
     End Sub
@@ -3281,11 +3301,11 @@ Public Class MainForm
 
     <Command("Shows the Event Command dialog.")>
     Sub ShowEventCommandsDialog()
-        Using f As New EventCommandsEditor(s.EventCommands)
-            If f.ShowDialog() = DialogResult.OK Then
+        Using form As New EventCommandsEditor(s.EventCommands)
+            If form.ShowDialog() = DialogResult.OK Then
                 s.EventCommands.Clear()
 
-                For Each i As ListViewItem In f.lv.Items
+                For Each i As ListViewItem In form.lv.Items
                     s.EventCommands.Add(DirectCast(i.Tag, EventCommand))
                 Next
             End If
@@ -3454,6 +3474,15 @@ Public Class MainForm
 
             Dim bsVS = AddFilterPreferences(ui, "Source Filters | VapourSynth",
                                             s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
+
+            Dim dangerZonePage = ui.CreateFlowPage("Danger Zone", True)
+
+            b = ui.AddBool
+            b.Text = "Allow to use tools with wrong version"
+            b.Help = "Don't enable this unless you are an absolute power user with debugging experience."
+            b.Field = NameOf(s.AllowToolsWithWrongVersion)
+
+            l = ui.AddLabel("Don't enable this unless you are an absolute power user.")
 
             ui.SelectLast("last settings page")
 
@@ -3821,15 +3850,20 @@ Public Class MainForm
         SaveProjectPath(jobPath)
         Job.AddJob(jobPath)
 
-        If showConfirmation Then MsgInfo("Job added")
-        If templateName <> "" Then LoadProject(Folder.Template + templateName + ".srip")
+        If showConfirmation Then
+            MsgInfo("Job added")
+        End If
+
+        If templateName <> "" Then
+            LoadProject(Folder.Template + templateName + ".srip")
+        End If
     End Sub
 
     <Command("Shows a dialog to compare different videos.")>
     Sub ShowVideoComparison()
-        Dim f As New VideoComparisonForm
-        f.Show()
-        f.Add()
+        Dim form As New VideoComparisonForm
+        form.Show()
+        form.Add()
     End Sub
 
     <Command("Dialog to edit filters.")>
@@ -4769,7 +4803,9 @@ Public Class MainForm
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
+        If sb.Show = DialogResult.OK Then
+            Return sb.SelectedValue
+        End If
     End Function
 
     Sub LoadFilterSetup(profileInterface As Profile)
@@ -4780,10 +4816,19 @@ Public Class MainForm
             Package.VapourSynth.VerifyOK(True) AndAlso
             Package.vspipe.VerifyOK(True)) Then
 
-            p.Script = profile
-            ModifyFilters()
-            FiltersListView.OnChanged()
-            Assistant()
+            Dim currentSetup = p.Script
+
+            Try
+                p.Script = profile
+                ModifyFilters()
+                FiltersListView.OnChanged()
+                Assistant()
+            Catch ex As Exception
+                p.Script = currentSetup
+                ModifyFilters()
+                FiltersListView.OnChanged()
+                Assistant()
+            End Try
         End If
 
         FiltersListView.RebuildMenu()

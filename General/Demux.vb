@@ -637,7 +637,10 @@ Public Class mkvDemuxer
             Not proj Is p Then
 
             Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
-                If form.ShowDialog() <> DialogResult.OK Then Throw New AbortException
+                If form.ShowDialog() <> DialogResult.OK Then
+                    Throw New AbortException
+                End If
+
                 VideoDemuxed = form.cbDemuxVideo.Checked
                 demuxChapters = form.cbDemuxChapters.Checked
                 audioStreams = form.AudioStreams

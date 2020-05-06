@@ -358,9 +358,12 @@ Public Class GlobalClass
     End Property
 
     Function BrowseFolder(defaultFolder As String) As String
-        Using d As New FolderBrowserDialog
-            d.SetSelectedPath(defaultFolder)
-            If d.ShowDialog = DialogResult.OK Then Return d.SelectedPath
+        Using dialog As New FolderBrowserDialog
+            dialog.SetSelectedPath(defaultFolder)
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                Return dialog.SelectedPath
+            End If
         End Using
     End Function
 
@@ -513,10 +516,10 @@ Public Class GlobalClass
     End Sub
 
     Sub PopulateProfileMenu(
-            ic As ToolStripItemCollection,
-            profiles As IList,
-            dialogAction As Action,
-            loadAction As Action(Of Profile))
+        ic As ToolStripItemCollection,
+        profiles As IList,
+        dialogAction As Action,
+        loadAction As Action(Of Profile))
 
         For Each iProfile As Profile In profiles
             Dim a = iProfile.Name.SplitNoEmpty("|")
@@ -1379,19 +1382,13 @@ Public Class GlobalClass
 
     Sub InitFrameServer()
         If Not WasFrameServerInitialized Then
-            'TODO:?
-            'Dim dirs = Package.Items.Values.Select(Function(pack) pack.Path.Dir)
-
-            'dirs = dirs.Concat({Folder.Startup, Package.Python.Directory,
-            '    Package.AviSynth.Directory, Package.VapourSynth.Directory})
-
-            'g.AddToPath(dirs.ToArray)
-
             g.AddToPath(Folder.Startup, Package.Python.Directory, Package.AviSynth.Directory,
                         Package.VapourSynth.Directory, Package.FFTW.Directory)
-
-            MakeSymLinks()
-            WasFrameServerInitialized = True
+            Try
+                MakeSymLinks()
+                WasFrameServerInitialized = True
+            Catch ex As Exception
+            End Try
         End If
     End Sub
 
@@ -1399,8 +1396,8 @@ Public Class GlobalClass
         'name, source,target
         Dim links As New List(Of (String, String, String))
 
-        If Package.AviSynth.Path.StartsWith(Folder.Startup) AndAlso
-            Package.ffmpeg.Path.StartsWith(Folder.Startup) Then
+        If Package.AviSynth.Path <> "" AndAlso Package.AviSynth.Path.StartsWith(Folder.Startup) AndAlso
+            Package.ffmpeg.Path <> "" AndAlso Package.ffmpeg.Path.StartsWith(Folder.Startup) Then
 
             links.Add(("ffmpeg avisynth", Package.ffmpeg.Directory + "AviSynth.dll", Package.AviSynth.Path))
         End If

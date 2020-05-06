@@ -126,9 +126,18 @@ Public Class Audio
     End Sub
 
     Shared Sub CutNicAudio(ap As AudioProfile)
-        If ap.File.Contains("_cut_") Then Exit Sub
-        If Not FileTypes.NicAudioInput.Contains(ap.File.Ext) Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If ap.File.Contains("_cut_") Then
+            Exit Sub
+        End If
+
+        If Not FileTypes.NicAudioInput.Contains(ap.File.Ext) Then
+            Exit Sub
+        End If
+
+        If Not Package.AviSynth.VerifyOK(True) Then
+            Throw New AbortException
+        End If
+
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -159,9 +168,18 @@ Public Class Audio
     End Sub
 
     Shared Sub ConvertNicAudio(ap As AudioProfile)
-        If ap.File.Ext = ap.ConvertExt Then Exit Sub
-        If Not FileTypes.NicAudioInput.Contains(ap.File.Ext) Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If ap.File.Ext = ap.ConvertExt Then
+            Exit Sub
+        End If
+
+        If Not FileTypes.NicAudioInput.Contains(ap.File.Ext) Then
+            Exit Sub
+        End If
+
+        If Not Package.AviSynth.VerifyOK(True) Then
+            Throw New AbortException
+        End If
+
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -352,8 +370,14 @@ Public Class Audio
     End Function
 
     Shared Sub ConvertDirectShowSource(ap As AudioProfile, Optional useFlac As Boolean = False)
-        If ap.File.Ext = ap.ConvertExt Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If ap.File.Ext = ap.ConvertExt Then
+            Exit Sub
+        End If
+
+        If Not Package.AviSynth.VerifyOK(True) Then
+            Throw New AbortException
+        End If
+
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -385,8 +409,14 @@ Public Class Audio
     End Sub
 
     Shared Sub ConvertFFAudioSource(ap As AudioProfile)
-        If ap.File.Ext = ap.ConvertExt Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If ap.File.Ext = ap.ConvertExt Then
+            Exit Sub
+        End If
+
+        If Not Package.AviSynth.VerifyOK(True) Then
+            Throw New AbortException
+        End If
+
         ap.Delay = 0
         Dim cachefile = p.TempDir + ap.File.Base + ".ffindex"
         g.ffmsindex(ap.File, cachefile)
@@ -420,8 +450,14 @@ Public Class Audio
     End Sub
 
     Shared Sub CutDirectShowSource(ap As AudioProfile)
-        If ap.File.Contains("_cut_") Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If ap.File.Contains("_cut_") Then
+            Exit Sub
+        End If
+
+        If Not Package.AviSynth.VerifyOK(True) Then
+            Throw New AbortException
+        End If
+
         ap.Delay = 0
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
@@ -452,8 +488,14 @@ Public Class Audio
     End Sub
 
     Shared Sub CutFFAudioSource(ap As AudioProfile)
-        If ap.File.Contains("_cut_") Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If ap.File.Contains("_cut_") Then
+            Exit Sub
+        End If
+
+        If Not Package.AviSynth.VerifyOK(True) Then
+            Throw New AbortException
+        End If
+
         ap.Delay = 0
         Dim cachefile = p.TempDir + ap.File.Base + ".ffindex"
         g.ffmsindex(ap.File, cachefile)

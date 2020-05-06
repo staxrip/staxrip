@@ -995,7 +995,10 @@ Public Class Macro
                 ret.Cancel = dialog.ShowDialog <> DialogResult.OK
 
                 If ret.Cancel Then
-                    If throwIfCancel Then Throw New AbortException
+                    If throwIfCancel Then
+                        Throw New AbortException
+                    End If
+
                     Return ret
                 Else
                     ret.Value = ret.Value.Replace("$browse_file$", dialog.FileName)
@@ -1971,8 +1974,14 @@ Public Class Subtitle
     End Function
 
     Shared Sub Cut(subtitles As List(Of Subtitle))
-        If p.Ranges.Count = 0 OrElse TypeOf p.VideoEncoder Is NullEncoder Then Exit Sub
-        If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+        If p.Ranges.Count = 0 OrElse TypeOf p.VideoEncoder Is NullEncoder Then
+            Exit Sub
+        End If
+
+        If Not Package.AviSynth.VerifyOK(True) Then
+            Throw New AbortException
+        End If
+
         Dim emptySubs As New List(Of Subtitle)
 
         For x = 0 To subtitles.Count - 1

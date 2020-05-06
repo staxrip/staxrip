@@ -16,6 +16,8 @@ todo: feature list doc page avisynth vapoursynth portable
   this avoids creating a temporary bat file and adds full unicode support
 - portable support added and enabled by default, no need to install anything
 - nvenc --vpp-transform
+- setting to allow to use tools with wrong version,
+  for this a Danger Zone tab was added in the settings
 
 
 2.1.0.9 Beta

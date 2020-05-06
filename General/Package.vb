@@ -1951,8 +1951,10 @@ Public Class Package
             Return GetStatusLocation()
         End If
 
-        If GetStatusVersion() <> "" Then
-            Return GetStatusVersion()
+        If Not s.AllowToolsWithWrongVersion Then
+            If GetStatusVersion() <> "" Then
+                Return GetStatusVersion()
+            End If
         End If
 
         If Not StatusFunc Is Nothing Then

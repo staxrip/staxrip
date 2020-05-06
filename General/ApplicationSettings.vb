@@ -5,9 +5,11 @@ Imports StaxRip.UI
 Public Class ApplicationSettings
     Implements ISafeSerialization
 
+    Public AllowToolsWithWrongVersion As Boolean
     Public AudioProfiles As List(Of AudioProfile)
     Public AviSynthFilterPreferences As StringPairList
     Public AviSynthProfiles As List(Of FilterCategory)
+    Public CharacterLimit As Integer
     Public CheckForUpdates As Boolean
     Public CheckForUpdatesDismissed As String
     Public CheckForUpdatesLastRequest As DateTime
@@ -33,6 +35,7 @@ Public Class ApplicationSettings
     Public IconFile As String
     Public LastPosition As Integer
     Public LastSourceDir As String
+    Public LogEventCommand As Boolean
     Public LogFileNum As Integer = 50
     Public MinimizeToTray As Boolean
     Public MinimumDiskSpace As Integer = 20
@@ -53,7 +56,6 @@ Public Class ApplicationSettings
     Public ShowPreviewInfo As Boolean
     Public ShowTemplateSelection As Boolean
     Public ShutdownTimeout As Integer
-    Public CharacterLimit As Integer
     Public StartupTemplate As String
     Public Storage As ObjectStorage
     Public StringDictionary As Dictionary(Of String, String)
@@ -70,7 +72,6 @@ Public Class ApplicationSettings
     Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
     Public WriteDebugLog As Boolean
-    Public LogEventCommand As Boolean
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

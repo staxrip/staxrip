@@ -223,7 +223,7 @@ Public Class x265Params
         .Text = "Quality",
         .DefaultValue = 28,
         .Value = 18,
-        .Config = {0, 51, 1, 1}}
+        .Config = {0, 51, 0.5, 1}}
 
     Property chunkstart As New NumParam With {
         .Switch = "--chunk-start",

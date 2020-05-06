@@ -1402,14 +1402,14 @@ Public Class GlobalClass
             links.Add(("ffmpeg avisynth", Package.ffmpeg.Directory + "AviSynth.dll", Package.AviSynth.Path))
         End If
 
-        links.Add(("libfftw3  vs fftw", Package.DCTFilterVS.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
-        links.Add(("libfftw3f vs fftw", Package.DCTFilterVS.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
+        links.Add(("DCTFilterVS libfftw3", Package.DCTFilterVS.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
+        links.Add(("DCTFilterVS libfftw3f", Package.DCTFilterVS.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
 
-        links.Add(("libfftw3  vs fftw", Package.BM3D.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
-        links.Add(("libfftw3f vs fftw", Package.BM3D.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
+        links.Add(("BM3D libfftw3", Package.BM3D.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
+        links.Add(("BM3D libfftw3f", Package.BM3D.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
 
-        links.Add(("libfftw3  vs fftw", Package.DFTTestVS.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
-        links.Add(("libfftw3f vs fftw", Package.DFTTestVS.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
+        links.Add(("DFTTestVS libfftw3", Package.DFTTestVS.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
+        links.Add(("DFTTestVS libfftw3f", Package.DFTTestVS.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
 
         For Each i In links
             If Not i.Item3.FileExists Then

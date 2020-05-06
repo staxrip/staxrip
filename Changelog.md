@@ -1,18 +1,22 @@
 
+2.1.1.2 Beta (not yet available)
+============
 
-todo: feature list doc page avisynth vapoursynth portable
 
-2.1.1.1 Beta (not yet available)
+
+
+2.1.1.1 Beta
 ============
 
 - mpv.net 5.4.6.0
 - MediaInfo.NET 6.3.0.0
-- fix invalid nvenc command line generation (Patman86)
+- x265 3.3+25-ga6489d2fb-gcc10.0.1 Patman
+- fix invalid --vpp-tweak nvenc command line generation (Patman86)
 - fix import of invalid color metadata into encoder VUI settings (Patman86)
-- fix crash doing multi select drag operation in jobs dialog
 - fix taskbar indication of values below 1 (Dendraspis)
-- fix showing the Apps dialog for a tool with non OK status in endless loop
 - fix x265 preset (Dendraspis)
+- fix crash doing multi select drag operation in jobs dialog
+- fix showing the Apps dialog for a tool with non OK status in endless loop
 - the command line audio encoder uses cmd.exe directly without creating a bat file,
   this avoids creating a temporary bat file and adds full unicode support
 - portable support added and enabled by default, no need to install anything

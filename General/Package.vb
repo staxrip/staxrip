@@ -418,6 +418,7 @@ Public Class Package
         .Filename = "x265.exe",
         .WebURL = "http://x265.org",
         .HelpURL = "http://x265.readthedocs.org",
+        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpSwitch = "--log-level full --fullhelp",
         .HelpFilename = "x265 Help.txt",
         .Description = "H.265 video encoding console app."})

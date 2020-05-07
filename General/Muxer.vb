@@ -196,14 +196,6 @@ Public MustInherit Class Muxer
             End If
         Next
 
-        If p.PreferredSubtitles <> "" AndAlso Subtitles.Count = 0 AndAlso
-            p.FirstOriginalSourceFile.Ext.EqualsAny("mkv", "mp4", "m2ts") AndAlso
-            MediaInfo.GetSubtitleCount(p.FirstOriginalSourceFile) > 0 AndAlso
-            TypeOf Me Is MkvMuxer Then
-
-            Subtitles.AddRange(Subtitle.Create(p.FirstOriginalSourceFile))
-        End If
-
         For Each i In files
             If g.IsSourceSameOrSimilar(i) Then
                 If Not TypeOf Me Is WebMMuxer Then

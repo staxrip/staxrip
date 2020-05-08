@@ -115,15 +115,8 @@ Public Class MediaInfo
 
                     at.Language = New Language(GetAudio(index, "Language/String2"))
 
-                    Select Case p.DemuxAudio
-                        Case DemuxMode.All
-                            at.Enabled = True
-                        Case DemuxMode.None
-                            at.Enabled = False
-                        Case DemuxMode.Preferred, DemuxMode.Dialog
-                            Dim autoCode = p.PreferredAudio.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                            at.Enabled = autoCode.ContainsAny("all", at.Language.TwoLetterCode, at.Language.ThreeLetterCode)
-                    End Select
+                    Dim autoCode = p.PreferredAudio.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    at.Enabled = autoCode.ContainsAny("all", at.Language.TwoLetterCode, at.Language.ThreeLetterCode) OrElse p.DemuxAudio = DemuxMode.All
 
                     ret.Add(at)
                 Next

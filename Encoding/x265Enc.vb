@@ -672,6 +672,7 @@ Public Class x265Params
 
     Property LimitModes As New BoolParam With {
         .Switch = "--limit-modes",
+        .NoSwitch = "--no-limit-modes",
         .Text = "Limit Modes"}
 
     Property RdRefine As New BoolParam With {
@@ -1427,7 +1428,6 @@ Public Class x265Params
                 Deblock.Value = True
                 EarlySkip.Value = False
                 FastIntra.Value = False
-                LimitModes.Value = True
                 LimitRefs.Value = 0
                 LimitTU.Value = 4
                 LookaheadSlices.Value = 4
@@ -1724,7 +1724,6 @@ Public Class x265Params
                 Deblock.DefaultValue = True
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = False
-                LimitModes.DefaultValue = True
                 LimitTU.DefaultValue = 4
                 LookaheadSlices.DefaultValue = 4
                 MaxMerge.DefaultValue = 4

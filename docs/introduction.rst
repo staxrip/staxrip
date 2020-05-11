@@ -3,76 +3,26 @@
 Introduction
 ============
 
+
 About
 =====
 
-StaxRip is a video encoding GUI for Windows, it executes and controls console apps like x265, mkvmerge and ffmpeg and uses the scripting based frame servers AviSynth+ and VapourSynth for video processing.
-
-
-Target Audience
-===============
-
-The target audience are users that accept a learning curve in order to achieve the highest possible quality and learn the basics of video encoding and the underlying tools.
-
-
-Alternative Applications
-========================
-
-Normal User
------------
-
-`Handbrake <https://handbrake.fr>`_ 
-
-`VidCoder <https://vidcoder.net>`_ 
-
-
-Power User
-----------
-
-`MeGUI <https://sourceforge.net/projects/megui>`_ 
-
-`RipBot264 <https://forum.doom9.org/showthread.php?t=127611>`_ 
-
-`Hybrid <http://www.selur.de/>`_ 
+StaxRip is a video encoding GUI for Windows, it executes and controls console apps like x265, mkvmerge and ffmpeg and uses the scripting based frame servers AviSynth and VapourSynth for video processing.
 
 
 Feature Highlights
-==================
+------------------
 
 - Support for a wide variety of formats and tools
 - All popular and modern video encoders like x265 and nvenc are supported
 - Hardware encoding for AMD, Intel and NVIDIA
 - Batch Processing
-- Video editing using AviSynth+ and VapourSynth
-- Extendable via PowerShell
+- Video editing using AviSynth and VapourSynth
+- Scriptable via PowerShell
 - Minimal user interaction required due to rich configuration and automation features
 - Copy modes for audio and video for plain remuxing
 - Cut/Trim feature, for MKV output no re-encoding is required
 - High DPI scaling
-
-
-Requirements
-============
-
-StaxRip is a x64 application, it's necesarry that all of the requirements are available in the x64 variant.
-
-The application runs only on the Windows operating system, the minimum version is Windows 7.
-
-Another requirement is the `.NET Framework <https://www.microsoft.com/net/download/dotnet-framework-runtime>`_ which must be installed in version 4.8.
-
-`Visual C++ 2019 <https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads>`_ is required with minimum version 14.25.28508.3.
-
-StaxRip requires that either AviSynth+ or VapourSynth is installed, installers are included. It's possible to install and use both AviSynth+ and VapourSynth. VapourSynth requires that also Python is installed.
-
-Hardware encoding works only on newer hardware and up to date drivers.
-
-It's important to understand that x64 and x86 can never be mixed, everything StaxRip requires and everything it uses is x64.
-
-
-License
-=======
-
-Licensed under the `MIT license <https://opensource.org/licenses/MIT>`_.
 
 
 Download
@@ -82,9 +32,6 @@ Stable
 ------
 
 `<https://github.com/staxrip/staxrip/releases>`_
-
-Before making a bug report please try the newest beta build:
-
 
 .. _beta:
 
@@ -99,14 +46,18 @@ Beta
 Setup
 =====
 
-It's required to use Windows 7 or higher in the x64 variant.
+It's important to understand that x64 and x86 can never be mixed, everything StaxRip requires and everything it uses is x64, x86 plugins generally don't work in x64 applications.
 
-First `Visual C++ 2019 <https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads>`_ must be installed in the x64 variant. The version must be up to date.
+Windows 7 x64 is the minimum required Windows version.
 
-StaxRip requires that either AviSynth+ or VapourSynth is installed in the x64 variant, installers are included under ``Apps\Installer``. It's possible to install and use both AviSynth+ and VapourSynth. VapourSynth requires that Python is installed before VapourSynth, both in the x64 variant.
+`.NET Framework <https://www.microsoft.com/net/download/dotnet-framework-runtime>`_ is required in verrsion 4.8.
 
-Whenever StaxRip starts the first time from a new location it will ask for a settings folder location to use for this particular start-up location. You can open the current settings folder from the main menu at ``Tools > Folders > Settings``. It's possible to run different StaxRip versions side by side with different settings.
+Another requirement is `Visual C++ 2019 x64 <https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads>`_ with minimum version 14.25.28508
 
-It's not recommended to start StaxRip from a location without full write access so ``C:\Program Files`` shouldn't be used. StaxRip uses almost 200 tools and some of these tools might require write access to their start-up directory.
+StaxRip has portable versions of AviSynth, VapourSynth and Python included, a setup is not required.
 
-To add StaxRip to the windows start menu right-click the StaxRip.exe and choose *Add to Start*.
+If AviSynth or VapourSynth was installed then StaxRip will use the installed version instead of the included portable version.
+
+Hardware encoding works only on newer hardware and up to date drivers.
+
+It's not possible to start StaxRip from a location without full write access.

@@ -5520,10 +5520,8 @@ Public Class MainForm
         End If
     End Sub
 
-    Sub UpdateAudioFileMenu(m As ContextMenuStripEx,
-                            a As Action,
-                            ap As AudioProfile,
-                            tb As TextBox)
+    Sub UpdateAudioFileMenu(
+        m As ContextMenuStripEx, a As Action, ap As AudioProfile, tb As TextBox)
 
         m.Items.ClearAndDisplose
         Dim exist = File.Exists(ap.File)

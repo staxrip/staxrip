@@ -355,7 +355,7 @@ clipname.set_output()
 
                     line = "core.avs.LoadPlugin(r""" + plugin.Path + """)" + BR
                 Else
-                    line = "core.std.LoadPlugin(r""" + plugin.Path + """)" + BR
+                    line = "core.std.LoadPlugin(r""" + plugin.Path + """, altsearchpath=True)" + BR
                 End If
 
                 code += line

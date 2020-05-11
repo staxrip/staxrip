@@ -35,17 +35,6 @@ Public Class Package
 
     Shared Property Items As New SortedDictionary(Of String, Package)
 
-    Shared Property Python As Package = Add(New Package With {
-        .Name = "Python",
-        .Filename = "python.exe",
-        .TreePath = "Runtimes",
-        .WebURL = "http://www.python.org",
-        .HelpSwitch = "-h",
-        .Description = "Python is required by VapourSynth.",
-        .IgnorePath = "\WindowsApps\",
-        .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = AddressOf GetPythonHintDir})
-
     Shared Property DGIndex As Package = Add(New Package With {
         .Name = "DGIndex",
         .Filename = "DGIndex.exe",
@@ -176,7 +165,7 @@ Public Class Package
         .WebURL = "https://github.com/AviSynth/AviSynthPlus",
         .HelpURL = "http://avisynth.nl",
         .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
-        .Locations = {"FrameServer\AviSynth", Folder.System},
+        .Locations = {Folder.System, "FrameServer\AviSynth"},
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth})
 
     Shared Property VapourSynth As Package = Add(New Package With {
@@ -197,6 +186,17 @@ Public Class Package
         .HelpSwitch = "",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthHintDir})
+
+    Shared Property Python As Package = Add(New Package With {
+        .Name = "Python",
+        .Filename = "python.exe",
+        .TreePath = "Runtimes",
+        .WebURL = "http://www.python.org",
+        .HelpSwitch = "-h",
+        .Description = "Python is required by VapourSynth.",
+        .IgnorePath = "\WindowsApps\",
+        .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .HintDirFunc = AddressOf GetPythonHintDir})
 
     Shared Property chapterEditor As Package = Add(New Package With {
         .Name = "chapterEditor",
@@ -2036,22 +2036,6 @@ Public Class Package
         End Get
     End Property
 
-    Function GetVapourSynthHintDir() As String
-        Dim ret = GetPathFromLocation("FrameServer\VapourSynth")
-
-        If ret <> "" Then
-            Return ret.Dir
-        End If
-
-        ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
-
-        If File.Exists(ret + "VapourSynth.dll") Then
-            Return ret
-        End If
-
-        Return Registry.CurrentUser.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
-    End Function
-
     Sub SetStoredPath(value As String)
         s.Storage.SetString(Name + "custom path", value)
     End Sub
@@ -2074,11 +2058,27 @@ Public Class Package
         Return ret
     End Function
 
-    Shared Function GetPythonHintDir() As String
-        If (Folder.Apps + "FrameServer\VapourSynth\python.exe").FileExists Then
-            Return Folder.Apps + "FrameServer\VapourSynth\"
+    Function GetVapourSynthHintDir() As String
+        Dim ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
+
+        If File.Exists(ret + "VapourSynth.dll") Then
+            Return ret
         End If
 
+        ret = Registry.CurrentUser.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
+
+        If File.Exists(ret + "VapourSynth.dll") Then
+            Return ret
+        End If
+
+        ret = GetPathFromLocation("FrameServer\VapourSynth")
+
+        If ret <> "" Then
+            Return ret.Dir
+        End If
+    End Function
+
+    Shared Function GetPythonHintDir() As String
         For Each x In {8, 9, 7}
             For Each rootKey In {Registry.CurrentUser, Registry.LocalMachine}
                 Dim exePath = rootKey.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath")
@@ -2093,6 +2093,10 @@ Public Class Package
 
         If fp <> "" Then
             Return fp.Dir
+        End If
+
+        If (Folder.Apps + "FrameServer\VapourSynth\python.exe").FileExists Then
+            Return Folder.Apps + "FrameServer\VapourSynth\"
         End If
     End Function
 

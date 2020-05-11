@@ -1,11 +1,13 @@
 
+=====
 Usage
 =====
 
 .. note::  This section is currently under construction. Meanwhile you can request usage support on the `Issue Tracker <https://github.com/staxrip/staxrip/issues>`_ 
 
+
 Preprocessing
--------------
+=============
 
 Supported are three different demuxing modes.
 
@@ -19,13 +21,21 @@ Custom preprocessing tools for demuxing, re-muxing or indexing can be integrated
 
 
 Video Processing
-----------------
+================
 
-Video processing is supported via AviSynth+ and VapourSynth with AviSynth+ and VapourSynth being equally well supported.
+Video processing is supported via AviSynth and VapourSynth with AviSynth and VapourSynth being equally well supported.
 
-The script code of AviSynth+ and VapourSynth can be edited directly or easily be generated via menu selection for which a profile system is available to integrate and customize custom filters and plugins.
+The script code of AviSynth and VapourSynth can be edited directly or easily be generated via menu selection for which a profile system is available to integrate and customize custom filters and plugins.
 
 With the help of a macro system script parameters can be changed with convenient GUI features like a resize slider and menu or a cropping dialog, due to the macro system the parameters can change at any time allowing much greater flexibility compared to a one dimensional and limiting one step after another approach.
+
+
+Portable mode
+-------------
+
+StaxRip has portable versions of AviSynth, VapourSynth and Python included, a setup is not required.
+
+If AviSynth or VapourSynth was installed then StaxRip will use the installed version instead of the included portable version.
 
 
 Templates

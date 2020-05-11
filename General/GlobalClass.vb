@@ -1402,21 +1402,12 @@ Public Class GlobalClass
             links.Add(("ffmpeg avisynth", Package.ffmpeg.Directory + "AviSynth.dll", Package.AviSynth.Path))
         End If
 
-        links.Add(("DCTFilterVS libfftw3", Package.DCTFilterVS.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
-        links.Add(("DCTFilterVS libfftw3f", Package.DCTFilterVS.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
-
-        links.Add(("BM3D libfftw3", Package.BM3D.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
-        links.Add(("BM3D libfftw3f", Package.BM3D.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
-
-        links.Add(("DFTTestVS libfftw3", Package.DFTTestVS.Directory + "libfftw3-3.dll", Package.FFTW.Directory + "libfftw3-3.dll"))
-        links.Add(("DFTTestVS libfftw3f", Package.DFTTestVS.Directory + "libfftw3f-3.dll", Package.FFTW.Directory + "libfftw3f-3.dll"))
-
         For Each i In links
             If Not i.Item3.FileExists Then
                 Continue For
             End If
 
-            Dim hash = (i.Item2 & i.Item3 & New FileInfo(i.Item3).Length & Folder.Startup).MD5Hash
+            Dim hash = (i.Item2 + i.Item3).MD5Hash
 
             If s.Storage.GetString(i.Item1 + "symlinkhash") <> hash OrElse Not i.Item2.FileExists Then
                 FileHelp.Delete(i.Item2)

@@ -2,7 +2,9 @@
 2.1.1.2 Beta (not yet available)
 ============
 
-
+- if AviSynth or VapourSynth was installed then StaxRip will use
+  the installed version instead of the included portable version.
+- fix x265 --limit-modes issue
 
 
 2.1.1.1 Beta

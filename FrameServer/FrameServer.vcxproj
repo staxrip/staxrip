@@ -47,12 +47,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\</OutDir>
-    <IncludePath>C:\Users\frank\AppData\Local\Programs\VapourSynth\sdk\include\vapoursynth;C:\Users\frank\Desktop\VapourSynth64-Portable-R50-RC2\sdk\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Projekte\VB\StaxRip\bin\Apps\FrameServer\VapourSynth\sdk\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\frank\AppData\Local\Programs\VapourSynth\sdk\include\vapoursynth;C:\Users\frank\Desktop\VapourSynth64-Portable-R50-RC2\sdk\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Projekte\VB\StaxRip\bin\Apps\FrameServer\VapourSynth\sdk\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <OutDir>..\bin\</OutDir>
   </PropertyGroup>

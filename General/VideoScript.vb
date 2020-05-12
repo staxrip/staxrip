@@ -262,6 +262,10 @@ clipname.set_output()
     End Sub
 
     Shared Function ModifyScript(script As String, engine As ScriptEngine) As String
+        If p.SourceFile.Ext.EqualsAny("avs", "vpy") Then
+            Return script
+        End If
+
         If engine = ScriptEngine.VapourSynth Then
             Return ModifyVSScript(script)
         Else

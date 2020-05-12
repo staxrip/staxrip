@@ -2,7 +2,7 @@
 2.1.1.3 Beta (not yet available)
 ============
 
-
+- fix avs and vpy import issue
 
 
 2.1.1.2 Beta

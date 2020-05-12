@@ -1,5 +1,11 @@
 
-2.1.1.2 Beta (not yet available)
+2.1.1.3 Beta (not yet available)
+============
+
+
+
+
+2.1.1.2 Beta
 ============
 
 - if AviSynth or VapourSynth was installed then StaxRip will use
@@ -9,10 +15,11 @@
 - mpv.net 5.4.8.0
 - VapourSynth r50
 - x265 3.3+27-g4780a8d99-gcc11.0.0 Patman
-- nvenc 5.01, there will be no --vpp-decimate GUI support from me
+- nvenc 5.01
 - mkvtoolnix 46
 - RgTools 1.0
 - AVSMeter 2.9.9.1
+- new docs page Features giving a comprehensive feature list
 
 
 2.1.1.1 Beta

@@ -23,6 +23,7 @@ Feature Highlights
 - Copy modes for audio and video for plain remuxing
 - Cut/Trim feature, for MKV output no re-encoding is required
 - High DPI scaling
+- Portable, nothing has to be installed
 
 
 Download

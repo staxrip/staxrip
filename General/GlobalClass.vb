@@ -802,8 +802,8 @@ Public Class GlobalClass
             Using proc As New Proc
                 proc.Header = "Indexing using ffmsindex"
                 proc.SkipString = "Indexing, please wait..."
-                If proj Is Nothing Then proj = p
                 proc.Project = proj
+                proc.Priority = ProcessPriorityClass.Normal
                 proc.File = Package.ffms2.Directory + "ffmsindex.exe"
                 proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Escape + " " + cachePath.Escape
                 proc.Start()

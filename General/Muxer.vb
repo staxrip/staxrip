@@ -3,9 +3,10 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Globalization
 Imports System.Xml.Linq
-Imports VB6 = Microsoft.VisualBasic
 Imports System.ComponentModel
 Imports System.Runtime.Serialization
+
+Imports VB6 = Microsoft.VisualBasic
 
 <Serializable()>
 Public MustInherit Class Muxer
@@ -532,8 +533,8 @@ Public Class MkvMuxer
     End Property
 
     Overrides Function Edit() As DialogResult
-        Using f As New MuxerForm(Me)
-            Return f.ShowDialog()
+        Using form As New MuxerForm(Me)
+            Return form.ShowDialog()
         End Using
     End Function
 
@@ -544,7 +545,10 @@ Public Class MkvMuxer
             For Each iBase In {"small_cover", "cover_land", "small_cover_land"}
                 For Each iExt In {".jpg", ".png"}
                     Dim fp = iDir + iBase + iExt
-                    If File.Exists(fp) Then AdditionalSwitches += " --attach-file " + fp.Escape
+
+                    If File.Exists(fp) Then
+                        AdditionalSwitches += " --attach-file " + fp.Escape
+                    End If
                 Next
             Next
         Next
@@ -565,7 +569,10 @@ Public Class MkvMuxer
             proc.Start()
         End Using
 
-        If Not g.FileExists(p.TargetFile) Then Log.Write("Error MKV output file is missing", p.TargetFile)
+        If Not g.FileExists(p.TargetFile) Then
+            Log.Write("Error MKV output file is missing", p.TargetFile)
+        End If
+
         Log.WriteLine(MediaInfo.GetSummary(p.TargetFile))
     End Sub
 
@@ -915,7 +922,10 @@ Public Class ffmpegMuxer
 
             If ret = DialogResult.OK Then
                 ui.Save()
-                If p.SourceFile <> "" Then p.TargetFile = p.TargetFile.DirAndBase + "." + OutputExt
+
+                If p.SourceFile <> "" Then
+                    p.TargetFile = p.TargetFile.DirAndBase + "." + OutputExt
+                End If
             End If
 
             Return ret

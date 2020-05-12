@@ -115,7 +115,11 @@ Public Class GlobalClass
         Try
             Job.ActivateJob(jobPath, False)
             g.MainForm.OpenProject(jobPath, False)
-            If s.PreventStandby Then PowerRequest.SuppressStandby()
+
+            If s.PreventStandby Then
+                PowerRequest.SuppressStandby()
+            End If
+
             ProcessJob(jobPath)
             jobs = Job.GetJobs
 
@@ -143,7 +147,10 @@ Public Class GlobalClass
             Log.Save()
             g.OnException(ex)
         Finally
-            If s.PreventStandby Then PowerRequest.EnableStandby()
+            If s.PreventStandby Then
+                PowerRequest.EnableStandby()
+            End If
+
             g.IsProcessing = False
             g.MainForm.OpenProject(jobPath, False)
             ProcController.Finished()
@@ -158,9 +165,9 @@ Public Class GlobalClass
 
             If p.BatchMode Then
                 g.MainForm.OpenVideoSourceFiles(p.SourceFiles, True)
-                g.ProjectPath = p.TempDir + p.SourceFile.Base + ".srip"
-                g.MainForm.SaveProjectPath(g.ProjectPath)
+                g.ProjectPath = p.TempDir + p.TargetFile.Base + ".srip"
                 p.BatchMode = False
+                g.MainForm.SaveProjectPath(g.ProjectPath)
             End If
 
             Log.WriteHeader(If(p.Script.Engine = ScriptEngine.AviSynth, "AviSynth Script", "VapourSynth Script"))
@@ -255,7 +262,9 @@ Public Class GlobalClass
     End Sub
 
     Sub ProcessVideo()
-        If Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath)) Then
+        If Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
+            File.Exists(p.VideoEncoder.OutputPath)) Then
+
             Dim originalFilters As List(Of VideoFilter)
             Dim originalSource As String
 
@@ -880,7 +889,11 @@ Public Class GlobalClass
             Try
                 If File.Exists(p.SourceFile) Then
                     Dim name = p.TargetFile.Base
-                    If name = "" Then name = p.SourceFile.Base
+
+                    If name = "" Then
+                        name = p.SourceFile.Base
+                    End If
+
                     Dim path = p.SourceFile.Dir + "recovery.srip"
                     g.MainForm.SaveProjectPath(path)
                 End If

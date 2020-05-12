@@ -208,7 +208,9 @@ Public Class eac3toDemuxer
     End Sub
 
     Overrides Sub Run(proj As Project)
-        If proj.NoDialogs OrElse proj.BatchMode Then Exit Sub
+        If proj.NoDialogs OrElse proj.BatchMode Then
+            Exit Sub
+        End If
 
         Using form As New eac3toForm(proj)
             form.M2TSFile = proj.SourceFile

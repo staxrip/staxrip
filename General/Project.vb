@@ -226,7 +226,7 @@ Public Class Project
     End Function
 
     Private Sub NotifyPropertyChanged(
-    <CallerMemberName()> Optional ByVal propertyName As String = Nothing)
+        <CallerMemberName()> Optional ByVal propertyName As String = Nothing)
 
         RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
     End Sub
@@ -244,7 +244,7 @@ Public Class Project
                     Exit Property
                 End If
 
-                If System.Text.Encoding.Default.CodePage <> 65001 AndAlso
+                If Text.Encoding.Default.CodePage <> 65001 AndAlso
                     Not value.IsANSICompatible AndAlso Script.Engine = ScriptEngine.AviSynth Then
 
                     MsgWarn(Strings.NoUnicode)

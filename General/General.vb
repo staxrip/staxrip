@@ -255,9 +255,10 @@ Public Class SafeSerialization
     Shared Sub Serialize(o As Object, path As String)
         Dim list As New List(Of Object)
 
-        For Each i In o.GetType.GetFields(BindingFlags.Public Or
-                                          BindingFlags.NonPublic Or
-                                          BindingFlags.Instance)
+        For Each i In o.GetType.GetFields(
+            BindingFlags.Public Or
+            BindingFlags.NonPublic Or
+            BindingFlags.Instance)
 
             If Not i.IsNotSerialized Then
                 Dim mc As New FieldContainer
@@ -299,9 +300,9 @@ Public Class SafeSerialization
             End Using
 
             For Each i As FieldContainer In list
-                For Each iFieldInfo In instance.GetType.GetFields(BindingFlags.Public Or
-                                                                      BindingFlags.NonPublic Or
-                                                                      BindingFlags.Instance)
+                For Each iFieldInfo In instance.GetType.GetFields(
+                    BindingFlags.Public Or BindingFlags.NonPublic Or BindingFlags.Instance)
+
                     If Not iFieldInfo.IsNotSerialized Then
                         If i.Name = iFieldInfo.Name Then
                             Try

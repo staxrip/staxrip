@@ -122,7 +122,8 @@ Public Class NVEnc
             avcuvid-analyze audio-source audio-file seek format audio-copy audio-ignore-notrack-error
             audio-copy audio-codec vpp-perf-monitor avi audio-profile check-profiles avsync mux-option
             audio-bitrate audio-ignore audio-ignore audio-samplerate audio-resampler audio-stream dar
-            audio-stream audio-stream audio-stream audio-filter chapter-copy chapter sub-copy input-res"
+            audio-stream audio-stream audio-stream audio-filter chapter-copy chapter sub-copy input-res
+            vpp-decimate"
 
         tester.Package = Package.NVEnc
         tester.CodeFile = Folder.Startup.Parent + "Encoding\nvenc.vb"
@@ -599,6 +600,7 @@ Public Class NVEnc
                         New StringParam With {.Switch = "--sub-source", .Text = "Subtitle File", .BrowseFile = True, .BrowseFileFilter = FileTypes.GetFilter(FileTypes.SubtitleExludingContainers)},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option"},
+                        New StringParam With {.Switch = "--attachment-copy", .Text = "Attachment", .Quotes = QuotesMode.Never, .RemoveSpace = True},
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
                         Interlace,
@@ -707,9 +709,17 @@ Public Class NVEnc
             If PMD.Value Then
                 Dim ret = ""
 
-                If PmdApplyCount.Value <> PmdApplyCount.DefaultValue Then ret += ",apply_count=" & PmdApplyCount.Value
-                If PmdStrength.Value <> PmdStrength.DefaultValue Then ret += ",strength=" & PmdStrength.Value
-                If PmdThreshold.Value <> PmdThreshold.DefaultValue Then ret += ",threshold=" & PmdThreshold.Value
+                If PmdApplyCount.Value <> PmdApplyCount.DefaultValue Then
+                    ret += ",apply_count=" & PmdApplyCount.Value
+                End If
+
+                If PmdStrength.Value <> PmdStrength.DefaultValue Then
+                    ret += ",strength=" & PmdStrength.Value
+                End If
+
+                If PmdThreshold.Value <> PmdThreshold.DefaultValue Then
+                    ret += ",threshold=" & PmdThreshold.Value
+                End If
 
                 If ret <> "" Then
                     Return "--vpp-pmd " + ret.TrimStart(","c)
@@ -723,11 +733,25 @@ Public Class NVEnc
             If Tweak.Value Then
                 Dim ret = ""
 
-                If vppbrightness.Value <> vppbrightness.DefaultValue Then ret += "brightness=" & vppbrightness.Value.ToInvariantString
-                If vppcontrast.Value <> vppcontrast.DefaultValue Then ret += ",contrast=" & vppcontrast.Value.ToInvariantString
-                If vppsaturation.Value <> vppsaturation.DefaultValue Then ret += ",saturation=" & vppsaturation.Value.ToInvariantString
-                If vppgamma.Value <> vppgamma.DefaultValue Then ret += ",gamma=" & vppgamma.Value.ToInvariantString
-                If vpphue.Value <> vpphue.DefaultValue Then ret += ",hue=" & vpphue.Value.ToInvariantString
+                If vppbrightness.Value <> vppbrightness.DefaultValue Then
+                    ret += "brightness=" & vppbrightness.Value.ToInvariantString
+                End If
+
+                If vppcontrast.Value <> vppcontrast.DefaultValue Then
+                    ret += ",contrast=" & vppcontrast.Value.ToInvariantString
+                End If
+
+                If vppsaturation.Value <> vppsaturation.DefaultValue Then
+                    ret += ",saturation=" & vppsaturation.Value.ToInvariantString
+                End If
+
+                If vppgamma.Value <> vppgamma.DefaultValue Then
+                    ret += ",gamma=" & vppgamma.Value.ToInvariantString
+                End If
+
+                If vpphue.Value <> vpphue.DefaultValue Then
+                    ret += ",hue=" & vpphue.Value.ToInvariantString
+                End If
 
                 If ret <> "" Then
                     Return "--vpp-tweak " + ret.TrimStart(","c)
@@ -741,10 +765,21 @@ Public Class NVEnc
             If Pad.Value Then
                 Dim ret = ""
 
-                If PadLeft.Value <> PadLeft.DefaultValue Then ret += "" & PadLeft.Value
-                If PadTop.Value <> PadTop.DefaultValue Then ret += "," & PadTop.Value
-                If PadRight.Value <> PadRight.DefaultValue Then ret += "," & PadRight.Value
-                If PadBottom.Value <> PadBottom.DefaultValue Then ret += "," & PadBottom.Value
+                If PadLeft.Value <> PadLeft.DefaultValue Then
+                    ret += "" & PadLeft.Value
+                End If
+
+                If PadTop.Value <> PadTop.DefaultValue Then
+                    ret += "," & PadTop.Value
+                End If
+
+                If PadRight.Value <> PadRight.DefaultValue Then
+                    ret += "," & PadRight.Value
+                End If
+
+                If PadBottom.Value <> PadBottom.DefaultValue Then
+                    ret += "," & PadBottom.Value
+                End If
 
                 If ret <> "" Then
                     Return "--vpp-pad " + ret.TrimStart(","c)
@@ -758,10 +793,21 @@ Public Class NVEnc
             If KNN.Value Then
                 Dim ret = ""
 
-                If KnnRadius.Value <> KnnRadius.DefaultValue Then ret += ",radius=" & KnnRadius.Value
-                If KnnStrength.Value <> KnnStrength.DefaultValue Then ret += ",strength=" & KnnStrength.Value.ToInvariantString
-                If KnnLerp.Value <> KnnLerp.DefaultValue Then ret += ",lerp=" & KnnLerp.Value.ToInvariantString
-                If KnnThLerp.Value <> KnnThLerp.DefaultValue Then ret += ",th_lerp=" & KnnThLerp.Value.ToInvariantString
+                If KnnRadius.Value <> KnnRadius.DefaultValue Then
+                    ret += ",radius=" & KnnRadius.Value
+                End If
+
+                If KnnStrength.Value <> KnnStrength.DefaultValue Then
+                    ret += ",strength=" & KnnStrength.Value.ToInvariantString
+                End If
+
+                If KnnLerp.Value <> KnnLerp.DefaultValue Then
+                    ret += ",lerp=" & KnnLerp.Value.ToInvariantString
+                End If
+
+                If KnnThLerp.Value <> KnnThLerp.DefaultValue Then
+                    ret += ",th_lerp=" & KnnThLerp.Value.ToInvariantString
+                End If
 
                 If ret <> "" Then
                     Return "--vpp-knn " + ret.TrimStart(","c)
@@ -780,38 +826,77 @@ Public Class NVEnc
                 If i.Value <> i.DefaultValue Then ret += "," + i.Text.Trim + "=" & i.Value
             Next
 
-            If Deband_blurfirst.Value Then ret += "," + "blurfirst"
-            If Deband_rand_each_frame.Value Then ret += "," + "rand_each_frame"
-            If Deband.Value Then Return ("--vpp-deband " + ret.TrimStart(","c)).TrimEnd
+            If Deband_blurfirst.Value Then
+                ret += "," + "blurfirst"
+            End If
+
+            If Deband_rand_each_frame.Value Then
+                ret += "," + "rand_each_frame"
+            End If
+
+            If Deband.Value Then
+                Return ("--vpp-deband " + ret.TrimStart(","c)).TrimEnd
+            End If
         End Function
 
         Function GetUnsharp() As String
             Dim ret = ""
 
-            If VppUnsharpRadius.Value <> VppUnsharpRadius.DefaultValue Then ret += "radius=" & VppUnsharpRadius.Value
-            If VppUnsharpWeight.Value <> VppUnsharpWeight.DefaultValue Then ret += ",weight=" & VppUnsharpWeight.Value.ToInvariantString
-            If VppUnsharpThreshold.Value <> VppUnsharpThreshold.DefaultValue Then ret += ",threshold=" & VppUnsharpThreshold.Value
+            If VppUnsharpRadius.Value <> VppUnsharpRadius.DefaultValue Then
+                ret += "radius=" & VppUnsharpRadius.Value
+            End If
 
-            If VppUnsharp.Value Then Return ("--vpp-unsharp " + ret.TrimStart(","c)).TrimEnd
+            If VppUnsharpWeight.Value <> VppUnsharpWeight.DefaultValue Then
+                ret += ",weight=" & VppUnsharpWeight.Value.ToInvariantString
+            End If
+
+            If VppUnsharpThreshold.Value <> VppUnsharpThreshold.DefaultValue Then
+                ret += ",threshold=" & VppUnsharpThreshold.Value
+            End If
+
+            If VppUnsharp.Value Then
+                Return ("--vpp-unsharp " + ret.TrimStart(","c)).TrimEnd
+            End If
         End Function
 
         Function GetEdge() As String
             Dim ret = ""
 
-            If VppEdgelevelStrength.Value <> VppEdgelevelStrength.DefaultValue Then ret += "strength=" & VppEdgelevelStrength.Value
-            If VppEdgelevelThreshold.Value <> VppEdgelevelThreshold.DefaultValue Then ret += ",threshold=" & VppEdgelevelThreshold.Value
-            If VppEdgelevelBlack.Value <> VppEdgelevelBlack.DefaultValue Then ret += ",black=" & VppEdgelevelBlack.Value
-            If VppEdgelevelWhite.Value <> VppEdgelevelWhite.DefaultValue Then ret += ",white=" & VppEdgelevelWhite.Value
+            If VppEdgelevelStrength.Value <> VppEdgelevelStrength.DefaultValue Then
+                ret += "strength=" & VppEdgelevelStrength.Value
+            End If
 
-            If VppEdgelevel.Value Then Return ("--vpp-edgelevel " + ret.TrimStart(","c)).TrimEnd
+            If VppEdgelevelThreshold.Value <> VppEdgelevelThreshold.DefaultValue Then
+                ret += ",threshold=" & VppEdgelevelThreshold.Value
+            End If
+
+            If VppEdgelevelBlack.Value <> VppEdgelevelBlack.DefaultValue Then
+                ret += ",black=" & VppEdgelevelBlack.Value
+            End If
+
+            If VppEdgelevelWhite.Value <> VppEdgelevelWhite.DefaultValue Then
+                ret += ",white=" & VppEdgelevelWhite.Value
+            End If
+
+            If VppEdgelevel.Value Then
+                Return ("--vpp-edgelevel " + ret.TrimStart(","c)).TrimEnd
+            End If
         End Function
 
         Function GetTransform() As String
             Dim ret = ""
 
-            If VppTransformFlipX.Value Then ret += "flip_x=true"
-            If VppTransformFlipY.Value Then ret += ",flip_y=true"
-            If VppTransformTranspose.Value Then ret += ",transpose=true"
+            If VppTransformFlipX.Value Then
+                ret += "flip_x=true"
+            End If
+
+            If VppTransformFlipY.Value Then
+                ret += ",flip_y=true"
+            End If
+
+            If VppTransformTranspose.Value Then
+                ret += ",transpose=true"
+            End If
 
             If ret <> "" Then
                 Return ("--vpp-transform " + ret.TrimStart(","c)).TrimEnd
@@ -824,40 +909,79 @@ Public Class NVEnc
             ret += VppSelectEveryValue.Value.ToString
             ret += "," + VppSelectEveryOffsets.Value.SplitNoEmptyAndWhiteSpace(" ", ",", ";").Select(Function(item) "offset=" + item).Join(",")
 
-            If VppSelectEvery.Value Then Return ("--vpp-select-every " + ret.TrimStart(","c)).TrimEnd(","c)
+            If VppSelectEvery.Value Then
+                Return ("--vpp-select-every " + ret.TrimStart(","c)).TrimEnd(","c)
+            End If
         End Function
 
         Function GetNnedi() As String
             Dim ret = ""
-            If VppNnediField.Value <> VppNnediField.DefaultValue Then ret += "field=" + VppNnediField.ValueText
-            If VppNnediNns.Value <> VppNnediNns.DefaultValue Then ret += ",nns=" + VppNnediNns.ValueText
-            If VppNnediNszie.Value <> VppNnediNszie.DefaultValue Then ret += ",nszie=" + VppNnediNszie.ValueText
-            If VppNnediQuality.Value <> VppNnediQuality.DefaultValue Then ret += ",quality=" + VppNnediQuality.ValueText
-            If VppNnediPrescreen.Value <> VppNnediPrescreen.DefaultValue Then ret += ",prescreen=" + VppNnediPrescreen.ValueText
-            If VppNnediErrortype.Value <> VppNnediErrortype.DefaultValue Then ret += ",errortype=" + VppNnediErrortype.ValueText
-            If VppNnediPrec.Value <> VppNnediPrec.DefaultValue Then ret += ",prec=" + VppNnediPrec.ValueText
-            If VppNnediWeightfile.Value <> "" Then ret += ",weightfile=" + VppNnediWeightfile.Value.Escape
 
-            If VppNnedi.Value Then Return ("--vpp-nnedi " + ret.TrimStart(","c)).TrimEnd
+            If VppNnediField.Value <> VppNnediField.DefaultValue Then
+                ret += "field=" + VppNnediField.ValueText
+            End If
+
+            If VppNnediNns.Value <> VppNnediNns.DefaultValue Then
+                ret += ",nns=" + VppNnediNns.ValueText
+            End If
+
+            If VppNnediNszie.Value <> VppNnediNszie.DefaultValue Then
+                ret += ",nszie=" + VppNnediNszie.ValueText
+            End If
+
+            If VppNnediQuality.Value <> VppNnediQuality.DefaultValue Then
+                ret += ",quality=" + VppNnediQuality.ValueText
+            End If
+
+            If VppNnediPrescreen.Value <> VppNnediPrescreen.DefaultValue Then
+                ret += ",prescreen=" + VppNnediPrescreen.ValueText
+            End If
+
+            If VppNnediErrortype.Value <> VppNnediErrortype.DefaultValue Then
+                ret += ",errortype=" + VppNnediErrortype.ValueText
+            End If
+
+            If VppNnediPrec.Value <> VppNnediPrec.DefaultValue Then
+                ret += ",prec=" + VppNnediPrec.ValueText
+            End If
+
+            If VppNnediWeightfile.Value <> "" Then
+                ret += ",weightfile=" + VppNnediWeightfile.Value.Escape
+            End If
+
+            If VppNnedi.Value Then
+                Return ("--vpp-nnedi " + ret.TrimStart(","c)).TrimEnd
+            End If
         End Function
 
         Function GetAFS() As String
             Dim ret = ""
 
-            If AFSPreset.Value <> AFSPreset.DefaultValue Then ret += "preset=" + AFSPreset.ValueText
-            If AFSINI.Value <> "" Then ret += ",ini=" + AFSINI.Value.Escape
+            If AFSPreset.Value <> AFSPreset.DefaultValue Then
+                ret += "preset=" + AFSPreset.ValueText
+            End If
+
+            If AFSINI.Value <> "" Then
+                ret += ",ini=" + AFSINI.Value.Escape
+            End If
 
             For Each i In {AFSLeft, AFSRight, AFSTop, AFSBottom, AFSmethod_switch, AFScoeff_shift,
-                               AFSthre_shift, AFSthre_deint, AFSthre_motion_y, AFSthre_motion_c, AFSlevel}
+                           AFSthre_shift, AFSthre_deint, AFSthre_motion_y, AFSthre_motion_c, AFSlevel}
 
-                If i.Value <> i.DefaultValue Then ret += "," + i.Text + "=" & i.Value
+                If i.Value <> i.DefaultValue Then
+                    ret += "," + i.Text + "=" & i.Value
+                End If
             Next
 
             For Each i In {AFSshift, AFSdrop, AFSsmooth, AFS24fps, AFStune, AFSrff, AFStimecode, AFSlog}
-                If i.Value <> i.DefaultValue Then ret += "," + i.Text + "=" + If(i.Value, "on", "off")
+                If i.Value <> i.DefaultValue Then
+                    ret += "," + i.Text + "=" + If(i.Value, "on", "off")
+                End If
             Next
 
-            If AFS.Value Then Return ("--vpp-afs " + ret.TrimStart(","c)).TrimEnd
+            If AFS.Value Then
+                Return ("--vpp-afs " + ret.TrimStart(","c)).TrimEnd
+            End If
         End Function
 
         Function GetModeArgs() As String
@@ -881,14 +1005,16 @@ Public Class NVEnc
             End Select
         End Function
 
-        Overrides Function GetCommandLine(includePaths As Boolean,
-                                          includeExe As Boolean,
-                                          Optional pass As Integer = 1) As String
+        Overrides Function GetCommandLine(
+            includePaths As Boolean, includeExe As Boolean, Optional pass As Integer = 1) As String
+
             Dim ret As String
             Dim sourcePath As String
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
-            If includePaths AndAlso includeExe Then ret = Package.NVEnc.Path.Escape
+            If includePaths AndAlso includeExe Then
+                ret = Package.NVEnc.Path.Escape
+            End If
 
             Select Case Decoder.ValueText
                 Case "avs"
@@ -901,13 +1027,22 @@ Public Class NVEnc
                     ret += " --avsw"
                 Case "qs"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+
+                    If includePaths Then
+                        ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+                    End If
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+
+                    If includePaths Then
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+                    End If
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+
+                    If includePaths Then
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+                    End If
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
@@ -935,8 +1070,13 @@ Public Class NVEnc
                 End If
             End If
 
-            If sourcePath = "-" Then ret += " --y4m"
-            If includePaths Then ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
+            If sourcePath = "-" Then
+                ret += " --y4m"
+            End If
+
+            If includePaths Then
+                ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
+            End If
 
             Return ret.Trim
         End Function

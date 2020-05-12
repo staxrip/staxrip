@@ -4,7 +4,15 @@
 
 - if AviSynth or VapourSynth was installed then StaxRip will use
   the installed version instead of the included portable version.
-- fix x265 --limit-modes issue
+- fix x265 --limit-modes issue.
+- fix batch encoding issue.
+- mpv.net 5.4.8.0
+- VapourSynth r50
+- x265 3.3+27-g4780a8d99-gcc11.0.0 Patman
+- nvenc 5.01, there will be no --vpp-decimate GUI support from me
+- mkvtoolnix 46
+- RgTools 1.0
+- AVSMeter 2.9.9.1
 
 
 2.1.1.1 Beta

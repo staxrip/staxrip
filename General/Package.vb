@@ -290,7 +290,7 @@ Public Class Package
         .Location = "Support\mpv.net",
         .IsGUI = True,
         .WebURL = "https://github.com/stax76/mpv.net",
-        .Description = "libmpv based media player."})
+        .Description = "The worlds best media player."})
 
     Shared Property MpcBE As Package = Add(New Package With {
         .Name = "MPC-BE",
@@ -438,6 +438,7 @@ Public Class Package
         .Location = "Support\MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
+        .DownloadURL = "https://mkvtoolnix.download/downloads.html#windows",
         .HelpSwitch = "",
         .Description = "MKV muxing tool."})
 
@@ -1198,7 +1199,7 @@ Public Class Package
             .Name = "RgTools",
             .Filename = "RgTools.dll",
             .WebURL = "http://github.com/pinterf/RgTools",
-            .HelpFilename = "RemoveGrain.htm",
+            .HelpURL = "https://github.com/pinterf/RgTools/blob/master/RgTools/documentation/RgTools.txt",
             .Description = "RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, ForwardClense and VerticalCleaner all in a single plugin.",
             .AvsFilterNames = {"RemoveGrain", "Clense", "ForwardClense", "BackwardClense", "Repair", "VerticalCleaner"},
             .AvsFiltersFunc = Function() {

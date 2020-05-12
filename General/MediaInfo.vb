@@ -59,11 +59,19 @@ Public Class MediaInfo
                     at.Index = index
 
                     Dim streamOrder = GetAudio(index, "StreamOrder")
-                    If Not streamOrder.IsInt Then streamOrder = (index + 1).ToString
+
+                    If Not streamOrder.IsInt Then
+                        streamOrder = (index + 1).ToString
+                    End If
+
                     at.StreamOrder = streamOrder.ToInt + offset
 
                     Dim id = GetAudio(index, "ID")
-                    If Not id.IsInt Then id = (index + 2).ToString
+
+                    If Not id.IsInt Then
+                        id = (index + 2).ToString
+                    End If
+
                     at.ID = id.ToInt + offset
 
                     at.Lossy = GetAudio(index, "Compression_Mode") = "Lossy"
@@ -99,11 +107,17 @@ Public Class MediaInfo
                     If at.Bitrate = 0 Then at.Bitrate = GetAudio(index, "FromStats_BitRate").ToInt
 
                     at.Delay = GetAudio(index, "Video_Delay").ToInt
-                    If at.Delay = 0 Then at.Delay = GetAudio(index, "Source_Delay").ToInt
+
+                    If at.Delay = 0 Then
+                        at.Delay = GetAudio(index, "Source_Delay").ToInt
+                    End If
 
                     Dim channels = GetAudio(index, "Channel(s)")
                     at.Channels = channels.ToInt
-                    If at.Channels = 0 Then at.Channels = GetAudio(index, "Channel(s)_Original").ToInt
+
+                    If at.Channels = 0 Then
+                        at.Channels = GetAudio(index, "Channel(s)_Original").ToInt
+                    End If
 
                     If at.Channels = 0 Then
                         If channels.Contains("/") Then

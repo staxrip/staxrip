@@ -1533,23 +1533,23 @@ Public Class MainForm
     End Sub
 
     Function OpenSaveDialog() As Boolean
-        Using d As New System.Windows.Forms.SaveFileDialog
-            d.SetInitDir(p.TempDir)
+        Using dialog As New SaveFileDialog
+            dialog.SetInitDir(p.TempDir)
 
             If p.SourceFile <> "" Then
-                d.FileName = p.TargetFile.Base
+                dialog.FileName = p.TargetFile.Base
             Else
-                d.FileName = "Untitled"
+                dialog.FileName = "Untitled"
             End If
 
-            d.Filter = "StaxRip Project Files (*.srip)|*.srip"
+            dialog.Filter = "StaxRip Project Files (*.srip)|*.srip"
 
-            If d.ShowDialog() = DialogResult.OK Then
-                If Not d.FileName.ToLower.EndsWith(".srip") Then
-                    d.FileName += ".srip"
+            If dialog.ShowDialog() = DialogResult.OK Then
+                If Not dialog.FileName.ToLower.EndsWith(".srip") Then
+                    dialog.FileName += ".srip"
                 End If
 
-                SaveProjectPath(d.FileName)
+                SaveProjectPath(dialog.FileName)
                 Return True
             End If
         End Using
@@ -1690,7 +1690,7 @@ Public Class MainForm
     End Sub
 
     Sub SetSavedProject()
-        g.SavedProject = StaxRip.ObjectHelp.GetCopy(Of Project)(p)
+        g.SavedProject = ObjectHelp.GetCopy(Of Project)(p)
     End Sub
 
     Function GetPathFromIndexFile(sourcePath As String) As String
@@ -3798,8 +3798,15 @@ Public Class MainForm
 
     Function GetJobPath() As String
         Dim name = p.TargetFile.Base
-        If name = "" Then name = Macro.Expand(p.DefaultTargetName)
-        If name = "" Then name = p.SourceFile.Base
+
+        If name = "" Then
+            name = Macro.Expand(p.DefaultTargetName)
+        End If
+
+        If name = "" Then
+            name = p.SourceFile.Base
+        End If
+
         Return p.TempDir + name + ".srip"
     End Function
 
@@ -3839,7 +3846,9 @@ Public Class MainForm
     End Sub
 
     Sub AddJob(showConfirmation As Boolean, templateName As String, showAssistant As Boolean)
-        If Not g.VerifyRequirements() Then Exit Sub
+        If Not g.VerifyRequirements() Then
+            Exit Sub
+        End If
 
         If showAssistant AndAlso Not IsLoading AndAlso Not AssistantPassed Then
             MsgWarn("Please follow the assistant.")
@@ -4092,7 +4101,7 @@ Public Class MainForm
             Dim subPage = ui.CreateFlowPage("Subtitles", True)
 
             t = ui.AddText(subPage)
-            t.Text = "Preferred Languages"
+            t.Text = "Languages"
             t.Help = "Subtitles demuxed and loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
             t.Field = NameOf(p.PreferredSubtitles)
 
@@ -4958,17 +4967,26 @@ Public Class MainForm
                     End If
                 End Using
             Case "File Batch"
-                If AbortDueToLowDiskSpace() Then Exit Sub
+                If AbortDueToLowDiskSpace() Then
+                    Exit Sub
+                End If
 
                 Using form As New SourceFilesForm()
                     form.Text = "File Batch"
-                    If p.DefaultTargetName = "%source_dir_name%" Then p.DefaultTargetName = "%source_name%"
+                    If p.DefaultTargetName = "%source_dir_name%" Then
+                        p.DefaultTargetName = "%source_name%"
+                    End If
 
                     If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
-                        If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then Exit Sub
+                        If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then
+                            Exit Sub
+                        End If
 
                         Dim batchFolder = Folder.Settings + "Batch Projects\"
-                        If Not Directory.Exists(batchFolder) Then Directory.CreateDirectory(batchFolder)
+
+                        If Not Directory.Exists(batchFolder) Then
+                            Directory.CreateDirectory(batchFolder)
+                        End If
 
                         For Each i In form.GetFiles
                             Dim batchProject = ObjectHelp.GetCopy(Of Project)(p)
@@ -5355,40 +5373,71 @@ Public Class MainForm
     Sub SourceDarMenuClick(value As String)
         value = Macro.Expand(value)
         Dim tup = Macro.ExpandGUI(value)
-        If tup.Cancel Then Exit Sub
+
+        If tup.Cancel Then
+            Exit Sub
+        End If
+
         p.CustomSourcePAR = ""
         p.CustomSourceDAR = tup.Value
-        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then p.CustomSourceDAR = ""
+
+        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then
+            p.CustomSourceDAR = ""
+        End If
+
         Assistant()
     End Sub
 
     Sub SourceParMenuClick(value As String)
         value = Macro.Expand(value)
         Dim tup = Macro.ExpandGUI(value)
-        If tup.Cancel Then Exit Sub
+
+        If tup.Cancel Then
+            Exit Sub
+        End If
+
         p.CustomSourcePAR = tup.Value
         p.CustomSourceDAR = ""
-        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then p.CustomSourcePAR = ""
+        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then
+            p.CustomSourcePAR = ""
+        End If
+
         Assistant()
     End Sub
 
     Sub TargetDarMenuClick(value As String)
         value = Macro.Expand(value)
         Dim tup = Macro.ExpandGUI(value)
-        If tup.Cancel Then Exit Sub
+
+        If tup.Cancel Then
+            Exit Sub
+        End If
+
         p.CustomTargetPAR = ""
         p.CustomTargetDAR = tup.Value
-        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then p.CustomTargetDAR = ""
+
+        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then
+            p.CustomTargetDAR = ""
+        End If
+
         Assistant()
     End Sub
 
     Sub TargetParMenuClick(value As String)
         value = Macro.Expand(value)
         Dim tup = Macro.ExpandGUI(value)
-        If tup.Cancel Then Exit Sub
+
+        If tup.Cancel Then
+            Exit Sub
+        End If
+
         p.CustomTargetPAR = tup.Value
         p.CustomTargetDAR = ""
-        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then p.CustomTargetPAR = ""
+
+        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then
+            p.CustomTargetPAR = ""
+        End If
+
         Assistant()
     End Sub
 
@@ -5397,7 +5446,11 @@ Public Class MainForm
 
         value = Macro.Expand(value)
         Dim tup = Macro.ExpandGUI(value)
-        If tup.Cancel Then Exit Sub
+
+        If tup.Cancel Then
+            Exit Sub
+        End If
+
         value = tup.Value
 
         If value.IsInt Then
@@ -5421,7 +5474,11 @@ Public Class MainForm
         p.SourceAnamorphic = isAnamorphic
         p.CustomSourcePAR = ""
         p.CustomSourceDAR = ""
-        If p.Script.IsFilterActive("Resize)") Then SetTargetImageSize(p.TargetWidth, 0)
+
+        If p.Script.IsFilterActive("Resize)") Then
+            SetTargetImageSize(p.TargetWidth, 0)
+        End If
+
         Assistant()
     End Sub
 
@@ -5489,23 +5546,27 @@ Public Class MainForm
     End Sub
 
     Sub tbTargetFile_DoubleClick() Handles tbTargetFile.DoubleClick
-        Using d As New System.Windows.Forms.SaveFileDialog
-            d.FileName = p.TargetFile.Base
-            d.SetInitDir(p.TargetFile.Dir)
+        Using dialog As New SaveFileDialog
+            dialog.FileName = p.TargetFile.Base
+            dialog.SetInitDir(p.TargetFile.Dir)
 
-            If d.ShowDialog() = DialogResult.OK Then
+            If dialog.ShowDialog() = DialogResult.OK Then
                 Dim ext = p.VideoEncoder.Muxer.OutputExtFull
-                p.TargetFile = If(d.FileName.Ext = ext, d.FileName, d.FileName + ext)
+                p.TargetFile = If(dialog.FileName.Ext = ext, dialog.FileName, dialog.FileName + ext)
             End If
         End Using
     End Sub
 
     Private Sub tbTargetFile_MouseDown(sender As Object, e As MouseEventArgs) Handles tbTargetFile.MouseDown
-        If e.Button = MouseButtons.Right Then UpdateTargetFileMenu()
+        If e.Button = MouseButtons.Right Then
+            UpdateTargetFileMenu()
+        End If
     End Sub
 
     Private Sub tbSourceFile_MouseDown(sender As Object, e As MouseEventArgs) Handles tbSourceFile.MouseDown
-        If e.Button = MouseButtons.Right Then UpdateSourceFileMenu()
+        If e.Button = MouseButtons.Right Then
+            UpdateSourceFileMenu()
+        End If
     End Sub
 
     Private Sub tbAudioFile0_MouseDown(sender As Object, e As MouseEventArgs) Handles tbAudioFile0.MouseDown

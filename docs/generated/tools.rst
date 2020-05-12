@@ -248,7 +248,7 @@ https://mpc-hc.org/
 mpv.net
 ~~~~~~~
 
-libmpv based media player.
+The worlds best media player.
 
 https://github.com/stax76/mpv.net
 

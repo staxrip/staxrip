@@ -172,43 +172,46 @@ Public Class VideoScript
                     Optional comparePath As Boolean = True,
                     Optional flipVertical As Boolean = False)
 
-        If Path <> "" Then
-            Dim srcFilter = GetFilter("Source")
+        If Path = "" OrElse p.SourceFile = "" Then
+            Exit Sub
+        End If
 
-            If Not srcFilter Is Nothing AndAlso Not srcFilter.Script.Contains("(") Then
-                Exit Sub
-            End If
+        Dim srcFilter = GetFilter("Source")
 
-            Dim code = Macro.Expand(GetScript())
+        If Not srcFilter Is Nothing AndAlso Not srcFilter.Script.Contains("(") Then
+            Exit Sub
+        End If
 
-            If convertToRGB Then
-                If Engine = ScriptEngine.AviSynth Then
-                    If p.SourceHeight > 576 Then
-                        code += BR + "ConvertBits(8)" + BR + "ConvertToRGB32(matrix=""Rec709"")"
-                    Else
-                        code += BR + "ConvertBits(8)" + BR + "ConvertToRGB32(matrix=""Rec601"")"
-                    End If
+        Dim code = Macro.Expand(GetScript())
 
-                    If flipVertical Then
-                        code += BR + "FlipVertical()"
-                    End If
+        If convertToRGB Then
+            If Engine = ScriptEngine.AviSynth Then
+                If p.SourceHeight > 576 Then
+                    code += BR + "ConvertBits(8)" + BR + "ConvertToRGB32(matrix=""Rec709"")"
                 Else
-                    code = code.Trim
+                    code += BR + "ConvertBits(8)" + BR + "ConvertToRGB32(matrix=""Rec601"")"
+                End If
 
-                    If Not code.Contains(".set_output(") Then
-                        code += BR + "clip.set_output()"
-                    End If
+                If flipVertical Then
+                    code += BR + "FlipVertical()"
+                End If
+            Else
+                code = code.Trim
 
-                    Dim match = Regex.Match(code, "(\w+)\.set_output\(\)")
-                    Dim clipname = match.Groups(1).Value
+                If Not code.Contains(".set_output(") Then
+                    code += BR + "clip.set_output()"
+                End If
 
-                    Dim vsCode = ""
+                Dim match = Regex.Match(code, "(\w+)\.set_output\(\)")
+                Dim clipname = match.Groups(1).Value
 
-                    If flipVertical Then
-                        vsCode += BR + "clipname = core.std.FlipVertical(clipname)" + BR
-                    End If
+                Dim vsCode = ""
 
-                    vsCode += "
+                If flipVertical Then
+                    vsCode += BR + "clipname = core.std.FlipVertical(clipname)" + BR
+                End If
+
+                vsCode += "
 if clipname.format.id == vs.RGB24:
     _matrix_in_s = 'rgb'
 else:
@@ -220,43 +223,40 @@ else:
 clipname = clipname.resize.Bicubic(matrix_in_s = _matrix_in_s, format = vs.COMPATBGR32)
 clipname.set_output()
 "
-                    vsCode = vsCode.Replace("clipname", clipname)
-                    code = code.Replace(match.Value, vsCode).Trim
-                End If
+                vsCode = vsCode.Replace("clipname", clipname)
+                code = code.Replace(match.Value, vsCode).Trim
             End If
+        End If
 
-            If Me.Error <> "" OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
-                If Path.Dir.DirExists Then
-                    If Engine = ScriptEngine.VapourSynth Then
-                        ModifyScript(code, Engine).WriteFile(Path, Encoding.UTF8)
-                    Else
-                        ModifyScript(code, Engine).WriteFileDefault(Path)
-                    End If
+        If Me.Error <> "" OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
+            If Path.Dir.DirExists Then
+                If Engine = ScriptEngine.VapourSynth Then
+                    ModifyScript(code, Engine).WriteFile(Path, Encoding.UTF8)
+                Else
+                    ModifyScript(code, Engine).WriteFileDefault(Path)
+                End If
 
-                    If p.SourceFile <> "" Then
-                        g.MainForm.Indexing()
-                    End If
-
-                    If Not Package.AviSynth.VerifyOK OrElse
+                If Not Package.AviSynth.VerifyOK OrElse
                         Not Package.VapourSynth.VerifyOK OrElse
                         Not Package.vspipe.VerifyOK Then
 
-                        Throw New AbortException
+                    Throw New AbortException
+                End If
+
+                g.MainForm.Indexing()
+
+                Using server As New FrameServer(Path)
+                    Info = server.Info
+
+                    If Not convertToRGB Then
+                        OriginalInfo = Info
                     End If
 
-                    Using server As New FrameServer(Path)
-                        Info = server.Info
+                    Me.Error = server.Error
+                End Using
 
-                        If Not convertToRGB Then
-                            OriginalInfo = Info
-                        End If
-
-                        Me.Error = server.Error
-                    End Using
-
-                    LastCode = code
-                    LastPath = Path
-                End If
+                LastCode = code
+                LastPath = Path
             End If
         End If
     End Sub
@@ -441,6 +441,11 @@ clipname.set_output()
     Function GetFramerate() As Double
         Dim info = GetInfo()
         Dim ret = info.FrameRateNum / info.FrameRateDen
+        Return If(Calc.IsValidFrameRate(ret), ret, 25)
+    End Function
+
+    Function GetCachedFrameRate() As Double
+        Dim ret = Info.FrameRateNum / Info.FrameRateDen
         Return If(Calc.IsValidFrameRate(ret), ret, 25)
     End Function
 

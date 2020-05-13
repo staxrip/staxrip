@@ -3,7 +3,9 @@
 Macros
 ======
 
-Macros are placeholders that can be used in all locations where StaxRip allows to customize a command line or script.
+Macros are placeholders that can be used in all locations where StaxRip allows to customize command lines and scripts.
+
+Whenever StaxRip starts a process and shell execute is disabled it passes all macros as environment variables to the process.
 
 
 Interactive Macros

@@ -74,7 +74,7 @@ Namespace CommandLine
 
         Sub Execute()
             If g.IsWindowsTerminalAvailable Then
-                Process.Start("wt.exe", "cmd.exe /k """ + GetCommandLine(True, True) + """")
+                g.ShellExecute("wt.exe", "cmd.exe /k """ + GetCommandLine(True, True) + """")
             Else
                 g.ShellExecute("cmd.exe", "/k """ + GetCommandLine(True, True) + """")
             End If

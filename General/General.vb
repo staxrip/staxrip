@@ -1343,7 +1343,7 @@ End Class
 
 Public Class Shutdown
     Shared Sub Commit(mode As ShutdownMode)
-        Dim psi = New ProcessStartInfo("shutdown")
+        Dim psi = New ProcessStartInfo("shutdown.exe")
         psi.CreateNoWindow = True
         psi.UseShellExecute = False
 
@@ -1354,10 +1354,10 @@ Public Class Shutdown
                 SetSuspendState(True, False, False)
             Case ShutdownMode.Hybrid
                 psi.Arguments = "/f /hybrid /t " & s.ShutdownTimeout
-                Process.Start(psi)
+                Process.Start(psi)?.Dispose()
             Case ShutdownMode.Shutdown
                 psi.Arguments = "/f /s /t " & s.ShutdownTimeout
-                Process.Start(psi)
+                Process.Start(psi)?.Dispose()
         End Select
     End Sub
 

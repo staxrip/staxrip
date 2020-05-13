@@ -119,9 +119,8 @@ Public Class GlobalCommands
             proc.Wait = waitForExit
             proc.WorkingDirectory = workingDirectory
 
-            If showProcessWindow OrElse Not useShellExecute Then
+            If Not useShellExecute Then
                 proc.Process.StartInfo.UseShellExecute = False
-                proc.SetEnvironmentVariables()
             End If
 
             Try

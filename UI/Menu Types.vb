@@ -228,9 +228,16 @@ Namespace UI
             If item.MethodName <> "" Then
                 Dim e As New CustomMenuItemEventArgs(item)
                 RaiseEvent Command(e)
-                If Not e.Handled Then Process(item)
-                Dim f = ToolStrip.FindForm
-                If Not f Is Nothing Then f.Refresh()
+
+                If Not e.Handled Then
+                    Process(item)
+                End If
+
+                Dim form = ToolStrip.FindForm
+
+                If Not form Is Nothing Then
+                    form.Refresh()
+                End If
             End If
         End Sub
 

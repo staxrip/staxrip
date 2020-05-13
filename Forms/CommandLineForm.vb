@@ -255,7 +255,7 @@ Public Class CommandLineForm
         form.Doc.WriteStart(Text)
 
         If cbGoTo.Visible Then
-            form.Doc.WriteP("The Search input field can be used to quickly find options, it searches command line switches, labels and dropdowns. Multiple matches can be cycled by pressing enter.")
+            form.Doc.WriteP("The Search dropdown field at the dialog bottom left lists options and can be used to quickly find options, it searches command line switches, labels and dropdowns. Multiple matches can be cycled by pressing enter.")
         End If
 
         form.Doc.WriteP("Numeric values and dropdown menu options can be reset to their default value by double clicking on the label.")

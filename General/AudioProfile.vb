@@ -342,7 +342,6 @@ Public Class BatchAudioProfile
                     proc.SkipStrings = Proc.GetSkipStrings(CommandLines)
                     proc.File = "cmd.exe"
                     proc.Arguments = "/S /C """ + line + """"
-                    proc.SetEnvironmentVariables()
 
                     Try
                         proc.Start()

@@ -58,7 +58,7 @@ Help
 - For every tool the help file or help page can be shown in the Apps management dialog and also in the main menu under Help
 - The Apps management dialog provides easy access to tool websites and download sites
 - Tooltips
-- Context help via right-click, for x265 the context help has a local and a online version (using Ctrl key),
+- Context help via right-click, for x264 and x265 the context help has a local and a online version,
   for all video encoders the console output help can be shown via context help and with console look and feel
 - Customizable assistant
 

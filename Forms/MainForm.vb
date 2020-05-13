@@ -2275,7 +2275,9 @@ Public Class MainForm
                                     Function(v) v.Name = "Source").First.Filters.Where(
                                     Function(v) v.Name = def(0).Value)
 
-                            If filters.Count > 0 Then p.Script.SetFilter("Source", filters(0).Name, filters(0).Script)
+                            If filters.Count > 0 Then
+                                p.Script.SetFilter("Source", filters(0).Name, filters(0).Script)
+                            End If
                         End If
                     End If
                 End If
@@ -2289,19 +2291,21 @@ Public Class MainForm
             If Not sourceFilter.Script.Contains("(") Then
                 Dim filter = FilterCategory.GetAviSynthDefaults.Where(Function(v) v.Name = "Source").First.Filters.Where(Function(v) v.Name = "FFVideoSource").First
                 p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
-                Indexing()
             End If
         ElseIf editVS Then
             If Not sourceFilter.Script.Contains("(") Then
                 Dim filter = FilterCategory.GetVapourSynthDefaults.Where(Function(v) v.Name = "Source").First.Filters.Where(Function(v) v.Name = "ffms2").First
                 p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
-                Indexing()
             End If
         End If
 
         For Each iFilter In p.Script.Filters
-            If iFilter.Script.Contains("$") Then iFilter.Script = Macro.ExpandGUI(iFilter.Script, True).Value
+            If iFilter.Script.Contains("$") Then
+                iFilter.Script = Macro.ExpandGUI(iFilter.Script, True).Value
+            End If
         Next
+
+        'Indexing()
 
         If editAVS Then
             Dim miFPS = MediaInfo.GetFrameRate(p.FirstOriginalSourceFile, 25)
@@ -3186,8 +3190,9 @@ Public Class MainForm
         Next
 
         p.Script.Synchronize()
-        Indexing()
     End Sub
+
+    Private BlockIndexingRecursion As Boolean = False
 
     Sub Indexing()
         If p.SourceFile.Ext.EqualsAny("avs", "vpy") Then
@@ -3257,12 +3262,7 @@ Public Class MainForm
             Dim outFile = p.TempDir + p.SourceFile.Base + ".dgi"
 
             If Not File.Exists(outFile) Then
-                Static wasIndexed As Boolean = False
-
-                If Not wasIndexed Then
-                    wasIndexed = True
-                    dgIndexNV.Run(p)
-                End If
+                dgIndexNV.Run(p)
             End If
 
             If File.Exists(outFile) Then
@@ -5104,16 +5104,16 @@ Public Class MainForm
                         Exit Sub
                     End If
 
-                    Using proc As New Proc
-                        proc.Header = "Demux M2TS"
-                        proc.TrimChars = {"-"c, " "c}
-                        proc.SkipStrings = {"analyze: ", "process: "}
-                        proc.Package = Package.eac3to
-                        proc.Process.StartInfo.Arguments = form.GetArgs(
+                    Using pr As New Proc
+                        pr.Header = "Demux M2TS"
+                        pr.TrimChars = {"-"c, " "c}
+                        pr.SkipStrings = {"analyze: ", "process: "}
+                        pr.Package = Package.eac3to
+                        pr.Process.StartInfo.Arguments = form.GetArgs(
                             playlistFolder.Escape + " " & playlistID & ")", title)
 
                         Try
-                            proc.Start()
+                            pr.Start()
                         Catch ex As AbortException
                             Exit Sub
                         Catch ex As Exception

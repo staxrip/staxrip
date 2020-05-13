@@ -49,9 +49,6 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
         static HMODULE dll = LoadLibrary(L"AviSynth.dll");
 
         if (!dll)
-            dll = LoadLibrary(L"AviSynth.dll");
-
-        if (!dll)
         {
             std::string msg = GetWinErrorMessage(GetLastError());
             throw std::runtime_error("Failed to load AviSynth+: \r\n\r\n" + msg);

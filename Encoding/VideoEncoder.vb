@@ -569,7 +569,6 @@ Public Class BatchEncoder
                 proc.SkipStrings = Proc.GetSkipStrings(CommandLines)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/S /C """ + line + """"
-                proc.SetEnvironmentVariables()
 
                 Try
                     proc.Start()
@@ -618,7 +617,6 @@ Public Class BatchEncoder
             proc.SkipStrings = Proc.GetSkipStrings(line)
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + line + """"
-            proc.SetEnvironmentVariables()
 
             Try
                 proc.Start()

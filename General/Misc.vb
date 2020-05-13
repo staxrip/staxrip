@@ -7,6 +7,7 @@ Imports System.Management
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.Web.UI.WebControls.WebParts
 Imports StaxRip.UI
 
 Public Module ShortcutModule
@@ -202,12 +203,18 @@ Public Class Calc
     Shared Function GetSourcePAR() As Point
         If p.CustomSourcePAR <> "" Then
             Dim val = ParseCustomAR(p.CustomSourcePAR, 0, 0)
-            If val.X <> 0 Then Return Reduce(val)
+
+            If val.X <> 0 Then
+                Return Reduce(val)
+            End If
         End If
 
         If p.CustomSourceDAR <> "" Then
             Dim val = ParseCustomAR(p.CustomSourceDAR, 0, 0)
-            If val.X <> 0 Then Return Reduce(New Point(p.SourceHeight * val.X, p.SourceWidth * val.Y))
+
+            If val.X <> 0 Then
+                Return Reduce(New Point(p.SourceHeight * val.X, p.SourceWidth * val.Y))
+            End If
         End If
 
         Dim par As New Point(1, 1)
@@ -225,7 +232,11 @@ Public Class Calc
 
             If f.Width > 0 Then
                 Dim samplingWidth = 52.0
-                If Not p.ITU Then samplingWidth = f.Width / f.SamplingRate
+
+                If Not p.ITU Then
+                    samplingWidth = f.Width / f.SamplingRate
+                End If
+
                 Dim dar = (p.SourcePAR.X * p.SourceWidth) / (p.SourcePAR.Y * p.SourceHeight)
                 par.X = CInt(If(p.SourceAnamorphic OrElse dar > 1.7, 16 / 9, 4 / 3) * f.Height)
                 par.Y = CInt(f.SamplingRate * samplingWidth)
@@ -785,16 +796,13 @@ Public Class Macro
 
     Property Name() As String
         Get
-            If NameValue Is Nothing Then NameValue = ""
+            If NameValue Is Nothing Then
+                NameValue = ""
+            End If
+
             Return NameValue
         End Get
         Set(Value As String)
-            If (Not Value.StartsWith("%") AndAlso Not Value.StartsWith("$")) OrElse
-                (Not Value.EndsWith("%") AndAlso Not Value.EndsWith("$")) Then
-
-                Throw New Exception("Macro must start and end with '%' or '$'")
-            End If
-
             NameValue = Value
         End Set
     End Property
@@ -1141,10 +1149,10 @@ Public Class Macro
         If value.Contains("%target_seconds%") Then value = value.Replace("%target_seconds%", p.TargetSeconds.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", p.Script.GetFrameCount.ToString)
+        If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", p.Script.Info.FrameCount.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture))
+        If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", p.Script.GetCachedFrameRate.ToString("f6", CultureInfo.InvariantCulture))
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_size%") Then value = value.Replace("%target_size%", (p.TargetSize * 1024).ToString)
@@ -1158,42 +1166,6 @@ Public Class Macro
 
         If value.Contains("%target_name%") Then value = value.Replace("%target_name%", p.TargetFile.Base)
         If Not value.Contains("%") Then Return value
-
-        If value.Contains("%source_par_x%") Then
-            Dim par = Calc.GetSourcePAR
-            value = value.Replace("%source_par_x%", par.X.ToString)
-            If Not value.Contains("%") Then Return value
-        End If
-
-        If value.Contains("%source_par_y%") Then
-            Dim par = Calc.GetSourcePAR
-            value = value.Replace("%source_par_y%", par.Y.ToString)
-            If Not value.Contains("%") Then Return value
-        End If
-
-        If value.Contains("%target_par_x%") Then
-            Dim par = Calc.GetTargetPAR
-            value = value.Replace("%target_par_x%", par.X.ToString)
-            If Not value.Contains("%") Then Return value
-        End If
-
-        If value.Contains("%target_par_y%") Then
-            Dim par = Calc.GetTargetPAR
-            value = value.Replace("%target_par_y%", par.Y.ToString)
-            If Not value.Contains("%") Then Return value
-        End If
-
-        If value.Contains("%source_dar%") Then
-            Dim dar = Calc.GetSourceDAR
-            value = value.Replace("%source_dar%", dar.ToString("f9", CultureInfo.InvariantCulture))
-            If Not value.Contains("%") Then Return value
-        End If
-
-        If value.Contains("%target_dar%") Then
-            Dim dar = Calc.GetTargetDAR
-            value = value.Replace("%target_dar%", dar.ToString("f9", CultureInfo.InvariantCulture))
-            If Not value.Contains("%") Then Return value
-        End If
 
         If value.Contains("%crop_width%") Then value = value.Replace("%crop_width%", (p.SourceWidth - p.CropLeft - p.CropRight).ToString)
         If Not value.Contains("%") Then Return value
@@ -1294,6 +1266,63 @@ Public Class Macro
         If value.Contains("%script_file%") Then value = value.Replace("%script_file%", p.Script.Path)
         If Not value.Contains("%") Then Return value
 
+        If value.Contains("%pos_ms%") Then value = value.Replace("%pos_ms%", g.GetPreviewPosMS.ToString)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%source_par_x%") Then
+            Dim par = Calc.GetSourcePAR
+            value = value.Replace("%source_par_x%", par.X.ToString)
+
+            If Not value.Contains("%") Then
+                Return value
+            End If
+        End If
+
+        If value.Contains("%source_par_y%") Then
+            Dim par = Calc.GetSourcePAR
+            value = value.Replace("%source_par_y%", par.Y.ToString)
+
+            If Not value.Contains("%") Then
+                Return value
+            End If
+        End If
+
+        If value.Contains("%target_par_x%") Then
+            Dim par = Calc.GetTargetPAR
+            value = value.Replace("%target_par_x%", par.X.ToString)
+
+            If Not value.Contains("%") Then
+                Return value
+            End If
+        End If
+
+        If value.Contains("%target_par_y%") Then
+            Dim par = Calc.GetTargetPAR
+            value = value.Replace("%target_par_y%", par.Y.ToString)
+
+            If Not value.Contains("%") Then
+                Return value
+            End If
+        End If
+
+        If value.Contains("%source_dar%") Then
+            Dim dar = Calc.GetSourceDAR
+            value = value.Replace("%source_dar%", dar.ToString("f9", CultureInfo.InvariantCulture))
+
+            If Not value.Contains("%") Then
+                Return value
+            End If
+        End If
+
+        If value.Contains("%target_dar%") Then
+            Dim dar = Calc.GetTargetDAR
+            value = value.Replace("%target_dar%", dar.ToString("f9", CultureInfo.InvariantCulture))
+
+            If Not value.Contains("%") Then
+                Return value
+            End If
+        End If
+
         If p.Ranges.Count > 0 Then
             If value.Contains("%sel_start%") Then value = value.Replace("%sel_start%", p.Ranges(0).Start.ToString)
             If Not value.Contains("%") Then Return value
@@ -1307,9 +1336,6 @@ Public Class Macro
             If value.Contains("%sel_end%") Then value = value.Replace("%sel_end%", 0.ToString)
             If Not value.Contains("%") Then Return value
         End If
-
-        If value.Contains("%pos_ms%") Then value = value.Replace("%pos_ms%", g.GetPreviewPosMS.ToString)
-        If Not value.Contains("%") Then Return value
 
         If value.Contains("%app:") Then
             Dim mc = Regex.Matches(value, "%app:(.+?)%")
@@ -1349,14 +1375,20 @@ Public Class Macro
         If value.Contains("%media_info_video:") Then
             For Each i As Match In Regex.Matches(value, "%media_info_video:(.+?)%")
                 value = value.Replace(i.Value, MediaInfo.GetVideo(p.LastOriginalSourceFile, i.Groups(1).Value))
-                If Not value.Contains("%") Then Return value
+
+                If Not value.Contains("%") Then
+                    Return value
+                End If
             Next
         End If
 
         If value.Contains("%media_info_audio:") Then
             For Each i As Match In Regex.Matches(value, "%media_info_audio:(.+?)%")
                 value = value.Replace(i.Value, MediaInfo.GetAudio(p.LastOriginalSourceFile, i.Groups(1).Value))
-                If Not value.Contains("%") Then Return value
+
+                If Not value.Contains("%") Then
+                    Return value
+                End If
             Next
         End If
 
@@ -1367,7 +1399,11 @@ Public Class Macro
                 For Each i2 In p.Script.Filters
                     If i2.Active AndAlso i2.Path.ToUpper = i.Groups(1).Value.ToUpper Then
                         value = value.Replace(i.Value, i2.Script)
-                        If Not value.Contains("%") Then Return value
+
+                        If Not value.Contains("%") Then
+                            Return value
+                        End If
+
                         Exit For
                     End If
                 Next

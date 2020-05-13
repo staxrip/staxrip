@@ -55,30 +55,14 @@ Public Class GlobalClass
     Sub RunCommandInTerminal(fileName As String, Optional arguments As String = Nothing)
         Documentation.ShowTip("Console apps are added to the path environment variable and macros are added as environment variables.")
 
-        Using proc As New Process
-            proc.StartInfo.UseShellExecute = False
-            proc.StartInfo.FileName = fileName
-            proc.StartInfo.Arguments = arguments
-            proc.StartInfo.WorkingDirectory = Folder.Desktop
-            SetEnvironmentVariables(proc.StartInfo.EnvironmentVariables)
-            proc.Start()
+        Using pr As New Process
+            pr.StartInfo.FileName = fileName
+            pr.StartInfo.Arguments = arguments
+            pr.StartInfo.UseShellExecute = False
+            pr.StartInfo.WorkingDirectory = Folder.Desktop
+            Proc.SetEnvironmentVariables(pr)
+            pr.Start()
         End Using
-    End Sub
-
-    Sub SetEnvironmentVariables(dic As StringDictionary)
-        For Each mac In Macro.GetMacros(False, False)
-            dic(mac.Name.Trim("%"c)) = Macro.Expand(mac.Name)
-        Next
-
-        Dim path = Environment.GetEnvironmentVariable("path")
-
-        For Each pack In Package.Items.Values
-            If pack.Path.Ext = "exe" AndAlso pack.Path.FileExists Then
-                path = pack.Directory + ";" + path
-            End If
-        Next
-
-        dic("path") = path
     End Sub
 
     Sub AddToPath(ParamArray dirs As String())
@@ -590,7 +574,7 @@ Public Class GlobalClass
     End Function
 
     Function GetPreviewPosMS() As Integer
-        Return CInt((s.LastPosition / p.Script.GetFramerate) * 1000)
+        Return CInt((s.LastPosition / p.Script.GetCachedFrameRate) * 1000)
     End Function
 
     Function GetTextEditorPath() As String
@@ -797,7 +781,7 @@ Public Class GlobalClass
                   Optional proj As Project = Nothing)
 
         If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso
-            Not FileTypes.VideoText.Contains(sourcePath.Ext) Then
+                    Not FileTypes.VideoText.Contains(sourcePath.Ext) Then
 
             Using proc As New Proc
                 proc.Header = "Indexing using ffmsindex"
@@ -1021,7 +1005,7 @@ Public Class GlobalClass
 
     Sub ShellExecute(fileName As String, Optional arguments As String = Nothing)
         Try
-            Process.Start(fileName, arguments)
+            Process.Start(fileName, arguments)?.Dispose()
         Catch ex As Exception
             g.ShowException(ex, "Failed to start process", "Filename:" + BR2 + fileName + BR2 + "Arguments:" + BR2 + arguments)
         End Try
@@ -1426,12 +1410,12 @@ Public Class GlobalClass
                 FileHelp.Delete(i.Item2)
                 Dim cmd = $"mklink {i.Item2.Escape} {i.Item3.Escape}"
 
-                Using cmdProc As New Process
-                    cmdProc.StartInfo.UseShellExecute = False
-                    cmdProc.StartInfo.CreateNoWindow = True
-                    cmdProc.StartInfo.FileName = "cmd.exe"
-                    cmdProc.StartInfo.Arguments = $"/s /c ""{cmd}"""
-                    cmdProc.Start()
+                Using pr As New Process
+                    pr.StartInfo.FileName = "cmd.exe"
+                    pr.StartInfo.Arguments = $"/s /c ""{cmd}"""
+                    pr.StartInfo.UseShellExecute = False
+                    pr.StartInfo.CreateNoWindow = True
+                    pr.Start()
                 End Using
 
                 s.Storage.SetString(i.Item1 + "symlinkhash", hash)

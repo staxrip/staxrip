@@ -58,7 +58,6 @@ Public Class Project
     Public NoDialogs As Boolean
     Public PreferredAudio As String
     Public PreferredSubtitles As String
-    Public PreRenderIntoLossless As Boolean
     Public Ranges As List(Of Range)
     Public RemindOversize As Boolean = True
     Public RemindToCrop As Boolean = False

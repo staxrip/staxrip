@@ -64,6 +64,7 @@ Public Class ApplicationSettings
     Public ThumbnailBackgroundColor As Color = Color.AliceBlue
     Public ToolStripRenderModeEx As ToolStripRenderModeEx = ToolStripRenderModeEx.SystemDefault
     Public UIScaleFactor As Single = 1
+    Public UseVapourSynthPortable As Boolean
     Public VapourSynthFilterPreferences As StringPairList
     Public VapourSynthProfiles As List(Of FilterCategory)
     Public Versions As Dictionary(Of String, Integer)
@@ -130,20 +131,19 @@ Public Class ApplicationSettings
 
         If Check(Demuxers, "Demuxers", 106) Then Demuxers = Demuxer.GetDefaults()
 
-        If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 3) Then
+        If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 6) Then
             AviSynthFilterPreferences = New StringPairList
             AviSynthFilterPreferences.Add("default", "FFVideoSource")
             AviSynthFilterPreferences.Add("264 h264 avc", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("d2v", "MPEG2Source")
-            AviSynthFilterPreferences.Add("dgi", "DGSource")
             AviSynthFilterPreferences.Add("mp4 m4v mov", "LSMASHVideoSource")
             AviSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("wmv", "DSS2")
             AviSynthFilterPreferences.Add("vdr", "AviSource")
         End If
 
-        If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 5) Then
+        If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 6) Then
             VapourSynthFilterPreferences = New StringPairList
             VapourSynthFilterPreferences.Add("default", "ffms2")
             VapourSynthFilterPreferences.Add("264 h264 avc", "LWLibavSource")
@@ -152,7 +152,6 @@ Public Class ApplicationSettings
             VapourSynthFilterPreferences.Add("mp4 m4v mov", "LibavSMASHSource")
             VapourSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavSource")
             VapourSynthFilterPreferences.Add("d2v", "d2vsource")
-            VapourSynthFilterPreferences.Add("dgi", "DGSource")
         End If
 
         If Check(ToolStripRenderModeEx, "menu style", 1) Then

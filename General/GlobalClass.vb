@@ -197,7 +197,16 @@ Public Class GlobalClass
             Next
 
             actions.Add(Sub() Subtitle.Cut(p.VideoEncoder.Muxer.Subtitles))
-            actions.Add(AddressOf ProcessVideo)
+
+            If CanEncodeVideo() Then
+                If p.VideoEncoder.CanChunkEncode Then
+                    For Each i In p.VideoEncoder.GetChunkEncodeActions
+                        actions.Add(i)
+                    Next
+                Else
+                    actions.Add(AddressOf p.VideoEncoder.Encode)
+                End If
+            End If
 
             Try
                 Parallel.Invoke(New ParallelOptions With {.MaxDegreeOfParallelism = s.ParallelProcsNum}, actions.ToArray)
@@ -245,74 +254,10 @@ Public Class GlobalClass
         End Try
     End Sub
 
-    Sub ProcessVideo()
-        If Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
-            File.Exists(p.VideoEncoder.OutputPath)) Then
-
-            Dim originalFilters As List(Of VideoFilter)
-            Dim originalSource As String
-
-            If p.PreRenderIntoLossless AndAlso Not TypeOf p.VideoEncoder Is NullEncoder Then
-                Dim outPath = p.TempDir + p.TargetFile.Base + "_lossless.avi"
-
-                If p.Script.Engine = ScriptEngine.AviSynth Then
-                    Using proc As New Proc
-                        proc.Header = "Pre-render into lossless AVI"
-                        proc.SkipStrings = {"frame=", "size="}
-                        proc.Encoding = Encoding.UTF8
-                        proc.Package = Package.ffmpeg
-                        proc.Arguments = "-i " + p.Script.Path.Escape + " -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
-                        proc.Start()
-                    End Using
-                Else
-                    Dim commandLine = Package.vspipe.Path.Escape + " " + p.Script.Path.Escape + " - --y4m | " + Package.ffmpeg.Path.Escape + " -i - -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
-
-                    Using proc As New Proc
-                        proc.Header = "Pre-render into lossless AVI"
-                        proc.SkipStrings = {"frame=", "size=", "Multiple"}
-                        proc.Encoding = Encoding.UTF8
-                        proc.Package = Package.ffmpeg
-                        proc.File = "cmd.exe"
-                        proc.Arguments = "/S /C call """ + commandLine + """"
-                        proc.Start()
-                    End Using
-                End If
-
-                If File.Exists(outPath) Then
-                    Log.WriteHeader("Lossless AVI MediaInfo")
-                    Log.WriteLine(MediaInfo.GetSummary(outPath))
-                Else
-                    Throw New ErrorAbortException("Pre-render failed", "Output file is missing")
-                End If
-
-                originalSource = p.SourceFile
-                p.SourceFile = p.TempDir + p.TargetFile.Base + "_lossless.avi"
-                originalFilters = p.Script.GetFiltersCopy()
-
-                For Each i In p.Script.Filters
-                    If i.Category = "Source" Then
-                        If p.Script.Engine = ScriptEngine.AviSynth Then
-                            i.Script = "FFVideoSource(""" + outPath + """)"
-                        Else
-                            i.Script = "clip = core.ffms2.Source(r""" + outPath + """)"
-                        End If
-                    Else
-                        i.Active = False
-                    End If
-                Next
-
-                p.Script.Synchronize()
-            End If
-
-            If Not originalFilters Is Nothing Then
-                p.SourceFile = originalSource
-                p.Script.Filters = originalFilters
-                p.Script.Synchronize()
-            End If
-
-            p.VideoEncoder.Encode()
-        End If
-    End Sub
+    Function CanEncodeVideo() As Boolean
+        Return Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
+            File.Exists(p.VideoEncoder.OutputPath))
+    End Function
 
     Sub DeleteTempFiles()
         If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then

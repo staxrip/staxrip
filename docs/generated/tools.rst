@@ -221,14 +221,6 @@ MPEG-2 demuxing and indexing app.
 
 
 
-DGIndexNV
-~~~~~~~~~
-
-Shareware indexer and demuxer.
-
-
-
-
 MPC-BE
 ~~~~~~
 
@@ -419,16 +411,6 @@ DFTTest
 Filters: dfttest
 
 https://github.com/pinterf/dfttest
-
-
-DGDecodeNV
-~~~~~~~~~~
-
-Shareware source filter.
-
-Filters: DGSource
-
-
 
 
 Dither DLL

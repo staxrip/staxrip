@@ -101,28 +101,6 @@ Public MustInherit Class Demuxer
         dgIndex.Active = False
         ret.Add(dgIndex)
 
-        Dim dgnvNoDemux As New CommandLineDemuxer
-        dgnvNoDemux.Name = "DGIndexNV: Index, No Demux"
-        dgnvNoDemux.InputExtensions = {"mkv", "mp4", "h264", "h265", "avc", "hevc", "hvc", "264", "265"}
-        dgnvNoDemux.OutputExtensions = {"dgi"}
-        dgnvNoDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
-        dgnvNoDemux.Command = "%app:DGIndexNV%"
-        dgnvNoDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgi"" -h"
-        dgnvNoDemux.SourceFilters = {"DGSource"}
-        dgnvNoDemux.Active = False
-        ret.Add(dgnvNoDemux)
-
-        Dim dgnvDemux As New CommandLineDemuxer
-        dgnvDemux.Name = "DGIndexNV: Demux & Index"
-        dgnvDemux.InputExtensions = {"mpg", "vob", "ts", "m2ts", "mts", "m2t"}
-        dgnvDemux.OutputExtensions = {"dgi"}
-        dgnvDemux.InputFormats = {"hevc", "avc", "vc1", "mpeg2"}
-        dgnvDemux.Command = "%app:DGIndexNV%"
-        dgnvDemux.Arguments = "-i %source_files_comma% -o ""%source_temp_file%.dgi"" -a -h"
-        dgnvDemux.SourceFilters = {"DGSource"}
-        dgnvDemux.Active = False
-        ret.Add(dgnvDemux)
-
         Return ret
     End Function
 End Class
@@ -148,14 +126,7 @@ Public Class CommandLineDemuxer
 
     Overrides Sub Run(proj As Project)
         Using proc As New Proc
-            If Command?.Contains("DGIndexNV") OrElse Arguments?.Contains("DGIndexNV") Then
-                If Not Package.DGIndexNV.VerifyOK(True) Then
-                    Throw New AbortException
-                End If
-
-                proc.Package = Package.DGIndexNV
-                proc.IntegerPercentOutput = True
-            ElseIf Command?.Contains("DGIndex") OrElse Arguments?.Contains("DGIndex") Then
+            If Command?.Contains("DGIndex") OrElse Arguments?.Contains("DGIndex") Then
                 If Not Package.DGIndex.VerifyOK(True) Then
                     Throw New AbortException
                 End If

@@ -43,27 +43,6 @@ Public Class Package
         .IsIncluded = False,
         .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:DGIndex%")})
 
-    Shared Property DGIndexNV As Package = Add(New Package With {
-        .Name = "DGIndexNV",
-        .Filename = "DGIndexNV.exe",
-        .Description = "Shareware indexer and demuxer.",
-        .IsGUI = True,
-        .IsIncluded = False,
-        .HintDirFunc = Function() DGDecodeNV.GetStoredPath.Dir,
-        .RequiredFunc = Function() CommandLineDemuxer.IsActive("DGIndexNV")})
-
-    Shared Property DGDecodeNV As Package = Add(New PluginPackage With {
-        .Name = "DGDecodeNV",
-        .Filename = "DGDecodeNV.dll",
-        .Description = "Shareware source filter.",
-        .IsIncluded = False,
-        .HintDirFunc = Function() DGIndexNV.GetStoredPath.Dir,
-        .RequiredFunc = Function() p.Script.Filters(0).Script.Contains("DGSource("),
-        .AvsFilterNames = {"DGSource"},
-        .VSFilterNames = {"DGSource"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")},
-        .VSFiltersFunc = Function() {New VideoFilter("Source", "DGSource", "clip = core.dgdecodenv.DGSource(r""%source_file%"")")}})
-
     Shared Property dsmux As Package = Add(New Package With {
         .Name = "dsmux",
         .Filename = "dsmux.exe",
@@ -180,7 +159,6 @@ Public Class Package
     Shared Property vspipe As Package = Add(New Package With {
         .Name = "vspipe",
         .Filename = "vspipe.exe",
-        .Location = "Support\VapourSynth",
         .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
         .HelpURL = "http://www.vapoursynth.com/doc/vspipe.html",
         .HelpSwitch = "",
@@ -2060,16 +2038,20 @@ Public Class Package
     End Function
 
     Function GetVapourSynthHintDir() As String
-        Dim ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
+        Dim ret As String
 
-        If File.Exists(ret + "VapourSynth.dll") Then
-            Return ret
-        End If
+        If Not s.UseVapourSynthPortable Then
+            ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
 
-        ret = Registry.CurrentUser.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
+            If File.Exists(ret + "VapourSynth.dll") Then
+                Return ret
+            End If
 
-        If File.Exists(ret + "VapourSynth.dll") Then
-            Return ret
+            ret = Registry.CurrentUser.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
+
+            If File.Exists(ret + "VapourSynth.dll") Then
+                Return ret
+            End If
         End If
 
         ret = GetPathFromLocation("FrameServer\VapourSynth")
@@ -2080,20 +2062,22 @@ Public Class Package
     End Function
 
     Shared Function GetPythonHintDir() As String
-        For Each x In {8, 9, 7}
-            For Each rootKey In {Registry.CurrentUser, Registry.LocalMachine}
-                Dim exePath = rootKey.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath")
+        If Not s.UseVapourSynthPortable Then
+            For Each x In {8, 9, 7}
+                For Each rootKey In {Registry.CurrentUser, Registry.LocalMachine}
+                    Dim exePath = rootKey.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath")
 
-                If File.Exists(exePath) Then
-                    Return exePath.Dir
-                End If
+                    If File.Exists(exePath) Then
+                        Return exePath.Dir
+                    End If
+                Next
             Next
-        Next
 
-        Dim fp = FindEverywhere({"python.exe"}, Python.IgnorePath)
+            Dim fp = FindEverywhere({"python.exe"}, Python.IgnorePath)
 
-        If fp <> "" Then
-            Return fp.Dir
+            If fp <> "" Then
+                Return fp.Dir
+            End If
         End If
 
         If (Folder.Apps + "FrameServer\VapourSynth\python.exe").FileExists Then

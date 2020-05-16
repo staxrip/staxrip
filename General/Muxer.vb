@@ -641,6 +641,16 @@ Public Class MkvMuxer
 
         args += " " + p.VideoEncoder.OutputPath.Escape
 
+        For x = 2 To 10
+            Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
+
+            If fp.FileExists Then
+                args += " + " + fp.Escape
+            Else
+                Exit For
+            End If
+        Next
+
         AddAudioArgs(p.Audio0, args)
         AddAudioArgs(p.Audio1, args)
 

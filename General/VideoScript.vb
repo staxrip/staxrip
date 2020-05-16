@@ -919,21 +919,6 @@ Public Class FilterParameters
                                Next
                            End Sub
 
-                add({"DGSource"}, "Hardware Resizing", {
-                    New FilterParameter("resize_w", "%target_width%"),
-                    New FilterParameter("resize_h", "%target_height%")})
-
-                add({"DGSource"}, "Hardware Cropping", {
-                    New FilterParameter("crop_l", "%crop_left%"),
-                    New FilterParameter("crop_t", "%crop_top%"),
-                    New FilterParameter("crop_r", "%crop_right%"),
-                    New FilterParameter("crop_b", "%crop_bottom%")})
-
-                add2({"DGSource"}, "deinterlace", "0", "deinterlace | 0 (no deinterlacing)")
-                add2({"DGSource"}, "deinterlace", "1", "deinterlace | 1 (single rate deinterlacing)")
-                add2({"DGSource"}, "deinterlace", "2", "deinterlace | 2 (double rate deinterlacing)")
-                add2({"DGSource"}, "fulldepth", "true", "fulldepth = true")
-
                 add({"FFVideoSource",
                      "LWLibavVideoSource",
                      "LSMASHVideoSource",

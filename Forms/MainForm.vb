@@ -1710,13 +1710,25 @@ Public Class MainForm
     Function ShowSourceFilterSelectionDialog(inputFile As String) As VideoFilter
         Dim filters As New List(Of VideoFilter)
 
-        If inputFile.Ext = "dgi" OrElse FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then AddSourceFilters({"DGSource"}, filters)
-        If inputFile.Ext = "dgim" OrElse FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then AddSourceFilters({"DGSourceIM"}, filters)
-        If inputFile.Ext.EqualsAny("mp4", "m4v", "mov") Then AddSourceFilters({"LSMASHVideoSource", "LibavSMASHSource"}, filters)
-        If FileTypes.Video.Contains(inputFile.Ext) AndAlso Not FileTypes.VideoText.Contains(inputFile.Ext) Then AddSourceFilters({"FFVideoSource", "LWLibavVideoSource", "ffms2", "LWLibavSource"}, filters)
-        If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then AddSourceFilters({"DSS2"}, filters)
-        If {"avi", "avs", "vdr"}.Contains(inputFile.Ext) Then AddSourceFilters({"AVISource"}, filters)
-        If inputFile.Ext = "d2v" Then AddSourceFilters({"d2vsource"}, filters)
+        If inputFile.Ext.EqualsAny("mp4", "m4v", "mov") Then
+            AddSourceFilters({"LSMASHVideoSource", "LibavSMASHSource"}, filters)
+        End If
+
+        If FileTypes.Video.Contains(inputFile.Ext) AndAlso Not FileTypes.VideoText.Contains(inputFile.Ext) Then
+            AddSourceFilters({"FFVideoSource", "LWLibavVideoSource", "ffms2", "LWLibavSource"}, filters)
+        End If
+
+        If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
+            AddSourceFilters({"DSS2"}, filters)
+        End If
+
+        If {"avi", "avs", "vdr"}.Contains(inputFile.Ext) Then
+            AddSourceFilters({"AVISource"}, filters)
+        End If
+
+        If inputFile.Ext = "d2v" Then
+            AddSourceFilters({"d2vsource"}, filters)
+        End If
 
         If p.Script.Engine = ScriptEngine.AviSynth Then
             filters = filters.Where(Function(filter) Not filter.Script.Replace(" ", "").Contains("clip=core.")).ToList
@@ -2032,10 +2044,6 @@ Public Class MainForm
             ModifyFilters()
             FiltersListView.IsLoading = False
             FiltersListView.Load()
-
-            If Not Package.DGDecodeNV.VerifyOK() Then
-                Throw New AbortException
-            End If
 
             RenameDVDTracks()
 
@@ -3253,24 +3261,6 @@ Public Class MainForm
                 tbSourceFile.Text = p.SourceFile
                 BlockSourceTextBoxTextChanged = False
             End If
-        ElseIf codeLower.Contains("dgsource(") AndAlso Not p.SourceFile.Ext = "dgi" Then
-            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
-                p.SourceFile = p.LastOriginalSourceFile
-            End If
-
-            Dim dgIndexNV = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexNV: Index, No Demux")
-            Dim outFile = p.TempDir + p.SourceFile.Base + ".dgi"
-
-            If Not File.Exists(outFile) Then
-                dgIndexNV.Run(p)
-            End If
-
-            If File.Exists(outFile) Then
-                p.SourceFile = outFile
-                BlockSourceTextBoxTextChanged = True
-                tbSourceFile.Text = outFile
-                BlockSourceTextBoxTextChanged = False
-            End If
         End If
     End Sub
 
@@ -3452,6 +3442,10 @@ Public Class MainForm
             b = ui.AddBool
             b.Text = "Minimize processing dialog to tray"
             b.Field = NameOf(s.MinimizeToTray)
+
+            b = ui.AddBool
+            b.Text = "Use included portable VapourSynth"
+            b.Field = NameOf(s.UseVapourSynthPortable)
 
             Dim videoPage = ui.CreateFlowPage("Video", True)
 
@@ -4084,11 +4078,6 @@ Public Class MainForm
             videoExist.Field = NameOf(p.FileExistVideo)
 
             b = ui.AddBool
-            b.Text = "Pre-render script into lossless AVI file"
-            b.Help = "Note that depending on the resolution this can result in very large files."
-            b.Field = NameOf(p.PreRenderIntoLossless)
-
-            b = ui.AddBool
             b.Text = "Import VUI metadata"
             b.Help = "Imports VUI metadata such as HDR from the source file to the video encoder."
             b.Field = NameOf(p.ImportVUIMetadata)
@@ -4101,7 +4090,7 @@ Public Class MainForm
             Dim subPage = ui.CreateFlowPage("Subtitles", True)
 
             t = ui.AddText(subPage)
-            t.Text = "Languages"
+            t.Text = "Preferred Languages"
             t.Help = "Subtitles demuxed and loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
             t.Field = NameOf(p.PreferredSubtitles)
 
@@ -4478,7 +4467,6 @@ Public Class MainForm
         ret.Add("Apps|Media Info|MediaInfo Folder", NameOf(g.DefaultCommands.ShowMediaInfoFolderViewDialog))
         ret.Add("Apps|Media Info|Ingest HDR", NameOf(g.DefaultCommands.SaveMKVHDR))
         ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
-        ret.Add("Apps|DGIndex|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
         ret.Add("Apps|Players|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpv.net"})
         ret.Add("Apps|Players|MPC-BE", NameOf(g.DefaultCommands.StartTool), {"MPC-BE"})
         ret.Add("Apps|Players|MPC-HC", NameOf(g.DefaultCommands.StartTool), {"MPC-HC"})
@@ -5282,8 +5270,6 @@ Public Class MainForm
 
     Private Sub AviSynthListView_ScriptChanged() Handles FiltersListView.Changed
         If Not IsLoading AndAlso Not FiltersListView.IsLoading Then
-            Package.DGDecodeNV.VerifyOK()
-
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
                 UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)

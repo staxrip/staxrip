@@ -1,8 +1,16 @@
 
-2.1.1.3 Beta (not yet available)
+2.1.1.4 Beta (not yet available)
 ============
 
-- fix avs and vpy import issue
+2.1.1.3 Beta
+============
+
+- fix avs and vpy import adding unnecessary LoadPlugin and Import calls
+- new setting: 'Main Menu > Tools > Settigs > System > Use included portable VapourSynth',
+  to force usage of included portable VapourSynth instead of installed VapourSynth
+- new chunk encoding feature for x265 parallel processing
+- DGDecNV removal, there are better open source tools,
+  L-Smash-Source supports hardware decoding for NVIDIA, Intel and AMD
 
 
 2.1.1.2 Beta

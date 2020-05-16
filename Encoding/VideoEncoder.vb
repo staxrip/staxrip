@@ -43,6 +43,12 @@ Public MustInherit Class VideoEncoder
     Overridable Function GetMenu() As MenuList
     End Function
 
+    Overridable Function CanChunkEncode() As Boolean
+    End Function
+
+    Overridable Function GetChunkEncodeActions() As List(Of Action)
+    End Function
+
     Overridable Sub ImportCommandLine(commandLine As String)
     End Sub
 

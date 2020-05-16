@@ -72,9 +72,16 @@ Supported encoders are:
 Parallel Processing
 ===================
 
-The jobs in the job list can be processed with multiple StaxRip instances in parallel. It's not recommended to use more than two StaxRip instances. Parallel processing should not be used with any HDD, it should only be used with a very fast SSD.
+Job processing using multiple StaxRip instances
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-StaxRip supports chunk encoding for the x265 encoder, it splits the encoding into maximum of 4 chunks and encodes the chunks in parallel. Only users that know exactly the hardware requirements should use this feature, it requires a very fast SSD, lot's of memory for each chunk and should only be used with minimum 16 CPU cores. It's not recommended to use more than two chunks. This feature can be enabled at: x265 dialog > Other > Chunks
+The jobs in the shared job list can be processed with multiple StaxRip instances in parallel. This feature is only recommended for power users that know exactly what their hardware is capable of.
+
+
+Chunk Encoding
+~~~~~~~~~~~~~~
+
+StaxRip supports chunk encoding for the x265 encoder, it splits the encoding into chunks and encodes the chunks in parallel. Only recommended for power users that know exactly what their hardware is capable of. This feature can be enabled at: *x265 dialog > Other > Chunks*
 
 
 Command Engine

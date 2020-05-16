@@ -435,7 +435,7 @@ Public Class x265Params
     Property Chunks As New NumParam With {
         .Text = "Chunks",
         .Init = 1,
-        .Config = {1, 4}}
+        .Config = {1, 64}}
 
     Property Weightp As New BoolParam With {
         .Switch = "--weightp",

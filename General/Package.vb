@@ -100,7 +100,7 @@ Public Class Package
         .Filename = "ffmpeg.exe",
         .Location = "Encoders\ffmpeg",
         .WebURL = "http://ffmpeg.org",
-        .HelpURL = "http://www.ffmpeg.org/ffmpeg-all.html",
+        .HelpURL = "http://www.ffmpeg.org/documentation.html",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpSwitch = "-h",
         .Description = "Versatile audio video convertor."})
@@ -153,14 +153,19 @@ Public Class Package
         .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
+        .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases",
+        .HelpFilename = "doc\index.html",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthHintDir})
 
     Shared Property vspipe As Package = Add(New Package With {
         .Name = "vspipe",
         .Filename = "vspipe.exe",
-        .Description = "vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
+        .Description = "vspipe is part of VapourSynth and used to pipe VapourSynth scripts to encoding apps.",
+        .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc/vspipe.html",
+        .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases",
+        .HelpFilename = "doc/vspipe.html",
         .HelpSwitch = "",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthHintDir})
@@ -1847,7 +1852,7 @@ Public Class Package
 
                 If dialog.Show <> "" Then
                     CreateHelpfile()
-                    StartProcess(dialog.SelectedValue)
+                    g.ShellExecute(dialog.SelectedValue)
                 End If
             End Using
         Else
@@ -1856,7 +1861,7 @@ Public Class Package
             If HelpFileOrURL <> "" AndAlso (HelpFileOrURL.Contains("http") OrElse
                 File.Exists(HelpFileOrURL)) Then
 
-                StartProcess(HelpFileOrURL)
+                g.ShellExecute(HelpFileOrURL)
             Else
                 MsgInfo("No help resource available.")
             End If
@@ -1866,6 +1871,22 @@ Public Class Package
     Public ReadOnly Property HelpFile As String
         Get
             Return Directory + HelpFilename
+        End Get
+    End Property
+
+    Public ReadOnly Property URL As String
+        Get
+            If WebURL <> "" Then
+                Return WebURL
+            ElseIf HelpURL <> "" Then
+                Return HelpURL
+            ElseIf HelpUrlAviSynth <> "" Then
+                Return HelpUrlAviSynth
+            ElseIf HelpUrlVapourSynth <> "" Then
+                Return HelpUrlVapourSynth
+            ElseIf DownloadURL <> "" Then
+                Return DownloadURL
+            End If
         End Get
     End Property
 
@@ -2174,19 +2195,6 @@ Public Class Package
             Next
         End If
     End Function
-
-    Sub StartProcess(path As String)
-        If path.Ext.EqualsAny("htm", "html") Then
-            Dim broswer = FindEverywhere({"chrome.exe", "firefox.exe"})
-
-            If broswer <> "" Then
-                g.ShellExecute(broswer, path.Escape)
-                Exit Sub
-            End If
-        End If
-
-        g.ShellExecute(path)
-    End Sub
 
     Shared Function IsNotEmptyOrIgnored(filePath As String, ignorePath As String) As Boolean
         Return filePath <> "" AndAlso (ignorePath = Nothing OrElse Not filePath.Contains(ignorePath))

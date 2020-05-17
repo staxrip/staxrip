@@ -3351,7 +3351,8 @@ Public Class MainForm
             n.Field = NameOf(s.ProjectsMruNum)
 
             n = ui.AddNum()
-            n.Text = "Number of parallel processes"
+            n.Text = "Maximum number of parallel processes"
+            n.Help = "Maximum number of parallel processes used for audio and video processing. Chunk encoding can be enabled in the x265 dialog."
             n.Config = {1, 4}
             n.Field = NameOf(s.ParallelProcsNum)
 

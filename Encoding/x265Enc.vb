@@ -117,8 +117,9 @@ Public Class x265Enc
     End Sub
 
     Overrides Sub RunCompCheck()
-        If Not g.VerifyRequirements Then Exit Sub
-        If Not g.IsValidSource Then Exit Sub
+        If Not g.VerifyRequirements OrElse Not g.IsValidSource Then
+            Exit Sub
+        End If
 
         Dim newParams As New x265Params
         Dim newStore = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
@@ -435,7 +436,7 @@ Public Class x265Params
     Property Chunks As New NumParam With {
         .Text = "Chunks",
         .Init = 1,
-        .Config = {1, 64}}
+        .Config = {1, 16}}
 
     Property Weightp As New BoolParam With {
         .Switch = "--weightp",

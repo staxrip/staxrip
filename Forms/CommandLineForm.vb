@@ -10,6 +10,8 @@ Public Class CommandLineForm
 
     Property HTMLHelp As String
 
+    Event BeforeHelp()
+
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
         SimpleUI.ScaleClientSize(37, 26)
@@ -251,6 +253,8 @@ Public Class CommandLineForm
     End Sub
 
     Sub ShowHelp()
+        RaiseEvent BeforeHelp()
+
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
 
@@ -260,6 +264,7 @@ Public Class CommandLineForm
 
         form.Doc.WriteP("Numeric values and dropdown menu options can be reset to their default value by double clicking on the label.")
         form.Doc.WriteP("The context help is shown with a right-click on a label, dropdown menu or checkbox.")
+        form.Doc.WriteP("The command line preview at the bottom of the dialog has a context menu that allows to quickly find and show options.")
 
         If HTMLHelp <> "" Then
             form.Doc.Writer.WriteRaw(HTMLHelp)

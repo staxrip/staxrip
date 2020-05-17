@@ -352,7 +352,7 @@ Public Class AppsForm
 
         tsbExplore.Enabled = path <> ""
         tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.GetStatus = ""
-        tsbWebsite.Enabled = CurrentPackage.WebURL <> ""
+        tsbWebsite.Enabled = CurrentPackage.URL <> ""
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
         tsbHelp.Enabled = CurrentPackage.HelpFileOrURL <> ""
 
@@ -572,7 +572,7 @@ Public Class AppsForm
     End Sub
 
     Private Sub tsbWebsite_Click(sender As Object, e As EventArgs) Handles tsbWebsite.Click
-        g.ShellExecute(CurrentPackage.WebURL)
+        g.ShellExecute(CurrentPackage.URL)
     End Sub
 
     Private Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click

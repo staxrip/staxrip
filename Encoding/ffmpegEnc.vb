@@ -1,4 +1,6 @@
-﻿Imports System.Text
+﻿
+Imports System.Text
+
 Imports StaxRip.UI
 Imports StaxRip.CommandLine
 
@@ -36,11 +38,11 @@ Public Class ffmpegEnc
     End Property
 
     Overrides Sub ShowConfigDialog()
-        Dim newParams As New EncoderParams
+        Dim newParams = New EncoderParams
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
         newParams.Init(store)
 
-        Using f As New CommandLineForm(newParams)
+        Using form As New CommandLineForm(newParams)
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of ffmpegEnc)(Me)
                                         Dim params2 As New EncoderParams
@@ -51,10 +53,25 @@ Public Class ffmpegEnc
                                         SaveProfile(enc)
                                     End Sub
 
-            f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
-            f.cms.Items.Add(New ActionMenuItem("Codec Help", Sub() g.ShowCode(newParams.Codec.OptionText + " Help", ProcessHelp.GetConsoleOutput(Package.ffmpeg.Path, "-hide_banner -h encoder=" + newParams.Codec.ValueText))))
+            form.cms.Add("Save Profile...", saveProfileAction)
+            AddHandler form.BeforeHelp, Sub()
+                                            Dim codec = newParams.Codec.ValueText
+                                            Dim codecHelp = ProcessHelp.GetConsoleOutput(Package.ffmpeg.Path, "-hide_banner -h encoder=" + codec)
+                                            Dim helpDic As New Dictionary(Of String, String) From {
+                                                {"x264", "H.264"},
+                                                {"x265", "H.265"}
+                                            }
 
-            If f.ShowDialog() = DialogResult.OK Then
+                                            form.HTMLHelp = ""
+
+                                            If helpDic.ContainsKey(codec) Then
+                                                form.HTMLHelp += $"<p><a href=""https://trac.ffmpeg.org/wiki/Encode/{helpDic(codec)}"">{codec} online help</a></p>"
+                                            End If
+
+                                            form.HTMLHelp = $"<pre>{HelpDocument.ConvertChars(codecHelp)}</pre>"
+                                        End Sub
+
+            If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
@@ -197,13 +214,17 @@ Public Class ffmpegEnc
             End Get
         End Property
 
-        Overloads Overrides Function GetCommandLine(includePaths As Boolean,
-                                                    includeExecutable As Boolean,
-                                                    Optional pass As Integer = 1) As String
+        Overloads Overrides Function GetCommandLine(
+            includePaths As Boolean,
+            includeExecutable As Boolean,
+            Optional pass As Integer = 1) As String
+
             Dim sourcePath = p.Script.Path
             Dim ret As String
 
-            If includePaths AndAlso includeExecutable Then ret = Package.ffmpeg.Path.Escape
+            If includePaths AndAlso includeExecutable Then
+                ret = Package.ffmpeg.Path.Escape
+            End If
 
             Select Case Decoder.ValueText
                 Case "qsv"
@@ -217,11 +238,23 @@ Public Class ffmpegEnc
                     ret += " -hwaccel cuvid"
             End Select
 
-            If sourcePath.Ext = "vpy" Then ret += " -f vapoursynth"
-            If includePaths Then ret += " -i " + sourcePath.Escape
+            If sourcePath.Ext = "vpy" Then
+                ret += " -f vapoursynth"
+            End If
+
+            If includePaths Then
+                ret += " -i " + sourcePath.Escape
+            End If
+
             Dim items = From i In Me.Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
-            If items.Count > 0 Then ret += " " + items.Select(Function(item) item.GetArgs).Join(" ")
-            If Calc.IsARSignalingRequired Then ret += " -aspect " + Calc.GetTargetDAR.ToInvariantString.Shorten(8)
+
+            If items.Count > 0 Then
+                ret += " " + items.Select(Function(item) item.GetArgs).Join(" ")
+            End If
+
+            If Calc.IsARSignalingRequired Then
+                ret += " -aspect " + Calc.GetTargetDAR.ToInvariantString.Shorten(8)
+            End If
 
             Select Case Mode.Value
                 Case EncodingMode.TwoPass
@@ -247,13 +280,21 @@ Public Class ffmpegEnc
                 targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).Escape
             End If
 
-            If includePaths Then ret += " -an -y -hide_banner " + targetPath
+            If includePaths Then
+                ret += " -an -y -hide_banner " + targetPath
+            End If
+
             Return ret.Trim
         End Function
 
         Function IsCustom(switch As String) As Boolean
-            If switch = "" Then Return False
-            If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then Return True
+            If switch = "" Then
+                Return False
+            End If
+
+            If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then
+                Return True
+            End If
         End Function
 
         Public Overrides Function GetPackage() As Package

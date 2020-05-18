@@ -13,13 +13,19 @@ Commands can be used in:
 Main Menu
 ---------
 
-The main menu can be customized at: ``Main Menu > Tools > Edit Menu``.
+The main menu can be customized at:
+
+``Main Menu > Tools > Edit Menu``.
 
 
 Event Command
 -------------
 
-The Event Command feature allows to define a command to be executed on a defined event under defined conditions. Find it at: ``Main Menu > Tools > Advanced > Event Command``
+The Event Command feature allows to define a command to be executed on a defined event under defined conditions.
+
+Find it at:
+
+``Main Menu > Tools > Advanced > Event Command``
 
 
 Available Commands

@@ -24,6 +24,7 @@ Feature Highlights
 - Cut/Trim feature, for MKV output no re-encoding is required
 - High DPI scaling
 - Portable, nothing has to be installed
+- Parallel Job processing, parallel audio video processing, parallel junk encoding for x265
 
 
 Download

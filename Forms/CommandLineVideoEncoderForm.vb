@@ -158,7 +158,7 @@ Public Class CommandLineVideoEncoderForm
         Me.KeyPreview = True
         Me.Location = New System.Drawing.Point(0, 0)
         Me.Name = "CommandLineEncoderForm"
-        Me.Text = "Command Line Encoder"
+        Me.Text = "Command Line Video Encoder"
         Me.tlp.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -201,9 +201,9 @@ Public Class CommandLineVideoEncoderForm
     Private Sub CommandLineVideoEncoderForm_HelpRequested() Handles Me.HelpRequested
         Dim form As New HelpForm
         form.Doc.WriteStart(Text)
-        form.Doc.Write("The command line encoder executes command lines.")
+        form.Doc.WriteParagraph("Each line is executed separately. Global macros are passed to the process as environment variables.")
         form.Doc.WriteTips(TipProvider.GetTips, EncodingCliControl.TipProvider.GetTips)
-        form.Doc.WriteTable("Macros", Macro.GetTips())
+        form.Doc.WriteTable("Macros", Macro.GetTips(False, True, False))
         form.Show()
     End Sub
 

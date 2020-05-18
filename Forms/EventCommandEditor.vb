@@ -384,7 +384,7 @@ Public Class EventCommandEditor
 
         Dim allCriteria As New List(Of Criteria)
 
-        For Each m In Macro.GetMacros()
+        For Each m In Macro.GetMacros(False, False, False)
             Dim c = Criteria.Create(m.Type)
             c.Name = m.FriendlyName
             c.Description = m.Description

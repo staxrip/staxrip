@@ -5641,7 +5641,13 @@ Public Class MainForm
             End If
         End If
 
-        m.Add("Open", a, "Change the audio source file.").SetImage(Symbol.OpenFile)
+        Dim moreFilesAction = Sub()
+                                  s.Storage.SetInt("last selected muxer tab", 1)
+                                  p.VideoEncoder.OpenMuxerConfigDialog()
+                              End Sub
+
+        m.Add("Open File", a, "Change the audio source file.").SetImage(Symbol.OpenFile)
+        m.Add("Add more files...", moreFilesAction, exist)
         m.Add("Play", Sub() g.PlayAudio(ap), exist, "Plays the audio source file with a media player.").SetImage(Symbol.Play)
         m.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), exist, "Show MediaInfo for the audio source file.").SetImage(Symbol.Info)
         m.Add("Explore", Sub() g.SelectFileWithExplorer(ap.File), exist, "Open the audio source file directory with File Explorer.").SetImage(Symbol.FileExplorer)

@@ -1,4 +1,5 @@
-﻿Imports StaxRip.UI
+﻿
+Imports StaxRip.UI
 
 Public Class x264Control
     Inherits UserControl
@@ -137,7 +138,9 @@ Public Class x264Control
     Protected Overrides Sub OnLayout(e As LayoutEventArgs)
         MyBase.OnLayout(e)
 
-        If lv.Columns.Count = 0 Then lv.Columns.AddRange({New ColumnHeader, New ColumnHeader})
+        If lv.Columns.Count = 0 Then
+            lv.Columns.AddRange({New ColumnHeader, New ColumnHeader})
+        End If
 
         lv.Columns(0).Width = CInt(Width * (32 / 100))
         lv.Columns(1).Width = CInt(Width * (66 / 100))

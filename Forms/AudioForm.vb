@@ -964,7 +964,9 @@ Public Class AudioForm
         ui.Store = TempProfile.Params
         ui.Host.Controls.Clear()
 
-        If Not ui.ActivePage Is Nothing Then DirectCast(ui.ActivePage, Control).Dispose()
+        If Not ui.ActivePage Is Nothing Then
+            DirectCast(ui.ActivePage, Control).Dispose()
+        End If
 
         Dim page = ui.CreateFlowPage()
         page.SuspendLayout()
@@ -1021,6 +1023,17 @@ Public Class AudioForm
                             mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.RateMode = value
                         End If
                 End Select
+
+                If (TempProfile.File = "" OrElse TempProfile.File.ToLower.Contains("dts") OrElse
+                        (Not TempProfile.Stream Is Nothing AndAlso
+                        TempProfile.Stream.Name.Contains("DTS"))) AndAlso
+                        TempProfile.Params.Codec = AudioCodec.DTS Then
+
+                    cb = ui.AddBool(page)
+                    cb.Text = "Extract DTS core"
+                    cb.Checked = TempProfile.Params.ffExtractDtsCore
+                    cb.SaveAction = Sub(value) TempProfile.Params.ffExtractDtsCore = value
+                End If
             Case GuiAudioEncoder.fdkaac
                 Dim getHelpAction = Function(switch As String) Sub() g.ShowCommandLineHelp(Package.fdkaac, switch)
 

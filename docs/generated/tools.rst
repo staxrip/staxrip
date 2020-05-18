@@ -166,9 +166,9 @@ http://github.com/rigaya/VCEEnc
 vspipe
 ~~~~~~
 
-vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.
+vspipe is part of VapourSynth and used to pipe VapourSynth scripts to encoding apps.
 
-
+http://www.vapoursynth.com
 
 
 x264

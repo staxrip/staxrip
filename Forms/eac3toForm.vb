@@ -1,3 +1,4 @@
+
 Imports System.ComponentModel
 Imports System.Globalization
 Imports System.Text.RegularExpressions
@@ -652,7 +653,7 @@ Public Class eac3toForm
     Sub ShowAudioStreamProfilesHelp()
         Dim f As New HelpForm
         f.Doc.WriteStart("Audio Stream Profiles")
-        f.Doc.Write("Allows to automatically apply default values for audio streams.")
+        f.Doc.WriteParagraph("Allows to automatically apply default values for audio streams.")
         f.Doc.WriteTable({New StringPair("Match All", "space separated, if all match then the Output Format and Options are applied"),
                           New StringPair("Output Format", "applied to the stream if Match All succeeds"),
                           New StringPair("Options", "applied to the stream if Match All succeeds")})
@@ -907,7 +908,7 @@ Public Class eac3toForm
         End If
     End Sub
 
-    Private Sub AddCmdlControl_PresetsChanged(presets As String) Handles cmdlOptions.PresetsChanged
+    Sub AddCmdlControl_PresetsChanged(presets As String) Handles cmdlOptions.PresetsChanged
         cmdlOptions.Presets = presets
     End Sub
 
@@ -954,18 +955,21 @@ Public Class eac3toForm
         Return r + " -progressnumbers"
     End Function
 
-    Private Sub bnBrowse_Click() Handles bnBrowse.Click
-        Using d As New FolderBrowserDialog
-            d.SetSelectedPath(teTempDir.Text)
-            If d.ShowDialog = DialogResult.OK Then teTempDir.Text = d.SelectedPath
+    Sub bnBrowse_Click() Handles bnBrowse.Click
+        Using dialog As New FolderBrowserDialog
+            dialog.SetSelectedPath(teTempDir.Text)
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                teTempDir.Text = dialog.SelectedPath
+            End If
         End Using
     End Sub
 
-    Private Sub lvSubtitles_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lvSubtitles.ItemCheck
+    Sub lvSubtitles_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lvSubtitles.ItemCheck
         DirectCast(lvSubtitles.Items(e.Index).Tag, M2TSStream).Checked = e.NewValue = CheckState.Checked
     End Sub
 
-    Private Sub cbVideoStream_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbVideoStream.SelectedIndexChanged
+    Sub cbVideoStream_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbVideoStream.SelectedIndexChanged
         cbVideoOutput.Items.Clear()
         cbVideoOutput.Items.Add("Nothing")
         cbVideoOutput.Enabled = True
@@ -990,7 +994,7 @@ Public Class eac3toForm
         End Select
     End Sub
 
-    Private Sub cbAudioOutput_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbAudioOutput.SelectedIndexChanged
+    Sub cbAudioOutput_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbAudioOutput.SelectedIndexChanged
         If Not cbAudioOutput.SelectedItem Is Nothing AndAlso Not GetSelectedStream() Is Nothing Then
             Dim ms = GetSelectedStream()
             ms.OutputType = cbAudioOutput.SelectedItem.ToString
@@ -1012,7 +1016,7 @@ Public Class eac3toForm
         End If
     End Sub
 
-    Private Sub cmdlOptions_ValueChanged(value As String) Handles cmdlOptions.ValueChanged
+    Sub cmdlOptions_ValueChanged(value As String) Handles cmdlOptions.ValueChanged
         If cmdlOptions.tb.Focused OrElse cmdlOptions.bn.Focused Then
             Dim ms = GetSelectedStream()
 
@@ -1036,7 +1040,7 @@ Public Class eac3toForm
         End If
     End Sub
 
-    Private Sub lvAudio_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lvAudio.ItemCheck
+    Sub lvAudio_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lvAudio.ItemCheck
         DirectCast(lvAudio.Items(e.Index).Tag, M2TSStream).Checked = e.NewValue = CheckState.Checked
     End Sub
 
@@ -1044,7 +1048,7 @@ Public Class eac3toForm
         If lvAudio.SelectedItems.Count > 0 Then Return DirectCast(lvAudio.SelectedItems(0).Tag, M2TSStream)
     End Function
 
-    Private Sub lvAudio_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lvAudio.SelectedIndexChanged
+    Sub lvAudio_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lvAudio.SelectedIndexChanged
         Dim ms = GetSelectedStream()
 
         If Not ms Is Nothing Then
@@ -1053,19 +1057,19 @@ Public Class eac3toForm
         End If
     End Sub
 
-    Private Sub bnAudioAll_Click(sender As Object, e As EventArgs) Handles bnAudioAll.Click
+    Sub bnAudioAll_Click(sender As Object, e As EventArgs) Handles bnAudioAll.Click
         For Each i As ListViewItem In lvAudio.Items
             i.Checked = True
         Next
     End Sub
 
-    Private Sub bnAudioNone_Click(sender As Object, e As EventArgs) Handles bnAudioNone.Click
+    Sub bnAudioNone_Click(sender As Object, e As EventArgs) Handles bnAudioNone.Click
         For Each i As ListViewItem In lvAudio.Items
             i.Checked = False
         Next
     End Sub
 
-    Private Sub bnAudioEnglish_Click(sender As Object, e As EventArgs) Handles bnAudioEnglish.Click
+    Sub bnAudioEnglish_Click(sender As Object, e As EventArgs) Handles bnAudioEnglish.Click
         For Each i As ListViewItem In lvAudio.Items
             Dim stream = DirectCast(i.Tag, M2TSStream)
 
@@ -1075,7 +1079,7 @@ Public Class eac3toForm
         Next
     End Sub
 
-    Private Sub bnAudioNative_Click(sender As Object, e As EventArgs) Handles bnAudioNative.Click
+    Sub bnAudioNative_Click(sender As Object, e As EventArgs) Handles bnAudioNative.Click
         For Each i As ListViewItem In lvAudio.Items
             Dim stream = DirectCast(i.Tag, M2TSStream)
 
@@ -1085,19 +1089,19 @@ Public Class eac3toForm
         Next
     End Sub
 
-    Private Sub bnSubtitleAll_Click(sender As Object, e As EventArgs) Handles bnSubtitleAll.Click
+    Sub bnSubtitleAll_Click(sender As Object, e As EventArgs) Handles bnSubtitleAll.Click
         For Each i As ListViewItem In lvSubtitles.Items
             i.Checked = True
         Next
     End Sub
 
-    Private Sub bnSubtitleNone_Click(sender As Object, e As EventArgs) Handles bnSubtitleNone.Click
+    Sub bnSubtitleNone_Click(sender As Object, e As EventArgs) Handles bnSubtitleNone.Click
         For Each i As ListViewItem In lvSubtitles.Items
             i.Checked = False
         Next
     End Sub
 
-    Private Sub bnSubtitleEnglish_Click(sender As Object, e As EventArgs) Handles bnSubtitleEnglish.Click
+    Sub bnSubtitleEnglish_Click(sender As Object, e As EventArgs) Handles bnSubtitleEnglish.Click
         For Each i As ListViewItem In lvSubtitles.Items
             Dim stream = DirectCast(i.Tag, M2TSStream)
 
@@ -1107,7 +1111,7 @@ Public Class eac3toForm
         Next
     End Sub
 
-    Private Sub bnSubtitleNative_Click(sender As Object, e As EventArgs) Handles bnSubtitleNative.Click
+    Sub bnSubtitleNative_Click(sender As Object, e As EventArgs) Handles bnSubtitleNative.Click
         For Each i As ListViewItem In lvSubtitles.Items
             Dim stream = DirectCast(i.Tag, M2TSStream)
 
@@ -1117,7 +1121,7 @@ Public Class eac3toForm
         Next
     End Sub
 
-    Private Sub teTempDir_TextChanged() Handles teTempDir.TextChanged
+    Sub teTempDir_TextChanged() Handles teTempDir.TextChanged
         OutputFolder = teTempDir.Text.FixDir
     End Sub
 
@@ -1136,7 +1140,9 @@ Public Class eac3toForm
 
         s.CmdlPresetsEac3to = cmdlOptions.Presets
 
-        If Not bnOK.Enabled Then e.Cancel = True
+        If Not bnOK.Enabled Then
+            e.Cancel = True
+        End If
 
         If DialogResult = DialogResult.OK Then
             If cbVideoOutput.Text = "MKV" AndAlso Not Package.Haali.VerifyOK(True) Then

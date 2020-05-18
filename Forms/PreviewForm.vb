@@ -648,9 +648,9 @@ Public Class PreviewForm
     Sub OpenHelp()
         Dim form As New HelpForm
         form.Doc.WriteStart("Preview")
-        form.Doc.Write("The preview dialog allows to preview and cut the video. It's possible to open more than one instance of the preview for filter comparisons.")
+        form.Doc.WriteParagraph("The preview dialog allows to preview and cut the video. It's possible to open more than one instance of the preview for filter comparisons.")
         form.Doc.WriteH2("Cutting")
-        form.Doc.Write("Cutting can be achieved by selecting the sections that should be kept. Selected sections appear green in the trackbar. Cutting in muxing mode without video encoding works only with mkv muxer (using the nearest key frames).")
+        form.Doc.WriteParagraph("Cutting can be achieved by selecting the sections that should be kept. Selected sections appear green in the trackbar. Cutting in muxing mode without video encoding works only with mkv muxer (using the nearest key frames).")
         form.Doc.WriteTips(GenericMenu.GetTips)
         form.Doc.WriteTable("Shortcut Keys", GenericMenu.GetKeys, False)
         form.Show()

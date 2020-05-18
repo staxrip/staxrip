@@ -118,6 +118,8 @@ Encoding
 - Video encoder dialogs have a command line preview, this preview has a context
   menu that allows to quickly find GUI options for command line switches
 - Generic audio and video command line based encoder to integrate any encoder that isn't already built-in
+- Parallel audio video encoding
+- Parallel junk encoding for x265
 
 
 Muxing

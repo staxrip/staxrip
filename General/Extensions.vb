@@ -276,7 +276,9 @@ Module StringExtensions
 
     <Extension()>
     Function ContainsAny(instance As String, ParamArray any As String()) As Boolean
-        If instance <> "" Then Return any.Any(Function(arg) instance.Contains(arg))
+        If instance <> "" Then
+            Return any.Any(Function(arg) instance.Contains(arg))
+        End If
     End Function
 
     <Extension()>

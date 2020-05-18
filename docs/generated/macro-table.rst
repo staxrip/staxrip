@@ -2,10 +2,6 @@
     :header: "Name", "Description"
     :widths: auto
 
-    "$browse_file$","Filepath returned from a file browser."
-    "$enter_text$","Text entered in a input box."
-    "$enter_text:prompt$","Text entered in a input box."
-    "$select:param1;param2;...$","String selected from dropdown, to show a optional message the first parameter has to start with msg: and to give the items optional captions use caption|value. Example: $select:msg:hello;caption1|value1;caption2|value2$"
     "%app:name%","Returns the path of a tool, it can be any type of tool found in the Apps dialog. Example: %app:qtgmc%"
     "%app_dir:name%","Returns the directory of a tool, it can be any type of tool found in the Apps dialog. Example: %app_dir:x265%"
     "%audio_bitrate%","Overall audio bitrate."

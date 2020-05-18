@@ -291,9 +291,8 @@ Public MustInherit Class VideoEncoder
 
     Function OpenMuxerProfilesDialog() As DialogResult
         Using form As New ProfilesForm("Muxer Profiles", s.MuxerProfiles,
-                                       AddressOf LoadMuxer,
-                                       AddressOf GetMuxerProfile,
-                                       AddressOf Muxer.GetDefaults)
+            AddressOf LoadMuxer, AddressOf GetMuxerProfile, AddressOf Muxer.GetDefaults)
+
             Return form.ShowDialog()
         End Using
     End Function

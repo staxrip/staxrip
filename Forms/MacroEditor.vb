@@ -141,12 +141,12 @@ Public Class MacroEditorDialog
         ScaleClientSize(45, 35)
     End Sub
 
-    Private Sub UniversalEditor_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
+    Sub UniversalEditor_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
-        form.Doc.Write(HelpText)
+        form.Doc.WriteParagraph(HelpText)
         form.Doc.WriteTips(MacroEditorControl.TipProvider.GetTips)
-        form.Doc.WriteTable("Macros", Macro.GetTips())
+        form.Doc.WriteTable("Macros", Macro.GetTips(False, True, False))
         form.Show()
     End Sub
 

@@ -2,13 +2,17 @@
 2.1.1.4 Beta (not yet available)
 ============
 
-- built-in help uses a dark color theme
-- built-in help improved for video encoder dialogs
-- ffmpeg encoder supports FFV1 codec
-- the x264 and x265 dialog have a new Bitrate option, the default value is 0 which
+- dark color theme for built-in help.
+- improved built-in help for various dialogs.
+- various docs pages improved.
+- ffmpeg video encoder codec FFV1.
+- x264 and x265 dialogs have a new Bitrate option, the default value is 0 which
   means the bitrate of the project/template in the main dialog is used,
-  this behavior is documented in the F1 help of the x264 and x265 dialog
-- for file batch jobs only the file name is shown in the jobs dialog and not the full path
+  this behavior is documented in the F1 help of the x264 and x265 dialog.
+- for file batch jobs only the file name is shown in the jobs dialog and not the full path.
+- audio encoder supports extracting DTS core using ffmpeg, generated name is _Extract DTS Core_.
+- the audio Copy/Mux profile has a _Extract DTS Core_ feature.
+- the command line audio encoder has a Default and Forced option.
 
 
 2.1.1.3 Beta

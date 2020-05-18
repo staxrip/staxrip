@@ -569,7 +569,9 @@ Public Class MuxerForm
         pathColumn.HeaderText = "Track"
         pathColumn.ReadOnly = True
 
-        If dgvAudio.RowCount > 0 Then dgvAudio.Rows(0).Selected = True
+        If dgvAudio.RowCount > 0 Then
+            dgvAudio.Rows(0).Selected = True
+        End If
 
         UpdateControls()
         TipProvider.SetTip("Additional command line switches that may contain macros.", tpCommandLine)
@@ -820,9 +822,9 @@ Public Class MuxerForm
     Private Sub MuxerForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
-        form.Doc.Write(Strings.Muxer)
+        form.Doc.WriteParagraph(Strings.Muxer)
         form.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
-        form.Doc.WriteTable("Macros", Macro.GetTips())
+        form.Doc.WriteTable("Macros", Macro.GetTips(False, True, False))
         form.Show()
     End Sub
 

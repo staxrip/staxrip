@@ -16,6 +16,7 @@ Public MustInherit Class AudioProfile
     Property Streams As List(Of AudioStream) = New List(Of AudioStream)
     Property [Default] As Boolean
     Property Forced As Boolean
+    Property ExtractDTSCore As Boolean
     Property Decoder As AudioDecoderMode
     Property DecodingMode As AudioDecodingMode
 
@@ -486,7 +487,9 @@ Public Class MuxAudioProfile
     End Sub
 
     Private Overloads Function Edit(showProjectSettings As Boolean) As DialogResult
-        Using form As New SimpleSettingsForm("Audio Mux Options", "The Audio Mux options allow to add a audio file without reencoding.")
+        Using form As New SimpleSettingsForm("Audio Mux Options",
+            "The Audio Mux options allow to add a audio file without reencoding.")
+
             form.ScaleClientSize(30, 15)
 
             Dim ui = form.SimpleUI
@@ -534,6 +537,12 @@ Public Class MuxAudioProfile
             cb.Help = "Flaged as forced in MKV."
             cb.Checked = Forced
             cb.SaveAction = Sub(value) Forced = value
+
+            cb = ui.AddBool(page)
+            cb.Text = "Extract DTS Core"
+            cb.Help = "Only include DTS core using mkvmerge."
+            cb.Checked = ExtractDTSCore
+            cb.SaveAction = Sub(value) ExtractDTSCore = value
 
             page.ResumeLayout()
 
@@ -706,12 +715,18 @@ Public Class GUIAudioProfile
     End Sub
 
     Sub NormalizeFF()
-        If Not Params.Normalize OrElse Not {ffNormalizeMode.loudnorm, ffNormalizeMode.volumedetect}.Contains(Params.ffNormalizeMode) Then
+        If Not Params.Normalize OrElse ExtractCore OrElse
+            Not {ffNormalizeMode.loudnorm, ffNormalizeMode.volumedetect}.Contains(Params.ffNormalizeMode) Then
+
             Exit Sub
         End If
 
         Dim args = "-i " + File.Escape
-        If Not Stream Is Nothing AndAlso Streams.Count > 1 Then args += " -map 0:a:" & Stream.Index
+
+        If Not Stream Is Nothing AndAlso Streams.Count > 1 Then
+            args += " -map 0:a:" & Stream.Index
+        End If
+
         args += " -sn -vn -hide_banner"
 
         If Params.ffNormalizeMode = ffNormalizeMode.volumedetect Then
@@ -959,7 +974,11 @@ Public Class GUIAudioProfile
 
                 ret += " -b:a " & CInt(Bitrate) & "k"
             Case AudioCodec.DTS
-                ret += " -strict -2 -b:a " & CInt(Bitrate) & "k"
+                If Params.ffExtractDtsCore Then
+                    ret += " -bsf:a dca_core -c:a copy"
+                Else
+                    ret += " -strict -2 -b:a " & CInt(Bitrate) & "k"
+                End If
             Case AudioCodec.Vorbis
                 If Not Params.CustomSwitches.Contains("-c:a ") Then ret += " -c:a libvorbis"
 
@@ -992,7 +1011,9 @@ Public Class GUIAudioProfile
                 End If
         End Select
 
-        If Gain <> 0 Then ret += " -af volume=" + Gain.ToInvariantString + "dB"
+        If Gain <> 0 Then
+            ret += " -af volume=" + Gain.ToInvariantString + "dB"
+        End If
 
         If Params.Normalize Then
             If Params.ffNormalizeMode = ffNormalizeMode.loudnorm Then
@@ -1007,8 +1028,13 @@ Public Class GUIAudioProfile
             ret += " -ac " & Channels
         End If
 
-        If Params.SamplingRate <> 0 Then ret += " -ar " & Params.SamplingRate
-        If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
+        If Params.SamplingRate <> 0 Then
+            ret += " -ar " & Params.SamplingRate
+        End If
+
+        If Params.CustomSwitches <> "" Then
+            ret += " " + Params.CustomSwitches
+        End If
 
         If includePaths AndAlso File <> "" Then
             ret += " -y -hide_banner"
@@ -1024,7 +1050,10 @@ Public Class GUIAudioProfile
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            If Params Is Nothing Then Exit Property
+            If Params Is Nothing Then
+                Exit Property
+            End If
+
             Dim ch As String
 
             Select Case Params.ChannelsMode
@@ -1043,7 +1072,24 @@ Public Class GUIAudioProfile
             Dim circa = If(Params.RateMode = AudioRateMode.VBR OrElse Params.Codec = AudioCodec.FLAC, "~", "")
             Dim bitrate = If(Params.RateMode = AudioRateMode.VBR, GetBitrate(), Me.Bitrate)
 
-            Return Params.Codec.ToString + ch & " " & circa & bitrate & " Kbps"
+            If ExtractCore Then
+                Return "Extract DTS Core"
+            Else
+                Return Params.Codec.ToString + ch & " " & circa & bitrate & " Kbps"
+            End If
+        End Get
+    End Property
+
+    ReadOnly Property ExtractCore As Boolean
+        Get
+            Dim enc = GetEncoder()
+
+            If Params.Codec = AudioCodec.DTS AndAlso
+                ((enc = GuiAudioEncoder.Eac3to AndAlso Params.eac3toExtractDtsCore) OrElse
+                 (enc = GuiAudioEncoder.ffmpeg AndAlso Params.ffExtractDtsCore)) Then
+
+                Return True
+            End If
         End Get
     End Property
 
@@ -1156,6 +1202,8 @@ Public Class GUIAudioProfile
         Property fdkaacMoovBeforeMdat As Boolean
 
         Property ffNormalizeMode As ffNormalizeMode
+        Property ffExtractDtsCore As Boolean
+
         Property ffmpegLoudnormIntegrated As Double = -24
         Property ffmpegLoudnormLRA As Double = 7
         Property ffmpegLoudnormTruePeak As Double = -2

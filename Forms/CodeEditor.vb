@@ -166,10 +166,10 @@ Public Class CodeEditor
         Next
     End Sub
 
-    Private Sub CodeEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+    Sub CodeEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
-        form.Doc.WriteTable("Macros", Macro.GetTips())
+        form.Doc.WriteTable("Macros", Macro.GetTips(False, True, False))
         form.Show()
     End Sub
 

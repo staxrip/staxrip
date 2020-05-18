@@ -85,7 +85,7 @@ Public Class HelpForm
         form.Doc.WriteStart(heading)
 
         If Not summary Is Nothing Then
-            form.Doc.Write(summary)
+            form.Doc.WriteParagraph(summary)
         End If
 
         form.Doc.WriteTips(tips)

@@ -408,45 +408,45 @@ Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$"
 
     Shared Function GetDefaultEac3toMenu() As String
         Return _
-"AAC 96 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.3" + BR +
-"AAC 132 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.4" + BR +
-"AAC 240 Kbps 5.1ch - Normalize - 16bit = -down16 -down6 -normalize -quality=0.3" + BR +
-"Normalize = -normalize" + BR +
-"Convert to 16 bit = -down16" + BR +
-"Extract DTS Core = -core" + BR +
-"Downmix | Multichannel to stereo = -downStereo" + BR +
-"Downmix | Multichannel to stereo (DPL II) = -downDpl" + BR +
-"Downmix | 7 or 8 channels to 6 channels = -down6" + BR +
-"Downmix | Mix LFE in (stereo downmixing) = -mixlfe" + BR +
-"AAC Quality | 0.10 = -quality=0.10" + BR +
-"AAC Quality | 0.15 = -quality=0.15" + BR +
-"AAC Quality | 0.20 = -quality=0.20" + BR +
-"AAC Quality | 0.25 = -quality=0.25" + BR +
-"AAC Quality | 0.30 = -quality=0.30" + BR +
-"AAC Quality | 0.35 = -quality=0.35" + BR +
-"AAC Quality | 0.40 = -quality=0.40" + BR +
-"AAC Quality | 0.45 = -quality=0.45" + BR +
-"AAC Quality | 0.50 = -quality=0.50" + BR +
-"AAC Quality | 0.55 = -quality=0.55" + BR +
-"AAC Quality | 0.60 = -quality=0.60" + BR +
-"AAC Quality | 0.65 = -quality=0.65" + BR +
-"AAC Quality | 0.70 = -quality=0.70" + BR +
-"AAC Quality | 0.75 = -quality=0.75" + BR +
-"AAC Quality | 0.80 = -quality=0.80" + BR +
-"AAC Quality | 0.85 = -quality=0.85" + BR +
-"AAC Quality | 0.90 = -quality=0.90" + BR +
-"AAC Quality | 0.95 = -quality=0.95" + BR +
-"AC3 Encoding | 192 = -192" + BR +
-"AC3 Encoding | 224 = -224" + BR +
-"AC3 Encoding | 384 = -384" + BR +
-"AC3 Encoding | 448 = -448" + BR +
-"AC3 Encoding | 640 = -640" + BR +
-"DTS Encoding | 768 = -768" + BR +
-"DTS Encoding | 1536 = -1536" + BR +
-"Resample | 44100 = -resampleTo44100" + BR +
-"Resample | 48000 = -resampleTo48000" + BR +
-"Resample | 88200 = -resampleTo88200" + BR +
-"Resample | 96000 = -resampleTo96000"
+            "AAC 96 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.3" + BR +
+            "AAC 132 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.4" + BR +
+            "AAC 240 Kbps 5.1ch - Normalize - 16bit = -down16 -down6 -normalize -quality=0.3" + BR +
+            "Normalize = -normalize" + BR +
+            "Convert to 16 bit = -down16" + BR +
+            "Extract DTS Core = -core" + BR +
+            "Downmix | Multichannel to stereo = -downStereo" + BR +
+            "Downmix | Multichannel to stereo (DPL II) = -downDpl" + BR +
+            "Downmix | 7 or 8 channels to 6 channels = -down6" + BR +
+            "Downmix | Mix LFE in (stereo downmixing) = -mixlfe" + BR +
+            "AAC Quality | 0.10 = -quality=0.10" + BR +
+            "AAC Quality | 0.15 = -quality=0.15" + BR +
+            "AAC Quality | 0.20 = -quality=0.20" + BR +
+            "AAC Quality | 0.25 = -quality=0.25" + BR +
+            "AAC Quality | 0.30 = -quality=0.30" + BR +
+            "AAC Quality | 0.35 = -quality=0.35" + BR +
+            "AAC Quality | 0.40 = -quality=0.40" + BR +
+            "AAC Quality | 0.45 = -quality=0.45" + BR +
+            "AAC Quality | 0.50 = -quality=0.50" + BR +
+            "AAC Quality | 0.55 = -quality=0.55" + BR +
+            "AAC Quality | 0.60 = -quality=0.60" + BR +
+            "AAC Quality | 0.65 = -quality=0.65" + BR +
+            "AAC Quality | 0.70 = -quality=0.70" + BR +
+            "AAC Quality | 0.75 = -quality=0.75" + BR +
+            "AAC Quality | 0.80 = -quality=0.80" + BR +
+            "AAC Quality | 0.85 = -quality=0.85" + BR +
+            "AAC Quality | 0.90 = -quality=0.90" + BR +
+            "AAC Quality | 0.95 = -quality=0.95" + BR +
+            "AC3 Encoding | 192 = -192" + BR +
+            "AC3 Encoding | 224 = -224" + BR +
+            "AC3 Encoding | 384 = -384" + BR +
+            "AC3 Encoding | 448 = -448" + BR +
+            "AC3 Encoding | 640 = -640" + BR +
+            "DTS Encoding | 768 = -768" + BR +
+            "DTS Encoding | 1536 = -1536" + BR +
+            "Resample | 44100 = -resampleTo44100" + BR +
+            "Resample | 48000 = -resampleTo48000" + BR +
+            "Resample | 88200 = -resampleTo88200" + BR +
+            "Resample | 96000 = -resampleTo96000"
     End Function
 
     Sub UpdateRecentProjects(path As String)

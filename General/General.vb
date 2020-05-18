@@ -473,7 +473,7 @@ table {
         End If
     End Sub
 
-    Sub Write(text As String, Optional convert As Boolean = False)
+    Sub WriteParagraph(text As String, Optional convert As Boolean = False)
         If convert Then
             text = ConvertChars(text)
         End If
@@ -593,7 +593,7 @@ table {
 
         For Each i In list
             WriteH3(HelpDocument.ConvertChars(i.Name))
-            Write(HelpDocument.ConvertChars(i.Value))
+            WriteParagraph(HelpDocument.ConvertChars(i.Value))
         Next
     End Sub
 
@@ -641,7 +641,7 @@ table {
         If text Is Nothing Then
             Writer.WriteElementString("p", "")
         Else
-            Write(text, True)
+            WriteParagraph(text, True)
         End If
 
         Writer.WriteStartElement("table")

@@ -1072,9 +1072,9 @@ Namespace UI
         Private Sub CustomMenuEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
             Dim f As New HelpForm()
             f.Doc.WriteStart(Text)
-            f.Doc.Write("The menu editor allows to customize the text, location, shortcut key and command of a menu item. Menu items can be rearranged with '''Drag & Drop'''. Pressing Ctrl while dragging moves as sub-item.")
-            f.Doc.Write("[http://fontawesome.io/cheatsheet FontAwesome icons]")
-            f.Doc.Write("[https://docs.microsoft.com/en-us/windows/uwp/style/segoe-ui-symbol-font Segoe MDL2 icons]")
+            f.Doc.WriteParagraph("The menu editor allows to customize the text, location, shortcut key and command of a menu item. Menu items can be rearranged with '''Drag & Drop'''. Pressing Ctrl while dragging moves as sub-item.")
+            f.Doc.WriteParagraph("[http://fontawesome.io/cheatsheet FontAwesome icons]")
+            f.Doc.WriteParagraph("[https://docs.microsoft.com/en-us/windows/uwp/style/segoe-ui-symbol-font Segoe MDL2 icons]")
             f.Doc.WriteTable("Commands", GenericMenu.CommandManager.GetTips)
             f.Show()
         End Sub

@@ -21,7 +21,7 @@ Supported are three different demuxing modes:
 
 The demuxing mode can be defined in the project options under the Audio and Subtitles tab.
 
-When demuxing is disabled StaxRip will still find and include audio and subtitle tracks directly from the source file using a demux free mode, to prevent this the _Preferred Languages_ option has to be cleared.
+When demuxing is disabled StaxRip will still find and include audio and subtitle tracks directly from the source file using a demux free mode, to prevent this the Preferred Languages option has to be cleared.
 
 Custom preprocessing tools for demuxing, re-muxing or indexing can be integrated and configured via command line to either execute a preprocessing tool like a demuxer directly or with a scripting tool like PowerShell or Python. When a preprocessing command line executes, all console tools are added to the path environment variable and all macros are available as environment variables. Preprocessing can be customized in the Settings dialog under Preprocessing.
 

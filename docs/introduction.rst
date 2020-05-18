@@ -17,7 +17,7 @@ Feature Highlights
 - All popular and modern video encoders like x265 and nvenc are supported
 - Hardware encoding for AMD, Intel and NVIDIA
 - Batch Processing
-- Video editing using AviSynth and VapourSynth
+- Video editing using AviSynth and VapourSynth, direct control of the script and popular filters like QTGMC included
 - Scriptable via PowerShell
 - Minimal user interaction required due to rich configuration and automation features
 - Copy modes for audio and video for plain remuxing

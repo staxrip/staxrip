@@ -1,3 +1,4 @@
+
 Imports System.ComponentModel
 Imports System.Drawing.Design
 
@@ -9,17 +10,17 @@ Namespace UI
 
         Private ToolTip As New ToolTip
         Private TipTitles As New Dictionary(Of Control, String)
-        Private ShortHelp As New Dictionary(Of Control, String)
         Private TipTexts As New Dictionary(Of Control, String)
-        Private CreatedAdded As Boolean
-        Private CleanUpAdded As Boolean
 
         <Browsable(False)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property TipsFunc As Func(Of StringPairList)
 
         Sub New(Optional component As IContainer = Nothing)
-            If Not component Is Nothing Then component.Add(Me)
+            If Not component Is Nothing Then
+                component.Add(Me)
+            End If
+
             ToolTip.AutomaticDelay = 1000
             ToolTip.AutoPopDelay = 10000
             ToolTip.InitialDelay = 1000
@@ -38,9 +39,9 @@ Namespace UI
         <Category("TipProvider")>
         <DefaultValue("")>
         <Editor(GetType(StringEditor), GetType(UITypeEditor))>
-        Function GetTipText(c As Control) As String
-            If TipTexts.ContainsKey(c) Then
-                Return TipTexts(c)
+        Function GetTipText(ctrl As Control) As String
+            If TipTexts.ContainsKey(ctrl) Then
+                Return TipTexts(ctrl)
             End If
 
             Return ""
@@ -51,29 +52,32 @@ Namespace UI
             Init(value, c)
         End Sub
 
-        Sub SetTip(tipText As String,
-                   tipTitle As String,
-                   c As Control)
-
+        Sub SetTip(tipText As String, tipTitle As String, c As Control)
             TipTitles(c) = tipTitle
             SetTipText(c, tipText)
         End Sub
 
         Sub SetTip(tipText As String, ParamArray controls As Control())
-            If tipText = "" Then Exit Sub
+            If tipText = "" Then
+                Exit Sub
+            End If
 
             Dim title As String
 
-            For Each i In controls
-                If TypeOf i Is Label OrElse TypeOf i Is CheckBox Then
-                    title = FormatName(i.Text)
+            For Each ctrl In controls
+                If TypeOf ctrl Is Label OrElse TypeOf ctrl Is CheckBox Then
+                    title = FormatName(ctrl.Text)
                 End If
             Next
 
-            For Each i In controls
-                TipTexts(i) = tipText
-                If title <> "" Then TipTitles(i) = title
-                Init(tipText, i)
+            For Each ctrl In controls
+                TipTexts(ctrl) = tipText
+
+                If title <> "" Then
+                    TipTitles(ctrl) = title
+                End If
+
+                Init(tipText, ctrl)
             Next
         End Sub
 
@@ -92,7 +96,9 @@ Namespace UI
                     tipText = HelpDocument.ConvertMarkup(tipText, True)
                 End If
 
-                If tipText <> "" Then AddHandler control.HandleCreated, Sub() ToolTip.SetToolTip(control, tipText)
+                If tipText <> "" Then
+                    AddHandler control.HandleCreated, Sub() ToolTip.SetToolTip(control, tipText)
+                End If
             End If
         End Sub
 
@@ -104,59 +110,79 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub ShowHelp(c As Control)
-            Dim t = GetTip(c)
-            g.ShowHelp(t.Name, t.Value)
+        Private Sub ShowHelp(ctrl As Control)
+            Dim tip = GetTip(ctrl)
+            g.ShowHelp(tip.Name, tip.Value)
         End Sub
 
-        Private Function GetTip(c As Control) As StringPair
+        Private Function GetTip(ctrl As Control) As StringPair
             Dim ret As New StringPair
-            If TipTitles.ContainsKey(c) Then ret.Name = FormatName(TipTitles(c))
-            If TipTexts.ContainsKey(c) Then ret.Value = TipTexts(c)
+
+            If TipTitles.ContainsKey(ctrl) Then
+                ret.Name = FormatName(TipTitles(ctrl))
+            End If
+
+            If TipTexts.ContainsKey(ctrl) Then
+                ret.Value = TipTexts(ctrl)
+            End If
             Return ret
         End Function
 
-        Private Function HasContextMenu(c As Control) As Boolean
-            If TypeOf c Is TextBox Then Return True
-            If TypeOf c Is RichTextBox Then Return True
-            If TypeOf c Is NumericUpDown Then Return True
+        Private Function HasContextMenu(ctrl As Control) As Boolean
+            If TypeOf ctrl Is TextBox Then Return True
+            If TypeOf ctrl Is RichTextBox Then Return True
+            If TypeOf ctrl Is NumericUpDown Then Return True
 
-            If TypeOf c Is ComboBox AndAlso
-                DirectCast(c, ComboBox).DropDownStyle = ComboBoxStyle.DropDown Then
+            If TypeOf ctrl Is ComboBox AndAlso
+                DirectCast(ctrl, ComboBox).DropDownStyle = ComboBoxStyle.DropDown Then
 
                 Return True
             End If
 
-            If Not c.ContextMenuStrip Is Nothing Then Return True
+            If Not ctrl.ContextMenuStrip Is Nothing Then
+                Return True
+            End If
         End Function
 
         Private Function FormatName(value As String) As String
-            If value.Contains(" ") Then value = value.Trim
-            If value.Contains("&") AndAlso Not value.Contains(" & ") Then value = value.Replace("&", "")
-            If value.EndsWith("...") Then value = value.TrimEnd("."c)
-            If value.EndsWith(":") Then value = value.TrimEnd(":"c)
+            If value.Contains(" ") Then
+                value = value.Trim
+            End If
+
+            If value.Contains("&") AndAlso Not value.Contains(" & ") Then
+                value = value.Replace("&", "")
+            End If
+
+            If value.EndsWith("...") Then
+                value = value.TrimEnd("."c)
+            End If
+
+            If value.EndsWith(":") Then
+                value = value.TrimEnd(":"c)
+            End If
+
             Return value
         End Function
 
         Function GetTips() As StringPairList
             Dim ret As New StringPairList
-            Dim temp As New List(Of String) 'to ignore double tips
+            Dim temp As New List(Of String)
 
-            For Each i In TipTexts.Keys
-                If Not i.IsDisposed Then 'controls in background tabs are not visible!
-                    Dim t As New StringPair
-                    t.Value = TipTexts(i)
+            For Each ctrl In TipTexts.Keys
+                If Not ctrl.IsDisposed AndAlso ctrl.Visible Then
+                    Dim pair As New StringPair
+                    pair.Value = TipTexts(ctrl)
 
-                    If TipTitles.ContainsKey(i) Then
-                        t.Name = FormatName(TipTitles(i))
+                    If TipTitles.ContainsKey(ctrl) Then
+                        pair.Name = FormatName(TipTitles(ctrl))
                     Else
-                        t.Name = FormatName(i.Text)
+                        pair.Name = FormatName(ctrl.Text)
                     End If
 
-                    If Not temp.Contains(t.Name) Then
-                        temp.Add(t.Name)
-                        t.Name = FormatName(t.Name)
-                        ret.Add(t)
+                    If Not temp.Contains(pair.Name) Then
+                        temp.Add(pair.Name)
+                        pair.Name = FormatName(pair.Name)
+                        ret.Add(pair)
                     End If
                 End If
             Next

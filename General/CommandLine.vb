@@ -256,11 +256,15 @@ Namespace CommandLine
 
         Property Config As Double() 'min, max, step, decimal places
             Get
-                If ConfigValue Is Nothing Then Return {Double.MinValue, Double.MaxValue, 1, 0}
+                If ConfigValue Is Nothing Then
+                    Return {Double.MinValue, Double.MaxValue, 1, 0}
+                End If
+
                 Return ConfigValue
             End Get
             Set(value As Double())
                 ConfigValue = {value(0), value(1), 1, 0}
+
                 If value.Length > 2 Then ConfigValue(2) = value(2)
                 If value.Length > 3 Then ConfigValue(3) = value(3)
 

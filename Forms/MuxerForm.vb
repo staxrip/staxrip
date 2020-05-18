@@ -820,7 +820,7 @@ Public Class MuxerForm
     Private Sub MuxerForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
-        form.Doc.WriteP(Strings.Muxer)
+        form.Doc.Write(Strings.Muxer)
         form.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
         form.Doc.WriteTable("Macros", Macro.GetTips())
         form.Show()

@@ -352,7 +352,10 @@ Public Class SimpleUI
         End Sub
 
         Protected Overrides Sub OnCreateControl()
-            If AutoSuspend Then ResumeLayout()
+            If AutoSuspend Then
+                ResumeLayout()
+            End If
+
             MyBase.OnCreateControl()
         End Sub
     End Class

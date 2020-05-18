@@ -37,8 +37,9 @@ Public Class NVEnc
         newParams.Init(store)
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelp = $"<p><a href=""{Package.NVEnc.HelpURL}"">NVEnc online help</a></p>" +
-                $"<pre>{HelpDocument.ConvertChars(Package.NVEnc.CreateHelpfile())}</pre>"
+            form.HTMLHelp = "<h2>NVEnc Help</h2>" + "<p>Right-clicking a option shows the local console help for the option.</p>" +
+                           $"<h2>NVEnc Online Help</h2><p><a href=""{Package.NVEnc.HelpURL}"">NVEnc Online Help</a></p>" +
+                           $"<h2>NVEnc Console Help</h2><pre>{HelpDocument.ConvertChars(Package.NVEnc.CreateHelpfile())}</pre>"
 
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of NVEnc)(Me)

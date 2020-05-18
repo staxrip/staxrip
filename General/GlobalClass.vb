@@ -87,17 +87,17 @@ Public Class GlobalClass
     End Function
 
     Sub ProcessJobs()
-        Dim jobs = Job.ActiveJobs
+        Dim jobs = JobManager.ActiveJobs
 
         If jobs.Count = 0 Then
             Exit Sub
         End If
 
         g.IsProcessing = True
-        Dim jobPath = jobs(0).Key
+        Dim jobPath = jobs(0).Path
 
         Try
-            Job.ActivateJob(jobPath, False)
+            JobManager.ActivateJob(jobPath, False)
             g.MainForm.OpenProject(jobPath, False)
 
             If s.PreventStandby Then
@@ -105,12 +105,12 @@ Public Class GlobalClass
             End If
 
             ProcessJob(jobPath)
-            jobs = Job.GetJobs
+            jobs = JobManager.GetJobs
 
             If jobs.Count = 0 Then
                 g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
                 g.ShutdownPC()
-            ElseIf Job.ActiveJobs.Count = 0 Then
+            ElseIf JobManager.ActiveJobs.Count = 0 Then
                 If Process.GetProcessesByName("StaxRip").Count = 1 Then
                     g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
                     g.ShutdownPC()
@@ -241,7 +241,7 @@ Public Class GlobalClass
             g.ArchiveLogFile(Log.GetPath)
             g.DeleteTempFiles()
             g.RaiseAppEvent(ApplicationEvent.JobProcessed)
-            Job.RemoveJob(jobPath)
+            JobManager.RemoveJob(jobPath)
 
             If jobPath.StartsWith(Folder.Settings + "Batch Projects\") Then
                 File.Delete(jobPath)
@@ -262,7 +262,7 @@ Public Class GlobalClass
     Sub DeleteTempFiles()
         If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then
             Try
-                Dim moreJobsToProcessInTempDir = Job.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
+                Dim moreJobsToProcessInTempDir = JobManager.GetJobs.Where(Function(a) a.Active AndAlso a.Path.Contains(p.TempDir))
 
                 If moreJobsToProcessInTempDir.Count = 0 Then
                     If s.DeleteTempFilesMode = DeleteMode.RecycleBin Then

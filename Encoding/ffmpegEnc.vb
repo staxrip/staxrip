@@ -1,7 +1,6 @@
 ﻿
 Imports System.Text
 
-Imports StaxRip.UI
 Imports StaxRip.CommandLine
 
 <Serializable()>
@@ -55,20 +54,29 @@ Public Class ffmpegEnc
 
             form.cms.Add("Save Profile...", saveProfileAction)
             AddHandler form.BeforeHelp, Sub()
-                                            Dim codec = newParams.Codec.ValueText
-                                            Dim codecHelp = ProcessHelp.GetConsoleOutput(Package.ffmpeg.Path, "-hide_banner -h encoder=" + codec)
+                                            Dim codecText = newParams.Codec.OptionText
+                                            Dim consoleHelp = ProcessHelp.GetConsoleOutput(Package.ffmpeg.Path, "-hide_banner -h encoder=" + newParams.Codec.ValueText)
                                             Dim helpDic As New Dictionary(Of String, String) From {
-                                                {"x264", "H.264"},
-                                                {"x265", "H.265"}
+                                                {"x264", "https://trac.ffmpeg.org/wiki/Encode/H.264"},
+                                                {"x265", "https://trac.ffmpeg.org/wiki/Encode/H.265"},
+                                                {"XviD", "https://trac.ffmpeg.org/wiki/Encode/MPEG-4"},
+                                                {"VP9", "https://trac.ffmpeg.org/wiki/Encode/VP9"},
+                                                {"FFV1", "https://trac.ffmpeg.org/wiki/Encode/FFV1"},
+                                                {"Intel H.264", "https://trac.ffmpeg.org/wiki/Hardware/QuickSync"},
+                                                {"Intel H.265", "https://trac.ffmpeg.org/wiki/Hardware/QuickSync"},
+                                                {"AV1", "https://trac.ffmpeg.org/wiki/Encode/AV1"}
                                             }
 
-                                            form.HTMLHelp = ""
+                                            form.HTMLHelp = $"<h2>ffmpeg Online Help</h2>" +
+                                                "<p><a href=""{Package.ffmpeg.HelpURL}"">ffmpeg Online Help</a></p>"
 
-                                            If helpDic.ContainsKey(codec) Then
-                                                form.HTMLHelp += $"<p><a href=""https://trac.ffmpeg.org/wiki/Encode/{helpDic(codec)}"">{codec} online help</a></p>"
+                                            If helpDic.ContainsKey(codecText) Then
+                                                form.HTMLHelp += $"<h2>ffmpeg {codecText} Online Help</h2>" +
+                                                    $"<p><a href=""{helpDic(codecText)}"">ffmpeg {codecText} Online Help</a></p>"
                                             End If
 
-                                            form.HTMLHelp = $"<pre>{HelpDocument.ConvertChars(codecHelp)}</pre>"
+                                            form.HTMLHelp += $"<h2>ffmpeg {codecText} Console Help</h2>" +
+                                                $"<pre>{HelpDocument.ConvertChars(consoleHelp) + BR}</pre>"
                                         End Sub
 
             If form.ShowDialog() = DialogResult.OK Then
@@ -82,7 +90,7 @@ Public Class ffmpegEnc
     Overrides ReadOnly Property OutputExt() As String
         Get
             Select Case Params.Codec.OptionText
-                Case "Xvid", "MPEG-4", "UT Video"
+                Case "Xvid", "MPEG-4", "UT Video", "FFV1"
                     Return "avi"
                 Case "ProRes"
                     Return "mov"
@@ -159,22 +167,24 @@ Public Class ffmpegEnc
             .Switch = "-c:v",
             .Text = "Codec",
             .AlwaysOn = True,
-            .Options = {"x264", "x265", "AV1", "XviD", "MPEG-4", "Theora", "ProRes", "UT Video",
-                        "VP | VP8", "VP | VP9", "Intel | Intel H.264", "Intel | Intel H.265",
+            .Options = {"x264", "x265", "AV1", "XviD", "MPEG-4", "Theora", "ProRes",
+                        "UT Video", "FFV1", "VP | VP8", "VP | VP9",
+                        "Intel | Intel H.264", "Intel | Intel H.265",
                         "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265"},
-            .Values = {"libx264", "libx265", "libaom-av1", "libxvid", "mpeg4", "libtheora", "prores", "utvideo",
-                       "libvpx", "libvpx-vp9", "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
+            .Values = {"libx264", "libx265", "libaom-av1", "libxvid", "mpeg4", "libtheora", "prores",
+                       "utvideo", "ffv1", "libvpx", "libvpx-vp9",
+                       "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
 
         Property Mode As New OptionParam With {
             .Name = "Mode",
             .Text = "Mode",
-            .VisibleFunc = Function() Not Codec.ValueText.EqualsAny("prores", "utvideo"),
+            .VisibleFunc = Function() Not Codec.ValueText.EqualsAny("prores", "utvideo", "ffv1"),
             .Options = {"Quality", "One Pass", "Two Pass"}}
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
-            .Options = {"AviSynth/VapourSynth", "Intel", "DXVA2", "Nvidia"},
-            .Values = {"avs", "qsv", "dxva2", "cuvid"}}
+            .Options = {"AviSynth/VapourSynth", "Software", "Intel", "DXVA2", "Nvidia"},
+            .Values = {"-", "sw", "qsv", "dxva2", "cuvid"}}
 
         Property Custom As New StringParam With {
             .Text = "Custom",
@@ -199,7 +209,7 @@ Public Class ffmpegEnc
                         New OptionParam With {.Name = "h264_nvenc rc", .Switch = "-rc", .Text = "Rate Control", .Options = {"Preset", "Constqp", "VBR", "CBR", "VBR_MinQP", "LL_2Pass_Quality", "LL_2Pass_Size", "VBR_2Pass"}, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
                         New OptionParam With {.Name = "utVideoPred", .Switch = "-pred", .Text = "Prediction", .Init = 3, .Options = {"None", "Left", "Gradient", "Median"}, .VisibleFunc = Function() Codec.ValueText = "utvideo"},
                         New OptionParam With {.Name = "utVideoPixFmt", .Switch = "-pix_fmt", .Text = "Pixel Format", .Options = {"YUV420P", "YUV422P", "YUV444P", "RGB24", "RGBA"}, .VisibleFunc = Function() Codec.ValueText = "utvideo"},
-                        New NumParam With {.Name = "Quality", .Text = "Quality", .Init = -1, .VisibleFunc = Function() Mode.Value = EncodingMode.Quality AndAlso Not Codec.ValueText.EqualsAny("prores", "utvideo"), .ArgsFunc = AddressOf GetQualityArgs, .Config = {-1, 63}},
+                        New NumParam With {.Name = "Quality", .Text = "Quality", .Init = -1, .VisibleFunc = Function() Mode.Value = EncodingMode.Quality AndAlso Not Codec.ValueText.EqualsAny("prores", "utvideo", "ffv1"), .ArgsFunc = AddressOf GetQualityArgs, .Config = {-1, 63}},
                         New NumParam With {.Switch = "-threads", .Text = "Threads", .Config = {0, 64}},
                         New NumParam With {.Switch = "-tile-columns", .Text = "Tile Columns", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 6, .DefaultValue = -1},
                         New NumParam With {.Switch = "-frame-parallel", .Text = "Frame Parallel", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 1, .DefaultValue = -1},
@@ -227,6 +237,8 @@ Public Class ffmpegEnc
             End If
 
             Select Case Decoder.ValueText
+                Case "sw"
+                    sourcePath = p.LastOriginalSourceFile
                 Case "qsv"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " -hwaccel qsv"

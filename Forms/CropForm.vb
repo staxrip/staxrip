@@ -584,7 +584,7 @@ Public Class CropForm
 
         Dim form As New HelpForm()
         form.Doc.WriteStart("Crop Dialog")
-        form.Doc.WriteP("The crop dialog allows to crop borders. Right-click to show a '''context menu''' with available features. By default StaxRip detects the crop values automatically. It's recommended to check the detected values visually. A crop value can be changed roughly by moving the mouse while the left mouse button is pressed. Alternative methods are using the '''mousewheel''' or keyboard shortcuts. The Ctrl key crops the active and opposite side, the Shift key crops 8 instead of 2 pixel.")
+        form.Doc.Write("The crop dialog allows to crop borders. Right-click to show a '''context menu''' with available features. By default StaxRip detects the crop values automatically. It's recommended to check the detected values visually. A crop value can be changed roughly by moving the mouse while the left mouse button is pressed. Alternative methods are using the '''mousewheel''' or keyboard shortcuts. The Ctrl key crops the active and opposite side, the Shift key crops 8 instead of 2 pixel.")
         form.Doc.WriteTips(CustomMenu.GetTips)
         form.Doc.WriteTable("Shortcut Keys", CustomMenu.GetKeys, False)
         form.Show()

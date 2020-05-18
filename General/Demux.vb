@@ -127,11 +127,6 @@ Public Class CommandLineDemuxer
     Overrides Sub Run(proj As Project)
         Using proc As New Proc
             If Command?.Contains("DGIndex") OrElse Arguments?.Contains("DGIndex") Then
-                If Not Package.DGIndex.VerifyOK(True) Then
-                    Throw New AbortException
-                End If
-
-                proc.Package = Package.DGIndex
                 proc.IntegerPercentOutput = True
             ElseIf Command?.Contains("ffmpeg") OrElse Arguments?.Contains("ffmpeg") Then
                 proc.Package = Package.ffmpeg
@@ -159,8 +154,8 @@ Public Class CommandLineDemuxer
     End Sub
 
     Shared Function IsActive(value As String) As Boolean
-        For Each i In s.Demuxers.OfType(Of CommandLineDemuxer)()
-            If i.Active AndAlso (i.Name.Contains(value) OrElse i.Command.Contains(value)) Then
+        For Each demuxer In s.Demuxers.OfType(Of CommandLineDemuxer)()
+            If demuxer.Active AndAlso (demuxer.Name.Contains(value) OrElse demuxer.Command.Contains(value)) Then
                 Return True
             End If
         Next

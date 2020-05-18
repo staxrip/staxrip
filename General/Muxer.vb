@@ -641,7 +641,7 @@ Public Class MkvMuxer
 
         args += " " + p.VideoEncoder.OutputPath.Escape
 
-        For x = 2 To 10
+        For x = 2 To 99
             Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
 
             If fp.FileExists Then

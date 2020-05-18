@@ -41,6 +41,10 @@ Public Class x264Enc
         End Get
     End Property
 
+    Overrides Function GetFixedBitrate() As Integer
+        Return CInt(Params.Bitrate.Value)
+    End Function
+
     Overrides Sub Encode()
         p.Script.Synchronize()
         Encode("Video encoding", GetArgs(1, p.Script), s.ProcessPriority)
@@ -141,9 +145,11 @@ Public Class x264Enc
         newParams.ApplyValues(True)
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelp = "<p>Pressing Ctrl or Shift while right-clicking on an option opens the x264 online help and navigates to the switch that was right-clicked.</p>" +
-                $"<p><a href=""{Package.x264.HelpURL}"">x264 online help</a></p>" +
-                $"<pre>{HelpDocument.ConvertChars(Package.x264.CreateHelpfile())}</pre>"
+            form.HTMLHelp = "<h2>x264 Help</h2>" +
+                "<p>Right-clicking a option shows the local console help for the option, pressing Ctrl or Shift while right-clicking a option shows the online help for the option.</p>" +
+                "<p>Setting the Bitrate option to 0 will use the bitrate defined in the project/template in the main dialog.</p>" +
+               $"<h2>x264 Online Help</h2><p><a href=""{Package.x264.HelpURL}"">x264 Online Help</a></p>" +
+               $"<h2>x264 Console Help</h2><pre>{HelpDocument.ConvertChars(Package.x264.CreateHelpfile())}</pre>"
 
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of x264Enc)(Me)
@@ -207,12 +213,26 @@ Public Class x264Params
         Title = "x264 Options"
     End Sub
 
+    Property Mode As New OptionParam With {
+        .Name = "Mode",
+        .Text = "Mode",
+        .Switches = {"--bitrate", "--qp", "--crf", "--pass", "--stats", "-q", "-B", "-p"},
+        .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
+        .Value = 2}
+
     Property Quant As New NumParam With {
         .Switches = {"--crf", "--qp"},
         .Name = "Quant",
         .Text = "Quality",
         .Init = 22,
+        .VisibleFunc = Function() Mode.Value = 1 OrElse Mode.Value = 2,
         .Config = {0, 69, 0.5, 1}}
+
+    Property Bitrate As New NumParam With {
+        .Switch2 = "--bitrate",
+        .Text = "Bitrate",
+        .VisibleFunc = Function() Mode.Value <> 1 AndAlso Mode.Value <> 2,
+        .Config = {0, 1000000, 100}}
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
@@ -224,13 +244,6 @@ Public Class x264Params
         .Switch = "--tune",
         .Text = "Tune",
         .Options = {"None", "Film", "Animation", "Grain", "Still Image", "PSNR", "SSIM", "Fast Decode", "Zero Latency"}}
-
-    Property Mode As New OptionParam With {
-        .Name = "Mode",
-        .Text = "Mode",
-        .Switches = {"--bitrate", "--qp", "--crf", "--pass", "--stats", "-q", "-B", "-p"},
-        .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
-        .Value = 2}
 
     Property CompCheck As New NumParam With {
         .Name = "CompCheckQuant",
@@ -745,7 +758,8 @@ Public Class x264Params
                     Profile,
                     New OptionParam With {.Switch = "--level", .Text = "Level", .Options = {"Automatic", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                     New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
-                    Quant)
+                    Quant,
+                    Bitrate)
                 Add("Analysis",
                     Trellis,
                     CQM,
@@ -1011,7 +1025,11 @@ Public Class x264Params
             End If
         Else
             If Not IsCustom(pass, "--bitrate") Then
-                args += " --bitrate " & p.VideoBitrate
+                If Bitrate.Value <> 0 Then
+                    args += " --bitrate " & Bitrate.Value
+                Else
+                    args += " --bitrate " & p.VideoBitrate
+                End If
             End If
         End If
 

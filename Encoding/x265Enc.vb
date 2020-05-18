@@ -1,5 +1,6 @@
 ﻿
 Imports System.Text
+
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -50,6 +51,10 @@ Public Class x265Enc
 
         AfterEncoding()
     End Sub
+
+    Overrides Function GetFixedBitrate() As Integer
+        Return CInt(Params.Bitrate.Value)
+    End Function
 
     Overrides Function CanChunkEncode() As Boolean
         Return CInt(Params.Chunks.Value) <> 1
@@ -192,9 +197,11 @@ Public Class x265Enc
         newParams.ApplyTuneDefaultValues()
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelp = "<p>Pressing Ctrl or Shift while right-clicking on an option opens the x265 online help instead of the local help and navigates to the switch that was right-clicked.</p>" +
-                $"<p><a href=""{Package.x265.HelpURL}"">x265 online help</a></p>" +
-                $"<pre>{HelpDocument.ConvertChars(Package.x265.CreateHelpfile())}</pre>"
+            form.HTMLHelp = "<h2>x265 Help</h2>" +
+                "<p>Right-clicking a option shows the local console help for the option, pressing Ctrl or Shift while right-clicking a option shows the online help for the option.</p>" +
+                "<p>Setting the Bitrate option to 0 will use the bitrate defined in the project/template in the main dialog.</p>" +
+               $"<h2>x265 Online Help</h2><p><a href=""{Package.x265.HelpURL}"">x265 Online Help</a></p>" +
+               $"<h2>x265 Console Help</h2><pre>{HelpDocument.ConvertChars(Package.x265.CreateHelpfile())}</pre>"
 
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of x265Enc)(Me)
@@ -265,10 +272,45 @@ Public Class x265Params
         Title = "x265 Options"
     End Sub
 
+    Property Mode As New OptionParam With {
+        .Name = "Mode",
+        .Text = "Mode",
+        .Switches = {"--bitrate", "--qp", "--crf", "--pass", "--stats"},
+        .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
+        .Value = 2}
+
+    Property Quant As New NumParam With {
+        .Switches = {"--crf", "--qp", "-q"},
+        .Name = "Quant",
+        .Text = "Quality",
+        .DefaultValue = 28,
+        .Value = 18,
+        .VisibleFunc = Function() Mode.Value = 1 OrElse Mode.Value = 2,
+        .Config = {0, 51, 0.5, 1}}
+
+    Property Bitrate As New NumParam With {
+        .Switch2 = "--bitrate",
+        .Text = "Bitrate",
+        .VisibleFunc = Function() Mode.Value <> 1 AndAlso Mode.Value <> 2,
+        .Config = {0, 1000000, 100}}
+
     Property Decoder As New OptionParam With {
         .Text = "Decoder",
         .Options = {"AviSynth/VapourSynth", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
         .Values = {"script", "qs", "ffqsv", "ffdxva"}}
+
+    Property Preset As New OptionParam With {
+        .Switch = "--preset",
+        .Switches = {"-p"},
+        .Text = "Preset",
+        .Options = {"Ultra Fast", "Super Fast", "Very Fast", "Faster", "Fast", "Medium", "Slow", "Slower", "Very Slow", "Placebo"},
+        .Init = 5}
+
+    Property Tune As New OptionParam With {
+        .Switch = "--tune",
+        .Switches = {"-t"},
+        .Text = "Tune",
+        .Options = {"None", "PSNR", "SSIM", "Grain", "Fast Decode", "Zero Latency", "Animation"}}
 
     Property PipingToolAVS As New OptionParam With {
         .Text = "Piping Tool",
@@ -284,43 +326,15 @@ Public Class x265Params
         .Options = {"Automatic", "None", "vspipe", "ffmpeg"},
         .Values = {"auto", "none", "vspipe", "ffmpeg"}}
 
-    Property Quant As New NumParam With {
-        .Switches = {"--crf", "--qp", "-q"},
-        .Name = "Quant",
-        .Text = "Quality",
-        .DefaultValue = 28,
-        .Value = 18,
-        .Config = {0, 51, 0.5, 1}}
-
-    Property chunkstart As New NumParam With {
+    Property chunkStart As New NumParam With {
         .Switch = "--chunk-start",
         .Name = "Chunk Start",
         .Text = "Chunk Start"}
 
-    Property chunkend As New NumParam With {
+    Property chunkEnd As New NumParam With {
         .Switch = "--chunk-end",
         .Name = "Chunk End",
         .Text = "Chunk End"}
-
-    Property Preset As New OptionParam With {
-        .Switch = "--preset",
-        .Switches = {"-p"},
-        .Text = "Preset",
-        .Options = {"Ultra Fast", "Super Fast", "Very Fast", "Faster", "Fast", "Medium", "Slow", "Slower", "Very Slow", "Placebo"},
-        .Init = 5}
-
-    Property Tune As New OptionParam With {
-        .Switch = "--tune",
-        .Switches = {"-t"},
-        .Text = "Tune",
-        .Options = {"None", "PSNR", "SSIM", "Grain", "Fast Decode", "Zero Latency", "Animation"}}
-
-    Property Mode As New OptionParam With {
-        .Name = "Mode",
-        .Text = "Mode",
-        .Switches = {"--bitrate", "--qp", "--crf", "--pass"},
-        .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
-        .Value = 2}
 
     Property SSIM As New BoolParam With {
         .Switch = "--ssim",
@@ -883,7 +897,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain10", .VisibleFunc = Function() OutputDepth.Value = 1, .Options = {"Automatic", "Main 10", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra"}},
                     New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain12", .VisibleFunc = Function() OutputDepth.Value = 2, .Options = {"Automatic", "Main 12", "Main 12 - Intra", "Main 422 - 12", "Main 422 - 12 - Intra", "Main 444 - 12", "Main 444 - 12 - Intra"}},
                     New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level", .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
-                    OutputDepth, Quant)
+                    OutputDepth, Quant, Bitrate)
                 Add("Analysis", RD,
                     New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis File", .BrowseFile = True},
                     New StringParam With {.Switch = "--analysis-load", .Text = "Analysis Load", .BrowseFile = True},
@@ -1020,7 +1034,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Options = {"Automatic", "I400", "I420", "I422", "I444", "NV12", "NV16"}},
                     New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Progressive", "Top Field First", "Bottom Field First"}, .Values = {"", "tff", "bff"}},
                     New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},
-                    Frames, chunkstart, chunkend,
+                    Frames, chunkStart, chunkEnd,
                     New NumParam With {.Switch = "--seek", .Text = "Seek"},
                     New NumParam With {.Switch = "--dup-threshold", .Text = "Dup. Threshold", .Init = 70, .Config = {1, 99}},
                     New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"},
@@ -1193,7 +1207,11 @@ Public Class x265Params
             End If
         Else
             If Not IsCustom(pass, "--bitrate") Then
-                sb.Append(" --bitrate " & p.VideoBitrate)
+                If Bitrate.Value <> 0 Then
+                    sb.Append(" --bitrate " & Bitrate.Value)
+                Else
+                    sb.Append(" --bitrate " & p.VideoBitrate)
+                End If
             End If
         End If
 

@@ -187,7 +187,7 @@ Friend Class JobsForm
         MyBase.New()
         InitializeComponent()
 
-        ScaleClientSize(38, 20)
+        ScaleClientSize(40, 20)
 
         bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
         bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
@@ -201,8 +201,8 @@ Friend Class JobsForm
         lv.SingleSelectionButtons = {bnLoad}
         lv.CheckBoxes = True
         lv.EnableListBoxMode()
-        lv.ItemCheckProperty = NameOf(StringBooleanPair.Value)
-        lv.AddItems(Job.GetJobs())
+        lv.ItemCheckProperty = NameOf(Job.Active)
+        lv.AddItems(JobManager.GetJobs())
         lv.SelectFirst()
 
         Dim cms As New ContextMenuStripEx()
@@ -216,7 +216,7 @@ Friend Class JobsForm
                              End Sub
 
         AddHandler lv.ItemRemoved, Sub(item)
-                                       Dim fp = DirectCast(item.Tag, StringBooleanPair).Key
+                                       Dim fp = DirectCast(item.Tag, Job).Path
 
                                        If fp.StartsWith(Folder.Settings + "Batch Projects\") Then
                                            FileHelp.Delete(fp)
@@ -293,7 +293,7 @@ Friend Class JobsForm
 
                    IsLoading = True
                    lv.Items.Clear()
-                   lv.AddItems(Job.GetJobs())
+                   lv.AddItems(JobManager.GetJobs())
                    lv.SelectFirst()
                    UpdateControls()
                    IsLoading = False
@@ -302,7 +302,7 @@ Friend Class JobsForm
 
     Sub UpdateControls()
         Dim activeJobs = From item In lv.Items.OfType(Of ListViewItem)
-                         Where DirectCast(item.Tag, StringBooleanPair).Value
+                         Where DirectCast(item.Tag, Job).Active
 
         bnStart.Enabled = activeJobs.Count > 0
     End Sub
@@ -316,14 +316,14 @@ Friend Class JobsForm
             Exit Sub
         End If
 
-        Dim jobs As New List(Of StringBooleanPair)
+        Dim jobs As New List(Of Job)
 
         For Each item As ListViewItem In lv.Items
-            jobs.Add(DirectCast(item.Tag, StringBooleanPair))
+            jobs.Add(DirectCast(item.Tag, Job))
         Next
 
         FileWatcher.EnableRaisingEvents = False
-        Job.SaveJobs(jobs)
+        JobManager.SaveJobs(jobs)
         FileWatcher.EnableRaisingEvents = True
     End Sub
 

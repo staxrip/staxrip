@@ -652,7 +652,7 @@ Public Class eac3toForm
     Sub ShowAudioStreamProfilesHelp()
         Dim f As New HelpForm
         f.Doc.WriteStart("Audio Stream Profiles")
-        f.Doc.WriteP("Allows to automatically apply default values for audio streams.")
+        f.Doc.Write("Allows to automatically apply default values for audio streams.")
         f.Doc.WriteTable({New StringPair("Match All", "space separated, if all match then the Output Format and Options are applied"),
                           New StringPair("Output Format", "applied to the stream if Match All succeeds"),
                           New StringPair("Options", "applied to the stream if Match All succeeds")})

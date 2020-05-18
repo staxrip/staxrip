@@ -852,11 +852,14 @@ Public Class Macro
         End Set
     End Property
 
-    Shared Function GetTips() As StringPairList
+    Shared Function GetTips(
+        Optional includeSpecial As Boolean = False,
+        Optional includeApps As Boolean = False) As StringPairList
+
         Dim ret As New StringPairList
 
-        For Each i In GetMacros(True, False)
-            ret.Add(i.Name, i.Description)
+        For Each macro In GetMacros(includeSpecial, includeApps)
+            ret.Add(macro.Name, macro.Description)
         Next
 
         Return ret
@@ -2152,21 +2155,6 @@ Public Class FileTypes
 
     Shared Function GetFilter(values As IEnumerable(Of String)) As String
         Return "*." + values.Join(";*.") + "|*." + values.Join(";*.") + "|All Files|*.*"
-    End Function
-End Class
-
-<Serializable>
-Public Class StringBooleanPair
-    Property Key As String
-    Property Value As Boolean
-
-    Sub New(key As String, value As Boolean)
-        Me.Key = key
-        Me.Value = value
-    End Sub
-
-    Public Overrides Function ToString() As String
-        Return Key
     End Function
 End Class
 

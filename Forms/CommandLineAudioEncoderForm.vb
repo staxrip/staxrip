@@ -529,7 +529,7 @@ Public Class CommandLineAudioEncoderForm
 
         form.Doc.WriteStart(Text)
         form.Doc.WriteTips(TipProvider.GetTips, EditControl.TipProvider.GetTips)
-        form.Doc.WriteP("Macros")
+        form.Doc.Write("Macros")
 
         Dim macroList As New StringPairList
 

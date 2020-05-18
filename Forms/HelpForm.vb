@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class HelpForm
@@ -80,11 +81,15 @@ Public Class HelpForm
     End Sub
 
     Overloads Shared Sub ShowDialog(heading As String, tips As StringPairList, summary As String)
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(heading)
-        If Not summary Is Nothing Then f.Doc.WriteP(summary)
-        f.Doc.WriteTips(tips)
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(heading)
+
+        If Not summary Is Nothing Then
+            form.Doc.Write(summary)
+        End If
+
+        form.Doc.WriteTips(tips)
+        form.Show()
     End Sub
 
     Private Sub HelpForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
@@ -106,7 +111,10 @@ Public Class HelpForm
     Shadows Sub Show()
         MyBase.Show()
         Application.DoEvents()
-        If Not DocumentValue Is Nothing Then DocumentValue.WriteDocument(Browser)
+
+        If Not DocumentValue Is Nothing Then
+            DocumentValue.WriteDocument(Browser)
+        End If
     End Sub
 
     Private Sub Browser_Navigating(sender As Object, e As WebBrowserNavigatingEventArgs) Handles Browser.Navigating

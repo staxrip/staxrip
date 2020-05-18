@@ -144,7 +144,7 @@ Public Class MacroEditorDialog
     Private Sub UniversalEditor_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
-        form.Doc.WriteP(HelpText)
+        form.Doc.Write(HelpText)
         form.Doc.WriteTips(MacroEditorControl.TipProvider.GetTips)
         form.Doc.WriteTable("Macros", Macro.GetTips())
         form.Show()

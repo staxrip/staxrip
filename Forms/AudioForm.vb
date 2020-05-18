@@ -1001,9 +1001,8 @@ Public Class AudioForm
                 mbStereoDownmix.Button.SaveAction = Sub(value) TempProfile.Params.eac3toStereoDownmixMode = value
 
                 If (TempProfile.File = "" OrElse TempProfile.File.ToLower.Contains("dts") OrElse
-                        (Not TempProfile.Stream Is Nothing AndAlso
-                         TempProfile.Stream.Name.Contains("DTS"))) AndAlso
-                        TempProfile.Params.Codec = AudioCodec.DTS Then
+                    (Not TempProfile.Stream Is Nothing AndAlso TempProfile.Stream.Name.Contains("DTS"))) AndAlso
+                    TempProfile.Params.Codec = AudioCodec.DTS Then
 
                     cb = ui.AddBool(page)
                     cb.Text = "Extract DTS core"

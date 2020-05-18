@@ -1903,11 +1903,11 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
-            Dim r = ClientRectangle
-            r.Inflate(-1, -1)
+            Dim cr = ClientRectangle
+            cr.Inflate(-1, -1)
 
             Using brush As New SolidBrush(BackColor)
-                e.Graphics.FillRectangle(If(Enabled, brush, SystemBrushes.Control), r)
+                e.Graphics.FillRectangle(If(Enabled, brush, SystemBrushes.Control), cr)
             End Using
 
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, BorderColor, ButtonBorderStyle.Solid)

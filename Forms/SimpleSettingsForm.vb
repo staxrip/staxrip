@@ -130,7 +130,7 @@ Public Class SimpleSettingsForm
 
         If Not HelpParagraphs Is Nothing Then
             For Each i As String In HelpParagraphs
-                form.Doc.WriteP(i)
+                form.Doc.Write(i)
             Next
         End If
 

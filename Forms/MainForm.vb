@@ -8,6 +8,7 @@ Imports System.Threading
 Imports System.Threading.Tasks
 
 Imports StaxRip.UI
+
 Imports VB6 = Microsoft.VisualBasic
 
 Public Class MainForm
@@ -1046,10 +1047,10 @@ Public Class MainForm
 
 #End Region
 
-    Public BlockSubtitlesItemCheck As Boolean
     Public WithEvents CustomMainMenu As CustomMenu
     Public WithEvents CustomSizeMenu As CustomMenu
     Public CurrentAssistantTipKey As String
+    Public BlockSubtitlesItemCheck As Boolean
     Public AssistantPassed As Boolean
     Public CommandManager As New CommandManager
 
@@ -3791,20 +3792,6 @@ Public Class MainForm
         FileHelp.Delete(Folder.Settings + "Jobs.dat")
     End Sub
 
-    Function GetJobPath() As String
-        Dim name = p.TargetFile.Base
-
-        If name = "" Then
-            name = Macro.Expand(p.DefaultTargetName)
-        End If
-
-        If name = "" Then
-            name = p.SourceFile.Base
-        End If
-
-        Return p.TempDir + name + ".srip"
-    End Function
-
     <Command("Loads a audio or video profile.")>
     Sub LoadProfile(<DispName("Video")> videoProfile As String,
                     <DispName("Audio 1")> audioProfile1 As String,
@@ -3850,9 +3837,9 @@ Public Class MainForm
             Exit Sub
         End If
 
-        Dim jobPath = GetJobPath()
+        Dim jobPath = JobManager.GetJobPath()
         SaveProjectPath(jobPath)
-        Job.AddJob(jobPath)
+        JobManager.AddJob(jobPath, jobPath)
 
         If showConfirmation Then
             MsgInfo("Job added")
@@ -4580,6 +4567,10 @@ Public Class MainForm
     End Sub
 
     Private Sub tbBitrate_KeyDown(sender As Object, e As KeyEventArgs) Handles tbBitrate.KeyDown
+        If tbBitrate.ReadOnly Then
+            Exit Sub
+        End If
+
         If e.KeyData = Keys.Up Then
             e.Handled = True
             tbBitrate.Text = Math.Max(0, Calc.GetPreviousMod(tbBitrate.Text.ToInt, 50)).ToString
@@ -4590,6 +4581,10 @@ Public Class MainForm
     End Sub
 
     Private Sub tbSize_KeyDown(sender As Object, e As KeyEventArgs) Handles tbTargetSize.KeyDown
+        If tbTargetSize.ReadOnly Then
+            Exit Sub
+        End If
+
         Dim modValue As Integer
 
         Select Case p.TargetSeconds
@@ -4613,17 +4608,27 @@ Public Class MainForm
     End Sub
 
     Sub UpdateSizeOrBitrate()
-        If p.BitrateIsFixed Then tbBitrate_TextChanged() Else tbSize_TextChanged()
+        If p.BitrateIsFixed Then
+            tbBitrate_TextChanged()
+        Else
+            tbSize_TextChanged()
+        End If
     End Sub
 
     Sub tbSize_TextChanged() Handles tbTargetSize.TextChanged
         Try
-            If tbTargetSize.Focused Then p.BitrateIsFixed = False
+            If tbTargetSize.Focused Then
+                p.BitrateIsFixed = False
+            End If
 
             If Integer.TryParse(tbTargetSize.Text, Nothing) Then
                 p.TargetSize = Math.Max(0, CInt(tbTargetSize.Text))
                 BlockSize = True
-                If Not BlockBitrate Then tbBitrate.Text = CInt(Calc.GetVideoBitrate).ToString
+
+                If Not BlockBitrate Then
+                    tbBitrate.Text = CInt(Calc.GetVideoBitrate).ToString
+                End If
+
                 BlockSize = False
                 Assistant()
             End If
@@ -4633,12 +4638,18 @@ Public Class MainForm
 
     Sub tbBitrate_TextChanged() Handles tbBitrate.TextChanged
         Try
-            If tbBitrate.Focused Then p.BitrateIsFixed = True
+            If tbBitrate.Focused Then
+                p.BitrateIsFixed = True
+            End If
 
             If Integer.TryParse(tbBitrate.Text, Nothing) Then
                 p.VideoBitrate = Math.Max(0, CInt(tbBitrate.Text))
                 BlockBitrate = True
-                If Not BlockSize Then tbTargetSize.Text = CInt(Calc.GetSize).ToString
+
+                If Not BlockSize Then
+                    tbTargetSize.Text = CInt(Calc.GetSize).ToString
+                End If
+
                 BlockBitrate = False
                 Assistant()
             End If
@@ -4891,6 +4902,9 @@ Public Class MainForm
         lBitrate.Visible = Not p.VideoEncoder.QualityMode
         tbBitrate.Visible = Not p.VideoEncoder.QualityMode
         lTarget2.Visible = p.VideoEncoder.IsCompCheckEnabled
+
+        tbTargetSize.ReadOnly = p.VideoEncoder.GetFixedBitrate <> 0
+        tbBitrate.ReadOnly = p.VideoEncoder.GetFixedBitrate <> 0
     End Sub
 
     <Command("Dialog to open source files.")>
@@ -4983,7 +4997,7 @@ Public Class MainForm
                             batchProject.SourceFiles = {i}.ToList
                             Dim jobPath = batchFolder + i.Dir.Replace("\", "-").Replace(":", "-") + " " + p.TemplateName + " - " + i.FileName
                             SafeSerialization.Serialize(batchProject, jobPath)
-                            Job.AddJob(jobPath)
+                            JobManager.AddJob(i.Base, jobPath)
                         Next
 
                         ShowJobsDialog()

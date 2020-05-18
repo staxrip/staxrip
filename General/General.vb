@@ -404,7 +404,6 @@ End Interface
 
 Public Class HelpDocument
     Private Path As String
-    Private Title As String
     Private IsClosed As Boolean
 
     Property Writer As XmlTextWriter
@@ -425,6 +424,8 @@ Public Class HelpDocument
 
 body {
     font-family: Tahoma, Geneva, sans-serif;
+    color:#DDDDDD;
+    background-color:#323232;
 }
 
 h1 {
@@ -434,18 +435,16 @@ h1 {
 
 h2 {
     font-size: 120%;
-    color: #666666;
     margin-bottom: -8pt;
 }
 
 h3 {
     font-size: 100%;
-    color: #333333;
     margin-bottom: -8pt;
 }
 
 a {
-    color: #666666;
+    color: #3C8CC8;
 }
 
 td {
@@ -458,7 +457,6 @@ table {
 }
 </style>"
 
-        Me.Title = title
         Writer = New XmlTextWriter(Path, Encoding.UTF8)
         Writer.Formatting = Formatting.Indented
         Writer.WriteRaw("<!doctype html>")
@@ -475,29 +473,29 @@ table {
         End If
     End Sub
 
-    Sub WriteP(rawText As String, Optional convert As Boolean = False)
+    Sub Write(text As String, Optional convert As Boolean = False)
         If convert Then
-            rawText = ConvertChars(rawText)
+            text = ConvertChars(text)
         End If
 
-        WriteElement("p", rawText)
+        WriteElement("p", text)
     End Sub
 
-    Sub WriteP(title As String, rawText As String, Optional convert As Boolean = False)
+    Sub Write(title As String, text As String, Optional convert As Boolean = False)
         If convert Then
-            rawText = ConvertChars(rawText)
+            text = ConvertChars(text)
         End If
 
         WriteElement("h2", title)
-        WriteElement("p", rawText)
+        WriteElement("p", text)
     End Sub
 
-    Sub WriteH2(rawText As String)
-        WriteElement("h2", rawText)
+    Sub WriteH2(text As String)
+        WriteElement("h2", text)
     End Sub
 
-    Sub WriteH3(rawText As String)
-        WriteElement("h3", rawText)
+    Sub WriteH3(text As String)
+        WriteElement("h3", text)
     End Sub
 
     Sub WriteElement(elementName As String, rawText As String)
@@ -595,7 +593,7 @@ table {
 
         For Each i In list
             WriteH3(HelpDocument.ConvertChars(i.Name))
-            WriteP(HelpDocument.ConvertChars(i.Value))
+            Write(HelpDocument.ConvertChars(i.Value))
         Next
     End Sub
 
@@ -643,7 +641,7 @@ table {
         If text Is Nothing Then
             Writer.WriteElementString("p", "")
         Else
-            WriteP(text, True)
+            Write(text, True)
         End If
 
         Writer.WriteStartElement("table")

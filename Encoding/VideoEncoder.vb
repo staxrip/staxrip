@@ -46,6 +46,9 @@ Public MustInherit Class VideoEncoder
     Overridable Function CanChunkEncode() As Boolean
     End Function
 
+    Overridable Function GetFixedBitrate() As Integer
+    End Function
+
     Overridable Function GetChunkEncodeActions() As List(Of Action)
     End Function
 
@@ -259,6 +262,12 @@ Public MustInherit Class VideoEncoder
         g.MainForm.SetEncoderControl(p.VideoEncoder.CreateEditControl)
         g.MainForm.lgbEncoder.Text = g.ConvertPath(p.VideoEncoder.Name).Shorten(38)
         g.MainForm.llMuxer.Text = p.VideoEncoder.Muxer.OutputExt.ToUpper
+
+        If GetFixedBitrate() <> 0 Then
+            p.BitrateIsFixed = True
+            g.MainForm.tbBitrate.Text = GetFixedBitrate().ToString
+        End If
+
         g.MainForm.UpdateSizeOrBitrate()
     End Sub
 
@@ -269,11 +278,11 @@ Public MustInherit Class VideoEncoder
     End Enum
 
     Sub OpenMuxerConfigDialog()
-        Dim m = ObjectHelp.GetCopy(Of Muxer)(Muxer)
+        Dim muxer = ObjectHelp.GetCopy(Of Muxer)(Me.Muxer)
 
-        If m.Edit = DialogResult.OK Then
-            Muxer = m
-            g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpper
+        If muxer.Edit = DialogResult.OK Then
+            Me.Muxer = muxer
+            g.MainForm.llMuxer.Text = Me.Muxer.OutputExt.ToUpper
             g.MainForm.Refresh()
             g.MainForm.UpdateSizeOrBitrate()
             g.MainForm.Assistant()

@@ -201,7 +201,7 @@ Public Class CommandLineVideoEncoderForm
     Private Sub CommandLineVideoEncoderForm_HelpRequested() Handles Me.HelpRequested
         Dim form As New HelpForm
         form.Doc.WriteStart(Text)
-        form.Doc.WriteP("The command line encoder executes command lines.")
+        form.Doc.Write("The command line encoder executes command lines.")
         form.Doc.WriteTips(TipProvider.GetTips, EncodingCliControl.TipProvider.GetTips)
         form.Doc.WriteTable("Macros", Macro.GetTips())
         form.Show()

@@ -2,6 +2,15 @@
 2.1.1.4 Beta (not yet available)
 ============
 
+- built-in help uses a dark color theme
+- built-in help improved for video encoder dialogs
+- ffmpeg encoder supports FFV1 codec
+- the x264 and x265 dialog have a new Bitrate option, the default value is 0 which
+  means the bitrate of the project/template in the main dialog is used,
+  this behavior is documented in the F1 help of the x264 and x265 dialog
+- for file batch jobs only the file name is shown in the jobs dialog and not the full path
+
+
 2.1.1.3 Beta
 ============
 

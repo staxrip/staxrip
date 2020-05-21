@@ -2,9 +2,12 @@
 2.1.1.5 Beta (not yet available)
 ============
 
-- in the video encoder dialogs the feature *Execute Command Line* failed when
-  Windows Terminal is installed and paths contained spaces
-
+- In the video encoder dialogs the feature *Execute Command Line* failed when
+  Windows Terminal is installed and paths contained spaces.
+- Maximum number of parallel processes increased from 4 to 16.
+- the Tools page in the docs lists all tools in a grid view
+  with columns: Name, Type, Filename, Version, Modified Date
+  
 
 2.1.1.4 Beta
 ============

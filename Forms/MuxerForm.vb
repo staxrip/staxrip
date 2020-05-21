@@ -168,7 +168,7 @@ Public Class MuxerForm
         Me.tpSubtitles.Margin = New System.Windows.Forms.Padding(5)
         Me.tpSubtitles.Name = "tpSubtitles"
         Me.tpSubtitles.Padding = New System.Windows.Forms.Padding(5)
-        Me.tpSubtitles.Size = New System.Drawing.Size(1177, 653)
+        Me.tpSubtitles.Size = New System.Drawing.Size(1488, 653)
         Me.tpSubtitles.TabIndex = 3
         Me.tpSubtitles.Text = " Subtitles "
         Me.tpSubtitles.UseVisualStyleBackColor = True
@@ -179,7 +179,7 @@ Public Class MuxerForm
         Me.SubtitleControl.Location = New System.Drawing.Point(5, 5)
         Me.SubtitleControl.Margin = New System.Windows.Forms.Padding(2, 3, 2, 3)
         Me.SubtitleControl.Name = "SubtitleControl"
-        Me.SubtitleControl.Size = New System.Drawing.Size(1167, 643)
+        Me.SubtitleControl.Size = New System.Drawing.Size(1478, 643)
         Me.SubtitleControl.TabIndex = 0
         '
         'tpAudio
@@ -189,7 +189,7 @@ Public Class MuxerForm
         Me.tpAudio.Margin = New System.Windows.Forms.Padding(5)
         Me.tpAudio.Name = "tpAudio"
         Me.tpAudio.Padding = New System.Windows.Forms.Padding(5)
-        Me.tpAudio.Size = New System.Drawing.Size(1177, 653)
+        Me.tpAudio.Size = New System.Drawing.Size(1488, 653)
         Me.tpAudio.TabIndex = 4
         Me.tpAudio.Text = "   Audio   "
         Me.tpAudio.UseVisualStyleBackColor = True
@@ -207,7 +207,7 @@ Public Class MuxerForm
         Me.tlpAudio.Name = "tlpAudio"
         Me.tlpAudio.RowCount = 1
         Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpAudio.Size = New System.Drawing.Size(1167, 643)
+        Me.tlpAudio.Size = New System.Drawing.Size(1478, 643)
         Me.tlpAudio.TabIndex = 7
         '
         'flpAudio
@@ -221,7 +221,7 @@ Public Class MuxerForm
         Me.flpAudio.Controls.Add(Me.bnPlayAudio)
         Me.flpAudio.Controls.Add(Me.bnEditAudio)
         Me.flpAudio.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.flpAudio.Location = New System.Drawing.Point(876, 0)
+        Me.flpAudio.Location = New System.Drawing.Point(1187, 0)
         Me.flpAudio.Margin = New System.Windows.Forms.Padding(0)
         Me.flpAudio.Name = "flpAudio"
         Me.flpAudio.Size = New System.Drawing.Size(291, 516)
@@ -286,7 +286,7 @@ Public Class MuxerForm
         Me.dgvAudio.Name = "dgvAudio"
         Me.dgvAudio.RowHeadersWidth = 123
         Me.dgvAudio.RowTemplate.Height = 28
-        Me.dgvAudio.Size = New System.Drawing.Size(876, 643)
+        Me.dgvAudio.Size = New System.Drawing.Size(1187, 643)
         Me.dgvAudio.TabIndex = 0
         '
         'tpAttachments
@@ -295,7 +295,7 @@ Public Class MuxerForm
         Me.tpAttachments.Location = New System.Drawing.Point(12, 69)
         Me.tpAttachments.Name = "tpAttachments"
         Me.tpAttachments.Padding = New System.Windows.Forms.Padding(3)
-        Me.tpAttachments.Size = New System.Drawing.Size(1177, 653)
+        Me.tpAttachments.Size = New System.Drawing.Size(1488, 653)
         Me.tpAttachments.TabIndex = 5
         Me.tpAttachments.Text = "  Attachments  "
         Me.tpAttachments.UseVisualStyleBackColor = True
@@ -312,7 +312,7 @@ Public Class MuxerForm
         Me.tlpAttachments.Name = "tlpAttachments"
         Me.tlpAttachments.RowCount = 1
         Me.tlpAttachments.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpAttachments.Size = New System.Drawing.Size(1171, 647)
+        Me.tlpAttachments.Size = New System.Drawing.Size(1482, 647)
         Me.tlpAttachments.TabIndex = 0
         '
         'flpAttachments
@@ -321,7 +321,7 @@ Public Class MuxerForm
         Me.flpAttachments.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.flpAttachments.Controls.Add(Me.bnAddAttachment)
         Me.flpAttachments.Controls.Add(Me.bnRemoveAttachment)
-        Me.flpAttachments.Location = New System.Drawing.Point(877, 3)
+        Me.flpAttachments.Location = New System.Drawing.Point(1188, 3)
         Me.flpAttachments.Name = "flpAttachments"
         Me.flpAttachments.Size = New System.Drawing.Size(291, 172)
         Me.flpAttachments.TabIndex = 0
@@ -350,7 +350,7 @@ Public Class MuxerForm
         Me.lbAttachments.ItemHeight = 67
         Me.lbAttachments.Location = New System.Drawing.Point(3, 3)
         Me.lbAttachments.Name = "lbAttachments"
-        Me.lbAttachments.Size = New System.Drawing.Size(868, 641)
+        Me.lbAttachments.Size = New System.Drawing.Size(1179, 641)
         Me.lbAttachments.TabIndex = 1
         '
         'tpTags
@@ -359,7 +359,7 @@ Public Class MuxerForm
         Me.tpTags.Location = New System.Drawing.Point(12, 69)
         Me.tpTags.Name = "tpTags"
         Me.tpTags.Padding = New System.Windows.Forms.Padding(3)
-        Me.tpTags.Size = New System.Drawing.Size(1177, 653)
+        Me.tpTags.Size = New System.Drawing.Size(1488, 653)
         Me.tpTags.TabIndex = 6
         Me.tpTags.Text = "  Tags"
         Me.tpTags.UseVisualStyleBackColor = True
@@ -372,7 +372,7 @@ Public Class MuxerForm
         Me.dgvTags.Name = "dgvTags"
         Me.dgvTags.RowHeadersWidth = 123
         Me.dgvTags.RowTemplate.Height = 46
-        Me.dgvTags.Size = New System.Drawing.Size(1171, 647)
+        Me.dgvTags.Size = New System.Drawing.Size(1482, 647)
         Me.dgvTags.TabIndex = 0
         '
         'tpOptions
@@ -382,7 +382,7 @@ Public Class MuxerForm
         Me.tpOptions.Margin = New System.Windows.Forms.Padding(5)
         Me.tpOptions.Name = "tpOptions"
         Me.tpOptions.Padding = New System.Windows.Forms.Padding(5)
-        Me.tpOptions.Size = New System.Drawing.Size(1177, 653)
+        Me.tpOptions.Size = New System.Drawing.Size(1488, 653)
         Me.tpOptions.TabIndex = 2
         Me.tpOptions.Text = "  Options  "
         Me.tpOptions.UseVisualStyleBackColor = True
@@ -394,7 +394,7 @@ Public Class MuxerForm
         Me.SimpleUI.Location = New System.Drawing.Point(5, 5)
         Me.SimpleUI.Margin = New System.Windows.Forms.Padding(5)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(1167, 643)
+        Me.SimpleUI.Size = New System.Drawing.Size(1478, 643)
         Me.SimpleUI.TabIndex = 0
         Me.SimpleUI.Text = "SimpleUI1"
         '
@@ -476,6 +476,7 @@ Public Class MuxerForm
         Me.CancelButton = Me.bnCancel
         Me.ClientSize = New System.Drawing.Size(1544, 852)
         Me.Controls.Add(Me.tlpMain)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "MuxerForm"
@@ -571,6 +572,16 @@ Public Class MuxerForm
 
         If dgvAudio.RowCount > 0 Then
             dgvAudio.Rows(0).Selected = True
+        End If
+
+        Dim w = s.Storage.GetInt("muxer form width")
+        Dim h = s.Storage.GetInt("muxer form height")
+
+        Dim wa = Screen.PrimaryScreen.WorkingArea
+
+        If w <> 0 AndAlso w < wa.Width AndAlso h <> 0 AndAlso h < wa.Height Then
+            Width = w
+            Height = h
         End If
 
         UpdateControls()
@@ -716,6 +727,12 @@ Public Class MuxerForm
 
     Private Sub dgvAudio_MouseUp(sender As Object, e As MouseEventArgs) Handles dgvAudio.MouseUp
         UpdateControls()
+    End Sub
+
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        MyBase.OnFormClosing(e)
+        s.Storage.SetInt("muxer form width", Width)
+        s.Storage.SetInt("muxer form height", Height)
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)

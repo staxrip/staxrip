@@ -629,7 +629,7 @@ Public Class AppsForm
     Sub miShowGridView_Click(sender As Object, e As EventArgs) Handles miShowGridView.Click
         Dim rows As New List(Of Object)
 
-        For Each pack In Package.Items.Values.OrderBy(Function(i) i.Path)
+        For Each pack In Package.Items.Values.OrderBy(Function(i) i.GetTypeName)
             Dim row = New With {.Name = "", .Type = "", .Filename = "",
                 .Version = "", .ModifiedDate = "", .Folder = ""}
 

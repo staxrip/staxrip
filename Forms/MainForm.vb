@@ -3354,7 +3354,7 @@ Public Class MainForm
             n = ui.AddNum()
             n.Text = "Maximum number of parallel processes"
             n.Help = "Maximum number of parallel processes used for audio and video processing. Chunk encoding can be enabled in the x265 dialog."
-            n.Config = {1, 4}
+            n.Config = {1, 16}
             n.Field = NameOf(s.ParallelProcsNum)
 
             n = ui.AddNum()

@@ -118,11 +118,42 @@ Public Class Documentation
     Shared Sub GenerateToolFile()
         Dim sb As New StringBuilder
         sb.Append("Tools" + BR + "=====" + BR2)
+
+        Dim rows As New List(Of Object)
+
+        For Each pack In Package.Items.Values.OrderBy(Function(i) i.GetTypeName)
+            Dim row = New With {
+                .Name = "", .Type = "", .Filename = "", .Version = "", .ModifiedDate = ""}
+
+            row.Name = pack.Name
+            row.Type = pack.GetTypeName
+            row.Filename = pack.Filename
+
+            If pack.IsCorrectVersion Then
+                row.Version = pack.Version
+            End If
+
+            If File.Exists(pack.Path) Then
+                row.ModifiedDate = File.GetLastWriteTime(pack.Path).ToString("yyyy-MM-dd")
+            End If
+
+            rows.Add(row)
+        Next
+
+        Dim text =
+            ".. csv-table::" + BR +
+            "    :header: ""Name"", ""Type"", ""Filename"", ""Version"", ""Modified Date""" + BR +
+            "    :widths: auto" + BR2 +
+            "    " + PowerShell.ConvertToCSV(",", rows).Right(BR).Right(BR).Replace(BR, BR + "    ")
+
+        sb.Append(text + BR2)
+
         sb.Append("Console App" + BR + "-----------" + BR)
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "Console App" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
                 sb.Append(pack.WebURL + BR2 + BR)
             End If
         Next
@@ -131,7 +162,8 @@ Public Class Documentation
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "GUI App" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
                 sb.Append(pack.WebURL + BR2 + BR)
             End If
         Next
@@ -140,7 +172,8 @@ Public Class Documentation
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "AviSynth Plugin" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
@@ -156,7 +189,8 @@ Public Class Documentation
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "AviSynth Script" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
@@ -172,7 +206,8 @@ Public Class Documentation
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "VapourSynth Plugin" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
@@ -188,7 +223,8 @@ Public Class Documentation
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "VapourSynth Script" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 

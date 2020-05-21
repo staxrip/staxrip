@@ -1,15 +1,17 @@
-﻿Imports System.Text
+﻿
+Imports System.Text
+
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 <Serializable()>
-Public Class AOMEnc
+Public Class aomenc
     Inherits BasicVideoEncoder
 
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "AV1 | AOMEnc"
+        Name = "AV1 | aomenc"
     End Sub
 
     <NonSerialized>
@@ -37,10 +39,10 @@ Public Class AOMEnc
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode("Video encoding using aomenc " + Package.AOMEnc.Version, GetArgs(1, p.Script))
+        Encode("Video encoding using aomenc " + Package.aomenc.Version, GetArgs(1, p.Script))
 
         If Params.Mode.Value = 1 Then
-            Encode("Video encoding second pass using aomenc " + Package.AOMEnc.Version, GetArgs(2, p.Script))
+            Encode("Video encoding second pass using aomenc " + Package.aomenc.Version, GetArgs(2, p.Script))
         End If
 
         AfterEncoding()
@@ -51,7 +53,7 @@ Public Class AOMEnc
 
         Using proc As New Proc
             proc.Header = passName
-            proc.Package = Package.AOMEnc
+            proc.Package = Package.aomenc
             proc.SkipString = "[ETA"
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + commandLine + """"
@@ -89,7 +91,7 @@ become unplayable in the future.")
 
         Using form As New CommandLineForm(newParams)
             Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of AOMEnc)(Me)
+                                        Dim enc = ObjectHelp.GetCopy(Of aomenc)(Me)
                                         Dim params2 As New AV1Params
                                         Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
                                         params2.Init(store2)
@@ -159,7 +161,7 @@ Public Class AV1Params
                 New OptionParam With {.Path = "Basic", .Switch = " --profile", .Text = "Profile", .IntegerValue = True, .Options = {"Main", "High", "Professional"}},
                 New OptionParam With {.Path = "Basic", .Switch = "--bit-depth", .Text = "Depth", .Options = {"8", "10", "12"}},
                 New NumParam With {.Path = "Basic", .Switch = "--cq-level", .Text = "CQ Level"},
-                New StringParam With {.Path = "Analysis", .Switch = "--cfg", .Text = "Config File", .Quotes = True, .BrowseFile = True},
+                New StringParam With {.Path = "Analysis", .Switch = "--cfg", .Text = "Config File", .Quotes = QuotesMode.Auto, .BrowseFile = True},
                 New OptionParam With {.Path = "Analysis", .Switch = "--tune", .Text = "Tune", .Options = {"Disabled", "PSNR", "SSIM", "Cdef-Dist", "Daala-Dist"}},
                 New NumParam With {.Path = "Analysis", .Switch = "--tile-columns", .Text = "Tile Columns"},
                 New NumParam With {.Path = "Analysis", .Switch = "--tile-rows", .Text = "Tile Rows"},
@@ -195,7 +197,7 @@ Public Class AV1Params
                 New NumParam With {.Path = "Slice Decision", .Switch = "--lag-in-frames", .Text = "Lag In Frames"},
                 New BoolParam With {.Path = "Slice Decision", .Switch = "--disable-kf", .Text = "Disable keyframe placement"},
                 New StringParam With {.Path = "Input/Output", .Switch = "--timebase", .Text = "Timebase"},
-                New StringParam With {.Path = "Input/Output", .Switch = "--annexb", .Text = "Save as Annex-B", .Quotes = True},
+                New StringParam With {.Path = "Input/Output", .Switch = "--annexb", .Text = "Save as Annex-B", .Quotes = QuotesMode.Auto},
                 New NumParam With {.Path = "Input/Output", .Switch = "--input-bit-depth", .Text = "Input Bit Depth"},
                 New NumParam With {.Path = "Input/Output", .Switch = "--fps", .Text = "Frame Rate"},
                 New NumParam With {.Path = "Input/Output", .Switch = "--limit", .Text = "Limit"},
@@ -234,7 +236,7 @@ Public Class AV1Params
                 New OptionParam With {.Path = "Misc 1", .Switch = "--tune-content", .Text = "Tune Content", .Options = {"Default", "Screen"}},
                 New OptionParam With {.Path = "Misc 1", .Switch = "--chroma-sample-position", .Text = "Chroma Sample Pos", .Options = {"Unknown", "Vertical", "Colocated"}},
                 New OptionParam With {.Path = "Misc 1", .Switch = "--enable-cdef", .Text = "Enable CDEF", .IntegerValue = True, .Options = {"Off", "On"}},
-                New OptionParam With {.Path = "Misc 1", .Switch = "--cdf-update-mode", .Text = "CDF Update", .IntegerValue = True, .Options = {"No Update", "Update All", "Selectively Update"}, .InitValue = 1},
+                New OptionParam With {.Path = "Misc 1", .Switch = "--cdf-update-mode", .Text = "CDF Update", .IntegerValue = True, .Options = {"No Update", "Update All", "Selectively Update"}, .Init = 1},
                 New OptionParam With {.Path = "Misc 1", .Switch = "--disable-trellis-quant", .Text = "Disable Trellis Quant", .IntegerValue = True, .Options = {"Off", "On"}},
                 New OptionParam With {.Path = "Misc 1", .Switch = "--sb-size", .Text = "Chroma Sample Pos", .Options = {"Dynamic", "64", "128"}},
                 New OptionParam With {.Path = "Misc 1", .Switch = "--timing-info", .Text = "Chroma Sample Pos", .Options = {"Unspecified", "Constant", "Model"}},
@@ -248,7 +250,7 @@ Public Class AV1Params
                 New NumParam With {.Path = "Misc 2", .Switch = "--profile", .Text = "Profile"},
                 New NumParam With {.Path = "Misc 2", .Switch = "--drop-frame", .Text = "Drop Frame"},
                 New NumParam With {.Path = "Misc 2", .Switch = "--auto-alt-ref", .Text = "Auto Alt Ref"},
-                New StringParam With {.Path = "Filters", .Switch = "--film-grain-table", .Text = "Film Grain Table", .Quotes = True, .BrowseFile = True},
+                New StringParam With {.Path = "Filters", .Switch = "--film-grain-table", .Text = "Film Grain Table", .Quotes = QuotesMode.Auto, .BrowseFile = True},
                 New NumParam With {.Path = "Filters", .Switch = "--sharpness", .Text = "Sharpness", .Config = {0, 7}},
                 New NumParam With {.Path = "Misc 2", .Switch = "--static-thresh", .Text = "Static Thresh"},
                 New NumParam With {.Path = "Misc 2", .Switch = "--arnr-maxframes", .Text = "ARNR Maxframes", .Config = {0, 15}},

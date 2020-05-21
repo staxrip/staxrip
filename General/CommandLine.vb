@@ -1,4 +1,5 @@
 ﻿
+Imports System.Text
 Imports StaxRip.UI
 
 Namespace CommandLine
@@ -73,10 +74,12 @@ Namespace CommandLine
         End Function
 
         Sub Execute()
-            If g.IsWindowsTerminalAvailable Then
-                g.ShellExecute("wt.exe", "cmd.exe /k """ + GetCommandLine(True, True) + """")
+            If g.IsWindowsTerminalAvailable AndAlso false Then
+                Dim cl = "cmd.exe /s /k --% """ + GetCommandLine(True, True) + """"
+                Dim base64String = Convert.ToBase64String(Encoding.Unicode.GetBytes(cl)) 'UTF16LE
+                g.Execute("wt.exe", "PowerShell.exe -NoLogo -NoExit -EncodedCommand """ + base64String + """")
             Else
-                g.ShellExecute("cmd.exe", "/k """ + GetCommandLine(True, True) + """")
+                g.Execute("cmd.exe", "/s /k """ + GetCommandLine(True, True) + """")
             End If
         End Sub
     End Class

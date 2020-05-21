@@ -1,5 +1,6 @@
 ﻿
 Imports System.Text
+
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -10,7 +11,7 @@ Public Class Rav1e
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "Rav1e"
+        Name = "AV1 | Rav1e"
     End Sub
 
     <NonSerialized>

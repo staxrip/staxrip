@@ -10,7 +10,7 @@ Public Class SVTAV1
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "SVT-AV1"
+            Return "AV1 | SVT-AV1"
         End Get
     End Property
 

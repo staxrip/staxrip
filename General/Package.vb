@@ -244,9 +244,17 @@ Public Class Package
         .Name = "rav1e",
         .Filename = "rav1e.exe",
         .Location = "Encoders\Rav1e",
-        .Description = "A Faster and Safer AV1 Encoder",
+        .Description = "AV1 Video Encoder.",
         .WebURL = "https://github.com/xiph/rav1e",
         .HelpFilename = "rav1e help.txt",
+        .HelpSwitch = "--help"})
+
+    Shared Property aomenc As Package = Add(New Package With {
+        .Name = "aomenc",
+        .Filename = "aomenc.exe",
+        .Location = "Encoders\aomenc",
+        .Description = "AV1 Video Encoder.",
+        .WebURL = "https://aomedia.org",
         .HelpSwitch = "--help"})
 
     Shared Property MTN As Package = Add(New Package With {

@@ -2,6 +2,9 @@
 2.1.1.5 Beta (not yet available)
 ============
 
+- in the video encoder dialogs the feature *Execute Command Line* failed when
+  Windows Terminal is installed and paths contained spaces
+
 
 2.1.1.4 Beta
 ============

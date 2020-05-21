@@ -48,10 +48,10 @@ Log File Viewer
 
 .. image:: ../screenshots/Log_File_Viewer.png
 
-Media Info
-----------
+MediaInfo
+---------
 
-.. image:: ../screenshots/Media_Info.png
+.. image:: ../screenshots/MediaInfo.png
 
 Menus
 -----

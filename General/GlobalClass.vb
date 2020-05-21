@@ -1,6 +1,5 @@
 ﻿
 Imports System.Collections.ObjectModel
-Imports System.Collections.Specialized
 Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Management.Automation
@@ -42,6 +41,10 @@ Public Class GlobalClass
         End Try
     End Function
 
+    Function IsWindowsTerminalAvailable() As Boolean
+        Return File.Exists(Folder.AppDataLocal + "Microsoft\WindowsApps\wt.exe")
+    End Function
+
     Sub RunCodeInTerminal(code As String)
         Dim base64String = Convert.ToBase64String(Encoding.Unicode.GetBytes(code)) 'UTF16LE
 
@@ -63,6 +66,45 @@ Public Class GlobalClass
             Proc.SetEnvironmentVariables(pr)
             pr.Start()
         End Using
+    End Sub
+
+    Sub Execute(fileName As String, arguments As String)
+        Dim info As New ProcessStartInfo
+        info.UseShellExecute = False
+        info.FileName = fileName
+        info.Arguments = arguments
+        Process.Start(info)?.Dispose()
+    End Sub
+
+    Sub ShellExecute(fileName As String, Optional arguments As String = Nothing)
+        Try
+            If Not fileName.StartsWith("http") AndAlso fileName.Ext.EqualsAny("htm", "html") Then
+                Dim browser = g.GetAppPathForExtension("htm", "html")
+
+                If browser = "" OrElse (Not browser.FileName = "chrome.exe" AndAlso
+                    Not browser.FileName = "firefox.exe") Then
+
+                    browser = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+                End If
+
+                If Not browser.FileExists Then
+                    browser = Package.FindEverywhere({"chrome.exe", "firefox.exe"})
+                End If
+
+                If browser.FileExists Then
+                    arguments = fileName.Escape
+                    fileName = browser
+                End If
+            End If
+
+            Process.Start(fileName, arguments)?.Dispose()
+        Catch ex As Exception
+            g.ShowException(ex, "Failed to start process", "Filename:" + BR2 + fileName + BR2 + "Arguments:" + BR2 + arguments)
+        End Try
+    End Sub
+
+    Sub SelectFileWithExplorer(filepath As String)
+        g.ShellExecute("explorer.exe", "/n, /select, " + filepath.Escape)
     End Sub
 
     Sub AddToPath(ParamArray dirs As String())
@@ -948,37 +990,6 @@ Public Class GlobalClass
         ShellExecute($"https://staxrip.readthedocs.io/{page}.html")
     End Sub
 
-    Sub ShellExecute(fileName As String, Optional arguments As String = Nothing)
-        Try
-            If Not fileName.StartsWith("http") AndAlso fileName.Ext.EqualsAny("htm", "html") Then
-                Dim browser = g.GetAppPathForExtension("htm", "html")
-
-                If browser = "" OrElse (Not browser.FileName = "chrome.exe" AndAlso
-                    Not browser.FileName = "firefox.exe") Then
-
-                    browser = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-                End If
-
-                If Not browser.FileExists Then
-                    browser = Package.FindEverywhere({"chrome.exe", "firefox.exe"})
-                End If
-
-                If browser.FileExists Then
-                    arguments = fileName.Escape
-                    fileName = browser
-                End If
-            End If
-
-            Process.Start(fileName, arguments)?.Dispose()
-        Catch ex As Exception
-            g.ShowException(ex, "Failed to start process", "Filename:" + BR2 + fileName + BR2 + "Arguments:" + BR2 + arguments)
-        End Try
-    End Sub
-
-    Sub SelectFileWithExplorer(filepath As String)
-        g.ShellExecute("explorer.exe", "/n, /select, " + filepath.Escape)
-    End Sub
-
     Sub OnUnhandledException(sender As Object, e As ThreadExceptionEventArgs)
         OnException(e.Exception)
     End Sub
@@ -1335,8 +1346,8 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Function IsWindowsTerminalAvailable() As Boolean
-        Return File.Exists(Folder.AppDataLocal + "Microsoft\WindowsApps\wt.exe")
+    Function IsDevelopmentPC() As Boolean
+        Return Application.StartupPath.EndsWith("\bin")
     End Function
 
     Shared WasFrameServerInitialized As Boolean

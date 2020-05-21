@@ -320,7 +320,9 @@ Public MustInherit Class VideoEncoder
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
+        If sb.Show = DialogResult.OK Then
+            Return sb.SelectedValue
+        End If
 
         Return Nothing
     End Function
@@ -331,6 +333,7 @@ Public MustInherit Class VideoEncoder
         ret.Add(New x264Enc)
         ret.Add(New x265Enc)
 
+        ret.Add(New aomenc)
         ret.Add(New Rav1e)
         ret.Add(New SVTAV1)
 
@@ -366,7 +369,7 @@ Public MustInherit Class VideoEncoder
         cmdl.Name = "Command Line"
         cmdl.Muxer = New ffmpegMuxer("AVI")
         cmdl.QualityMode = True
-        cmdl.CommandLines = "%app:xvid_encraw% -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_par_x%:%target_par_y%"
+        cmdl.CommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_par_x%:%target_par_y%"
         ret.Add(cmdl)
 
         ret.Add(New NullEncoder())

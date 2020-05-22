@@ -74,12 +74,12 @@ Namespace CommandLine
         End Function
 
         Sub Execute()
-            If g.IsWindowsTerminalAvailable AndAlso false Then
-                Dim cl = "cmd.exe /s /k --% """ + GetCommandLine(True, True) + """"
-                Dim base64String = Convert.ToBase64String(Encoding.Unicode.GetBytes(cl)) 'UTF16LE
-                g.Execute("wt.exe", "PowerShell.exe -NoLogo -NoExit -EncodedCommand """ + base64String + """")
+            If g.IsWindowsTerminalAvailable Then
+                Dim cl = "cmd.exe /S /K --% """ + GetCommandLine(True, True) + """"
+                Dim base64 = Convert.ToBase64String(Encoding.Unicode.GetBytes(cl)) 'UTF16LE
+                g.Execute("wt.exe", "powershell.exe -NoLogo -NoExit -NoProfile -EncodedCommand """ + base64 + """")
             Else
-                g.Execute("cmd.exe", "/s /k """ + GetCommandLine(True, True) + """")
+                g.Execute("cmd.exe", "/S /K """ + GetCommandLine(True, True) + """")
             End If
         End Sub
     End Class

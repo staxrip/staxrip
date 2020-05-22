@@ -129,7 +129,7 @@ Public Class Documentation
             row.Type = pack.GetTypeName
             row.Filename = pack.Filename
 
-            If pack.IsCorrectVersion Then
+            If pack.IsVersionCorrect Then
                 row.Version = pack.Version
             End If
 

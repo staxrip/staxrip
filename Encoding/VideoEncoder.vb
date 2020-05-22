@@ -605,8 +605,9 @@ Public Class BatchEncoder
             Exit Sub
         End If
 
-        If Not g.VerifyRequirements Then Exit Sub
-        If Not g.IsValidSource Then Exit Sub
+        If Not g.VerifyRequirements OrElse Not g.IsValidSource Then
+            Exit Sub
+        End If
 
         Dim script As New VideoScript
         script.Engine = p.Script.Engine

@@ -1679,6 +1679,11 @@ Public Class MainForm
             g.RaiseAppEvent(ApplicationEvent.ProjectLoaded)
             g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
             FiltersListView.RebuildMenu()
+
+            If p.SourceFile <> "" AndAlso Not g.VerifyRequirements Then
+                Throw New AbortException
+            End If
+
             Return True
         Catch ex As Exception
             OpenProject(g.StartupTemplatePath)
@@ -3045,10 +3050,14 @@ Public Class MainForm
             p.SkippedAssistantTips.Add(CurrentAssistantTipKey)
         End If
 
-        If Not g.VerifyRequirements() Then Exit Sub
+        If Not g.VerifyRequirements() Then
+            Exit Sub
+        End If
 
         If AssistantPassed Then
-            If AbortDueToLowDiskSpace() Then Exit Sub
+            If AbortDueToLowDiskSpace() Then
+                Exit Sub
+            End If
 
             If Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath) Then
                 Select Case p.FileExistVideo
@@ -3719,11 +3728,7 @@ Public Class MainForm
         If p.SourceFile = "" Then
             ShowOpenSourceDialog()
         Else
-            If Not g.VerifyRequirements Then
-                Exit Sub
-            End If
-
-            If Not g.IsValidSource Then
+            If Not g.VerifyRequirements OrElse Not g.IsValidSource Then
                 Exit Sub
             End If
 
@@ -4454,7 +4459,6 @@ Public Class MainForm
         ret.Add("Apps|Media Info|MediaInfo File", NameOf(g.DefaultCommands.ShowMediaInfo))
         ret.Add("Apps|Media Info|MediaInfo Folder", NameOf(g.DefaultCommands.ShowMediaInfoFolderViewDialog))
         ret.Add("Apps|Media Info|Ingest HDR", NameOf(g.DefaultCommands.SaveMKVHDR))
-        ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|Players|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpv.net"})
         ret.Add("Apps|Players|MPC-BE", NameOf(g.DefaultCommands.StartTool), {"MPC-BE"})
         ret.Add("Apps|Players|MPC-HC", NameOf(g.DefaultCommands.StartTool), {"MPC-HC"})
@@ -5142,7 +5146,10 @@ Public Class MainForm
         For Each i In FileTypes.Video
             Dim files = Directory.GetFiles(path, "*." + i)
             Array.Sort(files)
-            If files.Length > 0 Then Return files
+
+            If files.Length > 0 Then
+                Return files
+            End If
         Next
     End Function
 

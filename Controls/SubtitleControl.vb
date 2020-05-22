@@ -422,7 +422,9 @@ Public Class SubtitleControl
     End Class
 
     Private Sub bnPlay_Click() Handles bnPlay.Click
-        If Not Package.mpvnet.VerifyOK(True) Then Exit Sub
+        If Not Package.mpvnet.VerifyOK(True) Then
+            Exit Sub
+        End If
 
         Dim st = Items(dgv.CurrentRow.Index).Subtitle
         Dim filepath = st.Path

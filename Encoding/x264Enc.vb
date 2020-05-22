@@ -80,8 +80,9 @@ Public Class x264Enc
     End Sub
 
     Overrides Sub RunCompCheck()
-        If Not g.VerifyRequirements Then Exit Sub
-        If Not g.IsValidSource Then Exit Sub
+        If Not g.VerifyRequirements OrElse Not g.IsValidSource Then
+            Exit Sub
+        End If
 
         Dim newParams As New x264Params
         Dim newStore = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)

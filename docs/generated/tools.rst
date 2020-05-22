@@ -34,14 +34,14 @@ Tools
     "HQDN3D","AviSynth Plugin","Hqdn3d.dll","0.11","2019-01-01"
     "JincResize","AviSynth Plugin","JincResize.dll","r44","2019-01-01"
     "JPSDR","AviSynth Plugin","Plugins_JPSDR.dll","3.2.0","2019-12-29"
-    "KNLMeansCL","AviSynth Plugin","KNLMeansCL.dll","1.1.1","2019-01-01"
+    "KNLMeansCL","AviSynth Plugin","KNLMeansCL.dll","1.1.1","2020-04-29"
     "L-SMASH-Works","AviSynth Plugin","LSMASHSource.dll","2020-03-28 HolyWu","2020-03-27"
-    "masktools2","AviSynth Plugin","masktools2.dll","2.2.18","2019-01-01"
+    "masktools2","AviSynth Plugin","masktools2.dll","2.2.23","2020-05-14"
     "MedianBlur2","AviSynth Plugin","MedianBlur2.dll","0.94","2014-02-10"
     "MiniDeen","AviSynth Plugin","MiniDeen.dll","r6","2020-03-09"
     "MipSmooth","AviSynth Plugin","MipSmooth.dll","1.1.2","2019-01-01"
     "modPlus","AviSynth Plugin","modPlus.dll","2017-10-17","2019-01-01"
-    "MPEG2DecPlus","AviSynth Plugin","MPEG2DecPlus.dll","1.5.8.0","2019-01-01"
+    "MPEG2DecPlus","AviSynth Plugin","MPEG2DecPlus64.dll","0.1.2","2020-05-09"
     "MSharpen","AviSynth Plugin","msharpen.dll","0.9","2013-11-30"
     "mvtools2","AviSynth Plugin","mvtools2.dll","2.7.41","2019-05-02"
     "NicAudio","AviSynth Plugin","NicAudio.dll","1.1","2019-01-01"
@@ -63,7 +63,7 @@ Tools
     "vsCube","AviSynth Plugin","vscube.dll","1.0","2019-01-01"
     "VSFilterMod","AviSynth Plugin","VSFilterMod.dll","R5.2.1","2019-07-09"
     "xNLMeans","AviSynth Plugin","xNLMeans.dll","0.03","2019-01-01"
-    "yadifmod2","AviSynth Plugin","yadifmod2.dll","0.0.4-1","2016-07-05"
+    "yadifmod2","AviSynth Plugin","yadifmod2.dll","0.2.2","2020-05-14"
     "AnimeIVTC","AviSynth Script","AnimeIVTC.avsi","2.20","2019-01-01"
     "AviSynthShader AVSI","AviSynth Script","Shader.avsi","1.6.5","2018-05-13"
     "CropResize","AviSynth Script","CropResize.avsi","2019-09-09","2019-09-10"
@@ -92,7 +92,7 @@ Tools
     "nnedi3 AVSI","AviSynth Script","nnedi3_16.avsi","3.0","2019-01-01"
     "nnedi3x AVSI","AviSynth Script","nnedi3x.avsi","3.0","2019-01-01"
     "pSharpen","AviSynth Script","pSharpen.avsi","2016-03-16","2019-01-01"
-    "QTGMC","AviSynth Script","QTGMC.avsi","3.361s","2019-01-01"
+    "QTGMC","AviSynth Script","QTGMC.avsi","3.364s","2020-05-22"
     "ResizeX","AviSynth Script","ResizeX.avsi","1.0.1","2019-01-01"
     "SMDegrain","AviSynth Script","SMDegrain.avsi","3.1.2.100s","2019-08-19"
     "SmoothD2c","AviSynth Script","SmoothD2c.avs","a2","2019-01-01"
@@ -100,7 +100,7 @@ Tools
     "aomenc","Console App","aomenc.exe","2.0","2020-05-19"
     "AutoCrop","Console App","AutoCrop.exe","1.0.0.0","2020-05-06"
     "avs2pipemod","Console App","avs2pipemod64.exe","1.1.1","2016-08-14"
-    "AVSMeter","Console App","AVSMeter64.exe","2.9.9.1","2020-04-17"
+    "AVSMeter","Console App","AVSMeter64.exe","2.9.9.3","2020-05-22"
     "dsmux","Console App","dsmux.exe","2013-04-14","2013-04-14"
     "eac3to","Console App","eac3to.exe","3.34","2017-11-19"
     "fdkaac","Console App","fdkaac.exe","1.0.0","2019-02-13"
@@ -121,26 +121,26 @@ Tools
     "vspipe","Console App","vspipe.exe","r50","2020-05-08"
     "x264","Console App","x264.exe","2991-1771b55 Patman","2020-02-20"
     "x265","Console App","x265.exe","3.3+27-g4780a8d99-gcc11.0.0 Patman","2020-05-07"
-    "xvid_encraw","Console App","xvid_encraw.exe","",""
+    "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
     "chapterEditor","GUI App","chapterEditor.exe","1.21","2020-02-29"
-    "DGIndex","GUI App","DGIndex.exe","",""
-    "MPC-BE","GUI App","mpc-be64.exe",,"2019-12-27"
-    "MPC-HC","GUI App","mpc-hc64.exe",,"2017-07-16"
+    "DGIndex","GUI App","DGIndex.exe","1.5.8",""
+    "MPC-BE","GUI App","mpc-be64.exe","","2019-12-27"
+    "MPC-HC","GUI App","mpc-hc64.exe","","2017-07-16"
     "mpv.net","GUI App","mpvnet.exe","5.4.8.0","2020-05-11"
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.14","2020-03-08"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
-    "AviSynth","Library","AviSynth.dll","3.5.1","2020-04-03"
-    "DirectX 9","Library","d3d9.dll",,"2019-10-04"
+    "AviSynth","Library","AviSynth.dll","3.6.0","2020-05-20"
+    "DirectX 9","Library","d3d9.dll","","2019-10-04"
     "FFTW","Library","libfftw3-3.dll","3.3.8","2018-12-20"
     "MediaInfo","Library","MediaInfo.dll","20.03","2020-04-03"
     "VapourSynth","Library","vapoursynth.dll","r50","2020-05-08"
-    "Visual C++ 2012","Library","msvcp110.dll",,"2012-11-05"
-    "Visual C++ 2013","Library","msvcp120.dll",,"2016-02-10"
-    "Visual C++ 2019","Library","msvcp140.dll","14.25.28508.3","2020-01-08"
+    "Visual C++ 2012","Library","msvcp110.dll","","2012-11-05"
+    "Visual C++ 2013","Library","msvcp120.dll","","2016-02-10"
+    "Visual C++ 2019","Library","msvcp140.dll","","2020-03-20"
     "Get-MediaInfo","Misc","Get-MediaInfo.ps1","3.3","2020-05-04"
     "Haali Splitter","Misc","splitter.ax","","2013-04-14"
-    "MediaInfo.NET","Misc","MediaInfoNET.exe","6.3.0.0","2020-05-04"
+    "MediaInfo.NET","Misc","MediaInfoNET.exe","6.4.0.0","2020-05-22"
     "AWarpSharp2","VapourSynth Plugin","libawarpsharp2.dll","2018-06-18","2019-01-01"
     "BM3D","VapourSynth Plugin","BM3D.dll","r8","2019-01-03"
     "Bwdif","VapourSynth Plugin","Bwdif.dll","r1","2020-02-24"
@@ -181,7 +181,7 @@ Tools
     "vcmod","VapourSynth Plugin","vcmod.dll","2017-10-17","2019-01-01"
     "vcmove","VapourSynth Plugin","vcmove.dll","2016-04-10","2019-01-01"
     "W3FDIF","VapourSynth Plugin","W3FDIF.dll","r1","2019-01-01"
-    "Yadifmod","VapourSynth Plugin","Yadifmod.dll","10","2017-02-07"
+    "Yadifmod","VapourSynth Plugin","Yadifmod.dll","r10","2017-02-07"
     "znedi3","VapourSynth Plugin","vsznedi3.dll","2018-01-11","2019-01-01"
     "adjust","VapourSynth Script","adjust.py","2015-03-22","2019-01-01"
     "Dither","VapourSynth Script","Dither.py","2018-02-23","2019-01-01"
@@ -768,7 +768,7 @@ KNLMeansCL is an optimized pixelwise OpenCL implementation of the Non-local mean
 
 Filters: KNLMeansCL
 
-http://github.com/Khanattila/KNLMeansCL
+https://github.com/pinterf/KNLMeansCL
 
 
 L-SMASH-Works
@@ -838,7 +838,7 @@ Source filter to open D2V index files created with DGIndex or D2VWitch.
 
 Filters: MPEG2Source
 
-http://github.com/chikuzen/MPEG2DecPlus
+https://github.com/Asd-g/MPEG2DecPlus
 
 
 MSharpen
@@ -1054,11 +1054,11 @@ http://avisynth.nl/index.php/xNLMeans
 yadifmod2
 ~~~~~~~~~
 
-Yet Another Deinterlacing Filter mod  for Avisynth2.6/Avisynth+
+Yet Another Deinterlacing Filter mod
 
 Filters: yadifmod2
 
-http://github.com/chikuzen/yadifmod2
+https://github.com/Asd-g/yadifmod2
 
 
 AviSynth Script

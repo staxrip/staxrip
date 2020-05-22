@@ -103,8 +103,8 @@ Public Class AppsForm
         Me.tsbLaunch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbLaunch.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbLaunch.Name = "tsbLaunch"
-        Me.tsbLaunch.Size = New System.Drawing.Size(136, 69)
-        Me.tsbLaunch.Text = "Launch"
+        Me.tsbLaunch.Size = New System.Drawing.Size(156, 69)
+        Me.tsbLaunch.Text = " Launch "
         Me.tsbLaunch.ToolTipText = "Launches the app"
         '
         'tsbExplore
@@ -112,8 +112,8 @@ Public Class AppsForm
         Me.tsbExplore.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbExplore.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbExplore.Name = "tsbExplore"
-        Me.tsbExplore.Size = New System.Drawing.Size(142, 69)
-        Me.tsbExplore.Text = "Explore"
+        Me.tsbExplore.Size = New System.Drawing.Size(162, 69)
+        Me.tsbExplore.Text = " Explore "
         Me.tsbExplore.ToolTipText = "Opens the apps folder in File Explorer"
         '
         'tsbWebsite
@@ -121,8 +121,8 @@ Public Class AppsForm
         Me.tsbWebsite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbWebsite.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbWebsite.Name = "tsbWebsite"
-        Me.tsbWebsite.Size = New System.Drawing.Size(117, 69)
-        Me.tsbWebsite.Text = " Web "
+        Me.tsbWebsite.Size = New System.Drawing.Size(137, 69)
+        Me.tsbWebsite.Text = "  Web  "
         Me.tsbWebsite.ToolTipText = "Opens the apps website"
         '
         'tsbDownload
@@ -130,8 +130,8 @@ Public Class AppsForm
         Me.tsbDownload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbDownload.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbDownload.Name = "tsbDownload"
-        Me.tsbDownload.Size = New System.Drawing.Size(185, 69)
-        Me.tsbDownload.Text = "Download"
+        Me.tsbDownload.Size = New System.Drawing.Size(205, 69)
+        Me.tsbDownload.Text = " Download "
         Me.tsbDownload.ToolTipText = "Opens the apps download web page"
         '
         'tsbVersion
@@ -139,8 +139,8 @@ Public Class AppsForm
         Me.tsbVersion.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbVersion.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbVersion.Name = "tsbVersion"
-        Me.tsbVersion.Size = New System.Drawing.Size(141, 69)
-        Me.tsbVersion.Text = "Version"
+        Me.tsbVersion.Size = New System.Drawing.Size(181, 69)
+        Me.tsbVersion.Text = "  Version  "
         Me.tsbVersion.ToolTipText = "Edits the apps version (F12)"
         '
         'ddbPath
@@ -151,8 +151,8 @@ Public Class AppsForm
         Me.ddbPath.Image = CType(resources.GetObject("ddbPath.Image"), System.Drawing.Image)
         Me.ddbPath.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ddbPath.Name = "ddbPath"
-        Me.ddbPath.Size = New System.Drawing.Size(120, 69)
-        Me.ddbPath.Text = "Path"
+        Me.ddbPath.Size = New System.Drawing.Size(160, 69)
+        Me.ddbPath.Text = "  Path  "
         '
         'miBrowsePath
         '
@@ -183,8 +183,8 @@ Public Class AppsForm
         Me.ddbTools.Image = CType(resources.GetObject("ddbTools.Image"), System.Drawing.Image)
         Me.ddbTools.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ddbTools.Name = "ddbTools"
-        Me.ddbTools.Size = New System.Drawing.Size(152, 69)
-        Me.ddbTools.Text = " Tools "
+        Me.ddbTools.Size = New System.Drawing.Size(172, 69)
+        Me.ddbTools.Text = "  Tools  "
         '
         'miShowGridView
         '
@@ -203,8 +203,8 @@ Public Class AppsForm
         Me.tsbHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbHelp.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbHelp.Name = "tsbHelp"
-        Me.tsbHelp.Size = New System.Drawing.Size(119, 69)
-        Me.tsbHelp.Text = " Help "
+        Me.tsbHelp.Size = New System.Drawing.Size(139, 69)
+        Me.tsbHelp.Text = "  Help  "
         Me.tsbHelp.ToolTipText = "Opens the apps help (F1)"
         '
         'flp
@@ -356,8 +356,8 @@ Public Class AppsForm
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
         tsbHelp.Enabled = CurrentPackage.HelpFileOrURL <> ""
 
-        tsbVersion.Enabled = Not CurrentPackage.IgnoreVersion AndAlso CurrentPackage.Path.FileExists AndAlso
-            Not (CurrentPackage.IsOldVersion() AndAlso Not CurrentPackage.AllowOldVersion)
+        tsbVersion.Enabled = CurrentPackage.Path.FileExists AndAlso
+            Not (CurrentPackage.IsVersionOld() AndAlso Not CurrentPackage.VersionAllowOld)
 
         miBrowsePath.Enabled = CurrentPackage.FixedDir = ""
         miSearchUsingEverything.Enabled = CurrentPackage.FixedDir = ""
@@ -370,13 +370,9 @@ Public Class AppsForm
         Contents("Description").Text = CurrentPackage.Description
 
         If File.Exists(CurrentPackage.Path) Then
-            Contents("Version").Text = CurrentPackage.Version + " (" + File.GetLastWriteTimeUtc(CurrentPackage.Path).ToShortDateString() + ")"
-        Else
-            Contents("Version").Text = CurrentPackage.Version
+            Contents("Version").Text = If(CurrentPackage.IsVersionCorrect, CurrentPackage.Version, "Unknown")
+            Contents("Version").Text += " (" + File.GetLastWriteTimeUtc(CurrentPackage.Path).ToShortDateString() + ")"
         End If
-
-        Headers("Version").Visible = CurrentPackage.IsCorrectVersion AndAlso Not CurrentPackage.IgnoreVersion
-        Contents("Version").Visible = CurrentPackage.IsCorrectVersion AndAlso Not CurrentPackage.IgnoreVersion
 
         Contents("Status").Text = CurrentPackage.GetStatusDisplay()
 
@@ -609,7 +605,7 @@ Public Class AppsForm
             CurrentPackage.Version = input
             CurrentPackage.VersionDate = File.GetLastWriteTimeUtc(CurrentPackage.Path)
 
-            Dim txt = Application.ProductVersion + BR2
+            Dim txt As String
 
             For Each pack In Package.Items.Values
                 If pack.Version <> "" Then
@@ -638,7 +634,7 @@ Public Class AppsForm
             row.Filename = pack.Filename
             row.Folder = pack.Directory
 
-            If pack.IsCorrectVersion Then
+            If pack.IsVersionCorrect Then
                 row.Version = "'" + pack.Version + "'"
             End If
 

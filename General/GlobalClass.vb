@@ -46,12 +46,12 @@ Public Class GlobalClass
     End Function
 
     Sub RunCodeInTerminal(code As String)
-        Dim base64String = Convert.ToBase64String(Encoding.Unicode.GetBytes(code)) 'UTF16LE
+        Dim base64 = Convert.ToBase64String(Encoding.Unicode.GetBytes(code)) 'UTF16LE
 
         If g.IsWindowsTerminalAvailable Then
-            RunCommandInTerminal("wt.exe", $"powershell.exe -nologo -noexit -EncodedCommand ""{base64String}""")
+            RunCommandInTerminal("wt.exe", $"powershell.exe -NoLogo -NoExit -NoProfile -EncodedCommand ""{base64}""")
         Else
-            RunCommandInTerminal("powershell.exe", $"-nologo -noexit -EncodedCommand ""{base64String}""")
+            RunCommandInTerminal("powershell.exe", $"-NoLogo -NoExit -NoProfile -EncodedCommand ""{base64}""")
         End If
     End Sub
 
@@ -349,7 +349,9 @@ Public Class GlobalClass
 
     Function VerifyRequirements() As Boolean
         For Each pack In Package.Items.Values
-            If Not pack.VerifyOK Then Return False
+            If Not pack.VerifyOK Then
+                Return False
+            End If
         Next
 
         If Not p.Script.IsFilterActive("Source") Then
@@ -784,7 +786,10 @@ Public Class GlobalClass
 
     Function IsValidSource(Optional warn As Boolean = True) As Boolean
         If p.SourceScript.GetFrameCount = 0 Then
-            If warn Then MsgWarn("Failed to load source.")
+            If warn Then
+                MsgWarn("Failed to load source.")
+            End If
+
             Return False
         End If
 

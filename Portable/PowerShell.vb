@@ -16,6 +16,11 @@ Public Class PowerShell
             runspace.Open()
 
             Using pipeline = runspace.CreatePipeline()
+                Dim cmd = New Runspaces.Command("Set-ExecutionPolicy")
+                cmd.Parameters.Add("ExecutionPolicy", "Unrestricted")
+                cmd.Parameters.Add("Scope", "Process")
+                pipeline.Commands.Add(cmd)
+
                 If InitCode <> "" Then
                     pipeline.Commands.AddScript(InitCode)
                 End If

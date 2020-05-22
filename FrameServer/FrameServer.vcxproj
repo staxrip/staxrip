@@ -98,6 +98,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="avisynth.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="FrameServer.h" />
     <ClInclude Include="AviSynthServer.h" />

@@ -60,7 +60,7 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
         if (!CreateScriptEnvironment2)
             throw std::exception("Cannot resolve AviSynth+ CreateScriptEnvironment2 function");
 
-        m_ScriptEnvironment = CreateScriptEnvironment2(6);
+        m_ScriptEnvironment = CreateScriptEnvironment2(8);
 
         if (!m_ScriptEnvironment)
             throw std::exception("A newer AviSynth+ version is required");

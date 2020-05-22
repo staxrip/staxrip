@@ -1,13 +1,27 @@
 
-2.1.1.5 Beta (not yet available)
+2.1.1.6 Beta (not yet available)
+============
+
+2.1.1.5 Beta
 ============
 
 - In the video encoder dialogs the feature *Execute Command Line* failed when
   Windows Terminal is installed and paths contained spaces.
 - Maximum number of parallel processes increased from 4 to 16.
+- Issues fixed on systems with restricted PowerShell execution policy.
 - the Tools page in the docs lists all tools in a grid view
   with columns: Name, Type, Filename, Version, Modified Date
-  
+- The muxer dialog is resizable and remembers the size.
+- AviSynth headers updated and interface version changed to 8
+- AviSynth 3.6
+- yadifmod2 avs 0.2.2
+- AVSMeter 2.9.9.3
+- KNLMeansCL avs/vs 1.1.1
+- MPEG2DecPlus avs 0.1.2 (untested)
+- QTGMC avs 3.364s
+- masktools2 2.2.23
+- MediaInfo.NET 6.4.0.0
+
 
 2.1.1.4 Beta
 ============

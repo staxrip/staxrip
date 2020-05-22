@@ -5,7 +5,6 @@ Imports Microsoft.Win32
 Public Class Package
     Implements IComparable(Of Package)
 
-    Property AllowOldVersion As Boolean = True
     Property Description As String
     Property DownloadURL As String
     Property Filename As String
@@ -15,9 +14,7 @@ Public Class Package
     Property HelpUrlAviSynth As String
     Property HelpUrlVapourSynth As String
     Property HintDirFunc As Func(Of String)
-    Property IgnoreNewVersion As Boolean
     Property IgnorePath As String
-    Property IgnoreVersion As Boolean
     Property IsGUI As Boolean
     Property IsIncluded As Boolean = True
     Property Location As String
@@ -28,6 +25,9 @@ Public Class Package
     Property StatusFunc As Func(Of String)
     Property TreePath As String
     Property Version As String
+    Property VersionAllowAny As Boolean
+    Property VersionAllowNew As Boolean
+    Property VersionAllowOld As Boolean = True
     Property VersionDate As Date
     Property WebURL As String
 
@@ -143,6 +143,7 @@ Public Class Package
         .Filename = "AviSynth.dll",
         .WebURL = "https://github.com/AviSynth/AviSynthPlus",
         .HelpURL = "http://avisynth.nl",
+        .DownloadURL = "https://github.com/AviSynth/AviSynthPlus/releases",
         .Description = "StaxRip supports both AviSynth and VapourSynth as video processing tool.",
         .Locations = {Folder.System, "FrameServer\AviSynth"},
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth})
@@ -288,7 +289,7 @@ Public Class Package
         .Filename = "mpc-be64.exe",
         .IsGUI = True,
         .IsIncluded = False,
-        .IgnoreVersion = True,
+        .VersionAllowAny = True,
         .Required = False,
         .WebURL = "https://sourceforge.net/projects/mpcbe/",
         .Description = "DirectShow based media player.",
@@ -299,7 +300,7 @@ Public Class Package
         .Filename = "mpc-hc64.exe",
         .IsGUI = True,
         .IsIncluded = False,
-        .IgnoreVersion = True,
+        .VersionAllowAny = True,
         .Required = False,
         .WebURL = "https://mpc-hc.org/",
         .Description = "DirectShow based media player.",
@@ -690,7 +691,9 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",
             .Filename = "KNLMeansCL.dll",
-            .WebURL = "http://github.com/Khanattila/KNLMeansCL",
+            .WebURL = "https://github.com/pinterf/KNLMeansCL",
+            .DownloadURL = "https://github.com/pinterf/KNLMeansCL/releases",
+            .HelpURL = "https://github.com/Khanattila/KNLMeansCL/wiki",
             .Description = "KNLMeansCL is an optimized pixelwise OpenCL implementation of the Non-local means denoising algorithm. Every pixel is restored by the weighted average of all pixels in its search window. The level of averaging is determined by the filtering parameter h.",
             .VSFilterNames = {"knlm.KNLMeansCL"},
             .AvsFilterNames = {"KNLMeansCL"},
@@ -707,8 +710,9 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "MPEG2DecPlus",
-            .Filename = "MPEG2DecPlus.dll",
-            .WebURL = "http://github.com/chikuzen/MPEG2DecPlus",
+            .Filename = "MPEG2DecPlus64.dll",
+            .WebURL = "https://github.com/Asd-g/MPEG2DecPlus",
+            .DownloadURL = "https://github.com/Asd-g/MPEG2DecPlus/releases",
             .Description = "Source filter to open D2V index files created with DGIndex or D2VWitch.",
             .AvsFilterNames = {"MPEG2Source"},
             .AvsFiltersFunc = Function() {New VideoFilter("Source", "MPEG2Source", "MPEG2Source(""%source_file%"")")}})
@@ -729,7 +733,7 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/DeBlock",
             .Location = "Plugins\AVS\Deblock",
             .AvsFilterNames = {"Deblock"},
-            .AvsFiltersFunc = Function() {New VideoFilter("Restoration", "DeBlock | DeBock", "Deblock(quant=25, aOffset=0, bOffset=0, planes=""yuv"")")}})
+            .AvsFiltersFunc = Function() {New VideoFilter("Restoration", "DeBlock | DeBock", "Deblock(quant=25, aOffset=0, bOffset=0)")}})
 
         Add(New PluginPackage With {
             .Name = "VapourSource",
@@ -1220,6 +1224,7 @@ Public Class Package
             .Name = "masktools2",
             .Filename = "masktools2.dll",
             .WebURL = "http://github.com/pinterf/masktools",
+            .DownloadURL = "https://github.com/pinterf/masktools/releases",
             .Description = "MaskTools2 contain a set of filters designed to create, manipulate and use masks. Masks, in video processing, are a way to give a relative importance to each pixel. You can, for example, create a mask that selects only the green parts of the video, and then replace those parts with another video.",
             .AvsFilterNames = {"mt_adddiff", "mt_average", "mt_binarize", "mt_circle", "mt_clamp", "mt_convolution", "mt_diamond", "mt_edge", "mt_ellipse", "mt_expand", "mt_hysteresis", "mt_inflate", "mt_inpand", "mt_invert", "mt_logic", "mt_losange", "mt_lut", "mt_lutf", "mt_luts", "mt_lutxy", "mt_makediff", "mt_mappedblur", "mt_merge", "mt_motion", "mt_polish", "mt_rectangle", "mt_square"}})
 
@@ -1233,11 +1238,20 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "yadifmod2",
             .Filename = "yadifmod2.dll",
-            .Description = "Yet Another Deinterlacing Filter mod  for Avisynth2.6/Avisynth+",
-            .WebURL = "http://github.com/chikuzen/yadifmod2",
-            .HelpURL = "http://github.com/chikuzen/yadifmod2/blob/master/avisynth/readme.md",
+            .Description = "Yet Another Deinterlacing Filter mod",
+            .WebURL = "https://github.com/Asd-g/yadifmod2",
+            .HelpUrlAviSynth = "https://github.com/Asd-g/yadifmod2/blob/master-1/avisynth/readme.md",
+            .HelpUrlVapourSynth = "https://github.com/Asd-g/yadifmod2/blob/master-1/vapoursynth/readme.md",
             .AvsFilterNames = {"yadifmod2"},
             .AvsFiltersFunc = Function() {New VideoFilter("Field", "yadifmod2", "yadifmod2()")}})
+
+        Add(New PluginPackage With {
+            .Name = "Yadifmod",
+            .Filename = "Yadifmod.dll",
+            .Description = "Modified version of Fizick's avisynth filter port of yadif from mplayer. This version doesn't internally generate spatial predictions, but takes them from an external clip.",
+            .WebURL = "http://github.com/HomeOfVapourSynthEvolution/VapourSynth-Yadifmod",
+            .VSFilterNames = {"yadifmod.Yadifmod"},
+            .VSFiltersFunc = Function() {New VideoFilter("Field", "Yadifmod", "clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field=0), order=1, field=-1, mode=0)")}})
 
         Add(New PluginPackage With {
             .Name = "FixTelecinedFades",
@@ -1271,14 +1285,6 @@ Public Class Package
             .Description = "vcvcfreq plugin for VapourSynth.",
             .WebURL = "http://www.avisynth.nl/users/vcmohan/vcfreq/vcfreq.html",
             .VSFilterNames = {"vcfreq.F1Quiver", "vcfreq.F2Quiver", "vcfreq.Blur", "vcfreq.Sharp"}})
-
-        Add(New PluginPackage With {
-            .Name = "Yadifmod",
-            .Filename = "Yadifmod.dll",
-            .Description = "Modified version of Fizick's avisynth filter port of yadif from mplayer. This version doesn't internally generate spatial predictions, but takes them from an external clip.",
-            .WebURL = "http://github.com/HomeOfVapourSynthEvolution/VapourSynth-Yadifmod",
-            .VSFilterNames = {"yadifmod.Yadifmod"},
-            .VSFiltersFunc = Function() {New VideoFilter("Field", "Yadifmod", "clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field=0), order=1, field=-1, mode=0)")}})
 
         Add(New PluginPackage With {
             .Name = "nnedi3",
@@ -1683,7 +1689,7 @@ Public Class Package
             .Description = "Visual C++ 2012 Redistributable is required by some tools used by StaxRip.",
             .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
             .FixedDir = Folder.System,
-            .IgnoreVersion = True,
+            .VersionAllowAny = True,
             .TreePath = "Runtimes",
             .RequiredFunc = Function() Items("SangNom2 avs").Required OrElse
                 Items("Deblock avs").Required OrElse Items("mClean avs").Required})
@@ -1693,7 +1699,7 @@ Public Class Package
             .Filename = "msvcp120.dll",
             .Description = "Visual C++ 2013 Redistributable is required by some tools used by StaxRip.",
             .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=40784",
-            .IgnoreVersion = True,
+            .VersionAllowAny = True,
             .FixedDir = Folder.System,
             .TreePath = "Runtimes"})
 
@@ -1702,7 +1708,8 @@ Public Class Package
             .Filename = "msvcp140.dll",
             .Description = "Visual C++ Redistributable is required by many tools used by StaxRip.",
             .DownloadURL = "https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads",
-            .AllowOldVersion = False,
+            .VersionAllowOld = False,
+            .VersionAllowNew = True,
             .FixedDir = Folder.System,
             .TreePath = "Runtimes"})
 
@@ -1712,7 +1719,7 @@ Public Class Package
             .Description = "DirectX 9.0c End-User Runtime.",
             .DownloadURL = "https://www.microsoft.com/en-us/download/details.aspx?id=34429",
             .FixedDir = Folder.System,
-            .IgnoreVersion = True,
+            .VersionAllowAny = True,
             .TreePath = "Runtimes",
             .RequiredFunc = Function() AviSynthShader.Required})
 
@@ -1974,14 +1981,16 @@ Public Class Package
     Function GetStatusVersion() As String
         Dim ret As String
 
-        If Not IsCorrectVersion() AndAlso Not IgnoreVersion Then
-            If IsOldVersion() Then
-                If Not AllowOldVersion Then
+        If Not IsVersionValid() Then
+            If IsVersionOld() Then
+                If Not VersionAllowOld Then
                     ret = $"The currently used version of {Name} is not compatible (too old)."
                 Else
                     ret = $"An old {Name} version was found, click on Version (F12) and enter the name of this version or install a newer version."
                 End If
-            Else
+            End If
+
+            If IsVersionNew() Then
                 ret = $"A new {Name} version was found, new versions are usually compatible, click on Version (F12) and enter the name of this version."
             End If
         End If
@@ -2015,18 +2024,36 @@ Public Class Package
         End If
     End Function
 
-    Function IsOldVersion() As Boolean
+    Function IsVersionOld() As Boolean
         Dim filepath = Path
 
-        If filepath <> "" AndAlso Not IgnoreVersion Then
+        If filepath <> "" Then
             If (VersionDate - File.GetLastWriteTimeUtc(filepath)).TotalDays > 3 Then
                 Return True
             End If
         End If
     End Function
 
-    Overridable Function IsCorrectVersion() As Boolean
-        If IgnoreVersion Then
+    Function IsVersionNew() As Boolean
+        Dim filepath = Path
+
+        If filepath <> "" Then
+            If (VersionDate - File.GetLastWriteTimeUtc(filepath)).TotalDays < -3 Then
+                Return True
+            End If
+        End If
+    End Function
+
+    Function IsVersionCorrect() As Boolean
+        Return Not IsVersionOld() AndAlso Not IsVersionNew()
+    End Function
+
+    Overridable Function IsVersionValid() As Boolean
+        If VersionAllowAny Then
+            Return True
+        End If
+
+        If IsVersionNew() AndAlso VersionAllowNew Then
             Return True
         End If
 

@@ -223,10 +223,10 @@ Public Class GlobalCommands
             If pack.IsIncluded Then
                 If pack.Path = "" Then
                     msg += BR2 + "# path missing for " + pack.Name
-                ElseIf Not pack.IgnoreVersion Then
+                ElseIf Not pack.VersionAllowAny Then
                     If pack.Version = "" Then
                         msg += BR2 + "# version missing for " + pack.Name
-                    ElseIf Not pack.IsCorrectVersion Then
+                    ElseIf Not pack.IsVersionValid Then
                         msg += BR2 + "# wrong version for " + pack.Name
                     End If
                 End If

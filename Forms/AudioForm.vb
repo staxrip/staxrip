@@ -695,7 +695,9 @@ Public Class AudioForm
         cbDefaultTrack.Visible = TypeOf p.VideoEncoder.Muxer Is MkvMuxer
         cbForcedTrack.Visible = TypeOf p.VideoEncoder.Muxer Is MkvMuxer
 
-        If components Is Nothing Then components = New System.ComponentModel.Container
+        If components Is Nothing Then
+            components = New System.ComponentModel.Container
+        End If
 
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
 
@@ -739,6 +741,7 @@ Public Class AudioForm
         gap.Params = TempProfile.Params
         gap.Decoder = TempProfile.Decoder
         gap.DecodingMode = TempProfile.DecodingMode
+        gap.ExtractDTSCore = TempProfile.ExtractDTSCore
     End Sub
 
     Sub UpdateBitrate()
@@ -776,19 +779,25 @@ Public Class AudioForm
     End Sub
 
     Sub UpdateControls()
-        Select Case TempProfile.Params.Codec
-            Case AudioCodec.Opus, AudioCodec.FLAC, AudioCodec.W64, AudioCodec.WAV
-                numQuality.Enabled = False
-            Case Else
-                numQuality.Enabled = TempProfile.Params.RateMode = AudioRateMode.VBR
-        End Select
-
-        If TempProfile.Params.Codec = AudioCodec.FLAC Then
+        If TempProfile.ExtractCore Then
+            numQuality.Enabled = False
             numBitrate.Enabled = False
         Else
-            numBitrate.Enabled = Not numQuality.Enabled
+            Select Case TempProfile.Params.Codec
+                Case AudioCodec.Opus, AudioCodec.FLAC, AudioCodec.W64, AudioCodec.WAV, AudioCodec.DTS
+                    numQuality.Enabled = False
+                Case Else
+                    numQuality.Enabled = TempProfile.Params.RateMode = AudioRateMode.VBR
+            End Select
+
+            If TempProfile.Params.Codec = AudioCodec.FLAC Then
+                numBitrate.Enabled = False
+            Else
+                numBitrate.Enabled = Not numQuality.Enabled
+            End If
         End If
 
+        numGain.Enabled = Not TempProfile.ExtractCore
         numBitrate.Increment = If(TempProfile.Params.Codec = AudioCodec.AC3, 32D, 1D)
         tbProfileName.SendMessageCue(TempProfile.Name, False)
         rtbCommandLine.SetText(TempProfile.GetCommandLine(False))
@@ -926,7 +935,10 @@ Public Class AudioForm
     End Sub
 
     Sub LoadProfile()
-        If TempProfile.Name <> TempProfile.DefaultName Then tbProfileName.Text = TempProfile.Name
+        If TempProfile.Name <> TempProfile.DefaultName Then
+            tbProfileName.Text = TempProfile.Name
+        End If
+
         tbProfileName.SendMessageCue(TempProfile.Name, False)
 
         tbCustom.Text = TempProfile.Params.CustomSwitches
@@ -1008,8 +1020,11 @@ Public Class AudioForm
 
                     cb = ui.AddBool(page)
                     cb.Text = "Extract DTS core"
-                    cb.Checked = TempProfile.Params.eac3toExtractDtsCore
-                    cb.SaveAction = Sub(value) TempProfile.Params.eac3toExtractDtsCore = value
+                    cb.Checked = TempProfile.ExtractDTSCore
+                    cb.SaveAction = Sub(value)
+                                        TempProfile.ExtractDTSCore = value
+                                        UpdateControls()
+                                    End Sub
                 End If
             Case GuiAudioEncoder.ffmpeg
                 Select Case TempProfile.Params.Codec
@@ -1031,8 +1046,11 @@ Public Class AudioForm
 
                     cb = ui.AddBool(page)
                     cb.Text = "Extract DTS core"
-                    cb.Checked = TempProfile.Params.ffExtractDtsCore
-                    cb.SaveAction = Sub(value) TempProfile.Params.ffExtractDtsCore = value
+                    cb.Checked = TempProfile.ExtractDTSCore
+                    cb.SaveAction = Sub(value)
+                                        TempProfile.ExtractDTSCore = value
+                                        UpdateControls()
+                                    End Sub
                 End If
             Case GuiAudioEncoder.fdkaac
                 Dim getHelpAction = Function(switch As String) Sub() g.ShowCommandLineHelp(Package.fdkaac, switch)
@@ -1176,7 +1194,10 @@ Public Class AudioForm
     Sub nudBitrate_KeyUp(sender As Object, e As KeyEventArgs) Handles numBitrate.KeyUp
         Try
             Dim v = CInt(numBitrate.Text)
-            If v Mod 16 = 0 Then numBitrate.Value = v
+
+            If v Mod 16 = 0 Then
+                numBitrate.Value = v
+            End If
         Catch
         End Try
     End Sub
@@ -1233,10 +1254,10 @@ Public Class AudioForm
     End Sub
 
     Sub ShowHelp()
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
+        form.Show()
     End Sub
 
     Sub mbChannels_ValueChanged(value As Object) Handles mbChannels.ValueChangedUser

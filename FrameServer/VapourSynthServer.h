@@ -6,9 +6,9 @@
 
 #include "Common.h"
 #include "FrameServer.h"
+#include "avisynth.h"
 #include "VSScript.h"
 #include "VSHelper.h"
-#include "avisynth.h"
 #include "Windows.h"
 
 #include <atomic>

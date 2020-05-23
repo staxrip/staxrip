@@ -13,7 +13,7 @@ Tools
     "AVSTP","AviSynth Plugin","avstp.dll","1.0.3.0","2019-01-01"
     "checkmate","AviSynth Plugin","checkmate.dll","0.9","2013-12-19"
     "CNR2","AviSynth Plugin","CNR2.dll","2.6.1","2019-01-01"
-    "DCTFilter","AviSynth Plugin","DCTFilter.dll","0.5.0","2019-01-01"
+    "DCTFilter","AviSynth Plugin","DCTFilter.dll","0.5.1","2020-05-13"
     "Deblock","AviSynth Plugin","Deblock.dll","2013-12-03","2019-01-01"
     "Decomb","AviSynth Plugin","Decomb.dll","5.2.4","2013-12-01"
     "DeGrainMedian","AviSynth Plugin","DeGrainMedian.dll","0.8.2","2019-01-01"
@@ -97,22 +97,22 @@ Tools
     "SMDegrain","AviSynth Script","SMDegrain.avsi","3.1.2.100s","2019-08-19"
     "SmoothD2c","AviSynth Script","SmoothD2c.avs","a2","2019-01-01"
     "YFRC","AviSynth Script","YFRC.avsi","2015-10-01","2019-01-01"
-    "aomenc","Console App","aomenc.exe","2.0","2020-05-19"
+    "aomenc","Console App","aomenc.exe","2.0",""
     "AutoCrop","Console App","AutoCrop.exe","1.0.0.0","2020-05-06"
     "avs2pipemod","Console App","avs2pipemod64.exe","1.1.1","2016-08-14"
     "AVSMeter","Console App","AVSMeter64.exe","2.9.9.3","2020-05-22"
     "dsmux","Console App","dsmux.exe","2013-04-14","2013-04-14"
     "eac3to","Console App","eac3to.exe","3.34","2017-11-19"
     "fdkaac","Console App","fdkaac.exe","1.0.0","2019-02-13"
-    "ffmpeg","Console App","ffmpeg.exe","N-97384-gcc9ba91bec-g4457f75c65-gcc9.3.0 Patman","2020-04-18"
+    "ffmpeg","Console App","ffmpeg.exe","N-97868-gaa6f38c298-g38490cbeb3-gcc10.1.0 Patman","2020-05-22"
     "mkvextract","Console App","mkvextract.exe","46","2020-05-01"
     "mkvinfo","Console App","mkvinfo.exe","46","2020-05-01"
     "mkvmerge","Console App","mkvmerge.exe","46","2020-05-01"
     "MP4Box","Console App","MP4Box.exe","0.9.0-DEV-rev0-g81b4481e1-gcc10.0.1 Patman","2020-04-18"
     "mtn","Console App","mtn.exe","2.0.1","2019-06-27"
-    "NVEnc","Console App","NVEncC64.exe","5.01","2020-05-07"
+    "NVEnc","Console App","NVEncC64.exe","5.02","2020-05-23"
     "PNGopt","Console App","apngopt.exe","1.4","2019-01-01"
-    "Python","Console App","python.exe","3.8.2150","2020-02-25"
+    "Python","Console App","python.exe","3.8.3121","2020-04-29"
     "qaac","Console App","qaac64.exe","2.68","2018-11-20"
     "QSVEnc","Console App","QSVEncC64.exe","4.00","2020-04-05"
     "rav1e","Console App","rav1e.exe","0.3.0","2020-02-29"
@@ -120,7 +120,7 @@ Tools
     "VCEEnc","Console App","VCEEncC64.exe","6.0","2020-04-20"
     "vspipe","Console App","vspipe.exe","r50","2020-05-08"
     "x264","Console App","x264.exe","2991-1771b55 Patman","2020-02-20"
-    "x265","Console App","x265.exe","3.3+27-g4780a8d99-gcc11.0.0 Patman","2020-05-07"
+    "x265","Console App","x265.exe","M-3.3+31-g431a22e82-gcc11.0.0 Patman","2020-05-22"
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
     "chapterEditor","GUI App","chapterEditor.exe","1.21","2020-02-29"
@@ -558,7 +558,7 @@ A rewrite of DctFilter for Avisynth+.
 
 Filters: DCTFilter, DCTFilterD, DCTFilter4, DCTFilter4D, DCTFilter8, DCTFilter8D
 
-http://github.com/chikuzen/DCTFilter
+https://github.com/Asd-g/DCTFilter
 
 
 Deblock

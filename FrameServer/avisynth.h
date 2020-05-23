@@ -1141,28 +1141,28 @@ public:
 #endif
 }; // end class PClip
 
-// enums for frame property functions
-typedef enum AVSPropTypes {
-  ptUnset = 'u',
-  ptInt = 'i',
-  ptFloat = 'f',
-  ptData = 's',
-  ptClip = 'c',
-  ptFrame = 'v',
-  //  ptFunction = 'm'
-} AVSPropTypes;
+//// enums for frame property functions
+//typedef enum AVSPropTypes {
+//  ptUnset = 'u',
+//  ptInt = 'i',
+//  ptFloat = 'f',
+//  ptData = 's',
+//  ptClip = 'c',
+//  ptFrame = 'v',
+//  //  ptFunction = 'm'
+//} AVSPropTypes;
 
-typedef enum AVSGetPropErrors {
-  peUnset = 1,
-  peType = 2,
-  peIndex = 4
-} AVSGetPropErrors;
+//typedef enum AVSGetPropErrors {
+//  peUnset = 1,
+//  peType = 2,
+//  peIndex = 4
+//} AVSGetPropErrors;
 
-typedef enum AVSPropAppendMode {
-  paReplace = 0,
-  paAppend = 1,
-  paTouch = 2
-} AVSPropAppendMode;
+//typedef enum AVSPropAppendMode {
+//  paReplace = 0,
+//  paAppend = 1,
+//  paTouch = 2
+//} AVSPropAppendMode;
 
 
 class AVSValue {
@@ -1334,7 +1334,7 @@ public:
 #undef AVS_BakedCode
 
 
-#include <avs/cpuid.h>
+#include "avs/cpuid.h"
 
 // IScriptEnvironment GetEnvProperty
 enum AvsEnvProperty

@@ -547,7 +547,10 @@ Public Class MuxAudioProfile
             page.ResumeLayout()
 
             Dim ret = form.ShowDialog()
-            If ret = DialogResult.OK Then ui.Save()
+
+            If ret = DialogResult.OK Then
+                ui.Save()
+            End If
 
             Return ret
         End Using
@@ -809,7 +812,7 @@ Public Class GUIAudioProfile
             ret = "eac3to"
         End If
 
-        If Not (Params.Codec = AudioCodec.DTS AndAlso Params.eac3toExtractDtsCore) Then
+        If Not (Params.Codec = AudioCodec.DTS AndAlso ExtractDTSCore) Then
             Select Case Params.Codec
                 Case AudioCodec.AAC
                     ret += " -quality=" & Params.Quality.ToInvariantString
@@ -843,8 +846,10 @@ Public Class GUIAudioProfile
                     End If
             End Select
 
-            If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
-        ElseIf Params.eac3toExtractDtsCore Then
+            If Params.CustomSwitches <> "" Then
+                ret += " " + Params.CustomSwitches
+            End If
+        ElseIf ExtractDTSCore Then
             ret += " -core"
         End If
 
@@ -974,7 +979,7 @@ Public Class GUIAudioProfile
 
                 ret += " -b:a " & CInt(Bitrate) & "k"
             Case AudioCodec.DTS
-                If Params.ffExtractDtsCore Then
+                If ExtractDTSCore Then
                     ret += " -bsf:a dca_core -c:a copy"
                 Else
                     ret += " -strict -2 -b:a " & CInt(Bitrate) & "k"
@@ -1084,9 +1089,8 @@ Public Class GUIAudioProfile
         Get
             Dim enc = GetEncoder()
 
-            If Params.Codec = AudioCodec.DTS AndAlso
-                ((enc = GuiAudioEncoder.Eac3to AndAlso Params.eac3toExtractDtsCore) OrElse
-                 (enc = GuiAudioEncoder.ffmpeg AndAlso Params.ffExtractDtsCore)) Then
+            If Params.Codec = AudioCodec.DTS AndAlso ExtractDTSCore AndAlso
+                (enc = GuiAudioEncoder.Eac3to OrElse enc = GuiAudioEncoder.ffmpeg) Then
 
                 Return True
             End If
@@ -1166,7 +1170,6 @@ Public Class GUIAudioProfile
     Public Class Parameters
         Property Codec As AudioCodec
         Property CustomSwitches As String = ""
-        Property eac3toExtractDtsCore As Boolean
         Property eac3toStereoDownmixMode As Integer
         Property Encoder As GuiAudioEncoder
         Property FrameRateMode As AudioFrameRateMode
@@ -1202,7 +1205,6 @@ Public Class GUIAudioProfile
         Property fdkaacMoovBeforeMdat As Boolean
 
         Property ffNormalizeMode As ffNormalizeMode
-        Property ffExtractDtsCore As Boolean
 
         Property ffmpegLoudnormIntegrated As Double = -24
         Property ffmpegLoudnormLRA As Double = 7

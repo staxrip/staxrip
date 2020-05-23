@@ -688,7 +688,7 @@ Namespace UI
         End Function
 
         Function Add(path As String, action As Action, key As Keys) As ActionMenuItem
-            Return Add(path, action, key, Nothing, Nothing, Nothing)
+            Return Add(path, action, key, True, Nothing, Nothing)
         End Function
 
         Function Add(path As String, action As Action, help As String) As ActionMenuItem

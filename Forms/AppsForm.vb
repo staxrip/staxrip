@@ -372,6 +372,8 @@ Public Class AppsForm
         If File.Exists(CurrentPackage.Path) Then
             Contents("Version").Text = If(CurrentPackage.IsVersionCorrect, CurrentPackage.Version, "Unknown")
             Contents("Version").Text += " (" + File.GetLastWriteTimeUtc(CurrentPackage.Path).ToShortDateString() + ")"
+        Else
+            Contents("Version").Text = "-"
         End If
 
         Contents("Status").Text = CurrentPackage.GetStatusDisplay()

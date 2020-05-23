@@ -674,6 +674,11 @@ Module MiscExtensions
     End Function
 
     <Extension()>
+    Function ContainsAny(Of T)(instance As IEnumerable(Of T), values As IEnumerable(Of T)) As Boolean
+        Return instance.Where(Function(arg) values.Contains(arg)).Count > 0
+    End Function
+
+    <Extension()>
     Function Sort(Of T)(instance As IEnumerable(Of T)) As IEnumerable(Of T)
         Dim ret = instance.ToArray
         Array.Sort(Of T)(ret)

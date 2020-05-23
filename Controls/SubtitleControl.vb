@@ -1,3 +1,4 @@
+
 Imports System.Text.RegularExpressions
 Imports System.Globalization
 
@@ -8,12 +9,12 @@ Public Class SubtitleControl
     Inherits UserControl
 
     Private BindingSource As New BindingSource
+    Private Items As New BindingList(Of SubtitleItem)
 
     Friend WithEvents bnSetNames As ButtonEx
     Friend WithEvents flpButtons As FlowLayoutPanel
     Friend WithEvents tlpMain As TableLayoutPanel
     Friend WithEvents bnSubtitleEdit As ButtonEx
-    Private Items As New BindingList(Of SubtitleItem)
 
 #Region " Designer "
     <DebuggerNonUserCode()>
@@ -100,6 +101,7 @@ Public Class SubtitleControl
         Me.dgv.Location = New System.Drawing.Point(0, 0)
         Me.dgv.Margin = New System.Windows.Forms.Padding(0)
         Me.dgv.Name = "dgv"
+        Me.dgv.RowHeadersWidth = 123
         Me.dgv.RowTemplate.Height = 28
         Me.dgv.Size = New System.Drawing.Size(249, 731)
         Me.dgv.TabIndex = 17
@@ -174,6 +176,7 @@ Public Class SubtitleControl
         '
         'SubtitleControl
         '
+        Me.AllowDrop = True
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
         Me.Controls.Add(Me.tlpMain)
         Me.Margin = New System.Windows.Forms.Padding(1, 2, 1, 2)
@@ -276,20 +279,59 @@ Public Class SubtitleControl
         dgv.DataSource = BindingSource
     End Sub
 
+    Public Class SubtitleItem
+        Property Enabled As Boolean
+        Property Language As Language
+        Property Title As String
+        Property Forced As Boolean
+        Property [Default] As Boolean
+        Property ID As Integer
+        Property TypeName As String
+        Property Size As String
+        Property Filename As String
+        Property Subtitle As Subtitle
+    End Class
+
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
         UpdateControls()
     End Sub
 
-    Private Sub bnAdd_Click(sender As Object, e As EventArgs) Handles bnAdd.Click
-        Using d As New OpenFileDialog
-            d.SetFilter(FileTypes.SubtitleIncludingContainers)
-            d.Multiselect = True
-            d.SetInitDir(s.LastSourceDir)
+    Protected Overrides Sub OnDragEnter(ea As DragEventArgs)
+        MyBase.OnDragEnter(ea)
 
-            If d.ShowDialog = DialogResult.OK Then
-                For Each iFilename In d.FileNames
-                    AddSubtitles(Subtitle.Create(iFilename))
+        Dim files = TryCast(ea.Data.GetData(DataFormats.FileDrop), String())
+
+        If Not files.NothingOrEmpty Then
+            If FileTypes.SubtitleIncludingContainers.ContainsAny(files.Select(Function(item) item.Ext)) Then
+                ea.Effect = DragDropEffects.Copy
+            End If
+        End If
+    End Sub
+
+    Protected Overrides Sub OnDragDrop(ea As DragEventArgs)
+        MyBase.OnDragDrop(ea)
+
+        Dim files = TryCast(ea.Data.GetData(DataFormats.FileDrop), String())
+
+        If Not files.NothingOrEmpty Then
+            For Each filePath In files
+                If FileTypes.SubtitleIncludingContainers.Contains(filePath.Ext) Then
+                    AddSubtitles(Subtitle.Create(filePath))
+                End If
+            Next
+        End If
+    End Sub
+
+    Sub bnAdd_Click(sender As Object, e As EventArgs) Handles bnAdd.Click
+        Using dialog As New OpenFileDialog
+            dialog.SetFilter(FileTypes.SubtitleIncludingContainers)
+            dialog.Multiselect = True
+            dialog.SetInitDir(s.LastSourceDir)
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                For Each fn In dialog.FileNames
+                    AddSubtitles(Subtitle.Create(fn))
                 Next
 
                 UpdateControls()
@@ -297,22 +339,22 @@ Public Class SubtitleControl
         End Using
     End Sub
 
-    Private Sub bnRemove_Click(sender As Object, e As EventArgs) Handles bnRemove.Click
+    Sub bnRemove_Click(sender As Object, e As EventArgs) Handles bnRemove.Click
         dgv.RemoveSelection
         UpdateControls()
     End Sub
 
-    Private Sub bnUp_Click(sender As Object, e As EventArgs) Handles bnUp.Click
+    Sub bnUp_Click(sender As Object, e As EventArgs) Handles bnUp.Click
         dgv.MoveSelectionUp
         UpdateControls()
     End Sub
 
-    Private Sub bnDown_Click(sender As Object, e As EventArgs) Handles bnDown.Click
+    Sub bnDown_Click(sender As Object, e As EventArgs) Handles bnDown.Click
         dgv.MoveSelectionDown
         UpdateControls()
     End Sub
 
-    Private Sub dgv_CellParsing(sender As Object, e As DataGridViewCellParsingEventArgs) Handles dgv.CellParsing
+    Sub dgv_CellParsing(sender As Object, e As DataGridViewCellParsingEventArgs) Handles dgv.CellParsing
         If TypeOf dgv.CurrentCell.OwningColumn Is DataGridViewComboBoxColumn Then
             Dim editingControl = DirectCast(dgv.EditingControl, DataGridViewComboBoxEditingControl)
             e.Value = editingControl.SelectedItem
@@ -320,7 +362,7 @@ Public Class SubtitleControl
         End If
     End Sub
 
-    Private Sub dgv_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.CellEndEdit
+    Sub dgv_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles dgv.CellEndEdit
         UpdateControls()
     End Sub
 
@@ -408,20 +450,7 @@ Public Class SubtitleControl
         Next
     End Sub
 
-    Public Class SubtitleItem
-        Property Enabled As Boolean
-        Property Language As Language
-        Property Title As String
-        Property Forced As Boolean
-        Property [Default] As Boolean
-        Property ID As Integer
-        Property TypeName As String
-        Property Size As String
-        Property Filename As String
-        Property Subtitle As Subtitle
-    End Class
-
-    Private Sub bnPlay_Click() Handles bnPlay.Click
+    Sub bnPlay_Click() Handles bnPlay.Click
         If Not Package.mpvnet.VerifyOK(True) Then
             Exit Sub
         End If
@@ -443,7 +472,7 @@ Public Class SubtitleControl
         End If
     End Sub
 
-    Private Sub bnSetNames_Click(sender As Object, e As EventArgs) Handles bnSetNames.Click
+    Sub bnSetNames_Click(sender As Object, e As EventArgs) Handles bnSetNames.Click
         Using td As New TaskDialog(Of Integer)
             td.MainInstruction = "Set names for all streams."
             td.AddCommand("Set language in English", 1)
@@ -471,11 +500,11 @@ Public Class SubtitleControl
         End Using
     End Sub
 
-    Private Sub dgv_MouseUp(sender As Object, e As MouseEventArgs) Handles dgv.MouseUp
+    Sub dgv_MouseUp(sender As Object, e As MouseEventArgs) Handles dgv.MouseUp
         UpdateControls()
     End Sub
 
-    Private Sub bnBDSup2SubPP_Click(sender As Object, e As EventArgs) Handles bnBDSup2SubPP.Click
+    Sub bnBDSup2SubPP_Click(sender As Object, e As EventArgs) Handles bnBDSup2SubPP.Click
         Try
             Dim st = Items(dgv.CurrentRow.Index).Subtitle
             Dim fp = st.Path
@@ -492,7 +521,7 @@ Public Class SubtitleControl
         End Try
     End Sub
 
-    Private Sub bnSubtitleEdit_Click(sender As Object, e As EventArgs) Handles bnSubtitleEdit.Click
+    Sub bnSubtitleEdit_Click(sender As Object, e As EventArgs) Handles bnSubtitleEdit.Click
         Try
             Dim st = Items(dgv.CurrentRow.Index).Subtitle
             Dim fp = st.Path

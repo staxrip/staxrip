@@ -66,25 +66,13 @@ Public Class aomenc
     End Function
 
     Overrides Function GetMenu() As MenuList
-        Dim r As New MenuList
-        r.Add("Encoder Options", AddressOf ShowConfigDialog)
-        r.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
-        Return r
+        Dim menuList As New MenuList
+        menuList.Add("Encoder Options", AddressOf ShowConfigDialog)
+        menuList.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
+        Return menuList
     End Function
 
-    Shared WarningShown As Boolean
-
     Overrides Sub ShowConfigDialog()
-        If Not WarningShown Then
-            MsgWarn(
-"Please note that AV1 is experimental!",
-"The bitstream format is not yet frozen. It's very
-likely that files created with the current encoder
-become unplayable in the future.")
-
-            WarningShown = True
-        End If
-
         Dim newParams As New AV1Params
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
         newParams.Init(store)
@@ -160,9 +148,10 @@ Public Class AV1Params
                 Add(RateMode,
                 New OptionParam With {.Path = "Basic", .Switch = " --profile", .Text = "Profile", .IntegerValue = True, .Options = {"Main", "High", "Professional"}},
                 New OptionParam With {.Path = "Basic", .Switch = "--bit-depth", .Text = "Depth", .Options = {"8", "10", "12"}},
+                New OptionParam With {.Path = "Basic", .Switch = "--cpu-used", .Text = "CPU Used", .Value = 8, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Fastest"}},
                 New NumParam With {.Path = "Basic", .Switch = "--cq-level", .Text = "CQ Level"},
                 New StringParam With {.Path = "Analysis", .Switch = "--cfg", .Text = "Config File", .Quotes = QuotesMode.Auto, .BrowseFile = True},
-                New OptionParam With {.Path = "Analysis", .Switch = "--tune", .Text = "Tune", .Options = {"Disabled", "PSNR", "SSIM", "Cdef-Dist", "Daala-Dist"}},
+                New OptionParam With {.Path = "Analysis", .Switch = "--tune", .Text = "Tune", .Options = {"psnr", "ssim", "vmaf_with_preprocessing", "vmaf_without_preprocessing", "vmaf"}},
                 New NumParam With {.Path = "Analysis", .Switch = "--tile-columns", .Text = "Tile Columns"},
                 New NumParam With {.Path = "Analysis", .Switch = "--tile-rows", .Text = "Tile Rows"},
                 New NumParam With {.Path = "Analysis", .Switch = "--num-tile-groups", .Text = "Num Tile Groups"},
@@ -210,7 +199,6 @@ Public Class AV1Params
                 New OptionParam With {.Path = "VUI", .Switch = "--transfer-characteristics", .Text = "Transfer", .Options = {"unspecified", "BT 709", "BT 470 M", "BT 470 BG", "BT 601", "SMPTE 240", "LIN", "LOG 100", "LOG 100SQ 10", "IEC 61966", "BT 1361", "SRGB", "BT2020-10bit", "BT2020-12bit", "SMPTE 2084", "HLG", "SMPTE 428"}},
                 New OptionParam With {.Path = "VUI", .Switch = "--matrix-coefficients", .Text = "Matrix", .Options = {" unspecified", "identity", "BT 2020 NC", "BT 2020 CL", "BT 601", "FCC 73", "BT 709", "BT 470 BG", "SMPTE 2085", "YCGCO", "SMPTE 240", "ICTCP", "CHROM NCL", "CHROM CL"}},
                 New NumParam With {.Path = "Performance", .Switch = "--threads", .Text = "Threads"},
-                New NumParam With {.Path = "Performance", .Switch = "--cpu-used", .Text = "CPUs Used", .Config = {0, 8}},
                 New OptionParam With {.Path = "Performance", .Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}},
                 New BoolParam With {.Path = "Performance", .Switch = "--frame-parallel", .Text = "Frame Parallel", .IntegerValue = True},
                 New OptionParam With {.Path = "Statistic", .Switch = "--test-decode", .Text = "Test Decode", .Options = {"Disabled", "Fatal", "Warn"}},
@@ -276,34 +264,37 @@ Public Class AV1Params
         For Each i In items
             If i.HelpSwitch = "" Then
                 Dim switches = i.GetSwitches
-                If Not switches.NothingOrEmpty Then i.HelpSwitch = switches(0)
+
+                If Not switches.NothingOrEmpty Then
+                    i.HelpSwitch = switches(0)
+                End If
             End If
 
             ItemsValue.Add(i)
         Next
     End Sub
 
-    Overloads Overrides Function GetCommandLine(includePaths As Boolean,
-                                                includeExecutable As Boolean,
-                                                Optional pass As Integer = 1) As String
+    Overloads Overrides Function GetCommandLine(
+        includePaths As Boolean, includeExecutable As Boolean, Optional pass As Integer = 1) As String
 
         Return GetArgs(1, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
                        p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
     End Function
 
-    Overloads Function GetArgs(pass As Integer,
-                               script As VideoScript,
-                               targetPath As String,
-                               includePaths As Boolean,
-                               includeExecutable As Boolean) As String
+    Overloads Function GetArgs(
+        pass As Integer,
+        script As VideoScript,
+        targetPath As String,
+        includePaths As Boolean,
+        includeExecutable As Boolean) As String
 
         Dim sb As New StringBuilder
 
         If includePaths AndAlso includeExecutable Then
             If p.Script.Engine = ScriptEngine.VapourSynth Then
-                sb.Append(Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | " + Package.AOMEnc.Path.Escape + " -")
+                sb.Append(Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | " + Package.aomenc.Path.Escape + " -")
             Else
-                sb.Append(Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -loglevel fatal -hide_banner - | " + Package.AOMEnc.Path.Escape + " -")
+                sb.Append(Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -loglevel fatal -hide_banner - | " + Package.aomenc.Path.Escape + " -")
             End If
         End If
 
@@ -314,12 +305,21 @@ Public Class AV1Params
                 sb.Append(" --passes=2 --pass=" & pass)
         End Select
 
-        If Not RateMode.OptionText.EqualsAny("CQ", "Q") Then sb.Append(" --target-bitrate=" & p.VideoBitrate)
+        If Not RateMode.OptionText.EqualsAny("CQ", "Q") Then
+            sb.Append(" --target-bitrate=" & p.VideoBitrate)
+        End If
+
         Dim q = From i In Items Where i.GetArgs <> ""
-        If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
+
+        If q.Count > 0 Then
+            sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
+        End If
 
         If includePaths Then
-            If Mode.Value = 1 Then sb.Append(" --fpf=" + (p.TempDir + p.TargetFile.Base + ".txt").Escape)
+            If Mode.Value = 1 Then
+                sb.Append(" --fpf=" + (p.TempDir + p.TargetFile.Base + ".txt").Escape)
+            End If
+
             sb.Append(" -o " + targetPath.Escape)
         End If
 

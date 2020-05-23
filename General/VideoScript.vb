@@ -160,8 +160,10 @@ Public Class VideoScript
     End Function
 
     Function GetFilter(category As String) As VideoFilter
-        For Each i In Filters
-            If i.Category = category Then Return i
+        For Each filter In Filters
+            If filter.Category = category Then
+                Return filter
+            End If
         Next
     End Function
 
@@ -172,7 +174,7 @@ Public Class VideoScript
                     Optional comparePath As Boolean = True,
                     Optional flipVertical As Boolean = False)
 
-        If Path = "" OrElse p.SourceFile = "" Then
+        If Path = "" Then
             Exit Sub
         End If
 

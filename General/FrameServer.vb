@@ -67,7 +67,7 @@ Public Structure ServerInfo
 
     Function GetInfoText(position As Integer) As String
         Dim rate = FrameRateNum / FrameRateDen
-        Dim currentDate = Date.Today.AddSeconds(position / rate)
+
         Dim lengthtDate = Date.Today.AddSeconds(FrameCount / rate)
         Dim dateFormat = If(lengthtDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff")
         Dim frames = FrameCount.ToString
@@ -75,6 +75,7 @@ Public Structure ServerInfo
 
         If position > -1 Then
             frames = position & " of " & FrameCount
+            Dim currentDate = Date.Today.AddSeconds(position / rate)
             len = currentDate.ToString(dateFormat) + " of " + lengthtDate.ToString(dateFormat)
         End If
 

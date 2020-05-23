@@ -753,15 +753,13 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowCommandLinePreview(title As String, value As String)
-        Using form As New StringEditorForm
-            form.Text = title
-            form.rtb.ReadOnly = True
-            form.cbWrap.Checked = Not value.Contains(BR)
-            form.rtb.Text = value
-            form.bnOK.Visible = False
-            form.bnCancel.Text = "Close"
-            form.ShowDialog()
-        End Using
+        Environment.SetEnvironmentVariable("CommandLineToShow", BR + value + BR)
+
+        If g.IsWindowsTerminalAvailable Then
+            g.Execute("wt.exe", "powershell.exe -NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
+        Else
+            g.Execute("powershell.exe", "-NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
+        End If
     End Sub
 
     Sub ffmsindex(sourcePath As String,
@@ -1361,45 +1359,33 @@ Public Class GlobalClass
         If Not WasFrameServerInitialized Then
             g.AddToPath(Folder.Startup, Package.Python.Directory, Package.AviSynth.Directory,
                         Package.VapourSynth.Directory, Package.FFTW.Directory)
-            Try
-                MakeSymLinks()
-                WasFrameServerInitialized = True
-            Catch ex As Exception
-            End Try
+
+            MakeSymLinks()
+            WasFrameServerInitialized = True
         End If
     End Sub
 
     Sub MakeSymLinks()
-        'name, source,target
-        Dim links As New List(Of (String, String, String))
+        Dim pack = Package.ffmpeg
+        Dim path = pack.Directory + "AviSynth.dll"
 
-        If Package.AviSynth.Path <> "" AndAlso Package.AviSynth.Path.StartsWith(Folder.Startup) AndAlso
-            Package.ffmpeg.Path <> "" AndAlso Package.ffmpeg.Path.StartsWith(Folder.Startup) Then
+        If Package.AviSynth.Path.StartsWith(Folder.Startup) Then
+            If s.Storage.GetString(pack.Name + "symlink") <> path OrElse Not path.FileExists Then
+                FileHelp.Delete(path)
+                Dim cmd = $"mklink {path.Escape} {Package.AviSynth.Path.Escape}"
 
-            links.Add(("ffmpeg avisynth", Package.ffmpeg.Directory + "AviSynth.dll", Package.AviSynth.Path))
-        End If
-
-        For Each i In links
-            If Not i.Item3.FileExists Then
-                Continue For
-            End If
-
-            Dim hash = (i.Item2 + i.Item3).MD5Hash
-
-            If s.Storage.GetString(i.Item1 + "symlinkhash") <> hash OrElse Not i.Item2.FileExists Then
-                FileHelp.Delete(i.Item2)
-                Dim cmd = $"mklink {i.Item2.Escape} {i.Item3.Escape}"
-
-                Using pr As New Process
-                    pr.StartInfo.FileName = "cmd.exe"
-                    pr.StartInfo.Arguments = $"/s /c ""{cmd}"""
-                    pr.StartInfo.UseShellExecute = False
-                    pr.StartInfo.CreateNoWindow = True
-                    pr.Start()
+                Using proc As New Process
+                    proc.StartInfo.FileName = "cmd.exe"
+                    proc.StartInfo.Arguments = $"/S /C ""{cmd}"""
+                    proc.StartInfo.UseShellExecute = False
+                    proc.StartInfo.CreateNoWindow = True
+                    proc.Start()
                 End Using
 
-                s.Storage.SetString(i.Item1 + "symlinkhash", hash)
+                s.Storage.SetString(pack.Name + "symlink", path)
             End If
-        Next
+        Else
+            FileHelp.Delete(path)
+        End If
     End Sub
 End Class

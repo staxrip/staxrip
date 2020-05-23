@@ -175,6 +175,7 @@ Public Class MuxerForm
         '
         'SubtitleControl
         '
+        Me.SubtitleControl.AllowDrop = True
         Me.SubtitleControl.Dock = System.Windows.Forms.DockStyle.Fill
         Me.SubtitleControl.Location = New System.Drawing.Point(5, 5)
         Me.SubtitleControl.Margin = New System.Windows.Forms.Padding(2, 3, 2, 3)
@@ -277,6 +278,7 @@ Public Class MuxerForm
         '
         'dgvAudio
         '
+        Me.dgvAudio.AllowDrop = True
         Me.dgvAudio.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -344,6 +346,7 @@ Public Class MuxerForm
         '
         'lbAttachments
         '
+        Me.lbAttachments.AllowDrop = True
         Me.lbAttachments.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lbAttachments.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed
         Me.lbAttachments.FormattingEnabled = True
@@ -588,146 +591,17 @@ Public Class MuxerForm
         TipProvider.SetTip("Additional command line switches that may contain macros.", tpCommandLine)
     End Sub
 
-    Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
-        If TypeOf Muxer Is MkvMuxer Then
-            s.CmdlPresetsMKV = CmdlControl.Presets.ReplaceUnicode
-        ElseIf TypeOf Muxer Is MP4Muxer Then
-            s.CmdlPresetsMP4 = CmdlControl.Presets.ReplaceUnicode
-        End If
+    Public Class AttachmentContainer
+        Property Filepath As String
 
-        s.Storage.SetInt("last selected muxer tab", tcMain.SelectedIndex)
-        SetValues()
-
-        If DialogResult = DialogResult.OK Then
-            p.AudioTracks = DirectCast(AudioBindingSource.DataSource, List(Of AudioProfile))
-            Muxer.Attachments.Clear()
-            Muxer.Attachments.AddRange(lbAttachments.Items.OfType(Of AttachmentContainer).Select(Function(val) val.Filepath))
-        End If
-
-        MyBase.OnFormClosed(e)
-    End Sub
-
-    Private Sub SetValues()
-        SubtitleControl.SetValues(Muxer)
-        SimpleUI.Save()
-        Muxer.AdditionalSwitches = CmdlControl.tb.Text.ReplaceUnicode
-    End Sub
-
-    Private Sub bnCmdlPreview_Click() Handles bnCommandLinePreview.Click
-        SetValues()
-        g.ShowCommandLinePreview("Command Line", Muxer.GetCommandLine)
-    End Sub
-
-    Private Sub bnAddAudio_Click(sender As Object, e As EventArgs) Handles bnAddAudio.Click
-        Using d As New OpenFileDialog
-            d.SetFilter(FileTypes.Audio.Union(FileTypes.VideoAudio))
-            d.Multiselect = True
-            d.SetInitDir(p.TempDir)
-
-            If d.ShowDialog = DialogResult.OK Then
-                Dim sb As New SelectionBox(Of AudioProfile)
-                sb.Title = "Audio Profile"
-                sb.Text = "Please select a audio profile."
-
-                For Each audioProfile In s.AudioProfiles
-                    sb.AddItem(audioProfile)
-                Next
-
-                If sb.Show = DialogResult.OK Then
-                    For Each path In d.FileNames
-                        Dim ap = ObjectHelp.GetCopy(sb.SelectedValue)
-                        ap.File = path
-
-                        If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
-                            ap.Delay = g.ExtractDelay(ap.File)
-                        End If
-
-                        If FileTypes.VideoAudio.Contains(ap.File.Ext) Then
-                            ap.Streams = MediaInfo.GetAudioStreams(ap.File)
-                        End If
-
-                        ap.SetStreamOrLanguage()
-
-                        If Not ap.Stream Is Nothing Then
-                            Dim sb2 As New SelectionBox(Of AudioStream)
-                            sb2.Title = "Stream Selection"
-                            sb2.Text = "Please select a audio stream."
-
-                            For Each i2 In ap.Streams
-                                sb2.AddItem(i2)
-                            Next
-
-                            If sb2.Show = DialogResult.Cancel Then Return
-                            ap.Stream = sb2.SelectedValue
-                        End If
-
-                        g.MainForm.UpdateSizeOrBitrate()
-                        AudioBindingSource.Add(ap)
-                        AudioBindingSource.Position = AudioBindingSource.Count - 1
-                        UpdateControls()
-                    Next
-                End If
+        Public Overrides Function ToString() As String
+            If Filepath.Contains("_attachment_") Then
+                Return Filepath.Right("_attachment_")
             End If
-        End Using
-    End Sub
 
-    Private Sub bnRemoveAudio_Click(sender As Object, e As EventArgs) Handles bnRemoveAudio.Click
-        dgvAudio.RemoveSelection
-        UpdateControls()
-    End Sub
-
-    Private Sub bnUpAudio_Click(sender As Object, e As EventArgs) Handles bnUpAudio.Click
-        dgvAudio.MoveSelectionUp
-        UpdateControls()
-    End Sub
-
-    Private Sub bnDownAudio_Click(sender As Object, e As EventArgs) Handles bnDownAudio.Click
-        dgvAudio.MoveSelectionDown
-        UpdateControls()
-    End Sub
-
-    Private Sub bnPlayAudio_Click(sender As Object, e As EventArgs) Handles bnPlayAudio.Click
-        g.Play(DirectCast(AudioBindingSource(dgvAudio.SelectedRows(0).Index), AudioProfile).File)
-    End Sub
-
-    Private Sub bnEditAudio_Click(sender As Object, e As EventArgs) Handles bnEditAudio.Click
-        Dim ap = DirectCast(AudioBindingSource(dgvAudio.SelectedRows(0).Index), AudioProfile)
-        ap.EditProject()
-        g.MainForm.UpdateAudioMenu()
-        g.MainForm.UpdateSizeOrBitrate()
-        AudioBindingSource.ResetBindings(False)
-    End Sub
-
-    Private Sub BnAddAttachment_Click(sender As Object, e As EventArgs) Handles bnAddAttachment.Click
-        Using d As New OpenFileDialog
-            d.SetFilter({"ttf", "txt", "jpg", "png", "otf", "jpeg", "xml", "nfo"})
-            d.Multiselect = True
-            d.SetInitDir(p.TempDir)
-
-            If d.ShowDialog = DialogResult.OK Then
-                Dim items2 = lbAttachments.Items.OfType(Of AttachmentContainer).Select(Function(val) val.Filepath).ToList
-                items2.AddRange(d.FileNames)
-                items2.Sort()
-                lbAttachments.Items.Clear()
-                lbAttachments.Items.AddRange(items2.Select(Function(val) New AttachmentContainer With {.Filepath = val}).ToArray)
-                UpdateControls()
-            End If
-        End Using
-    End Sub
-
-    Sub UpdateControls()
-        bnRemoveAudio.Enabled = dgvAudio.SelectedRows.Count > 0
-        bnPlayAudio.Enabled = dgvAudio.SelectedRows.Count > 0
-        bnEditAudio.Enabled = dgvAudio.SelectedRows.Count > 0
-        bnUpAudio.Enabled = dgvAudio.CanMoveUp
-        bnDownAudio.Enabled = dgvAudio.CanMoveDown
-
-        lbAttachments.UpdateControls()
-    End Sub
-
-    Private Sub dgvAudio_MouseUp(sender As Object, e As MouseEventArgs) Handles dgvAudio.MouseUp
-        UpdateControls()
-    End Sub
+            Return Path.GetFileName(Filepath)
+        End Function
+    End Class
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
@@ -836,7 +710,182 @@ Public Class MuxerForm
         MyBase.OnShown(e)
     End Sub
 
-    Private Sub MuxerForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+    Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
+        If TypeOf Muxer Is MkvMuxer Then
+            s.CmdlPresetsMKV = CmdlControl.Presets.ReplaceUnicode
+        ElseIf TypeOf Muxer Is MP4Muxer Then
+            s.CmdlPresetsMP4 = CmdlControl.Presets.ReplaceUnicode
+        End If
+
+        s.Storage.SetInt("last selected muxer tab", tcMain.SelectedIndex)
+        SetValues()
+
+        If DialogResult = DialogResult.OK Then
+            p.AudioTracks = DirectCast(AudioBindingSource.DataSource, List(Of AudioProfile))
+            Muxer.Attachments.Clear()
+            Muxer.Attachments.AddRange(lbAttachments.Items.OfType(Of AttachmentContainer).Select(Function(val) val.Filepath))
+        End If
+
+        MyBase.OnFormClosed(e)
+    End Sub
+
+    Sub SetValues()
+        SubtitleControl.SetValues(Muxer)
+        SimpleUI.Save()
+        Muxer.AdditionalSwitches = CmdlControl.tb.Text.ReplaceUnicode
+    End Sub
+
+    Sub UpdateControls()
+        bnRemoveAudio.Enabled = dgvAudio.SelectedRows.Count > 0
+        bnPlayAudio.Enabled = dgvAudio.SelectedRows.Count > 0
+        bnEditAudio.Enabled = dgvAudio.SelectedRows.Count > 0
+        bnUpAudio.Enabled = dgvAudio.CanMoveUp
+        bnDownAudio.Enabled = dgvAudio.CanMoveDown
+
+        lbAttachments.UpdateControls()
+    End Sub
+
+    Sub AddAudio(path As String)
+        Dim profileSelection As New SelectionBox(Of AudioProfile)
+        profileSelection.Title = "Audio Profile"
+        profileSelection.Text = "Please select a audio profile."
+
+        For Each audioProfile In s.AudioProfiles
+            profileSelection.AddItem(audioProfile)
+        Next
+
+        If profileSelection.Show <> DialogResult.OK Then
+            Exit Sub
+        End If
+
+        Dim ap = ObjectHelp.GetCopy(profileSelection.SelectedValue)
+        ap.File = path
+
+        If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
+            ap.Delay = g.ExtractDelay(ap.File)
+        End If
+
+        If FileTypes.VideoAudio.Contains(ap.File.Ext) Then
+            ap.Streams = MediaInfo.GetAudioStreams(ap.File)
+        End If
+
+        ap.SetStreamOrLanguage()
+
+        If Not ap.Stream Is Nothing Then
+            Dim streamSelection As New SelectionBox(Of AudioStream)
+            streamSelection.Title = "Stream Selection"
+            streamSelection.Text = "Please select a audio stream."
+
+            For Each stream In ap.Streams
+                streamSelection.AddItem(stream)
+            Next
+
+            If streamSelection.Show <> DialogResult.OK Then
+                Exit Sub
+            End If
+
+            ap.Stream = streamSelection.SelectedValue
+        End If
+
+        g.MainForm.UpdateSizeOrBitrate()
+        AudioBindingSource.Add(ap)
+        AudioBindingSource.Position = AudioBindingSource.Count - 1
+        UpdateControls()
+    End Sub
+
+    Sub bnCmdlPreview_Click() Handles bnCommandLinePreview.Click
+        SetValues()
+        g.ShowCommandLinePreview("Command Line", Muxer.GetCommandLine)
+    End Sub
+
+    Sub bnAddAudio_Click(sender As Object, e As EventArgs) Handles bnAddAudio.Click
+        Using dialog As New OpenFileDialog
+            dialog.SetFilter(FileTypes.Audio.Union(FileTypes.VideoAudio))
+            dialog.SetInitDir(p.TempDir)
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                For Each path In dialog.FileNames
+                    AddAudio(path)
+                Next
+            End If
+        End Using
+    End Sub
+
+    Sub bnRemoveAudio_Click(sender As Object, e As EventArgs) Handles bnRemoveAudio.Click
+        dgvAudio.RemoveSelection
+        UpdateControls()
+    End Sub
+
+    Sub bnUpAudio_Click(sender As Object, e As EventArgs) Handles bnUpAudio.Click
+        dgvAudio.MoveSelectionUp
+        UpdateControls()
+    End Sub
+
+    Sub bnDownAudio_Click(sender As Object, e As EventArgs) Handles bnDownAudio.Click
+        dgvAudio.MoveSelectionDown
+        UpdateControls()
+    End Sub
+
+    Sub bnPlayAudio_Click(sender As Object, e As EventArgs) Handles bnPlayAudio.Click
+        g.Play(DirectCast(AudioBindingSource(dgvAudio.SelectedRows(0).Index), AudioProfile).File)
+    End Sub
+
+    Sub bnEditAudio_Click(sender As Object, e As EventArgs) Handles bnEditAudio.Click
+        Dim ap = DirectCast(AudioBindingSource(dgvAudio.SelectedRows(0).Index), AudioProfile)
+        ap.EditProject()
+        g.MainForm.UpdateAudioMenu()
+        g.MainForm.UpdateSizeOrBitrate()
+        AudioBindingSource.ResetBindings(False)
+    End Sub
+
+    Sub bnAddAttachment_Click(sender As Object, e As EventArgs) Handles bnAddAttachment.Click
+        Using dialog As New OpenFileDialog
+            dialog.SetFilter({"ttf", "txt", "jpg", "png", "otf", "jpeg", "xml", "nfo"})
+            dialog.Multiselect = True
+            dialog.SetInitDir(p.TempDir)
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                AddAttachment(dialog.FileNames)
+            End If
+        End Using
+    End Sub
+
+    Sub AddAttachment(paths As String())
+        Dim items2 = lbAttachments.Items.OfType(Of AttachmentContainer).Select(Function(val) val.Filepath).ToList
+        items2.AddRange(paths)
+        items2.Sort()
+        lbAttachments.Items.Clear()
+        lbAttachments.Items.AddRange(items2.Select(Function(val) New AttachmentContainer With {.Filepath = val}).ToArray)
+        UpdateControls()
+    End Sub
+
+    Sub dgvAudio_MouseUp(sender As Object, e As MouseEventArgs) Handles dgvAudio.MouseUp
+        UpdateControls()
+    End Sub
+
+    Sub dgvAudio_DragEnter(sender As Object, e As DragEventArgs) Handles dgvAudio.DragEnter
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+
+        If Not files.NothingOrEmpty Then
+            If FileTypes.VideoAudio.ContainsAny(files.Select(Function(item) item.Ext)) Then
+                e.Effect = DragDropEffects.Copy
+            End If
+        End If
+    End Sub
+
+    Sub dgvAudio_DragDrop(sender As Object, e As DragEventArgs) Handles dgvAudio.DragDrop
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+
+        If Not files.NothingOrEmpty Then
+            For Each filePath In files
+                If FileTypes.VideoAudio.Contains(filePath.Ext) Then
+                    AddAudio(filePath)
+                End If
+            Next
+        End If
+    End Sub
+
+    Sub MuxerForm_HelpRequested(sender As Object, ea As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
         form.Doc.WriteParagraph(Strings.Muxer)
@@ -845,15 +894,19 @@ Public Class MuxerForm
         form.Show()
     End Sub
 
-    Public Class AttachmentContainer
-        Property Filepath As String
+    Private Sub lbAttachments_DragEnter(sender As Object, e As DragEventArgs) Handles lbAttachments.DragEnter
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
-        Public Overrides Function ToString() As String
-            If Filepath.Contains("_attachment_") Then
-                Return Filepath.Right("_attachment_")
-            End If
+        If Not files.NothingOrEmpty Then
+            e.Effect = DragDropEffects.Copy
+        End If
+    End Sub
 
-            Return Path.GetFileName(Filepath)
-        End Function
-    End Class
+    Private Sub lbAttachments_DragDrop(sender As Object, e As DragEventArgs) Handles lbAttachments.DragDrop
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+
+        If Not files.NothingOrEmpty Then
+            AddAttachment(files)
+        End If
+    End Sub
 End Class

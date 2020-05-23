@@ -326,7 +326,7 @@ Public Class PreviewForm
 
     Public NormalRectangle As Rectangle
 
-    Private Sub Fullscreen()
+    Sub Fullscreen()
         Dim trackVisible = pnTrack.Visible
         pnTrack.Visible = False
         FormBorderStyle = FormBorderStyle.None
@@ -361,7 +361,7 @@ Public Class PreviewForm
         pnTrack.Visible = trackVisible
     End Sub
 
-    Private Sub NormalScreen()
+    Sub NormalScreen()
         FormBorderStyle = FormBorderStyle.FixedDialog
         s.PreviewFormBorderStyle = FormBorderStyle
         WindowState = FormWindowState.Normal
@@ -373,8 +373,13 @@ Public Class PreviewForm
             WindowPositions.CenterScreen(Me)
         End If
 
-        If Left < 0 Then Left = 0
-        If Top < 0 Then Top = 0
+        If Left < 0 Then
+            Left = 0
+        End If
+
+        If Top < 0 Then
+            Top = 0
+        End If
     End Sub
 
     Function GetNormalSize() As Size
@@ -417,61 +422,61 @@ Public Class PreviewForm
         bnMenu.Visible = vis
     End Sub
 
-    Private Sub bnRight1_Click() Handles bnRight1.Click
+    Sub bnRight1_Click() Handles bnRight1.Click
         For Each i As PreviewForm In Instances
             SetRelativePos(1)
         Next
     End Sub
 
-    Private Sub bnLeft1_Click() Handles bnLeft1.Click
+    Sub bnLeft1_Click() Handles bnLeft1.Click
         For Each i As PreviewForm In Instances
             SetRelativePos(-1)
         Next
     End Sub
 
-    Private Sub bnStartCutRange_Click() Handles bnStartCutRange.Click
+    Sub bnStartCutRange_Click() Handles bnStartCutRange.Click
         For Each i As PreviewForm In Instances
             SetRangeStart()
         Next
     End Sub
 
-    Private Sub bnEndCutRange_Click() Handles bnEndCutRange.Click
+    Sub bnEndCutRange_Click() Handles bnEndCutRange.Click
         For Each i As PreviewForm In Instances
             SetRangeEnd()
         Next
     End Sub
 
-    Private Sub bnLeft2_Click() Handles bnLeft2.Click
+    Sub bnLeft2_Click() Handles bnLeft2.Click
         For Each i As PreviewForm In Instances
             SetRelativePos(-10)
         Next
     End Sub
 
-    Private Sub bnRight2_Click() Handles bnRight2.Click
+    Sub bnRight2_Click() Handles bnRight2.Click
         For Each i As PreviewForm In Instances
             SetRelativePos(10)
         Next
     End Sub
 
-    Private Sub bnDelete_Click() Handles bnDelete.Click
+    Sub bnDelete_Click() Handles bnDelete.Click
         For Each i As PreviewForm In Instances
             DeleteRange()
         Next
     End Sub
 
-    Private Sub bnLeft3_Click() Handles bnLeft3.Click
+    Sub bnLeft3_Click() Handles bnLeft3.Click
         For Each i As PreviewForm In Instances
             i.SetRelativePos(-100)
         Next
     End Sub
 
-    Private Sub bnRight3_Click() Handles bnRight3.Click
+    Sub bnRight3_Click() Handles bnRight3.Click
         For Each i As PreviewForm In Instances
             SetRelativePos(100)
         Next
     End Sub
 
-    Private Sub Wheel(sender As Object, e As MouseEventArgs) Handles MyBase.MouseWheel
+    Sub Wheel(sender As Object, e As MouseEventArgs) Handles MyBase.MouseWheel
         Dim pos = 1
         If Control.ModifierKeys = Keys.Control Then pos = 10
         If Control.ModifierKeys = Keys.Shift Then pos = 100
@@ -843,9 +848,7 @@ Public Class PreviewForm
 
     <Command("Copies the time of the current position.")>
     Sub CopyTime()
-        Dim d As Date
-        d = d.AddSeconds(Renderer.Position / FrameServer.FrameRate)
-        Clipboard.SetText(d.ToString("HH:mm:ss.fff"))
+        Clipboard.SetText(Date.Today.AddSeconds(Renderer.Position / FrameServer.FrameRate).ToString("HH:mm:ss.fff"))
     End Sub
 
     <Command("Jumps to the next cut point.")>

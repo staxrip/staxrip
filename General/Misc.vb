@@ -1260,11 +1260,14 @@ Public Class Subtitle
             Dim st As New Subtitle()
             st.Size = New FileInfo(path).Length
             Dim match = Regex.Match(path, " ID(\d+)")
-            If match.Success Then st.StreamOrder = match.Groups(1).Value.ToInt - 1
 
-            For Each i In Language.Languages
-                If path.Contains(i.CultureInfo.EnglishName) Then
-                    st.Language = i
+            If match.Success Then
+                st.StreamOrder = match.Groups(1).Value.ToInt - 1
+            End If
+
+            For Each lng In Language.Languages
+                If path.Contains(lng.CultureInfo.EnglishName) Then
+                    st.Language = lng
                     Exit For
                 End If
             Next
@@ -1285,26 +1288,34 @@ Public Class Subtitle
 
         Select Case p.DefaultSubtitle
             Case DefaultSubtitleMode.Single
-                If enabledSubs.Count = 1 Then enabledSubs(0).Default = True
+                If enabledSubs.Count = 1 Then
+                    enabledSubs(0).Default = True
+                End If
             Case DefaultSubtitleMode.First
-                If enabledSubs.Count > 0 Then enabledSubs(0).Default = True
+                If enabledSubs.Count > 0 Then
+                    enabledSubs(0).Default = True
+                End If
             Case DefaultSubtitleMode.Second
-                If enabledSubs.Count > 1 Then enabledSubs(1).Default = True
+                If enabledSubs.Count > 1 Then
+                    enabledSubs(1).Default = True
+                End If
         End Select
 
-        For Each i In ret
-            If p.SubtitleName <> "" Then i.Title = p.SubtitleName
+        For Each st In ret
+            If p.SubtitleName <> "" Then
+                st.Title = p.SubtitleName
+            End If
         Next
 
-        For Each i In ret
+        For Each st In ret
             If p.DefaultSubtitle = DefaultSubtitleMode.English Then
-                If i.Language.TwoLetterCode = "en" Then
-                    i.Default = True
+                If st.Language.TwoLetterCode = "en" Then
+                    st.Default = True
                     Exit For
                 End If
             ElseIf p.DefaultSubtitle = DefaultSubtitleMode.Native Then
-                If i.Language.TwoLetterCode = Language.CurrentCulture.TwoLetterCode Then
-                    i.Default = True
+                If st.Language.TwoLetterCode = Language.CurrentCulture.TwoLetterCode Then
+                    st.Default = True
                     Exit For
                 End If
             End If

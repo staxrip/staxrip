@@ -7,19 +7,27 @@
 
 - In the video encoder dialogs the feature *Execute Command Line* failed when
   Windows Terminal is installed and paths contained spaces.
+- The video encoder dialog feature *Show Command Line* is shown using a console.
 - Maximum number of parallel processes increased from 4 to 16.
-- Issues fixed on systems with restricted PowerShell execution policy.
-- the Tools page in the docs lists all tools in a grid view
-  with columns: Name, Type, Filename, Version, Modified Date
-- The muxer dialog is resizable and remembers the size.
-- AviSynth headers updated and interface version changed to 8
+- On systems with restricted PowerShell execution policy several features
+  like the media info folder view feature failed.
+- The Tools page in the docs lists all tools in a grid view
+  with columns: Name, Type, Filename, Version, Modified Date.
+- Muxer dialog is resizable and remembers the size.
+- Muxer dialog supports Drag & Drop for subtitles, audio and attachments.
+- Video Comparison crash fixed and hardware render support added.
+- aomenc.exe GUI re-enabled, executable not included
+- AviSynth headers updated.
 - AviSynth 3.6
+- x265 M-3.3+31-g431a22e82-gcc11.0.0 Patman
+- ffmpeg N-97868-gaa6f38c298-g38490cbeb3-gcc10.1.0 Patman
 - yadifmod2 avs 0.2.2
 - AVSMeter 2.9.9.3
 - KNLMeansCL avs/vs 1.1.1
 - MPEG2DecPlus avs 0.1.2 (untested)
 - QTGMC avs 3.364s
 - masktools2 2.2.23
+- DCTFilter 0.5.1
 - MediaInfo.NET 6.4.0.0
 
 

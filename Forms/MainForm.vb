@@ -3326,6 +3326,10 @@ Public Class MainForm
             b.Text = "Check for updates once per day"
             b.Field = NameOf(s.CheckForUpdates)
 
+            b = ui.AddBool
+            b.Text = "Use included portable VapourSynth"
+            b.Field = NameOf(s.UseVapourSynthPortable)
+
             b = ui.AddBool()
             b.Text = "Show template selection when loading new files"
             b.Field = NameOf(s.ShowTemplateSelection)
@@ -3453,10 +3457,6 @@ Public Class MainForm
             b = ui.AddBool
             b.Text = "Minimize processing dialog to tray"
             b.Field = NameOf(s.MinimizeToTray)
-
-            b = ui.AddBool
-            b.Text = "Use included portable VapourSynth"
-            b.Field = NameOf(s.UseVapourSynthPortable)
 
             Dim videoPage = ui.CreateFlowPage("Video", True)
 
@@ -3859,7 +3859,6 @@ Public Class MainForm
     Sub ShowVideoComparison()
         Dim form As New VideoComparisonForm
         form.Show()
-        form.Add()
     End Sub
 
     <Command("Dialog to edit filters.")>
@@ -5704,23 +5703,23 @@ Public Class MainForm
     End Sub
 
     Protected Overrides Sub OnDragEnter(e As DragEventArgs)
+        MyBase.OnDragEnter(e)
+
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
         If Not files.NothingOrEmpty Then
             e.Effect = DragDropEffects.Copy
         End If
-
-        MyBase.OnDragEnter(e)
     End Sub
 
     Protected Overrides Sub OnDragDrop(e As DragEventArgs)
+        MyBase.OnDragDrop(e)
+
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
         If Not files.NothingOrEmpty Then
             BeginInvoke(Sub() OpenAnyFile(files.ToList))
         End If
-
-        MyBase.OnDragDrop(e)
     End Sub
 
     Protected Overrides Sub OnActivated(e As EventArgs)

@@ -1,5 +1,4 @@
 ﻿
-Imports System.Drawing.Drawing2D
 Imports System.Drawing.Imaging
 
 Imports StaxRip.UI
@@ -8,7 +7,6 @@ Public Class VideoComparisonForm
     Shared Property Pos As Integer
 
     Public CropLeft, CropTop, CropRight, CropBottom As Integer
-    Public Zoom As Integer = 100
 
     Shadows Menu As ContextMenuStripEx
 
@@ -31,7 +29,7 @@ Public Class VideoComparisonForm
         Menu.Add("Add files to compare...", AddressOf Add, Keys.O, "Video files to compare, the file browser has multiselect enabled.")
         Menu.Add("Close selected tab", AddressOf Remove, Keys.Delete, enabledFunc)
         Menu.Add("Save PNGs at current position", AddressOf Save, Keys.S, enabledFunc, "Saves a PNG image for every file/tab at the current position in the directory of the source file.")
-        Menu.Add("Crop and Zoom...", AddressOf CropZoom, Keys.C, enabledFunc)
+        Menu.Add("Crop and Zoom...", AddressOf CropZoom, Keys.C)
         Menu.Add("Go To Frame...", AddressOf GoToFrame, Keys.F, enabledFunc)
         Menu.Add("Go To Time...", AddressOf GoToTime, Keys.T, enabledFunc)
         Menu.Add("Select next tab", AddressOf NextTab, Keys.Space, enabledFunc)
@@ -55,14 +53,14 @@ Public Class VideoComparisonForm
             If dialog.ShowDialog() = DialogResult.OK Then
                 s.Storage.SetString("video comparison folder", dialog.FileName.Dir)
 
-                For Each i In dialog.FileNames
-                    Add(i)
+                For Each file In dialog.FileNames
+                    Add(file)
                 Next
             End If
         End Using
     End Sub
 
-    Private Sub Remove()
+    Sub Remove()
         If Not TabControl.SelectedTab Is Nothing Then
             Dim tab = TabControl.SelectedTab
             TabControl.TabPages.Remove(tab)
@@ -71,45 +69,55 @@ Public Class VideoComparisonForm
         End If
     End Sub
 
-    Private Sub Save()
-        For Each i As VideoTab In TabControl.TabPages
-            Dim outputPath = i.SourceFile.Dir & Pos & " " + i.SourceFile.Base + ".png"
+    Sub Save()
+        For Each tab As VideoTab In TabControl.TabPages
+            Dim outputPath = tab.SourceFile.Dir & Pos & " " + tab.SourceFile.Base + ".png"
 
-            Using b = i.GetBitmap
-                b.Save(outputPath, ImageFormat.Png)
+            Using bmp = tab.GetBitmap
+                bmp.Save(outputPath, ImageFormat.Png)
             End Using
         Next
+
+        MsgInfo("Images were saved in the source file directory.")
     End Sub
 
     Sub Add(sourePath As String)
         Dim tab = New VideoTab()
         tab.Form = Me
+        tab.VideoPanel.ContextMenuStrip = TabControl.ContextMenuStrip
 
         If tab.Open(sourePath) Then
             TabControl.TabPages.Add(tab)
-            DirectCast(TabControl.SelectedTab, VideoTab).TrackBarValueChanged()
+            Dim page = DirectCast(TabControl.SelectedTab, VideoTab)
+            page.DoLayout()
+            page.TrackBarValueChanged()
             RaiseEvent UpdateMenu()
-            Application.DoEvents()
         Else
             tab.Dispose()
         End If
     End Sub
 
-    Private Sub TrackBar_ValueChanged(sender As Object, e As EventArgs) Handles TrackBar.ValueChanged
+    Sub TrackBar_ValueChanged(sender As Object, e As EventArgs) Handles TrackBar.ValueChanged
         TrackBarValueChanged()
     End Sub
 
-    Private Sub CodecComparisonForm_MouseWheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
+    Sub CodecComparisonForm_MouseWheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
         Dim value = 100
-        If e.Delta < 0 Then value = value * -1
-        If s.ReverseVideoScrollDirection Then value = value * -1
+
+        If e.Delta < 0 Then
+            value = value * -1
+        End If
+
+        If s.ReverseVideoScrollDirection Then
+            value = value * -1
+        End If
+
         TrackBar.Value += value
     End Sub
 
     Sub TrackBarValueChanged()
-        If Not TabControl.SelectedTab Is Nothing Then
+        If TabControl.TabPages.Count > 0 Then
             DirectCast(TabControl.SelectedTab, VideoTab).TrackBarValueChanged()
-            Pos = TrackBar.Value
         End If
     End Sub
 
@@ -122,7 +130,7 @@ Public Class VideoComparisonForm
         form.Show()
     End Sub
 
-    Private Sub NextTab()
+    Sub NextTab()
         Dim index = TabControl.SelectedIndex + 1
 
         If index >= TabControl.TabPages.Count Then
@@ -140,7 +148,7 @@ Public Class VideoComparisonForm
         Next
     End Sub
 
-    Private Sub TabControl_Selected(sender As Object, e As TabControlEventArgs) Handles TabControl.Selected
+    Sub TabControl_Selected(sender As Object, e As TabControlEventArgs) Handles TabControl.Selected
         Dim tab = DirectCast(TabControl.SelectedTab, VideoTab)
 
         If Not tab Is Nothing Then
@@ -148,15 +156,15 @@ Public Class VideoComparisonForm
         End If
     End Sub
 
-    Private Sub CodecComparisonForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+    Sub CodecComparisonForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         Dispose()
     End Sub
 
-    Private Sub CropZoom()
-        Using f As New SimpleSettingsForm("Crop and Zoom")
-            f.Height = CInt(f.Height * 0.6)
-            f.Width = CInt(f.Width * 0.6)
-            Dim ui = f.SimpleUI
+    Sub CropZoom()
+        Using form As New SimpleSettingsForm("Crop and Zoom")
+            form.Height = CInt(form.Height * 0.6)
+            form.Width = CInt(form.Width * 0.6)
+            Dim ui = form.SimpleUI
             Dim page = ui.CreateFlowPage("main page")
             page.SuspendLayout()
 
@@ -184,17 +192,9 @@ Public Class VideoComparisonForm
             nb.NumEdit.Value = CropBottom
             nb.NumEdit.SaveAction = Sub(value) CropBottom = CInt(value)
 
-            ui.AddLine(page)
-
-            nb = ui.AddNum(page)
-            nb.Label.Text = "Zoom:"
-            nb.NumEdit.Config = {0, 1000, 10}
-            nb.NumEdit.Value = Zoom
-            nb.NumEdit.SaveAction = Sub(value) Zoom = CInt(value)
-
             page.ResumeLayout()
 
-            If f.ShowDialog() = DialogResult.OK Then
+            If form.ShowDialog() = DialogResult.OK Then
                 ui.Save()
                 Reload()
                 TrackBarValueChanged()
@@ -202,13 +202,16 @@ Public Class VideoComparisonForm
         End Using
     End Sub
 
-    Private Sub GoToFrame()
+    Sub GoToFrame()
         Dim value = InputBox.Show("Frame:", "Go To Frame", TrackBar.Value.ToString)
         Dim pos As Integer
-        If Integer.TryParse(value, pos) Then TrackBar.Value = pos
+
+        If Integer.TryParse(value, pos) Then
+            TrackBar.Value = pos
+        End If
     End Sub
 
-    Private Sub GoToTime()
+    Sub GoToTime()
         Dim tab = DirectCast(TabControl.SelectedTab, VideoTab)
         Dim d As Date
         d = d.AddSeconds(Pos / tab.Server.FrameRate)
@@ -220,21 +223,21 @@ Public Class VideoComparisonForm
         End If
     End Sub
 
-    Private Sub VideoComparisonForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        WindowState = FormWindowState.Normal
-    End Sub
-
     Public Class VideoTab
         Inherits TabPage
 
         Property Server As FrameServer
         Property Form As VideoComparisonForm
         Property SourceFile As String
+        Property VideoPanel As Panel
 
+        Private Renderer As VideoRenderer
         Private FrameInfo As String()
 
         Sub New()
-            SetStyle(ControlStyles.Opaque, True)
+            VideoPanel = New Panel
+            AddHandler VideoPanel.Paint, Sub() Draw()
+            Controls.Add(VideoPanel)
         End Sub
 
         Sub Reload()
@@ -273,12 +276,9 @@ Public Class VideoComparisonForm
                 script.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
             End If
 
-            If Form.Zoom <> 100 Then
-                script.Filters.Add(New VideoFilter("Spline64Resize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
-            End If
-
-            script.Synchronize(True)
+            script.Synchronize(True, True, True)
             Server = New FrameServer(script.Path)
+            Renderer = New VideoRenderer(VideoPanel, Server)
 
             Try
                 FileHelp.Delete(sourePath + ".ffindex")
@@ -319,63 +319,12 @@ Public Class VideoComparisonForm
         End Function
 
         Sub Draw()
-            Dim padding As Padding
-            Dim sizeToFit = New Size(Server.Info.Width, Server.Info.Height)
-
-            Dim rect As New Rectangle(
-                padding.Left, padding.Top,
-                Width - padding.Horizontal,
-                Height - padding.Vertical)
-
-            Dim targetPoint As Point
-            Dim targetSize As Size
-            Dim ar1 = rect.Width / rect.Height
-            Dim ar2 = sizeToFit.Width / sizeToFit.Height
-
-            If ar2 < ar1 Then
-                targetSize.Height = rect.Height
-                targetSize.Width = CInt(sizeToFit.Width / (sizeToFit.Height / rect.Height))
-                targetPoint.X = CInt((rect.Width - targetSize.Width) / 2) + padding.Left
-                targetPoint.Y = padding.Top
-            Else
-                targetSize.Width = rect.Width
-                targetSize.Height = CInt(sizeToFit.Height / (sizeToFit.Width / rect.Width))
-                targetPoint.Y = CInt((rect.Height - targetSize.Height) / 2) + padding.Top
-                targetPoint.X = padding.Left
-            End If
-
-            Dim targetRect = New Rectangle(targetPoint, targetSize)
-            Dim reg As New Region(ClientRectangle)
-            reg.Exclude(targetRect)
-
-            Using g = CreateGraphics()
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                g.FillRegion(Brushes.Black, reg)
-                g.DrawImage(GetBitmap, targetRect)
-            End Using
+            Renderer.Position = Pos
+            Renderer.Draw()
         End Sub
 
         Function GetBitmap() As Bitmap
-            Dim ret = BitmapUtil.CreateBitmap(Server, Pos)
-            ret.RotateFlip(RotateFlipType.RotateNoneFlipY)
-
-            Using g = Graphics.FromImage(ret)
-                g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
-                Dim text = SourceFile.Base
-                Dim fontSize = ret.Height \ 100
-
-                If fontSize < 10 Then
-                    fontSize = 10
-                End If
-
-                Dim font = New Font("Arial", fontSize)
-                Dim size = g.MeasureString(text, font)
-                Dim rect = New RectangleF(font.Height \ 2, font.Height \ 2, size.Width, size.Height)
-                g.FillRectangle(Brushes.DarkGray, rect)
-                g.DrawString(text, font, Brushes.White, rect)
-            End Using
-
-            Return ret
+            Return BitmapUtil.CreateBitmap(Server, Pos)
         End Function
 
         Sub TrackBarValueChanged()
@@ -404,9 +353,49 @@ Public Class VideoComparisonForm
             Form.lInfo.Refresh()
         End Sub
 
-        Protected Overrides Sub OnPaint(e As PaintEventArgs)
-            MyBase.OnPaint(e)
-            Draw()
+        Sub DoLayout()
+            If Server Is Nothing Then
+                Exit Sub
+            End If
+
+            Dim sizeToFit = New Size(Server.Info.Width, Server.Info.Height)
+
+            If sizeToFit.IsEmpty Then
+                Exit Sub
+            End If
+
+            Dim padding As Padding
+
+            Dim rect As New Rectangle(
+                padding.Left, padding.Top,
+                Width - padding.Horizontal,
+                Height - padding.Vertical)
+
+            Dim targetPoint As Point
+            Dim targetSize As Size
+            Dim ar1 = rect.Width / rect.Height
+            Dim ar2 = sizeToFit.Width / sizeToFit.Height
+
+            If ar2 < ar1 Then
+                targetSize.Height = rect.Height
+                targetSize.Width = CInt(sizeToFit.Width / (sizeToFit.Height / rect.Height))
+                targetPoint.X = CInt((rect.Width - targetSize.Width) / 2) + padding.Left
+                targetPoint.Y = padding.Top
+            Else
+                targetSize.Width = rect.Width
+                targetSize.Height = CInt(sizeToFit.Height / (sizeToFit.Width / rect.Width))
+                targetPoint.Y = CInt((rect.Height - targetSize.Height) / 2) + padding.Top
+                targetPoint.X = padding.Left
+            End If
+
+            Dim targetRect = New Rectangle(targetPoint, targetSize)
+            Dim reg As New Region(ClientRectangle)
+            reg.Exclude(targetRect)
+
+            VideoPanel.Left = targetRect.Left
+            VideoPanel.Top = targetRect.Top
+            VideoPanel.Width = targetRect.Width
+            VideoPanel.Height = targetRect.Height
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
@@ -415,6 +404,10 @@ Public Class VideoComparisonForm
             End If
 
             MyBase.Dispose(disposing)
+        End Sub
+
+        Sub VideoTab_Resize(sender As Object, e As EventArgs) Handles Me.Resize
+            DoLayout()
         End Sub
     End Class
 End Class

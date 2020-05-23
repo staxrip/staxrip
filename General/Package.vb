@@ -1,5 +1,6 @@
 
 Imports System.Text.RegularExpressions
+
 Imports Microsoft.Win32
 
 Public Class Package
@@ -241,23 +242,6 @@ Public Class Package
         .WebURL = "https://github.com/amichaeltm/BDSup2SubPlusPlus",
         .Description = "Converts Blu-ray subtitles to other formats like VobSub."})
 
-    Shared Property Rav1e As Package = Add(New Package With {
-        .Name = "rav1e",
-        .Filename = "rav1e.exe",
-        .Location = "Encoders\Rav1e",
-        .Description = "AV1 Video Encoder.",
-        .WebURL = "https://github.com/xiph/rav1e",
-        .HelpFilename = "rav1e help.txt",
-        .HelpSwitch = "--help"})
-
-    Shared Property aomenc As Package = Add(New Package With {
-        .Name = "aomenc",
-        .Filename = "aomenc.exe",
-        .Location = "Encoders\aomenc",
-        .Description = "AV1 Video Encoder.",
-        .WebURL = "https://aomedia.org",
-        .HelpSwitch = "--help"})
-
     Shared Property MTN As Package = Add(New Package With {
         .Name = "mtn",
         .Filename = "mtn.exe",
@@ -424,6 +408,26 @@ Public Class Package
         .HelpSwitch = "",
         .Description = "Intel AV1 encoder."})
 
+    Shared Property Rav1e As Package = Add(New Package With {
+        .Name = "rav1e",
+        .Filename = "rav1e.exe",
+        .Location = "Encoders\Rav1e",
+        .Description = "AV1 Video Encoder.",
+        .WebURL = "https://github.com/xiph/rav1e",
+        .HelpFilename = "rav1e help.txt",
+        .HelpSwitch = "--help"})
+
+    Shared Property aomenc As Package = Add(New Package With {
+        .Name = "aomenc",
+        .Filename = "aomenc.exe",
+        .Location = "Encoders\aomenc",
+        .Description = "AV1 Video Encoder.",
+        .IsIncluded = False,
+        .VersionAllowAny = True,
+        .WebURL = "https://aomedia.org",
+        .RequiredFunc = Function() TypeOf p.VideoEncoder Is aomenc,
+        .HelpSwitch = "--help"})
+
     Shared Property mkvmerge As Package = Add(New Package With {
         .Name = "mkvmerge",
         .Filename = "mkvmerge.exe",
@@ -553,7 +557,7 @@ Public Class Package
         .Filename = "DCTFilter.dll",
         .Location = "Plugins\AVS\DCTFilter",
         .Description = "A rewrite of DctFilter for Avisynth+.",
-        .WebURL = "http://github.com/chikuzen/DCTFilter",
+        .WebURL = "https://github.com/Asd-g/DCTFilter",
         .AvsFilterNames = {"DCTFilter", "DCTFilterD", "DCTFilter4", "DCTFilter4D", "DCTFilter8", "DCTFilter8D"}})
 
     Shared Property DCTFilterF As Package = Add(New PluginPackage With {
@@ -643,7 +647,7 @@ Public Class Package
         .WebURL = "https://github.com/pinterf/dfttest",
         .DownloadURL = "https://github.com/pinterf/dfttest/releases",
         .AvsFilterNames = {"dfttest"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest", "dfttest($select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong|sigma=64, tbsize=1$,$select:msg:Enable High Bit Depth?;True|lsb_in=true, lsb=true;False|lsb_in=false, lsb=false$)")}})
+        .AvsFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest", "dfttest($select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong Static|sigma=64, tbsize=1;Strong Temporal|sigma=64, tbsize=3$,$select:msg:Reduce Banding?;No Deband| dither=0;Deband| dither=1;Add Noise| dither=2;More Noise| dither=3$)")}})
 
     Shared Property muvsfunc As Package = Add(New PluginPackage With {
         .Name = "muvsfunc",

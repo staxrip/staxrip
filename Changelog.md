@@ -20,6 +20,7 @@
 - AviSynth headers updated.
 - AviSynth 3.6
 - x265 M-3.3+31-g431a22e82-gcc11.0.0 Patman
+- NVEnc 5.02
 - ffmpeg N-97868-gaa6f38c298-g38490cbeb3-gcc10.1.0 Patman
 - yadifmod2 avs 0.2.2
 - AVSMeter 2.9.9.3

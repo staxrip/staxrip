@@ -28,7 +28,7 @@ Public Class CropForm
     Friend WithEvents tsbMenu As System.Windows.Forms.ToolStripDropDownButton
     Friend WithEvents laStatus As System.Windows.Forms.ToolStripStatusLabel
 
-    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
+    <System.Diagnostics.DebuggerStepThrough()> Sub InitializeComponent()
         Me.pLeftActive = New System.Windows.Forms.Panel()
         Me.pTopActive = New System.Windows.Forms.Panel()
         Me.pBottomActive = New System.Windows.Forms.Panel()
@@ -215,19 +215,19 @@ Public Class CropForm
         Side = AnchorStyles.Top
     End Sub
 
-    Private Sub TrackLength_Scroll() Handles tbPosition.Scroll
+    Sub TrackLength_Scroll() Handles tbPosition.Scroll
         Renderer.Position = tbPosition.Value
         Renderer.Draw()
     End Sub
 
-    Private Sub DeactivateActiveColor()
+    Sub DeactivateActiveColor()
         pLeftActive.BackColor = Drawing.SystemColors.Control
         pTopActive.BackColor = Drawing.SystemColors.Control
         pRightActive.BackColor = Drawing.SystemColors.Control
         pBottomActive.BackColor = Drawing.SystemColors.Control
     End Sub
 
-    Private Sub CropForm_Load(sender As Object, e As EventArgs) Handles Me.Load
+    Sub CropForm_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim zoom = 0.0
         Dim workingArea = Screen.FromControl(Me).WorkingArea
 
@@ -240,14 +240,14 @@ Public Class CropForm
         SetDialogSize(CInt(p.SourceWidth * zoom), CInt(p.SourceHeight * zoom))
     End Sub
 
-    Private Sub Wheel(sender As Object, e As MouseEventArgs) Handles MyBase.MouseWheel
+    Sub Wheel(sender As Object, e As MouseEventArgs) Handles MyBase.MouseWheel
         Dim value = 2
         value = If((Control.ModifierKeys And Keys.Shift) = Keys.Shift, 8, value)
         value = If(e.Delta > 0, value, value * -1)
         CropActiveSideInternal(value, (Control.ModifierKeys And Keys.Control) = Keys.Control)
     End Sub
 
-    Private Sub CropActiveSideInternal(x As Integer, opposite As Boolean)
+    Sub CropActiveSideInternal(x As Integer, opposite As Boolean)
         Select Case Side
             Case AnchorStyles.Left
                 p.CropLeft += x
@@ -304,7 +304,7 @@ Public Class CropForm
         Return AnchorStyles.None
     End Function
 
-    Private Sub MouseCrop(e As MouseEventArgs)
+    Sub MouseCrop(e As MouseEventArgs)
         Dim scaleX = p.SourceWidth / pVideo.Width
         Dim scaleY = p.SourceHeight / pVideo.Height
 
@@ -327,7 +327,7 @@ Public Class CropForm
         UpdateAll()
     End Sub
 
-    Private Sub MouseSelectBorder(e As MouseEventArgs)
+    Sub MouseSelectBorder(e As MouseEventArgs)
         Select Case GetSide(e)
             Case AnchorStyles.Left
                 DeactivateActiveColor()
@@ -395,7 +395,7 @@ Public Class CropForm
             "  DAR: " + Calc.GetTargetDAR().ToString("f6")
     End Sub
 
-    Private Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pVideo.MouseMove
+    Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pVideo.MouseMove
         If Control.MouseButtons = Windows.Forms.MouseButtons.Left Then
             MouseCrop(e)
         Else
@@ -403,22 +403,22 @@ Public Class CropForm
         End If
     End Sub
 
-    Private Sub pVideo_MouseDown(sender As Object, e As MouseEventArgs) Handles pVideo.MouseDown
+    Sub pVideo_MouseDown(sender As Object, e As MouseEventArgs) Handles pVideo.MouseDown
         If Control.MouseButtons = Windows.Forms.MouseButtons.Left Then
             ActiveCropSide = GetSide(e)
             MouseCrop(e)
         End If
     End Sub
 
-    Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pVideo.Paint
+    Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pVideo.Paint
         Renderer?.Draw()
     End Sub
 
-    Private Sub CropForm_SizeChanged() Handles MyBase.SizeChanged
+    Sub CropForm_SizeChanged() Handles MyBase.SizeChanged
         Renderer?.Draw()
     End Sub
 
-    Private Sub CropForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+    Sub CropForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         Dim err = p.Script.GetError
 
         If err <> "" Then
@@ -441,11 +441,11 @@ Public Class CropForm
         FrameServer.Dispose()
     End Sub
 
-    Private Sub tbPosition_Enter() Handles tbPosition.Enter
+    Sub tbPosition_Enter() Handles tbPosition.Enter
         ActiveControl = Nothing
     End Sub
 
-    Private Sub SetDialogSize(w As Integer, h As Integer)
+    Sub SetDialogSize(w As Integer, h As Integer)
         ClientSize = New Size(ClientSize.Width + w - pVideo.Width, ClientSize.Height + h - pVideo.Height)
         Renderer?.Draw()
     End Sub
@@ -492,7 +492,7 @@ Public Class CropForm
     End Function
 
     <Command("Sets the four crop values.")>
-    Private Sub SetCropValues(
+    Sub SetCropValues(
         left As Integer,
         top As Integer,
         right As Integer,
@@ -507,7 +507,7 @@ Public Class CropForm
     End Sub
 
     <Command("Crops the active side.")>
-    Private Sub CropActiveSide(
+    Sub CropActiveSide(
         <DispName("Pixel (corrected)"),
         Description("Pixels to crop when 'Auto correct crop values' is enabled.")>
         valueSafe As Integer,
@@ -519,7 +519,7 @@ Public Class CropForm
     End Sub
 
     <Command("Crops the active and the opposite side of the active side")>
-    Private Sub CropActiveAndOppositeSide(
+    Sub CropActiveAndOppositeSide(
         <DispName("Pixel (corrected)"),
         Description("Pixels to crop when 'Auto correct crop values' is enabled.")>
         valueSafe As Integer,
@@ -531,45 +531,47 @@ Public Class CropForm
     End Sub
 
     <Command("Detects the crop values automatically.")>
-    Private Sub RunAutoCrop()
+    Sub RunAutoCrop()
         p.CropLeft = 0
         p.CropTop = 0
         p.CropRight = 0
         p.CropBottom = 0
         UpdateAll()
+
         g.RunAutoCrop(Sub(progress As Double)
                           tbPosition.Value = CInt(tbPosition.Maximum / 100 * progress)
                           TrackLength_Scroll()
                       End Sub)
+
         tbPosition.Value = 0
         UpdateAll()
     End Sub
 
     <Command("Crops until the proper aspect ratio is found.")>
-    Private Sub RunSmartCrop()
+    Sub RunSmartCrop()
         g.SmartCrop()
         UpdateAll()
     End Sub
 
     <Command("Dialog to configure the menu.")>
-    Private Sub ShowMenuEditor()
+    Sub ShowMenuEditor()
         s.CustomMenuCrop = CustomMenu.Edit()
         g.SaveSettings()
     End Sub
 
     <Command("Exits the dialog.")>
-    Private Sub CloseDialog()
+    Sub CloseDialog()
         Close()
     End Sub
 
     <Command("Shows a dialog with crop options.")>
-    Private Sub ShowOptions()
+    Sub ShowOptions()
         g.MainForm.ShowOptionsDialog("Image|Crop")
         UpdateAll()
     End Sub
 
     <Command("Jumps a given frame count.")>
-    Private Sub SetRelativePosition(
+    Sub SetRelativePosition(
         <DispName("Offset"), Description("Frames to jump, negative values jump backward.")>
         offset As Integer)
 
@@ -579,7 +581,7 @@ Public Class CropForm
     End Sub
 
     <Command("Opens the help of the crop dialog.")>
-    Private Sub ShowHelpDialog()
+    Sub ShowHelpDialog()
         Refresh()
 
         Dim form As New HelpForm()
@@ -616,7 +618,7 @@ Public Class CropForm
         UpdateAll()
     End Sub
 
-    Private Sub tsbMenu_Click(sender As Object, e As EventArgs) Handles tsbMenu.Click
+    Sub tsbMenu_Click(sender As Object, e As EventArgs) Handles tsbMenu.Click
         ContextMenuStrip.Show(MousePosition)
     End Sub
 End Class

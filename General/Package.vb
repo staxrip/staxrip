@@ -32,8 +32,6 @@ Public Class Package
     Property VersionDate As Date
     Property WebURL As String
 
-    Overridable Property FixedDir As String
-
     Shared Property Items As New SortedDictionary(Of String, Package)
 
     Shared Property DGIndex As Package = Add(New Package With {
@@ -142,6 +140,7 @@ Public Class Package
     Shared Property AviSynth As Package = Add(New Package With {
         .Name = "AviSynth",
         .Filename = "AviSynth.dll",
+        .VersionAllowOld = False,
         .WebURL = "https://github.com/AviSynth/AviSynthPlus",
         .HelpURL = "http://avisynth.nl",
         .DownloadURL = "https://github.com/AviSynth/AviSynthPlus/releases",
@@ -405,7 +404,7 @@ Public Class Package
         .Filename = "SvtAv1EncApp.exe",
         .WebURL = "https://github.com/OpenVisualCloud/SVT-AV1",
         .HelpURL = "https://github.com/OpenVisualCloud/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
-        .HelpSwitch = "",
+        .HelpSwitch = "stderr-help",
         .Description = "Intel AV1 encoder."})
 
     Shared Property Rav1e As Package = Add(New Package With {
@@ -425,6 +424,7 @@ Public Class Package
         .IsIncluded = False,
         .VersionAllowAny = True,
         .WebURL = "https://aomedia.org",
+        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .RequiredFunc = Function() TypeOf p.VideoEncoder Is aomenc,
         .HelpSwitch = "--help"})
 
@@ -1692,7 +1692,7 @@ Public Class Package
             .Filename = "msvcp110.dll",
             .Description = "Visual C++ 2012 Redistributable is required by some tools used by StaxRip.",
             .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
-            .FixedDir = Folder.System,
+            .Location = Folder.System,
             .VersionAllowAny = True,
             .TreePath = "Runtimes",
             .RequiredFunc = Function() Items("SangNom2 avs").Required OrElse
@@ -1704,7 +1704,7 @@ Public Class Package
             .Description = "Visual C++ 2013 Redistributable is required by some tools used by StaxRip.",
             .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=40784",
             .VersionAllowAny = True,
-            .FixedDir = Folder.System,
+            .Location = Folder.System,
             .TreePath = "Runtimes"})
 
         Add(New Package With {
@@ -1714,7 +1714,7 @@ Public Class Package
             .DownloadURL = "https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads",
             .VersionAllowOld = False,
             .VersionAllowNew = True,
-            .FixedDir = Folder.System,
+            .Location = Folder.System,
             .TreePath = "Runtimes"})
 
         Add(New Package With {
@@ -1722,7 +1722,7 @@ Public Class Package
             .Filename = "d3d9.dll",
             .Description = "DirectX 9.0c End-User Runtime.",
             .DownloadURL = "https://www.microsoft.com/en-us/download/details.aspx?id=34429",
-            .FixedDir = Folder.System,
+            .Location = Folder.System,
             .VersionAllowAny = True,
             .TreePath = "Runtimes",
             .RequiredFunc = Function() AviSynthShader.Required})
@@ -1784,7 +1784,7 @@ Public Class Package
                     LaunchActionValue = Sub() g.ShellExecute(Path)
                 ElseIf Not HelpSwitch Is Nothing Then
                     LaunchActionValue = Sub() g.DefaultCommands.ExecutePowerShellScript(
-                        $"& '{Path}' {If(HelpSwitch = "stderr", "", HelpSwitch)}", True)
+                        $"& '{Path}' {If(HelpSwitch.Contains("stderr"), HelpSwitch.Replace("stderr", ""), HelpSwitch)}", True)
                 End If
             End If
 
@@ -1934,10 +1934,11 @@ Public Class Package
 
         Try
             If Not HelpSwitch Is Nothing Then
-                Dim stderr = If(HelpSwitch = "stderr", True, False)
+                Dim stderr = HelpSwitch.Contains("stderr")
+                Dim switch = If(stderr, HelpSwitch.Replace("stderr", ""), HelpSwitch)
 
                 File.WriteAllText(HelpFile, BR + ProcessHelp.GetConsoleOutput(
-                    Path, HelpSwitch, stderr).Trim + BR)
+                    Path, switch, stderr).Trim + BR)
 
                 Return HelpFile.ReadAllText
             End If
@@ -2011,20 +2012,8 @@ Public Class Package
     End Function
 
     Function GetStatusLocation() As String
-        Dim pathVar = Path
-
-        If pathVar = "" Then
-            If FixedDir <> "" Then
-                Return "App not found at '" + FixedDir.TrimEnd("\"c) + "'"
-            Else
-                Return "App not found, use the Path menu to locate the App."
-            End If
-        End If
-
-        If FixedDir <> "" AndAlso pathVar <> "" AndAlso
-            Not pathVar.ToLower.StartsWith(FixedDir.ToLower) Then
-
-            Return "The App has To be located at: " + FixedDir
+        If Path = "" Then
+            Return "App not found, use the Path menu to locate the App."
         End If
     End Function
 
@@ -2153,14 +2142,6 @@ Public Class Package
                 Return ret
             End If
 
-            If FixedDir <> "" Then
-                If File.Exists(FixedDir + Filename) Then
-                    Return FixedDir + Filename
-                End If
-
-                Return Nothing
-            End If
-
             ret = GetPathFromLocation(Location)
 
             If File.Exists(ret) Then
@@ -2205,12 +2186,6 @@ Public Class Package
                         End If
                     End If
                 End If
-            End If
-
-            ret = Folder.Apps + Name + "\" + Filename
-
-            If File.Exists(ret) Then
-                Return ret
             End If
 
             ret = FindEverywhere({Filename}, IgnorePath)

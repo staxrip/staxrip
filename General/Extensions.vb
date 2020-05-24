@@ -53,6 +53,15 @@ Module StringExtensions
     End Function
 
     <Extension>
+    Function StartsWithEx(instance As String, value As String) As Boolean
+        If instance = "" OrElse value = "" Then
+            Return False
+        End If
+
+        Return instance.StartsWith(value)
+    End Function
+
+    <Extension>
     Sub ThrowIfContainsNewLine(instance As String)
         If instance?.Contains(BR) Then
             Throw New Exception("String contains a line break char: " + instance)

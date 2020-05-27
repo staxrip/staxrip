@@ -1,11 +1,12 @@
-﻿Imports System.Text.RegularExpressions
+﻿
+Imports System.Text.RegularExpressions
 
 Public Class LogForm
     Property Path As String
 
     Public Sub New()
         InitializeComponent()
-        ScaleClientSize(55, 35)
+        g.RestoreClientSize(Me, 55, 35)
         lb.ItemHeight = FontHeight * 2
         rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
         rtb.ReadOnly = True
@@ -29,7 +30,7 @@ Public Class LogForm
         lb.Items.Add("Open with " + g.GetTextEditorPath.Base)
     End Sub
 
-    Private Sub lb_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lb.SelectedIndexChanged
+    Sub lb_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lb.SelectedIndexChanged
         If lb.SelectedItem Is Nothing Then Exit Sub
 
         If lb.SelectedItem.ToString.StartsWith("Open with") Then
@@ -38,5 +39,10 @@ Public Class LogForm
             rtb.Find(lb.SelectedItem.ToString)
             rtb.ScrollToCaret()
         End If
+    End Sub
+
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        MyBase.OnFormClosing(e)
+        g.SaveClientSize(Me)
     End Sub
 End Class

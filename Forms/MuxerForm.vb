@@ -515,7 +515,7 @@ Public Class MuxerForm
     Sub New(muxer As Muxer)
         MyBase.New()
         InitializeComponent()
-        ScaleClientSize(40, 20)
+        g.RestoreClientSize(Me, 45, 20)
         Text += " - " + muxer.Name
         Me.Muxer = muxer
         SubtitleControl.AddSubtitles(muxer.Subtitles)
@@ -577,16 +577,6 @@ Public Class MuxerForm
             dgvAudio.Rows(0).Selected = True
         End If
 
-        Dim w = s.Storage.GetInt("muxer form width")
-        Dim h = s.Storage.GetInt("muxer form height")
-
-        Dim wa = Screen.PrimaryScreen.WorkingArea
-
-        If w <> 0 AndAlso w < wa.Width AndAlso h <> 0 AndAlso h < wa.Height Then
-            Width = w
-            Height = h
-        End If
-
         UpdateControls()
         TipProvider.SetTip("Additional command line switches that may contain macros.", tpCommandLine)
     End Sub
@@ -605,8 +595,7 @@ Public Class MuxerForm
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
-        s.Storage.SetInt("muxer form width", Width)
-        s.Storage.SetInt("muxer form height", Height)
+        g.SaveClientSize(Me)
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)

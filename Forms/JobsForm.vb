@@ -184,10 +184,9 @@ Friend Class JobsForm
     Private Tip As String = "Please note that the job list can be processed by multiple StaxRip instances in parallel."
 
     Sub New()
-        MyBase.New()
         InitializeComponent()
 
-        ScaleClientSize(40, 20)
+        g.RestoreClientSize(Me, 40, 20)
 
         bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
         bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
@@ -348,6 +347,7 @@ Friend Class JobsForm
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
+        g.SaveClientSize(Me)
         RemoveHandler FileWatcher.Changed, AddressOf Reload
         RemoveHandler FileWatcher.Created, AddressOf Reload
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged

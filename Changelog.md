@@ -1,6 +1,13 @@
 
-2.1.1.6 Beta (not yet available)
+2.1.1.7 Beta (not yet available)
 ============
+
+2.1.1.6 Beta
+============
+
+- muxer dialog size issue
+- low DPI menu font render issue
+
 
 2.1.1.5 Beta
 ============

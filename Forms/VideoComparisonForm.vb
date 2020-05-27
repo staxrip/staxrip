@@ -14,6 +14,9 @@ Public Class VideoComparisonForm
 
     Public Sub New()
         InitializeComponent()
+        g.RestoreClientSize(Me, 53, 35)
+        WindowPositions.CenterScreen(Me)
+
         KeyPreview = True
         bnMenu.TabStop = False
         TabControl.AllowDrop = True
@@ -38,6 +41,11 @@ Public Class VideoComparisonForm
         Menu.Add("Navigate | 100 frame backward", Sub() TrackBar.Value -= 100, Keys.Left Or Keys.Control, enabledFunc)
         Menu.Add("Navigate | 100 frame forward", Sub() TrackBar.Value += 100, Keys.Right Or Keys.Control, enabledFunc)
         Menu.Add("Help", AddressOf Me.Help, Keys.F1)
+    End Sub
+
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        MyBase.OnFormClosing(e)
+        g.SaveClientSize(Me)
     End Sub
 
     Sub Add()

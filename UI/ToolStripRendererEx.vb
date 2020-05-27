@@ -1,6 +1,5 @@
 
 Imports System.Drawing.Drawing2D
-Imports System.Drawing.Text
 Imports Microsoft.Win32
 
 Public Class ToolStripRendererEx
@@ -36,7 +35,11 @@ Public Class ToolStripRendererEx
     Shared Sub InitColors(renderMode As ToolStripRenderModeEx)
         If ToolStripRendererEx.IsAutoRenderMode Then
             Dim argb = CInt(Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", 0))
-            If argb = 0 Then argb = Color.LightBlue.ToArgb
+
+            If argb = 0 Then
+                argb = Color.LightBlue.ToArgb
+            End If
+
             InitColors(Color.FromArgb(argb))
         Else
             ColorChecked = Color.FromArgb(&HFF91C9F7)
@@ -70,8 +73,6 @@ Public Class ToolStripRendererEx
     End Sub
 
     Protected Overloads Overrides Sub OnRenderItemText(e As ToolStripItemTextRenderEventArgs)
-        e.Graphics.TextRenderingHint = TextRenderingHint.AntiAlias
-
         If TypeOf e.Item Is ToolStripMenuItem AndAlso Not TypeOf e.Item.Owner Is MenuStrip Then
             Dim r = e.TextRectangle
             Dim dropDown = TryCast(e.ToolStrip, ToolStripDropDownMenu)

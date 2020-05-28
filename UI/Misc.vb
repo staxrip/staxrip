@@ -9,6 +9,8 @@ Namespace UI
         Event FilesDropped(files As String())
 
         Private FileDropValue As Boolean
+        Private DefaultWidthScale As Single
+        Private DefaultHeightScale As Single
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Shadows Property FontHeight As Integer
@@ -64,12 +66,42 @@ Namespace UI
                 End If
             Else
                 Dim designDimension = 144
-                If s.UIScaleFactor <> 1 Then Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+
+                If s.UIScaleFactor <> 1 Then
+                    Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+                End If
 
                 If designDimension <> DeviceDpi OrElse s.UIScaleFactor <> 1 Then
                     Scale(New SizeF(CSng(DeviceDpi / designDimension * s.UIScaleFactor),
                                     CSng(DeviceDpi / designDimension * s.UIScaleFactor)))
                 End If
+            End If
+
+            If DefaultWidthScale <> 0 Then
+                Dim defaultWidth = CInt(Font.Height * DefaultWidthScale)
+                Dim defaultHeight = CInt(Font.Height * DefaultHeightScale)
+
+                Dim w = s.Storage.GetInt(Me.GetType().Name + "width")
+                Dim h = s.Storage.GetInt(Me.GetType().Name + "height")
+
+                Dim workingArea = Screen.FromControl(Me).WorkingArea
+
+                If w = 0 OrElse w < (defaultWidth / 2) OrElse h = 0 OrElse h < (defaultHeight / 2) Then
+                    w = defaultWidth
+                    h = defaultHeight
+                End If
+
+                If w > workingArea.Width OrElse h > workingArea.Height Then
+                    w = workingArea.Width
+                    h = workingArea.Height
+                End If
+
+                Width = w
+                Height = h
+            End If
+
+            If StartPosition = FormStartPosition.CenterScreen Then
+                WindowPositions.CenterScreen(Me)
             End If
 
             MyBase.OnLoad(e)
@@ -82,6 +114,10 @@ Namespace UI
         Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
             If Not s.WindowPositions Is Nothing Then
                 s.WindowPositions.Save(Me)
+            End If
+
+            If DefaultWidthScale <> 0 Then
+                SaveClientSize()
             End If
 
             MyBase.OnFormClosing(e)
@@ -98,6 +134,16 @@ Namespace UI
                 index += 1
                 SetTabIndexes(i)
             Next
+        End Sub
+
+        Sub RestoreClientSize(defaultWidthScale As Single, defaultHeightScale As Single)
+            Me.DefaultWidthScale = defaultWidthScale
+            Me.DefaultHeightScale = defaultHeightScale
+        End Sub
+
+        Sub SaveClientSize()
+            s.Storage.SetInt(Me.GetType().Name + "width", Width)
+            s.Storage.SetInt(Me.GetType().Name + "height", Height)
         End Sub
     End Class
 
@@ -211,15 +257,6 @@ Namespace UI
 
         Sub RestorePosition(form As Form)
             Dim text = GetText(form)
-
-            If Not s.WindowPositionsCenterScreen.NothingOrEmpty AndAlso Not TypeOf form Is InputBoxForm Then
-                For Each i In s.WindowPositionsCenterScreen
-                    If text.StartsWith(i) OrElse i = "all" Then
-                        CenterScreen(form)
-                        Exit For
-                    End If
-                Next
-            End If
 
             If Not s.WindowPositionsRemembered.NothingOrEmpty AndAlso Not TypeOf form Is InputBoxForm Then
                 For Each i In s.WindowPositionsRemembered

@@ -301,30 +301,6 @@ Public Class GlobalClass
             File.Exists(p.VideoEncoder.OutputPath))
     End Function
 
-    Sub RestoreClientSize(form As Form, defaultWidthScale As Single, defaultHeightScale As Single)
-        Dim defaultWidth = CInt(form.Font.Height * defaultWidthScale)
-        Dim defaultHeight = CInt(form.Font.Height * defaultHeightScale)
-
-        Dim width = s.Storage.GetInt(form.GetType().Name + "width")
-        Dim height = s.Storage.GetInt(form.GetType().Name + "height")
-
-        Dim workingArea = Screen.FromControl(form).WorkingArea
-
-        If width = 0 OrElse width < (defaultWidth / 2) OrElse width > workingArea.Width OrElse
-            height = 0 OrElse height < (defaultHeight / 2) OrElse height > workingArea.Height Then
-
-            width = defaultWidth
-            height = defaultHeight
-        End If
-
-        form.ClientSize = New Size(width, height)
-    End Sub
-
-    Sub SaveClientSize(form As Form)
-        s.Storage.SetInt(form.GetType().Name + "width", form.ClientSize.Width)
-        s.Storage.SetInt(form.GetType().Name + "height", form.ClientSize.Height)
-    End Sub
-
     Sub DeleteTempFiles()
         If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then
             Try
@@ -510,10 +486,10 @@ Public Class GlobalClass
     End Function
 
     Sub ShowCode(title As String, content As String)
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(title)
-        f.Doc.Writer.WriteRaw("<pre><code>" + content + "</pre></code>")
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(title)
+        form.Doc.Writer.WriteRaw("<pre><code>" + content + "</pre></code>")
+        form.Show()
     End Sub
 
     Sub ShowHelp(title As String, content As String)

@@ -31,12 +31,12 @@ Public Class AppsForm
     Friend WithEvents tsbDownload As ToolStripButton
     Friend WithEvents tsbVersion As ToolStripButton
     Friend WithEvents ddbTools As ToolStripDropDownButton
-    Friend WithEvents miShowGridView As ToolStripMenuItem
-    Friend WithEvents miStatus As ToolStripMenuItem
+    Friend WithEvents miShowGridView As MenuItemEx
+    Friend WithEvents miStatus As MenuItemEx
     Friend WithEvents ddbPath As ToolStripDropDownButton
-    Friend WithEvents miBrowsePath As ToolStripMenuItem
-    Friend WithEvents miClearCustomPath As ToolStripMenuItem
-    Friend WithEvents miSearchUsingEverything As ToolStripMenuItem
+    Friend WithEvents miBrowsePath As MenuItemEx
+    Friend WithEvents miClearCustomPath As MenuItemEx
+    Friend WithEvents miSearchUsingEverything As MenuItemEx
     Friend WithEvents tsbExplore As System.Windows.Forms.ToolStripButton
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AppsForm))
@@ -48,12 +48,12 @@ Public Class AppsForm
         Me.tsbDownload = New System.Windows.Forms.ToolStripButton()
         Me.tsbVersion = New System.Windows.Forms.ToolStripButton()
         Me.ddbPath = New System.Windows.Forms.ToolStripDropDownButton()
-        Me.miBrowsePath = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miClearCustomPath = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miSearchUsingEverything = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miBrowsePath = New StaxRip.UI.MenuItemEx()
+        Me.miClearCustomPath = New StaxRip.UI.MenuItemEx()
+        Me.miSearchUsingEverything = New StaxRip.UI.MenuItemEx()
         Me.ddbTools = New System.Windows.Forms.ToolStripDropDownButton()
-        Me.miShowGridView = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miStatus = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miShowGridView = New StaxRip.UI.MenuItemEx()
+        Me.miStatus = New StaxRip.UI.MenuItemEx()
         Me.tsbHelp = New System.Windows.Forms.ToolStripButton()
         Me.flp = New System.Windows.Forms.FlowLayoutPanel()
         Me.SearchTextBox = New StaxRip.SearchTextBox()
@@ -156,23 +156,26 @@ Public Class AppsForm
         '
         'miBrowsePath
         '
+        Me.miBrowsePath.Help = Nothing
         Me.miBrowsePath.Name = "miBrowsePath"
         Me.miBrowsePath.ShortcutKeyDisplayString = "F11"
-        Me.miBrowsePath.Size = New System.Drawing.Size(738, 66)
+        Me.miBrowsePath.Size = New System.Drawing.Size(738, 67)
         Me.miBrowsePath.Text = "Browse..."
         Me.miBrowsePath.ToolTipText = "Show Open File dialog to customize the path"
         '
         'miClearCustomPath
         '
+        Me.miClearCustomPath.Help = Nothing
         Me.miClearCustomPath.Name = "miClearCustomPath"
-        Me.miClearCustomPath.Size = New System.Drawing.Size(738, 66)
+        Me.miClearCustomPath.Size = New System.Drawing.Size(738, 67)
         Me.miClearCustomPath.Text = "Clear custom path..."
         '
         'miSearchUsingEverything
         '
+        Me.miSearchUsingEverything.Help = Nothing
         Me.miSearchUsingEverything.Name = "miSearchUsingEverything"
         Me.miSearchUsingEverything.ShortcutKeyDisplayString = "Ctrl+F"
-        Me.miSearchUsingEverything.Size = New System.Drawing.Size(738, 66)
+        Me.miSearchUsingEverything.Size = New System.Drawing.Size(738, 67)
         Me.miSearchUsingEverything.Text = "Search using Everything..."
         '
         'ddbTools
@@ -188,14 +191,16 @@ Public Class AppsForm
         '
         'miShowGridView
         '
+        Me.miShowGridView.Help = Nothing
         Me.miShowGridView.Name = "miShowGridView"
-        Me.miShowGridView.Size = New System.Drawing.Size(737, 66)
+        Me.miShowGridView.Size = New System.Drawing.Size(737, 67)
         Me.miShowGridView.Text = "Show all tools in grid view"
         '
         'miStatus
         '
+        Me.miStatus.Help = Nothing
         Me.miStatus.Name = "miStatus"
-        Me.miStatus.Size = New System.Drawing.Size(737, 66)
+        Me.miStatus.Size = New System.Drawing.Size(737, 67)
         Me.miStatus.Text = "Check status of all required tools"
         '
         'tsbHelp
@@ -256,6 +261,7 @@ Public Class AppsForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(1894, 1128)
         Me.Controls.Add(Me.tlpMain)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.HelpButton = False
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
@@ -280,19 +286,8 @@ Public Class AppsForm
     Sub New()
         MyBase.New()
         InitializeComponent()
-
-        ScaleClientSize(45, 30)
+        RestoreClientSize(45, 29)
         tv.ItemHeight = CInt(FontHeight * 1.5)
-
-        For Each mi As ToolStripMenuItem In ddbTools.DropDownItems
-            mi.AutoSize = False
-            mi.Height = CInt(FontHeight * 1.5)
-        Next
-
-        For Each mi As ToolStripMenuItem In ddbPath.DropDownItems
-            mi.AutoSize = False
-            mi.Height = CInt(FontHeight * 1.5)
-        Next
 
         SearchTextBox_TextChanged()
 
@@ -384,7 +379,7 @@ Public Class AppsForm
             Contents("Status").ForeColor = Color.Black
         End If
 
-        Contents("Status").Font = New Font("Segoe UI", 10)
+        Contents("Status").Font = New Font("Segoe UI", 10 * s.UIScaleFactor)
 
         Headers("AviSynth Filters").Visible = False
         Contents("AviSynth Filters").Visible = False

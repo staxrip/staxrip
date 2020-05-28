@@ -2,6 +2,11 @@
 2.1.1.7 Beta (not yet available)
 ============
 
+- various dialogs made resizable and remember their size
+- various UI issues fixed
+- the play feature in the muxer dialog for subtitles was fixed
+
+
 2.1.1.6 Beta
 ============
 

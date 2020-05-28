@@ -183,7 +183,10 @@ Public Class SimpleUI
                       text As String,
                       Optional widthInFontHeights As Integer = 0) As SimpleUILabel
 
-        If parent Is Nothing Then parent = GetActiveFlowPage()
+        If parent Is Nothing Then
+            parent = GetActiveFlowPage()
+        End If
+
         Dim ret As New SimpleUILabel
         ret.Offset = widthInFontHeights
         ret.Text = text
@@ -193,7 +196,10 @@ Public Class SimpleUI
     End Function
 
     Function AddNum(Optional parent As FlowLayoutPanelEx = Nothing) As NumBlock
-        If parent Is Nothing Then parent = GetActiveFlowPage()
+        If parent Is Nothing Then
+            parent = GetActiveFlowPage()
+        End If
+
         Dim ret As New NumBlock(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
@@ -203,7 +209,10 @@ Public Class SimpleUI
     End Function
 
     Function AddText(Optional parent As FlowLayoutPanelEx = Nothing) As TextBlock
-        If parent Is Nothing Then parent = GetActiveFlowPage()
+        If parent Is Nothing Then
+            parent = GetActiveFlowPage()
+        End If
+
         Dim ret As New TextBlock(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
@@ -213,7 +222,10 @@ Public Class SimpleUI
     End Function
 
     Function AddTextMenu(Optional parent As FlowLayoutPanelEx = Nothing) As TextMenuBlock
-        If parent Is Nothing Then parent = GetActiveFlowPage()
+        If parent Is Nothing Then
+            parent = GetActiveFlowPage()
+        End If
+
         Dim ret As New TextMenuBlock(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
@@ -223,7 +235,10 @@ Public Class SimpleUI
     End Function
 
     Function AddColorPicker(Optional parent As FlowLayoutPanelEx = Nothing) As ColorPickerBlock
-        If parent Is Nothing Then parent = GetActiveFlowPage()
+        If parent Is Nothing Then
+            parent = GetActiveFlowPage()
+        End If
+
         Dim ret As New ColorPickerBlock(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
@@ -233,7 +248,10 @@ Public Class SimpleUI
     End Function
 
     Function AddButton(Optional parent As FlowLayoutPanelEx = Nothing) As ButtonBlock
-        If parent Is Nothing Then parent = GetActiveFlowPage()
+        If parent Is Nothing Then
+            parent = GetActiveFlowPage()
+        End If
+
         Dim ret As New ButtonBlock(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
@@ -242,7 +260,10 @@ Public Class SimpleUI
     End Function
 
     Function AddTextButton(Optional parent As FlowLayoutPanelEx = Nothing) As TextButtonBlock
-        If parent Is Nothing Then parent = GetActiveFlowPage()
+        If parent Is Nothing Then
+            parent = GetActiveFlowPage()
+        End If
+
         Dim ret As New TextButtonBlock(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
@@ -252,7 +273,10 @@ Public Class SimpleUI
     End Function
 
     Function AddMenu(Of T)(Optional parent As FlowLayoutPanelEx = Nothing) As MenuBlock(Of T)
-        If parent Is Nothing Then parent = GetActiveFlowPage()
+        If parent Is Nothing Then
+            parent = GetActiveFlowPage()
+        End If
+
         Dim ret As New MenuBlock(Of T)(Me)
         ret.AutoSize = True
         ret.UseParenWidth = True
@@ -664,7 +688,10 @@ Public Class SimpleUI
 
         Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
             MyBase.OnMouseDown(e)
-            If e.Button = MouseButtons.Right AndAlso Not HelpAction Is Nothing Then HelpAction.Invoke
+
+            If e.Button = MouseButtons.Right AndAlso Not HelpAction Is Nothing Then
+                HelpAction.Invoke
+            End If
         End Sub
 
         Protected Overrides Sub OnValueChanged(value As Object)
@@ -964,7 +991,11 @@ Public Class SimpleUI
         Sub MenuClick(value As String)
             value = Macro.Expand(value)
             Dim tup = Macro.ExpandGUI(value)
-            If tup.Cancel Then Exit Sub
+
+            If tup.Cancel Then
+                Exit Sub
+            End If
+
             Edit.Text = tup.Value
         End Sub
 
@@ -979,7 +1010,10 @@ Public Class SimpleUI
         Sub AddMenu(menuText As String, menuFunc As Func(Of String))
             Dim action = Sub()
                              Dim v = menuFunc.Invoke
-                             If v <> "" Then Edit.Text = v
+
+                             If v <> "" Then
+                                 Edit.Text = v
+                             End If
                          End Sub
 
             AddMenu(menuText, action)

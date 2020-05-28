@@ -37,6 +37,7 @@ Public Class HelpForm
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "HelpForm"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.ResumeLayout(False)
 
     End Sub
@@ -44,18 +45,7 @@ Public Class HelpForm
 
     Sub New()
         InitializeComponent()
-        Icon = g.Icon
-    End Sub
-
-    Sub New(path As String)
-        Me.New()
-
-        Try
-            Browser.Navigate(path)
-        Catch ex As Exception
-            MsgWarn("Failed to load: " + path)
-        End Try
-
+        RestoreClientSize(45, 30)
         Icon = g.Icon
     End Sub
 

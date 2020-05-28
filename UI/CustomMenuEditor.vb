@@ -91,14 +91,14 @@ Namespace UI
             Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
             Me.tsbRemove = New System.Windows.Forms.ToolStripButton()
             Me.ToolsToolStripDropDownButton = New System.Windows.Forms.ToolStripDropDownButton()
-            Me.NewFromDefaultsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-            Me.ResetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+            Me.NewFromDefaultsToolStripMenuItem = New MenuItemEx()
+            Me.ResetToolStripMenuItem = New MenuItemEx()
             Me.Label1 = New System.Windows.Forms.Label()
             Me.tlpSymbol = New System.Windows.Forms.TableLayoutPanel()
             Me.laSymbol = New System.Windows.Forms.Label()
             Me.pbSymbol = New System.Windows.Forms.PictureBox()
             Me.bnSymbol = New StaxRip.UI.ButtonEx()
-            Me.cmsSymbol = New System.Windows.Forms.ContextMenuStrip(Me.components)
+            Me.cmsSymbol = New ContextMenuStripEx(Me.components)
             Me.tlpMain.SuspendLayout()
             Me.FlowLayoutPanel1.SuspendLayout()
             Me.TableLayoutPanel2.SuspendLayout()
@@ -565,10 +565,7 @@ Namespace UI
             ScaleClientSize(32, 30)
             g.SetRenderer(ToolStrip)
 
-            For Each mi As ToolStripMenuItem In ToolsToolStripDropDownButton.DropDownItems
-                mi.AutoSize = False
-                mi.Height = CInt(FontHeight * 1.5)
-            Next
+            ToolStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
             tsbNew.Image = ImageHelp.GetSymbolImage(Symbol.Page)
             tsbCopy.Image = ImageHelp.GetSymbolImage(Symbol.Copy)
@@ -616,7 +613,7 @@ Namespace UI
                 If iName.StartsWith("fa_") Then Continue For
                 If IsClosing Then Exit For
                 Dim symbol = DirectCast(System.Enum.Parse(GetType(Symbol), iName), Symbol)
-                Dim path = "Segoe MDL2 Assets | " + iName.Substring(0, 1).ToUpper + " | " + iName
+                Dim path = "Segoe MDL2 Assets    | " + iName.Substring(0, 1).ToUpper + " | " + iName
                 ActionMenuItem.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol).SetImage(symbol)
                 Application.DoEvents()
             Next
@@ -639,28 +636,28 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub SetCommand(c As Command)
+        Sub SetCommand(c As Command)
             tbCommand.Text = c.MethodInfo.Name
         End Sub
 
-        Private Sub tv_DragDrop(sender As Object, e As DragEventArgs) Handles tv.DragDrop
+        Sub tv_DragDrop(sender As Object, e As DragEventArgs) Handles tv.DragDrop
             Block = False
         End Sub
 
-        Private Sub tv_DragEnter(sender As Object, e As DragEventArgs) Handles tv.DragEnter
+        Sub tv_DragEnter(sender As Object, e As DragEventArgs) Handles tv.DragEnter
             If e.Data.GetDataPresent(GetType(TreeNode)) Then
                 e.Effect = DragDropEffects.Move
             End If
         End Sub
 
-        Private Sub tv_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles tv.ItemDrag
+        Sub tv_ItemDrag(sender As Object, e As ItemDragEventArgs) Handles tv.ItemDrag
             If e.Button = Windows.Forms.MouseButtons.Left Then
                 Block = True
                 DoDragDrop(e.Item, DragDropEffects.Move)
             End If
         End Sub
 
-        Private Sub tv_DragOver(sender As Object, e As DragEventArgs) Handles tv.DragOver
+        Sub tv_DragOver(sender As Object, e As DragEventArgs) Handles tv.DragOver
             If e.Data.GetDataPresent(GetType(TreeNode)) Then
                 Dim node As TreeNode = CType(e.Data.GetData(GetType(TreeNode)), TreeNode)
                 Dim destNode As TreeNode = tv.GetNodeAt(tv.PointToClient(New Point(e.X, e.Y)))
@@ -704,7 +701,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub UpdateControls()
+        Sub UpdateControls()
             If Not Block Then
                 Block = True
                 Dim n As TreeNode = tv.SelectedNode
@@ -758,7 +755,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub tbText_TextChanged() Handles tbText.TextChanged
+        Sub tbText_TextChanged() Handles tbText.TextChanged
             If Not Block AndAlso Not tv.SelectedNode Is Nothing Then
                 Dim item = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
 
@@ -776,7 +773,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub PopulateGrid(item As CustomMenuItem)
+        Sub PopulateGrid(item As CustomMenuItem)
             GridTypeDescriptor.Items.Clear()
 
             If GenericMenu.CommandManager.HasCommand(item.MethodName) Then
@@ -801,7 +798,7 @@ Namespace UI
             pg.SelectedObject = GridTypeDescriptor
         End Sub
 
-        Private Sub pg_PropertyValueChanged() Handles pg.PropertyValueChanged
+        Sub pg_PropertyValueChanged() Handles pg.PropertyValueChanged
             If Not tv.SelectedNode Is Nothing Then
                 Dim item = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
                 item.Parameters.Clear()
@@ -812,14 +809,14 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub AddNodes(node As TreeNode, list As ArrayList)
+        Sub AddNodes(node As TreeNode, list As ArrayList)
             For Each i As TreeNode In node.Nodes
                 list.Add(i)
                 AddNodes(i, list)
             Next
         End Sub
 
-        Private Sub PopulateTreeView(item As CustomMenuItem, node As TreeNode)
+        Sub PopulateTreeView(item As CustomMenuItem, node As TreeNode)
             Dim newNode As New TreeNode(item.Text)
             newNode.Tag = item
 
@@ -840,7 +837,7 @@ Namespace UI
             Return item
         End Function
 
-        Private Sub BuildState(item As CustomMenuItem, node As TreeNode)
+        Sub BuildState(item As CustomMenuItem, node As TreeNode)
             item.SubItems.Clear()
 
             For Each i As TreeNode In node.Nodes
@@ -854,7 +851,7 @@ Namespace UI
             Return New MenuTemplateForm(item)
         End Function
 
-        Private Sub NewFromDefaultsToolStripMenuItem_Click() Handles NewFromDefaultsToolStripMenuItem.Click
+        Sub NewFromDefaultsToolStripMenuItem_Click() Handles NewFromDefaultsToolStripMenuItem.Click
             If Not tv.SelectedNode Is Nothing Then
                 Dim f = GetTemplateForm(GenericMenu.DefaultMenu.Invoke)
 
@@ -867,7 +864,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub RemoveSelectedItem()
+        Sub RemoveSelectedItem()
             If Not tv.SelectedNode Is Nothing AndAlso
                 Not tv.SelectedNode.Parent Is Nothing Then
 
@@ -875,11 +872,11 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub tv_KeyUp(sender As Object, e As KeyEventArgs) Handles tv.KeyUp
+        Sub tv_KeyUp(sender As Object, e As KeyEventArgs) Handles tv.KeyUp
             UpdateControls()
         End Sub
 
-        Private Sub tbHotkey_KeyDown(sender As Object, e As KeyEventArgs) Handles tbHotkey.KeyDown
+        Sub tbHotkey_KeyDown(sender As Object, e As KeyEventArgs) Handles tbHotkey.KeyDown
             If Not Block AndAlso Not tv.SelectedNode Is Nothing AndAlso
                 Not e.KeyCode = Keys.ControlKey AndAlso
                 Not e.KeyCode = Keys.Menu AndAlso
@@ -910,40 +907,40 @@ Namespace UI
             e.Handled = True
         End Sub
 
-        Private Sub tbHotkey_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbHotkey.KeyPress
+        Sub tbHotkey_KeyPress(sender As Object, e As KeyPressEventArgs) Handles tbHotkey.KeyPress
             e.Handled = True
         End Sub
 
-        Private Sub tv_AfterSelect() Handles tv.AfterSelect
+        Sub tv_AfterSelect() Handles tv.AfterSelect
             UpdateControls()
         End Sub
 
-        Private Sub tsbCut_Click() Handles tsbCut.Click
+        Sub tsbCut_Click() Handles tsbCut.Click
             If Not tv.SelectedNode Is Nothing Then
                 tsbCopy.PerformClick()
                 RemoveSelectedItem()
             End If
         End Sub
 
-        Private Sub tsbCopy_Click() Handles tsbCopy.Click
+        Sub tsbCopy_Click() Handles tsbCopy.Click
             If Not tv.SelectedNode Is Nothing Then
                 ClipboardNode = DirectCast(ObjectHelp.GetCopy(tv.SelectedNode), TreeNode)
                 UpdateControls()
             End If
         End Sub
 
-        Private Sub tsbPaste_Click() Handles tsbPaste.Click
+        Sub tsbPaste_Click() Handles tsbPaste.Click
             If Not tv.SelectedNode Is Nothing Then
                 tv.SelectedNode.Nodes.Add(CType(ObjectHelp.GetCopy(ClipboardNode), TreeNode))
                 tv.SelectedNode.ExpandAll()
             End If
         End Sub
 
-        Private Sub tsbRemove_Click() Handles tsbRemove.Click
+        Sub tsbRemove_Click() Handles tsbRemove.Click
             RemoveSelectedItem()
         End Sub
 
-        Private Sub ResetToolStripMenuItem_Click() Handles ResetToolStripMenuItem.Click
+        Sub ResetToolStripMenuItem_Click() Handles ResetToolStripMenuItem.Click
             If MsgOK("Please confirm to reset the entire menu.") Then
                 tv.BeginUpdate()
                 tv.Nodes.Clear()
@@ -954,7 +951,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub tsbMoveLeft_Click() Handles tsbMoveLeft.Click
+        Sub tsbMoveLeft_Click() Handles tsbMoveLeft.Click
             Dim n = tv.SelectedNode
 
             If Not n Is Nothing AndAlso n.Parent.Parent Is Nothing Then
@@ -966,13 +963,13 @@ Namespace UI
             Block = False
         End Sub
 
-        Private Sub tsbMoveRight_Click() Handles tsbMoveRight.Click
+        Sub tsbMoveRight_Click() Handles tsbMoveRight.Click
             Block = True
             tv.MoveSelectionRight()
             Block = False
         End Sub
 
-        Private Sub tsbMoveUp_Click() Handles tsbMoveUp.Click
+        Sub tsbMoveUp_Click() Handles tsbMoveUp.Click
             Dim n = tv.SelectedNode
 
             If Not n Is Nothing AndAlso
@@ -988,7 +985,7 @@ Namespace UI
             Block = False
         End Sub
 
-        Private Sub tsbMoveDown_Click() Handles tsbMoveDown.Click
+        Sub tsbMoveDown_Click() Handles tsbMoveDown.Click
             Dim n = tv.SelectedNode
 
             If Not n Is Nothing AndAlso
@@ -1003,11 +1000,11 @@ Namespace UI
             Block = False
         End Sub
 
-        Private Sub bCommand_Click() Handles bnCommand.Click
+        Sub bCommand_Click() Handles bnCommand.Click
             cmsCommand.Show(bnCommand, 0, bnCommand.Height)
         End Sub
 
-        Private Sub tbCommand_TextChanged() Handles tbCommand.TextChanged
+        Sub tbCommand_TextChanged() Handles tbCommand.TextChanged
             If Not tv.SelectedNode Is Nothing Then
                 Dim item = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
 
@@ -1041,7 +1038,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub tsbNew_Click(sender As Object, e As EventArgs) Handles tsbNew.Click
+        Sub tsbNew_Click(sender As Object, e As EventArgs) Handles tsbNew.Click
             If Not tv.SelectedNode Is Nothing Then
                 Dim newNode As New TreeNode
                 newNode.Text = "???"
@@ -1061,22 +1058,22 @@ Namespace UI
             MyBase.OnFormClosing(e)
         End Sub
 
-        Private Sub bnOK_Click(sender As Object, e As EventArgs) Handles bnOK.Click
+        Sub bnOK_Click(sender As Object, e As EventArgs) Handles bnOK.Click
             IsClosing = True
         End Sub
 
-        Private Sub bnCancel_Click(sender As Object, e As EventArgs) Handles bnCancel.Click
+        Sub bnCancel_Click(sender As Object, e As EventArgs) Handles bnCancel.Click
             IsClosing = True
         End Sub
 
-        Private Sub CustomMenuEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-            Dim f As New HelpForm()
-            f.Doc.WriteStart(Text)
-            f.Doc.WriteParagraph("The menu editor allows to customize the text, location, shortcut key and command of a menu item. Menu items can be rearranged with '''Drag & Drop'''. Pressing Ctrl while dragging moves as sub-item.")
-            f.Doc.WriteParagraph("[http://fontawesome.io/cheatsheet FontAwesome icons]")
-            f.Doc.WriteParagraph("[https://docs.microsoft.com/en-us/windows/uwp/style/segoe-ui-symbol-font Segoe MDL2 icons]")
-            f.Doc.WriteTable("Commands", GenericMenu.CommandManager.GetTips)
-            f.Show()
+        Sub CustomMenuEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+            Dim form As New HelpForm()
+            form.Doc.WriteStart(Text)
+            form.Doc.WriteParagraph("The menu editor allows to customize the text, location, shortcut key and command of a menu item. Menu items can be rearranged with '''Drag & Drop'''. Pressing Ctrl while dragging moves as sub-item.")
+            form.Doc.WriteParagraph("[http://fontawesome.io/cheatsheet FontAwesome icons]")
+            form.Doc.WriteParagraph("[https://docs.microsoft.com/en-us/windows/uwp/style/segoe-ui-symbol-font Segoe MDL2 icons]")
+            form.Doc.WriteTable("Commands", GenericMenu.CommandManager.GetTips)
+            form.Show()
         End Sub
     End Class
 End Namespace

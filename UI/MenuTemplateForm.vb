@@ -90,10 +90,10 @@ Namespace UI
         End Sub
 
         Private Sub MenuTemplateForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-            Dim f As New HelpForm()
-            f.Doc.WriteStart(Text)
-            f.Doc.WriteParagraph("The new item will be a clone of the selected item.")
-            f.Show()
+            Dim form As New HelpForm()
+            form.Doc.WriteStart(Text)
+            form.Doc.WriteParagraph("The new item will be a clone of the selected item.")
+            form.Show()
         End Sub
     End Class
 End Namespace

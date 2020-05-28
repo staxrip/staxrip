@@ -138,7 +138,7 @@ Public Class MacroEditorDialog
         Text = "Script Editor"
         HelpText = "Editor for scripts that may contain macros."
         MacroEditorControl.SetScriptDefaults()
-        ScaleClientSize(45, 35)
+        ScaleClientSize(45, 30)
     End Sub
 
     Sub UniversalEditor_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested

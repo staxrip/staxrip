@@ -53,39 +53,41 @@ Namespace UI
             KeysTexts(Keys.NumPad9) = "9 (Numpad)"
         End Sub
 
-        Shared Function GetKeyString(k As Keys) As String
-            If k = Keys.None Then Return ""
-
-            Dim s = ""
-
-            If (k And Keys.Control) = Keys.Control Then
-                k = k Xor Keys.Control
-                s += "Ctrl+"
+        Shared Function GetKeyString(key As Keys) As String
+            If key = Keys.None Then
+                Return ""
             End If
 
-            If (k And Keys.Alt) = Keys.Alt Then
-                k = k Xor Keys.Alt
-                s += "Alt+"
+            Dim ret = ""
+
+            If (key And Keys.Control) = Keys.Control Then
+                key = key Xor Keys.Control
+                ret += "Ctrl+"
             End If
 
-            If (k And Keys.Shift) = Keys.Shift Then
-                k = k Xor Keys.Shift
-                s += "Shift+"
+            If (key And Keys.Alt) = Keys.Alt Then
+                key = key Xor Keys.Alt
+                ret += "Alt+"
             End If
 
-            If KeysTexts.ContainsKey(k) Then
-                s += KeysTexts(k)
+            If (key And Keys.Shift) = Keys.Shift Then
+                key = key Xor Keys.Shift
+                ret += "Shift+"
+            End If
+
+            If KeysTexts.ContainsKey(key) Then
+                ret += KeysTexts(key)
             Else
-                Dim value = Native.MapVirtualKey(CInt(k), 2) 'MAPVK_VK_TO_CHAR
+                Dim value = Native.MapVirtualKey(CInt(key), 2) 'MAPVK_VK_TO_CHAR
 
                 If value = 0 OrElse (value And 1 << 31) = 1 << 31 Then
-                    s += k.ToString
+                    ret += key.ToString
                 Else
-                    s += Convert.ToChar(value)
+                    ret += Convert.ToChar(value)
                 End If
             End If
 
-            Return s
+            Return ret
         End Function
     End Class
 

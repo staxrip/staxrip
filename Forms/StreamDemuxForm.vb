@@ -12,7 +12,7 @@ Public Class StreamDemuxForm
         cbDemuxChapters.Visible = MediaInfo.GetMenu(sourceFile, "Chapters_Pos_End").ToInt - MediaInfo.GetMenu(sourceFile, "Chapters_Pos_Begin").ToInt > 0
         cbDemuxVideo.Checked = demuxer.VideoDemuxing
 
-        ScaleClientSize(42, 29)
+        ScaleClientSize(42, 30)
         StartPosition = FormStartPosition.CenterParent
 
         lvAudio.View = View.Details

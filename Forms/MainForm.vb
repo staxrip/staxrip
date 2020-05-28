@@ -2553,8 +2553,13 @@ Public Class MainForm
             (p.TargetWidth = 960 AndAlso p.TargetHeight = 720)
 
         If Not isResized Then
-            If p.TargetWidth <> cropw Then tbTargetWidth.Text = cropw.ToString
-            If p.TargetHeight <> croph Then tbTargetHeight.Text = croph.ToString
+            If p.TargetWidth <> cropw Then
+                tbTargetWidth.Text = cropw.ToString
+            End If
+
+            If p.TargetHeight <> croph Then
+                tbTargetHeight.Text = croph.ToString
+            End If
         End If
 
         lAspectRatioError.Text = Calc.GetAspectRatioError.ToString("f2") + "%"
@@ -2572,8 +2577,14 @@ Public Class MainForm
         lPixel.Text = CInt(p.TargetWidth * p.TargetHeight).ToString
 
         Dim trackBarValue = CInt((p.TargetWidth - 320) / p.ForcedOutputMod)
-        If trackBarValue < tbResize.Minimum Then trackBarValue = tbResize.Minimum
-        If trackBarValue > tbResize.Maximum Then trackBarValue = tbResize.Maximum
+
+        If trackBarValue < tbResize.Minimum Then
+            trackBarValue = tbResize.Minimum
+        End If
+
+        If trackBarValue > tbResize.Maximum Then
+            trackBarValue = tbResize.Maximum
+        End If
 
         tbResize.Value = trackBarValue
 
@@ -3400,14 +3411,6 @@ Public Class MainForm
             t.Edit.Text = s.WindowPositionsRemembered.Join(", ")
             t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
 
-            t = ui.AddText()
-            t.Text = "Center Screen Window Positions"
-            t.Help = "Title or beginning of the title of windows to be centered on the screen. For all windows enter '''all'''."
-            t.Label.Offset = 12
-            t.Edit.Expand = True
-            t.Edit.Text = s.WindowPositionsCenterScreen.Join(", ")
-            t.Edit.SaveAction = Sub(value) s.WindowPositionsCenterScreen = value.SplitNoEmptyAndWhiteSpace(",")
-
             n = ui.AddNum()
             n.Text = "UI Scale Factor"
             n.Help = "Requires to restart StaxRip."
@@ -3635,21 +3638,21 @@ Public Class MainForm
 
     <Command("Dialog to manage external tools.")>
     Sub ShowAppsDialog()
-        Using f As New AppsForm
+        Using form As New AppsForm
             Dim found As Boolean
 
             If s.StringDictionary.ContainsKey("RecentExternalApplicationControl") Then
                 For Each i In Package.Items.Values
                     If i.Name + i.Version = s.StringDictionary("RecentExternalApplicationControl") Then
-                        f.ShowPackage(i)
+                        form.ShowPackage(i)
                         found = True
                         Exit For
                     End If
                 Next
             End If
 
-            If Not found Then f.ShowPackage(Package.x265)
-            f.ShowDialog()
+            If Not found Then form.ShowPackage(Package.x265)
+            form.ShowDialog()
             g.SaveSettings()
         End Using
     End Sub
@@ -3886,13 +3889,6 @@ Public Class MainForm
 
             ui.CreateFlowPage("Image", True)
 
-            'TODO:
-            'Dim b = ui.AddBool()
-            'Dim b = ui.AddBool()
-            'b.Text = "Save Thumbnails"
-            'b.Help = "Saves thumbnails in the target folder. Customizations can be made in the settings under:" + BR2 + "General > Advanced > Thumbnails"
-            'b.Field = NameOf(p.SaveThumbnails)
-
             Dim n = ui.AddNum()
             n.Text = "Auto resize image size"
             n.Help = "Resizes to a given pixel size after loading a source file."
@@ -4035,35 +4031,33 @@ Public Class MainForm
 
             Dim videoPage = ui.CreateFlowPage("Video", True)
 
-            Dim ThumbOptions = ui.AddMenu(Of Integer)
+            Dim thumbOptions = ui.AddMenu(Of Integer)
             Dim videoExist = ui.AddMenu(Of FileExistMode)
-            Dim StaxRipThumbnailOption = ui.AddBool()
-            Dim MTNThumbnailOption = ui.AddBool()
+            Dim staxRipThumbnailOption = ui.AddBool()
+            Dim mtnThumbnailOption = ui.AddBool()
 
 
-            ThumbOptions.Text = "Thumbnail Choices:"
-            ThumbOptions.Add("StaxRip Thumbnails", 0)
-            ThumbOptions.Add("MTN Thumbnails", 1)
-            ThumbOptions.Button.Value = s.Storage.GetInt("Thumbnail Choices", 1)
-            ThumbOptions.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Choices", value)
-            AddHandler ThumbOptions.Button.ValueChangedUser, Sub()
-                                                                 StaxRipThumbnailOption.Visible = ThumbOptions.Button.Value = 0
-                                                                 MTNThumbnailOption.Visible = ThumbOptions.Button.Value = 1
+            thumbOptions.Text = "Thumbnail Choices:"
+            thumbOptions.Add("StaxRip Thumbnails", 0)
+            thumbOptions.Add("MTN Thumbnails", 1)
+            thumbOptions.Button.Value = s.Storage.GetInt("Thumbnail Choices", 1)
+            thumbOptions.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Choices", value)
+            AddHandler thumbOptions.Button.ValueChangedUser, Sub()
+                                                                 staxRipThumbnailOption.Visible = thumbOptions.Button.Value = 0
+                                                                 mtnThumbnailOption.Visible = thumbOptions.Button.Value = 1
                                                              End Sub
 
+            staxRipThumbnailOption.Text = "Create Thumbnails"
+            staxRipThumbnailOption.Help = "Saves thumbnails to Source Location using the StaxRip Engine"
+            staxRipThumbnailOption.Field = NameOf(p.SaveThumbnails)
 
-            StaxRipThumbnailOption.Text = "Create Thumbnails"
-            StaxRipThumbnailOption.Help = "Saves thumbnails to Source Location using the StaxRip Engine"
-            StaxRipThumbnailOption.Field = NameOf(p.SaveThumbnails)
+            mtnThumbnailOption.Text = "Create Thumbnails"
+            mtnThumbnailOption.Visible = True
+            mtnThumbnailOption.Help = "Saves thumbnails to Source Location using the MTN Engine"
+            mtnThumbnailOption.Field = NameOf(p.MTN)
 
-
-            MTNThumbnailOption.Text = "Create Thumbnails"
-            MTNThumbnailOption.Visible = True
-            MTNThumbnailOption.Help = "Saves thumbnails to Source Location using the MTN Engine"
-            MTNThumbnailOption.Field = NameOf(p.MTN)
-
-            StaxRipThumbnailOption.Visible = ThumbOptions.Button.Value = 0
-            MTNThumbnailOption.Visible = ThumbOptions.Button.Value = 1
+            staxRipThumbnailOption.Visible = thumbOptions.Button.Value = 0
+            mtnThumbnailOption.Visible = thumbOptions.Button.Value = 1
 
             videoExist.Text = "Existing Video Output"
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
@@ -4385,17 +4379,6 @@ Public Class MainForm
                 FiltersListView.RebuildMenu()
             End If
         End Using
-    End Sub
-
-    <Command("Opens a given URL or local file in the help browser.")>
-    Sub ShowHelpURL(
-        <DispName("URL"),
-        Description("URL or local file to be shown in the internet explorer powered help browser."),
-        Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
-        url As String)
-
-        Dim f As New HelpForm(Macro.Expand(url))
-        f.Show()
     End Sub
 
     Shared Function GetDefaultMainMenu() As CustomMenuItem
@@ -5225,7 +5208,7 @@ Public Class MainForm
         End Using
     End Sub
 
-    Private Sub lTip_Click() Handles lTip.Click
+    Sub lTip_Click() Handles lTip.Click
         If Not AssistantMethod Is Nothing Then
             AssistantMethod.Invoke()
             Assistant()
@@ -5238,29 +5221,29 @@ Public Class MainForm
         UpdateSizeOrBitrate()
     End Sub
 
-    Private Sub pEncoder_MouseLeave() Handles pnEncoder.MouseLeave
+    Sub pEncoder_MouseLeave() Handles pnEncoder.MouseLeave
         Assistant()
     End Sub
 
-    Private Sub AudioEdit0ToolStripMenuItemClick()
+    Sub AudioEdit0ToolStripMenuItemClick()
         p.Audio0.EditProject()
         UpdateAudioMenu()
         UpdateSizeOrBitrate()
         llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
     End Sub
 
-    Private Sub AudioEdit1ToolStripMenuItemClick()
+    Sub AudioEdit1ToolStripMenuItemClick()
         p.Audio1.EditProject()
         UpdateAudioMenu()
         UpdateSizeOrBitrate()
         llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
     End Sub
 
-    Private Sub AudioSource0ToolStripMenuItemClick()
+    Sub AudioSource0ToolStripMenuItemClick()
         tbAudioFile0_DoubleClick()
     End Sub
 
-    Private Sub AudioSource1ToolStripMenuItemClick()
+    Sub AudioSource1ToolStripMenuItemClick()
         tbAudioFile1_DoubleClick()
     End Sub
 
@@ -5289,7 +5272,7 @@ Public Class MainForm
         g.PopulateProfileMenu(AudioMenu1.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf g.LoadAudioProfile1)
     End Sub
 
-    Private Sub AviSynthListView_ScriptChanged() Handles FiltersListView.Changed
+    Sub AviSynthListView_ScriptChanged() Handles FiltersListView.Changed
         If Not IsLoading AndAlso Not FiltersListView.IsLoading Then
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
@@ -5308,40 +5291,40 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub AviSynthListView_DoubleClick() Handles FiltersListView.DoubleClick
+    Sub AviSynthListView_DoubleClick() Handles FiltersListView.DoubleClick
         FiltersListView.ShowEditor()
     End Sub
 
-    Private Sub gbFilters_MenuClick() Handles lgbFilters.LinkClick
+    Sub gbFilters_MenuClick() Handles lgbFilters.LinkClick
         FiltersListView.ContextMenuStrip.Show(lgbFilters, 0, 16)
     End Sub
 
-    Private Sub gbEncoder_LinkClick() Handles lgbEncoder.LinkClick
+    Sub gbEncoder_LinkClick() Handles lgbEncoder.LinkClick
         EncoderMenu.Items.ClearAndDisplose
         g.PopulateProfileMenu(EncoderMenu.Items, s.VideoEncoderProfiles, AddressOf ShowEncoderProfilesDialog, AddressOf g.LoadVideoEncoder)
         EncoderMenu.Show(lgbEncoder, 0, 16)
     End Sub
 
-    Private Sub llSize_Click() Handles blFilesize.Click
+    Sub llSize_Click() Handles blFilesize.Click
         UpdateSizeMenu()
         SizeContextMenuStrip.Show(blFilesize, 0, 16)
     End Sub
 
-    Private Sub lAudioProfile0_Click() Handles llAudioProfile0.Click
+    Sub lAudioProfile0_Click() Handles llAudioProfile0.Click
         AudioMenu0.Show(llAudioProfile0, 0, 16)
     End Sub
 
-    Private Sub lAudioProfile1_Click() Handles llAudioProfile1.Click
+    Sub lAudioProfile1_Click() Handles llAudioProfile1.Click
         AudioMenu1.Show(llAudioProfile1, 0, 16)
     End Sub
 
-    Private Sub llContainer_Click() Handles llMuxer.Click
+    Sub llContainer_Click() Handles llMuxer.Click
         ContainerMenu.Items.ClearAndDisplose
         g.PopulateProfileMenu(ContainerMenu.Items, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf p.VideoEncoder.LoadMuxer)
         ContainerMenu.Show(llMuxer, 0, 16)
     End Sub
 
-    Private Sub gbResize_LinkClick() Handles lgbResize.LinkClick
+    Sub gbResize_LinkClick() Handles lgbResize.LinkClick
         Dim cms = TextCustomMenu.GetMenu(s.TargetImageSizeMenu, lgbResize.Label, components, AddressOf TargetImageMenuClick)
         cms.Add("-")
         cms.Add("Image Options...", Sub() ShowOptionsDialog("Image"))
@@ -5349,28 +5332,28 @@ Public Class MainForm
         cms.Show(lgbResize, 0, lgbResize.Label.Height)
     End Sub
 
-    Private Sub blSourceParText_Click(sender As Object, e As EventArgs) Handles blSourceParText.Click
+    Sub blSourceParText_Click(sender As Object, e As EventArgs) Handles blSourceParText.Click
         Dim menu = TextCustomMenu.GetMenu(s.ParMenu, blSourceParText, components, AddressOf SourceParMenuClick)
         menu.Add("-")
         menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.ParMenu = TextCustomMenu.EditMenu(s.ParMenu, ApplicationSettings.GetParMenu, Me)))
         menu.Show(blSourceParText, 0, blSourceParText.Height)
     End Sub
 
-    Private Sub blSourceDarText_Click(sender As Object, e As EventArgs) Handles blSourceDarText.Click
+    Sub blSourceDarText_Click(sender As Object, e As EventArgs) Handles blSourceDarText.Click
         Dim menu = TextCustomMenu.GetMenu(s.DarMenu, blSourceDarText, components, AddressOf SourceDarMenuClick)
         menu.Add("-")
         menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.DarMenu = TextCustomMenu.EditMenu(s.DarMenu, ApplicationSettings.GetDarMenu, Me)))
         menu.Show(blSourceDarText, 0, blSourceDarText.Height)
     End Sub
 
-    Private Sub blTargetDarText_Click(sender As Object, e As EventArgs) Handles blTargetDarText.Click
+    Sub blTargetDarText_Click(sender As Object, e As EventArgs) Handles blTargetDarText.Click
         Dim menu = TextCustomMenu.GetMenu(s.DarMenu, blTargetDarText, components, AddressOf TargetDarMenuClick)
         menu.Add("-")
         menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.DarMenu = TextCustomMenu.EditMenu(s.DarMenu, ApplicationSettings.GetDarMenu, Me)))
         menu.Show(blTargetDarText, 0, blTargetDarText.Height)
     End Sub
 
-    Private Sub blTargetParText_Click(sender As Object, e As EventArgs) Handles blTargetParText.Click
+    Sub blTargetParText_Click(sender As Object, e As EventArgs) Handles blTargetParText.Click
         Dim menu = TextCustomMenu.GetMenu(s.ParMenu, blTargetParText, components, AddressOf TargetParMenuClick)
         menu.Add("-")
         menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.ParMenu = TextCustomMenu.EditMenu(s.ParMenu, ApplicationSettings.GetParMenu, Me)))

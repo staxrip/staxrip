@@ -359,7 +359,7 @@ Public Class CodeEditor
                 End If
             Next
 
-            Dim filterMenuItem = Menu.Add("Add, insert or replace a filter")
+            Dim filterMenuItem = Menu.Add("Add, insert or replace a filter   ")
             filterMenuItem.SetImage(Symbol.Filter)
 
             ActionMenuItem.Add(filterMenuItem.DropDownItems, "Empty Filter", AddressOf FilterClick, New VideoFilter("Misc", "", ""), "Filter with empty values.")
@@ -372,53 +372,53 @@ Public Class CodeEditor
             Next
 
             Dim removeMenuItem = Menu.Add("Remove", AddressOf RemoveClick)
-            removeMenuItem.ShortcutKeyDisplayString = "Ctrl+Delete"
+            removeMenuItem.ShortcutKeyDisplayString = "Ctrl+Delete   "
             removeMenuItem.SetImage(Symbol.Remove)
 
             Dim previewMenuItem = Menu.Add("Preview Video...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
             previewMenuItem.Enabled = p.SourceFile <> ""
-            previewMenuItem.ShortcutKeyDisplayString = "F5"
+            previewMenuItem.ShortcutKeyDisplayString = "F5   "
             previewMenuItem.SetImage(Symbol.Photo)
 
             Dim mpvnetMenuItem = Menu.Add("Play with mpv.net", AddressOf Editor.PlayScriptWithMPVt, "Plays the current script with mpv.net.")
             mpvnetMenuItem.Enabled = p.SourceFile <> ""
-            mpvnetMenuItem.ShortcutKeyDisplayString = "F9"
+            mpvnetMenuItem.ShortcutKeyDisplayString = "F9   "
             mpvnetMenuItem.SetImage(Symbol.Play)
 
             Dim mpcMenuItem = Menu.Add("Play with mpc", AddressOf Editor.PlayScriptWithMPC, "Plays the current script with MPC.")
             mpcMenuItem.Enabled = p.SourceFile <> ""
-            mpcMenuItem.ShortcutKeyDisplayString = "F10"
+            mpcMenuItem.ShortcutKeyDisplayString = "F10   "
             mpcMenuItem.SetImage(Symbol.Play)
 
             Menu.Add("Preview Code...", AddressOf CodePreview, "Previews the script with solved macros.").SetImage(Symbol.Code)
 
             Dim infoMenuItem = Menu.Add("Info...", AddressOf Editor.ShowInfo, "Previews script parameters such as framecount and colorspace.")
             infoMenuItem.SetImage(Symbol.Info)
-            infoMenuItem.ShortcutKeyDisplayString = "Ctrl+I"
+            infoMenuItem.ShortcutKeyDisplayString = "Ctrl+I   "
             infoMenuItem.Enabled = p.SourceFile <> ""
 
             Menu.Add("Advanced Info...", AddressOf Editor.ShowAdvancedInfo, p.SourceFile <> "").SetImage(Symbol.Lightbulb)
 
             Dim joinMenuItem = Menu.Add("Join Filters", AddressOf Editor.JoinFilters, "Joins all filters into one filter.")
             joinMenuItem.Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
-            joinMenuItem.ShortcutKeyDisplayString = "Ctrl+J"
+            joinMenuItem.ShortcutKeyDisplayString = "Ctrl+J   "
 
             Dim profilesMenuItem = Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
-            profilesMenuItem.ShortcutKeyDisplayString = "Ctrl+P"
+            profilesMenuItem.ShortcutKeyDisplayString = "Ctrl+P   "
             profilesMenuItem.SetImage(Symbol.FavoriteStar)
 
             Dim macrosMenuItem = Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to choose macros.")
-            macrosMenuItem.ShortcutKeyDisplayString = "Ctrl+M"
+            macrosMenuItem.ShortcutKeyDisplayString = "Ctrl+M   "
             macrosMenuItem.SetImage(Symbol.CalculatorPercentage)
 
             Menu.Add("-")
 
             Dim moveUpMenuItem = Menu.Add("Move Up", AddressOf MoveUp)
-            moveUpMenuItem.ShortcutKeyDisplayString = "Ctrl+Up"
+            moveUpMenuItem.ShortcutKeyDisplayString = "Ctrl+Up   "
             moveUpMenuItem.SetImage(Symbol.Up)
 
             Dim moveDownMenuItem = Menu.Add("Move Down", AddressOf MoveDown)
-            moveDownMenuItem.ShortcutKeyDisplayString = "Ctrl+Down"
+            moveDownMenuItem.ShortcutKeyDisplayString = "Ctrl+Down   "
             moveDownMenuItem.SetImage(Symbol.Down)
 
             Menu.Add("-")
@@ -437,15 +437,15 @@ Public Class CodeEditor
 
             Dim cutMenuItem = Menu.Add("Cut", cutAction, rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly)
             cutMenuItem.SetImage(Symbol.Cut)
-            cutMenuItem.ShortcutKeyDisplayString = "Ctrl+X"
+            cutMenuItem.ShortcutKeyDisplayString = "Ctrl+X   "
 
             Dim copyMenuItem = Menu.Add("Copy", copyAction, rtbScript.SelectionLength > 0)
             copyMenuItem.SetImage(Symbol.Copy)
-            copyMenuItem.ShortcutKeyDisplayString = "Ctrl+C"
+            copyMenuItem.ShortcutKeyDisplayString = "Ctrl+C   "
 
             Dim pasteMenuItem = Menu.Add("Paste", pasteAction, Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly)
             pasteMenuItem.SetImage(Symbol.Paste)
-            pasteMenuItem.ShortcutKeyDisplayString = "Ctrl+V"
+            pasteMenuItem.ShortcutKeyDisplayString = "Ctrl+V   "
 
             Menu.Add("-")
             Dim helpMenuItem = Menu.Add("Help")

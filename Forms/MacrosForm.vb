@@ -1,4 +1,5 @@
-﻿Imports StaxRip.UI
+﻿
+Imports StaxRip.UI
 Imports System.Threading
 
 Public Class MacrosForm

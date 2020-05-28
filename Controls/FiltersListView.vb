@@ -43,19 +43,19 @@ Public Class FiltersListView
         Items.Clear()
         BeginUpdate()
 
-        For Each i In p.Script.Filters
+        For Each filter In p.Script.Filters
             Dim item As New ListViewItem
-            item.Tag = i
-            item.Checked = i.Active
-            item.SubItems.Add(i.Category)
+            item.Tag = filter
+            item.Checked = filter.Active
+            item.SubItems.Add(filter.Category)
 
-            If i.Name = "" Then
-                item.SubItems.Add(i.Script)
+            If filter.Name = "" Then
+                item.SubItems.Add(filter.Script)
             Else
-                item.SubItems.Add(i.Name)
+                item.SubItems.Add(filter.Name)
             End If
 
-            item.SubItems.Add(i.Script)
+            item.SubItems.Add(filter.Script)
             Items.Add(item)
         Next
 

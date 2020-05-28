@@ -185,8 +185,7 @@ Friend Class JobsForm
 
     Sub New()
         InitializeComponent()
-
-        g.RestoreClientSize(Me, 40, 20)
+        RestoreClientSize(40, 20)
 
         bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
         bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
@@ -347,7 +346,6 @@ Friend Class JobsForm
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
-        g.SaveClientSize(Me)
         RemoveHandler FileWatcher.Changed, AddressOf Reload
         RemoveHandler FileWatcher.Created, AddressOf Reload
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged

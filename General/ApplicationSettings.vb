@@ -70,7 +70,6 @@ Public Class ApplicationSettings
     Public Versions As Dictionary(Of String, Integer)
     Public VideoEncoderProfiles As List(Of VideoEncoder)
     Public WindowPositions As WindowPositions
-    Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
     Public WriteDebugLog As Boolean
 
@@ -170,15 +169,21 @@ Public Class ApplicationSettings
             WindowPositionsRemembered = {"StaxRip", "Crop", "Preview", "Help"}
         End If
 
-        If Check(WindowPositions, "Remembered Window Positions 2", 1) Then WindowPositions = New WindowPositions
+        If Check(WindowPositions, "Remembered Window Positions 2", 1) Then
+            WindowPositions = New WindowPositions
+        End If
 
-        If WindowPositionsCenterScreen Is Nothing Then WindowPositionsCenterScreen = {}
+        If Check(StartupTemplate, "Startup Template", 2) Then
+            StartupTemplate = "Automatic Workflow"
+        End If
 
-        If Check(StartupTemplate, "Startup Template", 2) Then StartupTemplate = "Automatic Workflow"
+        If PackagePaths Is Nothing Then
+            PackagePaths = New Dictionary(Of String, String)
+        End If
 
-        If PackagePaths Is Nothing Then PackagePaths = New Dictionary(Of String, String)
-
-        If RecentProjects Is Nothing Then RecentProjects = New List(Of String)
+        If RecentProjects Is Nothing Then
+            RecentProjects = New List(Of String)
+        End If
 
         If Check(MuxerProfiles, "Container Profiles", 40) Then
             MuxerProfiles = New List(Of Muxer)

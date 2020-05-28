@@ -45,7 +45,7 @@ Partial Class VideoComparisonForm
         Me.TabControl.Margin = New System.Windows.Forms.Padding(10, 5, 10, 6)
         Me.TabControl.Name = "TabControl"
         Me.TabControl.SelectedIndex = 0
-        Me.TabControl.Size = New System.Drawing.Size(1278, 819)
+        Me.TabControl.Size = New System.Drawing.Size(1436, 819)
         Me.TabControl.TabIndex = 0
         '
         'TrackBar
@@ -55,7 +55,7 @@ Partial Class VideoComparisonForm
         Me.TrackBar.AutoSize = False
         Me.TrackBar.Location = New System.Drawing.Point(3, 833)
         Me.TrackBar.Name = "TrackBar"
-        Me.TrackBar.Size = New System.Drawing.Size(1292, 75)
+        Me.TrackBar.Size = New System.Drawing.Size(1450, 75)
         Me.TrackBar.TabIndex = 1
         Me.TrackBar.TabStop = False
         Me.TrackBar.TickStyle = System.Windows.Forms.TickStyle.None
@@ -65,13 +65,12 @@ Partial Class VideoComparisonForm
         Me.lInfo.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lInfo.Location = New System.Drawing.Point(91, 5)
         Me.lInfo.Name = "lInfo"
-        Me.lInfo.Size = New System.Drawing.Size(1204, 65)
+        Me.lInfo.Size = New System.Drawing.Size(1362, 65)
         Me.lInfo.TabIndex = 4
         Me.lInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'bnMenu
         '
-        Me.bnMenu.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.bnMenu.Location = New System.Drawing.Point(10, 0)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
         Me.bnMenu.ShowMenuSymbol = True
@@ -91,7 +90,7 @@ Partial Class VideoComparisonForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1298, 986)
+        Me.tlpMain.Size = New System.Drawing.Size(1456, 986)
         Me.tlpMain.TabIndex = 5
         '
         'tlpBottom
@@ -101,27 +100,27 @@ Partial Class VideoComparisonForm
         Me.tlpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.tlpBottom.ColumnCount = 2
         Me.tlpBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpBottom.Controls.Add(Me.bnMenu, 0, 0)
         Me.tlpBottom.Controls.Add(Me.lInfo, 1, 0)
         Me.tlpBottom.Location = New System.Drawing.Point(0, 911)
         Me.tlpBottom.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpBottom.Name = "tlpBottom"
         Me.tlpBottom.RowCount = 1
-        Me.tlpBottom.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpBottom.Size = New System.Drawing.Size(1298, 75)
+        Me.tlpBottom.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBottom.Size = New System.Drawing.Size(1456, 75)
         Me.tlpBottom.TabIndex = 0
         '
         'VideoComparisonForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(20.0!, 48.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1298, 986)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.ClientSize = New System.Drawing.Size(1456, 986)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "VideoComparisonForm"
         Me.ShowIcon = False
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Video Comparison"
         CType(Me.TrackBar, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tlpMain.ResumeLayout(False)

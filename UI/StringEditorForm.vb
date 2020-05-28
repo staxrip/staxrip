@@ -121,14 +121,14 @@ Namespace UI
             ScaleClientSize(41, 24)
         End Sub
 
-        Private Sub tb_KeyDown(sender As Object, e As KeyEventArgs) Handles rtb.KeyDown
+        Sub tb_KeyDown(sender As Object, e As KeyEventArgs) Handles rtb.KeyDown
             If e.KeyData = (Keys.Enter Or Keys.Control) Then
                 e.Handled = True
                 bnOK.PerformClick()
             End If
         End Sub
 
-        Private Sub cbWrap_CheckedChanged() Handles cbWrap.CheckedChanged
+        Sub cbWrap_CheckedChanged() Handles cbWrap.CheckedChanged
             rtb.WordWrap = cbWrap.Checked
         End Sub
     End Class

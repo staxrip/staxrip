@@ -468,28 +468,49 @@ Module StringExtensions
 
     <Extension()>
     Function Left(value As String, index As Integer) As String
-        If value = "" OrElse index < 0 Then Return ""
-        If index > value.Length Then Return value
+        If value = "" OrElse index < 0 Then
+            Return ""
+        End If
+
+        If index > value.Length Then
+            Return value
+        End If
+
         Return value.Substring(0, index)
     End Function
 
     <Extension()>
     Function Left(value As String, start As String) As String
-        If value = "" OrElse start = "" Then Return ""
-        If Not value.Contains(start) Then Return ""
+        If value = "" OrElse start = "" Then
+            Return ""
+        End If
+
+        If Not value.Contains(start) Then
+            Return ""
+        End If
+
         Return value.Substring(0, value.IndexOf(start))
     End Function
 
     <Extension()>
     Function LeftLast(value As String, start As String) As String
-        If Not value.Contains(start) Then Return ""
+        If Not value.Contains(start) Then
+            Return ""
+        End If
+
         Return value.Substring(0, value.LastIndexOf(start))
     End Function
 
     <Extension()>
     Function Right(value As String, start As String) As String
-        If value = "" OrElse start = "" Then Return ""
-        If Not value.Contains(start) Then Return ""
+        If value = "" OrElse start = "" Then
+            Return ""
+        End If
+
+        If Not value.Contains(start) Then
+            Return ""
+        End If
+
         Return value.Substring(value.IndexOf(start) + start.Length)
     End Function
 
@@ -623,15 +644,6 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function ReplaceUnicode(value As String) As String
-        If value.Contains(Convert.ToChar(&H2212)) Then
-            value = value.Replace(Convert.ToChar(&H2212), "-"c)
-        End If
-
-        Return value
-    End Function
-
-    <Extension()>
     Function ReplaceRecursive(value As String, find As String, replace As String) As String
         If value = "" Then
             Return ""
@@ -673,7 +685,10 @@ End Module
 Module MiscExtensions
     <Extension()>
     Function ToInvariantString(instance As IConvertible) As String
-        If instance Is Nothing Then Return ""
+        If instance Is Nothing Then
+            Return ""
+        End If
+
         Return instance.ToString(CultureInfo.InvariantCulture)
     End Function
 

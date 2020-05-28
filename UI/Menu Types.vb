@@ -26,7 +26,10 @@ Namespace UI
 
         Property Parameters() As List(Of Object)
             Get
-                If ParametersValue Is Nothing Then ParametersValue = New List(Of Object)
+                If ParametersValue Is Nothing Then
+                    ParametersValue = New List(Of Object)
+                End If
+
                 Return ParametersValue
             End Get
             Set(Value As List(Of Object))
@@ -100,7 +103,10 @@ Namespace UI
                         item.MethodName = methodName
                         item.KeyData = keyData
                         item.Symbol = symbol
-                        If Not params Is Nothing Then item.Parameters.AddRange(params)
+
+                        If Not params Is Nothing Then
+                            item.Parameters.AddRange(params)
+                        End If
                     End If
                 End If
             Next
@@ -192,16 +198,19 @@ Namespace UI
 
             For Each i As MenuItemEx In MenuItems
                 Dim help = i.GetHelp
-                If Not help Is Nothing Then ret.Add(help)
+
+                If Not help Is Nothing Then
+                    ret.Add(help)
+                End If
             Next
 
             Return ret
         End Function
 
         Function Edit() As CustomMenuItem
-            Using f As New CustomMenuEditor(Me)
-                If f.ShowDialog = DialogResult.OK Then
-                    MenuItem = f.GetState
+            Using form As New CustomMenuEditor(Me)
+                If form.ShowDialog = DialogResult.OK Then
+                    MenuItem = form.GetState
                     BuildMenu()
                 End If
             End Using
@@ -253,43 +262,51 @@ Namespace UI
             BuildMenu(ToolStrip, MenuItem)
         End Sub
 
-        Private Sub BuildMenu(menu As Object, item As CustomMenuItem)
-            For Each i As CustomMenuItem In item.SubItems
-                i.CustomMenu = Me
-                Dim mi As ToolStripItem
+        Sub BuildMenu(menu As Object, item As CustomMenuItem)
+            For Each cmi As CustomMenuItem In item.SubItems
+                cmi.CustomMenu = Me
+                Dim tsi As ToolStripItem
 
-                If i.Text = "-" Then
-                    mi = New ToolStripSeparator
+                If cmi.Text = "-" Then
+                    tsi = New ToolStripSeparator
                 Else
-                    Dim emi As New MenuItemEx()
-                    MenuItems.Add(emi)
-                    mi = emi
-                    emi.CustomMenuItem = i
+                    Dim mi As New MenuItemEx()
+                    MenuItems.Add(mi)
+                    tsi = mi
+                    mi.CustomMenuItem = cmi
 
-                    Dim keys = KeysHelp.GetKeyString(i.KeyData)
+                    Dim keys = KeysHelp.GetKeyString(cmi.KeyData)
 
                     If keys <> "" Then
-                        emi.ShortcutKeyDisplayString = keys
+                        mi.ShortcutKeyDisplayString = keys
                     End If
 
-                    If i.Symbol <> Symbol.None Then
-                        emi.ImageScaling = ToolStripItemImageScaling.None
-                        emi.SetImage(i.Symbol)
+                    If mi.ShortcutKeyDisplayString Is Nothing Then
+                        mi.ShortcutKeyDisplayString += ""
                     End If
 
-                    AddHandler mi.Click, AddressOf MenuClick
+                    If Not mi.ShortcutKeyDisplayString.EndsWith(" ") Then
+                        mi.ShortcutKeyDisplayString += "  "
+                    End If
+
+                    If cmi.Symbol <> Symbol.None Then
+                        mi.ImageScaling = ToolStripItemImageScaling.None
+                        mi.SetImage(cmi.Symbol)
+                    End If
+
+                    AddHandler tsi.Click, AddressOf MenuClick
                 End If
 
-                Items.Add(i)
-                mi.Text = i.Text
+                Items.Add(cmi)
+                tsi.Text = cmi.Text
 
                 If TypeOf menu Is ToolStripMenuItem Then
-                    DirectCast(menu, ToolStripMenuItem).DropDownItems.Add(mi)
+                    DirectCast(menu, ToolStripMenuItem).DropDownItems.Add(tsi)
                 ElseIf TypeOf menu Is ToolStrip Then
-                    DirectCast(menu, ToolStrip).Items.Add(mi)
+                    DirectCast(menu, ToolStrip).Items.Add(tsi)
                 End If
 
-                BuildMenu(mi, i)
+                BuildMenu(tsi, cmi)
             Next
         End Sub
     End Class
@@ -509,60 +526,73 @@ Namespace UI
         End Sub
 
         Sub Opening(sender As Object, e As CancelEventArgs)
-            If Not EnabledFunc Is Nothing Then Enabled = EnabledFunc.Invoke
-            If Not VisibleFunc Is Nothing Then Visible = VisibleFunc.Invoke
+            If Not EnabledFunc Is Nothing Then
+                Enabled = EnabledFunc.Invoke
+            End If
+
+            If Not VisibleFunc Is Nothing Then
+                Visible = VisibleFunc.Invoke
+            End If
         End Sub
 
         Protected Overrides Sub OnClick(e As EventArgs)
             Application.DoEvents()
-            If Not Action Is Nothing Then Action()
+
+            If Not Action Is Nothing Then
+                Action()
+            End If
+
             MyBase.OnClick(e)
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
             MyBase.Dispose(disposing)
-            If Not Form Is Nothing Then RemoveHandler Form.KeyDown, AddressOf KeyDown
+
+            If Not Form Is Nothing Then
+                RemoveHandler Form.KeyDown, AddressOf KeyDown
+            End If
+
             Action = Nothing
             EnabledFunc = Nothing
             VisibleFunc = Nothing
             Form = Nothing
         End Sub
 
-        Shared Function Add(Of T)(items As ToolStripItemCollection,
-                                  path As String,
-                                  action As Action(Of T),
-                                  value As T,
-                                  Optional help As String = Nothing) As ActionMenuItem
+        Shared Function Add(Of T)(
+            items As ToolStripItemCollection,
+            path As String,
+            action As Action(Of T),
+            value As T,
+            Optional help As String = Nothing) As ActionMenuItem
 
             Return Add(items, path, Sub() action(value), help)
         End Function
 
-        Shared Function Add(items As ToolStripItemCollection,
-                            path As String) As ActionMenuItem
-
+        Shared Function Add(items As ToolStripItemCollection, path As String) As ActionMenuItem
             Return Add(items, path, Nothing)
         End Function
 
-        Shared Function Add(items As ToolStripItemCollection,
-                            path As String,
-                            action As Action) As ActionMenuItem
+        Shared Function Add(
+            items As ToolStripItemCollection, path As String, action As Action) As ActionMenuItem
 
             Return Add(items, path, action, Symbol.None, Nothing)
         End Function
 
-        Shared Function Add(items As ToolStripItemCollection,
-                            path As String,
-                            action As Action,
-                            tip As String) As ActionMenuItem
+        Shared Function Add(
+            items As ToolStripItemCollection,
+            path As String,
+            action As Action,
+            tip As String) As ActionMenuItem
 
             Return Add(items, path, action, Symbol.None, tip)
         End Function
 
-        Shared Function Add(items As ToolStripItemCollection,
-                            path As String,
-                            action As Action,
-                            symbol As Symbol,
-                            Optional tip As String = Nothing) As ActionMenuItem
+        Shared Function Add(
+            items As ToolStripItemCollection,
+            path As String,
+            action As Action,
+            symbol As Symbol,
+            Optional tip As String = Nothing) As ActionMenuItem
 
             Dim a = path.SplitNoEmpty(" | ")
             Dim l = items
@@ -572,7 +602,7 @@ Namespace UI
 
                 For Each i In l.OfType(Of ToolStripMenuItem)()
                     If x < a.Length - 1 Then
-                        If i.Text = a(x) Then
+                        If i.Text = a(x) + "   " Then
                             found = True
                             l = i.DropDownItems
                         End If
@@ -584,7 +614,7 @@ Namespace UI
                         If a(x) = "-" Then
                             l.Add(New ToolStripSeparator)
                         Else
-                            Dim item As New ActionMenuItem(a(x), action, tip)
+                            Dim item As New ActionMenuItem(a(x) + "   ", action, tip)
                             item.SetImage(symbol)
                             l.Add(item)
                             l = item.DropDownItems
@@ -592,7 +622,7 @@ Namespace UI
                         End If
                     Else
                         Dim item As New ActionMenuItem()
-                        item.Text = a(x)
+                        item.Text = a(x) + "   "
                         l.Add(item)
                         l = item.DropDownItems
                     End If
@@ -602,43 +632,44 @@ Namespace UI
     End Class
 
     Public Class TextCustomMenu
-        Shared Function EditMenu(value As String,
-                                 defaults As String,
-                                 owner As Form) As String
-
-            Using dia As New MacroEditorDialog
-                dia.SetMacroDefaults()
-                dia.MacroEditorControl.Value = value
-                dia.MacroEditorControl.rtbDefaults.Text = defaults
-                dia.Text = "Menu Editor"
+        Shared Function EditMenu(value As String, defaults As String, owner As Form) As String
+            Using dialog As New MacroEditorDialog
+                dialog.SetMacroDefaults()
+                dialog.MacroEditorControl.Value = value
+                dialog.MacroEditorControl.rtbDefaults.Text = defaults
+                dialog.Text = "Menu Editor"
 
                 If defaults <> "" Then
-                    dia.bnContext.Text = " Restore Defaults... "
-                    dia.bnContext.Visible = True
-                    dia.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then dia.MacroEditorControl.Value = defaults)
+                    dialog.bnContext.Text = " Restore Defaults... "
+                    dialog.bnContext.Visible = True
+                    dialog.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then dialog.MacroEditorControl.Value = defaults)
                 End If
 
-                If dia.ShowDialog(owner) = DialogResult.OK Then
-                    value = dia.MacroEditorControl.Value
+                If dialog.ShowDialog(owner) = DialogResult.OK Then
+                    value = dialog.MacroEditorControl.Value
                 End If
             End Using
 
             Return value
         End Function
 
-        Shared Function GetMenu(definition As String,
-                                owner As Control,
-                                components As IContainer,
-                                action As Action(Of String)) As ContextMenuStripEx
+        Shared Function GetMenu(
+            definition As String,
+            owner As Control,
+            components As IContainer,
+            action As Action(Of String)) As ContextMenuStripEx
 
-            If owner.ContextMenuStrip Is Nothing Then owner.ContextMenuStrip = New ContextMenuStripEx(components)
+            If owner.ContextMenuStrip Is Nothing Then
+                owner.ContextMenuStrip = New ContextMenuStripEx(components)
+            End If
+
             Dim ret = DirectCast(owner.ContextMenuStrip, ContextMenuStripEx)
             ret.Items.ClearAndDisplose
 
             For Each i In definition.SplitKeepEmpty(BR)
                 If i.Contains("=") Then
                     Dim arg = i.Right("=").Trim
-                    ActionMenuItem.Add(ret.Items, i.Left("="), action, arg, Nothing)
+                    ActionMenuItem.Add(ret.Items, i.Left("=").Trim, action, arg, Nothing)
                 ElseIf i.EndsWith("-") Then
                     ActionMenuItem.Add(ret.Items, i)
                 ElseIf i = "" Then
@@ -719,15 +750,19 @@ Namespace UI
             Return Add(path, action, Keys.None, True, enabledFunc, help)
         End Function
 
-        Function Add(path As String,
-                     action As Action,
-                     key As Keys,
-                     enabled As Boolean,
-                     enabledFunc As Func(Of Boolean),
-                     Optional help As String = Nothing) As ActionMenuItem
+        Function Add(
+            path As String,
+            action As Action,
+            key As Keys,
+            enabled As Boolean,
+            enabledFunc As Func(Of Boolean),
+            Optional help As String = Nothing) As ActionMenuItem
 
             Dim ret = ActionMenuItem.Add(Items, path, action)
-            If ret Is Nothing Then Exit Function
+
+            If ret Is Nothing Then
+                Exit Function
+            End If
 
             ret.Form = Form
             ret.Shortcut = key

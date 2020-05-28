@@ -149,9 +149,6 @@
     <Compile Include="Controls\DemuxingControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\SubtitleControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Controls\x264Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
@@ -440,9 +437,6 @@
     <EmbeddedResource Include="Controls\DemuxingControl.resx">
       <DependentUpon>DemuxingControl.vb</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SubtitleControl.resx">
-      <DependentUpon>SubtitleControl.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\x265Control.resx">
       <DependentUpon>x265Control.vb</DependentUpon>

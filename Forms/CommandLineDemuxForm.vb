@@ -407,9 +407,9 @@ Public Class CommandLineDemuxForm
     End Sub
 
     Private Sub DemuxForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteTips(TipProvider.GetTips)
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteTips(TipProvider.GetTips)
+        form.Show()
     End Sub
 End Class

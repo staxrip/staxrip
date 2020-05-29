@@ -27,7 +27,6 @@ Tools
     "ffms2","AviSynth Plugin","ffms2.dll","89bd1e1 StvG","2020-03-30"
     "FFT3DFilter","AviSynth Plugin","fft3dfilter.dll","2.6","2019-01-31"
     "FFT3DGPU","AviSynth Plugin","FFT3dGPU.dll","0.8.2.0","2018-11-21"
-    "flash3kyuu_deband","AviSynth Plugin","flash3kyuu_deband.dll","5.0","2018-05-02"
     "FluxSmooth","AviSynth Plugin","FluxSmooth.dll","1.4.7","2019-04-26"
     "FrameRateConverter DLL","AviSynth Plugin","FrameRateConverter-x64.dll","1.2.1","2017-09-02"
     "GradFun2DB","AviSynth Plugin","gradfun2db.dll","2010-03-29","2019-01-01"
@@ -44,6 +43,7 @@ Tools
     "MPEG2DecPlus","AviSynth Plugin","MPEG2DecPlus64.dll","0.1.2","2020-05-09"
     "MSharpen","AviSynth Plugin","msharpen.dll","0.9","2013-11-30"
     "mvtools2","AviSynth Plugin","mvtools2.dll","2.7.41","2019-05-02"
+    "Neo f3kdb","AviSynth Plugin","neo-f3kdb.dll","r5","2020-04-13"
     "NicAudio","AviSynth Plugin","NicAudio.dll","1.1","2019-01-01"
     "RgTools","AviSynth Plugin","RgTools.dll","1.0","2020-04-27"
     "SangNom2","AviSynth Plugin","SangNom2.dll","0.35","2013-11-30"
@@ -125,7 +125,7 @@ Tools
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
     "chapterEditor","GUI App","chapterEditor.exe","1.21","2020-02-29"
     "DGIndex","GUI App","DGIndex.exe","1.5.8",""
-    "MPC-BE","GUI App","mpc-be64.exe","","2019-12-27"
+    "MPC-BE","GUI App","mpc-be64.exe","","2020-05-25"
     "MPC-HC","GUI App","mpc-hc64.exe","","2017-07-16"
     "mpv.net","GUI App","mpvnet.exe","5.4.8.0","2020-05-11"
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.14","2020-03-08"
@@ -691,16 +691,6 @@ Filters: FFT3DGPU
 
 
 
-flash3kyuu_deband
-~~~~~~~~~~~~~~~~~
-
-Simple debanding filter that can be quite effective for some anime sources.
-
-Filters: f3kdb
-
-http://forum.doom9.org/showthread.php?t=161411
-
-
 FluxSmooth
 ~~~~~~~~~~
 
@@ -859,6 +849,16 @@ MVTools is collection of functions for estimation and compensation of objects mo
 Filters: MSuper, MAnalyse, MCompensate, MMask, MDeGrain1, MDeGrain2, MDegrain3
 
 http://github.com/pinterf/mvtools
+
+
+Neo f3kdb
+~~~~~~~~~
+
+Debanding filter forked from flash3kyuu_deband.
+
+Filters: neo_f3kdb
+
+https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb
 
 
 NicAudio

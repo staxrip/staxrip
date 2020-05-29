@@ -286,7 +286,7 @@ Public Class AppsForm
     Sub New()
         MyBase.New()
         InitializeComponent()
-        RestoreClientSize(45, 29)
+        RestoreClientSize(45, 32)
         tv.ItemHeight = CInt(FontHeight * 1.5)
 
         SearchTextBox_TextChanged()

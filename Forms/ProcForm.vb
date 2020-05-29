@@ -315,18 +315,21 @@ Public Class ProcForm
 
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
-            If ProcController.BlockActivation Then Return True
+            If ProcController.BlockActivation Then
+                Return True
+            End If
+
             Return MyBase.ShowWithoutActivation
         End Get
     End Property
 
-    Private Sub bnJobs_Click(sender As Object, e As EventArgs) Handles bnJobs.Click
-        Using f As New JobsForm()
-            f.ShowDialog()
+    Sub bnJobs_Click(sender As Object, e As EventArgs) Handles bnJobs.Click
+        Using form As New JobsForm()
+            form.ShowDialog()
         End Using
     End Sub
 
-    Private Sub bnLog_Click(sender As Object, e As EventArgs) Handles bnLog.Click
+    Sub bnLog_Click(sender As Object, e As EventArgs) Handles bnLog.Click
         g.DefaultCommands.ShowLogFile()
     End Sub
 End Class

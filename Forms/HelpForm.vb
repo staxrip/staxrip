@@ -45,7 +45,7 @@ Public Class HelpForm
 
     Sub New()
         InitializeComponent()
-        RestoreClientSize(45, 30)
+        RestoreClientSize(50, 35)
         Icon = g.Icon
     End Sub
 

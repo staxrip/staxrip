@@ -24,7 +24,9 @@ Public Class Audio
             End If
         End If
 
-        If ap.Decoder <> AudioDecoderMode.Automatic Then
+        Dim extractCore = TypeOf ap Is GUIAudioProfile AndAlso DirectCast(ap, GUIAudioProfile).ExtractCore
+
+        If ap.Decoder <> AudioDecoderMode.Automatic AndAlso Not extractCore Then
             Convert(ap)
         End If
 

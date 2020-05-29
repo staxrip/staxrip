@@ -1,10 +1,17 @@
 
-2.1.1.7 Beta (not yet available)
+2.1.1.8 Beta (not yet available)
+============
+
+
+
+
+2.1.1.7 Beta
 ============
 
 - various dialogs made resizable and remember their size
 - various UI issues fixed
 - the play feature in the muxer dialog for subtitles was fixed
+- flash3kyuu_deband replaced by Neo f3kdb
 
 
 2.1.1.6 Beta

@@ -347,14 +347,17 @@ Public Class Package
         .IsGUI = True,
         .WebURL = "http://sourceforge.net/projects/guliverkli"})
 
-    Shared Property flash3kyuu_deband As Package = Add(New PluginPackage With {
-        .Name = "flash3kyuu_deband",
-        .Filename = "flash3kyuu_deband.dll",
-        .WebURL = "http://forum.doom9.org/showthread.php?t=161411",
+    Shared Property neo_f3kdb As Package = Add(New PluginPackage With {
+        .Name = "Neo f3kdb",
+        .Filename = "neo-f3kdb.dll",
+        .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb",
         .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",
-        .Description = "Simple debanding filter that can be quite effective for some anime sources.",
-        .VSFilterNames = {"core.f3kdb.Deband"},
-        .AvsFilterNames = {"f3kdb"}})
+        .DownloadURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb/releases",
+        .Description = "Debanding filter forked from flash3kyuu_deband.",
+        .AvsFilterNames = {"neo_f3kdb"},
+        .AvsFiltersFunc = Function() {New VideoFilter("Misc", "neo_f3kdb", $"neo_f3kdb(y=64, cb=64, cr=64, grainy=0, grainc=0)")},
+        .VSFilterNames = {"core.neo_f3kdb.Deband"},
+        .VSFiltersFunc = Function() {New VideoFilter("Misc", "neo_f3kdb", "clip = core.neo_f3kdb.Deband(clip, y=64, cb=64, cr=64, grainy=0, grainc=0)")}})
 
     Shared Property vinverse As Package = Add(New PluginPackage With {
         .Name = "vinverse",

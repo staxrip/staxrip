@@ -346,16 +346,6 @@
 
     Shows a dialog to add a hardcoded subtitle.
 
-.. option:: ShowHelpURL
-
-    Opens a given URL or local file in the help browser.
-
-.. list-table::
-    :widths: auto
-
-    * - url <string>
-      - URL or local file to be shown in the internet explorer powered help browser.
-
 .. option:: ShowJobsDialog
 
     Dialog to manage batch jobs.

@@ -80,7 +80,7 @@ Public Class LogBuilder
     End Sub
 
     Function FormatHeader(value As String) As String
-        Dim len = (70 - value.Length) \ 2
+        Dim len = (65 - value.Length) \ 2
         Return "--" + "-".Multiply(len) + " " + value + " " + "-".Multiply(len) + "--" + BR2
     End Function
 

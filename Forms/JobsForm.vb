@@ -1,6 +1,7 @@
 
 Imports System.Threading
 Imports System.Threading.Tasks
+
 Imports StaxRip.UI
 
 Friend Class JobsForm
@@ -181,7 +182,7 @@ Friend Class JobsForm
 
     Private FileWatcher As New FileSystemWatcher
     Private IsLoading As Boolean
-    Private Tip As String = "Please note that the job list can be processed by multiple StaxRip instances in parallel."
+    Private Tip As String = "The job list can be processed by multiple StaxRip instances in parallel."
 
     Sub New()
         InitializeComponent()
@@ -224,17 +225,18 @@ Friend Class JobsForm
         cms.Add("Select All", Sub() SelectAll(), Keys.Control Or Keys.A, Function() lv.Items.Count > lv.SelectedItems.Count)
         cms.Add("Select None", Sub() SelectNone(), Keys.Shift Or Keys.A, Function() lv.SelectedItems.Count > 0)
         cms.Add("-")
-        cms.Add("Check Selection", Sub() CheckSelection(), Keys.None, Function() lv.SelectedItems.Count > lv.CheckedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count)
+        cms.Add("Check Selection", Sub() CheckSelection(), Keys.None, Function() lv.SelectedItems.Count > lv.CheckedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count).ShortcutKeyDisplayString = "Space     "
         cms.Add("Check All", Sub() CheckAll(), Keys.Control Or Keys.Space, Function() lv.Items.Count > lv.CheckedItems.Count)
         cms.Add("Check None", Sub() CheckNone(), Keys.Shift Or Keys.Space, Function() lv.CheckedItems.Count > 0)
         cms.Add("-")
-        cms.Add("Move Selection Up", Sub() bnUp.PerformClick(), Keys.Control Or Keys.Up, Function() lv.CanMoveUp)
-        cms.Add("Move Selection Down", Sub() bnDown.PerformClick(), Keys.Control Or Keys.Down, Function() lv.CanMoveDown)
+        cms.Add("Move Selection Up", Sub() bnUp.PerformClick(), Keys.Control Or Keys.Up, Function() lv.CanMoveUp).SetImage(Symbol.Up)
+        cms.Add("Move Selection Down", Sub() bnDown.PerformClick(), Keys.Control Or Keys.Down, Function() lv.CanMoveDown).SetImage(Symbol.Down)
         cms.Add("-")
         cms.Add("Move Selection To Top", Sub() lv.MoveSelectionTop(), Keys.Control Or Keys.Home, Function() lv.CanMoveUp)
         cms.Add("Move Selection To Bottom", Sub() lv.MoveSelectionBottom(), Keys.Control Or Keys.End, Function() lv.CanMoveDown)
         cms.Add("-")
-        cms.Add("Delete Selection", Sub() bnRemove.PerformClick(), Keys.Control Or Keys.Delete, Function() lv.SelectedItems.Count > 0)
+        cms.Add("Sort Alphabetically", Sub() lv.SortItems(), Keys.Control Or Keys.S, Function() lv.Items.Count > 1).SetImage(Symbol.Sort)
+        cms.Add("Remove Selection", Sub() bnRemove.PerformClick(), Keys.Control Or Keys.Delete, Function() lv.SelectedItems.Count > 0).SetImage(Symbol.Remove)
         cms.Add("Load Selection", Sub() bnLoad.PerformClick(), Keys.Control Or Keys.L, Function() lv.SelectedItems.Count = 1)
 
         UpdateControls()
@@ -255,26 +257,26 @@ Friend Class JobsForm
     End Sub
 
     Sub CheckAll()
-        For Each i As ListViewItem In lv.Items
-            i.Checked = True
+        For Each item As ListViewItem In lv.Items
+            item.Checked = True
         Next
     End Sub
 
     Sub CheckSelection()
-        For Each i As ListViewItem In lv.SelectedItems
-            i.Checked = True
+        For Each item As ListViewItem In lv.SelectedItems
+            item.Checked = True
         Next
     End Sub
 
     Sub SelectNone()
-        For Each i As ListViewItem In lv.Items
-            i.Selected = False
+        For Each item As ListViewItem In lv.Items
+            item.Selected = False
         Next
     End Sub
 
     Sub SelectAll()
-        For Each i As ListViewItem In lv.Items
-            i.Selected = True
+        For Each item As ListViewItem In lv.Items
+            item.Selected = True
         Next
     End Sub
 
@@ -285,16 +287,14 @@ Friend Class JobsForm
 
     Sub Reload(sender As Object, e As FileSystemEventArgs)
         Invoke(Sub()
-                   If IsDisposed Then
-                       Exit Sub
+                   If Not IsDisposed Then
+                       IsLoading = True
+                       lv.Items.Clear()
+                       lv.AddItems(JobManager.GetJobs())
+                       lv.SelectFirst()
+                       UpdateControls()
+                       IsLoading = False
                    End If
-
-                   IsLoading = True
-                   lv.Items.Clear()
-                   lv.AddItems(JobManager.GetJobs())
-                   lv.SelectFirst()
-                   UpdateControls()
-                   IsLoading = False
                End Sub)
     End Sub
 
@@ -317,7 +317,9 @@ Friend Class JobsForm
         Dim jobs As New List(Of Job)
 
         For Each item As ListViewItem In lv.Items
-            jobs.Add(DirectCast(item.Tag, Job))
+            If Not item Is Nothing Then
+                jobs.Add(DirectCast(item.Tag, Job))
+            End If
         Next
 
         FileWatcher.EnableRaisingEvents = False

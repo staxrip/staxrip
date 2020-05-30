@@ -714,7 +714,10 @@ Module MiscExtensions
                   delimiter As String,
                   Optional removeEmpty As Boolean = False) As String
 
-        If instance Is Nothing Then Return Nothing
+        If instance Is Nothing Then
+            Return Nothing
+        End If
+
         Dim containsEmpty As Boolean
 
         For Each item In instance
@@ -724,7 +727,10 @@ Module MiscExtensions
             End If
         Next
 
-        If containsEmpty AndAlso removeEmpty Then instance = instance.Where(Function(arg) arg <> "")
+        If containsEmpty AndAlso removeEmpty Then
+            instance = instance.Where(Function(arg) arg <> "")
+        End If
+
         Return String.Join(delimiter, instance)
     End Function
 

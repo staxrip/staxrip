@@ -22,7 +22,7 @@ Public Class StreamDemuxForm
         lvAudio.ShowItemToolTips = True
         lvAudio.FullRowSelect = True
         lvAudio.MultiSelect = False
-        lvAudio.SendMessageHideFocus()
+        lvAudio.HideFocusRectange()
         lvAudio.AutoCheckMode = AutoCheckMode.SingleClick
 
         lvSubtitles.View = View.SmallIcon

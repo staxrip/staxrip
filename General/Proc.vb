@@ -258,11 +258,11 @@ Public Class Proc
 
         Try
             If Header <> "" Then
-                If Not Package Is Nothing Then
-                    Header += " using " + Package.Name + " " + Package.Version
-                End If
-
                 Log.WriteHeader(Header)
+
+                If Not Package Is Nothing Then
+                    Log.WriteLine(Package.Name + " " + Package.Version + BR2)
+                End If
             End If
 
             If Process.StartInfo.FileName = "" Then

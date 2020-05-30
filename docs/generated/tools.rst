@@ -43,7 +43,7 @@ Tools
     "MPEG2DecPlus","AviSynth Plugin","MPEG2DecPlus64.dll","0.1.2","2020-05-09"
     "MSharpen","AviSynth Plugin","msharpen.dll","0.9","2013-11-30"
     "mvtools2","AviSynth Plugin","mvtools2.dll","2.7.41","2019-05-02"
-    "Neo f3kdb","AviSynth Plugin","neo-f3kdb.dll","r5","2020-04-13"
+    "Neo f3kdb","AviSynth Plugin","neo-f3kdb.dll","r6","2020-05-30"
     "NicAudio","AviSynth Plugin","NicAudio.dll","1.1","2019-01-01"
     "RgTools","AviSynth Plugin","RgTools.dll","1.0","2020-04-27"
     "SangNom2","AviSynth Plugin","SangNom2.dll","0.35","2013-11-30"

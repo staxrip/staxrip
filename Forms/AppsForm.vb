@@ -3,6 +3,7 @@ Imports System.Globalization
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Threading.Tasks
+
 Imports StaxRip.UI
 
 Public Class AppsForm
@@ -68,6 +69,7 @@ Public Class AppsForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tv.AutoCollaps = True
+        Me.tv.BackColor = System.Drawing.SystemColors.Control
         Me.tv.ExpandMode = StaxRip.UI.TreeNodeExpandMode.InclusiveChilds
         Me.tv.FullRowSelect = True
         Me.tv.HideSelection = False
@@ -217,7 +219,6 @@ Public Class AppsForm
         Me.flp.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.flp.BackColor = System.Drawing.Color.White
         Me.flp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.flp.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
         Me.flp.Location = New System.Drawing.Point(473, 100)
@@ -451,7 +452,7 @@ Public Class AppsForm
         Next
     End Sub
 
-    Private Sub ShowPackage(tn As TreeNode)
+    Sub ShowPackage(tn As TreeNode)
         If Not tn Is Nothing AndAlso Not tn.Tag Is Nothing Then
             Dim newPackage = DirectCast(tn.Tag, Package)
 
@@ -488,7 +489,7 @@ Public Class AppsForm
         MyBase.OnKeyDown(e)
     End Sub
 
-    Private Sub tv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tv.AfterSelect
+    Sub tv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tv.AfterSelect
         If e.Node.Tag Is Nothing AndAlso e.Node.Nodes.Count > 0 Then
             tv.SelectedNode = e.Node.Nodes(0)
         End If
@@ -496,7 +497,7 @@ Public Class AppsForm
         If Not e.Node.Tag Is Nothing Then ShowPackage(e.Node)
     End Sub
 
-    Private Sub SearchTextBox_TextChanged() Handles SearchTextBox.TextChanged
+    Sub SearchTextBox_TextChanged() Handles SearchTextBox.TextChanged
         Dim current = CurrentPackage
 
         tv.BeginUpdate()
@@ -658,7 +659,7 @@ Public Class AppsForm
         End Using
     End Sub
 
-    Private Sub miStatus_Click(sender As Object, e As EventArgs) Handles miStatus.Click
+    Sub miStatus_Click(sender As Object, e As EventArgs) Handles miStatus.Click
         Dim txt As String
 
         For Each pair In Package.Items
@@ -676,7 +677,7 @@ Public Class AppsForm
         End If
     End Sub
 
-    Private Sub miBrowsePath_Click(sender As Object, e As EventArgs) Handles miBrowsePath.Click
+    Sub miBrowsePath_Click(sender As Object, e As EventArgs) Handles miBrowsePath.Click
         Using dialog As New OpenFileDialog
             dialog.SetInitDir(s.Storage.GetString(CurrentPackage.Name + "custom path"))
             dialog.Filter = "|" + CurrentPackage.Filename + "|All Files|*.*"
@@ -688,7 +689,7 @@ Public Class AppsForm
         End Using
     End Sub
 
-    Private Sub miClearCustomPath_Click(sender As Object, e As EventArgs) Handles miClearCustomPath.Click
+    Sub miClearCustomPath_Click(sender As Object, e As EventArgs) Handles miClearCustomPath.Click
         Dim packs = Package.Items.Values.Where(Function(pack) pack.GetStoredPath() <> "")
 
         If packs.Count > 0 Then
@@ -709,7 +710,7 @@ Public Class AppsForm
         End If
     End Sub
 
-    Private Sub miSearchUsingEverything_Click(sender As Object, e As EventArgs) Handles miSearchUsingEverything.Click
+    Sub miSearchUsingEverything_Click(sender As Object, e As EventArgs) Handles miSearchUsingEverything.Click
         Everything()
     End Sub
 

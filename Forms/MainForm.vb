@@ -2008,7 +2008,7 @@ Public Class MainForm
                 tbTargetFile.Text = p.TargetFile.DirAndBase + "_new" + p.TargetFile.ExtFull
             End If
 
-            Log.WriteHeader("MediaInfo Source File")
+            Log.WriteHeader("Media Info Source File")
 
             For Each i In p.SourceFiles
                 Log.WriteLine(i)
@@ -5638,9 +5638,9 @@ Public Class MainForm
         m.Add("Open File", a, "Change the audio source file.").SetImage(Symbol.OpenFile)
         m.Add("Add more files...", moreFilesAction, exist)
         m.Add("Play", Sub() g.PlayAudio(ap), exist, "Plays the audio source file with a media player.").SetImage(Symbol.Play)
-        m.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), exist, "Show MediaInfo for the audio source file.").SetImage(Symbol.Info)
+        m.Add("Media Info...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), exist, "Show MediaInfo for the audio source file.").SetImage(Symbol.Info)
         m.Add("Explore", Sub() g.SelectFileWithExplorer(ap.File), exist, "Open the audio source file directory with File Explorer.").SetImage(Symbol.FileExplorer)
-        m.Add("Execute", Sub() ExecuteAudio(ap), exist, "Processes the audio profile.").SetImage(Symbol.fa_terminal)
+        m.Add("Execute", Sub() ExecuteAudio(ap), exist, "Processes the audio profile.")
         m.Add("-")
         m.Add("Copy Path", Sub() Clipboard.SetText(ap.File), tb.Text <> "")
         m.Add("Copy Selection", Sub() Clipboard.SetText(tb.SelectedText), tb.Text <> "").SetImage(Symbol.Copy)
@@ -5665,7 +5665,7 @@ Public Class MainForm
         TargetFileMenu.Items.ClearAndDisplose
         TargetFileMenu.Add("Browse File...", AddressOf tbTargetFile_DoubleClick, File.Exists(p.SourceFile), "Change the path of the target file.")
         TargetFileMenu.Add("Play", Sub() g.Play(p.TargetFile), File.Exists(p.TargetFile), "Play the target file.").SetImage(Symbol.Play)
-        TargetFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), File.Exists(p.TargetFile), "Show MediaInfo for the target file.").SetImage(Symbol.Info)
+        TargetFileMenu.Add("Media Info...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), File.Exists(p.TargetFile), "Show MediaInfo for the target file.").SetImage(Symbol.Info)
         TargetFileMenu.Add("Explore...", Sub() g.SelectFileWithExplorer(p.TargetFile), Directory.Exists(p.TargetFile.Dir), "Open the target file directory with File Explorer.").SetImage(Symbol.FileExplorer)
         TargetFileMenu.Add("-")
         TargetFileMenu.Add("Copy", Sub() tbTargetFile.Copy(), tbTargetFile.Text <> "").SetImage(Symbol.Copy)
@@ -5678,7 +5678,7 @@ Public Class MainForm
 
         SourceFileMenu.Add("Open...", AddressOf ShowOpenSourceDialog, "Open source files").SetImage(Symbol.OpenFile)
         SourceFileMenu.Add("Play", Sub() g.Play(p.LastOriginalSourceFile), File.Exists(p.LastOriginalSourceFile) AndAlso Not isIndex, "Play the source file.").SetImage(Symbol.Play)
-        SourceFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.LastOriginalSourceFile), File.Exists(p.LastOriginalSourceFile) AndAlso Not isIndex, "Show MediaInfo for the source file.").SetImage(Symbol.Info)
+        SourceFileMenu.Add("Media Info...", Sub() g.DefaultCommands.ShowMediaInfo(p.LastOriginalSourceFile), File.Exists(p.LastOriginalSourceFile) AndAlso Not isIndex, "Show MediaInfo for the source file.").SetImage(Symbol.Info)
         SourceFileMenu.Add("Explore...", Sub() g.SelectFileWithExplorer(p.SourceFile), File.Exists(p.SourceFile), "Open the source file directory with File Explorer.").SetImage(Symbol.FileExplorer)
         SourceFileMenu.Items.Add("-")
         SourceFileMenu.Add("Copy", Sub() tbSourceFile.Copy(), tbSourceFile.Text <> "", "Copies the selected text to the clipboard.").SetImage(Symbol.Copy)

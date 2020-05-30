@@ -140,15 +140,13 @@ Public Class FileHelp
     End Sub
 
     Shared Sub Copy(src As String, dest As String, Optional opt As UIOption = UIOption.OnlyErrorDialogs)
-        If Not File.Exists(src) Then
-            Exit Sub
-        End If
+        If File.Exists(src) Then
+            If File.Exists(dest) Then
+                Delete(dest)
+            End If
 
-        If File.Exists(dest) Then
-            Delete(dest)
+            FileSystem.CopyFile(src, dest, opt, UICancelOption.DoNothing)
         End If
-
-        FileSystem.CopyFile(src, dest, opt, UICancelOption.DoNothing)
     End Sub
 
     Shared Sub Delete(path As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)

@@ -2,7 +2,10 @@
 2.1.1.8 Beta (not yet available)
 ============
 
-
+- Improved Log File Viewer.
+  Tip: The Log File Viewer has a context menu.
+- The Jobs dialog has a feature to sort the job list alphabetically
+- Neo f3kdb r6
 
 
 2.1.1.7 Beta

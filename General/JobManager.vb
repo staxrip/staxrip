@@ -56,7 +56,10 @@ Public Class JobManager
             Catch ex As Exception
                 Thread.Sleep(500)
                 counter += 1
-                If counter > 9 Then Throw ex
+
+                If counter > 9 Then
+                    Throw ex
+                End If
             End Try
         End While
     End Sub

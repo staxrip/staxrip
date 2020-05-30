@@ -198,9 +198,9 @@ Public Class GlobalClass
 
             Log.WriteHeader(If(p.Script.Engine = ScriptEngine.AviSynth, "AviSynth Script", "VapourSynth Script"))
             Log.WriteLine(p.Script.GetFullScript)
-            Log.WriteHeader("Source Script Information")
+            Log.WriteHeader("Source Script Info")
             Log.WriteLine(p.SourceScript.GetInfo().GetInfoText(-1))
-            Log.WriteHeader("Target Script Information")
+            Log.WriteHeader("Target Script Info")
             Log.WriteLine(p.Script.GetInfo().GetInfoText(-1))
 
             g.MainForm.Hide()
@@ -925,8 +925,12 @@ Public Class GlobalClass
     Sub ArchiveLogFile(path As String)
         Try
             Dim logFolder = Folder.Settings + "Log Files\"
-            If Not Directory.Exists(logFolder) Then Directory.CreateDirectory(logFolder)
-            FileHelp.Copy(path, logFolder + Date.Now.ToString("yyyy-MM-dd_HH.mm.ss") + " - " + path.FileName)
+
+            If Not Directory.Exists(logFolder) Then
+                Directory.CreateDirectory(logFolder)
+            End If
+
+            FileHelp.Copy(path, logFolder + Date.Now.ToString("yyyy-MM-dd - HH.mm.ss") + " - " + path.FileName)
             Dim di As New DirectoryInfo(logFolder)
 
             While di.GetFiles("*.log").Length > s.LogFileNum

@@ -24,7 +24,7 @@ Public Class FiltersListView
         Columns.Add("Name")
         Menu.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         ContextMenuStrip = Menu
-        SendMessageHideFocus()
+        HideFocusRectange()
         AddHandler VideoScript.Changed, Sub(script As VideoScript)
                                             If Not p.Script Is Nothing AndAlso script Is p.Script Then
                                                 OnChanged()

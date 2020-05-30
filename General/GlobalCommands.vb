@@ -16,15 +16,13 @@ Public Class GlobalCommands
 
     <Command("Shows the log file with the built-in log file viewer.")>
     Sub ShowLogFile()
-        If Not File.Exists(p.Log.GetPath()) Then
-            Exit Sub
+        If File.Exists(p.Log.GetPath()) Then
+            Using form As New LogForm()
+                form.ShowDialog()
+            End Using
+        Else
+            g.ShellExecute(Folder.Settings + "Log Files")
         End If
-
-        Using form As New LogForm
-            form.Path = p.Log.GetPath()
-            form.Init()
-            form.ShowDialog()
-        End Using
     End Sub
 
     <Command("Allows to use StaxRip's demuxing GUIs independently.")>

@@ -616,7 +616,7 @@ Public Class eac3toForm
         lvAudio.ShowItemToolTips = True
         lvAudio.FullRowSelect = True
         lvAudio.MultiSelect = False
-        lvAudio.SendMessageHideFocus()
+        lvAudio.HideFocusRectange()
 
         lvSubtitles.View = View.SmallIcon
         lvSubtitles.CheckBoxes = True

@@ -13,7 +13,7 @@ Public Class Audio
         End If
 
         If ap.File <> p.SourceFile Then
-            Log.Write("MediaInfo Audio Source " & ap.GetTrackID, MediaInfo.GetSummary(ap.File))
+            Log.Write("Media Info Audio Source " & ap.GetTrackID, MediaInfo.GetSummary(ap.File))
         End If
 
         If TypeOf ap Is GUIAudioProfile Then

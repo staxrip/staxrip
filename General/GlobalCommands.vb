@@ -1,6 +1,7 @@
 ﻿
 Imports System.ComponentModel
 Imports System.Drawing.Design
+Imports System.Management.Automation
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Text
@@ -61,8 +62,15 @@ Public Class GlobalCommands
 
                 Using td As New TaskDialog(Of Demuxer)
                     td.MainInstruction = "Select a demuxer."
-                    If sourceFile.Edit.Text.Ext = "mkv" Then td.AddCommand("mkvextract", New mkvDemuxer)
-                    If sourceFile.Edit.Text.Ext.EqualsAny("mp4", "flv") Then td.AddCommand("MP4Box", New MP4BoxDemuxer)
+
+                    If sourceFile.Edit.Text.Ext = "mkv" Then
+                        td.AddCommand("mkvextract", New mkvDemuxer)
+                    End If
+
+                    If sourceFile.Edit.Text.Ext.EqualsAny("mp4", "flv") Then
+                        td.AddCommand("MP4Box", New MP4BoxDemuxer)
+                    End If
+
                     td.AddCommand("ffmpeg", New ffmpegDemuxer)
                     td.AddCommand("eac3to", New eac3toDemuxer)
 
@@ -139,11 +147,7 @@ Public Class GlobalCommands
 
         filepath = Macro.Expand(filepath)
 
-        Try
-            ExecutePowerShellScript(filepath.ReadAllText)
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
+        ExecutePowerShellScript(filepath.ReadAllText)
     End Sub
 
     <Command("Starts a tool by name as shown in the app manage dialog.")>
@@ -261,7 +265,11 @@ Public Class GlobalCommands
 
     Function GetReleaseType() As String
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
-        If version.MinorRevision <> 0 Then Return "Beta"
+
+        If version.MinorRevision <> 0 Then
+            Return "Beta"
+        End If
+
         Return "Stable"
     End Function
 
@@ -275,19 +283,14 @@ Public Class GlobalCommands
         Select Case topic
             Case "info"
                 form.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
-                form.Doc.WriteParagraph("Thanks for icon artwork: Freepik www.flaticon.com, ilko-k, nulledone, vanontom")
+                form.Doc.Write("Development", "stax76, Revan654")
+                form.Doc.Write("Contributions", "Patman, 44vince44, JKyle, NikosD, qyot27, ernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+
                 Dim licensePath = Folder.Startup + "License.txt"
-                If File.Exists(licensePath) Then form.Doc.WriteParagraph(licensePath.ReadAllText, True)
-            Case "CRF Value"
-                form.Doc.WriteStart("CRF Value")
-                form.Doc.WriteParagraph("Low values produce high quality, large file size, large value produces small file size And poor quality. A balanced value Is 23 which Is the defalt In x264. Common values are 18-26 where 18 produces near transparent quality at the cost Of a huge file size. The quality 26 produces Is rather poor so such a high value should only be used When a small file size Is the only criterium.")
-            Case "x264 Mode"
-                form.Doc.WriteStart("x264 Mode")
-                form.Doc.WriteParagraph("Generally there are two popular encoding modes, quality based And 2pass. 2pass mode allows To specify a bit rate And file size, quality mode doesn't, it works with a rate factor and requires only a single pass. Other terms for quality mode are constant quality or CRF mode in x264.")
-                form.Doc.WriteParagraph("Slow and dark sources compress better then colorful sources with a lot action so a short, slow and dark movie requires a smaller file size then a long, colorful source with a lot action and movement.")
-                form.Doc.WriteParagraph("Quality mode works with a rate factor that gives comparable quality regardless of how well a movie compresses so it's not using a constant bit rate but adjusts the bit rate dynamically. So while the same rate factor can be applied to every movie to achieve a constant quality this is not possible with 2pass mode because every movie requires a different bit rate. Quality mode is much easier to use then 2pass mode which requires a longer encoding time due to 2 passes and a compressibility check to be performed to determine a reasonable image and file size which also requires more expertise.")
-                form.Doc.WriteParagraph("It's a common misconception that 2pass mode is more efficient than quality mode. The only benefit of 2pass mode is hitting a exact file size. Encoding in quality mode using a single pass will result in equal quality compared to a 2pass encode assuming the file size is identical of course.")
-                form.Doc.WriteParagraph("Quality mode is ideal for hard drive storage and 2pass mode is ideal for size restricted mediums like CD's and DVD's. If you are still not sure which mode to use then it's probably better to use quality mode.")
+
+                If File.Exists(licensePath) Then
+                    form.Doc.WriteParagraph(licensePath.ReadAllText, True)
+                End If
             Case Else
                 form.Doc.WriteStart("unknown topic")
                 form.Doc.WriteParagraph("The requested help topic '''" + topic + "''' is unknown.")

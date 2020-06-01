@@ -302,7 +302,11 @@ Public MustInherit Class VideoEncoder
         Muxer.Init()
         g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpper
         Dim newPath = p.TargetFile.ChangeExt(Muxer.OutputExt)
-        If p.SourceFile <> "" AndAlso newPath.ToLower = p.SourceFile.ToLower Then newPath = newPath.Dir + newPath.Base + "_new" + newPath.ExtFull
+
+        If p.SourceFile <> "" AndAlso newPath.ToLower = p.SourceFile.ToLower Then
+            newPath = newPath.Dir + newPath.Base + "_new" + newPath.ExtFull
+        End If
+
         g.MainForm.tbTargetFile.Text = newPath
         g.MainForm.RecalcBitrate()
         g.MainForm.Assistant()
@@ -433,7 +437,9 @@ Public MustInherit Class BasicVideoEncoder
 
     Overloads Shared Sub ImportCommandLine(commandLine As String, params As CommandLineParams)
         Try
-            If commandLine = "" Then Exit Sub
+            If commandLine = "" Then
+                Exit Sub
+            End If
 
             For Each i In {"tune", "preset", "profile"}
                 Dim match = Regex.Match(commandLine, "(.*)(--" + i + "\s\w+)(.*)")

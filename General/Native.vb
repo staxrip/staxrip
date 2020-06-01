@@ -3,14 +3,12 @@ Imports System.Runtime.InteropServices
 Imports System.Text
 
 Public Class Native
-    Friend Const EM_SETCUEBANNER As Integer = &H1501
+    Public Const EM_SETCUEBANNER As Integer = &H1501
 
-    Friend Const CB_SETCUEBANNER As Integer = &H1703
+    Public Const CB_SETCUEBANNER As Integer = &H1703
 
-    Friend Const SC_CLOSE As Integer = &HF060
-    Friend Const SC_MINIMIZE As Integer = &HF020
-
-    Public Delegate Function CallbackHandler(handle As IntPtr, parameter As Integer) As Boolean
+    Public Const SC_CLOSE As Integer = &HF060
+    Public Const SC_MINIMIZE As Integer = &HF020
 
     <DllImport("gdi32.dll")>
     Shared Function ExcludeClipRect(
@@ -45,11 +43,11 @@ Public Class Native
     End Function
 
     <DllImport("user32.dll")>
-    Shared Function MapVirtualKey(wCode As Integer, wMapType As Integer) As Integer
+    Shared Function UnregisterHotKey(hWnd As IntPtr, id As Integer) As Boolean
     End Function
 
     <DllImport("user32.dll")>
-    Shared Function UnregisterHotKey(hWnd As IntPtr, id As Integer) As Boolean
+    Shared Function MapVirtualKey(wCode As Integer, wMapType As Integer) As Integer
     End Function
 
     <DllImport("user32.dll")>
@@ -97,25 +95,6 @@ Public Class Native
         Msg As Int32,
         wParam As Integer,
         lParam As String) As IntPtr
-    End Function
-
-    <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
-    Shared Function SendMessage(
-        hWnd As IntPtr,
-        Msg As Int32,
-        ByRef wParam As IntPtr,
-        lParam As StringBuilder) As IntPtr
-    End Function
-
-    <DllImport("user32.dll")>
-    Shared Function SendMessageTimeout(
-        windowHandle As IntPtr,
-        msg As Integer,
-        wParam As IntPtr,
-        lParam As IntPtr,
-        flags As Integer,
-        timeout As Integer,
-        ByRef result As IntPtr) As IntPtr
     End Function
 
     <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
@@ -186,22 +165,6 @@ Public Class Native
         Function ToRectangle() As Rectangle
             Return Rectangle.FromLTRB(Left, Top, Right, Bottom)
         End Function
-    End Structure
-
-    Public Structure SHFILEINFO
-        Public hIcon As IntPtr
-        Public iIcon As Integer
-        Public dwAttributes As Integer
-        <MarshalAs(UnmanagedType.ByValTStr, SizeConst:=260)>
-        Public szDisplayName As String
-        <MarshalAs(UnmanagedType.ByValTStr, SizeConst:=80)>
-        Public szTypeName As String
-    End Structure
-
-    Public Structure NMHDR
-        Public hwndFrom As Integer
-        Public idFrom As Integer
-        Public code As Integer
     End Structure
 
     Public Structure NCCALCSIZE_PARAMS

@@ -1089,7 +1089,11 @@ Public Class MainForm
 
         If s.WriteDebugLog Then
             Dim filePath = Folder.Startup + "Debug.log"
-            If File.Exists(filePath) Then File.Delete(filePath)
+
+            If File.Exists(filePath) Then
+                File.Delete(filePath)
+            End If
+
             Dim listener = New TextWriterTraceListener(filePath)
             listener.TraceOutputOptions = TraceOptions.ThreadId Or TraceOptions.DateTime
             Trace.Listeners.Add(listener)
@@ -1102,7 +1106,9 @@ Public Class MainForm
 
         ScaleClientSize(41, 26.5)
 
-        If components Is Nothing Then components = New System.ComponentModel.Container
+        If components Is Nothing Then
+            components = New System.ComponentModel.Container
+        End If
 
         SetTip()
 
@@ -1232,7 +1238,9 @@ Public Class MainForm
     Sub RenameDVDTracks()
         Dim ifoPath = GetIfoFile()
 
-        If Not File.Exists(ifoPath) Then Exit Sub
+        If Not File.Exists(ifoPath) Then
+            Exit Sub
+        End If
 
         For Each i In Directory.GetFiles(p.TempDir)
             If g.IsSourceSame(i) AndAlso i.Contains("VTS") Then
@@ -1249,12 +1257,30 @@ Public Class MainForm
                                 Dim base = i.Base
                                 base = regex.Replace(base, " ID" & x & " ")
 
-                                If base.Contains("2_0ch") Then base = base.Replace("2_0ch", "2ch")
-                                If base.Contains("3_2ch") Then base = base.Replace("3_2ch", "6ch")
-                                If base.Contains(" DELAY") Then base = base.Replace(" DELAY", "")
-                                If base.Contains(" 0ms") Then base = base.Replace(" 0ms", "")
-                                If stream.Language.TwoLetterCode <> "iv" Then base += " " + stream.Language.Name
-                                If stream.Title <> "" Then base += " " + stream.Title
+                                If base.Contains("2_0ch") Then
+                                    base = base.Replace("2_0ch", "2ch")
+                                End If
+
+                                If base.Contains("3_2ch") Then
+                                    base = base.Replace("3_2ch", "6ch")
+                                End If
+
+                                If base.Contains(" DELAY") Then
+                                    base = base.Replace(" DELAY", "")
+                                End If
+
+                                If base.Contains(" 0ms") Then
+                                    base = base.Replace(" 0ms", "")
+                                End If
+
+                                If stream.Language.TwoLetterCode <> "iv" Then
+                                    base += " " + stream.Language.Name
+                                End If
+
+                                If stream.Title <> "" Then
+                                    base += " " + stream.Title
+                                End If
+
                                 FileHelp.Move(i, i.Dir + base + i.ExtFull)
                             End If
                         Next
@@ -1286,12 +1312,13 @@ Public Class MainForm
         files.Sort(New StringLogicalComparer)
 
         For Each iExt In FileTypes.Audio
-            If iExt = "avs" Then Continue For
+            If iExt = "avs" Then
+                Continue For
+            End If
 
             For Each iPath In files
                 If track = 1 AndAlso iPath.Base = p.Audio0.File.Base Then Continue For
                 If track = 0 AndAlso iPath.Base = p.Audio1.File.Base Then Continue For
-
                 If tbOther.Text = iPath Then Continue For
                 If Not iPath.Ext = iExt Then Continue For
                 If iPath.Contains("_cut_") Then Continue For
@@ -1310,7 +1337,9 @@ Public Class MainForm
                         lng = If(track = 0, New Language(), New Language("en"))
                     End If
 
-                    If Not iPath.Contains(lng.Name) Then Continue For
+                    If Not iPath.Contains(lng.Name) Then
+                        Continue For
+                    End If
                 End If
 
                 If iPath.Ext = "mp4" AndAlso p.SourceFile.IsSameBase(iPath) Then
@@ -1441,7 +1470,9 @@ Public Class MainForm
                            files = Directory.GetFiles(Folder.Script)
                        End Sub)
 
-        If IsDisposed OrElse Native.GetForegroundWindow() <> Handle Then Exit Sub
+        If IsDisposed OrElse Native.GetForegroundWindow() <> Handle Then
+            Exit Sub
+        End If
 
         For Each menuItem In CustomMainMenu.MenuItems
             If menuItem.CustomMenuItem.MethodName = "DynamicMenuItem" Then
@@ -1476,7 +1507,9 @@ Public Class MainForm
                            files = Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories)
                        End Sub)
 
-        If IsDisposed Then Exit Sub
+        If IsDisposed Then
+            Exit Sub
+        End If
 
         For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
@@ -1487,8 +1520,15 @@ Public Class MainForm
 
                 For Each i2 In files
                     Dim base = i2.Base
-                    If i2 = g.StartupTemplatePath Then base += " (Startup)"
-                    If i2.Contains("Backup\") Then base = "Backup | " + base
+
+                    If i2 = g.StartupTemplatePath Then
+                        base += " (Startup)"
+                    End If
+
+                    If i2.Contains("Backup\") Then
+                        base = "Backup | " + base
+                    End If
+
                     ActionMenuItem.Add(i.DropDownItems, base, AddressOf LoadProject, i2, Nothing)
                 Next
 
@@ -2068,7 +2108,10 @@ Public Class MainForm
 
                     If ifoFile <> "" Then
                         Dim dar2 = MediaInfo.GetVideo(ifoFile, "DisplayAspectRatio")
-                        If dar2 = "1.778" Then p.SourceAnamorphic = True
+
+                        If dar2 = "1.778" Then
+                            p.SourceAnamorphic = True
+                        End If
                     End If
                 End If
 
@@ -2141,7 +2184,10 @@ Public Class MainForm
                         Not FileTypes.VideoText.Contains(p.LastOriginalSourceFile.Ext) Then
 
                         tbAudioFile0.Text = p.LastOriginalSourceFile
-                        If p.Audio0.Streams.Count = 0 Then tbAudioFile0.Text = ""
+
+                        If p.Audio0.Streams.Count = 0 Then
+                            tbAudioFile0.Text = ""
+                        End If
 
                         If Not TypeOf p.Audio1 Is NullAudioProfile AndAlso
                             p.Audio0.Streams.Count > 1 Then
@@ -2221,7 +2267,10 @@ Public Class MainForm
                 End If
             End If
 
-            If p.AutoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled Then p.VideoEncoder.RunCompCheck()
+            If p.AutoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled Then
+                p.VideoEncoder.RunCompCheck()
+            End If
+
             Assistant()
             g.RaiseAppEvent(ApplicationEvent.AfterSourceLoaded)
             g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
@@ -2381,7 +2430,9 @@ Public Class MainForm
     End Sub
 
     Sub ConvertBluRaySubtitles()
-        If Not p.ConvertSup2Sub Then Exit Sub
+        If Not p.ConvertSup2Sub Then
+            Exit Sub
+        End If
 
         For Each i In g.GetFilesInTempDirAndParent
             If i.Ext = "sup" AndAlso g.IsSourceSameOrSimilar(i) AndAlso Not File.Exists(i.DirAndBase + ".idx") Then
@@ -2425,10 +2476,20 @@ Public Class MainForm
     End Sub
 
     Sub DemuxVobSubSubtitles()
-        If Not {"vob", "m2v"}.Contains(p.LastOriginalSourceFile.Ext) Then Exit Sub
+        If Not {"vob", "m2v"}.Contains(p.LastOriginalSourceFile.Ext) Then
+            Exit Sub
+        End If
+
         Dim ifoPath = GetIfoFile()
-        If ifoPath = "" Then Exit Sub
-        If File.Exists(p.TempDir + p.SourceFile.Base + ".idx") Then Exit Sub
+
+        If ifoPath = "" Then
+            Exit Sub
+        End If
+
+        If File.Exists(p.TempDir + p.SourceFile.Base + ".idx") Then
+            Exit Sub
+        End If
+
         Dim subtitleCount = MediaInfo.GetSubtitleCount(ifoPath)
 
         If subtitleCount > 0 Then
@@ -2670,14 +2731,6 @@ Public Class MainForm
         End If
 
         If Not p.BatchMode Then
-            If p.TargetFile.Ext = "mp4" AndAlso p.TargetFile.Contains("#") Then
-                If ProcessTip("Character # can't be processed by MP4Box, please rename target file.") Then
-                    gbAssistant.Text = "Invalid target filename"
-                    CanIgnoreTip = False
-                    Return False
-                End If
-            End If
-
             If p.Script.Filters.Count = 0 OrElse
                 Not p.Script.Filters(0).Active OrElse
                 p.Script.Filters(0).Category <> "Source" Then
@@ -2724,15 +2777,6 @@ Public Class MainForm
                     g.Highlight(True, tbAudioFile0)
                     g.Highlight(True, tbAudioFile1)
                     gbAssistant.Text = "Invalid Audio Settings"
-                    Return False
-                End If
-            End If
-
-            If TypeOf p.VideoEncoder.Muxer Is MP4Muxer AndAlso p.TargetFile.Contains("#") Then
-                If ProcessTip("Filenames with character '#' are not supported by MP4Box.") Then
-                    g.Highlight(True, tbTargetFile)
-                    gbAssistant.Text = "Invalid Output Filename"
-                    CanIgnoreTip = False
                     Return False
                 End If
             End If
@@ -3074,7 +3118,7 @@ Public Class MainForm
                 Select Case p.FileExistVideo
                     Case FileExistMode.Ask
                         Using td As New TaskDialog(Of String)
-                            td.MainInstruction = "The output file of the video encoder already exists"
+                            td.MainInstruction = "An video encoding output file already exists"
                             td.Content = "Would you like to skip video encoding and reuse the existing video encoder output file or would you like to re-encode and overwrite it?"
                             td.AddCommand("Reuse", "skip")
                             td.AddCommand("Re-encode", "encode")
@@ -3095,8 +3139,11 @@ Public Class MainForm
                 End Select
             End If
 
-            If (p.Audio0.File <> "" AndAlso (TypeOf p.Audio0 Is GUIAudioProfile OrElse TypeOf p.Audio0 Is BatchAudioProfile) AndAlso File.Exists(p.Audio0.GetOutputFile)) OrElse
-            (p.Audio1.File <> "" AndAlso (TypeOf p.Audio1 Is GUIAudioProfile OrElse TypeOf p.Audio1 Is BatchAudioProfile) AndAlso File.Exists(p.Audio1.GetOutputFile)) Then
+            If (p.Audio0.File <> "" AndAlso (TypeOf p.Audio0 Is GUIAudioProfile OrElse
+                TypeOf p.Audio0 Is BatchAudioProfile) AndAlso File.Exists(p.Audio0.GetOutputFile)) OrElse
+                (p.Audio1.File <> "" AndAlso (TypeOf p.Audio1 Is GUIAudioProfile OrElse
+                TypeOf p.Audio1 Is BatchAudioProfile) AndAlso File.Exists(p.Audio1.GetOutputFile)) Then
+
                 Select Case p.FileExistAudio
                     Case FileExistMode.Ask
                         Using td As New TaskDialog(Of String)
@@ -3144,7 +3191,10 @@ Public Class MainForm
                     td.MainIcon = TaskDialogIcon.Warning
                     td.AddButton("Continue", "Continue")
                     td.AddButton("Abort", "Abort")
-                    If td.Show <> "Continue" Then Return True
+
+                    If td.Show <> "Continue" Then
+                        Return True
+                    End If
                 End Using
             End If
         Catch
@@ -3176,7 +3226,10 @@ Public Class MainForm
 
         For Each i In s.Demuxers
             If Not i.Active AndAlso (i.SourceFilters.NothingOrEmpty OrElse
-                Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "(").ToArray)) Then Continue For
+                Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "(").ToArray)) Then
+
+                Continue For
+            End If
 
             If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(p.SourceFile.Ext) Then
                 If Not srcScript?.Contains("(") OrElse i.SourceFilters.NothingOrEmpty OrElse
@@ -3211,7 +3264,9 @@ Public Class MainForm
                                 End If
                             Next
 
-                            If exitFor Then Exit For
+                            If exitFor Then
+                                Exit For
+                            End If
                         Next
                     End If
                 End If
@@ -3382,9 +3437,9 @@ Public Class MainForm
             n.Field = NameOf(s.ParallelProcsNum)
 
             n = ui.AddNum()
-            n.Text = "Minimum preview size compared to screen size (percent)"
-            n.Config = {10, 90, 10}
-            n.Field = NameOf(s.MinPreviewSize)
+            n.Text = "Preview size compared to screen size (percent)"
+            n.Config = {10, 90, 5}
+            n.Field = NameOf(s.PreviewSize)
 
             ui.CreateFlowPage("User Interface", True)
 
@@ -3504,7 +3559,11 @@ Public Class MainForm
                 SetMenuStyle()
                 s.UpdateRecentProjects(Nothing)
                 UpdateRecentProjectsMenu()
-                If Not Icon Is g.Icon Then Icon = g.Icon
+
+                If Not Icon Is g.Icon Then
+                    Icon = g.Icon
+                End If
+
                 g.SaveSettings()
             End If
 
@@ -3527,7 +3586,9 @@ Public Class MainForm
                            For Each i In profiles.Where(
                                Function(v) v.Name = "Source").First.Filters
 
-                               If i.Script <> "" Then ret.Add(i.Name, i.Script)
+                               If i.Script <> "" Then
+                                   ret.Add(i.Name, i.Script)
+                               End If
                            Next
 
                            Return ret
@@ -3651,7 +3712,10 @@ Public Class MainForm
                 Next
             End If
 
-            If Not found Then form.ShowPackage(Package.x265)
+            If Not found Then
+                form.ShowPackage(Package.x265)
+            End If
+
             form.ShowDialog()
             g.SaveSettings()
         End Using
@@ -3694,7 +3758,9 @@ Public Class MainForm
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
+        If sb.Show = DialogResult.OK Then
+            Return sb.SelectedValue
+        End If
     End Function
 
     <Command("Placeholder for dynamically updated menu items.")>
@@ -3807,19 +3873,25 @@ Public Class MainForm
 
         If videoProfile <> "" Then
             For Each i In s.VideoEncoderProfiles
-                If i.Name = videoProfile Then g.LoadVideoEncoder(i)
+                If i.Name = videoProfile Then
+                    g.LoadVideoEncoder(i)
+                End If
             Next
         End If
 
         If audioProfile1 <> "" Then
             For Each i In s.AudioProfiles
-                If i.Name = audioProfile1 Then g.LoadAudioProfile0(i)
+                If i.Name = audioProfile1 Then
+                    g.LoadAudioProfile0(i)
+                End If
             Next
         End If
 
         If audioProfile2 <> "" Then
             For Each i In s.AudioProfiles
-                If i.Name = audioProfile2 Then g.LoadAudioProfile1(i)
+                If i.Name = audioProfile2 Then
+                    g.LoadAudioProfile1(i)
+                End If
             Next
         End If
     End Sub
@@ -3975,7 +4047,11 @@ Public Class MainForm
             te.Text = p.CropLeft.ToString
             te.WidthFactor = 3
             te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value) If value.IsInt Then p.CropLeft = CInt(value)
+            te.SaveAction = Sub(value)
+                                If value.IsInt Then
+                                    p.CropLeft = CInt(value)
+                                End If
+                            End Sub
 
             Dim l = ui.AddLabel(eb, "Right:", 4)
 
@@ -3983,7 +4059,11 @@ Public Class MainForm
             te.Text = p.CropRight.ToString
             te.WidthFactor = 3
             te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value) If value.IsInt Then p.CropRight = CInt(value)
+            te.SaveAction = Sub(value)
+                                If value.IsInt Then
+                                    p.CropRight = CInt(value)
+                                End If
+                            End Sub
 
             eb = ui.AddEmptyBlock(cropPage)
 
@@ -3993,7 +4073,11 @@ Public Class MainForm
             te.Text = p.CropTop.ToString
             te.WidthFactor = 3
             te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value) If value.IsInt Then p.CropTop = CInt(value)
+            te.SaveAction = Sub(value)
+                                If value.IsInt Then
+                                    p.CropTop = CInt(value)
+                                End If
+                            End Sub
 
             l = ui.AddLabel(eb, "Bottom:", 4)
 
@@ -4001,7 +4085,11 @@ Public Class MainForm
             te.Text = p.CropBottom.ToString
             te.WidthFactor = 3
             te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value) If value.IsInt Then p.CropBottom = CInt(value)
+            te.SaveAction = Sub(value)
+                                If value.IsInt Then
+                                    p.CropBottom = CInt(value)
+                                End If
+                            End Sub
 
             Dim audioPage = ui.CreateFlowPage("Audio", True)
 
@@ -4303,13 +4391,18 @@ Public Class MainForm
                     ret += BR + filter.Path + " =" + BR + lines.Join(BR) + BR
                     wasMultiline = True
                 Else
-                    If wasMultiline Then ret += BR
+                    If wasMultiline Then
+                        ret += BR
+                    End If
+
                     ret += filter.Path + " = " + filter.Script + BR
                     wasMultiline = False
                 End If
             Next
 
-            If Not ret.EndsWith(BR2) Then ret += BR
+            If Not ret.EndsWith(BR2) Then
+                ret += BR
+            End If
         Next
 
         Return ret
@@ -4320,21 +4413,25 @@ Public Class MainForm
         Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
         Dim getDefaults = If(p.Script.Engine = ScriptEngine.AviSynth, Function() FilterCategory.GetAviSynthDefaults, Function() FilterCategory.GetVapourSynthDefaults)
 
-        Using f As New MacroEditorDialog
-            f.SetScriptDefaults()
-            f.Text = "Filter Profiles"
-            f.MacroEditorControl.Value = GetFilterProfilesText(filterProfiles)
-            f.bnContext.Text = " Restore Defaults... "
-            f.bnContext.Visible = True
-            f.MacroEditorControl.rtbDefaults.Text = GetFilterProfilesText(getDefaults())
-            f.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then f.MacroEditorControl.Value = GetFilterProfilesText(getDefaults()))
+        Using dialog As New MacroEditorDialog
+            dialog.SetScriptDefaults()
+            dialog.Text = "Filter Profiles"
+            dialog.MacroEditorControl.Value = GetFilterProfilesText(filterProfiles)
+            dialog.bnContext.Text = " Restore Defaults... "
+            dialog.bnContext.Visible = True
+            dialog.MacroEditorControl.rtbDefaults.Text = GetFilterProfilesText(getDefaults())
+            dialog.bnContext.AddClickAction(Sub()
+                                                If MsgOK("Restore defaults?") Then
+                                                    dialog.MacroEditorControl.Value = GetFilterProfilesText(getDefaults())
+                                                End If
+                                            End Sub)
 
-            If f.ShowDialog(Me) = DialogResult.OK Then
+            If dialog.ShowDialog(Me) = DialogResult.OK Then
                 filterProfiles.Clear()
                 Dim cat As FilterCategory
                 Dim filter As VideoFilter
 
-                For Each line In f.MacroEditorControl.Value.SplitLinesNoEmpty
+                For Each line In dialog.MacroEditorControl.Value.SplitLinesNoEmpty
                     Dim multiline = line.StartsWith("    ") OrElse line.StartsWith(VB6.vbTab)
 
                     If line.StartsWith("[") AndAlso line.EndsWith("]") Then
@@ -4345,11 +4442,21 @@ Public Class MainForm
                     If multiline Then
                         If Not filter Is Nothing Then
                             If filter.Script = "" Then
-                                If line.StartsWith(VB6.vbTab) Then filter.Script += line.Substring(1)
-                                If line.StartsWith("    ") Then filter.Script += line.Substring(4)
+                                If line.StartsWith(VB6.vbTab) Then
+                                    filter.Script += line.Substring(1)
+                                End If
+
+                                If line.StartsWith("    ") Then
+                                    filter.Script += line.Substring(4)
+                                End If
                             Else
-                                If line.StartsWith(VB6.vbTab) Then filter.Script += BR + line.Substring(1)
-                                If line.StartsWith("    ") Then filter.Script += BR + line.Substring(4)
+                                If line.StartsWith(VB6.vbTab) Then
+                                    filter.Script += BR + line.Substring(1)
+                                End If
+
+                                If line.StartsWith("    ") Then
+                                    filter.Script += BR + line.Substring(4)
+                                End If
                             End If
                         End If
                     Else
@@ -4366,7 +4473,9 @@ Public Class MainForm
                     Dim found As Boolean
 
                     For Each i2 In filterProfiles
-                        If i.Name = i2.Name Then found = True
+                        If i.Name = i2.Name Then
+                            found = True
+                        End If
                     Next
 
                     If Not found AndAlso {"Source", "Crop", "Resize"}.Contains(i.Name) Then
@@ -4384,7 +4493,7 @@ Public Class MainForm
     Shared Function GetDefaultMainMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
-        ret.Add("File|Open Video...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control)
+        ret.Add("File|Open Video File...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control)
         ret.Add("File|-")
         ret.Add("File|Open Project...", NameOf(ShowFileBrowserToOpenProject))
         ret.Add("File|Save Project", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)
@@ -4454,7 +4563,7 @@ Public Class MainForm
         ret.Add("Apps|chapterEditor", NameOf(g.DefaultCommands.StartTool), {"chapterEditor"})
 
         ret.Add("Apps|-")
-        ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
+        ret.Add("Apps|Manage...", NameOf(ShowAppsDialog), Keys.F9)
 
         ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Help, {"http://staxrip.readthedocs.io"})
         ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Globe, {"https://github.com/staxrip/staxrip"})
@@ -4489,7 +4598,9 @@ Public Class MainForm
                         sb.AddItem(i.Language.Name, i)
                     Next
 
-                    If sb.Show = DialogResult.Cancel Then Exit Sub
+                    If sb.Show = DialogResult.Cancel Then
+                        Exit Sub
+                    End If
 
                     Regex.Replace(dialog.FileName.ReadAllText, "langidx: \d+", "langidx: " +
                                   sb.SelectedValue.IndexIDX.ToString).WriteFileDefault(dialog.FileName)
@@ -4730,7 +4841,9 @@ Public Class MainForm
         Dim ar = Calc.GetTargetDAR()
         Dim w = Calc.FixMod16(CInt(Math.Sqrt(pixel * ar)))
 
-        If w > cropw Then w = (cropw \ 16) * 16
+        If w > cropw Then
+            w = (cropw \ 16) * 16
+        End If
 
         Dim h = Calc.FixMod16(CInt(w / ar))
 
@@ -4844,7 +4957,9 @@ Public Class MainForm
                 If i.IsFile Then
                     files.Add(i.Value)
                 Else
-                    If Not CommandManager.ProcessCommandLineArgument(i.Value) Then Throw New Exception
+                    If Not CommandManager.ProcessCommandLineArgument(i.Value) Then
+                        Throw New Exception
+                    End If
                 End If
             Catch ex As Exception
                 MsgWarn("Error parsing argument:" + BR2 + i.Value + BR2 + ex.Message)
@@ -4991,20 +5106,27 @@ Public Class MainForm
                 End Using
             Case "Blu-ray Folder"
                 If p.SourceFile <> "" Then
-                    If Not OpenProject() Then Exit Sub
+                    If Not OpenProject() Then
+                        Exit Sub
+                    End If
                 End If
 
-                Using d As New FolderBrowserDialog
-                    d.Description = "Please select a Blu-ray source folder."
-                    d.SetSelectedPath(s.Storage.GetString("last blu-ray source folder"))
-                    d.ShowNewFolderButton = False
+                Using dialog As New FolderBrowserDialog
+                    dialog.Description = "Please select a Blu-ray source folder."
+                    dialog.SetSelectedPath(s.Storage.GetString("last blu-ray source folder"))
+                    dialog.ShowNewFolderButton = False
 
-                    If d.ShowDialog = DialogResult.OK Then
-                        s.Storage.SetString("last blu-ray source folder", d.SelectedPath.FixDir)
-                        Dim srcPath = d.SelectedPath.FixDir
+                    If dialog.ShowDialog = DialogResult.OK Then
+                        s.Storage.SetString("last blu-ray source folder", dialog.SelectedPath.FixDir)
+                        Dim srcPath = dialog.SelectedPath.FixDir
 
-                        If Directory.Exists(srcPath + "BDMV") Then srcPath = srcPath + "BDMV\"
-                        If Directory.Exists(srcPath + "PLAYLIST") Then srcPath = srcPath + "PLAYLIST\"
+                        If Directory.Exists(srcPath + "BDMV") Then
+                            srcPath = srcPath + "BDMV\"
+                        End If
+
+                        If Directory.Exists(srcPath + "PLAYLIST") Then
+                            srcPath = srcPath + "PLAYLIST\"
+                        End If
 
                         If Not srcPath.ToUpper.EndsWith("PLAYLIST\") Then
                             MsgWarn("No playlist directory found.")
@@ -5013,13 +5135,16 @@ Public Class MainForm
 
                         Log.WriteEnvironment()
                         Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + BR2)
-                        Log.WriteLine("Source Drive Type: " + New DriveInfo(d.SelectedPath).DriveType.ToString + BR)
+                        Log.WriteLine("Source Drive Type: " + New DriveInfo(dialog.SelectedPath).DriveType.ToString + BR)
 
                         Dim output = ProcessHelp.GetConsoleOutput(Package.eac3to.Path, srcPath.Escape).Replace(VB6.vbBack, "")
                         Log.WriteLine(output)
 
                         Dim a = Regex.Split(output, "^\d+\)", RegexOptions.Multiline).ToList
-                        If a(0) = "" Then a.RemoveAt(0)
+
+                        If a(0) = "" Then
+                            a.RemoveAt(0)
+                        End If
 
                         Dim td2 As New TaskDialog(Of Integer)
                         td2.MainInstruction = "Please select a playlist."
@@ -5030,7 +5155,10 @@ Public Class MainForm
                             End If
                         Next
 
-                        If td2.Show() = 0 Then Exit Sub
+                        If td2.Show() = 0 Then
+                            Exit Sub
+                        End If
+
                         OpenEac3toDemuxForm(srcPath, td2.SelectedValue)
                     End If
                 End Using
@@ -5044,10 +5172,12 @@ Public Class MainForm
 
             Dim workDir = playlistFolder.Parent.Parent
 
-            Dim title = InputBox.Show("Enter a short title used as filename.", "Title",
-                                      playlistFolder.Parent.Parent.DirName)
+            Dim title = InputBox.Show("Enter a short title used as filename.",
+                "Title", playlistFolder.Parent.Parent.DirName)
 
-            If title = "" Then Exit Sub
+            If title = "" Then
+                Exit Sub
+            End If
 
             If p.TempDir <> "" Then
                 workDir = p.TempDir.Replace("%source_name%", title)
@@ -5185,26 +5315,34 @@ Public Class MainForm
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
+        If sb.Show = DialogResult.OK Then
+            Return sb.SelectedValue
+        End If
     End Function
 
     Sub tbAudioFile0_DoubleClick() Handles tbAudioFile0.DoubleClick
-        Using d As New OpenFileDialog
+        Using dialog As New OpenFileDialog
             Dim filter = FileTypes.Audio.ToList
             filter.Insert(0, "avs")
-            d.SetFilter(filter)
-            d.SetInitDir(p.TempDir, s.LastSourceDir)
-            If d.ShowDialog() = DialogResult.OK Then tbAudioFile0.Text = d.FileName
+            dialog.SetFilter(filter)
+            dialog.SetInitDir(p.TempDir, s.LastSourceDir)
+
+            If dialog.ShowDialog() = DialogResult.OK Then
+                tbAudioFile0.Text = dialog.FileName
+            End If
         End Using
     End Sub
 
     Sub tbAudioFile1_DoubleClick() Handles tbAudioFile1.DoubleClick
-        Using d As New OpenFileDialog
+        Using dialog As New OpenFileDialog
             Dim filter = FileTypes.Audio.ToList
             filter.Insert(0, "avs")
-            d.SetFilter(filter)
-            d.SetInitDir(p.TempDir, s.LastSourceDir)
-            If d.ShowDialog() = DialogResult.OK Then tbAudioFile1.Text = d.FileName
+            dialog.SetFilter(filter)
+            dialog.SetInitDir(p.TempDir, s.LastSourceDir)
+
+            If dialog.ShowDialog() = DialogResult.OK Then
+                tbAudioFile1.Text = dialog.FileName
+            End If
         End Using
     End Sub
 
@@ -5516,7 +5654,9 @@ Public Class MainForm
 
     Private Sub tbSource_TextChanged(sender As Object, e As EventArgs) Handles tbSourceFile.TextChanged
         If Not BlockSourceTextBoxTextChanged Then
-            If File.Exists(tbSourceFile.Text) Then OpenVideoSourceFile(tbSourceFile.Text)
+            If File.Exists(tbSourceFile.Text) Then
+                OpenVideoSourceFile(tbSourceFile.Text)
+            End If
         End If
     End Sub
 
@@ -5582,7 +5722,10 @@ Public Class MainForm
                 Dim temp = i
 
                 Dim menuAction = Sub()
-                                     If ap.File <> p.LastOriginalSourceFile Then tb.Text = p.LastOriginalSourceFile
+                                     If ap.File <> p.LastOriginalSourceFile Then
+                                         tb.Text = p.LastOriginalSourceFile
+                                     End If
+
                                      tb.Text = temp.Name + " (" + ap.File.Ext + ")"
                                      ap.Stream = temp
 
@@ -5652,7 +5795,10 @@ Public Class MainForm
     Sub ExecuteAudio(ap As AudioProfile)
         If MsgQuestion("Confirm to process the track.") = DialogResult.OK Then
             Try
-                If p.TempDir = "" Then p.TempDir = ap.File.Dir
+                If p.TempDir = "" Then
+                    p.TempDir = ap.File.Dir
+                End If
+
                 ap = ObjectHelp.GetCopy(Of AudioProfile)(ap)
                 Audio.Process(ap)
                 ap.Encode()
@@ -5715,6 +5861,7 @@ Public Class MainForm
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)
+        MyBase.OnShown(e)
         UpdateDynamicMenuAsync()
         UpdateRecentProjectsMenu()
         UpdateTemplatesMenuAsync()
@@ -5723,7 +5870,6 @@ Public Class MainForm
         ProcessCommandLine(Environment.GetCommandLineArgs)
         StaxRip.Update.ShowUpdateQuestion()
         StaxRip.Update.CheckForUpdate()
-        MyBase.OnShown(e)
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)

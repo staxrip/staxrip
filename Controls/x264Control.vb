@@ -212,7 +212,9 @@ Public Class x264Control
 
     Function GetQualityCaption(value As Double) As String
         For Each i In QualityDefinitions
-            If i.Value = value Then Return value & " - " + i.Text
+            If i.Value = value Then
+                Return value & " - " + i.Text
+            End If
         Next
 
         Return value.ToString

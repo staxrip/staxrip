@@ -1316,14 +1316,20 @@ Public Class MuxerForm
                 Case 1
                     For Each i In SubtitleItems
                         i.Title = i.Language.CultureInfo.EnglishName
-                        If i.Forced Then i.Title += " (forced)"
+
+                        If i.Forced Then
+                            i.Title += " (forced)"
+                        End If
                     Next
 
                     SubtitleBindingSource.ResetBindings(False)
                 Case 2
                     For Each i In SubtitleItems
                         i.Title = i.Language.CultureInfo.NeutralCulture.DisplayName
-                        If i.Forced Then i.Title += " (forced)"
+
+                        If i.Forced Then
+                            i.Title += " (forced)"
+                        End If
                     Next
 
                     SubtitleBindingSource.ResetBindings(False)

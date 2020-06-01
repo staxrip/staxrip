@@ -661,39 +661,39 @@ Public Class eac3toForm
     End Sub
 
     Sub ShowAudioStreamProfiles()
-        Using f As New DataForm
-            f.Text = "Audio Stream Profiles"
-            f.FormBorderStyle = FormBorderStyle.Sizable
-            f.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
-            f.dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
-            f.dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-            f.dgv.AllowUserToDeleteRows = True
-            f.dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        Using form As New DataForm
+            form.Text = "Audio Stream Profiles"
+            form.FormBorderStyle = FormBorderStyle.Sizable
+            form.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+            form.dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
+            form.dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+            form.dgv.AllowUserToDeleteRows = True
+            form.dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
 
-            f.HelpAction = AddressOf ShowAudioStreamProfilesHelp
+            form.HelpAction = AddressOf ShowAudioStreamProfilesHelp
 
-            Dim match = f.dgv.AddTextBoxColumn()
+            Dim match = form.dgv.AddTextBoxColumn()
             match.DataPropertyName = "Match"
             match.HeaderText = "Match All"
 
-            Dim out = f.dgv.AddComboBoxColumn()
+            Dim out = form.dgv.AddComboBoxColumn()
             out.DataPropertyName = "Output"
             out.HeaderText = "Output Format"
             out.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             out.Items.AddRange(AudioOutputFormats)
 
-            Dim opt = f.dgv.AddTextBoxColumn()
+            Dim opt = form.dgv.AddTextBoxColumn()
             opt.DataPropertyName = "Options"
             opt.HeaderText = "Options"
 
-            f.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+            form.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
 
             Dim bs As New BindingSource
 
             bs.DataSource = ObjectHelp.GetCopy(s.eac3toProfiles)
-            f.dgv.DataSource = bs
+            form.dgv.DataSource = bs
 
-            If f.ShowDialog = DialogResult.OK Then
+            If form.ShowDialog = DialogResult.OK Then
                 s.eac3toProfiles = DirectCast(bs.DataSource, List(Of eac3toProfile))
             End If
         End Using
@@ -745,7 +745,10 @@ Public Class eac3toForm
     Sub OutputDataReceived(sender As Object, e As DataReceivedEventArgs)
         If Not e.Data Is Nothing Then
             BeginInvoke(Sub() Text = e.Data)
-            If Not e.Data.StartsWith("analyze: ") Then Output += e.Data + BR
+
+            If Not e.Data.StartsWith("analyze: ") Then
+                Output += e.Data + BR
+            End If
         End If
     End Sub
 
@@ -785,7 +788,9 @@ Public Class eac3toForm
             Output = Output.Replace("(core: ", "(").Replace("(embedded: ", "(")
 
             For Each line In Output.SplitLinesNoEmpty
-                If line.Contains("Subtitle (DVB)") Then Continue For
+                If line.Contains("Subtitle (DVB)") Then
+                    Continue For
+                End If
 
                 Dim match = Regex.Match(line, "^(\d+): (.+)$")
 
@@ -795,7 +800,9 @@ Public Class eac3toForm
                     ms.ID = match.Groups(1).Value.ToInt
                     ms.Codec = match.Groups(2).Value
 
-                    If ms.Codec.Contains(",") Then ms.Codec = ms.Codec.Left(",")
+                    If ms.Codec.Contains(",") Then
+                        ms.Codec = ms.Codec.Left(",")
+                    End If
 
                     ms.IsVideo = ms.Codec.EqualsAny("h264/AVC", "h265/HEVC", "VC-1", "MPEG2")
                     ms.IsAudio = ms.Codec.EqualsAny("DTS Master Audio", "DTS", "DTS-ES", "DTS Hi-Res", "DTS Express", "AC3", "AC3 EX", "AC3 Headphone", "AC3 Surround", "EAC3", "E-AC3", "E-AC3 EX", "E-AC3 Surround", "TrueHD/AC3", "TrueHD/AC3 (Atmos)", "TrueHD (Atmos)", "RAW/PCM", "MP2", "AAC")
@@ -834,7 +841,9 @@ Public Class eac3toForm
 
                     For Each iProfile In s.eac3toProfiles
                         Dim searchWords = iProfile.Match.SplitNoEmptyAndWhiteSpace(" ")
-                        If searchWords.NothingOrEmpty Then Continue For
+                        If searchWords.NothingOrEmpty Then
+                            Continue For
+                        End If
 
                         If ms.Text.ContainsAll(searchWords) Then
                             ms.OutputType = iProfile.Output
@@ -885,7 +894,9 @@ Public Class eac3toForm
                 End If
             Next
 
-            If cbVideoStream.Items.Count < 2 Then cbVideoStream.Enabled = False
+            If cbVideoStream.Items.Count < 2 Then
+                cbVideoStream.Enabled = False
+            End If
 
             If cbVideoStream.Items.Count > 0 Then
                 cbVideoStream.SelectedIndex = 0
@@ -932,7 +943,9 @@ Public Class eac3toForm
 
                 r += "." + i.OutputType + """"
 
-                If i.Options <> "" Then r += " " + i.Options.Trim
+                If i.Options <> "" Then
+                    r += " " + i.Options.Trim
+                End If
             End If
         Next
 
@@ -1001,7 +1014,10 @@ Public Class eac3toForm
             ms.ListViewItem.Text = ms.ToString
 
             If ms.OutputType = "dts" AndAlso {"DTS Master Audio", "DTS Hi-Res"}.Contains(ms.Codec) AndAlso Not ms.Options.Contains("-core") Then
-                If ms.Options = "" Then ms.Options = "-core"
+                If ms.Options = "" Then
+                    ms.Options = "-core"
+                End If
+
                 ms.UpdateListViewItem()
                 cmdlOptions.tb.Text = ms.Options
             ElseIf {"dtsma", "dtshr"}.Contains(ms.OutputType) AndAlso ms.Options.Contains("-core") Then
@@ -1045,7 +1061,9 @@ Public Class eac3toForm
     End Sub
 
     Function GetSelectedStream() As M2TSStream
-        If lvAudio.SelectedItems.Count > 0 Then Return DirectCast(lvAudio.SelectedItems(0).Tag, M2TSStream)
+        If lvAudio.SelectedItems.Count > 0 Then
+            Return DirectCast(lvAudio.SelectedItems(0).Tag, M2TSStream)
+        End If
     End Function
 
     Sub lvAudio_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lvAudio.SelectedIndexChanged

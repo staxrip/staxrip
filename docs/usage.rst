@@ -36,14 +36,6 @@ The script code of AviSynth and VapourSynth can be edited directly or easily be 
 With the help of a macro system script parameters can be changed with convenient GUI features like a resize slider and menu or a cropping dialog, due to the macro system the parameters can change at any time allowing much greater flexibility compared to a one dimensional and limiting one step after another approach.
 
 
-Portable mode
-=============
-
-StaxRip has portable versions of AviSynth, VapourSynth and Python included, a setup is not required.
-
-If AviSynth or VapourSynth was installed then StaxRip will use the installed version instead of the included portable version. In the *System* tab of the settings dialog there is a setting *Use included portable VapourSynth* to use the portable VapourSynth version instead of the installed version.
-
-
 Templates
 =========
 

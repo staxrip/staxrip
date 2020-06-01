@@ -460,9 +460,16 @@ Public Class x264Params
         .Text = "Psy RD",
         .ArgsFunc = Function() As String
                         If Psy.Value Then
-                            If PsyRD.Value <> PsyRD.DefaultValue OrElse PsyTrellis.Value <> PsyTrellis.DefaultValue OrElse Not Psy.DefaultValue Then Return "--psy-rd " & PsyRD.Value.ToInvariantString & ":" & PsyTrellis.Value.ToInvariantString
+                            If PsyRD.Value <> PsyRD.DefaultValue OrElse
+                                PsyTrellis.Value <> PsyTrellis.DefaultValue OrElse
+                                Not Psy.DefaultValue Then
+
+                                Return "--psy-rd " & PsyRD.Value.ToInvariantString & ":" & PsyTrellis.Value.ToInvariantString
+                            End If
                         Else
-                            If Psy.DefaultValue Then Return "--no-psy"
+                            If Psy.DefaultValue Then
+                                Return "--no-psy"
+                            End If
                         End If
                     End Function}
 
@@ -918,9 +925,16 @@ Public Class x264Params
                     CustomSecondPass)
 
                 For Each item In ItemsValue
-                    If item.HelpSwitch <> "" Then Continue For
+                    If item.HelpSwitch <> "" Then
+                        Continue For
+                    End If
+
                     Dim switches = item.GetSwitches
-                    If switches.NothingOrEmpty Then Continue For
+
+                    If switches.NothingOrEmpty Then
+                        Continue For
+                    End If
+
                     item.HelpSwitch = switches(0)
                 Next
             End If
@@ -940,7 +954,9 @@ Public Class x264Params
     Private BlockValueChanged As Boolean
 
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-        If BlockValueChanged Then Exit Sub
+        If BlockValueChanged Then
+            Exit Sub
+        End If
 
         If item Is Preset OrElse item Is Tune OrElse item Is Profile Then
             BlockValueChanged = True
@@ -1086,23 +1102,33 @@ Public Class x264Params
         If P8x8.Value Then partitions += "p8x8,"
         If B8x8.Value Then partitions += "b8x8"
 
-        If partitions <> "" Then Return "--partitions " + partitions.TrimEnd(","c)
+        If partitions <> "" Then
+            Return "--partitions " + partitions.TrimEnd(","c)
+        End If
     End Function
 
     Function IsCustom(pass As Integer, switch As String) As Boolean
-        If switch = "" Then Return False
+        If switch = "" Then
+            Return False
+        End If
 
         If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
             If pass = 1 Then
                 If CustomFirstPass.Value?.Contains(switch + " ") OrElse
-                    CustomFirstPass.Value?.EndsWith(switch) Then Return True
+                    CustomFirstPass.Value?.EndsWith(switch) Then
+                    Return True
+                End If
             Else
                 If CustomSecondPass.Value?.Contains(switch + " ") OrElse
-                    CustomSecondPass.Value?.EndsWith(switch) Then Return True
+                    CustomSecondPass.Value?.EndsWith(switch) Then
+                    Return True
+                End If
             End If
         End If
 
-        If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then Return True
+        If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then
+            Return True
+        End If
     End Function
 
     Public Overrides Function GetPackage() As Package

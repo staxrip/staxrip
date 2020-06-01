@@ -272,7 +272,10 @@ Public Class ffmpegEnc
                 Case EncodingMode.TwoPass
                     ret += " -pass " & pass
                     ret += $" -b:v {p.VideoBitrate}k"
-                    If pass = 1 Then ret += " -f rawvideo"
+
+                    If pass = 1 Then
+                        ret += " -f rawvideo"
+                    End If
                 Case EncodingMode.OnePass
                     ret += $" -b:v {p.VideoBitrate}k"
             End Select

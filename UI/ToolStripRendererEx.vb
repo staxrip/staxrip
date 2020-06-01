@@ -115,47 +115,46 @@ Public Class ToolStripRendererEx
     Protected Overrides Sub OnRenderMenuItemBackground(e As ToolStripItemRenderEventArgs)
         e.Item.ForeColor = Color.Black
 
-        Dim left = 22
-        Dim r = New Rectangle(Point.Empty, e.Item.Size)
-        Dim g = e.Graphics
+        Dim rect = New Rectangle(Point.Empty, e.Item.Size)
+        Dim gx = e.Graphics
 
         If Not TypeOf e.Item.Owner Is MenuStrip Then
-            g.Clear(ColorBackground)
+            gx.Clear(ColorBackground)
         End If
 
         If e.Item.Selected AndAlso e.Item.Enabled Then
             If TypeOf e.Item.Owner Is MenuStrip Then
                 DrawButton(e)
             Else
-                g.SmoothingMode = SmoothingMode.AntiAlias
-
-                Dim r2 = New Rectangle(r.X + 2, r.Y, r.Width - 4, r.Height - 1)
+                Dim rect2 = New Rectangle(rect.X + 2, rect.Y, rect.Width - 3, rect.Height)
 
                 If IsFlat() Then
-                    r2.Inflate(-1, -1)
-
-                    Using b As New SolidBrush(ColorBottom)
-                        g.FillRectangle(b, r2)
+                    Using brush As New SolidBrush(ColorBottom)
+                        gx.FillRectangle(brush, rect2)
                     End Using
                 Else
-                    Using path = CreateRoundRectangle(r2, 3)
-                        Using b As New LinearGradientBrush(r2,
-                                                           ControlPaint.LightLight(ControlPaint.LightLight(ColorTop)),
-                                                           ControlPaint.LightLight(ControlPaint.LightLight(ColorBottom)),
-                                                           90.0F)
-                            g.FillPath(b, path)
+                    gx.SmoothingMode = SmoothingMode.AntiAlias
+
+                    Using path = CreateRoundRectangle(rect2, 3)
+                        Using brush As New LinearGradientBrush(
+                            rect2,
+                            ControlPaint.LightLight(ControlPaint.LightLight(ColorTop)),
+                            ControlPaint.LightLight(ControlPaint.LightLight(ColorBottom)),
+                            90.0F)
+
+                            gx.FillPath(brush, path)
                         End Using
 
-                        Using p As New Pen(ColorBorder)
-                            g.DrawPath(p, path)
+                        Using pen As New Pen(ColorBorder)
+                            gx.DrawPath(pen, path)
                         End Using
                     End Using
 
-                    r2.Inflate(-1, -1)
+                    rect2.Inflate(-1, -1)
 
-                    Using path = CreateRoundRectangle(r2, 3)
-                        Using b As New LinearGradientBrush(r2, ColorTop, ColorBottom, 90.0F)
-                            g.FillPath(b, path)
+                    Using path = CreateRoundRectangle(rect2, 3)
+                        Using brush As New LinearGradientBrush(rect2, ColorTop, ColorBottom, 90.0F)
+                            gx.FillPath(brush, path)
                         End Using
                     End Using
                 End If
@@ -164,26 +163,23 @@ Public Class ToolStripRendererEx
     End Sub
 
     Sub DrawButton(e As ToolStripItemRenderEventArgs)
-        Dim g = e.Graphics
-        Dim r = New Rectangle(Point.Empty, e.Item.Size)
-        Dim r2 = New Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1)
+        Dim gx = e.Graphics
+        Dim rect = New Rectangle(Point.Empty, e.Item.Size)
 
         If IsFlat() Then
-            r2.Inflate(-1, -1)
+            Dim button = TryCast(e.Item, ToolStripButton)
 
-            Dim tsb = TryCast(e.Item, ToolStripButton)
-
-            If Not tsb Is Nothing AndAlso tsb.Checked Then
+            If Not button Is Nothing AndAlso button.Checked Then
                 Using brush As New SolidBrush(ColorChecked)
-                    g.FillRectangle(brush, r2)
+                    gx.FillRectangle(brush, rect)
                 End Using
             Else
                 Using brush As New SolidBrush(ColorChecked)
-                    g.FillRectangle(brush, r2)
+                    gx.FillRectangle(brush, rect)
                 End Using
             End If
         Else
-            g.SmoothingMode = SmoothingMode.AntiAlias
+            gx.SmoothingMode = SmoothingMode.AntiAlias
 
             Dim c1 = HSLColor.Convert(ColorToolStrip1).ToColorAddLuminosity(15)
             Dim c2 = HSLColor.Convert(ColorToolStrip2).ToColorAddLuminosity(15)
@@ -195,18 +191,18 @@ Public Class ToolStripRendererEx
             cb.Colors = {c1, c2, c3, c4}
             cb.Positions = {0.0F, 0.5F, 0.5F, 1.0F}
 
-            Using path = CreateRoundRectangle(r2, 3)
-                Using b As New LinearGradientBrush(r2, c1, c4, 90)
-                    b.InterpolationColors = cb
-                    g.FillPath(b, path)
+            Using path = CreateRoundRectangle(rect, 3)
+                Using brush As New LinearGradientBrush(rect, c1, c4, 90)
+                    brush.InterpolationColors = cb
+                    gx.FillPath(brush, path)
                 End Using
 
-                Using p As New Pen(ColorBorder)
-                    g.DrawPath(p, path)
+                Using pen As New Pen(ColorBorder)
+                    gx.DrawPath(pen, path)
                 End Using
             End Using
 
-            r2.Inflate(-1, -1)
+            rect.Inflate(-1, -1)
 
             c1 = HSLColor.Convert(ColorToolStrip1).ToColorAddLuminosity(5)
             c2 = HSLColor.Convert(ColorToolStrip2).ToColorAddLuminosity(5)
@@ -216,11 +212,11 @@ Public Class ToolStripRendererEx
             cb.Colors = {c1, c2, c3, c4}
             cb.Positions = {0.0F, 0.5F, 0.5F, 1.0F}
 
-            Using b As New LinearGradientBrush(r2, c1, c4, 90)
-                b.InterpolationColors = cb
+            Using brush As New LinearGradientBrush(rect, c1, c4, 90)
+                brush.InterpolationColors = cb
 
-                Using path = CreateRoundRectangle(r2, 3)
-                    g.FillPath(b, path)
+                Using path = CreateRoundRectangle(rect, 3)
+                    gx.FillPath(brush, path)
                 End Using
             End Using
         End If
@@ -241,21 +237,42 @@ Public Class ToolStripRendererEx
     End Sub
 
     Protected Overloads Overrides Sub OnRenderArrow(e As ToolStripArrowRenderEventArgs)
+        e.Graphics.SmoothingMode = SmoothingMode.HighQuality
+
         If e.Direction = ArrowDirection.Down Then
-            MyBase.OnRenderArrow(e)
+            Dim h = CInt(e.Item.Font.Height * 0.3)
+            Dim w = h * 2
+            Dim cs = e.Item.Bounds
+
+            Dim x1 = If(e.Item.Text = "", CInt(cs.Width / 2 - w / 2), cs.Width - w - CInt(w * 0.7))
+            Dim y1 = CInt(cs.Height / 2 - h / 2)
+
+            Dim x2 = CInt(x1 + w / 2)
+            Dim y2 = y1 + h
+
+            Dim x3 = x1 + w
+            Dim y3 = y1
+
+            Using brush = New SolidBrush(e.Item.ForeColor)
+                Using pen = New Pen(brush, e.Item.Font.Height / 20.0F)
+                    e.Graphics.DrawLine(pen, x1, y1, x2, y2)
+                    e.Graphics.DrawLine(pen, x2, y2, x3, y3)
+                End Using
+            End Using
         Else
             Dim x1 = e.Item.Width - e.Item.Height * 0.6F
             Dim y1 = e.Item.Height * 0.25F
+
             Dim x2 = x1 + e.Item.Height * 0.25F
             Dim y2 = e.Item.Height / 2.0F
+
             Dim x3 = x1
             Dim y3 = e.Item.Height * 0.75F
-            e.Graphics.SmoothingMode = SmoothingMode.HighQuality
 
-            Using b = New SolidBrush(e.Item.ForeColor)
-                Using p = New Pen(b, Control.DefaultFont.Height / 20.0F)
-                    e.Graphics.DrawLine(p, x1, y1, x2, y2)
-                    e.Graphics.DrawLine(p, x2, y2, x3, y3)
+            Using brush = New SolidBrush(e.Item.ForeColor)
+                Using pen = New Pen(brush, e.Item.Font.Height / 20.0F)
+                    e.Graphics.DrawLine(pen, x1, y1, x2, y2)
+                    e.Graphics.DrawLine(pen, x2, y2, x3, y3)
                 End Using
             End Using
         End If

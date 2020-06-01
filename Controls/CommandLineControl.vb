@@ -124,7 +124,13 @@ Public Class CommandLineControl
             If Not RestoreFunc Is Nothing Then
                 dialog.bnContext.Text = " Restore Defaults... "
                 dialog.bnContext.Visible = True
-                dialog.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then dialog.MacroEditorControl.Value = RestoreFunc.Invoke)
+
+                dialog.bnContext.AddClickAction(Sub()
+                                                    If MsgOK("Restore defaults?") Then
+                                                        dialog.MacroEditorControl.Value = RestoreFunc.Invoke
+                                                    End If
+                                                End Sub)
+
                 dialog.MacroEditorControl.rtbDefaults.Text = RestoreFunc.Invoke
             End If
 

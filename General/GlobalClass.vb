@@ -36,6 +36,9 @@ Public Class GlobalClass
     Function InvokePowerShellCode(code As String, varName As String, varValue As Object) As Collection(Of PSObject)
         Try
             Return PowerShell.Invoke(code, varName, varValue)
+        Catch ex As RuntimeException
+            g.ShowException(ex, "PowerShell Scipt Exception",
+                ex.ErrorRecord.ScriptStackTrace.Replace(" <ScriptBlock>, <No file>", ""))
         Catch ex As Exception
             ShowException(ex)
         End Try
@@ -195,6 +198,8 @@ Public Class GlobalClass
                 p.BatchMode = False
                 g.MainForm.SaveProjectPath(g.ProjectPath)
             End If
+
+            g.RaiseAppEvent(ApplicationEvent.BeforeProcessing)
 
             Log.WriteHeader(If(p.Script.Engine = ScriptEngine.AviSynth, "AviSynth Script", "VapourSynth Script"))
             Log.WriteLine(p.Script.GetFullScript)
@@ -374,13 +379,6 @@ Public Class GlobalClass
             If file.Length > s.CharacterLimit OrElse file.FileName.Length > s.CharacterLimit \ 2 Then
                 MsgError("Source file path or filename is too long", Strings.CharacterLimitReason)
                 Return True
-            End If
-
-            If file.Contains("#") Then
-                If file.Ext = "mp4" OrElse MediaInfo.GetGeneral(file, "Audio_Codec_List").Contains("AAC") Then
-                    MsgError("Character # can't be processed by MP4Box, please rename." + BR2 + file)
-                    Return True
-                End If
             End If
 
             If file.Ext = "dga" Then

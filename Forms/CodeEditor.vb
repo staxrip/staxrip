@@ -37,11 +37,17 @@ Public Class CodeEditor
             Case Keys.F10
                 PlayScriptWithMPC()
             Case Keys.Control Or Keys.Delete
-                If Not ActiveTable Is Nothing Then ActiveTable.RemoveClick()
+                If Not ActiveTable Is Nothing Then
+                    ActiveTable.RemoveClick()
+                End If
             Case Keys.Control Or Keys.Up
-                If Not ActiveTable Is Nothing Then ActiveTable.MoveUp()
+                If Not ActiveTable Is Nothing Then
+                    ActiveTable.MoveUp()
+                End If
             Case Keys.Control Or Keys.Down
-                If Not ActiveTable Is Nothing Then ActiveTable.MoveDown()
+                If Not ActiveTable Is Nothing Then
+                    ActiveTable.MoveDown()
+                End If
             Case Keys.Control Or Keys.I
                 ShowInfo()
             Case Keys.Control Or Keys.J
@@ -154,7 +160,11 @@ Public Class CodeEditor
 
     Sub MainFlowLayoutPanelLayout(sender As Object, e As LayoutEventArgs)
         Dim filterTables = MainFlowLayoutPanel.Controls.OfType(Of FilterTable)
-        If filterTables.Count = 0 Then Exit Sub
+
+        If filterTables.Count = 0 Then
+            Exit Sub
+        End If
+
         Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TrimmedTextSize.Width)
 
         For Each table As FilterTable In MainFlowLayoutPanel.Controls
@@ -214,10 +224,11 @@ Public Class CodeEditor
                                                   Dim textSizeVar = TrimmedTextSize
 
                                                   If textSizeVar.Width > maxTextWidth OrElse
-                                                                                      (textSizeVar.Width = maxTextWidth AndAlso
-                                                                                      textSizeVar.Width <> LastTextSize.Width) OrElse
-                                                                                      LastTextSize.Height <> textSizeVar.Height AndAlso
-                                                                                      textSizeVar.Height > FontHeight Then
+                                                      (textSizeVar.Width = maxTextWidth AndAlso
+                                                      textSizeVar.Width <> LastTextSize.Width) OrElse
+                                                      LastTextSize.Height <> textSizeVar.Height AndAlso
+                                                      textSizeVar.Height > FontHeight Then
+
                                                       Parent.PerformLayout()
                                                       LastTextSize = TrimmedTextSize
                                                   End If
@@ -291,8 +302,15 @@ Public Class CodeEditor
         ReadOnly Property TrimmedTextSize As Size
             Get
                 Dim ret = TextSize
-                If ret.Width > MaxTextWidth Then ret.Width = MaxTextWidth
-                If ret.Height > MaxTextHeight Then ret.Height = MaxTextHeight
+
+                If ret.Width > MaxTextWidth Then
+                    ret.Width = MaxTextWidth
+                End If
+
+                If ret.Height > MaxTextHeight Then
+                    ret.Height = MaxTextHeight
+                End If
+
                 Return ret
             End Get
         End Property
@@ -314,7 +332,9 @@ Public Class CodeEditor
                     End If
                 Next
 
-                If Not skip Then newParameters.Add(argument)
+                If Not skip Then
+                    newParameters.Add(argument)
+                End If
             Next
 
             For Each parameter In parameters.Parameters
@@ -343,7 +363,10 @@ Public Class CodeEditor
             For Each i In FilterParameters.Definitions
                 If code.Contains(i.FunctionName + "(") Then
                     Dim match = Regex.Match(code, i.FunctionName + "\((.+)\)")
-                    If match.Success Then ActionMenuItem.Add(Menu.Items, i.Text, AddressOf SetParameters, i)
+
+                    If match.Success Then
+                        ActionMenuItem.Add(Menu.Items, i.Text, AddressOf SetParameters, i)
+                    End If
                 End If
             Next
 
@@ -539,7 +562,11 @@ Public Class CodeEditor
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim index = flow.Controls.IndexOf(Me)
             index += 1
-            If index >= flow.Controls.Count - 1 Then index = flow.Controls.Count - 1
+
+            If index >= flow.Controls.Count - 1 Then
+                index = flow.Controls.Count - 1
+            End If
+
             flow.Controls.SetChildIndex(Me, index)
         End Sub
 
@@ -570,7 +597,11 @@ Public Class CodeEditor
                 Select Case td.Show
                     Case "Replace"
                         Dim tup = Macro.ExpandGUI(filter.Script)
-                        If tup.Cancel Then Exit Sub
+
+                        If tup.Cancel Then
+                            Exit Sub
+                        End If
+
                         cbActive.Checked = filter.Active
                         cbActive.Text = filter.Category
 
@@ -590,7 +621,10 @@ Public Class CodeEditor
                         Menu.Items.ClearAndDisplose
                     Case "Insert"
                         Dim tup = Macro.ExpandGUI(filter.Script)
-                        If tup.Cancel Then Exit Sub
+
+                        If tup.Cancel Then
+                            Exit Sub
+                        End If
 
                         If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
                             If filter.Script.StartsWith("$") Then
@@ -614,7 +648,10 @@ Public Class CodeEditor
                         Menu.Items.ClearAndDisplose
                     Case "Add"
                         Dim tup = Macro.ExpandGUI(filter.Script)
-                        If tup.Cancel Then Exit Sub
+
+                        If tup.Cancel Then
+                            Exit Sub
+                        End If
 
                         If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
                             If filter.Script.StartsWith("$") Then
@@ -638,7 +675,11 @@ Public Class CodeEditor
 
         Sub ReplaceClick(filter As VideoFilter)
             Dim tup = Macro.ExpandGUI(filter.Script)
-            If tup.Cancel Then Exit Sub
+
+            If tup.Cancel Then
+                Exit Sub
+            End If
+
             cbActive.Checked = filter.Active
             cbActive.Text = filter.Category
 

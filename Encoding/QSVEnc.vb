@@ -66,7 +66,10 @@ Public Class QSVEnc
 
     Overrides ReadOnly Property OutputExt() As String
         Get
-            If Params.Codec.ValueText = "mpeg2" Then Return "m2v"
+            If Params.Codec.ValueText = "mpeg2" Then
+                Return "m2v"
+            End If
+
             Return Params.Codec.ValueText
         End Get
     End Property
@@ -74,7 +77,10 @@ Public Class QSVEnc
     Overrides Sub Encode()
         If OutputExt = "hevc" Then
             Dim codecs = ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features").Right("Codec")
-            If Not codecs?.ToLower.Contains("hevc") Then Throw New ErrorAbortException("QSVEnc Error", "H.265/HEVC isn't supported by your Hardware.")
+
+            If Not codecs?.ToLower.Contains("hevc") Then
+                Throw New ErrorAbortException("QSVEnc Error", "H.265/HEVC isn't supported by your Hardware.")
+            End If
         End If
 
         p.Script.Synchronize()
@@ -216,7 +222,10 @@ Public Class QSVEnc
             .Config = {0, Integer.MaxValue, 50},
             .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", ""),
             .ImportAction = Sub(param, arg)
-                                If arg = "" Then Exit Sub
+                                If arg = "" Then
+                                    Exit Sub
+                                End If
+
                                 Dim a = arg.Trim(""""c).Split(","c)
                                 MaxCLL.Value = a(0).ToInt
                                 MaxFALL.Value = a(1).ToInt
@@ -254,7 +263,6 @@ Public Class QSVEnc
                         New NumParam With {.Switch = "--bframes", .Text = "B-Frames", .Init = 3, .Config = {0, 16}},
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Config = {0, 16}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
-                        New BoolParam With {.Switch = "--key-on-chapter", .Text = "Set key frame on chapter"},
                         New BoolParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid"},
                         New BoolParam With {.Switch = "--b-adapt", .Text = "Adaptive B-Frame Insert"},
                         New BoolParam With {.Switch = "--adapt-ltr", .Text = "Adaptive LTR frames"},
@@ -292,7 +300,6 @@ Public Class QSVEnc
                         mctfval)
                     Add("VUI",
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "hevc"},
-                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 NC", "BT 2020 C", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
@@ -324,9 +331,16 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"})
 
                     For Each item In ItemsValue
-                        If item.HelpSwitch <> "" Then Continue For
+                        If item.HelpSwitch <> "" Then
+                            Continue For
+                        End If
+
                         Dim switches = item.GetSwitches
-                        If switches.NothingOrEmpty Then Continue For
+
+                        If switches.NothingOrEmpty Then
+                            Continue For
+                        End If
+
                         item.HelpSwitch = switches(0)
                     Next
                 End If
@@ -367,7 +381,9 @@ Public Class QSVEnc
             Dim sourcePath = p.Script.Path
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
-            If includePaths AndAlso includeExecutable Then ret = Package.QSVEnc.Path.Escape
+            If includePaths AndAlso includeExecutable Then
+                ret = Package.QSVEnc.Path.Escape
+            End If
 
             Select Case Decoder.ValueText
                 Case "avs"
@@ -380,14 +396,23 @@ Public Class QSVEnc
                     ret += " --avsw"
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64")
+
+                    If includePaths Then
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64")
+                    End If
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64")
+
+                    If includePaths Then
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64")
+                    End If
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
-            If q.Count > 0 Then ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+
+            If q.Count > 0 Then
+                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+            End If
 
             Select Case Mode.ValueText
                 Case "icq", "la-icq"
@@ -419,8 +444,13 @@ Public Class QSVEnc
                 End If
             End If
 
-            If sourcePath = "-" Then ret += " --y4m"
-            If includePaths Then ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
+            If sourcePath = "-" Then
+                ret += " --y4m"
+            End If
+
+            If includePaths Then
+                ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
+            End If
 
             Return ret.Trim
         End Function
@@ -429,7 +459,9 @@ Public Class QSVEnc
             If mctf.Value Then
                 Dim ret = ""
 
-                If mctfval.Value <> mctfval.DefaultValue Then ret += "" & mctfval.Value
+                If mctfval.Value <> mctfval.DefaultValue Then
+                    ret += "" & mctfval.Value
+                End If
 
                 If ret <> "" Then
                     Return "--vpp-mctf " + ret.TrimStart(","c)

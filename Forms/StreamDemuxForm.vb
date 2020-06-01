@@ -77,15 +77,21 @@ Public Class StreamDemuxForm
     End Sub
 
     Private Sub lvAudio_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvAudio.ItemChecked
-        If Visible Then DirectCast(e.Item.Tag, AudioStream).Enabled = e.Item.Checked
+        If Visible Then
+            DirectCast(e.Item.Tag, AudioStream).Enabled = e.Item.Checked
+        End If
     End Sub
 
     Private Sub lvSubtitles_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvSubtitles.ItemChecked
-        If Visible Then DirectCast(e.Item.Tag, Subtitle).Enabled = e.Item.Checked
+        If Visible Then
+            DirectCast(e.Item.Tag, Subtitle).Enabled = e.Item.Checked
+        End If
     End Sub
 
     Private Sub lvAttachments_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvAttachments.ItemChecked
-        If Visible Then DirectCast(e.Item.Tag, Attachment).Enabled = e.Item.Checked
+        If Visible Then
+            DirectCast(e.Item.Tag, Attachment).Enabled = e.Item.Checked
+        End If
     End Sub
 
     Private Sub bnAudioAll_Click(sender As Object, e As EventArgs) Handles bnAudioAll.Click

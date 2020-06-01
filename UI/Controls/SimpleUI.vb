@@ -84,7 +84,9 @@ Public Class SimpleUI
         Dim node = e.Node
 
         For Each i In Pages
-            If Not i.Node Is node Then DirectCast(i, Control).Visible = False
+            If Not i.Node Is node Then
+                DirectCast(i, Control).Visible = False
+            End If
         Next
 
         For Each i In Pages
@@ -105,7 +107,9 @@ Public Class SimpleUI
         Next
 
         If Pages.Where(Function(arg) arg.Node Is node).Count = 0 Then
-            If node.Nodes.Count > 0 Then Tree.SelectedNode = node.Nodes(0)
+            If node.Nodes.Count > 0 Then
+                Tree.SelectedNode = node.Nodes(0)
+            End If
         End If
     End Sub
 
@@ -136,16 +140,24 @@ Public Class SimpleUI
     End Sub
 
     Sub SaveLast(id As String)
-        If Not ActivePage Is Nothing Then s.Storage.SetString(id, ActivePage.Path)
+        If Not ActivePage Is Nothing Then
+            s.Storage.SetString(id, ActivePage.Path)
+        End If
     End Sub
 
     Function GetActiveFlowPage() As FlowPage
-        If ActivePage Is Nothing Then ActivePage = CreateFlowPage("main page")
+        If ActivePage Is Nothing Then
+            ActivePage = CreateFlowPage("main page")
+        End If
+
         Return DirectCast(ActivePage, FlowPage)
     End Function
 
     Function GetFlowPage(path As String) As FlowPage
-        If path = "" Then path = "unknown"
+        If path = "" Then
+            path = "unknown"
+        End If
+
         Dim q = From i In Pages Where i.Path = path
 
         If q.Count > 0 Then
@@ -156,7 +168,10 @@ Public Class SimpleUI
     End Function
 
     Function AddBool(Optional parent As FlowLayoutPanelEx = Nothing) As SimpleUICheckBox
-        If parent Is Nothing Then parent = GetActiveFlowPage()
+        If parent Is Nothing Then
+            parent = GetActiveFlowPage()
+        End If
+
         Dim ret As New SimpleUICheckBox(Me)
         AddHandler SaveValues, AddressOf ret.Save
         parent.Controls.Add(ret)
@@ -304,7 +319,11 @@ Public Class SimpleUI
                             Optional autoSuspend As Boolean = False) As FlowPage
         Dim ret = New FlowPage
         ret.AutoSuspend = autoSuspend
-        If autoSuspend Then ret.SuspendLayout()
+
+        If autoSuspend Then
+            ret.SuspendLayout()
+        End If
+
         Pages.Add(ret)
         ret.Path = path
         ret.Dock = DockStyle.Fill
@@ -412,7 +431,10 @@ Public Class SimpleUI
 
         Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
             MyBase.OnMouseDown(e)
-            If e.Button = MouseButtons.Right AndAlso Not HelpAction Is Nothing Then HelpAction.Invoke
+
+            If e.Button = MouseButtons.Right AndAlso Not HelpAction Is Nothing Then
+                HelpAction.Invoke
+            End If
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
@@ -467,7 +489,10 @@ Public Class SimpleUI
                     parent = parent.Parent
                 End While
 
-                If value.StartsWith("http") Then value = $"[{value} {value}]"
+                If value.StartsWith("http") Then
+                    value = $"[{value} {value}]"
+                End If
+
                 DirectCast(parent, IPage).TipProvider.SetTip(value, Me)
             End Set
         End Property
@@ -484,10 +509,14 @@ Public Class SimpleUI
             End Set
         End Property
 
-        Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
+        Overrides Function GetPreferredSize(proposedSize As Size) As Size
             If Offset > 0 Then
                 Dim ret = MyBase.GetPreferredSize(proposedSize)
-                If ret.Width < Offset * FontHeight Then ret.Width = Offset * FontHeight
+
+                If ret.Width < Offset * FontHeight Then
+                    ret.Width = Offset * FontHeight
+                End If
+
                 Return ret
             Else
                 Return MyBase.GetPreferredSize(proposedSize)
@@ -600,7 +629,10 @@ Public Class SimpleUI
             If TextBox.Multiline Then
                 Height = FontHeight * MultilineHeightFactor
             Else
-                If Not Expand Then Width = FontHeight * WidthFactor
+                If Not Expand Then
+                    Width = FontHeight * WidthFactor
+                End If
+
                 Height = CInt(FontHeight * 1.4)
             End If
 
@@ -651,7 +683,9 @@ Public Class SimpleUI
 
         WriteOnly Property UseMacroEditor As Boolean
             Set(value As Boolean)
-                If value Then AddHandler TextBox.Click, Sub() EditMacro()
+                If value Then
+                    AddHandler TextBox.Click, Sub() EditMacro()
+                End If
             End Set
         End Property
 
@@ -659,15 +693,21 @@ Public Class SimpleUI
             Using form As New MacroEditorDialog
                 form.SetBatchDefaults()
                 form.MacroEditorControl.Value = Text
-                If form.ShowDialog() = DialogResult.OK Then Text = form.MacroEditorControl.Value
+
+                If form.ShowDialog() = DialogResult.OK Then
+                    Text = form.MacroEditorControl.Value
+                End If
             End Using
         End Sub
 
         Sub EditMacro()
-            Using f As New MacroEditorDialog
-                f.SetMacroDefaults()
-                f.MacroEditorControl.Value = Text
-                If f.ShowDialog() = DialogResult.OK Then Text = f.MacroEditorControl.Value
+            Using dialog As New MacroEditorDialog
+                dialog.SetMacroDefaults()
+                dialog.MacroEditorControl.Value = Text
+
+                If dialog.ShowDialog() = DialogResult.OK Then
+                    Text = dialog.MacroEditorControl.Value
+                End If
             End Using
         End Sub
     End Class
@@ -770,7 +810,10 @@ Public Class SimpleUI
 
         WriteOnly Property Help As String
             Set(value As String)
-                If value.StartsWith("http") Then value = $"[{value} {value}]"
+                If value.StartsWith("http") Then
+                    value = $"[{value} {value}]"
+                End If
+
                 Dim parent = Me.Parent
 
                 While Not TypeOf parent Is IPage
@@ -783,7 +826,10 @@ Public Class SimpleUI
 
         Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
             MyBase.OnMouseDown(e)
-            If e.Button = MouseButtons.Right AndAlso Not HelpAction Is Nothing Then HelpAction.Invoke
+
+            If e.Button = MouseButtons.Right AndAlso Not HelpAction Is Nothing Then
+                HelpAction.Invoke
+            End If
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
@@ -799,7 +845,11 @@ Public Class SimpleUI
         Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
             If Offset > 0 Then
                 Dim ret = MyBase.GetPreferredSize(proposedSize)
-                If ret.Width < Offset * FontHeight Then ret.Width = CInt(Offset * FontHeight)
+
+                If ret.Width < Offset * FontHeight Then
+                    ret.Width = CInt(Offset * FontHeight)
+                End If
+
                 Return ret
             Else
                 Return MyBase.GetPreferredSize(proposedSize)
@@ -968,19 +1018,12 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             MyBase.New(ui)
+            Button.Width = FontHeight * 2
+            Button.Height = CInt(FontHeight * 1.5)
             Button.ShowMenuSymbol = True
             Button.ContextMenuStrip = New ContextMenuStripEx
             Controls.Add(Button)
             AddHandler Edit.EnabledChanged, Sub() Button.Enabled = Edit.Enabled
-        End Sub
-
-        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            If Not Button Is Nothing Then
-                Button.Width = CInt(FontHeight * 1.4)
-                Button.Height = CInt(FontHeight * 1.4)
-            End If
-
-            MyBase.OnLayout(levent)
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
@@ -1049,7 +1092,10 @@ Public Class SimpleUI
             Button.ClickAction = Sub()
                                      Using cd As New ColorDialog
                                          cd.Color = Color
-                                         If cd.ShowDialog() = DialogResult.OK Then Color = cd.Color
+
+                                         If cd.ShowDialog() = DialogResult.OK Then
+                                             Color = cd.Color
+                                         End If
                                      End Using
                                  End Sub
         End Sub
@@ -1094,20 +1140,13 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             MyBase.New(ui)
+            Button.Width = FontHeight * 2
+            Button.Height = CInt(FontHeight * 1.5)
             Button.AutoSizeMode = AutoSizeMode.GrowOnly
             Button.AutoSize = True
             Button.Text = "..."
             Controls.Add(Button)
             AddHandler Edit.EnabledChanged, Sub() Button.Enabled = Edit.Enabled
-        End Sub
-
-        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            If Not Button Is Nothing Then
-                Button.Width = CInt(FontHeight * 1.4)
-                Button.Height = CInt(FontHeight * 1.4)
-            End If
-
-            MyBase.OnLayout(levent)
         End Sub
 
         Sub BrowseFile(filterTypes As String())
@@ -1118,9 +1157,16 @@ Public Class SimpleUI
             Button.ClickAction = Sub()
                                      Using dia As New OpenFileDialog
                                          dia.Filter = filter
-                                         If initDir = "" OrElse Not Directory.Exists(initDir) Then initDir = p.TempDir
+
+                                         If initDir = "" OrElse Not Directory.Exists(initDir) Then
+                                             initDir = p.TempDir
+                                         End If
+
                                          dia.SetInitDir(initDir)
-                                         If dia.ShowDialog = DialogResult.OK Then Edit.Text = dia.FileName
+
+                                         If dia.ShowDialog = DialogResult.OK Then
+                                             Edit.Text = dia.FileName
+                                         End If
                                      End Using
                                  End Sub
         End Sub
@@ -1129,7 +1175,10 @@ Public Class SimpleUI
             Button.ClickAction = Sub()
                                      Using dia As New FolderBrowserDialog
                                          dia.SetSelectedPath(s.LastSourceDir)
-                                         If dia.ShowDialog = DialogResult.OK Then Edit.Text = dia.SelectedPath
+
+                                         If dia.ShowDialog = DialogResult.OK Then
+                                             Edit.Text = dia.SelectedPath
+                                         End If
                                      End Using
                                  End Sub
         End Sub

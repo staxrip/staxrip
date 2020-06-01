@@ -53,27 +53,24 @@ Public MustInherit Class Demuxer
 
     Overrides Function ToString() As String
         Dim input = InputExtensions.Join(", ")
-        If input.Length > 25 Then input = input.Shorten(25) + "..."
+
+        If input.Length > 25 Then
+            input = input.Shorten(25) + "..."
+        End If
+
         Return Name + " (" + input + " -> " + OutputExtensions.Join(", ") + ")"
     End Function
 
     Overridable Function GetHelp() As String
         For Each i In Package.Items.Values
-            If Name = i.Name Then Return i.Description
+            If Name = i.Name Then
+                Return i.Description
+            End If
         Next
     End Function
 
     Shared Function GetDefaults() As List(Of Demuxer)
         Dim ret As New List(Of Demuxer)
-
-        Dim dsmux As New CommandLineDemuxer
-        dsmux.Name = "dsmux: Re-mux TS to MKV"
-        dsmux.InputExtensions = {"ts"}
-        dsmux.OutputExtensions = {"mkv"}
-        dsmux.Command = "%app:dsmux%"
-        dsmux.Arguments = """%temp_file%.mkv"" ""%source_file%"""
-        dsmux.Active = False
-        ret.Add(dsmux)
 
         ret.Add(New ffmpegDemuxer)
 
@@ -131,12 +128,6 @@ Public Class CommandLineDemuxer
             ElseIf Command?.Contains("ffmpeg") OrElse Arguments?.Contains("ffmpeg") Then
                 proc.Package = Package.ffmpeg
                 proc.SkipStrings = {"frame=", "size="}
-            ElseIf Command?.Contains("dsmux") OrElse Arguments?.Contains("dsmux") Then
-                If Not Package.Haali.VerifyOK(True) Then
-                    Throw New AbortException
-                End If
-
-                proc.SkipString = "Muxing..."
             ElseIf Command?.Contains("cmd") OrElse Command?.Contains("powershell") Then
                 proc.SkipStrings = {"frame=", "size="}
             End If
@@ -255,13 +246,19 @@ Public Class ffmpegDemuxer
             End Using
         End If
 
-        If videoDemuxing Then DemuxVideo(proj)
+        If videoDemuxing Then
+            DemuxVideo(proj)
+        End If
 
         If audioDemuxing AndAlso proj.DemuxAudio <> DemuxMode.None Then
-            If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
+            If audioStreams Is Nothing Then
+                audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
+            End If
 
             For Each i In audioStreams
-                If i.Enabled Then DemuxAudio(proj.SourceFile, i, Nothing, proj)
+                If i.Enabled Then
+                    DemuxAudio(proj.SourceFile, i, Nothing, proj)
+                End If
             Next
         End If
 
@@ -276,7 +273,11 @@ Public Class ffmpegDemuxer
         End If
 
         Dim outPath = proj.TempDir + proj.SourceFile.Base + streams(0).ExtFull
-        If outPath = proj.SourceFile Then Exit Sub
+
+        If outPath = proj.SourceFile Then
+            Exit Sub
+        End If
+
         Dim args = "-i " + proj.SourceFile.Escape
         args += " -c:v copy -an -sn -y -hide_banner"
         args += " " + outPath.Escape
@@ -300,17 +301,31 @@ Public Class ffmpegDemuxer
 
     Shared Sub DemuxAudio(sourcefile As String, stream As AudioStream, ap As AudioProfile, proj As Project)
         Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.Extension
-        If outPath.Length > 259 Then outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
+
+        If outPath.Length > 259 Then
+            outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
+        End If
+
         Dim streamIndex = stream.StreamOrder
         Dim args = "-i " + sourcefile.Escape
-        If MediaInfo.GetAudioCount(sourcefile) > 1 Then args += " -map 0:a:" & stream.Index
+
+        If MediaInfo.GetAudioCount(sourcefile) > 1 Then
+            args += " -map 0:a:" & stream.Index
+        End If
+
         args += " -vn -sn -y -hide_banner"
-        If outPath.Ext = "wav" Then args += " -c:a pcm_s16le" Else args += " -c:a copy"
+
+        If outPath.Ext = "wav" Then
+            args += " -c:a pcm_s16le"
+        Else
+            args += " -c:a copy"
+        End If
+
         args += " " + outPath.Escape
 
         Using proc As New Proc
             proc.Project = proj
-            proc.Header = "Demux audio"
+            proc.Header = "Demux Audio"
             proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
@@ -319,7 +334,10 @@ Public Class ffmpegDemuxer
         End Using
 
         If File.Exists(outPath) Then
-            If Not ap Is Nothing Then ap.File = outPath
+            If Not ap Is Nothing Then
+                ap.File = outPath
+            End If
+
             proj.Log.WriteLine(MediaInfo.GetSummary(outPath))
         Else
             proj.Log.Write("Error", "no audio output found")
@@ -327,10 +345,14 @@ Public Class ffmpegDemuxer
     End Sub
 
     Sub DemuxSubtitles(subtitles As List(Of Subtitle), proj As Project)
-        If subtitles.Where(Function(subtitle) subtitle.Enabled).Count = 0 Then Exit Sub
+        If subtitles.Where(Function(subtitle) subtitle.Enabled).Count = 0 Then
+            Exit Sub
+        End If
 
         For Each subtitle In subtitles
-            If Not subtitle.Enabled Then Continue For
+            If Not subtitle.Enabled Then
+                Continue For
+            End If
 
             Dim args = "-i " + proj.SourceFile.Escape
             Dim outpath = proj.TempDir + proj.SourceFile.Base + " " + subtitle.Filename + subtitle.ExtFull
@@ -339,7 +361,10 @@ Public Class ffmpegDemuxer
                 outpath = proj.TempDir + proj.SourceFile.Base.Shorten(10) + " " + subtitle.Filename.Shorten(10) + subtitle.ExtFull
             End If
 
-            If MediaInfo.GetSubtitleCount(proj.SourceFile) > 1 Then args += " -map 0:s:" & subtitle.Index
+            If MediaInfo.GetSubtitleCount(proj.SourceFile) > 1 Then
+                args += " -map 0:s:" & subtitle.Index
+            End If
+
             args += " -c:s copy -vn -an -y -hide_banner " + outpath.Escape
 
             Using proc As New Proc
@@ -410,21 +435,32 @@ Public Class MP4BoxDemuxer
         If VideoDemuxed Then DemuxVideo(proj)
 
         If demuxAudio AndAlso proj.DemuxAudio <> DemuxMode.None Then
-            If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
+            If audioStreams Is Nothing Then
+                audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
+            End If
 
             For Each i In audioStreams
-                If i.Enabled Then MP4BoxDemuxer.Demux(proj.SourceFile, i, Nothing, proj)
+                If i.Enabled Then
+                    MP4BoxDemuxer.Demux(proj.SourceFile, i, Nothing, proj)
+                End If
             Next
         End If
 
         If demuxSubtitles AndAlso proj.DemuxSubtitles <> DemuxMode.None Then
-            If subtitles Is Nothing Then subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
+            If subtitles Is Nothing Then
+                subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
+            End If
 
             For Each i In subtitles
-                If Not i.Enabled Then Continue For
+                If Not i.Enabled Then
+                    Continue For
+                End If
 
                 Dim outpath = proj.TempDir + proj.SourceFile.Base + " " + i.Filename + i.ExtFull
-                If outpath.Length > 259 Then outpath = proj.TempDir + proj.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(20) + i.ExtFull
+
+                If outpath.Length > 259 Then
+                    outpath = proj.TempDir + proj.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(20) + i.ExtFull
+                End If
 
                 FileHelp.Delete(outpath)
                 Dim args As String
@@ -486,7 +522,10 @@ Public Class MP4BoxDemuxer
 
     Public Overrides Property OutputExtensions As String()
         Get
-            If VideoDemuxing OrElse VideoDemuxed Then Return {"avi", "mpg", "h264", "h265"}
+            If VideoDemuxing OrElse VideoDemuxed Then
+                Return {"avi", "mpg", "h264", "h265"}
+            End If
+
             Return {}
         End Get
         Set(value As String())
@@ -501,7 +540,11 @@ Public Class MP4BoxDemuxer
         End If
 
         Dim outpath = proj.TempDir + proj.SourceFile.Base + streams(0).ExtFull
-        If outpath = proj.SourceFile Then Exit Sub
+
+        If outpath = proj.SourceFile Then
+            Exit Sub
+        End If
+
         Dim args = If(streams(0).Ext = "avi", "-avi ", "-raw ")
         args += streams(0).ID & " -out " + outpath.Escape + " " + proj.SourceFile.Escape
 
@@ -536,7 +579,13 @@ Public Class MP4BoxDemuxer
         If outPath.Length > 259 Then outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
         FileHelp.Delete(outPath)
         Dim args As String
-        If stream.Format = "AAC" Then args += "-single" Else args += "-raw"
+
+        If stream.Format = "AAC" Then
+            args += "-single"
+        Else
+            args += "-raw"
+        End If
+
         args += " " & stream.ID & " -out " + outPath.Escape + " " + sourcefile.Escape
 
         Using proc As New Proc
@@ -566,7 +615,10 @@ Public Class MP4BoxDemuxer
 
     Function GetAttachments(sourceFilePath As String) As List(Of Attachment)
         Dim cover = MediaInfo.GetGeneral(sourceFilePath, "Cover")
-        If cover <> "" Then Return New List(Of Attachment) From {New Attachment With {.Name = "Cover"}}
+
+        If cover <> "" Then
+            Return New List(Of Attachment) From {New Attachment With {.Name = "Cover"}}
+        End If
     End Function
 
     Public Overrides ReadOnly Property HasConfigDialog As Boolean
@@ -616,11 +668,15 @@ Public Class mkvDemuxer
         End If
 
         If demuxAudio AndAlso proj.DemuxAudio <> DemuxMode.None Then
-            If audioStreams Is Nothing Then audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
+            If audioStreams Is Nothing Then
+                audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
+            End If
         End If
 
         If demuxSubtitles AndAlso proj.DemuxSubtitles <> DemuxMode.None Then
-            If subtitles Is Nothing Then subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
+            If subtitles Is Nothing Then
+                subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
+            End If
         End If
 
         Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True, VideoDemuxed)
@@ -688,7 +744,10 @@ Public Class mkvDemuxer
 
     Public Overrides Property OutputExtensions As String()
         Get
-            If VideoDemuxing OrElse VideoDemuxed Then Return {"avi", "mpg", "h264", "h265"}
+            If VideoDemuxing OrElse VideoDemuxed Then
+                Return {"avi", "mpg", "h264", "h265"}
+            End If
+
             Return {}
         End Get
         Set(value As String())
@@ -754,9 +813,17 @@ Public Class mkvDemuxer
 
         For Each stream In audioStreams
             Dim ext = stream.Extension
-            If ext = ".m4a" Then ext = ".aac"
+
+            If ext = ".m4a" Then
+                ext = ".aac"
+            End If
+
             Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + ext
-            If outPath.Length > 259 Then outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream, True) + ext
+
+            If outPath.Length > 259 Then
+                outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream, True) + ext
+            End If
+
             outPaths.Add(outPath, stream)
             args += " " & stream.StreamOrder & ":" + outPath.Escape
         Next
@@ -774,7 +841,10 @@ Public Class mkvDemuxer
 
         For Each outPath In outPaths.Keys
             If File.Exists(outPath) Then
-                If Not ap Is Nothing Then ap.File = outPath
+                If Not ap Is Nothing Then
+                    ap.File = outPath
+                End If
+
                 proj.Log.WriteLine(MediaInfo.GetSummary(outPath) + BR)
 
                 If outPath.Ext = "aac" Then
@@ -794,7 +864,10 @@ Public Class mkvDemuxer
                     End Using
 
                     If File.Exists(m4aPath) Then
-                        If Not ap Is Nothing Then ap.File = m4aPath
+                        If Not ap Is Nothing Then
+                            ap.File = m4aPath
+                        End If
+
                         FileHelp.Delete(outPath)
                         proj.Log.WriteLine(BR + MediaInfo.GetSummary(m4aPath))
                     Else
@@ -811,7 +884,11 @@ Public Class mkvDemuxer
     Shared Function GetAttachmentPath(proj As Project, name As String) As String
         Dim prefix = If(name.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land"), "", proj.SourceFile.Base + "_attachment_")
         Dim ret = proj.TempDir + prefix + name.Base + name.ExtFull
-        If ret.Length > 260 Then ret = proj.TempDir + prefix + name.Base.Shorten(10) + name.ExtFull
+
+        If ret.Length > 260 Then
+            ret = proj.TempDir + prefix + name.Base.Shorten(10) + name.ExtFull
+        End If
+
         Return ret
     End Function
 

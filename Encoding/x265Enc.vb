@@ -766,7 +766,10 @@ Public Class x265Params
         .Config = {0, Integer.MaxValue, 50},
         .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", ""),
         .ImportAction = Sub(param, arg)
-                            If arg = "" Then Exit Sub
+                            If arg = "" Then
+                                Exit Sub
+                            End If
+
                             Dim a = arg.Trim(""""c).Split(","c)
                             MaxCLL.Value = a(0).ToInt
                             MaxFALL.Value = a(1).ToInt
@@ -1065,9 +1068,16 @@ Public Class x265Params
                 Add("Custom", Custom, CustomFirstPass, CustomSecondPass)
 
                 For Each item In ItemsValue
-                    If item.HelpSwitch <> "" Then Continue For
+                    If item.HelpSwitch <> "" Then
+                        Continue For
+                    End If
+
                     Dim switches = item.GetSwitches
-                    If switches.NothingOrEmpty Then Continue For
+
+                    If switches.NothingOrEmpty Then
+                        Continue For
+                    End If
+
                     item.HelpSwitch = switches(0)
                 Next
             End If
@@ -1087,7 +1097,9 @@ Public Class x265Params
     Private BlockValueChanged As Boolean
 
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-        If BlockValueChanged Then Exit Sub
+        If BlockValueChanged Then
+            Exit Sub
+        End If
 
         If item Is Preset OrElse item Is Tune Then
             BlockValueChanged = True
@@ -1097,8 +1109,13 @@ Public Class x265Params
         End If
 
         If Not DeblockA.NumEdit Is Nothing Then
-            If Not DeblockA.NumEdit Is Nothing Then DeblockA.NumEdit.Enabled = Deblock.Value
-            If Not DeblockB.NumEdit Is Nothing Then DeblockB.NumEdit.Enabled = Deblock.Value
+            If Not DeblockA.NumEdit Is Nothing Then
+                DeblockA.NumEdit.Enabled = Deblock.Value
+            End If
+
+            If Not DeblockB.NumEdit Is Nothing Then
+                DeblockB.NumEdit.Enabled = Deblock.Value
+            End If
         End If
 
         MyBase.OnValueChanged(item)

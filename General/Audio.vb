@@ -71,8 +71,13 @@ Public Class Audio
     Shared Function GetBaseNameForStream(path As String, stream As AudioStream, Optional shorten As Boolean = False) As String
         Dim ret = If(shorten, path.Base.Shorten(10), path.Base) + " ID" & (stream.Index + 1)
 
-        If stream.Delay <> 0 Then ret += " " & stream.Delay & "ms"
-        If stream.Language.TwoLetterCode <> "iv" Then ret += " " + stream.Language.ToString
+        If stream.Delay <> 0 Then
+            ret += " " & stream.Delay & "ms"
+        End If
+
+        If stream.Language.TwoLetterCode <> "iv" Then
+            ret += " " + stream.Language.ToString
+        End If
 
         If Not shorten AndAlso path.Length < 200 AndAlso stream.Title <> "" Then
             ret += " {" + stream.Title.Shorten(50).EscapeIllegalFileSysChars + "}"
@@ -146,7 +151,11 @@ Public Class Audio
         Dim wavPath = p.TempDir + ap.File.Base + "_cut_na.wav"
         d.Path = p.TempDir + ap.File.Base + "_cut_na.avs"
         d.Filters.Insert(1, New VideoFilter(GetNicAudioCode(ap)))
-        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
+
+        If ap.Channels = 2 Then
+            d.Filters.Add(New VideoFilter(GetDown2Code))
+        End If
+
         d.Synchronize()
 
         Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + wavPath.Escape
@@ -189,7 +198,11 @@ Public Class Audio
         Dim outPath = p.TempDir + ap.File.Base + "_DecodeNicAudio." + ap.ConvertExt
         d.Path = p.TempDir + ap.File.Base + "_DecodeNicAudio.avs"
         d.Filters.Insert(1, New VideoFilter(GetNicAudioCode(ap)))
-        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
+
+        If ap.Channels = 2 Then
+            d.Filters.Add(New VideoFilter(GetDown2Code))
+        End If
+
         d.Synchronize()
 
         Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + outPath.Escape
@@ -253,8 +266,14 @@ Public Class Audio
     End Function
 
     Shared Sub ConvertEac3to(ap As AudioProfile)
-        If ap.File.Ext = ap.ConvertExt Then Exit Sub
-        If Not FileTypes.eac3toInput.Contains(ap.File.Ext) Then Exit Sub
+        If ap.File.Ext = ap.ConvertExt Then
+            Exit Sub
+        End If
+
+        If Not FileTypes.eac3toInput.Contains(ap.File.Ext) Then
+            Exit Sub
+        End If
+
         Dim outPath = p.TempDir + ap.File.Base + "." + ap.ConvertExt
         Dim args = ap.File.Escape + " " + outPath.Escape
 
@@ -301,7 +320,11 @@ Public Class Audio
         Dim gap = TryCast(ap, GUIAudioProfile)
         gap?.NormalizeFF()
         Dim outPath = p.TempDir + ap.File.Base + "." + ap.ConvertExt
-        If ap.File = outPath Then outPath += "." + ap.ConvertExt
+
+        If ap.File = outPath Then
+            outPath += "." + ap.ConvertExt
+        End If
+
         Dim args = "-i " + ap.File.Escape
 
         If Not ap.Stream Is Nothing Then
@@ -321,7 +344,11 @@ Public Class Audio
         End If
 
         args += " -y -hide_banner -ac " & ap.Channels
-        If ap.ConvertExt.EqualsAny("wav", "w64") Then args += " -c:a pcm_s24le"
+
+        If ap.ConvertExt.EqualsAny("wav", "w64") Then
+            args += " -c:a pcm_s24le"
+        End If
+
         args += " " + outPath.Escape
 
         Using proc As New Proc
@@ -368,7 +395,11 @@ Public Class Audio
         If params.ffmpegDynaudnormC Then ret += ":c=true"
         If params.ffmpegDynaudnormB Then ret += ":b=true"
 
-        If ret <> "" Then Return "-af dynaudnorm=" + ret.Trim(":"c) Else Return "-af dynaudnorm"
+        If ret <> "" Then
+            Return "-af dynaudnorm=" + ret.Trim(":"c)
+        Else
+            Return "-af dynaudnorm"
+        End If
     End Function
 
     Shared Sub ConvertDirectShowSource(ap As AudioProfile, Optional useFlac As Boolean = False)
@@ -387,7 +418,11 @@ Public Class Audio
         Dim outPath = p.TempDir + ap.File.Base + "_convDSS." + ap.ConvertExt
         d.Path = p.TempDir + ap.File.Base + "_DecDSS.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
-        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
+
+        If ap.Channels = 2 Then
+            d.Filters.Add(New VideoFilter(GetDown2Code))
+        End If
+
         d.Synchronize()
 
         Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + outPath.Escape
@@ -428,7 +463,11 @@ Public Class Audio
         Dim outPath = p.TempDir + ap.File.Base + "_convFFAudioSource." + ap.ConvertExt
         d.Path = p.TempDir + ap.File.Base + "_DecodeFFAudioSource.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile=""" + cachefile + """))"))
-        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
+
+        If ap.Channels = 2 Then
+            d.Filters.Add(New VideoFilter(GetDown2Code))
+        End If
+
         d.Synchronize()
 
         Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + outPath.Escape
@@ -466,7 +505,11 @@ Public Class Audio
         Dim wavPath = p.TempDir + ap.File.Base + "_cut_ds.wav"
         d.Path = p.TempDir + ap.File.Base + "_cut_ds.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
-        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
+
+        If ap.Channels = 2 Then
+            d.Filters.Add(New VideoFilter(GetDown2Code))
+        End If
+
         d.Synchronize()
 
         Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + wavPath.Escape
@@ -506,7 +549,11 @@ Public Class Audio
         Dim wavPath = p.TempDir + ap.File.Base + "_cut_ff.wav"
         d.Path = p.TempDir + ap.File.Base + "_cut_ff.avs"
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile=""" + cachefile + """))"))
-        If ap.Channels = 2 Then d.Filters.Add(New VideoFilter(GetDown2Code))
+
+        If ap.Channels = 2 Then
+            d.Filters.Add(New VideoFilter(GetDown2Code))
+        End If
+
         d.Synchronize()
 
         Dim args = "-i " + d.Path.Escape + " -y -hide_banner " + wavPath.Escape

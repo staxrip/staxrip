@@ -1,7 +1,11 @@
-# This script handles the AfterSourceLoaded event, remove the underscore from the
-# filename in order to enable it. The script sets QTGMC filter to type 0 (Interlaced) if the
-# MediaInfo property 'ScanType' returns 'Interlaced'. 
-# However if it's not 'interlaced' and the Scantype is Progressive it will set QTGMC to type 1 (Progressive) if the 
+
+# This script handles the AfterSourceLoaded event,
+# remove the underscore from the filename in order
+# to enable it. The script sets QTGMC filter
+# to type 0 (Interlaced) if the MediaInfo property
+# 'ScanType' returns 'Interlaced'. However if it's
+# not 'interlaced' and the Scantype is Progressive
+# it will set QTGMC to type 1 (Progressive) if the 
 # MediaInfo property 'ScanType' returns 'Progressive'. 
 
 # active project

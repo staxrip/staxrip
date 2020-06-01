@@ -73,7 +73,10 @@ Public Class NVEnc
     Overrides Sub Encode()
         If OutputExt = "h265" Then
             Dim codecs = ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw").Right("Codec(s)")
-            If Not codecs?.ToLower.Contains("hevc") Then Throw New ErrorAbortException("NVEnc Error", "H.265/HEVC isn't supported by the graphics card.")
+
+            If Not codecs?.ToLower.Contains("hevc") Then
+                Throw New ErrorAbortException("NVEnc Error", "H.265/HEVC isn't supported by the graphics card.")
+            End If
         End If
 
         p.Script.Synchronize()
@@ -257,7 +260,10 @@ Public Class NVEnc
             .Config = {0, Integer.MaxValue, 50},
             .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--max-cll """ & MaxCLL.Value & "," & MaxFALL.Value & """", ""),
             .ImportAction = Sub(param, arg)
-                                If arg = "" Then Exit Sub
+                                If arg = "" Then
+                                    Exit Sub
+                                End If
+
                                 Dim a = arg.Trim(""""c).Split(","c)
                                 MaxCLL.Value = a(0).ToInt
                                 MaxFALL.Value = a(1).ToInt
@@ -610,9 +616,16 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"})
 
                     For Each item In ItemsValue
-                        If item.HelpSwitch <> "" Then Continue For
+                        If item.HelpSwitch <> "" Then
+                            Continue For
+                        End If
+
                         Dim switches = item.GetSwitches
-                        If switches.NothingOrEmpty Then Continue For
+
+                        If switches.NothingOrEmpty Then
+                            Continue For
+                        End If
+
                         item.HelpSwitch = switches(0)
                     Next
                 End If
@@ -824,7 +837,9 @@ Public Class NVEnc
             For Each i In {Deband_range, Deband_sample, Deband_thre, Deband_thre_y, Deband_thre_cb,
                 Deband_thre_cr, Deband_dither, Deband_dither_y, Deband_dither_c, Deband_seed}
 
-                If i.Value <> i.DefaultValue Then ret += "," + i.Text.Trim + "=" & i.Value
+                If i.Value <> i.DefaultValue Then
+                    ret += "," + i.Text.Trim + "=" & i.Value
+                End If
             Next
 
             If Deband_blurfirst.Value Then

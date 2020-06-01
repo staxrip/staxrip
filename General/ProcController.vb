@@ -23,7 +23,7 @@ Public Class ProcController
 
     Sub New(proc As Proc)
         Me.Proc = proc
-        Me.ProcForm = g.ProcForm
+        ProcForm = g.ProcForm
 
         CheckBox.Appearance = Appearance.Button
         CheckBox.AutoSize = True
@@ -71,17 +71,20 @@ Public Class ProcController
 
             ProcForm.BeginInvoke(StatusAction, {ret.Data})
         Else
-            Proc.Log.WriteLine(ret.Data)
+            If ret.Data.Trim <> "" Then
+                Proc.Log.WriteLine(ret.Data)
+            End If
+
             ProcForm.BeginInvoke(LogAction, Nothing)
         End If
     End Sub
 
-    Private Sub LogHandler()
+    Sub LogHandler()
         Dim log = Proc.Log.ToString
         LogTextBox.Text = log
     End Sub
 
-    Private Sub StatusHandler(value As String)
+    Sub StatusHandler(value As String)
         ProgressBar.Text = value
         SetProgress(value)
     End Sub
@@ -179,7 +182,7 @@ Public Class ProcController
         End If
     End Sub
 
-    Private Sub Click(sender As Object, e As EventArgs)
+    Sub Click(sender As Object, e As EventArgs)
         SyncLock Procs
             For Each i In Procs
                 If Not i.CheckBox Is sender Then i.Deactivate()

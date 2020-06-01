@@ -53,7 +53,9 @@ Namespace CommandLine
 
         Protected Overridable Sub OnValueChanged(item As CommandLineParam)
             For Each i In Items
-                If Not i.VisibleFunc Is Nothing Then i.Visible = i.Visible
+                If Not i.VisibleFunc Is Nothing Then
+                    i.Visible = i.Visible
+                End If
             Next
 
             RaiseEvent ValueChanged(item)
@@ -134,7 +136,10 @@ Namespace CommandLine
 
         Property Visible As Boolean
             Get
-                If Not VisibleFunc Is Nothing Then Return VisibleFunc.Invoke
+                If Not VisibleFunc Is Nothing Then
+                    Return VisibleFunc.Invoke
+                End If
+
                 Return VisibleValue
             End Get
             Set(value As Boolean)
@@ -144,7 +149,10 @@ Namespace CommandLine
                     Dim c = GetControl()
 
                     If Not c Is Nothing Then
-                        If TypeOf c.Parent Is SimpleUI.EmptyBlock Then c = c.Parent
+                        If TypeOf c.Parent Is SimpleUI.EmptyBlock Then
+                            c = c.Parent
+                        End If
+
                         c.Visible = value
                     End If
                 End If
@@ -152,8 +160,13 @@ Namespace CommandLine
         End Property
 
         Function GetKey() As String
-            If Name <> "" Then Return Name
-            If Switch <> "" Then Return Switch
+            If Name <> "" Then
+                Return Name
+            End If
+
+            If Switch <> "" Then
+                Return Switch
+            End If
 
             If Text <> "" Then
                 If Text.StartsWith(" ") AndAlso HelpSwitch <> "" Then
@@ -232,8 +245,14 @@ Namespace CommandLine
             End Get
             Set(value As Boolean)
                 ValueValue = value
-                If Not Store Is Nothing Then Store.Bool(GetKey) = value
-                If Not CheckBox Is Nothing Then CheckBox.Checked = value
+
+                If Not Store Is Nothing Then
+                    Store.Bool(GetKey) = value
+                End If
+
+                If Not CheckBox Is Nothing Then
+                    CheckBox.Checked = value
+                End If
             End Set
         End Property
 

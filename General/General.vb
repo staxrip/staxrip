@@ -1157,8 +1157,10 @@ Public Module MainModule
     Public Const BR3 As String = VB6.vbCrLf + VB6.vbCrLf + VB6.vbCrLf
     Public Log As LogBuilder
 
-    Sub MsgInfo(text As String, Optional content As String = Nothing)
-        Msg(text, content, MsgIcon.Info, TaskDialogButtons.Ok)
+    Sub MsgInfo(text As Object, Optional content As Object = Nothing)
+        Dim text1 = text?.ToString
+        Dim content1 = content?.ToString
+        Msg(text1, content1, MsgIcon.Info, TaskDialogButtons.Ok)
     End Sub
 
     Sub MsgError(text As String, Optional content As String = Nothing)

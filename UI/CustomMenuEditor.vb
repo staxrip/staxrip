@@ -39,7 +39,7 @@ Namespace UI
         Friend WithEvents laSymbol As Label
         Friend WithEvents pbSymbol As PictureBox
         Friend WithEvents bnSymbol As ButtonEx
-        Friend WithEvents cmsSymbol As ContextMenuStrip
+        Friend WithEvents cmsSymbol As ContextMenuStripEx
         Friend WithEvents ToolStrip As ToolStrip
         Friend WithEvents tsbNew As ToolStripButton
         Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
@@ -54,8 +54,8 @@ Namespace UI
         Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
         Friend WithEvents tsbRemove As ToolStripButton
         Friend WithEvents ToolsToolStripDropDownButton As ToolStripDropDownButton
-        Friend WithEvents NewFromDefaultsToolStripMenuItem As ToolStripMenuItem
-        Friend WithEvents ResetToolStripMenuItem As ToolStripMenuItem
+        Friend WithEvents NewFromDefaultsToolStripMenuItem As MenuItemEx
+        Friend WithEvents ResetToolStripMenuItem As MenuItemEx
         Friend WithEvents bnOK As StaxRip.UI.ButtonEx
         <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
             Me.components = New System.ComponentModel.Container()
@@ -91,14 +91,14 @@ Namespace UI
             Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
             Me.tsbRemove = New System.Windows.Forms.ToolStripButton()
             Me.ToolsToolStripDropDownButton = New System.Windows.Forms.ToolStripDropDownButton()
-            Me.NewFromDefaultsToolStripMenuItem = New MenuItemEx()
-            Me.ResetToolStripMenuItem = New MenuItemEx()
+            Me.NewFromDefaultsToolStripMenuItem = New StaxRip.UI.MenuItemEx()
+            Me.ResetToolStripMenuItem = New StaxRip.UI.MenuItemEx()
             Me.Label1 = New System.Windows.Forms.Label()
             Me.tlpSymbol = New System.Windows.Forms.TableLayoutPanel()
             Me.laSymbol = New System.Windows.Forms.Label()
             Me.pbSymbol = New System.Windows.Forms.PictureBox()
             Me.bnSymbol = New StaxRip.UI.ButtonEx()
-            Me.cmsSymbol = New ContextMenuStripEx(Me.components)
+            Me.cmsSymbol = New StaxRip.UI.ContextMenuStripEx(Me.components)
             Me.tlpMain.SuspendLayout()
             Me.FlowLayoutPanel1.SuspendLayout()
             Me.TableLayoutPanel2.SuspendLayout()
@@ -439,22 +439,22 @@ Namespace UI
             Me.ToolsToolStripDropDownButton.AutoToolTip = False
             Me.ToolsToolStripDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
             Me.ToolsToolStripDropDownButton.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NewFromDefaultsToolStripMenuItem, Me.ResetToolStripMenuItem})
-            Me.ToolsToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta
             Me.ToolsToolStripDropDownButton.Name = "ToolsToolStripDropDownButton"
-            Me.ToolsToolStripDropDownButton.Padding = New System.Windows.Forms.Padding(2)
-            Me.ToolsToolStripDropDownButton.Size = New System.Drawing.Size(136, 80)
-            Me.ToolsToolStripDropDownButton.Text = "Tools"
+            Me.ToolsToolStripDropDownButton.Size = New System.Drawing.Size(162, 80)
+            Me.ToolsToolStripDropDownButton.Text = " Tools  "
             '
             'NewFromDefaultsToolStripMenuItem
             '
+            Me.NewFromDefaultsToolStripMenuItem.Help = Nothing
             Me.NewFromDefaultsToolStripMenuItem.Name = "NewFromDefaultsToolStripMenuItem"
-            Me.NewFromDefaultsToolStripMenuItem.Size = New System.Drawing.Size(546, 66)
+            Me.NewFromDefaultsToolStripMenuItem.Size = New System.Drawing.Size(546, 67)
             Me.NewFromDefaultsToolStripMenuItem.Text = "New From Defaults..."
             '
             'ResetToolStripMenuItem
             '
+            Me.ResetToolStripMenuItem.Help = Nothing
             Me.ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
-            Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(546, 66)
+            Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(546, 67)
             Me.ResetToolStripMenuItem.Text = "Reset Everything"
             '
             'Label1

@@ -468,8 +468,10 @@ Public Class AppsForm
         MyBase.OnActivated(e)
     End Sub
 
-    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
-        Select Case e.KeyData
+    Protected Overrides Sub OnKeyDown(args As KeyEventArgs)
+        MyBase.OnKeyDown(args)
+
+        Select Case args.KeyData
             Case Keys.F1
                 tsbHelp.PerformClick()
             Case Keys.F10
@@ -485,8 +487,6 @@ Public Class AppsForm
             Case Keys.Control Or Keys.F
                 miSearchUsingEverything.PerformClick()
         End Select
-
-        MyBase.OnKeyDown(e)
     End Sub
 
     Sub tv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tv.AfterSelect
@@ -494,7 +494,9 @@ Public Class AppsForm
             tv.SelectedNode = e.Node.Nodes(0)
         End If
 
-        If Not e.Node.Tag Is Nothing Then ShowPackage(e.Node)
+        If Not e.Node.Tag Is Nothing Then
+            ShowPackage(e.Node)
+        End If
     End Sub
 
     Sub SearchTextBox_TextChanged() Handles SearchTextBox.TextChanged

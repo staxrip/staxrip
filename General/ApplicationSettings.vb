@@ -39,7 +39,7 @@ Public Class ApplicationSettings
     Public LogFileNum As Integer = 50
     Public MinimizeToTray As Boolean
     Public MinimumDiskSpace As Integer = 20
-    Public MinPreviewSize As Integer = 70
+    Public PreviewSize As Integer = 70
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
     Public ParallelProcsNum As Integer = 2
@@ -86,8 +86,13 @@ Public Class ApplicationSettings
     End Function
 
     Sub Init() Implements ISafeSerialization.Init
-        If Versions Is Nothing Then Versions = New Dictionary(Of String, Integer)
-        If Check(Storage, "Misc", 2) Then Storage = New ObjectStorage
+        If Versions Is Nothing Then
+            Versions = New Dictionary(Of String, Integer)
+        End If
+
+        If Check(Storage, "Misc", 2) Then
+            Storage = New ObjectStorage
+        End If
 
         If Check(VideoEncoderProfiles, "Video Encoder Profiles", 196) Then
             If VideoEncoderProfiles Is Nothing Then
@@ -128,7 +133,9 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(Demuxers, "Demuxers", 106) Then Demuxers = Demuxer.GetDefaults()
+        If Check(Demuxers, "Demuxers", 106) Then
+            Demuxers = Demuxer.GetDefaults()
+        End If
 
         If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 6) Then
             AviSynthFilterPreferences = New StringPairList
@@ -221,18 +228,29 @@ Public Class ApplicationSettings
                               "Stats = --stats ""%target_temp_file%.stats"""
         End If
 
-        If Check(ParMenu, "Source PAR menu", 10) Then ParMenu = GetParMenu()
-        If Check(DarMenu, "Source DAR menu", 10) Then DarMenu = GetDarMenu()
+        If Check(ParMenu, "Source PAR menu", 10) Then
+            ParMenu = GetParMenu()
+        End If
+
+        If Check(DarMenu, "Source DAR menu", 10) Then
+            DarMenu = GetDarMenu()
+        End If
 
         If Check(TargetImageSizeMenu, "Target image size menu", 15) Then
             TargetImageSizeMenu = GetDefaultTargetImageSizeMenu()
         End If
 
-        If StringList Is Nothing Then StringList = New List(Of String)
+        If StringList Is Nothing Then
+            StringList = New List(Of String)
+        End If
 
-        If RecentFramePositions Is Nothing Then RecentFramePositions = New List(Of String)
+        If RecentFramePositions Is Nothing Then
+            RecentFramePositions = New List(Of String)
+        End If
 
-        If CropFrameCount = 0 Then CropFrameCount = 10
+        If CropFrameCount = 0 Then
+            CropFrameCount = 10
+        End If
 
         If Check(CustomMenuCrop, "Menu in crop dialog", 17) Then
             CustomMenuCrop = CropForm.GetDefaultMenuCrop
@@ -242,7 +260,7 @@ Public Class ApplicationSettings
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 
-        If Check(CustomMenuPreview, "Menu in preview dialog", 53) Then
+        If Check(CustomMenuPreview, "Menu in preview dialog", 54) Then
             CustomMenuPreview = PreviewForm.GetDefaultMenu()
         End If
 
@@ -261,7 +279,10 @@ Public Class ApplicationSettings
                 Dim unknown = current.Where(Function(filter) Not defaultScripts.Contains(filter.Script))
 
                 For Each i In unknown
-                    If Not i.Path?.StartsWith("Backup | ") Then i.Path = "Backup | " + i.Path
+                    If Not i.Path?.StartsWith("Backup | ") Then
+                        i.Path = "Backup | " + i.Path
+                    End If
+
                     FilterCategory.AddFilter(i, AviSynthProfiles)
                 Next
             End If
@@ -461,10 +482,15 @@ Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$"
             path.Ext = "bin"
 
         Dim list As New List(Of String)
-        If Not skip Then list.Add(path)
+
+        If Not skip Then
+            list.Add(path)
+        End If
 
         For Each i In s.RecentProjects
-            If i <> path AndAlso File.Exists(i) Then list.Add(i)
+            If i <> path AndAlso File.Exists(i) Then
+                list.Add(i)
+            End If
         Next
 
         While list.Count > s.ProjectsMruNum

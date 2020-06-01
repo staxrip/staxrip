@@ -1,11 +1,36 @@
 
-2.1.1.8 Beta (not yet available)
+2.1.1.9 Beta (not yet available)
 ============
 
-- Improved Log File Viewer.
+2.1.1.8 Beta
+============
+
+- Improved Log File Viewer (Main Menu > Tools > Log File).
   Tip: The Log File Viewer has a context menu.
-- The Jobs dialog has a feature to sort the job list alphabetically
-- Neo f3kdb r6
+- The Jobs dialog has a feature to sort the job list alphabetically.
+- The Preview dialog can be resized with the mouse.
+- Support for character # in filenames because MP4Box was finally fixed.
+- Improved PowerShell scripting error handling.
+- Many UI improvements, especially on 96 DPI.
+- 'Main Menu > Help > Info' shows list with contributors I could remember.
+- x265 M-3.4+6-g73f96ff39-gcc11.0.0 Patman
+- nvenc 5.03
+- qsvenc 4.03
+- mkvtoolnix 47
+- AVSMeter 3.0.0.4
+- chapterEditor 1.23
+- f3kdb Neo r6
+- MiniDeen Neo r9
+- DFTTest Neo r7
+- L-Smash-Works 2020-05-31
+- JPSDR 3.2.2
+- mvtools2 2.7.42
+- VSFilterMod 5.2.2
+- TIVTC 1.0.17
+- TDeint 1.5
+- SMDegrain 3.12.108s
+- QTGMC 3.365
+- LSFmod 2.187
 
 
 2.1.1.7 Beta

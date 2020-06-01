@@ -58,7 +58,9 @@ Another requirement is `Visual C++ 2019 x64 <https://support.microsoft.com/en-gb
 
 StaxRip has portable versions of AviSynth, VapourSynth and Python included, a setup is not required.
 
-If AviSynth or VapourSynth was installed then StaxRip will use the installed version instead of the included portable version.
+If AviSynth was installed then StaxRip will use the installed AviSynth version.
+
+If VapourSynth was installed then StaxRip will also use the installed VapourSynth version, the Settings dialog has a setting to use the included portable version instead.
 
 Hardware encoding works only on newer hardware and up to date drivers.
 

@@ -1,7 +1,8 @@
 
 Imports System.ComponentModel
 Imports System.Drawing.Imaging
-
+Imports System.Reflection
+Imports System.Runtime.InteropServices
 Imports StaxRip.UI
 
 Public Class PreviewForm
@@ -90,7 +91,7 @@ Public Class PreviewForm
         Me.bnLeft1.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnLeft1, "Backward 1 Frame")
         '
-        'bnOpen
+        'bnStartCutRange
         '
         Me.bnStartCutRange.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnStartCutRange.BackColor = System.Drawing.Color.WhiteSmoke
@@ -102,7 +103,7 @@ Public Class PreviewForm
         Me.bnStartCutRange.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnStartCutRange, "Sets a start cut point. Press F1 for help about cutting")
         '
-        'bnClose
+        'bnEndCutRange
         '
         Me.bnEndCutRange.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnEndCutRange.BackColor = System.Drawing.Color.WhiteSmoke
@@ -248,19 +249,22 @@ Public Class PreviewForm
     Private StartRange As Integer = -1
     Private EndRange As Integer = -1
     Private PreviewScript As VideoScript
-    Private SizeFactor As Double = 1
-    Private WithEvents GenericMenu As CustomMenu
     Private CommandManager As New CommandManager
-
-    Private Const TrackBarBorder As Integer = 1
-    Private Const TrackBarGap As Integer = 1
+    Private TrackBarBorder As Integer = 1
+    Private TrackBarGap As Integer = 1
     Private TrackBarPosition As Integer = CInt(Control.DefaultFont.Height / 4) - 1
+    Private VideoSize As Size
 
     Private Shared Instances As New List(Of PreviewForm)
+    Private WithEvents GenericMenu As CustomMenu
 
     Sub New(script As VideoScript)
-        MyBase.New()
         InitializeComponent()
+
+        GetType(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty Or
+            BindingFlags.Instance Or BindingFlags.NonPublic, Nothing,
+            pnTrack, New Object() {True})
+
         Icon = g.Icon
 
         CommandManager.AddCommandsFromObject(Me)
@@ -275,138 +279,40 @@ Public Class PreviewForm
         Instances.Add(Me)
 
         PreviewScript = script
-        NormalRectangle.Size = Size
-        NormalRectangle.Location = Location
     End Sub
-
-    Sub RefreshScript()
-        If Not Renderer Is Nothing Then
-            Renderer.Dispose()
-        End If
-
-        If Not FrameServer Is Nothing Then
-            FrameServer.Dispose()
-        End If
-
-        PreviewScript.Synchronize()
-        PreviewScript.Synchronize(True, True, True)
-        FrameServer = New FrameServer(PreviewScript.Path)
-        Renderer = New VideoRenderer(pnVideo, FrameServer)
-        Renderer.Info = PreviewScript.OriginalInfo
-        Renderer.ShowInfo = s.ShowPreviewInfo
-        Dim workingArea = Screen.FromControl(Me).WorkingArea
-
-        While GetNormalSize.Width < workingArea.Width * (s.MinPreviewSize / 100) AndAlso
-            GetNormalSize.Height < workingArea.Height * (s.MinPreviewSize / 100)
-
-            SizeFactor += 0.05
-            SizeFactor = Math.Round(SizeFactor, 2)
-        End While
-
-        While GetNormalSize.Width > workingArea.Width * 0.95 OrElse
-            GetNormalSize.Height > workingArea.Height * 0.95
-
-            SizeFactor -= 0.05
-            SizeFactor = Math.Round(SizeFactor, 2)
-        End While
-
-        If s.PreviewFormBorderStyle = FormBorderStyle.None Then
-            Fullscreen()
-        Else
-            NormalScreen()
-        End If
-
-        If s.LastPosition < FrameServer.Info.FrameCount - 1 Then
-            Renderer.Position = s.LastPosition
-        End If
-
-        AfterPositionChanged()
-        ShowButtons(Not s.HidePreviewButtons)
-    End Sub
-
-    Public NormalRectangle As Rectangle
 
     Sub Fullscreen()
-        Dim trackVisible = pnTrack.Visible
-        pnTrack.Visible = False
+        BlockVideoPaint = True
         FormBorderStyle = FormBorderStyle.None
         s.PreviewFormBorderStyle = FormBorderStyle
         WindowState = FormWindowState.Maximized
-        Dim ratio As Double
-
-        If Calc.IsARSignalingRequired Then
-            ratio = Calc.GetTargetDAR
-        Else
-            ratio = FrameServer.Info.Width / FrameServer.Info.Height
-        End If
-
-        Dim b = Screen.FromControl(Me).Bounds
-
+        Dim screenBounds = Screen.FromControl(Me).Bounds
         pnVideo.Dock = DockStyle.None
+        Dim ratio = VideoSize.Width / VideoSize.Height
 
-        If ratio > b.Width / b.Height Then
-            Dim h = CInt(b.Width / ratio)
+        If ratio > screenBounds.Width / screenBounds.Height Then
+            Dim h = CInt(screenBounds.Width / ratio)
             pnVideo.Left = 0
-            pnVideo.Top = CInt((b.Height - h) / 2)
-            pnVideo.Width = b.Width
+            pnVideo.Top = CInt((screenBounds.Height - h) / 2)
+            pnVideo.Width = screenBounds.Width
             pnVideo.Height = h
         Else
-            Dim w = CInt(b.Height * ratio)
-            pnVideo.Left = CInt((b.Width - w) / 2)
+            Dim w = CInt(screenBounds.Height * ratio)
+            pnVideo.Left = CInt((screenBounds.Width - w) / 2)
             pnVideo.Top = 0
             pnVideo.Width = w
-            pnVideo.Height = b.Height
+            pnVideo.Height = screenBounds.Height
         End If
 
-        pnTrack.Visible = trackVisible
+        BlockVideoPaint = False
+        pnVideo.Refresh()
     End Sub
 
     Sub NormalScreen()
-        FormBorderStyle = FormBorderStyle.FixedDialog
+        FormBorderStyle = FormBorderStyle.Sizable
         s.PreviewFormBorderStyle = FormBorderStyle
         WindowState = FormWindowState.Normal
         pnVideo.Dock = DockStyle.Fill
-        ClientSize = GetNormalSize()
-        Dim wa = Screen.FromControl(Me).WorkingArea
-
-        If Left + Width > wa.Width OrElse Top + Height > wa.Height Then
-            WindowPositions.CenterScreen(Me)
-        End If
-
-        If Left < 0 Then
-            Left = 0
-        End If
-
-        If Top < 0 Then
-            Top = 0
-        End If
-    End Sub
-
-    Function GetNormalSize() As Size
-        Dim ret As Size
-        Dim frameHeight = FrameServer.Info.Height
-
-        If Calc.IsARSignalingRequired Then
-            ret = New Size(CInt(frameHeight * SizeFactor * Calc.GetTargetDAR), CInt(frameHeight * SizeFactor))
-        Else
-            ret = New Size(CInt(FrameServer.Info.Width * SizeFactor), CInt(frameHeight * SizeFactor))
-        End If
-
-        Return ret
-    End Function
-
-    <Command("Switches the window state between full and normal.")>
-    Sub SwitchWindowState()
-        ShowButtons(False)
-
-        If FormBorderStyle = FormBorderStyle.None Then
-            NormalScreen()
-        Else
-            Fullscreen()
-        End If
-
-        ShowButtons(Not s.HidePreviewButtons)
-        AfterPositionChanged()
     End Sub
 
     Sub ShowButtons(vis As Boolean)
@@ -423,92 +329,129 @@ Public Class PreviewForm
     End Sub
 
     Sub bnRight1_Click() Handles bnRight1.Click
-        For Each i As PreviewForm In Instances
+        For Each i In Instances
             SetRelativePos(1)
         Next
     End Sub
 
     Sub bnLeft1_Click() Handles bnLeft1.Click
-        For Each i As PreviewForm In Instances
+        For Each i In Instances
             SetRelativePos(-1)
         Next
     End Sub
 
     Sub bnStartCutRange_Click() Handles bnStartCutRange.Click
-        For Each i As PreviewForm In Instances
+        For Each i In Instances
             SetRangeStart()
         Next
     End Sub
 
     Sub bnEndCutRange_Click() Handles bnEndCutRange.Click
-        For Each i As PreviewForm In Instances
+        For Each i In Instances
             SetRangeEnd()
         Next
     End Sub
 
     Sub bnLeft2_Click() Handles bnLeft2.Click
-        For Each i As PreviewForm In Instances
+        For Each i In Instances
             SetRelativePos(-10)
         Next
     End Sub
 
     Sub bnRight2_Click() Handles bnRight2.Click
-        For Each i As PreviewForm In Instances
+        For Each i In Instances
             SetRelativePos(10)
         Next
     End Sub
 
     Sub bnDelete_Click() Handles bnDelete.Click
-        For Each i As PreviewForm In Instances
+        For Each i In Instances
             DeleteRange()
         Next
     End Sub
 
     Sub bnLeft3_Click() Handles bnLeft3.Click
-        For Each i As PreviewForm In Instances
+        For Each i In Instances
             i.SetRelativePos(-100)
         Next
     End Sub
 
     Sub bnRight3_Click() Handles bnRight3.Click
-        For Each i As PreviewForm In Instances
+        For Each i In Instances
             SetRelativePos(100)
         Next
     End Sub
 
     Sub Wheel(sender As Object, e As MouseEventArgs) Handles MyBase.MouseWheel
         Dim pos = 1
+
         If Control.ModifierKeys = Keys.Control Then pos = 10
         If Control.ModifierKeys = Keys.Shift Then pos = 100
         If Control.ModifierKeys = Keys.Alt Then pos = 1000
-        If e.Delta < 0 Then pos = pos * -1
-        If s.ReverseVideoScrollDirection Then pos = pos * -1
+
+        If e.Delta < 0 Then
+            pos = pos * -1
+        End If
+
+        If s.ReverseVideoScrollDirection Then
+            pos = pos * -1
+        End If
+
         SetRelativePos(pos)
     End Sub
 
-    Sub DrawTrack()
-        Dim g = pnTrack.CreateGraphics()
-        g.FillRectangle(Brushes.White, pnTrack.ClientRectangle)
+    Function GetDrawPos(frame As Integer) As Integer
+        Dim values = TrackBarBorder * 2 + TrackBarGap * 2 + TrackBarPosition
+        Dim width = CInt(((pnTrack.Width - values) / CInt(PreviewScript.Info.FrameCount - 1)) * frame)
+        Return width + CInt(values / 2)
+    End Function
+
+    Sub pnTrack_MouseMove(sender As Object, e As MouseEventArgs) Handles pnTrack.MouseMove
+        If e.Button = MouseButtons.Left Then
+            HandleMouseOntrackBar()
+        End If
+    End Sub
+
+    Sub pnTrack_MouseDown(sender As Object, e As MouseEventArgs) Handles pnTrack.MouseDown
+        HandleMouseOntrackBar()
+    End Sub
+
+    Sub HandleMouseOntrackBar()
+        Dim pos = CInt((PreviewScript.Info.FrameCount / pnTrack.Width) * pnTrack.PointToClient(Control.MousePosition).X)
+        Dim remainder = pos Mod 4
+
+        If remainder <> 0 Then
+            pos -= remainder
+        End If
+
+        For Each i In Instances
+            i.SetAbsolutePos(pos)
+        Next
+    End Sub
+
+    Sub pnTrack_Paint(sender As Object, e As PaintEventArgs) Handles pnTrack.Paint
+        Dim gx = e.Graphics
+        gx.FillRectangle(Brushes.White, pnTrack.ClientRectangle)
 
         Dim trackHeight = pnTrack.Height - TrackBarBorder * 2 - TrackBarGap * 2
 
         Using borderPen As New Pen(Color.Black, TrackBarBorder)
             borderPen.Alignment = Drawing2D.PenAlignment.Inset
-            g.DrawRectangle(borderPen, 0, 0, pnTrack.Width - 1, pnTrack.Height - 1)
+            gx.DrawRectangle(borderPen, 0, 0, pnTrack.Width - 1, pnTrack.Height - 1)
         End Using
 
         If p.Ranges.Count > 0 Then
             For x = 0 To p.Ranges.Count - 1
-                Dim c As Color
+                Dim col As Color
 
                 If (x Mod 2) = 0 Then
-                    c = Color.Green
+                    col = Color.Green
                 Else
-                    c = Color.LimeGreen
+                    col = Color.LimeGreen
                 End If
 
-                Using rangePen As New Pen(c, trackHeight)
-                    g.DrawLine(rangePen, GetDrawPos(p.Ranges(x).Start) - CInt(TrackBarPosition / 2),
+                Using rangePen As New Pen(col, trackHeight)
+                    gx.DrawLine(rangePen, GetDrawPos(p.Ranges(x).Start) - CInt(TrackBarPosition / 2),
                         pnTrack.Height \ 2, GetDrawPos(p.Ranges(x).End) + CInt(TrackBarPosition / 2),
                         pnTrack.Height \ 2)
                 End Using
@@ -517,7 +460,7 @@ Public Class PreviewForm
 
         Using rangeSetPen As New Pen(Color.DarkOrange, trackHeight)
             If StartRange > -1 AndAlso StartRange <= Renderer.Position Then
-                g.DrawLine(rangeSetPen, GetDrawPos(StartRange) - CInt(TrackBarPosition / 2),
+                gx.DrawLine(rangeSetPen, GetDrawPos(StartRange) - CInt(TrackBarPosition / 2),
                     pnTrack.Height \ 2, GetDrawPos(Renderer.Position) +
                     CInt(TrackBarPosition / 2), pnTrack.Height \ 2)
             End If
@@ -525,7 +468,7 @@ Public Class PreviewForm
 
         Using rangeSetPen As New Pen(Color.DarkOrange, trackHeight)
             If EndRange > -1 AndAlso EndRange >= Renderer.Position Then
-                g.DrawLine(rangeSetPen, GetDrawPos(EndRange) - CInt(TrackBarPosition / 2),
+                gx.DrawLine(rangeSetPen, GetDrawPos(EndRange) - CInt(TrackBarPosition / 2),
                     pnTrack.Height \ 2, GetDrawPos(Renderer.Position) +
                     CInt(TrackBarPosition / 2), pnTrack.Height \ 2)
             End If
@@ -543,49 +486,39 @@ Public Class PreviewForm
 
         Dim pos = GetDrawPos(Renderer.Position)
 
-        g.DrawLine(posPen,
-                   pos - CInt(TrackBarPosition / 2),
-                   pnTrack.Height \ 2,
-                   pos + CInt(TrackBarPosition / 2),
-                   pnTrack.Height \ 2)
+        gx.DrawLine(
+            posPen,
+            pos - CInt(TrackBarPosition / 2),
+            pnTrack.Height \ 2,
+            pos + CInt(TrackBarPosition / 2),
+            pnTrack.Height \ 2)
 
         posPen.Dispose()
-        g.Dispose()
     End Sub
 
-    Private Function GetDrawPos(frame As Integer) As Integer
-        Dim values = TrackBarBorder * 2 + TrackBarGap * 2 + TrackBarPosition
-        Dim width = CInt(((pnTrack.Width - values) / CInt(PreviewScript.Info.FrameCount - 1)) * frame)
-        Return width + CInt(values / 2)
-    End Function
-
-    Private Sub pTrack_MouseMove(sender As Object, e As MouseEventArgs) Handles pnTrack.MouseMove
-        If e.Button = MouseButtons.Left Then HandleMouseOntrackBar()
+    Sub bnExtras_Click() Handles bnMenu.Click
+        cmsMain.Show(bnMenu, New Point(1, bnMenu.Height))
     End Sub
 
-    Private Sub pTrack_MouseDown(sender As Object, e As MouseEventArgs) Handles pnTrack.MouseDown
-        HandleMouseOntrackBar()
+    Sub SetPos(pos As Integer)
+        Try
+            Renderer.Position = pos
+            Renderer.Draw()
+            AfterPositionChanged()
+        Catch
+        End Try
     End Sub
 
-    Private Sub HandleMouseOntrackBar()
-        Dim pos = CInt((PreviewScript.Info.FrameCount / pnTrack.Width) * pnTrack.PointToClient(Control.MousePosition).X)
-        Dim remainder = pos Mod 4
+    Sub AfterPositionChanged()
+        s.LastPosition = Renderer.Position
+        pnTrack.Refresh()
+        Dim time = TimeSpan.FromSeconds(Renderer.Position / FrameServer.FrameRate).ToString.Shorten(12)
 
-        If remainder <> 0 Then
-            pos -= remainder
+        If time.StartsWith("00") Then
+            time = time.Substring(3)
         End If
 
-        For Each i In Instances
-            i.SetAbsolutePos(pos)
-        Next
-    End Sub
-
-    Private Sub pnTrack_Paint(sender As Object, e As PaintEventArgs) Handles pnTrack.Paint
-        DrawTrack()
-    End Sub
-
-    Private Sub bnExtras_Click() Handles bnMenu.Click
-        cmsMain.Show(bnMenu, New Point(1, bnMenu.Height))
+        Text = "Preview  " & s.LastPosition & "  " + time
     End Sub
 
     <Command("Jumps to a given frame.")>
@@ -601,18 +534,18 @@ Public Class PreviewForm
         SetPos(Renderer.Position + pos)
     End Sub
 
-    Sub SetPos(pos As Integer)
-        Renderer.Position = pos
-        Renderer.Draw()
-        AfterPositionChanged()
-    End Sub
+    <Command("Switches the window state between full and normal.")>
+    Sub SwitchWindowState()
+        ShowButtons(False)
 
-    Private Sub AfterPositionChanged()
-        s.LastPosition = Renderer.Position
-        DrawTrack()
-        Dim time = TimeSpan.FromSeconds(Renderer.Position / FrameServer.FrameRate).ToString.Shorten(12)
-        If time.StartsWith("00") Then time = time.Substring(3)
-        Text = "Preview  " & s.LastPosition & "  " + time
+        If FormBorderStyle = FormBorderStyle.None Then
+            NormalScreen()
+        Else
+            Fullscreen()
+        End If
+
+        ShowButtons(Not s.HidePreviewButtons)
+        AfterPositionChanged()
     End Sub
 
     <Command("Dialog to jump to a specific time.")>
@@ -622,12 +555,7 @@ Public Class PreviewForm
         Dim value = InputBox.Show("Time:", "Go To Time", d.ToString("HH:mm:ss.fff"))
 
         If value <> "" Then
-            Try
-                Renderer.Position = CInt((TimeSpan.Parse(value).TotalMilliseconds / 1000) * FrameServer.FrameRate)
-                Renderer.Draw()
-                AfterPositionChanged()
-            Catch
-            End Try
+            SetPos(CInt((TimeSpan.Parse(value).TotalMilliseconds / 1000) * FrameServer.FrameRate))
         End If
     End Sub
 
@@ -637,9 +565,7 @@ Public Class PreviewForm
         Dim pos As Integer
 
         If Integer.TryParse(value, pos) Then
-            Renderer.Position = pos
-            Renderer.Draw()
-            AfterPositionChanged()
+            SetPos(pos)
         End If
     End Sub
 
@@ -703,25 +629,6 @@ Public Class PreviewForm
         AfterPositionChanged()
     End Sub
 
-    Sub MergeRanges()
-        For Each i In p.Ranges.ToArray
-            For Each i2 In p.Ranges.ToArray
-                If Not i Is i2 Then
-                    If (i2.Start >= i.Start AndAlso i2.Start <= i.End) OrElse
-                        (i2.End >= i.Start AndAlso i2.End <= i.End) Then
-
-                        p.Ranges.Remove(i)
-                        p.Ranges.Remove(i2)
-                        p.Ranges.Add(New Range(Math.Min(i.Start, i2.Start), Math.Max(i.End, i2.End)))
-                        MergeRanges()
-                    End If
-                End If
-            Next
-        Next
-
-        p.Ranges.Sort()
-    End Sub
-
     <Command("Splits the clip or selection into two selections.")>
     Sub SplitRange()
         If p.Ranges.Count = 0 Then
@@ -774,12 +681,7 @@ Public Class PreviewForm
 
     <Command("Changes the size.")>
     Sub Zoom(<DispName("Factor")> factor As Single)
-        SizeFactor += factor
-        SizeFactor = Math.Round(SizeFactor, 2)
-        NormalScreen()
-        Left = (Screen.FromControl(Me).WorkingArea.Width - Width) \ 2
-        Top = (Screen.FromControl(Me).WorkingArea.Height - Height) \ 2
-        AfterPositionChanged()
+        SetSize(CInt(Height * factor))
     End Sub
 
     <Command("Shows/hides various infos.")>
@@ -813,12 +715,6 @@ Public Class PreviewForm
         g.PlayScriptWithMPC(script, "/start " & GetPlayPosition.TotalMilliseconds)
     End Sub
 
-    <Command("Reloads the script.")>
-    Sub Reload()
-        RefreshScript()
-        AfterPositionChanged()
-    End Sub
-
     <Command("Closes the dialog.")>
     Sub CloseDialog()
         Close()
@@ -828,9 +724,9 @@ Public Class PreviewForm
     Sub JumpToThePreviousRangePos()
         Dim list As New List(Of Object)
 
-        For Each i As Range In p.Ranges
-            list.Add(i.Start)
-            list.Add(i.End)
+        For Each range As Range In p.Ranges
+            list.Add(range.Start)
+            list.Add(range.End)
         Next
 
         list.Add(Renderer.Position - 1)
@@ -840,9 +736,7 @@ Public Class PreviewForm
         Dim index = list.IndexOf(Renderer.Position - 1) - 1
 
         If index >= 0 AndAlso index < list.Count Then
-            Renderer.Position = CInt(list(index))
-            Renderer.Draw()
-            AfterPositionChanged()
+            SetPos(CInt(list(index)))
         End If
     End Sub
 
@@ -866,48 +760,47 @@ Public Class PreviewForm
         Dim index = list.IndexOf(Renderer.Position + 1) + 1
 
         If index >= 0 AndAlso index < list.Count Then
-            Renderer.Position = CInt(list(index))
-            Renderer.Draw()
-            AfterPositionChanged()
+            SetPos(CInt(list(index)))
         End If
     End Sub
 
     <Command("Saves the current frame as bitmap.")>
     Sub SaveBitmap()
-        Using d As New SaveFileDialog
-            d.SetFilter({"bmp"})
-            d.FileName = p.TargetFile.Base + " - " & Renderer.Position
+        Using dialog As New SaveFileDialog
+            dialog.SetFilter({"bmp"})
+            dialog.FileName = p.TargetFile.Base + " - " & Renderer.Position
 
-            If d.ShowDialog = DialogResult.OK Then
-                BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(d.FileName, ImageFormat.Bmp)
+            If dialog.ShowDialog = DialogResult.OK Then
+                BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(dialog.FileName, ImageFormat.Bmp)
             End If
         End Using
     End Sub
 
     <Command("Saves the current frame as bitmap.")>
     Sub SavePng()
-        Using d As New SaveFileDialog
-            d.SetFilter({"png"})
-            d.FileName = p.TargetFile.Base + " - " & Renderer.Position
+        Using dialog As New SaveFileDialog
+            dialog.SetFilter({"png"})
+            dialog.FileName = p.TargetFile.Base + " - " & Renderer.Position
 
-            If d.ShowDialog = DialogResult.OK Then
-                BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(d.FileName, ImageFormat.Png)
+            If dialog.ShowDialog = DialogResult.OK Then
+                BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(dialog.FileName, ImageFormat.Png)
             End If
         End Using
     End Sub
 
     <Command("Saves the current frame as JPG to the given path which can contain macros.")>
-    Sub SaveJpgByPath(<DispName("File Path")>
-                      <Description("File path which can contain macros.")>
-                      path As String)
+    Sub SaveJpgByPath(
+        <DispName("File Path")>
+        <Description("File path which can contain macros.")>
+        path As String)
 
         path = Macro.Expand(path)
-        Dim q = InputBox.Show("Enter the compression quality.", "Compression Quality", s.Storage.GetInt("preview compression quality", 95).ToString)
+        Dim result = InputBox.Show("Enter the compression quality.", "Compression Quality", s.Storage.GetInt("preview compression quality", 95).ToString)
 
-        If q.IsInt Then
-            s.Storage.SetInt("preview compression quality", q.ToInt)
+        If result.IsInt Then
+            s.Storage.SetInt("preview compression quality", result.ToInt)
             Dim params = New EncoderParameters(1)
-            params.Param(0) = New EncoderParameter(Encoder.Quality, q.ToInt)
+            params.Param(0) = New EncoderParameter(Encoder.Quality, result.ToInt)
             Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Jpeg.Guid).First
             BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(path, info, params)
         End If
@@ -915,11 +808,13 @@ Public Class PreviewForm
 
     <Command("Saves the current frame as JPG.")>
     Sub SaveJPG()
-        Using d As New SaveFileDialog
-            d.DefaultExt = "jpg"
-            d.FileName = p.TargetFile.Base + " - " & Renderer.Position
+        Using dialog As New SaveFileDialog
+            dialog.DefaultExt = "jpg"
+            dialog.FileName = p.TargetFile.Base + " - " & Renderer.Position
 
-            If d.ShowDialog = DialogResult.OK Then SaveJpgByPath(d.FileName)
+            If dialog.ShowDialog = DialogResult.OK Then
+                SaveJpgByPath(dialog.FileName)
+            End If
         End Using
     End Sub
 
@@ -935,16 +830,16 @@ Public Class PreviewForm
         Using td As New TaskDialog(Of String)
             td.MainInstruction = "Select a chapter"
 
-            For Each i In File.ReadAllLines(fp)
-                Dim left = i.Left("=")
-                If left.Length <> 9 Then Continue For
-                td.AddCommand(left.Substring(7) + "   " + i.Right("="), i.Right("="))
+            For Each line In File.ReadAllLines(fp)
+                Dim left = line.Left("=")
+
+                If left.Length = 9 Then
+                    td.AddCommand(left.Substring(7) + "   " + line.Right("="), line.Right("="))
+                End If
             Next
 
             If td.Show() <> "" Then
-                Renderer.Position = CInt((TimeSpan.Parse(td.SelectedValue).TotalMilliseconds / 1000) * FrameServer.FrameRate)
-                Renderer.Draw()
-                AfterPositionChanged()
+                SetPos(CInt((TimeSpan.Parse(td.SelectedValue).TotalMilliseconds / 1000) * FrameServer.FrameRate))
             End If
         End Using
     End Sub
@@ -983,13 +878,12 @@ Public Class PreviewForm
         ret.Add("View|Info", NameOf(ToggleInfos), Keys.I, Symbol.Info)
         ret.Add("View|Fullscreen", NameOf(SwitchWindowState), Keys.Enter, Symbol.FullScreen)
         ret.Add("View|-")
-        ret.Add("View|Zoom In", NameOf(Zoom), Keys.Oemplus, Symbol.ZoomIn, {0.25F})
-        ret.Add("View|Zoom Out", NameOf(Zoom), Keys.OemMinus, Symbol.ZoomOut, {-0.25F})
+        ret.Add("View|Zoom In", NameOf(Zoom), Keys.Oemplus, Symbol.ZoomIn, {1.1F})
+        ret.Add("View|Zoom Out", NameOf(Zoom), Keys.OemMinus, Symbol.ZoomOut, {0.9F})
         ret.Add("View|-")
         ret.Add("View|Buttons", NameOf(ShowHideButtons), Keys.B)
         ret.Add("View|Trackbar", NameOf(ShowHideTrackbar), Keys.Control Or Keys.T)
 
-        ret.Add("Tools|Reload", NameOf(Reload), Keys.R, Symbol.Refresh)
         ret.Add("Tools|Play with mpv.net", NameOf(PlayWithMpvnet), Keys.F9, Symbol.Play)
         ret.Add("Tools|Play with mpc", NameOf(PlayWithMPC), Keys.F10, Symbol.Play)
         ret.Add("Tools|-")
@@ -1006,6 +900,25 @@ Public Class PreviewForm
         Return ret
     End Function
 
+    Sub MergeRanges()
+        For Each r1 In p.Ranges.ToArray
+            For Each r2 In p.Ranges.ToArray
+                If Not r1 Is r2 Then
+                    If (r2.Start >= r1.Start AndAlso r2.Start <= r1.End) OrElse
+                        (r2.End >= r1.Start AndAlso r2.End <= r1.End) Then
+
+                        p.Ranges.Remove(r1)
+                        p.Ranges.Remove(r2)
+                        p.Ranges.Add(New Range(Math.Min(r1.Start, r2.Start), Math.Max(r1.End, r2.End)))
+                        MergeRanges()
+                    End If
+                End If
+            Next
+        Next
+
+        p.Ranges.Sort()
+    End Sub
+
     Sub RefreshControls()
         bnLeft1.Refresh()
         bnLeft2.Refresh()
@@ -1020,29 +933,13 @@ Public Class PreviewForm
         pnTrack.Refresh()
     End Sub
 
-    Private Sub pVideo_DoubleClick() Handles pnVideo.DoubleClick
-        SwitchWindowState()
-    End Sub
-
-    Private Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseMove
-        If Not WindowState = FormWindowState.Maximized AndAlso e.Button = MouseButtons.Left Then
-            Native.ReleaseCapture()
-            Native.PostMessage(Handle, &HA1, New IntPtr(2), IntPtr.Zero) 'WM_NCLBUTTONDOWN, HTCAPTION
-        End If
-    End Sub
-
-    Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pnVideo.Paint
-        RefreshControls()
-        Renderer.Draw()
-    End Sub
-
-    Private Sub GenericMenu_Command(e As CustomMenuItemEventArgs) Handles GenericMenu.Command
+    Sub GenericMenu_Command(e As CustomMenuItemEventArgs) Handles GenericMenu.Command
         e.Handled = True
 
         If e.Item.MethodName = "CloseDialog" Then
             ProcessMenu(e.Item)
         Else
-            For Each i As PreviewForm In Instances
+            For Each i In Instances
                 i.ProcessMenu(e.Item)
             Next
         End If
@@ -1050,23 +947,6 @@ Public Class PreviewForm
 
     Sub ProcessMenu(item As CustomMenuItem)
         GenericMenu.Process(item)
-    End Sub
-
-    Protected Overrides Sub OnLoad(e As EventArgs)
-        MyBase.OnLoad(e)
-        RefreshScript()
-    End Sub
-
-    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
-        MyBase.OnFormClosing(e)
-        Instances.Remove(Me)
-        UpdateTrim(p.Script)
-        s.LastPosition = Renderer.Position
-        p.CutFrameCount = FrameServer.Info.FrameCount
-        p.CutFrameRate = FrameServer.FrameRate
-        g.MainForm.UpdateFilters()
-        Renderer.Dispose()
-        FrameServer.Dispose()
     End Sub
 
     Sub UpdateTrim(script As VideoScript)
@@ -1108,14 +988,16 @@ Public Class PreviewForm
         End If
     End Function
 
-    Private Sub Control_Enter() Handles bnLeft3.Enter, bnLeft2.Enter, bnLeft1.Enter, bnRight1.Enter, bnRight2.Enter, bnRight3.Enter, bnEndCutRange.Enter, bnStartCutRange.Enter, bnDelete.Enter, bnMenu.Enter
+    Sub Controls_Enter() Handles bnLeft3.Enter, bnLeft2.Enter, bnLeft1.Enter, bnRight1.Enter, bnRight2.Enter,
+        bnRight3.Enter, bnEndCutRange.Enter, bnStartCutRange.Enter, bnDelete.Enter, bnMenu.Enter
+
         ActiveControl = Nothing
     End Sub
 
     Function GetCurrentRange() As Range
-        For Each i In p.Ranges
-            If Renderer.Position >= i.Start AndAlso Renderer.Position <= i.End Then
-                Return i
+        For Each range In p.Ranges
+            If Renderer.Position >= range.Start AndAlso Renderer.Position <= range.End Then
+                Return range
             End If
         Next
     End Function
@@ -1160,25 +1042,184 @@ Public Class PreviewForm
         OpenHelp()
     End Sub
 
-    Private Sub pVideo_MouseDown(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseDown
+    Protected Overrides Sub OnLoad(e As EventArgs)
+        MyBase.OnLoad(e)
+
+        PreviewScript.Synchronize(True, True, True)
+        FrameServer = New FrameServer(PreviewScript.Path)
+        Renderer = New VideoRenderer(pnVideo, FrameServer)
+        Renderer.Info = PreviewScript.OriginalInfo
+        Renderer.ShowInfo = s.ShowPreviewInfo
+
+        Dim info = FrameServer.Info
+
+        If Calc.IsARSignalingRequired Then
+            VideoSize = New Size(CInt(info.Height * Calc.GetTargetDAR), CInt(info.Height))
+        Else
+            VideoSize = New Size(CInt(info.Width), CInt(info.Height))
+        End If
+
+        Dim workingArea = Screen.FromControl(Me).WorkingArea
+        Dim initHeight = CInt((workingArea.Height / 100) * s.PreviewSize)
+
+        SetSize(initHeight)
+
+        If s.PreviewFormBorderStyle = FormBorderStyle.None Then
+            Fullscreen()
+        Else
+            NormalScreen()
+        End If
+
+        If s.LastPosition < FrameServer.Info.FrameCount - 1 Then
+            Renderer.Position = s.LastPosition
+        End If
+
+        AfterPositionChanged()
+        ShowButtons(Not s.HidePreviewButtons)
+    End Sub
+
+    Sub SetSize(newHeight As Integer)
+        Dim workingArea = Screen.FromControl(Me).WorkingArea
+        Dim bordersHeight = Height - ClientSize.Height
+        Dim clientHeight = newHeight - bordersHeight
+
+        If clientHeight > workingArea.Height * 0.9 Then
+            clientHeight = CInt(workingArea.Height * 0.9)
+        End If
+
+        Dim clientWidth = CInt((clientHeight / VideoSize.Height) * VideoSize.Width)
+
+        If clientWidth > workingArea.Width * 0.9 Then
+            clientWidth = CInt(workingArea.Width * 0.9)
+            clientHeight = CInt((clientWidth / VideoSize.Width) * VideoSize.Height)
+        End If
+
+        Width = clientWidth + (Width - ClientSize.Width)
+        Height = clientHeight + bordersHeight
+    End Sub
+
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        MyBase.OnFormClosing(e)
+        Instances.Remove(Me)
+        UpdateTrim(p.Script)
+        s.LastPosition = Renderer.Position
+        p.CutFrameCount = FrameServer.Info.FrameCount
+        p.CutFrameRate = FrameServer.FrameRate
+        g.MainForm.UpdateFilters()
+        Renderer.Dispose()
+        FrameServer.Dispose()
+    End Sub
+
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        If m.Msg = &H214 Then 'WM_SIZING
+            Dim rc = Marshal.PtrToStructure(Of Native.RECT)(m.LParam)
+            Dim r = rc
+            SubtractWindowBorders(Handle, r)
+            Dim c_w = r.Right - r.Left, c_h = r.Bottom - r.Top
+            Dim aspect = VideoSize.Width / VideoSize.Height
+            Dim d_w = CInt(c_h * aspect - c_w)
+            Dim d_h = CInt(c_w / aspect - c_h)
+            Dim d_w2 = CInt(c_h * aspect - c_w)
+            Dim d_h2 = CInt(c_w / aspect - c_h)
+            Dim d_corners = {d_w, d_h, -d_w, -d_h}
+            Dim corners = {rc.Left, rc.Top, rc.Right, rc.Bottom}
+            Dim corner = GetResizeBorder(m.WParam.ToInt32())
+
+            If corner >= 0 Then
+                corners(corner) -= d_corners(corner)
+            End If
+
+            Marshal.StructureToPtr(Of Native.RECT)(New Native.RECT(corners(0), corners(1), corners(2), corners(3)), m.LParam, False)
+            m.Result = New IntPtr(1)
+            Exit Sub
+        End If
+
+        MyBase.WndProc(m)
+    End Sub
+
+    Shared Function GetResizeBorder(v As Integer) As Integer
+        Select Case v
+            Case 1
+                Return 3
+            Case 3
+                Return 2
+            Case 2
+                Return 3
+            Case 6
+                Return 2
+            Case 4
+                Return 1
+            Case 5
+                Return 1
+            Case 7
+                Return 3
+            Case 8
+                Return 3
+            Case Else
+                Return -1
+        End Select
+    End Function
+
+    Shared Sub SubtractWindowBorders(hwnd As IntPtr, ByRef rect As Native.RECT)
+        Dim rect2 = New Native.RECT(0, 0, 0, 0)
+        AddWindowBorders(hwnd, rect2)
+        rect.Left -= rect2.Left
+        rect.Top -= rect2.Top
+        rect.Right -= rect2.Right
+        rect.Bottom -= rect2.Bottom
+    End Sub
+
+    Shared Sub AddWindowBorders(hwnd As IntPtr, ByRef rc As Native.RECT)
+        AdjustWindowRect(rc, CUInt(GetWindowLongPtr(hwnd, -16)), False)
+    End Sub
+
+    <DllImport("user32.dll")>
+    Shared Function AdjustWindowRect(ByRef lpRect As Native.RECT, dwStyle As UInteger, bMenu As Boolean) As Boolean
+    End Function
+
+    <DllImport("user32.dll")>
+    Shared Function GetWindowLongPtr(hWnd As IntPtr, nIndex As Integer) As IntPtr
+    End Function
+
+    Sub pnVideo_MouseDown(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseDown
         Dim sb = Screen.FromControl(Me).Bounds
         Dim p1 = New Point(sb.Width, 0)
         Dim p2 = PointToScreen(e.Location)
 
-        If Math.Abs(p1.X - p2.X) < 10 AndAlso Math.Abs(p1.Y - p2.Y) < 10 Then
+        If Math.Abs(p1.X - p2.X) <10 AndAlso Math.Abs(p1.Y - p2.Y) <10 Then
             Close()
         End If
     End Sub
 
-    Private Sub pVideo_MouseClick(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseClick
+    Sub PreviewForm_MouseClick(sender As Object, e As MouseEventArgs) Handles Me.MouseClick
+        If Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
+            Close()
+        End If
+    End Sub
+
+    Sub pnVideo_MouseClick(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseClick
         If pnVideo.Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
             Close()
         End If
     End Sub
 
-    Private Sub PreviewForm_MouseClick(sender As Object, e As MouseEventArgs) Handles Me.MouseClick
-        If Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
-            Close()
+    Sub pnVideo_DoubleClick() Handles pnVideo.DoubleClick
+        SwitchWindowState()
+    End Sub
+
+    Sub pnVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseMove
+        If Not WindowState = FormWindowState.Maximized AndAlso e.Button = MouseButtons.Left Then
+            Native.ReleaseCapture()
+            Native.PostMessage(Handle, &HA1, New IntPtr(2), IntPtr.Zero) 'WM_NCLBUTTONDOWN, HTCAPTION
+        End If
+    End Sub
+
+    Private BlockVideoPaint As Boolean
+
+    Sub pnVideo_Paint(sender As Object, e As PaintEventArgs) Handles pnVideo.Paint
+        If Not BlockVideoPaint Then
+            RefreshControls()
+            Renderer.Draw()
         End If
     End Sub
 End Class

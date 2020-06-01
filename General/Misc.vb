@@ -264,7 +264,10 @@ Public Class Calc
         Try
             If p.CustomTargetPAR <> "" Then
                 Dim val = ParseCustomAR(p.CustomTargetPAR, 0, 0)
-                If val.X <> 0 Then Return Reduce(val)
+
+                If val.X <> 0 Then
+                    Return Reduce(val)
+                End If
             End If
 
             Dim par = GetSourcePAR()
@@ -278,7 +281,10 @@ Public Class Calc
 
             If p.CustomTargetDAR <> "" Then
                 Dim val = ParseCustomAR(p.CustomTargetDAR, 0, 0)
-                If val.X <> 0 Then Return Reduce(New Point(CInt(val.X * croppedHeight), CInt(val.Y * croppedWidth)))
+
+                If val.X <> 0 Then
+                    Return Reduce(New Point(CInt(val.X * croppedHeight), CInt(val.Y * croppedWidth)))
+                End If
             End If
 
             If p.TargetWidth <> croppedWidth OrElse p.TargetHeight <> croppedHeight Then
@@ -3786,13 +3792,14 @@ Public Enum QuotesMode
 End Enum
 
 Public Enum ApplicationEvent
-    <DispName("After Project Loaded")> ProjectLoaded
-    <DispName("After Job Processed")> JobProcessed
-    <DispName("After Video Encoded")> VideoEncoded
-    <DispName("Before Job Processed")> BeforeJobProcessed
-    <DispName("After Source Loaded")> AfterSourceLoaded
-    <DispName("Application Exit")> ApplicationExit
-    <DispName("After Project Or Source Loaded")> ProjectOrSourceLoaded
-    <DispName("After Jobs Processed")> JobsProcessed
     <DispName("After Job Muxed")> JobMuxed
+    <DispName("After Job Processed")> JobProcessed
+    <DispName("After Jobs Processed")> JobsProcessed
+    <DispName("After Project Loaded")> ProjectLoaded
+    <DispName("After Project Or Source Loaded")> ProjectOrSourceLoaded
+    <DispName("After Source Loaded")> AfterSourceLoaded
+    <DispName("After Video Encoded")> VideoEncoded
+    <DispName("Application Exit")> ApplicationExit
+    <DispName("Before Job Processed")> BeforeJobProcessed
+    <DispName("Before Processing")> BeforeProcessing
 End Enum

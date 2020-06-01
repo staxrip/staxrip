@@ -352,8 +352,14 @@ Public Class CommandLineDemuxForm
     End Sub
 
     Function ConvertFormat(input As String) As String
-        If input.Contains("MPEG Video") Then input = input.Replace("MPEG Video", "mpeg2")
-        If input.Contains("VC-1") Then input = input.Replace("VC-1", "vc1")
+        If input.Contains("MPEG Video") Then
+            input = input.Replace("MPEG Video", "mpeg2")
+        End If
+
+        If input.Contains("VC-1") Then
+            input = input.Replace("VC-1", "vc1")
+        End If
+
         Return input.ToLower
     End Function
 
@@ -372,8 +378,10 @@ Public Class CommandLineDemuxForm
     End Sub
 
     Private Sub tbCommand_DoubleClick(sender As Object, e As EventArgs) Handles tbCommand.DoubleClick
-        Using d As New OpenFileDialog
-            If d.ShowDialog() = DialogResult.OK Then tbCommand.Text = d.FileName
+        Using dialog As New OpenFileDialog
+            If dialog.ShowDialog() = DialogResult.OK Then
+                tbCommand.Text = dialog.FileName
+            End If
         End Using
     End Sub
 

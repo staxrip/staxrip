@@ -201,9 +201,16 @@ Public Class VCEEnc
                         New BoolParam With {.Switch = "--filler", .Text = "Use filler data"})
 
                     For Each item In ItemsValue
-                        If item.HelpSwitch <> "" Then Continue For
+                        If item.HelpSwitch <> "" Then
+                            Continue For
+                        End If
+
                         Dim switches = item.GetSwitches
-                        If switches.NothingOrEmpty Then Continue For
+
+                        If switches.NothingOrEmpty Then
+                            Continue For
+                        End If
+
                         item.HelpSwitch = switches(0)
                     Next
                 End If
@@ -222,27 +229,42 @@ Public Class VCEEnc
             Dim ret As String
             Dim sourcePath As String
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
-            If includePaths AndAlso includeExecutable Then ret = Package.VCEEnc.Path.Escape
+
+            If includePaths AndAlso includeExecutable Then
+                ret = Package.VCEEnc.Path.Escape
+            End If
 
             Select Case Decoder.ValueText
                 Case "avs"
                     sourcePath = p.Script.Path
                 Case "qs"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
+
+                    If includePaths Then
+                        ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
+                    End If
                 Case "ffdxva"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal - | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
+
+                    If includePaths Then
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal - | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
+                    End If
                 Case "ffqsv"
                     sourcePath = "-"
-                    If includePaths Then ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal - | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
+
+                    If includePaths Then
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal - | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
+                    End If
                 Case "vce"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " --avhw"
             End Select
 
             Dim q = From i In Items Where i.GetArgs <> ""
-            If q.Count > 0 Then ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+
+            If q.Count > 0 Then
+                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+            End If
 
             Select Case Mode.Value
                 Case 0
@@ -266,8 +288,13 @@ Public Class VCEEnc
                 ret += " --output-res " & p.TargetWidth & "x" & p.TargetHeight
             End If
 
-            If sourcePath = "-" Then ret += " --y4m"
-            If includePaths Then ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
+            If sourcePath = "-" Then
+                ret += " --y4m"
+            End If
+
+            If includePaths Then
+                ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
+            End If
 
             Return ret.Trim
         End Function

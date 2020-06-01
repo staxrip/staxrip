@@ -184,7 +184,7 @@
     <Compile Include="General\GlobalClass.vb" />
     <Compile Include="General\GlobalCommands.vb" />
     <Compile Include="General\Macro.vb" />
-    <Compile Include="Portable\PowerShell.vb" />
+    <Compile Include="General\PowerShell.vb" />
     <Compile Include="General\ProcController.vb" />
     <Compile Include="General\Update.vb" />
     <Compile Include="General\Test.vb" />

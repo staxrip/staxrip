@@ -541,7 +541,7 @@ Public Class AudioForm
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(85, 15)
+        Me.bnOK.Location = New System.Drawing.Point(115, 15)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(15)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
@@ -550,7 +550,7 @@ Public Class AudioForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(350, 15)
+        Me.bnCancel.Location = New System.Drawing.Point(380, 15)
         Me.bnCancel.Margin = New System.Windows.Forms.Padding(0, 15, 15, 15)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
@@ -595,10 +595,10 @@ Public Class AudioForm
         Me.flpButtons.Controls.Add(Me.bnMenu)
         Me.flpButtons.Controls.Add(Me.bnOK)
         Me.flpButtons.Controls.Add(Me.bnCancel)
-        Me.flpButtons.Location = New System.Drawing.Point(1251, 1106)
+        Me.flpButtons.Location = New System.Drawing.Point(1221, 1106)
         Me.flpButtons.Margin = New System.Windows.Forms.Padding(0)
         Me.flpButtons.Name = "flpButtons"
-        Me.flpButtons.Size = New System.Drawing.Size(615, 100)
+        Me.flpButtons.Size = New System.Drawing.Size(645, 100)
         Me.flpButtons.TabIndex = 11
         '
         'bnMenu
@@ -607,7 +607,7 @@ Public Class AudioForm
         Me.bnMenu.Location = New System.Drawing.Point(0, 15)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(0)
         Me.bnMenu.ShowMenuSymbol = True
-        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
+        Me.bnMenu.Size = New System.Drawing.Size(100, 70)
         '
         'tlpRTB
         '
@@ -1377,7 +1377,11 @@ Public Class AudioForm
             b.Property = NameOf(TempProfile.Params.ffmpegDynaudnormB)
 
             ui.SelectLast("last advanced audio options page")
-            If form.ShowDialog() = DialogResult.OK Then ui.Save()
+
+            If form.ShowDialog() = DialogResult.OK Then
+                ui.Save()
+            End If
+
             UpdateControls()
             ui.SaveLast("last advanced audio options page")
         End Using

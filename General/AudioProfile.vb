@@ -125,7 +125,10 @@ Public MustInherit Class AudioProfile
                 End If
             End If
 
-            If SourceSamplingRateValue = 0 Then SourceSamplingRateValue = 48000
+            If SourceSamplingRateValue = 0 Then
+                SourceSamplingRateValue = 48000
+            End If
+
             Return SourceSamplingRateValue
         End Get
     End Property
@@ -137,7 +140,9 @@ Public MustInherit Class AudioProfile
     End Property
 
     Overridable Sub Migrate()
-        If Depth = 0 Then Depth = 24
+        If Depth = 0 Then
+            Depth = 24
+        End If
     End Sub
 
     ReadOnly Property ConvertExt As String
@@ -190,7 +195,10 @@ Public MustInherit Class AudioProfile
         Next
 
         Dim matchDelay = Regex.Match(path, " (-?\d+)ms")
-        If matchDelay.Success Then stream.Delay = matchDelay.Groups(1).Value.ToInt
+
+        If matchDelay.Success Then
+            stream.Delay = matchDelay.Groups(1).Value.ToInt
+        End If
 
         Dim matchID = Regex.Match(path, " ID(\d+)")
         Dim name As String
@@ -204,7 +212,9 @@ Public MustInherit Class AudioProfile
     End Function
 
     Sub SetStreamOrLanguage()
-        If File = "" Then Exit Sub
+        If File = "" Then
+            Exit Sub
+        End If
 
         If File <> p.LastOriginalSourceFile Then
             For Each i In Language.Languages
@@ -245,11 +255,18 @@ Public MustInherit Class AudioProfile
     End Function
 
     Function GetTrackID() As Integer
-        If Me Is p.Audio0 Then Return 1
-        If Me Is p.Audio1 Then Return 2
+        If Me Is p.Audio0 Then
+            Return 1
+        End If
+
+        If Me Is p.Audio1 Then
+            Return 2
+        End If
 
         For x = 0 To p.AudioTracks.Count - 1
-            If Me Is p.AudioTracks(x) Then Return x + 3
+            If Me Is p.AudioTracks(x) Then
+                Return x + 3
+            End If
         Next
     End Function
 
@@ -260,10 +277,15 @@ Public MustInherit Class AudioProfile
             If HandlesDelay() Then
                 If base.Contains("ms") Then
                     Dim re As New Regex(" (-?\d+)ms")
-                    If re.IsMatch(base) Then base = re.Replace(base, "")
+
+                    If re.IsMatch(base) Then
+                        base = re.Replace(base, "")
+                    End If
                 End If
             Else
-                If Not base.Contains("ms") Then base += " " & Delay & "ms"
+                If Not base.Contains("ms") Then
+                    base += " " & Delay & "ms"
+                End If
             End If
         End If
 
@@ -373,7 +395,10 @@ Public Class BatchAudioProfile
 
                 If Not File.Ext = "wav" Then
                     Audio.Convert(Me)
-                    If File.Ext = "wav" Then Encode()
+
+                    If File.Ext = "wav" Then
+                        Encode()
+                    End If
                 End If
             End If
         End If
@@ -412,7 +437,9 @@ Public Class NullAudioProfile
             n.Config = {0, Integer.MaxValue, 8}
             n.Property = NameOf(Bitrate)
 
-            If form.ShowDialog() = DialogResult.OK Then ui.Save()
+            If form.ShowDialog() = DialogResult.OK Then
+                ui.Save()
+            End If
         End Using
     End Sub
 
@@ -826,21 +853,48 @@ Public Class GUIAudioProfile
                     ret += " -" & Bitrate
             End Select
 
-            If Params.Normalize Then ret += " -normalize"
-            If Depth = 16 Then ret += " -down16"
-            If Params.SamplingRate <> 0 Then ret += " -resampleTo" & Params.SamplingRate
-            If Params.FrameRateMode = AudioFrameRateMode.Speedup Then ret += " -speedup"
-            If Params.FrameRateMode = AudioFrameRateMode.Slowdown Then ret += " -slowdown"
-            If Delay <> 0 Then ret += " " + If(Delay > 0, "+", "") & Delay & "ms"
-            If Gain < 0 Then ret += " " & CInt(Gain) & "dB"
-            If Gain > 0 Then ret += " +" & CInt(Gain) & "dB"
+            If Params.Normalize Then
+                ret += " -normalize"
+            End If
+
+            If Depth = 16 Then
+                ret += " -down16"
+            End If
+
+            If Params.SamplingRate <> 0 Then
+                ret += " -resampleTo" & Params.SamplingRate
+            End If
+
+            If Params.FrameRateMode = AudioFrameRateMode.Speedup Then
+                ret += " -speedup"
+            End If
+
+            If Params.FrameRateMode = AudioFrameRateMode.Slowdown Then
+                ret += " -slowdown"
+            End If
+
+            If Delay <> 0 Then
+                ret += " " + If(Delay > 0, "+", "") & Delay & "ms"
+            End If
+
+            If Gain < 0 Then
+                ret += " " & CInt(Gain) & "dB"
+            End If
+
+            If Gain > 0 Then
+                ret += " +" & CInt(Gain) & "dB"
+            End If
 
             Select Case Channels
                 Case 6
-                    If Params.ChannelsMode <> ChannelsMode.Original Then ret += " -down6"
+                    If Params.ChannelsMode <> ChannelsMode.Original Then
+                        ret += " -down6"
+                    End If
                 Case 2
                     If Params.eac3toStereoDownmixMode = 0 Then
-                        If Params.ChannelsMode <> ChannelsMode.Original Then ret += " -downStereo"
+                        If Params.ChannelsMode <> ChannelsMode.Original Then
+                            ret += " -downStereo"
+                        End If
                     Else
                         ret += " -downDpl"
                     End If
@@ -853,7 +907,9 @@ Public Class GUIAudioProfile
             ret += " -core"
         End If
 
-        If includePaths Then ret += " -progressnumbers"
+        If includePaths Then
+            ret += " -progressnumbers"
+        End If
 
         Return ret
     End Function
@@ -861,9 +917,20 @@ Public Class GUIAudioProfile
     Function GetfdkaacCommandLine(includePaths As Boolean) As String
         Dim ret As String
         includePaths = includePaths And File <> ""
-        If DecodingMode = AudioDecodingMode.Pipe Then ret = GetPipeCommandLine(includePaths)
-        If includePaths Then ret += Package.fdkaac.Path.Escape Else ret = "fdkaac"
-        If Params.fdkaacProfile <> 2 Then ret += " --profile " & Params.fdkaacProfile
+
+        If DecodingMode = AudioDecodingMode.Pipe Then
+            ret = GetPipeCommandLine(includePaths)
+        End If
+
+        If includePaths Then
+            ret += Package.fdkaac.Path.Escape
+        Else
+            ret = "fdkaac"
+        End If
+
+        If Params.fdkaacProfile <> 2 Then
+            ret += " --profile " & Params.fdkaacProfile
+        End If
 
         If Params.SimpleRateMode = SimpleAudioRateMode.CBR Then
             ret += " --bitrate " & CInt(Bitrate)
@@ -884,7 +951,10 @@ Public Class GUIAudioProfile
         If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
 
         Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.Escape)
-        If includePaths Then ret += " --ignorelength -o " + GetOutputFile.Escape + " " + input
+
+        If includePaths Then
+            ret += " --ignorelength -o " + GetOutputFile.Escape + " " + input
+        End If
 
         Return ret
     End Function
@@ -892,8 +962,16 @@ Public Class GUIAudioProfile
     Function GetQaacCommandLine(includePaths As Boolean) As String
         Dim ret As String
         includePaths = includePaths And File <> ""
-        If DecodingMode = AudioDecodingMode.Pipe Then ret = GetPipeCommandLine(includePaths)
-        If includePaths Then ret += Package.qaac.Path.Escape Else ret = "qaac"
+
+        If DecodingMode = AudioDecodingMode.Pipe Then
+            ret = GetPipeCommandLine(includePaths)
+        End If
+
+        If includePaths Then
+            ret += Package.qaac.Path.Escape
+        Else
+            ret = "qaac"
+        End If
 
         Select Case Params.qaacRateMode
             Case 0
@@ -910,16 +988,43 @@ Public Class GUIAudioProfile
             ret += " --he"
         End If
 
-        If Delay <> 0 Then ret += " --delay " + (Delay / 1000).ToInvariantString
-        If Params.Normalize Then ret += " --normalize"
-        If Params.qaacQuality <> 2 Then ret += " --quality " & Params.qaacQuality
-        If Params.SamplingRate <> 0 Then ret += " --rate " & Params.SamplingRate
-        If Params.qaacLowpass <> 0 Then ret += " --lowpass " & Params.qaacLowpass
-        If Params.qaacNoDither Then ret += " --no-dither"
-        If Gain <> 0 Then ret += " --gain " & Gain.ToInvariantString
-        If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
+        If Delay <> 0 Then
+            ret += " --delay " + (Delay / 1000).ToInvariantString
+        End If
+
+        If Params.Normalize Then
+            ret += " --normalize"
+        End If
+
+        If Params.qaacQuality <> 2 Then
+            ret += " --quality " & Params.qaacQuality
+        End If
+
+        If Params.SamplingRate <> 0 Then
+            ret += " --rate " & Params.SamplingRate
+        End If
+
+        If Params.qaacLowpass <> 0 Then
+            ret += " --lowpass " & Params.qaacLowpass
+        End If
+
+        If Params.qaacNoDither Then
+            ret += " --no-dither"
+        End If
+
+        If Gain <> 0 Then
+            ret += " --gain " & Gain.ToInvariantString
+        End If
+
+        If Params.CustomSwitches <> "" Then
+            ret += " " + Params.CustomSwitches
+        End If
+
         Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.Escape)
-        If includePaths Then ret += " " + input + " -o " + GetOutputFile.Escape
+
+        If includePaths Then
+            ret += " " + input + " -o " + GetOutputFile.Escape
+        End If
 
         Return ret
     End Function
@@ -933,8 +1038,13 @@ Public Class GUIAudioProfile
             ret = "ffmpeg"
         End If
 
-        If Not Stream Is Nothing AndAlso Streams.Count > 1 Then ret += " -map 0:a:" & Stream.Index
-        If Params.ChannelsMode <> ChannelsMode.Original Then ret += " -ac " & Channels
+        If Not Stream Is Nothing AndAlso Streams.Count > 1 Then
+            ret += " -map 0:a:" & Stream.Index
+        End If
+
+        If Params.ChannelsMode <> ChannelsMode.Original Then
+            ret += " -ac " & Channels
+        End If
 
         If Params.Normalize Then
             If Params.ffNormalizeMode = ffNormalizeMode.dynaudnorm Then
@@ -944,7 +1054,9 @@ Public Class GUIAudioProfile
             End If
         End If
 
-        If includePaths AndAlso File <> "" Then ret += " -loglevel fatal -hide_banner -f wav - | "
+        If includePaths AndAlso File <> "" Then
+            ret += " -loglevel fatal -hide_banner -f wav - | "
+        End If
 
         Return ret
     End Function
@@ -958,11 +1070,15 @@ Public Class GUIAudioProfile
             ret = "ffmpeg"
         End If
 
-        If Not Stream Is Nothing AndAlso Streams.Count > 1 Then ret += " -map 0:a:" & Stream.Index
+        If Not Stream Is Nothing AndAlso Streams.Count > 1 Then
+            ret += " -map 0:a:" & Stream.Index
+        End If
 
         Select Case Params.Codec
             Case AudioCodec.MP3
-                If Not Params.CustomSwitches.Contains("-c:a ") Then ret += " -c:a libmp3lame"
+                If Not Params.CustomSwitches.Contains("-c:a ") Then
+                    ret += " -c:a libmp3lame"
+                End If
 
                 Select Case Params.RateMode
                     Case AudioRateMode.ABR
@@ -985,7 +1101,9 @@ Public Class GUIAudioProfile
                     ret += " -strict -2 -b:a " & CInt(Bitrate) & "k"
                 End If
             Case AudioCodec.Vorbis
-                If Not Params.CustomSwitches.Contains("-c:a ") Then ret += " -c:a libvorbis"
+                If Not Params.CustomSwitches.Contains("-c:a ") Then
+                    ret += " -c:a libvorbis"
+                End If
 
                 If Params.RateMode = AudioRateMode.VBR Then
                     ret += " -q:a " & CInt(Params.Quality)
@@ -993,7 +1111,9 @@ Public Class GUIAudioProfile
                     ret += " -b:a " & CInt(Bitrate) & "k"
                 End If
             Case AudioCodec.Opus
-                If Not Params.CustomSwitches.Contains("-c:a ") Then ret += " -c:a libopus"
+                If Not Params.CustomSwitches.Contains("-c:a ") Then
+                    ret += " -c:a libopus"
+                End If
 
                 If Params.RateMode = AudioRateMode.VBR Then
                     ret += " -vbr on"
@@ -1120,16 +1240,24 @@ Public Class GUIAudioProfile
     Function GetEncoder() As GuiAudioEncoder
         Select Case Params.Encoder
             Case GuiAudioEncoder.Eac3to
-                If {AudioCodec.AAC, AudioCodec.AC3, AudioCodec.FLAC, AudioCodec.DTS, AudioCodec.W64, AudioCodec.WAV}.Contains(Params.Codec) Then Return GuiAudioEncoder.Eac3to
+                If {AudioCodec.AAC, AudioCodec.AC3, AudioCodec.FLAC, AudioCodec.DTS, AudioCodec.W64, AudioCodec.WAV}.Contains(Params.Codec) Then
+                    Return GuiAudioEncoder.Eac3to
+                End If
             Case GuiAudioEncoder.ffmpeg
                 Return GuiAudioEncoder.ffmpeg
             Case GuiAudioEncoder.qaac
-                If Params.Codec = AudioCodec.AAC Then Return GuiAudioEncoder.qaac
+                If Params.Codec = AudioCodec.AAC Then
+                    Return GuiAudioEncoder.qaac
+                End If
             Case GuiAudioEncoder.fdkaac
-                If Params.Codec = AudioCodec.AAC Then Return GuiAudioEncoder.fdkaac
+                If Params.Codec = AudioCodec.AAC Then
+                    Return GuiAudioEncoder.fdkaac
+                End If
         End Select
 
-        If Params.Codec = AudioCodec.AAC Then Return GuiAudioEncoder.Eac3to
+        If Params.Codec = AudioCodec.AAC Then
+            Return GuiAudioEncoder.Eac3to
+        End If
 
         Return GuiAudioEncoder.ffmpeg
     End Function

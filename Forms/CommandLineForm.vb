@@ -45,7 +45,7 @@ Public Class CommandLineForm
 
         cms.Add("Copy Command Line", Sub()
                                          Clipboard.SetText(params.GetCommandLine(True, True))
-                                         MsgInfo("Command Line was copied to the clipboard.")
+                                         MsgInfo("Command Line was copied.")
                                      End Sub).SetImage(Symbol.Copy)
 
         cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLine(True, True)))

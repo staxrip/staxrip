@@ -324,8 +324,15 @@ Public Class MacrosForm
 
             If sel <> 0 Then
                 sel = lv.SelectedItems(0).Index + sel
-                If sel < 0 Then sel = 0
-                If sel >= lv.Items.Count Then sel = lv.Items.Count - 1
+
+                If sel < 0 Then
+                    sel = 0
+                End If
+
+                If sel >= lv.Items.Count Then
+                    sel = lv.Items.Count - 1
+                End If
+
                 lv.Items(sel).Selected = True
                 lv.Items(sel).EnsureVisible()
             End If

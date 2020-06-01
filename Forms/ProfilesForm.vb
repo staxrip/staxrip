@@ -375,9 +375,13 @@ Public Class ProfilesForm
     Private Sub lbMain_KeyDown(sender As Object, e As KeyEventArgs) Handles lbMain.KeyDown
         Select Case e.KeyData
             Case Keys.Delete
-                If bnRemove.Enabled Then bnRemove.PerformClick()
+                If bnRemove.Enabled Then
+                    bnRemove.PerformClick()
+                End If
             Case Keys.F2
-                If bnRename.Enabled Then bnRename.PerformClick()
+                If bnRename.Enabled Then
+                    bnRename.PerformClick()
+                End If
             Case Keys.Control Or Keys.Up
                 If bnUp.Enabled Then
                     e.Handled = True

@@ -1,5 +1,7 @@
-﻿Imports System.Drawing.Drawing2D
+﻿
+Imports System.Drawing.Drawing2D
 Imports System.Windows.Forms.VisualStyles
+
 Imports StaxRip.UI
 
 Public Class SearchTextBox
@@ -55,19 +57,22 @@ Public Class SearchTextBox
     End Sub
 
     Protected Overrides Sub OnTextChanged(e As EventArgs)
-        Button.Visible = Edit.Text <> ""
         MyBase.OnTextChanged(e)
+        Button.Visible = Edit.Text <> ""
     End Sub
 
     Protected Overrides Sub OnLayout(e As LayoutEventArgs)
         MyBase.OnLayout(e)
 
-        Button.Top = 3
-        Button.Height = Height - 6
+        Button.Top = 2
+        Button.Height = Height - 4
         Button.Width = Button.Height
         Button.Left = Width - Button.Width - Button.Top
 
-        If Height <> Edit.Height Then Height = Edit.Height
+        If Height <> Edit.Height Then
+            Height = Edit.Height
+        End If
+
         Edit.Width = Width
     End Sub
 
@@ -80,46 +85,55 @@ Public Class SearchTextBox
         End Set
     End Property
 
-    Private Class SearchTextBoxButton
+    Class SearchTextBoxButton
         Inherits Control
 
         Private MouseIsOver As Boolean
 
-        Protected Overrides Sub OnMouseEnter(eventargs As EventArgs)
+        Sub New()
+            SetStyle(
+                ControlStyles.AllPaintingInWmPaint Or
+                ControlStyles.OptimizedDoubleBuffer,
+                True)
+        End Sub
+
+        Protected Overrides Sub OnMouseEnter(eventArgs As EventArgs)
+            MyBase.OnMouseEnter(eventArgs)
             MouseIsOver = True
             Refresh()
-            MyBase.OnMouseEnter(eventargs)
         End Sub
 
-        Protected Overrides Sub OnMouseLeave(eventargs As EventArgs)
+        Protected Overrides Sub OnMouseLeave(eventArgs As EventArgs)
+            MyBase.OnMouseLeave(eventArgs)
             MouseIsOver = False
             Refresh()
-            MyBase.OnMouseLeave(eventargs)
         End Sub
 
-        Protected Overrides Sub OnPaint(e As PaintEventArgs)
-            Using p = New Pen(Color.DarkSlateGray, 5)
+        Protected Overrides Sub OnPaint(args As PaintEventArgs)
+            args.Graphics.SmoothingMode = SmoothingMode.HighQuality
+
+            Using pen = New Pen(Color.DarkSlateGray, 2)
                 Dim offset = CSng(Width / 3.3)
-                e.Graphics.DrawLine(p, offset, offset, Width - offset, Height - offset)
-                e.Graphics.DrawLine(p, Width - offset, offset, offset, Height - offset)
+                args.Graphics.DrawLine(pen, offset, offset, Width - offset, Height - offset)
+                args.Graphics.DrawLine(pen, Width - offset, offset, offset, Height - offset)
             End Using
         End Sub
 
         Protected Overrides Sub OnPaintBackground(e As PaintEventArgs)
             If MouseIsOver Then
-                Dim r = New Rectangle(Point.Empty, Size)
+                Dim rect = New Rectangle(Point.Empty, Size)
 
                 If VisualStyleInformation.IsEnabledByUser Then
                     Dim Renderer = New VisualStyleRenderer(VisualStyleElement.Button.PushButton.Hot)
                     Renderer.DrawBackground(e.Graphics, ClientRectangle)
                 Else
-                    Using path = ToolStripRendererEx.CreateRoundRectangle(New Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1), 3)
-                        Using b As New LinearGradientBrush(New Point(0, 0), New Point(0, r.Height), Color.White, Color.LightGray)
-                            e.Graphics.FillPath(b, path)
+                    Using path = ToolStripRendererEx.CreateRoundRectangle(New Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1), 3)
+                        Using brush As New LinearGradientBrush(New Point(0, 0), New Point(0, rect.Height), Color.White, Color.LightGray)
+                            e.Graphics.FillPath(brush, path)
                         End Using
 
-                        Using p As New Pen(Brushes.LightGray)
-                            e.Graphics.DrawPath(p, path)
+                        Using pen As New Pen(Brushes.LightGray)
+                            e.Graphics.DrawPath(pen, path)
                         End Using
                     End Using
                 End If

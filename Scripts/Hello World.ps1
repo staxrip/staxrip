@@ -1,0 +1,2 @@
+
+[MainModule]::MsgInfo('Hello World')

@@ -971,13 +971,13 @@ Public Class PreviewForm
             End If
 
             If PreviewScript.Engine = ScriptEngine.AviSynth Then
-                ret += "Trim(" & i.Start & ", " & i.End - 1 & ")"
+                ret += "Trim(" & i.Start & ", " & i.End & ")"
 
                 If p.TrimCode <> "" Then
                     ret += "." + p.TrimCode.TrimStart("."c)
                 End If
             Else
-                ret += "clip[" & i.Start & ":" & i.End & "]"
+                ret += "clip[" & i.Start & ":" & (i.End + 1) & "]"
             End If
         Next
 
@@ -1024,11 +1024,6 @@ Public Class PreviewForm
                         frames += current.End - current.Start
                     Else
                         Dim pos = Renderer.Position
-
-                        If pos = current.End AndAlso x = p.Ranges.Count - 1 Then
-                            pos -= 2
-                        End If
-
                         Return TimeSpan.FromSeconds((frames + (pos - current.Start)) / FrameServer.FrameRate)
                     End If
                 Next

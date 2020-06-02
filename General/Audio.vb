@@ -609,7 +609,7 @@ Public Class Audio
         Dim mkvPath = p.TempDir + ap.File.Base + "_cut_.mkv"
 
         Dim args2 = "-o " + mkvPath.Escape + " " + aviPath.Escape + " " + ap.File.Escape
-        args2 += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & v.End).Join(",+")
+        args2 += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & (v.End + 1)).Join(",+")
         args2 += " --ui-language en"
 
         Using proc As New Proc

@@ -2,6 +2,9 @@
 2.1.1.9 Beta (not yet available)
 ============
 
+- the cut feature was missing the last frame
+
+
 2.1.1.8 Beta
 ============
 

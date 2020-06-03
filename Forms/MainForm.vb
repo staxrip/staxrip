@@ -2792,16 +2792,6 @@ Public Class MainForm
             End If
 
             For Each ap In p.GetAudioTracks
-                If p.CuttingMode = CuttingMode.mkvmerge AndAlso ap.Decoder <> AudioDecoderMode.Automatic AndAlso
-                    ap.DecodingMode = AudioDecodingMode.FLAC AndAlso p.Ranges.Count > 0 Then
-
-                    If ProcessTip("Audio decoding is enabled with FLAC as output format which mkvmerge cannot cut. Either disable decoding or set the decoding format from FLAC to W64.") Then
-                        gbAssistant.Text = "Incompatible Audio Settings"
-                        CanIgnoreTip = False
-                        Return False
-                    End If
-                End If
-
                 If ap.File = p.TargetFile Then
                     If ProcessTip("The audio source and target filepath is identical.") Then
                         g.Highlight(True, tbTargetFile)

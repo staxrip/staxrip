@@ -150,15 +150,21 @@ Public MustInherit Class AudioProfile
             Dim ret As String
 
             Select Case DecodingMode
-                Case AudioDecodingMode.FLAC
-                    ret = "flac"
-                Case AudioDecodingMode.W64
-                    ret = "w64"
                 Case AudioDecodingMode.WAVE
                     ret = "wav"
+                Case AudioDecodingMode.W64
+                    ret = "w64"
                 Case Else
-                    Throw New NotImplementedException
+                    ret = "flac"
             End Select
+
+            If Not SupportedInput.Contains(ret) Then
+                ret = "flac"
+            End If
+
+            If Not SupportedInput.Contains(ret) Then
+                ret = "w64"
+            End If
 
             If Not SupportedInput.Contains(ret) Then
                 ret = "wav"
@@ -1282,7 +1288,11 @@ Public Class GUIAudioProfile
                     Return FileTypes.eac3toInput
                 Case GuiAudioEncoder.qaac
                     If DecodingMode <> AudioDecodingMode.Pipe Then
-                        Return FileTypes.qaacInput
+                        If p.Ranges.Count > 0 Then
+                            Return {"wav", "w64"}
+                        Else
+                            Return {"wav", "flac", "w64"}
+                        End If
                     End If
                 Case GuiAudioEncoder.fdkaac
                     If DecodingMode <> AudioDecodingMode.Pipe Then

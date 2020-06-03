@@ -2,7 +2,11 @@
 2.1.1.9 Beta (not yet available)
 ============
 
-- the cut feature was missing the last frame
+- the cut feature was missing the last frame.
+- in case the cut feature is used, flac input for qaac is disabled
+  so if necessary a w64 file is created.
+- many nvenc improvements
+- mvtools2 2.7.43
 
 
 2.1.1.8 Beta

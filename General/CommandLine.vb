@@ -168,13 +168,11 @@ Namespace CommandLine
                 Return Switch
             End If
 
-            If Text <> "" Then
-                If Text.StartsWith(" ") AndAlso HelpSwitch <> "" Then
-                    Return Text + HelpSwitch
-                Else
-                    Return Text
-                End If
+            If HelpSwitch <> "" Then
+                Return Text + HelpSwitch
             End If
+
+            Return Text
         End Function
     End Class
 

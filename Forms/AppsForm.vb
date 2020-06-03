@@ -673,7 +673,7 @@ Public Class AppsForm
         Next
 
         If txt = "" Then
-            MsgInfo("Status of all tools required by the current project is OK.")
+            MsgInfo("OK!")
         Else
             MsgInfo(txt)
         End If

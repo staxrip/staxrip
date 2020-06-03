@@ -230,7 +230,7 @@ Public Class x264Params
         .Config = {0, 69, 0.5, 1}}
 
     Property Bitrate As New NumParam With {
-        .Switch2 = "--bitrate",
+        .HelpSwitch = "--bitrate",
         .Text = "Bitrate",
         .VisibleFunc = Function() Mode.Value <> 1 AndAlso Mode.Value <> 2,
         .Config = {0, 1000000, 100}}

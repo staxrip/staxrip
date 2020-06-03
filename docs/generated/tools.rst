@@ -24,10 +24,10 @@ Tools
     "DSS2mod","AviSynth Plugin","avss.dll","2014-11-13","2019-01-01"
     "EEDI2","AviSynth Plugin","EEDI2.dll","0.9.2.0","2019-01-01"
     "EEDI3","AviSynth Plugin","EEDI3.dll","0.9.2.3","2019-01-01"
-    "f3kdb neo","AviSynth Plugin","neo-f3kdb.dll","r6","2020-05-30"
     "ffms2","AviSynth Plugin","ffms2.dll","89bd1e1 StvG","2020-03-30"
     "FFT3DFilter","AviSynth Plugin","fft3dfilter.dll","2.6","2019-01-31"
     "FFT3DGPU","AviSynth Plugin","FFT3dGPU.dll","0.8.2.0","2018-11-21"
+    "flash3kyuu_deband","AviSynth Plugin","flash3kyuu_deband.dll","5.0","2018-05-02"
     "FluxSmooth","AviSynth Plugin","FluxSmooth.dll","1.4.7","2019-04-26"
     "FrameRateConverter DLL","AviSynth Plugin","FrameRateConverter-x64.dll","1.2.1","2017-09-02"
     "GradFun2DB","AviSynth Plugin","gradfun2db.dll","2010-03-29","2019-01-01"
@@ -43,7 +43,8 @@ Tools
     "modPlus","AviSynth Plugin","modPlus.dll","2017-10-17","2019-01-01"
     "MPEG2DecPlus","AviSynth Plugin","MPEG2DecPlus64.dll","0.1.2","2020-05-09"
     "MSharpen","AviSynth Plugin","msharpen.dll","0.9","2013-11-30"
-    "mvtools2","AviSynth Plugin","mvtools2.dll","2.7.42","2020-05-23"
+    "mvtools2","AviSynth Plugin","mvtools2.dll","2.7.43","2020-06-02"
+    "Neo f3kdb","AviSynth Plugin","neo-f3kdb.dll","r6","2020-05-30"
     "NicAudio","AviSynth Plugin","NicAudio.dll","1.1","2019-01-01"
     "RgTools","AviSynth Plugin","RgTools.dll","1.0","2020-04-27"
     "SangNom2","AviSynth Plugin","SangNom2.dll","0.35","2013-11-30"
@@ -653,16 +654,6 @@ Filters: EEDI3
 http://avisynth.nl/index.php/EEDI3
 
 
-f3kdb neo
-~~~~~~~~~
-
-Debanding filter forked from flash3kyuu_deband.
-
-Filters: neo_f3kdb
-
-https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb
-
-
 ffms2
 ~~~~~
 
@@ -691,6 +682,16 @@ Similar algorithm to FFT3DFilter, but uses graphics hardware for increased speed
 Filters: FFT3DGPU
 
 
+
+
+flash3kyuu_deband
+~~~~~~~~~~~~~~~~~
+
+Simple debanding filter that can be quite effective for some anime sources.
+
+Filters: f3kdb
+
+http://forum.doom9.org/showthread.php?t=161411
 
 
 FluxSmooth
@@ -851,6 +852,16 @@ MVTools is collection of functions for estimation and compensation of objects mo
 Filters: MSuper, MAnalyse, MCompensate, MMask, MDeGrain1, MDeGrain2, MDegrain3
 
 http://github.com/pinterf/mvtools
+
+
+Neo f3kdb
+~~~~~~~~~
+
+Debanding filter forked from flash3kyuu_deband.
+
+Filters: neo_f3kdb
+
+https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb
 
 
 NicAudio

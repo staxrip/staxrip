@@ -127,7 +127,8 @@ Public Class NVEnc
             audio-copy audio-codec vpp-perf-monitor avi audio-profile check-profiles avsync mux-option
             audio-bitrate audio-ignore audio-ignore audio-samplerate audio-resampler audio-stream dar
             audio-stream audio-stream audio-stream audio-filter chapter-copy chapter sub-copy input-res
-            vpp-decimate"
+            vpp-decimate audio-disposition audio-metadata option-list sub-disposition sub-metadata
+            metadata video-metadata video-tag attachment-copy"
 
         tester.Package = Package.NVEnc
         tester.CodeFile = Folder.Startup.Parent + "Encoding\nvenc.vb"
@@ -275,177 +276,111 @@ Public Class NVEnc
             .Config = {0, Integer.MaxValue, 50},
             .VisibleFunc = Function() Codec.ValueText = "h265"}
 
-        Property KNN As New BoolParam With {
-            .Switch = "--vpp-knn",
-            .Text = "Denoise using K-nearest neighbor",
-            .ArgsFunc = AddressOf GetKnnArgs}
-
-        Property Pad As New BoolParam With {
-            .Switch = "--vpp-pad",
-            .Text = "Padding",
-            .ArgsFunc = AddressOf GetPaddingArgs}
-
-        Property PadLeft As New NumParam With {
-            .Text = "      Left"}
-
-        Property PadTop As New NumParam With {
-            .Text = "      Top"}
-
-        Property PadRight As New NumParam With {
-            .Text = "      Right"}
-
-        Property PadBottom As New NumParam With {
-            .Text = "      Bottom"}
-
-        Property Tweak As New BoolParam With {
-            .Switch = "--vpp-tweak",
-            .Text = "Tweaking",
-            .ArgsFunc = AddressOf GetTweakArgs}
-
-        Property KnnRadius As New NumParam With {
-            .Text = "      Radius",
-            .Init = 3}
-
-        Property vppcontrast As New NumParam With {
-            .Text = "      Contrast",
-            .Init = 1.0,
-            .Config = {-2.0, 2.0, 0.1, 1}}
-
-        Property vppgamma As New NumParam With {
-            .Text = "      Gamma",
-            .Init = 1.0,
-            .Config = {0.1, 10.0, 0.1, 1}}
-
-        Property vppsaturation As New NumParam With {
-            .Text = "      Saturation",
-            .Init = 1.0,
-            .Config = {0.0, 3.0, 0.1, 1}}
-
-        Property vpphue As New NumParam With {
-            .Text = "      Hue",
-            .Config = {-180.0, 180.0, 0.1, 1}}
-
-        Property vppbrightness As New NumParam With {
-            .Text = "      Brightness",
-            .Config = {-1.0, 1.0, 0.1, 1}}
-
-        Property KnnStrength As New NumParam With {
-            .Text = "      Strength",
-            .Init = 0.08,
-            .Config = {0, 1, 0.02, 2}}
-
-        Property KnnLerp As New NumParam With {
-            .Text = "      Lerp",
-            .Init = 0.2,
-            .Config = {0, Integer.MaxValue, 0.1, 1}}
-
-        Property KnnThLerp As New NumParam With {
-            .Text = "      TH Lerp",
-            .Init = 0.8,
-            .Config = {0, 1, 0.1, 1}}
-
-        Property PMD As New BoolParam With {
-            .Switch = "--vpp-pmd",
-            .Text = "Denoise using PMD",
-            .ArgsFunc = AddressOf GetPmdArgs}
-
-        Property PmdApplyCount As New NumParam With {
-            .Text = "      Apply Count",
-            .Init = 2}
-
-        Property PmdStrength As New NumParam With {
-            .Text = "      Strength",
-            .Name = "PmdStrength",
-            .Init = 100.0,
-            .Config = {0, 100, 1, 1}}
-
-        Property PmdThreshold As New NumParam With {
-            .Text = "      Threshold",
-            .Init = 100.0,
-            .Config = {0, 255, 1, 1}}
-
         Property Interlace As New OptionParam With {
             .Text = "Interlace",
-            .VisibleFunc = Function() Codec.ValueText = "h264",
-            .Options = {"Top Field First", "Bottom Field First"},
-            .Values = {"--interlace tff", "--interlace bff"}}
+            .Switch = "--interlace",
+            .Options = {"Disabled", "Top Field First", "Bottom Field First"},
+            .Values = {"", "tff", "bff"}}
 
         Property Custom As New StringParam With {
             .Text = "Custom",
             .Quotes = QuotesMode.Never,
             .AlwaysOn = True}
 
-        Property Deband As New BoolParam With {.Text = "Deband", .Switches = {"--vpp-deband"}, .ArgsFunc = AddressOf GetDebandArgs}
+        Property Tweak As New BoolParam With {.Switch = "--vpp-tweak", .Text = "Tweaking", .ArgsFunc = AddressOf GetTweakArgs}
+        Property TweakContrast As New NumParam With {.Text = "      Contrast", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {-2.0, 2.0, 0.1, 1}}
+        Property TweakGamma As New NumParam With {.Text = "      Gamma", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {0.1, 10.0, 0.1, 1}}
+        Property TweakSaturation As New NumParam With {.Text = "      Saturation", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {0.0, 3.0, 0.1, 1}}
+        Property TweakHue As New NumParam With {.Text = "      Hue", .HelpSwitch = "--vpp-tweak", .Config = {-180.0, 180.0, 0.1, 1}}
+        Property TweakBrightness As New NumParam With {.Text = "      Brightness", .HelpSwitch = "--vpp-tweak", .Config = {-1.0, 1.0, 0.1, 1}}
 
-        Property Deband_range As New NumParam With {.Text = "range", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 127}}
-        Property Deband_sample As New NumParam With {.Text = "sample", .HelpSwitch = "--vpp-deband", .Init = 1, .Config = {0, 2}}
-        Property Deband_thre As New NumParam With {.Text = "thre", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
-        Property Deband_thre_y As New NumParam With {.Text = "     thre_y", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
-        Property Deband_thre_cb As New NumParam With {.Text = "     thre_cb", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
-        Property Deband_thre_cr As New NumParam With {.Text = "     thre_cr", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
-        Property Deband_dither As New NumParam With {.Text = "dither", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
-        Property Deband_dither_y As New NumParam With {.Text = "     dither_y", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
-        Property Deband_dither_c As New NumParam With {.Text = "     dither_c", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
-        Property Deband_seed As New NumParam With {.Text = "seed", .HelpSwitch = "--vpp-deband", .Init = 1234}
+        Property Pmd As New BoolParam With {.Switch = "--vpp-pmd", .Text = "Denoise using PMD", .ArgsFunc = AddressOf GetPmdArgs}
+        Property PmdApplyCount As New NumParam With {.Text = "      Apply Count", .Init = 2}
+        Property PmdStrength As New NumParam With {.Text = "      Strength", .Name = "PmdStrength", .Init = 100.0, .Config = {0, 100, 1, 1}}
+        Property PmdThreshold As New NumParam With {.Text = "      Threshold", .Init = 100.0, .Config = {0, 255, 1, 1}}
 
-        Property Deband_blurfirst As New BoolParam With {.Text = "blurfirst", .HelpSwitch = "--vpp-deband"}
-        Property Deband_rand_each_frame As New BoolParam With {.Text = "rand_each_frame", .HelpSwitch = "--vpp-deband"}
+        Property Knn As New BoolParam With {.Switch = "--vpp-knn", .Text = "Denoise using K-nearest neighbor", .ArgsFunc = AddressOf GetKnnArgs}
+        Property KnnRadius As New NumParam With {.Text = "      Radius", .Init = 3}
+        Property KnnStrength As New NumParam With {.Text = "      Strength", .Init = 0.08, .Config = {0, 1, 0.02, 2}}
+        Property KnnLerp As New NumParam With {.Text = "      Lerp", .Init = 0.2, .Config = {0, Integer.MaxValue, 0.1, 1}}
+        Property KnnThLerp As New NumParam With {.Text = "      TH Lerp", .Init = 0.8, .Config = {0, 1, 0.1, 1}}
 
-        Property AFS As New BoolParam With {.Text = "Auto field shift deinterlacer", .Switches = {"--vpp-afs"}, .ArgsFunc = AddressOf GetAFS}
+        Property Pad As New BoolParam With {.Switch = "--vpp-pad", .Text = "Padding", .ArgsFunc = AddressOf GetPaddingArgs}
+        Property PadLeft As New NumParam With {.Text = "      Left"}
+        Property PadTop As New NumParam With {.Text = "      Top"}
+        Property PadRight As New NumParam With {.Text = "      Right"}
+        Property PadBottom As New NumParam With {.Text = "      Bottom"}
 
-        Property AFSPreset As New OptionParam With {.Text = "preset", .HelpSwitch = "--vpp-afs", .Options = {"Default", "Triple", "Double", "Anime", "Cinema", "Min_afterimg", "24fps", "24fps_sd", "30fps"}}
-        Property AFSINI As New StringParam With {.Text = "ini", .HelpSwitch = "--vpp-afs", .BrowseFile = True}
+        Property Deband As New BoolParam With {.Text = "Deband", .Switch = "--vpp-deband", .ArgsFunc = AddressOf GetDebandArgs}
+        Property DebandRange As New NumParam With {.Text = "     Range", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 127}}
+        Property DebandSample As New NumParam With {.Text = "     Sample", .HelpSwitch = "--vpp-deband", .Init = 1, .Config = {0, 2}}
+        Property DebandThre As New NumParam With {.Text = "     Threshold", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandThreY As New NumParam With {.Text = "          Y", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandThreCB As New NumParam With {.Text = "          CB", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandThreCR As New NumParam With {.Text = "          CR", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandDither As New NumParam With {.Text = "     Dither", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandDitherY As New NumParam With {.Text = "          Y", .HelpSwitch = "--vpp-deband", .Name = "vpp-deband_dither_y", .Init = 15, .Config = {0, 31}}
+        Property DebandDitherC As New NumParam With {.Text = "          C", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandSeed As New NumParam With {.Text = "     Seed", .HelpSwitch = "--vpp-deband", .Init = 1234}
+        Property DebandBlurfirst As New BoolParam With {.Text = "Blurfirst", .HelpSwitch = "--vpp-deband", .LeftMargin = g.MainForm.FontHeight * 1.3}
+        Property DebandRandEachFrame As New BoolParam With {.Text = "Rand Each Frame", .HelpSwitch = "--vpp-deband", .LeftMargin = g.MainForm.FontHeight * 1.3}
 
-        Property AFSLeft As New NumParam With {.Text = "left", .HelpSwitch = "--vpp-afs", .Init = 32}
-        Property AFSRight As New NumParam With {.Text = "right", .HelpSwitch = "--vpp-afs", .Init = 32}
-        Property AFSTop As New NumParam With {.Text = "top", .HelpSwitch = "--vpp-afs", .Init = 16}
-        Property AFSBottom As New NumParam With {.Text = "bottom", .HelpSwitch = "--vpp-afs", .Init = 16}
+        Property Afs As New BoolParam With {.Text = "Auto field shift deinterlacer", .Switches = {"--vpp-afs"}, .ArgsFunc = AddressOf GetAFS}
+        Property AfsPreset As New OptionParam With {.Text = "     Preset", .HelpSwitch = "--vpp-afs", .Options = {"Default", "Triple", "Double", "Anime", "Cinema", "Min_afterimg", "24fps", "24fps_sd", "30fps"}}
+        Property AfsINI As New StringParam With {.Text = "     INI", .HelpSwitch = "--vpp-afs", .BrowseFile = True}
+        Property AfsLeft As New NumParam With {.Text = "     Left", .HelpSwitch = "--vpp-afs", .Init = 32}
+        Property AfsRight As New NumParam With {.Text = "     Right", .HelpSwitch = "--vpp-afs", .Init = 32}
+        Property AfsTop As New NumParam With {.Text = "     Top", .HelpSwitch = "--vpp-afs", .Init = 16}
+        Property AfsBottom As New NumParam With {.Text = "     Bottom", .HelpSwitch = "--vpp-afs", .Init = 16}
+        Property AfsMethodSwitch As New NumParam With {.Text = "     Method Switch", .HelpSwitch = "--vpp-afs", .Config = {0, 256}}
+        Property AfsCoeffShift As New NumParam With {.Text = "     Coeff Shift", .HelpSwitch = "--vpp-afs", .Init = 192, .Config = {0, 256}}
+        Property AfsThreShift As New NumParam With {.Text = "          Shift", .Label = "     Threshold", .HelpSwitch = "--vpp-afs", .Init = 128, .Config = {0, 1024}}
+        Property AfsThreDeint As New NumParam With {.Text = "          Deint", .HelpSwitch = "--vpp-afs", .Init = 48, .Config = {0, 1024}}
+        Property AfsThreMotionY As New NumParam With {.Text = "          Motion Y", .HelpSwitch = "--vpp-afs", .Init = 112, .Config = {0, 1024}}
+        Property AfsThreMotionC As New NumParam With {.Text = "          Motion C", .HelpSwitch = "--vpp-afs", .Init = 224, .Config = {0, 1024}}
+        Property AfsLevel As New NumParam With {.Text = "     Level", .HelpSwitch = "--vpp-afs", .Init = 3, .Config = {0, 4}}
+        Property AfsShift As New BoolParam With {.Text = "Shift", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
+        Property AfsDrop As New BoolParam With {.Text = "Drop", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
+        Property AfsSmooth As New BoolParam With {.Text = "Smooth", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
+        Property Afs24fps As New BoolParam With {.Text = "24 FPS", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
+        Property AfsTune As New BoolParam With {.Text = "Tune", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
+        Property AfsRFF As New BoolParam With {.Text = "RFF", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
+        Property AfsTimecode As New BoolParam With {.Text = "Timecode", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
+        Property AfsLog As New BoolParam With {.Text = "Log", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
 
-        Property AFSmethod_switch As New NumParam With {.Text = "method_switch", .HelpSwitch = "--vpp-afs", .Config = {0, 256}}
-        Property AFScoeff_shift As New NumParam With {.Text = "coeff_shift", .HelpSwitch = "--vpp-afs", .Init = 192, .Config = {0, 256}}
-        Property AFSthre_shift As New NumParam With {.Text = "thre_shift", .HelpSwitch = "--vpp-afs", .Init = 128, .Config = {0, 1024}}
-        Property AFSthre_deint As New NumParam With {.Text = "thre_deint", .HelpSwitch = "--vpp-afs", .Init = 48, .Config = {0, 1024}}
-        Property AFSthre_motion_y As New NumParam With {.Text = "thre_motion_y", .HelpSwitch = "--vpp-afs", .Init = 112, .Config = {0, 1024}}
-        Property AFSthre_motion_c As New NumParam With {.Text = "thre_motion_c", .HelpSwitch = "--vpp-afs", .Init = 224, .Config = {0, 1024}}
-        Property AFSlevel As New NumParam With {.Text = "level", .HelpSwitch = "--vpp-afs", .Init = 3, .Config = {0, 4}}
+        Property Edgelevel As New BoolParam With {.Text = "Edgelevel filter to enhance edge", .Switches = {"--vpp-edgelevel"}, .ArgsFunc = AddressOf GetEdge}
+        Property EdgelevelStrength As New NumParam With {.Text = "     Strength", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
+        Property EdgelevelThreshold As New NumParam With {.Text = "     Threshold", .HelpSwitch = "--vpp-edgelevel", .Init = 20, .Config = {0, 255, 1, 1}}
+        Property EdgelevelBlack As New NumParam With {.Text = "     Black", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
+        Property EdgelevelWhite As New NumParam With {.Text = "     White", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
 
-        Property AFSshift As New BoolParam With {.Text = "shift", .Init = True, .HelpSwitch = "--vpp-afs"}
-        Property AFSdrop As New BoolParam With {.Text = "drop", .HelpSwitch = "--vpp-afs"}
-        Property AFSsmooth As New BoolParam With {.Text = "smooth", .HelpSwitch = "--vpp-afs"}
-        Property AFS24fps As New BoolParam With {.Text = "24fps", .HelpSwitch = "--vpp-afs"}
-        Property AFStune As New BoolParam With {.Text = "tune", .HelpSwitch = "--vpp-afs"}
-        Property AFSrff As New BoolParam With {.Text = "rff", .HelpSwitch = "--vpp-afs"}
-        Property AFStimecode As New BoolParam With {.Text = "timecode", .HelpSwitch = "--vpp-afs"}
-        Property AFSlog As New BoolParam With {.Text = "log", .HelpSwitch = "--vpp-afs"}
+        Property Unsharp As New BoolParam With {.Text = "Unsharp Filter", .Switches = {"--vpp-unsharp"}, .ArgsFunc = AddressOf GetUnsharp}
+        Property UnsharpRadius As New NumParam With {.Text = "     Radius", .HelpSwitch = "--vpp-unsharp", .Init = 3, .Config = {1, 9}}
+        Property UnsharpWeight As New NumParam With {.Text = "     Weight", .HelpSwitch = "--vpp-unsharp", .Init = 0.5, .Config = {0, 10, 0.5, 1}}
+        Property UnsharpThreshold As New NumParam With {.Text = "     Threshold", .HelpSwitch = "--vpp-unsharp", .Init = 10, .Config = {0, 255, 1, 1}}
 
-        Property VppEdgelevel As New BoolParam With {.Text = "Edgelevel filter to enhance edge", .Switches = {"--vpp-edgelevel"}, .ArgsFunc = AddressOf GetEdge}
-        Property VppEdgelevelStrength As New NumParam With {.Text = "     strength", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
-        Property VppEdgelevelThreshold As New NumParam With {.Text = "     threshold", .HelpSwitch = "--vpp-edgelevel", .Init = 20, .Config = {0, 255, 1, 1}}
-        Property VppEdgelevelBlack As New NumParam With {.Text = "     black", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
-        Property VppEdgelevelWhite As New NumParam With {.Text = "     white", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
+        Property Nnedi As New BoolParam With {.Text = "nnedi Deinterlacer", .Switches = {"--vpp-nnedi"}, .ArgsFunc = AddressOf GetNnedi}
+        Property NnediField As New OptionParam With {.Text = "     Field", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "top", "bottom"}}
+        Property NnediNns As New OptionParam With {.Text = "     NNS", .HelpSwitch = "--vpp-nnedi", .Init = 1, .Options = {"16", "32", "64", "128", "256"}}
+        Property NnediNszie As New OptionParam With {.Text = "     N Size", .HelpSwitch = "--vpp-nnedi", .Init = 6, .Options = {"8x6", "16x6", "32x6", "48x6", "8x4", "16x4", "32x4"}}
+        Property NnediQuality As New OptionParam With {.Text = "     Quality", .HelpSwitch = "--vpp-nnedi", .Options = {"fast", "slow"}}
+        Property NnediPrescreen As New OptionParam With {.Text = "     Pre Screen", .HelpSwitch = "--vpp-nnedi", .Init = 4, .Options = {"none", "original", "new", "original_block", "new_block"}}
+        Property NnediErrortype As New OptionParam With {.Text = "     Error Type", .HelpSwitch = "--vpp-nnedi", .Options = {"abs", "square"}}
+        Property NnediPrec As New OptionParam With {.Text = "     Prec", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "fp16", "fp32"}}
+        Property NnediWeightfile As New StringParam With {.Text = "     Weight File", .HelpSwitch = "--vpp-nnedi", .BrowseFile = True}
 
-        Property VppUnsharp As New BoolParam With {.Text = "Enable unsharp filter", .Switches = {"--vpp-unsharp"}, .ArgsFunc = AddressOf GetUnsharp}
-        Property VppUnsharpRadius As New NumParam With {.Text = "     radius", .HelpSwitch = "--vpp-unsharp", .Init = 3, .Config = {1, 9}}
-        Property VppUnsharpWeight As New NumParam With {.Text = "     weight", .HelpSwitch = "--vpp-unsharp", .Init = 0.5, .Config = {0, 10, 0.5, 1}}
-        Property VppUnsharpThreshold As New NumParam With {.Text = "     threshold", .HelpSwitch = "--vpp-unsharp", .Init = 10, .Config = {0, 255, 1, 1}}
+        Property SelectEvery As New BoolParam With {.Text = "Select Every", .Switches = {"--vpp-select-every"}, .ArgsFunc = AddressOf GetSelectEvery}
+        Property SelectEveryValue As New NumParam With {.Text = "     Value", .HelpSwitch = "--vpp-select-every", .Init = 2}
+        Property SelectEveryOffsets As New StringParam With {.Text = "     Offsets", .HelpSwitch = "--vpp-select-every", .Expand = False}
 
-        Property VppNnedi As New BoolParam With {.Text = "nnedi deinterlacer", .Switches = {"--vpp-nnedi"}, .ArgsFunc = AddressOf GetNnedi}
-        Property VppNnediField As New OptionParam With {.Text = "     field", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "top", "bottom"}}
-        Property VppNnediNns As New OptionParam With {.Text = "     nns", .HelpSwitch = "--vpp-nnedi", .Init = 1, .Options = {"16", "32", "64", "128", "256"}}
-        Property VppNnediNszie As New OptionParam With {.Text = "     nszie", .HelpSwitch = "--vpp-nnedi", .Init = 6, .Options = {"8x6", "16x6", "32x6", "48x6", "8x4", "16x4", "32x4"}}
-        Property VppNnediQuality As New OptionParam With {.Text = "     quality", .HelpSwitch = "--vpp-nnedi", .Options = {"fast", "slow"}}
-        Property VppNnediPrescreen As New OptionParam With {.Text = "     prescreen", .HelpSwitch = "--vpp-nnedi", .Init = 4, .Options = {"none", "original", "new", "original_block", "new_block"}}
-        Property VppNnediErrortype As New OptionParam With {.Text = "     errortype", .HelpSwitch = "--vpp-nnedi", .Options = {"abs", "square"}}
-        Property VppNnediPrec As New OptionParam With {.Text = "     prec", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "fp16", "fp32"}}
-        Property VppNnediWeightfile As New StringParam With {.Text = "     weightfile", .HelpSwitch = "--vpp-nnedi", .BrowseFile = True}
+        Property TransformFlipX As New BoolParam With {.Switch = "--vpp-transform", .Text = "Flip X", .Label = "Transform", .LeftMargin = g.MainForm.FontHeight * 1.5, .ArgsFunc = AddressOf GetTransform}
+        Property TransformFlipY As New BoolParam With {.Text = "Flip Y", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
+        Property TransformTranspose As New BoolParam With {.Text = "Transpose", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
 
-        Property VppSelectEvery As New BoolParam With {.Text = "Select Every", .Switches = {"--vpp-select-every"}, .ArgsFunc = AddressOf GetSelectEvery}
-        Property VppSelectEveryValue As New NumParam With {.Text = "     value", .HelpSwitch = "--vpp-select-every", .Init = 2}
-        Property VppSelectEveryOffsets As New StringParam With {.Text = "     offsets", .HelpSwitch = "--vpp-select-every", .Expand = False}
-
-        Property VppTransformFlipX As New BoolParam With {.Text = "flip_x", .Label = "Transform", .LeftMargin = g.MainForm.FontHeight * 1.5, .Switches = {"--vpp-transform"}, .ArgsFunc = AddressOf GetTransform}
-        Property VppTransformFlipY As New BoolParam With {.Text = "flip_y", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
-        Property VppTransformTranspose As New BoolParam With {.Text = "transpose", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
+        Property Smooth As New BoolParam With {.Text = "Smooth", .Switch = "--vpp-smooth", .ArgsFunc = AddressOf GetSmooth}
+        Property SmoothQuality As New NumParam With {.Text = "      Quality", .HelpSwitch = "--vpp-smooth", .Init = 3, .Config = {1, 6}}
+        Property SmoothQP As New NumParam With {.Text = "      QP", .HelpSwitch = "--vpp-smooth", .Config = {0, 100, 10, 1}}
+        Property SmoothPrec As New OptionParam With {.Text = "      Precision", .HelpSwitch = "--vpp-smooth", .Options = {"Auto", "FP16", "FP32"}}
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
@@ -519,85 +454,90 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}},
                         New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw")},
-                        VppEdgelevel,
-                        VppEdgelevelStrength,
-                        VppEdgelevelThreshold,
-                        VppEdgelevelBlack,
-                        VppEdgelevelWhite,
-                        VppUnsharp,
-                        VppUnsharpRadius,
-                        VppUnsharpWeight,
-                        VppUnsharpThreshold,
-                        VppSelectEvery,
-                        VppSelectEveryValue,
-                        VppSelectEveryOffsets)
+                        Edgelevel,
+                        EdgelevelStrength,
+                        EdgelevelThreshold,
+                        EdgelevelBlack,
+                        EdgelevelWhite,
+                        Unsharp,
+                        UnsharpRadius,
+                        UnsharpWeight,
+                        UnsharpThreshold,
+                        SelectEvery,
+                        SelectEveryValue,
+                        SelectEveryOffsets)
                     Add("VPP | Misc 2",
                         Tweak,
-                        vppbrightness,
-                        vppcontrast,
-                        vppsaturation,
-                        vppgamma,
-                        vpphue,
+                        TweakBrightness,
+                        TweakContrast,
+                        TweakSaturation,
+                        TweakGamma,
+                        TweakHue,
                         Pad,
                         PadLeft,
                         PadTop,
                         PadRight,
                         PadBottom,
-                        VppTransformFlipX,
-                        VppTransformFlipY,
-                        VppTransformTranspose)
+                        Smooth,
+                        SmoothQuality,
+                        SmoothQP,
+                        SmoothPrec)
+                    Add("VPP | Misc 3",
+                        TransformFlipX,
+                        TransformFlipY,
+                        TransformTranspose)
                     Add("VPP | Denoise",
-                        KNN, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
-                        PMD, PmdApplyCount, PmdStrength, PmdThreshold)
+                        Knn, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
+                        Pmd, PmdApplyCount, PmdStrength, PmdThreshold)
                     Add("VPP | Deband",
                         Deband,
-                        Deband_range,
-                        Deband_sample,
-                        Deband_thre,
-                        Deband_thre_y,
-                        Deband_thre_cb,
-                        Deband_thre_cr,
-                        Deband_dither,
-                        Deband_dither_y,
-                        Deband_dither_c,
-                        Deband_seed,
-                        Deband_blurfirst,
-                        Deband_rand_each_frame)
+                        DebandRange,
+                        DebandSample,
+                        DebandThre,
+                        DebandThreY,
+                        DebandThreCB,
+                        DebandThreCR,
+                        DebandDither,
+                        DebandDitherY,
+                        DebandDitherC,
+                        DebandSeed,
+                        DebandBlurfirst,
+                        DebandRandEachFrame)
                     Add("VPP | Deinterlace",
-                        VppNnedi,
-                        VppNnediField,
-                        VppNnediNns,
-                        VppNnediNszie,
-                        VppNnediQuality,
-                        VppNnediPrescreen,
-                        VppNnediErrortype,
-                        VppNnediPrec,
-                        VppNnediWeightfile,
-                        New OptionParam With {.Switch = "--vpp-yadif", .Text = "Yadif", .Options = {"disabled", "auto", "tff", "bff", "bob", "bob_tff", "bob_bff"}, .Values = {"", "", "mode=tff", "mode=bff", "mode=bob", "mode=bob_tff", "mode=bob_bff"}})
+                        Nnedi,
+                        NnediField,
+                        NnediNns,
+                        NnediNszie,
+                        NnediQuality,
+                        NnediPrescreen,
+                        NnediErrortype,
+                        NnediPrec,
+                        NnediWeightfile,
+                        New OptionParam With {.Switch = "--vpp-yadif", .Text = "Yadif", .Options = {"Disabled", "Auto", "TFF", "BFF", "Bob", "Bob TFF", "Bob BFF"}, .Values = {"", "", "mode=tff", "mode=bff", "mode=bob", "mode=bob_tff", "mode=bob_bff"}})
                     Add("VPP | AFS 1",
-                        AFS,
-                        AFSINI,
-                        AFSPreset,
-                        AFSLeft,
-                        AFSRight,
-                        AFSTop,
-                        AFSBottom,
-                        AFSmethod_switch,
-                        AFScoeff_shift,
-                        AFSthre_shift,
-                        AFSthre_deint,
-                        AFSthre_motion_y,
-                        AFSthre_motion_c,
-                        AFSlevel)
+                        Afs,
+                        AfsINI,
+                        AfsPreset,
+                        AfsLeft,
+                        AfsRight,
+                        AfsTop,
+                        AfsBottom,
+                        AfsMethodSwitch,
+                        AfsCoeffShift,
+                        AfsThreShift,
+                        AfsThreDeint,
+                        AfsThreMotionY,
+                        AfsThreMotionC,
+                        AfsLevel)
                     Add("VPP | AFS 2",
-                        AFSshift,
-                        AFSdrop,
-                        AFSsmooth,
-                        AFS24fps,
-                        AFStune,
-                        AFSrff,
-                        AFStimecode,
-                        AFSlog)
+                        AfsShift,
+                        AfsDrop,
+                        AfsSmooth,
+                        Afs24fps,
+                        AfsTune,
+                        AfsRFF,
+                        AfsTimecode,
+                        AfsLog)
                     Add("Statistic",
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
@@ -605,9 +545,9 @@ Public Class NVEnc
                     Add("Other",
                         Custom,
                         New StringParam With {.Switch = "--sub-source", .Text = "Subtitle File", .BrowseFile = True, .BrowseFileFilter = FileTypes.GetFilter(FileTypes.SubtitleExludingContainers)},
+                        New StringParam With {.Switch = "--keyfile", .Text = "Keyframes File", .BrowseFile = True},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option"},
-                        New StringParam With {.Switch = "--attachment-copy", .Text = "Attachment", .Quotes = QuotesMode.Never, .RemoveSpace = True},
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
                         Interlace,
@@ -650,77 +590,103 @@ Public Class NVEnc
             End If
 
             If Not QPI.NumEdit Is Nothing Then
-                VppNnediField.MenuButton.Enabled = VppNnedi.Value
-                VppNnediNns.MenuButton.Enabled = VppNnedi.Value
-                VppNnediNszie.MenuButton.Enabled = VppNnedi.Value
-                VppNnediQuality.MenuButton.Enabled = VppNnedi.Value
-                VppNnediPrescreen.MenuButton.Enabled = VppNnedi.Value
-                VppNnediErrortype.MenuButton.Enabled = VppNnedi.Value
-                VppNnediPrec.MenuButton.Enabled = VppNnedi.Value
-                VppNnediWeightfile.TextEdit.Enabled = VppNnedi.Value
+                NnediField.MenuButton.Enabled = Nnedi.Value
+                NnediNns.MenuButton.Enabled = Nnedi.Value
+                NnediNszie.MenuButton.Enabled = Nnedi.Value
+                NnediQuality.MenuButton.Enabled = Nnedi.Value
+                NnediPrescreen.MenuButton.Enabled = Nnedi.Value
+                NnediErrortype.MenuButton.Enabled = Nnedi.Value
+                NnediPrec.MenuButton.Enabled = Nnedi.Value
+                NnediWeightfile.TextEdit.Enabled = Nnedi.Value
 
-                VppEdgelevelStrength.NumEdit.Enabled = VppEdgelevel.Value
-                VppEdgelevelThreshold.NumEdit.Enabled = VppEdgelevel.Value
-                VppEdgelevelBlack.NumEdit.Enabled = VppEdgelevel.Value
-                VppEdgelevelWhite.NumEdit.Enabled = VppEdgelevel.Value
+                EdgelevelStrength.NumEdit.Enabled = Edgelevel.Value
+                EdgelevelThreshold.NumEdit.Enabled = Edgelevel.Value
+                EdgelevelBlack.NumEdit.Enabled = Edgelevel.Value
+                EdgelevelWhite.NumEdit.Enabled = Edgelevel.Value
 
-                VppUnsharpRadius.NumEdit.Enabled = VppUnsharp.Value
-                VppUnsharpWeight.NumEdit.Enabled = VppUnsharp.Value
-                VppUnsharpThreshold.NumEdit.Enabled = VppUnsharp.Value
+                UnsharpRadius.NumEdit.Enabled = Unsharp.Value
+                UnsharpWeight.NumEdit.Enabled = Unsharp.Value
+                UnsharpThreshold.NumEdit.Enabled = Unsharp.Value
 
-                VppSelectEveryValue.NumEdit.Enabled = VppSelectEvery.Value
-                VppSelectEveryOffsets.TextEdit.Enabled = VppSelectEvery.Value
+                SelectEveryValue.NumEdit.Enabled = SelectEvery.Value
+                SelectEveryOffsets.TextEdit.Enabled = SelectEvery.Value
 
-                KnnRadius.NumEdit.Enabled = KNN.Value
-                KnnStrength.NumEdit.Enabled = KNN.Value
-                KnnLerp.NumEdit.Enabled = KNN.Value
-                KnnThLerp.NumEdit.Enabled = KNN.Value
+                KnnRadius.NumEdit.Enabled = Knn.Value
+                KnnStrength.NumEdit.Enabled = Knn.Value
+                KnnLerp.NumEdit.Enabled = Knn.Value
+                KnnThLerp.NumEdit.Enabled = Knn.Value
 
                 PadLeft.NumEdit.Enabled = Pad.Value
                 PadTop.NumEdit.Enabled = Pad.Value
                 PadRight.NumEdit.Enabled = Pad.Value
                 PadBottom.NumEdit.Enabled = Pad.Value
 
-                vppcontrast.NumEdit.Enabled = Tweak.Value
-                vppgamma.NumEdit.Enabled = Tweak.Value
-                vppsaturation.NumEdit.Enabled = Tweak.Value
-                vpphue.NumEdit.Enabled = Tweak.Value
-                vppbrightness.NumEdit.Enabled = Tweak.Value
+                SmoothQuality.NumEdit.Enabled = Smooth.Value
+                SmoothQP.NumEdit.Enabled = Smooth.Value
+                SmoothPrec.MenuButton.Enabled = Smooth.Value
 
-                PmdApplyCount.NumEdit.Enabled = PMD.Value
-                PmdStrength.NumEdit.Enabled = PMD.Value
-                PmdThreshold.NumEdit.Enabled = PMD.Value
+                TweakContrast.NumEdit.Enabled = Tweak.Value
+                TweakGamma.NumEdit.Enabled = Tweak.Value
+                TweakSaturation.NumEdit.Enabled = Tweak.Value
+                TweakHue.NumEdit.Enabled = Tweak.Value
+                TweakBrightness.NumEdit.Enabled = Tweak.Value
 
-                For Each i In {Deband_range, Deband_sample, Deband_thre, Deband_thre_y, Deband_thre_cb,
-                    Deband_thre_cr, Deband_dither, Deband_dither_y, Deband_dither_c, Deband_seed}
+                PmdApplyCount.NumEdit.Enabled = Pmd.Value
+                PmdStrength.NumEdit.Enabled = Pmd.Value
+                PmdThreshold.NumEdit.Enabled = Pmd.Value
+
+                For Each i In {DebandRange, DebandSample, DebandThre, DebandThreY, DebandThreCB,
+                    DebandThreCR, DebandDither, DebandDitherY, DebandDitherC, DebandSeed}
 
                     i.NumEdit.Enabled = Deband.Value
                 Next
 
-                Deband_rand_each_frame.CheckBox.Enabled = Deband.Value
-                Deband_blurfirst.CheckBox.Enabled = Deband.Value
+                DebandRandEachFrame.CheckBox.Enabled = Deband.Value
+                DebandBlurfirst.CheckBox.Enabled = Deband.Value
 
-                AFS.CheckBox.Enabled = Interlace.Value > 0
+                AfsPreset.MenuButton.Enabled = Afs.Value
+                AfsINI.TextEdit.Enabled = Afs.Value
 
-                AFSPreset.MenuButton.Enabled = AFS.Value
-                AFSINI.TextEdit.Enabled = AFS.Value
+                For Each i In {AfsLeft, AfsRight, AfsTop, AfsBottom, AfsMethodSwitch, AfsCoeffShift,
+                               AfsThreShift, AfsThreDeint, AfsThreMotionY, AfsThreMotionC, AfsLevel}
 
-                For Each i In {AFSLeft, AFSRight, AFSTop, AFSBottom, AFSmethod_switch, AFScoeff_shift,
-                               AFSthre_shift, AFSthre_deint, AFSthre_motion_y, AFSthre_motion_c, AFSlevel}
-
-                    i.NumEdit.Enabled = AFS.Value
+                    i.NumEdit.Enabled = Afs.Value
                 Next
 
-                For Each i In {AFSshift, AFSdrop, AFSsmooth, AFS24fps, AFStune, AFSrff, AFStimecode, AFSlog}
-                    i.CheckBox.Enabled = AFS.Value
+                For Each i In {AfsShift, AfsDrop, AfsSmooth, Afs24fps, AfsTune, AfsRFF, AfsTimecode, AfsLog}
+                    i.CheckBox.Enabled = Afs.Value
                 Next
             End If
 
             MyBase.OnValueChanged(item)
         End Sub
 
+        Function GetSmooth() As String
+            If Smooth.Value Then
+                Dim ret = ""
+
+                If SmoothQuality.Value <> SmoothQuality.DefaultValue Then
+                    ret += ",quality=" & SmoothQuality.Value
+                End If
+
+                If SmoothQP.Value <> SmoothQP.DefaultValue Then
+                    ret += ",qp=" & SmoothQP.Value.ToInvariantString
+                End If
+
+                If SmoothPrec.Value <> SmoothPrec.DefaultValue Then
+                    ret += ",prec=" & SmoothPrec.ValueText
+                End If
+
+                If ret <> "" Then
+                    Return "--vpp-smooth " + ret.TrimStart(","c)
+                Else
+                    Return "--vpp-smooth"
+                End If
+            End If
+        End Function
+
         Function GetPmdArgs() As String
-            If PMD.Value Then
+            If Pmd.Value Then
                 Dim ret = ""
 
                 If PmdApplyCount.Value <> PmdApplyCount.DefaultValue Then
@@ -747,24 +713,24 @@ Public Class NVEnc
             If Tweak.Value Then
                 Dim ret = ""
 
-                If vppbrightness.Value <> vppbrightness.DefaultValue Then
-                    ret += "brightness=" & vppbrightness.Value.ToInvariantString
+                If TweakBrightness.Value <> TweakBrightness.DefaultValue Then
+                    ret += "brightness=" & TweakBrightness.Value.ToInvariantString
                 End If
 
-                If vppcontrast.Value <> vppcontrast.DefaultValue Then
-                    ret += ",contrast=" & vppcontrast.Value.ToInvariantString
+                If TweakContrast.Value <> TweakContrast.DefaultValue Then
+                    ret += ",contrast=" & TweakContrast.Value.ToInvariantString
                 End If
 
-                If vppsaturation.Value <> vppsaturation.DefaultValue Then
-                    ret += ",saturation=" & vppsaturation.Value.ToInvariantString
+                If TweakSaturation.Value <> TweakSaturation.DefaultValue Then
+                    ret += ",saturation=" & TweakSaturation.Value.ToInvariantString
                 End If
 
-                If vppgamma.Value <> vppgamma.DefaultValue Then
-                    ret += ",gamma=" & vppgamma.Value.ToInvariantString
+                If TweakGamma.Value <> TweakGamma.DefaultValue Then
+                    ret += ",gamma=" & TweakGamma.Value.ToInvariantString
                 End If
 
-                If vpphue.Value <> vpphue.DefaultValue Then
-                    ret += ",hue=" & vpphue.Value.ToInvariantString
+                If TweakHue.Value <> TweakHue.DefaultValue Then
+                    ret += ",hue=" & TweakHue.Value.ToInvariantString
                 End If
 
                 If ret <> "" Then
@@ -804,7 +770,7 @@ Public Class NVEnc
         End Function
 
         Function GetKnnArgs() As String
-            If KNN.Value Then
+            If Knn.Value Then
                 Dim ret = ""
 
                 If KnnRadius.Value <> KnnRadius.DefaultValue Then
@@ -834,19 +800,51 @@ Public Class NVEnc
         Function GetDebandArgs() As String
             Dim ret = ""
 
-            For Each i In {Deband_range, Deband_sample, Deband_thre, Deband_thre_y, Deband_thre_cb,
-                Deband_thre_cr, Deband_dither, Deband_dither_y, Deband_dither_c, Deband_seed}
+            If DebandRange.Value <> DebandRange.DefaultValue Then
+                ret += ",range=" & DebandRange.Value
+            End If
 
-                If i.Value <> i.DefaultValue Then
-                    ret += "," + i.Text.Trim + "=" & i.Value
-                End If
-            Next
+            If DebandSample.Value <> DebandSample.DefaultValue Then
+                ret += ",sample=" & DebandSample.Value
+            End If
 
-            If Deband_blurfirst.Value Then
+            If DebandThre.Value <> DebandThre.DefaultValue Then
+                ret += ",thre=" & DebandThre.Value
+            End If
+
+            If DebandThreY.Value <> DebandThreY.DefaultValue Then
+                ret += ",thre_y=" & DebandThreY.Value
+            End If
+
+            If DebandThreCB.Value <> DebandThreCB.DefaultValue Then
+                ret += ",thre_cb=" & DebandThreCB.Value
+            End If
+
+            If DebandThreCR.Value <> DebandThreCR.DefaultValue Then
+                ret += ",thre_cr=" & DebandThreCR.Value
+            End If
+
+            If DebandDither.Value <> DebandDither.DefaultValue Then
+                ret += ",dither=" & DebandDither.Value
+            End If
+
+            If DebandDitherY.Value <> DebandDitherY.DefaultValue Then
+                ret += ",dither_y=" & DebandDitherY.Value
+            End If
+
+            If DebandDitherC.Value <> DebandDitherC.DefaultValue Then
+                ret += ",dither_c=" & DebandDitherC.Value
+            End If
+
+            If DebandSeed.Value <> DebandSeed.DefaultValue Then
+                ret += ",seed=" & DebandSeed.Value
+            End If
+
+            If DebandBlurfirst.Value Then
                 ret += "," + "blurfirst"
             End If
 
-            If Deband_rand_each_frame.Value Then
+            If DebandRandEachFrame.Value Then
                 ret += "," + "rand_each_frame"
             End If
 
@@ -858,19 +856,19 @@ Public Class NVEnc
         Function GetUnsharp() As String
             Dim ret = ""
 
-            If VppUnsharpRadius.Value <> VppUnsharpRadius.DefaultValue Then
-                ret += "radius=" & VppUnsharpRadius.Value
+            If UnsharpRadius.Value <> UnsharpRadius.DefaultValue Then
+                ret += "radius=" & UnsharpRadius.Value
             End If
 
-            If VppUnsharpWeight.Value <> VppUnsharpWeight.DefaultValue Then
-                ret += ",weight=" & VppUnsharpWeight.Value.ToInvariantString
+            If UnsharpWeight.Value <> UnsharpWeight.DefaultValue Then
+                ret += ",weight=" & UnsharpWeight.Value.ToInvariantString
             End If
 
-            If VppUnsharpThreshold.Value <> VppUnsharpThreshold.DefaultValue Then
-                ret += ",threshold=" & VppUnsharpThreshold.Value
+            If UnsharpThreshold.Value <> UnsharpThreshold.DefaultValue Then
+                ret += ",threshold=" & UnsharpThreshold.Value
             End If
 
-            If VppUnsharp.Value Then
+            If Unsharp.Value Then
                 Return ("--vpp-unsharp " + ret.TrimStart(","c)).TrimEnd
             End If
         End Function
@@ -878,23 +876,23 @@ Public Class NVEnc
         Function GetEdge() As String
             Dim ret = ""
 
-            If VppEdgelevelStrength.Value <> VppEdgelevelStrength.DefaultValue Then
-                ret += "strength=" & VppEdgelevelStrength.Value
+            If EdgelevelStrength.Value <> EdgelevelStrength.DefaultValue Then
+                ret += "strength=" & EdgelevelStrength.Value
             End If
 
-            If VppEdgelevelThreshold.Value <> VppEdgelevelThreshold.DefaultValue Then
-                ret += ",threshold=" & VppEdgelevelThreshold.Value
+            If EdgelevelThreshold.Value <> EdgelevelThreshold.DefaultValue Then
+                ret += ",threshold=" & EdgelevelThreshold.Value
             End If
 
-            If VppEdgelevelBlack.Value <> VppEdgelevelBlack.DefaultValue Then
-                ret += ",black=" & VppEdgelevelBlack.Value
+            If EdgelevelBlack.Value <> EdgelevelBlack.DefaultValue Then
+                ret += ",black=" & EdgelevelBlack.Value
             End If
 
-            If VppEdgelevelWhite.Value <> VppEdgelevelWhite.DefaultValue Then
-                ret += ",white=" & VppEdgelevelWhite.Value
+            If EdgelevelWhite.Value <> EdgelevelWhite.DefaultValue Then
+                ret += ",white=" & EdgelevelWhite.Value
             End If
 
-            If VppEdgelevel.Value Then
+            If Edgelevel.Value Then
                 Return ("--vpp-edgelevel " + ret.TrimStart(","c)).TrimEnd
             End If
         End Function
@@ -902,15 +900,15 @@ Public Class NVEnc
         Function GetTransform() As String
             Dim ret = ""
 
-            If VppTransformFlipX.Value Then
+            If TransformFlipX.Value Then
                 ret += "flip_x=true"
             End If
 
-            If VppTransformFlipY.Value Then
+            If TransformFlipY.Value Then
                 ret += ",flip_y=true"
             End If
 
-            If VppTransformTranspose.Value Then
+            If TransformTranspose.Value Then
                 ret += ",transpose=true"
             End If
 
@@ -922,10 +920,10 @@ Public Class NVEnc
         Function GetSelectEvery() As String
             Dim ret = ""
 
-            ret += VppSelectEveryValue.Value.ToString
-            ret += "," + VppSelectEveryOffsets.Value.SplitNoEmptyAndWhiteSpace(" ", ",", ";").Select(Function(item) "offset=" + item).Join(",")
+            ret += SelectEveryValue.Value.ToString
+            ret += "," + SelectEveryOffsets.Value.SplitNoEmptyAndWhiteSpace(" ", ",", ";").Select(Function(item) "offset=" + item).Join(",")
 
-            If VppSelectEvery.Value Then
+            If SelectEvery.Value Then
                 Return ("--vpp-select-every " + ret.TrimStart(","c)).TrimEnd(","c)
             End If
         End Function
@@ -933,39 +931,39 @@ Public Class NVEnc
         Function GetNnedi() As String
             Dim ret = ""
 
-            If VppNnediField.Value <> VppNnediField.DefaultValue Then
-                ret += "field=" + VppNnediField.ValueText
+            If NnediField.Value <> NnediField.DefaultValue Then
+                ret += "field=" + NnediField.ValueText
             End If
 
-            If VppNnediNns.Value <> VppNnediNns.DefaultValue Then
-                ret += ",nns=" + VppNnediNns.ValueText
+            If NnediNns.Value <> NnediNns.DefaultValue Then
+                ret += ",nns=" + NnediNns.ValueText
             End If
 
-            If VppNnediNszie.Value <> VppNnediNszie.DefaultValue Then
-                ret += ",nszie=" + VppNnediNszie.ValueText
+            If NnediNszie.Value <> NnediNszie.DefaultValue Then
+                ret += ",nszie=" + NnediNszie.ValueText
             End If
 
-            If VppNnediQuality.Value <> VppNnediQuality.DefaultValue Then
-                ret += ",quality=" + VppNnediQuality.ValueText
+            If NnediQuality.Value <> NnediQuality.DefaultValue Then
+                ret += ",quality=" + NnediQuality.ValueText
             End If
 
-            If VppNnediPrescreen.Value <> VppNnediPrescreen.DefaultValue Then
-                ret += ",prescreen=" + VppNnediPrescreen.ValueText
+            If NnediPrescreen.Value <> NnediPrescreen.DefaultValue Then
+                ret += ",prescreen=" + NnediPrescreen.ValueText
             End If
 
-            If VppNnediErrortype.Value <> VppNnediErrortype.DefaultValue Then
-                ret += ",errortype=" + VppNnediErrortype.ValueText
+            If NnediErrortype.Value <> NnediErrortype.DefaultValue Then
+                ret += ",errortype=" + NnediErrortype.ValueText
             End If
 
-            If VppNnediPrec.Value <> VppNnediPrec.DefaultValue Then
-                ret += ",prec=" + VppNnediPrec.ValueText
+            If NnediPrec.Value <> NnediPrec.DefaultValue Then
+                ret += ",prec=" + NnediPrec.ValueText
             End If
 
-            If VppNnediWeightfile.Value <> "" Then
-                ret += ",weightfile=" + VppNnediWeightfile.Value.Escape
+            If NnediWeightfile.Value <> "" Then
+                ret += ",weightfile=" + NnediWeightfile.Value.Escape
             End If
 
-            If VppNnedi.Value Then
+            If Nnedi.Value Then
                 Return ("--vpp-nnedi " + ret.TrimStart(","c)).TrimEnd
             End If
         End Function
@@ -973,29 +971,91 @@ Public Class NVEnc
         Function GetAFS() As String
             Dim ret = ""
 
-            If AFSPreset.Value <> AFSPreset.DefaultValue Then
-                ret += "preset=" + AFSPreset.ValueText
+            If AfsPreset.Value <> AfsPreset.DefaultValue Then
+                ret += "preset=" + AfsPreset.ValueText
             End If
 
-            If AFSINI.Value <> "" Then
-                ret += ",ini=" + AFSINI.Value.Escape
+            If AfsINI.Value <> "" Then
+                ret += ",ini=" + AfsINI.Value.Escape
             End If
 
-            For Each i In {AFSLeft, AFSRight, AFSTop, AFSBottom, AFSmethod_switch, AFScoeff_shift,
-                           AFSthre_shift, AFSthre_deint, AFSthre_motion_y, AFSthre_motion_c, AFSlevel}
+            If AfsLeft.Value <> AfsLeft.DefaultValue Then
+                ret += ",left=" & AfsLeft.Value
+            End If
 
-                If i.Value <> i.DefaultValue Then
-                    ret += "," + i.Text + "=" & i.Value
-                End If
-            Next
+            If AfsRight.Value <> AfsRight.DefaultValue Then
+                ret += ",right=" & AfsRight.Value
+            End If
 
-            For Each i In {AFSshift, AFSdrop, AFSsmooth, AFS24fps, AFStune, AFSrff, AFStimecode, AFSlog}
-                If i.Value <> i.DefaultValue Then
-                    ret += "," + i.Text + "=" + If(i.Value, "on", "off")
-                End If
-            Next
+            If AfsTop.Value <> AfsTop.DefaultValue Then
+                ret += ",top=" & AfsTop.Value
+            End If
 
-            If AFS.Value Then
+            If AfsBottom.Value <> AfsBottom.DefaultValue Then
+                ret += ",bottom=" & AfsBottom.Value
+            End If
+
+            If AfsMethodSwitch.Value <> AfsMethodSwitch.DefaultValue Then
+                ret += ",method_switch=" & AfsMethodSwitch.Value
+            End If
+
+            If AfsCoeffShift.Value <> AfsCoeffShift.DefaultValue Then
+                ret += ",coeff_shift=" & AfsCoeffShift.Value
+            End If
+
+            If AfsThreShift.Value <> AfsThreShift.DefaultValue Then
+                ret += ",thre_shift=" & AfsThreShift.Value
+            End If
+
+            If AfsThreDeint.Value <> AfsThreDeint.DefaultValue Then
+                ret += ",thre_deint=" & AfsThreDeint.Value
+            End If
+
+            If AfsThreMotionY.Value <> AfsThreMotionY.DefaultValue Then
+                ret += ",thre_motion_y=" & AfsThreMotionY.Value
+            End If
+
+            If AfsThreMotionC.Value <> AfsThreMotionC.DefaultValue Then
+                ret += ",thre_motion_c=" & AfsThreMotionC.Value
+            End If
+
+            If AfsLevel.Value <> AfsLevel.DefaultValue Then
+                ret += ",level=" & AfsLevel.Value
+            End If
+
+            If AfsShift.Value <> AfsShift.DefaultValue Then
+                ret += ",shift=" + If(AfsShift.Value, "on", "off")
+            End If
+
+            If AfsDrop.Value <> AfsDrop.DefaultValue Then
+                ret += ",drop=" + If(AfsDrop.Value, "on", "off")
+            End If
+
+            If AfsSmooth.Value <> AfsSmooth.DefaultValue Then
+                ret += ",smooth=" + If(AfsSmooth.Value, "on", "off")
+            End If
+
+            If Afs24fps.Value <> Afs24fps.DefaultValue Then
+                ret += ",24fps=" + If(Afs24fps.Value, "on", "off")
+            End If
+
+            If AfsTune.Value <> AfsTune.DefaultValue Then
+                ret += ",tune=" + If(AfsTune.Value, "on", "off")
+            End If
+
+            If AfsRFF.Value <> AfsRFF.DefaultValue Then
+                ret += ",rff=" + If(AfsRFF.Value, "on", "off")
+            End If
+
+            If AfsTimecode.Value <> AfsTimecode.DefaultValue Then
+                ret += ",timecode=" + If(AfsTimecode.Value, "on", "off")
+            End If
+
+            If AfsLog.Value <> AfsLog.DefaultValue Then
+                ret += ",log=" + If(AfsLog.Value, "on", "off")
+            End If
+
+            If Afs.Value Then
                 Return ("--vpp-afs " + ret.TrimStart(","c)).TrimEnd
             End If
         End Function

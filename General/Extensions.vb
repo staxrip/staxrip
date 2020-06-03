@@ -62,6 +62,15 @@ Module StringExtensions
     End Function
 
     <Extension>
+    Function ToLowerEx(instance As String) As String
+        If instance = "" Then
+            Return ""
+        End If
+
+        Return instance.ToLower
+    End Function
+
+    <Extension>
     Sub ThrowIfContainsNewLine(instance As String)
         If instance?.Contains(BR) Then
             Throw New Exception("String contains a line break char: " + instance)

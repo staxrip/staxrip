@@ -91,6 +91,10 @@ Public Class CommandLineForm
                 help += param.Switch2 + BR
             End If
 
+            If param.HelpSwitch <> "" Then
+                help += param.HelpSwitch + BR
+            End If
+
             If param.NoSwitch <> "" Then
                 help += param.NoSwitch + BR
             End If
@@ -306,7 +310,11 @@ Public Class CommandLineForm
 
         If find.Length > 1 Then
             For Each item In Items
-                If item.Param.Switch = cbGoTo.Text OrElse item.Param.Switch2 = cbGoTo.Text Then
+                If item.Param.Switch = cbGoTo.Text OrElse
+                    item.Param.Switch2 = cbGoTo.Text OrElse
+                    item.Param.NoSwitch = cbGoTo.Text OrElse
+                    item.Param.HelpSwitch = cbGoTo.Text Then
+
                     matchedItems.Add(item)
                 End If
 
@@ -320,11 +328,15 @@ Public Class CommandLineForm
             Next
 
             For Each item In Items
-                If item.Param.Switch?.ToLower?.Contains(find) Then matchedItems.Add(item)
-                If item.Param.Switch2?.ToLower?.Contains(find) Then matchedItems.Add(item)
-                If item.Param.NoSwitch?.ToLower?.Contains(find) Then matchedItems.Add(item)
-                If item.Param.Help?.ToLower?.Contains(find) Then matchedItems.Add(item)
-                If item.Param.Text?.ToLower?.Contains(find) Then matchedItems.Add(item)
+                If item.Param.Switch.ToLowerEx.Contains(find) OrElse
+                    item.Param.Switch2.ToLowerEx.Contains(find) OrElse
+                    item.Param.NoSwitch.ToLowerEx.Contains(find) OrElse
+                    item.Param.HelpSwitch.ToLowerEx.Contains(find) OrElse
+                    item.Param.Help.ToLowerEx.Contains(find) OrElse
+                    item.Param.Text.ToLowerEx.Contains(find) Then
+
+                    matchedItems.Add(item)
+                End If
 
                 If Not item.Param.Switches Is Nothing Then
                     For Each switch In item.Param.Switches
@@ -414,6 +426,10 @@ Public Class CommandLineForm
 
                 If i.Param.Switch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.Switch) Then
                     cbGoTo.Items.Add(i.Param.Switch)
+                End If
+
+                If i.Param.HelpSwitch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.HelpSwitch) Then
+                    cbGoTo.Items.Add(i.Param.HelpSwitch)
                 End If
 
                 If i.Param.Switch2 <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.Switch2) Then

@@ -338,8 +338,17 @@ Public Class Package
         .IsGUI = True,
         .WebURL = "http://sourceforge.net/projects/guliverkli"})
 
+    Shared Property flash3kyuu_deband As Package = Add(New PluginPackage With {
+        .Name = "flash3kyuu_deband",
+        .Filename = "flash3kyuu_deband.dll",
+        .WebURL = "http://forum.doom9.org/showthread.php?t=161411",
+        .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",
+        .Description = "Simple debanding filter that can be quite effective for some anime sources.",
+        .VSFilterNames = {"core.f3kdb.Deband"},
+        .AvsFilterNames = {"f3kdb"}})
+
     Shared Property f3kdb_neo As Package = Add(New PluginPackage With {
-        .Name = "f3kdb neo",
+        .Name = "Neo f3kdb",
         .Filename = "neo-f3kdb.dll",
         .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb",
         .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",

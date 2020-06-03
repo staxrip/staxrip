@@ -133,7 +133,8 @@ Public Class QSVEnc
             bench-quality log log-framelist audio-thread avi avqsv input-file python qvbr-quality help
             audio-ignore-decode-error audio-ignore-notrack-error nv12 output-file sharpness vpp-delogo
             check-features-html perf-monitor perf-monitor-plot perf-monitor-interval vpp-delogo-select
-            audio-delay"
+            audio-delay audio-disposition audio-metadata option-list sub-disposition sub-metadata
+            metadata video-metadata video-tag attachment-copy"
 
         tester.UndocumentedSwitches = "input-thread chromaloc videoformat colormatrix colorprim transfer fullrange"
         tester.Package = Package.QSVEnc
@@ -328,7 +329,8 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--fixed-func", .Text = "Use fixed func instead of GPU EU"},
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"},
                         New BoolParam With {.Switch = "--tskip", .Text = "T-Skip", .VisibleFunc = Function() Codec.ValueText = "hevc"},
-                        New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"})
+                        New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"},
+                        New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"})
 
                     For Each item In ItemsValue
                         If item.HelpSwitch <> "" Then

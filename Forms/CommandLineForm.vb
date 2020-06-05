@@ -87,10 +87,6 @@ Public Class CommandLineForm
                 help += param.Switch + BR
             End If
 
-            If param.Switch2 <> "" Then
-                help += param.Switch2 + BR
-            End If
-
             If param.HelpSwitch <> "" Then
                 help += param.HelpSwitch + BR
             End If
@@ -257,7 +253,7 @@ Public Class CommandLineForm
         MyBase.OnFormClosed(e)
     End Sub
 
-    Private Sub CommandLineForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+    Sub CommandLineForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         ShowHelp()
     End Sub
 
@@ -285,7 +281,7 @@ Public Class CommandLineForm
         form.Show()
     End Sub
 
-    Private Sub cbGoTo_KeyDown(sender As Object, e As KeyEventArgs) Handles cbGoTo.KeyDown
+    Sub cbGoTo_KeyDown(sender As Object, e As KeyEventArgs) Handles cbGoTo.KeyDown
         If e.KeyData = Keys.Enter Then
             SearchIndex += 1
             cbGoTo_TextChanged(Nothing, Nothing)
@@ -298,7 +294,7 @@ Public Class CommandLineForm
         End If
     End Sub
 
-    Private Sub cbGoTo_TextChanged(sender As Object, e As EventArgs) Handles cbGoTo.TextChanged
+    Sub cbGoTo_TextChanged(sender As Object, e As EventArgs) Handles cbGoTo.TextChanged
         If Not HighlightedControl Is Nothing Then
             HighlightedControl.Font = New Font(HighlightedControl.Font.FontFamily, HighlightedControl.Font.Size, FontStyle.Regular)
             HighlightedControl = Nothing
@@ -311,7 +307,6 @@ Public Class CommandLineForm
         If find.Length > 1 Then
             For Each item In Items
                 If item.Param.Switch = cbGoTo.Text OrElse
-                    item.Param.Switch2 = cbGoTo.Text OrElse
                     item.Param.NoSwitch = cbGoTo.Text OrElse
                     item.Param.HelpSwitch = cbGoTo.Text Then
 
@@ -329,7 +324,6 @@ Public Class CommandLineForm
 
             For Each item In Items
                 If item.Param.Switch.ToLowerEx.Contains(find) OrElse
-                    item.Param.Switch2.ToLowerEx.Contains(find) OrElse
                     item.Param.NoSwitch.ToLowerEx.Contains(find) OrElse
                     item.Param.HelpSwitch.ToLowerEx.Contains(find) OrElse
                     item.Param.Help.ToLowerEx.Contains(find) OrElse
@@ -428,26 +422,22 @@ Public Class CommandLineForm
                     cbGoTo.Items.Add(i.Param.Switch)
                 End If
 
-                If i.Param.HelpSwitch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.HelpSwitch) Then
-                    cbGoTo.Items.Add(i.Param.HelpSwitch)
-                End If
-
-                If i.Param.Switch2 <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.Switch2) Then
-                    cbGoTo.Items.Add(i.Param.Switch2)
-                End If
-
                 If i.Param.NoSwitch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.NoSwitch) Then
                     cbGoTo.Items.Add(i.Param.NoSwitch)
+                End If
+
+                If i.Param.HelpSwitch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.HelpSwitch) Then
+                    cbGoTo.Items.Add(i.Param.HelpSwitch)
                 End If
             End If
         Next
     End Sub
 
-    Private Sub CommandLineForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+    Sub CommandLineForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         g.MainForm.PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
     End Sub
 
-    Private Sub rtbCommandLine_MouseUp(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseUp
+    Sub rtbCommandLine_MouseUp(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseUp
         If e.Button = MouseButtons.Right Then
             cmsCommandLine.Items.Clear()
 
@@ -487,7 +477,7 @@ Public Class CommandLineForm
         End If
     End Sub
 
-    Private Sub rtbCommandLine_MouseDown(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseDown
+    Sub rtbCommandLine_MouseDown(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseDown
         If e.Button = MouseButtons.Right AndAlso rtbCommandLine.SelectedText = "" Then
             rtbCommandLine.SelectionStart = rtbCommandLine.GetCharIndexFromPosition(e.Location)
         End If

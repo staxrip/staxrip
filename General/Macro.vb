@@ -449,7 +449,7 @@ Public Class Macro
         If value.Contains("%system_dir%") Then value = value.Replace("%system_dir%", Folder.System)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%script_dir%") Then value = value.Replace("%script_dir%", Folder.Script)
+        If value.Contains("%script_dir%") Then value = value.Replace("%script_dir%", Folder.Scripts)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%programs_dir%") Then value = value.Replace("%programs_dir%", Folder.Programs)

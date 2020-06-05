@@ -109,11 +109,9 @@ Public Class Folder
         End Get
     End Property
 
-    Shared ReadOnly Property Script As String
+    Shared ReadOnly Property Scripts As String
         Get
-            Dim ret = Settings + "Scripts\"
-            If Not Directory.Exists(ret) Then Directory.CreateDirectory(ret)
-            Return ret
+            Return Settings + "Scripts\"
         End Get
     End Property
 
@@ -143,11 +141,11 @@ Public Class Folder
                     Dim dir = td.Show
 
                     If dir = "custom" Then
-                        Using d As New FolderBrowserDialog
-                            d.SelectedPath = Folder.Startup
+                        Using dialog As New FolderBrowserDialog
+                            dialog.SelectedPath = Folder.Startup
 
-                            If d.ShowDialog = DialogResult.OK Then
-                                dir = d.SelectedPath
+                            If dialog.ShowDialog = DialogResult.OK Then
+                                dir = dialog.SelectedPath
                             Else
                                 dir = Folder.AppDataCommon + "StaxRip"
                             End If
@@ -156,13 +154,25 @@ Public Class Folder
                         dir = Folder.AppDataCommon + "StaxRip"
                     End If
 
-                    If Not Directory.Exists(dir) Then
+                    If Not dir.DirExists Then
                         Try
                             Directory.CreateDirectory(dir)
                         Catch
                             dir = Folder.AppDataCommon + "StaxRip"
-                            If Not Directory.Exists(dir) Then Directory.CreateDirectory(dir)
+
+                            If Not dir.DirExists Then
+                                Directory.CreateDirectory(dir)
+                            End If
                         End Try
+                    End If
+
+                    Dim scriptDir = dir.FixDir + "Scripts\"
+
+                    If Not scriptDir.DirExists Then
+                        Directory.CreateDirectory(scriptDir)
+                        Dim code = "[MainModule]::MsgInfo('Hello World')"
+                        code.WriteFileUTF8BOM(scriptDir + "Hello World.ps1")
+                        Directory.CreateDirectory(scriptDir + "Auto Load")
                     End If
 
                     SettingsValue = dir.FixDir

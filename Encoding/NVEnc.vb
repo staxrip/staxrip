@@ -172,7 +172,7 @@ Public Class NVEnc
 
         Property Codec As New OptionParam With {
             .Switch = "--codec",
-            .Switch2 = "-c",
+            .HelpSwitch = "-c",
             .Text = "Codec",
             .Options = {"Nvidia H.264", "Nvidia H.265"},
             .Values = {"h264", "h265"},
@@ -387,7 +387,7 @@ Public Class NVEnc
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
                     Add("Basic", Mode, Decoder, Codec,
-                        New OptionParam With {.Switch = "--preset", .Switch2 = "-u", .Text = "Preset", .Value = 1, .Options = {"Default", "Quality", "Performance"}},
+                        New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Value = 1, .Options = {"Default", "Quality", "Performance"}},
                         Profile, ProfileH265,
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}, .Values = {"main", "high"}},
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
@@ -410,7 +410,7 @@ Public Class NVEnc
                     Add("Slice Decision",
                         New OptionParam With {.Switch = "--direct", .Text = "B-Direct Mode", .Options = {"Automatic", "None", "Spatial", "Temporal"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New OptionParam With {.Switch = "--bref-mode", .Text = "B-Frame Ref. Mode", .Options = {"Disabled", "Each", "Middle"}},
-                        New NumParam With {.Switch = "--bframes", .Switch2 = "-b", .Text = "B-Frames", .Init = 3, .Config = {0, 16}},
+                        New NumParam With {.Switch = "--bframes", .HelpSwitch = "-b", .Text = "B-Frames", .Init = 3, .Config = {0, 16}},
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Init = 3, .Config = {0, 16}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--lookahead", .Text = "Lookahead", .Config = {0, 32}},
@@ -551,7 +551,7 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
                         Interlace,
-                        New NumParam With {.Switch = "--device", .Switch2 = "-d", .Text = "Device", .Config = {0, 4}},
+                        New NumParam With {.Switch = "--device", .HelpSwitch = "-d", .Text = "Device", .Config = {0, 4}},
                         New BoolParam With {.Switch = "--deblock", .NoSwitch = "--no-deblock", .Text = "Deblock", .Init = True},
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"})
 

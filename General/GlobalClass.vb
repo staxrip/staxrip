@@ -23,6 +23,17 @@ Public Class GlobalClass
     Property DefaultCommands As New GlobalCommands
     Property IsProcessing As Boolean
 
+    Event JobMuxed()
+    Event JobProcessed()
+    Event JobsProcessed()
+    Event ProjectLoaded()
+    Event ProjectOrSourceLoaded()
+    Event AfterSourceLoaded()
+    Event VideoEncoded()
+    Event ApplicationExit()
+    Event BeforeJobProcessed()
+    Event BeforeProcessing()
+
     Sub WriteDebugLog(value As String)
         If s?.WriteDebugLog Then
             Trace.TraceInformation(value)
@@ -42,6 +53,21 @@ Public Class GlobalClass
         Catch ex As Exception
             ShowException(ex)
         End Try
+    End Function
+
+    Sub LoadPowerShellScripts()
+        For Each dirPath In {Folder.Apps + "Scripts", Folder.Scripts + "Auto Load"}
+            If dirPath.DirExists Then
+                For Each fp In Directory.GetFiles(dirPath, "*.ps1")
+                    g.DefaultCommands.ExecuteScriptFile(fp)
+                Next
+            End If
+        Next
+    End Sub
+
+    Shared Function ConvertToCSV(delimiter As String, objects As IEnumerable(Of Object)) As String
+        Dim code = $"$inputVar | ConvertTo-Csv -Delimiter '{delimiter}' -NoTypeInformation"
+        Return $"sep={delimiter}" + Environment.NewLine + PowerShell.InvokeAndConvert(code, "inputVar", objects)
     End Function
 
     Function IsWindowsTerminalAvailable() As Boolean
@@ -664,15 +690,38 @@ Public Class GlobalClass
         g.MainForm.Assistant()
     End Sub
 
-    Sub RaiseAppEvent(appEvent As ApplicationEvent)
-        Dim scriptPath = Folder.Settings + "Scripts\" + appEvent.ToString + ".ps1"
+    Sub RaiseAppEvent(ae As ApplicationEvent)
+        Select Case ae
+            Case ApplicationEvent.JobMuxed
+                RaiseEvent JobMuxed()
+            Case ApplicationEvent.JobProcessed
+                RaiseEvent JobProcessed()
+            Case ApplicationEvent.JobsProcessed
+                RaiseEvent JobsProcessed()
+            Case ApplicationEvent.ProjectLoaded
+                RaiseEvent ProjectLoaded()
+            Case ApplicationEvent.ProjectOrSourceLoaded
+                RaiseEvent ProjectOrSourceLoaded()
+            Case ApplicationEvent.AfterSourceLoaded
+                RaiseEvent AfterSourceLoaded()
+            Case ApplicationEvent.VideoEncoded
+                RaiseEvent VideoEncoded()
+            Case ApplicationEvent.ApplicationExit
+                RaiseEvent ApplicationExit()
+            Case ApplicationEvent.BeforeJobProcessed
+                RaiseEvent BeforeJobProcessed()
+            Case ApplicationEvent.BeforeProcessing
+                RaiseEvent BeforeProcessing()
+        End Select
+
+        Dim scriptPath = Folder.Scripts + ae.ToString + ".ps1"
 
         If File.Exists(scriptPath) Then
             g.DefaultCommands.ExecuteScriptFile(scriptPath)
         End If
 
         For Each ec In s.EventCommands
-            If ec.Enabled AndAlso ec.Event = appEvent Then
+            If ec.Enabled AndAlso ec.Event = ae Then
                 Dim matches = 0
 
                 For Each criteria In ec.CriteriaList

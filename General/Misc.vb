@@ -7,7 +7,7 @@ Imports System.Management
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
-Imports System.Web.UI.WebControls.WebParts
+
 Imports StaxRip.UI
 
 Public Module ShortcutModule

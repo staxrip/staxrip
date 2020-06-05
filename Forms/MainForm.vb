@@ -1082,7 +1082,6 @@ Public Class MainForm
         LoadSettings()
 
         PowerShell.InitCode =
-            "Using namespace System.Windows.Forms;" + BR +
             "Using namespace StaxRip;" + BR +
             "Using namespace StaxRip.UI;" + BR +
             "[Reflection.Assembly]::LoadWithPartialName(""StaxRip"")"
@@ -1449,28 +1448,16 @@ Public Class MainForm
     End Sub
 
     Async Sub UpdateScriptsMenuAsync()
-        Dim files As String()
-        Dim events As String()
+        Dim files As String() = {}
+        Dim events As String() = System.Enum.GetNames(GetType(ApplicationEvent))
 
         Await Task.Run(Sub()
-                           Thread.Sleep(500)
-
-                           If Directory.Exists(Folder.Apps + "Scripts") Then
-                               For Each script In Directory.GetFiles(Folder.Apps + "Scripts")
-                                   If Not s.Storage.GetBool(script.FileName) AndAlso
-                                       Not File.Exists(Folder.Script + script.FileName) Then
-
-                                       FileHelp.Copy(script, Folder.Script + script.FileName)
-                                       s.Storage.SetBool(script.FileName, True)
-                                   End If
-                               Next
+                           If Folder.Scripts.DirExists Then
+                               files = Directory.GetFiles(Folder.Scripts)
                            End If
-
-                           events = System.Enum.GetNames(GetType(ApplicationEvent))
-                           files = Directory.GetFiles(Folder.Script)
                        End Sub)
 
-        If IsDisposed OrElse Native.GetForegroundWindow() <> Handle Then
+        If IsDisposed OrElse Native.GetForegroundWindow() <> Handle OrElse files.Count = 0 Then
             Exit Sub
         End If
 
@@ -1488,7 +1475,7 @@ Public Class MainForm
                     Next
 
                     menuItem.DropDownItems.Add(New ToolStripSeparator)
-                    ActionMenuItem.Add(menuItem.DropDownItems, "Open Scripts Folder", Sub() g.ShellExecute(Folder.Script))
+                    ActionMenuItem.Add(menuItem.DropDownItems, "Open Script Folder", Sub() g.ShellExecute(Folder.Scripts))
                 End If
             End If
         Next
@@ -5860,24 +5847,26 @@ Public Class MainForm
         ProcessCommandLine(Environment.GetCommandLineArgs)
         StaxRip.Update.ShowUpdateQuestion()
         StaxRip.Update.CheckForUpdate()
+        Task.Run(AddressOf g.LoadPowerShellScripts)
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        MyBase.OnFormClosing(e)
+
         If IsSaveCanceled() Then
             e.Cancel = True
         End If
-
-        MyBase.OnFormClosing(e)
     End Sub
 
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
+        MyBase.OnFormClosed(e)
+
         If Not g.ProcForm Is Nothing Then
             g.ProcForm.Invoke(Sub() g.ProcForm.Close())
         End If
 
         g.SaveSettings()
         g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
-        MyBase.OnFormClosed(e)
     End Sub
 
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean

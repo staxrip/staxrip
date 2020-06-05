@@ -9,7 +9,6 @@ Public Class Documentation
         GenerateMacroTableFile()
         GenerateToolFile()
         GenerateScreenshotsFile()
-        GenerateEventsFile()
 
         UpdateFile(Folder.Startup + "..\docs\generated\switches.rst", GetCommands(True))
         UpdateFile(Folder.Startup + "..\docs\generated\commands.rst", GetCommands(False))
@@ -110,7 +109,7 @@ Public Class Documentation
             ".. csv-table::" + BR +
             "    :header: ""Name"", ""Description""" + BR +
             "    :widths: auto" + BR2 +
-            "    " + PowerShell.ConvertToCSV(",", Macro.GetTips(False, True, False)).Right(BR).Right(BR).Replace(BR, BR + "    ")
+            "    " + g.ConvertToCSV(",", Macro.GetTips(False, True, False)).Right(BR).Right(BR).Replace(BR, BR + "    ")
 
         UpdateFile(Folder.Startup + "..\docs\generated\macro-table.rst", text)
     End Sub
@@ -144,7 +143,7 @@ Public Class Documentation
             ".. csv-table::" + BR +
             "    :header: ""Name"", ""Type"", ""Filename"", ""Version"", ""Modified Date""" + BR +
             "    :widths: auto" + BR2 +
-            "    " + PowerShell.ConvertToCSV(",", rows).Right(BR).Right(BR).Replace(BR, BR + "    ")
+            "    " + g.ConvertToCSV(",", rows).Right(BR).Right(BR).Replace(BR, BR + "    ")
 
         sb.Append(text + BR2)
 
@@ -250,16 +249,6 @@ Public Class Documentation
         Next
 
         UpdateFile(Folder.Startup + "..\docs\generated\screenshots.rst", screenshots)
-    End Sub
-
-    Shared Sub GenerateEventsFile()
-        Dim events = ""
-
-        For Each i As ApplicationEvent In System.Enum.GetValues(GetType(ApplicationEvent))
-            events += "- ``" + i.ToString + "`` " + DispNameAttribute.GetValueForEnum(i) + BR
-        Next
-
-        UpdateFile(Folder.Startup + "..\docs\generated\events.rst", events)
     End Sub
 
     Shared Sub UpdateFile(filepath As String, content As String)

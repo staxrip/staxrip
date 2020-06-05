@@ -653,7 +653,7 @@ Public Class AppsForm
             Select Case td.Show
                 Case "csv"
                     Dim csvFile = Folder.Temp + "staxrip tools.csv"
-                    PowerShell.ConvertToCSV(";", rows).WriteFileUTF8(csvFile)
+                    g.ConvertToCSV(";", rows).WriteFileUTF8(csvFile)
                     g.ShellExecute(g.GetAppPathForExtension("csv", "txt"), csvFile.Escape)
                 Case "ogv"
                     g.InvokePowerShellCode($"$objects | Out-GridView", "objects", rows)

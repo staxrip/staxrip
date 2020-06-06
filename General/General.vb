@@ -248,14 +248,13 @@ Public Class Folder
     End Property
 
     <DllImport("shfolder.dll", CharSet:=CharSet.Unicode)>
-    Private Shared Function SHGetFolderPath(hwndOwner As IntPtr, nFolder As Integer, hToken As IntPtr, dwFlags As Integer, lpszPath As StringBuilder) As Integer
+    Shared Function SHGetFolderPath(hwndOwner As IntPtr, nFolder As Integer, hToken As IntPtr, dwFlags As Integer, lpszPath As StringBuilder) As Integer
     End Function
 
-    Private Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String
-        'TODO: max path can theoretically be longer...
-        Dim sb As New StringBuilder(260)
+    Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String
+        Dim sb As New StringBuilder(500)
         SHGetFolderPath(IntPtr.Zero, CInt(folder), IntPtr.Zero, 0, sb)
-        Dim ret = sb.ToString.FixDir '.NET fails on 'D:'
+        Dim ret = sb.ToString.FixDir
         Call New FileIOPermission(FileIOPermissionAccess.PathDiscovery, ret).Demand()
         Return ret
     End Function

@@ -43,7 +43,7 @@ Partial Class CodeEditor
         Me.tlpMain.Controls.Add(Me.MainFlowLayoutPanel, 0, 0)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
-        Me.tlpMain.Margin = New System.Windows.Forms.Padding(5, 5, 5, 5)
+        Me.tlpMain.Margin = New System.Windows.Forms.Padding(5)
         Me.tlpMain.Name = "tlpMain"
         Me.tlpMain.RowCount = 2
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
@@ -59,24 +59,24 @@ Partial Class CodeEditor
         Me.FlowLayoutPanel1.Controls.Add(Me.bnOK)
         Me.FlowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.FlowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(10, 324)
-        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(10)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(15, 319)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(15)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(622, 70)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(612, 70)
         Me.FlowLayoutPanel1.TabIndex = 0
         '
         'bnCancel
         '
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(372, 0)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(11, 0, 0, 0)
+        Me.bnCancel.Location = New System.Drawing.Point(362, 0)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(111, 0)
+        Me.bnOK.Location = New System.Drawing.Point(97, 0)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
@@ -87,10 +87,10 @@ Partial Class CodeEditor
         Me.MainFlowLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.MainFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
         Me.MainFlowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.MainFlowLayoutPanel.Location = New System.Drawing.Point(10, 10)
-        Me.MainFlowLayoutPanel.Margin = New System.Windows.Forms.Padding(10, 10, 10, 0)
+        Me.MainFlowLayoutPanel.Location = New System.Drawing.Point(15, 15)
+        Me.MainFlowLayoutPanel.Margin = New System.Windows.Forms.Padding(15, 15, 15, 0)
         Me.MainFlowLayoutPanel.Name = "MainFlowLayoutPanel"
-        Me.MainFlowLayoutPanel.Size = New System.Drawing.Size(622, 304)
+        Me.MainFlowLayoutPanel.Size = New System.Drawing.Size(612, 289)
         Me.MainFlowLayoutPanel.TabIndex = 1
         '
         'CodeEditor

@@ -44,6 +44,9 @@ Namespace UI
         <DefaultValue(False)>
         Property ShowContextMenuOnLeftClick As Boolean
 
+        <DefaultValue(False)>
+        Property RightClickOnlyForMenu As Boolean
+
         <DefaultValue(GetType(AutoCheckMode), "DoubleClick")>
         Property AutoCheckMode As AutoCheckMode = AutoCheckMode.DoubleClick
 
@@ -214,6 +217,10 @@ Namespace UI
         End Sub
 
         Sub RemoveSelection()
+            If MsgQuestion("Remove Selection?") <> DialogResult.OK Then
+                Exit Sub
+            End If
+
             If SelectedItems.Count > 0 Then
                 BeginUpdate()
 
@@ -299,6 +306,12 @@ Namespace UI
                             End If
                         End If
                     End If
+                Case &H204 'WM_RBUTTONDOWN
+                    If RightClickOnlyForMenu Then
+                        m.Result = New IntPtr(1)
+                        ShowMenu()
+                        Exit Sub
+                    End If
             End Select
 
             MyBase.WndProc(m)
@@ -315,6 +328,11 @@ Namespace UI
             End If
 
             MyBase.OnMouseUp(e)
+        End Sub
+
+        Sub ShowMenu()
+            RaiseEvent UpdateContextMenu()
+            ContextMenuStrip.Show(Me, PointToClient(MousePosition))
         End Sub
 
         Function GetBounds(mousePos As Point) As Rectangle

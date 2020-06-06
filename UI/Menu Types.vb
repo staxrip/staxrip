@@ -286,7 +286,7 @@ Namespace UI
                     End If
 
                     If Not mi.ShortcutKeyDisplayString.EndsWith(" ") Then
-                        mi.ShortcutKeyDisplayString += "  "
+                        mi.ShortcutKeyDisplayString += g.MenuSpace
                     End If
 
                     If cmi.Symbol <> Symbol.None Then
@@ -509,7 +509,7 @@ Namespace UI
             Set(value As Keys)
                 If value <> Keys.None Then
                     ShortcutValue = value
-                    ShortcutKeyDisplayString = KeysHelp.GetKeyString(value) + "     "
+                    ShortcutKeyDisplayString = KeysHelp.GetKeyString(value) + g.MenuSpace
                     AddHandler Form.KeyDown, AddressOf KeyDown
                 End If
             End Set
@@ -602,7 +602,7 @@ Namespace UI
 
                 For Each i In l.OfType(Of ToolStripMenuItem)()
                     If x < a.Length - 1 Then
-                        If i.Text = a(x) + "   " Then
+                        If i.Text = a(x) + g.MenuSpace Then
                             found = True
                             l = i.DropDownItems
                         End If
@@ -614,7 +614,7 @@ Namespace UI
                         If a(x) = "-" Then
                             l.Add(New ToolStripSeparator)
                         Else
-                            Dim item As New ActionMenuItem(a(x) + "   ", action, tip)
+                            Dim item As New ActionMenuItem(a(x) + g.MenuSpace, action, tip)
                             item.SetImage(symbol)
                             l.Add(item)
                             l = item.DropDownItems
@@ -622,7 +622,7 @@ Namespace UI
                         End If
                     Else
                         Dim item As New ActionMenuItem()
-                        item.Text = a(x) + "   "
+                        item.Text = a(x) + g.MenuSpace
                         l.Add(item)
                         l = item.DropDownItems
                     End If
@@ -799,17 +799,17 @@ Namespace UI
         Function GetKeys() As StringPairList
             Dim ret As New StringPairList
 
-            For Each i In GetItems.OfType(Of ActionMenuItem)()
-                If i.ShortcutKeyDisplayString <> "" Then
+            For Each mi In GetItems.OfType(Of ActionMenuItem)()
+                If mi.ShortcutKeyDisplayString <> "" Then
                     Dim sp As New StringPair
 
-                    If i.Text.EndsWith("...") Then
-                        sp.Name = i.Text.TrimEnd("."c)
+                    If mi.Text.EndsWith("...") Then
+                        sp.Name = mi.Text.TrimEnd("."c)
                     Else
-                        sp.Name = i.Text
+                        sp.Name = mi.Text
                     End If
 
-                    sp.Value = i.ShortcutKeyDisplayString
+                    sp.Value = mi.ShortcutKeyDisplayString
                     ret.Add(sp)
                 End If
             Next

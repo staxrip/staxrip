@@ -15,7 +15,7 @@ Namespace UI
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Shadows Property FontHeight As Integer
 
-        Public Sub New()
+        Sub New()
             Font = New Font("Segoe UI", 9)
             FontHeight = Font.Height
         End Sub

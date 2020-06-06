@@ -56,9 +56,9 @@ Public Class TaskDialog(Of T)
     End Sub
 
     Function GetHandle() As IntPtr
-        Dim sb As New StringBuilder(260)
+        Dim sb As New StringBuilder(500)
         Dim h = Native.GetForegroundWindow
-        Native.GetWindowModuleFileName(h, sb, 260)
+        Native.GetWindowModuleFileName(h, sb, CUInt(sb.Capacity))
 
         If sb.ToString.Replace(".vshost", "").Base = Application.ExecutablePath.Base Then
             Return h

@@ -25,9 +25,12 @@ Public Class ProcController
         Me.Proc = proc
         ProcForm = g.ProcForm
 
+        Dim pad = g.ProcForm.FontHeight \ 6
+        CheckBox.Margin = New Padding(pad, pad, 0, pad)
+        CheckBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
         CheckBox.Appearance = Appearance.Button
-        CheckBox.AutoSize = True
         CheckBox.Text = " " + proc.Title + " "
+        CheckBox.AutoSize = True
         AddHandler CheckBox.Click, AddressOf Click
 
         ProgressBar.Dock = DockStyle.Fill

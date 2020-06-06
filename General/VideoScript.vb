@@ -738,6 +738,7 @@ Public Class FilterCategory
         misc.Filters.Add(New VideoFilter(misc.Name, "Histogram", "Histogram(""levels"", bits=$select:msg:Select BitDepth;8;10;12$)"))
         misc.Filters.Add(New VideoFilter(misc.Name, "SplitVertical", "Splitvertical=true"))
         misc.Filters.Add(New VideoFilter(misc.Name, "AddBorders", "AddBorders(0,0,0,0) #left,top,right,bottom"))
+        misc.Filters.Add(New VideoFilter(misc.Name, "SelectRangeEvery", "SelectRangeEvery(1500,50)"))
 
         ret.Add(misc)
 

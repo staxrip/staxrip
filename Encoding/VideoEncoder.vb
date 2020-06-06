@@ -182,15 +182,17 @@ Public MustInherit Class VideoEncoder
         ret.ShowControlBorder = True
         ret.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
-        For Each i In GetMenu()
-            Dim b As New ToolStripButton
-            b.Margin = New Padding(2, 2, 0, 0)
-            b.Text = i.Key
-            b.Padding = New Padding(4)
-            Dim happy = i
-            AddHandler b.Click, Sub() happy.Value.Invoke()
-            b.TextAlign = ContentAlignment.MiddleLeft
-            ret.Items.Add(b)
+        Dim pad = ret.Font.Height \ 8
+
+        For Each pair In GetMenu()
+            Dim bn As New ToolStripButton
+            bn.Margin = New Padding(2, 2, 0, 0)
+            bn.Text = pair.Key
+            bn.Padding = New Padding(pad)
+            Dim tmp = pair
+            AddHandler bn.Click, Sub() tmp.Value.Invoke()
+            bn.TextAlign = ContentAlignment.MiddleLeft
+            ret.Items.Add(bn)
         Next
 
         Return ret

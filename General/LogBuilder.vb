@@ -100,7 +100,7 @@ Public Class LogBuilder
             "CPU:" + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + BR +
             "GPU:" + String.Join(", ", OS.VideoControllers) + BR +
             "Resolution:" & Screen.PrimaryScreen.Bounds.Width & " x " & Screen.PrimaryScreen.Bounds.Height & BR +
-            "DPI:" & g.MainForm.DeviceDpi
+            "DPI:" & g.DPI
 
         WriteLine(EnvironmentString.FormatColumn(":"))
     End Sub

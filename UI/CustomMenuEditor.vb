@@ -19,8 +19,8 @@ Namespace UI
 
         Public WithEvents lParameters As System.Windows.Forms.Label
         Public WithEvents pg As PropertyGridEx
-        Public WithEvents lText As System.Windows.Forms.Label
-        Public WithEvents lHotkey As System.Windows.Forms.Label
+        Public WithEvents laText As System.Windows.Forms.Label
+        Public WithEvents laHotkey As System.Windows.Forms.Label
         Private WithEvents tbText As System.Windows.Forms.TextBox
         Friend WithEvents TipProvider As StaxRip.UI.TipProvider
         Friend WithEvents tv As StaxRip.UI.TreeViewEx
@@ -28,13 +28,13 @@ Namespace UI
         Friend WithEvents tbCommand As System.Windows.Forms.TextBox
         Friend WithEvents bnCommand As ButtonEx
         Friend WithEvents cmsCommand As ContextMenuStripEx
-        Friend WithEvents lCommand As System.Windows.Forms.Label
+        Friend WithEvents laCommand As System.Windows.Forms.Label
         Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
         Friend WithEvents ImageList1 As System.Windows.Forms.ImageList
         Friend WithEvents tlpMain As System.Windows.Forms.TableLayoutPanel
-        Friend WithEvents TableLayoutPanel2 As System.Windows.Forms.TableLayoutPanel
-        Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
-        Friend WithEvents Label1 As Label
+        Friend WithEvents tlpCommand As System.Windows.Forms.TableLayoutPanel
+        Friend WithEvents flpBottom As System.Windows.Forms.FlowLayoutPanel
+        Friend WithEvents laIcon As Label
         Friend WithEvents tlpSymbol As TableLayoutPanel
         Friend WithEvents laSymbol As Label
         Friend WithEvents pbSymbol As PictureBox
@@ -59,24 +59,24 @@ Namespace UI
         Friend WithEvents bnOK As StaxRip.UI.ButtonEx
         <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
             Me.components = New System.ComponentModel.Container()
-            Me.lHotkey = New System.Windows.Forms.Label()
+            Me.laHotkey = New System.Windows.Forms.Label()
             Me.lParameters = New System.Windows.Forms.Label()
             Me.pg = New StaxRip.UI.PropertyGridEx()
             Me.tbText = New System.Windows.Forms.TextBox()
-            Me.lText = New System.Windows.Forms.Label()
+            Me.laText = New System.Windows.Forms.Label()
             Me.tv = New StaxRip.UI.TreeViewEx()
             Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
             Me.tbHotkey = New System.Windows.Forms.TextBox()
             Me.tbCommand = New System.Windows.Forms.TextBox()
             Me.bnCommand = New StaxRip.UI.ButtonEx()
             Me.cmsCommand = New StaxRip.UI.ContextMenuStripEx(Me.components)
-            Me.lCommand = New System.Windows.Forms.Label()
+            Me.laCommand = New System.Windows.Forms.Label()
             Me.bnCancel = New StaxRip.UI.ButtonEx()
             Me.bnOK = New StaxRip.UI.ButtonEx()
             Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
             Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-            Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
-            Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
+            Me.flpBottom = New System.Windows.Forms.FlowLayoutPanel()
+            Me.tlpCommand = New System.Windows.Forms.TableLayoutPanel()
             Me.ToolStrip = New System.Windows.Forms.ToolStrip()
             Me.tsbNew = New System.Windows.Forms.ToolStripButton()
             Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
@@ -93,31 +93,31 @@ Namespace UI
             Me.ToolsToolStripDropDownButton = New System.Windows.Forms.ToolStripDropDownButton()
             Me.NewFromDefaultsToolStripMenuItem = New StaxRip.UI.MenuItemEx()
             Me.ResetToolStripMenuItem = New StaxRip.UI.MenuItemEx()
-            Me.Label1 = New System.Windows.Forms.Label()
+            Me.laIcon = New System.Windows.Forms.Label()
             Me.tlpSymbol = New System.Windows.Forms.TableLayoutPanel()
             Me.laSymbol = New System.Windows.Forms.Label()
             Me.pbSymbol = New System.Windows.Forms.PictureBox()
             Me.bnSymbol = New StaxRip.UI.ButtonEx()
             Me.cmsSymbol = New StaxRip.UI.ContextMenuStripEx(Me.components)
             Me.tlpMain.SuspendLayout()
-            Me.FlowLayoutPanel1.SuspendLayout()
-            Me.TableLayoutPanel2.SuspendLayout()
+            Me.flpBottom.SuspendLayout()
+            Me.tlpCommand.SuspendLayout()
             Me.ToolStrip.SuspendLayout()
             Me.tlpSymbol.SuspendLayout()
             CType(Me.pbSymbol, System.ComponentModel.ISupportInitialize).BeginInit()
             Me.SuspendLayout()
             '
-            'lHotkey
+            'laHotkey
             '
-            Me.lHotkey.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Me.laHotkey.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.lHotkey.AutoSize = True
-            Me.lHotkey.Location = New System.Drawing.Point(686, 224)
-            Me.lHotkey.Margin = New System.Windows.Forms.Padding(0, 20, 0, 0)
-            Me.lHotkey.Name = "lHotkey"
-            Me.lHotkey.Size = New System.Drawing.Size(676, 48)
-            Me.lHotkey.TabIndex = 5
-            Me.lHotkey.Text = "Shortcut Key:"
+            Me.laHotkey.AutoSize = True
+            Me.laHotkey.Location = New System.Drawing.Point(686, 224)
+            Me.laHotkey.Margin = New System.Windows.Forms.Padding(0, 20, 0, 0)
+            Me.laHotkey.Name = "laHotkey"
+            Me.laHotkey.Size = New System.Drawing.Size(671, 48)
+            Me.laHotkey.TabIndex = 5
+            Me.laHotkey.Text = "Shortcut Key:"
             '
             'lParameters
             '
@@ -127,7 +127,7 @@ Namespace UI
             Me.lParameters.Location = New System.Drawing.Point(686, 647)
             Me.lParameters.Margin = New System.Windows.Forms.Padding(0, 20, 0, 0)
             Me.lParameters.Name = "lParameters"
-            Me.lParameters.Size = New System.Drawing.Size(676, 48)
+            Me.lParameters.Size = New System.Drawing.Size(671, 48)
             Me.lParameters.TabIndex = 9
             Me.lParameters.Text = "Command Parameters:"
             Me.lParameters.Visible = False
@@ -143,7 +143,7 @@ Namespace UI
             Me.pg.Margin = New System.Windows.Forms.Padding(0)
             Me.pg.Name = "pg"
             Me.pg.PropertySort = System.Windows.Forms.PropertySort.NoSort
-            Me.pg.Size = New System.Drawing.Size(676, 364)
+            Me.pg.Size = New System.Drawing.Size(671, 354)
             Me.pg.TabIndex = 10
             Me.pg.ToolbarVisible = False
             Me.pg.Visible = False
@@ -155,20 +155,20 @@ Namespace UI
             Me.tbText.Location = New System.Drawing.Point(686, 149)
             Me.tbText.Margin = New System.Windows.Forms.Padding(0)
             Me.tbText.Name = "tbText"
-            Me.tbText.Size = New System.Drawing.Size(676, 55)
+            Me.tbText.Size = New System.Drawing.Size(671, 55)
             Me.tbText.TabIndex = 4
             '
-            'lText
+            'laText
             '
-            Me.lText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Me.laText.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.lText.AutoSize = True
-            Me.lText.Location = New System.Drawing.Point(686, 101)
-            Me.lText.Margin = New System.Windows.Forms.Padding(0)
-            Me.lText.Name = "lText"
-            Me.lText.Size = New System.Drawing.Size(676, 48)
-            Me.lText.TabIndex = 3
-            Me.lText.Text = "Text:"
+            Me.laText.AutoSize = True
+            Me.laText.Location = New System.Drawing.Point(686, 101)
+            Me.laText.Margin = New System.Windows.Forms.Padding(0)
+            Me.laText.Name = "laText"
+            Me.laText.Size = New System.Drawing.Size(671, 48)
+            Me.laText.TabIndex = 3
+            Me.laText.Text = "Text:"
             '
             'tv
             '
@@ -177,11 +177,11 @@ Namespace UI
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.tv.HideSelection = False
-            Me.tv.Location = New System.Drawing.Point(10, 101)
-            Me.tv.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+            Me.tv.Location = New System.Drawing.Point(15, 101)
+            Me.tv.Margin = New System.Windows.Forms.Padding(0, 0, 15, 0)
             Me.tv.Name = "tv"
             Me.tlpMain.SetRowSpan(Me.tv, 10)
-            Me.tv.Size = New System.Drawing.Size(666, 958)
+            Me.tv.Size = New System.Drawing.Size(656, 948)
             Me.tv.TabIndex = 2
             '
             'tbHotkey
@@ -193,7 +193,7 @@ Namespace UI
             Me.tbHotkey.Location = New System.Drawing.Point(686, 272)
             Me.tbHotkey.Margin = New System.Windows.Forms.Padding(0)
             Me.tbHotkey.Name = "tbHotkey"
-            Me.tbHotkey.Size = New System.Drawing.Size(676, 55)
+            Me.tbHotkey.Size = New System.Drawing.Size(671, 55)
             Me.tbHotkey.TabIndex = 6
             '
             'tbCommand
@@ -202,13 +202,13 @@ Namespace UI
             Me.tbCommand.Location = New System.Drawing.Point(0, 7)
             Me.tbCommand.Margin = New System.Windows.Forms.Padding(0)
             Me.tbCommand.Name = "tbCommand"
-            Me.tbCommand.Size = New System.Drawing.Size(596, 55)
+            Me.tbCommand.Size = New System.Drawing.Size(591, 55)
             Me.tbCommand.TabIndex = 8
             '
             'bnCommand
             '
             Me.bnCommand.Anchor = System.Windows.Forms.AnchorStyles.None
-            Me.bnCommand.Location = New System.Drawing.Point(606, 0)
+            Me.bnCommand.Location = New System.Drawing.Point(601, 0)
             Me.bnCommand.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
             Me.bnCommand.ShowMenuSymbol = True
             Me.bnCommand.Size = New System.Drawing.Size(70, 70)
@@ -220,22 +220,22 @@ Namespace UI
             Me.cmsCommand.Name = "cmsCommand"
             Me.cmsCommand.Size = New System.Drawing.Size(61, 4)
             '
-            'lCommand
+            'laCommand
             '
-            Me.lCommand.AutoSize = True
-            Me.lCommand.Location = New System.Drawing.Point(686, 509)
-            Me.lCommand.Margin = New System.Windows.Forms.Padding(0, 20, 0, 0)
-            Me.lCommand.Name = "lCommand"
-            Me.lCommand.Size = New System.Drawing.Size(192, 48)
-            Me.lCommand.TabIndex = 7
-            Me.lCommand.Text = "Command:"
+            Me.laCommand.AutoSize = True
+            Me.laCommand.Location = New System.Drawing.Point(686, 509)
+            Me.laCommand.Margin = New System.Windows.Forms.Padding(0, 20, 0, 0)
+            Me.laCommand.Name = "laCommand"
+            Me.laCommand.Size = New System.Drawing.Size(192, 48)
+            Me.laCommand.TabIndex = 7
+            Me.laCommand.Text = "Command:"
             '
             'bnCancel
             '
             Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-            Me.bnCancel.Location = New System.Drawing.Point(260, 0)
-            Me.bnCancel.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
+            Me.bnCancel.Location = New System.Drawing.Point(265, 0)
+            Me.bnCancel.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
             Me.bnCancel.Size = New System.Drawing.Size(250, 70)
             Me.bnCancel.Text = "Cancel"
             '
@@ -257,22 +257,22 @@ Namespace UI
             'tlpMain
             '
             Me.tlpMain.ColumnCount = 4
-            Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10.0!))
+            Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 15.0!))
             Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
             Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-            Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10.0!))
-            Me.tlpMain.Controls.Add(Me.FlowLayoutPanel1, 2, 11)
+            Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 15.0!))
+            Me.tlpMain.Controls.Add(Me.flpBottom, 2, 11)
             Me.tlpMain.Controls.Add(Me.pg, 2, 10)
             Me.tlpMain.Controls.Add(Me.lParameters, 2, 9)
-            Me.tlpMain.Controls.Add(Me.TableLayoutPanel2, 2, 8)
-            Me.tlpMain.Controls.Add(Me.lCommand, 2, 7)
+            Me.tlpMain.Controls.Add(Me.tlpCommand, 2, 8)
+            Me.tlpMain.Controls.Add(Me.laCommand, 2, 7)
             Me.tlpMain.Controls.Add(Me.ToolStrip, 0, 0)
             Me.tlpMain.Controls.Add(Me.tbHotkey, 2, 4)
             Me.tlpMain.Controls.Add(Me.tv, 1, 1)
-            Me.tlpMain.Controls.Add(Me.lHotkey, 2, 3)
+            Me.tlpMain.Controls.Add(Me.laHotkey, 2, 3)
             Me.tlpMain.Controls.Add(Me.tbText, 2, 2)
-            Me.tlpMain.Controls.Add(Me.lText, 2, 1)
-            Me.tlpMain.Controls.Add(Me.Label1, 2, 5)
+            Me.tlpMain.Controls.Add(Me.laText, 2, 1)
+            Me.tlpMain.Controls.Add(Me.laIcon, 2, 5)
             Me.tlpMain.Controls.Add(Me.tlpSymbol, 2, 6)
             Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
             Me.tlpMain.Location = New System.Drawing.Point(0, 0)
@@ -293,37 +293,37 @@ Namespace UI
             Me.tlpMain.Size = New System.Drawing.Size(1372, 1149)
             Me.tlpMain.TabIndex = 11
             '
-            'FlowLayoutPanel1
+            'flpBottom
             '
-            Me.FlowLayoutPanel1.Anchor = System.Windows.Forms.AnchorStyles.Right
-            Me.FlowLayoutPanel1.AutoSize = True
-            Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-            Me.FlowLayoutPanel1.Controls.Add(Me.bnOK)
-            Me.FlowLayoutPanel1.Controls.Add(Me.bnCancel)
-            Me.FlowLayoutPanel1.Location = New System.Drawing.Point(852, 1069)
-            Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0, 10, 0, 10)
-            Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-            Me.FlowLayoutPanel1.Size = New System.Drawing.Size(510, 70)
-            Me.FlowLayoutPanel1.TabIndex = 12
+            Me.flpBottom.Anchor = System.Windows.Forms.AnchorStyles.Right
+            Me.flpBottom.AutoSize = True
+            Me.flpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+            Me.flpBottom.Controls.Add(Me.bnOK)
+            Me.flpBottom.Controls.Add(Me.bnCancel)
+            Me.flpBottom.Location = New System.Drawing.Point(842, 1064)
+            Me.flpBottom.Margin = New System.Windows.Forms.Padding(0, 15, 0, 15)
+            Me.flpBottom.Name = "flpBottom"
+            Me.flpBottom.Size = New System.Drawing.Size(515, 70)
+            Me.flpBottom.TabIndex = 12
             '
-            'TableLayoutPanel2
+            'tlpCommand
             '
-            Me.TableLayoutPanel2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Me.tlpCommand.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.TableLayoutPanel2.AutoSize = True
-            Me.TableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-            Me.TableLayoutPanel2.ColumnCount = 2
-            Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-            Me.TableLayoutPanel2.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-            Me.TableLayoutPanel2.Controls.Add(Me.bnCommand, 1, 0)
-            Me.TableLayoutPanel2.Controls.Add(Me.tbCommand, 0, 0)
-            Me.TableLayoutPanel2.Location = New System.Drawing.Point(686, 557)
-            Me.TableLayoutPanel2.Margin = New System.Windows.Forms.Padding(0)
-            Me.TableLayoutPanel2.Name = "TableLayoutPanel2"
-            Me.TableLayoutPanel2.RowCount = 1
-            Me.TableLayoutPanel2.RowStyles.Add(New System.Windows.Forms.RowStyle())
-            Me.TableLayoutPanel2.Size = New System.Drawing.Size(676, 70)
-            Me.TableLayoutPanel2.TabIndex = 12
+            Me.tlpCommand.AutoSize = True
+            Me.tlpCommand.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+            Me.tlpCommand.ColumnCount = 2
+            Me.tlpCommand.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+            Me.tlpCommand.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+            Me.tlpCommand.Controls.Add(Me.bnCommand, 1, 0)
+            Me.tlpCommand.Controls.Add(Me.tbCommand, 0, 0)
+            Me.tlpCommand.Location = New System.Drawing.Point(686, 557)
+            Me.tlpCommand.Margin = New System.Windows.Forms.Padding(0)
+            Me.tlpCommand.Name = "tlpCommand"
+            Me.tlpCommand.RowCount = 1
+            Me.tlpCommand.RowStyles.Add(New System.Windows.Forms.RowStyle())
+            Me.tlpCommand.Size = New System.Drawing.Size(671, 70)
+            Me.tlpCommand.TabIndex = 12
             '
             'ToolStrip
             '
@@ -457,15 +457,15 @@ Namespace UI
             Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(546, 67)
             Me.ResetToolStripMenuItem.Text = "Reset Everything"
             '
-            'Label1
+            'laIcon
             '
-            Me.Label1.AutoSize = True
-            Me.Label1.Location = New System.Drawing.Point(686, 347)
-            Me.Label1.Margin = New System.Windows.Forms.Padding(0, 20, 0, 0)
-            Me.Label1.Name = "Label1"
-            Me.Label1.Size = New System.Drawing.Size(96, 48)
-            Me.Label1.TabIndex = 13
-            Me.Label1.Text = "Icon:"
+            Me.laIcon.AutoSize = True
+            Me.laIcon.Location = New System.Drawing.Point(686, 347)
+            Me.laIcon.Margin = New System.Windows.Forms.Padding(0, 20, 0, 0)
+            Me.laIcon.Name = "laIcon"
+            Me.laIcon.Size = New System.Drawing.Size(96, 48)
+            Me.laIcon.TabIndex = 13
+            Me.laIcon.Text = "Icon:"
             '
             'tlpSymbol
             '
@@ -482,7 +482,7 @@ Namespace UI
             Me.tlpSymbol.Name = "tlpSymbol"
             Me.tlpSymbol.RowCount = 1
             Me.tlpSymbol.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-            Me.tlpSymbol.Size = New System.Drawing.Size(676, 94)
+            Me.tlpSymbol.Size = New System.Drawing.Size(671, 94)
             Me.tlpSymbol.TabIndex = 14
             '
             'laSymbol
@@ -493,7 +493,7 @@ Namespace UI
             Me.laSymbol.Location = New System.Drawing.Point(98, 0)
             Me.laSymbol.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
             Me.laSymbol.Name = "laSymbol"
-            Me.laSymbol.Size = New System.Drawing.Size(501, 94)
+            Me.laSymbol.Size = New System.Drawing.Size(496, 94)
             Me.laSymbol.TabIndex = 1
             Me.laSymbol.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
             '
@@ -514,7 +514,7 @@ Namespace UI
             '
             Me.bnSymbol.Anchor = System.Windows.Forms.AnchorStyles.None
             Me.bnSymbol.ContextMenuStrip = Me.cmsSymbol
-            Me.bnSymbol.Location = New System.Drawing.Point(606, 12)
+            Me.bnSymbol.Location = New System.Drawing.Point(601, 12)
             Me.bnSymbol.Margin = New System.Windows.Forms.Padding(0)
             Me.bnSymbol.ShowMenuSymbol = True
             Me.bnSymbol.Size = New System.Drawing.Size(70, 70)
@@ -539,9 +539,9 @@ Namespace UI
             Me.Text = "Menu Editor"
             Me.tlpMain.ResumeLayout(False)
             Me.tlpMain.PerformLayout()
-            Me.FlowLayoutPanel1.ResumeLayout(False)
-            Me.TableLayoutPanel2.ResumeLayout(False)
-            Me.TableLayoutPanel2.PerformLayout()
+            Me.flpBottom.ResumeLayout(False)
+            Me.tlpCommand.ResumeLayout(False)
+            Me.tlpCommand.PerformLayout()
             Me.ToolStrip.ResumeLayout(False)
             Me.ToolStrip.PerformLayout()
             Me.tlpSymbol.ResumeLayout(False)
@@ -598,9 +598,9 @@ Namespace UI
             Next
 
             TipProvider.SetTip("Parameters used when the command is executed. Please make a feature request if useful parameters are missing.", pg, lParameters)
-            TipProvider.SetTip("Text to be displayed. Enter minus to create a separator.", tbText, lText)
-            TipProvider.SetTip("A key can be deleted by pressing it two times.", tbHotkey, lHotkey)
-            TipProvider.SetTip("Command to be executed. Please make a feature request if useful commands are missing.", tbCommand, lCommand)
+            TipProvider.SetTip("Text to be displayed. Enter minus to create a separator.", tbText, laText)
+            TipProvider.SetTip("A key can be deleted by pressing it two times.", tbHotkey, laHotkey)
+            TipProvider.SetTip("Command to be executed. Please make a feature request if useful commands are missing.", tbCommand, laCommand)
         End Sub
 
         Sub PopulateSymbolMenu()

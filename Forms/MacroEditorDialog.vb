@@ -37,17 +37,17 @@ Public Class MacroEditorDialog
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlp.SetColumnSpan(Me.MacroEditorControl, 3)
-        Me.MacroEditorControl.Location = New System.Drawing.Point(18, 18)
-        Me.MacroEditorControl.Margin = New System.Windows.Forms.Padding(18, 18, 18, 3)
+        Me.MacroEditorControl.Location = New System.Drawing.Point(15, 0)
+        Me.MacroEditorControl.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.MacroEditorControl.Name = "MacroEditorControl"
-        Me.MacroEditorControl.Size = New System.Drawing.Size(839, 580)
+        Me.MacroEditorControl.Size = New System.Drawing.Size(845, 607)
         Me.MacroEditorControl.TabIndex = 0
         '
         'bnContext
         '
         Me.bnContext.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.bnContext.Location = New System.Drawing.Point(18, 619)
-        Me.bnContext.Margin = New System.Windows.Forms.Padding(18)
+        Me.bnContext.Location = New System.Drawing.Point(15, 622)
+        Me.bnContext.Margin = New System.Windows.Forms.Padding(15)
         Me.bnContext.Name = "bnContext"
         Me.bnContext.Size = New System.Drawing.Size(182, 70)
         Me.bnContext.TabIndex = 2
@@ -58,8 +58,8 @@ Public Class MacroEditorDialog
         '
         Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(607, 619)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(18)
+        Me.bnCancel.Location = New System.Drawing.Point(610, 622)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
@@ -67,7 +67,7 @@ Public Class MacroEditorDialog
         '
         Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(339, 619)
+        Me.bnOK.Location = New System.Drawing.Point(345, 622)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
@@ -150,8 +150,8 @@ Public Class MacroEditorDialog
         form.Show()
     End Sub
 
-    Protected Overrides Sub OnLoad(args As EventArgs)
-        MyBase.OnLoad(args)
+    Protected Overrides Sub OnLoad(e As EventArgs)
+        MyBase.OnLoad(e)
 
         bnContext.AutoSize = True
         Dim editorControl = MacroEditorControl

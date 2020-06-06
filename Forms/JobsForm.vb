@@ -184,6 +184,7 @@ Friend Class JobsForm
     Private FileWatcher As New FileSystemWatcher
     Private IsLoading As Boolean
     Private Tip As String = "The job list can be processed by multiple StaxRip instances in parallel."
+    Private BlockSave As Boolean
 
     Sub New()
         InitializeComponent()
@@ -197,6 +198,7 @@ Friend Class JobsForm
         lv.UpButton = bnUp
         lv.DownButton = bnDown
         lv.RemoveButton = bnRemove
+        lv.RightClickOnlyForMenu = True
 
         lv.SingleSelectionButtons = {bnLoad}
         lv.CheckBoxes = True
@@ -226,9 +228,11 @@ Friend Class JobsForm
         cms.Add("Select All", Sub() SelectAll(), Keys.Control Or Keys.A, Function() lv.Items.Count > lv.SelectedItems.Count)
         cms.Add("Select None", Sub() SelectNone(), Keys.Shift Or Keys.A, Function() lv.SelectedItems.Count > 0)
         cms.Add("-")
-        cms.Add("Check Selection", Sub() CheckSelection(), Keys.None, Function() lv.SelectedItems.Count > lv.CheckedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count).ShortcutKeyDisplayString = "Space     "
+        cms.Add("Check Selection", Sub() CheckSelection(), Keys.None, Function() lv.SelectedItems.Count > lv.CheckedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count)
         cms.Add("Check All", Sub() CheckAll(), Keys.Control Or Keys.Space, Function() lv.Items.Count > lv.CheckedItems.Count)
-        cms.Add("Check None", Sub() CheckNone(), Keys.Shift Or Keys.Space, Function() lv.CheckedItems.Count > 0)
+        cms.Add("-")
+        cms.Add("Uncheck Selection", Sub() UncheckSelection(), Keys.None, Function() lv.SelectedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count > 0)
+        cms.Add("Uncheck All", Sub() UncheckAll(), Keys.Shift Or Keys.Space, Function() lv.CheckedItems.Count > 0)
         cms.Add("-")
         cms.Add("Move Selection Up", Sub() bnUp.PerformClick(), Keys.Control Or Keys.Up, Function() lv.CanMoveUp).SetImage(Symbol.Up)
         cms.Add("Move Selection Down", Sub() bnDown.PerformClick(), Keys.Control Or Keys.Down, Function() lv.CanMoveDown).SetImage(Symbol.Down)
@@ -251,39 +255,77 @@ Friend Class JobsForm
         FileWatcher.EnableRaisingEvents = True
     End Sub
 
-    Sub CheckNone()
-        For Each i As ListViewItem In lv.Items
-            i.Checked = False
+    Sub UncheckAll()
+        BlockSave = True
+
+        For Each item As ListViewItem In lv.Items
+            item.Checked = False
         Next
+
+        BlockSave = False
+        HandleItemsChanged()
+    End Sub
+
+    Sub UncheckSelection()
+        BlockSave = True
+
+        For Each item As ListViewItem In lv.SelectedItems
+            item.Checked = False
+        Next
+
+        BlockSave = False
+        HandleItemsChanged()
     End Sub
 
     Sub CheckAll()
+        BlockSave = True
+
         For Each item As ListViewItem In lv.Items
             item.Checked = True
         Next
+
+        BlockSave = False
+        HandleItemsChanged()
     End Sub
 
     Sub CheckSelection()
+        BlockSave = True
+
         For Each item As ListViewItem In lv.SelectedItems
             item.Checked = True
         Next
+
+        BlockSave = False
+        HandleItemsChanged()
     End Sub
 
     Sub SelectNone()
+        BlockSave = True
+
         For Each item As ListViewItem In lv.Items
             item.Selected = False
         Next
+
+        BlockSave = False
+        HandleItemsChanged()
     End Sub
 
     Sub SelectAll()
+        BlockSave = True
+
         For Each item As ListViewItem In lv.Items
             item.Selected = True
         Next
+
+        BlockSave = False
+        HandleItemsChanged()
     End Sub
 
     Sub HandleItemsChanged()
-        SaveJobs()
-        UpdateControls()
+        If Not BlockSave Then
+            SaveJobs()
+            UpdateControls()
+        End If
     End Sub
 
     Sub Reload(sender As Object, e As FileSystemEventArgs)

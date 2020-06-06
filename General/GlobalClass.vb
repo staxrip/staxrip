@@ -22,6 +22,8 @@ Public Class GlobalClass
     Property SavedProject As New Project
     Property DefaultCommands As New GlobalCommands
     Property IsProcessing As Boolean
+    Property DPI As Integer
+    Property MenuSpace As String
 
     Event JobMuxed()
     Event JobProcessed()

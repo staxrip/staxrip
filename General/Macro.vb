@@ -500,7 +500,7 @@ Public Class Macro
         If value.Contains("%video_encoder%") Then value = value.Replace("%video_encoder%", TryCast(p.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage.Name)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%dpi%") Then value = value.Replace("%dpi%", g.MainForm.DeviceDpi.ToString())
+        If value.Contains("%dpi%") Then value = value.Replace("%dpi%", g.DPI.ToString())
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%script_file%") Then value = value.Replace("%script_file%", p.Script.Path)

@@ -5,6 +5,7 @@ Imports StaxRip.UI
 Public Class ApplicationSettings
     Implements ISafeSerialization
 
+    Public AllowCustomPathsInStartupFolder As Boolean
     Public AllowToolsWithWrongVersion As Boolean
     Public AudioProfiles As List(Of AudioProfile)
     Public AviSynthFilterPreferences As StringPairList

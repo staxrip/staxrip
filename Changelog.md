@@ -2,14 +2,16 @@
 2.1.2.1 Beta (not yet available)
 ============
 
-2.1.1.9 Beta (not yet available)
+2.1.1.9 Beta
 ============
 
 - The cut feature was missing the last frame.
 - In case the cut feature is used, flac input for qaac is disabled
   so if necessary a w64 file is created.
 - Many nvenc improvements.
+- Layout and scaling fixes.
 - PowerShell script host supports events, script examples use events.
+- The menu in the Jobs dialog was improved.
 - mvtools2 2.7.43
 
 

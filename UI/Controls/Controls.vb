@@ -474,15 +474,15 @@ Namespace UI
 
             Dim cutItem = cms.Add("Cut")
             cutItem.SetImage(Symbol.Cut)
-            cutItem.ShortcutKeyDisplayString = "Ctrl+X     "
+            cutItem.ShortcutKeyDisplayString = "Ctrl+X" + g.MenuSpace
 
             Dim copyItem = cms.Add("Copy", Sub() Clipboard.SetText(SelectedText))
             copyItem.SetImage(Symbol.Copy)
-            copyItem.ShortcutKeyDisplayString = "Ctrl+C     "
+            copyItem.ShortcutKeyDisplayString = "Ctrl+C" + g.MenuSpace
 
             Dim pasteItem = cms.Add("Paste")
             pasteItem.SetImage(Symbol.Paste)
-            pasteItem.ShortcutKeyDisplayString = "Ctrl+V     "
+            pasteItem.ShortcutKeyDisplayString = "Ctrl+V" + g.MenuSpace
 
             cms.Add("Copy Everything", Sub() Clipboard.SetText(Text))
 

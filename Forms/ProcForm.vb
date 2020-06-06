@@ -9,7 +9,7 @@ Public Class ProcForm
     Private components As System.ComponentModel.IContainer
 
     Friend WithEvents bnAbort As System.Windows.Forms.Button
-    Friend WithEvents lWhenfinisheddo As System.Windows.Forms.Label
+    Friend WithEvents laWhenfinisheddo As System.Windows.Forms.Label
     Friend WithEvents NotifyIcon As System.Windows.Forms.NotifyIcon
     Friend WithEvents bnResume As System.Windows.Forms.Button
     Friend WithEvents bnJobs As System.Windows.Forms.Button
@@ -34,7 +34,7 @@ Public Class ProcForm
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.bnAbort = New System.Windows.Forms.Button()
-        Me.lWhenfinisheddo = New System.Windows.Forms.Label()
+        Me.laWhenfinisheddo = New System.Windows.Forms.Label()
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.bnJobs = New System.Windows.Forms.Button()
         Me.bnResume = New System.Windows.Forms.Button()
@@ -53,23 +53,23 @@ Public Class ProcForm
         'bnAbort
         '
         Me.bnAbort.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnAbort.Location = New System.Drawing.Point(1035, 0)
-        Me.bnAbort.Margin = New System.Windows.Forms.Padding(18, 0, 18, 0)
+        Me.bnAbort.Location = New System.Drawing.Point(1026, 0)
+        Me.bnAbort.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.bnAbort.Name = "bnAbort"
         Me.bnAbort.Size = New System.Drawing.Size(200, 70)
         Me.bnAbort.TabIndex = 2
         Me.bnAbort.Text = "Abort"
         '
-        'lWhenfinisheddo
+        'laWhenfinisheddo
         '
-        Me.lWhenfinisheddo.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.lWhenfinisheddo.AutoSize = True
-        Me.lWhenfinisheddo.Location = New System.Drawing.Point(7, 11)
-        Me.lWhenfinisheddo.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
-        Me.lWhenfinisheddo.Name = "lWhenfinisheddo"
-        Me.lWhenfinisheddo.Size = New System.Drawing.Size(307, 48)
-        Me.lWhenfinisheddo.TabIndex = 6
-        Me.lWhenfinisheddo.Text = "When finished do:"
+        Me.laWhenfinisheddo.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.laWhenfinisheddo.AutoSize = True
+        Me.laWhenfinisheddo.Location = New System.Drawing.Point(7, 11)
+        Me.laWhenfinisheddo.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
+        Me.laWhenfinisheddo.Name = "laWhenfinisheddo"
+        Me.laWhenfinisheddo.Size = New System.Drawing.Size(307, 48)
+        Me.laWhenfinisheddo.TabIndex = 6
+        Me.laWhenfinisheddo.Text = "When finished do:"
         '
         'NotifyIcon
         '
@@ -77,7 +77,7 @@ Public Class ProcForm
         'bnJobs
         '
         Me.bnJobs.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnJobs.Location = New System.Drawing.Point(1253, 0)
+        Me.bnJobs.Location = New System.Drawing.Point(1241, 0)
         Me.bnJobs.Margin = New System.Windows.Forms.Padding(0)
         Me.bnJobs.Name = "bnJobs"
         Me.bnJobs.Size = New System.Drawing.Size(200, 70)
@@ -88,7 +88,7 @@ Public Class ProcForm
         'bnResume
         '
         Me.bnResume.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnResume.Location = New System.Drawing.Point(817, 0)
+        Me.bnResume.Location = New System.Drawing.Point(811, 0)
         Me.bnResume.Margin = New System.Windows.Forms.Padding(0)
         Me.bnResume.Name = "bnResume"
         Me.bnResume.Size = New System.Drawing.Size(200, 70)
@@ -99,8 +99,8 @@ Public Class ProcForm
         'bnSuspend
         '
         Me.bnSuspend.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnSuspend.Location = New System.Drawing.Point(599, 0)
-        Me.bnSuspend.Margin = New System.Windows.Forms.Padding(18, 0, 18, 0)
+        Me.bnSuspend.Location = New System.Drawing.Point(596, 0)
+        Me.bnSuspend.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.bnSuspend.Name = "bnSuspend"
         Me.bnSuspend.Size = New System.Drawing.Size(200, 70)
         Me.bnSuspend.TabIndex = 12
@@ -112,17 +112,17 @@ Public Class ProcForm
         Me.flpButtons.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.flpButtons.AutoSize = True
         Me.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.flpButtons.Controls.Add(Me.lWhenfinisheddo)
+        Me.flpButtons.Controls.Add(Me.laWhenfinisheddo)
         Me.flpButtons.Controls.Add(Me.mbShutdown)
         Me.flpButtons.Controls.Add(Me.bnSuspend)
         Me.flpButtons.Controls.Add(Me.bnResume)
         Me.flpButtons.Controls.Add(Me.bnAbort)
         Me.flpButtons.Controls.Add(Me.bnJobs)
         Me.flpButtons.Controls.Add(Me.bnLog)
-        Me.flpButtons.Location = New System.Drawing.Point(53, 726)
-        Me.flpButtons.Margin = New System.Windows.Forms.Padding(18)
+        Me.flpButtons.Location = New System.Drawing.Point(71, 729)
+        Me.flpButtons.Margin = New System.Windows.Forms.Padding(15)
         Me.flpButtons.Name = "flpButtons"
-        Me.flpButtons.Size = New System.Drawing.Size(1671, 70)
+        Me.flpButtons.Size = New System.Drawing.Size(1656, 70)
         Me.flpButtons.TabIndex = 13
         '
         'mbShutdown
@@ -135,8 +135,8 @@ Public Class ProcForm
         'bnLog
         '
         Me.bnLog.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnLog.Location = New System.Drawing.Point(1471, 0)
-        Me.bnLog.Margin = New System.Windows.Forms.Padding(18, 0, 0, 0)
+        Me.bnLog.Location = New System.Drawing.Point(1456, 0)
+        Me.bnLog.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
         Me.bnLog.Name = "bnLog"
         Me.bnLog.Size = New System.Drawing.Size(200, 70)
         Me.bnLog.TabIndex = 13
@@ -170,7 +170,7 @@ Public Class ProcForm
         Me.pnLogHost.Location = New System.Drawing.Point(0, 6)
         Me.pnLogHost.Margin = New System.Windows.Forms.Padding(0)
         Me.pnLogHost.Name = "pnLogHost"
-        Me.pnLogHost.Size = New System.Drawing.Size(1742, 642)
+        Me.pnLogHost.Size = New System.Drawing.Size(1742, 648)
         Me.pnLogHost.TabIndex = 17
         '
         'pnStatusHost
@@ -178,7 +178,7 @@ Public Class ProcForm
         Me.pnStatusHost.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnStatusHost.Location = New System.Drawing.Point(0, 648)
+        Me.pnStatusHost.Location = New System.Drawing.Point(0, 654)
         Me.pnStatusHost.Margin = New System.Windows.Forms.Padding(0)
         Me.pnStatusHost.Name = "pnStatusHost"
         Me.pnStatusHost.Size = New System.Drawing.Size(1742, 60)
@@ -296,7 +296,7 @@ Public Class ProcForm
     End Sub
 
     Sub UpdateControls()
-        lWhenfinisheddo.Visible = g.IsProcessing
+        laWhenfinisheddo.Visible = g.IsProcessing
         mbShutdown.Visible = g.IsProcessing
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
     End Sub

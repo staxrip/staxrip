@@ -87,10 +87,10 @@ Public Class CommandLineVideoEncoderForm
         '
         Me.CompCheckControl.Dock = System.Windows.Forms.DockStyle.Fill
         Me.CompCheckControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CompCheckControl.Location = New System.Drawing.Point(18, 422)
-        Me.CompCheckControl.Margin = New System.Windows.Forms.Padding(18, 18, 18, 0)
+        Me.CompCheckControl.Location = New System.Drawing.Point(15, 422)
+        Me.CompCheckControl.Margin = New System.Windows.Forms.Padding(15, 15, 15, 0)
         Me.CompCheckControl.Name = "CompCheckControl"
-        Me.CompCheckControl.Size = New System.Drawing.Size(1357, 280)
+        Me.CompCheckControl.Size = New System.Drawing.Size(1363, 286)
         Me.CompCheckControl.TabIndex = 1
         Me.CompCheckControl.Text = "Compressibility Check"
         '
@@ -98,10 +98,10 @@ Public Class CommandLineVideoEncoderForm
         '
         Me.EncodingControl.Dock = System.Windows.Forms.DockStyle.Fill
         Me.EncodingControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.EncodingControl.Location = New System.Drawing.Point(18, 106)
-        Me.EncodingControl.Margin = New System.Windows.Forms.Padding(18, 0, 18, 0)
+        Me.EncodingControl.Location = New System.Drawing.Point(15, 106)
+        Me.EncodingControl.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.EncodingControl.Name = "EncodingControl"
-        Me.EncodingControl.Size = New System.Drawing.Size(1357, 298)
+        Me.EncodingControl.Size = New System.Drawing.Size(1363, 301)
         Me.EncodingControl.TabIndex = 0
         Me.EncodingControl.Text = "Command Line"
         '
@@ -120,9 +120,9 @@ Public Class CommandLineVideoEncoderForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(238, 0)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(18, 0, 0, 0)
-        Me.bnCancel.Size = New System.Drawing.Size(220, 70)
+        Me.bnCancel.Location = New System.Drawing.Point(265, 0)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
+        Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
@@ -131,7 +131,7 @@ Public Class CommandLineVideoEncoderForm
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.bnOK.Location = New System.Drawing.Point(0, 0)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnOK.Size = New System.Drawing.Size(220, 70)
+        Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '
         'tlpMain
@@ -161,10 +161,10 @@ Public Class CommandLineVideoEncoderForm
         Me.flpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.flpBottom.Controls.Add(Me.bnOK)
         Me.flpBottom.Controls.Add(Me.bnCancel)
-        Me.flpBottom.Location = New System.Drawing.Point(917, 720)
-        Me.flpBottom.Margin = New System.Windows.Forms.Padding(18)
+        Me.flpBottom.Location = New System.Drawing.Point(863, 723)
+        Me.flpBottom.Margin = New System.Windows.Forms.Padding(15)
         Me.flpBottom.Name = "flpBottom"
-        Me.flpBottom.Size = New System.Drawing.Size(458, 70)
+        Me.flpBottom.Size = New System.Drawing.Size(515, 70)
         Me.flpBottom.TabIndex = 4
         '
         'tlpTop
@@ -205,7 +205,7 @@ Public Class CommandLineVideoEncoderForm
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.Margin = New System.Windows.Forms.Padding(6)
         Me.Name = "CommandLineVideoEncoderForm"
         Me.Text = "Command Line Video Encoder"
         Me.tlpMain.ResumeLayout(False)
@@ -260,6 +260,7 @@ Public Class CommandLineVideoEncoderForm
             tlpMain.RowStyles(2).Height = 50
         End If
 
+        CompCheckControl.Visible = Not cbQualityMode.Checked
         tlpMain.ResumeLayout()
 
         laPercent.Visible = Not cbQualityMode.Checked

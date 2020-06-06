@@ -302,20 +302,20 @@ Public Class AppsForm
                                       End Sub
 
         SetupButton.ForeColor = Color.Red
+        SetupButton.TextImageRelation = TextImageRelation.ImageBeforeText
+        SetupButton.Image = StockIcon.GetSmallImage(StockIconIdentifier.Shield)
         SetupButton.Font = New Font("Segoe UI", 10)
         SetupButton.Margin = New Padding(FontHeight \ 3)
         SetupButton.Padding = New Padding(FontHeight \ 5)
-        SetupButton.AutoSize = True
         SetupButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
-        SetupButton.TextImageRelation = TextImageRelation.ImageBeforeText
-        SetupButton.Image = StockIcon.GetSmallImage(StockIconIdentifier.Shield)
+        SetupButton.AutoSize = True
 
         AddHandler DownloadButton.Click, Sub() g.ShellExecute(CurrentPackage.DownloadURL)
-        DownloadButton.AutoSize = True
-        DownloadButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
         DownloadButton.Font = New Font("Segoe UI", 10)
         DownloadButton.Margin = New Padding(FontHeight \ 3)
         DownloadButton.Padding = New Padding(FontHeight \ 5)
+        DownloadButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        DownloadButton.AutoSize = True
 
         Dim titleHeaderLabel = New Label With {
             .Font = New Font(flp.Font.FontFamily, 14 * s.UIScaleFactor, FontStyle.Bold),
@@ -685,6 +685,11 @@ Public Class AppsForm
             dialog.Filter = "|" + CurrentPackage.Filename + "|All Files|*.*"
 
             If dialog.ShowDialog = DialogResult.OK Then
+                If Not s.AllowCustomPathsInStartupFolder AndAlso dialog.FileName.ToLowerEx.StartsWithEx(Folder.Startup.ToLower) Then
+                    MsgError("Custom paths within the startup folder are not permitted.")
+                    Exit Sub
+                End If
+
                 s.Storage.SetString(CurrentPackage.Name + "custom path", dialog.FileName)
                 ShowActivePackage()
             End If
@@ -768,10 +773,16 @@ Public Class AppsForm
                     bn.Button.Expand = True
                     bn.Button.TextAlign = ContentAlignment.MiddleLeft
                     bn.Button.Height = CInt(form.FontHeight * 3)
-                    bn.Button.Padding = New Padding(CInt(form.FontHeight / 3))
+                    bn.Button.Padding = New Padding(form.FontHeight \ 3)
                     AddHandler bn.Button.Click, Sub(sender As Object, e As EventArgs)
-                                                    Dim txt = DirectCast(sender, Button).Text
-                                                    CurrentPackage.SetStoredPath(txt)
+                                                    Dim fp = DirectCast(sender, Button).Text
+
+                                                    If Not s.AllowCustomPathsInStartupFolder AndAlso fp.ToLowerEx.StartsWithEx(Folder.Startup.ToLower) Then
+                                                        MsgError("Custom paths within the startup folder are not permitted.")
+                                                        Exit Sub
+                                                    End If
+
+                                                    CurrentPackage.SetStoredPath(fp)
                                                     ShowActivePackage()
                                                     form.Close()
                                                 End Sub

@@ -146,7 +146,7 @@ Public Class CommandLineControl
         Dim cms = TextCustomMenu.GetMenu(Presets, bn, components, AddressOf MenuItenClick)
         components.Add(cms)
         cms.Items.Add(New ToolStripSeparator)
-        cms.Items.Add(New ActionMenuItem("Edit Menu...      ", AddressOf EditPresets))
+        cms.Items.Add(New ActionMenuItem("Edit Menu..." + g.MenuSpace, AddressOf EditPresets))
         cms.Show(bn, 0, bn.Height)
     End Sub
 

@@ -1075,8 +1075,6 @@ Public Class MainForm
     Private BlockSourceTextBoxTextChanged As Boolean
 
     Sub New()
-        MyBase.New()
-
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
         g.MainForm = Me
         LoadSettings()
@@ -1102,8 +1100,9 @@ Public Class MainForm
         MenuItemEx.UseTooltips = s.EnableTooltips
         Icon = g.Icon
         InitializeComponent()
-
         ScaleClientSize(41, 26.5)
+        g.DPI = DeviceDpi
+        g.MenuSpace = " ".Multiply(CInt(g.DPI / 96))
 
         If components Is Nothing Then
             components = New System.ComponentModel.Container
@@ -3479,12 +3478,6 @@ Public Class MainForm
             n.Help = "Timeout in seconds before the shutdown is executed."
             n.Field = NameOf(s.ShutdownTimeout)
 
-            n = ui.AddNum
-            n.Text = "Path Character Limit"
-            n.Help = "Character limit of source file paths and half of it as filename limit. " + Strings.CharacterLimitReason
-            n.Config = {150, 1000, 10}
-            n.Field = NameOf(s.CharacterLimit)
-
             b = ui.AddBool
             b.Text = "Prevent system entering standby mode while encoding"
             b.Field = NameOf(s.PreventStandby)
@@ -3517,12 +3510,28 @@ Public Class MainForm
 
             Dim dangerZonePage = ui.CreateFlowPage("Danger Zone", True)
 
+            l = ui.AddLabel("")
+
+            l = ui.AddLabel("Don't change Danger Zone settings unless you are" + BR +
+                            "an absolute power user with debugging experience." + BR)
+
+            l.ForeColor = Color.Red
+
+            l = ui.AddLabel("")
+
             b = ui.AddBool
             b.Text = "Allow to use tools with wrong version"
-            b.Help = "Don't enable this unless you are an absolute power user with debugging experience."
             b.Field = NameOf(s.AllowToolsWithWrongVersion)
 
-            l = ui.AddLabel("Don't enable this unless you are an absolute power user.")
+            b = ui.AddBool
+            b.Text = "Allow to use custom paths in startup folder."
+            b.Field = NameOf(s.AllowCustomPathsInStartupFolder)
+
+            n = ui.AddNum
+            n.Text = "Path Character Limit"
+            n.Help = "Character limit of source file paths and half of it as filename limit. " + Strings.CharacterLimitReason
+            n.Config = {150, 1000, 10}
+            n.Field = NameOf(s.CharacterLimit)
 
             ui.SelectLast("last settings page")
 

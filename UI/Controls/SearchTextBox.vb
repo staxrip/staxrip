@@ -16,6 +16,7 @@ Public Class SearchTextBox
         '
         'Edit
         '
+        Me.Edit.BackColor = System.Drawing.Color.White
         Me.Edit.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Edit.Location = New System.Drawing.Point(0, 0)
         Me.Edit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -34,7 +35,8 @@ Public Class SearchTextBox
         '
         'SearchTextBox
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.Controls.Add(Me.Button)
         Me.Controls.Add(Me.Edit)
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -49,7 +51,7 @@ Public Class SearchTextBox
     Private Edit As TextEdit
     Private Button As SearchTextBoxButton
 
-    Public Sub New()
+    Sub New()
         InitializeComponent()
         Edit.TextBox.SendMessageCue("Search", False)
         AddHandler Edit.TextChanged, Sub() OnTextChanged(New EventArgs)

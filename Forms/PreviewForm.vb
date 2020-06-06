@@ -1033,12 +1033,11 @@ Public Class PreviewForm
 
     Protected Overrides Sub OnHelpButtonClicked(e As CancelEventArgs)
         e.Cancel = True
-        MyBase.OnHelpButtonClicked(e)
         OpenHelp()
     End Sub
 
-    Protected Overrides Sub OnLoad(e As EventArgs)
-        MyBase.OnLoad(e)
+    Protected Overrides Sub OnLoad(args As EventArgs)
+        MyBase.OnLoad(args)
 
         PreviewScript.Synchronize(True, True, True)
         FrameServer = New FrameServer(PreviewScript.Path)
@@ -1093,8 +1092,8 @@ Public Class PreviewForm
         Height = clientHeight + bordersHeight
     End Sub
 
-    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
-        MyBase.OnFormClosing(e)
+    Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
+        MyBase.OnFormClosing(args)
         Instances.Remove(Me)
         UpdateTrim(p.Script)
         s.LastPosition = Renderer.Position

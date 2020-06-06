@@ -23,9 +23,9 @@ Public Class x265Control
 
     <DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.llConfigCodec = New ButtonLabel()
-        Me.llConfigContainer = New ButtonLabel()
-        Me.llCompCheck = New ButtonLabel()
+        Me.llConfigCodec = New StaxRip.UI.ButtonLabel()
+        Me.llConfigContainer = New StaxRip.UI.ButtonLabel()
+        Me.llCompCheck = New StaxRip.UI.ButtonLabel()
         Me.lv = New StaxRip.UI.ListViewEx()
         Me.SuspendLayout()
         '
@@ -34,11 +34,12 @@ Public Class x265Control
         Me.llConfigCodec.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.llConfigCodec.AutoSize = True
         Me.llConfigCodec.BackColor = System.Drawing.SystemColors.Window
+        Me.llConfigCodec.ForeColor = System.Drawing.Color.DimGray
         Me.llConfigCodec.LinkColor = System.Drawing.Color.DimGray
-        Me.llConfigCodec.Location = New System.Drawing.Point(3, 185)
+        Me.llConfigCodec.Location = New System.Drawing.Point(3, 408)
         Me.llConfigCodec.Margin = New System.Windows.Forms.Padding(3)
         Me.llConfigCodec.Name = "llConfigCodec"
-        Me.llConfigCodec.Size = New System.Drawing.Size(120, 25)
+        Me.llConfigCodec.Size = New System.Drawing.Size(128, 37)
         Me.llConfigCodec.TabIndex = 1
         Me.llConfigCodec.TabStop = True
         Me.llConfigCodec.Text = "Options"
@@ -48,11 +49,12 @@ Public Class x265Control
         Me.llConfigContainer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.llConfigContainer.AutoSize = True
         Me.llConfigContainer.BackColor = System.Drawing.SystemColors.Window
+        Me.llConfigContainer.ForeColor = System.Drawing.Color.DimGray
         Me.llConfigContainer.LinkColor = System.Drawing.Color.DimGray
-        Me.llConfigContainer.Location = New System.Drawing.Point(218, 185)
+        Me.llConfigContainer.Location = New System.Drawing.Point(346, 408)
         Me.llConfigContainer.Margin = New System.Windows.Forms.Padding(3)
         Me.llConfigContainer.Name = "llConfigContainer"
-        Me.llConfigContainer.Size = New System.Drawing.Size(146, 25)
+        Me.llConfigContainer.Size = New System.Drawing.Size(276, 37)
         Me.llConfigContainer.TabIndex = 2
         Me.llConfigContainer.TabStop = True
         Me.llConfigContainer.Text = "Container Options"
@@ -62,11 +64,12 @@ Public Class x265Control
         Me.llCompCheck.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.llCompCheck.AutoSize = True
         Me.llCompCheck.BackColor = System.Drawing.SystemColors.Window
+        Me.llCompCheck.ForeColor = System.Drawing.Color.DimGray
         Me.llCompCheck.LinkColor = System.Drawing.Color.DimGray
-        Me.llCompCheck.Location = New System.Drawing.Point(3, 154)
+        Me.llCompCheck.Location = New System.Drawing.Point(3, 365)
         Me.llCompCheck.Margin = New System.Windows.Forms.Padding(3)
         Me.llCompCheck.Name = "llCompCheck"
-        Me.llCompCheck.Size = New System.Drawing.Size(222, 25)
+        Me.llCompCheck.Size = New System.Drawing.Size(399, 37)
         Me.llCompCheck.TabIndex = 3
         Me.llCompCheck.TabStop = True
         Me.llCompCheck.Text = "Run Compressibility Check"
@@ -74,20 +77,23 @@ Public Class x265Control
         'lv
         '
         Me.lv.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lv.HideSelection = False
         Me.lv.Location = New System.Drawing.Point(0, 0)
         Me.lv.Name = "lv"
-        Me.lv.Size = New System.Drawing.Size(367, 213)
+        Me.lv.Size = New System.Drawing.Size(625, 448)
         Me.lv.TabIndex = 0
+        Me.lv.UseCompatibleStateImageBehavior = False
         '
         'x265Control
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.Controls.Add(Me.llConfigContainer)
         Me.Controls.Add(Me.llConfigCodec)
         Me.Controls.Add(Me.llCompCheck)
         Me.Controls.Add(Me.lv)
         Me.Name = "x265Control"
-        Me.Size = New System.Drawing.Size(367, 213)
+        Me.Size = New System.Drawing.Size(625, 448)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -97,7 +103,6 @@ Public Class x265Control
 
     Private Encoder As x265Enc
     Private Params As x265Params
-
     Private cms As ContextMenuStripEx
     Private QualityDefinitions As List(Of QualityItem)
 
@@ -242,15 +247,15 @@ Public Class x265Control
         llCompCheck.Visible = Params.Mode.Value = x265RateMode.TwoPass Or Params.Mode.Value = x265RateMode.ThreePass
     End Sub
 
-    Private Sub llConfigCodec_Click(sender As Object, e As EventArgs) Handles llConfigCodec.Click
+    Sub llConfigCodec_Click(sender As Object, e As EventArgs) Handles llConfigCodec.Click
         Encoder.ShowConfigDialog()
     End Sub
 
-    Private Sub llConfigContainer_Click(sender As Object, e As EventArgs) Handles llConfigContainer.Click
+    Sub llConfigContainer_Click(sender As Object, e As EventArgs) Handles llConfigContainer.Click
         Encoder.OpenMuxerConfigDialog()
     End Sub
 
-    Private Sub llCompCheck_Click(sender As Object, e As EventArgs) Handles llCompCheck.Click
+    Sub llCompCheck_Click(sender As Object, e As EventArgs) Handles llCompCheck.Click
         Encoder.RunCompCheck()
     End Sub
 

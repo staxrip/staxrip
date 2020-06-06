@@ -1143,7 +1143,9 @@ Public Class eac3toForm
         OutputFolder = teTempDir.Text.FixDir
     End Sub
 
-    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+    Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
+        MyBase.OnFormClosing(args)
+
         Dim hdCounter As Integer
 
         For Each i In Streams
@@ -1159,18 +1161,18 @@ Public Class eac3toForm
         s.CmdlPresetsEac3to = cmdlOptions.Presets
 
         If Not bnOK.Enabled Then
-            e.Cancel = True
+            args.Cancel = True
         End If
 
         If DialogResult = DialogResult.OK Then
             If cbVideoOutput.Text = "MKV" AndAlso Not Package.Haali.VerifyOK(True) Then
-                e.Cancel = True
+                args.Cancel = True
             End If
 
             s.Storage.SetBool("demux Blu-ray chapters", cbChapters.Checked)
         End If
 
-        MyBase.OnFormClosing(e)
+        MyBase.OnFormClosing(args)
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)

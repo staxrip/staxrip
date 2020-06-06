@@ -25,21 +25,6 @@ A second startup folder is ``<startup>\Apps\Scripts``, this folder should only
 be used by StaxRip maintainers.
 
 
-Events
-------
-
-- ``JobMuxed`` After a job was muxed.
-- ``JobProcessed`` After a job was processed.
-- ``JobsProcessed`` After jobs were processed.
-- ``ProjectLoaded`` After a project was loaded.
-- ``ProjectOrSourceLoaded`` After a project or source was loaded.
-- ``AfterSourceLoaded`` After source files were loaded.
-- ``VideoEncoded`` After video was encoded.
-- ``ApplicationExit`` When the application exits.
-- ``BeforeJobProcessed`` Before job processing starts.
-- ``BeforeProcessing`` Before processing starts.
-
-
 Example Scripts
 ---------------
 

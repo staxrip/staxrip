@@ -53,8 +53,8 @@ Public Class ProcForm
         'bnAbort
         '
         Me.bnAbort.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnAbort.Location = New System.Drawing.Point(1011, 0)
-        Me.bnAbort.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
+        Me.bnAbort.Location = New System.Drawing.Point(1035, 0)
+        Me.bnAbort.Margin = New System.Windows.Forms.Padding(18, 0, 18, 0)
         Me.bnAbort.Name = "bnAbort"
         Me.bnAbort.Size = New System.Drawing.Size(200, 70)
         Me.bnAbort.TabIndex = 2
@@ -77,7 +77,7 @@ Public Class ProcForm
         'bnJobs
         '
         Me.bnJobs.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnJobs.Location = New System.Drawing.Point(1221, 0)
+        Me.bnJobs.Location = New System.Drawing.Point(1253, 0)
         Me.bnJobs.Margin = New System.Windows.Forms.Padding(0)
         Me.bnJobs.Name = "bnJobs"
         Me.bnJobs.Size = New System.Drawing.Size(200, 70)
@@ -88,7 +88,7 @@ Public Class ProcForm
         'bnResume
         '
         Me.bnResume.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnResume.Location = New System.Drawing.Point(801, 0)
+        Me.bnResume.Location = New System.Drawing.Point(817, 0)
         Me.bnResume.Margin = New System.Windows.Forms.Padding(0)
         Me.bnResume.Name = "bnResume"
         Me.bnResume.Size = New System.Drawing.Size(200, 70)
@@ -99,8 +99,8 @@ Public Class ProcForm
         'bnSuspend
         '
         Me.bnSuspend.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnSuspend.Location = New System.Drawing.Point(591, 0)
-        Me.bnSuspend.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
+        Me.bnSuspend.Location = New System.Drawing.Point(599, 0)
+        Me.bnSuspend.Margin = New System.Windows.Forms.Padding(18, 0, 18, 0)
         Me.bnSuspend.Name = "bnSuspend"
         Me.bnSuspend.Size = New System.Drawing.Size(200, 70)
         Me.bnSuspend.TabIndex = 12
@@ -119,10 +119,10 @@ Public Class ProcForm
         Me.flpButtons.Controls.Add(Me.bnAbort)
         Me.flpButtons.Controls.Add(Me.bnJobs)
         Me.flpButtons.Controls.Add(Me.bnLog)
-        Me.flpButtons.Location = New System.Drawing.Point(101, 734)
-        Me.flpButtons.Margin = New System.Windows.Forms.Padding(10)
+        Me.flpButtons.Location = New System.Drawing.Point(53, 726)
+        Me.flpButtons.Margin = New System.Windows.Forms.Padding(18)
         Me.flpButtons.Name = "flpButtons"
-        Me.flpButtons.Size = New System.Drawing.Size(1631, 70)
+        Me.flpButtons.Size = New System.Drawing.Size(1671, 70)
         Me.flpButtons.TabIndex = 13
         '
         'mbShutdown
@@ -135,8 +135,8 @@ Public Class ProcForm
         'bnLog
         '
         Me.bnLog.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnLog.Location = New System.Drawing.Point(1431, 0)
-        Me.bnLog.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
+        Me.bnLog.Location = New System.Drawing.Point(1471, 0)
+        Me.bnLog.Margin = New System.Windows.Forms.Padding(18, 0, 0, 0)
         Me.bnLog.Name = "bnLog"
         Me.bnLog.Size = New System.Drawing.Size(200, 70)
         Me.bnLog.TabIndex = 13
@@ -170,7 +170,7 @@ Public Class ProcForm
         Me.pnLogHost.Location = New System.Drawing.Point(0, 6)
         Me.pnLogHost.Margin = New System.Windows.Forms.Padding(0)
         Me.pnLogHost.Name = "pnLogHost"
-        Me.pnLogHost.Size = New System.Drawing.Size(1742, 658)
+        Me.pnLogHost.Size = New System.Drawing.Size(1742, 642)
         Me.pnLogHost.TabIndex = 17
         '
         'pnStatusHost
@@ -178,7 +178,7 @@ Public Class ProcForm
         Me.pnStatusHost.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnStatusHost.Location = New System.Drawing.Point(0, 664)
+        Me.pnStatusHost.Location = New System.Drawing.Point(0, 648)
         Me.pnStatusHost.Margin = New System.Windows.Forms.Padding(0)
         Me.pnStatusHost.Name = "pnStatusHost"
         Me.pnStatusHost.Size = New System.Drawing.Size(1742, 60)
@@ -230,32 +230,6 @@ Public Class ProcForm
         ScaleClientSize(45, 28)
     End Sub
 
-    Private Sub cbShutdown_SelectedIndexChanged() Handles mbShutdown.ValueChangedUser
-        Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", CInt(mbShutdown.Value))
-    End Sub
-
-    Private Sub NotifyIcon_MouseClick() Handles NotifyIcon.MouseClick
-        ShowForm()
-    End Sub
-
-    Private Sub bnSuspend_Click(sender As Object, e As EventArgs) Handles bnSuspend.Click
-        ProcController.Suspend()
-    End Sub
-
-    Private Sub bnResume_Click(sender As Object, e As EventArgs) Handles bnResume.Click
-        ProcController.ResumeProcs()
-    End Sub
-
-    Private Sub bnAbort_Click(sender As Object, e As EventArgs) Handles bnAbort.Click
-        If MsgOK("Abort processing?") Then
-            Abort()
-        End If
-    End Sub
-
-    Sub Abort()
-        ProcController.Abort()
-    End Sub
-
     Protected Overrides Sub WndProc(ByRef m As Message)
         Select Case m.Msg
             Case &H112 'WM_SYSCOMMAND
@@ -283,27 +257,9 @@ Public Class ProcForm
         End If
     End Sub
 
-    Private Sub ShowForm()
-        Show()
-        WindowState = FormWindowState.Normal
-        Activate()
-    End Sub
-
-    Sub HideForm()
-        WindowState = FormWindowState.Normal
-        NotifyIcon.Visible = False
-        Hide()
-    End Sub
-
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
         UpdateControls()
-    End Sub
-
-    Sub UpdateControls()
-        lWhenfinisheddo.Visible = g.IsProcessing
-        mbShutdown.Visible = g.IsProcessing
-        mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
     End Sub
 
     Shared Property WasHandleCreated As Boolean
@@ -322,6 +278,50 @@ Public Class ProcForm
             Return MyBase.ShowWithoutActivation
         End Get
     End Property
+
+    Sub Abort()
+        ProcController.Abort()
+    End Sub
+
+    Sub ShowForm()
+        Show()
+        WindowState = FormWindowState.Normal
+        Activate()
+    End Sub
+
+    Sub HideForm()
+        WindowState = FormWindowState.Normal
+        NotifyIcon.Visible = False
+        Hide()
+    End Sub
+
+    Sub UpdateControls()
+        lWhenfinisheddo.Visible = g.IsProcessing
+        mbShutdown.Visible = g.IsProcessing
+        mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
+    End Sub
+
+    Sub cbShutdown_SelectedIndexChanged() Handles mbShutdown.ValueChangedUser
+        Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", CInt(mbShutdown.Value))
+    End Sub
+
+    Sub NotifyIcon_MouseClick() Handles NotifyIcon.MouseClick
+        ShowForm()
+    End Sub
+
+    Sub bnSuspend_Click(sender As Object, e As EventArgs) Handles bnSuspend.Click
+        ProcController.Suspend()
+    End Sub
+
+    Sub bnResume_Click(sender As Object, e As EventArgs) Handles bnResume.Click
+        ProcController.ResumeProcs()
+    End Sub
+
+    Sub bnAbort_Click(sender As Object, e As EventArgs) Handles bnAbort.Click
+        If MsgOK("Abort processing?") Then
+            Abort()
+        End If
+    End Sub
 
     Sub bnJobs_Click(sender As Object, e As EventArgs) Handles bnJobs.Click
         Using form As New JobsForm()

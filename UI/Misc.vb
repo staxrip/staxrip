@@ -32,6 +32,8 @@ Namespace UI
         End Property
 
         Protected Overrides Sub OnDragEnter(e As DragEventArgs)
+            MyBase.OnDragEnter(e)
+
             If FileDrop Then
                 Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
@@ -39,42 +41,27 @@ Namespace UI
                     e.Effect = DragDropEffects.Copy
                 End If
             End If
-
-            MyBase.OnDragEnter(e)
         End Sub
 
-        Protected Overrides Sub OnDragDrop(e As DragEventArgs)
+        Protected Overrides Sub OnDragDrop(args As DragEventArgs)
+            MyBase.OnDragDrop(args)
+
             If FileDrop Then
-                Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+                Dim files = TryCast(args.Data.GetData(DataFormats.FileDrop), String())
 
                 If Not files.NothingOrEmpty Then
                     RaiseEvent FilesDropped(files)
                 End If
             End If
-
-            MyBase.OnDragDrop(e)
         End Sub
 
-        Protected Overrides Sub OnLoad(e As EventArgs)
+        Protected Overrides Sub OnLoad(args As EventArgs)
             KeyPreview = True
             SetTabIndexes(Me)
 
-            If AutoScaleMode = AutoScaleMode.Dpi OrElse AutoScaleMode = AutoScaleMode.Font Then
-                If s.UIScaleFactor <> 1 Then
-                    Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
-                    Scale(New SizeF(1 * s.UIScaleFactor, 1 * s.UIScaleFactor))
-                End If
-            Else
-                Dim designDimension = 144
-
-                If s.UIScaleFactor <> 1 Then
-                    Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
-                End If
-
-                If designDimension <> DeviceDpi OrElse s.UIScaleFactor <> 1 Then
-                    Scale(New SizeF(CSng(DeviceDpi / designDimension * s.UIScaleFactor),
-                                    CSng(DeviceDpi / designDimension * s.UIScaleFactor)))
-                End If
+            If s.UIScaleFactor <> 1 Then
+                Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+                Scale(New SizeF(1 * s.UIScaleFactor, 1 * s.UIScaleFactor))
             End If
 
             If DefaultWidthScale <> 0 Then
@@ -104,14 +91,16 @@ Namespace UI
                 WindowPositions.CenterScreen(Me)
             End If
 
-            MyBase.OnLoad(e)
-
             If Not DesignHelp.IsDesignMode Then
                 s.WindowPositions?.RestorePosition(Me)
             End If
+
+            MyBase.OnLoad(args)
         End Sub
 
-        Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
+            MyBase.OnFormClosing(args)
+
             If Not s.WindowPositions Is Nothing Then
                 s.WindowPositions.Save(Me)
             End If
@@ -119,8 +108,6 @@ Namespace UI
             If DefaultWidthScale <> 0 Then
                 SaveClientSize()
             End If
-
-            MyBase.OnFormClosing(e)
         End Sub
 
         Sub SetTabIndexes(c As Control)
@@ -160,9 +147,9 @@ Namespace UI
             StartPosition = FormStartPosition.CenterParent
         End Sub
 
-        Protected Overrides Sub OnHelpButtonClicked(e As CancelEventArgs)
-            e.Cancel = True
-            MyBase.OnHelpButtonClicked(e)
+        Protected Overrides Sub OnHelpButtonClicked(args As CancelEventArgs)
+            MyBase.OnHelpButtonClicked(args)
+            args.Cancel = True
             OnHelpRequested(New HelpEventArgs(MousePosition))
         End Sub
     End Class
@@ -221,17 +208,17 @@ Namespace UI
             SaveWindowState(form)
         End Sub
 
-        Private Sub SavePosition(form As Form)
+        Sub SavePosition(form As Form)
             If form.WindowState = FormWindowState.Normal Then
                 Positions(GetKey(form)) = form.Location
             End If
         End Sub
 
-        Private Sub SaveWindowState(form As Form)
+        Sub SaveWindowState(form As Form)
             WindowStates(GetKey(form)) = form.WindowState
         End Sub
 
-        Private Sub RestorePositionInternal(form As Form)
+        Sub RestorePositionInternal(form As Form)
             If Positions.ContainsKey(GetKey(form)) Then
                 Dim pos = Positions(GetKey(form))
                 Dim wa = Screen.FromControl(form).WorkingArea
@@ -330,7 +317,10 @@ Namespace UI
 
         Shared ReadOnly Property IsDesignMode As Boolean
             Get
-                If Not IsDesignModeValue.HasValue Then IsDesignModeValue = Process.GetCurrentProcess.ProcessName = "devenv"
+                If Not IsDesignModeValue.HasValue Then
+                    IsDesignModeValue = Process.GetCurrentProcess.ProcessName = "devenv"
+                End If
+
                 Return IsDesignModeValue.Value
             End Get
         End Property

@@ -724,10 +724,24 @@ Public Class AudioForm
         TipProvider.SetTip("Forced MKV Track.", cbForcedTrack)
     End Sub
 
-    Sub AudioForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+    Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
         If DialogResult = DialogResult.OK Then
             SetValues(Profile)
         End If
+    End Sub
+
+    Protected Overrides Sub OnShown(e As EventArgs)
+        UpdateControls()
+        Refresh()
+        ActiveControl = mbCodec
+
+        For Each lng In Language.Languages
+            If lng.IsCommon Then
+                mbLanguage.Add(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
+            Else
+                mbLanguage.Add("More | " + lng.ToString.Substring(0, 1).ToUpper + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
+            End If
+        Next
     End Sub
 
     Sub SetValues(gap As GUIAudioProfile)
@@ -901,20 +915,6 @@ Public Class AudioForm
         TempProfile.Language = mbLanguage.GetValue(Of Language)()
         mbLanguage.Text = TempProfile.Language.Name
         UpdateControls()
-    End Sub
-
-    Sub AudioForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
-        UpdateControls()
-        Refresh()
-        ActiveControl = mbCodec
-
-        For Each i In Language.Languages
-            If i.IsCommon Then
-                mbLanguage.Add(i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
-            Else
-                mbLanguage.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
-            End If
-        Next
     End Sub
 
     Sub tbName_TextChanged(sender As Object, e As EventArgs) Handles tbProfileName.TextChanged
@@ -1232,10 +1232,6 @@ Public Class AudioForm
         End If
     End Sub
 
-    Sub CommandLineAudioSettingsForm_HelpRequested() Handles Me.HelpRequested
-        ShowHelp()
-    End Sub
-
     Sub tbStreamName_TextChanged(sender As Object, e As EventArgs) Handles tbStreamName.TextChanged
         TempProfile.StreamName = tbStreamName.Text
     End Sub
@@ -1390,5 +1386,9 @@ Public Class AudioForm
     Sub cbNormalize_CheckedChanged(sender As Object, e As EventArgs) Handles cbNormalize.CheckedChanged
         TempProfile.Params.Normalize = cbNormalize.Checked
         UpdateControls()
+    End Sub
+
+    Sub AudioForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+        ShowHelp()
     End Sub
 End Class

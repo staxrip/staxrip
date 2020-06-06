@@ -226,10 +226,6 @@ Public Class PreprocessingControl
         Return r
     End Function
 
-    Private Sub lv_Layout(sender As Object, e As LayoutEventArgs) Handles lv.Layout
-        lv.Columns(0).Width = lv.Width - 5
-    End Sub
-
     Protected Overrides Sub OnHandleDestroyed(e As EventArgs)
         If FindForm.DialogResult = DialogResult.OK Then
             s.Demuxers.Clear()
@@ -244,12 +240,16 @@ Public Class PreprocessingControl
         MyBase.OnHandleDestroyed(e)
     End Sub
 
-    Private Sub lv_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lv.SelectedIndexChanged
+    Sub lv_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lv.SelectedIndexChanged
         bnEdit.Enabled = lv.SelectedItems.Count = 1 AndAlso
             DirectCast(lv.SelectedItems(0).Tag, Demuxer).HasConfigDialog
     End Sub
 
-    Private Sub bnAdd_Click(sender As Object, e As EventArgs) Handles bnAdd.Click
+    Sub lv_Layout(sender As Object, e As LayoutEventArgs) Handles lv.Layout
+        lv.Columns(0).Width = lv.Width - 5
+    End Sub
+
+    Sub bnAdd_Click(sender As Object, e As EventArgs) Handles bnAdd.Click
         Dim sb As New SelectionBox(Of Demuxer)
         sb.Title = "New Demuxer"
         sb.Text = "Please select a Demuxer."
@@ -267,14 +267,14 @@ Public Class PreprocessingControl
         End If
     End Sub
 
-    Private Sub bnEdit_Click(sender As Object, e As EventArgs) Handles bnEdit.Click
+    Sub bnEdit_Click(sender As Object, e As EventArgs) Handles bnEdit.Click
         Dim listItem = lv.SelectedItems(0)
         Dim demuxer = DirectCast(listItem.Tag, Demuxer)
         demuxer.ShowConfigDialog()
         listItem.Text = demuxer.ToString
     End Sub
 
-    Private Sub bnRestore_Click(sender As Object, e As EventArgs) Handles bnRestore.Click
+    Sub bnRestore_Click(sender As Object, e As EventArgs) Handles bnRestore.Click
         If MsgQuestion("Restore defaults?") = DialogResult.OK Then
             lv.Items.Clear()
 

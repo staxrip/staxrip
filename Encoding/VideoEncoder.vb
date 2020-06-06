@@ -409,7 +409,7 @@ Public MustInherit Class VideoEncoder
 
     Overrides Function Edit() As DialogResult
         Using form As New ControlHostForm(Name)
-            form.AddControl(CreateEditControl, Nothing)
+            form.AddControl(CreateEditControl)
             form.ShowDialog()
         End Using
 

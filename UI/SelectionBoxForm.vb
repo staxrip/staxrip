@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class SelectionBoxForm
@@ -24,34 +25,34 @@ Public Class SelectionBoxForm
     Friend WithEvents bnCancel As System.Windows.Forms.Button
     Public WithEvents bnOK As System.Windows.Forms.Button
     Friend WithEvents mb As MenuButton
-    Public WithEvents lText As System.Windows.Forms.Label
+    Public WithEvents laText As System.Windows.Forms.Label
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.lText = New System.Windows.Forms.Label()
+        Me.laText = New System.Windows.Forms.Label()
         Me.bnCancel = New System.Windows.Forms.Button()
         Me.bnOK = New System.Windows.Forms.Button()
         Me.mb = New StaxRip.UI.MenuButton()
         Me.SuspendLayout()
         '
-        'lText
+        'laText
         '
-        Me.lText.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.laText.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lText.Location = New System.Drawing.Point(13, 5)
-        Me.lText.Name = "lText"
-        Me.lText.Size = New System.Drawing.Size(408, 40)
-        Me.lText.TabIndex = 0
-        Me.lText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.laText.Location = New System.Drawing.Point(12, 9)
+        Me.laText.Name = "laText"
+        Me.laText.Size = New System.Drawing.Size(612, 101)
+        Me.laText.TabIndex = 0
+        Me.laText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'bnCancel
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.bnCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.bnCancel.Location = New System.Drawing.Point(321, 90)
+        Me.bnCancel.Location = New System.Drawing.Point(374, 209)
         Me.bnCancel.Name = "bnCancel"
-        Me.bnCancel.Size = New System.Drawing.Size(100, 34)
+        Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.TabIndex = 3
         Me.bnCancel.Text = "Cancel"
         '
@@ -60,9 +61,9 @@ Public Class SelectionBoxForm
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.bnOK.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.bnOK.Location = New System.Drawing.Point(215, 90)
+        Me.bnOK.Location = New System.Drawing.Point(118, 209)
         Me.bnOK.Name = "bnOK"
-        Me.bnOK.Size = New System.Drawing.Size(100, 34)
+        Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.TabIndex = 2
         Me.bnOK.Text = "OK"
         '
@@ -70,20 +71,21 @@ Public Class SelectionBoxForm
         '
         Me.mb.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.mb.Location = New System.Drawing.Point(12, 48)
+        Me.mb.Location = New System.Drawing.Point(12, 121)
         Me.mb.ShowMenuSymbol = True
-        Me.mb.Size = New System.Drawing.Size(409, 36)
+        Me.mb.Size = New System.Drawing.Size(612, 70)
         '
         'SelectionBoxForm
         '
         Me.AcceptButton = Me.bnOK
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(433, 136)
+        Me.ClientSize = New System.Drawing.Size(636, 291)
         Me.Controls.Add(Me.mb)
         Me.Controls.Add(Me.bnOK)
         Me.Controls.Add(Me.bnCancel)
-        Me.Controls.Add(Me.lText)
+        Me.Controls.Add(Me.laText)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.KeyPreview = True
@@ -101,10 +103,13 @@ Public Class SelectionBoxForm
 
     Property ReturnValue As Object
 
-    Private Sub lText_TextChanged() Handles lText.TextChanged
-        Using g = lText.CreateGraphics
-            Dim s = g.MeasureString(lText.Text, lText.Font, lText.Width)
-            If s.Height > lText.Height Then Height += CInt(s.Height - lText.Height)
+    Sub lText_TextChanged() Handles laText.TextChanged
+        Using gx = laText.CreateGraphics
+            Dim textSize = gx.MeasureString(laText.Text, laText.Font, laText.Width)
+
+            If textSize.Height > laText.Height Then
+                Height += CInt(textSize.Height - laText.Height)
+            End If
         End Using
     End Sub
 End Class

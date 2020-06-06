@@ -43,15 +43,15 @@ Friend Class JobsForm
         Me.bnDown.Enabled = False
         Me.bnDown.Location = New System.Drawing.Point(8, 0)
         Me.bnDown.Margin = New System.Windows.Forms.Padding(8, 0, 0, 0)
-        Me.bnDown.Size = New System.Drawing.Size(70, 70)
+        Me.bnDown.Size = New System.Drawing.Size(100, 70)
         '
         'bnUp
         '
         Me.bnUp.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.bnUp.Enabled = False
-        Me.bnUp.Location = New System.Drawing.Point(756, 0)
+        Me.bnUp.Location = New System.Drawing.Point(726, 0)
         Me.bnUp.Margin = New System.Windows.Forms.Padding(0, 0, 8, 0)
-        Me.bnUp.Size = New System.Drawing.Size(70, 70)
+        Me.bnUp.Size = New System.Drawing.Size(100, 70)
         '
         'bnStart
         '
@@ -75,6 +75,7 @@ Friend Class JobsForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.lv, 2)
+        Me.lv.HideSelection = False
         Me.lv.Location = New System.Drawing.Point(15, 15)
         Me.lv.Margin = New System.Windows.Forms.Padding(0, 0, 0, 14)
         Me.lv.Name = "lv"
@@ -127,10 +128,10 @@ Friend Class JobsForm
         'bnMenu
         '
         Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.bnMenu.Location = New System.Drawing.Point(234, 0)
+        Me.bnMenu.Location = New System.Drawing.Point(204, 0)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(0)
         Me.bnMenu.ShowMenuSymbol = True
-        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
+        Me.bnMenu.Size = New System.Drawing.Size(100, 70)
         '
         'bnRemove
         '
@@ -346,14 +347,14 @@ Friend Class JobsForm
         Close()
     End Sub
 
-    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
-        MyBase.OnFormClosing(e)
+    Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
+        MyBase.OnFormClosing(args)
         RemoveHandler FileWatcher.Changed, AddressOf Reload
         RemoveHandler FileWatcher.Created, AddressOf Reload
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged
     End Sub
 
-    Sub JobsForm_HelpRequested(sender As Object, ea As HelpEventArgs) Handles Me.HelpRequested
+    Sub JobsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         MsgInfo(Tip)
     End Sub
 End Class

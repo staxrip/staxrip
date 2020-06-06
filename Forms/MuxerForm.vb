@@ -1370,4 +1370,8 @@ Public Class MuxerForm
             g.ShowException(ex)
         End Try
     End Sub
+
+    Sub dgvSubtitles_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles dgvSubtitles.DataBindingComplete
+        UpdateControls()
+    End Sub
 End Class

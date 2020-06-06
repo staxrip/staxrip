@@ -14,51 +14,60 @@ Public Class CommandLineVideoEncoderForm
         End If
         MyBase.Dispose(disposing)
     End Sub
-    Friend WithEvents EncodingCliControl As StaxRip.MacroEditorControl
-    Friend WithEvents lType As System.Windows.Forms.Label
+    Friend WithEvents EncodingControl As StaxRip.MacroEditorControl
+    Friend WithEvents laType As System.Windows.Forms.Label
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
-    Friend WithEvents CompCheckCliControl As StaxRip.MacroEditorControl
+    Friend WithEvents CompCheckControl As StaxRip.MacroEditorControl
     Friend WithEvents cbQualityMode As System.Windows.Forms.CheckBox
     Friend WithEvents numPercent As NumEdit
-    Friend WithEvents lPercent As System.Windows.Forms.Label
+    Friend WithEvents laPercent As System.Windows.Forms.Label
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
-    Friend WithEvents tlp As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents tlpMain As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents tbType As StaxRip.UI.TextBoxEx
-
+    Friend WithEvents tlpTop As TableLayoutPanel
+    Friend WithEvents flpBottom As FlowLayoutPanel
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.lType = New System.Windows.Forms.Label()
+        Me.laType = New System.Windows.Forms.Label()
         Me.cbQualityMode = New System.Windows.Forms.CheckBox()
         Me.numPercent = New StaxRip.UI.NumEdit()
-        Me.CompCheckCliControl = New StaxRip.MacroEditorControl()
-        Me.EncodingCliControl = New StaxRip.MacroEditorControl()
+        Me.CompCheckControl = New StaxRip.MacroEditorControl()
+        Me.EncodingControl = New StaxRip.MacroEditorControl()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
-        Me.lPercent = New System.Windows.Forms.Label()
+        Me.laPercent = New System.Windows.Forms.Label()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
-        Me.tlp = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+        Me.flpBottom = New System.Windows.Forms.FlowLayoutPanel()
+        Me.tlpTop = New System.Windows.Forms.TableLayoutPanel()
         Me.tbType = New StaxRip.UI.TextBoxEx()
-        Me.tlp.SuspendLayout()
+        Me.tlpMain.SuspendLayout()
+        Me.flpBottom.SuspendLayout()
+        Me.tlpTop.SuspendLayout()
         Me.SuspendLayout()
         '
-        'lType
+        'laType
         '
-        Me.lType.AutoSize = True
-        Me.lType.Location = New System.Drawing.Point(12, 20)
-        Me.lType.Name = "lType"
-        Me.lType.Size = New System.Drawing.Size(147, 25)
-        Me.lType.TabIndex = 0
-        Me.lType.Text = "Output File Type:"
+        Me.laType.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.laType.AutoSize = True
+        Me.laType.Location = New System.Drawing.Point(20, 26)
+        Me.laType.Margin = New System.Windows.Forms.Padding(20, 0, 3, 0)
+        Me.laType.Name = "laType"
+        Me.laType.Size = New System.Drawing.Size(289, 48)
+        Me.laType.TabIndex = 0
+        Me.laType.Text = "Output File Type:"
         '
         'cbQualityMode
         '
+        Me.cbQualityMode.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cbQualityMode.AutoSize = True
-        Me.cbQualityMode.Location = New System.Drawing.Point(296, 20)
+        Me.cbQualityMode.Location = New System.Drawing.Point(468, 24)
+        Me.cbQualityMode.Margin = New System.Windows.Forms.Padding(50, 3, 3, 3)
         Me.cbQualityMode.Name = "cbQualityMode"
-        Me.cbQualityMode.Size = New System.Drawing.Size(146, 29)
+        Me.cbQualityMode.Size = New System.Drawing.Size(281, 52)
         Me.cbQualityMode.TabIndex = 3
         Me.cbQualityMode.Text = "Quality Mode"
         Me.TipProvider.SetTipText(Me.cbQualityMode, "In Quality Mode bitrate related features are disabled.")
@@ -66,102 +75,145 @@ Public Class CommandLineVideoEncoderForm
         '
         'numPercent
         '
-        Me.numPercent.Increment = New Decimal(New Integer() {5, 0, 0, 0})
-        Me.numPercent.Location = New System.Drawing.Point(648, 18)
-        Me.numPercent.Maximum = New Decimal(New Integer() {200, 0, 0, 0})
+        Me.numPercent.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.numPercent.Increment = 5.0R
+        Me.numPercent.Location = New System.Drawing.Point(1122, 20)
+        Me.numPercent.Maximum = 200.0R
         Me.numPercent.Name = "numPercent"
-        Me.numPercent.Size = New System.Drawing.Size(75, 31)
+        Me.numPercent.Size = New System.Drawing.Size(140, 60)
         Me.numPercent.TabIndex = 5
         '
-        'CompCheckCliControl
+        'CompCheckControl
         '
-        Me.CompCheckCliControl.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.CompCheckCliControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CompCheckCliControl.Location = New System.Drawing.Point(3, 260)
-        Me.CompCheckCliControl.Name = "CompCheckCliControl"
-        Me.CompCheckCliControl.Size = New System.Drawing.Size(1234, 252)
-        Me.CompCheckCliControl.TabIndex = 1
-        Me.CompCheckCliControl.Text = "Compressibility Check Batch"
+        Me.CompCheckControl.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.CompCheckControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CompCheckControl.Location = New System.Drawing.Point(18, 422)
+        Me.CompCheckControl.Margin = New System.Windows.Forms.Padding(18, 18, 18, 0)
+        Me.CompCheckControl.Name = "CompCheckControl"
+        Me.CompCheckControl.Size = New System.Drawing.Size(1357, 280)
+        Me.CompCheckControl.TabIndex = 1
+        Me.CompCheckControl.Text = "Compressibility Check"
         '
-        'EncodingCliControl
+        'EncodingControl
         '
-        Me.EncodingCliControl.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.EncodingCliControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.EncodingCliControl.Location = New System.Drawing.Point(3, 3)
-        Me.EncodingCliControl.Name = "EncodingCliControl"
-        Me.EncodingCliControl.Size = New System.Drawing.Size(1234, 251)
-        Me.EncodingCliControl.TabIndex = 0
-        Me.EncodingCliControl.Text = "Command Line"
+        Me.EncodingControl.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.EncodingControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.EncodingControl.Location = New System.Drawing.Point(18, 106)
+        Me.EncodingControl.Margin = New System.Windows.Forms.Padding(18, 0, 18, 0)
+        Me.EncodingControl.Name = "EncodingControl"
+        Me.EncodingControl.Size = New System.Drawing.Size(1357, 298)
+        Me.EncodingControl.TabIndex = 0
+        Me.EncodingControl.Text = "Command Line"
         '
-        'lPercent
+        'laPercent
         '
-        Me.lPercent.AutoSize = True
-        Me.lPercent.Location = New System.Drawing.Point(471, 21)
-        Me.lPercent.Name = "lPercent"
-        Me.lPercent.Size = New System.Drawing.Size(159, 25)
-        Me.lPercent.TabIndex = 4
-        Me.lPercent.Text = "Aimed Quality (%):"
+        Me.laPercent.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.laPercent.AutoSize = True
+        Me.laPercent.Location = New System.Drawing.Point(802, 26)
+        Me.laPercent.Margin = New System.Windows.Forms.Padding(50, 0, 3, 0)
+        Me.laPercent.Name = "laPercent"
+        Me.laPercent.Size = New System.Drawing.Size(314, 48)
+        Me.laPercent.TabIndex = 4
+        Me.laPercent.Text = "Aimed Quality (%):"
         '
         'bnCancel
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(1146, 577)
-        Me.bnCancel.Size = New System.Drawing.Size(100, 36)
+        Me.bnCancel.Location = New System.Drawing.Point(238, 0)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(18, 0, 0, 0)
+        Me.bnCancel.Size = New System.Drawing.Size(220, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(1040, 577)
-        Me.bnOK.Size = New System.Drawing.Size(100, 36)
+        Me.bnOK.Location = New System.Drawing.Point(0, 0)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnOK.Size = New System.Drawing.Size(220, 70)
         Me.bnOK.Text = "OK"
         '
-        'tlp
+        'tlpMain
         '
-        Me.tlp.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tlp.ColumnCount = 1
-        Me.tlp.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlp.Controls.Add(Me.EncodingCliControl, 0, 0)
-        Me.tlp.Controls.Add(Me.CompCheckCliControl, 0, 1)
-        Me.tlp.Location = New System.Drawing.Point(9, 56)
-        Me.tlp.Margin = New System.Windows.Forms.Padding(0, 3, 0, 3)
-        Me.tlp.Name = "tlp"
-        Me.tlp.RowCount = 2
-        Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlp.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlp.Size = New System.Drawing.Size(1240, 515)
-        Me.tlp.TabIndex = 1
+        Me.tlpMain.ColumnCount = 1
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.Controls.Add(Me.flpBottom, 0, 3)
+        Me.tlpMain.Controls.Add(Me.tlpTop, 0, 0)
+        Me.tlpMain.Controls.Add(Me.EncodingControl, 0, 1)
+        Me.tlpMain.Controls.Add(Me.CompCheckControl, 0, 2)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Margin = New System.Windows.Forms.Padding(0, 3, 0, 3)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 4
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.Size = New System.Drawing.Size(1393, 809)
+        Me.tlpMain.TabIndex = 1
+        '
+        'flpBottom
+        '
+        Me.flpBottom.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.flpBottom.AutoSize = True
+        Me.flpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpBottom.Controls.Add(Me.bnOK)
+        Me.flpBottom.Controls.Add(Me.bnCancel)
+        Me.flpBottom.Location = New System.Drawing.Point(917, 720)
+        Me.flpBottom.Margin = New System.Windows.Forms.Padding(18)
+        Me.flpBottom.Name = "flpBottom"
+        Me.flpBottom.Size = New System.Drawing.Size(458, 70)
+        Me.flpBottom.TabIndex = 4
+        '
+        'tlpTop
+        '
+        Me.tlpTop.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpTop.ColumnCount = 6
+        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpTop.Controls.Add(Me.laType, 0, 0)
+        Me.tlpTop.Controls.Add(Me.tbType, 1, 0)
+        Me.tlpTop.Controls.Add(Me.cbQualityMode, 2, 0)
+        Me.tlpTop.Controls.Add(Me.laPercent, 3, 0)
+        Me.tlpTop.Controls.Add(Me.numPercent, 4, 0)
+        Me.tlpTop.Location = New System.Drawing.Point(3, 3)
+        Me.tlpTop.Name = "tlpTop"
+        Me.tlpTop.RowCount = 1
+        Me.tlpTop.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpTop.Size = New System.Drawing.Size(1387, 100)
+        Me.tlpTop.TabIndex = 6
         '
         'tbType
         '
-        Me.tbType.Location = New System.Drawing.Point(165, 17)
-        Me.tbType.Size = New System.Drawing.Size(100, 31)
+        Me.tbType.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.tbType.Location = New System.Drawing.Point(315, 22)
+        Me.tbType.Size = New System.Drawing.Size(100, 55)
+        Me.tbType.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
-        'BatchEncoderForm
+        'CommandLineVideoEncoderForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.ClientSize = New System.Drawing.Size(1258, 623)
-        Me.Controls.Add(Me.tbType)
-        Me.Controls.Add(Me.tlp)
-        Me.Controls.Add(Me.bnCancel)
-        Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.lPercent)
-        Me.Controls.Add(Me.numPercent)
-        Me.Controls.Add(Me.cbQualityMode)
-        Me.Controls.Add(Me.lType)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.ClientSize = New System.Drawing.Size(1393, 809)
+        Me.Controls.Add(Me.tlpMain)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
-        Me.Name = "CommandLineEncoderForm"
+        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.Name = "CommandLineVideoEncoderForm"
         Me.Text = "Command Line Video Encoder"
-        Me.tlp.ResumeLayout(False)
+        Me.tlpMain.ResumeLayout(False)
+        Me.tlpMain.PerformLayout()
+        Me.flpBottom.ResumeLayout(False)
+        Me.tlpTop.ResumeLayout(False)
+        Me.tlpTop.PerformLayout()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 
@@ -172,55 +224,45 @@ Public Class CommandLineVideoEncoderForm
     Sub New(encoder As BatchEncoder)
         MyBase.New()
         InitializeComponent()
+        RestoreClientSize(50, 22)
         Me.Encoder = encoder
 
         cbQualityMode.Checked = encoder.QualityMode
         tbType.Text = encoder.OutputExt
 
-        EncodingCliControl.SetCommandLineDefaults()
-        EncodingCliControl.Value = encoder.CommandLines
+        EncodingControl.SetCommandLineDefaults()
+        EncodingControl.Value = encoder.CommandLines
 
-        CompCheckCliControl.SetCommandLineDefaults()
-        CompCheckCliControl.Value = encoder.CompCheckCommandLines
+        CompCheckControl.SetCommandLineDefaults()
+        CompCheckControl.Value = encoder.CompCheckCommandLines
 
         numPercent.Value = encoder.AutoCompCheckValue
 
-        TipProvider.SetTip("Adjusts the target file size or image size after the compressibility check accordingly.", numPercent, lPercent)
+        TipProvider.SetTip("Adjusts the target file size or image size after the compressibility check accordingly.", numPercent, laPercent)
     End Sub
 
-    Private Sub CommandLineVideoEncoderForm_FormClosed() Handles Me.FormClosed
+    Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
         If DialogResult = DialogResult.OK Then
             Encoder.OutputFileTypeValue = tbType.Text
-            Encoder.CommandLines = EncodingCliControl.Value
-            Encoder.CompCheckCommandLines = CompCheckCliControl.Value
+            Encoder.CommandLines = EncodingControl.Value
+            Encoder.CompCheckCommandLines = CompCheckControl.Value
             Encoder.QualityMode = cbQualityMode.Checked
             Encoder.AutoCompCheckValue = CInt(numPercent.Value)
         End If
     End Sub
 
-    Private Sub CommandLineVideoEncoderForm_HelpRequested() Handles Me.HelpRequested
-        Dim form As New HelpForm
-        form.Doc.WriteStart(Text)
-        form.Doc.WriteParagraph("Each line is executed separately. Global macros are passed to the process as environment variables.")
-        form.Doc.WriteTips(TipProvider.GetTips, EncodingCliControl.TipProvider.GetTips)
-        form.Doc.WriteTable("Macros", Macro.GetTips(False, True, False))
-        form.Show()
-    End Sub
-
-    Private Sub cbQualityMode_CheckedChanged(sender As Object, e As EventArgs) Handles cbQualityMode.CheckedChanged
-        tlp.SuspendLayout()
+    Sub cbQualityMode_CheckedChanged(sender As Object, e As EventArgs) Handles cbQualityMode.CheckedChanged
+        tlpMain.SuspendLayout()
 
         If cbQualityMode.Checked Then
-            tlp.RowStyles(1).Height = 0
-            Height -= CInt(tlp.Height / 2)
+            tlpMain.RowStyles(2).Height = 0
         Else
-            tlp.RowStyles(1).Height = 50
-            Height += CInt(tlp.Height)
+            tlpMain.RowStyles(2).Height = 50
         End If
 
-        tlp.ResumeLayout()
+        tlpMain.ResumeLayout()
 
-        lPercent.Visible = Not cbQualityMode.Checked
+        laPercent.Visible = Not cbQualityMode.Checked
         numPercent.Visible = Not cbQualityMode.Checked
     End Sub
 End Class

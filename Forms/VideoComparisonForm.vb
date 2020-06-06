@@ -145,8 +145,8 @@ Public Class VideoComparisonForm
     End Sub
 
     Sub Reload()
-        For Each i As VideoTab In TabControl.TabPages
-            i.Reload()
+        For Each tab As VideoTab In TabControl.TabPages
+            tab.Reload()
         Next
     End Sub
 
@@ -282,10 +282,7 @@ Public Class VideoComparisonForm
             Server = New FrameServer(script.Path)
             Renderer = New VideoRenderer(VideoPanel, Server)
 
-            Try
-                FileHelp.Delete(sourePath + ".ffindex")
-            Catch ex As Exception
-            End Try
+            FileHelp.Delete(sourePath + ".ffindex")
 
             If Form.TrackBar.Maximum < Server.Info.FrameCount - 1 Then
                 Form.TrackBar.Maximum = Server.Info.FrameCount - 1
@@ -345,14 +342,14 @@ Public Class VideoComparisonForm
             End Try
 
             If Not FrameInfo Is Nothing Then
-                Form.lInfo.Text = FrameInfo(Form.TrackBar.Value)
+                Form.laInfo.Text = FrameInfo(Form.TrackBar.Value)
             Else
                 Dim d As Date
                 d = d.AddSeconds(Pos / Server.FrameRate)
-                Form.lInfo.Text = "Position: " & Pos & ", Time: " + d.ToString("HH:mm:ss.fff") + ", Size: " & Server.Info.Width & " x " & Server.Info.Height
+                Form.laInfo.Text = "Position: " & Pos & ", Time: " + d.ToString("HH:mm:ss.fff") + ", Size: " & Server.Info.Width & " x " & Server.Info.Height
             End If
 
-            Form.lInfo.Refresh()
+            Form.laInfo.Refresh()
         End Sub
 
         Sub DoLayout()

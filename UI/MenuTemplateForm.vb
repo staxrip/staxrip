@@ -1,3 +1,4 @@
+
 Namespace UI
     Public Class MenuTemplateForm
         Inherits DialogBase
@@ -8,66 +9,102 @@ Namespace UI
             Me.tv = New System.Windows.Forms.TreeView()
             Me.bnCancel = New StaxRip.UI.ButtonEx()
             Me.bnOK = New StaxRip.UI.ButtonEx()
+            Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+            Me.pnTreeView = New System.Windows.Forms.Panel()
+            Me.tlpMain.SuspendLayout()
+            Me.pnTreeView.SuspendLayout()
             Me.SuspendLayout()
             '
             'tv
             '
-            Me.tv.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.tv.Location = New System.Drawing.Point(12, 13)
+            Me.tv.Dock = System.Windows.Forms.DockStyle.Fill
+            Me.tv.Location = New System.Drawing.Point(0, 0)
             Me.tv.Margin = New System.Windows.Forms.Padding(3, 3, 3, 8)
             Me.tv.Name = "tv"
-            Me.tv.Size = New System.Drawing.Size(417, 437)
+            Me.tv.Size = New System.Drawing.Size(1030, 1093)
             Me.tv.TabIndex = 0
             '
             'bnCancel
             '
             Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-            Me.bnCancel.Location = New System.Drawing.Point(329, 461)
-            Me.bnCancel.Size = New System.Drawing.Size(100, 34)
+            Me.bnCancel.Location = New System.Drawing.Point(798, 1129)
+            Me.bnCancel.Margin = New System.Windows.Forms.Padding(18, 0, 18, 18)
+            Me.bnCancel.Size = New System.Drawing.Size(250, 70)
             Me.bnCancel.Text = "Cancel"
             '
             'bnOK
             '
-            Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-            Me.bnOK.Location = New System.Drawing.Point(223, 461)
-            Me.bnOK.Size = New System.Drawing.Size(100, 34)
+            Me.bnOK.Location = New System.Drawing.Point(530, 1129)
+            Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
+            Me.bnOK.Size = New System.Drawing.Size(250, 70)
             Me.bnOK.Text = "OK"
+            '
+            'tlpMain
+            '
+            Me.tlpMain.ColumnCount = 2
+            Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+            Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+            Me.tlpMain.Controls.Add(Me.bnCancel, 1, 1)
+            Me.tlpMain.Controls.Add(Me.bnOK, 0, 1)
+            Me.tlpMain.Controls.Add(Me.pnTreeView, 0, 0)
+            Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+            Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+            Me.tlpMain.Name = "tlpMain"
+            Me.tlpMain.RowCount = 2
+            Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+            Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+            Me.tlpMain.Size = New System.Drawing.Size(1066, 1217)
+            Me.tlpMain.TabIndex = 2
+            '
+            'pnTreeView
+            '
+            Me.pnTreeView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.tlpMain.SetColumnSpan(Me.pnTreeView, 2)
+            Me.pnTreeView.Controls.Add(Me.tv)
+            Me.pnTreeView.Location = New System.Drawing.Point(18, 18)
+            Me.pnTreeView.Margin = New System.Windows.Forms.Padding(18)
+            Me.pnTreeView.Name = "pnTreeView"
+            Me.pnTreeView.Size = New System.Drawing.Size(1030, 1093)
+            Me.pnTreeView.TabIndex = 2
             '
             'MenuTemplateForm
             '
             Me.AcceptButton = Me.bnOK
-            Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+            Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+            Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
             Me.CancelButton = Me.bnCancel
-            Me.ClientSize = New System.Drawing.Size(441, 507)
-            Me.Controls.Add(Me.bnCancel)
-            Me.Controls.Add(Me.bnOK)
-            Me.Controls.Add(Me.tv)
+            Me.ClientSize = New System.Drawing.Size(1066, 1217)
+            Me.Controls.Add(Me.tlpMain)
             Me.KeyPreview = True
-            Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+            Me.Margin = New System.Windows.Forms.Padding(6)
             Me.Name = "MenuTemplateForm"
             Me.Text = "Default Menu"
+            Me.tlpMain.ResumeLayout(False)
+            Me.pnTreeView.ResumeLayout(False)
             Me.ResumeLayout(False)
 
         End Sub
         Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
         Friend WithEvents bnOK As StaxRip.UI.ButtonEx
+        Friend WithEvents tlpMain As TableLayoutPanel
+        Friend WithEvents pnTreeView As Panel
 
 #End Region
 
         Public TreeNode As TreeNode
 
         Sub New(item As CustomMenuItem)
-            MyBase.New()
             InitializeComponent()
             PopulateTreeView(item, Nothing)
             tv.ExpandAll()
         End Sub
 
-        Private Sub PopulateTreeView(item As CustomMenuItem, node As TreeNode)
+        Sub PopulateTreeView(item As CustomMenuItem, node As TreeNode)
             Dim newNode As New TreeNode(item.Text)
             newNode.Tag = item
 
@@ -82,14 +119,14 @@ Namespace UI
             Next
         End Sub
 
-        Private Sub tv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tv.AfterSelect
+        Sub tv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tv.AfterSelect
             If Not tv.SelectedNode Is Nothing Then
                 TreeNode = tv.SelectedNode
                 bnOK.Enabled = Not TreeNode.Parent Is Nothing
             End If
         End Sub
 
-        Private Sub MenuTemplateForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+        Sub MenuTemplateForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
             Dim form As New HelpForm()
             form.Doc.WriteStart(Text)
             form.Doc.WriteParagraph("The new item will be a clone of the selected item.")

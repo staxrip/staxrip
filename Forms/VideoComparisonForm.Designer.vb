@@ -1,12 +1,12 @@
 ﻿
 Imports StaxRip.UI
 
-<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class VideoComparisonForm
     Inherits FormBase
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -23,17 +23,15 @@ Partial Class VideoComparisonForm
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.TabControl = New StaxRip.UI.TabControlEx()
         Me.TrackBar = New StaxRip.UI.TrackBarEx()
-        Me.lInfo = New System.Windows.Forms.Label()
+        Me.laInfo = New System.Windows.Forms.Label()
         Me.bnMenu = New StaxRip.UI.ButtonEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.tlpBottom = New System.Windows.Forms.TableLayoutPanel()
         CType(Me.TrackBar, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tlpMain.SuspendLayout()
-        Me.tlpBottom.SuspendLayout()
         Me.SuspendLayout()
         '
         'TabControl
@@ -41,6 +39,7 @@ Partial Class VideoComparisonForm
         Me.TabControl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpMain.SetColumnSpan(Me.TabControl, 2)
         Me.TabControl.Location = New System.Drawing.Point(10, 5)
         Me.TabControl.Margin = New System.Windows.Forms.Padding(10, 5, 10, 6)
         Me.TabControl.Name = "TabControl"
@@ -53,6 +52,7 @@ Partial Class VideoComparisonForm
         Me.TrackBar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TrackBar.AutoSize = False
+        Me.tlpMain.SetColumnSpan(Me.TrackBar, 2)
         Me.TrackBar.Location = New System.Drawing.Point(3, 833)
         Me.TrackBar.Name = "TrackBar"
         Me.TrackBar.Size = New System.Drawing.Size(1450, 75)
@@ -60,27 +60,29 @@ Partial Class VideoComparisonForm
         Me.TrackBar.TabStop = False
         Me.TrackBar.TickStyle = System.Windows.Forms.TickStyle.None
         '
-        'lInfo
+        'laInfo
         '
-        Me.lInfo.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lInfo.Location = New System.Drawing.Point(91, 5)
-        Me.lInfo.Name = "lInfo"
-        Me.lInfo.Size = New System.Drawing.Size(1362, 65)
-        Me.lInfo.TabIndex = 4
-        Me.lInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.laInfo.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.laInfo.Location = New System.Drawing.Point(91, 924)
+        Me.laInfo.Name = "laInfo"
+        Me.laInfo.Size = New System.Drawing.Size(1362, 48)
+        Me.laInfo.TabIndex = 4
+        Me.laInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'bnMenu
         '
-        Me.bnMenu.Location = New System.Drawing.Point(10, 0)
+        Me.bnMenu.Location = New System.Drawing.Point(10, 911)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
         Me.bnMenu.ShowMenuSymbol = True
         Me.bnMenu.Size = New System.Drawing.Size(68, 65)
         '
         'tlpMain
         '
-        Me.tlpMain.ColumnCount = 1
+        Me.tlpMain.ColumnCount = 2
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpMain.Controls.Add(Me.tlpBottom, 0, 2)
+        Me.tlpMain.Controls.Add(Me.bnMenu, 0, 2)
+        Me.tlpMain.Controls.Add(Me.laInfo, 1, 2)
         Me.tlpMain.Controls.Add(Me.TabControl, 0, 0)
         Me.tlpMain.Controls.Add(Me.TrackBar, 0, 1)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
@@ -93,27 +95,10 @@ Partial Class VideoComparisonForm
         Me.tlpMain.Size = New System.Drawing.Size(1456, 986)
         Me.tlpMain.TabIndex = 5
         '
-        'tlpBottom
-        '
-        Me.tlpBottom.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tlpBottom.AutoSize = True
-        Me.tlpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.tlpBottom.ColumnCount = 2
-        Me.tlpBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpBottom.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpBottom.Controls.Add(Me.bnMenu, 0, 0)
-        Me.tlpBottom.Controls.Add(Me.lInfo, 1, 0)
-        Me.tlpBottom.Location = New System.Drawing.Point(0, 911)
-        Me.tlpBottom.Margin = New System.Windows.Forms.Padding(0)
-        Me.tlpBottom.Name = "tlpBottom"
-        Me.tlpBottom.RowCount = 1
-        Me.tlpBottom.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpBottom.Size = New System.Drawing.Size(1456, 75)
-        Me.tlpBottom.TabIndex = 0
-        '
         'VideoComparisonForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(1456, 986)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
@@ -124,15 +109,12 @@ Partial Class VideoComparisonForm
         Me.Text = "Video Comparison"
         CType(Me.TrackBar, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tlpMain.ResumeLayout(False)
-        Me.tlpMain.PerformLayout()
-        Me.tlpBottom.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
     Friend WithEvents TabControl As TabControlEx
     Friend WithEvents TrackBar As TrackBarEx
-    Friend WithEvents lInfo As System.Windows.Forms.Label
+    Friend WithEvents laInfo As System.Windows.Forms.Label
     Friend WithEvents bnMenu As StaxRip.UI.ButtonEx
     Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents tlpBottom As TableLayoutPanel
 End Class

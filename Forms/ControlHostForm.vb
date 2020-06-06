@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class ControlHostForm
@@ -15,13 +16,11 @@ Public Class ControlHostForm
     End Sub
 
     Friend WithEvents pControl As System.Windows.Forms.Panel
-    Friend WithEvents ButtonEx1 As StaxRip.UI.ButtonEx
 
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.pControl = New System.Windows.Forms.Panel()
-        Me.ButtonEx1 = New StaxRip.UI.ButtonEx()
         Me.SuspendLayout()
         '
         'pControl
@@ -31,23 +30,14 @@ Public Class ControlHostForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pControl.Location = New System.Drawing.Point(12, 12)
         Me.pControl.Name = "pControl"
-        Me.pControl.Size = New System.Drawing.Size(318, 216)
+        Me.pControl.Size = New System.Drawing.Size(638, 489)
         Me.pControl.TabIndex = 0
-        '
-        'ButtonEx1
-        '
-        Me.ButtonEx1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ButtonEx1.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonEx1.Location = New System.Drawing.Point(230, 234)
-        Me.ButtonEx1.Size = New System.Drawing.Size(100, 34)
-        Me.ButtonEx1.Text = "Close"
         '
         'ControlHostForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.CancelButton = Me.ButtonEx1
-        Me.ClientSize = New System.Drawing.Size(342, 280)
-        Me.Controls.Add(Me.ButtonEx1)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.ClientSize = New System.Drawing.Size(662, 513)
         Me.Controls.Add(Me.pControl)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
@@ -59,24 +49,14 @@ Public Class ControlHostForm
 
 #End Region
 
-    Private HelpAction As Action
-
     Sub New(title As String)
-        MyBase.New()
         InitializeComponent()
         Text = title
+        HelpButton = False
     End Sub
 
-    Sub AddControl(c As Control, helpAction As Action)
-        c.Dock = DockStyle.Fill
-        pControl.Controls.Add(c)
-        Me.HelpAction = helpAction
-        Me.HelpButton = Not helpAction Is Nothing
-    End Sub
-
-    Private Sub ControlHostForm_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
-        If Not HelpAction Is Nothing Then
-            HelpAction()
-        End If
+    Sub AddControl(ctrl As Control)
+        ctrl.Dock = DockStyle.Fill
+        pControl.Controls.Add(ctrl)
     End Sub
 End Class

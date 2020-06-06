@@ -71,7 +71,8 @@ Partial Class LogForm
         '
         'LogForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(961, 825)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True

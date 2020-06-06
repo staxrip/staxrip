@@ -1,15 +1,14 @@
 ﻿
 Imports System.Text.RegularExpressions
+
 Imports StaxRip.UI
 
 Public Class LogForm
     Public Sub New()
         InitializeComponent()
         RestoreClientSize(50, 35)
-        lb.BackColor = SystemColors.Control
-
         Text += " - " + p.Log.GetPath
-
+        lb.BackColor = SystemColors.Control
         lb.ItemHeight = FontHeight * 2
         rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
         rtb.ReadOnly = True

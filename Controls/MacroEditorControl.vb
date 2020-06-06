@@ -1,5 +1,6 @@
 
 Imports System.ComponentModel
+
 Imports StaxRip.UI
 
 Public Class MacroEditorControl
@@ -94,7 +95,7 @@ Public Class MacroEditorControl
         Me.tpPreview.Controls.Add(Me.rtbPreview)
         Me.tpPreview.Location = New System.Drawing.Point(12, 58)
         Me.tpPreview.Name = "tpPreview"
-        Me.tpPreview.Size = New System.Drawing.Size(584, 394)
+        Me.tpPreview.Size = New System.Drawing.Size(584, 371)
         Me.tpPreview.TabIndex = 1
         Me.tpPreview.Text = " Preview "
         '
@@ -105,7 +106,7 @@ Public Class MacroEditorControl
         Me.rtbPreview.Location = New System.Drawing.Point(0, 0)
         Me.rtbPreview.Name = "rtbPreview"
         Me.rtbPreview.ReadOnly = True
-        Me.rtbPreview.Size = New System.Drawing.Size(584, 394)
+        Me.rtbPreview.Size = New System.Drawing.Size(584, 371)
         Me.rtbPreview.TabIndex = 0
         Me.rtbPreview.Text = ""
         '
@@ -114,7 +115,7 @@ Public Class MacroEditorControl
         Me.tpDefaults.Controls.Add(Me.rtbDefaults)
         Me.tpDefaults.Location = New System.Drawing.Point(12, 58)
         Me.tpDefaults.Name = "tpDefaults"
-        Me.tpDefaults.Size = New System.Drawing.Size(584, 394)
+        Me.tpDefaults.Size = New System.Drawing.Size(584, 371)
         Me.tpDefaults.TabIndex = 2
         Me.tpDefaults.Text = " Defaults "
         '
@@ -125,7 +126,7 @@ Public Class MacroEditorControl
         Me.rtbDefaults.Location = New System.Drawing.Point(0, 0)
         Me.rtbDefaults.Name = "rtbDefaults"
         Me.rtbDefaults.ReadOnly = True
-        Me.rtbDefaults.Size = New System.Drawing.Size(584, 394)
+        Me.rtbDefaults.Size = New System.Drawing.Size(584, 371)
         Me.rtbDefaults.TabIndex = 0
         Me.rtbDefaults.Text = ""
         '
@@ -192,7 +193,8 @@ Public Class MacroEditorControl
         '
         'MacroEditorControl
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.Controls.Add(Me.gb)
         Me.Name = "MacroEditorControl"
         Me.Size = New System.Drawing.Size(620, 550)
@@ -281,7 +283,7 @@ Public Class MacroEditorControl
         rtbDefaults.WordWrap = False
     End Sub
 
-    Private Sub UpdateWrapMode(rtb As RichTextBox)
+    Sub UpdateWrapMode(rtb As RichTextBox)
         If AutoWrap Then
             rtb.WordWrap = Not rtb.Text.FixBreak.Contains(BR)
             Dim s = TextRenderer.MeasureText(rtb.Text, rtb.Font)
@@ -294,7 +296,7 @@ Public Class MacroEditorControl
         End If
     End Sub
 
-    Private Sub tpPreview_Enter() Handles tpPreview.Enter
+    Sub tpPreview_Enter() Handles tpPreview.Enter
         UpdatePreview()
     End Sub
 
@@ -306,19 +308,21 @@ Public Class MacroEditorControl
         End If
     End Sub
 
-    Private Sub rtbPreview_TextChanged(sender As Object, e As EventArgs) Handles rtbPreview.TextChanged
+    Sub rtbPreview_TextChanged(sender As Object, e As EventArgs) Handles rtbPreview.TextChanged
         UpdateWrapMode(rtbPreview)
     End Sub
 
-    Private Sub rtbEdit_TextChanged(sender As Object, e As EventArgs) Handles rtbEdit.TextChanged
+    Sub rtbEdit_TextChanged(sender As Object, e As EventArgs) Handles rtbEdit.TextChanged
         UpdateWrapMode(rtbEdit)
     End Sub
 
-    Private Sub rtbDefaults_TextChanged(sender As Object, e As EventArgs) Handles rtbDefaults.TextChanged
+    Sub rtbDefaults_TextChanged(sender As Object, e As EventArgs) Handles rtbDefaults.TextChanged
         UpdateWrapMode(rtbDefaults)
     End Sub
 
-    Protected Overrides Sub OnLoad(e As EventArgs)
+    Protected Overrides Sub OnLoad(args As EventArgs)
+        MyBase.OnLoad(args)
+
         UpdateWrapMode(rtbEdit)
         UpdateWrapMode(rtbPreview)
 
@@ -326,17 +330,15 @@ Public Class MacroEditorControl
             Controls.Remove(tpDefaults)
             tpDefaults.Dispose()
         End If
-
-        MyBase.OnLoad(e)
     End Sub
 
-    Private Sub llMacros_Click(sender As Object, e As EventArgs) Handles llMacros.Click
+    Sub llMacros_Click(sender As Object, e As EventArgs) Handles llMacros.Click
         MacrosForm.ShowDialogForm()
     End Sub
 
     Private HelpPaths As New List(Of String)
 
-    Private Sub llHelp_Click(sender As Object, e As EventArgs) Handles llHelp.Click
+    Sub llHelp_Click(sender As Object, e As EventArgs) Handles llHelp.Click
         For Each i In HelpPaths
             g.ShellExecute(i)
         Next

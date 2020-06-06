@@ -42,7 +42,7 @@ Public Class CommandLineControl
         Me.tb.Multiline = True
         Me.tb.Size = New System.Drawing.Size(235, 205)
         '
-        'bu
+        'bn
         '
         Me.bn.Anchor = System.Windows.Forms.AnchorStyles.Top
         Me.bn.Location = New System.Drawing.Point(245, 0)
@@ -68,7 +68,8 @@ Public Class CommandLineControl
         '
         'CommandLineControl
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.Controls.Add(Me.tlpMain)
         Me.Margin = New System.Windows.Forms.Padding(0)
         Me.Name = "CommandLineControl"

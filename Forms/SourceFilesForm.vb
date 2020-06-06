@@ -234,16 +234,16 @@ Public Class SourceFilesForm
         End Using
     End Sub
 
-    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+    Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
+        MyBase.OnFormClosing(args)
+
         If DialogResult = DialogResult.OK Then
             Dim files = GetFiles()
 
             If g.ShowVideoSourceWarnings(GetFiles) Then
-                e.Cancel = True
+                args.Cancel = True
             End If
         End If
-
-        MyBase.OnFormClosing(e)
     End Sub
 
     Function GetFiles() As IEnumerable(Of String)

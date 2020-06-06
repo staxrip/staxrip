@@ -1,7 +1,9 @@
 ﻿
-Imports StaxRip.UI
-Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
+
+Imports Microsoft.Win32
+
+Imports StaxRip.UI
 
 Public Class CodeEditor
     Property ActiveTable As FilterTable

@@ -31,7 +31,8 @@ Public Class HelpForm
         '
         'HelpForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(1218, 791)
         Me.Controls.Add(Me.Browser)
         Me.KeyPreview = True
@@ -82,15 +83,15 @@ Public Class HelpForm
         form.Show()
     End Sub
 
-    Private Sub HelpForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
+    Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
         Dispose()
     End Sub
 
-    Private Sub Browser_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles Browser.DocumentCompleted
+    Sub Browser_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles Browser.DocumentCompleted
         WebBrowserHelp.ResetTextSize(Browser)
     End Sub
 
-    Private Sub Browser_Navigated(sender As Object, e As WebBrowserNavigatedEventArgs) Handles Browser.Navigated
+    Sub Browser_Navigated(sender As Object, e As WebBrowserNavigatedEventArgs) Handles Browser.Navigated
         If Browser.DocumentTitle <> "" Then
             Text = Browser.DocumentTitle
         ElseIf File.Exists(e.Url.LocalPath) Then
@@ -100,14 +101,13 @@ Public Class HelpForm
 
     Shadows Sub Show()
         MyBase.Show()
-        Application.DoEvents()
 
         If Not DocumentValue Is Nothing Then
             DocumentValue.WriteDocument(Browser)
         End If
     End Sub
 
-    Private Sub Browser_Navigating(sender As Object, e As WebBrowserNavigatingEventArgs) Handles Browser.Navigating
+    Sub Browser_Navigating(sender As Object, e As WebBrowserNavigatingEventArgs) Handles Browser.Navigating
         If e.Url.AbsoluteUri.StartsWith("http") Then
             e.Cancel = True
             g.ShellExecute(e.Url.ToString)

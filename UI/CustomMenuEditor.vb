@@ -1053,9 +1053,9 @@ Namespace UI
             MyBase.OnShown(e)
         End Sub
 
-        Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
+            MyBase.OnFormClosing(args)
             IsClosing = True
-            MyBase.OnFormClosing(e)
         End Sub
 
         Sub bnOK_Click(sender As Object, e As EventArgs) Handles bnOK.Click

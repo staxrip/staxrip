@@ -372,6 +372,7 @@ Friend Class JobsForm
 
     Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
         Documentation.ShowTip(Tip)
+        g.StopAfterCurrentJob = False
         Close()
 
         If g.IsProcessing Then

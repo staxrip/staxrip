@@ -2,6 +2,9 @@
 2.1.2.1 Beta (not yet available)
 ============
 
+- The Processing dialog has a new feature: Stop After Current Job
+
+
 2.1.1.9 Beta
 ============
 

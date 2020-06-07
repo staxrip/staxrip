@@ -14,7 +14,7 @@ Public Class VideoComparisonForm
 
     Public Sub New()
         InitializeComponent()
-        RestoreClientSize(53, 35)
+        RestoreClientSize(53, 36)
 
         KeyPreview = True
         bnMenu.TabStop = False
@@ -327,29 +327,22 @@ Public Class VideoComparisonForm
         End Function
 
         Sub TrackBarValueChanged()
-            Pos = Form.TrackBar.Value
-
             Try
+                Pos = Form.TrackBar.Value
                 Draw()
+
+                If Not FrameInfo Is Nothing Then
+                    Form.laInfo.Text = FrameInfo(Form.TrackBar.Value)
+                Else
+                    Dim frameRate = If(Calc.IsValidFrameRate(Server.FrameRate), Server.FrameRate, 25)
+                    Dim dt = DateTime.Today.AddSeconds(Pos / frameRate)
+                    Form.laInfo.Text = "Position: " & Pos & ", Time: " + dt.ToString("HH:mm:ss.fff") + ", Size: " & Server.Info.Width & " x " & Server.Info.Height
+                End If
+
+                Form.laInfo.Refresh()
             Catch ex As Exception
-                Form.Reload()
-
-                Try
-                    Draw()
-                Catch ex2 As Exception
-                    g.ShowException(ex2)
-                End Try
+                g.ShowException(ex)
             End Try
-
-            If Not FrameInfo Is Nothing Then
-                Form.laInfo.Text = FrameInfo(Form.TrackBar.Value)
-            Else
-                Dim d As Date
-                d = d.AddSeconds(Pos / Server.FrameRate)
-                Form.laInfo.Text = "Position: " & Pos & ", Time: " + d.ToString("HH:mm:ss.fff") + ", Size: " & Server.Info.Width & " x " & Server.Info.Height
-            End If
-
-            Form.laInfo.Refresh()
         End Sub
 
         Sub DoLayout()

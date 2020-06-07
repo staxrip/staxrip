@@ -22,6 +22,7 @@ Public Class GlobalClass
     Property SavedProject As New Project
     Property DefaultCommands As New GlobalCommands
     Property IsProcessing As Boolean
+    Property StopAfterCurrentJob As Boolean
     Property DPI As Integer
     Property MenuSpace As String
 
@@ -183,9 +184,10 @@ Public Class GlobalClass
             If jobs.Count = 0 Then
                 g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
                 g.ShutdownPC()
-            ElseIf JobManager.ActiveJobs.Count = 0 Then
+            ElseIf JobManager.ActiveJobs.Count = 0 OrElse g.StopAfterCurrentJob Then
+                g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
+
                 If Process.GetProcessesByName("StaxRip").Count = 1 Then
-                    g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
                     g.ShutdownPC()
                 End If
             Else

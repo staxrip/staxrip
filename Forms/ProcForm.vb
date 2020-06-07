@@ -11,15 +11,14 @@ Public Class ProcForm
     Friend WithEvents bnAbort As System.Windows.Forms.Button
     Friend WithEvents laWhenfinisheddo As System.Windows.Forms.Label
     Friend WithEvents NotifyIcon As System.Windows.Forms.NotifyIcon
-    Friend WithEvents bnResume As System.Windows.Forms.Button
     Friend WithEvents bnJobs As System.Windows.Forms.Button
-    Friend WithEvents bnSuspend As System.Windows.Forms.Button
     Friend WithEvents flpButtons As System.Windows.Forms.FlowLayoutPanel
     Friend WithEvents mbShutdown As MenuButton
     Friend WithEvents pnLogHost As Panel
     Friend WithEvents pnStatusHost As Panel
     Friend WithEvents flpNav As FlowLayoutPanel
     Friend WithEvents bnLog As Button
+    Friend WithEvents bnMenu As ButtonEx
     Friend WithEvents tlpMain As TableLayoutPanel
 
     <System.Diagnostics.DebuggerNonUserCode()>
@@ -37,8 +36,6 @@ Public Class ProcForm
         Me.laWhenfinisheddo = New System.Windows.Forms.Label()
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
         Me.bnJobs = New System.Windows.Forms.Button()
-        Me.bnResume = New System.Windows.Forms.Button()
-        Me.bnSuspend = New System.Windows.Forms.Button()
         Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
         Me.mbShutdown = New StaxRip.UI.MenuButton()
         Me.bnLog = New System.Windows.Forms.Button()
@@ -46,6 +43,7 @@ Public Class ProcForm
         Me.pnLogHost = New System.Windows.Forms.Panel()
         Me.pnStatusHost = New System.Windows.Forms.Panel()
         Me.flpNav = New System.Windows.Forms.FlowLayoutPanel()
+        Me.bnMenu = New ButtonEx
         Me.flpButtons.SuspendLayout()
         Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
@@ -53,10 +51,10 @@ Public Class ProcForm
         'bnAbort
         '
         Me.bnAbort.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnAbort.Location = New System.Drawing.Point(1026, 0)
+        Me.bnAbort.Location = New System.Drawing.Point(596, 0)
         Me.bnAbort.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.bnAbort.Name = "bnAbort"
-        Me.bnAbort.Size = New System.Drawing.Size(200, 70)
+        Me.bnAbort.Size = New System.Drawing.Size(260, 70)
         Me.bnAbort.TabIndex = 2
         Me.bnAbort.Text = "Abort"
         '
@@ -77,35 +75,13 @@ Public Class ProcForm
         'bnJobs
         '
         Me.bnJobs.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnJobs.Location = New System.Drawing.Point(1241, 0)
+        Me.bnJobs.Location = New System.Drawing.Point(871, 0)
         Me.bnJobs.Margin = New System.Windows.Forms.Padding(0)
         Me.bnJobs.Name = "bnJobs"
-        Me.bnJobs.Size = New System.Drawing.Size(200, 70)
+        Me.bnJobs.Size = New System.Drawing.Size(260, 70)
         Me.bnJobs.TabIndex = 9
         Me.bnJobs.Text = "Jobs"
         Me.bnJobs.UseVisualStyleBackColor = True
-        '
-        'bnResume
-        '
-        Me.bnResume.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnResume.Location = New System.Drawing.Point(811, 0)
-        Me.bnResume.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnResume.Name = "bnResume"
-        Me.bnResume.Size = New System.Drawing.Size(200, 70)
-        Me.bnResume.TabIndex = 8
-        Me.bnResume.Text = "Resume"
-        Me.bnResume.UseVisualStyleBackColor = True
-        '
-        'bnSuspend
-        '
-        Me.bnSuspend.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnSuspend.Location = New System.Drawing.Point(596, 0)
-        Me.bnSuspend.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
-        Me.bnSuspend.Name = "bnSuspend"
-        Me.bnSuspend.Size = New System.Drawing.Size(200, 70)
-        Me.bnSuspend.TabIndex = 12
-        Me.bnSuspend.Text = "Suspend"
-        Me.bnSuspend.UseVisualStyleBackColor = True
         '
         'flpButtons
         '
@@ -114,15 +90,14 @@ Public Class ProcForm
         Me.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.flpButtons.Controls.Add(Me.laWhenfinisheddo)
         Me.flpButtons.Controls.Add(Me.mbShutdown)
-        Me.flpButtons.Controls.Add(Me.bnSuspend)
-        Me.flpButtons.Controls.Add(Me.bnResume)
         Me.flpButtons.Controls.Add(Me.bnAbort)
         Me.flpButtons.Controls.Add(Me.bnJobs)
         Me.flpButtons.Controls.Add(Me.bnLog)
-        Me.flpButtons.Location = New System.Drawing.Point(71, 729)
+        Me.flpButtons.Controls.Add(Me.bnMenu)
+        Me.flpButtons.Location = New System.Drawing.Point(206, 729)
         Me.flpButtons.Margin = New System.Windows.Forms.Padding(15)
         Me.flpButtons.Name = "flpButtons"
-        Me.flpButtons.Size = New System.Drawing.Size(1656, 70)
+        Me.flpButtons.Size = New System.Drawing.Size(1521, 70)
         Me.flpButtons.TabIndex = 13
         '
         'mbShutdown
@@ -135,10 +110,10 @@ Public Class ProcForm
         'bnLog
         '
         Me.bnLog.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnLog.Location = New System.Drawing.Point(1456, 0)
-        Me.bnLog.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
+        Me.bnLog.Location = New System.Drawing.Point(1146, 0)
+        Me.bnLog.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.bnLog.Name = "bnLog"
-        Me.bnLog.Size = New System.Drawing.Size(200, 70)
+        Me.bnLog.Size = New System.Drawing.Size(260, 70)
         Me.bnLog.TabIndex = 13
         Me.bnLog.Text = "Log"
         Me.bnLog.UseVisualStyleBackColor = True
@@ -195,6 +170,14 @@ Public Class ProcForm
         Me.flpNav.Size = New System.Drawing.Size(1736, 1)
         Me.flpNav.TabIndex = 19
         '
+        'mbMenu
+        '
+        Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnMenu.Location = New System.Drawing.Point(1421, 0)
+        Me.bnMenu.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnMenu.ShowMenuSymbol = True
+        Me.bnMenu.Size = New System.Drawing.Size(100, 70)
+        '
         'ProcForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
@@ -216,6 +199,7 @@ Public Class ProcForm
 #End Region
 
     Private TaskbarButtonCreatedMessage As Integer
+    Private StopAfterCurrentJobMenuItem As ActionMenuItem
 
     Property Taskbar As Taskbar
 
@@ -228,6 +212,13 @@ Public Class ProcForm
         NotifyIcon.Text = "StaxRip"
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
         ScaleClientSize(45, 28)
+
+        Dim cms As New ContextMenuStripEx(components)
+        cms.Add("Suspend", AddressOf ProcController.Suspend)
+        cms.Add("Resume", AddressOf ProcController.ResumeProcs)
+        StopAfterCurrentJobMenuItem = cms.Add("Stop After Current Job", AddressOf StopAfterCurrentJob)
+
+        bnMenu.ContextMenuStrip = cms
     End Sub
 
     Protected Overrides Sub WndProc(ByRef m As Message)
@@ -279,6 +270,16 @@ Public Class ProcForm
         End Get
     End Property
 
+    Sub StopAfterCurrentJob()
+        g.StopAfterCurrentJob = Not g.StopAfterCurrentJob
+
+        If g.StopAfterCurrentJob Then
+            StopAfterCurrentJobMenuItem.Text = StopAfterCurrentJobMenuItem.Text.Replace("Stop", "Continue")
+        Else
+            StopAfterCurrentJobMenuItem.Text = StopAfterCurrentJobMenuItem.Text.Replace("Continue", "Stop")
+        End If
+    End Sub
+
     Sub Abort()
         ProcController.Abort()
     End Sub
@@ -307,14 +308,6 @@ Public Class ProcForm
 
     Sub NotifyIcon_MouseClick() Handles NotifyIcon.MouseClick
         ShowForm()
-    End Sub
-
-    Sub bnSuspend_Click(sender As Object, e As EventArgs) Handles bnSuspend.Click
-        ProcController.Suspend()
-    End Sub
-
-    Sub bnResume_Click(sender As Object, e As EventArgs) Handles bnResume.Click
-        ProcController.ResumeProcs()
     End Sub
 
     Sub bnAbort_Click(sender As Object, e As EventArgs) Handles bnAbort.Click

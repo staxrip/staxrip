@@ -3332,8 +3332,8 @@ Public Class MainForm
         Dim td As New TaskDialog(Of String)
         td.MainInstruction = "Please select a template"
 
-        For Each i In Directory.GetFiles(Folder.Template, "*.srip")
-            td.AddCommand(i.Base, i)
+        For Each fp In Directory.GetFiles(Folder.Template, "*.srip")
+            td.AddCommand(fp.Base, fp)
         Next
 
         If td.Show <> "" Then

@@ -63,9 +63,9 @@ Partial Class VideoComparisonForm
         'laInfo
         '
         Me.laInfo.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.laInfo.Location = New System.Drawing.Point(91, 924)
+        Me.laInfo.Location = New System.Drawing.Point(123, 924)
         Me.laInfo.Name = "laInfo"
-        Me.laInfo.Size = New System.Drawing.Size(1362, 48)
+        Me.laInfo.Size = New System.Drawing.Size(1330, 48)
         Me.laInfo.TabIndex = 4
         Me.laInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -74,7 +74,7 @@ Partial Class VideoComparisonForm
         Me.bnMenu.Location = New System.Drawing.Point(10, 911)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
         Me.bnMenu.ShowMenuSymbol = True
-        Me.bnMenu.Size = New System.Drawing.Size(68, 65)
+        Me.bnMenu.Size = New System.Drawing.Size(100, 65)
         '
         'tlpMain
         '
@@ -102,7 +102,7 @@ Partial Class VideoComparisonForm
         Me.ClientSize = New System.Drawing.Size(1456, 986)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+        Me.Margin = New System.Windows.Forms.Padding(6)
         Me.Name = "VideoComparisonForm"
         Me.ShowIcon = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

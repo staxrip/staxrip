@@ -16,7 +16,6 @@ Public Class Package
     Property HelpUrlVapourSynth As String
     Property HintDirFunc As Func(Of String)
     Property IgnorePath As String
-    Property IsGUI As Boolean
     Property IsIncluded As Boolean = True
     Property Location As String
     Property Locations As String()
@@ -37,10 +36,16 @@ Public Class Package
     Shared Property DGIndex As Package = Add(New Package With {
         .Name = "DGIndex",
         .Filename = "DGIndex.exe",
-        .Description = "MPEG-2 demuxing and indexing GUI app.",
-        .IsGUI = True,
-        .IsIncluded = False,
+        .Description = "MPEG-2 demuxing and d2v indexing GUI app.",
+        .Location = "Support\DGIndex",
         .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:DGIndex%")})
+
+    Shared Property D2VWitch As Package = Add(New Package With {
+        .Name = "D2V Witch",
+        .Filename = "d2vwitch.exe",
+        .Description = "Portable MPEG-2 demuxing and d2v indexing GUI app.",
+        .Location = "Support\D2V Witch",
+        .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:D2V Witch%")})
 
     Shared Property Haali As Package = Add(New Package With {
         .Name = "Haali Splitter",
@@ -175,7 +180,6 @@ Public Class Package
         .Name = "chapterEditor",
         .Location = "Support\chapterEditor",
         .Filename = "chapterEditor.exe",
-        .IsGUI = True,
         .Description = "GUI app to edit chapters and menus for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, Matroska Menu.",
         .WebURL = "https://forum.doom9.org/showthread.php?t=169984",
         .DownloadURL = "https://www.videohelp.com/software/chapterEditor"})
@@ -226,7 +230,6 @@ Public Class Package
     Shared Property BDSup2SubPP As Package = Add(New Package With {
         .Name = "BDSup2Sub++",
         .Filename = "bdsup2sub++.exe",
-        .IsGUI = True,
         .Location = "Subtitles\BDSup2Sub++",
         .WebURL = "https://github.com/amichaeltm/BDSup2SubPlusPlus",
         .DownloadURL = "https://github.com/amichaeltm/BDSup2SubPlusPlus/releases",
@@ -244,7 +247,6 @@ Public Class Package
     Shared Property SubtitleEdit As Package = Add(New Package With {
         .Name = "Subtitle Edit",
         .Filename = "SubtitleEdit.exe",
-        .IsGUI = True,
         .Location = "Support\SubtitleEdit",
         .WebURL = "http://www.nikse.dk/SubtitleEdit",
         .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
@@ -254,30 +256,27 @@ Public Class Package
         .Name = "mpv.net",
         .Filename = "mpvnet.exe",
         .Location = "Support\mpv.net",
-        .IsGUI = True,
         .WebURL = "https://github.com/stax76/mpv.net",
-        .Description = "The worlds best media player."})
+        .Description = "The worlds best media player (GUI app)."})
 
     Shared Property MpcBE As Package = Add(New Package With {
         .Name = "MPC-BE",
         .Filename = "mpc-be64.exe",
-        .IsGUI = True,
         .IsIncluded = False,
         .VersionAllowAny = True,
         .Required = False,
         .WebURL = "https://sourceforge.net/projects/mpcbe/",
-        .Description = "DirectShow based media player.",
+        .Description = "DirectShow based media player (GUI app).",
         .Locations = {Registry.LocalMachine.GetString("SOFTWARE\MPC-BE", "ExePath").Dir, Folder.Programs + "MPC-BE x64\"}})
 
     Shared Property MpcHC As Package = Add(New Package With {
         .Name = "MPC-HC",
         .Filename = "mpc-hc64.exe",
-        .IsGUI = True,
         .IsIncluded = False,
         .VersionAllowAny = True,
         .Required = False,
         .WebURL = "https://mpc-hc.org/",
-        .Description = "DirectShow based media player.",
+        .Description = "DirectShow based media player (GUI app).",
         .Locations = {Registry.CurrentUser.GetString("Software\MPC-HC\MPC-HC", "ExePath").Dir, Folder.Programs + "MPC-HC\"}})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
@@ -335,7 +334,6 @@ Public Class Package
         .Filename = "VSRip.exe",
         .Location = "Subtitles\VSRip",
         .Description = "GUI app that rips VobSub subtitles.",
-        .IsGUI = True,
         .WebURL = "http://sourceforge.net/projects/guliverkli"})
 
     Shared Property flash3kyuu_deband As Package = Add(New PluginPackage With {
@@ -735,7 +733,7 @@ Public Class Package
             .Filename = "MPEG2DecPlus64.dll",
             .WebURL = "https://github.com/Asd-g/MPEG2DecPlus",
             .DownloadURL = "https://github.com/Asd-g/MPEG2DecPlus/releases",
-            .Description = "Source filter to open D2V index files created with DGIndex or D2VWitch.",
+            .Description = "Source filter to open D2V index files created with DGIndex or D2V Witch.",
             .AvsFilterNames = {"MPEG2Source"},
             .AvsFiltersFunc = Function() {New VideoFilter("Source", "MPEG2Source", "MPEG2Source(""%source_file%"")")}})
 
@@ -1547,7 +1545,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "d2vsource",
             .Filename = "d2vsource.dll",
-            .Description = "Source filter to open D2V index files created with DGIndex or D2VWitch.",
+            .Description = "Source filter to open D2V index files created with DGIndex or D2V Witch.",
             .WebURL = "http://github.com/dwbuiten/d2vsource",
             .VSFilterNames = {"d2v.Source"},
             .VSFiltersFunc = Function() {New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
@@ -1805,7 +1803,7 @@ Public Class Package
     Overridable Property LaunchAction As Action
         Get
             If LaunchActionValue Is Nothing Then
-                If IsGUI Then
+                If Description.ContainsEx("GUI app") Then
                     LaunchActionValue = Sub() g.ShellExecute(Path)
                 ElseIf Not HelpSwitch Is Nothing Then
                     LaunchActionValue = Sub() g.DefaultCommands.ExecutePowerShellScript(
@@ -1840,7 +1838,7 @@ Public Class Package
     Function GetTypeName() As String
         If Not HelpSwitch Is Nothing Then
             Return "Console App"
-        ElseIf IsGUI Then
+        ElseIf Description.ContainsEx("GUI app") Then
             Return "GUI App"
         ElseIf TypeOf Me Is PluginPackage Then
             Dim plugin = DirectCast(Me, PluginPackage)

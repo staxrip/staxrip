@@ -3,6 +3,8 @@
 ============
 
 - The Processing dialog has a new feature: Stop After Current Job
+- DGIndex binary added again because it's GPL licensed
+- Full D2V Witch support added and enabled by default for VOB/MPG
 
 
 2.1.1.9 Beta

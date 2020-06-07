@@ -272,7 +272,7 @@ Public Class Proc
             If ReadOutput Then
                 ProcController.Start(Me)
 
-                If File = "cmd.exe" AndAlso Arguments?.StartsWith("/S /C """) AndAlso Arguments?.EndsWith("""") Then
+                If File = "cmd.exe" AndAlso Arguments.StartsWithEx("/S /C """) AndAlso Arguments.EndsWithEx("""") Then
                     Log.WriteLine(Arguments.Substring(7, Arguments.Length - 8) + BR2)
                 Else
                     Log.WriteLine(CommandLine + BR2)

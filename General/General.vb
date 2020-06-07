@@ -1173,12 +1173,19 @@ Public Module MainModule
     End Sub
 
     Sub MsgError(text As String, Optional content As String = Nothing)
-        If text = "" Then text = content
-        If text = "" Then Exit Sub
+        MsgError(text, content, IntPtr.Zero)
+    End Sub
+
+    Sub MsgError(text As String, content As String, handle As IntPtr)
+        If text = "" Then
+            text = content
+        End If
+
+        If text = "" Then
+            Exit Sub
+        End If
 
         Using td As New TaskDialog(Of String)
-            td.AllowCancel = False
-
             If content = "" Then
                 If text.Length < 80 Then
                     td.MainInstruction = text
@@ -1190,6 +1197,11 @@ Public Module MainModule
                 td.Content = content
             End If
 
+            If handle <> IntPtr.Zero Then
+                td.Config.hwndParent = handle
+            End If
+
+            td.AllowCancel = False
             td.MainIcon = TaskDialogIcon.Error
             td.Footer = Strings.TaskDialogFooter
             td.Show()
@@ -1208,8 +1220,9 @@ Public Module MainModule
         Return Msg(text, Nothing, MsgIcon.Question, TaskDialogButtons.OkCancel) = DialogResult.OK
     End Function
 
-    Function MsgQuestion(text As String,
-                         Optional buttons As TaskDialogButtons = TaskDialogButtons.OkCancel) As DialogResult
+    Function MsgQuestion(
+        text As String, Optional buttons As TaskDialogButtons = TaskDialogButtons.OkCancel) As DialogResult
+
         Return Msg(text, Nothing, MsgIcon.Question, buttons)
     End Function
 
@@ -1225,7 +1238,9 @@ Public Module MainModule
                  buttons As TaskDialogButtons,
                  Optional defaultButton As DialogResult = DialogResult.None) As DialogResult
 
-        If mainInstruction Is Nothing Then mainInstruction = ""
+        If mainInstruction Is Nothing Then
+            mainInstruction = ""
+        End If
 
         Using td As New TaskDialog(Of DialogResult)
             td.AllowCancel = False

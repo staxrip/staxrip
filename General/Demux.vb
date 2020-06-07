@@ -87,6 +87,16 @@ Public MustInherit Class Demuxer
         ret.Add(New MP4BoxDemuxer)
         ret.Add(New eac3toDemuxer)
 
+        Dim d2vWitch As New CommandLineDemuxer
+        d2vWitch.Name = "D2V Witch: Demux & Index MPEG-2"
+        d2vWitch.InputExtensions = {"mpg", "vob", "m2ts", "mts", "m2t"}
+        d2vWitch.OutputExtensions = {"d2v"}
+        d2vWitch.InputFormats = {"mpeg2"}
+        d2vWitch.Command = "cmd.exe"
+        d2vWitch.Arguments = "/S /C """"%app:D2V Witch%"" --audio-ids all --output ""%temp_file%.d2v"" %source_files%"""
+        d2vWitch.SourceFilters = {"MPEG2Source", "d2v.Source"}
+        ret.Add(d2vWitch)
+
         Dim dgIndex As New CommandLineDemuxer
         dgIndex.Name = "DGIndex: Demux & Index MPEG-2"
         dgIndex.InputExtensions = {"mpg", "vob", "m2ts", "mts", "m2t"}
@@ -123,12 +133,15 @@ Public Class CommandLineDemuxer
 
     Overrides Sub Run(proj As Project)
         Using proc As New Proc
-            If Command?.Contains("DGIndex") OrElse Arguments?.Contains("DGIndex") Then
+            Dim test = Macro.Expand(Command + Arguments).ToLowerEx.RemoveChars(" ")
+
+            If test.Contains("dgindex") AndAlso Not test.Contains("dgindexnv") Then
+                proc.Package = Package.DGIndex
                 proc.IntegerPercentOutput = True
-            ElseIf Command?.Contains("ffmpeg") OrElse Arguments?.Contains("ffmpeg") Then
-                proc.Package = Package.ffmpeg
-                proc.SkipStrings = {"frame=", "size="}
-            ElseIf Command?.Contains("cmd") OrElse Command?.Contains("powershell") Then
+            ElseIf test.Contains("d2vwitch") Then
+                proc.Package = Package.D2VWitch
+                proc.SkipString = "%"
+            Else
                 proc.SkipStrings = {"frame=", "size="}
             End If
 

@@ -498,9 +498,7 @@ Public Class GlobalClass
 
         Dim ap = GetAudioProfileForScriptPlayback()
 
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso
-            p.Ranges.Count = 0 Then
-
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso p.Ranges.Count = 0 Then
             args += " --audio-files=" + ap.File.Escape
         End If
 
@@ -509,8 +507,11 @@ Public Class GlobalClass
     End Sub
 
     Function ExtractDelay(value As String) As Integer
-        Dim match = Regex.Match(value, " (-?\d+)ms")
-        If match.Success Then Return CInt(match.Groups(1).Value)
+        Dim match = Regex.Match(value, " (-?\d+) ?ms")
+
+        If match.Success Then
+            Return CInt(match.Groups(1).Value)
+        End If
     End Function
 
     Sub ShowCode(title As String, content As String)
@@ -521,7 +522,10 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowHelp(title As String, content As String)
-        If title <> "" Then title = title.TrimEnd("."c, ":"c)
+        If title <> "" Then
+            title = title.TrimEnd("."c, ":"c)
+        End If
+
         MsgInfo(title, content)
     End Sub
 
@@ -1182,17 +1186,6 @@ Public Class GlobalClass
             form.bnCancel.Text = "Close"
             form.ShowDialog()
         End Using
-    End Sub
-
-    Sub ShowDirectShowWarning()
-        If Not p.BatchMode Then
-            If Not g.IsCOMObjectRegistered(GUIDS.LAVSplitter) OrElse
-                Not g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
-
-                MsgError("DirectShow Filter Setup",
-                         "An error occurred that could possibly be solved by installing [http://code.google.com/p/lavfilters LAV Filters].")
-            End If
-        End If
     End Sub
 
     Sub AddHardcodedSubtitle()

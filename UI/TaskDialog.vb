@@ -4,11 +4,7 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 
 Public Delegate Function PFTASKDIALOGCALLBACK(
-    hwnd As IntPtr,
-    msg As UInteger,
-    wParam As IntPtr,
-    lParam As IntPtr,
-    lpRefData As IntPtr) As Integer
+    hwnd As IntPtr, msg As UInteger, wParam As IntPtr, lParam As IntPtr, lpRefData As IntPtr) As Integer
 
 Public Class TaskDialog(Of T)
     Inherits TaskDialog
@@ -20,11 +16,19 @@ Public Class TaskDialog(Of T)
     Private ButtonArray As IntPtr, RadioButtonArray As IntPtr
     Private Buttons As New List(Of TASKDIALOG_BUTTON)
     Private RadioButtons As New List(Of TASKDIALOG_BUTTON)
-    Private Config As TASKDIALOGCONFIG
+
+    Property Config As TASKDIALOGCONFIG
+
+    Const TDN_CREATED As Integer = 0
+    Const TDN_BUTTON_CLICKED As Integer = 2
+    Const TDN_HYPERLINK_CLICKED As Integer = 3
+    Const TDN_TIMER As Integer = 4
+    Const TDN_RADIO_BUTTON_CLICKED As Integer = 6
+    Const TDM_CLICK_BUTTON As Integer = &H400 + 102
+    Const TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE As Integer = &H400 + 115
 
     Sub New()
         Config = New TASKDIALOGCONFIG()
-
         Config.cbSize = CUInt(Marshal.SizeOf(Config))
         Config.cButtons = 0
         Config.cRadioButtons = 0
@@ -49,60 +53,6 @@ Public Class TaskDialog(Of T)
         Config.pszVerificationText = Nothing
         Config.pszWindowTitle = Application.ProductName
     End Sub
-
-    Sub New(handle As IntPtr)
-        Me.New()
-        Config.hwndParent = handle
-    End Sub
-
-    Function GetHandle() As IntPtr
-        Dim sb As New StringBuilder(500)
-        Dim h = Native.GetForegroundWindow
-        Native.GetWindowModuleFileName(h, sb, CUInt(sb.Capacity))
-
-        If sb.ToString.Replace(".vshost", "").Base = Application.ExecutablePath.Base Then
-            Return h
-        End If
-    End Function
-
-#Region "Constants"
-    Const TDE_CONTENT As Integer = 0
-    Const TDE_EXPANDED_INFORMATION As Integer = 1
-    Const TDE_FOOTER As Integer = 2
-    Const TDE_MAIN_INSTRUCTION As Integer = 3
-
-    Const TDN_CREATED As Integer = 0
-    Const TDN_NAVIGATED As Integer = 1
-    Const TDN_BUTTON_CLICKED As Integer = 2
-    Const TDN_HYPERLINK_CLICKED As Integer = 3
-    Const TDN_TIMER As Integer = 4
-    Const TDN_DESTROYED As Integer = 5
-    Const TDN_RADIO_BUTTON_CLICKED As Integer = 6
-    Const TDN_DIALOG_CONSTRUCTED As Integer = 7
-    Const TDN_VERIFICATION_CLICKED As Integer = 8
-    Const TDN_HELP As Integer = 9
-    Const TDN_EXPANDO_BUTTON_CLICKED As Integer = 10
-
-    Const TDM_NAVIGATE_PAGE As Integer = &H400 + 101
-    Const TDM_CLICK_BUTTON As Integer = &H400 + 102 'wParam = Button ID
-    Const TDM_SET_MARQUEE_PROGRESS_BAR As Integer = &H400 + 103 'wParam = 0 (nonMarque) wParam != 0 (Marquee)
-    Const TDM_SET_PROGRESS_BAR_STATE As Integer = &H400 + 104 'wParam = new progress state
-    Const TDM_SET_PROGRESS_BAR_RANGE As Integer = &H400 + 105 'lParam = MAKELPARAM(nMinRange, nMaxRange)
-    Const TDM_SET_PROGRESS_BAR_POS As Integer = &H400 + 106 'wParam = new position
-    Const TDM_SET_PROGRESS_BAR_MARQUEE As Integer = &H400 + 107 'wParam = 0 (stop marquee), wParam != 0 (start marquee), lparam = speed (milliseconds between repaints)
-    Const TDM_SET_ELEMENT_TEXT As Integer = &H400 + 108 'wParam = element (TASKDIALOG_ELEMENTS), lParam = new element text (LPCWSTR)
-    Const TDM_CLICK_RADIO_BUTTON As Integer = &H400 + 110 'wParam = Radio Button ID
-    Const TDM_ENABLE_BUTTON As Integer = &H400 + 111 'lParam = 0 (disable), lParam != 0 (enable), wParam = Button ID
-    Const TDM_ENABLE_RADIO_BUTTON As Integer = &H400 + 112 'lParam = 0 (disable), lParam != 0 (enable), wParam = Radio Button ID
-    Const TDM_CLICK_VERIFICATION As Integer = &H400 + 113 'wParam = 0 (unchecked), 1 (checked), lParam = 1 (set key focus)
-    Const TDM_UPDATE_ELEMENT_TEXT As Integer = &H400 + 114 'wParam = element (TASKDIALOG_ELEMENTS), lParam = new element text (LPCWSTR)
-    Const TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE As Integer = &H400 + 115 'wParam = Button ID, lParam = 0 (elevation not required), lParam != 0 (elevation required)
-    Const TDM_UPDATE_ICON As Integer = &H400 + 116 'wParam = icon element (TASKDIALOG_ICON_ELEMENTS), lParam = new icon (hIcon if TDF_USE_HICON_* was set, PCWSTR otherwise)
-#End Region
-
-#Region "Properties"
-
-    Private AllowCancelValue As Boolean
 
     WriteOnly Property AllowCancel() As Boolean
         Set(Value As Boolean)
@@ -182,7 +132,9 @@ Public Class TaskDialog(Of T)
         End Get
         Set(value As Integer)
             For Each i In IdValueDic
-                If i.Key = value Then SelectedIDValue = value
+                If i.Key = value Then
+                    SelectedIDValue = value
+                End If
             Next
         End Set
     End Property
@@ -206,7 +158,10 @@ Public Class TaskDialog(Of T)
 
     Property SelectedText() As String
         Get
-            If IdTextDic.ContainsKey(SelectedID) Then Return IdTextDic(SelectedID)
+            If IdTextDic.ContainsKey(SelectedID) Then
+                Return IdTextDic(SelectedID)
+            End If
+
             Return SelectedTextValue
         End Get
         Set(value As String)
@@ -226,8 +181,6 @@ Public Class TaskDialog(Of T)
             End If
         End Set
     End Property
-
-    Private CommonButtonsValue As TaskDialogButtons
 
     Property CommonButtons() As TaskDialogButtons
         Get
@@ -252,9 +205,16 @@ Public Class TaskDialog(Of T)
             End If
         End Set
     End Property
-#End Region
 
-#Region "Methods"
+    Function GetHandle() As IntPtr
+        Dim sb As New StringBuilder(500)
+        Dim h = Native.GetForegroundWindow
+        Native.GetWindowModuleFileName(h, sb, CUInt(sb.Capacity))
+
+        If sb.ToString.Replace(".vshost", "").Base = Application.ExecutablePath.Base Then
+            Return h
+        End If
+    End Function
 
     Sub AddButton(text As String, value As T)
         Dim id = 1000 + IdValueDic.Count + 1
@@ -264,12 +224,12 @@ Public Class TaskDialog(Of T)
 
     Function ExpandWikiMarkup(value As String) As String
         If value.Contains("[") Then
-            Dim re As New Regex("\[(\w+?:.*?) (.+?)\]")
-            Dim m = re.Match(value)
+            Dim regex As New Regex("\[(\w+?:.*?) (.+?)\]")
+            Dim match = regex.Match(value)
 
-            If m.Success Then
+            If match.Success Then
                 Config.dwFlags = Config.dwFlags Or Flags.TDF_ENABLE_HYPERLINKS
-                value = re.Replace(value, "<a href=""$1"">$2</a>")
+                value = regex.Replace(value, "<a href=""$1"">$2</a>")
             End If
         End If
 
@@ -290,8 +250,15 @@ Public Class TaskDialog(Of T)
 
         Dim id = 1000 + IdValueDic.Count + 1
         IdValueDic(id) = value
-        If setShield Then CommandLinkShieldList.Add(id)
-        If description <> "" Then text = text + BR + description
+
+        If setShield Then
+            CommandLinkShieldList.Add(id)
+        End If
+
+        If description <> "" Then
+            text = text + BR + description
+        End If
+
         Buttons.Add(New TASKDIALOG_BUTTON(id, text))
         Config.dwFlags = Config.dwFlags Or Flags.TDF_USE_COMMAND_LINKS
     End Sub
@@ -321,11 +288,8 @@ Public Class TaskDialog(Of T)
 
     Private ExitTickCount As Integer
 
-    Private Function DialogProc(hwnd As IntPtr,
-                                msg As UInteger,
-                                wParam As IntPtr,
-                                lParam As IntPtr,
-                                lpRefData As IntPtr) As Integer
+    Function DialogProc(hwnd As IntPtr, msg As UInteger, wParam As IntPtr,
+                        lParam As IntPtr, lpRefData As IntPtr) As Integer
         Select Case msg
             Case TDN_BUTTON_CLICKED, TDN_RADIO_BUTTON_CLICKED
                 If TypeOf SelectedValue Is DialogResult Then
@@ -361,7 +325,7 @@ Public Class TaskDialog(Of T)
         Return 0
     End Function
 
-    Private Sub MarshalDialogControlStructs()
+    Sub MarshalDialogControlStructs()
         If Not Buttons Is Nothing AndAlso Buttons.Count > 0 Then
             ButtonArray = AllocateAndMarshalButtons(Buttons)
             Config.pButtons = ButtonArray
@@ -375,7 +339,7 @@ Public Class TaskDialog(Of T)
         End If
     End Sub
 
-    Private Shared Function AllocateAndMarshalButtons(structs As List(Of TASKDIALOG_BUTTON)) As IntPtr
+    Shared Function AllocateAndMarshalButtons(structs As List(Of TASKDIALOG_BUTTON)) As IntPtr
         Dim initialPtr = Marshal.AllocHGlobal(Marshal.SizeOf(GetType(TASKDIALOG_BUTTON)) * structs.Count)
         Dim currentPtr = initialPtr
 
@@ -386,10 +350,6 @@ Public Class TaskDialog(Of T)
 
         Return initialPtr
     End Function
-
-#End Region
-
-#Region "IDispose Pattern"
 
     Private disposed As Boolean
 
@@ -419,19 +379,14 @@ Public Class TaskDialog(Of T)
                 Marshal.FreeHGlobal(RadioButtonArray)
                 RadioButtonArray = IntPtr.Zero
             End If
-
-            If disposing Then
-            End If
         End If
     End Sub
-
-#End Region
-
 End Class
 
 Public Class TaskDialog
     <DllImport("comctl32.dll", CharSet:=CharSet.Unicode)>
-    Shared Function TaskDialogIndirect(<[In]()> pTaskConfig As TASKDIALOGCONFIG, <Out()> ByRef pnButton As Integer, <Out()> ByRef pnRadioButton As Integer, <MarshalAs(UnmanagedType.Bool)> <Out()> ByRef pVerificationFlagChecked As Boolean) As Integer
+    Shared Function TaskDialogIndirect(pTaskConfig As TASKDIALOGCONFIG, ByRef pnButton As Integer,
+        ByRef pnRadioButton As Integer, ByRef pVerificationFlagChecked As Boolean) As Integer
     End Function
 
     <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)>
@@ -441,12 +396,9 @@ Public Class TaskDialog
         Public hInstance As IntPtr
         Public dwFlags As Flags
         Public dwCommonButtons As TaskDialogButtons
-        <MarshalAs(UnmanagedType.LPWStr)>
         Public pszWindowTitle As String
         Public MainIcon As TASKDIALOGCONFIG_ICON_UNION
-        <MarshalAs(UnmanagedType.LPWStr)>
         Public pszMainInstruction As String
-        <MarshalAs(UnmanagedType.LPWStr)>
         Public pszContent As String
         Public cButtons As UInteger
         Public pButtons As IntPtr
@@ -454,23 +406,17 @@ Public Class TaskDialog
         Public cRadioButtons As UInteger
         Public pRadioButtons As IntPtr
         Public nDefaultRadioButton As Integer
-        <MarshalAs(UnmanagedType.LPWStr)>
         Public pszVerificationText As String
-        <MarshalAs(UnmanagedType.LPWStr)>
         Public pszExpandedInformation As String
-        <MarshalAs(UnmanagedType.LPWStr)>
         Public pszExpandedControlText As String
-        <MarshalAs(UnmanagedType.LPWStr)>
         Public pszCollapsedControlText As String
         Public FooterIcon As TASKDIALOGCONFIG_ICON_UNION
-        <MarshalAs(UnmanagedType.LPWStr)>
         Public pszFooter As String
         Public pfCallback As PFTASKDIALOGCALLBACK
         Public lpCallbackData As IntPtr
         Public cxWidth As UInteger
     End Class
 
-    'TASKDIALOG_FLAGS
     Public Enum Flags
         NONE = 0
         TDF_ENABLE_HYPERLINKS = &H1
@@ -492,31 +438,26 @@ Public Class TaskDialog
 
     <StructLayout(LayoutKind.Explicit, CharSet:=CharSet.Unicode)>
     Public Structure TASKDIALOGCONFIG_ICON_UNION
+        <FieldOffset(0)> Public hMainIcon As Integer
+        <FieldOffset(0)> Public pszIcon As Integer
+        <FieldOffset(0)> Public spacer As IntPtr
+
         Sub New(i As Integer)
             spacer = IntPtr.Zero
             pszIcon = 0
             hMainIcon = i
         End Sub
-
-        <FieldOffset(0)>
-        Public hMainIcon As Integer
-        <FieldOffset(0)>
-        Public pszIcon As Integer
-        <FieldOffset(0)>
-        Public spacer As IntPtr
     End Structure
 
-    <StructLayout(LayoutKind.Sequential,
-    CharSet:=CharSet.Unicode, Pack:=4)>
+    <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)>
     Public Structure TASKDIALOG_BUTTON
+        Public nButtonID As Integer
+        Public pszButtonText As String
+
         Sub New(n As Integer, txt As String)
             nButtonID = n
             pszButtonText = txt
         End Sub
-
-        Public nButtonID As Integer
-        <MarshalAs(UnmanagedType.LPWStr)>
-        Public pszButtonText As String
     End Structure
 End Class
 
@@ -535,10 +476,10 @@ Public Enum TaskDialogButtons
 End Enum
 
 Public Enum TaskDialogIcon
-    Warning = 65535 'TD_WARNING_ICON
-    [Error] = 65534 'TD_ERROR_ICON
-    Info = 65533 'TD_INFORMATION_ICON
-    Shield = 65532 'TD_SHIELD_ICON
+    Warning = 65535
+    [Error] = 65534
+    Info = 65533
+    Shield = 65532
     SecurityShieldBlue = 65531
     SecurityWarning = 65530
     SecurityError = 65529

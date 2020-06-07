@@ -134,7 +134,7 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(Demuxers, "Demuxers", 106) Then
+        If Check(Demuxers, "Demuxers", 107) Then
             Demuxers = Demuxer.GetDefaults()
         End If
 

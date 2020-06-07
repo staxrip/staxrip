@@ -2130,17 +2130,9 @@ Public Class MainForm
                 Log.WriteLine(p.SourceScript.GetFullScript)
                 Log.Save()
 
-                g.ShowDirectShowWarning()
-
-                Using td As New TaskDialog(Of DialogResult)(Handle)
-                    td.MainInstruction = "Script Error"
-                    td.MainIcon = TaskDialogIcon.Error
-                    td.Content = errorMsg
-                    td.CommonButtons = TaskDialogButtons.Ok
-                    td.Show()
-                    p.Script.Synchronize()
-                    Throw New AbortException
-                End Using
+                MsgError("Script Error", errorMsg, Handle)
+                p.Script.Synchronize()
+                Throw New AbortException
             End If
 
             UpdateSourceParameters()
@@ -4532,6 +4524,9 @@ Public Class MainForm
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
 
+        ret.Add("Apps|Subtitles|Subtitle Edit", NameOf(g.DefaultCommands.StartTool), {"Subtitle Edit"})
+        ret.Add("Apps|Subtitles|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
+        ret.Add("Apps|Subtitles|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
         ret.Add("Apps|Media Info|mkvinfo", NameOf(g.DefaultCommands.ShowMkvInfo))
         ret.Add("Apps|Media Info|MediaInfo File", NameOf(g.DefaultCommands.ShowMediaInfo))
         ret.Add("Apps|Media Info|MediaInfo Folder", NameOf(g.DefaultCommands.ShowMediaInfoFolderViewDialog))
@@ -4539,15 +4534,13 @@ Public Class MainForm
         ret.Add("Apps|Players|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpv.net"})
         ret.Add("Apps|Players|MPC-BE", NameOf(g.DefaultCommands.StartTool), {"MPC-BE"})
         ret.Add("Apps|Players|MPC-HC", NameOf(g.DefaultCommands.StartTool), {"MPC-HC"})
+        ret.Add("Apps|Indexing|D2V Witch", NameOf(g.DefaultCommands.StartTool), {"D2V Witch"})
+        ret.Add("Apps|Indexing|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|Thumbnails|MTN Thumbnailer", NameOf(g.DefaultCommands.SaveMTN))
         ret.Add("Apps|Thumbnails|StaxRip Thumbnailer", NameOf(g.DefaultCommands.ShowBatchGenerateThumbnailsDialog))
         ret.Add("Apps|Animation|Animated GIF", NameOf(g.DefaultCommands.SaveGIF))
         ret.Add("Apps|Animation|Animated PNG", NameOf(g.DefaultCommands.SavePNG))
-        ret.Add("Apps|Subtitles|Subtitle Edit", NameOf(g.DefaultCommands.StartTool), {"Subtitle Edit"})
-        ret.Add("Apps|Subtitles|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
-        ret.Add("Apps|Subtitles|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
         ret.Add("Apps|chapterEditor", NameOf(g.DefaultCommands.StartTool), {"chapterEditor"})
-
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog), Keys.F9)
 

@@ -33,8 +33,8 @@ Partial Class LogForm
         'tlpMain
         '
         Me.tlpMain.ColumnCount = 2
-        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
-        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75.0!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.0!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 73.0!))
         Me.tlpMain.Controls.Add(Me.lb, 0, 0)
         Me.tlpMain.Controls.Add(Me.rtb, 1, 0)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
@@ -55,17 +55,17 @@ Partial Class LogForm
         Me.lb.Location = New System.Drawing.Point(0, 0)
         Me.lb.Margin = New System.Windows.Forms.Padding(0)
         Me.lb.Name = "lb"
-        Me.lb.Size = New System.Drawing.Size(240, 825)
+        Me.lb.Size = New System.Drawing.Size(259, 825)
         Me.lb.TabIndex = 1
         '
         'rtb
         '
         Me.rtb.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.rtb.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.rtb.Location = New System.Drawing.Point(240, 0)
+        Me.rtb.Location = New System.Drawing.Point(259, 0)
         Me.rtb.Margin = New System.Windows.Forms.Padding(0)
         Me.rtb.Name = "rtb"
-        Me.rtb.Size = New System.Drawing.Size(721, 825)
+        Me.rtb.Size = New System.Drawing.Size(702, 825)
         Me.rtb.TabIndex = 2
         Me.rtb.Text = ""
         '

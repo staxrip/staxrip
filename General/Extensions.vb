@@ -54,11 +54,23 @@ Module StringExtensions
 
     <Extension>
     Function StartsWithEx(instance As String, value As String) As Boolean
-        If instance = "" OrElse value = "" Then
-            Return False
+        If instance <> "" AndAlso value <> "" Then
+            Return instance.StartsWith(value)
         End If
+    End Function
 
-        Return instance.StartsWith(value)
+    <Extension>
+    Function EndsWithEx(instance As String, value As String) As Boolean
+        If instance <> "" AndAlso value <> "" Then
+            Return instance.EndsWith(value)
+        End If
+    End Function
+
+    <Extension>
+    Function ContainsEx(instance As String, value As String) As Boolean
+        If instance <> "" AndAlso value <> "" Then
+            Return instance.Contains(value)
+        End If
     End Function
 
     <Extension>
@@ -638,9 +650,9 @@ Module StringExtensions
     Function RemoveChars(value As String, chars As String) As String
         Dim ret = value
 
-        For Each i In value
-            If chars.IndexOf(i) >= 0 Then
-                ret = ret.Replace(i, "")
+        For Each ch In value
+            If chars.Contains(ch) Then
+                ret = ret.Replace(ch, "")
             End If
         Next
 

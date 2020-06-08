@@ -102,7 +102,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub TipMouseDown(sender As Object, e As MouseEventArgs)
+        Sub TipMouseDown(sender As Object, e As MouseEventArgs)
             If e.Button = MouseButtons.Right AndAlso
                 Not HasContextMenu(DirectCast(sender, Control)) Then
 
@@ -110,12 +110,12 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub ShowHelp(ctrl As Control)
+        Sub ShowHelp(ctrl As Control)
             Dim tip = GetTip(ctrl)
             g.ShowHelp(tip.Name, tip.Value)
         End Sub
 
-        Private Function GetTip(ctrl As Control) As StringPair
+        Function GetTip(ctrl As Control) As StringPair
             Dim ret As New StringPair
 
             If TipTitles.ContainsKey(ctrl) Then
@@ -128,7 +128,7 @@ Namespace UI
             Return ret
         End Function
 
-        Private Function HasContextMenu(ctrl As Control) As Boolean
+        Function HasContextMenu(ctrl As Control) As Boolean
             If TypeOf ctrl Is TextBox Then Return True
             If TypeOf ctrl Is RichTextBox Then Return True
             If TypeOf ctrl Is NumericUpDown Then Return True
@@ -144,7 +144,7 @@ Namespace UI
             End If
         End Function
 
-        Private Function FormatName(value As String) As String
+        Function FormatName(value As String) As String
             If value.Contains(" ") Then
                 value = value.Trim
             End If

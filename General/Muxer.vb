@@ -286,7 +286,7 @@ Public Class MP4Muxer
         Return Package.MP4Box.Path.Escape + " " + GetArgs()
     End Function
 
-    Private Function GetArgs() As String
+    Function GetArgs() As String
         Dim args As New StringBuilder
 
         If MediaInfo.GetFrameRate(p.VideoEncoder.OutputPath, 0) = 0 Then
@@ -603,7 +603,7 @@ Public Class MkvMuxer
         Return CommandLineHelp.ConvertText(val)
     End Function
 
-    Private Function GetArgs() As String
+    Function GetArgs() As String
         Dim args = "-o " + p.TargetFile.Escape
 
         Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + p.VideoEncoder.OutputPath.Escape)

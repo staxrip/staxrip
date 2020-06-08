@@ -288,9 +288,6 @@
     <Compile Include="Forms\MacroEditorDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ControlHostForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\MuxerForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -476,9 +473,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CommandLineVideoEncoderForm.resx">
       <DependentUpon>CommandLineVideoEncoderForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ControlHostForm.resx">
-      <DependentUpon>ControlHostForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CropForm.resx">
       <DependentUpon>CropForm.vb</DependentUpon>

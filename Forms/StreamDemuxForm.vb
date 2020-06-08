@@ -1,4 +1,6 @@
-﻿Imports System.Globalization
+﻿
+Imports System.Globalization
+
 Imports StaxRip.UI
 
 Public Class StreamDemuxForm
@@ -76,37 +78,37 @@ Public Class StreamDemuxForm
         End If
     End Sub
 
-    Private Sub lvAudio_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvAudio.ItemChecked
+    Sub lvAudio_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvAudio.ItemChecked
         If Visible Then
             DirectCast(e.Item.Tag, AudioStream).Enabled = e.Item.Checked
         End If
     End Sub
 
-    Private Sub lvSubtitles_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvSubtitles.ItemChecked
+    Sub lvSubtitles_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvSubtitles.ItemChecked
         If Visible Then
             DirectCast(e.Item.Tag, Subtitle).Enabled = e.Item.Checked
         End If
     End Sub
 
-    Private Sub lvAttachments_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvAttachments.ItemChecked
+    Sub lvAttachments_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvAttachments.ItemChecked
         If Visible Then
             DirectCast(e.Item.Tag, Attachment).Enabled = e.Item.Checked
         End If
     End Sub
 
-    Private Sub bnAudioAll_Click(sender As Object, e As EventArgs) Handles bnAudioAll.Click
+    Sub bnAudioAll_Click(sender As Object, e As EventArgs) Handles bnAudioAll.Click
         For Each i As ListViewItem In lvAudio.Items
             i.Checked = True
         Next
     End Sub
 
-    Private Sub bnAudioNone_Click(sender As Object, e As EventArgs) Handles bnAudioNone.Click
+    Sub bnAudioNone_Click(sender As Object, e As EventArgs) Handles bnAudioNone.Click
         For Each i As ListViewItem In lvAudio.Items
             i.Checked = False
         Next
     End Sub
 
-    Private Sub bnAudioEnglish_Click(sender As Object, e As EventArgs) Handles bnAudioEnglish.Click
+    Sub bnAudioEnglish_Click(sender As Object, e As EventArgs) Handles bnAudioEnglish.Click
         For Each i As ListViewItem In lvAudio.Items
             Dim stream = DirectCast(i.Tag, AudioStream)
 
@@ -116,7 +118,7 @@ Public Class StreamDemuxForm
         Next
     End Sub
 
-    Private Sub bnAudioNative_Click(sender As Object, e As EventArgs) Handles bnAudioNative.Click
+    Sub bnAudioNative_Click(sender As Object, e As EventArgs) Handles bnAudioNative.Click
         For Each i As ListViewItem In lvAudio.Items
             Dim stream = DirectCast(i.Tag, AudioStream)
 
@@ -126,19 +128,19 @@ Public Class StreamDemuxForm
         Next
     End Sub
 
-    Private Sub bnSubtitleAll_Click(sender As Object, e As EventArgs) Handles bnSubtitleAll.Click
+    Sub bnSubtitleAll_Click(sender As Object, e As EventArgs) Handles bnSubtitleAll.Click
         For Each i As ListViewItem In lvSubtitles.Items
             i.Checked = True
         Next
     End Sub
 
-    Private Sub bnSubtitleNone_Click(sender As Object, e As EventArgs) Handles bnSubtitleNone.Click
+    Sub bnSubtitleNone_Click(sender As Object, e As EventArgs) Handles bnSubtitleNone.Click
         For Each i As ListViewItem In lvSubtitles.Items
             i.Checked = False
         Next
     End Sub
 
-    Private Sub bnSubtitleEnglish_Click(sender As Object, e As EventArgs) Handles bnSubtitleEnglish.Click
+    Sub bnSubtitleEnglish_Click(sender As Object, e As EventArgs) Handles bnSubtitleEnglish.Click
         For Each i As ListViewItem In lvSubtitles.Items
             Dim stream = DirectCast(i.Tag, Subtitle)
 
@@ -148,7 +150,7 @@ Public Class StreamDemuxForm
         Next
     End Sub
 
-    Private Sub bnSubtitleNative_Click(sender As Object, e As EventArgs) Handles bnSubtitleNative.Click
+    Sub bnSubtitleNative_Click(sender As Object, e As EventArgs) Handles bnSubtitleNative.Click
         For Each i As ListViewItem In lvSubtitles.Items
             Dim stream = DirectCast(i.Tag, Subtitle)
 

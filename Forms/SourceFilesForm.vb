@@ -208,7 +208,7 @@ Public Class SourceFilesForm
         End Using
     End Sub
 
-    Private Sub bnAdd_Click() Handles bnAdd.Click
+    Sub bnAdd_Click() Handles bnAdd.Click
         If IsMerge Then
             ShowOpenFileDialog()
             Exit Sub
@@ -223,10 +223,10 @@ Public Class SourceFilesForm
                 Case "files"
                     ShowOpenFileDialog()
                 Case "folder", "sub-folders"
-                    Using d As New FolderBrowserDialog
-                        If d.ShowDialog = DialogResult.OK Then
+                    Using dialog As New FolderBrowserDialog
+                        If dialog.ShowDialog = DialogResult.OK Then
                             Dim opt = If(td.SelectedValue = "sub-folders", SearchOption.AllDirectories, SearchOption.TopDirectoryOnly)
-                            lb.Items.AddRange(Directory.GetFiles(d.SelectedPath, "*.*", opt).Where(Function(val) FileTypes.Video.Contains(val.Ext)).ToArray)
+                            lb.Items.AddRange(Directory.GetFiles(dialog.SelectedPath, "*.*", opt).Where(Function(val) FileTypes.Video.Contains(val.Ext)).ToArray)
                             lb.SelectedIndex = lb.Items.Count - 1
                         End If
                     End Using
@@ -250,7 +250,7 @@ Public Class SourceFilesForm
         Return lb.Items.OfType(Of String)
     End Function
 
-    Private Sub lb_DragDrop(sender As Object, e As DragEventArgs) Handles lb.DragDrop
+    Sub lb_DragDrop(sender As Object, e As DragEventArgs) Handles lb.DragDrop
         Dim a = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
         If Not a.NothingOrEmpty Then
@@ -259,7 +259,7 @@ Public Class SourceFilesForm
         End If
     End Sub
 
-    Private Sub lb_DragEnter(sender As Object, e As DragEventArgs) Handles lb.DragEnter
+    Sub lb_DragEnter(sender As Object, e As DragEventArgs) Handles lb.DragEnter
         e.Effect = DragDropEffects.Copy
     End Sub
 End Class

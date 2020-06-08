@@ -21,7 +21,7 @@ Public Class GlobalClass
     Property MinimizedWindows As Boolean
     Property SavedProject As New Project
     Property DefaultCommands As New GlobalCommands
-    Property IsProcessing As Boolean
+    Property IsJobProcessing As Boolean
     Property StopAfterCurrentJob As Boolean
     Property DPI As Integer
     Property MenuSpace As String
@@ -167,7 +167,7 @@ Public Class GlobalClass
             Exit Sub
         End If
 
-        g.IsProcessing = True
+        g.IsJobProcessing = True
         Dim jobPath = jobs(0).Path
 
         Try
@@ -210,7 +210,7 @@ Public Class GlobalClass
                 PowerRequest.EnableStandby()
             End If
 
-            g.IsProcessing = False
+            g.IsJobProcessing = False
             g.MainForm.OpenProject(jobPath, False)
             ProcController.Finished()
         End Try
@@ -1317,7 +1317,7 @@ Public Class GlobalClass
         CorrectCropMod(True)
     End Sub
 
-    Private Sub CorrectCropMod(force As Boolean)
+    Sub CorrectCropMod(force As Boolean)
         If p.AutoCorrectCropValues OrElse force Then
             p.CropLeft += p.CropLeft Mod 2
             p.CropRight += p.CropRight Mod 2

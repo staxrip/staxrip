@@ -638,7 +638,7 @@ table {
         WriteTable(title, text, list, False)
     End Sub
 
-    Private Sub WriteTable(title As String, text As String, list As StringPairList, sort As Boolean)
+    Sub WriteTable(title As String, text As String, list As StringPairList, sort As Boolean)
         If sort Then
             list.Sort()
         End If

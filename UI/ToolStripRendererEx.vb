@@ -74,7 +74,7 @@ Public Class ToolStripRendererEx
 
     Protected Overloads Overrides Sub OnRenderItemText(e As ToolStripItemTextRenderEventArgs)
         If TypeOf e.Item Is ToolStripMenuItem AndAlso Not TypeOf e.Item.Owner Is MenuStrip Then
-            Dim r = e.TextRectangle
+            Dim rect = e.TextRectangle
             Dim dropDown = TryCast(e.ToolStrip, ToolStripDropDownMenu)
 
             If dropDown Is Nothing OrElse dropDown.ShowImageMargin OrElse dropDown.ShowCheckMargin Then
@@ -83,7 +83,7 @@ Public Class ToolStripRendererEx
                 TextOffset = CInt(e.Item.Height * 0.2)
             End If
 
-            e.TextRectangle = New Rectangle(TextOffset, CInt((e.Item.Height - r.Height) / 2), r.Width, r.Height)
+            e.TextRectangle = New Rectangle(TextOffset, CInt((e.Item.Height - rect.Height) / 2), rect.Width, rect.Height)
         End If
 
         MyBase.OnRenderItemText(e)
@@ -93,20 +93,20 @@ Public Class ToolStripRendererEx
         If Not TypeOf e.ToolStrip Is ToolStripDropDownMenu AndAlso
             Not e.ToolStrip.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow Then
 
-            Dim r As New Rectangle(-1, -1, e.AffectedBounds.Width, e.AffectedBounds.Height)
+            Dim rect As New Rectangle(-1, -1, e.AffectedBounds.Width, e.AffectedBounds.Height)
 
             If IsFlat() Then
                 Using b As New SolidBrush(ColorToolStrip2)
-                    e.Graphics.FillRectangle(b, r)
+                    e.Graphics.FillRectangle(b, rect)
                 End Using
             Else
                 Dim cb As New ColorBlend()
                 cb.Colors = {ColorToolStrip1, ColorToolStrip2, ColorToolStrip3, ColorToolStrip4}
                 cb.Positions = {0.0F, 0.5F, 0.5F, 1.0F}
 
-                Using b As New LinearGradientBrush(r, ColorToolStrip1, ColorToolStrip4, 90)
-                    b.InterpolationColors = cb
-                    e.Graphics.FillRectangle(b, r)
+                Using brush As New LinearGradientBrush(rect, ColorToolStrip1, ColorToolStrip4, 90)
+                    brush.InterpolationColors = cb
+                    e.Graphics.FillRectangle(brush, rect)
                 End Using
             End If
         End If
@@ -133,6 +133,8 @@ Public Class ToolStripRendererEx
                         gx.FillRectangle(brush, rect2)
                     End Using
                 Else
+                    rect2 = New Rectangle(rect2.X, rect2.Y, rect2.Width - 1, rect2.Height - 1)
+
                     gx.SmoothingMode = SmoothingMode.AntiAlias
 
                     Using path = CreateRoundRectangle(rect2, 3)
@@ -179,6 +181,8 @@ Public Class ToolStripRendererEx
                 End Using
             End If
         Else
+            rect = New Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1)
+
             gx.SmoothingMode = SmoothingMode.AntiAlias
 
             Dim c1 = HSLColor.Convert(ColorToolStrip1).ToColorAddLuminosity(15)
@@ -289,16 +293,17 @@ Public Class ToolStripRendererEx
             Dim right = e.Item.Width - CInt(TextOffset / 5)
             Dim top = e.Item.Height \ 2
             top -= 1
-            Dim b = e.Item.Bounds
+            Dim bounds = e.Item.Bounds
 
-            Using p As New Pen(Color.Gray)
-                e.Graphics.DrawLine(p, New Point(TextOffset, top), New Point(right, top))
+            Using pen As New Pen(Color.Gray)
+                e.Graphics.DrawLine(pen, New Point(TextOffset, top), New Point(right, top))
             End Using
         ElseIf e.Vertical Then
-            Dim b = e.Item.Bounds
+            Dim bounds = e.Item.Bounds
 
-            Using p As New Pen(SystemColors.ControlDarkDark)
-                e.Graphics.DrawLine(p, CInt(b.Width / 2), CInt(b.Height * 0.15), CInt(b.Width / 2), CInt(b.Height * 0.85))
+            Using pen As New Pen(SystemColors.ControlDarkDark)
+                e.Graphics.DrawLine(pen, CInt(bounds.Width / 2), CInt(bounds.Height * 0.15),
+                                         CInt(bounds.Width / 2), CInt(bounds.Height * 0.85))
             End Using
         End If
     End Sub

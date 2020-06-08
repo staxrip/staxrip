@@ -79,7 +79,7 @@ Partial Class LogForm
         Me.Margin = New System.Windows.Forms.Padding(6, 8, 6, 8)
         Me.Name = "LogForm"
         Me.ShowIcon = False
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Log File Viewer"
         Me.tlpMain.ResumeLayout(False)
         Me.ResumeLayout(False)

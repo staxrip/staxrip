@@ -357,7 +357,7 @@ Public Class ProfilesForm
         TipProvider.SetTip("Moves profiles into a sub menu, multiselect is available.", "Right", bnRight)
     End Sub
 
-    Private Sub UpdateControls()
+    Sub UpdateControls()
         Dim pro = DirectCast(lbMain.SelectedItem, Profile)
         Dim count = lbMain.SelectedItems.Count
         bnClone.Enabled = count = 1
@@ -372,7 +372,7 @@ Public Class ProfilesForm
         bnRestore.Enabled = Not DefaultsFunc Is Nothing
     End Sub
 
-    Private Sub lbMain_KeyDown(sender As Object, e As KeyEventArgs) Handles lbMain.KeyDown
+    Sub lbMain_KeyDown(sender As Object, e As KeyEventArgs) Handles lbMain.KeyDown
         Select Case e.KeyData
             Case Keys.Delete
                 If bnRemove.Enabled Then
@@ -395,23 +395,23 @@ Public Class ProfilesForm
         End Select
     End Sub
 
-    Private Sub lbMain_SelectedIndexChanged() Handles lbMain.SelectedIndexChanged
+    Sub lbMain_SelectedIndexChanged() Handles lbMain.SelectedIndexChanged
         UpdateControls()
     End Sub
 
-    Private Sub bnLoad_Click() Handles bnLoad.Click
+    Sub bnLoad_Click() Handles bnLoad.Click
         LoadProfileMethod(DirectCast(lbMain.SelectedItem, Profile))
         TextValues(bnLoad) = bnLoad.Text
         bnLoad.ShowBold()
     End Sub
 
-    Private Sub lbMain_DoubleClick() Handles lbMain.DoubleClick
+    Sub lbMain_DoubleClick() Handles lbMain.DoubleClick
         If Not lbMain.SelectedItem Is Nothing AndAlso DirectCast(lbMain.SelectedItem, Profile).CanEdit Then
             bnEdit.PerformClick()
         End If
     End Sub
 
-    Private Sub bnAdd_Click() Handles bnAdd.Click
+    Sub bnAdd_Click() Handles bnAdd.Click
         Dim pm = AddProfileMethod()
 
         If Not pm Is Nothing Then
@@ -444,12 +444,12 @@ Public Class ProfilesForm
         End If
     End Sub
 
-    Private Sub bnRemove_Click() Handles bnRemove.Click
+    Sub bnRemove_Click() Handles bnRemove.Click
         lbMain.RemoveSelection()
         UpdateControls()
     End Sub
 
-    Private Sub bnRename_Click() Handles bnRename.Click
+    Sub bnRename_Click() Handles bnRename.Click
         Dim p = DirectCast(lbMain.SelectedItem, Profile)
         Dim ret = InputBox.Show("Please enter a name.", "Rename Profile", p.Name)
 
@@ -460,7 +460,7 @@ Public Class ProfilesForm
         End If
     End Sub
 
-    Private Sub bnEdit_Click() Handles bnEdit.Click
+    Sub bnEdit_Click() Handles bnEdit.Click
         Dim profile = DirectCast(ObjectHelp.GetCopy(lbMain.SelectedItem), Profile)
 
         If profile.Edit = DialogResult.OK Then
@@ -469,21 +469,21 @@ Public Class ProfilesForm
         End If
     End Sub
 
-    Private Sub bnClone_Click() Handles bnClone.Click
+    Sub bnClone_Click() Handles bnClone.Click
         lbMain.Items.Insert(lbMain.SelectedIndex, ObjectHelp.GetCopy(lbMain.SelectedItem))
     End Sub
 
-    Private Sub bnUp_Click(sender As Object, e As EventArgs) Handles bnUp.Click
+    Sub bnUp_Click(sender As Object, e As EventArgs) Handles bnUp.Click
         lbMain.MoveSelectionUp()
         UpdateControls()
     End Sub
 
-    Private Sub bnDown_Click(sender As Object, e As EventArgs) Handles bnDown.Click
+    Sub bnDown_Click(sender As Object, e As EventArgs) Handles bnDown.Click
         lbMain.MoveSelectionDown()
         UpdateControls()
     End Sub
 
-    Private Sub bnLeft_Click(sender As Object, e As EventArgs) Handles bnLeft.Click
+    Sub bnLeft_Click(sender As Object, e As EventArgs) Handles bnLeft.Click
         lbMain.SaveSelection()
 
         For x = 0 To lbMain.Items.Count - 1
@@ -500,7 +500,7 @@ Public Class ProfilesForm
         lbMain.RestoreSelection()
     End Sub
 
-    Private Sub bnRightRight_Click(sender As Object, e As EventArgs) Handles bnRight.Click
+    Sub bnRightRight_Click(sender As Object, e As EventArgs) Handles bnRight.Click
         Dim inputName = InputBox.Show("Enter a name for a sub menu.")
 
         If inputName <> "" Then
@@ -518,7 +518,7 @@ Public Class ProfilesForm
         End If
     End Sub
 
-    Private Sub bnRestore_Click(sender As Object, e As EventArgs) Handles bnRestore.Click
+    Sub bnRestore_Click(sender As Object, e As EventArgs) Handles bnRestore.Click
         If MsgQuestion("Restore Profiles?") = DialogResult.OK Then
             lbMain.Items.Clear()
             lbMain.Items.AddRange(DefaultsFunc().OfType(Of Profile).ToArray)
@@ -540,14 +540,14 @@ Public Class ProfilesForm
         End If
     End Sub
 
-    Private Sub ProfilesForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+    Sub ProfilesForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
         form.Doc.WriteTips(TipProvider.GetTips)
         form.Show()
     End Sub
 
-    Private Sub bnOK_Click(sender As Object, e As EventArgs) Handles bnOK.Click
+    Sub bnOK_Click(sender As Object, e As EventArgs) Handles bnOK.Click
         DialogResult = DialogResult.OK
     End Sub
 End Class

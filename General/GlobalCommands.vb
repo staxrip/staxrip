@@ -317,7 +317,7 @@ Public Class GlobalCommands
     End Sub
 
     <Command("Shows a Open File dialog to show media info.")>
-    Private Sub ShowMediaInfoBrowse()
+    Sub ShowMediaInfoBrowse()
         Using dialog As New OpenFileDialog
             If dialog.ShowDialog = DialogResult.OK Then
                 g.DefaultCommands.ShowMediaInfo(dialog.FileName)
@@ -912,7 +912,7 @@ Public Class GlobalCommands
     End Sub
 
     <Command("This command is obsolete since 2020.")>
-    Private Sub ShowLAVFiltersConfigDialog()
+    Sub ShowLAVFiltersConfigDialog()
         Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.LAVVideoDecoder.ToString + "\InprocServer32", Nothing)
 
         If File.Exists(ret) Then
@@ -978,7 +978,7 @@ Public Class GlobalCommands
     End Sub
 
     <Command("This command is obsolete since 2020.")>
-    Private Sub MediaInfoShowMedia()
+    Sub MediaInfoShowMedia()
         ShowMediaInfoBrowse()
     End Sub
 End Class

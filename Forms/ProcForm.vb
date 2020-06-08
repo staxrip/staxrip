@@ -188,7 +188,7 @@ Public Class ProcForm
         Me.Margin = New System.Windows.Forms.Padding(9)
         Me.Name = "ProcForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
-        Me.Text = "StaxRip - Job Processing"
+        Me.Text = "StaxRip - Processing..."
         Me.flpButtons.ResumeLayout(False)
         Me.flpButtons.PerformLayout()
         Me.tlpMain.ResumeLayout(False)
@@ -297,8 +297,10 @@ Public Class ProcForm
     End Sub
 
     Sub UpdateControls()
-        laWhenfinisheddo.Visible = g.IsProcessing
-        mbShutdown.Visible = g.IsProcessing
+        laWhenfinisheddo.Enabled = g.IsJobProcessing
+        mbShutdown.Enabled = g.IsJobProcessing
+        bnJobs.Enabled = g.IsJobProcessing
+        StopAfterCurrentJobMenuItem.Enabled = g.IsJobProcessing
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
     End Sub
 

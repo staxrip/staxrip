@@ -1,6 +1,7 @@
 ﻿
-Imports StaxRip.UI
 Imports System.Threading
+
+Imports StaxRip.UI
 
 Public Class MacrosForm
     Inherits DialogBase

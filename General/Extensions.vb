@@ -810,7 +810,7 @@ Module MiscExtensions
 End Module
 
 Module RegistryKeyExtensions
-    Private Function GetValue(Of T)(rootKey As RegistryKey, subKeyName As String, valueName As String) As T
+    Function GetValue(Of T)(rootKey As RegistryKey, subKeyName As String, valueName As String) As T
         Using subKey = rootKey.OpenSubKey(subKeyName)
             If Not subKey Is Nothing Then
                 Dim value = subKey.GetValue(valueName)
@@ -953,8 +953,13 @@ Module UIExtensions
 
     <Extension()>
     Sub SetSelectedPath(d As FolderBrowserDialog, path As String)
-        If Not Directory.Exists(path) Then path = path.ExistingParent
-        If Directory.Exists(path) Then d.SelectedPath = path
+        If Not Directory.Exists(path) Then
+            path = path.ExistingParent
+        End If
+
+        If Directory.Exists(path) Then
+            d.SelectedPath = path
+        End If
     End Sub
 
     <Extension()>

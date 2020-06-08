@@ -128,7 +128,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Function GetParentParentNodes(n As TreeNode) As TreeNodeCollection
+        Function GetParentParentNodes(n As TreeNode) As TreeNodeCollection
             Dim parent = n.Parent
 
             If parent Is Nothing Then
@@ -142,7 +142,7 @@ Namespace UI
             End If
         End Function
 
-        Private Function GetParentNodes(n As TreeNode) As TreeNodeCollection
+        Function GetParentNodes(n As TreeNode) As TreeNodeCollection
             Dim parent As TreeNode = n.Parent
 
             If parent Is Nothing Then
@@ -544,7 +544,7 @@ Namespace UI
             End Select
         End Sub
 
-        Private Sub WmNccalcsize(ByRef m As Message)
+        Sub WmNccalcsize(ByRef m As Message)
             If Not VisualStyleInformation.IsEnabledByUser Then
                 Return
             End If
@@ -583,7 +583,7 @@ Namespace UI
             m.Result = New IntPtr(WVR_REDRAW)
         End Sub
 
-        Private Sub WmNcpaint(ByRef m As Message)
+        Sub WmNcpaint(ByRef m As Message)
             If Not VisualStyleInformation.IsEnabledByUser Then
                 Return
             End If
@@ -765,12 +765,12 @@ Namespace UI
             End Set
         End Property
 
-        Private Sub Label_Click() Handles Label.Click
+        Sub Label_Click() Handles Label.Click
             ShowContext()
             RaiseEvent LinkClick()
         End Sub
 
-        Private Sub ShowContext()
+        Sub ShowContext()
             If Not Label.ContextMenuStrip Is Nothing Then Label.ContextMenuStrip.Show(Label, 0, 16)
         End Sub
     End Class
@@ -878,7 +878,7 @@ Namespace UI
             Menu.Items.ClearAndDisplose
         End Sub
 
-        Private Sub OnAction(text As String, value As Object)
+        Sub OnAction(text As String, value As Object)
             Me.Text = text
             Me.Value = value
             OnValueChanged(value)
@@ -967,7 +967,7 @@ Namespace UI
             Return New String(chars)
         End Function
 
-        Private Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated
+        Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated
             If Not DesignMode Then
                 Font = New Font("Consolas", 10 * s.UIScaleFactor)
             End If
@@ -2044,7 +2044,7 @@ Namespace UI
             MyBase.OnDragOver(e)
         End Sub
 
-        Private Function HoverTab() As TabPage
+        Function HoverTab() As TabPage
             For index = 0 To TabCount - 1
                 If GetTabRect(index).Contains(PointToClient(Cursor.Position)) Then
                     Return TabPages(index)
@@ -2052,7 +2052,7 @@ Namespace UI
             Next
         End Function
 
-        Private Sub SwapTabPages(ByVal tp1 As TabPage, ByVal tp2 As TabPage)
+        Sub SwapTabPages(ByVal tp1 As TabPage, ByVal tp2 As TabPage)
             Dim index1 = TabPages.IndexOf(tp1)
             Dim index2 = TabPages.IndexOf(tp2)
             TabPages(index1) = tp2

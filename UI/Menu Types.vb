@@ -132,7 +132,7 @@ Namespace UI
             Return l
         End Function
 
-        Private Sub AddToList(item As CustomMenuItem, list As List(Of CustomMenuItem))
+        Sub AddToList(item As CustomMenuItem, list As List(Of CustomMenuItem))
             For Each i In item.SubItems
                 list.Add(i)
                 AddToList(i, list)
@@ -233,7 +233,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub OnCommand(item As CustomMenuItem)
+        Sub OnCommand(item As CustomMenuItem)
             If item.MethodName <> "" Then
                 Dim e As New CustomMenuItemEventArgs(item)
                 RaiseEvent Command(e)
@@ -334,7 +334,7 @@ Namespace UI
             MyBase.New(text)
         End Sub
 
-        Public Overrides Function GetPreferredSize(constrainingSize As Size) As Size
+        Overrides Function GetPreferredSize(constrainingSize As Size) As Size
             Dim ret = MyBase.GetPreferredSize(constrainingSize)
             ret.Height = CInt(Font.Height * 1.4)
             Return ret

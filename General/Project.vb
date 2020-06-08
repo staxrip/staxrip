@@ -110,7 +110,7 @@ Public Class Project
         End Get
     End Property
 
-    Private Function Check(obj As Object, key As String, version As Integer) As Boolean
+    Function Check(obj As Object, key As String, version As Integer) As Boolean
         Return SafeSerialization.Check(Me, obj, key, version)
     End Function
 
@@ -224,7 +224,7 @@ Public Class Project
         Return ret
     End Function
 
-    Private Sub NotifyPropertyChanged(
+    Sub NotifyPropertyChanged(
         <CallerMemberName()> Optional ByVal propertyName As String = Nothing)
 
         RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))

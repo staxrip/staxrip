@@ -1045,6 +1045,10 @@ Public Class PreviewForm
         Renderer.Info = PreviewScript.OriginalInfo
         Renderer.ShowInfo = s.ShowPreviewInfo
 
+        If s.LastPosition < FrameServer.Info.FrameCount - 1 Then
+            Renderer.Position = s.LastPosition
+        End If
+
         Dim info = FrameServer.Info
 
         If Calc.IsARSignalingRequired Then
@@ -1062,10 +1066,6 @@ Public Class PreviewForm
             Fullscreen()
         Else
             NormalScreen()
-        End If
-
-        If s.LastPosition < FrameServer.Info.FrameCount - 1 Then
-            Renderer.Position = s.LastPosition
         End If
 
         AfterPositionChanged()

@@ -294,7 +294,7 @@ Public Class MuxerForm
         Me.bnSubtitleSetNames.Location = New System.Drawing.Point(10, 344)
         Me.bnSubtitleSetNames.Margin = New System.Windows.Forms.Padding(10, 0, 0, 6)
         Me.bnSubtitleSetNames.Size = New System.Drawing.Size(280, 80)
-        Me.bnSubtitleSetNames.Text = "Set Names"
+        Me.bnSubtitleSetNames.Text = "Set Names..."
         '
         'bnSubtitlePlay
         '
@@ -1183,7 +1183,7 @@ Public Class MuxerForm
         End Using
     End Sub
 
-    Private Sub lbAttachments_DragDrop(sender As Object, e As DragEventArgs) Handles lbAttachments.DragDrop
+    Sub lbAttachments_DragDrop(sender As Object, e As DragEventArgs) Handles lbAttachments.DragDrop
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
         If Not files.NothingOrEmpty Then
@@ -1191,7 +1191,7 @@ Public Class MuxerForm
         End If
     End Sub
 
-    Private Sub lbAttachments_DragEnter(sender As Object, e As DragEventArgs) Handles lbAttachments.DragEnter
+    Sub lbAttachments_DragEnter(sender As Object, e As DragEventArgs) Handles lbAttachments.DragEnter
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
         If Not files.NothingOrEmpty Then

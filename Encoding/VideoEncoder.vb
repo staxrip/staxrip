@@ -1,7 +1,8 @@
 
+Imports System.Text.RegularExpressions
+
 Imports StaxRip.UI
 Imports StaxRip.CommandLine
-Imports System.Text.RegularExpressions
 
 <Serializable()>
 Public MustInherit Class VideoEncoder
@@ -314,7 +315,7 @@ Public MustInherit Class VideoEncoder
         g.MainForm.Assistant()
     End Sub
 
-    Private Function GetMuxerProfile() As Profile
+    Function GetMuxerProfile() As Profile
         Dim sb As New SelectionBox(Of Muxer)
 
         sb.Title = "New Profile"
@@ -410,11 +411,7 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Overrides Function Edit() As DialogResult
-        Using form As New ControlHostForm(Name)
-            form.AddControl(CreateEditControl)
-            form.ShowDialog()
-        End Using
-
+        ShowConfigDialog()
         Return DialogResult.OK
     End Function
 

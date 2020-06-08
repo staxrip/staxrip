@@ -8,7 +8,6 @@ Imports System.Threading
 Imports System.Threading.Tasks
 
 Imports StaxRip.UI
-
 Imports VB6 = Microsoft.VisualBasic
 
 Public Class MainForm
@@ -58,7 +57,7 @@ Public Class MainForm
     Public WithEvents lSource2 As System.Windows.Forms.Label
     Public WithEvents lgbTarget As LinkGroupBox
     Public WithEvents GroupBox1 As System.Windows.Forms.GroupBox
-    Public WithEvents lTip As System.Windows.Forms.Label
+    Public WithEvents laTip As System.Windows.Forms.Label
     Public WithEvents lgbEncoder As LinkGroupBox
     Public WithEvents lTarget2 As System.Windows.Forms.Label
     Public WithEvents MenuStrip As System.Windows.Forms.MenuStrip
@@ -96,7 +95,7 @@ Public Class MainForm
         Me.llEditAudio0 = New StaxRip.UI.ButtonLabel()
         Me.gbAssistant = New System.Windows.Forms.GroupBox()
         Me.tlpAssistant = New System.Windows.Forms.TableLayoutPanel()
-        Me.lTip = New System.Windows.Forms.Label()
+        Me.laTip = New System.Windows.Forms.Label()
         Me.llEditAudio1 = New StaxRip.UI.ButtonLabel()
         Me.gbAudio = New System.Windows.Forms.GroupBox()
         Me.tlpAudio = New System.Windows.Forms.TableLayoutPanel()
@@ -174,13 +173,11 @@ Public Class MainForm
         'bnNext
         '
         Me.bnNext.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnNext.AutoSize = True
-        Me.bnNext.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.bnNext.Cursor = System.Windows.Forms.Cursors.Default
-        Me.bnNext.Location = New System.Drawing.Point(1888, 39)
+        Me.bnNext.Location = New System.Drawing.Point(1863, 33)
         Me.bnNext.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
         Me.bnNext.Name = "bnNext"
-        Me.bnNext.Size = New System.Drawing.Size(125, 58)
+        Me.bnNext.Size = New System.Drawing.Size(150, 70)
         Me.bnNext.TabIndex = 39
         Me.bnNext.Text = " Next "
         '
@@ -219,7 +216,7 @@ Public Class MainForm
         Me.tlpAssistant.ColumnCount = 2
         Me.tlpAssistant.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.tlpAssistant.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpAssistant.Controls.Add(Me.lTip, 0, 0)
+        Me.tlpAssistant.Controls.Add(Me.laTip, 0, 0)
         Me.tlpAssistant.Controls.Add(Me.bnNext, 1, 0)
         Me.tlpAssistant.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpAssistant.Location = New System.Drawing.Point(6, 48)
@@ -230,17 +227,17 @@ Public Class MainForm
         Me.tlpAssistant.Size = New System.Drawing.Size(2019, 137)
         Me.tlpAssistant.TabIndex = 62
         '
-        'lTip
+        'laTip
         '
-        Me.lTip.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.laTip.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lTip.Location = New System.Drawing.Point(0, 0)
-        Me.lTip.Margin = New System.Windows.Forms.Padding(0)
-        Me.lTip.Name = "lTip"
-        Me.lTip.Size = New System.Drawing.Size(1888, 137)
-        Me.lTip.TabIndex = 40
-        Me.lTip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.laTip.Location = New System.Drawing.Point(0, 0)
+        Me.laTip.Margin = New System.Windows.Forms.Padding(0)
+        Me.laTip.Name = "laTip"
+        Me.laTip.Size = New System.Drawing.Size(1863, 137)
+        Me.laTip.TabIndex = 40
+        Me.laTip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'llEditAudio1
         '
@@ -366,7 +363,7 @@ Public Class MainForm
         Me.lgbTarget.Size = New System.Drawing.Size(1011, 357)
         Me.lgbTarget.TabIndex = 58
         Me.lgbTarget.TabStop = False
-        Me.lgbTarget.Text = "Target"
+        Me.lgbTarget.Text = "Target "
         '
         'tlpTarget
         '
@@ -488,7 +485,7 @@ Public Class MainForm
         Me.lgbSource.Size = New System.Drawing.Size(1008, 357)
         Me.lgbSource.TabIndex = 57
         Me.lgbSource.TabStop = False
-        Me.lgbSource.Text = "Source"
+        Me.lgbSource.Text = "Source "
         '
         'tlpSource
         '
@@ -652,7 +649,7 @@ Public Class MainForm
         Me.lgbResize.Size = New System.Drawing.Size(670, 286)
         Me.lgbResize.TabIndex = 55
         Me.lgbResize.TabStop = False
-        Me.lgbResize.Text = "Resize"
+        Me.lgbResize.Text = "Resize "
         '
         'tlpResize
         '
@@ -914,7 +911,7 @@ Public Class MainForm
         Me.lgbFilters.Size = New System.Drawing.Size(667, 286)
         Me.lgbFilters.TabIndex = 53
         Me.lgbFilters.TabStop = False
-        Me.lgbFilters.Text = "Filters"
+        Me.lgbFilters.Text = "Filters "
         '
         'FiltersListView
         '
@@ -949,7 +946,7 @@ Public Class MainForm
         Me.lgbEncoder.Size = New System.Drawing.Size(670, 286)
         Me.lgbEncoder.TabIndex = 51
         Me.lgbEncoder.TabStop = False
-        Me.lgbEncoder.Text = "Encoder"
+        Me.lgbEncoder.Text = "Encoder "
         '
         'llMuxer
         '
@@ -1015,7 +1012,6 @@ Public Class MainForm
         Me.Text = "StaxRip"
         Me.gbAssistant.ResumeLayout(False)
         Me.tlpAssistant.ResumeLayout(False)
-        Me.tlpAssistant.PerformLayout()
         Me.gbAudio.ResumeLayout(False)
         Me.tlpAudio.ResumeLayout(False)
         Me.tlpAudio.PerformLayout()
@@ -1162,7 +1158,7 @@ Public Class MainForm
         SetMenuStyle()
     End Sub
 
-    Private Sub LoadSettings()
+    Sub LoadSettings()
         Try
             s = SafeSerialization.Deserialize(New ApplicationSettings, g.SettingsFile)
         Catch ex As Exception
@@ -1216,7 +1212,7 @@ Public Class MainForm
         lgbResize.Label.LinkColor = col
         lgbSource.Label.LinkColor = col
         lgbTarget.Label.LinkColor = col
-        lTip.ForeColor = col
+        laTip.ForeColor = col
     End Sub
 
     Function GetIfoFile() As String
@@ -1288,7 +1284,7 @@ Public Class MainForm
         Next
     End Sub
 
-    Private Sub DetectAudioFiles(track As Integer, lang As Boolean, same As Boolean, hq As Boolean)
+    Sub DetectAudioFiles(track As Integer, lang As Boolean, same As Boolean, hq As Boolean)
         Dim tb, tbOther As TextBox
         Dim profile As AudioProfile
 
@@ -2273,7 +2269,7 @@ Public Class MainForm
         End Try
     End Sub
 
-    Private Sub ModifyFilters()
+    Sub ModifyFilters()
         If p.SourceFile = "" Then
             Exit Sub
         End If
@@ -2345,8 +2341,6 @@ Public Class MainForm
                 iFilter.Script = Macro.ExpandGUI(iFilter.Script, True).Value
             End If
         Next
-
-        'Indexing()
 
         If editAVS Then
             Dim miFPS = MediaInfo.GetFrameRate(p.FirstOriginalSourceFile, 25)
@@ -2530,13 +2524,13 @@ Public Class MainForm
         If Not p.SkippedAssistantTips.Contains(CurrentAssistantTipKey) Then
             If message <> "" Then
                 If message.Length > 130 Then
-                    lTip.Font = New Font(lTip.Font.FontFamily, 8 * s.UIScaleFactor)
+                    laTip.Font = New Font(laTip.Font.FontFamily, 8 * s.UIScaleFactor)
                 Else
-                    lTip.Font = New Font(lTip.Font.FontFamily, 9 * s.UIScaleFactor)
+                    laTip.Font = New Font(laTip.Font.FontFamily, 9 * s.UIScaleFactor)
                 End If
             End If
 
-            lTip.Text = message
+            laTip.Text = message
             Return True
         End If
     End Function
@@ -2670,7 +2664,7 @@ Public Class MainForm
             lSource2.Text = ""
         End If
 
-        lTip.Text = ""
+        laTip.Text = ""
         gbAssistant.Text = ""
         AssistantMethod = Nothing
         CanIgnoreTip = True
@@ -2780,7 +2774,7 @@ Public Class MainForm
                 End If
 
                 If Math.Abs(ap.Delay) > 2000 Then
-                    If ProcessTip("The audio delay is unusual high indicating a sync problem, MakeMKV and ProjectX can prevent this problem.") Then
+                    If ProcessTip("The audio delay is unusual high indicating a sync problem.") Then
                         g.Highlight(True, tbAudioFile0)
                         gbAssistant.Text = "Unusual high audio delay"
                         Return False
@@ -2887,7 +2881,8 @@ Public Class MainForm
 
             If p.Script.IsFilterActive("Resize") Then
                 If p.TargetWidth Mod p.ForcedOutputMod <> 0 Then
-                    If ProcessTip("Move the resize slider to adjust the target width to be divisible by " & p.ForcedOutputMod & " or customize Options > Image > Output Mod.") Then
+                    If ProcessTip("Move the resize slider to adjust the target width to be divisible by " &
+                                  p.ForcedOutputMod & " or customize:" + BR + "Options > Image > Output Mod") Then
                         CanIgnoreTip = Not p.AutoCorrectCropValues
                         g.Highlight(True, tbTargetWidth)
                         g.Highlight(True, lSAR)
@@ -2897,7 +2892,8 @@ Public Class MainForm
                 End If
 
                 If Not p.TargetHeight = 1080 AndAlso p.TargetHeight Mod p.ForcedOutputMod <> 0 Then
-                    If ProcessTip("Move the resize slider to adjust the target height to be divisible by " & p.ForcedOutputMod & " or customize Options > Image > Output Mod.") Then
+                    If ProcessTip("Move the resize slider to adjust the target height to be divisible by " &
+                                  p.ForcedOutputMod & " or customize:" + BR + "Options > Image > Output Mod") Then
                         CanIgnoreTip = Not p.AutoCorrectCropValues
                         g.Highlight(True, tbTargetHeight)
                         g.Highlight(True, lSAR)
@@ -2907,7 +2903,9 @@ Public Class MainForm
                 End If
             Else
                 If p.TargetWidth Mod p.ForcedOutputMod <> 0 Then
-                    If ProcessTip("The image width is not divisible by " & p.ForcedOutputMod & ", click here to correct the crop values or customize Options > Image > Output Mod.") Then
+                    If ProcessTip("Image width is not divisible by " & p.ForcedOutputMod &
+                                  ", click here to correct the crop values or customize:" + BR +
+                                  "Options > Image > Output Mod") Then
                         CanIgnoreTip = False
                         AssistantMethod = AddressOf g.ForceCropMod
                         g.Highlight(True, tbTargetWidth)
@@ -2918,7 +2916,9 @@ Public Class MainForm
                 End If
 
                 If Not p.TargetHeight = 1080 AndAlso p.TargetHeight Mod p.ForcedOutputMod <> 0 Then
-                    If ProcessTip("The image height is not divisible by " & p.ForcedOutputMod & ", click here to correct the crop values or customize Options > Image > Output Mod.") Then
+                    If ProcessTip("Image height is not divisible by " & p.ForcedOutputMod &
+                                  ", click here to correct the crop values or customize:" + BR +
+                                  "Options > Image > Output Mod") Then
                         CanIgnoreTip = False
                         AssistantMethod = AddressOf g.ForceCropMod
                         g.Highlight(True, tbTargetHeight)
@@ -2935,7 +2935,7 @@ Public Class MainForm
                 If value < (p.VideoEncoder.AutoCompCheckValue - 20) OrElse
                     value > (p.VideoEncoder.AutoCompCheckValue + 20) Then
 
-                    If ProcessTip("The aimed quality value is more than 20% off, change the image or file size to get something between 50% and 70% quality.") Then
+                    If ProcessTip("Aimed quality value is more than 20% off, change the image or file size to get something between 50% and 70% quality.") Then
                         g.Highlight(True, tbTargetSize)
                         g.Highlight(True, tbBitrate)
                         g.Highlight(True, tbTargetWidth)
@@ -2993,15 +2993,15 @@ Public Class MainForm
 
         gbAssistant.Text = "Add Job"
 
-        If lTip.Font.Size <> 9 Then
-            lTip.Font = New Font(lTip.Font.FontFamily, 9 * s.UIScaleFactor)
+        If laTip.Font.Size <> 9 Then
+            laTip.Font = New Font(laTip.Font.FontFamily, 9 * s.UIScaleFactor)
         End If
 
-        lTip.Text = "Click on the next button to add a job."
+        laTip.Text = "Click on the next button to add a job."
         AssistantPassed = True
     End Function
 
-    Private Sub OpenTargetFolder()
+    Sub OpenTargetFolder()
         g.ShellExecute(p.TargetFile.Dir)
     End Sub
 
@@ -3176,7 +3176,7 @@ Public Class MainForm
         g.ProcessJobs()
     End Sub
 
-    Private Sub Demux()
+    Sub Demux()
         Dim getFormat = Function() As String
                             Dim ret = MediaInfo.GetVideo(p.SourceFile, "Format")
 
@@ -3320,7 +3320,7 @@ Public Class MainForm
         End Using
     End Sub
 
-    Private Function LoadTemplateWithSelectionDialog() As Boolean
+    Function LoadTemplateWithSelectionDialog() As Boolean
         Dim td As New TaskDialog(Of String)
         td.MainInstruction = "Please select a template"
 
@@ -4590,11 +4590,11 @@ Public Class MainForm
         End Using
     End Sub
 
-    Private Sub tbResize_MouseUp(sender As Object, e As MouseEventArgs) Handles tbResize.MouseUp
+    Sub tbResize_MouseUp(sender As Object, e As MouseEventArgs) Handles tbResize.MouseUp
         Assistant()
     End Sub
 
-    Private Sub tbResize_Scroll() Handles tbResize.Scroll
+    Sub tbResize_Scroll() Handles tbResize.Scroll
         SkipAssistant = True
 
         If Not g.EnableFilter("Resize") Then
@@ -4642,7 +4642,7 @@ Public Class MainForm
         End Try
     End Sub
 
-    Private Sub tbBitrate_KeyDown(sender As Object, e As KeyEventArgs) Handles tbBitrate.KeyDown
+    Sub tbBitrate_KeyDown(sender As Object, e As KeyEventArgs) Handles tbBitrate.KeyDown
         If tbBitrate.ReadOnly Then
             Exit Sub
         End If
@@ -4656,7 +4656,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub tbSize_KeyDown(sender As Object, e As KeyEventArgs) Handles tbTargetSize.KeyDown
+    Sub tbTargetSize_KeyDown(sender As Object, e As KeyEventArgs) Handles tbTargetSize.KeyDown
         If tbTargetSize.ReadOnly Then
             Exit Sub
         End If
@@ -4753,7 +4753,7 @@ Public Class MainForm
         End Try
     End Sub
 
-    Private Sub tbTargetWidth_KeyDown(sender As Object, e As KeyEventArgs) Handles tbTargetWidth.KeyDown
+    Sub tbTargetWidth_KeyDown(sender As Object, e As KeyEventArgs) Handles tbTargetWidth.KeyDown
         If e.KeyData = Keys.Up Then
             e.Handled = True
             Dim modVal = p.ForcedOutputMod
@@ -4765,7 +4765,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub tbTargetHeight_KeyDown(sender As Object, e As KeyEventArgs) Handles tbTargetHeight.KeyDown
+    Sub tbTargetHeight_KeyDown(sender As Object, e As KeyEventArgs) Handles tbTargetHeight.KeyDown
         If e.KeyData = Keys.Up Then
             e.Handled = True
             Dim modVal = p.ForcedOutputMod
@@ -4870,7 +4870,7 @@ Public Class MainForm
         s.CustomMenuSize = CustomSizeMenu.Edit()
     End Sub
 
-    Private Sub UpdateSizeMenu()
+    Sub UpdateSizeMenu()
         For Each i As MenuItemEx In CustomSizeMenu.MenuItems
             If i.CustomMenuItem.MethodName = "SetPercent" Then
                 i.Enabled = p.Compressibility > 0
@@ -4878,7 +4878,7 @@ Public Class MainForm
         Next
     End Sub
 
-    Private Function GetScriptAsProfile() As Profile
+    Function GetScriptAsProfile() As Profile
         Dim sb As New SelectionBox(Of TargetVideoScript)
 
         sb.Title = "New Profile"
@@ -4921,7 +4921,7 @@ Public Class MainForm
         FiltersListView.RebuildMenu()
     End Sub
 
-    Private Sub ProcessCommandLine(a As String())
+    Sub ProcessCommandLine(a As String())
         Dim files As New List(Of String)
 
         For Each i In CLIArg.GetArgs(a)
@@ -4952,17 +4952,17 @@ Public Class MainForm
     End Sub
 
     <Command("Sets the project option 'Hide dialogs asking to demux, source filter etc.'")>
-    Private Sub SetHideDialogsOption(hide As Boolean)
+    Sub SetHideDialogsOption(hide As Boolean)
         p.NoDialogs = hide
     End Sub
 
     <Command("Standby PC.")>
-    Private Sub Standby()
+    Sub Standby()
         g.ShutdownPC(ShutdownMode.Standby)
     End Sub
 
     <Command("Shut down PC.")>
-    Private Sub Shutdown()
+    Sub Shutdown()
         g.ShutdownPC(ShutdownMode.Shutdown)
     End Sub
 
@@ -4988,7 +4988,7 @@ Public Class MainForm
     End Sub
 
     <Command("Dialog to open source files.")>
-    Private Sub ShowOpenSourceDialog()
+    Sub ShowOpenSourceDialog()
         Dim td As New TaskDialog(Of String)
 
         td.MainInstruction = "Select a method for opening a source."
@@ -5165,12 +5165,12 @@ Public Class MainForm
             End If
 
             If Not g.IsFixedDrive(workDir) Then
-                Using d As New FolderBrowserDialog
-                    d.Description = "Please select a folder for temporary files on a fixed local drive."
-                    d.SetSelectedPath(s.Storage.GetString("last blu-ray target folder").Parent)
+                Using dialog As New FolderBrowserDialog
+                    dialog.Description = "Please select a folder for temporary files on a fixed local drive."
+                    dialog.SetSelectedPath(s.Storage.GetString("last blu-ray target folder").Parent)
 
-                    If d.ShowDialog = DialogResult.OK Then
-                        workDir = d.SelectedPath.FixDir
+                    If dialog.ShowDialog = DialogResult.OK Then
+                        workDir = dialog.SelectedPath.FixDir
                     Else
                         Exit Sub
                     End If
@@ -5233,7 +5233,7 @@ Public Class MainForm
         End Using
     End Sub
 
-    Private Function GetSourceFilesFromDir(path As String) As String()
+    Function GetSourceFilesFromDir(path As String) As String()
         For Each i In FileTypes.Video
             Dim files = Directory.GetFiles(path, "*." + i)
             Array.Sort(files)
@@ -5325,7 +5325,7 @@ Public Class MainForm
         End Using
     End Sub
 
-    Sub lTip_Click() Handles lTip.Click
+    Sub lTip_Click() Handles laTip.Click
         If Not AssistantMethod Is Nothing Then
             AssistantMethod.Invoke()
             Assistant()
@@ -5631,7 +5631,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub tbSource_TextChanged(sender As Object, e As EventArgs) Handles tbSourceFile.TextChanged
+    Sub tbSource_TextChanged(sender As Object, e As EventArgs) Handles tbSourceFile.TextChanged
         If Not BlockSourceTextBoxTextChanged Then
             If File.Exists(tbSourceFile.Text) Then
                 OpenVideoSourceFile(tbSourceFile.Text)
@@ -5639,12 +5639,12 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub gbTarget_LinkClick() Handles lgbTarget.LinkClick
+    Sub gbTarget_LinkClick() Handles lgbTarget.LinkClick
         UpdateTargetFileMenu()
         TargetFileMenu.Show(lgbTarget, 0, lgbTarget.Label.Height)
     End Sub
 
-    Private Sub gbSource_MenuClick() Handles lgbSource.LinkClick
+    Sub gbSource_MenuClick() Handles lgbSource.LinkClick
         UpdateSourceFileMenu()
 
         If File.Exists(p.SourceFile) Then
@@ -5666,25 +5666,25 @@ Public Class MainForm
         End Using
     End Sub
 
-    Private Sub tbTargetFile_MouseDown(sender As Object, e As MouseEventArgs) Handles tbTargetFile.MouseDown
+    Sub tbTargetFile_MouseDown(sender As Object, e As MouseEventArgs) Handles tbTargetFile.MouseDown
         If e.Button = MouseButtons.Right Then
             UpdateTargetFileMenu()
         End If
     End Sub
 
-    Private Sub tbSourceFile_MouseDown(sender As Object, e As MouseEventArgs) Handles tbSourceFile.MouseDown
+    Sub tbSourceFile_MouseDown(sender As Object, e As MouseEventArgs) Handles tbSourceFile.MouseDown
         If e.Button = MouseButtons.Right Then
             UpdateSourceFileMenu()
         End If
     End Sub
 
-    Private Sub tbAudioFile0_MouseDown(sender As Object, e As MouseEventArgs) Handles tbAudioFile0.MouseDown
+    Sub tbAudioFile0_MouseDown(sender As Object, e As MouseEventArgs) Handles tbAudioFile0.MouseDown
         If e.Button = MouseButtons.Right Then
             UpdateAudioFileMenu(Audio0FileMenu, AddressOf tbAudioFile0_DoubleClick, p.Audio0, tbAudioFile0)
         End If
     End Sub
 
-    Private Sub tbAudioFile1_MouseDown(sender As Object, e As MouseEventArgs) Handles tbAudioFile1.MouseDown
+    Sub tbAudioFile1_MouseDown(sender As Object, e As MouseEventArgs) Handles tbAudioFile1.MouseDown
         If e.Button = MouseButtons.Right Then
             UpdateAudioFileMenu(Audio1FileMenu, AddressOf tbAudioFile1_DoubleClick, p.Audio1, tbAudioFile1)
         End If

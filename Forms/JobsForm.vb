@@ -375,7 +375,7 @@ Friend Class JobsForm
         g.StopAfterCurrentJob = False
         Close()
 
-        If g.IsProcessing Then
+        If g.IsJobProcessing Then
             g.ShellExecute(Application.ExecutablePath, "-StartJobs")
         Else
             Task.Run(Sub()

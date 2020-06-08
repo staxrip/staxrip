@@ -80,7 +80,7 @@ Public Class SimpleUI
         RaiseEvent ValueChanged()
     End Sub
 
-    Private Sub Tree_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles Tree.AfterSelect
+    Sub Tree_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles Tree.AfterSelect
         Dim node = e.Node
 
         For Each i In Pages
@@ -1173,11 +1173,11 @@ Public Class SimpleUI
 
         Sub BrowseFolder()
             Button.ClickAction = Sub()
-                                     Using dia As New FolderBrowserDialog
-                                         dia.SetSelectedPath(s.LastSourceDir)
+                                     Using dialog As New FolderBrowserDialog
+                                         dialog.SetSelectedPath(s.LastSourceDir)
 
-                                         If dia.ShowDialog = DialogResult.OK Then
-                                             Edit.Text = dia.SelectedPath
+                                         If dialog.ShowDialog = DialogResult.OK Then
+                                             Edit.Text = dialog.SelectedPath
                                          End If
                                      End Using
                                  End Sub

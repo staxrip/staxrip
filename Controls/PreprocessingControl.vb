@@ -278,8 +278,8 @@ Public Class PreprocessingControl
         If MsgQuestion("Restore defaults?") = DialogResult.OK Then
             lv.Items.Clear()
 
-            For Each i In Demuxer.GetDefaults()
-                AddItem(i)
+            For Each dmx In Demuxer.GetDefaults()
+                AddItem(dmx)
             Next
         End If
     End Sub

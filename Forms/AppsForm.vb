@@ -554,28 +554,28 @@ Public Class AppsForm
         tv.EndUpdate()
     End Sub
 
-    Private Sub tsbLaunch_Click(sender As Object, e As EventArgs) Handles tsbLaunch.Click
+    Sub tsbLaunch_Click(sender As Object, e As EventArgs) Handles tsbLaunch.Click
         CurrentPackage.LaunchAction?.Invoke()
     End Sub
 
     <DebuggerNonUserCode()>
-    Private Sub tsbOpenDir_Click(sender As Object, e As EventArgs) Handles tsbExplore.Click
+    Sub tsbOpenDir_Click(sender As Object, e As EventArgs) Handles tsbExplore.Click
         g.SelectFileWithExplorer(CurrentPackage.Path)
     End Sub
 
-    Private Sub tsbHelp_Click(sender As Object, e As EventArgs) Handles tsbHelp.Click
+    Sub tsbHelp_Click(sender As Object, e As EventArgs) Handles tsbHelp.Click
         CurrentPackage.ShowHelp()
     End Sub
 
-    Private Sub tsbWebsite_Click(sender As Object, e As EventArgs) Handles tsbWebsite.Click
+    Sub tsbWebsite_Click(sender As Object, e As EventArgs) Handles tsbWebsite.Click
         g.ShellExecute(CurrentPackage.URL)
     End Sub
 
-    Private Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
+    Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
         g.ShellExecute(CurrentPackage.DownloadURL)
     End Sub
 
-    Private Sub tsbVersion_Click(sender As Object, e As EventArgs) Handles tsbVersion.Click
+    Sub tsbVersion_Click(sender As Object, e As EventArgs) Handles tsbVersion.Click
         If Not File.Exists(CurrentPackage.Path) Then
             Exit Sub
         End If
@@ -685,7 +685,10 @@ Public Class AppsForm
             dialog.Filter = "|" + CurrentPackage.Filename + "|All Files|*.*"
 
             If dialog.ShowDialog = DialogResult.OK Then
-                If Not s.AllowCustomPathsInStartupFolder AndAlso dialog.FileName.ToLowerEx.StartsWithEx(Folder.Startup.ToLower) Then
+                If Not s.AllowCustomPathsInStartupFolder AndAlso
+                    dialog.FileName.ToLowerEx.StartsWithEx(Folder.Startup.ToLowerEx) AndAlso
+                    Not dialog.FileName.ToLowerEx.StartsWithEx(Folder.Settings.ToLowerEx) Then
+
                     MsgError("Custom paths within the startup folder are not permitted.")
                     Exit Sub
                 End If
@@ -777,7 +780,10 @@ Public Class AppsForm
                     AddHandler bn.Button.Click, Sub(sender As Object, e As EventArgs)
                                                     Dim fp = DirectCast(sender, Button).Text
 
-                                                    If Not s.AllowCustomPathsInStartupFolder AndAlso fp.ToLowerEx.StartsWithEx(Folder.Startup.ToLower) Then
+                                                    If Not s.AllowCustomPathsInStartupFolder AndAlso
+                                                        fp.ToLowerEx.StartsWithEx(Folder.Startup.ToLowerEx) AndAlso
+                                                        Not fp.ToLowerEx.StartsWithEx(Folder.Settings.ToLowerEx) Then
+
                                                         MsgError("Custom paths within the startup folder are not permitted.")
                                                         Exit Sub
                                                     End If

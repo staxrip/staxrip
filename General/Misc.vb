@@ -1665,11 +1665,11 @@ Public Class StringLogicalComparer
     Shared Function StrCmpLogical(x As String, y As String) As Integer
     End Function
 
-    Private Function IComparer_Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
+    Function IComparer_Compare(x As Object, y As Object) As Integer Implements IComparer.Compare
         Return StrCmpLogical(x.ToString(), y.ToString())
     End Function
 
-    Private Function IComparerOfString_Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
+    Function IComparerOfString_Compare(x As String, y As String) As Integer Implements IComparer(Of String).Compare
         Return StrCmpLogical(x, y)
     End Function
 End Class

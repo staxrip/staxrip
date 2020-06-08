@@ -44,6 +44,8 @@ Public Class Package
         .Name = "D2V Witch",
         .Filename = "d2vwitch.exe",
         .Description = "Portable MPEG-2 demuxing and d2v indexing GUI app.",
+        .WebURL = "https://github.com/dubhater/D2VWitch",
+        .DownloadURL = "https://github.com/dubhater/D2VWitch/releases",
         .Location = "Support\D2V Witch",
         .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:D2V Witch%")})
 
@@ -590,6 +592,7 @@ Public Class Package
     Shared Property havsfunc As Package = Add(New PluginPackage With {
         .Name = "havsfunc",
         .WebURL = "http://github.com/HomeOfVapourSynthEvolution/havsfunc",
+        .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/havsfunc/releases",
         .HelpURL = "http://forum.doom9.org/showthread.php?t=166582",
         .Description = "Various popular AviSynth scripts ported To VapourSynth.",
         .Filename = "havsfunc.py",
@@ -684,6 +687,15 @@ Public Class Package
         .AvsFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest", "dfttest($select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong Static|sigma=64, tbsize=1;Strong Temporal|sigma=64, tbsize=3$,$select:msg:Reduce Banding?;No Deband| dither=0;Deband| dither=1;Add Noise| dither=2;More Noise| dither=3$)")}})
 
     Shared Property DFTTestVS As Package = Add(New PluginPackage With {
+        .Name = "DFTTest",
+        .Filename = "DFTTest.dll",
+        .Description = "VapourSynth port of dfttest.",
+        .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DFTTest",
+        .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DFTTest/releases",
+        .VSFilterNames = {"dfttest.DFTTest"},
+        .VSFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest", "$select:msg:Select Strength;Light|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3,opt=3);Moderate|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5,opt=3);Strong|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1,opt=3)$")}})
+
+    Shared Property DFTTestNeoVS As Package = Add(New PluginPackage With {
         .Name = "DFTTest Neo",
         .Filename = "neo-dfttest.dll",
         .Description = "2D/3D frequency domain denoiser using Discrete Fourier transform.",

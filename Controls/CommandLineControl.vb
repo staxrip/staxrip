@@ -1,7 +1,7 @@
 ﻿
-Imports StaxRip.UI
-
 Imports System.ComponentModel
+
+Imports StaxRip.UI
 
 Public Class CommandLineControl
     Inherits UserControl
@@ -40,15 +40,15 @@ Public Class CommandLineControl
         Me.tb.Location = New System.Drawing.Point(0, 0)
         Me.tb.Margin = New System.Windows.Forms.Padding(0)
         Me.tb.Multiline = True
-        Me.tb.Size = New System.Drawing.Size(235, 205)
+        Me.tb.Size = New System.Drawing.Size(205, 205)
         '
         'bn
         '
         Me.bn.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.bn.Location = New System.Drawing.Point(245, 0)
+        Me.bn.Location = New System.Drawing.Point(215, 0)
         Me.bn.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
         Me.bn.ShowMenuSymbol = True
-        Me.bn.Size = New System.Drawing.Size(70, 70)
+        Me.bn.Size = New System.Drawing.Size(100, 70)
         '
         'tlpMain
         '

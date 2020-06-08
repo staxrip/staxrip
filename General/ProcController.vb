@@ -27,10 +27,13 @@ Public Class ProcController
 
         Dim pad = g.ProcForm.FontHeight \ 6
         CheckBox.Margin = New Padding(pad, pad, 0, pad)
-        CheckBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
         CheckBox.Appearance = Appearance.Button
+        CheckBox.TextAlign = ContentAlignment.MiddleCenter
+        CheckBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
         CheckBox.Text = " " + proc.Title + " "
-        CheckBox.AutoSize = True
+        Dim sz = TextRenderer.MeasureText(CheckBox.Text, CheckBox.Font)
+        CheckBox.Width = sz.Width + CheckBox.Font.Height
+        CheckBox.Height = CInt(CheckBox.Font.Height * 1.5)
         AddHandler CheckBox.Click, AddressOf Click
 
         ProgressBar.Dock = DockStyle.Fill
@@ -83,8 +86,7 @@ Public Class ProcController
     End Sub
 
     Sub LogHandler()
-        Dim log = Proc.Log.ToString
-        LogTextBox.Text = log
+        LogTextBox.Text = Proc.Log.ToString
     End Sub
 
     Sub StatusHandler(value As String)
@@ -237,7 +239,10 @@ Public Class ProcController
         For Each procButton In Procs.ToArray
             If procButton.Proc.Process.ProcessName = "cmd" Then
                 For Each process In ProcessHelp.GetChilds(procButton.Proc.Process)
-                    If {"conhost", "vspipe"}.Contains(process.ProcessName) Then Continue For
+                    If {"conhost", "vspipe"}.Contains(process.ProcessName) Then
+                        Continue For
+                    End If
+
                     ret.Add(process)
                 Next
             Else
@@ -281,7 +286,7 @@ Public Class ProcController
                      Thread.Sleep(500)
 
                      SyncLock Procs
-                         If Procs.Count = 0 AndAlso Not g.IsProcessing Then
+                         If Procs.Count = 0 AndAlso Not g.IsJobProcessing Then
                              Finished()
                          End If
                      End SyncLock

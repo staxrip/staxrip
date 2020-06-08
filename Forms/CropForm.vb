@@ -175,7 +175,7 @@ Public Class CropForm
 
         StatusStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
-        Dim offset = FontHeight
+        Dim offset = CInt(FontHeight * 0.6)
 
         pnVideo.Left = offset
         pnVideo.Top = offset

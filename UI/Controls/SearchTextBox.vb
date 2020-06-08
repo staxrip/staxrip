@@ -111,37 +111,27 @@ Public Class SearchTextBox
             Refresh()
         End Sub
 
-        Protected Overrides Sub OnPaint(args As PaintEventArgs)
-            args.Graphics.SmoothingMode = SmoothingMode.HighQuality
+        Protected Overrides Sub OnPaint(e As PaintEventArgs)
+            e.Graphics.SmoothingMode = SmoothingMode.HighQuality
 
-            Using pen = New Pen(Color.DarkSlateGray, 2)
-                Dim offset = CSng(Width / 3.3)
-                args.Graphics.DrawLine(pen, offset, offset, Width - offset, Height - offset)
-                args.Graphics.DrawLine(pen, Width - offset, offset, offset, Height - offset)
-            End Using
-        End Sub
-
-        Protected Overrides Sub OnPaintBackground(e As PaintEventArgs)
             If MouseIsOver Then
                 Dim rect = New Rectangle(Point.Empty, Size)
 
-                If VisualStyleInformation.IsEnabledByUser Then
+                If VisualStyleInformation.IsEnabledByUser AndAlso False Then
                     Dim Renderer = New VisualStyleRenderer(VisualStyleElement.Button.PushButton.Hot)
                     Renderer.DrawBackground(e.Graphics, ClientRectangle)
                 Else
-                    Using path = ToolStripRendererEx.CreateRoundRectangle(New Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1), 3)
-                        Using brush As New LinearGradientBrush(New Point(0, 0), New Point(0, rect.Height), Color.White, Color.LightGray)
-                            e.Graphics.FillPath(brush, path)
-                        End Using
-
-                        Using pen As New Pen(Brushes.LightGray)
-                            e.Graphics.DrawPath(pen, path)
-                        End Using
-                    End Using
+                    ControlPaint.DrawButton(e.Graphics, ClientRectangle, ButtonState.Flat)
                 End If
             Else
                 e.Graphics.Clear(Color.White)
             End If
+
+            Using pen = New Pen(Color.DarkSlateGray, 2)
+                Dim offset = CSng(Width / 3.3)
+                e.Graphics.DrawLine(pen, offset, offset, Width - offset, Height - offset)
+                e.Graphics.DrawLine(pen, Width - offset, offset, offset, Height - offset)
+            End Using
         End Sub
     End Class
 End Class

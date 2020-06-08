@@ -124,7 +124,7 @@ Public Class SimpleSettingsForm
         SimpleUI.Tree.Select()
     End Sub
 
-    Private Sub SimpleSettingsForm_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
+    Sub SimpleSettingsForm_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
 

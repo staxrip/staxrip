@@ -188,7 +188,7 @@ Public Class ProcessHelp
         Return ret
     End Function
 
-    Private Sub KillProcessAndChildren(pid As Integer)
+    Sub KillProcessAndChildren(pid As Integer)
         Dim searcher As New ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" & pid)
         Dim moc As ManagementObjectCollection = searcher.[Get]()
         For Each mo As ManagementObject In moc

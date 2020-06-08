@@ -494,7 +494,7 @@ Public Class Macro
         If value.Contains("%text_editor%") Then value = value.Replace("%text_editor%", g.GetTextEditorPath)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%processing%") Then value = value.Replace("%processing%", g.IsProcessing.ToString)
+        If value.Contains("%processing%") Then value = value.Replace("%processing%", g.IsJobProcessing.ToString)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%video_encoder%") Then value = value.Replace("%video_encoder%", TryCast(p.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage.Name)

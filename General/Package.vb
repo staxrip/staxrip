@@ -631,7 +631,8 @@ Public Class Package
         .WebURL = "https://github.com/realfinder/AVS-Stuff",
         .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/Zs_RF_Shared.avsi",
         .Description = "Shared Functions and utility.",
-        .AvsFilterNames = {"Dither_Luma_Rebuild"}})
+        .RequiredFunc = Function() MCTemporalDenoise.Required,
+        .AvsFilterNames = {"Dither_Luma_Rebuild", "AvsPlusVersionNumber"}})
 
     Shared Property LSFmod As Package = Add(New PluginPackage With {
         .Name = "LSFmod",
@@ -669,7 +670,7 @@ Public Class Package
     Shared Property MCTemporalDenoise As Package = Add(New PluginPackage With {
         .Name = "MCTemporalDenoise",
         .Filename = "MCTemporalDenoise.avsi",
-        .WebURL = "http://avisynth.nl/index.php/Abcxyz",
+        .WebURL = "http://avisynth.nl/index.php/MCTemporalDenoise",
         .Description = "A motion compensated noise removal script with an accompanying post-processing component.",
         .AvsFilterNames = {"MCTemporalDenoise", "MCTemporalDenoisePP"},
         .AvsFiltersFunc = Function() {
@@ -2363,7 +2364,9 @@ Public Class PluginPackage
     End Property
 
     Shared Function IsPluginPackageRequired(package As PluginPackage) As Boolean
-        If p Is Nothing Then Return False
+        If p Is Nothing Then
+            Return False
+        End If
 
         If p.Script.Engine = ScriptEngine.AviSynth AndAlso
             Not package.AvsFilterNames.NothingOrEmpty Then

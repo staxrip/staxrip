@@ -84,10 +84,10 @@ Tools
     "HQDeringmod","AviSynth Script","HQDeringmod.avsi","2018-01-18","2019-01-01"
     "InterFrame","AviSynth Script","InterFrame.avsi","2.0","2019-01-01"
     "Lazy Utilities","AviSynth Script","LUtils.avsi","0.12","2019-01-01"
-    "LSFmod","AviSynth Script","LSFmod.avsi","2.187","2020-05-31"
+    "LSFmod","AviSynth Script","LSFmod.avsi","2.187","2020-05-26"
     "MAA2Mod","AviSynth Script","maa2mod.avsi","0.431","2019-01-01"
     "mClean","AviSynth Script","mClean.avsi","3.2","2019-01-01"
-    "MCTemporalDenoise","AviSynth Script","MCTemporalDenoise.avsi","1.4.20","2019-11-06"
+    "MCTemporalDenoise","AviSynth Script","MCTemporalDenoise.avsi","1.4.20","2010-07-02"
     "MT Expand Multi","AviSynth Script","mt_xxpand_multi.avsi","2018-05-19","2019-01-01"
     "MultiSharpen","AviSynth Script","MultiSharpen.avsi","1.0","2019-01-01"
     "nnedi3 AVSI","AviSynth Script","nnedi3_16.avsi","3.0","2019-01-01"
@@ -125,7 +125,9 @@ Tools
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
     "chapterEditor","GUI App","chapterEditor.exe","1.23","2020-05-13"
-    "DGIndex","GUI App","DGIndex.exe","1.5.8",""
+    "D2V Witch","GUI App","d2vwitch.exe","v3","2019-04-04"
+    "DGIndex","GUI App","DGIndex.exe","1.5.8","2010-03-06"
+    "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.4.0.0","2020-05-22"
     "MPC-BE","GUI App","mpc-be64.exe","","2020-05-25"
     "MPC-HC","GUI App","mpc-hc64.exe","","2017-07-16"
     "mpv.net","GUI App","mpvnet.exe","5.4.8.0","2020-05-11"
@@ -141,7 +143,6 @@ Tools
     "Visual C++ 2019","Library","msvcp140.dll","","2020-03-20"
     "Get-MediaInfo","Misc","Get-MediaInfo.ps1","3.3","2020-05-04"
     "Haali Splitter","Misc","splitter.ax","","2013-04-14"
-    "MediaInfo.NET","Misc","MediaInfoNET.exe","6.4.0.0","2020-05-22"
     "AWarpSharp2","VapourSynth Plugin","libawarpsharp2.dll","2018-06-18","2019-01-01"
     "BM3D","VapourSynth Plugin","BM3D.dll","r8","2019-01-03"
     "Bwdif","VapourSynth Plugin","Bwdif.dll","r1","2020-02-24"
@@ -154,6 +155,7 @@ Tools
     "DeblockPP7","VapourSynth Plugin","DeblockPP7.dll","2018-04-28","2019-01-01"
     "DegrainMedian","VapourSynth Plugin","libdegrainmedian.dll","2016-08-07","2019-01-01"
     "DFTTest Neo","VapourSynth Plugin","neo-dfttest.dll","r7","2020-04-16"
+    "DFTTest","VapourSynth Plugin","DFTTest.dll","r6","2019-08-06"
     "EEDI2","VapourSynth Plugin","EEDI2.dll","2017-03-04","2019-01-01"
     "EEDI3m","VapourSynth Plugin","EEDI3m.dll","2017-12-23","2019-01-01"
     "FFT3DFilter","VapourSynth Plugin","fft3dfilter.dll","2018-07-11","2019-01-01"
@@ -414,18 +416,34 @@ GUI app to edit chapters and menus for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, 
 https://forum.doom9.org/showthread.php?t=169984
 
 
+D2V Witch
+~~~~~~~~~
+
+Portable MPEG-2 demuxing and d2v indexing GUI app.
+
+https://github.com/dubhater/D2VWitch
+
+
 DGIndex
 ~~~~~~~
 
-MPEG-2 demuxing and indexing GUI app.
+MPEG-2 demuxing and d2v indexing GUI app.
 
 
+
+
+MediaInfo.NET
+~~~~~~~~~~~~~
+
+GUI app originally built for StaxRip to show info about media files.
+
+https://github.com/stax76/MediaInfo.NET
 
 
 MPC-BE
 ~~~~~~
 
-DirectShow based media player.
+DirectShow based media player (GUI app).
 
 https://sourceforge.net/projects/mpcbe/
 
@@ -433,7 +451,7 @@ https://sourceforge.net/projects/mpcbe/
 MPC-HC
 ~~~~~~
 
-DirectShow based media player.
+DirectShow based media player (GUI app).
 
 https://mpc-hc.org/
 
@@ -441,7 +459,7 @@ https://mpc-hc.org/
 mpv.net
 ~~~~~~~
 
-The worlds best media player.
+The worlds best media player (GUI app).
 
 https://github.com/stax76/mpv.net
 
@@ -827,7 +845,7 @@ http://www.avisynth.nl/users/vcmohan/modPlus/modPlus.html
 MPEG2DecPlus
 ~~~~~~~~~~~~
 
-Source filter to open D2V index files created with DGIndex or D2VWitch.
+Source filter to open D2V index files created with DGIndex or D2V Witch.
 
 Filters: MPEG2Source
 
@@ -1293,7 +1311,7 @@ A motion compensated noise removal script with an accompanying post-processing c
 
 Filters: MCTemporalDenoise, MCTemporalDenoisePP
 
-http://avisynth.nl/index.php/Abcxyz
+http://avisynth.nl/index.php/MCTemporalDenoise
 
 
 MT Expand Multi
@@ -1401,7 +1419,7 @@ Zs_RF_Shared
 
 Shared Functions and utility.
 
-Filters: Dither_Luma_Rebuild
+Filters: Dither_Luma_Rebuild, AvsPlusVersionNumber
 
 https://github.com/realfinder/AVS-Stuff
 
@@ -1461,7 +1479,7 @@ https://github.com/HomeOfVapourSynthEvolution/VapourSynth-CTMF
 d2vsource
 ~~~~~~~~~
 
-Source filter to open D2V index files created with DGIndex or D2VWitch.
+Source filter to open D2V index files created with DGIndex or D2V Witch.
 
 Filters: d2v.Source
 
@@ -1526,6 +1544,16 @@ DFTTest Neo
 Filters: neo_dfttest.DFTTest
 
 https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest
+
+
+DFTTest
+~~~~~~~
+
+VapourSynth port of dfttest.
+
+Filters: dfttest.DFTTest
+
+https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DFTTest
 
 
 EEDI2

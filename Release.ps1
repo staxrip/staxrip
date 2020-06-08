@@ -81,6 +81,7 @@ $patterns = @(
     '*\_StaxRip.log',
     '*\AVSMeter.ini',
     '*\chapterEditor.ini',
+    '*\d2vwitch.ini'
     '*\Debug.log',
     '*\DGIndex.ini',
     '*\eac3to\log.txt',

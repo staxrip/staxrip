@@ -370,6 +370,7 @@ clipname.set_output()
     End Sub
 
     Shared Function GetAVSLoadCode(script As String, scriptAlready As String) As String
+        Dim scriptLower = script.ToLower
         Dim loadCode = ""
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
 
@@ -379,20 +380,20 @@ clipname.set_output()
             If fp <> "" Then
                 If Not plugin.AvsFilterNames Is Nothing Then
                     For Each filterName In plugin.AvsFilterNames
-                        If script.Contains(filterName.ToLower) Then
+                        If scriptLower.Contains(filterName.ToLower) Then
                             If plugin.Filename.Ext = "dll" Then
                                 Dim load = "LoadPlugin(""" + fp + """)" + BR
 
                                 If File.Exists(Folder.Plugins + fp.FileName) AndAlso
-                                        File.GetLastWriteTimeUtc(Folder.Plugins + fp.FileName) <
-                                        File.GetLastWriteTimeUtc(fp) Then
+                                    File.GetLastWriteTimeUtc(Folder.Plugins + fp.FileName) <
+                                    File.GetLastWriteTimeUtc(fp) Then
 
                                     MsgWarn("Conflict with outdated plugin", $"An outdated version of {plugin.Name} is located in your auto load folder. StaxRip includes a newer version.{BR2 + Folder.Plugins + fp.FileName}", True)
                                 End If
 
-                                If Not script.Contains(load.ToLower) AndAlso
-                                    Not loadCode.Contains(load) AndAlso
-                                    Not scriptAlready.Contains(load.ToLower) Then
+                                If Not scriptLower.Contains(load.ToLower) AndAlso
+                                    Not loadCode.ToLower.Contains(load.ToLower) AndAlso
+                                    Not scriptAlready.ToLower.Contains(load.ToLower) Then
 
                                     loadCode += load
                                 End If
@@ -400,7 +401,7 @@ clipname.set_output()
                             ElseIf plugin.Filename.Ext = "avsi" Then
                                 Dim avsiImport = "Import(""" + fp + """)" + BR
 
-                                If Not script.Contains(avsiImport.ToLower) AndAlso
+                                If Not scriptLower.Contains(avsiImport.ToLower) AndAlso
                                     Not loadCode.Contains(avsiImport) AndAlso
                                     Not scriptAlready.Contains(avsiImport.ToLower) Then
 
@@ -412,10 +413,12 @@ clipname.set_output()
                 End If
             End If
         Next
+
         Return loadCode
     End Function
 
     Shared Function GetAVSLoadCodeFromImports(code As String) As String
+        code = code.ToLower
         Dim ret = ""
 
         For Each line In code.SplitLinesNoEmpty
@@ -423,7 +426,7 @@ clipname.set_output()
                 Dim match = Regex.Match(line, "\bimport\s*\(\s*""\s*(.+\.avsi*)\s*""\s*\)", RegexOptions.IgnoreCase)
 
                 If match.Success AndAlso File.Exists(match.Groups(1).Value) Then
-                    ret += GetAVSLoadCode(match.Groups(1).Value.ReadAllText.ToLowerInvariant, code)
+                    ret += GetAVSLoadCode(match.Groups(1).Value.ReadAllText, code)
                 End If
             End If
         Next
@@ -433,10 +436,9 @@ clipname.set_output()
 
     Shared Function ModifyAVSScript(script As String) As String
         Dim clip As String
-        Dim lowerScript = script.ToLower
-        Dim loadCode = GetAVSLoadCode(lowerScript, "")
+        Dim loadCode = GetAVSLoadCode(script, "")
         clip = loadCode + script
-        clip = GetAVSLoadCodeFromImports(clip.ToLowerInvariant) + clip
+        clip = GetAVSLoadCodeFromImports(clip) +clip
         Return clip
     End Function
 

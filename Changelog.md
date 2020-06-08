@@ -1,15 +1,16 @@
 
-2.1.2.2 Beta (not yet available)
+2.1.2.3 Beta (not yet available)
 ============
 
-2.1.2.1 Beta
+2.1.2.2 Beta
 ============
 
 - The Processing dialog has a new feature: Stop After Current Job.
 - GPL licensed DGIndex binary re-added.
 - D2V Witch added and enabled by default for VOB/MPG.
 - Command line for some processes like ffmsindex wasn't shown while processing.
-- DFTTest VS re-added, coexists now with the Neo version.
+- DFTTest VS re-added to fix dependency issue.
+- MCTemporalDenoise AVS dependency issue fix.
 - Render, scaling and layout fixes and improvements.
 
 

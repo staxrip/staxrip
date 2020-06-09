@@ -282,11 +282,6 @@ Public Class ToolStripRendererEx
         End If
     End Sub
 
-    Protected Overrides Sub OnRenderItemCheck(e As ToolStripItemImageRenderEventArgs)
-        Dim x = CInt(e.ImageRectangle.Height * 0.2)
-        e.Graphics.DrawImage(e.Image, New Point(x, x))
-    End Sub
-
     Protected Overloads Overrides Sub OnRenderSeparator(e As ToolStripSeparatorRenderEventArgs)
         If e.Item.IsOnDropDown Then
             e.Graphics.Clear(ColorBackground)

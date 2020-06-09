@@ -2,6 +2,9 @@
 2.1.2.3 Beta (not yet available)
 ============
 
+- processing dialog fix for new Stop After Current Job feature
+
+
 2.1.2.2 Beta
 ============
 

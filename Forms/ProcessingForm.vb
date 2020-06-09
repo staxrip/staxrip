@@ -2,7 +2,7 @@
 Imports Microsoft.Win32
 Imports StaxRip.UI
 
-Public Class ProcForm
+Public Class ProcessingForm
     Inherits FormBase
 
 #Region " Designer "
@@ -272,12 +272,7 @@ Public Class ProcForm
 
     Sub StopAfterCurrentJob()
         g.StopAfterCurrentJob = Not g.StopAfterCurrentJob
-
-        If g.StopAfterCurrentJob Then
-            StopAfterCurrentJobMenuItem.Text = StopAfterCurrentJobMenuItem.Text.Replace("Stop", "Continue")
-        Else
-            StopAfterCurrentJobMenuItem.Text = StopAfterCurrentJobMenuItem.Text.Replace("Continue", "Stop")
-        End If
+        StopAfterCurrentJobMenuItem.SetImage(If(g.StopAfterCurrentJob, Symbol.CheckMark, Symbol.None))
     End Sub
 
     Sub Abort()
@@ -301,6 +296,7 @@ Public Class ProcForm
         mbShutdown.Enabled = g.IsJobProcessing
         bnJobs.Enabled = g.IsJobProcessing
         StopAfterCurrentJobMenuItem.Enabled = g.IsJobProcessing
+        StopAfterCurrentJobMenuItem.SetImage(If(g.StopAfterCurrentJob, Symbol.CheckMark, Symbol.None))
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
     End Sub
 

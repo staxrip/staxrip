@@ -341,10 +341,10 @@ Namespace UI
         End Function
 
         Sub SetImage(symbol As Symbol)
-            SetImage(symbol, Me)
+            SetImageAsync(symbol, Me)
         End Sub
 
-        Shared Async Sub SetImage(symbol As Symbol, mi As ToolStripMenuItem)
+        Shared Async Sub SetImageAsync(symbol As Symbol, mi As ToolStripMenuItem)
             If symbol = Symbol.None Then
                 mi.Image = Nothing
                 Exit Sub

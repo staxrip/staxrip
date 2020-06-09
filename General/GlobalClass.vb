@@ -17,7 +17,7 @@ Imports VB6 = Microsoft.VisualBasic
 Public Class GlobalClass
     Property ProjectPath As String
     Property MainForm As MainForm
-    Property ProcForm As ProcForm
+    Property ProcForm As ProcessingForm
     Property MinimizedWindows As Boolean
     Property SavedProject As New Project
     Property DefaultCommands As New GlobalCommands
@@ -68,7 +68,7 @@ Public Class GlobalClass
         Next
     End Sub
 
-    Shared Function ConvertToCSV(delimiter As String, objects As IEnumerable(Of Object)) As String
+    Function ConvertToCSV(delimiter As String, objects As IEnumerable(Of Object)) As String
         Dim code = $"$inputVar | ConvertTo-Csv -Delimiter '{delimiter}' -NoTypeInformation"
         Return $"sep={delimiter}" + Environment.NewLine + PowerShell.InvokeAndConvert(code, "inputVar", objects)
     End Function

@@ -72,19 +72,19 @@
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\</OutputPath>
     <WarningLevel>1</WarningLevel>
-    <NoWarn>41998,42004,42024,42025,42026,42029,42030,42031,42099,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <NoWarn>41998,42004,42025,42026,42029,42030,42031,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
     <DebugType>Full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42024,42032,42036,42099</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\</OutputPath>
     <WarningLevel>1</WarningLevel>
-    <NoWarn>41998,42004,42024,42025,42026,42029,42030,42031,42099,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <NoWarn>41998,42004,42025,42026,42029,42030,42031,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42024,42032,42036,42099</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -334,7 +334,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="General\Demux.vb" />
-    <Compile Include="Forms\ProcForm.vb">
+    <Compile Include="Forms\ProcessingForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\Project.vb">
@@ -509,8 +509,8 @@
       <DependentUpon>PreviewForm.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ProcForm.resx">
-      <DependentUpon>ProcForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\ProcessingForm.resx">
+      <DependentUpon>ProcessingForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProfilesForm.resx">
       <DependentUpon>ProfilesForm.vb</DependentUpon>

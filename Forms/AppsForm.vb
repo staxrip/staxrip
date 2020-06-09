@@ -639,7 +639,7 @@ Public Class AppsForm
             End If
 
             If File.Exists(pack.Path) Then
-                row.ModifiedDate = File.GetLastWriteTime(pack.Path).ToShortDateString()
+                row.ModifiedDate = File.GetLastWriteTime(pack.Path).ToString("yyyy-MM-dd")
             End If
 
             rows.Add(row)

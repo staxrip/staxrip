@@ -10,7 +10,7 @@ Public Class ProcController
     Property Proc As Proc
     Property LogTextBox As New TextBox
     Property ProgressBar As New LabelProgressBar
-    Property ProcForm As ProcForm
+    Property ProcForm As ProcessingForm
     Property CheckBox As New CheckBoxEx
 
     Private LogAction As Action = New Action(AddressOf LogHandler)
@@ -362,11 +362,11 @@ Public Class ProcController
         SyncLock Procs
             If g.ProcForm Is Nothing Then
                 Task.Run(Sub()
-                             g.ProcForm = New ProcForm
+                             g.ProcForm = New ProcessingForm
                              Application.Run(g.ProcForm)
                          End Sub)
 
-                While Not ProcForm.WasHandleCreated
+                While Not ProcessingForm.WasHandleCreated
                     Thread.Sleep(50)
                 End While
             End If

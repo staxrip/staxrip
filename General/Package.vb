@@ -47,7 +47,11 @@ Public Class Package
         .WebURL = "https://github.com/dubhater/D2VWitch",
         .DownloadURL = "https://github.com/dubhater/D2VWitch/releases",
         .Location = "Support\D2V Witch",
-        .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:D2V Witch%")})
+        .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:D2V Witch%"),
+        .LaunchAction = Sub()
+                            g.AddToPath(Package.d2vsource.Directory)
+                            g.Execute(D2VWitch.Path)
+                        End Sub})
 
     Shared Property Haali As Package = Add(New Package With {
         .Name = "Haali Splitter",
@@ -728,6 +732,23 @@ Public Class Package
         .AvsFilterNames = {"FFT3DGPU"},
         .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter | FFT3DGPU", "FFT3DGPU(sigma=1.5, bt=5, bw=32, bh=32, ow=16, oh=16, sharpen=0.4, NVPerf=$select:msg:Enable Nvidia Function;True;False$)")}})
 
+    Shared Property MPEG2DecPlus As Package = Add(New PluginPackage With {
+        .Name = "MPEG2DecPlus",
+        .Filename = "MPEG2DecPlus64.dll",
+        .WebURL = "https://github.com/Asd-g/MPEG2DecPlus",
+        .DownloadURL = "https://github.com/Asd-g/MPEG2DecPlus/releases",
+        .Description = "Source filter to open D2V index files created with DGIndex or D2V Witch.",
+        .AvsFilterNames = {"MPEG2Source"},
+        .AvsFiltersFunc = Function() {New VideoFilter("Source", "MPEG2Source", "MPEG2Source(""%source_file%"")")}})
+
+    Shared Property d2vsource As Package = Add(New PluginPackage With {
+        .Name = "d2vsource",
+        .Filename = "d2vsource.dll",
+        .Description = "Source filter to open D2V index files created with DGIndex or D2V Witch.",
+        .WebURL = "http://github.com/dwbuiten/d2vsource",
+        .VSFilterNames = {"d2v.Source"},
+        .VSFiltersFunc = Function() {New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
+
     Shared Sub New()
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",
@@ -740,15 +761,6 @@ Public Class Package
             .AvsFilterNames = {"KNLMeansCL"},
             .AvsFiltersFunc = Function() {New VideoFilter("Noise", "NLMeans | KNLMeansCL", "KNLMeansCL(D=1, A=1, h=$select:msg:Select Strength;Light|2;Medium|4;Strong|4$, device_type=""auto"")")},
             .VSFiltersFunc = Function() {New VideoFilter("Noise", "KNLMeansCL", "clip = core.knlm.KNLMeansCL(clip, d=1, a=1, h=$select:msg:Select Strength;Light|2;Medium|4;Strong|4$, device_type='auto')")}})
-
-        Add(New PluginPackage With {
-            .Name = "MPEG2DecPlus",
-            .Filename = "MPEG2DecPlus64.dll",
-            .WebURL = "https://github.com/Asd-g/MPEG2DecPlus",
-            .DownloadURL = "https://github.com/Asd-g/MPEG2DecPlus/releases",
-            .Description = "Source filter to open D2V index files created with DGIndex or D2V Witch.",
-            .AvsFilterNames = {"MPEG2Source"},
-            .AvsFiltersFunc = Function() {New VideoFilter("Source", "MPEG2Source", "MPEG2Source(""%source_file%"")")}})
 
         Add(New PluginPackage With {
             .Name = "DSS2mod",
@@ -1554,14 +1566,6 @@ Public Class Package
                 "mvsfunc.AssumeBFF", "mvsfunc.AssumeField", "mvsfunc.AssumeCombed", "mvsfunc.CheckVersion",
                 "mvsfunc.GetMatrix", "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage",
                 "mvsfunc.Preview", "mvsfunc.GrayScale"}})
-
-        Add(New PluginPackage With {
-            .Name = "d2vsource",
-            .Filename = "d2vsource.dll",
-            .Description = "Source filter to open D2V index files created with DGIndex or D2V Witch.",
-            .WebURL = "http://github.com/dwbuiten/d2vsource",
-            .VSFilterNames = {"d2v.Source"},
-            .VSFiltersFunc = Function() {New VideoFilter("Source", "d2vsource", "clip = core.d2v.Source(r""%source_file%"")")}})
 
         Add(New PluginPackage With {
             .Name = "Bwdif",

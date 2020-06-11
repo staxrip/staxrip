@@ -100,12 +100,20 @@ Public Class GlobalClass
         End Using
     End Sub
 
-    Sub Execute(fileName As String, arguments As String)
+    Sub Execute(fileName As String, Optional arguments As String = Nothing)
         Dim info As New ProcessStartInfo
         info.UseShellExecute = False
         info.FileName = fileName
-        info.Arguments = arguments
-        Process.Start(info)?.Dispose()
+
+        If arguments <> "" Then
+            info.Arguments = arguments
+        End If
+
+        Using pr As New Process
+            pr.StartInfo = info
+            Proc.SetEnvironmentVariables(pr)
+            pr.Start()
+        End Using
     End Sub
 
     Sub ShellExecute(fileName As String, Optional arguments As String = Nothing)
@@ -141,14 +149,17 @@ Public Class GlobalClass
 
     Sub AddToPath(ParamArray dirs As String())
         Dim path = Environment.GetEnvironmentVariable("path")
+        Dim newPath = path
 
         For Each d In dirs
-            If d.DirExists AndAlso Not d.StartsWith(Folder.System) Then
-                path = d + ";" + path
+            If d.DirExists AndAlso Not d.StartsWith(Folder.System) AndAlso Not path.Contains(d + ";") Then
+                newPath = d + ";" + newPath
             End If
         Next
 
-        Environment.SetEnvironmentVariable("path", path)
+        If newPath <> path Then
+            Environment.SetEnvironmentVariable("path", newPath)
+        End If
     End Sub
 
     Function IsFixedDrive(path As String) As Boolean

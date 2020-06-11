@@ -148,7 +148,7 @@ Public Class Thumbnails
 
                         gp.AddString(timestamp, ft.FontFamily, CInt(ft.Style), ft.Size, pt, New StringFormat())
 
-                        Using pen As New Pen(Brushes.Black, ft.Height \ 5)
+                        Using pen As New Pen(Color.Black, ft.Height \ 5)
                             g.DrawPath(pen, gp)
                         End Using
 

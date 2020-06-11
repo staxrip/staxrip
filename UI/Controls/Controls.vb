@@ -1156,23 +1156,20 @@ Namespace UI
                 Dim x3 = x1 + w
                 Dim y3 = y1
 
-                Using brush = New SolidBrush(ForeColor)
-                    Using pen = New Pen(brush, Font.Height / 20.0F)
-                        e.Graphics.DrawLine(pen, x1, y1, x2, y2)
-                        e.Graphics.DrawLine(pen, x2, y2, x3, y3)
-                    End Using
+                Using pen = New Pen(ForeColor, Font.Height / 16.0F)
+                    e.Graphics.DrawLine(pen, x1, y1, x2, y2)
+                    e.Graphics.DrawLine(pen, x2, y2, x3, y3)
                 End Using
             End If
 
             If Symbol <> ButtonSymbol.None Then
                 e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
 
-                Dim p = New Pen(Brushes.Black)
-                p = New Pen(Brushes.Black)
+                Dim p = New Pen(Color.Black)
                 p.Alignment = Drawing2D.PenAlignment.Center
                 p.EndCap = Drawing2D.LineCap.Round
                 p.StartCap = Drawing2D.LineCap.Round
-                p.Width = Height \ 12
+                p.Width = CInt(Height / 14)
 
                 Dim d As New SymbolDrawer()
                 d.Graphics = e.Graphics
@@ -1886,11 +1883,9 @@ Namespace UI
                     y3 = y1
                 End If
 
-                Using brush = New SolidBrush(If(Enabled, Color.Black, SystemColors.GrayText))
-                    Using pen = New Pen(brush, Font.Height / 20.0F)
-                        e.Graphics.DrawLine(pen, x1, y1, x2, y2)
-                        e.Graphics.DrawLine(pen, x2, y2, x3, y3)
-                    End Using
+                Using pen = New Pen(If(Enabled, Color.Black, SystemColors.GrayText), Font.Height / 20.0F)
+                    e.Graphics.DrawLine(pen, x1, y1, x2, y2)
+                    e.Graphics.DrawLine(pen, x2, y2, x3, y3)
                 End Using
             End Sub
 

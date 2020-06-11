@@ -272,7 +272,7 @@ Public Class ProcessingForm
 
     Sub StopAfterCurrentJob()
         g.StopAfterCurrentJob = Not g.StopAfterCurrentJob
-        StopAfterCurrentJobMenuItem.SetImage(If(g.StopAfterCurrentJob, Symbol.CheckMark, Symbol.None))
+        StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
     End Sub
 
     Sub Abort()
@@ -296,7 +296,7 @@ Public Class ProcessingForm
         mbShutdown.Enabled = g.IsJobProcessing
         bnJobs.Enabled = g.IsJobProcessing
         StopAfterCurrentJobMenuItem.Enabled = g.IsJobProcessing
-        StopAfterCurrentJobMenuItem.SetImage(If(g.StopAfterCurrentJob, Symbol.CheckMark, Symbol.None))
+        StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
     End Sub
 

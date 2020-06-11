@@ -240,8 +240,44 @@ Public Class ToolStripRendererEx
         End If
     End Sub
 
+    Protected Overrides Sub OnRenderItemCheck(e As ToolStripItemImageRenderEventArgs)
+        Dim item = TryCast(e.Item, ToolStripMenuItem)
+
+        If item Is Nothing OrElse Not item.Checked Then
+            Exit Sub
+        End If
+
+        Dim gx = e.Graphics
+        gx.SmoothingMode = SmoothingMode.AntiAlias
+        Dim h = item.Height
+
+        If IsFlat() Then
+            Dim rect = New Rectangle(2, 0, h, h)
+            Dim col = If(item.Selected, Color.FromArgb(&HFF56B0FA), ColorChecked)
+
+            Using brush As New SolidBrush(col)
+                gx.FillRectangle(brush, rect)
+            End Using
+        End If
+
+        Dim x1 = CInt(2 + h * 0.4)
+        Dim y1 = CInt(h * 0.7)
+
+        Dim x2 = CInt(x1 - h * 0.2)
+        Dim y2 = CInt(y1 - h * 0.2)
+
+        Dim x3 = CInt(x1 + h * 0.37)
+        Dim y3 = CInt(y1 - h * 0.37)
+
+        Using pen = New Pen(Color.Black, e.Item.Font.Height / 16.0F)
+            gx.DrawLine(pen, x1, y1, x2, y2)
+            gx.DrawLine(pen, x1, y1, x3, y3)
+        End Using
+    End Sub
+
     Protected Overloads Overrides Sub OnRenderArrow(e As ToolStripArrowRenderEventArgs)
-        e.Graphics.SmoothingMode = SmoothingMode.HighQuality
+        Dim gx = e.Graphics
+        gx.SmoothingMode = SmoothingMode.HighQuality
 
         If e.Direction = ArrowDirection.Down Then
             Dim h = CInt(e.Item.Font.Height * 0.3)
@@ -257,11 +293,9 @@ Public Class ToolStripRendererEx
             Dim x3 = x1 + w
             Dim y3 = y1
 
-            Using brush = New SolidBrush(e.Item.ForeColor)
-                Using pen = New Pen(brush, e.Item.Font.Height / 20.0F)
-                    e.Graphics.DrawLine(pen, x1, y1, x2, y2)
-                    e.Graphics.DrawLine(pen, x2, y2, x3, y3)
-                End Using
+            Using pen = New Pen(e.Item.ForeColor, e.Item.Font.Height / 16.0F)
+                gx.DrawLine(pen, x1, y1, x2, y2)
+                gx.DrawLine(pen, x2, y2, x3, y3)
             End Using
         Else
             Dim x1 = e.Item.Width - e.Item.Height * 0.6F
@@ -273,11 +307,9 @@ Public Class ToolStripRendererEx
             Dim x3 = x1
             Dim y3 = e.Item.Height * 0.75F
 
-            Using brush = New SolidBrush(e.Item.ForeColor)
-                Using pen = New Pen(brush, e.Item.Font.Height / 20.0F)
-                    e.Graphics.DrawLine(pen, x1, y1, x2, y2)
-                    e.Graphics.DrawLine(pen, x2, y2, x3, y3)
-                End Using
+            Using pen = New Pen(e.Item.ForeColor, e.Item.Font.Height / 16.0F)
+                gx.DrawLine(pen, x1, y1, x2, y2)
+                gx.DrawLine(pen, x2, y2, x3, y3)
             End Using
         End If
     End Sub

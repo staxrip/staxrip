@@ -29,7 +29,7 @@ Public Class ProcController
         CheckBox.Margin = New Padding(pad, pad, 0, pad)
         CheckBox.Appearance = Appearance.Button
         CheckBox.TextAlign = ContentAlignment.MiddleCenter
-        CheckBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+        CheckBox.Font = New Font("Consolas", 9 * s.UIScaleFactor)
         CheckBox.Text = " " + proc.Title + " "
         Dim sz = TextRenderer.MeasureText(CheckBox.Text, CheckBox.Font)
         CheckBox.Width = sz.Width + CheckBox.Font.Height

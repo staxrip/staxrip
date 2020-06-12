@@ -877,7 +877,8 @@ Public Class MuxerForm
             tb.Text = "Title"
             tb.Expandet = True
             tb.Property = NameOf(MkvMuxer.Title)
-            tb.MacroDialog()
+            tb.Button.Text = "%"
+            tb.Button.ClickAction = Sub() MacrosForm.ShowDialogForm()
 
             Dim t = UI.AddText()
             t.Text = "Video Track Name"

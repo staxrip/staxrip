@@ -269,8 +269,6 @@ Public Class GlobalCommands
         If version.MinorRevision <> 0 Then
             Return "Beta"
         End If
-
-        Return "Stable"
     End Function
 
     <Command("Opens a given help topic In the help browser.")>

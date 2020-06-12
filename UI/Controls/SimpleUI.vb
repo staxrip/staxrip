@@ -390,8 +390,8 @@ Public Class SimpleUI
             FlowDirection = FlowDirection.TopDown
         End Sub
 
-        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            MyBase.OnLayout(levent)
+        Protected Overrides Sub OnLayout(e As LayoutEventArgs)
+            MyBase.OnLayout(e)
         End Sub
 
         Protected Overrides Sub OnCreateControl()
@@ -536,9 +536,9 @@ Public Class SimpleUI
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            Height = CInt(FontHeight * 1.4)
-            Width = FontHeight * 4
             MyBase.OnLayout(levent)
+            Height = CInt(Font.Height * 1.3)
+            Width = CInt(Font.Height * 4.5)
         End Sub
 
         Sub Save()
@@ -633,7 +633,7 @@ Public Class SimpleUI
                     Width = FontHeight * WidthFactor
                 End If
 
-                Height = CInt(FontHeight * 1.4)
+                Height = CInt(FontHeight * 1.45)
             End If
 
             MyBase.OnLayout(levent)
@@ -951,15 +951,6 @@ Public Class SimpleUI
                 NumEdit.Config = value
             End Set
         End Property
-
-        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            If Not NumEdit Is Nothing Then
-                NumEdit.Height = CInt(FontHeight * 1.4)
-                NumEdit.Width = FontHeight * 4
-            End If
-
-            MyBase.OnLayout(levent)
-        End Sub
     End Class
 
     Public Class ButtonBlock
@@ -1141,7 +1132,7 @@ Public Class SimpleUI
         Sub New(ui As SimpleUI)
             MyBase.New(ui)
             Button.Width = FontHeight * 2
-            Button.Height = CInt(FontHeight * 1.5)
+            Button.Height = CInt(FontHeight * 1.45)
             Button.AutoSizeMode = AutoSizeMode.GrowOnly
             Button.AutoSize = True
             Button.Text = "..."
@@ -1172,20 +1163,16 @@ Public Class SimpleUI
         End Sub
 
         Sub BrowseFolder()
-            Button.ClickAction = Sub()
-                                     Using dialog As New FolderBrowserDialog
-                                         dialog.SetSelectedPath(s.LastSourceDir)
+            Button.ClickAction =
+                Sub()
+                    Using dialog As New FolderBrowserDialog
+                        dialog.SetSelectedPath(s.LastSourceDir)
 
-                                         If dialog.ShowDialog = DialogResult.OK Then
-                                             Edit.Text = dialog.SelectedPath
-                                         End If
-                                     End Using
-                                 End Sub
-        End Sub
-
-        Sub MacroDialog()
-            Button.Text = "%"
-            Button.ClickAction = Sub() MacrosForm.ShowDialogForm()
+                        If dialog.ShowDialog = DialogResult.OK Then
+                            Edit.Text = dialog.SelectedPath
+                        End If
+                    End Using
+                End Sub
         End Sub
     End Class
 

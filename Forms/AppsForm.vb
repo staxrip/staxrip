@@ -312,8 +312,6 @@ Public Class AppsForm
 
         AddHandler DownloadButton.Click, Sub() g.ShellExecute(CurrentPackage.DownloadURL)
         DownloadButton.Font = New Font("Segoe UI", 10)
-        DownloadButton.Margin = New Padding(FontHeight \ 3)
-        DownloadButton.Padding = New Padding(FontHeight \ 5)
         DownloadButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
         DownloadButton.AutoSize = True
 
@@ -508,7 +506,7 @@ Public Class AppsForm
         For Each pack In Package.Items.Values
             Dim plugin = TryCast(pack, PluginPackage)
 
-            Dim searchString = pack.Name + pack.Description + pack.Version +
+            Dim searchString = pack.Name + pack.Description + pack.Version + pack.WebURL +
                 plugin?.VSFilterNames.Join(" ") + pack.Path + plugin?.AvsFilterNames.Join(" ")
 
             If searchString?.ToLower.Contains(SearchTextBox.Text?.ToLower) Then

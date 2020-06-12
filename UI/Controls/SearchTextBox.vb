@@ -127,7 +127,7 @@ Public Class SearchTextBox
                 e.Graphics.Clear(Color.White)
             End If
 
-            Using pen = New Pen(Color.DarkSlateGray, 2)
+            Using pen = New Pen(Color.DarkSlateGray, FontHeight / 16.0F)
                 Dim offset = CSng(Width / 3.3)
                 e.Graphics.DrawLine(pen, offset, offset, Width - offset, Height - offset)
                 e.Graphics.DrawLine(pen, Width - offset, offset, offset, Height - offset)

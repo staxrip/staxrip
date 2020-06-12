@@ -4176,6 +4176,10 @@ Public Class MainForm
             l = ui.AddLabel(pathPage, "Default Target Folder:")
             l.Help = "Leave empty to use the source file folder."
 
+            Dim macroAction = Function() As Object
+                                  MacrosForm.ShowDialogForm()
+                              End Function
+
             Dim tm = ui.AddTextMenu(pathPage)
             tm.Label.Visible = False
             tm.Edit.Expand = True
@@ -4184,6 +4188,7 @@ Public Class MainForm
             tm.AddMenu("Browse Folder...", Function() g.BrowseFolder(p.DefaultTargetFolder))
             tm.AddMenu("Directory of source file", "%source_dir%")
             tm.AddMenu("Parent directory of source file directory", "%source_dir_parent%")
+            tm.AddMenu("Macros...", macroAction)
 
             l = ui.AddLabel(pathPage, "Default Target Name:")
             l.Help = "Leave empty to use the source filename"
@@ -4196,6 +4201,7 @@ Public Class MainForm
             tm.Edit.SaveAction = Sub(value) p.DefaultTargetName = value
             tm.AddMenu("Name of source file without extension", "%source_name%")
             tm.AddMenu("Name of source file directory", "%source_dir_name%")
+            tm.AddMenu("Macros...", macroAction)
 
             l = ui.AddLabel(pathPage, "Temp Files Folder:")
             l.Help = "Leave empty to use the source file folder."
@@ -4216,6 +4222,7 @@ Public Class MainForm
             tm.Edit.SaveAction = Sub(value) p.TempDir = value
             tm.AddMenu("Browse Folder...", tempDirFunc)
             tm.AddMenu("Source File Directory", "%source_dir%%source_name%_temp")
+            tm.AddMenu("Macros...", macroAction)
 
             ui.CreateFlowPage("Assistant")
 

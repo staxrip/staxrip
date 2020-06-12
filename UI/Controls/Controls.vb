@@ -793,12 +793,12 @@ Namespace UI
         Sub MenuOpening(sender As Object, e As CancelEventArgs)
             Menu.MinimumSize = New Size(Width, 0)
 
-            For Each i As ActionMenuItem In Menu.Items
-                i.Font = New Font("Segoe UI", 9 * s.UIScaleFactor, If(Not Value Is Nothing AndAlso Value.Equals(i.Tag), FontStyle.Bold, FontStyle.Regular))
+            For Each mi As ActionMenuItem In Menu.Items
+                mi.Font = New Font("Segoe UI", 9 * s.UIScaleFactor, If(Not Value Is Nothing AndAlso Value.Equals(mi.Tag), FontStyle.Bold, FontStyle.Regular))
 
-                If (Menu.Width - i.Width) > 2 Then
-                    i.AutoSize = False
-                    i.Width = Menu.Width - 1
+                If (Menu.Width - mi.Width) > 2 Then
+                    mi.AutoSize = False
+                    mi.Width = Menu.Width - 1
                 End If
             Next
         End Sub
@@ -1001,8 +1001,6 @@ Namespace UI
                 Dim nextPos As Integer
 
                 For Each ctrl As Control In Controls
-                    If nextPos = 0 Then nextPos = 3
-
                     If ctrl.Visible Then
                         nextPos += ctrl.Margin.Left + ctrl.Width + ctrl.Margin.Right
 
@@ -1036,10 +1034,14 @@ Namespace UI
                 (FlowDirection = FlowDirection.LeftToRight OrElse
                 FlowDirection = FlowDirection.RightToLeft) Then
 
-                For Each i As Control In Controls
+                For Each ctrl As Control In Controls
                     Dim offset = 0
-                    If TypeOf i Is CheckBox Then offset = 1
-                    i.Top = CInt((Height - i.Height) / 2) + offset
+
+                    If TypeOf ctrl Is CheckBox Then
+                        offset = 1
+                    End If
+
+                    ctrl.Top = CInt((Height - ctrl.Height) / 2) + offset
                 Next
             End If
 
@@ -1048,8 +1050,8 @@ Namespace UI
             If labelBlocks.Count > 0 Then
                 Dim hMax = Aggregate i In labelBlocks Into Max(TextRenderer.MeasureText(i.Label.Text, i.Label.Font).Width)
 
-                For Each i In labelBlocks
-                    i.Label.Offset = hMax / i.Label.Font.Height
+                For Each lb In labelBlocks
+                    lb.Label.Offset = hMax / lb.Label.Font.Height
                 Next
             End If
         End Sub
@@ -1145,10 +1147,9 @@ Namespace UI
 
                 Dim h = CInt(Font.Height * 0.3)
                 Dim w = h * 2
-                Dim cs = ClientSize
 
-                Dim x1 = If(Text = "", CInt(cs.Width / 2 - w / 2), cs.Width - w - CInt(w * 0.7))
-                Dim y1 = CInt(cs.Height / 2 - h / 2)
+                Dim x1 = If(Text = "", Width \ 2 - w \ 2, Width - w - CInt(w * 0.7))
+                Dim y1 = CInt(Height / 2 - h / 2)
 
                 Dim x2 = CInt(x1 + w / 2)
                 Dim y2 = y1 + h
@@ -1717,7 +1718,7 @@ Namespace UI
                 h -= 1
             End If
 
-            UpControl.Width = CInt(ClientSize.Height * 0.7)
+            UpControl.Width = CInt(Height * 0.8)
             UpControl.Height = h
             UpControl.Top = 2
             UpControl.Left = ClientSize.Width - UpControl.Width - 2
@@ -1727,7 +1728,7 @@ Namespace UI
             DownControl.Top = ClientSize.Height - h - 2
             DownControl.Height = h
 
-            TextBox.Top = (ClientSize.Height - TextBox.Height) \ 2
+            TextBox.Top = (ClientSize.Height - TextBox.Height) \ 2 + 1
             TextBox.Left = 2
             TextBox.Width = DownControl.Left - 3
             TextBox.Height = TextRenderer.MeasureText("gG", TextBox.Font).Height
@@ -1785,7 +1786,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Class Edit
+        Class Edit
             Inherits TextBox
 
             Private BlockTextChanged As Boolean
@@ -1797,11 +1798,13 @@ Namespace UI
             End Sub
 
             Protected Overrides Sub OnTextChanged(e As EventArgs)
-                If Not BlockTextChanged Then MyBase.OnTextChanged(e)
+                If Not BlockTextChanged Then
+                    MyBase.OnTextChanged(e)
+                End If
             End Sub
         End Class
 
-        Private Class UpDownButton
+        Class UpDownButton
             Inherits Control
 
             Private IsUp As Boolean
@@ -1851,25 +1854,24 @@ Namespace UI
 
             Protected Overrides Sub OnPaint(e As PaintEventArgs)
                 MyBase.OnPaint(e)
-
-                e.Graphics.SmoothingMode = SmoothingMode.HighQuality
+                Dim gx = e.Graphics
+                gx.SmoothingMode = SmoothingMode.HighQuality
 
                 If IsPressed Then
-                    e.Graphics.Clear(Color.LightBlue)
+                    gx.Clear(Color.LightBlue)
                 ElseIf IsHot Then
-                    e.Graphics.Clear(Color.AliceBlue)
+                    gx.Clear(Color.AliceBlue)
                 Else
-                    e.Graphics.Clear(SystemColors.Control)
+                    gx.Clear(SystemColors.Control)
                 End If
 
-                ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.CadetBlue, ButtonBorderStyle.Solid)
+                ControlPaint.DrawBorder(gx, ClientRectangle, Color.CadetBlue, ButtonBorderStyle.Solid)
 
                 Dim h = CInt(Font.Height * 0.2)
                 Dim w = h * 2
-                Dim cs = ClientSize
 
-                Dim x1 = CInt(cs.Width / 2 - w / 2)
-                Dim y1 = CInt(cs.Height / 2 - h / 2)
+                Dim x1 = Width \ 2 - w \ 2
+                Dim y1 = CInt(Height / 2 - h / 2)
 
                 Dim x2 = CInt(x1 + w / 2)
                 Dim y2 = y1 + h
@@ -1884,8 +1886,8 @@ Namespace UI
                 End If
 
                 Using pen = New Pen(If(Enabled, Color.Black, SystemColors.GrayText), Font.Height / 20.0F)
-                    e.Graphics.DrawLine(pen, x1, y1, x2, y2)
-                    e.Graphics.DrawLine(pen, x2, y2, x3, y3)
+                    gx.DrawLine(pen, x1, y1, x2, y2)
+                    gx.DrawLine(pen, x2, y2, x3, y3)
                 End Using
             End Sub
 

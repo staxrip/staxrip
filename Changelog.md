@@ -1,8 +1,79 @@
 
-2.1.2.3 Beta (not yet available)
+2.1.3.1 Beta (not yet available)
 ============
 
+2.1.3.0
+=======
+
+- Processing dialog fix for new Stop After Current Job feature.
+- Web URL is included in the search of the Apps dialog.
+- Numerous bugs fixed.
+- The Processing dialog has a new feature: Stop After Current Job.
+- D2V Witch added and enabled by default for VOB/MPG.
+- Command line for some processes like ffmsindex wasn't shown while processing.
+- Render, scaling and layout fixes and improvements, especially for 96 DPI.
+- PowerShell script host supports events, script examples use events, better error handling.
+- Improved Log File Viewer (Main Menu > Tools > Log File).
+  Tip: The Log File Viewer has a context menu.
+- The Preview dialog can be resized with the mouse.
+- Support for character # in filenames because MP4Box was finally fixed.
+- Various dialogs made resizable and remember their size.
+- Maximum number of parallel processes increased from 4 to 16.
+- The documentation was greatly improved (still far from perfect though).
+- Muxer dialog supports Drag & Drop for subtitles, audio and attachments.
+- Video Comparison has hardware render support added.
+- aomenc.exe GUI re-enabled.
+- Dark color theme for built-in help.
+- Improved built-in F1 help.
+- ffmpeg video encoder codec FFV1.
+- x264 and x265 dialogs have a new Bitrate option, the default value is 0 which
+  means the bitrate of the project/template in the main dialog is used.
+- For file batch jobs only the file name is shown in the jobs dialog and not the full path.
+- Audio encoder supports extracting DTS core using ffmpeg.
+- The audio Copy/Mux profile has a Extract DTS Core feature.
+- The command line audio encoder has a Default and Forced option.
+- New chunk encoding feature for x265 parallel processing.
+- Media info dialog replaced with MediaInfo.NET.
+- The command line video and audio encoder uses cmd.exe directly without creating a bat file,
+  this avoids creating a temporary bat file and adds full unicode support.
+- Portable support added, no need to install anything.
+- Setting to allow to use tools with wrong version,
+  for this a Danger Zone tab was added in the settings.
+- The auto crop feature shows progress both in the processing dialog and in the crop dialog.
+- Improved issue templates on the github issue tracker.
+- The ExecuteCommandLine command has a new Working Directory parameter.
+- The launch button in the Apps dialog for a console tool shows its help via Windows Terminal
+- Windows Terminal available in the main menu with special StaxRip environment (apps and macros).
+- The video encoder dialog feature *Show Command Line* is shown using Windows Terminal.
+- Execute Command Line in video encoder dialogs is shown via Windows Terminal.
+- In the Apps dialog the tools can be listed using PowerShell Out-GridView.
+- Shell Execute flag was added to the command ExecuteCommandLine.
+- The global setting 'Add filter to convert chroma subsampling to 4:2:0'
+  uses now ConvertToYUV420 instead of ConverttoYV12.
+- In various command line features the path environment variable of the process has all exe tools
+  added and all macros are available as environment variables.
+- Check added that blocks source files with too long path or filename.
+  A setting that allows to change the limit exists in the Danger Zone section.
+- SVT-AV1 support with GUI.
+- Media info folder view was replaced with a new powershell based (Get-MediaInfo)
+  dialog that supports caching for fast startup perforance.
+- When a Event Command executes it writes a log entry, this is now disabled by default
+  but there is a new setting: 'Write Event Commands to log file'.
+- In the Jobs dialog there is a button that shows a menu, this menu can now also be shown
+  as context menu via right-click on the jobs list and it has various new features.
+- The Apps dialog allows to clear custom paths.
+- The Apps dialog allows to locate files via Everything.
+- Check for Updates added to main menu in Help section.
+- Version is shown in main dialog title bar.
+- 'Main Menu > Help > Info' shows list with contributors.
+
+
+2.1.3.0
+=======
+
 - processing dialog fix for new Stop After Current Job feature
+- x264 M-0.160.3000-33f9e14-gcc10.0.1 Patman
+- Web URL is included in the search of the Apps dialog
 
 
 2.1.2.2 Beta

@@ -169,17 +169,9 @@ Public Class ToolStripRendererEx
         Dim rect = New Rectangle(Point.Empty, e.Item.Size)
 
         If IsFlat() Then
-            Dim button = TryCast(e.Item, ToolStripButton)
-
-            If Not button Is Nothing AndAlso button.Checked Then
-                Using brush As New SolidBrush(ColorChecked)
-                    gx.FillRectangle(brush, rect)
-                End Using
-            Else
-                Using brush As New SolidBrush(ColorChecked)
-                    gx.FillRectangle(brush, rect)
-                End Using
-            End If
+            Using brush As New SolidBrush(ColorChecked)
+                gx.FillRectangle(brush, rect)
+            End Using
         Else
             rect = New Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1)
 
@@ -299,13 +291,13 @@ Public Class ToolStripRendererEx
             End Using
         Else
             Dim x1 = e.Item.Width - e.Item.Height * 0.6F
-            Dim y1 = e.Item.Height * 0.25F
+            Dim y1 = (e.Item.Height * 0.25F) - 1
 
             Dim x2 = x1 + e.Item.Height * 0.25F
-            Dim y2 = e.Item.Height / 2.0F
+            Dim y2 = (e.Item.Height / 2.0F) - 1
 
             Dim x3 = x1
-            Dim y3 = e.Item.Height * 0.75F
+            Dim y3 = (e.Item.Height * 0.75F) - 1
 
             Using pen = New Pen(e.Item.ForeColor, e.Item.Font.Height / 16.0F)
                 gx.DrawLine(pen, x1, y1, x2, y2)

@@ -183,7 +183,7 @@ Public MustInherit Class VideoEncoder
         ret.ShowControlBorder = True
         ret.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
-        Dim pad = ret.Font.Height \ 8
+        Dim pad = ret.Font.Height \ 9
 
         For Each pair In GetMenu()
             Dim bn As New ToolStripButton
@@ -300,7 +300,7 @@ Public MustInherit Class VideoEncoder
         End Using
     End Function
 
-    Public Sub LoadMuxer(profile As Profile)
+    Sub LoadMuxer(profile As Profile)
         Muxer = DirectCast(ObjectHelp.GetCopy(profile), Muxer)
         Muxer.Init()
         g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpper

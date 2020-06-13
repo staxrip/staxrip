@@ -45,7 +45,10 @@ Public MustInherit Class Demuxer
             cb.SaveAction = Sub(val) ChaptersDemuxing = val
 
             Dim ret = form.ShowDialog()
-            If ret = DialogResult.OK Then ui.Save()
+
+            If ret = DialogResult.OK Then
+                ui.Save()
+            End If
 
             Return ret
         End Using
@@ -233,7 +236,7 @@ Public Class ffmpegDemuxer
     Public Overrides Sub Run(proj As Project)
         Dim audioStreams As List(Of AudioStream)
         Dim subtitles As List(Of Subtitle)
-        Dim videoDemuxing As Boolean
+        Dim videoDemuxing = Me.VideoDemuxing
 
         Dim audioDemuxing = Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
             TypeOf proj.Audio1 Is NullAudioProfile) AndAlso
@@ -427,6 +430,7 @@ Public Class MP4BoxDemuxer
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim attachments = GetAttachments(proj.SourceFile)
         Dim demuxChapters = ChaptersDemuxing
+        VideoDemuxed = VideoDemuxing
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
             ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
@@ -445,7 +449,9 @@ Public Class MP4BoxDemuxer
             End Using
         End If
 
-        If VideoDemuxed Then DemuxVideo(proj)
+        If VideoDemuxed Then
+            DemuxVideo(proj)
+        End If
 
         If demuxAudio AndAlso proj.DemuxAudio <> DemuxMode.None Then
             If audioStreams Is Nothing Then
@@ -662,6 +668,7 @@ Public Class mkvDemuxer
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim attachments = GetAttachments(stdout)
         Dim demuxChapters = ChaptersDemuxing
+        VideoDemuxed = VideoDemuxing
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
             ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
@@ -767,13 +774,14 @@ Public Class mkvDemuxer
         End Set
     End Property
 
-    Shared Sub Demux(sourcefile As String,
-                     audioStreams As IEnumerable(Of AudioStream),
-                     subtitles As IEnumerable(Of Subtitle),
-                     ap As AudioProfile,
-                     proj As Project,
-                     onlyEnabled As Boolean,
-                     videoDemuxing As Boolean)
+    Shared Sub Demux(
+        sourcefile As String,
+        audioStreams As IEnumerable(Of AudioStream),
+        subtitles As IEnumerable(Of Subtitle),
+        ap As AudioProfile,
+        proj As Project,
+        onlyEnabled As Boolean,
+        videoDemuxing As Boolean)
 
         If audioStreams Is Nothing Then
             audioStreams = New List(Of AudioStream)
@@ -783,7 +791,10 @@ Public Class mkvDemuxer
             subtitles = New List(Of Subtitle)
         End If
 
-        If onlyEnabled Then audioStreams = audioStreams.Where(Function(arg) arg.Enabled)
+        If onlyEnabled Then
+            audioStreams = audioStreams.Where(Function(arg) arg.Enabled)
+        End If
+
         subtitles = subtitles.Where(Function(subtitle) subtitle.Enabled)
 
         If audioStreams.Count = 0 AndAlso subtitles.Count = 0 AndAlso Not videoDemuxing Then

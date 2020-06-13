@@ -44,10 +44,10 @@ Partial Class StreamDemuxForm
         Me.gbAttachments = New System.Windows.Forms.GroupBox()
         Me.lvAttachments = New StaxRip.UI.ListViewEx()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
-        Me.bnOK = New StaxRip.UI.ButtonEx()
-        Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.cbDemuxVideo = New System.Windows.Forms.CheckBox()
         Me.cbDemuxChapters = New System.Windows.Forms.CheckBox()
+        Me.bnCancel = New StaxRip.UI.ButtonEx()
+        Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.gbAudio.SuspendLayout()
         Me.AudioTableLayoutPanel.SuspendLayout()
         Me.flpAudioButtons.SuspendLayout()
@@ -94,6 +94,7 @@ Partial Class StreamDemuxForm
         Me.lvAudio.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lvAudio.HideSelection = False
         Me.lvAudio.Location = New System.Drawing.Point(0, 0)
         Me.lvAudio.Margin = New System.Windows.Forms.Padding(0)
         Me.lvAudio.Name = "lvAudio"
@@ -113,7 +114,7 @@ Partial Class StreamDemuxForm
         Me.flpAudioButtons.Location = New System.Drawing.Point(0, 242)
         Me.flpAudioButtons.Margin = New System.Windows.Forms.Padding(0, 10, 0, 0)
         Me.flpAudioButtons.Name = "flpAudioButtons"
-        Me.flpAudioButtons.Size = New System.Drawing.Size(910, 70)
+        Me.flpAudioButtons.Size = New System.Drawing.Size(925, 70)
         Me.flpAudioButtons.TabIndex = 18
         '
         'bnAudioAll
@@ -125,22 +126,22 @@ Partial Class StreamDemuxForm
         '
         'bnAudioNone
         '
-        Me.bnAudioNone.Location = New System.Drawing.Point(230, 0)
-        Me.bnAudioNone.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
+        Me.bnAudioNone.Location = New System.Drawing.Point(235, 0)
+        Me.bnAudioNone.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.bnAudioNone.Size = New System.Drawing.Size(220, 70)
         Me.bnAudioNone.Text = "None"
         '
         'bnAudioEnglish
         '
-        Me.bnAudioEnglish.Location = New System.Drawing.Point(460, 0)
+        Me.bnAudioEnglish.Location = New System.Drawing.Point(470, 0)
         Me.bnAudioEnglish.Margin = New System.Windows.Forms.Padding(0)
         Me.bnAudioEnglish.Size = New System.Drawing.Size(220, 70)
         Me.bnAudioEnglish.Text = "English"
         '
         'bnAudioNative
         '
-        Me.bnAudioNative.Location = New System.Drawing.Point(690, 0)
-        Me.bnAudioNative.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
+        Me.bnAudioNative.Location = New System.Drawing.Point(705, 0)
+        Me.bnAudioNative.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
         Me.bnAudioNative.Size = New System.Drawing.Size(220, 70)
         Me.bnAudioNative.Text = "Native"
         '
@@ -199,6 +200,7 @@ Partial Class StreamDemuxForm
         Me.lvSubtitles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lvSubtitles.HideSelection = False
         Me.lvSubtitles.Location = New System.Drawing.Point(0, 0)
         Me.lvSubtitles.Margin = New System.Windows.Forms.Padding(0)
         Me.lvSubtitles.Name = "lvSubtitles"
@@ -218,7 +220,7 @@ Partial Class StreamDemuxForm
         Me.flpSubtitleButtons.Location = New System.Drawing.Point(0, 84)
         Me.flpSubtitleButtons.Margin = New System.Windows.Forms.Padding(0, 10, 0, 0)
         Me.flpSubtitleButtons.Name = "flpSubtitleButtons"
-        Me.flpSubtitleButtons.Size = New System.Drawing.Size(910, 70)
+        Me.flpSubtitleButtons.Size = New System.Drawing.Size(925, 70)
         Me.flpSubtitleButtons.TabIndex = 19
         '
         'bnSubtitleAll
@@ -230,22 +232,22 @@ Partial Class StreamDemuxForm
         '
         'bnSubtitleNone
         '
-        Me.bnSubtitleNone.Location = New System.Drawing.Point(230, 0)
-        Me.bnSubtitleNone.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
+        Me.bnSubtitleNone.Location = New System.Drawing.Point(235, 0)
+        Me.bnSubtitleNone.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.bnSubtitleNone.Size = New System.Drawing.Size(220, 70)
         Me.bnSubtitleNone.Text = "None"
         '
         'bnSubtitleEnglish
         '
-        Me.bnSubtitleEnglish.Location = New System.Drawing.Point(460, 0)
+        Me.bnSubtitleEnglish.Location = New System.Drawing.Point(470, 0)
         Me.bnSubtitleEnglish.Margin = New System.Windows.Forms.Padding(0)
         Me.bnSubtitleEnglish.Size = New System.Drawing.Size(220, 70)
         Me.bnSubtitleEnglish.Text = "English"
         '
         'bnSubtitleNative
         '
-        Me.bnSubtitleNative.Location = New System.Drawing.Point(690, 0)
-        Me.bnSubtitleNative.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
+        Me.bnSubtitleNative.Location = New System.Drawing.Point(705, 0)
+        Me.bnSubtitleNative.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
         Me.bnSubtitleNative.Size = New System.Drawing.Size(220, 70)
         Me.bnSubtitleNative.Text = "Native"
         '
@@ -267,6 +269,7 @@ Partial Class StreamDemuxForm
         'lvAttachments
         '
         Me.lvAttachments.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lvAttachments.HideSelection = False
         Me.lvAttachments.Location = New System.Drawing.Point(10, 48)
         Me.lvAttachments.Margin = New System.Windows.Forms.Padding(10)
         Me.lvAttachments.Name = "lvAttachments"
@@ -296,24 +299,6 @@ Partial Class StreamDemuxForm
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(1316, 103)
         Me.TableLayoutPanel1.TabIndex = 28
         '
-        'bnOK
-        '
-        Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(786, 16)
-        Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnOK.Size = New System.Drawing.Size(250, 70)
-        Me.bnOK.Text = "OK"
-        '
-        'bnCancel
-        '
-        Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(1051, 16)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15)
-        Me.bnCancel.Size = New System.Drawing.Size(250, 70)
-        Me.bnCancel.Text = "Cancel"
-        '
         'cbDemuxVideo
         '
         Me.cbDemuxVideo.Anchor = System.Windows.Forms.AnchorStyles.None
@@ -335,6 +320,24 @@ Partial Class StreamDemuxForm
         Me.cbDemuxChapters.Size = New System.Drawing.Size(328, 52)
         Me.cbDemuxChapters.TabIndex = 3
         Me.cbDemuxChapters.Text = "Demux Chapters"
+        '
+        'bnCancel
+        '
+        Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.bnCancel.Location = New System.Drawing.Point(1051, 16)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15)
+        Me.bnCancel.Size = New System.Drawing.Size(250, 70)
+        Me.bnCancel.Text = "Cancel"
+        '
+        'bnOK
+        '
+        Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
+        Me.bnOK.Location = New System.Drawing.Point(786, 16)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnOK.Size = New System.Drawing.Size(250, 70)
+        Me.bnOK.Text = "OK"
         '
         'StreamDemuxForm
         '

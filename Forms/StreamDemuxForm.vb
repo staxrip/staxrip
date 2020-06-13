@@ -97,65 +97,65 @@ Public Class StreamDemuxForm
     End Sub
 
     Sub bnAudioAll_Click(sender As Object, e As EventArgs) Handles bnAudioAll.Click
-        For Each i As ListViewItem In lvAudio.Items
-            i.Checked = True
+        For Each item As ListViewItem In lvAudio.Items
+            item.Checked = True
         Next
     End Sub
 
     Sub bnAudioNone_Click(sender As Object, e As EventArgs) Handles bnAudioNone.Click
-        For Each i As ListViewItem In lvAudio.Items
-            i.Checked = False
+        For Each item As ListViewItem In lvAudio.Items
+            item.Checked = False
         Next
     End Sub
 
     Sub bnAudioEnglish_Click(sender As Object, e As EventArgs) Handles bnAudioEnglish.Click
-        For Each i As ListViewItem In lvAudio.Items
-            Dim stream = DirectCast(i.Tag, AudioStream)
+        For Each item As ListViewItem In lvAudio.Items
+            Dim stream = DirectCast(item.Tag, AudioStream)
 
             If stream.Language.TwoLetterCode = "en" Then
-                i.Checked = True
+                item.Checked = True
             End If
         Next
     End Sub
 
     Sub bnAudioNative_Click(sender As Object, e As EventArgs) Handles bnAudioNative.Click
-        For Each i As ListViewItem In lvAudio.Items
-            Dim stream = DirectCast(i.Tag, AudioStream)
+        For Each item As ListViewItem In lvAudio.Items
+            Dim stream = DirectCast(item.Tag, AudioStream)
 
             If stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
-                i.Checked = True
+                item.Checked = True
             End If
         Next
     End Sub
 
     Sub bnSubtitleAll_Click(sender As Object, e As EventArgs) Handles bnSubtitleAll.Click
-        For Each i As ListViewItem In lvSubtitles.Items
-            i.Checked = True
+        For Each item As ListViewItem In lvSubtitles.Items
+            item.Checked = True
         Next
     End Sub
 
     Sub bnSubtitleNone_Click(sender As Object, e As EventArgs) Handles bnSubtitleNone.Click
-        For Each i As ListViewItem In lvSubtitles.Items
-            i.Checked = False
+        For Each item As ListViewItem In lvSubtitles.Items
+            item.Checked = False
         Next
     End Sub
 
     Sub bnSubtitleEnglish_Click(sender As Object, e As EventArgs) Handles bnSubtitleEnglish.Click
-        For Each i As ListViewItem In lvSubtitles.Items
-            Dim stream = DirectCast(i.Tag, Subtitle)
+        For Each item As ListViewItem In lvSubtitles.Items
+            Dim stream = DirectCast(item.Tag, Subtitle)
 
             If stream.Language.TwoLetterCode = "en" Then
-                i.Checked = True
+                item.Checked = True
             End If
         Next
     End Sub
 
     Sub bnSubtitleNative_Click(sender As Object, e As EventArgs) Handles bnSubtitleNative.Click
-        For Each i As ListViewItem In lvSubtitles.Items
-            Dim stream = DirectCast(i.Tag, Subtitle)
+        For Each item As ListViewItem In lvSubtitles.Items
+            Dim stream = DirectCast(item.Tag, Subtitle)
 
             If stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
-                i.Checked = True
+                item.Checked = True
             End If
         Next
     End Sub

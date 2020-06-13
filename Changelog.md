@@ -1,13 +1,17 @@
 
-2.1.3.1 Beta (not yet available)
+2.1.3.2 Beta (not yet available)
+============
+
+2.1.3.1 Beta
 ============
 
 - Main dialog target image width and height text box supports mouse wheel.
 - Subtitle file drag & drop in muxer dialog was broken.
-- TemporalDegrain2 integration
-- AviSynth 3.6.1 Test 8 (fixes issue with VSFilterMod)
+- TemporalDegrain2 integration.
+- AviSynth 3.6.1 Test 8 (fixes issue with VSFilterMod).
 - The docs explain how to use the filter profile editor to edit filter profiles and
-  how to create new custom filter profiles for plugins not yet included in StaxRip
+  how to create new custom filter profiles for plugins not yet included in StaxRip.
+- Video demuxing defined in Preprocessing settings did not work in auto mode.
 
 
 2.1.3.0

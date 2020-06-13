@@ -79,6 +79,8 @@ Example:
 
 .. code-block:: INI
 
+    [Field]
+
     yadifmod2 =
         LoadPlugin("D:\yadifmod2\yadifmod2.dll")
         yadifmod2()

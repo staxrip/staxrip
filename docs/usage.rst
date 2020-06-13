@@ -36,6 +36,54 @@ The script code of AviSynth and VapourSynth can be edited directly or easily be 
 With the help of a macro system script parameters can be changed with convenient GUI features like a resize slider and menu or a cropping dialog, due to the macro system the parameters can change at any time allowing much greater flexibility compared to a one dimensional and limiting one step after another approach.
 
 
+Filter Profiles
+---------------
+
+StaxRip includes a large set of filter plugins and filter presets for the plugins. The presets can be selected in the filter menu.
+
+
+Custom Filter Profiles
+~~~~~~~~~~~~~~~~~~~~~~
+
+The filter profiles editor can be used to customize the included filter profiles and to create new custom filter profiles.
+
+The profile editor can be found at:
+
+Filter Menu > Profiles
+
+The filter profiles use the INI format:
+
+.. code-block:: INI
+
+    [Filter Type]
+
+    Menu item name = Filter code
+
+Cascading/sub menus:
+
+.. code-block:: INI
+
+    Top level | Level 2 | Level 3 = Filter code
+
+Multi-line code:
+
+.. code-block:: INI
+
+    Menu name =
+        code line 1
+        code line 2
+
+Many of the included presets use :ref:`interactive_macros` to show a selection box.
+
+Example:
+
+.. code-block:: INI
+
+    yadifmod2 =
+        LoadPlugin("D:\yadifmod2\yadifmod2.dll")
+        yadifmod2()
+
+
 Templates
 =========
 

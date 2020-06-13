@@ -3,8 +3,11 @@
 ============
 
 - Main dialog target image width and height text box supports mouse wheel.
-- subtitle file drag & drop in muxer dialog was broken.
+- Subtitle file drag & drop in muxer dialog was broken.
 - TemporalDegrain2 integration
+- AviSynth 3.6.1 Test 8 (fixes issue with VSFilterMod)
+- The docs explain how to use the filter profile editor to edit filter profiles and
+  how to create new custom filter profiles for plugins not yet included in StaxRip
 
 
 2.1.3.0

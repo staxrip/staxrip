@@ -1,6 +1,7 @@
 ﻿
-Imports StaxRip.UI
 Imports System.ComponentModel
+
+Imports StaxRip.UI
 
 Public Class CommandLineControl
     Inherits UserControl
@@ -39,15 +40,15 @@ Public Class CommandLineControl
         Me.tb.Location = New System.Drawing.Point(0, 0)
         Me.tb.Margin = New System.Windows.Forms.Padding(0)
         Me.tb.Multiline = True
-        Me.tb.Size = New System.Drawing.Size(235, 205)
+        Me.tb.Size = New System.Drawing.Size(205, 205)
         '
-        'bu
+        'bn
         '
         Me.bn.Anchor = System.Windows.Forms.AnchorStyles.Top
-        Me.bn.Location = New System.Drawing.Point(245, 0)
+        Me.bn.Location = New System.Drawing.Point(215, 0)
         Me.bn.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
         Me.bn.ShowMenuSymbol = True
-        Me.bn.Size = New System.Drawing.Size(70, 70)
+        Me.bn.Size = New System.Drawing.Size(100, 70)
         '
         'tlpMain
         '
@@ -67,7 +68,8 @@ Public Class CommandLineControl
         '
         'CommandLineControl
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.Controls.Add(Me.tlpMain)
         Me.Margin = New System.Windows.Forms.Padding(0)
         Me.Name = "CommandLineControl"
@@ -83,15 +85,12 @@ Public Class CommandLineControl
     DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
     Property RestoreFunc As Func(Of String)
 
-    Private HelpFileValue As String
-    Private cms As ContextMenuStripEx
-
     Event PresetsChanged(presets As String)
     Event ValueChanged(value As String)
 
     Sub New()
         InitializeComponent()
-        components = New System.ComponentModel.Container
+        components = New Container
         AddHandler tb.TextChanged, Sub() RaiseEvent ValueChanged(tb.Text)
     End Sub
 
@@ -118,38 +117,44 @@ Public Class CommandLineControl
     End Sub
 
     Sub EditPresets()
-        Using dia As New MacroEditorDialog
-            dia.SetMacroDefaults()
-            dia.MacroEditorControl.Value = Presets.FormatColumn("=")
-            dia.Text = "Menu Editor"
+        Using dialog As New MacroEditorDialog
+            dialog.SetMacroDefaults()
+            dialog.MacroEditorControl.Value = Presets.FormatColumn("=")
+            dialog.Text = "Menu Editor"
 
             If Not RestoreFunc Is Nothing Then
-                dia.bnContext.Text = " Restore Defaults... "
-                dia.bnContext.Visible = True
-                dia.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then dia.MacroEditorControl.Value = RestoreFunc.Invoke)
-                dia.MacroEditorControl.rtbDefaults.Text = RestoreFunc.Invoke
+                dialog.bnContext.Text = " Restore Defaults... "
+                dialog.bnContext.Visible = True
+
+                dialog.bnContext.AddClickAction(Sub()
+                                                    If MsgOK("Restore defaults?") Then
+                                                        dialog.MacroEditorControl.Value = RestoreFunc.Invoke
+                                                    End If
+                                                End Sub)
+
+                dialog.MacroEditorControl.rtbDefaults.Text = RestoreFunc.Invoke
             End If
 
-            If dia.ShowDialog(FindForm) = DialogResult.OK Then
-                Presets = dia.MacroEditorControl.Value.ReplaceUnicode
+            If dialog.ShowDialog(FindForm) = DialogResult.OK Then
+                Presets = dialog.MacroEditorControl.Value
                 RaiseEvent PresetsChanged(Presets)
             End If
         End Using
     End Sub
 
-    Private Sub bnCmdlAddition_Click() Handles bn.Click
+    Sub bn_Click() Handles bn.Click
         Dim cms = TextCustomMenu.GetMenu(Presets, bn, components, AddressOf MenuItenClick)
         components.Add(cms)
         cms.Items.Add(New ToolStripSeparator)
-        cms.Items.Add(New ActionMenuItem("Edit Menu...", AddressOf EditPresets))
+        cms.Items.Add(New ActionMenuItem("Edit Menu..." + g.MenuSpace, AddressOf EditPresets))
         cms.Show(bn, 0, bn.Height)
     End Sub
 
-    Private Sub CmdlControl_Layout(sender As Object, e As LayoutEventArgs) Handles Me.Layout
+    Sub CommandLineControl_Layout(sender As Object, e As LayoutEventArgs) Handles Me.Layout
         tb.Height = Height
     End Sub
 
-    Private Sub CommandLineControl_Load(sender As Object, e As EventArgs) Handles Me.Load
+    Sub CommandLineControl_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not DesignHelp.IsDesignMode Then
             Font = New Font("Consolas", 10 * s.UIScaleFactor)
         End If

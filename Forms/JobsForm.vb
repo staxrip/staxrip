@@ -1,6 +1,7 @@
 
 Imports System.Threading
 Imports System.Threading.Tasks
+
 Imports StaxRip.UI
 
 Friend Class JobsForm
@@ -42,15 +43,15 @@ Friend Class JobsForm
         Me.bnDown.Enabled = False
         Me.bnDown.Location = New System.Drawing.Point(8, 0)
         Me.bnDown.Margin = New System.Windows.Forms.Padding(8, 0, 0, 0)
-        Me.bnDown.Size = New System.Drawing.Size(70, 70)
+        Me.bnDown.Size = New System.Drawing.Size(100, 70)
         '
         'bnUp
         '
         Me.bnUp.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.bnUp.Enabled = False
-        Me.bnUp.Location = New System.Drawing.Point(756, 0)
+        Me.bnUp.Location = New System.Drawing.Point(726, 0)
         Me.bnUp.Margin = New System.Windows.Forms.Padding(0, 0, 8, 0)
-        Me.bnUp.Size = New System.Drawing.Size(70, 70)
+        Me.bnUp.Size = New System.Drawing.Size(100, 70)
         '
         'bnStart
         '
@@ -74,6 +75,7 @@ Friend Class JobsForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.lv, 2)
+        Me.lv.HideSelection = False
         Me.lv.Location = New System.Drawing.Point(15, 15)
         Me.lv.Margin = New System.Windows.Forms.Padding(0, 0, 0, 14)
         Me.lv.Name = "lv"
@@ -126,10 +128,10 @@ Friend Class JobsForm
         'bnMenu
         '
         Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.bnMenu.Location = New System.Drawing.Point(234, 0)
+        Me.bnMenu.Location = New System.Drawing.Point(204, 0)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(0)
         Me.bnMenu.ShowMenuSymbol = True
-        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
+        Me.bnMenu.Size = New System.Drawing.Size(100, 70)
         '
         'bnRemove
         '
@@ -181,13 +183,12 @@ Friend Class JobsForm
 
     Private FileWatcher As New FileSystemWatcher
     Private IsLoading As Boolean
-    Private Tip As String = "Please note that the job list can be processed by multiple StaxRip instances in parallel."
+    Private Tip As String = "The job list can be processed by multiple StaxRip instances in parallel."
+    Private BlockSave As Boolean
 
     Sub New()
-        MyBase.New()
         InitializeComponent()
-
-        ScaleClientSize(38, 20)
+        RestoreClientSize(40, 20)
 
         bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
         bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
@@ -197,12 +198,13 @@ Friend Class JobsForm
         lv.UpButton = bnUp
         lv.DownButton = bnDown
         lv.RemoveButton = bnRemove
+        lv.RightClickOnlyForMenu = True
 
         lv.SingleSelectionButtons = {bnLoad}
         lv.CheckBoxes = True
         lv.EnableListBoxMode()
-        lv.ItemCheckProperty = NameOf(StringBooleanPair.Value)
-        lv.AddItems(Job.GetJobs())
+        lv.ItemCheckProperty = NameOf(Job.Active)
+        lv.AddItems(JobManager.GetJobs())
         lv.SelectFirst()
 
         Dim cms As New ContextMenuStripEx()
@@ -216,7 +218,7 @@ Friend Class JobsForm
                              End Sub
 
         AddHandler lv.ItemRemoved, Sub(item)
-                                       Dim fp = DirectCast(item.Tag, StringBooleanPair).Key
+                                       Dim fp = DirectCast(item.Tag, Job).Path
 
                                        If fp.StartsWith(Folder.Settings + "Batch Projects\") Then
                                            FileHelp.Delete(fp)
@@ -228,15 +230,18 @@ Friend Class JobsForm
         cms.Add("-")
         cms.Add("Check Selection", Sub() CheckSelection(), Keys.None, Function() lv.SelectedItems.Count > lv.CheckedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count)
         cms.Add("Check All", Sub() CheckAll(), Keys.Control Or Keys.Space, Function() lv.Items.Count > lv.CheckedItems.Count)
-        cms.Add("Check None", Sub() CheckNone(), Keys.Shift Or Keys.Space, Function() lv.CheckedItems.Count > 0)
         cms.Add("-")
-        cms.Add("Move Selection Up", Sub() bnUp.PerformClick(), Keys.Control Or Keys.Up, Function() lv.CanMoveUp)
-        cms.Add("Move Selection Down", Sub() bnDown.PerformClick(), Keys.Control Or Keys.Down, Function() lv.CanMoveDown)
+        cms.Add("Uncheck Selection", Sub() UncheckSelection(), Keys.None, Function() lv.SelectedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count > 0)
+        cms.Add("Uncheck All", Sub() UncheckAll(), Keys.Shift Or Keys.Space, Function() lv.CheckedItems.Count > 0)
+        cms.Add("-")
+        cms.Add("Move Selection Up", Sub() bnUp.PerformClick(), Keys.Control Or Keys.Up, Function() lv.CanMoveUp).SetImage(Symbol.Up)
+        cms.Add("Move Selection Down", Sub() bnDown.PerformClick(), Keys.Control Or Keys.Down, Function() lv.CanMoveDown).SetImage(Symbol.Down)
         cms.Add("-")
         cms.Add("Move Selection To Top", Sub() lv.MoveSelectionTop(), Keys.Control Or Keys.Home, Function() lv.CanMoveUp)
         cms.Add("Move Selection To Bottom", Sub() lv.MoveSelectionBottom(), Keys.Control Or Keys.End, Function() lv.CanMoveDown)
         cms.Add("-")
-        cms.Add("Delete Selection", Sub() bnRemove.PerformClick(), Keys.Control Or Keys.Delete, Function() lv.SelectedItems.Count > 0)
+        cms.Add("Sort Alphabetically", Sub() lv.SortItems(), Keys.Control Or Keys.S, Function() lv.Items.Count > 1).SetImage(Symbol.Sort)
+        cms.Add("Remove Selection", Sub() bnRemove.PerformClick(), Keys.Control Or Keys.Delete, Function() lv.SelectedItems.Count > 0).SetImage(Symbol.Remove)
         cms.Add("Load Selection", Sub() bnLoad.PerformClick(), Keys.Control Or Keys.L, Function() lv.SelectedItems.Count = 1)
 
         UpdateControls()
@@ -250,59 +255,95 @@ Friend Class JobsForm
         FileWatcher.EnableRaisingEvents = True
     End Sub
 
-    Sub CheckNone()
-        For Each i As ListViewItem In lv.Items
-            i.Checked = False
+    Sub UncheckAll()
+        BlockSave = True
+
+        For Each item As ListViewItem In lv.Items
+            item.Checked = False
         Next
+
+        BlockSave = False
+        HandleItemsChanged()
+    End Sub
+
+    Sub UncheckSelection()
+        BlockSave = True
+
+        For Each item As ListViewItem In lv.SelectedItems
+            item.Checked = False
+        Next
+
+        BlockSave = False
+        HandleItemsChanged()
     End Sub
 
     Sub CheckAll()
-        For Each i As ListViewItem In lv.Items
-            i.Checked = True
+        BlockSave = True
+
+        For Each item As ListViewItem In lv.Items
+            item.Checked = True
         Next
+
+        BlockSave = False
+        HandleItemsChanged()
     End Sub
 
     Sub CheckSelection()
-        For Each i As ListViewItem In lv.SelectedItems
-            i.Checked = True
+        BlockSave = True
+
+        For Each item As ListViewItem In lv.SelectedItems
+            item.Checked = True
         Next
+
+        BlockSave = False
+        HandleItemsChanged()
     End Sub
 
     Sub SelectNone()
-        For Each i As ListViewItem In lv.Items
-            i.Selected = False
+        BlockSave = True
+
+        For Each item As ListViewItem In lv.Items
+            item.Selected = False
         Next
+
+        BlockSave = False
+        HandleItemsChanged()
     End Sub
 
     Sub SelectAll()
-        For Each i As ListViewItem In lv.Items
-            i.Selected = True
+        BlockSave = True
+
+        For Each item As ListViewItem In lv.Items
+            item.Selected = True
         Next
+
+        BlockSave = False
+        HandleItemsChanged()
     End Sub
 
     Sub HandleItemsChanged()
-        SaveJobs()
-        UpdateControls()
+        If Not BlockSave Then
+            SaveJobs()
+            UpdateControls()
+        End If
     End Sub
 
     Sub Reload(sender As Object, e As FileSystemEventArgs)
         Invoke(Sub()
-                   If IsDisposed Then
-                       Exit Sub
+                   If Not IsDisposed Then
+                       IsLoading = True
+                       lv.Items.Clear()
+                       lv.AddItems(JobManager.GetJobs())
+                       lv.SelectFirst()
+                       UpdateControls()
+                       IsLoading = False
                    End If
-
-                   IsLoading = True
-                   lv.Items.Clear()
-                   lv.AddItems(Job.GetJobs())
-                   lv.SelectFirst()
-                   UpdateControls()
-                   IsLoading = False
                End Sub)
     End Sub
 
     Sub UpdateControls()
         Dim activeJobs = From item In lv.Items.OfType(Of ListViewItem)
-                         Where DirectCast(item.Tag, StringBooleanPair).Value
+                         Where DirectCast(item.Tag, Job).Active
 
         bnStart.Enabled = activeJobs.Count > 0
     End Sub
@@ -316,22 +357,25 @@ Friend Class JobsForm
             Exit Sub
         End If
 
-        Dim jobs As New List(Of StringBooleanPair)
+        Dim jobs As New List(Of Job)
 
         For Each item As ListViewItem In lv.Items
-            jobs.Add(DirectCast(item.Tag, StringBooleanPair))
+            If Not item Is Nothing Then
+                jobs.Add(DirectCast(item.Tag, Job))
+            End If
         Next
 
         FileWatcher.EnableRaisingEvents = False
-        Job.SaveJobs(jobs)
+        JobManager.SaveJobs(jobs)
         FileWatcher.EnableRaisingEvents = True
     End Sub
 
     Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
         Documentation.ShowTip(Tip)
+        g.StopAfterCurrentJob = False
         Close()
 
-        If g.IsProcessing Then
+        If g.IsJobProcessing Then
             g.ShellExecute(Application.ExecutablePath, "-StartJobs")
         Else
             Task.Run(Sub()
@@ -346,14 +390,14 @@ Friend Class JobsForm
         Close()
     End Sub
 
-    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
-        MyBase.OnFormClosing(e)
+    Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
+        MyBase.OnFormClosing(args)
         RemoveHandler FileWatcher.Changed, AddressOf Reload
         RemoveHandler FileWatcher.Created, AddressOf Reload
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged
     End Sub
 
-    Sub JobsForm_HelpRequested(sender As Object, ea As HelpEventArgs) Handles Me.HelpRequested
+    Sub JobsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         MsgInfo(Tip)
     End Sub
 End Class

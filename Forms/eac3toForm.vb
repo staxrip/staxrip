@@ -1,7 +1,9 @@
+
 Imports System.ComponentModel
 Imports System.Globalization
 Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
+
 Imports StaxRip.UI
 
 Public Class eac3toForm
@@ -19,7 +21,7 @@ Public Class eac3toForm
     End Sub
     Friend WithEvents CommandLink1 As StaxRip.UI.CommandLink
     Friend WithEvents cbVideoOutput As System.Windows.Forms.ComboBox
-    Friend WithEvents Label5 As System.Windows.Forms.Label
+    Friend WithEvents laVideo As System.Windows.Forms.Label
     Friend WithEvents cmdlOptions As StaxRip.CommandLineControl
     Friend WithEvents bnBrowse As StaxRip.UI.ButtonEx
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
@@ -27,17 +29,17 @@ Public Class eac3toForm
     Friend WithEvents lvAudio As ListViewEx
     Friend WithEvents lvSubtitles As StaxRip.UI.ListViewEx
     Friend WithEvents cbVideoStream As System.Windows.Forms.ComboBox
-    Friend WithEvents Label8 As System.Windows.Forms.Label
+    Friend WithEvents laStream As System.Windows.Forms.Label
     Friend WithEvents flpAudioLinks As System.Windows.Forms.FlowLayoutPanel
     Friend WithEvents flpSubtitleLinks As System.Windows.Forms.FlowLayoutPanel
     Friend WithEvents cbChapters As System.Windows.Forms.CheckBox
-    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents laTargetDir As System.Windows.Forms.Label
     Friend WithEvents tlpTarget As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents gbAudio As System.Windows.Forms.GroupBox
     Friend WithEvents gbSubtitles As System.Windows.Forms.GroupBox
     Friend WithEvents cbAudioOutput As System.Windows.Forms.ComboBox
-    Friend WithEvents Label3 As System.Windows.Forms.Label
-    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents laOptions As System.Windows.Forms.Label
+    Friend WithEvents laOutput As System.Windows.Forms.Label
     Friend WithEvents bnMenu As StaxRip.UI.ButtonEx
     Friend WithEvents cms As ContextMenuStripEx
     Friend WithEvents bnAudioAll As ButtonEx
@@ -61,7 +63,7 @@ Public Class eac3toForm
         Me.components = New System.ComponentModel.Container()
         Me.cmdlOptions = New StaxRip.CommandLineControl()
         Me.cbVideoOutput = New System.Windows.Forms.ComboBox()
-        Me.Label5 = New System.Windows.Forms.Label()
+        Me.laVideo = New System.Windows.Forms.Label()
         Me.bnBrowse = New StaxRip.UI.ButtonEx()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
@@ -78,9 +80,9 @@ Public Class eac3toForm
         Me.bnAudioEnglish = New StaxRip.UI.ButtonEx()
         Me.bnAudioNative = New StaxRip.UI.ButtonEx()
         Me.cbVideoStream = New System.Windows.Forms.ComboBox()
-        Me.Label8 = New System.Windows.Forms.Label()
+        Me.laStream = New System.Windows.Forms.Label()
         Me.tlpTarget = New System.Windows.Forms.TableLayoutPanel()
-        Me.Label2 = New System.Windows.Forms.Label()
+        Me.laTargetDir = New System.Windows.Forms.Label()
         Me.teTempDir = New StaxRip.UI.TextEdit()
         Me.tlpBottom = New System.Windows.Forms.TableLayoutPanel()
         Me.bnMenu = New StaxRip.UI.ButtonEx()
@@ -89,8 +91,8 @@ Public Class eac3toForm
         Me.gbAudio = New System.Windows.Forms.GroupBox()
         Me.tlpAudio = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpAudioOptions = New System.Windows.Forms.TableLayoutPanel()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
+        Me.laOutput = New System.Windows.Forms.Label()
+        Me.laOptions = New System.Windows.Forms.Label()
         Me.cbAudioOutput = New System.Windows.Forms.ComboBox()
         Me.gbSubtitles = New System.Windows.Forms.GroupBox()
         Me.tlpSubtitles = New System.Windows.Forms.TableLayoutPanel()
@@ -112,10 +114,10 @@ Public Class eac3toForm
         'cmdlOptions
         '
         Me.cmdlOptions.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdlOptions.Location = New System.Drawing.Point(520, 8)
+        Me.cmdlOptions.Location = New System.Drawing.Point(560, 8)
         Me.cmdlOptions.Margin = New System.Windows.Forms.Padding(3, 8, 3, 8)
         Me.cmdlOptions.Name = "cmdlOptions"
-        Me.cmdlOptions.Size = New System.Drawing.Size(488, 70)
+        Me.cmdlOptions.Size = New System.Drawing.Size(702, 70)
         Me.cmdlOptions.TabIndex = 5
         '
         'cbVideoOutput
@@ -123,36 +125,36 @@ Public Class eac3toForm
         Me.cbVideoOutput.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cbVideoOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbVideoOutput.FormattingEnabled = True
-        Me.cbVideoOutput.Location = New System.Drawing.Point(129, 3)
+        Me.cbVideoOutput.Location = New System.Drawing.Point(169, 3)
         Me.cbVideoOutput.Name = "cbVideoOutput"
         Me.cbVideoOutput.Size = New System.Drawing.Size(206, 56)
         Me.cbVideoOutput.TabIndex = 2
         '
-        'Label5
+        'laVideo
         '
-        Me.Label5.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(3, 7)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(120, 48)
-        Me.Label5.TabIndex = 1
-        Me.Label5.Text = "Video:"
-        Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.laVideo.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.laVideo.AutoSize = True
+        Me.laVideo.Location = New System.Drawing.Point(3, 7)
+        Me.laVideo.Name = "laVideo"
+        Me.laVideo.Size = New System.Drawing.Size(160, 48)
+        Me.laVideo.TabIndex = 1
+        Me.laVideo.Text = " Output: "
+        Me.laVideo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'bnBrowse
         '
         Me.bnBrowse.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnBrowse.Location = New System.Drawing.Point(959, 4)
+        Me.bnBrowse.Location = New System.Drawing.Point(1171, 4)
         Me.bnBrowse.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnBrowse.Size = New System.Drawing.Size(70, 70)
+        Me.bnBrowse.Size = New System.Drawing.Size(100, 70)
         Me.bnBrowse.Text = "..."
         '
         'bnCancel
         '
         Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(779, 3)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
+        Me.bnCancel.Location = New System.Drawing.Point(1021, 3)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
@@ -160,18 +162,19 @@ Public Class eac3toForm
         '
         Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(518, 3)
-        Me.bnOK.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
+        Me.bnOK.Location = New System.Drawing.Point(756, 3)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '
         'lvAudio
         '
         Me.lvAudio.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lvAudio.HideSelection = False
         Me.lvAudio.Location = New System.Drawing.Point(10, 0)
         Me.lvAudio.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
         Me.lvAudio.Name = "lvAudio"
-        Me.lvAudio.Size = New System.Drawing.Size(997, 33)
+        Me.lvAudio.Size = New System.Drawing.Size(1251, 219)
         Me.lvAudio.TabIndex = 8
         Me.lvAudio.UseCompatibleStateImageBehavior = False
         '
@@ -180,10 +183,11 @@ Public Class eac3toForm
         Me.lvSubtitles.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lvSubtitles.HideSelection = False
         Me.lvSubtitles.Location = New System.Drawing.Point(10, 0)
         Me.lvSubtitles.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
         Me.lvSubtitles.Name = "lvSubtitles"
-        Me.lvSubtitles.Size = New System.Drawing.Size(997, 24)
+        Me.lvSubtitles.Size = New System.Drawing.Size(1251, 148)
         Me.lvSubtitles.TabIndex = 9
         Me.lvSubtitles.UseCompatibleStateImageBehavior = False
         '
@@ -196,36 +200,36 @@ Public Class eac3toForm
         Me.flpSubtitleLinks.Controls.Add(Me.bnSubtitleNone)
         Me.flpSubtitleLinks.Controls.Add(Me.bnSubtitleEnglish)
         Me.flpSubtitleLinks.Controls.Add(Me.bnSubtitleNative)
-        Me.flpSubtitleLinks.Location = New System.Drawing.Point(10, 34)
+        Me.flpSubtitleLinks.Location = New System.Drawing.Point(10, 158)
         Me.flpSubtitleLinks.Margin = New System.Windows.Forms.Padding(10, 0, 0, 10)
         Me.flpSubtitleLinks.Name = "flpSubtitleLinks"
-        Me.flpSubtitleLinks.Size = New System.Drawing.Size(910, 70)
+        Me.flpSubtitleLinks.Size = New System.Drawing.Size(925, 70)
         Me.flpSubtitleLinks.TabIndex = 19
         '
         'bnSubtitleAll
         '
         Me.bnSubtitleAll.Location = New System.Drawing.Point(0, 0)
-        Me.bnSubtitleAll.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnSubtitleAll.Margin = New System.Windows.Forms.Padding(0, 0, 15, 0)
         Me.bnSubtitleAll.Size = New System.Drawing.Size(220, 70)
         Me.bnSubtitleAll.Text = "All"
         '
         'bnSubtitleNone
         '
-        Me.bnSubtitleNone.Location = New System.Drawing.Point(230, 0)
-        Me.bnSubtitleNone.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnSubtitleNone.Location = New System.Drawing.Point(235, 0)
+        Me.bnSubtitleNone.Margin = New System.Windows.Forms.Padding(0, 0, 15, 0)
         Me.bnSubtitleNone.Size = New System.Drawing.Size(220, 70)
         Me.bnSubtitleNone.Text = "None"
         '
         'bnSubtitleEnglish
         '
-        Me.bnSubtitleEnglish.Location = New System.Drawing.Point(460, 0)
-        Me.bnSubtitleEnglish.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnSubtitleEnglish.Location = New System.Drawing.Point(470, 0)
+        Me.bnSubtitleEnglish.Margin = New System.Windows.Forms.Padding(0, 0, 15, 0)
         Me.bnSubtitleEnglish.Size = New System.Drawing.Size(220, 70)
         Me.bnSubtitleEnglish.Text = "English"
         '
         'bnSubtitleNative
         '
-        Me.bnSubtitleNative.Location = New System.Drawing.Point(690, 0)
+        Me.bnSubtitleNative.Location = New System.Drawing.Point(705, 0)
         Me.bnSubtitleNative.Margin = New System.Windows.Forms.Padding(0)
         Me.bnSubtitleNative.Size = New System.Drawing.Size(220, 70)
         Me.bnSubtitleNative.Text = "Native"
@@ -239,36 +243,36 @@ Public Class eac3toForm
         Me.flpAudioLinks.Controls.Add(Me.bnAudioNone)
         Me.flpAudioLinks.Controls.Add(Me.bnAudioEnglish)
         Me.flpAudioLinks.Controls.Add(Me.bnAudioNative)
-        Me.flpAudioLinks.Location = New System.Drawing.Point(10, 43)
+        Me.flpAudioLinks.Location = New System.Drawing.Point(10, 229)
         Me.flpAudioLinks.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
         Me.flpAudioLinks.Name = "flpAudioLinks"
-        Me.flpAudioLinks.Size = New System.Drawing.Size(910, 70)
+        Me.flpAudioLinks.Size = New System.Drawing.Size(925, 70)
         Me.flpAudioLinks.TabIndex = 18
         '
         'bnAudioAll
         '
         Me.bnAudioAll.Location = New System.Drawing.Point(0, 0)
-        Me.bnAudioAll.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnAudioAll.Margin = New System.Windows.Forms.Padding(0, 0, 15, 0)
         Me.bnAudioAll.Size = New System.Drawing.Size(220, 70)
         Me.bnAudioAll.Text = "All"
         '
         'bnAudioNone
         '
-        Me.bnAudioNone.Location = New System.Drawing.Point(230, 0)
-        Me.bnAudioNone.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnAudioNone.Location = New System.Drawing.Point(235, 0)
+        Me.bnAudioNone.Margin = New System.Windows.Forms.Padding(0, 0, 15, 0)
         Me.bnAudioNone.Size = New System.Drawing.Size(220, 70)
         Me.bnAudioNone.Text = "None"
         '
         'bnAudioEnglish
         '
-        Me.bnAudioEnglish.Location = New System.Drawing.Point(460, 0)
-        Me.bnAudioEnglish.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
+        Me.bnAudioEnglish.Location = New System.Drawing.Point(470, 0)
+        Me.bnAudioEnglish.Margin = New System.Windows.Forms.Padding(0, 0, 15, 0)
         Me.bnAudioEnglish.Size = New System.Drawing.Size(220, 70)
         Me.bnAudioEnglish.Text = "English"
         '
         'bnAudioNative
         '
-        Me.bnAudioNative.Location = New System.Drawing.Point(690, 0)
+        Me.bnAudioNative.Location = New System.Drawing.Point(705, 0)
         Me.bnAudioNative.Margin = New System.Windows.Forms.Padding(0)
         Me.bnAudioNative.Size = New System.Drawing.Size(220, 70)
         Me.bnAudioNative.Text = "Native"
@@ -278,21 +282,21 @@ Public Class eac3toForm
         Me.cbVideoStream.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cbVideoStream.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbVideoStream.FormattingEnabled = True
-        Me.cbVideoStream.Location = New System.Drawing.Point(486, 3)
+        Me.cbVideoStream.Location = New System.Drawing.Point(546, 3)
         Me.cbVideoStream.Name = "cbVideoStream"
-        Me.cbVideoStream.Size = New System.Drawing.Size(540, 56)
+        Me.cbVideoStream.Size = New System.Drawing.Size(732, 56)
         Me.cbVideoStream.TabIndex = 16
         '
-        'Label8
+        'laStream
         '
-        Me.Label8.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(341, 7)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(139, 48)
-        Me.Label8.TabIndex = 15
-        Me.Label8.Text = "Stream:"
-        Me.Label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.laStream.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.laStream.AutoSize = True
+        Me.laStream.Location = New System.Drawing.Point(381, 7)
+        Me.laStream.Name = "laStream"
+        Me.laStream.Size = New System.Drawing.Size(159, 48)
+        Me.laStream.TabIndex = 15
+        Me.laStream.Text = " Stream: "
+        Me.laStream.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'tlpTarget
         '
@@ -303,35 +307,36 @@ Public Class eac3toForm
         Me.tlpTarget.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.tlpTarget.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.tlpTarget.Controls.Add(Me.bnBrowse, 2, 0)
-        Me.tlpTarget.Controls.Add(Me.Label2, 0, 0)
+        Me.tlpTarget.Controls.Add(Me.laTargetDir, 0, 0)
         Me.tlpTarget.Controls.Add(Me.teTempDir, 1, 0)
-        Me.tlpTarget.Location = New System.Drawing.Point(10, 537)
-        Me.tlpTarget.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
+        Me.tlpTarget.Location = New System.Drawing.Point(15, 847)
+        Me.tlpTarget.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.tlpTarget.Name = "tlpTarget"
         Me.tlpTarget.RowCount = 1
         Me.tlpTarget.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpTarget.Size = New System.Drawing.Size(1029, 79)
+        Me.tlpTarget.Size = New System.Drawing.Size(1271, 79)
         Me.tlpTarget.TabIndex = 4
         '
-        'Label2
+        'laTargetDir
         '
-        Me.Label2.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(0, 15)
-        Me.Label2.Margin = New System.Windows.Forms.Padding(0)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(282, 48)
-        Me.Label2.TabIndex = 2
-        Me.Label2.Text = "Target Directory:"
-        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.laTargetDir.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.laTargetDir.AutoSize = True
+        Me.laTargetDir.Location = New System.Drawing.Point(0, 15)
+        Me.laTargetDir.Margin = New System.Windows.Forms.Padding(0)
+        Me.laTargetDir.Name = "laTargetDir"
+        Me.laTargetDir.Size = New System.Drawing.Size(302, 48)
+        Me.laTargetDir.TabIndex = 2
+        Me.laTargetDir.Text = " Target Directory: "
+        Me.laTargetDir.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'teTempDir
         '
         Me.teTempDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.teTempDir.Location = New System.Drawing.Point(282, 4)
+        Me.teTempDir.BackColor = System.Drawing.Color.White
+        Me.teTempDir.Location = New System.Drawing.Point(302, 4)
         Me.teTempDir.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
         Me.teTempDir.Name = "teTempDir"
-        Me.teTempDir.Size = New System.Drawing.Size(666, 70)
+        Me.teTempDir.Size = New System.Drawing.Size(859, 70)
         Me.teTempDir.TabIndex = 3
         '
         'tlpBottom
@@ -348,22 +353,22 @@ Public Class eac3toForm
         Me.tlpBottom.Controls.Add(Me.bnOK, 2, 0)
         Me.tlpBottom.Controls.Add(Me.bnMenu, 1, 0)
         Me.tlpBottom.Controls.Add(Me.cbChapters, 0, 0)
-        Me.tlpBottom.Location = New System.Drawing.Point(10, 626)
-        Me.tlpBottom.Margin = New System.Windows.Forms.Padding(10, 10, 10, 15)
+        Me.tlpBottom.Location = New System.Drawing.Point(15, 941)
+        Me.tlpBottom.Margin = New System.Windows.Forms.Padding(15)
         Me.tlpBottom.Name = "tlpBottom"
         Me.tlpBottom.RowCount = 1
         Me.tlpBottom.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpBottom.Size = New System.Drawing.Size(1029, 76)
+        Me.tlpBottom.Size = New System.Drawing.Size(1271, 77)
         Me.tlpBottom.TabIndex = 20
         '
         'bnMenu
         '
         Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnMenu.ContextMenuStrip = Me.cms
-        Me.bnMenu.Location = New System.Drawing.Point(437, 3)
+        Me.bnMenu.Location = New System.Drawing.Point(641, 3)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(0)
         Me.bnMenu.ShowMenuSymbol = True
-        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
+        Me.bnMenu.Size = New System.Drawing.Size(100, 70)
         '
         'cms
         '
@@ -375,8 +380,8 @@ Public Class eac3toForm
         '
         Me.cbChapters.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.cbChapters.AutoSize = True
-        Me.cbChapters.Location = New System.Drawing.Point(5, 12)
-        Me.cbChapters.Margin = New System.Windows.Forms.Padding(5)
+        Me.cbChapters.Location = New System.Drawing.Point(15, 12)
+        Me.cbChapters.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
         Me.cbChapters.Name = "cbChapters"
         Me.cbChapters.Size = New System.Drawing.Size(323, 52)
         Me.cbChapters.TabIndex = 2
@@ -394,7 +399,7 @@ Public Class eac3toForm
         Me.gbAudio.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
         Me.gbAudio.Name = "gbAudio"
         Me.gbAudio.Padding = New System.Windows.Forms.Padding(5)
-        Me.gbAudio.Size = New System.Drawing.Size(1027, 263)
+        Me.gbAudio.Size = New System.Drawing.Size(1281, 449)
         Me.gbAudio.TabIndex = 23
         Me.gbAudio.TabStop = False
         Me.gbAudio.Text = "Audio"
@@ -414,7 +419,7 @@ Public Class eac3toForm
         Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpAudio.Size = New System.Drawing.Size(1017, 205)
+        Me.tlpAudio.Size = New System.Drawing.Size(1271, 391)
         Me.tlpAudio.TabIndex = 23
         '
         'tlpAudioOptions
@@ -426,45 +431,45 @@ Public Class eac3toForm
         Me.tlpAudioOptions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.tlpAudioOptions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.tlpAudioOptions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpAudioOptions.Controls.Add(Me.Label1, 0, 0)
-        Me.tlpAudioOptions.Controls.Add(Me.Label3, 2, 0)
+        Me.tlpAudioOptions.Controls.Add(Me.laOutput, 0, 0)
+        Me.tlpAudioOptions.Controls.Add(Me.laOptions, 2, 0)
         Me.tlpAudioOptions.Controls.Add(Me.cbAudioOutput, 1, 0)
         Me.tlpAudioOptions.Controls.Add(Me.cmdlOptions, 3, 0)
-        Me.tlpAudioOptions.Location = New System.Drawing.Point(3, 116)
+        Me.tlpAudioOptions.Location = New System.Drawing.Point(3, 302)
         Me.tlpAudioOptions.Name = "tlpAudioOptions"
         Me.tlpAudioOptions.RowCount = 1
         Me.tlpAudioOptions.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpAudioOptions.Size = New System.Drawing.Size(1011, 86)
+        Me.tlpAudioOptions.Size = New System.Drawing.Size(1265, 86)
         Me.tlpAudioOptions.TabIndex = 22
         '
-        'Label1
+        'laOutput
         '
-        Me.Label1.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(3, 19)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(140, 48)
-        Me.Label1.TabIndex = 19
-        Me.Label1.Text = "Output:"
-        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.laOutput.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.laOutput.AutoSize = True
+        Me.laOutput.Location = New System.Drawing.Point(3, 19)
+        Me.laOutput.Name = "laOutput"
+        Me.laOutput.Size = New System.Drawing.Size(160, 48)
+        Me.laOutput.TabIndex = 19
+        Me.laOutput.Text = " Output: "
+        Me.laOutput.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'Label3
+        'laOptions
         '
-        Me.Label3.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(361, 19)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(153, 48)
-        Me.Label3.TabIndex = 20
-        Me.Label3.Text = "Options:"
-        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.laOptions.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.laOptions.AutoSize = True
+        Me.laOptions.Location = New System.Drawing.Point(381, 19)
+        Me.laOptions.Name = "laOptions"
+        Me.laOptions.Size = New System.Drawing.Size(173, 48)
+        Me.laOptions.TabIndex = 20
+        Me.laOptions.Text = " Options: "
+        Me.laOptions.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'cbAudioOutput
         '
         Me.cbAudioOutput.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cbAudioOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbAudioOutput.FormattingEnabled = True
-        Me.cbAudioOutput.Location = New System.Drawing.Point(149, 20)
+        Me.cbAudioOutput.Location = New System.Drawing.Point(169, 15)
         Me.cbAudioOutput.Name = "cbAudioOutput"
         Me.cbAudioOutput.Size = New System.Drawing.Size(206, 56)
         Me.cbAudioOutput.TabIndex = 21
@@ -475,11 +480,11 @@ Public Class eac3toForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbSubtitles.Controls.Add(Me.tlpSubtitles)
-        Me.gbSubtitles.Location = New System.Drawing.Point(10, 355)
+        Me.gbSubtitles.Location = New System.Drawing.Point(10, 541)
         Me.gbSubtitles.Margin = New System.Windows.Forms.Padding(10, 0, 10, 10)
         Me.gbSubtitles.Name = "gbSubtitles"
         Me.gbSubtitles.Padding = New System.Windows.Forms.Padding(5)
-        Me.gbSubtitles.Size = New System.Drawing.Size(1027, 172)
+        Me.gbSubtitles.Size = New System.Drawing.Size(1281, 296)
         Me.gbSubtitles.TabIndex = 24
         Me.gbSubtitles.TabStop = False
         Me.gbSubtitles.Text = "Subtitles"
@@ -497,7 +502,7 @@ Public Class eac3toForm
         Me.tlpSubtitles.RowCount = 2
         Me.tlpSubtitles.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.tlpSubtitles.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpSubtitles.Size = New System.Drawing.Size(1017, 114)
+        Me.tlpSubtitles.Size = New System.Drawing.Size(1271, 238)
         Me.tlpSubtitles.TabIndex = 20
         '
         'tlpVideo
@@ -514,14 +519,14 @@ Public Class eac3toForm
         Me.tlpVideo.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpVideo.Controls.Add(Me.cbVideoStream, 3, 0)
         Me.tlpVideo.Controls.Add(Me.cbVideoOutput, 1, 0)
-        Me.tlpVideo.Controls.Add(Me.Label8, 2, 0)
-        Me.tlpVideo.Controls.Add(Me.Label5, 0, 0)
+        Me.tlpVideo.Controls.Add(Me.laStream, 2, 0)
+        Me.tlpVideo.Controls.Add(Me.laVideo, 0, 0)
         Me.tlpVideo.Location = New System.Drawing.Point(10, 10)
         Me.tlpVideo.Margin = New System.Windows.Forms.Padding(10)
         Me.tlpVideo.Name = "tlpVideo"
         Me.tlpVideo.RowCount = 1
         Me.tlpVideo.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpVideo.Size = New System.Drawing.Size(1029, 62)
+        Me.tlpVideo.Size = New System.Drawing.Size(1281, 62)
         Me.tlpVideo.TabIndex = 25
         '
         'tlpMain
@@ -542,7 +547,7 @@ Public Class eac3toForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1049, 717)
+        Me.tlpMain.Size = New System.Drawing.Size(1301, 1033)
         Me.tlpMain.TabIndex = 26
         '
         'eac3toForm
@@ -551,14 +556,14 @@ Public Class eac3toForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1049, 717)
+        Me.ClientSize = New System.Drawing.Size(1301, 1033)
         Me.Controls.Add(Me.tlpMain)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.HelpButton = False
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(10, 10, 10, 10)
+        Me.Margin = New System.Windows.Forms.Padding(10)
         Me.Name = "eac3toForm"
-        Me.Text = "eac3to"
+        Me.Text = "eac3to Demuxing"
         Me.flpSubtitleLinks.ResumeLayout(False)
         Me.flpAudioLinks.ResumeLayout(False)
         Me.tlpTarget.ResumeLayout(False)
@@ -590,7 +595,9 @@ Public Class eac3toForm
 
     Private Output As String
     Private Streams As New BindingList(Of M2TSStream)
-    Private AudioOutputFormats As String() = {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd", "thd+ac3"}
+    Private AudioOutputFormats As String() =
+        {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd", "thd+ac3"}
+
     Private Project As Project
 
     Sub New(proj As Project)
@@ -615,7 +622,7 @@ Public Class eac3toForm
         lvAudio.ShowItemToolTips = True
         lvAudio.FullRowSelect = True
         lvAudio.MultiSelect = False
-        lvAudio.SendMessageHideFocus()
+        lvAudio.HideFocusRectange()
 
         lvSubtitles.View = View.SmallIcon
         lvSubtitles.CheckBoxes = True
@@ -650,49 +657,49 @@ Public Class eac3toForm
     End Sub
 
     Sub ShowAudioStreamProfilesHelp()
-        Dim f As New HelpForm
-        f.Doc.WriteStart("Audio Stream Profiles")
-        f.Doc.WriteP("Allows to automatically apply default values for audio streams.")
-        f.Doc.WriteTable({New StringPair("Match All", "space separated, if all match then the Output Format and Options are applied"),
-                          New StringPair("Output Format", "applied to the stream if Match All succeeds"),
-                          New StringPair("Options", "applied to the stream if Match All succeeds")})
-        f.Show()
+        Dim form As New HelpForm
+        form.Doc.WriteStart("Audio Stream Profiles")
+        form.Doc.WriteParagraph("Allows to automatically apply default values for audio streams.")
+        form.Doc.WriteTable({New StringPair("Match All", "space separated, if all match then the Output Format and Options are applied"),
+                             New StringPair("Output Format", "applied to the stream if Match All succeeds"),
+                             New StringPair("Options", "applied to the stream if Match All succeeds")})
+        form.Show()
     End Sub
 
     Sub ShowAudioStreamProfiles()
-        Using f As New DataForm
-            f.Text = "Audio Stream Profiles"
-            f.FormBorderStyle = FormBorderStyle.Sizable
-            f.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
-            f.dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
-            f.dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-            f.dgv.AllowUserToDeleteRows = True
-            f.dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        Using form As New DataForm
+            form.Text = "Audio Stream Profiles"
+            form.FormBorderStyle = FormBorderStyle.Sizable
+            form.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+            form.dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
+            form.dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+            form.dgv.AllowUserToDeleteRows = True
+            form.dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect
 
-            f.HelpAction = AddressOf ShowAudioStreamProfilesHelp
+            form.HelpAction = AddressOf ShowAudioStreamProfilesHelp
 
-            Dim match = f.dgv.AddTextBoxColumn()
+            Dim match = form.dgv.AddTextBoxColumn()
             match.DataPropertyName = "Match"
             match.HeaderText = "Match All"
 
-            Dim out = f.dgv.AddComboBoxColumn()
+            Dim out = form.dgv.AddComboBoxColumn()
             out.DataPropertyName = "Output"
             out.HeaderText = "Output Format"
             out.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             out.Items.AddRange(AudioOutputFormats)
 
-            Dim opt = f.dgv.AddTextBoxColumn()
+            Dim opt = form.dgv.AddTextBoxColumn()
             opt.DataPropertyName = "Options"
             opt.HeaderText = "Options"
 
-            f.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+            form.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
 
             Dim bs As New BindingSource
 
             bs.DataSource = ObjectHelp.GetCopy(s.eac3toProfiles)
-            f.dgv.DataSource = bs
+            form.dgv.DataSource = bs
 
-            If f.ShowDialog = DialogResult.OK Then
+            If form.ShowDialog = DialogResult.OK Then
                 s.eac3toProfiles = DirectCast(bs.DataSource, List(Of eac3toProfile))
             End If
         End Using
@@ -744,7 +751,10 @@ Public Class eac3toForm
     Sub OutputDataReceived(sender As Object, e As DataReceivedEventArgs)
         If Not e.Data Is Nothing Then
             BeginInvoke(Sub() Text = e.Data)
-            If Not e.Data.StartsWith("analyze: ") Then Output += e.Data + BR
+
+            If Not e.Data.StartsWith("analyze: ") Then
+                Output += e.Data + BR
+            End If
         End If
     End Sub
 
@@ -784,7 +794,9 @@ Public Class eac3toForm
             Output = Output.Replace("(core: ", "(").Replace("(embedded: ", "(")
 
             For Each line In Output.SplitLinesNoEmpty
-                If line.Contains("Subtitle (DVB)") Then Continue For
+                If line.Contains("Subtitle (DVB)") Then
+                    Continue For
+                End If
 
                 Dim match = Regex.Match(line, "^(\d+): (.+)$")
 
@@ -794,7 +806,9 @@ Public Class eac3toForm
                     ms.ID = match.Groups(1).Value.ToInt
                     ms.Codec = match.Groups(2).Value
 
-                    If ms.Codec.Contains(",") Then ms.Codec = ms.Codec.Left(",")
+                    If ms.Codec.Contains(",") Then
+                        ms.Codec = ms.Codec.Left(",")
+                    End If
 
                     ms.IsVideo = ms.Codec.EqualsAny("h264/AVC", "h265/HEVC", "VC-1", "MPEG2")
                     ms.IsAudio = ms.Codec.EqualsAny("DTS Master Audio", "DTS", "DTS-ES", "DTS Hi-Res", "DTS Express", "AC3", "AC3 EX", "AC3 Headphone", "AC3 Surround", "EAC3", "E-AC3", "E-AC3 EX", "E-AC3 Surround", "TrueHD/AC3", "TrueHD/AC3 (Atmos)", "TrueHD (Atmos)", "RAW/PCM", "MP2", "AAC")
@@ -810,7 +824,7 @@ Public Class eac3toForm
                         Next
 
                         Select Case ms.Codec
-                            Case "AC3 EX", "AC3 Surround", "AC3 Headphone"
+                            Case "AC3", "AC3 EX", "AC3 Surround", "AC3 Headphone"
                                 ms.OutputType = "ac3"
                             Case "E-AC3", "E-AC3 EX"
                                 ms.OutputType = "eac3"
@@ -826,18 +840,24 @@ Public Class eac3toForm
                                 ms.OutputType = "dtshr"
                             Case "RAW/PCM"
                                 ms.OutputType = "flac"
+                            Case "AAC"
+                                ms.OutputType = "m4a"
+                            Case "Subtitle (ASS)"
+                                ms.OutputType = "ass"
                             Case Else
                                 ms.OutputType = ms.Codec.ToLower.Replace("-", "")
                         End Select
                     End If
 
-                    For Each iProfile In s.eac3toProfiles
-                        Dim searchWords = iProfile.Match.SplitNoEmptyAndWhiteSpace(" ")
-                        If searchWords.NothingOrEmpty Then Continue For
+                    For Each pro In s.eac3toProfiles
+                        Dim searchWords = pro.Match.SplitNoEmptyAndWhiteSpace(" ")
+                        If searchWords.NothingOrEmpty Then
+                            Continue For
+                        End If
 
                         If ms.Text.ContainsAll(searchWords) Then
-                            ms.OutputType = iProfile.Output
-                            ms.Options = iProfile.Options
+                            ms.OutputType = pro.Output
+                            ms.Options = pro.Options
                         End If
                     Next
 
@@ -884,7 +904,9 @@ Public Class eac3toForm
                 End If
             Next
 
-            If cbVideoStream.Items.Count < 2 Then cbVideoStream.Enabled = False
+            If cbVideoStream.Items.Count < 2 Then
+                cbVideoStream.Enabled = False
+            End If
 
             If cbVideoStream.Items.Count > 0 Then
                 cbVideoStream.SelectedIndex = 0
@@ -907,7 +929,7 @@ Public Class eac3toForm
         End If
     End Sub
 
-    Private Sub AddCmdlControl_PresetsChanged(presets As String) Handles cmdlOptions.PresetsChanged
+    Sub AddCmdlControl_PresetsChanged(presets As String) Handles cmdlOptions.PresetsChanged
         cmdlOptions.Presets = presets
     End Sub
 
@@ -931,7 +953,9 @@ Public Class eac3toForm
 
                 r += "." + i.OutputType + """"
 
-                If i.Options <> "" Then r += " " + i.Options.Trim
+                If i.Options <> "" Then
+                    r += " " + i.Options.Trim
+                End If
             End If
         Next
 
@@ -954,18 +978,21 @@ Public Class eac3toForm
         Return r + " -progressnumbers"
     End Function
 
-    Private Sub bnBrowse_Click() Handles bnBrowse.Click
-        Using d As New FolderBrowserDialog
-            d.SetSelectedPath(teTempDir.Text)
-            If d.ShowDialog = DialogResult.OK Then teTempDir.Text = d.SelectedPath
+    Sub bnBrowse_Click() Handles bnBrowse.Click
+        Using dialog As New FolderBrowserDialog
+            dialog.SetSelectedPath(teTempDir.Text)
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                teTempDir.Text = dialog.SelectedPath
+            End If
         End Using
     End Sub
 
-    Private Sub lvSubtitles_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lvSubtitles.ItemCheck
+    Sub lvSubtitles_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lvSubtitles.ItemCheck
         DirectCast(lvSubtitles.Items(e.Index).Tag, M2TSStream).Checked = e.NewValue = CheckState.Checked
     End Sub
 
-    Private Sub cbVideoStream_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbVideoStream.SelectedIndexChanged
+    Sub cbVideoStream_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbVideoStream.SelectedIndexChanged
         cbVideoOutput.Items.Clear()
         cbVideoOutput.Items.Add("Nothing")
         cbVideoOutput.Enabled = True
@@ -990,14 +1017,17 @@ Public Class eac3toForm
         End Select
     End Sub
 
-    Private Sub cbAudioOutput_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbAudioOutput.SelectedIndexChanged
+    Sub cbAudioOutput_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbAudioOutput.SelectedIndexChanged
         If Not cbAudioOutput.SelectedItem Is Nothing AndAlso Not GetSelectedStream() Is Nothing Then
             Dim ms = GetSelectedStream()
             ms.OutputType = cbAudioOutput.SelectedItem.ToString
             ms.ListViewItem.Text = ms.ToString
 
             If ms.OutputType = "dts" AndAlso {"DTS Master Audio", "DTS Hi-Res"}.Contains(ms.Codec) AndAlso Not ms.Options.Contains("-core") Then
-                If ms.Options = "" Then ms.Options = "-core"
+                If ms.Options = "" Then
+                    ms.Options = "-core"
+                End If
+
                 ms.UpdateListViewItem()
                 cmdlOptions.tb.Text = ms.Options
             ElseIf {"dtsma", "dtshr"}.Contains(ms.OutputType) AndAlso ms.Options.Contains("-core") Then
@@ -1012,7 +1042,7 @@ Public Class eac3toForm
         End If
     End Sub
 
-    Private Sub cmdlOptions_ValueChanged(value As String) Handles cmdlOptions.ValueChanged
+    Sub cmdlOptions_ValueChanged(value As String) Handles cmdlOptions.ValueChanged
         If cmdlOptions.tb.Focused OrElse cmdlOptions.bn.Focused Then
             Dim ms = GetSelectedStream()
 
@@ -1036,15 +1066,17 @@ Public Class eac3toForm
         End If
     End Sub
 
-    Private Sub lvAudio_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lvAudio.ItemCheck
+    Sub lvAudio_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lvAudio.ItemCheck
         DirectCast(lvAudio.Items(e.Index).Tag, M2TSStream).Checked = e.NewValue = CheckState.Checked
     End Sub
 
     Function GetSelectedStream() As M2TSStream
-        If lvAudio.SelectedItems.Count > 0 Then Return DirectCast(lvAudio.SelectedItems(0).Tag, M2TSStream)
+        If lvAudio.SelectedItems.Count > 0 Then
+            Return DirectCast(lvAudio.SelectedItems(0).Tag, M2TSStream)
+        End If
     End Function
 
-    Private Sub lvAudio_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lvAudio.SelectedIndexChanged
+    Sub lvAudio_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lvAudio.SelectedIndexChanged
         Dim ms = GetSelectedStream()
 
         If Not ms Is Nothing Then
@@ -1053,82 +1085,84 @@ Public Class eac3toForm
         End If
     End Sub
 
-    Private Sub bnAudioAll_Click(sender As Object, e As EventArgs) Handles bnAudioAll.Click
-        For Each i As ListViewItem In lvAudio.Items
-            i.Checked = True
+    Sub bnAudioAll_Click(sender As Object, e As EventArgs) Handles bnAudioAll.Click
+        For Each item As ListViewItem In lvAudio.Items
+            item.Checked = True
         Next
     End Sub
 
-    Private Sub bnAudioNone_Click(sender As Object, e As EventArgs) Handles bnAudioNone.Click
-        For Each i As ListViewItem In lvAudio.Items
-            i.Checked = False
+    Sub bnAudioNone_Click(sender As Object, e As EventArgs) Handles bnAudioNone.Click
+        For Each item As ListViewItem In lvAudio.Items
+            item.Checked = False
         Next
     End Sub
 
-    Private Sub bnAudioEnglish_Click(sender As Object, e As EventArgs) Handles bnAudioEnglish.Click
-        For Each i As ListViewItem In lvAudio.Items
-            Dim stream = DirectCast(i.Tag, M2TSStream)
+    Sub bnAudioEnglish_Click(sender As Object, e As EventArgs) Handles bnAudioEnglish.Click
+        For Each item As ListViewItem In lvAudio.Items
+            Dim stream = DirectCast(item.Tag, M2TSStream)
 
             If stream.Language.TwoLetterCode = "en" Then
-                i.Checked = True
+                item.Checked = True
             End If
         Next
     End Sub
 
-    Private Sub bnAudioNative_Click(sender As Object, e As EventArgs) Handles bnAudioNative.Click
-        For Each i As ListViewItem In lvAudio.Items
-            Dim stream = DirectCast(i.Tag, M2TSStream)
+    Sub bnAudioNative_Click(sender As Object, e As EventArgs) Handles bnAudioNative.Click
+        For Each item As ListViewItem In lvAudio.Items
+            Dim stream = DirectCast(item.Tag, M2TSStream)
 
             If stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
-                i.Checked = True
+                item.Checked = True
             End If
         Next
     End Sub
 
-    Private Sub bnSubtitleAll_Click(sender As Object, e As EventArgs) Handles bnSubtitleAll.Click
-        For Each i As ListViewItem In lvSubtitles.Items
-            i.Checked = True
+    Sub bnSubtitleAll_Click(sender As Object, e As EventArgs) Handles bnSubtitleAll.Click
+        For Each item As ListViewItem In lvSubtitles.Items
+            item.Checked = True
         Next
     End Sub
 
-    Private Sub bnSubtitleNone_Click(sender As Object, e As EventArgs) Handles bnSubtitleNone.Click
-        For Each i As ListViewItem In lvSubtitles.Items
-            i.Checked = False
+    Sub bnSubtitleNone_Click(sender As Object, e As EventArgs) Handles bnSubtitleNone.Click
+        For Each item As ListViewItem In lvSubtitles.Items
+            item.Checked = False
         Next
     End Sub
 
-    Private Sub bnSubtitleEnglish_Click(sender As Object, e As EventArgs) Handles bnSubtitleEnglish.Click
-        For Each i As ListViewItem In lvSubtitles.Items
-            Dim stream = DirectCast(i.Tag, M2TSStream)
+    Sub bnSubtitleEnglish_Click(sender As Object, e As EventArgs) Handles bnSubtitleEnglish.Click
+        For Each item As ListViewItem In lvSubtitles.Items
+            Dim stream = DirectCast(item.Tag, M2TSStream)
 
             If stream.Language.TwoLetterCode = "en" Then
-                i.Checked = True
+                item.Checked = True
             End If
         Next
     End Sub
 
-    Private Sub bnSubtitleNative_Click(sender As Object, e As EventArgs) Handles bnSubtitleNative.Click
-        For Each i As ListViewItem In lvSubtitles.Items
-            Dim stream = DirectCast(i.Tag, M2TSStream)
+    Sub bnSubtitleNative_Click(sender As Object, e As EventArgs) Handles bnSubtitleNative.Click
+        For Each item As ListViewItem In lvSubtitles.Items
+            Dim stream = DirectCast(item.Tag, M2TSStream)
 
             If stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
-                i.Checked = True
+                item.Checked = True
             End If
         Next
     End Sub
 
-    Private Sub teTempDir_TextChanged() Handles teTempDir.TextChanged
+    Sub teTempDir_TextChanged() Handles teTempDir.TextChanged
         OutputFolder = teTempDir.Text.FixDir
     End Sub
 
-    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+    Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
+        MyBase.OnFormClosing(args)
+
         Dim hdCounter As Integer
 
-        For Each i In Streams
-            If i.Checked AndAlso i.IsAudio Then
-                If {"dtsma", "dtshr"}.Contains(i.OutputType) Then
+        For Each str In Streams
+            If str.Checked AndAlso str.IsAudio Then
+                If {"dtsma", "dtshr"}.Contains(str.OutputType) Then
                     hdCounter += 1
-                ElseIf i.OutputType = "dts" AndAlso {"DTS Master Audio", "DTS Hi-Res"}.Contains(i.Codec) Then
+                ElseIf str.OutputType = "dts" AndAlso {"DTS Master Audio", "DTS Hi-Res"}.Contains(str.Codec) Then
                     hdCounter -= 1
                 End If
             End If
@@ -1136,21 +1170,23 @@ Public Class eac3toForm
 
         s.CmdlPresetsEac3to = cmdlOptions.Presets
 
-        If Not bnOK.Enabled Then e.Cancel = True
+        If Not bnOK.Enabled Then
+            args.Cancel = True
+        End If
 
         If DialogResult = DialogResult.OK Then
             If cbVideoOutput.Text = "MKV" AndAlso Not Package.Haali.VerifyOK(True) Then
-                e.Cancel = True
+                args.Cancel = True
             End If
 
             s.Storage.SetBool("demux Blu-ray chapters", cbChapters.Checked)
         End If
 
-        MyBase.OnFormClosing(e)
+        MyBase.OnFormClosing(args)
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)
-        Task.Run(AddressOf StartAnalyze)
         MyBase.OnShown(e)
+        Task.Run(AddressOf StartAnalyze)
     End Sub
 End Class

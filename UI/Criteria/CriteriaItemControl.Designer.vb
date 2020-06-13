@@ -21,12 +21,11 @@ Namespace UI
         <System.Diagnostics.DebuggerStepThrough()>
         Private Sub InitializeComponent()
             Me.components = New System.ComponentModel.Container()
-            Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(CriteriaItemControl))
             Me.LayoutPanel = New System.Windows.Forms.TableLayoutPanel()
             Me.mbProperties = New StaxRip.UI.MenuButton()
             Me.bnRemove = New System.Windows.Forms.Button()
-            Me.te = New StaxRip.UI.TextEdit()
             Me.mbCondition = New StaxRip.UI.MenuButton()
+            Me.te = New StaxRip.UI.TextEdit()
             Me.LayoutPanel.SuspendLayout()
             Me.SuspendLayout()
             '
@@ -70,14 +69,6 @@ Namespace UI
             Me.bnRemove.Text = "Remove"
             Me.bnRemove.UseVisualStyleBackColor = True
             '
-            'te
-            '
-            Me.te.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.te.Location = New System.Drawing.Point(525, 70)
-            Me.te.Name = "te"
-            Me.te.Size = New System.Drawing.Size(218, 35)
-            Me.te.TabIndex = 4
-            '
             'mbCondition
             '
             Me.mbCondition.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -85,9 +76,19 @@ Namespace UI
             Me.mbCondition.ShowMenuSymbol = True
             Me.mbCondition.Size = New System.Drawing.Size(218, 35)
             '
+            'te
+            '
+            Me.te.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.te.BackColor = System.Drawing.Color.White
+            Me.te.Location = New System.Drawing.Point(525, 70)
+            Me.te.Name = "te"
+            Me.te.Size = New System.Drawing.Size(218, 35)
+            Me.te.TabIndex = 4
+            '
             'CriteriaItemControl
             '
-            Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+            Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+            Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
             Me.BackColor = System.Drawing.SystemColors.Window
             Me.Controls.Add(Me.LayoutPanel)
             Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))

@@ -42,7 +42,7 @@
         End Set
     End Property
 
-    Private Function CheckRange(value As Double) As Double
+    Function CheckRange(value As Double) As Double
         If value < 0 Then
             value = 0
         ElseIf value > 1 Then

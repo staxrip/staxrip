@@ -5,9 +5,12 @@ Imports StaxRip.UI
 Public Class ApplicationSettings
     Implements ISafeSerialization
 
+    Public AllowCustomPathsInStartupFolder As Boolean
+    Public AllowToolsWithWrongVersion As Boolean
     Public AudioProfiles As List(Of AudioProfile)
     Public AviSynthFilterPreferences As StringPairList
     Public AviSynthProfiles As List(Of FilterCategory)
+    Public CharacterLimit As Integer
     Public CheckForUpdates As Boolean
     Public CheckForUpdatesDismissed As String
     Public CheckForUpdatesLastRequest As DateTime
@@ -33,10 +36,11 @@ Public Class ApplicationSettings
     Public IconFile As String
     Public LastPosition As Integer
     Public LastSourceDir As String
+    Public LogEventCommand As Boolean
     Public LogFileNum As Integer = 50
     Public MinimizeToTray As Boolean
     Public MinimumDiskSpace As Integer = 20
-    Public MinPreviewSize As Integer = 70
+    Public PreviewSize As Integer = 70
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
     Public ParallelProcsNum As Integer = 2
@@ -53,7 +57,6 @@ Public Class ApplicationSettings
     Public ShowPreviewInfo As Boolean
     Public ShowTemplateSelection As Boolean
     Public ShutdownTimeout As Integer
-    Public CharacterLimit As Integer
     Public StartupTemplate As String
     Public Storage As ObjectStorage
     Public StringDictionary As Dictionary(Of String, String)
@@ -62,15 +65,14 @@ Public Class ApplicationSettings
     Public ThumbnailBackgroundColor As Color = Color.AliceBlue
     Public ToolStripRenderModeEx As ToolStripRenderModeEx = ToolStripRenderModeEx.SystemDefault
     Public UIScaleFactor As Single = 1
+    Public UseVapourSynthPortable As Boolean
     Public VapourSynthFilterPreferences As StringPairList
     Public VapourSynthProfiles As List(Of FilterCategory)
     Public Versions As Dictionary(Of String, Integer)
     Public VideoEncoderProfiles As List(Of VideoEncoder)
     Public WindowPositions As WindowPositions
-    Public WindowPositionsCenterScreen As String()
     Public WindowPositionsRemembered As String()
     Public WriteDebugLog As Boolean
-    Public LogEventCommand As Boolean
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 
@@ -80,13 +82,18 @@ Public Class ApplicationSettings
         End Get
     End Property
 
-    Private Function Check(obj As Object, key As String, version As Integer) As Boolean
+    Function Check(obj As Object, key As String, version As Integer) As Boolean
         Return SafeSerialization.Check(Me, obj, key, version)
     End Function
 
     Sub Init() Implements ISafeSerialization.Init
-        If Versions Is Nothing Then Versions = New Dictionary(Of String, Integer)
-        If Check(Storage, "Misc", 2) Then Storage = New ObjectStorage
+        If Versions Is Nothing Then
+            Versions = New Dictionary(Of String, Integer)
+        End If
+
+        If Check(Storage, "Misc", 2) Then
+            Storage = New ObjectStorage
+        End If
 
         If Check(VideoEncoderProfiles, "Video Encoder Profiles", 196) Then
             If VideoEncoderProfiles Is Nothing Then
@@ -127,22 +134,23 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(Demuxers, "Demuxers", 106) Then Demuxers = Demuxer.GetDefaults()
+        If Check(Demuxers, "Demuxers", 108) Then
+            Demuxers = Demuxer.GetDefaults()
+        End If
 
-        If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 3) Then
+        If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 6) Then
             AviSynthFilterPreferences = New StringPairList
             AviSynthFilterPreferences.Add("default", "FFVideoSource")
             AviSynthFilterPreferences.Add("264 h264 avc", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("d2v", "MPEG2Source")
-            AviSynthFilterPreferences.Add("dgi", "DGSource")
             AviSynthFilterPreferences.Add("mp4 m4v mov", "LSMASHVideoSource")
             AviSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("wmv", "DSS2")
             AviSynthFilterPreferences.Add("vdr", "AviSource")
         End If
 
-        If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 5) Then
+        If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 6) Then
             VapourSynthFilterPreferences = New StringPairList
             VapourSynthFilterPreferences.Add("default", "ffms2")
             VapourSynthFilterPreferences.Add("264 h264 avc", "LWLibavSource")
@@ -151,7 +159,6 @@ Public Class ApplicationSettings
             VapourSynthFilterPreferences.Add("mp4 m4v mov", "LibavSMASHSource")
             VapourSynthFilterPreferences.Add("ts m2ts mts m2t", "LWLibavSource")
             VapourSynthFilterPreferences.Add("d2v", "d2vsource")
-            VapourSynthFilterPreferences.Add("dgi", "DGSource")
         End If
 
         If Check(ToolStripRenderModeEx, "menu style", 1) Then
@@ -170,15 +177,21 @@ Public Class ApplicationSettings
             WindowPositionsRemembered = {"StaxRip", "Crop", "Preview", "Help"}
         End If
 
-        If Check(WindowPositions, "Remembered Window Positions 2", 1) Then WindowPositions = New WindowPositions
+        If Check(WindowPositions, "Remembered Window Positions 2", 1) Then
+            WindowPositions = New WindowPositions
+        End If
 
-        If WindowPositionsCenterScreen Is Nothing Then WindowPositionsCenterScreen = {}
+        If Check(StartupTemplate, "Startup Template", 2) Then
+            StartupTemplate = "Automatic Workflow"
+        End If
 
-        If Check(StartupTemplate, "Startup Template", 2) Then StartupTemplate = "Automatic Workflow"
+        If PackagePaths Is Nothing Then
+            PackagePaths = New Dictionary(Of String, String)
+        End If
 
-        If PackagePaths Is Nothing Then PackagePaths = New Dictionary(Of String, String)
-
-        If RecentProjects Is Nothing Then RecentProjects = New List(Of String)
+        If RecentProjects Is Nothing Then
+            RecentProjects = New List(Of String)
+        End If
 
         If Check(MuxerProfiles, "Container Profiles", 40) Then
             MuxerProfiles = New List(Of Muxer)
@@ -216,18 +229,29 @@ Public Class ApplicationSettings
                               "Stats = --stats ""%target_temp_file%.stats"""
         End If
 
-        If Check(ParMenu, "Source PAR menu", 10) Then ParMenu = GetParMenu()
-        If Check(DarMenu, "Source DAR menu", 10) Then DarMenu = GetDarMenu()
+        If Check(ParMenu, "Source PAR menu", 10) Then
+            ParMenu = GetParMenu()
+        End If
+
+        If Check(DarMenu, "Source DAR menu", 10) Then
+            DarMenu = GetDarMenu()
+        End If
 
         If Check(TargetImageSizeMenu, "Target image size menu", 15) Then
             TargetImageSizeMenu = GetDefaultTargetImageSizeMenu()
         End If
 
-        If StringList Is Nothing Then StringList = New List(Of String)
+        If StringList Is Nothing Then
+            StringList = New List(Of String)
+        End If
 
-        If RecentFramePositions Is Nothing Then RecentFramePositions = New List(Of String)
+        If RecentFramePositions Is Nothing Then
+            RecentFramePositions = New List(Of String)
+        End If
 
-        If CropFrameCount = 0 Then CropFrameCount = 10
+        If CropFrameCount = 0 Then
+            CropFrameCount = 10
+        End If
 
         If Check(CustomMenuCrop, "Menu in crop dialog", 17) Then
             CustomMenuCrop = CropForm.GetDefaultMenuCrop
@@ -237,7 +261,7 @@ Public Class ApplicationSettings
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 
-        If Check(CustomMenuPreview, "Menu in preview dialog", 53) Then
+        If Check(CustomMenuPreview, "Menu in preview dialog", 54) Then
             CustomMenuPreview = PreviewForm.GetDefaultMenu()
         End If
 
@@ -256,7 +280,10 @@ Public Class ApplicationSettings
                 Dim unknown = current.Where(Function(filter) Not defaultScripts.Contains(filter.Script))
 
                 For Each i In unknown
-                    If Not i.Path?.StartsWith("Backup | ") Then i.Path = "Backup | " + i.Path
+                    If Not i.Path?.StartsWith("Backup | ") Then
+                        i.Path = "Backup | " + i.Path
+                    End If
+
                     FilterCategory.AddFilter(i, AviSynthProfiles)
                 Next
             End If
@@ -298,53 +325,8 @@ Public Class ApplicationSettings
     End Sub
 
     Sub Migrate()
-        Dim mainMenuVersion = 14
-
-        If Not Storage.GetBool("main menu update" & mainMenuVersion) Then
-            'If 0 = CustomMenuMainForm.GetAllItems().Where(
-            '    Function(val) Not val.Parameters.NothingOrEmpty AndAlso
-            '    TypeOf val.Parameters(0) Is String AndAlso
-            '    val.Parameters(0).ToString.Contains("Log Files")).Count Then
-
-            'CustomMenuMainForm.Add("Tools|Directories|Log Files", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%Log Files"""})
-            'End If
-
-            'For Each i In CustomMenuMainForm.GetAllItems()
-            '    If i.MethodName = NameOf(g.DefaultCommands.ExecuteCommandLine) AndAlso
-            '        i.Parameters.Count > 0 AndAlso TypeOf i.Parameters(0) Is String AndAlso
-            '        i.Parameters(0).ToString <> "" AndAlso i.Parameters(0).ToString.EndsWith("test-build.md") Then
-
-            '        i.Parameters(0) = "https://github.com/stax76/staxrip/blob/master/changelog.md"
-            '        Exit For
-            '    End If
-            'Next
-
-            'For Each i In CustomMenuMainForm.GetAllItems()
-            '    If i.MethodName = NameOf(g.DefaultCommands.ExecuteCommandLine) AndAlso
-            '        i.Parameters.Count > 0 AndAlso TypeOf i.Parameters(0) Is String AndAlso
-            '        i.Parameters(0).ToString <> "" AndAlso i.Parameters(0).ToString.EndsWith("/md/changelog.md") Then
-
-            '        i.Parameters(0) = "https://github.com/stax76/staxrip/blob/master/changelog.md"
-            '        Exit For
-            '    End If
-            'Next
-
-            'For Each i In CustomMenuMainForm.GetAllItems()
-            '    If i.MethodName = NameOf(g.DefaultCommands.ExecuteCommandLine) AndAlso
-            '        i.Parameters.Count > 0 AndAlso TypeOf i.Parameters(0) Is String AndAlso
-            '        i.Parameters(0).ToString <> "" AndAlso i.Parameters(0).ToString.EndsWith("_staxrip.log""") Then
-
-            '        i.MethodName = "ShowLogFile"
-            '        i.Parameters.Clear()
-            '        Exit For
-            '    End If
-            'Next
-
-            Storage.SetBool("main menu update" & mainMenuVersion, True)
-        End If
-
-        For Each i In AudioProfiles
-            i.Migrate()
+        For Each ap In AudioProfiles
+            ap.Migrate()
         Next
     End Sub
 
@@ -408,45 +390,45 @@ Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$"
 
     Shared Function GetDefaultEac3toMenu() As String
         Return _
-"AAC 96 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.3" + BR +
-"AAC 132 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.4" + BR +
-"AAC 240 Kbps 5.1ch - Normalize - 16bit = -down16 -down6 -normalize -quality=0.3" + BR +
-"Normalize = -normalize" + BR +
-"Convert to 16 bit = -down16" + BR +
-"Extract DTS Core = -core" + BR +
-"Downmix | Multichannel to stereo = -downStereo" + BR +
-"Downmix | Multichannel to stereo (DPL II) = -downDpl" + BR +
-"Downmix | 7 or 8 channels to 6 channels = -down6" + BR +
-"Downmix | Mix LFE in (stereo downmixing) = -mixlfe" + BR +
-"AAC Quality | 0.10 = -quality=0.10" + BR +
-"AAC Quality | 0.15 = -quality=0.15" + BR +
-"AAC Quality | 0.20 = -quality=0.20" + BR +
-"AAC Quality | 0.25 = -quality=0.25" + BR +
-"AAC Quality | 0.30 = -quality=0.30" + BR +
-"AAC Quality | 0.35 = -quality=0.35" + BR +
-"AAC Quality | 0.40 = -quality=0.40" + BR +
-"AAC Quality | 0.45 = -quality=0.45" + BR +
-"AAC Quality | 0.50 = -quality=0.50" + BR +
-"AAC Quality | 0.55 = -quality=0.55" + BR +
-"AAC Quality | 0.60 = -quality=0.60" + BR +
-"AAC Quality | 0.65 = -quality=0.65" + BR +
-"AAC Quality | 0.70 = -quality=0.70" + BR +
-"AAC Quality | 0.75 = -quality=0.75" + BR +
-"AAC Quality | 0.80 = -quality=0.80" + BR +
-"AAC Quality | 0.85 = -quality=0.85" + BR +
-"AAC Quality | 0.90 = -quality=0.90" + BR +
-"AAC Quality | 0.95 = -quality=0.95" + BR +
-"AC3 Encoding | 192 = -192" + BR +
-"AC3 Encoding | 224 = -224" + BR +
-"AC3 Encoding | 384 = -384" + BR +
-"AC3 Encoding | 448 = -448" + BR +
-"AC3 Encoding | 640 = -640" + BR +
-"DTS Encoding | 768 = -768" + BR +
-"DTS Encoding | 1536 = -1536" + BR +
-"Resample | 44100 = -resampleTo44100" + BR +
-"Resample | 48000 = -resampleTo48000" + BR +
-"Resample | 88200 = -resampleTo88200" + BR +
-"Resample | 96000 = -resampleTo96000"
+            "AAC 96 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.3" + BR +
+            "AAC 132 Kbps - 2ch - Normalize - 16bit = -down16 -downStereo -normalize -quality=0.4" + BR +
+            "AAC 240 Kbps 5.1ch - Normalize - 16bit = -down16 -down6 -normalize -quality=0.3" + BR +
+            "Normalize = -normalize" + BR +
+            "Convert to 16 bit = -down16" + BR +
+            "Extract DTS Core = -core" + BR +
+            "Downmix | Multichannel to stereo = -downStereo" + BR +
+            "Downmix | Multichannel to stereo (DPL II) = -downDpl" + BR +
+            "Downmix | 7 or 8 channels to 6 channels = -down6" + BR +
+            "Downmix | Mix LFE in (stereo downmixing) = -mixlfe" + BR +
+            "AAC Quality | 0.10 = -quality=0.10" + BR +
+            "AAC Quality | 0.15 = -quality=0.15" + BR +
+            "AAC Quality | 0.20 = -quality=0.20" + BR +
+            "AAC Quality | 0.25 = -quality=0.25" + BR +
+            "AAC Quality | 0.30 = -quality=0.30" + BR +
+            "AAC Quality | 0.35 = -quality=0.35" + BR +
+            "AAC Quality | 0.40 = -quality=0.40" + BR +
+            "AAC Quality | 0.45 = -quality=0.45" + BR +
+            "AAC Quality | 0.50 = -quality=0.50" + BR +
+            "AAC Quality | 0.55 = -quality=0.55" + BR +
+            "AAC Quality | 0.60 = -quality=0.60" + BR +
+            "AAC Quality | 0.65 = -quality=0.65" + BR +
+            "AAC Quality | 0.70 = -quality=0.70" + BR +
+            "AAC Quality | 0.75 = -quality=0.75" + BR +
+            "AAC Quality | 0.80 = -quality=0.80" + BR +
+            "AAC Quality | 0.85 = -quality=0.85" + BR +
+            "AAC Quality | 0.90 = -quality=0.90" + BR +
+            "AAC Quality | 0.95 = -quality=0.95" + BR +
+            "AC3 Encoding | 192 = -192" + BR +
+            "AC3 Encoding | 224 = -224" + BR +
+            "AC3 Encoding | 384 = -384" + BR +
+            "AC3 Encoding | 448 = -448" + BR +
+            "AC3 Encoding | 640 = -640" + BR +
+            "DTS Encoding | 768 = -768" + BR +
+            "DTS Encoding | 1536 = -1536" + BR +
+            "Resample | 44100 = -resampleTo44100" + BR +
+            "Resample | 48000 = -resampleTo48000" + BR +
+            "Resample | 88200 = -resampleTo88200" + BR +
+            "Resample | 96000 = -resampleTo96000"
     End Function
 
     Sub UpdateRecentProjects(path As String)
@@ -456,10 +438,15 @@ Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$"
             path.Ext = "bin"
 
         Dim list As New List(Of String)
-        If Not skip Then list.Add(path)
+
+        If Not skip Then
+            list.Add(path)
+        End If
 
         For Each i In s.RecentProjects
-            If i <> path AndAlso File.Exists(i) Then list.Add(i)
+            If i <> path AndAlso File.Exists(i) Then
+                list.Add(i)
+            End If
         Next
 
         While list.Count > s.ProjectsMruNum

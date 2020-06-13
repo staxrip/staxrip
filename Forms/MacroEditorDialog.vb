@@ -37,17 +37,17 @@ Public Class MacroEditorDialog
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlp.SetColumnSpan(Me.MacroEditorControl, 3)
-        Me.MacroEditorControl.Location = New System.Drawing.Point(10, 10)
-        Me.MacroEditorControl.Margin = New System.Windows.Forms.Padding(10, 10, 10, 0)
+        Me.MacroEditorControl.Location = New System.Drawing.Point(15, 0)
+        Me.MacroEditorControl.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.MacroEditorControl.Name = "MacroEditorControl"
-        Me.MacroEditorControl.Size = New System.Drawing.Size(855, 607)
+        Me.MacroEditorControl.Size = New System.Drawing.Size(845, 607)
         Me.MacroEditorControl.TabIndex = 0
         '
         'bnContext
         '
         Me.bnContext.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.bnContext.Location = New System.Drawing.Point(10, 627)
-        Me.bnContext.Margin = New System.Windows.Forms.Padding(10)
+        Me.bnContext.Location = New System.Drawing.Point(15, 622)
+        Me.bnContext.Margin = New System.Windows.Forms.Padding(15)
         Me.bnContext.Name = "bnContext"
         Me.bnContext.Size = New System.Drawing.Size(182, 70)
         Me.bnContext.TabIndex = 2
@@ -58,8 +58,8 @@ Public Class MacroEditorDialog
         '
         Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(615, 627)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(10)
+        Me.bnCancel.Location = New System.Drawing.Point(610, 622)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
@@ -67,7 +67,7 @@ Public Class MacroEditorDialog
         '
         Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(355, 627)
+        Me.bnOK.Location = New System.Drawing.Point(345, 622)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
@@ -93,7 +93,7 @@ Public Class MacroEditorDialog
         Me.tlp.Size = New System.Drawing.Size(875, 707)
         Me.tlp.TabIndex = 3
         '
-        'MacroEditor
+        'MacroEditorDialog
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
@@ -103,7 +103,7 @@ Public Class MacroEditorDialog
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
-        Me.Name = "MacroEditor"
+        Me.Name = "MacroEditorDialog"
         Me.Text = "Text"
         Me.tlp.ResumeLayout(False)
         Me.ResumeLayout(False)
@@ -138,20 +138,21 @@ Public Class MacroEditorDialog
         Text = "Script Editor"
         HelpText = "Editor for scripts that may contain macros."
         MacroEditorControl.SetScriptDefaults()
-        ScaleClientSize(45, 35)
+        ScaleClientSize(45, 30)
     End Sub
 
-    Private Sub UniversalEditor_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
+    Sub UniversalEditor_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
-        form.Doc.WriteP(HelpText)
+        form.Doc.WriteParagraph(HelpText)
         form.Doc.WriteTips(MacroEditorControl.TipProvider.GetTips)
-        form.Doc.WriteTable("Macros", Macro.GetTips())
+        form.Doc.WriteTable("Macros", Macro.GetTips(False, True, False))
         form.Show()
     End Sub
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
+
         bnContext.AutoSize = True
         Dim editorControl = MacroEditorControl
         Dim textSize = TextRenderer.MeasureText(editorControl.rtbEdit.Text, editorControl.rtbEdit.Font)

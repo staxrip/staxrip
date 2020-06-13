@@ -3,7 +3,7 @@
 
 #include "Common.h"
 #include "FrameServer.h"
-#include "avisynth_headers\avisynth.h"
+#include "avisynth.h"
 
 #include <atomic>
 

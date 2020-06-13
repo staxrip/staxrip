@@ -1,4 +1,6 @@
 ﻿
+Imports StaxRip.UI
+
 Public Class TestForm
     Sub New()
         InitializeComponent()

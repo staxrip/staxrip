@@ -58,7 +58,6 @@ Public Class Project
     Public NoDialogs As Boolean
     Public PreferredAudio As String
     Public PreferredSubtitles As String
-    Public PreRenderIntoLossless As Boolean
     Public Ranges As List(Of Range)
     Public RemindOversize As Boolean = True
     Public RemindToCrop As Boolean = False
@@ -111,7 +110,7 @@ Public Class Project
         End Get
     End Property
 
-    Private Function Check(obj As Object, key As String, version As Integer) As Boolean
+    Function Check(obj As Object, key As String, version As Integer) As Boolean
         Return SafeSerialization.Check(Me, obj, key, version)
     End Function
 
@@ -225,8 +224,8 @@ Public Class Project
         Return ret
     End Function
 
-    Private Sub NotifyPropertyChanged(
-    <CallerMemberName()> Optional ByVal propertyName As String = Nothing)
+    Sub NotifyPropertyChanged(
+        <CallerMemberName()> Optional ByVal propertyName As String = Nothing)
 
         RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
     End Sub
@@ -244,7 +243,7 @@ Public Class Project
                     Exit Property
                 End If
 
-                If System.Text.Encoding.Default.CodePage <> 65001 AndAlso
+                If Text.Encoding.Default.CodePage <> 65001 AndAlso
                     Not value.IsANSICompatible AndAlso Script.Engine = ScriptEngine.AviSynth Then
 
                     MsgWarn(Strings.NoUnicode)
@@ -273,7 +272,7 @@ Public Class Project
 
             Dim filter As New VideoFilter
             filter.Category = "Subtitle"
-            filter.Path = FilePath.GetName(path)
+            filter.Path = path.FileName
             filter.Active = True
             filter.Script = filterName + "(""" + path + """)"
             Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")
@@ -307,7 +306,7 @@ Public Class Project
 
             Dim filter As New VideoFilter
             filter.Category = "Subtitle"
-            filter.Path = FilePath.GetName(path)
+            filter.Path = path.FileName
             filter.Active = True
             filter.Script = "clip = " + filterName + "(clip, file = r""" + path + """)"
             Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")

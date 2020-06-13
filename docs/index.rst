@@ -1,4 +1,5 @@
 
+=====================
 StaxRip Documentation
 =====================
 
@@ -7,6 +8,7 @@ StaxRip Documentation
 
    introduction
    generated/screenshots
+   features
    usage
    support
    commands

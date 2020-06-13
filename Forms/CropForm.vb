@@ -18,22 +18,22 @@ Public Class CropForm
 
     Private components As System.ComponentModel.IContainer
 
-    Friend WithEvents pLeftActive As System.Windows.Forms.Panel
-    Friend WithEvents pTopActive As System.Windows.Forms.Panel
-    Friend WithEvents pBottomActive As System.Windows.Forms.Panel
-    Friend WithEvents pRightActive As System.Windows.Forms.Panel
+    Friend WithEvents pnLeftActive As System.Windows.Forms.Panel
+    Friend WithEvents pnTopActive As System.Windows.Forms.Panel
+    Friend WithEvents pnBottomActive As System.Windows.Forms.Panel
+    Friend WithEvents pnRightActive As System.Windows.Forms.Panel
     Friend WithEvents tbPosition As TrackBar
-    Friend WithEvents pVideo As System.Windows.Forms.Panel
+    Friend WithEvents pnVideo As System.Windows.Forms.Panel
     Friend WithEvents StatusStrip As System.Windows.Forms.StatusStrip
     Friend WithEvents tsbMenu As System.Windows.Forms.ToolStripDropDownButton
     Friend WithEvents laStatus As System.Windows.Forms.ToolStripStatusLabel
 
-    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.pLeftActive = New System.Windows.Forms.Panel()
-        Me.pTopActive = New System.Windows.Forms.Panel()
-        Me.pBottomActive = New System.Windows.Forms.Panel()
-        Me.pRightActive = New System.Windows.Forms.Panel()
-        Me.pVideo = New System.Windows.Forms.Panel()
+    <System.Diagnostics.DebuggerStepThrough()> Sub InitializeComponent()
+        Me.pnLeftActive = New System.Windows.Forms.Panel()
+        Me.pnTopActive = New System.Windows.Forms.Panel()
+        Me.pnBottomActive = New System.Windows.Forms.Panel()
+        Me.pnRightActive = New System.Windows.Forms.Panel()
+        Me.pnVideo = New System.Windows.Forms.Panel()
         Me.tbPosition = New System.Windows.Forms.TrackBar()
         Me.StatusStrip = New System.Windows.Forms.StatusStrip()
         Me.laStatus = New System.Windows.Forms.ToolStripStatusLabel()
@@ -42,54 +42,54 @@ Public Class CropForm
         Me.StatusStrip.SuspendLayout()
         Me.SuspendLayout()
         '
-        'pLeftActive
+        'pnLeftActive
         '
-        Me.pLeftActive.BackColor = System.Drawing.SystemColors.InfoText
-        Me.pLeftActive.Location = New System.Drawing.Point(24, 56)
-        Me.pLeftActive.Name = "pLeftActive"
-        Me.pLeftActive.Size = New System.Drawing.Size(8, 81)
-        Me.pLeftActive.TabIndex = 0
+        Me.pnLeftActive.BackColor = System.Drawing.SystemColors.InfoText
+        Me.pnLeftActive.Location = New System.Drawing.Point(24, 56)
+        Me.pnLeftActive.Name = "pnLeftActive"
+        Me.pnLeftActive.Size = New System.Drawing.Size(20, 81)
+        Me.pnLeftActive.TabIndex = 0
         '
-        'pTopActive
+        'pnTopActive
         '
-        Me.pTopActive.BackColor = System.Drawing.SystemColors.InfoText
-        Me.pTopActive.Location = New System.Drawing.Point(64, 15)
-        Me.pTopActive.Name = "pTopActive"
-        Me.pTopActive.Size = New System.Drawing.Size(152, 8)
-        Me.pTopActive.TabIndex = 1
+        Me.pnTopActive.BackColor = System.Drawing.SystemColors.InfoText
+        Me.pnTopActive.Location = New System.Drawing.Point(64, 15)
+        Me.pnTopActive.Name = "pnTopActive"
+        Me.pnTopActive.Size = New System.Drawing.Size(152, 20)
+        Me.pnTopActive.TabIndex = 1
         '
-        'pBottomActive
+        'pnBottomActive
         '
-        Me.pBottomActive.BackColor = System.Drawing.SystemColors.InfoText
-        Me.pBottomActive.Location = New System.Drawing.Point(64, 184)
-        Me.pBottomActive.Name = "pBottomActive"
-        Me.pBottomActive.Size = New System.Drawing.Size(152, 8)
-        Me.pBottomActive.TabIndex = 3
+        Me.pnBottomActive.BackColor = System.Drawing.SystemColors.InfoText
+        Me.pnBottomActive.Location = New System.Drawing.Point(64, 184)
+        Me.pnBottomActive.Name = "pnBottomActive"
+        Me.pnBottomActive.Size = New System.Drawing.Size(152, 20)
+        Me.pnBottomActive.TabIndex = 3
         '
-        'pRightActive
+        'pnRightActive
         '
-        Me.pRightActive.BackColor = System.Drawing.SystemColors.InfoText
-        Me.pRightActive.Location = New System.Drawing.Point(256, 56)
-        Me.pRightActive.Name = "pRightActive"
-        Me.pRightActive.Size = New System.Drawing.Size(8, 88)
-        Me.pRightActive.TabIndex = 4
+        Me.pnRightActive.BackColor = System.Drawing.SystemColors.InfoText
+        Me.pnRightActive.Location = New System.Drawing.Point(256, 56)
+        Me.pnRightActive.Name = "pnRightActive"
+        Me.pnRightActive.Size = New System.Drawing.Size(20, 88)
+        Me.pnRightActive.TabIndex = 4
         '
         'pVideo
         '
-        Me.pVideo.BackColor = System.Drawing.Color.Black
-        Me.pVideo.Location = New System.Drawing.Point(64, 55)
-        Me.pVideo.Name = "pVideo"
-        Me.pVideo.Size = New System.Drawing.Size(149, 89)
-        Me.pVideo.TabIndex = 2
+        Me.pnVideo.BackColor = System.Drawing.Color.Black
+        Me.pnVideo.Location = New System.Drawing.Point(64, 55)
+        Me.pnVideo.Name = "pVideo"
+        Me.pnVideo.Size = New System.Drawing.Size(149, 89)
+        Me.pnVideo.TabIndex = 2
         '
         'tbPosition
         '
         Me.tbPosition.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbPosition.AutoSize = False
-        Me.tbPosition.Location = New System.Drawing.Point(12, 326)
+        Me.tbPosition.Location = New System.Drawing.Point(12, 266)
         Me.tbPosition.Name = "tbPosition"
-        Me.tbPosition.Size = New System.Drawing.Size(711, 33)
+        Me.tbPosition.Size = New System.Drawing.Size(711, 61)
         Me.tbPosition.TabIndex = 5
         Me.tbPosition.TabStop = False
         Me.tbPosition.TickStyle = System.Windows.Forms.TickStyle.None
@@ -99,16 +99,16 @@ Public Class CropForm
         Me.StatusStrip.ImageScalingSize = New System.Drawing.Size(48, 48)
         Me.StatusStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.laStatus, Me.tsbMenu})
         Me.StatusStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow
-        Me.StatusStrip.Location = New System.Drawing.Point(0, 336)
+        Me.StatusStrip.Location = New System.Drawing.Point(0, 330)
         Me.StatusStrip.Name = "StatusStrip"
-        Me.StatusStrip.Size = New System.Drawing.Size(735, 57)
+        Me.StatusStrip.Size = New System.Drawing.Size(735, 63)
         Me.StatusStrip.TabIndex = 6
         Me.StatusStrip.Text = "StatusStrip"
         '
         'laStatus
         '
         Me.laStatus.Name = "laStatus"
-        Me.laStatus.Size = New System.Drawing.Size(34, 52)
+        Me.laStatus.Size = New System.Drawing.Size(34, 48)
         Me.laStatus.Text = "-"
         '
         'tsbMenu
@@ -117,20 +117,21 @@ Public Class CropForm
         Me.tsbMenu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbMenu.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbMenu.Name = "tsbMenu"
-        Me.tsbMenu.Size = New System.Drawing.Size(142, 55)
+        Me.tsbMenu.Size = New System.Drawing.Size(142, 57)
         Me.tsbMenu.Text = "Menu"
         '
         'CropForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(735, 393)
         Me.Controls.Add(Me.StatusStrip)
         Me.Controls.Add(Me.tbPosition)
-        Me.Controls.Add(Me.pVideo)
-        Me.Controls.Add(Me.pRightActive)
-        Me.Controls.Add(Me.pBottomActive)
-        Me.Controls.Add(Me.pTopActive)
-        Me.Controls.Add(Me.pLeftActive)
+        Me.Controls.Add(Me.pnVideo)
+        Me.Controls.Add(Me.pnRightActive)
+        Me.Controls.Add(Me.pnBottomActive)
+        Me.Controls.Add(Me.pnTopActive)
+        Me.Controls.Add(Me.pnLeftActive)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
@@ -157,7 +158,6 @@ Public Class CropForm
     Private WithEvents CustomMenu As CustomMenu
 
     Sub New()
-        MyBase.New()
         InitializeComponent()
 
         MinimumSize = New Size(CInt(Font.Size * 90), CInt(Font.Size * 70))
@@ -175,35 +175,37 @@ Public Class CropForm
 
         StatusStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
-        pVideo.Left = 10
-        pVideo.Top = 10
-        pVideo.Width = ClientSize.Width - 20
-        pVideo.Height = tbPosition.Top - 20
-        pVideo.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right Or AnchorStyles.Bottom
+        Dim offset = CInt(FontHeight * 0.6)
 
-        pLeftActive.Top = 10
-        pLeftActive.Left = 0
-        pLeftActive.Width = 10
-        pLeftActive.Height = pVideo.Height
-        pLeftActive.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Top
+        pnVideo.Left = offset
+        pnVideo.Top = offset
+        pnVideo.Width = ClientSize.Width - offset * 2
+        pnVideo.Height = tbPosition.Top - offset * 2
+        pnVideo.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right Or AnchorStyles.Bottom
 
-        pTopActive.Left = 10
-        pTopActive.Top = 0
-        pTopActive.Width = pVideo.Width
-        pTopActive.Height = 10
-        pTopActive.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
+        pnLeftActive.Top = offset
+        pnLeftActive.Left = 0
+        pnLeftActive.Width = offset
+        pnLeftActive.Height = pnVideo.Height
+        pnLeftActive.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Top
 
-        pRightActive.Left = 10 + pVideo.Width
-        pRightActive.Top = 10
-        pRightActive.Width = 10
-        pRightActive.Height = pVideo.Height
-        pRightActive.Anchor = AnchorStyles.Top Or AnchorStyles.Right Or AnchorStyles.Bottom
+        pnTopActive.Left = offset
+        pnTopActive.Top = 0
+        pnTopActive.Width = pnVideo.Width
+        pnTopActive.Height = offset
+        pnTopActive.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
 
-        pBottomActive.Left = 10
-        pBottomActive.Top = 10 + pVideo.Height
-        pBottomActive.Width = pVideo.Width
-        pBottomActive.Height = 10
-        pBottomActive.Anchor = AnchorStyles.Right Or AnchorStyles.Bottom Or AnchorStyles.Left
+        pnRightActive.Left = offset + pnVideo.Width
+        pnRightActive.Top = offset
+        pnRightActive.Width = offset
+        pnRightActive.Height = pnVideo.Height
+        pnRightActive.Anchor = AnchorStyles.Top Or AnchorStyles.Right Or AnchorStyles.Bottom
+
+        pnBottomActive.Left = offset
+        pnBottomActive.Top = offset + pnVideo.Height
+        pnBottomActive.Width = pnVideo.Width
+        pnBottomActive.Height = offset
+        pnBottomActive.Anchor = AnchorStyles.Right Or AnchorStyles.Bottom Or AnchorStyles.Left
 
         FormBorderStyle = FormBorderStyle.Sizable
 
@@ -211,43 +213,53 @@ Public Class CropForm
 
         tbPosition.Maximum = p.SourceFrames
 
-        pTopActive.BackColor = SelectedBorderColor
+        pnTopActive.BackColor = SelectedBorderColor
         Side = AnchorStyles.Top
     End Sub
 
-    Private Sub TrackLength_Scroll() Handles tbPosition.Scroll
+    Sub TrackLength_Scroll() Handles tbPosition.Scroll
         Renderer.Position = tbPosition.Value
         Renderer.Draw()
     End Sub
 
-    Private Sub DeactivateActiveColor()
-        pLeftActive.BackColor = Drawing.SystemColors.Control
-        pTopActive.BackColor = Drawing.SystemColors.Control
-        pRightActive.BackColor = Drawing.SystemColors.Control
-        pBottomActive.BackColor = Drawing.SystemColors.Control
+    Sub DeactivateActiveColor()
+        pnLeftActive.BackColor = Drawing.SystemColors.Control
+        pnTopActive.BackColor = Drawing.SystemColors.Control
+        pnRightActive.BackColor = Drawing.SystemColors.Control
+        pnBottomActive.BackColor = Drawing.SystemColors.Control
     End Sub
 
-    Private Sub CropForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim zoom = 0.0
-        Dim workingArea = Screen.FromControl(Me).WorkingArea
-
-        While p.SourceWidth * zoom < 0.7 * workingArea.Width AndAlso
-            p.SourceHeight * zoom < 0.7 * workingArea.Height
-
-            zoom += 0.01
-        End While
-
-        SetDialogSize(CInt(p.SourceWidth * zoom), CInt(p.SourceHeight * zoom))
+    Protected Overrides Sub OnSizeChanged(args As EventArgs)
+        MyBase.OnSizeChanged(args)
+        Renderer?.Draw()
     End Sub
 
-    Private Sub Wheel(sender As Object, e As MouseEventArgs) Handles MyBase.MouseWheel
-        Dim value = 2
-        value = If((Control.ModifierKeys And Keys.Shift) = Keys.Shift, 8, value)
-        value = If(e.Delta > 0, value, value * -1)
-        CropActiveSideInternal(value, (Control.ModifierKeys And Keys.Control) = Keys.Control)
+    Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
+        MyBase.OnFormClosing(args)
+
+        Dim err = p.Script.GetError
+
+        If err <> "" Then
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "Script Error"
+                td.Content = err
+                td.AddButton("OK", "OK")
+                td.AddButton("Exit", "Exit")
+
+                If td.Show() = "OK" Then
+                    args.Cancel = True
+                    Exit Sub
+                End If
+            End Using
+        End If
+
+        p.RemindToCrop = False
+        s.LastPosition = Renderer.Position
+        Renderer.Dispose()
+        FrameServer.Dispose()
     End Sub
 
-    Private Sub CropActiveSideInternal(x As Integer, opposite As Boolean)
+    Sub CropActiveSideInternal(x As Integer, opposite As Boolean)
         Select Case Side
             Case AnchorStyles.Left
                 p.CropLeft += x
@@ -278,14 +290,14 @@ Public Class CropForm
         UpdateAll()
     End Sub
 
-    Private Function GetSide(e As MouseEventArgs) As AnchorStyles
-        Dim factorX = p.SourceWidth / pVideo.Width
-        Dim factorY = p.SourceHeight / pVideo.Height
+    Function GetSide(e As MouseEventArgs) As AnchorStyles
+        Dim factorX = p.SourceWidth / pnVideo.Width
+        Dim factorY = p.SourceHeight / pnVideo.Height
 
         Dim leftSide = CInt(e.X * factorX)
         Dim topSide = CInt(e.Y * factorY)
-        Dim rightSide = CInt((pVideo.Width - e.X) * factorX)
-        Dim bottomSide = CInt((pVideo.Height - e.Y) * factorY)
+        Dim rightSide = CInt((pnVideo.Width - e.X) * factorX)
+        Dim bottomSide = CInt((pnVideo.Height - e.Y) * factorY)
 
         Dim sides As Integer() = {leftSide, topSide, rightSide, bottomSide}
         Array.Sort(sides)
@@ -304,14 +316,14 @@ Public Class CropForm
         Return AnchorStyles.None
     End Function
 
-    Private Sub MouseCrop(e As MouseEventArgs)
-        Dim scaleX = p.SourceWidth / pVideo.Width
-        Dim scaleY = p.SourceHeight / pVideo.Height
+    Sub MouseCrop(e As MouseEventArgs)
+        Dim scaleX = p.SourceWidth / pnVideo.Width
+        Dim scaleY = p.SourceHeight / pnVideo.Height
 
         Dim leftSide = CInt(e.X * scaleX)
         Dim topSide = CInt(e.Y * scaleY)
-        Dim rightSide = CInt((pVideo.Width - e.X) * scaleX)
-        Dim bottomSide = CInt((pVideo.Height - e.Y) * scaleY)
+        Dim rightSide = CInt((pnVideo.Width - e.X) * scaleX)
+        Dim bottomSide = CInt((pnVideo.Height - e.Y) * scaleY)
 
         Select Case ActiveCropSide
             Case AnchorStyles.Left
@@ -327,28 +339,28 @@ Public Class CropForm
         UpdateAll()
     End Sub
 
-    Private Sub MouseSelectBorder(e As MouseEventArgs)
+    Sub MouseSelectBorder(e As MouseEventArgs)
         Select Case GetSide(e)
             Case AnchorStyles.Left
                 DeactivateActiveColor()
-                pLeftActive.BackColor = SelectedBorderColor
+                pnLeftActive.BackColor = SelectedBorderColor
                 Side = AnchorStyles.Left
             Case AnchorStyles.Top
                 DeactivateActiveColor()
-                pTopActive.BackColor = SelectedBorderColor
+                pnTopActive.BackColor = SelectedBorderColor
                 Side = AnchorStyles.Top
             Case AnchorStyles.Right
                 DeactivateActiveColor()
-                pRightActive.BackColor = SelectedBorderColor
+                pnRightActive.BackColor = SelectedBorderColor
                 Side = AnchorStyles.Right
             Case AnchorStyles.Bottom
                 DeactivateActiveColor()
-                pBottomActive.BackColor = SelectedBorderColor
+                pnBottomActive.BackColor = SelectedBorderColor
                 Side = AnchorStyles.Bottom
         End Select
     End Sub
 
-    Private Function FixMod(value As Integer) As Integer
+    Function FixMod(value As Integer) As Integer
         If p.AutoCorrectCropValues AndAlso Not value Mod 2 = 0 Then
             value += 1
         End If
@@ -395,7 +407,7 @@ Public Class CropForm
             "  DAR: " + Calc.GetTargetDAR().ToString("f6")
     End Sub
 
-    Private Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pVideo.MouseMove
+    Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseMove
         If Control.MouseButtons = Windows.Forms.MouseButtons.Left Then
             MouseCrop(e)
         Else
@@ -403,50 +415,23 @@ Public Class CropForm
         End If
     End Sub
 
-    Private Sub pVideo_MouseDown(sender As Object, e As MouseEventArgs) Handles pVideo.MouseDown
+    Sub pVideo_MouseDown(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseDown
         If Control.MouseButtons = Windows.Forms.MouseButtons.Left Then
             ActiveCropSide = GetSide(e)
             MouseCrop(e)
         End If
     End Sub
 
-    Private Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pVideo.Paint
+    Sub pVideo_Paint(sender As Object, e As PaintEventArgs) Handles pnVideo.Paint
         Renderer?.Draw()
     End Sub
 
-    Private Sub CropForm_SizeChanged() Handles MyBase.SizeChanged
-        Renderer?.Draw()
-    End Sub
-
-    Private Sub CropForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        Dim err = p.Script.GetError
-
-        If err <> "" Then
-            Using td As New TaskDialog(Of String)
-                td.MainInstruction = "Script Error"
-                td.Content = err
-                td.AddButton("OK", "OK")
-                td.AddButton("Exit", "Exit")
-
-                If td.Show() = "OK" Then
-                    e.Cancel = True
-                    Exit Sub
-                End If
-            End Using
-        End If
-
-        p.RemindToCrop = False
-        s.LastPosition = Renderer.Position
-        Renderer.Dispose()
-        FrameServer.Dispose()
-    End Sub
-
-    Private Sub tbPosition_Enter() Handles tbPosition.Enter
+    Sub tbPosition_Enter() Handles tbPosition.Enter
         ActiveControl = Nothing
     End Sub
 
-    Private Sub SetDialogSize(w As Integer, h As Integer)
-        ClientSize = New Size(ClientSize.Width + w - pVideo.Width, ClientSize.Height + h - pVideo.Height)
+    Sub SetDialogSize(w As Integer, h As Integer)
+        ClientSize = New Size(ClientSize.Width + w - pnVideo.Width, ClientSize.Height + h - pnVideo.Height)
         Renderer?.Draw()
     End Sub
 
@@ -492,7 +477,7 @@ Public Class CropForm
     End Function
 
     <Command("Sets the four crop values.")>
-    Private Sub SetCropValues(
+    Sub SetCropValues(
         left As Integer,
         top As Integer,
         right As Integer,
@@ -507,7 +492,7 @@ Public Class CropForm
     End Sub
 
     <Command("Crops the active side.")>
-    Private Sub CropActiveSide(
+    Sub CropActiveSide(
         <DispName("Pixel (corrected)"),
         Description("Pixels to crop when 'Auto correct crop values' is enabled.")>
         valueSafe As Integer,
@@ -519,7 +504,7 @@ Public Class CropForm
     End Sub
 
     <Command("Crops the active and the opposite side of the active side")>
-    Private Sub CropActiveAndOppositeSide(
+    Sub CropActiveAndOppositeSide(
         <DispName("Pixel (corrected)"),
         Description("Pixels to crop when 'Auto correct crop values' is enabled.")>
         valueSafe As Integer,
@@ -531,45 +516,47 @@ Public Class CropForm
     End Sub
 
     <Command("Detects the crop values automatically.")>
-    Private Sub RunAutoCrop()
+    Sub RunAutoCrop()
         p.CropLeft = 0
         p.CropTop = 0
         p.CropRight = 0
         p.CropBottom = 0
         UpdateAll()
+
         g.RunAutoCrop(Sub(progress As Double)
                           tbPosition.Value = CInt(tbPosition.Maximum / 100 * progress)
                           TrackLength_Scroll()
                       End Sub)
+
         tbPosition.Value = 0
         UpdateAll()
     End Sub
 
     <Command("Crops until the proper aspect ratio is found.")>
-    Private Sub RunSmartCrop()
+    Sub RunSmartCrop()
         g.SmartCrop()
         UpdateAll()
     End Sub
 
     <Command("Dialog to configure the menu.")>
-    Private Sub ShowMenuEditor()
+    Sub ShowMenuEditor()
         s.CustomMenuCrop = CustomMenu.Edit()
         g.SaveSettings()
     End Sub
 
     <Command("Exits the dialog.")>
-    Private Sub CloseDialog()
+    Sub CloseDialog()
         Close()
     End Sub
 
     <Command("Shows a dialog with crop options.")>
-    Private Sub ShowOptions()
+    Sub ShowOptions()
         g.MainForm.ShowOptionsDialog("Image|Crop")
         UpdateAll()
     End Sub
 
     <Command("Jumps a given frame count.")>
-    Private Sub SetRelativePosition(
+    Sub SetRelativePosition(
         <DispName("Offset"), Description("Frames to jump, negative values jump backward.")>
         offset As Integer)
 
@@ -579,12 +566,10 @@ Public Class CropForm
     End Sub
 
     <Command("Opens the help of the crop dialog.")>
-    Private Sub ShowHelpDialog()
-        Refresh()
-
+    Sub ShowHelpDialog()
         Dim form As New HelpForm()
         form.Doc.WriteStart("Crop Dialog")
-        form.Doc.WriteP("The crop dialog allows to crop borders. Right-click to show a '''context menu''' with available features. By default StaxRip detects the crop values automatically. It's recommended to check the detected values visually. A crop value can be changed roughly by moving the mouse while the left mouse button is pressed. Alternative methods are using the '''mousewheel''' or keyboard shortcuts. The Ctrl key crops the active and opposite side, the Shift key crops 8 instead of 2 pixel.")
+        form.Doc.WriteParagraph("The crop dialog allows to crop borders. Right-click to show a '''context menu''' with available features. By default StaxRip detects the crop values automatically. It's recommended to check the detected values visually. A crop value can be changed roughly by moving the mouse while the left mouse button is pressed. Alternative methods are using the '''mousewheel''' or keyboard shortcuts. The Ctrl key crops the active and opposite side, the Shift key crops 8 instead of 2 pixel.")
         form.Doc.WriteTips(CustomMenu.GetTips)
         form.Doc.WriteTable("Shortcut Keys", CustomMenu.GetKeys, False)
         form.Show()
@@ -592,12 +577,31 @@ Public Class CropForm
 
     Protected Overrides Sub OnHelpButtonClicked(e As CancelEventArgs)
         e.Cancel = True
-        MyBase.OnHelpButtonClicked(e)
         ShowHelpDialog()
     End Sub
 
-    Protected Overrides Sub OnLoad(e As EventArgs)
-        MyBase.OnLoad(e)
+    Protected Overrides Sub OnMouseWheel(args As MouseEventArgs)
+        MyBase.OnMouseWheel(args)
+
+        Dim value = 2
+        value = If((Control.ModifierKeys And Keys.Shift) = Keys.Shift, 8, value)
+        value = If(args.Delta > 0, value, value * -1)
+        CropActiveSideInternal(value, (Control.ModifierKeys And Keys.Control) = Keys.Control)
+    End Sub
+
+    Protected Overrides Sub OnLoad(args As EventArgs)
+        MyBase.OnLoad(args)
+
+        Dim zoom = 0.0
+        Dim workingArea = Screen.FromControl(Me).WorkingArea
+
+        While p.SourceWidth * zoom < 0.7 * workingArea.Width AndAlso
+            p.SourceHeight * zoom < 0.7 * workingArea.Height
+
+            zoom += 0.01
+        End While
+
+        SetDialogSize(CInt(p.SourceWidth * zoom), CInt(p.SourceHeight * zoom))
 
         Dim script As New VideoScript
         script.Engine = p.Script.Engine
@@ -606,7 +610,7 @@ Public Class CropForm
         script.Synchronize(True, True, True)
 
         FrameServer = New FrameServer(script.Path)
-        Renderer = New VideoRenderer(pVideo, FrameServer)
+        Renderer = New VideoRenderer(pnVideo, FrameServer)
 
         If s.LastPosition < (FrameServer.Info.FrameCount - 1) Then
             Renderer.Position = s.LastPosition
@@ -616,7 +620,7 @@ Public Class CropForm
         UpdateAll()
     End Sub
 
-    Private Sub tsbMenu_Click(sender As Object, e As EventArgs) Handles tsbMenu.Click
+    Sub tsbMenu_Click(sender As Object, e As EventArgs) Handles tsbMenu.Click
         ContextMenuStrip.Show(MousePosition)
     End Sub
 End Class

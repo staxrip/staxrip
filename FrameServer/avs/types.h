@@ -30,52 +30,25 @@
 // on Avisynth C Interface, such as 3rd-party filters, import and
 // export plugins, or graphical user interfaces.
 
-#ifndef AVS_CONFIG_H
-#define AVS_CONFIG_H
+#ifndef AVS_TYPES_H
+#define AVS_TYPES_H
 
-// Undefine this to get cdecl calling convention
-#define AVSC_USE_STDCALL 1
-
-// NOTE TO PLUGIN AUTHORS:
-// Because FRAME_ALIGN can be substantially higher than the alignment
-// a plugin actually needs, plugins should not use FRAME_ALIGN to check for
-// alignment. They should always request the exact alignment value they need.
-// This is to make sure that plugins work over the widest range of AviSynth
-// builds possible.
-#define FRAME_ALIGN 64
-
-#if   defined(_M_AMD64) || defined(__x86_64)
-#   define X86_64
-#elif defined(_M_IX86) || defined(__i386__)
-#   define X86_32
+// Define all types necessary for interfacing with avisynth.dll
+#include <stdint.h>
+#include <stdbool.h>
+#ifdef __cplusplus
+  #include <cstddef>
+  #include <cstdarg>
 #else
-#   error Unsupported CPU architecture.
+  #include <stddef.h>
+  #include <stdarg.h>
 #endif
 
-//            VC++  LLVM-Clang-cl   MinGW-Gnu
-// MSVC        x          x 
-// MSVC_PURE   x
-// CLANG                  x             
-// GCC                                  x
+// Raster types used by VirtualDub & Avisynth
+typedef uint32_t Pixel32;
+typedef uint8_t  BYTE;
 
-#if defined(__clang__)
-// Check clang first. clang-cl also defines __MSC_VER
-// We set MSVC because they are mostly compatible
-#   define MSVC
-#   define CLANG
-#   define AVS_FORCEINLINE __attribute__((always_inline))
-#elif   defined(_MSC_VER)
-#   define MSVC
-#   define MSVC_PURE
-#   define AVS_FORCEINLINE __forceinline
-#elif defined(__GNUC__)
-#   define GCC
-#   define AVS_FORCEINLINE __attribute__((always_inline)) inline
-#else
-#   error Unsupported compiler.
-#   define AVS_FORCEINLINE inline
-#   undef __forceinline
-#   define __forceinline inline
-#endif
+// Audio Sample information
+typedef float SFLOAT;
 
-#endif //AVS_CONFIG_H
+#endif //AVS_TYPES_H

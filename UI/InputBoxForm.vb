@@ -172,28 +172,24 @@ Namespace UI
 
 #End Region
 
-        Private Sub tbInput_TextChanged() Handles tbInput.TextChanged
+        Sub tbInput_TextChanged() Handles tbInput.TextChanged
             bnOK.Enabled = tbInput.Text <> ""
         End Sub
 
-        Private Sub bCancel_Click() Handles bnCancel.Click
+        Sub bnCancel_Click() Handles bnCancel.Click
             tbInput.Text = ""
             DialogResult = DialogResult.Cancel
             Close()
         End Sub
 
-        Private Sub InputBoxForm_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Sub InputBoxForm_Load(sender As Object, e As EventArgs) Handles Me.Load
             If flp.Left < laPrompt.Left Then
                 Width += laPrompt.Left - flp.Left
             End If
         End Sub
 
-        Private Sub InputBoxForm_Shown() Handles Me.Shown
+        Sub InputBoxForm_Shown() Handles Me.Shown
             Native.SetForegroundWindow(Handle)
-        End Sub
-
-        Private Sub tbInput_TextChanged(sender As Object, e As EventArgs) Handles tbInput.TextChanged
-
         End Sub
     End Class
 End Namespace

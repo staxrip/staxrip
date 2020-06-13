@@ -1,6 +1,7 @@
 ﻿
 Imports System.ComponentModel
 Imports System.Drawing.Design
+Imports System.Management.Automation
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Text
@@ -16,15 +17,13 @@ Public Class GlobalCommands
 
     <Command("Shows the log file with the built-in log file viewer.")>
     Sub ShowLogFile()
-        If Not File.Exists(p.Log.GetPath()) Then
-            Exit Sub
+        If File.Exists(p.Log.GetPath()) Then
+            Using form As New LogForm()
+                form.ShowDialog()
+            End Using
+        Else
+            g.ShellExecute(Folder.Settings + "Log Files")
         End If
-
-        Using form As New LogForm
-            form.Path = p.Log.GetPath()
-            form.Init()
-            form.ShowDialog()
-        End Using
     End Sub
 
     <Command("Allows to use StaxRip's demuxing GUIs independently.")>
@@ -38,33 +37,44 @@ Public Class GlobalCommands
             Dim sourceFile = ui.AddTextButton(page)
             sourceFile.Label.Text = "Source File:"
             sourceFile.Edit.Expand = True
+            sourceFile.Edit.TextBox.ReadOnly = True
             sourceFile.BrowseFile(FileTypes.VideoAudio)
 
             Dim outputFolder = ui.AddTextButton(page)
             outputFolder.Label.Text = "Output Folder:"
             outputFolder.Edit.Expand = True
+            outputFolder.Edit.TextBox.ReadOnly = True
             outputFolder.BrowseFolder()
 
             page.ResumeLayout()
 
-            AddHandler sourceFile.Edit.TextChanged, Sub()
-                                                        If outputFolder.Edit.Text = "" AndAlso
-                                                            File.Exists(sourceFile.Edit.Text) Then
+            Dim textChanged = Sub()
+                                  If outputFolder.Edit.Text = "" AndAlso
+                                      File.Exists(sourceFile.Edit.Text) Then
 
-                                                            outputFolder.Edit.Text = sourceFile.Edit.Text.Dir
-                                                        End If
-                                                    End Sub
+                                      outputFolder.Edit.Text = sourceFile.Edit.Text.Dir
+                                  End If
+                              End Sub
+
+            AddHandler sourceFile.Edit.TextChanged, textChanged
             form.FileDrop = True
             AddHandler form.FilesDropped, Sub(files) sourceFile.Edit.Text = files(0)
 
             If form.ShowDialog() = DialogResult.OK AndAlso
-                    File.Exists(sourceFile.Edit.Text) AndAlso
-                    Directory.Exists(outputFolder.Edit.Text) Then
+                File.Exists(sourceFile.Edit.Text) AndAlso
+                Directory.Exists(outputFolder.Edit.Text) Then
 
                 Using td As New TaskDialog(Of Demuxer)
                     td.MainInstruction = "Select a demuxer."
-                    If sourceFile.Edit.Text.Ext = "mkv" Then td.AddCommand("mkvextract", New mkvDemuxer)
-                    If sourceFile.Edit.Text.Ext.EqualsAny("mp4", "flv") Then td.AddCommand("MP4Box", New MP4BoxDemuxer)
+
+                    If sourceFile.Edit.Text.Ext = "mkv" Then
+                        td.AddCommand("mkvextract", New mkvDemuxer)
+                    End If
+
+                    If sourceFile.Edit.Text.Ext.EqualsAny("mp4", "flv") Then
+                        td.AddCommand("MP4Box", New MP4BoxDemuxer)
+                    End If
+
                     td.AddCommand("ffmpeg", New ffmpegDemuxer)
                     td.AddCommand("eac3to", New eac3toDemuxer)
 
@@ -119,9 +129,8 @@ Public Class GlobalCommands
             proc.Wait = waitForExit
             proc.WorkingDirectory = workingDirectory
 
-            If showProcessWindow OrElse Not useShellExecute Then
+            If Not useShellExecute Then
                 proc.Process.StartInfo.UseShellExecute = False
-                proc.SetEnvironmentVariables()
             End If
 
             Try
@@ -142,11 +151,7 @@ Public Class GlobalCommands
 
         filepath = Macro.Expand(filepath)
 
-        Try
-            ExecutePowerShellScript(filepath.ReadAllText)
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
+        ExecutePowerShellScript(filepath.ReadAllText)
     End Sub
 
     <Command("Starts a tool by name as shown in the app manage dialog.")>
@@ -224,10 +229,10 @@ Public Class GlobalCommands
             If pack.IsIncluded Then
                 If pack.Path = "" Then
                     msg += BR2 + "# path missing for " + pack.Name
-                ElseIf Not pack.IgnoreVersion Then
+                ElseIf Not pack.VersionAllowAny Then
                     If pack.Version = "" Then
                         msg += BR2 + "# version missing for " + pack.Name
-                    ElseIf Not pack.IsCorrectVersion Then
+                    ElseIf Not pack.IsVersionValid Then
                         msg += BR2 + "# wrong version for " + pack.Name
                     End If
                 End If
@@ -237,11 +242,6 @@ Public Class GlobalCommands
                     If Not File.Exists(pack.Directory + pack.HelpFilename) Then
                         msg += BR2 + $"# Help file of {pack.Name} don't exist!"
                     End If
-                End If
-
-                'does setup file exist?
-                If pack.SetupFilename <> "" AndAlso Not File.Exists(Folder.Apps + pack.SetupFilename) Then
-                    msg += BR2 + $"Setup file of {pack.Name} don't exist!"
                 End If
             End If
         Next
@@ -269,8 +269,10 @@ Public Class GlobalCommands
 
     Function GetReleaseType() As String
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
-        If version.MinorRevision <> 0 Then Return "Beta"
-        Return "Stable"
+
+        If version.MinorRevision <> 0 Then
+            Return "Beta"
+        End If
     End Function
 
     <Command("Opens a given help topic In the help browser.")>
@@ -278,30 +280,25 @@ Public Class GlobalCommands
         <DispName("Help Topic"),
         Description("Name Of the help topic To be opened.")> topic As String)
 
-        Dim f As New HelpForm()
+        Dim form As New HelpForm()
 
         Select Case topic
             Case "info"
-                f.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
-                f.Doc.WriteP("Thanks for icon artwork: Freepik www.flaticon.com, ilko-k, nulledone, vanontom")
+                form.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
+                form.Doc.Write("Development", "stax76, Revan654")
+                form.Doc.Write("Contributions", "Patman, 44vince44, JKyle, NikosD, qyot27, ernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+
                 Dim licensePath = Folder.Startup + "License.txt"
-                If File.Exists(licensePath) Then f.Doc.WriteP(licensePath.ReadAllText, True)
-            Case "CRF Value"
-                f.Doc.WriteStart("CRF Value")
-                f.Doc.WriteP("Low values produce high quality, large file size, large value produces small file size And poor quality. A balanced value Is 23 which Is the defalt In x264. Common values are 18-26 where 18 produces near transparent quality at the cost Of a huge file size. The quality 26 produces Is rather poor so such a high value should only be used When a small file size Is the only criterium.")
-            Case "x264 Mode"
-                f.Doc.WriteStart("x264 Mode")
-                f.Doc.WriteP("Generally there are two popular encoding modes, quality based And 2pass. 2pass mode allows To specify a bit rate And file size, quality mode doesn't, it works with a rate factor and requires only a single pass. Other terms for quality mode are constant quality or CRF mode in x264.")
-                f.Doc.WriteP("Slow and dark sources compress better then colorful sources with a lot action so a short, slow and dark movie requires a smaller file size then a long, colorful source with a lot action and movement.")
-                f.Doc.WriteP("Quality mode works with a rate factor that gives comparable quality regardless of how well a movie compresses so it's not using a constant bit rate but adjusts the bit rate dynamically. So while the same rate factor can be applied to every movie to achieve a constant quality this is not possible with 2pass mode because every movie requires a different bit rate. Quality mode is much easier to use then 2pass mode which requires a longer encoding time due to 2 passes and a compressibility check to be performed to determine a reasonable image and file size which also requires more expertise.")
-                f.Doc.WriteP("It's a common misconception that 2pass mode is more efficient than quality mode. The only benefit of 2pass mode is hitting a exact file size. Encoding in quality mode using a single pass will result in equal quality compared to a 2pass encode assuming the file size is identical of course.")
-                f.Doc.WriteP("Quality mode is ideal for hard drive storage and 2pass mode is ideal for size restricted mediums like CD's and DVD's. If you are still not sure which mode to use then it's probably better to use quality mode.")
+
+                If File.Exists(licensePath) Then
+                    form.Doc.WriteParagraph(licensePath.ReadAllText, True)
+                End If
             Case Else
-                f.Doc.WriteStart("unknown topic")
-                f.Doc.WriteP("The requested help topic '''" + topic + "''' is unknown.")
+                form.Doc.WriteStart("unknown topic")
+                form.Doc.WriteParagraph("The requested help topic '''" + topic + "''' is unknown.")
         End Select
 
-        f.Show()
+        form.Show()
     End Sub
 
     <Command("Shows a message box.")>
@@ -322,7 +319,7 @@ Public Class GlobalCommands
     End Sub
 
     <Command("Shows a Open File dialog to show media info.")>
-    Private Sub ShowMediaInfoBrowse()
+    Sub ShowMediaInfoBrowse()
         Using dialog As New OpenFileDialog
             If dialog.ShowDialog = DialogResult.OK Then
                 g.DefaultCommands.ShowMediaInfo(dialog.FileName)
@@ -917,7 +914,7 @@ Public Class GlobalCommands
     End Sub
 
     <Command("This command is obsolete since 2020.")>
-    Private Sub ShowLAVFiltersConfigDialog()
+    Sub ShowLAVFiltersConfigDialog()
         Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.LAVVideoDecoder.ToString + "\InprocServer32", Nothing)
 
         If File.Exists(ret) Then
@@ -968,10 +965,6 @@ Public Class GlobalCommands
             proc.Wait = True
             proc.Process.StartInfo.UseShellExecute = False
 
-            For Each i In Macro.GetMacros
-                proc.Process.StartInfo.EnvironmentVariables(i.Name.Trim("%"c)) = Macro.Expand(i.Name)
-            Next
-
             Try
                 proc.Start()
             Catch ex As Exception
@@ -987,7 +980,7 @@ Public Class GlobalCommands
     End Sub
 
     <Command("This command is obsolete since 2020.")>
-    Private Sub MediaInfoShowMedia()
+    Sub MediaInfoShowMedia()
         ShowMediaInfoBrowse()
     End Sub
 End Class

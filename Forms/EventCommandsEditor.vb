@@ -274,8 +274,10 @@ Public Class EventCommandsEditor
     End Sub
 
     Sub bnEdit_Click(sender As Object, e As EventArgs) Handles bnEdit.Click
-        Using f As New EventCommandEditor(lv.SelectedItem(Of EventCommand))
-            If f.ShowDialog = DialogResult.OK Then lv.RefreshSelection()
+        Using form As New EventCommandEditor(lv.SelectedItem(Of EventCommand))
+            If form.ShowDialog = DialogResult.OK Then
+                lv.RefreshSelection()
+            End If
         End Using
     End Sub
 End Class

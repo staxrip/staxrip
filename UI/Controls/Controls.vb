@@ -1,11 +1,10 @@
-Imports System.Reflection
+﻿
 Imports System.ComponentModel
 Imports System.Runtime.InteropServices
 Imports System.Windows.Forms.VisualStyles
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports System.Drawing.Drawing2D
-Imports Microsoft.Win32
 
 Namespace UI
     Public Class TreeViewEx
@@ -129,7 +128,7 @@ Namespace UI
             End If
         End Sub
 
-        Private Function GetParentParentNodes(n As TreeNode) As TreeNodeCollection
+        Function GetParentParentNodes(n As TreeNode) As TreeNodeCollection
             Dim parent = n.Parent
 
             If parent Is Nothing Then
@@ -143,7 +142,7 @@ Namespace UI
             End If
         End Function
 
-        Private Function GetParentNodes(n As TreeNode) As TreeNodeCollection
+        Function GetParentNodes(n As TreeNode) As TreeNodeCollection
             Dim parent As TreeNode = n.Parent
 
             If parent Is Nothing Then
@@ -285,6 +284,8 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
+            MyBase.OnPaint(e)
+
             e.Graphics.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
 
             Dim textOffset As Integer
@@ -294,8 +295,8 @@ Namespace UI
                 Dim textSize = e.Graphics.MeasureString(Text, Font)
                 textOffset = CInt(textSize.Width)
 
-                Using b = New SolidBrush(If(Enabled, ForeColor, SystemColors.GrayText))
-                    e.Graphics.DrawString(Text, Font, b, 0, CInt((Height - textSize.Height) / 2) - 1)
+                Using brush = New SolidBrush(If(Enabled, ForeColor, SystemColors.GrayText))
+                    e.Graphics.DrawString(Text, Font, brush, 0, CInt((Height - textSize.Height) / 2) - 1)
                 End Using
             End If
 
@@ -305,8 +306,6 @@ Namespace UI
             Else
                 e.Graphics.DrawLine(SystemPens.InactiveBorder, textOffset, lineHeight, Width, lineHeight)
             End If
-
-            MyBase.OnPaint(e)
         End Sub
     End Class
 
@@ -315,20 +314,17 @@ Namespace UI
 
         Const BS_COMMANDLINK As Integer = &HE
 
-        Const BCM_SETSHIELD As Integer = &H160C
         Const BCM_SETNOTE As Integer = &H1609
-        Const BCM_GETNOTE As Integer = &H160A
-        Const BCM_GETNOTELENGTH As Integer = &H160B
 
         Sub New()
-            Me.FlatStyle = FlatStyle.System
+            FlatStyle = FlatStyle.System
         End Sub
 
         Protected Overloads Overrides ReadOnly Property CreateParams() As CreateParams
             Get
-                Dim r = MyBase.CreateParams
-                r.Style = r.Style Or BS_COMMANDLINK
-                Return r
+                Dim params = MyBase.CreateParams
+                params.Style = params.Style Or BS_COMMANDLINK
+                Return params
             End Get
         End Property
 
@@ -346,8 +342,11 @@ Namespace UI
         End Property
 
         Protected Overrides Sub OnCreateControl()
-            If Note <> "" Then Text += BR2 + Note
             MyBase.OnCreateControl()
+
+            If Note <> "" Then
+                Text += BR2 + Note
+            End If
         End Sub
     End Class
 
@@ -475,15 +474,15 @@ Namespace UI
 
             Dim cutItem = cms.Add("Cut")
             cutItem.SetImage(Symbol.Cut)
-            cutItem.ShortcutKeyDisplayString = "Ctrl+X"
+            cutItem.ShortcutKeyDisplayString = "Ctrl+X" + g.MenuSpace
 
             Dim copyItem = cms.Add("Copy", Sub() Clipboard.SetText(SelectedText))
             copyItem.SetImage(Symbol.Copy)
-            copyItem.ShortcutKeyDisplayString = "Ctrl+C"
+            copyItem.ShortcutKeyDisplayString = "Ctrl+C" + g.MenuSpace
 
             Dim pasteItem = cms.Add("Paste")
             pasteItem.SetImage(Symbol.Paste)
-            pasteItem.ShortcutKeyDisplayString = "Ctrl+V"
+            pasteItem.ShortcutKeyDisplayString = "Ctrl+V" + g.MenuSpace
 
             cms.Add("Copy Everything", Sub() Clipboard.SetText(Text))
 
@@ -545,7 +544,7 @@ Namespace UI
             End Select
         End Sub
 
-        Private Sub WmNccalcsize(ByRef m As Message)
+        Sub WmNccalcsize(ByRef m As Message)
             If Not VisualStyleInformation.IsEnabledByUser Then
                 Return
             End If
@@ -584,7 +583,7 @@ Namespace UI
             m.Result = New IntPtr(WVR_REDRAW)
         End Sub
 
-        Private Sub WmNcpaint(ByRef m As Message)
+        Sub WmNcpaint(ByRef m As Message)
             If Not VisualStyleInformation.IsEnabledByUser Then
                 Return
             End If
@@ -766,12 +765,12 @@ Namespace UI
             End Set
         End Property
 
-        Private Sub Label_Click() Handles Label.Click
+        Sub Label_Click() Handles Label.Click
             ShowContext()
             RaiseEvent LinkClick()
         End Sub
 
-        Private Sub ShowContext()
+        Sub ShowContext()
             If Not Label.ContextMenuStrip Is Nothing Then Label.ContextMenuStrip.Show(Label, 0, 16)
         End Sub
     End Class
@@ -794,12 +793,12 @@ Namespace UI
         Sub MenuOpening(sender As Object, e As CancelEventArgs)
             Menu.MinimumSize = New Size(Width, 0)
 
-            For Each i As ActionMenuItem In Menu.Items
-                i.Font = New Font("Segoe UI", 9 * s.UIScaleFactor, If(Not Value Is Nothing AndAlso Value.Equals(i.Tag), FontStyle.Bold, FontStyle.Regular))
+            For Each mi As ActionMenuItem In Menu.Items
+                mi.Font = New Font("Segoe UI", 9 * s.UIScaleFactor, If(Not Value Is Nothing AndAlso Value.Equals(mi.Tag), FontStyle.Bold, FontStyle.Regular))
 
-                If (Menu.Width - i.Width) > 2 Then
-                    i.AutoSize = False
-                    i.Width = Menu.Width - 1
+                If (Menu.Width - mi.Width) > 2 Then
+                    mi.AutoSize = False
+                    mi.Width = Menu.Width - 1
                 End If
             Next
         End Sub
@@ -879,7 +878,7 @@ Namespace UI
             Menu.Items.ClearAndDisplose
         End Sub
 
-        Private Sub OnAction(text As String, value As Object)
+        Sub OnAction(text As String, value As Object)
             Me.Text = text
             Me.Value = value
             OnValueChanged(value)
@@ -968,7 +967,7 @@ Namespace UI
             Return New String(chars)
         End Function
 
-        Private Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated
+        Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated
             If Not DesignMode Then
                 Font = New Font("Consolas", 10 * s.UIScaleFactor)
             End If
@@ -1002,8 +1001,6 @@ Namespace UI
                 Dim nextPos As Integer
 
                 For Each ctrl As Control In Controls
-                    If nextPos = 0 Then nextPos = 3
-
                     If ctrl.Visible Then
                         nextPos += ctrl.Margin.Left + ctrl.Width + ctrl.Margin.Right
 
@@ -1037,10 +1034,14 @@ Namespace UI
                 (FlowDirection = FlowDirection.LeftToRight OrElse
                 FlowDirection = FlowDirection.RightToLeft) Then
 
-                For Each i As Control In Controls
+                For Each ctrl As Control In Controls
                     Dim offset = 0
-                    If TypeOf i Is CheckBox Then offset = 1
-                    i.Top = CInt((Height - i.Height) / 2) + offset
+
+                    If TypeOf ctrl Is CheckBox Then
+                        offset = 1
+                    End If
+
+                    ctrl.Top = CInt((Height - ctrl.Height) / 2) + offset
                 Next
             End If
 
@@ -1049,8 +1050,8 @@ Namespace UI
             If labelBlocks.Count > 0 Then
                 Dim hMax = Aggregate i In labelBlocks Into Max(TextRenderer.MeasureText(i.Label.Text, i.Label.Font).Width)
 
-                For Each i In labelBlocks
-                    i.Label.Offset = hMax / i.Label.Font.Height
+                For Each lb In labelBlocks
+                    lb.Label.Offset = hMax / lb.Label.Font.Height
                 Next
             End If
         End Sub
@@ -1063,7 +1064,11 @@ Namespace UI
 
         Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
             Dim ret = MyBase.GetPreferredSize(proposedSize)
-            If UseParenWidth Then ret.Width = Parent.Width
+
+            If UseParenWidth Then
+                ret.Width = Parent.Width
+            End If
+
             Return ret
         End Function
     End Class
@@ -1123,8 +1128,14 @@ Namespace UI
         End Property
 
         Protected Overrides Sub OnClick(e As EventArgs)
-            If Not ClickAction Is Nothing Then ClickAction.Invoke()
-            If Not ContextMenuStrip Is Nothing Then ContextMenuStrip.Show(Me, 0, Height)
+            If Not ClickAction Is Nothing Then
+                ClickAction.Invoke()
+            End If
+
+            If Not ContextMenuStrip Is Nothing Then
+                ContextMenuStrip.Show(Me, 0, Height)
+            End If
+
             MyBase.OnClick(e)
         End Sub
 
@@ -1132,24 +1143,34 @@ Namespace UI
             MyBase.OnPaint(e)
 
             If ShowMenuSymbol Then
-                Dim _text = "6"
-                Dim _font = New Font("Marlett", Font.Size)
-                Dim textSize = e.Graphics.MeasureString(_text, _font)
-                Dim x = If(Text <> "", Width - textSize.Width, Math.Ceiling((Width - textSize.Width) / 2))
-                Dim y = Math.Ceiling((Height - textSize.Height) / 2)
-                Dim brush = If(Enabled, Brushes.Black, SystemBrushes.GrayText)
-                e.Graphics.DrawString(_text, _font, brush, CSng(x), CSng(y))
+                e.Graphics.SmoothingMode = SmoothingMode.HighQuality
+
+                Dim h = CInt(Font.Height * 0.3)
+                Dim w = h * 2
+
+                Dim x1 = If(Text = "", Width \ 2 - w \ 2, Width - w - CInt(w * 0.7))
+                Dim y1 = CInt(Height / 2 - h / 2)
+
+                Dim x2 = CInt(x1 + w / 2)
+                Dim y2 = y1 + h
+
+                Dim x3 = x1 + w
+                Dim y3 = y1
+
+                Using pen = New Pen(ForeColor, Font.Height / 16.0F)
+                    e.Graphics.DrawLine(pen, x1, y1, x2, y2)
+                    e.Graphics.DrawLine(pen, x2, y2, x3, y3)
+                End Using
             End If
 
             If Symbol <> ButtonSymbol.None Then
                 e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
 
-                Dim p = New Pen(Brushes.Black)
-                p = New Pen(Brushes.Black)
+                Dim p = New Pen(Color.Black)
                 p.Alignment = Drawing2D.PenAlignment.Center
                 p.EndCap = Drawing2D.LineCap.Round
                 p.StartCap = Drawing2D.LineCap.Round
-                p.Width = Height \ 12
+                p.Width = CInt(Height / 14)
 
                 Dim d As New SymbolDrawer()
                 d.Graphics = e.Graphics
@@ -1585,6 +1606,7 @@ Namespace UI
         Private UpControl As New UpDownButton(True)
         Private DownControl As New UpDownButton(False)
         Private BorderColor As Color = Color.CadetBlue
+        Private TipProvider As TipProvider
 
         Event ValueChanged(numEdit As NumEdit)
 
@@ -1617,72 +1639,14 @@ Namespace UI
             AddHandler TextBox.MouseWheel, AddressOf Wheel
         End Sub
 
-        Private TipProvider As TipProvider
-
         WriteOnly Property Help As String
             Set(value As String)
-                If TipProvider Is Nothing Then TipProvider = New TipProvider()
+                If TipProvider Is Nothing Then
+                    TipProvider = New TipProvider()
+                End If
+
                 TipProvider.SetTip(value, TextBox, UpControl, DownControl)
             End Set
-        End Property
-
-        Protected Overrides Sub Dispose(disposing As Boolean)
-            TipProvider?.Dispose()
-            MyBase.Dispose(disposing)
-        End Sub
-
-        Sub Wheel(sender As Object, e As MouseEventArgs)
-            If e.Delta > 0 Then
-                Value += Increment
-            Else
-                Value -= Increment
-            End If
-        End Sub
-
-        Private Sub SetColor(c As Color)
-            BorderColor = c
-            Invalidate()
-        End Sub
-
-        Protected Overridable Sub OnValueChanged(numEdit As NumEdit)
-            RaiseEvent ValueChanged(Me)
-        End Sub
-
-        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            Dim h = (ClientSize.Height \ 2) - 3
-            h -= h Mod 2
-            If h > 20 Then h -= 1
-
-            UpControl.Width = CInt(ClientSize.Height * 0.7)
-            UpControl.Height = h
-            UpControl.Top = 3
-            UpControl.Left = ClientSize.Width - UpControl.Width - 3
-
-            DownControl.Width = UpControl.Width
-            DownControl.Left = UpControl.Left
-            DownControl.Top = ClientSize.Height - h - 3
-            DownControl.Height = h
-
-            TextBox.Top = (ClientSize.Height - TextBox.Height) \ 2
-            TextBox.Left = 2
-            TextBox.Width = DownControl.Left - 3
-            TextBox.Height = TextRenderer.MeasureText("gG", TextBox.Font).Height
-
-            MyBase.OnLayout(levent)
-        End Sub
-
-        Protected Overrides Sub OnPaint(e As PaintEventArgs)
-            Dim r = ClientRectangle
-            r.Inflate(-1, -1)
-            e.Graphics.FillRectangle(If(Enabled, Brushes.White, SystemBrushes.Control), r)
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, BorderColor, ButtonBorderStyle.Solid)
-            MyBase.OnPaint(e)
-        End Sub
-
-        Protected Overrides ReadOnly Property DefaultSize() As Size
-            Get
-                Return New Size(250, 70)
-            End Get
         End Property
 
         <Category("Data")>
@@ -1724,7 +1688,69 @@ Namespace UI
             End Set
         End Property
 
-        Private Sub SetValue(value As Double, updateText As Boolean)
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            TipProvider?.Dispose()
+            MyBase.Dispose(disposing)
+        End Sub
+
+        Sub Wheel(sender As Object, e As MouseEventArgs)
+            If e.Delta > 0 Then
+                Value += Increment
+            Else
+                Value -= Increment
+            End If
+        End Sub
+
+        Sub SetColor(c As Color)
+            BorderColor = c
+            Invalidate()
+        End Sub
+
+        Protected Overridable Sub OnValueChanged(numEdit As NumEdit)
+            RaiseEvent ValueChanged(Me)
+        End Sub
+
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            Dim h = (ClientSize.Height \ 2) - 1
+            h -= h Mod 2
+
+            If h > 20 Then
+                h -= 1
+            End If
+
+            UpControl.Width = CInt(Height * 0.8)
+            UpControl.Height = h
+            UpControl.Top = 2
+            UpControl.Left = ClientSize.Width - UpControl.Width - 2
+
+            DownControl.Width = UpControl.Width
+            DownControl.Left = UpControl.Left
+            DownControl.Top = ClientSize.Height - h - 2
+            DownControl.Height = h
+
+            TextBox.Top = (ClientSize.Height - TextBox.Height) \ 2 + 1
+            TextBox.Left = 2
+            TextBox.Width = DownControl.Left - 3
+            TextBox.Height = TextRenderer.MeasureText("gG", TextBox.Font).Height
+
+            MyBase.OnLayout(levent)
+        End Sub
+
+        Protected Overrides Sub OnPaint(e As PaintEventArgs)
+            Dim r = ClientRectangle
+            r.Inflate(-1, -1)
+            e.Graphics.FillRectangle(If(Enabled, Brushes.White, SystemBrushes.Control), r)
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, BorderColor, ButtonBorderStyle.Solid)
+            MyBase.OnPaint(e)
+        End Sub
+
+        Protected Overrides ReadOnly Property DefaultSize() As Size
+            Get
+                Return New Size(250, 70)
+            End Get
+        End Property
+
+        Sub SetValue(value As Double, updateText As Boolean)
             If value <> ValueValue Then
                 If value > Maximum Then
                     value = Maximum
@@ -1733,7 +1759,11 @@ Namespace UI
                 End If
 
                 ValueValue = value
-                If updateText Then Me.UpdateText()
+
+                If updateText Then
+                    Me.UpdateText()
+                End If
+
                 OnValueChanged(Me)
             End If
         End Sub
@@ -1742,7 +1772,7 @@ Namespace UI
             TextBox.SetTextWithoutTextChanged(ValueValue.ToString("F" & DecimalPlaces))
         End Sub
 
-        Private Sub TextBox_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox.KeyDown
+        Sub TextBox_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox.KeyDown
             If e.KeyData = Keys.Up Then
                 Value += Increment
             ElseIf e.KeyData = Keys.Down Then
@@ -1750,11 +1780,13 @@ Namespace UI
             End If
         End Sub
 
-        Private Sub TextBox_TextChanged(sender As Object, e As EventArgs) Handles TextBox.TextChanged
-            If TextBox.Text.IsDouble Then SetValue(TextBox.Text.ToDouble, False)
+        Sub TextBox_TextChanged(sender As Object, e As EventArgs) Handles TextBox.TextChanged
+            If TextBox.Text.IsDouble Then
+                SetValue(TextBox.Text.ToDouble, False)
+            End If
         End Sub
 
-        Private Class Edit
+        Class Edit
             Inherits TextBox
 
             Private BlockTextChanged As Boolean
@@ -1766,11 +1798,13 @@ Namespace UI
             End Sub
 
             Protected Overrides Sub OnTextChanged(e As EventArgs)
-                If Not BlockTextChanged Then MyBase.OnTextChanged(e)
+                If Not BlockTextChanged Then
+                    MyBase.OnTextChanged(e)
+                End If
             End Sub
         End Class
 
-        Private Class UpDownButton
+        Class UpDownButton
             Inherits Control
 
             Private IsUp As Boolean
@@ -1783,61 +1817,78 @@ Namespace UI
             Sub New(isUp As Boolean)
                 Me.IsUp = isUp
                 TabStop = False
-                SetStyle(ControlStyles.Opaque Or
-                         ControlStyles.ResizeRedraw Or
-                         ControlStyles.OptimizedDoubleBuffer, True)
+
+                SetStyle(
+                    ControlStyles.Opaque Or
+                    ControlStyles.ResizeRedraw Or
+                    ControlStyles.OptimizedDoubleBuffer,
+                    True)
             End Sub
 
             Protected Overrides Sub OnMouseEnter(e As EventArgs)
+                MyBase.OnMouseEnter(e)
                 IsHot = True
                 Invalidate()
-                MyBase.OnMouseEnter(e)
             End Sub
 
             Protected Overrides Sub OnMouseLeave(e As EventArgs)
+                MyBase.OnMouseLeave(e)
                 IsHot = False
                 Invalidate()
-                MyBase.OnMouseLeave(e)
             End Sub
 
             Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
+                MyBase.OnMouseDown(e)
                 IsPressed = True
                 Invalidate()
                 ClickAction.Invoke()
                 LastMouseDownTick = Environment.TickCount
                 MouseDownClicks(1000, LastMouseDownTick)
-                MyBase.OnMouseDown(e)
             End Sub
 
             Protected Overrides Sub OnMouseUp(e As MouseEventArgs)
+                MyBase.OnMouseUp(e)
                 IsPressed = False
                 Invalidate()
-                MyBase.OnMouseUp(e)
             End Sub
 
             Protected Overrides Sub OnPaint(e As PaintEventArgs)
+                MyBase.OnPaint(e)
+                Dim gx = e.Graphics
+                gx.SmoothingMode = SmoothingMode.HighQuality
+
                 If IsPressed Then
-                    e.Graphics.Clear(Color.LightBlue)
+                    gx.Clear(Color.LightBlue)
                 ElseIf IsHot Then
-                    e.Graphics.Clear(Color.AliceBlue)
+                    gx.Clear(Color.AliceBlue)
                 Else
-                    e.Graphics.Clear(SystemColors.Control)
+                    gx.Clear(SystemColors.Control)
                 End If
 
-                ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.CadetBlue, ButtonBorderStyle.Solid)
+                ControlPaint.DrawBorder(gx, ClientRectangle, Color.CadetBlue, ButtonBorderStyle.Solid)
 
-                Dim text = If(IsUp, "5", "6")
-                Dim font = New Font("Marlett", Me.Font.Size - 1)
-                Dim textSize = e.Graphics.MeasureString(text, font)
-                Dim offsetY = 0
-                If text = "5" Then offsetY += CInt(textSize.Height * 0.1)
-                Dim offsetX = textSize.Width * 0.01
-                Dim x = (Width - textSize.Width) / 2
-                Dim y = (Height - textSize.Height) / 2 + offsetY
-                Dim brush = If(Enabled, Brushes.Black, SystemBrushes.GrayText)
-                e.Graphics.DrawString(text, font, brush, CInt(x + offsetX), CInt(y))
+                Dim h = CInt(Font.Height * 0.2)
+                Dim w = h * 2
 
-                MyBase.OnPaint(e)
+                Dim x1 = Width \ 2 - w \ 2
+                Dim y1 = CInt(Height / 2 - h / 2)
+
+                Dim x2 = CInt(x1 + w / 2)
+                Dim y2 = y1 + h
+
+                Dim x3 = x1 + w
+                Dim y3 = y1
+
+                If IsUp Then
+                    y1 = y2
+                    y2 = y3
+                    y3 = y1
+                End If
+
+                Using pen = New Pen(If(Enabled, Color.Black, SystemColors.GrayText), Font.Height / 20.0F)
+                    gx.DrawLine(pen, x1, y1, x2, y2)
+                    gx.DrawLine(pen, x2, y2, x3, y3)
+                End Using
             End Sub
 
             Async Sub MouseDownClicks(sleep As Integer, tick As Integer)
@@ -1868,12 +1919,10 @@ Namespace UI
             AddHandler TextBox.TextChanged, Sub() RaiseEvent TextChanged()
         End Sub
 
-        Private Sub SetColor(c As Color)
+        Sub SetColor(c As Color)
             BorderColor = c
             Invalidate()
         End Sub
-
-        Private TextValue As String
 
         <Browsable(True)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
@@ -1886,7 +1935,15 @@ Namespace UI
             End Set
         End Property
 
-        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+        WriteOnly Property [ReadOnly] As Boolean
+            Set(value As Boolean)
+                TextBox.ReadOnly = value
+            End Set
+        End Property
+
+        Protected Overrides Sub OnLayout(args As LayoutEventArgs)
+            MyBase.OnLayout(args)
+
             If TextBox.Multiline Then
                 TextBox.Top = 2
                 TextBox.Left = 2
@@ -1898,20 +1955,20 @@ Namespace UI
                 TextBox.Width = ClientSize.Width - 4
                 TextBox.Height = TextRenderer.MeasureText("gG", TextBox.Font).Height
             End If
-
-            MyBase.OnLayout(levent)
         End Sub
 
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
-            Dim r = ClientRectangle
-            r.Inflate(-1, -1)
+            MyBase.OnPaint(e)
 
-            Using brush As New SolidBrush(BackColor)
-                e.Graphics.FillRectangle(If(Enabled, brush, SystemBrushes.Control), r)
+            Dim cr = ClientRectangle
+            cr.Inflate(-1, -1)
+            Dim col = If(Enabled AndAlso Not TextBox.ReadOnly, BackColor, SystemColors.Control)
+
+            Using brush As New SolidBrush(col)
+                e.Graphics.FillRectangle(brush, cr)
             End Using
 
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, BorderColor, ButtonBorderStyle.Solid)
-            MyBase.OnPaint(e)
         End Sub
     End Class
 
@@ -1991,7 +2048,7 @@ Namespace UI
             MyBase.OnDragOver(e)
         End Sub
 
-        Private Function HoverTab() As TabPage
+        Function HoverTab() As TabPage
             For index = 0 To TabCount - 1
                 If GetTabRect(index).Contains(PointToClient(Cursor.Position)) Then
                     Return TabPages(index)
@@ -1999,7 +2056,7 @@ Namespace UI
             Next
         End Function
 
-        Private Sub SwapTabPages(ByVal tp1 As TabPage, ByVal tp2 As TabPage)
+        Sub SwapTabPages(ByVal tp1 As TabPage, ByVal tp2 As TabPage)
             Dim index1 = TabPages.IndexOf(tp1)
             Dim index2 = TabPages.IndexOf(tp2)
             TabPages(index1) = tp2

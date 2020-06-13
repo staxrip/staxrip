@@ -1,9 +1,250 @@
 
-2.1.1.1 Beta (not yet available)
+2.1.3.1 Beta (not yet available)
 ============
 
+- Main dialog target image width and height text box supports mouse wheel.
+- subtitle file drag & drop in muxer dialog was broken.
+- TemporalDegrain2 integration
+
+
+2.1.3.0
+=======
+
+- Processing dialog fix for new Stop After Current Job feature.
+- Web URL is included in the search of the Apps dialog.
+- Numerous bugs fixed.
+- The Processing dialog has a new feature: Stop After Current Job.
+- D2V Witch added and enabled by default for VOB/MPG.
+- Command line for some processes like ffmsindex wasn't shown while processing.
+- Render, scaling and layout fixes and improvements, especially for 96 DPI.
+- PowerShell script host supports events, script examples use events, better error handling.
+- Improved Log File Viewer (Main Menu > Tools > Log File).
+  Tip: The Log File Viewer has a context menu.
+- The Preview dialog can be resized with the mouse.
+- Support for character # in filenames because MP4Box was finally fixed.
+- Various dialogs made resizable and remember their size.
+- Maximum number of parallel processes increased from 4 to 16.
+- The documentation was greatly improved (still far from perfect though).
+- Muxer dialog supports Drag & Drop for subtitles, audio and attachments.
+- Video Comparison has hardware render support added.
+- aomenc.exe GUI re-enabled.
+- Dark color theme for built-in help.
+- Improved built-in F1 help.
+- ffmpeg video encoder codec FFV1.
+- x264 and x265 dialogs have a new Bitrate option, the default value is 0 which
+  means the bitrate of the project/template in the main dialog is used.
+- For file batch jobs only the file name is shown in the jobs dialog and not the full path.
+- Audio encoder supports extracting DTS core using ffmpeg.
+- The audio Copy/Mux profile has a Extract DTS Core feature.
+- The command line audio encoder has a Default and Forced option.
+- New chunk encoding feature for x265 parallel processing.
+- Media info dialog replaced with MediaInfo.NET.
+- The command line video and audio encoder uses cmd.exe directly without creating a bat file,
+  this avoids creating a temporary bat file and adds full unicode support.
+- Portable support added, no need to install anything.
+- Setting to allow to use tools with wrong version,
+  for this a Danger Zone tab was added in the settings.
+- The auto crop feature shows progress both in the processing dialog and in the crop dialog.
+- Improved issue templates on the github issue tracker.
+- The ExecuteCommandLine command has a new Working Directory parameter.
+- The launch button in the Apps dialog for a console tool shows its help via Windows Terminal
+- Windows Terminal available in the main menu with special StaxRip environment (apps and macros).
+- The video encoder dialog feature *Show Command Line* is shown using Windows Terminal.
+- Execute Command Line in video encoder dialogs is shown via Windows Terminal.
+- In the Apps dialog the tools can be listed using PowerShell Out-GridView.
+- Shell Execute flag was added to the command ExecuteCommandLine.
+- The global setting 'Add filter to convert chroma subsampling to 4:2:0'
+  uses now ConvertToYUV420 instead of ConverttoYV12.
+- In various command line features the path environment variable of the process has all exe tools
+  added and all macros are available as environment variables.
+- Check added that blocks source files with too long path or filename.
+  A setting that allows to change the limit exists in the Danger Zone section.
+- SVT-AV1 support with GUI.
+- Media info folder view was replaced with a new powershell based (Get-MediaInfo)
+  dialog that supports caching for fast startup perforance.
+- When a Event Command executes it writes a log entry, this is now disabled by default
+  but there is a new setting: 'Write Event Commands to log file'.
+- In the Jobs dialog there is a button that shows a menu, this menu can now also be shown
+  as context menu via right-click on the jobs list and it has various new features.
+- The Apps dialog allows to clear custom paths.
+- The Apps dialog allows to locate files via Everything.
+- Check for Updates added to main menu in Help section.
+- Version is shown in main dialog title bar.
+- 'Main Menu > Help > Info' shows list with contributors.
+
+
+2.1.3.0
+=======
+
+- processing dialog fix for new Stop After Current Job feature
+- x264 M-0.160.3000-33f9e14-gcc10.0.1 Patman
+- Web URL is included in the search of the Apps dialog
+
+
+2.1.2.2 Beta
+============
+
+- The Processing dialog has a new feature: Stop After Current Job.
+- GPL licensed DGIndex binary re-added.
+- D2V Witch added and enabled by default for VOB/MPG.
+- Command line for some processes like ffmsindex wasn't shown while processing.
+- DFTTest VS re-added to fix dependency issue.
+- MCTemporalDenoise AVS dependency issue fix.
+- Render, scaling and layout fixes and improvements.
+
+
+2.1.1.9 Beta
+============
+
+- The cut feature was missing the last frame.
+- In case the cut feature is used, flac input for qaac is disabled
+  so if necessary a w64 file is created.
+- Many nvenc improvements.
+- Layout and scaling fixes.
+- PowerShell script host supports events, script examples use events.
+- The menu in the Jobs dialog was improved.
+- mvtools2 2.7.43
+
+
+2.1.1.8 Beta
+============
+
+- Improved Log File Viewer (Main Menu > Tools > Log File).
+  Tip: The Log File Viewer has a context menu.
+- The Jobs dialog has a feature to sort the job list alphabetically.
+- The Preview dialog can be resized with the mouse.
+- Support for character # in filenames because MP4Box was finally fixed.
+- Improved PowerShell scripting error handling.
+- Many UI improvements, especially on 96 DPI.
+- 'Main Menu > Help > Info' shows list with contributors I could remember.
+- x265 M-3.4+6-g73f96ff39-gcc11.0.0 Patman
+- nvenc 5.03
+- qsvenc 4.03
+- mkvtoolnix 47
+- AVSMeter 3.0.0.4
+- chapterEditor 1.23
+- f3kdb Neo r6
+- MiniDeen Neo r9
+- DFTTest Neo r7
+- L-Smash-Works 2020-05-31
+- JPSDR 3.2.2
+- mvtools2 2.7.42
+- VSFilterMod 5.2.2
+- TIVTC 1.0.17
+- TDeint 1.5
+- SMDegrain 3.12.108s
+- QTGMC 3.365
+- LSFmod 2.187
+
+
+2.1.1.7 Beta
+============
+
+- various dialogs made resizable and remember their size
+- various UI issues fixed
+- the play feature in the muxer dialog for subtitles was fixed
+- flash3kyuu_deband replaced by Neo f3kdb
+
+
+2.1.1.6 Beta
+============
+
+- muxer dialog size issue
+- low DPI menu font render issue
+
+
+2.1.1.5 Beta
+============
+
+- In the video encoder dialogs the feature *Execute Command Line* failed when
+  Windows Terminal is installed and paths contained spaces.
+- The video encoder dialog feature *Show Command Line* is shown using a console.
+- Maximum number of parallel processes increased from 4 to 16.
+- On systems with restricted PowerShell execution policy several features
+  like the media info folder view feature failed.
+- The Tools page in the docs lists all tools in a grid view
+  with columns: Name, Type, Filename, Version, Modified Date.
+- Muxer dialog is resizable and remembers the size.
+- Muxer dialog supports Drag & Drop for subtitles, audio and attachments.
+- Video Comparison crash fixed and hardware render support added.
+- aomenc.exe GUI re-enabled, executable not included
+- AviSynth headers updated.
+- AviSynth 3.6
+- x265 M-3.3+31-g431a22e82-gcc11.0.0 Patman
+- NVEnc 5.02
+- ffmpeg N-97868-gaa6f38c298-g38490cbeb3-gcc10.1.0 Patman
+- yadifmod2 avs 0.2.2
+- AVSMeter 2.9.9.3
+- KNLMeansCL avs/vs 1.1.1
+- MPEG2DecPlus avs 0.1.2 (untested)
+- QTGMC avs 3.364s
+- masktools2 2.2.23
+- DCTFilter 0.5.1
+- MediaInfo.NET 6.4.0.0
+
+
+2.1.1.4 Beta
+============
+
+- dark color theme for built-in help.
+- improved built-in help for various dialogs.
+- various docs pages improved.
+- ffmpeg video encoder codec FFV1.
+- x264 and x265 dialogs have a new Bitrate option, the default value is 0 which
+  means the bitrate of the project/template in the main dialog is used,
+  this behavior is documented in the F1 help of the x264 and x265 dialog.
+- for file batch jobs only the file name is shown in the jobs dialog and not the full path.
+- audio encoder supports extracting DTS core using ffmpeg, generated name is _Extract DTS Core_.
+- the audio Copy/Mux profile has a _Extract DTS Core_ feature.
+- the command line audio encoder has a Default and Forced option.
+
+
+2.1.1.3 Beta
+============
+
+- fix avs and vpy import adding unnecessary LoadPlugin and Import calls
+- new setting: 'Main Menu > Tools > Settigs > System > Use included portable VapourSynth',
+  to force usage of included portable VapourSynth instead of installed VapourSynth
+- new chunk encoding feature for x265 parallel processing
+- DGDecNV removal, there are better open source tools,
+  L-Smash-Source supports hardware decoding for NVIDIA, Intel and AMD
+
+
+2.1.1.2 Beta
+============
+
+- if AviSynth or VapourSynth was installed then StaxRip will use
+  the installed version instead of the included portable version.
+- fix x265 --limit-modes issue.
+- fix batch encoding issue.
+- mpv.net 5.4.8.0
+- VapourSynth r50
+- x265 3.3+27-g4780a8d99-gcc11.0.0 Patman
+- nvenc 5.01
+- mkvtoolnix 46
+- RgTools 1.0
+- AVSMeter 2.9.9.1
+- new docs page Features giving a comprehensive feature list
+
+
+2.1.1.1 Beta
+============
+
+- mpv.net 5.4.6.0
+- MediaInfo.NET 6.3.0.0
+- x265 3.3+25-ga6489d2fb-gcc10.0.1 Patman
+- fix invalid --vpp-tweak nvenc command line generation (Patman86)
+- fix import of invalid color metadata into encoder VUI settings (Patman86)
+- fix taskbar indication of values below 1 (Dendraspis)
+- fix x265 preset (Dendraspis)
+- fix crash doing multi select drag operation in jobs dialog
+- fix showing the Apps dialog for a tool with non OK status in endless loop
 - the command line audio encoder uses cmd.exe directly without creating a bat file,
   this avoids creating a temporary bat file and adds full unicode support
+- portable support added and enabled by default, no need to install anything
+- nvenc --vpp-transform
+- setting to allow to use tools with wrong version,
+  for this a Danger Zone tab was added in the settings
 
 
 2.1.0.9 Beta

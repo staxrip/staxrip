@@ -1,5 +1,6 @@
-﻿Imports System.Text
-Imports StaxRip.UI
+﻿
+Imports System.Text
+
 Imports StaxRip.CommandLine
 
 <Serializable()>
@@ -36,11 +37,11 @@ Public Class ffmpegEnc
     End Property
 
     Overrides Sub ShowConfigDialog()
-        Dim newParams As New EncoderParams
+        Dim newParams = New EncoderParams
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
         newParams.Init(store)
 
-        Using f As New CommandLineForm(newParams)
+        Using form As New CommandLineForm(newParams)
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of ffmpegEnc)(Me)
                                         Dim params2 As New EncoderParams
@@ -51,10 +52,34 @@ Public Class ffmpegEnc
                                         SaveProfile(enc)
                                     End Sub
 
-            f.cms.Items.Add(New ActionMenuItem("Save Profile...", saveProfileAction))
-            f.cms.Items.Add(New ActionMenuItem("Codec Help", Sub() g.ShowCode(newParams.Codec.OptionText + " Help", ProcessHelp.GetConsoleOutput(Package.ffmpeg.Path, "-hide_banner -h encoder=" + newParams.Codec.ValueText))))
+            form.cms.Add("Save Profile...", saveProfileAction)
+            AddHandler form.BeforeHelp, Sub()
+                                            Dim codecText = newParams.Codec.OptionText
+                                            Dim consoleHelp = ProcessHelp.GetConsoleOutput(Package.ffmpeg.Path, "-hide_banner -h encoder=" + newParams.Codec.ValueText)
+                                            Dim helpDic As New Dictionary(Of String, String) From {
+                                                {"x264", "https://trac.ffmpeg.org/wiki/Encode/H.264"},
+                                                {"x265", "https://trac.ffmpeg.org/wiki/Encode/H.265"},
+                                                {"XviD", "https://trac.ffmpeg.org/wiki/Encode/MPEG-4"},
+                                                {"VP9", "https://trac.ffmpeg.org/wiki/Encode/VP9"},
+                                                {"FFV1", "https://trac.ffmpeg.org/wiki/Encode/FFV1"},
+                                                {"Intel H.264", "https://trac.ffmpeg.org/wiki/Hardware/QuickSync"},
+                                                {"Intel H.265", "https://trac.ffmpeg.org/wiki/Hardware/QuickSync"},
+                                                {"AV1", "https://trac.ffmpeg.org/wiki/Encode/AV1"}
+                                            }
 
-            If f.ShowDialog() = DialogResult.OK Then
+                                            form.HTMLHelp = $"<h2>ffmpeg Online Help</h2>" +
+                                                "<p><a href=""{Package.ffmpeg.HelpURL}"">ffmpeg Online Help</a></p>"
+
+                                            If helpDic.ContainsKey(codecText) Then
+                                                form.HTMLHelp += $"<h2>ffmpeg {codecText} Online Help</h2>" +
+                                                    $"<p><a href=""{helpDic(codecText)}"">ffmpeg {codecText} Online Help</a></p>"
+                                            End If
+
+                                            form.HTMLHelp += $"<h2>ffmpeg {codecText} Console Help</h2>" +
+                                                $"<pre>{HelpDocument.ConvertChars(consoleHelp) + BR}</pre>"
+                                        End Sub
+
+            If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
@@ -65,7 +90,7 @@ Public Class ffmpegEnc
     Overrides ReadOnly Property OutputExt() As String
         Get
             Select Case Params.Codec.OptionText
-                Case "Xvid", "MPEG-4", "UT Video"
+                Case "Xvid", "MPEG-4", "UT Video", "FFV1"
                     Return "avi"
                 Case "ProRes"
                     Return "mov"
@@ -142,22 +167,24 @@ Public Class ffmpegEnc
             .Switch = "-c:v",
             .Text = "Codec",
             .AlwaysOn = True,
-            .Options = {"x264", "x265", "AV1", "XviD", "MPEG-4", "Theora", "ProRes", "UT Video",
-                        "VP | VP8", "VP | VP9", "Intel | Intel H.264", "Intel | Intel H.265",
+            .Options = {"x264", "x265", "AV1", "XviD", "MPEG-4", "Theora", "ProRes",
+                        "UT Video", "FFV1", "VP | VP8", "VP | VP9",
+                        "Intel | Intel H.264", "Intel | Intel H.265",
                         "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265"},
-            .Values = {"libx264", "libx265", "libaom-av1", "libxvid", "mpeg4", "libtheora", "prores", "utvideo",
-                       "libvpx", "libvpx-vp9", "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
+            .Values = {"libx264", "libx265", "libaom-av1", "libxvid", "mpeg4", "libtheora", "prores",
+                       "utvideo", "ffv1", "libvpx", "libvpx-vp9",
+                       "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
 
         Property Mode As New OptionParam With {
             .Name = "Mode",
             .Text = "Mode",
-            .VisibleFunc = Function() Not Codec.ValueText.EqualsAny("prores", "utvideo"),
+            .VisibleFunc = Function() Not Codec.ValueText.EqualsAny("prores", "utvideo", "ffv1"),
             .Options = {"Quality", "One Pass", "Two Pass"}}
 
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
-            .Options = {"AviSynth/VapourSynth", "Intel", "DXVA2", "Nvidia"},
-            .Values = {"avs", "qsv", "dxva2", "cuvid"}}
+            .Options = {"AviSynth/VapourSynth", "Software", "Intel", "DXVA2", "Nvidia"},
+            .Values = {"-", "sw", "qsv", "dxva2", "cuvid"}}
 
         Property Custom As New StringParam With {
             .Text = "Custom",
@@ -174,7 +201,7 @@ Public Class ffmpegEnc
                         New OptionParam With {.Name = "x264/x265 tune", .Text = "Tune", .Switch = "-tune", .Options = {"None", "Film", "Animation", "Grain", "Stillimage", "Psnr", "Ssim", "Fastdecode", "Zerolatency"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
                         New OptionParam With {.Switch = "-profile:v", .Text = "Profile", .VisibleFunc = Function() Codec.OptionText = "ProRes", .Init = 3, .IntegerValue = True, .Options = {"Proxy", "LT", "Normal", "HQ"}},
                         New OptionParam With {.Switch = "-speed", .Text = "Speed", .AlwaysOn = True, .VisibleFunc = Function() Codec.OptionText.EqualsAny("VP8", "VP9"), .Options = {"6 - Fastest", "5 - Faster", "4 - Fast", "3 - Medium", "2 - Slow", "1 - Slower", "0 - Slowest"}, .Values = {"6", "5", "4", "3", "2", "1", "0"}, .Value = 5},
-                        New OptionParam With {.Switch = "-cpu-used", .Text = "Quality/Speed", .Init = 1, .VisibleFunc = Function() Codec.OptionText = "AV1", .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Fastest"}},
+                        New OptionParam With {.Switch = "-cpu-used", .Text = "CPU Used", .Init = 1, .VisibleFunc = Function() Codec.OptionText = "AV1", .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Fastest"}},
                         New OptionParam With {.Switch = "-aq-mode", .Text = "AQ Mode", .VisibleFunc = Function() Codec.OptionText = "VP9", .Options = {"Disabled", "0", "1", "2", "3"}, .Values = {"Disabled", "0", "1", "2", "3"}},
                         New OptionParam With {.Name = "h264_nvenc profile", .Switch = "-profile", .Text = "Profile", .Options = {"Baseline", "Main", "High", "High444p"}, .Init = 1, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
                         New OptionParam With {.Name = "h264_nvenc preset", .Switch = "-preset", .Text = "Preset", .Options = {"Default", "Slow", "Medium", "Fast", "HP", "HQ", "BD", "LL", "LLHQ", "LLHP", "Lossless", "Losslesshp"}, .Init = 2, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
@@ -182,7 +209,7 @@ Public Class ffmpegEnc
                         New OptionParam With {.Name = "h264_nvenc rc", .Switch = "-rc", .Text = "Rate Control", .Options = {"Preset", "Constqp", "VBR", "CBR", "VBR_MinQP", "LL_2Pass_Quality", "LL_2Pass_Size", "VBR_2Pass"}, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
                         New OptionParam With {.Name = "utVideoPred", .Switch = "-pred", .Text = "Prediction", .Init = 3, .Options = {"None", "Left", "Gradient", "Median"}, .VisibleFunc = Function() Codec.ValueText = "utvideo"},
                         New OptionParam With {.Name = "utVideoPixFmt", .Switch = "-pix_fmt", .Text = "Pixel Format", .Options = {"YUV420P", "YUV422P", "YUV444P", "RGB24", "RGBA"}, .VisibleFunc = Function() Codec.ValueText = "utvideo"},
-                        New NumParam With {.Name = "Quality", .Text = "Quality", .Init = -1, .VisibleFunc = Function() Mode.Value = EncodingMode.Quality AndAlso Not Codec.ValueText.EqualsAny("prores", "utvideo"), .ArgsFunc = AddressOf GetQualityArgs, .Config = {-1, 63}},
+                        New NumParam With {.Name = "Quality", .Text = "Quality", .Init = -1, .VisibleFunc = Function() Mode.Value = EncodingMode.Quality AndAlso Not Codec.ValueText.EqualsAny("prores", "utvideo", "ffv1"), .ArgsFunc = AddressOf GetQualityArgs, .Config = {-1, 63}},
                         New NumParam With {.Switch = "-threads", .Text = "Threads", .Config = {0, 64}},
                         New NumParam With {.Switch = "-tile-columns", .Text = "Tile Columns", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 6, .DefaultValue = -1},
                         New NumParam With {.Switch = "-frame-parallel", .Text = "Frame Parallel", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 1, .DefaultValue = -1},
@@ -197,15 +224,21 @@ Public Class ffmpegEnc
             End Get
         End Property
 
-        Overloads Overrides Function GetCommandLine(includePaths As Boolean,
-                                                    includeExecutable As Boolean,
-                                                    Optional pass As Integer = 1) As String
+        Overloads Overrides Function GetCommandLine(
+            includePaths As Boolean,
+            includeExecutable As Boolean,
+            Optional pass As Integer = 1) As String
+
             Dim sourcePath = p.Script.Path
             Dim ret As String
 
-            If includePaths AndAlso includeExecutable Then ret = Package.ffmpeg.Path.Escape
+            If includePaths AndAlso includeExecutable Then
+                ret = Package.ffmpeg.Path.Escape
+            End If
 
             Select Case Decoder.ValueText
+                Case "sw"
+                    sourcePath = p.LastOriginalSourceFile
                 Case "qsv"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " -hwaccel qsv"
@@ -217,17 +250,32 @@ Public Class ffmpegEnc
                     ret += " -hwaccel cuvid"
             End Select
 
-            If sourcePath.Ext = "vpy" Then ret += " -f vapoursynth"
-            If includePaths Then ret += " -i " + sourcePath.Escape
+            If sourcePath.Ext = "vpy" Then
+                ret += " -f vapoursynth"
+            End If
+
+            If includePaths Then
+                ret += " -i " + sourcePath.Escape
+            End If
+
             Dim items = From i In Me.Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
-            If items.Count > 0 Then ret += " " + items.Select(Function(item) item.GetArgs).Join(" ")
-            If Calc.IsARSignalingRequired Then ret += " -aspect " + Calc.GetTargetDAR.ToInvariantString.Shorten(8)
+
+            If items.Count > 0 Then
+                ret += " " + items.Select(Function(item) item.GetArgs).Join(" ")
+            End If
+
+            If Calc.IsARSignalingRequired Then
+                ret += " -aspect " + Calc.GetTargetDAR.ToInvariantString.Shorten(8)
+            End If
 
             Select Case Mode.Value
                 Case EncodingMode.TwoPass
                     ret += " -pass " & pass
                     ret += $" -b:v {p.VideoBitrate}k"
-                    If pass = 1 Then ret += " -f rawvideo"
+
+                    If pass = 1 Then
+                        ret += " -f rawvideo"
+                    End If
                 Case EncodingMode.OnePass
                     ret += $" -b:v {p.VideoBitrate}k"
             End Select
@@ -247,13 +295,21 @@ Public Class ffmpegEnc
                 targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).Escape
             End If
 
-            If includePaths Then ret += " -an -y -hide_banner " + targetPath
+            If includePaths Then
+                ret += " -an -y -hide_banner " + targetPath
+            End If
+
             Return ret.Trim
         End Function
 
         Function IsCustom(switch As String) As Boolean
-            If switch = "" Then Return False
-            If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then Return True
+            If switch = "" Then
+                Return False
+            End If
+
+            If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then
+                Return True
+            End If
         End Function
 
         Public Overrides Function GetPackage() As Package

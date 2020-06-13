@@ -1,23 +1,28 @@
 
+====================
 PowerShell Scripting
 ====================
 
 StaxRip can be automated via PowerShell scripting.
 
 
-Events
-------
+Script Folder
+-------------
 
-In order to run scripts on certain events the following events are available:
+The Script folder is located at ``<settings>\Scripts`` and can be opened from
+the main menu under ``Tools > Scripts > Open Script Folder``.
 
-.. include:: generated/events.rst
+Scripts located in this folder are not loaded automatically but rather can be
+invoked from the main menu under ``Tools > Scripts``.
 
 
-Assign to an event by saving a script file in the scripting folder using the event name as file name.
+Auto Load Folder
+----------------
 
-The scripting folder can be opened with:
+Scripts located under ``<settings>\Scripts\Auto Load`` are loaded on startup.
 
-``Main Menu > Tools > Scripts > Open Script Folder``
+A second startup folder is ``<startup>\Apps\Scripts``, this folder should only
+be used by StaxRip maintainers.
 
 
 Example Scripts

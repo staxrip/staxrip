@@ -116,6 +116,7 @@ Public Class DirectoryHelp
     End Function
 End Class
 
+'TODO:remove?
 Public Class ConsoleHelp
     Private Shared DosCodePageValue As Integer
 
@@ -139,21 +140,22 @@ Public Class FileHelp
     End Sub
 
     Shared Sub Copy(src As String, dest As String, Optional opt As UIOption = UIOption.OnlyErrorDialogs)
-        If Not File.Exists(src) Then
-            Exit Sub
-        End If
+        If File.Exists(src) Then
+            If File.Exists(dest) Then
+                Delete(dest)
+            End If
 
-        If File.Exists(dest) Then
-            Delete(dest)
+            FileSystem.CopyFile(src, dest, opt, UICancelOption.DoNothing)
         End If
-
-        FileSystem.CopyFile(src, dest, opt, UICancelOption.DoNothing)
     End Sub
 
     Shared Sub Delete(path As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
-        If File.Exists(path) Then
-            FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
-        End If
+        Try
+            If File.Exists(path) Then
+                FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
+            End If
+        Catch
+        End Try
     End Sub
 End Class
 
@@ -186,7 +188,7 @@ Public Class ProcessHelp
         Return ret
     End Function
 
-    Private Sub KillProcessAndChildren(pid As Integer)
+    Sub KillProcessAndChildren(pid As Integer)
         Dim searcher As New ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" & pid)
         Dim moc As ManagementObjectCollection = searcher.[Get]()
         For Each mo As ManagementObject In moc

@@ -37,7 +37,7 @@ Public Class Update
 
                         Select Case td.Show
                             Case "download"
-                                Process.Start("https://github.com/staxrip/staxrip/releases")
+                                g.ShellExecute("https://github.com/staxrip/staxrip/releases")
                             Case "dismiss"
                                 s.CheckForUpdatesDismissed = onlineVersion.ToString
                         End Select

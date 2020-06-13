@@ -10,9 +10,12 @@ Public Class CommandLineForm
 
     Property HTMLHelp As String
 
+    Event BeforeHelp()
+
     Public Sub New(params As CommandLineParams)
         InitializeComponent()
         SimpleUI.ScaleClientSize(37, 26)
+
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
         rtbCommandLine.ContextMenuStrip.Dispose()
         rtbCommandLine.ContextMenuStrip = cmsCommandLine
@@ -40,7 +43,12 @@ Public Class CommandLineForm
         cbGoTo.Select()
 
         cms.Add("Execute Command Line", Sub() params.Execute(), p.SourceFile <> "").SetImage(Symbol.fa_terminal)
-        cms.Add("Copy Command Line", Sub() Clipboard.SetText(params.GetCommandLine(True, True))).SetImage(Symbol.Copy)
+
+        cms.Add("Copy Command Line", Sub()
+                                         Clipboard.SetText(params.GetCommandLine(True, True))
+                                         MsgInfo("Command Line was copied.")
+                                     End Sub).SetImage(Symbol.Copy)
+
         cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLine(True, True)))
         cms.Add("Import Command Line...", Sub() If MsgQuestion("Import command line from clipboard?", Clipboard.GetText) = DialogResult.OK Then BasicVideoEncoder.ImportCommandLine(Clipboard.GetText, params)).SetImage(Symbol.Download)
 
@@ -80,8 +88,8 @@ Public Class CommandLineForm
                 help += param.Switch + BR
             End If
 
-            If param.Switch2 <> "" Then
-                help += param.Switch2 + BR
+            If param.HelpSwitch <> "" Then
+                help += param.HelpSwitch + BR
             End If
 
             If param.NoSwitch <> "" Then
@@ -246,20 +254,25 @@ Public Class CommandLineForm
         MyBase.OnFormClosed(e)
     End Sub
 
-    Private Sub CommandLineForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+    Sub CommandLineForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         ShowHelp()
     End Sub
 
     Sub ShowHelp()
+        RaiseEvent BeforeHelp()
+
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
 
+        form.Doc.WriteH2("How to use the video encoder dialog")
+
         If cbGoTo.Visible Then
-            form.Doc.WriteP("The Search input field can be used to quickly find options, it searches command line switches, labels and dropdowns. Multiple matches can be cycled by pressing enter.")
+            form.Doc.WriteParagraph("The Search dropdown field at the dialog bottom left lists options and can be used to quickly find options, it searches command line switches, labels and dropdowns. Multiple matches can be cycled by pressing enter.")
         End If
 
-        form.Doc.WriteP("Numeric values and dropdown menu options can be reset to their default value by double clicking on the label.")
-        form.Doc.WriteP("The context help is shown with a right-click on a label, dropdown menu or checkbox.")
+        form.Doc.WriteParagraph("Numeric values and dropdown menu options can be reset to their default value by double clicking on the label.")
+        form.Doc.WriteParagraph("The context help is shown with a right-click on a label, dropdown menu or checkbox.")
+        form.Doc.WriteParagraph("The command line preview at the bottom of the dialog has a context menu that allows to quickly find and show options.")
 
         If HTMLHelp <> "" Then
             form.Doc.Writer.WriteRaw(HTMLHelp)
@@ -269,7 +282,7 @@ Public Class CommandLineForm
         form.Show()
     End Sub
 
-    Private Sub cbGoTo_KeyDown(sender As Object, e As KeyEventArgs) Handles cbGoTo.KeyDown
+    Sub cbGoTo_KeyDown(sender As Object, e As KeyEventArgs) Handles cbGoTo.KeyDown
         If e.KeyData = Keys.Enter Then
             SearchIndex += 1
             cbGoTo_TextChanged(Nothing, Nothing)
@@ -282,7 +295,7 @@ Public Class CommandLineForm
         End If
     End Sub
 
-    Private Sub cbGoTo_TextChanged(sender As Object, e As EventArgs) Handles cbGoTo.TextChanged
+    Sub cbGoTo_TextChanged(sender As Object, e As EventArgs) Handles cbGoTo.TextChanged
         If Not HighlightedControl Is Nothing Then
             HighlightedControl.Font = New Font(HighlightedControl.Font.FontFamily, HighlightedControl.Font.Size, FontStyle.Regular)
             HighlightedControl = Nothing
@@ -294,7 +307,10 @@ Public Class CommandLineForm
 
         If find.Length > 1 Then
             For Each item In Items
-                If item.Param.Switch = cbGoTo.Text OrElse item.Param.Switch2 = cbGoTo.Text Then
+                If item.Param.Switch = cbGoTo.Text OrElse
+                    item.Param.NoSwitch = cbGoTo.Text OrElse
+                    item.Param.HelpSwitch = cbGoTo.Text Then
+
                     matchedItems.Add(item)
                 End If
 
@@ -308,11 +324,14 @@ Public Class CommandLineForm
             Next
 
             For Each item In Items
-                If item.Param.Switch?.ToLower?.Contains(find) Then matchedItems.Add(item)
-                If item.Param.Switch2?.ToLower?.Contains(find) Then matchedItems.Add(item)
-                If item.Param.NoSwitch?.ToLower?.Contains(find) Then matchedItems.Add(item)
-                If item.Param.Help?.ToLower?.Contains(find) Then matchedItems.Add(item)
-                If item.Param.Text?.ToLower?.Contains(find) Then matchedItems.Add(item)
+                If item.Param.Switch.ToLowerEx.Contains(find) OrElse
+                    item.Param.NoSwitch.ToLowerEx.Contains(find) OrElse
+                    item.Param.HelpSwitch.ToLowerEx.Contains(find) OrElse
+                    item.Param.Help.ToLowerEx.Contains(find) OrElse
+                    item.Param.Text.ToLowerEx.Contains(find) Then
+
+                    matchedItems.Add(item)
+                End If
 
                 If Not item.Param.Switches Is Nothing Then
                     For Each switch In item.Param.Switches
@@ -404,27 +423,27 @@ Public Class CommandLineForm
                     cbGoTo.Items.Add(i.Param.Switch)
                 End If
 
-                If i.Param.Switch2 <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.Switch2) Then
-                    cbGoTo.Items.Add(i.Param.Switch2)
-                End If
-
                 If i.Param.NoSwitch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.NoSwitch) Then
                     cbGoTo.Items.Add(i.Param.NoSwitch)
+                End If
+
+                If i.Param.HelpSwitch <> "" AndAlso Not cbGoTo.Items.Contains(i.Param.HelpSwitch) Then
+                    cbGoTo.Items.Add(i.Param.HelpSwitch)
                 End If
             End If
         Next
     End Sub
 
-    Private Sub CommandLineForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+    Sub CommandLineForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         g.MainForm.PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
     End Sub
 
-    Private Sub rtbCommandLine_MouseUp(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseUp
+    Sub rtbCommandLine_MouseUp(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseUp
         If e.Button = MouseButtons.Right Then
             cmsCommandLine.Items.Clear()
 
             Dim copyItem = cmsCommandLine.Add("Copy Selection", Sub() Clipboard.SetText(rtbCommandLine.SelectedText))
-            copyItem.ShortcutKeyDisplayString = "Ctrl+C    "
+            copyItem.ShortcutKeyDisplayString = "Ctrl+C" + g.MenuSpace
             copyItem.Visible = rtbCommandLine.SelectionLength > 0
 
             cmsCommandLine.Add("Copy Command Line", Sub() Clipboard.SetText(Params.GetCommandLine(True, True)))
@@ -459,7 +478,7 @@ Public Class CommandLineForm
         End If
     End Sub
 
-    Private Sub rtbCommandLine_MouseDown(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseDown
+    Sub rtbCommandLine_MouseDown(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseDown
         If e.Button = MouseButtons.Right AndAlso rtbCommandLine.SelectedText = "" Then
             rtbCommandLine.SelectionStart = rtbCommandLine.GetCharIndexFromPosition(e.Location)
         End If

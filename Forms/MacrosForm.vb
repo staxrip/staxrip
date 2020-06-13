@@ -1,5 +1,7 @@
-﻿Imports StaxRip.UI
+﻿
 Imports System.Threading
+
+Imports StaxRip.UI
 
 Public Class MacrosForm
     Inherits DialogBase
@@ -265,8 +267,8 @@ Public Class MacrosForm
 
         Dim macros As New StringPairList
 
-        For Each i In Macro.GetMacros(True, True)
-            macros.Add(i.Name, i.Description)
+        For Each mac In Macro.GetMacros(True, True, True)
+            macros.Add(mac.Name, mac.Description)
         Next
 
         For Each i In macros
@@ -323,8 +325,15 @@ Public Class MacrosForm
 
             If sel <> 0 Then
                 sel = lv.SelectedItems(0).Index + sel
-                If sel < 0 Then sel = 0
-                If sel >= lv.Items.Count Then sel = lv.Items.Count - 1
+
+                If sel < 0 Then
+                    sel = 0
+                End If
+
+                If sel >= lv.Items.Count Then
+                    sel = lv.Items.Count - 1
+                End If
+
                 lv.Items(sel).Selected = True
                 lv.Items(sel).EnsureVisible()
             End If

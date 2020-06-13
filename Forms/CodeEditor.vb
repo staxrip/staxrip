@@ -1,7 +1,9 @@
 ﻿
-Imports StaxRip.UI
-Imports Microsoft.Win32
 Imports System.Text.RegularExpressions
+
+Imports Microsoft.Win32
+
+Imports StaxRip.UI
 
 Public Class CodeEditor
     Property ActiveTable As FilterTable
@@ -37,11 +39,17 @@ Public Class CodeEditor
             Case Keys.F10
                 PlayScriptWithMPC()
             Case Keys.Control Or Keys.Delete
-                If Not ActiveTable Is Nothing Then ActiveTable.RemoveClick()
+                If Not ActiveTable Is Nothing Then
+                    ActiveTable.RemoveClick()
+                End If
             Case Keys.Control Or Keys.Up
-                If Not ActiveTable Is Nothing Then ActiveTable.MoveUp()
+                If Not ActiveTable Is Nothing Then
+                    ActiveTable.MoveUp()
+                End If
             Case Keys.Control Or Keys.Down
-                If Not ActiveTable Is Nothing Then ActiveTable.MoveDown()
+                If Not ActiveTable Is Nothing Then
+                    ActiveTable.MoveDown()
+                End If
             Case Keys.Control Or Keys.I
                 ShowInfo()
             Case Keys.Control Or Keys.J
@@ -154,7 +162,11 @@ Public Class CodeEditor
 
     Sub MainFlowLayoutPanelLayout(sender As Object, e As LayoutEventArgs)
         Dim filterTables = MainFlowLayoutPanel.Controls.OfType(Of FilterTable)
-        If filterTables.Count = 0 Then Exit Sub
+
+        If filterTables.Count = 0 Then
+            Exit Sub
+        End If
+
         Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TrimmedTextSize.Width)
 
         For Each table As FilterTable In MainFlowLayoutPanel.Controls
@@ -166,10 +178,10 @@ Public Class CodeEditor
         Next
     End Sub
 
-    Private Sub CodeEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+    Sub CodeEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
-        form.Doc.WriteTable("Macros", Macro.GetTips())
+        form.Doc.WriteTable("Macros", Macro.GetTips(False, True, False))
         form.Show()
     End Sub
 
@@ -214,10 +226,11 @@ Public Class CodeEditor
                                                   Dim textSizeVar = TrimmedTextSize
 
                                                   If textSizeVar.Width > maxTextWidth OrElse
-                                                                                      (textSizeVar.Width = maxTextWidth AndAlso
-                                                                                      textSizeVar.Width <> LastTextSize.Width) OrElse
-                                                                                      LastTextSize.Height <> textSizeVar.Height AndAlso
-                                                                                      textSizeVar.Height > FontHeight Then
+                                                      (textSizeVar.Width = maxTextWidth AndAlso
+                                                      textSizeVar.Width <> LastTextSize.Width) OrElse
+                                                      LastTextSize.Height <> textSizeVar.Height AndAlso
+                                                      textSizeVar.Height > FontHeight Then
+
                                                       Parent.PerformLayout()
                                                       LastTextSize = TrimmedTextSize
                                                   End If
@@ -291,8 +304,15 @@ Public Class CodeEditor
         ReadOnly Property TrimmedTextSize As Size
             Get
                 Dim ret = TextSize
-                If ret.Width > MaxTextWidth Then ret.Width = MaxTextWidth
-                If ret.Height > MaxTextHeight Then ret.Height = MaxTextHeight
+
+                If ret.Width > MaxTextWidth Then
+                    ret.Width = MaxTextWidth
+                End If
+
+                If ret.Height > MaxTextHeight Then
+                    ret.Height = MaxTextHeight
+                End If
+
                 Return ret
             End Get
         End Property
@@ -314,7 +334,9 @@ Public Class CodeEditor
                     End If
                 Next
 
-                If Not skip Then newParameters.Add(argument)
+                If Not skip Then
+                    newParameters.Add(argument)
+                End If
             Next
 
             For Each parameter In parameters.Parameters
@@ -343,7 +365,10 @@ Public Class CodeEditor
             For Each i In FilterParameters.Definitions
                 If code.Contains(i.FunctionName + "(") Then
                     Dim match = Regex.Match(code, i.FunctionName + "\((.+)\)")
-                    If match.Success Then ActionMenuItem.Add(Menu.Items, i.Text, AddressOf SetParameters, i)
+
+                    If match.Success Then
+                        ActionMenuItem.Add(Menu.Items, i.Text, AddressOf SetParameters, i)
+                    End If
                 End If
             Next
 
@@ -359,7 +384,7 @@ Public Class CodeEditor
                 End If
             Next
 
-            Dim filterMenuItem = Menu.Add("Add, insert or replace a filter")
+            Dim filterMenuItem = Menu.Add("Add, insert or replace a filter   ")
             filterMenuItem.SetImage(Symbol.Filter)
 
             ActionMenuItem.Add(filterMenuItem.DropDownItems, "Empty Filter", AddressOf FilterClick, New VideoFilter("Misc", "", ""), "Filter with empty values.")
@@ -372,53 +397,53 @@ Public Class CodeEditor
             Next
 
             Dim removeMenuItem = Menu.Add("Remove", AddressOf RemoveClick)
-            removeMenuItem.ShortcutKeyDisplayString = "Ctrl+Delete"
+            removeMenuItem.ShortcutKeyDisplayString = "Ctrl+Delete" + g.MenuSpace
             removeMenuItem.SetImage(Symbol.Remove)
 
             Dim previewMenuItem = Menu.Add("Preview Video...", AddressOf Editor.VideoPreview, "Previews the script with solved macros.")
             previewMenuItem.Enabled = p.SourceFile <> ""
-            previewMenuItem.ShortcutKeyDisplayString = "F5"
+            previewMenuItem.ShortcutKeyDisplayString = "F5" + g.MenuSpace
             previewMenuItem.SetImage(Symbol.Photo)
 
             Dim mpvnetMenuItem = Menu.Add("Play with mpv.net", AddressOf Editor.PlayScriptWithMPVt, "Plays the current script with mpv.net.")
             mpvnetMenuItem.Enabled = p.SourceFile <> ""
-            mpvnetMenuItem.ShortcutKeyDisplayString = "F9"
+            mpvnetMenuItem.ShortcutKeyDisplayString = "F9" + g.MenuSpace
             mpvnetMenuItem.SetImage(Symbol.Play)
 
             Dim mpcMenuItem = Menu.Add("Play with mpc", AddressOf Editor.PlayScriptWithMPC, "Plays the current script with MPC.")
             mpcMenuItem.Enabled = p.SourceFile <> ""
-            mpcMenuItem.ShortcutKeyDisplayString = "F10"
+            mpcMenuItem.ShortcutKeyDisplayString = "F10" + g.MenuSpace
             mpcMenuItem.SetImage(Symbol.Play)
 
             Menu.Add("Preview Code...", AddressOf CodePreview, "Previews the script with solved macros.").SetImage(Symbol.Code)
 
             Dim infoMenuItem = Menu.Add("Info...", AddressOf Editor.ShowInfo, "Previews script parameters such as framecount and colorspace.")
             infoMenuItem.SetImage(Symbol.Info)
-            infoMenuItem.ShortcutKeyDisplayString = "Ctrl+I"
+            infoMenuItem.ShortcutKeyDisplayString = "Ctrl+I" + g.MenuSpace
             infoMenuItem.Enabled = p.SourceFile <> ""
 
             Menu.Add("Advanced Info...", AddressOf Editor.ShowAdvancedInfo, p.SourceFile <> "").SetImage(Symbol.Lightbulb)
 
             Dim joinMenuItem = Menu.Add("Join Filters", AddressOf Editor.JoinFilters, "Joins all filters into one filter.")
             joinMenuItem.Enabled = DirectCast(Parent, FlowLayoutPanel).Controls.Count > 1
-            joinMenuItem.ShortcutKeyDisplayString = "Ctrl+J"
+            joinMenuItem.ShortcutKeyDisplayString = "Ctrl+J   "
 
             Dim profilesMenuItem = Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.")
-            profilesMenuItem.ShortcutKeyDisplayString = "Ctrl+P"
+            profilesMenuItem.ShortcutKeyDisplayString = "Ctrl+P" + g.MenuSpace
             profilesMenuItem.SetImage(Symbol.FavoriteStar)
 
             Dim macrosMenuItem = Menu.Add("Macros...", AddressOf MacrosForm.ShowDialogForm, "Dialog to choose macros.")
-            macrosMenuItem.ShortcutKeyDisplayString = "Ctrl+M"
+            macrosMenuItem.ShortcutKeyDisplayString = "Ctrl+M" + g.MenuSpace
             macrosMenuItem.SetImage(Symbol.CalculatorPercentage)
 
             Menu.Add("-")
 
             Dim moveUpMenuItem = Menu.Add("Move Up", AddressOf MoveUp)
-            moveUpMenuItem.ShortcutKeyDisplayString = "Ctrl+Up"
+            moveUpMenuItem.ShortcutKeyDisplayString = "Ctrl+Up" + g.MenuSpace
             moveUpMenuItem.SetImage(Symbol.Up)
 
             Dim moveDownMenuItem = Menu.Add("Move Down", AddressOf MoveDown)
-            moveDownMenuItem.ShortcutKeyDisplayString = "Ctrl+Down"
+            moveDownMenuItem.ShortcutKeyDisplayString = "Ctrl+Down" + g.MenuSpace
             moveDownMenuItem.SetImage(Symbol.Down)
 
             Menu.Add("-")
@@ -437,15 +462,15 @@ Public Class CodeEditor
 
             Dim cutMenuItem = Menu.Add("Cut", cutAction, rtbScript.SelectionLength > 0 AndAlso Not rtbScript.ReadOnly)
             cutMenuItem.SetImage(Symbol.Cut)
-            cutMenuItem.ShortcutKeyDisplayString = "Ctrl+X"
+            cutMenuItem.ShortcutKeyDisplayString = "Ctrl+X" + g.MenuSpace
 
             Dim copyMenuItem = Menu.Add("Copy", copyAction, rtbScript.SelectionLength > 0)
             copyMenuItem.SetImage(Symbol.Copy)
-            copyMenuItem.ShortcutKeyDisplayString = "Ctrl+C"
+            copyMenuItem.ShortcutKeyDisplayString = "Ctrl+C" + g.MenuSpace
 
             Dim pasteMenuItem = Menu.Add("Paste", pasteAction, Clipboard.GetText <> "" AndAlso Not rtbScript.ReadOnly)
             pasteMenuItem.SetImage(Symbol.Paste)
-            pasteMenuItem.ShortcutKeyDisplayString = "Ctrl+V"
+            pasteMenuItem.ShortcutKeyDisplayString = "Ctrl+V" + g.MenuSpace
 
             Menu.Add("-")
             Dim helpMenuItem = Menu.Add("Help")
@@ -539,7 +564,11 @@ Public Class CodeEditor
             Dim flow = DirectCast(Parent, FlowLayoutPanel)
             Dim index = flow.Controls.IndexOf(Me)
             index += 1
-            If index >= flow.Controls.Count - 1 Then index = flow.Controls.Count - 1
+
+            If index >= flow.Controls.Count - 1 Then
+                index = flow.Controls.Count - 1
+            End If
+
             flow.Controls.SetChildIndex(Me, index)
         End Sub
 
@@ -551,12 +580,14 @@ Public Class CodeEditor
         End Sub
 
         Sub RemoveClick()
-            Dim flow = DirectCast(Parent, FlowLayoutPanel)
+            If MsgQuestion("Remove?") = DialogResult.OK Then
+                Dim flow = DirectCast(Parent, FlowLayoutPanel)
 
-            If flow.Controls.Count > 1 Then
-                flow.Controls.Remove(Me)
-                Dispose()
-                Editor.ActiveTable = Nothing
+                If flow.Controls.Count > 1 Then
+                    flow.Controls.Remove(Me)
+                    Dispose()
+                    Editor.ActiveTable = Nothing
+                End If
             End If
         End Sub
 
@@ -570,7 +601,11 @@ Public Class CodeEditor
                 Select Case td.Show
                     Case "Replace"
                         Dim tup = Macro.ExpandGUI(filter.Script)
-                        If tup.Cancel Then Exit Sub
+
+                        If tup.Cancel Then
+                            Exit Sub
+                        End If
+
                         cbActive.Checked = filter.Active
                         cbActive.Text = filter.Category
 
@@ -590,7 +625,10 @@ Public Class CodeEditor
                         Menu.Items.ClearAndDisplose
                     Case "Insert"
                         Dim tup = Macro.ExpandGUI(filter.Script)
-                        If tup.Cancel Then Exit Sub
+
+                        If tup.Cancel Then
+                            Exit Sub
+                        End If
 
                         If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
                             If filter.Script.StartsWith("$") Then
@@ -614,7 +652,10 @@ Public Class CodeEditor
                         Menu.Items.ClearAndDisplose
                     Case "Add"
                         Dim tup = Macro.ExpandGUI(filter.Script)
-                        If tup.Cancel Then Exit Sub
+
+                        If tup.Cancel Then
+                            Exit Sub
+                        End If
 
                         If tup.Value <> filter.Script AndAlso tup.Caption <> "" Then
                             If filter.Script.StartsWith("$") Then
@@ -638,7 +679,11 @@ Public Class CodeEditor
 
         Sub ReplaceClick(filter As VideoFilter)
             Dim tup = Macro.ExpandGUI(filter.Script)
-            If tup.Cancel Then Exit Sub
+
+            If tup.Cancel Then
+                Exit Sub
+            End If
+
             cbActive.Checked = filter.Active
             cbActive.Text = filter.Category
 

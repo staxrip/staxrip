@@ -1,5 +1,6 @@
 ﻿
 Imports System.Text
+
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -10,7 +11,7 @@ Public Class Rav1e
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "Rav1e"
+        Name = "AV1 | Rav1e"
     End Sub
 
     <NonSerialized>
@@ -229,7 +230,10 @@ Public Class Rav1eParams
         .Config = {0, Integer.MaxValue, 50},
         .ArgsFunc = Function() If(Light.Value <> 0 OrElse MaxFALL.Value <> 0, "--content_light """ & Light.Value & "," & MaxFALL.Value & """", ""),
         .ImportAction = Sub(param, arg)
-                            If arg = "" Then Exit Sub
+                            If arg = "" Then
+                                Exit Sub
+                            End If
+
                             Dim a = arg.Trim(""""c).Split(","c)
                             Light.Value = a(0).ToInt
                             MaxFALL.Value = a(1).ToInt
@@ -265,9 +269,16 @@ Public Class Rav1eParams
                 Custom)
 
                 For Each item In ItemsValue
-                    If item.HelpSwitch <> "" Then Continue For
+                    If item.HelpSwitch <> "" Then
+                        Continue For
+                    End If
+
                     Dim switches = item.GetSwitches
-                    If switches.NothingOrEmpty Then Continue For
+
+                    If switches.NothingOrEmpty Then
+                        Continue For
+                    End If
+
                     item.HelpSwitch = switches(0)
                 Next
             End If
@@ -284,7 +295,10 @@ Public Class Rav1eParams
         For Each i In items
             If i.HelpSwitch = "" Then
                 Dim switches = i.GetSwitches
-                If Not switches.NothingOrEmpty Then i.HelpSwitch = switches(0)
+
+                If Not switches.NothingOrEmpty Then
+                    i.HelpSwitch = switches(0)
+                End If
             End If
 
             ItemsValue.Add(i)
@@ -311,7 +325,11 @@ Public Class Rav1eParams
         End If
 
         Dim q = From i In Items Where i.GetArgs <> ""
-        If q.Count > 0 Then sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
+
+        If q.Count > 0 Then
+            sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
+        End If
+
         sb.Append(" -o " + targetPath.Escape + " - ")
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))

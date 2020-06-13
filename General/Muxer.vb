@@ -3,9 +3,10 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Globalization
 Imports System.Xml.Linq
-Imports VB6 = Microsoft.VisualBasic
 Imports System.ComponentModel
 Imports System.Runtime.Serialization
+
+Imports VB6 = Microsoft.VisualBasic
 
 <Serializable()>
 Public MustInherit Class Muxer
@@ -285,7 +286,7 @@ Public Class MP4Muxer
         Return Package.MP4Box.Path.Escape + " " + GetArgs()
     End Function
 
-    Private Function GetArgs() As String
+    Function GetArgs() As String
         Dim args As New StringBuilder
 
         If MediaInfo.GetFrameRate(p.VideoEncoder.OutputPath, 0) = 0 Then
@@ -532,8 +533,8 @@ Public Class MkvMuxer
     End Property
 
     Overrides Function Edit() As DialogResult
-        Using f As New MuxerForm(Me)
-            Return f.ShowDialog()
+        Using form As New MuxerForm(Me)
+            Return form.ShowDialog()
         End Using
     End Function
 
@@ -544,7 +545,10 @@ Public Class MkvMuxer
             For Each iBase In {"small_cover", "cover_land", "small_cover_land"}
                 For Each iExt In {".jpg", ".png"}
                     Dim fp = iDir + iBase + iExt
-                    If File.Exists(fp) Then AdditionalSwitches += " --attach-file " + fp.Escape
+
+                    If File.Exists(fp) Then
+                        AdditionalSwitches += " --attach-file " + fp.Escape
+                    End If
                 Next
             Next
         Next
@@ -565,7 +569,10 @@ Public Class MkvMuxer
             proc.Start()
         End Using
 
-        If Not g.FileExists(p.TargetFile) Then Log.Write("Error MKV output file is missing", p.TargetFile)
+        If Not g.FileExists(p.TargetFile) Then
+            Log.Write("Error MKV output file is missing", p.TargetFile)
+        End If
+
         Log.WriteLine(MediaInfo.GetSummary(p.TargetFile))
     End Sub
 
@@ -596,7 +603,7 @@ Public Class MkvMuxer
         Return CommandLineHelp.ConvertText(val)
     End Function
 
-    Private Function GetArgs() As String
+    Function GetArgs() As String
         Dim args = "-o " + p.TargetFile.Escape
 
         Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + p.VideoEncoder.OutputPath.Escape)
@@ -633,6 +640,16 @@ Public Class MkvMuxer
         End If
 
         args += " " + p.VideoEncoder.OutputPath.Escape
+
+        For x = 2 To 99
+            Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
+
+            If fp.FileExists Then
+                args += " + " + fp.Escape
+            Else
+                Exit For
+            End If
+        Next
 
         AddAudioArgs(p.Audio0, args)
         AddAudioArgs(p.Audio1, args)
@@ -743,14 +760,19 @@ Public Class MkvMuxer
         If File.Exists(ap.File) AndAlso IsSupported(ap.File.Ext) AndAlso IsSupported(ap.OutputFileType) Then
             Dim tid = 0
             Dim isCombo As Boolean
+            Dim isDTSHD As Boolean
 
             If Not ap.Stream Is Nothing Then
                 tid = ap.Stream.StreamOrder
                 isCombo = ap.Stream.Name.Contains("THD+AC3")
+                isDTSHD = ap.Stream.Name.ContainsAny("DTSMA", "DTSX", "DTSMA", "DTSHRA")
 
                 Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + ap.File.Escape)
                 Dim values = Regex.Matches(stdout, "Track ID (\d+): audio").OfType(Of Match).Select(Function(match) match.Groups(1).Value.ToInt)
-                If values.Count = ap.Streams.Count Then tid = values(ap.Stream.Index)
+
+                If values.Count = ap.Streams.Count Then
+                    tid = values(ap.Stream.Index)
+                End If
             Else
                 tid = MediaInfo.GetAudio(ap.File, "StreamOrder").ToInt
                 isCombo = ap.File.Ext = "thd+ac3"
@@ -762,22 +784,43 @@ Public Class MkvMuxer
                 args += " --no-video --no-subs --no-chapters --no-attachments --no-track-tags --no-global-tags"
             ElseIf ap.File.Ext = "m4a" Then
                 args += " --no-chapters" 'eac3to writes chapters to m4a
+            ElseIf ap.File.Ext.EqualsAny("dtsma", "dtshr", "dtshd") Then
+                isDTSHD = True
             End If
 
             args += " --audio-tracks " + If(isCombo, tid & "," & tid + 1, tid.ToString)
             args += " --language " & tid & ":" + ap.Language.ThreeLetterCode
-            If isCombo Then args += " --language " & tid + 1 & ":" + ap.Language.ThreeLetterCode
+
+            If isCombo Then
+                args += " --language " & tid + 1 & ":" + ap.Language.ThreeLetterCode
+            End If
 
             If ap.OutputFileType = "aac" AndAlso ap.File.ToLower.Contains("sbr") Then
                 args += " --aac-is-sbr " & tid
             End If
 
-            If Not (isAudioType AndAlso ap.StreamName = "") Then args += " --track-name """ & tid & ":" + Convert(ap.ExpandMacros(ap.StreamName, False)) + """"
-            If isCombo Then args += " --track-name """ & tid + 1 & ":" + Convert(ap.ExpandMacros(ap.StreamName, False)) + """"
+            If isDTSHD AndAlso TypeOf ap Is MuxAudioProfile Then
+                Dim map = DirectCast(ap, MuxAudioProfile)
+
+                If map.ExtractDTSCore Then
+                    args += " --reduce-to-core " & tid
+                End If
+            End If
+
+            If Not (isAudioType AndAlso ap.StreamName = "") Then
+                args += " --track-name """ & tid & ":" + Convert(ap.ExpandMacros(ap.StreamName, False)) + """"
+            End If
+
+            If isCombo Then
+                args += " --track-name """ & tid + 1 & ":" + Convert(ap.ExpandMacros(ap.StreamName, False)) + """"
+            End If
 
             If ap.Delay <> 0 AndAlso Not ap.HandlesDelay AndAlso Not (ap.HasStream AndAlso ap.Stream.Delay <> 0) Then
                 args += " --sync " & tid & ":" + ap.Delay.ToString
-                If isCombo Then args += " --sync " & tid + 1 & ":" + ap.Delay.ToString
+
+                If isCombo Then
+                    args += " --sync " & tid + 1 & ":" + ap.Delay.ToString
+                End If
             End If
 
             args += " --default-track " & tid & ":" & If(ap.Default, 1, 0)
@@ -915,7 +958,10 @@ Public Class ffmpegMuxer
 
             If ret = DialogResult.OK Then
                 ui.Save()
-                If p.SourceFile <> "" Then p.TargetFile = p.TargetFile.DirAndBase + "." + OutputExt
+
+                If p.SourceFile <> "" Then
+                    p.TargetFile = p.TargetFile.DirAndBase + "." + OutputExt
+                End If
             End If
 
             Return ret

@@ -109,11 +109,9 @@ Public Class Folder
         End Get
     End Property
 
-    Shared ReadOnly Property Script As String
+    Shared ReadOnly Property Scripts As String
         Get
-            Dim ret = Settings + "Scripts\"
-            If Not Directory.Exists(ret) Then Directory.CreateDirectory(ret)
-            Return ret
+            Return Settings + "Scripts\"
         End Get
     End Property
 
@@ -143,11 +141,11 @@ Public Class Folder
                     Dim dir = td.Show
 
                     If dir = "custom" Then
-                        Using d As New FolderBrowserDialog
-                            d.SelectedPath = Folder.Startup
+                        Using dialog As New FolderBrowserDialog
+                            dialog.SelectedPath = Folder.Startup
 
-                            If d.ShowDialog = DialogResult.OK Then
-                                dir = d.SelectedPath
+                            If dialog.ShowDialog = DialogResult.OK Then
+                                dir = dialog.SelectedPath
                             Else
                                 dir = Folder.AppDataCommon + "StaxRip"
                             End If
@@ -156,13 +154,25 @@ Public Class Folder
                         dir = Folder.AppDataCommon + "StaxRip"
                     End If
 
-                    If Not Directory.Exists(dir) Then
+                    If Not dir.DirExists Then
                         Try
                             Directory.CreateDirectory(dir)
                         Catch
                             dir = Folder.AppDataCommon + "StaxRip"
-                            If Not Directory.Exists(dir) Then Directory.CreateDirectory(dir)
+
+                            If Not dir.DirExists Then
+                                Directory.CreateDirectory(dir)
+                            End If
                         End Try
+                    End If
+
+                    Dim scriptDir = dir.FixDir + "Scripts\"
+
+                    If Not scriptDir.DirExists Then
+                        Directory.CreateDirectory(scriptDir)
+                        Dim code = "[MainModule]::MsgInfo('Hello World')"
+                        code.WriteFileUTF8BOM(scriptDir + "Hello World.ps1")
+                        Directory.CreateDirectory(scriptDir + "Auto Load")
                     End If
 
                     SettingsValue = dir.FixDir
@@ -196,7 +206,7 @@ Public Class Folder
                     Directory.CreateDirectory(ret + "Backup")
 
                     For Each i In files
-                        FileHelp.Move(i, FilePath.GetDir(i) + "Backup\" + FilePath.GetName(i))
+                        FileHelp.Move(i, i.Dir + "Backup\" + i.FileName)
                     Next
                 End If
 
@@ -238,190 +248,15 @@ Public Class Folder
     End Property
 
     <DllImport("shfolder.dll", CharSet:=CharSet.Unicode)>
-    Private Shared Function SHGetFolderPath(hwndOwner As IntPtr, nFolder As Integer, hToken As IntPtr, dwFlags As Integer, lpszPath As StringBuilder) As Integer
+    Shared Function SHGetFolderPath(hwndOwner As IntPtr, nFolder As Integer, hToken As IntPtr, dwFlags As Integer, lpszPath As StringBuilder) As Integer
     End Function
 
-    Private Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String
-        'TODO: max path can theoretically be longer...
-        Dim sb As New StringBuilder(260)
+    Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String
+        Dim sb As New StringBuilder(500)
         SHGetFolderPath(IntPtr.Zero, CInt(folder), IntPtr.Zero, 0, sb)
-        Dim ret = sb.ToString.FixDir '.NET fails on 'D:'
+        Dim ret = sb.ToString.FixDir
         Call New FileIOPermission(FileIOPermissionAccess.PathDiscovery, ret).Demand()
         Return ret
-    End Function
-End Class
-
-Public Class PathBase
-    Shared ReadOnly Property Separator() As Char
-        Get
-            Return Path.DirectorySeparatorChar
-        End Get
-    End Property
-
-    Shared Function IsSameBase(a As String, b As String) As Boolean
-        Return FilePath.GetBase(a).EqualIgnoreCase(FilePath.GetBase(b))
-    End Function
-
-    Shared Function IsSameDir(a As String, b As String) As Boolean
-        Return FilePath.GetDir(a).EqualIgnoreCase(FilePath.GetDir(b))
-    End Function
-
-    Shared Function IsValidFileSystemName(name As String) As Boolean
-        If name = "" Then Return False
-        Dim chars = """*/:<>?\|^".ToCharArray
-
-        For Each i In name.ToCharArray
-            If chars.Contains(i) Then Return False
-            If Convert.ToInt32(i) < 32 Then Return False
-        Next
-
-        Return True
-    End Function
-End Class
-
-Public Class DirPath
-    Inherits PathBase
-
-    Shared Function TrimTrailingSeparator(path As String) As String
-        If path = "" Then Return ""
-
-        If path.EndsWith(Separator) AndAlso Not path.Length <= 3 Then
-            Return path.TrimEnd(Separator)
-        End If
-
-        Return path
-    End Function
-
-    Shared Function FixSeperator(path As String) As String
-        If path.Contains("\") AndAlso Separator <> "\" Then
-            path = path.Replace("\", Separator)
-        End If
-
-        If path.Contains("/") AndAlso Separator <> "/" Then
-            path = path.Replace("/", Separator)
-        End If
-
-        Return path
-    End Function
-
-    Shared Function GetParent(path As String) As String
-        If path = "" Then Return ""
-        Dim temp = TrimTrailingSeparator(path)
-        If temp.Contains(Separator) Then path = temp.LeftLast(Separator) + Separator
-        Return path
-    End Function
-
-    Shared Function GetName(path As String) As String
-        If path = "" Then Return ""
-        path = TrimTrailingSeparator(path)
-        Return path.RightLast(Separator)
-    End Function
-
-    Shared Function IsInSysDir(path As String) As Boolean
-        If path = "" Then Return False
-        If Not path.EndsWith("\") Then path += "\"
-        Return path.ToUpper.Contains(Folder.Programs.ToUpper)
-    End Function
-
-    Shared Function IsFixedDrive(path As String) As Boolean
-        Try
-            If path <> "" Then Return New DriveInfo(path).DriveType = DriveType.Fixed
-        Catch ex As Exception
-        End Try
-    End Function
-End Class
-
-Public Class FilePath
-    Inherits PathBase
-
-    Private Value As String
-
-    Sub New(path As String)
-        Value = path
-    End Sub
-
-    Shared Function GetDir(path As String) As String
-        If path = "" Then
-            Return ""
-        End If
-
-        If path.Contains("\") Then
-            path = path.LeftLast("\") + "\"
-        End If
-
-        Return path
-    End Function
-
-    Shared Function GetDirAndBase(path As String) As String
-        Return GetDir(path) + GetBase(path)
-    End Function
-
-    Shared Function GetName(path As String) As String
-        If Not path Is Nothing Then
-            Dim index = path.LastIndexOf(IO.Path.DirectorySeparatorChar)
-
-            If index > -1 Then
-                Return path.Substring(index + 1)
-            End If
-        End If
-
-        Return path
-    End Function
-
-    Shared Function GetExtFull(filepath As String) As String
-        Return GetExt(filepath, True)
-    End Function
-
-    Shared Function GetExt(filepath As String) As String
-        Return GetExt(filepath, False)
-    End Function
-
-    Shared Function GetExt(filepath As String, includeDot As Boolean) As String
-        If filepath = "" Then
-            Return ""
-        End If
-
-        Dim chars = filepath.ToCharArray()
-
-        For x = filepath.Length - 1 To 0 Step -1
-            If chars(x) = Separator Then
-                Return ""
-            End If
-
-            If chars(x) = "."c Then
-                Return filepath.Substring(x + If(includeDot, 0, 1)).ToLower()
-            End If
-        Next
-
-        Return ""
-    End Function
-
-    Shared Function GetDirNoSep(path As String) As String
-        path = GetDir(path)
-        If path.EndsWith(Separator) Then path = TrimSep(path)
-        Return path
-    End Function
-
-    Shared Function GetBase(path As String) As String
-        If path = "" Then Return ""
-        Dim ret = path
-        If ret.Contains(Separator) Then ret = ret.RightLast(Separator)
-        If ret.Contains(".") Then ret = ret.LeftLast(".")
-        Return ret
-    End Function
-
-    Shared Function TrimSep(path As String) As String
-        If path = "" Then Return ""
-
-        If path.EndsWith(Separator) AndAlso Not path.EndsWith(":" + Separator) Then
-            Return path.TrimEnd(Separator)
-        End If
-
-        Return path
-    End Function
-
-    Shared Function GetDirNameOnly(path As String) As String
-        Return FilePath.GetDirNoSep(path).RightLast("\")
     End Function
 End Class
 
@@ -429,9 +264,10 @@ Public Class SafeSerialization
     Shared Sub Serialize(o As Object, path As String)
         Dim list As New List(Of Object)
 
-        For Each i In o.GetType.GetFields(BindingFlags.Public Or
-                                          BindingFlags.NonPublic Or
-                                          BindingFlags.Instance)
+        For Each i In o.GetType.GetFields(
+            BindingFlags.Public Or
+            BindingFlags.NonPublic Or
+            BindingFlags.Instance)
 
             If Not i.IsNotSerialized Then
                 Dim mc As New FieldContainer
@@ -473,9 +309,9 @@ Public Class SafeSerialization
             End Using
 
             For Each i As FieldContainer In list
-                For Each iFieldInfo In instance.GetType.GetFields(BindingFlags.Public Or
-                                                                      BindingFlags.NonPublic Or
-                                                                      BindingFlags.Instance)
+                For Each iFieldInfo In instance.GetType.GetFields(
+                    BindingFlags.Public Or BindingFlags.NonPublic Or BindingFlags.Instance)
+
                     If Not iFieldInfo.IsNotSerialized Then
                         If i.Name = iFieldInfo.Name Then
                             Try
@@ -577,7 +413,6 @@ End Interface
 
 Public Class HelpDocument
     Private Path As String
-    Private Title As String
     Private IsClosed As Boolean
 
     Property Writer As XmlTextWriter
@@ -598,6 +433,8 @@ Public Class HelpDocument
 
 body {
     font-family: Tahoma, Geneva, sans-serif;
+    color:#DDDDDD;
+    background-color:#323232;
 }
 
 h1 {
@@ -607,18 +444,16 @@ h1 {
 
 h2 {
     font-size: 120%;
-    color: #666666;
     margin-bottom: -8pt;
 }
 
 h3 {
     font-size: 100%;
-    color: #333333;
     margin-bottom: -8pt;
 }
 
 a {
-    color: #666666;
+    color: #3C8CC8;
 }
 
 td {
@@ -631,7 +466,6 @@ table {
 }
 </style>"
 
-        Me.Title = title
         Writer = New XmlTextWriter(Path, Encoding.UTF8)
         Writer.Formatting = Formatting.Indented
         Writer.WriteRaw("<!doctype html>")
@@ -648,29 +482,29 @@ table {
         End If
     End Sub
 
-    Sub WriteP(rawText As String, Optional convert As Boolean = False)
+    Sub WriteParagraph(text As String, Optional convert As Boolean = False)
         If convert Then
-            rawText = ConvertChars(rawText)
+            text = ConvertChars(text)
         End If
 
-        WriteElement("p", rawText)
+        WriteElement("p", text)
     End Sub
 
-    Sub WriteP(title As String, rawText As String, Optional convert As Boolean = False)
+    Sub Write(title As String, text As String, Optional convert As Boolean = False)
         If convert Then
-            rawText = ConvertChars(rawText)
+            text = ConvertChars(text)
         End If
 
         WriteElement("h2", title)
-        WriteElement("p", rawText)
+        WriteElement("p", text)
     End Sub
 
-    Sub WriteH2(rawText As String)
-        WriteElement("h2", rawText)
+    Sub WriteH2(text As String)
+        WriteElement("h2", text)
     End Sub
 
-    Sub WriteH3(rawText As String)
-        WriteElement("h3", rawText)
+    Sub WriteH3(text As String)
+        WriteElement("h3", text)
     End Sub
 
     Sub WriteElement(elementName As String, rawText As String)
@@ -768,7 +602,7 @@ table {
 
         For Each i In list
             WriteH3(HelpDocument.ConvertChars(i.Name))
-            WriteP(HelpDocument.ConvertChars(i.Value))
+            WriteParagraph(HelpDocument.ConvertChars(i.Value))
         Next
     End Sub
 
@@ -804,7 +638,7 @@ table {
         WriteTable(title, text, list, False)
     End Sub
 
-    Private Sub WriteTable(title As String, text As String, list As StringPairList, sort As Boolean)
+    Sub WriteTable(title As String, text As String, list As StringPairList, sort As Boolean)
         If sort Then
             list.Sort()
         End If
@@ -816,7 +650,7 @@ table {
         If text Is Nothing Then
             Writer.WriteElementString("p", "")
         Else
-            WriteP(text, True)
+            WriteParagraph(text, True)
         End If
 
         Writer.WriteStartElement("table")
@@ -954,7 +788,7 @@ Public Class StringPair
         Me.Value = value
     End Sub
 
-    Function CompareTo(other As StringPair) As Integer Implements System.IComparable(Of StringPair).CompareTo
+    Function CompareTo(other As StringPair) As Integer Implements IComparable(Of StringPair).CompareTo
         Return Name.CompareTo(other.Name)
     End Function
 End Class
@@ -1210,7 +1044,7 @@ Public Class CommandManager
         End If
 
         For Each i In Commands.Keys
-            If i.EqualIgnoreCase(name) Then
+            If i.IsEqualIgnoreCase(name) Then
                 Return True
             End If
         Next
@@ -1222,7 +1056,7 @@ Public Class CommandManager
         End If
 
         For Each i In Commands.Keys
-            If i.EqualIgnoreCase(name) Then
+            If i.IsEqualIgnoreCase(name) Then
                 Return Commands(i)
             End If
         Next
@@ -1332,17 +1166,26 @@ Public Module MainModule
     Public Const BR3 As String = VB6.vbCrLf + VB6.vbCrLf + VB6.vbCrLf
     Public Log As LogBuilder
 
-    Sub MsgInfo(text As String, Optional content As String = Nothing)
-        Msg(text, content, MsgIcon.Info, TaskDialogButtons.Ok)
+    Sub MsgInfo(text As Object, Optional content As Object = Nothing)
+        Dim text1 = text?.ToString
+        Dim content1 = content?.ToString
+        Msg(text1, content1, MsgIcon.Info, TaskDialogButtons.Ok)
     End Sub
 
     Sub MsgError(text As String, Optional content As String = Nothing)
-        If text = "" Then text = content
-        If text = "" Then Exit Sub
+        MsgError(text, content, IntPtr.Zero)
+    End Sub
+
+    Sub MsgError(text As String, content As String, handle As IntPtr)
+        If text = "" Then
+            text = content
+        End If
+
+        If text = "" Then
+            Exit Sub
+        End If
 
         Using td As New TaskDialog(Of String)
-            td.AllowCancel = False
-
             If content = "" Then
                 If text.Length < 80 Then
                     td.MainInstruction = text
@@ -1354,6 +1197,11 @@ Public Module MainModule
                 td.Content = content
             End If
 
+            If handle <> IntPtr.Zero Then
+                td.Config.hwndParent = handle
+            End If
+
+            td.AllowCancel = False
             td.MainIcon = TaskDialogIcon.Error
             td.Footer = Strings.TaskDialogFooter
             td.Show()
@@ -1372,8 +1220,9 @@ Public Module MainModule
         Return Msg(text, Nothing, MsgIcon.Question, TaskDialogButtons.OkCancel) = DialogResult.OK
     End Function
 
-    Function MsgQuestion(text As String,
-                         Optional buttons As TaskDialogButtons = TaskDialogButtons.OkCancel) As DialogResult
+    Function MsgQuestion(
+        text As String, Optional buttons As TaskDialogButtons = TaskDialogButtons.OkCancel) As DialogResult
+
         Return Msg(text, Nothing, MsgIcon.Question, buttons)
     End Function
 
@@ -1389,7 +1238,9 @@ Public Module MainModule
                  buttons As TaskDialogButtons,
                  Optional defaultButton As DialogResult = DialogResult.None) As DialogResult
 
-        If mainInstruction Is Nothing Then mainInstruction = ""
+        If mainInstruction Is Nothing Then
+            mainInstruction = ""
+        End If
 
         Using td As New TaskDialog(Of DialogResult)
             td.AllowCancel = False
@@ -1516,7 +1367,7 @@ End Class
 
 Public Class Shutdown
     Shared Sub Commit(mode As ShutdownMode)
-        Dim psi = New ProcessStartInfo("shutdown")
+        Dim psi = New ProcessStartInfo("shutdown.exe")
         psi.CreateNoWindow = True
         psi.UseShellExecute = False
 
@@ -1527,10 +1378,10 @@ Public Class Shutdown
                 SetSuspendState(True, False, False)
             Case ShutdownMode.Hybrid
                 psi.Arguments = "/f /hybrid /t " & s.ShutdownTimeout
-                Process.Start(psi)
+                Process.Start(psi)?.Dispose()
             Case ShutdownMode.Shutdown
                 psi.Arguments = "/f /s /t " & s.ShutdownTimeout
-                Process.Start(psi)
+                Process.Start(psi)?.Dispose()
         End Select
     End Sub
 

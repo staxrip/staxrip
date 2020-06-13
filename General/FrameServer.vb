@@ -7,19 +7,12 @@ Public Class FrameServer
     Property Info As ServerInfo
     Property NativeServer As IFrameServer
 
-    Shared WasInitialized As Boolean
-
     Sub New(path As String)
+        g.InitFrameServer()
+
         If path.EndsWith(".avs") Then
             NativeServer = CreateAviSynthServer()
         Else
-            If Not WasInitialized Then
-                Environment.SetEnvironmentVariable("path",
-                    Package.Python.Directory + ";" + Environment.GetEnvironmentVariable("path"))
-
-                WasInitialized = True
-            End If
-
             NativeServer = CreateVapourSynthServer()
         End If
 
@@ -74,7 +67,7 @@ Public Structure ServerInfo
 
     Function GetInfoText(position As Integer) As String
         Dim rate = FrameRateNum / FrameRateDen
-        Dim currentDate = Date.Today.AddSeconds(position / rate)
+
         Dim lengthtDate = Date.Today.AddSeconds(FrameCount / rate)
         Dim dateFormat = If(lengthtDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff")
         Dim frames = FrameCount.ToString
@@ -82,6 +75,7 @@ Public Structure ServerInfo
 
         If position > -1 Then
             frames = position & " of " & FrameCount
+            Dim currentDate = Date.Today.AddSeconds(position / rate)
             len = currentDate.ToString(dateFormat) + " of " + lengthtDate.ToString(dateFormat)
         End If
 

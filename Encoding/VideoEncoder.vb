@@ -1,7 +1,8 @@
 
+Imports System.Text.RegularExpressions
+
 Imports StaxRip.UI
 Imports StaxRip.CommandLine
-Imports System.Text.RegularExpressions
 
 <Serializable()>
 Public MustInherit Class VideoEncoder
@@ -43,6 +44,15 @@ Public MustInherit Class VideoEncoder
     Overridable Function GetMenu() As MenuList
     End Function
 
+    Overridable Function CanChunkEncode() As Boolean
+    End Function
+
+    Overridable Function GetFixedBitrate() As Integer
+    End Function
+
+    Overridable Function GetChunkEncodeActions() As List(Of Action)
+    End Function
+
     Overridable Sub ImportCommandLine(commandLine As String)
     End Sub
 
@@ -63,14 +73,6 @@ Public MustInherit Class VideoEncoder
                 If colour_primaries.Contains("BT.709") Then
                     cl += " --colorprim bt709"
                 End If
-            Case "BT.601 NTSC"
-                If colour_primaries.Contains("BT.601 NTSC") Then
-                    cl += " --colorprim bt470m"
-                End If
-            Case "BT.601 PAL"
-                If colour_primaries.Contains("BT.601 PAL") Then
-                    cl += " --colorprim bt470bg"
-                End If
         End Select
 
         Dim transfer_characteristics = MediaInfo.GetVideo(sourceFile, "transfer_characteristics")
@@ -86,14 +88,6 @@ Public MustInherit Class VideoEncoder
                 End If
             Case "HLG"
                 cl += " --transfer arib-std-b67"
-            Case "BT.601 NTSC"
-                If transfer_characteristics.Contains("BT.601 NTSC") Then
-                    cl += " --transfer bt470m"
-                End If
-            Case "BT.601 PAL"
-                If transfer_characteristics.Contains("BT.601 PAL") Then
-                    cl += " --transfer bt470bg"
-                End If
         End Select
 
         Dim matrix_coefficients = MediaInfo.GetVideo(sourceFile, "matrix_coefficients")
@@ -105,14 +99,6 @@ Public MustInherit Class VideoEncoder
                 End If
             Case "BT.709"
                 cl += " --colormatrix bt709"
-            Case "BT.601 NTSC"
-                If matrix_coefficients.Contains("BT.601 NTSC") Then
-                    cl += " --colormatrix bt470m"
-                End If
-            Case "BT.601 PAL"
-                If matrix_coefficients.Contains("BT.601 PAL") Then
-                    cl += " --colormatrix bt470bg"
-                End If
         End Select
 
         Dim color_range = MediaInfo.GetVideo(sourceFile, "colour_range")
@@ -197,15 +183,17 @@ Public MustInherit Class VideoEncoder
         ret.ShowControlBorder = True
         ret.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
-        For Each i In GetMenu()
-            Dim b As New ToolStripButton
-            b.Margin = New Padding(2, 2, 0, 0)
-            b.Text = i.Key
-            b.Padding = New Padding(4)
-            Dim happy = i
-            AddHandler b.Click, Sub() happy.Value.Invoke()
-            b.TextAlign = ContentAlignment.MiddleLeft
-            ret.Items.Add(b)
+        Dim pad = ret.Font.Height \ 9
+
+        For Each pair In GetMenu()
+            Dim bn As New ToolStripButton
+            bn.Margin = New Padding(2, 2, 0, 0)
+            bn.Text = pair.Key
+            bn.Padding = New Padding(pad)
+            Dim tmp = pair
+            AddHandler bn.Click, Sub() tmp.Value.Invoke()
+            bn.TextAlign = ContentAlignment.MiddleLeft
+            ret.Items.Add(bn)
         Next
 
         Return ret
@@ -277,6 +265,12 @@ Public MustInherit Class VideoEncoder
         g.MainForm.SetEncoderControl(p.VideoEncoder.CreateEditControl)
         g.MainForm.lgbEncoder.Text = g.ConvertPath(p.VideoEncoder.Name).Shorten(38)
         g.MainForm.llMuxer.Text = p.VideoEncoder.Muxer.OutputExt.ToUpper
+
+        If GetFixedBitrate() <> 0 Then
+            p.BitrateIsFixed = True
+            g.MainForm.tbBitrate.Text = GetFixedBitrate().ToString
+        End If
+
         g.MainForm.UpdateSizeOrBitrate()
     End Sub
 
@@ -287,11 +281,11 @@ Public MustInherit Class VideoEncoder
     End Enum
 
     Sub OpenMuxerConfigDialog()
-        Dim m = ObjectHelp.GetCopy(Of Muxer)(Muxer)
+        Dim muxer = ObjectHelp.GetCopy(Of Muxer)(Me.Muxer)
 
-        If m.Edit = DialogResult.OK Then
-            Muxer = m
-            g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpper
+        If muxer.Edit = DialogResult.OK Then
+            Me.Muxer = muxer
+            g.MainForm.llMuxer.Text = Me.Muxer.OutputExt.ToUpper
             g.MainForm.Refresh()
             g.MainForm.UpdateSizeOrBitrate()
             g.MainForm.Assistant()
@@ -300,25 +294,28 @@ Public MustInherit Class VideoEncoder
 
     Function OpenMuxerProfilesDialog() As DialogResult
         Using form As New ProfilesForm("Muxer Profiles", s.MuxerProfiles,
-                                       AddressOf LoadMuxer,
-                                       AddressOf GetMuxerProfile,
-                                       AddressOf Muxer.GetDefaults)
+            AddressOf LoadMuxer, AddressOf GetMuxerProfile, AddressOf Muxer.GetDefaults)
+
             Return form.ShowDialog()
         End Using
     End Function
 
-    Public Sub LoadMuxer(profile As Profile)
+    Sub LoadMuxer(profile As Profile)
         Muxer = DirectCast(ObjectHelp.GetCopy(profile), Muxer)
         Muxer.Init()
         g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpper
         Dim newPath = p.TargetFile.ChangeExt(Muxer.OutputExt)
-        If p.SourceFile <> "" AndAlso newPath.ToLower = p.SourceFile.ToLower Then newPath = newPath.Dir + newPath.Base + "_new" + newPath.ExtFull
+
+        If p.SourceFile <> "" AndAlso newPath.ToLower = p.SourceFile.ToLower Then
+            newPath = newPath.Dir + newPath.Base + "_new" + newPath.ExtFull
+        End If
+
         g.MainForm.tbTargetFile.Text = newPath
         g.MainForm.RecalcBitrate()
         g.MainForm.Assistant()
     End Sub
 
-    Private Function GetMuxerProfile() As Profile
+    Function GetMuxerProfile() As Profile
         Dim sb As New SelectionBox(Of Muxer)
 
         sb.Title = "New Profile"
@@ -330,7 +327,9 @@ Public MustInherit Class VideoEncoder
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
+        If sb.Show = DialogResult.OK Then
+            Return sb.SelectedValue
+        End If
 
         Return Nothing
     End Function
@@ -341,6 +340,7 @@ Public MustInherit Class VideoEncoder
         ret.Add(New x264Enc)
         ret.Add(New x265Enc)
 
+        ret.Add(New aomenc)
         ret.Add(New Rav1e)
         ret.Add(New SVTAV1)
 
@@ -376,7 +376,7 @@ Public MustInherit Class VideoEncoder
         cmdl.Name = "Command Line"
         cmdl.Muxer = New ffmpegMuxer("AVI")
         cmdl.QualityMode = True
-        cmdl.CommandLines = "%app:xvid_encraw% -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_par_x%:%target_par_y%"
+        cmdl.CommandLines = """%app:xvid_encraw%"" -cq 2 -smoother 0 -max_key_interval 250 -nopacked -vhqmode 4 -qpel -notrellis -max_bframes 1 -bvhq -bquant_ratio 162 -bquant_offset 0 -threads 1 -i ""%script_file%"" -avi ""%encoder_out_file%"" -par %target_par_x%:%target_par_y%"
         ret.Add(cmdl)
 
         ret.Add(New NullEncoder())
@@ -411,11 +411,7 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Overrides Function Edit() As DialogResult
-        Using form As New ControlHostForm(Name)
-            form.AddControl(CreateEditControl, Nothing)
-            form.ShowDialog()
-        End Using
-
+        ShowConfigDialog()
         Return DialogResult.OK
     End Function
 
@@ -440,7 +436,9 @@ Public MustInherit Class BasicVideoEncoder
 
     Overloads Shared Sub ImportCommandLine(commandLine As String, params As CommandLineParams)
         Try
-            If commandLine = "" Then Exit Sub
+            If commandLine = "" Then
+                Exit Sub
+            End If
 
             For Each i In {"tune", "preset", "profile"}
                 Dim match = Regex.Match(commandLine, "(.*)(--" + i + "\s\w+)(.*)")
@@ -593,7 +591,6 @@ Public Class BatchEncoder
                 proc.SkipStrings = Proc.GetSkipStrings(CommandLines)
                 proc.File = "cmd.exe"
                 proc.Arguments = "/S /C """ + line + """"
-                proc.SetEnvironmentVariables()
 
                 Try
                     proc.Start()
@@ -613,8 +610,9 @@ Public Class BatchEncoder
             Exit Sub
         End If
 
-        If Not g.VerifyRequirements Then Exit Sub
-        If Not g.IsValidSource Then Exit Sub
+        If Not g.VerifyRequirements OrElse Not g.IsValidSource Then
+            Exit Sub
+        End If
 
         Dim script As New VideoScript
         script.Engine = p.Script.Engine
@@ -642,7 +640,6 @@ Public Class BatchEncoder
             proc.SkipStrings = Proc.GetSkipStrings(line)
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + line + """"
-            proc.SetEnvironmentVariables()
 
             Try
                 proc.Start()
@@ -723,7 +720,7 @@ Public Class NullEncoder
         Dim sourceFile = GetSourceFile()
 
         If Not p.VideoEncoder.Muxer.IsSupported(sourceFile.Ext) Then
-            Select Case FilePath.GetExt(sourceFile)
+            Select Case sourceFile.Ext
                 Case "mkv"
                     mkvDemuxer.Demux(sourceFile, Nothing, Nothing, Nothing, p, False, True)
             End Select

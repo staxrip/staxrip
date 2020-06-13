@@ -1,12 +1,223 @@
 Tools
 =====
 
+.. csv-table::
+    :header: "Name", "Type", "Filename", "Version", "Modified Date"
+    :widths: auto
+
+    "AddGrainC","AviSynth Plugin","AddGrainC.dll","1.7.1","2019-01-01"
+    "AutoAdjust","AviSynth Plugin","AutoAdjust.dll","2.60","2016-01-05"
+    "Average","AviSynth Plugin","Average.dll","0.94","2019-01-01"
+    "AviSynthShader DLL","AviSynth Plugin","Shader.dll","1.6.5","2018-05-13"
+    "AvsResize","AviSynth Plugin","avsresize.dll","r1d","2019-01-01"
+    "AVSTP","AviSynth Plugin","avstp.dll","1.0.3.0","2019-01-01"
+    "checkmate","AviSynth Plugin","checkmate.dll","0.9","2013-12-19"
+    "CNR2","AviSynth Plugin","CNR2.dll","2.6.1","2019-01-01"
+    "DCTFilter","AviSynth Plugin","DCTFilter.dll","0.5.1","2020-05-13"
+    "Deblock","AviSynth Plugin","Deblock.dll","2013-12-03","2019-01-01"
+    "Decomb","AviSynth Plugin","Decomb.dll","5.2.4","2013-12-01"
+    "DeGrainMedian","AviSynth Plugin","DeGrainMedian.dll","0.8.2","2019-01-01"
+    "DePan","AviSynth Plugin","DePan.dll","2.7.42","2020-05-22"
+    "DePanEstimate","AviSynth Plugin","DePanEstimate.dll","2.7.42","2020-05-22"
+    "DFTTest","AviSynth Plugin","dfttest.dll","1.9.6 Clang","2020-03-24"
+    "Dither DLL","AviSynth Plugin","dither.dll","1.27.2","2019-01-01"
+    "DSS2mod","AviSynth Plugin","avss.dll","2014-11-13","2019-01-01"
+    "EEDI2","AviSynth Plugin","EEDI2.dll","0.9.2.0","2019-01-01"
+    "EEDI3","AviSynth Plugin","EEDI3.dll","0.9.2.3","2019-01-01"
+    "ffms2","AviSynth Plugin","ffms2.dll","89bd1e1 StvG","2020-03-30"
+    "FFT3DFilter","AviSynth Plugin","fft3dfilter.dll","2.6","2019-01-31"
+    "FFT3DGPU","AviSynth Plugin","FFT3dGPU.dll","0.8.2.0","2018-11-21"
+    "flash3kyuu_deband","AviSynth Plugin","flash3kyuu_deband.dll","5.0","2018-05-02"
+    "FluxSmooth","AviSynth Plugin","FluxSmooth.dll","1.4.7","2019-04-26"
+    "FrameRateConverter DLL","AviSynth Plugin","FrameRateConverter-x64.dll","1.2.1","2017-09-02"
+    "GradFun2DB","AviSynth Plugin","gradfun2db.dll","2010-03-29","2019-01-01"
+    "HQDN3D","AviSynth Plugin","Hqdn3d.dll","0.11","2019-01-01"
+    "JincResize","AviSynth Plugin","JincResize.dll","r44","2019-01-01"
+    "JPSDR","AviSynth Plugin","Plugins_JPSDR.dll","3.2.2","2020-05-05"
+    "KNLMeansCL","AviSynth Plugin","KNLMeansCL.dll","1.1.1","2020-04-29"
+    "L-SMASH-Works","AviSynth Plugin","LSMASHSource.dll","2020-05-31","2020-05-31"
+    "masktools2","AviSynth Plugin","masktools2.dll","2.2.23","2020-05-14"
+    "MedianBlur2","AviSynth Plugin","MedianBlur2.dll","0.94","2014-02-10"
+    "MiniDeen","AviSynth Plugin","neo-minideen.dll","r9","2020-05-29"
+    "MipSmooth","AviSynth Plugin","MipSmooth.dll","1.1.2","2019-01-01"
+    "modPlus","AviSynth Plugin","modPlus.dll","2017-10-17","2019-01-01"
+    "MPEG2DecPlus","AviSynth Plugin","MPEG2DecPlus64.dll","0.1.2","2020-05-09"
+    "MSharpen","AviSynth Plugin","msharpen.dll","0.9","2013-11-30"
+    "mvtools2","AviSynth Plugin","mvtools2.dll","2.7.43","2020-06-02"
+    "Neo f3kdb","AviSynth Plugin","neo-f3kdb.dll","r6","2020-05-30"
+    "NicAudio","AviSynth Plugin","NicAudio.dll","1.1","2019-01-01"
+    "RgTools","AviSynth Plugin","RgTools.dll","1.0","2020-04-27"
+    "SangNom2","AviSynth Plugin","SangNom2.dll","0.35","2013-11-30"
+    "SmoothAdjust","AviSynth Plugin","SmoothAdjust.dll","3.20","2016-01-05"
+    "SmoothD2","AviSynth Plugin","SmoothD2.dll","a2","2019-01-01"
+    "SVPFlow 1","AviSynth Plugin","svpflow1.dll","4.2.0.133","2019-01-01"
+    "SVPFlow 2","AviSynth Plugin","svpflow2.dll","4.2.0.142","2019-01-01"
+    "TDeint","AviSynth Plugin","TDeint.dll","1.5","2020-05-13"
+    "TEMmod","AviSynth Plugin","TEMmod.dll","0.2.1","2019-01-01"
+    "TIVTC","AviSynth Plugin","TIVTC.dll","1.0.17","2020-05-12"
+    "TMM2","AviSynth Plugin","TMM2.dll","2016-07-05","2019-01-01"
+    "TNLMeans","AviSynth Plugin","TNLMeans.dll","1.0.3","2019-01-01"
+    "UnDot","AviSynth Plugin","UnDot.dll","0.0.1.1","2006-09-19"
+    "VagueDenoiser","AviSynth Plugin","VagueDenoiser.dll","0.35.1.0","2019-01-01"
+    "VapourSource","AviSynth Plugin","VapourSource_x64.dll","2018-09-21","2019-01-01"
+    "vinverse","AviSynth Plugin","vinverse.dll","2013-11-30","2013-11-30"
+    "vsCube","AviSynth Plugin","vscube.dll","1.0","2019-01-01"
+    "VSFilterMod","AviSynth Plugin","VSFilterMod.dll","5.2.2","2020-04-03"
+    "xNLMeans","AviSynth Plugin","xNLMeans.dll","0.03","2019-01-01"
+    "yadifmod2","AviSynth Plugin","yadifmod2.dll","0.2.2","2020-05-14"
+    "AnimeIVTC","AviSynth Script","AnimeIVTC.avsi","2.20","2019-01-01"
+    "AviSynthShader AVSI","AviSynth Script","Shader.avsi","1.6.5","2018-05-13"
+    "CropResize","AviSynth Script","CropResize.avsi","2019-09-09","2019-09-10"
+    "DAA3Mod","AviSynth Script","daa3mod.avsi","3.3","2019-01-01"
+    "Deblock_QED","AviSynth Script","Deblock_QED.avsi","2011-11-29","2019-01-01"
+    "DehaloAlpha","AviSynth Script","Dehalo_alpha.avsi","MT2","2019-01-01"
+    "DeNoise Histogram","AviSynth Script","DiffCol.avsi","2018-05-15","2019-01-01"
+    "DeNoiseMD","AviSynth Script","DeNoiseMD.avsi","2018-05-15","2019-01-01"
+    "DeNoiseMF","AviSynth Script","DeNoiseMF.avsi","2018-05-15","2019-01-01"
+    "Dither AVSI","AviSynth Script","dither.avsi","1.27.2","2019-01-01"
+    "edi_rpow2 AVSI","AviSynth Script","edi_rpow2.avsi","0.9.2.0","2019-01-01"
+    "eedi3_resize","AviSynth Script","eedi3_resize.avsi","0.11","2019-01-01"
+    "FineDehalo","AviSynth Script","FineDehalo.avsi","1.1","2019-01-01"
+    "FineSharp","AviSynth Script","FineSharp.avsi","2012-04-12","2019-01-01"
+    "FrameRateConverter AVSI","AviSynth Script","FrameRateConverter.avsi","1.2.1","2019-01-01"
+    "GradFun2DBmod","AviSynth Script","GradFun2DBmod.avsi","1.5","2019-11-06"
+    "HQDeringmod","AviSynth Script","HQDeringmod.avsi","2018-01-18","2019-01-01"
+    "InterFrame","AviSynth Script","InterFrame.avsi","2.0","2019-01-01"
+    "Lazy Utilities","AviSynth Script","LUtils.avsi","0.12","2019-01-01"
+    "LSFmod","AviSynth Script","LSFmod.avsi","2.187","2020-05-26"
+    "MAA2Mod","AviSynth Script","maa2mod.avsi","0.431","2019-01-01"
+    "mClean","AviSynth Script","mClean.avsi","3.2","2019-01-01"
+    "MCTemporalDenoise","AviSynth Script","MCTemporalDenoise.avsi","1.4.20","2010-07-02"
+    "MT Expand Multi","AviSynth Script","mt_xxpand_multi.avsi","2018-05-19","2019-01-01"
+    "MultiSharpen","AviSynth Script","MultiSharpen.avsi","1.0","2019-01-01"
+    "nnedi3 AVSI","AviSynth Script","nnedi3_16.avsi","3.0","2019-01-01"
+    "nnedi3x AVSI","AviSynth Script","nnedi3x.avsi","3.0","2019-01-01"
+    "pSharpen","AviSynth Script","pSharpen.avsi","2016-03-16","2019-01-01"
+    "QTGMC","AviSynth Script","QTGMC.avsi","3.365","2020-05-31"
+    "ResizeX","AviSynth Script","ResizeX.avsi","1.0.1","2019-01-01"
+    "SMDegrain","AviSynth Script","SMDegrain.avsi","3.12.108s","2020-05-31"
+    "SmoothD2c","AviSynth Script","SmoothD2c.avs","a2","2019-01-01"
+    "YFRC","AviSynth Script","YFRC.avsi","2015-10-01","2019-01-01"
+    "Zs_RF_Shared","AviSynth Script","Zs_RF_Shared.avsi","1.127","2020-05-31"
+    "aomenc","Console App","aomenc.exe","2.0",""
+    "AutoCrop","Console App","AutoCrop.exe","1.0.0.0","2020-05-06"
+    "avs2pipemod","Console App","avs2pipemod64.exe","1.1.1","2016-08-14"
+    "AVSMeter","Console App","AVSMeter64.exe","3.0.0.4","2020-05-26"
+    "eac3to","Console App","eac3to.exe","3.34","2017-11-19"
+    "fdkaac","Console App","fdkaac.exe","1.0.0","2019-02-13"
+    "ffmpeg","Console App","ffmpeg.exe","N-97868-gaa6f38c298-g38490cbeb3-gcc10.1.0 Patman","2020-05-22"
+    "mkvextract","Console App","mkvextract.exe","47","2020-05-30"
+    "mkvinfo","Console App","mkvinfo.exe","47","2020-05-30"
+    "mkvmerge","Console App","mkvmerge.exe","47","2020-05-30"
+    "MP4Box","Console App","MP4Box.exe","0.9.0-DEV-rev0-g81b4481e1-gcc10.0.1 Patman","2020-04-18"
+    "mtn","Console App","mtn.exe","2.0.1","2019-06-27"
+    "NVEnc","Console App","NVEncC64.exe","5.04","2020-06-11"
+    "PNGopt","Console App","apngopt.exe","1.4","2019-01-01"
+    "Python","Console App","python.exe","3.8.3121","2020-04-29"
+    "qaac","Console App","qaac64.exe","2.68","2018-11-20"
+    "QSVEnc","Console App","QSVEncC64.exe","4.03","2020-05-31"
+    "rav1e","Console App","rav1e.exe","0.3.0","2020-02-29"
+    "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.2","2020-04-20"
+    "VCEEnc","Console App","VCEEncC64.exe","6.0","2020-04-20"
+    "vspipe","Console App","vspipe.exe","r50","2020-05-08"
+    "x264","Console App","x264.exe","M-0.160.3000-33f9e14-gcc10.0.1 Patman","2020-04-11"
+    "x265","Console App","x265.exe","M-3.4+6-g73f96ff39-gcc11.0.0 Patman","2020-05-30"
+    "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
+    "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
+    "chapterEditor","GUI App","chapterEditor.exe","1.23","2020-05-13"
+    "D2V Witch","GUI App","d2vwitch.exe","v3","2019-04-04"
+    "DGIndex","GUI App","DGIndex.exe","1.5.8","2010-03-06"
+    "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.4.0.0","2020-05-22"
+    "MPC-BE","GUI App","mpc-be64.exe","","2020-05-25"
+    "MPC-HC","GUI App","mpc-hc64.exe","","2017-07-16"
+    "mpv.net","GUI App","mpvnet.exe","5.4.8.0","2020-05-11"
+    "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.14","2020-03-08"
+    "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
+    "AviSynth","Library","AviSynth.dll","3.6.0","2020-05-20"
+    "DirectX 9","Library","d3d9.dll","","2019-12-07"
+    "FFTW","Library","libfftw3-3.dll","3.3.8","2018-12-20"
+    "MediaInfo","Library","MediaInfo.dll","20.03","2020-04-03"
+    "VapourSynth","Library","vapoursynth.dll","r50","2020-05-08"
+    "Visual C++ 2012","Library","msvcp110.dll","","2012-11-05"
+    "Visual C++ 2013","Library","msvcp120.dll","","2016-02-10"
+    "Visual C++ 2019","Library","msvcp140.dll","","2020-03-20"
+    "Get-MediaInfo","Misc","Get-MediaInfo.ps1","3.3","2020-05-04"
+    "Haali Splitter","Misc","splitter.ax","","2013-04-14"
+    "AWarpSharp2","VapourSynth Plugin","libawarpsharp2.dll","2018-06-18","2019-01-01"
+    "BM3D","VapourSynth Plugin","BM3D.dll","r8","2019-01-03"
+    "Bwdif","VapourSynth Plugin","Bwdif.dll","r1","2020-02-24"
+    "CNR2","VapourSynth Plugin","libcnr2.dll","2016-07-02","2019-01-01"
+    "CTMF","VapourSynth Plugin","CTMF.dll","2017-06-02","2019-01-01"
+    "d2vsource","VapourSynth Plugin","d2vsource.dll","1.2","2019-08-06"
+    "DCTFilter","VapourSynth Plugin","DCTFilter.dll","r2","2017-12-23"
+    "DCTFilter-f","VapourSynth Plugin","DCTFilter.dll","r2","2019-01-01"
+    "Deblock","VapourSynth Plugin","Deblock.dll","6","2017-06-13"
+    "DeblockPP7","VapourSynth Plugin","DeblockPP7.dll","2018-04-28","2019-01-01"
+    "DegrainMedian","VapourSynth Plugin","libdegrainmedian.dll","2016-08-07","2019-01-01"
+    "DFTTest Neo","VapourSynth Plugin","neo-dfttest.dll","r7","2020-04-16"
+    "DFTTest","VapourSynth Plugin","DFTTest.dll","r6","2019-08-06"
+    "EEDI2","VapourSynth Plugin","EEDI2.dll","2017-03-04","2019-01-01"
+    "EEDI3m","VapourSynth Plugin","EEDI3m.dll","2017-12-23","2019-01-01"
+    "FFT3DFilter","VapourSynth Plugin","fft3dfilter.dll","2018-07-11","2019-01-01"
+    "FixTelecinedFades","VapourSynth Plugin","libftf_em64t_avx_fma.dll","5.0","2017-01-28"
+    "FluxSmooth","VapourSynth Plugin","libfluxsmooth.dll","2.0","2019-01-01"
+    "fmtconv","VapourSynth Plugin","fmtconv.dll","20","2016-03-25"
+    "HQDN3D","VapourSynth Plugin","libhqdn3d.dll","2018-07-01","2019-01-01"
+    "IT","VapourSynth Plugin","vs_it.dll","1.2","2019-01-01"
+    "msmoosh","VapourSynth Plugin","libmsmoosh.dll","1.1","2014-09-26"
+    "mvtools","VapourSynth Plugin","libmvtools.dll","r20","2019-03-13"
+    "mvtools-sf","VapourSynth Plugin","libmvtools_sf_em64t.dll","r1","2017-06-20"
+    "nnedi3","VapourSynth Plugin","libnnedi3.dll","v12","2019-01-01"
+    "nnedi3cl","VapourSynth Plugin","NNEDI3CL.dll","7.2","2019-01-01"
+    "Sangnom","VapourSynth Plugin","libsangnom.dll","2016-08-31","2019-01-01"
+    "scenechange","VapourSynth Plugin","scenechange.dll","2014-09-25","2014-09-25"
+    "SVPFlow 1","VapourSynth Plugin","svpflow1_vs64.dll","4.2.0.133","2019-01-01"
+    "SVPFlow 2","VapourSynth Plugin","svpflow2_vs64.dll","4.2.0.142","2019-01-01"
+    "TCanny","VapourSynth Plugin","TCanny.dll","r12","2019-02-05"
+    "TDeintMod","VapourSynth Plugin","TDeintMod.dll","r10","2019-01-01"
+    "TemporalMedian","VapourSynth Plugin","libtemporalmedian.dll","v1","2019-01-01"
+    "temporalsoften","VapourSynth Plugin","temporalsoften.dll","2014-09-25","2014-09-25"
+    "TimeCube","VapourSynth Plugin","vscube.dll","2.0","2019-01-01"
+    "TTempSmooth","VapourSynth Plugin","TTempSmooth.dll","2018-05-08","2019-01-01"
+    "VagueDenoiser","VapourSynth Plugin","VagueDenoiser.dll","2015-06-08","2019-01-01"
+    "vcfreq","VapourSynth Plugin","vcfreq.dll","2016-05-12","2019-01-01"
+    "vcmod","VapourSynth Plugin","vcmod.dll","2017-10-17","2019-01-01"
+    "vcmove","VapourSynth Plugin","vcmove.dll","2016-04-10","2019-01-01"
+    "W3FDIF","VapourSynth Plugin","W3FDIF.dll","r1","2019-01-01"
+    "Yadifmod","VapourSynth Plugin","Yadifmod.dll","r10","2017-02-07"
+    "znedi3","VapourSynth Plugin","vsznedi3.dll","2018-01-11","2019-01-01"
+    "adjust","VapourSynth Script","adjust.py","2015-03-22","2019-01-01"
+    "Dither","VapourSynth Script","Dither.py","2018-02-23","2019-01-01"
+    "finesharp","VapourSynth Script","finesharp.py","2018-06-30","2019-01-01"
+    "fvsfunc","VapourSynth Script","fvsfunc.py","2018-10-28","2019-01-01"
+    "G41Fun","VapourSynth Script","G41Fun.py","1.0","2019-01-01"
+    "havsfunc","VapourSynth Script","havsfunc.py","32","2019-08-06"
+    "mcdegrainsharp","VapourSynth Script","mcdegrainsharp.py","2016-10-20","2019-01-01"
+    "muvsfunc","VapourSynth Script","muvsfunc.py","0.2.0","2019-02-18"
+    "mvmulti","VapourSynth Script","mvmulti.py","20","2019-01-01"
+    "mvsfunc","VapourSynth Script","mvsfunc.py","2016-10-03","2016-07-24"
+    "nnedi3_rpow2","VapourSynth Script","nnedi3_rpow2.py","1.0","2017-09-14"
+    "Oyster","VapourSynth Script","Oyster.py","2017-02-10","2019-01-01"
+    "Plum","VapourSynth Script","Plum.py","2017-06-24","2019-01-01"
+    "psharpen","VapourSynth Script","psharpen.py","1.0","2019-01-01"
+    "resamplehq","VapourSynth Script","resamplehq.py","1.0","2019-01-01"
+    "taa","VapourSynth Script","vsTAAmbk.py","0.8.0","2019-01-01"
+    "Vine","VapourSynth Script","Vine.py","2017-03-16","2019-01-01"
+
 Console App
 -----------
+aomenc
+~~~~~~
+
+AV1 video encoder console app.
+
+https://aomedia.org
+
+
 AutoCrop
 ~~~~~~~~
 
-AutoCrop console tool.
+AutoCrop console app (works only in StaxRip).
 
 
 
@@ -22,17 +233,9 @@ http://github.com/chikuzen/avs2pipemod
 AVSMeter
 ~~~~~~~~
 
-AVSMeter displays AviSynth script clip info, CPU and memory usage and the minimum, maximum and average frames processed per second. It measures how fast Avisynth can serve frames to a client application and comes in handy when testing filters/plugins to evaluate their performance and memory requirements.
+Console app that displays AviSynth script clip info.
 
 http://forum.doom9.org/showthread.php?t=174797
-
-
-dsmux
-~~~~~
-
-dsmux is installed by the Haali Splitter and can be used to mux TS containing AVC into MKV in order to fix av sync problems.
-
-http://haali.su/mkv
 
 
 eac3to
@@ -46,7 +249,7 @@ http://forum.doom9.org/showthread.php?t=125966
 fdkaac
 ~~~~~~
 
-Console AAC encoder based on libfdk-aac.
+AAC console encoder based on libfdk-aac.
 
 http://github.com/nu774/fdkaac
 
@@ -54,7 +257,7 @@ http://github.com/nu774/fdkaac
 ffmpeg
 ~~~~~~
 
-Versatile audio video convertor.
+Versatile audio video convertor console app.
 
 http://ffmpeg.org
 
@@ -94,7 +297,7 @@ http://gpac.wp.mines-telecom.fr/
 mtn
 ~~~
 
-movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.
+Movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.
 
 https://github.com/Revan654/Movie-Thumbnailer-mtn
 
@@ -118,7 +321,7 @@ https://sourceforge.net/projects/apng/files/
 Python
 ~~~~~~
 
-Python is required by VapourSynth.
+Scripting language used by VapourSynth.
 
 http://www.python.org
 
@@ -126,7 +329,7 @@ http://www.python.org
 qaac
 ~~~~
 
-qaac is a console AAC encoder frontend based on the Apple AAC encoder.
+Console AAC encoder based on the Apple AAC encoder.
 
 http://github.com/nu774/qaac
 
@@ -142,7 +345,7 @@ http://github.com/rigaya/QSVEnc
 rav1e
 ~~~~~
 
-A Faster and Safer AV1 Encoder
+AV1 Video Encoder.
 
 https://github.com/xiph/rav1e
 
@@ -166,9 +369,9 @@ http://github.com/rigaya/VCEEnc
 vspipe
 ~~~~~~
 
-vspipe is installed by VapourSynth and used to pipe VapourSynth scripts to encoding apps.
+Console app that pipes VapourSynth scripts to video encoding console apps.
 
-
+http://www.vapoursynth.com
 
 
 x264
@@ -190,7 +393,7 @@ http://x265.org
 xvid_encraw
 ~~~~~~~~~~~
 
-XviD console encoder
+MPEG-4 video encoder console app.
 
 https://www.xvid.com
 
@@ -200,7 +403,7 @@ GUI App
 BDSup2Sub++
 ~~~~~~~~~~~
 
-Converts Blu-ray subtitles to other formats like VobSub.
+GUI app that converts Blu-ray subtitles to other formats like VobSub.
 
 https://github.com/amichaeltm/BDSup2SubPlusPlus
 
@@ -208,31 +411,39 @@ https://github.com/amichaeltm/BDSup2SubPlusPlus
 chapterEditor
 ~~~~~~~~~~~~~
 
-ChapterEditor is a chapter editor and menu editor for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, Matroska Menu.
+GUI app to edit chapters and menus for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, Matroska Menu.
 
 https://forum.doom9.org/showthread.php?t=169984
+
+
+D2V Witch
+~~~~~~~~~
+
+Portable MPEG-2 demuxing and d2v indexing GUI app.
+
+https://github.com/dubhater/D2VWitch
 
 
 DGIndex
 ~~~~~~~
 
-MPEG-2 demuxing and indexing app.
+MPEG-2 demuxing and d2v indexing GUI app.
 
 
 
 
-DGIndexNV
-~~~~~~~~~
+MediaInfo.NET
+~~~~~~~~~~~~~
 
-Shareware indexer and demuxer.
+GUI app originally built for StaxRip to show info about media files.
 
-
+https://github.com/stax76/MediaInfo.NET
 
 
 MPC-BE
 ~~~~~~
 
-DirectShow based media player.
+DirectShow based media player (GUI app).
 
 https://sourceforge.net/projects/mpcbe/
 
@@ -240,7 +451,7 @@ https://sourceforge.net/projects/mpcbe/
 MPC-HC
 ~~~~~~
 
-DirectShow based media player.
+DirectShow based media player (GUI app).
 
 https://mpc-hc.org/
 
@@ -248,7 +459,7 @@ https://mpc-hc.org/
 mpv.net
 ~~~~~~~
 
-libmpv based media player.
+The worlds best media player (GUI app).
 
 https://github.com/stax76/mpv.net
 
@@ -256,7 +467,7 @@ https://github.com/stax76/mpv.net
 Subtitle Edit
 ~~~~~~~~~~~~~
 
-Subtitle Edit is a open source subtitle editor.
+Subtitle editor GUI app.
 
 http://www.nikse.dk/SubtitleEdit
 
@@ -264,7 +475,7 @@ http://www.nikse.dk/SubtitleEdit
 VSRip
 ~~~~~
 
-VSRip rips VobSub subtitles.
+GUI app that rips VobSub subtitles.
 
 http://sourceforge.net/projects/guliverkli
 
@@ -284,7 +495,7 @@ http://avisynth.nl/index.php/AddGrainC
 AutoAdjust
 ~~~~~~~~~~
 
-AutoAdjust is an automatic adjustement filter. It calculates statistics of clip, stabilizes them temporally and uses them to adjust luminance gain & color balance.
+Automatic adjustement video filter plugin that calculates statistics of clip, stabilizes them temporally and uses them to adjust luminance gain & color balance.
 
 Filters: AutoAdjust
 
@@ -294,7 +505,7 @@ http://forum.doom9.org/showthread.php?t=167573
 Average
 ~~~~~~~
 
-A simple plugin that calculates a weighted frame-by-frame average from multiple clips. This is a modern rewrite of the old Average plugin but a bit faster, additional colorspace support, and some additional sanity checks.
+A simple video filter plugin that calculates a weighted frame-by-frame average from multiple clips.
 
 Filters: Average
 
@@ -334,7 +545,7 @@ http://avisynth.nl/index.php/AVSTP
 checkmate
 ~~~~~~~~~
 
-Spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes. When using in high motion scenes (or areas) be careful, it's known to cause artifacts with its default values.
+Spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes.
 
 Filters: checkmate
 
@@ -358,7 +569,7 @@ A rewrite of DctFilter for Avisynth+.
 
 Filters: DCTFilter, DCTFilterD, DCTFilter4, DCTFilter4D, DCTFilter8, DCTFilter8D
 
-http://github.com/chikuzen/DCTFilter
+https://github.com/Asd-g/DCTFilter
 
 
 Deblock
@@ -374,7 +585,7 @@ http://avisynth.nl/index.php/DeBlock
 Decomb
 ~~~~~~
 
-This package of plugin functions for Avisynth provides the means for removing combing artifacts from telecined progressive streams, interlaced streams, and mixtures thereof. Functions can be combined to implement inverse telecine (IVTC) for both NTSC and PAL streams.
+Video filter plugin that provides the means for removing combing artifacts from telecined progressive streams, interlaced streams, and mixtures thereof.
 
 Filters: Telecide, FieldDeinterlace, Decimate, IsCombed
 
@@ -398,7 +609,7 @@ DePan
 
 Filters: DePan, DePanInterleave, DePanStabilize, DePanScenes
 
-http://avisynth.nl/index.php/DePan
+https://github.com/pinterf/mvtools
 
 
 DePanEstimate
@@ -408,7 +619,7 @@ DePanEstimate
 
 Filters: DePanEstimate
 
-http://avisynth.nl/index.php/DePan
+https://github.com/pinterf/mvtools
 
 
 DFTTest
@@ -419,16 +630,6 @@ DFTTest
 Filters: dfttest
 
 https://github.com/pinterf/dfttest
-
-
-DGDecodeNV
-~~~~~~~~~~
-
-Shareware source filter.
-
-Filters: DGSource
-
-
 
 
 Dither DLL
@@ -568,7 +769,7 @@ Merge of AutoYUY2, NNEDI3, HDRTools, aWarpSharpMT and ResampleMT. Included is th
 
 Filters: aBlur, aSobel, AutoYUY2, aWarp, aWarp4, aWarpSharp2, BicubicResizeMT, BilinearResizeMT, BlackmanResizeMT, ConvertLinearRGBtoYUV, ConvertRGB_Hable_HDRtoSDR, ConvertRGB_Mobius_HDRtoSDR, ConvertRGB_Reinhard_HDRtoSDR, ConvertRGBtoXYZ, ConvertXYZ_Hable_HDRtoSDR, ConvertXYZ_Mobius_HDRtoSDR, ConvertXYZ_Reinhard_HDRtoSDR, ConvertXYZ_Scale_HDRtoSDR, ConvertXYZ_Scale_SDRtoHDR, ConvertXYZtoRGB, ConvertXYZtoYUV, ConvertYUVtoLinearRGB, ConvertYUVtoXYZ, DeBicubicResizeMT, DeBilinearResizeMT, DeBlackmanResizeMT, DeGaussResizeMT, DeLanczos4ResizeMT, DeLanczosResizeMT, DeSincResizeMT, DeSpline16ResizeMT, DeSpline36ResizeMT, DeSpline64ResizeMT, GaussResizeMT, Lanczos4ResizeMT, LanczosResizeMT, nnedi3, PointResizeMT, SincResizeMT, Spline16ResizeMT, Spline36ResizeMT, Spline64ResizeMT
 
-http://forum.doom9.org/showthread.php?t=174248
+https://github.com/jpsdr/plugins_JPSDR
 
 
 KNLMeansCL
@@ -578,7 +779,7 @@ KNLMeansCL is an optimized pixelwise OpenCL implementation of the Non-local mean
 
 Filters: KNLMeansCL
 
-http://github.com/Khanattila/KNLMeansCL
+https://github.com/pinterf/KNLMeansCL
 
 
 L-SMASH-Works
@@ -604,7 +805,7 @@ http://github.com/pinterf/masktools
 MedianBlur2
 ~~~~~~~~~~~
 
-Implementation of constant time median filter for AviSynth.
+Constant time median video filter plugin.
 
 Filters: MedianBlur, MedianBlurTemporal
 
@@ -614,7 +815,7 @@ http://avisynth.nl/index.php/MedianBlur2
 MiniDeen
 ~~~~~~~~
 
-MiniDeen is a spatial denoising filter. It replaces every pixel with the average of its neighbourhood.
+MiniDeen is a spatial denoising filter which replaces every pixel with the average of its neighbourhood.
 
 Filters: MiniDeen
 
@@ -634,7 +835,7 @@ http://avisynth.org.ru/docs/english/externalfilters/mipsmooth.htm
 modPlus
 ~~~~~~~
 
-This plugin has 9 functions, which modify values of color components to attenuate noise, blur or equalize input.
+Video filter plugin which modify values of color components to attenuate noise, blur or equalize input.
 
 Filters: GBlur, MBlur, Median, minvar, Morph, SaltPepper, SegAmp, TweakHist, Veed
 
@@ -644,11 +845,11 @@ http://www.avisynth.nl/users/vcmohan/modPlus/modPlus.html
 MPEG2DecPlus
 ~~~~~~~~~~~~
 
-Source filter to open D2V index files created with DGIndex or D2VWitch.
+Source filter to open D2V index files created with DGIndex or D2V Witch.
 
 Filters: MPEG2Source
 
-http://github.com/chikuzen/MPEG2DecPlus
+https://github.com/Asd-g/MPEG2DecPlus
 
 
 MSharpen
@@ -671,10 +872,20 @@ Filters: MSuper, MAnalyse, MCompensate, MMask, MDeGrain1, MDeGrain2, MDegrain3
 http://github.com/pinterf/mvtools
 
 
+Neo f3kdb
+~~~~~~~~~
+
+Debanding filter forked from flash3kyuu_deband.
+
+Filters: neo_f3kdb
+
+https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb
+
+
 NicAudio
 ~~~~~~~~
 
-AviSynth audio source filter.
+AviSynth audio source filter plugin.
 
 Filters: NicAC3Source, NicDTSSource, NicMPASource, RaWavSource
 
@@ -704,7 +915,7 @@ http://avisynth.nl/index.php/SangNom2
 SmoothAdjust
 ~~~~~~~~~~~~
 
-SmoothAdjust is a set of 5 plugins to make YUV adjustements.
+SmoothAdjust is a video filter plugin to make YUV adjustements.
 
 Filters: SmoothTweak, SmoothCurve, SmoothCustom, SmoothTools
 
@@ -748,7 +959,7 @@ TDeint is a bi-directionally, motion adaptive, sharp deinterlacer.
 
 Filters: TDeint
 
-http://avisynth.nl/index.php/TDeint
+https://github.com/pinterf/TIVTC
 
 
 TEMmod
@@ -794,7 +1005,7 @@ http://avisynth.nl/index.php/TNLMeans
 UnDot
 ~~~~~
 
-UnDot is a simple median filter for removing dots, that is stray orphan pixels and mosquito noise.
+UnDot is a simple median filter plugin for removing dots, that is stray orphan pixels and mosquito noise.
 
 Filters: UnDot
 
@@ -864,11 +1075,11 @@ http://avisynth.nl/index.php/xNLMeans
 yadifmod2
 ~~~~~~~~~
 
-Yet Another Deinterlacing Filter mod  for Avisynth2.6/Avisynth+
+Yet Another Deinterlacing Filter mod
 
 Filters: yadifmod2
 
-http://github.com/chikuzen/yadifmod2
+https://github.com/Asd-g/yadifmod2
 
 
 AviSynth Script
@@ -1100,7 +1311,7 @@ A motion compensated noise removal script with an accompanying post-processing c
 
 Filters: MCTemporalDenoise, MCTemporalDenoisePP
 
-http://avisynth.nl/index.php/Abcxyz
+http://avisynth.nl/index.php/MCTemporalDenoise
 
 
 MT Expand Multi
@@ -1203,6 +1414,16 @@ Filters: YFRC
 http://avisynth.nl/index.php/YFRC
 
 
+Zs_RF_Shared
+~~~~~~~~~~~~
+
+Shared Functions and utility.
+
+Filters: Dither_Luma_Rebuild, AvsPlusVersionNumber
+
+https://github.com/realfinder/AVS-Stuff
+
+
 VapourSynth Plugin
 ------------------
 AWarpSharp2
@@ -1258,7 +1479,7 @@ https://github.com/HomeOfVapourSynthEvolution/VapourSynth-CTMF
 d2vsource
 ~~~~~~~~~
 
-Source filter to open D2V index files created with DGIndex or D2VWitch.
+Source filter to open D2V index files created with DGIndex or D2V Witch.
 
 Filters: d2v.Source
 
@@ -1313,6 +1534,16 @@ VapourSynth port of DegrainMedian
 Filters: dgm.DegrainMedian
 
 https://github.com/dubhater/vapoursynth-degrainmedian
+
+
+DFTTest Neo
+~~~~~~~~~~~
+
+2D/3D frequency domain denoiser using Discrete Fourier transform.
+
+Filters: neo_dfttest.DFTTest
+
+https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest
 
 
 DFTTest

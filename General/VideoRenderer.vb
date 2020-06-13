@@ -1,5 +1,6 @@
 ﻿
 Imports System.Runtime.InteropServices
+
 Imports DirectN
 
 Public Class VideoRenderer

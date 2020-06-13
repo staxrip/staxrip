@@ -9,7 +9,6 @@ Public Class Documentation
         GenerateMacroTableFile()
         GenerateToolFile()
         GenerateScreenshotsFile()
-        GenerateEventsFile()
 
         UpdateFile(Folder.Startup + "..\docs\generated\switches.rst", GetCommands(True))
         UpdateFile(Folder.Startup + "..\docs\generated\commands.rst", GetCommands(False))
@@ -58,7 +57,7 @@ Public Class Documentation
                     Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
 
                     If Not nameAttrib Is Nothing AndAlso
-                        Not nameAttrib.DisplayName.EqualIgnoreCase(param.Name) Then
+                        Not nameAttrib.DisplayName.IsEqualIgnoreCase(param.Name) Then
 
                         hasDescription = True
                     End If
@@ -74,7 +73,7 @@ Public Class Documentation
                         Dim hasName = False
 
                         If Not nameAttrib Is Nothing AndAlso
-                            Not nameAttrib.DisplayName.EqualIgnoreCase(param.Name) Then
+                            Not nameAttrib.DisplayName.IsEqualIgnoreCase(param.Name) Then
                             sb.Append(nameAttrib.DisplayName)
                             hasName = True
                         End If
@@ -110,7 +109,7 @@ Public Class Documentation
             ".. csv-table::" + BR +
             "    :header: ""Name"", ""Description""" + BR +
             "    :widths: auto" + BR2 +
-            "    " + PowerShell.ConvertToCSV(",", Macro.GetTips).Right(BR).Right(BR).Replace(BR, BR + "    ")
+            "    " + g.ConvertToCSV(",", Macro.GetTips(False, True, False)).Right(BR).Right(BR).Replace(BR, BR + "    ")
 
         UpdateFile(Folder.Startup + "..\docs\generated\macro-table.rst", text)
     End Sub
@@ -118,11 +117,42 @@ Public Class Documentation
     Shared Sub GenerateToolFile()
         Dim sb As New StringBuilder
         sb.Append("Tools" + BR + "=====" + BR2)
+
+        Dim rows As New List(Of Object)
+
+        For Each pack In Package.Items.Values.OrderBy(Function(i) i.GetTypeName)
+            Dim row = New With {
+                .Name = "", .Type = "", .Filename = "", .Version = "", .ModifiedDate = ""}
+
+            row.Name = pack.Name
+            row.Type = pack.GetTypeName
+            row.Filename = pack.Filename
+
+            If pack.IsVersionCorrect Then
+                row.Version = pack.Version
+            End If
+
+            If File.Exists(pack.Path) Then
+                row.ModifiedDate = File.GetLastWriteTime(pack.Path).ToString("yyyy-MM-dd")
+            End If
+
+            rows.Add(row)
+        Next
+
+        Dim text =
+            ".. csv-table::" + BR +
+            "    :header: ""Name"", ""Type"", ""Filename"", ""Version"", ""Modified Date""" + BR +
+            "    :widths: auto" + BR2 +
+            "    " + g.ConvertToCSV(",", rows).Right(BR).Right(BR).Replace(BR, BR + "    ")
+
+        sb.Append(text + BR2)
+
         sb.Append("Console App" + BR + "-----------" + BR)
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "Console App" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
                 sb.Append(pack.WebURL + BR2 + BR)
             End If
         Next
@@ -131,7 +161,8 @@ Public Class Documentation
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "GUI App" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
                 sb.Append(pack.WebURL + BR2 + BR)
             End If
         Next
@@ -140,7 +171,8 @@ Public Class Documentation
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "AviSynth Plugin" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
@@ -156,7 +188,8 @@ Public Class Documentation
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "AviSynth Script" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
@@ -172,7 +205,8 @@ Public Class Documentation
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "VapourSynth Plugin" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
@@ -188,7 +222,8 @@ Public Class Documentation
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "VapourSynth Script" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2 + pack.Description + BR2)
+                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
+                sb.Append(pack.Description + BR2)
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
@@ -214,16 +249,6 @@ Public Class Documentation
         Next
 
         UpdateFile(Folder.Startup + "..\docs\generated\screenshots.rst", screenshots)
-    End Sub
-
-    Shared Sub GenerateEventsFile()
-        Dim events = ""
-
-        For Each i As ApplicationEvent In System.Enum.GetValues(GetType(ApplicationEvent))
-            events += "- ``" + i.ToString + "`` " + DispNameAttribute.GetValueForEnum(i) + BR
-        Next
-
-        UpdateFile(Folder.Startup + "..\docs\generated\events.rst", events)
     End Sub
 
     Shared Sub UpdateFile(filepath As String, content As String)

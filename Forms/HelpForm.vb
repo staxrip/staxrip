@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class HelpForm
@@ -30,12 +31,14 @@ Public Class HelpForm
         '
         'HelpForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(1218, 791)
         Me.Controls.Add(Me.Browser)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "HelpForm"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.ResumeLayout(False)
 
     End Sub
@@ -43,18 +46,7 @@ Public Class HelpForm
 
     Sub New()
         InitializeComponent()
-        Icon = g.Icon
-    End Sub
-
-    Sub New(path As String)
-        Me.New()
-
-        Try
-            Browser.Navigate(path)
-        Catch ex As Exception
-            MsgWarn("Failed to load: " + path)
-        End Try
-
+        RestoreClientSize(50, 35)
         Icon = g.Icon
     End Sub
 
@@ -80,36 +72,42 @@ Public Class HelpForm
     End Sub
 
     Overloads Shared Sub ShowDialog(heading As String, tips As StringPairList, summary As String)
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(heading)
-        If Not summary Is Nothing Then f.Doc.WriteP(summary)
-        f.Doc.WriteTips(tips)
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(heading)
+
+        If Not summary Is Nothing Then
+            form.Doc.WriteParagraph(summary)
+        End If
+
+        form.Doc.WriteTips(tips)
+        form.Show()
     End Sub
 
-    Private Sub HelpForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
+    Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
         Dispose()
     End Sub
 
-    Private Sub Browser_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles Browser.DocumentCompleted
+    Sub Browser_DocumentCompleted(sender As Object, e As WebBrowserDocumentCompletedEventArgs) Handles Browser.DocumentCompleted
         WebBrowserHelp.ResetTextSize(Browser)
     End Sub
 
-    Private Sub Browser_Navigated(sender As Object, e As WebBrowserNavigatedEventArgs) Handles Browser.Navigated
+    Sub Browser_Navigated(sender As Object, e As WebBrowserNavigatedEventArgs) Handles Browser.Navigated
         If Browser.DocumentTitle <> "" Then
             Text = Browser.DocumentTitle
         ElseIf File.Exists(e.Url.LocalPath) Then
-            Text = FilePath.GetBase(e.Url.LocalPath)
+            Text = e.Url.LocalPath.Base
         End If
     End Sub
 
     Shadows Sub Show()
         MyBase.Show()
-        Application.DoEvents()
-        If Not DocumentValue Is Nothing Then DocumentValue.WriteDocument(Browser)
+
+        If Not DocumentValue Is Nothing Then
+            DocumentValue.WriteDocument(Browser)
+        End If
     End Sub
 
-    Private Sub Browser_Navigating(sender As Object, e As WebBrowserNavigatingEventArgs) Handles Browser.Navigating
+    Sub Browser_Navigating(sender As Object, e As WebBrowserNavigatingEventArgs) Handles Browser.Navigating
         If e.Url.AbsoluteUri.StartsWith("http") Then
             e.Cancel = True
             g.ShellExecute(e.Url.ToString)

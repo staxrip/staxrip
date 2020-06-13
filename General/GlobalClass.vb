@@ -1,6 +1,5 @@
 ﻿
 Imports System.Collections.ObjectModel
-Imports System.Collections.Specialized
 Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Management.Automation
@@ -18,11 +17,25 @@ Imports VB6 = Microsoft.VisualBasic
 Public Class GlobalClass
     Property ProjectPath As String
     Property MainForm As MainForm
-    Property ProcForm As ProcForm
+    Property ProcForm As ProcessingForm
     Property MinimizedWindows As Boolean
     Property SavedProject As New Project
     Property DefaultCommands As New GlobalCommands
-    Property IsProcessing As Boolean
+    Property IsJobProcessing As Boolean
+    Property StopAfterCurrentJob As Boolean
+    Property DPI As Integer
+    Property MenuSpace As String
+
+    Event JobMuxed()
+    Event JobProcessed()
+    Event JobsProcessed()
+    Event ProjectLoaded()
+    Event ProjectOrSourceLoaded()
+    Event AfterSourceLoaded()
+    Event VideoEncoded()
+    Event ApplicationExit()
+    Event BeforeJobProcessed()
+    Event BeforeProcessing()
 
     Sub WriteDebugLog(value As String)
         If s?.WriteDebugLog Then
@@ -37,73 +50,155 @@ Public Class GlobalClass
     Function InvokePowerShellCode(code As String, varName As String, varValue As Object) As Collection(Of PSObject)
         Try
             Return PowerShell.Invoke(code, varName, varValue)
+        Catch ex As RuntimeException
+            g.ShowException(ex, "PowerShell Scipt Exception",
+                ex.ErrorRecord.ScriptStackTrace.Replace(" <ScriptBlock>, <No file>", ""))
         Catch ex As Exception
             ShowException(ex)
         End Try
     End Function
 
+    Sub LoadPowerShellScripts()
+        For Each dirPath In {Folder.Apps + "Scripts", Folder.Scripts + "Auto Load"}
+            If dirPath.DirExists Then
+                For Each fp In Directory.GetFiles(dirPath, "*.ps1")
+                    g.DefaultCommands.ExecuteScriptFile(fp)
+                Next
+            End If
+        Next
+    End Sub
+
+    Function ConvertToCSV(delimiter As String, objects As IEnumerable(Of Object)) As String
+        Dim code = $"$inputVar | ConvertTo-Csv -Delimiter '{delimiter}' -NoTypeInformation"
+        Return $"sep={delimiter}" + Environment.NewLine + PowerShell.InvokeAndConvert(code, "inputVar", objects)
+    End Function
+
+    Function IsWindowsTerminalAvailable() As Boolean
+        Return File.Exists(Folder.AppDataLocal + "Microsoft\WindowsApps\wt.exe")
+    End Function
+
     Sub RunCodeInTerminal(code As String)
-        Dim base64String = Convert.ToBase64String(Encoding.Unicode.GetBytes(code)) 'UTF16LE
+        Dim base64 = Convert.ToBase64String(Encoding.Unicode.GetBytes(code)) 'UTF16LE
 
         If g.IsWindowsTerminalAvailable Then
-            RunCommandInTerminal("wt.exe", $"powershell.exe -nologo -noexit -EncodedCommand ""{base64String}""")
+            RunCommandInTerminal("wt.exe", $"powershell.exe -NoLogo -NoExit -NoProfile -EncodedCommand ""{base64}""")
         Else
-            RunCommandInTerminal("powershell.exe", $"-nologo -noexit -EncodedCommand ""{base64String}""")
+            RunCommandInTerminal("powershell.exe", $"-NoLogo -NoExit -NoProfile -EncodedCommand ""{base64}""")
         End If
     End Sub
 
     Sub RunCommandInTerminal(fileName As String, Optional arguments As String = Nothing)
         Documentation.ShowTip("Console apps are added to the path environment variable and macros are added as environment variables.")
 
-        Using proc As New Process
-            proc.StartInfo.UseShellExecute = False
-            proc.StartInfo.FileName = fileName
-            proc.StartInfo.Arguments = arguments
-            proc.StartInfo.WorkingDirectory = Folder.Desktop
-            SetEnvironmentVariables(proc.StartInfo.EnvironmentVariables)
-            proc.Start()
+        Using pr As New Process
+            pr.StartInfo.FileName = fileName
+            pr.StartInfo.Arguments = arguments
+            pr.StartInfo.UseShellExecute = False
+            pr.StartInfo.WorkingDirectory = Folder.Desktop
+            Proc.SetEnvironmentVariables(pr)
+            pr.Start()
         End Using
     End Sub
 
-    Sub SetEnvironmentVariables(dic As StringDictionary)
-        For Each mac In Macro.GetMacros(False, False)
-            dic(mac.Name.Trim("%"c)) = Macro.Expand(mac.Name)
-        Next
+    Sub Execute(fileName As String, Optional arguments As String = Nothing)
+        Dim info As New ProcessStartInfo
+        info.UseShellExecute = False
+        info.FileName = fileName
 
+        If arguments <> "" Then
+            info.Arguments = arguments
+        End If
+
+        Using pr As New Process
+            pr.StartInfo = info
+            Proc.SetEnvironmentVariables(pr)
+            pr.Start()
+        End Using
+    End Sub
+
+    Sub ShellExecute(fileName As String, Optional arguments As String = Nothing)
+        Try
+            If Not fileName.StartsWith("http") AndAlso fileName.Ext.EqualsAny("htm", "html") Then
+                Dim browser = g.GetAppPathForExtension("htm", "html")
+
+                If browser = "" OrElse (Not browser.FileName = "chrome.exe" AndAlso
+                    Not browser.FileName = "firefox.exe") Then
+
+                    browser = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+                End If
+
+                If Not browser.FileExists Then
+                    browser = Package.FindEverywhere({"chrome.exe", "firefox.exe"})
+                End If
+
+                If browser.FileExists Then
+                    arguments = fileName.Escape
+                    fileName = browser
+                End If
+            End If
+
+            Process.Start(fileName, arguments)?.Dispose()
+        Catch ex As Exception
+            g.ShowException(ex, "Failed to start process", "Filename:" + BR2 + fileName + BR2 + "Arguments:" + BR2 + arguments)
+        End Try
+    End Sub
+
+    Sub SelectFileWithExplorer(filepath As String)
+        g.ShellExecute("explorer.exe", "/n, /select, " + filepath.Escape)
+    End Sub
+
+    Sub AddToPath(ParamArray dirs As String())
         Dim path = Environment.GetEnvironmentVariable("path")
+        Dim newPath = path
 
-        For Each pack In Package.Items.Values
-            If Not pack.HelpSwitch Is Nothing AndAlso pack.Path.FileExists Then
-                path = pack.Directory + ";" + path
+        For Each d In dirs
+            If d.DirExists AndAlso Not d.StartsWith(Folder.System) AndAlso Not path.Contains(d + ";") Then
+                newPath = d + ";" + newPath
             End If
         Next
 
-        dic("path") = path
+        If newPath <> path Then
+            Environment.SetEnvironmentVariable("path", newPath)
+        End If
     End Sub
 
+    Function IsFixedDrive(path As String) As Boolean
+        Try
+            If path <> "" Then
+                Return New DriveInfo(path).DriveType = DriveType.Fixed
+            End If
+        Catch
+        End Try
+    End Function
+
     Sub ProcessJobs()
-        Dim jobs = Job.ActiveJobs
+        Dim jobs = JobManager.ActiveJobs
 
         If jobs.Count = 0 Then
             Exit Sub
         End If
 
-        g.IsProcessing = True
-        Dim jobPath = jobs(0).Key
+        g.IsJobProcessing = True
+        Dim jobPath = jobs(0).Path
 
         Try
-            Job.ActivateJob(jobPath, False)
+            JobManager.ActivateJob(jobPath, False)
             g.MainForm.OpenProject(jobPath, False)
-            If s.PreventStandby Then PowerRequest.SuppressStandby()
+
+            If s.PreventStandby Then
+                PowerRequest.SuppressStandby()
+            End If
+
             ProcessJob(jobPath)
-            jobs = Job.GetJobs
+            jobs = JobManager.GetJobs
 
             If jobs.Count = 0 Then
                 g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
                 g.ShutdownPC()
-            ElseIf Job.ActiveJobs.Count = 0 Then
+            ElseIf JobManager.ActiveJobs.Count = 0 OrElse g.StopAfterCurrentJob Then
+                g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
+
                 If Process.GetProcessesByName("StaxRip").Count = 1 Then
-                    g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
                     g.ShutdownPC()
                 End If
             Else
@@ -122,8 +217,11 @@ Public Class GlobalClass
             Log.Save()
             g.OnException(ex)
         Finally
-            If s.PreventStandby Then PowerRequest.EnableStandby()
-            g.IsProcessing = False
+            If s.PreventStandby Then
+                PowerRequest.EnableStandby()
+            End If
+
+            g.IsJobProcessing = False
             g.MainForm.OpenProject(jobPath, False)
             ProcController.Finished()
         End Try
@@ -137,16 +235,18 @@ Public Class GlobalClass
 
             If p.BatchMode Then
                 g.MainForm.OpenVideoSourceFiles(p.SourceFiles, True)
-                g.ProjectPath = p.TempDir + p.SourceFile.Base + ".srip"
-                g.MainForm.SaveProjectPath(g.ProjectPath)
+                g.ProjectPath = p.TempDir + p.TargetFile.Base + ".srip"
                 p.BatchMode = False
+                g.MainForm.SaveProjectPath(g.ProjectPath)
             End If
+
+            g.RaiseAppEvent(ApplicationEvent.BeforeProcessing)
 
             Log.WriteHeader(If(p.Script.Engine = ScriptEngine.AviSynth, "AviSynth Script", "VapourSynth Script"))
             Log.WriteLine(p.Script.GetFullScript)
-            Log.WriteHeader("Source Script Information")
+            Log.WriteHeader("Source Script Info")
             Log.WriteLine(p.SourceScript.GetInfo().GetInfoText(-1))
-            Log.WriteHeader("Target Script Information")
+            Log.WriteHeader("Target Script Info")
             Log.WriteLine(p.Script.GetInfo().GetInfoText(-1))
 
             g.MainForm.Hide()
@@ -185,7 +285,16 @@ Public Class GlobalClass
             Next
 
             actions.Add(Sub() Subtitle.Cut(p.VideoEncoder.Muxer.Subtitles))
-            actions.Add(AddressOf ProcessVideo)
+
+            If CanEncodeVideo() Then
+                If p.VideoEncoder.CanChunkEncode Then
+                    For Each i In p.VideoEncoder.GetChunkEncodeActions
+                        actions.Add(i)
+                    Next
+                Else
+                    actions.Add(AddressOf p.VideoEncoder.Encode)
+                End If
+            End If
 
             Try
                 Parallel.Invoke(New ParallelOptions With {.MaxDegreeOfParallelism = s.ParallelProcsNum}, actions.ToArray)
@@ -220,7 +329,7 @@ Public Class GlobalClass
             g.ArchiveLogFile(Log.GetPath)
             g.DeleteTempFiles()
             g.RaiseAppEvent(ApplicationEvent.JobProcessed)
-            Job.RemoveJob(jobPath)
+            JobManager.RemoveJob(jobPath)
 
             If jobPath.StartsWith(Folder.Settings + "Batch Projects\") Then
                 File.Delete(jobPath)
@@ -233,77 +342,15 @@ Public Class GlobalClass
         End Try
     End Sub
 
-    Sub ProcessVideo()
-        If Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath)) Then
-            Dim originalFilters As List(Of VideoFilter)
-            Dim originalSource As String
-
-            If p.PreRenderIntoLossless AndAlso Not TypeOf p.VideoEncoder Is NullEncoder Then
-                Dim outPath = p.TempDir + p.TargetFile.Base + "_lossless.avi"
-
-                If p.Script.Engine = ScriptEngine.AviSynth Then
-                    Using proc As New Proc
-                        proc.Header = "Pre-render into lossless AVI"
-                        proc.SkipStrings = {"frame=", "size="}
-                        proc.Encoding = Encoding.UTF8
-                        proc.Package = Package.ffmpeg
-                        proc.Arguments = "-i " + p.Script.Path.Escape + " -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
-                        proc.Start()
-                    End Using
-                Else
-                    Dim commandLine = Package.vspipe.Path.Escape + " " + p.Script.Path.Escape + " - --y4m | " + Package.ffmpeg.Path.Escape + " -i - -c:v utvideo -pred median -sn -an -y -hide_banner " + outPath.Escape
-
-                    Using proc As New Proc
-                        proc.Header = "Pre-render into lossless AVI"
-                        proc.SkipStrings = {"frame=", "size=", "Multiple"}
-                        proc.Encoding = Encoding.UTF8
-                        proc.Package = Package.ffmpeg
-                        proc.File = "cmd.exe"
-                        proc.Arguments = "/S /C call """ + commandLine + """"
-                        proc.Start()
-                    End Using
-                End If
-
-                If File.Exists(outPath) Then
-                    Log.WriteHeader("Lossless AVI MediaInfo")
-                    Log.WriteLine(MediaInfo.GetSummary(outPath))
-                Else
-                    Throw New ErrorAbortException("Pre-render failed", "Output file is missing")
-                End If
-
-                originalSource = p.SourceFile
-                p.SourceFile = p.TempDir + p.TargetFile.Base + "_lossless.avi"
-                originalFilters = p.Script.GetFiltersCopy()
-
-                For Each i In p.Script.Filters
-                    If i.Category = "Source" Then
-                        If p.Script.Engine = ScriptEngine.AviSynth Then
-                            i.Script = "FFVideoSource(""" + outPath + """)"
-                        Else
-                            i.Script = "clip = core.ffms2.Source(r""" + outPath + """)"
-                        End If
-                    Else
-                        i.Active = False
-                    End If
-                Next
-
-                p.Script.Synchronize()
-            End If
-
-            If Not originalFilters Is Nothing Then
-                p.SourceFile = originalSource
-                p.Script.Filters = originalFilters
-                p.Script.Synchronize()
-            End If
-
-            p.VideoEncoder.Encode()
-        End If
-    End Sub
+    Function CanEncodeVideo() As Boolean
+        Return Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
+            File.Exists(p.VideoEncoder.OutputPath))
+    End Function
 
     Sub DeleteTempFiles()
         If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then
             Try
-                Dim moreJobsToProcessInTempDir = Job.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
+                Dim moreJobsToProcessInTempDir = JobManager.GetJobs.Where(Function(a) a.Active AndAlso a.Path.Contains(p.TempDir))
 
                 If moreJobsToProcessInTempDir.Count = 0 Then
                     If s.DeleteTempFilesMode = DeleteMode.RecycleBin Then
@@ -337,15 +384,20 @@ Public Class GlobalClass
     End Property
 
     Function BrowseFolder(defaultFolder As String) As String
-        Using d As New FolderBrowserDialog
-            d.SetSelectedPath(defaultFolder)
-            If d.ShowDialog = DialogResult.OK Then Return d.SelectedPath
+        Using dialog As New FolderBrowserDialog
+            dialog.SetSelectedPath(defaultFolder)
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                Return dialog.SelectedPath
+            End If
         End Using
     End Function
 
     Function VerifyRequirements() As Boolean
         For Each pack In Package.Items.Values
-            If Not pack.VerifyOK Then Return False
+            If Not pack.VerifyOK Then
+                Return False
+            End If
         Next
 
         If Not p.Script.IsFilterActive("Source") Then
@@ -368,13 +420,6 @@ Public Class GlobalClass
             If file.Length > s.CharacterLimit OrElse file.FileName.Length > s.CharacterLimit \ 2 Then
                 MsgError("Source file path or filename is too long", Strings.CharacterLimitReason)
                 Return True
-            End If
-
-            If file.Contains("#") Then
-                If file.Ext = "mp4" OrElse MediaInfo.GetGeneral(file, "Audio_Codec_List").Contains("AAC") Then
-                    MsgError("Character # can't be processed by MP4Box, please rename." + BR2 + file)
-                    Return True
-                End If
             End If
 
             If file.Ext = "dga" Then
@@ -464,9 +509,7 @@ Public Class GlobalClass
 
         Dim ap = GetAudioProfileForScriptPlayback()
 
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso
-            p.Ranges.Count = 0 Then
-
+        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso p.Ranges.Count = 0 Then
             args += " --audio-files=" + ap.File.Escape
         End If
 
@@ -475,27 +518,33 @@ Public Class GlobalClass
     End Sub
 
     Function ExtractDelay(value As String) As Integer
-        Dim match = Regex.Match(value, " (-?\d+)ms")
-        If match.Success Then Return CInt(match.Groups(1).Value)
+        Dim match = Regex.Match(value, " (-?\d+) ?ms")
+
+        If match.Success Then
+            Return CInt(match.Groups(1).Value)
+        End If
     End Function
 
     Sub ShowCode(title As String, content As String)
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(title)
-        f.Doc.Writer.WriteRaw("<pre><code>" + content + "</pre></code>")
-        f.Show()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(title)
+        form.Doc.Writer.WriteRaw("<pre><code>" + content + "</pre></code>")
+        form.Show()
     End Sub
 
     Sub ShowHelp(title As String, content As String)
-        If title <> "" Then title = title.TrimEnd("."c, ":"c)
+        If title <> "" Then
+            title = title.TrimEnd("."c, ":"c)
+        End If
+
         MsgInfo(title, content)
     End Sub
 
     Sub PopulateProfileMenu(
-            ic As ToolStripItemCollection,
-            profiles As IList,
-            dialogAction As Action,
-            loadAction As Action(Of Profile))
+        ic As ToolStripItemCollection,
+        profiles As IList,
+        dialogAction As Action,
+        loadAction As Action(Of Profile))
 
         For Each iProfile As Profile In profiles
             Dim a = iProfile.Name.SplitNoEmpty("|")
@@ -557,7 +606,7 @@ Public Class GlobalClass
     End Function
 
     Function GetPreviewPosMS() As Integer
-        Return CInt((s.LastPosition / p.Script.GetFramerate) * 1000)
+        Return CInt((s.LastPosition / p.Script.GetCachedFrameRate) * 1000)
     End Function
 
     Function GetTextEditorPath() As String
@@ -660,15 +709,38 @@ Public Class GlobalClass
         g.MainForm.Assistant()
     End Sub
 
-    Sub RaiseAppEvent(appEvent As ApplicationEvent)
-        Dim scriptPath = Folder.Settings + "Scripts\" + appEvent.ToString + ".ps1"
+    Sub RaiseAppEvent(ae As ApplicationEvent)
+        Select Case ae
+            Case ApplicationEvent.JobMuxed
+                RaiseEvent JobMuxed()
+            Case ApplicationEvent.JobProcessed
+                RaiseEvent JobProcessed()
+            Case ApplicationEvent.JobsProcessed
+                RaiseEvent JobsProcessed()
+            Case ApplicationEvent.ProjectLoaded
+                RaiseEvent ProjectLoaded()
+            Case ApplicationEvent.ProjectOrSourceLoaded
+                RaiseEvent ProjectOrSourceLoaded()
+            Case ApplicationEvent.AfterSourceLoaded
+                RaiseEvent AfterSourceLoaded()
+            Case ApplicationEvent.VideoEncoded
+                RaiseEvent VideoEncoded()
+            Case ApplicationEvent.ApplicationExit
+                RaiseEvent ApplicationExit()
+            Case ApplicationEvent.BeforeJobProcessed
+                RaiseEvent BeforeJobProcessed()
+            Case ApplicationEvent.BeforeProcessing
+                RaiseEvent BeforeProcessing()
+        End Select
+
+        Dim scriptPath = Folder.Scripts + ae.ToString + ".ps1"
 
         If File.Exists(scriptPath) Then
             g.DefaultCommands.ExecuteScriptFile(scriptPath)
         End If
 
         For Each ec In s.EventCommands
-            If ec.Enabled AndAlso ec.Event = appEvent Then
+            If ec.Enabled AndAlso ec.Event = ae Then
                 Dim matches = 0
 
                 For Each criteria In ec.CriteriaList
@@ -747,15 +819,13 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowCommandLinePreview(title As String, value As String)
-        Using form As New StringEditorForm
-            form.Text = title
-            form.rtb.ReadOnly = True
-            form.cbWrap.Checked = Not value.Contains(BR)
-            form.rtb.Text = value
-            form.bnOK.Visible = False
-            form.bnCancel.Text = "Close"
-            form.ShowDialog()
-        End Using
+        Environment.SetEnvironmentVariable("CommandLineToShow", BR + value + BR)
+
+        If g.IsWindowsTerminalAvailable Then
+            g.Execute("wt.exe", "powershell.exe -NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
+        Else
+            g.Execute("powershell.exe", "-NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
+        End If
     End Sub
 
     Sub ffmsindex(sourcePath As String,
@@ -764,13 +834,13 @@ Public Class GlobalClass
                   Optional proj As Project = Nothing)
 
         If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso
-            Not FileTypes.VideoText.Contains(sourcePath.Ext) Then
+                    Not FileTypes.VideoText.Contains(sourcePath.Ext) Then
 
             Using proc As New Proc
                 proc.Header = "Indexing using ffmsindex"
                 proc.SkipString = "Indexing, please wait..."
-                If proj Is Nothing Then proj = p
                 proc.Project = proj
+                proc.Priority = ProcessPriorityClass.Normal
                 proc.File = Package.ffms2.Directory + "ffmsindex.exe"
                 proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Escape + " " + cachePath.Escape
                 proc.Start()
@@ -780,7 +850,10 @@ Public Class GlobalClass
 
     Function IsValidSource(Optional warn As Boolean = True) As Boolean
         If p.SourceScript.GetFrameCount = 0 Then
-            If warn Then MsgWarn("Failed to load source.")
+            If warn Then
+                MsgWarn("Failed to load source.")
+            End If
+
             Return False
         End If
 
@@ -801,16 +874,22 @@ Public Class GlobalClass
     End Function
 
     Function IsSourceSame(path As String) As Boolean
-        Return FilePath.GetBase(path).StartsWith(FilePath.GetBase(p.SourceFile))
+        Return path.Base.StartsWith(p.SourceFile.Base)
     End Function
 
     Function GetFilesInTempDirAndParent() As List(Of String)
         Dim ret As New List(Of String)
         Dim dirs As New HashSet(Of String)
 
-        If p.TempDir <> "" Then dirs.Add(p.TempDir)
-        If p.TempDir?.EndsWith("_temp\") Then dirs.Add(DirPath.GetParent(p.TempDir))
-        dirs.Add(FilePath.GetDir(p.FirstOriginalSourceFile))
+        If p.TempDir <> "" Then
+            dirs.Add(p.TempDir)
+        End If
+
+        If p.TempDir?.EndsWith("_temp\") Then
+            dirs.Add(p.TempDir.Parent)
+        End If
+
+        dirs.Add(p.FirstOriginalSourceFile.Dir)
 
         For Each i In dirs
             ret.AddRange(Directory.GetFiles(i))
@@ -821,13 +900,13 @@ Public Class GlobalClass
 
     Function IsSourceSimilar(path As String) As Boolean
         If p.SourceFile.Contains("_") Then
-            Dim src = FilePath.GetBase(p.SourceFile)
+            Dim sourceBase = p.SourceFile.Base
 
-            While src.Length > 2 AndAlso src.ToCharArray.Last.IsDigit
-                src = src.DeleteRight(1)
+            While sourceBase.Length > 2 AndAlso sourceBase.ToCharArray.Last.IsDigit
+                sourceBase = sourceBase.DeleteRight(1)
             End While
 
-            If src.EndsWith("_") AndAlso FilePath.GetBase(path).StartsWith(src.TrimEnd("_"c)) Then
+            If sourceBase.EndsWith("_") AndAlso path.Base.StartsWith(sourceBase.TrimEnd("_"c)) Then
                 Return True
             End If
         End If
@@ -850,8 +929,12 @@ Public Class GlobalClass
             Try
                 If File.Exists(p.SourceFile) Then
                     Dim name = p.TargetFile.Base
-                    If name = "" Then name = p.SourceFile.Base
-                    Dim path = FilePath.GetDir(p.SourceFile) + "recovery.srip"
+
+                    If name = "" Then
+                        name = p.SourceFile.Base
+                    End If
+
+                    Dim path = p.SourceFile.Dir + "recovery.srip"
                     g.MainForm.SaveProjectPath(path)
                 End If
 
@@ -908,8 +991,12 @@ Public Class GlobalClass
     Sub ArchiveLogFile(path As String)
         Try
             Dim logFolder = Folder.Settings + "Log Files\"
-            If Not Directory.Exists(logFolder) Then Directory.CreateDirectory(logFolder)
-            FileHelp.Copy(path, logFolder + Date.Now.ToString("yyyy-MM-dd_HH.mm.ss") + " - " + path.FileName)
+
+            If Not Directory.Exists(logFolder) Then
+                Directory.CreateDirectory(logFolder)
+            End If
+
+            FileHelp.Copy(path, logFolder + Date.Now.ToString("yyyy-MM-dd - HH.mm.ss") + " - " + path.FileName)
             Dim di As New DirectoryInfo(logFolder)
 
             While di.GetFiles("*.log").Length > s.LogFileNum
@@ -974,18 +1061,6 @@ Public Class GlobalClass
 
     Sub ShowPage(page As String)
         ShellExecute($"https://staxrip.readthedocs.io/{page}.html")
-    End Sub
-
-    Sub ShellExecute(fileName As String, Optional arguments As String = Nothing)
-        Try
-            Process.Start(fileName, arguments)
-        Catch ex As Exception
-            g.ShowException(ex, "Failed to start process", "Filename:" + BR2 + fileName + BR2 + "Arguments:" + BR2 + arguments)
-        End Try
-    End Sub
-
-    Sub SelectFileWithExplorer(filepath As String)
-        g.ShellExecute("explorer.exe", "/n, /select, " + filepath.Escape)
     End Sub
 
     Sub OnUnhandledException(sender As Object, e As ThreadExceptionEventArgs)
@@ -1081,15 +1156,19 @@ Public Class GlobalClass
     End Function
 
     Function BrowseFile(filter As String) As String
-        Using d As New OpenFileDialog
-            d.Filter = filter
-            d.SetInitDir(p.TempDir)
-            If d.ShowDialog = DialogResult.OK Then Return d.FileName
+        Using dialog As New OpenFileDialog
+            dialog.Filter = filter
+            dialog.SetInitDir(p.TempDir)
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                Return dialog.FileName
+            End If
         End Using
     End Function
 
     Sub CodePreview(code As String)
         Using form As New StringEditorForm
+            form.ScaleClientSize(50, 30)
             form.rtb.ReadOnly = True
             form.cbWrap.Checked = False
             form.cbWrap.Visible = False
@@ -1118,17 +1197,6 @@ Public Class GlobalClass
             form.bnCancel.Text = "Close"
             form.ShowDialog()
         End Using
-    End Sub
-
-    Sub ShowDirectShowWarning()
-        If Not p.BatchMode Then
-            If Not g.IsCOMObjectRegistered(GUIDS.LAVSplitter) OrElse
-                Not g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
-
-                MsgError("DirectShow Filter Setup",
-                         "An error occurred that could possibly be solved by installing [http://code.google.com/p/lavfilters LAV Filters].")
-            End If
-        End If
     End Sub
 
     Sub AddHardcodedSubtitle()
@@ -1260,7 +1328,7 @@ Public Class GlobalClass
         CorrectCropMod(True)
     End Sub
 
-    Private Sub CorrectCropMod(force As Boolean)
+    Sub CorrectCropMod(force As Boolean)
         If p.AutoCorrectCropValues OrElse force Then
             p.CropLeft += p.CropLeft Mod 2
             p.CropRight += p.CropRight Mod 2
@@ -1340,7 +1408,43 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Function IsWindowsTerminalAvailable() As Boolean
-        Return File.Exists(Folder.AppDataLocal + "Microsoft\WindowsApps\wt.exe")
+    Function IsDevelopmentPC() As Boolean
+        Return Application.StartupPath.EndsWith("\bin")
     End Function
+
+    Shared WasFrameServerInitialized As Boolean
+
+    Sub InitFrameServer()
+        If Not WasFrameServerInitialized Then
+            g.AddToPath(Folder.Startup, Package.Python.Directory, Package.AviSynth.Directory,
+                        Package.VapourSynth.Directory, Package.FFTW.Directory)
+
+            MakeSymLinks()
+            WasFrameServerInitialized = True
+        End If
+    End Sub
+
+    Sub MakeSymLinks()
+        Dim pack = Package.ffmpeg
+        Dim path = pack.Directory + "AviSynth.dll"
+
+        If Package.AviSynth.Path.StartsWith(Folder.Startup) Then
+            If s.Storage.GetString(pack.Name + "symlink") <> path OrElse Not path.FileExists Then
+                FileHelp.Delete(path)
+                Dim cmd = $"mklink {path.Escape} {Package.AviSynth.Path.Escape}"
+
+                Using proc As New Process
+                    proc.StartInfo.FileName = "cmd.exe"
+                    proc.StartInfo.Arguments = $"/S /C ""{cmd}"""
+                    proc.StartInfo.UseShellExecute = False
+                    proc.StartInfo.CreateNoWindow = True
+                    proc.Start()
+                End Using
+
+                s.Storage.SetString(pack.Name + "symlink", path)
+            End If
+        Else
+            FileHelp.Delete(path)
+        End If
+    End Sub
 End Class

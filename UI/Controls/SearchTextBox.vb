@@ -1,5 +1,7 @@
-﻿Imports System.Drawing.Drawing2D
+﻿
+Imports System.Drawing.Drawing2D
 Imports System.Windows.Forms.VisualStyles
+
 Imports StaxRip.UI
 
 Public Class SearchTextBox
@@ -14,6 +16,7 @@ Public Class SearchTextBox
         '
         'Edit
         '
+        Me.Edit.BackColor = System.Drawing.Color.White
         Me.Edit.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Edit.Location = New System.Drawing.Point(0, 0)
         Me.Edit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -32,7 +35,8 @@ Public Class SearchTextBox
         '
         'SearchTextBox
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.Controls.Add(Me.Button)
         Me.Controls.Add(Me.Edit)
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -47,7 +51,7 @@ Public Class SearchTextBox
     Private Edit As TextEdit
     Private Button As SearchTextBoxButton
 
-    Public Sub New()
+    Sub New()
         InitializeComponent()
         Edit.TextBox.SendMessageCue("Search", False)
         AddHandler Edit.TextChanged, Sub() OnTextChanged(New EventArgs)
@@ -55,19 +59,22 @@ Public Class SearchTextBox
     End Sub
 
     Protected Overrides Sub OnTextChanged(e As EventArgs)
-        Button.Visible = Edit.Text <> ""
         MyBase.OnTextChanged(e)
+        Button.Visible = Edit.Text <> ""
     End Sub
 
     Protected Overrides Sub OnLayout(e As LayoutEventArgs)
         MyBase.OnLayout(e)
 
-        Button.Top = 3
-        Button.Height = Height - 6
+        Button.Top = 2
+        Button.Height = Height - 4
         Button.Width = Button.Height
         Button.Left = Width - Button.Width - Button.Top
 
-        If Height <> Edit.Height Then Height = Edit.Height
+        If Height <> Edit.Height Then
+            Height = Edit.Height
+        End If
+
         Edit.Width = Width
     End Sub
 
@@ -80,52 +87,51 @@ Public Class SearchTextBox
         End Set
     End Property
 
-    Private Class SearchTextBoxButton
+    Class SearchTextBoxButton
         Inherits Control
 
         Private MouseIsOver As Boolean
 
-        Protected Overrides Sub OnMouseEnter(eventargs As EventArgs)
-            MouseIsOver = True
-            Refresh()
-            MyBase.OnMouseEnter(eventargs)
+        Sub New()
+            SetStyle(
+                ControlStyles.AllPaintingInWmPaint Or
+                ControlStyles.OptimizedDoubleBuffer,
+                True)
         End Sub
 
-        Protected Overrides Sub OnMouseLeave(eventargs As EventArgs)
+        Protected Overrides Sub OnMouseEnter(eventArgs As EventArgs)
+            MyBase.OnMouseEnter(eventArgs)
+            MouseIsOver = True
+            Refresh()
+        End Sub
+
+        Protected Overrides Sub OnMouseLeave(eventArgs As EventArgs)
+            MyBase.OnMouseLeave(eventArgs)
             MouseIsOver = False
             Refresh()
-            MyBase.OnMouseLeave(eventargs)
         End Sub
 
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
-            Using p = New Pen(Color.DarkSlateGray, 5)
-                Dim offset = CSng(Width / 3.3)
-                e.Graphics.DrawLine(p, offset, offset, Width - offset, Height - offset)
-                e.Graphics.DrawLine(p, Width - offset, offset, offset, Height - offset)
-            End Using
-        End Sub
+            e.Graphics.SmoothingMode = SmoothingMode.HighQuality
 
-        Protected Overrides Sub OnPaintBackground(e As PaintEventArgs)
             If MouseIsOver Then
-                Dim r = New Rectangle(Point.Empty, Size)
+                Dim rect = New Rectangle(Point.Empty, Size)
 
-                If VisualStyleInformation.IsEnabledByUser Then
+                If VisualStyleInformation.IsEnabledByUser AndAlso False Then
                     Dim Renderer = New VisualStyleRenderer(VisualStyleElement.Button.PushButton.Hot)
                     Renderer.DrawBackground(e.Graphics, ClientRectangle)
                 Else
-                    Using path = ToolStripRendererEx.CreateRoundRectangle(New Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1), 3)
-                        Using b As New LinearGradientBrush(New Point(0, 0), New Point(0, r.Height), Color.White, Color.LightGray)
-                            e.Graphics.FillPath(b, path)
-                        End Using
-
-                        Using p As New Pen(Brushes.LightGray)
-                            e.Graphics.DrawPath(p, path)
-                        End Using
-                    End Using
+                    ControlPaint.DrawButton(e.Graphics, ClientRectangle, ButtonState.Flat)
                 End If
             Else
                 e.Graphics.Clear(Color.White)
             End If
+
+            Using pen = New Pen(Color.DarkSlateGray, FontHeight / 16.0F)
+                Dim offset = CSng(Width / 3.3)
+                e.Graphics.DrawLine(pen, offset, offset, Width - offset, Height - offset)
+                e.Graphics.DrawLine(pen, Width - offset, offset, offset, Height - offset)
+            End Using
         End Sub
     End Class
 End Class

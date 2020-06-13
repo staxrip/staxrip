@@ -72,19 +72,19 @@
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\</OutputPath>
     <WarningLevel>1</WarningLevel>
-    <NoWarn>41998,42004,42024,42025,42026,42029,42030,42031,42099,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <NoWarn>41998,42004,42025,42026,42029,42030,42031,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
     <DebugType>Full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42024,42032,42036,42099</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\</OutputPath>
     <WarningLevel>1</WarningLevel>
-    <NoWarn>41998,42004,42024,42025,42026,42029,42030,42031,42099,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <NoWarn>41998,42004,42025,42026,42029,42030,42031,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42024,42032,42036,42099</WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -146,10 +146,7 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\DemuxingControl.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\SubtitleControl.vb">
+    <Compile Include="Controls\PreprocessingControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\x264Control.vb">
@@ -158,6 +155,7 @@
     <Compile Include="Controls\x265Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Encoding\aomenc.vb" />
     <Compile Include="Encoding\Rav1e.vb" />
     <Compile Include="Encoding\SVTAV1.vb" />
     <Compile Include="Encoding\VCEEnc.vb" />
@@ -181,11 +179,12 @@
     <Compile Include="General\Documentation.vb" />
     <Compile Include="General\Extras.vb" />
     <Compile Include="General\FrameServer.vb" />
-    <Compile Include="General\Job.vb" />
+    <Compile Include="General\JobManager.vb" />
     <Compile Include="General\LogBuilder.vb" />
     <Compile Include="General\GlobalClass.vb" />
     <Compile Include="General\GlobalCommands.vb" />
-    <Compile Include="Portable\PowerShell.vb" />
+    <Compile Include="General\Macro.vb" />
+    <Compile Include="General\PowerShell.vb" />
     <Compile Include="General\ProcController.vb" />
     <Compile Include="General\Update.vb" />
     <Compile Include="General\Test.vb" />
@@ -286,10 +285,7 @@
     <Compile Include="Forms\EventCommandsEditor.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MacroEditor.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ControlHostForm.vb">
+    <Compile Include="Forms\MacroEditorDialog.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MuxerForm.vb">
@@ -338,7 +334,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="General\Demux.vb" />
-    <Compile Include="Forms\ProcForm.vb">
+    <Compile Include="Forms\ProcessingForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\Project.vb">
@@ -435,12 +431,12 @@
       <DependentUpon>MacroEditorControl.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\DemuxingControl.resx">
-      <DependentUpon>DemuxingControl.vb</DependentUpon>
+    <EmbeddedResource Include="Controls\PreprocessingControl.resx">
+      <DependentUpon>PreprocessingControl.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SubtitleControl.resx">
-      <DependentUpon>SubtitleControl.vb</DependentUpon>
+    <EmbeddedResource Include="Controls\x264Control.resx">
+      <DependentUpon>x264Control.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\x265Control.resx">
       <DependentUpon>x265Control.vb</DependentUpon>
@@ -478,9 +474,6 @@
     <EmbeddedResource Include="Forms\CommandLineVideoEncoderForm.resx">
       <DependentUpon>CommandLineVideoEncoderForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ControlHostForm.resx">
-      <DependentUpon>ControlHostForm.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\CropForm.resx">
       <DependentUpon>CropForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -502,8 +495,8 @@
     <EmbeddedResource Include="Forms\JobsForm.resx">
       <DependentUpon>JobsForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MacroEditor.resx">
-      <DependentUpon>MacroEditor.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\MacroEditorDialog.resx">
+      <DependentUpon>MacroEditorDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
@@ -516,8 +509,8 @@
       <DependentUpon>PreviewForm.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ProcForm.resx">
-      <DependentUpon>ProcForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\ProcessingForm.resx">
+      <DependentUpon>ProcessingForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProfilesForm.resx">
       <DependentUpon>ProfilesForm.vb</DependentUpon>

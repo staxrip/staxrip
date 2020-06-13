@@ -193,10 +193,6 @@ Public Class Proc
         End Set
     End Property
 
-    Sub SetEnvironmentVariables()
-        g.SetEnvironmentVariables(Process.StartInfo.EnvironmentVariables)
-    End Sub
-
     Property Arguments() As String
         Get
             Return Process.StartInfo.Arguments
@@ -236,8 +232,13 @@ Public Class Proc
             If Not Process.HasExited Then
                 If Process.ProcessName = "cmd" Then
                     For Each i In ProcessHelp.GetChilds(Process)
-                        If {"conhost", "vspipe", "avs2pipemod64"}.Contains(i.ProcessName) Then Continue For
-                        If Not i.HasExited Then i.Kill()
+                        If {"conhost", "vspipe", "avs2pipemod64"}.Contains(i.ProcessName) Then
+                            Continue For
+                        End If
+
+                        If Not i.HasExited Then
+                            i.Kill()
+                        End If
                     Next
                 Else
                     Process.Kill()
@@ -262,11 +263,11 @@ Public Class Proc
 
         Try
             If Header <> "" Then
-                If Not Package Is Nothing Then
-                    Header += " using " + Package.Name + " " + Package.Version
-                End If
-
                 Log.WriteHeader(Header)
+
+                If Not Package Is Nothing Then
+                    Log.WriteLine(Package.Name + " " + Package.Version + BR2)
+                End If
             End If
 
             If Process.StartInfo.FileName = "" Then
@@ -274,13 +275,13 @@ Public Class Proc
             End If
 
             If ReadOutput Then
-                ProcController.Start(Me)
-
-                If File = "cmd.exe" AndAlso Arguments?.StartsWith("/S /C """) AndAlso Arguments?.EndsWith("""") Then
+                If File = "cmd.exe" AndAlso Arguments.StartsWithEx("/S /C """) AndAlso Arguments.EndsWithEx("""") Then
                     Log.WriteLine(Arguments.Substring(7, Arguments.Length - 8) + BR2)
                 Else
                     Log.WriteLine(CommandLine + BR2)
                 End If
+
+                ProcController.Start(Me)
             End If
 
             If Not LogItems Is Nothing Then
@@ -289,6 +290,7 @@ Public Class Proc
                 Next
             End If
 
+            SetEnvironmentVariables(Process)
             Process.Start()
 
             If ReadOutput Then
@@ -406,6 +408,33 @@ Public Class Proc
     Sub Dispose() Implements IDisposable.Dispose
         Dispose(True)
         GC.SuppressFinalize(Me)
+    End Sub
+
+    Shared Sub SetEnvironmentVariables(process As Process)
+        If process.StartInfo.UseShellExecute Then
+            Exit Sub
+        End If
+
+        Dim dic = process.StartInfo.EnvironmentVariables
+        Dim keys = dic.Keys.OfType(Of String).Select(Function(key) key.ToLower)
+
+        For Each mac In Macro.GetMacros(False, False, False)
+            Dim name = mac.Name.Trim("%"c)
+
+            If Not keys.Contains(name) Then
+                dic(name) = Macro.Expand(mac.Name)
+            End If
+        Next
+
+        Dim path = dic("Path")
+
+        For Each pack In Package.Items.Values
+            If pack.Path.Ext = "exe" AndAlso pack.HelpSwitch IsNot Nothing AndAlso pack.Path.FileExists Then
+                path = pack.Directory + ";" + path
+            End If
+        Next
+
+        dic("path") = path
     End Sub
 
     Function ProcessData(value As String) As (Data As String, Skip As Boolean)

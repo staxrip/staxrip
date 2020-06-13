@@ -1,8 +1,9 @@
+
 Imports System.ComponentModel
 
 Namespace UI
     <ToolboxItem(False)>
-    Public Class CriteriaItemControl
+    Class CriteriaItemControl
         Sub New(allCriteria As List(Of Criteria))
             InitializeComponent()
 
@@ -71,19 +72,19 @@ Namespace UI
             End Set
         End Property
 
-        Private Sub bnRemove_Click() Handles bnRemove.Click
+        Sub bnRemove_Click() Handles bnRemove.Click
             Parent.Controls.Remove(Me)
         End Sub
 
-        Private Sub te_TextChanged() Handles te.TextChanged
+        Sub te_TextChanged() Handles te.TextChanged
             Criteria.ValueString = te.Text
         End Sub
 
-        Private Sub mbCondition_ValueChangedUser(value As Object) Handles mbCondition.ValueChangedUser
+        Sub mbCondition_ValueChangedUser(value As Object) Handles mbCondition.ValueChangedUser
             Criteria.ConditionName = mbCondition.Value.ToString
         End Sub
 
-        Private Sub mbProperties_ValueChangedUser(value As Object) Handles mbProperties.ValueChangedUser
+        Sub mbProperties_ValueChangedUser(value As Object) Handles mbProperties.ValueChangedUser
             Criteria = DirectCast(value, Criteria)
         End Sub
     End Class

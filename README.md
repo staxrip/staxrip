@@ -2,7 +2,7 @@
 
 # About
 
-StaxRip is a video encoding GUI for Windows, it executes and controls console apps like x265, mkvmerge and ffmpeg and uses the scripting based frame servers AviSynth+ and VapourSynth for video processing.
+StaxRip is a video encoding GUI for Windows, it executes and controls console apps like x265, mkvmerge and ffmpeg and uses the scripting based frame servers AviSynth and VapourSynth for video processing.
 
 ## [Documentation](https://staxrip.readthedocs.io)
 

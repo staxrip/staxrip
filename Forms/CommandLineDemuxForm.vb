@@ -1,3 +1,4 @@
+
 Imports StaxRip.UI
 
 Public Class CommandLineDemuxForm
@@ -352,8 +353,14 @@ Public Class CommandLineDemuxForm
     End Sub
 
     Function ConvertFormat(input As String) As String
-        If input.Contains("MPEG Video") Then input = input.Replace("MPEG Video", "mpeg2")
-        If input.Contains("VC-1") Then input = input.Replace("VC-1", "vc1")
+        If input.Contains("MPEG Video") Then
+            input = input.Replace("MPEG Video", "mpeg2")
+        End If
+
+        If input.Contains("VC-1") Then
+            input = input.Replace("VC-1", "vc1")
+        End If
+
         Return input.ToLower
     End Function
 
@@ -371,25 +378,27 @@ Public Class CommandLineDemuxForm
         MyBase.OnFormClosed(e)
     End Sub
 
-    Private Sub tbCommand_DoubleClick(sender As Object, e As EventArgs) Handles tbCommand.DoubleClick
-        Using d As New OpenFileDialog
-            If d.ShowDialog() = DialogResult.OK Then tbCommand.Text = d.FileName
+    Sub tbCommand_DoubleClick(sender As Object, e As EventArgs) Handles tbCommand.DoubleClick
+        Using dialog As New OpenFileDialog
+            If dialog.ShowDialog() = DialogResult.OK Then
+                tbCommand.Text = dialog.FileName
+            End If
         End Using
     End Sub
 
-    Private Sub tbArguments_DoubleClick(sender As Object, e As EventArgs) Handles tbArguments.DoubleClick
+    Sub tbArguments_DoubleClick(sender As Object, e As EventArgs) Handles tbArguments.DoubleClick
         MacrosForm.ShowDialogForm()
     End Sub
 
-    Private Sub bnBrowse_Click(sender As Object, e As EventArgs) Handles bnBrowse.Click
+    Sub bnBrowse_Click(sender As Object, e As EventArgs) Handles bnBrowse.Click
         tbCommand_DoubleClick(Nothing, Nothing)
     End Sub
 
-    Private Sub MacrosToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MacrosToolStripMenuItem.Click
+    Sub MacrosToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MacrosToolStripMenuItem.Click
         MacrosForm.ShowDialogForm()
     End Sub
 
-    Private Sub HelpToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HelpToolStripMenuItem.Click
+    Sub HelpToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HelpToolStripMenuItem.Click
         For Each pack In Package.Items.Values
             If tbName.Text = pack.Name Then
                 If pack.HelpFileOrURL <> "" Then
@@ -406,10 +415,10 @@ Public Class CommandLineDemuxForm
                 Package.Items.Values.Where(Function(package) Not TypeOf package Is PluginPackage).Select(Function(package) package.Name).ToArray.Sort.Join(", "))
     End Sub
 
-    Private Sub DemuxForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        Dim f As New HelpForm()
-        f.Doc.WriteStart(Text)
-        f.Doc.WriteTips(TipProvider.GetTips)
-        f.Show()
+    Sub DemuxForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteTips(TipProvider.GetTips)
+        form.Show()
     End Sub
 End Class

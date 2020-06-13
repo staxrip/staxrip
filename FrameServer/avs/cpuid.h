@@ -50,7 +50,7 @@ enum {
   CPUF_SSE3         = 0x100,   //  PIV+, K8 Venice
   CPUF_SSSE3        = 0x200,   //  Core 2
   CPUF_SSE4         = 0x400,
-  CPUF_SSE4_1       = 0x400,   //  Penryn, Wolfdale, Yorkfield  
+  CPUF_SSE4_1       = 0x400,   //  Penryn, Wolfdale, Yorkfield
   CPUF_AVX          = 0x800,   //  Sandy Bridge, Bulldozer
   CPUF_SSE4_2       = 0x1000,  //  Nehalem
   // AVS+
@@ -75,6 +75,7 @@ enum {
 
 #ifdef BUILDING_AVSCORE
 int GetCPUFlags();
+void SetMaxCPU(int new_flags);
 #endif
 
 #endif // AVSCORE_CPUID_H

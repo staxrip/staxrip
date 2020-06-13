@@ -80,7 +80,7 @@ Public Class LogBuilder
     End Sub
 
     Function FormatHeader(value As String) As String
-        Dim len = (70 - value.Length) \ 2
+        Dim len = (65 - value.Length) \ 2
         Return "--" + "-".Multiply(len) + " " + value + " " + "-".Multiply(len) + "--" + BR2
     End Function
 
@@ -100,7 +100,7 @@ Public Class LogBuilder
             "CPU:" + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + BR +
             "GPU:" + String.Join(", ", OS.VideoControllers) + BR +
             "Resolution:" & Screen.PrimaryScreen.Bounds.Width & " x " & Screen.PrimaryScreen.Bounds.Height & BR +
-            "DPI:" & g.MainForm.DeviceDpi
+            "DPI:" & g.DPI
 
         WriteLine(EnvironmentString.FormatColumn(":"))
     End Sub

@@ -1,4 +1,5 @@
 ﻿
+Imports System.Text
 Imports StaxRip.UI
 
 Namespace CommandLine
@@ -52,7 +53,9 @@ Namespace CommandLine
 
         Protected Overridable Sub OnValueChanged(item As CommandLineParam)
             For Each i In Items
-                If Not i.VisibleFunc Is Nothing Then i.Visible = i.Visible
+                If Not i.VisibleFunc Is Nothing Then
+                    i.Visible = i.Visible
+                End If
             Next
 
             RaiseEvent ValueChanged(item)
@@ -74,9 +77,11 @@ Namespace CommandLine
 
         Sub Execute()
             If g.IsWindowsTerminalAvailable Then
-                Process.Start("wt.exe", "cmd.exe /k """ + GetCommandLine(True, True) + """")
+                Dim cl = "cmd.exe /S /K --% """ + GetCommandLine(True, True) + """"
+                Dim base64 = Convert.ToBase64String(Encoding.Unicode.GetBytes(cl)) 'UTF16LE
+                g.Execute("wt.exe", "powershell.exe -NoLogo -NoExit -NoProfile -EncodedCommand """ + base64 + """")
             Else
-                g.ShellExecute("cmd.exe", "/k """ + GetCommandLine(True, True) + """")
+                g.Execute("cmd.exe", "/S /K """ + GetCommandLine(True, True) + """")
             End If
         End Sub
     End Class
@@ -93,7 +98,6 @@ Namespace CommandLine
         Property NoSwitch As String
         Property Path As String
         Property Switch As String
-        Property Switch2 As String
         Property Switches As IEnumerable(Of String)
         Property Text As String
         Property URLs As List(Of String)
@@ -112,7 +116,6 @@ Namespace CommandLine
             Dim ret As New HashSet(Of String)
 
             If Switch <> "" Then ret.Add(Switch)
-            If Switch2 <> "" Then ret.Add(Switch2)
             If NoSwitch <> "" Then ret.Add(NoSwitch)
             If HelpSwitch <> "" Then ret.Add(HelpSwitch)
 
@@ -131,7 +134,10 @@ Namespace CommandLine
 
         Property Visible As Boolean
             Get
-                If Not VisibleFunc Is Nothing Then Return VisibleFunc.Invoke
+                If Not VisibleFunc Is Nothing Then
+                    Return VisibleFunc.Invoke
+                End If
+
                 Return VisibleValue
             End Get
             Set(value As Boolean)
@@ -141,7 +147,10 @@ Namespace CommandLine
                     Dim c = GetControl()
 
                     If Not c Is Nothing Then
-                        If TypeOf c.Parent Is SimpleUI.EmptyBlock Then c = c.Parent
+                        If TypeOf c.Parent Is SimpleUI.EmptyBlock Then
+                            c = c.Parent
+                        End If
+
                         c.Visible = value
                     End If
                 End If
@@ -149,16 +158,19 @@ Namespace CommandLine
         End Property
 
         Function GetKey() As String
-            If Name <> "" Then Return Name
-            If Switch <> "" Then Return Switch
-
-            If Text <> "" Then
-                If Text.StartsWith(" ") AndAlso HelpSwitch <> "" Then
-                    Return Text + HelpSwitch
-                Else
-                    Return Text
-                End If
+            If Name <> "" Then
+                Return Name
             End If
+
+            If Switch <> "" Then
+                Return Switch
+            End If
+
+            If HelpSwitch <> "" Then
+                Return Text + HelpSwitch
+            End If
+
+            Return Text
         End Function
     End Class
 
@@ -229,8 +241,14 @@ Namespace CommandLine
             End Get
             Set(value As Boolean)
                 ValueValue = value
-                If Not Store Is Nothing Then Store.Bool(GetKey) = value
-                If Not CheckBox Is Nothing Then CheckBox.Checked = value
+
+                If Not Store Is Nothing Then
+                    Store.Bool(GetKey) = value
+                End If
+
+                If Not CheckBox Is Nothing Then
+                    CheckBox.Checked = value
+                End If
             End Set
         End Property
 
@@ -256,11 +274,15 @@ Namespace CommandLine
 
         Property Config As Double() 'min, max, step, decimal places
             Get
-                If ConfigValue Is Nothing Then Return {Double.MinValue, Double.MaxValue, 1, 0}
+                If ConfigValue Is Nothing Then
+                    Return {Double.MinValue, Double.MaxValue, 1, 0}
+                End If
+
                 Return ConfigValue
             End Get
             Set(value As Double())
                 ConfigValue = {value(0), value(1), 1, 0}
+
                 If value.Length > 2 Then ConfigValue(2) = value(2)
                 If value.Length > 3 Then ConfigValue(3) = value(3)
 

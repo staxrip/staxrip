@@ -41,6 +41,10 @@ Public Class x264Enc
         End Get
     End Property
 
+    Overrides Function GetFixedBitrate() As Integer
+        Return CInt(Params.Bitrate.Value)
+    End Function
+
     Overrides Sub Encode()
         p.Script.Synchronize()
         Encode("Video encoding", GetArgs(1, p.Script), s.ProcessPriority)
@@ -76,8 +80,9 @@ Public Class x264Enc
     End Sub
 
     Overrides Sub RunCompCheck()
-        If Not g.VerifyRequirements Then Exit Sub
-        If Not g.IsValidSource Then Exit Sub
+        If Not g.VerifyRequirements OrElse Not g.IsValidSource Then
+            Exit Sub
+        End If
 
         Dim newParams As New x264Params
         Dim newStore = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
@@ -141,9 +146,11 @@ Public Class x264Enc
         newParams.ApplyValues(True)
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelp = "<p>Pressing Ctrl or Shift while right-clicking on an option opens the x264 online help and navigates to the switch that was right-clicked.</p>" +
-                $"<p><a href=""{Package.x264.HelpURL}"">x264 online help</a></p>" +
-                $"<pre>{HelpDocument.ConvertChars(Package.x264.CreateHelpfile())}</pre>"
+            form.HTMLHelp = "<h2>x264 Help</h2>" +
+                "<p>Right-clicking a option shows the local console help for the option, pressing Ctrl or Shift while right-clicking a option shows the online help for the option.</p>" +
+                "<p>Setting the Bitrate option to 0 will use the bitrate defined in the project/template in the main dialog.</p>" +
+               $"<h2>x264 Online Help</h2><p><a href=""{Package.x264.HelpURL}"">x264 Online Help</a></p>" +
+               $"<h2>x264 Console Help</h2><pre>{HelpDocument.ConvertChars(Package.x264.CreateHelpfile())}</pre>"
 
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of x264Enc)(Me)
@@ -207,12 +214,26 @@ Public Class x264Params
         Title = "x264 Options"
     End Sub
 
+    Property Mode As New OptionParam With {
+        .Name = "Mode",
+        .Text = "Mode",
+        .Switches = {"--bitrate", "--qp", "--crf", "--pass", "--stats", "-q", "-B", "-p"},
+        .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
+        .Value = 2}
+
     Property Quant As New NumParam With {
         .Switches = {"--crf", "--qp"},
         .Name = "Quant",
         .Text = "Quality",
         .Init = 22,
-        .Config = {0, 69, 1, 1}}
+        .VisibleFunc = Function() Mode.Value = 1 OrElse Mode.Value = 2,
+        .Config = {0, 69, 0.5, 1}}
+
+    Property Bitrate As New NumParam With {
+        .HelpSwitch = "--bitrate",
+        .Text = "Bitrate",
+        .VisibleFunc = Function() Mode.Value <> 1 AndAlso Mode.Value <> 2,
+        .Config = {0, 1000000, 100}}
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
@@ -224,13 +245,6 @@ Public Class x264Params
         .Switch = "--tune",
         .Text = "Tune",
         .Options = {"None", "Film", "Animation", "Grain", "Still Image", "PSNR", "SSIM", "Fast Decode", "Zero Latency"}}
-
-    Property Mode As New OptionParam With {
-        .Name = "Mode",
-        .Text = "Mode",
-        .Switches = {"--bitrate", "--qp", "--crf", "--pass", "--stats", "-q", "-B", "-p"},
-        .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
-        .Value = 2}
 
     Property CompCheck As New NumParam With {
         .Name = "CompCheckQuant",
@@ -446,9 +460,16 @@ Public Class x264Params
         .Text = "Psy RD",
         .ArgsFunc = Function() As String
                         If Psy.Value Then
-                            If PsyRD.Value <> PsyRD.DefaultValue OrElse PsyTrellis.Value <> PsyTrellis.DefaultValue OrElse Not Psy.DefaultValue Then Return "--psy-rd " & PsyRD.Value.ToInvariantString & ":" & PsyTrellis.Value.ToInvariantString
+                            If PsyRD.Value <> PsyRD.DefaultValue OrElse
+                                PsyTrellis.Value <> PsyTrellis.DefaultValue OrElse
+                                Not Psy.DefaultValue Then
+
+                                Return "--psy-rd " & PsyRD.Value.ToInvariantString & ":" & PsyTrellis.Value.ToInvariantString
+                            End If
                         Else
-                            If Psy.DefaultValue Then Return "--no-psy"
+                            If Psy.DefaultValue Then
+                                Return "--no-psy"
+                            End If
                         End If
                     End Function}
 
@@ -511,10 +532,19 @@ Public Class x264Params
         .Switch = "--slow-firstpass",
         .Text = "Slow Firstpass"}
 
-    Property PipingTool As New OptionParam With {
+    Property PipingToolAVS As New OptionParam With {
         .Text = "Piping Tool",
-        .Options = {"Automatic", "None", "vspipe", "avs2pipemod", "ffmpeg"},
-        .Values = {"auto", "none", "vspipe", "avs2pipemod", "ffmpeg"}}
+        .Name = "PipingToolAVS",
+        .VisibleFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
+        .Options = {"Automatic", "None", "avs2pipemod", "ffmpeg"},
+        .Values = {"auto", "none", "avs2pipemod", "ffmpeg"}}
+
+    Property PipingToolVS As New OptionParam With {
+        .Text = "Piping Tool",
+        .Name = "PipingToolVS",
+        .VisibleFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .Options = {"Automatic", "None", "vspipe", "ffmpeg"},
+        .Values = {"auto", "none", "vspipe", "ffmpeg"}}
 
     Sub ApplyValues(isDefault As Boolean)
         Dim setVal = Sub(param As CommandLineParam, value As Object)
@@ -736,7 +766,8 @@ Public Class x264Params
                     Profile,
                     New OptionParam With {.Switch = "--level", .Text = "Level", .Options = {"Automatic", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                     New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
-                    Quant)
+                    Quant,
+                    Bitrate)
                 Add("Analysis",
                     Trellis,
                     CQM,
@@ -876,7 +907,8 @@ Public Class x264Params
                     New BoolParam With {.Switch = "--dts-compress", .Text = "Eliminate initial delay with container DTS hack"})
                 Add("Other",
                     New StringParam With {.Switch = "--video-filter", .Switches = {"--vf"}, .Text = "Video Filter"},
-                    PipingTool,
+                    PipingToolAVS,
+                    PipingToolVS,
                     New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                     New OptionParam With {.Switch = "--frame-packing", .Text = "Frame Packing", .IntegerValue = True, .Options = {"Checkerboard", "Column Alternation", "Row Alternation", "Side By Side", "Top Bottom", "Frame Alternation", "Mono", "Tile Format"}},
                     Deblock,
@@ -893,9 +925,16 @@ Public Class x264Params
                     CustomSecondPass)
 
                 For Each item In ItemsValue
-                    If item.HelpSwitch <> "" Then Continue For
+                    If item.HelpSwitch <> "" Then
+                        Continue For
+                    End If
+
                     Dim switches = item.GetSwitches
-                    If switches.NothingOrEmpty Then Continue For
+
+                    If switches.NothingOrEmpty Then
+                        Continue For
+                    End If
+
                     item.HelpSwitch = switches(0)
                 Next
             End If
@@ -915,7 +954,9 @@ Public Class x264Params
     Private BlockValueChanged As Boolean
 
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-        If BlockValueChanged Then Exit Sub
+        If BlockValueChanged Then
+            Exit Sub
+        End If
 
         If item Is Preset OrElse item Is Tune OrElse item Is Profile Then
             BlockValueChanged = True
@@ -934,45 +975,46 @@ Public Class x264Params
         MyBase.OnValueChanged(item)
     End Sub
 
-    Overloads Overrides Function GetCommandLine(includePaths As Boolean,
-                                                includeExecutable As Boolean,
-                                                Optional pass As Integer = 1) As String
+    Overloads Overrides Function GetCommandLine(
+        includePaths As Boolean, includeExecutable As Boolean, Optional pass As Integer = 1) As String
 
         Return GetArgs(1, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
                        p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
     End Function
 
-    Overloads Function GetArgs(pass As Integer,
-                               script As VideoScript,
-                               targetPath As String,
-                               includePaths As Boolean,
-                               includeExecutable As Boolean) As String
+    Overloads Function GetArgs(
+        pass As Integer,
+        script As VideoScript,
+        targetPath As String,
+        includePaths As Boolean,
+        includeExecutable As Boolean) As String
+
         ApplyValues(True)
 
         Dim args As String
 
         If includePaths AndAlso includeExecutable Then
-            Dim pipeString = ""
-            Dim pipeTool = PipingTool.ValueText
+            Dim pipeCmd = ""
+            Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS).ValueText
 
             If pipeTool = "auto" Then
-                If p.Script.Engine = ScriptEngine.VapourSynth Then
-                    pipeTool = "vspipe"
-                Else
+                If p.Script.Engine = ScriptEngine.AviSynth Then
                     pipeTool = "avs2pipemod"
+                Else
+                    pipeTool = "vspipe"
                 End If
             End If
 
             Select Case pipeTool
                 Case "vspipe"
-                    pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | "
+                    pipeCmd = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | "
                 Case "avs2pipemod"
-                    pipeString = Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | "
+                    pipeCmd = Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | "
                 Case "ffmpeg"
-                    pipeString = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
+                    pipeCmd = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
             End Select
 
-            args += pipeString + Package.x264.Path.Escape
+            args += pipeCmd + Package.x264.Path.Escape
         End If
 
         If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
@@ -999,7 +1041,11 @@ Public Class x264Params
             End If
         Else
             If Not IsCustom(pass, "--bitrate") Then
-                args += " --bitrate " & p.VideoBitrate
+                If Bitrate.Value <> 0 Then
+                    args += " --bitrate " & Bitrate.Value
+                Else
+                    args += " --bitrate " & p.VideoBitrate
+                End If
             End If
         End If
 
@@ -1010,7 +1056,8 @@ Public Class x264Params
         End If
 
         If includePaths Then
-            Dim input = If(PipingTool.ValueText = "none", script.Path.Escape, "-")
+            Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS)
+            Dim input = If(pipeTool.ValueText = "none", script.Path.Escape, "-")
 
             If input = "-" Then
                 args += " --demuxer y4m --frames " & script.GetFrameCount
@@ -1054,23 +1101,33 @@ Public Class x264Params
         If P8x8.Value Then partitions += "p8x8,"
         If B8x8.Value Then partitions += "b8x8"
 
-        If partitions <> "" Then Return "--partitions " + partitions.TrimEnd(","c)
+        If partitions <> "" Then
+            Return "--partitions " + partitions.TrimEnd(","c)
+        End If
     End Function
 
     Function IsCustom(pass As Integer, switch As String) As Boolean
-        If switch = "" Then Return False
+        If switch = "" Then
+            Return False
+        End If
 
         If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
             If pass = 1 Then
                 If CustomFirstPass.Value?.Contains(switch + " ") OrElse
-                    CustomFirstPass.Value?.EndsWith(switch) Then Return True
+                    CustomFirstPass.Value?.EndsWith(switch) Then
+                    Return True
+                End If
             Else
                 If CustomSecondPass.Value?.Contains(switch + " ") OrElse
-                    CustomSecondPass.Value?.EndsWith(switch) Then Return True
+                    CustomSecondPass.Value?.EndsWith(switch) Then
+                    Return True
+                End If
             End If
         End If
 
-        If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then Return True
+        If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then
+            Return True
+        End If
     End Function
 
     Public Overrides Function GetPackage() As Package

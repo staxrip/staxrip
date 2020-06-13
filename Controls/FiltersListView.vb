@@ -24,7 +24,7 @@ Public Class FiltersListView
         Columns.Add("Name")
         Menu.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         ContextMenuStrip = Menu
-        SendMessageHideFocus()
+        HideFocusRectange()
         AddHandler VideoScript.Changed, Sub(script As VideoScript)
                                             If Not p.Script Is Nothing AndAlso script Is p.Script Then
                                                 OnChanged()
@@ -43,19 +43,19 @@ Public Class FiltersListView
         Items.Clear()
         BeginUpdate()
 
-        For Each i In p.Script.Filters
+        For Each filter In p.Script.Filters
             Dim item As New ListViewItem
-            item.Tag = i
-            item.Checked = i.Active
-            item.SubItems.Add(i.Category)
+            item.Tag = filter
+            item.Checked = filter.Active
+            item.SubItems.Add(filter.Category)
 
-            If i.Name = "" Then
-                item.SubItems.Add(i.Script)
+            If filter.Name = "" Then
+                item.SubItems.Add(filter.Script)
             Else
-                item.SubItems.Add(i.Name)
+                item.SubItems.Add(filter.Name)
             End If
 
-            item.SubItems.Add(i.Script)
+            item.SubItems.Add(filter.Script)
             Items.Add(item)
         Next
 
@@ -215,7 +215,7 @@ Public Class FiltersListView
         Items(index).Selected = True
     End Sub
 
-    Private Sub InsertClick(filter As VideoFilter)
+    Sub InsertClick(filter As VideoFilter)
         filter = filter.GetCopy
         Dim val = Macro.ExpandGUI(filter.Script)
 
@@ -239,7 +239,7 @@ Public Class FiltersListView
         Items(index).Selected = True
     End Sub
 
-    Private Sub AddClick(filter As VideoFilter)
+    Sub AddClick(filter As VideoFilter)
         filter = filter.GetCopy
         Dim val = Macro.ExpandGUI(filter.Script)
 
@@ -271,17 +271,8 @@ Public Class FiltersListView
         RaiseEvent Changed()
     End Sub
 
-    Sub RaiseChangedAsync()
-        Dim async = Sub()
-                        Application.DoEvents()
-                        OnChanged()
-                    End Sub
-
-        g.MainForm.BeginInvoke(async)
-    End Sub
-
-    Private Sub RemoveClick()
-        If SelectedItems.Count > 0 Then
+    Sub RemoveClick()
+        If MsgQuestion("Remove Selection?") = DialogResult.OK AndAlso SelectedItems.Count > 0 Then
             p.Script.RemoveFilterAt(SelectedItems(0).Index)
         End If
     End Sub
@@ -289,8 +280,8 @@ Public Class FiltersListView
     Sub UpdateDocument()
         p.Script.Filters.Clear()
 
-        For Each i As ListViewItem In Items
-            p.Script.Filters.Add(DirectCast(i.Tag, VideoFilter))
+        For Each item As ListViewItem In Items
+            p.Script.Filters.Add(DirectCast(item.Tag, VideoFilter))
         Next
 
         OnChanged()
@@ -336,7 +327,7 @@ Public Class FiltersListView
             End If
 
             filter.Active = e.NewValue = CheckState.Checked
-            RaiseChangedAsync()
+            g.MainForm.BeginInvoke(Sub() OnChanged())
         End If
     End Sub
 End Class

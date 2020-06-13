@@ -1935,6 +1935,12 @@ Namespace UI
             End Set
         End Property
 
+        WriteOnly Property [ReadOnly] As Boolean
+            Set(value As Boolean)
+                TextBox.ReadOnly = value
+            End Set
+        End Property
+
         Protected Overrides Sub OnLayout(args As LayoutEventArgs)
             MyBase.OnLayout(args)
 
@@ -1956,9 +1962,10 @@ Namespace UI
 
             Dim cr = ClientRectangle
             cr.Inflate(-1, -1)
+            Dim col = If(Enabled AndAlso Not TextBox.ReadOnly, BackColor, SystemColors.Control)
 
-            Using brush As New SolidBrush(BackColor)
-                e.Graphics.FillRectangle(If(Enabled, brush, SystemBrushes.Control), cr)
+            Using brush As New SolidBrush(col)
+                e.Graphics.FillRectangle(brush, cr)
             End Using
 
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, BorderColor, ButtonBorderStyle.Solid)

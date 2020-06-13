@@ -272,7 +272,7 @@ Public Class ToolStripRendererEx
         gx.SmoothingMode = SmoothingMode.HighQuality
 
         If e.Direction = ArrowDirection.Down Then
-            Dim h = CInt(e.Item.Font.Height * 0.3)
+            Dim h = CInt(e.Item.Font.Height * 0.25)
             Dim w = h * 2
             Dim cs = e.Item.Bounds
 
@@ -291,13 +291,13 @@ Public Class ToolStripRendererEx
             End Using
         Else
             Dim x1 = e.Item.Width - e.Item.Height * 0.6F
-            Dim y1 = (e.Item.Height * 0.25F) - 1
+            Dim y1 = (e.Item.Height * 0.3F) - 1
 
-            Dim x2 = x1 + e.Item.Height * 0.25F
+            Dim x2 = x1 + e.Item.Height * 0.2F
             Dim y2 = (e.Item.Height / 2.0F) - 1
 
             Dim x3 = x1
-            Dim y3 = (e.Item.Height * 0.75F) - 1
+            Dim y3 = (e.Item.Height * 0.7F) - 1
 
             Using pen = New Pen(e.Item.ForeColor, e.Item.Font.Height / 16.0F)
                 gx.DrawLine(pen, x1, y1, x2, y2)

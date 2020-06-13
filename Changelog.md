@@ -2,6 +2,11 @@
 2.1.3.1 Beta (not yet available)
 ============
 
+- Main dialog target image width and height text box supports mouse wheel.
+- subtitle file drag & drop in muxer dialog was broken.
+- TemporalDegrain2 integration
+
+
 2.1.3.0
 =======
 

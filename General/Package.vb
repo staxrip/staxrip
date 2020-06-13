@@ -647,6 +647,15 @@ Public Class Package
         .AvsFilterNames = {"LSFmod"},
         .AvsFiltersFunc = Function() {New VideoFilter("Line", "Sharpen | LSFmod", "LSFmod(defaults=""slow"", strength=100, Smode=5, Smethod=3, kernel=11, preblur=""OFF"", secure=true, Szrp=16, Spwr=4, SdmpLo=4, SdmpHi=48, Lmode=4, overshoot=1, undershoot=1, Overshoot2=1, Undershoot2=1, soft=-2, soothe=true, keep=20, edgemode=0, edgemaskHQ=true, ss_x=1.50, ss_y=1.50, dest_x=%target_width%, dest_y=%target_height%, show=false, screenW=1280, screenH=1024)")}})
 
+    Shared Property TemporalDegrain2 As Package = Add(New PluginPackage With {
+        .Name = "TemporalDegrain2",
+        .Filename = "TemporalDegrain2.avsi",
+        .WebURL = "http://avisynth.nl/index.php/TemporalDegrain2",
+        .Description = "Builds on Temporal Degrain but it is able to clean the noise even further while impoving the sharpness in cases where orignal version had severe drops in visual quality.",
+        .AvsFilterNames = {"TemporalDegrain2"},
+        .AvsFiltersFunc = Function() {
+            New VideoFilter("Noise", "TemporalDegrain2", "TemporalDegrain2(degrainTR=2, postFFT=3, postSigma=3)")}})
+
     Shared Property LSmashWorks As Package = Add(New PluginPackage With {
         .Name = "L-SMASH-Works",
         .Filename = "LSMASHSource.dll",
@@ -681,7 +690,7 @@ Public Class Package
             New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoise", "MCTemporalDenoise(settings=""medium"")"),
             New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoisePP", "source=last" + BR + "denoised=FFT3Dfilter()" + BR + "MCTemporalDenoisePP(denoised)")}})
 
-    Shared Property DFTTestAvs As Package = Add(New PluginPackage With {
+    Shared Property DFTTestAVS As Package = Add(New PluginPackage With {
         .Name = "DFTTest",
         .Filename = "dfttest.dll",
         .Description = "2D/3D frequency domain denoiser using Discrete Fourier transform.",

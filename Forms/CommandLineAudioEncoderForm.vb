@@ -219,7 +219,7 @@ Public Class CommandLineAudioEncoderForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(732, 15)
+        Me.bnCancel.Location = New System.Drawing.Point(762, 15)
         Me.bnCancel.Margin = New System.Windows.Forms.Padding(15)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
@@ -228,7 +228,7 @@ Public Class CommandLineAudioEncoderForm
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(467, 15)
+        Me.bnOK.Location = New System.Drawing.Point(497, 15)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(0, 15, 0, 15)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
@@ -273,7 +273,7 @@ Public Class CommandLineAudioEncoderForm
         Me.bnMenu.Location = New System.Drawing.Point(382, 15)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(15)
         Me.bnMenu.ShowMenuSymbol = True
-        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
+        Me.bnMenu.Size = New System.Drawing.Size(100, 70)
         '
         'cms
         '
@@ -363,10 +363,10 @@ Public Class CommandLineAudioEncoderForm
         Me.FlowLayoutPanel1.Controls.Add(Me.bnMenu)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnOK)
         Me.FlowLayoutPanel1.Controls.Add(Me.bnCancel)
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(767, 697)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(737, 697)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(997, 100)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(1027, 100)
         Me.FlowLayoutPanel1.TabIndex = 19
         '
         'cbDefault

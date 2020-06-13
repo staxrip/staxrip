@@ -35,7 +35,7 @@ Public Class MainForm
     Public WithEvents gbAssistant As System.Windows.Forms.GroupBox
     Public WithEvents lgbFilters As LinkGroupBox
     Public WithEvents tbTargetSize As System.Windows.Forms.TextBox
-    Public WithEvents lBitrate As System.Windows.Forms.Label
+    Public WithEvents laBitrate As System.Windows.Forms.Label
     Public WithEvents tbBitrate As System.Windows.Forms.TextBox
     Public WithEvents lTarget1 As System.Windows.Forms.Label
     Public WithEvents lSource1 As System.Windows.Forms.Label
@@ -59,7 +59,7 @@ Public Class MainForm
     Public WithEvents GroupBox1 As System.Windows.Forms.GroupBox
     Public WithEvents laTip As System.Windows.Forms.Label
     Public WithEvents lgbEncoder As LinkGroupBox
-    Public WithEvents lTarget2 As System.Windows.Forms.Label
+    Public WithEvents laTarget2 As System.Windows.Forms.Label
     Public WithEvents MenuStrip As System.Windows.Forms.MenuStrip
     Public WithEvents llAudioProfile0 As ButtonLabel
     Public WithEvents llAudioProfile1 As ButtonLabel
@@ -107,11 +107,11 @@ Public Class MainForm
         Me.lgbTarget = New StaxRip.UI.LinkGroupBox()
         Me.tlpTarget = New System.Windows.Forms.TableLayoutPanel()
         Me.tbTargetFile = New StaxRip.UI.TextBoxEx()
-        Me.lTarget2 = New System.Windows.Forms.Label()
+        Me.laTarget2 = New System.Windows.Forms.Label()
         Me.tbTargetSize = New System.Windows.Forms.TextBox()
         Me.lTarget1 = New System.Windows.Forms.Label()
         Me.tbBitrate = New System.Windows.Forms.TextBox()
-        Me.lBitrate = New System.Windows.Forms.Label()
+        Me.laBitrate = New System.Windows.Forms.Label()
         Me.blFilesize = New StaxRip.UI.ButtonLabel()
         Me.lgbSource = New StaxRip.UI.LinkGroupBox()
         Me.tlpSource = New System.Windows.Forms.TableLayoutPanel()
@@ -373,11 +373,11 @@ Public Class MainForm
         Me.tlpTarget.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
         Me.tlpTarget.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
         Me.tlpTarget.Controls.Add(Me.tbTargetFile, 0, 0)
-        Me.tlpTarget.Controls.Add(Me.lTarget2, 0, 3)
+        Me.tlpTarget.Controls.Add(Me.laTarget2, 0, 3)
         Me.tlpTarget.Controls.Add(Me.tbTargetSize, 1, 1)
         Me.tlpTarget.Controls.Add(Me.lTarget1, 0, 2)
         Me.tlpTarget.Controls.Add(Me.tbBitrate, 3, 1)
-        Me.tlpTarget.Controls.Add(Me.lBitrate, 2, 1)
+        Me.tlpTarget.Controls.Add(Me.laBitrate, 2, 1)
         Me.tlpTarget.Controls.Add(Me.blFilesize, 0, 1)
         Me.tlpTarget.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpTarget.Location = New System.Drawing.Point(6, 48)
@@ -401,15 +401,15 @@ Public Class MainForm
         '
         'lTarget2
         '
-        Me.lTarget2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tlpTarget.SetColumnSpan(Me.lTarget2, 4)
-        Me.lTarget2.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lTarget2.Location = New System.Drawing.Point(6, 234)
-        Me.lTarget2.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.lTarget2.Name = "lTarget2"
-        Me.lTarget2.Size = New System.Drawing.Size(987, 60)
-        Me.lTarget2.TabIndex = 47
-        Me.lTarget2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.laTarget2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpTarget.SetColumnSpan(Me.laTarget2, 4)
+        Me.laTarget2.ImeMode = System.Windows.Forms.ImeMode.NoControl
+        Me.laTarget2.Location = New System.Drawing.Point(6, 234)
+        Me.laTarget2.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Me.laTarget2.Name = "lTarget2"
+        Me.laTarget2.Size = New System.Drawing.Size(987, 60)
+        Me.laTarget2.TabIndex = 47
+        Me.laTarget2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'tbTargetSize
         '
@@ -444,16 +444,16 @@ Public Class MainForm
         '
         'lBitrate
         '
-        Me.lBitrate.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.laBitrate.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lBitrate.Location = New System.Drawing.Point(498, 75)
-        Me.lBitrate.Margin = New System.Windows.Forms.Padding(0)
-        Me.lBitrate.Name = "lBitrate"
-        Me.lBitrate.Size = New System.Drawing.Size(249, 75)
-        Me.lBitrate.TabIndex = 42
-        Me.lBitrate.Text = "Video Bitrate:"
-        Me.lBitrate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.laBitrate.Location = New System.Drawing.Point(498, 75)
+        Me.laBitrate.Margin = New System.Windows.Forms.Padding(0)
+        Me.laBitrate.Name = "lBitrate"
+        Me.laBitrate.Size = New System.Drawing.Size(249, 75)
+        Me.laBitrate.TabIndex = 42
+        Me.laBitrate.Text = "Video Bitrate:"
+        Me.laBitrate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'blFilesize
         '
@@ -2572,7 +2572,7 @@ Public Class MainForm
         g.Highlight(False, tbTargetWidth)
         g.Highlight(False, llMuxer)
         g.Highlight(False, lgbEncoder.Label)
-        g.Highlight(False, lTarget2)
+        g.Highlight(False, laTarget2)
 
         Dim cropw = p.SourceWidth
         Dim croph = p.SourceHeight
@@ -2653,14 +2653,14 @@ Public Class MainForm
                 p.TargetFrameRate.ToString.Shorten(9) + "fps", "Audio Bitrate: " & CInt(Calc.GetAudioBitrate))
 
             If p.VideoEncoder.IsCompCheckEnabled Then
-                lTarget2.Text = lSource1.GetMaxTextSpace(
+                laTarget2.Text = lSource1.GetMaxTextSpace(
                     "Quality: " & CInt(Calc.GetPercent).ToString() + " %",
                     "Compressibility: " + p.Compressibility.ToString("f2"))
             End If
         Else
             lTarget1.Text = ""
             lSource1.Text = ""
-            lTarget2.Text = ""
+            laTarget2.Text = ""
             lSource2.Text = ""
         End If
 
@@ -2854,7 +2854,7 @@ Public Class MainForm
             If p.RemindToDoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled AndAlso p.Compressibility = 0 Then
                 If ProcessTip("Click here to start the compressibility check. The compressibility check helps to finds the ideal bitrate or image size.") Then
                     AssistantMethod = AddressOf p.VideoEncoder.RunCompCheck
-                    g.Highlight(True, lTarget2)
+                    g.Highlight(True, laTarget2)
                     gbAssistant.Text = "Compressibility Check"
                     Return False
                 End If
@@ -2940,8 +2940,8 @@ Public Class MainForm
                         g.Highlight(True, tbBitrate)
                         g.Highlight(True, tbTargetWidth)
                         g.Highlight(True, tbTargetHeight)
-                        g.Highlight(True, lTarget2)
-                        lTarget2.BackColor = Color.Red
+                        g.Highlight(True, laTarget2)
+                        laTarget2.BackColor = Color.Red
                         gbAssistant.Text = "Quality"
                         Return False
                     End If
@@ -4784,6 +4784,26 @@ Public Class MainForm
         End If
     End Sub
 
+    Sub tbTargetWidth_MouseWheel(sender As Object, e As MouseEventArgs) Handles tbTargetWidth.MouseWheel
+        If e.Delta < 0 Then
+            Dim modVal = p.ForcedOutputMod
+            tbTargetWidth.Text = CInt(((p.TargetWidth - modVal) / modVal) * modVal).ToString()
+        Else
+            Dim modVal = p.ForcedOutputMod
+            tbTargetWidth.Text = CInt(((p.TargetWidth + modVal) / modVal) * modVal).ToString()
+        End If
+    End Sub
+
+    Sub tbTargetHeight_MouseWheel(sender As Object, e As MouseEventArgs) Handles tbTargetHeight.MouseWheel
+        If e.Delta < 0 Then
+            Dim modVal = p.ForcedOutputMod
+            tbTargetHeight.Text = CInt(((p.TargetHeight - modVal) / modVal) * modVal).ToString()
+        Else
+            Dim modVal = p.ForcedOutputMod
+            tbTargetHeight.Text = CInt(((p.TargetHeight + modVal) / modVal) * modVal).ToString()
+        End If
+    End Sub
+
     Shared Function GetDefaultMenuSize() As CustomMenuItem
         Dim ret = New CustomMenuItem("Root")
         ret.Add("DVD/BD-5 (4480 MB)", NameOf(SetSize), {4480})
@@ -4986,12 +5006,13 @@ Public Class MainForm
     Sub UpdateEncoderStateRelatedControls()
         blFilesize.Visible = Not p.VideoEncoder.QualityMode
         tbTargetSize.Visible = Not p.VideoEncoder.QualityMode
-        lBitrate.Visible = Not p.VideoEncoder.QualityMode
+        laBitrate.Visible = Not p.VideoEncoder.QualityMode
         tbBitrate.Visible = Not p.VideoEncoder.QualityMode
-        lTarget2.Visible = p.VideoEncoder.IsCompCheckEnabled
+        laTarget2.Visible = p.VideoEncoder.IsCompCheckEnabled
 
         tbTargetSize.ReadOnly = p.VideoEncoder.GetFixedBitrate <> 0
         tbBitrate.ReadOnly = p.VideoEncoder.GetFixedBitrate <> 0
+        blFilesize.Enabled = p.VideoEncoder.GetFixedBitrate = 0
     End Sub
 
     <Command("Dialog to open source files.")>
@@ -5608,7 +5629,7 @@ Public Class MainForm
             .SetTip("Cropped image size", lCrop, lCropText)
             .SetTip("Source Display Aspect Ratio", lSourceDar, blSourceDarText)
             .SetTip("Source Pixel Aspect Ratio", lSourcePAR, blSourceParText)
-            .SetTip("Target Video Bitrate in Kbps (Up/Down key)", tbBitrate, lBitrate)
+            .SetTip("Target Video Bitrate in Kbps (Up/Down key)", tbBitrate, laBitrate)
             .SetTip("Target Image Width in pixel (Up/Down key)", tbTargetWidth, lTargetWidth)
             .SetTip("Target Image Height in pixel (Up/Down key)", tbTargetHeight, lTargetHeight)
             .SetTip("Target File Size (Up/Down key)", tbTargetSize)

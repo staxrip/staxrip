@@ -37,28 +37,32 @@ Public Class GlobalCommands
             Dim sourceFile = ui.AddTextButton(page)
             sourceFile.Label.Text = "Source File:"
             sourceFile.Edit.Expand = True
+            sourceFile.Edit.TextBox.ReadOnly = True
             sourceFile.BrowseFile(FileTypes.VideoAudio)
 
             Dim outputFolder = ui.AddTextButton(page)
             outputFolder.Label.Text = "Output Folder:"
             outputFolder.Edit.Expand = True
+            outputFolder.Edit.TextBox.ReadOnly = True
             outputFolder.BrowseFolder()
 
             page.ResumeLayout()
 
-            AddHandler sourceFile.Edit.TextChanged, Sub()
-                                                        If outputFolder.Edit.Text = "" AndAlso
-                                                            File.Exists(sourceFile.Edit.Text) Then
+            Dim textChanged = Sub()
+                                  If outputFolder.Edit.Text = "" AndAlso
+                                      File.Exists(sourceFile.Edit.Text) Then
 
-                                                            outputFolder.Edit.Text = sourceFile.Edit.Text.Dir
-                                                        End If
-                                                    End Sub
+                                      outputFolder.Edit.Text = sourceFile.Edit.Text.Dir
+                                  End If
+                              End Sub
+
+            AddHandler sourceFile.Edit.TextChanged, textChanged
             form.FileDrop = True
             AddHandler form.FilesDropped, Sub(files) sourceFile.Edit.Text = files(0)
 
             If form.ShowDialog() = DialogResult.OK AndAlso
-                    File.Exists(sourceFile.Edit.Text) AndAlso
-                    Directory.Exists(outputFolder.Edit.Text) Then
+                File.Exists(sourceFile.Edit.Text) AndAlso
+                Directory.Exists(outputFolder.Edit.Text) Then
 
                 Using td As New TaskDialog(Of Demuxer)
                     td.MainInstruction = "Select a demuxer."

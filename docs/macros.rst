@@ -7,6 +7,7 @@ Macros are placeholders that can be used in all locations where StaxRip allows t
 
 Whenever StaxRip starts a process and shell execute is disabled it passes all macros as environment variables to the process.
 
+.. _interactive_macros:
 
 Interactive Macros
 ------------------

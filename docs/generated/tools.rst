@@ -97,6 +97,7 @@ Tools
     "ResizeX","AviSynth Script","ResizeX.avsi","1.0.1","2019-01-01"
     "SMDegrain","AviSynth Script","SMDegrain.avsi","3.12.108s","2020-05-31"
     "SmoothD2c","AviSynth Script","SmoothD2c.avs","a2","2019-01-01"
+    "TemporalDegrain2","AviSynth Script","TemporalDegrain2.avsi","2.2.1","2019-02-24"
     "YFRC","AviSynth Script","YFRC.avsi","2015-10-01","2019-01-01"
     "Zs_RF_Shared","AviSynth Script","Zs_RF_Shared.avsi","1.127","2020-05-31"
     "aomenc","Console App","aomenc.exe","2.0",""
@@ -133,7 +134,7 @@ Tools
     "mpv.net","GUI App","mpvnet.exe","5.4.8.0","2020-05-11"
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.14","2020-03-08"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
-    "AviSynth","Library","AviSynth.dll","3.6.0","2020-05-20"
+    "AviSynth","Library","AviSynth.dll","3.6.1 Test 8","2020-06-07"
     "DirectX 9","Library","d3d9.dll","","2019-12-07"
     "FFTW","Library","libfftw3-3.dll","3.3.8","2018-12-20"
     "MediaInfo","Library","MediaInfo.dll","20.03","2020-04-03"
@@ -1402,6 +1403,16 @@ Deblocking filter. Rewrite of SmoothD. Faster, better detail preservation, optio
 Filters: SmoothD2c
 
 http://avisynth.nl/index.php/SmoothD2
+
+
+TemporalDegrain2
+~~~~~~~~~~~~~~~~
+
+Builds on Temporal Degrain but it is able to clean the noise even further while impoving the sharpness in cases where orignal version had severe drops in visual quality.
+
+Filters: TemporalDegrain2
+
+http://avisynth.nl/index.php/TemporalDegrain2
 
 
 YFRC

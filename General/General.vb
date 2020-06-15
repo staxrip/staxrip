@@ -102,9 +102,17 @@ Public Class Folder
     Shared ReadOnly Property Plugins As String
         Get
             If p.Script.Engine = ScriptEngine.AviSynth Then
-                Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+").FixDir
+                If Package.AviSynth.Directory.StartsWithEx(Folder.Apps) Then
+                    Return Package.AviSynth.Directory + "plugins\"
+                Else
+                    Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+").FixDir
+                End If
             Else
-                Return Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64").FixDir
+                If Package.VapourSynth.Directory.StartsWithEx(Folder.Apps) Then
+                    Return Package.VapourSynth.Directory + "vapoursynth64\plugins\"
+                Else
+                    Return Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64").FixDir
+                End If
             End If
         End Get
     End Property

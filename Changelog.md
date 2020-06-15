@@ -2,6 +2,12 @@
 2.1.3.2 Beta (not yet available)
 ============
 
+- AVS/VS plugin auto load folder support in portable mode (Main Menu > Folders > Plugins)
+- MediaInfo.NET 6.5.0.0
+- Subtitle Edit 3.5.1.5
+- NVEnc 5.05
+
+
 2.1.3.1 Beta
 ============
 

@@ -26,7 +26,7 @@
     "%media_info_video:property%","Returns a MediaInfo video property for the source file."
     "%muxer_ext%","Output extension of the active muxer."
     "%player%","Path of the media player."
-    "%plugin_dir%","AviSynth/VapourSynth plugin directory."
+    "%plugin_dir%","AviSynth/VapourSynth plugin auto load directory."
     "%pos_frame%","Current preview position in frames."
     "%pos_ms%","Current preview position in milliseconds."
     "%processing%","Returns 'True' if a job is currently processing otherwise 'False'."

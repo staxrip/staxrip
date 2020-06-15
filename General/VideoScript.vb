@@ -435,11 +435,19 @@ clipname.set_output()
     End Function
 
     Shared Function ModifyAVSScript(script As String) As String
-        Dim clip As String
+        Dim newScript As String
         Dim loadCode = GetAVSLoadCode(script, "")
-        clip = loadCode + script
-        clip = GetAVSLoadCodeFromImports(clip) +clip
-        Return clip
+        newScript = loadCode + script
+        newScript = GetAVSLoadCodeFromImports(newScript) + newScript
+
+        Dim initCode As String
+
+        If Package.AviSynth.Directory.StartsWithEx(Folder.Apps) Then
+            Dim portableAutoLoadDir = Package.AviSynth.Directory + "plugins"
+            initCode = $"AddAutoloadDir(""{portableAutoLoadDir}"")" + BR
+        End If
+
+        Return initCode + newScript
     End Function
 
     Function GetFramerate() As Double

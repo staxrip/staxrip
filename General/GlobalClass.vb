@@ -1411,40 +1411,4 @@ Public Class GlobalClass
     Function IsDevelopmentPC() As Boolean
         Return Application.StartupPath.EndsWith("\bin")
     End Function
-
-    Shared WasFrameServerInitialized As Boolean
-
-    Sub InitFrameServer()
-        If Not WasFrameServerInitialized Then
-            g.AddToPath(Folder.Startup, Package.Python.Directory, Package.AviSynth.Directory,
-                        Package.VapourSynth.Directory, Package.FFTW.Directory)
-
-            MakeSymLinks()
-            WasFrameServerInitialized = True
-        End If
-    End Sub
-
-    Sub MakeSymLinks()
-        Dim pack = Package.ffmpeg
-        Dim path = pack.Directory + "AviSynth.dll"
-
-        If Package.AviSynth.Path.StartsWith(Folder.Startup) Then
-            If s.Storage.GetString(pack.Name + "symlink") <> path OrElse Not path.FileExists Then
-                FileHelp.Delete(path)
-                Dim cmd = $"mklink {path.Escape} {Package.AviSynth.Path.Escape}"
-
-                Using proc As New Process
-                    proc.StartInfo.FileName = "cmd.exe"
-                    proc.StartInfo.Arguments = $"/S /C ""{cmd}"""
-                    proc.StartInfo.UseShellExecute = False
-                    proc.StartInfo.CreateNoWindow = True
-                    proc.Start()
-                End Using
-
-                s.Storage.SetString(pack.Name + "symlink", path)
-            End If
-        Else
-            FileHelp.Delete(path)
-        End If
-    End Sub
 End Class

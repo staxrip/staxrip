@@ -85,13 +85,20 @@ Public Class ObjectHelp
 End Class
 
 Public Class DirectoryHelp
-    Shared Sub Delete(filepath As String,
-                      Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
+    Shared Sub Create(path As String)
+        If Not Directory.Exists(path) Then
+            Directory.CreateDirectory(path)
+        End If
+    End Sub
+
+    Shared Sub Delete(
+        filepath As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
 
         If Directory.Exists(filepath) Then
             Try
                 FileSystem.DeleteDirectory(filepath, UIOption.OnlyErrorDialogs, recycleOption)
             Catch ex As Exception
+                g.ShowException(ex)
             End Try
         End If
     End Sub
@@ -99,7 +106,8 @@ Public Class DirectoryHelp
     Shared Sub Copy(source As String, target As String, Optional opt As UIOption = UIOption.OnlyErrorDialogs)
         Try
             FileSystem.CopyDirectory(source, target, opt)
-        Catch
+        Catch ex As Exception
+            g.ShowException(ex)
         End Try
     End Sub
 
@@ -107,7 +115,7 @@ Public Class DirectoryHelp
         Try
             FileSystem.MoveDirectory(source, target, True)
         Catch ex As Exception
-            FileSystem.MoveDirectory(source, target, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
+            g.ShowException(ex)
         End Try
     End Sub
 

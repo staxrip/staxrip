@@ -101,15 +101,15 @@ Public Class Folder
 
     Shared ReadOnly Property Plugins As String
         Get
-            If p.Script.Engine = ScriptEngine.AviSynth Then
-                If Package.AviSynth.Directory.StartsWithEx(Folder.Apps) Then
-                    Return Package.AviSynth.Directory + "plugins\"
+            If FrameServerHelp.IsPortable Then
+                If p.Script.Engine = ScriptEngine.AviSynth Then
+                    Return Folder.Settings + "Plugins\AviSynth\"
                 Else
-                    Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+").FixDir
+                    Return Folder.Settings + "Plugins\VapourSynth\"
                 End If
             Else
-                If Package.VapourSynth.Directory.StartsWithEx(Folder.Apps) Then
-                    Return Package.VapourSynth.Directory + "vapoursynth64\plugins\"
+                If p.Script.Engine = ScriptEngine.AviSynth Then
+                    Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+").FixDir
                 Else
                     Return Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64").FixDir
                 End If
@@ -185,6 +185,9 @@ Public Class Folder
 
                     SettingsValue = dir.FixDir
                     Registry.CurrentUser.Write("Software\StaxRip\SettingsLocation", Folder.Startup, SettingsValue)
+
+                    DirectoryHelp.Create(SettingsValue + "Plugins\AviSynth")
+                    DirectoryHelp.Create(SettingsValue + "Plugins\VapourSynth")
                 End If
             End If
 

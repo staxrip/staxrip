@@ -275,6 +275,21 @@ clipname.set_output()
         End If
     End Function
 
+    Shared Function GetVsPortableAutoLoadPluginCode() As String
+        If FrameServerHelp.IsPortable Then
+            Dim ret As String
+            Dim dir = Folder.Settings + "Plugins\VapourSynth\"
+
+            If dir.DirExists Then
+                For Each file In Directory.GetFiles(dir, "*.dll")
+                    ret += "core.std.LoadPlugin(r""" + file + """, altsearchpath=True)" + BR
+                Next
+            End If
+
+            Return ret
+        End If
+    End Function
+
     Shared Function ModifyVSScript(script As String) As String
         Dim code = ""
         ModifyVSScript(script, code)
@@ -287,6 +302,7 @@ clipname.set_output()
             code =
                 "import os, sys" + BR +
                 "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR +
+                GetVsPortableAutoLoadPluginCode() + BR +
                 "sys.path.append(r""" + Folder.Startup + "Apps\Plugins\VS\Scripts"")" + BR + code
         End If
 
@@ -323,23 +339,27 @@ clipname.set_output()
                 End If
 
                 Dim scriptCode = script + code
+
                 If scriptCode.Contains("import " + plugin.Name) Then
                     WriteVSCode(script, code, Nothing, plugin)
                 End If
 
                 If Not plugin.AvsFilterNames Is Nothing Then
                     For Each filterName In plugin.AvsFilterNames
-                        If script.Contains(".avs." + filterName) Then WriteVSCode(script, code, filterName, plugin)
+                        If script.Contains(".avs." + filterName) Then
+                            WriteVSCode(script, code, filterName, plugin)
+                        End If
                     Next
                 End If
             End If
         Next
     End Function
 
-    Shared Sub WriteVSCode(ByRef script As String,
-                           ByRef code As String,
-                           ByRef filterName As String,
-                           plugin As PluginPackage)
+    Shared Sub WriteVSCode(
+        ByRef script As String,
+        ByRef code As String,
+        ByRef filterName As String,
+        plugin As PluginPackage)
 
         If plugin.Filename.Ext = "py" Then
             Dim line = plugin.Name + " = importlib.machinery.SourceFileLoader('" +
@@ -442,9 +462,9 @@ clipname.set_output()
 
         Dim initCode As String
 
-        If Package.AviSynth.Directory.StartsWithEx(Folder.Apps) Then
-            Dim portableAutoLoadDir = Package.AviSynth.Directory + "plugins"
-            initCode = $"AddAutoloadDir(""{portableAutoLoadDir}"")" + BR
+        If FrameServerHelp.IsPortable Then
+            initCode = "AddAutoloadDir(""" + Package.AviSynth.Directory + "plugins"")" + BR +
+                       "AddAutoloadDir(""" + Folder.Settings + "Plugins\AviSynth" + """)" + BR
         End If
 
         Return initCode + newScript

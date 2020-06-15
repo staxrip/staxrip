@@ -8,7 +8,7 @@ Public Class FrameServer
     Property NativeServer As IFrameServer
 
     Sub New(path As String)
-        g.InitFrameServer()
+        FrameServerHelp.Init()
 
         If path.EndsWith(".avs") Then
             NativeServer = CreateAviSynthServer()

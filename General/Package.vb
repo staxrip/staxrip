@@ -536,7 +536,7 @@ Public Class Package
     Shared Property AviSynthShader As Package = Add(New PluginPackage With {
         .Name = "AviSynthShader DLL",
         .Location = "Plugins\AVS\AviSynthShader",
-        .Filename = "Shader.dll",
+        .Filename = "Shader-x64.dll",
         .WebURL = "https://github.com/mysteryx93/AviSynthShader",
         .AvsFilterNames = {"SuperRes", "SuperResXBR", "SuperXBR", "ResizeShader", "SuperResPass", "SuperXbrMulti", "ResizeShader"}})
 

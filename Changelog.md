@@ -12,6 +12,7 @@
 - MediaInfo.NET 6.5.0.0
 - Subtitle Edit 3.5.1.5
 - TMM2 0.1.4
+- AviSynthShader 1.6.6
 
 
 2.1.3.1 Beta

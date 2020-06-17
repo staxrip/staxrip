@@ -55,7 +55,7 @@ Tools
     "TDeint","AviSynth Plugin","TDeint.dll","1.5","2020-05-13"
     "TEMmod","AviSynth Plugin","TEMmod.dll","0.2.1","2019-01-01"
     "TIVTC","AviSynth Plugin","TIVTC.dll","1.0.17","2020-05-12"
-    "TMM2","AviSynth Plugin","TMM2.dll","2016-07-05","2019-01-01"
+    "TMM2","AviSynth Plugin","TMM2.dll","0.1.4","2020-05-14"
     "TNLMeans","AviSynth Plugin","TNLMeans.dll","1.0.3","2019-01-01"
     "UnDot","AviSynth Plugin","UnDot.dll","0.0.1.1","2006-09-19"
     "VagueDenoiser","AviSynth Plugin","VagueDenoiser.dll","0.35.1.0","2019-01-01"
@@ -65,7 +65,7 @@ Tools
     "VSFilterMod","AviSynth Plugin","VSFilterMod.dll","5.2.2","2020-04-03"
     "xNLMeans","AviSynth Plugin","xNLMeans.dll","0.03","2019-01-01"
     "yadifmod2","AviSynth Plugin","yadifmod2.dll","0.2.2","2020-05-14"
-    "AnimeIVTC","AviSynth Script","AnimeIVTC.avsi","2.20","2019-01-01"
+    "AnimeIVTC","AviSynth Script","AnimeIVTC.avsi","2.22","2018-04-17"
     "AviSynthShader AVSI","AviSynth Script","Shader.avsi","1.6.5","2018-05-13"
     "CropResize","AviSynth Script","CropResize.avsi","2019-09-09","2019-09-10"
     "DAA3Mod","AviSynth Script","daa3mod.avsi","3.3","2019-01-01"
@@ -112,7 +112,7 @@ Tools
     "mkvmerge","Console App","mkvmerge.exe","47","2020-05-30"
     "MP4Box","Console App","MP4Box.exe","0.9.0-DEV-rev0-g81b4481e1-gcc10.0.1 Patman","2020-04-18"
     "mtn","Console App","mtn.exe","2.0.1","2019-06-27"
-    "NVEnc","Console App","NVEncC64.exe","5.05","2020-06-14"
+    "NVEnc","Console App","NVEncC64.exe","5.06","2020-06-16"
     "PNGopt","Console App","apngopt.exe","1.4","2019-01-01"
     "Python","Console App","python.exe","3.8.3121","2020-04-29"
     "qaac","Console App","qaac64.exe","2.68","2018-11-20"
@@ -121,7 +121,7 @@ Tools
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.2","2020-04-20"
     "VCEEnc","Console App","VCEEncC64.exe","6.0","2020-04-20"
     "vspipe","Console App","vspipe.exe","r50","2020-05-08"
-    "x264","Console App","x264.exe","M-0.160.3000-33f9e14-gcc10.0.1 Patman","2020-04-11"
+    "x264","Console App","x264.exe","M-0.160.3009-4c9b076-gcc11 Patman","2020-06-16"
     "x265","Console App","x265.exe","M-3.4+6-g73f96ff39-gcc11.0.0 Patman","2020-05-30"
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
@@ -990,7 +990,7 @@ TMM builds a motion-mask for TDeint, which TDeint uses via its 'emask' parameter
 
 Filters: TMM2
 
-http://avisynth.nl/index.php/TMM
+https://github.com/Asd-g/TMM2
 
 
 TNLMeans

@@ -320,29 +320,44 @@ Public Class MP4Muxer
         AddAudio(p.Audio0, args)
         AddAudio(p.Audio1, args)
 
-        For Each i In p.AudioTracks
-            AddAudio(i, args)
+        For Each track In p.AudioTracks
+            AddAudio(track, args)
         Next
 
         ExpandMacros()
 
-        For Each i In Subtitles
-            If i.Enabled AndAlso File.Exists(i.Path) Then
-                If i.Path.Ext = "idx" Then
-                    args.Append(" -add """ + i.Path + "#" & i.IndexIDX + 1 & ":name=" + Macro.Expand(i.Title) & """")
+        For Each st In Subtitles
+            If st.Enabled AndAlso File.Exists(st.Path) Then
+                If st.Path.Ext = "idx" Then
+                    args.Append(" -add """ + st.Path + "#" & st.IndexIDX + 1 & ":name=" + Macro.Expand(st.Title) & """")
                 Else
-                    args.Append(" -add """ + i.Path + ":lang=" + i.Language.ThreeLetterCode + ":name=" + Macro.Expand(i.Title) + """")
+                    args.Append(" -add """ + st.Path + ":lang=" + st.Language.ThreeLetterCode + ":name=" + Macro.Expand(st.Title) + """")
                 End If
             End If
         Next
 
-        If File.Exists(ChapterFile) Then args.Append(" -chap " + ChapterFile.Escape)
-        If AdditionalSwitches <> "" Then args.Append(" " + Macro.Expand(AdditionalSwitches))
+        If File.Exists(ChapterFile) Then
+            args.Append(" -chap " + ChapterFile.Escape)
+        End If
+
+        If AdditionalSwitches <> "" Then
+            args.Append(" " + Macro.Expand(AdditionalSwitches))
+        End If
 
         Dim tagList As New List(Of String)
-        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then tagList.Add("cover=" + CoverFile.Escape)
-        If Tags.Count > 0 Then tagList.AddRange(Tags.Select(Function(val) val.Name + "=" + val.Value))
-        If tagList.Count > 0 Then args.Append(" -itags " + Macro.Expand(String.Join(":", tagList)))
+
+        If CoverFile <> "" AndAlso File.Exists(CoverFile) Then
+            tagList.Add("cover=" + CoverFile.Escape)
+        End If
+
+        If Tags.Count > 0 Then
+            tagList.AddRange(Tags.Select(Function(val) val.Name + "=" + val.Value))
+        End If
+
+        If tagList.Count > 0 Then
+            args.Append(" -itags " + Macro.Expand(String.Join(":", tagList)))
+        End If
+
         args.Append(" -new " + p.TargetFile.Escape)
 
         Return args.ToString.Trim
@@ -887,7 +902,8 @@ Public Class ffmpegMuxer
 
     Shared ReadOnly Property SupportedFormats As String()
         Get
-            Return {"ASF", "AVI", "FLV", "ISMV", "IVF", "MKV", "MOV", "MP4", "MPG", "MXF", "NUT", "OGG", "TS", "WEBM", "WMV"}
+            Return {"ASF", "AVI", "FLV", "ISMV", "IVF", "MKV", "MOV",
+                    "MP4", "MPG", "MXF", "NUT", "OGG", "TS", "WEBM", "WMV"}
         End Get
     End Property
 
@@ -899,13 +915,19 @@ Public Class ffmpegMuxer
 
     Public Overrides ReadOnly Property SupportedInputTypes As String()
         Get
-            If OutputExt = "avi" Then Return AVITypes
+            If OutputExt = "avi" Then
+                Return AVITypes
+            End If
+
             Return MyBase.SupportedInputTypes
         End Get
     End Property
 
     Overrides Function IsSupported(type As String) As Boolean
-        If OutputExt = "avi" Then Return AVITypes.Contains(type)
+        If OutputExt = "avi" Then
+            Return AVITypes.Contains(type)
+        End If
+
         Return True
     End Function
 
@@ -921,16 +943,19 @@ Public Class ffmpegMuxer
         Dim id As Integer
         Dim mapping = " -map 0:v"
 
-        For Each i In {p.Audio0, p.Audio1}
-            If File.Exists(i.File) AndAlso IsSupported(i.OutputFileType) Then
+        For Each track In {p.Audio0, p.Audio1}
+            If File.Exists(track.File) AndAlso IsSupported(track.OutputFileType) Then
                 id += 1
-                args += " -i " + i.File.Escape
+                args += " -i " + track.File.Escape
                 mapping += " -map " & id
-                If Not i.Stream Is Nothing Then mapping += ":" & i.Stream.StreamOrder
+
+                If Not track.Stream Is Nothing Then
+                    mapping += ":" & track.Stream.StreamOrder
+                End If
             End If
         Next
 
-        args += mapping + " -c:v copy -c:a copy -y -hide_banner " + p.TargetFile.Escape
+        args += mapping + " -c:v copy -c:a copy -y -hide_banner -strict -2 " + p.TargetFile.Escape
 
         Using proc As New Proc
             proc.Header = "Muxing to " + OutputFormat

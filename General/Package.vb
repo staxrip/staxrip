@@ -390,6 +390,7 @@ Public Class Package
         .Location = "Encoders\x264",
         .Description = "H.264 video encoding console app.",
         .WebURL = "http://www.videolan.org/developers/x264.html",
+        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
         .HelpFilename = "x264 Help.txt",
         .HelpSwitch = "--fullhelp"})
@@ -913,8 +914,8 @@ Public Class Package
             .Name = "TMM2",
             .Filename = "TMM2.dll",
             .Description = "TMM builds a motion-mask for TDeint, which TDeint uses via its 'emask' parameter.",
-            .HelpFilename = "Readme.txt",
-            .WebURL = "http://avisynth.nl/index.php/TMM",
+            .WebURL = "https://github.com/Asd-g/TMM2",
+            .DownloadURL = "https://github.com/Asd-g/TMM2/releases",
             .AvsFilterNames = {"TMM2"}})
 
         Add(New PluginPackage With {

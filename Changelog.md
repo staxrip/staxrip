@@ -1,11 +1,17 @@
 
-2.1.3.2 Beta (not yet available)
+2.1.3.3 Beta (not yet available)
 ============
 
-- AVS/VS plugin auto load folder support in portable mode (Main Menu > Folders > Plugins)
+2.1.3.2 Beta
+============
+
+- AviSynth/VapourSynth plugin auto load folder support in portable mode (Main Menu > Folders > Plugins)
+- ffmpeg muxer uses always -strict -2, it enables TrueHD in MP4
+- x264 M-0.160.3009-4c9b076-gcc11 Patman
+- NVEnc 5.06
 - MediaInfo.NET 6.5.0.0
 - Subtitle Edit 3.5.1.5
-- NVEnc 5.05
+- TMM2 0.1.4
 
 
 2.1.3.1 Beta

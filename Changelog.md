@@ -2,6 +2,9 @@
 2.1.3.3 Beta (not yet available)
 ============
 
+- In batch mode script errors handling was fixed.
+
+
 2.1.3.2 Beta
 ============
 

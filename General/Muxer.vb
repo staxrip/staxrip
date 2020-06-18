@@ -395,7 +395,10 @@ Public Class MP4Muxer
             proc.Start()
         End Using
 
-        If Not g.FileExists(p.TargetFile) Then Throw New ErrorAbortException("MP4 output file is missing.", GetArgs())
+        If Not g.FileExists(p.TargetFile) Then
+            Throw New ErrorAbortException("MP4 output file is missing.", GetArgs())
+        End If
+
         Log.WriteLine(MediaInfo.GetSummary(p.TargetFile))
     End Sub
 

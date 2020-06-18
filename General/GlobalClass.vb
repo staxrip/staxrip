@@ -242,8 +242,15 @@ Public Class GlobalClass
 
             g.RaiseAppEvent(ApplicationEvent.BeforeProcessing)
 
-            Log.WriteHeader(If(p.Script.Engine = ScriptEngine.AviSynth, "AviSynth Script", "VapourSynth Script"))
+            Log.WriteHeader($"{p.Script.Engine} Script")
             Log.WriteLine(p.Script.GetFullScript)
+
+            Dim err = p.Script.GetError
+
+            If err <> "" Then
+                Throw New ErrorAbortException($"{p.Script.Engine} Script Error", err)
+            End If
+
             Log.WriteHeader("Source Script Info")
             Log.WriteLine(p.SourceScript.GetInfo().GetInfoText(-1))
             Log.WriteHeader("Target Script Info")

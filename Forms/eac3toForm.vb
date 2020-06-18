@@ -469,7 +469,7 @@ Public Class eac3toForm
         Me.cbAudioOutput.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.cbAudioOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbAudioOutput.FormattingEnabled = True
-        Me.cbAudioOutput.Location = New System.Drawing.Point(169, 15)
+        Me.cbAudioOutput.Location = New System.Drawing.Point(169, 20)
         Me.cbAudioOutput.Name = "cbAudioOutput"
         Me.cbAudioOutput.Size = New System.Drawing.Size(206, 56)
         Me.cbAudioOutput.TabIndex = 21
@@ -742,7 +742,7 @@ Public Class eac3toForm
 
     Sub Cancel()
         For Each ctrl As Control In Controls
-            ctrl.Enabled = True 'bnCancel is child of tlp
+            ctrl.Enabled = True
         Next
 
         bnCancel.PerformClick()
@@ -811,14 +811,19 @@ Public Class eac3toForm
                     End If
 
                     ms.IsVideo = ms.Codec.EqualsAny("h264/AVC", "h265/HEVC", "VC-1", "MPEG2")
-                    ms.IsAudio = ms.Codec.EqualsAny("DTS Master Audio", "DTS", "DTS-ES", "DTS Hi-Res", "DTS Express", "AC3", "AC3 EX", "AC3 Headphone", "AC3 Surround", "EAC3", "E-AC3", "E-AC3 EX", "E-AC3 Surround", "TrueHD/AC3", "TrueHD/AC3 (Atmos)", "TrueHD (Atmos)", "RAW/PCM", "MP2", "AAC")
+
+                    ms.IsAudio = ms.Codec.EqualsAny("DTS Master Audio", "DTS", "DTS-ES",
+                        "DTS Hi-Res", "DTS Express", "AC3", "AC3 EX", "AC3 Headphone",
+                        "AC3 Surround", "EAC3", "E-AC3", "E-AC3 EX", "E-AC3 Surround", "TrueHD/AC3",
+                        "TrueHD/AC3 (Atmos)", "TrueHD (Atmos)", "RAW/PCM", "MP2", "AAC")
+
                     ms.IsSubtitle = ms.Codec.StartsWith("Subtitle")
                     ms.IsChapters = ms.Codec.StartsWith("Chapters")
 
                     If ms.IsAudio OrElse ms.IsSubtitle Then
-                        For Each i2 In Language.Languages
-                            If ms.Text.Contains(", " + i2.CultureInfo.EnglishName) Then
-                                ms.Language = i2
+                        For Each lng In Language.Languages
+                            If ms.Text.Contains(", " + lng.CultureInfo.EnglishName) Then
+                                ms.Language = lng
                                 Exit For
                             End If
                         Next
@@ -851,6 +856,7 @@ Public Class eac3toForm
 
                     For Each pro In s.eac3toProfiles
                         Dim searchWords = pro.Match.SplitNoEmptyAndWhiteSpace(" ")
+
                         If searchWords.NothingOrEmpty Then
                             Continue For
                         End If
@@ -934,48 +940,48 @@ Public Class eac3toForm
     End Sub
 
     Function GetArgs(src As String, baseName As String) As String
-        Dim r = src
+        Dim ret = src
 
         Dim videoStream = TryCast(cbVideoStream.SelectedItem, M2TSStream)
 
         If Not videoStream Is Nothing AndAlso Not cbVideoOutput.Text = "Nothing" Then
-            r += " " & videoStream.ID & ": " + (OutputFolder + baseName +
+            ret += " " & videoStream.ID & ": " + (OutputFolder + baseName +
                 "." + cbVideoOutput.Text.ToLower).Escape
         End If
 
-        For Each i In Streams
-            If i.IsAudio AndAlso i.Checked Then
-                r += " " & i.ID & ": """ + OutputFolder + baseName + " ID" & i.ID
+        For Each stream In Streams
+            If stream.IsAudio AndAlso stream.Checked Then
+                ret += " " & stream.ID & ": """ + OutputFolder + baseName + " ID" & stream.ID
 
-                If i.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
-                    r += " " + i.Language.CultureInfo.EnglishName
+                If stream.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
+                    ret += " " + stream.Language.CultureInfo.EnglishName
                 End If
 
-                r += "." + i.OutputType + """"
+                ret += "." + stream.OutputType + """"
 
-                If i.Options <> "" Then
-                    r += " " + i.Options.Trim
+                If stream.Options <> "" Then
+                    ret += " " + stream.Options.Trim
                 End If
             End If
         Next
 
-        For Each i In Streams
-            If i.IsSubtitle AndAlso i.Checked Then
-                r += " " & i.ID & ": """ + OutputFolder + baseName + " ID" & i.ID
+        For Each stream In Streams
+            If stream.IsSubtitle AndAlso stream.Checked Then
+                ret += " " & stream.ID & ": """ + OutputFolder + baseName + " ID" & stream.ID
 
-                If i.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
-                    r += " " + i.Language.CultureInfo.EnglishName
+                If stream.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
+                    ret += " " + stream.Language.CultureInfo.EnglishName
                 End If
 
-                r += ".sup"""
+                ret += ".sup"""
             End If
 
-            If i.IsChapters AndAlso cbChapters.Checked Then
-                r += " " & i.ID & ": """ + OutputFolder + baseName + "_chapters.txt"""
+            If stream.IsChapters AndAlso cbChapters.Checked Then
+                ret += " " & stream.ID & ": """ + OutputFolder + baseName + "_chapters.txt"""
             End If
         Next
 
-        Return r + " -progressnumbers"
+        Return ret + " -progressnumbers"
     End Function
 
     Sub bnBrowse_Click() Handles bnBrowse.Click
@@ -1003,13 +1009,14 @@ Public Class eac3toForm
             Case "h264/AVC"
                 cbVideoOutput.Items.Add("H264")
                 cbVideoOutput.Items.Add("MKV")
-                cbVideoOutput.Text = If(M2TSFile = "", "MKV", "Nothing")
+                cbVideoOutput.Text = If(M2TSFile = "", "H264", "Nothing")
             Case "h265/HEVC"
                 cbVideoOutput.Items.Add("H265")
-                cbVideoOutput.Text = If(M2TSFile = "", "MKV", "Nothing")
+                cbVideoOutput.Text = If(M2TSFile = "", "H265", "Nothing")
             Case "VC-1"
                 cbVideoOutput.Items.Add("MKV")
-                cbVideoOutput.Text = If(M2TSFile = "", "MKV", "Nothing")
+                cbVideoOutput.Items.Add("VC1")
+                cbVideoOutput.Text = If(M2TSFile = "", "VC1", "Nothing")
             Case "MPEG2"
                 cbVideoOutput.Items.Add("M2V")
                 cbVideoOutput.Items.Add("MKV")

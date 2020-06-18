@@ -139,7 +139,7 @@ Public Class LogBuilder
         End If
 
         SyncLock Log
-            Log.ToString.WriteFileUTF8BOM(GetPath(proj))
+            Log.ToString.WriteFileUTF8(GetPath(proj))
         End SyncLock
     End Sub
 

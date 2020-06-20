@@ -817,7 +817,7 @@ Public Class AudioForm
         mbSamplingRate.Enabled = Not TempProfile.ExtractCore
         cbNormalize.Enabled = Not TempProfile.ExtractCore
         numGain.Enabled = Not TempProfile.ExtractCore
-        numBitrate.Increment = If(TempProfile.Params.Codec = AudioCodec.AC3, 32D, 1D)
+        numBitrate.Increment = If({AudioCodec.AC3, AudioCodec.EAC3}.Contains(TempProfile.Params.Codec), 32D, 1D)
         tbProfileName.SendMessageCue(TempProfile.Name, False)
         rtbCommandLine.SetText(TempProfile.GetCommandLine(False))
         rtbCommandLine.UpdateHeight()
@@ -838,7 +838,7 @@ Public Class AudioForm
                 End Select
 
                 TempProfile.Params.RateMode = AudioRateMode.VBR
-            Case AudioCodec.AC3
+            Case AudioCodec.AC3, AudioCodec.EAC3
                 If TempProfile.Channels = 6 Then
                     numBitrate.Value = 448
                 Else
@@ -1033,7 +1033,7 @@ Public Class AudioForm
                 End If
             Case GuiAudioEncoder.ffmpeg
                 Select Case TempProfile.Params.Codec
-                    Case AudioCodec.AC3, AudioCodec.DTS
+                    Case AudioCodec.DTS, AudioCodec.AC3, AudioCodec.EAC3
                     Case Else
                         If Not {AudioCodec.WAV, AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then
                             Dim mbRateMode = ui.AddMenu(Of AudioRateMode)

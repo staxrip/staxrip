@@ -526,6 +526,7 @@ Public Class CropForm
         g.RunAutoCrop(Sub(progress As Double)
                           tbPosition.Value = CInt(tbPosition.Maximum / 100 * progress)
                           TrackLength_Scroll()
+                          Application.DoEvents()
                       End Sub)
 
         tbPosition.Value = 0

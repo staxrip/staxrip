@@ -107,10 +107,8 @@ Public Class x265Control
     Private QualityDefinitions As List(Of QualityItem)
 
     Sub New(enc As x265Enc)
-        MyBase.New()
         InitializeComponent()
-
-        components = New System.ComponentModel.Container()
+        components = New ComponentModel.Container()
 
         QualityDefinitions = New List(Of QualityItem) From {
             New QualityItem(10, "Super High", "Super high quality and file size)"),
@@ -168,8 +166,8 @@ Public Class x265Control
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
                 Case 0 - offset
-                    For Each i In QualityDefinitions
-                        cms.Items.Add(New ActionMenuItem(i.Value & " - " + i.Text + "      ", Sub() SetQuality(i.Value), i.Tooltip) With {.Font = If(Params.Quant.Value = i.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
+                    For Each def In QualityDefinitions
+                        cms.Items.Add(New ActionMenuItem(def.Value & " - " + def.Text + "      ", Sub() SetQuality(def.Value), def.Tooltip) With {.Font = If(Params.Quant.Value = def.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
                 Case 1 - offset
                     For x = 0 To Params.Preset.Options.Length - 1
@@ -222,9 +220,9 @@ Public Class x265Control
     End Sub
 
     Function GetQualityCaption(value As Double) As String
-        For Each i In QualityDefinitions
-            If i.Value = value Then
-                Return value & " - " + i.Text
+        For Each def In QualityDefinitions
+            If def.Value = value Then
+                Return value & " - " + def.Text
             End If
         Next
 

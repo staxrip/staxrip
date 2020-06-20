@@ -2,7 +2,10 @@
 2.1.3.3 Beta (not yet available)
 ============
 
+- ffmpeg EAC3 encoding support
 - In batch mode script errors handling was fixed.
+- AviSynth 3.6.1
+- ffmpeg N-98036-gd538ca5175-gb6d7c4c1d4-gcc10.1.0 Patman
 - Bwdif r2
 
 

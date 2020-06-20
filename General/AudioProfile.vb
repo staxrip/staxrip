@@ -324,6 +324,7 @@ Public MustInherit Class AudioProfile
         ret.Add(New GUIAudioProfile(AudioCodec.Vorbis, 1))
         ret.Add(New GUIAudioProfile(AudioCodec.MP3, 4))
         ret.Add(New GUIAudioProfile(AudioCodec.AC3, 1.0) With {.Channels = 6, .Bitrate = 640})
+        ret.Add(New GUIAudioProfile(AudioCodec.EAC3, 1.0) With {.Channels = 6, .Bitrate = 640})
         ret.Add(New BatchAudioProfile(640, {}, "ac3", 6, """%app:ffmpeg%"" -i ""%input%"" -b:a %bitrate%k -y -hide_banner ""%output%"""))
         ret.Add(New MuxAudioProfile())
         ret.Add(New NullAudioProfile())
@@ -603,7 +604,7 @@ Public Class GUIAudioProfile
         Params.Quality = quality
 
         Select Case codec
-            Case AudioCodec.DTS, AudioCodec.AC3
+            Case AudioCodec.DTS, AudioCodec.AC3, AudioCodec.EAC3
                 Params.RateMode = AudioRateMode.CBR
             Case Else
                 Params.RateMode = AudioRateMode.VBR
@@ -1100,6 +1101,8 @@ Public Class GUIAudioProfile
                 End If
 
                 ret += " -b:a " & CInt(Bitrate) & "k"
+            Case AudioCodec.EAC3
+                ret += " -b:a " & CInt(Bitrate) & "k"
             Case AudioCodec.DTS
                 If ExtractDTSCore Then
                     ret += " -bsf:a dca_core -c:a copy"
@@ -1262,7 +1265,7 @@ Public Class GUIAudioProfile
         End Select
 
         If Params.Codec = AudioCodec.AAC Then
-            Return GuiAudioEncoder.Eac3to
+            Return GuiAudioEncoder.qaac
         End If
 
         Return GuiAudioEncoder.ffmpeg
@@ -1425,6 +1428,7 @@ Public Enum AudioCodec
     Vorbis
     W64
     WAV
+    EAC3
 End Enum
 
 Public Enum AudioRateMode

@@ -3,6 +3,7 @@
 ============
 
 - In batch mode script errors handling was fixed.
+- Bwdif r2
 
 
 2.1.3.2 Beta

@@ -1582,6 +1582,7 @@ Public Class Package
             .Filename = "Bwdif.dll",
             .Description = "Motion adaptive deinterlacing based on yadif with the use of w3fdif and cubic interpolation algorithms.",
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Bwdif",
+            .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Bwdif/releases",
             .VSFilterNames = {"bwdif.Bwdif"},
             .VSFiltersFunc = Function() {New VideoFilter("Field", "Bwdif", "clip = core.bwdif.Bwdif(clip, field=0)")}})
 

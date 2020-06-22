@@ -96,6 +96,10 @@ Public Class ffmpegEnc
                     Return "mov"
                 Case "VP8", "VP9"
                     Return "webm"
+                Case "x264"
+                    Return "h264"
+                Case "x265"
+                    Return "h265"
                 Case Else
                     Return "mkv"
             End Select

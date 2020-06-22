@@ -1638,6 +1638,7 @@ Public Class MainForm
             If path.StartsWith(Folder.Template) Then
                 g.ProjectPath = Nothing
                 p.TemplateName = path.Base
+                p.BatchMode = False
             Else
                 g.ProjectPath = path
             End If
@@ -3350,6 +3351,9 @@ Public Class MainForm
 
     <Command("Shows the settings dialog.")>
     Sub ShowSettingsDialog()
+        Dim usePortableAviSynth = s.UsePortableAviSynth
+        Dim usePortableVapourSynth = s.UsePortableVapourSynth
+
         Using form As New SimpleSettingsForm("Settings")
             Dim ui = form.SimpleUI
             ui.Store = s
@@ -3361,8 +3365,12 @@ Public Class MainForm
             b.Field = NameOf(s.CheckForUpdates)
 
             b = ui.AddBool
+            b.Text = "Use included portable AviSynth"
+            b.Field = NameOf(s.UsePortableAviSynth)
+
+            b = ui.AddBool
             b.Text = "Use included portable VapourSynth"
-            b.Field = NameOf(s.UseVapourSynthPortable)
+            b.Field = NameOf(s.UsePortableVapourSynth)
 
             b = ui.AddBool()
             b.Text = "Show template selection when loading new files"
@@ -3545,25 +3553,28 @@ Public Class MainForm
                 g.SaveSettings()
             End If
 
+            If usePortableAviSynth <> s.UsePortableAviSynth OrElse
+                usePortableVapourSynth <> s.UsePortableVapourSynth Then
+
+                MsgInfo("Please restart StaxRip.")
+            End If
+
             ui.SaveLast("last settings page")
         End Using
     End Sub
 
-    Function AddFilterPreferences(ui As SimpleUI,
-                                  pagePath As String,
-                                  preferences As StringPairList,
-                                  profiles As List(Of FilterCategory)) As BindingSource
+    Function AddFilterPreferences(
+        ui As SimpleUI,
+        pagePath As String,
+        preferences As StringPairList,
+        profiles As List(Of FilterCategory)) As BindingSource
 
         Dim filterPage = ui.CreateDataPage(pagePath)
 
         Dim tipsFunc = Function() As StringPairList
-                           Dim ret As New StringPairList From {
-                               {" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type. The source filter profiles can be customized by right-clicking the filters menu in the main dialog."}
-                           }
+                           Dim ret As New StringPairList From {{" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type. The source filter profiles can be customized by right-clicking the filters menu in the main dialog."}}
 
-                           For Each i In profiles.Where(
-                               Function(v) v.Name = "Source").First.Filters
-
+                           For Each i In profiles.Where(Function(v) v.Name = "Source").First.Filters
                                If i.Script <> "" Then
                                    ret.Add(i.Name, i.Script)
                                End If

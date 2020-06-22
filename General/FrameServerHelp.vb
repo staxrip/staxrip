@@ -7,44 +7,87 @@ Public Class FrameServerHelp
             g.AddToPath(Folder.Startup, Package.Python.Directory, Package.AviSynth.Directory,
                         Package.VapourSynth.Directory, Package.FFTW.Directory)
 
-            DirectoryHelp.Create(Folder.Settings + "Plugins\AviSynth")
-            DirectoryHelp.Create(Folder.Settings + "Plugins\VapourSynth")
-            MakeSymLinks()
+            If IsAviSynthPortableUsed() Then
+                DirectoryHelp.Create(Folder.Settings + "Plugins\AviSynth")
+            End If
+
+            If IsVapourSynthPortableUsed() Then
+                DirectoryHelp.Create(Folder.Settings + "Plugins\VapourSynth")
+            End If
+
+            MakeAviSynthSymLinks()
+
             WasInitialized = True
         End If
     End Sub
 
+    Shared Function IsAviSynthPortableUsed() As Boolean
+        Return Package.AviSynth.Directory.StartsWithEx(Folder.Apps)
+    End Function
+
+    Shared Function IsVapourSynthPortableUsed() As Boolean
+        Return Package.VapourSynth.Directory.StartsWithEx(Folder.Apps)
+    End Function
+
     Shared Function IsPortable() As Boolean
-        If (p.Script.Engine = ScriptEngine.AviSynth AndAlso
-            Package.AviSynth.Directory.StartsWithEx(Folder.Apps)) OrElse
-            (p.Script.Engine = ScriptEngine.VapourSynth AndAlso
-            Package.VapourSynth.Directory.StartsWithEx(Folder.Apps)) Then
+        If (p.Script.Engine = ScriptEngine.AviSynth AndAlso IsAviSynthPortableUsed()) OrElse
+            (p.Script.Engine = ScriptEngine.VapourSynth AndAlso IsVapourSynthPortableUsed()) Then
 
             Return True
         End If
     End Function
 
-    Shared Sub MakeSymLinks()
-        Dim pack = Package.ffmpeg
-        Dim path = pack.Directory + "AviSynth.dll"
+    Shared Function IsAviSynthInstalled() As Boolean
+        Return (Folder.System + "AviSynth.dll").FileExists
+    End Function
 
-        If Package.AviSynth.Path.StartsWith(Folder.Startup) Then
-            If s.Storage.GetString(pack.Name + "symlink") <> path OrElse Not path.FileExists Then
-                FileHelp.Delete(path)
-                Dim cmd = $"mklink {path.Escape} {Package.AviSynth.Path.Escape}"
+    Shared Sub MakeAviSynthSymLinks()
+        Dim packs = {Package.NVEnc, Package.QSVEnc, Package.VCEEnc, Package.avs2pipemod, Package.x264, Package.mpvnet}
 
-                Using proc As New Process
-                    proc.StartInfo.FileName = "cmd.exe"
-                    proc.StartInfo.Arguments = $"/S /C ""{cmd}"""
-                    proc.StartInfo.UseShellExecute = False
-                    proc.StartInfo.CreateNoWindow = True
-                    proc.Start()
-                End Using
+        If IsAviSynthPortableUsed() Then
+            MakeSymLink("avisynth to ffmpeg", Package.AviSynth.Path, Package.ffmpeg.Directory + "AviSynth.dll")
+            MakeSymLink("avisynth to staxrip", Package.AviSynth.Path, Folder.Startup + "AviSynth.dll")
 
-                s.Storage.SetString(pack.Name + "symlink", path)
-            End If
+            For Each pack In packs
+                MakeSymLink("avisynth to " + pack.Name, Package.AviSynth.Path, pack.Directory + "AviSynth.dll")
+            Next
         Else
-            FileHelp.Delete(path)
+            DeleteFile(Package.ffmpeg.Directory + "AviSynth.dll")
+            DeleteFile(Folder.Startup + "AviSynth.dll")
+
+            For Each pack In packs
+                DeleteFile(pack.Directory + "AviSynth.dll")
+            Next
         End If
+    End Sub
+
+    Shared Sub MakeSymLink(name As String, source As String, link As String)
+        If s.Storage.GetString(name + "symlink") <> source OrElse Not link.FileExists Then
+            DeleteFile(link)
+            MakeSymLink(source, link)
+            s.Storage.SetString(name + "symlink", source)
+        End If
+    End Sub
+
+    Shared Sub MakeSymLink(source As String, link As String)
+        Dim cmd = $"mklink {link.Escape} {source.Escape}"
+
+        Using proc As New Process
+            proc.StartInfo.FileName = "cmd.exe"
+            proc.StartInfo.Arguments = $"/S /C ""{cmd}"""
+            proc.StartInfo.UseShellExecute = False
+            proc.StartInfo.CreateNoWindow = True
+            proc.Start()
+        End Using
+    End Sub
+
+    Shared Sub DeleteFile(path As String)
+        Try
+            If File.Exists(path) Then
+                File.Delete(path)
+            End If
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
     End Sub
 End Class

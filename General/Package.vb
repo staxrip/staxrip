@@ -134,6 +134,7 @@ Public Class Package
         .Location = "Support\MP4Box",
         .WebURL = "http://gpac.wp.mines-telecom.fr/",
         .HelpURL = "http://gpac.wp.mines-telecom.fr/mp4box/mp4box-documentation",
+        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpSwitch = "-h",
         .Description = "MP4Box is a MP4 muxing and demuxing console app."})
 
@@ -145,7 +146,7 @@ Public Class Package
         .HelpURL = "http://avisynth.nl",
         .DownloadURL = "https://github.com/AviSynth/AviSynthPlus/releases",
         .Description = "Video processing scripting library.",
-        .Locations = {Folder.System, "FrameServer\AviSynth"},
+        .HintDirFunc = Function() Package.AviSynth.GetAviSynthHintDir,
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth})
 
     Shared Property VapourSynth As Package = Add(New Package With {
@@ -381,6 +382,7 @@ Public Class Package
         .Filename = "avs2pipemod64.exe",
         .Location = "Support\avs2pipemod",
         .WebURL = "http://github.com/chikuzen/avs2pipemod",
+        .DownloadURL = "https://github.com/chikuzen/avs2pipemod/releases",
         .HelpSwitch = "stderr",
         .Description = "Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools."})
 
@@ -412,6 +414,7 @@ Public Class Package
         .Filename = "SvtAv1EncApp.exe",
         .WebURL = "https://github.com/OpenVisualCloud/SVT-AV1",
         .HelpURL = "https://github.com/OpenVisualCloud/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
+        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpSwitch = "stderr-help",
         .Description = "Intel AV1 encoder."})
 
@@ -2111,6 +2114,10 @@ Public Class Package
         End If
     End Function
 
+    Function IsCustomPathAllowed() As Boolean
+        Return Not Path.StartsWithEx(Folder.System) AndAlso Not Path.ContainsEx("FrameServer")
+    End Function
+
     ReadOnly Property Directory As String
         Get
             Return Path.Dir
@@ -2139,10 +2146,18 @@ Public Class Package
         Return ret
     End Function
 
+    Function GetAviSynthHintDir() As String
+        If s.UsePortableAviSynth Then
+            Return GetPathFromLocation("FrameServer\AviSynth").Dir
+        End If
+
+        Return Folder.System
+    End Function
+
     Function GetVapourSynthHintDir() As String
         Dim ret As String
 
-        If Not s.UseVapourSynthPortable Then
+        If Not s.UsePortableVapourSynth Then
             ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
 
             If File.Exists(ret + "VapourSynth.dll") Then
@@ -2164,7 +2179,7 @@ Public Class Package
     End Function
 
     Shared Function GetPythonHintDir() As String
-        If Not s.UseVapourSynthPortable Then
+        If Not s.UsePortableVapourSynth Then
             For Each x In {8, 9, 7}
                 For Each rootKey In {Registry.CurrentUser, Registry.LocalMachine}
                     Dim exePath = rootKey.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath")

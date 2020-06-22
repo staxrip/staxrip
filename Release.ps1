@@ -1,6 +1,8 @@
 
 $ErrorActionPreference = 'Stop'
 
+Get-ChildItem (Join-Path $PSScriptRoot bin) AviSynth.dll -Recurse | where Length -eq 0 | Remove-Item
+
 $include = @(
     '*.config',
     '*.cpp',

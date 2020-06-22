@@ -318,7 +318,12 @@ Public Class Audio
         End If
 
         Dim gap = TryCast(ap, GUIAudioProfile)
-        gap?.NormalizeFF()
+
+        If Not gap Is Nothing Then
+            gap.NormalizeFF()
+            gap.Params.Normalize = False
+        End If
+
         Dim outPath = p.TempDir + ap.File.Base + "." + ap.ConvertExt
 
         If ap.File = outPath Then

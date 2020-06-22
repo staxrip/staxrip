@@ -1,11 +1,21 @@
 
-2.1.3.3 Beta (not yet available)
+2.1.3.4 Beta (not yet available)
 ============
 
-- ffmpeg EAC3 encoding support
-- In batch mode script errors handling was fixed.
+2.1.3.3 Beta
+============
+
+- New setting to use AviSynth portable even when AviSynth
+  is installed, portable mode is enabled by default.
+- ffmpeg EAC3 encoding support.
+- Default AAC encoder changed from eac3to to qaac.
+- In batch mode script error handling was fixed.
+- ffmpeg muxed audio even for No Muxing profile.
 - AviSynth 3.6.1
-- ffmpeg N-98036-gd538ca5175-gb6d7c4c1d4-gcc10.1.0 Patman
+- ffmpeg N-98276-g1d5d8a30b4-g842bc312ad-gcc10.1.0 Patman
+- MP4Box 1.0.0-rev16-g10dd6533a-gcc11.0.0 Patman
+- SVT-AV1 0.8.3-57-gba72bc85-msvc1926 Patman
+- qaac 2.69
 - Bwdif r2
 
 

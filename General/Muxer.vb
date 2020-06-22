@@ -947,7 +947,9 @@ Public Class ffmpegMuxer
         Dim mapping = " -map 0:v"
 
         For Each track In {p.Audio0, p.Audio1}
-            If File.Exists(track.File) AndAlso IsSupported(track.OutputFileType) Then
+            If Not TypeOf track Is NullAudioProfile AndAlso File.Exists(track.File) AndAlso
+                IsSupported(track.OutputFileType) Then
+
                 id += 1
                 args += " -i " + track.File.Escape
                 mapping += " -map " & id

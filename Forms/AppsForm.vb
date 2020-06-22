@@ -353,8 +353,9 @@ Public Class AppsForm
         tsbVersion.Enabled = CurrentPackage.Path.FileExists AndAlso
             Not (CurrentPackage.IsVersionOld() AndAlso Not CurrentPackage.VersionAllowOld)
 
-        miBrowsePath.Enabled = Not CurrentPackage.Path.StartsWithEx(Folder.System)
+        miBrowsePath.Enabled = CurrentPackage.IsCustomPathAllowed
         miSearchUsingEverything.Enabled = miBrowsePath.Enabled
+        miClearCustomPath.Enabled = miBrowsePath.Enabled
 
         s.StringDictionary("RecentExternalApplicationControl") = CurrentPackage.Name + CurrentPackage.Version
 

@@ -119,7 +119,9 @@ Public Class x265Control
             New QualityItem(20, "Low", "Low quality and file size)"),
             New QualityItem(22, "Lower", "Lower quality and file size)"),
             New QualityItem(24, "Very Low", "Very low quality and file size)"),
-            New QualityItem(26, "Super Low", "Super low quality and file size)")}
+            New QualityItem(26, "Super Low", "Super low quality and file size)"),
+            New QualityItem(28, "Extreme Low", "Extreme low quality and file size)"),
+            New QualityItem(30, "Ultra Low", "Ultra low quality and file size)")}
 
         Encoder = enc
         Params = Encoder.Params

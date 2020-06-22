@@ -135,6 +135,22 @@ x265 dialog > Other > Chunks
 Main Menu > Tools > Settings > General > Maximum number of parallel processes
 
 
+Batch Processing
+================
+
+For Batch Processing first wanted options have to be changed, after that files can be added at:
+
+File > Open Video File > File Batch
+
+Not only encoding is supported but any task like remuxing, demuxing or AviSynth/VapourSynth script generation, this can be achieved by disabling unwanted features, almost every feature can be disabled:
+
+- The video encoder profiles have a Copy/Mux profile.
+- The muxer profiles have a No Muxing profile.
+- The audio profiles have a Copy/Mux and a No Audio profile.
+- Indexing can be disabled by installing LAV Filters and by enabling the DSS2 source filter.
+- Audio and subtitle demuxing can be disabled in the Options dialog.
+
+
 Command Engine
 ==============
 

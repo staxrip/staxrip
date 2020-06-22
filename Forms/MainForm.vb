@@ -3402,7 +3402,7 @@ Public Class MainForm
 
             n = ui.AddNum()
             n.Text = "Number of most recently used projects to keep"
-            n.Help = "MRU list shown in the main menu under: Project > Recent"
+            n.Help = "MRU list shown in the main menu under: File > Recent Projects"
             n.Config = {0, 15}
             n.Field = NameOf(s.ProjectsMruNum)
 
@@ -3939,7 +3939,7 @@ Public Class MainForm
         Using form As New SimpleSettingsForm(
             "Project Options",
             "In order to save project options go to:",
-            "Project > Save As Template",
+            "File > Save Project As Template",
             "In order to select a template to be loaded on program startup go to:",
             "Tools > Settings > General > Templates > Default Template")
 

@@ -817,7 +817,7 @@ Public Class FilterCategory
         ret.Add(framerate)
 
         Dim color As New FilterCategory("Color")
-        color.Filters.Add(New VideoFilter(color.Name, "Dither | Gamma / Linear", "clip = $select:Gamma To Linear|Dither.gamma_to_linear|Linear To Gamma|Dither.linear_to_gamma$(clip, curve='$select:msg:Select the Color Curve;601;709;2020$')"))
+        color.Filters.Add(New VideoFilter(color.Name, "Dither | Gamma / Linear", "clip = $select:Gamma To Linear|Dither.gamma_to_linear;Linear To Gamma|Dither.linear_to_gamma$(clip, curve='$select:msg:Select the Color Curve;601;709;2020$')"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | Sigmoid", "$select:Sigmoid Inverse|clip = havsfunc.SigmoidInverse(clip);Sigmoid Direct|clip = havsfunc.SigmoidDirect(clip)$"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | SmoothGrad", "clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1)"))
         color.Filters.Add(New VideoFilter(color.Name, "Dither | Stack", "$select:Native to Stack16|clip = core.fmtc.nativetostack16(clip);Stack16 to Native|clip = fmtc.stack16tonative(clip)$"))

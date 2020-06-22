@@ -2,7 +2,7 @@
 2.1.3.4 Beta (not yet available)
 ============
 
-2.1.3.3 Beta
+2.1.3.4 Beta
 ============
 
 - New setting to use AviSynth portable even when AviSynth

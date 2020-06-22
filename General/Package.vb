@@ -2147,11 +2147,11 @@ Public Class Package
     End Function
 
     Function GetAviSynthHintDir() As String
-        If s.UsePortableAviSynth Then
-            Return GetPathFromLocation("FrameServer\AviSynth").Dir
+        If Not s.UsePortableAviSynth AndAlso (Folder.System + "AviSynth.dll").FileExists Then
+            Return Folder.System
         End If
 
-        Return Folder.System
+        Return GetPathFromLocation("FrameServer\AviSynth").Dir
     End Function
 
     Function GetVapourSynthHintDir() As String

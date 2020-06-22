@@ -1,6 +1,6 @@
 ﻿
 Imports System.Drawing.Imaging
-
+Imports System.Reflection
 Imports StaxRip.UI
 
 Public Class VideoComparisonForm
@@ -41,6 +41,14 @@ Public Class VideoComparisonForm
         Menu.Add("Navigate | 100 frame forward", Sub() TrackBar.Value += 100, Keys.Right Or Keys.Control, enabledFunc)
         Menu.Add("Help", AddressOf Me.Help, Keys.F1)
     End Sub
+
+    Protected Overrides ReadOnly Property CreateParams() As CreateParams
+        Get
+            Dim ret = MyBase.CreateParams
+            ret.ExStyle = ret.ExStyle Or &H2000000 'WS_EX_COMPOSITED
+            Return ret
+        End Get
+    End Property
 
     Sub Add()
         If Not Package.AviSynth.VerifyOK(True) Then
@@ -103,20 +111,6 @@ Public Class VideoComparisonForm
         TrackBarValueChanged()
     End Sub
 
-    Sub CodecComparisonForm_MouseWheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
-        Dim value = 100
-
-        If e.Delta < 0 Then
-            value = value * -1
-        End If
-
-        If s.ReverseVideoScrollDirection Then
-            value = value * -1
-        End If
-
-        TrackBar.Value += value
-    End Sub
-
     Sub TrackBarValueChanged()
         If TabControl.TabPages.Count > 0 Then
             DirectCast(TabControl.SelectedTab, VideoTab).TrackBarValueChanged()
@@ -150,16 +144,30 @@ Public Class VideoComparisonForm
         Next
     End Sub
 
-    Sub TabControl_Selected(sender As Object, e As TabControlEventArgs) Handles TabControl.Selected
-        Dim tab = DirectCast(TabControl.SelectedTab, VideoTab)
+    Protected Overrides Sub OnMouseWheel(e As MouseEventArgs)
+        MyBase.OnMouseWheel(e)
 
-        If Not tab Is Nothing Then
-            tab.TrackBarValueChanged()
+        Dim value = 100
+
+        If e.Delta < 0 Then
+            value = value * -1
         End If
+
+        If s.ReverseVideoScrollDirection Then
+            value = value * -1
+        End If
+
+        TrackBar.Value += value
     End Sub
 
-    Sub CodecComparisonForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+    Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
+        MyBase.OnFormClosed(e)
         Dispose()
+    End Sub
+
+    Protected Overrides Sub OnShown(e As EventArgs)
+        MyBase.OnShown(e)
+        Add()
     End Sub
 
     Sub CropZoom()

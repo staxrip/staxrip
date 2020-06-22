@@ -2,6 +2,9 @@
 2.1.3.4 Beta (not yet available)
 ============
 
+- Flicker in Video Comparison fixed.
+
+
 2.1.3.4 Beta
 ============
 

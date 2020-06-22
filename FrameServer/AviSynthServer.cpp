@@ -113,7 +113,6 @@ HRESULT __stdcall AviSynthServer::GetFrame(int position, void** data, int& pitch
             return E_FAIL;
 
         AVS_linkage = m_Linkage;
-
         m_Frame = m_Clip->GetFrame(position, m_ScriptEnvironment);
         *data = (void*)m_Frame->GetReadPtr();
 

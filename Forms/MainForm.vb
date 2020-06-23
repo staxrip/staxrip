@@ -1542,6 +1542,22 @@ Public Class MainForm
         LoadProject(Folder.Template + name + ".srip")
     End Sub
 
+    <Command("Adds a batch job.")>
+    Sub AddBatchJob(sourcefile As String)
+        Dim batchFolder = Folder.Settings + "Batch Projects\"
+
+        If Not Directory.Exists(batchFolder) Then
+            Directory.CreateDirectory(batchFolder)
+        End If
+
+        Dim batchProject = ObjectHelp.GetCopy(Of Project)(p)
+        batchProject.BatchMode = True
+        batchProject.SourceFiles = {sourcefile}.ToList
+        Dim jobPath = batchFolder + sourcefile.Dir.Replace("\", "-").Replace(":", "-") + " " + p.TemplateName + " - " + sourcefile.FileName
+        SafeSerialization.Serialize(batchProject, jobPath)
+        JobManager.AddJob(sourcefile.Base, jobPath)
+    End Sub
+
     Sub LoadProject(path As String)
         Refresh()
 
@@ -5095,6 +5111,7 @@ Public Class MainForm
 
                 Using form As New SourceFilesForm()
                     form.Text = "File Batch"
+
                     If p.DefaultTargetName = "%source_dir_name%" Then
                         p.DefaultTargetName = "%source_name%"
                     End If
@@ -5104,19 +5121,8 @@ Public Class MainForm
                             Exit Sub
                         End If
 
-                        Dim batchFolder = Folder.Settings + "Batch Projects\"
-
-                        If Not Directory.Exists(batchFolder) Then
-                            Directory.CreateDirectory(batchFolder)
-                        End If
-
-                        For Each i In form.GetFiles
-                            Dim batchProject = ObjectHelp.GetCopy(Of Project)(p)
-                            batchProject.BatchMode = True
-                            batchProject.SourceFiles = {i}.ToList
-                            Dim jobPath = batchFolder + i.Dir.Replace("\", "-").Replace(":", "-") + " " + p.TemplateName + " - " + i.FileName
-                            SafeSerialization.Serialize(batchProject, jobPath)
-                            JobManager.AddJob(i.Base, jobPath)
+                        For Each filepath In form.GetFiles
+                            AddBatchJob(filepath)
                         Next
 
                         ShowJobsDialog()
@@ -5297,15 +5303,15 @@ Public Class MainForm
     End Sub
 
     Sub tbSource_DoubleClick() Handles tbSourceFile.DoubleClick
-        Using d As New OpenFileDialog
-            d.SetFilter(FileTypes.Video)
-            d.Multiselect = True
-            d.SetInitDir(s.LastSourceDir)
+        Using dialog As New OpenFileDialog
+            dialog.SetFilter(FileTypes.Video)
+            dialog.Multiselect = True
+            dialog.SetInitDir(s.LastSourceDir)
 
-            If d.ShowDialog() = DialogResult.OK Then
+            If dialog.ShowDialog() = DialogResult.OK Then
                 Refresh()
 
-                Dim l As New List(Of String)(d.FileNames)
+                Dim l As New List(Of String)(dialog.FileNames)
                 l.Sort()
                 OpenVideoSourceFiles(l)
             End If

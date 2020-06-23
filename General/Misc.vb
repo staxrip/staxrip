@@ -594,7 +594,10 @@ Public Class Language
                 l.Add(New Language(CultureInfo.InvariantCulture, True))
 
                 Dim current = l.Where(Function(a) a.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).FirstOrDefault
-                If current Is Nothing Then l.Add(CurrentCulture)
+
+                If current Is Nothing Then
+                    l.Add(CurrentCulture)
+                End If
 
                 l.Sort()
 

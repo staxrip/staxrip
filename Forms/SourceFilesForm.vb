@@ -195,14 +195,14 @@ Public Class SourceFilesForm
     End Sub
 
     Sub ShowOpenFileDialog()
-        Using d As New OpenFileDialog
-            d.Multiselect = True
-            d.SetFilter(FileTypes.Video)
-            d.SetInitDir(s.LastSourceDir)
+        Using dialog As New OpenFileDialog
+            dialog.Multiselect = True
+            dialog.SetFilter(FileTypes.Video)
+            dialog.SetInitDir(s.LastSourceDir)
 
-            If d.ShowDialog() = DialogResult.OK Then
-                s.LastSourceDir = d.FileName.Dir
-                lb.Items.AddRange(d.FileNames.Sort.ToArray)
+            If dialog.ShowDialog() = DialogResult.OK Then
+                s.LastSourceDir = dialog.FileName.Dir
+                lb.Items.AddRange(dialog.FileNames.Sort.ToArray)
                 lb.SelectedIndex = lb.Items.Count - 1
             End If
         End Using
@@ -217,15 +217,22 @@ Public Class SourceFilesForm
         Using td As New TaskDialog(Of String)
             td.AddCommand("Add files", "files")
             td.AddCommand("Add folder", "folder")
-            td.AddCommand("Add folder including sub-folders", "sub-folders")
 
             Select Case td.Show
                 Case "files"
                     ShowOpenFileDialog()
-                Case "folder", "sub-folders"
+                Case "folder"
                     Using dialog As New FolderBrowserDialog
                         If dialog.ShowDialog = DialogResult.OK Then
-                            Dim opt = If(td.SelectedValue = "sub-folders", SearchOption.AllDirectories, SearchOption.TopDirectoryOnly)
+                            Dim subfolders = Directory.GetDirectories(dialog.SelectedPath)
+                            Dim opt = SearchOption.TopDirectoryOnly
+
+                            If Directory.GetDirectories(dialog.SelectedPath).Count > 0 Then
+                                If MsgQuestion("Include sub folders?", TaskDialogButtons.YesNo) = DialogResult.Yes Then
+                                    opt = SearchOption.AllDirectories
+                                End If
+                            End If
+
                             lb.Items.AddRange(Directory.GetFiles(dialog.SelectedPath, "*.*", opt).Where(Function(val) FileTypes.Video.Contains(val.Ext)).ToArray)
                             lb.SelectedIndex = lb.Items.Count - 1
                         End If
@@ -251,11 +258,11 @@ Public Class SourceFilesForm
     End Function
 
     Sub lb_DragDrop(sender As Object, e As DragEventArgs) Handles lb.DragDrop
-        Dim a = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+        Dim items = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
-        If Not a.NothingOrEmpty Then
-            Array.Sort(a)
-            lb.Items.AddRange(a.Where(Function(val) File.Exists(val)).ToArray)
+        If Not items.NothingOrEmpty Then
+            Array.Sort(items)
+            lb.Items.AddRange(items.Where(Function(val) File.Exists(val)).ToArray)
         End If
     End Sub
 

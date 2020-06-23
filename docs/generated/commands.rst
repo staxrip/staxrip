@@ -1,3 +1,12 @@
+.. option:: AddBatchJob
+
+    Adds a batch job.
+
+.. list-table::
+    :widths: auto
+
+    * - sourcefile <string>
+
 .. option:: AddFilter
 
     Adds a filter at the end of the script.

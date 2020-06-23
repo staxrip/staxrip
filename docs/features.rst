@@ -34,7 +34,7 @@ General
   command line and script editing to leverage the full potential of the tools.
 - Container and hardcoded subtitles.
 - Clean and easy to read log file and dedicated log file viewer to easily navigate the processing steps.
-- Video comparison tool to compare multiple videos.
+- Video comparison tool to compare video frames in a tab view.
 - The processing window can be minimized to the system tray.
 - For all essential console tools such as x265 and mkvmerge there is a built-in command line preview
   either directly integrated in the dialog or via menu showable.

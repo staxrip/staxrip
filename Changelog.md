@@ -3,6 +3,7 @@
 ============
 
 - Flicker in Video Comparison fixed.
+- New command AddBatchJob.
 
 
 2.1.3.4 Beta

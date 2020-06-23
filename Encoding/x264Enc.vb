@@ -198,7 +198,7 @@ Public Class x264Enc
     Shared Function Test() As String
         Dim tester As New ConsolAppTester
 
-        tester.IgnoredSwitches = "help longhelp fullhelp input-res progress"
+        tester.IgnoredSwitches = "help longhelp fullhelp progress"
         tester.UndocumentedSwitches = "y4m"
         tester.Package = Package.x264
         tester.CodeFile = Folder.Startup.Parent + "Encoding\x264Enc.vb"
@@ -526,25 +526,28 @@ Public Class x264Params
     Property Muxer As New OptionParam With {
         .Switch = "--muxer",
         .Text = "Output Format",
-        .Options = {"Auto", "RAW", "MKV", "FLV", "MP4"}}
+        .Options = {"Automatic", "RAW", "MKV", "FLV", "MP4"}}
+
+    Property Demuxer As New OptionParam With {
+        .Switch = "--demuxer",
+        .Text = "Demuxer",
+        .Options = {"Automatic", "RAW", "Y4M", "AVS", "LAVF", "FFMS"}}
 
     Property SlowFirstpass As New BoolParam With {
         .Switch = "--slow-firstpass",
         .Text = "Slow Firstpass"}
 
     Property PipingToolAVS As New OptionParam With {
-        .Text = "Piping Tool",
+        .Text = "Pipe",
         .Name = "PipingToolAVS",
         .VisibleFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
-        .Options = {"Automatic", "None", "avs2pipemod", "ffmpeg"},
-        .Values = {"auto", "none", "avs2pipemod", "ffmpeg"}}
+        .Options = {"Automatic", "None", "avs2pipemod y4m", "avs2pipemod raw", "ffmpeg y4m", "ffmpeg raw"}}
 
     Property PipingToolVS As New OptionParam With {
-        .Text = "Piping Tool",
+        .Text = "Pipe",
         .Name = "PipingToolVS",
         .VisibleFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .Options = {"Automatic", "None", "vspipe", "ffmpeg"},
-        .Values = {"auto", "none", "vspipe", "ffmpeg"}}
+        .Options = {"Automatic", "None", "vspipe y4m", "vspipe raw", "ffmpeg y4m", "ffmpeg raw"}}
 
     Sub ApplyValues(isDefault As Boolean)
         Dim setVal = Sub(param As CommandLineParam, value As Object)
@@ -870,14 +873,17 @@ Public Class x264Params
                     New StringParam With {.Switch = "--index", .Text = "Index File", .BrowseFile = True},
                     New StringParam With {.Switch = "--timebase", .Text = "Timebase"},
                     New StringParam With {.Switch = "--input-fmt", .Text = "Input File Format"},
+                    PipingToolAVS,
+                    PipingToolVS,
+                    Demuxer,
                     New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input Csp", .Options = {"Automatic", "I420", "YV12", "NV12", "NV21", "I422", "YV16", "NV16", "YUYV", "UYVY", "I444", "YV24", "BGR", "BGRA", "RGB"}},
                     New OptionParam With {.Switch = "--input-range", .Text = "Input Range", .Options = {"Automatic", "TV", "PC"}},
                     New OptionParam With {.Switch = "--output-csp", .Text = "Output Csp", .Options = {"Automatic", "I420", "I422", "I444", "RGB"}},
                     Muxer,
-                    New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},
-                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug"}})
+                    New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}})
                 Add("Input/Output 2",
+                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug"}},
                     New OptionParam With {.Switch = "--pulldown", .Text = "Pulldown", .Options = {"None", "22", "32", "64", "Double", "Triple", "Euro"}},
                     New OptionParam With {.Switch = "--avcintra-class", .Text = "AVC Intra Class", .Options = {"None", "50", "100", "200"}},
                     New OptionParam With {.Switch = "--avcintra-flavor", .Text = "AVC Intra Flavor", .Options = {"Panasonic", "Sony"}},
@@ -907,8 +913,6 @@ Public Class x264Params
                     New BoolParam With {.Switch = "--dts-compress", .Text = "Eliminate initial delay with container DTS hack"})
                 Add("Other",
                     New StringParam With {.Switch = "--video-filter", .Switches = {"--vf"}, .Text = "Video Filter"},
-                    PipingToolAVS,
-                    PipingToolVS,
                     New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                     New OptionParam With {.Switch = "--frame-packing", .Text = "Frame Packing", .IntegerValue = True, .Options = {"Checkerboard", "Column Alternation", "Row Alternation", "Side By Side", "Top Bottom", "Frame Alternation", "Mono", "Tile Format"}},
                     Deblock,
@@ -992,26 +996,32 @@ Public Class x264Params
         ApplyValues(True)
 
         Dim args As String
+        Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS).ValueText
 
         If includePaths AndAlso includeExecutable Then
             Dim pipeCmd = ""
-            Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS).ValueText
 
-            If pipeTool = "auto" Then
+            If pipeTool = "automatic" Then
                 If p.Script.Engine = ScriptEngine.AviSynth Then
-                    pipeTool = "avs2pipemod"
+                    pipeTool = "none"
                 Else
-                    pipeTool = "vspipe"
+                    pipeTool = "vspipe y4m"
                 End If
             End If
 
             Select Case pipeTool
-                Case "vspipe"
+                Case "vspipe y4m"
                     pipeCmd = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | "
-                Case "avs2pipemod"
+                Case "vspipe raw"
+                    pipeCmd = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - | "
+                Case "avs2pipemod y4m"
                     pipeCmd = Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | "
-                Case "ffmpeg"
+                Case "avs2pipemod raw"
+                    pipeCmd = Package.avs2pipemod.Path.Escape + " -rawvideo " + script.Path.Escape + " | "
+                Case "ffmpeg y4m"
                     pipeCmd = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
+                Case "ffmpeg raw"
+                    pipeCmd = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f rawvideo -strict -1 -loglevel fatal -hide_banner - | "
             End Select
 
             args += pipeCmd + Package.x264.Path.Escape
@@ -1056,11 +1066,31 @@ Public Class x264Params
         End If
 
         If includePaths Then
-            Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS)
-            Dim input = If(pipeTool.ValueText = "none", script.Path.Escape, "-")
+            Dim input = If(pipeTool = "none", script.Path.Escape, "-")
+            Dim dmx = Demuxer.ValueText
 
-            If input = "-" Then
-                args += " --demuxer y4m --frames " & script.GetFrameCount
+            If dmx = "automatic" Then
+                If pipeTool = "none" Then
+                    dmx = ""
+                ElseIf pipeTool.EndsWith(" y4m") Then
+                    dmx = "y4m"
+                ElseIf pipeTool.EndsWith(" raw") Then
+                    dmx = "raw"
+                End If
+            End If
+
+            If dmx <> "" Then
+                Dim info = script.GetInfo
+
+                args += $" --demuxer {dmx} --frames " & info.FrameCount
+
+                If dmx = "raw" Then
+                    args += $" --input-res {info.Width}x{info.Height}"
+
+                    If Not args.Contains("--fps ") Then
+                        args += $" --fps {info.FrameRateNum}/{info.FrameRateDen}"
+                    End If
+                End If
             End If
 
             If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then

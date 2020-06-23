@@ -1,12 +1,19 @@
 
-2.1.3.4 Beta (not yet available)
+2.1.3.6 Beta (not yet available)
 ============
 
+2.1.3.5 Beta
+============
+
+- x264 encoder by default uses avs input.
+- x264 encoder has pipe options for raw format.
 - Flicker in Video Comparison fixed.
 - New command AddBatchJob.
 - AviSynth ImageSource support.
+- x264 M-0.160.3009-4c9b076-gcc11 Patman
 - QSVEnc 4.04
 - VCEEnc 6.02
+- AVSMeter 3.0.2.0
 
 
 2.1.3.4 Beta

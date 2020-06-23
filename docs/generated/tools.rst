@@ -103,7 +103,7 @@ Tools
     "aomenc","Console App","aomenc.exe","2.0",""
     "AutoCrop","Console App","AutoCrop.exe","1.0.0.0","2020-05-06"
     "avs2pipemod","Console App","avs2pipemod64.exe","1.1.1","2016-08-14"
-    "AVSMeter","Console App","AVSMeter64.exe","3.0.0.4","2020-05-26"
+    "AVSMeter","Console App","AVSMeter64.exe","3.0.2.0","2020-06-23"
     "eac3to","Console App","eac3to.exe","3.34","2017-11-19"
     "fdkaac","Console App","fdkaac.exe","1.0.0","2019-02-13"
     "ffmpeg","Console App","ffmpeg.exe","N-98276-g1d5d8a30b4-g842bc312ad-gcc10.1.0 Patman","2020-06-21"
@@ -121,7 +121,7 @@ Tools
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.3-57-gba72bc85-msvc1926 Patman","2020-06-21"
     "VCEEnc","Console App","VCEEncC64.exe","6.02","2020-05-14"
     "vspipe","Console App","vspipe.exe","r50","2020-05-08"
-    "x264","Console App","x264.exe","M-0.160.3009-4c9b076-gcc11 Patman","2020-06-16"
+    "x264","Console App","x264.exe","M-0.160.3009-4c9b076-gcc11 Patman","2020-06-22"
     "x265","Console App","x265.exe","M-3.4+6-g73f96ff39-gcc11.0.0 Patman","2020-05-30"
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
@@ -378,7 +378,7 @@ http://www.vapoursynth.com
 x264
 ~~~~
 
-H.264 video encoding console app. Patman mod shows the estimated size in the status line.
+H.264 video encoding console app. Patman mod supports vpy input and shows the estimated size in the status line.
 
 http://www.videolan.org/developers/x264.html
 

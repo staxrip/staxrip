@@ -167,8 +167,7 @@ Public Class Package
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc/vspipe.html",
         .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases",
-        .HelpFilename = "doc/vspipe.html",
-        .HelpSwitch = "",
+        .HelpSwitch = "stderr",
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthHintDir})
 
@@ -232,6 +231,7 @@ Public Class Package
         .Description = "Console app that displays AviSynth script clip info.",
         .HelpFilename = "doc\AVSMeter.html",
         .WebURL = "http://forum.doom9.org/showthread.php?t=174797",
+        .DownloadURL = "https://www.mediafire.com/folder/x6f7yqjufdg7c/Groucho%27s_Avisynth_Stuff",
         .HelpSwitch = ""})
 
     Shared Property BDSup2SubPP As Package = Add(New Package With {
@@ -390,7 +390,7 @@ Public Class Package
         .Name = "x264",
         .Filename = "x264.exe",
         .Location = "Encoders\x264",
-        .Description = "H.264 video encoding console app. Patman mod shows the estimated size in the status line.",
+        .Description = "H.264 video encoding console app. Patman mod supports vpy input and shows the estimated size in the status line.",
         .WebURL = "http://www.videolan.org/developers/x264.html",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",

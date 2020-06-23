@@ -90,6 +90,7 @@ End Structure
 
 Public Enum ColorSpace
     Unknown = 0
+    BGR24 = 1342177281
     BGR32 = 1342177282
     RGBP8 = -1879048191
     RGBP10 = -1878720511

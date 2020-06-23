@@ -2421,7 +2421,7 @@ Public Class MainForm
                 End If
 
                 p.Script.GetFilter("Source").Script += BR + "clip = clip.resize.Bicubic(matrix_s = '" + matrix + "', format = vs.YUV420P8)"
-            ElseIf editAVS AndAlso Not sourceFilter.Script.Contains("ConvertToYV12") AndAlso
+            ElseIf editAVS AndAlso Not sourceFilter.Script.ContainsAny("ConvertToYV12", "ConvertToYUV420") AndAlso
                 Not sourceFilter.Script.Contains("ConvertToYUV420") Then
 
                 p.Script.GetFilter("Source").Script += BR + "ConvertToYUV420()"

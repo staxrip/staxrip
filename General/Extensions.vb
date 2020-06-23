@@ -301,7 +301,9 @@ Module StringExtensions
 
     <Extension()>
     Function ContainsAll(instance As String, ParamArray all As String()) As Boolean
-        If instance <> "" Then Return all.All(Function(arg) instance.Contains(arg))
+        If instance <> "" Then
+            Return all.All(Function(arg) instance.Contains(arg))
+        End If
     End Function
 
     <Extension()>
@@ -313,7 +315,10 @@ Module StringExtensions
 
     <Extension()>
     Function EqualsAny(instance As String, ParamArray values As String()) As Boolean
-        If instance = "" OrElse values.NothingOrEmpty Then Return False
+        If instance = "" OrElse values.NothingOrEmpty Then
+            Return False
+        End If
+
         Return values.Contains(instance)
     End Function
 

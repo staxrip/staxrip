@@ -313,14 +313,14 @@ Public Class x265Params
         .Options = {"None", "PSNR", "SSIM", "Grain", "Fast Decode", "Zero Latency", "Animation"}}
 
     Property PipingToolAVS As New OptionParam With {
-        .Text = "Piping Tool",
+        .Text = "Pipe",
         .Name = "PipingToolAVS",
         .VisibleFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
         .Options = {"Automatic", "None", "avs2pipemod", "ffmpeg"},
         .Values = {"auto", "none", "avs2pipemod", "ffmpeg"}}
 
     Property PipingToolVS As New OptionParam With {
-        .Text = "Piping Tool",
+        .Text = "Pipe",
         .Name = "PipingToolVS",
         .VisibleFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .Options = {"Automatic", "None", "vspipe", "ffmpeg"},
@@ -1144,6 +1144,7 @@ Public Class x265Params
         ApplyTuneDefaultValues()
 
         Dim sb As New StringBuilder
+        Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS).ValueText
 
         If includePaths AndAlso includeExecutable Then
             Dim isCropped = CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
@@ -1152,7 +1153,6 @@ Public Class x265Params
             Select Case Decoder.ValueText
                 Case "script"
                     Dim pipeString = ""
-                    Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS).ValueText
 
                     If pipeTool = "auto" OrElse endFrame <> 0 Then
                         If p.Script.Engine = ScriptEngine.AviSynth Then
@@ -1257,8 +1257,7 @@ Public Class x265Params
                 sb.Append(" --stats " + (targetPath.DirAndBase + chunkName + ".stats").Escape)
             End If
 
-            Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS)
-            Dim input = If(pipeTool.ValueText = "none", script.Path.Escape, "-")
+            Dim input = If(pipeTool = "none", script.Path.Escape, "-")
 
             If (Mode.Value = x265RateMode.ThreePass AndAlso pass < 3) OrElse
                 Mode.Value = x265RateMode.TwoPass AndAlso pass = 1 Then

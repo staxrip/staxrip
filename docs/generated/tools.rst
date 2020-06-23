@@ -116,10 +116,10 @@ Tools
     "PNGopt","Console App","apngopt.exe","1.4","2019-01-01"
     "Python","Console App","python.exe","3.8.3121","2020-04-29"
     "qaac","Console App","qaac64.exe","2.69","2020-06-21"
-    "QSVEnc","Console App","QSVEncC64.exe","4.03","2020-05-31"
+    "QSVEnc","Console App","QSVEncC64.exe","4.04","2020-06-16"
     "rav1e","Console App","rav1e.exe","0.3.0","2020-02-29"
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.3-57-gba72bc85-msvc1926 Patman","2020-06-21"
-    "VCEEnc","Console App","VCEEncC64.exe","6.0","2020-04-20"
+    "VCEEnc","Console App","VCEEncC64.exe","6.02","2020-05-14"
     "vspipe","Console App","vspipe.exe","r50","2020-05-08"
     "x264","Console App","x264.exe","M-0.160.3009-4c9b076-gcc11 Patman","2020-06-16"
     "x265","Console App","x265.exe","M-3.4+6-g73f96ff39-gcc11.0.0 Patman","2020-05-30"
@@ -378,7 +378,7 @@ http://www.vapoursynth.com
 x264
 ~~~~
 
-H.264 video encoding console app.
+H.264 video encoding console app. Patman mod shows the estimated size in the status line.
 
 http://www.videolan.org/developers/x264.html
 
@@ -386,7 +386,7 @@ http://www.videolan.org/developers/x264.html
 x265
 ~~~~
 
-H.265 video encoding console app.
+H.265 video encoding console app. Patman mod shows the estimated size in the status line.
 
 http://x265.org
 

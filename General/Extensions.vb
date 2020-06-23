@@ -977,8 +977,8 @@ Module UIExtensions
     End Sub
 
     <Extension()>
-    Sub SetFilter(d As FileDialog, values As IEnumerable(Of String))
-        d.Filter = FileTypes.GetFilter(values)
+    Sub SetFilter(dialog As FileDialog, values As IEnumerable(Of String))
+        dialog.Filter = FileTypes.GetFilter(values)
     End Sub
 
     <Extension()>

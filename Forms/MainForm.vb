@@ -1863,7 +1863,7 @@ Public Class MainForm
 
                 If name.ToUpper Like "VTS_0#_0.VOB" Then
                     If MsgQuestion("Are you sure you want to open the file " + name + "," + BR +
-                           "the first VOB file usually contains a menu!") = DialogResult.Cancel Then
+                           "the first VOB file usually contains a menu.") = DialogResult.Cancel Then
 
                         Throw New AbortException
                     End If
@@ -1897,6 +1897,45 @@ Public Class MainForm
 
             p.SourceFiles = files.ToList
             p.SourceFile = files(0)
+
+            If p.SourceFile.Ext.EqualsAny(FileTypes.Image) Then
+                If p.SourceFile.Base(p.SourceFile.Base.Length - 1).IsDigit Then
+                    If p.Script.Engine = ScriptEngine.AviSynth Then
+                        Dim digitCount = 0
+
+                        For i = p.SourceFile.Base.Length - 1 To 0 Step -1
+                            If p.SourceFile.Base(i).IsDigit Then
+                                digitCount += 1
+                            End If
+                        Next
+
+                        Dim startText = p.SourceFile.Base.Substring(0, p.SourceFile.Base.Length - digitCount)
+                        Dim images As New List(Of String)
+                        Dim allFiles = Directory.GetFiles(p.SourceFile.Dir)
+
+                        For Each file In Directory.GetFiles(p.SourceFile.Dir)
+                            If file.Base.Length = p.SourceFile.Base.Length AndAlso
+                                file.Ext = p.SourceFile.Ext AndAlso file.Base.StartsWith(startText) Then
+
+                                images.Add(file)
+                            End If
+                        Next
+
+                        images.Sort()
+
+                        Dim filter = p.Script.GetFilter("Source")
+                        filter.Path = "Image"
+                        filter.Script = "ImageSource(""" + images(0).Dir + p.SourceFile.Base.Substring(0,
+                            p.SourceFile.Base.Length - digitCount) + "%0" & digitCount & "d." + p.SourceFile.Ext +
+                            """, " & images(0).Base.Substring(p.SourceFile.Base.Length - digitCount).ToInt &
+                            ", " & images(images.Count - 1).Base.Substring(p.SourceFile.Base.Length - digitCount).ToInt & ", 25)"
+                    End If
+                Else
+                    Dim filter = p.Script.GetFilter("Source")
+                    filter.Path = "Image"
+                    filter.Script = "ImageSource(""%source_file%"", 0, 1000, 25)"
+                End If
+            End If
 
             FiltersListView.IsLoading = True
 
@@ -5054,12 +5093,12 @@ Public Class MainForm
 
         Select Case td.Show
             Case "Single File"
-                Using d As New OpenFileDialog
-                    d.SetFilter(FileTypes.Video)
-                    d.SetInitDir(s.LastSourceDir)
+                Using dialog As New OpenFileDialog
+                    dialog.SetFilter(FileTypes.Video.Concat(FileTypes.Image))
+                    dialog.SetInitDir(s.LastSourceDir)
 
-                    If d.ShowDialog() = DialogResult.OK Then
-                        OpenVideoSourceFiles(d.FileNames)
+                    If dialog.ShowDialog() = DialogResult.OK Then
+                        OpenVideoSourceFiles(dialog.FileNames)
                     End If
                 End Using
             Case "Merge Files"

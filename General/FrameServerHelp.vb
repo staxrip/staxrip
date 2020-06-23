@@ -15,9 +15,12 @@ Public Class FrameServerHelp
                 DirectoryHelp.Create(Folder.Settings + "Plugins\VapourSynth")
             End If
 
-            MakeAviSynthSymLinks()
-
-            WasInitialized = True
+            Try
+                MakeAviSynthSoftLinks()
+                WasInitialized = True
+            Catch ex As Exception
+                g.ShowException(ex)
+            End Try
         End If
     End Sub
 
@@ -41,15 +44,16 @@ Public Class FrameServerHelp
         Return (Folder.System + "AviSynth.dll").FileExists
     End Function
 
-    Shared Sub MakeAviSynthSymLinks()
-        Dim packs = {Package.NVEnc, Package.QSVEnc, Package.VCEEnc, Package.avs2pipemod, Package.x264, Package.mpvnet}
+    Shared Sub MakeAviSynthSoftLinks()
+        Dim packs = {Package.NVEnc, Package.QSVEnc, Package.VCEEnc, Package.avs2pipemod,
+                     Package.x264, Package.x265, Package.mpvnet}
 
         If IsAviSynthPortableUsed() Then
-            MakeSymLink("avisynth to ffmpeg", Package.AviSynth.Path, Package.ffmpeg.Directory + "AviSynth.dll")
-            MakeSymLink("avisynth to staxrip", Package.AviSynth.Path, Folder.Startup + "AviSynth.dll")
+            MakeSoftLink("avisynth to ffmpeg", Package.AviSynth.Path, Package.ffmpeg.Directory + "AviSynth.dll")
+            MakeSoftLink("avisynth to staxrip", Package.AviSynth.Path, Folder.Startup + "AviSynth.dll")
 
             For Each pack In packs
-                MakeSymLink("avisynth to " + pack.Name, Package.AviSynth.Path, pack.Directory + "AviSynth.dll")
+                MakeSoftLink("avisynth to " + pack.Name, Package.AviSynth.Path, pack.Directory + "AviSynth.dll")
             Next
         Else
             DeleteFile(Package.ffmpeg.Directory + "AviSynth.dll")
@@ -61,15 +65,17 @@ Public Class FrameServerHelp
         End If
     End Sub
 
-    Shared Sub MakeSymLink(name As String, source As String, link As String)
-        If s.Storage.GetString(name + "symlink") <> source OrElse Not link.FileExists Then
+    Shared Sub MakeSoftLink(name As String, source As String, link As String)
+        If s.Storage.GetString(name + "symlink") <> source OrElse Not link.FileExists OrElse
+            New FileInfo(link).Length > 0 Then
+
             DeleteFile(link)
-            MakeSymLink(source, link)
+            MakeSoftLink(source, link)
             s.Storage.SetString(name + "symlink", source)
         End If
     End Sub
 
-    Shared Sub MakeSymLink(source As String, link As String)
+    Shared Sub MakeSoftLink(source As String, link As String)
         Dim cmd = $"mklink {link.Escape} {source.Escape}"
 
         Using proc As New Process
@@ -78,6 +84,11 @@ Public Class FrameServerHelp
             proc.StartInfo.UseShellExecute = False
             proc.StartInfo.CreateNoWindow = True
             proc.Start()
+            proc.WaitForExit()
+
+            If proc.ExitCode <> 0 Then
+                MsgError("Failed to create soft link." + BR2 + link)
+            End If
         End Using
     End Sub
 

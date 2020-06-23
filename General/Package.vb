@@ -390,7 +390,7 @@ Public Class Package
         .Name = "x264",
         .Filename = "x264.exe",
         .Location = "Encoders\x264",
-        .Description = "H.264 video encoding console app.",
+        .Description = "H.264 video encoding console app. Patman mod shows the estimated size in the status line.",
         .WebURL = "http://www.videolan.org/developers/x264.html",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
@@ -406,7 +406,7 @@ Public Class Package
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpSwitch = "--log-level full --fullhelp",
         .HelpFilename = "x265 Help.txt",
-        .Description = "H.265 video encoding console app."})
+        .Description = "H.265 video encoding console app. Patman mod shows the estimated size in the status line."})
 
     Shared Property SVTAV1 As Package = Add(New Package With {
         .Name = "SVT-AV1",
@@ -514,7 +514,8 @@ Public Class Package
         .Description = "AMD hardware video encoder.",
         .HelpFilename = "VCEEnc Help.txt",
         .HelpSwitch = "-h",
-        .WebURL = "http://github.com/rigaya/VCEEnc"})
+        .WebURL = "http://github.com/rigaya/VCEEnc",
+        .DownloadURL = "https://github.com/rigaya/VCEEnc/releases"})
 
     Shared Property FFT3DFilter As Package = Add(New PluginPackage With {
         .Name = "FFT3DFilter",

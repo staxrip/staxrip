@@ -4,6 +4,9 @@
 
 - Flicker in Video Comparison fixed.
 - New command AddBatchJob.
+- AviSynth ImageSource support.
+- QSVEnc 4.04
+- VCEEnc 6.02
 
 
 2.1.3.4 Beta

@@ -316,15 +316,13 @@ Public Class x265Params
         .Text = "Pipe",
         .Name = "PipingToolAVS",
         .VisibleFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
-        .Options = {"Automatic", "None", "avs2pipemod", "ffmpeg"},
-        .Values = {"auto", "none", "avs2pipemod", "ffmpeg"}}
+        .Options = {"Automatic", "None", "avs2pipemod", "ffmpeg"}}
 
     Property PipingToolVS As New OptionParam With {
         .Text = "Pipe",
         .Name = "PipingToolVS",
         .VisibleFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .Options = {"Automatic", "None", "vspipe", "ffmpeg"},
-        .Values = {"auto", "none", "vspipe", "ffmpeg"}}
+        .Options = {"Automatic", "None", "vspipe", "ffmpeg"}}
 
     Property chunkStart As New NumParam With {
         .Switch = "--chunk-start",
@@ -1033,11 +1031,12 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--multi-pass-opt-rps", .Init = False, .Text = "Enable Storing", .Help = "Enable Storing commonly used RPS in SPS in multi pass mode"},
                     New BoolParam With {.Switch = "--opt-cu-delta-qp", .Text = "Optimize CU level QPs", .Help = "Optimize CU level QPs pulling up lower QPs close to meanQP", .Init = False})
                 Add("Input/Output",
+                    Decoder, PipingToolAVS, PipingToolVS,
                     New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Options = {"Automatic", "I400", "I420", "I422", "I444", "NV12", "NV16"}},
-                    New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Progressive", "Top Field First", "Bottom Field First"}, .Values = {"", "tff", "bff"}},
                     New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},
-                    Frames, chunkStart, chunkEnd,
+                    New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Progressive", "Top Field First", "Bottom Field First"}, .Values = {"", "tff", "bff"}},
+                    Chunks, chunkStart, chunkEnd, Frames,
                     New NumParam With {.Switch = "--seek", .Text = "Seek"},
                     New NumParam With {.Switch = "--dup-threshold", .Text = "Dup. Threshold", .Init = 70, .Config = {1, 99}},
                     New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"},
@@ -1055,7 +1054,7 @@ Public Class x265Params
                     New StringParam With {.Switch = "--abr-ladder", .Text = "ABR Ladder File", .BrowseFile = True},
                     New StringParam With {.Switch = "--scaling-list", .Text = "Scaling List"},
                     New OptionParam With {.Switch = "--high-tier", .NoSwitch = "--no-high-tier", .Text = "High Tier", .Options = {"Undefined", "Yes", "No"}, .Values = {"", "--high-tier", "--no-high-tier"}},
-                    Decoder, PipingToolAVS, PipingToolVS, Chunks, CompCheck, CompCheckAimedQuality, PsyRD,
+                    CompCheck, CompCheckAimedQuality, PsyRD,
                     New NumParam With {.Switch = "--recon-depth", .Text = "Recon Depth"},
                     RDpenalty, MaxAuSizeFactor)
                 Add("Other 2",
@@ -1154,7 +1153,7 @@ Public Class x265Params
                 Case "script"
                     Dim pipeString = ""
 
-                    If pipeTool = "auto" OrElse endFrame <> 0 Then
+                    If pipeTool = "automatic" OrElse endFrame <> 0 Then
                         If p.Script.Engine = ScriptEngine.AviSynth Then
                             pipeTool = "avs2pipemod"
                         Else
@@ -1239,9 +1238,7 @@ Public Class x265Params
         End If
 
         If includePaths Then
-            Dim pipingTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS)
-
-            If pipingTool.ValueText <> "none" Then
+            If pipeTool <> "none" Then
                 If Frames.Value = 0 AndAlso Not IsCustom(pass, "--frames") Then
                     If Chunks.Value = 1 Then
                         sb.Append(" --frames " & script.GetFrameCount)

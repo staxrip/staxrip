@@ -1,6 +1,12 @@
 
-2.1.3.6 Beta (not yet available)
+2.1.3.7 Beta (not yet available)
 ============
+
+2.1.3.6 Beta
+============
+
+- Incorrect command line using VapourSynth and x265.
+
 
 2.1.3.5 Beta
 ============

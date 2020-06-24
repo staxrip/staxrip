@@ -81,7 +81,7 @@ Copy-Item ($PSScriptRoot + '\bin') $targetDir -Recurse
 
 $patterns = @(
     '*\_StaxRip.log',
-    '*\AVSMeter.ini',
+    '*\AVSMeter64.ini',
     '*\chapterEditor.ini',
     '*\d2vwitch.ini'
     '*\Debug.log',

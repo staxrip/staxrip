@@ -4592,6 +4592,8 @@ Public Class MainForm
 
         If g.IsWindowsTerminalAvailable Then
             ret.Add("Tools|Advanced|Windows Terminal", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.Control Or Keys.T, Symbol.fa_terminal, {"wt.exe", False, False, False, Folder.Desktop})
+        Else
+            ret.Add("Tools|Advanced|PowerShell Terminal", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.Control Or Keys.T, Symbol.fa_terminal, {"powershell.exe -nologo -executionpolicy unrestricted", False, False, False, Folder.Desktop})
         End If
 
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))

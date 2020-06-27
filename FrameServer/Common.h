@@ -19,3 +19,4 @@ std::wstring ConvertUtf8ToWide(const std::string& str);
 ////////////////////// misc
 
 std::string GetWinErrorMessage(int id);
+bool FileExists(LPCWSTR szPath);

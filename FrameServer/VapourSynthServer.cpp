@@ -43,7 +43,7 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
 {
     try
     {
-        static HMODULE dll = LoadLibrary(L"VSScript.dll");
+        HMODULE dll = LoadLibrary(L"VSScript.dll");
 
         if (!dll)
         {

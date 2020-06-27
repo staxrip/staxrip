@@ -416,6 +416,8 @@ Public Class Proc
         End If
 
         Dim dic = process.StartInfo.EnvironmentVariables
+        dic("AviSynthDLL") = Package.AviSynth.Path
+
         Dim keys = dic.Keys.OfType(Of String).Select(Function(key) key.ToLower)
 
         For Each mac In Macro.GetMacros(False, False, False)

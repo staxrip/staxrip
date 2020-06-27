@@ -255,7 +255,7 @@ Public Class GlobalCommands
         End If
     End Sub
 
-    <Command("Plays a mp3, wav Or wmv sound file.")>
+    <Command("Plays audio file.")>
     Sub PlaySound(
         <Editor(GetType(OpenFileDialogEditor), GetType(UITypeEditor))>
         <Description("Filepath to a mp3, wav or wmv sound file.")>
@@ -264,7 +264,16 @@ Public Class GlobalCommands
         <DefaultValue(20)>
         Volume As Integer)
 
-        Misc.PlayAudioFile(FilePath, Volume)
+        Try
+            Static player As New Reflector("WMPlayer.OCX.7")
+            Dim settings = player.Invoke("settings", BindingFlags.GetProperty)
+            settings.Invoke("volume", BindingFlags.SetProperty, Volume)
+            settings.Invoke("setMode", "loop", False)
+            player.Invoke("URL", BindingFlags.SetProperty, FilePath)
+            player.Invoke("controls", BindingFlags.GetProperty).Invoke("play")
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
     End Sub
 
     Function GetReleaseType() As String

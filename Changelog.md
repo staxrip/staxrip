@@ -1,6 +1,12 @@
 
-2.1.3.7 Beta (not yet available)
+2.1.3.8 Beta (not yet available)
 ============
+
+2.1.3.7 Beta
+============
+
+- AviSynth soft link fix.
+
 
 2.1.3.6 Beta
 ============

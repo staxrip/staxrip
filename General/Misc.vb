@@ -75,10 +75,17 @@ Public Class Calc
     End Function
 
     Shared Function GetVideoBitrate() As Double
-        If p.TargetSeconds = 0 Then Return 0
+        If p.TargetSeconds = 0 Then
+            Return 0
+        End If
+
         Dim kbytes = p.TargetSize * 1024 - GetAudioKBytes() - GetSubtitleKBytes() - GetOverheadKBytes()
         Dim ret = kbytes * 8 * 1.024 / p.TargetSeconds
-        If ret < 1 Then ret = 1
+
+        If ret < 1 Then
+            ret = 1
+        End If
+
         Return ret
     End Function
 

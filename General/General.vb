@@ -804,39 +804,6 @@ Public Class StringPair
     End Function
 End Class
 
-Public Class Misc
-    Public Shared IsAdmin As Boolean = New WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator)
-
-    Shared Sub PlayAudioFile(path As String, volume As Integer)
-        Try
-            Static r As New Reflector("WMPlayer.OCX.7")
-            Dim s = r.Invoke("settings", BindingFlags.GetProperty)
-            s.Invoke("volume", BindingFlags.SetProperty, volume)
-            s.Invoke("setMode", "loop", False)
-            r.Invoke("URL", BindingFlags.SetProperty, path)
-            r.Invoke("controls", BindingFlags.GetProperty).Invoke("play")
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
-    End Sub
-
-    Shared Sub SendPaste(value As String)
-        Dim tmp = Clipboard.GetText()
-        value.ToClipboard()
-        SendKeys.SendWait("^v")
-        tmp.ToClipboard()
-    End Sub
-
-    Shared Function Validate(value As String, pattern As String) As Boolean
-        If Not Regex.IsMatch(value, pattern) Then
-            MsgWarn("""" + value + """ is no valid input.")
-            Return False
-        End If
-
-        Return True
-    End Function
-End Class
-
 Public Class ErrorAbortException
     Inherits ApplicationException
 
@@ -1435,7 +1402,10 @@ Public Class PowerRequest
 
         If CurrentPowerRequest = IntPtr.Zero Then
             Dim err = Marshal.GetLastWin32Error()
-            If err <> 0 Then Throw New Win32Exception(err)
+
+            If err <> 0 Then
+                Throw New Win32Exception(err)
+            End If
         End If
 
         Dim success = PowerSetRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)
@@ -1443,7 +1413,10 @@ Public Class PowerRequest
         If Not success Then
             CurrentPowerRequest = IntPtr.Zero
             Dim err = Marshal.GetLastWin32Error()
-            If err <> 0 Then Throw New Win32Exception(err)
+
+            If err <> 0 Then
+                Throw New Win32Exception(err)
+            End If
         End If
     End Sub
 
@@ -1454,7 +1427,10 @@ Public Class PowerRequest
             If Not success Then
                 CurrentPowerRequest = IntPtr.Zero
                 Dim err = Marshal.GetLastWin32Error()
-                If err <> 0 Then Throw New Win32Exception(err)
+
+                If err <> 0 Then
+                    Throw New Win32Exception(err)
+                End If
             Else
                 CurrentPowerRequest = IntPtr.Zero
             End If

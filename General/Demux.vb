@@ -90,16 +90,6 @@ Public MustInherit Class Demuxer
         ret.Add(New MP4BoxDemuxer)
         ret.Add(New eac3toDemuxer)
 
-        Dim d2vWitch As New CommandLineDemuxer
-        d2vWitch.Name = "D2V Witch: Demux & Index MPEG-2"
-        d2vWitch.InputExtensions = {"mpg", "vob", "m2ts", "mts", "m2t"}
-        d2vWitch.OutputExtensions = {"d2v"}
-        d2vWitch.InputFormats = {"mpeg2"}
-        d2vWitch.Command = "cmd.exe"
-        d2vWitch.Arguments = "/S /C """"%app:D2V Witch%"" --audio-ids all --output ""%temp_file%.d2v"" %source_files%"""
-        d2vWitch.SourceFilters = {"MPEG2Source", "d2v.Source"}
-        ret.Add(d2vWitch)
-
         Dim dgIndex As New CommandLineDemuxer
         dgIndex.Name = "DGIndex: Demux & Index MPEG-2"
         dgIndex.InputExtensions = {"mpg", "vob", "m2ts", "mts", "m2t"}
@@ -108,8 +98,18 @@ Public MustInherit Class Demuxer
         dgIndex.Command = "%app:DGIndex%"
         dgIndex.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -o ""%temp_file%"" -hide -exit"
         dgIndex.SourceFilters = {"MPEG2Source", "d2v.Source"}
-        dgIndex.Active = False
         ret.Add(dgIndex)
+
+        Dim d2vWitch As New CommandLineDemuxer
+        d2vWitch.Name = "D2V Witch: Demux & Index MPEG-2"
+        d2vWitch.InputExtensions = {"mpg", "vob", "m2ts", "mts", "m2t"}
+        d2vWitch.OutputExtensions = {"d2v"}
+        d2vWitch.InputFormats = {"mpeg2"}
+        d2vWitch.Command = "cmd.exe"
+        d2vWitch.Arguments = "/S /C """"%app:D2V Witch%"" --audio-ids all --output ""%temp_file%.d2v"" %source_files%"""
+        d2vWitch.SourceFilters = {"MPEG2Source", "d2v.Source"}
+        d2vWitch.Active = False
+        ret.Add(d2vWitch)
 
         Return ret
     End Function

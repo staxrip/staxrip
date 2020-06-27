@@ -3,7 +3,9 @@ Imports System.Collections.ObjectModel
 Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Management.Automation
+Imports System.Reflection
 Imports System.Runtime.ExceptionServices
+Imports System.Security.Principal
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
@@ -15,16 +17,17 @@ Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
 
 Public Class GlobalClass
-    Property ProjectPath As String
-    Property MainForm As MainForm
-    Property ProcForm As ProcessingForm
-    Property MinimizedWindows As Boolean
-    Property SavedProject As New Project
     Property DefaultCommands As New GlobalCommands
-    Property IsJobProcessing As Boolean
-    Property StopAfterCurrentJob As Boolean
     Property DPI As Integer
+    Property IsAdmin As Boolean = New WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator)
+    Property IsJobProcessing As Boolean
+    Property MainForm As MainForm
     Property MenuSpace As String
+    Property MinimizedWindows As Boolean
+    Property ProcForm As ProcessingForm
+    Property ProjectPath As String
+    Property SavedProject As New Project
+    Property StopAfterCurrentJob As Boolean
 
     Event JobMuxed()
     Event JobProcessed()
@@ -1390,7 +1393,7 @@ Public Class GlobalClass
 
                 Select Case td.Show()
                     Case "avs2pipemod info"
-                        g.RunCodeInTerminal($"""`n{Package.avs2pipemod.Name} {Package.avs2pipemod.Version}""; & '{Package.avs2pipemod.Path}' -info '{script.Path}'")
+                        g.RunCodeInTerminal($"""`n{Package.avs2pipemod.Name} {Package.avs2pipemod.Version}""; & '{Package.avs2pipemod.Path}' -dll=""{Package.AviSynth.Path.Escape}"" -info '{script.Path}'")
                     Case "avsmeter benchmark"
                         g.RunCodeInTerminal($"& '{Package.AVSMeter.Path}' '{script.Path}'")
                     Case "avsmeter info"

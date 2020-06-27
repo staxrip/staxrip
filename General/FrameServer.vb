@@ -10,7 +10,8 @@ Public Class FrameServer
     Sub New(path As String)
         FrameServerHelp.Init()
 
-        If path.EndsWith(".avs") Then
+        If path.Ext = "avs" Then
+            Environment.SetEnvironmentVariable("AviSynthDLL", Package.AviSynth.Path)
             NativeServer = CreateAviSynthServer()
         Else
             NativeServer = CreateVapourSynthServer()

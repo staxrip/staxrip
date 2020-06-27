@@ -4,6 +4,8 @@
 #include "Common.h"
 #include "FrameServer.h"
 #include "avisynth.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 #include <atomic>
 

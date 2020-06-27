@@ -1015,9 +1015,21 @@ Public Class x264Params
                 Case "vspipe raw"
                     pipeCmd = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - | "
                 Case "avs2pipemod y4m"
-                    pipeCmd = Package.avs2pipemod.Path.Escape + " -y4mp " + script.Path.Escape + " | "
+                    Dim dll As String
+
+                    If FrameServerHelp.IsAviSynthPortableUsed Then
+                        dll = " -dll=" + Package.AviSynth.Path.Escape
+                    End If
+
+                    pipeCmd = Package.avs2pipemod.Path.Escape + dll + " -y4mp " + script.Path.Escape + " | "
                 Case "avs2pipemod raw"
-                    pipeCmd = Package.avs2pipemod.Path.Escape + " -rawvideo " + script.Path.Escape + " | "
+                    Dim dll As String
+
+                    If FrameServerHelp.IsAviSynthPortableUsed Then
+                        dll = " -dll=" + Package.AviSynth.Path.Escape
+                    End If
+
+                    pipeCmd = Package.avs2pipemod.Path.Escape + dll + " -rawvideo " + script.Path.Escape + " | "
                 Case "ffmpeg y4m"
                     pipeCmd = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
                 Case "ffmpeg raw"

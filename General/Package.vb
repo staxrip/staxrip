@@ -2180,7 +2180,7 @@ Public Class Package
     End Function
 
     Shared Function GetPythonHintDir() As String
-        If Not s.UsePortableVapourSynth Then
+        If Not FrameServerHelp.IsVapourSynthPortableUsed Then
             For Each x In {8, 9, 7}
                 For Each rootKey In {Registry.CurrentUser, Registry.LocalMachine}
                     Dim exePath = rootKey.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath")
@@ -2198,9 +2198,7 @@ Public Class Package
             End If
         End If
 
-        If (Folder.Apps + "FrameServer\VapourSynth\python.exe").FileExists Then
-            Return Folder.Apps + "FrameServer\VapourSynth\"
-        End If
+        Return Folder.Apps + "FrameServer\VapourSynth\"
     End Function
 
     Overridable ReadOnly Property Path As String

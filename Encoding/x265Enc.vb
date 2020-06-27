@@ -1169,7 +1169,13 @@ Public Class x265Params
                                 chunk = $" -trim={startFrame},{endFrame}"
                             End If
 
-                            pipeString = Package.avs2pipemod.Path.Escape + chunk + " -y4mp " + script.Path.Escape + " | "
+                            Dim dll As String
+
+                            If FrameServerHelp.IsAviSynthPortableUsed Then
+                                dll = " -dll=" + Package.AviSynth.Path.Escape
+                            End If
+
+                            pipeString = Package.avs2pipemod.Path.Escape + dll + chunk + " -y4mp " + script.Path.Escape + " | "
                         Case "vspipe"
                             Dim chunk As String
 

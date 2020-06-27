@@ -1858,6 +1858,8 @@ Public Class MainForm
                 Throw New AbortException
             End If
 
+            FrameServerHelp.Init()
+
             For Each i In files
                 Dim name = i.FileName
 

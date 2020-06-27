@@ -46,7 +46,13 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
         memset(&m_Clip,  0, sizeof(PClip));
         memset(&m_Frame, 0, sizeof(PVideoFrame));
 
-        static HMODULE dll = LoadLibrary(L"AviSynth.dll");
+        WCHAR* dllPath = _wgetenv(L"AviSynthDLL");
+        HMODULE dll;
+
+        if (FileExists(dllPath))
+            dll = LoadLibrary(dllPath);
+        else
+            dll = LoadLibrary(L"AviSynth.dll");
 
         if (!dll)
         {

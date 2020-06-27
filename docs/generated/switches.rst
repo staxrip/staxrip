@@ -170,7 +170,7 @@
 
 .. option:: -PlaySound:FilePath,Volume
 
-    Plays a mp3, wav Or wmv sound file.
+    Plays audio file.
 
 .. list-table::
     :widths: auto

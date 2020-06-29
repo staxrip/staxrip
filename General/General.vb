@@ -245,7 +245,7 @@ Public Class Folder
 
                 Dim remux As New Project
                 remux.Init()
-                remux.Script.Filters(0) = VideoFilter.GetDefault("Source", "DSS2")
+                remux.Script.Filters(0) = fastLoad.Script.Filters(0).GetCopy
                 remux.DemuxAudio = DemuxMode.None
                 remux.DemuxSubtitles = DemuxMode.None
                 remux.VideoEncoder = New NullEncoder

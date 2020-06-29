@@ -2,6 +2,9 @@
 2.1.3.8 Beta (not yet available)
 ============
 
+- mkvtoolnix 48
+- ec3 file extension support for eac3 files.
+
 2.1.3.7 Beta
 ============
 

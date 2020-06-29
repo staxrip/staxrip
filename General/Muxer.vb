@@ -854,7 +854,7 @@ Public Class MkvMuxer
                     "flv", "mov",
                     "264", "h264", "avc",
                     "265", "h265", "hevc", "hvc",
-                    "ac3", "eac3", "thd+ac3", "thd",
+                    "ac3", "ec3", "eac3", "thd+ac3", "thd",
                     "mkv", "mka", "webm",
                     "mp2", "mpa", "mp3",
                     "ogg", "ogm",

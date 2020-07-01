@@ -785,7 +785,7 @@ Public Class GUIAudioProfile
             proc.Start()
 
             Dim match = Regex.Match(proc.Log.ToString, "max_volume: -(\d+\.\d+) dB")
-            If match.Success Then Gain = match.Groups(1).Value.ToSingle()
+            If match.Success Then Gain += match.Groups(1).Value.ToSingle()
 
             match = Regex.Match(proc.Log.ToString, "Input Integrated:\s*([-\.0-9]+)")
             If match.Success Then Params.ffmpegLoudnormIntegratedMeasured = match.Groups(1).Value.ToDouble

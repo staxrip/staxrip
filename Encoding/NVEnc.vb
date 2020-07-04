@@ -362,7 +362,7 @@ Public Class NVEnc
         Property Nnedi As New BoolParam With {.Text = "nnedi Deinterlacer", .Switches = {"--vpp-nnedi"}, .ArgsFunc = AddressOf GetNnedi}
         Property NnediField As New OptionParam With {.Text = "     Field", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "top", "bottom"}}
         Property NnediNns As New OptionParam With {.Text = "     NNS", .HelpSwitch = "--vpp-nnedi", .Init = 1, .Options = {"16", "32", "64", "128", "256"}}
-        Property NnediNszie As New OptionParam With {.Text = "     N Size", .HelpSwitch = "--vpp-nnedi", .Init = 6, .Options = {"8x6", "16x6", "32x6", "48x6", "8x4", "16x4", "32x4"}}
+        Property NnediNsize As New OptionParam With {.Text = "     N Size", .HelpSwitch = "--vpp-nnedi", .Init = 6, .Options = {"8x6", "16x6", "32x6", "48x6", "8x4", "16x4", "32x4"}}
         Property NnediQuality As New OptionParam With {.Text = "     Quality", .HelpSwitch = "--vpp-nnedi", .Options = {"fast", "slow"}}
         Property NnediPrescreen As New OptionParam With {.Text = "     Pre Screen", .HelpSwitch = "--vpp-nnedi", .Init = 4, .Options = {"none", "original", "new", "original_block", "new_block"}}
         Property NnediErrortype As New OptionParam With {.Text = "     Error Type", .HelpSwitch = "--vpp-nnedi", .Options = {"abs", "square"}}
@@ -507,7 +507,7 @@ Public Class NVEnc
                         Nnedi,
                         NnediField,
                         NnediNns,
-                        NnediNszie,
+                        NnediNsize,
                         NnediQuality,
                         NnediPrescreen,
                         NnediErrortype,
@@ -592,7 +592,7 @@ Public Class NVEnc
             If Not QPI.NumEdit Is Nothing Then
                 NnediField.MenuButton.Enabled = Nnedi.Value
                 NnediNns.MenuButton.Enabled = Nnedi.Value
-                NnediNszie.MenuButton.Enabled = Nnedi.Value
+                NnediNsize.MenuButton.Enabled = Nnedi.Value
                 NnediQuality.MenuButton.Enabled = Nnedi.Value
                 NnediPrescreen.MenuButton.Enabled = Nnedi.Value
                 NnediErrortype.MenuButton.Enabled = Nnedi.Value
@@ -939,8 +939,8 @@ Public Class NVEnc
                 ret += ",nns=" + NnediNns.ValueText
             End If
 
-            If NnediNszie.Value <> NnediNszie.DefaultValue Then
-                ret += ",nszie=" + NnediNszie.ValueText
+            If NnediNsize.Value <> NnediNsize.DefaultValue Then
+                ret += ",nsize=" + NnediNsize.ValueText
             End If
 
             If NnediQuality.Value <> NnediQuality.DefaultValue Then

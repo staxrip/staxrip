@@ -92,7 +92,7 @@ Public Class ffmpegEnc
             Select Case Params.Codec.OptionText
                 Case "Xvid", "MPEG-4", "UT Video", "FFV1"
                     Return "avi"
-                Case "ProRes"
+                Case "ProRes", "R210", "V210"
                     Return "mov"
                 Case "VP8", "VP9"
                     Return "webm"
@@ -172,11 +172,11 @@ Public Class ffmpegEnc
             .Text = "Codec",
             .AlwaysOn = True,
             .Options = {"x264", "x265", "AV1", "XviD", "MPEG-4", "Theora", "ProRes",
-                        "UT Video", "FFV1", "VP | VP8", "VP | VP9",
+                        "R210", "V210", "UT Video", "FFV1", "VP | VP8", "VP | VP9",
                         "Intel | Intel H.264", "Intel | Intel H.265",
                         "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265"},
             .Values = {"libx264", "libx265", "libaom-av1", "libxvid", "mpeg4", "libtheora", "prores",
-                       "utvideo", "ffv1", "libvpx", "libvpx-vp9",
+                       "r210", "v210", "utvideo", "ffv1", "libvpx", "libvpx-vp9",
                        "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
 
         Property Mode As New OptionParam With {

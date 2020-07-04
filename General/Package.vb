@@ -353,16 +353,16 @@ Public Class Package
         .AvsFilterNames = {"f3kdb"}})
 
     Shared Property f3kdb_neo As Package = Add(New PluginPackage With {
-        .Name = "Neo f3kdb",
+        .Name = "f3kdb Neo",
         .Filename = "neo-f3kdb.dll",
         .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb",
         .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",
         .DownloadURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb/releases",
         .Description = "Debanding filter forked from flash3kyuu_deband.",
         .AvsFilterNames = {"neo_f3kdb"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Misc", "neo_f3kdb", $"neo_f3kdb(y=64, cb=64, cr=64, grainy=0, grainc=0)")},
+        .AvsFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb Neo", $"neo_f3kdb(y=64, cb=64, cr=64, grainy=0, grainc=0)")},
         .VSFilterNames = {"core.neo_f3kdb.Deband"},
-        .VSFiltersFunc = Function() {New VideoFilter("Misc", "neo_f3kdb", "clip = core.neo_f3kdb.Deband(clip, y=64, cb=64, cr=64, grainy=0, grainc=0)")}})
+        .VSFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb Neo", "clip = core.neo_f3kdb.Deband(clip, y=64, cb=64, cr=64, grainy=0, grainc=0)")}})
 
     Shared Property vinverse As Package = Add(New PluginPackage With {
         .Name = "vinverse",

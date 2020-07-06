@@ -2752,7 +2752,7 @@ Public Class MainForm
             If Not param Is Nothing AndAlso param.Value > 0 AndAlso
                 Not p.Script.IsFilterActive("Resize", "Hardware Encoder") Then
 
-                If ProcessTip("In order to use an resize filter of the hardware encoder select 'Hardware Encoder' as resize filter from the filters menu.") Then
+                If ProcessTip("In order to use a resize filter of the hardware encoder select 'Hardware Encoder' as resize filter from the filters menu.") Then
                     gbAssistant.Text = "Invalid filter setting"
                     CanIgnoreTip = False
                     Return False
@@ -3144,7 +3144,7 @@ Public Class MainForm
                 Select Case p.FileExistVideo
                     Case FileExistMode.Ask
                         Using td As New TaskDialog(Of String)
-                            td.MainInstruction = "An video encoding output file already exists"
+                            td.MainInstruction = "A video encoding output file already exists"
                             td.Content = "Would you like to skip video encoding and reuse the existing video encoder output file or would you like to re-encode and overwrite it?"
                             td.AddCommand("Reuse", "skip")
                             td.AddCommand("Re-encode", "encode")

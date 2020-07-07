@@ -3121,7 +3121,7 @@ Public Class MainForm
         AudioTextChanged(tbAudioFile1, p.Audio1)
     End Sub
 
-    Sub bnSkip_Click() Handles bnNext.Click
+    Sub bnNext_Click() Handles bnNext.Click
         If Not CanIgnoreTip Then
             MsgWarn("The current assistant warning cannot be skipped.")
             Exit Sub

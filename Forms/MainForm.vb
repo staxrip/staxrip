@@ -3195,7 +3195,9 @@ Public Class MainForm
             End If
 
             AddJob(False, Nothing)
-            ShowJobsDialog()
+            If Not Control.ModifierKeys = Keys.Control Then
+                ShowJobsDialog()
+            End If
         Else
             Assistant()
         End If

@@ -3194,8 +3194,12 @@ Public Class MainForm
                 End Select
             End If
 
-            AddJob(False, Nothing)
-            ShowJobsDialog()
+            Dim position = If(Control.ModifierKeys.HasFlag(Keys.Shift), 0, -1)
+            AddJob(False, Nothing, position)
+
+            If Control.ModifierKeys.HasFlag(Keys.Control) Then
+                ShowJobsDialog()
+            End If
         Else
             Assistant()
         End If
@@ -3948,12 +3952,14 @@ Public Class MainForm
         showConfirmation As Boolean,
         <DispName("Template Name"),
         Description("Name of the template to be loaded after the job was added. Empty to load no template.")>
-        templateName As String)
+        templateName As String,
+        <DispName("Position to insert new job")>
+        Optional position As Integer = -1)
 
-        AddJob(showConfirmation, templateName, True)
+        AddJob(showConfirmation, templateName, True, position)
     End Sub
 
-    Sub AddJob(showConfirmation As Boolean, templateName As String, showAssistant As Boolean)
+    Sub AddJob(showConfirmation As Boolean, templateName As String, showAssistant As Boolean, Optional position As Integer = -1)
         If Not g.VerifyRequirements() Then
             Exit Sub
         End If
@@ -3965,7 +3971,7 @@ Public Class MainForm
 
         Dim jobPath = JobManager.GetJobPath()
         SaveProjectPath(jobPath)
-        JobManager.AddJob(jobPath, jobPath)
+        JobManager.AddJob(jobPath, jobPath, position)
 
         If showConfirmation Then
             MsgInfo("Job added")

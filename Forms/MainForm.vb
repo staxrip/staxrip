@@ -3197,7 +3197,7 @@ Public Class MainForm
             Dim position = If(Control.ModifierKeys.HasFlag(Keys.Shift), 0, -1)
             AddJob(False, Nothing, position)
 
-            If Control.ModifierKeys.HasFlag(Keys.Control) Then
+            If Not Control.ModifierKeys.HasFlag(Keys.Control) Then
                 ShowJobsDialog()
             End If
         Else

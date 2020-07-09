@@ -1824,6 +1824,8 @@ Public Class MainForm
     End Sub
 
     Sub OpenAnyFile(files As IEnumerable(Of String))
+        files = files.Select(Function(filePath) New FileInfo(filePath).FullName).AsEnumerable()
+
         If files(0).Ext = "srip" Then
             OpenProject(files(0))
         ElseIf FileTypes.Video.Contains(files(0).Ext.Lower) Then

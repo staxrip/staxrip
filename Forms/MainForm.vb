@@ -1854,6 +1854,8 @@ Public Class MainForm
         AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
 
         Try
+            files = files.Select(Function(filePath) New FileInfo(filePath).FullName).AsEnumerable()
+
             If g.ShowVideoSourceWarnings(files) Then
                 Throw New AbortException
             End If

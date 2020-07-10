@@ -323,4 +323,14 @@ Public Class ProcessingForm
     Sub bnLog_Click(sender As Object, e As EventArgs) Handles bnLog.Click
         g.DefaultCommands.ShowLogFile()
     End Sub
+
+    Sub ProcessingForm_KeyUp(sender As Object, e As KeyEventArgs) Handles MyBase.KeyUp
+        If Not (e.Alt OrElse e.Control OrElse e.Shift) Then
+            If e.KeyCode = Keys.F6 Then
+                Using form As New JobsForm()
+                    form.ShowDialog()
+                End Using
+            End If
+        End If
+    End Sub
 End Class

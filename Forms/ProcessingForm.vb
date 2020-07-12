@@ -80,7 +80,7 @@ Public Class ProcessingForm
         Me.bnJobs.Name = "bnJobs"
         Me.bnJobs.Size = New System.Drawing.Size(260, 70)
         Me.bnJobs.TabIndex = 9
-        Me.bnJobs.Text = "Jobs"
+        Me.bnJobs.Text = "Jobs (F6)"
         Me.bnJobs.UseVisualStyleBackColor = True
         '
         'flpButtons

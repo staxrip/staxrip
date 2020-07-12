@@ -12,6 +12,7 @@ Public Class ApplicationSettings
     Public AviSynthProfiles As List(Of FilterCategory)
     Public CharacterLimit As Integer
     Public CheckForUpdates As Boolean
+    Public CheckForUpdatesBeta As Boolean
     Public CheckForUpdatesDismissed As String
     Public CheckForUpdatesLastRequest As DateTime
     Public CheckForUpdatesQuestion As Boolean

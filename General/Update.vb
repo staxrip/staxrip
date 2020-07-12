@@ -33,24 +33,28 @@ Public Class Update
                 Dim stableUrl = "https://github.com/staxrip/staxrip/releases"
 
                 Dim currentVersion = Reflection.Assembly.GetEntryAssembly.GetName.Version
-                Dim latestVersions = New List(Of (Version As Version, Status As String, SourceSite As String, DownloadUri As String, FileName As String))
+                Dim latestVersions = New List(Of (Version As Version, Status As String,
+                    SourceSite As String, DownloadUri As String, FileName As String))
 
                 Dim response = Await HttpClient.GetAsync(stableUrl)
+
                 If response.IsSuccessStatusCode Then
                     Dim content = Await response.Content.ReadAsStringAsync()
                     Dim titleMatch = Regex.Match(content, "title=""(\d+\.\d+\.\d+\.\d+)""")
                     Dim onlineVersion = Version.Parse(titleMatch.Groups(1).Value)
                     Dim linkMatch = Regex.Match(content, "(https://[^""]*/([^""/]*StaxRip[^""?]*)[^""]*)\\""")
 
-                    latestVersions.Add((onlineVersion, "Stable", stableUrl, linkMatch.Groups(1).Value, linkMatch.Groups(2).Value))
+                    latestVersions.Add((onlineVersion, "Stable", stableUrl,
+                        linkMatch.Groups(1).Value, linkMatch.Groups(2).Value))
+
                 ElseIf Not includeBeta Then
                     response.EnsureSuccessStatusCode()
                 End If
 
-
                 If includeBeta Then
                     Try
                         Dim dropboxResponse = Await HttpClient.GetAsync(dropboxUrl)
+
                         If Not dropboxResponse.IsSuccessStatusCode Then
                             Dim betaSourcesResponse = Await HttpClient.GetAsync(betaSourcesUrl)
                             Dim betaSourcesContent = Await betaSourcesResponse.Content.ReadAsStringAsync()
@@ -63,7 +67,8 @@ Public Class Update
 
                         dropboxResponse.EnsureSuccessStatusCode()
                         Dim dropboxContent = Await dropboxResponse.Content.ReadAsStringAsync()
-                        Dim betaMatches = Regex.Matches(dropboxContent, "(https://[^""]*/([^""/]*StaxRip[^""?]*)[^""]*)\\""")
+                        Dim betaMatches = Regex.Matches(dropboxContent,
+                            "(https://[^""]*/([^""/]*StaxRip[^""?]*)[^""]*)\\""")
 
                         If betaMatches.Count > 0 Then
                             Dim sortedMatches = New Match(betaMatches.Count - 1) {}
@@ -82,25 +87,30 @@ Public Class Update
                     End Try
                 End If
 
-
                 If latestVersions.Count > 0 Then
                     Dim latestVersion = latestVersions.OrderBy(Function(x) x.Version).Last()
 
-                    If latestVersion.Version > currentVersion AndAlso (s.CheckForUpdatesDismissed = "" OrElse Version.Parse(s.CheckForUpdatesDismissed) <> latestVersion.Version OrElse force) Then
+                    If latestVersion.Version > currentVersion AndAlso (s.CheckForUpdatesDismissed = "" OrElse
+                        Version.Parse(s.CheckForUpdatesDismissed) <> latestVersion.Version OrElse force) Then
+
                         Using td As New TaskDialog(Of String)
                             td.MainInstruction = "A new " + latestVersion.Status + " version was found: " + latestVersion.Version.ToString()
 
                             Dim changelogResponse = Await HttpClient.GetAsync(changelogUrl)
+
                             If changelogResponse.IsSuccessStatusCode Then
                                 Dim changelogContent = Await changelogResponse.Content.ReadAsStringAsync()
                                 Dim splits = Regex.Split(changelogContent, "\n\n\n")
+
                                 If splits.Any() Then
                                     Dim split = splits.Where(Function(x) x.Contains(latestVersion.Version.ToString()))?.LastOrDefault()
-                                    If Not String.IsNullOrWhiteSpace(split) Then
+
+                                    If split <> "" Then
                                         Dim changes = 0
 
                                         td.Content += "Changes in this version:" + BR
-                                        For Each line As String In Regex.Split(split, "\n")
+
+                                        For Each line In Regex.Split(split, "\n")
                                             If changes >= 20 Then
                                                 td.Content += "..."
                                                 Exit For
@@ -130,6 +140,7 @@ Public Class Update
                                         .OverwritePrompt = True,
                                         .Title = "Save new " + latestVersion.Status + " version as..."
                                     }
+
                                     If saveFileDialog.ShowDialog() = DialogResult.OK Then
                                         Using client As New WebClient()
                                             AddHandler client.DownloadFileCompleted, AddressOf OnDownloadComplete
@@ -146,11 +157,9 @@ Public Class Update
                                     s.CheckForUpdatesDismissed = latestVersion.Version.ToString()
                             End Select
                         End Using
-
                     ElseIf force Then
                         MsgInfo("No update available.")
                     End If
-
                 ElseIf force Then
                     MsgInfo("No update available.")
                 End If
@@ -161,13 +170,11 @@ Public Class Update
         End Try
     End Sub
 
-
-    Private Shared Sub OnDownloadComplete(ByVal sender As Object, ByVal e As AsyncCompletedEventArgs)
+    Shared Sub OnDownloadComplete(sender As Object, e As AsyncCompletedEventArgs)
         If Not e.Cancelled AndAlso e.Error Is Nothing Then
-            MessageBox.Show("Download successed!")
+            MsgInfo("Download successed!")
         Else
-            MessageBox.Show("Download failed!")
+            MsgError("Download failed!")
         End If
     End Sub
-
 End Class

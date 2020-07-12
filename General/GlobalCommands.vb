@@ -295,7 +295,7 @@ Public Class GlobalCommands
             Case "info"
                 form.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
                 form.Doc.Write("Development", "stax76, Revan654")
-                form.Doc.Write("Contributions", "Patman, 44vince44, JKyle, NikosD, qyot27, ernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+                form.Doc.Write("Contributions", "Dendraspis, Patman, 44vince44, JKyle, NikosD, qyot27, ernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
 
                 Dim licensePath = Folder.Startup + "License.txt"
 

@@ -5,6 +5,7 @@
 - mkvtoolnix 48
 - ec3 file extension support for eac3 files.
 - R210/V210 video output using ffmpeg.
+- Include beta versions for update checker and show changelog (Dendraspis)
 
 
 2.1.3.7 Beta

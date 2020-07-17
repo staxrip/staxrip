@@ -3958,10 +3958,10 @@ Public Class MainForm
 
             AddJob(False, Nothing, position)
 
-            If ModifierKeys.HasFlag(Keys.Control) Then
+            If showJobsDialog Then
                 bnNext.ShowBold()
             Else
-                ShowJobsDialog()
+                Me.ShowJobsDialog()
             End If
         Else
             Assistant()

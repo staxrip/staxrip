@@ -43,18 +43,18 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
 {
     try
     {
-        HMODULE dll = LoadLibrary(L"VSScript.dll");
-
-        if (!dll)
-        {
-            std::string msg = GetWinErrorMessage(GetLastError());
-            throw std::runtime_error("Failed to load VapourSynth:\r\n\r\n" + msg);
-        }
-
         static bool wasResolved = false;
 
         if (!wasResolved)
         {
+            HMODULE dll = LoadLibrary(L"VSScript.dll");
+
+            if (!dll)
+            {
+                std::string msg = GetWinErrorMessage(GetLastError());
+                throw std::runtime_error("Failed to load VapourSynth:\r\n\r\n" + msg);
+            }
+
             bool x64 = sizeof(void*) == 8;
 
             std::array resolvePairs = {

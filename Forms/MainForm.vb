@@ -29,7 +29,7 @@ Public Class MainForm
     Public WithEvents tbAudioFile1 As StaxRip.UI.TextBoxEx
     Public WithEvents llEditAudio1 As ButtonLabel
     Public WithEvents llEditAudio0 As ButtonLabel
-    Public WithEvents bnNext As System.Windows.Forms.Button
+    Public WithEvents bnNext As ButtonEx
     Public WithEvents tbSourceFile As StaxRip.UI.TextBoxEx
     Public WithEvents tbTargetFile As StaxRip.UI.TextBoxEx
     Public WithEvents gbAssistant As System.Windows.Forms.GroupBox
@@ -91,7 +91,7 @@ Public Class MainForm
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.bnNext = New System.Windows.Forms.Button()
+        Me.bnNext = New ButtonEx()
         Me.llEditAudio0 = New StaxRip.UI.ButtonLabel()
         Me.gbAssistant = New System.Windows.Forms.GroupBox()
         Me.tlpAssistant = New System.Windows.Forms.TableLayoutPanel()
@@ -3880,7 +3880,10 @@ Public Class MainForm
         End If
     End Sub
 
-    Sub AddJob(Optional showJobsDialog As Boolean = True, Optional position As Integer = -1)
+    Sub AddJob(
+        Optional showJobsDialog As Boolean = True,
+        Optional position As Integer = -1)
+
         If Not CanIgnoreTip Then
             MsgWarn("The current assistant warning cannot be skipped.")
             Exit Sub
@@ -3976,7 +3979,12 @@ Public Class MainForm
         AddJob(showConfirmation, templateName, True, position)
     End Sub
 
-    Sub AddJob(showConfirmation As Boolean, templateName As String, showAssistant As Boolean, Optional position As Integer = -1)
+    Sub AddJob(
+        showConfirmation As Boolean,
+        templateName As String,
+        showAssistant As Boolean,
+        Optional position As Integer = -1)
+
         If Not g.VerifyRequirements() Then
             Exit Sub
         End If
@@ -5724,6 +5732,10 @@ Public Class MainForm
             .SetTip("Shows a menu with Container/Muxer profiles", llMuxer)
             .SetTip("Shows a menu with video encoder profiles", lgbEncoder.Label)
             .SetTip("Shows a menu with AviSynth filter options", lgbFilters.Label)
+            .SetTip("Next assistant tip." + BR2 +
+                    "The final tip to add a job supports modifier keys:" + BR2 +
+                    "SHIFT adds a job on top of the job list." + BR2 +
+                    "CTRL prevents showing the Jobs dialog.", bnNext)
         End With
     End Sub
 

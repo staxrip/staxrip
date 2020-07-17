@@ -5,6 +5,9 @@
 - mkvtoolnix 48
 - ec3 file extension support for eac3 files.
 - R210/V210 video output using ffmpeg.
+- The final assistant tip supports SHIFT key to add the job at the top
+  of the job list and CTRL to prevent showing the jobs dialog.
+  It's documented via tooltip, right-click on Next button. (Dendraspis)
 
 
 2.1.3.7 Beta

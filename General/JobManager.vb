@@ -87,7 +87,7 @@ Public Class JobManager
         SaveJobs(jobs)
     End Sub
 
-    Shared Sub AddJob(name As String, path As String)
+    Shared Sub AddJob(name As String, path As String, Optional position As Integer = -1)
         Dim jobs = GetJobs()
 
         For Each job In jobs.ToArray
@@ -96,7 +96,22 @@ Public Class JobManager
             End If
         Next
 
-        jobs.Add(New Job(name, path))
+        If position = -1 Then
+            jobs.Add(New Job(name, path))
+        ElseIf position >= 0 Then
+            If jobs.Count > position Then
+                jobs.Insert(position, New Job(name, path))
+            Else
+                jobs.Add(New Job(name, path))
+            End If
+        Else
+            If -jobs.Count - 1 <= position Then
+                jobs.Insert(jobs.Count + position + 1, New Job(name, path))
+            Else
+                jobs.Add(New Job(name, path))
+            End If
+        End If
+
         SaveJobs(jobs)
     End Sub
 

@@ -1303,6 +1303,8 @@ Public Class x265Params
     Sub ApplyPresetValues()
         AQmode.Value = 2
         AQStrength.Value = 1
+        CUtree.Value = True
+        Deblock.Value = True
         DeblockA.Value = 0
         DeblockB.Value = 0
         FrameThreads.Value = 0
@@ -1327,8 +1329,6 @@ Public Class x265Params
                 BAdapt.Value = 0
                 BFrames.Value = 3
                 BIntra.Value = False
-                CUtree.Value = False
-                Deblock.Value = True
                 EarlySkip.Value = True
                 FastIntra.Value = True
                 LimitRefs.Value = 0
@@ -1357,8 +1357,6 @@ Public Class x265Params
                 BAdapt.Value = 0
                 BFrames.Value = 3
                 BIntra.Value = False
-                CUtree.Value = False
-                Deblock.Value = True
                 EarlySkip.Value = True
                 FastIntra.Value = True
                 LimitRefs.Value = 0
@@ -1384,11 +1382,8 @@ Public Class x265Params
                 BAdapt.Value = 0
                 BFrames.Value = 4
                 BIntra.Value = False
-                CUtree.Value = False
-                Deblock.Value = True
                 EarlySkip.Value = True
                 FastIntra.Value = True
-                MaxCuSize.Value = 1
                 MaxMerge.Value = 2
                 MErange.Value = 57
                 RCLookahead.Value = 15
@@ -1410,8 +1405,6 @@ Public Class x265Params
                 BAdapt.Value = 0
                 BFrames.Value = 4
                 BIntra.Value = False
-                CUtree.Value = False
-                Deblock.Value = True
                 EarlySkip.Value = True
                 FastIntra.Value = True
                 MaxMerge.Value = 2
@@ -1432,11 +1425,9 @@ Public Class x265Params
             Case 4 'fast
                 [Me].Value = 1
                 AMP.Value = False
-                BAdapt.Value = 2
+                BAdapt.Value = 0
                 BFrames.Value = 4
                 BIntra.Value = False
-                CUtree.Value = True
-                Deblock.Value = True
                 EarlySkip.Value = False
                 FastIntra.Value = True
                 MaxMerge.Value = 2
@@ -1460,8 +1451,6 @@ Public Class x265Params
                 BAdapt.Value = 2
                 BFrames.Value = 4
                 BIntra.Value = False
-                CUtree.Value = True
-                Deblock.Value = True
                 EarlySkip.Value = True
                 FastIntra.Value = False
                 MaxMerge.Value = 2
@@ -1485,8 +1474,6 @@ Public Class x265Params
                 BAdapt.Value = 2
                 BFrames.Value = 4
                 BIntra.Value = False
-                CUtree.Value = True
-                Deblock.Value = True
                 EarlySkip.Value = False
                 FastIntra.Value = False
                 LimitModes.Value = True
@@ -1513,22 +1500,20 @@ Public Class x265Params
                 BAdapt.Value = 2
                 BFrames.Value = 8
                 BIntra.Value = True
-                CUtree.Value = True
-                Deblock.Value = True
                 EarlySkip.Value = False
                 FastIntra.Value = False
                 LimitModes.Value = True
                 LimitRefs.Value = 0
                 LimitTU.Value = 4
-                LookaheadSlices.Value = 4
-                MaxMerge.Value = 5
+                LookaheadSlices.Value = 1
+                MaxMerge.Value = 4
                 MErange.Value = 57
                 PsyRDOQ.Value = 1
                 RCLookahead.Value = 40
                 RD.Value = 6
                 rdoqLevel.Value = 2
                 Rect.Value = True
-                Ref.Value = 4
+                Ref.Value = 5
                 SAO.Value = True
                 Scenecut.Value = 40
                 SignHide.Value = True
@@ -1543,13 +1528,11 @@ Public Class x265Params
                 BAdapt.Value = 2
                 BFrames.Value = 8
                 BIntra.Value = True
-                CUtree.Value = True
-                Deblock.Value = True
                 EarlySkip.Value = False
                 FastIntra.Value = False
                 LimitRefs.Value = 0
                 LimitTU.Value = 4
-                LookaheadSlices.Value = 4
+                LookaheadSlices.Value = 1
                 MaxMerge.Value = 5
                 MErange.Value = 57
                 PsyRDOQ.Value = 1
@@ -1572,12 +1555,10 @@ Public Class x265Params
                 BAdapt.Value = 2
                 BFrames.Value = 8
                 BIntra.Value = True
-                CUtree.Value = True
-                Deblock.Value = True
                 EarlySkip.Value = False
                 FastIntra.Value = False
                 LimitRefs.Value = 0
-                LookaheadSlices.Value = 0
+                LookaheadSlices.Value = 1
                 MaxMerge.Value = 5
                 MErange.Value = 92
                 RCLookahead.Value = 60
@@ -1599,6 +1580,8 @@ Public Class x265Params
     Sub ApplyPresetDefaultValues()
         AQmode.DefaultValue = 2
         AQStrength.DefaultValue = 1
+        CUtree.DefaultValue = True
+        Deblock.DefaultValue = True
         DeblockA.DefaultValue = 0
         DeblockB.DefaultValue = 0
         FrameThreads.DefaultValue = 0
@@ -1623,8 +1606,6 @@ Public Class x265Params
                 BAdapt.DefaultValue = 0
                 BFrames.DefaultValue = 3
                 BIntra.DefaultValue = False
-                CUtree.DefaultValue = False
-                Deblock.DefaultValue = True
                 EarlySkip.DefaultValue = True
                 FastIntra.DefaultValue = True
                 LimitRefs.DefaultValue = 0
@@ -1653,8 +1634,6 @@ Public Class x265Params
                 BAdapt.DefaultValue = 0
                 BFrames.DefaultValue = 3
                 BIntra.DefaultValue = False
-                CUtree.DefaultValue = False
-                Deblock.DefaultValue = True
                 EarlySkip.DefaultValue = True
                 FastIntra.DefaultValue = True
                 LimitRefs.DefaultValue = 0
@@ -1680,11 +1659,8 @@ Public Class x265Params
                 BAdapt.DefaultValue = 0
                 BFrames.DefaultValue = 4
                 BIntra.DefaultValue = False
-                CUtree.DefaultValue = False
-                Deblock.DefaultValue = True
                 EarlySkip.DefaultValue = True
                 FastIntra.DefaultValue = True
-                MaxCuSize.DefaultValue = 1
                 MaxMerge.DefaultValue = 2
                 MErange.DefaultValue = 57
                 RCLookahead.DefaultValue = 15
@@ -1706,8 +1682,6 @@ Public Class x265Params
                 BAdapt.DefaultValue = 0
                 BFrames.DefaultValue = 4
                 BIntra.DefaultValue = False
-                CUtree.DefaultValue = False
-                Deblock.DefaultValue = True
                 EarlySkip.DefaultValue = True
                 FastIntra.DefaultValue = True
                 MaxMerge.DefaultValue = 2
@@ -1728,11 +1702,9 @@ Public Class x265Params
             Case 4 'fast
                 [Me].DefaultValue = 1
                 AMP.DefaultValue = False
-                BAdapt.DefaultValue = 2
+                BAdapt.DefaultValue = 0
                 BFrames.DefaultValue = 4
                 BIntra.DefaultValue = False
-                CUtree.DefaultValue = True
-                Deblock.DefaultValue = True
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = True
                 MaxMerge.DefaultValue = 2
@@ -1756,8 +1728,6 @@ Public Class x265Params
                 BAdapt.DefaultValue = 2
                 BFrames.DefaultValue = 4
                 BIntra.DefaultValue = False
-                CUtree.DefaultValue = True
-                Deblock.DefaultValue = True
                 EarlySkip.DefaultValue = True
                 FastIntra.DefaultValue = False
                 MaxMerge.DefaultValue = 2
@@ -1781,8 +1751,6 @@ Public Class x265Params
                 BAdapt.DefaultValue = 2
                 BFrames.DefaultValue = 4
                 BIntra.DefaultValue = False
-                CUtree.DefaultValue = True
-                Deblock.DefaultValue = True
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = False
                 LimitModes.DefaultValue = True
@@ -1809,22 +1777,20 @@ Public Class x265Params
                 BAdapt.DefaultValue = 2
                 BFrames.DefaultValue = 8
                 BIntra.DefaultValue = True
-                CUtree.DefaultValue = True
-                Deblock.DefaultValue = True
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = False
                 LimitModes.DefaultValue = True
                 LimitRefs.DefaultValue = 0
                 LimitTU.DefaultValue = 4
-                LookaheadSlices.DefaultValue = 4
-                MaxMerge.DefaultValue = 5
+                LookaheadSlices.DefaultValue = 1
+                MaxMerge.DefaultValue = 4
                 MErange.DefaultValue = 57
                 PsyRDOQ.DefaultValue = 1
                 RCLookahead.DefaultValue = 40
                 RD.DefaultValue = 6
                 rdoqLevel.DefaultValue = 2
                 Rect.DefaultValue = True
-                Ref.DefaultValue = 4
+                Ref.DefaultValue = 5
                 SAO.DefaultValue = True
                 Scenecut.DefaultValue = 40
                 SignHide.DefaultValue = True
@@ -1839,12 +1805,10 @@ Public Class x265Params
                 BAdapt.DefaultValue = 2
                 BFrames.DefaultValue = 8
                 BIntra.DefaultValue = True
-                CUtree.DefaultValue = True
-                Deblock.DefaultValue = True
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = False
                 LimitTU.DefaultValue = 4
-                LookaheadSlices.DefaultValue = 4
+                LookaheadSlices.DefaultValue = 1
                 MaxMerge.DefaultValue = 4
                 MErange.DefaultValue = 57
                 PsyRDOQ.DefaultValue = 1
@@ -1867,12 +1831,10 @@ Public Class x265Params
                 BAdapt.DefaultValue = 2
                 BFrames.DefaultValue = 8
                 BIntra.DefaultValue = True
-                CUtree.DefaultValue = True
-                Deblock.DefaultValue = True
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = False
                 LimitRefs.DefaultValue = 0
-                LookaheadSlices.DefaultValue = 0
+                LookaheadSlices.DefaultValue = 1
                 MaxMerge.DefaultValue = 5
                 MErange.DefaultValue = 92
                 RCLookahead.DefaultValue = 60
@@ -1901,6 +1863,7 @@ Public Class x265Params
                 AQStrength.Value = 0.0
                 PsyRD.Value = 0.0
                 PsyRDOQ.Value = 0.0
+                CUtree.Value = False
             Case 2 '"ssim"
                 AQmode.Value = 2
                 PsyRD.Value = 0.0
@@ -1935,7 +1898,7 @@ Public Class x265Params
                 Deblock.Value = True
                 DeblockA.Value = 1
                 DeblockB.Value = 1
-                BFrames.Value = 6
+                BFrames.Value += 2
         End Select
     End Sub
 
@@ -1949,6 +1912,7 @@ Public Class x265Params
                 AQStrength.DefaultValue = 0.0
                 PsyRD.DefaultValue = 0.0
                 PsyRDOQ.DefaultValue = 0.0
+                CUtree.DefaultValue = False
             Case 2 '"ssim"
                 AQmode.DefaultValue = 2
                 PsyRD.DefaultValue = 0.0
@@ -1980,8 +1944,10 @@ Public Class x265Params
             Case 6 '"Animation
                 PsyRD.DefaultValue = 0.4
                 AQStrength.DefaultValue = 0.4
-                Deblock.DefaultValue = False
-                BFrames.DefaultValue = 6
+                Deblock.DefaultValue = True
+                DeblockA.DefaultValue = 1
+                DeblockB.DefaultValue = 1
+                BFrames.DefaultValue += 2
         End Select
     End Sub
 

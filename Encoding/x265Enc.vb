@@ -888,6 +888,14 @@ Public Class x265Params
         .Switches = {"-f"},
         .Text = "Frames"}
 
+    Property RSkip As New OptionParam With {
+        .Switch = "--rskip",
+        .Text = "Recursion Skip",
+        .Expand = True,
+        .Options = {"Undefined", "0 - Disabled", "1 - RD Level 0-4 Neighbour costs and CU homogenity, RD Level 5-6 Comparison with inter2Nx2N", "2 - RD Level 0-6 CU edge denstiy"},
+        .Values = {"0", "1", "2"},
+        .Init = 1}
+
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
             If ItemsValue Is Nothing Then
@@ -906,18 +914,16 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--refine-mv", .Text = "Refine MV", .Expand = True, .IntegerValue = True, .Options = {"Disabled", "Level 1: Search around scaled MV", "Level 2: Level 1 + Search around best AMVP cand", "Level 3: Level 2 + Search around the other AMVP cand"}},
                     New OptionParam With {.Switch = "--analysis-save-reuse-level", .Text = "Save Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     New OptionParam With {.Switch = "--analysis-load-reuse-level", .Text = "Load Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
-                    New OptionParam With {.Switch = "--rskip", .Text = "Recursion Skip", .Expand = True, .Options = {"Undefined", "0 - Disabled", "1 - RD Level 0-4 Neighbour costs, RD Level 5-6 Comparison with inter2Nx2N", "2 - RD Level 0-6 CU edge denstiy", "3 - RD Level 0-6 CU edge denstiy with forceful skip for lower levels of CTU"}, .Values = {"", "0", "1", "2", "3"}},
+                    RSkip,
+                    New NumParam With {.Switch = "--rskip-edge-threshold", .Text = "RSkip Edge Threshold, requires RSkip Mode 2", .Init = 5, .Config = {0, 100}},
                     MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
                 Add("Analysis 2",
                     New NumParam With {.Switch = "--analysis-reuse-level", .Text = "Refine Level", .Config = {1, 10}, .Init = 5},
                     New NumParam With {.Switch = "--scale-factor", .Text = "Scale Factor"},
-                    LimitTU,
-                    TUintra, TUinter, rdoqLevel,
-                    PsyRDOQ,
+                    LimitTU, TUintra, TUinter, rdoqLevel, PsyRDOQ,
                     New NumParam With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}},
-                    New NumParam With {.Switch = "--rskip-edge-threshold", .Text = "RSkip Edge Threshold", .Init = 5, .Config = {0, 100}},
                     qpadaptationrange)
                 Add("Analysis 3", Rect, AMP,
                     New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
@@ -1319,6 +1325,7 @@ Public Class x265Params
         PsyRD.Value = 2.0
         PsyRDOQ.Value = 0
         QComp.Value = 0.6
+        RSkip.Value = 1
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1566,6 +1573,7 @@ Public Class x265Params
                 rdoqLevel.Value = 2
                 Rect.Value = True
                 Ref.Value = 5
+                RSkip.Value = 0
                 SAO.Value = True
                 Scenecut.Value = 40
                 SignHide.Value = True
@@ -1596,6 +1604,7 @@ Public Class x265Params
         PsyRD.DefaultValue = 2.0
         PsyRDOQ.DefaultValue = 0
         QComp.DefaultValue = 0.6
+        RSkip.DefaultValue = 1
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1842,6 +1851,7 @@ Public Class x265Params
                 rdoqLevel.DefaultValue = 2
                 Rect.DefaultValue = True
                 Ref.DefaultValue = 5
+                RSkip.DefaultValue = 0
                 SAO.DefaultValue = True
                 Scenecut.DefaultValue = 40
                 SignHide.DefaultValue = True
@@ -1877,6 +1887,7 @@ Public Class x265Params
                 RcGrain.Value = True
                 PsyRD.Value = 4
                 PsyRDOQ.Value = 10
+                RSkip.Value = 0
                 SAO.Value = False
                 ConstVBV.Value = True
             Case 4 '"fastdecode"
@@ -1926,6 +1937,7 @@ Public Class x265Params
                 RcGrain.DefaultValue = True
                 PsyRD.DefaultValue = 4
                 PsyRDOQ.DefaultValue = 10
+                RSkip.DefaultValue = 0
                 SAO.DefaultValue = False
                 ConstVBV.DefaultValue = True
             Case 4 '"fastdecode"

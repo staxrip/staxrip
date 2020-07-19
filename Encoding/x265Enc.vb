@@ -892,7 +892,7 @@ Public Class x265Params
         .Switch = "--rskip",
         .Text = "Recursion Skip",
         .Expand = True,
-        .Options = {"Undefined", "0 - Disabled", "1 - RD Level 0-4 Neighbour costs and CU homogenity, RD Level 5-6 Comparison with inter2Nx2N", "2 - RD Level 0-6 CU edge denstiy"},
+        .Options = {"0 - Disabled", "1 - RD Level 0-4 Neighbour costs and CU homogenity, RD Level 5-6 Comparison with inter2Nx2N", "2 - RD Level 0-6 CU edge denstiy"},
         .Values = {"0", "1", "2"},
         .Init = 1}
 

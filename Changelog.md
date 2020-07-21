@@ -9,6 +9,7 @@
 - The final assistant tip supports SHIFT key to add the job at the top
   of the job list and CTRL to prevent showing the jobs dialog.
   It's documented via tooltip, right-click on Next button. (Dendraspis)
+- allow to open video files with relative paths on the command line (Dendraspis)
 
 
 2.1.3.7 Beta

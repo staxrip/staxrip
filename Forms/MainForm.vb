@@ -1824,7 +1824,7 @@ Public Class MainForm
     End Sub
 
     Sub OpenAnyFile(files As IEnumerable(Of String))
-        files = files.Select(Function(filePath) New FileInfo(filePath).FullName).AsEnumerable()
+        files = files.Select(Function(filePath) New FileInfo(filePath).FullName)
 
         If files(0).Ext = "srip" Then
             OpenProject(files(0))

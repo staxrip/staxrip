@@ -3916,9 +3916,7 @@ Public Class MainForm
 
     <Command("Dialog to manage batch jobs.")>
     Sub ShowJobsDialog()
-        Using form As New JobsForm()
-            form.ShowDialog()
-        End Using
+        JobsForm.ShowForm()
     End Sub
 
     <Command("Clears the job list.")>
@@ -4583,7 +4581,7 @@ Public Class MainForm
         ret.Add("Options", NameOf(ShowOptionsDialog), Keys.F8)
 
         ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F6, Symbol.MultiSelectLegacy)
-        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ShowLogFile), Symbol.Page)
+        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ShowLogFile), Keys.F7, Symbol.Page)
         ret.Add("Tools|Folders", Symbol.Folder)
         ret.Add("Tools|Folders|Log Files", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%Log Files"""})
         ret.Add("Tools|Folders|Plugins", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%plugin_dir%"""})

@@ -39,11 +39,11 @@ Public Class ProcessingForm
         Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
         Me.mbShutdown = New StaxRip.UI.MenuButton()
         Me.bnLog = New System.Windows.Forms.Button()
+        Me.bnMenu = New StaxRip.UI.ButtonEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         Me.pnLogHost = New System.Windows.Forms.Panel()
         Me.pnStatusHost = New System.Windows.Forms.Panel()
         Me.flpNav = New System.Windows.Forms.FlowLayoutPanel()
-        Me.bnMenu = New ButtonEx
         Me.flpButtons.SuspendLayout()
         Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
@@ -115,8 +115,16 @@ Public Class ProcessingForm
         Me.bnLog.Name = "bnLog"
         Me.bnLog.Size = New System.Drawing.Size(260, 70)
         Me.bnLog.TabIndex = 13
-        Me.bnLog.Text = "Log"
+        Me.bnLog.Text = "Log (F7)"
         Me.bnLog.UseVisualStyleBackColor = True
+        '
+        'bnMenu
+        '
+        Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnMenu.Location = New System.Drawing.Point(1421, 0)
+        Me.bnMenu.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnMenu.ShowMenuSymbol = True
+        Me.bnMenu.Size = New System.Drawing.Size(100, 70)
         '
         'tlpMain
         '
@@ -170,15 +178,7 @@ Public Class ProcessingForm
         Me.flpNav.Size = New System.Drawing.Size(1736, 1)
         Me.flpNav.TabIndex = 19
         '
-        'mbMenu
-        '
-        Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnMenu.Location = New System.Drawing.Point(1421, 0)
-        Me.bnMenu.Margin = New System.Windows.Forms.Padding(0)
-        Me.bnMenu.ShowMenuSymbol = True
-        Me.bnMenu.Size = New System.Drawing.Size(100, 70)
-        '
-        'ProcForm
+        'ProcessingForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
@@ -186,7 +186,7 @@ Public Class ProcessingForm
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(9)
-        Me.Name = "ProcForm"
+        Me.Name = "ProcessingForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
         Me.Text = "StaxRip - Processing..."
         Me.flpButtons.ResumeLayout(False)
@@ -315,22 +315,18 @@ Public Class ProcessingForm
     End Sub
 
     Sub bnJobs_Click(sender As Object, e As EventArgs) Handles bnJobs.Click
-        Using form As New JobsForm()
-            form.ShowDialog()
-        End Using
+        JobsForm.ShowForm()
     End Sub
 
     Sub bnLog_Click(sender As Object, e As EventArgs) Handles bnLog.Click
         g.DefaultCommands.ShowLogFile()
     End Sub
 
-    Sub ProcessingForm_KeyUp(sender As Object, e As KeyEventArgs) Handles MyBase.KeyUp
-        If Not (e.Alt OrElse e.Control OrElse e.Shift) Then
-            If e.KeyCode = Keys.F6 Then
-                Using form As New JobsForm()
-                    form.ShowDialog()
-                End Using
-            End If
+    Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
+        MyBase.OnKeyUp(e)
+
+        If e.KeyData = Keys.F6 Then
+            JobsForm.ShowForm()
         End If
     End Sub
 End Class

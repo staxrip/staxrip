@@ -400,4 +400,10 @@ Friend Class JobsForm
     Sub JobsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         MsgInfo(Tip)
     End Sub
+
+    Sub ShowForm()
+        Using form As New JobsForm()
+            form.ShowDialog()
+        End Using
+    End Sub
 End Class

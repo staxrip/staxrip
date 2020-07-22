@@ -243,16 +243,6 @@ Friend Class JobsForm
         cms.Add("Sort Alphabetically", Sub() lv.SortItems(), Keys.Control Or Keys.S, Function() lv.Items.Count > 1).SetImage(Symbol.Sort)
         cms.Add("Remove Selection", Sub() bnRemove.PerformClick(), Keys.Control Or Keys.Delete, Function() lv.SelectedItems.Count > 0).SetImage(Symbol.Remove)
         cms.Add("Load Selection", Sub() bnLoad.PerformClick(), Keys.Control Or Keys.L, Function() lv.SelectedItems.Count = 1)
-
-        UpdateControls()
-
-        FileWatcher.Path = Folder.Settings
-        FileWatcher.NotifyFilter = NotifyFilters.LastWrite Or NotifyFilters.CreationTime
-        FileWatcher.Filter = "Jobs.dat"
-        AddHandler FileWatcher.Changed, AddressOf Reload
-        AddHandler FileWatcher.Created, AddressOf Reload
-        AddHandler lv.ItemsChanged, AddressOf HandleItemsChanged
-        FileWatcher.EnableRaisingEvents = True
     End Sub
 
     Sub UncheckAll()
@@ -330,7 +320,7 @@ Friend Class JobsForm
 
     Sub Reload(sender As Object, e As FileSystemEventArgs)
         Invoke(Sub()
-                   If Not IsDisposed Then
+                   If Not Disposing AndAlso Not IsDisposed Then
                        IsLoading = True
                        lv.Items.Clear()
                        lv.AddItems(JobManager.GetJobs())
@@ -392,9 +382,25 @@ Friend Class JobsForm
 
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
         MyBase.OnFormClosing(args)
+
         RemoveHandler FileWatcher.Changed, AddressOf Reload
         RemoveHandler FileWatcher.Created, AddressOf Reload
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged
+    End Sub
+
+    Protected Overrides Sub OnLoad(args As EventArgs)
+        MyBase.OnLoad(args)
+
+        FileWatcher.Path = Folder.Settings
+        FileWatcher.NotifyFilter = NotifyFilters.LastWrite Or NotifyFilters.CreationTime
+        FileWatcher.Filter = "Jobs.dat"
+        FileWatcher.EnableRaisingEvents = True
+
+        AddHandler FileWatcher.Changed, AddressOf Reload
+        AddHandler FileWatcher.Created, AddressOf Reload
+        AddHandler lv.ItemsChanged, AddressOf HandleItemsChanged
+
+        UpdateControls()
     End Sub
 
     Sub JobsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested

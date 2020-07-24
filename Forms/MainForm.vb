@@ -5249,7 +5249,6 @@ Public Class MainForm
         End Using
     End Sub
 
-
     <Command("Dialog to open source files.")>
     Sub ShowOpenSourceDialog()
         Dim td As New TaskDialog(Of String)

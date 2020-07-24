@@ -12,6 +12,7 @@
 - allow to open video files with relative paths on the command line (Dendraspis)
 - Create F6 shortcut for Jobs button on Processing dialog (Dendraspis)
 - Create F7 shortcut for Log dialog
+- 4 commands added to open each source type separately (Dendraspis)
 
 
 2.1.3.7 Beta

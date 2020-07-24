@@ -5104,6 +5104,152 @@ Public Class MainForm
         blFilesize.Enabled = p.VideoEncoder.GetFixedBitrate = 0
     End Sub
 
+    <Command("Dialog to open a single file source.")>
+    Sub ShowOpenSourceSingleFileDialog()
+        Using dialog As New OpenFileDialog
+            dialog.SetFilter(FileTypes.Video.Concat(FileTypes.Image))
+            dialog.SetInitDir(s.LastSourceDir)
+
+            If dialog.ShowDialog() = DialogResult.OK Then
+                OpenVideoSourceFiles(dialog.FileNames)
+            End If
+        End Using
+    End Sub
+
+    <Command("Dialog to open a Blu-ray folder source.")>
+    Sub ShowOpenSourceBlurayFolderDialog()
+        If p.SourceFile <> "" Then
+            If Not OpenProject() Then
+                Exit Sub
+            End If
+        End If
+
+        Using dialog As New FolderBrowserDialog
+            dialog.Description = "Please select a Blu-ray source folder."
+            dialog.SetSelectedPath(s.Storage.GetString("last blu-ray source folder"))
+            dialog.ShowNewFolderButton = False
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                s.Storage.SetString("last blu-ray source folder", dialog.SelectedPath.FixDir)
+                Dim srcPath = dialog.SelectedPath.FixDir
+
+                If Directory.Exists(srcPath + "BDMV") Then
+                    srcPath = srcPath + "BDMV\"
+                End If
+
+                If Directory.Exists(srcPath + "PLAYLIST") Then
+                    srcPath = srcPath + "PLAYLIST\"
+                End If
+
+                If Not srcPath.ToUpper.EndsWith("PLAYLIST\") Then
+                    MsgWarn("No playlist directory found.")
+                    Exit Sub
+                End If
+
+                Log.WriteEnvironment()
+                Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + BR2)
+                Log.WriteLine("Source Drive Type: " + New DriveInfo(dialog.SelectedPath).DriveType.ToString + BR)
+
+                Dim output = ProcessHelp.GetConsoleOutput(Package.eac3to.Path, srcPath.Escape).Replace(VB6.vbBack, "")
+                Log.WriteLine(output)
+
+                Dim a = Regex.Split(output, "^\d+\)", RegexOptions.Multiline).ToList
+
+                If a(0) = "" Then
+                    a.RemoveAt(0)
+                End If
+
+                Dim td2 As New TaskDialog(Of Integer)
+                td2.MainInstruction = "Please select a playlist."
+
+                For Each i In a
+                    If i.Contains(BR) Then
+                        td2.AddCommand(i.Left(BR).Trim, i.Right(BR).TrimEnd, a.IndexOf(i) + 1)
+                    End If
+                Next
+
+                If td2.Show() = 0 Then
+                    Exit Sub
+                End If
+
+                OpenEac3toDemuxForm(srcPath, td2.SelectedValue)
+            End If
+        End Using
+    End Sub
+
+    <Command("Dialog to open a merged files source.")>
+    Sub ShowOpenSourceMergeFilesDialog()
+        Using form As New SourceFilesForm()
+            form.Text = "Merge"
+            form.IsMerge = True
+
+            If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
+                Dim files = form.GetFiles
+
+                Select Case files(0).Ext
+                    Case "mpg", "vob"
+                        OpenVideoSourceFiles(files)
+                    Case Else
+                        Using proc As New Proc
+                            proc.Header = "Merge source files"
+
+                            For Each i In files
+                                Log.WriteLine(MediaInfo.GetSummary(i) + "---------------------------------------------------------" + BR2)
+                            Next
+
+                            proc.Encoding = Encoding.UTF8
+                            proc.Package = Package.mkvmerge
+                            Dim outFile = files(0).DirAndBase + "_merged.mkv"
+                            proc.Arguments = "-o " + outFile.Escape + " """ + files.Join(""" + """) + """"
+
+                            Try
+                                proc.Start()
+                            Catch ex As Exception
+                                g.ShowException(ex)
+                                MsgInfo("Manual Merging", "Please merge the files manually with a appropriate tool or visit the support forum].")
+                                Throw New AbortException
+                            End Try
+
+                            If Not g.FileExists(outFile) Then
+                                Log.Write("Error merged output file is missing", outFile)
+                                Exit Sub
+                            Else
+                                OpenVideoSourceFile(outFile)
+                            End If
+                        End Using
+                End Select
+            End If
+        End Using
+    End Sub
+
+    <Command("Dialog to open a file batch source.")>
+    Sub ShowOpenSourceBatchFilesDialog()
+        If AbortDueToLowDiskSpace() Then
+            Exit Sub
+        End If
+
+        Using form As New SourceFilesForm()
+            form.Text = "File Batch"
+
+            If p.DefaultTargetName = "%source_dir_name%" Then
+                p.DefaultTargetName = "%source_name%"
+            End If
+
+            If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
+                If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then
+                    Exit Sub
+                End If
+
+                For Each filepath In form.GetFiles
+                    AddBatchJob(filepath)
+                Next
+
+                ShowJobsDialog()
+            End If
+        End Using
+    End Sub
+
+
     <Command("Dialog to open source files.")>
     Sub ShowOpenSourceDialog()
         Dim td As New TaskDialog(Of String)
@@ -5116,138 +5262,13 @@ Public Class MainForm
 
         Select Case td.Show
             Case "Single File"
-                Using dialog As New OpenFileDialog
-                    dialog.SetFilter(FileTypes.Video.Concat(FileTypes.Image))
-                    dialog.SetInitDir(s.LastSourceDir)
-
-                    If dialog.ShowDialog() = DialogResult.OK Then
-                        OpenVideoSourceFiles(dialog.FileNames)
-                    End If
-                End Using
+                ShowOpenSourceSingleFileDialog()
             Case "Merge Files"
-                Using form As New SourceFilesForm()
-                    form.Text = "Merge"
-                    form.IsMerge = True
-
-                    If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
-                        Dim files = form.GetFiles
-
-                        Select Case files(0).Ext
-                            Case "mpg", "vob"
-                                OpenVideoSourceFiles(files)
-                            Case Else
-                                Using proc As New Proc
-                                    proc.Header = "Merge source files"
-
-                                    For Each i In files
-                                        Log.WriteLine(MediaInfo.GetSummary(i) + "---------------------------------------------------------" + BR2)
-                                    Next
-
-                                    proc.Encoding = Encoding.UTF8
-                                    proc.Package = Package.mkvmerge
-                                    Dim outFile = files(0).DirAndBase + "_merged.mkv"
-                                    proc.Arguments = "-o " + outFile.Escape + " """ + files.Join(""" + """) + """"
-
-                                    Try
-                                        proc.Start()
-                                    Catch ex As Exception
-                                        g.ShowException(ex)
-                                        MsgInfo("Manual Merging", "Please merge the files manually with a appropriate tool or visit the support forum].")
-                                        Throw New AbortException
-                                    End Try
-
-                                    If Not g.FileExists(outFile) Then
-                                        Log.Write("Error merged output file is missing", outFile)
-                                        Exit Sub
-                                    Else
-                                        OpenVideoSourceFile(outFile)
-                                    End If
-                                End Using
-                        End Select
-                    End If
-                End Using
+                ShowOpenSourceMergeFilesDialog()
             Case "File Batch"
-                If AbortDueToLowDiskSpace() Then
-                    Exit Sub
-                End If
-
-                Using form As New SourceFilesForm()
-                    form.Text = "File Batch"
-
-                    If p.DefaultTargetName = "%source_dir_name%" Then
-                        p.DefaultTargetName = "%source_name%"
-                    End If
-
-                    If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
-                        If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then
-                            Exit Sub
-                        End If
-
-                        For Each filepath In form.GetFiles
-                            AddBatchJob(filepath)
-                        Next
-
-                        ShowJobsDialog()
-                    End If
-                End Using
+                ShowOpenSourceBatchFilesDialog()
             Case "Blu-ray Folder"
-                If p.SourceFile <> "" Then
-                    If Not OpenProject() Then
-                        Exit Sub
-                    End If
-                End If
-
-                Using dialog As New FolderBrowserDialog
-                    dialog.Description = "Please select a Blu-ray source folder."
-                    dialog.SetSelectedPath(s.Storage.GetString("last blu-ray source folder"))
-                    dialog.ShowNewFolderButton = False
-
-                    If dialog.ShowDialog = DialogResult.OK Then
-                        s.Storage.SetString("last blu-ray source folder", dialog.SelectedPath.FixDir)
-                        Dim srcPath = dialog.SelectedPath.FixDir
-
-                        If Directory.Exists(srcPath + "BDMV") Then
-                            srcPath = srcPath + "BDMV\"
-                        End If
-
-                        If Directory.Exists(srcPath + "PLAYLIST") Then
-                            srcPath = srcPath + "PLAYLIST\"
-                        End If
-
-                        If Not srcPath.ToUpper.EndsWith("PLAYLIST\") Then
-                            MsgWarn("No playlist directory found.")
-                            Exit Sub
-                        End If
-
-                        Log.WriteEnvironment()
-                        Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + BR2)
-                        Log.WriteLine("Source Drive Type: " + New DriveInfo(dialog.SelectedPath).DriveType.ToString + BR)
-
-                        Dim output = ProcessHelp.GetConsoleOutput(Package.eac3to.Path, srcPath.Escape).Replace(VB6.vbBack, "")
-                        Log.WriteLine(output)
-
-                        Dim a = Regex.Split(output, "^\d+\)", RegexOptions.Multiline).ToList
-
-                        If a(0) = "" Then
-                            a.RemoveAt(0)
-                        End If
-
-                        Dim td2 As New TaskDialog(Of Integer)
-                        td2.MainInstruction = "Please select a playlist."
-
-                        For Each i In a
-                            If i.Contains(BR) Then
-                                td2.AddCommand(i.Left(BR).Trim, i.Right(BR).TrimEnd, a.IndexOf(i) + 1)
-                            End If
-                        Next
-
-                        If td2.Show() = 0 Then
-                            Exit Sub
-                        End If
-
-                        OpenEac3toDemuxForm(srcPath, td2.SelectedValue)
-                    End If
-                End Using
+                ShowOpenSourceBlurayFolderDialog()
         End Select
     End Sub
 

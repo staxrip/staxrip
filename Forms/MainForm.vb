@@ -174,12 +174,11 @@ Public Class MainForm
         '
         Me.bnNext.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnNext.Cursor = System.Windows.Forms.Cursors.Default
-        Me.bnNext.Location = New System.Drawing.Point(1863, 33)
         Me.bnNext.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
         Me.bnNext.Name = "bnNext"
-        Me.bnNext.Size = New System.Drawing.Size(150, 70)
+        Me.bnNext.Size = New System.Drawing.Size(240, 100)
         Me.bnNext.TabIndex = 39
-        Me.bnNext.Text = " Next "
+        Me.bnNext.Text = "Next"
         '
         'llEditAudio0
         '
@@ -1061,6 +1060,7 @@ Public Class MainForm
     Private SourceFileMenu As ContextMenuStripEx
     Private Audio0FileMenu As ContextMenuStripEx
     Private Audio1FileMenu As ContextMenuStripEx
+    Private NextContextMenuStrip As ContextMenuStripEx
     Private BlockAviSynthItemCheck As Boolean
     Private CanChangeSize As Boolean = True
     Private CanChangeBitrate As Boolean = True
@@ -1117,6 +1117,8 @@ Public Class MainForm
         SourceFileMenu = New ContextMenuStripEx(components)
         Audio0FileMenu = New ContextMenuStripEx(components)
         Audio1FileMenu = New ContextMenuStripEx(components)
+        Audio1FileMenu = New ContextMenuStripEx(components)
+        NextContextMenuStrip = New ContextMenuStripEx(components)
 
         tbTargetFile.ContextMenuStrip = TargetFileMenu
         tbSourceFile.ContextMenuStrip = SourceFileMenu
@@ -1154,6 +1156,17 @@ Public Class MainForm
         CustomSizeMenu.AddKeyDownHandler(Me)
         CustomSizeMenu.BuildMenu()
         SizeContextMenuStrip.ResumeLayout()
+
+        bnNext.AutoSize = True
+        bnNext.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        bnNext.MinimumSize = New Size(CInt(FontHeight * 3.5), CInt(FontHeight * 1.5))
+
+        NextContextMenuStrip.Add("Add to top and open Jobs", Sub() AddJob(True, 0))
+        NextContextMenuStrip.Add("Add to bottom and open Jobs", Sub() AddJob(True, -1))
+        NextContextMenuStrip.Add("-")
+        NextContextMenuStrip.Add("Add to top w/o opening Jobs", Sub() AddJob(False, 0))
+        NextContextMenuStrip.Add("Add to bottom w/o opening Jobs", Sub() AddJob(False, -1))
+
         g.SetRenderer(MenuStrip)
         SetMenuStyle()
     End Sub
@@ -3125,92 +3138,6 @@ Public Class MainForm
         AudioTextChanged(tbAudioFile1, p.Audio1)
     End Sub
 
-    Sub bnNext_Click() Handles bnNext.Click
-        If Not CanIgnoreTip Then
-            MsgWarn("The current assistant warning cannot be skipped.")
-            Exit Sub
-        End If
-
-        If Not p.SkippedAssistantTips.Contains(CurrentAssistantTipKey) Then
-            p.SkippedAssistantTips.Add(CurrentAssistantTipKey)
-        End If
-
-        If Not g.VerifyRequirements() Then
-            Exit Sub
-        End If
-
-        If AssistantPassed Then
-            If AbortDueToLowDiskSpace() Then
-                Exit Sub
-            End If
-
-            If Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath) Then
-                Select Case p.FileExistVideo
-                    Case FileExistMode.Ask
-                        Using td As New TaskDialog(Of String)
-                            td.MainInstruction = "A video encoding output file already exists"
-                            td.Content = "Would you like to skip video encoding and reuse the existing video encoder output file or would you like to re-encode and overwrite it?"
-                            td.AddCommand("Reuse", "skip")
-                            td.AddCommand("Re-encode", "encode")
-
-                            Select Case td.Show
-                                Case "skip"
-                                    p.SkipVideoEncoding = True
-                                Case "encode"
-                                    p.SkipVideoEncoding = False
-                                Case Else
-                                    Exit Sub
-                            End Select
-                        End Using
-                    Case FileExistMode.Overwrite
-                        p.SkipVideoEncoding = False
-                    Case FileExistMode.Skip
-                        p.SkipVideoEncoding = True
-                End Select
-            End If
-
-            If (p.Audio0.File <> "" AndAlso (TypeOf p.Audio0 Is GUIAudioProfile OrElse
-                TypeOf p.Audio0 Is BatchAudioProfile) AndAlso File.Exists(p.Audio0.GetOutputFile)) OrElse
-                (p.Audio1.File <> "" AndAlso (TypeOf p.Audio1 Is GUIAudioProfile OrElse
-                TypeOf p.Audio1 Is BatchAudioProfile) AndAlso File.Exists(p.Audio1.GetOutputFile)) Then
-
-                Select Case p.FileExistAudio
-                    Case FileExistMode.Ask
-                        Using td As New TaskDialog(Of String)
-                            td.MainInstruction = "An audio encoding output file already exists"
-                            td.Content = "Would you like to skip audio encoding and reuse existing audio encoding output files or would you like to re-encode and overwrite?"
-                            td.AddCommand("Reuse", "skip")
-                            td.AddCommand("Re-encode", "encode")
-
-                            Select Case td.Show
-                                Case "skip"
-                                    p.SkipAudioEncoding = True
-                                Case "encode"
-                                    p.SkipAudioEncoding = False
-                                Case Else
-                                    Exit Sub
-                            End Select
-                        End Using
-                    Case FileExistMode.Overwrite
-                        p.SkipAudioEncoding = False
-                    Case FileExistMode.Skip
-                        p.SkipAudioEncoding = True
-                End Select
-            End If
-
-            Dim position = If(ModifierKeys.HasFlag(Keys.Shift), 0, -1)
-            AddJob(False, Nothing, position)
-
-            If ModifierKeys.HasFlag(Keys.Control) Then
-                bnNext.ShowBold()
-            Else
-                ShowJobsDialog()
-            End If
-        Else
-            Assistant()
-        End If
-    End Sub
-
     Function AbortDueToLowDiskSpace() As Boolean
         Try 'crashes with network shares
             If p.TargetFile = "" OrElse p.TargetFile.StartsWith("\\") Then
@@ -3240,7 +3167,7 @@ Public Class MainForm
     <Command("Creates a job and runs the job list.")>
     Sub StartEncoding()
         AssistantPassed = True
-        AddJob(False, Nothing)
+        AddJob(False, "")
         g.ProcessJobs()
     End Sub
 
@@ -3430,10 +3357,6 @@ Public Class MainForm
             Dim b = ui.AddBool()
             b.Text = "Check for updates once per day"
             b.Field = NameOf(s.CheckForUpdates)
-
-            b = ui.AddBool
-            b.Text = "Include beta versions for update check"
-            b.Field = NameOf(s.CheckForUpdatesBeta)
 
             b = ui.AddBool
             b.Text = "Use included portable AviSynth"
@@ -3951,6 +3874,94 @@ Public Class MainForm
                     g.LoadAudioProfile1(i)
                 End If
             Next
+        End If
+    End Sub
+
+    Sub AddJob(
+        Optional showJobsDialog As Boolean = True,
+        Optional position As Integer = -1)
+
+        If Not CanIgnoreTip Then
+            MsgWarn("The current assistant warning cannot be skipped.")
+            Exit Sub
+        End If
+
+        If Not p.SkippedAssistantTips.Contains(CurrentAssistantTipKey) Then
+            p.SkippedAssistantTips.Add(CurrentAssistantTipKey)
+        End If
+
+        If Not g.VerifyRequirements() Then
+            Exit Sub
+        End If
+
+        If AssistantPassed Then
+            If AbortDueToLowDiskSpace() Then
+                Exit Sub
+            End If
+
+            If Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath) Then
+                Select Case p.FileExistVideo
+                    Case FileExistMode.Ask
+                        Using td As New TaskDialog(Of String)
+                            td.MainInstruction = "A video encoding output file already exists"
+                            td.Content = "Would you like to skip video encoding and reuse the existing video encoder output file or would you like to re-encode and overwrite it?"
+                            td.AddCommand("Reuse", "skip")
+                            td.AddCommand("Re-encode", "encode")
+
+                            Select Case td.Show
+                                Case "skip"
+                                    p.SkipVideoEncoding = True
+                                Case "encode"
+                                    p.SkipVideoEncoding = False
+                                Case Else
+                                    Exit Sub
+                            End Select
+                        End Using
+                    Case FileExistMode.Overwrite
+                        p.SkipVideoEncoding = False
+                    Case FileExistMode.Skip
+                        p.SkipVideoEncoding = True
+                End Select
+            End If
+
+            If (p.Audio0.File <> "" AndAlso (TypeOf p.Audio0 Is GUIAudioProfile OrElse
+                TypeOf p.Audio0 Is BatchAudioProfile) AndAlso File.Exists(p.Audio0.GetOutputFile)) OrElse
+                (p.Audio1.File <> "" AndAlso (TypeOf p.Audio1 Is GUIAudioProfile OrElse
+                TypeOf p.Audio1 Is BatchAudioProfile) AndAlso File.Exists(p.Audio1.GetOutputFile)) Then
+
+                Select Case p.FileExistAudio
+                    Case FileExistMode.Ask
+                        Using td As New TaskDialog(Of String)
+                            td.MainInstruction = "An audio encoding output file already exists"
+                            td.Content = "Would you like to skip audio encoding and reuse existing audio encoding output files or would you like to re-encode and overwrite?"
+                            td.AddCommand("Reuse", "skip")
+                            td.AddCommand("Re-encode", "encode")
+
+                            Select Case td.Show
+                                Case "skip"
+                                    p.SkipAudioEncoding = True
+                                Case "encode"
+                                    p.SkipAudioEncoding = False
+                                Case Else
+                                    Exit Sub
+                            End Select
+                        End Using
+                    Case FileExistMode.Overwrite
+                        p.SkipAudioEncoding = False
+                    Case FileExistMode.Skip
+                        p.SkipAudioEncoding = True
+                End Select
+            End If
+
+            AddJob(False, Nothing, position)
+
+            If showJobsDialog Then
+                Me.ShowJobsDialog()
+            Else
+                bnNext.ShowBold()
+            End If
+        Else
+            Assistant()
         End If
     End Sub
 
@@ -5740,10 +5751,6 @@ Public Class MainForm
             .SetTip("Shows a menu with Container/Muxer profiles", llMuxer)
             .SetTip("Shows a menu with video encoder profiles", lgbEncoder.Label)
             .SetTip("Shows a menu with AviSynth filter options", lgbFilters.Label)
-            .SetTip("Next assistant tip." + BR2 +
-                    "The final tip to add a job supports modifier keys:" + BR2 +
-                    "SHIFT adds a job on top of the job list." + BR2 +
-                    "CTRL prevents showing the Jobs dialog.", bnNext)
         End With
     End Sub
 
@@ -5963,6 +5970,7 @@ Public Class MainForm
 
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
+
         BeginInvoke(New Action(Sub()
                                    Application.DoEvents()
                                    Assistant()
@@ -6002,6 +6010,21 @@ Public Class MainForm
         g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
     End Sub
 
+    Protected Overrides Sub OnDeactivate(e As EventArgs)
+        MyBase.OnDeactivate(e)
+        UpdateNextButton()
+    End Sub
+
+    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
+        MyBase.OnKeyDown(e)
+        UpdateNextButton()
+    End Sub
+
+    Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
+        MyBase.OnKeyUp(e)
+        UpdateNextButton()
+    End Sub
+
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
             Dim hwnd = Native.GetForegroundWindow()
@@ -6016,4 +6039,37 @@ Public Class MainForm
             Return MyBase.ShowWithoutActivation
         End Get
     End Property
+
+    Sub UpdateNextButton()
+        If AssistantPassed AndAlso CanIgnoreTip AndAlso
+            (ModifierKeys.HasFlag(Keys.Shift) OrElse ModifierKeys.HasFlag(Keys.Control)) Then
+
+            Dim txt = "Add"
+
+            If ModifierKeys.HasFlag(Keys.Shift) Then
+                txt += " to top"
+            End If
+
+            If ModifierKeys.HasFlag(Keys.Control) Then
+                txt += BR + "w/o opening"
+            End If
+
+            bnNext.Text = txt
+        Else
+            bnNext.Text = "Next"
+        End If
+    End Sub
+
+    Sub bnNext_Click(sender As Object, e As EventArgs) Handles bnNext.Click
+        Dim showJobsDialog = If(Control.ModifierKeys.HasFlag(Keys.Control), False, True)
+        Dim position = If(Control.ModifierKeys.HasFlag(Keys.Shift), 0, -1)
+
+        AddJob(showJobsDialog, position)
+    End Sub
+
+    Sub bnNext_MouseDown(sender As Object, e As MouseEventArgs) Handles bnNext.MouseDown
+        If e.Button = MouseButtons.Right AndAlso AssistantPassed AndAlso CanIgnoreTip Then
+            NextContextMenuStrip.Show(bnNext, 0, bnNext.Height)
+        End If
+    End Sub
 End Class

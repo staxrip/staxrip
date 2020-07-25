@@ -1128,14 +1128,8 @@ Namespace UI
         End Property
 
         Protected Overrides Sub OnClick(e As EventArgs)
-            If Not ClickAction Is Nothing Then
-                ClickAction.Invoke()
-            End If
-
-            If Not ContextMenuStrip Is Nothing Then
-                ContextMenuStrip.Show(Me, 0, Height)
-            End If
-
+            ClickAction?.Invoke()
+            ContextMenuStrip?.Show(Me, 0, Height)
             MyBase.OnClick(e)
         End Sub
 

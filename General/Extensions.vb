@@ -888,6 +888,11 @@ Module ControlExtension
     End Sub
 
     <Extension()>
+    Sub SetFontSize(instance As Control, fontSize As Single)
+        instance.Font = New Font(instance.Font.FontFamily, fontSize)
+    End Sub
+
+    <Extension()>
     Sub AddClickAction(instance As Control, action As Action)
         AddHandler instance.Click, Sub() action()
     End Sub

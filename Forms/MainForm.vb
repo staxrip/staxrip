@@ -174,12 +174,11 @@ Public Class MainForm
         '
         Me.bnNext.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnNext.Cursor = System.Windows.Forms.Cursors.Default
-        'Me.bnNext.Location = New System.Drawing.Point(1863, 33)
         Me.bnNext.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
         Me.bnNext.Name = "bnNext"
         Me.bnNext.Size = New System.Drawing.Size(240, 100)
         Me.bnNext.TabIndex = 39
-        Me.bnNext.Text = "Add"
+        Me.bnNext.Text = "Next"
         '
         'llEditAudio0
         '
@@ -1061,7 +1060,7 @@ Public Class MainForm
     Private SourceFileMenu As ContextMenuStripEx
     Private Audio0FileMenu As ContextMenuStripEx
     Private Audio1FileMenu As ContextMenuStripEx
-    Private bnNextContextMenuStrip As ContextMenuStripEx
+    Private NextContextMenuStrip As ContextMenuStripEx
     Private BlockAviSynthItemCheck As Boolean
     Private CanChangeSize As Boolean = True
     Private CanChangeBitrate As Boolean = True
@@ -1119,13 +1118,12 @@ Public Class MainForm
         Audio0FileMenu = New ContextMenuStripEx(components)
         Audio1FileMenu = New ContextMenuStripEx(components)
         Audio1FileMenu = New ContextMenuStripEx(components)
-        bnNextContextMenuStrip = New ContextMenuStripEx(components)
+        NextContextMenuStrip = New ContextMenuStripEx(components)
 
         tbTargetFile.ContextMenuStrip = TargetFileMenu
         tbSourceFile.ContextMenuStrip = SourceFileMenu
         tbAudioFile0.ContextMenuStrip = Audio0FileMenu
         tbAudioFile1.ContextMenuStrip = Audio1FileMenu
-        bnNext.ContextMenuStrip = bnNextContextMenuStrip
 
         Dim rc = "right-click"
         tbAudioFile0.SendMessageCue(rc, False)
@@ -1158,13 +1156,17 @@ Public Class MainForm
         CustomSizeMenu.AddKeyDownHandler(Me)
         CustomSizeMenu.BuildMenu()
         SizeContextMenuStrip.ResumeLayout()
-        bnNextContextMenuStrip.SuspendLayout()
-        bnNextContextMenuStrip.Add("Add to top and open Jobs", Sub() AddJob(True, 0), Nothing, True, Nothing, Nothing)
-        bnNextContextMenuStrip.Add("Add to bottom and open Jobs", Sub() AddJob(True, -1), Nothing, True, Nothing, Nothing)
-        bnNextContextMenuStrip.Add("-")
-        bnNextContextMenuStrip.Add("Add to top w/o opening Jobs", Sub() AddJob(False, 0), Nothing, True, Nothing, Nothing)
-        bnNextContextMenuStrip.Add("Add to bottom w/o opening Jobs", Sub() AddJob(False, -1), Nothing, True, Nothing, Nothing)
-        bnNextContextMenuStrip.ResumeLayout()
+
+        bnNext.AutoSize = True
+        bnNext.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        bnNext.MinimumSize = New Size(CInt(FontHeight * 3.5), CInt(FontHeight * 1.5))
+
+        NextContextMenuStrip.Add("Add to top and open Jobs", Sub() AddJob(True, 0))
+        NextContextMenuStrip.Add("Add to bottom and open Jobs", Sub() AddJob(True, -1))
+        NextContextMenuStrip.Add("-")
+        NextContextMenuStrip.Add("Add to top w/o opening Jobs", Sub() AddJob(False, 0))
+        NextContextMenuStrip.Add("Add to bottom w/o opening Jobs", Sub() AddJob(False, -1))
+
         g.SetRenderer(MenuStrip)
         SetMenuStyle()
     End Sub
@@ -3132,13 +3134,6 @@ Public Class MainForm
         AudioTextChanged(tbAudioFile1, p.Audio1)
     End Sub
 
-    Sub bnNext_Click() Handles bnNext.Click
-        Dim showJobsDialog = If(Control.ModifierKeys.HasFlag(Keys.Control), False, True)
-        Dim position = If(Control.ModifierKeys.HasFlag(Keys.Shift), 0, -1)
-
-        AddJob(showJobsDialog, position)
-    End Sub
-
     Function AbortDueToLowDiskSpace() As Boolean
         Try 'crashes with network shares
             If p.TargetFile = "" OrElse p.TargetFile.StartsWith("\\") Then
@@ -3959,9 +3954,9 @@ Public Class MainForm
             AddJob(False, Nothing, position)
 
             If showJobsDialog Then
-                bnNext.ShowBold()
-            Else
                 Me.ShowJobsDialog()
+            Else
+                bnNext.ShowBold()
             End If
         Else
             Assistant()
@@ -5734,10 +5729,6 @@ Public Class MainForm
             .SetTip("Shows a menu with Container/Muxer profiles", llMuxer)
             .SetTip("Shows a menu with video encoder profiles", lgbEncoder.Label)
             .SetTip("Shows a menu with AviSynth filter options", lgbFilters.Label)
-            .SetTip("Next assistant tip." + BR2 +
-                    "The final tip to add a job supports modifier keys:" + BR2 +
-                    "SHIFT adds a job on top of the job list." + BR2 +
-                    "CTRL prevents showing the Jobs dialog.", bnNext)
         End With
     End Sub
 
@@ -5957,6 +5948,7 @@ Public Class MainForm
 
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
+
         BeginInvoke(New Action(Sub()
                                    Application.DoEvents()
                                    Assistant()
@@ -5996,6 +5988,21 @@ Public Class MainForm
         g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
     End Sub
 
+    Protected Overrides Sub OnDeactivate(e As EventArgs)
+        MyBase.OnDeactivate(e)
+        UpdateNextButton()
+    End Sub
+
+    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
+        MyBase.OnKeyDown(e)
+        UpdateNextButton()
+    End Sub
+
+    Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
+        MyBase.OnKeyUp(e)
+        UpdateNextButton()
+    End Sub
+
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
             Dim hwnd = Native.GetForegroundWindow()
@@ -6011,43 +6018,36 @@ Public Class MainForm
         End Get
     End Property
 
-    Sub MainForm_Deactivate(sender As Object, e As EventArgs) Handles MyBase.Deactivate
-        ButtonTextOnModifiers(sender, Nothing)
-    End Sub
+    Sub UpdateNextButton()
+        If AssistantPassed AndAlso CanIgnoreTip AndAlso
+            (ModifierKeys.HasFlag(Keys.Shift) OrElse ModifierKeys.HasFlag(Keys.Control)) Then
 
-    Sub MainForm_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
-        ButtonTextOnModifiers(sender, e)
-    End Sub
+            Dim txt = "Add"
 
-    Sub MainForm_KeyUp(sender As Object, e As KeyEventArgs) Handles MyBase.KeyUp
-        ButtonTextOnModifiers(sender, e)
-    End Sub
-
-    Sub ButtonTextOnModifiers(sender As Object, e As KeyEventArgs)
-        bnNextOnModifiers(sender, e)
-    End Sub
-
-    Sub bnNextOnModifiers(sender As Object, e As KeyEventArgs)
-        Try
-            bnNext.SuspendLayout()
-            bnNext.Font = New Font(bnNext.Font.FontFamily, 9)
-            bnNext.Text = "Add"
-
-            If e.Modifiers.HasFlag(Keys.Shift) Then
-                bnNext.Text += " to top"
+            If ModifierKeys.HasFlag(Keys.Shift) Then
+                txt += " to top"
             End If
 
-            bnNext.Text += ""
-
-            If e.Modifiers.HasFlag(Keys.Control) Then
-                bnNext.Font = New Font(bnNext.Font.FontFamily, 7)
-                bnNext.Text += BR + "w/o opening"
+            If ModifierKeys.HasFlag(Keys.Control) Then
+                txt += BR + "w/o opening"
             End If
-        Catch ex As Exception
-            bnNext.Font = New Font(bnNext.Font.FontFamily, 9)
-            bnNext.Text = "Add"
-        Finally
-            bnNext.ResumeLayout()
-        End Try
+
+            bnNext.Text = txt
+        Else
+            bnNext.Text = "Next"
+        End If
+    End Sub
+
+    Sub bnNext_Click(sender As Object, e As EventArgs) Handles bnNext.Click
+        Dim showJobsDialog = If(Control.ModifierKeys.HasFlag(Keys.Control), False, True)
+        Dim position = If(Control.ModifierKeys.HasFlag(Keys.Shift), 0, -1)
+
+        AddJob(showJobsDialog, position)
+    End Sub
+
+    Sub bnNext_MouseDown(sender As Object, e As MouseEventArgs) Handles bnNext.MouseDown
+        If e.Button = MouseButtons.Right AndAlso AssistantPassed AndAlso CanIgnoreTip Then
+            NextContextMenuStrip.Show(bnNext, 0, bnNext.Height)
+        End If
     End Sub
 End Class

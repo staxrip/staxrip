@@ -3448,8 +3448,8 @@ Public Class MainForm
             b.Help = "If you disable this you can still right-click menu items to show the tooltip."
             b.Field = NameOf(s.EnableTooltips)
 
-            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(38, 21)
-            ui.FormSizeScaleFactor = New Size(31, 21)
+            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(38, 22)
+            ui.FormSizeScaleFactor = New Size(31, 22)
 
             Dim systemPage = ui.CreateFlowPage("System", True)
 

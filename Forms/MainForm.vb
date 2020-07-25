@@ -2599,9 +2599,9 @@ Public Class MainForm
         If Not p.SkippedAssistantTips.Contains(CurrentAssistantTipKey) Then
             If message <> "" Then
                 If message.Length > 130 Then
-                    laTip.Font = New Font(laTip.Font.FontFamily, 8 * s.UIScaleFactor)
+                    laTip.SetFontSize(8 * s.UIScaleFactor)
                 Else
-                    laTip.Font = New Font(laTip.Font.FontFamily, 9 * s.UIScaleFactor)
+                    laTip.SetFontSize(9 * s.UIScaleFactor)
                 End If
             End If
 
@@ -3068,8 +3068,8 @@ Public Class MainForm
 
         gbAssistant.Text = "Add Job"
 
-        If laTip.Font.Size <> 9 Then
-            laTip.Font = New Font(laTip.Font.FontFamily, 9 * s.UIScaleFactor)
+        If laTip.Font.Size <> (9 * s.UIScaleFactor) Then
+            laTip.SetFontSize(9 * s.UIScaleFactor)
         End If
 
         laTip.Text = "Click on the next button to add a job."

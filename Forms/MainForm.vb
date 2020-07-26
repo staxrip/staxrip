@@ -3149,8 +3149,8 @@ Public Class MainForm
             If di.AvailableFreeSpace / 1024 ^ 3 < s.MinimumDiskSpace Then
                 Using td As New TaskDialog(Of String)
                     td.MainInstruction = "Low Disk Space"
-                    td.Content = $"The target drive {Path.GetPathRoot(p.TargetFile)} has only {(di.AvailableFreeSpace / 1024 ^ 3).ToString("f2")} GB free disk space." + BR2 +
-                        "This message can be configured at:" + BR2 + "Tools > Settings > System > Minimum Disk Space"
+                    td.Content = $"The target drive {Path.GetPathRoot(p.TargetFile)} has only " +
+                                 $"{(di.AvailableFreeSpace / 1024 ^ 3).ToString("f2")} GB free disk space."
                     td.MainIcon = TaskDialogIcon.Warning
                     td.AddButton("Continue", "Continue")
                     td.AddButton("Abort", "Abort")
@@ -6062,7 +6062,7 @@ Public Class MainForm
     End Sub
 
     Sub bnNext_Click(sender As Object, e As EventArgs) Handles bnNext.Click
-        Dim showJobsDialog = If(Control.ModifierKeys.HasFlag(Keys.Control), False, True)
+        Dim showJobsDialog = Not Control.ModifierKeys.HasFlag(Keys.Control)
         Dim position = If(Control.ModifierKeys.HasFlag(Keys.Shift), 0, -1)
 
         AddJob(showJobsDialog, position)

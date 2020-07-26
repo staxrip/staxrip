@@ -99,10 +99,10 @@ Public Class QSVEnc
     End Sub
 
     Overrides Function GetMenu() As MenuList
-        Dim r As New MenuList
-        r.Add("Encoder Options", AddressOf ShowConfigDialog)
-        r.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
-        Return r
+        Dim ret As New MenuList
+        ret.Add("Encoder Options", AddressOf ShowConfigDialog)
+        ret.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
+        Return ret
     End Function
 
     Overrides Property QualityMode() As Boolean
@@ -376,9 +376,11 @@ Public Class QSVEnc
             MyBase.OnValueChanged(item)
         End Sub
 
-        Overrides Function GetCommandLine(includePaths As Boolean,
-                                          includeExecutable As Boolean,
-                                          Optional pass As Integer = 1) As String
+        Overrides Function GetCommandLine(
+            includePaths As Boolean,
+            includeExecutable As Boolean,
+            Optional pass As Integer = 1) As String
+
             Dim ret As String
             Dim sourcePath = p.Script.Path
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)

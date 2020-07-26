@@ -74,7 +74,7 @@ Public Class NVEnc
         If OutputExt = "h265" Then
             Dim codecs = ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw").Right("Codec(s)")
 
-            If Not codecs?.ToLower.Contains("hevc") Then
+            If Not codecs.ToLower.Contains("hevc") Then
                 Throw New ErrorAbortException("NVEnc Error", "H.265/HEVC isn't supported by the graphics card.")
             End If
         End If

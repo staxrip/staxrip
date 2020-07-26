@@ -18,6 +18,7 @@
 ============
 
 - AviSynth soft link fix.
+- DGIndex re-enabled by default for VOB/MPG.
 
 
 2.1.3.6 Beta

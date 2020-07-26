@@ -113,8 +113,13 @@ Module StringExtensions
         Dim chars = """*/:<>?\|"
 
         For Each i In instance
-            If chars.Contains(i) Then Return False
-            If Convert.ToInt32(i) < 32 Then Return False
+            If chars.Contains(i) Then
+                Return False
+            End If
+
+            If Convert.ToInt32(i) < 32 Then
+                Return False
+            End If
         Next
 
         Return True
@@ -608,7 +613,9 @@ Module StringExtensions
 
     <Extension()>
     Function UnescapeIllegalFileSysChars(value As String) As String
-        If value = "" Then Return ""
+        If value = "" Then
+            Return ""
+        End If
 
         For Each match As Match In Regex.Matches(value, "__(\w\w)__")
             value = value.Replace(match.Value, Uri.UnescapeDataString("%" + match.Groups(1).Value))
@@ -629,7 +636,9 @@ Module StringExtensions
 
     <Extension()>
     Function SplitNoEmptyAndWhiteSpace(value As String, ParamArray delimiters As String()) As String()
-        If value = "" Then Return {}
+        If value = "" Then
+            Return {}
+        End If
 
         Dim a = SplitNoEmpty(value, delimiters)
 

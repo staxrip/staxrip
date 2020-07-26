@@ -208,11 +208,11 @@ Public Class TaskDialog(Of T)
 
     Function GetHandle() As IntPtr
         Dim sb As New StringBuilder(500)
-        Dim h = Native.GetForegroundWindow
-        Native.GetWindowModuleFileName(h, sb, CUInt(sb.Capacity))
+        Dim handle = Native.GetForegroundWindow
+        Native.GetWindowModuleFileName(handle, sb, CUInt(sb.Capacity))
 
         If sb.ToString.Replace(".vshost", "").Base = Application.ExecutablePath.Base Then
-            Return h
+            Return handle
         End If
     End Function
 

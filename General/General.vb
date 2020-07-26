@@ -1045,11 +1045,11 @@ Public Class CommandManager
             Dim attributes = DirectCast(i.GetCustomAttributes(GetType(CommandAttribute), False), CommandAttribute())
 
             If attributes.Length > 0 Then
-                Dim c As New Command
-                c.MethodInfo = i
-                c.Attribute = attributes(0)
-                c.Object = obj
-                AddCommand(c)
+                Dim cmd As New Command
+                cmd.MethodInfo = i
+                cmd.Attribute = attributes(0)
+                cmd.Object = obj
+                AddCommand(cmd)
             End If
         Next
     End Sub

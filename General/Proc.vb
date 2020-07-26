@@ -3,11 +3,13 @@ Imports System.ComponentModel
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.Threading.Tasks
 
 Public Class Proc
     Implements IDisposable
 
     Property Abort As Boolean
+    Property Skip As Boolean
     Property IsSilent As Boolean
     Property Process As New Process
     Property Wait As Boolean
@@ -248,6 +250,29 @@ Public Class Proc
         End Try
     End Sub
 
+    Sub KillAndSkip()
+        Try
+            Skip = True
+
+            If Not Process.HasExited Then
+                If Process.ProcessName = "cmd" Then
+                    For Each i In ProcessHelp.GetChilds(Process)
+                        If {"conhost", "vspipe", "avs2pipemod64"}.Contains(i.ProcessName) Then
+                            Continue For
+                        End If
+
+                        If Not i.HasExited Then
+                            i.Kill()
+                        End If
+                    Next
+                Else
+                    Process.Kill()
+                End If
+            End If
+        Catch
+        End Try
+    End Sub
+
     Sub OutputReadNotifyUser(value As String)
         RaiseEvent OutputDataReceived(value)
     End Sub
@@ -309,6 +334,8 @@ Public Class Proc
             End If
         Catch ex As AbortException
             Throw ex
+        Catch ex As TaskCanceledException
+            Throw ex
         Catch ex As Exception
             Dim msg = ex.Message
 
@@ -337,6 +364,10 @@ Public Class Proc
 
                 If Abort Then
                     Throw New AbortException
+                End If
+
+                If Skip Then
+                    Throw New TaskCanceledException
                 End If
 
                 If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCode) Then
@@ -374,6 +405,10 @@ Public Class Proc
 
         If Abort Then
             Throw New AbortException
+        End If
+
+        If Skip Then
+            Throw New TaskCanceledException
         End If
     End Sub
 

@@ -213,6 +213,12 @@ Public Class ProcController
         Next
     End Sub
 
+    Shared Sub Skip()
+        For Each i In Procs.ToArray
+            i.Proc.KillAndSkip()
+        Next
+    End Sub
+
     Shared Sub Suspend()
         For Each process In GetProcesses()
             For Each thread As ProcessThread In process.Threads
@@ -278,7 +284,7 @@ Public Class ProcController
             End If
         End SyncLock
 
-        If Not Proc.Succeeded Then
+        If Not Proc.Succeeded And Not Proc.Skip Then
             Abort()
         End If
 

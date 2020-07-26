@@ -216,6 +216,10 @@ Public Class ProcessingForm
         Dim cms As New ContextMenuStripEx(components)
         cms.Add("Suspend", AddressOf ProcController.Suspend)
         cms.Add("Resume", AddressOf ProcController.ResumeProcs)
+        cms.Add("-")
+        cms.Add("Abort", AddressOf Abort)
+        cms.Add("Skip", AddressOf Skip)
+        cms.Add("-")
         StopAfterCurrentJobMenuItem = cms.Add("Stop After Current Job", AddressOf StopAfterCurrentJob)
 
         bnMenu.ContextMenuStrip = cms
@@ -276,7 +280,15 @@ Public Class ProcessingForm
     End Sub
 
     Sub Abort()
-        ProcController.Abort()
+        If MsgOK("Abort processing?") Then
+            ProcController.Abort()
+        End If
+    End Sub
+
+    Sub Skip()
+        If MsgOK("Skip current process?") Then
+            ProcController.Skip()
+        End If
     End Sub
 
     Sub ShowForm()
@@ -309,9 +321,7 @@ Public Class ProcessingForm
     End Sub
 
     Sub bnAbort_Click(sender As Object, e As EventArgs) Handles bnAbort.Click
-        If MsgOK("Abort processing?") Then
-            Abort()
-        End If
+        Abort()
     End Sub
 
     Sub bnJobs_Click(sender As Object, e As EventArgs) Handles bnJobs.Click

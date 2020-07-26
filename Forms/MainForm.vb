@@ -5970,6 +5970,7 @@ Public Class MainForm
 
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
+        UpdateNextButton()
 
         BeginInvoke(New Action(Sub()
                                    Application.DoEvents()

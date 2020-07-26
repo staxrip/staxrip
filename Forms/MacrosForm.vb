@@ -362,10 +362,10 @@ Public Class MacrosForm
 
     Sub bnCopy_Click(sender As Object, e As EventArgs) Handles bnCopy.Click
         Clipboard.SetText(lName.Text)
-        bnCopy.Font = New Font(bnCopy.Font, FontStyle.Bold)
+        bnCopy.SetFontStyle(FontStyle.Bold)
         Application.DoEvents()
         Thread.Sleep(300)
-        bnCopy.Font = New Font(bnCopy.Font, FontStyle.Regular)
+        bnCopy.SetFontStyle(FontStyle.Regular)
     End Sub
 
     Sub MacrosForm_Load(sender As Object, e As EventArgs) Handles Me.Load

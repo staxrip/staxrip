@@ -725,13 +725,13 @@ Namespace UI
         End Property
 
         Protected Overrides Sub OnMouseEnter(e As EventArgs)
-            Font = New Font(Font, FontStyle.Bold)
+            SetFontStyle(FontStyle.Bold)
             ForeColor = LinkColorHover
             MyBase.OnMouseEnter(e)
         End Sub
 
         Protected Overrides Sub OnMouseLeave(e As EventArgs)
-            Font = New Font(Font, FontStyle.Regular)
+            SetFontStyle(FontStyle.Regular)
             ForeColor = LinkColorNormal
             MyBase.OnMouseLeave(e)
         End Sub
@@ -1128,14 +1128,8 @@ Namespace UI
         End Property
 
         Protected Overrides Sub OnClick(e As EventArgs)
-            If Not ClickAction Is Nothing Then
-                ClickAction.Invoke()
-            End If
-
-            If Not ContextMenuStrip Is Nothing Then
-                ContextMenuStrip.Show(Me, 0, Height)
-            End If
-
+            ClickAction?.Invoke()
+            ContextMenuStrip?.Show(Me, 0, Height)
             MyBase.OnClick(e)
         End Sub
 
@@ -1328,14 +1322,14 @@ Namespace UI
         End Sub
 
         Sub ShowBold()
-            Font = New Font(Font, FontStyle.Bold)
+            SetFontStyle(FontStyle.Bold)
 
             For i = 0 To 20
                 Application.DoEvents()
                 Thread.Sleep(10)
             Next
 
-            Font = New Font(Font, FontStyle.Regular)
+            SetFontStyle(FontStyle.Regular)
         End Sub
 
         Enum ButtonSymbol

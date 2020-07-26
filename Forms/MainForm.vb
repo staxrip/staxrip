@@ -6062,7 +6062,7 @@ Public Class MainForm
     End Sub
 
     Sub bnNext_Click(sender As Object, e As EventArgs) Handles bnNext.Click
-        Dim showJobsDialog = If(Control.ModifierKeys.HasFlag(Keys.Control), False, True)
+        Dim showJobsDialog = Not Control.ModifierKeys.HasFlag(Keys.Control)
         Dim position = If(Control.ModifierKeys.HasFlag(Keys.Shift), 0, -1)
 
         AddJob(showJobsDialog, position)

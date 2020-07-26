@@ -1869,12 +1869,12 @@ Public Class x265Params
         ConstVBV.Value = False
 
         Select Case Tune.Value
-            Case 1 '"psnr"
+            Case 1 'psnr
                 AQStrength.Value = 0.0
                 PsyRD.Value = 0.0
                 PsyRDOQ.Value = 0.0
                 CUtree.Value = False
-            Case 2 '"ssim"
+            Case 2 'ssim
                 AQmode.Value = 2
                 PsyRD.Value = 0.0
                 PsyRDOQ.Value = 0.0
@@ -1890,20 +1890,20 @@ Public Class x265Params
                 RSkip.Value = 0
                 SAO.Value = False
                 ConstVBV.Value = True
-            Case 4 '"fastdecode"
+            Case 4 'fastdecode
                 Deblock.Value = False
                 SAO.Value = False
                 Weightp.Value = False
                 Weightb.Value = False
                 BIntra.Value = False
-            Case 5 '"zerolatency"
+            Case 5 'zerolatency
                 BAdapt.Value = 0
                 BFrames.Value = 0
                 RCLookahead.Value = 0
                 Scenecut.Value = 0
                 CUtree.Value = False
                 FrameThreads.Value = 1
-            Case 6 '"Animation"
+            Case 6 'Animation
                 PsyRD.Value = 0.4
                 AQStrength.Value = 0.4
                 Deblock.Value = True
@@ -1919,12 +1919,12 @@ Public Class x265Params
         ConstVBV.DefaultValue = False
 
         Select Case Tune.Value
-            Case 1 '"psnr"
+            Case 1 'psnr
                 AQStrength.DefaultValue = 0.0
                 PsyRD.DefaultValue = 0.0
                 PsyRDOQ.DefaultValue = 0.0
                 CUtree.DefaultValue = False
-            Case 2 '"ssim"
+            Case 2 'ssim
                 AQmode.DefaultValue = 2
                 PsyRD.DefaultValue = 0.0
                 PsyRDOQ.DefaultValue = 0.0
@@ -1940,20 +1940,20 @@ Public Class x265Params
                 RSkip.DefaultValue = 0
                 SAO.DefaultValue = False
                 ConstVBV.DefaultValue = True
-            Case 4 '"fastdecode"
+            Case 4 'fastdecode
                 Deblock.DefaultValue = False
                 SAO.DefaultValue = False
                 Weightp.DefaultValue = False
                 Weightb.DefaultValue = False
                 BIntra.DefaultValue = False
-            Case 5 '"zerolatency"
+            Case 5 'zerolatency
                 BAdapt.DefaultValue = 0
                 BFrames.DefaultValue = 0
                 RCLookahead.DefaultValue = 0
                 Scenecut.DefaultValue = 0
                 CUtree.DefaultValue = False
                 FrameThreads.DefaultValue = 1
-            Case 6 '"Animation
+            Case 6 'Animation
                 PsyRD.DefaultValue = 0.4
                 AQStrength.DefaultValue = 0.4
                 Deblock.DefaultValue = True

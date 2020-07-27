@@ -3,11 +3,13 @@ Imports System.ComponentModel
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.Threading.Tasks
 
 Public Class Proc
     Implements IDisposable
 
     Property Abort As Boolean
+    Property Skip As Boolean
     Property IsSilent As Boolean
     Property Process As New Process
     Property Wait As Boolean
@@ -225,10 +227,8 @@ Public Class Proc
         LogItems.Add(value)
     End Sub
 
-    Sub KillAndThrow()
+    Sub Kill()
         Try
-            Abort = True
-
             If Not Process.HasExited Then
                 If Process.ProcessName = "cmd" Then
                     For Each i In ProcessHelp.GetChilds(Process)
@@ -309,6 +309,8 @@ Public Class Proc
             End If
         Catch ex As AbortException
             Throw ex
+        Catch ex As SkipException
+            Throw ex
         Catch ex As Exception
             Dim msg = ex.Message
 
@@ -337,6 +339,10 @@ Public Class Proc
 
                 If Abort Then
                     Throw New AbortException
+                End If
+
+                If Skip Then
+                    Throw New SkipException
                 End If
 
                 If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCode) Then
@@ -374,6 +380,10 @@ Public Class Proc
 
         If Abort Then
             Throw New AbortException
+        End If
+
+        If Skip Then
+            Throw New SkipException
         End If
     End Sub
 

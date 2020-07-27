@@ -209,7 +209,15 @@ Public Class ProcController
         Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", 0)
 
         For Each i In Procs.ToArray
-            i.Proc.KillAndThrow()
+            i.Proc.Abort = True
+            i.Proc.Kill()
+        Next
+    End Sub
+
+    Shared Sub Skip()
+        For Each i In Procs.ToArray
+            i.Proc.Skip = True
+            i.Proc.Kill()
         Next
     End Sub
 
@@ -278,7 +286,7 @@ Public Class ProcController
             End If
         End SyncLock
 
-        If Not Proc.Succeeded Then
+        If Not Proc.Succeeded And Not Proc.Skip Then
             Abort()
         End If
 
@@ -361,10 +369,13 @@ Public Class ProcController
 
         SyncLock Procs
             If g.ProcForm Is Nothing Then
-                Task.Run(Sub()
-                             g.ProcForm = New ProcessingForm
-                             Application.Run(g.ProcForm)
-                         End Sub)
+                Dim thread = New Thread(Sub()
+                                            g.ProcForm = New ProcessingForm
+                                            Application.Run(g.ProcForm)
+                                        End Sub)
+
+                thread.SetApartmentState(ApartmentState.STA)
+                thread.Start()
 
                 While Not ProcessingForm.WasHandleCreated
                     Thread.Sleep(50)

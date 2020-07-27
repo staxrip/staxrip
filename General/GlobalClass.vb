@@ -344,6 +344,9 @@ Public Class GlobalClass
             If jobPath.StartsWith(Folder.Settings + "Batch Projects\") Then
                 File.Delete(jobPath)
             End If
+        Catch ex As SkipException
+            Log.Save()
+            ProcController.Aborted = False
         Catch ex As ErrorAbortException
             Log.Save()
             g.ShowException(ex, Nothing, Nothing, 50)

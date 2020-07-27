@@ -8,11 +8,12 @@
 - Include beta versions for update checker and show changelog (Dendraspis)
 - The final assistant tip supports SHIFT key to add the job at the top of the job list and
   CTRL to prevent showing the jobs dialog. Right-click shows a menu. (Dendraspis)
-- allow to open video files with relative paths on the command line (Dendraspis)
+- Allow to open video files with relative paths on the command line (Dendraspis)
 - Create F6 shortcut for Jobs button on Processing dialog (Dendraspis)
 - Create F7 shortcut for Log dialog
 - 4 commands added to open each source type separately (Dendraspis)
 - x265 Presets and Tunes fixes (Dendraspis)
+- The Processing dialog has a feature to skip the currently running job (Dendraspis)
 
 
 2.1.3.7 Beta

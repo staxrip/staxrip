@@ -826,6 +826,10 @@ Public Class AbortException
     Inherits ApplicationException
 End Class
 
+Public Class SkipException
+    Inherits ApplicationException
+End Class
+
 Public Class CLIArg
     Sub New(value As String)
         Me.Value = value

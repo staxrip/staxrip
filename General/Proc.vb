@@ -227,33 +227,8 @@ Public Class Proc
         LogItems.Add(value)
     End Sub
 
-    Sub KillAndThrow()
+    Sub Kill()
         Try
-            Abort = True
-
-            If Not Process.HasExited Then
-                If Process.ProcessName = "cmd" Then
-                    For Each i In ProcessHelp.GetChilds(Process)
-                        If {"conhost", "vspipe", "avs2pipemod64"}.Contains(i.ProcessName) Then
-                            Continue For
-                        End If
-
-                        If Not i.HasExited Then
-                            i.Kill()
-                        End If
-                    Next
-                Else
-                    Process.Kill()
-                End If
-            End If
-        Catch
-        End Try
-    End Sub
-
-    Sub KillAndSkip()
-        Try
-            Skip = True
-
             If Not Process.HasExited Then
                 If Process.ProcessName = "cmd" Then
                     For Each i In ProcessHelp.GetChilds(Process)
@@ -334,7 +309,7 @@ Public Class Proc
             End If
         Catch ex As AbortException
             Throw ex
-        Catch ex As TaskCanceledException
+        Catch ex As SkipException
             Throw ex
         Catch ex As Exception
             Dim msg = ex.Message
@@ -367,7 +342,7 @@ Public Class Proc
                 End If
 
                 If Skip Then
-                    Throw New TaskCanceledException
+                    Throw New SkipException
                 End If
 
                 If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCode) Then
@@ -408,7 +383,7 @@ Public Class Proc
         End If
 
         If Skip Then
-            Throw New TaskCanceledException
+            Throw New SkipException
         End If
     End Sub
 

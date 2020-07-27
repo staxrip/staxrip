@@ -56,7 +56,7 @@ Public Class ProcessingForm
         Me.bnAbort.Name = "bnAbort"
         Me.bnAbort.Size = New System.Drawing.Size(260, 70)
         Me.bnAbort.TabIndex = 2
-        Me.bnAbort.Text = "Abort"
+        Me.bnAbort.Text = "Abort (ESC)"
         '
         'laWhenfinisheddo
         '
@@ -200,6 +200,7 @@ Public Class ProcessingForm
 
     Private TaskbarButtonCreatedMessage As Integer
     Private StopAfterCurrentJobMenuItem As ActionMenuItem
+    Private CMS As ContextMenuStripEx
 
     Property Taskbar As Taskbar
 
@@ -213,16 +214,20 @@ Public Class ProcessingForm
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
         ScaleClientSize(45, 28)
 
-        Dim cms As New ContextMenuStripEx(components)
-        cms.Add("Suspend", AddressOf ProcController.Suspend)
-        cms.Add("Resume", AddressOf ProcController.ResumeProcs)
-        cms.Add("-")
-        cms.Add("Abort", AddressOf Abort)
-        cms.Add("Skip", AddressOf Skip)
-        cms.Add("-")
-        StopAfterCurrentJobMenuItem = cms.Add("Stop After Current Job", AddressOf StopAfterCurrentJob)
+        CMS = New ContextMenuStripEx(components)
+        CMS.Add("Suspend", AddressOf ProcController.Suspend, "Suspends the current process, might not work with all tools.")
+        CMS.Add("Resume", AddressOf ProcController.ResumeProcs, "Resumes a suspended process.")
+        CMS.Add("-")
+        CMS.Add("Abort", AddressOf Abort, "Aborts all job processing of this StaxRip instance.").ShortcutKeyDisplayString = "ESC" + g.MenuSpace
+        CMS.Add("Skip", AddressOf Skip, "Aborts the current job and continues with the next job.")
+        StopAfterCurrentJobMenuItem = CMS.Add("Stop After Current", AddressOf StopAfterCurrentJob, "Stops all job processing after the current job.")
+        CMS.Add("-")
+        CMS.Add("Jobs", AddressOf JobsForm.ShowForm, "Shows the Jobs dialog.").ShortcutKeyDisplayString = "F6" + g.MenuSpace
+        CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, "Shows the Jobs dialog.").ShortcutKeyDisplayString = "F7" + g.MenuSpace
+        CMS.Add("-")
+        CMS.Add("Help", AddressOf ShowHelp).ShortcutKeyDisplayString = "F1" + g.MenuSpace
 
-        bnMenu.ContextMenuStrip = cms
+        bnMenu.ContextMenuStrip = CMS
     End Sub
 
     Protected Overrides Sub WndProc(ByRef m As Message)
@@ -335,8 +340,24 @@ Public Class ProcessingForm
     Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
         MyBase.OnKeyUp(e)
 
-        If e.KeyData = Keys.F6 Then
-            JobsForm.ShowForm()
-        End If
+        Select Case e.KeyData
+            Case Keys.F6
+                JobsForm.ShowForm()
+            Case Keys.F7
+                g.DefaultCommands.ShowLogFile()
+            Case Keys.Escape
+                Abort()
+        End Select
+    End Sub
+
+    Sub ProcessingForm_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
+        ShowHelp()
+    End Sub
+
+    Sub ShowHelp()
+        Dim form As New HelpForm()
+        form.Doc.WriteStart(Text)
+        form.Doc.WriteTips(CMS.GetTips)
+        form.Show()
     End Sub
 End Class

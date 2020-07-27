@@ -218,14 +218,14 @@ Public Class ProcessingForm
         CMS.Add("Suspend", AddressOf ProcController.Suspend, "Suspends the current process, might not work with all tools.")
         CMS.Add("Resume", AddressOf ProcController.ResumeProcs, "Resumes a suspended process.")
         CMS.Add("-")
-        CMS.Add("Abort", AddressOf Abort, "Aborts all job processing of this StaxRip instance.").ShortcutKeyDisplayString = "ESC" + g.MenuSpace
+        CMS.Add("Abort", AddressOf Abort, "Aborts all job processing of this StaxRip instance.").KeyDisplayString = "ESC"
         CMS.Add("Skip", AddressOf Skip, "Aborts the current job and continues with the next job.")
         StopAfterCurrentJobMenuItem = CMS.Add("Stop After Current", AddressOf StopAfterCurrentJob, "Stops all job processing after the current job.")
         CMS.Add("-")
-        CMS.Add("Jobs", AddressOf JobsForm.ShowForm, "Shows the Jobs dialog.").ShortcutKeyDisplayString = "F6" + g.MenuSpace
-        CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, "Shows the Jobs dialog.").ShortcutKeyDisplayString = "F7" + g.MenuSpace
+        CMS.Add("Jobs", AddressOf JobsForm.ShowForm, "Shows the Jobs dialog.").KeyDisplayString = "F6"
+        CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, "Shows the Jobs dialog.").KeyDisplayString = "F7"
         CMS.Add("-")
-        CMS.Add("Help", AddressOf ShowHelp).ShortcutKeyDisplayString = "F1" + g.MenuSpace
+        CMS.Add("Help", AddressOf ShowHelp).KeyDisplayString = "F1"
 
         bnMenu.ContextMenuStrip = CMS
     End Sub

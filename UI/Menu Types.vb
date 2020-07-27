@@ -515,6 +515,12 @@ Namespace UI
             End Set
         End Property
 
+        WriteOnly Property KeyDisplayString As String
+            Set(value As String)
+                ShortcutKeyDisplayString = value + g.MenuSpace
+            End Set
+        End Property
+
         Sub KeyDown(sender As Object, e As KeyEventArgs)
             If Enabled AndAlso e.KeyData = Shortcut AndAlso
                 If(EnabledFunc Is Nothing, True, EnabledFunc.Invoke) AndAlso

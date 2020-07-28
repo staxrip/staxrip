@@ -53,31 +53,33 @@ Public Class ffmpegEnc
                                     End Sub
 
             form.cms.Add("Save Profile...", saveProfileAction)
-            AddHandler form.BeforeHelp, Sub()
-                                            Dim codecText = newParams.Codec.OptionText
-                                            Dim consoleHelp = ProcessHelp.GetConsoleOutput(Package.ffmpeg.Path, "-hide_banner -h encoder=" + newParams.Codec.ValueText)
-                                            Dim helpDic As New Dictionary(Of String, String) From {
-                                                {"x264", "https://trac.ffmpeg.org/wiki/Encode/H.264"},
-                                                {"x265", "https://trac.ffmpeg.org/wiki/Encode/H.265"},
-                                                {"XviD", "https://trac.ffmpeg.org/wiki/Encode/MPEG-4"},
-                                                {"VP9", "https://trac.ffmpeg.org/wiki/Encode/VP9"},
-                                                {"FFV1", "https://trac.ffmpeg.org/wiki/Encode/FFV1"},
-                                                {"Intel H.264", "https://trac.ffmpeg.org/wiki/Hardware/QuickSync"},
-                                                {"Intel H.265", "https://trac.ffmpeg.org/wiki/Hardware/QuickSync"},
-                                                {"AV1", "https://trac.ffmpeg.org/wiki/Encode/AV1"}
-                                            }
 
-                                            form.HTMLHelp = $"<h2>ffmpeg Online Help</h2>" +
-                                                "<p><a href=""{Package.ffmpeg.HelpURL}"">ffmpeg Online Help</a></p>"
+            Dim a = Sub()
+                        Dim codecText = newParams.Codec.OptionText
+                        Dim consoleHelp = ProcessHelp.GetConsoleOutput(Package.ffmpeg.Path, "-hide_banner -h encoder=" + newParams.Codec.ValueText)
+                        Dim helpDic As New Dictionary(Of String, String) From {
+                            {"x264", "https://trac.ffmpeg.org/wiki/Encode/H.264"},
+                            {"x265", "https://trac.ffmpeg.org/wiki/Encode/H.265"},
+                            {"XviD", "https://trac.ffmpeg.org/wiki/Encode/MPEG-4"},
+                            {"VP9", "https://trac.ffmpeg.org/wiki/Encode/VP9"},
+                            {"FFV1", "https://trac.ffmpeg.org/wiki/Encode/FFV1"},
+                            {"Intel H.264", "https://trac.ffmpeg.org/wiki/Hardware/QuickSync"},
+                            {"Intel H.265", "https://trac.ffmpeg.org/wiki/Hardware/QuickSync"},
+                            {"AV1", "https://trac.ffmpeg.org/wiki/Encode/AV1"}}
 
-                                            If helpDic.ContainsKey(codecText) Then
-                                                form.HTMLHelp += $"<h2>ffmpeg {codecText} Online Help</h2>" +
-                                                    $"<p><a href=""{helpDic(codecText)}"">ffmpeg {codecText} Online Help</a></p>"
-                                            End If
+                        form.HTMLHelp = $"<h2>ffmpeg Online Help</h2>" +
+                                     "<p><a href=""{Package.ffmpeg.HelpURL}"">ffmpeg Online Help</a></p>"
 
-                                            form.HTMLHelp += $"<h2>ffmpeg {codecText} Console Help</h2>" +
-                                                $"<pre>{HelpDocument.ConvertChars(consoleHelp) + BR}</pre>"
-                                        End Sub
+                        If helpDic.ContainsKey(codecText) Then
+                            form.HTMLHelp += $"<h2>ffmpeg {codecText} Online Help</h2>" +
+                                         $"<p><a href=""{helpDic(codecText)}"">ffmpeg {codecText} Online Help</a></p>"
+                        End If
+
+                        form.HTMLHelp += $"<h2>ffmpeg {codecText} Console Help</h2>" +
+                                     $"<pre>{HelpDocument.ConvertChars(consoleHelp) + BR}</pre>"
+                    End Sub
+
+            AddHandler form.BeforeHelp, a
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams
@@ -329,6 +331,8 @@ Public Class ffmpegEnc
                         Return "-crf " & param.Value & " -b:v 0"
                     ElseIf Codec.OptionText.EqualsAny("x264", "x265", "AV1") Then
                         Return "-crf " & param.Value
+                    ElseIf Codec.ValueText.EqualsAny("h264_nvenc", "hevc_nvenc") Then
+                        Return "-cq " & param.Value
                     Else
                         Return "-q:v " & param.Value
                     End If

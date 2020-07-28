@@ -5988,7 +5988,7 @@ Public Class MainForm
         Refresh()
         ProcessCommandLine(Environment.GetCommandLineArgs)
         StaxRip.Update.ShowUpdateQuestion()
-        StaxRip.Update.CheckForUpdate()
+        StaxRip.Update.CheckForUpdate(False, s.CheckForUpdatesBeta)
         Task.Run(AddressOf g.LoadPowerShellScripts)
     End Sub
 

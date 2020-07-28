@@ -1,5 +1,9 @@
 
 2.1.3.9 Beta (not yet available)
+============
+
+
+
 
 2.1.3.8 Beta
 ============
@@ -16,6 +20,7 @@
 - 4 commands added to open each source type separately (Dendraspis)
 - x265 Presets and Tunes fixes (Dendraspis)
 - The Processing dialog has a feature to skip the currently running job (Dendraspis)
+- Confirmation on exceptions before files/windows are opened (Dendraspis)
 - A new issue template for usage questions was created on the issue tracker and
   the docs were updated to describe that the issue tracker can be used for usage questions.
 - For ffmpeg h264_nvenc the command line option generated for quality

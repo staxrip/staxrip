@@ -1,5 +1,7 @@
 
-2.1.3.8 Beta (not yet available)
+2.1.3.9 Beta (not yet available)
+
+2.1.3.8 Beta
 ============
 
 - mkvtoolnix 48

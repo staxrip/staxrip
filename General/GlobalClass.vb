@@ -1123,13 +1123,18 @@ Public Class GlobalClass
         Dim logfileOpened = False
         Dim fp = Log.GetPath
 
-        If MsgQuestion("An error occured", "Do you want to open the log file?", TaskDialogButtons.YesNo) = DialogResult.Yes Then
-            g.ShellExecute(g.GetTextEditorPath(), """" + fp + """")
+        If MsgQuestion("An error occured", "Do you want to open the log file?",
+                       TaskDialogButtons.YesNo) = DialogResult.Yes Then
+            g.ShellExecute(g.GetTextEditorPath(), fp.Escape)
             logfileOpened = True
         End If
 
-        If MsgQuestion("BugReport", "Do you want to report an issue or bug?", TaskDialogButtons.YesNo) = DialogResult.Yes Then
-            If Not logfileOpened Then g.ShellExecute(g.GetTextEditorPath(), """" + fp + """")
+        If MsgQuestion("BugReport", "Do you want to report an issue or bug?",
+                       TaskDialogButtons.YesNo) = DialogResult.Yes Then
+            If Not logfileOpened Then
+                g.ShellExecute(g.GetTextEditorPath(), fp.Escape)
+            End If
+
             g.SelectFileWithExplorer(fp)
             g.ShellExecute("https://github.com/staxrip/staxrip/issues")
         End If

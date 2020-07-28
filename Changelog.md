@@ -1,5 +1,7 @@
 
-2.1.3.8 Beta (not yet available)
+2.1.3.9 Beta (not yet available)
+
+2.1.3.8 Beta
 ============
 
 - mkvtoolnix 48
@@ -18,6 +20,7 @@
   the docs were updated to describe that the issue tracker can be used for usage questions.
 - For ffmpeg h264_nvenc the command line option generated for quality
   was using -q:v instead of -cq.
+- Pass --demuxer-lavf-format=vapoursynth to mpv.net in case the source is vpy.
 
 
 2.1.3.7 Beta

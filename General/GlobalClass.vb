@@ -512,6 +512,10 @@ Public Class GlobalClass
         script.Synchronize()
         Dim args As String
 
+        If script.Engine = ScriptEngine.VapourSynth Then
+            args += " --demuxer-lavf-format=vapoursynth"
+        End If
+
         If cliArgs <> "" Then
             args += " " + cliArgs
         End If
@@ -1115,10 +1119,25 @@ Public Class GlobalClass
         End If
 
         Log.Save(p)
+
+        Dim logfileOpened = False
         Dim fp = Log.GetPath
-        g.SelectFileWithExplorer(fp)
-        g.ShellExecute(g.GetTextEditorPath(), """" + fp + """")
-        g.ShellExecute("https://github.com/staxrip/staxrip/issues")
+
+        If MsgQuestion("An error occured", "Do you want to open the log file?",
+                       TaskDialogButtons.YesNo) = DialogResult.Yes Then
+            g.ShellExecute(g.GetTextEditorPath(), fp.Escape)
+            logfileOpened = True
+        End If
+
+        If MsgQuestion("BugReport", "Do you want to report an issue or bug?",
+                       TaskDialogButtons.YesNo) = DialogResult.Yes Then
+            If Not logfileOpened Then
+                g.ShellExecute(g.GetTextEditorPath(), fp.Escape)
+            End If
+
+            g.SelectFileWithExplorer(fp)
+            g.ShellExecute("https://github.com/staxrip/staxrip/issues")
+        End If
     End Sub
 
     Function FileExists(path As String) As Boolean

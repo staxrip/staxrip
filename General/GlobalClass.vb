@@ -512,6 +512,10 @@ Public Class GlobalClass
         script.Synchronize()
         Dim args As String
 
+        If script.Engine = ScriptEngine.VapourSynth Then
+            args += " --demuxer-lavf-format=vapoursynth"
+        End If
+
         If cliArgs <> "" Then
             args += " " + cliArgs
         End If

@@ -22,10 +22,6 @@ Public Class Update
                 Exit Sub
             End If
 
-            If s.CheckForUpdatesBeta Then
-                includeBeta = True
-            End If
-
             If (DateTime.Now - s.CheckForUpdatesLastRequest).TotalHours >= 24 OrElse force Then
                 Dim changelogUrl = "https://raw.githubusercontent.com/staxrip/staxrip/master/Changelog.md"
                 Dim betaSourcesUrl = "https://staxrip.readthedocs.io/introduction.html"

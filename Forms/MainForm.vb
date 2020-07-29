@@ -3514,11 +3514,11 @@ Public Class MainForm
             l = ui.AddLabel("")
 
             b = ui.AddBool
-            b.Text = "Allow to use tools with wrong version"
+            b.Text = "Allow using tools with unknown version"
             b.Field = NameOf(s.AllowToolsWithWrongVersion)
 
             b = ui.AddBool
-            b.Text = "Allow to use custom paths in startup folder."
+            b.Text = "Allow using custom paths in startup folder"
             b.Field = NameOf(s.AllowCustomPathsInStartupFolder)
 
             n = ui.AddNum

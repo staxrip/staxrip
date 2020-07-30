@@ -915,7 +915,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--analysis-save-reuse-level", .Text = "Save Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     New OptionParam With {.Switch = "--analysis-load-reuse-level", .Text = "Load Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     RSkip,
-                    New NumParam With {.Switch = "--rskip-edge-threshold", .Text = "RSkip Edge Threshold, requires RSkip Mode 2", .Init = 5, .Config = {0, 100}},
+                    New NumParam With {.Switch = "--rskip-edge-threshold", .Text = "RSkip Edge Threshold", .Init = 5, .Config = {0, 100}},
                     MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
                 Add("Analysis 2",
                     New NumParam With {.Switch = "--analysis-reuse-level", .Text = "Refine Level", .Config = {1, 10}, .Init = 5},

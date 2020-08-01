@@ -21,7 +21,7 @@ private:
     std::wstring         m_Error;
     ServerInfo           m_Info = {};
 
-    IScriptEnvironment2* m_ScriptEnvironment = NULL;
+    IScriptEnvironment*  m_ScriptEnvironment = NULL;
     PClip                m_Clip;
     AVSValue             m_AVSValue;
     PVideoFrame          m_Frame;

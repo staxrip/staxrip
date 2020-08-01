@@ -60,16 +60,16 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
             throw std::runtime_error("Failed to load AviSynth+: \r\n\r\n" + msg);
         }
 
-        IScriptEnvironment2* (*CreateScriptEnvironment2)(int version) =
-            (IScriptEnvironment2 * (*)(int)) GetProcAddress(dll, "CreateScriptEnvironment2");
+        typedef IScriptEnvironment* (__stdcall* cse_t)(int);
+        cse_t create_env = reinterpret_cast<cse_t>(GetProcAddress(dll, "CreateScriptEnvironment"));
 
-        if (!CreateScriptEnvironment2)
-            throw std::exception("Cannot resolve AviSynth+ CreateScriptEnvironment2 function");
+        if (!create_env)
+            throw std::exception("Failed to get CreateScriptEnvironment");
 
-        m_ScriptEnvironment = CreateScriptEnvironment2(8);
+        m_ScriptEnvironment = create_env(6 /*AVS_INTERFACE_VERSION*/);
 
         if (!m_ScriptEnvironment)
-            throw std::exception("A newer AviSynth+ version is required");
+            throw std::exception("A newer AviSynth version is required");
 
         AVS_linkage = m_Linkage = m_ScriptEnvironment->GetAVSLinkage();
 

@@ -213,6 +213,7 @@ Public Class VfwFrameServer
             info2.FrameRateNum = CInt(aviInfo.dwRate)
             info2.Width = aviInfo.rcFrame.Right
             info2.Height = aviInfo.rcFrame.Bottom
+            info2.ColorSpace = GetColorSpace(aviInfo.fccHandler)
             Info = info2
         Catch ex As Exception
             Me.Error = ex.Message
@@ -248,6 +249,52 @@ Public Class VfwFrameServer
         End If
 
         Return &H80004005 'E_FAIL
+    End Function
+
+    Function GetColorSpace(fcc As UInt32) As ColorSpace
+        Dim fccStr = FccToString(fcc)
+
+        Select Case fccStr
+            Case "Y416"
+                Return ColorSpace.YUV444P16
+            Case "Y410"
+                Return ColorSpace.YUV444P10
+            Case "YV24"
+                Return ColorSpace.YUV444P8
+            Case "P216"
+                Return ColorSpace.YUV422P16
+            Case "P210", "v210", "V210"
+                Return ColorSpace.YUV422P10
+            Case "YV16"
+                Return ColorSpace.YUV422P8
+            Case "P016"
+                Return ColorSpace.YUV420P16
+            Case "P010"
+                Return ColorSpace.YUV420P10
+            Case "YV12"
+                Return ColorSpace.YUV420P8
+            Case "Y41B"
+                Return ColorSpace.YUV411P8
+            Case "YVU9"
+                Return ColorSpace.YUV410P8
+            Case "Y800"
+                Return ColorSpace.Y8
+            Case "YUY2"
+                Return ColorSpace.YUY2
+            Case "b64a"
+                Return ColorSpace.RGBP16
+            Case "r210"
+                Return ColorSpace.RGBP10
+            Case "DIB "
+                Return ColorSpace.BGR32
+        End Select
+    End Function
+
+    Function FccToString(fourcc As UInt32) As String
+        Return Convert.ToChar((fourcc And &HFF)) +
+               Convert.ToChar((fourcc And &HFF00) >> 8) +
+               Convert.ToChar((fourcc And &HFF0000) >> 16) +
+               Convert.ToChar((fourcc And &HFF000000) >> 24)
     End Function
 
     <Guid("E6D6B708-124D-11D4-86F3-DB80AFD98778"),

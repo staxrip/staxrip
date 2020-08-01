@@ -201,6 +201,34 @@ Public Class Package
         .IsIncluded = False,
         .HelpSwitch = "-h"})
 
+    Shared Property VisualCpp2012 As Package = Add(New Package With {
+        .Name = "Visual C++ 2012",
+        .Filename = "msvcp110.dll",
+        .Description = "Visual C++ 2012 Redistributable is required by some tools used by StaxRip.",
+        .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
+        .Locations = {Folder.System, "Support\VC"},
+        .VersionAllowAny = True,
+        .TreePath = "Runtimes"})
+
+    Shared Property VisualCpp2013 As Package = Add(New Package With {
+        .Name = "Visual C++ 2013",
+        .Filename = "msvcp120.dll",
+        .Description = "Visual C++ 2013 Redistributable is required by some tools used by StaxRip.",
+        .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=40784",
+        .VersionAllowAny = True,
+        .Locations = {Folder.System, "Support\VC"},
+        .TreePath = "Runtimes"})
+
+    Shared Property VisualCpp2019 As Package = Add(New Package With {
+        .Name = "Visual C++ 2019",
+        .Filename = "msvcp140.dll",
+        .Description = "Visual C++ Redistributable is required by many tools used by StaxRip.",
+        .DownloadURL = "https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads",
+        .VersionAllowOld = False,
+        .VersionAllowNew = True,
+        .Locations = {Folder.System, "Support\VC"},
+        .TreePath = "Runtimes"})
+
     Shared Property Decomb As Package = Add(New PluginPackage With {
         .Name = "Decomb",
         .Filename = "Decomb.dll",
@@ -274,7 +302,7 @@ Public Class Package
         .Required = False,
         .WebURL = "https://sourceforge.net/projects/mpcbe/",
         .Description = "DirectShow based media player (GUI app).",
-        .Locations = {Registry.LocalMachine.GetString("SOFTWARE\MPC-BE", "ExePath").Dir, Folder.Programs + "MPC-BE x64\"}})
+        .Locations = {Registry.LocalMachine.GetString("SOFTWARE\MPC-BE", "ExePath").Dir, Folder.Programs + "MPC-BE x64"}})
 
     Shared Property MpcHC As Package = Add(New Package With {
         .Name = "MPC-HC",
@@ -284,7 +312,7 @@ Public Class Package
         .Required = False,
         .WebURL = "https://mpc-hc.org/",
         .Description = "DirectShow based media player (GUI app).",
-        .Locations = {Registry.CurrentUser.GetString("Software\MPC-HC\MPC-HC", "ExePath").Dir, Folder.Programs + "MPC-HC\"}})
+        .Locations = {Registry.CurrentUser.GetString("Software\MPC-HC\MPC-HC", "ExePath").Dir, Folder.Programs + "MPC-HC"}})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
         .Name = "modPlus",
@@ -1741,36 +1769,6 @@ Public Class Package
             .WebURL = "https://forum.videohelp.com/threads/393752-CropResize-Cropping-resizing-script",
             .AvsFilterNames = {"CropResize"},
             .AvsFiltersFunc = Function() {New VideoFilter("Resize", "Advanced | CropResize", $"CropResize(%target_width%, %target_height%, \{BR}    %crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%, \{BR}    InDAR=%source_dar%, OutDAR=%target_dar%, Info=true)")}})
-
-        Add(New Package With {
-            .Name = "Visual C++ 2012",
-            .Filename = "msvcp110.dll",
-            .Description = "Visual C++ 2012 Redistributable is required by some tools used by StaxRip.",
-            .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
-            .Location = Folder.System,
-            .VersionAllowAny = True,
-            .TreePath = "Runtimes",
-            .RequiredFunc = Function() Items("SangNom2 avs").Required OrElse
-                Items("Deblock avs").Required OrElse Items("mClean avs").Required})
-
-        Add(New Package With {
-            .Name = "Visual C++ 2013",
-            .Filename = "msvcp120.dll",
-            .Description = "Visual C++ 2013 Redistributable is required by some tools used by StaxRip.",
-            .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=40784",
-            .VersionAllowAny = True,
-            .Location = Folder.System,
-            .TreePath = "Runtimes"})
-
-        Add(New Package With {
-            .Name = "Visual C++ 2019",
-            .Filename = "msvcp140.dll",
-            .Description = "Visual C++ Redistributable is required by many tools used by StaxRip.",
-            .DownloadURL = "https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads",
-            .VersionAllowOld = False,
-            .VersionAllowNew = True,
-            .Location = Folder.System,
-            .TreePath = "Runtimes"})
 
         Add(New Package With {
             .Name = "DirectX 9",

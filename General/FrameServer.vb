@@ -386,8 +386,8 @@ Public Class FrameServerHelp
         End If
 
         If Not WasInitialized Then
-            g.AddToPath(Folder.Startup, Package.Python.Directory, Package.AviSynth.Directory,
-                        Package.VapourSynth.Directory, Package.FFTW.Directory)
+            g.AddToPath(Package.VisualCpp2019.Directory, Folder.Startup, Package.Python.Directory,
+                        Package.AviSynth.Directory, Package.VapourSynth.Directory, Package.FFTW.Directory)
 
             WasInitialized = True
         End If

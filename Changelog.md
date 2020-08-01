@@ -3,6 +3,7 @@
 ============
 
 - Optional mode added to use AviSynth/VapourSynth via VFW instead of directly.
+- All VC++ x64 binaries from abbodi1406/vcredist added.
 
 
 2.1.3.8 Beta

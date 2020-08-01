@@ -3,7 +3,6 @@ Imports System.ComponentModel
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
-Imports System.Threading.Tasks
 
 Public Class Proc
     Implements IDisposable
@@ -441,10 +440,16 @@ Public Class Proc
         Dim path = dic("Path")
 
         For Each pack In Package.Items.Values
-            If pack.Path.Ext = "exe" AndAlso pack.HelpSwitch IsNot Nothing AndAlso pack.Path.FileExists Then
+            If pack.Path.Ext = "exe" AndAlso pack.HelpSwitch IsNot Nothing AndAlso
+                pack.Path.FileExists AndAlso Not path.Contains(pack.Directory + ";") Then
+
                 path = pack.Directory + ";" + path
             End If
         Next
+
+        If Not path.Contains(Package.VisualCpp2019.Directory + ";") Then
+            path = Package.VisualCpp2019.Directory + ";" + path
+        End If
 
         dic("path") = path
     End Sub

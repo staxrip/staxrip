@@ -502,7 +502,7 @@ Public Class Package
         .Filename = "AutoCrop.exe",
         .Location = "Support\AutoCrop",
         .HelpSwitch = "",
-        .Description = "AutoCrop console app (works only in StaxRip)."})
+        .Description = "AutoCrop console app."})
 
     Shared Property PNGopt As Package = Add(New Package With {
         .Name = "PNGopt",

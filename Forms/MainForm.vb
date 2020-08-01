@@ -2284,12 +2284,14 @@ Public Class MainForm
 
             If isCropActive AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
                 p.SourceScript.Synchronize(True, True, True)
+                Environment.SetEnvironmentVariable("AviSynthDLL", Package.AviSynth.Path)
 
                 Using proc As New Proc
                     proc.Header = "Auto Crop"
                     proc.SkipString = "%"
                     proc.Package = Package.AutoCrop
-                    proc.Arguments = p.SourceScript.Path.Escape + " " & s.CropFrameCount
+                    proc.Arguments = p.SourceScript.Path.Escape + " " & s.CropFrameCount & " " &
+                        If(FrameServerHelp.IsVfwUsed, 1, 0)
                     proc.Start()
 
                     Dim output = proc.Log.ToString

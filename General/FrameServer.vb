@@ -500,6 +500,11 @@ Public Class FrameServerHelp
         Return p.Script.Engine = ScriptEngine.VapourSynth
     End Function
 
+    Shared Function IsVfwUsed() As Boolean
+        Return (IsAviSynthUsed() AndAlso s.AviSynthMode = FrameServerMode.VFW) OrElse
+            (IsVapourSynthUsed() AndAlso s.VapourSynthMode = FrameServerMode.VFW)
+    End Function
+
     Shared Sub CreateAviSynthSoftLinks()
         Dim packs = {Package.x265, Package.NVEnc, Package.QSVEnc, Package.VCEEnc, Package.x264, Package.mpvnet}
 

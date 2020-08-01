@@ -2,7 +2,7 @@
 Public Class DataForm
     Property HelpAction As Action
 
-    Public Sub New()
+    Sub New()
         InitializeComponent()
     End Sub
 

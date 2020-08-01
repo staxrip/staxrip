@@ -256,7 +256,7 @@ Public Class VideoRenderer
         End If
     End Sub
 
-    Public Sub Dispose() Implements IDisposable.Dispose
+    Sub Dispose() Implements IDisposable.Dispose
         ReleaseGraphicsResources()
         Direct2dFactory.Dispose()
         DirectWriteFactory.Dispose()

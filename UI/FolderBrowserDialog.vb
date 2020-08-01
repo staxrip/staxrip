@@ -12,11 +12,11 @@ Public Class FolderBrowserDialog
     Private _selectedPath As String
     Private _rootFolder As Environment.SpecialFolder
 
-    Public Sub New()
+    Sub New()
         Me.New(False)
     End Sub
 
-    Public Sub New(forceDownlevel As Boolean)
+    Sub New(forceDownlevel As Boolean)
         If forceDownlevel Then
             _downlevelDialog = New Windows.Forms.FolderBrowserDialog()
         Else
@@ -424,25 +424,25 @@ Public Class FolderBrowserDialog
 
         Private _handle As IntPtr
 
-        Public Sub New(handle As IntPtr)
+        Sub New(handle As IntPtr)
             _handle = handle
         End Sub
 
-        Public ReadOnly Property Handle() As IntPtr Implements IWin32Window.Handle
+        ReadOnly Property Handle() As IntPtr Implements IWin32Window.Handle
             Get
                 Return _handle
             End Get
         End Property
     End Class
 
-    Public Class SafeModuleHandle
+    Class SafeModuleHandle
         Inherits SafeHandle
 
-        Public Sub New()
+        Sub New()
             MyBase.New(IntPtr.Zero, True)
         End Sub
 
-        Public Overrides ReadOnly Property IsInvalid() As Boolean
+        Overrides ReadOnly Property IsInvalid() As Boolean
             Get
                 Return handle = IntPtr.Zero
             End Get

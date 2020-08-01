@@ -277,7 +277,7 @@ Namespace UI
     Public Class LineControl
         Inherits Control
 
-        Public Sub New()
+        Sub New()
             Margin = New Padding(4, 2, 5, 2)
             Anchor = AnchorStyles.Left Or AnchorStyles.Bottom Or AnchorStyles.Right
             SetStyle(ControlStyles.SupportsTransparentBackColor, True)
@@ -784,7 +784,7 @@ Namespace UI
         Property Items As New List(Of Object)
         Property Menu As New ContextMenuStripEx
 
-        Public Sub New()
+        Sub New()
             Menu.ShowImageMargin = False
             ShowMenuSymbol = True
             AddHandler Menu.Opening, AddressOf MenuOpening
@@ -1086,7 +1086,7 @@ Namespace UI
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property ClickAction As Action
 
-        Public Sub New()
+        Sub New()
             MyBase.UseVisualStyleBackColor = True
         End Sub
 
@@ -1401,7 +1401,7 @@ Namespace UI
         Private KeyText As String = ""
         Private BlockOnSelectedIndexChanged As Boolean
 
-        Public Sub New()
+        Sub New()
             DrawMode = DrawMode.OwnerDrawFixed
         End Sub
 
@@ -2063,7 +2063,7 @@ Namespace UI
 
         Property ProgressColor As Color
 
-        Public Sub New()
+        Sub New()
             SetStyle(ControlStyles.ResizeRedraw, True)
             SetStyle(ControlStyles.Selectable, False)
             SetStyle(ControlStyles.OptimizedDoubleBuffer, True)

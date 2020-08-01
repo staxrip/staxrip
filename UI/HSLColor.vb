@@ -1,9 +1,9 @@
 ﻿Public Structure HSLColor
-    Public Sub New(color As Color)
+    Sub New(color As Color)
         SetRGB(color.R, color.G, color.B)
     End Sub
 
-    Public Sub New(h As Integer, s As Integer, l As Integer)
+    Sub New(h As Integer, s As Integer, l As Integer)
         Hue = h
         Saturation = s
         Luminosity = l
@@ -131,7 +131,7 @@
         Return r
     End Function
 
-    Public Sub SetRGB(red As Integer, green As Integer, blue As Integer)
+    Sub SetRGB(red As Integer, green As Integer, blue As Integer)
         Dim hc = HSLColor.Convert(Color.FromArgb(red, green, blue))
 
         HueValue = hc.HueValue

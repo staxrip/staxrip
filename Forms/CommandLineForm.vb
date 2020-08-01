@@ -12,7 +12,7 @@ Public Class CommandLineForm
 
     Event BeforeHelp()
 
-    Public Sub New(params As CommandLineParams)
+    Sub New(params As CommandLineParams)
         InitializeComponent()
         SimpleUI.ScaleClientSize(37, 26)
 

@@ -155,7 +155,7 @@ Public Class Native
             Bottom = r.Bottom
         End Sub
 
-        Public Sub New(left As Integer, top As Integer, right As Integer, bottom As Integer)
+        Sub New(left As Integer, top As Integer, right As Integer, bottom As Integer)
             Me.Left = left
             Me.Top = top
             Me.Right = right
@@ -178,7 +178,7 @@ Public Class Taskbar
 
     Property Handle As IntPtr
 
-    Public Sub New(handle As IntPtr)
+    Sub New(handle As IntPtr)
         Me.Handle = handle
     End Sub
 
@@ -202,14 +202,14 @@ Public Class Taskbar
     <ComImport>
     <ClassInterface(ClassInterfaceType.None)>
     <Guid("56FDF344-FD6D-11d0-958A-006097C9A090")>
-    Private Class TaskBarCommunication
+    Class TaskBarCommunication
     End Class
 
-    Public Sub SetState(taskbarState As TaskbarStates)
+    Sub SetState(taskbarState As TaskbarStates)
         Taskbar.SetProgressState(Handle, taskbarState)
     End Sub
 
-    Public Sub SetValue(progressValue As Double, progressMax As Double)
+    Sub SetValue(progressValue As Double, progressMax As Double)
         Taskbar.SetProgressValue(Handle, CULng(Math.Max(1, Math.Truncate(progressValue))), CULng(Math.Truncate(progressMax)))
     End Sub
 End Class

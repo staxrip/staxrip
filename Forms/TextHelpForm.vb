@@ -2,7 +2,7 @@
 Public Class TextHelpForm
     Property Find As String
 
-    Public Sub New(text As String, find As String)
+    Sub New(text As String, find As String)
         InitializeComponent()
         rtb.Text = text
         rtb.BackColor = Color.Black

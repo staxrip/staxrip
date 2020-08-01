@@ -236,7 +236,7 @@ Public Class MacrosForm
 
 #End Region
 
-    Public Sub New()
+    Sub New()
         InitializeComponent()
         ScaleClientSize(30, 25)
         lv.View = View.Tile

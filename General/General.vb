@@ -1193,9 +1193,15 @@ Public Module MainModule
     Private ShownMessages As String
 
     Sub MsgWarn(text As String, Optional content As String = Nothing, Optional onlyOnce As Boolean = False)
-        If onlyOnce AndAlso ShownMessages?.Contains(text + content) Then Exit Sub
+        If onlyOnce AndAlso ShownMessages?.Contains(text + content) Then
+            Exit Sub
+        End If
+
         Msg(text, content, MsgIcon.Warning, TaskDialogButtons.Ok)
-        If onlyOnce Then ShownMessages += text + content
+
+        If onlyOnce Then
+            ShownMessages += text + content
+        End If
     End Sub
 
     Function MsgOK(text As String) As Boolean

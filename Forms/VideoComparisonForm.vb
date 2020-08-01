@@ -12,7 +12,7 @@ Public Class VideoComparisonForm
 
     Event UpdateMenu()
 
-    Public Sub New()
+    Sub New()
         InitializeComponent()
         RestoreClientSize(53, 36)
 

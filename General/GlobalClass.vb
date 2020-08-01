@@ -675,7 +675,7 @@ Public Class GlobalClass
         End Try
     End Sub
 
-    Public Sub LoadVideoEncoder(profile As Profile)
+    Sub LoadVideoEncoder(profile As Profile)
         Dim currentMuxer = p.VideoEncoder.Muxer
         p.VideoEncoder = DirectCast(ObjectHelp.GetCopy(profile), VideoEncoder)
 
@@ -692,7 +692,7 @@ Public Class GlobalClass
         MainForm.Assistant()
     End Sub
 
-    Public Sub LoadAudioProfile0(profile As Profile)
+    Sub LoadAudioProfile0(profile As Profile)
         Dim file = p.Audio0.File
         Dim delay = p.Audio0.Delay
         Dim language = p.Audio0.Language
@@ -709,7 +709,7 @@ Public Class GlobalClass
         g.MainForm.Assistant()
     End Sub
 
-    Public Sub LoadAudioProfile1(profile As Profile)
+    Sub LoadAudioProfile1(profile As Profile)
         Dim file = p.Audio1.File
         Dim delay = p.Audio1.Delay
         Dim language = p.Audio1.Language

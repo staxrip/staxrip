@@ -407,15 +407,17 @@ Public Class GlobalClass
     End Function
 
     Function VerifyRequirements() As Boolean
-        For Each pack In Package.Items.Values
-            If Not pack.VerifyOK Then
+        If s.VerifyToolStatus Then
+            For Each pack In Package.Items.Values
+                If Not pack.VerifyOK Then
+                    Return False
+                End If
+            Next
+
+            If Not p.Script.IsFilterActive("Source") Then
+                MsgWarn("No active filter of category 'Source' found.")
                 Return False
             End If
-        Next
-
-        If Not p.Script.IsFilterActive("Source") Then
-            MsgWarn("No active filter of category 'Source' found.")
-            Return False
         End If
 
         Return True

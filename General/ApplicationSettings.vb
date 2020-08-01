@@ -70,6 +70,7 @@ Public Class ApplicationSettings
     Public VapourSynthFilterPreferences As StringPairList
     Public VapourSynthMode As FrameServerMode
     Public VapourSynthProfiles As List(Of FilterCategory)
+    Public VerifyToolStatus As Boolean = True
     Public Versions As Dictionary(Of String, Integer)
     Public VideoEncoderProfiles As List(Of VideoEncoder)
     Public WindowPositions As WindowPositions

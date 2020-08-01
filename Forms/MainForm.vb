@@ -3530,6 +3530,10 @@ Public Class MainForm
             b.Text = "Allow using custom paths in startup folder"
             b.Field = NameOf(s.AllowCustomPathsInStartupFolder)
 
+            b = ui.AddBool
+            b.Text = "Verify tool status"
+            b.Field = NameOf(s.VerifyToolStatus)
+
             n = ui.AddNum
             n.Text = "Path Character Limit"
             n.Help = "Character limit of source file paths and half of it as filename limit. " + Strings.CharacterLimitReason

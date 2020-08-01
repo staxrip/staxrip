@@ -2,8 +2,9 @@
 2.1.3.9 Beta (not yet available)
 ============
 
-- Optional mode added to use AviSynth/VapourSynth via VFW instead of directly.
+- Optional mode added to use AviSynth/VapourSynth via VFW.
 - All VC++ x64 binaries from abbodi1406/vcredist added.
+- Danger Zone setting to disable all tool verifications.
 
 
 2.1.3.8 Beta

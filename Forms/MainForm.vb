@@ -3345,7 +3345,7 @@ Public Class MainForm
     End Sub
 
     Function GetRestartID() As String
-        Return s.UsePortableAviSynth & s.UsePortableVapourSynth & s.UseVfwAviSynth & s.UseVfwVapourSynth
+        Return s.AviSynthMode & s.VapourSynthMode
     End Function
 
     <Command("Shows the settings dialog.")>
@@ -3362,6 +3362,16 @@ Public Class MainForm
             Dim b = ui.AddBool()
             b.Text = "Check for updates once per day"
             b.Field = NameOf(s.CheckForUpdates)
+
+            Dim avsMode = ui.AddMenu(Of FrameServerMode)()
+            avsMode.Text = "AviSynth Mode"
+            avsMode.Expandet = True
+            avsMode.Field = NameOf(s.AviSynthMode)
+
+            Dim vsMode = ui.AddMenu(Of FrameServerMode)()
+            vsMode.Text = "VapourSynth Mode"
+            vsMode.Expandet = True
+            vsMode.Field = NameOf(s.VapourSynthMode)
 
             b = ui.AddBool()
             b.Text = "Show template selection when loading new files"
@@ -3407,29 +3417,6 @@ Public Class MainForm
             n.Text = "Preview size compared to screen size (percent)"
             n.Config = {10, 90, 5}
             n.Field = NameOf(s.PreviewSize)
-
-            '################# Frameserver
-            ui.CreateFlowPage("Frameserver | AviSynth", True)
-
-            Dim usePortAVS = ui.AddBool
-            usePortAVS.Text = "Use included portable AviSynth"
-            usePortAVS.Field = NameOf(s.UsePortableAviSynth)
-
-            Dim useVfwAVS = ui.AddBool
-            useVfwAVS.Text = "Use installed AviSynth via VFW"
-            AddHandler useVfwAVS.CheckedChanged, Sub() usePortAVS.Enabled = Not useVfwAVS.Checked
-            useVfwAVS.Field = NameOf(s.UseVfwAviSynth)
-
-            ui.CreateFlowPage("Frameserver | VapourSynth", True)
-
-            Dim usePortVS = ui.AddBool
-            usePortVS.Text = "Use included portable VapourSynth"
-            usePortVS.Field = NameOf(s.UsePortableVapourSynth)
-
-            Dim useVfwVS = ui.AddBool
-            useVfwVS.Text = "Use installed VapourSynth via VFW"
-            AddHandler useVfwVS.CheckedChanged, Sub() usePortVS.Enabled = Not useVfwVS.Checked
-            useVfwVS.Field = NameOf(s.UseVfwVapourSynth)
 
             '################# User Interface
             ui.CreateFlowPage("User Interface", True)

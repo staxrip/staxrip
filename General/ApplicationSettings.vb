@@ -9,6 +9,7 @@ Public Class ApplicationSettings
     Public AllowToolsWithWrongVersion As Boolean
     Public AudioProfiles As List(Of AudioProfile)
     Public AviSynthFilterPreferences As StringPairList
+    Public AviSynthMode As FrameServerMode
     Public AviSynthProfiles As List(Of FilterCategory)
     Public CharacterLimit As Integer
     Public CheckForUpdates As Boolean
@@ -66,11 +67,8 @@ Public Class ApplicationSettings
     Public ThumbnailBackgroundColor As Color = Color.AliceBlue
     Public ToolStripRenderModeEx As ToolStripRenderModeEx = ToolStripRenderModeEx.SystemDefault
     Public UIScaleFactor As Single = 1
-    Public UsePortableAviSynth As Boolean = True
-    Public UsePortableVapourSynth As Boolean = True
-    Public UseVfwAviSynth As Boolean
-    Public UseVfwVapourSynth As Boolean
     Public VapourSynthFilterPreferences As StringPairList
+    Public VapourSynthMode As FrameServerMode
     Public VapourSynthProfiles As List(Of FilterCategory)
     Public Versions As Dictionary(Of String, Integer)
     Public VideoEncoderProfiles As List(Of VideoEncoder)

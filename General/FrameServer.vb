@@ -1,6 +1,8 @@
 ﻿
 Imports System.Runtime.InteropServices
 
+Imports StaxRip.UI
+
 Public Class DirectFrameServer
     Implements IDisposable, IFrameServer
 
@@ -148,8 +150,8 @@ Public Class FrameServerFactory
     Shared Function Create(path As String) As IFrameServer
         FrameServerHelp.Init()
 
-        If (path.Ext = "avs" AndAlso s.UseVfwAviSynth) OrElse
-           (path.Ext = "vpy" AndAlso s.UseVfwVapourSynth) Then
+        If (path.Ext = "avs" AndAlso s.AviSynthMode = FrameServerMode.VFW) OrElse
+           (path.Ext = "vpy" AndAlso s.VapourSynthMode = FrameServerMode.VFW) Then
 
             Return New VfwFrameServer(path)
         Else
@@ -511,3 +513,9 @@ Public Class FrameServerHelp
     Shared Function CreateSymbolicLink(link As String, target As String, flags As Integer) As Boolean
     End Function
 End Class
+
+Public Enum FrameServerMode
+    <DispName("Use portable directly")> Portable
+    <DispName("Use installed directly")> Installed
+    <DispName("Use installed via VFW")> VFW
+End Enum

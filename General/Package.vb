@@ -2148,8 +2148,8 @@ Public Class Package
     End Function
 
     Function GetAviSynthHintDir() As String
-        If (Not s.UsePortableAviSynth OrElse s.UseVfwAviSynth) AndAlso
-            (Folder.System + "AviSynth.dll").FileExists Then
+        If Not s.AviSynthMode = FrameServerMode.Portable AndAlso
+            File.Exists(Folder.System + Filename) Then
 
             Return Folder.System
         End If
@@ -2158,27 +2158,23 @@ Public Class Package
     End Function
 
     Function GetVapourSynthHintDir() As String
-        Dim ret As String
+        Dim test As String
 
-        If Not s.UsePortableVapourSynth OrElse s.UseVfwVapourSynth Then
-            ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
+        If Not s.VapourSynthMode = FrameServerMode.Portable Then
+            test = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL")
 
-            If File.Exists(ret + "VapourSynth.dll") Then
-                Return ret
+            If File.Exists(test) Then
+                Return test.Dir
             End If
 
-            ret = Registry.CurrentUser.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
+            test = Registry.CurrentUser.GetString("Software\VapourSynth", "VapourSynthDLL")
 
-            If File.Exists(ret + "VapourSynth.dll") Then
-                Return ret
+            If File.Exists(test) Then
+                Return test.Dir
             End If
         End If
 
-        ret = GetPathFromLocation("FrameServer\VapourSynth")
-
-        If ret <> "" Then
-            Return ret.Dir
-        End If
+        Return GetPathFromLocation("FrameServer\VapourSynth").Dir
     End Function
 
     Shared Function GetPythonHintDir() As String

@@ -112,7 +112,7 @@ Public Class Thumbnails
 
         script.Synchronize(True, True, True)
 
-        Using server As New FrameServer(script.Path)
+        Using server = FrameServerFactory.Create(script.Path)
             Dim serverPos As Integer
 
             For x = 1 To count

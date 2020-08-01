@@ -68,6 +68,8 @@ Public Class ApplicationSettings
     Public UIScaleFactor As Single = 1
     Public UsePortableAviSynth As Boolean = True
     Public UsePortableVapourSynth As Boolean = True
+    Public UseVfwAviSynth As Boolean
+    Public UseVfwVapourSynth As Boolean
     Public VapourSynthFilterPreferences As StringPairList
     Public VapourSynthProfiles As List(Of FilterCategory)
     Public Versions As Dictionary(Of String, Integer)

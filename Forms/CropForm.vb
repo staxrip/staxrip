@@ -149,7 +149,7 @@ Public Class CropForm
 
 #End Region
 
-    Private FrameServer As FrameServer
+    Private FrameServer As IFrameServer
     Private Renderer As VideoRenderer
     Private SelectedBorderColor As Color = ToolStripRendererEx.ColorBorder
     Private Side As AnchorStyles
@@ -610,7 +610,7 @@ Public Class CropForm
         script.Filters.Add(p.Script.GetFilter("Source").GetCopy)
         script.Synchronize(True, True, True)
 
-        FrameServer = New FrameServer(script.Path)
+        FrameServer = FrameServerFactory.Create(script.Path)
         Renderer = New VideoRenderer(pnVideo, FrameServer)
 
         If s.LastPosition < (FrameServer.Info.FrameCount - 1) Then

@@ -247,7 +247,7 @@ clipname.set_output()
 
                 g.MainForm.Indexing()
 
-                Using server As New FrameServer(Path)
+                Using server = FrameServerFactory.Create(Path)
                     Info = server.Info
 
                     If Not convertToRGB Then

@@ -244,7 +244,7 @@ Public Class PreviewForm
 
 #End Region
 
-    Private FrameServer As FrameServer
+    Private FrameServer As IFrameServer
     Private Renderer As VideoRenderer
     Private StartRange As Integer = -1
     Private EndRange As Integer = -1
@@ -1040,7 +1040,7 @@ Public Class PreviewForm
         MyBase.OnLoad(args)
 
         PreviewScript.Synchronize(True, True, True)
-        FrameServer = New FrameServer(PreviewScript.Path)
+        FrameServer = FrameServerFactory.Create(PreviewScript.Path)
         Renderer = New VideoRenderer(pnVideo, FrameServer)
         Renderer.Info = PreviewScript.OriginalInfo
         Renderer.ShowInfo = s.ShowPreviewInfo

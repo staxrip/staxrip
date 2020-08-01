@@ -17,10 +17,10 @@ Public Class VideoRenderer
     Private DirectWriteFactory As ComObject(Of IDWriteFactory)
     Private RenderTarget As ID2D1HwndRenderTarget
     Private DeviceContext As ID2D1DeviceContext
-    Private Server As FrameServer
+    Private Server As IFrameServer
     Private Control As Control
 
-    Sub New(control As Control, server As FrameServer)
+    Sub New(control As Control, server As IFrameServer)
         Me.Server = server
         Me.Control = control
         Info = server.Info
@@ -68,7 +68,7 @@ Public Class VideoRenderer
             Dim pitch As Integer
             Dim pixelPtr As IntPtr
 
-            If Server.NativeServer.GetFrame(Position, pixelPtr, pitch) <> 0 OrElse pixelPtr = IntPtr.Zero Then
+            If Server.GetFrame(Position, pixelPtr, pitch) <> 0 OrElse pixelPtr = IntPtr.Zero Then
                 Exit Sub
             End If
 

@@ -4,7 +4,7 @@ Imports System.Text.RegularExpressions
 Imports StaxRip.UI
 
 Public Class LogForm
-    Public Sub New()
+    Sub New()
         InitializeComponent()
         RestoreClientSize(50, 35)
         Text += " - " + p.Log.GetPath

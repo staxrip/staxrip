@@ -2148,7 +2148,9 @@ Public Class Package
     End Function
 
     Function GetAviSynthHintDir() As String
-        If Not s.UsePortableAviSynth AndAlso (Folder.System + "AviSynth.dll").FileExists Then
+        If (Not s.UsePortableAviSynth OrElse s.UseVfwAviSynth) AndAlso
+            (Folder.System + "AviSynth.dll").FileExists Then
+
             Return Folder.System
         End If
 
@@ -2158,7 +2160,7 @@ Public Class Package
     Function GetVapourSynthHintDir() As String
         Dim ret As String
 
-        If Not s.UsePortableVapourSynth Then
+        If Not s.UsePortableVapourSynth OrElse s.UseVfwVapourSynth Then
             ret = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL").Dir
 
             If File.Exists(ret + "VapourSynth.dll") Then

@@ -1246,7 +1246,7 @@ Public Class GlobalClass
     Sub RunAutoCrop(progressAction As Action(Of Double))
         p.SourceScript.Synchronize(True, True, True)
 
-        Using server As New FrameServer(p.SourceScript.Path)
+        Using server = FrameServerFactory.Create(p.SourceScript.Path)
             Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)
             Dim crops(s.CropFrameCount - 1) As AutoCrop
             Dim pos As Integer

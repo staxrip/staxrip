@@ -2439,6 +2439,7 @@ Public Class MainForm
                     matrix = "470bg"
                 End If
 
+                'TODO: 10 bit support 
                 p.Script.GetFilter("Source").Script += BR + "clip = clip.resize.Bicubic(matrix_s = '" + matrix + "', format = vs.YUV420P8)"
             ElseIf editAVS AndAlso Not sourceFilter.Script.ContainsAny("ConvertToYV12", "ConvertToYUV420") AndAlso
                 Not sourceFilter.Script.Contains("ConvertToYUV420") Then
@@ -3343,28 +3344,24 @@ Public Class MainForm
         g.SaveSettings()
     End Sub
 
+    Function GetRestartID() As String
+        Return s.UsePortableAviSynth & s.UsePortableVapourSynth & s.UseVfwAviSynth & s.UseVfwVapourSynth
+    End Function
+
     <Command("Shows the settings dialog.")>
     Sub ShowSettingsDialog()
-        Dim usePortableAviSynth = s.UsePortableAviSynth
-        Dim usePortableVapourSynth = s.UsePortableVapourSynth
+        Dim restartID = GetRestartID()
 
         Using form As New SimpleSettingsForm("Settings")
             Dim ui = form.SimpleUI
             ui.Store = s
 
+            '################# General
             ui.CreateFlowPage("General")
 
             Dim b = ui.AddBool()
             b.Text = "Check for updates once per day"
             b.Field = NameOf(s.CheckForUpdates)
-
-            b = ui.AddBool
-            b.Text = "Use included portable AviSynth"
-            b.Field = NameOf(s.UsePortableAviSynth)
-
-            b = ui.AddBool
-            b.Text = "Use included portable VapourSynth"
-            b.Field = NameOf(s.UsePortableVapourSynth)
 
             b = ui.AddBool()
             b.Text = "Show template selection when loading new files"
@@ -3411,6 +3408,30 @@ Public Class MainForm
             n.Config = {10, 90, 5}
             n.Field = NameOf(s.PreviewSize)
 
+            '################# Frameserver
+            ui.CreateFlowPage("Frameserver | AviSynth", True)
+
+            Dim usePortAVS = ui.AddBool
+            usePortAVS.Text = "Use included portable AviSynth"
+            usePortAVS.Field = NameOf(s.UsePortableAviSynth)
+
+            Dim useVfwAVS = ui.AddBool
+            useVfwAVS.Text = "Use installed AviSynth via VFW"
+            AddHandler useVfwAVS.CheckedChanged, Sub() usePortAVS.Enabled = Not useVfwAVS.Checked
+            useVfwAVS.Field = NameOf(s.UseVfwAviSynth)
+
+            ui.CreateFlowPage("Frameserver | VapourSynth", True)
+
+            Dim usePortVS = ui.AddBool
+            usePortVS.Text = "Use included portable VapourSynth"
+            usePortVS.Field = NameOf(s.UsePortableVapourSynth)
+
+            Dim useVfwVS = ui.AddBool
+            useVfwVS.Text = "Use installed VapourSynth via VFW"
+            AddHandler useVfwVS.CheckedChanged, Sub() usePortVS.Enabled = Not useVfwVS.Checked
+            useVfwVS.Field = NameOf(s.UseVfwVapourSynth)
+
+            '################# User Interface
             ui.CreateFlowPage("User Interface", True)
 
             Dim l = ui.AddLabel("Icon File")
@@ -3447,9 +3468,11 @@ Public Class MainForm
             b.Help = "If you disable this you can still right-click menu items to show the tooltip."
             b.Field = NameOf(s.EnableTooltips)
 
+            '############# Preprocessing
             ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(38, 22)
             ui.FormSizeScaleFactor = New Size(31, 22)
 
+            '############# System
             Dim systemPage = ui.CreateFlowPage("System", True)
 
             Dim procPriority = ui.AddMenu(Of ProcessPriorityClass)
@@ -3480,6 +3503,7 @@ Public Class MainForm
             b.Text = "Minimize processing dialog to tray"
             b.Field = NameOf(s.MinimizeToTray)
 
+            '############# Video
             Dim videoPage = ui.CreateFlowPage("Video", True)
 
             b = ui.AddBool
@@ -3492,16 +3516,14 @@ Public Class MainForm
             n.Config = {5, 20}
             n.Field = NameOf(s.CropFrameCount)
 
-            b.Text = "Add filter to convert chroma subsampling to 4:2:0"
-            b.Help = "After a source is loaded, automatically add a filter to convert chroma subsampling to 4:2:0"
-            b.Field = NameOf(s.ConvertChromaSubsampling)
-
+            '############# Source Filters
             Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth",
-                                             s.AviSynthFilterPreferences, s.AviSynthProfiles)
+                s.AviSynthFilterPreferences, s.AviSynthProfiles)
 
             Dim bsVS = AddFilterPreferences(ui, "Source Filters | VapourSynth",
-                                            s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
+                s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
 
+            '############### Danger Zone
             Dim dangerZonePage = ui.CreateFlowPage("Danger Zone", True)
 
             l = ui.AddLabel("")
@@ -3547,9 +3569,7 @@ Public Class MainForm
                 g.SaveSettings()
             End If
 
-            If usePortableAviSynth <> s.UsePortableAviSynth OrElse
-                usePortableVapourSynth <> s.UsePortableVapourSynth Then
-
+            If restartID <> GetRestartID() Then
                 MsgInfo("Please restart StaxRip.")
             End If
 

@@ -236,7 +236,7 @@ Public Class VideoComparisonForm
     Public Class VideoTab
         Inherits TabPage
 
-        Property Server As FrameServer
+        Property Server As IFrameServer
         Property Form As VideoComparisonForm
         Property SourceFile As String
         Property VideoPanel As Panel
@@ -287,7 +287,7 @@ Public Class VideoComparisonForm
             End If
 
             script.Synchronize(True, True, True)
-            Server = New FrameServer(script.Path)
+            Server = FrameServerFactory.Create(script.Path)
             Renderer = New VideoRenderer(VideoPanel, Server)
 
             FileHelp.Delete(sourePath + ".ffindex")

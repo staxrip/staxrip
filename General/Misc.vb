@@ -1572,11 +1572,11 @@ Public Class BitmapUtil
         Return util
     End Function
 
-    Shared Function CreateBitmap(server As FrameServer, position As Integer) As Bitmap
+    Shared Function CreateBitmap(server As IFrameServer, position As Integer) As Bitmap
         Dim pitch As Integer
         Dim data As IntPtr
 
-        If server.NativeServer.GetFrame(position, data, pitch) = 0 Then
+        If server.GetFrame(position, data, pitch) = 0 Then
             Return New Bitmap(server.Info.Width, server.Info.Height,
                 pitch, PixelFormat.Format32bppArgb, data)
         End If

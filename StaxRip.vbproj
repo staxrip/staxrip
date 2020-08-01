@@ -179,7 +179,6 @@
     <Compile Include="General\Documentation.vb" />
     <Compile Include="General\Extras.vb" />
     <Compile Include="General\FrameServer.vb" />
-    <Compile Include="General\FrameServerHelp.vb" />
     <Compile Include="General\JobManager.vb" />
     <Compile Include="General\LogBuilder.vb" />
     <Compile Include="General\GlobalClass.vb" />

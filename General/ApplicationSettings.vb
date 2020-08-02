@@ -38,17 +38,19 @@ Public Class ApplicationSettings
     Public IconFile As String
     Public LastPosition As Integer
     Public LastSourceDir As String
+    Public LoadAviSynthPlugins As Boolean = True
+    Public LoadVapourSynthPlugins As Boolean = True
     Public LogEventCommand As Boolean
     Public LogFileNum As Integer = 50
     Public MinimizeToTray As Boolean
     Public MinimumDiskSpace As Integer = 20
-    Public PreviewSize As Integer = 70
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
     Public ParallelProcsNum As Integer = 2
     Public ParMenu As String
     Public PreventStandby As Boolean = True
     Public PreviewFormBorderStyle As FormBorderStyle
+    Public PreviewSize As Integer = 70
     Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.Idle
     Public ProjectsMruNum As Integer = 10
     Public RecentFramePositions As List(Of String)

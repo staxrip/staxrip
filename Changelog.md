@@ -4,7 +4,9 @@
 
 - Optional mode added to use AviSynth/VapourSynth via VFW.
 - All VC++ x64 binaries from abbodi1406/vcredist added.
-- Danger Zone setting to disable all tool verifications.
+- Danger Zone setting to disable tool verifications.
+- Setting to disable manual plugin loading.
+- VapourSynth R51
 
 
 2.1.3.8 Beta

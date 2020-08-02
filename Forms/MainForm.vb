@@ -3365,16 +3365,6 @@ Public Class MainForm
             b.Text = "Check for updates once per day"
             b.Field = NameOf(s.CheckForUpdates)
 
-            Dim avsMode = ui.AddMenu(Of FrameServerMode)()
-            avsMode.Text = "AviSynth Mode"
-            avsMode.Expandet = True
-            avsMode.Field = NameOf(s.AviSynthMode)
-
-            Dim vsMode = ui.AddMenu(Of FrameServerMode)()
-            vsMode.Text = "VapourSynth Mode"
-            vsMode.Expandet = True
-            vsMode.Field = NameOf(s.VapourSynthMode)
-
             b = ui.AddBool()
             b.Text = "Show template selection when loading new files"
             b.Field = NameOf(s.ShowTemplateSelection)
@@ -3419,6 +3409,27 @@ Public Class MainForm
             n.Text = "Preview size compared to screen size (percent)"
             n.Config = {10, 90, 5}
             n.Field = NameOf(s.PreviewSize)
+
+            '################# Frameserver
+            ui.CreateFlowPage("Frameserver", True)
+
+            Dim avsMode = ui.AddMenu(Of FrameServerMode)()
+            avsMode.Text = "AviSynth Mode"
+            avsMode.Field = NameOf(s.AviSynthMode)
+
+            Dim vsMode = ui.AddMenu(Of FrameServerMode)()
+            vsMode.Text = "VapourSynth Mode"
+            vsMode.Field = NameOf(s.VapourSynthMode)
+
+            b = ui.AddBool()
+            b.Text = "Load AviSynth plugins"
+            b.Help = "Detects and adds necessary LoadPlugin calls."
+            b.Field = NameOf(s.LoadAviSynthPlugins)
+
+            b = ui.AddBool()
+            b.Text = "Load VapourSynth plugins"
+            b.Help = "Detects and adds necessary LoadPlugin calls."
+            b.Field = NameOf(s.LoadVapourSynthPlugins)
 
             '################# User Interface
             ui.CreateFlowPage("User Interface", True)

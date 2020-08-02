@@ -371,7 +371,7 @@ clipname.set_output()
                 ModifyVSScript(scriptCode, code)
             End If
         Else
-            If Not File.Exists(Folder.Plugins + plugin.Filename) AndAlso
+            If s.LoadVapourSynthPlugins AndAlso Not File.Exists(Folder.Plugins + plugin.Filename) AndAlso
                 Not script.Contains(plugin.Filename) AndAlso Not code.Contains(plugin.Filename) Then
 
                 Dim line As String
@@ -400,7 +400,10 @@ clipname.set_output()
             If fp <> "" Then
                 If Not plugin.AvsFilterNames Is Nothing Then
                     For Each filterName In plugin.AvsFilterNames
-                        If scriptLower.Contains(filterName.ToLower) Then
+                        If s.LoadAviSynthPlugins AndAlso
+                            Not File.Exists(Folder.Plugins + plugin.Filename) AndAlso
+                            scriptLower.Contains(filterName.ToLower) Then
+
                             If plugin.Filename.Ext = "dll" Then
                                 Dim load = "LoadPlugin(""" + fp + """)" + BR
 

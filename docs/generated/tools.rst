@@ -101,7 +101,7 @@ Tools
     "YFRC","AviSynth Script","YFRC.avsi","2015-10-01","2019-01-01"
     "Zs_RF_Shared","AviSynth Script","Zs_RF_Shared.avsi","1.127","2020-05-31"
     "aomenc","Console App","aomenc.exe","2.0",""
-    "AutoCrop","Console App","AutoCrop.exe","1.0.0.0","2020-05-06"
+    "AutoCrop","Console App","AutoCrop.exe","2.0.0.0","2020-08-02"
     "avs2pipemod","Console App","avs2pipemod64.exe","1.1.1","2016-08-14"
     "AVSMeter","Console App","AVSMeter64.exe","3.0.2.0","2020-06-23"
     "eac3to","Console App","eac3to.exe","3.34","2017-11-19"
@@ -112,15 +112,15 @@ Tools
     "mkvmerge","Console App","mkvmerge.exe","48","2020-06-27"
     "MP4Box","Console App","MP4Box.exe","1.0.0-rev16-g10dd6533a-gcc11.0.0 Patman","2020-06-21"
     "mtn","Console App","mtn.exe","2.0.1","2019-06-27"
-    "NVEnc","Console App","NVEncC64.exe","5.06","2020-06-16"
+    "NVEnc","Console App","NVEncC64.exe","5.13","2020-07-29"
     "PNGopt","Console App","apngopt.exe","1.4","2019-01-01"
-    "Python","Console App","python.exe","3.8.3121","2020-04-29"
+    "Python","Console App","python.exe","3.8.5150","2020-07-20"
     "qaac","Console App","qaac64.exe","2.69","2020-06-21"
     "QSVEnc","Console App","QSVEncC64.exe","4.04","2020-06-16"
     "rav1e","Console App","rav1e.exe","0.3.0","2020-02-29"
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.3-57-gba72bc85-msvc1926 Patman","2020-06-21"
     "VCEEnc","Console App","VCEEncC64.exe","6.02","2020-05-14"
-    "vspipe","Console App","vspipe.exe","r50","2020-05-08"
+    "vspipe","Console App","vspipe.exe","r51","2020-08-01"
     "x264","Console App","x264.exe","M-0.160.3009-4c9b076-gcc11 Patman","2020-06-22"
     "x265","Console App","x265.exe","M-3.4+6-g73f96ff39-gcc11.0.0 Patman","2020-05-30"
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
@@ -138,7 +138,7 @@ Tools
     "DirectX 9","Library","d3d9.dll","","2019-12-07"
     "FFTW","Library","libfftw3-3.dll","3.3.8","2018-12-20"
     "MediaInfo","Library","MediaInfo.dll","20.03","2020-04-03"
-    "VapourSynth","Library","vapoursynth.dll","r50","2020-05-08"
+    "VapourSynth","Library","vapoursynth.dll","r51","2020-08-01"
     "Visual C++ 2012","Library","msvcp110.dll","","2012-11-05"
     "Visual C++ 2013","Library","msvcp120.dll","","2016-02-10"
     "Visual C++ 2019","Library","msvcp140.dll","","2020-03-20"
@@ -218,7 +218,7 @@ https://aomedia.org
 AutoCrop
 ~~~~~~~~
 
-AutoCrop console app (works only in StaxRip).
+AutoCrop console app.
 
 
 

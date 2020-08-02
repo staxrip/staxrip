@@ -2199,6 +2199,10 @@ Public Class Package
 
     Overridable ReadOnly Property Path As String
         Get
+            If IntPtr.Size = 4 AndAlso Filename.Contains("64.exe") Then
+                Filename = Filename.Replace("64.exe", ".exe")
+            End If
+
             Dim ret = GetStoredPath()
 
             If File.Exists(ret) Then

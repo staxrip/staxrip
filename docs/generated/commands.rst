@@ -30,6 +30,8 @@
       - Show Confirmation
     * - templateName <string>
       - Template Name: Name of the template to be loaded after the job was added. Empty to load no template.
+    * - position <integer>
+      - Position to insert new job
 
 .. option:: CheckForUpdate
 
@@ -407,9 +409,25 @@
 
     Dialog to manage Muxer profiles.
 
+.. option:: ShowOpenSourceBatchFilesDialog
+
+    Dialog to open a file batch source.
+
+.. option:: ShowOpenSourceBlurayFolderDialog
+
+    Dialog to open a Blu-ray folder source.
+
 .. option:: ShowOpenSourceDialog
 
     Dialog to open source files.
+
+.. option:: ShowOpenSourceMergeFilesDialog
+
+    Dialog to open a merged files source.
+
+.. option:: ShowOpenSourceSingleFileDialog
+
+    Dialog to open a single file source.
 
 .. option:: ShowOptionsDialog
 

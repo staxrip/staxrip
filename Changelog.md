@@ -1,12 +1,17 @@
 
-2.1.3.9 Beta (not yet available)
+2.1.4.1 Beta (not yet available)
+============
+
+2.1.3.9 Beta
 ============
 
 - Optional mode added to use AviSynth/VapourSynth via VFW.
 - All VC++ x64 binaries from abbodi1406/vcredist added.
 - Danger Zone setting to disable tool verifications.
 - Setting to disable manual plugin loading.
+- Experimental 32 bit support.
 - VapourSynth R51
+- NVEnc 5.13
 
 
 2.1.3.8 Beta

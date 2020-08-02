@@ -1662,6 +1662,11 @@ Public Class MainForm
             SetBindings(p, True)
 
             Text = path.Base + " - " + Application.ProductName + " " + Application.ProductVersion
+
+            If IntPtr.Size = 4 Then
+                Text += " (32 bit)"
+            End If
+
             SkipAssistant = True
 
             If path.StartsWith(Folder.Template) Then

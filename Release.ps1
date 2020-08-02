@@ -46,6 +46,13 @@ $versionInfo = [Diagnostics.FileVersionInfo]::GetVersionInfo($exeFile)
 $vsDir       = 'C:\Program Files (x86)\Microsoft Visual Studio\2019'
 $msBuild     = $vsDir + '\Community\MSBuild\Current\Bin\MSBuild.exe'
 
+& $msBuild ($PSScriptRoot + '\StaxRip.sln') -t:Rebuild -p:Configuration=Release -p:Platform=x86
+
+if ($LastExitCode)
+{
+    throw $LastExitCode
+}
+
 & $msBuild ($PSScriptRoot + '\StaxRip.sln') -t:Rebuild -p:Configuration=Release -p:Platform=x64
 
 if ($LastExitCode)
@@ -60,27 +67,35 @@ if ($versionInfo.FilePrivatePart -gt 9)
 }
 elseif ($versionInfo.FilePrivatePart -ne 0)
 {
-    $releaseType = 'beta'
+    $releaseType = 'Beta'
     $downloadURL = 'https://staxrip.readthedocs.io/introduction.html#beta'
 }
 else
 {
-    $releaseType = 'stable'
+    $releaseType = 'Stable'
     $downloadURL = 'https://staxrip.readthedocs.io/introduction.html#stable'
 }
 
-$desktopDir  = [Environment]::GetFolderPath('Desktop')
-$targetDir   = $desktopDir + '\StaxRip-x64-' + $versionInfo.FileVersion + '-' + $releaseType
+$desktopDir    = [Environment]::GetFolderPath('Desktop')
+$targetDir     = $desktopDir + '\StaxRip-x64-' + $versionInfo.FileVersion + '-' + $releaseType
+$targetDir32   = $desktopDir + '\StaxRip-x86-' + $versionInfo.FileVersion + '-' + $releaseType + "-Experimental"
 
 if (Test-Path $targetDir)
 {
     Remove-Item $targetDir -Recurse
 }
 
-Copy-Item ($PSScriptRoot + '\bin') $targetDir -Recurse
+if (Test-Path $targetDir32)
+{
+    Remove-Item $targetDir32 -Recurse
+}
+
+Copy-Item ($PSScriptRoot + '\bin')     $targetDir   -Recurse
+Copy-Item ($PSScriptRoot + '\bin-x86') $targetDir32 -Recurse
 
 $patterns = @(
     '*\_StaxRip.log',
+    '*\AVSMeter.ini',
     '*\AVSMeter64.ini',
     '*\chapterEditor.ini',
     '*\d2vwitch.ini'
@@ -101,23 +116,28 @@ $patterns = @(
     '*_pycache_*'
 )
 
-foreach ($item in (Get-ChildItem $targetDir -Recurse))
+foreach ($dir in $targetDir, $targetDir32)
 {
-    foreach ($pattern in $patterns)
+    foreach ($item in (Get-ChildItem $dir -Recurse))
     {
-        if ($item.FullName -like $pattern -and (Test-Path $item.FullName))
+        foreach ($pattern in $patterns)
         {
-            Write-Host delete $item.FullName
-            Remove-Item $item.FullName -Recurse
+            if ($item.FullName -like $pattern -and (Test-Path $item.FullName))
+            {
+                Write-Host delete $item.FullName
+                Remove-Item $item.FullName -Recurse
+            }
         }
     }
 }
 
-Get-ChildItem $targetDir -Filter *.ini -Recurse | foreach { throw $_ }
+Get-ChildItem $targetDir   -Filter *.ini -Recurse | foreach { throw $_ }
+Get-ChildItem $targetDir32 -Filter *.ini -Recurse | foreach { throw $_ }
 
 if ($versionInfo.FilePrivatePart -gt 9)
 {
-    Remove-Item ($targetDir + '\Apps') -Recurse
+    Remove-Item ($targetDir   + '\Apps') -Recurse
+    Remove-Item ($targetDir32 + '\Apps') -Recurse
 }
 
 $7z = 'C:\Program Files\7-Zip\7z.exe'
@@ -128,7 +148,14 @@ if ($LastExitCode)
     throw $LastExitCode
 }
 
-if ($releaseType -eq 'beta' -or $releaseType -eq 'beta-without-apps')
+& $7z a -t7z -mx9 "$targetDir32.7z" -r "$targetDir32\*"
+
+if ($LastExitCode)
+{
+    throw $LastExitCode
+}
+
+if ($releaseType -eq 'Beta' -or $releaseType -eq 'beta-without-apps')
 {
     if (Test-Path 'D:\Projekte\VB\StaxRip')
     {
@@ -142,21 +169,27 @@ if ($releaseType -eq 'beta' -or $releaseType -eq 'beta-without-apps')
                 throw $outputDirectory
             }
 
-            $targetFile = $outputDirectory + '\' + (Split-Path "$targetDir.7z" -Leaf)
+            $targetFile   = $outputDirectory + '\' + (Split-Path "$targetDir.7z"   -Leaf)
+            $targetFile32 = $outputDirectory + '\' + (Split-Path "$targetDir32.7z" -Leaf)
 
             if (Test-Path $targetFile)
             {
                 throw $targetFile
             }
 
-            Copy-Item "$targetDir.7z" $targetFile
+            if (Test-Path $targetFile32)
+            {
+                throw $targetFile32
+            }
+
+            Copy-Item "$targetDir.7z"   $targetFile
+            Copy-Item "$targetDir32.7z" $targetFile32
             Invoke-Item $outputDirectory
         }
     }
 }
 
-Set-Clipboard ('[B]' + $versionInfo.FileVersion + $releaseType[0].ToString().ToUpper() +
-    $releaseType.Substring(1) + "[/B]`n`n`nChangelog`n`n" +
+Set-Clipboard ('[B]' + $versionInfo.FileVersion + $releaseType + "[/B]`n`n`nChangelog`n`n" +
     'https://github.com/staxrip/staxrip/blob/master/Changelog.md' +
     "`n`n`nDownload`n`n" + $downloadURL)
 

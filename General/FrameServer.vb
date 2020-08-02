@@ -506,7 +506,7 @@ Public Class FrameServerHelp
     End Function
 
     Shared Sub CreateAviSynthSoftLinks()
-        Dim packs = {Package.x265, Package.NVEnc, Package.QSVEnc, Package.VCEEnc, Package.x264, Package.mpvnet}
+        Dim packs = {Package.x264, Package.x265, Package.NVEnc, Package.QSVEnc, Package.VCEEnc, Package.mpvnet}
 
         If IsAviSynthPortableUsed() Then
             If IsAviSynthInstalled() Then
@@ -531,8 +531,8 @@ Public Class FrameServerHelp
     End Sub
 
     Shared Sub MakeSoftLink(name As String, target As String, link As String, msg As String)
-        If s.Storage.GetString(name + "softlink") <> target OrElse Not link.FileExists OrElse
-            New FileInfo(link).Length > 0 Then
+        If s.Storage.GetString(name + "softlink").ToLowerEx <> target.ToLowerEx OrElse
+            Not link.FileExists OrElse New FileInfo(link).Length > 0 Then
 
             DeleteSoftLink(link)
             MakeSoftLink(target, link, msg)

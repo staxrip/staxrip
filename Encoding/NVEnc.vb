@@ -387,7 +387,7 @@ Public Class NVEnc
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
                     Add("Basic", Mode, Decoder, Codec,
-                        New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .DefaultValue = 3, .Init = 3, .Options = {"P1 (=Performance)", "P2", "P3", "P4 (=Default)", "P5", "P6", "P7 (=Quality)"}, .Values = {"P1", "P2", "P3", "P4", "P5", "P6", "P7"}},
+                        New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .DefaultValue = 6, .Init = 6, .Options = {"Default", "Performance", "Quality", "P1 (=Performance)", "P2", "P3", "P4 (=Default)", "P5", "P6", "P7 (=Quality)"}, .Values = {"default", "performance", "quality", "P1", "P2", "P3", "P4", "P5", "P6", "P7"}},
                         Profile, ProfileH265,
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}, .Values = {"main", "high"}},
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},

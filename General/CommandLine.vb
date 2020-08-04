@@ -76,6 +76,10 @@ Namespace CommandLine
         End Function
 
         Sub Execute()
+            If Not FrameServerHelp.ValidateAviSynthLinks() Then
+                Exit Sub
+            End If
+
             If g.IsWindowsTerminalAvailable Then
                 Dim cl = "cmd.exe /S /K --% """ + GetCommandLine(True, True) + """"
                 Dim base64 = Convert.ToBase64String(Encoding.Unicode.GetBytes(cl)) 'UTF16LE

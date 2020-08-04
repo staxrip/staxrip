@@ -83,6 +83,13 @@ Module StringExtensions
     End Function
 
     <Extension>
+    Function PathStartsWith(instance As String, value As String) As Boolean
+        If instance <> "" AndAlso value <> "" Then
+            Return instance.ToLower.StartsWith(value.ToLower)
+        End If
+    End Function
+
+    <Extension>
     Sub ThrowIfContainsNewLine(instance As String)
         If instance?.Contains(BR) Then
             Throw New Exception("String contains a line break char: " + instance)
@@ -824,10 +831,10 @@ Module MiscExtensions
 End Module
 
 Module RegistryKeyExtensions
-    Function GetValue(Of T)(rootKey As RegistryKey, subKeyName As String, valueName As String) As T
-        Using subKey = rootKey.OpenSubKey(subKeyName)
-            If Not subKey Is Nothing Then
-                Dim value = subKey.GetValue(valueName)
+    Function GetValue(Of T)(root As RegistryKey, path As String, name As String) As T
+        Using key = root.OpenSubKey(path)
+            If Not key Is Nothing Then
+                Dim value = key.GetValue(name)
 
                 If Not value Is Nothing Then
                     Try
@@ -840,46 +847,48 @@ Module RegistryKeyExtensions
     End Function
 
     <Extension()>
-    Function GetString(rootKey As RegistryKey, subKeyName As String, valueName As String) As String
-        Return GetValue(Of String)(rootKey, subKeyName, valueName)
+    Function GetString(root As RegistryKey, path As String, name As String) As String
+        Return GetValue(Of String)(root, path, name)
     End Function
 
     <Extension()>
-    Function GetInt(rootKey As RegistryKey, subKeyName As String, valueName As String) As Integer
-        Return GetValue(Of Integer)(rootKey, subKeyName, valueName)
+    Function GetInt(root As RegistryKey, path As String, name As String) As Integer
+        Return GetValue(Of Integer)(root, path, name)
     End Function
 
     <Extension()>
-    Function GetBoolean(rootKey As RegistryKey, subKeyName As String, valueName As String) As Boolean
-        Return GetValue(Of Boolean)(rootKey, subKeyName, valueName)
+    Function GetBoolean(root As RegistryKey, path As String, name As String) As Boolean
+        Return GetValue(Of Boolean)(root, path, name)
     End Function
 
     <Extension()>
-    Function GetValueNames(rootKey As RegistryKey, subKeyName As String) As String()
-        Using subKey = rootKey.OpenSubKey(subKeyName)
-            If Not subKey Is Nothing Then Return subKey.GetValueNames
+    Function GetValueNames(root As RegistryKey, path As String) As String()
+        Using subKey = root.OpenSubKey(path)
+            If Not subKey Is Nothing Then
+                Return subKey.GetValueNames
+            End If
         End Using
 
         Return {}
     End Function
 
     <Extension()>
-    Sub Write(rootKey As RegistryKey, subKeyName As String, valueName As String, valueValue As Object)
-        Dim subKey = rootKey.OpenSubKey(subKeyName, True)
+    Sub Write(root As RegistryKey, path As String, name As String, value As Object)
+        Dim subKey = root.OpenSubKey(path, True)
 
         If subKey Is Nothing Then
-            subKey = rootKey.CreateSubKey(subKeyName, RegistryKeyPermissionCheck.ReadWriteSubTree)
+            subKey = root.CreateSubKey(path, RegistryKeyPermissionCheck.ReadWriteSubTree)
         End If
 
-        subKey.SetValue(valueName, valueValue)
+        subKey.SetValue(name, value)
         subKey.Close()
     End Sub
 
     <Extension()>
-    Sub DeleteValue(rootKey As RegistryKey, key As String, valueName As String)
-        Using k = rootKey.OpenSubKey(key, True)
-            If Not k Is Nothing Then
-                k.DeleteValue(valueName, False)
+    Sub DeleteValue(root As RegistryKey, path As String, name As String)
+        Using key = root.OpenSubKey(path, True)
+            If Not key Is Nothing Then
+                key.DeleteValue(name, False)
             End If
         End Using
     End Sub

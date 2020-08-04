@@ -407,7 +407,7 @@ Public Class GlobalClass
     End Function
 
     Function VerifyRequirements() As Boolean
-        If s.VerifyToolStatus Then
+        If s.VerifyToolStatus AndAlso Not g.Is32Bit Then
             For Each pack In Package.Items.Values
                 If Not pack.VerifyOK Then
                     Return False
@@ -533,7 +533,7 @@ Public Class GlobalClass
         End If
 
         args += " " + script.Path.Escape
-        g.ShellExecute(Package.mpvnet.Path, args.Trim)
+        g.Execute(Package.mpvnet.Path, args.Trim)
     End Sub
 
     Function ExtractDelay(value As String) As Integer
@@ -1112,7 +1112,9 @@ Public Class GlobalClass
     End Property
 
     Sub MakeBugReport(e As Exception)
-        If e Is Nothing AndAlso Not g.IsValidSource(False) Then Exit Sub
+        If e Is Nothing AndAlso Not g.IsValidSource(False) Then
+            Exit Sub
+        End If
 
         If Not e Is Nothing Then
             If Log.IsEmpty Then Log.WriteEnvironment()
@@ -1127,12 +1129,14 @@ Public Class GlobalClass
 
         If MsgQuestion("An error occured", "Do you want to open the log file?",
                        TaskDialogButtons.YesNo) = DialogResult.Yes Then
+
             g.ShellExecute(g.GetTextEditorPath(), fp.Escape)
             logfileOpened = True
         End If
 
-        If MsgQuestion("BugReport", "Do you want to report an issue or bug?",
+        If MsgQuestion("Bug Report", "Do you want to report an issue or bug?",
                        TaskDialogButtons.YesNo) = DialogResult.Yes Then
+
             If Not logfileOpened Then
                 g.ShellExecute(g.GetTextEditorPath(), fp.Escape)
             End If
@@ -1144,7 +1148,10 @@ Public Class GlobalClass
 
     Function FileExists(path As String) As Boolean
         For x = 1 To 6
-            If File.Exists(path) Then Return True
+            If File.Exists(path) Then
+                Return True
+            End If
+
             Thread.Sleep(500)
         Next
     End Function
@@ -1443,6 +1450,20 @@ Public Class GlobalClass
     End Sub
 
     Function IsDevelopmentPC() As Boolean
-        Return Application.StartupPath.EndsWith("\bin")
+        Return Application.StartupPath.EndsWith("\bin") OrElse Application.StartupPath.EndsWith("\bin-x86")
     End Function
+
+    Function Is32Bit() As Boolean
+        Return IntPtr.Size = 4
+    End Function
+
+    Sub RunTask(action As Action)
+        Task.Run(Sub()
+                     Try
+                         action.Invoke
+                     Catch ex As Exception
+                         OnException(ex)
+                     End Try
+                 End Sub)
+    End Sub
 End Class

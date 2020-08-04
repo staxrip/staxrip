@@ -1,6 +1,6 @@
 ﻿
 Imports System.Runtime.InteropServices
-
+Imports Microsoft.Win32
 Imports StaxRip.UI
 
 Public Class DirectFrameServer
@@ -148,7 +148,12 @@ End Enum
 
 Public Class FrameServerFactory
     Shared Function Create(path As String) As IFrameServer
-        FrameServerHelp.Init()
+        g.AddToPath(
+            Package.Python.Directory,
+            Package.VapourSynth.Directory,
+            Package.AviSynth.Directory,
+            Package.FFTW.Directory,
+            Package.VisualCpp2019.Directory)
 
         If (path.Ext = "avs" AndAlso s.AviSynthMode = FrameServerMode.VFW) OrElse
            (path.Ext = "vpy" AndAlso s.VapourSynthMode = FrameServerMode.VFW) Then
@@ -242,7 +247,7 @@ Public Class VfwFrameServer
             data = AVIStreamGetFrame(FrameObject, position)
 
             If data <> IntPtr.Zero Then
-                data += 40
+                data += 40 'BITMAPINFOHEADER size
                 pitch = (((Info.Width * 32) + 31) And Not 31) >> 3
                 Return 0 'S_OK
             End If
@@ -252,9 +257,7 @@ Public Class VfwFrameServer
     End Function
 
     Function GetColorSpace(fcc As UInt32) As ColorSpace
-        Dim fccStr = FccToString(fcc)
-
-        Select Case fccStr
+        Select Case FccToString(fcc)
             Case "Y416"
                 Return ColorSpace.YUV444P16
             Case "Y410"
@@ -415,69 +418,12 @@ Public Class VfwFrameServer
 End Class
 
 Public Class FrameServerHelp
-    Shared WasInitialized As Boolean
-    Shared WasAviSynthInitialized As Boolean
-    Shared WasVapourSynthInitialized As Boolean
-
-    Shared Sub Init()
-        If ffmpegMightUseAviSynth() Then
-            If IsAviSynthPortableUsed() Then
-                Dim msg = "Soft link creation is required to use AviSynth+ in portable mode due to " +
-                          "design limitations of AviSynth+ and ffmpeg." + BR2 + GetAviSynthOptions()
-
-                MakeSoftLink("avs to ffmpeg", Package.AviSynth.Path,
-                             Package.ffmpeg.Directory + "AviSynth.dll", msg)
-            Else
-                DeleteSoftLink(Package.ffmpeg.Directory + "AviSynth.dll")
-            End If
-        End If
-
-        If Not WasInitialized Then
-            g.AddToPath(Package.VisualCpp2019.Directory, Folder.Startup, Package.Python.Directory,
-                        Package.AviSynth.Directory, Package.VapourSynth.Directory, Package.FFTW.Directory)
-
-            WasInitialized = True
-        End If
-
-        If IsAviSynthUsed() AndAlso Not WasAviSynthInitialized Then
-            If IsAviSynthPortableUsed() Then
-                DirectoryHelp.Create(Folder.Settings + "Plugins\AviSynth")
-            End If
-
-            CreateAviSynthSoftLinks()
-            WasAviSynthInitialized = True
-        End If
-
-        If IsVapourSynthUsed() AndAlso Not WasVapourSynthInitialized Then
-            If IsVapourSynthPortableUsed() Then
-                DirectoryHelp.Create(Folder.Settings + "Plugins\VapourSynth")
-            End If
-
-            WasVapourSynthInitialized = True
-        End If
-    End Sub
-
-    Shared Function GetAviSynthOptions() As String
-        Return "Option one is installing a compatible AviSynth+ version and disabling AviSynth+ " +
-               "portable mode in the StaxRip settings (Tools > Settings > General)." + BR2 +
-               "Option two is running StaxRip with administrative privileges until soft link " +
-               "creation completes, this has to be done only once, after the links were created, " +
-               "regular privileges are sufficient." + BR2 +
-               "Option three is enabling Developer Mode in the Windows 10 settings, this allows " +
-               "soft link creation without administrative privileges."
-    End Function
-
-    Shared Function ffmpegMightUseAviSynth() As Boolean
-        Return (p.Script.Engine = ScriptEngine.AviSynth AndAlso TypeOf p.VideoEncoder Is ffmpegEnc) OrElse
-            p.Audio0.File.Ext = "avs" OrElse p.Audio1.File.Ext = "avs"
-    End Function
-
     Shared Function IsAviSynthPortableUsed() As Boolean
-        Return Package.AviSynth.Directory.StartsWithEx(Folder.Apps)
+        Return Package.AviSynth.Directory.PathStartsWith(Folder.Apps)
     End Function
 
     Shared Function IsVapourSynthPortableUsed() As Boolean
-        Return Package.VapourSynth.Directory.StartsWithEx(Folder.Apps)
+        Return Package.VapourSynth.Directory.PathStartsWith(Folder.Apps)
     End Function
 
     Shared Function IsPortable() As Boolean
@@ -505,64 +451,70 @@ Public Class FrameServerHelp
             (IsVapourSynthUsed() AndAlso s.VapourSynthMode = FrameServerMode.VFW)
     End Function
 
-    Shared Sub CreateAviSynthSoftLinks()
-        Dim packs = {Package.x264, Package.x265, Package.NVEnc, Package.QSVEnc, Package.VCEEnc, Package.mpvnet}
-
-        If IsAviSynthPortableUsed() Then
+    Shared Function AreAviSynthLinksRequired() As Boolean
+        If IsAviSynthUsed() AndAlso IsAviSynthPortableUsed() Then
             If IsAviSynthInstalled() Then
-                Dim msg = "When AviSynth+ is installed then portable mode requires " +
-                          "soft link creation due to limitations of AviSynth+ and " +
-                          "most AviSynth reading tools." + BR2 + GetAviSynthOptions()
-
-                For Each pack In packs
-                    MakeSoftLink("avs to " + pack.Name, Package.AviSynth.Path,
-                                 pack.Directory + "AviSynth.dll", msg)
-                Next
-            Else
-                For Each pack In packs
-                    DeleteSoftLink(pack.Directory + "AviSynth.dll")
-                Next
+                Return True
             End If
-        Else
-            For Each pack In packs
-                DeleteSoftLink(pack.Directory + "AviSynth.dll")
-            Next
-        End If
-    End Sub
 
-    Shared Sub MakeSoftLink(name As String, target As String, link As String, msg As String)
-        If s.Storage.GetString(name + "softlink").ToLowerEx <> target.ToLowerEx OrElse
-            Not link.FileExists OrElse New FileInfo(link).Length > 0 Then
-
-            DeleteSoftLink(link)
-            MakeSoftLink(target, link, msg)
-            s.Storage.SetString(name + "softlink", target)
-        End If
-    End Sub
-
-    Shared Sub MakeSoftLink(target As String, link As String, msg As String)
-        'return value not working, known Windows bug
-        CreateSymbolicLink(link, target, 2)
-
-        If Not File.Exists(link) Then
-            MsgError("Failed to create soft link", link + BR2 + msg)
-            Throw New AbortException()
-        End If
-    End Sub
-
-    Shared Sub DeleteSoftLink(path As String)
-        Try
-            If File.Exists(path) Then
-                File.Delete(path)
+            If "avs".EqualsAny(p.Audio0.File.Ext, p.Audio1.File.Ext) Then
+                Return True
             End If
-        Catch ex As Exception
-            MsgError("Failed to delete soft link", path + BR2 + ex.Message)
-            Throw New AbortException()
-        End Try
-    End Sub
 
-    <DllImport("kernel32.dll", CharSet:=CharSet.Unicode)>
-    Shared Function CreateSymbolicLink(link As String, target As String, flags As Integer) As Boolean
+            If TypeOf p.VideoEncoder Is BasicVideoEncoder Then
+                Dim enc = DirectCast(p.VideoEncoder, BasicVideoEncoder)
+
+                If enc.CommandLineParams.GetCommandLine(True, True).Contains("ffmpeg") Then
+                    Return True
+                End If
+            End If
+        End If
+    End Function
+
+    Shared Function ValidateAviSynthLinks() As Boolean
+        Dim packages = {
+            Package.ffmpeg,
+            Package.x264,
+            Package.x265,
+            Package.NVEnc,
+            Package.QSVEnc,
+            Package.VCEEnc}
+
+        Dim links = packages.Select(Function(pack) New SoftLink(
+            pack.Directory + "AviSynth.dll", Package.AviSynth.Path)).ToArray
+
+        If g.Is32Bit Then
+            links = links.Where(Function(lnk) lnk.Link <> "AviSynth.dll").ToArray
+        End If
+
+        If AreAviSynthLinksRequired() Then
+            If Not SoftLink.AreLinksValid(links) Then
+                Try
+                    SoftLink.CreateLinks(links)
+                Catch
+                    Using td As New TaskDialog(Of Boolean)
+                        td.MainIcon = TaskDialogIcon.Shield
+                        td.MainInstruction = "AviSynth Portable Mode"
+                        td.Content = "AviSynth portable mode requires soft link creation."
+                        td.AddCommand("Create AviSynth soft links", True)
+
+                        If td.Show Then
+                            SoftLink.CreateLinksElevated(links)
+                        End If
+                    End Using
+                End Try
+
+                Return SoftLink.AreLinksValid(links)
+            End If
+        ElseIf Not IsAviSynthPortableUsed() Then
+            Try
+                SoftLink.DeleteLinks(links)
+            Catch ex As Exception
+                g.ShowException(ex)
+            End Try
+        End If
+
+        Return True
     End Function
 End Class
 
@@ -571,3 +523,120 @@ Public Enum FrameServerMode
     <DispName("Use installed directly")> Installed
     <DispName("Use installed via VFW")> VFW
 End Enum
+
+Public Class SoftLink
+    Property Link As String
+    Property Target As String
+
+    Shared Property Key As String = "Software\StaxRip\SoftLink"
+
+    Sub New(link As String, target As String)
+        Me.Link = link
+        Me.Target = target
+    End Sub
+
+    Function IsValid() As Boolean
+        Return IsLengthZero() AndAlso Not IsDead()
+    End Function
+
+    Function IsLengthZero() As Boolean
+        Return Link.FileExists AndAlso New FileInfo(Link).Length = 0
+    End Function
+
+    Function IsDead() As Boolean
+        Return Not Registry.CurrentUser.GetString(Key, Link).IsEqualIgnoreCase(Target)
+    End Function
+
+    Sub Create()
+        Delete()
+
+        '2: SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE
+        'return value does not work due to OS bug
+        CreateSymbolicLink(Link, Target, 2)
+
+        If IsLengthZero() Then
+            Registry.CurrentUser.Write(Key, Link, Target)
+        Else
+            Throw New Exception("Failed to create soft link." + BR2 + Link)
+        End If
+    End Sub
+
+    Sub Delete()
+        Try
+            If Link.FileExists Then
+                File.Delete(Link)
+                Registry.CurrentUser.DeleteValue(Key, Link)
+            End If
+        Catch ex As Exception
+            Throw New Exception("Failed to delete soft link." + BR2 + Link + BR2 + ex.Message)
+        End Try
+    End Sub
+
+    'return value does not work due to OS bug
+    <DllImport("kernel32.dll", CharSet:=CharSet.Unicode)>
+    Shared Function CreateSymbolicLink(link As String, target As String, flags As Integer) As Boolean
+    End Function
+
+    Shared Sub CreateLinks(links As SoftLink())
+        CleanRegistry()
+
+        For Each lnk In links
+            If Not lnk.IsValid Then
+                lnk.Create()
+            End If
+        Next
+    End Sub
+
+    Shared Sub CleanRegistry()
+        For Each lnk In Registry.CurrentUser.GetValueNames(Key)
+            If Not lnk.FileExists OrElse Not Registry.CurrentUser.GetString(Key, lnk).FileExists Then
+                Registry.CurrentUser.DeleteValue(Key, lnk)
+            End If
+        Next
+    End Sub
+
+    Shared Sub CreateLinksElevated(links As SoftLink())
+        Dim args = links.Select(Function(pack) """" + pack.Link + "|" + pack.Target + """")
+
+        Using pr As New Process
+            pr.StartInfo.UseShellExecute = True
+            pr.StartInfo.Verb = "runas"
+            pr.StartInfo.FileName = Application.ExecutablePath
+            pr.StartInfo.Arguments = "--create-soft-links " + String.Join(" ", args)
+            pr.Start()
+            pr.WaitForExit()
+
+            If pr.ExitCode = 0 Then
+                MsgInfo("Soft link creation succeeded.")
+            Else
+                MsgError("Soft link creation failed.")
+            End If
+        End Using
+    End Sub
+
+    Shared Sub CreateLinksElevated(args As IEnumerable(Of String))
+        For Each pair In args
+            Dim lnk As New SoftLink(pair.Left("|"), pair.Right("|"))
+
+            If Not lnk.IsValid Then
+                lnk.Create()
+            End If
+        Next
+    End Sub
+
+    Shared Sub DeleteLinks(links As SoftLink())
+        For Each lnk In links
+            lnk.Delete()
+        Next
+    End Sub
+
+    Shared Function AreLinksValid(links As SoftLink()) As Boolean
+        For Each lnk In links
+            If Not lnk.IsValid Then
+                Return False
+            End If
+        Next
+
+        Return True
+    End Function
+End Class

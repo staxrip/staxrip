@@ -131,7 +131,7 @@ Tools
     "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.5.0.0","2020-06-14"
     "MPC-BE","GUI App","mpc-be64.exe","","2020-05-25"
     "MPC-HC","GUI App","mpc-hc64.exe","","2017-07-16"
-    "mpv.net","GUI App","mpvnet.exe","5.4.8.0","2020-05-11"
+    "mpv.net","GUI App","mpvnet.exe","5.4.8.4","2020-08-04"
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.15","2020-05-01"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
     "AviSynth","Library","AviSynth.dll","3.6.1","2020-06-20"

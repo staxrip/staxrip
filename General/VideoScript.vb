@@ -236,11 +236,12 @@ clipname.set_output()
                     ModifyScript(code, Engine).WriteFile(Path, Encoding.UTF8)
                 Else
                     ModifyScript(code, Engine).WriteFileDefault(Path)
+                    Environment.SetEnvironmentVariable("AviSynthDLL", Package.AviSynth.Path)
                 End If
 
                 If Not Package.AviSynth.VerifyOK OrElse
-                        Not Package.VapourSynth.VerifyOK OrElse
-                        Not Package.vspipe.VerifyOK Then
+                    Not Package.VapourSynth.VerifyOK OrElse
+                    Not Package.vspipe.VerifyOK Then
 
                     Throw New AbortException
                 End If

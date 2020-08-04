@@ -1663,7 +1663,7 @@ Public Class MainForm
 
             Text = path.Base + " - " + Application.ProductName + " " + Application.ProductVersion
 
-            If IntPtr.Size = 4 Then
+            If g.Is32Bit Then
                 Text += " (32 bit)"
             End If
 
@@ -1879,8 +1879,6 @@ Public Class MainForm
             If g.ShowVideoSourceWarnings(files) Then
                 Throw New AbortException
             End If
-
-            FrameServerHelp.Init()
 
             For Each i In files
                 Dim name = i.FileName
@@ -2289,7 +2287,6 @@ Public Class MainForm
 
             If isCropActive AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
                 p.SourceScript.Synchronize(True, True, True)
-                Environment.SetEnvironmentVariable("AviSynthDLL", Package.AviSynth.Path)
 
                 Using proc As New Proc
                     proc.Header = "Auto Crop"
@@ -3575,6 +3572,7 @@ Public Class MainForm
                     Icon = g.Icon
                 End If
 
+                g.RunTask(AddressOf FrameServerHelp.ValidateAviSynthLinks)
                 g.SaveSettings()
             End If
 
@@ -3715,9 +3713,9 @@ Public Class MainForm
             Dim found As Boolean
 
             If s.StringDictionary.ContainsKey("RecentExternalApplicationControl") Then
-                For Each i In Package.Items.Values
-                    If i.Name + i.Version = s.StringDictionary("RecentExternalApplicationControl") Then
-                        form.ShowPackage(i)
+                For Each pack In Package.Items.Values
+                    If pack.Name + pack.Version = s.StringDictionary("RecentExternalApplicationControl") Then
+                        form.ShowPackage(pack)
                         found = True
                         Exit For
                     End If
@@ -3729,6 +3727,7 @@ Public Class MainForm
             End If
 
             form.ShowDialog()
+            g.RunTask(AddressOf FrameServerHelp.ValidateAviSynthLinks)
             g.SaveSettings()
         End Using
     End Sub
@@ -3985,7 +3984,9 @@ Public Class MainForm
             AddJob(False, Nothing, position)
 
             If showJobsDialog Then
-                Me.ShowJobsDialog()
+                If FrameServerHelp.ValidateAviSynthLinks() Then
+                    Me.ShowJobsDialog()
+                End If
             Else
                 bnNext.ShowBold()
             End If
@@ -5146,6 +5147,10 @@ Public Class MainForm
 
     <Command("Dialog to open a single file source.")>
     Sub ShowOpenSourceSingleFileDialog()
+        If Not FrameServerHelp.ValidateAviSynthLinks Then
+            Exit Sub
+        End If
+
         Using dialog As New OpenFileDialog
             dialog.SetFilter(FileTypes.Video.Concat(FileTypes.Image))
             dialog.SetInitDir(s.LastSourceDir)
@@ -5158,6 +5163,10 @@ Public Class MainForm
 
     <Command("Dialog to open a Blu-ray folder source.")>
     Sub ShowOpenSourceBlurayFolderDialog()
+        If Not FrameServerHelp.ValidateAviSynthLinks Then
+            Exit Sub
+        End If
+
         If p.SourceFile <> "" Then
             If Not OpenProject() Then
                 Exit Sub
@@ -5219,6 +5228,10 @@ Public Class MainForm
 
     <Command("Dialog to open a merged files source.")>
     Sub ShowOpenSourceMergeFilesDialog()
+        If Not FrameServerHelp.ValidateAviSynthLinks Then
+            Exit Sub
+        End If
+
         Using form As New SourceFilesForm()
             form.Text = "Merge"
             form.IsMerge = True
@@ -5264,7 +5277,7 @@ Public Class MainForm
 
     <Command("Dialog to open a file batch source.")>
     Sub ShowOpenSourceBatchFilesDialog()
-        If AbortDueToLowDiskSpace() Then
+        If Not FrameServerHelp.ValidateAviSynthLinks OrElse AbortDueToLowDiskSpace() Then
             Exit Sub
         End If
 
@@ -6019,6 +6032,7 @@ Public Class MainForm
         StaxRip.Update.ShowUpdateQuestion()
         StaxRip.Update.CheckForUpdate(False, s.CheckForUpdatesBeta)
         Task.Run(AddressOf g.LoadPowerShellScripts)
+        g.RunTask(AddressOf FrameServerHelp.ValidateAviSynthLinks)
     End Sub
 
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)

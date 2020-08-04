@@ -174,7 +174,9 @@ Public Class Folder
                         End Try
                     End If
 
-                    Dim scriptDir = dir.FixDir + "Scripts\"
+                    dir = dir.FixDir
+
+                    Dim scriptDir = dir + "Scripts\"
 
                     If Not scriptDir.DirExists Then
                         Directory.CreateDirectory(scriptDir)
@@ -183,11 +185,11 @@ Public Class Folder
                         Directory.CreateDirectory(scriptDir + "Auto Load")
                     End If
 
-                    SettingsValue = dir.FixDir
-                    Registry.CurrentUser.Write("Software\StaxRip\SettingsLocation", Folder.Startup, SettingsValue)
+                    DirectoryHelp.Create(dir + "Plugins\AviSynth")
+                    DirectoryHelp.Create(dir + "Plugins\VapourSynth")
 
-                    DirectoryHelp.Create(SettingsValue + "Plugins\AviSynth")
-                    DirectoryHelp.Create(SettingsValue + "Plugins\VapourSynth")
+                    Registry.CurrentUser.Write("Software\StaxRip\SettingsLocation", Folder.Startup, dir)
+                    SettingsValue = dir
                 End If
             End If
 
@@ -1209,7 +1211,8 @@ Public Module MainModule
     End Function
 
     Function MsgQuestion(
-        text As String, Optional buttons As TaskDialogButtons = TaskDialogButtons.OkCancel) As DialogResult
+        text As String,
+        Optional buttons As TaskDialogButtons = TaskDialogButtons.OkCancel) As DialogResult
 
         Return Msg(text, Nothing, MsgIcon.Question, buttons)
     End Function

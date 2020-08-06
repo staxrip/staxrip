@@ -73,6 +73,6 @@ Why does AviSynth portable mode require soft links?
 
 StaxRip has portable mode enabled by default because many users have incompatible AviSynth versions installed, portable mode can be disabled in the settings, if AviSynth is installed and portable mode is disabled then soft links are not necessary.
 
-If AviSynth is installed and portable mode should be used instead of the installed version then it can only be achieved with soft links because there is no way to tell a tool from where it should load AviSynth, default DLL loading of the OS applies and that includes the system folder where AviSynth is installed. A tool needs an implementation to use a custom/portable path and right now not all tools have such an implementation, only feature requests were created.
+If AviSynth is installed and portable mode should be used instead of the installed version then it can only be achieved with soft links because there is no way to tell a tool from where it should load AviSynth, default DLL loading of the OS applies and that includes the system folder where AviSynth is installed. A tool needs an implementation to use a custom/portable path and right now not all tools have such an implementation.
 
 If AviSynth is not installed then only ffmpeg needs a soft link because ffmpeg blocks default DLL loading of the OS which searches in the PATH environment variable which StaxRip sets in portable mode.

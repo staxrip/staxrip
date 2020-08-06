@@ -112,7 +112,7 @@ Tools
     "mkvmerge","Console App","mkvmerge.exe","48","2020-06-27"
     "MP4Box","Console App","MP4Box.exe","1.0.0-rev16-g10dd6533a-gcc11.0.0 Patman","2020-06-21"
     "mtn","Console App","mtn.exe","2.0.1","2019-06-27"
-    "NVEnc","Console App","NVEncC64.exe","5.13","2020-07-29"
+    "NVEnc","Console App","NVEncC64.exe","5.14","2020-08-04"
     "PNGopt","Console App","apngopt.exe","1.4","2019-01-01"
     "Python","Console App","python.exe","3.8.5150","2020-07-20"
     "qaac","Console App","qaac64.exe","2.69","2020-06-21"

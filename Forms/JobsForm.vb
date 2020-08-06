@@ -361,6 +361,10 @@ Friend Class JobsForm
     End Sub
 
     Sub bnStart_Click(sender As Object, e As EventArgs) Handles bnStart.Click
+        If Not g.VerifyRequirements Then
+            Exit Sub
+        End If
+
         Documentation.ShowTip(Tip)
         g.StopAfterCurrentJob = False
         Close()

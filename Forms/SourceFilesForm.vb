@@ -247,7 +247,7 @@ Public Class SourceFilesForm
         If DialogResult = DialogResult.OK Then
             Dim files = GetFiles()
 
-            If g.ShowVideoSourceWarnings(GetFiles) Then
+            If Not g.VerifySource(GetFiles) Then
                 args.Cancel = True
             End If
         End If

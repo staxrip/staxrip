@@ -1,7 +1,10 @@
 
 2.1.4.1 Beta (not yet available)
 ============
+
 - New Presets for NVEnc (P1-P7) added. Reference: https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md#-u---preset
+- Improved soft link implementation for portable AviSynth.
+- NVEnc 5.14 (supports portable AviSynth)
 
 
 2.1.3.9 Beta

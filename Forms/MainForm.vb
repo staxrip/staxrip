@@ -1653,6 +1653,10 @@ Public Class MainForm
                 p.Init()
             End Try
 
+            If p.SourceFile <> "" AndAlso Not FrameServerHelp.VerifyAviSynthLinks() Then
+                Throw New AbortException
+            End If
+
             Log = p.Log
 
             If File.Exists(Folder.Temp + "staxrip.log") Then
@@ -1876,7 +1880,7 @@ Public Class MainForm
         Try
             files = files.Select(Function(filePath) New FileInfo(filePath).FullName).AsEnumerable()
 
-            If g.ShowVideoSourceWarnings(files) Then
+            If Not g.VerifySource(files) Then
                 Throw New AbortException
             End If
 
@@ -3572,7 +3576,6 @@ Public Class MainForm
                     Icon = g.Icon
                 End If
 
-                g.RunTask(AddressOf FrameServerHelp.ValidateAviSynthLinks)
                 g.SaveSettings()
             End If
 
@@ -3727,7 +3730,6 @@ Public Class MainForm
             End If
 
             form.ShowDialog()
-            g.RunTask(AddressOf FrameServerHelp.ValidateAviSynthLinks)
             g.SaveSettings()
         End Using
     End Sub
@@ -3984,9 +3986,7 @@ Public Class MainForm
             AddJob(False, Nothing, position)
 
             If showJobsDialog Then
-                If FrameServerHelp.ValidateAviSynthLinks() Then
-                    Me.ShowJobsDialog()
-                End If
+                Me.ShowJobsDialog()
             Else
                 bnNext.ShowBold()
             End If
@@ -5147,10 +5147,6 @@ Public Class MainForm
 
     <Command("Dialog to open a single file source.")>
     Sub ShowOpenSourceSingleFileDialog()
-        If Not FrameServerHelp.ValidateAviSynthLinks Then
-            Exit Sub
-        End If
-
         Using dialog As New OpenFileDialog
             dialog.SetFilter(FileTypes.Video.Concat(FileTypes.Image))
             dialog.SetInitDir(s.LastSourceDir)
@@ -5163,10 +5159,6 @@ Public Class MainForm
 
     <Command("Dialog to open a Blu-ray folder source.")>
     Sub ShowOpenSourceBlurayFolderDialog()
-        If Not FrameServerHelp.ValidateAviSynthLinks Then
-            Exit Sub
-        End If
-
         If p.SourceFile <> "" Then
             If Not OpenProject() Then
                 Exit Sub
@@ -5228,10 +5220,6 @@ Public Class MainForm
 
     <Command("Dialog to open a merged files source.")>
     Sub ShowOpenSourceMergeFilesDialog()
-        If Not FrameServerHelp.ValidateAviSynthLinks Then
-            Exit Sub
-        End If
-
         Using form As New SourceFilesForm()
             form.Text = "Merge"
             form.IsMerge = True
@@ -5277,7 +5265,7 @@ Public Class MainForm
 
     <Command("Dialog to open a file batch source.")>
     Sub ShowOpenSourceBatchFilesDialog()
-        If Not FrameServerHelp.ValidateAviSynthLinks OrElse AbortDueToLowDiskSpace() Then
+        If AbortDueToLowDiskSpace() Then
             Exit Sub
         End If
 
@@ -6031,8 +6019,8 @@ Public Class MainForm
         ProcessCommandLine(Environment.GetCommandLineArgs)
         StaxRip.Update.ShowUpdateQuestion()
         StaxRip.Update.CheckForUpdate(False, s.CheckForUpdatesBeta)
-        Task.Run(AddressOf g.LoadPowerShellScripts)
-        g.RunTask(AddressOf FrameServerHelp.ValidateAviSynthLinks)
+        g.RunTask(AddressOf g.LoadPowerShellScripts)
+        g.RunTask(AddressOf FrameServerHelp.VerifyAviSynthLinks)
     End Sub
 
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)

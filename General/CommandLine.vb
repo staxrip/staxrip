@@ -76,9 +76,11 @@ Namespace CommandLine
         End Function
 
         Sub Execute()
-            If Not FrameServerHelp.ValidateAviSynthLinks() Then
+            If Not g.VerifyRequirements Then
                 Exit Sub
             End If
+
+            p.Script.Synchronize()
 
             If g.IsWindowsTerminalAvailable Then
                 Dim cl = "cmd.exe /S /K --% """ + GetCommandLine(True, True) + """"

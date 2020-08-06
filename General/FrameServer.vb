@@ -451,32 +451,45 @@ Public Class FrameServerHelp
             (IsVapourSynthUsed() AndAlso s.VapourSynthMode = FrameServerMode.VFW)
     End Function
 
+    Shared Function IsffmpegUsed() As Boolean
+        If "avs".EqualsAny(p.Audio0.File.Ext, p.Audio1.File.Ext) Then
+            Return True
+        End If
+
+        If TypeOf p.VideoEncoder Is BasicVideoEncoder Then
+            Dim enc = DirectCast(p.VideoEncoder, BasicVideoEncoder)
+
+            If enc.CommandLineParams.GetCommandLine(True, True).Contains("ffmpeg") Then
+                Return True
+            End If
+        End If
+    End Function
+
     Shared Function AreAviSynthLinksRequired() As Boolean
         If IsAviSynthUsed() AndAlso IsAviSynthPortableUsed() Then
-            If IsAviSynthInstalled() Then
+            If IsffmpegUsed() Then
                 Return True
             End If
 
-            If "avs".EqualsAny(p.Audio0.File.Ext, p.Audio1.File.Ext) Then
-                Return True
+            If Not IsAviSynthInstalled() Then
+                Return False
             End If
 
             If TypeOf p.VideoEncoder Is BasicVideoEncoder Then
                 Dim enc = DirectCast(p.VideoEncoder, BasicVideoEncoder)
 
-                If enc.CommandLineParams.GetCommandLine(True, True).Contains("ffmpeg") Then
+                If Not enc.CommandLineParams.GetCommandLine(True, True).Contains(Package.AviSynth.Path) Then
                     Return True
                 End If
             End If
         End If
     End Function
 
-    Shared Function ValidateAviSynthLinks() As Boolean
+    Shared Function VerifyAviSynthLinks() As Boolean
         Dim packages = {
             Package.ffmpeg,
             Package.x264,
             Package.x265,
-            Package.NVEnc,
             Package.QSVEnc,
             Package.VCEEnc}
 
@@ -495,8 +508,10 @@ Public Class FrameServerHelp
                     Using td As New TaskDialog(Of Boolean)
                         td.MainIcon = TaskDialogIcon.Shield
                         td.MainInstruction = "AviSynth Portable Mode"
-                        td.Content = "AviSynth portable mode requires soft link creation."
-                        td.AddCommand("Create AviSynth soft links", True)
+                        td.Content = "The current configuration uses AviSynth portable mode with AviSynth tools " +
+                                     "that do not support portable mode, to workaround this it's required to " +
+                                     "create soft links that are pointing to the location of portable AviSynth."
+                        td.AddCommand("Create portable AviSynth soft links", True)
 
                         If td.Show Then
                             SoftLink.CreateLinksElevated(links)
@@ -535,17 +550,23 @@ Public Class SoftLink
         Me.Target = target
     End Sub
 
-    Function IsValid() As Boolean
-        Return IsLengthZero() AndAlso Not IsDead()
-    End Function
+    ReadOnly Property IsValid As Boolean
+        Get
+            Return IsLengthZero() AndAlso Not IsDead()
+        End Get
+    End Property
 
-    Function IsLengthZero() As Boolean
-        Return Link.FileExists AndAlso New FileInfo(Link).Length = 0
-    End Function
+    ReadOnly Property IsLengthZero As Boolean
+        Get
+            Return Link.FileExists AndAlso New FileInfo(Link).Length = 0
+        End Get
+    End Property
 
-    Function IsDead() As Boolean
-        Return Not Registry.CurrentUser.GetString(Key, Link).IsEqualIgnoreCase(Target)
-    End Function
+    ReadOnly Property IsDead As Boolean
+        Get
+            Return Not Registry.CurrentUser.GetString(Key, Link).IsEqualIgnoreCase(Target)
+        End Get
+    End Property
 
     Sub Create()
         Delete()

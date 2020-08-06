@@ -418,30 +418,36 @@ Public Class GlobalClass
                 MsgWarn("No active filter of category 'Source' found.")
                 Return False
             End If
+
+            If Not FrameServerHelp.VerifyAviSynthLinks() Then
+                Return False
+            End If
         End If
 
         Return True
     End Function
 
-    Function ShowVideoSourceWarnings(files As IEnumerable(Of String)) As Boolean
+    Function VerifySource(files As IEnumerable(Of String)) As Boolean
         For Each file In files
             If Encoding.Default.CodePage <> 65001 AndAlso
                 Not file.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
 
                 MsgError(Strings.NoUnicode)
-                Return True
+                Return False
             End If
 
             If file.Length > s.CharacterLimit OrElse file.FileName.Length > s.CharacterLimit \ 2 Then
                 MsgError("Source file path or filename is too long", Strings.CharacterLimitReason)
-                Return True
+                Return False
             End If
 
             If file.Ext = "dga" Then
                 MsgError("There is no properly working x64 source filters available for DGA. There are several newer and faster x64 source filters available.")
-                Return True
+                Return False
             End If
         Next
+
+        Return True
     End Function
 
     Sub PlayAudio(ap As AudioProfile)

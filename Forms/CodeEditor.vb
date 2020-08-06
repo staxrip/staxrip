@@ -35,7 +35,7 @@ Public Class CodeEditor
             Case Keys.F5
                 VideoPreview()
             Case Keys.F9
-                PlayScriptWithMPVt()
+                PlayScriptWithMPV()
             Case Keys.F10
                 PlayScriptWithMPC()
             Case Keys.Control Or Keys.Delete
@@ -106,7 +106,7 @@ Public Class CodeEditor
         Return script
     End Function
 
-    Sub PlayScriptWithMPVt()
+    Sub PlayScriptWithMPV()
         g.PlayScriptWithMPV(CreateTempScript())
     End Sub
 
@@ -405,7 +405,7 @@ Public Class CodeEditor
             previewMenuItem.KeyDisplayString = "F5"
             previewMenuItem.SetImage(Symbol.Photo)
 
-            Dim mpvnetMenuItem = Menu.Add("Play with mpv.net", AddressOf Editor.PlayScriptWithMPVt, "Plays the current script with mpv.net.")
+            Dim mpvnetMenuItem = Menu.Add("Play with mpv.net", AddressOf Editor.PlayScriptWithMPV, "Plays the current script with mpv.net.")
             mpvnetMenuItem.Enabled = p.SourceFile <> ""
             mpvnetMenuItem.KeyDisplayString = "F9"
             mpvnetMenuItem.SetImage(Symbol.Play)

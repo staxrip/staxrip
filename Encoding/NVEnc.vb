@@ -1095,6 +1095,10 @@ Public Class NVEnc
             Select Case Decoder.ValueText
                 Case "avs"
                     sourcePath = p.Script.Path
+
+                    If includePaths AndAlso FrameServerHelp.IsAviSynthPortableUsed Then
+                        ret += " --avsdll=" + Package.AviSynth.Path.Escape
+                    End If
                 Case "nvhw"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " --avhw"

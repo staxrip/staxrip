@@ -2195,26 +2195,26 @@ Public Class Package
 
     Overridable ReadOnly Property Path As String
         Get
-            If g.Is32Bit AndAlso Filename.Contains("64.exe") Then
-                Filename = Filename.Replace("64.exe", ".exe")
-            End If
-
             Dim ret = GetStoredPath()
 
             If File.Exists(ret) Then
                 Return ret
             End If
 
-            ret = GetPathFromLocation(Location)
+            If Location <> "" Then
+                ret = GetPathFromLocation(Location)
 
-            If File.Exists(ret) Then
-                Return ret
+                If File.Exists(ret) Then
+                    Return ret
+                End If
             End If
 
-            ret = GetPathFromLocation(Locations)
+            If Not Locations.NothingOrEmpty Then
+                ret = GetPathFromLocation(Locations)
 
-            If File.Exists(ret) Then
-                Return ret
+                If File.Exists(ret) Then
+                    Return ret
+                End If
             End If
 
             If Not HintDirFunc Is Nothing Then
@@ -2259,18 +2259,36 @@ Public Class Package
         End Get
     End Property
 
-    Function GetPathFromLocation(ParamArray dirs As String()) As String
-        If Not dirs.NothingOrEmpty Then
-            For Each hintDir In dirs
-                If Not hintDir.Contains(":\") AndAlso Not hintDir.StartsWith("\\") Then
-                    hintDir = Folder.Apps + hintDir
-                End If
-
-                If File.Exists(hintDir.FixDir + Filename) Then
-                    Return hintDir.FixDir + Filename
-                End If
-            Next
+    Function GetPathFromLocation(dir As String) As String
+        If dir = "" Then
+            Return Nothing
         End If
+
+        If Not dir.Contains(":\") AndAlso Not dir.StartsWith("\\") Then
+            dir = Folder.Apps + dir
+        End If
+
+        If File.Exists(dir.FixDir + Filename) Then
+            Return dir.FixDir + Filename
+        End If
+
+        If g.Is32Bit AndAlso Filename.Contains("64.exe") Then
+            Dim fp = dir.FixDir + Filename.Replace("64.exe", ".exe")
+
+            If File.Exists(fp) Then
+                Return fp
+            End If
+        End If
+    End Function
+
+    Function GetPathFromLocation(dirs As String()) As String
+        For Each hintDir In dirs
+            Dim ret = GetPathFromLocation(hintDir)
+
+            If ret <> "" Then
+                Return ret
+            End If
+        Next
     End Function
 
     Shared Function IsNotEmptyOrIgnored(filePath As String, ignorePath As String) As Boolean

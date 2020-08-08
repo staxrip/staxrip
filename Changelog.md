@@ -7,17 +7,14 @@
   there is now a confirm dialog with shield icon,
   mpv.net, NVEnc and QSVEnc no longer need soft links.
 - New NVEnc options --multipass --repeat-headers
-- NVEnc 5.14_x64
-- NVEnc 5.14_Win32
-- QSVEnc 4.07_x64
-- QSVEnc 4.07_Win32
+- x264 r3018-db0d417 x86
+- NVEnc 5.14
+- QSVEnc 4.07
+- VCEEnc 6.02
 - SVT-AV1 0.8.4-26-g0af191de-msvc1926 Patman
-- MP4Box 1.0.0-rev188-g2aa266dfa-x64-gcc10.2.0 Patman
-- MP4Box 1.0.0-rev188-g2aa266dfa-x86-gcc10.2.0 Patman
-- qaac 2.69-x86-msvc1926 Patman
-- qaac 2.69-x64-msvc1926 Patman
-- ffmpeg N-98647-gffa6072fc7-x64-gcc10.2.0 Patman
-- ffmpeg N-98647-gffa6072fc7-x86-gcc10.2.0 Patman
+- MP4Box 1.0.0-rev188-g2aa266dfa-gcc10.2.0 Patman
+- qaac 2.69-msvc1926 Patman
+- ffmpeg N-98647-gffa6072fc7-gcc10.2.0 Patman
 
 
 2.1.3.9 Beta

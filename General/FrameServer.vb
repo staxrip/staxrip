@@ -491,10 +491,6 @@ Public Class FrameServerHelp
         Dim links = packages.Select(Function(pack) New SoftLink(
             pack.Directory + "AviSynth.dll", Package.AviSynth.Path)).ToArray
 
-        If g.Is32Bit Then
-            links = links.Where(Function(lnk) lnk.Link <> "AviSynth.dll").ToArray
-        End If
-
         If AreAviSynthLinksRequired() Then
             If Not SoftLink.AreLinksValid(links) Then
                 Try

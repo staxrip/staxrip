@@ -4,7 +4,15 @@
 
 - New Presets for NVEnc (P1-P7) added. Reference: https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md#-u---preset
 - Improved soft link implementation for portable AviSynth.
+- New NVEnc options --multipass --repeat-headers
 - NVEnc 5.14 (supports portable AviSynth)
+- SVT-AV1 0.8.4-26-g0af191de-msvc1926 Patman
+- MP4Box 1.0.0-rev188-g2aa266dfa-x64-gcc10.2.0 Patman
+- MP4Box 1.0.0-rev188-g2aa266dfa-x86-gcc10.2.0 Patman
+- qaac 2.69-x86-msvc1926 Patman
+- qaac 2.69-x64-msvc1926 Patman
+- ffmpeg N-98647-gffa6072fc7-x64-gcc10.2.0 Patman
+- ffmpeg N-98647-gffa6072fc7-x86-gcc10.2.0 Patman
 
 
 2.1.3.9 Beta

@@ -130,6 +130,7 @@ Public Class NVEnc
             vpp-decimate audio-disposition audio-metadata option-list sub-disposition sub-metadata
             metadata video-metadata video-tag attachment-copy"
 
+        tester.UndocumentedSwitches = "cbrhq vbrhq"
         tester.Package = Package.NVEnc
         tester.CodeFile = Folder.Startup.Parent + "Encoding\nvenc.vb"
 
@@ -157,7 +158,11 @@ Public Class NVEnc
             .Text = "Mode",
             .Expand = True,
             .Switches = {"--cqp", "--cbr", "--cbrhq", "--vbr", "--vbrhq"},
-            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "CBR HQ - Constant Bitrate HQ", "VBR - Variable Bitrate", "VBR HQ - Variable Bitrate HQ"},
+            .Options = {"CQP - Constant QP",
+                        "CBR - Constant Bitrate",
+                        "CBR HQ - Constant Bitrate HQ",
+                        "VBR - Variable Bitrate",
+                        "VBR HQ - Variable Bitrate HQ"},
             .VisibleFunc = Function() Not Lossless.Value,
             .ArgsFunc = AddressOf GetModeArgs,
             .ImportAction = Sub(param, arg)
@@ -386,7 +391,9 @@ Public Class NVEnc
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
-                    Add("Basic", Mode, Decoder, Codec,
+                    Add("Basic", Mode,
+                        New OptionParam With {.Switch = "--multipass", .Text = "Multipass", .Options = {"None", "2Pass-Quarter", "2Pass-Full"}, .VisibleFunc = Function() Mode.Value = 1 OrElse Mode.Value = 3},
+                        Decoder, Codec,
                         New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Init = 6, .Options = {"Default", "Quality", "Performance", "P1 (=Performance)", "P2", "P3", "P4 (=Default)", "P5", "P6", "P7 (=Quality)"}, .Values = {"default", "quality", "performance", "P1", "P2", "P3", "P4", "P5", "P6", "P7"}},
                         Profile, ProfileH265,
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}, .Values = {"main", "high"}},
@@ -446,7 +453,8 @@ Public Class NVEnc
                         MaxCLL, MaxFALL,
                         New NumParam With {.Switch = "--chromaloc", .Text = "Chromaloc", .Config = {0, 5}},
                         New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
-                        New BoolParam With {.Switch = "--aud", .Text = "AUD"})
+                        New BoolParam With {.Switch = "--aud", .Text = "Insert Access Unit Delimiter NAL"},
+                        New BoolParam With {.Switch = "--repeat-headers", .Text = "Output VPS, SPS and PPS for every IDR frame"})
                     Add("VPP | Misc",
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},

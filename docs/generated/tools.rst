@@ -116,7 +116,7 @@ Tools
     "PNGopt","Console App","apngopt.exe","1.4","2019-01-01"
     "Python","Console App","python.exe","3.8.5150","2020-07-20"
     "qaac","Console App","qaac64.exe","2.69-x64-msvc1926 Patman","2020-08-04"
-    "QSVEnc","Console App","QSVEncC64.exe","4.04","2020-06-16"
+    "QSVEnc","Console App","QSVEncC64.exe","4.07","2020-08-06"
     "rav1e","Console App","rav1e.exe","0.3.0","2020-02-29"
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.4-26-g0af191de-msvc1926 Patman","2020-08-07"
     "VCEEnc","Console App","VCEEncC64.exe","6.02","2020-05-14"

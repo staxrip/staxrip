@@ -3,9 +3,14 @@
 ============
 
 - New Presets for NVEnc (P1-P7) added. Reference: https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md#-u---preset
-- Improved soft link implementation for portable AviSynth.
+- Soft links are only created if needed by the current config,
+  there is now a confirm dialog with shield icon,
+  mpv.net, NVEnc and QSVEnc no longer need soft links.
 - New NVEnc options --multipass --repeat-headers
-- NVEnc 5.14 (supports portable AviSynth)
+- NVEnc 5.14_x64
+- NVEnc 5.14_Win32
+- QSVEnc 4.07_x64
+- QSVEnc 4.07_Win32
 - SVT-AV1 0.8.4-26-g0af191de-msvc1926 Patman
 - MP4Box 1.0.0-rev188-g2aa266dfa-x64-gcc10.2.0 Patman
 - MP4Box 1.0.0-rev188-g2aa266dfa-x86-gcc10.2.0 Patman

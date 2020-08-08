@@ -392,6 +392,10 @@ Public Class QSVEnc
             Select Case Decoder.ValueText
                 Case "avs"
                     sourcePath = p.Script.Path
+
+                    If includePaths AndAlso FrameServerHelp.IsAviSynthPortableUsed Then
+                        ret += " --avsdll=" + Package.AviSynth.Path.Escape
+                    End If
                 Case "qshw"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " --avhw"

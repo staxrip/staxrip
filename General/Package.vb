@@ -2156,20 +2156,14 @@ Public Class Package
     End Function
 
     Function GetVapourSynthHintDir() As String
-        Dim test As String
-
         If Not s.VapourSynthMode = FrameServerMode.Portable Then
-            test = Registry.LocalMachine.GetString("Software\VapourSynth", "VapourSynthDLL")
+            For Each key In {Registry.CurrentUser, Registry.LocalMachine}
+                Dim dllPath = key.GetString("Software\VapourSynth", "VapourSynthDLL")
 
-            If File.Exists(test) Then
-                Return test.Dir
-            End If
-
-            test = Registry.CurrentUser.GetString("Software\VapourSynth", "VapourSynthDLL")
-
-            If File.Exists(test) Then
-                Return test.Dir
-            End If
+                If File.Exists(dllPath) Then
+                    Return dllPath.Dir
+                End If
+            Next
         End If
 
         Return GetPathFromLocation("FrameServer\VapourSynth").Dir
@@ -2177,9 +2171,11 @@ Public Class Package
 
     Shared Function GetPythonHintDir() As String
         If Not FrameServerHelp.IsVapourSynthPortableUsed Then
-            For Each x In {8, 9, 7}
-                For Each rootKey In {Registry.CurrentUser, Registry.LocalMachine}
-                    Dim exePath = rootKey.GetString($"SOFTWARE\Python\PythonCore\3.{x}\InstallPath", "ExecutablePath")
+            Dim exePath As String
+
+            For Each key In {Registry.CurrentUser, Registry.LocalMachine}
+                For Each keyName In key.GetKeyNames("SOFTWARE\Python\PythonCore")
+                    exePath = key.GetString($"SOFTWARE\Python\PythonCore\{keyName}\InstallPath", "ExecutablePath")
 
                     If File.Exists(exePath) Then
                         Return exePath.Dir
@@ -2187,10 +2183,10 @@ Public Class Package
                 Next
             Next
 
-            Dim fp = FindEverywhere({"python.exe"}, Python.IgnorePath)
+            exePath = FindEverywhere("python.exe", Python.IgnorePath)
 
-            If fp <> "" Then
-                Return fp.Dir
+            If exePath <> "" Then
+                Return exePath.Dir
             End If
         End If
 
@@ -2255,7 +2251,7 @@ Public Class Package
                 End If
             End If
 
-            ret = FindEverywhere({Filename}, IgnorePath)
+            ret = FindEverywhere(Filename, IgnorePath)
 
             If ret <> "" Then
                 Return ret
@@ -2281,27 +2277,35 @@ Public Class Package
         Return filePath <> "" AndAlso (ignorePath = Nothing OrElse Not filePath.Contains(ignorePath))
     End Function
 
-    Shared Function FindEverywhere(fileNames As String(), Optional ignorePath As String = Nothing) As String
+    Shared Function FindEverywhere(fileName As String, Optional ignorePath As String = Nothing) As String
         Dim ret As String
 
-        For Each fn In fileNames
-            If fn.Ext = "exe" Then
-                ret = FindInMuiCacheKey(fn)
-
-                If IsNotEmptyOrIgnored(ret, ignorePath) Then
-                    Return ret
-                End If
-
-                ret = FindInAppKey(fn)
-
-                If IsNotEmptyOrIgnored(ret, ignorePath) Then
-                    Return ret
-                End If
-            End If
-
-            ret = FindInPathEnvVar(fn)
+        If fileName.Ext = "exe" Then
+            ret = FindInMuiCacheKey(fileName)
 
             If IsNotEmptyOrIgnored(ret, ignorePath) Then
+                Return ret
+            End If
+
+            ret = FindInAppKey(fileName)
+
+            If IsNotEmptyOrIgnored(ret, ignorePath) Then
+                Return ret
+            End If
+        End If
+
+        ret = FindInPathEnvVar(fileName)
+
+        If IsNotEmptyOrIgnored(ret, ignorePath) Then
+            Return ret
+        End If
+    End Function
+
+    Shared Function FindEverywhere(fileNames As String()) As String
+        For Each fn In fileNames
+            Dim ret = FindEverywhere(fn)
+
+            If ret <> "" Then
                 Return ret
             End If
         Next

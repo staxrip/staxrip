@@ -124,9 +124,7 @@ Public Class GlobalClass
             If Not fileName.StartsWith("http") AndAlso fileName.Ext.EqualsAny("htm", "html") Then
                 Dim browser = g.GetAppPathForExtension("htm", "html")
 
-                If browser = "" OrElse (Not browser.FileName = "chrome.exe" AndAlso
-                    Not browser.FileName = "firefox.exe") Then
-
+                If Not browser.FileName.EqualsAny("chrome.exe", "firefox.exe") Then
                     browser = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
                 End If
 

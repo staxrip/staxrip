@@ -862,6 +862,17 @@ Module RegistryKeyExtensions
     End Function
 
     <Extension()>
+    Function GetKeyNames(root As RegistryKey, path As String) As String()
+        Using subKey = root.OpenSubKey(path)
+            If Not subKey Is Nothing Then
+                Return subKey.GetSubKeyNames
+            End If
+        End Using
+
+        Return {}
+    End Function
+
+    <Extension()>
     Function GetValueNames(root As RegistryKey, path As String) As String()
         Using subKey = root.OpenSubKey(path)
             If Not subKey Is Nothing Then

@@ -223,7 +223,7 @@ Public Class ProcessingForm
         StopAfterCurrentJobMenuItem = CMS.Add("Stop After Current", AddressOf StopAfterCurrentJob, "Stops all job processing after the current job.")
         CMS.Add("-")
         CMS.Add("Jobs", AddressOf JobsForm.ShowForm, "Shows the Jobs dialog.").KeyDisplayString = "F6"
-        CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, "Shows the Jobs dialog.").KeyDisplayString = "F7"
+        CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, "Shows the log file.").KeyDisplayString = "F7"
         CMS.Add("-")
         CMS.Add("Help", AddressOf ShowHelp).KeyDisplayString = "F1"
 

@@ -778,12 +778,10 @@ Public Class MkvMuxer
         If File.Exists(ap.File) AndAlso IsSupported(ap.File.Ext) AndAlso IsSupported(ap.OutputFileType) Then
             Dim tid = 0
             Dim isCombo As Boolean
-            Dim isDTSHD As Boolean
 
             If Not ap.Stream Is Nothing Then
                 tid = ap.Stream.StreamOrder
                 isCombo = ap.Stream.Name.Contains("THD+AC3")
-                isDTSHD = ap.Stream.Name.ContainsAny("DTSMA", "DTSX", "DTSMA", "DTSHRA")
 
                 Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + ap.File.Escape)
                 Dim values = Regex.Matches(stdout, "Track ID (\d+): audio").OfType(Of Match).Select(Function(match) match.Groups(1).Value.ToInt)
@@ -802,8 +800,6 @@ Public Class MkvMuxer
                 args += " --no-video --no-subs --no-chapters --no-attachments --no-track-tags --no-global-tags"
             ElseIf ap.File.Ext = "m4a" Then
                 args += " --no-chapters" 'eac3to writes chapters to m4a
-            ElseIf ap.File.Ext.EqualsAny("dtsma", "dtshr", "dtshd") Then
-                isDTSHD = True
             End If
 
             args += " --audio-tracks " + If(isCombo, tid & "," & tid + 1, tid.ToString)
@@ -817,7 +813,7 @@ Public Class MkvMuxer
                 args += " --aac-is-sbr " & tid
             End If
 
-            If isDTSHD AndAlso TypeOf ap Is MuxAudioProfile Then
+            If TypeOf ap Is MuxAudioProfile AndAlso ap.DisplayName.ContainsAny("DTSMA", "DTSX", "DTSHRA") Then
                 Dim map = DirectCast(ap, MuxAudioProfile)
 
                 If map.ExtractDTSCore Then

@@ -1007,9 +1007,11 @@ Public Class AudioStream
         Get
             Dim ret = "#" & Index + 1
 
-            If FormatProfile.EqualsAny("TrueHD+Atmos / TrueHD",
-                                       "E-AC-3+Atmos / E-AC-3",
-                                       "TrueHD+Atmos / TrueHD / AC-3") Then
+            If FormatProfile.EqualsAny(
+                "TrueHD+Atmos / TrueHD",
+                "E-AC-3+Atmos / E-AC-3",
+                "TrueHD+Atmos / TrueHD / AC-3") Then
+
                 ret += " Atmos"
             ElseIf FormatString = "TrueHD / AC3" Then
                 ret += " TrueHD"
@@ -1024,12 +1026,10 @@ Public Class AudioStream
                 ret += " EAC3"
             ElseIf Format = "MLP FBA" Then
                 ret += " TrueHD"
-            ElseIf FormatString = "DTS XLL" Then
+            ElseIf FormatString = "DTS XLL" OrElse FormatProfile.StartsWith("MA /") Then
                 ret += " DTSMA"
             ElseIf FormatString = "DTS XLL X" Then
                 ret += " DTSX"
-            ElseIf FormatProfile.StartsWith("MA /") Then
-                ret += " DTSMA"
             ElseIf FormatProfile.StartsWith("HRA /") Then
                 ret += " DTSHRA"
             ElseIf FormatString = "AC-3" Then

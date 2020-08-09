@@ -93,7 +93,7 @@ Tools
     "nnedi3 AVSI","AviSynth Script","nnedi3_16.avsi","3.0","2019-01-01"
     "nnedi3x AVSI","AviSynth Script","nnedi3x.avsi","3.0","2019-01-01"
     "pSharpen","AviSynth Script","pSharpen.avsi","2016-03-16","2019-01-01"
-    "QTGMC","AviSynth Script","QTGMC.avsi","3.365","2020-05-31"
+    "QTGMC","AviSynth Script","QTGMC.avsi","3.368s","2020-08-09"
     "ResizeX","AviSynth Script","ResizeX.avsi","1.0.1","2019-01-01"
     "SMDegrain","AviSynth Script","SMDegrain.avsi","3.12.108s","2020-05-31"
     "SmoothD2c","AviSynth Script","SmoothD2c.avs","a2","2019-01-01"

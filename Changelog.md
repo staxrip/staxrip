@@ -7,6 +7,7 @@
   there is now a confirm dialog with shield icon,
   mpv.net, NVEnc and QSVEnc no longer need soft links.
 - New NVEnc options --multipass --repeat-headers
+- Fix mux audio profile Extract DTS Core not working for mka files.
 - x264 r3018-db0d417 x86
 - NVEnc 5.14
 - QSVEnc 4.07
@@ -15,6 +16,7 @@
 - MP4Box 1.0.0-rev188-g2aa266dfa-gcc10.2.0 Patman
 - qaac 2.69-msvc1926 Patman
 - ffmpeg N-98647-gffa6072fc7-gcc10.2.0 Patman
+- QTGMC 3.368s
 
 
 2.1.3.9 Beta

@@ -394,7 +394,7 @@ Public Class QSVEnc
                     sourcePath = p.Script.Path
 
                     If includePaths AndAlso FrameServerHelp.IsAviSynthPortableUsed Then
-                        ret += " --avsdll=" + Package.AviSynth.Path.Escape
+                        ret += " --avsdll " + Package.AviSynth.Path.Escape
                     End If
                 Case "qshw"
                     sourcePath = p.LastOriginalSourceFile

@@ -2963,9 +2963,7 @@ Public Class MainForm
                 End If
             End If
 
-            Dim info = p.Script.Info
-
-            If info.Width Mod p.ForcedOutputMod <> 0 Then
+            If p.Script.Info.Width Mod p.ForcedOutputMod <> 0 Then
                 If ProcessTip("Change output width to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
                     CanIgnoreTip = Not p.AutoCorrectCropValues
@@ -2976,7 +2974,7 @@ Public Class MainForm
                 End If
             End If
 
-            If info.Height Mod p.ForcedOutputMod <> 0 Then
+            If p.Script.Info.Height Mod p.ForcedOutputMod <> 0 Then
                 If ProcessTip("Change output height to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
                     CanIgnoreTip = Not p.AutoCorrectCropValues

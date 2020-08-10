@@ -1,6 +1,13 @@
 
-2.1.4.2 Beta (not yet available)
+2.1.4.3 Beta (not yet available)
 ============
+
+2.1.4.2 Beta
+============
+
+- Fix incorrect output mod warning shown.
+- Fix incorrect syntax for nvenc/qsvenc --avsdll in avisynth portable mode.
+
 
 2.1.4.1 Beta
 ============

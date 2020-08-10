@@ -2895,7 +2895,7 @@ Public Class MainForm
             Dim ae = Calc.GetAspectRatioError()
 
             If Not isValidAnamorphicSize AndAlso (ae > p.MaxAspectRatioError OrElse
-                ae < -p.MaxAspectRatioError) AndAlso p.Script.IsFilterActive("Resize") AndAlso
+                ae < -p.MaxAspectRatioError) AndAlso isResized AndAlso
                 p.RemindArError AndAlso p.CustomTargetPAR <> "1:1" Then
 
                 If ProcessTip("Use the resize slider to correct the aspect ratio error or click next to encode anamorphic.") Then
@@ -2963,53 +2963,27 @@ Public Class MainForm
                 End If
             End If
 
-            If p.Script.IsFilterActive("Resize") Then
-                If p.TargetWidth Mod p.ForcedOutputMod <> 0 Then
-                    If ProcessTip("Move the resize slider to adjust the target width to be divisible by " &
-                                  p.ForcedOutputMod & " or customize:" + BR + "Options > Image > Output Mod") Then
-                        CanIgnoreTip = Not p.AutoCorrectCropValues
-                        g.Highlight(True, tbTargetWidth)
-                        g.Highlight(True, lSAR)
-                        gbAssistant.Text = "Invalid Target Width"
-                        Return False
-                    End If
-                End If
+            Dim info = p.Script.Info
 
-                If Not p.TargetHeight = 1080 AndAlso p.TargetHeight Mod p.ForcedOutputMod <> 0 Then
-                    If ProcessTip("Move the resize slider to adjust the target height to be divisible by " &
-                                  p.ForcedOutputMod & " or customize:" + BR + "Options > Image > Output Mod") Then
-                        CanIgnoreTip = Not p.AutoCorrectCropValues
-                        g.Highlight(True, tbTargetHeight)
-                        g.Highlight(True, lSAR)
-                        gbAssistant.Text = "Invalid Target Height"
-                        Return False
-                    End If
+            If info.Width Mod p.ForcedOutputMod <> 0 Then
+                If ProcessTip("Change output width to be divisible by " & p.ForcedOutputMod &
+                              " or customize:" + BR + "Options > Image > Output Mod") Then
+                    CanIgnoreTip = Not p.AutoCorrectCropValues
+                    g.Highlight(True, tbTargetWidth)
+                    g.Highlight(True, lSAR)
+                    gbAssistant.Text = "Invalid Target Width"
+                    Return False
                 End If
-            Else
-                If p.TargetWidth Mod p.ForcedOutputMod <> 0 Then
-                    If ProcessTip("Image width is not divisible by " & p.ForcedOutputMod &
-                                  ", click here to correct the crop values or customize:" + BR +
-                                  "Options > Image > Output Mod") Then
-                        CanIgnoreTip = False
-                        AssistantMethod = AddressOf g.ForceCropMod
-                        g.Highlight(True, tbTargetWidth)
-                        g.Highlight(True, lSAR)
-                        gbAssistant.Text = "Invalid Target Width"
-                        Return False
-                    End If
-                End If
+            End If
 
-                If Not p.TargetHeight = 1080 AndAlso p.TargetHeight Mod p.ForcedOutputMod <> 0 Then
-                    If ProcessTip("Image height is not divisible by " & p.ForcedOutputMod &
-                                  ", click here to correct the crop values or customize:" + BR +
-                                  "Options > Image > Output Mod") Then
-                        CanIgnoreTip = False
-                        AssistantMethod = AddressOf g.ForceCropMod
-                        g.Highlight(True, tbTargetHeight)
-                        g.Highlight(True, lSAR)
-                        gbAssistant.Text = "Invalid Target Height"
-                        Return False
-                    End If
+            If info.Height Mod p.ForcedOutputMod <> 0 Then
+                If ProcessTip("Change output height to be divisible by " & p.ForcedOutputMod &
+                              " or customize:" + BR + "Options > Image > Output Mod") Then
+                    CanIgnoreTip = Not p.AutoCorrectCropValues
+                    g.Highlight(True, tbTargetHeight)
+                    g.Highlight(True, lSAR)
+                    gbAssistant.Text = "Invalid Target Height"
+                    Return False
                 End If
             End If
 
@@ -4728,6 +4702,7 @@ Public Class MainForm
     End Sub
 
     Sub tbResize_MouseUp(sender As Object, e As MouseEventArgs) Handles tbResize.MouseUp
+        p.Script.GetInfo()
         Assistant()
     End Sub
 
@@ -4902,6 +4877,11 @@ Public Class MainForm
         End If
     End Sub
 
+    Sub tbTargetWidth_KeyUp(sender As Object, e As KeyEventArgs) Handles tbTargetWidth.KeyUp
+        p.Script.GetInfo()
+        Assistant()
+    End Sub
+
     Sub tbTargetHeight_KeyDown(sender As Object, e As KeyEventArgs) Handles tbTargetHeight.KeyDown
         If e.KeyData = Keys.Up Then
             e.Handled = True
@@ -4912,6 +4892,11 @@ Public Class MainForm
             Dim modVal = p.ForcedOutputMod
             tbTargetHeight.Text = CInt(((p.TargetHeight - modVal) / modVal) * modVal).ToString()
         End If
+    End Sub
+
+    Sub tbTargetHeight_KeyUp(sender As Object, e As KeyEventArgs) Handles tbTargetHeight.KeyUp
+        p.Script.GetInfo()
+        Assistant()
     End Sub
 
     Sub tbTargetWidth_MouseWheel(sender As Object, e As MouseEventArgs) Handles tbTargetWidth.MouseWheel
@@ -4965,6 +4950,9 @@ Public Class MainForm
             tbTargetWidth.Text = width.ToString
             tbTargetHeight.Text = height.ToString
         End If
+
+        p.Script.GetInfo()
+        Assistant()
     End Sub
 
     <Command("Sets the target image size by pixels (width x height).")>
@@ -4985,6 +4973,9 @@ Public Class MainForm
 
         tbTargetWidth.Text = w.ToString()
         tbTargetHeight.Text = h.ToString()
+
+        p.Script.GetInfo()
+        Assistant()
     End Sub
 
     <Command("Sets the target file size in MB.")>

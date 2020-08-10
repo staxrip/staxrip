@@ -1,14 +1,18 @@
 
-2.1.4.1 Beta (not yet available)
+2.1.4.2 Beta (not yet available)
+============
+
+2.1.4.1 Beta
 ============
 
 - New Presets for NVEnc (P1-P7) added. Reference: https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md#-u---preset
 - Soft links are only created if needed by the current config,
   there is now a confirm dialog with shield icon,
   mpv.net, NVEnc and QSVEnc no longer need soft links.
-- New NVEnc options --multipass --repeat-headers
+- New NVEnc options --multipass --repeat-headers.
 - Fix mux audio profile Extract DTS Core not working for mka files.
 - x264 r3018-db0d417 x86
+- mkvtoolnix 49 x64
 - NVEnc 5.14
 - QSVEnc 4.07
 - VCEEnc 6.02

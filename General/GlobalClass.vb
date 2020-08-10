@@ -73,7 +73,7 @@ Public Class GlobalClass
 
     Function ConvertToCSV(delimiter As String, objects As IEnumerable(Of Object)) As String
         Dim code = $"$inputVar | ConvertTo-Csv -Delimiter '{delimiter}' -NoTypeInformation"
-        Return $"sep={delimiter}" + Environment.NewLine + PowerShell.InvokeAndConvert(code, "inputVar", objects)
+        Return "sep=" + delimiter + BR + PowerShell.InvokeAndConvert(code, "inputVar", objects)
     End Function
 
     Function IsWindowsTerminalAvailable() As Boolean

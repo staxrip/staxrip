@@ -22,13 +22,8 @@ Public Class Project
     Public AutoSmartCrop As Boolean
     Public AutoSmartOvercrop As Double
     Public BatchMode As Boolean
-    Public BitDepth As Integer
     Public BitrateIsFixed As Boolean
-    Public ChromaSubsampling As String
     Public CodeAtTop As String = ""
-    Public Codec As String
-    Public CodecProfile As String
-    Public ColorSpace As String
     Public CompCheckAction As CompCheckAction = CompCheckAction.AdjustImageSize
     Public CompCheckRange As Integer = 5
     Public Compressibility As Double
@@ -51,41 +46,47 @@ Public Class Project
     Public FirstOriginalSourceFile As String
     Public ForcedOutputMod As Integer = 8
     Public HarcodedSubtitle As Boolean
+    Public ImportVUIMetadata As Boolean = True
     Public ITU As Boolean = True
     Public LastOriginalSourceFile As String
     Public Log As New LogBuilder
     Public MaxAspectRatioError As Double = 2
+    Public MKVHDR As Boolean
+    Public MTN As Boolean
     Public NoDialogs As Boolean
     Public PreferredAudio As String
     Public PreferredSubtitles As String
     Public Ranges As List(Of Range)
+    Public RemindArError As Boolean = True
     Public RemindOversize As Boolean = True
     Public RemindToCrop As Boolean = False
     Public RemindToCut As Boolean = False
-    Public RemindArError As Boolean = True
     Public RemindToDoCompCheck As Boolean = False
     Public RemindToSetFilters As Boolean = False
     Public ResizeSliderMaxWidth As Integer
     Public SaveThumbnails As Boolean
-    Public MTN As Boolean
-    Public MKVHDR As Boolean
-    Public ScanOrder As String
-    Public ScanType As String
     Public Script As TargetVideoScript
     Public SkipAudioEncoding As Boolean
     Public SkippedAssistantTips As List(Of String)
     Public SkipVideoEncoding As Boolean
     Public SourceAnamorphic As Boolean
     Public SourceBitrate As Integer
+    Public SourceChromaSubsampling As String
+    Public SourceColorSpace As String
     Public SourceFile As String
     Public SourceFiles As List(Of String)
     Public SourceFrameRate As Double
     Public SourceFrames As Integer
     Public SourceHeight As Integer = 1080
     Public SourcePAR As Point = New Point(1, 1)
+    Public SourceScanOrder As String
+    Public SourceScanType As String
     Public SourceScript As SourceVideoScript
     Public SourceSeconds As Integer
     Public SourceSize As Long
+    Public SourceVideoBitDepth As Integer
+    Public SourceVideoFormat As String
+    Public SourceVideoFormatProfile As String
     Public SourceWidth As Integer = 1920
     Public SubtitleName As String = ""
     Public TargetFrameRate As Double
@@ -100,7 +101,6 @@ Public Class Project
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 5000
     Public VideoEncoder As VideoEncoder
-    Public ImportVUIMetadata As Boolean = True
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

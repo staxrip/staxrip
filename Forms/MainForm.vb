@@ -2055,15 +2055,15 @@ Public Class MainForm
                 p.SourcePAR.Y = 1000
             End If
 
-            p.Codec = MediaInfo.GetVideoFormat(p.LastOriginalSourceFile)
-            p.CodecProfile = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format_Profile")
-            p.BitDepth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitDepth").ToInt
-            p.ColorSpace = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ColorSpace")
-            p.ChromaSubsampling = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ChromaSubsampling")
+            p.SourceVideoFormat = MediaInfo.GetVideoFormat(p.LastOriginalSourceFile)
+            p.SourceVideoFormatProfile = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format_Profile")
+            p.SourceVideoBitDepth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitDepth").ToInt
+            p.SourceColorSpace = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ColorSpace")
+            p.SourceChromaSubsampling = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ChromaSubsampling")
             p.SourceSize = New FileInfo(p.LastOriginalSourceFile).Length
             p.SourceBitrate = CInt(MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitRate").ToInt / 1000)
-            p.ScanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
-            p.ScanOrder = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanOrder")
+            p.SourceScanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
+            p.SourceScanOrder = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanOrder")
 
             p.VideoEncoder.SetMetaData(p.LastOriginalSourceFile)
 
@@ -2436,7 +2436,7 @@ Public Class MainForm
             End If
         End If
 
-        If p.ChromaSubsampling <> "4:2:0" AndAlso s.ConvertChromaSubsampling Then
+        If p.SourceChromaSubsampling <> "4:2:0" AndAlso s.ConvertChromaSubsampling Then
             If editVS Then
                 Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
                 Dim matrix As String
@@ -2726,12 +2726,12 @@ Public Class MainForm
                 (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB"),
                 If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToString("f1") + "Mb/s", ""),
                 p.SourceFrameRate.ToString.Shorten(9) + "fps",
-                p.Codec, p.CodecProfile)
+                p.SourceVideoFormat, p.SourceVideoFormatProfile)
 
             lSource2.Text = lSource1.GetMaxTextSpace(
-                p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.ColorSpace,
-                p.ChromaSubsampling, If(p.BitDepth <> 0, p.BitDepth & "Bits", ""),
-                p.ScanType, If(p.ScanType = "Interlaced", p.ScanOrder, ""))
+                p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.SourceColorSpace,
+                p.SourceChromaSubsampling, If(p.SourceVideoBitDepth <> 0, p.SourceVideoBitDepth & "Bits", ""),
+                p.SourceScanType, If(p.SourceScanType = "Interlaced", p.SourceScanOrder, ""))
 
             lTarget1.Text = lSource1.GetMaxTextSpace(g.GetTimeString(p.TargetSeconds),
                 p.TargetFrameRate.ToString.Shorten(9) + "fps", "Audio Bitrate: " & CInt(Calc.GetAudioBitrate))

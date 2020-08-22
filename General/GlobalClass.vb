@@ -897,7 +897,17 @@ Public Class GlobalClass
     End Function
 
     Function IsSourceSame(path As String) As Boolean
-        Return path.Base.StartsWith(p.SourceFile.Base)
+        Return path.Base.StartsWith(p.SourceFile.Base) OrElse path.StartsWithEx(p.TempDir)
+    End Function
+
+    Function GetAudioTracks() As List(Of AudioProfile)
+        Dim ret As New List(Of AudioProfile)
+
+        ret.Add(p.Audio0)
+        ret.Add(p.Audio1)
+        ret.AddRange(p.AudioTracks)
+
+        Return ret
     End Function
 
     Function GetFilesInTempDirAndParent() As List(Of String)

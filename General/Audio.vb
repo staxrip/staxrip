@@ -68,8 +68,16 @@ Public Class Audio
         End If
     End Sub
 
-    Shared Function GetBaseNameForStream(path As String, stream As AudioStream, Optional shorten As Boolean = False) As String
-        Dim ret = If(shorten, path.Base.Shorten(10), path.Base) + " ID" & (stream.Index + 1)
+    Shared Function GetBaseNameForStream(path As String, stream As AudioStream) As String
+        Dim base As String
+
+        If p.TempDir.EndsWithEx("_temp\") AndAlso path.Base.StartsWithEx(p.SourceFile.Base) Then
+            base = path.Base.Substring(p.SourceFile.Base.Length)
+        Else
+            base = path.Base
+        End If
+
+        Dim ret = base + " ID" & (stream.Index + 1)
 
         If stream.Delay <> 0 Then
             ret += " " & stream.Delay & "ms"
@@ -79,11 +87,11 @@ Public Class Audio
             ret += " " + stream.Language.ToString
         End If
 
-        If Not shorten AndAlso path.Length < 200 AndAlso stream.Title <> "" Then
+        If path.Length < 200 AndAlso stream.Title <> "" Then
             ret += " {" + stream.Title.Shorten(50).EscapeIllegalFileSysChars + "}"
         End If
 
-        Return ret
+        Return ret.Trim
     End Function
 
     Shared Sub Convert(ap As AudioProfile)

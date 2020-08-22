@@ -261,13 +261,8 @@ Public MustInherit Class AudioProfile
     End Function
 
     Function GetTrackID() As Integer
-        If Me Is p.Audio0 Then
-            Return 1
-        End If
-
-        If Me Is p.Audio1 Then
-            Return 2
-        End If
+        If Me Is p.Audio0 Then Return 1
+        If Me Is p.Audio1 Then Return 2
 
         For x = 0 To p.AudioTracks.Count - 1
             If Me Is p.AudioTracks(x) Then
@@ -277,7 +272,13 @@ Public MustInherit Class AudioProfile
     End Function
 
     Function GetOutputFile() As String
-        Dim base = File.Base
+        Dim base As String
+
+        If p.TempDir.EndsWithEx("_temp\") AndAlso File.Base.StartsWithEx(p.SourceFile.Base) Then
+            base = File.Base.Substring(p.SourceFile.Base.Length)
+        Else
+            base = File.Base
+        End If
 
         If Delay <> 0 Then
             If HandlesDelay() Then
@@ -295,7 +296,9 @@ Public MustInherit Class AudioProfile
             End If
         End If
 
-        Return p.TempDir + base + "_a" & GetTrackID() & "." + OutputFileType
+        Dim tracks = g.GetAudioTracks.Where(Function(track) track.File <> "")
+        Dim trackID = If(tracks.Count > 1, "_a" & GetTrackID(), "")
+        Return p.TempDir + base + trackID & "." + OutputFileType
     End Function
 
     Function ExpandMacros(value As String) As String

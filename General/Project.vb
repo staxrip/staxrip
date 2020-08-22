@@ -214,16 +214,6 @@ Public Class Project
         End Set
     End Property
 
-    Function GetAudioTracks() As List(Of AudioProfile)
-        Dim ret As New List(Of AudioProfile)
-
-        ret.Add(p.Audio0)
-        ret.Add(p.Audio1)
-        ret.AddRange(p.AudioTracks)
-
-        Return ret
-    End Function
-
     Sub NotifyPropertyChanged(
         <CallerMemberName()> Optional ByVal propertyName As String = Nothing)
 

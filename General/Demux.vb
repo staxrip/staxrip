@@ -318,10 +318,6 @@ Public Class ffmpegDemuxer
     Shared Sub DemuxAudio(sourcefile As String, stream As AudioStream, ap As AudioProfile, proj As Project)
         Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.Extension
 
-        If outPath.Length > 259 Then
-            outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
-        End If
-
         Dim streamIndex = stream.StreamOrder
         Dim args = "-i " + sourcefile.Escape
 
@@ -595,7 +591,6 @@ Public Class MP4BoxDemuxer
         End If
 
         Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.Extension
-        If outPath.Length > 259 Then outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream, True) + stream.Extension
         FileHelp.Delete(outPath)
         Dim args As String
 
@@ -843,11 +838,6 @@ Public Class mkvDemuxer
             End If
 
             Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + ext
-
-            If outPath.Length > 259 Then
-                outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream, True) + ext
-            End If
-
             outPaths.Add(outPath, stream)
             args += " " & stream.StreamOrder & ":" + outPath.Escape
         Next

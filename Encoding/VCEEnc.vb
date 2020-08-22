@@ -247,7 +247,11 @@ Public Class VCEEnc
                     sourcePath = "-"
 
                     If includePaths Then
-                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal - | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
+                        Dim pix_fmt = If(p.BitDepth = 10, "yuv420p10le", "yuv420p")
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") +
+                            " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") +
+                            " -f yuv4mpegpipe -pix_fmt " + pix_fmt + " -strict -1 -loglevel fatal - | " +
+                            If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
                     End If
                 Case "ffqsv"
                     sourcePath = "-"

@@ -2,7 +2,7 @@
 2.1.4.3 Beta (not yet available)
 ============
 
-- fix x265 Decoder ffmpeg DXVA2 (stax76, #290)
+- fix Decoder ffmpeg DXVA2 (stax76, #290)
 - ffms2 2.40-RC1
 
 

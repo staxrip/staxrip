@@ -2,6 +2,9 @@
 2.1.4.3 Beta (not yet available)
 ============
 
+- ffms2 2.40-RC1
+
+
 2.1.4.2 Beta
 ============
 

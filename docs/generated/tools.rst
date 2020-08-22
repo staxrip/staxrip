@@ -25,7 +25,7 @@ Tools
     "EEDI2","AviSynth Plugin","EEDI2.dll","0.9.2.0","2019-01-01"
     "EEDI3","AviSynth Plugin","EEDI3.dll","0.9.2.3","2019-01-01"
     "f3kdb Neo","AviSynth Plugin","neo-f3kdb.dll","r6","2020-05-30"
-    "ffms2","AviSynth Plugin","ffms2.dll","89bd1e1 StvG","2020-03-30"
+    "ffms2","AviSynth Plugin","ffms2.dll","2.40-RC1","2020-08-22"
     "FFT3DFilter","AviSynth Plugin","fft3dfilter.dll","2.6","2019-01-31"
     "FFT3DGPU","AviSynth Plugin","FFT3dGPU.dll","0.8.2.0","2018-11-21"
     "flash3kyuu_deband","AviSynth Plugin","flash3kyuu_deband.dll","5.0","2018-05-02"

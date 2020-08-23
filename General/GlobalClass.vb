@@ -434,13 +434,8 @@ Public Class GlobalClass
                 Return False
             End If
 
-            If file.Length > s.CharacterLimit OrElse file.FileName.Length > s.CharacterLimit \ 2 Then
-                MsgError("Source file path or filename is too long", Strings.CharacterLimitReason)
-                Return False
-            End If
-
-            If file.Ext = "dga" Then
-                MsgError("There is no properly working x64 source filters available for DGA. There are several newer and faster x64 source filters available.")
+            If file.Dir.Length > s.CharacterLimitFolder Then
+                MsgError("Source file folder path is too long", "Windows does not have usable long path support.")
                 Return False
             End If
         Next
@@ -546,6 +541,40 @@ Public Class GlobalClass
         If match.Success Then
             Return CInt(match.Groups(1).Value)
         End If
+    End Function
+
+    Function GetSourceBase() As String
+        If p.TempDir.EndsWithEx("_temp\") Then
+            Return "temp"
+        Else
+            Return p.SourceFile.Base
+        End If
+    End Function
+
+    Function GetPath(folder As String, base As String, ext As String) As String
+        Return GetPath(folder, base, Nothing, ext)
+    End Function
+
+    Function GetPath(folder As String, base As String, suffix As String, ext As String) As String
+        Dim fullPath = folder + base + suffix + "." + ext
+        Dim MAX_PATH = 260
+
+        If fullPath.Length <= MAX_PATH Then
+            Return fullPath
+        End If
+
+        Dim checksum = "_" & CRC32.GetChecksum(base)
+        Dim minPath = folder + checksum + suffix + "." + ext
+
+        If minPath.Length > MAX_PATH Then
+            MsgError("Path is too long", folder + base + suffix + "." + ext)
+            Throw New AbortException()
+        End If
+
+        Dim trimSize = fullPath.Length - MAX_PATH
+        Dim newBase = base.Substring(0, base.Length - trimSize - checksum.Length) + checksum
+
+        Return folder + newBase + suffix + "." + ext
     End Function
 
     Sub ShowCode(title As String, content As String)

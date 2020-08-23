@@ -177,7 +177,7 @@ Public MustInherit Class Muxer
             End If
 
             If FileTypes.SubtitleExludingContainers.Contains(fp.Ext) AndAlso
-                g.IsSourceSameOrSimilar(fp) AndAlso Not fp.Contains("_Preview.") AndAlso
+                g.IsSourceSameOrSimilar(fp) AndAlso Not fp.Contains("_view.") AndAlso
                 Not fp.Contains("_Temp.") Then
 
                 If p.ConvertSup2Sub AndAlso fp.Ext = "sup" Then

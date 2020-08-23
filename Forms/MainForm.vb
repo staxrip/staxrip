@@ -1376,7 +1376,7 @@ Public Class MainForm
 
                 If td.SelectedValue = DialogResult.Yes Then
                     If g.ProjectPath Is Nothing Then
-                        If Not OpenSaveDialog() Then
+                        If Not OpenSaveProjectDialog() Then
                             Return True
                         End If
                     Else
@@ -1584,12 +1584,12 @@ Public Class MainForm
         End If
     End Sub
 
-    Function OpenSaveDialog() As Boolean
+    Function OpenSaveProjectDialog() As Boolean
         Using dialog As New SaveFileDialog
             dialog.SetInitDir(p.TempDir)
 
             If p.SourceFile <> "" Then
-                dialog.FileName = p.TargetFile.Base
+                dialog.FileName = g.GetPath(p.TempDir, p.TargetFile.Base, p.TargetFile.Ext)
             Else
                 dialog.FileName = "Untitled"
             End If
@@ -3237,8 +3237,8 @@ Public Class MainForm
                 BlockSourceTextBoxTextChanged = False
             End If
 
-            If codeLower.Contains("cachefile") Then
-                g.ffmsindex(p.SourceFile, p.TempDir + p.SourceFile.Base + ".ffindex")
+            If codeLower.Contains("cachefile") AndAlso p.TempDir.EndsWithEx("_temp\") Then
+                g.ffmsindex(p.SourceFile, p.TempDir + g.GetSourceBase + ".ffindex")
             Else
                 g.ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
             End If
@@ -3526,10 +3526,16 @@ Public Class MainForm
             b.Field = NameOf(s.VerifyToolStatus)
 
             n = ui.AddNum
-            n.Text = "Path Character Limit"
-            n.Help = "Character limit of source file paths and half of it as filename limit. " + Strings.CharacterLimitReason
-            n.Config = {150, 1000, 10}
-            n.Field = NameOf(s.CharacterLimit)
+            n.Text = "Character limit for folders"
+            n.Help = "Character limit of source file folder paths. Windows does not have usable long path support."
+            n.Config = {50, 900, 10}
+            n.Field = NameOf(s.CharacterLimitFolder)
+
+            n = ui.AddNum
+            n.Text = "Character limit for filenames"
+            n.Help = "Windows does not have usable long path support."
+            n.Config = {20, 200, 10}
+            n.Field = NameOf(s.CharacterLimitFilename)
 
             ui.SelectLast("last settings page")
 
@@ -3612,7 +3618,7 @@ Public Class MainForm
     <Command("Saves the current project.")>
     Sub SaveProject()
         If g.ProjectPath Is Nothing Then
-            OpenSaveDialog()
+            OpenSaveProjectDialog()
         Else
             SaveProjectPath(g.ProjectPath)
         End If
@@ -3646,7 +3652,7 @@ Public Class MainForm
 
     <Command("Saves the current project.")>
     Sub SaveProjectAs()
-        OpenSaveDialog()
+        OpenSaveProjectDialog()
     End Sub
 
     <Command("Saves the current project as template.")>
@@ -3813,7 +3819,7 @@ Public Class MainForm
             End If
 
             Dim script = p.Script.GetNewScript
-            script.Path = p.TempDir + p.TargetFile.Base + "_preview." + script.FileType
+            script.Path = g.GetPath(p.TempDir, p.TargetFile.Base, "_view", script.FileType)
             script.RemoveFilter("Cutting")
 
             If script.GetError <> "" Then

@@ -559,11 +559,11 @@ Public Class TargetVideoScript
 
     Overrides Property Path() As String
         Get
-            If p.SourceFile = "" OrElse p.TargetFile.Base = "" Then
+            If p.SourceFile = "" OrElse p.TargetFile = "" Then
                 Return ""
             End If
 
-            Return p.TempDir + p.TargetFile.Base + "." + FileType
+            Return g.GetPath(p.TempDir, p.TargetFile.Base, FileType)
         End Get
         Set(value As String)
         End Set
@@ -580,7 +580,7 @@ Public Class SourceVideoScript
                 Return ""
             End If
 
-            Return p.TempDir + p.TargetFile.Base + "_source." + p.Script.FileType
+            Return g.GetPath(p.TempDir, p.TargetFile.Base, "_source", FileType)
         End Get
         Set(value As String)
         End Set

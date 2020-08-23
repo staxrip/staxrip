@@ -341,7 +341,7 @@ Public Class Macro
         If value.Contains("%temp_file%") Then value = value.Replace("%temp_file%", p.TempDir + p.SourceFile.Base)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_temp_file%") Then value = value.Replace("%source_temp_file%", p.TempDir + p.SourceFile.Base)
+        If value.Contains("%source_temp_file%") Then value = value.Replace("%source_temp_file%", p.TempDir + g.GetSourceBase)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_temp_file%") Then value = value.Replace("%target_temp_file%", p.TempDir + p.TargetFile.Base)

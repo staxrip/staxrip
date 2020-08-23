@@ -152,16 +152,14 @@ Public Class LogBuilder
             Return Folder.Temp + "staxrip.log"
         ElseIf proj.TempDir = "" Then
             Dim ret = proj.SourceFile.DirAndBase + "_staxrip.log"
-            If ret.Length > 259 Then ret = proj.SourceFile.Dir + proj.SourceFile.Base.Shorten(10) + "_staxrip.log"
-            Return ret
-        Else
-            Dim ret = proj.TempDir + proj.TargetFile.Base + "_staxrip.log"
 
             If ret.Length > 259 Then
-                ret = proj.TempDir + proj.TargetFile.Base.Shorten(10) + "_staxrip.log"
+                ret = proj.SourceFile.Dir + proj.SourceFile.Base.Shorten(10) + "_staxrip.log"
             End If
 
             Return ret
+        Else
+            Return g.GetPath(proj.TempDir, proj.TargetFile.Base, "_staxrip", "log")
         End If
     End Function
 End Class

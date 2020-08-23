@@ -11,7 +11,8 @@ Public Class ApplicationSettings
     Public AviSynthFilterPreferences As StringPairList
     Public AviSynthMode As FrameServerMode
     Public AviSynthProfiles As List(Of FilterCategory)
-    Public CharacterLimit As Integer
+    Public CharacterLimitFolder As Integer = 100
+    Public CharacterLimitFilename As Integer = 50
     Public CheckForUpdates As Boolean
     Public CheckForUpdatesBeta As Boolean
     Public CheckForUpdatesDismissed As String
@@ -320,10 +321,6 @@ Public Class ApplicationSettings
 
         If LastSourceDir = "" Then
             LastSourceDir = ""
-        End If
-
-        If CharacterLimit < 150 Then
-            CharacterLimit = 150
         End If
 
         Migrate()

@@ -296,15 +296,21 @@ Public Class MP4Muxer
         Dim videoParams = ""
 
         If PAR <> "" Then
-            Dim val = Calc.ParseCustomAR(PAR, 0, 0)
+            Dim par = Me.PAR.TrimEx
+
+            If par.EqualsAny("auto", "0") Then
+                Dim par2 = Calc.GetTargetPAR
+                par = par2.X & "/" & par2.Y
+            End If
+
+            Dim val = Calc.ParseCustomAR(par, 0, 0)
 
             If val.X <> 0 Then
                 videoParams = ":par=" & val.X & ":" & val.Y
             End If
         ElseIf Calc.IsARSignalingRequired Then
-            Dim par = Calc.GetTargetPAR
-
             If TypeOf p.VideoEncoder Is NullEncoder Then
+                Dim par = Calc.GetTargetPAR
                 videoParams = ":par=" & par.X & ":" & par.Y
             End If
         End If
@@ -639,8 +645,14 @@ Public Class MkvMuxer
             args += " --track-name """ & id & ":" + Convert(VideoTrackName) + """"
         End If
 
-        If DAR <> "" Then
-            args += " --aspect-ratio " & id & ":" + DAR.Replace(",", ".").Replace(":", "/")
+        Dim dar = Me.DAR.TrimEx
+
+        If dar.EqualsAny("auto", "0") Then
+            dar = Calc.GetTargetDAR.ToInvariantString.Shorten(11)
+        End If
+
+        If dar <> "" Then
+            args += " --aspect-ratio " & id & ":" + dar.TrimEx.Replace(",", ".").Replace(":", "/")
         ElseIf Calc.IsARSignalingRequired AndAlso TypeOf p.VideoEncoder Is NullEncoder Then
             args += " --aspect-ratio " & id & ":" + Calc.GetTargetDAR.ToInvariantString.Shorten(11)
         End If

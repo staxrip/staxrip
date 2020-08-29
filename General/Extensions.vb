@@ -83,6 +83,15 @@ Module StringExtensions
     End Function
 
     <Extension>
+    Function TrimEx(instance As String) As String
+        If instance = "" Then
+            Return ""
+        End If
+
+        Return instance.Trim
+    End Function
+
+    <Extension>
     Function PathStartsWith(instance As String, value As String) As Boolean
         If instance <> "" AndAlso value <> "" Then
             Return instance.ToLower.StartsWith(value.ToLower)

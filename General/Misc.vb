@@ -188,7 +188,10 @@ Public Class Calc
             End If
         ElseIf value.IsDouble Then
             Dim val = value.ToDouble
-            If val > 0 Then Return Reduce(New Point(CInt(val * 1000000), 1000000))
+
+            If val > 0 Then
+                Return Reduce(New Point(CInt(val * 1000000), 1000000))
+            End If
         End If
 
         Return New Point(defaultX, defaultY)
@@ -310,7 +313,10 @@ Public Class Calc
     Shared Function GetTargetDAR() As Double
         If p.CustomTargetDAR <> "" Then
             Dim val = ParseCustomAR(p.CustomTargetDAR, 0, 0)
-            If val.X <> 0 AndAlso val.Y <> 0 Then Return val.X / val.Y
+
+            If val.X <> 0 AndAlso val.Y <> 0 Then
+                Return val.X / val.Y
+            End If
         End If
 
         Dim w = p.SourceWidth, h = p.SourceHeight

@@ -334,7 +334,7 @@ Public Class ApplicationSettings
 
     Shared Function GetDarMenu() As String
         Dim ret =
-"Automatic = 0
+"Automatic = auto
 
 1.333333 = 4:3
 1.777777 = 16:9
@@ -357,7 +357,7 @@ Custom... = $enter_text:Enter a custom Display Aspect Ratio.$"
 
     Shared Function GetParMenu() As String
         Dim ret =
-"Automatic = 0
+"Automatic = auto
 1:1 = 1:1
 
 PAL 1.33 16:15 = 16:15

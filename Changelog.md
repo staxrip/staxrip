@@ -2,6 +2,7 @@
 2.1.4.3 Beta (not yet available)
 ============
 
+- temp filepaths are trimmed if necessary in order to support longer paths (stax76, #226) 
 - fix Decoder ffmpeg DXVA2 (stax76, #290)
 - ffms2 2.40-RC1
 

@@ -1080,46 +1080,52 @@ Public Class AudioStream
         End Get
     End Property
 
-    ReadOnly Property Extension() As String
+    ReadOnly Property ExtFull() As String
+        Get
+            Return "." + Ext
+        End Get
+    End Property
+
+    ReadOnly Property Ext() As String
         Get
             Select Case FormatString
                 Case "AAC LC", "AAC LC-SBR", "AAC LC-SBR-PS", "AAC LC SBR"
-                    Return ".m4a"
+                    Return "m4a"
                 Case "AC3", "AC-3"
-                    Return ".ac3"
+                    Return "ac3"
                 Case "DTS"
-                    Return ".dts"
+                    Return "dts"
                 Case "DTS-HD", "DTS XLL", "DTS XLL X", "DTS XBR", "DTS ES XLL"
-                    Return ".dtshd"
+                    Return "dtshd"
                 Case "PCM", "ADPCM"
-                    Return ".wav"
+                    Return "wav"
                 Case "MPEG-1 Audio layer 2"
-                    Return ".mp2"
+                    Return "mp2"
                 Case "MPEG-1 Audio layer 3"
-                    Return ".mp3"
+                    Return "mp3"
                 Case "MPEG Audio"
-                    If FormatProfile = "Layer 2" Then Return ".mp2"
-                    If FormatProfile = "Layer 3" Then Return ".mp3"
+                    If FormatProfile = "Layer 2" Then Return "mp2"
+                    If FormatProfile = "Layer 3" Then Return "mp3"
                 Case "TrueHD / AC3"
-                    Return ".thd"
+                    Return "thd"
                 Case "FLAC"
-                    Return ".flac"
+                    Return "flac"
                 Case "Vorbis"
-                    Return ".ogg"
+                    Return "ogg"
                 Case "Opus"
-                    Return ".opus"
+                    Return "opus"
                 Case "TrueHD", "Atmos / TrueHD", "MLP FBA 16-ch"
-                    Return ".thd"
+                    Return "thd"
                 Case "AC3+", "E-AC-3"
-                    Return ".eac3"
+                    Return "eac3"
                 Case Else
                     Select Case Format
                         Case "MLP FBA"
-                            Return ".thd"
+                            Return "thd"
                         Case "E-AC-3"
-                            Return ".eac3"
+                            Return "eac3"
                         Case Else
-                            Return ".mka"
+                            Return "mka"
                     End Select
             End Select
         End Get
@@ -1191,7 +1197,7 @@ Public Class Subtitle
             Dim ret = "ID" & (StreamOrder + 1)
             ret += " " + Language.Name
 
-            If Title <> "" AndAlso Title <> " " AndAlso p.SourceFile <> "" AndAlso p.SourceFile.Length < 200 Then
+            If Title <> "" AndAlso Title <> " " AndAlso p.SourceFile <> "" Then
                 ret += " {" + Title.Shorten(50).EscapeIllegalFileSysChars + "}"
             End If
 
@@ -1201,21 +1207,27 @@ Public Class Subtitle
 
     ReadOnly Property ExtFull As String
         Get
+            Return "." + Ext
+        End Get
+    End Property
+
+    ReadOnly Property Ext As String
+        Get
             Select Case CodecString
                 Case "VobSub"
-                    Return ".idx"
+                    Return "idx"
                 Case "S_HDMV/PGS", "PGS"
-                    Return ".sup"
+                    Return "sup"
                 Case "S_TEXT/ASS", "ASS"
-                    Return ".ass"
+                    Return "ass"
                 Case "S_TEXT/UTF8", "UTF-8", "Timed"
-                    Return ".srt"
+                    Return "srt"
                 Case "S_TEXT/SSA", "SSA"
-                    Return ".ssa"
+                    Return "ssa"
                 Case "S_TEXT/USF", "USF"
-                    Return ".usf"
+                    Return "usf"
                 Case Else
-                    Return Path.ExtFull
+                    Return Path.Ext
             End Select
         End Get
     End Property

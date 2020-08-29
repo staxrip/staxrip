@@ -34,11 +34,11 @@ Public Class Audio
             Dim cutting = p.Ranges.Count > 0
 
             Dim directMux = TypeOf ap Is MuxAudioProfile AndAlso
-                p.VideoEncoder.Muxer.IsSupported(ap.Stream.Extension.TrimStart("."c)) AndAlso
+                p.VideoEncoder.Muxer.IsSupported(ap.Stream.Ext) AndAlso
                 p.VideoEncoder.Muxer.IsSupported(ap.File.Ext) AndAlso Not cutting
 
             Dim trackIsSupportedButNotContainer = TypeOf ap Is MuxAudioProfile AndAlso
-                p.VideoEncoder.Muxer.IsSupported(ap.Stream.Extension.TrimStart("."c)) AndAlso
+                p.VideoEncoder.Muxer.IsSupported(ap.Stream.Ext) AndAlso
                 Not p.VideoEncoder.Muxer.IsSupported(ap.File.Ext)
 
             If ((cutting OrElse Not ap.IsInputSupported) AndAlso Not directMux) OrElse

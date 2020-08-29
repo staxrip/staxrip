@@ -316,7 +316,7 @@ Public Class ffmpegDemuxer
     End Sub
 
     Shared Sub DemuxAudio(sourcefile As String, stream As AudioStream, ap As AudioProfile, proj As Project)
-        Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.Extension
+        Dim outPath = g.GetPath(proj.TempDir, Audio.GetBaseNameForStream(sourcefile, stream), stream.Ext)
 
         Dim streamIndex = stream.StreamOrder
         Dim args = "-i " + sourcefile.Escape
@@ -367,11 +367,7 @@ Public Class ffmpegDemuxer
             End If
 
             Dim args = "-i " + proj.SourceFile.Escape
-            Dim outpath = proj.TempDir + proj.SourceFile.Base + " " + subtitle.Filename + subtitle.ExtFull
-
-            If outpath.Length > 259 Then
-                outpath = proj.TempDir + proj.SourceFile.Base.Shorten(10) + " " + subtitle.Filename.Shorten(10) + subtitle.ExtFull
-            End If
+            Dim outpath = g.GetPath(proj.TempDir, subtitle.Filename, subtitle.Ext)
 
             If MediaInfo.GetSubtitleCount(proj.SourceFile) > 1 Then
                 args += " -map 0:s:" & subtitle.Index
@@ -471,12 +467,7 @@ Public Class MP4BoxDemuxer
                     Continue For
                 End If
 
-                Dim outpath = proj.TempDir + proj.SourceFile.Base + " " + i.Filename + i.ExtFull
-
-                If outpath.Length > 259 Then
-                    outpath = proj.TempDir + proj.SourceFile.Base.Shorten(10) + " " + i.Filename.Shorten(20) + i.ExtFull
-                End If
-
+                Dim outpath = g.GetPath(proj.TempDir, i.Filename, i.Ext)
                 FileHelp.Delete(outpath)
                 Dim args As String
 
@@ -590,7 +581,7 @@ Public Class MP4BoxDemuxer
             Exit Sub
         End If
 
-        Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.Extension
+        Dim outPath = g.GetPath(proj.TempDir, Audio.GetBaseNameForStream(sourcefile, stream), stream.Ext)
         FileHelp.Delete(outPath)
         Dim args As String
 
@@ -818,26 +809,20 @@ Public Class mkvDemuxer
             End If
 
             Dim forced = If(subtitle.Forced, "_forced", "")
-            Dim outpath = proj.TempDir + sourcefile.Base + " " + subtitle.Filename + forced + subtitle.ExtFull
-
-            If outpath.Length > 259 Then
-                outpath = proj.TempDir + sourcefile.Base.Shorten(10) + " " +
-                    subtitle.Filename.Shorten(10) + forced + subtitle.ExtFull
-            End If
-
+            Dim outpath = g.GetPath(proj.TempDir, subtitle.Filename, forced, subtitle.Ext)
             args += " " & subtitle.StreamOrder & ":" + outpath.Escape
         Next
 
         Dim outPaths As New Dictionary(Of String, AudioStream)
 
         For Each stream In audioStreams
-            Dim ext = stream.Extension
+            Dim ext = stream.Ext
 
-            If ext = ".m4a" Then
-                ext = ".aac"
+            If ext = "m4a" Then
+                ext = "aac"
             End If
 
-            Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + ext
+            Dim outPath = g.GetPath(proj.TempDir, Audio.GetBaseNameForStream(sourcefile, stream), ext)
             outPaths.Add(outPath, stream)
             args += " " & stream.StreamOrder & ":" + outPath.Escape
         Next

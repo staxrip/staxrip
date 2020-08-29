@@ -479,7 +479,7 @@ Public Class MuxAudioProfile
             If Stream Is Nothing Then
                 Return File.Ext
             Else
-                Return Stream.Extension.TrimStart("."c)
+                Return Stream.Ext
             End If
         End Get
         Set(value As String)

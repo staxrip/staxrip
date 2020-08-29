@@ -567,7 +567,7 @@ Public Class GlobalClass
         Dim minPath = folder + checksum + suffix + "." + ext
 
         If minPath.Length > MAX_PATH Then
-            MsgError("Path is too long", folder + base + suffix + "." + ext)
+            MsgError("Path is too long", fullPath)
             Throw New AbortException()
         End If
 
@@ -827,26 +827,19 @@ Public Class GlobalClass
             p.TempDir = Macro.Expand(p.TempDir)
 
             If p.TempDir = "" Then
-                Try
-                    If p.SourceFile.Dir.EndsWith("_temp\") Then
-                        p.TempDir = p.SourceFile.Dir
-                    Else
-                        Dim base = p.SourceFile.Base
-                        p.TempDir = p.SourceFile.Dir + base + "_temp\"
-                    End If
-                Catch ex As PathTooLongException
-                    If p.SourceFile.Dir.EndsWith("_temp\") Then
-                        p.TempDir = p.SourceFile.Dir
-                    Else
-                        Dim base = p.SourceFile.Base
+                If p.SourceFile.Dir.EndsWith("_temp\") Then
+                    p.TempDir = p.SourceFile.Dir
+                Else
+                    Dim base = p.SourceFile.Base
 
-                        If base.Length > 30 Then
-                            base = base.Shorten(15) + "..."
-                        End If
+                    If (base.Length > s.CharacterLimitFilename OrElse
+                        p.SourceFile.Dir.Length > s.CharacterLimitFolder) AndAlso base.Length > 20 Then
 
-                        p.TempDir = p.SourceFile.Dir + base + "_temp\"
+                        base = base.Substring(0, 20) + "_" & CRC32.GetChecksum(base)
                     End If
-                End Try
+
+                    p.TempDir = p.SourceFile.Dir + base + "_temp\"
+                End If
             End If
 
             p.TempDir = p.TempDir.FixDir
@@ -862,7 +855,11 @@ Public Class GlobalClass
                             Directory.CreateDirectory(p.TempDir)
                         End If
                     Catch
-                        MsgWarn("Failed to create a temp directory. By default it's created in the directory of the source file so it's not possible to open files directly from a optical drive unless a temp directory is defined in the options. Usually discs are copied to the hard drive first using a application like MakeMKV, DVDfab or AnyDVD.")
+                        MsgWarn("Failed to create a temp directory. By default it's created " +
+                                "in the directory of the source file so it's not possible " +
+                                "to open files directly from a optical drive unless a temp directory  " +
+                                "is defined in the options. Usually discs are copied to the hard drive " +
+                                "first using a application like MakeMKV, DVDFab or AnyDVD.")
                         Throw New AbortException
                     End Try
                 End Try

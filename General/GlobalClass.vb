@@ -433,11 +433,6 @@ Public Class GlobalClass
                 MsgError(Strings.NoUnicode)
                 Return False
             End If
-
-            If file.Dir.Length > s.CharacterLimitFolder Then
-                MsgError("Source file folder path is too long", "Windows does not have usable long path support.")
-                Return False
-            End If
         Next
 
         Return True

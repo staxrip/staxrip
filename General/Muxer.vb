@@ -277,8 +277,8 @@ Public Class MP4Muxer
     End Property
 
     Overrides Function Edit() As DialogResult
-        Using f As New MuxerForm(Me)
-            Return f.ShowDialog()
+        Using form As New MuxerForm(Me)
+            Return form.ShowDialog()
         End Using
     End Function
 

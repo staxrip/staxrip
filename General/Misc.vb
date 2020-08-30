@@ -1226,7 +1226,7 @@ Public Class Subtitle
                     Return "sup"
                 Case "S_TEXT/ASS", "ASS"
                     Return "ass"
-                Case "S_TEXT/UTF8", "UTF-8", "Timed"
+                Case "S_TEXT/UTF8", "UTF-8", "Timed", "Timed Text"
                     Return "srt"
                 Case "S_TEXT/SSA", "SSA"
                     Return "ssa"

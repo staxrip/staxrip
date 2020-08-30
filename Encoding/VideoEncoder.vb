@@ -629,7 +629,7 @@ Public Class BatchEncoder
         End If
 
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
-        script.Path = p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType
+        script.Path = (p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType).ToShortFilePath
         script.Synchronize()
 
         Dim line = Macro.Expand(CompCheckCommandLines)

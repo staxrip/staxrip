@@ -102,7 +102,6 @@ $patterns = @(
     '*\Debug.log',
     '*\DGIndex.ini',
     '*\eac3to\log.txt',
-    '*\ffmpeg\AviSynth.dll',
     '*\FrameServer.exp',
     '*\FrameServer.ilk',
     '*\FrameServer.lib',

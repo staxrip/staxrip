@@ -180,6 +180,10 @@ Public MustInherit Class AudioProfile
     Overridable Sub OnStreamChanged()
     End Sub
 
+    Function ContainsCommand(value As String) As Boolean
+        Return CommandLines.ContainsEx(value)
+    End Function
+
     Function GetDuration() As TimeSpan
         If IO.File.Exists(File) Then
             If Stream Is Nothing Then
@@ -298,7 +302,13 @@ Public MustInherit Class AudioProfile
 
         Dim tracks = g.GetAudioTracks.Where(Function(track) track.File <> "")
         Dim trackID = If(tracks.Count > 1, "_a" & GetTrackID(), "")
-        Return p.TempDir + base + trackID & "." + OutputFileType
+        Dim outfile = p.TempDir + base + trackID & "." + OutputFileType
+
+        If File.IsEqualIgnoreCase(outfile) Then
+            Return p.TempDir + base + trackID & "_new." + OutputFileType
+        End If
+
+        Return outfile
     End Function
 
     Function ExpandMacros(value As String) As String
@@ -316,12 +326,14 @@ Public MustInherit Class AudioProfile
         If value.Contains("%language_native%") Then value = value.Replace("%language_native%", Language.CultureInfo.NativeName)
         If value.Contains("%language_english%") Then value = value.Replace("%language_english%", Language.Name)
         If value.Contains("%delay%") Then value = value.Replace("%delay%", Delay.ToString)
+
         Return Macro.Expand(value)
     End Function
 
     Shared Function GetDefaults() As List(Of AudioProfile)
         Dim ret As New List(Of AudioProfile)
-        ret.Add(New GUIAudioProfile(AudioCodec.AAC, 0.4))
+
+        ret.Add(New GUIAudioProfile(AudioCodec.AAC, 50))
         ret.Add(New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 250})
         ret.Add(New GUIAudioProfile(AudioCodec.FLAC, 0.3))
         ret.Add(New GUIAudioProfile(AudioCodec.Vorbis, 1))
@@ -331,6 +343,7 @@ Public MustInherit Class AudioProfile
         ret.Add(New BatchAudioProfile(640, {}, "ac3", 6, """%app:ffmpeg%"" -i ""%input%"" -b:a %bitrate%k -y -hide_banner ""%output%"""))
         ret.Add(New MuxAudioProfile())
         ret.Add(New NullAudioProfile())
+
         Return ret
     End Function
 End Class
@@ -669,12 +682,10 @@ Public Class GUIAudioProfile
             Select Case Params.Codec
                 Case AudioCodec.AAC
                     Select Case Params.Encoder
-                        Case GuiAudioEncoder.qaac
+                        Case GuiAudioEncoder.qaac, GuiAudioEncoder.Automatic
                             Return Calc.GetYFromTwoPointForm(0, CInt(50 / 8 * Channels), 127, CInt(1000 / 8 * Channels), Params.Quality)
-                        Case GuiAudioEncoder.fdkaac
-                            Return Calc.GetYFromTwoPointForm(1, CInt(50 / 8 * Channels), 5, CInt(900 / 8 * Channels), Params.Quality)
                         Case Else
-                            Return Calc.GetYFromTwoPointForm(0.01, CInt(50 / 8 * Channels), 1, CInt(1000 / 8 * Channels), Params.Quality)
+                            Return Calc.GetYFromTwoPointForm(1, CInt(50 / 8 * Channels), 5, CInt(900 / 8 * Channels), Params.Quality)
                     End Select
                 Case AudioCodec.MP3
                     Return Calc.GetYFromTwoPointForm(9, 65, 0, 245, Params.Quality)
@@ -706,7 +717,7 @@ Public Class GUIAudioProfile
             Dim cl = GetCommandLine(True)
 
             Using proc As New Proc
-                proc.Header = "Audio encoding " & GetTrackID()
+                proc.Header = "Audio Encoding " & GetTrackID()
 
                 If cl.Contains("|") Then
                     proc.File = "cmd.exe"
@@ -726,7 +737,12 @@ Public Class GUIAudioProfile
                     proc.SkipStrings = {"process: ", "analyze: "}
                     proc.TrimChars = {"-"c, " "c}
                 ElseIf cl.Contains("ffmpeg") Then
-                    proc.Package = Package.ffmpeg
+                    If cl.Contains("libfdk_aac") Then
+                        proc.Package = Package.ffmpeg_non_free
+                    Else
+                        proc.Package = Package.ffmpeg
+                    End If
+
                     proc.SkipStrings = {"frame=", "size="}
                     proc.Encoding = Encoding.UTF8
                     proc.Duration = GetDuration()
@@ -761,7 +777,7 @@ Public Class GUIAudioProfile
             Exit Sub
         End If
 
-        Dim args = "-i " + File.Escape
+        Dim args = "-i " + File.ToShortFilePath.Escape
 
         If Not Stream Is Nothing AndAlso Streams.Count > 1 Then
             args += " -map 0:a:" & Stream.Index
@@ -844,7 +860,8 @@ Public Class GUIAudioProfile
         End If
 
         If includePaths Then
-            ret = Package.eac3to.Path.Escape + " " + id + File.Escape + " " + GetOutputFile.Escape
+            ret = Package.eac3to.Path.Escape + " " + id + File.ToShortFilePath.Escape +
+                " " + GetOutputFile.ToShortFilePath.Escape
         Else
             ret = "eac3to"
         End If
@@ -960,10 +977,10 @@ Public Class GUIAudioProfile
         If Params.fdkaacTransportFormat <> 0 Then ret += " --transport-format " & Params.fdkaacTransportFormat
         If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
 
-        Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.Escape)
+        Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.ToShortFilePath.Escape)
 
         If includePaths Then
-            ret += " --ignorelength -o " + GetOutputFile.Escape + " " + input
+            ret += " --ignorelength -o " + GetOutputFile.ToShortFilePath.Escape + " " + input
         End If
 
         Return ret
@@ -1073,9 +1090,10 @@ Public Class GUIAudioProfile
 
     Function GetffmpegCommandLine(includePaths As Boolean) As String
         Dim ret As String
+        Dim pack = If(Params.Codec = AudioCodec.AAC, Package.ffmpeg_non_free, Package.ffmpeg)
 
         If includePaths AndAlso File <> "" Then
-            ret = Package.ffmpeg.Path.Escape + " -i " + File.Escape
+            ret = pack.Path.Escape + " -i " + File.ToShortFilePath.Escape
         Else
             ret = "ffmpeg"
         End If
@@ -1136,9 +1154,9 @@ Public Class GUIAudioProfile
                 ret += " -b:a " & CInt(Bitrate) & "k"
             Case AudioCodec.AAC
                 If Params.RateMode = AudioRateMode.VBR Then
-                    ret += " -q:a " & Calc.GetYFromTwoPointForm(0.1, 1, 1, 10, Params.Quality)
+                    ret += " -c:a libfdk_aac -vbr " & Params.Quality
                 Else
-                    ret += " -b:a " & CInt(Bitrate) & "k"
+                    ret += " -c:a libfdk_aac -b:a " & CInt(Bitrate) & "k"
                 End If
             Case AudioCodec.W64, AudioCodec.WAV
                 If Depth = 24 Then
@@ -1175,7 +1193,7 @@ Public Class GUIAudioProfile
 
         If includePaths AndAlso File <> "" Then
             ret += " -y -hide_banner"
-            ret += " " + GetOutputFile.Escape
+            ret += " " + GetOutputFile.ToShortFilePath.Escape
         End If
 
         Return ret

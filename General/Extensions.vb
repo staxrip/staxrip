@@ -295,14 +295,44 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function DirNoSep(instance As String) As String
-        instance = instance.Dir
-
-        If instance.EndsWith(Separator) Then
-            instance = instance.TrimTrailingSeparator
+    Function ToShortPath(instance As String) As String
+        If instance = "" Then
+            Return ""
         End If
 
-        Return instance
+        Dim MAX_PATH = 260
+
+        If instance.Length <= MAX_PATH Then
+            Return instance
+        End If
+
+        Dim sb As New StringBuilder(500)
+        Native.GetShortPathName(instance, sb, sb.Capacity)
+        Return sb.ToString
+    End Function
+
+    <Extension()>
+    Function ToShortFilePath(instance As String) As String
+        If instance = "" Then
+            Return ""
+        End If
+
+        Dim MAX_PATH = 260
+
+        If instance.Length <= MAX_PATH Then
+            Return instance
+        End If
+
+        Dim sb As New StringBuilder(900)
+        Native.GetShortPathName(instance.Dir, sb, sb.Capacity)
+        Dim ret = sb.ToString + instance.FileName
+
+        If ret.Length <= MAX_PATH Then
+            Return ret
+        End If
+
+        Native.GetShortPathName(instance, sb, sb.Capacity)
+        Return sb.ToString
     End Function
 
     <Extension()>

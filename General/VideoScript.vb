@@ -563,7 +563,7 @@ Public Class TargetVideoScript
                 Return ""
             End If
 
-            Return g.GetPath(p.TempDir, p.TargetFile.Base, FileType)
+            Return (p.TempDir + p.TargetFile.Base + "." + FileType).ToShortFilePath
         End Get
         Set(value As String)
         End Set
@@ -580,7 +580,7 @@ Public Class SourceVideoScript
                 Return ""
             End If
 
-            Return g.GetPath(p.TempDir, p.TargetFile.Base, "_source", FileType)
+            Return (p.TempDir + p.TargetFile.Base + "_source." + FileType).ToShortFilePath
         End Get
         Set(value As String)
         End Set

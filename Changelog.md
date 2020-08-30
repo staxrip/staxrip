@@ -1,10 +1,16 @@
 
-2.1.4.3 Beta (not yet available)
+2.1.4.4 Beta (not yet available)
 ============
 
-- temp filepaths are trimmed if necessary in order to support longer paths (stax76, #226) 
+2.1.4.3 Beta
+============
+
+- ffmpeg uses libfdk_aac as AAC encoder (stax76, #292)
+- Long path support (stax76, #226, experimental)
 - fix Decoder ffmpeg DXVA2 (stax76, #290)
 - ffms2 2.40-RC1
+- MediaInfo.NET 6.6
+- VapourSynth R52
 
 
 2.1.4.2 Beta

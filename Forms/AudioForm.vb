@@ -831,10 +831,8 @@ Public Class AudioForm
                 Select Case TempProfile.Params.Encoder
                     Case GuiAudioEncoder.qaac
                         SetQuality(50)
-                    Case GuiAudioEncoder.fdkaac
-                        SetQuality(3)
                     Case Else
-                        SetQuality(0.4)
+                        SetQuality(3)
                 End Select
 
                 TempProfile.Params.RateMode = AudioRateMode.VBR
@@ -875,12 +873,18 @@ Public Class AudioForm
     End Sub
 
     Sub SetQuality(value As Single)
-        If TempProfile.Params.Codec = AudioCodec.AAC AndAlso TempProfile.Params.Encoder = GuiAudioEncoder.qaac Then
+        If TempProfile.Params.Codec = AudioCodec.AAC AndAlso
+            TempProfile.Params.Encoder = GuiAudioEncoder.qaac OrElse
+            TempProfile.Params.Encoder = GuiAudioEncoder.Automatic Then
+
             numQuality.Minimum = 0
             numQuality.Maximum = 127
             numQuality.Increment = 1
             numQuality.DecimalPlaces = 0
-        ElseIf TempProfile.Params.Codec = AudioCodec.AAC AndAlso TempProfile.Params.Encoder = GuiAudioEncoder.fdkaac Then
+        ElseIf TempProfile.Params.Codec = AudioCodec.AAC AndAlso
+            TempProfile.Params.Encoder = GuiAudioEncoder.fdkaac OrElse
+            TempProfile.Params.Encoder = GuiAudioEncoder.ffmpeg Then
+
             numQuality.Minimum = 1
             numQuality.Maximum = 5
             numQuality.Increment = 1

@@ -316,10 +316,10 @@ Public Class ffmpegDemuxer
     End Sub
 
     Shared Sub DemuxAudio(sourcefile As String, stream As AudioStream, ap As AudioProfile, proj As Project)
-        Dim outPath = g.GetPath(proj.TempDir, Audio.GetBaseNameForStream(sourcefile, stream), stream.Ext)
+        Dim outPath = (proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.ExtFull).ToShortFilePath
 
         Dim streamIndex = stream.StreamOrder
-        Dim args = "-i " + sourcefile.Escape
+        Dim args = "-i " + sourcefile.ToShortFilePath.Escape
 
         If MediaInfo.GetAudioCount(sourcefile) > 1 Then
             args += " -map 0:a:" & stream.Index
@@ -366,8 +366,8 @@ Public Class ffmpegDemuxer
                 Continue For
             End If
 
-            Dim args = "-i " + proj.SourceFile.Escape
-            Dim outpath = g.GetPath(proj.TempDir, subtitle.Filename, subtitle.Ext)
+            Dim args = "-i " + proj.SourceFile.ToShortFilePath.Escape
+            Dim outpath = (proj.TempDir + subtitle.Filename + subtitle.ExtFull).ToShortFilePath
 
             If MediaInfo.GetSubtitleCount(proj.SourceFile) > 1 Then
                 args += " -map 0:s:" & subtitle.Index
@@ -467,7 +467,7 @@ Public Class MP4BoxDemuxer
                     Continue For
                 End If
 
-                Dim outpath = g.GetPath(proj.TempDir, i.Filename, i.Ext)
+                Dim outpath = (proj.TempDir + i.Filename + i.ExtFull).ToShortFilePath
                 FileHelp.Delete(outpath)
                 Dim args As String
 
@@ -480,7 +480,7 @@ Public Class MP4BoxDemuxer
                         args = "-raw "
                 End Select
 
-                args += i.ID & " -out " + outpath.Escape + " " + proj.SourceFile.Escape
+                args += i.ID & " -out " + outpath.Escape + " " + proj.SourceFile.ToShortFilePath.Escape
 
                 Using proc As New Proc
                     proc.Project = proj
@@ -516,7 +516,8 @@ Public Class MP4BoxDemuxer
                 proc.Header = "Extract chapters"
                 proc.SkipString = "|"
                 proc.Package = Package.MP4Box
-                proc.Arguments = "-dump-chap-ogg " + proj.SourceFile.Escape + " -out " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape
+                proc.Arguments = "-dump-chap-ogg " + proj.SourceFile.ToShortFilePath.Escape +
+                    " -out " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").ToShortFilePath.Escape
                 proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
                 proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
                 proc.Start()
@@ -581,17 +582,18 @@ Public Class MP4BoxDemuxer
             Exit Sub
         End If
 
-        Dim outPath = g.GetPath(proj.TempDir, Audio.GetBaseNameForStream(sourcefile, stream), stream.Ext)
+        Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.ExtFull
         FileHelp.Delete(outPath)
         Dim args As String
 
-        If stream.Format = "AAC" Then
+        If stream.Format.EqualsAny("AAC", "Opus") Then
             args += "-single"
         Else
             args += "-raw"
         End If
 
-        args += " " & stream.ID & " -out " + outPath.Escape + " " + sourcefile.Escape
+        args += " " & stream.ID & " -out " + outPath.ToShortFilePath.Escape + " " +
+            sourcefile.ToShortFilePath.Escape
 
         Using proc As New Proc
             proc.Project = proj
@@ -787,7 +789,7 @@ Public Class mkvDemuxer
             Exit Sub
         End If
 
-        Dim args = sourcefile.Escape + " tracks"
+        Dim args = sourcefile.ToShortFilePath.Escape + " tracks"
 
         If videoDemuxing Then
             Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)
@@ -809,7 +811,7 @@ Public Class mkvDemuxer
             End If
 
             Dim forced = If(subtitle.Forced, "_forced", "")
-            Dim outpath = g.GetPath(proj.TempDir, subtitle.Filename, forced, subtitle.Ext)
+            Dim outpath = (proj.TempDir + subtitle.Filename + forced + subtitle.ExtFull).ToShortFilePath
             args += " " & subtitle.StreamOrder & ":" + outpath.Escape
         Next
 
@@ -822,7 +824,7 @@ Public Class mkvDemuxer
                 ext = "aac"
             End If
 
-            Dim outPath = g.GetPath(proj.TempDir, Audio.GetBaseNameForStream(sourcefile, stream), ext)
+            Dim outPath = (proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + "." + ext).ToShortFilePath
             outPaths.Add(outPath, stream)
             args += " " & stream.StreamOrder & ":" + outPath.Escape
         Next

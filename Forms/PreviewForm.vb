@@ -694,7 +694,7 @@ Public Class PreviewForm
     <Command("Plays the script with a player.")>
     Sub ShowExternalPlayer()
         Dim script = PreviewScript.GetNewScript()
-        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        script.Path = (p.TempDir + p.TargetFile.Base + "_play." + script.FileType).ToShortFilePath
         UpdateTrim(script)
         g.PlayScript(script)
     End Sub
@@ -702,7 +702,7 @@ Public Class PreviewForm
     <Command("Plays the script with mpv.net.")>
     Sub PlayWithMpvnet()
         Dim script = PreviewScript.GetNewScript()
-        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        script.Path = (p.TempDir + p.TargetFile.Base + "_play." + script.FileType).ToShortFilePath
         UpdateTrim(script)
         g.PlayScriptWithMPV(script, "--start=" + GetPlayPosition.ToString)
     End Sub
@@ -710,7 +710,7 @@ Public Class PreviewForm
     <Command("Plays the script with MPC.")>
     Sub PlayWithMPC()
         Dim script = PreviewScript.GetNewScript()
-        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        script.Path = (p.TempDir + p.TargetFile.Base + "_play." + script.FileType).ToShortFilePath
         UpdateTrim(script)
         g.PlayScriptWithMPC(script, "/start " & GetPlayPosition.TotalMilliseconds)
     End Sub

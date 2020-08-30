@@ -321,7 +321,7 @@ Public Class MP4Muxer
             videoParams += Macro.Expand(VideoTrackName)
         End If
 
-        args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + videoParams).Escape)
+        args.Append(" -add " + (p.VideoEncoder.OutputPath.ToShortFilePath + "#video" + videoParams).Escape)
 
         AddAudio(p.Audio0, args)
         AddAudio(p.Audio1, args)
@@ -335,15 +335,17 @@ Public Class MP4Muxer
         For Each st In Subtitles
             If st.Enabled AndAlso File.Exists(st.Path) Then
                 If st.Path.Ext = "idx" Then
-                    args.Append(" -add """ + st.Path + "#" & st.IndexIDX + 1 & ":name=" + Macro.Expand(st.Title) & """")
+                    args.Append(" -add """ + st.Path.ToShortFilePath + "#" & st.IndexIDX + 1 &
+                                ":name=" + Macro.Expand(st.Title) & """")
                 Else
-                    args.Append(" -add """ + st.Path + ":lang=" + st.Language.ThreeLetterCode + ":name=" + Macro.Expand(st.Title) + """")
+                    args.Append(" -add """ + st.Path.ToShortFilePath + ":lang=" + st.Language.ThreeLetterCode +
+                                ":name=" + Macro.Expand(st.Title) + """")
                 End If
             End If
         Next
 
         If File.Exists(ChapterFile) Then
-            args.Append(" -chap " + ChapterFile.Escape)
+            args.Append(" -chap " + ChapterFile.ToShortFilePath.Escape)
         End If
 
         If AdditionalSwitches <> "" Then
@@ -353,7 +355,7 @@ Public Class MP4Muxer
         Dim tagList As New List(Of String)
 
         If CoverFile <> "" AndAlso File.Exists(CoverFile) Then
-            tagList.Add("cover=" + CoverFile.Escape)
+            tagList.Add("cover=" + CoverFile.ToShortFilePath.Escape)
         End If
 
         If Tags.Count > 0 Then
@@ -364,14 +366,14 @@ Public Class MP4Muxer
             args.Append(" -itags " + Macro.Expand(String.Join(":", tagList)))
         End If
 
-        args.Append(" -new " + p.TargetFile.Escape)
+        args.Append(" -new " + p.TargetFile.ToShortFilePath.Escape)
 
         Return args.ToString.Trim
     End Function
 
     Sub AddAudio(ap As AudioProfile, args As StringBuilder)
         If File.Exists(ap.File) AndAlso IsSupported(ap.File.Ext) AndAlso IsSupported(ap.OutputFileType) Then
-            args.Append(" -add """ + ap.File)
+            args.Append(" -add """ + ap.File.ToShortFilePath)
 
             If ap.HasStream AndAlso ap.File.Ext = "mp4" Then
                 args.Append("#trackID=" & ap.Stream.ID)
@@ -628,9 +630,11 @@ Public Class MkvMuxer
     End Function
 
     Function GetArgs() As String
-        Dim args = "-o " + p.TargetFile.Escape
+        Dim args = "-o " + p.TargetFile.ToShortFilePath.Escape
 
-        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + p.VideoEncoder.OutputPath.Escape)
+        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " +
+            p.VideoEncoder.OutputPath.ToShortFilePath.Escape)
+
         Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
 
         If Not FileTypes.VideoOnly.Contains(p.VideoEncoder.OutputPath.Ext) Then
@@ -669,7 +673,7 @@ Public Class MkvMuxer
             End If
         End If
 
-        args += " " + p.VideoEncoder.OutputPath.Escape
+        args += " " + p.VideoEncoder.OutputPath.ToShortFilePath.Escape
 
         For x = 2 To 99
             Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
@@ -698,14 +702,21 @@ Public Class MkvMuxer
                     args += " --no-audio --no-video --no-chapters --no-attachments --no-track-tags --no-global-tags"
                 End If
 
-                If Not FileTypes.SubtitleSingle.Contains(subtitle.Path.Ext) Then args += " --subtitle-tracks " & id
+                If Not FileTypes.SubtitleSingle.Contains(subtitle.Path.Ext) Then
+                    args += " --subtitle-tracks " & id
+                End If
+
                 Dim isContainer = FileTypes.VideoAudio.Contains(subtitle.Path.Ext)
 
                 args += " --forced-track " & id & ":" & If(subtitle.Forced, 1, 0)
                 args += " --default-track " & id & ":" & If(subtitle.Default, 1, 0)
                 args += " --language " & id & ":" + subtitle.Language.ThreeLetterCode
-                If isContainer OrElse subtitle.Title <> "" Then args += " --track-name """ & id & ":" + Convert(subtitle.Title) + """"
-                args += " " + subtitle.Path.Escape
+
+                If isContainer OrElse subtitle.Title <> "" Then
+                    args += " --track-name """ & id & ":" + Convert(subtitle.Title) + """"
+                End If
+
+                args += " " + subtitle.Path.ToShortFilePath.Escape
             End If
         Next
 
@@ -780,7 +791,7 @@ Public Class MkvMuxer
                 name = i.Right("_attachment_")
             End If
 
-            args += $" --attachment-name {name.Escape} --attach-file {i.Escape}"
+            args += $" --attachment-name {name.Escape} --attach-file {i.ToShortFilePath.Escape}"
         Next
 
         Return args
@@ -851,7 +862,7 @@ Public Class MkvMuxer
 
             args += " --default-track " & tid & ":" & If(ap.Default, 1, 0)
             args += " --forced-track " & tid & ":" & If(ap.Forced, 1, 0)
-            args += " " + ap.File.Escape
+            args += " " + ap.File.ToShortFilePath.Escape
         End If
     End Sub
 

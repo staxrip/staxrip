@@ -134,7 +134,7 @@ Public Class ffmpegEnc
             proc.SkipStrings = {"frame=", "size="}
             proc.FrameCount = p.Script.GetFrameCount
             proc.Encoding = Encoding.UTF8
-            proc.WorkingDirectory = p.TempDir
+            proc.WorkingDirectory = p.TempDir.ToShortPath
             proc.Package = Package.ffmpeg
             proc.Arguments = args
             proc.Start()
@@ -298,7 +298,7 @@ Public Class ffmpegEnc
             If Mode.OptionText = "Two Pass" AndAlso pass = 1 Then
                 targetPath = "NUL"
             Else
-                targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).Escape
+                targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).ToShortFilePath.Escape
             End If
 
             If includePaths Then

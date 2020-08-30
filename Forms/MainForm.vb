@@ -1589,7 +1589,7 @@ Public Class MainForm
             dialog.SetInitDir(p.TempDir)
 
             If p.SourceFile <> "" Then
-                dialog.FileName = g.GetPath(p.TempDir, p.TargetFile.Base, p.TargetFile.Ext)
+                dialog.FileName = p.TargetFile.Base
             Else
                 dialog.FileName = "Untitled"
             End If
@@ -3819,7 +3819,7 @@ Public Class MainForm
             End If
 
             Dim script = p.Script.GetNewScript
-            script.Path = g.GetPath(p.TempDir, p.TargetFile.Base, "_view", script.FileType)
+            script.Path = (p.TempDir + p.TargetFile.Base + "_view." + script.FileType).ToShortFilePath
             script.RemoveFilter("Cutting")
 
             If script.GetError <> "" Then

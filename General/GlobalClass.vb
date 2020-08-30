@@ -5,6 +5,7 @@ Imports System.Globalization
 Imports System.Management.Automation
 Imports System.Reflection
 Imports System.Runtime.ExceptionServices
+Imports System.Runtime.InteropServices
 Imports System.Security.Principal
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -28,6 +29,7 @@ Public Class GlobalClass
     Property ProjectPath As String
     Property SavedProject As New Project
     Property StopAfterCurrentJob As Boolean
+    Property MAX_PATH As Integer = 260
 
     Event JobMuxed()
     Event JobProcessed()
@@ -546,32 +548,6 @@ Public Class GlobalClass
         End If
     End Function
 
-    Function GetPath(folder As String, base As String, ext As String) As String
-        Return GetPath(folder, base, Nothing, ext)
-    End Function
-
-    Function GetPath(folder As String, base As String, suffix As String, ext As String) As String
-        Dim fullPath = folder + base + suffix + "." + ext
-        Dim MAX_PATH = 260
-
-        If fullPath.Length <= MAX_PATH Then
-            Return fullPath
-        End If
-
-        Dim checksum = "_" & CRC32.GetChecksum(base)
-        Dim minPath = folder + checksum + suffix + "." + ext
-
-        If minPath.Length > MAX_PATH Then
-            MsgError("Path is too long", fullPath)
-            Throw New AbortException()
-        End If
-
-        Dim trimSize = fullPath.Length - MAX_PATH
-        Dim newBase = base.Substring(0, base.Length - trimSize - checksum.Length) + checksum
-
-        Return folder + newBase + suffix + "." + ext
-    End Function
-
     Sub ShowCode(title As String, content As String)
         Dim form As New HelpForm()
         form.Doc.WriteStart(title)
@@ -825,15 +801,7 @@ Public Class GlobalClass
                 If p.SourceFile.Dir.EndsWith("_temp\") Then
                     p.TempDir = p.SourceFile.Dir
                 Else
-                    Dim base = p.SourceFile.Base
-
-                    If (base.Length > s.CharacterLimitFilename OrElse
-                        p.SourceFile.Dir.Length > s.CharacterLimitFolder) AndAlso base.Length > 20 Then
-
-                        base = base.Substring(0, 20) + "_" & CRC32.GetChecksum(base)
-                    End If
-
-                    p.TempDir = p.SourceFile.Dir + base + "_temp\"
+                    p.TempDir = p.SourceFile.Dir + p.SourceFile.Base + "_temp\"
                 End If
             End If
 
@@ -872,13 +840,14 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub ffmsindex(sourcePath As String,
-                  cachePath As String,
-                  Optional indexAudio As Boolean = False,
-                  Optional proj As Project = Nothing)
+    Sub ffmsindex(
+        sourcePath As String,
+        cachePath As String,
+        Optional indexAudio As Boolean = False,
+        Optional proj As Project = Nothing)
 
         If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso
-                    Not FileTypes.VideoText.Contains(sourcePath.Ext) Then
+            Not FileTypes.VideoText.Contains(sourcePath.Ext) Then
 
             Using proc As New Proc
                 proc.Header = "Indexing using ffmsindex"
@@ -886,7 +855,8 @@ Public Class GlobalClass
                 proc.Project = proj
                 proc.Priority = ProcessPriorityClass.Normal
                 proc.File = Package.ffms2.Directory + "ffmsindex.exe"
-                proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.Escape + " " + cachePath.Escape
+                proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.ToShortFilePath.Escape +
+                    " " + cachePath.ToShortFilePath.Escape
                 proc.Start()
             End Using
         End If
@@ -1469,7 +1439,7 @@ Public Class GlobalClass
                         infoScript.AddFilter(New VideoFilter($"Import(""{script.Path}"")"))
                         Dim infoCode = $"Info(size={(script.GetInfo().Height * 0.05).ToInvariantString()})"
                         infoScript.AddFilter(New VideoFilter(infoCode))
-                        infoScript.Path = p.TempDir + p.TargetFile.Base + $"_info." + script.FileType
+                        infoScript.Path = (p.TempDir + p.TargetFile.Base + $"_info." + script.FileType).ToShortFilePath
 
                         If infoScript.GetError() <> "" Then
                             MsgError("Script Error", infoScript.GetError())

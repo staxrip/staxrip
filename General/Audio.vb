@@ -19,7 +19,7 @@ Public Class Audio
         If TypeOf ap Is GUIAudioProfile Then
             Dim gap = DirectCast(ap, GUIAudioProfile)
 
-            If gap.CommandLines.Contains("ffmpeg") Then
+            If gap.ContainsCommand("ffmpeg") Then
                 gap.NormalizeFF()
             End If
         End If
@@ -157,7 +157,7 @@ Public Class Audio
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
         Dim wavPath = p.TempDir + ap.File.Base + "_cut_na.wav"
-        d.Path = p.TempDir + ap.File.Base + "_cut_na.avs"
+        d.Path = (p.TempDir + ap.File.Base + "_cut_na.avs").ToShortFilePath
         d.Filters.Insert(1, New VideoFilter(GetNicAudioCode(ap)))
 
         If ap.Channels = 2 Then
@@ -204,7 +204,7 @@ Public Class Audio
         d.Filters.AddRange(p.Script.Filters)
         d.RemoveFilter("Cutting")
         Dim outPath = p.TempDir + ap.File.Base + "_DecodeNicAudio." + ap.ConvertExt
-        d.Path = p.TempDir + ap.File.Base + "_DecodeNicAudio.avs"
+        d.Path = (p.TempDir + ap.File.Base + "_DecodeNicAudio.avs").ToShortFilePath
         d.Filters.Insert(1, New VideoFilter(GetNicAudioCode(ap)))
 
         If ap.Channels = 2 Then
@@ -332,13 +332,13 @@ Public Class Audio
             gap.Params.Normalize = False
         End If
 
-        Dim outPath = p.TempDir + ap.File.Base + "." + ap.ConvertExt
+        Dim outPath = (p.TempDir + ap.File.Base + "." + ap.ConvertExt).ToShortFilePath
 
         If ap.File = outPath Then
             outPath += "." + ap.ConvertExt
         End If
 
-        Dim args = "-i " + ap.File.Escape
+        Dim args = "-i " + ap.File.ToShortFilePath.Escape
 
         If Not ap.Stream Is Nothing Then
             args += " -map 0:" & ap.Stream.StreamOrder
@@ -429,7 +429,7 @@ Public Class Audio
         d.Filters.AddRange(p.Script.Filters)
         d.RemoveFilter("Cutting")
         Dim outPath = p.TempDir + ap.File.Base + "_convDSS." + ap.ConvertExt
-        d.Path = p.TempDir + ap.File.Base + "_DecDSS.avs"
+        d.Path = (p.TempDir + ap.File.Base + "_DecDSS.avs").ToShortFilePath
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
 
         If ap.Channels = 2 Then
@@ -474,7 +474,7 @@ Public Class Audio
         d.Filters.AddRange(p.Script.Filters)
         d.RemoveFilter("Cutting")
         Dim outPath = p.TempDir + ap.File.Base + "_convFFAudioSource." + ap.ConvertExt
-        d.Path = p.TempDir + ap.File.Base + "_DecodeFFAudioSource.avs"
+        d.Path = (p.TempDir + ap.File.Base + "_DecodeFFAudioSource.avs").ToShortFilePath
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile=""" + cachefile + """))"))
 
         If ap.Channels = 2 Then
@@ -516,7 +516,7 @@ Public Class Audio
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
         Dim wavPath = p.TempDir + ap.File.Base + "_cut_ds.wav"
-        d.Path = p.TempDir + ap.File.Base + "_cut_ds.avs"
+        d.Path = (p.TempDir + ap.File.Base + "_cut_ds.avs").ToShortFilePath
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,DirectShowSource(""" + ap.File + """, video=false))"))
 
         If ap.Channels = 2 Then
@@ -560,7 +560,7 @@ Public Class Audio
         Dim d As New VideoScript
         d.Filters.AddRange(p.Script.Filters)
         Dim wavPath = p.TempDir + ap.File.Base + "_cut_ff.wav"
-        d.Path = p.TempDir + ap.File.Base + "_cut_ff.avs"
+        d.Path = (p.TempDir + ap.File.Base + "_cut_ff.avs").ToShortFilePath
         d.Filters.Insert(1, New VideoFilter("AudioDub(last,FFAudioSource(""" + ap.File + """, cachefile=""" + cachefile + """))"))
 
         If ap.Channels = 2 Then

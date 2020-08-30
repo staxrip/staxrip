@@ -21,6 +21,7 @@ Public Class Package
     Property Locations As String()
     Property Name As String
     Property RequiredFunc As Func(Of Boolean)
+    Property Find As Boolean = True
     Property SetupAction As Action
     Property StatusFunc As Func(Of String)
     Property TreePath As String
@@ -103,6 +104,18 @@ Public Class Package
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpSwitch = "-h",
         .Description = "Versatile audio video convertor console app."})
+
+    Shared Property ffmpeg_non_free As Package = Add(New Package With {
+        .Name = "ffmpeg non-free",
+        .Filename = "ffmpeg.exe",
+        .WebURL = "http://ffmpeg.org",
+        .HelpURL = "http://www.ffmpeg.org/documentation.html",
+        .HelpSwitch = "-h",
+        .IsIncluded = False,
+        .VersionAllowAny = True,
+        .Find = False,
+        .Description = "Versatile audio video convertor console app.",
+        .RequiredFunc = Function() p.Audio0.ContainsCommand("libfdk_aac") OrElse p.Audio1.ContainsCommand("libfdk_aac")})
 
     Shared Property MediaInfo As Package = Add(New Package With {
         .Name = "MediaInfo",
@@ -249,8 +262,7 @@ Public Class Package
         .HelpFilename = "help.txt",
         .HelpSwitch = "-h",
         .Description = "AAC console encoder based on libfdk-aac.",
-        .WebURL = "http://github.com/nu774/fdkaac",
-        .RequiredFunc = Function() TypeOf p.Audio0 Is GUIAudioProfile AndAlso DirectCast(p.Audio0, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac OrElse TypeOf p.Audio1 Is GUIAudioProfile AndAlso DirectCast(p.Audio1, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac})
+        .WebURL = "http://github.com/nu774/fdkaac"})
 
     Shared Property AVSMeter As Package = Add(New Package With {
         .Name = "AVSMeter",
@@ -2204,7 +2216,7 @@ Public Class Package
             If Location <> "" Then
                 ret = GetPathFromLocation(Location)
 
-                If File.Exists(ret) Then
+                If ret <> "" Then
                     Return ret
                 End If
             End If
@@ -2212,7 +2224,7 @@ Public Class Package
             If Not Locations.NothingOrEmpty Then
                 ret = GetPathFromLocation(Locations)
 
-                If File.Exists(ret) Then
+                If ret <> "" Then
                     Return ret
                 End If
             End If
@@ -2251,10 +2263,12 @@ Public Class Package
                 End If
             End If
 
-            ret = FindEverywhere(Filename, IgnorePath)
+            If Find Then
+                ret = FindEverywhere(Filename, IgnorePath)
 
-            If ret <> "" Then
-                Return ret
+                If ret <> "" Then
+                    Return ret
+                End If
             End If
         End Get
     End Property

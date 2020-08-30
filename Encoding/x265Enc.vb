@@ -150,7 +150,7 @@ Public Class x265Enc
         End If
 
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
-        script.Path = p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType
+        script.Path = (p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType).ToShortFilePath
         script.Synchronize()
 
         Log.WriteLine(BR + script.GetFullScript + BR)
@@ -1276,7 +1276,8 @@ Public Class x265Params
 
                 sb.Append(" --output NUL " + input)
             Else
-                sb.Append(" --output " + (targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape + " " + input)
+                sb.Append(" --output " + (targetPath.DirAndBase + chunkName +
+                          targetPath.ExtFull).ToShortFilePath.Escape + " " + input)
             End If
         End If
 

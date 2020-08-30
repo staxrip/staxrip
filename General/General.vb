@@ -261,7 +261,12 @@ Public Class Folder
     End Property
 
     <DllImport("shfolder.dll", CharSet:=CharSet.Unicode)>
-    Shared Function SHGetFolderPath(hwndOwner As IntPtr, nFolder As Integer, hToken As IntPtr, dwFlags As Integer, lpszPath As StringBuilder) As Integer
+    Shared Function SHGetFolderPath(
+        hwndOwner As IntPtr,
+        nFolder As Integer,
+        hToken As IntPtr,
+        dwFlags As Integer,
+        lpszPath As StringBuilder) As Integer
     End Function
 
     Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String

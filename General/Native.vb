@@ -125,6 +125,13 @@ Public Class Native
     Shared Function LoadLibrary(path As String) As IntPtr
     End Function
 
+    <DllImport("kernel32.dll", CharSet:=CharSet.Unicode)>
+    Shared Function GetShortPathName(
+        longPath As String,
+        shortPath As StringBuilder,
+        bufSize As Integer) As Integer
+    End Function
+
     <DllImport("uxtheme.dll", CharSet:=CharSet.Unicode)>
     Shared Function SetWindowTheme(
         hWnd As IntPtr,

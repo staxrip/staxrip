@@ -107,6 +107,7 @@ Tools
     "eac3to","Console App","eac3to.exe","3.34","2017-11-19"
     "fdkaac","Console App","fdkaac.exe","1.0.0","2019-02-13"
     "ffmpeg","Console App","ffmpeg.exe","N-98647-gffa6072fc7-x64-gcc10.2.0 Patman","2020-08-04"
+    "ffmpeg non-free","Console App","ffmpeg.exe","","2020-08-30"
     "mkvextract","Console App","mkvextract.exe","49","2020-08-02"
     "mkvinfo","Console App","mkvinfo.exe","49","2020-08-02"
     "mkvmerge","Console App","mkvmerge.exe","49","2020-08-02"
@@ -120,7 +121,7 @@ Tools
     "rav1e","Console App","rav1e.exe","0.3.0","2020-02-29"
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.4-26-g0af191de-msvc1926 Patman","2020-08-07"
     "VCEEnc","Console App","VCEEncC64.exe","6.02","2020-05-14"
-    "vspipe","Console App","vspipe.exe","r51","2020-08-01"
+    "vspipe","Console App","vspipe.exe","r52","2020-08-20"
     "x264","Console App","x264.exe","M-0.160.3009-4c9b076-gcc11 Patman","2020-06-22"
     "x265","Console App","x265.exe","M-3.4+6-g73f96ff39-gcc11.0.0 Patman","2020-05-30"
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
@@ -128,17 +129,17 @@ Tools
     "chapterEditor","GUI App","chapterEditor.exe","1.23","2020-05-13"
     "D2V Witch","GUI App","d2vwitch.exe","v4","2020-06-15"
     "DGIndex","GUI App","DGIndex.exe","1.5.8","2010-03-06"
-    "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.5.0.0","2020-06-14"
+    "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.6.0.0","2020-08-30"
     "MPC-BE","GUI App","mpc-be64.exe","","2020-05-25"
     "MPC-HC","GUI App","mpc-hc64.exe","","2017-07-16"
     "mpv.net","GUI App","mpvnet.exe","5.4.8.4","2020-08-04"
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.15","2020-05-01"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
     "AviSynth","Library","AviSynth.dll","3.6.1","2020-06-20"
-    "DirectX 9","Library","d3d9.dll","","2019-12-07"
+    "DirectX 9","Library","d3d9.dll","","2020-08-29"
     "FFTW","Library","libfftw3-3.dll","3.3.8","2018-12-20"
     "MediaInfo","Library","MediaInfo.dll","20.03","2020-04-03"
-    "VapourSynth","Library","vapoursynth.dll","r51","2020-08-01"
+    "VapourSynth","Library","vapoursynth.dll","r52","2020-08-20"
     "Visual C++ 2012","Library","msvcp110.dll","","2012-11-05"
     "Visual C++ 2013","Library","msvcp120.dll","","2016-02-10"
     "Visual C++ 2019","Library","msvcp140.dll","","2020-06-16"
@@ -257,6 +258,14 @@ http://github.com/nu774/fdkaac
 
 ffmpeg
 ~~~~~~
+
+Versatile audio video convertor console app.
+
+http://ffmpeg.org
+
+
+ffmpeg non-free
+~~~~~~~~~~~~~~~
 
 Versatile audio video convertor console app.
 

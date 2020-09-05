@@ -1191,7 +1191,7 @@ Public Class x265Params
 
                             pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m" + chunk + " | "
                         Case "ffmpeg"
-                            pipeString = Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
+                            pipeString = Package.ffmpeg.Path.Escape + " -i " + script.Path.LongPathPrefix.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
                     End Select
 
                     sb.Append(pipeString + Package.x265.Path.Escape)
@@ -1269,7 +1269,7 @@ Public Class x265Params
                 sb.Append(" --stats " + (targetPath.DirAndBase + chunkName + ".stats").Escape)
             End If
 
-            Dim input = If(pipeTool = "none", script.Path.Escape, "-")
+            Dim input = If(pipeTool = "none", script.Path.ToShortFilePath.Escape, "-")
 
             If (Mode.Value = x265RateMode.ThreePass AndAlso pass < 3) OrElse
                 Mode.Value = x265RateMode.TwoPass AndAlso pass = 1 Then

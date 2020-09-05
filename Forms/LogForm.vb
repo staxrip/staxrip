@@ -14,6 +14,7 @@ Public Class LogForm
         rtb.ReadOnly = True
         rtb.BackColor = SystemColors.Control
         rtb.Text = p.Log.GetPath.ReadAllText
+        rtb.DetectUrls = False
 
         For Each match As Match In Regex.Matches(rtb.Text, "^-+ (.+) -+", RegexOptions.Multiline)
             Dim val = match.Groups(1).Value

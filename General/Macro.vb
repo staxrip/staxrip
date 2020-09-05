@@ -329,7 +329,7 @@ Public Class Macro
         If value = "" Then Return ""
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_file%") Then value = value.Replace("%source_file%", p.SourceFile.ToShortFilePath)
+        If value.Contains("%source_file%") Then value = value.Replace("%source_file%", p.SourceFile.LongPathPrefix)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%working_dir%") Then value = value.Replace("%working_dir%", p.TempDir)

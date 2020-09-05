@@ -1078,7 +1078,7 @@ Public Class x264Params
         End If
 
         If includePaths Then
-            Dim input = If(pipeTool = "none", script.Path.Escape, "-")
+            Dim input = If(pipeTool = "none", script.Path.ToShortFilePath.Escape, "-")
             Dim dmx = Demuxer.ValueText
 
             If dmx = "automatic" Then
@@ -1123,8 +1123,8 @@ Public Class x264Params
 
     Function GetPartitionsArg() As String
         If I4x4.Value = I4x4.DefaultValue AndAlso I8x8.Value = I8x8.DefaultValue AndAlso
-                P4x4.Value = P4x4.DefaultValue AndAlso P8x8.Value = P8x8.DefaultValue AndAlso
-                B8x8.Value = B8x8.DefaultValue Then
+            P4x4.Value = P4x4.DefaultValue AndAlso P8x8.Value = P8x8.DefaultValue AndAlso
+            B8x8.Value = B8x8.DefaultValue Then
 
             Return Nothing
         End If

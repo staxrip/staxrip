@@ -1093,7 +1093,7 @@ Public Class GUIAudioProfile
         Dim pack = If(Params.Codec = AudioCodec.AAC, Package.ffmpeg_non_free, Package.ffmpeg)
 
         If includePaths AndAlso File <> "" Then
-            ret = pack.Path.Escape + " -i " + File.ToShortFilePath.Escape
+            ret = pack.Path.Escape + " -i " + File.LongPathPrefix.Escape
         Else
             ret = "ffmpeg"
         End If
@@ -1193,7 +1193,7 @@ Public Class GUIAudioProfile
 
         If includePaths AndAlso File <> "" Then
             ret += " -y -hide_banner"
-            ret += " " + GetOutputFile.ToShortFilePath.Escape
+            ret += " " + GetOutputFile.LongPathPrefix.Escape
         End If
 
         Return ret

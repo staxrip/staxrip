@@ -630,10 +630,10 @@ Public Class MkvMuxer
     End Function
 
     Function GetArgs() As String
-        Dim args = "-o " + p.TargetFile.ToShortFilePath.Escape
+        Dim args = "-o " + p.TargetFile.LongPathPrefix.Escape
 
         Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " +
-            p.VideoEncoder.OutputPath.ToShortFilePath.Escape)
+            p.VideoEncoder.OutputPath.LongPathPrefix.Escape)
 
         Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
 
@@ -673,7 +673,7 @@ Public Class MkvMuxer
             End If
         End If
 
-        args += " " + p.VideoEncoder.OutputPath.ToShortFilePath.Escape
+        args += " " + p.VideoEncoder.OutputPath.LongPathPrefix.Escape
 
         For x = 2 To 99
             Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
@@ -716,7 +716,7 @@ Public Class MkvMuxer
                     args += " --track-name """ & id & ":" + Convert(subtitle.Title) + """"
                 End If
 
-                args += " " + subtitle.Path.ToShortFilePath.Escape
+                args += " " + subtitle.Path.LongPathPrefix.Escape
             End If
         Next
 
@@ -791,7 +791,7 @@ Public Class MkvMuxer
                 name = i.Right("_attachment_")
             End If
 
-            args += $" --attachment-name {name.Escape} --attach-file {i.ToShortFilePath.Escape}"
+            args += $" --attachment-name {name.Escape} --attach-file {i.LongPathPrefix.Escape}"
         Next
 
         Return args
@@ -862,7 +862,7 @@ Public Class MkvMuxer
 
             args += " --default-track " & tid & ":" & If(ap.Default, 1, 0)
             args += " --forced-track " & tid & ":" & If(ap.Forced, 1, 0)
-            args += " " + ap.File.ToShortFilePath.Escape
+            args += " " + ap.File.LongPathPrefix.Escape
         End If
     End Sub
 

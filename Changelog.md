@@ -9,7 +9,8 @@
 - Long path support (stax76, #226, experimental)
 - fix Decoder ffmpeg DXVA2 (stax76, #290)
 - ffms2 2.40-RC1
-- MediaInfo.NET 6.6
+- MediaInfo.NET 6.6 (long path support)
+- AviSynth+ 3.6.2 test 2 (long path support)
 - VapourSynth R52
 
 

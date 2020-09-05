@@ -647,7 +647,9 @@ Public Class mkvDemuxer
     Overrides Sub Run(proj As Project)
         Dim audioStreams As List(Of AudioStream)
         Dim subtitles As List(Of Subtitle)
-        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify --ui-language en " + proj.SourceFile.Escape)
+
+        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify --ui-language en " +
+            proj.SourceFile.LongPathPrefix.Escape)
 
         Dim demuxAudio = (Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
             TypeOf proj.Audio1 Is NullAudioProfile)) AndAlso
@@ -789,7 +791,7 @@ Public Class mkvDemuxer
             Exit Sub
         End If
 
-        Dim args = sourcefile.ToShortFilePath.Escape + " tracks"
+        Dim args = sourcefile.LongPathPrefix.Escape + " tracks"
 
         If videoDemuxing Then
             Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)
@@ -800,7 +802,7 @@ Public Class mkvDemuxer
                 Dim outpath = proj.TempDir + sourcefile.Base + videoStreams(0).ExtFull
 
                 If outpath <> sourcefile Then
-                    args += " " & id & ":" + outpath.Escape
+                    args += " " & id & ":" + outpath.LongPathPrefix.Escape
                 End If
             End If
         End If
@@ -811,8 +813,8 @@ Public Class mkvDemuxer
             End If
 
             Dim forced = If(subtitle.Forced, "_forced", "")
-            Dim outpath = (proj.TempDir + subtitle.Filename + forced + subtitle.ExtFull).ToShortFilePath
-            args += " " & subtitle.StreamOrder & ":" + outpath.Escape
+            Dim outpath = proj.TempDir + subtitle.Filename + forced + subtitle.ExtFull
+            args += " " & subtitle.StreamOrder & ":" + outpath.LongPathPrefix.Escape
         Next
 
         Dim outPaths As New Dictionary(Of String, AudioStream)
@@ -824,9 +826,9 @@ Public Class mkvDemuxer
                 ext = "aac"
             End If
 
-            Dim outPath = (proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + "." + ext).ToShortFilePath
+            Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + "." + ext
             outPaths.Add(outPath, stream)
-            args += " " & stream.StreamOrder & ":" + outPath.Escape
+            args += " " & stream.StreamOrder & ":" + outPath.LongPathPrefix.Escape
         Next
 
         Using proc As New Proc
@@ -858,7 +860,8 @@ Public Class mkvDemuxer
                         proc.Package = Package.MP4Box
                         Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
                         m4aPath = outPath.ChangeExt("m4a")
-                        proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new " + m4aPath.Escape
+                        proc.Arguments = "-add """ + outPath.ToShortFilePath + sbr +
+                            ":name= "" -new " + m4aPath.ToShortFilePath.Escape
                         proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
                         proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
                         proc.Start()
@@ -885,12 +888,7 @@ Public Class mkvDemuxer
     Shared Function GetAttachmentPath(proj As Project, name As String) As String
         Dim prefix = If(name.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land"), "", proj.SourceFile.Base + "_attachment_")
         Dim ret = proj.TempDir + prefix + name.Base + name.ExtFull
-
-        If ret.Length > 260 Then
-            ret = proj.TempDir + prefix + name.Base.Shorten(10) + name.ExtFull
-        End If
-
-        Return ret
+        Return ret.LongPathPrefix
     End Function
 
     Function GetAttachments(stdout As String) As List(Of Attachment)

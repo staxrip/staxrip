@@ -563,7 +563,7 @@ Public Class TargetVideoScript
                 Return ""
             End If
 
-            Return (p.TempDir + p.TargetFile.Base + "." + FileType).ToShortFilePath
+            Return p.TempDir + p.TargetFile.Base + "." + FileType
         End Get
         Set(value As String)
         End Set

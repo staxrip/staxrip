@@ -855,8 +855,8 @@ Public Class GlobalClass
                 proc.Project = proj
                 proc.Priority = ProcessPriorityClass.Normal
                 proc.File = Package.ffms2.Directory + "ffmsindex.exe"
-                proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.ToShortFilePath.Escape +
-                    " " + cachePath.ToShortFilePath.Escape
+                proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.LongPathPrefix.Escape +
+                    " " + cachePath.LongPathPrefix.Escape
                 proc.Start()
             End Using
         End If

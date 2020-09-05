@@ -3,6 +3,7 @@
 ============
 
 - fix incorrect language default selection in eac3to dialog (stax76, #318)
+- MP4Box muxer supports chunks encoded with x265 chunk encoding (stax76, #316)
 
 
 2.1.4.3 Beta

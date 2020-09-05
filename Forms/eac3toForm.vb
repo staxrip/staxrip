@@ -882,24 +882,11 @@ Public Class eac3toForm
                     stream.ListViewItem = lvAudio.Items.Add(stream.ToString)
                     stream.ListViewItem.Tag = stream
 
-                    If stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
-                        bnAudioNative.Visible = True
-                        stream.ListViewItem.Checked = True
-                    ElseIf stream.Language.TwoLetterCode = "en" Then
-                        bnAudioEnglish.Visible = True
-                        stream.ListViewItem.Checked = True
-                    ElseIf stream.Language.TwoLetterCode = "iv" Then
-                        stream.ListViewItem.Checked = True
-                    End If
+                    Dim autoCode = Project.PreferredAudio.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    stream.ListViewItem.Checked = autoCode.ContainsAny("all", stream.Language.TwoLetterCode, stream.Language.ThreeLetterCode)
                 ElseIf stream.IsVideo Then
                     cbVideoStream.Items.Add(stream)
                 ElseIf stream.IsSubtitle Then
-                    If stream.Language.CultureInfo.TwoLetterISOLanguageName = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
-                        bnSubtitleNative.Visible = True
-                    ElseIf stream.Language.CultureInfo.TwoLetterISOLanguageName = "en" Then
-                        bnSubtitleEnglish.Visible = True
-                    End If
-
                     Dim item = lvSubtitles.Items.Add(stream.Language.ToString)
                     item.Tag = stream
 

@@ -2,6 +2,9 @@
 2.1.4.4 Beta (not yet available)
 ============
 
+- fix incorrect language default selection in eac3to dialog (stax76, #318)
+
+
 2.1.4.3 Beta
 ============
 

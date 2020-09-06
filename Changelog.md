@@ -1,5 +1,8 @@
 
-2.1.4.4 Beta (2020-09-??)
+2.1.4.5 Beta (2020-09-??)
+============
+
+2.1.4.4 Beta (2020-09-06)
 ============
 
 - eac3to demux dialog showed incorrect language default selection (stax76, #318)

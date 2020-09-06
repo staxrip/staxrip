@@ -267,7 +267,7 @@ http://ffmpeg.org
 ffmpeg non-free
 ~~~~~~~~~~~~~~~
 
-Versatile audio video convertor console app.
+Versatile audio video convertor console app. Custom build with non-free libraries like fdk-aac.
 
 http://ffmpeg.org
 

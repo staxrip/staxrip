@@ -1,9 +1,11 @@
 
-2.1.4.4 Beta (not yet available)
+2.1.4.4 Beta (2020-09-??)
 ============
 
-- fix incorrect language default selection in eac3to dialog (stax76, #318)
+- eac3to demux dialog showed incorrect language default selection (stax76, #318)
+- MP4Box fail to demux OGG chapters (44vince44, #310)
 - MP4Box muxer supports chunks encoded with x265 chunk encoding (stax76, #316)
+- MP4Box 1.0.0-rev211-g71f1d75ea-x64-gcc10.2.0 (Patman86, #310)
 
 
 2.1.4.3 Beta

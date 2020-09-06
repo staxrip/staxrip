@@ -114,7 +114,7 @@ Public Class Package
         .IsIncluded = False,
         .VersionAllowAny = True,
         .Find = False,
-        .Description = "Versatile audio video convertor console app.",
+        .Description = "Versatile audio video convertor console app. Custom build with non-free libraries like fdk-aac.",
         .RequiredFunc = Function() p.Audio0.ContainsCommand("libfdk_aac") OrElse p.Audio1.ContainsCommand("libfdk_aac")})
 
     Shared Property MediaInfo As Package = Add(New Package With {

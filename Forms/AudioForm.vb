@@ -831,6 +831,8 @@ Public Class AudioForm
                 Select Case TempProfile.Params.Encoder
                     Case GuiAudioEncoder.qaac
                         SetQuality(50)
+                    Case GuiAudioEncoder.Eac3to
+                        SetQuality(0.5)
                     Case Else
                         SetQuality(3)
                 End Select
@@ -889,6 +891,13 @@ Public Class AudioForm
             numQuality.Maximum = 5
             numQuality.Increment = 1
             numQuality.DecimalPlaces = 0
+        ElseIf TempProfile.Params.Codec = AudioCodec.AAC AndAlso
+            TempProfile.Params.Encoder = GuiAudioEncoder.Eac3to Then
+
+            numQuality.Minimum = 0
+            numQuality.Maximum = 1
+            numQuality.Increment = 0.01
+            numQuality.DecimalPlaces = 2
         ElseIf TempProfile.Params.Codec = AudioCodec.MP3 Then
             numQuality.Minimum = 0
             numQuality.Maximum = 9

@@ -884,19 +884,19 @@ Public Class AudioForm
             numQuality.Increment = 1
             numQuality.DecimalPlaces = 0
         ElseIf TempProfile.Params.Codec = AudioCodec.AAC Then
-            If TempProfile.Params.Encoder = GuiAudioEncoder.fdkaac OrElse
-               TempProfile.Params.Encoder = GuiAudioEncoder.ffmpeg Then
-
-                numQuality.Minimum = 1
-                numQuality.Maximum = 5
-                numQuality.Increment = 1
-                numQuality.DecimalPlaces = 0
-            ElseIf TempProfile.Params.Encoder = GuiAudioEncoder.eac3to Then
-                numQuality.Minimum = 0
-                numQuality.Maximum = 1
-                numQuality.Increment = 0.01
-                numQuality.DecimalPlaces = 2
-            End If
+            Select Case TempProfile.Params.Encoder
+                Case GuiAudioEncoder.eac3to
+                    numQuality.Minimum = 0
+                    numQuality.Maximum = 1
+                    numQuality.Increment = 0.01
+                    numQuality.DecimalPlaces = 2
+                Case GuiAudioEncoder.fdkaac, GuiAudioEncoder.ffmpeg
+                    numQuality.Minimum = 1
+                    numQuality.Maximum = 5
+                    numQuality.Increment = 1
+                    numQuality.DecimalPlaces = 0
+                Case Else
+            End Select
         ElseIf TempProfile.Params.Codec = AudioCodec.MP3 Then
             numQuality.Minimum = 0
             numQuality.Maximum = 9

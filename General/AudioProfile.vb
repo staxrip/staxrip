@@ -1472,7 +1472,7 @@ End Enum
 
 Public Enum GuiAudioEncoder
     Automatic
-    Eac3to
+    eac3to
     ffmpeg
     qaac
     fdkaac

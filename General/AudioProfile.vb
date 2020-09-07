@@ -1200,7 +1200,7 @@ Public Class GUIAudioProfile
     End Function
 
     Function SupportsNormalize() As Boolean
-        Return GetEncoder() = GuiAudioEncoder.Eac3to OrElse GetEncoder() = GuiAudioEncoder.qaac
+        Return GetEncoder() = GuiAudioEncoder.eac3to OrElse GetEncoder() = GuiAudioEncoder.qaac
     End Function
 
     Public Overrides ReadOnly Property DefaultName As String
@@ -1240,7 +1240,7 @@ Public Class GUIAudioProfile
             Dim enc = GetEncoder()
 
             If Params.Codec = AudioCodec.DTS AndAlso ExtractDTSCore AndAlso
-                (enc = GuiAudioEncoder.Eac3to OrElse enc = GuiAudioEncoder.ffmpeg) Then
+                (enc = GuiAudioEncoder.eac3to OrElse enc = GuiAudioEncoder.ffmpeg) Then
 
                 Return True
             End If
@@ -1262,16 +1262,16 @@ Public Class GUIAudioProfile
     End Property
 
     Overrides Function HandlesDelay() As Boolean
-        If {GuiAudioEncoder.Eac3to, GuiAudioEncoder.qaac}.Contains(GetEncoder()) Then
+        If {GuiAudioEncoder.eac3to, GuiAudioEncoder.qaac}.Contains(GetEncoder()) Then
             Return True
         End If
     End Function
 
     Function GetEncoder() As GuiAudioEncoder
         Select Case Params.Encoder
-            Case GuiAudioEncoder.Eac3to
+            Case GuiAudioEncoder.eac3to
                 If {AudioCodec.AAC, AudioCodec.AC3, AudioCodec.FLAC, AudioCodec.DTS, AudioCodec.W64, AudioCodec.WAV}.Contains(Params.Codec) Then
-                    Return GuiAudioEncoder.Eac3to
+                    Return GuiAudioEncoder.eac3to
                 End If
             Case GuiAudioEncoder.ffmpeg
                 Return GuiAudioEncoder.ffmpeg
@@ -1294,7 +1294,7 @@ Public Class GUIAudioProfile
 
     Function GetCommandLine(includePaths As Boolean) As String
         Select Case GetEncoder()
-            Case GuiAudioEncoder.Eac3to
+            Case GuiAudioEncoder.eac3to
                 Return GetEac3toCommandLine(includePaths)
             Case GuiAudioEncoder.qaac
                 Return GetQaacCommandLine(includePaths)
@@ -1308,7 +1308,7 @@ Public Class GUIAudioProfile
     Overrides Property SupportedInput As String()
         Get
             Select Case GetEncoder()
-                Case GuiAudioEncoder.Eac3to
+                Case GuiAudioEncoder.eac3to
                     Return FileTypes.eac3toInput
                 Case GuiAudioEncoder.qaac
                     If DecodingMode <> AudioDecodingMode.Pipe Then
@@ -1472,7 +1472,7 @@ End Enum
 
 Public Enum GuiAudioEncoder
     Automatic
-    Eac3to
+    eac3to
     ffmpeg
     qaac
     fdkaac

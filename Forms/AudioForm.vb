@@ -831,7 +831,7 @@ Public Class AudioForm
                 Select Case TempProfile.Params.Encoder
                     Case GuiAudioEncoder.qaac
                         SetQuality(50)
-                    Case GuiAudioEncoder.Eac3to
+                    Case GuiAudioEncoder.eac3to
                         SetQuality(0.5)
                     Case Else
                         SetQuality(3)
@@ -891,7 +891,7 @@ Public Class AudioForm
                 numQuality.Maximum = 5
                 numQuality.Increment = 1
                 numQuality.DecimalPlaces = 0
-            ElseIf TempProfile.Params.Encoder = GuiAudioEncoder.Eac3to Then
+            ElseIf TempProfile.Params.Encoder = GuiAudioEncoder.eac3to Then
                 numQuality.Minimum = 0
                 numQuality.Maximum = 1
                 numQuality.Increment = 0.01
@@ -1016,7 +1016,7 @@ Public Class AudioForm
         Dim cb As SimpleUI.SimpleUICheckBox
 
         Select Case TempProfile.GetEncoder
-            Case GuiAudioEncoder.Eac3to
+            Case GuiAudioEncoder.eac3to
                 Dim mbFrameRateMode = ui.AddMenu(Of AudioFrameRateMode)(page)
                 mbFrameRateMode.Label.Text = "Frame rate:"
                 mbFrameRateMode.Button.Expand = True

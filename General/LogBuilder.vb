@@ -105,6 +105,22 @@ Public Class LogBuilder
         WriteLine(EnvironmentString.FormatColumn(":"))
     End Sub
 
+    Shared ConfigurationString As String 'cached due to bug report
+
+    Sub WriteConfiguration()
+        If ToString.Contains("- Configuration -") Then
+            Exit Sub
+        End If
+
+        WriteHeader("Configuration")
+
+        If ConfigurationString = "" Then ConfigurationString =
+            $"Template: {p.TemplateName}{BR}" +
+            $"Profile: {p.VideoEncoder.Name}{BR}"
+
+        WriteLine(ConfigurationString.FormatColumn(":"))
+    End Sub
+
     Sub WriteStats()
         WriteStats(StartTime)
     End Sub

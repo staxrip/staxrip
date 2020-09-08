@@ -245,6 +245,8 @@ Public Class GlobalClass
 
             g.RaiseAppEvent(ApplicationEvent.BeforeProcessing)
 
+            Log.WriteConfiguration()
+
             Log.WriteHeader($"{p.Script.Engine} Script")
             Log.WriteLine(p.Script.GetFullScript)
 

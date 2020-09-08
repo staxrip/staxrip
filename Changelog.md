@@ -2,6 +2,10 @@
 2.1.4.5 Beta (2020-09-??)
 ============
 
+- New configuration section in log files, displaying template, profile, muxer, ... - can be extended anytime (Dendraspis, #331)
+- eac3to AAC encoding gets correct default quality value and limits (Dendraspis, #328)
+
+
 2.1.4.4 Beta (2020-09-06)
 ============
 

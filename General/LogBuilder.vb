@@ -116,7 +116,8 @@ Public Class LogBuilder
 
         If ConfigurationString = "" Then ConfigurationString =
             $"Template: {p.TemplateName}{BR}" +
-            $"Profile: {p.VideoEncoder.Name}{BR}"
+            $"Profile: {p.VideoEncoder.Name}{BR}" +
+            $"Muxer: {p.VideoEncoder.Muxer.Name}{BR}"
 
         WriteLine(ConfigurationString.FormatColumn(":"))
     End Sub

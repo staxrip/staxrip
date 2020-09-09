@@ -1516,7 +1516,7 @@ Public Class x265Params
                 LimitModes.Value = True
                 LimitRefs.Value = 0
                 LimitTU.Value = 4
-                LookaheadSlices.Value = 1
+                LookaheadSlices.Value = 0
                 MaxMerge.Value = 4
                 MErange.Value = 57
                 PsyRDOQ.Value = 1
@@ -1543,7 +1543,7 @@ Public Class x265Params
                 FastIntra.Value = False
                 LimitRefs.Value = 0
                 LimitTU.Value = 4
-                LookaheadSlices.Value = 1
+                LookaheadSlices.Value = 0
                 MaxMerge.Value = 5
                 MErange.Value = 57
                 PsyRDOQ.Value = 1
@@ -1569,7 +1569,7 @@ Public Class x265Params
                 EarlySkip.Value = False
                 FastIntra.Value = False
                 LimitRefs.Value = 0
-                LookaheadSlices.Value = 1
+                LookaheadSlices.Value = 0
                 MaxMerge.Value = 5
                 MErange.Value = 92
                 RCLookahead.Value = 60
@@ -1795,7 +1795,7 @@ Public Class x265Params
                 LimitModes.DefaultValue = True
                 LimitRefs.DefaultValue = 0
                 LimitTU.DefaultValue = 4
-                LookaheadSlices.DefaultValue = 1
+                LookaheadSlices.DefaultValue = 0
                 MaxMerge.DefaultValue = 4
                 MErange.DefaultValue = 57
                 PsyRDOQ.DefaultValue = 1
@@ -1821,7 +1821,7 @@ Public Class x265Params
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = False
                 LimitTU.DefaultValue = 4
-                LookaheadSlices.DefaultValue = 1
+                LookaheadSlices.DefaultValue = 0
                 MaxMerge.DefaultValue = 4
                 MErange.DefaultValue = 57
                 PsyRDOQ.DefaultValue = 1
@@ -1847,7 +1847,7 @@ Public Class x265Params
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = False
                 LimitRefs.DefaultValue = 0
-                LookaheadSlices.DefaultValue = 1
+                LookaheadSlices.DefaultValue = 0
                 MaxMerge.DefaultValue = 5
                 MErange.DefaultValue = 92
                 RCLookahead.DefaultValue = 60

@@ -4,6 +4,7 @@
 
 - New configuration section in log files, displaying template, profile, muxer, ... - can be extended anytime (Dendraspis, #331)
 - eac3to AAC encoding gets correct default quality value and limits (Dendraspis, #328)
+- Fixed x265 Preset default value for LookaheadSlices (Dendraspis, (112e150))
 
 
 2.1.4.4 Beta (2020-09-06)

@@ -16,7 +16,7 @@ Public Class Update
         End If
     End Sub
 
-    Shared Async Sub CheckForUpdate(Optional force As Boolean = False, Optional includeBeta As Boolean = False)
+    Shared Async Sub CheckForUpdate(Optional force As Boolean = False, Optional includeBeta As Boolean = False, Optional x64 As Boolean = True)
         Try
             If Not s.CheckForUpdates AndAlso Not force Then
                 Exit Sub
@@ -63,8 +63,9 @@ Public Class Update
 
                         dropboxResponse.EnsureSuccessStatusCode()
                         Dim dropboxContent = Await dropboxResponse.Content.ReadAsStringAsync()
-                        Dim betaMatches = Regex.Matches(dropboxContent,
-                            "(https://[^""]*/([^""/]*StaxRip[^""?]*)[^""]*)\\""")
+                        Dim betaPattern = If(x64, "(https://[^""]*/([^""/]*StaxRip[^""/?]*x64[^""?]*)[^""]*)\\""",
+                                                  "(https://[^""]*/([^""/]*StaxRip[^""/?]*x86[^""?]*)[^""]*)\\""")
+                        Dim betaMatches = Regex.Matches(dropboxContent, betaPattern)
 
                         If betaMatches.Count > 0 Then
                             Dim sortedMatches = New Match(betaMatches.Count - 1) {}

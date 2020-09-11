@@ -6013,7 +6013,7 @@ Public Class MainForm
         Refresh()
         ProcessCommandLine(Environment.GetCommandLineArgs)
         StaxRip.Update.ShowUpdateQuestion()
-        StaxRip.Update.CheckForUpdate(False, s.CheckForUpdatesBeta)
+        StaxRip.Update.CheckForUpdate(False, s.CheckForUpdatesBeta, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
         g.RunTask(AddressOf FrameServerHelp.VerifyAviSynthLinks)
     End Sub

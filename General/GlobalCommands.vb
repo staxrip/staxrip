@@ -12,7 +12,7 @@ Imports StaxRip.UI
 Public Class GlobalCommands
     <Command("Checks if a update is available.")>
     Sub CheckForUpdate()
-        Update.CheckForUpdate(True, s.CheckForUpdatesBeta)
+        Update.CheckForUpdate(True, s.CheckForUpdatesBeta, Environment.Is64BitProcess)
     End Sub
 
     <Command("Shows the log file with the built-in log file viewer.")>

@@ -649,7 +649,7 @@ Public Class mkvDemuxer
         Dim subtitles As List(Of Subtitle)
 
         Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify --ui-language en " +
-            proj.SourceFile.LongPathPrefix.Escape)
+            proj.SourceFile.Escape)
 
         Dim demuxAudio = (Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
             TypeOf proj.Audio1 Is NullAudioProfile)) AndAlso
@@ -791,7 +791,7 @@ Public Class mkvDemuxer
             Exit Sub
         End If
 
-        Dim args = sourcefile.LongPathPrefix.Escape + " tracks"
+        Dim args = sourcefile.Escape + " tracks"
 
         If videoDemuxing Then
             Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)
@@ -802,7 +802,7 @@ Public Class mkvDemuxer
                 Dim outpath = proj.TempDir + sourcefile.Base + videoStreams(0).ExtFull
 
                 If outpath <> sourcefile Then
-                    args += " " & id & ":" + outpath.LongPathPrefix.Escape
+                    args += " " & id & ":" + outpath.Escape
                 End If
             End If
         End If
@@ -814,7 +814,7 @@ Public Class mkvDemuxer
 
             Dim forced = If(subtitle.Forced, "_forced", "")
             Dim outpath = proj.TempDir + subtitle.Filename + forced + subtitle.ExtFull
-            args += " " & subtitle.StreamOrder & ":" + outpath.LongPathPrefix.Escape
+            args += " " & subtitle.StreamOrder & ":" + outpath.Escape
         Next
 
         Dim outPaths As New Dictionary(Of String, AudioStream)
@@ -828,7 +828,7 @@ Public Class mkvDemuxer
 
             Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + "." + ext
             outPaths.Add(outPath, stream)
-            args += " " & stream.StreamOrder & ":" + outPath.LongPathPrefix.Escape
+            args += " " & stream.StreamOrder & ":" + outPath.Escape
         Next
 
         Using proc As New Proc
@@ -888,7 +888,7 @@ Public Class mkvDemuxer
     Shared Function GetAttachmentPath(proj As Project, name As String) As String
         Dim prefix = If(name.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land"), "", proj.SourceFile.Base + "_attachment_")
         Dim ret = proj.TempDir + prefix + name.Base + name.ExtFull
-        Return ret.LongPathPrefix
+        Return ret
     End Function
 
     Function GetAttachments(stdout As String) As List(Of Attachment)

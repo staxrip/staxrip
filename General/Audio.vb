@@ -87,7 +87,7 @@ Public Class Audio
             ret += " " + stream.Language.ToString
         End If
 
-        If path.Length < 200 AndAlso stream.Title <> "" Then
+        If stream.Title <> "" Then
             ret += " {" + stream.Title.Shorten(50).EscapeIllegalFileSysChars + "}"
         End If
 

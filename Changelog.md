@@ -6,7 +6,7 @@
 - eac3to AAC encoding gets correct default quality value and limits (Dendraspis, #328)
 - Fixed x265 Preset default value for LookaheadSlices (Dendraspis, (112e150))
 - Update checker respects runtime architecture (x64/x86) (Dendraspis)
-- MKVToolNix 50 (long path support)
+- MKVToolNix 50 long path support (stax76, #226)
 
 
 2.1.4.4 Beta (2020-09-06)

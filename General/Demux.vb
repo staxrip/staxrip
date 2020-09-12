@@ -57,8 +57,8 @@ Public MustInherit Class Demuxer
     Overrides Function ToString() As String
         Dim input = InputExtensions.Join(", ")
 
-        If input.Length > 25 Then
-            input = input.Shorten(25) + "..."
+        If input.Length > 30 Then
+            input = input.Shorten(30) + "..."
         End If
 
         Return Name + " (" + input + " -> " + OutputExtensions.Join(", ") + ")"
@@ -92,7 +92,7 @@ Public MustInherit Class Demuxer
 
         Dim dgIndex As New CommandLineDemuxer
         dgIndex.Name = "DGIndex: Demux & Index MPEG-2"
-        dgIndex.InputExtensions = {"mpg", "vob", "m2ts", "mts", "m2t"}
+        dgIndex.InputExtensions = {"mpg", "vob", "m2ts", "m2v", "mts", "m2t"}
         dgIndex.OutputExtensions = {"d2v"}
         dgIndex.InputFormats = {"mpeg2"}
         dgIndex.Command = "%app:DGIndex%"
@@ -102,7 +102,7 @@ Public MustInherit Class Demuxer
 
         Dim d2vWitch As New CommandLineDemuxer
         d2vWitch.Name = "D2V Witch: Demux & Index MPEG-2"
-        d2vWitch.InputExtensions = {"mpg", "vob", "m2ts", "mts", "m2t"}
+        d2vWitch.InputExtensions = {"mpg", "vob", "m2ts", "m2v", "mts", "m2t"}
         d2vWitch.OutputExtensions = {"d2v"}
         d2vWitch.InputFormats = {"mpeg2"}
         d2vWitch.Command = "cmd.exe"

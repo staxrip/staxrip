@@ -9,6 +9,9 @@
 - MKVToolNix 50 long path support (stax76, #226)
 - The wiki was integrated into the tool help. Anybody can add
   detailed tool info and access it from StaxRip (stax76, #292, #320)
+- The automatic source filter detection supports detection by format,
+  the defaults were reset and use now L-Smash-Works for VP9 (stax76, #312)
+- ffms2 0055b2d StvG
 
 
 2.1.4.4 Beta (2020-09-06)

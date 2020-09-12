@@ -53,6 +53,7 @@
     "%source_par_y%","Source pixel/sample aspect ratio."
     "%source_seconds%","Length in seconds of the source video."
     "%source_temp_file%","File located in the temp directory using the same name as the source file."
+    "%source_video_format%","Video codec of the source file."
     "%source_width%","Image width of the source video."
     "%startup_dir%","Directory of the application."
     "%system_dir%","System directory."

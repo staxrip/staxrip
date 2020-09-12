@@ -2355,64 +2355,30 @@ Public Class MainForm
             Exit Sub
         End If
 
+        Dim profiles = If(p.Script.Engine = ScriptEngine.AviSynth,
+            s.AviSynthProfiles, s.VapourSynthProfiles)
+
+        Dim preferences = If(p.Script.Engine = ScriptEngine.AviSynth,
+            s.AviSynthFilterPreferences, s.VapourSynthFilterPreferences)
+
         Dim sourceFilter = p.Script.GetFilter("Source")
 
-        If Not sourceFilter.Script.Contains("(") OrElse
-                p.Script.Filters(0).Name = "Automatic" OrElse
-                p.Script.Filters(0).Name = "Manual" Then
-
-            For Each iPref In {s.AviSynthFilterPreferences, s.VapourSynthFilterPreferences}
-                If (iPref Is s.AviSynthFilterPreferences AndAlso
-                        p.Script.Engine = ScriptEngine.AviSynth) OrElse
-                        (iPref Is s.VapourSynthFilterPreferences AndAlso
-                        p.Script.Engine = ScriptEngine.VapourSynth) Then
-
-                    Dim scriptingProfiles = If(p.Script.Engine = ScriptEngine.AviSynth,
-                            s.AviSynthProfiles, s.VapourSynthProfiles)
-
-                    For Each i In iPref
-                        Dim name = i.Name.SplitNoEmptyAndWhiteSpace({",", " "})
-
-                        If name.Contains(p.SourceFile.Ext) Then
-                            Dim filters = scriptingProfiles.Where(
-                                    Function(v) v.Name = "Source").First.Filters.Where(
-                                    Function(v) v.Name = i.Value)
-
-                            If filters.Count > 0 Then
-                                p.Script.SetFilter("Source", filters(0).Name, filters(0).Script)
-                                Exit For
-                            End If
-                        End If
-                    Next
-
-                    If Not sourceFilter.Script.Contains("(") Then
-                        Dim def = iPref.Where(Function(v) v.Name = "default")
-
-                        If def.Count > 0 Then
-                            Dim filters = scriptingProfiles.Where(
-                                    Function(v) v.Name = "Source").First.Filters.Where(
-                                    Function(v) v.Name = def(0).Value)
-
-                            If filters.Count > 0 Then
-                                p.Script.SetFilter("Source", filters(0).Name, filters(0).Script)
-                            End If
-                        End If
-                    End If
-                End If
-            Next
-        End If
+        SetSourceFilter(sourceFilter, preferences, profiles, True, True, False, False)
+        SetSourceFilter(sourceFilter, preferences, profiles, False, True, True, False)
+        SetSourceFilter(sourceFilter, preferences, profiles, True, False, False, True)
+        SetSourceFilter(sourceFilter, preferences, profiles, False, False, False, False)
 
         Dim editAVS = p.Script.Engine = ScriptEngine.AviSynth AndAlso p.SourceFile.Ext <> "avs"
         Dim editVS = p.Script.Engine = ScriptEngine.VapourSynth AndAlso p.SourceFile.Ext <> "vpy"
 
         If editAVS Then
             If Not sourceFilter.Script.Contains("(") Then
-                Dim filter = FilterCategory.GetAviSynthDefaults.Where(Function(v) v.Name = "Source").First.Filters.Where(Function(v) v.Name = "FFVideoSource").First
+                Dim filter = FilterCategory.GetAviSynthDefaults.Where(Function(cat) cat.Name = "Source").First.Filters.Where(Function(cat) cat.Name = "FFVideoSource").First
                 p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
             End If
         ElseIf editVS Then
             If Not sourceFilter.Script.Contains("(") Then
-                Dim filter = FilterCategory.GetVapourSynthDefaults.Where(Function(v) v.Name = "Source").First.Filters.Where(Function(v) v.Name = "ffms2").First
+                Dim filter = FilterCategory.GetVapourSynthDefaults.Where(Function(cat) cat.Name = "Source").First.Filters.Where(Function(cat) cat.Name = "ffms2").First
                 p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
             End If
         End If
@@ -2463,6 +2429,50 @@ Public Class MainForm
                 p.CropBottom = sourceHeight Mod 4
                 p.Script.ActivateFilter("Crop")
             End If
+        End If
+    End Sub
+
+    Sub SetSourceFilter(
+        sourceFilter As VideoFilter,
+        preferences As StringPairList,
+        profiles As List(Of FilterCategory),
+        skipAnyExtension As Boolean,
+        skipAnyFormat As Boolean,
+        skipNonAnyExtension As Boolean,
+        skipNonAnyFormat As Boolean)
+
+        If Not sourceFilter.Script.Contains("(") Then
+            For Each pref In preferences
+                Dim extensions = pref.Name.SplitNoEmptyAndWhiteSpace({",", " ", ";"})
+
+                For Each extension In extensions
+                    extension = extension.ToLower
+                    Dim format = "*"
+
+                    If extension.Contains(":") Then
+                        format = extension.Right(":").ToLower
+                        extension = extension.Left(":").ToLower
+                    End If
+
+                    If skipAnyExtension AndAlso extension = "*" Then Continue For
+                    If skipAnyFormat AndAlso format = "*" Then Continue For
+                    If skipNonAnyExtension AndAlso extension <> "*" Then Continue For
+                    If skipNonAnyFormat AndAlso format <> "*" Then Continue For
+
+                    If (extension = p.SourceFile.Ext OrElse extension = "*") AndAlso
+                        (format = "*" OrElse format = MediaInfo.GetVideo(p.SourceFile, "Format").ToLower) Then
+
+                        Dim filters = profiles.Where(
+                            Function(cat) cat.Name = "Source").First.Filters.Where(
+                            Function(cat) cat.Name = pref.Value)
+
+                        If filters.Count > 0 Then
+                            p.Script.SetFilter("Source", filters(0).Name, filters(0).Script)
+                            Exit Sub
+                        End If
+                    End If
+                Next
+            Next
         End If
     End Sub
 
@@ -3248,7 +3258,8 @@ Public Class MainForm
                 BlockSourceTextBoxTextChanged = False
             End If
 
-            If Not File.Exists(p.SourceFile + ".lwi") AndAlso Not File.Exists(p.TempDir + p.SourceFile.Base + ".lwi") AndAlso
+            If Not File.Exists(p.SourceFile + ".lwi") AndAlso
+                Not File.Exists(p.TempDir + g.GetSourceBase + ".lwi") AndAlso
                 File.Exists(p.Script.Path) AndAlso Not FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
 
                 Using proc As New Proc
@@ -3445,8 +3456,8 @@ Public Class MainForm
             b.Field = NameOf(s.EnableTooltips)
 
             '############# Preprocessing
-            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(38, 22)
-            ui.FormSizeScaleFactor = New Size(31, 22)
+            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(40, 22)
+            ui.FormSizeScaleFactor = New Size(33, 22)
 
             '############# System
             Dim systemPage = ui.CreateFlowPage("System", True)
@@ -3571,27 +3582,27 @@ Public Class MainForm
 
         Dim filterPage = ui.CreateDataPage(pagePath)
 
-        Dim tipsFunc = Function() As StringPairList
-                           Dim ret As New StringPairList From {{" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type. The source filter profiles can be customized by right-clicking the filters menu in the main dialog."}}
+        Dim fn = Function() As StringPairList
+                     Dim ret As New StringPairList From {{" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type or format. The source filter profiles can be customized by right-clicking the filters menu in the main dialog."}}
 
-                           For Each i In profiles.Where(Function(v) v.Name = "Source").First.Filters
-                               If i.Script <> "" Then
-                                   ret.Add(i.Name, i.Script)
-                               End If
-                           Next
+                     For Each i In profiles.Where(Function(v) v.Name = "Source").First.Filters
+                         If i.Script <> "" Then
+                             ret.Add(i.Name, i.Script)
+                         End If
+                     Next
 
-                           Return ret
-                       End Function
+                     Return ret
+                 End Function
 
-        filterPage.TipProvider.TipsFunc = tipsFunc
+        filterPage.TipProvider.TipsFunc = fn
 
         Dim c1 = filterPage.AddTextBoxColumn()
         c1.DataPropertyName = "Name"
-        c1.HeaderText = "File Type"
+        c1.HeaderText = "Extension[:Format]"
 
         Dim c2 = filterPage.AddComboBoxColumn
         c2.DataPropertyName = "Value"
-        c2.HeaderText = "Prefered Source Filter"
+        c2.HeaderText = "Source Filter"
 
         Dim filterNames = profiles.Where(
             Function(v) v.Name = "Source").First.Filters.Where(

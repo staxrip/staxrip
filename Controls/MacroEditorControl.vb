@@ -354,11 +354,9 @@ Public Class MacroEditorControl
 
         For Each pack In Package.Items.Values
             If editText.Contains(pack.Name) Then
-                If pack.HelpFileOrURL <> "" Then
-                    llHelp.Visible = True
-                    caption += ", " + pack.Name
-                    HelpPaths.Add(pack.HelpFileOrURL)
-                End If
+                llHelp.Visible = True
+                caption += ", " + pack.Name
+                HelpPaths.Add(pack.HelpFileOrURL)
             End If
         Next
 

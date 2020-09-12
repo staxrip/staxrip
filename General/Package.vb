@@ -1923,6 +1923,7 @@ Public Class Package
         dic("Online") = HelpURL
         dic("AviSynth") = HelpUrlAviSynth
         dic("VapourSynth") = HelpUrlVapourSynth
+        dic("Wiki") = "https://github.com/staxrip/staxrip/wiki/" + Name.Replace(" ", "-")
 
         Dim count = dic.Values.Where(Function(val) val <> "").Count
 
@@ -1943,14 +1944,7 @@ Public Class Package
             End Using
         Else
             CreateHelpfile()
-
-            If HelpFileOrURL <> "" AndAlso (HelpFileOrURL.Contains("http") OrElse
-                File.Exists(HelpFileOrURL)) Then
-
-                g.ShellExecute(HelpFileOrURL)
-            Else
-                MsgInfo("No help resource available.")
-            End If
+            g.ShellExecute(HelpFileOrURL)
         End If
     End Sub
 
@@ -1990,6 +1984,8 @@ Public Class Package
                 Return WebURL
             ElseIf DownloadURL <> "" Then
                 Return DownloadURL
+            Else
+                Return "https://github.com/staxrip/staxrip/wiki/" + Name.Replace(" ", "-")
             End If
         End Get
     End Property

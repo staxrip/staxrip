@@ -348,7 +348,6 @@ Public Class AppsForm
         tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.GetStatus = ""
         tsbWebsite.Enabled = CurrentPackage.URL <> ""
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
-        tsbHelp.Enabled = CurrentPackage.HelpFileOrURL <> ""
 
         tsbVersion.Enabled = CurrentPackage.Path.FileExists AndAlso
             Not (CurrentPackage.IsVersionOld() AndAlso Not CurrentPackage.VersionAllowOld)

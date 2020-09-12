@@ -1444,9 +1444,7 @@ Public Class MainForm
                     iMenuItem.DropDownItems.ClearAndDisplose
 
                     For Each pack In Package.Items.Values
-                        If pack.HelpFileOrURL <> "" Then
-                            ActionMenuItem.Add(iMenuItem.DropDownItems, pack.Name.Substring(0, 1).Upper + " | " + pack.Name, Sub() pack.ShowHelp())
-                        End If
+                        ActionMenuItem.Add(iMenuItem.DropDownItems, pack.Name.Substring(0, 1).Upper + " | " + pack.Name, Sub() pack.ShowHelp())
                     Next
                 End If
             End If

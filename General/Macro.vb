@@ -188,6 +188,7 @@ Public Class Macro
         ret.Add(New Macro("source_par_y", "Source Pixel Aspect Ratio Y", GetType(String), "Source pixel/sample aspect ratio."))
         ret.Add(New Macro("source_seconds", "Source Seconds", GetType(Integer), "Length in seconds of the source video."))
         ret.Add(New Macro("source_temp_file", "Source Temp File", GetType(String), "File located in the temp directory using the same name as the source file."))
+        ret.Add(New Macro("source_video_format", "Source Video Codec", GetType(String), "Video codec of the source file."))
         ret.Add(New Macro("source_width", "Source Image Width", GetType(Integer), "Image width of the source video."))
         ret.Add(New Macro("startup_dir", "Startup Directory", GetType(String), "Directory of the application."))
         ret.Add(New Macro("system_dir", "System Directory", GetType(String), "System directory."))
@@ -378,6 +379,9 @@ Public Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_dir_name%") Then value = value.Replace("%source_dir_name%", p.SourceFile.Dir.DirName)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%source_video_format%") Then value = value.Replace("%source_video_format%", MediaInfo.GetVideo(p.FirstOriginalSourceFile, "Format"))
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_width%") Then value = value.Replace("%target_width%", p.TargetWidth.ToString)

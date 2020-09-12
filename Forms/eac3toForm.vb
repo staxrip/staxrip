@@ -926,25 +926,28 @@ Public Class eac3toForm
         cmdlOptions.Presets = presets
     End Sub
 
-    Function GetArgs(src As String, baseName As String) As String
+    Function GetArgs(src As String, baseName As String, ByRef outFiles As List(Of String)) As String
         Dim ret = src
 
         Dim videoStream = TryCast(cbVideoStream.SelectedItem, M2TSStream)
 
         If Not videoStream Is Nothing AndAlso Not cbVideoOutput.Text = "Nothing" Then
-            ret += " " & videoStream.ID & ": " + (OutputFolder + baseName +
-                "." + cbVideoOutput.Text.ToLower).Escape
+            Dim outFile = OutputFolder + baseName + "." + cbVideoOutput.Text.ToLower
+            ret += " " & videoStream.ID & ": " + outFile.Escape
+            outFiles.Add(outFile)
         End If
 
         For Each stream In Streams
             If stream.IsAudio AndAlso stream.Checked Then
-                ret += " " & stream.ID & ": """ + OutputFolder + baseName + " ID" & stream.ID
+                Dim outFile = OutputFolder + baseName + " ID" & stream.ID
 
                 If stream.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
-                    ret += " " + stream.Language.CultureInfo.EnglishName
+                    outFile += " " + stream.Language.CultureInfo.EnglishName
                 End If
 
-                ret += "." + stream.OutputType + """"
+                outFile += "." + stream.OutputType
+                outFiles.Add(outFile)
+                ret += " " & stream.ID & ": " + outFile.Escape
 
                 If stream.Options <> "" Then
                     ret += " " + stream.Options.Trim
@@ -954,17 +957,21 @@ Public Class eac3toForm
 
         For Each stream In Streams
             If stream.IsSubtitle AndAlso stream.Checked Then
-                ret += " " & stream.ID & ": """ + OutputFolder + baseName + " ID" & stream.ID
+                Dim outFile = OutputFolder + baseName + " ID" & stream.ID
 
                 If stream.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
-                    ret += " " + stream.Language.CultureInfo.EnglishName
+                    outFile += " " + stream.Language.CultureInfo.EnglishName
                 End If
 
-                ret += ".sup"""
+                outFile += ".sup"
+                outFiles.Add(outFile)
+                ret += " " & stream.ID & ": " + outFile.Escape
             End If
 
             If stream.IsChapters AndAlso cbChapters.Checked Then
-                ret += " " & stream.ID & ": """ + OutputFolder + baseName + "_chapters.txt"""
+                Dim outFile = OutputFolder + baseName + "_chapters.txt"
+                outFiles.Add(outFile)
+                ret += " " & stream.ID & ": " + outFile.Escape
             End If
         Next
 

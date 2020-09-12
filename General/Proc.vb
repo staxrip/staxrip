@@ -3,32 +3,34 @@ Imports System.ComponentModel
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.Threading
 
 Public Class Proc
     Implements IDisposable
 
     Property Abort As Boolean
-    Property Skip As Boolean
-    Property IsSilent As Boolean
-    Property Process As New Process
-    Property Wait As Boolean
-    Property Priority As ProcessPriorityClass = ProcessPriorityClass.Normal
     Property AllowedExitCodes As Integer() = {0}
     Property BeginOutputReadLine As Boolean
-    Property SkipString As String
-    Property SkipStrings As String()
-    Property TrimChars As Char()
+    Property Duration As TimeSpan
+    Property ErrorReader As AsyncStreamReader
     Property ExitCode As Integer
     Property FrameCount As Integer
-    Property Duration As TimeSpan
-    Property Log As New LogBuilder
-    Property Succeeded As Boolean
     Property Header As String
-    Property Package As Package
-    Property OutputReader As AsyncStreamReader
-    Property ErrorReader As AsyncStreamReader
     Property IntegerFrameOutput As Boolean
     Property IntegerPercentOutput As Boolean
+    Property IsSilent As Boolean
+    Property Log As New LogBuilder
+    Property OutputFiles As IEnumerable(Of String)
+    Property OutputReader As AsyncStreamReader
+    Property Package As Package
+    Property Priority As ProcessPriorityClass = ProcessPriorityClass.Normal
+    Property Process As New Process
+    Property Skip As Boolean
+    Property SkipString As String
+    Property SkipStrings As String()
+    Property Succeeded As Boolean
+    Property TrimChars As Char()
+    Property Wait As Boolean
 
     Private LogItems As List(Of String)
 
@@ -245,6 +247,22 @@ Public Class Proc
             End If
         Catch
         End Try
+
+        g.RunTask(Sub()
+                      For Each i In OutputFiles
+                          Dim counter = 0
+
+                          While i.FileExists AndAlso counter < 9
+                              Try
+                                  IO.File.Delete(i)
+                              Catch
+                              End Try
+
+                              Thread.Sleep(100)
+                              counter += 1
+                          End While
+                      Next
+                  End Sub)
     End Sub
 
     Sub OutputReadNotifyUser(value As String)

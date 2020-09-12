@@ -46,16 +46,16 @@ Public Class Audio
 
                 Select Case ap.File.ExtFull
                     Case ".mkv", ".webm"
-                        mkvDemuxer.Demux(ap.File, {ap.Stream}, Nothing, ap, p, False, False)
+                        mkvDemuxer.Demux(ap.File, {ap.Stream}, Nothing, ap, p, False, False, True)
                     Case ".mp4"
-                        MP4BoxDemuxer.Demux(ap.File, ap.Stream, ap, p)
+                        MP4BoxDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p, True)
                     Case Else
                         If p.Script.GetFilter("Source").Script.ToLower.Contains("directshowsource") AndAlso
                             Not TypeOf ap Is MuxAudioProfile Then
 
                             ConvertDirectShowSource(ap)
                         ElseIf Not ap.File.Ext = "m2ts" Then
-                            ffmpegDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p)
+                            ffmpegDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p, True)
                         End If
                 End Select
             End If
@@ -642,7 +642,7 @@ Public Class Audio
             Dim streams = MediaInfo.GetAudioStreams(mkvPath)
 
             If streams.Count > 0 Then
-                mkvDemuxer.Demux(mkvPath, {streams(0)}, Nothing, ap, p, False, False)
+                mkvDemuxer.Demux(mkvPath, {streams(0)}, Nothing, ap, p, False, False, True)
             Else
                 fail = True
             End If

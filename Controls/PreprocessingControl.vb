@@ -220,10 +220,10 @@ Public Class PreprocessingControl
     End Function
 
     Function AddItem(value As Demuxer) As ListViewItem
-        Dim r = lv.Items.Add(value.ToString)
-        r.Checked = value.Active
-        r.Tag = value
-        Return r
+        Dim ret = lv.Items.Add(value.ToString)
+        ret.Checked = value.Active
+        ret.Tag = value
+        Return ret
     End Function
 
     Protected Overrides Sub OnHandleDestroyed(e As EventArgs)
@@ -281,6 +281,8 @@ Public Class PreprocessingControl
             For Each dmx In Demuxer.GetDefaults()
                 AddItem(dmx)
             Next
+
+            lv.UpdateControls()
         End If
     End Sub
 End Class

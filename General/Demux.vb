@@ -16,6 +16,7 @@ Public MustInherit Class Demuxer
     Property VideoDemuxing As Boolean
     Property VideoDemuxed As Boolean
     Property ChaptersDemuxing As Boolean = True
+    Property OverrideExisting As Boolean
 
     Overridable ReadOnly Property HasConfigDialog() As Boolean
         Get
@@ -25,7 +26,7 @@ Public MustInherit Class Demuxer
 
     Overridable Function ShowConfigDialog() As DialogResult
         Using form As New SimpleSettingsForm(Name)
-            form.ScaleClientSize(23, 10)
+            form.ScaleClientSize(23, 11)
             Dim ui = form.SimpleUI
             Dim page = ui.CreateFlowPage("main page")
 
@@ -43,6 +44,12 @@ Public MustInherit Class Demuxer
             cb.Text = "Chapters Demuxing"
             cb.Checked = ChaptersDemuxing
             cb.SaveAction = Sub(val) ChaptersDemuxing = val
+
+            cb = ui.AddBool(page)
+            cb.Text = "Recreate already existing files"
+            cb.Help = "Demux even when ouput files already exist."
+            cb.Checked = OverrideExisting
+            cb.SaveAction = Sub(val) OverrideExisting = val
 
             Dim ret = form.ShowDialog()
 
@@ -195,7 +202,9 @@ Public Class eac3toDemuxer
                     proc.TrimChars = {"-"c, " "c}
                     proc.Header = "Demux M2TS"
                     proc.Package = Package.eac3to
-                    proc.Arguments = form.GetArgs(proj.SourceFile.Escape, proj.SourceFile.Base)
+                    Dim outFiles As New List(Of String)
+                    proc.Arguments = form.GetArgs(proj.SourceFile.Escape, proj.SourceFile.Base, outFiles)
+                    proc.OutputFiles = outFiles
 
                     Try
                         proc.Start()
@@ -263,7 +272,7 @@ Public Class ffmpegDemuxer
         End If
 
         If videoDemuxing Then
-            DemuxVideo(proj)
+            DemuxVideo(proj, OverrideExisting)
         End If
 
         If audioDemuxing AndAlso proj.DemuxAudio <> DemuxMode.None Then
@@ -271,9 +280,9 @@ Public Class ffmpegDemuxer
                 audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
             End If
 
-            For Each i In audioStreams
-                If i.Enabled Then
-                    DemuxAudio(proj.SourceFile, i, Nothing, proj)
+            For Each stream In audioStreams
+                If stream.Enabled Then
+                    DemuxAudio(proj.SourceFile, stream, Nothing, proj, OverrideExisting)
                 End If
             Next
         End If
@@ -281,7 +290,7 @@ Public Class ffmpegDemuxer
         Log.Save(proj)
     End Sub
 
-    Shared Sub DemuxVideo(proj As Project)
+    Shared Sub DemuxVideo(proj As Project, overrideExisting As Boolean)
         Dim streams = MediaInfo.GetVideoStreams(proj.SourceFile)
 
         If streams.Count = 0 OrElse streams(0).Ext = "" Then
@@ -290,7 +299,7 @@ Public Class ffmpegDemuxer
 
         Dim outPath = proj.TempDir + proj.SourceFile.Base + streams(0).ExtFull
 
-        If outPath = proj.SourceFile Then
+        If outPath = proj.SourceFile OrElse (Not overrideExisting AndAlso outPath.FileExists) Then
             Exit Sub
         End If
 
@@ -305,6 +314,7 @@ Public Class ffmpegDemuxer
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
             proc.Arguments = args
+            proc.OutputFiles = {outPath}
             proc.Start()
         End Using
 
@@ -315,8 +325,18 @@ Public Class ffmpegDemuxer
         End If
     End Sub
 
-    Shared Sub DemuxAudio(sourcefile As String, stream As AudioStream, ap As AudioProfile, proj As Project)
+    Shared Sub DemuxAudio(
+        sourcefile As String,
+        stream As AudioStream,
+        ap As AudioProfile,
+        proj As Project,
+        overrideExisting As Boolean)
+
         Dim outPath = (proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.ExtFull).ToShortFilePath
+
+        If Not overrideExisting AndAlso outPath.FileExists Then
+            Exit Sub
+        End If
 
         Dim streamIndex = stream.StreamOrder
         Dim args = "-i " + sourcefile.ToShortFilePath.Escape
@@ -342,6 +362,7 @@ Public Class ffmpegDemuxer
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
             proc.Arguments = args
+            proc.OutputFiles = {outPath}
             proc.Start()
         End Using
 
@@ -442,7 +463,7 @@ Public Class MP4BoxDemuxer
         End If
 
         If VideoDemuxed Then
-            DemuxVideo(proj)
+            DemuxVideo(proj, OverrideExisting)
         End If
 
         If demuxAudio AndAlso proj.DemuxAudio <> DemuxMode.None Then
@@ -450,9 +471,9 @@ Public Class MP4BoxDemuxer
                 audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
             End If
 
-            For Each i In audioStreams
-                If i.Enabled Then
-                    MP4BoxDemuxer.Demux(proj.SourceFile, i, Nothing, proj)
+            For Each stream In audioStreams
+                If stream.Enabled Then
+                    MP4BoxDemuxer.DemuxAudio(proj.SourceFile, stream, Nothing, proj, OverrideExisting)
                 End If
             Next
         End If
@@ -462,16 +483,21 @@ Public Class MP4BoxDemuxer
                 subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
             End If
 
-            For Each i In subtitles
-                If Not i.Enabled Then
+            For Each st In subtitles
+                If Not st.Enabled Then
                     Continue For
                 End If
 
-                Dim outpath = (proj.TempDir + i.Filename + i.ExtFull).ToShortFilePath
+                Dim outpath = (proj.TempDir + st.Filename + st.ExtFull).ToShortFilePath
+
+                If Not OverrideExisting AndAlso outpath.FileExists Then
+                    Continue For
+                End If
+
                 FileHelp.Delete(outpath)
                 Dim args As String
 
-                Select Case i.ExtFull
+                Select Case st.ExtFull
                     Case ""
                         Continue For
                     Case ".srt"
@@ -480,7 +506,7 @@ Public Class MP4BoxDemuxer
                         args = "-raw "
                 End Select
 
-                args += i.ID & " -out " + outpath.Escape + " " + proj.SourceFile.ToShortFilePath.Escape
+                args += st.ID & " -out " + outpath.Escape + " " + proj.SourceFile.ToShortFilePath.Escape
 
                 Using proc As New Proc
                     proc.Project = proj
@@ -490,6 +516,7 @@ Public Class MP4BoxDemuxer
                     proc.Arguments = args
                     proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
                     proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+                    proc.OutputFiles = {outpath}
                     proc.Start()
                 End Using
             Next
@@ -539,7 +566,7 @@ Public Class MP4BoxDemuxer
         End Set
     End Property
 
-    Shared Sub DemuxVideo(proj As Project)
+    Shared Sub DemuxVideo(proj As Project, overrideExisting As Boolean)
         Dim streams = MediaInfo.GetVideoStreams(proj.SourceFile)
 
         If streams.Count = 0 OrElse streams(0).Ext = "" Then
@@ -548,7 +575,7 @@ Public Class MP4BoxDemuxer
 
         Dim outpath = proj.TempDir + proj.SourceFile.Base + streams(0).ExtFull
 
-        If outpath = proj.SourceFile Then
+        If outpath = proj.SourceFile OrElse (Not overrideExisting AndAlso outpath.FileExists) Then
             Exit Sub
         End If
 
@@ -565,6 +592,7 @@ Public Class MP4BoxDemuxer
             proc.Arguments = args
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
             proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+            proc.OutputFiles = {outpath}
             proc.Start()
         End Using
 
@@ -572,17 +600,28 @@ Public Class MP4BoxDemuxer
             proj.Log.WriteLine(MediaInfo.GetSummary(outpath))
         Else
             proj.Log.Write("Error", "no video output found")
-            ffmpegDemuxer.DemuxVideo(proj)
+            ffmpegDemuxer.DemuxVideo(proj, overrideExisting)
         End If
     End Sub
 
-    Shared Sub Demux(sourcefile As String, stream As AudioStream, ap As AudioProfile, proj As Project)
+    Shared Sub DemuxAudio(
+        sourcefile As String,
+        stream As AudioStream,
+        ap As AudioProfile,
+        proj As Project,
+        overrideExisting As Boolean)
+
         If MediaInfo.GetAudio(sourcefile, "Format") = "PCM" Then
-            ffmpegDemuxer.DemuxAudio(sourcefile, stream, ap, proj)
+            ffmpegDemuxer.DemuxAudio(sourcefile, stream, ap, proj, overrideExisting)
             Exit Sub
         End If
 
         Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.ExtFull
+
+        If Not overrideExisting AndAlso outPath.FileExists Then
+            Exit Sub
+        End If
+
         FileHelp.Delete(outPath)
         Dim args As String
 
@@ -603,20 +642,21 @@ Public Class MP4BoxDemuxer
             proc.Arguments = args
             proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
             proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+            proc.OutputFiles = {outPath}
             proc.Start()
         End Using
 
         If File.Exists(outPath) Then
             If MediaInfo.GetAudio(outPath, "Format") = "" Then
                 proj.Log.Write("Error", "No format detected by MediaInfo.")
-                ffmpegDemuxer.DemuxAudio(sourcefile, stream, ap, proj)
+                ffmpegDemuxer.DemuxAudio(sourcefile, stream, ap, proj, overrideExisting)
             Else
                 If Not ap Is Nothing Then ap.File = outPath
                 proj.Log.WriteLine(MediaInfo.GetSummary(outPath))
             End If
         Else
             proj.Log.Write("Error", "no output found")
-            ffmpegDemuxer.DemuxAudio(sourcefile, stream, ap, proj)
+            ffmpegDemuxer.DemuxAudio(sourcefile, stream, ap, proj, overrideExisting)
         End If
     End Sub
 
@@ -689,7 +729,7 @@ Public Class mkvDemuxer
             End If
         End If
 
-        Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True, VideoDemuxed)
+        Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True, VideoDemuxed, OverrideExisting)
 
         If demuxChapters AndAlso stdout.Contains("Chapters: ") Then
             Using proc As New Proc
@@ -771,7 +811,8 @@ Public Class mkvDemuxer
         ap As AudioProfile,
         proj As Project,
         onlyEnabled As Boolean,
-        videoDemuxing As Boolean)
+        videoDemuxing As Boolean,
+        overrideExisting As Boolean)
 
         If audioStreams Is Nothing Then
             audioStreams = New List(Of AudioStream)
@@ -792,6 +833,8 @@ Public Class mkvDemuxer
         End If
 
         Dim args = sourcefile.Escape + " tracks"
+        Dim newCount As Integer
+        Dim outPaths As New List(Of String)
 
         If videoDemuxing Then
             Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + sourcefile.Escape)
@@ -799,10 +842,15 @@ Public Class mkvDemuxer
             Dim videoStreams = MediaInfo.GetVideoStreams(sourcefile)
 
             If videoStreams.Count > 0 Then
-                Dim outpath = proj.TempDir + sourcefile.Base + videoStreams(0).ExtFull
+                Dim outPath = proj.TempDir + sourcefile.Base + videoStreams(0).ExtFull
 
-                If outpath <> sourcefile Then
-                    args += " " & id & ":" + outpath.Escape
+                If outPath <> sourcefile Then
+                    args += " " & id & ":" + outPath.Escape
+                    outPaths.Add(outPath)
+
+                    If Not outPath.FileExists Then
+                        newCount += 1
+                    End If
                 End If
             End If
         End If
@@ -813,11 +861,16 @@ Public Class mkvDemuxer
             End If
 
             Dim forced = If(subtitle.Forced, "_forced", "")
-            Dim outpath = proj.TempDir + subtitle.Filename + forced + subtitle.ExtFull
-            args += " " & subtitle.StreamOrder & ":" + outpath.Escape
+            Dim outPath = proj.TempDir + subtitle.Filename + forced + subtitle.ExtFull
+            args += " " & subtitle.StreamOrder & ":" + outPath.Escape
+            outPaths.Add(outPath)
+
+            If Not outPath.FileExists Then
+                newCount += 1
+            End If
         Next
 
-        Dim outPaths As New Dictionary(Of String, AudioStream)
+        Dim audioOutPaths As New Dictionary(Of String, AudioStream)
 
         For Each stream In audioStreams
             Dim ext = stream.Ext
@@ -827,9 +880,22 @@ Public Class mkvDemuxer
             End If
 
             Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + "." + ext
-            outPaths.Add(outPath, stream)
+            audioOutPaths.Add(outPath, stream)
+            outPaths.Add(outPath)
             args += " " & stream.StreamOrder & ":" + outPath.Escape
+
+            If outPath.Ext = "aac" Then
+                outPath = outPath.ChangeExt("m4a")
+            End If
+
+            If Not outPath.FileExists Then
+                newCount += 1
+            End If
         Next
+
+        If Not (newCount > 0 OrElse overrideExisting) Then
+            Exit Sub
+        End If
 
         Using proc As New Proc
             proc.Project = proj
@@ -839,10 +905,13 @@ Public Class mkvDemuxer
             proc.Package = Package.mkvextract
             proc.Arguments = args + " --ui-language en"
             proc.AllowedExitCodes = {0, 1, 2}
+            proc.OutputFiles = outPaths
             proc.Start()
         End Using
 
-        For Each outPath In outPaths.Keys
+        outPaths.Clear()
+
+        For Each outPath In audioOutPaths.Keys
             If File.Exists(outPath) Then
                 If Not ap Is Nothing Then
                     ap.File = outPath
@@ -851,7 +920,8 @@ Public Class mkvDemuxer
                 proj.Log.WriteLine(MediaInfo.GetSummary(outPath) + BR)
 
                 If outPath.Ext = "aac" Then
-                    Dim m4aPath As String
+                    Dim newOutPath = outPath.ChangeExt("m4a")
+                    outPaths.Add(newOutPath)
 
                     Using proc As New Proc
                         proc.Project = proj
@@ -859,28 +929,28 @@ Public Class mkvDemuxer
                         proc.SkipString = "|"
                         proc.Package = Package.MP4Box
                         Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
-                        m4aPath = outPath.ChangeExt("m4a")
                         proc.Arguments = "-add """ + outPath.ToShortFilePath + sbr +
-                            ":name= "" -new " + m4aPath.ToShortFilePath.Escape
+                            ":name= "" -new " + newOutPath.ToShortFilePath.Escape
                         proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
                         proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+                        proc.OutputFiles = outPaths
                         proc.Start()
                     End Using
 
-                    If File.Exists(m4aPath) Then
+                    If File.Exists(newOutPath) Then
                         If Not ap Is Nothing Then
-                            ap.File = m4aPath
+                            ap.File = newOutPath
                         End If
 
                         FileHelp.Delete(outPath)
-                        proj.Log.WriteLine(BR + MediaInfo.GetSummary(m4aPath))
+                        proj.Log.WriteLine(BR + MediaInfo.GetSummary(newOutPath))
                     Else
                         Throw New ErrorAbortException("Error mux AAC to M4A", outPath)
                     End If
                 End If
             Else
                 proj.Log.Write("Error", "no output found")
-                ffmpegDemuxer.DemuxAudio(sourcefile, outPaths(outPath), ap, proj)
+                ffmpegDemuxer.DemuxAudio(sourcefile, audioOutPaths(outPath), ap, proj, overrideExisting)
             End If
         Next
     End Sub

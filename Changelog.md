@@ -1,5 +1,8 @@
 
-2.1.4.5 Beta (2020-09-??)
+2.1.4.6 Beta (2020-09-??)
+============
+
+2.1.4.5 Beta (2020-09-13)
 ============
 
 - New configuration section in log files, displaying template, profile, muxer, ... - can be extended anytime (Dendraspis, #331)
@@ -11,6 +14,9 @@
   detailed tool info and access it from StaxRip (stax76, #292, #320)
 - The automatic source filter detection supports detection by format,
   the defaults were reset and use now L-Smash-Works for VP9 (stax76, #312)
+- Demuxing is skipped if output files already exist, the old recreate behaviour can be restored
+  in the preprocessing settings. If demuxing is canceled then unfinished files are deleted (stax76)
+- Fix L-Smash-Works indexing happening multiple times (stax76)
 - ffms2 0055b2d StvG
 
 

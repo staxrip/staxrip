@@ -260,6 +260,7 @@ Public Class ProcessingForm
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
         UpdateControls()
+        ProcController.LastActivation = Environment.TickCount
     End Sub
 
     Shared Property WasHandleCreated As Boolean
@@ -268,16 +269,6 @@ Public Class ProcessingForm
         MyBase.OnHandleCreated(e)
         WasHandleCreated = True
     End Sub
-
-    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
-        Get
-            If ProcController.BlockActivation Then
-                Return True
-            End If
-
-            Return MyBase.ShowWithoutActivation
-        End Get
-    End Property
 
     Sub StopAfterCurrentJob()
         g.StopAfterCurrentJob = Not g.StopAfterCurrentJob

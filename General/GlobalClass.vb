@@ -893,7 +893,7 @@ Public Class GlobalClass
         Return path.Base.StartsWith(p.SourceFile.Base) OrElse path.StartsWithEx(p.TempDir)
     End Function
 
-    Function GetAudioTracks() As List(Of AudioProfile)
+    Function GetAudioProfiles() As List(Of AudioProfile)
         Dim ret As New List(Of AudioProfile)
 
         ret.Add(p.Audio0)

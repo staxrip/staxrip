@@ -105,7 +105,7 @@ Tools
     "avs2pipemod","Console App","avs2pipemod64.exe","1.1.1","2016-08-14"
     "AVSMeter","Console App","AVSMeter64.exe","3.0.2.0","2020-06-23"
     "eac3to","Console App","eac3to.exe","3.34","2017-11-19"
-    "fdkaac","Console App","fdkaac.exe","1.0.0","2019-02-13"
+    "fdkaac","Console App","fdkaac.exe","1.0.0",""
     "ffmpeg","Console App","ffmpeg.exe","N-98647-gffa6072fc7-x64-gcc10.2.0 Patman","2020-08-04"
     "ffmpeg non-free","Console App","ffmpeg.exe","","2020-08-30"
     "mkvextract","Console App","mkvextract.exe","50","2020-09-06"
@@ -136,7 +136,7 @@ Tools
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.15","2020-05-01"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
     "AviSynth","Library","AviSynth.dll","3.6.2 test 2","2020-08-31"
-    "DirectX 9","Library","d3d9.dll","","2020-08-29"
+    "DirectX 9","Library","d3d9.dll","","2020-09-13"
     "FFTW","Library","libfftw3-3.dll","3.3.8","2018-12-20"
     "MediaInfo","Library","MediaInfo.dll","20.03","2020-04-03"
     "VapourSynth","Library","vapoursynth.dll","r52","2020-08-20"
@@ -251,7 +251,7 @@ http://forum.doom9.org/showthread.php?t=125966
 fdkaac
 ~~~~~~
 
-AAC console encoder based on libfdk-aac.
+Non-free AAC console encoder based on libfdk-aac. Opus is recommended as free alternative.
 
 http://github.com/nu774/fdkaac
 

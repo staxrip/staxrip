@@ -300,7 +300,7 @@ Public MustInherit Class AudioProfile
             End If
         End If
 
-        Dim tracks = g.GetAudioTracks.Where(Function(track) track.File <> "")
+        Dim tracks = g.GetAudioProfiles.Where(Function(track) track.File <> "")
         Dim trackID = If(tracks.Count > 1, "_a" & GetTrackID(), "")
         Dim outfile = p.TempDir + base + trackID & "." + OutputFileType
 

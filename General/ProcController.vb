@@ -18,6 +18,7 @@ Public Class ProcController
 
     Shared Property Procs As New List(Of ProcController)
     Shared Property Aborted As Boolean
+    Shared Property LastActivation As Long
 
     Shared Property BlockActivation As Boolean
 
@@ -205,7 +206,6 @@ Public Class ProcController
 
     Shared Sub Abort()
         Aborted = True
-        BlockActivation = False
         Registry.CurrentUser.Write("Software\" + Application.ProductName, "ShutdownMode", 0)
 
         For Each i In Procs.ToArray
@@ -315,7 +315,10 @@ Public Class ProcController
         End If
 
         Dim mainSub = Sub()
-                          BlockActivation = False
+                          If Not Aborted Then
+                              BlockActivation = True
+                          End If
+
                           g.MainForm.Show()
                           g.MainForm.Refresh()
                           Aborted = False
@@ -327,6 +330,10 @@ Public Class ProcController
             mainSub.Invoke
         End If
     End Sub
+
+    Shared Function IsLastActivationLessThan(sec As Integer) As Boolean
+        Return (LastActivation + sec * 1000) < Environment.TickCount
+    End Function
 
     Sub Activate()
         CheckBox.Checked = True
@@ -388,11 +395,11 @@ Public Class ProcController
                                   g.ProcForm.Show()
                                   g.ProcForm.WindowState = FormWindowState.Normal
 
-                                  If Not BlockActivation Then
-                                      g.ProcForm.Activate()
-                                      BlockActivation = True
+                                  'If Not BlockActivation Then
+                                  g.ProcForm.Activate()
+                                      '    BlockActivation = True
+                                      'End If
                                   End If
-                              End If
 
                               AddProc(proc)
                               g.ProcForm.UpdateControls()

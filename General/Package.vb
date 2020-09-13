@@ -261,8 +261,14 @@ Public Class Package
         .Location = "Audio\fdkaac",
         .HelpFilename = "help.txt",
         .HelpSwitch = "-h",
-        .Description = "AAC console encoder based on libfdk-aac.",
-        .WebURL = "http://github.com/nu774/fdkaac"})
+        .IsIncluded = False,
+        .VersionAllowAny = True,
+        .Description = "Non-free AAC console encoder based on libfdk-aac. Opus is recommended as free alternative.",
+        .WebURL = "http://github.com/nu774/fdkaac",
+        .RequiredFunc = Function() (TypeOf p.Audio0 Is GUIAudioProfile AndAlso
+            DirectCast(p.Audio0, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac) OrElse
+            (TypeOf p.Audio1 Is GUIAudioProfile AndAlso DirectCast(
+            p.Audio1, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac)})
 
     Shared Property AVSMeter As Package = Add(New Package With {
         .Name = "AVSMeter",

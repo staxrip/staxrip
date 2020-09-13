@@ -248,6 +248,10 @@ Public Class Proc
         Catch
         End Try
 
+        If OutputFiles Is Nothing Then
+            Exit Sub
+        End If
+
         g.RunTask(Sub()
                       For Each i In OutputFiles
                           Dim counter = 0

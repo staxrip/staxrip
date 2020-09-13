@@ -199,28 +199,6 @@ Public Class GlobalCommands
         msg += x264Enc.Test
         msg += x265Enc.Test
 
-        '//////////////////// aom
-
-        'Dim aomCodeExcept = "".Split((" " + BR).ToCharArray())
-
-        'Dim aomExcept = "--output --help".Split((" " + BR).ToCharArray())
-        'Dim aomCodeExcept = "--y4m --help".Split((" " + BR).ToCharArray())
-        'Dim aomHelp = ProcessHelp.GetConsoleOutput(Package.AOMEnc.Path, "--help")
-        'File.WriteAllText(Package.AOMEnc.GetDir + "aomenc.txt", aomHelp)
-        'aomHelp = aomHelp.Replace("(no-)", "").Replace("--no-", "--")
-        'Dim aomHelpSwitches = Regex.Matches(aomHelp, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        'Dim aomCode = File.ReadAllText(Folder.Startup.Parent + "Encoding\aomenc.vb").Replace("--no-", "--")
-        'Dim aomPresentInCode = Regex.Matches(aomCode, "--[\w-]+").OfType(Of Match)().Select(Function(x) x.Value)
-        'Dim aomMissing = aomPresentInCode.Where(Function(arg) Not aomHelpSwitches.Contains(arg) AndAlso Not aomCodeExcept.Contains(arg))
-        'Dim aomUnknown = aomHelpSwitches.Where(Function(x) Not aomPresentInCode.Contains(x) AndAlso Not aomExcept.Contains(x)).ToList()
-        'aomUnknown.Sort()
-        'Dim aomNoNeedToExcept = aomExcept.Where(Function(arg) aomPresentInCode.Contains(arg))
-        'If aomNoNeedToExcept.Count > 0 Then msg += BR2 + "# Unnecessary aomenc Exception:" + BR2 + aomNoNeedToExcept.Join(" ")
-        'If aomMissing.Count > 0 Then msg += BR2 + "# Removed from aomenc" + BR2 + aomMissing.Join(" ")
-        'If aomUnknown.Count > 0 Then msg += BR2 + "# aomenc Todo" + BR2 + aomUnknown.Join(" ")
-
-        Package.fdkaac.CreateHelpfile()
-
         For Each pack In Package.Items.Values
             If pack.HelpFilename.Ext = "md" Then
                 msg += BR2 + "# local MD file for " + pack.Name

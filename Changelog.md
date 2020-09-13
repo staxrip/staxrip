@@ -1,10 +1,16 @@
 
-2.1.4.6 Beta (2020-09-??)
+2.1.4.7 Beta (2020-09-??)
+============
+
+2.1.4.6 Beta (2020-09-13)
 ============
 
 - Fix eac3to AAC quality mode incorrect bitrate estimation (stax76)
 - Fix error at: Main Menu > Tools > Settings > Source Filters (stax76, #322)
 - ffmpeg fdk-aac has a option and is disabled by default (stax76, #337)
+- Main window focus is supressed after processing in case the last
+  window activation is older than 60 seconds (stax76, #333, #298)
+- fdkaac removed due to non-free license (stax76, [#292](/../../issues/292))
 
 
 2.1.4.5 Beta (2020-09-13)

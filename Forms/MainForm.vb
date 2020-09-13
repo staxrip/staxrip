@@ -2855,7 +2855,7 @@ Public Class MainForm
                 End If
             End If
 
-            For Each ap In g.GetAudioTracks
+            For Each ap In g.GetAudioProfiles
                 If ap.File = p.TargetFile Then
                     If ProcessTip("The audio source and target filepath is identical.") Then
                         g.Highlight(True, tbTargetFile)
@@ -6022,6 +6022,7 @@ Public Class MainForm
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
         UpdateNextButton()
+        ProcController.LastActivation = Environment.TickCount
 
         BeginInvoke(New Action(Sub()
                                    Application.DoEvents()
@@ -6080,13 +6081,12 @@ Public Class MainForm
 
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
-            Dim hwnd = Native.GetForegroundWindow()
-            Dim styles = Native.GetWindowLong(hwnd, -16) 'GWL_STYLE
+            If ProcController.BlockActivation Then
+                ProcController.BlockActivation = False
 
-            'WS_CAPTION
-            If p.SourceFile <> "" AndAlso ((&HC00000L And styles) <> &HC00000L OrElse
-                ProcController.BlockActivation) Then
-                Return True
+                If ProcController.IsLastActivationLessThan(60) Then
+                    Return True
+                End If
             End If
 
             Return MyBase.ShowWithoutActivation

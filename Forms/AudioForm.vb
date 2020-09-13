@@ -1048,7 +1048,7 @@ Public Class AudioForm
                     Case AudioCodec.DTS, AudioCodec.AC3, AudioCodec.EAC3
                     Case AudioCodec.AAC
                         cb = ui.AddBool
-                        cb.Text = "Use fdkaac"
+                        cb.Text = "Use fdk-aac"
                         cb.Property = NameOf(TempProfile.Params.ffmpegLibFdkAAC)
                     Case Else
                         If Not {AudioCodec.WAV, AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then

@@ -853,355 +853,358 @@ Public Class GUIAudioProfile
     End Property
 
     Function GetEac3toCommandLine(includePaths As Boolean) As String
-        Dim ret, id As String
+        Dim id As String
+        Dim sb As New StringBuilder
 
         If File.Ext.EqualsAny("ts", "m2ts", "mkv") AndAlso Not Stream Is Nothing Then
             id = (Stream.StreamOrder + 1) & ": "
         End If
 
         If includePaths Then
-            ret = Package.eac3to.Path.Escape + " " + id + File.ToShortFilePath.Escape +
-                " " + GetOutputFile.ToShortFilePath.Escape
+            sb.Append(Package.eac3to.Path.Escape + " " + id + File.ToShortFilePath.Escape +
+                " " + GetOutputFile.ToShortFilePath.Escape)
         Else
-            ret = "eac3to"
+            sb.Append("eac3to")
         End If
 
         If Not (Params.Codec = AudioCodec.DTS AndAlso ExtractDTSCore) Then
             Select Case Params.Codec
                 Case AudioCodec.AAC
-                    ret += " -quality=" & Params.Quality.ToInvariantString
+                    sb.Append(" -quality=" & Params.Quality.ToInvariantString)
                 Case AudioCodec.AC3
-                    ret += " -" & Bitrate
+                    sb.Append(" -" & Bitrate)
 
                     If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
                         Return "Invalid bitrate, select 192, 224, 384, 448 or 640"
                     End If
                 Case AudioCodec.DTS
-                    ret += " -" & Bitrate
+                    sb.Append(" -" & Bitrate)
             End Select
 
             If Params.Normalize Then
-                ret += " -normalize"
+                sb.Append(" -normalize")
             End If
 
             If Depth = 16 Then
-                ret += " -down16"
+                sb.Append(" -down16")
             End If
 
             If Params.SamplingRate <> 0 Then
-                ret += " -resampleTo" & Params.SamplingRate
+                sb.Append(" -resampleTo" & Params.SamplingRate)
             End If
 
             If Params.FrameRateMode = AudioFrameRateMode.Speedup Then
-                ret += " -speedup"
+                sb.Append(" -speedup")
             End If
 
             If Params.FrameRateMode = AudioFrameRateMode.Slowdown Then
-                ret += " -slowdown"
+                sb.Append(" -slowdown")
             End If
 
             If Delay <> 0 Then
-                ret += " " + If(Delay > 0, "+", "") & Delay & "ms"
+                sb.Append(" " + If(Delay > 0, "+", "") & Delay & "ms")
             End If
 
             If Gain < 0 Then
-                ret += " " & CInt(Gain) & "dB"
+                sb.Append(" " & CInt(Gain) & "dB")
             End If
 
             If Gain > 0 Then
-                ret += " +" & CInt(Gain) & "dB"
+                sb.Append(" +" & CInt(Gain) & "dB")
             End If
 
             Select Case Channels
                 Case 6
                     If Params.ChannelsMode <> ChannelsMode.Original Then
-                        ret += " -down6"
+                        sb.Append(" -down6")
                     End If
                 Case 2
                     If Params.eac3toStereoDownmixMode = 0 Then
                         If Params.ChannelsMode <> ChannelsMode.Original Then
-                            ret += " -downStereo"
+                            sb.Append(" -downStereo")
                         End If
                     Else
-                        ret += " -downDpl"
+                        sb.Append(" -downDpl")
                     End If
             End Select
 
             If Params.CustomSwitches <> "" Then
-                ret += " " + Params.CustomSwitches
+                sb.Append(" " + Params.CustomSwitches)
             End If
         ElseIf ExtractDTSCore Then
-            ret += " -core"
+            sb.Append(" -core")
         End If
 
         If includePaths Then
-            ret += " -progressnumbers"
+            sb.Append(" -progressnumbers")
         End If
 
-        Return ret
+        Return sb.ToString
     End Function
 
     Function GetfdkaacCommandLine(includePaths As Boolean) As String
-        Dim ret As String
+        Dim sb As New StringBuilder
         includePaths = includePaths And File <> ""
 
         If DecodingMode = AudioDecodingMode.Pipe Then
-            ret = GetPipeCommandLine(includePaths)
+            sb.Append(GetPipeCommandLine(includePaths))
         End If
 
         If includePaths Then
-            ret += Package.fdkaac.Path.Escape
+            sb.Append(Package.fdkaac.Path.Escape)
         Else
-            ret = "fdkaac"
+            sb.Clear()
+            sb.Append("fdkaac")
         End If
 
         If Params.fdkaacProfile <> 2 Then
-            ret += " --profile " & Params.fdkaacProfile
+            sb.Append(" --profile " & Params.fdkaacProfile)
         End If
 
         If Params.SimpleRateMode = SimpleAudioRateMode.CBR Then
-            ret += " --bitrate " & CInt(Bitrate)
+            sb.Append(" --bitrate " & CInt(Bitrate))
         Else
-            ret += " --bitrate-mode " & Params.Quality
+            sb.Append(" --bitrate-mode " & Params.Quality)
         End If
 
-        If Params.fdkaacGaplessMode <> 0 Then ret += " --gapless-mode " & Params.fdkaacGaplessMode
-        If Params.fdkaacBandwidth <> 0 Then ret += " --bandwidth " & Params.fdkaacBandwidth
-        If Not Params.fdkaacAfterburner Then ret += " --afterburner 0"
-        If Params.fdkaacAdtsCrcCheck Then ret += " --adts-crc-check"
-        If Params.fdkaacMoovBeforeMdat Then ret += " --moov-before-mdat"
-        If Params.fdkaacIncludeSbrDelay Then ret += " --include-sbr-delay"
-        If Params.fdkaacHeaderPeriod Then ret += " --header-period"
-        If Params.fdkaacLowDelaySBR <> 0 Then ret += " --lowdelay-sbr " & Params.fdkaacLowDelaySBR
-        If Params.fdkaacSbrRatio <> 0 Then ret += " --sbr-ratio " & Params.fdkaacSbrRatio
-        If Params.fdkaacTransportFormat <> 0 Then ret += " --transport-format " & Params.fdkaacTransportFormat
-        If Params.CustomSwitches <> "" Then ret += " " + Params.CustomSwitches
+        If Params.fdkaacGaplessMode <> 0 Then sb.Append(" --gapless-mode " & Params.fdkaacGaplessMode)
+        If Params.fdkaacBandwidth <> 0 Then sb.Append(" --bandwidth " & Params.fdkaacBandwidth)
+        If Not Params.fdkaacAfterburner Then sb.Append(" --afterburner 0")
+        If Params.fdkaacAdtsCrcCheck Then sb.Append(" --adts-crc-check")
+        If Params.fdkaacMoovBeforeMdat Then sb.Append(" --moov-before-mdat")
+        If Params.fdkaacIncludeSbrDelay Then sb.Append(" --include-sbr-delay")
+        If Params.fdkaacHeaderPeriod Then sb.Append(" --header-period")
+        If Params.fdkaacLowDelaySBR <> 0 Then sb.Append(" --lowdelay-sbr " & Params.fdkaacLowDelaySBR)
+        If Params.fdkaacSbrRatio <> 0 Then sb.Append(" --sbr-ratio " & Params.fdkaacSbrRatio)
+        If Params.fdkaacTransportFormat <> 0 Then sb.Append(" --transport-format " & Params.fdkaacTransportFormat)
+        If Params.CustomSwitches <> "" Then sb.Append(" " + Params.CustomSwitches)
 
         Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.ToShortFilePath.Escape)
 
         If includePaths Then
-            ret += " --ignorelength -o " + GetOutputFile.ToShortFilePath.Escape + " " + input
+            sb.Append(" --ignorelength -o " + GetOutputFile.ToShortFilePath.Escape + " " + input)
         End If
 
-        Return ret
+        Return sb.ToString
     End Function
 
     Function GetQaacCommandLine(includePaths As Boolean) As String
-        Dim ret As String
+        Dim sb As New StringBuilder
         includePaths = includePaths And File <> ""
 
         If DecodingMode = AudioDecodingMode.Pipe Then
-            ret = GetPipeCommandLine(includePaths)
+            sb.Append(GetPipeCommandLine(includePaths))
         End If
 
         If includePaths Then
-            ret += Package.qaac.Path.Escape
+            sb.Append(Package.qaac.Path.Escape)
         Else
-            ret = "qaac"
+            sb.Clear()
+            sb.Append("qaac")
         End If
 
         Select Case Params.qaacRateMode
             Case 0
-                ret += " --tvbr " & CInt(Params.Quality)
+                sb.Append(" --tvbr " & CInt(Params.Quality))
             Case 1
-                ret += " --cvbr " & CInt(Bitrate)
+                sb.Append(" --cvbr " & CInt(Bitrate))
             Case 2
-                ret += " --abr " & CInt(Bitrate)
+                sb.Append(" --abr " & CInt(Bitrate))
             Case 3
-                ret += " --cbr " & CInt(Bitrate)
+                sb.Append(" --cbr " & CInt(Bitrate))
         End Select
 
         If Params.qaacHE AndAlso {1, 2, 3}.Contains(Params.qaacRateMode) Then
-            ret += " --he"
+            sb.Append(" --he")
         End If
 
         If Delay <> 0 Then
-            ret += " --delay " + (Delay / 1000).ToInvariantString
+            sb.Append(" --delay " + (Delay / 1000).ToInvariantString)
         End If
 
         If Params.Normalize Then
-            ret += " --normalize"
+            sb.Append(" --normalize")
         End If
 
         If Params.qaacQuality <> 2 Then
-            ret += " --quality " & Params.qaacQuality
+            sb.Append(" --quality " & Params.qaacQuality)
         End If
 
         If Params.SamplingRate <> 0 Then
-            ret += " --rate " & Params.SamplingRate
+            sb.Append(" --rate " & Params.SamplingRate)
         End If
 
         If Params.qaacLowpass <> 0 Then
-            ret += " --lowpass " & Params.qaacLowpass
+            sb.Append(" --lowpass " & Params.qaacLowpass)
         End If
 
         If Params.qaacNoDither Then
-            ret += " --no-dither"
+            sb.Append(" --no-dither")
         End If
 
         If Gain <> 0 Then
-            ret += " --gain " & Gain.ToInvariantString
+            sb.Append(" --gain " & Gain.ToInvariantString)
         End If
 
         If Params.CustomSwitches <> "" Then
-            ret += " " + Params.CustomSwitches
+            sb.Append(" " + Params.CustomSwitches)
         End If
 
         Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.Escape)
 
         If includePaths Then
-            ret += " " + input + " -o " + GetOutputFile.Escape
+            sb.Append(" " + input + " -o " + GetOutputFile.Escape)
         End If
 
-        Return ret
+        Return sb.ToString
     End Function
 
     Function GetPipeCommandLine(includePaths As Boolean) As String
-        Dim ret As String
+        Dim sb As StringBuilder
 
         If includePaths AndAlso File <> "" Then
-            ret = Package.ffmpeg.Path.Escape + " -i " + File.Escape
+            sb.Append(Package.ffmpeg.Path.Escape + " -i " + File.Escape)
         Else
-            ret = "ffmpeg"
+            sb.Append("ffmpeg")
         End If
 
         If Not Stream Is Nothing AndAlso Streams.Count > 1 Then
-            ret += " -map 0:a:" & Stream.Index
+            sb.Append(" -map 0:a:" & Stream.Index)
         End If
 
         If Params.ChannelsMode <> ChannelsMode.Original Then
-            ret += " -ac " & Channels
+            sb.Append(" -ac " & Channels)
         End If
 
         If Params.Normalize Then
             If Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm Then
-                ret += " " + Audio.GetDynAudNormArgs(Params)
+                sb.Append(" " + Audio.GetDynAudNormArgs(Params))
             ElseIf Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm Then
-                ret += " " + Audio.GetLoudNormArgs(Params)
+                sb.Append(" " + Audio.GetLoudNormArgs(Params))
             End If
         End If
 
         If includePaths AndAlso File <> "" Then
-            ret += " -loglevel fatal -hide_banner -f wav - | "
+            sb.Append(" -loglevel fatal -hide_banner -f wav - | ")
         End If
 
-        Return ret
+        Return sb.ToString
     End Function
 
     Function GetffmpegCommandLine(includePaths As Boolean) As String
-        Dim ret As String
+        Dim sb As New StringBuilder
         Dim pack = If(Params.Codec = AudioCodec.AAC AndAlso Params.ffmpegLibFdkAAC,
             Package.ffmpeg_non_free, Package.ffmpeg)
 
         If includePaths AndAlso File <> "" Then
-            ret = pack.Path.Escape + " -i " + File.LongPathPrefix.Escape
+            sb.Append(pack.Path.Escape + " -i " + File.LongPathPrefix.Escape)
         Else
-            ret = "ffmpeg"
+            sb.Append("ffmpeg")
         End If
 
         If Not Stream Is Nothing AndAlso Streams.Count > 1 Then
-            ret += " -map 0:a:" & Stream.Index
+            sb.Append(" -map 0:a:" & Stream.Index)
         End If
 
         Select Case Params.Codec
             Case AudioCodec.MP3
                 If Not Params.CustomSwitches.Contains("-c:a ") Then
-                    ret += " -c:a libmp3lame"
+                    sb.Append(" -c:a libmp3lame")
                 End If
 
                 Select Case Params.RateMode
                     Case AudioRateMode.ABR
-                        ret += " -b:a " & CInt(Bitrate) & "k -abr 1"
+                        sb.Append(" -b:a " & CInt(Bitrate) & "k -abr 1")
                     Case AudioRateMode.CBR
-                        ret += " -b:a " & CInt(Bitrate) & "k"
+                        sb.Append(" -b:a " & CInt(Bitrate) & "k")
                     Case AudioRateMode.VBR
-                        ret += " -q:a " & CInt(Params.Quality)
+                        sb.Append(" -q:a " & CInt(Params.Quality))
                 End Select
             Case AudioCodec.AC3
                 If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
                     Return "Invalid bitrate, select 192, 224, 384, 448 or 640"
                 End If
 
-                ret += " -b:a " & CInt(Bitrate) & "k"
+                sb.Append(" -b:a " & CInt(Bitrate) & "k")
             Case AudioCodec.EAC3
-                ret += " -b:a " & CInt(Bitrate) & "k"
+                sb.Append(" -b:a " & CInt(Bitrate) & "k")
             Case AudioCodec.DTS
                 If ExtractDTSCore Then
-                    ret += " -bsf:a dca_core -c:a copy"
+                    sb.Append(" -bsf:a dca_core -c:a copy")
                 Else
-                    ret += " -strict -2 -b:a " & CInt(Bitrate) & "k"
+                    sb.Append(" -strict -2 -b:a " & CInt(Bitrate) & "k")
                 End If
             Case AudioCodec.Vorbis
                 If Not Params.CustomSwitches.Contains("-c:a ") Then
-                    ret += " -c:a libvorbis"
+                    sb.Append(" -c:a libvorbis")
                 End If
 
                 If Params.RateMode = AudioRateMode.VBR Then
-                    ret += " -q:a " & CInt(Params.Quality)
+                    sb.Append(" -q:a " & CInt(Params.Quality))
                 Else
-                    ret += " -b:a " & CInt(Bitrate) & "k"
+                    sb.Append(" -b:a " & CInt(Bitrate) & "k")
                 End If
             Case AudioCodec.Opus
                 If Not Params.CustomSwitches.Contains("-c:a ") Then
-                    ret += " -c:a libopus"
+                    sb.Append(" -c:a libopus")
                 End If
 
                 If Params.RateMode = AudioRateMode.VBR Then
-                    ret += " -vbr on"
+                    sb.Append(" -vbr on")
                 Else
-                    ret += " -vbr off"
+                    sb.Append(" -vbr off")
                 End If
 
-                ret += " -b:a " & CInt(Bitrate) & "k"
+                sb.Append(" -b:a " & CInt(Bitrate) & "k")
             Case AudioCodec.AAC
                 If Params.ffmpegLibFdkAAC Then
-                    ret += " -c:a libfdk_aac"
+                    sb.Append(" -c:a libfdk_aac")
                 End If
 
                 If Params.RateMode = AudioRateMode.VBR Then
-                    ret += " -vbr " & Params.Quality
+                    sb.Append(" -vbr " & Params.Quality)
                 Else
-                    ret += " -b:a " & CInt(Bitrate) & "k"
+                    sb.Append(" -b:a " & CInt(Bitrate) & "k")
                 End If
             Case AudioCodec.W64, AudioCodec.WAV
                 If Depth = 24 Then
-                    ret += " -c:a pcm_s24le"
+                    sb.Append(" -c:a pcm_s24le")
                 Else
-                    ret += " -c:a pcm_s16le"
+                    sb.Append(" -c:a pcm_s16le")
                 End If
         End Select
 
         If Gain <> 0 Then
-            ret += " -af volume=" + Gain.ToInvariantString + "dB"
+            sb.Append(" -af volume=" + Gain.ToInvariantString + "dB")
         End If
 
         If Params.Normalize Then
             If Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm Then
-                ret += " " + Audio.GetLoudNormArgs(Params)
+                sb.Append(" " + Audio.GetLoudNormArgs(Params))
             ElseIf Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm Then
-                ret += " " + Audio.GetDynAudNormArgs(Params)
+                sb.Append(" " + Audio.GetDynAudNormArgs(Params))
             End If
         End If
 
         'opus fails if -ac is missing
         If Params.ChannelsMode <> ChannelsMode.Original OrElse Params.Codec = AudioCodec.Opus Then
-            ret += " -ac " & Channels
+            sb.Append(" -ac " & Channels)
         End If
 
         If Params.SamplingRate <> 0 Then
-            ret += " -ar " & Params.SamplingRate
+            sb.Append(" -ar " & Params.SamplingRate)
         End If
 
         If Params.CustomSwitches <> "" Then
-            ret += " " + Params.CustomSwitches
+            sb.Append(" " + Params.CustomSwitches)
         End If
 
         If includePaths AndAlso File <> "" Then
-            ret += " -y -hide_banner"
-            ret += " " + GetOutputFile.LongPathPrefix.Escape
+            sb.Append(" -y -hide_banner")
+            sb.Append(" " + GetOutputFile.LongPathPrefix.Escape)
         End If
 
-        Return ret
+        Return sb.ToString
     End Function
 
     Function SupportsNormalize() As Boolean

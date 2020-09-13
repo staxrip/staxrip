@@ -807,7 +807,9 @@ Public Class StringPair
     End Sub
 
     Function CompareTo(other As StringPair) As Integer Implements IComparable(Of StringPair).CompareTo
-        Return Name.CompareTo(other.Name)
+        If Not Name Is Nothing Then
+            Return Name.CompareTo(other.Name)
+        End If
     End Function
 End Class
 

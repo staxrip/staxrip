@@ -3,6 +3,7 @@
 ============
 
 - Fix eac3to AAC quality mode incorrect bitrate estimation (stax76)
+- Fix error at: Main Menu > Tools > Settings > Source Filters (stax76, #322)
 - ffmpeg fdk-aac has a option and is disabled by default (stax76, #337)
 
 

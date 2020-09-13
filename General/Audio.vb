@@ -349,9 +349,9 @@ Public Class Audio
         End If
 
         If gap?.Params.Normalize Then
-            If gap.Params.ffNormalizeMode = ffNormalizeMode.dynaudnorm Then
+            If gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm Then
                 args += " " + Audio.GetDynAudNormArgs(gap.Params)
-            ElseIf gap.Params.ffNormalizeMode = ffNormalizeMode.loudnorm Then
+            ElseIf gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm Then
                 args += " " + Audio.GetLoudNormArgs(gap.Params)
             End If
         End If
@@ -713,6 +713,12 @@ Public Enum CuttingMode
 End Enum
 
 Public Enum ffNormalizeMode
+    volumedetect
+    loudnorm
+    dynaudnorm
+End Enum
+
+Public Enum ffmpegNormalizeMode
     volumedetect
     loudnorm
     dynaudnorm

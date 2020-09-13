@@ -17,6 +17,7 @@
 - Demuxing is skipped if output files already exist, the old recreate behaviour can be restored
   in the preprocessing settings. If demuxing is canceled then unfinished files are deleted (stax76)
 - Fix L-Smash-Works indexing happening multiple times (stax76)
+- ffmpeg fdk-aac has a option and is disabled by default (stax76, #337)
 - ffms2 0055b2d StvG
 
 

@@ -1046,6 +1046,10 @@ Public Class AudioForm
             Case GuiAudioEncoder.ffmpeg
                 Select Case TempProfile.Params.Codec
                     Case AudioCodec.DTS, AudioCodec.AC3, AudioCodec.EAC3
+                    Case AudioCodec.AAC
+                        cb = ui.AddBool
+                        cb.Text = "Use fdkaac"
+                        cb.Property = NameOf(TempProfile.Params.ffmpegLibFdkAAC)
                     Case Else
                         If Not {AudioCodec.WAV, AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then
                             Dim mbRateMode = ui.AddMenu(Of AudioRateMode)
@@ -1299,9 +1303,9 @@ Public Class AudioForm
 
             ui.CreateFlowPage("ffmpeg", True)
 
-            Dim ffmpegNormalize = ui.AddMenu(Of ffNormalizeMode)
+            Dim ffmpegNormalize = ui.AddMenu(Of ffmpegNormalizeMode)
             ffmpegNormalize.Text = "Normalize Method:"
-            ffmpegNormalize.Property = NameOf(TempProfile.Params.ffNormalizeMode)
+            ffmpegNormalize.Property = NameOf(TempProfile.Params.ffmpegNormalizeMode)
 
             ui.CreateFlowPage("ffmpeg | loudnorm", True)
 

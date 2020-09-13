@@ -772,7 +772,7 @@ Public Class GUIAudioProfile
 
     Sub NormalizeFF()
         If Not Params.Normalize OrElse ExtractCore OrElse
-            Not {ffNormalizeMode.loudnorm, ffNormalizeMode.volumedetect}.Contains(Params.ffNormalizeMode) Then
+            Not {ffmpegNormalizeMode.loudnorm, ffmpegNormalizeMode.volumedetect}.Contains(Params.ffmpegNormalizeMode) Then
 
             Exit Sub
         End If
@@ -785,9 +785,9 @@ Public Class GUIAudioProfile
 
         args += " -sn -vn -hide_banner"
 
-        If Params.ffNormalizeMode = ffNormalizeMode.volumedetect Then
+        If Params.ffmpegNormalizeMode = ffmpegNormalizeMode.volumedetect Then
             args += " -af volumedetect"
-        ElseIf Params.ffNormalizeMode = ffNormalizeMode.loudnorm Then
+        ElseIf Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm Then
             args += " -af loudnorm=I=" & Params.ffmpegLoudnormIntegrated.ToInvariantString +
                 ":TP=" & Params.ffmpegLoudnormTruePeak.ToInvariantString + ":LRA=" &
                 Params.ffmpegLoudnormLRA.ToInvariantString + ":print_format=summary"
@@ -1074,9 +1074,9 @@ Public Class GUIAudioProfile
         End If
 
         If Params.Normalize Then
-            If Params.ffNormalizeMode = ffNormalizeMode.dynaudnorm Then
+            If Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm Then
                 ret += " " + Audio.GetDynAudNormArgs(Params)
-            ElseIf Params.ffNormalizeMode = ffNormalizeMode.loudnorm Then
+            ElseIf Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm Then
                 ret += " " + Audio.GetLoudNormArgs(Params)
             End If
         End If
@@ -1090,7 +1090,8 @@ Public Class GUIAudioProfile
 
     Function GetffmpegCommandLine(includePaths As Boolean) As String
         Dim ret As String
-        Dim pack = If(Params.Codec = AudioCodec.AAC, Package.ffmpeg_non_free, Package.ffmpeg)
+        Dim pack = If(Params.Codec = AudioCodec.AAC AndAlso Params.ffmpegLibFdkAAC,
+            Package.ffmpeg_non_free, Package.ffmpeg)
 
         If includePaths AndAlso File <> "" Then
             ret = pack.Path.Escape + " -i " + File.LongPathPrefix.Escape
@@ -1153,10 +1154,14 @@ Public Class GUIAudioProfile
 
                 ret += " -b:a " & CInt(Bitrate) & "k"
             Case AudioCodec.AAC
+                If Params.ffmpegLibFdkAAC Then
+                    ret += " -c:a libfdk_aac"
+                End If
+
                 If Params.RateMode = AudioRateMode.VBR Then
-                    ret += " -c:a libfdk_aac -vbr " & Params.Quality
+                    ret += " -vbr " & Params.Quality
                 Else
-                    ret += " -c:a libfdk_aac -b:a " & CInt(Bitrate) & "k"
+                    ret += " -b:a " & CInt(Bitrate) & "k"
                 End If
             Case AudioCodec.W64, AudioCodec.WAV
                 If Depth = 24 Then
@@ -1171,9 +1176,9 @@ Public Class GUIAudioProfile
         End If
 
         If Params.Normalize Then
-            If Params.ffNormalizeMode = ffNormalizeMode.loudnorm Then
+            If Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm Then
                 ret += " " + Audio.GetLoudNormArgs(Params)
-            ElseIf Params.ffNormalizeMode = ffNormalizeMode.dynaudnorm Then
+            ElseIf Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm Then
                 ret += " " + Audio.GetDynAudNormArgs(Params)
             End If
         End If
@@ -1344,6 +1349,7 @@ Public Class GUIAudioProfile
         Property ChannelsMode As ChannelsMode
 
         Property Migrate1 As Boolean = True
+        Property MigrateffNormalizeMode As Boolean = True
 
         Property qaacHE As Boolean
         Property qaacLowpass As Integer
@@ -1369,15 +1375,17 @@ Public Class GUIAudioProfile
         Property fdkaacMoovBeforeMdat As Boolean
 
         Property ffNormalizeMode As ffNormalizeMode
+        Property ffmpegNormalizeMode As ffmpegNormalizeMode
+
+        Property ffmpegLibFdkAAC As Boolean
 
         Property ffmpegLoudnormIntegrated As Double = -24
-        Property ffmpegLoudnormLRA As Double = 7
-        Property ffmpegLoudnormTruePeak As Double = -2
-
         Property ffmpegLoudnormIntegratedMeasured As Double
+        Property ffmpegLoudnormLRA As Double = 7
         Property ffmpegLoudnormLraMeasured As Double
-        Property ffmpegLoudnormTruePeakMeasured As Double
         Property ffmpegLoudnormThresholdMeasured As Double
+        Property ffmpegLoudnormTruePeak As Double = -2
+        Property ffmpegLoudnormTruePeakMeasured As Double
 
         Property ffmpegDynaudnormF As Integer = 500
         Property ffmpegDynaudnormG As Integer = 31
@@ -1406,7 +1414,9 @@ Public Class GUIAudioProfile
             End Set
         End Property
 
+        'legacy/obsolete
         Sub Migrate()
+            '2019
             If opusencMigrateVersion <> 1 Then
                 opusencFramesize = 20
                 opusencComplexity = 10
@@ -1414,12 +1424,14 @@ Public Class GUIAudioProfile
                 opusencMigrateVersion = 1
             End If
 
+            '2019
             If fdkaacProfile = 0 Then
                 fdkaacProfile = 2
                 SimpleRateMode = SimpleAudioRateMode.VBR
                 fdkaacAfterburner = True
             End If
 
+            '2019
             If Not Migrate1 Then
                 Normalize = True
 
@@ -1434,6 +1446,12 @@ Public Class GUIAudioProfile
                 ffmpegDynaudnormN = True
 
                 Migrate1 = True
+            End If
+
+            '2020
+            If Not MigrateffNormalizeMode Then
+                ffmpegNormalizeMode = CType(ffNormalizeMode, ffmpegNormalizeMode)
+                MigrateffNormalizeMode = True
             End If
         End Sub
     End Class

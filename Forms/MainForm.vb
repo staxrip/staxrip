@@ -5521,6 +5521,7 @@ Public Class MainForm
         UpdateAudioMenu()
         UpdateSizeOrBitrate()
         llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
+        ShowAudioTip(p.Audio0)
     End Sub
 
     Sub AudioEdit1ToolStripMenuItemClick()
@@ -5528,6 +5529,20 @@ Public Class MainForm
         UpdateAudioMenu()
         UpdateSizeOrBitrate()
         llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
+        ShowAudioTip(p.Audio1)
+    End Sub
+
+    Sub ShowAudioTip(ap As AudioProfile)
+        If TypeOf ap Is GUIAudioProfile Then
+            Dim gap = DirectCast(ap, GUIAudioProfile)
+
+            If ap.Decoder = AudioDecoderMode.ffmpeg AndAlso gap.GetEncoder = GuiAudioEncoder.ffmpeg Then
+                Documentation.ShowTip(
+                    "Please note that defining an audio decoder will always result in a separate " +
+                    "decoding step, which is usually not necessary if the decoder and encoder are identical, " +
+                    "it's a waste of time and disk space.")
+            End If
+        End If
     End Sub
 
     Sub AudioSource0ToolStripMenuItemClick()

@@ -1047,6 +1047,12 @@ Public Class AudioForm
                 Select Case TempProfile.Params.Codec
                     Case AudioCodec.DTS, AudioCodec.AC3, AudioCodec.EAC3
                     Case AudioCodec.AAC
+                        Dim mbRateMode = ui.AddMenu(Of SimpleAudioRateMode)
+                        mbRateMode.Text = "Rate Mode:"
+                        mbRateMode.Expandet = True
+                        mbRateMode.Button.Value = TempProfile.Params.SimpleRateMode
+                        mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.SimpleRateMode = value 
+                        cb = ui.AddBool
                         cb = ui.AddBool
                         cb.Text = "Use fdk-aac"
                         cb.Property = NameOf(TempProfile.Params.ffmpegLibFdkAAC)

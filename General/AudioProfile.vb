@@ -1161,6 +1161,8 @@ Public Class GUIAudioProfile
             Case AudioCodec.AAC
                 If Params.ffmpegLibFdkAAC Then
                     sb.Append(" -c:a libfdk_aac")
+                Else
+                    sb.Append(" -c:a aac")
                 End If
 
                 If Params.RateMode = AudioRateMode.VBR Then

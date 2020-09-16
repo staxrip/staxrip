@@ -1062,7 +1062,7 @@ Public Class GUIAudioProfile
     End Function
 
     Function GetPipeCommandLine(includePaths As Boolean) As String
-        Dim sb As StringBuilder
+        Dim sb As New StringBuilder
 
         If includePaths AndAlso File <> "" Then
             sb.Append(Package.ffmpeg.Path.Escape + " -i " + File.Escape)

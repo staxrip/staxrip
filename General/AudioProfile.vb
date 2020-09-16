@@ -1158,13 +1158,30 @@ Public Class GUIAudioProfile
                     sb.Append(" -c:a libopus")
                 End If
 
-                If Params.RateMode = AudioRateMode.VBR Then
-                    sb.Append(" -vbr on")
-                Else
-                    sb.Append(" -vbr off")
-                End If
+                Select Case Params.opusRateMode
+                    Case OpusRateMode.CBR
+                        sb.Append(" -vbr 0 ")
+                    Case OpusRateMode.VBR
+                        sb.Append(" -vbr 1 ")
+                    Case OpusRateMode.CVBR
+                        sb.Append(" -vbr 2 ")
+                End Select
 
                 sb.Append(" -b:a " & CInt(Bitrate) & "k")
+
+                If Params.opuscompress > 0 Then
+                    sb.Append(" -compression_level " & CInt(Params.opuscompress))
+                End If
+
+                Select Case Params.opusApp
+                    Case OpusApp.no
+                    Case OpusApp.voip
+                        sb.Append(" -application voip ")
+                    Case OpusApp.audio
+                        sb.Append(" -application audio ")
+                    Case OpusApp.lowdelay
+                        sb.Append(" -application lowdelay ")
+                End Select
             Case AudioCodec.AAC
                 If Params.ffmpegLibFdkAAC Then
                     sb.Append(" -c:a libfdk_aac")

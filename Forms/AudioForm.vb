@@ -1056,6 +1056,24 @@ Public Class AudioForm
                         cb = ui.AddBool
                         cb.Text = "Use fdk-aac"
                         cb.Property = NameOf(TempProfile.Params.ffmpegLibFdkAAC)
+                    Case AudioCodec.Opus
+                        Dim mbRateMode = ui.AddMenu(Of OpusRateMode)
+                        mbRateMode.Text = "Rate Mode:"
+                        mbRateMode.Expandet = True
+                        mbRateMode.Button.Value = TempProfile.Params.opusRateMode
+                        mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.opusRateMode = value
+
+                        Dim mbOpusApp = ui.AddMenu(Of OpusApp)
+                        mbOpusApp.Text = "Application Type:"
+                        mbOpusApp.Expandet = True
+                        mbOpusApp.Button.Value = TempProfile.Params.opusApp
+                        mbOpusApp.Button.SaveAction = Sub(value) TempProfile.Params.opusApp = value
+
+                        Dim num = ui.AddNum(page)
+                        num.Text = "Compression Level:"
+                        num.Config = {0, 10, 1}
+                        num.NumEdit.Value = TempProfile.Params.opuscompress
+                        num.NumEdit.SaveAction = Sub(value) TempProfile.Params.opuscompress = CInt(value)
                     Case Else
                         If Not {AudioCodec.WAV, AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then
                             Dim mbRateMode = ui.AddMenu(Of AudioRateMode)

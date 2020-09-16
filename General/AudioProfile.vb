@@ -1123,12 +1123,19 @@ Public Class GUIAudioProfile
                         sb.Append(" -q:a " & CInt(Params.Quality))
                 End Select
             Case AudioCodec.AC3
+                If Not Params.CustomSwitches.Contains("-c:a ") Then
+                    sb.Append(" -c:a ac3")
+                End If
                 If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
                     Return "Invalid bitrate, select 192, 224, 384, 448 or 640"
                 End If
 
                 sb.Append(" -b:a " & CInt(Bitrate) & "k")
             Case AudioCodec.EAC3
+                If Not Params.CustomSwitches.Contains("-c:a ") Then
+                    sb.Append(" -c:a eac3")
+                End If
+                
                 sb.Append(" -b:a " & CInt(Bitrate) & "k")
             Case AudioCodec.DTS
                 If ExtractDTSCore Then
@@ -1161,8 +1168,22 @@ Public Class GUIAudioProfile
             Case AudioCodec.AAC
                 If Params.ffmpegLibFdkAAC Then
                     sb.Append(" -c:a libfdk_aac")
+                    
+                    If Params.RateMode = SimpleAudioRateMode.CBR Then
+                        sb.Append(" -b:a " & CInt(Bitrate) & "k")
+                    Else
+                        sb.Append(" -vbr " & CInt(Params.Quality))
+                    End If
+                    
                 Else
                     sb.Append(" -c:a aac")
+                    
+                    If Params.RateMode = SimpleAudioRateMode.CBR Then
+                        sb.Append(" -b:a " & CInt(Bitrate) & "k")
+                    Else
+                        sb.Append(" -q:a " & CInt(Params.Quality))
+                    End If
+                    
                 End If
 
                 If Params.RateMode = AudioRateMode.VBR Then

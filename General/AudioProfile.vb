@@ -1406,6 +1406,9 @@ Public Class GUIAudioProfile
         Property opusencComplexity As Integer = 10
         Property opusencFramesize As Double = 20
         Property opusencMigrateVersion As Integer = 1
+        Property opusRateMode As OpusRateMode
+        Property opuscompress As Integer
+        Property opusApp As OpusApp
 
         Property fdkaacProfile As Integer = 2
         Property fdkaacBandwidth As Integer
@@ -1519,6 +1522,19 @@ Public Enum AudioRateMode
     CBR
     ABR
     VBR
+End Enum
+
+Public Enum OpusRateMode
+    CBR
+    VBR
+    CVBR
+End Enum
+
+Public Enum OpusApp
+    no
+    voip
+    audio
+    lowdelay
 End Enum
 
 Public Enum SimpleAudioRateMode

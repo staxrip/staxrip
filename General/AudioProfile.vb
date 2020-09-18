@@ -1126,6 +1126,7 @@ Public Class GUIAudioProfile
                 If Not Params.CustomSwitches.Contains("-c:a ") Then
                     sb.Append(" -c:a ac3")
                 End If
+
                 If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
                     Return "Invalid bitrate, select 192, 224, 384, 448 or 640"
                 End If
@@ -1135,7 +1136,7 @@ Public Class GUIAudioProfile
                 If Not Params.CustomSwitches.Contains("-c:a ") Then
                     sb.Append(" -c:a eac3")
                 End If
-                
+
                 sb.Append(" -b:a " & CInt(Bitrate) & "k")
             Case AudioCodec.DTS
                 If ExtractDTSCore Then
@@ -1160,11 +1161,11 @@ Public Class GUIAudioProfile
 
                 Select Case Params.opusRateMode
                     Case OpusRateMode.CBR
-                        sb.Append(" -vbr 0 ")
+                        sb.Append(" -vbr 0")
                     Case OpusRateMode.VBR
-                        sb.Append(" -vbr 1 ")
+                        sb.Append(" -vbr 1")
                     Case OpusRateMode.CVBR
-                        sb.Append(" -vbr 2 ")
+                        sb.Append(" -vbr 2")
                 End Select
 
                 sb.Append(" -b:a " & CInt(Bitrate) & "k")

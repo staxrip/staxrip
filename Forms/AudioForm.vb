@@ -1048,29 +1048,29 @@ Public Class AudioForm
                     Case AudioCodec.DTS, AudioCodec.AC3, AudioCodec.EAC3
                     Case AudioCodec.AAC
                         Dim mbRateMode = ui.AddMenu(Of SimpleAudioRateMode)
-                        mbRateMode.Text = "Rate Mode:"
+                        mbRateMode.Text = "Rate Mode"
                         mbRateMode.Expandet = True
                         mbRateMode.Button.Value = TempProfile.Params.SimpleRateMode
-                        mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.SimpleRateMode = value 
-                        cb = ui.AddBool
+                        mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.SimpleRateMode = value
+
                         cb = ui.AddBool
                         cb.Text = "Use fdk-aac"
                         cb.Property = NameOf(TempProfile.Params.ffmpegLibFdkAAC)
                     Case AudioCodec.Opus
                         Dim mbRateMode = ui.AddMenu(Of OpusRateMode)
-                        mbRateMode.Text = "Rate Mode:"
+                        mbRateMode.Text = "Rate Mode"
                         mbRateMode.Expandet = True
                         mbRateMode.Button.Value = TempProfile.Params.opusRateMode
                         mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.opusRateMode = value
 
                         Dim mbOpusApp = ui.AddMenu(Of OpusApp)
-                        mbOpusApp.Text = "Application Type:"
+                        mbOpusApp.Text = "Application Type"
                         mbOpusApp.Expandet = True
                         mbOpusApp.Button.Value = TempProfile.Params.opusApp
                         mbOpusApp.Button.SaveAction = Sub(value) TempProfile.Params.opusApp = value
 
                         Dim num = ui.AddNum(page)
-                        num.Text = "Compression Level:"
+                        num.Text = "Compression Level"
                         num.Config = {0, 10, 1}
                         num.NumEdit.Value = TempProfile.Params.opuscompress
                         num.NumEdit.SaveAction = Sub(value) TempProfile.Params.opuscompress = CInt(value)

@@ -1186,28 +1186,20 @@ Public Class GUIAudioProfile
             Case AudioCodec.AAC
                 If Params.ffmpegLibFdkAAC Then
                     sb.Append(" -c:a libfdk_aac")
-                    
+
                     If Params.RateMode = SimpleAudioRateMode.CBR Then
                         sb.Append(" -b:a " & CInt(Bitrate) & "k")
                     Else
                         sb.Append(" -vbr " & CInt(Params.Quality))
                     End If
-                    
                 Else
                     sb.Append(" -c:a aac")
-                    
+
                     If Params.RateMode = SimpleAudioRateMode.CBR Then
                         sb.Append(" -b:a " & CInt(Bitrate) & "k")
                     Else
                         sb.Append(" -q:a " & CInt(Params.Quality))
                     End If
-                    
-                End If
-
-                If Params.RateMode = AudioRateMode.VBR Then
-                    sb.Append(" -vbr " & Params.Quality)
-                Else
-                    sb.Append(" -b:a " & CInt(Bitrate) & "k")
                 End If
             Case AudioCodec.W64, AudioCodec.WAV
                 If Depth = 24 Then

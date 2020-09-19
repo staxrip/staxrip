@@ -456,12 +456,8 @@ Public Class FrameServerHelp
             Return True
         End If
 
-        If TypeOf p.VideoEncoder Is BasicVideoEncoder Then
-            Dim enc = DirectCast(p.VideoEncoder, BasicVideoEncoder)
-
-            If enc.CommandLineParams.GetCommandLine(True, True).Contains("ffmpeg") Then
-                Return True
-            End If
+        If p.VideoEncoder.GetCommandLine.ContainsEx("ffmpeg") Then
+            Return True
         End If
     End Function
 
@@ -475,12 +471,8 @@ Public Class FrameServerHelp
                 Return False
             End If
 
-            If TypeOf p.VideoEncoder Is BasicVideoEncoder Then
-                Dim enc = DirectCast(p.VideoEncoder, BasicVideoEncoder)
-
-                If Not enc.CommandLineParams.GetCommandLine(True, True).Contains(Package.AviSynth.Path) Then
-                    Return True
-                End If
+            If Not p.VideoEncoder.GetCommandLine.ContainsEx(Package.AviSynth.Path) Then
+                Return True
             End If
         End If
     End Function

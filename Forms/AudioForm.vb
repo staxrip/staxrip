@@ -829,7 +829,7 @@ Public Class AudioForm
         Select Case TempProfile.Params.Codec
             Case AudioCodec.AAC
                 Select Case TempProfile.Params.Encoder
-                    Case GuiAudioEncoder.qaac
+                    Case GuiAudioEncoder.qaac, GuiAudioEncoder.Automatic
                         SetQuality(50)
                     Case GuiAudioEncoder.eac3to
                         SetQuality(0.5)

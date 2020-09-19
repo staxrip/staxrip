@@ -1336,11 +1336,11 @@ Public Class GUIAudioProfile
                 If Params.Codec = AudioCodec.AAC Then
                     Return GuiAudioEncoder.fdkaac
                 End If
+            Case GuiAudioEncoder.Automatic
+                If Params.Codec = AudioCodec.AAC Then
+                    Return GuiAudioEncoder.qaac
+                End If
         End Select
-
-        If Params.Codec = AudioCodec.AAC Then
-            Return GuiAudioEncoder.qaac
-        End If
 
         Return GuiAudioEncoder.ffmpeg
     End Function

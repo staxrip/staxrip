@@ -1219,7 +1219,7 @@ Public Class AudioForm
                 cb.Property = NameOf(TempProfile.Params.fdkaacMoovBeforeMdat)
             Case GuiAudioEncoder.qaac
                 Dim mbMode = ui.AddMenu(Of Integer)
-                mbMode.Text = "Mode:"
+                mbMode.Text = "Mode"
                 mbMode.Expandet = True
                 mbMode.Add("True VBR", 0)
                 mbMode.Add("Constrained VBR", 1)
@@ -1233,7 +1233,7 @@ Public Class AudioForm
                                            End Sub
 
                 Dim mbQuality = ui.AddMenu(Of Integer)(page)
-                mbQuality.Label.Text = "Quality:"
+                mbQuality.Label.Text = "Quality"
                 mbQuality.Button.Expand = True
                 mbQuality.Button.Add("Low", 0)
                 mbQuality.Button.Add("Medium", 1)
@@ -1242,7 +1242,7 @@ Public Class AudioForm
                 mbQuality.Button.SaveAction = Sub(value) TempProfile.Params.qaacQuality = value
 
                 Dim num = ui.AddNum(page)
-                num.Text = "Lowpass:"
+                num.Text = "Lowpass"
                 num.Config = {0, Integer.MaxValue}
                 num.NumEdit.Value = TempProfile.Params.qaacLowpass
                 num.NumEdit.SaveAction = Sub(value) TempProfile.Params.qaacLowpass = CInt(value)

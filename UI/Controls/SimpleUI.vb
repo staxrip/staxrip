@@ -535,9 +535,9 @@ Public Class SimpleUI
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            MyBase.OnLayout(levent)
             Height = CInt(Font.Height * 1.3)
             Width = CInt(Font.Height * 4.5)
+            MyBase.OnLayout(levent)
         End Sub
 
         Sub Save()

@@ -1163,30 +1163,38 @@ Public Class GUIAudioProfile
                     sb.Append(" -c:a libopus")
                 End If
 
-                Select Case Params.ffmpegOpusRateMode
+                Select Case Params.OpusRateMode
                     Case OpusRateMode.CBR
-                        sb.Append(" -vbr 0")
-                    Case OpusRateMode.VBR
-                        sb.Append(" -vbr 1")
+                        sb.Append(" -vbr off")
                     Case OpusRateMode.CVBR
-                        sb.Append(" -vbr 2")
+                        sb.Append(" -vbr constrained")
                 End Select
 
                 sb.Append(" -b:a " & CInt(Bitrate) & "k")
 
-                If Params.ffmpegOpusCompress > 0 Then
-                    sb.Append(" -compression_level " & CInt(Params.ffmpegOpusCompress))
+                Select Case Params.OpusApp
+                    Case OpusApp.voip
+                        sb.Append(" -application voip")
+                    Case OpusApp.lowdelay
+                        sb.Append(" -application lowdelay")
+                End Select
+
+                If Params.OpusFrame <> 20 Then
+                    sb.Append(" -frame_duration " & Params.OpusFrame.ToInvariantString)
                 End If
 
-                Select Case Params.ffmpegOpusApp
-                    Case OpusApp.no
-                    Case OpusApp.voip
-                        sb.Append(" -application voip ")
-                    Case OpusApp.audio
-                        sb.Append(" -application audio ")
-                    Case OpusApp.lowdelay
-                        sb.Append(" -application lowdelay ")
-                End Select
+                If Params.OpusMap <> -1 Then
+                    sb.Append(" -mapping_family " & CInt(Params.OpusMap))
+                End If
+
+                If Params.Opuscompress <> 10 Then
+                    sb.Append(" -compression_level " & CInt(Params.Opuscompress))
+                End If
+
+                If Params.OpusPacket <> 0 Then
+                    sb.Append(" -packet_loss " & CInt(Params.OpusPacket))
+                End If
+
             Case AudioCodec.AAC
                 If Params.ffmpegLibFdkAAC Then
                     sb.Append(" -c:a libfdk_aac")
@@ -1399,12 +1407,16 @@ Public Class GUIAudioProfile
         Property qaacQuality As Integer = 2
         Property qaacRateMode As Integer
 
-        Property ffmpegOpusMode As Integer = 2
-        Property ffmpegOpusComplexity As Integer = 10
-        Property ffmpegOpusFrameSize As Double = 20
-        Property ffmpegOpusRateMode As OpusRateMode
-        Property ffmpegOpusCompress As Integer
-        Property ffmpegOpusApp As OpusApp
+        Property OpusencMode As Integer = 2
+        Property OpusencComplexity As Integer = 10
+        Property OpusencFramesize As Double = 20
+        Property OpusencMigrateVersion As Integer = 1
+        Property OpusRateMode As OpusRateMode
+        Property OpusApp As OpusApp
+        Property Opuscompress As Integer
+        Property OpusFrame As Double
+        Property OpusPacket As Integer
+        Property OpusMap As Integer
 
         Property fdkaacProfile As Integer = 2
         Property fdkaacBandwidth As Integer
@@ -1460,6 +1472,14 @@ Public Class GUIAudioProfile
 
         'legacy/obsolete
         Sub Migrate()
+            '2019
+            If OpusencMigrateVersion <> 1 Then
+                OpusencFramesize = 20
+                OpusencComplexity = 10
+                OpusencMode = 2
+                OpusencMigrateVersion = 1
+            End If
+
             '2019
             If fdkaacProfile = 0 Then
                 fdkaacProfile = 2
@@ -1519,7 +1539,6 @@ Public Enum OpusRateMode
 End Enum
 
 Public Enum OpusApp
-    no
     voip
     audio
     lowdelay

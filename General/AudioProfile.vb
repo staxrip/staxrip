@@ -184,6 +184,10 @@ Public MustInherit Class AudioProfile
         Return CommandLines.ContainsEx(value)
     End Function
 
+    Function IsUsedAndContainsCommand(value As String) As Boolean
+        Return File <> "" AndAlso CommandLines.ContainsEx(value)
+    End Function
+
     Function GetDuration() As TimeSpan
         If IO.File.Exists(File) Then
             If Stream Is Nothing Then
@@ -1282,11 +1286,11 @@ Public Class GUIAudioProfile
     Function GetEncoder() As GuiAudioEncoder
         Select Case Params.Encoder
             Case GuiAudioEncoder.eac3to
-                If {AudioCodec.AAC, AudioCodec.AC3, AudioCodec.FLAC, AudioCodec.DTS, AudioCodec.W64, AudioCodec.WAV}.Contains(Params.Codec) Then
+                If {AudioCodec.AAC, AudioCodec.AC3, AudioCodec.FLAC, AudioCodec.DTS,
+                    AudioCodec.W64, AudioCodec.WAV}.Contains(Params.Codec) Then
+
                     Return GuiAudioEncoder.eac3to
                 End If
-            Case GuiAudioEncoder.ffmpeg
-                Return GuiAudioEncoder.ffmpeg
             Case GuiAudioEncoder.qaac
                 If Params.Codec = AudioCodec.AAC Then
                     Return GuiAudioEncoder.qaac

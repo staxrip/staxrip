@@ -70,30 +70,12 @@ Public Class Package
         .Description = "AviSynth audio source filter plugin.",
         .AvsFilterNames = {"NicAC3Source", "NicDTSSource", "NicMPASource", "RaWavSource"}})
 
-    Shared Property qaac As Package = Add(New Package With {
-        .Name = "qaac",
-        .Filename = "qaac64.exe",
-        .Location = "Audio\qaac",
-        .WebURL = "http://github.com/nu774/qaac",
-        .HelpSwitch = "-h",
-        .RequiredFunc = Function() TypeOf p.Audio0 Is GUIAudioProfile AndAlso DirectCast(p.Audio0, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.qaac OrElse TypeOf p.Audio1 Is GUIAudioProfile AndAlso DirectCast(p.Audio1, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.qaac,
-        .Description = "Console AAC encoder based on the Apple AAC encoder."})
-
     Shared Property UnDot As Package = Add(New PluginPackage With {
         .Name = "UnDot",
         .Filename = "UnDot.dll",
         .WebURL = "http://avisynth.nl/index.php/UnDot",
         .Description = "UnDot is a simple median filter plugin for removing dots, that is stray orphan pixels and mosquito noise.",
         .AvsFilterNames = {"UnDot"}})
-
-    Shared Property eac3to As Package = Add(New Package With {
-        .Name = "eac3to",
-        .Filename = "eac3to.exe",
-        .Location = "Audio\eac3to",
-        .WebURL = "http://forum.doom9.org/showthread.php?t=125966",
-        .HelpURL = "http://en.wikibooks.org/wiki/Eac3to/How_to_Use",
-        .HelpSwitch = "",
-        .Description = "Audio convertor console app."})
 
     Shared Property ffmpeg As Package = Add(New Package With {
         .Name = "ffmpeg",
@@ -115,7 +97,36 @@ Public Class Package
         .VersionAllowAny = True,
         .Find = False,
         .Description = "Versatile audio video convertor console app. Custom build with non-free libraries like fdk-aac.",
-        .RequiredFunc = Function() p.Audio0.ContainsCommand("libfdk_aac") OrElse p.Audio1.ContainsCommand("libfdk_aac")})
+        .RequiredFunc = Function() Audio.CommandContains("libfdk_aac")})
+
+    Shared Property qaac As Package = Add(New Package With {
+        .Name = "qaac",
+        .Filename = "qaac64.exe",
+        .Location = "Audio\qaac",
+        .WebURL = "http://github.com/nu774/qaac",
+        .HelpSwitch = "-h",
+        .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.qaac),
+        .Description = "Console AAC encoder based on the Apple AAC encoder."})
+
+    Shared Property fdkaac As Package = Add(New Package With {
+        .Name = "fdkaac",
+        .Filename = "fdkaac.exe",
+        .Location = "Audio\fdkaac",
+        .HelpSwitch = "-h",
+        .IsIncluded = False,
+        .VersionAllowAny = True,
+        .Description = "Non-free AAC console encoder based on libfdk-aac. Opus is recommended as free alternative.",
+        .WebURL = "http://github.com/nu774/fdkaac",
+        .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.fdkaac)})
+
+    Shared Property eac3to As Package = Add(New Package With {
+        .Name = "eac3to",
+        .Filename = "eac3to.exe",
+        .Location = "Audio\eac3to",
+        .WebURL = "http://forum.doom9.org/showthread.php?t=125966",
+        .HelpURL = "http://en.wikibooks.org/wiki/Eac3to/How_to_Use",
+        .HelpSwitch = "",
+        .Description = "Audio convertor console app."})
 
     Shared Property MediaInfo As Package = Add(New Package With {
         .Name = "MediaInfo",
@@ -254,21 +265,6 @@ Public Class Package
         .Name = "temporalsoften",
         .Filename = "temporalsoften.dll",
         .VSFilterNames = {"TemporalSoften"}})
-
-    Shared Property fdkaac As Package = Add(New Package With {
-        .Name = "fdkaac",
-        .Filename = "fdkaac.exe",
-        .Location = "Audio\fdkaac",
-        .HelpFilename = "help.txt",
-        .HelpSwitch = "-h",
-        .IsIncluded = False,
-        .VersionAllowAny = True,
-        .Description = "Non-free AAC console encoder based on libfdk-aac. Opus is recommended as free alternative.",
-        .WebURL = "http://github.com/nu774/fdkaac",
-        .RequiredFunc = Function() (TypeOf p.Audio0 Is GUIAudioProfile AndAlso
-            DirectCast(p.Audio0, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac) OrElse
-            (TypeOf p.Audio1 Is GUIAudioProfile AndAlso DirectCast(
-            p.Audio1, GUIAudioProfile).Params.Encoder = GuiAudioEncoder.fdkaac)})
 
     Shared Property AVSMeter As Package = Add(New Package With {
         .Name = "AVSMeter",

@@ -688,6 +688,44 @@ function Down2(clip a)
     Shared Function FileExist(fp As String) As Boolean
         Return File.Exists(fp) AndAlso New FileInfo(fp).Length > 500
     End Function
+
+    Shared Function IsEncoderUsed(encoder As GuiAudioEncoder) As Boolean
+        If IsEncoderUsed(p.Audio0, encoder) OrElse IsEncoderUsed(p.Audio1, encoder) Then
+            Return True
+        End If
+
+        If Not p.AudioTracks.NothingOrEmpty Then
+            For Each ap In p.AudioTracks
+                If IsEncoderUsed(ap, encoder) Then
+                    Return True
+                End If
+            Next
+        End If
+    End Function
+
+    Shared Function IsEncoderUsed(ap As AudioProfile, encoder As GuiAudioEncoder) As Boolean
+        If TypeOf ap Is GUIAudioProfile AndAlso ap.File <> "" Then
+            Dim gap = DirectCast(ap, GUIAudioProfile)
+
+            If gap.GetEncoder = encoder Then
+                Return True
+            End If
+        End If
+    End Function
+
+    Shared Function CommandContains(find As String) As Boolean
+        If p.Audio0.IsUsedAndContainsCommand(find) OrElse p.Audio1.IsUsedAndContainsCommand(find) Then
+            Return True
+        End If
+
+        If Not p.AudioTracks.NothingOrEmpty Then
+            For Each ap In p.AudioTracks
+                If ap.IsUsedAndContainsCommand(find) Then
+                    Return True
+                End If
+            Next
+        End If
+    End Function
 End Class
 
 Public Enum AudioDecoderMode

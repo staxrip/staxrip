@@ -93,8 +93,6 @@ Public Class GlobalClass
     End Sub
 
     Sub RunCommandInTerminal(fileName As String, Optional arguments As String = Nothing)
-        Documentation.ShowTip("Console apps are added to the path environment variable and macros are added as environment variables.")
-
         Using pr As New Process
             pr.StartInfo.FileName = fileName
             pr.StartInfo.Arguments = arguments
@@ -1433,9 +1431,9 @@ Public Class GlobalClass
                     Case "avs2pipemod info"
                         g.RunCodeInTerminal($"""`n{Package.avs2pipemod.Name} {Package.avs2pipemod.Version}""; & '{Package.avs2pipemod.Path}' -dll=""{Package.AviSynth.Path.Escape}"" -info '{script.Path}'")
                     Case "avsmeter benchmark"
-                        g.RunCodeInTerminal($"& '{Package.AVSMeter.Path}' '{script.Path}'")
+                        g.RunCodeInTerminal($"& '{Package.AVSMeter.Path}' '{script.Path.ToShortFilePath}'")
                     Case "avsmeter info"
-                        g.RunCodeInTerminal($"& '{Package.AVSMeter.Path}' -info '{script.Path}';""""")
+                        g.RunCodeInTerminal($"& '{Package.AVSMeter.Path}' -info '{script.Path.ToShortFilePath}';""""")
                     Case "Info()"
                         Dim infoScript = New VideoScript
                         infoScript.AddFilter(New VideoFilter($"Import(""{script.Path}"")"))

@@ -95,7 +95,7 @@ Public Class CodeEditor
     Function CreateTempScript() As VideoScript
         Dim script As New VideoScript
         script.Engine = Engine
-        script.Path = (p.TempDir + p.TargetFile.Base + $"_temp." + script.FileType).ToShortFilePath
+        script.Path = p.TempDir + p.TargetFile.Base + $"_temp." + script.FileType
         script.Filters = GetFilters()
 
         If script.GetError <> "" Then

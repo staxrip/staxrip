@@ -865,12 +865,6 @@ Public Class AudioForm
                 TempProfile.Params.RateMode = AudioRateMode.VBR
             Case AudioCodec.Opus
                 numBitrate.Value = 80
-                TempProfile.Params.ffmpegRateMode = OpusRateMode.VBR
-                TempProfile.Params.ffmpegOpusApp = OpusApp.audio
-                TempProfile.Params.ffmpegOpusCompress = 10
-                TempProfile.Params.ffmpegOpusFrame = 20
-                TempProfile.Params.ffmpegOpusPacket = 0
-                TempProfile.Params.ffmpegOpusMap = -1
         End Select
 
         UpdateBitrate()
@@ -1065,8 +1059,8 @@ Public Class AudioForm
                         Dim mbRateMode = ui.AddMenu(Of OpusRateMode)
                         mbRateMode.Text = "Rate Mode"
                         mbRateMode.Expandet = True
-                        mbRateMode.Button.Value = TempProfile.Params.ffmpegRateMode
-                        mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.ffmpegRateMode = value
+                        mbRateMode.Button.Value = TempProfile.Params.ffmpegOpusRateMode
+                        mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.ffmpegOpusRateMode = value
 
                         Dim mbOpusApp = ui.AddMenu(Of OpusApp)
                         mbOpusApp.Text = "Application Type"
@@ -1108,7 +1102,6 @@ Public Class AudioForm
                         packet.Config = {0, 100, 1}
                         packet.NumEdit.Value = TempProfile.Params.ffmpegOpusPacket
                         packet.NumEdit.SaveAction = Sub(value) TempProfile.Params.ffmpegOpusPacket = CInt(value)
-
                     Case Else
                         If Not {AudioCodec.WAV, AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then
                             Dim mbRateMode = ui.AddMenu(Of AudioRateMode)

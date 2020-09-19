@@ -4,7 +4,7 @@
 
 - Fix Audio decoding method *Pipe* causes crash (Dendraspis, #340)
 - Fix parameters when audio converting to AAC with FFmpeg (Dendraspis, Patman86, #341)
-- Add opus rate modes (Patman86)
+- Improved Opus encoder (Patman86)
 
 
 2.1.4.6 Beta (2020-09-13)

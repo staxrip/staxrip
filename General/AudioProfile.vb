@@ -1163,7 +1163,7 @@ Public Class GUIAudioProfile
                     sb.Append(" -c:a libopus")
                 End If
 
-                Select Case Params.ffmpegRateMode
+                Select Case Params.ffmpegOpusRateMode
                     Case OpusRateMode.CBR
                         sb.Append(" -vbr off")
                     Case OpusRateMode.CVBR
@@ -1194,7 +1194,6 @@ Public Class GUIAudioProfile
                 If Params.ffmpegOpusPacket <> 0 Then
                     sb.Append(" -packet_loss " & CInt(Params.ffmpegOpusPacket))
                 End If
-
             Case AudioCodec.AAC
                 If Params.ffmpegLibFdkAAC Then
                     sb.Append(" -c:a libfdk_aac")
@@ -1233,8 +1232,7 @@ Public Class GUIAudioProfile
             End If
         End If
 
-        'opus fails if -ac is missing
-        If Params.ChannelsMode <> ChannelsMode.Original OrElse Params.Codec = AudioCodec.Opus Then
+        If Params.ChannelsMode <> ChannelsMode.Original Then
             sb.Append(" -ac " & Channels)
         End If
 
@@ -1407,15 +1405,13 @@ Public Class GUIAudioProfile
         Property qaacQuality As Integer = 2
         Property qaacRateMode As Integer
 
-        Property ffmpegOpusApp As OpusApp
-        Property ffmpegOpusComplexity As Integer = 10
-        Property ffmpegOpusCompress As Integer
-        Property ffmpegOpusFrame As Double
-        Property ffmpegOpusFrameSize As Double = 20
-        Property ffmpegOpusMap As Integer
-        Property ffmpegOpusMode As Integer = 2
+        Property ffmpegOpusApp As OpusApp = OpusApp.audio
+        Property ffmpegOpusCompress As Integer = 10
+        Property ffmpegOpusFrame As Double = 20
+        Property ffmpegOpusMap As Integer = -1
         Property ffmpegOpusPacket As Integer
-        Property ffmpegRateMode As OpusRateMode
+        Property ffmpegOpusRateMode As OpusRateMode = OpusRateMode.VBR
+        Property ffmpegOpusMigrate As Integer = 1
 
         Property fdkaacProfile As Integer = 2
         Property fdkaacBandwidth As Integer
@@ -1499,6 +1495,16 @@ Public Class GUIAudioProfile
             If Not MigrateffNormalizeMode Then
                 ffmpegNormalizeMode = CType(ffNormalizeMode, ffmpegNormalizeMode)
                 MigrateffNormalizeMode = True
+            End If
+
+            '2020
+            If ffmpegOpusMigrate <> 1 Then
+                ffmpegOpusMigrate = 1
+                ffmpegOpusApp = OpusApp.audio
+                ffmpegOpusCompress = 10
+                ffmpegOpusFrame = 20
+                ffmpegOpusMap = -1
+                ffmpegOpusRateMode = OpusRateMode.VBR
             End If
         End Sub
     End Class

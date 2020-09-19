@@ -1163,7 +1163,7 @@ Public Class GUIAudioProfile
                     sb.Append(" -c:a libopus")
                 End If
 
-                Select Case Params.OpusRateMode
+                Select Case Params.ffmpegRateMode
                     Case OpusRateMode.CBR
                         sb.Append(" -vbr off")
                     Case OpusRateMode.CVBR
@@ -1172,27 +1172,27 @@ Public Class GUIAudioProfile
 
                 sb.Append(" -b:a " & CInt(Bitrate) & "k")
 
-                Select Case Params.OpusApp
+                Select Case Params.ffmpegOpusApp
                     Case OpusApp.voip
                         sb.Append(" -application voip")
                     Case OpusApp.lowdelay
                         sb.Append(" -application lowdelay")
                 End Select
 
-                If Params.OpusFrame <> 20 Then
-                    sb.Append(" -frame_duration " & Params.OpusFrame.ToInvariantString)
+                If Params.ffmpegOpusFrame <> 20 Then
+                    sb.Append(" -frame_duration " & Params.ffmpegOpusFrame.ToInvariantString)
                 End If
 
-                If Params.OpusMap <> -1 Then
-                    sb.Append(" -mapping_family " & CInt(Params.OpusMap))
+                If Params.ffmpegOpusMap <> -1 Then
+                    sb.Append(" -mapping_family " & CInt(Params.ffmpegOpusMap))
                 End If
 
-                If Params.Opuscompress <> 10 Then
-                    sb.Append(" -compression_level " & CInt(Params.Opuscompress))
+                If Params.ffmpegOpusCompress <> 10 Then
+                    sb.Append(" -compression_level " & CInt(Params.ffmpegOpusCompress))
                 End If
 
-                If Params.OpusPacket <> 0 Then
-                    sb.Append(" -packet_loss " & CInt(Params.OpusPacket))
+                If Params.ffmpegOpusPacket <> 0 Then
+                    sb.Append(" -packet_loss " & CInt(Params.ffmpegOpusPacket))
                 End If
 
             Case AudioCodec.AAC
@@ -1407,16 +1407,15 @@ Public Class GUIAudioProfile
         Property qaacQuality As Integer = 2
         Property qaacRateMode As Integer
 
-        Property OpusencMode As Integer = 2
-        Property OpusencComplexity As Integer = 10
-        Property OpusencFramesize As Double = 20
-        Property OpusencMigrateVersion As Integer = 1
-        Property OpusRateMode As OpusRateMode
-        Property OpusApp As OpusApp
-        Property Opuscompress As Integer
-        Property OpusFrame As Double
-        Property OpusPacket As Integer
-        Property OpusMap As Integer
+        Property ffmpegOpusApp As OpusApp
+        Property ffmpegOpusComplexity As Integer = 10
+        Property ffmpegOpusCompress As Integer
+        Property ffmpegOpusFrame As Double
+        Property ffmpegOpusFrameSize As Double = 20
+        Property ffmpegOpusMap As Integer
+        Property ffmpegOpusMode As Integer = 2
+        Property ffmpegOpusPacket As Integer
+        Property ffmpegRateMode As OpusRateMode
 
         Property fdkaacProfile As Integer = 2
         Property fdkaacBandwidth As Integer
@@ -1472,14 +1471,6 @@ Public Class GUIAudioProfile
 
         'legacy/obsolete
         Sub Migrate()
-            '2019
-            If OpusencMigrateVersion <> 1 Then
-                OpusencFramesize = 20
-                OpusencComplexity = 10
-                OpusencMode = 2
-                OpusencMigrateVersion = 1
-            End If
-
             '2019
             If fdkaacProfile = 0 Then
                 fdkaacProfile = 2

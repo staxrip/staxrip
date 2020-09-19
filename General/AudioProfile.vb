@@ -1163,7 +1163,7 @@ Public Class GUIAudioProfile
                     sb.Append(" -c:a libopus")
                 End If
 
-                Select Case Params.opusRateMode
+                Select Case Params.ffmpegOpusRateMode
                     Case OpusRateMode.CBR
                         sb.Append(" -vbr 0")
                     Case OpusRateMode.VBR
@@ -1174,11 +1174,11 @@ Public Class GUIAudioProfile
 
                 sb.Append(" -b:a " & CInt(Bitrate) & "k")
 
-                If Params.opuscompress > 0 Then
-                    sb.Append(" -compression_level " & CInt(Params.opuscompress))
+                If Params.ffmpegOpusCompress > 0 Then
+                    sb.Append(" -compression_level " & CInt(Params.ffmpegOpusCompress))
                 End If
 
-                Select Case Params.opusApp
+                Select Case Params.ffmpegOpusApp
                     Case OpusApp.no
                     Case OpusApp.voip
                         sb.Append(" -application voip ")
@@ -1399,13 +1399,12 @@ Public Class GUIAudioProfile
         Property qaacQuality As Integer = 2
         Property qaacRateMode As Integer
 
-        Property opusencMode As Integer = 2
-        Property opusencComplexity As Integer = 10
-        Property opusencFramesize As Double = 20
-        Property opusencMigrateVersion As Integer = 1
-        Property opusRateMode As OpusRateMode
-        Property opuscompress As Integer
-        Property opusApp As OpusApp
+        Property ffmpegOpusMode As Integer = 2
+        Property ffmpegOpusComplexity As Integer = 10
+        Property ffmpegOpusFrameSize As Double = 20
+        Property ffmpegOpusRateMode As OpusRateMode
+        Property ffmpegOpusCompress As Integer
+        Property ffmpegOpusApp As OpusApp
 
         Property fdkaacProfile As Integer = 2
         Property fdkaacBandwidth As Integer
@@ -1461,14 +1460,6 @@ Public Class GUIAudioProfile
 
         'legacy/obsolete
         Sub Migrate()
-            '2019
-            If opusencMigrateVersion <> 1 Then
-                opusencFramesize = 20
-                opusencComplexity = 10
-                opusencMode = 2
-                opusencMigrateVersion = 1
-            End If
-
             '2019
             If fdkaacProfile = 0 Then
                 fdkaacProfile = 2

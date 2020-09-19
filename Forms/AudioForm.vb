@@ -865,7 +865,12 @@ Public Class AudioForm
                 TempProfile.Params.RateMode = AudioRateMode.VBR
             Case AudioCodec.Opus
                 numBitrate.Value = 80
-                TempProfile.Params.RateMode = AudioRateMode.VBR
+                TempProfile.Params.OpusRateMode = OpusRateMode.VBR
+                TempProfile.Params.OpusApp = OpusApp.audio
+                TempProfile.Params.Opuscompress = 10
+                TempProfile.Params.OpusFrame = 20
+                TempProfile.Params.OpusPacket = 0
+                TempProfile.Params.OpusMap = -1
         End Select
 
         UpdateBitrate()
@@ -1060,20 +1065,50 @@ Public Class AudioForm
                         Dim mbRateMode = ui.AddMenu(Of OpusRateMode)
                         mbRateMode.Text = "Rate Mode"
                         mbRateMode.Expandet = True
-                        mbRateMode.Button.Value = TempProfile.Params.opusRateMode
-                        mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.opusRateMode = value
+                        mbRateMode.Button.Value = TempProfile.Params.OpusRateMode
+                        mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.OpusRateMode = value
 
                         Dim mbOpusApp = ui.AddMenu(Of OpusApp)
                         mbOpusApp.Text = "Application Type"
                         mbOpusApp.Expandet = True
-                        mbOpusApp.Button.Value = TempProfile.Params.opusApp
-                        mbOpusApp.Button.SaveAction = Sub(value) TempProfile.Params.opusApp = value
+                        mbOpusApp.Button.Value = TempProfile.Params.OpusApp
+                        mbOpusApp.Button.SaveAction = Sub(value) TempProfile.Params.OpusApp = value
 
-                        Dim num = ui.AddNum(page)
-                        num.Text = "Compression Level"
-                        num.Config = {0, 10, 1}
-                        num.NumEdit.Value = TempProfile.Params.opuscompress
-                        num.NumEdit.SaveAction = Sub(value) TempProfile.Params.opuscompress = CInt(value)
+                        Dim frame = ui.AddMenu(Of Double)
+                        frame.Text = "Frame Duration"
+                        frame.Expandet = True
+                        frame.Add("2.5", 2.5)
+                        frame.Add("5", 5)
+                        frame.Add("10", 10)
+                        frame.Add("20", 20)
+                        frame.Add("40", 40)
+                        frame.Add("60", 60)
+                        frame.Add("80", 80)
+                        frame.Add("100", 100)
+                        frame.Add("120", 120)
+                        frame.Property = NameOf(TempProfile.Params.OpusFrame)
+
+                        Dim map = ui.AddMenu(Of Integer)
+                        map.Text = "Mapping Family"
+                        map.Expandet = True
+                        map.Add("-1", -1)
+                        map.Add("0", 0)
+                        map.Add("1", 1)
+                        map.Add("255", 255)
+                        map.Property = NameOf(TempProfile.Params.OpusMap)
+
+                        Dim comp = ui.AddNum(page)
+                        comp.Text = "Compression Level"
+                        comp.Config = {0, 10, 1}
+                        comp.NumEdit.Value = TempProfile.Params.Opuscompress
+                        comp.NumEdit.SaveAction = Sub(value) TempProfile.Params.Opuscompress = CInt(value)
+
+                        Dim packet = ui.AddNum(page)
+                        packet.Text = "Packet Loss"
+                        packet.Config = {0, 100, 1}
+                        packet.NumEdit.Value = TempProfile.Params.OpusPacket
+                        packet.NumEdit.SaveAction = Sub(value) TempProfile.Params.OpusPacket = CInt(value)
+
                     Case Else
                         If Not {AudioCodec.WAV, AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then
                             Dim mbRateMode = ui.AddMenu(Of AudioRateMode)

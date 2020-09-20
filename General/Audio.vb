@@ -332,13 +332,13 @@ Public Class Audio
             gap.Params.Normalize = False
         End If
 
-        Dim outPath = (p.TempDir + ap.File.Base + "." + ap.ConvertExt).ToShortFilePath
+        Dim outPath = (p.TempDir + ap.File.Base + "." + ap.ConvertExt).LongPathPrefix
 
         If ap.File = outPath Then
             outPath += "." + ap.ConvertExt
         End If
 
-        Dim args = "-i " + ap.File.ToShortFilePath.Escape
+        Dim args = "-i " + ap.File.LongPathPrefix.Escape
 
         If Not ap.Stream Is Nothing Then
             args += " -map 0:" & ap.Stream.StreamOrder

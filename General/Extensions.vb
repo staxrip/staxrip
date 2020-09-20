@@ -301,9 +301,10 @@ Module StringExtensions
         End If
 
         Dim MAX_PATH = 260
+        Dim prefix = "\\?\"
 
-        If instance.Length > MAX_PATH Then
-            Return "\\?\" + instance
+        If instance.Length > MAX_PATH AndAlso Not instance.StartsWith(prefix) Then
+            Return prefix + instance
         End If
 
         Return instance

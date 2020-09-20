@@ -1582,13 +1582,29 @@ Namespace UI
         End Sub
 
         Sub UpdateControls()
-            If Not RemoveButton Is Nothing Then RemoveButton.Enabled = Not SelectedItem Is Nothing
-            If Not UpButton Is Nothing Then UpButton.Enabled = SelectedIndex > 0
-            If Not DownButton Is Nothing Then DownButton.Enabled = SelectedIndex > -1 AndAlso SelectedIndex < Items.Count - 1
-            If Not Button1 Is Nothing Then Button1.Enabled = Not SelectedItem Is Nothing
-            If Not Button2 Is Nothing Then Button2.Enabled = Not SelectedItem Is Nothing
+            If Not RemoveButton Is Nothing Then
+                RemoveButton.Enabled = Not SelectedItem Is Nothing
+            End If
 
-            If SelectedIndex = -1 AndAlso Items.Count > 0 Then SelectedIndex = 0
+            If Not UpButton Is Nothing Then
+                UpButton.Enabled = SelectedIndex > 0
+            End If
+
+            If Not DownButton Is Nothing Then
+                DownButton.Enabled = SelectedIndex > -1 AndAlso SelectedIndex < Items.Count - 1
+            End If
+
+            If Not Button1 Is Nothing Then
+                Button1.Enabled = Not SelectedItem Is Nothing
+            End If
+
+            If Not Button2 Is Nothing Then
+                Button2.Enabled = Not SelectedItem Is Nothing
+            End If
+
+            If SelectedIndex = -1 AndAlso Items.Count > 0 Then
+                SelectedIndex = 0
+            End If
         End Sub
     End Class
 

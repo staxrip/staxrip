@@ -783,7 +783,7 @@ Public Class GUIAudioProfile
             Exit Sub
         End If
 
-        Dim args = "-i " + File.ToShortFilePath.Escape
+        Dim args = "-i " + File.LongPathPrefix.Escape
 
         If Not Stream Is Nothing AndAlso Streams.Count > 1 Then
             args += " -map 0:a:" & Stream.Index
@@ -867,8 +867,8 @@ Public Class GUIAudioProfile
         End If
 
         If includePaths Then
-            sb.Append(Package.eac3to.Path.Escape + " " + id + File.ToShortFilePath.Escape +
-                " " + GetOutputFile.ToShortFilePath.Escape)
+            sb.Append(Package.eac3to.Path.Escape + " " + id + File.LongPathPrefix.Escape +
+                " " + GetOutputFile.LongPathPrefix.Escape)
         Else
             sb.Append("eac3to")
         End If
@@ -985,10 +985,10 @@ Public Class GUIAudioProfile
         If Params.fdkaacTransportFormat <> 0 Then sb.Append(" --transport-format " & Params.fdkaacTransportFormat)
         If Params.CustomSwitches <> "" Then sb.Append(" " + Params.CustomSwitches)
 
-        Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.ToShortFilePath.Escape)
+        Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.LongPathPrefix.Escape)
 
         If includePaths Then
-            sb.Append(" --ignorelength -o " + GetOutputFile.ToShortFilePath.Escape + " " + input)
+            sb.Append(" --ignorelength -o " + GetOutputFile.LongPathPrefix.Escape + " " + input)
         End If
 
         Return sb.ToString

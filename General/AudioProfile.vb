@@ -742,6 +742,7 @@ Public Class GUIAudioProfile
                     proc.Package = Package.eac3to
                     proc.SkipStrings = {"process: ", "analyze: "}
                     proc.TrimChars = {"-"c, " "c}
+                    g.AddToPath(Package.NeroAAC.Directory)
                 ElseIf cl.Contains("ffmpeg") Then
                     If cl.Contains("libfdk_aac") Then
                         proc.Package = Package.ffmpeg_non_free

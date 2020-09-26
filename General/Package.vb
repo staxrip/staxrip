@@ -85,7 +85,7 @@ Public Class Package
         .HelpURL = "http://www.ffmpeg.org/documentation.html",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpSwitch = "-h",
-        .Description = "Versatile audio video convertor console app."})
+        .Description = "Versatile and free audio video convertor console app. " + Strings.Opus})
 
     Shared Property ffmpeg_non_free As Package = Add(New Package With {
         .Name = "ffmpeg non-free",
@@ -96,7 +96,8 @@ Public Class Package
         .IsIncluded = False,
         .VersionAllowAny = True,
         .Find = False,
-        .Description = "Versatile audio video convertor console app. Custom build with non-free libraries like fdk-aac.",
+        .Description = "Versatile audio video convertor console app. " +
+                       "Custom build with non-free libraries like fdk-aac. " + Strings.Opus,
         .RequiredFunc = Function() Audio.CommandContains("libfdk_aac")})
 
     Shared Property qaac As Package = Add(New Package With {
@@ -106,7 +107,7 @@ Public Class Package
         .WebURL = "http://github.com/nu774/qaac",
         .HelpSwitch = "-h",
         .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.qaac),
-        .Description = "Console AAC encoder based on the Apple AAC encoder."})
+        .Description = "Console AAC encoder using the non-free Apple AAC encoder. " + Strings.Opus})
 
     Shared Property fdkaac As Package = Add(New Package With {
         .Name = "fdkaac",
@@ -115,7 +116,7 @@ Public Class Package
         .HelpSwitch = "-h",
         .IsIncluded = False,
         .VersionAllowAny = True,
-        .Description = "Non-free AAC console encoder based on libfdk-aac. Opus is recommended as free alternative.",
+        .Description = "Non-free AAC console encoder using libfdk-aac. " + Strings.Opus,
         .WebURL = "http://github.com/nu774/fdkaac",
         .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.fdkaac)})
 
@@ -126,7 +127,16 @@ Public Class Package
         .WebURL = "http://forum.doom9.org/showthread.php?t=125966",
         .HelpURL = "http://en.wikibooks.org/wiki/Eac3to/How_to_Use",
         .HelpSwitch = "",
-        .Description = "Audio convertor console app."})
+        .Description = "Audio convertor console app. " + Strings.Opus})
+
+    Shared Property NeroAAC As Package = Add(New Package With {
+        .Name = "NeroAAC",
+        .Filename = "neroAacEnc.exe",
+        .HelpSwitch = "-?",
+        .IsIncluded = False,
+        .VersionAllowAny = True,
+        .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.eac3to) AndAlso Audio.CommandContains("m4a"),
+        .Description = "Non-free AAC audio convertor console app. " + Strings.Opus})
 
     Shared Property MediaInfo As Package = Add(New Package With {
         .Name = "MediaInfo",

@@ -468,6 +468,10 @@ Public Class CommandLineForm
             End If
 
             If find.Length > 0 Then
+                If find.Contains("=") Then
+                    find = find.Left("=")
+                End If
+
                 cmsCommandLine.Add("Search " + find, Sub()
                                                          cbGoTo.Text = find
                                                          cbGoTo.Focus()

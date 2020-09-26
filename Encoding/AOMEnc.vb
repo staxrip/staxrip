@@ -125,6 +125,7 @@ Public Class AV1Params
         .Name = "Mode",
         .Text = "Mode",
         .Path = "Basic",
+        .Switches = {"--passes", "--pass", "--target-bitrate"},
         .Options = {"One Pass", "Two Pass"}}
 
     Property RateMode As New OptionParam With {

@@ -1539,7 +1539,7 @@ Public Class MainForm
     Sub ResetTemplates()
         If MsgQuestion("Restore the default templates?") = DialogResult.OK Then
             Try
-                DirectoryHelp.Delete(Folder.Template)
+                FolderHelp.Delete(Folder.Template)
                 Folder.Template.ToString()
                 UpdateTemplatesMenuAsync()
             Catch ex As Exception

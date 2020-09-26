@@ -367,9 +367,9 @@ Public Class GlobalClass
 
                 If moreJobsToProcessInTempDir.Count = 0 Then
                     If s.DeleteTempFilesMode = DeleteMode.RecycleBin Then
-                        DirectoryHelp.Delete(p.TempDir, VB6.FileIO.RecycleOption.SendToRecycleBin)
+                        FolderHelp.Delete(p.TempDir, VB6.FileIO.RecycleOption.SendToRecycleBin)
                     Else
-                        DirectoryHelp.Delete(p.TempDir)
+                        FolderHelp.Delete(p.TempDir)
                     End If
                 End If
             Catch

@@ -185,8 +185,9 @@ Public Class Folder
                         Directory.CreateDirectory(scriptDir + "Auto Load")
                     End If
 
-                    DirectoryHelp.Create(dir + "Plugins\AviSynth")
-                    DirectoryHelp.Create(dir + "Plugins\VapourSynth")
+                    FolderHelp.Create(dir + "Plugins\AviSynth")
+                    FolderHelp.Create(dir + "Plugins\VapourSynth")
+                    FolderHelp.Create(dir + "Plugins\Dual")
 
                     Registry.CurrentUser.Write("Software\StaxRip\SettingsLocation", Folder.Startup, dir)
                     SettingsValue = dir
@@ -215,7 +216,7 @@ Public Class Folder
                 Dim files = Directory.GetFiles(ret, "*.srip")
 
                 If files.Length > 0 Then
-                    DirectoryHelp.Delete(ret + "Backup")
+                    FolderHelp.Delete(ret + "Backup")
                     Directory.CreateDirectory(ret + "Backup")
 
                     For Each i In files
@@ -1483,43 +1484,4 @@ Public Class PowerRequest
         <MarshalAs(UnmanagedType.LPWStr)>
         Public SimpleReasonString As String
     End Structure
-End Class
-
-Public Class CRC32
-    Shared Table As UInteger()
-
-    Shared Sub New()
-        Dim poly = &HEDB88320UI
-        Table = New UInteger(255) {}
-        Dim temp As UInteger
-
-        For i = 0 To Table.Length - 1
-            temp = CUInt(i)
-
-            For j = 8 To 1 Step -1
-                If (temp And 1) = 1 Then
-                    temp = (temp >> 1) Xor poly
-                Else
-                    temp >>= 1
-                End If
-            Next
-
-            Table(i) = temp
-        Next
-    End Sub
-
-    Shared Function GetChecksum(bytes As Byte()) As UInteger
-        Dim crc = &HFFFFFFFFUI
-
-        For i = 0 To bytes.Length - 1
-            Dim index = CByte((crc And &HFF) Xor bytes(i))
-            crc = (crc >> 8) Xor Table(index)
-        Next
-
-        Return Not crc
-    End Function
-
-    Shared Function GetChecksum(str As String) As UInteger
-        Return GetChecksum(Encoding.Unicode.GetBytes(str))
-    End Function
 End Class

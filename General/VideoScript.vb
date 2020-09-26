@@ -286,6 +286,14 @@ clipname.set_output()
                 Next
             End If
 
+            dir = Folder.Settings + "Plugins\Dual\"
+
+            If dir.DirExists Then
+                For Each file In Directory.GetFiles(dir, "*.dll")
+                    ret += "core.std.LoadPlugin(r""" + file + """, altsearchpath=True)" + BR
+                Next
+            End If
+
             Return ret
         End If
     End Function
@@ -371,7 +379,7 @@ clipname.set_output()
                 ModifyVSScript(scriptCode, code)
             End If
         Else
-            If s.LoadVapourSynthPlugins AndAlso Not File.Exists(Folder.Plugins + plugin.Filename) AndAlso
+            If s.LoadVapourSynthPlugins AndAlso Not IsVsPluginInAutoLoadFolder(plugin.Filename) AndAlso
                 Not script.Contains(plugin.Filename) AndAlso Not code.Contains(plugin.Filename) Then
 
                 Dim line As String
@@ -389,6 +397,41 @@ clipname.set_output()
         End If
     End Sub
 
+    Shared Function IsVsPluginInAutoLoadFolder(filename As String) As Boolean
+        If FrameServerHelp.IsPortable Then
+            Dim folders = {
+                Package.VapourSynth.Directory + "vapoursynth64\plugins\",
+                Package.VapourSynth.Directory + "vapoursynth64\coreplugins\",
+                Folder.Settings + "Plugins\VapourSynth\",
+                Folder.Settings + "Plugins\Dual\"}
+
+            For Each folder In folders
+                If File.Exists(folder + filename) Then
+                    Return True
+                End If
+            Next
+        Else
+            Return File.Exists(Folder.Plugins + filename)
+        End If
+    End Function
+
+    Shared Function IsAvsPluginInAutoLoadFolder(filename As String) As Boolean
+        If FrameServerHelp.IsPortable Then
+            Dim folders = {
+                Package.AviSynth.Directory + "plugins\",
+                Folder.Settings + "Plugins\AviSynth\",
+                Folder.Settings + "Plugins\Dual\"}
+
+            For Each folder In folders
+                If File.Exists(folder + filename) Then
+                    Return True
+                End If
+            Next
+        Else
+            Return (Folder.Plugins + filename).FileExists
+        End If
+    End Function
+
     Shared Function GetAVSLoadCode(script As String, scriptAlready As String) As String
         Dim scriptLower = script.ToLower
         Dim loadCode = ""
@@ -401,18 +444,11 @@ clipname.set_output()
                 If Not plugin.AvsFilterNames Is Nothing Then
                     For Each filterName In plugin.AvsFilterNames
                         If s.LoadAviSynthPlugins AndAlso
-                            Not File.Exists(Folder.Plugins + plugin.Filename) AndAlso
+                            Not IsAvsPluginInAutoLoadFolder(plugin.Filename) AndAlso
                             scriptLower.Contains(filterName.ToLower) Then
 
                             If plugin.Filename.Ext = "dll" Then
                                 Dim load = "LoadPlugin(""" + fp + """)" + BR
-
-                                If File.Exists(Folder.Plugins + fp.FileName) AndAlso
-                                    File.GetLastWriteTimeUtc(Folder.Plugins + fp.FileName) <
-                                    File.GetLastWriteTimeUtc(fp) Then
-
-                                    MsgWarn("Conflict with outdated plugin", $"An outdated version of {plugin.Name} is located in your auto load folder. StaxRip includes a newer version.{BR2 + Folder.Plugins + fp.FileName}", True)
-                                End If
 
                                 If Not scriptLower.Contains(load.ToLower) AndAlso
                                     Not loadCode.ToLower.Contains(load.ToLower) AndAlso
@@ -466,8 +502,19 @@ clipname.set_output()
         Dim initCode As String
 
         If FrameServerHelp.IsPortable Then
-            initCode = "AddAutoloadDir(""" + Package.AviSynth.Directory + "plugins"")" + BR +
-                       "AddAutoloadDir(""" + Folder.Settings + "Plugins\AviSynth" + """)" + BR
+            initCode = "AddAutoloadDir(""" + Package.AviSynth.Directory + "plugins"")" + BR
+
+            Dim pluginDir = Folder.Settings + "Plugins\AviSynth"
+
+            If FolderHelp.HasFiles(pluginDir) Then
+                initCode += "AddAutoloadDir(""" + pluginDir + """)" + BR
+            End If
+
+            pluginDir = Folder.Settings + "Plugins\Dual"
+
+            If FolderHelp.HasFiles(pluginDir) Then
+                initCode += "AddAutoloadDir(""" + pluginDir + """)" + BR
+            End If
         End If
 
         Return initCode + newScript

@@ -3833,6 +3833,12 @@ Public Enum QuotesMode
     Never
 End Enum
 
+Public Enum CompressionMode
+    zlib
+    mpeg4p2
+    none
+End Enum
+
 Public Enum ApplicationEvent
     <DispName("After Job Muxed")> JobMuxed
     <DispName("After Job Processed")> JobProcessed

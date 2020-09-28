@@ -17,6 +17,7 @@ Public MustInherit Class Muxer
     Property TagFile As String = ""
     Property TimestampsFile As String = ""
     Property VideoTrackName As String = ""
+    Property Compression As CompressionMode
 
     MustOverride Sub Mux()
 
@@ -721,6 +722,10 @@ Public Class MkvMuxer
                 args += " --forced-track " & id & ":" & If(subtitle.Forced, 1, 0)
                 args += " --default-track " & id & ":" & If(subtitle.Default, 1, 0)
                 args += " --language " & id & ":" + subtitle.Language.ThreeLetterCode
+
+                If Compression <> CompressionMode.zlib Then
+                    args += " --compression " & id & ":" + Compression.ToString
+                End If
 
                 If isContainer OrElse subtitle.Title <> "" Then
                     args += " --track-name """ & id & ":" + Convert(subtitle.Title) + """"

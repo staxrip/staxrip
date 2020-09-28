@@ -55,6 +55,10 @@ Namespace UI
             End If
         End Sub
 
+        Sub SetMinimumSize(w As Integer, h As Integer)
+            MinimumSize = New Size(CInt(Font.Height * w), CInt(Font.Height * h))
+        End Sub
+
         Protected Overrides Sub OnLoad(args As EventArgs)
             KeyPreview = True
             SetTabIndexes(Me)

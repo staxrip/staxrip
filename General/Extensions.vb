@@ -311,35 +311,22 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function ToShortPath(instance As String) As String
-        If instance = "" Then
-            Return ""
-        End If
-
-        Dim MAX_PATH = 260
-
-        If instance.Length <= MAX_PATH Then
-            Return instance
-        End If
-
-        Dim sb As New StringBuilder(500)
-        Native.GetShortPathName(instance, sb, sb.Capacity)
-        Return sb.ToString
-    End Function
-
-    <Extension()>
     Function ToShortFilePath(instance As String) As String
         If instance = "" Then
             Return ""
         End If
 
+        If instance.StartsWith("\\?\") Then
+            instance = instance.Substring(4)
+        End If
+
         Dim MAX_PATH = 260
 
         If instance.Length <= MAX_PATH Then
             Return instance
         End If
 
-        Dim sb As New StringBuilder(500)
+        Dim sb As New StringBuilder(MAX_PATH)
         Native.GetShortPathName(instance.Dir, sb, sb.Capacity)
         Dim ret = sb.ToString + instance.FileName
 

@@ -306,10 +306,10 @@ Public MustInherit Class AudioProfile
 
         Dim tracks = g.GetAudioProfiles.Where(Function(track) track.File <> "")
         Dim trackID = If(tracks.Count > 1, "_a" & GetTrackID(), "")
-        Dim outfile = p.TempDir + base + trackID & "." + OutputFileType
+        Dim outfile = p.TempDir + base + trackID & "." + OutputFileType.ToLower
 
         If File.IsEqualIgnoreCase(outfile) Then
-            Return p.TempDir + base + trackID & "_new." + OutputFileType
+            Return p.TempDir + base + trackID & "_new." + OutputFileType.ToLower
         End If
 
         Return outfile
@@ -1057,10 +1057,10 @@ Public Class GUIAudioProfile
             sb.Append(" " + Params.CustomSwitches)
         End If
 
-        Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.Escape)
+        Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.ToShortFilePath.Escape)
 
         If includePaths Then
-            sb.Append(" " + input + " -o " + GetOutputFile.Escape)
+            sb.Append(" " + input + " -o " + GetOutputFile.ToShortFilePath.Escape)
         End If
 
         Return sb.ToString

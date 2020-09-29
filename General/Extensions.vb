@@ -759,14 +759,12 @@ Module StringExtensions
     End Sub
 End Module
 
-Module NumericExtensions
+Module MiscExtensions
     <Extension()>
     Function ToInvariantString(value As Double, format As String) As String
         Return value.ToString(format, CultureInfo.InvariantCulture)
     End Function
-End Module
 
-Module MiscExtensions
     <Extension()>
     Function ToInvariantString(instance As IConvertible) As String
         If instance Is Nothing Then
@@ -774,6 +772,11 @@ Module MiscExtensions
         End If
 
         Return instance.ToString(CultureInfo.InvariantCulture)
+    End Function
+
+    <Extension()>
+    Function ToInvariantString(instance As Date, format As String) As String
+        Return instance.ToString(format, CultureInfo.InvariantCulture)
     End Function
 
     <Extension()>

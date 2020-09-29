@@ -1,4 +1,6 @@
 
+Imports System.Globalization
+Imports System.Text
 Imports System.Text.RegularExpressions
 
 Imports Microsoft.Win32
@@ -1247,8 +1249,9 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "AddGrainC",
             .Filename = "AddGrainC.dll",
-            .HelpFilename = "Readme.txt",
-            .WebURL = "http://avisynth.nl/index.php/AddGrainC",
+            .WebURL = "https://github.com/pinterf/AddGrainC",
+            .HelpURL = "https://raw.githubusercontent.com/pinterf/AddGrainC/master/Documentation/AddGrainC.txt",
+            .DownloadURL = "https://github.com/pinterf/AddGrainC/releases",
             .Description = "Generate film-like grain or other effects (like rain) by adding random noise to a video clip.",
             .AvsFilterNames = {"AddGrainC", "AddGrain"}})
 
@@ -1804,28 +1807,16 @@ Public Class Package
             .TreePath = "Runtimes",
             .RequiredFunc = Function() AviSynthShader.Required OrElse FFT3DGPU.Required})
 
-        Try
-            Dim versionFile = Folder.Apps + "Versions.txt"
-
-            For Each line In File.ReadAllLines(versionFile)
-                For Each pack In Items.Values
-                    If line Like "*=*;*" Then
-                        Dim name = line.Left("=").Trim
-
-                        If name = pack.ID Then
-                            pack.Version = line.Right("=").Right(";").Trim
-                            Dim dateArray = line.Right("=").Left(";").Trim.Split("-"c)
-                            pack.VersionDate = New DateTime(CInt(dateArray(0)), CInt(dateArray(1)), CInt(dateArray(2)))
-                        End If
-                    End If
-                Next
-            Next
-        Catch ex As Exception
-            MsgError("You are running a StaxRip version that don't has any apps included!" + BR2 +
-                     "Please download and use a StaxRip version that has all required apps included." + BR2 +
-                     "The Apps are expected to be located in a directory called 'Apps' in the startup folder besides the StaxRip executable.")
-        End Try
+        g.RunTask(Sub()
+                      SyncLock ConfLock
+                          For Each pack In Items.Values
+                              pack.LoadConf()
+                          Next
+                      End SyncLock
+                  End Sub)
     End Sub
+
+    Shared Property ConfLock As New Object
 
     Shared Function Add(pack As Package) As Package
         Items(pack.ID) = pack
@@ -2418,6 +2409,39 @@ Public Class Package
     Function CompareTo(other As Package) As Integer Implements System.IComparable(Of Package).CompareTo
         Return Name.CompareTo(other.Name)
     End Function
+
+    Sub LoadConf()
+        Dim path = Folder.Apps + "Conf\" + ID + ".conf"
+
+        If Not path.FileExists Then
+            Exit Sub
+        End If
+
+        Dim content = File.ReadAllText(path)
+
+        For Each line In content.SplitLinesNoEmpty
+            If Not line.Contains("=") Then
+                Continue For
+            End If
+
+            Dim name = line.Left("=").Trim
+            Dim value = line.Right("=").Trim
+
+            Select Case name
+                Case "Version"
+                    Version = value
+                Case "Date"
+                    Dim tokens = value.Split("-"c)
+                    VersionDate = New DateTime(CInt(tokens(0)), CInt(tokens(1)), CInt(tokens(2)))
+            End Select
+        Next
+    End Sub
+
+    Sub SaveConf()
+        Dim content = "Version = " + Version + BR +
+                      "Date = " + VersionDate.ToInvariantString("yyyy-MM-dd")
+        content.WriteFileUTF8BOM(Folder.Apps + "Conf\" + ID + ".conf")
+    End Sub
 End Class
 
 Public Class PluginPackage

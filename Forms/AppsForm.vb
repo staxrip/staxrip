@@ -602,19 +602,7 @@ Public Class AppsForm
 
             CurrentPackage.Version = input
             CurrentPackage.VersionDate = File.GetLastWriteTimeUtc(CurrentPackage.Path)
-
-            Dim txt As String
-
-            For Each pack In Package.Items.Values
-                If pack.Version <> "" Then
-                    txt += pack.ID + " = " + pack.VersionDate.ToString("yyyy-MM-dd",
-                        CultureInfo.InvariantCulture) + "; " + pack.Version + BR 'persian calendar
-                End If
-            Next
-
-            If Directory.Exists(Folder.Apps) Then
-                txt.FormatColumn("=").WriteFileUTF8BOM(Folder.Apps + "Versions.txt")
-            End If
+            CurrentPackage.SaveConf()
 
             ShowActivePackage()
         End If

@@ -1,5 +1,8 @@
 
-2.1.4.7 Beta (2020-09-??)
+2.1.4.8 Beta (2020-09-??)
+============
+
+2.1.4.7 Beta (2020-10-02)
 ============
 
 - Fix Audio decoding method *Pipe* causes crash (Dendraspis, #340)

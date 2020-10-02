@@ -35,7 +35,6 @@ Public Class Package
     Property WebURL As String
 
     Shared Property Items As New SortedDictionary(Of String, Package)
-    Shared Event Changed()
 
     Shared Property DGIndex As Package = Add(New Package With {
         .Name = "DGIndex",
@@ -1940,10 +1939,6 @@ Public Class Package
             Return "Misc"
         End If
     End Function
-
-    Shared Sub RaiseChanged()
-        RaiseEvent Changed()
-    End Sub
 
     Sub ShowHelp()
         Dim dic As New SortedDictionary(Of String, String)

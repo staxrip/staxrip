@@ -352,8 +352,6 @@ Public Class AppsForm
         miAutoUpdate.Visible = g.IsDevelopmentPC
         miEditConf.Visible = g.IsDevelopmentPC
 
-        AddHandler Package.Changed, AddressOf ShowActivePackage
-
         AddHandler SetupButton.Click, Sub()
                                           CurrentPackage.SetupAction.Invoke
                                           ShowActivePackage()
@@ -527,11 +525,6 @@ Public Class AppsForm
         ShowActivePackage()
         Refresh()
         MyBase.OnActivated(e)
-    End Sub
-
-    Protected Overrides Sub OnClosed(e As EventArgs)
-        MyBase.OnClosed(e)
-        RemoveHandler Package.Changed, AddressOf ShowActivePackage
     End Sub
 
     Protected Overrides Sub OnKeyDown(args As KeyEventArgs)

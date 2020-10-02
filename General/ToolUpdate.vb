@@ -213,7 +213,7 @@ Public Class ToolUpdate
             Package.Version = input
             Package.VersionDate = File.GetLastWriteTimeUtc(Package.Path)
             Package.SaveConf()
-            Package.RaiseChanged()
+            UpdatePackageDialog()
             g.DefaultCommands.TestAndDynamicFileCreation()
         End If
     End Sub

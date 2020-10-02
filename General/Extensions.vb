@@ -229,7 +229,9 @@ Module StringExtensions
 
     <Extension()>
     Function DirExists(instance As String) As Boolean
-        Return Directory.Exists(instance)
+        If instance <> "" Then
+            Return Directory.Exists(instance)
+        End If
     End Function
 
     <Extension()>
@@ -362,7 +364,7 @@ Module StringExtensions
 
     <Extension()>
     Function ContainsAny(instance As String, ParamArray any As String()) As Boolean
-        If instance <> "" Then
+        If instance <> "" AndAlso Not any.NothingOrEmpty Then
             Return any.Any(Function(arg) instance.Contains(arg))
         End If
     End Function

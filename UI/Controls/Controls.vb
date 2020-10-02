@@ -1960,10 +1960,16 @@ Namespace UI
                 TextBox.Width = ClientSize.Width - 4
                 TextBox.Height = ClientSize.Height - 4
             Else
-                TextBox.Top = (ClientSize.Height - TextBox.Height) \ 2
+                TextBox.Top = ((ClientSize.Height - TextBox.Height) \ 2) - 1
                 TextBox.Left = 2
                 TextBox.Width = ClientSize.Width - 4
-                TextBox.Height = TextRenderer.MeasureText("gG", TextBox.Font).Height
+                Dim h = TextRenderer.MeasureText("gG", TextBox.Font).Height
+
+                If TextBox.Height < h Then
+                    TextBox.Multiline = True
+                    TextBox.MinimumSize = New Size(0, h)
+                    TextBox.Multiline = False
+                End If
             End If
         End Sub
 

@@ -1464,6 +1464,10 @@ Public Class GlobalClass
         Return IntPtr.Size = 4
     End Function
 
+    Function Is64Bit() As Boolean
+        Return IntPtr.Size = 8
+    End Function
+
     Sub RunTask(action As Action)
         Task.Run(Sub()
                      Try

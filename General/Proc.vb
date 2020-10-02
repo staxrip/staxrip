@@ -469,8 +469,10 @@ Public Class Proc
             End If
         Next
 
-        If Not path.Contains(Package.VisualCpp2019.Directory + ";") Then
-            path = Package.VisualCpp2019.Directory + ";" + path
+        Dim cppDir = Package.VisualCpp2019.Directory
+
+        If Not cppDir.PathStartsWith(Folder.System) AndAlso Not path.Contains(cppDir + ";") Then
+            path = cppDir + ";" + path
         End If
 
         dic("path") = path

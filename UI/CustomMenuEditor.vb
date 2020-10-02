@@ -445,14 +445,12 @@ Namespace UI
             '
             'NewFromDefaultsToolStripMenuItem
             '
-            Me.NewFromDefaultsToolStripMenuItem.Help = Nothing
             Me.NewFromDefaultsToolStripMenuItem.Name = "NewFromDefaultsToolStripMenuItem"
             Me.NewFromDefaultsToolStripMenuItem.Size = New System.Drawing.Size(546, 67)
             Me.NewFromDefaultsToolStripMenuItem.Text = "New From Defaults..."
             '
             'ResetToolStripMenuItem
             '
-            Me.ResetToolStripMenuItem.Help = Nothing
             Me.ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
             Me.ResetToolStripMenuItem.Size = New System.Drawing.Size(546, 67)
             Me.ResetToolStripMenuItem.Text = "Reset Everything"

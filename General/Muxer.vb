@@ -509,10 +509,10 @@ Public Class BatchMuxer
     End Sub
 
     Overrides Function Edit() As DialogResult
-        Using f As New SimpleSettingsForm("Batch Muxer", "The Batch Muxer dialog allows to configure StaxRip to use a command line or batch code as muxer.")
-            f.Height = CInt(f.Height * 0.6)
+        Using form As New SimpleSettingsForm("Batch Muxer", "The Batch Muxer dialog allows to configure StaxRip to use a command line or batch code as muxer.")
+            form.Height = CInt(form.Height * 0.6)
 
-            Dim ui = f.SimpleUI
+            Dim ui = form.SimpleUI
             Dim page = ui.CreateFlowPage("main page")
 
             Dim tb = ui.AddText(page)
@@ -521,7 +521,7 @@ Public Class BatchMuxer
             tb.Edit.SaveAction = Sub(value) OutputTypeValue = value
 
             Dim l = ui.AddLabel(page, "Batch Script:")
-            l.MarginTop = f.Font.Height
+            l.MarginTop = form.Font.Height
             l.Help = "Batch script which may contain macros."
 
             tb = ui.AddText(page)
@@ -533,7 +533,7 @@ Public Class BatchMuxer
             tb.Edit.UseCommandlineEditor = True
             tb.Edit.SaveAction = Sub(value) CommandLines = value
 
-            Dim ret = f.ShowDialog()
+            Dim ret = form.ShowDialog()
             If ret = DialogResult.OK Then
                 ui.Save()
 

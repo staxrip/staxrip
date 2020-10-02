@@ -425,6 +425,7 @@ Namespace UI
         Private HelpValue As String
 
         <Editor(GetType(StringEditor), GetType(UITypeEditor))>
+        <DefaultValue("")>
         Property Help() As String
             Get
                 Return HelpValue

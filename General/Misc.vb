@@ -3851,3 +3851,7 @@ Public Enum ApplicationEvent
     <DispName("Before Job Processed")> BeforeJobProcessed
     <DispName("Before Processing")> BeforeProcessing
 End Enum
+
+Public Interface IUpdateUI
+    Sub UpdateUI()
+End Interface

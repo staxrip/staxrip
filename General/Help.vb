@@ -161,14 +161,26 @@ Public Class FileHelp
         End If
     End Sub
 
-    Shared Sub Delete(path As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
+    Shared Sub Delete(
+        path As String,
+        Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
+
         Try
             If File.Exists(path) Then
-                FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
+                FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs,
+                    recycleOption, UICancelOption.DoNothing)
             End If
         Catch
         End Try
     End Sub
+
+    Shared Function ReadAllText(path As String) As String
+        If path.FileExists Then
+            Return File.ReadAllText(path)
+        End If
+
+        Return ""
+    End Function
 End Class
 
 Public Class ProcessHelp

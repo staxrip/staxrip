@@ -140,17 +140,17 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(Demuxers, "Demuxers", 108) Then
+        If Check(Demuxers, "Demuxers", 109) Then
             Demuxers = Demuxer.GetDefaults()
         End If
 
-        If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 8) Then
+        If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 9) Then
             AviSynthFilterPreferences = New StringPairList
             AviSynthFilterPreferences.Add("*", "FFVideoSource")
             AviSynthFilterPreferences.Add("*:VP9", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("264 h264 avc", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavVideoSource")
-            AviSynthFilterPreferences.Add("d2v", "MPEG2Source")
+            AviSynthFilterPreferences.Add("d2v", "D2VSource")
             AviSynthFilterPreferences.Add("mp4 m4v mov", "LSMASHVideoSource")
             AviSynthFilterPreferences.Add("ts m2ts mts m2t m2v", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("vdr", "AviSource")

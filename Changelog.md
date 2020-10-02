@@ -6,8 +6,12 @@
 - Fix parameters when audio converting to AAC with FFmpeg (Dendraspis, Patman86, #341)
 - 8.3 filepath fix
 - Improved Opus encoder (Patman86)
+- Apps dialog has a experimental Auto Update feature (stax76)
 - NeroAAC removal
 - Option to disable MKV subtitle compression (stax76, [#334](/../../issues/334))
+- AddGrainC 1.8.2
+- VCEEnc 6.05
+- L-Smash-Works 2020-07-28
 
 
 2.1.4.6 Beta (2020-09-13)

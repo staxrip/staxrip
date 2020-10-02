@@ -5,7 +5,7 @@ Tools
     :header: "Name", "Type", "Filename", "Version", "Modified Date"
     :widths: auto
 
-    "AddGrainC","AviSynth Plugin","AddGrainC.dll","1.7.1","2019-01-01"
+    "AddGrainC","AviSynth Plugin","AddGrainC.dll","1.8.2","2020-05-20"
     "AutoAdjust","AviSynth Plugin","AutoAdjust.dll","2.60","2016-01-05"
     "Average","AviSynth Plugin","Average.dll","0.94","2019-01-01"
     "AviSynthShader DLL","AviSynth Plugin","Shader-x64.dll","1.6.6","2020-06-17"
@@ -13,6 +13,7 @@ Tools
     "AVSTP","AviSynth Plugin","avstp.dll","1.0.3.0","2019-01-01"
     "checkmate","AviSynth Plugin","checkmate.dll","0.9","2013-12-19"
     "CNR2","AviSynth Plugin","CNR2.dll","2.6.1","2019-01-01"
+    "D2VSource","AviSynth Plugin","D2VSource.dll","1.0.0","2020-06-20"
     "DCTFilter","AviSynth Plugin","DCTFilter.dll","0.5.1","2020-05-13"
     "Deblock","AviSynth Plugin","Deblock.dll","2013-12-03","2019-01-01"
     "Decomb","AviSynth Plugin","Decomb.dll","5.2.4","2013-12-01"
@@ -36,13 +37,12 @@ Tools
     "JincResize","AviSynth Plugin","JincResize.dll","r44","2019-01-01"
     "JPSDR","AviSynth Plugin","Plugins_JPSDR.dll","3.2.2","2020-05-05"
     "KNLMeansCL","AviSynth Plugin","KNLMeansCL.dll","1.1.1","2020-04-29"
-    "L-SMASH-Works","AviSynth Plugin","LSMASHSource.dll","2020-05-31","2020-05-31"
+    "L-SMASH-Works","AviSynth Plugin","LSMASHSource.dll","2020-07-28","2020-07-27"
     "masktools2","AviSynth Plugin","masktools2.dll","2.2.23","2020-05-14"
     "MedianBlur2","AviSynth Plugin","MedianBlur2.dll","0.94","2014-02-10"
     "MiniDeen","AviSynth Plugin","neo-minideen.dll","r9","2020-05-29"
     "MipSmooth","AviSynth Plugin","MipSmooth.dll","1.1.2","2019-01-01"
     "modPlus","AviSynth Plugin","modPlus.dll","2017-10-17","2019-01-01"
-    "MPEG2DecPlus","AviSynth Plugin","MPEG2DecPlus64.dll","0.1.2","2020-05-09"
     "MSharpen","AviSynth Plugin","msharpen.dll","0.9","2013-11-30"
     "mvtools2","AviSynth Plugin","mvtools2.dll","2.7.43","2020-06-02"
     "NicAudio","AviSynth Plugin","NicAudio.dll","1.1","2019-01-01"
@@ -103,24 +103,25 @@ Tools
     "aomenc","Console App","aomenc.exe","2.0",""
     "AutoCrop","Console App","AutoCrop.exe","2.0.0.0","2020-08-02"
     "avs2pipemod","Console App","avs2pipemod64.exe","1.1.1","2016-08-14"
-    "AVSMeter","Console App","AVSMeter64.exe","3.0.2.0","2020-06-23"
+    "AVSMeter","Console App","AVSMeter64.exe","3.0.6.0","2020-06-23"
     "eac3to","Console App","eac3to.exe","3.34","2017-11-19"
     "fdkaac","Console App","fdkaac.exe","1.0.0",""
     "ffmpeg","Console App","ffmpeg.exe","N-98647-gffa6072fc7-x64-gcc10.2.0 Patman","2020-08-04"
-    "ffmpeg non-free","Console App","ffmpeg.exe","","2020-08-30"
+    "ffmpeg non-free","Console App","ffmpeg.exe","","2020-09-18"
     "mkvextract","Console App","mkvextract.exe","50","2020-09-06"
     "mkvinfo","Console App","mkvinfo.exe","50","2020-09-06"
     "mkvmerge","Console App","mkvmerge.exe","50","2020-09-06"
     "MP4Box","Console App","MP4Box.exe","1.0.0-rev211-g71f1d75ea-x64-gcc10.2.0 Patman","2020-09-01"
     "mtn","Console App","mtn.exe","2.0.1","2019-06-27"
-    "NVEnc","Console App","NVEncC64.exe","5.14","2020-08-04"
+    "NeroAAC","Console App","neroAacEnc.exe","",""
+    "NVEnc","Console App","NVEncC64.exe","5.15","2020-09-12"
     "PNGopt","Console App","apngopt.exe","1.4","2019-01-01"
     "Python","Console App","python.exe","3.8.5150","2020-07-20"
-    "qaac","Console App","qaac64.exe","2.69-x64-msvc1926 Patman","2020-08-04"
+    "qaac","Console App","qaac64.exe","2.70","2020-09-19"
     "QSVEnc","Console App","QSVEncC64.exe","4.07","2020-08-06"
     "rav1e","Console App","rav1e.exe","0.3.0","2020-02-29"
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.4-26-g0af191de-msvc1926 Patman","2020-08-07"
-    "VCEEnc","Console App","VCEEncC64.exe","6.02","2020-05-14"
+    "VCEEnc","Console App","VCEEncC64.exe","6.05","2020-09-23"
     "vspipe","Console App","vspipe.exe","r52","2020-08-20"
     "x264","Console App","x264.exe","M-0.160.3009-4c9b076-gcc11 Patman","2020-06-22"
     "x265","Console App","x265.exe","M-3.4+6-g73f96ff39-gcc11.0.0 Patman","2020-05-30"
@@ -130,21 +131,22 @@ Tools
     "D2V Witch","GUI App","d2vwitch.exe","v4","2020-06-15"
     "DGIndex","GUI App","DGIndex.exe","1.5.8","2010-03-06"
     "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.6.0.0","2020-08-30"
-    "MPC-BE","GUI App","mpc-be64.exe","","2020-05-25"
-    "MPC-HC","GUI App","mpc-hc64.exe","","2017-07-16"
+    "MPC-BE","GUI App","mpc-be64.exe","",""
+    "MPC-HC","GUI App","mpc-hc64.exe","",""
     "mpv.net","GUI App","mpvnet.exe","5.4.8.4","2020-08-04"
-    "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.15","2020-05-01"
+    "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.16","2020-06-16"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
     "AviSynth","Library","AviSynth.dll","3.6.2 test 2","2020-08-31"
-    "DirectX 9","Library","d3d9.dll","","2020-09-13"
+    "DirectX 9","Library","d3d9.dll","","2020-09-10"
     "FFTW","Library","libfftw3-3.dll","3.3.8","2018-12-20"
     "MediaInfo","Library","MediaInfo.dll","20.03","2020-04-03"
     "VapourSynth","Library","vapoursynth.dll","r52","2020-08-20"
-    "Visual C++ 2012","Library","msvcp110.dll","","2012-11-05"
+    "Visual C++ 2012","Library","msvcp110.dll","","2016-07-19"
     "Visual C++ 2013","Library","msvcp120.dll","","2016-02-10"
-    "Visual C++ 2019","Library","msvcp140.dll","","2020-06-16"
-    "Get-MediaInfo","Misc","Get-MediaInfo.ps1","3.3","2020-05-04"
-    "Haali Splitter","Misc","splitter.ax",,""
+    "Visual C++ 2019","Library","msvcp140.dll","","2020-09-16"
+    "7zip","Misc","7za.exe","9.20","2010-11-18"
+    "Get-MediaInfo","Misc","Get-MediaInfo.ps1","3.4","2020-09-22"
+    "Haali Splitter","Misc","splitter.ax","",""
     "AWarpSharp2","VapourSynth Plugin","libawarpsharp2.dll","2018-06-18","2019-01-01"
     "BM3D","VapourSynth Plugin","BM3D.dll","r8","2019-01-03"
     "Bwdif","VapourSynth Plugin","Bwdif.dll","r2","2020-06-19"
@@ -243,7 +245,7 @@ http://forum.doom9.org/showthread.php?t=174797
 eac3to
 ~~~~~~
 
-Audio convertor console app.
+Audio convertor console app. The recommended audio codec is Opus because it's high quality and free.
 
 http://forum.doom9.org/showthread.php?t=125966
 
@@ -251,7 +253,7 @@ http://forum.doom9.org/showthread.php?t=125966
 fdkaac
 ~~~~~~
 
-Non-free AAC console encoder based on libfdk-aac. Opus is recommended as free alternative.
+Non-free AAC console encoder using libfdk-aac. The recommended audio codec is Opus because it's high quality and free.
 
 http://github.com/nu774/fdkaac
 
@@ -259,7 +261,7 @@ http://github.com/nu774/fdkaac
 ffmpeg
 ~~~~~~
 
-Versatile audio video convertor console app.
+Versatile and free audio video convertor console app. The recommended audio codec is Opus because it's high quality and free.
 
 http://ffmpeg.org
 
@@ -267,7 +269,7 @@ http://ffmpeg.org
 ffmpeg non-free
 ~~~~~~~~~~~~~~~
 
-Versatile audio video convertor console app. Custom build with non-free libraries like fdk-aac.
+Versatile audio video convertor console app. Custom build with non-free libraries like fdk-aac. The recommended audio codec is Opus because it's high quality and free.
 
 http://ffmpeg.org
 
@@ -312,6 +314,14 @@ Movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg
 https://github.com/Revan654/Movie-Thumbnailer-mtn
 
 
+NeroAAC
+~~~~~~~
+
+Non-free AAC audio convertor console app. The recommended audio codec is Opus because it's high quality and free.
+
+
+
+
 NVEnc
 ~~~~~
 
@@ -339,7 +349,7 @@ http://www.python.org
 qaac
 ~~~~
 
-Console AAC encoder based on the Apple AAC encoder.
+Console AAC encoder using the non-free Apple AAC encoder. The recommended audio codec is Opus because it's high quality and free.
 
 http://github.com/nu774/qaac
 
@@ -499,7 +509,7 @@ Generate film-like grain or other effects (like rain) by adding random noise to 
 
 Filters: AddGrainC, AddGrain
 
-http://avisynth.nl/index.php/AddGrainC
+https://github.com/pinterf/AddGrainC
 
 
 AutoAdjust
@@ -570,6 +580,16 @@ A fast chroma denoiser. Very effective against stationary rainbows and huge anal
 Filters: cnr2
 
 http://avisynth.nl/index.php/Cnr2
+
+
+D2VSource
+~~~~~~~~~
+
+Source filter to open D2V index files created with DGIndex or D2V Witch.
+
+Filters: D2VSource
+
+https://github.com/Asd-g/MPEG2DecPlus
 
 
 DCTFilter
@@ -860,16 +880,6 @@ Video filter plugin which modify values of color components to attenuate noise, 
 Filters: GBlur, MBlur, Median, minvar, Morph, SaltPepper, SegAmp, TweakHist, Veed
 
 http://www.avisynth.nl/users/vcmohan/modPlus/modPlus.html
-
-
-MPEG2DecPlus
-~~~~~~~~~~~~
-
-Source filter to open D2V index files created with DGIndex or D2V Witch.
-
-Filters: MPEG2Source
-
-https://github.com/Asd-g/MPEG2DecPlus
 
 
 MSharpen

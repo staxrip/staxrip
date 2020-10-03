@@ -283,9 +283,13 @@ Public MustInherit Class AudioProfile
         Dim base As String
 
         If p.TempDir.EndsWithEx("_temp\") AndAlso File.Base.StartsWithEx(p.SourceFile.Base) Then
-            base = File.Base.Substring(p.SourceFile.Base.Length)
+            base = File.Base.Substring(p.SourceFile.Base.Length).Trim
         Else
             base = File.Base
+        End If
+
+        If base = "" Then
+            base = "temp"
         End If
 
         If Delay <> 0 Then
@@ -1057,10 +1061,10 @@ Public Class GUIAudioProfile
             sb.Append(" " + Params.CustomSwitches)
         End If
 
-        Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.ToShortFilePath.Escape)
+        Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.Escape)
 
         If includePaths Then
-            sb.Append(" " + input + " -o " + GetOutputFile.ToShortFilePath.Escape)
+            sb.Append(" " + input + " -o " + GetOutputFile.Escape)
         End If
 
         Return sb.ToString

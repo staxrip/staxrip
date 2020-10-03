@@ -375,6 +375,10 @@ Public Class Audio
         End Using
 
         If g.FileExists(outPath) Then
+            If outPath.StartsWith("\\?\") Then
+                outPath = outPath.Substring(4)
+            End If
+
             ap.Gain = 0
             ap.File = outPath
             Log.WriteLine(MediaInfo.GetSummary(outPath))

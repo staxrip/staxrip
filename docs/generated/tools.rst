@@ -127,7 +127,7 @@ Tools
     "x265","Console App","x265.exe","M-3.4+6-g73f96ff39-gcc11.0.0 Patman","2020-05-30"
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
-    "chapterEditor","GUI App","chapterEditor.exe","1.23","2020-05-13"
+    "chapterEditor","GUI App","chapterEditor.exe","1.24","2020-07-11"
     "D2V Witch","GUI App","d2vwitch.exe","v4","2020-06-15"
     "DGIndex","GUI App","DGIndex.exe","1.5.8","2010-03-06"
     "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.6.0.0","2020-08-30"

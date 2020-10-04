@@ -168,8 +168,8 @@ Public Class ToolUpdate
         Dim list = String.Join(BR, names)
         UpdatePackageDialog()
 
-        If MsgQuestion("Copy New Files?",
-            "Copy files from:" + BR2 + ExtractDir + BR2 + "to:" + BR2 +
+        If MsgQuestion("Copy new files?",
+            "Copy new files from:" + BR2 + ExtractDir + BR2 + "to:" + BR2 +
             TargetDir + BR2 + list) = DialogResult.OK Then
 
             For Each file In Directory.GetFiles(ExtractDir)

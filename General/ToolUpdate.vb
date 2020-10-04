@@ -219,7 +219,7 @@ Public Class ToolUpdate
     End Sub
 
     Function Ignore(value As String) As Boolean
-        If value.ContainsAny(Package.Ignore) Then
+        If value.ContainsAny(Package.Exclude) Then
             Return True
         End If
 

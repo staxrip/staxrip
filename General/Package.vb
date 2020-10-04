@@ -1,4 +1,5 @@
 
+Imports System.Text
 Imports System.Text.RegularExpressions
 
 Imports Microsoft.Win32
@@ -8,7 +9,7 @@ Public Class Package
 
     Property Description As String
     Property DownloadURL As String
-    Property Keep As String()
+    Property Exclude As String()
     Property Filename32 As String
     Property Find As Boolean = True
     Property HelpFilename As String
@@ -17,9 +18,9 @@ Public Class Package
     Property HelpUrlAviSynth As String
     Property HelpUrlVapourSynth As String
     Property HintDirFunc As Func(Of String)
-    Property Ignore As String()
     Property Include As String
     Property IsIncluded As Boolean = True
+    Property Keep As String()
     Property Location As String
     Property Locations As String()
     Property Name As String
@@ -110,6 +111,7 @@ Public Class Package
         .WebURL = "http://github.com/nu774/qaac",
         .DownloadURL = "https://github.com/nu774/qaac/releases",
         .HelpSwitch = "-h",
+        .Keep = {"QTfiles64", "libsndfile-1.dll", "libFLAC_dynamic.dll"},
         .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.qaac),
         .Description = "Console AAC encoder using the non-free Apple AAC encoder. " + Strings.Opus})
 
@@ -184,6 +186,7 @@ Public Class Package
         .HelpURL = "http://avisynth.nl",
         .DownloadURL = "https://github.com/AviSynth/AviSynthPlus/releases",
         .Description = "Video processing scripting library.",
+        .Exclude = {"_arm64", "_xp", ".exe"},
         .HintDirFunc = Function() Package.AviSynth.GetAviSynthHintDir,
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth})
 
@@ -216,7 +219,7 @@ Public Class Package
         .WebURL = "http://www.python.org",
         .HelpSwitch = "-h",
         .Description = "Scripting language used by VapourSynth.",
-        .Ignore = {"\WindowsApps\"},
+        .Exclude = {"\WindowsApps\"},
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = AddressOf GetPythonHintDir})
 
@@ -225,6 +228,7 @@ Public Class Package
         .Location = "Support\chapterEditor",
         .Filename = "chapterEditor.exe",
         .Description = "GUI app to edit chapters and menus for OGG, XML, TTXT, m.AVCHD, m.editions-mkv, Matroska Menu.",
+        .Exclude = {"-Linux", "CLI"},
         .WebURL = "https://forum.doom9.org/showthread.php?t=169984",
         .DownloadURL = "https://www.videohelp.com/software/chapterEditor"})
 
@@ -320,6 +324,7 @@ Public Class Package
         .Name = "Subtitle Edit",
         .Filename = "SubtitleEdit.exe",
         .Location = "Support\SubtitleEdit",
+        .Exclude = {"-Setup.zip", "FI.zip", "PL.zip"},
         .WebURL = "http://www.nikse.dk/SubtitleEdit",
         .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
         .DownloadURL = "https://github.com/SubtitleEdit/subtitleedit/releases",
@@ -2226,7 +2231,7 @@ Public Class Package
                 Next
             Next
 
-            exePath = FindEverywhere("python.exe", Python.Ignore(0))
+            exePath = FindEverywhere("python.exe", Python.Exclude(0))
 
             If exePath <> "" Then
                 Return exePath.Dir
@@ -2295,10 +2300,10 @@ Public Class Package
             End If
 
             If Find Then
-                If Ignore.NothingOrEmpty Then
+                If Exclude.NothingOrEmpty Then
                     ret = FindEverywhere(Filename)
                 Else
-                    ret = FindEverywhere(Filename, Ignore(0))
+                    ret = FindEverywhere(Filename, Exclude(0))
                 End If
 
                 If ret <> "" Then
@@ -2460,35 +2465,45 @@ Public Class Package
             Select Case name
                 Case "Version"
                     Version = value
-                Case "Ignore"
-                    Ignore = value.Split(";"c)
+                Case "Ignore", "Exclude"
+                    Exclude = value.Split(";"c)
                 Case "Date"
                     SetVersionDate(value)
                 Case "Include"
                     Include = value
                 Case "Keep"
                     Keep = value.Split(";"c)
+                Case "WebURL"
+                    WebURL = value
+                Case "DownloadURL"
+                    DownloadURL = value
+                Case "HelpURL"
+                    HelpURL = value
+                Case "HelpUrlAviSynth"
+                    HelpUrlAviSynth = value
+                Case "HelpUrlVapourSynth"
+                    HelpUrlVapourSynth = value
             End Select
         Next
     End Sub
 
     Sub SaveConf()
-        Dim content = "Version = " + Version + BR +
-                      "Date = " + VersionDate.ToInvariantString("yyyy-MM-dd")
+        Dim sb As New StringBuilder
 
-        If Not Ignore.NothingOrEmpty Then
-            content += BR + "Ignore = " + Ignore.Join(";")
-        End If
+        sb.Append("Version = " + Version + BR +
+                  "Date = " + VersionDate.ToInvariantString("yyyy-MM-dd"))
 
-        If Include <> "" Then
-            content += BR + "Include = " + Include
-        End If
+        If Not Exclude.NothingOrEmpty Then sb.Append(BR + "Exclude = " + Exclude.Join(";"))
+        If Include <> "" Then sb.Append(BR + "Include = " + Include)
+        If Not Keep.NothingOrEmpty Then sb.Append(BR + "Keep = " + Keep.Join(";"))
 
-        If Not Keep.NothingOrEmpty Then
-            content += BR + "Keep = " + Keep.Join(";")
-        End If
+        If WebURL <> "" Then sb.Append(BR + "WebURL = " + WebURL)
+        If DownloadURL <> "" Then sb.Append(BR + "DownloadURL = " + DownloadURL)
+        If HelpURL <> "" Then sb.Append(BR + "HelpURL = " + HelpURL)
+        If HelpUrlAviSynth <> "" Then sb.Append(BR + "HelpUrlAviSynth = " + HelpUrlAviSynth)
+        If HelpUrlVapourSynth <> "" Then sb.Append(BR + "HelpUrlVapourSynth = " + HelpUrlVapourSynth)
 
-        content.WriteFileUTF8BOM(ConfPath)
+        sb.ToString.WriteFileUTF8BOM(ConfPath)
     End Sub
 
     Sub SetVersionDate(value As String)

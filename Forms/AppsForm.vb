@@ -41,7 +41,6 @@ Public Class AppsForm
     Friend WithEvents miAutoUpdate As MenuItemEx
     Friend WithEvents miEditVersion As MenuItemEx
     Friend WithEvents ToolStripMenuItem2 As ToolStripSeparator
-    Friend WithEvents miEditConf As MenuItemEx
     Friend WithEvents miEditChangelog As MenuItemEx
     Friend WithEvents tsbExplore As System.Windows.Forms.ToolStripButton
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -56,7 +55,6 @@ Public Class AppsForm
         Me.ddbTools = New System.Windows.Forms.ToolStripDropDownButton()
         Me.miEditPath = New StaxRip.UI.MenuItemEx()
         Me.miEditVersion = New StaxRip.UI.MenuItemEx()
-        Me.miEditConf = New StaxRip.UI.MenuItemEx()
         Me.miEditChangelog = New StaxRip.UI.MenuItemEx()
         Me.ToolStripMenuItem2 = New System.Windows.Forms.ToolStripSeparator()
         Me.miClearCustomPaths = New StaxRip.UI.MenuItemEx()
@@ -83,14 +81,14 @@ Public Class AppsForm
         Me.tv.ExpandMode = StaxRip.UI.TreeNodeExpandMode.InclusiveChilds
         Me.tv.FullRowSelect = True
         Me.tv.HideSelection = False
-        Me.tv.Location = New System.Drawing.Point(6, 59)
-        Me.tv.Margin = New System.Windows.Forms.Padding(6)
+        Me.tv.Location = New System.Drawing.Point(10, 101)
+        Me.tv.Margin = New System.Windows.Forms.Padding(10, 10, 10, 10)
         Me.tv.Name = "tv"
         Me.tv.Scrollable = False
         Me.tv.SelectOnMouseDown = True
         Me.tv.ShowLines = False
         Me.tv.ShowPlusMinus = False
-        Me.tv.Size = New System.Drawing.Size(264, 544)
+        Me.tv.Size = New System.Drawing.Size(453, 933)
         Me.tv.Sorted = True
         Me.tv.TabIndex = 0
         '
@@ -102,11 +100,11 @@ Public Class AppsForm
         Me.ToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
         Me.ToolStrip.ImageScalingSize = New System.Drawing.Size(48, 48)
         Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tsbLaunch, Me.tsbExplore, Me.tsbWebsite, Me.tsbDownload, Me.tsbVersion, Me.ddbTools, Me.tsbHelp})
-        Me.ToolStrip.Location = New System.Drawing.Point(276, 6)
-        Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 6, 6, 0)
+        Me.ToolStrip.Location = New System.Drawing.Point(473, 10)
+        Me.ToolStrip.Margin = New System.Windows.Forms.Padding(0, 10, 10, 0)
         Me.ToolStrip.Name = "ToolStrip"
-        Me.ToolStrip.Padding = New System.Windows.Forms.Padding(3, 1, 1, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(823, 47)
+        Me.ToolStrip.Padding = New System.Windows.Forms.Padding(5, 2, 2, 0)
+        Me.ToolStrip.Size = New System.Drawing.Size(1411, 81)
         Me.ToolStrip.TabIndex = 1
         Me.ToolStrip.Text = "tsMain"
         '
@@ -115,7 +113,7 @@ Public Class AppsForm
         Me.tsbLaunch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbLaunch.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbLaunch.Name = "tsbLaunch"
-        Me.tsbLaunch.Size = New System.Drawing.Size(96, 40)
+        Me.tsbLaunch.Size = New System.Drawing.Size(156, 70)
         Me.tsbLaunch.Text = " Launch "
         Me.tsbLaunch.ToolTipText = "Launches the app (Ctrl+L)"
         '
@@ -124,7 +122,7 @@ Public Class AppsForm
         Me.tsbExplore.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbExplore.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbExplore.Name = "tsbExplore"
-        Me.tsbExplore.Size = New System.Drawing.Size(97, 40)
+        Me.tsbExplore.Size = New System.Drawing.Size(162, 70)
         Me.tsbExplore.Text = " Explore "
         Me.tsbExplore.ToolTipText = "Opens the apps folder in File Explorer (Ctrl+E)"
         '
@@ -133,7 +131,7 @@ Public Class AppsForm
         Me.tsbWebsite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbWebsite.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbWebsite.Name = "tsbWebsite"
-        Me.tsbWebsite.Size = New System.Drawing.Size(83, 40)
+        Me.tsbWebsite.Size = New System.Drawing.Size(137, 70)
         Me.tsbWebsite.Text = "  Web  "
         Me.tsbWebsite.ToolTipText = "Opens the apps website (Ctrl+W)"
         '
@@ -142,7 +140,7 @@ Public Class AppsForm
         Me.tsbDownload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbDownload.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbDownload.Name = "tsbDownload"
-        Me.tsbDownload.Size = New System.Drawing.Size(123, 40)
+        Me.tsbDownload.Size = New System.Drawing.Size(205, 70)
         Me.tsbDownload.Text = " Download "
         Me.tsbDownload.ToolTipText = "Opens the apps download web page (Ctrl+D)"
         '
@@ -151,7 +149,7 @@ Public Class AppsForm
         Me.tsbVersion.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbVersion.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbVersion.Name = "tsbVersion"
-        Me.tsbVersion.Size = New System.Drawing.Size(109, 40)
+        Me.tsbVersion.Size = New System.Drawing.Size(181, 70)
         Me.tsbVersion.Text = "  Version  "
         Me.tsbVersion.ToolTipText = "Edits the apps version (F12)"
         '
@@ -159,11 +157,11 @@ Public Class AppsForm
         '
         Me.ddbTools.AutoToolTip = False
         Me.ddbTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miEditPath, Me.miEditVersion, Me.miEditConf, Me.miEditChangelog, Me.ToolStripMenuItem2, Me.miClearCustomPaths, Me.miFind, Me.ToolStripMenuItem1, Me.miShowGrid, Me.miStatus, Me.miAutoUpdate})
+        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miEditPath, Me.miEditVersion, Me.miEditChangelog, Me.ToolStripMenuItem2, Me.miClearCustomPaths, Me.miFind, Me.ToolStripMenuItem1, Me.miShowGrid, Me.miStatus, Me.miAutoUpdate})
         Me.ddbTools.Image = CType(resources.GetObject("ddbTools.Image"), System.Drawing.Image)
         Me.ddbTools.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ddbTools.Name = "ddbTools"
-        Me.ddbTools.Size = New System.Drawing.Size(105, 40)
+        Me.ddbTools.Size = New System.Drawing.Size(172, 70)
         Me.ddbTools.Text = "  Tools  "
         '
         'miEditPath
@@ -171,7 +169,7 @@ Public Class AppsForm
         Me.miEditPath.Help = Nothing
         Me.miEditPath.Name = "miEditPath"
         Me.miEditPath.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.P), System.Windows.Forms.Keys)
-        Me.miEditPath.Size = New System.Drawing.Size(322, 39)
+        Me.miEditPath.Size = New System.Drawing.Size(546, 67)
         Me.miEditPath.Text = "Edit Path..."
         Me.miEditPath.ToolTipText = "Show Open File dialog to customize the path"
         '
@@ -180,36 +178,28 @@ Public Class AppsForm
         Me.miEditVersion.Help = Nothing
         Me.miEditVersion.Name = "miEditVersion"
         Me.miEditVersion.ShortcutKeys = System.Windows.Forms.Keys.F12
-        Me.miEditVersion.Size = New System.Drawing.Size(322, 39)
+        Me.miEditVersion.Size = New System.Drawing.Size(546, 67)
         Me.miEditVersion.Text = "Edit Version"
-        '
-        'miEditConf
-        '
-        Me.miEditConf.Help = Nothing
-        Me.miEditConf.Name = "miEditConf"
-        Me.miEditConf.ShortcutKeys = System.Windows.Forms.Keys.F11
-        Me.miEditConf.Size = New System.Drawing.Size(322, 39)
-        Me.miEditConf.Text = "Edit Conf"
         '
         'miEditChangelog
         '
         Me.miEditChangelog.Help = Nothing
         Me.miEditChangelog.Name = "miEditChangelog"
         Me.miEditChangelog.ShortcutKeys = System.Windows.Forms.Keys.F10
-        Me.miEditChangelog.Size = New System.Drawing.Size(322, 39)
+        Me.miEditChangelog.Size = New System.Drawing.Size(546, 67)
         Me.miEditChangelog.Text = "Edit Changelog"
         '
         'ToolStripMenuItem2
         '
         Me.ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(319, 6)
+        Me.ToolStripMenuItem2.Size = New System.Drawing.Size(543, 6)
         '
         'miClearCustomPaths
         '
         Me.miClearCustomPaths.Help = Nothing
         Me.miClearCustomPaths.Name = "miClearCustomPaths"
         Me.miClearCustomPaths.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.X), System.Windows.Forms.Keys)
-        Me.miClearCustomPaths.Size = New System.Drawing.Size(322, 39)
+        Me.miClearCustomPaths.Size = New System.Drawing.Size(546, 67)
         Me.miClearCustomPaths.Text = "Clear Paths..."
         Me.miClearCustomPaths.ToolTipText = "Clear custom paths"
         '
@@ -219,21 +209,21 @@ Public Class AppsForm
         Me.miFind.Name = "miFind"
         Me.miFind.ShortcutKeyDisplayString = ""
         Me.miFind.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
-        Me.miFind.Size = New System.Drawing.Size(322, 39)
+        Me.miFind.Size = New System.Drawing.Size(546, 67)
         Me.miFind.Text = "Find Path..."
         Me.miFind.ToolTipText = "Find path using voidtools Everything"
         '
         'ToolStripMenuItem1
         '
         Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(319, 6)
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(543, 6)
         '
         'miShowGrid
         '
         Me.miShowGrid.Help = Nothing
         Me.miShowGrid.Name = "miShowGrid"
         Me.miShowGrid.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.G), System.Windows.Forms.Keys)
-        Me.miShowGrid.Size = New System.Drawing.Size(322, 39)
+        Me.miShowGrid.Size = New System.Drawing.Size(546, 67)
         Me.miShowGrid.Text = "Show Grid"
         Me.miShowGrid.ToolTipText = "Show tools in grid view"
         '
@@ -242,7 +232,7 @@ Public Class AppsForm
         Me.miStatus.Help = Nothing
         Me.miStatus.Name = "miStatus"
         Me.miStatus.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
-        Me.miStatus.Size = New System.Drawing.Size(322, 39)
+        Me.miStatus.Size = New System.Drawing.Size(546, 67)
         Me.miStatus.Text = "Check Status"
         Me.miStatus.ToolTipText = "Check status of all required tools"
         '
@@ -252,7 +242,7 @@ Public Class AppsForm
         Me.miAutoUpdate.Name = "miAutoUpdate"
         Me.miAutoUpdate.ShortcutKeyDisplayString = ""
         Me.miAutoUpdate.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.U), System.Windows.Forms.Keys)
-        Me.miAutoUpdate.Size = New System.Drawing.Size(322, 39)
+        Me.miAutoUpdate.Size = New System.Drawing.Size(546, 67)
         Me.miAutoUpdate.Text = "Auto Update"
         Me.miAutoUpdate.ToolTipText = "Full automatic update"
         '
@@ -261,7 +251,7 @@ Public Class AppsForm
         Me.tsbHelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
         Me.tsbHelp.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbHelp.Name = "tsbHelp"
-        Me.tsbHelp.Size = New System.Drawing.Size(84, 40)
+        Me.tsbHelp.Size = New System.Drawing.Size(139, 70)
         Me.tsbHelp.Text = "  Help  "
         Me.tsbHelp.ToolTipText = "Opens the apps help (F1)"
         '
@@ -272,19 +262,19 @@ Public Class AppsForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.flp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.flp.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.flp.Location = New System.Drawing.Point(276, 59)
-        Me.flp.Margin = New System.Windows.Forms.Padding(0, 6, 6, 6)
+        Me.flp.Location = New System.Drawing.Point(473, 101)
+        Me.flp.Margin = New System.Windows.Forms.Padding(0, 10, 10, 10)
         Me.flp.Name = "flp"
-        Me.flp.Size = New System.Drawing.Size(823, 544)
+        Me.flp.Size = New System.Drawing.Size(1411, 933)
         Me.flp.TabIndex = 2
         '
         'SearchTextBox
         '
         Me.SearchTextBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.SearchTextBox.Location = New System.Drawing.Point(6, 9)
-        Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(6, 6, 6, 0)
+        Me.SearchTextBox.Location = New System.Drawing.Point(10, 15)
+        Me.SearchTextBox.Margin = New System.Windows.Forms.Padding(10, 10, 10, 0)
         Me.SearchTextBox.Name = "SearchTextBox"
-        Me.SearchTextBox.Size = New System.Drawing.Size(264, 41)
+        Me.SearchTextBox.Size = New System.Drawing.Size(453, 70)
         Me.SearchTextBox.TabIndex = 4
         '
         'tlpMain
@@ -298,25 +288,24 @@ Public Class AppsForm
         Me.tlpMain.Controls.Add(Me.ToolStrip, 1, 0)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
-        Me.tlpMain.Margin = New System.Windows.Forms.Padding(2)
         Me.tlpMain.Name = "tlpMain"
         Me.tlpMain.RowCount = 3
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1105, 609)
+        Me.tlpMain.Size = New System.Drawing.Size(1894, 1044)
         Me.tlpMain.TabIndex = 6
         '
         'AppsForm
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(168.0!, 168.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(1105, 609)
+        Me.ClientSize = New System.Drawing.Size(1894, 1044)
         Me.Controls.Add(Me.tlpMain)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.HelpButton = False
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(6)
+        Me.Margin = New System.Windows.Forms.Padding(10, 10, 10, 10)
         Me.Name = "AppsForm"
         Me.Text = "Apps"
         Me.ToolStrip.ResumeLayout(False)
@@ -350,7 +339,6 @@ Public Class AppsForm
 
         miEditChangelog.Visible = g.IsDevelopmentPC
         miAutoUpdate.Visible = g.IsDevelopmentPC
-        miEditConf.Visible = g.IsDevelopmentPC
 
         AddHandler SetupButton.Click, Sub()
                                           CurrentPackage.SetupAction.Invoke
@@ -874,54 +862,6 @@ Public Class AppsForm
     Sub miAutoUpdate_Click(sender As Object, e As EventArgs) Handles miAutoUpdate.Click
         ToolUpdate = New ToolUpdate(CurrentPackage, Me)
         ToolUpdate.Update()
-    End Sub
-
-    Sub miEditConf_Click(sender As Object, e As EventArgs) Handles miEditConf.Click
-        Using form As New SimpleSettingsForm(CurrentPackage.Name + " Conf")
-            form.ScaleClientSize(25, 11)
-            Dim ui = form.SimpleUI
-            ui.CreateFlowPage("main page", True)
-
-            Dim tb = ui.AddText()
-            tb.Label.Text = "Version:"
-            tb.Help = "Name of the version."
-            tb.Expandet = True
-            tb.Edit.Text = CurrentPackage.Version
-            tb.Edit.SaveAction = Sub(value) CurrentPackage.Version = value
-
-            tb = ui.AddText()
-            tb.Label.Text = "Date:"
-            tb.Help = "File write/modified date."
-            tb.Expandet = True
-            tb.Edit.Text = CurrentPackage.VersionDate.ToInvariantString("yyyy-MM-dd")
-            tb.Edit.SaveAction = Sub(value) CurrentPackage.SetVersionDate(value)
-
-            tb = ui.AddText()
-            tb.Label.Text = "Ignore:"
-            tb.Help = "Ignore keywords when extracting URLs from the download page. Separated with semicolon."
-            tb.Expandet = True
-            tb.Edit.Text = CurrentPackage.Ignore.Join(";")
-            tb.Edit.SaveAction = Sub(value) CurrentPackage.Ignore = value.Split(";"c)
-
-            tb = ui.AddText()
-            tb.Label.Text = "Include:"
-            tb.Help = "A keyword that must be present when extracting URLs from the download page."
-            tb.Expandet = True
-            tb.Edit.Text = CurrentPackage.Include
-            tb.Edit.SaveAction = Sub(value) CurrentPackage.Include = value
-
-            tb = ui.AddText()
-            tb.Label.Text = "Keep:"
-            tb.Help = "Defines which files and folders should be kept when the auto update feature deletes old files and folders. Separated with semicolon."
-            tb.Expandet = True
-            tb.Edit.Text = CurrentPackage.Keep.Join(";")
-            tb.Edit.SaveAction = Sub(value) CurrentPackage.Keep = value.Split(";"c)
-
-            If form.ShowDialog() = DialogResult.OK Then
-                ui.Save()
-                CurrentPackage.SaveConf()
-            End If
-        End Using
     End Sub
 
     Sub miEditChangelog_Click(sender As Object, e As EventArgs) Handles miEditChangelog.Click

@@ -978,10 +978,12 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub ShowException(ex As Exception,
-                      Optional mainInstruction As String = Nothing,
-                      Optional content As String = Nothing,
-                      Optional timeout As Integer = 0)
+    Sub ShowException(
+        ex As Exception,
+        Optional mainInstruction As String = Nothing,
+        Optional content As String = Nothing,
+        Optional timeout As Integer = 0)
+
         Try
             Using td As New TaskDialog(Of String)
                 If mainInstruction = "" Then

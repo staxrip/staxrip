@@ -2,9 +2,9 @@
 2.1.4.8 Beta (2020-09-??)
 ============
 
-- qaac 2.71 (long path support)
 - The Apps dialog supports drag & drop for zip/7z files,
   mostly usefull for the tool update maintainer (stax76)
+- qaac 2.71 (long path support)
 - chapterEditor 1.24
 
 

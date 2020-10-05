@@ -661,12 +661,7 @@ Public Class AppsForm
         Dim input = InputBox.Show(msg, "StaxRip", CurrentPackage.Version)
 
         If input <> "" Then
-            input = input.Replace(";", "_")
-
-            CurrentPackage.Version = input
-            CurrentPackage.VersionDate = File.GetLastWriteTimeUtc(CurrentPackage.Path)
-            CurrentPackage.SaveConf()
-
+            CurrentPackage.SetVersion(input.Replace(";", "_"))
             ShowActivePackage()
         End If
     End Sub

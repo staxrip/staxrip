@@ -26,6 +26,7 @@ Public Class Package
     Property Name As String
     Property RequiredFunc As Func(Of Boolean)
     Property SetupAction As Action
+    Property Siblings As String()
     Property StatusFunc As Func(Of String)
     Property TreePath As String
     Property Version As String
@@ -198,6 +199,7 @@ Public Class Package
         .HelpURL = "http://www.vapoursynth.com/doc",
         .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases",
         .HelpFilename = "doc\index.html",
+        .Siblings = {"vspipe"},
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthHintDir})
 
@@ -209,6 +211,7 @@ Public Class Package
         .HelpURL = "http://www.vapoursynth.com/doc/vspipe.html",
         .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases",
         .HelpSwitch = "stderr",
+        .Siblings = {"VapourSynth"},
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthHintDir})
 
@@ -521,6 +524,8 @@ Public Class Package
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",
         .HelpSwitch = "",
+        .Siblings = {"mkvextract", "mkvinfo", "MKVToolnix GUI"},
+        .Exclude = {"-Setup", "-setup"},
         .Description = "MKV muxing tool."})
 
     Shared Property mkvextract As Package = Add(New Package With {
@@ -531,6 +536,7 @@ Public Class Package
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",
         .HelpSwitch = "",
+        .Siblings = {"mkvinfo", "MKVToolnix GUI", "mkvmerge"},
         .Description = "MKV demuxing tool."})
 
     Shared Property mkvinfo As Package = Add(New Package With {
@@ -541,7 +547,18 @@ Public Class Package
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",
         .HelpSwitch = "",
+        .Siblings = {"mkvextract", "MKVToolnix GUI", "mkvmerge"},
         .Description = "MKV info tool."})
+
+    Shared Property MKVToolnixGUI As Package = Add(New Package With {
+        .Name = "MKVToolnix GUI",
+        .Filename = "mkvtoolnix-gui.exe",
+        .Location = "Support\MKVToolNix",
+        .Siblings = {"mkvextract", "mkvinfo", "mkvmerge"},
+        .WebURL = "https://mkvtoolnix.download/",
+        .HelpURL = "https://mkvtoolnix.download/docs.html",
+        .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",
+        .Description = "MKV muxing/demuxing GUI app."})
 
     Shared Property AutoCrop As Package = Add(New Package With {
         .Name = "AutoCrop",
@@ -1944,6 +1961,22 @@ Public Class Package
             Return "Misc"
         End If
     End Function
+
+    Sub SetVersion(versionName As String)
+        SetVersionInternal(versionName)
+
+        If Not Siblings.NothingOrEmpty Then
+            For Each i In Siblings
+                Items(i).SetVersionInternal(versionName)
+            Next
+        End If
+    End Sub
+
+    Sub SetVersionInternal(versionName As String)
+        Version = versionName
+        VersionDate = File.GetLastWriteTimeUtc(Path)
+        SaveConf()
+    End Sub
 
     Sub ShowHelp()
         Dim dic As New SortedDictionary(Of String, String)

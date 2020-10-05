@@ -4664,7 +4664,8 @@ Public Class MainForm
         ret.Add("Apps|Thumbnails|StaxRip Thumbnailer", NameOf(g.DefaultCommands.ShowBatchGenerateThumbnailsDialog))
         ret.Add("Apps|Animation|Animated GIF", NameOf(g.DefaultCommands.SaveGIF))
         ret.Add("Apps|Animation|Animated PNG", NameOf(g.DefaultCommands.SavePNG))
-        ret.Add("Apps|chapterEditor", NameOf(g.DefaultCommands.StartTool), {"chapterEditor"})
+        ret.Add("Apps|Other|MKVToolnix GUI", NameOf(g.DefaultCommands.StartTool), {"MKVToolnix GUI"})
+        ret.Add("Apps|Other|chapterEditor", NameOf(g.DefaultCommands.StartTool), {"chapterEditor"})
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog), Keys.F9)
 

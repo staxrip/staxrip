@@ -663,6 +663,7 @@ Public Class AppsForm
         If input <> "" Then
             CurrentPackage.SetVersion(input.Replace(";", "_"))
             ShowActivePackage()
+            g.DefaultCommands.TestAndDynamicFileCreation()
         End If
     End Sub
 

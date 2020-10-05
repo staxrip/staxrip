@@ -6,6 +6,7 @@
   mostly usefull for the tool update maintainer (stax76)
 - qaac 2.71 (long path support)
 - chapterEditor 1.24
+- mkvtoolnix 51
 
 
 2.1.4.7 Beta (2020-10-02)

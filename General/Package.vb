@@ -525,7 +525,7 @@ Public Class Package
         .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",
         .HelpSwitch = "",
         .Siblings = {"mkvextract", "mkvinfo", "MKVToolnix GUI"},
-        .Exclude = {"-Setup", "-setup"},
+        .Exclude = {"-setup"},
         .Description = "MKV muxing tool."})
 
     Shared Property mkvextract As Package = Add(New Package With {
@@ -536,6 +536,7 @@ Public Class Package
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",
         .HelpSwitch = "",
+        .Exclude = {"-setup"},
         .Siblings = {"mkvinfo", "MKVToolnix GUI", "mkvmerge"},
         .Description = "MKV demuxing tool."})
 
@@ -547,6 +548,7 @@ Public Class Package
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",
         .HelpSwitch = "",
+        .Exclude = {"-setup"},
         .Siblings = {"mkvextract", "MKVToolnix GUI", "mkvmerge"},
         .Description = "MKV info tool."})
 
@@ -555,6 +557,7 @@ Public Class Package
         .Filename = "mkvtoolnix-gui.exe",
         .Location = "Support\MKVToolNix",
         .Siblings = {"mkvextract", "mkvinfo", "mkvmerge"},
+        .Exclude = {"-setup"},
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",

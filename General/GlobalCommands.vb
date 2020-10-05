@@ -188,6 +188,10 @@ Public Class GlobalCommands
 
     <Command("Development tests and creation of doc files.")>
     Sub TestAndDynamicFileCreation()
+        If Not g.IsDevelopmentPC Then
+            Exit Sub
+        End If
+
         Documentation.GenerateDynamicFiles()
 
         Dim msg = ""

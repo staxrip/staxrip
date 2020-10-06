@@ -925,9 +925,8 @@ Public Class AppsForm
     End Sub
 
     Sub miAutoUpdate_Click(sender As Object, e As EventArgs) Handles miAutoUpdate.Click
-        If Not CurrentPackage.DownloadURL.ContainsEx("github.com") AndAlso
-            MsgQuestion("The download page is not at github which means the auto update feature is likely not working." + BR2 +
-                        "Continue anyway?") <> DialogResult.OK Then
+        If CurrentPackage.DownloadURL.ContainsEx("mediafire") Then
+            MsgError("The auto update feature does currently not support MediaFire.")
             Exit Sub
         End If
 

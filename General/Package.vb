@@ -523,7 +523,7 @@ Public Class Package
         .Location = "Support\MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",
+        .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
         .HelpSwitch = "",
         .Siblings = {"mkvextract", "mkvinfo", "MKVToolnix GUI"},
         .Exclude = {"-setup"},
@@ -535,7 +535,7 @@ Public Class Package
         .Location = "Support\MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",
+        .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
         .HelpSwitch = "",
         .Exclude = {"-setup"},
         .Siblings = {"mkvinfo", "MKVToolnix GUI", "mkvmerge"},
@@ -547,7 +547,7 @@ Public Class Package
         .Location = "Support\MKVToolNix",
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",
+        .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
         .HelpSwitch = "",
         .Exclude = {"-setup"},
         .Siblings = {"mkvextract", "MKVToolnix GUI", "mkvmerge"},
@@ -561,7 +561,7 @@ Public Class Package
         .Exclude = {"-setup"},
         .WebURL = "https://mkvtoolnix.download/",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .DownloadURL = "https://www.fosshub.com/MKVToolNix.html",
+        .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
         .Description = "MKV muxing/demuxing GUI app."})
 
     Shared Property AutoCrop As Package = Add(New Package With {
@@ -2503,44 +2503,16 @@ Public Class Package
             Select Case name
                 Case "Version"
                     Version = value
-                Case "Ignore", "Exclude"
-                    Exclude = value.Split(";"c)
                 Case "Date"
                     SetVersionDate(value)
-                Case "Include"
-                    Include = value
-                Case "Keep"
-                    Keep = value.Split(";"c)
-                Case "WebURL"
-                    WebURL = value
-                Case "DownloadURL"
-                    DownloadURL = value
-                Case "HelpURL"
-                    HelpURL = value
-                Case "HelpUrlAviSynth"
-                    HelpUrlAviSynth = value
-                Case "HelpUrlVapourSynth"
-                    HelpUrlVapourSynth = value
             End Select
         Next
     End Sub
 
     Sub SaveConf()
         Dim sb As New StringBuilder
-
         sb.Append("Version = " + Version + BR +
                   "Date = " + VersionDate.ToInvariantString("yyyy-MM-dd"))
-
-        If Not Exclude.NothingOrEmpty Then sb.Append(BR + "Exclude = " + Exclude.Join(";"))
-        If Include <> "" Then sb.Append(BR + "Include = " + Include)
-        If Not Keep.NothingOrEmpty Then sb.Append(BR + "Keep = " + Keep.Join(";"))
-
-        If WebURL <> "" Then sb.Append(BR + "WebURL = " + WebURL)
-        If DownloadURL <> "" Then sb.Append(BR + "DownloadURL = " + DownloadURL)
-        If HelpURL <> "" Then sb.Append(BR + "HelpURL = " + HelpURL)
-        If HelpUrlAviSynth <> "" Then sb.Append(BR + "HelpUrlAviSynth = " + HelpUrlAviSynth)
-        If HelpUrlVapourSynth <> "" Then sb.Append(BR + "HelpUrlVapourSynth = " + HelpUrlVapourSynth)
-
         sb.ToString.WriteFileUTF8BOM(ConfPath)
     End Sub
 

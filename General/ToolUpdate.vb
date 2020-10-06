@@ -10,6 +10,7 @@ Public Class ToolUpdate
     Property DownloadFile As String
     Property ExtractDir As String
     Property TargetDir As String
+    Property UseCurl As Boolean
 
     Private HttpClient As New HttpClient
     Private UpdateUI As IUpdateUI
@@ -22,49 +23,51 @@ Public Class ToolUpdate
 
     Async Sub Update()
         Dim content = Await HttpClient.GetStringAsync(Package.DownloadURL)
-        Dim matches = Regex.Matches(content, "href=""[^ ]+\.(7z|zip|exe)""")
+        Dim matches = Regex.Matches(content, "href=(""|')[^ ]+\.(7z|zip|exe)(""|')")
 
         For Each match As Match In matches
-            Dim value = match.Value
+            Dim url = match.Value
 
-            If Ignore(value) Then
+            If Ignore(url) Then
                 Continue For
             End If
 
-            If Package.Include <> "" AndAlso Not value.Contains(Package.Include) Then
+            If Package.Include <> "" AndAlso Not url.Contains(Package.Include) Then
                 Continue For
             End If
 
-            value = value.Substring(6, value.Length - 7)
+            url = url.Substring(6, url.Length - 7)
 
-            If Not value.StartsWith("http") AndAlso value.StartsWith("/") Then
+            If Not url.StartsWith("http") AndAlso url.StartsWith("/") Then
                 Dim match2 = Regex.Match(Package.DownloadURL, "https?://[^/]+")
-                value = match2.Value + value
+                url = match2.Value + url
             End If
 
-            Dim filename = IO.Path.GetFileName(value)
-            DownloadFile = Folder.Desktop + filename
-
-            If MessageBox.Show("Download the file listed below?" + BR2 + value,
-                filename, MessageBoxButtons.OKCancel,
-                MessageBoxIcon.Question) = DialogResult.OK Then
-
-                Using form As New DownloadForm(value, DownloadFile)
-                    If form.ShowDialog() = DialogResult.OK AndAlso DownloadFile.FileExists Then
-                        If DownloadFile.FileExists Then
-                            Extract()
-                        Else
-                            MsgError("Downloaded file is missing.")
-                        End If
-                    Else
-                        FileHelp.Delete(DownloadFile)
-                        MsgInfo("Download was canceled or failed.")
-                    End If
-                End Using
-            End If
-
+            DownloadFile = Folder.Desktop + IO.Path.GetFileName(url)
+            Download(url)
             Exit For
         Next
+    End Sub
+
+    Sub Download(url As String)
+        'TaskDialog trims URLs
+        If MessageBox.Show("Download the file shown below?" + BR2 + url,
+            "StaxRip", MessageBoxButtons.OKCancel,
+            MessageBoxIcon.Question) = DialogResult.OK Then
+
+            Using form As New DownloadForm(url, DownloadFile)
+                If form.ShowDialog() = DialogResult.OK AndAlso DownloadFile.FileExists Then
+                    If DownloadFile.FileExists Then
+                        Extract()
+                    Else
+                        MsgError("Downloaded file is missing.")
+                    End If
+                Else
+                    FileHelp.Delete(DownloadFile)
+                    MsgInfo("Download was canceled or failed.")
+                End If
+            End Using
+        End If
     End Sub
 
     Sub Extract()

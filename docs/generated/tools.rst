@@ -100,6 +100,7 @@ Tools
     "TemporalDegrain2","AviSynth Script","TemporalDegrain2.avsi","2.2.1","2019-02-24"
     "YFRC","AviSynth Script","YFRC.avsi","2015-10-01","2019-01-01"
     "Zs_RF_Shared","AviSynth Script","Zs_RF_Shared.avsi","1.127","2020-05-31"
+    "7zip","Console App","7za.exe","9.20","2010-11-18"
     "aomenc","Console App","aomenc.exe","2.0",""
     "AutoCrop","Console App","AutoCrop.exe","2.0.0.0","2020-08-02"
     "avs2pipemod","Console App","avs2pipemod64.exe","1.1.1","2016-08-14"
@@ -109,8 +110,8 @@ Tools
     "ffmpeg","Console App","ffmpeg.exe","N-98647-gffa6072fc7-x64-gcc10.2.0 Patman","2020-08-04"
     "ffmpeg non-free","Console App","ffmpeg.exe","","2020-09-18"
     "mkvextract","Console App","mkvextract.exe","51","2020-10-04"
-    "mkvinfo","Console App","mkvinfo.exe","","2020-10-04"
-    "mkvmerge","Console App","mkvmerge.exe","","2020-10-04"
+    "mkvinfo","Console App","mkvinfo.exe","51","2020-10-04"
+    "mkvmerge","Console App","mkvmerge.exe","51","2020-10-04"
     "MP4Box","Console App","MP4Box.exe","1.0.0-rev211-g71f1d75ea-x64-gcc10.2.0 Patman","2020-09-01"
     "mtn","Console App","mtn.exe","2.0.1","2019-06-27"
     "NeroAAC","Console App","neroAacEnc.exe","",""
@@ -131,7 +132,7 @@ Tools
     "D2V Witch","GUI App","d2vwitch.exe","v4","2020-06-15"
     "DGIndex","GUI App","DGIndex.exe","1.5.8","2010-03-06"
     "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.6.0.0","2020-08-30"
-    "MKVToolnix GUI","GUI App","mkvtoolnix-gui.exe","","2020-10-04"
+    "MKVToolnix GUI","GUI App","mkvtoolnix-gui.exe","51","2020-10-04"
     "MPC-BE","GUI App","mpc-be64.exe","",""
     "MPC-HC","GUI App","mpc-hc64.exe","",""
     "mpv.net","GUI App","mpvnet.exe","5.4.8.4","2020-08-04"
@@ -145,7 +146,6 @@ Tools
     "Visual C++ 2012","Library","msvcp110.dll","","2016-07-19"
     "Visual C++ 2013","Library","msvcp120.dll","","2016-02-10"
     "Visual C++ 2019","Library","msvcp140.dll","","2020-09-16"
-    "7zip","Misc","7za.exe","9.20","2010-11-18"
     "Get-MediaInfo","Misc","Get-MediaInfo.ps1","3.4","2020-09-22"
     "Haali Splitter","Misc","splitter.ax","",""
     "AWarpSharp2","VapourSynth Plugin","libawarpsharp2.dll","2018-06-18","2019-01-01"
@@ -211,6 +211,14 @@ Tools
 
 Console App
 -----------
+7zip
+~~~~
+
+Packing console app.
+
+https://www.7-zip.org
+
+
 aomenc
 ~~~~~~
 
@@ -230,7 +238,7 @@ AutoCrop console app.
 avs2pipemod
 ~~~~~~~~~~~
 
-Given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools.
+Console app given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools.
 
 http://github.com/chikuzen/avs2pipemod
 
@@ -246,7 +254,7 @@ http://forum.doom9.org/showthread.php?t=174797
 eac3to
 ~~~~~~
 
-Audio convertor console app. The recommended audio codec is Opus because it's high quality and free.
+Audio convertor console app.
 
 http://forum.doom9.org/showthread.php?t=125966
 
@@ -254,7 +262,7 @@ http://forum.doom9.org/showthread.php?t=125966
 fdkaac
 ~~~~~~
 
-Non-free AAC console encoder using libfdk-aac. The recommended audio codec is Opus because it's high quality and free.
+Non-free AAC console encoder using libfdk-aac.
 
 http://github.com/nu774/fdkaac
 
@@ -262,7 +270,7 @@ http://github.com/nu774/fdkaac
 ffmpeg
 ~~~~~~
 
-Versatile and free audio video convertor console app. The recommended audio codec is Opus because it's high quality and free.
+Versatile and free audio video convertor console app.
 
 http://ffmpeg.org
 
@@ -270,7 +278,7 @@ http://ffmpeg.org
 ffmpeg non-free
 ~~~~~~~~~~~~~~~
 
-Versatile audio video convertor console app. Custom build with non-free libraries like fdk-aac. The recommended audio codec is Opus because it's high quality and free.
+Versatile audio video convertor console app. Custom build with non-free libraries like fdk-aac.
 
 http://ffmpeg.org
 
@@ -318,7 +326,7 @@ https://github.com/Revan654/Movie-Thumbnailer-mtn
 NeroAAC
 ~~~~~~~
 
-Non-free AAC audio convertor console app. The recommended audio codec is Opus because it's high quality and free.
+Non-free AAC audio convertor console app.
 
 
 
@@ -350,7 +358,7 @@ http://www.python.org
 qaac
 ~~~~
 
-Console AAC encoder using the non-free Apple AAC encoder. The recommended audio codec is Opus because it's high quality and free.
+Console AAC encoder using the non-free Apple AAC encoder.
 
 http://github.com/nu774/qaac
 

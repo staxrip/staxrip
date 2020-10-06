@@ -45,7 +45,8 @@ Public Class ToolUpdate
             Dim filename = IO.Path.GetFileName(value)
             DownloadFile = Folder.Desktop + filename
 
-            If MessageBox.Show(value, filename, MessageBoxButtons.OKCancel,
+            If MessageBox.Show("Download the file listed below?" + BR2 + value,
+                filename, MessageBoxButtons.OKCancel,
                 MessageBoxIcon.Question) = DialogResult.OK Then
 
                 Using form As New DownloadForm(value, DownloadFile)

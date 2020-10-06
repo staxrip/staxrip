@@ -1296,7 +1296,8 @@ Public Class Package
             .HelpURL = "https://raw.githubusercontent.com/pinterf/AddGrainC/master/Documentation/AddGrainC.txt",
             .DownloadURL = "https://github.com/pinterf/AddGrainC/releases",
             .Description = "Generate film-like grain or other effects (like rain) by adding random noise to a video clip.",
-            .AvsFilterNames = {"AddGrainC", "AddGrain"}})
+            .AvsFilterNames = {"AddGrainC", "AddGrain"},
+            .AvsFiltersFunc = Function() {New VideoFilter("Noise", "AddGrainC", "AddGrainC(var=1.0, uvar=0.0, hcorr=0.0, vcorr=0.0, seed=6, constant=false, sse2=true)")}})
 
         Add(New PluginPackage With {
             .Name = "YFRC",

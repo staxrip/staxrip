@@ -229,7 +229,7 @@ Namespace CommandLine
                     End If
                 ElseIf Not Value AndAlso DefaultValue Then
                     If IntegerValue Then
-                        Return NoSwitch + Params.Separator + "1"
+                        Return Switch + Params.Separator + "0"
                     Else
                         Return NoSwitch
                     End If

@@ -244,8 +244,9 @@ Public Class AV1Params
         AddTab("Performance")
         '###################
 
-        Add(New OptionParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}})
+        'Add(New OptionParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}})
         Add(New NumParam With {.Switch = "--threads", .Text = "Threads"})
+        Add(New BoolParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .Init = True, .IntegerValue = True})
         Add(New BoolParam With {.Switch = "--frame-parallel", .Text = "Frame Parallel", .IntegerValue = True})
 
         AddTab("Statistic")

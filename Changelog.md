@@ -3,6 +3,7 @@
 ============
 
 - The Apps dialog supports drag & drop for zip/7z files (stax76)
+- aomenc fixes and improvements (stax76)
 - qaac 2.71 (long path support)
 - chapterEditor 1.24
 - mkvtoolnix 51

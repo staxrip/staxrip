@@ -143,136 +143,204 @@ Public Class AV1Params
         Get
             If ItemsValue Is Nothing Then
                 ItemsValue = New List(Of CommandLineParam)
-
-                Add(Mode)
-
-                Add(RateMode,
-                New OptionParam With {.Path = "Basic", .Switch = " --profile", .Text = "Profile", .IntegerValue = True, .Options = {"Main", "High", "Professional"}},
-                New OptionParam With {.Path = "Basic", .Switch = "--bit-depth", .Text = "Depth", .Options = {"8", "10", "12"}},
-                New OptionParam With {.Path = "Basic", .Switch = "--cpu-used", .Text = "CPU Used", .Value = 8, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Fastest"}},
-                New NumParam With {.Path = "Basic", .Switch = "--cq-level", .Text = "CQ Level"},
-                New StringParam With {.Path = "Analysis", .Switch = "--cfg", .Text = "Config File", .Quotes = QuotesMode.Auto, .BrowseFile = True},
-                New OptionParam With {.Path = "Analysis", .Switch = "--tune", .Text = "Tune", .Options = {"psnr", "ssim", "vmaf_with_preprocessing", "vmaf_without_preprocessing", "vmaf"}},
-                New NumParam With {.Path = "Analysis", .Switch = "--tile-columns", .Text = "Tile Columns"},
-                New NumParam With {.Path = "Analysis", .Switch = "--tile-rows", .Text = "Tile Rows"},
-                New NumParam With {.Path = "Analysis", .Switch = "--num-tile-groups", .Text = "Num Tile Groups"},
-                New OptionParam With {.Path = "Analysis", .Switch = "--large-scale-tile", .Text = "Large Scale Tile Groups", .IntegerValue = True, .Options = {"Off", "On"}},
-                New NumParam With {.Path = "Analysis", .Switch = "--mtu-size", .Text = "MTU Size"},
-                New OptionParam With {.Path = "Rate Control 1", .Switch = "--aq-mode", .Text = "AQ Mode", .IntegerValue = True, .Options = {"Disabled", "Variance", "Complexity", "Cyclic", "Refresh"}},
-                New OptionParam With {.Path = "Rate Control 1", .Switch = "--deltaq-mode", .Text = "Delta QIndex Mode", .IntegerValue = True, .Options = {"Disabled", "Deltaq", "Deltaq + Deltalf"}},
-                New NumParam With {.Path = "Rate Control 1", .Switch = "--superres-mode", .Text = "SuperRes"},
-                New NumParam With {.Path = "Rate Control 1", .Switch = "--superres-denominator", .Text = "SuperRes Denominator"},
-                New NumParam With {.Path = "Rate Control 1", .Switch = "--superres-kf-denominator", .Text = "SuperRes KF Denominator"},
-                New NumParam With {.Path = "Rate Control 1", .Switch = "--superres-qthresh", .Text = "SuperRes qThresh"},
-                New NumParam With {.Path = "Rate Control 1", .Switch = "--superres-kf-qthresh", .Text = "SuperRes KF qThresh"},
-                New BoolParam With {.Path = "Rate Control 1", .Switch = "--lossless", .Text = "Lossless", .IntegerValue = True},
-                New BoolParam With {.Path = "Rate Control 1", .Switch = "--enable-qm", .Text = "Enable QM", .IntegerValue = True},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--bias-pct", .Text = "Bias PCT", .Config = {0, 100}},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--max-intra-rate", .Text = "Max Intra Rate"},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--max-inter-rate", .Text = "Max Inter Rate"},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--undershoot-pct", .Text = "Undershoot PCT"},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--overshoot-pct", .Text = "Overshoot PCT"},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--minsection-pct", .Text = "Minsection PCT"},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--maxsection-pct", .Text = "Maxsection PCT"},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--gf-cbr-boost", .Text = "GF CBR Boost"},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--min-q", .Text = "Minimum Quantizer"},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--max-q", .Text = "Maximum Quantizer"},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--qm-min", .Text = "Min QM Flatness", .Init = 8, .Config = {0, 16}},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--qm-max", .Text = "Max QM Flatness", .Init = 16, .Config = {0, 16}},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--buf-sz", .Text = "Buffer Size"},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--buf-initial-sz", .Text = "Buf Initial Size"},
-                New NumParam With {.Path = "Rate Control 2", .Switch = "--buf-optimal-sz", .Text = "Buf Optimal Size"},
-                New NumParam With {.Path = "Slice Decision", .Switch = "--kf-min-dist", .Text = "Min GOP Size"},
-                New NumParam With {.Path = "Slice Decision", .Switch = "--kf-max-dist", .Text = "Max GOP Size"},
-                New NumParam With {.Path = "Slice Decision", .Switch = "--lag-in-frames", .Text = "Lag In Frames"},
-                New BoolParam With {.Path = "Slice Decision", .Switch = "--disable-kf", .Text = "Disable keyframe placement"},
-                New StringParam With {.Path = "Input/Output", .Switch = "--timebase", .Text = "Timebase"},
-                New StringParam With {.Path = "Input/Output", .Switch = "--annexb", .Text = "Save as Annex-B", .Quotes = QuotesMode.Auto},
-                New NumParam With {.Path = "Input/Output", .Switch = "--input-bit-depth", .Text = "Input Bit Depth"},
-                New NumParam With {.Path = "Input/Output", .Switch = "--fps", .Text = "Frame Rate"},
-                New NumParam With {.Path = "Input/Output", .Switch = "--limit", .Text = "Limit"},
-                New NumParam With {.Path = "Input/Output", .Switch = "--skip", .Text = "Skip"},
-                New BoolParam With {.Path = "Input/Output", .Switch = "--yv12", .Text = "YV12"},
-                New BoolParam With {.Path = "Input/Output", .Switch = "--i420", .Text = "I420"},
-                New BoolParam With {.Path = "Input/Output", .Switch = "--i422", .Text = "I422"},
-                New BoolParam With {.Path = "Input/Output", .Switch = "--i444", .Text = "I444"},
-                New OptionParam With {.Path = "VUI", .Switch = "--color-primaries", .Text = "Primaries", .Options = {" unspecified", "BT 2020", "BT 601", "BT 709", "BT 470 M", "BT 470 BG", "SMPTE 170", "XYZ", "SMPTE 240", "SMPTE 431", "SMPTE 432", "FILM", "EBU 3213"}},
-                New OptionParam With {.Path = "VUI", .Switch = "--transfer-characteristics", .Text = "Transfer", .Options = {"unspecified", "BT 709", "BT 470 M", "BT 470 BG", "BT 601", "SMPTE 240", "LIN", "LOG 100", "LOG 100SQ 10", "IEC 61966", "BT 1361", "SRGB", "BT2020-10bit", "BT2020-12bit", "SMPTE 2084", "HLG", "SMPTE 428"}},
-                New OptionParam With {.Path = "VUI", .Switch = "--matrix-coefficients", .Text = "Matrix", .Options = {" unspecified", "identity", "BT 2020 NC", "BT 2020 CL", "BT 601", "FCC 73", "BT 709", "BT 470 BG", "SMPTE 2085", "YCGCO", "SMPTE 240", "ICTCP", "CHROM NCL", "CHROM CL"}},
-                New NumParam With {.Path = "Performance", .Switch = "--threads", .Text = "Threads"},
-                New OptionParam With {.Path = "Performance", .Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}},
-                New BoolParam With {.Path = "Performance", .Switch = "--frame-parallel", .Text = "Frame Parallel", .IntegerValue = True},
-                New OptionParam With {.Path = "Statistic", .Switch = "--test-decode", .Text = "Test Decode", .Options = {"Disabled", "Fatal", "Warn"}},
-                New BoolParam With {.Path = "Statistic", .Switch = "--psnr", .Text = "PSNR"},
-                New BoolParam With {.Path = "Statistic", .Switch = "--debug", .Text = "Debug"},
-                New BoolParam With {.Path = "Statistic", .Switch = "--disable-warnings", .Text = "Disable Warnings"},
-                New BoolParam With {.Path = "Statistic", .Switch = "--disable-warning-prompt", .Text = "Disable Warning Prompt"},
-                New BoolParam With {.Path = "Statistic", .Switch = "--quiet", .Text = "Quiet"},
-                New NumParam With {.Path = "Frame Size", .Switch = "--width", .Text = "Width"},
-                New NumParam With {.Path = "Frame Size", .Switch = "--height", .Text = "Height"},
-                New NumParam With {.Path = "Frame Size", .Switch = "--forced_max_frame_width", .Text = "Force Width"},
-                New NumParam With {.Path = "Frame Size", .Switch = "--forced_max_frame_height", .Text = "Force Height"},
-                New NumParam With {.Path = "Frame Size", .Switch = "--resize-mode", .Text = "Resize Mode"},
-                New NumParam With {.Path = "Frame Size", .Switch = "--resize-denominator", .Text = "Resize Denominator"},
-                New NumParam With {.Path = "Frame Size", .Switch = "--resize-kf-denominator", .Text = "Resize KF Denominator"},
-                Custom,
-                New StringParam With {.Path = "Misc 1", .Switch = "--error-resilient", .Text = "Error Resilient"},
-                New StringParam With {.Path = "Misc 1", .Switch = "--global-error-resilient", .Text = "Global Error Resilient"},
-                New StringParam With {.Path = "Misc 1", .Switch = "--q-hist", .Text = "Q-Hist"},
-                New StringParam With {.Path = "Misc 1", .Switch = "--codec", .Text = "Codec"},
-                New StringParam With {.Path = "Misc 1", .Switch = "--rate-hist", .Text = "Rate Hist"},
-                New OptionParam With {.Path = "Misc 1", .Switch = "--stereo-mode", .Text = "Stereo Mode", .Options = {"None", "Mono", "Left-Right", "Bottom-Top", "Top-Bottom", "Right-Left"}},
-                New OptionParam With {.Path = "Misc 1", .Switch = "--tune-content", .Text = "Tune Content", .Options = {"Default", "Screen"}},
-                New OptionParam With {.Path = "Misc 1", .Switch = "--chroma-sample-position", .Text = "Chroma Sample Pos", .Options = {"Unknown", "Vertical", "Colocated"}},
-                New OptionParam With {.Path = "Misc 1", .Switch = "--enable-cdef", .Text = "Enable CDEF", .IntegerValue = True, .Options = {"Off", "On"}},
-                New OptionParam With {.Path = "Misc 1", .Switch = "--cdf-update-mode", .Text = "CDF Update", .IntegerValue = True, .Options = {"No Update", "Update All", "Selectively Update"}, .Init = 1},
-                New OptionParam With {.Path = "Misc 1", .Switch = "--disable-trellis-quant", .Text = "Disable Trellis Quant", .IntegerValue = True, .Options = {"Off", "On"}},
-                New OptionParam With {.Path = "Misc 1", .Switch = "--sb-size", .Text = "Chroma Sample Pos", .Options = {"Dynamic", "64", "128"}},
-                New OptionParam With {.Path = "Misc 1", .Switch = "--timing-info", .Text = "Chroma Sample Pos", .Options = {"Unspecified", "Constant", "Model"}},
-                New BoolParam With {.Path = "Misc 1", .Switch = "--good", .Text = "Good"},
-                New BoolParam With {.Path = "Misc 1", .Switch = "--verbose", .Text = "Verbose"},
-                New BoolParam With {.Path = "Misc 1", .Switch = "--webm", .Text = "WEBM"},
-                New BoolParam With {.Path = "Misc 1", .Switch = "--ivf", .Text = "IVF"},
-                New BoolParam With {.Path = "Misc 1", .Switch = "--obu", .Text = "OBU"},
-                New BoolParam With {.Path = "Misc 1", .Switch = "--frame-boost", .Text = "Enable frame periodic boost", .IntegerValue = True},
-                New NumParam With {.Path = "Misc 2", .Switch = "--usage", .Text = "Usage"},
-                New NumParam With {.Path = "Misc 2", .Switch = "--profile", .Text = "Profile"},
-                New NumParam With {.Path = "Misc 2", .Switch = "--drop-frame", .Text = "Drop Frame"},
-                New NumParam With {.Path = "Misc 2", .Switch = "--auto-alt-ref", .Text = "Auto Alt Ref"},
-                New StringParam With {.Path = "Filters", .Switch = "--film-grain-table", .Text = "Film Grain Table", .Quotes = QuotesMode.Auto, .BrowseFile = True},
-                New NumParam With {.Path = "Filters", .Switch = "--sharpness", .Text = "Sharpness", .Config = {0, 7}},
-                New NumParam With {.Path = "Misc 2", .Switch = "--static-thresh", .Text = "Static Thresh"},
-                New NumParam With {.Path = "Misc 2", .Switch = "--arnr-maxframes", .Text = "ARNR Maxframes", .Config = {0, 15}},
-                New NumParam With {.Path = "Misc 2", .Switch = "--arnr-strength", .Text = "ARNR Strength", .Config = {0, 6}},
-                New OptionParam With {.Path = "Filters", .Switch = "--enable-restoration", .Text = "Restoration", .IntegerValue = True, .Options = {"Off", "On"}},
-                New NumParam With {.Path = "Filters", .Switch = "--noise-sensitivity", .Text = "Noise Sensitivity"},
-                New NumParam With {.Path = "Filters", .Switch = "--denoise-noise-level", .Text = "Denoise Level", .Config = {0, 50}},
-                New NumParam With {.Path = "Filters", .Switch = "--denoise-block-size", .Text = "Denoise Block Size", .Config = {0, 32}},
-                New NumParam With {.Path = "Misc 2", .Switch = "--enable-ref-frame-mvs", .Text = "Ref Frame mvs", .Init = 1},
-                New NumParam With {.Path = "Misc 2", .Switch = "--min-gf-interval", .Text = "Min GF Interval"},
-                New NumParam With {.Path = "Misc 2", .Switch = "--max-gf-interval", .Text = "Max GF Interval"})
+                AddParameters()
             End If
 
             Return ItemsValue
         End Get
     End Property
 
-    Public Overrides Sub ShowHelp(id As String)
-        g.ShowCommandLineHelp(Package.AOMEnc, id)
+    Sub AddParameters()
+        AddTab("Basic")
+        '#############
+
+        Add(Mode)
+        Add(RateMode)
+        Add(New OptionParam With {.Switch = "--profile", .Text = "Profile", .IntegerValue = True, .Options = {"Main", "High", "Professional"}})
+        Add(New OptionParam With {.Switch = "--bit-depth", .Text = "Depth", .Options = {"8", "10", "12"}})
+        Add(New OptionParam With {.Switch = "--cpu-used", .Text = "CPU Used", .Value = 8, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Fastest"}})
+
+        Add(New NumParam With {.Switch = "--cq-level", .Text = "CQ Level"})
+
+        AddTab("Analysis")
+        '################
+
+        Add(New StringParam With {.Switch = "--cfg", .Text = "Config File", .Quotes = QuotesMode.Auto, .BrowseFile = True})
+
+        Add(New OptionParam With {.Switch = "--tune", .Text = "Tune", .Options = {"psnr", "ssim", "vmaf_with_preprocessing", "vmaf_without_preprocessing", "vmaf"}})
+        Add(New OptionParam With {.Switch = "--large-scale-tile", .Text = "Large Scale Tile Groups", .IntegerValue = True, .Options = {"Off", "On"}})
+
+        Add(New NumParam With {.Switch = "--tile-columns", .Text = "Tile Columns"})
+        Add(New NumParam With {.Switch = "--tile-rows", .Text = "Tile Rows"})
+        Add(New NumParam With {.Switch = "--num-tile-groups", .Text = "Num Tile Groups"})
+        Add(New NumParam With {.Switch = "--mtu-size", .Text = "MTU Size"})
+
+        AddTab("Rate Control 1")
+        '######################
+
+        Add(New OptionParam With {.Switch = "--aq-mode", .Text = "AQ Mode", .IntegerValue = True, .Options = {"Disabled", "Variance", "Complexity", "Cyclic", "Refresh"}})
+        Add(New OptionParam With {.Switch = "--deltaq-mode", .Text = "Delta QIndex Mode", .IntegerValue = True, .Options = {"Disabled", "Deltaq", "Deltaq + Deltalf"}})
+
+        Add(New NumParam With {.Switch = "--superres-mode", .Text = "SuperRes"})
+        Add(New NumParam With {.Switch = "--superres-denominator", .Text = "SuperRes Denominator"})
+        Add(New NumParam With {.Switch = "--superres-kf-denominator", .Text = "SuperRes KF Denominator"})
+        Add(New NumParam With {.Switch = "--superres-qthresh", .Text = "SuperRes qThresh"})
+        Add(New NumParam With {.Switch = "--superres-kf-qthresh", .Text = "SuperRes KF qThresh"})
+
+        Add(New BoolParam With {.Switch = "--lossless", .Text = "Lossless", .IntegerValue = True})
+        Add(New BoolParam With {.Switch = "--enable-qm", .Text = "Enable QM", .IntegerValue = True})
+
+        AddTab("Rate Control 2")
+        '######################
+
+        Add(New NumParam With {.Switch = "--bias-pct", .Text = "Bias PCT", .Config = {0, 100}})
+        Add(New NumParam With {.Switch = "--max-intra-rate", .Text = "Max Intra Rate"})
+        Add(New NumParam With {.Switch = "--max-inter-rate", .Text = "Max Inter Rate"})
+        Add(New NumParam With {.Switch = "--undershoot-pct", .Text = "Undershoot PCT"})
+        Add(New NumParam With {.Switch = "--overshoot-pct", .Text = "Overshoot PCT"})
+        Add(New NumParam With {.Switch = "--minsection-pct", .Text = "Minsection PCT"})
+        Add(New NumParam With {.Switch = "--maxsection-pct", .Text = "Maxsection PCT"})
+        Add(New NumParam With {.Switch = "--gf-cbr-boost", .Text = "GF CBR Boost"})
+        Add(New NumParam With {.Switch = "--min-q", .Text = "Minimum Quantizer"})
+        Add(New NumParam With {.Switch = "--max-q", .Text = "Maximum Quantizer"})
+        Add(New NumParam With {.Switch = "--qm-min", .Text = "Min QM Flatness", .Init = 8, .Config = {0, 16}})
+        Add(New NumParam With {.Switch = "--qm-max", .Text = "Max QM Flatness", .Init = 16, .Config = {0, 16}})
+        Add(New NumParam With {.Switch = "--buf-sz", .Text = "Buffer Size"})
+        Add(New NumParam With {.Switch = "--buf-initial-sz", .Text = "Buf Initial Size"})
+        Add(New NumParam With {.Switch = "--buf-optimal-sz", .Text = "Buf Optimal Size"})
+
+        AddTab("Slice Decision")
+        '######################
+
+        Add(New NumParam With {.Switch = "--kf-min-dist", .Text = "Min GOP Size"})
+        Add(New NumParam With {.Switch = "--kf-max-dist", .Text = "Max GOP Size"})
+        Add(New NumParam With {.Switch = "--lag-in-frames", .Text = "Lag In Frames"})
+
+        Add(New BoolParam With {.Switch = "--disable-kf", .Text = "Disable keyframe placement"})
+
+        AddTab("Input/Output")
+        '####################
+
+        Add(New StringParam With {.Switch = "--timebase", .Text = "Timebase"})
+        Add(New StringParam With {.Switch = "--annexb", .Text = "Save as Annex-B", .Quotes = QuotesMode.Auto})
+
+        Add(New NumParam With {.Switch = "--input-bit-depth", .Text = "Input Bit Depth"})
+        Add(New NumParam With {.Switch = "--fps", .Text = "Frame Rate"})
+        Add(New NumParam With {.Switch = "--limit", .Text = "Limit"})
+        Add(New NumParam With {.Switch = "--skip", .Text = "Skip"})
+
+        Add(New BoolParam With {.Switch = "--yv12", .Text = "YV12"})
+        Add(New BoolParam With {.Switch = "--i420", .Text = "I420"})
+        Add(New BoolParam With {.Switch = "--i422", .Text = "I422"})
+        Add(New BoolParam With {.Switch = "--i444", .Text = "I444"})
+
+        AddTab("VUI")
+        '###########
+
+        Add(New OptionParam With {.Switch = "--color-primaries", .Text = "Primaries", .Options = {" unspecified", "BT 2020", "BT 601", "BT 709", "BT 470 M", "BT 470 BG", "SMPTE 170", "XYZ", "SMPTE 240", "SMPTE 431", "SMPTE 432", "FILM", "EBU 3213"}})
+        Add(New OptionParam With {.Switch = "--transfer-characteristics", .Text = "Transfer", .Options = {"unspecified", "BT 709", "BT 470 M", "BT 470 BG", "BT 601", "SMPTE 240", "LIN", "LOG 100", "LOG 100SQ 10", "IEC 61966", "BT 1361", "SRGB", "BT2020-10bit", "BT2020-12bit", "SMPTE 2084", "HLG", "SMPTE 428"}})
+        Add(New OptionParam With {.Switch = "--matrix-coefficients", .Text = "Matrix", .Options = {" unspecified", "identity", "BT 2020 NC", "BT 2020 CL", "BT 601", "FCC 73", "BT 709", "BT 470 BG", "SMPTE 2085", "YCGCO", "SMPTE 240", "ICTCP", "CHROM NCL", "CHROM CL"}})
+
+        AddTab("Performance")
+        '###################
+
+        Add(New OptionParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}})
+        Add(New NumParam With {.Switch = "--threads", .Text = "Threads"})
+        Add(New BoolParam With {.Switch = "--frame-parallel", .Text = "Frame Parallel", .IntegerValue = True})
+
+        AddTab("Statistic")
+        '#################
+
+        Add(New OptionParam With {.Switch = "--test-decode", .Text = "Test Decode", .Options = {"Disabled", "Fatal", "Warn"}})
+
+        Add(New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
+        Add(New BoolParam With {.Switch = "--debug", .Text = "Debug"})
+        Add(New BoolParam With {.Switch = "--disable-warnings", .Text = "Disable Warnings"})
+        Add(New BoolParam With {.Switch = "--disable-warning-prompt", .Text = "Disable Warning Prompt"})
+        Add(New BoolParam With {.Switch = "--quiet", .Text = "Quiet"})
+
+        AddTab("Frame Size")
+        '##################
+
+        Add(New NumParam With {.Switch = "--width", .Text = "Width"})
+        Add(New NumParam With {.Switch = "--height", .Text = "Height"})
+        Add(New NumParam With {.Switch = "--forced_max_frame_width", .Text = "Force Width"})
+        Add(New NumParam With {.Switch = "--forced_max_frame_height", .Text = "Force Height"})
+        Add(New NumParam With {.Switch = "--resize-mode", .Text = "Resize Mode"})
+        Add(New NumParam With {.Switch = "--resize-denominator", .Text = "Resize Denominator"})
+        Add(New NumParam With {.Switch = "--resize-kf-denominator", .Text = "Resize KF Denominator"})
+
+        AddTab("Filters")
+        '###############
+
+        Add(New StringParam With {.Switch = "--film-grain-table", .Text = "Film Grain Table", .Quotes = QuotesMode.Auto, .BrowseFile = True})
+        Add(New OptionParam With {.Switch = "--enable-restoration", .Text = "Restoration", .IntegerValue = True, .Options = {"Off", "On"}})
+        Add(New NumParam With {.Switch = "--sharpness", .Text = "Sharpness", .Config = {0, 7}})
+        Add(New NumParam With {.Switch = "--noise-sensitivity", .Text = "Noise Sensitivity"})
+        Add(New NumParam With {.Switch = "--denoise-noise-level", .Text = "Denoise Level", .Config = {0, 50}})
+        Add(New NumParam With {.Switch = "--denoise-block-size", .Text = "Denoise Block Size", .Config = {0, 32}})
+
+        AddTab("Misc 1")
+        '##############
+
+        Add(Custom)
+        Add(New StringParam With {.Switch = "--error-resilient", .Text = "Error Resilient"})
+        Add(New StringParam With {.Switch = "--global-error-resilient", .Text = "Global Error Resilient"})
+        Add(New StringParam With {.Switch = "--q-hist", .Text = "Q-Hist"})
+        Add(New StringParam With {.Switch = "--codec", .Text = "Codec"})
+        Add(New StringParam With {.Switch = "--rate-hist", .Text = "Rate Hist"})
+
+        Add(New OptionParam With {.Switch = "--stereo-mode", .Text = "Stereo Mode", .Options = {"None", "Mono", "Left-Right", "Bottom-Top", "Top-Bottom", "Right-Left"}})
+        Add(New OptionParam With {.Switch = "--tune-content", .Text = "Tune Content", .Options = {"Default", "Screen"}})
+        Add(New OptionParam With {.Switch = "--chroma-sample-position", .Text = "Chroma Sample Pos", .Options = {"Unknown", "Vertical", "Colocated"}})
+        Add(New OptionParam With {.Switch = "--enable-cdef", .Text = "Enable CDEF", .Init = 1, .IntegerValue = True, .Options = {"Off", "On"}})
+        Add(New OptionParam With {.Switch = "--cdf-update-mode", .Text = "CDF Update", .IntegerValue = True, .Options = {"No Update", "Update All", "Selectively Update"}, .Init = 1})
+        Add(New OptionParam With {.Switch = "--disable-trellis-quant", .Text = "Disable Trellis Quant", .IntegerValue = True, .Options = {"Off", "On"}})
+        Add(New OptionParam With {.Switch = "--sb-size", .Text = "Chroma Sample Pos", .Options = {"Dynamic", "64", "128"}})
+        Add(New OptionParam With {.Switch = "--timing-info", .Text = "Chroma Sample Pos", .Options = {"Unspecified", "Constant", "Model"}})
+
+        AddTab("Misc 2")
+        '##############
+
+        Add(New NumParam With {.Switch = "--usage", .Text = "Usage"})
+        Add(New NumParam With {.Switch = "--drop-frame", .Text = "Drop Frame"})
+        Add(New NumParam With {.Switch = "--auto-alt-ref", .Text = "Auto Alt Ref"})
+        Add(New NumParam With {.Switch = "--static-thresh", .Text = "Static Thresh"})
+        Add(New NumParam With {.Switch = "--arnr-maxframes", .Text = "ARNR Maxframes", .Config = {0, 15}})
+        Add(New NumParam With {.Switch = "--arnr-strength", .Text = "ARNR Strength", .Config = {0, 6}})
+        Add(New NumParam With {.Switch = "--enable-ref-frame-mvs", .Text = "Ref Frame mvs", .Init = 1})
+        Add(New NumParam With {.Switch = "--min-gf-interval", .Text = "Min GF Interval"})
+        Add(New NumParam With {.Switch = "--max-gf-interval", .Text = "Max GF Interval"})
+
+        Add(New BoolParam With {.Switch = "--good", .Text = "Good"})
+        Add(New BoolParam With {.Switch = "--verbose", .Text = "Verbose"})
+        Add(New BoolParam With {.Switch = "--webm", .Text = "WEBM"})
+        Add(New BoolParam With {.Switch = "--ivf", .Text = "IVF"})
+        Add(New BoolParam With {.Switch = "--obu", .Text = "OBU"})
+        Add(New BoolParam With {.Switch = "--frame-boost", .Text = "Enable frame periodic boost", .IntegerValue = True})
     End Sub
 
-    Shadows Sub Add(ParamArray items As CommandLineParam())
-        For Each i In items
-            If i.HelpSwitch = "" Then
-                Dim switches = i.GetSwitches
+    Overrides Sub ShowHelp(id As String)
+        g.ShowCommandLineHelp(Package.aomenc, id)
+    End Sub
 
-                If Not switches.NothingOrEmpty Then
-                    i.HelpSwitch = switches(0)
-                End If
+    Private LastTabName As String
+
+    Sub AddTab(name As String)
+        LastTabName = name
+    End Sub
+
+    Shadows Sub Add(item As CommandLineParam)
+        If item.HelpSwitch = "" Then
+            Dim switches = item.GetSwitches
+
+            If Not switches.NothingOrEmpty Then
+                item.HelpSwitch = switches(0)
             End If
+        End If
 
-            ItemsValue.Add(i)
-        Next
+        item.Path = LastTabName
+        ItemsValue.Add(item)
     End Sub
 
     Overloads Overrides Function GetCommandLine(

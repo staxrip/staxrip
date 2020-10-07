@@ -189,7 +189,7 @@ Public Class ffmpegEnc
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
             .Options = {"AviSynth/VapourSynth", "Software", "Intel", "DXVA2", "Nvidia"},
-            .Values = {"-", "sw", "qsv", "dxva2", "cuvid"}}
+            .Values = {"-", "sw", "qsv", "dxva2", "cuda"}}
 
         Property Custom As New StringParam With {
             .Text = "Custom",
@@ -250,9 +250,9 @@ Public Class ffmpegEnc
                 Case "dxva2"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " -hwaccel dxva2"
-                Case "cuvid"
+                Case "cuda"
                     sourcePath = p.LastOriginalSourceFile
-                    ret += " -hwaccel cuvid"
+                    ret += " -hwaccel_output_format cuda"
             End Select
 
             If sourcePath.Ext = "vpy" Then

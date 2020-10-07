@@ -1,5 +1,8 @@
 
-2.1.4.8 Beta (2020-09-??)
+2.1.4.9 Beta (2020-09-??)
+============
+
+2.1.4.8 Beta (2020-10-07)
 ============
 
 - The Apps dialog supports drag & drop for zip/7z files (stax76)

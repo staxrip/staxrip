@@ -103,7 +103,8 @@ Public Class NVEnc
     Overrides Property QualityMode() As Boolean
         Get
             Return Params.Mode.Value = 0 OrElse
-                ((Params.Mode.Value = 3 OrElse Params.Mode.Value = 4) AndAlso Params.ConstantQualityMode.Value)
+                ((Params.Mode.Value = 3 OrElse Params.Mode.Value = 4) AndAlso
+                Params.ConstantQualityMode.Value)
         End Get
         Set(Value As Boolean)
         End Set

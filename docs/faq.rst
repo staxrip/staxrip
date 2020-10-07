@@ -5,6 +5,7 @@ Frequently Asked Questions
 
 .. contents::
 
+
 How can I encode with a fixed bitrate?
 --------------------------------------
 
@@ -68,6 +69,7 @@ Main Menu > Tools > Folders > Plugins
 
 The AviSynth script can be edited manually using the code editor (Filters > Edit Code) or the filters menu can be configured using the filter profile editor (Filters > Profiles).
 
+
 Why does AviSynth portable mode require soft links?
 ---------------------------------------------------
 
@@ -76,3 +78,19 @@ StaxRip has portable mode enabled by default because many users have incompatibl
 If AviSynth is installed and portable mode should be used instead of the installed version then it can only be achieved with soft links because there is no way to tell a tool from where it should load AviSynth, default DLL loading of the OS applies and that includes the system folder where AviSynth is installed. A tool needs an implementation to use a custom/portable path and right now not all tools have such an implementation.
 
 If AviSynth is not installed then only ffmpeg needs a soft link because ffmpeg blocks default DLL loading of the OS which searches in the PATH environment variable which StaxRip sets in portable mode.
+
+
+Where can I find the log file?
+------------------------------
+
+The StaxRip log file ends with _staxrip.log and can be found in the temp folder, by default the temp folder is located next to the source file.
+
+If a project is re-opened from the Recent menu, then the log file can be opened from the main menu:
+
+File > Recent Projects
+
+Tools > Log File (F7)
+
+The log file history can be found at:
+
+Tools > Folders > Log Files

@@ -6,6 +6,7 @@
 ============
 
 - The Apps dialog supports drag & drop for zip/7z files (stax76)
+- Auto update supports mkvtoolnix (stax76)
 - aomenc fixes and improvements (stax76, [#357](/../../issues/357))
 - GUI options for ffmpeg -probesize -analyzeduration (stax76, [#354](/../../issues/354))
 - qaac 2.71 (long path support)

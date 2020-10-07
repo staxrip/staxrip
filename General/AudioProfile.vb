@@ -1108,7 +1108,17 @@ Public Class GUIAudioProfile
             Package.ffmpeg_non_free, Package.ffmpeg)
 
         If includePaths AndAlso File <> "" Then
-            sb.Append(pack.Path.Escape + " -i " + File.LongPathPrefix.Escape)
+            sb.Append(pack.Path.Escape)
+
+            If Params.ProbeSize <> 5 Then
+                sb.Append($" -probesize {Params.ProbeSize}M")
+            End If
+
+            If Params.AnalyzeDuration <> 5 Then
+                sb.Append($" -analyzeduration {Params.AnalyzeDuration}M")
+            End If
+
+            sb.Append(" -i " + File.LongPathPrefix.Escape)
         Else
             sb.Append("ffmpeg")
         End If
@@ -1390,16 +1400,18 @@ Public Class GUIAudioProfile
 
     <Serializable()>
     Public Class Parameters
+        Property AnalyzeDuration As Integer = 5
+        Property ChannelsMode As ChannelsMode
         Property Codec As AudioCodec
         Property CustomSwitches As String = ""
         Property eac3toStereoDownmixMode As Integer
         Property Encoder As GuiAudioEncoder
         Property FrameRateMode As AudioFrameRateMode
         Property Normalize As Boolean = True
+        Property ProbeSize As Integer = 5
         Property Quality As Single = 0.3
         Property RateMode As AudioRateMode
         Property SamplingRate As Integer
-        Property ChannelsMode As ChannelsMode
 
         Property Migrate1 As Boolean = True
         Property MigrateffNormalizeMode As Boolean = True
@@ -1409,14 +1421,6 @@ Public Class GUIAudioProfile
         Property qaacNoDither As Boolean
         Property qaacQuality As Integer = 2
         Property qaacRateMode As Integer
-
-        Property ffmpegOpusApp As OpusApp = OpusApp.audio
-        Property ffmpegOpusCompress As Integer = 10
-        Property ffmpegOpusFrame As Double = 20
-        Property ffmpegOpusMap As Integer = -1
-        Property ffmpegOpusPacket As Integer
-        Property ffmpegOpusRateMode As OpusRateMode = OpusRateMode.VBR
-        Property ffmpegOpusMigrate As Integer = 1
 
         Property fdkaacProfile As Integer = 2
         Property fdkaacBandwidth As Integer
@@ -1452,6 +1456,14 @@ Public Class GUIAudioProfile
         Property ffmpegDynaudnormC As Boolean
         Property ffmpegDynaudnormB As Boolean
         Property ffmpegDynaudnormS As Double
+
+        Property ffmpegOpusApp As OpusApp = OpusApp.audio
+        Property ffmpegOpusCompress As Integer = 10
+        Property ffmpegOpusFrame As Double = 20
+        Property ffmpegOpusMap As Integer = -1
+        Property ffmpegOpusPacket As Integer
+        Property ffmpegOpusRateMode As OpusRateMode = OpusRateMode.VBR
+        Property ffmpegOpusMigrate As Integer = 1
 
         Property SimpleRateMode As SimpleAudioRateMode
             Get
@@ -1510,6 +1522,12 @@ Public Class GUIAudioProfile
                 ffmpegOpusFrame = 20
                 ffmpegOpusMap = -1
                 ffmpegOpusRateMode = OpusRateMode.VBR
+            End If
+
+            '2020
+            If ProbeSize = 0 AndAlso AnalyzeDuration = 0 Then
+                ProbeSize = 5
+                AnalyzeDuration = 5
             End If
         End Sub
     End Class

@@ -42,22 +42,22 @@ Public Class ffmpegEnc
         newParams.Init(store)
 
         Using form As New CommandLineForm(newParams)
-            Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of ffmpegEnc)(Me)
-                                        Dim params2 As New EncoderParams
-                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
-                                        params2.Init(store2)
-                                        enc.Params = params2
-                                        enc.ParamsStore = store2
-                                        SaveProfile(enc)
-                                    End Sub
+            Dim a1 = Sub()
+                         Dim enc = ObjectHelp.GetCopy(Of ffmpegEnc)(Me)
+                         Dim params2 As New EncoderParams
+                         Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
+                         params2.Init(store2)
+                         enc.Params = params2
+                         enc.ParamsStore = store2
+                         SaveProfile(enc)
+                     End Sub
 
-            form.cms.Add("Save Profile...", saveProfileAction)
+            form.cms.Add("Save Profile...", a1)
 
-            Dim a = Sub()
-                        Dim codecText = newParams.Codec.OptionText
-                        Dim consoleHelp = ProcessHelp.GetConsoleOutput(Package.ffmpeg.Path, "-hide_banner -h encoder=" + newParams.Codec.ValueText)
-                        Dim helpDic As New Dictionary(Of String, String) From {
+            Dim a2 = Sub()
+                         Dim codecText = newParams.Codec.OptionText
+                         Dim consoleHelp = ProcessHelp.GetConsoleOutput(Package.ffmpeg.Path, "-hide_banner -h encoder=" + newParams.Codec.ValueText)
+                         Dim helpDic As New Dictionary(Of String, String) From {
                             {"x264", "https://trac.ffmpeg.org/wiki/Encode/H.264"},
                             {"x265", "https://trac.ffmpeg.org/wiki/Encode/H.265"},
                             {"XviD", "https://trac.ffmpeg.org/wiki/Encode/MPEG-4"},
@@ -67,19 +67,19 @@ Public Class ffmpegEnc
                             {"Intel H.265", "https://trac.ffmpeg.org/wiki/Hardware/QuickSync"},
                             {"AV1", "https://trac.ffmpeg.org/wiki/Encode/AV1"}}
 
-                        form.HTMLHelp = $"<h2>ffmpeg Online Help</h2>" +
+                         form.HTMLHelp = $"<h2>ffmpeg Online Help</h2>" +
                                      "<p><a href=""{Package.ffmpeg.HelpURL}"">ffmpeg Online Help</a></p>"
 
-                        If helpDic.ContainsKey(codecText) Then
-                            form.HTMLHelp += $"<h2>ffmpeg {codecText} Online Help</h2>" +
+                         If helpDic.ContainsKey(codecText) Then
+                             form.HTMLHelp += $"<h2>ffmpeg {codecText} Online Help</h2>" +
                                          $"<p><a href=""{helpDic(codecText)}"">ffmpeg {codecText} Online Help</a></p>"
-                        End If
+                         End If
 
-                        form.HTMLHelp += $"<h2>ffmpeg {codecText} Console Help</h2>" +
+                         form.HTMLHelp += $"<h2>ffmpeg {codecText} Console Help</h2>" +
                                      $"<pre>{HelpDocument.ConvertChars(consoleHelp) + BR}</pre>"
-                    End Sub
+                     End Sub
 
-            AddHandler form.BeforeHelp, a
+            AddHandler form.BeforeHelp, a2
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams
@@ -191,6 +191,13 @@ Public Class ffmpegEnc
             .Options = {"AviSynth/VapourSynth", "Software", "Intel", "DXVA2", "Nvidia"},
             .Values = {"-", "sw", "qsv", "dxva2", "cuda"}}
 
+        Property h264_nvenc_rc As New OptionParam With {
+            .Name = "h264_nvenc rc",
+            .Switch = "-rc",
+            .Text = "Rate Control",
+            .Options = {"Preset", "Constqp", "VBR", "CBR", "VBR_MinQP", "LL_2Pass_Quality", "LL_2Pass_Size", "VBR_2Pass"},
+            .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"}
+
         Property Custom As New StringParam With {
             .Text = "Custom",
             .Quotes = QuotesMode.Never,
@@ -211,7 +218,7 @@ Public Class ffmpegEnc
                         New OptionParam With {.Name = "h264_nvenc profile", .Switch = "-profile", .Text = "Profile", .Options = {"Baseline", "Main", "High", "High444p"}, .Init = 1, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
                         New OptionParam With {.Name = "h264_nvenc preset", .Switch = "-preset", .Text = "Preset", .Options = {"Default", "Slow", "Medium", "Fast", "HP", "HQ", "BD", "LL", "LLHQ", "LLHP", "Lossless", "Losslesshp"}, .Init = 2, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
                         New OptionParam With {.Name = "h264_nvenc level", .Switch = "-level", .Text = "Level", .Options = {"Auto", "1", "1.0", "1b", "1.0b", "1.1", "1.2", "1.3", "2", "2.0", "2.1", "2.2", "3", "3.0", "3.1", "3.2", "4", "4.0", "4.1", "4.2", "5", "5.0", "5.1"}, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
-                        New OptionParam With {.Name = "h264_nvenc rc", .Switch = "-rc", .Text = "Rate Control", .Options = {"Preset", "Constqp", "VBR", "CBR", "VBR_MinQP", "LL_2Pass_Quality", "LL_2Pass_Size", "VBR_2Pass"}, .VisibleFunc = Function() Codec.ValueText = "h264_nvenc"},
+                        h264_nvenc_rc,
                         New OptionParam With {.Name = "utVideoPred", .Switch = "-pred", .Text = "Prediction", .Init = 3, .Options = {"None", "Left", "Gradient", "Median"}, .VisibleFunc = Function() Codec.ValueText = "utvideo"},
                         New OptionParam With {.Name = "utVideoPixFmt", .Switch = "-pix_fmt", .Text = "Pixel Format", .Options = {"YUV420P", "YUV422P", "YUV444P", "RGB24", "RGBA"}, .VisibleFunc = Function() Codec.ValueText = "utvideo"},
                         New NumParam With {.Name = "Quality", .Text = "Quality", .Init = -1, .VisibleFunc = Function() Mode.Value = EncodingMode.Quality AndAlso Not Codec.ValueText.EqualsAny("prores", "utvideo", "ffv1"), .ArgsFunc = AddressOf GetQualityArgs, .Config = {-1, 63}},
@@ -330,7 +337,13 @@ Public Class ffmpegEnc
                         Return "-crf " & param.Value & " -b:v 0"
                     ElseIf Codec.OptionText.EqualsAny("x264", "x265", "AV1") Then
                         Return "-crf " & param.Value
-                    ElseIf Codec.ValueText.EqualsAny("h264_nvenc", "hevc_nvenc") Then
+                    ElseIf Codec.ValueText.EqualsAny("h264_nvenc") Then
+                        If h264_nvenc_rc.OptionText = "Constqp" Then
+                            Return "-qp " & param.Value
+                        Else
+                            Return "-cq " & param.Value
+                        End If
+                    ElseIf Codec.ValueText.EqualsAny("hevc_nvenc") Then
                         Return "-cq " & param.Value
                     Else
                         Return "-q:v " & param.Value

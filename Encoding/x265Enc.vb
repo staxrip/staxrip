@@ -818,6 +818,16 @@ Public Class x265Params
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
 
+    Property CustomThirdPass As New StringParam With {
+        .Text = "Custom" + BR + "Third Pass",
+        .Quotes = QuotesMode.Never,
+        .InitAction = Sub(tb)
+                          tb.Edit.Expand = True
+                          tb.Edit.TextBox.Multiline = True
+                          tb.Edit.MultilineHeightFactor = 6
+                          tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+                      End Sub}
+
     Property Deblock As New BoolParam With {
         .Switch = "--deblock",
         .Text = "Deblocking",
@@ -1070,7 +1080,7 @@ Public Class x265Params
                     StrongIntraSmoothing,
                     New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .Init = False},
                     New BoolParam With {.Switch = "--lowpass-dct", .Text = "Lowpass DCT"})
-                Add("Custom", Custom, CustomFirstPass, CustomSecondPass)
+                Add("Custom", Custom, CustomFirstPass, CustomSecondPass, CustomThirdPass)
 
                 For Each item In ItemsValue
                     If item.HelpSwitch <> "" Then
@@ -1217,15 +1227,19 @@ Public Class x265Params
                 If CustomFirstPass.Value <> "" Then
                     sb.Append(" " + CustomFirstPass.Value)
                 End If
-            Else
+            ElseIf pass = 2 Then
                 If CustomSecondPass.Value <> "" Then
                     sb.Append(" " + CustomSecondPass.Value)
                 End If
+            Else
+                If CustomThirdPass.Value <> "" Then
+                    sb.Append(" " + CustomThirdPass.Value)
+                End If
             End If
+        End If
 
-            If includePaths AndAlso (MultiPassOptDistortion.Value OrElse MultiPassOptAnalysis.Value) Then
-                sb.Append(" --analysis-reuse-file " + (targetPath.DirAndBase + chunkName + ".analysis").Escape)
-            End If
+        If includePaths AndAlso (MultiPassOptDistortion.Value OrElse MultiPassOptAnalysis.Value) Then
+            sb.Append(" --analysis-reuse-file " + (targetPath.DirAndBase + chunkName + ".analysis").Escape)
         End If
 
         If Mode.Value = x265RateMode.SingleQuant Then
@@ -1296,9 +1310,15 @@ Public Class x265Params
 
                     Return True
                 End If
-            Else
+            ElseIf pass = 2 Then
                 If CustomSecondPass.Value?.Contains(switch + " ") OrElse
                     CustomSecondPass.Value?.EndsWith(switch) Then
+
+                    Return True
+                End If
+            Else
+                If CustomThirdPass.Value?.Contains(switch + " ") OrElse
+                    CustomThirdPass.Value?.EndsWith(switch) Then
 
                     Return True
                 End If

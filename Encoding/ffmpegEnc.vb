@@ -311,6 +311,10 @@ Public Class ffmpegEnc
                 ret += " -an -y -hide_banner " + targetPath
             End If
 
+            If ret.Contains("%") Then
+                ret = Macro.Expand(ret)
+            End If
+
             Return ret.Trim
         End Function
 

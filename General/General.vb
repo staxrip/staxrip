@@ -38,10 +38,13 @@ Public Class Folder
         End Get
     End Property
 
-    Shared ReadOnly Property Current As String
+    Shared Property Current As String
         Get
             Return Environment.CurrentDirectory.FixDir
         End Get
+        Set(value As String)
+            Environment.CurrentDirectory = value
+        End Set
     End Property
 
     Shared ReadOnly Property Temp As String

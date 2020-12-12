@@ -444,7 +444,8 @@ Public Class AppsForm
         DownloadButton.Visible = CurrentPackage.DownloadURL <> "" AndAlso CurrentPackage.GetStatus <> ""
 
         tsbExplore.Enabled = path <> ""
-        tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.GetStatus = ""
+        tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.Path <> ""
+        miLaunch.Enabled = tsbLaunch.Enabled
         tsbWebsite.Enabled = CurrentPackage.URL <> ""
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
 

@@ -5,7 +5,7 @@
 - chapterEditor 1.25
 - Set the current directory of the StaxRip process to the working
   directory of the current project. (stax76, 44vince44, [#388](/../../issues/388))
-- ffmpeg encoder expands macros in custom options. (stax76, 44vince44, [#388](/../../issues/388))
+- Video encoders expand macros in custom options. (stax76, 44vince44, [#388](/../../issues/388))
 
 
 2.1.4.8 Beta (2020-10-07)

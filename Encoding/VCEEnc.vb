@@ -223,9 +223,11 @@ Public Class VCEEnc
             g.ShowCommandLineHelp(Package.VCEEnc, id)
         End Sub
 
-        Overrides Function GetCommandLine(includePaths As Boolean,
-                                          includeExecutable As Boolean,
-                                          Optional pass As Integer = 1) As String
+        Overrides Function GetCommandLine(
+            includePaths As Boolean,
+            includeExecutable As Boolean,
+            Optional pass As Integer = 1) As String
+
             Dim ret As String
             Dim sourcePath As String
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
@@ -294,6 +296,10 @@ Public Class VCEEnc
 
             If sourcePath = "-" Then
                 ret += " --y4m"
+            End If
+
+            If ret.Contains("%") Then
+                ret = Macro.Expand(ret)
             End If
 
             If includePaths Then

@@ -178,6 +178,10 @@ Public Class SVTAV1
                 ret += " -tbr " & p.VideoBitrate
             End If
 
+            If ret.Contains("%") Then
+                ret = Macro.Expand(ret)
+            End If
+
             If includePaths Then
                 ret += " -n " & p.Script.GetFrameCount & " -i stdin -b " + targetPath.Escape
             End If

@@ -307,12 +307,12 @@ Public Class ffmpegEnc
                 targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).LongPathPrefix.Escape
             End If
 
-            If includePaths Then
-                ret += " -an -y -hide_banner " + targetPath
-            End If
-
             If ret.Contains("%") Then
                 ret = Macro.Expand(ret)
+            End If
+
+            If includePaths Then
+                ret += " -an -y -hide_banner " + targetPath
             End If
 
             Return ret.Trim

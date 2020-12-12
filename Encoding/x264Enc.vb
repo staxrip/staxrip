@@ -1077,6 +1077,10 @@ Public Class x264Params
             args += " " + q.Select(Function(item) item.GetArgs).Join(" ")
         End If
 
+        If args.Contains("%") Then
+            args = Macro.Expand(args)
+        End If
+
         If includePaths Then
             Dim input = If(pipeTool = "none", script.Path.ToShortFilePath.Escape, "-")
             Dim dmx = Demuxer.ValueText
@@ -1093,7 +1097,6 @@ Public Class x264Params
 
             If dmx <> "" Then
                 Dim info = script.GetInfo
-
                 args += $" --demuxer {dmx} --frames " & info.FrameCount
 
                 If dmx = "raw" Then
@@ -1118,7 +1121,7 @@ Public Class x264Params
             End If
         End If
 
-        Return Macro.Expand(args.Trim.FixBreak.Replace(BR, " "))
+        Return args.Trim.FixBreak.Replace(BR, " ")
     End Function
 
     Function GetPartitionsArg() As String

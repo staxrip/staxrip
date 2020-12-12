@@ -460,6 +460,10 @@ Public Class QSVEnc
                 ret += " --y4m"
             End If
 
+            If ret.Contains("%") Then
+                ret = Macro.Expand(ret)
+            End If
+
             If includePaths Then
                 ret += " -i " + sourcePath.Escape + " -o " + targetPath.Escape
             End If

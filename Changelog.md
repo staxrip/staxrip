@@ -6,6 +6,7 @@
   directory of the current project. (stax76, 44vince44, [#388](/../../issues/388))
 - Video encoders expand macros in custom options. (stax76, 44vince44, [#388](/../../issues/388))
 - Fix audio encoding overwriting original file. (stax76, 44vince44, [#380](/../../issues/380))
+- x265 --min-vbv-fullness --max-vbv-fullness --vbv-live-multi-pass (stax76)
 - chapterEditor 1.25
 - SVT-AV1 0.8.6
 - MediaInfo.NET 6.8

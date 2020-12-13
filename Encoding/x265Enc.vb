@@ -950,9 +950,10 @@ Public Class x265Params
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .BrowseFile = True},
                     AQmode, qgSize, AQStrength, QComp, qpmin, qpmax, qpstep,
+                    New NumParam With {.Switch = "--qp-delta-ref", .Text = "QP Delta Ref", .Init = 5, .Config = {0, 10, 0.5, 1}},
+                    New NumParam With {.Switch = "--qp-delta-nonref", .Text = "QP Delta NonRef", .Init = -1, .Config = {-1, 10, 0.5, 1}},
                     New NumParam With {.Switch = "--cbqpoffs", .Text = "CB QP Offset", .Config = {-12, 12}},
                     New NumParam With {.Switch = "--crqpoffs", .Text = "CR QP Offset", .Config = {-12, 12}},
-                    New NumParam With {.Switch = "--max-qp-delta", .Text = "Max QP Delta", .Init = 5, .Config = {0, 10}},
                     NRintra, NRinter, CRFmin, CRFmax)
                 Add("Rate Control 2",
                     New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Config = {0, 1000000, 100}},
@@ -960,6 +961,8 @@ Public Class x265Params
                     New NumParam With {.Switch = "--vbv-init", .Text = "VBV Init", .Config = {0.5, 1.0, 0.1, 1}, .Init = 0.9},
                     New NumParam With {.Switch = "--vbv-end", .Text = "VBV End", .Config = {0, 1.0, 0.1, 1}},
                     New NumParam With {.Switch = "--vbv-end-fr-adj", .Text = "VBV Adjust", .Config = {0, 1, 0.1, 1}},
+                    New NumParam With {.Switch = "--min-vbv-fullness", .Text = "Min VBV Fullness", .Init = 50, .Config = {0, 100, 1, 1}},
+                    New NumParam With {.Switch = "--max-vbv-fullness", .Text = "Max VBV Fullness", .Init = 80, .Config = {0, 100, 1, 1}},
                     IPRatio, PBRatio,
                     New NumParam With {.Switch = "--cplxblur", .Text = "Blur Complexity", .Config = {0, 0, 0.05, 2}, .Init = 20},
                     New NumParam With {.Switch = "--qblur", .Text = "Q Blur", .Config = {0, 0, 0.05, 2}, .Init = 0.5},
@@ -972,6 +975,7 @@ Public Class x265Params
                     MultiPassOptAnalysis,
                     MultiPassOptDistortion,
                     ConstVBV,
+                    New BoolParam() With {.Switch = "--vbv-live-multi-pass", .Text = "VBV Live Multi Pass"},
                     New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"},
                     New BoolParam() With {.Switch = "--scenecut-aware-qp", .NoSwitch = "--no-scenecut-aware-qp", .Text = "Scenecut Aware QP"})
                 Add("Motion Search",

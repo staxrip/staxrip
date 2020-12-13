@@ -45,8 +45,8 @@ Public Class x265Enc
         If Params.Mode.Value = x265RateMode.TwoPass Then
             Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
-            Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
-            Encode("Video encoding third pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            Encode("Video encoding second pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            Encode("Video encoding third pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()

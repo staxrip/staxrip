@@ -6,7 +6,7 @@
 - Set the current directory of the StaxRip process to the working
   directory of the current project. (stax76, 44vince44, [#388](/../../issues/388))
 - Video encoders expand macros in custom options. (stax76, 44vince44, [#388](/../../issues/388))
-- x265 multipass order refixed (Dendraspis, [#389](/../../issues/389))
+- ~~x265 multipass order refixed (Dendraspis, [#389](/../../issues/389))~~
 - x265 'Custom Third Pass' added (Dendraspis, [#389](/../../issues/389))
 - x265 options order slightly changed (Dendraspis)
 - x265 'Analysis Save' has also a 'Browse File' button (Dendraspis)

@@ -3,7 +3,7 @@
 ============
 
 - The apps dialog has a new auto update feature,
-  it does not work for all tools however.
+  it does not work for all tools however. (stax76)
 - qsvenc 4.12
 
 

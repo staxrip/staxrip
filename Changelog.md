@@ -4,6 +4,7 @@
 
 - The apps dialog has a new auto update feature,
   it does not work for all tools however.
+- qsvenc 4.12
 
 
 2.1.4.9 Beta

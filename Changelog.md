@@ -1,5 +1,5 @@
 
-2.1.4.9 Beta (2020-09-??)
+2.1.4.9 Beta (2020-12-??)
 ============
 
 - Set the current directory of the StaxRip process to the working
@@ -12,6 +12,13 @@
 - MediaInfo 20.09
 - Get-MediaInfo 3.5
 - mpv.net 5.4.8.5
+- ~~x265 multipass order refixed (Dendraspis, [#389](/../../issues/389))~~
+  Added comments in source code to prevent further confusions (Dendraspis, 44vince44)
+- x265 'Custom Nth Pass' added to options (Dendraspis, [#389](/../../issues/389))
+- x265 options order slightly changed (Dendraspis)
+- x265 'Analysis Save' has also a 'Browse File' button (Dendraspis)
+- Fixed x265 multipass order for chunks (Dendraspis)
+- Renamed x264/x265 passes for (n>2)-pass-mode (Dendraspis, 44vince44, [#389](/../../issues/389#issuecomment-743997077))
 
 
 2.1.4.8 Beta (2020-10-07)

@@ -45,8 +45,9 @@ Public Class x265Enc
         If Params.Mode.Value = x265RateMode.TwoPass Then
             Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
-            Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
-            Encode("Video encoding third pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            'Specific order 1 > 3 > 2 is correct!
+            Encode("Video encoding Nth pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            Encode("Video encoding last pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()
@@ -90,12 +91,13 @@ Public Class x265Enc
                         End Sub)
             ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
                 ret.Add(Sub()
-                            Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "),
+                            'Specific order 1 > 3 > 2 is correct!
+                            Encode("Video encoding first pass" + name.Replace("_chunk", " chunk "),
                                    GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority)
-                            Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority)
-                            Encode("Video encoding pass 3" + name.Replace("_chunk", " chunk "),
+                            Encode("Video encoding Nth pass" + name.Replace("_chunk", " chunk "),
                                    GetArgs(3, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                            Encode("Video encoding last pass" + name.Replace("_chunk", " chunk "),
+                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority)
                         End Sub)
             Else
                 ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "),
@@ -808,8 +810,8 @@ Public Class x265Params
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
 
-    Property CustomSecondPass As New StringParam With {
-        .Text = "Custom" + BR + "Second Pass",
+    Property CustomLastPass As New StringParam With {
+        .Text = "Custom" + BR + "Last Pass",
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.Expand = True
@@ -818,8 +820,8 @@ Public Class x265Params
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
 
-    Property CustomThirdPass As New StringParam With {
-        .Text = "Custom" + BR + "Third Pass",
+    Property CustomNthPass As New StringParam With {
+        .Text = "Custom" + BR + "Nth Pass",
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.Expand = True
@@ -918,27 +920,27 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level", .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
                     OutputDepth, Quant, Bitrate)
                 Add("Analysis", RD,
-                    New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis File", .BrowseFile = True},
-                    New StringParam With {.Switch = "--analysis-load", .Text = "Analysis Load", .BrowseFile = True},
-                    New StringParam With {.Switch = "--analysis-save", .Text = "Analysis Save"},
-                    New OptionParam With {.Switch = "--refine-mv", .Text = "Refine MV", .Expand = True, .IntegerValue = True, .Options = {"Disabled", "Level 1: Search around scaled MV", "Level 2: Level 1 + Search around best AMVP cand", "Level 3: Level 2 + Search around the other AMVP cand"}},
+                    New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis Reuse File", .BrowseFile = True},
+                    New NumParam With {.Switch = "--analysis-reuse-level", .Text = "Analysis Reuse Level", .Config = {1, 10}, .Init = 5},
+                    New StringParam With {.Switch = "--analysis-save", .Text = "Analysis Save", .BrowseFile = True},
                     New OptionParam With {.Switch = "--analysis-save-reuse-level", .Text = "Save Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
+                    New StringParam With {.Switch = "--analysis-load", .Text = "Analysis Load", .BrowseFile = True},
                     New OptionParam With {.Switch = "--analysis-load-reuse-level", .Text = "Load Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     RSkip,
                     New NumParam With {.Switch = "--rskip-edge-threshold", .Text = "RSkip Edge Threshold", .Init = 5, .Config = {0, 100}},
                     MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
                 Add("Analysis 2",
-                    New NumParam With {.Switch = "--analysis-reuse-level", .Text = "Refine Level", .Config = {1, 10}, .Init = 5},
                     New NumParam With {.Switch = "--scale-factor", .Text = "Scale Factor"},
                     LimitTU, TUintra, TUinter, rdoqLevel, PsyRDOQ,
                     New NumParam With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}},
+                    New OptionParam With {.Switch = "--refine-mv", .Text = "Refine MV", .Expand = True, .IntegerValue = True, .Options = {"Disabled", "Level 1: Search around scaled MV", "Level 2: Level 1 + Search around best AMVP cand", "Level 3: Level 2 + Search around the other AMVP cand"}},
                     New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}},
+                    New BoolParam With {.Switch = "--dynamic-refine", .Text = "Dynamic Refine"},
                     qpadaptationrange)
                 Add("Analysis 3", Rect, AMP,
                     New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
-                    New BoolParam With {.Switch = "--dynamic-refine", .Text = "Dynamic Refine"},
-                    EarlySkip, FastIntra, BIntra, CUlossless, TskipFast, LimitModes, RdRefine,
+                    TskipFast, EarlySkip, FastIntra, BIntra, CUlossless, LimitModes, RdRefine,
                     New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
                     New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"},
                     New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"},
@@ -1080,7 +1082,7 @@ Public Class x265Params
                     StrongIntraSmoothing,
                     New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .Init = False},
                     New BoolParam With {.Switch = "--lowpass-dct", .Text = "Lowpass DCT"})
-                Add("Custom", Custom, CustomFirstPass, CustomSecondPass, CustomThirdPass)
+                Add("Custom", Custom, CustomFirstPass, CustomLastPass, CustomNthPass)
 
                 For Each item In ItemsValue
                     If item.HelpSwitch <> "" Then
@@ -1228,12 +1230,12 @@ Public Class x265Params
                     sb.Append(" " + CustomFirstPass.Value)
                 End If
             ElseIf pass = 2 Then
-                If CustomSecondPass.Value <> "" Then
-                    sb.Append(" " + CustomSecondPass.Value)
+                If CustomLastPass.Value <> "" Then
+                    sb.Append(" " + CustomLastPass.Value)
                 End If
             Else
-                If CustomThirdPass.Value <> "" Then
-                    sb.Append(" " + CustomThirdPass.Value)
+                If CustomNthPass.Value <> "" Then
+                    sb.Append(" " + CustomNthPass.Value)
                 End If
             End If
         End If
@@ -1311,14 +1313,14 @@ Public Class x265Params
                     Return True
                 End If
             ElseIf pass = 2 Then
-                If CustomSecondPass.Value?.Contains(switch + " ") OrElse
-                    CustomSecondPass.Value?.EndsWith(switch) Then
+                If CustomLastPass.Value?.Contains(switch + " ") OrElse
+                    CustomLastPass.Value?.EndsWith(switch) Then
 
                     Return True
                 End If
             Else
-                If CustomThirdPass.Value?.Contains(switch + " ") OrElse
-                    CustomThirdPass.Value?.EndsWith(switch) Then
+                If CustomNthPass.Value?.Contains(switch + " ") OrElse
+                    CustomNthPass.Value?.EndsWith(switch) Then
 
                     Return True
                 End If

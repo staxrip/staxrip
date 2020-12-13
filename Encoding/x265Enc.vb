@@ -45,8 +45,9 @@ Public Class x265Enc
         If Params.Mode.Value = x265RateMode.TwoPass Then
             Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
-            Encode("Video encoding second pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
-            Encode("Video encoding third pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            'Specific order 1 > 3 > 2 is correct!
+            Encode("Video encoding Nth pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            Encode("Video encoding last pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()
@@ -90,11 +91,12 @@ Public Class x265Enc
                         End Sub)
             ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
                 ret.Add(Sub()
+                            'Specific order 1 > 3 > 2 is correct!
                             Encode("Video encoding first pass" + name.Replace("_chunk", " chunk "),
                                    GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority)
-                            Encode("Video encoding second pass" + name.Replace("_chunk", " chunk "),
+                            Encode("Video encoding Nth pass" + name.Replace("_chunk", " chunk "),
                                    GetArgs(3, startFrame, endFrame, name, p.Script), s.ProcessPriority)
-                            Encode("Video encoding third pass" + name.Replace("_chunk", " chunk "),
+                            Encode("Video encoding last pass" + name.Replace("_chunk", " chunk "),
                                    GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority)
                         End Sub)
             Else

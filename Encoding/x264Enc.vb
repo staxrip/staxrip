@@ -52,8 +52,9 @@ Public Class x264Enc
         If Params.Mode.Value = x264RateMode.TwoPass Then
             Encode("Video encoding second pass", GetArgs(2, p.Script), s.ProcessPriority)
         ElseIf Params.Mode.Value = x264RateMode.ThreePass Then
-            Encode("Video encoding second pass", GetArgs(3, p.Script), s.ProcessPriority)
-            Encode("Video encoding third pass", GetArgs(2, p.Script), s.ProcessPriority)
+            'Specific order 1 > 3 > 2 is correct!
+            Encode("Video encoding Nth pass", GetArgs(3, p.Script), s.ProcessPriority)
+            Encode("Video encoding last pass", GetArgs(2, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()

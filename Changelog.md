@@ -7,10 +7,12 @@
   directory of the current project. (stax76, 44vince44, [#388](/../../issues/388))
 - Video encoders expand macros in custom options. (stax76, 44vince44, [#388](/../../issues/388))
 - ~~x265 multipass order refixed (Dendraspis, [#389](/../../issues/389))~~
+  Added comments in source code to prevent further confusions (Dendraspis, 44vince44)
 - x265 'Custom Third Pass' added (Dendraspis, [#389](/../../issues/389))
 - x265 options order slightly changed (Dendraspis)
 - x265 'Analysis Save' has also a 'Browse File' button (Dendraspis)
 - Fixed x265 multipass order for chunks (Dendraspis)
+- Renamed x264/x265 passes for (n>2)-pass-mode (Dendraspis, 44vince44, [#389](/../../issues/389#issuecomment-743997077))
 
 
 2.1.4.8 Beta (2020-10-07)

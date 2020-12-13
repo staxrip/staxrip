@@ -7,7 +7,7 @@
 - qsvenc 4.12
 
 
-2.1.4.9 Beta
+2.1.4.9 Beta (2020-12-13)
 ============
 
 - Set the current directory of the StaxRip process to the working.

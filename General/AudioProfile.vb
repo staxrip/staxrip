@@ -312,7 +312,7 @@ Public MustInherit Class AudioProfile
         Dim trackID = If(tracks.Count > 1, "_a" & GetTrackID(), "")
         Dim outfile = p.TempDir + base + trackID & "." + OutputFileType.ToLower
 
-        If File.IsEqualIgnoreCase(outfile) Then
+        If outfile.FileExists Then
             Return p.TempDir + base + trackID & "_new." + OutputFileType.ToLower
         End If
 

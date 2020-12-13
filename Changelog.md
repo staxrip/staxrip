@@ -2,10 +2,16 @@
 2.1.4.9 Beta (2020-09-??)
 ============
 
-- chapterEditor 1.25
 - Set the current directory of the StaxRip process to the working
   directory of the current project. (stax76, 44vince44, [#388](/../../issues/388))
 - Video encoders expand macros in custom options. (stax76, 44vince44, [#388](/../../issues/388))
+- Fix audio encoding overwriting original file. (stax76, 44vince44, [#380](/../../issues/380))
+- chapterEditor 1.25
+- SVT-AV1 0.8.6
+- MediaInfo.NET 6.8
+- MediaInfo 20.09
+- Get-MediaInfo 3.5
+- mpv.net 5.4.8.5
 
 
 2.1.4.8 Beta (2020-10-07)

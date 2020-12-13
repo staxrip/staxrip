@@ -479,12 +479,12 @@ Public Class Package
         .Name = "x265",
         .Location = "Encoders\x265",
         .Filename = "x265.exe",
-        .WebURL = "http://x265.org",
+        .WebURL = "https://github.com/msg7086/x265-Yuuki-Asuna",
         .HelpURL = "http://x265.readthedocs.org",
-        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
+        .DownloadURL = "https://forum.doom9.org/showthread.php?p=1930644#post1930644",
         .HelpSwitch = "--log-level full --fullhelp",
         .HelpFilename = "x265 Help.txt",
-        .Description = "H.265 video encoding console app. Patman mod shows the estimated size in the status line."})
+        .Description = "H.265 video encoding console app. Yuuki-Asuna mod built by qyot27."})
 
     Shared Property SVTAV1 As Package = Add(New Package With {
         .Name = "SVT-AV1",

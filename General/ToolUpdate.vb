@@ -210,6 +210,7 @@ Public Class ToolUpdate
             End If
         Next
 
+        value = value.Replace("_", " ")
         UpdatePackageDialog()
         Dim input = InputBox.Show(msg, "StaxRip", value)
 

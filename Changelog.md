@@ -1,18 +1,15 @@
 
-2.1.4.9 Beta (2020-12-??)
+2.1.5.1 Beta (2020-12-??)
 ============
 
-- Set the current directory of the StaxRip process to the working
+2.1.4.9 Beta
+============
+
+- Set the current directory of the StaxRip process to the working.
   directory of the current project. (stax76, 44vince44, [#388](/../../issues/388))
 - Video encoders expand macros in custom options. (stax76, 44vince44, [#388](/../../issues/388))
 - Fix audio encoding overwriting original file. (stax76, 44vince44, [#380](/../../issues/380))
 - x265 --min-vbv-fullness --max-vbv-fullness --vbv-live-multi-pass (stax76)
-- chapterEditor 1.25
-- SVT-AV1 0.8.6
-- MediaInfo.NET 6.8
-- MediaInfo 20.09
-- Get-MediaInfo 3.5
-- mpv.net 5.4.8.5
 - ~~x265 multipass order refixed (Dendraspis, [#389](/../../issues/389))~~
   Added comments in source code to prevent further confusions (Dendraspis, 44vince44)
 - x265 'Custom Nth Pass' added to options (Dendraspis, [#389](/../../issues/389))
@@ -20,6 +17,14 @@
 - x265 'Analysis Save' has also a 'Browse File' button (Dendraspis)
 - Fixed x265 multipass order for chunks (Dendraspis)
 - Renamed x264/x265 passes for (n>2)-pass-mode (Dendraspis, 44vince44, [#389](/../../issues/389#issuecomment-743997077))
+- x265 3.4+53-ge4afbd100 2020-11-02 Yuuki/qyot27
+- nvenc 5.22
+- chapterEditor 1.25
+- SVT-AV1 0.8.6
+- MediaInfo.NET 6.8
+- MediaInfo 20.09
+- Get-MediaInfo 3.5
+- mpv.net 5.4.8.5
 
 
 2.1.4.8 Beta (2020-10-07)

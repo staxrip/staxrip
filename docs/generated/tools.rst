@@ -115,7 +115,7 @@ Tools
     "MP4Box","Console App","MP4Box.exe","1.0.0-rev211-g71f1d75ea-x64-gcc10.2.0 Patman","2020-09-01"
     "mtn","Console App","mtn.exe","2.0.1","2019-06-27"
     "NeroAAC","Console App","neroAacEnc.exe","","2010-02-18"
-    "NVEnc","Console App","NVEncC64.exe","5.15","2020-09-12"
+    "NVEnc","Console App","NVEncC64.exe","5.22","2020-12-01"
     "PNGopt","Console App","apngopt.exe","1.4","2019-01-01"
     "Python","Console App","python.exe","3.8.5150","2020-07-20"
     "qaac","Console App","qaac64.exe","2.71","2020-10-02"
@@ -125,7 +125,7 @@ Tools
     "VCEEnc","Console App","VCEEncC64.exe","6.05","2020-09-23"
     "vspipe","Console App","vspipe.exe","r52","2020-08-20"
     "x264","Console App","x264.exe","M-0.160.3009-4c9b076-gcc11 Patman","2020-06-22"
-    "x265","Console App","x265.exe","3.4+53-ge4afbd100 Yuuki/qyot27","2020-11-02"
+    "x265","Console App","x265.exe","3.4+53-ge4afbd100 2020-11-02 Yuuki/qyot27","2020-11-02"
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
     "chapterEditor","GUI App","chapterEditor.exe","1.25","2020-10-04"
@@ -414,9 +414,9 @@ http://www.videolan.org/developers/x264.html
 x265
 ~~~~
 
-H.265 video encoding console app. Patman mod shows the estimated size in the status line.
+H.265 video encoding console app. Yuuki-Asuna mod built by qyot27.
 
-http://x265.org
+https://github.com/msg7086/x265-Yuuki-Asuna
 
 
 xvid_encraw

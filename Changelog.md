@@ -8,7 +8,7 @@
 - Video encoders expand macros in custom options. (stax76, 44vince44, [#388](/../../issues/388))
 - ~~x265 multipass order refixed (Dendraspis, [#389](/../../issues/389))~~
   Added comments in source code to prevent further confusions (Dendraspis, 44vince44)
-- x265 'Custom Third Pass' added (Dendraspis, [#389](/../../issues/389))
+- x265 'Custom Nth Pass' added to options (Dendraspis, [#389](/../../issues/389))
 - x265 options order slightly changed (Dendraspis)
 - x265 'Analysis Save' has also a 'Browse File' button (Dendraspis)
 - Fixed x265 multipass order for chunks (Dendraspis)

@@ -810,8 +810,8 @@ Public Class x265Params
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
 
-    Property CustomSecondPass As New StringParam With {
-        .Text = "Custom" + BR + "Second Pass",
+    Property CustomLastPass As New StringParam With {
+        .Text = "Custom" + BR + "Last Pass",
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.Expand = True
@@ -820,8 +820,8 @@ Public Class x265Params
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
 
-    Property CustomThirdPass As New StringParam With {
-        .Text = "Custom" + BR + "Third Pass",
+    Property CustomNthPass As New StringParam With {
+        .Text = "Custom" + BR + "Nth Pass",
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.Expand = True
@@ -1082,7 +1082,7 @@ Public Class x265Params
                     StrongIntraSmoothing,
                     New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .Init = False},
                     New BoolParam With {.Switch = "--lowpass-dct", .Text = "Lowpass DCT"})
-                Add("Custom", Custom, CustomFirstPass, CustomSecondPass, CustomThirdPass)
+                Add("Custom", Custom, CustomFirstPass, CustomLastPass, CustomNthPass)
 
                 For Each item In ItemsValue
                     If item.HelpSwitch <> "" Then
@@ -1230,12 +1230,12 @@ Public Class x265Params
                     sb.Append(" " + CustomFirstPass.Value)
                 End If
             ElseIf pass = 2 Then
-                If CustomSecondPass.Value <> "" Then
-                    sb.Append(" " + CustomSecondPass.Value)
+                If CustomLastPass.Value <> "" Then
+                    sb.Append(" " + CustomLastPass.Value)
                 End If
             Else
-                If CustomThirdPass.Value <> "" Then
-                    sb.Append(" " + CustomThirdPass.Value)
+                If CustomNthPass.Value <> "" Then
+                    sb.Append(" " + CustomNthPass.Value)
                 End If
             End If
         End If
@@ -1313,14 +1313,14 @@ Public Class x265Params
                     Return True
                 End If
             ElseIf pass = 2 Then
-                If CustomSecondPass.Value?.Contains(switch + " ") OrElse
-                    CustomSecondPass.Value?.EndsWith(switch) Then
+                If CustomLastPass.Value?.Contains(switch + " ") OrElse
+                    CustomLastPass.Value?.EndsWith(switch) Then
 
                     Return True
                 End If
             Else
-                If CustomThirdPass.Value?.Contains(switch + " ") OrElse
-                    CustomThirdPass.Value?.EndsWith(switch) Then
+                If CustomNthPass.Value?.Contains(switch + " ") OrElse
+                    CustomNthPass.Value?.EndsWith(switch) Then
 
                     Return True
                 End If

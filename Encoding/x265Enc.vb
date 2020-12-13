@@ -90,12 +90,12 @@ Public Class x265Enc
                         End Sub)
             ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
                 ret.Add(Sub()
-                            Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "),
+                            Encode("Video encoding first pass" + name.Replace("_chunk", " chunk "),
                                    GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority)
-                            Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority)
-                            Encode("Video encoding pass 3" + name.Replace("_chunk", " chunk "),
+                            Encode("Video encoding second pass" + name.Replace("_chunk", " chunk "),
                                    GetArgs(3, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                            Encode("Video encoding third pass" + name.Replace("_chunk", " chunk "),
+                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority)
                         End Sub)
             Else
                 ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "),

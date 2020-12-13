@@ -10,6 +10,7 @@
 - x265 'Custom Third Pass' added (Dendraspis, [#389](/../../issues/389))
 - x265 options order slightly changed (Dendraspis)
 - x265 'Analysis Save' has also a 'Browse File' button (Dendraspis)
+- Fixed x265 multipass order for chunks (Dendraspis)
 
 
 2.1.4.8 Beta (2020-10-07)

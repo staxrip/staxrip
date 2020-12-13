@@ -215,7 +215,7 @@ Public Class ToolUpdate
         Dim input = InputBox.Show(msg, "StaxRip", value)
 
         If input <> "" Then
-            Package.SetVersion(input.Replace(";", "_"))
+            Package.SetVersion(input.Replace(";", "_").Trim)
             UpdatePackageDialog()
             g.DefaultCommands.TestAndDynamicFileCreation()
         End If

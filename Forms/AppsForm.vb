@@ -389,7 +389,6 @@ Public Class AppsForm
         g.SetRenderer(ToolStrip)
 
         miEditChangelog.Visible = g.IsDevelopmentPC
-        miAutoUpdate.Visible = g.IsDevelopmentPC
 
         AddHandler SetupButton.Click, Sub()
                                           CurrentPackage.SetupAction.Invoke
@@ -702,7 +701,7 @@ Public Class AppsForm
         Dim input = InputBox.Show(msg, "StaxRip", CurrentPackage.Version)
 
         If input <> "" Then
-            CurrentPackage.SetVersion(input.Replace(";", "_"))
+            CurrentPackage.SetVersion(input.Replace(";", "_").Trim)
             ShowActivePackage()
             g.DefaultCommands.TestAndDynamicFileCreation()
         End If
@@ -931,8 +930,10 @@ Public Class AppsForm
             Exit Sub
         End If
 
-        ToolUpdate = New ToolUpdate(CurrentPackage, Me)
-        ToolUpdate.Update()
+        If MsgQuestion("Experimental feature, it does not work for all tools.") = DialogResult.OK Then
+            ToolUpdate = New ToolUpdate(CurrentPackage, Me)
+            ToolUpdate.Update()
+        End If
     End Sub
 
     Sub miEditChangelog_Click(sender As Object, e As EventArgs) Handles miEditChangelog.Click

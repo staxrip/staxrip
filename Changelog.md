@@ -2,6 +2,10 @@
 2.1.5.1 Beta (2020-12-??)
 ============
 
+- The apps dialog has a new auto update feature,
+  it does not work for all tools however.
+
+
 2.1.4.9 Beta
 ============
 

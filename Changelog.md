@@ -4,10 +4,12 @@
 
 - The apps dialog has a new auto update feature,
   works for many but not for all tools. (stax76)
-- nvenc new options added
-- qsvenc new options added and reorganized
+- nvenc new options added (stax76)
+- qsvenc new options added and reorganized (stax76)
 - qsvenc 4.12
 - vceenc 6.07
+- L-Smash-Source 2020-12-11 StvG
+- ffms2 87bae19 2020-11-23 StvG
 
 
 2.1.4.9 Beta (2020-12-13)

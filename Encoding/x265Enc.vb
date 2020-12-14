@@ -1290,8 +1290,8 @@ Public Class x265Params
 
             Dim input = If(pipeTool = "none", script.Path.ToShortFilePath.Escape, "-")
 
-            If (Mode.Value = x265RateMode.ThreePass AndAlso pass < 3) OrElse
-                Mode.Value = x265RateMode.TwoPass AndAlso pass = 1 Then
+            If (Mode.Value = x265RateMode.ThreePass AndAlso pass <> 2) OrElse
+                (Mode.Value = x265RateMode.TwoPass AndAlso pass = 1) Then
 
                 sb.Append(" --output NUL " + input)
             Else

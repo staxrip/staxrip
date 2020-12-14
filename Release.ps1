@@ -3,8 +3,6 @@ $ErrorActionPreference = 'Stop'
 
 $output32bit = $false
 
-Get-ChildItem (Join-Path $PSScriptRoot bin) AviSynth.dll -Recurse | where Length -eq 0 | Remove-Item
-
 $include = @(
     '*.config',
     '*.cpp',
@@ -94,10 +92,12 @@ if (Test-Path $targetDir32)
     Remove-Item $targetDir32 -Recurse
 }
 
-Copy-Item ($PSScriptRoot + '\bin')     $targetDir   -Recurse
+Copy-Item ($PSScriptRoot + '\bin') $targetDir -Recurse
+Get-ChildItem $targetDir AviSynth.dll -Recurse | where Length -eq 0 | Remove-Item
 
 if ($output32bit) {
     Copy-Item ($PSScriptRoot + '\bin-x86') $targetDir32 -Recurse
+    Get-ChildItem $targetDir32 AviSynth.dll -Recurse | where Length -eq 0 | Remove-Item
 }
 
 $patterns = @(

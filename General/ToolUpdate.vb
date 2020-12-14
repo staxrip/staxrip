@@ -212,7 +212,7 @@ Public Class ToolUpdate
 
         value = value.Replace("_", " ")
         UpdatePackageDialog()
-        Dim input = InputBox.Show(msg, "StaxRip", value)
+        Dim input = InputBox.Show(msg, "StaxRip", value.Trim)
 
         If input <> "" Then
             Package.SetVersion(input.Replace(";", "_").Trim)

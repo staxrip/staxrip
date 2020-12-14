@@ -3,8 +3,11 @@
 ============
 
 - The apps dialog has a new auto update feature,
-  it does not work for all tools however. (stax76)
+  works for many but not for all tools. (stax76)
+- nvenc new options added
+- qsvenc new options added and reorganized
 - qsvenc 4.12
+- vceenc 6.07
 
 
 2.1.4.9 Beta

@@ -451,6 +451,7 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},
                         New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-SRD-B67", "Auto", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 2084", "SMPTE 428"}},
+                        New OptionParam With {.Switch = "--atc-sei", .Text = "ATC SEI", .Init = 1, .Options = {"Undef", "Unknown", "Auto", "Auto_Res", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}},
                         New OptionParam With {.Switch = "--colorrange", .Text = "Colorrange", .Options = {"Undefined", "Auto", "Limited", "TV", "Full", "PC"}},
                         MaxCLL, MaxFALL,
                         New NumParam With {.Switch = "--chromaloc", .Text = "Chromaloc", .Config = {0, 5}},
@@ -513,7 +514,7 @@ Public Class NVEnc
                         DebandSeed,
                         DebandBlurfirst,
                         DebandRandEachFrame)
-                    Add("VPP | Deinterlace",
+                    Add("VPP | Field",
                         Nnedi,
                         NnediField,
                         NnediNns,
@@ -523,7 +524,8 @@ Public Class NVEnc
                         NnediErrortype,
                         NnediPrec,
                         NnediWeightfile,
-                        New OptionParam With {.Switch = "--vpp-yadif", .Text = "Yadif", .Options = {"Disabled", "Auto", "TFF", "BFF", "Bob", "Bob TFF", "Bob BFF"}, .Values = {"", "", "mode=tff", "mode=bff", "mode=bob", "mode=bob_tff", "mode=bob_bff"}})
+                        New OptionParam With {.Switch = "--vpp-yadif", .Text = "Yadif", .Options = {"Disabled", "Auto", "TFF", "BFF", "Bob", "Bob TFF", "Bob BFF"}, .Values = {"", "", "mode=tff", "mode=bff", "mode=bob", "mode=bob_tff", "mode=bob_bff"}},
+                        New StringParam With {.Switch = "--vpp-mpdecimate", .Text = "MP Decimate"})
                     Add("VPP | AFS 1",
                         Afs,
                         AfsINI,
@@ -549,6 +551,7 @@ Public Class NVEnc
                         AfsTimecode,
                         AfsLog)
                     Add("Statistic",
+                        New StringParam With {.Switch = "--vmaf", .Text = "VMAF"},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
                         New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})

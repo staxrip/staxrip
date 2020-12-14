@@ -122,7 +122,7 @@ Tools
     "QSVEnc","Console App","QSVEncC64.exe","4.12","2020-11-23"
     "rav1e","Console App","rav1e.exe","0.3.0","2020-02-29"
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.6","2020-11-29"
-    "VCEEnc","Console App","VCEEncC64.exe","6.05","2020-09-23"
+    "VCEEnc","Console App","VCEEncC64.exe","6.07","2020-11-23"
     "vspipe","Console App","vspipe.exe","r52","2020-08-20"
     "x264","Console App","x264.exe","M-0.160.3009-4c9b076-gcc11 Patman","2020-06-22"
     "x265","Console App","x265.exe","3.4+53-ge4afbd100 2020-11-02 Yuuki/qyot27","2020-11-02"

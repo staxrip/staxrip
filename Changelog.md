@@ -10,6 +10,7 @@
 - vceenc 6.07
 - L-Smash-Source 2020-12-11 StvG
 - ffms2 87bae19 2020-11-23 StvG
+- Removed '--analysis-reuse-level' from x265 options, because not valid (anymore?!) (Dendraspis, sibylantonioforanna)
 
 
 2.1.4.9 Beta (2020-12-13)

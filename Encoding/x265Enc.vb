@@ -920,7 +920,6 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level", .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
                     OutputDepth, Quant, Bitrate)
                 Add("Analysis", RD,
-                    New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis Reuse File", .BrowseFile = True},
                     New StringParam With {.Switch = "--analysis-save", .Text = "Analysis Save", .BrowseFile = True},
                     New OptionParam With {.Switch = "--analysis-save-reuse-level", .Text = "Save Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     New StringParam With {.Switch = "--analysis-load", .Text = "Analysis Load", .BrowseFile = True},

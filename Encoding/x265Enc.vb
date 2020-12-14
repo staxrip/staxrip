@@ -921,7 +921,6 @@ Public Class x265Params
                     OutputDepth, Quant, Bitrate)
                 Add("Analysis", RD,
                     New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis Reuse File", .BrowseFile = True},
-                    New NumParam With {.Switch = "--analysis-reuse-level", .Text = "Analysis Reuse Level", .Config = {1, 10}, .Init = 5},
                     New StringParam With {.Switch = "--analysis-save", .Text = "Analysis Save", .BrowseFile = True},
                     New OptionParam With {.Switch = "--analysis-save-reuse-level", .Text = "Save Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     New StringParam With {.Switch = "--analysis-load", .Text = "Analysis Load", .BrowseFile = True},

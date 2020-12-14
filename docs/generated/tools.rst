@@ -129,7 +129,7 @@ Tools
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
     "chapterEditor","GUI App","chapterEditor.exe","1.25","2020-10-04"
-    "D2V Witch","GUI App","d2vwitch.exe","v4","2020-06-15"
+    "D2V Witch","GUI App","d2vwitch.exe","v5",""
     "DGIndex","GUI App","DGIndex.exe","1.5.8","2010-03-06"
     "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.8.0.0","2020-12-13"
     "MKVToolnix GUI","GUI App","mkvtoolnix-gui.exe","51.0.0","2020-10-04"

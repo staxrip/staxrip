@@ -52,6 +52,7 @@ Public Class Package
         .WebURL = "https://github.com/dubhater/D2VWitch",
         .DownloadURL = "https://github.com/dubhater/D2VWitch/releases",
         .Location = "Support\D2V Witch",
+        .IsIncluded = False,
         .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:D2V Witch%"),
         .LaunchAction = Sub()
                             g.AddToPath(Package.d2vsourceVS.Directory)

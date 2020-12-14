@@ -226,9 +226,9 @@ Public Class ToolUpdate
             Return True
         End If
 
-        Dim x86 = {"_Win32", "\x86", "-x86", "32-bit"}
+        Dim x86 = {"_win32", "\x86", "-x86", "32-bit", "-win32"}
 
-        If g.Is64Bit AndAlso value.ContainsAny(x86) Then
+        If g.Is64Bit AndAlso value.ToLower.ContainsAny(x86) Then
             Return True
         End If
     End Function

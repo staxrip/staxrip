@@ -930,7 +930,7 @@ Public Class AppsForm
             Exit Sub
         End If
 
-        If MsgQuestion("Experimental feature, it does not work for all tools.") = DialogResult.OK Then
+        If MsgQuestion("Experimental feature not working for all tools, continue?") = DialogResult.OK Then
             ToolUpdate = New ToolUpdate(CurrentPackage, Me)
             ToolUpdate.Update()
         End If

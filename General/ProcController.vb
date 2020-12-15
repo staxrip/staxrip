@@ -179,6 +179,28 @@ Public Class ProcController
 
                 Exit Sub
             End If
+        ElseIf Proc.FrameCount > 0 AndAlso value.StartsWith("encoded ") AndAlso value.Contains(" frames, ") Then
+            'rav1e
+            Dim left = value.Left(" frames, ")
+            Dim str = left.Right("encoded ")
+
+            If str.IsInt Then
+                Dim frame = str.ToInt
+
+                If frame < Proc.FrameCount Then
+                    Dim progressValue = CSng(frame / Proc.FrameCount * 100)
+
+                    If LastProgress <> progressValue Then
+                        ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                        ProcForm.Taskbar?.SetValue(Math.Max(progressValue, 1), 100)
+                        ProcForm.NotifyIcon.Text = progressValue & "%"
+                        ProgressBar.Value = progressValue
+                        LastProgress = progressValue
+                    End If
+
+                    Exit Sub
+                End If
+            End If
         End If
 
         If LastProgress <> 0 Then

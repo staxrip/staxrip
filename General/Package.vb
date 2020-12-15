@@ -504,7 +504,6 @@ Public Class Package
         .Description = "AV1 Video Encoder.",
         .WebURL = "https://github.com/xiph/rav1e",
         .DownloadURL = "https://github.com/xiph/rav1e/releases",
-        .HelpFilename = "rav1e help.txt",
         .HelpSwitch = "--help"})
 
     Shared Property aomenc As Package = Add(New Package With {

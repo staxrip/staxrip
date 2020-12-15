@@ -120,7 +120,7 @@ Tools
     "Python","Console App","python.exe","3.8.5150","2020-07-20"
     "qaac","Console App","qaac64.exe","2.71","2020-10-02"
     "QSVEnc","Console App","QSVEncC64.exe","4.12","2020-11-23"
-    "rav1e","Console App","rav1e.exe","0.3.0","2020-02-29"
+    "rav1e","Console App","rav1e.exe","2020-12-08","2020-12-08"
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.6","2020-11-29"
     "VCEEnc","Console App","VCEEncC64.exe","6.07","2020-11-23"
     "vspipe","Console App","vspipe.exe","r52","2020-08-20"

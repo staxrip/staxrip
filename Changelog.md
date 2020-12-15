@@ -2,9 +2,9 @@
 2.1.5.2 Beta (2020-12-??)
 ============
 
-- Maximum number of parallel processes default changed from 2 to 3. (stax76)
-- Many tool updates. (stax76, hevron)
-- Fix tool auto update crash in case of missing download URL.
+- Fix progress bar not working for rav1e encoder. (stax76)
+- Many tool updates (stax76, hevron)
+- Fix tool auto update crash in case of missing download URL. (stax76)
 - AVSMeter 3.0.7.0
 - D2VSource 1.2.0
 - KNLMeansCL 1.1.1e
@@ -18,6 +18,9 @@
 - L-Smash-Works 2020-07-28 HolyWu
 - havsfunc r33
 - x264 M-0.161.3018-db0d417-x64-gcc10.2.0
+- ffmpeg N-99558-g00772ef4f7-x64-gcc10.2.0 Patman
+- JPSDR 3.2.4
+- rav1e 2020-12-08
 
 
 2.1.5.1 Beta (2020-12-15)

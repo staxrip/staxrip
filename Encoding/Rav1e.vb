@@ -49,6 +49,7 @@ Public Class Rav1e
         Using proc As New Proc
             proc.Package = Package.Rav1e
             proc.Header = "Video encoding"
+            proc.FrameCount = p.Script.GetFrameCount
             proc.Encoding = Encoding.UTF8
             proc.WorkingDirectory = p.TempDir
             proc.Priority = priority
@@ -333,7 +334,7 @@ Public Class Rav1eParams
             sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
         End If
 
-        sb.Append(" -o " + targetPath.Escape + " - ")
+        sb.Append(" -y -o " + targetPath.Escape + " - ")
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))
     End Function

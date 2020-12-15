@@ -445,6 +445,7 @@ Public Class AppsForm
         tsbExplore.Enabled = path <> ""
         tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.Path <> ""
         miLaunch.Enabled = tsbLaunch.Enabled
+        miAutoUpdate.Enabled = CurrentPackage.DownloadURL <> ""
         tsbWebsite.Enabled = CurrentPackage.URL <> ""
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
 

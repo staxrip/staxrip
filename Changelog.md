@@ -2,6 +2,11 @@
 2.1.5.2 Beta (2020-12-??)
 ============
 
+- Fix tool auto update crash in case of missing download URL.
+- AVSMeter 3.0.7.0
+- D2VSource 1.2.0
+
+
 2.1.5.1 Beta (2020-12-15)
 ============
 

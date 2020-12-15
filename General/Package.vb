@@ -619,6 +619,7 @@ Public Class Package
         .Name = "FFT3DFilter",
         .Filename = "fft3dfilter.dll",
         .WebURL = "http://github.com/pinterf/fft3dfilter",
+        .DownloadURL = "https://github.com/pinterf/fft3dfilter/releases",
         .Description = "FFT3DFilter uses Fast Fourier Transform method for image processing in frequency domain.",
         .HelpFilename = "fft3dfilter.html",
         .AvsFilterNames = {"FFT3DFilter"},

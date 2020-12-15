@@ -276,8 +276,8 @@ Public Class GlobalCommands
         Select Case topic
             Case "info"
                 form.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
-                form.Doc.Write("Development", "stax76, Revan654, Dendraspis")
-                form.Doc.Write("Contributions", "Patman, 44vince44, JKyle, NikosD, qyot27, ernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+                form.Doc.Write("Contributions 2020", "stax76, Dendraspis, 44vince44, Patman, JKyle, qyot27")
+                form.Doc.Write("Contributions Before 2020", "stax76, Revan654, 44vince44, Patman, NikosD, ernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
 
                 Dim licensePath = Folder.Startup + "License.txt"
 

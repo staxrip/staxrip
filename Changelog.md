@@ -1,9 +1,13 @@
 
-2.1.5.2 Beta (2020-12-??)
+2.1.5.3 Beta (2020-12-??)
 ============
 
+2.1.5.2 Beta (2020-12-15)
+============
+
+- StaxRip authors in about page updated. (stax76)
 - Fix progress bar not working for rav1e encoder. (stax76)
-- Many tool updates (stax76, hevron)
+- Tool updates (stax76, hevron)
 - Fix tool auto update crash in case of missing download URL. (stax76)
 - AVSMeter 3.0.7.0
 - D2VSource 1.2.0
@@ -21,6 +25,8 @@
 - ffmpeg N-99558-g00772ef4f7-x64-gcc10.2.0 Patman
 - JPSDR 3.2.4
 - rav1e 2020-12-08
+- Subtitle-Edit 3.5.18
+- aomenc 2.0.0-918-g75a47cc18-gcc10.2.0
 
 
 2.1.5.1 Beta (2020-12-15)

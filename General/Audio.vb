@@ -46,7 +46,7 @@ Public Class Audio
 
                 Select Case ap.File.ExtFull
                     Case ".mkv", ".webm"
-                        mkvDemuxer.Demux(ap.File, {ap.Stream}, Nothing, ap, p, False, False, True, "Demux MKV", True)
+                        mkvDemuxer.Demux(ap.File, {ap.Stream}, Nothing, ap, p, False, False, True, "Demux MKV Audio " & (ap.GetTrackIndex + 1), True)
                     Case ".mp4"
                         MP4BoxDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p, True)
                     Case Else

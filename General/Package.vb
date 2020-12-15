@@ -511,8 +511,6 @@ Public Class Package
         .Filename = "aomenc.exe",
         .Location = "Encoders\aomenc",
         .Description = "AV1 video encoder console app.",
-        .IsIncluded = False,
-        .VersionAllowAny = True,
         .WebURL = "https://aomedia.org",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .RequiredFunc = Function() TypeOf p.VideoEncoder Is aomenc,

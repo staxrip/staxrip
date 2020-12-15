@@ -135,7 +135,7 @@ Tools
     "MKVToolnix GUI","GUI App","mkvtoolnix-gui.exe","51.0.0","2020-10-04"
     "MPC-BE","GUI App","mpc-be64.exe","",""
     "MPC-HC","GUI App","mpc-hc64.exe","","2017-07-16"
-    "mpv.net","GUI App","mpvnet.exe","5.4.8.5","2020-12-13"
+    "mpv.net","GUI App","mpvnet.exe","5.4.8.5","2020-12-15"
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.16","2020-06-16"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
     "AviSynth","Library","AviSynth.dll","3.6.2 test 2","2020-08-31"

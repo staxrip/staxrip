@@ -1173,7 +1173,11 @@ Public Class MainForm
 
     Sub LoadSettings()
         Try
-            s = SafeSerialization.Deserialize(New ApplicationSettings, g.SettingsFile)
+            Using mutex As New Mutex(False, "staxrip settings file")
+                mutex.WaitOne()
+                s = SafeSerialization.Deserialize(New ApplicationSettings, g.SettingsFile)
+                mutex.ReleaseMutex()
+            End Using
         Catch ex As Exception
             Using td As New TaskDialog(Of String)
                 td.MainInstruction = "The settings failed to load!"

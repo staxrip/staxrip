@@ -2,16 +2,18 @@
 2.1.5.1 Beta (2020-12-??)
 ============
 
+- Job processing issue fix (stax76, 44vince44, [#381](/../../issues/381))
+- Audio filename collision fix (stax76, Dendraspis, 44vince44, [#386](/../../issues/386), [#380](/../../issues/380), [#297](/../../issues/297))
 - The apps dialog has a new auto update feature,
   works for many but not for all tools. (stax76)
 - nvenc new options added (stax76)
 - qsvenc new options added and reorganized (stax76)
-- qsvenc 4.12
-- vceenc 6.07
-- L-Smash-Source 2020-12-11 StvG
-- ffms2 87bae19 2020-11-23 StvG
-- Removed '--analysis-reuse-level' from x265 options, because not valid (anymore?!) (Dendraspis, sibylantonioforanna)
+- Removed '--analysis-reuse-level' from x265 options, because not valid (anymore?!) (Dendraspis)
 - Fixed x265 wrong output params in 3-pass mode (Dendraspis, 44vince44, [#391](/../../issues/391))
+- vceenc 6.07
+- qsvenc 4.12
+- ffms2 87bae19 2020-11-23 StvG
+- L-Smash-Source 2020-12-11 StvG
 
 
 2.1.4.9 Beta (2020-12-13)

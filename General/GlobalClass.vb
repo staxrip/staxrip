@@ -674,7 +674,12 @@ Public Class GlobalClass
 
     Sub SaveSettings()
         Try
-            SafeSerialization.Serialize(s, g.SettingsFile)
+            Using mutex As New Mutex(False, "staxrip settings file")
+                mutex.WaitOne()
+                SafeSerialization.Serialize(s, g.SettingsFile)
+                mutex.ReleaseMutex()
+            End Using
+
             Dim backupPath = Folder.Settings + "Backup\"
 
             If Not Directory.Exists(backupPath) Then

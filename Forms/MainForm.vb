@@ -2855,7 +2855,7 @@ Public Class MainForm
                 End If
             End If
 
-            For Each ap In g.GetAudioProfiles
+            For Each ap In AudioProfile.GetProfiles
                 If ap.File = p.TargetFile Then
                     If ProcessTip("The audio source and target filepath is identical.") Then
                         g.Highlight(True, tbTargetFile)

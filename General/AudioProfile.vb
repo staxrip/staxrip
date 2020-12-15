@@ -268,21 +268,27 @@ Public MustInherit Class AudioProfile
     Overridable Function HandlesDelay() As Boolean
     End Function
 
-    Function GetTrackID() As Integer
-        If Me Is p.Audio0 Then Return 1
-        If Me Is p.Audio1 Then Return 2
+    Function GetTrackIndex() As Integer
+        If Me Is p.Audio0 Then Return 0
+        If Me Is p.Audio1 Then Return 1
 
         For x = 0 To p.AudioTracks.Count - 1
             If Me Is p.AudioTracks(x) Then
-                Return x + 3
+                Return x + 2
             End If
         Next
+    End Function
+
+    Function GetTrackID() As String
+        Return "_" & (CRC32.GetChecksum(p.TargetFile) + GetTrackIndex())
     End Function
 
     Function GetOutputFile() As String
         Dim base As String
 
-        If p.TempDir.EndsWithEx("_temp\") AndAlso File.Base.StartsWithEx(p.SourceFile.Base) Then
+        If HasStream Then
+            base = Audio.GetBaseNameForStream(File, Stream)
+        ElseIf p.TempDir.EndsWithEx("_temp\") AndAlso File.Base.StartsWithEx(p.SourceFile.Base) Then
             base = File.Base.Substring(p.SourceFile.Base.Length).Trim
         Else
             base = File.Base
@@ -290,6 +296,10 @@ Public MustInherit Class AudioProfile
 
         If base = "" Then
             base = "temp"
+        End If
+
+        If Not base.Contains(GetTrackID) Then
+            base += GetTrackID()
         End If
 
         If Delay <> 0 Then
@@ -308,15 +318,23 @@ Public MustInherit Class AudioProfile
             End If
         End If
 
-        Dim tracks = g.GetAudioProfiles.Where(Function(track) track.File <> "")
-        Dim trackID = If(tracks.Count > 1, "_a" & GetTrackID(), "")
-        Dim outfile = p.TempDir + base + trackID & "." + OutputFileType.ToLower
+        Dim outfile = p.TempDir + base + "." + OutputFileType.ToLower
 
-        If outfile.FileExists Then
-            Return p.TempDir + base + trackID & "_new." + OutputFileType.ToLower
+        If File = outfile Then
+            outfile = outfile.Base + "_new." + OutputFileType.ToLower
         End If
 
         Return outfile
+    End Function
+
+    Shared Function GetProfiles() As List(Of AudioProfile)
+        Dim ret As New List(Of AudioProfile)
+
+        ret.Add(p.Audio0)
+        ret.Add(p.Audio1)
+        ret.AddRange(p.AudioTracks)
+
+        Return ret
     End Function
 
     Function ExpandMacros(value As String) As String
@@ -727,7 +745,7 @@ Public Class GUIAudioProfile
             Dim cl = GetCommandLine(True)
 
             Using proc As New Proc
-                proc.Header = "Audio Encoding " & GetTrackID()
+                proc.Header = "Audio Encoding " & GetTrackIndex()
 
                 If cl.Contains("|") Then
                     proc.File = "cmd.exe"
@@ -807,7 +825,7 @@ Public Class GUIAudioProfile
         args += " -f null NUL"
 
         Using proc As New Proc
-            proc.Header = "Find Gain " & GetTrackID()
+            proc.Header = "Find Gain " & GetTrackIndex()
             proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
@@ -1247,7 +1265,7 @@ Public Class GUIAudioProfile
             End If
         End If
 
-        If Params.ChannelsMode <> ChannelsMode.Original Then
+        If Params.ChannelsMode <> ChannelsMode.Original OrElse Params.Codec = AudioCodec.Opus Then
             sb.Append(" -ac " & Channels)
         End If
 
@@ -1360,7 +1378,7 @@ Public Class GUIAudioProfile
         Return GuiAudioEncoder.ffmpeg
     End Function
 
-    Function GetCommandLine(includePaths As Boolean) As String
+    Function GetCommandLine(includePaths As Boolean, Optional useCrcSuffix As Boolean = False) As String
         Select Case GetEncoder()
             Case GuiAudioEncoder.eac3to
                 Return GetEac3toCommandLine(includePaths)

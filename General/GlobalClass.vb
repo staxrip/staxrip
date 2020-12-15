@@ -3,7 +3,6 @@ Imports System.Collections.ObjectModel
 Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Management.Automation
-Imports System.Reflection
 Imports System.Runtime.ExceptionServices
 Imports System.Runtime.InteropServices
 Imports System.Security.Principal
@@ -23,13 +22,13 @@ Public Class GlobalClass
     Property IsAdmin As Boolean = New WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator)
     Property IsJobProcessing As Boolean
     Property MainForm As MainForm
+    Property MAX_PATH As Integer = 260
     Property MenuSpace As String
     Property MinimizedWindows As Boolean
     Property ProcForm As ProcessingForm
     Property ProjectPath As String
     Property SavedProject As New Project
     Property StopAfterCurrentJob As Boolean
-    Property MAX_PATH As Integer = 260
 
     Event JobMuxed()
     Event JobProcessed()
@@ -173,6 +172,11 @@ Public Class GlobalClass
     End Function
 
     Sub ProcessJobs()
+        g.StopAfterCurrentJob = False
+        ProcessJobsRecursive()
+    End Sub
+
+    Sub ProcessJobsRecursive()
         Dim jobs = JobManager.ActiveJobs
 
         If jobs.Count = 0 Then
@@ -208,7 +212,7 @@ Public Class GlobalClass
                     g.MainForm.SetSavedProject()
                     g.MainForm.Close()
                 Else
-                    ProcessJobs()
+                    ProcessJobsRecursive()
                 End If
             End If
         Catch ex As AbortException
@@ -895,16 +899,6 @@ Public Class GlobalClass
         Return path.Base.StartsWith(p.SourceFile.Base) OrElse path.StartsWithEx(p.TempDir)
     End Function
 
-    Function GetAudioProfiles() As List(Of AudioProfile)
-        Dim ret As New List(Of AudioProfile)
-
-        ret.Add(p.Audio0)
-        ret.Add(p.Audio1)
-        ret.AddRange(p.AudioTracks)
-
-        Return ret
-    End Function
-
     Function GetFilesInTempDirAndParent() As List(Of String)
         Dim ret As New List(Of String)
         Dim dirs As New HashSet(Of String)
@@ -1360,11 +1354,26 @@ Public Class GlobalClass
     End Sub
 
     Function ConvertPath(value As String) As String
-        If value = "" Then Return ""
-        If value.Length > 30 AndAlso value.Contains("|") Then value = value.RightLast("|")
-        If value.Contains("Constant Quality") Then value = value.Replace("Constant Quality", "CQ")
-        If value.Contains(" | ") Then value = value.Replace(" | ", " - ")
-        If value.Contains("  ") Then value = value.Replace("  ", " ")
+        If value = "" Then
+            Return ""
+        End If
+
+        If value.Length > 30 AndAlso value.Contains("|") Then
+            value = value.RightLast("|")
+        End If
+
+        If value.Contains("Constant Quality") Then
+            value = value.Replace("Constant Quality", "CQ")
+        End If
+
+        If value.Contains(" | ") Then
+            value = value.Replace(" | ", " - ")
+        End If
+
+        If value.Contains("  ") Then
+            value = value.Replace("  ", " ")
+        End If
+
         Return value.Trim
     End Function
 

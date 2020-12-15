@@ -366,7 +366,6 @@ Friend Class JobsForm
         End If
 
         Documentation.ShowTip(Tip)
-        g.StopAfterCurrentJob = False
         Close()
 
         If g.IsJobProcessing Then

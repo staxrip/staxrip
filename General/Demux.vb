@@ -729,7 +729,7 @@ Public Class mkvDemuxer
             End If
         End If
 
-        Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True, VideoDemuxed, OverrideExisting)
+        Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True, VideoDemuxed, OverrideExisting, "Demux MKV", True)
 
         If demuxChapters AndAlso stdout.Contains("Chapters: ") Then
             Using proc As New Proc
@@ -812,7 +812,9 @@ Public Class mkvDemuxer
         proj As Project,
         onlyEnabled As Boolean,
         videoDemuxing As Boolean,
-        overrideExisting As Boolean)
+        overrideExisting As Boolean,
+        title As String,
+        useStreamName As Boolean)
 
         If audioStreams Is Nothing Then
             audioStreams = New List(Of AudioStream)
@@ -879,7 +881,15 @@ Public Class mkvDemuxer
                 ext = "aac"
             End If
 
-            Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + "." + ext
+            Dim base As String
+
+            If useStreamName Then
+                base = Audio.GetBaseNameForStream(sourcefile, stream)
+            Else
+                base = sourcefile.Base
+            End If
+
+            Dim outPath = proj.TempDir + base + "." + ext
             audioOutPaths.Add(outPath, stream)
             outPaths.Add(outPath)
             args += " " & stream.StreamOrder & ":" + outPath.Escape
@@ -899,7 +909,7 @@ Public Class mkvDemuxer
 
         Using proc As New Proc
             proc.Project = proj
-            proc.Header = "Demux MKV"
+            proc.Header = title
             proc.SkipString = "Progress: "
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.mkvextract

@@ -13,7 +13,7 @@ Public Class Audio
         End If
 
         If ap.File <> p.SourceFile Then
-            Log.Write("Media Info Audio Source " & ap.GetTrackID, MediaInfo.GetSummary(ap.File))
+            Log.Write("Media Info Audio Source " & (ap.GetTrackIndex + 1), MediaInfo.GetSummary(ap.File))
         End If
 
         If TypeOf ap Is GUIAudioProfile Then
@@ -46,7 +46,7 @@ Public Class Audio
 
                 Select Case ap.File.ExtFull
                     Case ".mkv", ".webm"
-                        mkvDemuxer.Demux(ap.File, {ap.Stream}, Nothing, ap, p, False, False, True)
+                        mkvDemuxer.Demux(ap.File, {ap.Stream}, Nothing, ap, p, False, False, True, "Demux MKV", True)
                     Case ".mp4"
                         MP4BoxDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p, True)
                     Case Else
@@ -303,7 +303,7 @@ Public Class Audio
         args += " -simple -progressnumbers"
 
         Using proc As New Proc
-            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & ap.GetTrackID
+            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & ap.GetTrackIndex
             proc.Package = Package.eac3to
             proc.Arguments = args
             proc.TrimChars = {"-"c, " "c}
@@ -332,7 +332,13 @@ Public Class Audio
             gap.Params.Normalize = False
         End If
 
-        Dim outPath = (p.TempDir + ap.File.Base + "." + ap.ConvertExt).LongPathPrefix
+        Dim base = ap.File.Base
+
+        If Not base.Contains(ap.GetTrackID) Then
+            base += ap.GetTrackID
+        End If
+
+        Dim outPath = (p.TempDir + base + "." + ap.ConvertExt).LongPathPrefix
 
         If ap.File = outPath Then
             outPath += "." + ap.ConvertExt
@@ -365,7 +371,7 @@ Public Class Audio
         args += " " + outPath.Escape
 
         Using proc As New Proc
-            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & ap.GetTrackID
+            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & ap.GetTrackIndex
             proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
@@ -602,7 +608,13 @@ Public Class Audio
             Throw New AbortException
         End If
 
-        Dim aviPath = p.TempDir + ap.File.Base + "_cut_mm.avi"
+        Dim base = ap.File.Base
+
+        If Not base.Contains(ap.GetTrackID) Then
+            base += ap.GetTrackID
+        End If
+
+        Dim aviPath = p.TempDir + base + "_cut_.avi"
         Dim d = (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture)
         Dim r = p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture)
         Dim args = $"-f lavfi -i color=c=black:s=16x16:d={d}:r={r} -y -hide_banner -c:v copy " + aviPath.Escape
@@ -623,7 +635,7 @@ Public Class Audio
             Log.WriteLine(MediaInfo.GetSummary(aviPath))
         End If
 
-        Dim mkvPath = p.TempDir + ap.File.Base + "_cut_.mkv"
+        Dim mkvPath = p.TempDir + base + "_cut_.mkv"
 
         Dim args2 = "-o " + mkvPath.Escape + " " + aviPath.Escape + " " + ap.File.Escape
         args2 += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & (v.End + 1)).Join(",+")
@@ -646,7 +658,7 @@ Public Class Audio
             Dim streams = MediaInfo.GetAudioStreams(mkvPath)
 
             If streams.Count > 0 Then
-                mkvDemuxer.Demux(mkvPath, {streams(0)}, Nothing, ap, p, False, False, True)
+                mkvDemuxer.Demux(mkvPath, {streams(0)}, Nothing, ap, p, False, False, True, "Demux cutted MKV", False)
             Else
                 fail = True
             End If

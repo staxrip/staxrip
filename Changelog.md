@@ -11,7 +11,7 @@
   works for many but not for all tools. (stax76)
 - nvenc new options added (stax76)
 - qsvenc new options added and reorganized (stax76)
-- Removed '--analysis-reuse-level' from x265 options, because not valid (anymore?!) (Dendraspis)
+- Removed '--analysis-reuse-level' from x265 options, because deprecated (Dendraspis)
 - Fixed x265 wrong output params in 3-pass mode (Dendraspis, 44vince44, [#391](/../../issues/391))
 - vceenc 6.07
 - qsvenc 4.12

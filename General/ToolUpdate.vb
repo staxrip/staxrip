@@ -210,6 +210,10 @@ Public Class ToolUpdate
             End If
         Next
 
+        If value Is Nothing Then
+            value = "???"
+        End If
+
         value = value.Replace("_", " ")
         UpdatePackageDialog()
         Dim input = InputBox.Show(msg, "StaxRip", value.Trim)

@@ -503,6 +503,7 @@ Public Class Package
         .Location = "Encoders\Rav1e",
         .Description = "AV1 Video Encoder.",
         .WebURL = "https://github.com/xiph/rav1e",
+        .DownloadURL = "https://github.com/xiph/rav1e/releases",
         .HelpFilename = "rav1e help.txt",
         .HelpSwitch = "--help"})
 
@@ -621,7 +622,6 @@ Public Class Package
         .WebURL = "http://github.com/pinterf/fft3dfilter",
         .DownloadURL = "https://github.com/pinterf/fft3dfilter/releases",
         .Description = "FFT3DFilter uses Fast Fourier Transform method for image processing in frequency domain.",
-        .HelpFilename = "fft3dfilter.html",
         .AvsFilterNames = {"FFT3DFilter"},
         .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter | FFT3DFilter", "FFT3DFilter()")}})
 
@@ -929,7 +929,6 @@ Public Class Package
             .Filename = "mvtools2.dll",
             .WebURL = "http://github.com/pinterf/mvtools",
             .DownloadURL = "https://github.com/pinterf/mvtools/releases",
-            .HelpFilename = "mvtools2.html",
             .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
             .AvsFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDeGrain1", "MDeGrain2", "MDegrain3"}})
 
@@ -937,7 +936,6 @@ Public Class Package
             .Name = "DePan",
             .Filename = "DePan.dll",
             .Location = "Plugins\AVS\MVTools2",
-            .HelpFilename = "DePan.html",
             .WebURL = "https://github.com/pinterf/mvtools",
             .DownloadURL = "https://github.com/pinterf/mvtools/releases",
             .AvsFilterNames = {"DePan", "DePanInterleave", "DePanStabilize", "DePanScenes"}})
@@ -946,7 +944,6 @@ Public Class Package
             .Name = "DePanEstimate",
             .Location = "Plugins\AVS\MVTools2",
             .Filename = "DePanEstimate.dll",
-            .HelpFilename = "DePan.html",
             .WebURL = "https://github.com/pinterf/mvtools",
             .DownloadURL = "https://github.com/pinterf/mvtools/releases",
             .AvsFilterNames = {"DePanEstimate"}})

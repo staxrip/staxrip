@@ -47,7 +47,7 @@ Public Class ApplicationSettings
     Public MinimumDiskSpace As Integer = 20
     Public MuxerProfiles As List(Of Muxer)
     Public PackagePaths As Dictionary(Of String, String)
-    Public ParallelProcsNum As Integer = 2
+    Public ParallelProcsNum As Integer = 3
     Public ParMenu As String
     Public PreventStandby As Boolean = True
     Public PreviewFormBorderStyle As FormBorderStyle

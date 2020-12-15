@@ -582,13 +582,27 @@ Public Class AppsForm
 
         Dim files = TryCast(args.Data.GetData(DataFormats.FileDrop), String())
 
-        If Not files.NothingOrEmpty AndAlso files.Length = 1 AndAlso
-            files(0).Ext.EqualsAny("zip", "7z") Then
+        BeginInvoke(Sub()
+                        If Not files.NothingOrEmpty Then
+                            If files.Length = 1 AndAlso files(0).Ext.EqualsAny("zip", "7z") Then
 
-            ToolUpdate = New ToolUpdate(CurrentPackage, Me)
-            ToolUpdate.DownloadFile = files(0)
-            ToolUpdate.Extract()
-        End If
+                                ToolUpdate = New ToolUpdate(CurrentPackage, Me)
+                                ToolUpdate.DownloadFile = files(0)
+                                ToolUpdate.Extract()
+                            Else
+                                ToolUpdate = New ToolUpdate(CurrentPackage, Me)
+                                ToolUpdate.ExtractDir = Folder.Temp + Guid.NewGuid.ToString + "\"
+                                Directory.CreateDirectory(ToolUpdate.ExtractDir)
+
+                                For Each i In files
+                                    FileHelp.Copy(i, ToolUpdate.ExtractDir + i.FileName)
+                                Next
+
+                                ToolUpdate.DeleteOldFiles()
+                                FolderHelp.Delete(ToolUpdate.ExtractDir)
+                            End If
+                        End If
+                    End Sub)
     End Sub
 
     Sub tv_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles tv.AfterSelect

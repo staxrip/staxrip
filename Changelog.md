@@ -2,9 +2,22 @@
 2.1.5.2 Beta (2020-12-??)
 ============
 
+- Maximum number of parallel processes default changed from 2 to 3. (stax76)
+- Many tool updates. (stax76, hevron)
 - Fix tool auto update crash in case of missing download URL.
 - AVSMeter 3.0.7.0
 - D2VSource 1.2.0
+- KNLMeansCL 1.1.1e
+- masktools2 2.2.26
+- mvtools2 2.7.44
+- neo-minideen r10
+- TDeint 1.8
+- TIVTC 1.0.25
+- VSFilterMod 5.2.3
+- DFTTest r7
+- L-Smash-Works 2020-07-28 HolyWu
+- havsfunc r33
+- x264 M-0.161.3018-db0d417-x64-gcc10.2.0
 
 
 2.1.5.1 Beta (2020-12-15)

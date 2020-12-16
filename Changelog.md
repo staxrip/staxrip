@@ -2,6 +2,9 @@
 2.1.5.3 Beta (2020-12-??)
 ============
 
+-aomenc, '--cpu-used' option added: "9 - Fastest" (Dendraspis, Neltulz, [#375](/../../issues/375))
+
+
 2.1.5.2 Beta (2020-12-15)
 ============
 

@@ -157,7 +157,7 @@ Public Class AV1Params
         Add(Mode)
         Add(RateMode)
         Add(New OptionParam With {.Switch = "--profile", .Text = "Profile", .IntegerValue = True, .Options = {"Main", "High", "Professional"}})
-        Add(New OptionParam With {.Switch = "--bit-depth", .Text = "Depth", .Options = {"8", "10", "12"}})
+        Add(New OptionParam With {.Switch = "--bit-depth", .Text = "Bit Depth", .Options = {"8", "10", "12"}})
         Add(New OptionParam With {.Switch = "--cpu-used", .Text = "CPU Used", .Value = 8, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Ultra Fast", "9 - Fastest"}})
 
         Add(New NumParam With {.Switch = "--cq-level", .Text = "CQ Level"})

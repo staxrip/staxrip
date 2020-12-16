@@ -156,7 +156,9 @@ Public Class LogBuilder
         End If
 
         SyncLock Log
-            Log.ToString.WriteFileUTF8(GetPath(proj))
+            If Log.Length > 0 Then
+                Log.ToString.WriteFileUTF8(GetPath(proj))
+            End If
         End SyncLock
     End Sub
 

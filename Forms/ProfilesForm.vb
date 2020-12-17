@@ -519,11 +519,18 @@ Public Class ProfilesForm
     End Sub
 
     Sub bnRestore_Click(sender As Object, e As EventArgs) Handles bnRestore.Click
-        If MsgQuestion("Restore Profiles?") = DialogResult.OK Then
-            lbMain.Items.Clear()
-            lbMain.Items.AddRange(DefaultsFunc().OfType(Of Profile).ToArray)
-            UpdateControls()
-        End If
+        Select Case MsgQuestion("Delete all profiles and restore the new ones?", "To prevent deleting custom profiles, similar profiles with the same name can be deleted and the default profiles can be added at the bottom - possible duplicates has to be removed by hand." + BR2 + "Otherwise click 'No' to clear all profiles and rebuild them from scratch or click 'Cancel' to abort.", TaskDialogButtons.YesNoCancel)
+            Case DialogResult.Yes
+                Dim uniqueProfiles = lbMain.Items.OfType(Of Profile).Where(Function(x) Not DefaultsFunc().OfType(Of Profile).Any(Function(y) x.Name = y.Name)).ToArray()
+                lbMain.Items.Clear()
+                lbMain.Items.AddRange(uniqueProfiles)
+                lbMain.Items.AddRange(DefaultsFunc().OfType(Of Profile).ToArray())
+            Case DialogResult.No
+                lbMain.Items.Clear()
+                lbMain.Items.AddRange(DefaultsFunc().OfType(Of Profile).ToArray())
+            Case DialogResult.Cancel
+        End Select
+        UpdateControls()
     End Sub
 
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)

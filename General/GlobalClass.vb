@@ -1049,7 +1049,7 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowCommandLineHelp(package As Package, switch As String)
-        Dim content = package.CreateHelpfile
+        Dim content = package.CreateHelpfile()
 
         If package Is StaxRip.Package.x264 Then
             Dim match = Regex.Match(content, "Presets:.+Frame-type options:", RegexOptions.Singleline)

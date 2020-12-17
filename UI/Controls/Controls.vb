@@ -1501,24 +1501,14 @@ Namespace UI
                     End If
 
                     Items.RemoveAt(index)
-                    UpdateControls()
                 Else
-                    Dim iFirst = SelectedIndex
+                    Dim iFirst = Items.IndexOf(SelectedItems(0))
 
-                    Dim indices(SelectedIndices.Count - 1) As Integer
-                    SelectedIndices.CopyTo(indices, 0)
-
-                    SelectedIndex = -1
-
-                    For i = indices.Length - 1 To 0 Step -1
-                        Items.RemoveAt(indices(i))
+                    For i = SelectedItems.Count - 1 To 0 Step -1
+                        Items.Remove(SelectedItems(i))
                     Next
 
-                    If iFirst > Items.Count - 1 Then
-                        SelectedIndex = Items.Count - 1
-                    Else
-                        SelectedIndex = iFirst
-                    End If
+                    SelectedIndex = If(iFirst > Items.Count - 1, Items.Count - 1, iFirst)
                 End If
             End If
         End Sub
@@ -1577,7 +1567,7 @@ Namespace UI
         Protected Overrides Sub OnSelectedIndexChanged(e As EventArgs)
             If Not BlockOnSelectedIndexChanged Then
                 MyBase.OnSelectedIndexChanged(e)
-                UpdateControls()
+                'UpdateControls()
             End If
         End Sub
 

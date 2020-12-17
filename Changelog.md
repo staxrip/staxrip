@@ -8,6 +8,7 @@
 - aomenc options optimized (Dendraspis, Neltulz, BlueSwordM , [#361](/../../issues/361))
 - Fix rightclick on aomenc options doesn't show help (Dendraspis, [#365](/../../issues/365))
 - Expand 'Restore Profiles' to preserve possible custom profiles (Dendraspis)
+- Fix bug in ListViewEx with selection after removing items (Dendraspis)
 
 
 2.1.5.2 Beta (2020-12-15)

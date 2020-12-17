@@ -172,12 +172,14 @@ Public Class GlobalCommands
     <Command("Executes PowerShell script code.")>
     Sub ExecutePowerShellScript(
         <DispName("Script Code")>
-        <Description("PowerShell script code to be executed.")>
+        <Description("PowerShell script code to be executed. Macros are expanded.")>
         <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
         code As String,
         <DispName("Use External Shell")>
         <Description("Execute in StaxRip to automate StaxRip or use external shell.")>
         Optional externalShell As Boolean = False)
+
+        code = Macro.Expand(code)
 
         If externalShell Then
             g.RunCodeInTerminal(code)

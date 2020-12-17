@@ -794,7 +794,6 @@ Public Class FilterCategory
         color.Filters.Add(New VideoFilter(color.Name, "Dither | DitherPost", "DitherPost()"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | AutoGain", "ColorYUV(autogain=$select:msg:Enable AutoGain?;true;false$, autowhite=$select:msg:Enable AutoWhite?;true;false$)"))
         color.Filters.Add(New VideoFilter(color.Name, "ColorYUV | Tweak", "Tweak(realcalc=true, dither_strength=1.0, sat=0.75, startHue=105, endHue=138 )"))
-        color.Filters.Add(New VideoFilter(color.Name, "HDRCore | Tone Mapping", "$select:msg:Select the Map Tone You Wish to Use;DGReinhard|DGReinhard();DGHable|DGHable()$"))
         ret.Add(color)
 
         Dim line As New FilterCategory("Line")

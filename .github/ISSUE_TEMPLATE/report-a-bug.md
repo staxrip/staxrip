@@ -33,12 +33,13 @@ If the issue happens only under special conditions then please describe how this
 
 If there is a error message than copy the message if possible, if not then make a screenshot. Ater that search for the log file because it should not only contain the error message but also additional useful debug information. The log file is located in the temp folder and the temp folder is located in the same directory as the source file. The log file ends with _staxrip.log. Visit the wesite pastebin.com and paste the log file content there, use the auto expire feature and set it to one year.
 
+If you can't (or don't) share your log file, give us at least this informations:
+- Used StaxRip version
+
 
 **Notes before posting**
+- Please also try the latest version of StaxRip that can be found here: https://staxrip.readthedocs.io/introduction.html#download
 - Only open an issue if it's tied to StaxRip, if the issue is tied to an external program or filter then head to that project and open an issue there. 
-- If you require help with one of the frame servers, tools or scripting then post in the forums rather then opening a ticket here:
-  https://forum.videohelp.com
-  https://forum.doom9.org
 - Check your CPU specs, many newer filters are AVX2 enabled with no AVX1 support, this is espeically true on the VapourSynth side, which will crash if your CPU don't support it.
 - Lastly, only files that are released with StaxRip are fully supported, this is done to make debugging easier. Also since all filters have been tested before the release, newer versions can have changes which have not been added to StaxRip yet.
 

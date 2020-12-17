@@ -5,6 +5,7 @@
 - Stop saving empty log files (Dendraspis)
 - aomenc options reorganized, restructured and refreshed (Dendraspis, Neltulz, [#375](/../../issues/375))
 - Removed 'HDRCore-ToneMapping' because of use of DGTonemap (Dendraspis, JJKylee, 44vince44, [#369](/../../issues/369))
+- aomenc options optimized (Dendraspis, Neltulz, BlueSwordM , [#361](/../../issues/361))
 
 
 2.1.5.2 Beta (2020-12-15)

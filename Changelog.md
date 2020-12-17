@@ -9,6 +9,7 @@
 - Fix rightclick on aomenc options doesn't show help (Dendraspis, [#365](/../../issues/365))
 - Expand 'Restore Profiles' to preserve possible custom profiles (Dendraspis)
 - Fix bug in ListViewEx with selection after removing items (Dendraspis)
+- L-SMASH-Works 2020-12-16 StvG
 
 
 2.1.5.2 Beta (2020-12-15)

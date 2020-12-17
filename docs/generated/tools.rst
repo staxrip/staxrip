@@ -37,7 +37,7 @@ Tools
     "JincResize","AviSynth Plugin","JincResize.dll","r44","2019-01-01"
     "JPSDR","AviSynth Plugin","Plugins_JPSDR.dll","3.2.4","2020-11-09"
     "KNLMeansCL","AviSynth Plugin","KNLMeansCL.dll","1.1.1e","2020-11-12"
-    "L-SMASH-Works","AviSynth Plugin","LSMASHSource.dll","2020-07-28 HolyWu","2020-07-27"
+    "L-SMASH-Works","AviSynth Plugin","LSMASHSource.dll","2020-12-16 StvG","2020-07-27"
     "masktools2","AviSynth Plugin","masktools2.dll","2.2.26","2020-09-04"
     "MedianBlur2","AviSynth Plugin","MedianBlur2.dll","0.94","2014-02-10"
     "MiniDeen","AviSynth Plugin","neo-minideen.dll","r10","2020-06-20"

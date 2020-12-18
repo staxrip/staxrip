@@ -80,6 +80,7 @@ Public Class ToolUpdate
         Using pr As New Process
             pr.StartInfo.FileName = Package.SevenZip.Path
             pr.StartInfo.Arguments = "x -y " + DownloadFile.Escape + " -o""" + ExtractDir + """"
+            pr.StartInfo.UseShellExecute = False
             pr.Start()
             pr.WaitForExit()
 

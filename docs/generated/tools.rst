@@ -100,7 +100,7 @@ Tools
     "TemporalDegrain2","AviSynth Script","TemporalDegrain2.avsi","2.2.1","2019-02-24"
     "YFRC","AviSynth Script","YFRC.avsi","2015-10-01","2019-01-01"
     "Zs_RF_Shared","AviSynth Script","Zs_RF_Shared.avsi","1.127","2020-05-31"
-    "7zip","Console App","7za.exe","9.20","2010-11-18"
+    "7zip","Console App","7za.exe","19.0","2019-02-21"
     "aomenc","Console App","aomenc.exe","2.0.0-918-g75a47cc18-gcc10.2.0 Patman","2020-10-13"
     "AutoCrop","Console App","AutoCrop.exe","2.0.0.0","2020-08-02"
     "avs2pipemod","Console App","avs2pipemod64.exe","1.1.1","2016-08-14"

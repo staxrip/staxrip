@@ -28,6 +28,7 @@ Public Class Package
     Property SetupAction As Action
     Property Siblings As String()
     Property StatusFunc As Func(Of String)
+    Property SupportsAutoUpdate As Boolean = True
     Property TreePath As String
     Property Version As String
     Property VersionAllowAny As Boolean
@@ -243,6 +244,7 @@ Public Class Package
         .Description = "Packing console app.",
         .WebURL = "https://www.7-zip.org",
         .HelpSwitch = "",
+        .SupportsAutoUpdate = False,
         .DownloadURL = "https://www.7-zip.org/download.html"})
 
     Shared Property xvid_encraw As Package = Add(New Package With {
@@ -2020,6 +2022,10 @@ Public Class Package
 
     Public ReadOnly Property HelpFile As String
         Get
+            If HelpFilename = "" AndAlso Not HelpSwitch Is Nothing Then
+                HelpFilename = Name + " Help.txt"
+            End If
+
             Return Directory + HelpFilename
         End Get
     End Property

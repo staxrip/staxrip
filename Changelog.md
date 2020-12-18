@@ -11,6 +11,7 @@
 - Fix bug in ListBoxEx with selection after removing items (Dendraspis)
 - Command ExecutePowerShellScript expands macros. (stax76, [#308](/../../issues/308))
 - L-SMASH-Works 2020-12-16 StvG
+- AviSynth 3.6.2 test6
 
 
 2.1.5.2 Beta (2020-12-15)

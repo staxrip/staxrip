@@ -473,7 +473,6 @@ Public Class Package
         .WebURL = "http://www.videolan.org/developers/x264.html",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
-        .HelpFilename = "x264 Help.txt",
         .HelpSwitch = "--fullhelp"})
 
     Shared Property x265 As Package = Add(New Package With {
@@ -484,25 +483,22 @@ Public Class Package
         .HelpURL = "http://x265.readthedocs.org",
         .DownloadURL = "https://forum.doom9.org/showthread.php?p=1930644#post1930644",
         .HelpSwitch = "--log-level full --fullhelp",
-        .HelpFilename = "x265 Help.txt",
         .Description = "H.265 video encoding console app. Yuuki-Asuna mod built by qyot27."})
 
     Shared Property SVTAV1 As Package = Add(New Package With {
         .Name = "SVT-AV1",
         .Location = "Encoders\SVT-AV1",
         .Filename = "SvtAv1EncApp.exe",
-        .HelpFilename = "SVT-AV1 Help.txt",
         .WebURL = "https://github.com/OpenVisualCloud/SVT-AV1",
         .HelpURL = "https://github.com/OpenVisualCloud/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
-        .HelpSwitch = "stderr-help",
+        .HelpSwitch = "--help",
         .Description = "Intel AV1 encoder."})
 
     Shared Property Rav1e As Package = Add(New Package With {
         .Name = "rav1e",
         .Filename = "rav1e.exe",
         .Location = "Encoders\Rav1e",
-        .HelpFilename = "Rav1e Help.txt",
         .Description = "AV1 Video Encoder.",
         .WebURL = "https://github.com/xiph/rav1e",
         .DownloadURL = "https://github.com/xiph/rav1e/releases",
@@ -512,7 +508,6 @@ Public Class Package
         .Name = "aomenc",
         .Filename = "aomenc.exe",
         .Location = "Encoders\aomenc",
-        .HelpFilename = "aomenc Help.txt",
         .Description = "AV1 video encoder console app.",
         .WebURL = "https://aomedia.org",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
@@ -591,8 +586,7 @@ Public Class Package
         .WebURL = "http://github.com/rigaya/NVEnc",
         .HelpURL = "https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md",
         .DownloadURL = "https://github.com/rigaya/NVEnc/releases",
-        .Description = "NVIDIA hardware video encoder.",
-        .HelpFilename = "NVEnc Help.txt"})
+        .Description = "NVIDIA hardware video encoder."})
 
     Shared Property QSVEnc As Package = Add(New Package With {
         .Name = "QSVEnc",
@@ -600,7 +594,6 @@ Public Class Package
         .Filename32 = "QSVEncC.exe",
         .Location = "Encoders\QSVEnc",
         .Description = "Intel hardware video encoder.",
-        .HelpFilename = "QSVEnc Help.txt",
         .WebURL = "http://github.com/rigaya/QSVEnc",
         .DownloadURL = "https://github.com/rigaya/QSVEnc/releases",
         .HelpURL = "https://github.com/rigaya/QSVEnc/blob/master/QSVEncC_Options.en.md",

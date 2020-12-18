@@ -99,7 +99,7 @@
     :widths: auto
 
     * - code <string>
-      - Script Code: PowerShell script code to be executed.
+      - Script Code: PowerShell script code to be executed. Macros are expanded.
     * - externalShell <boolean>
       - Use External Shell: Execute in StaxRip to automate StaxRip or use external shell.
 

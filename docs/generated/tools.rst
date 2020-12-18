@@ -138,7 +138,7 @@ Tools
     "mpv.net","GUI App","mpvnet.exe","5.4.8.5","2020-12-15"
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.18","2020-11-09"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
-    "AviSynth","Library","AviSynth.dll","3.6.2 test 2","2020-08-31"
+    "AviSynth","Library","AviSynth.dll","3.6.2 test 6","2020-12-10"
     "DirectX 9","Library","d3d9.dll","","2020-12-09"
     "FFTW","Library","libfftw3-3.dll","3.3.8","2018-12-20"
     "MediaInfo","Library","MediaInfo.dll","20.09","2020-10-09"

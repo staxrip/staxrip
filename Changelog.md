@@ -10,6 +10,8 @@
 - Expand 'Restore Profiles' to preserve possible custom profiles (Dendraspis)
 - Fix bug in ListBoxEx with selection after removing items (Dendraspis)
 - Command ExecutePowerShellScript expands macros. (stax76, [#308](/../../issues/308))
+- Fix StaxRip not finding the (installed) VapourSynth (per user) plugin directory, this could
+  lead to an error StaxRip trying to manually load plugins that were already auto loaded.
 - L-SMASH-Works 2020-12-16 StvG
 - AviSynth 3.6.2 test6
 - 7zip 19.0

@@ -113,7 +113,7 @@ Public Class Folder
                 If p.Script.Engine = ScriptEngine.AviSynth Then
                     Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+").FixDir
                 Else
-                    Return Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64").FixDir
+                    Return Folder.AppDataRoaming + "VapourSynth\plugins64\"
                 End If
             End If
         End Get

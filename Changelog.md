@@ -15,6 +15,7 @@
 - L-SMASH-Works 2020-12-16 StvG
 - AviSynth 3.6.2 test6
 - 7zip 19.0
+- aomenc 2.0.0-1117-g7ddc21b28
 
 
 2.1.5.2 Beta (2020-12-15)

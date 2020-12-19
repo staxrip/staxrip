@@ -512,7 +512,7 @@ Public Class Package
         .Location = "Encoders\aomenc",
         .Description = "AV1 video encoder console app.",
         .WebURL = "https://aomedia.org",
-        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
+        .DownloadURL = "https://ci.appveyor.com/project/marcomsousa/build-aom/build/artifacts",
         .RequiredFunc = Function() TypeOf p.VideoEncoder Is aomenc,
         .HelpSwitch = "--help"})
 

@@ -1,5 +1,8 @@
 
-2.1.5.3 Beta (2020-12-??)
+2.1.5.4 Beta (2020-12-??)
+============
+
+2.1.5.3 Beta (2020-12-19)
 ============
 
 - Stop saving empty log files (Dendraspis)
@@ -12,7 +15,8 @@
 - Fix bug in ListBoxEx with selection after removing items (Dendraspis)
 - Command ExecutePowerShellScript expands macros. (stax76, [#308](/../../issues/308))
 - Fix StaxRip not finding the (installed) VapourSynth (per user) plugin directory, this could
-  lead to an error StaxRip trying to manually load plugins that were already auto loaded.
+  lead to an error StaxRip trying to manually load plugins that were already auto loaded. (stax76, [#399](/../../issues/399))
+- Cut settings when created from the code editor preview were not applied. (stax76, [#395](/../../issues/395))
 - L-SMASH-Works 2020-12-16 StvG
 - AviSynth 3.6.2 test6
 - 7zip 19.0

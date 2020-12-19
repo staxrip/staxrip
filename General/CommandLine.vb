@@ -371,7 +371,6 @@ Namespace CommandLine
 
         Property Options As String()
         Property Values As String()
-        Property Expand As Boolean
         Property MenuButton As MenuButton
         Property DefaultValue As Integer
         Property IntegerValue As Boolean

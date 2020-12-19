@@ -14,7 +14,7 @@ Public Class CommandLineForm
 
     Sub New(params As CommandLineParams)
         InitializeComponent()
-        SimpleUI.ScaleClientSize(37, 26)
+        SimpleUI.ScaleClientSize(38, 26)
 
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
         rtbCommandLine.ContextMenuStrip.Dispose()
@@ -188,7 +188,9 @@ Public Class CommandLineForm
                 helpControl = menuBlock.Label
                 AddHandler menuBlock.Label.MouseDoubleClick, Sub() tempOptionParam.ValueChangedUser(tempOptionParam.DefaultValue)
 
-                If oParam.Expand Then
+                Dim max = oParam.Options.Select(Function(txt) txt.Length).Max
+
+                If max > 25 Then
                     menuBlock.Button.Expand = True
                 End If
 

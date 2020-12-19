@@ -6,6 +6,7 @@
 - aomenc options reorganized, restructured and refreshed (Dendraspis, Neltulz, [#375](/../../issues/375))
 - Removed 'HDRCore-ToneMapping' because of use of DGTonemap (Dendraspis, JJKylee, 44vince44, [#369](/../../issues/369))
 - aomenc options optimized (Dendraspis, Neltulz, BlueSwordM , [#361](/../../issues/361))
+- aomenc dropdown controls have a properly expanded width. (stax76)
 - Fix rightclick on aomenc options doesn't show help (Dendraspis, [#365](/../../issues/365))
 - Expand 'Restore Profiles' to preserve possible custom profiles (Dendraspis)
 - Fix bug in ListBoxEx with selection after removing items (Dendraspis)

@@ -335,7 +335,6 @@ Public Class x264Params
         .Switch = "--aq-mode",
         .Text = "AQ Mode",
         .IntegerValue = True,
-        .Expand = True,
         .Options = {"Disabled", "Variance AQ", "Auto-variance AQ", "Auto-variance AQ with bias to dark scenes"}}
 
     Property BAdapt As New OptionParam With {
@@ -351,7 +350,6 @@ Public Class x264Params
     Property Weightp As New OptionParam With {
         .Switch = "--weightp",
         .Text = "Weight P Prediction",
-        .Expand = True,
         .Options = {"Disabled", "Weighted refs", "Weighted refs + Duplicates"},
         .IntegerValue = True}
 
@@ -420,13 +418,11 @@ Public Class x264Params
         .Switches = {"-m"},
         .Text = "Subpel Refinement",
         .IntegerValue = True,
-        .Expand = True,
         .Options = {"Fullpel only (not recommended)", "SAD mode decision, one qpel iteration", "SATD mode decision", "Progressively more qpel", "Progressively more qpel", "Progressively more qpel", "RD mode decision for I/P-frames", "RD mode decision for all frames", "RD refinement for I/P-frames", "RD refinement for all frames", "QP-RD - requires trellis=2, aq-mode>0", "Full RD disable all early terminations"}}
 
     Property Me_ As New OptionParam With {
         .Switch = "--me",
         .Text = "Motion Search Method",
-        .Expand = True,
         .Values = {"dia", "hex", "umh", "esa", "tesa"},
         .Options = {"Diamond Search, Radius 1 (fast)", "Hexagonal Search, Radius 2", "Uneven Multi-Hexagon Search", "Exhaustive Search", "Hadamard Exhaustive Search (slow)"}}
 
@@ -438,7 +434,6 @@ Public Class x264Params
         .Switch = "--trellis",
         .Switches = {"-t"},
         .Text = "Trellis",
-        .Expand = True,
         .IntegerValue = True,
         .Options = {"Disabled", "Enabled only on the final encode of a MB", "Enabled on all mode decisions"}}
 

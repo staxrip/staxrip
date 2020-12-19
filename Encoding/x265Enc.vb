@@ -404,7 +404,6 @@ Public Class x265Params
         .Switches = {"-m"},
         .Text = "Subpel Refinement",
         .IntegerValue = True,
-        .Expand = True,
         .Options = {"0 - HPEL 1/4 - QPEL 0/4 - HPEL SATD false",
                     "1 - HPEL 1/4 - QPEL 1/4 - HPEL SATD false",
                     "2 - HPEL 1/4 - QPEL 1/4 - HPEL SATD true",
@@ -466,7 +465,6 @@ Public Class x265Params
     Property AQmode As New OptionParam With {
         .Switch = "--aq-mode",
         .Text = "AQ Mode",
-        .Expand = True,
         .IntegerValue = True,
         .Options = {"Disabled", "AQ", "AQ Auto-variance", "AQ Auto-variance with bias to dark scenes", "AQ Auto-variance and edge information"}}
 
@@ -485,7 +483,6 @@ Public Class x265Params
         .Switch = "--rd",
         .Text = "RD",
         .IntegerValue = True,
-        .Expand = True,
         .Options = {"0 - SA8D mode and split decisions, intra w/ source pixels",
                     "1 - Recon generated (better intra), RDO merge/skip selection",
                     "2 - RDO splits and merge/skip selection",
@@ -903,7 +900,6 @@ Public Class x265Params
     Property RSkip As New OptionParam With {
         .Switch = "--rskip",
         .Text = "Recursion Skip",
-        .Expand = True,
         .Options = {"0 - Disabled", "1 - RD Level 0-4 Neighbour costs and CU homogenity, RD Level 5-6 Comparison with inter2Nx2N", "2 - RD Level 0-6 CU edge denstiy"},
         .Values = {"0", "1", "2"},
         .Init = 1}
@@ -922,9 +918,9 @@ Public Class x265Params
                 Add("Analysis", RD,
                     New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis Reuse File", .BrowseFile = True},
                     New StringParam With {.Switch = "--analysis-save", .Text = "Analysis Save", .BrowseFile = True},
-                    New OptionParam With {.Switch = "--analysis-save-reuse-level", .Text = "Save Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
+                    New OptionParam With {.Switch = "--analysis-save-reuse-level", .Text = "Save Reuse Level", .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     New StringParam With {.Switch = "--analysis-load", .Text = "Analysis Load", .BrowseFile = True},
-                    New OptionParam With {.Switch = "--analysis-load-reuse-level", .Text = "Load Reuse Level", .Expand = True, .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
+                    New OptionParam With {.Switch = "--analysis-load-reuse-level", .Text = "Load Reuse Level", .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     RSkip,
                     New NumParam With {.Switch = "--rskip-edge-threshold", .Text = "RSkip Edge Threshold", .Init = 5, .Config = {0, 100}},
                     MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
@@ -932,7 +928,7 @@ Public Class x265Params
                     New NumParam With {.Switch = "--scale-factor", .Text = "Scale Factor"},
                     LimitTU, TUintra, TUinter, rdoqLevel, PsyRDOQ,
                     New NumParam With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}},
-                    New OptionParam With {.Switch = "--refine-mv", .Text = "Refine MV", .Expand = True, .IntegerValue = True, .Options = {"Disabled", "Level 1: Search around scaled MV", "Level 2: Level 1 + Search around best AMVP cand", "Level 3: Level 2 + Search around the other AMVP cand"}},
+                    New OptionParam With {.Switch = "--refine-mv", .Text = "Refine MV", .IntegerValue = True, .Options = {"Disabled", "Level 1: Search around scaled MV", "Level 2: Level 1 + Search around best AMVP cand", "Level 3: Level 2 + Search around the other AMVP cand"}},
                     New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}},
                     New BoolParam With {.Switch = "--dynamic-refine", .Text = "Dynamic Refine"},
@@ -985,7 +981,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--hme", .NoSwitch = "--no-hme", .Text = "3-level Hierarchical motion estimation"})
                 Add("Slice Decision",
                     New StringParam With {.Switch = "--refine-analysis-type", .Text = "Refine Analysis Type"},
-                    New OptionParam() With {.Switch = "--force-flush", .Text = "Force Flush", .Expand = True, .IntegerValue = True, .Options = {"Flush the encoder only when all the input pictures are over", "Flush all the frames even when the input is not over", "Flush the slicetype decided frames only"}},
+                    New OptionParam() With {.Switch = "--force-flush", .Text = "Force Flush", .IntegerValue = True, .Options = {"Flush the encoder only when all the input pictures are over", "Flush all the frames even when the input is not over", "Flush the slicetype decided frames only"}},
                     BAdapt,
                     New OptionParam With {.Switch = "--ctu-info", .Text = "CTU Info", .Options = {"0", "1", "2", "4", "6"}},
                     BFrames, BFrameBias,

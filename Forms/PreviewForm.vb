@@ -695,7 +695,7 @@ Public Class PreviewForm
     Sub ShowExternalPlayer()
         Dim script = PreviewScript.GetNewScript()
         script.Path = (p.TempDir + p.TargetFile.Base + "_play." + script.FileType).ToShortFilePath
-        UpdateTrim(script)
+        g.UpdateTrim(script)
         g.PlayScript(script)
     End Sub
 
@@ -703,7 +703,7 @@ Public Class PreviewForm
     Sub PlayWithMpvnet()
         Dim script = PreviewScript.GetNewScript()
         script.Path = (p.TempDir + p.TargetFile.Base + "_play." + script.FileType).ToShortFilePath
-        UpdateTrim(script)
+        g.UpdateTrim(script)
         g.PlayScriptWithMPV(script, "--start=" + GetPlayPosition.ToString)
     End Sub
 
@@ -711,7 +711,7 @@ Public Class PreviewForm
     Sub PlayWithMPC()
         Dim script = PreviewScript.GetNewScript()
         script.Path = (p.TempDir + p.TargetFile.Base + "_play." + script.FileType).ToShortFilePath
-        UpdateTrim(script)
+        g.UpdateTrim(script)
         g.PlayScriptWithMPC(script, "/start " & GetPlayPosition.TotalMilliseconds)
     End Sub
 
@@ -949,45 +949,6 @@ Public Class PreviewForm
         GenericMenu.Process(item)
     End Sub
 
-    Sub UpdateTrim(script As VideoScript)
-        script.RemoveFilter("Cutting")
-
-        If p.Ranges.Count > 0 Then
-            Dim cutFilter As New VideoFilter
-            cutFilter.Path = "Cutting"
-            cutFilter.Category = "Cutting"
-            cutFilter.Script = GetTrim()
-            cutFilter.Active = True
-            script.Filters.Add(cutFilter)
-        End If
-    End Sub
-
-    Function GetTrim() As String
-        Dim ret As String
-
-        For Each i In p.Ranges
-            If ret <> "" Then
-                ret += " + "
-            End If
-
-            If PreviewScript.Engine = ScriptEngine.AviSynth Then
-                ret += "Trim(" & i.Start & ", " & i.End & ")"
-
-                If p.TrimCode <> "" Then
-                    ret += "." + p.TrimCode.TrimStart("."c)
-                End If
-            Else
-                ret += "clip[" & i.Start & ":" & (i.End + 1) & "]"
-            End If
-        Next
-
-        If PreviewScript.Engine = ScriptEngine.AviSynth Then
-            Return ret
-        Else
-            Return "clip = " + ret
-        End If
-    End Function
-
     Sub Controls_Enter() Handles bnLeft3.Enter, bnLeft2.Enter, bnLeft1.Enter, bnRight1.Enter, bnRight2.Enter,
         bnRight3.Enter, bnEndCutRange.Enter, bnStartCutRange.Enter, bnDelete.Enter, bnMenu.Enter
 
@@ -1095,7 +1056,7 @@ Public Class PreviewForm
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
         MyBase.OnFormClosing(args)
         Instances.Remove(Me)
-        UpdateTrim(p.Script)
+        g.UpdateTrim(p.Script)
         s.LastPosition = Renderer.Position
         p.CutFrameCount = FrameServer.Info.FrameCount
         p.CutFrameRate = FrameServer.FrameRate

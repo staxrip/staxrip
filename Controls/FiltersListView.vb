@@ -186,9 +186,9 @@ Public Class FiltersListView
     End Sub
 
     Sub ShowEditor()
-        If p.Script.Edit = DialogResult.OK Then
-            OnChanged()
-        End If
+        p.Script.Edit()
+        g.UpdateTrim(p.Script)
+        OnChanged()
     End Sub
 
     Sub ReplaceClick(filter As VideoFilter)

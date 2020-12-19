@@ -1495,4 +1495,43 @@ Public Class GlobalClass
                      End Try
                  End Sub)
     End Sub
+
+    Sub UpdateTrim(script As VideoScript)
+        script.RemoveFilter("Cutting")
+
+        If p.Ranges.Count > 0 Then
+            Dim cutFilter As New VideoFilter
+            cutFilter.Path = "Cutting"
+            cutFilter.Category = "Cutting"
+            cutFilter.Script = GetTrim(script)
+            cutFilter.Active = True
+            script.Filters.Add(cutFilter)
+        End If
+    End Sub
+
+    Function GetTrim(script As VideoScript) As String
+        Dim ret As String
+
+        For Each i In p.Ranges
+            If ret <> "" Then
+                ret += " + "
+            End If
+
+            If script.Engine = ScriptEngine.AviSynth Then
+                ret += "Trim(" & i.Start & ", " & i.End & ")"
+
+                If p.TrimCode <> "" Then
+                    ret += "." + p.TrimCode.TrimStart("."c)
+                End If
+            Else
+                ret += "clip[" & i.Start & ":" & (i.End + 1) & "]"
+            End If
+        Next
+
+        If script.Engine = ScriptEngine.AviSynth Then
+            Return ret
+        Else
+            Return "clip = " + ret
+        End If
+    End Function
 End Class

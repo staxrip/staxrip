@@ -2,8 +2,10 @@
     :header: "Name", "Description"
     :widths: auto
 
-    "%app:name%","Returns the path of a tool, it can be any type of tool found in the Apps dialog. Example: %app:qtgmc%"
-    "%app_dir:name%","Returns the directory of a tool, it can be any type of tool found in the Apps dialog. Example: %app_dir:x265%"
+    "%app:name%","Returns the path of a given tool, it can be any type of tool found in the Apps dialog. Example: %app:x265%"
+    "%app_dir:name%","Returns the directory of a given tool, it can be any type of tool found in the Apps dialog. Example: %app_dir:x265%"
+    "%app_path:name%","Returns the path of a given tool, it can be any type of tool found in the Apps dialog. Example: %app:x265%"
+    "%app_version:name%","Returns the version of a given tool, it can be any type of tool found in the Apps dialog. Example: %version:x265%"
     "%audio_bitrate%","Overall audio bitrate."
     "%audio_file1%","File path of the first audio file."
     "%audio_file2%","File path of the second audio file."
@@ -20,7 +22,6 @@
     "%encoder_ext%","File extension of the format the encoder of the active project outputs."
     "%encoder_out_file%","Output file of the video encoder."
     "%eval:expression%","Evaluates a PowerShell expression which may contain macros."
-    "%eval_ps:expression%","This macro is obsolete since 2020."
     "%filter:name%","Returns the script code of a filter of the active project that matches the specified name."
     "%media_info_audio:property%","Returns a MediaInfo audio property for the video source file."
     "%media_info_video:property%","Returns a MediaInfo video property for the source file."
@@ -76,5 +77,6 @@
     "%text_editor%","Path of the application currently associated with TXT files."
     "%version%","StaxRip version."
     "%video_bitrate%","Video bitrate in Kbps"
-    "%video_encoder%","Depending on which video encoder is active returns x264, x265, nvenc, qsvenc, vceenc, aomenc, ffmpeg or xvid_encraw."
+    "%video_encoder%","Name of the active video encoder."
+    "%video_encoder_settings%","Settings of the active video encoder."
     "%working_dir%","Directory of the source file or the temp directory if enabled."

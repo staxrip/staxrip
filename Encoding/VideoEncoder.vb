@@ -41,7 +41,7 @@ Public MustInherit Class VideoEncoder
         End Get
     End Property
 
-    Overridable Function GetCommandLine() As String
+    Overridable Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String
     End Function
 
     Overridable Function GetMenu() As MenuList
@@ -437,8 +437,8 @@ Public MustInherit Class BasicVideoEncoder
         ImportCommandLine(commandLine, CommandLineParams)
     End Sub
 
-    Overrides Function GetCommandLine() As String
-        Return CommandLineParams.GetCommandLine(True, True)
+    Overrides Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String
+        Return CommandLineParams.GetCommandLine(includePaths, includeExecutable)
     End Function
 
     Overloads Shared Sub ImportCommandLine(commandLine As String, params As CommandLineParams)
@@ -575,7 +575,7 @@ Public Class BatchEncoder
         End Using
     End Sub
 
-    Overrides Function GetCommandLine() As String
+    Overrides Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String
         Return CommandLines
     End Function
 

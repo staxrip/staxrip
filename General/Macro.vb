@@ -87,13 +87,10 @@ Public Class Macro
         End Set
     End Property
 
-    Shared Function GetTips(includeInteractive As Boolean,
-                            includeParam As Boolean,
-                            includeApps As Boolean) As StringPairList
-
+    Shared Function GetTips(includeInteractive As Boolean, includeParam As Boolean) As StringPairList
         Dim ret As New StringPairList
 
-        For Each macro In GetMacros(includeInteractive, includeParam, includeApps)
+        For Each macro In GetMacros(includeInteractive, includeParam)
             ret.Add(macro.Name, macro.Description)
         Next
 
@@ -103,7 +100,7 @@ Public Class Macro
     Shared Function GetTipsFriendly(convertHTMLChars As Boolean) As StringPairList
         Dim ret As New StringPairList
 
-        For Each mac As Macro In GetMacros(False, False, False)
+        For Each mac As Macro In GetMacros(False, False)
             If convertHTMLChars Then
                 ret.Add(HelpDocument.ConvertChars(mac.FriendlyName), mac.Description)
             Else
@@ -122,9 +119,7 @@ Public Class Macro
         Return Name.CompareTo(other.Name)
     End Function
 
-    Shared Function GetMacros(
-        includeInteractive As Boolean, includeParam As Boolean, includeApps As Boolean) As List(Of Macro)
-
+    Shared Function GetMacros(includeInteractive As Boolean, includeParam As Boolean) As List(Of Macro)
         Dim ret As New List(Of Macro)
 
         If includeInteractive Then
@@ -135,10 +130,11 @@ Public Class Macro
         End If
 
         If includeParam Then
-            ret.Add(New Macro("app:name", "Application File Path", GetType(String), "Returns the path of a tool, it can be any type of tool found in the Apps dialog. Example: %app:qtgmc%"))
-            ret.Add(New Macro("app_dir:name", "Application Directory", GetType(String), "Returns the directory of a tool, it can be any type of tool found in the Apps dialog. Example: %app_dir:x265%"))
+            ret.Add(New Macro("app:name", "Application File Path", GetType(String), "Returns the path of a given tool, it can be any type of tool found in the Apps dialog. Example: %app:x265%"))
+            ret.Add(New Macro("app_dir:name", "Application Directory", GetType(String), "Returns the directory of a given tool, it can be any type of tool found in the Apps dialog. Example: %app_dir:x265%"))
+            ret.Add(New Macro("app_path:name", "Application File Path", GetType(String), "Returns the path of a given tool, it can be any type of tool found in the Apps dialog. Example: %app:x265%"))
+            ret.Add(New Macro("app_version:name", "Application Version", GetType(String), "Returns the version of a given tool, it can be any type of tool found in the Apps dialog. Example: %version:x265%"))
             ret.Add(New Macro("eval:expression", "Eval Math Expression", GetType(String), "Evaluates a PowerShell expression which may contain macros."))
-            ret.Add(New Macro("eval_ps:expression", "Eval PowerShell Expression", GetType(String), "This macro is obsolete since 2020."))
             ret.Add(New Macro("filter:name", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
             ret.Add(New Macro("media_info_audio:property", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
             ret.Add(New Macro("media_info_video:property", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
@@ -211,20 +207,11 @@ Public Class Macro
         ret.Add(New Macro("text_editor", "Text Editor", GetType(String), "Path of the application currently associated with TXT files."))
         ret.Add(New Macro("version", "Version", GetType(String), "StaxRip version."))
         ret.Add(New Macro("video_bitrate", "Video Bitrate", GetType(Integer), "Video bitrate in Kbps"))
-        ret.Add(New Macro("video_encoder", "Video Encoder", GetType(String), "Depending on which video encoder is active returns x264, x265, nvenc, qsvenc, vceenc, aomenc, ffmpeg or xvid_encraw."))
+        ret.Add(New Macro("video_encoder", "Video Encoder", GetType(String), "Name of the active video encoder."))
+        ret.Add(New Macro("video_encoder_settings", "Video Encoder Settings", GetType(String), "Settings of the active video encoder."))
         ret.Add(New Macro("working_dir", "Working Directory", GetType(String), "Directory of the source file or the temp directory if enabled."))
 
         ret.Sort()
-
-        If includeApps Then
-            For Each i In Package.Items.Values
-                ret.Add(New Macro("app:" + i.Name, "File path to " + i.Name, GetType(String), "File path to " + i.Name))
-            Next
-
-            For Each i In Package.Items.Values
-                ret.Add(New Macro("app_dir:" + i.Name, "Folder path to " + i.Name, GetType(String), "Folder path to " + i.Name))
-            Next
-        End If
 
         Return ret
     End Function
@@ -504,6 +491,9 @@ Public Class Macro
         If value.Contains("%video_encoder%") Then value = value.Replace("%video_encoder%", TryCast(p.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage.Name)
         If Not value.Contains("%") Then Return value
 
+        If value.Contains("%video_encoder_settings%") Then value = value.Replace("%video_encoder_settings%", TryCast(p.VideoEncoder, BasicVideoEncoder)?.GetCommandLine(False, True).Replace("--", ""))
+        If Not value.Contains("%") Then Return value
+
         If value.Contains("%dpi%") Then value = value.Replace("%dpi%", g.DPI.ToString())
         If Not value.Contains("%") Then Return value
 
@@ -516,79 +506,94 @@ Public Class Macro
         If value.Contains("%source_par_x%") Then
             Dim par = Calc.GetSourcePAR
             value = value.Replace("%source_par_x%", par.X.ToString)
-
-            If Not value.Contains("%") Then
-                Return value
-            End If
         End If
+
+        If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_par_y%") Then
             Dim par = Calc.GetSourcePAR
             value = value.Replace("%source_par_y%", par.Y.ToString)
-
-            If Not value.Contains("%") Then
-                Return value
-            End If
         End If
+
+        If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_par_x%") Then
             Dim par = Calc.GetTargetPAR
             value = value.Replace("%target_par_x%", par.X.ToString)
-
-            If Not value.Contains("%") Then
-                Return value
-            End If
         End If
+
+        If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_par_y%") Then
             Dim par = Calc.GetTargetPAR
             value = value.Replace("%target_par_y%", par.Y.ToString)
-
-            If Not value.Contains("%") Then
-                Return value
-            End If
         End If
+
+        If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_dar%") Then
             Dim dar = Calc.GetSourceDAR
             value = value.Replace("%source_dar%", dar.ToString("f9", CultureInfo.InvariantCulture))
-
-            If Not value.Contains("%") Then
-                Return value
-            End If
         End If
+
+        If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_dar%") Then
             Dim dar = Calc.GetTargetDAR
             value = value.Replace("%target_dar%", dar.ToString("f9", CultureInfo.InvariantCulture))
+        End If
 
-            If Not value.Contains("%") Then
-                Return value
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%sel_") Then
+            If p.Ranges.Count > 0 Then
+                If value.Contains("%sel_start%") Then
+                    value = value.Replace("%sel_start%", p.Ranges(0).Start.ToString)
+                End If
+
+                If value.Contains("%sel_end%") Then
+                    value = value.Replace("%sel_end%", p.Ranges(0).End.ToString)
+                End If
+            Else
+                If value.Contains("%sel_start%") Then
+                    value = value.Replace("%sel_start%", "0")
+                End If
+
+                If value.Contains("%sel_end%") Then
+                    value = value.Replace("%sel_end%", "0")
+                End If
             End If
         End If
 
-        If p.Ranges.Count > 0 Then
-            If value.Contains("%sel_start%") Then value = value.Replace("%sel_start%", p.Ranges(0).Start.ToString)
-            If Not value.Contains("%") Then Return value
-
-            If value.Contains("%sel_end%") Then value = value.Replace("%sel_end%", p.Ranges(0).End.ToString)
-            If Not value.Contains("%") Then Return value
-        Else
-            If value.Contains("%sel_start%") Then value = value.Replace("%sel_start%", 0.ToString)
-            If Not value.Contains("%") Then Return value
-
-            If value.Contains("%sel_end%") Then value = value.Replace("%sel_end%", 0.ToString)
-            If Not value.Contains("%") Then Return value
-        End If
+        If Not value.Contains("%") Then Return value
 
         If value.Contains("%app:") Then
             Dim mc = Regex.Matches(value, "%app:(.+?)%")
 
             For Each match As Match In mc
-                Dim package = StaxRip.Package.Items.Values.FirstOrDefault(
-                    Function(pack) pack.Name.ToLower = match.Groups(1).Value.ToLower)
+                Dim pack = Package.Items.Values.FirstOrDefault(
+                    Function(pack2) pack2.Name.ToLower = match.Groups(1).Value.ToLower)
 
-                Dim path = package?.Path
+                Dim path = pack?.Path
+
+                If path <> "" Then
+                    value = value.Replace(match.Value, path)
+
+                    If Not value.Contains("%") Then
+                        Return value
+                    End If
+                End If
+            Next
+        End If
+
+        If value.Contains("%app_path:") Then
+            Dim mc = Regex.Matches(value, "%app_path:(.+?)%")
+
+            For Each match As Match In mc
+                Dim pack = Package.Items.Values.FirstOrDefault(
+                    Function(pack2) pack2.Name.ToLower = match.Groups(1).Value.ToLower)
+
+                Dim path = pack?.Path
 
                 If path <> "" Then
                     value = value.Replace(match.Value, path)
@@ -602,13 +607,31 @@ Public Class Macro
 
         If value.Contains("%app_dir:") Then
             For Each match As Match In Regex.Matches(value, "%app_dir:(.+?)%")
-                Dim package = StaxRip.Package.Items.Values.FirstOrDefault(
-                    Function(pack) pack.Name.ToLower = match.Groups(1).Value.ToLower)
+                Dim pack = Package.Items.Values.FirstOrDefault(
+                    Function(pack2) pack2.Name.ToLower = match.Groups(1).Value.ToLower)
 
-                Dim path = package?.Path
+                Dim path = pack?.Path
 
                 If path <> "" Then
                     value = value.Replace(match.Value, path.Dir)
+
+                    If Not value.Contains("%") Then
+                        Return value
+                    End If
+                End If
+            Next
+        End If
+
+        If value.Contains("%app_version:") Then
+            For Each match As Match In Regex.Matches(value, "%app_version:(.+?)%")
+                Dim pack = Package.Items.Values.FirstOrDefault(
+                    Function(pack2) pack2.Name.ToLower = match.Groups(1).Value.ToLower)
+
+                Dim version = pack?.Version
+
+                If version <> "" Then
+                    value = value.Replace(match.Value, version)
+
                     If Not value.Contains("%") Then
                         Return value
                     End If
@@ -678,6 +701,7 @@ Public Class Macro
             End If
         End If
 
+        'Obsolete since 2020
         If value.Contains("%eval_ps:") Then
             If Not value.Contains("%eval_ps:<expression>%") AndAlso Not value.Contains("%eval_ps:expression%") Then
                 Dim matches = Regex.Matches(value, "%eval_ps:(.+?)%")

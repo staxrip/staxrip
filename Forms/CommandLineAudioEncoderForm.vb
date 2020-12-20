@@ -587,7 +587,7 @@ Public Class CommandLineAudioEncoderForm
                             macroList)
 
         form.Doc.WriteTable("Global Macros", "Global macros are passed to the process as environment variables.",
-                            Macro.GetTips(False, True, False))
+                            Macro.GetTips(False, True))
         form.Show()
     End Sub
 

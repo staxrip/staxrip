@@ -5,6 +5,7 @@
 - Re-include "check also for new beta version" option in settings (Dendraspis)
 - Remove links from changelog when checking for new versions (Dendraspis)
 - Fix play issue using multiple preview dialogs. (stax76, [#395](/../../issues/395))
+- New macros %video_encoder_settings% and %app_version:name% (stax76, [#367](/../../issues/367))
 
 
 2.1.5.3 Beta (2020-12-19)

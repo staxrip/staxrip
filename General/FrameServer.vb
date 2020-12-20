@@ -456,7 +456,7 @@ Public Class FrameServerHelp
             Return True
         End If
 
-        If p.VideoEncoder.GetCommandLine.ContainsEx("ffmpeg") Then
+        If p.VideoEncoder.GetCommandLine(True, True).ContainsEx("ffmpeg") Then
             Return True
         End If
     End Function
@@ -471,7 +471,7 @@ Public Class FrameServerHelp
                 Return False
             End If
 
-            If Not p.VideoEncoder.GetCommandLine.ContainsEx(Package.AviSynth.Path) Then
+            If Not p.VideoEncoder.GetCommandLine(True, True).ContainsEx(Package.AviSynth.Path) Then
                 Return True
             End If
         End If

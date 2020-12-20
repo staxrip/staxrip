@@ -109,7 +109,7 @@ Public Class Documentation
             ".. csv-table::" + BR +
             "    :header: ""Name"", ""Description""" + BR +
             "    :widths: auto" + BR2 +
-            "    " + g.ConvertToCSV(",", Macro.GetTips(False, True, False)).Right(BR).Right(BR).Replace(BR, BR + "    ")
+            "    " + g.ConvertToCSV(",", Macro.GetTips(False, True)).Right(BR).Right(BR).Replace(BR, BR + "    ")
 
         UpdateFile(Folder.Startup + "..\docs\generated\macro-table.rst", text)
     End Sub

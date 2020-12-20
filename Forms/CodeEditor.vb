@@ -180,7 +180,7 @@ Public Class CodeEditor
     Sub CodeEditor_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
-        form.Doc.WriteTable("Macros", Macro.GetTips(False, True, False))
+        form.Doc.WriteTable("Macros", Macro.GetTips(False, True))
         form.Show()
     End Sub
 

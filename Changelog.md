@@ -4,6 +4,7 @@
 
 - Re-include "check also for new beta version" option in settings (Dendraspis)
 - Remove links from changelog when checking for new versions (Dendraspis)
+- Fix play issue using multiple preview dialogs. (stax76, [#395](/../../issues/395))
 
 
 2.1.5.3 Beta (2020-12-19)

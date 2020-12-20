@@ -128,7 +128,6 @@ Public Class CodeEditor
         script.RemoveFilter("Cutting")
 
         Dim form As New PreviewForm(script)
-        form.Owner = g.MainForm
         form.Show()
     End Sub
 

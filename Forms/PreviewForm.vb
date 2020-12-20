@@ -936,13 +936,14 @@ Public Class PreviewForm
     Sub GenericMenu_Command(e As CustomMenuItemEventArgs) Handles GenericMenu.Command
         e.Handled = True
 
-        If e.Item.MethodName = "CloseDialog" Then
-            ProcessMenu(e.Item)
-        Else
-            For Each i In Instances
-                i.ProcessMenu(e.Item)
-            Next
-        End If
+        Select Case e.Item.MethodName
+            Case NameOf(CloseDialog), NameOf(PlayWithMPC), NameOf(PlayWithMpvnet)
+                ProcessMenu(e.Item)
+            Case Else
+                For Each i In Instances
+                    i.ProcessMenu(e.Item)
+                Next
+        End Select
     End Sub
 
     Sub ProcessMenu(item As CustomMenuItem)

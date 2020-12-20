@@ -3845,7 +3845,6 @@ Public Class MainForm
             End If
 
             Dim form As New PreviewForm(script)
-            form.Owner = g.MainForm
             form.Show()
         End If
     End Sub

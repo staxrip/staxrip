@@ -283,7 +283,7 @@ Public Class AV1Params
         '######################
 
         Add(New OptionParam With {.Switch = "--cpu-used", .Text = "CPU Used", .Value = 4, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Ultra Fast", "9 - Fastest"}})
-        Add(New NumParam With {.Switch = "--auto-alt-ref", .Text = "Auto Alt Ref", .Init = 1})
+        Add(New NumParam With {.Switch = "--auto-alt-ref", .Text = "Auto Alt Ref", .Init = 1, .AlwaysOn = True})
         Add(New NumParam With {.Switch = "--sharpness", .Text = "Sharpness", .Init = 0, .Config = {0, 7}})
         Add(New NumParam With {.Switch = "--static-thresh", .Text = "Static Thresh"})
         'Add(New OptionParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}})
@@ -292,7 +292,7 @@ Public Class AV1Params
         Add(New NumParam With {.Switch = "--tile-rows", .Text = "Tile Rows", .Init = 0})
         'Add(New BoolParam With {.Switch = "--enable-tpl-model", .Text = "TPL model", .Init = True, .IntegerValue = True})
         Add(New OptionParam With {.Switch = "--enable-tpl-model", .Text = "TPL model", .Value = 1, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Off", "1 - Backward source based"}})
-        Add(New OptionParam With {.Switch = "--enable-keyframe-filtering", .Text = "Keyframe Filtering", .Value = 1, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - No filter", "1 - Filter without overlay (default)", "2 - Filter with overlay"}})
+        Add(New OptionParam With {.Switch = "--enable-keyframe-filtering", .Text = "Keyframe Filtering", .Init = 1, .IntegerValue = True, .Options = {"0 - No filter", "1 - Filter without overlay (default)", "2 - Filter with overlay"}})
         Add(New NumParam With {.Switch = "--arnr-maxframes", .Text = "ARNR Max Frames", .Config = {0, 15}})
         Add(New NumParam With {.Switch = "--arnr-strength", .Text = "ARNR Filter Strength", .Config = {0, 6}})
 
@@ -302,7 +302,7 @@ Public Class AV1Params
         '######################
 
         Add(New OptionParam With {.Switch = "--tune", .Text = "Tune", .Options = {"psnr", "ssim", "vmaf_with_preprocessing", "vmaf_without_preprocessing", "vmaf", "vmaf_neg"}})
-        Add(New NumParam With {.Switch = "--cq-level", .Text = "CQ Level", .Init = 24})
+        Add(New NumParam With {.Switch = "--cq-level", .Text = "CQ Level", .Init = 24, .AlwaysOn = True})
         Add(New NumParam With {.Switch = "--max-intra-rate", .Text = "Max Intra Rate"})
         Add(New NumParam With {.Switch = "--max-inter-rate", .Text = "Max Inter Rate"})
         Add(New NumParam With {.Switch = "--gf-cbr-boost", .Text = "GF CBR Boost"})

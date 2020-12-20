@@ -2,6 +2,10 @@
 2.1.5.4 Beta (2020-12-??)
 ============
 
+- Re-include "check also for new beta version" option in settings (Dendraspis)
+- 
+
+
 2.1.5.3 Beta (2020-12-19)
 ============
 

@@ -3356,6 +3356,10 @@ Public Class MainForm
             b.Text = "Check for updates once per day"
             b.Field = NameOf(s.CheckForUpdates)
 
+            b = ui.AddBool
+            b.Text = "Include beta versions for update check"
+            b.Field = NameOf(s.CheckForUpdatesBeta)
+
             b = ui.AddBool()
             b.Text = "Show template selection when loading new files"
             b.Field = NameOf(s.ShowTemplateSelection)

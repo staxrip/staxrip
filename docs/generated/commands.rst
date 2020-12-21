@@ -33,6 +33,16 @@
     * - position <integer>
       - Position to insert new job
 
+.. option:: AddTags
+
+    Adds tags to the container (works only with mkvmerge).
+
+.. list-table::
+    :widths: auto
+
+    * - tags <string>
+      - name 1 = value 1; name 2 = value 2; etc.
+
 .. option:: CheckForUpdate
 
     Checks if a update is available.

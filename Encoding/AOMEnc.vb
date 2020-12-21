@@ -142,6 +142,7 @@ Public Class AV1Params
         .Text = "Rate Mode",
         .Options = {"VBR", "CBR", "CQ (Constrained Quality)", "Q (Constant Quality)"},
         .Values = {"VBR", "CBR", "CQ", "Q"},
+        .AlwaysOn = True,
         .Init = 3}
 
     Property TargetBitrate As New NumParam With {
@@ -156,9 +157,15 @@ Public Class AV1Params
         .Options = {"0 - Disabled", "1 - Enabled (default when WebM IO is enabled)"}}
 
     Property Custom As New StringParam With {
-        .Path = "Custom",
         .Text = "Custom",
-        .AlwaysOn = True}
+        .Quotes = QuotesMode.Never,
+        .AlwaysOn = True,
+        .InitAction = Sub(tb)
+                          tb.Edit.Expand = True
+                          tb.Edit.TextBox.Multiline = True
+                          tb.Edit.MultilineHeightFactor = 6
+                          tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+                      End Sub}
 
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -208,7 +215,7 @@ Public Class AV1Params
         Add(New BoolParam With {.Switch = "--i444", .Text = "I444"})
 
         Add(New NumParam With {.Switch = "--usage", .Text = "Usage"})
-        Add(New NumParam With {.Switch = "--threads", .Text = "Threads"})
+        Add(New NumParam With {.Switch = "--threads", .Text = "Threads", .Init = 128, .AlwaysOn = True})
         'Add(New OptionParam With {.Switch = "--profile", .Text = "Profile", .IntegerValue = True, .Options = {"Main", "High", "Professional"}})
         Add(New NumParam With {.Switch = "--profile", .Text = "Profile"})
         Add(New NumParam With {.Switch = "--width", .Text = "Width"})
@@ -285,11 +292,11 @@ Public Class AV1Params
         Add(New OptionParam With {.Switch = "--cpu-used", .Text = "CPU Used", .Value = 4, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Ultra Fast", "9 - Fastest"}})
         Add(New NumParam With {.Switch = "--auto-alt-ref", .Text = "Auto Alt Ref", .Init = 1, .AlwaysOn = True})
         Add(New NumParam With {.Switch = "--sharpness", .Text = "Sharpness", .Init = 0, .Config = {0, 7}})
-        Add(New NumParam With {.Switch = "--static-thresh", .Text = "Static Thresh"})
+        Add(New NumParam With {.Switch = "--static-thresh", .Text = "Static Thresh", .AlwaysOn = True})
         'Add(New OptionParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}})
         Add(New BoolParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .Init = True, .IntegerValue = True})
-        Add(New NumParam With {.Switch = "--tile-columns", .Text = "Tile Columns", .Init = 1})
-        Add(New NumParam With {.Switch = "--tile-rows", .Text = "Tile Rows", .Init = 0})
+        Add(New NumParam With {.Switch = "--tile-columns", .Text = "Tile Columns", .Init = 2, .AlwaysOn = True})
+        Add(New NumParam With {.Switch = "--tile-rows", .Text = "Tile Rows", .Init = 1, .AlwaysOn = True})
         'Add(New BoolParam With {.Switch = "--enable-tpl-model", .Text = "TPL model", .Init = True, .IntegerValue = True})
         Add(New OptionParam With {.Switch = "--enable-tpl-model", .Text = "TPL model", .Value = 1, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Off", "1 - Backward source based"}})
         Add(New OptionParam With {.Switch = "--enable-keyframe-filtering", .Text = "Keyframe Filtering", .Init = 1, .IntegerValue = True, .Options = {"0 - No filter", "1 - Filter without overlay (default)", "2 - Filter with overlay"}})
@@ -369,9 +376,9 @@ Public Class AV1Params
         Add(New BoolParam With {.Switch = "--use-inter-dct-only", .Text = "DCT only for INTER modes"})
         Add(New BoolParam With {.Switch = "--use-intra-default-tx-only", .Text = "Default-transform only for INTRA modes"})
         Add(New BoolParam With {.Switch = "--quant-b-adapt", .Text = "Adaptive quantize_b"})
-        Add(New OptionParam With {.Switch = "--coeff-cost-upd-freq", .Text = "Update freq for coeff costs", .IntegerValue = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
-        Add(New OptionParam With {.Switch = "--mode-cost-upd-freq", .Text = "Update freq for mode costs", .IntegerValue = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
-        Add(New OptionParam With {.Switch = "--mv-cost-upd-freq", .Text = "Update freq for mv costs", .IntegerValue = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
+        Add(New OptionParam With {.Switch = "--coeff-cost-upd-freq", .Text = "Update freq for coeff costs", .IntegerValue = True, .Init = 2, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
+        Add(New OptionParam With {.Switch = "--mode-cost-upd-freq", .Text = "Update freq for mode costs", .IntegerValue = True, .Init = 2, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
+        Add(New OptionParam With {.Switch = "--mv-cost-upd-freq", .Text = "Update freq for mv costs", .IntegerValue = True, .Init = 2, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
         Add(New BoolParam With {.Switch = "--frame-parallel", .Text = "Frame Parallel", .Init = False, .IntegerValue = True})
         Add(New BoolParam With {.Switch = "--error-resilient", .Text = "Error Resilient", .Init = False, .IntegerValue = True})
         Add(New OptionParam With {.Switch = "--aq-mode", .Text = "AQ Mode", .IntegerValue = True, .Options = {"Disabled", "Variance", "Complexity", "Cyclic Refresh"}})

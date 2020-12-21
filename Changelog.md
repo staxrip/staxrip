@@ -7,7 +7,7 @@
 - Fix issues using multiple preview dialogs. (stax76, [#395](/../../issues/395), [#401](/../../issues/401))
 - New macros %video_encoder_settings% and %app_version:name% (stax76, [#367](/../../issues/367))
 - New command `AddTags` for adding mkv tags. (stax76, [#367](/../../issues/367))
-- aomenc default params updated (Dendraspis, 44vince44, [#375](/../../issues/375))
+- aomenc default params updated and some fixes (Dendraspis, 44vince44, [#375](/../../issues/375))
 
 
 2.1.5.3 Beta (2020-12-19)

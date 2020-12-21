@@ -100,7 +100,7 @@ Public Class aomenc
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.RateMode.OptionText.EqualsAny("CQ", "Q")
+            Return Params.RateMode.ValueText.EqualsAny("CQ", "Q")
         End Get
         Set(Value As Boolean)
         End Set
@@ -147,7 +147,8 @@ Public Class AV1Params
 
     Property TargetBitrate As New NumParam With {
         .Switch = "--target-bitrate",
-        .Text = "Target Bitrate"}
+        .Text = "Target Bitrate",
+        .VisibleFunc = Function() RateMode.Value <> 2 AndAlso RateMode.Value <> 3}
 
     Property WebM As New OptionParam With {
         .Path = "Basic",
@@ -498,7 +499,7 @@ Public Class AV1Params
                 sb.Append(" --passes=2 --pass=" & pass)
         End Select
 
-        If Not RateMode.OptionText.EqualsAny("CQ", "Q") Then
+        If Not RateMode.ValueText.EqualsAny("CQ", "Q") Then
             sb.Append(" --target-bitrate=" & p.VideoBitrate)
         End If
 

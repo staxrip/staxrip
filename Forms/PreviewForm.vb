@@ -254,6 +254,8 @@ Public Class PreviewForm
     Private TrackBarGap As Integer = 1
     Private TrackBarPosition As Integer = CInt(Control.DefaultFont.Height / 4) - 1
     Private VideoSize As Size
+    Private ShowPreviewInfo As Boolean
+    Private HidePreviewButtons As Boolean
 
     Private Shared Instances As New List(Of PreviewForm)
     Private WithEvents GenericMenu As CustomMenu
@@ -277,6 +279,8 @@ Public Class PreviewForm
         GenericMenu.BuildMenu()
 
         Instances.Add(Me)
+        ShowPreviewInfo = s.ShowPreviewInfo
+        HidePreviewButtons = s.HidePreviewButtons
 
         PreviewScript = script
     End Sub
@@ -380,24 +384,6 @@ Public Class PreviewForm
         For Each i In Instances
             SetRelativePos(100)
         Next
-    End Sub
-
-    Sub Wheel(sender As Object, e As MouseEventArgs) Handles MyBase.MouseWheel
-        Dim pos = 1
-
-        If Control.ModifierKeys = Keys.Control Then pos = 10
-        If Control.ModifierKeys = Keys.Shift Then pos = 100
-        If Control.ModifierKeys = Keys.Alt Then pos = 1000
-
-        If e.Delta < 0 Then
-            pos = pos * -1
-        End If
-
-        If s.ReverseVideoScrollDirection Then
-            pos = pos * -1
-        End If
-
-        SetRelativePos(pos)
     End Sub
 
     Function GetDrawPos(frame As Integer) As Integer
@@ -668,8 +654,8 @@ Public Class PreviewForm
 
     <Command("Shows/hides the buttons.")>
     Sub ShowHideButtons()
-        s.HidePreviewButtons = Not s.HidePreviewButtons
-        ShowButtons(Not s.HidePreviewButtons)
+        HidePreviewButtons = Not HidePreviewButtons
+        ShowButtons(Not HidePreviewButtons)
         AfterPositionChanged()
     End Sub
 
@@ -686,8 +672,8 @@ Public Class PreviewForm
 
     <Command("Shows/hides various infos.")>
     Sub ToggleInfos()
-        s.ShowPreviewInfo = Not s.ShowPreviewInfo
-        Renderer.ShowInfo = s.ShowPreviewInfo
+        ShowPreviewInfo = Not ShowPreviewInfo
+        Renderer.ShowInfo = ShowPreviewInfo
         Renderer.Draw()
     End Sub
 
@@ -1054,10 +1040,40 @@ Public Class PreviewForm
         Height = clientHeight + bordersHeight
     End Sub
 
+    Protected Overrides Sub OnMouseWheel(e As MouseEventArgs)
+        MyBase.OnMouseWheel(e)
+
+        Dim pos = 1
+
+        If Control.ModifierKeys = Keys.Control Then pos = 10
+        If Control.ModifierKeys = Keys.Shift Then pos = 100
+        If Control.ModifierKeys = Keys.Alt Then pos = 1000
+
+        If e.Delta < 0 Then
+            pos = pos * -1
+        End If
+
+        If s.ReverseVideoScrollDirection Then
+            pos = pos * -1
+        End If
+
+        SetRelativePos(pos)
+    End Sub
+
+    Protected Overrides Sub OnMouseClick(e As MouseEventArgs)
+        MyBase.OnMouseClick(e)
+
+        If Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
+            Close()
+        End If
+    End Sub
+
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
         MyBase.OnFormClosing(args)
         Instances.Remove(Me)
         g.UpdateTrim(p.Script)
+        s.ShowPreviewInfo = ShowPreviewInfo
+        s.HidePreviewButtons = HidePreviewButtons
         s.LastPosition = Renderer.Position
         p.CutFrameCount = FrameServer.Info.FrameCount
         p.CutFrameRate = FrameServer.FrameRate
@@ -1143,12 +1159,6 @@ Public Class PreviewForm
         Dim p2 = PointToScreen(e.Location)
 
         If Math.Abs(p1.X - p2.X) <10 AndAlso Math.Abs(p1.Y - p2.Y) <10 Then
-            Close()
-        End If
-    End Sub
-
-    Sub PreviewForm_MouseClick(sender As Object, e As MouseEventArgs) Handles Me.MouseClick
-        If Width - e.Location.X < 10 AndAlso e.Location.Y < 10 Then
             Close()
         End If
     End Sub

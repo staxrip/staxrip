@@ -1,7 +1,6 @@
 ﻿
 Imports System.ComponentModel
 Imports System.Drawing.Design
-Imports System.Management.Automation
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Text
@@ -975,5 +974,20 @@ Public Class GlobalCommands
     <Command("This command is obsolete since 2020.")>
     Sub MediaInfoShowMedia()
         ShowMediaInfoBrowse()
+    End Sub
+
+    <Command("Adds tags to the container (works only with mkvmerge).")>
+    Sub AddTags(
+        <DispName("Tags"),
+        Description("name 1 = value 1; name 2 = value 2; etc.")>
+        tags As String)
+
+        For Each i In tags.Split(";"c)
+            If i.Contains("=") Then
+                Dim left = i.Left("=").Trim
+                Dim right = i.Right("=").Trim
+                p.VideoEncoder.Muxer.Tags.Add(New StringPair(left, right))
+            End If
+        Next
     End Sub
 End Class

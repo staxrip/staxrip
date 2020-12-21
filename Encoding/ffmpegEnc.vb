@@ -67,16 +67,18 @@ Public Class ffmpegEnc
                             {"Intel H.265", "https://trac.ffmpeg.org/wiki/Hardware/QuickSync"},
                             {"AV1", "https://trac.ffmpeg.org/wiki/Encode/AV1"}}
 
-                         form.HTMLHelp = $"<h2>ffmpeg Online Help</h2>" +
+                         Dim help = $"<h2>ffmpeg Online Help</h2>" +
                                      "<p><a href=""{Package.ffmpeg.HelpURL}"">ffmpeg Online Help</a></p>"
 
                          If helpDic.ContainsKey(codecText) Then
-                             form.HTMLHelp += $"<h2>ffmpeg {codecText} Online Help</h2>" +
-                                         $"<p><a href=""{helpDic(codecText)}"">ffmpeg {codecText} Online Help</a></p>"
+                             help += $"<h2>ffmpeg {codecText} Online Help</h2>" +
+                                     $"<p><a href=""{helpDic(codecText)}"">ffmpeg {codecText} Online Help</a></p>"
                          End If
 
-                         form.HTMLHelp += $"<h2>ffmpeg {codecText} Console Help</h2>" +
-                                     $"<pre>{HelpDocument.ConvertChars(consoleHelp) + BR}</pre>"
+                         help += $"<h2>ffmpeg {codecText} Console Help</h2>" +
+                                 $"<pre>{HelpDocument.ConvertChars(consoleHelp) + BR}</pre>"
+
+                         form.HTMLHelpFunc = Function() help
                      End Sub
 
             AddHandler form.BeforeHelp, a2

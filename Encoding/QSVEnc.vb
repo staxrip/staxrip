@@ -37,7 +37,7 @@ Public Class QSVEnc
         params1.Init(store)
 
         Using form As New CommandLineForm(params1)
-            form.HTMLHelp = $"<p><a href=""{Package.QSVEnc.HelpURL}"">QSVEnc online help</a></p>" +
+            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.QSVEnc.HelpURL}"">QSVEnc online help</a></p>" +
                 $"<p><a href=""https://github.com/staxrip/staxrip/wiki/qsvenc-bitrate-modes"">QSVEnc bitrate modes</a></p>" +
                 $"<pre>{HelpDocument.ConvertChars(Package.QSVEnc.CreateHelpfile())}</pre>"
 

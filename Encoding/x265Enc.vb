@@ -199,7 +199,7 @@ Public Class x265Enc
         newParams.ApplyTuneDefaultValues()
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelp = "<h2>x265 Help</h2>" +
+            form.HTMLHelpFunc = Function() "<h2>x265 Help</h2>" +
                 "<p>Right-clicking a option shows the local console help for the option, pressing Ctrl or Shift while right-clicking a option shows the online help for the option.</p>" +
                 "<p>Setting the Bitrate option to 0 will use the bitrate defined in the project/template in the main dialog.</p>" +
                $"<h2>x265 Online Help</h2><p><a href=""{Package.x265.HelpURL}"">x265 Online Help</a></p>" +

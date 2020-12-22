@@ -11,8 +11,6 @@ Public Class ApplicationSettings
     Public AviSynthFilterPreferences As StringPairList
     Public AviSynthMode As FrameServerMode
     Public AviSynthProfiles As List(Of FilterCategory)
-    Public CharacterLimitFolder As Integer = 100
-    Public CharacterLimitFilename As Integer = 70
     Public CheckForUpdates As Boolean
     Public CheckForUpdatesBeta As Boolean
     Public CheckForUpdatesDismissed As String

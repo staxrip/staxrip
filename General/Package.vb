@@ -2081,7 +2081,7 @@ Public Class Package
 
                 Return HelpFile.ReadAllText
             End If
-        Catch ex As Exception
+        Catch
         End Try
 
         Return ""

@@ -3460,7 +3460,7 @@ Public Class MainForm
 
             b = ui.AddBool()
             b.Text = "Enable tooltips in menus (restart required)"
-            b.Help = "If you disable this you can still right-click menu items to show the tooltip."
+            b.Help = "Tooltips can always be shown by right-clicking menu items."
             b.Field = NameOf(s.EnableTooltips)
 
             '############# Preprocessing
@@ -3541,18 +3541,6 @@ Public Class MainForm
             b = ui.AddBool
             b.Text = "Verify tool status"
             b.Field = NameOf(s.VerifyToolStatus)
-
-            n = ui.AddNum
-            n.Text = "Character limit for folders"
-            n.Help = "Character limit of source file folder paths. Windows does not have usable long path support."
-            n.Config = {50, 900, 10}
-            n.Field = NameOf(s.CharacterLimitFolder)
-
-            n = ui.AddNum
-            n.Text = "Character limit for filenames"
-            n.Help = "Windows does not have usable long path support."
-            n.Config = {20, 200, 10}
-            n.Field = NameOf(s.CharacterLimitFilename)
 
             ui.SelectLast("last settings page")
 
@@ -4256,6 +4244,7 @@ Public Class MainForm
             b.Help = "Imports VUI metadata such as HDR from the source file to the video encoder."
             b.Field = NameOf(p.ImportVUIMetadata)
 
+            'TODO: added by Revan, needs research
             b = ui.AddBool()
             b.Text = "HDR Ingest"
             b.Help = "Adds the Remaining Metadata Required to be Compliant to HDR10 or HLG Standards"

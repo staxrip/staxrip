@@ -614,7 +614,9 @@ Public Class MkvMuxer
     End Sub
 
     Sub WriteTagfile()
-        If Tags.Count = 0 Then Exit Sub
+        If Tags.Count = 0 Then
+            Exit Sub
+        End If
 
         Dim xml = <Tags>
                       <%= From tag In Tags Select

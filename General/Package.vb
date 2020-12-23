@@ -9,6 +9,7 @@ Public Class Package
 
     Property Description As String
     Property DownloadURL As String
+    Property DownloadURLs As StringPair()
     Property Exclude As String()
     Property Filename32 As String
     Property Find As Boolean = True
@@ -175,7 +176,7 @@ Public Class Package
         .Name = "MP4Box",
         .Filename = "MP4Box.exe",
         .Location = "Support\MP4Box",
-        .WebURL = "http://gpac.wp.mines-telecom.fr/",
+        .WebURL = "http://gpac.wp.mines-telecom.fr",
         .HelpURL = "http://gpac.wp.mines-telecom.fr/mp4box/mp4box-documentation",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpSwitch = "-h",
@@ -351,7 +352,7 @@ Public Class Package
         .IsIncluded = False,
         .VersionAllowAny = True,
         .Required = False,
-        .WebURL = "https://sourceforge.net/projects/mpcbe/",
+        .WebURL = "https://sourceforge.net/projects/mpcbe",
         .Description = "DirectShow based media player (GUI app).",
         .Locations = {Registry.LocalMachine.GetString("SOFTWARE\MPC-BE", "ExePath").Dir, Folder.Programs + "MPC-BE x64"}})
 
@@ -362,7 +363,7 @@ Public Class Package
         .IsIncluded = False,
         .VersionAllowAny = True,
         .Required = False,
-        .WebURL = "https://mpc-hc.org/",
+        .WebURL = "https://mpc-hc.org",
         .Description = "DirectShow based media player (GUI app).",
         .Locations = {Registry.CurrentUser.GetString("Software\MPC-HC\MPC-HC", "ExePath").Dir, Folder.Programs + "MPC-HC"}})
 
@@ -481,11 +482,14 @@ Public Class Package
         .Name = "x265",
         .Location = "Encoders\x265",
         .Filename = "x265.exe",
-        .WebURL = "https://github.com/msg7086/x265-Yuuki-Asuna",
+        .WebURL = "https://x265.com",
         .HelpURL = "http://x265.readthedocs.org",
-        .DownloadURL = "https://forum.doom9.org/showthread.php?p=1930644#post1930644",
         .HelpSwitch = "--log-level full --fullhelp",
-        .Description = "H.265 video encoding console app. Yuuki-Asuna mod built by qyot27."})
+        .Description = "H.265 video encoding console app.",
+        .DownloadURLs = {New StringPair("Patman", "https://www.mediafire.com/folder/9gxbsrup4j872/StaxRip_Universe#vkt2ckzjvt0qf"),
+                         New StringPair("qyot27", "https://forum.doom9.org/showthread.php?p=1930644#post1930644"),
+                         New StringPair("Yuuki-Asuna", "https://github.com/msg7086/x265-Yuuki-Asuna/releases"),
+                         New StringPair("LigH", "https://www.mediafire.com/?6lfp2jlygogwa")}})
 
     Shared Property SVTAV1 As Package = Add(New Package With {
         .Name = "SVT-AV1",
@@ -520,7 +524,7 @@ Public Class Package
         .Name = "mkvmerge",
         .Filename = "mkvmerge.exe",
         .Location = "Support\MKVToolNix",
-        .WebURL = "https://mkvtoolnix.download/",
+        .WebURL = "https://mkvtoolnix.download",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
         .HelpSwitch = "",
@@ -532,7 +536,7 @@ Public Class Package
         .Name = "mkvextract",
         .Filename = "mkvextract.exe",
         .Location = "Support\MKVToolNix",
-        .WebURL = "https://mkvtoolnix.download/",
+        .WebURL = "https://mkvtoolnix.download",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
         .HelpSwitch = "",
@@ -544,7 +548,7 @@ Public Class Package
         .Name = "mkvinfo",
         .Filename = "mkvinfo.exe",
         .Location = "Support\MKVToolNix",
-        .WebURL = "https://mkvtoolnix.download/",
+        .WebURL = "https://mkvtoolnix.download",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
         .HelpSwitch = "",
@@ -558,7 +562,7 @@ Public Class Package
         .Location = "Support\MKVToolNix",
         .Siblings = {"mkvextract", "mkvinfo", "mkvmerge"},
         .Exclude = {"-setup"},
-        .WebURL = "https://mkvtoolnix.download/",
+        .WebURL = "https://mkvtoolnix.download",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
         .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
         .Description = "MKV muxing/demuxing GUI app."})
@@ -575,7 +579,7 @@ Public Class Package
         .Filename = "apngopt.exe",
         .HelpFilename = "help.txt",
         .Location = "Thumbnails\PNGopt",
-        .WebURL = "https://sourceforge.net/projects/apng/files/",
+        .WebURL = "https://sourceforge.net/projects/apng/files",
         .HelpSwitch = "",
         .Description = "Opt Tools For Creating PNG"})
 
@@ -1307,7 +1311,7 @@ Public Class Package
             .Filename = "Deblock.dll",
             .Location = "Plugins\VS\Deblock",
             .Description = "Deblocking plugin using the deblocking filter of h264.",
-            .WebURL = "http://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock/",
+            .WebURL = "http://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock",
             .VSFilterNames = {"deblock.Deblock"},
             .VSFiltersFunc = Function() {New VideoFilter("Restoration", "DeBlock | DeBlock", "clip = core.deblock.Deblock(clip, quant=25, aoffset=0, boffset=0)")}})
 
@@ -2020,7 +2024,15 @@ Public Class Package
         End If
     End Sub
 
-    Public ReadOnly Property HelpFile As String
+    Function GetDownloadURL() As String
+        If DownloadURL <> "" Then
+            Return DownloadURL
+        ElseIf Not DownloadURLs Is Nothing Then
+            Return DownloadURLs(0).Value
+        End If
+    End Function
+
+    ReadOnly Property HelpFile As String
         Get
             If HelpFilename = "" AndAlso Not HelpSwitch Is Nothing Then
                 HelpFilename = Name + " Help.txt"
@@ -2030,7 +2042,7 @@ Public Class Package
         End Get
     End Property
 
-    Public ReadOnly Property URL As String
+    ReadOnly Property URL As String
         Get
             If WebURL <> "" Then
                 Return WebURL
@@ -2042,11 +2054,13 @@ Public Class Package
                 Return HelpUrlVapourSynth
             ElseIf DownloadURL <> "" Then
                 Return DownloadURL
+            ElseIf Not DownloadURLs Is Nothing Then
+                Return DownloadURLs(0).Value
             End If
         End Get
     End Property
 
-    Public ReadOnly Property HelpFileOrURL As String
+    ReadOnly Property HelpFileOrURL As String
         Get
             If HelpFilename <> "" Then
                 Return HelpFile
@@ -2060,6 +2074,8 @@ Public Class Package
                 Return WebURL
             ElseIf DownloadURL <> "" Then
                 Return DownloadURL
+            ElseIf Not DownloadURLs Is Nothing Then
+                Return DownloadURLs(0).Value
             Else
                 Return "https://github.com/staxrip/staxrip/wiki/" + Name.Replace(" ", "-")
             End If

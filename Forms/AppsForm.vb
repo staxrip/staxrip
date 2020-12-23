@@ -373,7 +373,6 @@ Public Class AppsForm
     Private Headers As New Dictionary(Of String, Label)
     Private Contents As New Dictionary(Of String, Label)
     Private SetupButton As New ButtonEx
-    Private DownloadButton As New ButtonEx
     Private ToolUpdate As ToolUpdate
 
     Sub New()
@@ -404,11 +403,6 @@ Public Class AppsForm
         SetupButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
         SetupButton.AutoSize = True
 
-        AddHandler DownloadButton.Click, Sub() g.ShellExecute(CurrentPackage.DownloadURL)
-        DownloadButton.Font = New Font("Segoe UI", 10)
-        DownloadButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
-        DownloadButton.AutoSize = True
-
         Dim titleHeaderLabel = New Label With {
             .Font = New Font(flp.Font.FontFamily, 14 * s.UIScaleFactor, FontStyle.Bold),
             .AutoSize = True
@@ -418,7 +412,6 @@ Public Class AppsForm
         flp.Controls.Add(titleHeaderLabel)
         AddSection("Status")
         flp.Controls.Add(SetupButton)
-        flp.Controls.Add(DownloadButton)
         AddSection("Location")
         AddSection("Version")
         AddSection("AviSynth Filters")
@@ -439,15 +432,12 @@ Public Class AppsForm
         SetupButton.Text = "Install " + CurrentPackage.Name
         SetupButton.Visible = Not CurrentPackage.SetupAction Is Nothing AndAlso CurrentPackage.GetStatus <> ""
 
-        DownloadButton.Text = "Download and install " + CurrentPackage.Name
-        DownloadButton.Visible = CurrentPackage.DownloadURL <> "" AndAlso CurrentPackage.GetStatus <> ""
-
         tsbExplore.Enabled = path <> ""
         tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.Path <> ""
         miLaunch.Enabled = tsbLaunch.Enabled
-        miAutoUpdate.Enabled = CurrentPackage.DownloadURL <> "" AndAlso CurrentPackage.SupportsAutoUpdate
+        tsbDownload.Enabled = CurrentPackage.DownloadURL <> "" OrElse Not CurrentPackage.DownloadURLs Is Nothing
+        miAutoUpdate.Enabled = tsbDownload.Enabled AndAlso CurrentPackage.SupportsAutoUpdate
         tsbWebsite.Enabled = CurrentPackage.URL <> ""
-        tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
 
         tsbVersion.Enabled = CurrentPackage.Path.FileExists AndAlso
             Not (CurrentPackage.IsVersionOld() AndAlso Not CurrentPackage.VersionAllowOld)
@@ -688,7 +678,21 @@ Public Class AppsForm
     End Sub
 
     Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
-        g.ShellExecute(CurrentPackage.DownloadURL)
+        If CurrentPackage.DownloadURL <> "" Then
+            g.ShellExecute(CurrentPackage.DownloadURL)
+        ElseIf Not CurrentPackage.DownloadURLs Is Nothing Then
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "Choose a download option."
+
+                For Each pair In CurrentPackage.DownloadURLs
+                    td.AddCommand(pair.Name, pair.Value)
+                Next
+
+                If td.Show <> "" Then
+                    g.ShellExecute(td.SelectedValue)
+                End If
+            End Using
+        End If
     End Sub
 
     Sub tsbVersion_Click(sender As Object, e As EventArgs) Handles tsbVersion.Click
@@ -940,7 +944,13 @@ Public Class AppsForm
     End Sub
 
     Sub miAutoUpdate_Click(sender As Object, e As EventArgs) Handles miAutoUpdate.Click
-        If CurrentPackage.DownloadURL.ContainsEx("mediafire") Then
+        Dim url = CurrentPackage.GetDownloadURL
+
+        If url = "" Then
+            Exit Sub
+        End If
+
+        If url.Contains("mediafire") Then
             MsgError("The auto update feature does currently not support MediaFire.")
             Exit Sub
         End If

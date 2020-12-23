@@ -101,7 +101,7 @@ Tools
     "YFRC","AviSynth Script","YFRC.avsi","2015-10-01","2019-01-01"
     "Zs_RF_Shared","AviSynth Script","Zs_RF_Shared.avsi","1.127","2020-05-31"
     "7zip","Console App","7za.exe","19.0","2019-02-21"
-    "aomenc","Console App","aomenc.exe","2.0.0-1117-g7ddc21b28","2020-12-19"
+    "aomenc","Console App","aomenc.exe","2.0.1-1118-gbe4ee75fd-gcc10.2.0 Patman","2020-12-22"
     "AutoCrop","Console App","AutoCrop.exe","2.0.0.0","2020-08-02"
     "avs2pipemod","Console App","avs2pipemod64.exe","1.1.1","2016-08-14"
     "AVSMeter","Console App","AVSMeter64.exe","3.0.7.0","2020-11-16"
@@ -125,7 +125,7 @@ Tools
     "VCEEnc","Console App","VCEEncC64.exe","6.07","2020-11-23"
     "vspipe","Console App","vspipe.exe","r52","2020-08-20"
     "x264","Console App","x264.exe","M-0.161.3018-0417-64-10.2.0","2020-09-06"
-    "x265","Console App","x265.exe","3.4+53-ge4afbd100 2020-11-02 Yuuki-Asuna/qyot27","2020-11-02"
+    "x265","Console App","x265.exe","x265 3.4+53-ge4afbd100 2020-11-02 Yuuki-Asuna/qyot27","2020-11-02"
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
     "chapterEditor","GUI App","chapterEditor.exe","1.25","2020-10-04"
@@ -288,7 +288,7 @@ mkvextract
 
 MKV demuxing tool.
 
-https://mkvtoolnix.download/
+https://mkvtoolnix.download
 
 
 mkvinfo
@@ -296,7 +296,7 @@ mkvinfo
 
 MKV info tool.
 
-https://mkvtoolnix.download/
+https://mkvtoolnix.download
 
 
 mkvmerge
@@ -304,7 +304,7 @@ mkvmerge
 
 MKV muxing tool.
 
-https://mkvtoolnix.download/
+https://mkvtoolnix.download
 
 
 MP4Box
@@ -312,7 +312,7 @@ MP4Box
 
 MP4Box is a MP4 muxing and demuxing console app.
 
-http://gpac.wp.mines-telecom.fr/
+http://gpac.wp.mines-telecom.fr
 
 
 mtn
@@ -344,7 +344,7 @@ PNGopt
 
 Opt Tools For Creating PNG
 
-https://sourceforge.net/projects/apng/files/
+https://sourceforge.net/projects/apng/files
 
 
 Python
@@ -414,9 +414,9 @@ http://www.videolan.org/developers/x264.html
 x265
 ~~~~
 
-H.265 video encoding console app. Yuuki-Asuna mod built by qyot27.
+H.265 video encoding console app.
 
-https://github.com/msg7086/x265-Yuuki-Asuna
+https://x265.com
 
 
 xvid_encraw
@@ -474,7 +474,7 @@ MKVToolnix GUI
 
 MKV muxing/demuxing GUI app.
 
-https://mkvtoolnix.download/
+https://mkvtoolnix.download
 
 
 MPC-BE
@@ -482,7 +482,7 @@ MPC-BE
 
 DirectShow based media player (GUI app).
 
-https://sourceforge.net/projects/mpcbe/
+https://sourceforge.net/projects/mpcbe
 
 
 MPC-HC
@@ -490,7 +490,7 @@ MPC-HC
 
 DirectShow based media player (GUI app).
 
-https://mpc-hc.org/
+https://mpc-hc.org
 
 
 mpv.net
@@ -1560,7 +1560,7 @@ Deblocking plugin using the deblocking filter of h264.
 
 Filters: deblock.Deblock
 
-http://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock/
+http://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock
 
 
 DeblockPP7

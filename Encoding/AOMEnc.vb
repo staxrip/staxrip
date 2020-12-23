@@ -54,6 +54,7 @@ Public Class aomenc
         Using proc As New Proc
             proc.Header = passName
             proc.Package = Package.aomenc
+            proc.FrameCount = p.Script.GetFrameCount
             proc.SkipString = "[ETA"
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + commandLine + """"
@@ -141,7 +142,7 @@ Public Class AV1Params
         .Switch = "--end-usage",
         .Text = "Rate Mode",
         .Options = {"VBR", "CBR", "CQ (Constrained Quality)", "Q (Constant Quality)"},
-        .Values = {"VBR", "CBR", "CQ", "Q"},
+        .Values = {"vbr", "cbr", "cq", "q"},
         .AlwaysOn = True,
         .Init = 3}
 

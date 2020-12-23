@@ -196,28 +196,9 @@ Public Class ToolUpdate
 
     Sub EditVersion()
         Dim msg = "What's the name of the new version?" + BR2 + DownloadFile.FileName
-        Dim value As String
-        Dim base = DownloadFile.Base
 
-        For Each i In {"_x64", "_x86", "-64-bit-", "-32-bit-"}
-            If base.Contains(i) Then
-                base = base.Replace(i, "")
-            End If
-        Next
-
-        For Each i In base
-            If "0123456789.-_".Contains(i) Then
-                value += i
-            End If
-        Next
-
-        If value Is Nothing Then
-            value = "???"
-        End If
-
-        value = value.Replace("_", " ")
         UpdatePackageDialog()
-        Dim input = InputBox.Show(msg, "StaxRip", value.Trim)
+        Dim input = InputBox.Show(msg, "StaxRip", DownloadFile.Base)
 
         If input <> "" Then
             Package.SetVersion(input.Replace(";", "_").Trim)

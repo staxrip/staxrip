@@ -972,6 +972,7 @@ Public Class AppsForm
     Sub UpdateUI() Implements IUpdateUI.UpdateUI
         ShowActivePackage()
         Refresh()
+        Application.DoEvents()
     End Sub
 
     Sub miHelp_Click(sender As Object, e As EventArgs) Handles miHelp.Click

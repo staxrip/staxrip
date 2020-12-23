@@ -486,10 +486,8 @@ Public Class Package
         .HelpURL = "http://x265.readthedocs.org",
         .HelpSwitch = "--log-level full --fullhelp",
         .Description = "H.265 video encoding console app.",
-        .DownloadURLs = {New StringPair("Patman", "https://www.mediafire.com/folder/9gxbsrup4j872/StaxRip_Universe#vkt2ckzjvt0qf"),
-                         New StringPair("qyot27", "https://forum.doom9.org/showthread.php?p=1930644#post1930644"),
-                         New StringPair("Yuuki-Asuna", "https://github.com/msg7086/x265-Yuuki-Asuna/releases"),
-                         New StringPair("LigH", "https://www.mediafire.com/?6lfp2jlygogwa")}})
+        .DownloadURLs = {New StringPair("Patman MediaFire Folder", "https://www.mediafire.com/folder/9gxbsrup4j872/StaxRip_Universe#vkt2ckzjvt0qf"),
+                         New StringPair("Full list of available builds", "https://github.com/staxrip/staxrip/wiki/x265")}})
 
     Shared Property SVTAV1 As Package = Add(New Package With {
         .Name = "SVT-AV1",
@@ -2005,7 +2003,7 @@ Public Class Package
 
         If count > 1 Then
             Using dialog As New TaskDialog(Of String)
-                dialog.MainInstruction = "Choose option"
+                dialog.MainInstruction = "Choose a help option"
 
                 For Each pair In dic
                     If pair.Value <> "" Then

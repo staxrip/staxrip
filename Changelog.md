@@ -8,7 +8,8 @@
 - New macros %video_encoder_settings% and %app_version:name% (stax76, [#367](/../../issues/367))
 - New command `AddTags` for adding mkv tags. (stax76, [#367](/../../issues/367))
 - aomenc default params updated and some fixes (Dendraspis, 44vince44, [#375](/../../issues/375))
-- A tool can now have multiple download URLs, x265 has now 4 download URLs. (stax76, [#400](/../../issues/400))
+- A tool can now have multiple download URLs. (stax76, [#400](/../../issues/400))
+- Apps dialog links to a new [x265 wiki page](https://github.com/staxrip/staxrip/wiki/x265). (stax76, [#400](/../../issues/400))
 
 
 2.1.5.3 Beta (2020-12-19)

@@ -101,7 +101,7 @@ Tools
     "YFRC","AviSynth Script","YFRC.avsi","2015-10-01","2019-01-01"
     "Zs_RF_Shared","AviSynth Script","Zs_RF_Shared.avsi","1.127","2020-05-31"
     "7zip","Console App","7za.exe","19.0","2019-02-21"
-    "aomenc","Console App","aomenc.exe","2.0.1-1118-gbe4ee75fd-gcc10.2.0 Patman","2020-12-22"
+    "aomenc","Console App","aomenc.exe","2.0.0-1124-g07a479f75 Marco Sousa","2020-12-23"
     "AutoCrop","Console App","AutoCrop.exe","2.0.0.0","2020-08-02"
     "avs2pipemod","Console App","avs2pipemod64.exe","1.1.1","2016-08-14"
     "AVSMeter","Console App","AVSMeter64.exe","3.0.7.0","2020-11-16"

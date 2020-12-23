@@ -514,9 +514,10 @@ Public Class Package
         .Location = "Encoders\aomenc",
         .Description = "AV1 video encoder console app.",
         .WebURL = "https://aomedia.org",
-        .DownloadURL = "https://ci.appveyor.com/project/marcomsousa/build-aom/build/artifacts",
         .RequiredFunc = Function() TypeOf p.VideoEncoder Is aomenc,
-        .HelpSwitch = "--help"})
+        .HelpSwitch = "--help",
+        .DownloadURLs = {New StringPair("Patman MediaFire Folder", "https://www.mediafire.com/folder/9gxbsrup4j872/StaxRip_Universe#vkt2ckzjvt0qf"),
+                         New StringPair("Marco Sousa appveyor auto build", "https://ci.appveyor.com/project/marcomsousa/build-aom/build/artifacts")}})
 
     Shared Property mkvmerge As Package = Add(New Package With {
         .Name = "mkvmerge",

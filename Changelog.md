@@ -10,7 +10,6 @@
 - aomenc default params updated and some fixes (Dendraspis, 44vince44, [#375](/../../issues/375))
 - A tool can now have multiple download URLs. (stax76, [#400](/../../issues/400))
 - Apps dialog links to a new [x265 wiki page](https://github.com/staxrip/staxrip/wiki/x265). (stax76, [#400](/../../issues/400))
-- aomenc 2.0.1-1118-gbe4ee75fd-gcc10.2.0 Patman
 
 
 2.1.5.3 Beta (2020-12-19)

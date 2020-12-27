@@ -486,8 +486,7 @@ Public Class Package
         .HelpURL = "http://x265.readthedocs.org",
         .HelpSwitch = "--log-level full --fullhelp",
         .Description = "H.265 video encoding console app.",
-        .DownloadURLs = {New StringPair("Patman MediaFire Folder", "https://www.mediafire.com/folder/9gxbsrup4j872/StaxRip_Universe#vkt2ckzjvt0qf"),
-                         New StringPair("Full list of available builds", "https://github.com/staxrip/staxrip/wiki/x265")}})
+        .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x265#x265-builds"})
 
     Shared Property SVTAV1 As Package = Add(New Package With {
         .Name = "SVT-AV1",

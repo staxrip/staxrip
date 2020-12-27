@@ -303,7 +303,7 @@ Public Class Audio
         args += " -simple -progressnumbers"
 
         Using proc As New Proc
-            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & ap.GetTrackIndex
+            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & (ap.GetTrackIndex + 1)
             proc.Package = Package.eac3to
             proc.Arguments = args
             proc.TrimChars = {"-"c, " "c}
@@ -371,7 +371,7 @@ Public Class Audio
         args += " " + outPath.Escape
 
         Using proc As New Proc
-            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & ap.GetTrackIndex
+            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & (ap.GetTrackIndex + 1)
             proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
@@ -620,7 +620,7 @@ Public Class Audio
         Dim args = $"-f lavfi -i color=c=black:s=16x16:d={d}:r={r} -y -hide_banner -c:v copy " + aviPath.Escape
 
         Using proc As New Proc
-            proc.Header = "Create avi file for audio cutting"
+            proc.Header = "Create avi file for audio cutting " & (ap.GetTrackIndex + 1)
             proc.SkipStrings = {"frame=", "size="}
             proc.WriteLog("mkvmerge cannot cut audio without video so a avi file has to be created" + BR2)
             proc.Encoding = Encoding.UTF8
@@ -642,7 +642,7 @@ Public Class Audio
         args2 += " --ui-language en"
 
         Using proc As New Proc
-            proc.Header = "Cut audio"
+            proc.Header = "Cut Audio " & (ap.GetTrackIndex + 1)
             proc.SkipString = "Progress: "
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.mkvmerge
@@ -658,7 +658,8 @@ Public Class Audio
             Dim streams = MediaInfo.GetAudioStreams(mkvPath)
 
             If streams.Count > 0 Then
-                mkvDemuxer.Demux(mkvPath, {streams(0)}, Nothing, ap, p, False, False, True, "Demux cutted MKV", False)
+                mkvDemuxer.Demux(mkvPath, {streams(0)}, Nothing, ap, p, False, False, True,
+                    "Demux cutted MKV " & (ap.GetTrackIndex + 1), False)
             Else
                 fail = True
             End If

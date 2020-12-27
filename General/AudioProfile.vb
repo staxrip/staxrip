@@ -745,7 +745,7 @@ Public Class GUIAudioProfile
             Dim cl = GetCommandLine(True)
 
             Using proc As New Proc
-                proc.Header = "Audio Encoding " & GetTrackIndex()
+                proc.Header = "Audio Encoding " & (GetTrackIndex() + 1)
 
                 If cl.Contains("|") Then
                     proc.File = "cmd.exe"
@@ -825,7 +825,7 @@ Public Class GUIAudioProfile
         args += " -f null NUL"
 
         Using proc As New Proc
-            proc.Header = "Find Gain " & GetTrackIndex()
+            proc.Header = "Find Gain " & (GetTrackIndex() + 1)
             proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg

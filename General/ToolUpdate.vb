@@ -91,8 +91,6 @@ Public Class ToolUpdate
             End If
         End Using
 
-        FileHelp.Delete(DownloadFile, FileIO.RecycleOption.SendToRecycleBin)
-
         If Not File.Exists(ExtractDir + Package.Filename) Then
             Dim subDirs As New List(Of String)
 

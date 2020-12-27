@@ -1,6 +1,9 @@
 
-2.1.5.4 Beta (2020-12-??)
-============
+2.1.5.5 Beta (2020-12-??)
+=========================
+
+2.1.5.4 Beta (2020-12-27)
+=========================
 
 - Re-include "check also for new beta version" option in settings (Dendraspis)
 - Remove links from changelog when checking for new versions (Dendraspis)
@@ -10,10 +13,13 @@
 - aomenc default params updated and some fixes (Dendraspis, 44vince44, [#375](/../../issues/375))
 - A tool can now have multiple download URLs. (stax76, [#400](/../../issues/400))
 - Apps dialog links to a new [x265 wiki page](https://github.com/staxrip/staxrip/wiki/x265). (stax76, [#400](/../../issues/400))
+- aomenc 2.0.1-1118-gbe4ee75fd-x64-msvc1929 Patman
+- ffmpeg N-100448-gab6a56773f-x64-gcc10.2.0 Patman
+- mp4box 1.1.0-DEV-rev384-gf9e004333-x64-gcc10.2.0 Patman
 
 
 2.1.5.3 Beta (2020-12-19)
-============
+=========================
 
 - Stop saving empty log files (Dendraspis)
 - aomenc options reorganized, restructured and refreshed (Dendraspis, Neltulz, [#375](/../../issues/375))
@@ -34,7 +40,7 @@
 
 
 2.1.5.2 Beta (2020-12-15)
-============
+=========================
 
 - StaxRip authors in about page updated. (stax76)
 - Fix progress bar not working for rav1e encoder. (stax76)
@@ -61,7 +67,7 @@
 
 
 2.1.5.1 Beta (2020-12-15)
-============
+=========================
 
 - Job processing issue fix (stax76, 44vince44, [#381](/../../issues/381))
 - Audio filename collision fix (stax76, Dendraspis, 44vince44, [#386](/../../issues/386), [#380](/../../issues/380), [#297](/../../issues/297))
@@ -78,7 +84,7 @@
 
 
 2.1.4.9 Beta (2020-12-13)
-============
+=========================
 
 - Set the current directory of the StaxRip process to the working.
   directory of the current project. (stax76, 44vince44, [#388](/../../issues/388))

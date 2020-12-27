@@ -405,7 +405,7 @@ Public Class MP4Muxer
 
     Overrides Sub Mux()
         Using proc As New Proc
-            proc.Header = "Muxing"
+            proc.Header = "Muxing to MP4"
             proc.SkipString = "|"
             proc.Package = Package.MP4Box
             proc.Arguments = GetArgs()
@@ -597,7 +597,7 @@ Public Class MkvMuxer
         WriteTagfile()
 
         Using proc As New Proc
-            proc.Header = "Muxing"
+            proc.Header = "Muxing to MKV"
             proc.SkipStrings = {"Progress: ", "+-> Pre-parsing"}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.mkvmerge

@@ -47,7 +47,7 @@ Public Class JobManager
         While True
             Try
                 Using stream As New FileStream(Folder.Settings + "Jobs.dat",
-                    FileMode.Create, FileAccess.ReadWrite, FileShare.None)
+                    FileMode.Create, FileAccess.Write, FileShare.None)
 
                     formatter.Serialize(stream, jobs)
                 End Using
@@ -124,7 +124,7 @@ Public Class JobManager
             While True
                 Try
                     Using stream As New FileStream(
-                        jobsPath, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
+                        jobsPath, FileMode.Open, FileAccess.Read, FileShare.None)
 
                         Try
                             Return DirectCast(formatter.Deserialize(stream), List(Of Job))

@@ -47,6 +47,7 @@ Public Class AppsForm
     Friend WithEvents miLaunch As MenuItemEx
     Friend WithEvents miHelp As MenuItemEx
     Friend WithEvents miCopyPath As MenuItemEx
+    Friend WithEvents miPATHEnvVar As MenuItemEx
     Friend WithEvents tsbExplore As System.Windows.Forms.ToolStripButton
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AppsForm))
@@ -61,6 +62,8 @@ Public Class AppsForm
         Me.miEditPath = New StaxRip.UI.MenuItemEx()
         Me.miClearPaths = New StaxRip.UI.MenuItemEx()
         Me.miFindPath = New StaxRip.UI.MenuItemEx()
+        Me.miCopyPath = New StaxRip.UI.MenuItemEx()
+        Me.miPATHEnvVar = New StaxRip.UI.MenuItemEx()
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
         Me.miEditVersion = New StaxRip.UI.MenuItemEx()
         Me.miEditChangelog = New StaxRip.UI.MenuItemEx()
@@ -76,7 +79,6 @@ Public Class AppsForm
         Me.flp = New System.Windows.Forms.FlowLayoutPanel()
         Me.SearchTextBox = New StaxRip.SearchTextBox()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.miCopyPath = New MenuItemEx()
         Me.ToolStrip.SuspendLayout()
         Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
@@ -92,7 +94,7 @@ Public Class AppsForm
         Me.tv.FullRowSelect = True
         Me.tv.HideSelection = False
         Me.tv.Location = New System.Drawing.Point(10, 101)
-        Me.tv.Margin = New System.Windows.Forms.Padding(10, 10, 10, 10)
+        Me.tv.Margin = New System.Windows.Forms.Padding(10)
         Me.tv.Name = "tv"
         Me.tv.Scrollable = False
         Me.tv.SelectOnMouseDown = True
@@ -167,7 +169,7 @@ Public Class AppsForm
         '
         Me.ddbTools.AutoToolTip = False
         Me.ddbTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miEditPath, Me.miClearPaths, Me.miFindPath, Me.miCopyPath, Me.ToolStripMenuItem1, Me.miEditVersion, Me.miEditChangelog, Me.miShowGrid, Me.miStatus, Me.miAutoUpdate, Me.miDownload, Me.miWebsite, Me.miExplore, Me.miLaunch, Me.miHelp})
+        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miEditPath, Me.miClearPaths, Me.miFindPath, Me.miCopyPath, Me.miPATHEnvVar, Me.ToolStripMenuItem1, Me.miEditVersion, Me.miEditChangelog, Me.miShowGrid, Me.miStatus, Me.miAutoUpdate, Me.miDownload, Me.miWebsite, Me.miExplore, Me.miLaunch, Me.miHelp})
         Me.ddbTools.Image = CType(resources.GetObject("ddbTools.Image"), System.Drawing.Image)
         Me.ddbTools.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ddbTools.Name = "ddbTools"
@@ -201,6 +203,20 @@ Public Class AppsForm
         Me.miFindPath.Size = New System.Drawing.Size(546, 67)
         Me.miFindPath.Text = "Find Path..."
         Me.miFindPath.ToolTipText = "Find path using voidtools Everything"
+        '
+        'miCopyPath
+        '
+        Me.miCopyPath.Help = Nothing
+        Me.miCopyPath.Name = "miCopyPath"
+        Me.miCopyPath.Size = New System.Drawing.Size(546, 67)
+        Me.miCopyPath.Text = "Copy Path"
+        '
+        'miPATHEnvVar
+        '
+        Me.miPATHEnvVar.Help = Nothing
+        Me.miPATHEnvVar.Name = "miPATHEnvVar"
+        Me.miPATHEnvVar.Size = New System.Drawing.Size(546, 67)
+        Me.miPATHEnvVar.Text = "PATH Env Var..."
         '
         'ToolStripMenuItem1
         '
@@ -347,12 +363,6 @@ Public Class AppsForm
         Me.tlpMain.Size = New System.Drawing.Size(1894, 1044)
         Me.tlpMain.TabIndex = 6
         '
-        'miCopyPath
-        '
-        Me.miCopyPath.Name = "miCopyPath"
-        Me.miCopyPath.Size = New System.Drawing.Size(546, 66)
-        Me.miCopyPath.Text = "Copy Path"
-        '
         'AppsForm
         '
         Me.AllowDrop = True
@@ -363,7 +373,7 @@ Public Class AppsForm
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.HelpButton = False
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(10, 10, 10, 10)
+        Me.Margin = New System.Windows.Forms.Padding(10)
         Me.Name = "AppsForm"
         Me.Text = "Apps"
         Me.ToolStrip.ResumeLayout(False)
@@ -1011,5 +1021,36 @@ Public Class AppsForm
     Sub miCopyPath_Click(sender As Object, e As EventArgs) Handles miCopyPath.Click
         Clipboard.SetText(CurrentPackage.Path)
         MsgInfo("The path was copied to the clipboard.")
+    End Sub
+
+    Sub miPATHEnvVar_Click(sender As Object, e As EventArgs) Handles miPATHEnvVar.Click
+        Dim dir = CurrentPackage.Directory.TrimTrailingSeparator
+        Dim path = Environment.GetEnvironmentVariable("path", EnvironmentVariableTarget.User)
+
+        Using td As New TaskDialog(Of String)
+            td.MainInstruction = "Modify the user PATH environment variable"
+            td.AddCommand("Add", $"Add {CurrentPackage.Name} to user PATH environment variable", "add")
+            td.AddCommand("Remove", $"Remove {CurrentPackage.Name} from user PATH environment variable", "remove")
+            td.AddCommand("Editor", "Show environment variable editor", "edit")
+
+            Select Case td.Show
+                Case "add"
+                    If path.Contains(dir + ";"c) Then
+                        MsgError("Folder is already in PATH")
+                    Else
+                        Environment.SetEnvironmentVariable("path", path + ";" + dir, EnvironmentVariableTarget.User)
+                        MsgInfo("Folder was added to PATH")
+                    End If
+                Case "remove"
+                    If path.Contains(dir + ";"c) Then
+                        Environment.SetEnvironmentVariable("path", path.Replace(dir + ";", ""), EnvironmentVariableTarget.User)
+                        MsgInfo("Folder was removed from PATH")
+                    Else
+                        MsgError("Folder is not in PATH")
+                    End If
+                Case "edit"
+                    g.Execute("rundll32.exe", "sysdm.cpl,EditEnvironmentVariables")
+            End Select
+        End Using
     End Sub
 End Class

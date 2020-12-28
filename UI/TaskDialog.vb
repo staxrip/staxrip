@@ -245,9 +245,7 @@ Public Class TaskDialog(Of T)
         Config.dwFlags = Config.dwFlags Or Flags.TDF_USE_COMMAND_LINKS
     End Sub
 
-    Sub AddCommand(text As String, description As String, value As T,
-                   Optional setShield As Boolean = False)
-
+    Sub AddCommand(text As String, description As String, value As T, Optional setShield As Boolean = False)
         Dim id = 1000 + IdValueDic.Count + 1
         IdValueDic(id) = value
 
@@ -256,7 +254,7 @@ Public Class TaskDialog(Of T)
         End If
 
         If description <> "" Then
-            text = text + BR + description
+            text = text + Microsoft.VisualBasic.vbLf + description
         End If
 
         Buttons.Add(New TASKDIALOG_BUTTON(id, text))

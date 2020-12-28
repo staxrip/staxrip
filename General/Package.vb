@@ -88,6 +88,7 @@ Public Class Package
         .Name = "ffmpeg",
         .Filename = "ffmpeg.exe",
         .Location = "Encoders\ffmpeg",
+        .Keep = {"AviSynth.dll"},
         .WebURL = "http://ffmpeg.org",
         .HelpURL = "http://www.ffmpeg.org/documentation.html",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
@@ -487,6 +488,7 @@ Public Class Package
         .Filename = "x264.exe",
         .Location = "Encoders\x264",
         .Description = "H.264 video encoding console app. Patman mod supports vpy input and shows the estimated size in the status line.",
+        .Keep = {"AviSynth.dll"},
         .WebURL = "http://www.videolan.org/developers/x264.html",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
@@ -498,6 +500,7 @@ Public Class Package
         .Filename = "x265.exe",
         .WebURL = "https://x265.com",
         .HelpURL = "http://x265.readthedocs.org",
+        .Keep = {"AviSynth.dll"},
         .HelpSwitch = "--log-level full --fullhelp",
         .Description = "H.265 video encoding console app.",
         .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x265#x265-builds"})
@@ -623,6 +626,7 @@ Public Class Package
         .Filename32 = "VCEEncC.exe",
         .Location = "Encoders\VCEEnc",
         .Description = "AMD hardware video encoder.",
+        .Keep = {"AviSynth.dll"},
         .HelpSwitch = "-h",
         .WebURL = "http://github.com/rigaya/VCEEnc",
         .DownloadURL = "https://github.com/rigaya/VCEEnc/releases"})

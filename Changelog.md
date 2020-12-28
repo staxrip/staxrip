@@ -2,6 +2,7 @@
 2.1.5.5 Beta (2020-12-??)
 =========================
 
+- Multiple AviSynth.dlls were included due to bug in release script. (stax76, 44vince44 [#407](/../../issues/407))
 - Apple QuickTime library removed.
 - mpv.net 5.4.8.6
 

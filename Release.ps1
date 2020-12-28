@@ -93,11 +93,9 @@ if (Test-Path $targetDir32)
 }
 
 Copy-Item ($PSScriptRoot + '\bin') $targetDir -Recurse
-Get-ChildItem $targetDir AviSynth.dll -Recurse | where Length -eq 0 | Remove-Item
 
 if ($output32bit) {
     Copy-Item ($PSScriptRoot + '\bin-x86') $targetDir32 -Recurse
-    Get-ChildItem $targetDir32 AviSynth.dll -Recurse | where Length -eq 0 | Remove-Item
 }
 
 $patterns = @(
@@ -109,6 +107,7 @@ $patterns = @(
     '*\Debug.log',
     '*\DGIndex.ini',
     '*\eac3to\log.txt',
+    '*\ffmpeg\AviSynth.dll',
     '*\FrameServer.exp',
     '*\FrameServer.ilk',
     '*\FrameServer.lib',
@@ -119,6 +118,9 @@ $patterns = @(
     '*\StaxRip.vshost.exe.config',
     '*\StaxRip.vshost.exe.manifest',
     '*\StaxRip.vshost.sln',
+    '*\VCEEnc\AviSynth.dll',
+    '*\x264\AviSynth.dll',
+    '*\x265\AviSynth.dll',
     '*_pycache_*'
 )
 

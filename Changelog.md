@@ -4,6 +4,7 @@
 
 - Multiple AviSynth.dlls were included due to bug in release script. (stax76, 44vince44 [#407](/../../issues/407))
 - Apple QuickTime library removed.
+- The apps dialog has a feature to copy the path to the clipboard. (stax76)
 - mpv.net 5.4.8.6
 
 

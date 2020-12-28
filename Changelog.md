@@ -3,6 +3,7 @@
 =========================
 
 - Apple QuickTime library removed.
+- mpv.net 5.4.8.6
 
 
 2.1.5.4 Beta (2020-12-27)

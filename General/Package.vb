@@ -125,6 +125,7 @@ Public Class Package
         .DownloadURL = "https://www.microsoft.com/en-gb/p/itunes/9pb2mz1zmb1s",
         .SupportsAutoUpdate = False,
         .VersionAllowAny = True,
+        .IsIncluded = False,
         .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.qaac),
         .Description = "qaac requires this library for AAC encoding."})
 
@@ -355,6 +356,7 @@ Public Class Package
         .Filename = "mpvnet.exe",
         .Location = "Support\mpv.net",
         .WebURL = "https://github.com/stax76/mpv.net",
+        .DownloadURL = "https://github.com/stax76/mpv.net#download",
         .Description = "The worlds best media player (GUI app)."})
 
     Shared Property MpcBE As Package = Add(New Package With {

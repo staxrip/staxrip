@@ -848,14 +848,19 @@ Public Class AppsForm
                                   paths.Add(path)
                               End If
 
-                              If paths.Count > 5 Then
+                              If paths.Count > 9 Then
                                   Exit For
                               End If
                           Next
                       Catch
-                          If MsgQuestion("The Find Path feature requires the installation of the tool Everything." + BR2 +
-                                         "Open Everything website?") = DialogResult.OK Then
+                          If MsgQuestion("The Find Path feature requires the installation of a tool named voidtools Everything." + BR2 +
+                                         "Open the voidtools Everything website?") = DialogResult.OK Then
                               g.ShellExecute("https://www.voidtools.com")
+                          End If
+
+                          If MsgQuestion("Would you like to open the website of Everything.NET?",
+                                         "Everything.NET is a voidtools Everything frontend that supports dark mode.") = DialogResult.OK Then
+                              g.ShellExecute("https://github.com/stax76/Everything.NET")
                           End If
                       End Try
                   End Sub

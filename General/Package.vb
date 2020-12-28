@@ -119,6 +119,15 @@ Public Class Package
         .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.qaac),
         .Description = "Console AAC encoder using the non-free Apple AAC encoder."})
 
+    Shared Property QuickTime As Package = Add(New Package With {
+        .Name = "Apple QuickTime",
+        .Filename = "CoreAudioToolbox.dll",
+        .DownloadURL = "https://www.microsoft.com/en-gb/p/itunes/9pb2mz1zmb1s",
+        .SupportsAutoUpdate = False,
+        .VersionAllowAny = True,
+        .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.qaac),
+        .Description = "qaac requires this library for AAC encoding."})
+
     Shared Property fdkaac As Package = Add(New Package With {
         .Name = "fdkaac",
         .Filename = "fdkaac.exe",
@@ -152,6 +161,7 @@ Public Class Package
         .Name = "MediaInfo",
         .Filename = "MediaInfo.dll",
         .Location = "Support\MediaInfo.NET",
+        .SupportsAutoUpdate = False,
         .WebURL = "http://mediaarea.net/en/MediaInfo",
         .DownloadURL = "https://mediaarea.net/en/MediaInfo/Download/Windows",
         .Description = "Library to retrieve info from media files."})
@@ -162,12 +172,14 @@ Public Class Package
         .Location = "Support\MediaInfo.NET",
         .WebURL = "https://github.com/stax76/MediaInfo.NET",
         .DownloadURL = "https://github.com/stax76/MediaInfo.NET/releases",
+        .SupportsAutoUpdate = False,
         .Description = "GUI app originally built for StaxRip to show info about media files."})
 
     Shared Property GetMediaInfo As Package = Add(New Package With {
         .Name = "Get-MediaInfo",
         .Location = "Support\MediaInfo.NET",
         .Filename = "Get-MediaInfo.ps1",
+        .SupportsAutoUpdate = False,
         .Description = "Complete PowerShell MediaInfo solution used for the media info folder view.",
         .WebURL = "https://github.com/stax76/Get-MediaInfo",
         .DownloadURL = "https://github.com/stax76/Get-MediaInfo/releases"})
@@ -2166,7 +2178,7 @@ Public Class Package
 
     Function GetStatusLocation() As String
         If Path = "" Then
-            Return "App not found, use the Path menu to locate the App."
+            Return $"App not found, choose 'Tools > Edit Path' to locate {Filename}."
         End If
     End Function
 

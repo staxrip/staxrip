@@ -2,9 +2,9 @@
 name: Ask a question
 about: Ask a question about StaxRip
 title: ''
-labels: ''
+labels: question
 assignees: ''
 
 ---
 
-This template is meant for usage questions of StaxRip.
+StaxRip usage questions can be asked here in the Issues section or in the [Discussions section](https://github.com/staxrip/staxrip/discussions).

@@ -104,7 +104,7 @@ Example:
 
 
 Opening scripts externally
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------
 
 Opening AviSynth and VapourSynth scripts with external apps
 from outside of StaxRip might require adding various directories

@@ -98,19 +98,20 @@ Apps > Manage > Tools > Path Env Var
 
 Consider adding the following directories to PATH:
 
-*Apps\\FrameServer\\AviSynth*
-*Apps\\FrameServer\\VapourSynth*
+**Apps\\FrameServer\\AviSynth**
+
+**Apps\\FrameServer\\VapourSynth**
 
 Legacy apps like VirtualDub2 or MPC player are VFW based and therefore
 require AviSynth/VapourSynth being installed. For modern apps like mpv.net
 it's sufficient to add the portable AviSynth/VapourSynth folder to PATH.
 
-*Apps\\Support\\VC*
+**Apps\\Support\\VC**
 
 This is a VC++ runtime All-in-One package which many apps, libraries
 and plugins depend on.
 
-*Apps\\Support\\FFTW*
+**Apps\\Support\\FFTW**
 
 This a library which many AviSynth and VapourSynth plugins depend on.
 

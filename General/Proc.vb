@@ -441,6 +441,11 @@ Public Class Proc
         GC.SuppressFinalize(Me)
     End Sub
 
+    Sub AddToPath(folder As String)
+        Dim dic = Process.StartInfo.EnvironmentVariables
+        dic("path") = folder + ";" + dic("path")
+    End Sub
+
     Shared Sub SetEnvironmentVariables(process As Process)
         If process.StartInfo.UseShellExecute Then
             Exit Sub

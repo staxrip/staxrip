@@ -103,8 +103,8 @@ Example:
         yadifmod2()
 
 
-Opening scripts with external apps
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Opening scripts externally
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Opening AviSynth and VapourSynth scripts with external apps
 from outside of StaxRip might require adding various directories

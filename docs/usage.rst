@@ -19,33 +19,50 @@ Supported are three different demuxing modes:
 2. Only audio and subtitle streams of preferred languages are automatically demuxed.
 3. A dialog is shown where users can select which audio and subtitle streams should be demuxed.
 
-The demuxing mode can be defined in the project options under the Audio and Subtitles tab.
+The demuxing mode can be defined in the project options under
+ the Audio and Subtitles tab.
 
-When demuxing is disabled StaxRip will still find and include audio and subtitle tracks directly from the source file using a demux free mode, to prevent this the Preferred Languages option has to be cleared.
+When demuxing is disabled StaxRip will still find and include audio and
+subtitle tracks directly from the source file using a demux free mode,
+to prevent this the Preferred Languages option has to be cleared.
 
-Custom preprocessing tools for demuxing, re-muxing or indexing can be integrated and configured via command line to either execute a preprocessing tool like a demuxer directly or with a scripting tool like PowerShell or Python. When a preprocessing command line executes, all console tools are added to the path environment variable and all macros are available as environment variables. Preprocessing can be customized in the Settings dialog under Preprocessing.
+Custom preprocessing tools for demuxing, re-muxing or indexing can be
+integrated and configured via command line to either execute a preprocessing
+tool like a demuxer directly or with a scripting tool like PowerShell or Python.
+When a preprocessing command line executes, all console tools are added to the
+path environment variable and all macros are available as environment variables.
+Preprocessing can be customized in the Settings dialog under Preprocessing.
 
 
 Video Processing
 ================
 
-Video processing is supported via AviSynth and VapourSynth with AviSynth and VapourSynth being equally well supported.
+Video processing is supported via AviSynth and VapourSynth,
+both being equally well supported.
 
-The script code of AviSynth and VapourSynth can be edited directly or easily be generated via menu selection for which a profile system is available to integrate and customize custom filters and plugins.
+The script code of AviSynth and VapourSynth can be edited directly or
+easily be generated via menu selection for which a profile system is
+available to integrate and customize custom filters and plugins.
 
-With the help of a macro system script parameters can be changed with convenient GUI features like a resize slider and menu or a cropping dialog, due to the macro system the parameters can change at any time allowing much greater flexibility compared to a one dimensional and limiting one step after another approach.
+With the help of a macro system script parameters can be changed with
+convenient GUI features like a resize slider and menu or a cropping dialog,
+due to the macro system the parameters can change at any time allowing much
+greater flexibility compared to a one dimensional and limiting one step after
+another approach.
 
 
 Filter Profiles
 ---------------
 
-StaxRip includes a large set of filter plugins and filter presets for the plugins. The presets can be selected in the filter menu.
+StaxRip includes a large set of filter plugins and filter presets for the plugins.
+The presets can be selected in the filter menu.
 
 
 Custom Filter Profiles
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The filter profiles editor can be used to customize the included filter profiles and to create new custom filter profiles.
+The filter profiles editor can be used to customize the included
+filter profiles and to create new custom filter profiles.
 
 The profile editor can be found at:
 

@@ -98,27 +98,21 @@ Apps > Manage > Tools > Path Env Var
 
 Consider adding the following directories to PATH:
 
-- Apps\\FrameServer\\AviSynth
+*Apps\\FrameServer\\AviSynth*
+*Apps\\FrameServer\\VapourSynth*
 
-  Legacy apps like VirtualDub2 are VFW based and therefore
-  require AviSynth being installed. For modern apps like mpv.net
-  it's sufficient if the portalbe AviSynth folder is added to PATH.
+Legacy apps like VirtualDub2 or MPC player are VFW based and therefore
+require AviSynth/VapourSynth being installed. For modern apps like mpv.net
+it's sufficient to add the portable AviSynth/VapourSynth folder to PATH.
 
-- Apps\\FrameServer\\VapourSynth
+*Apps\\Support\\VC*
 
-  Legacy apps like VirtualDub2 are VFW based and therefore
-  require AviSynth being installed. For modern apps like mpv.net
-  it's sufficient if the portalbe AviSynth folder is added to PATH.
-  Do not prepend but append this folder.
+This is a VC++ runtime All-in-One package which many apps, libraries
+and plugins depend on.
 
-- Apps\\Support\\VC
+*Apps\\Support\\FFTW*
 
-  This is a VC++ runtime All-in-One package which many
-  apps, libraries and plugins depend on.
-
-- Apps\\Support\\FFTW
-
-  This a library which many AviSynth and VapourSynth plugins depend on.
+This a library which many AviSynth and VapourSynth plugins depend on.
 
 
 Templates

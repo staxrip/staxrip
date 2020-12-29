@@ -108,8 +108,9 @@ Opening scripts externally
 
 Opening AviSynth and VapourSynth scripts with external apps
 from outside of StaxRip might require adding various directories
-to the PATH environment variable. The Apps dialog has a feature
-that helps adding the directories:
+to the PATH environment variable.
+
+The Apps dialog has a feature that helps adding the directories:
 
 Apps > Manage > Tools > Path Env Var
 

@@ -86,6 +86,23 @@ Example:
         yadifmod2()
 
 
+Opening scripts with external apps
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Opening AviSynth and VapourSynth scripts with external apps
+from outside of StaxRip might require adding various directories
+to the PATH environment variable. The Apps dialog has a feature
+that helps adding the directories:
+
+Apps > Manage > Tools > Path Env Var
+
+- AviSynth
+
+  Legacy app like VirtualDub2 are VFW based and therefore
+  require AviSynth being installed. For modern apps it's
+  sufficient if the portalbe AviSynth folder is added to PATH.
+  
+
 Templates
 =========
 

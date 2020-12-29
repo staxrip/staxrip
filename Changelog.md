@@ -7,6 +7,7 @@
 - The apps dialog has a feature to copy the path to the clipboard. (stax76)
 - The apps dialog has a feature to edit the user PATH environment variable. (stax76 [#305](/../../issues/305))
 - mpv.net 5.4.8.6
+- aomenc bitrate UI fix (Dendraspis, 44vince44, [#375](/../../issues/375))
 
 
 2.1.5.4 Beta (2020-12-27)

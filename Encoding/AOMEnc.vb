@@ -101,7 +101,7 @@ Public Class aomenc
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.RateMode.ValueText.EqualsAny("CQ", "Q")
+            Return Params.RateMode.ValueText.EqualsAny("cq", "q")
         End Get
         Set(Value As Boolean)
         End Set
@@ -158,8 +158,8 @@ Public Class AV1Params
         .IntegerValue = True,
         .Options = {"0 - Disabled", "1 - Enabled (default when WebM IO is enabled)"}}
 
-    Property Custom As New StringParam With {
-        .Text = "Custom",
+    Property CustomFirstPass As New StringParam With {
+        .Text = "Custom 1st pass",
         .Quotes = QuotesMode.Never,
         .AlwaysOn = True,
         .InitAction = Sub(tb)
@@ -168,6 +168,18 @@ Public Class AV1Params
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
+
+    Property CustomSecondPass As New StringParam With {
+        .Text = "Custom 2nd pass",
+        .Quotes = QuotesMode.Never,
+        .AlwaysOn = True,
+        .InitAction = Sub(tb)
+                          tb.Edit.Expand = True
+                          tb.Edit.TextBox.Multiline = True
+                          tb.Edit.MultilineHeightFactor = 6
+                          tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+                      End Sub}
+
 
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -440,7 +452,8 @@ Public Class AV1Params
         AddTab("Custom")
         '######################
 
-        Add(Custom)
+        Add(CustomFirstPass)
+        Add(CustomSecondPass)
 
     End Sub
 
@@ -500,8 +513,14 @@ Public Class AV1Params
                 sb.Append(" --passes=2 --pass=" & pass)
         End Select
 
-        If Not RateMode.ValueText.EqualsAny("CQ", "Q") Then
-            sb.Append(" --target-bitrate=" & p.VideoBitrate)
+        If Not RateMode.ValueText.EqualsAny("cq", "q") Then
+            If Not IsCustom(pass, "--target-bitrate") Then
+                If TargetBitrate.Value <> 0 Then
+                    sb.Append(" --target-bitrate=" & TargetBitrate.Value)
+                Else
+                    sb.Append(" --target-bitrate=" & p.VideoBitrate)
+                End If
+            End If
         End If
 
         Dim q = From i In Items Where i.GetArgs <> ""
@@ -520,6 +539,27 @@ Public Class AV1Params
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))
     End Function
+
+    Function IsCustom(pass As Integer, switch As String) As Boolean
+        If switch = "" Then
+            Return False
+        End If
+
+        If pass = 1 Then
+            If CustomFirstPass.Value?.Contains(switch + " ") OrElse
+                CustomFirstPass.Value?.EndsWith(switch) Then
+
+                Return True
+            End If
+        Else
+            If CustomSecondPass.Value?.Contains(switch + " ") OrElse
+                CustomSecondPass.Value?.EndsWith(switch) Then
+
+                Return True
+            End If
+        End If
+    End Function
+
 
     Public Overrides Function GetPackage() As Package
         Return Package.AOMEnc

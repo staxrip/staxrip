@@ -122,6 +122,15 @@ Public Class AV1Params
         Separator = "="
     End Sub
 
+
+    Property CqLevel As New NumParam With {
+        .Path = "AV1 Specific 2",
+        .Switch = "--cq-level",
+        .Text = "CQ Level",
+        .AlwaysOn = True,
+        .Init = 24,
+        .VisibleFunc = Function() RateMode.Value = 2 OrElse RateMode.Value = 3}
+
     Property EnableRestoration As New OptionParam With {
         .Path = "AV1 Specific 1",
         .Switch = "--enable-restoration",
@@ -323,7 +332,7 @@ Public Class AV1Params
         '######################
 
         Add(New OptionParam With {.Switch = "--tune", .Text = "Tune", .Options = {"psnr", "ssim", "vmaf_with_preprocessing", "vmaf_without_preprocessing", "vmaf", "vmaf_neg"}})
-        Add(New NumParam With {.Switch = "--cq-level", .Text = "CQ Level", .Init = 24, .AlwaysOn = True})
+        Add(CqLevel)
         Add(New NumParam With {.Switch = "--max-intra-rate", .Text = "Max Intra Rate"})
         Add(New NumParam With {.Switch = "--max-inter-rate", .Text = "Max Inter Rate"})
         Add(New NumParam With {.Switch = "--gf-cbr-boost", .Text = "GF CBR Boost"})
@@ -390,9 +399,9 @@ Public Class AV1Params
         Add(New BoolParam With {.Switch = "--use-inter-dct-only", .Text = "DCT only for INTER modes"})
         Add(New BoolParam With {.Switch = "--use-intra-default-tx-only", .Text = "Default-transform only for INTRA modes"})
         Add(New BoolParam With {.Switch = "--quant-b-adapt", .Text = "Adaptive quantize_b"})
-        Add(New OptionParam With {.Switch = "--coeff-cost-upd-freq", .Text = "Update freq for coeff costs", .IntegerValue = True, .Init = 2, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
-        Add(New OptionParam With {.Switch = "--mode-cost-upd-freq", .Text = "Update freq for mode costs", .IntegerValue = True, .Init = 2, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
-        Add(New OptionParam With {.Switch = "--mv-cost-upd-freq", .Text = "Update freq for mv costs", .IntegerValue = True, .Init = 2, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
+        Add(New OptionParam With {.Switch = "--coeff-cost-upd-freq", .Text = "Update freq for coeff costs", .IntegerValue = True, .Init = 2, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
+        Add(New OptionParam With {.Switch = "--mode-cost-upd-freq", .Text = "Update freq for mode costs", .IntegerValue = True, .Init = 2, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
+        Add(New OptionParam With {.Switch = "--mv-cost-upd-freq", .Text = "Update freq for mv costs", .IntegerValue = True, .Init = 2, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}})
         Add(New BoolParam With {.Switch = "--frame-parallel", .Text = "Frame Parallel", .Init = False, .IntegerValue = True})
         Add(New BoolParam With {.Switch = "--error-resilient", .Text = "Error Resilient", .Init = False, .IntegerValue = True})
         Add(New OptionParam With {.Switch = "--aq-mode", .Text = "AQ Mode", .IntegerValue = True, .Options = {"Disabled", "Variance", "Complexity", "Cyclic Refresh"}})
@@ -513,7 +522,11 @@ Public Class AV1Params
                 sb.Append(" --passes=2 --pass=" & pass)
         End Select
 
-        If Not RateMode.ValueText.EqualsAny("cq", "q") Then
+        If RateMode.ValueText.EqualsAny("cq", "q") Then
+            If Not IsCustom(pass, "--cq-level") Then
+                sb.Append(" --cq-level=" & CqLevel.Value)
+            End If
+        Else
             If Not IsCustom(pass, "--target-bitrate") Then
                 If TargetBitrate.Value <> 0 Then
                     sb.Append(" --target-bitrate=" & TargetBitrate.Value)

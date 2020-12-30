@@ -3,6 +3,7 @@
 =========================
 
 - aomenc bugfixes and UI improvements (Dendraspis, 44vince44, [#375](/../../issues/375))
+- x265 by default no longer uses a pipe tool.
 
 
 2.1.5.5 Beta (2020-12-30)

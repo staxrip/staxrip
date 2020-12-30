@@ -358,7 +358,7 @@ Public Class CodeEditor
             End If
 
             Menu.Items.ClearAndDisplose
-            Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
+            Dim filterProfiles = If(p.Script.IsAviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
             Dim code = rtbScript.Text.FixBreak
 
             For Each i In FilterParameters.Definitions
@@ -487,7 +487,7 @@ Public Class CodeEditor
                                      End If
                                  Next
 
-                                 If p.Script.Engine = ScriptEngine.AviSynth Then
+                                 If p.Script.IsAviSynth Then
                                      Dim installDir = Registry.LocalMachine.GetString("SOFTWARE\AviSynth", Nothing)
                                      Dim helpText = rtbScript.Text.Left("(")
 

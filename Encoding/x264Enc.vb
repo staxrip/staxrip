@@ -535,7 +535,7 @@ Public Class x264Params
     Property PipingToolAVS As New OptionParam With {
         .Text = "Pipe",
         .Name = "PipingToolAVS",
-        .VisibleFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
+        .VisibleFunc = Function() p.Script.IsAviSynth,
         .Options = {"Automatic", "None", "avs2pipemod y4m", "avs2pipemod raw", "ffmpeg y4m", "ffmpeg raw"}}
 
     Property PipingToolVS As New OptionParam With {
@@ -991,13 +991,13 @@ Public Class x264Params
         ApplyValues(True)
 
         Dim args As String
-        Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS).ValueText
+        Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText
 
         If includePaths AndAlso includeExecutable Then
             Dim pipeCmd = ""
 
             If pipeTool = "automatic" Then
-                If p.Script.Engine = ScriptEngine.AviSynth Then
+                If p.Script.IsAviSynth Then
                     pipeTool = "none"
                 Else
                     pipeTool = "vspipe y4m"

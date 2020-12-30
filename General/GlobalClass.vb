@@ -434,7 +434,7 @@ Public Class GlobalClass
 
     Function VerifySource(files As IEnumerable(Of String)) As Boolean
         For Each file In files
-            If Not file.IsProcessEncodingCompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+            If Not file.IsProcessEncodingCompatible AndAlso p.Script.IsAviSynth Then
                 ShowAviSynthUnicodeError()
                 Return False
             End If

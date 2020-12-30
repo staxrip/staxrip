@@ -33,7 +33,7 @@ Public Class FiltersListView
     End Sub
 
     Sub Load()
-        If p.Script.Engine = ScriptEngine.AviSynth Then
+        If p.Script.IsAviSynth Then
             g.MainForm.lgbFilters.Text = "AVS Filters"
         Else
             g.MainForm.lgbFilters.Text = "VS Filters"
@@ -66,7 +66,7 @@ Public Class FiltersListView
 
     Sub RebuildMenu()
         Menu.Items.ClearAndDisplose
-        Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
+        Dim filterProfiles = If(p.Script.IsAviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
         Dim selectedFunc = Function() SelectedItems.Count > 0
         Menu.Add("active").VisibleFunc = selectedFunc
         Dim sep0 = New ToolStripSeparator

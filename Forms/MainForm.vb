@@ -1799,7 +1799,7 @@ Public Class MainForm
             AddSourceFilters({"d2vsource"}, filters)
         End If
 
-        If p.Script.Engine = ScriptEngine.AviSynth Then
+        If p.Script.IsAviSynth Then
             filters = filters.Where(Function(filter) Not filter.Script.Replace(" ", "").Contains("clip=core.")).ToList
             filters.Insert(0, New VideoFilter("Source", "Automatic", "#avs"))
         Else
@@ -1809,7 +1809,7 @@ Public Class MainForm
 
         Dim td As New TaskDialog(Of VideoFilter)
 
-        If p.Script.Engine = ScriptEngine.AviSynth Then
+        If p.Script.IsAviSynth Then
             td.MainInstruction = "Select a AviSynth source filter."
         Else
             td.MainInstruction = "Select a VapourSynth source filter."
@@ -1928,7 +1928,7 @@ Public Class MainForm
 
             If p.SourceFile.Ext.EqualsAny(FileTypes.Image) Then
                 If p.SourceFile.Base(p.SourceFile.Base.Length - 1).IsDigit Then
-                    If p.Script.Engine = ScriptEngine.AviSynth Then
+                    If p.Script.IsAviSynth Then
                         Dim digitCount = 0
 
                         For i = p.SourceFile.Base.Length - 1 To 0 Step -1
@@ -1989,7 +1989,7 @@ Public Class MainForm
                         Throw New AbortException
                     End If
 
-                    If p.Script.Engine = ScriptEngine.AviSynth Then
+                    If p.Script.IsAviSynth Then
                         p.Script = VideoScript.GetDefaults()(1)
                     End If
                 Else
@@ -2141,7 +2141,7 @@ Public Class MainForm
 
             s.LastSourceDir = p.SourceFile.Dir
 
-            If p.SourceFile.Ext = "avs" AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+            If p.SourceFile.Ext = "avs" AndAlso p.Script.IsAviSynth Then
                 p.Script.Filters.Clear()
                 p.Script.Filters.Add(New VideoFilter("Source", "AVS Script Import", "Import(""" + p.SourceFile + """)"))
             ElseIf p.SourceFile.Ext = "vpy" Then
@@ -2358,10 +2358,9 @@ Public Class MainForm
             Exit Sub
         End If
 
-        Dim profiles = If(p.Script.Engine = ScriptEngine.AviSynth,
-            s.AviSynthProfiles, s.VapourSynthProfiles)
+        Dim profiles = If(p.Script.IsAviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
 
-        Dim preferences = If(p.Script.Engine = ScriptEngine.AviSynth,
+        Dim preferences = If(p.Script.IsAviSynth,
             s.AviSynthFilterPreferences, s.VapourSynthFilterPreferences)
 
         Dim sourceFilter = p.Script.GetFilter("Source")
@@ -2371,7 +2370,7 @@ Public Class MainForm
         SetSourceFilter(sourceFilter, preferences, profiles, True, False, False, True)
         SetSourceFilter(sourceFilter, preferences, profiles, False, False, False, False)
 
-        Dim editAVS = p.Script.Engine = ScriptEngine.AviSynth AndAlso p.SourceFile.Ext <> "avs"
+        Dim editAVS = p.Script.IsAviSynth AndAlso p.SourceFile.Ext <> "avs"
         Dim editVS = p.Script.Engine = ScriptEngine.VapourSynth AndAlso p.SourceFile.Ext <> "vpy"
 
         If editAVS Then
@@ -3279,7 +3278,7 @@ Public Class MainForm
                     proc.Encoding = Encoding.UTF8
                     proc.SkipString = "Creating lwi"
 
-                    If p.Script.Engine = ScriptEngine.AviSynth Then
+                    If p.Script.IsAviSynth Then
                         proc.File = Package.ffmpeg.Path
                         proc.Arguments = "-i " + p.Script.Path.Escape + " -hide_banner"
                     Else
@@ -3806,7 +3805,7 @@ Public Class MainForm
             End If
 
             If Not g.EnableFilter("Crop") Then
-                If p.Script.Engine = ScriptEngine.AviSynth Then
+                If p.Script.IsAviSynth Then
                     p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
                 Else
                     p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)"))
@@ -4514,8 +4513,8 @@ Public Class MainForm
 
     <Command("Dialog to configure AviSynth filter profiles.")>
     Sub ShowFilterProfilesDialog()
-        Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
-        Dim getDefaults = If(p.Script.Engine = ScriptEngine.AviSynth, Function() FilterCategory.GetAviSynthDefaults, Function() FilterCategory.GetVapourSynthDefaults)
+        Dim filterProfiles = If(p.Script.IsAviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
+        Dim getDefaults = If(p.Script.IsAviSynth, Function() FilterCategory.GetAviSynthDefaults, Function() FilterCategory.GetVapourSynthDefaults)
 
         Using dialog As New MacroEditorDialog
             dialog.SetScriptDefaults()
@@ -4728,7 +4727,7 @@ Public Class MainForm
         SkipAssistant = True
 
         If Not g.EnableFilter("Resize") Then
-            If p.Script.Engine = ScriptEngine.AviSynth Then
+            If p.Script.IsAviSynth Then
                 p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
             Else
                 p.Script.AddFilter(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)"))

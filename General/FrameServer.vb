@@ -439,7 +439,7 @@ Public Class FrameServerHelp
     End Function
 
     Shared Function IsAviSynthUsed() As Boolean
-        Return p.Script.Engine = ScriptEngine.AviSynth
+        Return p.Script.IsAviSynth
     End Function
 
     Shared Function IsVapourSynthUsed() As Boolean

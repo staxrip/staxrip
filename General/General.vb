@@ -104,13 +104,13 @@ Public Class Folder
     Shared ReadOnly Property Plugins As String
         Get
             If FrameServerHelp.IsPortable Then
-                If p.Script.Engine = ScriptEngine.AviSynth Then
+                If p.Script.IsAviSynth Then
                     Return Folder.Settings + "Plugins\AviSynth\"
                 Else
                     Return Folder.Settings + "Plugins\VapourSynth\"
                 End If
             Else
-                If p.Script.Engine = ScriptEngine.AviSynth Then
+                If p.Script.IsAviSynth Then
                     Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+").FixDir
                 Else
                     Return Folder.AppDataRoaming + "VapourSynth\plugins64\"

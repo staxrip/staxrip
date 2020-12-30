@@ -206,7 +206,7 @@ Public Class Package
         .Description = "Video processing scripting library.",
         .Exclude = {"_arm64", "_xp", ".exe"},
         .HintDirFunc = Function() Package.AviSynth.GetAviSynthHintDir,
-        .RequiredFunc = Function() p.Script.Engine = ScriptEngine.AviSynth})
+        .RequiredFunc = Function() p.Script.IsAviSynth})
 
     Shared Property VapourSynth As Package = Add(New Package With {
         .Name = "VapourSynth",
@@ -2585,7 +2585,7 @@ Public Class PluginPackage
             Return False
         End If
 
-        If p.Script.Engine = ScriptEngine.AviSynth AndAlso
+        If p.Script.IsAviSynth AndAlso
             Not package.AvsFilterNames.NothingOrEmpty Then
 
             Dim scriptLower = p.Script.GetScript().ToLowerInvariant

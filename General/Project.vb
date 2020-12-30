@@ -240,7 +240,7 @@ Public Class Project
     End Property
 
     Sub AddHardcodedSubtitleFilter(path As String, showErrorMsg As Boolean)
-        If p.Script.Engine = ScriptEngine.AviSynth Then
+        If p.Script.IsAviSynth Then
             Dim filterName As String
 
             Select Case path.Ext

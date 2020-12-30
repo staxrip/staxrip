@@ -323,14 +323,14 @@ Public Class x265Params
     Property PipingToolAVS As New OptionParam With {
         .Text = "Pipe",
         .Name = "PipingToolAVS",
-        .VisibleFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
-        .Options = {"Automatic", "None", "avs2pipemod", "ffmpeg"}}
+        .VisibleFunc = Function() p.Script.IsAviSynth,
+        .Options = {"None", "avs2pipemod", "ffmpeg"}}
 
     Property PipingToolVS As New OptionParam With {
         .Text = "Pipe",
         .Name = "PipingToolVS",
         .VisibleFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .Options = {"Automatic", "None", "vspipe", "ffmpeg"}}
+        .Options = {"None", "vspipe", "ffmpeg"}}
 
     Property chunkStart As New NumParam With {
         .Switch = "--chunk-start",
@@ -1166,7 +1166,7 @@ Public Class x265Params
         ApplyTuneDefaultValues()
 
         Dim sb As New StringBuilder
-        Dim pipeTool = If(p.Script.Engine = ScriptEngine.AviSynth, PipingToolAVS, PipingToolVS).ValueText
+        Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText
 
         If includePaths AndAlso includeExecutable Then
             Dim isCropped = CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
@@ -1177,7 +1177,7 @@ Public Class x265Params
                     Dim pipeString = ""
 
                     If pipeTool = "automatic" OrElse endFrame <> 0 Then
-                        If p.Script.Engine = ScriptEngine.AviSynth Then
+                        If p.Script.IsAviSynth Then
                             pipeTool = "avs2pipemod"
                         Else
                             pipeTool = "vspipe"

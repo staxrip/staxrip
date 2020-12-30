@@ -808,37 +808,41 @@ Public Class GlobalClass
 
     Sub SetTempDir()
         If p.SourceFile <> "" Then
-            p.TempDir = Macro.Expand(p.TempDir)
+            If p.NoTempDir Then
+                p.TempDir = p.SourceFile.Dir
+            Else
+                p.TempDir = Macro.Expand(p.TempDir)
 
-            If p.TempDir = "" Then
-                If p.SourceFile.Dir.EndsWith("_temp\") Then
-                    p.TempDir = p.SourceFile.Dir
-                Else
-                    p.TempDir = p.SourceFile.Dir + p.SourceFile.Base + "_temp\"
+                If p.TempDir = "" Then
+                    If p.SourceFile.Dir.EndsWith("_temp\") Then
+                        p.TempDir = p.SourceFile.Dir
+                    Else
+                        p.TempDir = p.SourceFile.Dir + p.SourceFile.Base + "_temp\"
+                    End If
                 End If
-            End If
 
-            p.TempDir = p.TempDir.FixDir
+                p.TempDir = p.TempDir.FixDir
 
-            If Not Directory.Exists(p.TempDir) Then
-                Try
-                    Directory.CreateDirectory(p.TempDir)
-                Catch
+                If Not Directory.Exists(p.TempDir) Then
                     Try
-                        p.TempDir = p.SourceFile.DirAndBase + "_temp\"
-
-                        If Not Directory.Exists(p.TempDir) Then
-                            Directory.CreateDirectory(p.TempDir)
-                        End If
+                        Directory.CreateDirectory(p.TempDir)
                     Catch
-                        MsgWarn("Failed to create a temp directory. By default it's created " +
-                                "in the directory of the source file so it's not possible " +
-                                "to open files directly from a optical drive unless a temp directory  " +
-                                "is defined in the options. Usually discs are copied to the hard drive " +
-                                "first using a application like MakeMKV, DVDFab or AnyDVD.")
-                        Throw New AbortException
+                        Try
+                            p.TempDir = p.SourceFile.DirAndBase + "_temp\"
+
+                            If Not Directory.Exists(p.TempDir) Then
+                                Directory.CreateDirectory(p.TempDir)
+                            End If
+                        Catch
+                            MsgWarn("Failed to create a temp directory. By default it's created " +
+                                    "in the directory of the source file so it's not possible " +
+                                    "to open files directly from a optical drive unless a temp directory  " +
+                                    "is defined in the options. Usually discs are copied to the hard drive " +
+                                    "first using a application like MakeMKV, DVDFab or AnyDVD.")
+                            Throw New AbortException
+                        End Try
                     End Try
-                End Try
+                End If
             End If
 
             Folder.Current = p.TempDir

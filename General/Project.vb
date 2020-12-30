@@ -54,6 +54,7 @@ Public Class Project
     Public MKVHDR As Boolean
     Public MTN As Boolean
     Public NoDialogs As Boolean
+    Public NoTempDir As Boolean
     Public PreferredAudio As String
     Public PreferredSubtitles As String
     Public Ranges As List(Of Range)

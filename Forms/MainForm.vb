@@ -2990,6 +2990,22 @@ Public Class MainForm
                 End If
             End If
 
+            If p.Script.IsAviSynth AndAlso TypeOf p.VideoEncoder Is x264Enc AndAlso
+                p.Script.Info.ColorSpace <> ColorSpace.YUV420P8 AndAlso
+                p.Script.Info.ColorSpace <> ColorSpace.YUV422P8 AndAlso
+                p.Script.Info.ColorSpace <> ColorSpace.YUV444P8 AndAlso
+                p.Script.Info.ColorSpace <> ColorSpace.BGR32 AndAlso
+                Not g.ContainsPipeTool(p.VideoEncoder.GetCommandLine(True, True)) Then
+
+                If ProcessTip("x264 AviSynth input supports only YUV420P8, YUV422P8, YUV444P8 and BGR32 " +
+                             $"as input colorspace.{BR}Consider to use a pipe tool: " +
+                              "x264 Options > Input/Output > Pipe > avs2pipemod y4m") Then
+                    gbAssistant.Text = "Incompatible colorspace"
+                    CanIgnoreTip = False
+                    Return False
+                End If
+            End If
+
             If p.Script.Info.Width Mod p.ForcedOutputMod <> 0 Then
                 If ProcessTip("Change output width to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
@@ -3901,7 +3917,7 @@ Public Class MainForm
         Optional position As Integer = -1)
 
         If Not CanIgnoreTip Then
-            MsgWarn("The current assistant warning cannot be skipped.")
+            MsgWarn("Assistant warning cannot be skipped.")
             Exit Sub
         End If
 
@@ -4402,6 +4418,11 @@ Public Class MainForm
             b.Text = "Extract timestamps from VFR MKV files"
             b.Checked = p.ExtractTimestamps
             b.SaveAction = Sub(value) p.ExtractTimestamps = value
+
+            b = ui.AddBool(miscPage)
+            b.Text = "Use source file folder for temp files"
+            b.Checked = p.NoTempDir
+            b.SaveAction = Sub(value) p.NoTempDir = value
 
             ui.AddLine(miscPage, "Compressibility Check")
 

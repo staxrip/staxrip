@@ -1122,7 +1122,7 @@ Public Class MuxerForm
         If st.Path.Ext = "idx" Then
             filepath = p.TempDir + p.TargetFile.Base + "_play.idx"
             Regex.Replace(st.Path.ReadAllText, "langidx: \d+", "langidx: " +
-                          st.IndexIDX.ToString).WriteFileDefault(filepath)
+                          st.IndexIDX.ToString).WriteFileSystemEncoding(filepath)
             FileHelp.Copy(st.Path.DirAndBase + ".sub", filepath.DirAndBase + ".sub")
         End If
 
@@ -1351,7 +1351,7 @@ Public Class MuxerForm
 
             If fp.Ext = "idx" Then
                 fp = p.TempDir + p.TargetFile.Base + "_temp.idx"
-                Regex.Replace(st.Path.ReadAllText, "langidx: \d+", "langidx: " + st.IndexIDX.ToString).WriteFileDefault(fp)
+                Regex.Replace(st.Path.ReadAllText, "langidx: \d+", "langidx: " + st.IndexIDX.ToString).WriteFileSystemEncoding(fp)
                 FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
             End If
 
@@ -1368,7 +1368,7 @@ Public Class MuxerForm
 
             If fp.ExtFull = ".idx" Then
                 fp = p.TempDir + p.TargetFile.Base + "_temp.idx"
-                Regex.Replace(st.Path.ReadAllText, "langidx: \d+", "langidx: " + st.IndexIDX.ToString).WriteFileDefault(fp)
+                Regex.Replace(st.Path.ReadAllText, "langidx: \d+", "langidx: " + st.IndexIDX.ToString).WriteFileSystemEncoding(fp)
                 FileHelp.Copy(st.Path.DirAndBase + ".sub", fp.DirAndBase + ".sub")
             End If
 

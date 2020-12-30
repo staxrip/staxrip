@@ -764,7 +764,7 @@ Public Class Package
         .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/master/avs%202.5%20and%20up/LSFmod.avsi",
         .Description = "A LimitedSharpenFaster mod with a lot of new features and optimizations.",
         .AvsFilterNames = {"LSFmod"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Line", "Sharpen | LSFmod", "LSFmod(defaults=""slow"", strength=100, Smode=5, Smethod=3, kernel=11, preblur=""OFF"", secure=true, Szrp=16, Spwr=4, SdmpLo=4, SdmpHi=48, Lmode=4, overshoot=1, undershoot=1, Overshoot2=1, Undershoot2=1, soft=-2, soothe=true, keep=20, edgemode=0, edgemaskHQ=true, ss_x=1.50, ss_y=1.50, dest_x=%target_width%, dest_y=%target_height%, show=false, screenW=1280, screenH=1024)")}})
+        .AvsFiltersFunc = Function() {New VideoFilter("Line", "Sharpen | LSFmod", "LSFmod(defaults=""slow"", strength=100, Smode=5, Smethod=3, kernel=11, secure=true, Szrp=16, Spwr=4, SdmpLo=4, SdmpHi=48, Lmode=4, overshoot=1, undershoot=1, Overshoot2=1, Undershoot2=1, soft=-2, soothe=true, keep=20, edgemode=0, edgemaskHQ=true, ss_x=1.50, ss_y=1.50, dest_x=%target_width%, dest_y=%target_height%, show=false, screenW=1280, screenH=1024)")}})
 
     Shared Property TemporalDegrain2 As Package = Add(New PluginPackage With {
         .Name = "TemporalDegrain2",
@@ -1573,6 +1573,14 @@ Public Class Package
             .WebURL = "https://github.com/sekrit-twc/znedi3",
             .Description = "znedi3 is a CPU-optimized version of nnedi.",
             .VSFilterNames = {"znedi3.nnedi3"}})
+
+        Add(New PluginPackage With {
+            .Name = "CAS",
+            .Filename = "CAS.dll",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-CAS",
+            .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-CAS/releases",
+            .Description = "Contrast Adaptive Sharpening.",
+            .VSFilterNames = {"cas.CAS"}})
 
         Add(New PluginPackage With {
             .Name = "nnedi3cl",

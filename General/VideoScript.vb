@@ -22,6 +22,18 @@ Public Class VideoScript
         RaiseEvent Changed(Me)
     End Sub
 
+    ReadOnly Property IsAviSynth As Boolean
+        Get
+            Return Engine = ScriptEngine.AviSynth
+        End Get
+    End Property
+
+    ReadOnly Property IsVapourSynth As Boolean
+        Get
+            Return Engine = ScriptEngine.VapourSynth
+        End Get
+    End Property
+
     Overridable ReadOnly Property FileType As String
         Get
             Return If(Engine = ScriptEngine.VapourSynth, "vpy", "avs")
@@ -169,13 +181,20 @@ Public Class VideoScript
 
     <NonSerialized()> Public LastCode As String
     <NonSerialized()> Public LastPath As String
+    <NonSerialized()> Public LastAvsCodePage As Integer
 
-    Sub Synchronize(Optional convertToRGB As Boolean = False,
-                    Optional comparePath As Boolean = True,
-                    Optional flipVertical As Boolean = False)
+    Sub Synchronize(
+        Optional convertToRGB As Boolean = False,
+        Optional comparePath As Boolean = True,
+        Optional flipVertical As Boolean = False,
+        Optional avsEncoding As Encoding = Nothing)
 
         If Path = "" Then
             Exit Sub
+        End If
+
+        If avsEncoding Is Nothing Then
+            avsEncoding = TextEncoding.EncodingOfSystem
         End If
 
         Dim srcFilter = GetFilter("Source")
@@ -230,12 +249,16 @@ clipname.set_output()
             End If
         End If
 
-        If Me.Error <> "" OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
+        Dim changedAvsEncoding = Engine = ScriptEngine.AviSynth AndAlso LastAvsCodePage <> avsEncoding.CodePage
+
+        If Me.Error <> "" OrElse code <> LastCode OrElse
+            (comparePath AndAlso Path <> LastPath) OrElse changedAvsEncoding Then
+
             If Path.Dir.DirExists Then
                 If Engine = ScriptEngine.VapourSynth Then
-                    ModifyScript(code, Engine).WriteFile(Path, Encoding.UTF8)
+                    ModifyScript(code, Engine).WriteFileUTF8(Path)
                 Else
-                    ModifyScript(code, Engine).WriteFileDefault(Path)
+                    ModifyScript(code, Engine).WriteFile(Path, TextEncoding.EncodingOfProcess)
                 End If
 
                 If Not Package.AviSynth.VerifyOK OrElse
@@ -256,6 +279,14 @@ clipname.set_output()
 
                     Me.Error = server.Error
                 End Using
+
+                If Engine = ScriptEngine.AviSynth Then
+                    If Not avsEncoding Is TextEncoding.EncodingOfProcess Then
+                        ModifyScript(code, Engine).WriteFile(Path, avsEncoding)
+                    End If
+
+                    LastAvsCodePage = avsEncoding.CodePage
+                End If
 
                 LastCode = code
                 LastPath = Path
@@ -532,12 +563,12 @@ clipname.set_output()
     End Function
 
     Function GetInfo() As ServerInfo
-        Synchronize(False, False)
+        Synchronize(False, False, avsEncoding:=TextEncoding.EncodingOfProcess)
         Return Info
     End Function
 
     Function GetError() As String
-        Synchronize(False, False)
+        Synchronize(False, False, avsEncoding:=TextEncoding.EncodingOfProcess)
         Return Me.Error
     End Function
 
@@ -892,7 +923,7 @@ Public Class FilterCategory
         line.Filters.Add(New VideoFilter(line.Name, "Anti-Aliasing | ediAA", "clip = muvsfunc.ediaa(clip)"))
         line.Filters.Add(New VideoFilter(line.Name, "Anti-Aliasing | Santiag", "clip = havsfunc.santiag(c=clip, opencl=$select:msg:Use GPU Enabled Feature?;True;False$)"))
         line.Filters.Add(New VideoFilter(line.Name, "Anti-Aliasing | MAA", "clip = muvsfunc.maa(clip)"))
-        line.Filters.Add(New VideoFilter(line.Name, "Sharpen | LSFmod", "clip = havsfunc.LSFmod(clip, defaults='slow', strength=100, Smode=5, Smethod=3, kernel=11, preblur='OFF', secure=True, Szrp= 16, Spwr= 4, SdmpLo= 4, SdmpHi= 48, Lmode=4, overshoot=1, undershoot=1, soft=-2, soothe=True, keep=20, edgemode=0, edgemaskHQ=True, ss_x= 1.50, ss_y=1.50)"))
+        line.Filters.Add(New VideoFilter(line.Name, "Sharpen | LSFmod", "clip = havsfunc.LSFmod(clip, defaults='slow', strength=100, Smode=5, Smethod=3, kernel=11, secure=True, Szrp= 16, Spwr= 4, SdmpLo= 4, SdmpHi= 48, Lmode=4, overshoot=1, undershoot=1, soft=-2, soothe=True, keep=20, edgemode=0, edgemaskHQ=True, ss_x= 1.50, ss_y=1.50)"))
         line.Filters.Add(New VideoFilter(line.Name, "Sharpen | SharpAAMcmod", "clip = muvsfunc.SharpAAMcmod(clip)"))
         ret.Add(line)
 

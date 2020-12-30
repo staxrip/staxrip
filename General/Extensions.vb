@@ -142,23 +142,42 @@ Module StringExtensions
     End Function
 
     <Extension>
-    Function IsDosCompatible(instance As String) As Boolean
-        If instance = "" Then
-            Return True
-        End If
+    Function IsASCIIEncodingCompatible(instance As String) As Boolean
+        For Each i In instance
+            If Convert.ToInt32(i) > 127 Then
+                Return False
+            End If
+        Next
 
-        Dim bytes = Encoding.Convert(Encoding.Unicode, Encoding.GetEncoding(ConsoleHelp.DosCodePage), Encoding.Unicode.GetBytes(instance))
-        Return instance = Encoding.Unicode.GetString(Encoding.Convert(Encoding.GetEncoding(ConsoleHelp.DosCodePage), Encoding.Unicode, bytes))
+        Return True
     End Function
 
     <Extension>
-    Function IsANSICompatible(instance As String) As Boolean
+    Function IsSystemEncodingCompatible(instance As String) As Boolean
         If instance = "" Then
             Return True
         End If
 
-        Dim bytes = Encoding.Convert(Encoding.Unicode, Encoding.Default, Encoding.Unicode.GetBytes(instance))
-        Return instance = Encoding.Unicode.GetString(Encoding.Convert(Encoding.Default, Encoding.Unicode, bytes))
+        If IsASCIIEncodingCompatible(instance) Then
+            Return True
+        End If
+
+        Dim bytes = Encoding.Convert(Encoding.Unicode, TextEncoding.EncodingOfSystem, Encoding.Unicode.GetBytes(instance))
+        Return instance = Encoding.Unicode.GetString(Encoding.Convert(TextEncoding.EncodingOfSystem, Encoding.Unicode, bytes))
+    End Function
+
+    <Extension>
+    Function IsProcessEncodingCompatible(instance As String) As Boolean
+        If instance = "" Then
+            Return True
+        End If
+
+        If IsASCIIEncodingCompatible(instance) Then
+            Return True
+        End If
+
+        Dim bytes = Encoding.Convert(Encoding.Unicode, TextEncoding.EncodingOfProcess, Encoding.Unicode.GetBytes(instance))
+        Return instance = Encoding.Unicode.GetString(Encoding.Convert(TextEncoding.EncodingOfProcess, Encoding.Unicode, bytes))
     End Function
 
     <Extension()>
@@ -525,8 +544,13 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Sub WriteFileDefault(instance As String, path As String)
-        WriteFile(instance, path, Encoding.Default)
+    Sub WriteFileSystemEncoding(instance As String, path As String)
+        WriteFile(instance, path, TextEncoding.EncodingOfSystem)
+    End Sub
+
+    <Extension()>
+    Sub WriteFileProcessEncoding(instance As String, path As String)
+        WriteFile(instance, path, TextEncoding.EncodingOfProcess)
     End Sub
 
     <Extension()>

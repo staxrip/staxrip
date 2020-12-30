@@ -937,6 +937,7 @@ Public Class GlobalCommands
         g.RunCommandInTerminal("powershell.exe")
     End Sub
 
+    'TODO: remove
     <Command("This command is obsolete since 2020.")>
     Sub ExecuteBatchScript(
         <DispName("Batch Script Code"),
@@ -946,7 +947,7 @@ Public Class GlobalCommands
 
         Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
         Dim batchCode = Macro.Expand(batchScript)
-        File.WriteAllText(batchPath, batchCode, Encoding.Default)
+        batchCode.WriteFileSystemEncoding(batchPath)
         AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
 
         Using proc As New Proc

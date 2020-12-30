@@ -46,7 +46,6 @@ Public Class x264Enc
     End Function
 
     Overrides Sub Encode()
-        p.Script.Synchronize()
         Encode("Video encoding", GetArgs(1, p.Script), s.ProcessPriority)
 
         If Params.Mode.Value = x264RateMode.TwoPass Then
@@ -61,7 +60,7 @@ Public Class x264Enc
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
-        p.Script.Synchronize()
+        p.Script.Synchronize(avsEncoding:=TextEncoding.EncodingOfProcess)
 
         Using proc As New Proc
             proc.Package = Package.x264
@@ -110,7 +109,7 @@ Public Class x264Enc
 
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
         script.Path = (p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType).ToShortFilePath
-        script.Synchronize()
+        script.Synchronize(avsEncoding:=TextEncoding.EncodingOfProcess)
 
         Log.WriteLine(BR + script.GetFullScript + BR)
 
@@ -1078,7 +1077,7 @@ Public Class x264Params
         End If
 
         If includePaths Then
-            Dim input = If(pipeTool = "none", script.Path.ToShortFilePath.Escape, "-")
+            Dim input = If(pipeTool = "none", script.Path.Escape, "-")
             Dim dmx = Demuxer.ValueText
 
             If dmx = "automatic" Then

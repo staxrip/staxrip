@@ -6,7 +6,7 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
-
+Imports Microsoft.Win32
 Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
 
@@ -2189,7 +2189,7 @@ Public Class MainForm
 
                         If film >= 95 Then
                             content = content.Replace("Field_Operation=0" + BR + "Frame_Rate=29970 (30000/1001)", "Field_Operation=1" + BR + "Frame_Rate=23976 (24000/1001)")
-                            content.WriteFileDefault(p.SourceFile)
+                            content.WriteFileSystemEncoding(p.SourceFile)
                         End If
                     End If
                 End If
@@ -2198,7 +2198,6 @@ Public Class MainForm
             Dim errorMsg = ""
 
             Try
-                p.SourceScript.Synchronize()
                 errorMsg = p.SourceScript.GetError
             Catch ex As Exception
                 errorMsg = ex.Message
@@ -2292,7 +2291,7 @@ Public Class MainForm
             Dim isCropActive = p.Script.IsFilterActive("Crop")
 
             If isCropActive AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
-                p.SourceScript.Synchronize(True, True, True)
+                p.SourceScript.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
 
                 Using proc As New Proc
                     proc.Header = "Auto Crop"
@@ -2527,7 +2526,7 @@ Public Class MainForm
                 If idxContent.Contains(VB6.ChrW(&HA) + VB6.ChrW(&H0) + VB6.ChrW(&HD) + VB6.ChrW(&HA)) Then
                     idxContent = idxContent.FixBreak
                     idxContent = idxContent.Replace(BR + VB6.ChrW(&H0) + BR, BR + "langidx: 0" + BR)
-                    File.WriteAllText(path, idxContent, Encoding.Default)
+                    idxContent.WriteFileSystemEncoding(path)
                 End If
 
                 Using proc As New Proc
@@ -2587,7 +2586,7 @@ Public Class MainForm
                             "CLOSE"
 
                         Dim fileContent = p.TempDir + p.TargetFile.Base + "_vsrip.txt"
-                        args.WriteFileDefault(fileContent)
+                        args.WriteFileSystemEncoding(fileContent)
 
                         Using proc As New Proc
                             proc.Header = "Demux subtitles using VSRip"
@@ -2799,6 +2798,22 @@ Public Class MainForm
         End If
 
         If Not p.BatchMode Then
+            If p.SourceFile <> "" Then
+                If p.Script.IsAviSynth AndAlso Not TextEncoding.IsSystemUTF8 AndAlso
+                    Not (TextEncoding.AvsEncoderSupportsUTF8 AndAlso OSVersion.Current >= OSVersion.Windows10) AndAlso
+                    Not TextEncoding.IsPathSupportedBySystemEncoding(p.SourceFile) Then
+
+                    If ProcessTip(If(OSVersion.Current >= OSVersion.Windows10,
+                        "The current AviSynth video encoder does not support Unicode, consider to enable UTF-8 in the administrative language settings of Windows 10.",
+                        "The current AviSynth video encoder does not support Unicode on systems older than Windows 10.")) Then
+
+                        gbAssistant.Text = "Text Encoding Limitation"
+                        CanIgnoreTip = False
+                        Return False
+                    End If
+                End If
+            End If
+
             If p.Script.Filters.Count = 0 OrElse
                 Not p.Script.Filters(0).Active OrElse
                 p.Script.Filters(0).Category <> "Source" Then
@@ -2939,7 +2954,8 @@ Public Class MainForm
                 End If
 
                 If Not p.Script.IsFilterActive("Cutting") AndAlso Form.ActiveForm Is Me Then
-                    If ProcessTip("The cutting filter settings don't match with the cutting settings used in the preview.") Then
+                    If ProcessTip("The cutting filter settings don't match with the cutting settings used in the preview." + BR +
+                                  "This can usually be fixed by opening and closing the preview.") Then
                         gbAssistant.Text = "Invalid Cutting Settings"
                         CanIgnoreTip = False
                         Return False
@@ -3077,14 +3093,6 @@ Public Class MainForm
 
     Sub AudioTextChanged(tb As TextBox, ap As AudioProfile)
         If BlockAudioTextChanged Then
-            Exit Sub
-        End If
-
-        If System.Text.Encoding.Default.CodePage <> 65001 AndAlso
-            Not tb.Text.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
-
-            MsgWarn(Strings.NoUnicode)
-            tb.Text = ""
             Exit Sub
         End If
 
@@ -4703,7 +4711,7 @@ Public Class MainForm
                     End If
 
                     Regex.Replace(dialog.FileName.ReadAllText, "langidx: \d+", "langidx: " +
-                                  sb.SelectedValue.IndexIDX.ToString).WriteFileDefault(dialog.FileName)
+                                  sb.SelectedValue.IndexIDX.ToString).WriteFileSystemEncoding(dialog.FileName)
                 End If
 
                 p.AddHardcodedSubtitleFilter(dialog.FileName, True)

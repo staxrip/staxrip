@@ -987,7 +987,7 @@ Public Class PreviewForm
     Protected Overrides Sub OnLoad(args As EventArgs)
         MyBase.OnLoad(args)
 
-        PreviewScript.Synchronize(True, True, True)
+        PreviewScript.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
         FrameServer = FrameServerFactory.Create(PreviewScript.Path)
         Renderer = New VideoRenderer(pnVideo, FrameServer)
         Renderer.Info = PreviewScript.OriginalInfo

@@ -1,4 +1,5 @@
-﻿Imports System.Drawing.Drawing2D
+﻿
+Imports System.Drawing.Drawing2D
 Imports System.Drawing.Imaging
 Imports System.Drawing.Text
 Imports System.Globalization
@@ -15,28 +16,41 @@ Public Class ImageHelp
     End Function
 
     Shared Function GetSymbolImage(symbol As Symbol) As Image
-        If Not FontFilesExist Then Return Nothing
+        If Not FontFilesExist Then
+            Return Nothing
+        End If
+
         Dim legacy = OSVersion.Current < OSVersion.Windows10
 
         If Coll Is Nothing Then
             Coll = New PrivateFontCollection
             Coll.AddFontFile(AwesomePath)
-            If legacy Then Coll.AddFontFile(SegoePath)
+
+            If legacy Then
+                Coll.AddFontFile(SegoePath)
+            End If
         End If
 
         Dim family As FontFamily
 
         If CInt(symbol) > 61400 Then
-            If Coll.Families.Count > 0 Then family = Coll.Families(0)
+            If Coll.Families.Count > 0 Then
+                family = Coll.Families(0)
+            End If
         Else
             If legacy Then
-                If Coll.Families.Count > 1 Then family = Coll.Families(1)
+                If Coll.Families.Count > 1 Then
+                    family = Coll.Families(1)
+                End If
             Else
                 family = New FontFamily("Segoe MDL2 Assets")
             End If
         End If
 
-        If family Is Nothing Then Return Nothing
+        If family Is Nothing Then
+            Return Nothing
+        End If
+
         Dim font As New Font(family, 12)
         Dim fontHeight = font.Height
         Dim bitmap As New Bitmap(CInt(fontHeight * 1.1F), CInt(fontHeight * 1.1F))
@@ -110,7 +124,7 @@ Public Class Thumbnails
         Dim count = columnCount * rowCount
         Dim bitmaps As New List(Of Bitmap)
 
-        script.Synchronize(True, True, True)
+        script.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
 
         Using server = FrameServerFactory.Create(script.Path)
             Dim serverPos As Integer

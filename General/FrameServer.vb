@@ -153,7 +153,7 @@ Public Class FrameServerFactory
             Package.VapourSynth.Directory,
             Package.AviSynth.Directory,
             Package.FFTW.Directory,
-            Package.VisualCpp2019.Directory)
+            Folder.Startup + "Apps\Support\VC")
 
         If (path.Ext = "avs" AndAlso s.AviSynthMode = FrameServerMode.VFW) OrElse
            (path.Ext = "vpy" AndAlso s.VapourSynthMode = FrameServerMode.VFW) Then

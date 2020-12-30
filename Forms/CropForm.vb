@@ -608,7 +608,7 @@ Public Class CropForm
         script.Engine = p.Script.Engine
         script.Path = (p.TempDir + p.TargetFile.Base + "_crop." + script.FileType).ToShortFilePath
         script.Filters.Add(p.Script.GetFilter("Source").GetCopy)
-        script.Synchronize(True, True, True)
+        script.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
 
         FrameServer = FrameServerFactory.Create(script.Path)
         Renderer = New VideoRenderer(pnVideo, FrameServer)

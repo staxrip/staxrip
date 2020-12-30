@@ -117,8 +117,14 @@ Public Class x265Enc
             proc.Encoding = Encoding.UTF8
             proc.Priority = priority
             proc.SkipString = "%] "
-            proc.File = "cmd.exe"
-            proc.Arguments = "/S /C """ + commandLine + """"
+
+            If commandLine.Contains("|") Then
+                proc.File = "cmd.exe"
+                proc.Arguments = "/S /C """ + commandLine + """"
+            Else
+                proc.CommandLine = commandLine
+            End If
+
             proc.Start()
         End Using
     End Sub

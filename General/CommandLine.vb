@@ -80,14 +80,20 @@ Namespace CommandLine
                 Exit Sub
             End If
 
-            p.Script.Synchronize()
+            Dim cl = GetCommandLine(True, True)
+
+            If TextEncoding.AvsEncoderSupportsUTF8(cl) Then
+                p.Script.Synchronize(avsEncoding:=TextEncoding.EncodingOfProcess)
+            Else
+                p.Script.Synchronize()
+            End If
 
             If g.IsWindowsTerminalAvailable Then
-                Dim cl = "cmd.exe /S /K --% """ + GetCommandLine(True, True) + """"
+                cl = "cmd.exe /S /K --% """ + cl + """"
                 Dim base64 = Convert.ToBase64String(Encoding.Unicode.GetBytes(cl)) 'UTF16LE
                 g.Execute("wt.exe", "powershell.exe -NoLogo -NoExit -NoProfile -EncodedCommand """ + base64 + """")
             Else
-                g.Execute("cmd.exe", "/S /K """ + GetCommandLine(True, True) + """")
+                g.Execute("cmd.exe", "/S /K """ + cl + """")
             End If
         End Sub
     End Class

@@ -4,7 +4,6 @@ Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Management.Automation
 Imports System.Runtime.ExceptionServices
-Imports System.Runtime.InteropServices
 Imports System.Security.Principal
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -435,16 +434,19 @@ Public Class GlobalClass
 
     Function VerifySource(files As IEnumerable(Of String)) As Boolean
         For Each file In files
-            If Encoding.Default.CodePage <> 65001 AndAlso
-                Not file.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
-
-                MsgError(Strings.NoUnicode)
+            If Not file.IsProcessEncodingCompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+                ShowAviSynthUnicodeError()
                 Return False
             End If
         Next
 
         Return True
     End Function
+
+    Sub ShowAviSynthUnicodeError()
+        MsgError($"Unicode filenames are not supported by AviSynth unless Windows 10 is used." + BR2 +
+                 $"Rename the file or enable VapourSynth:{BR2}Filters > Filter Setup > VapourSynth")
+    End Sub
 
     Sub PlayAudio(ap As AudioProfile)
         If FileTypes.AudioRaw.Contains(ap.File.Ext) Then
@@ -513,7 +515,7 @@ Public Class GlobalClass
             Exit Sub
         End If
 
-        script.Synchronize()
+        script.Synchronize(avsEncoding:=TextEncoding.EncodingOfProcess)
         Dim args As String
 
         If script.Engine = ScriptEngine.VapourSynth Then
@@ -1263,7 +1265,7 @@ Public Class GlobalClass
     End Sub
 
     Sub RunAutoCrop(progressAction As Action(Of Double))
-        p.SourceScript.Synchronize(True, True, True)
+        p.SourceScript.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
 
         Using server = FrameServerFactory.Create(p.SourceScript.Path)
             Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)
@@ -1532,6 +1534,12 @@ Public Class GlobalClass
             Return ret
         Else
             Return "clip = " + ret
+        End If
+    End Function
+
+    Function ContainsPipeTool(value As String) As Boolean
+        If value <> "" Then
+            Return value.Contains("ffmpeg") OrElse value.Contains("avs2pipemod") OrElse value.Contains("vspipe")
         End If
     End Function
 End Class

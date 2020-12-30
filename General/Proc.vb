@@ -143,31 +143,6 @@ Public Class Proc
         End If
     End Function
 
-    'TODO: should probably be removed
-    Shared Function WriteBatchFile(path As String, content As String) As String
-        If OSVersion.Current = OSVersion.Windows7 Then
-            For Each i In content
-                If Convert.ToInt32(i) > 137 Then
-                    Throw New ErrorAbortException("Unsupported Windows Version",
-                        "Executing batch files with character '" & i & "' requires minimum Windows 8.")
-                End If
-            Next
-        End If
-
-        If content.IsDosCompatible Then
-            content = "@echo off" + BR + content
-            IO.File.WriteAllText(path, content, Encoding.GetEncoding(ConsoleHelp.DosCodePage))
-        ElseIf content.IsANSICompatible Then
-            content = "@echo off" + BR + "CHCP " & Encoding.Default.CodePage & BR + content
-            IO.File.WriteAllText(path, content, Encoding.Default)
-        Else
-            content = "@echo off" + BR + "CHCP 65001" + BR + content
-            IO.File.WriteAllText(path, content, New UTF8Encoding(False))
-        End If
-
-        Return content
-    End Function
-
     Property File() As String
         Get
             Return Process.StartInfo.FileName
@@ -474,9 +449,9 @@ Public Class Proc
             End If
         Next
 
-        Dim cppDir = Package.VisualCpp2019.Directory
+        Dim cppDir = Folder.Startup + "Apps\Support\VC"
 
-        If Not cppDir.PathStartsWith(Folder.System) AndAlso Not path.Contains(cppDir + ";") Then
+        If Not path.Contains(cppDir + ";") Then
             path = cppDir + ";" + path
         End If
 

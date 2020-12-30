@@ -1,13 +1,23 @@
 
-2.1.5.5 Beta (2020-12-??)
+2.1.5.6 Beta (2020-12-??)
+=========================
+
+2.1.5.5 Beta (2020-12-30)
 =========================
 
 - Multiple AviSynth.dlls were included due to bug in release script. (stax76, 44vince44 [#407](/../../issues/407))
 - Apple QuickTime library removed.
 - The apps dialog has a feature to copy the path to the clipboard. (stax76)
 - The apps dialog has a feature to edit the user PATH environment variable. (stax76 [#305](/../../issues/305))
-- mpv.net 5.4.8.6
+- VapourSynth CAS plugin added (LSFmod dependency).
+- On Windows 10 Unicode for AviSynth is supported even when the default
+  code page is not UTF-8. This currently works for staxrip, mpv.net and x264.
 - aomenc bitrate UI fix (Dendraspis, 44vince44, [#375](/../../issues/375))
+- mpv.net 5.4.8.6
+- x264 M-0.161.3027-4121277-x64-gcc10.2.0 Patman
+- x265 M-3.4+28 gcc10.2.0 Yuuki-Asuna/msg7086/DJATOM/Patman,
+  it supports direct AviSynth and VapourSynth input which can be
+  enabled in the encoder settings: Input/Output > Pipe > None
 
 
 2.1.5.4 Beta (2020-12-27)

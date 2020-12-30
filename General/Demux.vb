@@ -729,7 +729,8 @@ Public Class mkvDemuxer
             End If
         End If
 
-        Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True, VideoDemuxed, OverrideExisting, "Demux MKV", True)
+        Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True,
+              VideoDemuxed, OverrideExisting, "Demux MKV", True)
 
         If demuxChapters AndAlso stdout.Contains("Chapters: ") Then
             Using proc As New Proc
@@ -863,7 +864,8 @@ Public Class mkvDemuxer
             End If
 
             Dim forced = If(subtitle.Forced, "_forced", "")
-            Dim outPath = proj.TempDir + subtitle.Filename + forced + subtitle.ExtFull
+            Dim _default = If(subtitle.Default, "_default", "")
+            Dim outPath = proj.TempDir + subtitle.Filename + _default + forced + subtitle.ExtFull
             args += " " & subtitle.StreamOrder & ":" + outPath.Escape
             outPaths.Add(outPath)
 

@@ -191,7 +191,10 @@ Public MustInherit Class Muxer
 
                 For Each iSubtitle In Subtitle.Create(fp)
                     If p.PreferredSubtitles <> "" Then
-                        If fp.Contains("_forced") Then iSubtitle.Forced = True
+                        If fp.Contains("_forced") Then
+                            iSubtitle.Forced = True
+                        End If
+
                         Subtitles.Add(iSubtitle)
                     End If
                 Next
@@ -233,7 +236,10 @@ Public MustInherit Class Muxer
         For Each iDir In {p.TempDir, p.TempDir.Parent}
             For Each iExt In {"jpg", "png"}
                 Dim fp = iDir + "cover." + iExt
-                If File.Exists(fp) Then CoverFile = fp
+
+                If File.Exists(fp) Then
+                    CoverFile = fp
+                End If
             Next
         Next
 

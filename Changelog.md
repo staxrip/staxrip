@@ -6,6 +6,7 @@
 - x265 by default no longer uses a pipe tool.
 - aomenc moved cq-level option to "Rate Control 1" for better usage (Dendraspis, Neltulz, [#411](/../../issues/411))
 - New option using the source file folder for temp files. (stax76)
+- Fix issue detecting default subtitle. (stax76, [#362](/../../issues/362))
 
 
 2.1.5.5 Beta (2020-12-30)

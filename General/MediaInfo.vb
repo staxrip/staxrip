@@ -172,7 +172,11 @@ Public Class MediaInfo
                     subtitle.ID = GetText(index, "ID").ToInt
                     subtitle.Title = GetText(index, "Title").Trim
                     subtitle.CodecString = GetText(index, "Codec/String")
-                    If subtitle.CodecString = "" Then subtitle.CodecString = GetText(index, "Format")
+
+                    If subtitle.CodecString = "" Then
+                        subtitle.CodecString = GetText(index, "Format")
+                    End If
+
                     subtitle.Format = GetText(index, "Format")
                     subtitle.Size = GetText(index, "StreamSize").ToInt
 

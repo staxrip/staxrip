@@ -1347,6 +1347,12 @@ Public Class Subtitle
                 If enabledSubs.Count > 1 Then
                     enabledSubs(1).Default = True
                 End If
+            Case DefaultSubtitleMode.Default
+                For Each st In enabledSubs
+                    If st.Path.Contains("_default") Then
+                        st.Default = True
+                    End If
+                Next
         End Select
 
         For Each st In ret
@@ -3802,6 +3808,7 @@ Public Enum DefaultSubtitleMode
     Second
     English
     Native
+    [Default]
 End Enum
 
 Public Class Attachment

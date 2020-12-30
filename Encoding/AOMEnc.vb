@@ -125,7 +125,7 @@ Public Class AV1Params
 
     Property CqLevel As New NumParam With {
         .Path = "Rate Control 1",  '.Path = "AV1 Specific 2",    moved to "Rate Control 1" for better usage
-        .Switch = "--cq-level",
+        .HelpSwitch = "--cq-level",
         .Text = "CQ Level",
         .AlwaysOn = True,
         .Init = 24,
@@ -156,7 +156,7 @@ Public Class AV1Params
         .Init = 3}
 
     Property TargetBitrate As New NumParam With {
-        .Switch = "--target-bitrate",
+        .HelpSwitch = "--target-bitrate",
         .Text = "Target Bitrate",
         .VisibleFunc = Function() RateMode.Value <> 2 AndAlso RateMode.Value <> 3}
 

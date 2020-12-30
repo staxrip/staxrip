@@ -124,7 +124,7 @@ Public Class AV1Params
 
 
     Property CqLevel As New NumParam With {
-        .Path = "AV1 Specific 2",
+        .Path = "Rate Control 1",  '.Path = "AV1 Specific 2",    moved to "Rate Control 1" for better usage
         .Switch = "--cq-level",
         .Text = "CQ Level",
         .AlwaysOn = True,
@@ -279,6 +279,7 @@ Public Class AV1Params
         Add(New NumParam With {.Switch = "--superres-qthresh", .Text = "SuperRes qThresh"})
         Add(New NumParam With {.Switch = "--superres-kf-qthresh", .Text = "SuperRes KF qThresh"})
         Add(RateMode)
+        Add(CqLevel)
         Add(TargetBitrate)
         Add(New NumParam With {.Switch = "--min-q", .Text = "Minimum Quantizer"})
         Add(New NumParam With {.Switch = "--max-q", .Text = "Maximum Quantizer"})
@@ -332,7 +333,7 @@ Public Class AV1Params
         '######################
 
         Add(New OptionParam With {.Switch = "--tune", .Text = "Tune", .Options = {"psnr", "ssim", "vmaf_with_preprocessing", "vmaf_without_preprocessing", "vmaf", "vmaf_neg"}})
-        Add(CqLevel)
+        'Add(CqLevel) moved to "Rate Control 1" for better usage
         Add(New NumParam With {.Switch = "--max-intra-rate", .Text = "Max Intra Rate"})
         Add(New NumParam With {.Switch = "--max-inter-rate", .Text = "Max Inter Rate"})
         Add(New NumParam With {.Switch = "--gf-cbr-boost", .Text = "GF CBR Boost"})

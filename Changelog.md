@@ -4,6 +4,7 @@
 
 - aomenc bugfixes and UI improvements (Dendraspis, 44vince44, [#375](/../../issues/375))
 - x265 by default no longer uses a pipe tool.
+- aomenc moved cq-level option to "Rate Control 1" for better usage (Dendraspis, Neltulz, [#411](/../../issues/411))
 
 
 2.1.5.5 Beta (2020-12-30)

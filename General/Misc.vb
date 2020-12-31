@@ -950,18 +950,19 @@ Public Class GUIDS
 End Class
 
 Public Class M2TSStream
-    Property Text As String = "Nothing"
-    Property Codec As String = ""
-    Property OutputType As String = ""
-    Property Options As String = ""
-    Property ID As Integer
-    Property IsVideo As Boolean
-    Property IsAudio As Boolean
-    Property IsSubtitle As Boolean
-    Property IsChapters As Boolean
-    Property Language As New Language
     Property Checked As Boolean
+    Property Codec As String = ""
+    Property ID As Integer
+    Property IsAudio As Boolean
+    Property IsChapters As Boolean
+    Property IsSubtitle As Boolean
+    Property IsVideo As Boolean
+    Property Language As New Language
     Property ListViewItem As ListViewItem
+    Property Options As String = ""
+    Property OutputType As String = ""
+    Property Text As String = "Nothing"
+    Property TypeID As Integer
 
     Sub UpdateListViewItem()
         ListViewItem.Text = ToString()

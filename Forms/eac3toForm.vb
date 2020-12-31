@@ -793,6 +793,9 @@ Public Class eac3toForm
             Output = Output.Replace(" channels, ", "ch, ").Replace(" bits, ", "bits, ").Replace("dialnorm", "dn")
             Output = Output.Replace("(core: ", "(").Replace("(embedded: ", "(")
 
+            Dim aid = 1
+            Dim sid = 1
+
             For Each line In Output.SplitLinesNoEmpty
                 If line.Contains("Subtitle (DVB)") Then
                     Continue For
@@ -819,6 +822,16 @@ Public Class eac3toForm
 
                     ms.IsSubtitle = ms.Codec.StartsWith("Subtitle")
                     ms.IsChapters = ms.Codec.StartsWith("Chapters")
+
+                    If ms.IsAudio Then
+                        ms.TypeID = aid
+                        aid += 1
+                    End If
+
+                    If ms.IsSubtitle Then
+                        ms.TypeID = sid
+                        sid += 1
+                    End If
 
                     If ms.IsAudio OrElse ms.IsSubtitle Then
                         For Each lng In Language.Languages
@@ -939,7 +952,7 @@ Public Class eac3toForm
 
         For Each stream In Streams
             If stream.IsAudio AndAlso stream.Checked Then
-                Dim outFile = OutputFolder + baseName + " ID" & stream.ID
+                Dim outFile = OutputFolder + baseName + " ID" & stream.TypeID
 
                 If stream.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
                     outFile += " " + stream.Language.CultureInfo.EnglishName
@@ -957,7 +970,7 @@ Public Class eac3toForm
 
         For Each stream In Streams
             If stream.IsSubtitle AndAlso stream.Checked Then
-                Dim outFile = OutputFolder + baseName + " ID" & stream.ID
+                Dim outFile = OutputFolder + baseName + " ID" & stream.TypeID
 
                 If stream.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
                     outFile += " " + stream.Language.CultureInfo.EnglishName

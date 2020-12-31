@@ -13,6 +13,7 @@
 - Preferred audio tracks to demux can be defined by ID. (stax76)
 - Preferred audio and subtitle tracks in Options can be defined per menu. (stax76)
 - x265 --aq-mode option captions extended (stax76)
+- aomenc internal improvements and updates (Dendraspis)
 
 
 2.1.5.5 Beta (2020-12-30)

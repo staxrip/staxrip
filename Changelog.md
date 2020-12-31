@@ -5,12 +5,13 @@
 - aomenc bugfixes and UI improvements (Dendraspis, 44vince44, [#375](/../../issues/375))
 - x265 by default no longer uses a pipe tool.
 - aomenc moved cq-level option to "Rate Control 1" for better usage (Dendraspis, Neltulz, [#411](/../../issues/411))
-- New option using the source file folder for temp files. (stax76)
+- New option using the source file folder as temp file folder. (stax76)
 - Fix issue detecting default subtitle. (stax76, [#362](/../../issues/362))
 - Fix demuxed mkv subtitles not named starting at ID 1. (stax76)
 - Fix eac3to demuxed tracks not named starting at ID 1. (stax76)
 - Preferred subtitles can be defined by ID. (stax76)
 - Preferred audio tracks to demux can be defined by ID. (stax76)
+- Preferred audio and subtitle tracks in Options can be defined per menu. (stax76)
 
 
 2.1.5.5 Beta (2020-12-30)

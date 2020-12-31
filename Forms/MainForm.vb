@@ -4204,17 +4204,29 @@ Public Class MainForm
 
             Dim audioPage = ui.CreateFlowPage("Audio", True)
 
-            t = ui.AddText
-            t.Text = "Preferred Languages"
-            t.Help = "List of audio tracks to demux." + BR2 +
-                     "Can be defined as two or three letter language code or by ID." + BR2 +
-                     "For all tracks enter: all" + BR2 +
-                     String.Join(BR, From i In Language.Languages
-                                     Where i.IsCommon
-                                     Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode) + BR2 +
-                    "[http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes List of ISO 639-1 codes]"
+            Dim prefAudio = ui.AddTextMenu
+            prefAudio.Text = "Preferred Languages"
+            prefAudio.Help = "List of audio tracks to demux."
+            prefAudio.Field = NameOf(p.PreferredAudio)
 
-            t.Field = NameOf(p.PreferredAudio)
+            For x = 1 To 9
+                Dim temp = x
+                prefAudio.AddMenu("Choose ID | " & x, Sub() prefAudio.Edit.Text += " " & temp)
+            Next
+
+            prefAudio.AddMenu("Choose All", "all")
+            prefAudio.AddMenu("-", "")
+
+            For Each lng In Language.Languages
+                If lng.IsCommon Then
+                    prefAudio.AddMenu(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
+                        Sub() prefAudio.Edit.Text += " " + lng.ThreeLetterCode)
+                Else
+                    prefAudio.AddMenu("More | " + lng.ToString.Substring(0, 1).ToUpper + " | " + lng.ToString +
+                        " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
+                        Sub() prefAudio.Edit.Text += " " + lng.ThreeLetterCode)
+                End If
+            Next
 
             Dim cut = ui.AddMenu(Of CuttingMode)
             cut.Text = "Cutting Method"
@@ -4282,17 +4294,29 @@ Public Class MainForm
 
             Dim subPage = ui.CreateFlowPage("Subtitles", True)
 
-            t = ui.AddText(subPage)
-            t.Text = "Preferred Languages"
-            t.Help = "List of subtitles demuxed and loaded automatically." + BR2 +
-                     "Can be defined as two or three letter language code or by ID." + BR2 +
-                     "For all subtitles enter: all" + BR2 +
-                     String.Join(BR, From i In Language.Languages
-                                     Where i.IsCommon
-                                     Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode) + BR2 +
-                    "[http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes List of ISO 639-1 codes]"
+            Dim prefSub = ui.AddTextMenu(subPage)
+            prefSub.Text = "Preferred Languages"
+            prefSub.Help = "List of subtitles demuxed and loaded automatically."
+            prefSub.Field = NameOf(p.PreferredSubtitles)
 
-            t.Field = NameOf(p.PreferredSubtitles)
+            For x = 1 To 9
+                Dim temp = x
+                prefSub.AddMenu("Choose ID | " & x, Sub() prefSub.Edit.Text += " " & temp)
+            Next
+
+            prefSub.AddMenu("Choose All", "all")
+            prefSub.AddMenu("-", "")
+
+            For Each lng In Language.Languages
+                If lng.IsCommon Then
+                    prefSub.AddMenu(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
+                        Sub() prefSub.Edit.Text += " " + lng.ThreeLetterCode)
+                Else
+                    prefSub.AddMenu("More | " + lng.ToString.Substring(0, 1).ToUpper + " | " + lng.ToString +
+                        " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
+                        Sub() prefSub.Edit.Text += " " + lng.ThreeLetterCode)
+                End If
+            Next
 
             Dim tbm = ui.AddTextMenu(subPage)
             tbm.Text = "Track Name"

@@ -10,6 +10,7 @@
 - Fix demuxed mkv subtitles not named starting at ID 1. (stax76)
 - Fix eac3to demuxed tracks not named starting at ID 1. (stax76)
 - Preferred subtitles can be defined by ID. (stax76)
+- Preferred audio tracks to demux can be defined by ID. (stax76)
 
 
 2.1.5.5 Beta (2020-12-30)

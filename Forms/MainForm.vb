@@ -4206,12 +4206,13 @@ Public Class MainForm
 
             t = ui.AddText
             t.Text = "Preferred Languages"
-            t.Help = "Preferred audio languages using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes " +
-                     "two or three letter language code] separated by space, comma or semicolon. " +
-                     "For all languages just enter 'all'." + BR2 +
+            t.Help = "List of audio tracks to demux." + BR2 +
+                     "Can be defined as two or three letter language code or by ID." + BR2 +
+                     "For all tracks enter: all" + BR2 +
                      String.Join(BR, From i In Language.Languages
                                      Where i.IsCommon
-                                     Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+                                     Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode) + BR2 +
+                    "[http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes List of ISO 639-1 codes]"
 
             t.Field = NameOf(p.PreferredAudio)
 

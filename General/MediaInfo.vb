@@ -137,6 +137,12 @@ Public Class MediaInfo
                         Case DemuxMode.Preferred, DemuxMode.Dialog
                             Dim autoCode = p.PreferredAudio.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
                             at.Enabled = autoCode.ContainsAny("all", at.Language.TwoLetterCode, at.Language.ThreeLetterCode)
+
+                            For Each i In autoCode
+                                If i.IsInt AndAlso i.ToInt = (index + 1) Then
+                                    at.Enabled = True
+                                End If
+                            Next
                     End Select
 
                     ret.Add(at)

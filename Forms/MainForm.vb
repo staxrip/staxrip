@@ -4206,7 +4206,13 @@ Public Class MainForm
 
             t = ui.AddText
             t.Text = "Preferred Languages"
-            t.Help = "Preferred audio languages using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all languages just enter 'all'." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+            t.Help = "Preferred audio languages using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes " +
+                     "two or three letter language code] separated by space, comma or semicolon. " +
+                     "For all languages just enter 'all'." + BR2 +
+                     String.Join(BR, From i In Language.Languages
+                                     Where i.IsCommon
+                                     Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+
             t.Field = NameOf(p.PreferredAudio)
 
             Dim cut = ui.AddMenu(Of CuttingMode)
@@ -4277,7 +4283,14 @@ Public Class MainForm
 
             t = ui.AddText(subPage)
             t.Text = "Preferred Languages"
-            t.Help = "Subtitles demuxed and loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+            t.Help = "List of subtitles demuxed and loaded automatically." + BR2 +
+                     "Can be defined as two or three letter language code or by ID." + BR2 +
+                     "For all subtitles enter: all" + BR2 +
+                     String.Join(BR, From i In Language.Languages
+                                     Where i.IsCommon
+                                     Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode) + BR2 +
+                    "[http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes List of ISO 639-1 codes]"
+
             t.Field = NameOf(p.PreferredSubtitles)
 
             Dim tbm = ui.AddTextMenu(subPage)

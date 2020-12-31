@@ -7,6 +7,8 @@
 - aomenc moved cq-level option to "Rate Control 1" for better usage (Dendraspis, Neltulz, [#411](/../../issues/411))
 - New option using the source file folder for temp files. (stax76)
 - Fix issue detecting default subtitle. (stax76, [#362](/../../issues/362))
+- Fix subtitle files not being renamed starting at ID1. (stax76)
+- Preferred subtitles can be defined by ID. (stax76)
 
 
 2.1.5.5 Beta (2020-12-30)

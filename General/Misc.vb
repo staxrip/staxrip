@@ -1200,7 +1200,7 @@ Public Class Subtitle
 
     ReadOnly Property Filename As String
         Get
-            Dim ret = "ID" & (StreamOrder + 1)
+            Dim ret = "ID" & (Index + 1)
             ret += " " + Language.Name
 
             If Title <> "" AndAlso Title <> " " AndAlso p.SourceFile <> "" Then
@@ -1327,8 +1327,14 @@ Public Class Subtitle
 
             Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
             st.Enabled = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
-
             st.Path = path
+
+            For Each i In autoCode
+                If i.IsInt AndAlso st.Path.Contains("ID" & i.ToInt & " ") Then
+                    st.Enabled = True
+                End If
+            Next
+
             ret.Add(st)
         End If
 

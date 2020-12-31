@@ -181,7 +181,14 @@ Public Class MediaInfo
                     subtitle.Size = GetText(index, "StreamSize").ToInt
 
                     Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                    subtitle.Enabled = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) OrElse p.DemuxSubtitles = DemuxMode.All
+                    subtitle.Enabled = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode,
+                        subtitle.Language.ThreeLetterCode) OrElse p.DemuxSubtitles = DemuxMode.All
+
+                    For Each i In autoCode
+                        If i.IsInt AndAlso i.ToInt = (index + 1) Then
+                            subtitle.Enabled = True
+                        End If
+                    Next
 
                     ret.Add(subtitle)
                 Next
@@ -377,9 +384,16 @@ Public Class MediaInfo
     Shared Cache As New Dictionary(Of String, MediaInfo)
 
     Shared Function GetMediaInfo(path As String) As MediaInfo
-        If path = "" Then Return Nothing
+        If path = "" Then
+            Return Nothing
+        End If
+
         Dim key = path & File.GetLastWriteTime(path).Ticks
-        If Cache.ContainsKey(key) Then Return Cache(key)
+
+        If Cache.ContainsKey(key) Then
+            Return Cache(key)
+        End If
+
         Dim ret As New MediaInfo(path)
         Cache(key) = ret
         Return ret

@@ -415,12 +415,6 @@ Public Class AV1Params
         g.ShowCommandLineHelp(Package.aomenc, id)
     End Sub
 
-    Private LastTabName As String
-
-    Sub AddTab(name As String)
-        LastTabName = name
-    End Sub
-
     Overloads Overrides Function GetCommandLine(
         includePaths As Boolean, includeExecutable As Boolean, Optional pass As Integer = 1) As String
 

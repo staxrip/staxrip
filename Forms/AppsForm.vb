@@ -812,7 +812,7 @@ Public Class AppsForm
                     Not dialog.FileName.ToLowerEx.StartsWithEx(Folder.Settings.ToLowerEx) Then
 
                     MsgError("Custom paths within the startup folder are not permitted " +
-                             "because it would prevent a simple update process. " +
+                             "because it would prevent a simple update process." + BR2 +
                              "Please put the file somewhere else outside the startup folder.")
                     Exit Sub
                 End If

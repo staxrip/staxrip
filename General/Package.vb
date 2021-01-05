@@ -120,15 +120,14 @@ Public Class Package
         .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.qaac),
         .Description = "Console AAC encoder using the non-free Apple AAC encoder."})
 
-    Shared Property QuickTime As Package = Add(New Package With {
-        .Name = "Apple QuickTime",
-        .Filename = "CoreAudioToolbox.dll",
-        .DownloadURL = "https://www.microsoft.com/en-gb/p/itunes/9pb2mz1zmb1s",
+    Shared Property AppleApplicationSupport As Package = Add(New Package With {
+        .Name = "Apple Application Support",
+        .Filename = "CoreAudioToolbox2.dll",
         .SupportsAutoUpdate = False,
         .VersionAllowAny = True,
         .IsIncluded = False,
         .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.qaac),
-        .Description = "qaac requires this library for AAC encoding."})
+        .Description = "qaac requires this library for AAC encoding. The license does not allow distribution."})
 
     Shared Property fdkaac As Package = Add(New Package With {
         .Name = "fdkaac",

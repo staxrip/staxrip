@@ -937,7 +937,6 @@ Public Class GlobalCommands
         g.RunCommandInTerminal("powershell.exe")
     End Sub
 
-    'TODO: remove
     <Command("This command is obsolete since 2020.")>
     Sub ExecuteBatchScript(
         <DispName("Batch Script Code"),

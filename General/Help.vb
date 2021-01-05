@@ -128,18 +128,6 @@ Public Class FolderHelp
     End Function
 End Class
 
-'TODO:remove?
-Public Class ConsoleHelp
-    Private Shared DosCodePageValue As Integer
-
-    Shared ReadOnly Property DosCodePage As Integer
-        Get
-            If DosCodePageValue = 0 Then DosCodePageValue = Regex.Match(ProcessHelp.GetConsoleOutput("cmd.exe", "/C CHCP"), "\d+").Value.ToInt
-            Return DosCodePageValue
-        End Get
-    End Property
-End Class
-
 Public Class FileHelp
     Shared Sub Move(src As String, dest As String)
         If File.Exists(src) Then

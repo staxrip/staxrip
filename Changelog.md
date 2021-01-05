@@ -14,6 +14,7 @@
 - Preferred audio and subtitle tracks in Options can be defined per menu. (stax76)
 - x265 --aq-mode option captions extended (stax76)
 - aomenc internal improvements and updates (Dendraspis)
+- mkvtoolnix 52
 
 
 2.1.5.5 Beta (2020-12-30)

@@ -757,7 +757,7 @@ Public Class GUIAudioProfile
                 If cl.Contains("qaac64") Then
                     proc.Package = Package.qaac
                     proc.SkipStrings = {", ETA ", "x)"}
-                    proc.AddToPath(Package.QuickTime.Directory)
+                    proc.AddToPath(Package.AppleApplicationSupport.Directory)
                 ElseIf cl.Contains("fdkaac") Then
                     proc.Package = Package.fdkaac
                     proc.SkipStrings = {"%]", "x)"}

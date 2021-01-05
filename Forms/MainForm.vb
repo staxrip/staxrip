@@ -2405,16 +2405,10 @@ Public Class MainForm
         If p.SourceChromaSubsampling <> "4:2:0" AndAlso s.ConvertChromaSubsampling Then
             If editVS Then
                 Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
-                Dim matrix As String
-
-                If sourceHeight = 0 OrElse sourceHeight > 576 Then
-                    matrix = "709"
-                Else
-                    matrix = "470bg"
-                End If
-
-                'TODO: 10 bit support 
-                p.Script.GetFilter("Source").Script += BR + "clip = clip.resize.Bicubic(matrix_s = '" + matrix + "', format = vs.YUV420P8)"
+                Dim matrix = If(sourceHeight = 0 OrElse sourceHeight > 576, "709", "470bg")
+                Dim format = If(p.SourceVideoBitDepth = 10, "YUV420P10", "YUV420P8")
+                p.Script.GetFilter("Source").Script += BR + "clip = clip.resize.Bicubic(matrix_s = '" +
+                    matrix + $"', format = vs.{format})"
             ElseIf editAVS AndAlso Not sourceFilter.Script.ContainsAny("ConvertToYV12", "ConvertToYUV420") AndAlso
                 Not sourceFilter.Script.Contains("ConvertToYUV420") Then
 
@@ -2803,8 +2797,10 @@ Public Class MainForm
                     Not TextEncoding.IsPathSupportedBySystemEncoding(p.SourceFile) Then
 
                     If ProcessTip(If(OSVersion.Current >= OSVersion.Windows10,
-                        "The current AviSynth video encoder does not support Unicode, consider to enable UTF-8 in the administrative language settings of Windows 10.",
-                        "The current AviSynth video encoder does not support Unicode on systems older than Windows 10.")) Then
+                        "The current AviSynth video encoder does not support Unicode, " +
+                        "consider to enable UTF-8 in the administrative language settings of Windows.",
+                        "The current AviSynth video encoder does not support " +
+                        "Unicode on systems older than Windows 10.")) Then
 
                         gbAssistant.Text = "Text Encoding Limitation"
                         CanIgnoreTip = False

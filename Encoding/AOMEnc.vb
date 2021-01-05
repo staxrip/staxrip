@@ -206,7 +206,7 @@ Public Class AV1Params
                     New BoolParam With {.Switch = "--good", .Text = "Good Quality Deadline"},
                     New BoolParam With {.Switch = "--rt", .Text = "Realtime Quality Deadline"},
                     New BoolParam With {.Switch = "--verbose", .Text = "Show encoder parameters"},
-                    New OptionParam With {.Switch = "--psnr", .Text = "Show PSNR in status line", .DefaultValue = 1, .IntegerValue = True, .Options = {"0 - Disable PSNR status line display", "1 - PSNR calculated using input bit-depth (default)", "2 - PSNR calculated using stream bit-depth"}},
+                    New OptionParam With {.Switch = "--psnr", .Text = "Show PSNR in status line", .Init = 1, .IntegerValue = True, .Options = {"0 - Disable PSNR status line display", "1 - PSNR calculated using input bit-depth (default)", "2 - PSNR calculated using stream bit-depth"}},
                     WebM,
                     New BoolParam With {.Switch = "--ivf", .Text = "Output IVF"},
                     New BoolParam With {.Switch = "--obu", .Text = "Output OBU"},

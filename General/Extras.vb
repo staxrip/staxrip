@@ -190,24 +190,32 @@ Public Class MKVInfo
             Exit Sub
         End If
 
-        Dim HDR = MediaInfo.GetVideo(inputFile, "transfer_characteristics")
+        Dim hdr = MediaInfo.GetVideo(inputFile, "transfer_characteristics")
 
-        If HDR = "PQ" Then
+        If hdr = "PQ" Then
             Using Proc As New Proc
                 Proc.Header = "Adding HDR Metadata"
                 Proc.SkipStrings = {"Progress", "The file", "The cue", "Multiplexing"}
                 Proc.Encoding = Encoding.UTF8
                 Proc.Package = Package.mkvmerge
-                Proc.Arguments = "-o " + """" + inputFile + "_HDR10.mkv" + """" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + """" + inputFile + """"
+                Proc.Arguments = "-o " + (inputFile + "_HDR10.mkv").Escape + " --colour-matrix 0:9 " +
+                    "--colour-range 0:1 --colour-transfer-characteristics 0:16 --colour-primaries 0:9 " +
+                    "--max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 " +
+                    "--min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06" +
+                    "--white-colour-coordinates 0:0.3127,0.3290 " + inputFile.Escape
                 Proc.Start()
             End Using
-        ElseIf HDR = "HLG" Then
+        ElseIf hdr = "HLG" Then
             Using Proc As New Proc
                 Proc.Header = "Adding HDR Metadata"
                 Proc.SkipStrings = {"Progress", "The file", "The cue", "Multiplexing"}
                 Proc.Encoding = Encoding.UTF8
                 Proc.Package = Package.mkvmerge
-                Proc.Arguments = "-o " + """" + inputFile + "_HLG.mkv" + """" + " --colour-matrix 0:9 --colour-range 0:1 --colour-transfer-characteristics 0:18 --colour-primaries 0:9 --max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 --min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 --white-colour-coordinates 0:0.3127,0.3290 " + """" + inputFile + """"
+                Proc.Arguments = "-o " + (inputFile + "_HLG.mkv").Escape + " --colour-matrix 0:9 " +
+                    "--colour-range 0:1 --colour-transfer-characteristics 0:18 --colour-primaries 0:9 " +
+                    "--max-content-light 0:1000 --max-frame-light 0:300 --max-luminance 0:1000 " +
+                    "--min-luminance 0:0.01 --chromaticity-coordinates 0:0.68,0.32,0.265,0.690,0.15,0.06 " +
+                    "--white-colour-coordinates 0:0.3127,0.3290 " + (inputFile).Escape
                 Proc.Start()
             End Using
         Else

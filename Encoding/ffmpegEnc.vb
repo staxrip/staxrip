@@ -244,10 +244,10 @@ Public Class ffmpegEnc
             Optional pass As Integer = 1) As String
 
             Dim sourcePath = p.Script.Path
-            Dim ret As String
+            Dim sb As New StringBuilder
 
             If includePaths AndAlso includeExecutable Then
-                ret = Package.ffmpeg.Path.Escape
+                sb.Append(Package.ffmpeg.Path.Escape)
             End If
 
             Select Case Decoder.ValueText
@@ -255,54 +255,54 @@ Public Class ffmpegEnc
                     sourcePath = p.LastOriginalSourceFile
                 Case "qsv"
                     sourcePath = p.LastOriginalSourceFile
-                    ret += " -hwaccel qsv"
+                    sb.Append(" -hwaccel qsv")
                 Case "dxva2"
                     sourcePath = p.LastOriginalSourceFile
-                    ret += " -hwaccel dxva2"
+                    sb.Append(" -hwaccel dxva2")
                 Case "cuda"
                     sourcePath = p.LastOriginalSourceFile
-                    ret += " -hwaccel_output_format cuda"
+                    sb.Append(" -hwaccel_output_format cuda")
             End Select
 
             If sourcePath.Ext = "vpy" Then
-                ret += " -f vapoursynth"
+                sb.Append(" -f vapoursynth")
             End If
 
             If includePaths Then
-                ret += " -i " + sourcePath.LongPathPrefix.Escape
+                sb.Append(" -i " + sourcePath.LongPathPrefix.Escape)
             End If
 
             Dim items = From i In Me.Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
 
             If items.Count > 0 Then
-                ret += " " + items.Select(Function(item) item.GetArgs).Join(" ")
+                sb.Append(" " + items.Select(Function(item) item.GetArgs).Join(" "))
             End If
 
             If Calc.IsARSignalingRequired Then
-                ret += " -aspect " + Calc.GetTargetDAR.ToInvariantString.Shorten(8)
+                sb.Append(" -aspect " + Calc.GetTargetDAR.ToInvariantString.Shorten(8))
             End If
 
             Select Case Mode.Value
                 Case EncodingMode.TwoPass
-                    ret += " -pass " & pass
-                    ret += $" -b:v {p.VideoBitrate}k"
+                    sb.Append(" -pass " & pass)
+                    sb.Append($" -b:v {p.VideoBitrate}k")
 
                     If pass = 1 Then
-                        ret += " -f rawvideo"
+                        sb.Append(" -f rawvideo")
                     End If
 
                     If includePaths Then
-                        ret += " -passlogfile " + (p.TempDir + p.TargetFile.Base + "_2pass").Escape
+                        sb.Append(" -passlogfile " + (p.TempDir + p.TargetFile.Base + "_2pass").Escape)
                     End If
                 Case EncodingMode.OnePass
-                    ret += $" -b:v {p.VideoBitrate}k"
+                    sb.Append($" -b:v {p.VideoBitrate}k")
             End Select
 
             Select Case Codec.OptionText
                 Case "XviD"
-                    ret += " -tag:v xvid"
+                    sb.Append(" -tag:v xvid")
                 Case "AV1"
-                    ret += " -strict experimental"
+                    sb.Append(" -strict experimental")
             End Select
 
             Dim targetPath As String
@@ -313,15 +313,17 @@ Public Class ffmpegEnc
                 targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).LongPathPrefix.Escape
             End If
 
+            If includePaths Then
+                sb.Append(" -an -y -hide_banner " + targetPath)
+            End If
+
+            Dim ret = sb.ToString.Trim
+
             If ret.Contains("%") Then
                 ret = Macro.Expand(ret)
             End If
 
-            If includePaths Then
-                ret += " -an -y -hide_banner " + targetPath
-            End If
-
-            Return ret.Trim
+            Return ret
         End Function
 
         Function IsCustom(switch As String) As Boolean

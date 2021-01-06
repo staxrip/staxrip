@@ -2,9 +2,18 @@
 2.1.5.6 Beta (2021-01-??)
 =========================
 
+2.1.6.0 Stable (2021-01-06)
+===========================
+
 - aomenc bugfixes and UI improvements (Dendraspis, 44vince44, [#375](/../../issues/375))
-- x265 by default no longer uses a pipe tool.
 - aomenc moved cq-level option to "Rate Control 1" for better usage (Dendraspis, Neltulz, [#411](/../../issues/411))
+- aomenc internal improvements and updates (Dendraspis)
+- aomenc 10-bit input fixed. (stax76, [#420](/../../issues/420))
+- x265 --aq-mode option captions extended (stax76)
+- x265 by default no longer uses a pipe tool because we use
+  a modified x265 build now that supports both AviSynth and VapourSynth
+  directly, people who want to replace it with an ordinary x265 build
+  need to enable piping in the x265 options: Input/Output > Pipe
 - New option using the source file folder as temp file folder. (stax76)
 - Fix issue detecting default subtitle. (stax76, [#362](/../../issues/362))
 - Fix demuxed mkv subtitles not named starting at ID 1. (stax76)
@@ -12,9 +21,6 @@
 - Preferred subtitles can be defined by ID. (stax76)
 - Preferred audio tracks to demux can be defined by ID. (stax76)
 - Preferred audio and subtitle tracks in Options can be defined per menu. (stax76)
-- x265 --aq-mode option captions extended (stax76)
-- aomenc internal improvements and updates (Dendraspis)
-- aomenc 10-bit input fixed. (stax76, [#420](/../../issues/420))
 - mkvtoolnix 52
 
 

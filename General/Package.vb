@@ -122,7 +122,7 @@ Public Class Package
 
     Shared Property AppleApplicationSupport As Package = Add(New Package With {
         .Name = "Apple Application Support",
-        .Filename = "CoreAudioToolbox2.dll",
+        .Filename = "CoreAudioToolbox.dll",
         .SupportsAutoUpdate = False,
         .VersionAllowAny = True,
         .IsIncluded = False,

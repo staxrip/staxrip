@@ -450,6 +450,7 @@ Public Class AppsForm
         SetupButton.Visible = Not CurrentPackage.SetupAction Is Nothing AndAlso CurrentPackage.GetStatus <> ""
 
         tsbExplore.Enabled = path <> ""
+        miCopyPath.Enabled = path <> ""
         tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.Path <> ""
         miLaunch.Enabled = tsbLaunch.Enabled
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> "" OrElse Not CurrentPackage.DownloadURLs Is Nothing

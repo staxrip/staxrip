@@ -3843,7 +3843,7 @@ Public Class MainForm
             End If
 
             Dim script = p.Script.GetNewScript
-            script.Path = (p.TempDir + p.TargetFile.Base + "_view." + script.FileType).ToShortFilePath
+            script.Path = p.TempDir + p.TargetFile.Base + "_view." + script.FileType
             script.RemoveFilter("Cutting")
 
             If script.GetError <> "" Then

@@ -488,7 +488,7 @@ Public Class MP4BoxDemuxer
                     Continue For
                 End If
 
-                Dim outpath = (proj.TempDir + st.Filename + st.ExtFull).ToShortFilePath
+                Dim outpath = proj.TempDir + st.Filename + st.ExtFull
 
                 If Not OverrideExisting AndAlso outpath.FileExists Then
                     Continue For
@@ -506,7 +506,7 @@ Public Class MP4BoxDemuxer
                         args = "-raw "
                 End Select
 
-                args += st.ID & " -out " + outpath.Escape + " " + proj.SourceFile.ToShortFilePath.Escape
+                args += st.ID & " -out " + outpath.Escape + " " + proj.SourceFile.Escape
 
                 Using proc As New Proc
                     proc.Project = proj
@@ -543,8 +543,8 @@ Public Class MP4BoxDemuxer
                 proc.Header = "Extract chapters"
                 proc.SkipString = "|"
                 proc.Package = Package.MP4Box
-                proc.Arguments = "-dump-chap-ogg " + proj.SourceFile.ToShortFilePath.Escape +
-                    " -out " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").ToShortFilePath.Escape
+                proc.Arguments = "-dump-chap-ogg " + proj.SourceFile.Escape +
+                    " -out " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape
                 proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
                 proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
                 proc.Start()
@@ -631,8 +631,7 @@ Public Class MP4BoxDemuxer
             args += "-raw"
         End If
 
-        args += " " & stream.ID & " -out " + outPath.ToShortFilePath.Escape + " " +
-            sourcefile.ToShortFilePath.Escape
+        args += " " & stream.ID & " -out " + outPath.Escape + " " + sourcefile.Escape
 
         Using proc As New Proc
             proc.Project = proj
@@ -941,8 +940,7 @@ Public Class mkvDemuxer
                         proc.SkipString = "|"
                         proc.Package = Package.MP4Box
                         Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
-                        proc.Arguments = "-add """ + outPath.ToShortFilePath + sbr +
-                            ":name= "" -new " + newOutPath.ToShortFilePath.Escape
+                        proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new " + newOutPath.Escape
                         proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
                         proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
                         proc.OutputFiles = outPaths

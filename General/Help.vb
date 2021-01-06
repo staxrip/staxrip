@@ -173,8 +173,7 @@ End Class
 
 Public Class ProcessHelp
     Shared Function GetConsoleOutput(
-        file As String, arguments As String,
-        Optional stderr As Boolean = False) As String
+        file As String, arguments As String, Optional stderr As Boolean = False) As String
 
         Dim ret = ""
 
@@ -182,6 +181,7 @@ Public Class ProcessHelp
             proc.StartInfo.UseShellExecute = False
             proc.StartInfo.CreateNoWindow = True
             proc.StartInfo.FileName = file
+            proc.StartInfo.WorkingDirectory = file.Dir
             proc.StartInfo.Arguments = arguments
 
             If stderr Then

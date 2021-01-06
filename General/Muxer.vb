@@ -328,13 +328,13 @@ Public Class MP4Muxer
             videoParams += Macro.Expand(VideoTrackName)
         End If
 
-        args.Append(" -add " + (p.VideoEncoder.OutputPath.ToShortFilePath + "#video" + videoParams).Escape)
+        args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + videoParams).Escape)
 
         For x = 2 To 99
             Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
 
             If fp.FileExists Then
-                args.Append(" -cat " + fp.ToShortFilePath.Escape)
+                args.Append(" -cat " + fp.Escape)
             Else
                 Exit For
             End If
@@ -352,17 +352,17 @@ Public Class MP4Muxer
         For Each st In Subtitles
             If st.Enabled AndAlso File.Exists(st.Path) Then
                 If st.Path.Ext = "idx" Then
-                    args.Append(" -add """ + st.Path.ToShortFilePath + "#" & st.IndexIDX + 1 &
+                    args.Append(" -add """ + st.Path + "#" & st.IndexIDX + 1 &
                                 ":name=" + Macro.Expand(st.Title) & """")
                 Else
-                    args.Append(" -add """ + st.Path.ToShortFilePath + ":lang=" + st.Language.ThreeLetterCode +
+                    args.Append(" -add """ + st.Path + ":lang=" + st.Language.ThreeLetterCode +
                                 ":name=" + Macro.Expand(st.Title) + """")
                 End If
             End If
         Next
 
         If File.Exists(ChapterFile) Then
-            args.Append(" -chap " + ChapterFile.ToShortFilePath.Escape)
+            args.Append(" -chap " + ChapterFile.Escape)
         End If
 
         If AdditionalSwitches <> "" Then
@@ -372,7 +372,7 @@ Public Class MP4Muxer
         Dim tagList As New List(Of String)
 
         If CoverFile <> "" AndAlso File.Exists(CoverFile) Then
-            tagList.Add("cover=" + CoverFile.ToShortFilePath.Escape)
+            tagList.Add("cover=" + CoverFile.Escape)
         End If
 
         If Tags.Count > 0 Then
@@ -383,14 +383,14 @@ Public Class MP4Muxer
             args.Append(" -itags " + Macro.Expand(String.Join(":", tagList)))
         End If
 
-        args.Append(" -new " + p.TargetFile.ToShortFilePath.Escape)
+        args.Append(" -new " + p.TargetFile.Escape)
 
         Return args.ToString.Trim
     End Function
 
     Sub AddAudio(ap As AudioProfile, args As StringBuilder)
         If File.Exists(ap.File) AndAlso IsSupported(ap.File.Ext) AndAlso IsSupported(ap.OutputFileType) Then
-            args.Append(" -add """ + ap.File.ToShortFilePath)
+            args.Append(" -add """ + ap.File)
 
             If ap.HasStream AndAlso ap.File.Ext = "mp4" Then
                 args.Append("#trackID=" & ap.Stream.ID)

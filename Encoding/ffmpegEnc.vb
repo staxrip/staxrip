@@ -290,6 +290,10 @@ Public Class ffmpegEnc
                     If pass = 1 Then
                         ret += " -f rawvideo"
                     End If
+
+                    If includePaths Then
+                        ret += " -passlogfile " + (p.TempDir + p.TargetFile.Base + "_2pass").Escape
+                    End If
                 Case EncodingMode.OnePass
                     ret += $" -b:v {p.VideoBitrate}k"
             End Select

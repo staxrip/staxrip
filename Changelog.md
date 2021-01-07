@@ -2,7 +2,8 @@
 2.1.7.0 Stable (2021-01-07)
 ===========================
 
-- Fixed crash using command line based audio profile. (stax76)
+- Fixed crash using command line based audio profile. (stax76, [#423](/../../issues/423)))
+
 
 
 2.1.6.1 Beta (2021-01-07)

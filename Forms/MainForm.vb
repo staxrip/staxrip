@@ -2673,14 +2673,9 @@ Public Class MainForm
         Dim isValidAnamorphicSize = (p.TargetWidth = 1440 AndAlso p.TargetHeight = 1080) OrElse
             (p.TargetWidth = 960 AndAlso p.TargetHeight = 720)
 
-        If Not isResized Then
-            If p.TargetWidth <> cropw Then
-                tbTargetWidth.Text = cropw.ToString
-            End If
-
-            If p.TargetHeight <> croph Then
-                tbTargetHeight.Text = croph.ToString
-            End If
+        If p.Script.Info.Width <> 0 AndAlso Not isResized Then
+            tbTargetWidth.Text = p.Script.Info.Width.ToString
+            tbTargetHeight.Text = p.Script.Info.Height.ToString
         End If
 
         lAspectRatioError.Text = Calc.GetAspectRatioError.ToString("f2") + "%"

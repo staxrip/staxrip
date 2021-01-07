@@ -1522,6 +1522,8 @@ Public Class CRC32
     End Function
 
     Shared Function GetChecksum(str As String) As UInteger
-        Return GetChecksum(Encoding.Unicode.GetBytes(str))
+        If str <> "" Then
+            Return GetChecksum(Encoding.Unicode.GetBytes(str))
+        End If
     End Function
 End Class

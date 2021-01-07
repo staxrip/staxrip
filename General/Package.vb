@@ -444,7 +444,7 @@ Public Class Package
         .WebURL = "http://forum.doom9.org/showthread.php?t=161411",
         .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",
         .Description = "Simple debanding filter that can be quite effective for some anime sources.",
-        .VSFilterNames = {"core.f3kdb.Deband"},
+        .VSFilterNames = {"f3kdb.Deband"},
         .AvsFilterNames = {"f3kdb"}})
 
     Shared Property f3kdb_neo As Package = Add(New PluginPackage With {
@@ -456,8 +456,19 @@ Public Class Package
         .Description = "Debanding filter forked from flash3kyuu_deband.",
         .AvsFilterNames = {"neo_f3kdb"},
         .AvsFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb Neo", $"neo_f3kdb(y=64, cb=64, cr=64, grainy=0, grainc=0)")},
-        .VSFilterNames = {"core.neo_f3kdb.Deband"},
+        .VSFilterNames = {"neo_f3kdb.Deband"},
         .VSFiltersFunc = Function() {New VideoFilter("Misc", "f3kdb Neo", "clip = core.neo_f3kdb.Deband(clip, y=64, cb=64, cr=64, grainy=0, grainc=0)")}})
+
+    Shared Property fft3d_neo As Package = Add(New PluginPackage With {
+        .Name = "FFT3D Neo",
+        .Filename = "neo-fft3d.dll",
+        .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_FFT3D",
+        .DownloadURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_FFT3D/releases",
+        .Description = "Neo FFT3D is a 3D Frequency Domain filter - strong denoiser and moderate sharpener.",
+        .AvsFilterNames = {"neo_fft3d"},
+        .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3D Neo", $"neo_fft3d(sigma=2.0, bt=3, y=3, u=3, v=3)")},
+        .VSFilterNames = {"neo_fft3d.FFT3D"},
+        .VSFiltersFunc = Function() {New VideoFilter("Noise", "FFT3D Neo", "clip = core.neo_fft3d.FFT3D(clip, sigma=2.0, bt=3, planes=[0,1,2])")}})
 
     Shared Property vinverse As Package = Add(New PluginPackage With {
         .Name = "vinverse",
@@ -834,7 +845,7 @@ Public Class Package
         .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest",
         .DownloadURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest/releases",
         .VSFilterNames = {"neo_dfttest.DFTTest"},
-        .VSFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest (Neo)", "clip = core.neo_dfttest.DFTTest(clip, ftype=0, sigma=2.0, planes=[0,1,2])")}})
+        .VSFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest Neo", "clip = core.neo_dfttest.DFTTest(clip, ftype=0, sigma=2.0, planes=[0,1,2])")}})
 
     Shared Property muvsfunc As Package = Add(New PluginPackage With {
         .Name = "muvsfunc",
@@ -1359,6 +1370,7 @@ Public Class Package
             .Name = "RgTools",
             .Filename = "RgTools.dll",
             .WebURL = "http://github.com/pinterf/RgTools",
+            .DownloadURL = "https://github.com/pinterf/RgTools/releases",
             .HelpURL = "https://github.com/pinterf/RgTools/blob/master/RgTools/documentation/RgTools.txt",
             .Description = "RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, ForwardClense and VerticalCleaner all in a single plugin.",
             .AvsFilterNames = {"RemoveGrain", "Clense", "ForwardClense", "BackwardClense", "Repair", "VerticalCleaner"},
@@ -1748,7 +1760,7 @@ Public Class Package
             .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow1_vs64.dll",
             .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
-            .VSFilterNames = {"core.svp1.Super", "core.svp1.Analyse", "core.svp1.Convert"}})
+            .VSFilterNames = {"svp1.Super", "svp1.Analyse", "svp1.Convert"}})
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 2",
@@ -1756,7 +1768,7 @@ Public Class Package
             .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin",
             .Filename = "svpflow2_vs64.dll",
             .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
-            .VSFilterNames = {"core.svp2.SmoothFps"}})
+            .VSFilterNames = {"svp2.SmoothFps"}})
 
         Add(New PluginPackage With {
             .Name = "Dither",

@@ -27,6 +27,7 @@ Tools
     "EEDI3","AviSynth Plugin","EEDI3.dll","0.9.2.3","2019-01-01"
     "f3kdb Neo","AviSynth Plugin","neo-f3kdb.dll","r6","2020-05-30"
     "ffms2","AviSynth Plugin","ffms2.dll","87bae19 StvG","2020-11-23"
+    "FFT3D Neo","AviSynth Plugin","neo-fft3d.dll","r10","2021-01-02"
     "FFT3DFilter","AviSynth Plugin","fft3dfilter.dll","2.8","2020-12-01"
     "FFT3DGPU","AviSynth Plugin","FFT3dGPU.dll","0.8.2.0","2018-11-21"
     "flash3kyuu_deband","AviSynth Plugin","flash3kyuu_deband.dll","5.0","2018-05-02"
@@ -46,7 +47,7 @@ Tools
     "MSharpen","AviSynth Plugin","msharpen.dll","0.9","2013-11-30"
     "mvtools2","AviSynth Plugin","mvtools2.dll","2.7.44","2020-12-14"
     "NicAudio","AviSynth Plugin","NicAudio.dll","1.1","2019-01-01"
-    "RgTools","AviSynth Plugin","RgTools.dll","1.0","2020-04-27"
+    "RgTools","AviSynth Plugin","RgTools.dll","1.1","2021-01-04"
     "SangNom2","AviSynth Plugin","SangNom2.dll","0.35","2013-11-30"
     "SmoothAdjust","AviSynth Plugin","SmoothAdjust.dll","3.20","2016-01-05"
     "SmoothD2","AviSynth Plugin","SmoothD2.dll","a2","2019-01-01"
@@ -138,7 +139,7 @@ Tools
     "mpv.net","GUI App","mpvnet.exe","5.4.8.6","2020-12-30"
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.18","2020-11-09"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
-    "Apple Application Support","Library","CoreAudioToolbox2.dll",,""
+    "Apple Application Support","Library","CoreAudioToolbox.dll","","2020-05-06"
     "AviSynth","Library","AviSynth.dll","3.6.2 test 6","2020-12-10"
     "DirectX 9","Library","d3d9.dll","","2020-12-09"
     "FFTW","Library","libfftw3-3.dll","3.3.8","2018-12-20"
@@ -739,6 +740,16 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 Filters: FFVideoSource, FFAudioSource
 
 http://github.com/FFMS/ffms2
+
+
+FFT3D Neo
+~~~~~~~~~
+
+Neo FFT3D is a 3D Frequency Domain filter - strong denoiser and moderate sharpener.
+
+Filters: neo_fft3d
+
+https://github.com/HomeOfAviSynthPlusEvolution/neo_FFT3D
 
 
 FFT3DFilter
@@ -1771,7 +1782,7 @@ SVPFlow 1
 
 Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin
 
-Filters: core.svp1.Super, core.svp1.Analyse, core.svp1.Convert
+Filters: svp1.Super, svp1.Analyse, svp1.Convert
 
 https://www.svp-team.com/wiki/Manual:SVPflow
 
@@ -1781,7 +1792,7 @@ SVPFlow 2
 
 Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin
 
-Filters: core.svp2.SmoothFps
+Filters: svp2.SmoothFps
 
 https://www.svp-team.com/wiki/Manual:SVPflow
 

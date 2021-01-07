@@ -6,7 +6,7 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
-Imports Microsoft.Win32
+
 Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
 
@@ -5141,27 +5141,31 @@ Public Class MainForm
         FiltersListView.RebuildMenu()
     End Sub
 
-    Sub ProcessCommandLine(a As String())
+    Sub ProcessCommandLine(args As String())
+        If args.Length > 1 Then
+            Package.LoadConfAll()
+        End If
+
         Dim files As New List(Of String)
 
-        For Each i In CLIArg.GetArgs(a)
+        For Each arg In CliArg.GetArgs(args)
             Try
-                If Not i.IsFile AndAlso files.Count > 0 Then
-                    Dim l As New List(Of String)(files)
+                If Not arg.IsFile AndAlso files.Count > 0 Then
+                    Dim files2 As New List(Of String)(files)
                     Refresh()
-                    OpenAnyFile(l)
+                    OpenAnyFile(files2)
                     files.Clear()
                 End If
 
-                If i.IsFile Then
-                    files.Add(i.Value)
+                If arg.IsFile Then
+                    files.Add(arg.Value)
                 Else
-                    If Not CommandManager.ProcessCommandLineArgument(i.Value) Then
+                    If Not CommandManager.ProcessCommandLineArgument(arg.Value) Then
                         Throw New Exception
                     End If
                 End If
             Catch ex As Exception
-                MsgWarn("Error parsing argument:" + BR2 + i.Value + BR2 + ex.Message)
+                MsgWarn("Error parsing argument:" + BR2 + arg.Value + BR2 + ex.Message)
             End Try
         Next
 

@@ -842,20 +842,20 @@ Public Class SkipException
     Inherits ApplicationException
 End Class
 
-Public Class CLIArg
+Public Class CliArg
     Sub New(value As String)
         Me.Value = value
     End Sub
 
     Property Value As String
 
-    Shared Function GetArgs(a As String()) As List(Of CLIArg)
-        Dim ret As New List(Of CLIArg)
-        Dim args As New List(Of String)(a)
-        args.RemoveAt(0)
+    Shared Function GetArgs(args As String()) As List(Of CliArg)
+        Dim ret As New List(Of CliArg)
+        Dim args2 As New List(Of String)(args)
+        args2.RemoveAt(0)
 
-        For Each i As String In args
-            ret.Add(New CLIArg(i))
+        For Each arg As String In args2
+            ret.Add(New CliArg(arg))
         Next
 
         Return ret

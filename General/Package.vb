@@ -39,6 +39,7 @@ Public Class Package
     Property WebURL As String
 
     Shared Property Items As New SortedDictionary(Of String, Package)
+    Shared Property WasConfLoaded As Boolean
 
     Shared Property DGIndex As Package = Add(New Package With {
         .Name = "DGIndex",
@@ -1886,9 +1887,7 @@ Public Class Package
 
         g.RunTask(Sub()
                       SyncLock ConfLock
-                          For Each pack In Items.Values
-                              pack.LoadConf()
-                          Next
+                          LoadConfAll()
                       End SyncLock
                   End Sub)
     End Sub
@@ -2539,6 +2538,16 @@ Public Class Package
     Function GetConf() As String
         Return FileHelp.ReadAllText(ConfPath)
     End Function
+
+    Shared Sub LoadConfAll()
+        If Not WasConfLoaded Then
+            For Each pack In Items.Values
+                pack.LoadConf()
+            Next
+
+            WasConfLoaded = True
+        End If
+    End Sub
 
     Sub LoadConf()
         For Each line In GetConf.SplitLinesNoEmpty

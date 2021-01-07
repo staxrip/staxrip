@@ -2,6 +2,7 @@
 2.1.6.1 Beta (2021-01-??)
 =========================
 
+- Fix CLI usage causing version verification to fail. (stax76)
 - RgTools 1.1
 - Neo FFT3D r10
 

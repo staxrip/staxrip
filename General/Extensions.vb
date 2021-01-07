@@ -463,6 +463,17 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function IsLong(value As String) As Boolean
+        Return Long.TryParse(value, Nothing)
+    End Function
+
+    <Extension()>
+    Function ToLong(value As String, Optional defaultValue As Long = 0L) As Long
+        Dim parsed = 0L
+        Return If(Long.TryParse(value, parsed), parsed, defaultValue)
+    End Function
+
+    <Extension()>
     Function IsSingle(value As String) As Boolean
         If value <> "" Then
             If value.Contains(",") Then value = value.Replace(",", ".")

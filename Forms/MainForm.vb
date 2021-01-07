@@ -2063,6 +2063,7 @@ Public Class MainForm
             p.SourceColorSpace = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ColorSpace")
             p.SourceChromaSubsampling = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ChromaSubsampling")
             p.SourceSize = New FileInfo(p.LastOriginalSourceFile).Length
+            p.SourceVideoSize = MediaInfo.GetVideo(p.LastOriginalSourceFile, "StreamSize").ToLong()
             p.SourceBitrate = CInt(MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitRate").ToInt / 1000)
             p.SourceScanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
             p.SourceScanOrder = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanOrder")
@@ -2719,18 +2720,23 @@ Public Class MainForm
         lSourcePAR.Text = par.X & ":" & par.Y
 
         If p.SourceSeconds > 0 Then
+            Dim size = If(p.SourceVideoSize > 0, p.SourceVideoSize, p.SourceSize)
+            Dim sizeText = If(size / 1024 ^ 2 < 1024, CInt(size / 1024 ^ 2).ToString + "MiB", (size / 1024 ^ 3).ToString("f1") + "GiB")
+            If size <> p.SourceVideoSize Then
+                sizeText = $"[{sizeText}]"
+            End If
+
             lSource1.Text = lSource1.GetMaxTextSpace(
                 g.GetTimeString(p.SourceSeconds),
-                If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB",
-                (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB"),
+                sizeText,
                 If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToString("f1") + "Mb/s", ""),
                 p.SourceFrameRate.ToString.Shorten(9) + "fps",
                 p.SourceVideoFormat, p.SourceVideoFormatProfile)
 
             lSource2.Text = lSource1.GetMaxTextSpace(
-                p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.SourceColorSpace,
-                p.SourceChromaSubsampling, If(p.SourceVideoBitDepth <> 0, p.SourceVideoBitDepth & "Bits", ""),
-                p.SourceScanType, If(p.SourceScanType = "Interlaced", p.SourceScanOrder, ""))
+                    p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.SourceColorSpace,
+                    p.SourceChromaSubsampling, If(p.SourceVideoBitDepth <> 0, p.SourceVideoBitDepth & "Bits", ""),
+                    p.SourceScanType, If(p.SourceScanType = "Interlaced", p.SourceScanOrder, ""))
 
             lTarget1.Text = lSource1.GetMaxTextSpace(g.GetTimeString(p.TargetSeconds),
                 p.TargetFrameRate.ToString.Shorten(9) + "fps", "Audio Bitrate: " & CInt(Calc.GetAudioBitrate))

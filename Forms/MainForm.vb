@@ -2983,6 +2983,7 @@ Public Class MainForm
 
             If p.Script.IsAviSynth AndAlso TypeOf p.VideoEncoder Is x264Enc AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV420P8 AndAlso
+                p.Script.Info.ColorSpace <> ColorSpace.YUV420P8_ AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV422P8 AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV444P8 AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.BGR32 AndAlso
@@ -5139,6 +5140,8 @@ Public Class MainForm
     Sub ProcessCommandLine(args As String())
         If args.Length > 1 Then
             Package.LoadConfAll()
+        Else
+            Exit Sub
         End If
 
         Dim files As New List(Of String)

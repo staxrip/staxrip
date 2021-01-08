@@ -2541,11 +2541,11 @@ Public Class Package
 
     Shared Sub LoadConfAll()
         If Not WasConfLoaded Then
+            WasConfLoaded = True
+
             For Each pack In Items.Values
                 pack.LoadConf()
             Next
-
-            WasConfLoaded = True
         End If
     End Sub
 

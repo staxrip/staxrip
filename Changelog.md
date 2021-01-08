@@ -4,6 +4,7 @@
 - Source information shows the video stream size instead of file size,
   if not available the file size is shown in brackets (Dendraspis)
 - Neo DFTTest is now also available for AviSynth. (stax76, [#426](/../../issues/426))
+- Main dialog shows actual width and height.
 
 
 2.1.7.0 Stable (2021-01-07)

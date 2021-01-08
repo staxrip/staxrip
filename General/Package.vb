@@ -839,12 +839,14 @@ Public Class Package
         .VSFilterNames = {"dfttest.DFTTest"},
         .VSFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest", "$select:msg:Select Strength;Light|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3,opt=3);Moderate|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5,opt=3);Strong|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1,opt=3)$")}})
 
-    Shared Property DFTTestNeoVS As Package = Add(New PluginPackage With {
+    Shared Property DFTTestNeo As Package = Add(New PluginPackage With {
         .Name = "DFTTest Neo",
         .Filename = "neo-dfttest.dll",
         .Description = "2D/3D frequency domain denoiser using Discrete Fourier transform.",
         .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest",
         .DownloadURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest/releases",
+        .AvsFilterNames = {"DFTTest"},
+        .AvsFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest Neo", "DFTTest(ftype=0, sigma=2.0)")},
         .VSFilterNames = {"neo_dfttest.DFTTest"},
         .VSFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest Neo", "clip = core.neo_dfttest.DFTTest(clip, ftype=0, sigma=2.0, planes=[0,1,2])")}})
 

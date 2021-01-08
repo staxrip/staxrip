@@ -21,6 +21,7 @@ Tools
     "DePan","AviSynth Plugin","DePan.dll","2.7.42","2020-05-22"
     "DePanEstimate","AviSynth Plugin","DePanEstimate.dll","2.7.42","2020-05-22"
     "DFTTest","AviSynth Plugin","dfttest.dll","1.9.6 Clang","2020-03-24"
+    "DFTTest Neo","AviSynth Plugin","neo-dfttest.dll","r7","2020-04-16"
     "Dither DLL","AviSynth Plugin","dither.dll","1.27.2","2019-01-01"
     "DSS2mod","AviSynth Plugin","avss.dll","2014-11-13","2019-01-01"
     "EEDI2","AviSynth Plugin","EEDI2.dll","0.9.2.0","2019-01-01"
@@ -162,7 +163,6 @@ Tools
     "Deblock","VapourSynth Plugin","Deblock.dll","6","2017-06-13"
     "DeblockPP7","VapourSynth Plugin","DeblockPP7.dll","2018-04-28","2019-01-01"
     "DegrainMedian","VapourSynth Plugin","libdegrainmedian.dll","2016-08-07","2019-01-01"
-    "DFTTest Neo","VapourSynth Plugin","neo-dfttest.dll","r7","2020-04-16"
     "DFTTest","VapourSynth Plugin","DFTTest.dll","r7","2020-07-04"
     "EEDI2","VapourSynth Plugin","EEDI2.dll","2017-03-04","2019-01-01"
     "EEDI3m","VapourSynth Plugin","EEDI3m.dll","2017-12-23","2019-01-01"
@@ -680,6 +680,16 @@ DFTTest
 Filters: dfttest
 
 https://github.com/pinterf/dfttest
+
+
+DFTTest Neo
+~~~~~~~~~~~
+
+2D/3D frequency domain denoiser using Discrete Fourier transform.
+
+Filters: DFTTest
+
+https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest
 
 
 Dither DLL
@@ -1604,16 +1614,6 @@ VapourSynth port of DegrainMedian
 Filters: dgm.DegrainMedian
 
 https://github.com/dubhater/vapoursynth-degrainmedian
-
-
-DFTTest Neo
-~~~~~~~~~~~
-
-2D/3D frequency domain denoiser using Discrete Fourier transform.
-
-Filters: neo_dfttest.DFTTest
-
-https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest
 
 
 DFTTest

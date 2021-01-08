@@ -1,13 +1,15 @@
+
 2.1.7.1 Beta (2021-01-??)
 =========================
 - Source information shows the video stream size instead of file size,
   if not available the file size is shown in brackets (Dendraspis)
+- Neo DFTTest is now also available for AviSynth. (stax76, [#426](/../../issues/426))
 
 
 2.1.7.0 Stable (2021-01-07)
 ===========================
 
-- Fixed crash using command line based audio profile. (stax76, [#423](/../../issues/423)))
+- Fixed crash using command line based audio profile. (stax76, [#423](/../../issues/423))
 
 
 2.1.6.1 Beta (2021-01-07)

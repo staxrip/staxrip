@@ -3220,10 +3220,10 @@ Public Class MainForm
                         i.Run(p)
                         Refresh()
 
-                        For Each iExt In i.OutputExtensions
+                        For Each outExt In i.OutputExtensions
                             Dim exitFor = False
 
-                            For Each iFile In Directory.GetFiles(p.TempDir, "*." + iExt)
+                            For Each iFile In Directory.GetFiles(p.TempDir, "*." + outExt)
                                 If g.IsSourceSame(iFile) AndAlso
                                     p.SourceFile <> iFile AndAlso
                                     Not iFile.Base.EndsWith("_out") AndAlso

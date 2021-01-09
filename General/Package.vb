@@ -45,8 +45,20 @@ Public Class Package
         .Name = "DGIndex",
         .Filename = "DGIndex.exe",
         .Description = "MPEG-2 demuxing and d2v indexing GUI app.",
-        .Location = "Support\DGIndex",
+        .WebURL = "http://rationalqm.us/dgmpgdec/dgmpgdec.html",
+        .Location = "Support\DgMpgDec",
         .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:DGIndex%")})
+
+    Shared Property DGDecode As Package = Add(New PluginPackage With {
+        .Name = "DGDecode",
+        .Filename = "DGDecode.dll",
+        .WebURL = "http://rationalqm.us/dgmpgdec/dgmpgdec.html",
+        .Description = "Source filter to open D2V index files created with DGIndex or D2V Witch.",
+        .Location = "Support\DgMpgDec",
+        .AvsFilterNames = {"MPEG2Source"},
+        .AvsFiltersFunc = Function() {New VideoFilter("Source", "MPEG2Source", "MPEG2Source(""%source_file%"")")},
+        .VSFilterNames = {"dgdecode.MPEG2Source"},
+        .VSFiltersFunc = Function() {New VideoFilter("Source", "MPEG2Source", "clip = core.dgdecode.MPEG2Source(r""%source_file%"")")}})
 
     Shared Property D2VWitch As Package = Add(New Package With {
         .Name = "D2V Witch",

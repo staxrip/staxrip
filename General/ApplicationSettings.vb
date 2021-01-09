@@ -148,7 +148,7 @@ Public Class ApplicationSettings
             AviSynthFilterPreferences.Add("*:VP9", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("264 h264 avc", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavVideoSource")
-            AviSynthFilterPreferences.Add("d2v", "D2VSource")
+            AviSynthFilterPreferences.Add("d2v", "MPEG2Source")
             AviSynthFilterPreferences.Add("mp4 m4v mov", "LSMASHVideoSource")
             AviSynthFilterPreferences.Add("ts m2ts mts m2t m2v", "LWLibavVideoSource")
             AviSynthFilterPreferences.Add("vdr", "AviSource")

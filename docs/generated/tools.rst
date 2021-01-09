@@ -22,6 +22,7 @@ Tools
     "DePanEstimate","AviSynth Plugin","DePanEstimate.dll","2.7.42","2020-05-22"
     "DFTTest","AviSynth Plugin","dfttest.dll","1.9.6 Clang","2020-03-24"
     "DFTTest Neo","AviSynth Plugin","neo-dfttest.dll","r7","2020-04-16"
+    "DGDecode","AviSynth Plugin","DGDecode.dll","2.0.0.1","2021-01-08"
     "Dither DLL","AviSynth Plugin","dither.dll","1.27.2","2019-01-01"
     "DSS2mod","AviSynth Plugin","avss.dll","2014-11-13","2019-01-01"
     "EEDI2","AviSynth Plugin","EEDI2.dll","0.9.2.0","2019-01-01"
@@ -132,7 +133,7 @@ Tools
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
     "chapterEditor","GUI App","chapterEditor.exe","1.25","2020-10-04"
     "D2V Witch","GUI App","d2vwitch.exe","v5",""
-    "DGIndex","GUI App","DGIndex.exe","1.5.8","2010-03-06"
+    "DGIndex","GUI App","DGIndex.exe","2.0.0.1","2020-12-23"
     "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.8.0.0","2020-12-13"
     "MKVToolnix GUI","GUI App","mkvtoolnix-gui.exe","52","2021-01-04"
     "MPC-BE","GUI App","mpc-be64.exe","",""
@@ -461,7 +462,7 @@ DGIndex
 
 MPEG-2 demuxing and d2v indexing GUI app.
 
-
+http://rationalqm.us/dgmpgdec/dgmpgdec.html
 
 
 MediaInfo.NET
@@ -690,6 +691,16 @@ DFTTest Neo
 Filters: DFTTest
 
 https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest
+
+
+DGDecode
+~~~~~~~~
+
+Source filter to open D2V index files created with DGIndex or D2V Witch.
+
+Filters: MPEG2Source
+
+http://rationalqm.us/dgmpgdec/dgmpgdec.html
 
 
 Dither DLL

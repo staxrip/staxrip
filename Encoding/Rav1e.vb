@@ -51,7 +51,6 @@ Public Class Rav1e
             proc.Header = "Video encoding"
             proc.FrameCount = p.Script.GetFrameCount
             proc.Encoding = Encoding.UTF8
-            proc.WorkingDirectory = p.TempDir
             proc.Priority = priority
             proc.SkipString = "encoded "
             proc.File = "cmd.exe"

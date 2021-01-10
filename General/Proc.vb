@@ -287,16 +287,6 @@ Public Class Proc
             End If
 
             SetEnvironmentVariables(Process)
-
-            If WorkingDirectory = "" AndAlso Folder.Current.Length > g.MAX_PATH Then
-                WorkingDirectory = Folder.Current.ToShortFolderPath
-
-                '.NET Framework throws exception if MAX_PATH is exceeded.
-                If WorkingDirectory.Length > g.MAX_PATH Then
-                    WorkingDirectory = Folder.Temp
-                End If
-            End If
-
             Process.Start()
 
             If ReadOutput Then

@@ -844,8 +844,6 @@ Public Class GlobalClass
                     End Try
                 End If
             End If
-
-            Folder.Current = p.TempDir
         End If
     End Sub
 

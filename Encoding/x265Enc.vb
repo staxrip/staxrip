@@ -53,7 +53,12 @@ Public Class x265Enc
         AfterEncoding()
     End Sub
 
-    Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass, Optional isFirstChunk As Boolean = True)
+    Overloads Sub Encode(
+        passName As String,
+        commandLine As String,
+        priority As ProcessPriorityClass,
+        Optional isFirstChunk As Boolean = True)
+
         p.Script.Synchronize(False, True, False, Nothing, isFirstChunk)
 
         Using proc As New Proc

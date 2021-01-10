@@ -2587,7 +2587,6 @@ Public Class MainForm
                             proc.WriteLog(args + BR2)
                             proc.File = Package.VSRip.Path
                             proc.Arguments = """" + fileContent + """"
-                            proc.WorkingDirectory = Package.VSRip.Directory
                             proc.AllowedExitCodes = {0, 1, 2}
                             proc.Start()
                         End Using

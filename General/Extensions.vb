@@ -577,7 +577,11 @@ Module StringExtensions
 
     <Extension()>
     Sub WriteFileSystemEncoding(instance As String, path As String)
-        WriteFile(instance, path, TextEncoding.EncodingOfSystem)
+        If TextEncoding.EncodingOfSystem.CodePage = TextEncoding.UTF8CodePage Then
+            WriteFileUTF8(instance, path)
+        Else
+            WriteFile(instance, path, TextEncoding.EncodingOfSystem)
+        End If
     End Sub
 
     <Extension()>

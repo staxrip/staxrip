@@ -12,6 +12,7 @@
   it locks the folder and also because the .NET Framework allows only
   260 characters for the working directory of a process. (stax76)
 - nero aac encoder binaries removed. (stax76)
+- On systems with UTF-8 code page invalid d2v and idx files were created.
 
 
 2.1.7.0 Stable (2021-01-07)

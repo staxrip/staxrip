@@ -10,9 +10,9 @@
 - Fix randomly appearing IOException when using x265 with chunks (Dendraspis, [#431](/../../issues/431))
 - Revert current folder of process being set to video temp folder because
   it locks the folder and also because the .NET Framework allows only
-  260 characters for the working directory of a process. (stax76)
+  260 characters for the working directory of a process. (stax76, [#431](/../../issues/431))
 - nero aac encoder binaries removed. (stax76)
-- On systems with UTF-8 code page invalid d2v and idx files were created.
+- On systems with UTF-8 code page invalid d2v and idx files were created. (stax76, [#435](/../../issues/435))
 
 
 2.1.7.0 Stable (2021-01-07)

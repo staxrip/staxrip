@@ -7,6 +7,7 @@
 - Main dialog shows actual width and height. (stax76)
 - Advanced Info feature of Code Editor has new VapourSynth ClipInfo option. (stax76)
 - Fix items can't be removed from or rearranged in lists (Dendraspis, [#433](/../../issues/433))
+- Fix randomly appearing IOException when using x265 with chunks (Dendraspis, [#431](/../../issues/431))
 
 
 2.1.7.0 Stable (2021-01-07)

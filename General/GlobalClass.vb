@@ -1476,7 +1476,28 @@ Public Class GlobalClass
                 End Select
             End Using
         Else
-            g.RunCodeInTerminal($"""`n{Package.vspipe.Name} {Package.vspipe.Version}`n""; & '{Package.vspipe.Path}' --info '{script.Path}' -;""""")
+
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "Choose below"
+                td.AddCommand("ClipInfo()")
+                td.AddCommand("vspipe info")
+
+                Select Case td.Show()
+                    Case "vspipe info"
+                        g.RunCodeInTerminal($"""`n{Package.vspipe.Name} {Package.vspipe.Version}`n""; & '{Package.vspipe.Path}' --info '{script.Path}' -;""""")
+                    Case "ClipInfo()"
+                        Dim infoScript = script.GetNewScript
+                        infoScript.Path = p.TempDir + p.TargetFile.Base + "_info." + script.FileType
+                        infoScript.AddFilter(New VideoFilter("clip = core.text.ClipInfo(clip)"))
+
+                        If infoScript.GetError() <> "" Then
+                            MsgError("Script Error", infoScript.GetError())
+                            Exit Sub
+                        End If
+
+                        g.PlayScriptWithMPV(infoScript, "--pause=yes --osc=no --osd-level=0")
+                End Select
+            End Using
         End If
     End Sub
 

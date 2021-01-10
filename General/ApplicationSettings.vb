@@ -162,7 +162,7 @@ Public Class ApplicationSettings
             VapourSynthFilterPreferences.Add("264 h264 avc", "LWLibavSource")
             VapourSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavSource")
             VapourSynthFilterPreferences.Add("avs vdr", "AVISource")
-            VapourSynthFilterPreferences.Add("d2v", "d2vsource")
+            VapourSynthFilterPreferences.Add("d2v", "MPEG2Source")
             VapourSynthFilterPreferences.Add("mp4 m4v mov", "LibavSMASHSource")
             VapourSynthFilterPreferences.Add("ts m2ts mts m2t m2v", "LWLibavSource")
         End If

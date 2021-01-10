@@ -150,7 +150,7 @@ Tools
     "Visual C++ 2012","Library","msvcp110.dll","","2012-11-05"
     "Visual C++ 2013","Library","msvcp120.dll","","2016-02-10"
     "Visual C++ 2019","Library","msvcp140.dll","","2020-11-11"
-    "Get-MediaInfo","Misc","Get-MediaInfo.ps1","3.5","2020-05-04"
+    "Get-MediaInfo","Misc","Get-MediaInfo.ps1","3.5","2021-01-10"
     "Haali Splitter","Misc","splitter.ax","",""
     "AWarpSharp2","VapourSynth Plugin","libawarpsharp2.dll","2018-06-18","2019-01-01"
     "BM3D","VapourSynth Plugin","BM3D.dll","r8","2019-01-03"

@@ -203,7 +203,7 @@ Public Class VideoScript
             Exit Sub
         End If
 
-        Dim code = Macro.Expand(GetScript())
+        Dim code = GetScript()
 
         If convertToRGB Then
             If Engine = ScriptEngine.AviSynth Then
@@ -233,15 +233,57 @@ Public Class VideoScript
                 End If
 
                 vsCode += "
-if clipname.format.id == vs.RGB24:
-    _matrix_in_s = 'rgb'
-else:
-    if clipname.height > 576:
-        _matrix_in_s = '709'
-    else:
-        _matrix_in_s = '470bg'
+# Matrix
+m_rgb = 0
+m_709 = 1
+m_unspec = 2
+m_470bg = 5
+m_2020ncl = 9
 
-clipname = clipname.resize.Bicubic(matrix_in_s = _matrix_in_s, format = vs.COMPATBGR32)
+# Transfer
+t_709 = 1
+t_470bg = 5
+t_st2084 = 16
+
+# Primaries
+p_709 = 1
+p_470bg = 5
+p_2020 = 9
+
+props = clip.get_frame(0).props
+
+if '_Matrix' in props and props['_Matrix'] != m_unspec:
+    matrix = props['_Matrix']
+else:
+    if clipname.format.id == vs.RGB24:
+        matrix = m_rgb
+    else:
+        if %source_height% > 576:
+            matrix = m_709
+        else:
+            matrix = m_470bg
+
+if '_Transfer' in props and props['_Transfer'] != 0:
+    transfer = props['_Transfer']
+else:
+    if matrix == m_470bg:
+        transfer = t_470bg
+    elif matrix == m_2020ncl:
+        transfer = t_st2084
+    else:
+        transfer = t_709
+
+if '_Primaries' in props and props['_Primaries'] != 0:
+    primaries = props['_Primaries']
+else:
+    if matrix == m_470bg:
+        primaries = p_470bg
+    elif matrix == m_2020ncl:
+        primaries = p_2020
+    else:
+        primaries = p_709
+
+clipname = clipname.resize.Bicubic(matrix_in = matrix, transfer_in = transfer, primaries_in = primaries, format = vs.COMPATBGR32)
 clipname.set_output()
 "
                 vsCode = vsCode.Replace("clipname", clipname)
@@ -249,6 +291,7 @@ clipname.set_output()
             End If
         End If
 
+        code = Macro.Expand(code)
         Dim changedAvsEncoding = Engine = ScriptEngine.AviSynth AndAlso LastAvsCodePage <> avsEncoding.CodePage
 
         If Me.Error <> "" OrElse code <> LastCode OrElse

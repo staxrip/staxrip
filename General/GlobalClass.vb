@@ -1476,7 +1476,6 @@ Public Class GlobalClass
                 End Select
             End Using
         Else
-
             Using td As New TaskDialog(Of String)
                 td.MainInstruction = "Choose below"
                 td.AddCommand("ClipInfo()")
@@ -1488,6 +1487,7 @@ Public Class GlobalClass
                     Case "ClipInfo()"
                         Dim infoScript = script.GetNewScript
                         infoScript.Path = p.TempDir + p.TargetFile.Base + "_info." + script.FileType
+                        infoScript.AddFilter(New VideoFilter("clip = clip.resize.Bicubic(720, (720 / clip.width * clip.height) // 8 * 8)"))
                         infoScript.AddFilter(New VideoFilter("clip = core.text.ClipInfo(clip)"))
 
                         If infoScript.GetError() <> "" Then

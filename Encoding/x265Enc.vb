@@ -53,6 +53,27 @@ Public Class x265Enc
         AfterEncoding()
     End Sub
 
+    Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass, Optional isFirstChunk As Boolean = True)
+        p.Script.Synchronize(False, True, False, Nothing, isFirstChunk)
+
+        Using proc As New Proc
+            proc.Package = Package.x265
+            proc.Header = passName
+            proc.Encoding = Encoding.UTF8
+            proc.Priority = priority
+            proc.SkipString = "%] "
+
+            If commandLine.Contains("|") Then
+                proc.File = "cmd.exe"
+                proc.Arguments = "/S /C """ + commandLine + """"
+            Else
+                proc.CommandLine = commandLine
+            End If
+
+            proc.Start()
+        End Using
+    End Sub
+
     Overrides Function GetFixedBitrate() As Integer
         Return CInt(Params.Bitrate.Value)
     End Function
@@ -85,49 +106,28 @@ Public Class x265Enc
             If Params.Mode.Value = x265RateMode.TwoPass Then
                 ret.Add(Sub()
                             Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                                   GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst)
                             Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst)
                         End Sub)
             ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
                 ret.Add(Sub()
                             'Specific order 1 > 3 > 2 is correct!
                             Encode("Video encoding first pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                                   GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst)
                             Encode("Video encoding Nth pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(3, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                                   GetArgs(3, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst)
                             Encode("Video encoding last pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst)
                         End Sub)
             Else
                 ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "),
-                    GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority))
+                    GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst))
             End If
         Next
 
         Return ret
     End Function
-
-    Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
-        p.Script.Synchronize()
-
-        Using proc As New Proc
-            proc.Package = Package.x265
-            proc.Header = passName
-            proc.Encoding = Encoding.UTF8
-            proc.Priority = priority
-            proc.SkipString = "%] "
-
-            If commandLine.Contains("|") Then
-                proc.File = "cmd.exe"
-                proc.Arguments = "/S /C """ + commandLine + """"
-            Else
-                proc.CommandLine = commandLine
-            End If
-
-            proc.Start()
-        End Using
-    End Sub
 
     Overrides Sub RunCompCheck()
         If Not g.VerifyRequirements OrElse Not g.IsValidSource Then

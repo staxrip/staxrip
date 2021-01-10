@@ -1460,6 +1460,11 @@ Namespace UI
             e.Graphics.DrawString(caption, Font, Brushes.Black, r2, sf)
         End Sub
 
+        Protected Overrides Sub OnSelectedValueChanged(e As EventArgs)
+            MyBase.OnSelectedValueChanged(e)
+            UpdateControls()
+        End Sub
+
         Sub UpdateSelection()
             If SelectedIndex > -1 Then
                 BlockOnSelectedIndexChanged = True

@@ -187,7 +187,8 @@ Public Class VideoScript
         Optional convertToRGB As Boolean = False,
         Optional comparePath As Boolean = True,
         Optional flipVertical As Boolean = False,
-        Optional avsEncoding As Encoding = Nothing)
+        Optional avsEncoding As Encoding = Nothing,
+        Optional writeScript As Boolean = True)
 
         If Path = "" Then
             Exit Sub
@@ -298,10 +299,12 @@ clipname.set_output()
             (comparePath AndAlso Path <> LastPath) OrElse changedAvsEncoding Then
 
             If Path.Dir.DirExists Then
-                If Engine = ScriptEngine.VapourSynth Then
-                    ModifyScript(code, Engine).WriteFileUTF8(Path)
-                Else
-                    ModifyScript(code, Engine).WriteFile(Path, TextEncoding.EncodingOfProcess)
+                If writeScript Then
+                    If Engine = ScriptEngine.VapourSynth Then
+                        ModifyScript(code, Engine).WriteFileUTF8(Path)
+                    Else
+                        ModifyScript(code, Engine).WriteFile(Path, TextEncoding.EncodingOfProcess)
+                    End If
                 End If
 
                 If Not Package.AviSynth.VerifyOK OrElse

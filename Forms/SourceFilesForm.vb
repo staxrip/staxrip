@@ -59,7 +59,7 @@ Public Class SourceFilesForm
         '
         'bnDown
         '
-        Me.bnDown.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.bnDown.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnDown.Location = New System.Drawing.Point(749, 370)
         Me.bnDown.Margin = New System.Windows.Forms.Padding(8)
         Me.bnDown.Size = New System.Drawing.Size(250, 80)
@@ -67,6 +67,7 @@ Public Class SourceFilesForm
         '
         'bnRemove
         '
+        Me.bnRemove.Anchor = System.Windows.Forms.AnchorStyles.Top
         Me.bnRemove.Location = New System.Drawing.Point(749, 112)
         Me.bnRemove.Margin = New System.Windows.Forms.Padding(8)
         Me.bnRemove.Size = New System.Drawing.Size(250, 80)
@@ -82,6 +83,7 @@ Public Class SourceFilesForm
         '
         'bnAdd
         '
+        Me.bnAdd.Anchor = System.Windows.Forms.AnchorStyles.Top
         Me.bnAdd.Location = New System.Drawing.Point(749, 16)
         Me.bnAdd.Margin = New System.Windows.Forms.Padding(8)
         Me.bnAdd.Size = New System.Drawing.Size(250, 80)

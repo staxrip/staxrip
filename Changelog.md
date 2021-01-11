@@ -1,5 +1,8 @@
 
-2.1.7.1 Beta (2021-01-??)
+2.1.7.2 Beta (2021-01-??)
+=========================
+
+2.1.7.1 Beta (2021-01-11)
 =========================
 
 - Source information shows the video stream size instead of file size,

@@ -4224,12 +4224,28 @@ Public Class MainForm
                 If lng.IsCommon Then
                     prefAudio.AddMenu(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
                         Sub() prefAudio.Edit.Text += " " + lng.ThreeLetterCode)
-                Else
-                    prefAudio.AddMenu("More | " + lng.ToString.Substring(0, 1).ToUpper + " | " + lng.ToString +
-                        " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
-                        Sub() prefAudio.Edit.Text += " " + lng.ThreeLetterCode)
                 End If
             Next
+
+            Dim moreAudio = prefAudio.AddMenu("More", DirectCast(Nothing, Action))
+            Dim moreAudioFirst = prefAudio.AddMenu("More | temp", DirectCast(Nothing, Action))
+
+            Dim moreAudioAction = Sub()
+                                      For Each lng In Language.Languages
+                                          prefAudio.AddMenu("More | " + lng.ToString.Substring(0, 1).ToUpper + " | " + lng.ToString +
+                                         " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
+                                         Sub() prefAudio.Edit.Text += " " + lng.ThreeLetterCode)
+                                      Next
+                                  End Sub
+
+            AddHandler moreAudio.DropDownOpened, Sub()
+                                                     If moreAudio.DropDownItems.Count > 1 Then
+                                                         Exit Sub
+                                                     End If
+
+                                                     moreAudioFirst.Visible = False
+                                                     moreAudioAction()
+                                                 End Sub
 
             Dim cut = ui.AddMenu(Of CuttingMode)
             cut.Text = "Cutting Method"
@@ -4314,12 +4330,28 @@ Public Class MainForm
                 If lng.IsCommon Then
                     prefSub.AddMenu(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
                         Sub() prefSub.Edit.Text += " " + lng.ThreeLetterCode)
-                Else
-                    prefSub.AddMenu("More | " + lng.ToString.Substring(0, 1).ToUpper + " | " + lng.ToString +
-                        " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
-                        Sub() prefSub.Edit.Text += " " + lng.ThreeLetterCode)
                 End If
             Next
+
+            Dim moreSub = prefSub.AddMenu("More", DirectCast(Nothing, Action))
+            Dim moreSubFirst = prefSub.AddMenu("More | temp", DirectCast(Nothing, Action))
+
+            Dim moreSubAction = Sub()
+                                    For Each lng In Language.Languages
+                                        prefSub.AddMenu("More | " + lng.ToString.Substring(0, 1).ToUpper + " | " + lng.ToString +
+                                         " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
+                                         Sub() prefSub.Edit.Text += " " + lng.ThreeLetterCode)
+                                    Next
+                                End Sub
+
+            AddHandler moreSub.DropDownOpened, Sub()
+                                                   If moreSub.DropDownItems.Count > 1 Then
+                                                       Exit Sub
+                                                   End If
+
+                                                   moreSubFirst.Visible = False
+                                                   moreSubAction()
+                                               End Sub
 
             Dim tbm = ui.AddTextMenu(subPage)
             tbm.Text = "Track Name"

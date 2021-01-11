@@ -15,6 +15,8 @@
 - nero aac encoder binaries removed. (stax76)
 - On systems with UTF-8 code page invalid d2v and idx files were created. (stax76, [#435](/../../issues/435))
 - Get-MediaInfo shows Range, Primaries, Transfer, Matrix. (stax76)
+- Fix wrong aspect ratio calculation in batch mode. (stax76, [#428](/../../issues/428))
+- Options dialog starts faster. (stax76)
 
 
 2.1.7.0 Stable (2021-01-07)

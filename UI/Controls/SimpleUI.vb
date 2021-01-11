@@ -1036,11 +1036,11 @@ Public Class SimpleUI
             TextCustomMenu.GetMenu(menu, Button, Nothing, AddressOf MenuClick)
         End Sub
 
-        Sub AddMenu(menuText As String, menuValue As String)
-            AddMenu(menuText, Function() menuValue)
-        End Sub
+        Function AddMenu(menuText As String, menuValue As String) As ActionMenuItem
+            Return AddMenu(menuText, Function() menuValue)
+        End Function
 
-        Sub AddMenu(menuText As String, menuFunc As Func(Of String))
+        Function AddMenu(menuText As String, menuFunc As Func(Of String)) As ActionMenuItem
             Dim action = Sub()
                              Dim v = menuFunc.Invoke
 
@@ -1049,12 +1049,12 @@ Public Class SimpleUI
                              End If
                          End Sub
 
-            AddMenu(menuText, action)
-        End Sub
+            Return AddMenu(menuText, action)
+        End Function
 
-        Sub AddMenu(menuText As String, menuAction As Action)
-            ActionMenuItem.Add(Button.ContextMenuStrip.Items, menuText, menuAction)
-        End Sub
+        Function AddMenu(menuText As String, menuAction As Action) As ActionMenuItem
+            Return ActionMenuItem.Add(Button.ContextMenuStrip.Items, menuText, menuAction)
+        End Function
     End Class
 
     Public Class ColorPickerBlock

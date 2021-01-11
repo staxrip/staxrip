@@ -1,10 +1,11 @@
 
 2.1.7.1 Beta (2021-01-??)
 =========================
+
 - Source information shows the video stream size instead of file size,
   if not available the file size is shown in brackets (Dendraspis)
 - Neo DFTTest is now also available for AviSynth. (stax76, [#426](/../../issues/426))
-- Main dialog shows actual width and height. (stax76)
+- Main dialog shows actual video width and height. (stax76)
 - Advanced Info feature of Code Editor has new VapourSynth ClipInfo option. (stax76)
 - Fix items can't be removed from or rearranged in lists (Dendraspis, [#433](/../../issues/433))
 - Fix randomly appearing IOException when using x265 with chunks (Dendraspis, [#431](/../../issues/431))
@@ -13,6 +14,7 @@
   260 characters for the working directory of a process. (stax76, [#431](/../../issues/431))
 - nero aac encoder binaries removed. (stax76)
 - On systems with UTF-8 code page invalid d2v and idx files were created. (stax76, [#435](/../../issues/435))
+- Get-MediaInfo shows Range, Primaries, Transfer, Matrix. (stax76)
 
 
 2.1.7.0 Stable (2021-01-07)

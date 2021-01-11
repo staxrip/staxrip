@@ -1029,6 +1029,7 @@ Public Class AppsForm
     Sub miPATHEnvVar_Click(sender As Object, e As EventArgs) Handles miPATHEnvVar.Click
         Dim dir = CurrentPackage.Directory.TrimTrailingSeparator
         Dim path = Environment.GetEnvironmentVariable("path", EnvironmentVariableTarget.User)
+        path = path.Replace(";;", ";").TrimEnd(";"c)
 
         Using td As New TaskDialog(Of String)
             td.MainInstruction = "Modify the user PATH environment variable"
@@ -1038,15 +1039,19 @@ Public Class AppsForm
 
             Select Case td.Show
                 Case "add"
-                    If path.Contains(dir + ";"c) Then
+                    If path.Contains(dir + ";") OrElse path.EndsWith(";" + dir) Then
                         MsgError("Folder is already in PATH")
                     Else
                         Environment.SetEnvironmentVariable("path", path + ";" + dir, EnvironmentVariableTarget.User)
                         MsgInfo("Folder was added to PATH")
                     End If
                 Case "remove"
-                    If path.Contains(dir + ";"c) Then
+                    If path.Contains(dir + ";") Then
                         Environment.SetEnvironmentVariable("path", path.Replace(dir + ";", ""), EnvironmentVariableTarget.User)
+                        MsgInfo("Folder was removed from PATH")
+                    ElseIf path.EndsWith(";" + dir) Then
+                        path = path.Substring(0, path.Length - (";" + dir).Length)
+                        Environment.SetEnvironmentVariable("path", path, EnvironmentVariableTarget.User)
                         MsgInfo("Folder was removed from PATH")
                     Else
                         MsgError("Folder is not in PATH")

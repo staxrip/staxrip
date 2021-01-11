@@ -2,7 +2,7 @@
 2.1.7.2 Beta (2021-01-??)
 =========================
 
-- Using an AviSynth neo function caused non neo plugins being loaded without reason. (stax76, [#250](/../../issues/250))
+- Using neo functions caused non neo plugins being loaded without reason. (stax76, [#250](/../../issues/250))
 
 
 2.1.7.1 Beta (2021-01-11)

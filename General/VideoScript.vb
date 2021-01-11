@@ -417,7 +417,7 @@ clipname.set_output()
             If fp <> "" Then
                 If Not plugin.VSFilterNames Is Nothing Then
                     For Each filterName In plugin.VSFilterNames
-                        If script.Contains(filterName) Then
+                        If ContainsFunction(script, filterName, 0) Then
                             WriteVSCode(script, code, filterName, plugin)
                         End If
                     Next

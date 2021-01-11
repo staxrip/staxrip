@@ -234,26 +234,23 @@ Public Class VideoScript
                 End If
 
                 vsCode += "
-# Matrix
 m_rgb = 0
 m_709 = 1
 m_unspec = 2
 m_470bg = 5
 m_2020ncl = 9
 
-# Transfer
 t_709 = 1
 t_470bg = 5
 t_st2084 = 16
 
-# Primaries
 p_709 = 1
 p_470bg = 5
 p_2020 = 9
 
 props = clip.get_frame(0).props
 
-if '_Matrix' in props and props['_Matrix'] != m_unspec:
+if '_Matrix' in props and props['_Matrix'] != m_unspec and props['_Matrix'] < 15:
     matrix = props['_Matrix']
 else:
     if clipname.format.id == vs.RGB24:
@@ -264,7 +261,7 @@ else:
         else:
             matrix = m_470bg
 
-if '_Transfer' in props and props['_Transfer'] != 0:
+if '_Transfer' in props and props['_Transfer'] > 0 and props['_Transfer'] < 19:
     transfer = props['_Transfer']
 else:
     if matrix == m_470bg:
@@ -274,7 +271,7 @@ else:
     else:
         transfer = t_709
 
-if '_Primaries' in props and props['_Primaries'] != 0:
+if '_Primaries' in props and props['_Primaries'] > 0 and props['_Primaries'] < 23:
     primaries = props['_Primaries']
 else:
     if matrix == m_470bg:

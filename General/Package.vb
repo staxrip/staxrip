@@ -140,7 +140,7 @@ Public Class Package
         .VersionAllowAny = True,
         .IsIncluded = False,
         .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.qaac),
-        .Description = "qaac requires this library for AAC encoding. The license does not allow distribution."})
+        .Description = "qaac requires this non free library for AAC encoding. It's not included because the license does not allow distribution."})
 
     Shared Property fdkaac As Package = Add(New Package With {
         .Name = "fdkaac",

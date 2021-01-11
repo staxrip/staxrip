@@ -1247,12 +1247,13 @@ Public Class AudioForm
                 num.NumEdit.Value = TempProfile.Params.qaacLowpass
                 num.NumEdit.SaveAction = Sub(value) TempProfile.Params.qaacLowpass = CInt(value)
 
-                cb = ui.AddBool(page)
-                cb.Text = "High Efficiency"
-                cb.Checked = TempProfile.Params.qaacHE
-                cb.SaveAction = Sub(value) TempProfile.Params.qaacHE = value
-                AddHandler cb.CheckedChanged, Sub() If cb.Checked Then mbMode.Button.Value = 1
-                AddHandler mbMode.Button.ValueChangedUser, Sub() If mbMode.Button.Value = 0 Then cb.Checked = False
+                Dim he = ui.AddBool(page)
+                he.Text = "High Efficiency"
+                he.Checked = TempProfile.Params.qaacHE
+                he.SaveAction = Sub(value) TempProfile.Params.qaacHE = value
+
+                AddHandler he.CheckedChanged, Sub() If he.Checked AndAlso mbMode.Button.Value = 0 Then mbMode.Button.Value = 1
+                AddHandler mbMode.Button.ValueChangedUser, Sub() If mbMode.Button.Value = 0 Then he.Checked = False
 
                 cb = ui.AddBool(page)
                 cb.Text = "No dither when quantizing to lower bit depth"

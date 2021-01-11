@@ -522,7 +522,7 @@ clipname.set_output()
                     For Each filterName In plugin.AvsFilterNames
                         If s.LoadAviSynthPlugins AndAlso
                             Not IsAvsPluginInAutoLoadFolder(plugin.Filename) AndAlso
-                            scriptLower.Contains(filterName.ToLower) Then
+                            ContainsFunction(scriptLower, filterName.ToLower, 0) Then
 
                             If plugin.Filename.Ext = "dll" Then
                                 Dim load = "LoadPlugin(""" + fp + """)" + BR
@@ -551,6 +551,36 @@ clipname.set_output()
         Next
 
         Return loadCode
+    End Function
+
+    Shared Function ContainsFunction(script As String, funcName As String, startPos As Integer) As Boolean
+        Dim index = script.IndexOf(funcName, startPos)
+
+        If index = -1 Then
+            Return False
+        End If
+
+        Dim charIndexBefore = index - 1
+        Dim charIndexAfter = index + funcName.Length
+        Dim charBeforeIsWord = charIndexBefore >= 0 AndAlso IsWordChar(script(charIndexBefore))
+        Dim charAfterIsWord = charIndexAfter < script.Length AndAlso IsWordChar(script(charIndexAfter))
+
+        If Not charBeforeIsWord AndAlso Not charAfterIsWord Then
+            Return True
+        Else
+            Dim newStart = index + 1
+
+            If newStart + funcName.Length < script.Length Then
+                Return ContainsFunction(script, funcName, newStart)
+            End If
+        End If
+    End Function
+
+    Shared Function IsWordChar(ch As Char) As Boolean
+        Dim val = Convert.ToInt32(ch)
+        Return (val >= 48 AndAlso val <= 57) OrElse
+               (val >= 65 AndAlso val <= 90) OrElse
+               (val >= 97 AndAlso val <= 122) OrElse val = 95
     End Function
 
     Shared Function GetAVSLoadCodeFromImports(code As String) As String

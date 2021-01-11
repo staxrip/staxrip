@@ -857,8 +857,8 @@ Public Class Package
         .Description = "2D/3D frequency domain denoiser using Discrete Fourier transform.",
         .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest",
         .DownloadURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest/releases",
-        .AvsFilterNames = {"DFTTest"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest Neo", "DFTTest(ftype=0, sigma=2.0)")},
+        .AvsFilterNames = {"neo_dfttest"},
+        .AvsFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest Neo", "neo_dfttest(ftype=0, sigma=2.0, y=3, u=3, v=3)")},
         .VSFilterNames = {"neo_dfttest.DFTTest"},
         .VSFiltersFunc = Function() {New VideoFilter("Noise", "DFTTest Neo", "clip = core.neo_dfttest.DFTTest(clip, ftype=0, sigma=2.0, planes=[0,1,2])")}})
 

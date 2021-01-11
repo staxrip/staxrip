@@ -120,13 +120,11 @@ Public Class GlobalCommands
         Description("Working directory the process will use.")>
         workingDirectory As String)
 
-        commandLine = Macro.Expand(commandLine)
-
         Using proc As New Proc(showProcessWindow)
             proc.Header = "Execute Command Line"
-            proc.CommandLine = commandLine
+            proc.CommandLine = Macro.Expand(commandLine)
             proc.Wait = waitForExit
-            proc.WorkingDirectory = workingDirectory
+            proc.WorkingDirectory = Macro.Expand(workingDirectory)
 
             If Not useShellExecute Then
                 proc.Process.StartInfo.UseShellExecute = False

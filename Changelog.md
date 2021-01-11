@@ -17,6 +17,9 @@
 - Get-MediaInfo shows Range, Primaries, Transfer, Matrix. (stax76)
 - Fix wrong aspect ratio calculation in batch mode. (stax76, [#428](/../../issues/428))
 - Options dialog starts faster. (stax76)
+- WorkingDirectory property of ExecuteCommandLine command supports
+  macro expansion, Windows Terminal menu item uses the video temp
+  folder as current directory. (stax76, JJKylee [#436](/../../issues/436))
 
 
 2.1.7.0 Stable (2021-01-07)

@@ -1027,38 +1027,43 @@ Public Class AppsForm
     End Sub
 
     Sub miPATHEnvVar_Click(sender As Object, e As EventArgs) Handles miPATHEnvVar.Click
-        Dim dir = CurrentPackage.Directory.TrimTrailingSeparator
-        Dim path = Environment.GetEnvironmentVariable("path", EnvironmentVariableTarget.User)
-        path = path.Replace(";;", ";").TrimEnd(";"c)
+        'crash report by user
+        Try
+            Dim dir = CurrentPackage.Directory.TrimTrailingSeparator
+            Dim path = Environment.GetEnvironmentVariable("path", EnvironmentVariableTarget.User)
+            path = path.Replace(";;", ";").TrimEnd(";"c)
 
-        Using td As New TaskDialog(Of String)
-            td.MainInstruction = "Modify the user PATH environment variable"
-            td.AddCommand("Add", $"Add {CurrentPackage.Name} to user PATH environment variable", "add")
-            td.AddCommand("Remove", $"Remove {CurrentPackage.Name} from user PATH environment variable", "remove")
-            td.AddCommand("Editor", "Show environment variable editor", "edit")
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "Modify the user PATH environment variable"
+                td.AddCommand("Add", $"Add {CurrentPackage.Name} to user PATH environment variable", "add")
+                td.AddCommand("Remove", $"Remove {CurrentPackage.Name} from user PATH environment variable", "remove")
+                td.AddCommand("Editor", "Show environment variable editor", "edit")
 
-            Select Case td.Show
-                Case "add"
-                    If path.Contains(dir + ";") OrElse path.EndsWith(";" + dir) Then
-                        MsgError("Folder is already in PATH")
-                    Else
-                        Environment.SetEnvironmentVariable("path", path + ";" + dir, EnvironmentVariableTarget.User)
-                        MsgInfo("Folder was added to PATH")
-                    End If
-                Case "remove"
-                    If path.Contains(dir + ";") Then
-                        Environment.SetEnvironmentVariable("path", path.Replace(dir + ";", ""), EnvironmentVariableTarget.User)
-                        MsgInfo("Folder was removed from PATH")
-                    ElseIf path.EndsWith(";" + dir) Then
-                        path = path.Substring(0, path.Length - (";" + dir).Length)
-                        Environment.SetEnvironmentVariable("path", path, EnvironmentVariableTarget.User)
-                        MsgInfo("Folder was removed from PATH")
-                    Else
-                        MsgError("Folder is not in PATH")
-                    End If
-                Case "edit"
-                    g.Execute("rundll32.exe", "sysdm.cpl,EditEnvironmentVariables")
-            End Select
-        End Using
+                Select Case td.Show
+                    Case "add"
+                        If path.Contains(dir + ";") OrElse path.EndsWith(";" + dir) Then
+                            MsgError("Folder is already in PATH")
+                        Else
+                            Environment.SetEnvironmentVariable("path", path + ";" + dir, EnvironmentVariableTarget.User)
+                            MsgInfo("Folder was added to PATH")
+                        End If
+                    Case "remove"
+                        If path.Contains(dir + ";") Then
+                            Environment.SetEnvironmentVariable("path", path.Replace(dir + ";", ""), EnvironmentVariableTarget.User)
+                            MsgInfo("Folder was removed from PATH")
+                        ElseIf path.EndsWith(";" + dir) Then
+                            path = path.Substring(0, path.Length - (";" + dir).Length)
+                            Environment.SetEnvironmentVariable("path", path, EnvironmentVariableTarget.User)
+                            MsgInfo("Folder was removed from PATH")
+                        Else
+                            MsgError("Folder is not in PATH")
+                        End If
+                    Case "edit"
+                        g.Execute("rundll32.exe", "sysdm.cpl,EditEnvironmentVariables")
+                End Select
+            End Using
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
     End Sub
 End Class

@@ -1793,7 +1793,7 @@ AVSC_API(IScriptEnvironment*, CreateScriptEnvironment)(int version = AVISYNTH_IN
 
 // These are some global variables you can set in your script to change AviSynth's behavior.
 #define VARNAME_AllowFloatAudio   "OPT_AllowFloatAudio"   // Allow WAVE_FORMAT_IEEE_FLOAT audio output
-#define VARNAME_VDubPlanarHack    "OPT_VDubPlanarHack"    // Hack YV16 and YV24 chroma plane order for old VDub's
+#define VARNAME_VDubPlanarHack    "OPT_VDubPlanarHack"    // Hac_k YV16 and YV24 chroma plane order for old VDub's
 #define VARNAME_AVIPadScanlines   "OPT_AVIPadScanlines"   // Have scanlines mod4 padded in all pixel formats
 #define VARNAME_UseWaveExtensible "OPT_UseWaveExtensible" // Use WAVEFORMATEXTENSIBLE when describing audio to Windows
 #define VARNAME_dwChannelMask     "OPT_dwChannelMask"     // Integer audio channel mask. See description of WAVEFORMATEXTENSIBLE for more info.

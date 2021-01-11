@@ -331,10 +331,6 @@ Public Class GlobalClass
                 MTN.Thumbnails(p.TargetFile, p)
             End If
 
-            If p.MKVHDR Then
-                MKVInfo.MetadataHDR(p.TargetFile, p)
-            End If
-
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
             Log.Save()

@@ -4305,12 +4305,6 @@ Public Class MainForm
             b.Help = "Imports VUI metadata such as HDR from the source file to the video encoder."
             b.Field = NameOf(p.ImportVUIMetadata)
 
-            'TODO: added by Revan, needs research
-            b = ui.AddBool()
-            b.Text = "HDR Ingest"
-            b.Help = "Adds the Remaining Metadata Required to be Compliant to HDR10 or HLG Standards"
-            b.Field = NameOf(p.MKVHDR)
-
             Dim subPage = ui.CreateFlowPage("Subtitles", True)
 
             Dim prefSub = ui.AddTextMenu(subPage)

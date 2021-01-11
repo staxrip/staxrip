@@ -688,7 +688,7 @@ DFTTest Neo
 
 2D/3D frequency domain denoiser using Discrete Fourier transform.
 
-Filters: DFTTest
+Filters: neo_dfttest
 
 https://github.com/HomeOfAviSynthPlusEvolution/neo_DFTTest
 

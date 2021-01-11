@@ -51,7 +51,6 @@ Public Class Project
     Public LastOriginalSourceFile As String
     Public Log As New LogBuilder
     Public MaxAspectRatioError As Double = 2
-    Public MKVHDR As Boolean
     Public MTN As Boolean
     Public NoDialogs As Boolean
     Public NoTempDir As Boolean

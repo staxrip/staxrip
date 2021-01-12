@@ -1181,14 +1181,6 @@ Public Class x265Params
                 Case "script"
                     Dim pipeString = ""
 
-                    If pipeTool = "automatic" OrElse endFrame <> 0 Then
-                        If p.Script.IsAviSynth Then
-                            pipeTool = "avs2pipemod"
-                        Else
-                            pipeTool = "vspipe"
-                        End If
-                    End If
-
                     Select Case pipeTool
                         Case "avs2pipemod"
                             Dim chunk As String
@@ -1217,6 +1209,10 @@ Public Class x265Params
                     End Select
 
                     sb.Append(pipeString + Package.x265.Path.Escape)
+
+                    If pipeTool.IsEqualIgnoreCase("none") AndAlso endFrame > 0 Then
+                        sb.Append($" --seek {startFrame} --frames {endFrame - startFrame + 1}")
+                    End If
                 Case "qs"
                     Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
                     sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)

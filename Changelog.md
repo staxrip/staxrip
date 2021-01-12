@@ -6,6 +6,7 @@
 - Fix weird behaviour on Audio Settings for qaac (Dendraspis)
 - x265 fixed default value for --hist-threshold (Dendraspis, [#441](/../../issues/441))
 - x265 muxing won't mux chunks from recent encodes (Dendraspis, [#438](/../../issues/438))
+- x265 don't use a pipline for chunks if no pipeline is set (Dendraspis, [#430](/../../issues/430))
 - AviSynth 3.7
 
 

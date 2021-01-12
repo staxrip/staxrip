@@ -30,38 +30,42 @@ Public Class Animation
             Proc.SkipStrings = {"frame=", "size="}
             Proc.Encoding = Encoding.UTF8
             Proc.Package = Package.ffmpeg
-            Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=" & Mode & """ -loglevel quiet -an -y " + cachePath
+            Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" +
+                " -vf " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline,palettegen=stats_mode=" &
+                Mode & """ -loglevel quiet -an -y " + cachePath
             Proc.Start()
         End Using
 
         If DirectoryStatus = True Then
-
             Using Proc As New Proc
                 Proc.Header = "Creating Gif"
                 Proc.SkipStrings = {"frame=", "size="}
                 Proc.Encoding = Encoding.UTF8
                 Proc.Package = Package.ffmpeg
-                Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & ":diff_mode=" & SecondMode & """ -loglevel quiet -an -y " + """" + Export + """"
+                Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" +
+                    " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size &
+                    ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & ":diff_mode=" & SecondMode &
+                    """ -loglevel quiet -an -y " + """" + Export + """"
                 Proc.Start()
             End Using
-
         Else
-
             Using Proc As New Proc
                 Proc.Header = "Creating Gif"
                 Proc.SkipStrings = {"frame=", "size="}
                 Proc.Encoding = Encoding.UTF8
                 Proc.Package = Package.ffmpeg
-                Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & ":diff_mode=" & SecondMode & """ -loglevel quiet -an -y " + """" + OutPutPath + """"
+                Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" +
+                    " -i " + cachePath + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size &
+                    ":-1:flags=spline [x]; [x][1:v] paletteuse=" & Dither & ":diff_mode=" & SecondMode &
+                    """ -loglevel quiet -an -y " + """" + OutPutPath + """"
                 Proc.Start()
             End Using
-
         End If
+
         Try
             FileHelp.Delete(cachePath)
-        Catch ex As Exception
+        Catch
         End Try
-
     End Sub
 
     Shared Sub aPNG(inputFile As String, proj As Project)
@@ -93,7 +97,9 @@ Public Class Animation
             Proc.SkipStrings = {"frame=", "size="}
             Proc.Encoding = Encoding.UTF8
             Proc.Package = Package.ffmpeg
-            Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" + " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline" + """ -plays 0 -loglevel quiet -an -y " + """" + Path + """"
+            Proc.Arguments = " -ss " & Seek & " -t " & Duration & " -i " + """" + inputFile + """" +
+                " -lavfi " + """" + "fps=" & Rate & ",scale=" & Size & ":-1:flags=spline" +
+                """ -plays 0 -loglevel quiet -an -y " + """" + Path + """"
             Proc.Start()
         End Using
 
@@ -101,11 +107,11 @@ Public Class Animation
             File.Delete(NewFile)
         End If
 
-
         If Opt = True Then
             If File.Exists(OptOut) = True Then
                 File.Delete(OptOut)
             End If
+
             If DirectoryStatus = True Then
                 Using Proc As New Proc
                     Proc.Header = "Optimizing PNG"
@@ -158,29 +164,27 @@ Class MTN
         Dim DirectoryLocation = s.Storage.GetString("MTNDirectory", p.DefaultTargetFolder)
 
         If DirectoryStatus = True Then
-
             Using Proc As New Proc
                 Proc.Header = "Creating Thumbnail"
                 Proc.SkipStrings = {"frame=", "size="}
                 Proc.Encoding = Encoding.UTF8
                 Proc.Package = Package.MTN
-                Proc.Arguments = """" + inputFile + """" + " -c " & Col & " -r " & Rows & " -h " & SizeHeight & " -w " & SizeWidth & " -j " & PictureQuality & " -D " & PictureDepth & " -P " & " -O " & """" & DirectoryLocation & """"
+                Proc.Arguments = """" + inputFile + """" + " -c " & Col & " -r " & Rows &
+                    " -h " & SizeHeight & " -w " & SizeWidth & " -j " & PictureQuality &
+                    " -D " & PictureDepth & " -P " & " -O " & """" & DirectoryLocation & """"
                 Proc.Start()
             End Using
-
         Else
-
             Using Proc As New Proc
                 Proc.Header = "Creating Thumbnail"
                 Proc.SkipStrings = {"frame=", "size="}
                 Proc.Encoding = Encoding.UTF8
                 Proc.Package = Package.MTN
-                Proc.Arguments = """" + inputFile + """" + " -c " & Col & " -r " & Rows & " -h " & SizeHeight & " -w " & SizeWidth & " -j " & PictureQuality & " -D " & PictureDepth & " -P "
+                Proc.Arguments = """" + inputFile + """" + " -c " & Col & " -r " & Rows &
+                    " -h " & SizeHeight & " -w " & SizeWidth & " -j " & PictureQuality & " -D " & PictureDepth & " -P "
                 Proc.Start()
             End Using
-
         End If
-
     End Sub
 End Class
 

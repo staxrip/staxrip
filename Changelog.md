@@ -9,6 +9,7 @@
 - x265 don't use a pipline for chunks if no pipeline is set (Dendraspis, [#430](/../../issues/430))
 - In the portable AviSynth folder there are two PowerShell scripts
   to install and uninstall AviSynth. (stax76)
+- Using ffmpeg as pipe tool with VapourSynth and x264/x265. (Patman86)
 - AviSynth 3.7
 
 

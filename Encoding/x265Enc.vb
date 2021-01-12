@@ -88,6 +88,10 @@ Public Class x265Enc
         Return CInt(Params.Chunks.Value) > 1
     End Function
 
+    Overrides Function GetChunks() As Integer
+        Return CInt(Params.Chunks.Value)
+    End Function
+
     Overrides Function GetChunkEncodeActions() As List(Of Action)
         Dim chunkCount = CInt(Params.Chunks.Value)
         Dim fullLen = p.Script.GetFrameCount

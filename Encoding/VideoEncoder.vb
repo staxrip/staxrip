@@ -50,6 +50,9 @@ Public MustInherit Class VideoEncoder
     Overridable Function CanChunkEncode() As Boolean
     End Function
 
+    Overridable Function GetChunks() As Integer
+    End Function
+
     Overridable Function GetFixedBitrate() As Integer
     End Function
 

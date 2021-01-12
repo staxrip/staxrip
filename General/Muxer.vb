@@ -697,8 +697,8 @@ Public Class MkvMuxer
 
         args += " " + p.VideoEncoder.OutputPath.LongPathPrefix.Escape
 
-        If p.VideoEncoder.CanChunkEncode() Then
-            For x = 2 To 99
+        If p.VideoEncoder.GetChunks() > 1 Then
+            For x = 2 To p.VideoEncoder.GetChunks()
                 Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
 
                 If fp.FileExists Then

@@ -84,7 +84,7 @@ Public Class x265Enc
     End Function
 
     Overrides Function CanChunkEncode() As Boolean
-        Return CInt(Params.Chunks.Value) <> 1
+        Return CInt(Params.Chunks.Value) > 1
     End Function
 
     Overrides Function GetChunkEncodeActions() As List(Of Action)

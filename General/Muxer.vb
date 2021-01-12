@@ -697,15 +697,17 @@ Public Class MkvMuxer
 
         args += " " + p.VideoEncoder.OutputPath.LongPathPrefix.Escape
 
-        For x = 2 To 99
-            Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
+        If p.VideoEncoder.CanChunkEncode() Then
+            For x = 2 To 99
+                Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
 
-            If fp.FileExists Then
-                args += " + " + fp.LongPathPrefix.Escape
-            Else
-                Exit For
-            End If
-        Next
+                If fp.FileExists Then
+                    args += " + " + fp.LongPathPrefix.Escape
+                Else
+                    Exit For
+                End If
+            Next
+        End If
 
         AddAudioArgs(p.Audio0, args)
         AddAudioArgs(p.Audio1, args)

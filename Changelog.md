@@ -5,6 +5,7 @@
 - Using neo functions caused non neo plugins being loaded without reason. (stax76, [#250](/../../issues/250))
 - Fix weird behaviour on Audio Settings for qaac (Dendraspis)
 - x265 fixed default value for --hist-threshold (Dendraspis, [#441](/../../issues/441))
+- x265 muxing won't mux chunks from recent encodes (Dendraspis, [#438](/../../issues/438))
 - AviSynth 3.7
 
 

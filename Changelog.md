@@ -11,6 +11,7 @@
   to install and uninstall AviSynth. (stax76)
 - Using ffmpeg as pipe tool with VapourSynth and x264/x265. (Patman86)
 - AviSynth 3.7
+- x265 M3.4+35-772bb4c84 gcc10.2.0 Yuuki-Asuna/msg7086/DJATOM/Patman
 
 
 2.1.7.1 Beta (2021-01-11)

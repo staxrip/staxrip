@@ -56,10 +56,11 @@ Public Class x265Enc
     Overloads Sub Encode(
         passName As String,
         commandLine As String,
-        priority As ProcessPriorityClass,
-        Optional isFirstChunk As Boolean = True)
+        priority As ProcessPriorityClass)
 
-        p.Script.Synchronize(False, True, False, Nothing, isFirstChunk)
+        If Not CanChunkEncode() Then
+            p.Script.Synchronize(False, True, False, Nothing)
+        End If
 
         Using proc As New Proc
             proc.Package = Package.x265
@@ -111,23 +112,23 @@ Public Class x265Enc
             If Params.Mode.Value = x265RateMode.TwoPass Then
                 ret.Add(Sub()
                             Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst)
+                                   GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority)
                             Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst)
+                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority)
                         End Sub)
             ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
                 ret.Add(Sub()
                             'Specific order 1 > 3 > 2 is correct!
                             Encode("Video encoding first pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst)
+                                   GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority)
                             Encode("Video encoding Nth pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(3, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst)
+                                   GetArgs(3, startFrame, endFrame, name, p.Script), s.ProcessPriority)
                             Encode("Video encoding last pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst)
+                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority)
                         End Sub)
             Else
                 ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "),
-                    GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority, isFirst))
+                    GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority))
             End If
         Next
 

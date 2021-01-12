@@ -4,6 +4,7 @@
 
 - Using neo functions caused non neo plugins being loaded without reason. (stax76, [#250](/../../issues/250))
 - Fix weird behaviour on Audio Settings for qaac (Dendraspis)
+- x265 fixed default value for --hist-threshold (Dendraspis, [#441](/../../issues/441))
 
 
 2.1.7.1 Beta (2021-01-11)

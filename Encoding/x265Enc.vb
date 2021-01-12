@@ -1003,7 +1003,7 @@ Public Class x265Params
                     Scenecut,
                     New NumParam() With {.Switch = "--scenecut-bias", .Text = "Scenecut Bias", .Init = 5, .Config = {0, 100, 1, 1}},
                     New NumParam() With {.Switch = "--radl", .Text = "Radl"},
-                    New NumParam() With {.Switch = "--hist-threshold", .Text = "Hist Threshold", .Init = 0.01, .Config = {0, 2, 0.01, 2}},
+                    New NumParam() With {.Switch = "--hist-threshold", .Text = "Hist Threshold", .Init = 0.03, .Config = {0, 1, 0.01, 2}},
                     Ref)
                 Add("Slice Decision 2", MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh,
                     New BoolParam() With {.Switch = "--fades", .Text = "Detection and handling of fade-in regions"},

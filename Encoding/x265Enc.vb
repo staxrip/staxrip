@@ -93,46 +93,43 @@ Public Class x265Enc
     End Function
 
     Overrides Function GetChunkEncodeActions() As List(Of Action)
+        Dim maxFrame = If(Params.Decoder.Value = 0, p.Script.GetFrameCount(), p.SourceFrames)
         Dim chunkCount = CInt(Params.Chunks.Value)
-        Dim fullLen = p.Script.GetFrameCount
-        Dim chunkLen = fullLen \ chunkCount
+        Dim startFrame = CInt(Params.Seek.Value)
+        Dim length = If(CInt(Params.Frames.Value) > 0, CInt(Params.Frames.Value), maxFrame - startFrame)
+        Dim endFrame = Math.Min(startFrame + length - 1, maxFrame)
+        Dim chunkLength = length \ chunkCount
         Dim ret As New List(Of Action)
 
-        For x = 0 To chunkCount - 1
-            Dim isFirst = x = 0
-            Dim isLast = x = chunkCount - 1
+        For chunk = 0 To chunkCount - 1
             Dim name = ""
-            Dim startFrame = x * chunkLen
-            Dim endFrame = startFrame + (chunkLen - 1)
+            Dim chunkStart = startFrame + (chunk * chunkLength)
+            Dim chunkEnd = If(chunk <> chunkCount - 1, chunkStart + (chunkLength - 1), endFrame)
 
-            If Not isFirst Then
-                name = "_chunk" & (x + 1)
-            End If
-
-            If isLast Then
-                endFrame = fullLen - 1
+            If chunk > 0 Then
+                name = "_chunk" & (chunk + 1)
             End If
 
             If Params.Mode.Value = x265RateMode.TwoPass Then
                 ret.Add(Sub()
                             Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                                   GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                             Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                                   GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                         End Sub)
             ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
                 ret.Add(Sub()
                             'Specific order 1 > 3 > 2 is correct!
                             Encode("Video encoding first pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                                   GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                             Encode("Video encoding Nth pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(3, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                                   GetArgs(3, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                             Encode("Video encoding last pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(2, startFrame, endFrame, name, p.Script), s.ProcessPriority)
+                                   GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                         End Sub)
             Else
                 ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "),
-                    GetArgs(1, startFrame, endFrame, name, p.Script), s.ProcessPriority))
+                    GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority))
             End If
         Next
 
@@ -333,13 +330,13 @@ Public Class x265Params
     Property PipingToolAVS As New OptionParam With {
         .Text = "Pipe",
         .Name = "PipingToolAVS",
-        .VisibleFunc = Function() p.Script.IsAviSynth,
+        .VisibleFunc = Function() p.Script.IsAviSynth AndAlso Decoder.Value = 0,
         .Options = {"None", "avs2pipemod", "ffmpeg"}}
 
     Property PipingToolVS As New OptionParam With {
         .Text = "Pipe",
         .Name = "PipingToolVS",
-        .VisibleFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
+        .VisibleFunc = Function() p.Script.IsVapourSynth AndAlso Decoder.Value = 0,
         .Options = {"None", "vspipe", "ffmpeg"}}
 
     Property chunkStart As New NumParam With {
@@ -908,8 +905,12 @@ Public Class x265Params
         .NoSwitch = "--no-const-vbv",
         .Text = "Enable VBV algorithm to be consistent across runs"}
 
+    Property Seek As New NumParam With {
+        .HelpSwitch = "--seek",
+        .Text = "Seek"}
+
     Property Frames As New NumParam With {
-        .Switch = "--frames",
+        .HelpSwitch = "--frames",
         .Switches = {"-f"},
         .Text = "Frames"}
 
@@ -1069,8 +1070,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Options = {"Automatic", "I400", "I420", "I422", "I444", "NV12", "NV16"}},
                     New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},
                     New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Progressive", "Top Field First", "Bottom Field First"}, .Values = {"", "tff", "bff"}},
-                    Chunks, chunkStart, chunkEnd, Frames,
-                    New NumParam With {.Switch = "--seek", .Text = "Seek"},
+                    Chunks, chunkStart, chunkEnd, Seek, Frames,
                     New NumParam With {.Switch = "--dup-threshold", .Text = "Dup. Threshold", .Init = 70, .Config = {1, 99}},
                     New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"},
                     New BoolParam With {.Switch = "--field", .NoSwitch = "--no-field", .Text = "Field Coding"},
@@ -1177,6 +1177,7 @@ Public Class x265Params
 
         Dim sb As New StringBuilder
         Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText
+        'pipeTool = If(Decoder.Value = 0, pipeTool, P)
 
         If includePaths AndAlso includeExecutable Then
             Dim isCropped = CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
@@ -1188,48 +1189,117 @@ Public Class x265Params
 
                     Select Case pipeTool
                         Case "avs2pipemod"
-                            Dim chunk As String
-
-                            If endFrame <> 0 Then
-                                chunk = $" -trim={startFrame},{endFrame}"
-                            End If
-
-                            Dim dll As String
-
-                            If FrameServerHelp.IsAviSynthPortableUsed Then
-                                dll = " -dll=" + Package.AviSynth.Path.Escape
-                            End If
-
+                            Dim chunk = If(endFrame > 0, $" -trim={startFrame},{endFrame}", "")
+                            Dim dll = If(FrameServerHelp.IsAviSynthPortableUsed, $" -dll={Package.AviSynth.Path.Escape}", "")
                             pipeString = Package.avs2pipemod.Path.Escape + dll + chunk + " -y4mp " + script.Path.Escape + " | "
-                        Case "vspipe"
-                            Dim chunk As String
 
-                            If endFrame <> 0 Then
-                                chunk = $" --start {startFrame} --end {endFrame}"
+                            sb.Append(pipeString + Package.x265.Path.Escape)
+                            If endFrame = 0 Then
+                                If Seek.Value > 0 Then
+                                    sb.Append($" --seek {Seek.Value}")
+                                End If
+                                If Frames.Value = 0 Then
+                                    sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
+                                Else
+                                    sb.Append($" --frames {Frames.Value}")
+                                End If
+                            Else
+                                sb.Append($" --frames {endFrame - startFrame + 1}")
                             End If
-
+                        Case "vspipe"
+                            Dim chunk = If(endFrame > 0, $" --start {startFrame} --end {endFrame}", "")
                             pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m" + chunk + " | "
+
+                            sb.Append(pipeString + Package.x265.Path.Escape)
+                            If endFrame = 0 Then
+                                If Seek.Value > 0 Then
+                                    sb.Append($" --seek {Seek.Value}")
+                                End If
+                                If Frames.Value = 0 Then
+                                    sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
+                                Else
+                                    sb.Append($" --frames {Frames.Value}")
+                                End If
+                            Else
+                                sb.Append($" --frames {endFrame - startFrame + 1}")
+                            End If
                         Case "ffmpeg"
                             pipeString = Package.ffmpeg.Path.Escape + If(p.Script.Engine = ScriptEngine.VapourSynth, " -f vapoursynth", "") + " -i " + script.Path.LongPathPrefix.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
+
+                            sb.Append(pipeString + Package.x265.Path.Escape)
+                            If endFrame = 0 Then
+                                If Seek.Value > 0 Then
+                                    sb.Append($" --seek {Seek.Value}")
+                                End If
+                                If Frames.Value = 0 Then
+                                    sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
+                                Else
+                                    sb.Append($" --frames {Frames.Value}")
+                                End If
+                            Else
+                                sb.Append($" --seek {startFrame} --frames {endFrame - startFrame + 1}")
+                            End If
+                        Case "none"
+                            sb.Append(pipeString + Package.x265.Path.Escape)
+                            If endFrame = 0 Then
+                                If Seek.Value > 0 Then
+                                    sb.Append($" --seek {Seek.Value}")
+                                End If
+                                If Frames.Value > 0 Then
+                                    sb.Append($" --frames {Frames.Value}")
+                                End If
+                            Else
+                                sb.Append($" --seek {startFrame} --frames {endFrame - startFrame + 1}")
+                            End If
                     End Select
-
-                    sb.Append(pipeString + Package.x265.Path.Escape)
-
-                    If pipeTool.IsEqualIgnoreCase("none") AndAlso endFrame > 0 Then
-                        sb.Append($" --seek {startFrame} --frames {endFrame - startFrame + 1}")
-                    End If
                 Case "qs"
                     Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
                     sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)
+                    If endFrame = 0 Then
+                        If Seek.Value > 0 Then
+                            sb.Append($" --seek {Seek.Value}")
+                        End If
+                        If Frames.Value = 0 Then
+                            sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
+                        Else
+                            sb.Append($" --frames {Frames.Value}")
+                        End If
+                    Else
+                        sb.Append($" --seek {startFrame} --frames {endFrame - startFrame + 1}")
+                    End If
                 Case "ffqsv"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
                     sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Escape + " -f yuv4mpegpipe -strict -1" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
+                    If endFrame = 0 Then
+                        If Seek.Value > 0 Then
+                            sb.Append($" --seek {Seek.Value}")
+                        End If
+                        If Frames.Value = 0 Then
+                            sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
+                        Else
+                            sb.Append($" --frames {Frames.Value}")
+                        End If
+                    Else
+                        sb.Append($" --seek {startFrame} --frames {endFrame - startFrame + 1}")
+                    End If
                 Case "ffdxva"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
                     Dim pix_fmt = If(p.SourceVideoBitDepth = 10, "yuv420p10le", "yuv420p")
                     sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Escape +
                               " -f yuv4mpegpipe -pix_fmt " + pix_fmt + " -strict -1" + crop +
                               " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
+                    If endFrame = 0 Then
+                        If Seek.Value > 0 Then
+                            sb.Append($" --seek {Seek.Value}")
+                        End If
+                        If Frames.Value = 0 Then
+                            sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
+                        Else
+                            sb.Append($" --frames {Frames.Value}")
+                        End If
+                    Else
+                        sb.Append($" --seek {startFrame} --frames {endFrame - startFrame + 1}")
+                    End If
             End Select
         End If
 
@@ -1280,15 +1350,7 @@ Public Class x265Params
         End If
 
         If includePaths Then
-            If pipeTool <> "none" Then
-                If Frames.Value = 0 AndAlso Not IsCustom(pass, "--frames") Then
-                    If Chunks.Value = 1 Then
-                        sb.Append(" --frames " & script.GetFrameCount)
-                    Else
-                        sb.Append(" --frames " & ((endFrame - startFrame) + 1))
-                    End If
-                End If
-
+            If Decoder.Value <> 0 OrElse pipeTool <> "none" Then
                 sb.Append(" --y4m")
             End If
 
@@ -1296,7 +1358,7 @@ Public Class x265Params
                 sb.Append(" --stats " + (targetPath.DirAndBase + chunkName + ".stats").Escape)
             End If
 
-            Dim input = If(pipeTool = "none", script.Path.ToShortFilePath.Escape, "-")
+            Dim input = If(Decoder.Value = 0 AndAlso pipeTool = "none", script.Path.ToShortFilePath.Escape, "-")
 
             If (Mode.Value = x265RateMode.ThreePass AndAlso pass <> 2) OrElse
                 (Mode.Value = x265RateMode.TwoPass AndAlso pass = 1) Then
@@ -1305,6 +1367,13 @@ Public Class x265Params
             Else
                 sb.Append(" --output " + (targetPath.DirAndBase + chunkName +
                           targetPath.ExtFull).ToShortFilePath.Escape + " " + input)
+            End If
+        Else
+            If Seek.Value > 0 AndAlso Not IsCustom(pass, "--seek") Then
+                sb.Append(" --seek " & Seek.Value)
+            End If
+            If Frames.Value > 0 AndAlso Not IsCustom(pass, "--frames") Then
+                sb.Append(" --frames " & Frames.Value)
             End If
         End If
 

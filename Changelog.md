@@ -7,6 +7,8 @@
 - x265 fixed default value for --hist-threshold (Dendraspis, [#441](/../../issues/441))
 - x265 muxing won't mux chunks from recent encodes (Dendraspis, [#438](/../../issues/438))
 - x265 don't use a pipline for chunks if no pipeline is set (Dendraspis, [#430](/../../issues/430))
+- x265 --seek and --frames also work with chunks (Dendraspis, [#430](/../../issues/430))
+- x265 Pipe option is invisible if decoder is not set to AVS/VPY (Dendraspis)
 - In the portable AviSynth folder there are two PowerShell scripts
   to install and uninstall AviSynth. (stax76)
 - Using ffmpeg as pipe tool with VapourSynth and x264/x265. (Patman86)

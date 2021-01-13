@@ -1260,7 +1260,7 @@ Public Class x265Params
                             sb.Append($" --seek {Seek.Value}")
                         End If
                         If Frames.Value = 0 Then
-                            sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
+                            sb.Append($" --frames {p.SourceFrames - Seek.Value}")
                         Else
                             sb.Append($" --frames {Frames.Value}")
                         End If
@@ -1275,7 +1275,7 @@ Public Class x265Params
                             sb.Append($" --seek {Seek.Value}")
                         End If
                         If Frames.Value = 0 Then
-                            sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
+                            sb.Append($" --frames {p.SourceFrames - Seek.Value}")
                         Else
                             sb.Append($" --frames {Frames.Value}")
                         End If
@@ -1293,7 +1293,7 @@ Public Class x265Params
                             sb.Append($" --seek {Seek.Value}")
                         End If
                         If Frames.Value = 0 Then
-                            sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
+                            sb.Append($" --frames {p.SourceFrames - Seek.Value}")
                         Else
                             sb.Append($" --frames {Frames.Value}")
                         End If

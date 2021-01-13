@@ -139,8 +139,10 @@ Public Class Package
         .SupportsAutoUpdate = False,
         .VersionAllowAny = True,
         .IsIncluded = False,
+        .DownloadURL = "https://github.com/staxrip/staxrip/wiki/qaac",
+        .Locations = {"Audio\qaac", "Audio\qaac\QTfiles64", Folder.Settings + "Tools\Apple Application Support"},
         .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.qaac),
-        .Description = "qaac requires this non free library for AAC encoding. It's not included because the license does not allow distribution."})
+        .Description = "qaac requires this library, it's not included because of a non-free license."})
 
     Shared Property fdkaac As Package = Add(New Package With {
         .Name = "fdkaac",
@@ -2216,7 +2218,7 @@ Public Class Package
 
     Function GetStatusLocation() As String
         If Path = "" Then
-            Return $"App not found, choose 'Tools > Edit Path' to locate {Filename}."
+            Return $"App not found, choose:{BR}Tools > Download (Ctrl+D){BR}Tools > Edit Path (Ctrl+P)"
         End If
     End Function
 

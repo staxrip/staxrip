@@ -14,6 +14,7 @@
 - Using ffmpeg as pipe tool with VapourSynth and x264/x265. (Patman86)
 - QT libraries will be found if located at Apps\Audio\qaac, Apps\Audio\qaac\QTfiles64,
   Download button points to wiki page with install instructions. (stax76)
+- Add 'ShowCodePreview' to commands list (Dendraspis, [#444](/../../issues/444))
 - AviSynth 3.7
 - x265 M3.4+35-772bb4c84 gcc10.2.0 Yuuki-Asuna/msg7086/DJATOM/Patman
 

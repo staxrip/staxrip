@@ -4055,6 +4055,11 @@ Public Class MainForm
         FiltersListView.ShowEditor()
     End Sub
 
+    <Command("Dialog to preview script code.")>
+    Sub ShowCodePreview()
+        g.CodePreview(p.Script.GetFullScript)
+    End Sub
+
     <Command("Dialog to configure project options.")>
     Sub ShowOptionsDialog()
         ShowOptionsDialog(Nothing)

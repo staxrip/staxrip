@@ -1224,7 +1224,7 @@ Public Class x265Params
                                 sb.Append($" --frames {endFrame - startFrame + 1}")
                             End If
                         Case "ffmpeg"
-                            pipeString = Package.ffmpeg.Path.Escape + If(p.Script.Engine = ScriptEngine.VapourSynth, " -f vapoursynth", "") + " -i " + script.Path.LongPathPrefix.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
+                            pipeString = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.LongPathPrefix.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
 
                             sb.Append(pipeString + Package.x265.Path.Escape)
                             If endFrame = 0 Then

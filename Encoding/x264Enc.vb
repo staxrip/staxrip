@@ -1026,9 +1026,9 @@ Public Class x264Params
 
                     pipeCmd = Package.avs2pipemod.Path.Escape + dll + " -rawvideo " + script.Path.Escape + " | "
                 Case "ffmpeg y4m"
-                    pipeCmd = Package.ffmpeg.Path.Escape + If(p.Script.Engine = ScriptEngine.VapourSynth, " -f vapoursynth", "") + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
+                    pipeCmd = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
                 Case "ffmpeg raw"
-                    pipeCmd = Package.ffmpeg.Path.Escape + If(p.Script.Engine = ScriptEngine.VapourSynth, " -f vapoursynth", "") + " -i " + script.Path.Escape + " -f rawvideo -strict -1 -loglevel fatal -hide_banner - | "
+                    pipeCmd = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.Escape + " -f rawvideo -strict -1 -loglevel fatal -hide_banner - | "
             End Select
 
             args += pipeCmd + Package.x264.Path.Escape

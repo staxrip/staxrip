@@ -17,6 +17,8 @@
 - Add 'ShowCodePreview' to commands list (Dendraspis, [#444](/../../issues/444))
 - x265 options set chromaloc automatically to 2 if HDR is set to "Yes",
   to 0 if HDR is disabled or keep it untouched if "Undefined" (Dendraspis, [#319](/../../issues/319))
+- "Import VUI metadata" also imports Chromaloc (Dendraspis, [#319](/../../issues/319))
+- "Import VUI metadata" sets "--hdr10" (Dendraspis)
 - AviSynth 3.7
 - x265 M3.4+35-772bb4c84 gcc10.2.0 Yuuki-Asuna/msg7086/DJATOM/Patman
 

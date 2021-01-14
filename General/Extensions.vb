@@ -923,8 +923,10 @@ Module MiscExtensions
         End If
 
         For Each i In strings
-            If i = "" Then Return True
+            If i <> "" Then Return False
         Next
+
+        Return True
     End Function
 
     <Extension()>

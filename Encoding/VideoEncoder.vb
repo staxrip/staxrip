@@ -116,6 +116,13 @@ Public MustInherit Class VideoEncoder
                 cl += " --range full"
         End Select
 
+        Dim ChromaSubsampling_Position = MediaInfo.GetVideo(sourceFile, "ChromaSubsampling_Position")
+        Dim chromaloc = New String(ChromaSubsampling_Position.Where(Function(c) c.IsDigit()).ToArray())
+
+        If Not String.IsNullOrEmpty(chromaloc) AndAlso chromaloc <> "0" Then
+            cl += $" --chromaloc {chromaloc}"
+        End If
+
         Dim MasteringDisplay_ColorPrimaries = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_ColorPrimaries")
         Dim MasteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
 
@@ -129,7 +136,7 @@ Public MustInherit Class VideoEncoder
                 If MasteringDisplay_ColorPrimaries.Contains("Display P3") Then
                     cl += " --output-depth 10"
                     cl += $" --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
-                    cl += " --hdr"
+                    cl += " --hdr10"
                     cl += " --repeat-headers"
                     cl += " --range limited"
                     cl += " --hrd"
@@ -139,7 +146,7 @@ Public MustInherit Class VideoEncoder
                 If MasteringDisplay_ColorPrimaries.Contains("DCI P3") Then
                     cl += " --output-depth 10"
                     cl += $" --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15700,17550)L({luminanceMax},{luminanceMin})"""
-                    cl += " --hdr"
+                    cl += " --hdr10"
                     cl += " --repeat-headers"
                     cl += " --range limited"
                     cl += " --hrd"
@@ -149,7 +156,7 @@ Public MustInherit Class VideoEncoder
                 If MasteringDisplay_ColorPrimaries.Contains("BT.2020") Then
                     cl += " --output-depth 10"
                     cl += $" --master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
-                    cl += " --hdr"
+                    cl += " --hdr10"
                     cl += " --repeat-headers"
                     cl += " --range limited"
                     cl += " --hrd"
@@ -507,8 +514,9 @@ Public MustInherit Class BasicVideoEncoder
                                 Else
                                     For xOpt = 0 To optionParam.Options.Length - 1
                                         Dim values = If(optionParam.Values.NothingOrEmpty, optionParam.Options, optionParam.Values)
+                                        Dim value = If(a(x + 1).StartsWith("--"), a(x), a(x + 1))
 
-                                        If a(x + 1).Trim(""""c).ToLower = values(xOpt).ToLower.Replace(" ", "") Then
+                                        If value.Trim(""""c).ToLower = values(xOpt).ToLower.Replace(" ", "") Then
                                             optionParam.Value = xOpt
                                             params.RaiseValueChanged(param)
                                             exitFor = True

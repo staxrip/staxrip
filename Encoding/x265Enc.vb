@@ -394,7 +394,7 @@ Public Class x265Params
         .Text = "Ref Frames",
         .Config = {1, 16}}
 
-    Property slowpass As New BoolParam With {
+    Property Slowpass As New BoolParam With {
         .Switch = "--slow-firstpass",
         .NoSwitch = "--no-slow-firstpass",
         .Init = True,
@@ -734,6 +734,13 @@ Public Class x265Params
         .Text = "Chromaloc",
         .Config = {0, 5}}
 
+    Property Hdr10 As New OptionParam With {
+        .Switch = "--hdr10",
+        .NoSwitch = "--no-hdr10",
+        .Text = "HDR10",
+        .Options = {"Undefined", "Yes", "No"},
+        .Values = {"", "--hdr10", "--no-hdr10"}}
+
     Property FrameThreads As New NumParam With {
         .Switch = "--frame-threads",
         .Switches = {"-F"},
@@ -1020,7 +1027,7 @@ Public Class x265Params
                     FrameThreads, WPP, Pmode, PME,
                     New BoolParam With {.Switch = "--asm", .NoSwitch = "--no-asm", .Text = "ASM", .Help = "For AVX512 Vector CPU's, Experiential Feature", .Init = True},
                     New BoolParam With {.Switch = "--asm avx512", .Text = "AVX 512"},
-                    slowpass,
+                    Slowpass,
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"})
                 Add("Statistic",
                     New StringParam With {.Switch = "--csv", .Text = "CSV", .BrowseFile = True},
@@ -1029,7 +1036,7 @@ Public Class x265Params
                 Add("VUI",
                     MasterDisplay,
                     New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
-                    New OptionParam With {.Switch = "--hdr10", .NoSwitch = "--no-hdr10", .Text = "HDR10", .Options = {"Undefined", "Yes", "No"}, .Values = {"", "--hdr10", "--no-hdr10"}},
+                    Hdr10,
                     New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},
                     New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "Chroma-Derived-C", "Chroma-Derived-NC", "FCC", "GBR", "ICTCP", "SMPTE 170 M", "SMPTE 2085", "SMPTE 240 M", "YCgCo"}},
                     New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-STD-B67", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}},
@@ -1140,6 +1147,16 @@ Public Class x265Params
             BlockValueChanged = False
         End If
 
+        If item Is Hdr10 Then
+            Select Case Hdr10.OptionText.ToLower()
+                Case "yes"
+                    Chromaloc.Value = 2
+                Case "no"
+                    Chromaloc.Value = 0
+                Case Else
+            End Select
+        End If
+
         If Not DeblockA.NumEdit Is Nothing Then
             If Not DeblockA.NumEdit Is Nothing Then
                 DeblockA.NumEdit.Enabled = Deblock.Value
@@ -1180,7 +1197,7 @@ Public Class x265Params
         Dim isSingleChunk = endFrame = 0
 
         If includePaths AndAlso includeExecutable Then
-            Dim isCropped = CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
+            Dim isCropped = (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
                 Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop")
 
             Select Case Decoder.ValueText

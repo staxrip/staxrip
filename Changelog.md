@@ -19,6 +19,7 @@
   to 0 if HDR is disabled or keep it untouched if "Undefined" (Dendraspis, [#319](/../../issues/319))
 - "Import VUI metadata" also imports Chromaloc (Dendraspis, [#319](/../../issues/319))
 - "Import VUI metadata" sets "--hdr10" (Dendraspis)
+- Moved '--high-tier' to 'Basic' page for x265 (Dendraspis)
 - AviSynth 3.7
 - x265 M3.4+35-772bb4c84 gcc10.2.0 Yuuki-Asuna/msg7086/DJATOM/Patman
 

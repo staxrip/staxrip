@@ -1177,7 +1177,7 @@ Public Class x265Params
 
         Dim sb As New StringBuilder
         Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText
-        'pipeTool = If(Decoder.Value = 0, pipeTool, P)
+        Dim isSingleChunk = endFrame = 0
 
         If includePaths AndAlso includeExecutable Then
             Dim isCropped = CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
@@ -1189,12 +1189,12 @@ Public Class x265Params
 
                     Select Case pipeTool
                         Case "avs2pipemod"
-                            Dim chunk = If(endFrame > 0, $" -trim={startFrame},{endFrame}", "")
+                            Dim chunk = If(isSingleChunk, "", $" -trim={startFrame},{endFrame}")
                             Dim dll = If(FrameServerHelp.IsAviSynthPortableUsed, $" -dll={Package.AviSynth.Path.Escape}", "")
                             pipeString = Package.avs2pipemod.Path.Escape + dll + chunk + " -y4mp " + script.Path.Escape + " | "
 
                             sb.Append(pipeString + Package.x265.Path.Escape)
-                            If endFrame = 0 Then
+                            If isSingleChunk Then
                                 If Seek.Value > 0 Then
                                     sb.Append($" --seek {Seek.Value}")
                                 End If
@@ -1207,11 +1207,11 @@ Public Class x265Params
                                 sb.Append($" --frames {endFrame - startFrame + 1}")
                             End If
                         Case "vspipe"
-                            Dim chunk = If(endFrame > 0, $" --start {startFrame} --end {endFrame}", "")
+                            Dim chunk = If(isSingleChunk, "", $" --start {startFrame} --end {endFrame}")
                             pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m" + chunk + " | "
 
                             sb.Append(pipeString + Package.x265.Path.Escape)
-                            If endFrame = 0 Then
+                            If isSingleChunk Then
                                 If Seek.Value > 0 Then
                                     sb.Append($" --seek {Seek.Value}")
                                 End If
@@ -1227,7 +1227,7 @@ Public Class x265Params
                             pipeString = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.LongPathPrefix.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
 
                             sb.Append(pipeString + Package.x265.Path.Escape)
-                            If endFrame = 0 Then
+                            If isSingleChunk Then
                                 If Seek.Value > 0 Then
                                     sb.Append($" --seek {Seek.Value}")
                                 End If
@@ -1241,7 +1241,7 @@ Public Class x265Params
                             End If
                         Case "none"
                             sb.Append(pipeString + Package.x265.Path.Escape)
-                            If endFrame = 0 Then
+                            If isSingleChunk Then
                                 If Seek.Value > 0 Then
                                     sb.Append($" --seek {Seek.Value}")
                                 End If
@@ -1255,7 +1255,7 @@ Public Class x265Params
                 Case "qs"
                     Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
                     sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)
-                    If endFrame = 0 Then
+                    If isSingleChunk Then
                         If Seek.Value > 0 Then
                             sb.Append($" --seek {Seek.Value}")
                         End If
@@ -1270,7 +1270,7 @@ Public Class x265Params
                 Case "ffqsv"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
                     sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Escape + " -f yuv4mpegpipe -strict -1" + crop + " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
-                    If endFrame = 0 Then
+                    If isSingleChunk Then
                         If Seek.Value > 0 Then
                             sb.Append($" --seek {Seek.Value}")
                         End If
@@ -1288,7 +1288,7 @@ Public Class x265Params
                     sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Escape +
                               " -f yuv4mpegpipe -pix_fmt " + pix_fmt + " -strict -1" + crop +
                               " -loglevel fatal -hide_banner - | " + Package.x265.Path.Escape)
-                    If endFrame = 0 Then
+                    If isSingleChunk Then
                         If Seek.Value > 0 Then
                             sb.Append($" --seek {Seek.Value}")
                         End If

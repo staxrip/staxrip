@@ -130,7 +130,7 @@ Public Class Proc
         ElseIf commands.Contains("nvenc") Then
             Return {"frames: "}
         ElseIf commands.Contains("qaac") Then
-            Return {", ETA ", "x)"}
+            Return {", ETA ", "x)", "Optimizing..."}
         ElseIf commands.Contains("fdkaac") Then
             Return {"%]", "x)"}
         ElseIf commands.Contains("eac3to") Then

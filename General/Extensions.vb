@@ -918,24 +918,22 @@ Module MiscExtensions
 
     <Extension()>
     Function NothingOrEmpty(strings As IEnumerable(Of String)) As Boolean
-        If strings Is Nothing OrElse strings.Count = 0 Then
-            Return True
+        If Not strings Is Nothing AndAlso strings.Any() Then
+            For Each str In strings
+                If str <> "" Then Return False
+            Next
         End If
-
-        For Each i In strings
-            If i <> "" Then Return False
-        Next
-
         Return True
     End Function
 
     <Extension()>
     Function NothingOrEmpty(objects As IEnumerable(Of Object)) As Boolean
-        If objects Is Nothing OrElse objects.Count = 0 Then Return True
-
-        For Each i In objects
-            If i Is Nothing Then Return True
-        Next
+        If Not objects Is Nothing AndAlso objects.Any() Then
+            For Each obj In objects
+                If Not obj Is Nothing Then Return False
+            Next
+        End If
+        Return True
     End Function
 End Module
 

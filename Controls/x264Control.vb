@@ -113,16 +113,20 @@ Public Class x264Control
 
         components = New System.ComponentModel.Container()
 
-        QualityDefinitions = New List(Of QualityItem) From {
-            New QualityItem(14, "Super High", "Super high quality and file size)"),
-            New QualityItem(16, "Very High", "Very high quality and file size)"),
-            New QualityItem(18, "Higher", "Higher quality and file size)"),
-            New QualityItem(20, "High", "High quality and file size)"),
-            New QualityItem(22, "Medium", "Medium quality and file size)"),
-            New QualityItem(24, "Low", "Low quality and file size)"),
-            New QualityItem(26, "Lower", "Lower quality and file size)"),
-            New QualityItem(28, "Very Low", "Very low quality and file size)"),
-            New QualityItem(30, "Super Low", "Super low quality and file size)")}
+        If Not s.X264QualityDefinitions Is Nothing AndAlso s.X264QualityDefinitions.Any() Then
+            QualityDefinitions = s.X264QualityDefinitions
+        Else
+            QualityDefinitions = New List(Of QualityItem) From {
+                New QualityItem(14, "Super High", "Super high quality and file size"),
+                New QualityItem(16, "Very High", "Very high quality and file size"),
+                New QualityItem(18, "Higher", "Higher quality and file size"),
+                New QualityItem(20, "High", "High quality and file size"),
+                New QualityItem(22, "Medium", "Medium quality and file size"),
+                New QualityItem(24, "Low", "Low quality and file size"),
+                New QualityItem(26, "Lower", "Lower quality and file size"),
+                New QualityItem(28, "Very Low", "Very low quality and file size"),
+                New QualityItem(30, "Super Low", "Super low quality and file size")}
+        End If
 
         Encoder = enc
         Params = Encoder.Params
@@ -169,8 +173,8 @@ Public Class x264Control
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
                 Case 0 - offset
-                    For Each i In QualityDefinitions
-                        cms.Items.Add(New ActionMenuItem(i.Value & " - " + i.Text + "      ", Sub() SetQuality(i.Value), i.Tooltip) With {.Font = If(Params.Quant.Value = i.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
+                    For Each def In QualityDefinitions
+                        cms.Items.Add(New ActionMenuItem(def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $" - {def.Text}      ", "      "), Sub() SetQuality(def.Value), def.Tooltip) With {.Font = If(Params.Quant.Value = def.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
                 Case 1 - offset
                     For x = 0 To Params.Preset.Options.Length - 1
@@ -186,7 +190,7 @@ Public Class x264Control
         End If
     End Sub
 
-    Sub SetQuality(v As Single)
+    Sub SetQuality(v As Double)
         Params.Quant.Value = v
         lv.Items(0).SubItems(1).Text = GetQualityCaption(v)
         lv.Items(0).Selected = False
@@ -217,9 +221,9 @@ Public Class x264Control
     End Sub
 
     Function GetQualityCaption(value As Double) As String
-        For Each i In QualityDefinitions
-            If i.Value = value Then
-                Return value & " - " + i.Text
+        For Each def In QualityDefinitions
+            If def.Value = value Then
+                Return value & If(Not String.IsNullOrWhiteSpace(def.Text), $" - {def.Text}", "")
             End If
         Next
 
@@ -254,12 +258,13 @@ Public Class x264Control
         Encoder.RunCompCheck()
     End Sub
 
+    <Serializable>
     Public Class QualityItem
-        Property Value As Single
+        Property Value As Double
         Property Text As String
         Property Tooltip As String
 
-        Sub New(value As Single, text As String, tooltip As String)
+        Sub New(value As Double, text As String, tooltip As String)
             Me.Value = value
             Me.Text = text
             Me.Tooltip = tooltip

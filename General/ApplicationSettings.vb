@@ -77,6 +77,8 @@ Public Class ApplicationSettings
     Public WindowPositions As WindowPositions
     Public WindowPositionsRemembered As String()
     Public WriteDebugLog As Boolean
+    Public X264QualityDefinitions As List(Of x264Control.QualityItem)
+    Public X265QualityDefinitions As List(Of x265Control.QualityItem)
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

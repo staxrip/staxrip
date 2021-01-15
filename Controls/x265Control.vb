@@ -110,18 +110,22 @@ Public Class x265Control
         InitializeComponent()
         components = New ComponentModel.Container()
 
-        QualityDefinitions = New List(Of QualityItem) From {
-            New QualityItem(10, "Super High", "Super high quality and file size"),
-            New QualityItem(12, "Very High", "Very high quality and file size"),
-            New QualityItem(14, "Higher", "Higher quality and file size"),
-            New QualityItem(16, "High", "High quality and file size"),
-            New QualityItem(18, "Medium", "Medium quality and file size"),
-            New QualityItem(20, "Low", "Low quality and file size"),
-            New QualityItem(22, "Lower", "Lower quality and file size"),
-            New QualityItem(24, "Very Low", "Very low quality and file size"),
-            New QualityItem(26, "Super Low", "Super low quality and file size"),
-            New QualityItem(28, "Extreme Low", "Extreme low quality and file size"),
-            New QualityItem(30, "Ultra Low", "Ultra low quality and file size")}
+        If Not s.X265QualityDefinitions Is Nothing AndAlso s.X265QualityDefinitions.Any() Then
+            QualityDefinitions = s.X265QualityDefinitions
+        Else
+            QualityDefinitions = New List(Of QualityItem) From {
+                New QualityItem(10, "Super High", "Super high quality and file size"),
+                New QualityItem(12, "Very High", "Very high quality and file size"),
+                New QualityItem(14, "Higher", "Higher quality and file size"),
+                New QualityItem(16, "High", "High quality and file size"),
+                New QualityItem(18, "Medium", "Medium quality and file size"),
+                New QualityItem(20, "Low", "Low quality and file size"),
+                New QualityItem(22, "Lower", "Lower quality and file size"),
+                New QualityItem(24, "Very Low", "Very low quality and file size"),
+                New QualityItem(26, "Super Low", "Super low quality and file size"),
+                New QualityItem(28, "Extreme Low", "Extreme low quality and file size"),
+                New QualityItem(30, "Ultra Low", "Ultra low quality and file size")}
+        End If
 
         Encoder = enc
         Params = Encoder.Params
@@ -169,7 +173,7 @@ Public Class x265Control
             Select Case lv.SelectedIndices(0)
                 Case 0 - offset
                     For Each def In QualityDefinitions
-                        cms.Items.Add(New ActionMenuItem(def.Value & " - " + def.Text + "      ", Sub() SetQuality(def.Value), def.Tooltip) With {.Font = If(Params.Quant.Value = def.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
+                        cms.Items.Add(New ActionMenuItem(def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $" - {def.Text}      ", "      "), Sub() SetQuality(def.Value), def.Tooltip) With {.Font = If(Params.Quant.Value = def.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
                 Case 1 - offset
                     For x = 0 To Params.Preset.Options.Length - 1
@@ -186,7 +190,7 @@ Public Class x265Control
         End If
     End Sub
 
-    Sub SetQuality(v As Single)
+    Sub SetQuality(v As Double)
         Params.Quant.Value = v
         lv.Items(0).SubItems(1).Text = GetQualityCaption(v)
         lv.Items(0).Selected = False
@@ -224,7 +228,7 @@ Public Class x265Control
     Function GetQualityCaption(value As Double) As String
         For Each def In QualityDefinitions
             If def.Value = value Then
-                Return value & " - " + def.Text
+                Return value & If(Not String.IsNullOrWhiteSpace(def.Text), $" - {def.Text}", "")
             End If
         Next
 
@@ -259,12 +263,13 @@ Public Class x265Control
         Encoder.RunCompCheck()
     End Sub
 
+    <Serializable>
     Public Class QualityItem
-        Property Value As Single
+        Property Value As Double
         Property Text As String
         Property Tooltip As String
 
-        Sub New(value As Single, text As String, tooltip As String)
+        Sub New(value As Double, text As String, tooltip As String)
             Me.Value = value
             Me.Text = text
             Me.Tooltip = tooltip

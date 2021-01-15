@@ -22,6 +22,7 @@
 - Moved '--high-tier' to 'Basic' page for x265 (Dendraspis)
 - AviSynth 3.7
 - x265 M3.4+35-772bb4c84 gcc10.2.0 Yuuki-Asuna/msg7086/DJATOM/Patman
+- rav1e 0.4.0
 
 
 2.1.7.1 Beta (2021-01-11)

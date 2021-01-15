@@ -123,7 +123,7 @@ Tools
     "Python","Console App","python.exe","3.8.5150","2020-07-20"
     "qaac","Console App","qaac64.exe","2.71","2020-10-02"
     "QSVEnc","Console App","QSVEncC64.exe","4.12","2020-11-23"
-    "rav1e","Console App","rav1e.exe","2020-12-08","2020-12-08"
+    "rav1e","Console App","rav1e.exe","0.4.0","2021-01-15"
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.6","2020-11-29"
     "VCEEnc","Console App","VCEEncC64.exe","6.07","2020-11-23"
     "vspipe","Console App","vspipe.exe","r52","2020-08-20"
@@ -141,7 +141,7 @@ Tools
     "mpv.net","GUI App","mpvnet.exe","5.4.8.6","2020-12-30"
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.18","2020-11-09"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
-    "Apple Application Support","Library","CoreAudioToolbox.dll","","2020-05-06"
+    "Apple Application Support","Library","CoreAudioToolbox.dll","","2020-10-16"
     "AviSynth","Library","AviSynth.dll","3.7","2021-01-11"
     "DirectX 9","Library","d3d9.dll","","2020-12-09"
     "FFTW","Library","libfftw3-3.dll","3.3.8","2018-12-20"
@@ -758,7 +758,7 @@ ffms2
 
 AviSynth+ and VapourSynth source filter supporting various input formats.
 
-Filters: FFVideoSource, FFAudioSource
+Filters: FFVideoSource, FFAudioSource, FFMS2
 
 http://github.com/FFMS/ffms2
 

@@ -20,9 +20,11 @@
 - "Import VUI metadata" also imports Chromaloc (Dendraspis, [#319](/../../issues/319))
 - "Import VUI metadata" sets "--hdr10" (Dendraspis)
 - Moved '--high-tier' to 'Basic' page for x265 (Dendraspis)
-- Introduce custom quality definitions for x264 and x265 via Settings » Video (Dendraspis)
+- Introduce custom quality definitions for x264 and x265 via Settings ï¿½ Video (Dendraspis)
+- The x265 command line preview shows both passes for two pass. (stax76, [#454](/../../issues/454))
 - AviSynth 3.7
 - x265 M3.4+35-772bb4c84 gcc10.2.0 Yuuki-Asuna/msg7086/DJATOM/Patman
+- rav1e 0.4.0
 
 
 2.1.7.1 Beta (2021-01-11)

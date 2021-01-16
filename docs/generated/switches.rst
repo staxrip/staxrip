@@ -331,6 +331,10 @@
 
     Shows a dialog to generate thumbnails.
 
+.. option:: -ShowCodePreview
+
+    Dialog to preview script code.
+
 .. option:: -ShowCropDialog
 
     Shows the crop dialog to crop borders.

@@ -17,6 +17,10 @@ Namespace CommandLine
 
         MustOverride Function GetPackage() As Package
 
+        Overridable Function GetCommandLinePreview() As String
+            Return GetCommandLine(True, True)
+        End Function
+
         Sub Init(store As PrimitiveStore)
             For Each i In Items
                 i.InitParam(store, Me)

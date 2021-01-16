@@ -118,7 +118,7 @@ Tools
     "MP4Box","Console App","MP4Box.exe","1.1.0-DEV-rev384-gf9e004333-x64-gcc10.2.0 Patman","2020-12-21"
     "mtn","Console App","mtn.exe","2.0.1","2019-06-27"
     "NeroAAC","Console App","neroAacEnc.exe","","2010-02-18"
-    "NVEnc","Console App","NVEncC64.exe","5.22","2020-12-01"
+    "NVEnc","Console App","NVEncC64.exe","5.25","2021-01-10"
     "PNGopt","Console App","apngopt.exe","1.4","2019-01-01"
     "Python","Console App","python.exe","3.8.5150","2020-07-20"
     "qaac","Console App","qaac64.exe","2.71","2020-10-02"

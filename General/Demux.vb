@@ -514,8 +514,12 @@ Public Class MP4BoxDemuxer
                     proc.SkipString = "|"
                     proc.Package = Package.MP4Box
                     proc.Arguments = args
-                    proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
-                    proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+
+                    If proj.TempDir.Length <= g.MAX_PATH Then
+                        proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
+                        proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+                    End If
+
                     proc.OutputFiles = {outpath}
                     proc.Start()
                 End Using
@@ -529,8 +533,12 @@ Public Class MP4BoxDemuxer
                 proc.Header = "Extract cover"
                 proc.Package = Package.MP4Box
                 proc.Arguments = "-dump-cover " + proj.SourceFile.Escape + " -out " + (proj.TempDir + "cover.jpg").Escape
-                proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
-                proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+
+                If proj.TempDir.Length <= g.MAX_PATH Then
+                    proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
+                    proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+                End If
+
                 proc.Start()
             End Using
         End If
@@ -545,8 +553,12 @@ Public Class MP4BoxDemuxer
                 proc.Package = Package.MP4Box
                 proc.Arguments = "-dump-chap-ogg " + proj.SourceFile.Escape +
                     " -out " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape
-                proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
-                proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+
+                If proj.TempDir.Length <= g.MAX_PATH Then
+                    proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
+                    proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+                End If
+
                 proc.Start()
             End Using
         End If
@@ -590,8 +602,12 @@ Public Class MP4BoxDemuxer
             proc.SkipString = "|"
             proc.Package = Package.MP4Box
             proc.Arguments = args
-            proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
-            proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+
+            If proj.TempDir.Length <= g.MAX_PATH Then
+                proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
+                proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+            End If
+
             proc.OutputFiles = {outpath}
             proc.Start()
         End Using
@@ -639,8 +655,12 @@ Public Class MP4BoxDemuxer
             proc.SkipString = "|"
             proc.Package = Package.MP4Box
             proc.Arguments = args
-            proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
-            proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+
+            If proj.TempDir.Length <= g.MAX_PATH Then
+                proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
+                proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+            End If
+
             proc.OutputFiles = {outPath}
             proc.Start()
         End Using
@@ -941,8 +961,12 @@ Public Class mkvDemuxer
                         proc.Package = Package.MP4Box
                         Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
                         proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new " + newOutPath.Escape
-                        proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
-                        proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+
+                        If proj.TempDir.Length <= g.MAX_PATH Then
+                            proc.Process.StartInfo.EnvironmentVariables("TEMP") = proj.TempDir
+                            proc.Process.StartInfo.EnvironmentVariables("TMP") = proj.TempDir
+                        End If
+
                         proc.OutputFiles = outPaths
                         proc.Start()
                     End Using

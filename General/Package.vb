@@ -229,6 +229,7 @@ Public Class Package
         .WebURL = "http://www.vapoursynth.com",
         .HelpURL = "http://www.vapoursynth.com/doc",
         .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases",
+        .SupportsAutoUpdate = False,
         .HelpFilename = "doc\index.html",
         .Siblings = {"vspipe"},
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
@@ -242,6 +243,7 @@ Public Class Package
         .HelpURL = "http://www.vapoursynth.com/doc/vspipe.html",
         .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases",
         .HelpSwitch = "stderr",
+        .SupportsAutoUpdate = False,
         .Siblings = {"VapourSynth"},
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
         .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthHintDir})

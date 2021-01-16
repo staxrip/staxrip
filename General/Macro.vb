@@ -317,7 +317,7 @@ Public Class Macro
         If value = "" Then Return ""
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_file%") Then value = value.Replace("%source_file%", p.SourceFile.LongPathPrefix)
+        If value.Contains("%source_file%") Then value = value.Replace("%source_file%", p.SourceFile)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%working_dir%") Then value = value.Replace("%working_dir%", p.TempDir)
@@ -329,7 +329,7 @@ Public Class Macro
         If value.Contains("%temp_file%") Then value = value.Replace("%temp_file%", p.TempDir + p.SourceFile.Base)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_temp_file%") Then value = value.Replace("%source_temp_file%", (p.TempDir + g.GetSourceBase).ToShortFilePath)
+        If value.Contains("%source_temp_file%") Then value = value.Replace("%source_temp_file%", p.TempDir + g.GetSourceBase)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_temp_file%") Then value = value.Replace("%target_temp_file%", p.TempDir + p.TargetFile.Base)

@@ -115,7 +115,7 @@ Tools
     "mkvextract","Console App","mkvextract.exe","52","2021-01-04"
     "mkvinfo","Console App","mkvinfo.exe","52","2021-01-04"
     "mkvmerge","Console App","mkvmerge.exe","52","2021-01-04"
-    "MP4Box","Console App","MP4Box.exe","1.1.0-DEV-rev384-gf9e004333-x64-gcc10.2.0 Patman","2020-12-21"
+    "MP4Box","Console App","MP4Box.exe","1.1.0-rev447-g8c190b551-gcc10.2.0 Patman","2021-01-15"
     "mtn","Console App","mtn.exe","2.0.1","2019-06-27"
     "NeroAAC","Console App","neroAacEnc.exe","","2010-02-18"
     "NVEnc","Console App","NVEncC64.exe","5.25","2021-01-10"

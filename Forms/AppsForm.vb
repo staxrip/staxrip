@@ -462,7 +462,6 @@ Public Class AppsForm
 
         miEditPath.Enabled = CurrentPackage.IsCustomPathAllowed
         miFindPath.Enabled = miEditPath.Enabled
-        miClearPaths.Enabled = miEditPath.Enabled
 
         s.StringDictionary("RecentExternalApplicationControl") = CurrentPackage.Name + CurrentPackage.Version
 

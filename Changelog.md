@@ -26,6 +26,7 @@
 - x265 M3.4+35-772bb4c84 gcc10.2.0 Yuuki-Asuna/msg7086/DJATOM/Patman
 - rav1e 0.4.0
 - nvenc 5.25
+- MP4Box 1.1.0-rev447-g8c190b551-gcc10.2.0 Patman (Windows 10 long path support)
 
 
 2.1.7.1 Beta (2021-01-11)

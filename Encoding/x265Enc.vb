@@ -1126,6 +1126,20 @@ Public Class x265Params
         End Get
     End Property
 
+    Overrides Function GetCommandLinePreview() As String
+        Dim ret = GetCommandLine(True, True)
+
+        If Mode.Value = x265RateMode.TwoPass Then
+            ret += BR2 + GetCommandLine(True, True, 2)
+        ElseIf Mode.Value = x265RateMode.ThreePass Then
+            'Specific order 1 > 3 > 2 is correct!
+            ret += BR2 + GetCommandLine(True, True, 3)
+            ret += BR2 + GetCommandLine(True, True, 2)
+        End If
+
+        Return ret
+    End Function
+
     Public Overrides Sub ShowHelp(id As String)
         If Control.ModifierKeys = Keys.Control OrElse Control.ModifierKeys = Keys.Shift Then
             g.ShellExecute("https://x265.readthedocs.io/en/latest/cli.html#cmdoption-" + id.TrimStart("-"c))
@@ -1176,7 +1190,7 @@ Public Class x265Params
         includeExecutable As Boolean,
         Optional pass As Integer = 1) As String
 
-        Return GetArgs(1, 0, 0, Nothing, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
+        Return GetArgs(pass, 0, 0, Nothing, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
             p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
     End Function
 

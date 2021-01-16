@@ -49,7 +49,7 @@ Public Class CommandLineForm
                                          MsgInfo("Command Line was copied.")
                                      End Sub).SetImage(Symbol.Copy)
 
-        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLine(True, True)))
+        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLinePreview))
         cms.Add("Import Command Line...", Sub() If MsgQuestion("Import command line from clipboard?", Clipboard.GetText) = DialogResult.OK Then BasicVideoEncoder.ImportCommandLine(Clipboard.GetText, params)).SetImage(Symbol.Download)
 
         cms.Add("Help about this dialog", AddressOf ShowHelp).SetImage(Symbol.Help)

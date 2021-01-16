@@ -966,7 +966,7 @@ Module MiscExtensions
             Dim text = ""
             If Double.TryParse(Regex.Replace(match.Groups(1).Value, "\.|,", NumberFormatInfo.CurrentInfo.NumberDecimalSeparator), value) Then
                 Dim powed = Math.Pow(10, qualityConfig(3))
-                value = CSng(Math.Floor(value * powed) / powed)
+                value = CInt(Math.Floor(value * powed)) / powed
                 If value >= qualityConfig(0) AndAlso value <= qualityConfig(1) AndAlso Not result.Where(Function(x) x.Value = value).Any() Then
                     text = If(match.Groups.Count > 4, match.Groups(4).Value.Trim(), text)
                     result.Add(New x264Control.QualityItem(value, text, ""))

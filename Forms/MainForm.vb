@@ -3525,7 +3525,7 @@ Public Class MainForm
             b.Field = NameOf(s.MinimizeToTray)
 
             '############# Video
-            Dim videoPage = ui.CreateFlowPage("Video", True)
+            Dim videoPage = ui.CreateFlowPage("Video")
 
             b = ui.AddBool
             b.Text = "Add filter to convert chroma subsampling to 4:2:0"
@@ -3540,13 +3540,12 @@ Public Class MainForm
             t = ui.AddText()
             t.Text = "x264 quality definitions"
             t.Help = "Create custom quality definitions for x264." + BR2 +
-                        "Use this format to create your custom values with optional description:" + BR +
-                        "number""text""" + BR +
-                        "number: can be used with optional decimal separator (, or .)" + BR +
-                        "text: description, optionally empty" + BR2 +
-                        "Example:" + BR +
-                        "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
-            t.Label.Offset = 12
+                     "Use this format to create your custom values with optional description:" + BR +
+                     "number""text""" + BR +
+                     "number: can be used with optional decimal separator (, or .)" + BR +
+                     "text: description, optionally empty" + BR2 +
+                     "Example:" + BR +
+                     "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
             t.Edit.Expand = True
             t.Edit.Text = s.X264QualityDefinitions.ToSeparatedString()
             t.Edit.SaveAction = Sub(value) s.X264QualityDefinitions = value.ToX264QualityItems()?.ToList()
@@ -3554,13 +3553,12 @@ Public Class MainForm
             t = ui.AddText()
             t.Text = "x265 quality definitions"
             t.Help = "Create custom quality definitions for x265." + BR2 +
-                        "Use this format to create your custom values with optional description:" + BR +
-                        "number""text""" + BR +
-                        "number: can be used with optional decimal separator (, or .)" + BR +
-                        "text: description, optionally empty" + BR2 +
-                        "Example:" + BR +
-                        "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
-            t.Label.Offset = 12
+                     "Use this format to create your custom values with optional description:" + BR +
+                     "number""text""" + BR +
+                     "number: can be used with optional decimal separator (, or .)" + BR +
+                     "text: description, optionally empty" + BR2 +
+                     "Example:" + BR +
+                     "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
             t.Edit.Expand = True
             t.Edit.Text = s.X265QualityDefinitions.ToSeparatedString()
             t.Edit.SaveAction = Sub(value) s.X265QualityDefinitions = value.ToX265QualityItems()?.ToList()

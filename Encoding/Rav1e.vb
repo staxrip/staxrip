@@ -64,14 +64,13 @@ Public Class Rav1e
     End Function
 
     Overrides Function GetMenu() As MenuList
-        Dim r As New MenuList
-        r.Add("Encoder Options", AddressOf ShowConfigDialog)
-        r.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
-        Return r
+        Dim ret As New MenuList
+        ret.Add("Encoder Options", AddressOf ShowConfigDialog)
+        ret.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
+        Return ret
     End Function
 
     Overrides Sub ShowConfigDialog()
-
         Dim newParams As New Rav1eParams
         Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
         newParams.Init(store)
@@ -194,12 +193,12 @@ Public Class Rav1eParams
 
     Property Speed As New NumParam With {
         .Text = "Speed",
-        .Help = "Speed level, 0 (Slowest) to 10 (Fastest)",
+        .HintText = "0 = Slowest, 10 = Fastest",
         .Switch = "--speed",
         .Config = {0, 10},
-        .Init = 3,
+        .Init = 6,
         .VisibleFunc = Function() Mode.Value = 0,
-        .ArgsFunc = Function() "" & Speed.Value,
+        .ArgsFunc = Function() Speed.Value.ToString,
         .Path = "Basic"}
 
     Property Quantizer As New NumParam With {

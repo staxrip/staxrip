@@ -107,6 +107,7 @@ Namespace CommandLine
         Property ArgsFunc As Func(Of String)
         Property Help As String
         Property HelpSwitch As String
+        Property HintText As String
         Property ImportAction As Action(Of String, String)
         Property Label As String
         Property LeftMargin As Double

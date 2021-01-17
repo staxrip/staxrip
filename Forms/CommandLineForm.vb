@@ -168,6 +168,11 @@ Public Class CommandLineForm
                 End If
 
                 numBlock.NumEdit.Config = nParam.Config
+
+                If nParam.HintText <> "" Then
+                    SimpleUI.AddLabel(numBlock, nParam.HintText)
+                End If
+
                 AddHandler numBlock.Label.MouseDoubleClick, Sub() tempNumParam.Value = tempNumParam.DefaultValue
                 DirectCast(param, NumParam).InitParam(numBlock.NumEdit)
                 helpControl = numBlock.Label
@@ -183,6 +188,10 @@ Public Class CommandLineForm
                     menuBlock.Button.HelpAction = Sub() Params.ShowHelp(helpID)
                 Else
                     menuBlock.Help = help
+                End If
+
+                If oParam.HintText <> "" Then
+                    SimpleUI.AddLabel(menuBlock, oParam.HintText)
                 End If
 
                 helpControl = menuBlock.Label

@@ -6,7 +6,7 @@ Imports StaxRip.UI
 Public Class LogForm
     Sub New()
         InitializeComponent()
-        RestoreClientSize(65, 35)
+        RestoreClientSize(50, 35)
         Text += " - " + p.Log.GetPath
         lb.BackColor = SystemColors.Control
         lb.ItemHeight = FontHeight * 2

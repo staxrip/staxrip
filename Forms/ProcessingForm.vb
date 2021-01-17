@@ -212,7 +212,7 @@ Public Class ProcessingForm
         NotifyIcon.Icon = g.Icon
         NotifyIcon.Text = "StaxRip"
         TaskbarButtonCreatedMessage = Native.RegisterWindowMessage("TaskbarButtonCreated")
-        ScaleClientSize(45, 28)
+        RestoreClientSize(51, 28)
 
         CMS = New ContextMenuStripEx(components)
         CMS.Add("Suspend", AddressOf ProcController.Suspend, "Suspends the current process, might not work with all tools.")

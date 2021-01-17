@@ -23,6 +23,7 @@
 - Introduce custom quality definitions for x264 and x265 via Settings > Video (Dendraspis)
 - The x265 command line preview shows both passes for two pass. (stax76, [#454](/../../issues/454))
 - MP4Box can import EAC3 (stax76, [#455](/../../issues/455))
+- Processing form remembers its size (stax76)
 - AviSynth 3.7
 - x265 3.4+56 aMod gcc10.2.1 msg7086/DJATOM (VapourSynth reader fixed)
 - rav1e 0.4.0

@@ -25,11 +25,13 @@
 - MP4Box can import EAC3 (stax76, [#455](/../../issues/455))
 - Processing form remembers its size (stax76)
 - Speed control in rav1e dialog has hint text: 0 = Slowest, 10 = Fastest (stax76)
+- nvenc option --timecode (stax76)
 - AviSynth 3.7
 - x265 3.4+56 aMod gcc10.2.1 msg7086/DJATOM (VapourSynth reader fixed)
-- rav1e 0.4.0
+- MP4Box 1.1.0-rev447-g8c190b551-gcc10.2.0 Patman (Windows 10 long path support added)
 - nvenc 5.25
-- MP4Box 1.1.0-rev447-g8c190b551-gcc10.2.0 Patman (Windows 10 long path support)
+- rav1e 0.4.0
+- DgMpgDec 2.0.0.2
 
 
 2.1.7.1 Beta (2021-01-11)

@@ -559,6 +559,7 @@ Public Class NVEnc
                         Custom,
                         New StringParam With {.Switch = "--sub-source", .Text = "Subtitle File", .BrowseFile = True, .BrowseFileFilter = FileTypes.GetFilter(FileTypes.SubtitleExludingContainers)},
                         New StringParam With {.Switch = "--keyfile", .Text = "Keyframes File", .BrowseFile = True},
+                        New StringParam With {.Switch = "--timecode", .Text = "Timecode File"},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option"},
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},

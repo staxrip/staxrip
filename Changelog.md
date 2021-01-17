@@ -1,5 +1,8 @@
 
-2.1.7.2 Beta (2021-01-??)
+2.1.7.3 Beta (2021-01-??)
+=========================
+
+2.1.7.2 Beta (2021-01-17)
 =========================
 
 - Using neo functions caused non neo plugins being loaded without reason (stax76, [#250](/../../issues/250))
@@ -10,10 +13,10 @@
 - x265 --seek and --frames also work with chunks (Dendraspis, [#430](/../../issues/430))
 - x265 Pipe option is invisible if decoder is not set to AVS/VPY (Dendraspis)
 - In the portable AviSynth folder there are two PowerShell scripts
-  to install and uninstall AviSynth. (stax76)
-- Using ffmpeg as pipe tool with VapourSynth and x264/x265. (Patman86)
+  to install and uninstall AviSynth (stax76)
+- Using ffmpeg as pipe tool with VapourSynth and x264/x265 (Patman86)
 - QT libraries will be found if located at Apps\Audio\qaac, Apps\Audio\qaac\QTfiles64,
-  Download button points to wiki page with install instructions. (stax76)
+  Download button points to wiki page with install instructions (stax76)
 - Add 'ShowCodePreview' to commands list (Dendraspis, [#444](/../../issues/444))
 - x265 options set chromaloc automatically to 2 if HDR is set to "Yes",
   to 0 if HDR is disabled or keep it untouched if "Undefined" (Dendraspis, [#319](/../../issues/319))
@@ -21,7 +24,7 @@
 - "Import VUI metadata" sets "--hdr10" (Dendraspis)
 - Moved '--high-tier' to 'Basic' page for x265 (Dendraspis)
 - Introduce custom quality definitions for x264 and x265 via Settings > Video (Dendraspis)
-- The x265 command line preview shows both passes for two pass. (stax76, [#454](/../../issues/454))
+- The x265 command line preview shows both passes for two pass (stax76, [#454](/../../issues/454))
 - MP4Box can import EAC3 (stax76, [#455](/../../issues/455))
 - Processing form remembers its size (stax76)
 - Speed control in rav1e dialog has hint text: 0 = Slowest, 10 = Fastest (stax76)

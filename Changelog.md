@@ -24,7 +24,7 @@
 - The x265 command line preview shows both passes for two pass. (stax76, [#454](/../../issues/454))
 - MP4Box can import EAC3 (stax76, [#455](/../../issues/455))
 - AviSynth 3.7
-- x265 M3.4+35-772bb4c84 gcc10.2.0 Yuuki-Asuna/msg7086/DJATOM/Patman
+- x265 3.4+56 aMod gcc10.2.1 msg7086/DJATOM (VapourSynth reader fixed)
 - rav1e 0.4.0
 - nvenc 5.25
 - MP4Box 1.1.0-rev447-g8c190b551-gcc10.2.0 Patman (Windows 10 long path support)

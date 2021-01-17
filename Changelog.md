@@ -26,6 +26,7 @@
 - Processing form remembers its size (stax76)
 - Speed control in rav1e dialog has hint text: 0 = Slowest, 10 = Fastest (stax76)
 - nvenc option --timecode (stax76)
+- x265 UI bug in preset VerySlow showing unnecessarily default values in command line (Dendraspis, stax76)
 - AviSynth 3.7
 - x265 3.4+56 aMod gcc10.2.1 msg7086/DJATOM (VapourSynth reader fixed)
 - MP4Box 1.1.0-rev447-g8c190b551-gcc10.2.0 Patman (Windows 10 long path support added)

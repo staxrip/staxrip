@@ -1955,8 +1955,9 @@ Public Class x265Params
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = False
                 LimitTU.DefaultValue = 4
+                LimitRefs.DefaultValue = 0
                 LookaheadSlices.DefaultValue = 0
-                MaxMerge.DefaultValue = 4
+                MaxMerge.DefaultValue = 5
                 MErange.DefaultValue = 57
                 PsyRDOQ.DefaultValue = 1
                 RCLookahead.DefaultValue = 40

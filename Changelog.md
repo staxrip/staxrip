@@ -2,7 +2,7 @@
 2.1.7.2 Beta (2021-01-??)
 =========================
 
-- Using neo functions caused non neo plugins being loaded without reason. (stax76, [#250](/../../issues/250))
+- Using neo functions caused non neo plugins being loaded without reason (stax76, [#250](/../../issues/250))
 - Fix weird behaviour on Audio Settings for qaac (Dendraspis)
 - x265 fixed default value for --hist-threshold (Dendraspis, [#441](/../../issues/441))
 - x265 muxing won't mux chunks from recent encodes (Dendraspis, [#438](/../../issues/438))
@@ -22,6 +22,7 @@
 - Moved '--high-tier' to 'Basic' page for x265 (Dendraspis)
 - Introduce custom quality definitions for x264 and x265 via Settings > Video (Dendraspis)
 - The x265 command line preview shows both passes for two pass. (stax76, [#454](/../../issues/454))
+- MP4Box can import EAC3 (stax76, [#455](/../../issues/455))
 - AviSynth 3.7
 - x265 M3.4+35-772bb4c84 gcc10.2.0 Yuuki-Asuna/msg7086/DJATOM/Patman
 - rav1e 0.4.0

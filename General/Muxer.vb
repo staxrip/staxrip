@@ -415,12 +415,6 @@ Public Class MP4Muxer
             proc.SkipString = "|"
             proc.Package = Package.MP4Box
             proc.Arguments = GetArgs()
-
-            If p.TempDir.Length <= g.MAX_PATH Then
-                proc.Process.StartInfo.EnvironmentVariables("TEMP") = p.TempDir
-                proc.Process.StartInfo.EnvironmentVariables("TMP") = p.TempDir
-            End If
-
             proc.Start()
         End Using
 

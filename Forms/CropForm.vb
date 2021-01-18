@@ -606,7 +606,7 @@ Public Class CropForm
 
         Dim script As New VideoScript
         script.Engine = p.Script.Engine
-        script.Path = (p.TempDir + p.TargetFile.Base + "_crop." + script.FileType).ToShortFilePath
+        script.Path = p.TempDir + p.TargetFile.Base + "_crop." + script.FileType
         script.Filters.Add(p.Script.GetFilter("Source").GetCopy)
         script.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
 

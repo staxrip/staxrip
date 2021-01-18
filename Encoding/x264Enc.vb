@@ -108,7 +108,7 @@ Public Class x264Enc
         End If
 
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
-        script.Path = (p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType).ToShortFilePath
+        script.Path = p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType
         script.Synchronize(avsEncoding:=TextEncoding.EncodingOfProcess)
 
         Log.WriteLine(BR + script.GetFullScript + BR)
@@ -1112,7 +1112,7 @@ Public Class x264Params
 
                 args += " --output NUL " + input
             Else
-                args += " --output " + targetPath.ToShortFilePath.Escape + " " + input
+                args += " --output " + targetPath.Escape + " " + input
             End If
         End If
 

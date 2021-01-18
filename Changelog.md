@@ -1,8 +1,15 @@
 
-2.1.7.3 Beta (2021-01-??)
+2.1.7.4 Beta (2021-01-18)
 =========================
 
+2.1.7.3 Beta (2021-01-18)
+=========================
+
+- Full AviSynth unicode and full long path support
+  for users of Windows 10 1903, Windows 7 users need to enable
+  avs2pipemod for x265 in order to use foreign (ANSI) characters
 - Show also Source HDR Format on main window (Dendraspis)
+- 3.4+62-aMod-gcc10.2.1+opt msg7086/DJATOM (avs unicode/long path/chunk encoding)
 
 
 2.1.7.2 Beta (2021-01-17)

@@ -165,7 +165,7 @@ Public Class x265Enc
         End If
 
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
-        script.Path = (p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType).ToShortFilePath
+        script.Path = p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType
         script.Synchronize(avsEncoding:=TextEncoding.EncodingOfProcess)
 
         Log.WriteLine(BR + script.GetFullScript + BR)

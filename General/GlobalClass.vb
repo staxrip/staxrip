@@ -301,7 +301,8 @@ Public Class GlobalClass
 
             If CanEncodeVideo() Then
                 If p.VideoEncoder.CanChunkEncode Then
-                    p.Script.Synchronize(False, True, False, TextEncoding.EncodingOfProcess)
+                    Dim enc = If(TextEncoding.AvsEncoderSupportsUTF8, TextEncoding.EncodingOfProcess, Nothing)
+                    p.Script.Synchronize(False, True, False, enc)
 
                     For Each i In p.VideoEncoder.GetChunkEncodeActions
                         actions.Add(i)
@@ -1461,7 +1462,7 @@ Public Class GlobalClass
                         infoScript.AddFilter(New VideoFilter($"Import(""{script.Path}"")"))
                         Dim infoCode = $"Info(size={(script.GetInfo().Height * 0.05).ToInvariantString()})"
                         infoScript.AddFilter(New VideoFilter(infoCode))
-                        infoScript.Path = (p.TempDir + p.TargetFile.Base + $"_info." + script.FileType).ToShortFilePath
+                        infoScript.Path = p.TempDir + p.TargetFile.Base + $"_info." + script.FileType
 
                         If infoScript.GetError() <> "" Then
                             MsgError("Script Error", infoScript.GetError())

@@ -2051,11 +2051,15 @@ Public Class MainForm
             g.SetTempDir()
 
             Dim sourcePAR = MediaInfo.GetVideo(p.LastOriginalSourceFile, "PixelAspectRatio")
-
             If sourcePAR <> "" Then
                 p.SourcePAR.X = CInt(Convert.ToSingle(sourcePAR, CultureInfo.InvariantCulture) * 1000)
                 p.SourcePAR.Y = 1000
             End If
+
+            p.SourceVideoHdrFormat = MediaInfo.GetVideo(p.LastOriginalSourceFile, "HDR_Format_Commercial")
+            If p.SourceVideoHdrFormat = "" Then p.SourceVideoHdrFormat = "SDR"
+            If p.SourceVideoHdrFormat.Contains("Blu-ray / HDR10") Then p.SourceVideoHdrFormat = "DV"
+            If p.SourceVideoHdrFormat.Contains("Dolby") Then p.SourceVideoHdrFormat = "DV"
 
             p.SourceVideoFormat = MediaInfo.GetVideoFormat(p.LastOriginalSourceFile)
             p.SourceVideoFormatProfile = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format_Profile")
@@ -2740,6 +2744,7 @@ Public Class MainForm
             lSource2.Text = lSource1.GetMaxTextSpace(
                     p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.SourceColorSpace,
                     p.SourceChromaSubsampling, If(p.SourceVideoBitDepth <> 0, p.SourceVideoBitDepth & "Bits", ""),
+                    p.SourceVideoHdrFormat,
                     p.SourceScanType, If(p.SourceScanType = "Interlaced", p.SourceScanOrder, ""))
 
             lTarget1.Text = lSource1.GetMaxTextSpace(g.GetTimeString(p.TargetSeconds),

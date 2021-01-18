@@ -87,6 +87,7 @@ Public Class Project
     Public SourceVideoBitDepth As Integer
     Public SourceVideoFormat As String
     Public SourceVideoFormatProfile As String
+    Public SourceVideoHdrFormat As String = ""
     Public SourceVideoSize As Long
     Public SourceWidth As Integer = 1920
     Public SubtitleName As String = ""

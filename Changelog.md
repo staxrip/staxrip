@@ -2,6 +2,9 @@
 2.1.7.3 Beta (2021-01-??)
 =========================
 
+- Show also Source HDR Format on main window (Dendraspis)
+
+
 2.1.7.2 Beta (2021-01-17)
 =========================
 

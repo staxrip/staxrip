@@ -3895,7 +3895,9 @@ Public Class TextEncoding
         End If
 
         If commandLine <> "" Then
-            Return commandLine.Contains("x264") AndAlso commandLine.Contains(".avs") AndAlso Not g.ContainsPipeTool(commandLine)
+            Return commandLine.Contains(".avs") AndAlso ((commandLine.Contains("x264") AndAlso
+                Not g.ContainsPipeTool(commandLine)) OrElse (commandLine.Contains("x265") AndAlso
+                Not g.ContainsPipeTool(commandLine)))
         End If
     End Function
 End Class

@@ -439,7 +439,7 @@ Public Class MP4Muxer
         Get
             Return {"ts", "m2ts", "ivf",
                     "mpg", "m2v",
-                    "avi", "ac3", "opus", "eac3",
+                    "avi", "ac3", "opus", "eac3", "thd",
                     "mp4", "m4a", "aac", "mov",
                     "264", "h264", "avc",
                     "265", "h265", "hevc", "hvc",

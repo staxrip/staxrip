@@ -301,7 +301,7 @@ Public Class GlobalClass
 
             If CanEncodeVideo() Then
                 If p.VideoEncoder.CanChunkEncode Then
-                    p.Script.Synchronize(False, True, False, Nothing)
+                    p.Script.Synchronize(False, True, False, TextEncoding.EncodingOfProcess)
 
                     For Each i In p.VideoEncoder.GetChunkEncodeActions
                         actions.Add(i)

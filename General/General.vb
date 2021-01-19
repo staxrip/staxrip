@@ -1365,9 +1365,9 @@ Public Class Shutdown
 
         Select Case mode
             Case ShutdownMode.Standby
-                SetSuspendState(False, False, False)
+                Application.SetSuspendState(PowerState.Suspend, s.ShutdownForce, False)
             Case ShutdownMode.Hibernate
-                SetSuspendState(True, False, False)
+                Application.SetSuspendState(PowerState.Hibernate, s.ShutdownForce, False)
             Case ShutdownMode.Hybrid
                 psi.Arguments = If(s.ShutdownForce, "/f ", "")
                 psi.Arguments += "/hybrid /t " & s.ShutdownTimeout
@@ -1378,8 +1378,6 @@ Public Class Shutdown
                 Process.Start(psi)?.Dispose()
         End Select
     End Sub
-
-    Declare Function SetSuspendState Lib "powrprof.dll" (hibernate As Boolean, forceCritical As Boolean, disableWakeEvent As Boolean) As Boolean
 End Class
 
 Public Enum ShutdownMode

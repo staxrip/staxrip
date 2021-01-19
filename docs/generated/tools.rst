@@ -13,7 +13,7 @@ Tools
     "AVSTP","AviSynth Plugin","avstp.dll","1.0.3.0","2019-01-01"
     "checkmate","AviSynth Plugin","checkmate.dll","0.9","2013-12-19"
     "CNR2","AviSynth Plugin","CNR2.dll","2.6.1","2019-01-01"
-    "D2VSource","AviSynth Plugin","D2VSource.dll","1.2.0","2020-12-02"
+    "D2VSource","AviSynth Plugin","D2VSource.dll","1.2.1","2021-01-17"
     "DCTFilter","AviSynth Plugin","DCTFilter.dll","0.5.1","2020-05-13"
     "Deblock","AviSynth Plugin","Deblock.dll","2013-12-03","2019-01-01"
     "Decomb","AviSynth Plugin","Decomb.dll","5.2.4","2013-12-01"

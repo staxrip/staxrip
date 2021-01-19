@@ -3,6 +3,7 @@
 =========================
 
 - Make forced closing optional via settings (Dendraspis)
+- D2VSource 1.2.1
 
 
 2.1.7.3 Beta (2021-01-18)

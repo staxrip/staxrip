@@ -1510,7 +1510,7 @@ End Enum
 Public Class FileTypes
     Shared Property AudioRaw As String() = {"thd", "aac", "ec3", "eac3"}
     Shared Property Audio As String() = {"flac", "dtshd", "dtsma", "dtshr", "thd", "thd+ac3", "true-hd", "truehd", "aac", "ac3", "dts", "ec3", "eac3", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "wav", "w64"}
-    Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm", "m4v", "3gp"}
+    Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2t", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm", "m4v", "3gp"}
     Shared Property DGDecNVInput As String() = {"264", "h264", "265", "h265", "avc", "hevc", "hvc", "mkv", "mp4", "m4v", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
     Shared Property eac3toInput As String() = {"dts", "dtshd", "dtshr", "dtsma", "evo", "vob", "ts", "m2ts", "wav", "w64", "pcm", "raw", "flac", "ac3", "ec3", "eac3", "thd", "thd+ac3", "mlp", "mp2", "mp3", "mpa"}
     Shared Property NicAudioInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "dts"}

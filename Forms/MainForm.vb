@@ -3522,6 +3522,10 @@ Public Class MainForm
             n.Field = NameOf(s.ShutdownTimeout)
 
             b = ui.AddBool
+            b.Text = "Force closing running apps when shutdown and for hybrid mode"
+            b.Field = NameOf(s.ShutdownForce)
+
+            b = ui.AddBool
             b.Text = "Prevent system entering standby mode while encoding"
             b.Field = NameOf(s.PreventStandby)
 

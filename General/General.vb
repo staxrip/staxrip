@@ -1369,10 +1369,12 @@ Public Class Shutdown
             Case ShutdownMode.Hibernate
                 SetSuspendState(True, False, False)
             Case ShutdownMode.Hybrid
-                psi.Arguments = "/f /hybrid /t " & s.ShutdownTimeout
+                psi.Arguments = If(s.ShutdownForce, "/f ", "")
+                psi.Arguments += "/hybrid /t " & s.ShutdownTimeout
                 Process.Start(psi)?.Dispose()
             Case ShutdownMode.Shutdown
-                psi.Arguments = "/f /s /t " & s.ShutdownTimeout
+                psi.Arguments = If(s.ShutdownForce, "/f ", "")
+                psi.Arguments += "/s /t " & s.ShutdownTimeout
                 Process.Start(psi)?.Dispose()
         End Select
     End Sub

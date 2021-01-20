@@ -233,6 +233,19 @@ Public Class GlobalClass
 
     Sub ProcessJob(jobPath As String)
         Try
+            If p.BatchMode AndAlso Not File.Exists(g.ProjectPath) Then
+                Task.Run(Sub() MsgError("Project file not found!", $"'{jobPath}'{BR}cound not be found and got skipped!"))
+                Exit Sub
+            End If
+            If Not File.Exists(jobPath) Then
+                Task.Run(Sub() MsgError("Project file not found!", $"'{jobPath}'{BR}cound not be found and got skipped!"))
+                Exit Sub
+            End If
+            If Not File.Exists(p.SourceFile) Then
+                Task.Run(Sub() MsgError("Source file not found!", $"'{p.SourceFile}'{BR}cound not be found and got skipped!"))
+                Exit Sub
+            End If
+
             g.RaiseAppEvent(ApplicationEvent.BeforeJobProcessed)
 
             Dim startTime = DateTime.Now

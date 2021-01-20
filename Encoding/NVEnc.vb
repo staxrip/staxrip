@@ -38,7 +38,7 @@ Public Class NVEnc
 
         Using form As New CommandLineForm(newParams)
             form.HTMLHelpFunc = Function() "<h2>NVEnc Help</h2>" +
-                 "<p>Right-clicking a option shows the local console help for the option.</p>" +
+                 "<p>Right-clicking an option shows the local console help for the option.</p>" +
                 $"<h2>NVEnc Online Help</h2><p><a href=""{Package.NVEnc.HelpURL}"">NVEnc Online Help</a></p>" +
                 $"<h2>NVEnc Console Help</h2><pre>{HelpDocument.ConvertChars(Package.NVEnc.CreateHelpfile())}</pre>"
 
@@ -123,7 +123,7 @@ Public Class NVEnc
         tester.IgnoredSwitches = "help version check-device input-analyze input-format output-format
             video-streamid video-track vpp-delogo vpp-delogo-cb vpp-delogo-cr vpp-delogo-depth output
             vpp-delogo-pos vpp-delogo-select vpp-delogo-y check-avversion check-codecs caption2ass log
-            check-encoders check-decoders check-formats check-protocols log-framelist vpp-colorspace fps
+            check-encoders check-decoders check-formats check-protocols log-framelist fps
             check-filters input raw avs vpy vpy-mt key-on-chapter audio-delay audio-ignore-decode-error
             avcuvid-analyze audio-source audio-file seek format audio-copy audio-ignore-notrack-error
             audio-copy audio-codec vpp-perf-monitor avi audio-profile check-profiles avsync mux-option
@@ -383,10 +383,36 @@ Public Class NVEnc
         Property TransformFlipY As New BoolParam With {.Text = "Flip Y", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
         Property TransformTranspose As New BoolParam With {.Text = "Transpose", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
 
-        Property Smooth As New BoolParam With {.Text = "Smooth", .Switch = "--vpp-smooth", .ArgsFunc = AddressOf GetSmooth}
+        Property Smooth As New BoolParam With {.Text = "Smooth", .Switch = "--vpp-smooth", .ArgsFunc = AddressOf GetSmoothArgs}
         Property SmoothQuality As New NumParam With {.Text = "      Quality", .HelpSwitch = "--vpp-smooth", .Init = 3, .Config = {1, 6}}
         Property SmoothQP As New NumParam With {.Text = "      QP", .HelpSwitch = "--vpp-smooth", .Config = {0, 100, 10, 1}}
         Property SmoothPrec As New OptionParam With {.Text = "      Precision", .HelpSwitch = "--vpp-smooth", .Options = {"Auto", "FP16", "FP32"}}
+
+        Property Colorspace As New BoolParam With {.Text = "Colorspace", .Switch = "--vpp-colorspace", .ArgsFunc = AddressOf GetColorspaceArgs}
+        Property ColorspaceMatrixFrom As New OptionParam With {.Text = New String(" "c, 6) + "Matrix From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR", "bt2020nc", "bt2020c"}}
+        Property ColorspaceMatrixTo As New OptionParam With {.Text = New String(" "c, 12) + "Matrix To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR", "bt2020nc", "bt2020c"}, .VisibleFunc = Function() ColorspaceMatrixFrom.Value > 0}
+        Property ColorspaceColorprimFrom As New OptionParam With {.Text = New String(" "c, 6) + "Colorprim From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "film", "bt2020"}}
+        Property ColorspaceColorprimTo As New OptionParam With {.Text = New String(" "c, 12) + "Colorprim To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "film", "bt2020"}, .VisibleFunc = Function() ColorspaceColorprimFrom.Value > 0}
+        Property ColorspaceTransferFrom As New OptionParam With {.Text = New String(" "c, 6) + "Transfer From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "arib-std-b67"}}
+        Property ColorspaceTransferTo As New OptionParam With {.Text = New String(" "c, 12) + "Transfer To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "arib-std-b67"}, .VisibleFunc = Function() ColorspaceTransferFrom.Value > 0}
+        Property ColorspaceRangeFrom As New OptionParam With {.Text = New String(" "c, 6) + "Range From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "limited", "full"}}
+        Property ColorspaceRangeTo As New OptionParam With {.Text = New String(" "c, 12) + "Range To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "limited", "full"}, .VisibleFunc = Function() ColorspaceRangeFrom.Value > 0}
+        Property ColorspaceHdr2sdr As New OptionParam With {.Text = New String(" "c, 0) + "HDR10 to SDR using this tonemapping:", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"none", "hable", "mobius", "reinhard", "bt2390"}}
+        Property ColorspaceHdr2sdrSourcepeak As New NumParam With {.Text = New String(" "c, 6) + "Source Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1000, .Config = {0, 10000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
+        Property ColorspaceHdr2sdrLdrnits As New NumParam With {.Text = New String(" "c, 6) + "Target brightness", .HelpSwitch = "--vpp-colorspace", .Init = 100.0, .Config = {0, 1000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
+        Property ColorspaceHdr2sdrDesatbase As New NumParam With {.Text = New String(" "c, 6) + "Offset for desaturation curve", .HelpSwitch = "--vpp-colorspace", .Init = 0.18, .Config = {0, 10, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
+        Property ColorspaceHdr2sdrDesatstrength As New NumParam With {.Text = New String(" "c, 6) + "Strength of desaturation curve", .HelpSwitch = "--vpp-colorspace", .Init = 0.75, .Config = {0, 10, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
+        Property ColorspaceHdr2sdrDesatexp As New NumParam With {.Text = New String(" "c, 6) + "Exponent of the desaturation curve", .HelpSwitch = "--vpp-colorspace", .Init = 1.5, .Config = {0, 100, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
+        Property ColorspaceHdr2sdrHableA As New NumParam With {.Text = New String(" "c, 6) + "a", .HelpSwitch = "--vpp-colorspace", .Init = 0.22, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrHableB As New NumParam With {.Text = New String(" "c, 6) + "b", .HelpSwitch = "--vpp-colorspace", .Init = 0.3, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrHableC As New NumParam With {.Text = New String(" "c, 6) + "c", .HelpSwitch = "--vpp-colorspace", .Init = 0.1, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrHableD As New NumParam With {.Text = New String(" "c, 6) + "d", .HelpSwitch = "--vpp-colorspace", .Init = 0.2, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrHableE As New NumParam With {.Text = New String(" "c, 6) + "e", .HelpSwitch = "--vpp-colorspace", .Init = 0.01, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrHableF As New NumParam With {.Text = New String(" "c, 6) + "f", .HelpSwitch = "--vpp-colorspace", .Init = 0.3, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrMobiusTransition As New NumParam With {.Text = New String(" "c, 6) + "Transition", .HelpSwitch = "--vpp-colorspace", .Init = 0.3, .Config = {0, 10, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 2}
+        Property ColorspaceHdr2sdrMobiusPeak As New NumParam With {.Text = New String(" "c, 6) + "Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1.0, .Config = {0, 100, 0.05, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 2, .Name = "MobiusPeak"}
+        Property ColorspaceHdr2sdrReinhardContrast As New NumParam With {.Text = New String(" "c, 6) + "Contrast", .HelpSwitch = "--vpp-colorspace", .Init = 0.5, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3}
+        Property ColorspaceHdr2sdrReinhardPeak As New NumParam With {.Text = New String(" "c, 6) + "Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1.0, .Config = {0, 100, 0.05, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3, .Name = "ReinhardPeak"}
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
@@ -497,9 +523,33 @@ Public Class NVEnc
                         TransformFlipX,
                         TransformFlipY,
                         TransformTranspose)
-                    Add("VPP | Denoise",
-                        Knn, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
-                        Pmd, PmdApplyCount, PmdStrength, PmdThreshold)
+                    Add("VPP | Colorspace",
+                        Colorspace,
+                        ColorspaceMatrixFrom,
+                        ColorspaceMatrixTo,
+                        ColorspaceColorprimFrom,
+                        ColorspaceColorprimTo,
+                        ColorspaceTransferFrom,
+                        ColorspaceTransferTo,
+                        ColorspaceRangeFrom,
+                        ColorspaceRangeTo)
+                    Add("VPP | Colorspace | HDR2SDR",
+                        ColorspaceHdr2sdr,
+                        ColorspaceHdr2sdrSourcepeak,
+                        ColorspaceHdr2sdrLdrnits,
+                        ColorspaceHdr2sdrDesatbase,
+                        ColorspaceHdr2sdrDesatstrength,
+                        ColorspaceHdr2sdrDesatexp,
+                        ColorspaceHdr2sdrHableA,
+                        ColorspaceHdr2sdrHableB,
+                        ColorspaceHdr2sdrHableC,
+                        ColorspaceHdr2sdrHableD,
+                        ColorspaceHdr2sdrHableE,
+                        ColorspaceHdr2sdrHableF,
+                        ColorspaceHdr2sdrMobiusTransition,
+                        ColorspaceHdr2sdrMobiusPeak,
+                        ColorspaceHdr2sdrReinhardContrast,
+                        ColorspaceHdr2sdrReinhardPeak)
                     Add("VPP | Deband",
                         Deband,
                         DebandRange,
@@ -514,6 +564,9 @@ Public Class NVEnc
                         DebandSeed,
                         DebandBlurfirst,
                         DebandRandEachFrame)
+                    Add("VPP | Denoise",
+                        Knn, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
+                        Pmd, PmdApplyCount, PmdStrength, PmdThreshold)
                     Add("VPP | Field",
                         Nnedi,
                         NnediField,
@@ -613,6 +666,31 @@ Public Class NVEnc
                 NnediPrec.MenuButton.Enabled = Nnedi.Value
                 NnediWeightfile.TextEdit.Enabled = Nnedi.Value
 
+                ColorspaceMatrixFrom.MenuButton.Enabled = Colorspace.Value
+                ColorspaceMatrixTo.MenuButton.Enabled = Colorspace.Value
+                ColorspaceColorprimFrom.MenuButton.Enabled = Colorspace.Value
+                ColorspaceColorprimTo.MenuButton.Enabled = Colorspace.Value
+                ColorspaceTransferFrom.MenuButton.Enabled = Colorspace.Value
+                ColorspaceTransferTo.MenuButton.Enabled = Colorspace.Value
+                ColorspaceRangeFrom.MenuButton.Enabled = Colorspace.Value
+                ColorspaceRangeTo.MenuButton.Enabled = Colorspace.Value
+                ColorspaceHdr2sdr.MenuButton.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrSourcepeak.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrLdrnits.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrDesatbase.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrDesatstrength.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrDesatexp.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableA.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableB.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableC.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableD.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableE.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableF.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrMobiusTransition.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrMobiusPeak.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrReinhardContrast.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrReinhardPeak.NumEdit.Enabled = Colorspace.Value
+
                 EdgelevelStrength.NumEdit.Enabled = Edgelevel.Value
                 EdgelevelThreshold.NumEdit.Enabled = Edgelevel.Value
                 EdgelevelBlack.NumEdit.Enabled = Edgelevel.Value
@@ -675,7 +753,7 @@ Public Class NVEnc
             MyBase.OnValueChanged(item)
         End Sub
 
-        Function GetSmooth() As String
+        Function GetSmoothArgs() As String
             If Smooth.Value Then
                 Dim ret = ""
 
@@ -695,6 +773,47 @@ Public Class NVEnc
                     Return "--vpp-smooth " + ret.TrimStart(","c)
                 Else
                     Return "--vpp-smooth"
+                End If
+            End If
+        End Function
+
+        Function GetColorspaceArgs() As String
+            If Colorspace.Value Then
+                Dim ret = ""
+
+                If ColorspaceMatrixFrom.Value <> ColorspaceMatrixFrom.DefaultValue Then ret += $",matrix={ColorspaceMatrixFrom.ValueText}:{ColorspaceMatrixTo.ValueText}"
+                If ColorspaceColorprimFrom.Value <> ColorspaceColorprimFrom.DefaultValue Then ret += $",colorprim={ColorspaceColorprimFrom.ValueText}:{ColorspaceColorprimTo.ValueText}"
+                If ColorspaceTransferFrom.Value <> ColorspaceTransferFrom.DefaultValue Then ret += $",transfer={ColorspaceTransferFrom.ValueText}:{ColorspaceTransferTo.ValueText}"
+                If ColorspaceRangeFrom.Value <> ColorspaceRangeFrom.DefaultValue Then ret += $",range={ColorspaceRangeFrom.ValueText}:{ColorspaceRangeTo.ValueText}"
+                If ColorspaceHdr2sdr.Value <> ColorspaceHdr2sdr.DefaultValue Then
+                    ret += $",hdr2sdr={ColorspaceHdr2sdr.ValueText}"
+                    If ColorspaceHdr2sdrSourcepeak.Value <> ColorspaceHdr2sdrSourcepeak.DefaultValue Then ret += $",source_peak={ColorspaceHdr2sdrSourcepeak.Value.ToInvariantString("0.0")}"
+                    If ColorspaceHdr2sdrLdrnits.Value <> ColorspaceHdr2sdrLdrnits.DefaultValue Then ret += $",ldr_nits={ColorspaceHdr2sdrLdrnits.Value.ToInvariantString("0.0")}"
+                    If ColorspaceHdr2sdrDesatbase.Value <> ColorspaceHdr2sdrDesatbase.DefaultValue Then ret += $",desat_base={ColorspaceHdr2sdrDesatbase.Value.ToInvariantString("0.00")}"
+                    If ColorspaceHdr2sdrDesatstrength.Value <> ColorspaceHdr2sdrDesatstrength.DefaultValue Then ret += $",desat_strength={ColorspaceHdr2sdrDesatstrength.Value.ToInvariantString("0.00")}"
+                    If ColorspaceHdr2sdrDesatexp.Value <> ColorspaceHdr2sdrDesatexp.DefaultValue Then ret += $",desat_exp={ColorspaceHdr2sdrDesatexp.Value.ToInvariantString("0.00")}"
+                    If ColorspaceHdr2sdr.Value = 1 Then
+                        If ColorspaceHdr2sdrHableA.Value <> ColorspaceHdr2sdrHableA.DefaultValue Then ret += $",a={ColorspaceHdr2sdrHableA.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrHableB.Value <> ColorspaceHdr2sdrHableB.DefaultValue Then ret += $",b={ColorspaceHdr2sdrHableB.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrHableC.Value <> ColorspaceHdr2sdrHableC.DefaultValue Then ret += $",c={ColorspaceHdr2sdrHableC.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrHableD.Value <> ColorspaceHdr2sdrHableD.DefaultValue Then ret += $",d={ColorspaceHdr2sdrHableD.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrHableE.Value <> ColorspaceHdr2sdrHableE.DefaultValue Then ret += $",e={ColorspaceHdr2sdrHableE.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrHableF.Value <> ColorspaceHdr2sdrHableF.DefaultValue Then ret += $",f={ColorspaceHdr2sdrHableF.Value.ToInvariantString("0.00")}"
+                    End If
+                    If ColorspaceHdr2sdr.Value = 2 Then
+                        If ColorspaceHdr2sdrMobiusTransition.Value <> ColorspaceHdr2sdrMobiusTransition.DefaultValue Then ret += $",transition={ColorspaceHdr2sdrMobiusTransition.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrMobiusPeak.Value <> ColorspaceHdr2sdrMobiusPeak.DefaultValue Then ret += $",peak={ColorspaceHdr2sdrMobiusPeak.Value.ToInvariantString("0.00")}"
+                    End If
+                    If ColorspaceHdr2sdr.Value = 3 Then
+                        If ColorspaceHdr2sdrReinhardContrast.Value <> ColorspaceHdr2sdrReinhardContrast.DefaultValue Then ret += $",contrast={ColorspaceHdr2sdrReinhardContrast.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrReinhardPeak.Value <> ColorspaceHdr2sdrReinhardPeak.DefaultValue Then ret += $",peak={ColorspaceHdr2sdrReinhardPeak.Value.ToInvariantString("0.00")}"
+                    End If
+                End If
+
+                If ret <> "" Then
+                    Return "--vpp-colorspace " + ret.TrimStart(","c)
+                Else
+                    Return ""
                 End If
             End If
         End Function
@@ -1080,7 +1199,9 @@ Public Class NVEnc
             Select Case Mode.Value
                 Case 0
                     If QPAdvanced.Value Then
-                        Return "--cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
+                        Return "--cqp " & QPI.Value & "
+                        " & QPP.Value & "
+                        " & QPB.Value
                     Else
                         Return "--cqp " & QP.Value
                     End If
@@ -1164,7 +1285,8 @@ Public Class NVEnc
 
             If Decoder.ValueText <> "avs" Then
                 If p.Ranges.Count > 0 Then
-                    ret += " --trim " + p.Ranges.Select(Function(range) range.Start & ":" & range.End).Join(",")
+                    ret += " --trim " + p.Ranges.Select(Function(range) range.Start & "
+                        " & range.End).Join(",")
                 End If
             End If
 

@@ -3,6 +3,7 @@
 =========================
 
 - Make forced closing optional via settings (Dendraspis)
+- NVEnc gets '--vpp-colorspace' options (Dendraspis, [#461](/../../issues/461))
 - D2VSource 1.2.1
 
 

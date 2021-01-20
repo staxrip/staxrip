@@ -5,7 +5,7 @@
 - Make forced closing optional via settings (Dendraspis)
 - NVEnc gets '--vpp-colorspace' options (Dendraspis, [#461](/../../issues/461))
 - Messagebox when processed file or its project file is not found instead of crash (Dendraspis, [#460](/../../issues/460))
-- D2VSource 1.2.1
+- D2VSource 1.2.2
 
 
 2.1.7.3 Beta (2021-01-18)

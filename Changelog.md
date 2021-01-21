@@ -1,5 +1,5 @@
 
-2.1.7.4 Beta (2021-01-18)
+2.1.7.4 Beta (2021-01-??)
 =========================
 
 - Make forced closing optional via settings (Dendraspis)

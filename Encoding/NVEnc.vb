@@ -756,31 +756,16 @@ Public Class NVEnc
         Function GetSmoothArgs() As String
             If Smooth.Value Then
                 Dim ret = ""
-
-                If SmoothQuality.Value <> SmoothQuality.DefaultValue Then
-                    ret += ",quality=" & SmoothQuality.Value
-                End If
-
-                If SmoothQP.Value <> SmoothQP.DefaultValue Then
-                    ret += ",qp=" & SmoothQP.Value.ToInvariantString
-                End If
-
-                If SmoothPrec.Value <> SmoothPrec.DefaultValue Then
-                    ret += ",prec=" & SmoothPrec.ValueText
-                End If
-
-                If ret <> "" Then
-                    Return "--vpp-smooth " + ret.TrimStart(","c)
-                Else
-                    Return "--vpp-smooth"
-                End If
+                If SmoothQuality.Value <> SmoothQuality.DefaultValue Then ret += ",quality=" & SmoothQuality.Value
+                If SmoothQP.Value <> SmoothQP.DefaultValue Then ret += ",qp=" & SmoothQP.Value.ToInvariantString
+                If SmoothPrec.Value <> SmoothPrec.DefaultValue Then ret += ",prec=" & SmoothPrec.ValueText
+                Return "--vpp-smooth " + ret.TrimStart(","c)
             End If
         End Function
 
         Function GetColorspaceArgs() As String
             If Colorspace.Value Then
                 Dim ret = ""
-
                 If ColorspaceMatrixFrom.Value <> ColorspaceMatrixFrom.DefaultValue Then ret += $",matrix={ColorspaceMatrixFrom.ValueText}:{ColorspaceMatrixTo.ValueText}"
                 If ColorspaceColorprimFrom.Value <> ColorspaceColorprimFrom.DefaultValue Then ret += $",colorprim={ColorspaceColorprimFrom.ValueText}:{ColorspaceColorprimTo.ValueText}"
                 If ColorspaceTransferFrom.Value <> ColorspaceTransferFrom.DefaultValue Then ret += $",transfer={ColorspaceTransferFrom.ValueText}:{ColorspaceTransferTo.ValueText}"
@@ -809,387 +794,151 @@ Public Class NVEnc
                         If ColorspaceHdr2sdrReinhardPeak.Value <> ColorspaceHdr2sdrReinhardPeak.DefaultValue Then ret += $",peak={ColorspaceHdr2sdrReinhardPeak.Value.ToInvariantString("0.00")}"
                     End If
                 End If
-
-                If ret <> "" Then
-                    Return "--vpp-colorspace " + ret.TrimStart(","c)
-                Else
-                    Return ""
-                End If
+                If ret <> "" Then Return "--vpp-colorspace " + ret.TrimStart(","c)
             End If
         End Function
 
         Function GetPmdArgs() As String
             If Pmd.Value Then
                 Dim ret = ""
-
-                If PmdApplyCount.Value <> PmdApplyCount.DefaultValue Then
-                    ret += ",apply_count=" & PmdApplyCount.Value
-                End If
-
-                If PmdStrength.Value <> PmdStrength.DefaultValue Then
-                    ret += ",strength=" & PmdStrength.Value
-                End If
-
-                If PmdThreshold.Value <> PmdThreshold.DefaultValue Then
-                    ret += ",threshold=" & PmdThreshold.Value
-                End If
-
-                If ret <> "" Then
-                    Return "--vpp-pmd " + ret.TrimStart(","c)
-                Else
-                    Return "--vpp-pmd"
-                End If
+                If PmdApplyCount.Value <> PmdApplyCount.DefaultValue Then ret += ",apply_count=" & PmdApplyCount.Value
+                If PmdStrength.Value <> PmdStrength.DefaultValue Then ret += ",strength=" & PmdStrength.Value
+                If PmdThreshold.Value <> PmdThreshold.DefaultValue Then ret += ",threshold=" & PmdThreshold.Value
+                Return "--vpp-pmd " + ret.TrimStart(","c)
             End If
         End Function
 
         Function GetTweakArgs() As String
             If Tweak.Value Then
                 Dim ret = ""
-
-                If TweakBrightness.Value <> TweakBrightness.DefaultValue Then
-                    ret += "brightness=" & TweakBrightness.Value.ToInvariantString
-                End If
-
-                If TweakContrast.Value <> TweakContrast.DefaultValue Then
-                    ret += ",contrast=" & TweakContrast.Value.ToInvariantString
-                End If
-
-                If TweakSaturation.Value <> TweakSaturation.DefaultValue Then
-                    ret += ",saturation=" & TweakSaturation.Value.ToInvariantString
-                End If
-
-                If TweakGamma.Value <> TweakGamma.DefaultValue Then
-                    ret += ",gamma=" & TweakGamma.Value.ToInvariantString
-                End If
-
-                If TweakHue.Value <> TweakHue.DefaultValue Then
-                    ret += ",hue=" & TweakHue.Value.ToInvariantString
-                End If
-
-                If ret <> "" Then
-                    Return "--vpp-tweak " + ret.TrimStart(","c)
-                Else
-                    Return "--vpp-tweak"
-                End If
+                If TweakBrightness.Value <> TweakBrightness.DefaultValue Then ret += ",brightness=" & TweakBrightness.Value.ToInvariantString
+                If TweakContrast.Value <> TweakContrast.DefaultValue Then ret += ",contrast=" & TweakContrast.Value.ToInvariantString
+                If TweakSaturation.Value <> TweakSaturation.DefaultValue Then ret += ",saturation=" & TweakSaturation.Value.ToInvariantString
+                If TweakGamma.Value <> TweakGamma.DefaultValue Then ret += ",gamma=" & TweakGamma.Value.ToInvariantString
+                If TweakHue.Value <> TweakHue.DefaultValue Then ret += ",hue=" & TweakHue.Value.ToInvariantString
+                Return "--vpp-tweak " + ret.TrimStart(","c)
             End If
         End Function
 
         Function GetPaddingArgs() As String
             If Pad.Value Then
                 Dim ret = ""
-
-                If PadLeft.Value <> PadLeft.DefaultValue Then
-                    ret += "" & PadLeft.Value
-                End If
-
-                If PadTop.Value <> PadTop.DefaultValue Then
-                    ret += "," & PadTop.Value
-                End If
-
-                If PadRight.Value <> PadRight.DefaultValue Then
-                    ret += "," & PadRight.Value
-                End If
-
-                If PadBottom.Value <> PadBottom.DefaultValue Then
-                    ret += "," & PadBottom.Value
-                End If
-
-                If ret <> "" Then
-                    Return "--vpp-pad " + ret.TrimStart(","c)
-                Else
-                    Return "--vpp-pad "
-                End If
+                If PadLeft.Value <> PadLeft.DefaultValue Then ret += "," & PadLeft.Value
+                If PadTop.Value <> PadTop.DefaultValue Then ret += "," & PadTop.Value
+                If PadRight.Value <> PadRight.DefaultValue Then ret += "," & PadRight.Value
+                If PadBottom.Value <> PadBottom.DefaultValue Then ret += "," & PadBottom.Value
+                If ret <> "" Then Return "--vpp-pad " + ret.TrimStart(","c)
             End If
         End Function
 
         Function GetKnnArgs() As String
             If Knn.Value Then
                 Dim ret = ""
-
-                If KnnRadius.Value <> KnnRadius.DefaultValue Then
-                    ret += ",radius=" & KnnRadius.Value
-                End If
-
-                If KnnStrength.Value <> KnnStrength.DefaultValue Then
-                    ret += ",strength=" & KnnStrength.Value.ToInvariantString
-                End If
-
-                If KnnLerp.Value <> KnnLerp.DefaultValue Then
-                    ret += ",lerp=" & KnnLerp.Value.ToInvariantString
-                End If
-
-                If KnnThLerp.Value <> KnnThLerp.DefaultValue Then
-                    ret += ",th_lerp=" & KnnThLerp.Value.ToInvariantString
-                End If
-
-                If ret <> "" Then
-                    Return "--vpp-knn " + ret.TrimStart(","c)
-                Else
-                    Return "--vpp-knn"
-                End If
+                If KnnRadius.Value <> KnnRadius.DefaultValue Then ret += ",radius=" & KnnRadius.Value
+                If KnnStrength.Value <> KnnStrength.DefaultValue Then ret += ",strength=" & KnnStrength.Value.ToInvariantString
+                If KnnLerp.Value <> KnnLerp.DefaultValue Then ret += ",lerp=" & KnnLerp.Value.ToInvariantString
+                If KnnThLerp.Value <> KnnThLerp.DefaultValue Then ret += ",th_lerp=" & KnnThLerp.Value.ToInvariantString
+                Return "--vpp-knn " + ret.TrimStart(","c)
             End If
         End Function
 
         Function GetDebandArgs() As String
-            Dim ret = ""
-
-            If DebandRange.Value <> DebandRange.DefaultValue Then
-                ret += ",range=" & DebandRange.Value
-            End If
-
-            If DebandSample.Value <> DebandSample.DefaultValue Then
-                ret += ",sample=" & DebandSample.Value
-            End If
-
-            If DebandThre.Value <> DebandThre.DefaultValue Then
-                ret += ",thre=" & DebandThre.Value
-            End If
-
-            If DebandThreY.Value <> DebandThreY.DefaultValue Then
-                ret += ",thre_y=" & DebandThreY.Value
-            End If
-
-            If DebandThreCB.Value <> DebandThreCB.DefaultValue Then
-                ret += ",thre_cb=" & DebandThreCB.Value
-            End If
-
-            If DebandThreCR.Value <> DebandThreCR.DefaultValue Then
-                ret += ",thre_cr=" & DebandThreCR.Value
-            End If
-
-            If DebandDither.Value <> DebandDither.DefaultValue Then
-                ret += ",dither=" & DebandDither.Value
-            End If
-
-            If DebandDitherY.Value <> DebandDitherY.DefaultValue Then
-                ret += ",dither_y=" & DebandDitherY.Value
-            End If
-
-            If DebandDitherC.Value <> DebandDitherC.DefaultValue Then
-                ret += ",dither_c=" & DebandDitherC.Value
-            End If
-
-            If DebandSeed.Value <> DebandSeed.DefaultValue Then
-                ret += ",seed=" & DebandSeed.Value
-            End If
-
-            If DebandBlurfirst.Value Then
-                ret += "," + "blurfirst"
-            End If
-
-            If DebandRandEachFrame.Value Then
-                ret += "," + "rand_each_frame"
-            End If
-
             If Deband.Value Then
-                Return ("--vpp-deband " + ret.TrimStart(","c)).TrimEnd
+                Dim ret = ""
+                If DebandRange.Value <> DebandRange.DefaultValue Then ret += ",range=" & DebandRange.Value
+                If DebandSample.Value <> DebandSample.DefaultValue Then ret += ",sample=" & DebandSample.Value
+                If DebandThre.Value <> DebandThre.DefaultValue Then ret += ",thre=" & DebandThre.Value
+                If DebandThreY.Value <> DebandThreY.DefaultValue Then ret += ",thre_y=" & DebandThreY.Value
+                If DebandThreCB.Value <> DebandThreCB.DefaultValue Then ret += ",thre_cb=" & DebandThreCB.Value
+                If DebandThreCR.Value <> DebandThreCR.DefaultValue Then ret += ",thre_cr=" & DebandThreCR.Value
+                If DebandDither.Value <> DebandDither.DefaultValue Then ret += ",dither=" & DebandDither.Value
+                If DebandDitherY.Value <> DebandDitherY.DefaultValue Then ret += ",dither_y=" & DebandDitherY.Value
+                If DebandDitherC.Value <> DebandDitherC.DefaultValue Then ret += ",dither_c=" & DebandDitherC.Value
+                If DebandSeed.Value <> DebandSeed.DefaultValue Then ret += ",seed=" & DebandSeed.Value
+                If DebandBlurfirst.Value Then ret += ",blurfirst"
+                If DebandRandEachFrame.Value Then ret += ",rand_each_frame"
+                Return "--vpp-deband " + ret.TrimStart(","c)
             End If
         End Function
 
         Function GetUnsharp() As String
-            Dim ret = ""
-
-            If UnsharpRadius.Value <> UnsharpRadius.DefaultValue Then
-                ret += "radius=" & UnsharpRadius.Value
-            End If
-
-            If UnsharpWeight.Value <> UnsharpWeight.DefaultValue Then
-                ret += ",weight=" & UnsharpWeight.Value.ToInvariantString
-            End If
-
-            If UnsharpThreshold.Value <> UnsharpThreshold.DefaultValue Then
-                ret += ",threshold=" & UnsharpThreshold.Value
-            End If
-
             If Unsharp.Value Then
-                Return ("--vpp-unsharp " + ret.TrimStart(","c)).TrimEnd
+                Dim ret = ""
+                If UnsharpRadius.Value <> UnsharpRadius.DefaultValue Then ret += ",radius=" & UnsharpRadius.Value
+                If UnsharpWeight.Value <> UnsharpWeight.DefaultValue Then ret += ",weight=" & UnsharpWeight.Value.ToInvariantString
+                If UnsharpThreshold.Value <> UnsharpThreshold.DefaultValue Then ret += ",threshold=" & UnsharpThreshold.Value
+                Return "--vpp-unsharp " + ret.TrimStart(","c)
             End If
         End Function
 
         Function GetEdge() As String
-            Dim ret = ""
-
-            If EdgelevelStrength.Value <> EdgelevelStrength.DefaultValue Then
-                ret += "strength=" & EdgelevelStrength.Value
-            End If
-
-            If EdgelevelThreshold.Value <> EdgelevelThreshold.DefaultValue Then
-                ret += ",threshold=" & EdgelevelThreshold.Value
-            End If
-
-            If EdgelevelBlack.Value <> EdgelevelBlack.DefaultValue Then
-                ret += ",black=" & EdgelevelBlack.Value
-            End If
-
-            If EdgelevelWhite.Value <> EdgelevelWhite.DefaultValue Then
-                ret += ",white=" & EdgelevelWhite.Value
-            End If
-
             If Edgelevel.Value Then
-                Return ("--vpp-edgelevel " + ret.TrimStart(","c)).TrimEnd
+                Dim ret = ""
+                If EdgelevelStrength.Value <> EdgelevelStrength.DefaultValue Then ret += ",strength=" & EdgelevelStrength.Value
+                If EdgelevelThreshold.Value <> EdgelevelThreshold.DefaultValue Then ret += ",threshold=" & EdgelevelThreshold.Value
+                If EdgelevelBlack.Value <> EdgelevelBlack.DefaultValue Then ret += ",black=" & EdgelevelBlack.Value
+                If EdgelevelWhite.Value <> EdgelevelWhite.DefaultValue Then ret += ",white=" & EdgelevelWhite.Value
+                Return "--vpp-edgelevel " + ret.TrimStart(","c)
             End If
         End Function
 
         Function GetTransform() As String
             Dim ret = ""
-
-            If TransformFlipX.Value Then
-                ret += "flip_x=true"
-            End If
-
-            If TransformFlipY.Value Then
-                ret += ",flip_y=true"
-            End If
-
-            If TransformTranspose.Value Then
-                ret += ",transpose=true"
-            End If
-
-            If ret <> "" Then
-                Return ("--vpp-transform " + ret.TrimStart(","c)).TrimEnd
-            End If
+            If TransformFlipX.Value Then ret += ",flip_x=true"
+            If TransformFlipY.Value Then ret += ",flip_y=true"
+            If TransformTranspose.Value Then ret += ",transpose=true"
+            If ret <> "" Then Return ("--vpp-transform " + ret.TrimStart(","c))
         End Function
 
         Function GetSelectEvery() As String
-            Dim ret = ""
-
-            ret += SelectEveryValue.Value.ToString
-            ret += "," + SelectEveryOffsets.Value.SplitNoEmptyAndWhiteSpace(" ", ",", ";").Select(Function(item) "offset=" + item).Join(",")
-
             If SelectEvery.Value Then
-                Return ("--vpp-select-every " + ret.TrimStart(","c)).TrimEnd(","c)
+                Dim ret = ""
+                ret += SelectEveryValue.Value.ToString
+                ret += "," + SelectEveryOffsets.Value.SplitNoEmptyAndWhiteSpace(" ", ",", ";").Select(Function(item) "offset=" + item).Join(",")
+                If ret <> "" Then Return "--vpp-select-every " + ret.TrimStart(","c)
             End If
         End Function
 
         Function GetNnedi() As String
-            Dim ret = ""
-
-            If NnediField.Value <> NnediField.DefaultValue Then
-                ret += "field=" + NnediField.ValueText
-            End If
-
-            If NnediNns.Value <> NnediNns.DefaultValue Then
-                ret += ",nns=" + NnediNns.ValueText
-            End If
-
-            If NnediNsize.Value <> NnediNsize.DefaultValue Then
-                ret += ",nsize=" + NnediNsize.ValueText
-            End If
-
-            If NnediQuality.Value <> NnediQuality.DefaultValue Then
-                ret += ",quality=" + NnediQuality.ValueText
-            End If
-
-            If NnediPrescreen.Value <> NnediPrescreen.DefaultValue Then
-                ret += ",prescreen=" + NnediPrescreen.ValueText
-            End If
-
-            If NnediErrortype.Value <> NnediErrortype.DefaultValue Then
-                ret += ",errortype=" + NnediErrortype.ValueText
-            End If
-
-            If NnediPrec.Value <> NnediPrec.DefaultValue Then
-                ret += ",prec=" + NnediPrec.ValueText
-            End If
-
-            If NnediWeightfile.Value <> "" Then
-                ret += ",weightfile=" + NnediWeightfile.Value.Escape
-            End If
-
             If Nnedi.Value Then
-                Return ("--vpp-nnedi " + ret.TrimStart(","c)).TrimEnd
+                Dim ret = ""
+                If NnediField.Value <> NnediField.DefaultValue Then ret += ",field=" + NnediField.ValueText
+                If NnediNns.Value <> NnediNns.DefaultValue Then ret += ",nns=" + NnediNns.ValueText
+                If NnediNsize.Value <> NnediNsize.DefaultValue Then ret += ",nsize=" + NnediNsize.ValueText
+                If NnediQuality.Value <> NnediQuality.DefaultValue Then ret += ",quality=" + NnediQuality.ValueText
+                If NnediPrescreen.Value <> NnediPrescreen.DefaultValue Then ret += ",prescreen=" + NnediPrescreen.ValueText
+                If NnediErrortype.Value <> NnediErrortype.DefaultValue Then ret += ",errortype=" + NnediErrortype.ValueText
+                If NnediPrec.Value <> NnediPrec.DefaultValue Then ret += ",prec=" + NnediPrec.ValueText
+                If NnediWeightfile.Value <> "" Then ret += ",weightfile=" + NnediWeightfile.Value.Escape
+                Return "--vpp-nnedi " + ret.TrimStart(","c)
             End If
         End Function
 
         Function GetAFS() As String
-            Dim ret = ""
-
-            If AfsPreset.Value <> AfsPreset.DefaultValue Then
-                ret += "preset=" + AfsPreset.ValueText
-            End If
-
-            If AfsINI.Value <> "" Then
-                ret += ",ini=" + AfsINI.Value.Escape
-            End If
-
-            If AfsLeft.Value <> AfsLeft.DefaultValue Then
-                ret += ",left=" & AfsLeft.Value
-            End If
-
-            If AfsRight.Value <> AfsRight.DefaultValue Then
-                ret += ",right=" & AfsRight.Value
-            End If
-
-            If AfsTop.Value <> AfsTop.DefaultValue Then
-                ret += ",top=" & AfsTop.Value
-            End If
-
-            If AfsBottom.Value <> AfsBottom.DefaultValue Then
-                ret += ",bottom=" & AfsBottom.Value
-            End If
-
-            If AfsMethodSwitch.Value <> AfsMethodSwitch.DefaultValue Then
-                ret += ",method_switch=" & AfsMethodSwitch.Value
-            End If
-
-            If AfsCoeffShift.Value <> AfsCoeffShift.DefaultValue Then
-                ret += ",coeff_shift=" & AfsCoeffShift.Value
-            End If
-
-            If AfsThreShift.Value <> AfsThreShift.DefaultValue Then
-                ret += ",thre_shift=" & AfsThreShift.Value
-            End If
-
-            If AfsThreDeint.Value <> AfsThreDeint.DefaultValue Then
-                ret += ",thre_deint=" & AfsThreDeint.Value
-            End If
-
-            If AfsThreMotionY.Value <> AfsThreMotionY.DefaultValue Then
-                ret += ",thre_motion_y=" & AfsThreMotionY.Value
-            End If
-
-            If AfsThreMotionC.Value <> AfsThreMotionC.DefaultValue Then
-                ret += ",thre_motion_c=" & AfsThreMotionC.Value
-            End If
-
-            If AfsLevel.Value <> AfsLevel.DefaultValue Then
-                ret += ",level=" & AfsLevel.Value
-            End If
-
-            If AfsShift.Value <> AfsShift.DefaultValue Then
-                ret += ",shift=" + If(AfsShift.Value, "on", "off")
-            End If
-
-            If AfsDrop.Value <> AfsDrop.DefaultValue Then
-                ret += ",drop=" + If(AfsDrop.Value, "on", "off")
-            End If
-
-            If AfsSmooth.Value <> AfsSmooth.DefaultValue Then
-                ret += ",smooth=" + If(AfsSmooth.Value, "on", "off")
-            End If
-
-            If Afs24fps.Value <> Afs24fps.DefaultValue Then
-                ret += ",24fps=" + If(Afs24fps.Value, "on", "off")
-            End If
-
-            If AfsTune.Value <> AfsTune.DefaultValue Then
-                ret += ",tune=" + If(AfsTune.Value, "on", "off")
-            End If
-
-            If AfsRFF.Value <> AfsRFF.DefaultValue Then
-                ret += ",rff=" + If(AfsRFF.Value, "on", "off")
-            End If
-
-            If AfsTimecode.Value <> AfsTimecode.DefaultValue Then
-                ret += ",timecode=" + If(AfsTimecode.Value, "on", "off")
-            End If
-
-            If AfsLog.Value <> AfsLog.DefaultValue Then
-                ret += ",log=" + If(AfsLog.Value, "on", "off")
-            End If
-
             If Afs.Value Then
-                Return ("--vpp-afs " + ret.TrimStart(","c)).TrimEnd
+                Dim ret = ""
+                If AfsPreset.Value <> AfsPreset.DefaultValue Then ret += ",preset=" + AfsPreset.ValueText
+                If AfsINI.Value <> "" Then ret += ",ini=" + AfsINI.Value.Escape
+                If AfsLeft.Value <> AfsLeft.DefaultValue Then ret += ",left=" & AfsLeft.Value
+                If AfsRight.Value <> AfsRight.DefaultValue Then ret += ",right=" & AfsRight.Value
+                If AfsTop.Value <> AfsTop.DefaultValue Then ret += ",top=" & AfsTop.Value
+                If AfsBottom.Value <> AfsBottom.DefaultValue Then ret += ",bottom=" & AfsBottom.Value
+                If AfsMethodSwitch.Value <> AfsMethodSwitch.DefaultValue Then ret += ",method_switch=" & AfsMethodSwitch.Value
+                If AfsCoeffShift.Value <> AfsCoeffShift.DefaultValue Then ret += ",coeff_shift=" & AfsCoeffShift.Value
+                If AfsThreShift.Value <> AfsThreShift.DefaultValue Then ret += ",thre_shift=" & AfsThreShift.Value
+                If AfsThreDeint.Value <> AfsThreDeint.DefaultValue Then ret += ",thre_deint=" & AfsThreDeint.Value
+                If AfsThreMotionY.Value <> AfsThreMotionY.DefaultValue Then ret += ",thre_motion_y=" & AfsThreMotionY.Value
+                If AfsThreMotionC.Value <> AfsThreMotionC.DefaultValue Then ret += ",thre_motion_c=" & AfsThreMotionC.Value
+                If AfsLevel.Value <> AfsLevel.DefaultValue Then ret += ",level=" & AfsLevel.Value
+                If AfsShift.Value <> AfsShift.DefaultValue Then ret += ",shift=" + If(AfsShift.Value, "on", "off")
+                If AfsDrop.Value <> AfsDrop.DefaultValue Then ret += ",drop=" + If(AfsDrop.Value, "on", "off")
+                If AfsSmooth.Value <> AfsSmooth.DefaultValue Then ret += ",smooth=" + If(AfsSmooth.Value, "on", "off")
+                If Afs24fps.Value <> Afs24fps.DefaultValue Then ret += ",24fps=" + If(Afs24fps.Value, "on", "off")
+                If AfsTune.Value <> AfsTune.DefaultValue Then ret += ",tune=" + If(AfsTune.Value, "on", "off")
+                If AfsRFF.Value <> AfsRFF.DefaultValue Then ret += ",rff=" + If(AfsRFF.Value, "on", "off")
+                If AfsTimecode.Value <> AfsTimecode.DefaultValue Then ret += ",timecode=" + If(AfsTimecode.Value, "on", "off")
+                If AfsLog.Value <> AfsLog.DefaultValue Then ret += ",log=" + If(AfsLog.Value, "on", "off")
+                Return "--vpp-afs " + ret.TrimStart(","c)
             End If
         End Function
 

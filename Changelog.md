@@ -5,7 +5,6 @@
 - Make forced closing optional via settings (Dendraspis)
 - NVEnc gets '--vpp-colorspace' options (Dendraspis, [#461](/../../issues/461))
 - Messagebox when processed file or its project file is not found instead of crash (Dendraspis, [#460](/../../issues/460))
-- NVEnc CQP and TRIM fixes (Dendraspis)
 - D2VSource 1.2.2
 
 

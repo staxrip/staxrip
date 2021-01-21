@@ -1198,13 +1198,7 @@ Public Class NVEnc
 
             Select Case Mode.Value
                 Case 0
-                    If QPAdvanced.Value Then
-                        Return "--cqp " & QPI.Value & "
-                        " & QPP.Value & "
-                        " & QPB.Value
-                    Else
-                        Return "--cqp " & QP.Value
-                    End If
+                    Return If(QPAdvanced.Value, $" --cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
                 Case 1
                     Return "--cbr " & p.VideoBitrate
                 Case 2
@@ -1285,8 +1279,7 @@ Public Class NVEnc
 
             If Decoder.ValueText <> "avs" Then
                 If p.Ranges.Count > 0 Then
-                    ret += " --trim " + p.Ranges.Select(Function(range) range.Start & "
-                        " & range.End).Join(",")
+                    ret += " --trim " + p.Ranges.Select(Function(range) $"{range.Start}:{range.End}").Join(",")
                 End If
             End If
 

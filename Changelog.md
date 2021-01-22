@@ -5,7 +5,9 @@
 - Make forced closing optional via settings (Dendraspis)
 - NVEnc gets '--vpp-colorspace' options (Dendraspis, [#461](/../../issues/461))
 - Messagebox when processed file or its project file is not found instead of crash (Dendraspis, [#460](/../../issues/460))
+- x265 vpy input sets --reader-options library=path-to-vsscript.dll (stax76, [#471](/../../issues/471))
 - D2VSource 1.2.2
+- x265 3.4+62-aMod-gcc10.2.1-hdr10-info msg7086/DJATOM
 
 
 2.1.7.3 Beta (2021-01-18)

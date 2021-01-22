@@ -2057,9 +2057,12 @@ Public Class MainForm
             End If
 
             p.SourceVideoHdrFormat = MediaInfo.GetVideo(p.LastOriginalSourceFile, "HDR_Format_Commercial")
-            If p.SourceVideoHdrFormat = "" Then p.SourceVideoHdrFormat = "SDR"
-            If p.SourceVideoHdrFormat.Contains("Blu-ray / HDR10") Then p.SourceVideoHdrFormat = "DV"
-            If p.SourceVideoHdrFormat.Contains("Dolby") Then p.SourceVideoHdrFormat = "DV"
+
+            If p.SourceVideoHdrFormat = "" Then
+                p.SourceVideoHdrFormat = "SDR"
+            ElseIf p.SourceVideoHdrFormat.Contains("Blu-ray / HDR10") OrElse p.SourceVideoHdrFormat.Contains("Dolby") Then
+                p.SourceVideoHdrFormat = "DV"
+            End If
 
             p.SourceVideoFormat = MediaInfo.GetVideoFormat(p.LastOriginalSourceFile)
             p.SourceVideoFormatProfile = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format_Profile")

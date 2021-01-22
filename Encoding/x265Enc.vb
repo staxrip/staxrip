@@ -271,7 +271,8 @@ Public Class x265Enc
 
         tester.UndocumentedSwitches = "numa-pools rdoq cip qblur cplxblur cu-stats
             dhdr10-info opt-qp-pps opt-ref-list-length-pps single-sei hrd-concat 
-            dhdr10-opt crop pb-factor ip-factor level log display-window start end"
+            dhdr10-opt crop pb-factor ip-factor level log display-window start end
+            reader-options"
 
         tester.Package = Package.x265
         tester.CodeFile = Folder.Startup.Parent + "Encoding\x265Enc.vb"
@@ -1273,10 +1274,14 @@ Public Class x265Params
                             End If
                         Case "none"
                             sb.Append(pipeString + Package.x265.Path.Escape)
+                            sb.Append(If(FrameServerHelp.IsVapourSynthPortableUsed,
+                                $" --reader-options library={(Package.VapourSynth.Directory + "VSScript.dll").Escape}", ""))
+
                             If isSingleChunk Then
                                 If Seek.Value > 0 Then
                                     sb.Append($" --seek {Seek.Value}")
                                 End If
+
                                 If Frames.Value > 0 Then
                                     sb.Append($" --frames {Frames.Value}")
                                 End If

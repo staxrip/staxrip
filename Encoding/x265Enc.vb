@@ -1274,8 +1274,10 @@ Public Class x265Params
                             End If
                         Case "none"
                             sb.Append(pipeString + Package.x265.Path.Escape)
-                            sb.Append(If(FrameServerHelp.IsVapourSynthPortableUsed,
-                                $" --reader-options library={(Package.VapourSynth.Directory + "VSScript.dll").Escape}", ""))
+
+                            If p.Script.IsVapourSynth AndAlso FrameServerHelp.IsVapourSynthPortableUsed Then
+                                sb.Append($" --reader-options library={(Package.VapourSynth.Directory + "VSScript.dll").Escape}")
+                            End If
 
                             If isSingleChunk Then
                                 If Seek.Value > 0 Then

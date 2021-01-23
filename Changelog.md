@@ -10,6 +10,7 @@
 - vceenc uses --avsdll in portable mode (stax76, [#473](/../../issues/473))
 - D2VSource 1.2.2
 - x265 3.4+62-aMod-gcc10.2.1-hdr10-info msg7086/DJATOM
+- avsresize r5
 
 
 2.1.7.3 Beta (2021-01-18)

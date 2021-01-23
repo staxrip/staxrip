@@ -203,10 +203,6 @@ Public Class GlobalCommands
         msg += x265Enc.Test
 
         For Each pack In Package.Items.Values
-            If pack.HelpFilename.Ext = "md" Then
-                msg += BR2 + "# local MD file for " + pack.Name
-            End If
-
             If pack.IsIncluded Then
                 If pack.Path = "" Then
                     msg += BR2 + "# path missing for " + pack.Name

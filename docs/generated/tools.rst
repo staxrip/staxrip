@@ -9,7 +9,7 @@ Tools
     "AutoAdjust","AviSynth Plugin","AutoAdjust.dll","2.60","2016-01-05"
     "Average","AviSynth Plugin","Average.dll","0.94","2019-01-01"
     "AviSynthShader DLL","AviSynth Plugin","Shader-x64.dll","1.6.6","2020-06-17"
-    "AvsResize","AviSynth Plugin","avsresize.dll","r1d","2019-01-01"
+    "AvsResize","AviSynth Plugin","avsresize.dll","r5","2020-10-30"
     "AVSTP","AviSynth Plugin","avstp.dll","1.0.3.0","2019-01-01"
     "checkmate","AviSynth Plugin","checkmate.dll","0.9","2013-12-19"
     "CNR2","AviSynth Plugin","CNR2.dll","2.6.1","2019-01-01"
@@ -568,7 +568,7 @@ AvsResize
 
 
 
-Filters: z_ConvertFormat, z_PointResize, z_BilinearResize, z_BicubicResize, z_LanczosResize, z_Lanczos4Resize, z_BlackmanResize, z_Spline16Resize, z_Spline36Resize, z_Spline64Resize, z_GaussResize, z_SincResize
+Filters: z_ConvertFormat, z_PointResize, z_BilinearResize, z_BicubicResize, z_LanczosResize, z_Lanczos4Resize, z_Spline16Resize, z_Spline36Resize, z_Spline64Resize
 
 http://forum.doom9.org/showthread.php?t=173986
 

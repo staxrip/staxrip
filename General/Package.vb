@@ -2048,7 +2048,11 @@ Public Class Package
         End If
 
         If HelpFilename <> "" Then
-            dic("Local") = Directory + HelpFilename
+            If Not HelpSwitch Is Nothing AndAlso HelpFilename = Name + " Help.txt" Then
+                dic("Console") = Directory + HelpFilename
+            Else
+                dic("Local") = Directory + HelpFilename
+            End If
         End If
 
         dic("Online") = HelpURL

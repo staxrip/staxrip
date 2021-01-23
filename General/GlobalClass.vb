@@ -233,16 +233,8 @@ Public Class GlobalClass
 
     Sub ProcessJob(jobPath As String)
         Try
-            If p.BatchMode AndAlso Not File.Exists(g.ProjectPath) Then
-                Task.Run(Sub() MsgError("Project file not found!", $"'{jobPath}'{BR}cound not be found and got skipped!"))
-                Exit Sub
-            End If
             If Not File.Exists(jobPath) Then
-                Task.Run(Sub() MsgError("Project file not found!", $"'{jobPath}'{BR}cound not be found and got skipped!"))
-                Exit Sub
-            End If
-            If Not File.Exists(p.SourceFile) Then
-                Task.Run(Sub() MsgError("Source file not found!", $"'{p.SourceFile}'{BR}cound not be found and got skipped!"))
+                g.RunTask(Sub() MsgError("Project file not found!", $"'{jobPath}'{BR}could not be found and got skipped!"))
                 Exit Sub
             End If
 
@@ -251,10 +243,22 @@ Public Class GlobalClass
             Dim startTime = DateTime.Now
 
             If p.BatchMode Then
+                Dim missingFiles = p.SourceFiles.Where(Function(srcFile) Not srcFile.FileExists)
+
+                If missingFiles.Count > 0 Then
+                    g.RunTask(Sub() MsgError("Source file not found!", $"{missingFiles.Join(BR)}{BR}could not be found and got skipped!"))
+                    Exit Sub
+                End If
+
                 g.MainForm.OpenVideoSourceFiles(p.SourceFiles, True)
                 g.ProjectPath = p.TempDir + p.TargetFile.Base + ".srip"
                 p.BatchMode = False
                 g.MainForm.SaveProjectPath(g.ProjectPath)
+            Else
+                If Not File.Exists(p.SourceFile) Then
+                    g.RunTask(Sub() MsgError("Source file not found!", $"'{p.SourceFile}'{BR}could not be found and got skipped!"))
+                    Exit Sub
+                End If
             End If
 
             g.RaiseAppEvent(ApplicationEvent.BeforeProcessing)
@@ -977,8 +981,7 @@ Public Class GlobalClass
                         name = p.SourceFile.Base
                     End If
 
-                    Dim path = p.SourceFile.Dir + "recovery.srip"
-                    g.MainForm.SaveProjectPath(path)
+                    g.MainForm.SaveProjectPath(p.SourceFile.Dir + "recovery.srip")
                 End If
 
                 g.SaveSettings()

@@ -248,7 +248,7 @@ Public Class Package
         .SupportsAutoUpdate = False,
         .Siblings = {"VapourSynth"},
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthHintDir})
+        .HintDirFunc = Function() Package.VapourSynth.Path.Dir})
 
     Shared Property Python As Package = Add(New Package With {
         .Name = "Python",
@@ -888,9 +888,9 @@ Public Class Package
         .Name = "FFT3DGPU",
         .Filename = "FFT3dGPU.dll",
         .Description = "Similar algorithm to FFT3DFilter, but uses graphics hardware for increased speed.",
-        .HelpFilename = "Readme.txt",
+        .HelpURL = "https://htmlpreview.github.io/?https://github.com/pinterf/FFT3dGPU/blob/master/FFT3dGPU/documentation/fft3dgpu.htm",
         .AvsFilterNames = {"FFT3DGPU"},
-        .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter | FFT3DGPU", "FFT3DGPU(sigma=1.5, bt=5, bw=32, bh=32, ow=16, oh=16, sharpen=0.4, NVPerf=$select:msg:Enable Nvidia Function;True;False$)")}})
+        .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter | FFT3DGPU", "FFT3DGPU(sigma=1.5, bt=3, bw=32, bh=32, ow=16, oh=16, sharpen=0.4, NVPerf=$select:msg:Enable Nvidia Function;True;False$)")}})
 
     Shared Property D2VSourceAVS As Package = Add(New PluginPackage With {
         .Name = "D2VSource",
@@ -2307,10 +2307,10 @@ Public Class Package
 
     Function GetAviSynthHintDir() As String
         If s.AviSynthMode <> FrameServerMode.Portable Then
-            Dim path = FrameServerHelp.GetAviSynthInstallPath
+            Dim dllPath = FrameServerHelp.GetAviSynthInstallPath
 
-            If path.FileExists Then
-                Return path.Dir
+            If dllPath.FileExists Then
+                Return dllPath.Dir
             End If
         End If
 
@@ -2318,14 +2318,12 @@ Public Class Package
     End Function
 
     Function GetVapourSynthHintDir() As String
-        If Not s.VapourSynthMode = FrameServerMode.Portable Then
-            For Each key In {Registry.CurrentUser, Registry.LocalMachine}
-                Dim dllPath = key.GetString("Software\VapourSynth", "VapourSynthDLL")
+        If s.VapourSynthMode <> FrameServerMode.Portable Then
+            Dim dllPath = FrameServerHelp.GetVapourSynthInstallPath
 
-                If File.Exists(dllPath) Then
-                    Return dllPath.Dir
-                End If
-            Next
+            If dllPath <> "" Then
+                Return dllPath.Dir
+            End If
         End If
 
         Return GetPathFromLocation("FrameServer\VapourSynth").Dir

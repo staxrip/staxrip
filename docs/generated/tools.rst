@@ -31,7 +31,7 @@ Tools
     "ffms2","AviSynth Plugin","ffms2.dll","87bae19 StvG","2020-11-23"
     "FFT3D Neo","AviSynth Plugin","neo-fft3d.dll","r10","2021-01-02"
     "FFT3DFilter","AviSynth Plugin","fft3dfilter.dll","2.8","2020-12-01"
-    "FFT3DGPU","AviSynth Plugin","FFT3dGPU.dll","0.8.2.0","2018-11-21"
+    "FFT3DGPU","AviSynth Plugin","FFT3dGPU.dll","0.8.6","2021-01-04"
     "flash3kyuu_deband","AviSynth Plugin","flash3kyuu_deband.dll","5.0","2018-05-02"
     "FluxSmooth","AviSynth Plugin","FluxSmooth.dll","1.4.7","2019-04-26"
     "FrameRateConverter DLL","AviSynth Plugin","FrameRateConverter-x64.dll","1.2.1","2017-09-02"

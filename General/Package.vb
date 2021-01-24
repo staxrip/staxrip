@@ -2274,7 +2274,7 @@ Public Class Package
     End Function
 
     Function IsCustomPathAllowed() As Boolean
-        Return Not Path.StartsWithEx(Folder.System) AndAlso Not Path.ContainsEx("FrameServer")
+        Return Not Path.PathStartsWith(Folder.System)
     End Function
 
     ReadOnly Property Directory As String
@@ -2306,10 +2306,12 @@ Public Class Package
     End Function
 
     Function GetAviSynthHintDir() As String
-        If Not s.AviSynthMode = FrameServerMode.Portable AndAlso
-            File.Exists(Folder.System + Filename) Then
+        If s.AviSynthMode <> FrameServerMode.Portable Then
+            Dim path = FrameServerHelp.GetAviSynthInstallPath
 
-            Return Folder.System
+            If path.FileExists Then
+                Return path.Dir
+            End If
         End If
 
         Return GetPathFromLocation("FrameServer\AviSynth").Dir

@@ -418,8 +418,12 @@ Public Class VfwFrameServer
 End Class
 
 Public Class FrameServerHelp
+    Shared Function GetAviSynthInstallPath() As String
+        Return Registry.ClassesRoot.GetString("CLSID\{E6D6B700-124D-11D4-86F3-DB80AFD98778}\InProcServer32", Nothing)
+    End Function
+
     Shared Function IsAviSynthPortableUsed() As Boolean
-        Return Package.AviSynth.Directory.PathStartsWith(Folder.Apps)
+        Return Not Package.AviSynth.Path.PathEquals(GetAviSynthInstallPath)
     End Function
 
     Shared Function IsVapourSynthPortableUsed() As Boolean

@@ -99,6 +99,13 @@ Module StringExtensions
     End Function
 
     <Extension>
+    Function PathEquals(instance As String, value As String) As Boolean
+        If instance <> "" AndAlso value <> "" Then
+            Return instance.ToLower = value.ToLower
+        End If
+    End Function
+
+    <Extension>
     Sub ThrowIfContainsNewLine(instance As String)
         If instance?.Contains(BR) Then
             Throw New Exception("String contains a line break char: " + instance)

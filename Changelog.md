@@ -2,6 +2,10 @@
 2.1.7.6 Beta (2021-01-??)
 =========================
 
+- x265 3.4+65-aMod-gcc10.2.1 2021-01-24 DJATOM Mod, avs portable support,
+  vs async frame requests logic overhaul ([#470](/../../issues/470))
+
+
 2.1.7.5 Beta (2021-01-23)
 =========================
 

@@ -1264,6 +1264,7 @@ Public Class x265Params
                                 If Seek.Value > 0 Then
                                     sb.Append($" --seek {Seek.Value}")
                                 End If
+
                                 If Frames.Value = 0 Then
                                     sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
                                 Else
@@ -1277,6 +1278,8 @@ Public Class x265Params
 
                             If p.Script.IsVapourSynth AndAlso FrameServerHelp.IsVapourSynthPortableUsed Then
                                 sb.Append($" --reader-options library={(Package.VapourSynth.Directory + "VSScript.dll").Escape}")
+                            ElseIf p.Script.IsAviSynth AndAlso FrameServerHelp.IsAviSynthPortableUsed Then
+                                sb.Append($" --reader-options library={Package.AviSynth.Path.Escape}")
                             End If
 
                             If isSingleChunk Then

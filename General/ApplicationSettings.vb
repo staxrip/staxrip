@@ -51,6 +51,7 @@ Public Class ApplicationSettings
     Public PreviewFormBorderStyle As FormBorderStyle
     Public PreviewSize As Integer = 70
     Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.Idle
+    Public ProgressOutputCustomize As Boolean = False
     Public ProjectsMruNum As Integer = 10
     Public RecentFramePositions As List(Of String)
     Public RecentOptionsPage As String

@@ -1061,10 +1061,10 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Options = {"0", "5", "8.1", "8.2"}},
                     New StringParam With {.Switch = "--dolby-vision-rpu", .Text = "Dolby Vision RPU", .BrowseFile = True},
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "Maximum Picture Order Count", .Init = 8},
-                    RepeatHeaders, Info, HRD, AUD,
+                    Info, RepeatHeaders, AUD, HRD,
                     New BoolParam With {.Switch = "--hrd-concat", .Init = False, .Text = "HRD Concat"},
-                    New BoolParam With {.Switch = "--vui-timing-info", .Text = "VUI Timing Info", .Init = True},
-                    New BoolParam With {.Switch = "--vui-hrd-info", .Text = "VUI HRD Info", .Init = True},
+                    New BoolParam With {.Switch = "--vui-timing-info", .NoSwitch = "--no-vui-timing-info", .Text = "VUI Timing Info", .Init = True},
+                    New BoolParam With {.Switch = "--vui-hrd-info", .NoSwitch = "--no-vui-hrd-info", .Text = "VUI HRD Info", .Init = True},
                     New BoolParam With {.Switch = "--idr-recovery-sei", .Init = False, .Text = "Recovery SEI"},
                     New BoolParam With {.Switch = "--single-sei", .Init = False, .Text = "Single SEI"})
                 Add("Bitstream 2",

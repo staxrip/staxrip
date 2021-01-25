@@ -5,6 +5,7 @@
 - Apps dialog allows custom paths to AviSynth and VapourSynth portable (stax76)
 - Installed AviSynth don't has to be located in System32, it can be installed
   anywhere using the included install.ps1 powershell script (stax76)
+- x265 two parameters not set when checkbox unchecked (Dendraspis)
 - x265 avs portable mode sets --reader-options library=avs-dll-path (stax76)
 - x265 3.4+65-aMod-gcc10.2.1 DJATOM Mod, avs portable support,
   vs async frame requests logic overhaul ([#470](/../../issues/470))

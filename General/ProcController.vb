@@ -109,8 +109,7 @@ Public Class ProcController
                                    If match.Success Then
                                        value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(9).Value}.{match.Groups(10).Value} fps, {match.Groups(13).Value,3}.{match.Groups(14).Value} {match.Groups(15).Value}, {match.Groups(16).Value}.{match.Groups(17).Value} {match.Groups(18).Value} ({match.Groups(20).Value} {match.Groups(22).Value}), -{match.Groups(19).Value}"
                                    End If
-                               End If
-                               If Proc.Package Is Package.x265 Then
+                               ElseIf Proc.Package Is Package.x265 Then
                                    Dim pattern = "\[((\d+)\.?(\d*))%\]\s+((\d+)/(\d+)(\sframes)),\s((\d+)\.?(\d*)(\sfps)),\s((\d+)\.?(\d*)\s([a-z]{2}/s)),\selapsed:\s(\d+:\d+:\d+),\seta:\s(\d+:\d+:\d+),\ssize:\s(\d+)\.(\d+)\s([a-z]{1,2}),\sest\.\ssize:\s(\d+)\.(\d+)\s([a-z]{1,2})"
                                    Dim match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
                                    If match.Success Then

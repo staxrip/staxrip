@@ -129,7 +129,7 @@ Public Class NVEnc
             audio-copy audio-codec vpp-perf-monitor avi audio-profile check-profiles avsync mux-option
             audio-bitrate audio-ignore audio-ignore audio-samplerate audio-resampler audio-stream dar
             audio-stream audio-stream audio-stream audio-filter chapter-copy chapter sub-copy input-res
-            vpp-decimate audio-disposition audio-metadata option-list sub-disposition sub-metadata
+            audio-disposition audio-metadata option-list sub-disposition sub-metadata
             metadata video-metadata video-tag attachment-copy chapter-no-trim"
 
         tester.UndocumentedSwitches = "cbrhq vbrhq"
@@ -331,28 +331,27 @@ Public Class NVEnc
         Property DebandBlurfirst As New BoolParam With {.Text = "Blurfirst", .HelpSwitch = "--vpp-deband", .LeftMargin = g.MainForm.FontHeight * 1.3}
         Property DebandRandEachFrame As New BoolParam With {.Text = "Rand Each Frame", .HelpSwitch = "--vpp-deband", .LeftMargin = g.MainForm.FontHeight * 1.3}
 
-        Property Afs As New BoolParam With {.Text = "Auto field shift deinterlacer", .Switches = {"--vpp-afs"}, .ArgsFunc = AddressOf GetAFS}
-        Property AfsPreset As New OptionParam With {.Text = "     Preset", .HelpSwitch = "--vpp-afs", .Options = {"Default", "Triple", "Double", "Anime", "Cinema", "Min_afterimg", "24fps", "24fps_sd", "30fps"}}
-        Property AfsINI As New StringParam With {.Text = "     INI", .HelpSwitch = "--vpp-afs", .BrowseFile = True}
-        Property AfsLeft As New NumParam With {.Text = "     Left", .HelpSwitch = "--vpp-afs", .Init = 32}
-        Property AfsRight As New NumParam With {.Text = "     Right", .HelpSwitch = "--vpp-afs", .Init = 32}
-        Property AfsTop As New NumParam With {.Text = "     Top", .HelpSwitch = "--vpp-afs", .Init = 16}
-        Property AfsBottom As New NumParam With {.Text = "     Bottom", .HelpSwitch = "--vpp-afs", .Init = 16}
-        Property AfsMethodSwitch As New NumParam With {.Text = "     Method Switch", .HelpSwitch = "--vpp-afs", .Config = {0, 256}}
-        Property AfsCoeffShift As New NumParam With {.Text = "     Coeff Shift", .HelpSwitch = "--vpp-afs", .Init = 192, .Config = {0, 256}}
-        Property AfsThreShift As New NumParam With {.Text = "          Shift", .Label = "     Threshold", .HelpSwitch = "--vpp-afs", .Init = 128, .Config = {0, 1024}}
-        Property AfsThreDeint As New NumParam With {.Text = "          Deint", .HelpSwitch = "--vpp-afs", .Init = 48, .Config = {0, 1024}}
-        Property AfsThreMotionY As New NumParam With {.Text = "          Motion Y", .HelpSwitch = "--vpp-afs", .Init = 112, .Config = {0, 1024}}
-        Property AfsThreMotionC As New NumParam With {.Text = "          Motion C", .HelpSwitch = "--vpp-afs", .Init = 224, .Config = {0, 1024}}
-        Property AfsLevel As New NumParam With {.Text = "     Level", .HelpSwitch = "--vpp-afs", .Init = 3, .Config = {0, 4}}
-        Property AfsShift As New BoolParam With {.Text = "Shift", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
-        Property AfsDrop As New BoolParam With {.Text = "Drop", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
-        Property AfsSmooth As New BoolParam With {.Text = "Smooth", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
-        Property Afs24fps As New BoolParam With {.Text = "24 FPS", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
-        Property AfsTune As New BoolParam With {.Text = "Tune", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
-        Property AfsRFF As New BoolParam With {.Text = "RFF", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
-        Property AfsTimecode As New BoolParam With {.Text = "Timecode", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
-        Property AfsLog As New BoolParam With {.Text = "Log", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3}
+        Property AfsPreset As New OptionParam With {.Text = "Preset", .HelpSwitch = "--vpp-afs", .Options = {"Default", "Triple", "Double", "Anime", "Cinema", "Min_afterimg", "24fps", "24fps_sd", "30fps"}, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsINI As New StringParam With {.Text = "INI", .HelpSwitch = "--vpp-afs", .BrowseFile = True, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsLeft As New NumParam With {.Text = "Left", .HelpSwitch = "--vpp-afs", .Init = 32, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsRight As New NumParam With {.Text = "Right", .HelpSwitch = "--vpp-afs", .Init = 32, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsTop As New NumParam With {.Text = "Top", .HelpSwitch = "--vpp-afs", .Init = 16, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsBottom As New NumParam With {.Text = "Bottom", .HelpSwitch = "--vpp-afs", .Init = 16, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsMethodSwitch As New NumParam With {.Text = "Method Switch", .HelpSwitch = "--vpp-afs", .Config = {0, 256}, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsCoeffShift As New NumParam With {.Text = "Coeff Shift", .HelpSwitch = "--vpp-afs", .Init = 192, .Config = {0, 256}, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsThreShift As New NumParam With {.Text = "Threshold Shift", .HelpSwitch = "--vpp-afs", .Init = 128, .Config = {0, 1024}, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsThreDeint As New NumParam With {.Text = "Threshold Deint", .HelpSwitch = "--vpp-afs", .Init = 48, .Config = {0, 1024}, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsThreMotionY As New NumParam With {.Text = "Threshold Motion Y", .HelpSwitch = "--vpp-afs", .Init = 112, .Config = {0, 1024}, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsThreMotionC As New NumParam With {.Text = "Threshold Motion C", .HelpSwitch = "--vpp-afs", .Init = 224, .Config = {0, 1024}, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsLevel As New NumParam With {.Text = "Level", .HelpSwitch = "--vpp-afs", .Init = 3, .Config = {0, 4}, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsShift As New BoolParam With {.Text = "Shift", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsDrop As New BoolParam With {.Text = "Drop", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsSmooth As New BoolParam With {.Text = "Smooth", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property Afs24fps As New BoolParam With {.Text = "24 FPS", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsTune As New BoolParam With {.Text = "Tune", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsRFF As New BoolParam With {.Text = "RFF", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsTimecode As New BoolParam With {.Text = "Timecode", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsLog As New BoolParam With {.Text = "Log", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
 
         Property Edgelevel As New BoolParam With {.Text = "Edgelevel filter to enhance edge", .Switches = {"--vpp-edgelevel"}, .ArgsFunc = AddressOf GetEdge}
         Property EdgelevelStrength As New NumParam With {.Text = "     Strength", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
@@ -365,15 +364,14 @@ Public Class NVEnc
         Property UnsharpWeight As New NumParam With {.Text = "     Weight", .HelpSwitch = "--vpp-unsharp", .Init = 0.5, .Config = {0, 10, 0.5, 1}}
         Property UnsharpThreshold As New NumParam With {.Text = "     Threshold", .HelpSwitch = "--vpp-unsharp", .Init = 10, .Config = {0, 255, 1, 1}}
 
-        Property Nnedi As New BoolParam With {.Text = "nnedi Deinterlacer", .Switches = {"--vpp-nnedi"}, .ArgsFunc = AddressOf GetNnedi}
-        Property NnediField As New OptionParam With {.Text = "     Field", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "top", "bottom"}}
-        Property NnediNns As New OptionParam With {.Text = "     NNS", .HelpSwitch = "--vpp-nnedi", .Init = 1, .Options = {"16", "32", "64", "128", "256"}}
-        Property NnediNsize As New OptionParam With {.Text = "     N Size", .HelpSwitch = "--vpp-nnedi", .Init = 6, .Options = {"8x6", "16x6", "32x6", "48x6", "8x4", "16x4", "32x4"}}
-        Property NnediQuality As New OptionParam With {.Text = "     Quality", .HelpSwitch = "--vpp-nnedi", .Options = {"fast", "slow"}}
-        Property NnediPrescreen As New OptionParam With {.Text = "     Pre Screen", .HelpSwitch = "--vpp-nnedi", .Init = 4, .Options = {"none", "original", "new", "original_block", "new_block"}}
-        Property NnediErrortype As New OptionParam With {.Text = "     Error Type", .HelpSwitch = "--vpp-nnedi", .Options = {"abs", "square"}}
-        Property NnediPrec As New OptionParam With {.Text = "     Prec", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "fp16", "fp32"}}
-        Property NnediWeightfile As New StringParam With {.Text = "     Weight File", .HelpSwitch = "--vpp-nnedi", .BrowseFile = True}
+        Property NnediField As New OptionParam With {.Text = "Field", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "top", "bottom"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property NnediNns As New OptionParam With {.Text = "NNS", .HelpSwitch = "--vpp-nnedi", .Init = 1, .Options = {"16", "32", "64", "128", "256"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property NnediNsize As New OptionParam With {.Text = "N Size", .HelpSwitch = "--vpp-nnedi", .Init = 6, .Options = {"8x6", "16x6", "32x6", "48x6", "8x4", "16x4", "32x4"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property NnediQuality As New OptionParam With {.Text = "Quality", .HelpSwitch = "--vpp-nnedi", .Options = {"fast", "slow"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property NnediPrescreen As New OptionParam With {.Text = "Pre Screen", .HelpSwitch = "--vpp-nnedi", .Init = 4, .Options = {"none", "original", "new", "original_block", "new_block"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property NnediErrortype As New OptionParam With {.Text = "Error Type", .HelpSwitch = "--vpp-nnedi", .Options = {"abs", "square"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property NnediPrec As New OptionParam With {.Text = "Prec", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "fp16", "fp32"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property NnediWeightfile As New StringParam With {.Text = "Weight File", .HelpSwitch = "--vpp-nnedi", .BrowseFile = True, .VisibleFunc = Function() Deinterlacer.Value = 3}
 
         Property SelectEvery As New BoolParam With {.Text = "Select Every", .Switches = {"--vpp-select-every"}, .ArgsFunc = AddressOf GetSelectEvery}
         Property SelectEveryValue As New NumParam With {.Text = "     Value", .HelpSwitch = "--vpp-select-every", .Init = 2}
@@ -414,6 +412,9 @@ Public Class NVEnc
         Property ColorspaceHdr2sdrReinhardContrast As New NumParam With {.Text = New String(" "c, 6) + "Contrast", .HelpSwitch = "--vpp-colorspace", .Init = 0.5, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3}
         Property ColorspaceHdr2sdrReinhardPeak As New NumParam With {.Text = New String(" "c, 6) + "Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1.0, .Config = {0, 100, 0.05, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3, .Name = "ReinhardPeak"}
 
+        Property Deinterlacer As New OptionParam With {.Text = "Deinterlacing Method", .HelpSwitch = "", .Init = 0, .Options = {"None", "Hardware (HW Decoder must be set to work!)", "AFS (Activate Auto Field Shift)", "Nnedi", "Yadif"}, .ArgsFunc = AddressOf GetDeinterlacerArgs}
+
+
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
@@ -426,6 +427,8 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}, .Values = {"main", "high"}},
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
+                        New OptionParam With {.Switch = "--input-csp", .Text = "Input Colorspace", .Init = 1, .Options = {"NV12", "YV12", "YUV420P", "YUV422P", "YUV444P", "YUV420P9LE", "YUV420P10LE", "YUV420P12LE", "YUV420P14LE", "YUV420P16LE", "P010", "YUV422P9LE", "YUV422P10LE", "YUV422P12LE", "YUV422P14LE", "YUV422P16LE", "YUV444P9LE", "YUV444P10LE", "YUV444P12LE", "YUV444P14LE", "YUV444P16LE"}},
+                        Interlace,
                         New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
                         QPAdvanced, QP, QPI, QPP, QPB)
                     Add("Rate Control",
@@ -460,34 +463,9 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--cu-min", .Text = "Minimum CU Size", .Config = {0, 32, 16}},
                         New NumParam With {.Switch = "--cu-max", .Text = "Maximum CU Size", .Config = {0, 64, 16}},
                         New BoolParam With {.Switch = "--weightp", .Text = "Enable weighted prediction in P slices"})
-                    Add("Performance",
-                        New StringParam With {.Switch = "--perf-monitor", .Text = "Perf. Monitor"},
-                        New OptionParam With {.Switch = "--cuda-schedule", .Text = "Cuda Schedule", .Init = 3, .Options = {"Let cuda driver to decide", "CPU will spin when waiting GPU tasks", "CPU will yield when waiting GPU tasks", "CPU will sleep when waiting GPU tasks"}, .Values = {"auto", "spin", "yield", "sync"}},
-                        New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer", .Options = {"8", "16", "32", "64", "128"}},
-                        New OptionParam With {.Switch = "--output-thread", .Text = "Output Thread", .Options = {"Automatic", "Disabled", "One Thread"}, .Values = {"-1", "0", "1"}},
-                        New NumParam With {.Switch = "--perf-monitor-interval", .Init = 500, .Config = {50, Integer.MaxValue}, .Text = "Perf. Mon. Interval"},
-                        New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"},
-                        New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"})
-                    Add("VUI",
-                        New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "h265"},
-                        New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
-                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
-                        New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Init = 1, .Options = {"NV12", "YV12", "YUV420P", "YUV422P", "YUV444P", "YUV420P9LE", "YUV420P10LE", "YUV420P12LE", "YUV420P14LE", "YUV420P16LE", "P010", "YUV422P9LE", "YUV422P10LE", "YUV422P12LE", "YUV422P14LE", "YUV422P16LE", "YUV444P9LE", "YUV444P10LE", "YUV444P12LE", "YUV444P14LE", "YUV444P16LE"}},
-                        New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
-                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
-                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},
-                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-SRD-B67", "Auto", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 2084", "SMPTE 428"}},
-                        New OptionParam With {.Switch = "--atc-sei", .Text = "ATC SEI", .Init = 1, .Options = {"Undef", "Unknown", "Auto", "Auto_Res", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}},
-                        New OptionParam With {.Switch = "--colorrange", .Text = "Colorrange", .Options = {"Undefined", "Auto", "Limited", "TV", "Full", "PC"}},
-                        MaxCLL, MaxFALL,
-                        New NumParam With {.Switch = "--chromaloc", .Text = "Chromaloc", .Config = {0, 5}},
-                        New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
-                        New BoolParam With {.Switch = "--aud", .Text = "Insert Access Unit Delimiter NAL"},
-                        New BoolParam With {.Switch = "--repeat-headers", .Text = "Output VPS, SPS and PPS for every IDR frame"})
                     Add("VPP | Misc",
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
-                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw"), .Options = {"None", "Adaptive", "Bob"}},
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}},
                         New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw")},
@@ -522,7 +500,9 @@ Public Class NVEnc
                     Add("VPP | Misc 3",
                         TransformFlipX,
                         TransformFlipY,
-                        TransformTranspose)
+                        TransformTranspose,
+                        New StringParam With {.Switch = "--vpp-decimate", .Text = "Decimate"},
+                        New StringParam With {.Switch = "--vpp-mpdecimate", .Text = "MP Decimate"})
                     Add("VPP | Colorspace",
                         Colorspace,
                         ColorspaceMatrixFrom,
@@ -564,45 +544,40 @@ Public Class NVEnc
                         DebandSeed,
                         DebandBlurfirst,
                         DebandRandEachFrame)
+                    Add("VPP | Deinterlace",
+                        Deinterlacer,
+                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace Mode", .VisibleFunc = Function() Deinterlacer.Value = 1 AndAlso Decoder.ValueText.EqualsAny("nvhw"), .AlwaysOn = True, .Options = {"Normal", "Adaptive", "Bob"}},
+                        New OptionParam With {.Switch = "--vpp-yadif", .Text = "Yadif Mode", .VisibleFunc = Function() Deinterlacer.Value = 4, .AlwaysOn = True, .Options = {"Auto", "TFF", "BFF", "Bob", "Bob TFF", "Bob BFF"}, .Values = {"", "mode=tff", "mode=bff", "mode=bob", "mode=bob_tff", "mode=bob_bff"}},
+                        NnediField, NnediNns, NnediNsize, NnediQuality, NnediPrescreen, NnediErrortype, NnediPrec, NnediWeightfile,
+                        AfsINI, AfsPreset, AfsLeft, AfsRight, AfsTop, AfsBottom, AfsMethodSwitch, AfsCoeffShift, AfsThreShift, AfsThreDeint, AfsThreMotionY, AfsThreMotionC, AfsLevel)
+                    Add("VPP | Deinterlace | AFS 2",
+                        AfsShift, AfsDrop, AfsSmooth, Afs24fps, AfsTune, AfsRFF, AfsTimecode, AfsLog)
                     Add("VPP | Denoise",
                         Knn, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
                         Pmd, PmdApplyCount, PmdStrength, PmdThreshold)
-                    Add("VPP | Field",
-                        Nnedi,
-                        NnediField,
-                        NnediNns,
-                        NnediNsize,
-                        NnediQuality,
-                        NnediPrescreen,
-                        NnediErrortype,
-                        NnediPrec,
-                        NnediWeightfile,
-                        New OptionParam With {.Switch = "--vpp-yadif", .Text = "Yadif", .Options = {"Disabled", "Auto", "TFF", "BFF", "Bob", "Bob TFF", "Bob BFF"}, .Values = {"", "", "mode=tff", "mode=bff", "mode=bob", "mode=bob_tff", "mode=bob_bff"}},
-                        New StringParam With {.Switch = "--vpp-mpdecimate", .Text = "MP Decimate"})
-                    Add("VPP | AFS 1",
-                        Afs,
-                        AfsINI,
-                        AfsPreset,
-                        AfsLeft,
-                        AfsRight,
-                        AfsTop,
-                        AfsBottom,
-                        AfsMethodSwitch,
-                        AfsCoeffShift,
-                        AfsThreShift,
-                        AfsThreDeint,
-                        AfsThreMotionY,
-                        AfsThreMotionC,
-                        AfsLevel)
-                    Add("VPP | AFS 2",
-                        AfsShift,
-                        AfsDrop,
-                        AfsSmooth,
-                        Afs24fps,
-                        AfsTune,
-                        AfsRFF,
-                        AfsTimecode,
-                        AfsLog)
+                    Add("VUI",
+                        New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "h265"},
+                        New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
+                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
+                        New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
+                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
+                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},
+                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-SRD-B67", "Auto", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 2084", "SMPTE 428"}},
+                        New OptionParam With {.Switch = "--atc-sei", .Text = "ATC SEI", .Init = 1, .Options = {"Undef", "Unknown", "Auto", "Auto_Res", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}},
+                        New OptionParam With {.Switch = "--colorrange", .Text = "Colorrange", .Options = {"Undefined", "Auto", "Limited", "TV", "Full", "PC"}},
+                        MaxCLL, MaxFALL,
+                        New NumParam With {.Switch = "--chromaloc", .Text = "Chromaloc", .Config = {0, 5}},
+                        New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
+                        New BoolParam With {.Switch = "--aud", .Text = "Insert Access Unit Delimiter NAL"},
+                        New BoolParam With {.Switch = "--repeat-headers", .Text = "Output VPS, SPS and PPS for every IDR frame"})
+                    Add("Performance",
+                        New StringParam With {.Switch = "--perf-monitor", .Text = "Perf. Monitor"},
+                        New OptionParam With {.Switch = "--cuda-schedule", .Text = "Cuda Schedule", .Init = 3, .Options = {"Let cuda driver to decide", "CPU will spin when waiting GPU tasks", "CPU will yield when waiting GPU tasks", "CPU will sleep when waiting GPU tasks"}, .Values = {"auto", "spin", "yield", "sync"}},
+                        New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer", .Options = {"8", "16", "32", "64", "128"}},
+                        New OptionParam With {.Switch = "--output-thread", .Text = "Output Thread", .Options = {"Automatic", "Disabled", "One Thread"}, .Values = {"-1", "0", "1"}},
+                        New NumParam With {.Switch = "--perf-monitor-interval", .Init = 500, .Config = {50, Integer.MaxValue}, .Text = "Perf. Mon. Interval"},
+                        New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"},
+                        New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"})
                     Add("Statistic",
                         New StringParam With {.Switch = "--vmaf", .Text = "VMAF"},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
@@ -617,7 +592,6 @@ Public Class NVEnc
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option"},
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
-                        Interlace,
                         New NumParam With {.Switch = "--device", .HelpSwitch = "-d", .Text = "Device", .Config = {0, 4}},
                         New BoolParam With {.Switch = "--deblock", .NoSwitch = "--no-deblock", .Text = "Deblock", .Init = True},
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"})
@@ -657,14 +631,14 @@ Public Class NVEnc
             End If
 
             If Not QPI.NumEdit Is Nothing Then
-                NnediField.MenuButton.Enabled = Nnedi.Value
-                NnediNns.MenuButton.Enabled = Nnedi.Value
-                NnediNsize.MenuButton.Enabled = Nnedi.Value
-                NnediQuality.MenuButton.Enabled = Nnedi.Value
-                NnediPrescreen.MenuButton.Enabled = Nnedi.Value
-                NnediErrortype.MenuButton.Enabled = Nnedi.Value
-                NnediPrec.MenuButton.Enabled = Nnedi.Value
-                NnediWeightfile.TextEdit.Enabled = Nnedi.Value
+                NnediField.MenuButton.Enabled = Deinterlacer.Value = 3
+                NnediNns.MenuButton.Enabled = Deinterlacer.Value = 3
+                NnediNsize.MenuButton.Enabled = Deinterlacer.Value = 3
+                NnediQuality.MenuButton.Enabled = Deinterlacer.Value = 3
+                NnediPrescreen.MenuButton.Enabled = Deinterlacer.Value = 3
+                NnediErrortype.MenuButton.Enabled = Deinterlacer.Value = 3
+                NnediPrec.MenuButton.Enabled = Deinterlacer.Value = 3
+                NnediWeightfile.TextEdit.Enabled = Deinterlacer.Value = 3
 
                 ColorspaceMatrixFrom.MenuButton.Enabled = Colorspace.Value
                 ColorspaceMatrixTo.MenuButton.Enabled = Colorspace.Value
@@ -736,17 +710,17 @@ Public Class NVEnc
                 DebandRandEachFrame.CheckBox.Enabled = Deband.Value
                 DebandBlurfirst.CheckBox.Enabled = Deband.Value
 
-                AfsPreset.MenuButton.Enabled = Afs.Value
-                AfsINI.TextEdit.Enabled = Afs.Value
+                AfsPreset.MenuButton.Enabled = Deinterlacer.Value = 2
+                AfsINI.TextEdit.Enabled = Deinterlacer.Value = 2
 
                 For Each i In {AfsLeft, AfsRight, AfsTop, AfsBottom, AfsMethodSwitch, AfsCoeffShift,
                                AfsThreShift, AfsThreDeint, AfsThreMotionY, AfsThreMotionC, AfsLevel}
 
-                    i.NumEdit.Enabled = Afs.Value
+                    i.NumEdit.Enabled = Deinterlacer.Value = 2
                 Next
 
                 For Each i In {AfsShift, AfsDrop, AfsSmooth, Afs24fps, AfsTune, AfsRFF, AfsTimecode, AfsLog}
-                    i.CheckBox.Enabled = Afs.Value
+                    i.CheckBox.Enabled = Deinterlacer.Value = 2
                 Next
             End If
 
@@ -899,47 +873,45 @@ Public Class NVEnc
             End If
         End Function
 
-        Function GetNnedi() As String
-            If Nnedi.Value Then
-                Dim ret = ""
-                If NnediField.Value <> NnediField.DefaultValue Then ret += ",field=" + NnediField.ValueText
-                If NnediNns.Value <> NnediNns.DefaultValue Then ret += ",nns=" + NnediNns.ValueText
-                If NnediNsize.Value <> NnediNsize.DefaultValue Then ret += ",nsize=" + NnediNsize.ValueText
-                If NnediQuality.Value <> NnediQuality.DefaultValue Then ret += ",quality=" + NnediQuality.ValueText
-                If NnediPrescreen.Value <> NnediPrescreen.DefaultValue Then ret += ",prescreen=" + NnediPrescreen.ValueText
-                If NnediErrortype.Value <> NnediErrortype.DefaultValue Then ret += ",errortype=" + NnediErrortype.ValueText
-                If NnediPrec.Value <> NnediPrec.DefaultValue Then ret += ",prec=" + NnediPrec.ValueText
-                If NnediWeightfile.Value <> "" Then ret += ",weightfile=" + NnediWeightfile.Value.Escape
-                Return "--vpp-nnedi " + ret.TrimStart(","c)
-            End If
-        End Function
-
-        Function GetAFS() As String
-            If Afs.Value Then
-                Dim ret = ""
-                If AfsPreset.Value <> AfsPreset.DefaultValue Then ret += ",preset=" + AfsPreset.ValueText
-                If AfsINI.Value <> "" Then ret += ",ini=" + AfsINI.Value.Escape
-                If AfsLeft.Value <> AfsLeft.DefaultValue Then ret += ",left=" & AfsLeft.Value
-                If AfsRight.Value <> AfsRight.DefaultValue Then ret += ",right=" & AfsRight.Value
-                If AfsTop.Value <> AfsTop.DefaultValue Then ret += ",top=" & AfsTop.Value
-                If AfsBottom.Value <> AfsBottom.DefaultValue Then ret += ",bottom=" & AfsBottom.Value
-                If AfsMethodSwitch.Value <> AfsMethodSwitch.DefaultValue Then ret += ",method_switch=" & AfsMethodSwitch.Value
-                If AfsCoeffShift.Value <> AfsCoeffShift.DefaultValue Then ret += ",coeff_shift=" & AfsCoeffShift.Value
-                If AfsThreShift.Value <> AfsThreShift.DefaultValue Then ret += ",thre_shift=" & AfsThreShift.Value
-                If AfsThreDeint.Value <> AfsThreDeint.DefaultValue Then ret += ",thre_deint=" & AfsThreDeint.Value
-                If AfsThreMotionY.Value <> AfsThreMotionY.DefaultValue Then ret += ",thre_motion_y=" & AfsThreMotionY.Value
-                If AfsThreMotionC.Value <> AfsThreMotionC.DefaultValue Then ret += ",thre_motion_c=" & AfsThreMotionC.Value
-                If AfsLevel.Value <> AfsLevel.DefaultValue Then ret += ",level=" & AfsLevel.Value
-                If AfsShift.Value <> AfsShift.DefaultValue Then ret += ",shift=" + If(AfsShift.Value, "on", "off")
-                If AfsDrop.Value <> AfsDrop.DefaultValue Then ret += ",drop=" + If(AfsDrop.Value, "on", "off")
-                If AfsSmooth.Value <> AfsSmooth.DefaultValue Then ret += ",smooth=" + If(AfsSmooth.Value, "on", "off")
-                If Afs24fps.Value <> Afs24fps.DefaultValue Then ret += ",24fps=" + If(Afs24fps.Value, "on", "off")
-                If AfsTune.Value <> AfsTune.DefaultValue Then ret += ",tune=" + If(AfsTune.Value, "on", "off")
-                If AfsRFF.Value <> AfsRFF.DefaultValue Then ret += ",rff=" + If(AfsRFF.Value, "on", "off")
-                If AfsTimecode.Value <> AfsTimecode.DefaultValue Then ret += ",timecode=" + If(AfsTimecode.Value, "on", "off")
-                If AfsLog.Value <> AfsLog.DefaultValue Then ret += ",log=" + If(AfsLog.Value, "on", "off")
-                Return "--vpp-afs " + ret.TrimStart(","c)
-            End If
+        Function GetDeinterlacerArgs() As String
+            Dim ret = ""
+            Select Case Deinterlacer.Value
+                Case 2
+                    If AfsPreset.Value <> AfsPreset.DefaultValue Then ret += ",preset=" + AfsPreset.ValueText
+                    If AfsINI.Value <> "" Then ret += ",ini=" + AfsINI.Value.Escape
+                    If AfsLeft.Value <> AfsLeft.DefaultValue Then ret += ",left=" & AfsLeft.Value
+                    If AfsRight.Value <> AfsRight.DefaultValue Then ret += ",right=" & AfsRight.Value
+                    If AfsTop.Value <> AfsTop.DefaultValue Then ret += ",top=" & AfsTop.Value
+                    If AfsBottom.Value <> AfsBottom.DefaultValue Then ret += ",bottom=" & AfsBottom.Value
+                    If AfsMethodSwitch.Value <> AfsMethodSwitch.DefaultValue Then ret += ",method_switch=" & AfsMethodSwitch.Value
+                    If AfsCoeffShift.Value <> AfsCoeffShift.DefaultValue Then ret += ",coeff_shift=" & AfsCoeffShift.Value
+                    If AfsThreShift.Value <> AfsThreShift.DefaultValue Then ret += ",thre_shift=" & AfsThreShift.Value
+                    If AfsThreDeint.Value <> AfsThreDeint.DefaultValue Then ret += ",thre_deint=" & AfsThreDeint.Value
+                    If AfsThreMotionY.Value <> AfsThreMotionY.DefaultValue Then ret += ",thre_motion_y=" & AfsThreMotionY.Value
+                    If AfsThreMotionC.Value <> AfsThreMotionC.DefaultValue Then ret += ",thre_motion_c=" & AfsThreMotionC.Value
+                    If AfsLevel.Value <> AfsLevel.DefaultValue Then ret += ",level=" & AfsLevel.Value
+                    If AfsShift.Value <> AfsShift.DefaultValue Then ret += ",shift=" + If(AfsShift.Value, "on", "off")
+                    If AfsDrop.Value <> AfsDrop.DefaultValue Then ret += ",drop=" + If(AfsDrop.Value, "on", "off")
+                    If AfsSmooth.Value <> AfsSmooth.DefaultValue Then ret += ",smooth=" + If(AfsSmooth.Value, "on", "off")
+                    If Afs24fps.Value <> Afs24fps.DefaultValue Then ret += ",24fps=" + If(Afs24fps.Value, "on", "off")
+                    If AfsTune.Value <> AfsTune.DefaultValue Then ret += ",tune=" + If(AfsTune.Value, "on", "off")
+                    If AfsRFF.Value <> AfsRFF.DefaultValue Then ret += ",rff=" + If(AfsRFF.Value, "on", "off")
+                    If AfsTimecode.Value <> AfsTimecode.DefaultValue Then ret += ",timecode=" + If(AfsTimecode.Value, "on", "off")
+                    If AfsLog.Value <> AfsLog.DefaultValue Then ret += ",log=" + If(AfsLog.Value, "on", "off")
+                    Return "--vpp-afs " + ret.TrimStart(","c)
+                Case 3
+                    If NnediField.Value <> NnediField.DefaultValue Then ret += ",field=" + NnediField.ValueText
+                    If NnediNns.Value <> NnediNns.DefaultValue Then ret += ",nns=" + NnediNns.ValueText
+                    If NnediNsize.Value <> NnediNsize.DefaultValue Then ret += ",nsize=" + NnediNsize.ValueText
+                    If NnediQuality.Value <> NnediQuality.DefaultValue Then ret += ",quality=" + NnediQuality.ValueText
+                    If NnediPrescreen.Value <> NnediPrescreen.DefaultValue Then ret += ",prescreen=" + NnediPrescreen.ValueText
+                    If NnediErrortype.Value <> NnediErrortype.DefaultValue Then ret += ",errortype=" + NnediErrortype.ValueText
+                    If NnediPrec.Value <> NnediPrec.DefaultValue Then ret += ",prec=" + NnediPrec.ValueText
+                    If NnediWeightfile.Value <> "" Then ret += ",weightfile=" + NnediWeightfile.Value.Escape
+                    Return "--vpp-nnedi " + ret.TrimStart(","c)
+                Case Else
+                    Return ret
+            End Select
         End Function
 
         Function GetModeArgs() As String
@@ -947,7 +919,7 @@ Public Class NVEnc
 
             Select Case Mode.Value
                 Case 0
-                    Return If(QPAdvanced.Value, $" --cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
+                    Return If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
                 Case 1
                     Return "--cbr " & p.VideoBitrate
                 Case 2

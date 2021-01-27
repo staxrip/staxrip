@@ -98,172 +98,161 @@ Public Class ProcController
 
     Shared LastProgress As Double
 
-    Async Sub SetText(value As String)
-        Await Task.Run(Sub()
-                           Try
-                               value = value.Trim()
+    Sub SetText(value As String)
+        value = value.Trim()
 
-                               If s.ProgressOutputCustomize Then
-                                   If Proc.Package Is Package.x264 Then
-                                       Dim pattern = "\[((\d+)\.?(\d*))%\]\s+((\d+)/(\d+)(\sframes)),\s((\d+)\.?(\d*)(\sfps)),\s((\d+)\.?(\d*)\s([a-z]{2}/s)),\s(\d+)\.(\d+)\s([a-z]{1,2}),\seta\s(\d+:\d+:\d+),\sest\.size\s(\d+)\.(\d+)\s([a-z]{1,2})"
-                                       Dim match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
-                                       If match.Success Then
-                                           value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(9).Value}.{match.Groups(10).Value} fps, {match.Groups(13).Value,3}.{match.Groups(14).Value} {match.Groups(15).Value}, {match.Groups(16).Value}.{match.Groups(17).Value} {match.Groups(18).Value} ({match.Groups(20).Value} {match.Groups(22).Value}), -{match.Groups(19).Value}"
-                                       End If
-                                   ElseIf Proc.Package Is Package.x265 Then
-                                       Dim pattern = "\[((\d+)\.?(\d*))%\]\s+((\d+)/(\d+)(\sframes)),\s((\d+)\.?(\d*)(\sfps)),\s((\d+)\.?(\d*)\s([a-z]{2}/s)),\selapsed:\s(\d+:\d+:\d+),\seta:\s(\d+:\d+:\d+),\ssize:\s(\d+)\.(\d+)\s([a-z]{1,2}),\sest\.\ssize:\s(\d+)\.(\d+)\s([a-z]{1,2})"
-                                       Dim match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
-                                       If match.Success Then
-                                           value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(9).Value}.{match.Groups(10).Value} fps, {match.Groups(13).Value,3}.{match.Groups(14).Value} {match.Groups(15).Value}, {match.Groups(18).Value}.{match.Groups(19).Value} {match.Groups(20).Value} ({match.Groups(21).Value} {match.Groups(23).Value}), {match.Groups(16).Value} (-{match.Groups(17).Value})"
-                                       End If
-                                   End If
-                               End If
+        If s.ProgressOutputCustomize Then
+            If Proc.Package Is Package.x264 Then
+                Dim pattern = "\[((\d+)\.?(\d*))%\]\s+((\d+)/(\d+)(\sframes)),\s((\d+)\.?(\d*)(\sfps)),\s((\d+)\.?(\d*)\s([a-z]{2}/s)),\s(\d+)\.(\d+)\s([a-z]{1,2}),\seta\s(\d+:\d+:\d+),\sest\.size\s(\d+)\.(\d+)\s([a-z]{1,2})"
+                Dim match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
+                If match.Success Then
+                    value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(9).Value}.{match.Groups(10).Value} fps, {match.Groups(13).Value,3}.{match.Groups(14).Value} {match.Groups(15).Value}, {match.Groups(16).Value}.{match.Groups(17).Value} {match.Groups(18).Value} ({match.Groups(20).Value} {match.Groups(22).Value}), -{match.Groups(19).Value}"
+                End If
+            ElseIf Proc.Package Is Package.x265 Then
+                Dim pattern = "\[((\d+)\.?(\d*))%\]\s+((\d+)/(\d+)(\sframes)),\s((\d+)\.?(\d*)(\sfps)),\s((\d+)\.?(\d*)\s([a-z]{2}/s)),\selapsed:\s(\d+:\d+:\d+),\seta:\s(\d+:\d+:\d+),\ssize:\s(\d+)\.(\d+)\s([a-z]{1,2}),\sest\.\ssize:\s(\d+)\.(\d+)\s([a-z]{1,2})"
+                Dim match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
+                If match.Success Then
+                    value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(9).Value}.{match.Groups(10).Value} fps, {match.Groups(13).Value,3}.{match.Groups(14).Value} {match.Groups(15).Value}, {match.Groups(18).Value}.{match.Groups(19).Value} {match.Groups(20).Value} ({match.Groups(21).Value} {match.Groups(23).Value}), {match.Groups(16).Value} (-{match.Groups(17).Value})"
+                End If
+            End If
+        End If
 
-                               ProgressBar.Text = value
-                           Catch ex As Exception
-                           End Try
-                       End Sub)
+        ProgressBar.Text = value
     End Sub
 
 
-    Async Sub SetProgress(value As String)
+    Sub SetProgress(value As String)
         If Proc.IsSilent Then
             Exit Sub
         End If
+        If value.Contains("%") Then
+            value = value.Left("%")
 
-        Await Task.Run(Sub()
-                           Try
-                               If value.Contains("%") Then
-                                   value = value.Left("%")
+            If value.Contains("[") Then
+                value = value.Right("[")
+            End If
 
-                                   If value.Contains("[") Then
-                                       value = value.Right("[")
-                                   End If
+            If value.Contains(" ") Then
+                value = value.RightLast(" ")
+            End If
 
-                                   If value.Contains(" ") Then
-                                       value = value.RightLast(" ")
-                                   End If
+            If value.IsDouble Then
+                Dim val = value.ToDouble
 
-                                   If value.IsDouble Then
-                                       Dim val = value.ToDouble
+                If LastProgress <> val Then
+                    ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                    ProcForm.Taskbar?.SetValue(Math.Max(val, 1), 100)
+                    ProcForm.NotifyIcon.Text = val & "%"
+                    ProgressBar.Value = val
+                    LastProgress = val
+                End If
 
-                                       If LastProgress <> val Then
-                                           ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
-                                           ProcForm.Taskbar?.SetValue(Math.Max(val, 1), 100)
-                                           ProcForm.NotifyIcon.Text = val & "%"
-                                           ProgressBar.Value = val
-                                           LastProgress = val
-                                       End If
+                Exit Sub
+            End If
+        ElseIf Proc.Duration <> TimeSpan.Zero AndAlso value.Contains(" time=") Then
+            Dim tokens = value.Right(" time=").Left(" ").Split(":"c)
 
-                                       Exit Sub
-                                   End If
-                               ElseIf Proc.Duration <> TimeSpan.Zero AndAlso value.Contains(" time=") Then
-                                   Dim tokens = value.Right(" time=").Left(" ").Split(":"c)
+            If tokens.Length = 3 Then
+                Dim ts As New TimeSpan(tokens(0).ToInt, tokens(1).ToInt, tokens(2).ToInt)
+                Dim val = 100 / Proc.Duration.TotalSeconds * ts.TotalSeconds
 
-                                   If tokens.Length = 3 Then
-                                       Dim ts As New TimeSpan(tokens(0).ToInt, tokens(1).ToInt, tokens(2).ToInt)
-                                       Dim val = 100 / Proc.Duration.TotalSeconds * ts.TotalSeconds
+                If LastProgress <> val Then
+                    ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                    ProcForm.Taskbar?.SetValue(Math.Max(val, 1), 100)
+                    ProcForm.NotifyIcon.Text = val & "%"
+                    ProgressBar.Value = val
+                    LastProgress = val
+                End If
 
-                                       If LastProgress <> val Then
-                                           ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
-                                           ProcForm.Taskbar?.SetValue(Math.Max(val, 1), 100)
-                                           ProcForm.NotifyIcon.Text = val & "%"
-                                           ProgressBar.Value = val
-                                           LastProgress = val
-                                       End If
+                Exit Sub
+            End If
+        ElseIf Proc.FrameCount > 0 AndAlso value.Contains("frame=") AndAlso value.Contains("fps=") Then
+            Dim frameString = value.Left("fps=").Right("frame=")
 
-                                       Exit Sub
-                                   End If
-                               ElseIf Proc.FrameCount > 0 AndAlso value.Contains("frame=") AndAlso value.Contains("fps=") Then
-                                   Dim frameString = value.Left("fps=").Right("frame=")
+            If frameString.IsInt Then
+                Dim frame = frameString.ToInt
 
-                                   If frameString.IsInt Then
-                                       Dim frame = frameString.ToInt
+                If frame < Proc.FrameCount Then
+                    Dim progressValue = CSng(frame / Proc.FrameCount * 100)
 
-                                       If frame < Proc.FrameCount Then
-                                           Dim progressValue = CSng(frame / Proc.FrameCount * 100)
+                    If LastProgress <> progressValue Then
+                        ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                        ProcForm.Taskbar?.SetValue(Math.Max(progressValue, 1), 100)
+                        ProcForm.NotifyIcon.Text = progressValue & "%"
+                        ProgressBar.Value = progressValue
+                        LastProgress = progressValue
+                    End If
 
-                                           If LastProgress <> progressValue Then
-                                               ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
-                                               ProcForm.Taskbar?.SetValue(Math.Max(progressValue, 1), 100)
-                                               ProcForm.NotifyIcon.Text = progressValue & "%"
-                                               ProgressBar.Value = progressValue
-                                               LastProgress = progressValue
-                                           End If
+                    Exit Sub
+                End If
+            End If
+        ElseIf value.Contains("/100)") Then
+            Dim percentString = value.Right("(").Left("/")
 
-                                           Exit Sub
-                                       End If
-                                   End If
-                               ElseIf value.Contains("/100)") Then
-                                   Dim percentString = value.Right("(").Left("/")
+            If percentString.IsInt Then
+                Dim percent = percentString.ToInt
 
-                                   If percentString.IsInt Then
-                                       Dim percent = percentString.ToInt
+                If LastProgress <> percent Then
+                    ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                    ProcForm.Taskbar?.SetValue(Math.Max(percent, 1), 100)
+                    ProcForm.NotifyIcon.Text = percent & "%"
+                    ProgressBar.Value = percent
+                    LastProgress = percent
+                End If
 
-                                       If LastProgress <> percent Then
-                                           ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
-                                           ProcForm.Taskbar?.SetValue(Math.Max(percent, 1), 100)
-                                           ProcForm.NotifyIcon.Text = percent & "%"
-                                           ProgressBar.Value = percent
-                                           LastProgress = percent
-                                       End If
+                Exit Sub
+            End If
+        ElseIf Proc.Package Is Package.Rav1e AndAlso Proc.FrameCount > 0 AndAlso
+            value.StartsWith("encoded ") AndAlso value.Contains(" frames, ") Then
 
-                                       Exit Sub
-                                   End If
-                               ElseIf Proc.Package Is Package.Rav1e AndAlso Proc.FrameCount > 0 AndAlso
-                                   value.StartsWith("encoded ") AndAlso value.Contains(" frames, ") Then
+            Dim left = value.Left(" frames, ")
+            Dim str = left.Right("encoded ")
 
-                                   Dim left = value.Left(" frames, ")
-                                   Dim str = left.Right("encoded ")
+            If str.IsInt Then
+                Dim frame = str.ToInt
 
-                                   If str.IsInt Then
-                                       Dim frame = str.ToInt
+                If frame < Proc.FrameCount Then
+                    Dim progressValue = CSng(frame / Proc.FrameCount * 100)
 
-                                       If frame < Proc.FrameCount Then
-                                           Dim progressValue = CSng(frame / Proc.FrameCount * 100)
+                    If LastProgress <> progressValue Then
+                        ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                        ProcForm.Taskbar?.SetValue(Math.Max(progressValue, 1), 100)
+                        ProcForm.NotifyIcon.Text = progressValue & "%"
+                        ProgressBar.Value = progressValue
+                        LastProgress = progressValue
+                    End If
 
-                                           If LastProgress <> progressValue Then
-                                               ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
-                                               ProcForm.Taskbar?.SetValue(Math.Max(progressValue, 1), 100)
-                                               ProcForm.NotifyIcon.Text = progressValue & "%"
-                                               ProgressBar.Value = progressValue
-                                               LastProgress = progressValue
-                                           End If
+                    Exit Sub
+                End If
+            End If
+        ElseIf Proc.Package Is Package.aomenc AndAlso Proc.FrameCount > 0 AndAlso value.Contains(" frame ") Then
+            Dim right = value.Right(" frame ")
+            Dim left = right.Left("/").Trim
 
-                                           Exit Sub
-                                       End If
-                                   End If
-                               ElseIf Proc.Package Is Package.aomenc AndAlso Proc.FrameCount > 0 AndAlso value.Contains(" frame ") Then
-                                   Dim right = value.Right(" frame ")
-                                   Dim left = right.Left("/").Trim
+            If left.IsInt Then
+                Dim frame = left.ToInt
 
-                                   If left.IsInt Then
-                                       Dim frame = left.ToInt
+                If frame < Proc.FrameCount Then
+                    Dim progressValue = CSng(frame / Proc.FrameCount * 100)
 
-                                       If frame < Proc.FrameCount Then
-                                           Dim progressValue = CSng(frame / Proc.FrameCount * 100)
+                    If LastProgress <> progressValue Then
+                        ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
+                        ProcForm.Taskbar?.SetValue(Math.Max(progressValue, 1), 100)
+                        ProcForm.NotifyIcon.Text = progressValue & "%"
+                        ProgressBar.Value = progressValue
+                        LastProgress = progressValue
+                    End If
 
-                                           If LastProgress <> progressValue Then
-                                               ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
-                                               ProcForm.Taskbar?.SetValue(Math.Max(progressValue, 1), 100)
-                                               ProcForm.NotifyIcon.Text = progressValue & "%"
-                                               ProgressBar.Value = progressValue
-                                               LastProgress = progressValue
-                                           End If
+                    Exit Sub
+                End If
+            End If
+        End If
 
-                                           Exit Sub
-                                       End If
-                                   End If
-                               End If
-
-                               If LastProgress <> 0 Then
-                                   ProcForm.NotifyIcon.Text = "StaxRip"
-                                   ProcForm.Taskbar?.SetState(TaskbarStates.NoProgress)
-                                   LastProgress = 0
-                               End If
-                           Catch ex As Exception
-                           End Try
-                       End Sub)
+        If LastProgress <> 0 Then
+            ProcForm.NotifyIcon.Text = "StaxRip"
+            ProcForm.Taskbar?.SetState(TaskbarStates.NoProgress)
+            LastProgress = 0
+        End If
     End Sub
 
     Sub Click(sender As Object, e As EventArgs)

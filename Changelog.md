@@ -6,6 +6,7 @@
 - Installed AviSynth don't has to be located in System32, it can be installed
   anywhere using the included install.ps1 powershell script (stax76)
 - NVEnc parameter fixes and option re-organisation (Dendraspis, [#468](/../../issues/468))
+- NVEnc add vpp-warpsharp parameter and create Sharpness subsection (Dendraspis)
 - x265 two parameters not set when checkbox unchecked (Dendraspis)
 - Optional customized/shorter progress text while encoding for x264/x265 (Dendraspis)
 - x264 portable mode uses --synth-lib (stax76)

@@ -1,4 +1,5 @@
 ﻿
+Imports System.Text
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -990,7 +991,7 @@ Public Class x264Params
 
         ApplyValues(True)
 
-        Dim args As String
+        Dim sb As New StringBuilder
         Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText
 
         If includePaths AndAlso includeExecutable Then
@@ -1012,7 +1013,7 @@ Public Class x264Params
                 Case "avs2pipemod y4m"
                     Dim dll As String
 
-                    If FrameServerHelp.IsAviSynthPortableUsed Then
+                    If FrameServerHelp.IsPortable Then
                         dll = " -dll=" + Package.AviSynth.Path.Escape
                     End If
 
@@ -1020,7 +1021,7 @@ Public Class x264Params
                 Case "avs2pipemod raw"
                     Dim dll As String
 
-                    If FrameServerHelp.IsAviSynthPortableUsed Then
+                    If FrameServerHelp.IsPortable Then
                         dll = " -dll=" + Package.AviSynth.Path.Escape
                     End If
 
@@ -1031,37 +1032,37 @@ Public Class x264Params
                     pipeCmd = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.Escape + " -f rawvideo -strict -1 -loglevel fatal -hide_banner - | "
             End Select
 
-            args += pipeCmd + Package.x264.Path.Escape
+            sb.Append(pipeCmd + Package.x264.Path.Escape)
         End If
 
         If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
-            args += " --pass " & pass
+            sb.Append(" --pass " & pass)
 
             If pass = 1 Then
                 If CustomFirstPass.Value <> "" Then
-                    args += " " + CustomFirstPass.Value
+                    sb.Append(" " + CustomFirstPass.Value)
                 End If
             Else
                 If CustomSecondPass.Value <> "" Then
-                    args += " " + CustomSecondPass.Value
+                    sb.Append(" " + CustomSecondPass.Value)
                 End If
             End If
         End If
 
         If Mode.Value = x264RateMode.Quantizer Then
             If Not IsCustom(pass, "--qp") Then
-                args += " --qp " + CInt(Quant.Value).ToString
+                sb.Append(" --qp " + CInt(Quant.Value).ToString)
             End If
         ElseIf Mode.Value = x264RateMode.Quality Then
             If Not IsCustom(pass, "--crf") Then
-                args += " --crf " + Quant.Value.ToInvariantString
+                sb.Append(" --crf " + Quant.Value.ToInvariantString)
             End If
         Else
             If Not IsCustom(pass, "--bitrate") Then
                 If Bitrate.Value <> 0 Then
-                    args += " --bitrate " & Bitrate.Value
+                    sb.Append(" --bitrate " & Bitrate.Value)
                 Else
-                    args += " --bitrate " & p.VideoBitrate
+                    sb.Append(" --bitrate " & p.VideoBitrate)
                 End If
             End If
         End If
@@ -1069,16 +1070,16 @@ Public Class x264Params
         Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.Switch)
 
         If q.Count > 0 Then
-            args += " " + q.Select(Function(item) item.GetArgs).Join(" ")
-        End If
-
-        If args.Contains("%") Then
-            args = Macro.Expand(args)
+            sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
         End If
 
         If includePaths Then
             Dim input = If(pipeTool = "none", script.Path.Escape, "-")
             Dim dmx = Demuxer.ValueText
+
+            If pipeTool = "none" AndAlso FrameServerHelp.IsPortable Then
+                sb.Append(" --synth-lib " + FrameServerHelp.GetSynthPath.Escape)
+            End If
 
             If dmx = "automatic" Then
                 If pipeTool = "none" Then
@@ -1092,31 +1093,31 @@ Public Class x264Params
 
             If dmx <> "" Then
                 Dim info = script.GetInfo
-                args += $" --demuxer {dmx} --frames " & info.FrameCount
+                sb.Append($" --demuxer {dmx} --frames " & info.FrameCount)
 
                 If dmx = "raw" Then
-                    args += $" --input-res {info.Width}x{info.Height}"
+                    sb.Append($" --input-res {info.Width}x{info.Height}")
 
-                    If Not args.Contains("--fps ") Then
-                        args += $" --fps {info.FrameRateNum}/{info.FrameRateDen}"
+                    If Not sb.ToString.Contains("--fps ") Then
+                        sb.Append($" --fps {info.FrameRateNum}/{info.FrameRateDen}")
                     End If
                 End If
             End If
 
             If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
-                args += " --stats " + (p.TempDir + p.TargetFile.Base + ".stats").Escape
+                sb.Append(" --stats " + (p.TempDir + p.TargetFile.Base + ".stats").Escape)
             End If
 
             If (Mode.Value = x264RateMode.ThreePass AndAlso (pass = 1 OrElse pass = 3)) OrElse
                 Mode.Value = x264RateMode.TwoPass AndAlso pass = 1 Then
 
-                args += " --output NUL " + input
+                sb.Append(" --output NUL " + input)
             Else
-                args += " --output " + targetPath.Escape + " " + input
+                sb.Append(" --output " + targetPath.Escape + " " + input)
             End If
         End If
 
-        Return args.Trim.FixBreak.Replace(BR, " ")
+        Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))
     End Function
 
     Function GetPartitionsArg() As String

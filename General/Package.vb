@@ -888,6 +888,8 @@ Public Class Package
         .Name = "FFT3DGPU",
         .Filename = "FFT3dGPU.dll",
         .Description = "Similar algorithm to FFT3DFilter, but uses graphics hardware for increased speed.",
+        .WebURL = "https://github.com/pinterf/FFT3dGPU",
+        .DownloadURL = "https://github.com/pinterf/FFT3dGPU/releases",
         .HelpURL = "https://htmlpreview.github.io/?https://github.com/pinterf/FFT3dGPU/blob/master/FFT3dGPU/documentation/fft3dgpu.htm",
         .AvsFilterNames = {"FFT3DGPU"},
         .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter | FFT3DGPU", "FFT3DGPU(sigma=1.5, bt=3, bw=32, bh=32, ow=16, oh=16, sharpen=0.4, NVPerf=$select:msg:Enable Nvidia Function;True;False$)")}})
@@ -2330,7 +2332,7 @@ Public Class Package
     End Function
 
     Shared Function GetPythonHintDir() As String
-        If Not FrameServerHelp.IsVapourSynthPortableUsed Then
+        If Not FrameServerHelp.IsVapourSynthPortable Then
             Dim exePath As String
 
             For Each key In {Registry.CurrentUser, Registry.LocalMachine}

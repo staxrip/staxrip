@@ -8,10 +8,12 @@
 - NVEnc parameter fixes and option re-organisation (Dendraspis, [#468](/../../issues/468))
 - x265 two parameters not set when checkbox unchecked (Dendraspis)
 - Optional customized/shorter progress text while encoding for x264/x265 (Dendraspis)
-- x265 avs portable mode sets --reader-options library=avs-dll-path (stax76)
+- x264 portable mode uses --synth-lib (stax76)
+- x265 portable mode uses --reader-options library (stax76)
 - x265 3.4+65-aMod-gcc10.2.1 DJATOM Mod, avs portable support,
   vs async frame requests logic overhaul ([#470](/../../issues/470))
 - FFT3dGPU 0.8.6
+- x264 aMod-core161-r3039+17 DJATOM (--synth-lib)
 
 
 2.1.7.5 Beta (2021-01-23)

@@ -240,7 +240,7 @@ Public Class VCEEnc
                 Case "avs"
                     sourcePath = p.Script.Path
 
-                    If includePaths AndAlso FrameServerHelp.IsAviSynthPortableUsed Then
+                    If includePaths AndAlso FrameServerHelp.IsPortable Then
                         ret += " --avsdll " + Package.AviSynth.Path.Escape
                     End If
                 Case "qs"

@@ -418,6 +418,10 @@ Public Class VfwFrameServer
 End Class
 
 Public Class FrameServerHelp
+    Shared Function GetSynthPath() As String
+        Return If(IsAviSynth(), Package.AviSynth.Path, Package.VapourSynth.Directory + "VSScript.dll")
+    End Function
+
     Shared Function GetAviSynthInstallPath() As String
         Return Registry.ClassesRoot.GetString("CLSID\{E6D6B700-124D-11D4-86F3-DB80AFD98778}\InProcServer32", Nothing)
     End Function
@@ -432,17 +436,17 @@ Public Class FrameServerHelp
         Next
     End Function
 
-    Shared Function IsAviSynthPortableUsed() As Boolean
-        Return Not Package.AviSynth.Path.PathEquals(GetAviSynthInstallPath)
+    Shared Function IsAviSynthPortable() As Boolean
+        Return s.AviSynthMode = FrameServerMode.Portable
     End Function
 
-    Shared Function IsVapourSynthPortableUsed() As Boolean
-        Return Not Package.VapourSynth.Path.PathEquals(GetVapourSynthInstallPath)
+    Shared Function IsVapourSynthPortable() As Boolean
+        Return s.VapourSynthMode = FrameServerMode.Portable
     End Function
 
     Shared Function IsPortable() As Boolean
-        If (IsAviSynthUsed() AndAlso IsAviSynthPortableUsed()) OrElse
-            (IsVapourSynthUsed() AndAlso IsVapourSynthPortableUsed()) Then
+        If (IsAviSynth() AndAlso IsAviSynthPortable()) OrElse
+            (IsVapourSynth() AndAlso IsVapourSynthPortable()) Then
 
             Return True
         End If
@@ -452,17 +456,17 @@ Public Class FrameServerHelp
         Return (Folder.System + "AviSynth.dll").FileExists
     End Function
 
-    Shared Function IsAviSynthUsed() As Boolean
+    Shared Function IsAviSynth() As Boolean
         Return p.Script.IsAviSynth
     End Function
 
-    Shared Function IsVapourSynthUsed() As Boolean
+    Shared Function IsVapourSynth() As Boolean
         Return p.Script.Engine = ScriptEngine.VapourSynth
     End Function
 
     Shared Function IsVfwUsed() As Boolean
-        Return (IsAviSynthUsed() AndAlso s.AviSynthMode = FrameServerMode.VFW) OrElse
-            (IsVapourSynthUsed() AndAlso s.VapourSynthMode = FrameServerMode.VFW)
+        Return (IsAviSynth() AndAlso s.AviSynthMode = FrameServerMode.VFW) OrElse
+            (IsVapourSynth() AndAlso s.VapourSynthMode = FrameServerMode.VFW)
     End Function
 
     Shared Function IsffmpegUsed() As Boolean
@@ -476,7 +480,7 @@ Public Class FrameServerHelp
     End Function
 
     Shared Function AreAviSynthLinksRequired() As Boolean
-        If IsAviSynthUsed() AndAlso IsAviSynthPortableUsed() Then
+        If IsAviSynth() AndAlso IsAviSynthPortable() Then
             If IsffmpegUsed() Then
                 Return True
             End If
@@ -492,7 +496,7 @@ Public Class FrameServerHelp
     End Function
 
     Shared Function VerifyAviSynthLinks() As Boolean
-        Dim packages = {Package.ffmpeg, Package.x264}
+        Dim packages = {Package.ffmpeg}
 
         Dim links = packages.Select(Function(pack) New SoftLink(
             pack.Directory + "AviSynth.dll", Package.AviSynth.Path)).ToArray
@@ -505,9 +509,9 @@ Public Class FrameServerHelp
                     Using td As New TaskDialog(Of Boolean)
                         td.MainIcon = TaskDialogIcon.Shield
                         td.MainInstruction = "AviSynth Portable Mode"
-                        td.Content = "The current configuration uses AviSynth portable mode with AviSynth tools " +
-                                     "that do not support portable mode, to workaround this it's required to " +
-                                     "create soft links that are pointing to the location of portable AviSynth."
+                        td.Content = "The current configuration uses AviSynth portable mode With AviSynth tools " +
+                                         "that Do Not support portable mode, To workaround this it's required to " +
+                                         "create soft links that are pointing to the location of portable AviSynth."
                         td.AddCommand("Create portable AviSynth soft links", True)
 
                         If td.Show Then
@@ -518,7 +522,7 @@ Public Class FrameServerHelp
 
                 Return SoftLink.AreLinksValid(links)
             End If
-        ElseIf Not IsAviSynthPortableUsed() Then
+        ElseIf Not IsAviSynthPortable() Then
             Try
                 SoftLink.DeleteLinks(links)
             Catch ex As Exception

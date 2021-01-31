@@ -1223,7 +1223,7 @@ Public Class x265Params
                     Select Case pipeTool
                         Case "avs2pipemod"
                             Dim chunk = If(isSingleChunk, "", $" -trim={startFrame},{endFrame}")
-                            Dim dll = If(FrameServerHelp.IsAviSynthPortableUsed, $" -dll={Package.AviSynth.Path.Escape}", "")
+                            Dim dll = If(FrameServerHelp.IsPortable, $" -dll={Package.AviSynth.Path.Escape}", "")
                             pipeString = Package.avs2pipemod.Path.Escape + dll + chunk + " -y4mp " + script.Path.Escape + " | "
 
                             sb.Append(pipeString + Package.x265.Path.Escape)
@@ -1260,6 +1260,7 @@ Public Class x265Params
                             pipeString = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.LongPathPrefix.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
 
                             sb.Append(pipeString + Package.x265.Path.Escape)
+
                             If isSingleChunk Then
                                 If Seek.Value > 0 Then
                                     sb.Append($" --seek {Seek.Value}")
@@ -1276,10 +1277,8 @@ Public Class x265Params
                         Case "none"
                             sb.Append(pipeString + Package.x265.Path.Escape)
 
-                            If p.Script.IsVapourSynth AndAlso FrameServerHelp.IsVapourSynthPortableUsed Then
-                                sb.Append($" --reader-options library={(Package.VapourSynth.Directory + "VSScript.dll").Escape}")
-                            ElseIf p.Script.IsAviSynth AndAlso FrameServerHelp.IsAviSynthPortableUsed Then
-                                sb.Append($" --reader-options library={Package.AviSynth.Path.Escape}")
+                            If FrameServerHelp.IsPortable Then
+                                sb.Append(" --reader-options library=" + FrameServerHelp.GetSynthPath.Escape)
                             End If
 
                             If isSingleChunk Then

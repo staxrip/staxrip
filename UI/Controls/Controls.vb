@@ -984,8 +984,8 @@ Namespace UI
                 Dim stringSize = graphics.MeasureString(Text, Font, Size.Width)
                 Dim h = CInt(stringSize.Height) + 1
 
-                If h > Font.Height * 8.1 Then
-                    h = CInt(Font.Height * 8.1)
+                If h > Font.Height * 9.1 Then
+                    h = CInt(Font.Height * 9.1)
                     ScrollBars = RichTextBoxScrollBars.Vertical
                 End If
 

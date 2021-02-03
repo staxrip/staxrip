@@ -982,7 +982,14 @@ Namespace UI
         Sub UpdateHeight()
             Using graphics = CreateGraphics()
                 Dim stringSize = graphics.MeasureString(Text, Font, Size.Width)
-                Size = New Size(Size.Width, CInt(stringSize.Height) + 1)
+                Dim h = CInt(stringSize.Height) + 1
+
+                If h > Font.Height * 8.1 Then
+                    h = CInt(Font.Height * 8.1)
+                    ScrollBars = RichTextBoxScrollBars.Vertical
+                End If
+
+                Size = New Size(Size.Width, h)
             End Using
         End Sub
     End Class

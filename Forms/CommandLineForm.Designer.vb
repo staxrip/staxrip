@@ -85,7 +85,7 @@ Partial Class CommandLineForm
         '
         Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnMenu.ContextMenuStrip = Me.cms
-        Me.bnMenu.Location = New System.Drawing.Point(666, 507)
+        Me.bnMenu.Location = New System.Drawing.Point(664, 507)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(0, 8, 0, 8)
         Me.bnMenu.ShowMenuSymbol = True
         Me.bnMenu.Size = New System.Drawing.Size(100, 70)

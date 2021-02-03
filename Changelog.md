@@ -1,5 +1,8 @@
 
-2.1.7.6 Beta (2021-02-??)
+2.1.7.7 Beta (2021-02-??)
+=========================
+
+2.1.7.6 Beta (2021-02-03)
 =========================
 
 - Apps dialog allows custom paths to AviSynth and VapourSynth portable (stax76)
@@ -10,8 +13,8 @@
 - x265 two parameters not set when checkbox unchecked (Dendraspis)
 - Optional customized/shorter progress text while encoding for x264/x265 (Dendraspis)
 - Fix Re-mux TS to MKV via ffmpeg doesn't demux AAC tracks with ADTS (Dendraspis, [#483](/../../issues/483))
-- x264 portable mode uses --synth-lib (stax76)
-- x265 portable mode uses --reader-options library (stax76)
+- x264 portable mode uses DJATOM Mod --synth-lib (stax76)
+- x265 portable mode uses DJATOM Mod --reader-options library (stax76)
 - Command line preview uses scrollbar in case > 9 lines (stax76, [#481](/../../issues/481))
 - x265 3.4+70-aMod-gcc10.2.1 DJATOM Mod, avs portable support,
   vs async frame requests logic overhaul ([#470](/../../issues/470))

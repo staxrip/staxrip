@@ -128,7 +128,7 @@ Tools
     "VCEEnc","Console App","VCEEncC64.exe","6.07","2020-11-23"
     "vspipe","Console App","vspipe.exe","r52","2020-08-20"
     "x264","Console App","x264.exe","aMod-core161-r3039+17 DJATOM","2021-01-27"
-    "x265","Console App","x265.exe","3.4+65-aMod-gcc10.2.1 DJATOM Mod","2021-01-25"
+    "x265","Console App","x265.exe","3.4+70-aMod-gcc10.2.1 DJATOM Mod","2021-02-02"
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
     "chapterEditor","GUI App","chapterEditor.exe","1.25","2020-10-04"

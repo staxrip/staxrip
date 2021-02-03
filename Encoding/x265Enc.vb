@@ -267,7 +267,8 @@ Public Class x265Enc
 
         tester.IgnoredSwitches = "crop-rectfast-cbf frame-skip help lavf no-scenecut
             ratetol recon-y4m-exec input input-res lft total-frames version pbration
-            no-progress progress -hrd-concat fullhelp hdr-opt analysis-reuse-level"
+            no-progress progress -hrd-concat fullhelp hdr-opt analysis-reuse-level
+            progress-readframes"
 
         tester.UndocumentedSwitches = "numa-pools rdoq cip qblur cplxblur cu-stats
             dhdr10-info opt-qp-pps opt-ref-list-length-pps single-sei hrd-concat 

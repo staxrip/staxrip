@@ -2155,7 +2155,9 @@ Public Class MainForm
             ElseIf p.SourceFile.Ext = "vpy" Then
                 p.Script.Engine = ScriptEngine.VapourSynth
                 p.Script.Filters.Clear()
-                Dim code = "from importlib.machinery import SourceFileLoader" + BR +
+                Dim code = "import vapoursynth as vs" + BR +
+                           "core = vs.get_core()" + BR +
+                           "from importlib.machinery import SourceFileLoader" + BR +
                            $"SourceFileLoader('clip', r""{p.SourceFile}"").load_module()" + BR +
                            "clip = vs.get_output()"
                 p.Script.Filters.Add(New VideoFilter("Source", "VS Script Import", code))

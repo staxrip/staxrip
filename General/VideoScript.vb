@@ -380,7 +380,8 @@ clipname.set_output()
         If Not script.Contains("import vapoursynth") Then
             code =
                 "import os, sys" + BR +
-                "import vapoursynth as vs" + BR + "core = vs.get_core()" + BR +
+                "import vapoursynth as vs" + BR +
+                "core = vs.get_core()" + BR +
                 GetVsPortableAutoLoadPluginCode() + BR +
                 "sys.path.append(r""" + Folder.Startup + "Apps\Plugins\VS\Scripts"")" + BR + code
         End If

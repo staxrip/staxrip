@@ -2654,22 +2654,22 @@ Public Class MainForm
         tbTargetWidth.ReadOnly = Not isResized
         tbTargetHeight.ReadOnly = Not isResized
 
-        g.Highlight(False, lSAR)
-        g.Highlight(False, llAudioProfile0)
-        g.Highlight(False, llAudioProfile1)
-        g.Highlight(False, lAspectRatioError)
-        g.Highlight(False, lZoom)
-        g.Highlight(False, tbAudioFile0)
-        g.Highlight(False, tbAudioFile1)
-        g.Highlight(False, tbBitrate)
-        g.Highlight(False, tbTargetSize)
-        g.Highlight(False, tbSourceFile)
-        g.Highlight(False, tbTargetHeight)
-        g.Highlight(False, tbTargetFile)
-        g.Highlight(False, tbTargetWidth)
-        g.Highlight(False, llMuxer)
-        g.Highlight(False, lgbEncoder.Label)
-        g.Highlight(False, laTarget2)
+        Highlight(False, lSAR)
+        Highlight(False, llAudioProfile0)
+        Highlight(False, llAudioProfile1)
+        Highlight(False, lAspectRatioError)
+        Highlight(False, lZoom)
+        Highlight(False, tbAudioFile0)
+        Highlight(False, tbAudioFile1)
+        Highlight(False, tbBitrate)
+        Highlight(False, tbTargetSize)
+        Highlight(False, tbSourceFile)
+        Highlight(False, tbTargetHeight)
+        Highlight(False, tbTargetFile)
+        Highlight(False, tbTargetWidth)
+        Highlight(False, llMuxer)
+        Highlight(False, lgbEncoder.Label)
+        Highlight(False, laTarget2)
 
         Dim cropw = p.SourceWidth
         Dim croph = p.SourceHeight
@@ -2735,6 +2735,7 @@ Public Class MainForm
         If p.SourceSeconds > 0 Then
             Dim size = If(p.SourceVideoSize > 0, p.SourceVideoSize, p.SourceSize)
             Dim sizeText = If(size / 1024 ^ 2 < 1024, CInt(size / 1024 ^ 2).ToString + "MiB", (size / 1024 ^ 3).ToString("f1") + "GiB")
+
             If size <> p.SourceVideoSize Then
                 sizeText = $"[{sizeText}]"
             End If
@@ -2847,7 +2848,7 @@ Public Class MainForm
 
             If p.SourceFile = p.TargetFile Then
                 If ProcessTip("The source and target filepath is identical.") Then
-                    g.Highlight(True, tbTargetFile)
+                    Highlight(tbTargetFile)
                     gbAssistant.Text = "Invalid Targetpath"
                     CanIgnoreTip = False
                     Return False
@@ -2862,14 +2863,13 @@ Public Class MainForm
                 Return False
             End If
 
-            If (p.Audio0.File <> "" AndAlso p.Audio0.File = p.Audio1.File AndAlso
-                p.Audio0.Stream Is Nothing) OrElse
+            If (p.Audio0.File <> "" AndAlso p.Audio0.File = p.Audio1.File AndAlso p.Audio0.Stream Is Nothing) OrElse
                 (Not p.Audio0.Stream Is Nothing AndAlso Not p.Audio1.Stream Is Nothing AndAlso
                 p.Audio0.Stream.StreamOrder = p.Audio1.Stream.StreamOrder) Then
 
                 If ProcessTip("The first and second audio source files or streams are identical.") Then
-                    g.Highlight(True, tbAudioFile0)
-                    g.Highlight(True, tbAudioFile1)
+                    Highlight(tbAudioFile0)
+                    Highlight(tbAudioFile1)
                     gbAssistant.Text = "Invalid Audio Settings"
                     Return False
                 End If
@@ -2878,17 +2878,30 @@ Public Class MainForm
             If Not p.VideoEncoder.Muxer.IsSupported(p.VideoEncoder.OutputExt) Then
                 If ProcessTip("The encoder outputs '" + p.VideoEncoder.OutputExt + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ".") Then
                     gbAssistant.Text = "Encoder conflicts with container"
-                    g.Highlight(True, llMuxer)
-                    g.Highlight(True, lgbEncoder.Label)
+                    Highlight(llMuxer)
+                    Highlight(lgbEncoder.Label)
                     CanIgnoreTip = False
                     Return False
                 End If
             End If
 
             For Each ap In AudioProfile.GetProfiles
+                If ap.File = "" Then
+                    Continue For
+                End If
+
+                If ap.AudioCodec = AudioCodec.AC3 AndAlso Not {192, 224, 384, 448, 640}.Contains(CInt(ap.Bitrate)) Then
+                    If ProcessTip("The AC3 bitrate is not specification compliant.") Then
+                        Highlight(GetAudioTextBox(ap))
+                        gbAssistant.Text = "Invalid Audio Bitrate"
+                        Return False
+                    End If
+                End If
+
                 If ap.File = p.TargetFile Then
                     If ProcessTip("The audio source and target filepath is identical.") Then
-                        g.Highlight(True, tbTargetFile)
+                        Highlight(tbTargetFile)
+                        Highlight(GetAudioTextBox(ap))
                         gbAssistant.Text = "Invalid Targetpath"
                         CanIgnoreTip = False
                         Return False
@@ -2897,16 +2910,21 @@ Public Class MainForm
 
                 If Math.Abs(ap.Delay) > 2000 Then
                     If ProcessTip("The audio delay is unusual high indicating a sync problem.") Then
-                        g.Highlight(True, tbAudioFile0)
+                        Highlight(GetAudioTextBox(ap))
                         gbAssistant.Text = "Unusual high audio delay"
                         Return False
                     End If
                 End If
 
-                If ap.File <> "" AndAlso Not p.VideoEncoder.Muxer.IsSupported(ap.OutputFileType) AndAlso Not ap.OutputFileType = "ignore" Then
-                    If ProcessTip("The audio format is '" + ap.OutputFileType + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ". Select another audio profile or another container.") Then
-                        g.Highlight(True, llMuxer)
-                        gbAssistant.Text = "Audio format conflicts with container"
+                If Not p.VideoEncoder.Muxer.IsSupported(ap.OutputFileType) AndAlso Not ap.OutputFileType = "ignore" Then
+                    If ProcessTip("The audio format is '" + ap.OutputFileType + "' but the container '" +
+                        p.VideoEncoder.Muxer.Name + "' supports only " +
+                        p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") +
+                        ". Select another audio profile or another container.") Then
+
+                        Highlight(llMuxer)
+                        Highlight(GetAudioTextBox(ap))
+                        gbAssistant.Text = "Audio format not compatible with container"
                         CanIgnoreTip = False
                         Return False
                     End If
@@ -2915,7 +2933,7 @@ Public Class MainForm
 
             If p.VideoEncoder.Muxer.OutputExtFull <> p.TargetFile.ExtFull Then
                 If ProcessTip("The container requires " + p.VideoEncoder.Muxer.OutputExt.ToUpper + " as target file type.") Then
-                    g.Highlight(True, tbTargetFile)
+                    Highlight(tbTargetFile)
                     gbAssistant.Text = "Invalid File Type"
                     CanIgnoreTip = False
                     Return False
@@ -2937,7 +2955,7 @@ Public Class MainForm
                 p.RemindArError AndAlso p.CustomTargetPAR <> "1:1" Then
 
                 If ProcessTip("Use the resize slider to correct the aspect ratio error or click next to encode anamorphic.") Then
-                    g.Highlight(True, lAspectRatioError)
+                    Highlight(lAspectRatioError)
                     gbAssistant.Text = "Aspect Ratio Error"
                     Return False
                 End If
@@ -2977,7 +2995,7 @@ Public Class MainForm
             If p.RemindToDoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled AndAlso p.Compressibility = 0 Then
                 If ProcessTip("Click here to start the compressibility check. The compressibility check helps to finds the ideal bitrate or image size.") Then
                     AssistantMethod = AddressOf p.VideoEncoder.RunCompCheck
-                    g.Highlight(True, laTarget2)
+                    Highlight(laTarget2)
                     gbAssistant.Text = "Compressibility Check"
                     Return False
                 End If
@@ -3023,8 +3041,8 @@ Public Class MainForm
                 If ProcessTip("Change output width to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
                     CanIgnoreTip = Not p.AutoCorrectCropValues
-                    g.Highlight(True, tbTargetWidth)
-                    g.Highlight(True, lSAR)
+                    Highlight(tbTargetWidth)
+                    Highlight(lSAR)
                     gbAssistant.Text = "Invalid Target Width"
                     Return False
                 End If
@@ -3034,8 +3052,8 @@ Public Class MainForm
                 If ProcessTip("Change output height to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
                     CanIgnoreTip = Not p.AutoCorrectCropValues
-                    g.Highlight(True, tbTargetHeight)
-                    g.Highlight(True, lSAR)
+                    Highlight(tbTargetHeight)
+                    Highlight(lSAR)
                     gbAssistant.Text = "Invalid Target Height"
                     Return False
                 End If
@@ -3048,11 +3066,11 @@ Public Class MainForm
                     value > (p.VideoEncoder.AutoCompCheckValue + 20) Then
 
                     If ProcessTip("Aimed quality value is more than 20% off, change the image or file size to get something between 50% and 70% quality.") Then
-                        g.Highlight(True, tbTargetSize)
-                        g.Highlight(True, tbBitrate)
-                        g.Highlight(True, tbTargetWidth)
-                        g.Highlight(True, tbTargetHeight)
-                        g.Highlight(True, laTarget2)
+                        Highlight(tbTargetSize)
+                        Highlight(tbBitrate)
+                        Highlight(tbTargetWidth)
+                        Highlight(tbTargetHeight)
+                        Highlight(laTarget2)
                         laTarget2.BackColor = Color.Red
                         gbAssistant.Text = "Quality"
                         Return False
@@ -3113,9 +3131,36 @@ Public Class MainForm
         AssistantPassed = True
     End Function
 
+    Sub Highlight(c As Control)
+        Highlight(True, c)
+    End Sub
+
+    Sub Highlight(highlight As Boolean, c As Control)
+        If c Is Nothing Then
+            Exit Sub
+        End If
+
+        If highlight Then
+            c.BackColor = Color.Orange
+        Else
+            If TypeOf c Is Label OrElse TypeOf c Is GroupBox Then
+                c.BackColor = SystemColors.Control
+            ElseIf TypeOf c Is TextBox AndAlso DirectCast(c, TextBox).ReadOnly Then
+                c.BackColor = SystemColors.Control
+            Else
+                c.BackColor = SystemColors.Window
+            End If
+        End If
+    End Sub
+
     Sub OpenTargetFolder()
         g.ShellExecute(p.TargetFile.Dir)
     End Sub
+
+    Function GetAudioTextBox(ap As AudioProfile) As TextBox
+        If ap Is p.Audio0 Then Return tbAudioFile0
+        If ap Is p.Audio1 Then Return tbAudioFile1
+    End Function
 
     Dim BlockAudioTextChanged As Boolean
 

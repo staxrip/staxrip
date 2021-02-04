@@ -45,6 +45,22 @@ Public MustInherit Class AudioProfile
         OutputFileType = fileType
     End Sub
 
+    ReadOnly Property AudioCodec As AudioCodec
+        Get
+            If TypeOf Me Is GUIAudioProfile Then
+                Return DirectCast(Me, GUIAudioProfile).Params.Codec
+            End If
+
+            For Each i As AudioCodec In System.Enum.GetValues(GetType(AudioCodec))
+                If i.ToString.ToLower = OutputFileType Then
+                    Return i
+                End If
+            Next
+
+            Return AudioCodec.None
+        End Get
+    End Property
+
     Private FileValue As String = ""
 
     Property File As String
@@ -327,14 +343,16 @@ Public MustInherit Class AudioProfile
         Return outfile
     End Function
 
-    Shared Function GetProfiles() As List(Of AudioProfile)
-        Dim ret As New List(Of AudioProfile)
-
-        ret.Add(p.Audio0)
-        ret.Add(p.Audio1)
-        ret.AddRange(p.AudioTracks)
-
-        Return ret
+    Shared Function GetProfiles() As IEnumerable(Of AudioProfile)
+        If p.AudioTracks.Count = 0 Then
+            Return {p.Audio0, p.Audio1}
+        Else
+            Dim ret As New List(Of AudioProfile)
+            ret.Add(p.Audio0)
+            ret.Add(p.Audio1)
+            ret.AddRange(p.AudioTracks)
+            Return ret
+        End If
     End Function
 
     Function ExpandMacros(value As String) As String
@@ -903,10 +921,6 @@ Public Class GUIAudioProfile
                     sb.Append(" -quality=" & Params.Quality.ToInvariantString)
                 Case AudioCodec.AC3
                     sb.Append(" -" & Bitrate)
-
-                    If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
-                        Return "Invalid bitrate, select 192, 224, 384, 448 or 640"
-                    End If
                 Case AudioCodec.DTS
                     sb.Append(" -" & Bitrate)
             End Select
@@ -1163,10 +1177,6 @@ Public Class GUIAudioProfile
             Case AudioCodec.AC3
                 If Not Params.CustomSwitches.Contains("-c:a ") Then
                     sb.Append(" -c:a ac3")
-                End If
-
-                If Not {192, 224, 384, 448, 640}.Contains(CInt(Bitrate)) Then
-                    Return "Invalid bitrate, select 192, 224, 384, 448 or 640"
                 End If
 
                 sb.Append(" -b:a " & CInt(Bitrate) & "k")
@@ -1563,6 +1573,7 @@ Public Enum AudioCodec
     W64
     WAV
     EAC3
+    None
 End Enum
 
 Public Enum AudioRateMode

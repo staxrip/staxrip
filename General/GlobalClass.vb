@@ -1198,20 +1198,6 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub Highlight(highlight As Boolean, c As Control)
-        If highlight Then
-            c.BackColor = Color.Orange
-        Else
-            If TypeOf c Is Label OrElse TypeOf c Is GroupBox Then
-                c.BackColor = SystemColors.Control
-            ElseIf TypeOf c Is TextBox AndAlso DirectCast(c, TextBox).ReadOnly Then
-                c.BackColor = SystemColors.Control
-            Else
-                c.BackColor = SystemColors.Window
-            End If
-        End If
-    End Sub
-
     Function EnableFilter(search As String) As Boolean
         For Each filter In p.Script.Filters
             If filter.Category = search Then

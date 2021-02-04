@@ -107,13 +107,13 @@ Public Class ProcController
                 Dim match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                 If match.Success Then
-                    value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(9).Value}.{match.Groups(10).Value} fps, {match.Groups(13).Value,4}.{match.Groups(14).Value} {match.Groups(15).Value}, {match.Groups(16).Value}.{match.Groups(17).Value} {match.Groups(18).Value} ({match.Groups(20).Value} {match.Groups(22).Value}), -{match.Groups(19).Value}"
+                    value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(9).Value}.{match.Groups(10).Value} fps, {match.Groups(13).Value,4} {match.Groups(15).Value}, {match.Groups(16).Value} {match.Groups(18).Value} ({match.Groups(20).Value} {match.Groups(22).Value}), -{match.Groups(19).Value}"
                 Else
                     pattern = "\[\s*((\d+)\.?(\d*))%\]\s+((\d+)/(\d+))\s+((\d+)\.?(\d*))\s+((\d+)\.?(\d*))\s+(\d+:\d+:\d+)\s+(\d+:\d+:\d+)\s+((\d+)\.(\d+))\s([a-z]{1,2})\s+((\d+)\.(\d+))\s([a-z]{1,2})"
                     match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                     If match.Success Then
-                        value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(8).Value}.{match.Groups(9).Value} fps, {match.Groups(11).Value,4}.{match.Groups(12).Value} kb/s, {match.Groups(16).Value}.{match.Groups(17).Value} {match.Groups(18).Value} ({match.Groups(20).Value}.{match.Groups(21).Value} {match.Groups(22).Value}), {match.Groups(13).Value} (-{match.Groups(14).Value})"
+                        value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(8).Value}.{match.Groups(9).Value} fps, {match.Groups(11).Value,4} kb/s, {match.Groups(16).Value} {match.Groups(18).Value} ({match.Groups(20).Value}.{match.Groups(21).Value} {match.Groups(22).Value}), {match.Groups(13).Value} (-{match.Groups(14).Value})"
                     End If
                 End If
             ElseIf Proc.Package Is Package.x265 Then
@@ -121,7 +121,7 @@ Public Class ProcController
                 Dim match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                 If match.Success Then
-                    value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(7).Value.Length)}{match.Groups(6).Value}/{match.Groups(7).Value} frames @ {match.Groups(10).Value}.{match.Groups(11).Value} fps, {match.Groups(14).Value,4} {match.Groups(16).Value}, {match.Groups(19).Value}.{match.Groups(20).Value} {match.Groups(21).Value} ({match.Groups(22).Value} {match.Groups(24).Value}), {match.Groups(17).Value} (-{match.Groups(18).Value})"
+                    value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(7).Value.Length)}{match.Groups(6).Value}/{match.Groups(7).Value} frames @ {match.Groups(10).Value}.{match.Groups(11).Value} fps, {match.Groups(14).Value,4} {match.Groups(16).Value}, {match.Groups(19).Value} {match.Groups(21).Value} ({match.Groups(22).Value} {match.Groups(24).Value}), {match.Groups(17).Value} (-{match.Groups(18).Value})"
                 End If
             End If
         End If

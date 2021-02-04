@@ -4357,6 +4357,10 @@ Public Class MainForm
             audioExist.Field = NameOf(p.FileExistAudio)
 
             b = ui.AddBool
+            b.Text = "Re-mux AAC to M4A using MP4Box"
+            b.Field = NameOf(p.RemuxAacToM4A)
+
+            b = ui.AddBool
             b.Text = "On load use AviSynth script as audio source"
             b.Help = "Sets the AviSynth script (*.avs) as audio source file when loading a source file."
             b.Field = NameOf(p.UseScriptAsAudioSource)
@@ -4367,7 +4371,6 @@ Public Class MainForm
             Dim videoExist = ui.AddMenu(Of FileExistMode)
             Dim staxRipThumbnailOption = ui.AddBool()
             Dim mtnThumbnailOption = ui.AddBool()
-
 
             thumbOptions.Text = "Thumbnail Choices:"
             thumbOptions.Add("StaxRip Thumbnails", 0)

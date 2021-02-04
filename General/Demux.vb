@@ -920,7 +920,7 @@ Public Class mkvDemuxer
 
                 proj.Log.WriteLine(MediaInfo.GetSummary(outPath) + BR)
 
-                If outPath.Ext = "aac" Then
+                If proj.RemuxAacToM4A AndAlso outPath.Ext = "aac" Then
                     Dim newOutPath = outPath.ChangeExt("m4a")
                     outPaths.Add(newOutPath)
 

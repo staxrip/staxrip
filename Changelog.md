@@ -6,6 +6,7 @@
 - Warning for non spec compliant AC3 bitrate moved to main dialog
   so it's possible to ignore the warning (stax76, JKyle)
 - avs2pipemod mod with Unicode and Long Path support (stax76)
+- Automatic re-muxing of AAC to M4A can be disabled (stax76, [#489](/../../issues/489))
 
 
 2.1.7.6 Beta (2021-02-03)

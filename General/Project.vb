@@ -63,6 +63,7 @@ Public Class Project
     Public RemindToCut As Boolean = False
     Public RemindToDoCompCheck As Boolean = False
     Public RemindToSetFilters As Boolean = False
+    Public RemuxAacToM4A As Boolean = True
     Public ResizeSliderMaxWidth As Integer
     Public SaveThumbnails As Boolean
     Public Script As TargetVideoScript

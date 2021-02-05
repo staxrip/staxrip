@@ -509,9 +509,9 @@ Public Class FrameServerHelp
                     Using td As New TaskDialog(Of Boolean)
                         td.MainIcon = TaskDialogIcon.Shield
                         td.MainInstruction = "AviSynth Portable Mode"
-                        td.Content = "The current configuration uses AviSynth portable mode With AviSynth tools " +
-                                         "that Do Not support portable mode, To workaround this it's required to " +
-                                         "create soft links that are pointing to the location of portable AviSynth."
+                        td.Content = "The current configuration uses AviSynth portable mode with AviSynth tools " +
+                                     "that do not support portable mode, to workaround this it's required to " +
+                                     "create soft links that are pointing to the location of portable AviSynth."
                         td.AddCommand("Create portable AviSynth soft links", True)
 
                         If td.Show Then

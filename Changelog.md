@@ -2,6 +2,9 @@
 2.1.7.8 Beta (2021-02-??)
 =========================
 
+- Support 10-bit avs input for x264 in case the x264 version name contains the keyword aMod (stax76)
+
+
 2.1.7.7 Beta (2021-02-05)
 =========================
 

@@ -105,6 +105,7 @@ Video Processing
 - Full high bit depth and HDR support.
 - Compressibility check.
 - It can be customized which source filters should be used for different formats.
+- Unicode support for AviSynth on Windows 10.
 
 
 Encoding
@@ -140,6 +141,7 @@ Power User
   for instance to execute custom command lines on given events.
 - Scriptable via PowerShell.
 - Customizable main menu and context menus.
+- Long path support, if enabled in Windows 10 file paths can be longer than 260 characters.
 - A PowerShel terminal can be shown with support for the new Windows Terminal,
   this terminal has a special environment for easy access of included console
   tools, all macros are available as environment variables in this

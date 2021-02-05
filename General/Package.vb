@@ -102,7 +102,7 @@ Public Class Package
     Shared Property ffmpeg As Package = Add(New Package With {
         .Name = "ffmpeg",
         .Filename = "ffmpeg.exe",
-        .Location = "Encoders\ffmpeg",
+        .Locations = {"Encoders\ffmpeg", "FrameServer\AviSynth"},
         .Keep = {"AviSynth.dll"},
         .WebURL = "http://ffmpeg.org",
         .HelpURL = "http://www.ffmpeg.org/documentation.html",
@@ -518,8 +518,8 @@ Public Class Package
         .Location = "Encoders\x264",
         .Description = "H.264 video encoding console app. Patman mod supports vpy input and shows the estimated size in the status line.",
         .Keep = {"AviSynth.dll"},
-        .WebURL = "http://www.videolan.org/developers/x264.html",
-        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
+        .WebURL = "https://github.com/DJATOM/x264-aMod",
+        .DownloadURL = "https://github.com/DJATOM/x264-aMod/releases",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
         .HelpSwitch = "--fullhelp"})
 

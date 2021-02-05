@@ -1,4 +1,7 @@
 
+2.1.7.8 Beta (2021-02-??)
+=========================
+
 2.1.7.7 Beta (2021-02-??)
 =========================
 
@@ -7,6 +10,7 @@
   so it's possible to ignore the warning (stax76, JKyle)
 - avs2pipemod mod with Unicode and Long Path support (stax76)
 - .aac files demuxed with mkvextract are no longer converted to .m4a (stax76, [#489](/../../issues/489))
+- x264 --fade-compensate --log-file --log-file-level --opts --progress-header (stax76)
 - mkvtoolnix 53
 
 

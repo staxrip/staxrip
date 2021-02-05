@@ -351,14 +351,6 @@ Public Class x265Params
         .Name = "Chunk End",
         .Text = "Chunk End"}
 
-    Property SSIM As New BoolParam With {
-        .Switch = "--ssim",
-        .Text = "SSIM"}
-
-    Property PSNR As New BoolParam With {
-        .Switch = "--psnr",
-        .Text = "PSNR"}
-
     Property BFrames As New NumParam With {
         .Switch = "--bframes",
         .Switches = {"-b"},
@@ -890,12 +882,6 @@ Public Class x265Params
         .Options = {"0", "1", "2", "3"},
         .Init = 3}
 
-    Property csvloglevel As New OptionParam With {
-        .Switch = "--csv-log-level",
-        .Text = "CSV Log Level",
-        .IntegerValue = True,
-        .Options = {"Default", "Summary", "Frame"}}
-
     Property MultiPassOptAnalysis As New BoolParam() With {
         .Switch = "--multi-pass-opt-analysis",
         .Text = "Multipass analysis refinement along with multipass ratecontrol"}
@@ -1036,7 +1022,9 @@ Public Class x265Params
                 Add("Statistic",
                     New StringParam With {.Switch = "--csv", .Text = "CSV", .BrowseFile = True},
                     New OptionParam With {.Switch = "--log-level", .Switches = {"--log"}, .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Init = 3},
-                    csvloglevel, SSIM, PSNR)
+                    New OptionParam With {.Switch = "--csv-log-level", .Text = "CSV Log Level", .IntegerValue = True, .Options = {"Default", "Summary", "Frame"}},
+                    New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
+                    New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
                 Add("VUI",
                     MasterDisplay,
                     New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},

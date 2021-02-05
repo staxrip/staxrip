@@ -799,7 +799,8 @@ Public Class x264Params
                     New NumParam With {.Switch = "--vbv-init", .Text = "VBV Init", .Config = {0.5, 1.0, 0.1, 1}, .Init = 0.9},
                     New NumParam With {.Switch = "--crf-max", .Text = "Maximum CRF"},
                     New NumParam With {.Switch = "--qpmin", .Text = "Minimum QP"},
-                    New NumParam With {.Switch = "--qpmax", .Text = "Maximum QP", .Init = 69})
+                    New NumParam With {.Switch = "--qpmax", .Text = "Maximum QP", .Init = 69},
+                    New NumParam With {.Switch = "--fade-compensate", .Text = "Fade Compensate", .Config = {0, 0, 0.1, 1}})
                 Add("Rate Control 2",
                     New NumParam With {.Switch = "--qpstep", .Text = "QP Step", .Init = 4},
                     New NumParam With {.Switch = "--ratetol", .Text = "Rate Tolerance", .Config = {0, 0, 0.1, 1}, .Init = 1},
@@ -847,6 +848,12 @@ Public Class x264Params
                     DctDecimate,
                     New BoolParam With {.Switch = "--intra-refresh", .Text = "Periodic Intra Refresh instead of IDR frames"},
                     New BoolParam With {.Switch = "--open-gop", .Text = "Open GOP"})
+                Add("Statistic",
+                    New StringParam With {.Switch = "--log-file", .Text = "Log File", .BrowseFile = True},
+                    New OptionParam With {.Switch = "--log-file-level", .Text = "Log File Level", .Options = {"None", "Error", "Warning", "Info", "Debug"}, .Init = 3},
+                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug"}},
+                    New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
+                    New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
                 Add("VUI",
                     New StringParam With {.Switch = "--sar", .Text = "Sample AR", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                     New StringParam With {.Switch = "--crop-rect", .Text = "Crop Rectangle"},
@@ -879,10 +886,10 @@ Public Class x264Params
                     Muxer,
                     New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}})
                 Add("Input/Output 2",
-                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug"}},
                     New OptionParam With {.Switch = "--pulldown", .Text = "Pulldown", .Options = {"None", "22", "32", "64", "Double", "Triple", "Euro"}},
                     New OptionParam With {.Switch = "--avcintra-class", .Text = "AVC Intra Class", .Options = {"None", "50", "100", "200"}},
                     New OptionParam With {.Switch = "--avcintra-flavor", .Text = "AVC Intra Flavor", .Options = {"Panasonic", "Sony"}},
+                    New OptionParam With {.Switch = "--opts", .Text = "SEI writing options", .Init = 3, .Options = {"None", "Information", "Options", "Information and Options"}},
                     New NumParam With {.Switch = "--threads", .Text = "Threads"},
                     New NumParam With {.Switch = "--lookahead-threads", .Text = "Lookahead Threads"},
                     New NumParam With {.Switch = "--seek", .Text = "Seek"},
@@ -893,8 +900,6 @@ Public Class x264Params
                 Add("Input/Output 3",
                     New BoolParam With {.Switch = "--fake-interlaced", .Text = "Fake Interlaced"},
                     New BoolParam With {.Switch = "--stitchable", .Text = "Stitchable"},
-                    New BoolParam With {.Switch = "--psnr", .Text = "PSNR"},
-                    New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
                     New BoolParam With {.Switch = "--sliced-threads", .Text = "Low-latency but lower-efficiency threading"},
                     New BoolParam With {.Switch = "--thread-input", .Text = "Run Avisynth in its own thread"},
                     New BoolParam With {.Switch = "--non-deterministic", .Text = "Non Deterministic"},
@@ -906,7 +911,8 @@ Public Class x264Params
                     New BoolParam With {.Switch = "--aud", .Text = "Use access unit delimiters"},
                     New BoolParam With {.Switch = "--quiet", .Text = "Quiet Mode"},
                     New BoolParam With {.Switch = "--verbose", .Switches = {"-v"}, .Text = "Print stats for each frame"},
-                    New BoolParam With {.Switch = "--dts-compress", .Text = "Eliminate initial delay with container DTS hack"})
+                    New BoolParam With {.Switch = "--dts-compress", .Text = "Eliminate initial delay with container DTS hack"},
+                    New BoolParam With {.Switch = "--progress-header", .NoSwitch = "--no-progress-header", .Text = "Show progress header", .Init = True})
                 Add("Other",
                     New StringParam With {.Switch = "--video-filter", .Switches = {"--vf"}, .Text = "Video Filter"},
                     New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},

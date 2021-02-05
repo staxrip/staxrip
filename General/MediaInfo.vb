@@ -83,6 +83,7 @@ Public Class MediaInfo
                     at.Title = GetAudio(index, "Title").Trim
                     at.Forced = GetAudio(index, "Forced") = "Yes"
                     at.Default = GetAudio(index, "Default") = "Yes"
+                    at.SBR = GetAudio(index, "Format/String").ContainsEx("SBR")
 
                     Dim lm = GetAudio(index, "Language_More")
 

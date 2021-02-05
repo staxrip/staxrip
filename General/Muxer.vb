@@ -398,6 +398,10 @@ Public Class MP4Muxer
                 args.Append("#audio")
             End If
 
+            If ap.File.Contains("SBR") Then
+                args.Append(":sbr")
+            End If
+
             args.Append(":lang=" + ap.Language.ThreeLetterCode)
 
             If ap.Delay <> 0 AndAlso Not ap.HandlesDelay Then
@@ -858,7 +862,7 @@ Public Class MkvMuxer
                 args += " --language " & tid + 1 & ":" + ap.Language.ThreeLetterCode
             End If
 
-            If ap.OutputFileType = "aac" AndAlso ap.File.ToLower.Contains("sbr") Then
+            If ap.OutputFileType = "aac" AndAlso ap.File.Contains("SBR") Then
                 args += " --aac-is-sbr " & tid
             End If
 

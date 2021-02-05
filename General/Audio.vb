@@ -79,6 +79,10 @@ Public Class Audio
 
         Dim ret = base + " ID" & (stream.Index + 1)
 
+        If stream.SBR Then
+            ret += " SBR"
+        End If
+
         If stream.Delay <> 0 Then
             ret += " " & stream.Delay & "ms"
         End If

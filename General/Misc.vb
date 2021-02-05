@@ -990,25 +990,26 @@ End Class
 
 <Serializable>
 Public Class AudioStream
+    Property [Default] As Boolean
     Property BitDepth As Integer
     Property Bitrate As Integer
     Property Bitrate2 As Integer
     Property Channels As Integer
     Property Channels2 As Integer
     Property Delay As Integer
+    Property Enabled As Boolean = True
+    Property Forced As Boolean
     Property Format As String
-    Property FormatString As String
     Property FormatProfile As String
+    Property FormatString As String
     Property ID As Integer
-    Property StreamOrder As Integer
     Property Index As Integer
     Property Language As Language
-    Property SamplingRate As Integer
-    Property Title As String
-    Property Enabled As Boolean = True
-    Property [Default] As Boolean
-    Property Forced As Boolean
     Property Lossy As Boolean
+    Property SamplingRate As Integer
+    Property SBR As Boolean
+    Property StreamOrder As Integer
+    Property Title As String
 
     ReadOnly Property Name As String
         Get

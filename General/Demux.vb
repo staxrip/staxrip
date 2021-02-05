@@ -885,10 +885,6 @@ Public Class mkvDemuxer
             outPaths.Add(outPath)
             args += " " & stream.StreamOrder & ":" + outPath.Escape
 
-            If outPath.Ext = "aac" Then
-                outPath = outPath.ChangeExt("m4a")
-            End If
-
             If Not outPath.FileExists Then
                 newCount += 1
             End If
@@ -919,33 +915,6 @@ Public Class mkvDemuxer
                 End If
 
                 proj.Log.WriteLine(MediaInfo.GetSummary(outPath) + BR)
-
-                If proj.RemuxAacToM4A AndAlso outPath.Ext = "aac" Then
-                    Dim newOutPath = outPath.ChangeExt("m4a")
-                    outPaths.Add(newOutPath)
-
-                    Using proc As New Proc
-                        proc.Project = proj
-                        proc.Header = "Mux AAC to M4A"
-                        proc.SkipString = "|"
-                        proc.Package = Package.MP4Box
-                        Dim sbr = If(outPath.Contains("SBR"), ":sbr", "")
-                        proc.Arguments = "-add """ + outPath + sbr + ":name= "" -new " + newOutPath.Escape
-                        proc.OutputFiles = outPaths
-                        proc.Start()
-                    End Using
-
-                    If File.Exists(newOutPath) Then
-                        If Not ap Is Nothing Then
-                            ap.File = newOutPath
-                        End If
-
-                        FileHelp.Delete(outPath)
-                        proj.Log.WriteLine(BR + MediaInfo.GetSummary(newOutPath))
-                    Else
-                        Throw New ErrorAbortException("Error mux AAC to M4A", outPath)
-                    End If
-                End If
             Else
                 proj.Log.Write("Error", "no output found")
                 ffmpegDemuxer.DemuxAudio(sourcefile, audioOutPaths(outPath), ap, proj, overrideExisting)

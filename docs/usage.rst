@@ -137,7 +137,8 @@ This a library which many AviSynth and VapourSynth plugins depend on.
 Templates
 =========
 
-StaxRip uses a template system, technically a template is a empty project file. When StaxRip starts it loads a default template, this default template can be changed at:
+StaxRip uses a template system, technically a template is a empty project file.
+When StaxRip starts it loads a default template, this default template can be changed at:
 
 *Main Menu > Tools > Settings > General > Startup Template*
 
@@ -170,15 +171,19 @@ Parallel Processing
 Job Processing
 --------------
 
-The jobs list can be processed with multiple StaxRip instances in parallel. This feature is only recommended for power users that know exactly what their hardware is capable of.
+The jobs list can be processed with multiple StaxRip instances in parallel.
+This feature is only recommended for power users that know exactly what their
+hardware is capable of.
 
 
 Chunk Encoding
 --------------
 
-StaxRip supports chunk encoding for the x265 encoder, it splits the encoding into chunks and encodes the chunks in parallel. Only recommended for power users that know exactly what their hardware is capable of. This feature can be configured at:
+StaxRip supports chunk encoding for the x265 encoder, it splits the encoding
+into chunks and encodes the chunks in parallel. Only recommended for power users
+that know exactly what their hardware is capable of. This feature can be configured at:
 
-x265 dialog > Other > Chunks
+x265 dialog > Input/Output > Chunks
 
 Main Menu > Tools > Settings > General > Maximum number of parallel processes
 
@@ -190,7 +195,9 @@ For Batch Processing first wanted options have to be changed, after that files c
 
 File > Open Video File > File Batch
 
-Not only encoding is supported but any task like remuxing, demuxing or AviSynth/VapourSynth script generation, this can be achieved by disabling unwanted features, almost every feature can be disabled:
+Not only encoding is supported but any task like remuxing, demuxing or
+AviSynth/VapourSynth script generation, this can be achieved by disabling
+unwanted features, almost every feature can be disabled:
 
 - The video encoder profiles have a Copy/Mux profile.
 - The muxer profiles have a No Muxing profile.

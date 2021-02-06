@@ -16,6 +16,7 @@ Public Class ProcController
 
     Private LogAction As Action = New Action(AddressOf LogHandler)
     Private StatusAction As Action(Of String) = New Action(Of String)(AddressOf StatusHandler)
+    Private CustomProgressFailure As Boolean
 
     Shared Property Procs As New List(Of ProcController)
     Shared Property Aborted As Boolean
@@ -101,7 +102,7 @@ Public Class ProcController
     Sub SetText(value As String)
         value = value.Trim()
 
-        If s.ProgressOutputCustomize Then
+        If s.ProgressOutputCustomize AndAlso Not CustomProgressFailure Then
             If Proc.Package Is Package.x264 Then
                 Dim pattern = "\[((\d+)\.?(\d*))%\]\s+((\d+)/(\d+)(\sframes)),\s((\d+)\.?(\d*)(\sfps)),\s((\d+)\.?(\d*)\s([a-z]{2}/s)),\s(\d+)\.(\d+)\s([a-z]{1,2}),\seta\s(\d+:\d+:\d+),\sest\.size\s(\d+)\.(\d+)\s([a-z]{1,2})"
                 Dim match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
@@ -114,6 +115,8 @@ Public Class ProcController
 
                     If match.Success Then
                         value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(8).Value}.{match.Groups(9).Value} fps, {match.Groups(11).Value,4} kb/s, {match.Groups(16).Value} {match.Groups(18).Value} ({match.Groups(20).Value}.{match.Groups(21).Value} {match.Groups(22).Value}), {match.Groups(13).Value} (-{match.Groups(14).Value})"
+                    Else
+                        CustomProgressFailure = True
                     End If
                 End If
             ElseIf Proc.Package Is Package.x265 Then
@@ -122,6 +125,8 @@ Public Class ProcController
 
                 If match.Success Then
                     value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(7).Value.Length)}{match.Groups(6).Value}/{match.Groups(7).Value} frames @ {match.Groups(10).Value}.{match.Groups(11).Value} fps, {match.Groups(14).Value,4} {match.Groups(16).Value}, {match.Groups(19).Value} {match.Groups(21).Value} ({match.Groups(22).Value} {match.Groups(24).Value}), {match.Groups(17).Value} (-{match.Groups(18).Value})"
+                Else
+                    CustomProgressFailure = True
                 End If
             End If
         End If
@@ -470,11 +475,7 @@ Public Class ProcController
                               If Not g.ProcForm.WindowState = FormWindowState.Minimized Then
                                   g.ProcForm.Show()
                                   g.ProcForm.WindowState = FormWindowState.Normal
-
-                                  'If Not BlockActivation Then
                                   g.ProcForm.Activate()
-                                  '    BlockActivation = True
-                                  'End If
                               End If
 
                               AddProc(proc)

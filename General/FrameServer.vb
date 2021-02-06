@@ -459,7 +459,7 @@ Public Class FrameServerHelp
     End Function
 
     Shared Function IsAviSynthSystemInstalled() As Boolean
-        Return (Folder.System + "AviSynth.dll").FileExists
+        Return File.Exists(Folder.System + "AviSynth.dll")
     End Function
 
     Shared Function IsAviSynth() As Boolean
@@ -508,7 +508,9 @@ Public Class FrameServerHelp
 
         If TypeOf p.VideoEncoder Is x264Enc Then
             If IsAviSynthPortable() Then
-                If Not Package.x264.Path.Contains("FrameServer\AviSynth") AndAlso Not CommandLineContainsAvsDllPath() Then
+                If IsAviSynthSystemInstalled() AndAlso Not Package.x264.Path.Contains("FrameServer\AviSynth") AndAlso
+                    Not CommandLineContainsAvsDllPath() Then
+
                     MoveFiles(Package.x264.Directory, Package.AviSynth.Directory, {Package.x264.Filename, "x264 Help.txt"})
                 End If
             Else
@@ -522,7 +524,9 @@ Public Class FrameServerHelp
 
         If TypeOf p.VideoEncoder Is x265Enc Then
             If IsAviSynthPortable() Then
-                If Not Package.x265.Path.Contains("FrameServer\AviSynth") AndAlso Not CommandLineContainsAvsDllPath() Then
+                If IsAviSynthSystemInstalled() AndAlso Not Package.x265.Path.Contains("FrameServer\AviSynth") AndAlso
+                    Not CommandLineContainsAvsDllPath() Then
+
                     MoveFiles(Package.x265.Directory, Package.AviSynth.Directory, {Package.x265.Filename, "x265 Help.txt"})
                 End If
             Else

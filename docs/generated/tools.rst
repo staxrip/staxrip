@@ -137,7 +137,7 @@ Tools
     "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.8.0.0","2020-12-13"
     "MKVToolnix GUI","GUI App","mkvtoolnix-gui.exe","53","2021-01-30"
     "MPC-BE","GUI App","mpc-be64.exe","",""
-    "MPC-HC","GUI App","mpc-hc64.exe","","2017-07-16"
+    "MPC-HC","GUI App","mpc-hc64.exe","","2021-01-03"
     "mpv.net","GUI App","mpvnet.exe","5.4.8.6","2020-12-30"
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.18","2020-11-09"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
@@ -412,7 +412,7 @@ x264
 
 H.264 video encoding console app. Patman mod supports vpy input and shows the estimated size in the status line.
 
-http://www.videolan.org/developers/x264.html
+https://github.com/DJATOM/x264-aMod
 
 
 x265

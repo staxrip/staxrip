@@ -1655,10 +1655,6 @@ Public Class MainForm
                 p.Init()
             End Try
 
-            If p.SourceFile <> "" AndAlso Not FrameServerHelp.VerifyAviSynthLinks() Then
-                Throw New AbortException
-            End If
-
             Log = p.Log
 
             If File.Exists(Folder.Temp + "staxrip.log") Then
@@ -1669,7 +1665,7 @@ Public Class MainForm
 
             Text = path.Base + " - " + Application.ProductName + " " + Application.ProductVersion
 
-            If g.Is32Bit Then
+            If Not Environment.Is64BitProcess Then
                 Text += " (32 bit)"
             End If
 
@@ -3677,6 +3673,7 @@ Public Class MainForm
                 End If
 
                 g.SaveSettings()
+                FrameServerHelp.AviSynthToolPath()
             End If
 
             If restartID <> GetRestartID() Then
@@ -3812,6 +3809,8 @@ Public Class MainForm
 
     <Command("Dialog to manage external tools.")>
     Sub ShowAppsDialog()
+        FrameServerHelp.AviSynthToolPath()
+
         Using form As New AppsForm
             Dim found As Boolean
 
@@ -3832,6 +3831,8 @@ Public Class MainForm
             form.ShowDialog()
             g.SaveSettings()
         End Using
+
+        FrameServerHelp.AviSynthToolPath()
     End Sub
 
     <Command("Shows a dialog to manage video encoder profiles.")>
@@ -6235,7 +6236,6 @@ Public Class MainForm
         StaxRip.StaxRipUpdate.ShowUpdateQuestion()
         StaxRip.StaxRipUpdate.CheckForUpdate(False, s.CheckForUpdatesBeta, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
-        g.RunTask(AddressOf FrameServerHelp.VerifyAviSynthLinks)
     End Sub
 
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)

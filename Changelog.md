@@ -3,6 +3,7 @@
 =========================
 
 - Support 10-bit avs input for x264 in case the x264 version name contains the keyword aMod (stax76)
+- AviSynth portable mode no longer uses soft links but moves files if necessary (stax76, [#473](/../../issues/473))
 
 
 2.1.7.7 Beta (2021-02-05)

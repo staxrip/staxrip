@@ -515,7 +515,7 @@ Public Class Package
     Shared Property x264 As Package = Add(New Package With {
         .Name = "x264",
         .Filename = "x264.exe",
-        .Location = "Encoders\x264",
+        .Locations = {"Encoders\x264", "FrameServer\AviSynth"},
         .Description = "H.264 video encoding console app. Patman mod supports vpy input and shows the estimated size in the status line.",
         .Keep = {"AviSynth.dll"},
         .WebURL = "https://github.com/DJATOM/x264-aMod",
@@ -525,7 +525,7 @@ Public Class Package
 
     Shared Property x265 As Package = Add(New Package With {
         .Name = "x265",
-        .Location = "Encoders\x265",
+        .Locations = {"Encoders\x265", "FrameServer\AviSynth"},
         .Filename = "x265.exe",
         .WebURL = "https://x265.com",
         .HelpURL = "http://x265.readthedocs.org",
@@ -1947,7 +1947,7 @@ Public Class Package
 
     Property Filename As String
         Get
-            If g.Is32Bit AndAlso Filename32 <> "" Then
+            If Not Environment.Is64BitProcess AndAlso Filename32 <> "" Then
                 Return Filename32
             End If
 
@@ -2574,6 +2574,8 @@ Public Class Package
             For Each pack In Items.Values
                 pack.LoadConf()
             Next
+
+            FrameServerHelp.AviSynthToolPath()
         End If
     End Sub
 

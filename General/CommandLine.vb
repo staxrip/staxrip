@@ -84,6 +84,8 @@ Namespace CommandLine
                 Exit Sub
             End If
 
+            FrameServerHelp.AviSynthToolPath()
+
             Dim cl = GetCommandLine(True, True)
 
             If TextEncoding.AvsEncoderSupportsUTF8(cl) Then

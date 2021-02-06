@@ -1209,6 +1209,14 @@ Public Class x265Params
                 Case "script"
                     Dim pipeString = ""
 
+                    If pipeTool = "none" AndAlso Not Package.x265.Version.ContainsAny("aMod", "Asuna") Then
+                        If p.Script.IsAviSynth Then
+                            pipeTool = "avs2pipemod"
+                        Else
+                            pipeTool = "vspipe"
+                        End If
+                    End If
+
                     Select Case pipeTool
                         Case "avs2pipemod"
                             Dim chunk = If(isSingleChunk, "", $" -trim={startFrame},{endFrame}")
@@ -1266,7 +1274,7 @@ Public Class x265Params
                         Case "none"
                             sb.Append(pipeString + Package.x265.Path.Escape)
 
-                            If FrameServerHelp.IsPortable Then
+                            If FrameServerHelp.IsPortable AndAlso Package.x265.Version.ContainsEx("aMod") Then
                                 sb.Append(" --reader-options library=" + FrameServerHelp.GetSynthPath.Escape)
                             End If
 

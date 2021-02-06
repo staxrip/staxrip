@@ -889,7 +889,7 @@ Public Class x264Params
                     New OptionParam With {.Switch = "--pulldown", .Text = "Pulldown", .Options = {"None", "22", "32", "64", "Double", "Triple", "Euro"}},
                     New OptionParam With {.Switch = "--avcintra-class", .Text = "AVC Intra Class", .Options = {"None", "50", "100", "200"}},
                     New OptionParam With {.Switch = "--avcintra-flavor", .Text = "AVC Intra Flavor", .Options = {"Panasonic", "Sony"}},
-                    New OptionParam With {.Switch = "--opts", .Text = "SEI writing options", .Init = 3, .Options = {"None", "Information", "Options", "Information and Options"}},
+                    New OptionParam With {.Switch = "--opts", .Text = "SEI writing options", .Init = 3, .IntegerValue = True, .Options = {"None", "Information", "Options", "Information and Options"}},
                     New NumParam With {.Switch = "--threads", .Text = "Threads"},
                     New NumParam With {.Switch = "--lookahead-threads", .Text = "Lookahead Threads"},
                     New NumParam With {.Switch = "--seek", .Text = "Seek"},
@@ -1083,7 +1083,9 @@ Public Class x264Params
             Dim input = If(pipeTool = "none", script.Path.Escape, "-")
             Dim dmx = Demuxer.ValueText
 
-            If pipeTool = "none" AndAlso FrameServerHelp.IsPortable Then
+            If pipeTool = "none" AndAlso FrameServerHelp.IsPortable AndAlso
+                Package.x264.Version.ContainsEx("aMod") Then
+
                 sb.Append(" --synth-lib " + FrameServerHelp.GetSynthPath.Escape)
             End If
 

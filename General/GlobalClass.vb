@@ -171,6 +171,7 @@ Public Class GlobalClass
     End Function
 
     Sub ProcessJobs()
+        FrameServerHelp.AviSynthToolPath()
         g.StopAfterCurrentJob = False
         ProcessJobsRecursive()
     End Sub
@@ -426,7 +427,7 @@ Public Class GlobalClass
     End Function
 
     Function VerifyRequirements() As Boolean
-        If s.VerifyToolStatus AndAlso Not g.Is32Bit Then
+        If s.VerifyToolStatus AndAlso Environment.Is64BitProcess Then
             SyncLock Package.ConfLock
                 For Each pack In Package.Items.Values
                     If Not pack.VerifyOK Then
@@ -437,10 +438,6 @@ Public Class GlobalClass
 
             If Not p.Script.IsFilterActive("Source") Then
                 MsgWarn("No active filter of category 'Source' found.")
-                Return False
-            End If
-
-            If Not FrameServerHelp.VerifyAviSynthLinks() Then
                 Return False
             End If
         End If
@@ -1502,14 +1499,6 @@ Public Class GlobalClass
 
     Function IsDevelopmentPC() As Boolean
         Return Application.StartupPath.EndsWith("\bin") OrElse Application.StartupPath.EndsWith("\bin-x86")
-    End Function
-
-    Function Is32Bit() As Boolean
-        Return IntPtr.Size = 4
-    End Function
-
-    Function Is64Bit() As Boolean
-        Return IntPtr.Size = 8
     End Function
 
     Sub RunTask(action As Action)

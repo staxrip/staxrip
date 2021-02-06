@@ -169,7 +169,7 @@ Public Class AppsForm
         '
         Me.ddbTools.AutoToolTip = False
         Me.ddbTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miEditPath, Me.miClearPaths, Me.miFindPath, Me.miCopyPath, Me.miPATHEnvVar, Me.ToolStripMenuItem1, Me.miEditVersion, Me.miEditChangelog, Me.miShowGrid, Me.miStatus, Me.miAutoUpdate, Me.miDownload, Me.miWebsite, Me.miExplore, Me.miLaunch, Me.miHelp})
+        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miEditPath, Me.miFindPath, Me.miClearPaths, Me.miCopyPath, Me.miPATHEnvVar, Me.ToolStripMenuItem1, Me.miEditVersion, Me.miEditChangelog, Me.miShowGrid, Me.miStatus, Me.miAutoUpdate, Me.miDownload, Me.miWebsite, Me.miExplore, Me.miLaunch, Me.miHelp})
         Me.ddbTools.Image = CType(resources.GetObject("ddbTools.Image"), System.Drawing.Image)
         Me.ddbTools.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ddbTools.Name = "ddbTools"

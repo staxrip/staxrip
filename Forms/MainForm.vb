@@ -3672,8 +3672,8 @@ Public Class MainForm
                     Icon = g.Icon
                 End If
 
-                g.SaveSettings()
                 FrameServerHelp.AviSynthToolPath()
+                g.SaveSettings()
             End If
 
             If restartID <> GetRestartID() Then
@@ -6216,6 +6216,15 @@ Public Class MainForm
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
         UpdateNextButton()
+
+        If Not FrameServerHelp.IsAviSynthPortable AndAlso FrameServerHelp.GetAviSynthInstallPath = "" Then
+            s.AviSynthMode = FrameServerMode.Portable
+        End If
+
+        If Not FrameServerHelp.IsVapourSynthPortable AndAlso FrameServerHelp.GetVapourSynthInstallPath = "" Then
+            s.VapourSynthMode = FrameServerMode.Portable
+        End If
+
         ProcController.LastActivation = Environment.TickCount
 
         BeginInvoke(New Action(Sub()

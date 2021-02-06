@@ -3835,6 +3835,12 @@ Public Enum CompressionMode
     none
 End Enum
 
+Public Enum x265Type
+    Vanilla
+    DJATOM
+    Asuna
+End Enum
+
 Public Enum ApplicationEvent
     <DispName("After Job Muxed")> JobMuxed
     <DispName("After Job Processed")> JobProcessed

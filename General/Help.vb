@@ -175,9 +175,11 @@ End Class
 
 Public Class ProcessHelp
     Shared Function GetConsoleOutput(
-        file As String, arguments As String, Optional stderr As Boolean = False) As String
+        file As String,
+        arguments As String,
+        Optional stderr As Boolean = False) As String
 
-        Dim ret = ""
+        Dim ret As String
 
         Using proc As New Process
             proc.StartInfo.UseShellExecute = False
@@ -198,6 +200,10 @@ Public Class ProcessHelp
 
             proc.WaitForExit()
         End Using
+
+        If ret Is Nothing Then
+            Return ""
+        End If
 
         Return ret
     End Function

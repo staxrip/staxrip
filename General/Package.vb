@@ -7,6 +7,7 @@ Imports Microsoft.Win32
 Public Class Package
     Implements IComparable(Of Package)
 
+    Property AllowCustomPath As Boolean = True
     Property Description As String
     Property DownloadURL As String
     Property DownloadURLs As StringPair()
@@ -31,7 +32,7 @@ Public Class Package
     Property StatusFunc As Func(Of String)
     Property SupportsAutoUpdate As Boolean = True
     Property TreePath As String
-    Property Version As String
+    Property Version As String = ""
     Property VersionAllowAny As Boolean
     Property VersionAllowNew As Boolean
     Property VersionAllowOld As Boolean = True
@@ -104,6 +105,7 @@ Public Class Package
         .Filename = "ffmpeg.exe",
         .Locations = {"Encoders\ffmpeg", "FrameServer\AviSynth"},
         .Keep = {"AviSynth.dll"},
+        .AllowCustomPath = False,
         .WebURL = "http://ffmpeg.org",
         .HelpURL = "http://www.ffmpeg.org/documentation.html",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
@@ -518,6 +520,7 @@ Public Class Package
         .Locations = {"Encoders\x264", "FrameServer\AviSynth"},
         .Description = "H.264 video encoding console app. Patman mod supports vpy input and shows the estimated size in the status line.",
         .Keep = {"AviSynth.dll"},
+        .AllowCustomPath = False,
         .WebURL = "https://github.com/DJATOM/x264-aMod",
         .DownloadURL = "https://github.com/DJATOM/x264-aMod/releases",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
@@ -529,6 +532,7 @@ Public Class Package
         .Filename = "x265.exe",
         .WebURL = "https://x265.com",
         .HelpURL = "http://x265.readthedocs.org",
+        .AllowCustomPath = False,
         .Keep = {"AviSynth.dll"},
         .HelpSwitch = "--log-level full --fullhelp",
         .Description = "H.265 video encoding console app.",
@@ -2276,8 +2280,37 @@ Public Class Package
     End Function
 
     Function IsCustomPathAllowed() As Boolean
-        Return Not Path.PathStartsWith(Folder.System)
+        Return Not Path.PathStartsWith(Folder.System) AndAlso AllowCustomPath
     End Function
+
+    Shared x265FileSize As Long
+    Shared x265TypeValue As x265Type
+
+    Shared ReadOnly Property x265Type As x265Type
+        Get
+            Dim filePath = x265.Path
+
+            If filePath <> "" Then
+                Dim size = New FileInfo(filePath).Length
+
+                If size <> x265FileSize Then
+                    Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", True)
+
+                    If output.Contains("Asuna") Then
+                        x265TypeValue = x265Type.Asuna
+                    ElseIf output.Contains("DJATOM") Then
+                        x265TypeValue = x265Type.DJATOM
+                    Else
+                        x265TypeValue = x265Type.Vanilla
+                    End If
+
+                    x265FileSize = size
+                End If
+
+                Return x265TypeValue
+            End If
+        End Get
+    End Property
 
     ReadOnly Property Directory As String
         Get
@@ -2574,8 +2607,6 @@ Public Class Package
             For Each pack In Items.Values
                 pack.LoadConf()
             Next
-
-            FrameServerHelp.AviSynthToolPath()
         End If
     End Sub
 

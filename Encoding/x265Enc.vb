@@ -333,13 +333,13 @@ Public Class x265Params
         .Text = "Pipe",
         .Name = "PipingToolAVS",
         .VisibleFunc = Function() p.Script.IsAviSynth AndAlso Decoder.Value = 0,
-        .Options = {"None", "avs2pipemod", "ffmpeg"}}
+        .Options = {"Automatic", "avs2pipemod", "ffmpeg"}}
 
     Property PipingToolVS As New OptionParam With {
         .Text = "Pipe",
         .Name = "PipingToolVS",
         .VisibleFunc = Function() p.Script.IsVapourSynth AndAlso Decoder.Value = 0,
-        .Options = {"None", "vspipe", "ffmpeg"}}
+        .Options = {"Automatic", "vspipe", "ffmpeg"}}
 
     Property chunkStart As New NumParam With {
         .Switch = "--chunk-start",
@@ -1209,7 +1209,7 @@ Public Class x265Params
                 Case "script"
                     Dim pipeString = ""
 
-                    If pipeTool = "none" AndAlso Not Package.x265.Version.ContainsAny("aMod", "Asuna") Then
+                    If pipeTool = "automatic" AndAlso Package.x265Type = x265Type.Vanilla Then
                         If p.Script.IsAviSynth Then
                             pipeTool = "avs2pipemod"
                         Else
@@ -1222,8 +1222,8 @@ Public Class x265Params
                             Dim chunk = If(isSingleChunk, "", $" -trim={startFrame},{endFrame}")
                             Dim dll = If(FrameServerHelp.IsPortable, $" -dll={Package.AviSynth.Path.Escape}", "")
                             pipeString = Package.avs2pipemod.Path.Escape + dll + chunk + " -y4mp " + script.Path.Escape + " | "
-
                             sb.Append(pipeString + Package.x265.Path.Escape)
+
                             If isSingleChunk Then
                                 If Seek.Value > 0 Then
                                     sb.Append($" --seek {Seek.Value}")
@@ -1271,10 +1271,10 @@ Public Class x265Params
                             Else
                                 sb.Append($" --seek {startFrame} --frames {endFrame - startFrame + 1}")
                             End If
-                        Case "none"
+                        Case "automatic"
                             sb.Append(pipeString + Package.x265.Path.Escape)
 
-                            If FrameServerHelp.IsPortable AndAlso Package.x265.Version.ContainsEx("aMod") Then
+                            If FrameServerHelp.IsPortable AndAlso Package.x265Type = x265Type.DJATOM Then
                                 sb.Append(" --reader-options library=" + FrameServerHelp.GetSynthPath.Escape)
                             End If
 
@@ -1388,7 +1388,7 @@ Public Class x265Params
         End If
 
         If includePaths Then
-            If Decoder.Value <> 0 OrElse pipeTool <> "none" Then
+            If Decoder.Value <> 0 OrElse pipeTool <> "automatic" Then
                 sb.Append(" --y4m")
             End If
 
@@ -1396,7 +1396,7 @@ Public Class x265Params
                 sb.Append(" --stats " + (targetPath.DirAndBase + chunkName + ".stats").Escape)
             End If
 
-            Dim input = If(Decoder.Value = 0 AndAlso pipeTool = "none", script.Path.Escape, "-")
+            Dim input = If(Decoder.Value = 0 AndAlso pipeTool = "automatic", script.Path.Escape, "-")
 
             If (Mode.Value = x265RateMode.ThreePass AndAlso pass <> 2) OrElse
                 (Mode.Value = x265RateMode.TwoPass AndAlso pass = 1) Then

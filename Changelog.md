@@ -2,6 +2,9 @@
 2.1.7.9 Beta (2021-02-??)
 =========================
 
+- x265 --version output is used in order to detect if it's aMod, Asuna or Vanilla (stax76)
+
+
 2.1.7.8 Beta (2021-02-06)
 =========================
 

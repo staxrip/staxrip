@@ -423,21 +423,23 @@ Public Class FrameServerHelp
     End Function
 
     Shared Function GetAviSynthInstallPath() As String
-        Dim ret = Registry.ClassesRoot.GetString("CLSID\{E6D6B700-124D-11D4-86F3-DB80AFD98778}\InProcServer32", Nothing)
+        Dim dll = Registry.ClassesRoot.GetString("CLSID\{E6D6B700-124D-11D4-86F3-DB80AFD98778}\InProcServer32", Nothing)
 
-        If ret = "AviSynth.dll" Then
-            ret = Folder.System + "AviSynth.dll"
+        If dll = "AviSynth.dll" Then
+            dll = Folder.System + "AviSynth.dll"
         End If
 
-        Return ret
+        If dll.FileExists Then
+            Return dll
+        End If
     End Function
 
     Shared Function GetVapourSynthInstallPath() As String
         For Each key In {Registry.CurrentUser, Registry.LocalMachine}
-            Dim dllPath = key.GetString("Software\VapourSynth", "VapourSynthDLL")
+            Dim dll = key.GetString("Software\VapourSynth", "VapourSynthDLL")
 
-            If File.Exists(dllPath) Then
-                Return dllPath
+            If dll.FileExists Then
+                Return dll
             End If
         Next
     End Function
@@ -487,7 +489,12 @@ Public Class FrameServerHelp
 
     Shared Sub MoveFiles(srcDir As String, targetDir As String, fileNames As String())
         For Each name In fileNames
-            FileHelp.Move(srcDir + name, targetDir + name)
+            Try
+                FileHelp.Move(srcDir + name, targetDir + name)
+            Catch ex As Exception
+                MsgError("Could not move file from:" + BR2 + srcDir + name + BR2 +
+                         "to:" + BR2 + targetDir + name + BR2 + ex.Message)
+            End Try
         Next
     End Sub
 

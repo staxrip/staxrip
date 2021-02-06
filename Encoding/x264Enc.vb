@@ -1084,7 +1084,7 @@ Public Class x264Params
             Dim dmx = Demuxer.ValueText
 
             If pipeTool = "none" AndAlso FrameServerHelp.IsPortable AndAlso
-                Package.x264.Version.ContainsEx("aMod") Then
+                Package.x264.Version.Contains("aMod") Then
 
                 sb.Append(" --synth-lib " + FrameServerHelp.GetSynthPath.Escape)
             End If

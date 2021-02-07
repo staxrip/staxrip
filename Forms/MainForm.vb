@@ -3831,8 +3831,6 @@ Public Class MainForm
             form.ShowDialog()
             g.SaveSettings()
         End Using
-
-        FrameServerHelp.AviSynthToolPath()
     End Sub
 
     <Command("Shows a dialog to manage video encoder profiles.")>
@@ -6218,10 +6216,12 @@ Public Class MainForm
         UpdateNextButton()
 
         If Not FrameServerHelp.IsAviSynthPortable AndAlso FrameServerHelp.GetAviSynthInstallPath = "" Then
+            MsgError($"AviSynth installation not found,{BR}using portable mode instead.")
             s.AviSynthMode = FrameServerMode.Portable
         End If
 
         If Not FrameServerHelp.IsVapourSynthPortable AndAlso FrameServerHelp.GetVapourSynthInstallPath = "" Then
+            MsgError($"VapourSynth installation not found,{BR}using portable mode instead.")
             s.VapourSynthMode = FrameServerMode.Portable
         End If
 

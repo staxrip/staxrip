@@ -482,7 +482,7 @@ Public Class FrameServerHelp
             Return True
         End If
 
-        If p.VideoEncoder.GetCommandLine(True, True).ContainsEx("ffmpeg") Then
+        If TypeOf p.VideoEncoder Is ffmpegEnc OrElse p.VideoEncoder.GetCommandLine(True, True).ContainsEx("ffmpeg") Then
             Return True
         End If
     End Function
@@ -515,13 +515,13 @@ Public Class FrameServerHelp
 
         If TypeOf p.VideoEncoder Is x264Enc Then
             If IsAviSynthPortable() Then
-                If IsAviSynthSystemInstalled() AndAlso Not Package.x264.Path.Contains("FrameServer\AviSynth") AndAlso
+                If IsAviSynthSystemInstalled() AndAlso Not Package.x264.Directory.PathEquals(Package.AviSynth.Directory) AndAlso
                     Not CommandLineContainsAvsDllPath() Then
 
                     MoveFiles(Package.x264.Directory, Package.AviSynth.Directory, {Package.x264.Filename, "x264 Help.txt"})
                 End If
             Else
-                If Package.x264.Path.Contains("FrameServer\AviSynth") Then
+                If Package.x264.Directory.PathEquals(Package.AviSynth.Directory) Then
                     Dim targetFolder = Folder.Startup + "Apps\Encoders\x264\"
                     FolderHelp.Create(targetFolder)
                     MoveFiles(Package.x264.Directory, targetFolder, {Package.x264.Filename, "x264 Help.txt"})
@@ -531,13 +531,13 @@ Public Class FrameServerHelp
 
         If TypeOf p.VideoEncoder Is x265Enc Then
             If IsAviSynthPortable() Then
-                If IsAviSynthSystemInstalled() AndAlso Not Package.x265.Path.Contains("FrameServer\AviSynth") AndAlso
+                If IsAviSynthSystemInstalled() AndAlso Not Package.x265.Directory.PathEquals(Package.AviSynth.Directory) AndAlso
                     Not CommandLineContainsAvsDllPath() Then
 
                     MoveFiles(Package.x265.Directory, Package.AviSynth.Directory, {Package.x265.Filename, "x265 Help.txt"})
                 End If
             Else
-                If Package.x265.Path.Contains("FrameServer\AviSynth") Then
+                If Package.x265.Directory.PathEquals(Package.AviSynth.Directory) Then
                     Dim targetFolder = Folder.Startup + "Apps\Encoders\x265\"
                     FolderHelp.Create(targetFolder)
                     MoveFiles(Package.x265.Directory, targetFolder, {Package.x265.Filename, "x265 Help.txt"})

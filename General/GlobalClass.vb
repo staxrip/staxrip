@@ -171,6 +171,10 @@ Public Class GlobalClass
     End Function
 
     Sub ProcessJobs()
+        For Each form In PreviewForm.Instances.ToArray
+            form.Close()
+        Next
+
         FrameServerHelp.AviSynthToolPath()
         g.StopAfterCurrentJob = False
         ProcessJobsRecursive()

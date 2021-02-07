@@ -244,6 +244,8 @@ Public Class PreviewForm
 
 #End Region
 
+    Shared Property Instances As New List(Of PreviewForm)
+
     Private FrameServer As IFrameServer
     Private Renderer As VideoRenderer
     Private StartRange As Integer = -1
@@ -257,7 +259,6 @@ Public Class PreviewForm
     Private ShowPreviewInfo As Boolean
     Private HidePreviewButtons As Boolean
 
-    Private Shared Instances As New List(Of PreviewForm)
     Private WithEvents GenericMenu As CustomMenu
 
     Sub New(script As VideoScript)

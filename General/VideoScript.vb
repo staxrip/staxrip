@@ -744,9 +744,9 @@ Public Class SourceVideoScript
     End Property
 
     Overrides Function GetScript() As String
-        Dim rotateFilter = p.Script.Filters.Where(Function(x) x.Active = True AndAlso x.Category = "Rotation")?.FirstOrDefault()
+        Dim rotationFilter = p.Script.Filters.Where(Function(x) x.Active = True AndAlso x.Category = "Rotation")?.FirstOrDefault()
         Dim ret = p.Script.Filters(0).Script
-        ret += If(rotateFilter Is Nothing, "", BR + rotateFilter.Script)
+        ret += If(rotationFilter Is Nothing, "", BR + rotationFilter.Script)
         Return ret
     End Function
 End Class

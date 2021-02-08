@@ -2370,13 +2370,12 @@ Public Class MainForm
             s.AviSynthFilterPreferences, s.VapourSynthFilterPreferences)
 
         Dim editAVS = p.Script.IsAviSynth AndAlso p.SourceFile.Ext <> "avs"
-        Dim editVS = p.Script.Engine = ScriptEngine.VapourSynth AndAlso p.SourceFile.Ext <> "vpy"
+        Dim editVS = p.Script.IsVapourSynth AndAlso p.SourceFile.Ext <> "vpy"
 
-        If p.AutoRotation Then
+        If p.AutoRotation AndAlso (editAVS OrElse editVS) Then
             Dim rot = MediaInfo.GetVideo(p.SourceFile, "Rotation").ToDouble
 
             If rot <> 0 Then
-                Dim defaults = If(editAVS, FilterCategory.GetAviSynthDefaults(), FilterCategory.GetVapourSynthDefaults())
                 Dim name As String
 
                 Select Case rot
@@ -2390,16 +2389,10 @@ Public Class MainForm
                 End Select
 
                 If name <> "" Then
-                    Dim category = "Rotation"
+                    Dim filter = VideoFilter.GetDefault("Rotation", name, p.Script.Engine)
 
-                    Dim cat = defaults.Where(Function(i) i.Name = category).FirstOrDefault()
-
-                    If Not cat Is Nothing Then
-                        Dim fil = cat.Filters.Where(Function(i) i.Name = name).FirstOrDefault()
-
-                        If Not fil Is Nothing Then
-                            p.Script.SetFilter(category, fil.Name, fil.Script)
-                        End If
+                    If Not filter Is Nothing Then
+                        p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
                     End If
                 End If
             End If
@@ -2414,12 +2407,12 @@ Public Class MainForm
 
         If editAVS Then
             If Not sourceFilter.Script.Contains("(") Then
-                Dim filter = FilterCategory.GetAviSynthDefaults.Where(Function(cat) cat.Name = "Source").First.Filters.Where(Function(cat) cat.Name = "FFVideoSource").First
+                Dim filter = VideoFilter.GetDefault("Source", "FFVideoSource")
                 p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
             End If
         ElseIf editVS Then
             If Not sourceFilter.Script.Contains("(") Then
-                Dim filter = FilterCategory.GetVapourSynthDefaults.Where(Function(cat) cat.Name = "Source").First.Filters.Where(Function(cat) cat.Name = "ffms2").First
+                Dim filter = VideoFilter.GetDefault("Source", "ffms2", ScriptEngine.VapourSynth)
                 p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
             End If
         End If

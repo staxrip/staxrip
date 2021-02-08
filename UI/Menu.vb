@@ -15,6 +15,9 @@ Namespace UI
         <NonSerialized()>
         Public CustomMenu As CustomMenu
 
+        <NonSerialized()>
+        Public MenuItem As MenuItemEx
+
         Overridable Property Text As String
 
         Property SubItems As New List(Of CustomMenuItem)
@@ -234,7 +237,7 @@ Namespace UI
 
         Sub OnKeyDown(sender As Object, e As KeyEventArgs)
             For Each i As CustomMenuItem In Items
-                If i.KeyData = e.KeyData Then
+                If i.KeyData = e.KeyData AndAlso i.MenuItem.Enabled Then
                     OnCommand(i)
                     Exit For
                 End If
@@ -299,6 +302,7 @@ Namespace UI
 
                     tsi = mi
                     mi.CustomMenuItem = cmi
+                    cmi.MenuItem = mi
 
                     Dim keys = KeysHelp.GetKeyString(cmi.KeyData)
 
@@ -531,6 +535,11 @@ Namespace UI
             EnabledFunc = Nothing
             VisibleFunc = Nothing
             Form = Nothing
+
+            If Not CustomMenuItem Is Nothing Then
+                CustomMenuItem.MenuItem = Nothing
+            End If
+
             CustomMenuItem = Nothing
         End Sub
 

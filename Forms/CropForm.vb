@@ -608,7 +608,11 @@ Public Class CropForm
         script.Engine = p.Script.Engine
         script.Path = p.TempDir + p.TargetFile.Base + "_crop." + script.FileType
         script.Filters.Add(p.Script.GetFilter("Source").GetCopy())
-        If Not p.Script.GetFilter("Rotation") Is Nothing Then script.Filters.Add(p.Script.GetFilter("Rotation").GetCopy())
+
+        If Not p.Script.GetFilter("Rotation") Is Nothing Then
+            script.Filters.Add(p.Script.GetFilter("Rotation").GetCopy())
+        End If
+
         script.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
 
         FrameServer = FrameServerFactory.Create(script.Path)

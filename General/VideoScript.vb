@@ -801,8 +801,13 @@ Public Class VideoFilter
         Return Path.CompareTo(other.Path)
     End Function
 
-    Shared Function GetDefault(category As String, name As String) As VideoFilter
-        Return FilterCategory.GetAviSynthDefaults.First(Function(val) val.Name = category).Filters.First(Function(val) val.Name = name)
+    Shared Function GetDefault(
+        category As String, name As String,
+        Optional scriptEngine As ScriptEngine = ScriptEngine.AviSynth) As VideoFilter
+
+        Dim defaults = If(scriptEngine = ScriptEngine.AviSynth,
+            FilterCategory.GetAviSynthDefaults(), FilterCategory.GetVapourSynthDefaults())
+        Return defaults.Where(Function(i) i.Name = category).FirstOrDefault()?.Filters.Where(Function(i) i.Name = name).FirstOrDefault()
     End Function
 End Class
 
@@ -844,9 +849,13 @@ Public Class FilterCategory
             Dim filters As VideoFilter() = Nothing
 
             If engine = ScriptEngine.AviSynth Then
-                If Not i.AvsFiltersFunc Is Nothing Then filters = i.AvsFiltersFunc.Invoke
+                If Not i.AvsFiltersFunc Is Nothing Then
+                    filters = i.AvsFiltersFunc.Invoke
+                End If
             Else
-                If Not i.VSFiltersFunc Is Nothing Then filters = i.VSFiltersFunc.Invoke
+                If Not i.VSFiltersFunc Is Nothing Then
+                    filters = i.VSFiltersFunc.Invoke
+                End If
             End If
 
             If Not filters Is Nothing Then

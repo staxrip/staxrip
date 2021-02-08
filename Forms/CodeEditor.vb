@@ -425,17 +425,20 @@ Public Class CodeEditor
             cmsMain.Items.Insert(0, i)
         Next
 
+        EnableMenuItems()
+
+        PopulateDynamicMenu(DynamicMenuItemID.FilterCategory, ActiveTable.cbActive.Text)
+    End Sub
+
+    Sub EnableMenuItems()
         CustomMenu.EnableMenuItemByActionName(NameOf(ShowVideoPreview), p.SourceFile <> "")
         CustomMenu.EnableMenuItemByActionName(NameOf(PlayWithMpvnet), p.SourceFile <> "")
         CustomMenu.EnableMenuItemByActionName(NameOf(ShowInfo), p.SourceFile <> "")
         CustomMenu.EnableMenuItemByActionName(NameOf(ShowAdvancedInfo), p.SourceFile <> "")
         CustomMenu.EnableMenuItemByActionName(NameOf(JoinFilters), MainFlowLayoutPanel.Controls.Count > 1)
-
         CustomMenu.EnableMenuItemByActionName(NameOf(Cut), ActiveTable.rtbScript.SelectionLength > 0 AndAlso Not ActiveTable.rtbScript.ReadOnly)
         CustomMenu.EnableMenuItemByActionName(NameOf(Copy), ActiveTable.rtbScript.SelectionLength > 0)
         CustomMenu.EnableMenuItemByActionName(NameOf(Paste), Clipboard.GetText <> "" AndAlso Not ActiveTable.rtbScript.ReadOnly)
-
-        PopulateDynamicMenu(DynamicMenuItemID.FilterCategory, ActiveTable.cbActive.Text)
     End Sub
 
     Public Class FilterTable
@@ -487,7 +490,11 @@ Public Class CodeEditor
             AddHandler cbActive.CheckedChanged, Sub() SetColor()
 
             AddHandler rtbScript.MouseDown, Sub() rtbScript.Focus()
-            AddHandler rtbScript.Enter, Sub() Editor.ActiveTable = Me
+            AddHandler rtbScript.Enter, Sub()
+                                            Editor.ActiveTable = Me
+                                            Editor.EnableMenuItems()
+                                        End Sub
+
             AddHandler rtbScript.TextChanged, a
 
             ColumnCount = 2

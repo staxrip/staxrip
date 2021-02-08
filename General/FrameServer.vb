@@ -85,6 +85,10 @@ Public Structure ServerInfo
     Public ColorSpace As ColorSpace
 
     Function GetInfoText(position As Integer) As String
+        If FrameRateDen = 0 Then
+            Return ""
+        End If
+
         Dim rate = FrameRateNum / FrameRateDen
 
         Dim lengthtDate = Date.Today.AddSeconds(FrameCount / rate)

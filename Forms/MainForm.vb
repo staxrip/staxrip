@@ -2886,8 +2886,8 @@ Public Class MainForm
                     Continue For
                 End If
 
-                If ap.AudioCodec = AudioCodec.AC3 AndAlso Not {192, 224, 384, 448, 640}.Contains(CInt(ap.Bitrate)) Then
-                    If ProcessTip("The AC3 bitrate is not specification compliant.") Then
+                If ap.AudioCodec = AudioCodec.AC3 AndAlso CInt(ap.Bitrate) Mod 32 <> 0 Then
+                    If ProcessTip($"The AC3 bitrate {CInt(ap.Bitrate)} is not specification compliant.") Then
                         Highlight(GetAudioTextBox(ap))
                         gbAssistant.Text = "Invalid Audio Bitrate"
                         Return False
@@ -4802,8 +4802,7 @@ Public Class MainForm
         ret.Add("Apps|Media Info|MediaInfo File", NameOf(g.DefaultCommands.ShowMediaInfo))
         ret.Add("Apps|Media Info|MediaInfo Folder", NameOf(g.DefaultCommands.ShowMediaInfoFolderViewDialog))
         ret.Add("Apps|Players|mpv.net", NameOf(g.DefaultCommands.StartTool), {"mpv.net"})
-        ret.Add("Apps|Players|MPC-BE", NameOf(g.DefaultCommands.StartTool), {"MPC-BE"})
-        ret.Add("Apps|Players|MPC-HC", NameOf(g.DefaultCommands.StartTool), {"MPC-HC"})
+        ret.Add("Apps|Players|MPC", NameOf(g.DefaultCommands.StartTool), {"MPC"})
         ret.Add("Apps|Indexing|D2V Witch", NameOf(g.DefaultCommands.StartTool), {"D2V Witch"})
         ret.Add("Apps|Indexing|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
         ret.Add("Apps|Thumbnails|MTN Thumbnailer", NameOf(g.DefaultCommands.SaveMTN))

@@ -107,13 +107,19 @@ Public MustInherit Class AudioProfile
 
     Property DisplayName As String
         Get
-            Dim ret = ""
+            Dim ret As String
 
             If Stream Is Nothing Then
                 Dim streams = MediaInfo.GetAudioStreams(File)
 
                 If streams.Count > 0 Then
-                    ret = GetAudioText(streams(0), File)
+                    Dim firstStream = streams(0)
+
+                    If firstStream.Bitrate = 0 AndAlso firstStream.Bitrate2 = 0 Then
+                        firstStream.Bitrate = CInt(Bitrate)
+                    End If
+
+                    ret = GetAudioText(firstStream, File)
                 Else
                     ret = File.FileName
                 End If
@@ -574,7 +580,13 @@ Public Class MuxAudioProfile
 
     Sub SetBitrate()
         If Stream Is Nothing Then
-            Bitrate = Calc.GetBitrateFromFile(File, p.SourceSeconds)
+            Dim temp = CInt(MediaInfo.GetAudio(File, "BitRate").ToInt / 1000)
+
+            If temp > 0 Then
+                Bitrate = temp
+            Else
+                Bitrate = Calc.GetBitrateFromFile(File, p.SourceSeconds)
+            End If
         Else
             Bitrate = Stream.Bitrate + Stream.Bitrate2
         End If

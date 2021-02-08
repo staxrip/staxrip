@@ -129,7 +129,10 @@ Public Class Calc
 
     Shared Function GetBitrateFromFile(path As String, seconds As Integer) As Double
         Try
-            If path = "" OrElse seconds = 0 Then Return 0
+            If path = "" OrElse seconds = 0 Then
+                Return 0
+            End If
+
             Dim kBits = New FileInfo(path).Length * 8 / 1000
             Return kBits / seconds
         Catch ex As Exception
@@ -1046,7 +1049,9 @@ Public Class AudioStream
                 End If
             End If
 
-            If BitDepth > 0 AndAlso Not Lossy Then ret += " " & BitDepth & "Bit"
+            If BitDepth > 0 AndAlso Not Lossy Then
+                ret += " " & BitDepth & "Bit"
+            End If
 
             If SamplingRate > 0 Then
                 If SamplingRate Mod 1000 = 0 Then

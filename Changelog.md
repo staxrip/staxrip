@@ -1,8 +1,12 @@
 
-2.1.7.9 Beta (2021-02-??)
+2.1.8.1 Beta (2021-02-??)
+=========================
+
+2.1.7.9 Beta (2021-02-08)
 =========================
 
 - x265 --version output is used in order to detect if it's aMod, Asuna or Vanilla (stax76)
+- Menu in the code editor can be customized and is much faster (stax76, [#494](/../../issues/494))
 
 
 2.1.7.8 Beta (2021-02-06)

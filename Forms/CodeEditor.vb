@@ -227,6 +227,7 @@ Public Class CodeEditor
 
     Protected Overrides Sub OnShown(e As EventArgs)
         MyBase.OnShown(e)
+        DirectCast(MainFlowLayoutPanel.Controls(0), FilterTable).rtbScript.Focus()
         Refresh()
         PopulateDynamicMenu(DynamicMenuItemID.AddFilters)
         PopulateDynamicMenu(DynamicMenuItemID.InsertFilters)

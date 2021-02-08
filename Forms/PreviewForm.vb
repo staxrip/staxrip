@@ -632,7 +632,7 @@ Public Class PreviewForm
         Next
 
         p.Ranges.Sort()
-
+        MergeRanges()
         AfterPositionChanged()
     End Sub
 
@@ -1006,6 +1006,9 @@ Public Class PreviewForm
             VideoSize = New Size(CInt(info.Width), CInt(info.Height))
         End If
 
+        p.CutFrameCount = info.FrameCount
+        p.CutFrameRate = FrameServer.FrameRate
+
         Dim workingArea = Screen.FromControl(Me).WorkingArea
         Dim initHeight = CInt((workingArea.Height / 100) * s.PreviewSize)
 
@@ -1076,8 +1079,6 @@ Public Class PreviewForm
         s.ShowPreviewInfo = ShowPreviewInfo
         s.HidePreviewButtons = HidePreviewButtons
         s.LastPosition = Renderer.Position
-        p.CutFrameCount = FrameServer.Info.FrameCount
-        p.CutFrameRate = FrameServer.FrameRate
         g.MainForm.UpdateFilters()
         Renderer.Dispose()
         FrameServer.Dispose()

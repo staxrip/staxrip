@@ -2919,7 +2919,7 @@ Public Class MainForm
                     Continue For
                 End If
 
-                If ap.AudioCodec = AudioCodec.AC3 AndAlso CInt(ap.Bitrate) Mod 32 <> 0 Then
+                If ap.AudioCodec = AudioCodec.AC3 AndAlso CInt(ap.Bitrate) Mod If(CInt(ap.Bitrate) > 256, 64, 32) <> 0 Then
                     If ProcessTip($"The AC3 bitrate {CInt(ap.Bitrate)} is not specification compliant.") Then
                         Highlight(GetAudioTextBox(ap))
                         gbAssistant.Text = "Invalid Audio Bitrate"

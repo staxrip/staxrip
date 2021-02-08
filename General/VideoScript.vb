@@ -944,11 +944,11 @@ Public Class FilterCategory
         restoration.Filters.Add(New VideoFilter(restoration.Name, "RCR | ColorBanding", "$select:GradFun3|GradFun3();f3kdb|f3kdb()$"))
         ret.Add(restoration)
 
-        Dim rotate As New FilterCategory("Rotation")
-        rotate.Filters.Add(New VideoFilter(rotate.Name, "Left", $"TurnLeft()"))
-        rotate.Filters.Add(New VideoFilter(rotate.Name, "Right", $"TurnRight()"))
-        rotate.Filters.Add(New VideoFilter(rotate.Name, "Upside Down", $"Turn180()"))
-        ret.Add(rotate)
+        Dim rotation As New FilterCategory("Rotation")
+        rotation.Filters.Add(New VideoFilter(rotation.Name, "Left", $"TurnLeft()"))
+        rotation.Filters.Add(New VideoFilter(rotation.Name, "Right", $"TurnRight()"))
+        rotation.Filters.Add(New VideoFilter(rotation.Name, "Upside Down", $"Turn180()"))
+        ret.Add(rotation)
 
         FilterCategory.AddDefaults(ScriptEngine.AviSynth, ret)
 
@@ -1053,11 +1053,11 @@ Public Class FilterCategory
         restoration.Filters.Add(New VideoFilter(restoration.Name, "RCR | CNR2", "clip = core.cnr2.Cnr2(clip)"))
         ret.Add(restoration)
 
-        Dim rotate As New FilterCategory("Rotation")
-        rotate.Filters.Add(New VideoFilter(rotate.Name, "Left", $"clip = core.std.FlipHorizontal(clip){BR}clip = core.std.Transpose(clip)"))
-        rotate.Filters.Add(New VideoFilter(rotate.Name, "Right", $"clip = core.std.FlipVertical(clip){BR}clip = core.std.Transpose(clip)"))
-        rotate.Filters.Add(New VideoFilter(rotate.Name, "Upside Down", $"clip = core.std.Turn180(clip)"))
-        ret.Add(rotate)
+        Dim rotation As New FilterCategory("Rotation")
+        rotation.Filters.Add(New VideoFilter(rotation.Name, "Left", $"clip = core.std.FlipHorizontal(clip){BR}clip = core.std.Transpose(clip)"))
+        rotation.Filters.Add(New VideoFilter(rotation.Name, "Right", $"clip = core.std.FlipVertical(clip){BR}clip = core.std.Transpose(clip)"))
+        rotation.Filters.Add(New VideoFilter(rotation.Name, "Upside Down", $"clip = core.std.Turn180(clip)"))
+        ret.Add(rotation)
 
         FilterCategory.AddDefaults(ScriptEngine.VapourSynth, ret)
 

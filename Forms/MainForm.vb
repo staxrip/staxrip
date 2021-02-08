@@ -2369,15 +2369,38 @@ Public Class MainForm
         Dim preferences = If(p.Script.IsAviSynth,
             s.AviSynthFilterPreferences, s.VapourSynthFilterPreferences)
 
+        Dim editAVS = p.Script.IsAviSynth AndAlso p.SourceFile.Ext <> "avs"
+        Dim editVS = p.Script.Engine = ScriptEngine.VapourSynth AndAlso p.SourceFile.Ext <> "vpy"
+
+        If p.AutoRotation Then
+            Dim rotationString = MediaInfo.GetVideo(p.SourceFile, "Rotation")
+            Dim rotation = 0D
+            Dim category = "Rotation"
+
+            If Decimal.TryParse(rotationString, NumberStyles.Number, CultureInfo.InvariantCulture, rotation) Then
+                Dim defaults = If(editAVS, FilterCategory.GetAviSynthDefaults(), FilterCategory.GetVapourSynthDefaults())
+
+                Select Case rotation
+                    Case 90     'Left
+                        Dim filter = defaults.Where(Function(cat) cat.Name = category).First().Filters.Where(Function(fil) fil.Name = "Right").First()
+                        p.Script.SetFilter(category, filter.Name, filter.Script)
+                    Case 180    'Upside Down
+                        Dim filter = defaults.Where(Function(cat) cat.Name = category).First().Filters.Where(Function(fil) fil.Name = "Upside Down").First()
+                        p.Script.SetFilter(category, filter.Name, filter.Script)
+                    Case 270    'Right
+                        Dim filter = defaults.Where(Function(cat) cat.Name = category).First().Filters.Where(Function(fil) fil.Name = "Left").First()
+                        p.Script.SetFilter(category, filter.Name, filter.Script)
+                    Case Else
+                End Select
+            End If
+        End If
+
         Dim sourceFilter = p.Script.GetFilter("Source")
 
         SetSourceFilter(sourceFilter, preferences, profiles, True, True, False, False)
         SetSourceFilter(sourceFilter, preferences, profiles, False, True, True, False)
         SetSourceFilter(sourceFilter, preferences, profiles, True, False, False, True)
         SetSourceFilter(sourceFilter, preferences, profiles, False, False, False, False)
-
-        Dim editAVS = p.Script.IsAviSynth AndAlso p.SourceFile.Ext <> "avs"
-        Dim editVS = p.Script.Engine = ScriptEngine.VapourSynth AndAlso p.SourceFile.Ext <> "vpy"
 
         If editAVS Then
             If Not sourceFilter.Script.Contains("(") Then
@@ -4394,6 +4417,11 @@ Public Class MainForm
             b.Text = "Import VUI metadata"
             b.Help = "Imports VUI metadata such as HDR from the source file to the video encoder."
             b.Field = NameOf(p.ImportVUIMetadata)
+
+            b = ui.AddBool
+            b.Text = "Auto-rotate video after loading when possible"
+            b.Help = "Auto-rotate video after loading when the source file/container supports it."
+            b.Field = NameOf(p.AutoRotation)
 
             Dim subPage = ui.CreateFlowPage("Subtitles", True)
 

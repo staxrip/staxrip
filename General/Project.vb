@@ -19,6 +19,7 @@ Public Class Project
     Public AutoCompCheck As Boolean
     Public AutoCorrectCropValues As Boolean = True
     Public AutoResizeImage As Integer
+    Public AutoRotation As Boolean = True
     Public AutoSmartCrop As Boolean
     Public AutoSmartOvercrop As Double
     Public BatchMode As Boolean

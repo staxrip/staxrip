@@ -160,7 +160,7 @@ Public Class CropForm
     Sub New()
         InitializeComponent()
 
-        MinimumSize = New Size(CInt(Font.Size * 90), CInt(Font.Size * 70))
+        MinimumSize = New Size(CInt(Font.Size * 60), CInt(Font.Size * 60))
 
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)
@@ -596,8 +596,8 @@ Public Class CropForm
         Dim zoom = 0.0
         Dim workingArea = Screen.FromControl(Me).WorkingArea
 
-        While p.SourceWidth * zoom < 0.7 * workingArea.Width AndAlso
-            p.SourceHeight * zoom < 0.7 * workingArea.Height
+        While p.SourceWidth * zoom < 0.77 * workingArea.Width AndAlso
+            p.SourceHeight * zoom < 0.77 * workingArea.Height
 
             zoom += 0.01
         End While
@@ -607,7 +607,8 @@ Public Class CropForm
         Dim script As New VideoScript
         script.Engine = p.Script.Engine
         script.Path = p.TempDir + p.TargetFile.Base + "_crop." + script.FileType
-        script.Filters.Add(p.Script.GetFilter("Source").GetCopy)
+        script.Filters.Add(p.Script.GetFilter("Source").GetCopy())
+        If Not p.Script.GetFilter("Rotation") Is Nothing Then script.Filters.Add(p.Script.GetFilter("Rotation").GetCopy())
         script.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
 
         FrameServer = FrameServerFactory.Create(script.Path)

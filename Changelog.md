@@ -3,6 +3,9 @@
 =========================
 
 - Audio source file bitrate detection fix (stax76)
+- New VideoFilter "ChangeFPS" for AviSynth (Dendraspis, 44vince44, [#499](/../../issues/499))
+- New VideoFilter "Rotation" (Dendraspis)
+- Auto-Rotation feature for supported source files/container (Dendraspis,  [#390](/../../issues/390))
 
 
 2.1.7.9 Beta (2021-02-08)

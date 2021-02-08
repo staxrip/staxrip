@@ -2373,25 +2373,35 @@ Public Class MainForm
         Dim editVS = p.Script.Engine = ScriptEngine.VapourSynth AndAlso p.SourceFile.Ext <> "vpy"
 
         If p.AutoRotation Then
-            Dim rotationString = MediaInfo.GetVideo(p.SourceFile, "Rotation")
-            Dim rotation = 0D
-            Dim category = "Rotation"
+            Dim rot = MediaInfo.GetVideo(p.SourceFile, "Rotation").ToDouble
 
-            If Decimal.TryParse(rotationString, NumberStyles.Number, CultureInfo.InvariantCulture, rotation) Then
+            If rot <> 0 Then
                 Dim defaults = If(editAVS, FilterCategory.GetAviSynthDefaults(), FilterCategory.GetVapourSynthDefaults())
+                Dim name As String
 
-                Select Case rotation
-                    Case 90     'Left
-                        Dim filter = defaults.Where(Function(cat) cat.Name = category).First().Filters.Where(Function(fil) fil.Name = "Right").First()
-                        p.Script.SetFilter(category, filter.Name, filter.Script)
-                    Case 180    'Upside Down
-                        Dim filter = defaults.Where(Function(cat) cat.Name = category).First().Filters.Where(Function(fil) fil.Name = "Upside Down").First()
-                        p.Script.SetFilter(category, filter.Name, filter.Script)
-                    Case 270    'Right
-                        Dim filter = defaults.Where(Function(cat) cat.Name = category).First().Filters.Where(Function(fil) fil.Name = "Left").First()
-                        p.Script.SetFilter(category, filter.Name, filter.Script)
+                Select Case rot
+                    Case 90
+                        name = "Right"
+                    Case 180
+                        name = "Upside Down"
+                    Case 270
+                        name = "Left"
                     Case Else
                 End Select
+
+                If name <> "" Then
+                    Dim category = "Rotation"
+
+                    Dim cat = defaults.Where(Function(i) i.Name = category).FirstOrDefault()
+
+                    If Not cat Is Nothing Then
+                        Dim fil = cat.Filters.Where(Function(i) i.Name = name).FirstOrDefault()
+
+                        If Not fil Is Nothing Then
+                            p.Script.SetFilter(category, fil.Name, fil.Script)
+                        End If
+                    End If
+                End If
             End If
         End If
 

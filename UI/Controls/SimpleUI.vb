@@ -1036,11 +1036,11 @@ Public Class SimpleUI
             TextCustomMenu.GetMenu(menu, Button, Nothing, AddressOf MenuClick)
         End Sub
 
-        Function AddMenu(menuText As String, menuValue As String) As ActionMenuItem
+        Function AddMenu(menuText As String, menuValue As String) As MenuItemEx
             Return AddMenu(menuText, Function() menuValue)
         End Function
 
-        Function AddMenu(menuText As String, menuFunc As Func(Of String)) As ActionMenuItem
+        Function AddMenu(menuText As String, menuFunc As Func(Of String)) As MenuItemEx
             Dim action = Sub()
                              Dim v = menuFunc.Invoke
 
@@ -1052,8 +1052,8 @@ Public Class SimpleUI
             Return AddMenu(menuText, action)
         End Function
 
-        Function AddMenu(menuText As String, menuAction As Action) As ActionMenuItem
-            Return ActionMenuItem.Add(Button.ContextMenuStrip.Items, menuText, menuAction)
+        Function AddMenu(menuText As String, menuAction As Action) As MenuItemEx
+            Return MenuItemEx.Add(Button.ContextMenuStrip.Items, menuText, menuAction)
         End Function
     End Class
 

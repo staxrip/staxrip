@@ -1413,7 +1413,7 @@ Public Class MainForm
                                 name = "..." + name.Remove(0, name.Length - 70)
                             End If
 
-                            mi.DropDownItems.Add(New ActionMenuItem(name, Sub() LoadProject(recentProj)))
+                            mi.DropDownItems.Add(New MenuItemEx(name, Sub() LoadProject(recentProj)))
                         End If
                     Next
                 End SyncLock
@@ -1448,7 +1448,7 @@ Public Class MainForm
                     iMenuItem.DropDownItems.ClearAndDisplose
 
                     For Each pack In Package.Items.Values
-                        ActionMenuItem.Add(iMenuItem.DropDownItems, pack.Name.Substring(0, 1).Upper + " | " + pack.Name, Sub() pack.ShowHelp())
+                        MenuItemEx.Add(iMenuItem.DropDownItems, pack.Name.Substring(0, 1).Upper + " | " + pack.ID, Sub() pack.ShowHelp())
                     Next
                 End If
             End If
@@ -1478,14 +1478,14 @@ Public Class MainForm
 
                     For Each path In files
                         If Not events.Contains(path.FileName.Left(".")) AndAlso Not path.FileName.StartsWith("_") Then
-                            ActionMenuItem.Add(menuItem.DropDownItems,
+                            MenuItemEx.Add(menuItem.DropDownItems,
                                                path.FileName.Base,
                                                Sub() g.DefaultCommands.ExecuteScriptFile(path))
                         End If
                     Next
 
                     menuItem.DropDownItems.Add(New ToolStripSeparator)
-                    ActionMenuItem.Add(menuItem.DropDownItems, "Open Script Folder", Sub() g.ShellExecute(Folder.Scripts))
+                    MenuItemEx.Add(menuItem.DropDownItems, "Open Script Folder", Sub() g.ShellExecute(Folder.Scripts))
                 End If
             End If
         Next
@@ -1513,7 +1513,7 @@ Public Class MainForm
                 i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.TemplateProjects) Then
 
                 i.DropDownItems.ClearAndDisplose
-                Dim items As New List(Of ActionMenuItem)
+                Dim items As New List(Of MenuItemEx)
 
                 For Each i2 In files
                     Dim base = i2.Base
@@ -1526,12 +1526,12 @@ Public Class MainForm
                         base = "Backup | " + base
                     End If
 
-                    ActionMenuItem.Add(i.DropDownItems, base, AddressOf LoadProject, i2, Nothing)
+                    MenuItemEx.Add(i.DropDownItems, base, AddressOf LoadProject, i2, Nothing)
                 Next
 
                 i.DropDownItems.Add("-")
-                ActionMenuItem.Add(i.DropDownItems, "Explore", Sub() g.ShellExecute(Folder.Template), "Opens the directory containing the templates.")
-                ActionMenuItem.Add(i.DropDownItems, "Restore", AddressOf ResetTemplates, "Restores the default templates.")
+                MenuItemEx.Add(i.DropDownItems, "Explore", Sub() g.ShellExecute(Folder.Template), "Opens the directory containing the templates.")
+                MenuItemEx.Add(i.DropDownItems, "Restore", AddressOf ResetTemplates, "Restores the default templates.")
 
                 Exit For
             End If
@@ -3875,12 +3875,8 @@ Public Class MainForm
         End If
     End Function
 
-    <Command("Placeholder for dynamically updated menu items.")>
-    Sub DynamicMenuItem(<DispName("ID")> id As DynamicMenuItemID)
-    End Sub
-
     Sub PopulateProfileMenu(id As DynamicMenuItemID)
-        For Each i In CustomMainMenu.MenuItems.OfType(Of MenuItemEx)()
+        For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
                 i.CustomMenuItem.Parameters(0).Equals(id) Then
 
@@ -4142,12 +4138,12 @@ Public Class MainForm
 
     <Command("Dialog to edit filters.")>
     Sub ShowFiltersEditor()
-        FiltersListView.ShowEditor()
+        FiltersListView.ShowCodeEditor()
     End Sub
 
     <Command("Dialog to preview script code.")>
     Sub ShowCodePreview()
-        g.CodePreview(p.Script.GetFullScript)
+        g.ShowCodePreview(p.Script.GetFullScript)
     End Sub
 
     <Command("Dialog to configure project options.")>
@@ -4658,42 +4654,7 @@ Public Class MainForm
         End Using
     End Sub
 
-    Function GetFilterProfilesText(categories As List(Of FilterCategory)) As String
-        Dim ret = ""
-        Dim wasMultiline As Boolean
-
-        For Each i In categories
-            ret += "[" + i.Name + "]" + BR
-
-            For Each filter In i.Filters
-                If filter.Script.Contains(BR) Then
-                    Dim lines = filter.Script.SplitLinesNoEmpty
-
-                    For x = 0 To lines.Length - 1
-                        lines(x) = "    " + lines(x)
-                    Next
-
-                    ret += BR + filter.Path + " =" + BR + lines.Join(BR) + BR
-                    wasMultiline = True
-                Else
-                    If wasMultiline Then
-                        ret += BR
-                    End If
-
-                    ret += filter.Path + " = " + filter.Script + BR
-                    wasMultiline = False
-                End If
-            Next
-
-            If Not ret.EndsWith(BR2) Then
-                ret += BR
-            End If
-        Next
-
-        Return ret
-    End Function
-
-    <Command("Dialog to configure AviSynth filter profiles.")>
+    <Command("Dialog to configure filter profiles.")>
     Sub ShowFilterProfilesDialog()
         Dim filterProfiles = If(p.Script.IsAviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
         Dim getDefaults = If(p.Script.IsAviSynth, Function() FilterCategory.GetAviSynthDefaults, Function() FilterCategory.GetVapourSynthDefaults)
@@ -4701,17 +4662,17 @@ Public Class MainForm
         Using dialog As New MacroEditorDialog
             dialog.SetScriptDefaults()
             dialog.Text = "Filter Profiles"
-            dialog.MacroEditorControl.Value = GetFilterProfilesText(filterProfiles)
+            dialog.MacroEditorControl.Value = g.GetFilterProfilesText(filterProfiles)
             dialog.bnContext.Text = " Restore Defaults... "
             dialog.bnContext.Visible = True
-            dialog.MacroEditorControl.rtbDefaults.Text = GetFilterProfilesText(getDefaults())
+            dialog.MacroEditorControl.rtbDefaults.Text = g.GetFilterProfilesText(getDefaults())
             dialog.bnContext.AddClickAction(Sub()
                                                 If MsgOK("Restore defaults?") Then
-                                                    dialog.MacroEditorControl.Value = GetFilterProfilesText(getDefaults())
+                                                    dialog.MacroEditorControl.Value = g.GetFilterProfilesText(getDefaults())
                                                 End If
                                             End Sub)
 
-            If dialog.ShowDialog(Me) = DialogResult.OK Then
+            If dialog.ShowDialog() = DialogResult.OK Then
                 filterProfiles.Clear()
                 Dim cat As FilterCategory
                 Dim filter As VideoFilter
@@ -4770,7 +4731,7 @@ Public Class MainForm
                 Next
 
                 g.SaveSettings()
-                FiltersListView.RebuildMenu()
+                g.MainForm.FiltersListView.RebuildMenu()
             End If
         End Using
     End Sub
@@ -4785,8 +4746,8 @@ Public Class MainForm
         ret.Add("File|Save Project As...", NameOf(SaveProjectAs))
         ret.Add("File|Save Project As Template...", NameOf(SaveProjectAsTemplate))
         ret.Add("File|-")
-        ret.Add("File|Project Templates", NameOf(DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
-        ret.Add("File|Recent Projects", NameOf(DynamicMenuItem), {DynamicMenuItemID.RecentProjects})
+        ret.Add("File|Project Templates", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
+        ret.Add("File|Recent Projects", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.RecentProjects})
 
         ret.Add("Crop", NameOf(ShowCropDialog), Keys.F4)
         ret.Add("Preview", NameOf(ShowPreview), Keys.F5)
@@ -4809,7 +4770,7 @@ Public Class MainForm
         ret.Add("Tools|Folders|Temp", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%temp_dir%"""})
         ret.Add("Tools|Folders|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%working_dir%"""})
 
-        ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
+        ret.Add("Tools|Scripts", NameOf(g.DefaultCommands.DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
 
         ret.Add("Tools|Advanced", Symbol.More)
 
@@ -4856,7 +4817,7 @@ Public Class MainForm
 
         ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.F1, Symbol.Help, {"http://staxrip.readthedocs.io"})
         ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Globe, {"https://github.com/staxrip/staxrip"})
-        ret.Add("Help|Apps", NameOf(DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
+        ret.Add("Help|Apps", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
         ret.Add("Help|Check for Updates", NameOf(g.DefaultCommands.CheckForUpdate))
         ret.Add("Help|-")
         ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})
@@ -5790,7 +5751,7 @@ Public Class MainForm
     End Sub
 
     Sub AviSynthListView_DoubleClick() Handles FiltersListView.DoubleClick
-        FiltersListView.ShowEditor()
+        FiltersListView.ShowCodeEditor()
     End Sub
 
     Sub gbFilters_MenuClick() Handles lgbFilters.LinkClick
@@ -5833,28 +5794,28 @@ Public Class MainForm
     Sub blSourceParText_Click(sender As Object, e As EventArgs) Handles blSourceParText.Click
         Dim menu = TextCustomMenu.GetMenu(s.ParMenu, blSourceParText, components, AddressOf SourceParMenuClick)
         menu.Add("-")
-        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.ParMenu = TextCustomMenu.EditMenu(s.ParMenu, ApplicationSettings.GetParMenu, Me)))
+        menu.Items.Add(New MenuItemEx("Edit Menu...", Sub() s.ParMenu = TextCustomMenu.EditMenu(s.ParMenu, ApplicationSettings.GetParMenu, Me)))
         menu.Show(blSourceParText, 0, blSourceParText.Height)
     End Sub
 
     Sub blSourceDarText_Click(sender As Object, e As EventArgs) Handles blSourceDarText.Click
         Dim menu = TextCustomMenu.GetMenu(s.DarMenu, blSourceDarText, components, AddressOf SourceDarMenuClick)
         menu.Add("-")
-        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.DarMenu = TextCustomMenu.EditMenu(s.DarMenu, ApplicationSettings.GetDarMenu, Me)))
+        menu.Items.Add(New MenuItemEx("Edit Menu...", Sub() s.DarMenu = TextCustomMenu.EditMenu(s.DarMenu, ApplicationSettings.GetDarMenu, Me)))
         menu.Show(blSourceDarText, 0, blSourceDarText.Height)
     End Sub
 
     Sub blTargetDarText_Click(sender As Object, e As EventArgs) Handles blTargetDarText.Click
         Dim menu = TextCustomMenu.GetMenu(s.DarMenu, blTargetDarText, components, AddressOf TargetDarMenuClick)
         menu.Add("-")
-        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.DarMenu = TextCustomMenu.EditMenu(s.DarMenu, ApplicationSettings.GetDarMenu, Me)))
+        menu.Items.Add(New MenuItemEx("Edit Menu...", Sub() s.DarMenu = TextCustomMenu.EditMenu(s.DarMenu, ApplicationSettings.GetDarMenu, Me)))
         menu.Show(blTargetDarText, 0, blTargetDarText.Height)
     End Sub
 
     Sub blTargetParText_Click(sender As Object, e As EventArgs) Handles blTargetParText.Click
         Dim menu = TextCustomMenu.GetMenu(s.ParMenu, blTargetParText, components, AddressOf TargetParMenuClick)
         menu.Add("-")
-        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.ParMenu = TextCustomMenu.EditMenu(s.ParMenu, ApplicationSettings.GetParMenu, Me)))
+        menu.Items.Add(New MenuItemEx("Edit Menu...", Sub() s.ParMenu = TextCustomMenu.EditMenu(s.ParMenu, ApplicationSettings.GetParMenu, Me)))
         menu.Show(blTargetParText, 0, blTargetParText.Height)
     End Sub
 

@@ -47,7 +47,7 @@ Public Class SVTAV1
                                         SaveProfile(enc)
                                     End Sub
 
-            ActionMenuItem.Add(form.cms.Items, "Save Profile...", saveProfileAction, Symbol.Save)
+            MenuItemEx.Add(form.cms.Items, "Save Profile...", saveProfileAction, Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = encParams

@@ -151,6 +151,8 @@ Namespace UI
         Property MenuStrip As MenuStrip
         Property ToolStrip As ToolStrip
         Property MenuItems As New List(Of MenuItemEx)
+        Property ActionDictionary As New Dictionary(Of String, MenuItemEx)
+        Property TextDictionary As New Dictionary(Of String, MenuItemEx)
         Property DefaultMenu As Func(Of CustomMenuItem)
         Property MenuItem As CustomMenuItem
         Property CommandManager As CommandManager
@@ -176,7 +178,7 @@ Namespace UI
             Dim ret As New StringPairList
 
             For Each i As MenuItemEx In MenuItems
-                If i.ShortcutKeyDisplayString <> "" Then
+                If i.ShortcutKeyDisplayString.TrimEx <> "" Then
                     Dim sp As New StringPair
 
                     If i.Text.EndsWith("...") Then
@@ -196,8 +198,8 @@ Namespace UI
         Function GetTips() As StringPairList
             Dim ret As New StringPairList
 
-            For Each i As MenuItemEx In MenuItems
-                Dim help = i.GetHelp
+            For Each item In MenuItems
+                Dim help = item.GetHelp
 
                 If Not help Is Nothing Then
                     ret.Add(help)
@@ -205,6 +207,18 @@ Namespace UI
             Next
 
             Return ret
+        End Function
+
+        Sub EnableMenuItemByActionName(actionName As String, enabled As Boolean)
+            If ActionDictionary.ContainsKey(actionName) Then
+                ActionDictionary(actionName).Enabled = enabled
+            End If
+        End Sub
+
+        Function GetMenuItemByText(text As String) As MenuItemEx
+            If TextDictionary.ContainsKey(text) Then
+                Return TextDictionary(text)
+            End If
         End Function
 
         Function Edit() As CustomMenuItem
@@ -258,12 +272,14 @@ Namespace UI
             ToolStrip.Items.ClearAndDisplose
             Items.Clear()
             MenuItems.Clear()
+            ActionDictionary.Clear()
+            TextDictionary.Clear()
             Application.DoEvents()
             BuildMenu(ToolStrip, MenuItem)
         End Sub
 
         Sub BuildMenu(menu As Object, item As CustomMenuItem)
-            For Each cmi As CustomMenuItem In item.SubItems
+            For Each cmi In item.SubItems
                 cmi.CustomMenu = Me
                 Dim tsi As ToolStripItem
 
@@ -272,6 +288,15 @@ Namespace UI
                 Else
                     Dim mi As New MenuItemEx()
                     MenuItems.Add(mi)
+
+                    If cmi.MethodName <> "" Then
+                        ActionDictionary(cmi.MethodName) = mi
+                    End If
+
+                    If cmi.Text <> "" Then
+                        TextDictionary(cmi.Text) = mi
+                    End If
+
                     tsi = mi
                     mi.CustomMenuItem = cmi
 
@@ -327,12 +352,146 @@ Namespace UI
 
         Shared Property UseTooltips As Boolean
 
+        Private Action As Action
+
+        Property Form As Form
+        Property EnabledFunc As Func(Of Boolean)
+        Property VisibleFunc As Func(Of Boolean)
+
         Sub New()
         End Sub
 
         Sub New(text As String)
             MyBase.New(text)
         End Sub
+
+        Sub New(text As String, a As Action)
+            Me.New(text, a, Nothing)
+        End Sub
+
+        Sub New(text As String,
+                action As Action,
+                Optional tooltip As String = Nothing,
+                Optional enabled As Boolean = True)
+
+            Me.Text = text
+            Me.Action = action
+            Me.Help = tooltip
+            Me.Enabled = enabled
+        End Sub
+
+        Private ShortcutValue As Keys
+
+        Property Shortcut As Keys
+            Get
+                Return ShortcutValue
+            End Get
+            Set(value As Keys)
+                If value <> Keys.None Then
+                    ShortcutValue = value
+                    ShortcutKeyDisplayString = KeysHelp.GetKeyString(value) + g.MenuSpace
+                    AddHandler Form.KeyDown, AddressOf KeyDown
+                End If
+            End Set
+        End Property
+
+        WriteOnly Property KeyDisplayString As String
+            Set(value As String)
+                ShortcutKeyDisplayString = value + g.MenuSpace
+            End Set
+        End Property
+
+        Sub KeyDown(sender As Object, e As KeyEventArgs)
+            If Enabled AndAlso e.KeyData = Shortcut AndAlso
+                If(EnabledFunc Is Nothing, True, EnabledFunc.Invoke) AndAlso
+                If(VisibleFunc Is Nothing, True, VisibleFunc.Invoke) Then
+
+                PerformClick()
+                e.Handled = True
+            End If
+        End Sub
+
+        Sub Opening(sender As Object, e As CancelEventArgs)
+            If Not EnabledFunc Is Nothing Then
+                Enabled = EnabledFunc.Invoke
+            End If
+
+            If Not VisibleFunc Is Nothing Then
+                Visible = VisibleFunc.Invoke
+            End If
+        End Sub
+
+        Shared Function Add(Of T)(
+            items As ToolStripItemCollection,
+            path As String,
+            action As Action(Of T),
+            value As T,
+            Optional help As String = Nothing) As MenuItemEx
+
+            Return Add(items, path, Sub() action(value), help)
+        End Function
+
+        Shared Function Add(items As ToolStripItemCollection, path As String) As MenuItemEx
+            Return Add(items, path, Nothing)
+        End Function
+
+        Shared Function Add(
+            items As ToolStripItemCollection, path As String, action As Action) As MenuItemEx
+
+            Return Add(items, path, action, Symbol.None, Nothing)
+        End Function
+
+        Shared Function Add(
+            items As ToolStripItemCollection,
+            path As String,
+            action As Action,
+            tip As String) As MenuItemEx
+
+            Return Add(items, path, action, Symbol.None, tip)
+        End Function
+
+        Shared Function Add(
+            items As ToolStripItemCollection,
+            path As String,
+            action As Action,
+            symbol As Symbol,
+            Optional tip As String = Nothing) As MenuItemEx
+
+            Dim a = path.SplitNoEmpty(" | ")
+            Dim l = items
+
+            For x = 0 To a.Length - 1
+                Dim found = False
+
+                For Each i In l.OfType(Of ToolStripMenuItem)()
+                    If x < a.Length - 1 Then
+                        If i.Text = a(x) + g.MenuSpace Then
+                            found = True
+                            l = i.DropDownItems
+                        End If
+                    End If
+                Next
+
+                If Not found Then
+                    If x = a.Length - 1 Then
+                        If a(x) = "-" Then
+                            l.Add(New ToolStripSeparator)
+                        Else
+                            Dim item As New MenuItemEx(a(x) + g.MenuSpace, action, tip)
+                            item.SetImage(symbol)
+                            l.Add(item)
+                            l = item.DropDownItems
+                            Return item
+                        End If
+                    Else
+                        Dim item As New MenuItemEx()
+                        item.Text = a(x) + g.MenuSpace
+                        l.Add(item)
+                        l = item.DropDownItems
+                    End If
+                End If
+            Next
+        End Function
 
         Overrides Function GetPreferredSize(constrainingSize As Size) As Size
             Dim ret = MyBase.GetPreferredSize(constrainingSize)
@@ -363,6 +522,15 @@ Namespace UI
 
         Protected Overrides Sub Dispose(disposing As Boolean)
             MyBase.Dispose(disposing)
+
+            If Not Form Is Nothing Then
+                RemoveHandler Form.KeyDown, AddressOf KeyDown
+            End If
+
+            Action = Nothing
+            EnabledFunc = Nothing
+            VisibleFunc = Nothing
+            Form = Nothing
             CustomMenuItem = Nothing
         End Sub
 
@@ -469,81 +637,6 @@ Namespace UI
 
         Protected Overrides Sub OnClick(e As EventArgs)
             Application.DoEvents()
-            MyBase.OnClick(e)
-        End Sub
-    End Class
-
-    Public Class ActionMenuItem
-        Inherits MenuItemEx
-
-        Private Action As Action
-
-        Property EnabledFunc As Func(Of Boolean)
-        Property VisibleFunc As Func(Of Boolean)
-
-        Property Form As Form
-
-        Sub New()
-        End Sub
-
-        Sub New(text As String, a As Action)
-            Me.New(text, a, Nothing)
-        End Sub
-
-        Sub New(text As String,
-                action As Action,
-                Optional tooltip As String = Nothing,
-                Optional enabled As Boolean = True)
-
-            Me.Text = text
-            Me.Action = action
-            Me.Help = tooltip
-            Me.Enabled = enabled
-        End Sub
-
-        Private ShortcutValue As Keys
-
-        Property Shortcut As Keys
-            Get
-                Return ShortcutValue
-            End Get
-            Set(value As Keys)
-                If value <> Keys.None Then
-                    ShortcutValue = value
-                    ShortcutKeyDisplayString = KeysHelp.GetKeyString(value) + g.MenuSpace
-                    AddHandler Form.KeyDown, AddressOf KeyDown
-                End If
-            End Set
-        End Property
-
-        WriteOnly Property KeyDisplayString As String
-            Set(value As String)
-                ShortcutKeyDisplayString = value + g.MenuSpace
-            End Set
-        End Property
-
-        Sub KeyDown(sender As Object, e As KeyEventArgs)
-            If Enabled AndAlso e.KeyData = Shortcut AndAlso
-                If(EnabledFunc Is Nothing, True, EnabledFunc.Invoke) AndAlso
-                If(VisibleFunc Is Nothing, True, VisibleFunc.Invoke) Then
-
-                PerformClick()
-                e.Handled = True
-            End If
-        End Sub
-
-        Sub Opening(sender As Object, e As CancelEventArgs)
-            If Not EnabledFunc Is Nothing Then
-                Enabled = EnabledFunc.Invoke
-            End If
-
-            If Not VisibleFunc Is Nothing Then
-                Visible = VisibleFunc.Invoke
-            End If
-        End Sub
-
-        Protected Overrides Sub OnClick(e As EventArgs)
-            Application.DoEvents()
 
             If Not Action Is Nothing Then
                 Action()
@@ -551,91 +644,6 @@ Namespace UI
 
             MyBase.OnClick(e)
         End Sub
-
-        Protected Overrides Sub Dispose(disposing As Boolean)
-            MyBase.Dispose(disposing)
-
-            If Not Form Is Nothing Then
-                RemoveHandler Form.KeyDown, AddressOf KeyDown
-            End If
-
-            Action = Nothing
-            EnabledFunc = Nothing
-            VisibleFunc = Nothing
-            Form = Nothing
-        End Sub
-
-        Shared Function Add(Of T)(
-            items As ToolStripItemCollection,
-            path As String,
-            action As Action(Of T),
-            value As T,
-            Optional help As String = Nothing) As ActionMenuItem
-
-            Return Add(items, path, Sub() action(value), help)
-        End Function
-
-        Shared Function Add(items As ToolStripItemCollection, path As String) As ActionMenuItem
-            Return Add(items, path, Nothing)
-        End Function
-
-        Shared Function Add(
-            items As ToolStripItemCollection, path As String, action As Action) As ActionMenuItem
-
-            Return Add(items, path, action, Symbol.None, Nothing)
-        End Function
-
-        Shared Function Add(
-            items As ToolStripItemCollection,
-            path As String,
-            action As Action,
-            tip As String) As ActionMenuItem
-
-            Return Add(items, path, action, Symbol.None, tip)
-        End Function
-
-        Shared Function Add(
-            items As ToolStripItemCollection,
-            path As String,
-            action As Action,
-            symbol As Symbol,
-            Optional tip As String = Nothing) As ActionMenuItem
-
-            Dim a = path.SplitNoEmpty(" | ")
-            Dim l = items
-
-            For x = 0 To a.Length - 1
-                Dim found = False
-
-                For Each i In l.OfType(Of ToolStripMenuItem)()
-                    If x < a.Length - 1 Then
-                        If i.Text = a(x) + g.MenuSpace Then
-                            found = True
-                            l = i.DropDownItems
-                        End If
-                    End If
-                Next
-
-                If Not found Then
-                    If x = a.Length - 1 Then
-                        If a(x) = "-" Then
-                            l.Add(New ToolStripSeparator)
-                        Else
-                            Dim item As New ActionMenuItem(a(x) + g.MenuSpace, action, tip)
-                            item.SetImage(symbol)
-                            l.Add(item)
-                            l = item.DropDownItems
-                            Return item
-                        End If
-                    Else
-                        Dim item As New ActionMenuItem()
-                        item.Text = a(x) + g.MenuSpace
-                        l.Add(item)
-                        l = item.DropDownItems
-                    End If
-                End If
-            Next
-        End Function
     End Class
 
     Public Class TextCustomMenu
@@ -676,9 +684,9 @@ Namespace UI
             For Each i In definition.SplitKeepEmpty(BR)
                 If i.Contains("=") Then
                     Dim arg = i.Right("=").Trim
-                    ActionMenuItem.Add(ret.Items, i.Left("=").Trim, action, arg, Nothing)
+                    MenuItemEx.Add(ret.Items, i.Left("=").Trim, action, arg, Nothing)
                 ElseIf i.EndsWith("-") Then
-                    ActionMenuItem.Add(ret.Items, i)
+                    MenuItemEx.Add(ret.Items, i)
                 ElseIf i = "" Then
                     ret.Items.Add(New ToolStripSeparator)
                 End If
@@ -717,43 +725,43 @@ Namespace UI
             End Set
         End Property
 
-        Function Add(path As String) As ActionMenuItem
+        Function Add(path As String) As MenuItemEx
             Return Add(path, Nothing)
         End Function
 
-        Function Add(path As String, action As Action) As ActionMenuItem
+        Function Add(path As String, action As Action) As MenuItemEx
             Return Add(path, action, True)
         End Function
 
-        Function Add(path As String, action As Action, key As Keys) As ActionMenuItem
+        Function Add(path As String, action As Action, key As Keys) As MenuItemEx
             Return Add(path, action, key, True, Nothing, Nothing)
         End Function
 
-        Function Add(path As String, action As Action, help As String) As ActionMenuItem
+        Function Add(path As String, action As Action, help As String) As MenuItemEx
             Return Add(path, action, True, help)
         End Function
 
-        Function Add(path As String, action As Action, enabled As Boolean) As ActionMenuItem
+        Function Add(path As String, action As Action, enabled As Boolean) As MenuItemEx
             Return Add(path, action, enabled, Nothing)
         End Function
 
-        Function Add(path As String, action As Action, key As Keys, help As String) As ActionMenuItem
+        Function Add(path As String, action As Action, key As Keys, help As String) As MenuItemEx
             Return Add(path, action, key, True, Nothing, help)
         End Function
 
-        Function Add(path As String, action As Action, key As Keys, enabledFunc As Func(Of Boolean)) As ActionMenuItem
+        Function Add(path As String, action As Action, key As Keys, enabledFunc As Func(Of Boolean)) As MenuItemEx
             Return Add(path, action, key, True, enabledFunc)
         End Function
 
-        Function Add(path As String, action As Action, key As Keys, enabledFunc As Func(Of Boolean), help As String) As ActionMenuItem
+        Function Add(path As String, action As Action, key As Keys, enabledFunc As Func(Of Boolean), help As String) As MenuItemEx
             Return Add(path, action, key, True, enabledFunc, help)
         End Function
 
-        Function Add(path As String, action As Action, enabled As Boolean, help As String) As ActionMenuItem
+        Function Add(path As String, action As Action, enabled As Boolean, help As String) As MenuItemEx
             Return Add(path, action, Keys.None, enabled, Nothing, help)
         End Function
 
-        Function Add(path As String, action As Action, enabledFunc As Func(Of Boolean), help As String) As ActionMenuItem
+        Function Add(path As String, action As Action, enabledFunc As Func(Of Boolean), help As String) As MenuItemEx
             Return Add(path, action, Keys.None, True, enabledFunc, help)
         End Function
 
@@ -763,9 +771,9 @@ Namespace UI
             key As Keys,
             enabled As Boolean,
             enabledFunc As Func(Of Boolean),
-            Optional help As String = Nothing) As ActionMenuItem
+            Optional help As String = Nothing) As MenuItemEx
 
-            Dim ret = ActionMenuItem.Add(Items, path, action)
+            Dim ret = MenuItemEx.Add(Items, path, action)
 
             If ret Is Nothing Then
                 Exit Function
@@ -785,7 +793,7 @@ Namespace UI
         Function GetTips() As StringPairList
             Dim ret As New StringPairList
 
-            For Each i In GetItems.OfType(Of ActionMenuItem)()
+            For Each i In GetItems.OfType(Of MenuItemEx)()
                 If i.Help <> "" Then
                     Dim pair As New StringPair
 
@@ -806,7 +814,7 @@ Namespace UI
         Function GetKeys() As StringPairList
             Dim ret As New StringPairList
 
-            For Each mi In GetItems.OfType(Of ActionMenuItem)()
+            For Each mi In GetItems.OfType(Of MenuItemEx)()
                 If mi.ShortcutKeyDisplayString <> "" Then
                     Dim sp As New StringPair
 

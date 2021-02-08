@@ -904,6 +904,10 @@ Public Enum DynamicMenuItemID
     TemplateProjects
     HelpApplications
     Scripts
+    AddFilters
+    InsertFilters
+    ReplaceFilters
+    FilterCategory
 End Enum
 
 Public Class Startup

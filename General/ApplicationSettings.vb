@@ -22,6 +22,7 @@ Public Class ApplicationSettings
     Public CmdlPresetsX264 As String
     Public ConvertChromaSubsampling As Boolean = True
     Public CropFrameCount As Integer
+    Public CustomMenuCodeEditor As CustomMenuItem
     Public CustomMenuCrop As CustomMenuItem
     Public CustomMenuMainForm As CustomMenuItem
     Public CustomMenuPreview As CustomMenuItem
@@ -273,6 +274,10 @@ Public Class ApplicationSettings
 
         If Check(CustomMenuPreview, "Menu in preview dialog", 54) Then
             CustomMenuPreview = PreviewForm.GetDefaultMenu()
+        End If
+
+        If Check(CustomMenuCodeEditor, "Menu in code editor", 21) Then
+            CustomMenuCodeEditor = CodeEditor.GetDefaultMenu()
         End If
 
         If Check(CustomMenuSize, "Target size menu in main dialog", 31) Then

@@ -569,7 +569,7 @@ Namespace UI
             tsbCopy.Image = ImageHelp.GetSymbolImage(Symbol.Copy)
             tsbCut.Image = ImageHelp.GetSymbolImage(Symbol.Cut)
             tsbPaste.Image = ImageHelp.GetSymbolImage(Symbol.Paste)
-            tsbRemove.Image = ImageHelp.GetSymbolImage(Symbol.Remove)
+            tsbRemove.Image = ImageHelp.GetSymbolImage(Symbol.Delete)
 
             tsbMoveLeft.Image = ImageHelp.GetSymbolImage(Symbol.Back)
             tsbMoveUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
@@ -602,7 +602,7 @@ Namespace UI
         End Sub
 
         Sub PopulateSymbolMenu()
-            ActionMenuItem.Add(Of Symbol)(cmsSymbol.Items, "No Icon", AddressOf HandleSymbol, Symbol.None)
+            MenuItemEx.Add(Of Symbol)(cmsSymbol.Items, "No Icon", AddressOf HandleSymbol, Symbol.None)
 
             Dim enumNames = System.Enum.GetNames(GetType(Symbol)).ToList
             enumNames.Sort()
@@ -612,7 +612,7 @@ Namespace UI
                 If IsClosing Then Exit For
                 Dim symbol = DirectCast(System.Enum.Parse(GetType(Symbol), iName), Symbol)
                 Dim path = "Segoe MDL2 Assets    | " + iName.Substring(0, 1).ToUpper + " | " + iName
-                ActionMenuItem.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol).SetImage(symbol)
+                MenuItemEx.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol).SetImage(symbol)
                 Application.DoEvents()
             Next
 
@@ -621,7 +621,7 @@ Namespace UI
                 If IsClosing Then Exit For
                 Dim symbol = DirectCast(System.Enum.Parse(GetType(Symbol), iName), Symbol)
                 Dim path = "FontAwesome | " + iName.Substring(3, 1).ToUpper + " | " + iName.Substring(3).ToTitleCase.Replace("_", " ")
-                ActionMenuItem.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol).SetImage(symbol)
+                MenuItemEx.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol).SetImage(symbol)
                 Application.DoEvents()
             Next
         End Sub

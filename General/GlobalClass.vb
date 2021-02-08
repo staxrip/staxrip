@@ -495,17 +495,13 @@ Public Class GlobalClass
         End If
 
         script.Synchronize()
-        Dim playerPath = Package.MpcBE.Path
+        Dim playerPath = Package.MPC.Path
 
-        If Not File.Exists(playerPath) Then
-            playerPath = Package.MpcHC.Path
+        If Not playerPath.FileExists AndAlso Package.MPC.VerifyOK(True) Then
+            playerPath = Package.MPC.Path
         End If
 
-        If Not File.Exists(playerPath) AndAlso Package.MpcBE.VerifyOK(True) Then
-            playerPath = Package.MpcBE.Path
-        End If
-
-        If Not File.Exists(playerPath) Then
+        If Not playerPath.FileExists Then
             Exit Sub
         End If
 
@@ -612,7 +608,7 @@ Public Class GlobalClass
 
                 If Not found Then
                     If i = a.Length - 1 Then
-                        Dim item As New ActionMenuItem(a(i) + "     ", Sub() loadAction(iProfile))
+                        Dim item As New MenuItemEx(a(i) + "     ", Sub() loadAction(iProfile))
                         l.Add(item)
                         l = item.DropDownItems
                     Else
@@ -626,7 +622,7 @@ Public Class GlobalClass
 
         If Not dialogAction Is Nothing Then
             ic.Add(New ToolStripSeparator)
-            ic.Add(New ActionMenuItem("Edit Profiles...", dialogAction, "Opens the profiles editor"))
+            ic.Add(New MenuItemEx("Edit Profiles...", dialogAction, "Opens the profiles editor"))
         End If
     End Sub
 
@@ -1223,7 +1219,7 @@ Public Class GlobalClass
         End Using
     End Function
 
-    Sub CodePreview(code As String)
+    Sub ShowCodePreview(code As String)
         Using form As New StringEditorForm
             form.ScaleClientSize(50, 30)
             form.rtb.ReadOnly = True
@@ -1558,5 +1554,40 @@ Public Class GlobalClass
         If value <> "" Then
             Return value.Contains("ffmpeg") OrElse value.Contains("avs2pipemod") OrElse value.Contains("vspipe")
         End If
+    End Function
+
+    Function GetFilterProfilesText(categories As List(Of FilterCategory)) As String
+        Dim ret = ""
+        Dim wasMultiline As Boolean
+
+        For Each i In categories
+            ret += "[" + i.Name + "]" + BR
+
+            For Each filter In i.Filters
+                If filter.Script.Contains(BR) Then
+                    Dim lines = filter.Script.SplitLinesNoEmpty
+
+                    For x = 0 To lines.Length - 1
+                        lines(x) = "    " + lines(x)
+                    Next
+
+                    ret += BR + filter.Path + " =" + BR + lines.Join(BR) + BR
+                    wasMultiline = True
+                Else
+                    If wasMultiline Then
+                        ret += BR
+                    End If
+
+                    ret += filter.Path + " = " + filter.Script + BR
+                    wasMultiline = False
+                End If
+            Next
+
+            If Not ret.EndsWith(BR2) Then
+                ret += BR
+            End If
+        Next
+
+        Return ret
     End Function
 End Class

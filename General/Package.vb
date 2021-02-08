@@ -13,6 +13,7 @@ Public Class Package
     Property DownloadURLs As StringPair()
     Property Exclude As String()
     Property Filename32 As String
+    Property Filter As String
     Property Find As Boolean = True
     Property HelpFilename As String
     Property HelpSwitch As String
@@ -381,27 +382,17 @@ Public Class Package
         .DownloadURL = "https://github.com/stax76/mpv.net#download",
         .Description = "The worlds best media player (GUI app)."})
 
-    Shared Property MpcBE As Package = Add(New Package With {
-        .Name = "MPC-BE",
+    Shared Property MPC As Package = Add(New Package With {
+        .Name = "MPC",
         .Filename = "mpc-be64.exe",
         .Filename32 = "mpc-be.exe",
+        .Filter = "|mpc-hc64.exe;mpc-be64.exe|All Files|*.*",
         .IsIncluded = False,
         .VersionAllowAny = True,
         .Required = False,
         .WebURL = "https://sourceforge.net/projects/mpcbe",
         .Description = "DirectShow based media player (GUI app).",
         .Locations = {Registry.LocalMachine.GetString("SOFTWARE\MPC-BE", "ExePath").Dir, Folder.Programs + "MPC-BE x64"}})
-
-    Shared Property MpcHC As Package = Add(New Package With {
-        .Name = "MPC-HC",
-        .Filename = "mpc-hc64.exe",
-        .Filename32 = "mpc-hc.exe",
-        .IsIncluded = False,
-        .VersionAllowAny = True,
-        .Required = False,
-        .WebURL = "https://mpc-hc.org",
-        .Description = "DirectShow based media player (GUI app).",
-        .Locations = {Registry.CurrentUser.GetString("Software\MPC-HC\MPC-HC", "ExePath").Dir, Folder.Programs + "MPC-HC"}})
 
     Shared Property modPlus As Package = Add(New PluginPackage With {
         .Name = "modPlus",
@@ -1035,7 +1026,7 @@ Public Class Package
             .Location = "Plugins\AVS\InterFrame2",
             .WebURL = "http://avisynth.nl/index.php/InterFrame",
             .AvsFilterNames = {"InterFrame"},
-            .AvsFiltersFunc = Function() {New VideoFilter("FrameRate", "InterFrame", "InterFrame(preset=""Medium"", tuning=""$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$"", newNum=$enter_text:Enter the NewNum Value.$, newDen=$enter_text:Enter the NewDen Value$, cores=$enter_text:Enter the Number of Cores You want to use$, overrideAlgo=$select:msg:Which Algorithm Do you want to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)")}})
+            .AvsFiltersFunc = Function() {New VideoFilter("Frame Rate", "InterFrame", "InterFrame(preset=""Medium"", tuning=""$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$"", newNum=$enter_text:Enter the NewNum Value.$, newDen=$enter_text:Enter the NewDen Value$, cores=$enter_text:Enter the Number of Cores You want to use$, overrideAlgo=$select:msg:Which Algorithm Do you want to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)")}})
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 1",
@@ -1360,7 +1351,7 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/YFRC",
             .Description = "Yushko Frame Rate convertor - doubles the frame rate with strong artifact detection and scene change detection. YFRC uses masks to reduce artifacts in areas where interpolation failed.",
             .AvsFilterNames = {"YFRC"},
-            .AvsFiltersFunc = Function() {New VideoFilter("FrameRate", "YRFC", "YFRC(BlockH=16, BlockV=16, OverlayType=0, MaskExpand=1)")}})
+            .AvsFiltersFunc = Function() {New VideoFilter("Frame Rate", "YRFC", "YFRC(BlockH=16, BlockV=16, OverlayType=0, MaskExpand=1)")}})
 
         Add(New PluginPackage With {
             .Name = "Deblock",
@@ -1936,7 +1927,7 @@ Public Class Package
                 If Not plugin.AvsFilterNames.NothingOrEmpty AndAlso
                     Not plugin.VSFilterNames.NothingOrEmpty Then
 
-                    Return Name + " avs+vs"
+                    Return Name + " dual"
                 ElseIf Not plugin.AvsFilterNames.NothingOrEmpty Then
                     Return Name + " avs"
                 ElseIf Not plugin.VSFilterNames.NothingOrEmpty Then
@@ -2691,10 +2682,12 @@ Public Class PluginPackage
         ElseIf p.Script.Engine = ScriptEngine.VapourSynth AndAlso
             Not package.VSFilterNames.NothingOrEmpty Then
 
-            For Each filter In p.Script.Filters
-                If filter.Active Then
+            For Each ifilter In p.Script.Filters
+                If ifilter.Active Then
                     For Each filterName In package.VSFilterNames
-                        If filter.Script.Contains(filterName) Then Return True
+                        If ifilter.Script.Contains(filterName) Then
+                            Return True
+                        End If
                     Next
                 End If
             Next

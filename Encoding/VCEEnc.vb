@@ -47,9 +47,9 @@ Public Class VCEEnc
                                         SaveProfile(enc)
                                     End Sub
 
-            f.cms.Items.Add(New ActionMenuItem("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.VCEEnc.Path, "--check-features"))))
-            f.cms.Items.Add(New ActionMenuItem("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.VCEEnc.Path, "--check-hw"))))
-            ActionMenuItem.Add(f.cms.Items, "Save Profile...", saveProfileAction, Symbol.Save)
+            f.cms.Items.Add(New MenuItemEx("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.VCEEnc.Path, "--check-features"))))
+            f.cms.Items.Add(New MenuItemEx("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.VCEEnc.Path, "--check-hw"))))
+            MenuItemEx.Add(f.cms.Items, "Save Profile...", saveProfileAction, Symbol.Save)
 
             If f.ShowDialog() = DialogResult.OK Then
                 Params = params1

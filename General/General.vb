@@ -982,7 +982,7 @@ Public Class Command
             If path.StartsWith("Execute") Then path = "Execute | " + path
             If path.StartsWith("Add") Then path = "Add | " + path
 
-            ActionMenuItem.Add(items, path, clickSub, i, i.Attribute.Description)
+            MenuItemEx.Add(items, path, clickSub, i, i.Attribute.Description)
         Next
     End Sub
 

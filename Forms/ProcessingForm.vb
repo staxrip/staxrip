@@ -199,7 +199,7 @@ Public Class ProcessingForm
 #End Region
 
     Private TaskbarButtonCreatedMessage As Integer
-    Private StopAfterCurrentJobMenuItem As ActionMenuItem
+    Private StopAfterCurrentJobMenuItem As MenuItemEx
     Private CMS As ContextMenuStripEx
 
     Property Taskbar As Taskbar

@@ -8,6 +8,8 @@ Imports DirectN
 Imports Microsoft.Win32
 Imports StaxRip.UI
 
+Imports VB6 = Microsoft.VisualBasic
+
 Public Class GlobalCommands
     <Command("Checks if a update is available.")>
     Sub CheckForUpdate()
@@ -96,6 +98,15 @@ Public Class GlobalCommands
     <Command("Runs all active jobs of the job list.")>
     Sub StartJobs()
         g.ProcessJobs()
+    End Sub
+
+    <Command("Placeholder for dynamically updated menu items.")>
+    Sub DynamicMenuItem(<DispName("ID")> id As DynamicMenuItemID)
+    End Sub
+
+    <Command("Dialog that shows available macros.")>
+    Sub ShowMacrosDialog()
+        MacrosForm.ShowDialogForm()
     End Sub
 
     <Command("Executes a command line. If Shell Execute is disabled then macros are passed in as environment variables.")>

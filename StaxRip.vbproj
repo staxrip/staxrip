@@ -401,7 +401,7 @@
     <Compile Include="UI\InputBoxForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Menu Types.vb" />
+    <Compile Include="UI\Menu.vb" />
     <Compile Include="UI\MenuTemplateForm.vb">
       <SubType>Form</SubType>
     </Compile>

@@ -255,7 +255,7 @@ Public Class AppsForm
         Me.miStatus.Name = "miStatus"
         Me.miStatus.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
         Me.miStatus.Size = New System.Drawing.Size(546, 67)
-        Me.miStatus.Text = "Check Status"
+        Me.miStatus.Text = "Check All"
         Me.miStatus.ToolTipText = "Check status of all required tools"
         '
         'miAutoUpdate
@@ -804,7 +804,12 @@ Public Class AppsForm
     Sub miBrowsePath_Click(sender As Object, e As EventArgs) Handles miEditPath.Click
         Using dialog As New OpenFileDialog
             dialog.SetInitDir(s.Storage.GetString(CurrentPackage.Name + "custom path"))
-            dialog.Filter = "|" + CurrentPackage.Filename + "|All Files|*.*"
+
+            If CurrentPackage.Filter <> "" Then
+                dialog.Filter = CurrentPackage.Filter
+            Else
+                dialog.Filter = "|" + CurrentPackage.Filename + "|All Files|*.*"
+            End If
 
             If dialog.ShowDialog = DialogResult.OK Then
                 If Not s.AllowCustomPathsInStartupFolder AndAlso

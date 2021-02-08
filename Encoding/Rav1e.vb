@@ -86,7 +86,7 @@ Public Class Rav1e
                                         SaveProfile(enc)
                                     End Sub
 
-            ActionMenuItem.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
+            MenuItemEx.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams

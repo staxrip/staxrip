@@ -793,7 +793,7 @@ Namespace UI
         Sub MenuOpening(sender As Object, e As CancelEventArgs)
             Menu.MinimumSize = New Size(Width, 0)
 
-            For Each mi As ActionMenuItem In Menu.Items
+            For Each mi As MenuItemEx In Menu.Items
                 mi.Font = New Font("Segoe UI", 9 * s.UIScaleFactor, If(Not Value Is Nothing AndAlso Value.Equals(mi.Tag), FontStyle.Bold, FontStyle.Regular))
 
                 If (Menu.Width - mi.Width) > 2 Then
@@ -817,17 +817,17 @@ Namespace UI
                             Dim text = DispNameAttribute.GetValueForEnum(i)
                             Dim temp = i
 
-                            ActionMenuItem.Add(Menu.Items, text, Sub(o As Object) OnAction(text, o), temp, Nothing).Tag = temp
+                            MenuItemEx.Add(Menu.Items, text, Sub(o As Object) OnAction(text, o), temp, Nothing).Tag = temp
                         Next
                     End If
                 End If
 
                 If Not value Is Nothing Then
-                    For Each i In Menu.Items.OfType(Of ActionMenuItem)()
+                    For Each i In Menu.Items.OfType(Of MenuItemEx)()
                         If value.Equals(i.Tag) Then Text = i.Text
 
                         If i.DropDownItems.Count > 0 Then
-                            For Each i2 In i.DropDownItems.OfType(Of ActionMenuItem)()
+                            For Each i2 In i.DropDownItems.OfType(Of MenuItemEx)()
                                 If value.Equals(i2.Tag) Then
                                     Text = i2.Text
                                 End If
@@ -866,7 +866,7 @@ Namespace UI
             Next
         End Sub
 
-        Function Add(path As String, obj As Object, Optional tip As String = Nothing) As ActionMenuItem
+        Function Add(path As String, obj As Object, Optional tip As String = Nothing) As MenuItemEx
             Items.Add(obj)
             Dim name = path
 
@@ -874,7 +874,7 @@ Namespace UI
                 name = path.RightLast("|").Trim
             End If
 
-            Dim ret = ActionMenuItem.Add(Menu.Items, path, Sub(o As Object) OnAction(name, o), obj, tip)
+            Dim ret = MenuItemEx.Add(Menu.Items, path, Sub(o As Object) OnAction(name, o), obj, tip)
             ret.Tag = obj
             Return ret
         End Function

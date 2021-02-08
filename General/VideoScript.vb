@@ -915,10 +915,10 @@ Public Class FilterCategory
         ret.Add(field)
 
         Dim framerate As New FilterCategory("Frame Rate")
-        framerate.Filters.Add(New VideoFilter(framerate.Name, "AssumeFPS", "AssumeFPS($select:msg:Select a frame rate;24000/1001|24000, 1001;24;25;30000/1001|30000, 1001;30;50;60000/1001|60000, 1001;60;120;144;240$)"))
+        framerate.Filters.Add(New VideoFilter(framerate.Name, "AssumeFPS", "AssumeFPS($select:msg:Select a frame rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;50;59.940|60000, 1001;60;120;144;240$)"))
         framerate.Filters.Add(New VideoFilter(framerate.Name, "AssumeFPS Source File", "AssumeFPS(%media_info_video:FrameRate%)"))
-        framerate.Filters.Add(New VideoFilter(framerate.Name, "ChangeFPS", "ChangeFPS($select:msg:Select a frame rate;23.976;24;25;29.970;30;50;59.940;60;120;144;240;$)"))
-        framerate.Filters.Add(New VideoFilter(framerate.Name, "ConvertFPS", "ConvertFPS($select:msg:Select a frame rate;23.976;24;25;29.970;30;50;59.940;60;120;144;240;$)"))
+        framerate.Filters.Add(New VideoFilter(framerate.Name, "ChangeFPS", "ChangeFPS($select:msg:Select a frame rate;23.976|24000,1001;24;25;29.970|30000/1001;30;50;59.940|60000,1001;60;120;144;240$)"))
+        framerate.Filters.Add(New VideoFilter(framerate.Name, "ConvertFPS", "ConvertFPS($select:msg:Select a frame rate;23.976|24000,1001;24;25;29.970|30000,1001;30;50;59.940|60000,1001;60;120;144;240$)"))
         framerate.Filters.Add(New VideoFilter(framerate.Name, "SVPFlow", "Threads = 8" + BR + "super_params = ""{pel:2,gpu:1}""" + BR + "analyse_params = """"""{block:{w:16,h:16}, main:{search:{coarse:{distance:-10}}}, refine:[{thsad:200}]}"""""" " + BR + "smoothfps_params = ""{rate:{num:4,den:2},algo:23,cubic:1}""" + BR + "super = SVSuper(super_params)" + BR + "vectors = SVAnalyse(super, analyse_params)" + BR + "SVSmoothFps(super, vectors, smoothfps_params, mt=threads)" + BR + "#Prefetch(threads) must be added at the end of the script and Threads=9 after the source" + BR + "Prefetch(threads)"))
         ret.Add(framerate)
 

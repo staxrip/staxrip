@@ -1198,14 +1198,14 @@ Public Class x265Params
         ApplyTuneDefaultValues()
 
         Dim sb As New StringBuilder
-        Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText
+        Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText.ToLower()
         Dim isSingleChunk = endFrame = 0
 
         If includePaths AndAlso includeExecutable Then
             Dim isCropped = (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
                 Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop")
 
-            Select Case Decoder.ValueText
+            Select Case Decoder.ValueText.ToLower()
                 Case "script"
                     Dim pipeString = ""
 

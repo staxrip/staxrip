@@ -39,21 +39,25 @@ Public Class aomenc
 
     Overrides Sub Encode()
         p.Script.Synchronize()
-        Encode("Video encoding using aomenc " + Package.aomenc.Version, GetArgs(1, p.Script))
+        Encode("Video encoding pass 1", GetArgs(1, 0, 0, Nothing, p.Script), s.ProcessPriority)
 
         If Params.Passes.Value = 1 Then
-            Encode("Video encoding second pass using aomenc " + Package.aomenc.Version, GetArgs(2, p.Script))
+            Encode("Video encoding pass 2", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
 
         AfterEncoding()
     End Sub
 
-    Overloads Sub Encode(passName As String, commandLine As String)
-        p.Script.Synchronize()
+    Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
+        If Not CanChunkEncode() Then
+            p.Script.Synchronize(False, True, False, TextEncoding.EncodingOfProcess)
+        End If
 
         Using proc As New Proc
-            proc.Header = passName
             proc.Package = Package.aomenc
+            proc.Encoding = Encoding.UTF8
+            proc.Header = passName
+            proc.Priority = priority
             proc.FrameCount = p.Script.GetFrameCount
             proc.SkipString = "[ETA"
             proc.File = "cmd.exe"
@@ -62,8 +66,57 @@ Public Class aomenc
         End Using
     End Sub
 
-    Overloads Function GetArgs(pass As Integer, script As VideoScript, Optional includePaths As Boolean = True) As String
-        Return Params.GetArgs(pass, script, OutputPath.DirAndBase + OutputExtFull, includePaths, True)
+    Overrides Function CanChunkEncode() As Boolean
+        Return CInt(Params.Chunks.Value) > 1
+    End Function
+
+    Overrides Function GetChunks() As Integer
+        Return CInt(Params.Chunks.Value)
+    End Function
+
+    Overrides Function GetChunkEncodeActions() As List(Of Action)
+        Dim maxFrame = If(Params.Decoder.Value = 0, p.Script.GetFrameCount(), p.SourceFrames)
+        Dim chunkCount = CInt(Params.Chunks.Value)
+        Dim startFrame = CInt(Params.Skip.Value)
+        Dim length = If(CInt(Params.Limit.Value) > 0, CInt(Params.Limit.Value), maxFrame - startFrame)
+        Dim endFrame = Math.Min(startFrame + length - 1, maxFrame)
+        Dim chunkLength = length \ chunkCount
+        Dim ret As New List(Of Action)
+
+        For chunk = 0 To chunkCount - 1
+            Dim name = ""
+            Dim chunkStart = startFrame + (chunk * chunkLength)
+            Dim chunkEnd = If(chunk <> chunkCount - 1, chunkStart + (chunkLength - 1), endFrame)
+
+            If chunk > 0 Then
+                name = "_chunk" & (chunk + 1)
+            End If
+
+            If Params.Passes.Value = 1 Then
+                ret.Add(Sub()
+                            Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "),
+                                   GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                            Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "),
+                                   GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                        End Sub)
+            Else
+                ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "),
+                    GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority))
+            End If
+        Next
+
+        Return ret
+    End Function
+
+    Overloads Function GetArgs(
+            pass As Integer,
+            startFrame As Integer,
+            endFrame As Integer,
+            chunkName As String,
+            script As VideoScript,
+            Optional includePaths As Boolean = True) As String
+
+        Return Params.GetArgs(pass, startFrame, endFrame, chunkName, script, OutputPath.DirAndBase + OutputExtFull, includePaths, True)
     End Function
 
     Overrides Function GetMenu() As MenuList
@@ -123,6 +176,11 @@ Public Class AV1Params
     End Sub
 
 
+    Property Chunks As New NumParam With {
+        .Text = "Chunks",
+        .Init = 1,
+        .Config = {1, 16}}
+
     Property CqLevel As New NumParam With {
         .Path = "Rate Control 1",  '.Path = "AV1 Specific 2",    moved to "Rate Control 1" for better usage
         .HelpSwitch = "--cq-level",
@@ -130,6 +188,11 @@ Public Class AV1Params
         .AlwaysOn = True,
         .Init = 24,
         .VisibleFunc = Function() RateMode.Value = 2 OrElse RateMode.Value = 3}
+
+    Property Decoder As New OptionParam With {
+        .Text = "Decoder",
+        .Options = {"AviSynth/VapourSynth", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
+        .Values = {"script", "qs", "ffqsv", "ffdxva"}}
 
     Property EnableRestoration As New OptionParam With {
         .Path = "AV1 Specific 1",
@@ -146,6 +209,18 @@ Public Class AV1Params
         .Options = {"One Pass", "Two Pass"},
         .Init = 1}
 
+    Property PipingToolAVS As New OptionParam With {
+        .Text = "Pipe",
+        .Name = "PipingToolAVS",
+        .VisibleFunc = Function() p.Script.IsAviSynth AndAlso Decoder.Value = 0,
+        .Options = {"Automatic", "avs2pipemod", "ffmpeg"}}
+
+    Property PipingToolVS As New OptionParam With {
+        .Text = "Pipe",
+        .Name = "PipingToolVS",
+        .VisibleFunc = Function() p.Script.IsVapourSynth AndAlso Decoder.Value = 0,
+        .Options = {"Automatic", "vspipe", "ffmpeg"}}
+
     Property RateMode As New OptionParam With {
         .Path = "Basic",
         .Switch = "--end-usage",
@@ -154,6 +229,14 @@ Public Class AV1Params
         .Values = {"vbr", "cbr", "cq", "q"},
         .AlwaysOn = True,
         .Init = 3}
+
+    Property Skip As New NumParam With {
+        .Switch = "--skip",
+        .Text = "Skip first n frames"}
+
+    Property Limit As New NumParam With {
+        .Switch = "--limit",
+        .Text = "Stop after n frames"}
 
     Property TargetBitrate As New NumParam With {
         .HelpSwitch = "--target-bitrate",
@@ -200,9 +283,7 @@ Public Class AV1Params
                     New StringParam With {.Switch = "--cfg", .Text = "Config File", .Quotes = QuotesMode.Auto, .BrowseFile = True},
                     New BoolParam With {.Switch = "--debug", .Text = "Debug"},
                     New StringParam With {.Switch = "--codec", .Text = "Codec"},
-                    Passes,
-                    New NumParam With {.Switch = "--skip", .Text = "Skip first n frames"},
-                    New NumParam With {.Switch = "--limit", .Text = "Stop after n frames"},
+                    Passes, Skip, Limit,
                     New BoolParam With {.Switch = "--good", .Text = "Good Quality Deadline"},
                     New BoolParam With {.Switch = "--rt", .Text = "Realtime Quality Deadline"},
                     New BoolParam With {.Switch = "--verbose", .Text = "Show encoder parameters"},
@@ -214,6 +295,9 @@ Public Class AV1Params
                     New NumParam With {.Switch = "--rate-hist", .Text = "Rate Hist (n-buckets)"},
                     New BoolParam With {.Switch = "--disable-warnings", .Text = "Disable Warnings"},
                     New OptionParam With {.Switch = "--test-decode", .Text = "Test Decode", .Options = {"Off", "Fatal", "Warn"}})
+
+                Add("Input/Output",
+                    Decoder, PipingToolAVS, PipingToolVS, Chunks)
 
                 'New OptionParam With {.Switch = "--profile", .Text = "Profile", .IntegerValue = True, .Options = {"Main", "High", "Professional"}},
                 Add("Encoder Global 1",
@@ -418,28 +502,145 @@ Public Class AV1Params
     Overloads Overrides Function GetCommandLine(
         includePaths As Boolean, includeExecutable As Boolean, Optional pass As Integer = 1) As String
 
-        Return GetArgs(1, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
+        Return GetArgs(1, 0, 0, Nothing, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
                        p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
     End Function
 
     Overloads Function GetArgs(
         pass As Integer,
+        startFrame As Integer,
+        endFrame As Integer,
+        chunkName As String,
         script As VideoScript,
         targetPath As String,
         includePaths As Boolean,
         includeExecutable As Boolean) As String
 
         Dim sb As New StringBuilder
+        Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText.ToLower()
+        Dim isSingleChunk = endFrame = 0
 
         If includePaths AndAlso includeExecutable Then
-            If p.Script.Engine = ScriptEngine.VapourSynth Then
-                sb.Append(Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | " + Package.aomenc.Path.Escape + " -")
-            Else
-                sb.Append(Package.ffmpeg.Path.Escape + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | " + Package.aomenc.Path.Escape + " -")
-            End If
-        End If
+            Dim isCropped = (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
+                Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop")
 
-        sb.Append(" --disable-warning-prompt")
+            Select Case Decoder.ValueText.ToLower()
+                Case "script"
+                    Dim pipeString = ""
+
+                    If pipeTool = "automatic" Then
+                        If p.Script.IsAviSynth Then
+                            pipeTool = "avs2pipemod"
+                        Else
+                            pipeTool = "vspipe"
+                        End If
+                    End If
+
+                    Select Case pipeTool
+                        Case "avs2pipemod"
+                            Dim chunk = If(isSingleChunk, "", $" -trim={startFrame},{endFrame}")
+                            Dim dll = If(FrameServerHelp.IsPortable, $" -dll={Package.AviSynth.Path.Escape}", "")
+                            pipeString = Package.avs2pipemod.Path.Escape + dll + chunk + " -y4mp " + script.Path.Escape + " | "
+                            sb.Append(pipeString + Package.aomenc.Path.Escape)
+
+                            If isSingleChunk Then
+                                If Skip.Value > 0 Then
+                                    sb.Append($" --skip={Skip.Value}")
+                                End If
+                                If Limit.Value = 0 Then
+                                    sb.Append($" --limit={script.GetFrameCount - Skip.Value}")
+                                Else
+                                    sb.Append($" --limit={Limit.Value}")
+                                End If
+                            Else
+                                sb.Append($" --limit={endFrame - startFrame + 1}")
+                            End If
+                        Case "vspipe"
+                            Dim chunk = If(isSingleChunk, "", $" --start={startFrame} --end={endFrame}")
+                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m" + chunk + " | "
+
+                            sb.Append(pipeString + Package.aomenc.Path.Escape)
+                            If isSingleChunk Then
+                                If Skip.Value > 0 Then
+                                    sb.Append($" --skip={Skip.Value}")
+                                End If
+                                If Limit.Value = 0 Then
+                                    sb.Append($" --limit={script.GetFrameCount - Skip.Value}")
+                                Else
+                                    sb.Append($" --limit={Limit.Value}")
+                                End If
+                            Else
+                                sb.Append($" --limit={endFrame - startFrame + 1}")
+                            End If
+                        Case "ffmpeg"
+                            pipeString = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.LongPathPrefix.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
+
+                            sb.Append(pipeString + Package.aomenc.Path.Escape)
+
+                            If isSingleChunk Then
+                                If Skip.Value > 0 Then
+                                    sb.Append($" --skip={Skip.Value}")
+                                End If
+
+                                If Limit.Value = 0 Then
+                                    sb.Append($" --limit={script.GetFrameCount - Skip.Value}")
+                                Else
+                                    sb.Append($" --limit={Limit.Value}")
+                                End If
+                            Else
+                                sb.Append($" --skip={startFrame} --limit={endFrame - startFrame + 1}")
+                            End If
+                    End Select
+                Case "qs"
+                    Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
+                    sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.aomenc.Path.Escape)
+                    If isSingleChunk Then
+                        If Skip.Value > 0 Then
+                            sb.Append($" --skip={Skip.Value}")
+                        End If
+                        If Limit.Value = 0 Then
+                            sb.Append($" --limit={p.SourceFrames - Skip.Value}")
+                        Else
+                            sb.Append($" --limit={Limit.Value}")
+                        End If
+                    Else
+                        sb.Append($" --skip={startFrame} --limit={endFrame - startFrame + 1}")
+                    End If
+                Case "ffqsv"
+                    Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
+                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Escape + " -f yuv4mpegpipe -strict -1" + crop + " -loglevel fatal -hide_banner - | " + Package.aomenc.Path.Escape)
+                    If isSingleChunk Then
+                        If Skip.Value > 0 Then
+                            sb.Append($" --skip={Skip.Value}")
+                        End If
+                        If Limit.Value = 0 Then
+                            sb.Append($" --limit={p.SourceFrames - Skip.Value}")
+                        Else
+                            sb.Append($" --limit={Limit.Value}")
+                        End If
+                    Else
+                        sb.Append($" --skip={startFrame} --limit={endFrame - startFrame + 1}")
+                    End If
+                Case "ffdxva"
+                    Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
+                    Dim pix_fmt = If(p.SourceVideoBitDepth = 10, "yuv420p10le", "yuv420p")
+                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Escape +
+                              " -f yuv4mpegpipe -pix_fmt " + pix_fmt + " -strict -1" + crop +
+                              " -loglevel fatal -hide_banner - | " + Package.aomenc.Path.Escape)
+                    If isSingleChunk Then
+                        If Skip.Value > 0 Then
+                            sb.Append($" --skip={Skip.Value}")
+                        End If
+                        If Limit.Value = 0 Then
+                            sb.Append($" --limit={p.SourceFrames - Skip.Value}")
+                        Else
+                            sb.Append($" --limit={Limit.Value}")
+                        End If
+                    Else
+                        sb.Append($" --skip={startFrame} --limit={endFrame - startFrame + 1}")
+                    End If
+            End Select
+        End If
 
         Select Case Passes.Value
             Case 0
@@ -483,12 +684,26 @@ Public Class AV1Params
             sb.Append(" " + q.Select(Function(item) item.GetArgs).Join(" "))
         End If
 
+        sb.Append(" --disable-warning-prompt")
+
         If includePaths Then
+            'If Decoder.Value <> 0 OrElse pipeTool <> "automatic" Then
+            '    sb.Append(" --y4m")
+            'End If
+
             If Passes.Value = 1 Then
                 sb.Append(" --fpf=" + (p.TempDir + p.TargetFile.Base + ".txt").Escape)
             End If
 
-            sb.Append(" -o " + targetPath.Escape)
+            sb.Append(" -o " + (targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape)
+            sb.Append(" -")
+        Else
+            If Skip.Value > 0 AndAlso Not IsCustom(pass, "--skip") Then
+                sb.Append(" --skip=" & Skip.Value)
+            End If
+            If Limit.Value > 0 AndAlso Not IsCustom(pass, "--limit") Then
+                sb.Append(" --limit=" & Limit.Value)
+            End If
         End If
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))

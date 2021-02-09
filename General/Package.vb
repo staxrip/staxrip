@@ -1106,7 +1106,7 @@ Public Class Package
             .Name = "AvsResize",
             .Filename = "avsresize.dll",
             .HelpFilename = "README.md",
-            .WebURL = "http://forum.doom9.org/showthread.php?t=173986",
+            .WebURL = "http://avisynth.nl/index.php/Avsresize",
             .AvsFilterNames = {"z_ConvertFormat", "z_PointResize", "z_BilinearResize", "z_BicubicResize", "z_LanczosResize", "z_Lanczos4Resize", "z_Spline16Resize", "z_Spline36Resize", "z_Spline64Resize"},
             .AvsFiltersFunc = Function() {New VideoFilter("Color", "Convert | Format", "z_ConvertFormat(pixel_type=""$enter_text:Enter the Format You Wish to Convert to$"", colorspace_op=""$select:msg:Select Input Color Matrix;rgb;709;unspec;fcc;470bg;170m;240;ycgco;2020ncl;2020cl;chromancl;chromacl;ictcp$:$select:msg:Select Input Color Transfer;709;unspec;470m;470bg;601;240m;linear;log100;log316;xvycc;srgb;2020_10;2020_12;st2084;std-b67$:$select:msg:Select Input Color Primaries;709;unspec;470m;470bg;170m;240m;film;2020;st428;st431-2;st432-1;jedec-p22$:$select:msg:Select Pixel Range;limited;l;full;f$=>$select:msg:Select Output Color Matrix;rgb;709;unspec;fcc;470bg;170m;240;ycgco;2020ncl;2020cl;chromancl;chromacl;ictcp$:$select:msg:Select Output Color Transfer;709;unspec;470m;470bg;601;240m;linear;log100;log316;xvycc;srgb;2020_10;2020_12;st2084;std-b67$:$select:msg:Select Output Color Primaries;709;unspec;470m;470bg;170m;240m;film;2020;st428;st431-2;st432-1;jedec-p22$:$select:msg:Select Pixel Range;limited;l;full;f$"", dither_type=""$select:msg:Select Dither Type;none;ordered;random;error_diffusion$"")")}})
 

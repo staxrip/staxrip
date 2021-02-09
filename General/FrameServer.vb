@@ -84,21 +84,27 @@ Public Structure ServerInfo
     Public FrameCount As Integer
     Public ColorSpace As ColorSpace
 
+    ReadOnly Property FrameRate As Double
+        Get
+            If FrameRateDen <> 0 Then
+                Return FrameRateNum / FrameRateDen
+            End If
+        End Get
+    End Property
+
     Function GetInfoText(position As Integer) As String
         If FrameRateDen = 0 Then
             Return ""
         End If
 
-        Dim rate = FrameRateNum / FrameRateDen
-
-        Dim lengthtDate = Date.Today.AddSeconds(FrameCount / rate)
+        Dim lengthtDate = Date.Today.AddSeconds(FrameCount / FrameRate)
         Dim dateFormat = If(lengthtDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff")
         Dim frames = FrameCount.ToString
         Dim len = lengthtDate.ToString(dateFormat)
 
         If position > -1 Then
             frames = position & " of " & FrameCount
-            Dim currentDate = Date.Today.AddSeconds(position / rate)
+            Dim currentDate = Date.Today.AddSeconds(position / FrameRate)
             len = currentDate.ToString(dateFormat) + " of " + lengthtDate.ToString(dateFormat)
         End If
 
@@ -106,7 +112,7 @@ Public Structure ServerInfo
                "Height    : " & Height & BR &
                "Frames    : " + frames + BR +
                "Time      : " + len + BR +
-               "Framerate : " + rate.ToInvariantString.Shorten(9) + " (" & FrameRateNum & "/" & FrameRateDen & ")" + BR +
+               "Framerate : " + FrameRate.ToInvariantString.Shorten(9) + " (" & FrameRateNum & "/" & FrameRateDen & ")" + BR +
                "Format    : " + ColorSpace.ToString.Replace("_", "")
     End Function
 End Structure

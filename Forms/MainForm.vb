@@ -2056,6 +2056,7 @@ Public Class MainForm
             g.SetTempDir()
 
             Dim sourcePAR = MediaInfo.GetVideo(p.LastOriginalSourceFile, "PixelAspectRatio")
+
             If sourcePAR <> "" Then
                 p.SourcePAR.X = CInt(Convert.ToSingle(sourcePAR, CultureInfo.InvariantCulture) * 1000)
                 p.SourcePAR.Y = 1000
@@ -2208,25 +2209,6 @@ Public Class MainForm
                         End If
                     End If
                 End If
-            End If
-
-            Dim errorMsg = ""
-
-            Try
-                errorMsg = p.SourceScript.GetError
-            Catch ex As Exception
-                errorMsg = ex.Message
-            End Try
-
-            If errorMsg <> "" Then
-                Log.WriteHeader("Error opening source")
-                Log.WriteLine(errorMsg + BR2)
-                Log.WriteLine(p.SourceScript.GetFullScript)
-                Log.Save()
-
-                MsgError("Script Error", errorMsg, Handle)
-                p.Script.Synchronize()
-                Throw New AbortException
             End If
 
             UpdateSourceParameters()
@@ -2432,13 +2414,51 @@ Public Class MainForm
             End If
         Next
 
+        Dim errorMsg As String
+
+        Try
+            errorMsg = p.SourceScript.GetError
+        Catch ex As Exception
+            errorMsg = ex.Message
+        End Try
+
+        If errorMsg <> "" Then
+            Log.WriteHeader("Error opening source")
+            Log.WriteLine(errorMsg + BR2)
+            Log.WriteLine(p.SourceScript.GetFullScript)
+            Log.Save()
+
+            MsgError("Script Error", errorMsg, Handle)
+            p.Script.Synchronize()
+            Throw New AbortException
+        End If
+
+        If Not editAVS AndAlso Not editVS Then
+            Exit Sub
+        End If
+
+        Dim sourceInfo = p.SourceScript.Info
+
+        If s.FixFrameRate Then
+            Dim fixedFrameRate = FixFrameRate(sourceInfo.FrameRateNum, sourceInfo.FrameRateDen)
+
+            If fixedFrameRate.num <> sourceInfo.FrameRateNum OrElse fixedFrameRate.den <> sourceInfo.FrameRateDen Then
+                If editAVS Then
+                    p.Script.GetFilter("Source").Script += BR + "AssumeFPS(" & fixedFrameRate.num & ", " & fixedFrameRate.den & ")"
+                    p.SourceScript.Synchronize()
+                Else
+                    p.Script.GetFilter("Source").Script += BR + "clip = core.std.AssumeFPS(clip, None, " & fixedFrameRate.num & ", " & fixedFrameRate.den & ")"
+                    p.SourceScript.Synchronize()
+                End If
+            End If
+        End If
+
         If editAVS Then
             Dim miFPS = MediaInfo.GetFrameRate(p.FirstOriginalSourceFile, 25)
-            Dim avsFPS = p.SourceScript.GetFramerate
+            Dim avsFPS = sourceInfo.FrameRate
 
             If (CInt(miFPS) * 2) = CInt(avsFPS) Then
-                Dim src = p.Script.GetFilter("Source")
-                src.Script = src.Script + BR + "SelectEven().AssumeFPS(" & miFPS.ToInvariantString + ")"
+                p.Script.GetFilter("Source").Script += BR + "SelectEven().AssumeFPS(" & miFPS.ToInvariantString + ")"
                 p.SourceScript.Synchronize()
             End If
         End If
@@ -2468,6 +2488,16 @@ Public Class MainForm
             End If
         End If
     End Sub
+
+    Function FixFrameRate(num As Integer, den As Integer) As (num As Integer, den As Integer)
+        Dim rate = num / den
+
+        If rate < 50 AndAlso rate > 49 Then
+            Return (50, 1)
+        End If
+
+        Return (num, den)
+    End Function
 
     Sub SetSourceFilter(
         sourceFilter As VideoFilter,
@@ -3631,6 +3661,10 @@ Public Class MainForm
             b.Text = "Add filter to convert chroma subsampling to 4:2:0"
             b.Help = "After a source is loaded, automatically add a filter to convert chroma subsampling to 4:2:0"
             b.Field = NameOf(s.ConvertChromaSubsampling)
+
+            b = ui.AddBool
+            b.Text = "Add filter to automatically correct the frame rate."
+            b.Field = NameOf(s.FixFrameRate)
 
             n = ui.AddNum
             n.Text = "Number of frames used for auto crop"

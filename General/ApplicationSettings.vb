@@ -35,6 +35,7 @@ Public Class ApplicationSettings
     Public EnableTooltips As Boolean
     Public EventCommands As List(Of EventCommand)
     Public FilterSetupProfiles As List(Of TargetVideoScript)
+    Public FixFrameRate As Boolean = True
     Public HidePreviewButtons As Boolean
     Public IconFile As String
     Public LastPosition As Integer

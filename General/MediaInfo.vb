@@ -254,7 +254,10 @@ Public Class MediaInfo
     End Function
 
     Shared Function GetInfo(path As String, streamKind As MediaInfoStreamKind, parameter As String) As String
-        If path = "" Then Return ""
+        If path = "" Then
+            Return ""
+        End If
+
         Return GetMediaInfo(path).GetInfo(streamKind, parameter)
     End Function
 

@@ -760,7 +760,7 @@ Public Class Package
         .AvsFilterNames = {"QTGMC"},
         .AvsFiltersFunc = Function() {
             New VideoFilter("Field", "QTGMC | QTGMC...", "QTGMC(preset=""$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$"", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, sourceMatch=3, sharpness=0.2, tr2=2, ediThreads=8)"),
-            New VideoFilter("Field", "QTGMC | QTGMC With Repair", "QTGMC1 = QTGMC(preset=""Slower"", inputType=2)" + BR + "QTGMC2 = QTGMC(preset=""Slower"", inputType=3, prevGlobals=""Reuse"")" + BR + "$select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Repair16(QTGMC1, QTGMC2, 1)$")}})
+            New VideoFilter("Field", "QTGMC | QTGMC With Repair", "QTGMC1 = QTGMC(preset=""Slower"", inputType=2)" + BR + "QTGMC2 = QTGMC(preset=""Slower"", inputType=3, prevGlobals=""Reuse"")" + BR + "$select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Dither_Repair16(QTGMC1, QTGMC2, 1)$")}})
 
     Shared Property SMDegrain As Package = Add(New PluginPackage With {
         .Name = "SMDegrain",

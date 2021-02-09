@@ -116,7 +116,7 @@ Public MustInherit Class AudioProfile
                     Dim firstStream = streams(0)
 
                     If firstStream.Bitrate = 0 AndAlso firstStream.Bitrate2 = 0 Then
-                        firstStream.Bitrate = CInt(Bitrate)
+                        firstStream.Bitrate = CInt(Calc.GetBitrateFromFile(File, p.SourceSeconds))
                     End If
 
                     ret = GetAudioText(firstStream, File)

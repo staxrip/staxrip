@@ -40,7 +40,6 @@
     <OptionInfer>On</OptionInfer>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
-    <PublishUrl>ftp://planetdvb.net/staxrip/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -50,10 +49,9 @@
     <UpdatePeriodically>true</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.planetdvb.net/staxrip/</InstallUrl>
     <TargetCulture>en</TargetCulture>
     <ProductName>StaxRip</ProductName>
-    <PublisherName>stax</PublisherName>
+    <PublisherName>stax76</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>0.9.0.%2a</ApplicationVersion>

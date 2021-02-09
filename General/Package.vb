@@ -41,7 +41,6 @@ Public Class Package
     Property WebURL As String
 
     Shared Property Items As New SortedDictionary(Of String, Package)
-    Shared Property WasConfLoaded As Boolean
 
     Shared Property DGIndex As Package = Add(New Package With {
         .Name = "DGIndex",
@@ -1912,8 +1911,6 @@ Public Class Package
                   End Sub)
     End Sub
 
-    Shared Property ConfLock As New Object
-
     Shared Function Add(pack As Package) As Package
         Items(pack.ID) = pack
         Return pack
@@ -2582,6 +2579,9 @@ Public Class Package
         Return Name.CompareTo(other.Name)
     End Function
 
+    Shared Property ConfLock As New Object
+    Shared Property WasConfLoaded As Boolean
+
     ReadOnly Property ConfPath As String
         Get
             Return Folder.Apps + "Conf\" + ID + ".conf"
@@ -2595,9 +2595,14 @@ Public Class Package
     Shared Sub LoadConfAll()
         If Not WasConfLoaded Then
             WasConfLoaded = True
+            Dim path = Folder.Apps + "Conf"
 
-            For Each pack In Items.Values
-                pack.LoadConf()
+            For Each i In IO.Directory.GetFiles(path)
+                If Items.ContainsKey(i.Base) Then
+                    Items(i.Base).LoadConf()
+                Else
+                    FileHelp.Delete(i)
+                End If
             Next
         End If
     End Sub

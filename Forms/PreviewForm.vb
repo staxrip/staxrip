@@ -857,7 +857,7 @@ Public Class PreviewForm
         ret.Add("Cut|Begin Selection", NameOf(SetRangeStart), Keys.Home)
         ret.Add("Cut|End Selection", NameOf(SetRangeEnd), Keys.End)
         ret.Add("Cut|-")
-        ret.Add("Cut|Split", NameOf(SplitRange), Keys.S)
+        ret.Add("Cut|Split Selection", NameOf(SplitRange), Keys.S)
         ret.Add("Cut|-")
         ret.Add("Cut|Delete Selection", NameOf(DeleteRange), Keys.Delete, Symbol.Delete)
         ret.Add("Cut|Delete All Selections", NameOf(ClearAllRanges), Keys.Control Or Keys.Delete)

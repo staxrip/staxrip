@@ -8,6 +8,7 @@
 - Auto-Rotation feature for supported source files/container (Dendraspis,  [#390](/../../issues/390))
 - BAT and PS1 scripts to install and uninstall AviSynth and VapourSynth
   portable system wide are located at Apps\FrameServer\Install (stax76)
+- New setting to save projects automatically (stax76)
 
 
 2.1.7.9 Beta (2021-02-08)

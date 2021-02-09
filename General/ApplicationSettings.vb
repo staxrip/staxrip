@@ -8,6 +8,7 @@ Public Class ApplicationSettings
     Public AllowCustomPathsInStartupFolder As Boolean
     Public AllowToolsWithWrongVersion As Boolean
     Public AudioProfiles As List(Of AudioProfile)
+    Public AutoSaveProject As Boolean
     Public AviSynthFilterPreferences As StringPairList
     Public AviSynthMode As FrameServerMode
     Public AviSynthProfiles As List(Of FilterCategory)

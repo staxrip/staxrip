@@ -1,4 +1,5 @@
 
+Imports System.ComponentModel
 Imports StaxRip.UI
 
 Public Class FiltersListView
@@ -127,26 +128,28 @@ Public Class FiltersListView
         setup.SetImage(Symbol.MultiSelect)
         g.PopulateProfileMenu(setup.DropDownItems, s.FilterSetupProfiles, AddressOf g.MainForm.ShowFilterSetupProfilesDialog, AddressOf g.MainForm.LoadFilterSetup)
 
-        AddHandler Menu.Opening, Sub()
-                                     Dim active = DirectCast(Menu.Items(0), MenuItemEx)
-                                     active.DropDownItems.ClearAndDisplose
-                                     sep0.Visible = SelectedItems.Count > 0
+        Dim a = Sub(sender As Object, e As CancelEventArgs)
+                    Dim active = DirectCast(Menu.Items(0), MenuItemEx)
+                    active.DropDownItems.ClearAndDisplose
+                    sep0.Visible = SelectedItems.Count > 0
 
-                                     If SelectedItems.Count = 0 Then
-                                         Exit Sub
-                                     End If
+                    If SelectedItems.Count = 0 Then
+                        Exit Sub
+                    End If
 
-                                     Dim selectedFilter = DirectCast(SelectedItems(0).Tag, VideoFilter)
-                                     active.Text = selectedFilter.Category
+                    Dim selectedFilter = DirectCast(SelectedItems(0).Tag, VideoFilter)
+                    active.Text = selectedFilter.Category
 
-                                     For Each i In filterProfiles
-                                         If i.Name = selectedFilter.Category Then
-                                             For Each i2 In i.Filters
-                                                 MenuItemEx.Add(active.DropDownItems, i2.Path, AddressOf ReplaceClick, i2.GetCopy, i2.Script)
-                                             Next
-                                         End If
-                                     Next
-                                 End Sub
+                    For Each i In filterProfiles
+                        If i.Name = selectedFilter.Category Then
+                            For Each i2 In i.Filters
+                                MenuItemEx.Add(active.DropDownItems, i2.Path, AddressOf ReplaceClick, i2.GetCopy, i2.Script)
+                            Next
+                        End If
+                    Next
+                End Sub
+
+        AddHandler Menu.Opening, a
     End Sub
 
     Sub MoveUp()

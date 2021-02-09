@@ -1370,6 +1370,15 @@ Public Class MainForm
         'ObjectHelp.GetCompareString(p).WriteFile(Folder.Desktop + "\test2.txt", Encoding.ASCII)
 
         If ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p) Then
+            If s.AutoSaveProject AndAlso p.SourceFile <> "" Then
+                If g.ProjectPath Is Nothing Then
+                    g.ProjectPath = p.TempDir + p.TargetFile.Base + ".srip"
+                End If
+
+                SaveProjectPath(g.ProjectPath)
+                Return False
+            End If
+
             Using td As New TaskDialog(Of DialogResult)
                 td.MainInstruction = "Save changed project?"
                 td.AddButton("Save", DialogResult.Yes)
@@ -3463,6 +3472,10 @@ Public Class MainForm
             b = ui.AddBool
             b.Text = "Include beta versions for update check"
             b.Field = NameOf(s.CheckForUpdatesBeta)
+
+            b = ui.AddBool
+            b.Text = "Save projects automatically"
+            b.Field = NameOf(s.AutoSaveProject)
 
             b = ui.AddBool()
             b.Text = "Show template selection when loading new files"

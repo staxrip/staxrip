@@ -81,7 +81,7 @@
     :widths: auto
 
     * - id <dynamicmenuitemid>
-      -  Audio1Profiles, Audio2Profiles, EncoderProfiles, FilterSetupProfiles, MuxerProfiles, RecentProjects, TemplateProjects, HelpApplications, Scripts
+      -  Audio1Profiles, Audio2Profiles, EncoderProfiles, FilterSetupProfiles, MuxerProfiles, RecentProjects, TemplateProjects, HelpApplications, Scripts, AddFilters, InsertFilters, ReplaceFilters, FilterCategory
 
 .. option:: -ExecuteCommandLine:commandLine,waitForExit,showProcessWindow,useShellExecute,workingDirectory
 
@@ -357,7 +357,7 @@
 
 .. option:: -ShowFilterProfilesDialog
 
-    Dialog to configure AviSynth filter profiles.
+    Dialog to configure filter profiles.
 
 .. option:: -ShowFiltersEditor
 
@@ -378,6 +378,10 @@
 .. option:: -ShowLogFile
 
     Shows the log file with the built-in log file viewer.
+
+.. option:: -ShowMacrosDialog
+
+    Dialog that shows available macros.
 
 .. option:: -ShowMainMenuEditor
 

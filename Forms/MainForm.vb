@@ -2445,11 +2445,11 @@ Public Class MainForm
             If fixedFrameRate.num <> sourceInfo.FrameRateNum OrElse fixedFrameRate.den <> sourceInfo.FrameRateDen Then
                 If editAVS Then
                     p.Script.GetFilter("Source").Script += BR + "AssumeFPS(" & fixedFrameRate.num & ", " & fixedFrameRate.den & ")"
-                    p.SourceScript.Synchronize()
                 Else
                     p.Script.GetFilter("Source").Script += BR + "clip = core.std.AssumeFPS(clip, None, " & fixedFrameRate.num & ", " & fixedFrameRate.den & ")"
-                    p.SourceScript.Synchronize()
                 End If
+
+                p.SourceScript.Synchronize()
             End If
         End If
 

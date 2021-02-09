@@ -1112,10 +1112,6 @@ Public Class MuxerForm
     End Sub
 
     Sub bnSubtitlePlay_Click(sender As Object, e As EventArgs) Handles bnSubtitlePlay.Click
-        If Not Package.mpvnet.VerifyOK(True) Then
-            Exit Sub
-        End If
-
         Dim st = SubtitleItems(dgvSubtitles.CurrentRow.Index).Subtitle
         Dim filepath = st.Path
 
@@ -1127,9 +1123,11 @@ Public Class MuxerForm
         End If
 
         If FileTypes.SubtitleExludingContainers.Contains(filepath.Ext) Then
-            g.ShellExecute(Package.mpvnet.Path, "--sub-files=" + filepath.Escape + " " + p.FirstOriginalSourceFile.Escape)
+            Dim count = MediaInfo.GetSubtitleCount(p.FirstOriginalSourceFile)
+            g.ShellExecute(Package.mpvnet.Path, "--sub-files=" + filepath.Escape + " " +
+                p.FirstOriginalSourceFile.Escape + $" --sid={count + 1}")
         ElseIf p.FirstOriginalSourceFile = filepath Then
-            g.ShellExecute(Package.mpvnet.Path, "--sub=" & (st.Index + 1) & " " + filepath.Escape)
+            g.ShellExecute(Package.mpvnet.Path, "--sid=" & (st.Index + 1) & " " + filepath.Escape)
         End If
     End Sub
 

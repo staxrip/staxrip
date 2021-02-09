@@ -136,8 +136,7 @@ Tools
     "DGIndex","GUI App","DGIndex.exe","2.0.0.2","2021-01-12"
     "MediaInfo.NET","GUI App","MediaInfoNET.exe","6.8.0.0","2020-12-13"
     "MKVToolnix GUI","GUI App","mkvtoolnix-gui.exe","53","2021-01-30"
-    "MPC-BE","GUI App","mpc-be64.exe","",""
-    "MPC-HC","GUI App","mpc-hc64.exe","","2021-01-03"
+    "MPC","GUI App","mpc-be64.exe","","2020-12-09"
     "mpv.net","GUI App","mpvnet.exe","5.4.8.6","2020-12-30"
     "Subtitle Edit","GUI App","SubtitleEdit.exe","3.5.18","2020-11-09"
     "VSRip","GUI App","VSRip.exe","1.0.0.7","2011-07-14"
@@ -410,7 +409,7 @@ http://www.vapoursynth.com
 x264
 ~~~~
 
-H.264 video encoding console app. Patman mod supports vpy input and shows the estimated size in the status line.
+H.264 video encoding console app.
 
 https://github.com/DJATOM/x264-aMod
 
@@ -481,20 +480,12 @@ MKV muxing/demuxing GUI app.
 https://mkvtoolnix.download
 
 
-MPC-BE
-~~~~~~
+MPC
+~~~
 
 DirectShow based media player (GUI app).
 
 https://sourceforge.net/projects/mpcbe
-
-
-MPC-HC
-~~~~~~
-
-DirectShow based media player (GUI app).
-
-https://mpc-hc.org
 
 
 mpv.net

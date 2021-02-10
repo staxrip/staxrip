@@ -687,12 +687,8 @@ Public Class AV1Params
         sb.Append(" --disable-warning-prompt")
 
         If includePaths Then
-            'If Decoder.Value <> 0 OrElse pipeTool <> "automatic" Then
-            '    sb.Append(" --y4m")
-            'End If
-
             If Passes.Value = 1 Then
-                sb.Append(" --fpf=" + (p.TempDir + p.TargetFile.Base + chunkName + ".txt").Escape)
+                sb.Append(" --fpf=" + (p.TempDir + p.TargetFile.Base + chunkName + ".fpf").Escape)
             End If
 
             sb.Append(" -o " + (targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape)

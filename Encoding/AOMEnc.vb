@@ -692,7 +692,7 @@ Public Class AV1Params
             'End If
 
             If Passes.Value = 1 Then
-                sb.Append(" --fpf=" + (p.TempDir + p.TargetFile.Base + ".txt").Escape)
+                sb.Append(" --fpf=" + (p.TempDir + p.TargetFile.Base + chunkName + ".txt").Escape)
             End If
 
             sb.Append(" -o " + (targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape)

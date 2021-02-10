@@ -8,6 +8,9 @@
 - aomenc default value for --kf-max-dist changed to 120 (Dendraspis, 44vince44, [#506](/../../issues/506))
 - aomenc default value for --kf-min-dist changed to 120 (Dendraspis, 44vince44, [#506](/../../issues/506))
 - aomenc sets --verbose by default (Dendraspis, 44vince44, [#506](/../../issues/506))
+- Fix frame rates for AviSynth functions (44vince44)
+- Replace Rapair16 with Dither_Repair16 for AVS (44vince44)
+- Fix AvsResize website address and VS ConvertFormat command (JJKylee)
 
 
 2.1.8.0 Stable (2021-02-09)

@@ -286,7 +286,7 @@ Public Class AV1Params
                     Passes, Skip, Limit,
                     New BoolParam With {.Switch = "--good", .Text = "Good Quality Deadline"},
                     New BoolParam With {.Switch = "--rt", .Text = "Realtime Quality Deadline"},
-                    New BoolParam With {.Switch = "--verbose", .Text = "Show encoder parameters", .Init = True},
+                    New BoolParam With {.Switch = "--verbose", .Text = "Show encoder parameters", .Value = True},
                     New OptionParam With {.Switch = "--psnr", .Text = "Show PSNR in status line", .Init = 1, .IntegerValue = True, .Options = {"0 - Disable PSNR status line display", "1 - PSNR calculated using input bit-depth (default)", "2 - PSNR calculated using stream bit-depth"}},
                     New NumParam With {.Switch = "--q-hist", .Text = "Q-Hist (n-buckets)"},
                     New NumParam With {.Switch = "--rate-hist", .Text = "Rate Hist (n-buckets)"},
@@ -352,8 +352,8 @@ Public Class AV1Params
 
                 Add("Keyframe Placement",
                     New NumParam With {.Switch = "--enable-fwd-kf", .Text = "Enable forward reference keyframes"},
-                    New NumParam With {.Switch = "--kf-min-dist", .Text = "Min keyframe interval", .Init = 0},
-                    New NumParam With {.Switch = "--kf-max-dist", .Text = "Max keyframe interval", .Init = 120},
+                    New NumParam With {.Switch = "--kf-min-dist", .Text = "Min keyframe interval", .Init = 0, .Config = {0, 9999}},
+                    New NumParam With {.Switch = "--kf-max-dist", .Text = "Max keyframe interval", .Init = 9999, .Value = 120, .Config = {0, 9999}},
                     New BoolParam With {.Switch = "--disable-kf", .Text = "Disable keyframe placement"})
 
                 'New OptionParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}},

@@ -286,18 +286,20 @@ Public Class AV1Params
                     Passes, Skip, Limit,
                     New BoolParam With {.Switch = "--good", .Text = "Good Quality Deadline"},
                     New BoolParam With {.Switch = "--rt", .Text = "Realtime Quality Deadline"},
-                    New BoolParam With {.Switch = "--verbose", .Text = "Show encoder parameters"},
+                    New BoolParam With {.Switch = "--verbose", .Text = "Show encoder parameters", .Init = True},
                     New OptionParam With {.Switch = "--psnr", .Text = "Show PSNR in status line", .Init = 1, .IntegerValue = True, .Options = {"0 - Disable PSNR status line display", "1 - PSNR calculated using input bit-depth (default)", "2 - PSNR calculated using stream bit-depth"}},
-                    WebM,
-                    New BoolParam With {.Switch = "--ivf", .Text = "Output IVF"},
-                    New BoolParam With {.Switch = "--obu", .Text = "Output OBU"},
                     New NumParam With {.Switch = "--q-hist", .Text = "Q-Hist (n-buckets)"},
                     New NumParam With {.Switch = "--rate-hist", .Text = "Rate Hist (n-buckets)"},
                     New BoolParam With {.Switch = "--disable-warnings", .Text = "Disable Warnings"},
                     New OptionParam With {.Switch = "--test-decode", .Text = "Test Decode", .Options = {"Off", "Fatal", "Warn"}})
 
                 Add("Input/Output",
-                    Decoder, PipingToolAVS, PipingToolVS, Chunks)
+                    Decoder, PipingToolAVS, PipingToolVS, Chunks,
+                    New OptionParam With {.Switch = "--input-bit-depth", .Text = "Input Bit Depth", .Options = {"Automatic", "8", "10", "12"}},
+                    New OptionParam With {.Switch = "--bit-depth", .Text = "Bit Depth", .Options = {"8", "10", "12"}, .Init = 1, .AlwaysOn = True},
+                    WebM,
+                    New BoolParam With {.Switch = "--ivf", .Text = "Output IVF"},
+                    New BoolParam With {.Switch = "--obu", .Text = "Output OBU"})
 
                 'New OptionParam With {.Switch = "--profile", .Text = "Profile", .IntegerValue = True, .Options = {"Main", "High", "Professional"}},
                 Add("Encoder Global 1",
@@ -318,7 +320,6 @@ Public Class AV1Params
                     New StringParam With {.Switch = "--timebase", .Text = "Timebase precision"},
                     New StringParam With {.Switch = "--fps", .Text = "Frame Rate"},
                     New StringParam With {.Switch = "--global-error-resilient", .Text = "Global Error Resilient"},
-                    New OptionParam With {.Switch = "--bit-depth", .Text = "Bit Depth", .Options = {"8", "10", "12"}, .Init = 1, .AlwaysOn = True},
                     New NumParam With {.Switch = "--lag-in-frames", .Text = "Lag In Frames", .Init = 25},
                     New OptionParam With {.Switch = "--large-scale-tile", .Text = "Large Scale Tile Coding", .IntegerValue = True, .Options = {"Off", "On"}},
                     New BoolParam With {.Switch = "--monochrome", .Text = "Monochrome"},
@@ -351,8 +352,8 @@ Public Class AV1Params
 
                 Add("Keyframe Placement",
                     New NumParam With {.Switch = "--enable-fwd-kf", .Text = "Enable forward reference keyframes"},
-                    New NumParam With {.Switch = "--kf-min-dist", .Text = "Min keyframe interval", .Init = 23},
-                    New NumParam With {.Switch = "--kf-max-dist", .Text = "Max keyframe interval", .Init = 250},
+                    New NumParam With {.Switch = "--kf-min-dist", .Text = "Min keyframe interval", .Init = 0},
+                    New NumParam With {.Switch = "--kf-max-dist", .Text = "Max keyframe interval", .Init = 120},
                     New BoolParam With {.Switch = "--disable-kf", .Text = "Disable keyframe placement"})
 
                 'New OptionParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}},
@@ -466,7 +467,6 @@ Public Class AV1Params
                     New OptionParam With {.Switch = "--set-tier-mask", .Text = "Tier mask", .IntegerValue = True, .Options = {"Main tier (default)", "High tier"}},
                     New NumParam With {.Switch = "--min-cr", .Text = "Minimum compression ratio", .Init = 0},
                     New NumParam With {.Switch = "--vbr-corpus-complexity-lap", .Text = "Average corpus complexity for 1pass VBR", .Config = {0, 10000}, .Init = 0},
-                    New OptionParam With {.Switch = "--input-bit-depth", .Text = "Input Bit Depth", .Options = {"Automatic", "8", "10", "12"}},
                     New NumParam With {.Switch = "--input-chroma-subsampling-x", .Text = "Chroma subsampling x value"},
                     New NumParam With {.Switch = "--input-chroma-subsampling-y", .Text = "Chroma subsampling y value"},
                     New NumParam With {.Switch = "--sframe-dist", .Text = "S-Frame interval"},

@@ -352,7 +352,7 @@ Public Class AV1Params
 
                 Add("Keyframe Placement",
                     New NumParam With {.Switch = "--enable-fwd-kf", .Text = "Enable forward reference keyframes"},
-                    New NumParam With {.Switch = "--kf-min-dist", .Text = "Min keyframe interval", .Init = 0, .Config = {0, 9999}},
+                    New NumParam With {.Switch = "--kf-min-dist", .Text = "Min keyframe interval", .Init = 0, .Value = 12, .Config = {0, 9999}},
                     New NumParam With {.Switch = "--kf-max-dist", .Text = "Max keyframe interval", .Init = 9999, .Value = 120, .Config = {1, 9999}},
                     New BoolParam With {.Switch = "--disable-kf", .Text = "Disable keyframe placement"})
 

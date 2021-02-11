@@ -12,6 +12,7 @@
 - Replace Rapair16 with Dither_Repair16 for AVS (44vince44)
 - Fix AvsResize website address and VS ConvertFormat command (JJKylee)
 - aomenc 2-pass stats file extension change to '.fpf' (Dendraspis)
+- Fix shortcut editor shown in code editor when m is typed (stax76, [#505](/../../issues/505))
 
 
 2.1.8.0 Stable (2021-02-09)

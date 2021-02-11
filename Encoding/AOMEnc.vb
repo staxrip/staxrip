@@ -291,7 +291,7 @@ Public Class AV1Params
                     New OptionParam With {.Switch = "--input-bit-depth", .Text = "Input Bit Depth", .Options = {"Automatic", "8", "10", "12"}},
                     New OptionParam With {.Switch = "--bit-depth", .Text = "Bit Depth", .Options = {"8", "10", "12"}, .Init = 1, .AlwaysOn = True},
                     New BoolParam With {.Switch = "--webm", .Text = "Output WEBM (enabled by default when WebM IO is enabled)"},
-                    New BoolParam With {.Switch = "--ivf", .Text = "Output IVF"},
+                    New BoolParam With {.Switch = "--ivf", .Text = "Output IVF", .Value = True},
                     New BoolParam With {.Switch = "--obu", .Text = "Output OBU"})
 
                 'New OptionParam With {.Switch = "--profile", .Text = "Profile", .IntegerValue = True, .Options = {"Main", "High", "Professional"}},

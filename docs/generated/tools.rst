@@ -561,7 +561,7 @@ AvsResize
 
 Filters: z_ConvertFormat, z_PointResize, z_BilinearResize, z_BicubicResize, z_LanczosResize, z_Lanczos4Resize, z_Spline16Resize, z_Spline36Resize, z_Spline64Resize
 
-http://forum.doom9.org/showthread.php?t=173986
+http://avisynth.nl/index.php/Avsresize
 
 
 AVSTP

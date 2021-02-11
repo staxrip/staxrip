@@ -2595,9 +2595,8 @@ Public Class Package
     Shared Sub LoadConfAll()
         If Not WasConfLoaded Then
             WasConfLoaded = True
-            Dim path = Folder.Apps + "Conf"
 
-            For Each i In IO.Directory.GetFiles(path)
+            For Each i In IO.Directory.GetFiles(Folder.Apps + "Conf")
                 If Items.ContainsKey(i.Base) Then
                     Items(i.Base).LoadConf()
                 Else

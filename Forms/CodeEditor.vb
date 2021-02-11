@@ -322,7 +322,7 @@ Public Class CodeEditor
         ret.Add("Copy", NameOf(Copy), Symbol.Copy)
         ret.Add("Paste", NameOf(Paste), Symbol.Paste)
         ret.Add("-")
-        ret.Add("Edit Menu...", NameOf(OpenMenuEditor), Keys.M)
+        ret.Add("Edit Menu...", NameOf(OpenMenuEditor))
 
         Return ret
     End Function

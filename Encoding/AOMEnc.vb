@@ -243,13 +243,6 @@ Public Class AV1Params
         .Text = "Target Bitrate",
         .VisibleFunc = Function() RateMode.Value <> 2 AndAlso RateMode.Value <> 3}
 
-    Property WebM As New OptionParam With {
-        .Path = "Basic",
-        .Switch = "--webm",
-        .Text = "Output WEBM",
-        .IntegerValue = True,
-        .Options = {"0 - Disabled", "1 - Enabled (default when WebM IO is enabled)"}}
-
     Property CustomFirstPass As New StringParam With {
         .Text = "Custom 1st pass",
         .Quotes = QuotesMode.Never,
@@ -297,7 +290,7 @@ Public Class AV1Params
                     Decoder, PipingToolAVS, PipingToolVS, Chunks,
                     New OptionParam With {.Switch = "--input-bit-depth", .Text = "Input Bit Depth", .Options = {"Automatic", "8", "10", "12"}},
                     New OptionParam With {.Switch = "--bit-depth", .Text = "Bit Depth", .Options = {"8", "10", "12"}, .Init = 1, .AlwaysOn = True},
-                    WebM,
+                    New BoolParam With {.Switch = "--webm", .Text = "Output WEBM (enabled by default when WebM IO is enabled)"},
                     New BoolParam With {.Switch = "--ivf", .Text = "Output IVF"},
                     New BoolParam With {.Switch = "--obu", .Text = "Output OBU"})
 

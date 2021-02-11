@@ -13,6 +13,7 @@
 - Fix AvsResize website address and VS ConvertFormat command (JJKylee)
 - aomenc 2-pass stats file extension change to '.fpf' (Dendraspis)
 - Fix aomenc --webm parameter (Dendraspis)
+- Force mkvmerge to write fps in case of aomenc not using IVF container (Dendraspis)
 - Fix shortcut editor shown in code editor when m is typed (stax76, [#505](/../../issues/505))
 
 

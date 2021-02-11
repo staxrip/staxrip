@@ -15,6 +15,7 @@
 - Fix aomenc --webm parameter (Dendraspis)
 - Force mkvmerge to write fps in case of aomenc not using IVF container (Dendraspis)
 - Fix shortcut editor shown in code editor when m is typed (stax76, [#505](/../../issues/505))
+- x265 UI option for '--progress-readframes' on DJATOM builds (Dendraspis)
 
 
 2.1.8.0 Stable (2021-02-09)

@@ -2285,10 +2285,12 @@ Public Class Package
                 If size <> x265FileSize Then
                     Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", True)
 
-                    If output.Contains("Asuna") Then
-                        x265TypeValue = x265Type.Asuna
-                    ElseIf output.Contains("DJATOM") Then
+                    If output.Contains("DJATOM") Then
                         x265TypeValue = x265Type.DJATOM
+                    ElseIf output.Contains("Asuna") Then
+                        x265TypeValue = x265Type.Asuna
+                    ElseIf output.Contains("Patman") Then
+                        x265TypeValue = x265Type.Patman
                     Else
                         x265TypeValue = x265Type.Vanilla
                     End If

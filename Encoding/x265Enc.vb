@@ -916,6 +916,14 @@ Public Class x265Params
         .Values = {"0", "1", "2"},
         .Init = 1}
 
+    Property ProgressReadframes As New BoolParam() With {
+        .HelpSwitch = "--progress-readframes",
+        .Text = "Progress Readframes",
+        .Help = "Print how much frames retrieved from reader",
+        .Init = False,
+        .VisibleFunc = Function() Package.x265Type = x265Type.DJATOM}
+
+
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
             If ItemsValue Is Nothing Then
@@ -1094,7 +1102,8 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--uhd-bd", .Text = "Ultra HD Blu-ray"},
                     StrongIntraSmoothing,
                     New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .Init = False},
-                    New BoolParam With {.Switch = "--lowpass-dct", .Text = "Lowpass DCT"})
+                    New BoolParam With {.Switch = "--lowpass-dct", .Text = "Lowpass DCT"},
+                    ProgressReadframes)
                 Add("Custom", Custom, CustomFirstPass, CustomLastPass, CustomNthPass)
 
                 For Each item In ItemsValue
@@ -1413,6 +1422,10 @@ Public Class x265Params
             If Frames.Value > 0 AndAlso Not IsCustom(pass, "--frames") Then
                 sb.Append(" --frames " & Frames.Value)
             End If
+        End If
+
+        If ProgressReadframes.Value AndAlso ProgressReadframes.VisibleFunc().Invoke() AndAlso Not IsCustom(pass, ProgressReadframes.HelpSwitch) Then
+            sb.Append(" " + ProgressReadframes.HelpSwitch)
         End If
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))
@@ -2120,3 +2133,11 @@ Public Enum x265RateMode
     TwoPass
     ThreePass
 End Enum
+
+Public Enum x265Type
+    Vanilla
+    Patman
+    DJATOM
+    Asuna
+End Enum
+

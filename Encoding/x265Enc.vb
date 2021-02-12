@@ -1424,7 +1424,7 @@ Public Class x265Params
             End If
         End If
 
-        If ProgressReadframes.Value AndAlso ProgressReadframes.VisibleFunc().Invoke() AndAlso Not IsCustom(pass, ProgressReadframes.HelpSwitch) Then
+        If ProgressReadframes.Value AndAlso Not IsCustom(pass, ProgressReadframes.HelpSwitch) Then
             sb.Append(" " + ProgressReadframes.HelpSwitch)
         End If
 

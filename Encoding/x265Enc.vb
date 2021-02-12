@@ -917,10 +917,10 @@ Public Class x265Params
         .Init = 1}
 
     Property ProgressReadframes As New BoolParam() With {
-        .HelpSwitch = "--progress-readframes",
+        .Switch = "--progress-readframes",
         .Text = "Progress Readframes",
         .Help = "Print how much frames retrieved from reader",
-        .Init = False,
+        .Weight = 9,
         .VisibleFunc = Function() Package.x265Type = x265Type.DJATOM}
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -1118,6 +1118,10 @@ Public Class x265Params
 
                     item.HelpSwitch = switches(0)
                 Next
+
+                If HasWeight Then
+                    ItemsValue = ItemsValue.OrderBy(Function(i) i.Weight).ToList
+                End If
             End If
 
             Return ItemsValue
@@ -1421,10 +1425,6 @@ Public Class x265Params
             If Frames.Value > 0 AndAlso Not IsCustom(pass, "--frames") Then
                 sb.Append(" --frames " & Frames.Value)
             End If
-        End If
-
-        If ProgressReadframes.Value AndAlso Not IsCustom(pass, ProgressReadframes.HelpSwitch) Then
-            sb.Append(" " + ProgressReadframes.HelpSwitch)
         End If
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))

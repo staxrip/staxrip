@@ -1032,7 +1032,8 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--log-level", .Switches = {"--log"}, .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Init = 3},
                     New OptionParam With {.Switch = "--csv-log-level", .Text = "CSV Log Level", .IntegerValue = True, .Options = {"Default", "Summary", "Frame"}},
                     New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
-                    New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
+                    New BoolParam With {.Switch = "--psnr", .Text = "PSNR"},
+                    ProgressReadframes)
                 Add("VUI",
                     MasterDisplay,
                     New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
@@ -1102,8 +1103,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--uhd-bd", .Text = "Ultra HD Blu-ray"},
                     StrongIntraSmoothing,
                     New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .Init = False},
-                    New BoolParam With {.Switch = "--lowpass-dct", .Text = "Lowpass DCT"},
-                    ProgressReadframes)
+                    New BoolParam With {.Switch = "--lowpass-dct", .Text = "Lowpass DCT"})
                 Add("Custom", Custom, CustomFirstPass, CustomLastPass, CustomNthPass)
 
                 For Each item In ItemsValue

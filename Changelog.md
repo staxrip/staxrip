@@ -14,8 +14,9 @@
 - aomenc 2-pass stats file extension change to '.fpf' (Dendraspis)
 - Fix aomenc --webm parameter (Dendraspis)
 - Force mkvmerge to write fps in case of aomenc not using IVF container (Dendraspis)
-- Fix shortcut editor shown in code editor when m is typed (stax76, [#505](/../../issues/505))
+- Fix shortcut editor key default causing an issue when m is typed (stax76, [#505](/../../issues/505))
 - x265 UI option for '--progress-readframes' on DJATOM builds (Dendraspis)
+- nvenc 5.27 (Windows 10 long path support)
 
 
 2.1.8.0 Stable (2021-02-09)

@@ -685,12 +685,11 @@ Public Class MkvMuxer
             args += " --aspect-ratio " & id & ":" + Calc.GetTargetDAR.ToInvariantString.Shorten(11)
         End If
 
-        If MediaInfo.GetFrameRate(p.VideoEncoder.OutputPath, 0) = 0 Then
+        If MediaInfo.GetFrameRate(p.VideoEncoder.OutputPath, 0) = 0 OrElse
+            (TypeOf p.VideoEncoder Is aomenc AndAlso
+            Not p.VideoEncoder.GetCommandLine(True, True).Contains(" --ivf")) Then
+
             args += " --default-duration 0:" + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
-        ElseIf TypeOf p.VideoEncoder Is aomenc Then
-            If Not DirectCast(p.VideoEncoder, aomenc).GetCommandLine(True, True).Contains(" --ivf") Then
-                args += " --default-duration 0:" + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
-            End If
         End If
 
         If TimestampsFile <> "" Then

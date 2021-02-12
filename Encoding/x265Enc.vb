@@ -923,7 +923,6 @@ Public Class x265Params
         .Init = False,
         .VisibleFunc = Function() Package.x265Type = x265Type.DJATOM}
 
-
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
             If ItemsValue Is Nothing Then
@@ -1412,13 +1411,13 @@ Public Class x265Params
 
                 sb.Append(" --output NUL " + input)
             Else
-                sb.Append(" --output " + (targetPath.DirAndBase + chunkName +
-                          targetPath.ExtFull).Escape + " " + input)
+                sb.Append(" --output " + (targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape + " " + input)
             End If
         Else
             If Seek.Value > 0 AndAlso Not IsCustom(pass, "--seek") Then
                 sb.Append(" --seek " & Seek.Value)
             End If
+
             If Frames.Value > 0 AndAlso Not IsCustom(pass, "--frames") Then
                 sb.Append(" --frames " & Frames.Value)
             End If

@@ -3892,9 +3892,10 @@ Public Class TextEncoding
 
         If commandLine <> "" Then
             Return commandLine.Contains(".avs") AndAlso
-                ((commandLine.Contains("x264") AndAlso
+                (commandLine.Contains(Package.NVEnc.Filename) OrElse
+                (commandLine.Contains(Package.x264.Filename) AndAlso
                 (Not g.ContainsPipeTool(commandLine) OrElse commandLine.Contains("avs2pipemod"))) OrElse
-                (commandLine.Contains("x265") AndAlso
+                (commandLine.Contains(Package.x265.Filename) AndAlso
                 (Not g.ContainsPipeTool(commandLine) OrElse commandLine.Contains("avs2pipemod"))))
         End If
     End Function

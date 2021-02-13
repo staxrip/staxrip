@@ -267,8 +267,7 @@ Public Class x265Enc
 
         tester.IgnoredSwitches = "crop-rectfast-cbf frame-skip help lavf no-scenecut
             ratetol recon-y4m-exec input input-res lft total-frames version pbration
-            no-progress progress -hrd-concat fullhelp hdr-opt analysis-reuse-level
-            progress-readframes"
+            no-progress progress -hrd-concat fullhelp hdr-opt analysis-reuse-level"
 
         tester.UndocumentedSwitches = "numa-pools rdoq cip qblur cplxblur cu-stats
             dhdr10-info opt-qp-pps opt-ref-list-length-pps single-sei hrd-concat 
@@ -1119,9 +1118,7 @@ Public Class x265Params
                     item.HelpSwitch = switches(0)
                 Next
 
-                If HasWeight Then
-                    ItemsValue = ItemsValue.OrderBy(Function(i) i.Weight).ToList
-                End If
+                ItemsValue = ItemsValue.OrderBy(Function(i) i.Weight).ToList
             End If
 
             Return ItemsValue
@@ -1240,6 +1237,7 @@ Public Class x265Params
                                 If Seek.Value > 0 Then
                                     sb.Append($" --seek {Seek.Value}")
                                 End If
+
                                 If Frames.Value = 0 Then
                                     sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
                                 Else

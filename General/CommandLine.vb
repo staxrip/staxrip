@@ -6,7 +6,6 @@ Namespace CommandLine
     Public MustInherit Class CommandLineParams
         Property Title As String
         Property Separator As String = " "
-        Property HasWeight As Boolean
 
         Event ValueChanged(item As CommandLineParam)
         MustOverride ReadOnly Property Items As List(Of CommandLineParam)
@@ -33,11 +32,6 @@ Namespace CommandLine
         Protected Sub Add(path As String, ParamArray items As CommandLineParam())
             For Each i In items
                 i.Path = path
-
-                If i.Weight <> 0 Then
-                    HasWeight = True
-                End If
-
                 ItemsValue.Add(i)
             Next
         End Sub

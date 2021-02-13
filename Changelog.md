@@ -9,7 +9,7 @@
 - aomenc supports chunk encoding (Dendraspis, [#368](/../../issues/368))
 - aomenc gets decoder and pipe settings (Dendraspis, [#497](/../../issues/497))
 - aomenc default value for --kf-max-dist changed to 120 (Dendraspis, 44vince44, [#506](/../../issues/506))
-- aomenc default value for --kf-min-dist changed to 120 (Dendraspis, 44vince44, [#506](/../../issues/506))
+- aomenc default value for --kf-min-dist changed to 12 (Dendraspis, 44vince44, [#506](/../../issues/506))
 - aomenc sets --verbose by default (Dendraspis, 44vince44, [#506](/../../issues/506))
 - Fix frame rates for AviSynth functions (44vince44)
 - Replace Rapair16 with Dither_Repair16 for AVS (44vince44)

@@ -636,6 +636,36 @@ Public Class PreviewForm
         AfterPositionChanged()
     End Sub
 
+    <Command("Creates a job for each selection.")>
+    Sub CreateJobForEachSelection()
+        If p.SourceFile = "" OrElse p.Ranges.Count = 0 Then
+            Exit Sub
+        End If
+
+        If Not g.MainForm.AssistantPassed Then
+            MsgError("Follow assistant message in main dialog.")
+            Exit Sub
+        End If
+
+        Dim ranges = p.Ranges.ToArray
+        Dim targetFile = p.TargetFile
+
+        For x = 0 To ranges.Length - 1
+            p.Ranges.Clear()
+            p.Ranges.Add(ranges(x))
+            g.UpdateTrim(p.Script)
+            g.MainForm.UpdateFilters()
+            g.MainForm.tbTargetFile.Text = targetFile.DirAndBase + "_" & (x + 1) & targetFile.ExtFull
+            g.MainForm.AddJob(False)
+        Next
+
+        g.MainForm.tbTargetFile.Text = targetFile
+        p.Ranges = ranges.ToList
+        g.UpdateTrim(p.Script)
+        g.MainForm.UpdateFilters()
+        g.MainForm.ShowJobsDialog()
+    End Sub
+
     <Command("Clears all cuts.")>
     Sub ClearAllRanges()
         p.Ranges.Clear()
@@ -861,6 +891,8 @@ Public Class PreviewForm
         ret.Add("Cut|-")
         ret.Add("Cut|Delete Selection", NameOf(DeleteRange), Keys.Delete, Symbol.Delete)
         ret.Add("Cut|Delete All Selections", NameOf(ClearAllRanges), Keys.Control Or Keys.Delete)
+        ret.Add("Cut|-")
+        ret.Add("Cut|Create job for each selection", NameOf(CreateJobForEachSelection))
 
         ret.Add("View|Info", NameOf(ToggleInfos), Keys.I, Symbol.Info)
         ret.Add("View|Fullscreen", NameOf(SwitchWindowState), Keys.Enter, Symbol.FullScreen)

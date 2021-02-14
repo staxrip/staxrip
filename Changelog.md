@@ -2,6 +2,7 @@
 2.1.8.2 Beta (2021-02-??)
 =========================
 
+- New Preview dialog feature 'Create job for each selection' (stax76, [#512](/../../issues/512))
 - nvenc 5.29
 
 

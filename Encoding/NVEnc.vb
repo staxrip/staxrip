@@ -123,14 +123,14 @@ Public Class NVEnc
         tester.IgnoredSwitches = "help version check-device input-analyze input-format output-format
             video-streamid video-track vpp-delogo vpp-delogo-cb vpp-delogo-cr vpp-delogo-depth output
             vpp-delogo-pos vpp-delogo-select vpp-delogo-y check-avversion check-codecs caption2ass log
-            check-encoders check-decoders check-formats check-protocols log-framelist fps
-            check-filters input raw avs vpy vpy-mt key-on-chapter audio-delay audio-ignore-decode-error
+            check-encoders check-decoders check-formats check-protocols log-framelist fps audio-delay
+            check-filters input raw avs vpy vpy-mt key-on-chapter video-tag audio-ignore-decode-error
             avcuvid-analyze audio-source audio-file seek format audio-copy audio-ignore-notrack-error
             audio-copy audio-codec vpp-perf-monitor avi audio-profile check-profiles avsync mux-option
             audio-bitrate audio-ignore audio-ignore audio-samplerate audio-resampler audio-stream dar
             audio-stream audio-stream audio-stream audio-filter chapter-copy chapter sub-copy input-res
-            audio-disposition audio-metadata option-list sub-disposition sub-metadata
-            metadata video-metadata video-tag attachment-copy chapter-no-trim"
+            audio-disposition audio-metadata option-list sub-disposition sub-metadata process-codepage
+            metadata attachment-copy chapter-no-trim video-metadata"
 
         tester.UndocumentedSwitches = "cbrhq vbrhq"
         tester.Package = Package.NVEnc

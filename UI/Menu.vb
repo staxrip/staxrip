@@ -130,9 +130,9 @@ Namespace UI
         End Sub
 
         Function GetAllItems() As List(Of CustomMenuItem)
-            Dim l As New List(Of CustomMenuItem)
-            AddToList(Me, l)
-            Return l
+            Dim ret As New List(Of CustomMenuItem)
+            AddToList(Me, ret)
+            Return ret
         End Function
 
         Sub AddToList(item As CustomMenuItem, list As List(Of CustomMenuItem))
@@ -143,7 +143,7 @@ Namespace UI
         End Sub
 
         Function GetClone() As CustomMenuItem
-            Return DirectCast(ObjectHelp.GetCopy(Me), CustomMenuItem)
+            Return ObjectHelp.GetCopy(Me)
         End Function
     End Class
 
@@ -175,6 +175,10 @@ Namespace UI
 
         Sub AddKeyDownHandler(control As Control)
             AddHandler control.KeyDown, AddressOf OnKeyDown
+        End Sub
+
+        Sub RemoveKeyDownHandler(control As Control)
+            RemoveHandler control.KeyDown, AddressOf OnKeyDown
         End Sub
 
         Function GetKeys() As StringPairList
@@ -535,12 +539,6 @@ Namespace UI
             EnabledFunc = Nothing
             VisibleFunc = Nothing
             Form = Nothing
-
-            If Not CustomMenuItem Is Nothing Then
-                CustomMenuItem.MenuItem = Nothing
-            End If
-
-            CustomMenuItem = Nothing
         End Sub
 
         Function GetHelp() As StringPair

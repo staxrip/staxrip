@@ -294,10 +294,19 @@ Public Class Package
         .IsIncluded = False,
         .HelpSwitch = "-h"})
 
+    Shared Property VisualCpp2010 As Package = Add(New Package With {
+        .Name = "Visual C++ 2010",
+        .Filename = "msvcp100.dll",
+        .Description = "Visual C++ 2010 Redistributable.",
+        .DownloadURL = "https://www.microsoft.com/en-us/download/details.aspx?id=14632",
+        .Locations = {Folder.System, "Support\VC"},
+        .VersionAllowAny = True,
+        .TreePath = "Runtimes"})
+
     Shared Property VisualCpp2012 As Package = Add(New Package With {
         .Name = "Visual C++ 2012",
         .Filename = "msvcp110.dll",
-        .Description = "Visual C++ 2012 Redistributable is required by some tools used by StaxRip.",
+        .Description = "Visual C++ 2012 Redistributable.",
         .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
         .Locations = {Folder.System, "Support\VC"},
         .VersionAllowAny = True,
@@ -306,16 +315,16 @@ Public Class Package
     Shared Property VisualCpp2013 As Package = Add(New Package With {
         .Name = "Visual C++ 2013",
         .Filename = "msvcp120.dll",
-        .Description = "Visual C++ 2013 Redistributable is required by some tools used by StaxRip.",
+        .Description = "Visual C++ 2013 Redistributable.",
         .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=40784",
         .VersionAllowAny = True,
         .Locations = {Folder.System, "Support\VC"},
         .TreePath = "Runtimes"})
 
     Shared Property VisualCpp2019 As Package = Add(New Package With {
-        .Name = "Visual C++ 2019",
+        .Name = "Visual C++ 2015-2019",
         .Filename = "msvcp140.dll",
-        .Description = "Visual C++ Redistributable is required by many tools used by StaxRip.",
+        .Description = "Visual C++ 2015-2019 Redistributable.",
         .DownloadURL = "https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads",
         .VersionAllowOld = False,
         .VersionAllowNew = True,

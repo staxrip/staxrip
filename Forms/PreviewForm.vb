@@ -647,6 +647,10 @@ Public Class PreviewForm
             Exit Sub
         End If
 
+        If MsgQuestion("Save current project?") = DialogResult.OK Then
+            g.MainForm.IsSaveCanceled()
+        End If
+
         Dim ranges = p.Ranges.ToArray
         Dim targetFile = p.TargetFile
 
@@ -1107,6 +1111,7 @@ Public Class PreviewForm
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
         MyBase.OnFormClosing(args)
         Instances.Remove(Me)
+        GenericMenu.RemoveKeyDownHandler(Me)
         g.UpdateTrim(p.Script)
         s.ShowPreviewInfo = ShowPreviewInfo
         s.HidePreviewButtons = HidePreviewButtons

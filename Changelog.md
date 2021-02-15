@@ -3,7 +3,6 @@
 =========================
 
 - New Preview dialog feature 'Create job for each selection' (stax76, [#512](/../../issues/512))
-- Fix crash in Preview dialog using 2 instances and shortcut keys (stax76, [#515](/../../issues/515))
 - nvenc 5.29
 
 

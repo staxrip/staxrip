@@ -326,8 +326,7 @@ Public Class Package
         .Filename = "msvcp140.dll",
         .Description = "Visual C++ 2015-2019 Redistributable.",
         .DownloadURL = "https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads",
-        .VersionAllowOld = False,
-        .VersionAllowNew = True,
+        .VersionAllowAny = True,
         .Locations = {Folder.System, "Support\VC"},
         .TreePath = "Runtimes"})
 

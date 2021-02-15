@@ -5,6 +5,7 @@
 - New Preview dialog feature 'Create job for each selection' (stax76, [#512](/../../issues/512))
 - Fix crash in Preview dialog using 2 instances and shortcut keys (stax76, [#515](/../../issues/515))
 - nvenc 5.29
+- MP4Box 1.1.0 rev506 gcc10.2 Patman
 
 
 2.1.8.1 Beta (2021-02-13)

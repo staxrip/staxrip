@@ -11,7 +11,7 @@ Public Class PreviewForm
 #Region " Designer "
     Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
-            If Not (components Is Nothing) AndAlso Instances.Count = 0 Then
+            If Not (components Is Nothing) Then
                 components.Dispose()
             End If
         End If

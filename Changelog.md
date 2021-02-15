@@ -3,7 +3,6 @@
 =========================
 
 - New Preview dialog feature 'Create job for each selection' (stax76, [#512](/../../issues/512))
-- Fix crash when using shortcuts in an opened Preview after another was closed (Dendraspis, [#515](/../../issues/515))
 - nvenc 5.29
 
 

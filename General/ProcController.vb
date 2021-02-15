@@ -100,6 +100,10 @@ Public Class ProcController
     Shared LastProgress As Double
 
     Sub SetText(value As String)
+        If Proc.IsSilent Then
+            Exit Sub
+        End If
+
         value = value.Trim()
 
         If s.ProgressOutputCustomize AndAlso Not CustomProgressFailure Then

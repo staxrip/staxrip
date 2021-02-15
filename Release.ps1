@@ -107,7 +107,6 @@ $patterns = @(
     '*\Debug.log',
     '*\DGIndex.ini',
     '*\eac3to\log.txt',
-    '*\ffmpeg\AviSynth.dll',
     '*\FrameServer.exp',
     '*\FrameServer.ilk',
     '*\FrameServer.lib',
@@ -118,9 +117,6 @@ $patterns = @(
     '*\StaxRip.vshost.exe.config',
     '*\StaxRip.vshost.exe.manifest',
     '*\StaxRip.vshost.sln',
-    '*\VCEEnc\AviSynth.dll',
-    '*\x264\AviSynth.dll',
-    '*\x265\AviSynth.dll',
     '*_pycache_*'
 )
 

@@ -71,6 +71,10 @@ Public Class NVEnc
         End Get
     End Property
 
+    Overrides Function GetFixedBitrate() As Integer
+        Return CInt(Params.Bitrate.Value)
+    End Function
+
     Overrides Sub Encode()
         If OutputExt = "h265" Then
             Dim codecs = ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw").Right("Codec(s)")
@@ -209,6 +213,13 @@ Public Class NVEnc
             .Text = "Show advanced QP settings",
             .VisibleFunc = Function() Mode.Value = 0
         }
+
+        Property Bitrate As New NumParam With {
+            .Switches = {"--cbr", "--cbrhq", "--vbr", "--vbrhq"},
+            .Text = "Bitrate",
+            .Init = p.VideoBitrate,
+            .VisibleFunc = Function() Mode.Value > 0,
+            .Config = {0, 1000000, 100}}
 
         Property QP As New NumParam With {
             .Switches = {"--cqp"},
@@ -437,7 +448,7 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--input-csp", .Text = "Input Colorspace", .Init = 1, .Options = {"NV12", "YV12", "YUV420P", "YUV422P", "YUV444P", "YUV420P9LE", "YUV420P10LE", "YUV420P12LE", "YUV420P14LE", "YUV420P16LE", "P010", "YUV422P9LE", "YUV422P10LE", "YUV422P12LE", "YUV422P14LE", "YUV422P16LE", "YUV444P9LE", "YUV444P10LE", "YUV444P12LE", "YUV444P14LE", "YUV444P16LE"}},
                         Interlace,
                         New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
-                        QPAdvanced, QP, QPI, QPP, QPB)
+                        QPAdvanced, Bitrate, QP, QPI, QPP, QPB)
                     Add("Rate Control",
                         New StringParam With {.Switch = "--dynamic-rc", .Text = "Dynamic RC"},
                         New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Config = {0, Integer.MaxValue, 1}},
@@ -631,6 +642,8 @@ Public Class NVEnc
                     End If
                 Next
             End If
+
+            p.VideoBitrate = CInt(Bitrate.Value)
 
             If Not QPI.NumEdit Is Nothing Then
                 NnediField.MenuButton.Enabled = Deinterlacer.Value = 3
@@ -935,19 +948,19 @@ Public Class NVEnc
         End Function
 
         Function GetModeArgs() As String
-            Dim bitrate = If(ConstantQualityMode.Value, 0, p.VideoBitrate)
+            Dim rate = If(ConstantQualityMode.Value, 0, Bitrate.Value)
 
             Select Case Mode.Value
                 Case 0
                     Return If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
                 Case 1
-                    Return "--cbr " & p.VideoBitrate
+                    Return "--cbr " & rate
                 Case 2
-                    Return "--cbrhq " & p.VideoBitrate
+                    Return "--cbrhq " & rate
                 Case 3
-                    Return "--vbr " & bitrate
+                    Return "--vbr " & rate
                 Case 4
-                    Return "--vbrhq " & bitrate
+                    Return "--vbrhq " & rate
             End Select
         End Function
 

@@ -281,7 +281,6 @@ Public MustInherit Class VideoEncoder
                 Bitrate = p.VideoBitrate
             End If
 
-            p.BitrateIsFixed = True
             g.MainForm.tbBitrate.Text = Bitrate.ToString
         End If
 

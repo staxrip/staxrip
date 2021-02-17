@@ -1233,7 +1233,9 @@ Public Class MuxerForm
     Sub MuxerForm_HelpRequested(sender As Object, ea As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
-        form.Doc.WriteParagraph(Strings.Muxer)
+        form.Doc.WriteParagraph(
+            "A muxer merges different video, audio and subtitle files " +
+            "into a single container file which is the actual output file.")
         form.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
         form.Doc.WriteTable("Macros", Macro.GetTips(False, True))
         form.Show()

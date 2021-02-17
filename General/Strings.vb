@@ -1,5 +1,0 @@
-
-Public Class Strings
-    Public Shared Muxer As String = "A muxer merges different video, audio and subtitle files into a single container file which is the actual output file."
-    Public Shared TaskDialogFooter As String = "[copymsg: Copy Message]"
-End Class

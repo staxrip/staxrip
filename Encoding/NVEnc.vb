@@ -168,11 +168,11 @@ Public Class NVEnc
         Property Mode As New OptionParam With {
             .Text = "Mode",
             .Switches = {"--cqp", "--cbr", "--cbrhq", "--vbr", "--vbrhq"},
-            .Options = {"CQP - Constant QP",
-                        "CBR - Constant Bitrate",
-                        "CBR HQ - Constant Bitrate HQ",
-                        "VBR - Variable Bitrate",
-                        "VBR HQ - Variable Bitrate HQ"},
+            .Options = {"CQP: Constant QP",
+                        "CBR: Constant Bitrate",
+                        "CBRHQ: Const. Bitrate HQ",
+                        "VBR: Variable Bitrate",
+                        "VBRHQ: Var. Bitrate HQ"},
             .VisibleFunc = Function() Not Lossless.Value,
             .ArgsFunc = AddressOf GetModeArgs,
             .ImportAction = Sub(param, arg)
@@ -440,7 +440,7 @@ Public Class NVEnc
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
                     Add("Basic",
-                        Mode, Decoder, Codec,
+                        Mode, Codec,
                         New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Init = 6, .Options = {"Default", "Quality", "Performance", "P1 (Performance)", "P2", "P3", "P4 (Default)", "P5", "P6", "P7 (Quality)"}, .Values = {"default", "quality", "performance", "P1", "P2", "P3", "P4", "P5", "P6", "P7"}},
                         Profile, ProfileH265,
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}, .Values = {"main", "high"}},
@@ -602,6 +602,7 @@ Public Class NVEnc
                         New StringParam With {.Switch = "--timecode", .Text = "Timecode File"},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option"},
+                        Decoder,
                         Interlace,
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},

@@ -2951,6 +2951,21 @@ Public Class MainForm
                     Continue For
                 End If
 
+                If TypeOf ap Is GUIAudioProfile Then
+                    Dim gap = DirectCast(ap, GUIAudioProfile)
+
+                    If (gap.AudioCodec = AudioCodec.AC3 OrElse gap.AudioCodec = AudioCodec.EAC3) AndAlso
+                        gap.Params.ChannelsMode = ChannelsMode._7 OrElse gap.Params.ChannelsMode = ChannelsMode._8 Then
+
+                        If ProcessTip("AC3/EAC3 6.1/7.1 is not supported by ffmpeg.") Then
+                            Highlight(GetAudioTextBox(ap))
+                            gbAssistant.Text = "Invalid Audio Channel Count"
+                            CanIgnoreTip = False
+                            Return False
+                        End If
+                    End If
+                End If
+
                 If ap.AudioCodec = AudioCodec.AC3 AndAlso CInt(ap.Bitrate) Mod If(CInt(ap.Bitrate) > 256, 64, 32) <> 0 Then
                     If ProcessTip($"The AC3 bitrate {CInt(ap.Bitrate)} is not specification compliant.") Then
                         Highlight(GetAudioTextBox(ap))

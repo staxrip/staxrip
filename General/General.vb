@@ -1188,7 +1188,7 @@ Public Module MainModule
 
             td.AllowCancel = False
             td.MainIcon = TaskDialogIcon.Error
-            td.Footer = Strings.TaskDialogFooter
+            td.Footer = "[copymsg: Copy Message]"
             td.Show()
         End Using
     End Sub

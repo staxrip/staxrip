@@ -1017,7 +1017,7 @@ Public Class GlobalClass
                 td.Content = (ex.Message + BR2 + content).Trim
                 td.MainIcon = TaskDialogIcon.Error
                 td.ExpandedInformation = ex.ToString
-                td.Footer = Strings.TaskDialogFooter
+                td.Footer = "[copymsg: Copy Message]"
                 td.Show()
             End Using
         Catch

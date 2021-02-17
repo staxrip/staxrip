@@ -371,7 +371,6 @@
     </Compile>
     <Compile Include="General\Misc.vb">
     </Compile>
-    <Compile Include="General\Strings.vb" />
     <Compile Include="UI\Controls\Controls.vb">
       <SubType>Component</SubType>
     </Compile>

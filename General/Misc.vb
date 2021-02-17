@@ -964,10 +964,21 @@ Public Class M2TSStream
     Public Overrides Function ToString() As String
         Dim ret = Text
 
-        If ret.Contains("TrueHD/AC3") Then ret = ret.Replace("TrueHD/AC3", "THD+AC3")
-        If ret.Contains("DTS Master Audio") Then ret = ret.Replace("DTS Master Audio", "DTS-MA")
-        If ret.Contains("DTS Hi-Res") Then ret = ret.Replace("DTS Hi-Res", "DTS-HRA")
-        If ret.Contains("DTS Express") Then ret = ret.Replace("DTS Express", "DTS-EX")
+        If ret.Contains("TrueHD/AC3") Then
+            ret = ret.Replace("TrueHD/AC3", "THD+AC3")
+        End If
+
+        If ret.Contains("DTS Master Audio") Then
+            ret = ret.Replace("DTS Master Audio", "DTS-MA")
+        End If
+
+        If ret.Contains("DTS Hi-Res") Then
+            ret = ret.Replace("DTS Hi-Res", "DTS-HRA")
+        End If
+
+        If ret.Contains("DTS Express") Then
+            ret = ret.Replace("DTS Express", "DTS-EX")
+        End If
 
         If IsAudio Then
             ret += "  ->  " + OutputType
@@ -1505,7 +1516,8 @@ End Enum
 
 Public Class FileTypes
     Shared Property AudioRaw As String() = {"thd", "aac", "ec3", "eac3"}
-    Shared Property Audio As String() = {"flac", "dtshd", "dtsma", "dtshr", "thd", "thd+ac3", "true-hd", "truehd", "aac", "ac3", "dts", "ec3", "eac3", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "wav", "w64"}
+    Shared Property Audio As String() = {"flac", "dtshd", "dtsma", "dtshr", "thd", "thd+ac3", "truehd", "aac", "ac3", "dts", "ec3", "eac3", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "wav", "w64"}
+    Shared Property AudioHQ As String() = {"dtshr", "dtshd", "dtsma", "thd", "truehd", "ec3", "eac3", "thd+ac3", "flac", "wav", "w64"}
     Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2t", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm", "m4v", "3gp"}
     Shared Property DGDecNVInput As String() = {"264", "h264", "265", "h265", "avc", "hevc", "hvc", "mkv", "mp4", "m4v", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
     Shared Property eac3toInput As String() = {"dts", "dtshd", "dtshr", "dtsma", "evo", "vob", "ts", "m2ts", "wav", "w64", "pcm", "raw", "flac", "ac3", "ec3", "eac3", "thd", "thd+ac3", "mlp", "mp2", "mp3", "mpa"}
@@ -1524,6 +1536,11 @@ Public Class FileTypes
 
     Shared Function GetFilter(values As IEnumerable(Of String)) As String
         Return "*." + values.Join(";*.") + "|*." + values.Join(";*.") + "|All Files|*.*"
+    End Function
+
+    Shared Function VideoExtensionSupportsAudio(ext As String) As Boolean
+        Return Video.Contains(ext) AndAlso Not VideoOnly.Contains(ext) AndAlso
+            Not VideoRaw.Contains(ext) AndAlso Not VideoText.Contains(ext)
     End Function
 End Class
 

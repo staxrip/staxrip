@@ -1335,7 +1335,7 @@ Public Class MainForm
                 If iPath.Contains("_cut_") Then Continue For
                 If iPath.Contains("_out") Then Continue For
                 If Not g.IsSourceSame(iPath) Then Continue For
-                If hq AndAlso Not iPath.Ext.EqualsAny("dtsma", "thd", "ec3", "eac3", "thd+ac3", "dtshr", "dtshd") Then Continue For
+                If hq AndAlso Not iPath.Ext.EqualsAny(FileTypes.AudioHQ) Then Continue For
 
                 If same AndAlso tbOther.Text <> "" AndAlso tbOther.Text.ExtFull <> iPath.ExtFull Then
                     Continue For
@@ -2233,37 +2233,29 @@ Public Class MainForm
             If p.UseScriptAsAudioSource Then
                 tbAudioFile0.Text = p.Script.Path
             Else
-                If p.Audio0.File = "" AndAlso p.Audio1.File = "" Then
-                    If Not TypeOf p.Audio0 Is NullAudioProfile AndAlso
-                        Not FileTypes.VideoText.Contains(p.LastOriginalSourceFile.Ext) Then
+                If p.Audio0.File = "" AndAlso p.Audio1.File = "" AndAlso
+                    FileTypes.VideoExtensionSupportsAudio(p.LastOriginalSourceFile.Ext) Then
 
-                        tbAudioFile0.Text = p.LastOriginalSourceFile
+                    Dim audioCount = MediaInfo.GetAudioCount(p.LastOriginalSourceFile)
 
-                        If p.Audio0.Streams.Count = 0 Then
-                            tbAudioFile0.Text = ""
-                        End If
+                    If audioCount > 0 Then
+                        For Each iAP In {p.Audio0, p.Audio1}
+                            If TypeOf iAP Is NullAudioProfile Then
+                                Continue For
+                            End If
 
-                        If Not TypeOf p.Audio1 Is NullAudioProfile AndAlso
-                            p.Audio0.Streams.Count > 1 Then
+                            Dim tb = GetAudioTextBox(iAP)
+                            tb.Text = p.LastOriginalSourceFile
 
-                            tbAudioFile1.Text = p.LastOriginalSourceFile
+                            If audioCount = 1 Then
+                                Exit For
+                            End If
+                        Next
 
-                            For Each i In p.Audio1.Streams
-                                If Not p.Audio0.Stream Is Nothing AndAlso
-                                    Not p.Audio1.Stream Is Nothing Then
+                        If Not p.Audio0.Stream Is Nothing AndAlso Not p.Audio1.Stream Is Nothing AndAlso
+                            p.Audio0.Stream.ID = p.Audio1.Stream.ID Then
 
-                                    If p.Audio0.Stream.StreamOrder = p.Audio1.Stream.StreamOrder Then
-                                        For Each i2 In p.Audio1.Streams
-                                            If i2.StreamOrder <> p.Audio1.Stream.StreamOrder Then
-                                                tbAudioFile1.Text = i2.Name + " (" + p.Audio1.File.Ext + ")"
-                                                p.Audio1.Stream = i2
-                                                UpdateSizeOrBitrate()
-                                                Exit For
-                                            End If
-                                        Next
-                                    End If
-                                End If
-                            Next
+                            tbAudioFile1.Text = ""
                         End If
                     End If
                 End If

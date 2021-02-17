@@ -261,11 +261,20 @@ Public MustInherit Class AudioProfile
             Next
         Else
             For Each i In Streams
-                If i.Language.Equals(Language) Then
+                If FileTypes.AudioHQ.Contains(i.Ext) AndAlso i.Language.Equals(Language) Then
                     Stream = i
                     Exit For
                 End If
             Next
+
+            If Stream Is Nothing Then
+                For Each i In Streams
+                    If Not FileTypes.AudioHQ.Contains(i.Ext) AndAlso i.Language.Equals(Language) Then
+                        Stream = i
+                        Exit For
+                    End If
+                Next
+            End If
 
             If Stream Is Nothing AndAlso Streams.Count > 0 Then
                 Stream = Streams(0)
@@ -685,6 +694,8 @@ Public Class GUIAudioProfile
         Bitrate = GetBitrate()
     End Sub
 
+    Private ChannelsValue As Integer
+
     Public Overrides Property Channels As Integer
         Get
             Select Case Params.ChannelsMode
@@ -695,8 +706,12 @@ Public Class GUIAudioProfile
                         Else
                             Return Stream.Channels2
                         End If
-                    ElseIf File <> "" AndAlso IO.File.Exists(File) Then
-                        Return MediaInfo.GetChannels(File)
+                    ElseIf IO.File.Exists(File) Then
+                        If ChannelsValue = 0 Then
+                            ChannelsValue = MediaInfo.GetChannels(File)
+                        End If
+
+                        Return ChannelsValue
                     Else
                         Return 6
                     End If

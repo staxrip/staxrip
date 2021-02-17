@@ -268,7 +268,6 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Overridable Function GetError() As String
-        Return Nothing
     End Function
 
     Sub OnStateChange()

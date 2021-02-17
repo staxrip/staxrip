@@ -139,7 +139,7 @@ Public Class NVEnc
             audio-bitrate audio-ignore audio-ignore audio-samplerate audio-resampler audio-stream dar
             audio-stream audio-stream audio-stream audio-filter chapter-copy chapter sub-copy input-res
             audio-disposition audio-metadata option-list sub-disposition sub-metadata process-codepage
-            metadata attachment-copy chapter-no-trim video-metadata input-csp"
+            metadata attachment-copy chapter-no-trim video-metadata input-csp sub-source"
 
         tester.UndocumentedSwitches = "cbrhq vbrhq"
         tester.Package = Package.NVEnc
@@ -439,9 +439,8 @@ Public Class NVEnc
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
-                    Add("Basic", Mode,
-                        New OptionParam With {.Switch = "--multipass", .Text = "Multipass", .Options = {"None", "2Pass-Quarter", "2Pass-Full"}, .VisibleFunc = Function() Mode.Value = 1 OrElse Mode.Value = 3},
-                        Decoder, Codec,
+                    Add("Basic",
+                        Mode, Decoder, Codec,
                         New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Init = 6, .Options = {"Default", "Quality", "Performance", "P1 (Performance)", "P2", "P3", "P4 (Default)", "P5", "P6", "P7 (Quality)"}, .Values = {"default", "quality", "performance", "P1", "P2", "P3", "P4", "P5", "P6", "P7"}},
                         Profile, ProfileH265,
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}, .Values = {"main", "high"}},
@@ -451,6 +450,7 @@ Public Class NVEnc
                         QPAdvanced, Bitrate, QP, QPI, QPP, QPB)
                     Add("Rate Control",
                         New StringParam With {.Switch = "--dynamic-rc", .Text = "Dynamic RC"},
+                        New OptionParam With {.Switch = "--multipass", .Text = "Multipass", .Options = {"None", "2Pass-Quarter", "2Pass-Full"}, .VisibleFunc = Function() Mode.Value = 1 OrElse Mode.Value = 3},
                         New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
@@ -598,7 +598,6 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
                     Add("Other",
                         Custom,
-                        New StringParam With {.Switch = "--sub-source", .Text = "Subtitle File", .BrowseFile = True, .BrowseFileFilter = FileTypes.GetFilter(FileTypes.SubtitleExludingContainers)},
                         New StringParam With {.Switch = "--keyfile", .Text = "Keyframes File", .BrowseFile = True},
                         New StringParam With {.Switch = "--timecode", .Text = "Timecode File"},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},

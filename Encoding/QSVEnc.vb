@@ -134,7 +134,7 @@ Public Class QSVEnc
             audio-ignore-decode-error audio-ignore-notrack-error nv12 output-file sharpness vpp-delogo
             check-features-html perf-monitor perf-monitor-plot perf-monitor-interval vpp-delogo-select
             audio-delay audio-disposition audio-metadata option-list sub-disposition sub-metadata
-            metadata video-metadata video-tag attachment-copy"
+            metadata video-metadata video-tag attachment-copy sub-source"
 
         tester.UndocumentedSwitches = "input-thread chromaloc videoformat colormatrix colorprim transfer fullrange"
         tester.Package = Package.QSVEnc
@@ -339,7 +339,6 @@ Public Class QSVEnc
                         New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Undefined", "TFF", "BFF"}})
                     Add("Other",
                         New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
-                        New StringParam With {.Switch = "--sub-source", .Text = "Subtitle File", .BrowseFile = True, .BrowseFileFilter = FileTypes.GetFilter(FileTypes.SubtitleExludingContainers)},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Init = 3},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},

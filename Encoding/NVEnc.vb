@@ -71,9 +71,14 @@ Public Class NVEnc
         End Get
     End Property
 
-    Overrides Function GetFixedBitrate() As Integer
-        Return CInt(Params.Bitrate.Value)
-    End Function
+    Overrides Property Bitrate As Integer
+        Get
+            Return CInt(Params.Bitrate.Value)
+        End Get
+        Set(value As Integer)
+            Params.Bitrate.Value = value
+        End Set
+    End Property
 
     Overrides Sub Encode()
         If OutputExt = "h265" Then
@@ -99,10 +104,10 @@ Public Class NVEnc
     End Sub
 
     Overrides Function GetMenu() As MenuList
-        Dim r As New MenuList
-        r.Add("Encoder Options", AddressOf ShowConfigDialog)
-        r.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
-        Return r
+        Dim ret As New MenuList
+        ret.Add("Encoder Options", AddressOf ShowConfigDialog)
+        ret.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
+        Return ret
     End Function
 
     Overrides Property QualityMode() As Boolean
@@ -206,18 +211,16 @@ Public Class NVEnc
         Property ConstantQualityMode As New BoolParam With {
             .Switches = {"--vbr-quality"},
             .Text = "Constant Quality Mode",
-            .VisibleFunc = Function() Mode.Value = 3 OrElse Mode.Value = 4
-        }
+            .VisibleFunc = Function() Mode.Value = 3 OrElse Mode.Value = 4}
 
         Property QPAdvanced As New BoolParam With {
             .Text = "Show advanced QP settings",
-            .VisibleFunc = Function() Mode.Value = 0
-        }
+            .VisibleFunc = Function() Mode.Value = 0}
 
         Property Bitrate As New NumParam With {
             .Switches = {"--cbr", "--cbrhq", "--vbr", "--vbrhq"},
             .Text = "Bitrate",
-            .Init = p.VideoBitrate,
+            .Init = 5000,
             .VisibleFunc = Function() Mode.Value > 0,
             .Config = {0, 1000000, 100}}
 
@@ -642,8 +645,6 @@ Public Class NVEnc
                     End If
                 Next
             End If
-
-            p.VideoBitrate = CInt(Bitrate.Value)
 
             If Not QPI.NumEdit Is Nothing Then
                 NnediField.MenuButton.Enabled = Deinterlacer.Value = 3

@@ -350,8 +350,14 @@ Namespace CommandLine
             End Get
             Set(value As Double)
                 ValueValue = value
-                If Not Store Is Nothing Then Store.Double(GetKey) = value
-                If Not NumEdit Is Nothing Then NumEdit.Value = value
+
+                If Not Store Is Nothing Then
+                    Store.Double(GetKey) = value
+                End If
+
+                If Not NumEdit Is Nothing Then
+                    NumEdit.Value = value
+                End If
             End Set
         End Property
 

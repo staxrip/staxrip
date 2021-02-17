@@ -13,6 +13,7 @@ Public MustInherit Class VideoEncoder
 
     MustOverride ReadOnly Property OutputExt As String
 
+    Overridable Property Bitrate As Integer
     Overridable Property Passes As Integer
     Overridable Property QualityMode As Boolean
 
@@ -51,9 +52,6 @@ Public MustInherit Class VideoEncoder
     End Function
 
     Overridable Function GetChunks() As Integer
-    End Function
-
-    Overridable Function GetFixedBitrate() As Integer
     End Function
 
     Overridable Function GetChunkEncodeActions() As List(Of Action)
@@ -279,9 +277,13 @@ Public MustInherit Class VideoEncoder
         g.MainForm.lgbEncoder.Text = g.ConvertPath(p.VideoEncoder.Name).Shorten(38)
         g.MainForm.llMuxer.Text = p.VideoEncoder.Muxer.OutputExt.ToUpper
 
-        If GetFixedBitrate() <> 0 Then
+        If Not QualityMode Then
+            If Bitrate = 0 Then
+                Bitrate = p.VideoBitrate
+            End If
+
             p.BitrateIsFixed = True
-            g.MainForm.tbBitrate.Text = GetFixedBitrate().ToString
+            g.MainForm.tbBitrate.Text = Bitrate.ToString
         End If
 
         g.MainForm.UpdateSizeOrBitrate()

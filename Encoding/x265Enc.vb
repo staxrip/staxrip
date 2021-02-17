@@ -80,9 +80,14 @@ Public Class x265Enc
         End Using
     End Sub
 
-    Overrides Function GetFixedBitrate() As Integer
-        Return CInt(Params.Bitrate.Value)
-    End Function
+    Overrides Property Bitrate As Integer
+        Get
+            Return CInt(Params.Bitrate.Value)
+        End Get
+        Set(value As Integer)
+            Params.Bitrate.Value = value
+        End Set
+    End Property
 
     Overrides Function CanChunkEncode() As Boolean
         Return CInt(Params.Chunks.Value) > 1
@@ -307,6 +312,7 @@ Public Class x265Params
     Property Bitrate As New NumParam With {
         .HelpSwitch = "--bitrate",
         .Text = "Bitrate",
+        .Init = 5000,
         .VisibleFunc = Function() Mode.Value <> 1 AndAlso Mode.Value <> 2,
         .Config = {0, 1000000, 100}}
 
@@ -1383,11 +1389,7 @@ Public Class x265Params
             End If
         Else
             If Not IsCustom(pass, "--bitrate") Then
-                If Bitrate.Value <> 0 Then
-                    sb.Append(" --bitrate " & Bitrate.Value)
-                Else
-                    sb.Append(" --bitrate " & p.VideoBitrate)
-                End If
+                sb.Append(" --bitrate " & Bitrate.Value)
             End If
         End If
 

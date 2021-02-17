@@ -42,9 +42,14 @@ Public Class x264Enc
         End Get
     End Property
 
-    Overrides Function GetFixedBitrate() As Integer
-        Return CInt(Params.Bitrate.Value)
-    End Function
+    Overrides Property Bitrate As Integer
+        Get
+            Return CInt(Params.Bitrate.Value)
+        End Get
+        Set(value As Integer)
+            Params.Bitrate.Value = value
+        End Set
+    End Property
 
     Overrides Sub Encode()
         Encode("Video encoding", GetArgs(1, p.Script), s.ProcessPriority)
@@ -233,6 +238,7 @@ Public Class x264Params
     Property Bitrate As New NumParam With {
         .HelpSwitch = "--bitrate",
         .Text = "Bitrate",
+        .Init = 5000,
         .VisibleFunc = Function() Mode.Value <> 1 AndAlso Mode.Value <> 2,
         .Config = {0, 1000000, 100}}
 
@@ -1065,11 +1071,7 @@ Public Class x264Params
             End If
         Else
             If Not IsCustom(pass, "--bitrate") Then
-                If Bitrate.Value <> 0 Then
-                    sb.Append(" --bitrate " & Bitrate.Value)
-                Else
-                    sb.Append(" --bitrate " & p.VideoBitrate)
-                End If
+                sb.Append(" --bitrate " & Bitrate.Value)
             End If
         End If
 

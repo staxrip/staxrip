@@ -5069,6 +5069,7 @@ Public Class MainForm
 
             If Integer.TryParse(tbBitrate.Text, Nothing) Then
                 p.VideoBitrate = Math.Max(0, CInt(tbBitrate.Text))
+                p.VideoEncoder.Bitrate = p.VideoBitrate
                 BlockBitrate = True
 
                 If Not BlockSize Then
@@ -5373,10 +5374,6 @@ Public Class MainForm
         laBitrate.Visible = Not p.VideoEncoder.QualityMode
         tbBitrate.Visible = Not p.VideoEncoder.QualityMode
         laTarget2.Visible = p.VideoEncoder.IsCompCheckEnabled
-
-        tbTargetSize.ReadOnly = p.VideoEncoder.GetFixedBitrate <> 0
-        tbBitrate.ReadOnly = p.VideoEncoder.GetFixedBitrate <> 0
-        blFilesize.Enabled = p.VideoEncoder.GetFixedBitrate = 0
     End Sub
 
     <Command("Dialog to open a single file source.")>

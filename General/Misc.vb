@@ -3907,7 +3907,6 @@ Public Class TextEncoding
             commandLine = p.VideoEncoder.GetCommandLine(True, True)
         End If
 
-        Return commandLine.ContainsEx(".avs") AndAlso
-            Not commandLine.ContainsAny(Package.VCEEnc.Filename, Package.ffmpeg.Filename)
+        Return commandLine.ContainsEx(".avs") AndAlso Not commandLine.Contains(Package.ffmpeg.Filename)
     End Function
 End Class

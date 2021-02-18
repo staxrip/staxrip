@@ -125,7 +125,7 @@ Tools
     "QSVEnc","Console App","QSVEncC64.exe","4.13","2021-02-17"
     "rav1e","Console App","rav1e.exe","0.4.0","2021-01-15"
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.6","2020-11-29"
-    "VCEEnc","Console App","VCEEncC64.exe","6.07","2020-11-23"
+    "VCEEnc","Console App","VCEEncC64.exe","6.09","2021-02-18"
     "vspipe","Console App","vspipe.exe","r52","2020-08-20"
     "x264","Console App","x264.exe","aMod-core161-r3039+17 DJATOM Mod","2021-01-27"
     "x265","Console App","x265.exe","3.4+70-aMod-gcc10.2.1 DJATOM Mod","2021-02-02"

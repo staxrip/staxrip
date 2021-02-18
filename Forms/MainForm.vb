@@ -1069,6 +1069,7 @@ Public Class MainForm
     Private BlockBitrate, BlockSize As Boolean
     Private SkipAssistant As Boolean
     Private BlockSourceTextBoxTextChanged As Boolean
+    Private AssistantMethod As Action
 
     Sub New()
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
@@ -2685,17 +2686,6 @@ Public Class MainForm
         End If
     End Function
 
-    Private AssistantMethodValue As Action
-
-    Property AssistantMethod() As Action
-        Get
-            Return AssistantMethodValue
-        End Get
-        Set(Value As Action)
-            AssistantMethodValue = Value
-        End Set
-    End Property
-
     Function Assistant() As Boolean
         If SkipAssistant Then
             Return False
@@ -2833,8 +2823,7 @@ Public Class MainForm
 
         If p.VideoEncoder.Muxer.TagFile <> "" AndAlso File.Exists(p.VideoEncoder.Muxer.TagFile) AndAlso p.VideoEncoder.Muxer.Tags.Count > 0 Then
             If ProcessTip("In the container options there is both a tag file and tags in the Tags tab defined. Only one can be used, the file will be ignored.") Then
-                gbAssistant.Text = "Tags are defined twice"
-                Return False
+                Return Warn("Tags are defined twice")
             End If
         End If
 
@@ -2854,7 +2843,7 @@ Public Class MainForm
                 Not p.Script.IsFilterActive("Resize", "Hardware Encoder") Then
 
                 If ProcessTip("In order to use a resize filter of the hardware encoder select 'Hardware Encoder' as resize filter from the filters menu.") Then
-                    Return Block("Invalid filter setting")
+                    Return Block("Invalid Filter Setting")
                 End If
             End If
         End If
@@ -2886,10 +2875,8 @@ Public Class MainForm
 
             If p.SourceSeconds = 0 Then
                 If ProcessTip("Click here to open a source file.") Then
-                    AssistantMethod = AddressOf ShowOpenSourceDialog
-                    gbAssistant.Text = "Assistant"
                     CanIgnoreTip = False
-                    Return False
+                    Return Warn("Assistant", AddressOf ShowOpenSourceDialog)
                 End If
             End If
 
@@ -2902,9 +2889,7 @@ Public Class MainForm
             If p.RemindToCrop AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
                 ProcessTip("Click here to open the crop dialog. When done continue with Next.") Then
 
-                AssistantMethod = AddressOf ShowCropDialog
-                gbAssistant.Text = "Crop"
-                Return False
+                Return Warn("Crop", AddressOf ShowCropDialog)
             End If
 
             If (p.Audio0.File <> "" AndAlso p.Audio0.File = p.Audio1.File AndAlso p.Audio0.Stream Is Nothing) OrElse
@@ -2912,10 +2897,7 @@ Public Class MainForm
                 p.Audio0.Stream.StreamOrder = p.Audio1.Stream.StreamOrder) Then
 
                 If ProcessTip("The first and second audio source files or streams are identical.") Then
-                    Highlight(tbAudioFile0)
-                    Highlight(tbAudioFile1)
-                    gbAssistant.Text = "Invalid Audio Settings"
-                    Return False
+                    Return Warn("Invalid Audio Settings", tbAudioFile0, tbAudioFile1)
                 End If
             End If
 
@@ -2944,9 +2926,7 @@ Public Class MainForm
 
                 If ap.AudioCodec = AudioCodec.AC3 AndAlso CInt(ap.Bitrate) Mod If(CInt(ap.Bitrate) > 256, 64, 32) <> 0 Then
                     If ProcessTip($"The AC3 bitrate {CInt(ap.Bitrate)} is not specification compliant.") Then
-                        Highlight(GetAudioTextBox(ap))
-                        gbAssistant.Text = "Invalid Audio Bitrate"
-                        Return False
+                        Return Warn("Invalid Audio Bitrate", GetAudioTextBox(ap))
                     End If
                 End If
 
@@ -2958,9 +2938,7 @@ Public Class MainForm
 
                 If Math.Abs(ap.Delay) > 2000 Then
                     If ProcessTip("The audio delay is unusual high indicating a sync problem.") Then
-                        Highlight(GetAudioTextBox(ap))
-                        gbAssistant.Text = "Unusual high audio delay"
-                        Return False
+                        Return Warn("High Audio Delay", GetAudioTextBox(ap))
                     End If
                 End If
 
@@ -2994,30 +2972,24 @@ Public Class MainForm
                 p.RemindArError AndAlso p.CustomTargetPAR <> "1:1" Then
 
                 If ProcessTip("Use the resize slider to correct the aspect ratio error or click next to encode anamorphic.") Then
-                    Highlight(lAspectRatioError)
-                    gbAssistant.Text = "Aspect Ratio Error"
-                    Return False
+                    Return Warn("Aspect Ratio Error", lAspectRatioError)
                 End If
             End If
 
             If p.RemindToSetFilters AndAlso ProcessTip("Verify the filter setup, when done continue with Next.") Then
-                gbAssistant.Text = "Filter Setup"
-                Return False
+                Return Warn("Filter Setup")
             End If
 
             If p.Ranges.Count = 0 Then
                 If p.RemindToCut AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
                     ProcessTip("Click here to open the preview for cutting if necessary. When done continue with Next.") Then
 
-                    AssistantMethod = AddressOf ShowPreview
-                    gbAssistant.Text = "Cutting"
-                    Return False
+                    Return Warn("Cutting", AddressOf ShowPreview)
                 End If
             Else
                 If p.CutFrameRate <> p.Script.GetFramerate Then
                     If ProcessTip("The frame rate was changed after cutting was performed, please ensure that this change is happening after the Cutting filter section in the AviSynth script.") Then
-                        gbAssistant.Text = "Illegal frame rate change"
-                        Return False
+                        Return Warn("Frame Rate Change")
                     End If
                 End If
 
@@ -3031,10 +3003,7 @@ Public Class MainForm
 
             If p.RemindToDoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled AndAlso p.Compressibility = 0 Then
                 If ProcessTip("Click here to start the compressibility check. The compressibility check helps to finds the ideal bitrate or image size.") Then
-                    AssistantMethod = AddressOf p.VideoEncoder.RunCompCheck
-                    Highlight(laTarget2)
-                    gbAssistant.Text = "Compressibility Check"
-                    Return False
+                    Return Warn("Compressibility Check", AddressOf p.VideoEncoder.RunCompCheck, laTarget2)
                 End If
             End If
 
@@ -3047,9 +3016,7 @@ Public Class MainForm
                     End If
                 Else
                     If ProcessTip("The target file already exist." + BR + p.TargetFile) Then
-                        tbTargetFile.BackColor = Color.Yellow
-                        gbAssistant.Text = "Target File"
-                        Return False
+                        Return Warn("Target File", tbTargetFile)
                     End If
                 End If
             End If
@@ -3074,9 +3041,7 @@ Public Class MainForm
                 If ProcessTip("Change output width to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
                     CanIgnoreTip = Not p.AutoCorrectCropValues
-                    Highlight(tbTargetWidth, lSAR)
-                    gbAssistant.Text = "Invalid Target Width"
-                    Return False
+                    Return Warn("Invalid Target Width", tbTargetWidth, lSAR)
                 End If
             End If
 
@@ -3084,9 +3049,7 @@ Public Class MainForm
                 If ProcessTip("Change output height to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
                     CanIgnoreTip = Not p.AutoCorrectCropValues
-                    Highlight(tbTargetHeight, lSAR)
-                    gbAssistant.Text = "Invalid Target Height"
-                    Return False
+                    Return Warn("Invalid Target Height", tbTargetHeight, lSAR)
                 End If
             End If
 
@@ -3097,14 +3060,8 @@ Public Class MainForm
                     value > (p.VideoEncoder.AutoCompCheckValue + 20) Then
 
                     If ProcessTip("Aimed quality value is more than 20% off, change the image or file size to get something between 50% and 70% quality.") Then
-                        Highlight(tbTargetSize)
-                        Highlight(tbBitrate)
-                        Highlight(tbTargetWidth)
-                        Highlight(tbTargetHeight)
-                        Highlight(laTarget2)
                         laTarget2.BackColor = Color.Red
-                        gbAssistant.Text = "Quality"
-                        Return False
+                        Return Warn("Quality", tbTargetSize, tbBitrate, tbTargetWidth, tbTargetHeight, laTarget2)
                     End If
                 End If
             End If
@@ -3138,10 +3095,8 @@ Public Class MainForm
         Else
             If p.SourceFiles.Count = 0 Then
                 If ProcessTip("Click here to open a source file.") Then
-                    AssistantMethod = AddressOf ShowOpenSourceDialog
-                    gbAssistant.Text = "Assistant"
                     CanIgnoreTip = False
-                    Return False
+                    Return Warn("Assistant", AddressOf ShowOpenSourceDialog)
                 End If
             End If
         End If
@@ -3156,23 +3111,35 @@ Public Class MainForm
         AssistantPassed = True
     End Function
 
+    Function Warn(msg As String, ParamArray controls As Control()) As Boolean
+        Warn(msg, Nothing, controls)
+    End Function
+
+    Function Warn(msg As String, a As Action, ParamArray controls As Control()) As Boolean
+        AssistantMethod = a
+
+        If Not a Is Nothing Then
+            laTip.ForeColor = Color.Blue
+        End If
+
+        gbAssistant.Text = msg
+        Highlight(controls)
+    End Function
+
     Function Block(msg As String, ParamArray controls As Control()) As Boolean
         gbAssistant.Text = msg
         laTip.ForeColor = Color.Red
         bnNext.Enabled = False
         CanIgnoreTip = False
-
-        If Not controls Is Nothing Then
-            For Each c In controls
-                Highlight(c)
-            Next
-        End If
+        Highlight(controls)
     End Function
 
     Sub Highlight(ParamArray controls As Control())
-        For Each c In controls
-            Highlight(True, c)
-        Next
+        If Not controls Is Nothing Then
+            For Each c In controls
+                Highlight(True, c)
+            Next
+        End If
     End Sub
 
     Sub Highlight(highlight As Boolean, c As Control)

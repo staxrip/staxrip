@@ -66,7 +66,7 @@ Public Class VCEEnc
     End Property
 
     Overrides Sub Encode()
-        p.Script.Synchronize()
+        p.Script.Synchronize(False, True, False, TextEncoding.EncodingOfProcess)
 
         Using proc As New Proc
             proc.Header = "Video encoding"

@@ -2824,10 +2824,12 @@ Public Class MainForm
         End If
 
         laTip.Text = ""
+        laTip.ForeColor = SystemColors.ControlText
         gbAssistant.Text = ""
         AssistantMethod = Nothing
         CanIgnoreTip = True
         AssistantPassed = False
+        bnNext.Enabled = True
 
         If p.VideoEncoder.Muxer.TagFile <> "" AndAlso File.Exists(p.VideoEncoder.Muxer.TagFile) AndAlso p.VideoEncoder.Muxer.Tags.Count > 0 Then
             If ProcessTip("In the container options there is both a tag file and tags in the Tags tab defined. Only one can be used, the file will be ignored.") Then
@@ -2839,9 +2841,7 @@ Public Class MainForm
         If p.VideoEncoder.Muxer.CoverFile <> "" AndAlso TypeOf p.VideoEncoder.Muxer Is MkvMuxer Then
             If Not p.VideoEncoder.Muxer.CoverFile.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land") OrElse Not p.VideoEncoder.Muxer.CoverFile.Ext.EqualsAny("jpg", "png") Then
                 If ProcessTip("The cover file name bust be cover, small_cover, cover_land or small_cover_land, the file type must be jpg or png.") Then
-                    gbAssistant.Text = "Invalid cover file name"
-                    CanIgnoreTip = False
-                    Return False
+                    Return Block("Invalid Cover File Name")
                 End If
             End If
         End If
@@ -2854,9 +2854,7 @@ Public Class MainForm
                 Not p.Script.IsFilterActive("Resize", "Hardware Encoder") Then
 
                 If ProcessTip("In order to use a resize filter of the hardware encoder select 'Hardware Encoder' as resize filter from the filters menu.") Then
-                    gbAssistant.Text = "Invalid filter setting"
-                    CanIgnoreTip = False
-                    Return False
+                    Return Block("Invalid filter setting")
                 End If
             End If
         End If
@@ -2872,10 +2870,7 @@ Public Class MainForm
                         "The current AviSynth video encoder does not support Unicode " +
                         "on systems older than Windows 10.")) Then
 
-                        gbAssistant.Text = "Text Encoding Limitation"
-                        Highlight(lgbEncoder.Label)
-                        CanIgnoreTip = False
-                        Return False
+                        Return Block("Text Encoding Limitation", lgbEncoder.Label)
                     End If
                 End If
             End If
@@ -2885,9 +2880,7 @@ Public Class MainForm
                 p.Script.Filters(0).Category <> "Source" Then
 
                 If ProcessTip("The first filter must have the category Source.") Then
-                    gbAssistant.Text = "Invalid filter setup"
-                    CanIgnoreTip = False
-                    Return False
+                    Return Block("Invalid Filter Setup")
                 End If
             End If
 
@@ -2902,10 +2895,7 @@ Public Class MainForm
 
             If p.SourceFile = p.TargetFile Then
                 If ProcessTip("The source and target filepath is identical.") Then
-                    Highlight(tbTargetFile)
-                    gbAssistant.Text = "Invalid Targetpath"
-                    CanIgnoreTip = False
-                    Return False
+                    Return Block("Invalid Targetpath", tbSourceFile, tbTargetFile)
                 End If
             End If
 
@@ -2931,11 +2921,7 @@ Public Class MainForm
 
             If Not p.VideoEncoder.Muxer.IsSupported(p.VideoEncoder.OutputExt) Then
                 If ProcessTip("The encoder outputs '" + p.VideoEncoder.OutputExt + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ".") Then
-                    gbAssistant.Text = "Encoder conflicts with container"
-                    Highlight(llMuxer)
-                    Highlight(lgbEncoder.Label)
-                    CanIgnoreTip = False
-                    Return False
+                    Return Block("Encoder conflicts with container", lgbEncoder.Label, llMuxer)
                 End If
             End If
 
@@ -2951,10 +2937,7 @@ Public Class MainForm
                         gap.Params.ChannelsMode = ChannelsMode._7 OrElse gap.Params.ChannelsMode = ChannelsMode._8 Then
 
                         If ProcessTip("AC3/EAC3 6.1/7.1 is not supported by ffmpeg.") Then
-                            Highlight(GetAudioTextBox(ap))
-                            gbAssistant.Text = "Invalid Audio Channel Count"
-                            CanIgnoreTip = False
-                            Return False
+                            Return Block("Invalid Audio Channel Count", GetAudioTextBox(ap))
                         End If
                     End If
                 End If
@@ -2969,11 +2952,7 @@ Public Class MainForm
 
                 If ap.File = p.TargetFile Then
                     If ProcessTip("The audio source and target filepath is identical.") Then
-                        Highlight(tbTargetFile)
-                        Highlight(GetAudioTextBox(ap))
-                        gbAssistant.Text = "Invalid Targetpath"
-                        CanIgnoreTip = False
-                        Return False
+                        Return Block("Invalid Targetpath", GetAudioTextBox(ap), tbTargetFile)
                     End If
                 End If
 
@@ -2991,29 +2970,20 @@ Public Class MainForm
                         p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") +
                         ". Select another audio profile or another container.") Then
 
-                        Highlight(llMuxer)
-                        Highlight(GetAudioTextBox(ap))
-                        gbAssistant.Text = "Audio format not compatible with container"
-                        CanIgnoreTip = False
-                        Return False
+                        Return Block("Audio format not compatible with container", GetAudioTextBox(ap), llMuxer)
                     End If
                 End If
             Next
 
             If p.VideoEncoder.Muxer.OutputExtFull <> p.TargetFile.ExtFull Then
                 If ProcessTip("The container requires " + p.VideoEncoder.Muxer.OutputExt.ToUpper + " as target file type.") Then
-                    Highlight(tbTargetFile)
-                    gbAssistant.Text = "Invalid File Type"
-                    CanIgnoreTip = False
-                    Return False
+                    Return Block("Invalid File Type", tbTargetFile)
                 End If
             End If
 
             If Not p.VideoEncoder.GetError Is Nothing Then
                 If ProcessTip(p.VideoEncoder.GetError) Then
-                    gbAssistant.Text = "Encoder Error"
-                    CanIgnoreTip = False
-                    Return False
+                    Return Block("Encoder Error")
                 End If
             End If
 
@@ -3054,9 +3024,7 @@ Public Class MainForm
                 If Not p.Script.IsFilterActive("Cutting") AndAlso Form.ActiveForm Is Me Then
                     If ProcessTip("The cutting filter settings don't match with the cutting settings used in the preview." + BR +
                                   "This can usually be fixed by opening and closing the preview.") Then
-                        gbAssistant.Text = "Invalid Cutting Settings"
-                        CanIgnoreTip = False
-                        Return False
+                        Return Block("Invalid Cutting Settings")
                     End If
                 End If
             End If
@@ -3075,10 +3043,7 @@ Public Class MainForm
                     p.SourceFile.ReadAllText.Contains(p.TargetFile) Then
 
                     If ProcessTip("Source and target name are identical, please select another target name.") Then
-                        CanIgnoreTip = False
-                        tbTargetFile.BackColor = Color.Yellow
-                        gbAssistant.Text = "Target File"
-                        Return False
+                        Return Block("Invalid Target File", tbTargetFile)
                     End If
                 Else
                     If ProcessTip("The target file already exist." + BR + p.TargetFile) Then
@@ -3101,9 +3066,7 @@ Public Class MainForm
                 If ProcessTip("x264 AviSynth input supports only YUV420P8, YUV422P8, YUV444P8 and BGR32 " +
                              $"as input colorspace.{BR}Consider to use a pipe tool: " +
                               "x264 Options > Input/Output > Pipe > avs2pipemod y4m") Then
-                    gbAssistant.Text = "Incompatible colorspace"
-                    CanIgnoreTip = False
-                    Return False
+                    Return Block("Incompatible colorspace")
                 End If
             End If
 
@@ -3111,8 +3074,7 @@ Public Class MainForm
                 If ProcessTip("Change output width to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
                     CanIgnoreTip = Not p.AutoCorrectCropValues
-                    Highlight(tbTargetWidth)
-                    Highlight(lSAR)
+                    Highlight(tbTargetWidth, lSAR)
                     gbAssistant.Text = "Invalid Target Width"
                     Return False
                 End If
@@ -3122,8 +3084,7 @@ Public Class MainForm
                 If ProcessTip("Change output height to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
                     CanIgnoreTip = Not p.AutoCorrectCropValues
-                    Highlight(tbTargetHeight)
-                    Highlight(lSAR)
+                    Highlight(tbTargetHeight, lSAR)
                     gbAssistant.Text = "Invalid Target Height"
                     Return False
                 End If
@@ -3150,11 +3111,9 @@ Public Class MainForm
 
             If TypeOf p.VideoEncoder.Muxer Is MP4Muxer Then
                 For Each i In p.VideoEncoder.Muxer.Subtitles
-                    If Not {"idx", "srt"}.Contains(i.Path.Ext) Then
+                    If Not i.Path.Ext.EqualsAny("idx", "srt") Then
                         If ProcessTip("MP4 supports only SRT and IDX subtitles.") Then
-                            CanIgnoreTip = False
-                            gbAssistant.Text = "Invalid subtitle format"
-                            Return False
+                            Return Block("Invalid subtitle format")
                         End If
                     End If
                 Next
@@ -3166,17 +3125,13 @@ Public Class MainForm
 
                 If err <> "" AndAlso Not g.VerifyRequirements Then
                     If ProcessTip(err) Then
-                        CanIgnoreTip = False
-                        gbAssistant.Text = title
-                        Return False
+                        Return Block(title)
                     End If
                 End If
 
                 If err <> "" Then
                     If ProcessTip(err) Then
-                        CanIgnoreTip = False
-                        gbAssistant.Text = title
-                        Return False
+                        Return Block(title)
                     End If
                 End If
             End If
@@ -3201,8 +3156,23 @@ Public Class MainForm
         AssistantPassed = True
     End Function
 
-    Sub Highlight(c As Control)
-        Highlight(True, c)
+    Function Block(msg As String, ParamArray controls As Control()) As Boolean
+        gbAssistant.Text = msg
+        laTip.ForeColor = Color.Red
+        bnNext.Enabled = False
+        CanIgnoreTip = False
+
+        If Not controls Is Nothing Then
+            For Each c In controls
+                Highlight(c)
+            Next
+        End If
+    End Function
+
+    Sub Highlight(ParamArray controls As Control())
+        For Each c In controls
+            Highlight(True, c)
+        Next
     End Sub
 
     Sub Highlight(highlight As Boolean, c As Control)
@@ -4825,7 +4795,7 @@ Public Class MainForm
     Shared Function GetDefaultMainMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
-        ret.Add("File|Open Video File...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control)
+        ret.Add("File|Open Video Source File...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control)
         ret.Add("File|-")
         ret.Add("File|Open Project...", NameOf(ShowFileBrowserToOpenProject))
         ret.Add("File|Save Project", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)

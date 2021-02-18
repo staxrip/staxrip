@@ -937,15 +937,21 @@ Module MiscExtensions
     Function NothingOrEmpty(objects As IEnumerable(Of Object)) As Boolean
         If Not objects Is Nothing AndAlso objects.Any() Then
             For Each obj In objects
-                If Not obj Is Nothing Then Return False
+                If Not obj Is Nothing Then
+                    Return False
+                End If
             Next
         End If
+
         Return True
     End Function
 
     <Extension()>
     Function ToSeparatedString(list As IEnumerable(Of x264Control.QualityItem)) As String
-        If list Is Nothing OrElse Not list.Any() Then Return ""
+        If list Is Nothing OrElse Not list.Any() Then
+            Return ""
+        End If
+
         Return String.Join("_", s.X264QualityDefinitions.OrderBy(Function(x) x.Value).Select(Function(x) $"{x.Value:0.#}{If(String.IsNullOrWhiteSpace(x.Text), "", $"""{x.Text.Trim()}""")}"))
     End Function
 

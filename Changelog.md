@@ -4,7 +4,7 @@
 
 - New Preview dialog feature 'Create job for each selection' (stax76, [#512](/../../issues/512))
 - Fix crash in Preview dialog using 2 instances and shortcut keys (stax76, [#515](/../../issues/515))
-- nvenc options have a bitrate option (Dendraspis, [#520](/../../issues/520))
+- NVEnc options have a bitrate option (Dendraspis, [#520](/../../issues/520))
 - Blocking assistant warnings are shown in red with Next button disabled (stax76)
 - NVEnc 5.29, QSVEnc 4.13, VCEEnc 6.09 (Win 10 avs Unicode and long path)
 - MP4Box 1.1.0 rev506 gcc10.2 Patman

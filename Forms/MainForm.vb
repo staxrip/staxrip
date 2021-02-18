@@ -2821,14 +2821,18 @@ Public Class MainForm
         AssistantPassed = False
         bnNext.Enabled = True
 
-        If p.VideoEncoder.Muxer.TagFile <> "" AndAlso File.Exists(p.VideoEncoder.Muxer.TagFile) AndAlso p.VideoEncoder.Muxer.Tags.Count > 0 Then
+        If p.VideoEncoder.Muxer.TagFile <> "" AndAlso File.Exists(p.VideoEncoder.Muxer.TagFile) AndAlso
+            p.VideoEncoder.Muxer.Tags.Count > 0 Then
+
             If ProcessTip("In the container options there is both a tag file and tags in the Tags tab defined. Only one can be used, the file will be ignored.") Then
                 Return Warn("Tags are defined twice")
             End If
         End If
 
         If p.VideoEncoder.Muxer.CoverFile <> "" AndAlso TypeOf p.VideoEncoder.Muxer Is MkvMuxer Then
-            If Not p.VideoEncoder.Muxer.CoverFile.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land") OrElse Not p.VideoEncoder.Muxer.CoverFile.Ext.EqualsAny("jpg", "png") Then
+            If Not p.VideoEncoder.Muxer.CoverFile.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land") OrElse
+                Not p.VideoEncoder.Muxer.CoverFile.Ext.EqualsAny("jpg", "png") Then
+
                 If ProcessTip("The cover file name bust be cover, small_cover, cover_land or small_cover_land, the file type must be jpg or png.") Then
                     Return Block("Invalid Cover File Name")
                 End If
@@ -2864,8 +2868,7 @@ Public Class MainForm
                 End If
             End If
 
-            If p.Script.Filters.Count = 0 OrElse
-                Not p.Script.Filters(0).Active OrElse
+            If p.Script.Filters.Count = 0 OrElse Not p.Script.Filters(0).Active OrElse
                 p.Script.Filters(0).Category <> "Source" Then
 
                 If ProcessTip("The first filter must have the category Source.") Then
@@ -2873,17 +2876,13 @@ Public Class MainForm
                 End If
             End If
 
-            If p.SourceSeconds = 0 Then
-                If ProcessTip("Click here to open a source file.") Then
-                    CanIgnoreTip = False
-                    Return Warn("Assistant", AddressOf ShowOpenSourceDialog)
-                End If
+            If p.SourceSeconds = 0 AndAlso ProcessTip("Click here to open a source file.") Then
+                CanIgnoreTip = False
+                Return Warn("Assistant", AddressOf ShowOpenSourceDialog)
             End If
 
-            If p.SourceFile = p.TargetFile Then
-                If ProcessTip("The source and target filepath is identical.") Then
-                    Return Block("Invalid Targetpath", tbSourceFile, tbTargetFile)
-                End If
+            If p.SourceFile = p.TargetFile AndAlso ProcessTip("The source and target filepath is identical.") Then
+                Return Block("Invalid Targetpath", tbSourceFile, tbTargetFile)
             End If
 
             If p.RemindToCrop AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
@@ -2930,16 +2929,12 @@ Public Class MainForm
                     End If
                 End If
 
-                If ap.File = p.TargetFile Then
-                    If ProcessTip("The audio source and target filepath is identical.") Then
-                        Return Block("Invalid Targetpath", GetAudioTextBox(ap), tbTargetFile)
-                    End If
+                If ap.File = p.TargetFile AndAlso ProcessTip("The audio source and target filepath is identical.") Then
+                    Return Block("Invalid Targetpath", GetAudioTextBox(ap), tbTargetFile)
                 End If
 
-                If Math.Abs(ap.Delay) > 2000 Then
-                    If ProcessTip("The audio delay is unusual high indicating a sync problem.") Then
-                        Return Warn("High Audio Delay", GetAudioTextBox(ap))
-                    End If
+                If Math.Abs(ap.Delay) > 2000 AndAlso ProcessTip("The audio delay is unusual high indicating a sync problem.") Then
+                    Return Warn("High Audio Delay", GetAudioTextBox(ap))
                 End If
 
                 If Not p.VideoEncoder.Muxer.IsSupported(ap.OutputFileType) AndAlso Not ap.OutputFileType = "ignore" Then
@@ -2967,9 +2962,8 @@ Public Class MainForm
 
             Dim ae = Calc.GetAspectRatioError()
 
-            If Not isValidAnamorphicSize AndAlso (ae > p.MaxAspectRatioError OrElse
-                ae < -p.MaxAspectRatioError) AndAlso isResized AndAlso
-                p.RemindArError AndAlso p.CustomTargetPAR <> "1:1" Then
+            If Not isValidAnamorphicSize AndAlso (ae > p.MaxAspectRatioError OrElse ae < -p.MaxAspectRatioError) AndAlso
+                isResized AndAlso p.RemindArError AndAlso p.CustomTargetPAR <> "1:1" Then
 
                 If ProcessTip("Use the resize slider to correct the aspect ratio error or click next to encode anamorphic.") Then
                     Return Warn("Aspect Ratio Error", lAspectRatioError)
@@ -3008,9 +3002,7 @@ Public Class MainForm
             End If
 
             If File.Exists(p.TargetFile) Then
-                If FileTypes.VideoText.Contains(p.SourceFile.Ext) AndAlso
-                    p.SourceFile.ReadAllText.Contains(p.TargetFile) Then
-
+                If FileTypes.VideoText.Contains(p.SourceFile.Ext) AndAlso p.SourceFile.ReadAllText.Contains(p.TargetFile) Then
                     If ProcessTip("Source and target name are identical, please select another target name.") Then
                         Return Block("Invalid Target File", tbTargetFile)
                     End If

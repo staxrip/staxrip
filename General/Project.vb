@@ -23,7 +23,7 @@ Public Class Project
     Public AutoSmartCrop As Boolean
     Public AutoSmartOvercrop As Double
     Public BatchMode As Boolean
-    Public BitrateIsFixed As Boolean
+    Public BitrateIsFixed As Boolean = True
     Public CodeAtTop As String = ""
     Public CompCheckAction As CompCheckAction = CompCheckAction.AdjustImageSize
     Public CompCheckRange As Integer = 5

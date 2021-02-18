@@ -2723,6 +2723,7 @@ Public Class MainForm
         Highlight(False, llMuxer)
         Highlight(False, lgbEncoder.Label)
         Highlight(False, laTarget2)
+        Highlight(False, lgbEncoder.Label)
 
         Dim cropw = p.SourceWidth
         Dim croph = p.SourceHeight
@@ -2867,12 +2868,12 @@ Public Class MainForm
                     Not TextEncoding.IsPathSupportedBySystemEncoding(p.SourceFile) Then
 
                     If ProcessTip(If(OSVersion.Current >= OSVersion.Windows10,
-                        "The current AviSynth video encoder does not support Unicode, " +
-                        "consider to enable UTF-8 in the administrative language settings of Windows.",
-                        "The current AviSynth video encoder does not support " +
-                        "Unicode on systems older than Windows 10.")) Then
+                        "The current AviSynth video encoder does not support Unicode.",
+                        "The current AviSynth video encoder does not support Unicode " +
+                        "on systems older than Windows 10.")) Then
 
                         gbAssistant.Text = "Text Encoding Limitation"
+                        Highlight(lgbEncoder.Label)
                         CanIgnoreTip = False
                         Return False
                     End If

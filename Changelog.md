@@ -7,6 +7,7 @@
 - nvenc options have a bitrate option (Dendraspis, [#520](/../../issues/520))
 - nvenc 5.29
 - MP4Box 1.1.0 rev506 gcc10.2 Patman
+- QSVEnc 4.13 (Win 10 avs Unicode and long path)
 
 
 2.1.8.1 Beta (2021-02-13)

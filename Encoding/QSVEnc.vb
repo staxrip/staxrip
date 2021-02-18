@@ -78,12 +78,12 @@ Public Class QSVEnc
         If OutputExt = "hevc" Then
             Dim codecs = ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features").Right("Codec")
 
-            If Not codecs?.ToLower.Contains("hevc") Then
+            If Not codecs.ToLowerEx.Contains("hevc") Then
                 Throw New ErrorAbortException("QSVEnc Error", "H.265/HEVC isn't supported by your Hardware.")
             End If
         End If
 
-        p.Script.Synchronize()
+        p.Script.Synchronize(False, True, False, TextEncoding.EncodingOfProcess)
         Params.RaiseValueChanged(Nothing)
 
         Using proc As New Proc
@@ -134,7 +134,7 @@ Public Class QSVEnc
             audio-ignore-decode-error audio-ignore-notrack-error nv12 output-file sharpness vpp-delogo
             check-features-html perf-monitor perf-monitor-plot perf-monitor-interval vpp-delogo-select
             audio-delay audio-disposition audio-metadata option-list sub-disposition sub-metadata
-            metadata video-metadata video-tag attachment-copy sub-source"
+            metadata video-metadata video-tag attachment-copy sub-source process-codepage"
 
         tester.UndocumentedSwitches = "input-thread chromaloc videoformat colormatrix colorprim transfer fullrange"
         tester.Package = Package.QSVEnc
@@ -350,7 +350,8 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"},
                         New BoolParam With {.Switch = "--tskip", .Text = "T-Skip", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"},
-                        New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"})
+                        New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"},
+                        New BoolParam With {.Switch = "--timecode", .Text = "Output timecode file"})
 
                     For Each item In ItemsValue
                         If item.HelpSwitch <> "" Then

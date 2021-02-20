@@ -269,7 +269,7 @@ Public Class ffmpegEnc
             End If
 
             If includePaths Then
-                sb.Append(" -i " + sourcePath.LongPathPrefix.Escape)
+                sb.Append(" -i " + sourcePath.Escape)
             End If
 
             Dim items = From i In Me.Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
@@ -310,7 +310,7 @@ Public Class ffmpegEnc
             If Mode.OptionText = "Two Pass" AndAlso pass = 1 Then
                 targetPath = "NUL"
             Else
-                targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).LongPathPrefix.Escape
+                targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).Escape
             End If
 
             If includePaths Then

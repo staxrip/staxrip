@@ -110,7 +110,7 @@ Tools
     "AVSMeter","Console App","AVSMeter64.exe","3.0.7.0","2020-11-16"
     "eac3to","Console App","eac3to.exe","3.34","2017-11-19"
     "fdkaac","Console App","fdkaac.exe","1.0.0","2019-02-13"
-    "ffmpeg","Console App","ffmpeg.exe","N-100448-gab6a56773f-x64-gcc10.2.0 Patman","2020-12-20"
+    "ffmpeg","Console App","ffmpeg.exe","N-101069 gcc10.2.0 Patman","2021-02-11"
     "ffmpeg non-free","Console App","ffmpeg.exe","","2020-08-30"
     "mkvextract","Console App","mkvextract.exe","53","2021-01-30"
     "mkvinfo","Console App","mkvinfo.exe","53","2021-01-30"

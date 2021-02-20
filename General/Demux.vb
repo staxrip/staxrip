@@ -332,14 +332,14 @@ Public Class ffmpegDemuxer
         proj As Project,
         overrideExisting As Boolean)
 
-        Dim outPath = (proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.ExtFull).LongPathPrefix
+        Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.ExtFull
 
         If Not overrideExisting AndAlso outPath.FileExists Then
             Exit Sub
         End If
 
         Dim streamIndex = stream.StreamOrder
-        Dim args = "-i " + sourcefile.LongPathPrefix.Escape
+        Dim args = "-i " + sourcefile.Escape
 
         If MediaInfo.GetAudioCount(sourcefile) > 1 Then
             args += " -map 0:a:" & stream.Index
@@ -387,8 +387,8 @@ Public Class ffmpegDemuxer
                 Continue For
             End If
 
-            Dim args = "-i " + proj.SourceFile.LongPathPrefix.Escape
-            Dim outpath = (proj.TempDir + subtitle.Filename + subtitle.ExtFull).LongPathPrefix
+            Dim args = "-i " + proj.SourceFile.Escape
+            Dim outpath = proj.TempDir + subtitle.Filename + subtitle.ExtFull
 
             If MediaInfo.GetSubtitleCount(proj.SourceFile) > 1 Then
                 args += " -map 0:s:" & subtitle.Index

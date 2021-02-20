@@ -9,6 +9,7 @@
 - NVEnc 5.29, QSVEnc 4.13, VCEEnc 6.09 (Win 10 avs Unicode and long path)
 - MP4Box 1.1.0 rev506 gcc10.2 Patman
 - Subtitle Edit 3.6.0
+- ffmpeg N-101069 gcc10.2.0 Patman
 
 
 2.1.8.1 Beta (2021-02-13)

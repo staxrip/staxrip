@@ -66,7 +66,7 @@ Public Class VCEEnc
     End Property
 
     Overrides Sub Encode()
-        p.Script.Synchronize(False, True, False, TextEncoding.EncodingOfProcess)
+        p.Script.Synchronize()
 
         Using proc As New Proc
             proc.Header = "Video encoding"
@@ -81,10 +81,10 @@ Public Class VCEEnc
     End Sub
 
     Overrides Function GetMenu() As MenuList
-        Dim r As New MenuList
-        r.Add("Encoder Options", AddressOf ShowConfigDialog)
-        r.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
-        Return r
+        Dim ret As New MenuList
+        ret.Add("Encoder Options", AddressOf ShowConfigDialog)
+        ret.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
+        Return ret
     End Function
 
     Overrides Property QualityMode() As Boolean

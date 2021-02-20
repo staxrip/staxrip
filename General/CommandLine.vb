@@ -88,11 +88,7 @@ Namespace CommandLine
 
             Dim cl = GetCommandLine(True, True)
 
-            If TextEncoding.AvsEncoderSupportsUTF8(cl) Then
-                p.Script.Synchronize(avsEncoding:=TextEncoding.EncodingOfProcess)
-            Else
-                p.Script.Synchronize()
-            End If
+            p.Script.Synchronize()
 
             If g.IsWindowsTerminalAvailable Then
                 cl = "cmd.exe /S /K --% """ + cl + """"

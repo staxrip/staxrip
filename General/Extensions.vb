@@ -164,20 +164,6 @@ Module StringExtensions
     End Function
 
     <Extension>
-    Function IsSystemEncodingCompatible(instance As String) As Boolean
-        If instance = "" Then
-            Return True
-        End If
-
-        If IsASCIIEncodingCompatible(instance) Then
-            Return True
-        End If
-
-        Dim bytes = Encoding.Convert(Encoding.Unicode, TextEncoding.EncodingOfSystem, Encoding.Unicode.GetBytes(instance))
-        Return instance = Encoding.Unicode.GetString(Encoding.Convert(TextEncoding.EncodingOfSystem, Encoding.Unicode, bytes))
-    End Function
-
-    <Extension>
     Function IsProcessEncodingCompatible(instance As String) As Boolean
         If instance = "" Then
             Return True

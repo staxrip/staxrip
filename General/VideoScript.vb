@@ -181,20 +181,14 @@ Public Class VideoScript
 
     <NonSerialized()> Public LastCode As String
     <NonSerialized()> Public LastPath As String
-    <NonSerialized()> Public LastAvsCodePage As Integer
 
     Sub Synchronize(
         Optional convertToRGB As Boolean = False,
         Optional comparePath As Boolean = True,
-        Optional flipVertical As Boolean = False,
-        Optional avsEncoding As Encoding = Nothing)
+        Optional flipVertical As Boolean = False)
 
         If Path = "" Then
             Exit Sub
-        End If
-
-        If avsEncoding Is Nothing Then
-            avsEncoding = TextEncoding.EncodingOfSystem
         End If
 
         Dim srcFilter = GetFilter("Source")
@@ -289,11 +283,8 @@ clipname.set_output()
         End If
 
         code = Macro.Expand(code)
-        Dim changedAvsEncoding = Engine = ScriptEngine.AviSynth AndAlso LastAvsCodePage <> avsEncoding.CodePage
 
-        If Me.Error <> "" OrElse code <> LastCode OrElse
-            (comparePath AndAlso Path <> LastPath) OrElse changedAvsEncoding Then
-
+        If Me.Error <> "" OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
             If Path.Dir.DirExists Then
                 If Engine = ScriptEngine.VapourSynth Then
                     ModifyScript(code, Engine).WriteFileUTF8(Path)
@@ -301,8 +292,7 @@ clipname.set_output()
                     ModifyScript(code, Engine).WriteFile(Path, TextEncoding.EncodingOfProcess)
                 End If
 
-                If Not Package.AviSynth.VerifyOK OrElse
-                    Not Package.VapourSynth.VerifyOK OrElse
+                If Not Package.AviSynth.VerifyOK OrElse Not Package.VapourSynth.VerifyOK OrElse
                     Not Package.vspipe.VerifyOK Then
 
                     Throw New AbortException
@@ -319,14 +309,6 @@ clipname.set_output()
 
                     Me.Error = server.Error
                 End Using
-
-                If Engine = ScriptEngine.AviSynth Then
-                    If Not avsEncoding Is TextEncoding.EncodingOfProcess Then
-                        ModifyScript(code, Engine).WriteFile(Path, avsEncoding)
-                    End If
-
-                    LastAvsCodePage = avsEncoding.CodePage
-                End If
 
                 LastCode = code
                 LastPath = Path
@@ -634,12 +616,12 @@ clipname.set_output()
     End Function
 
     Function GetInfo() As ServerInfo
-        Synchronize(False, False, avsEncoding:=TextEncoding.EncodingOfProcess)
+        Synchronize(False, False)
         Return Info
     End Function
 
     Function GetError() As String
-        Synchronize(False, False, avsEncoding:=TextEncoding.EncodingOfProcess)
+        Synchronize(False, False)
         Return Me.Error
     End Function
 

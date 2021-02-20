@@ -613,7 +613,7 @@ Public Class CropForm
             script.Filters.Add(p.Script.GetFilter("Rotation").GetCopy())
         End If
 
-        script.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
+        script.Synchronize(True, True, True)
 
         FrameServer = FrameServerFactory.Create(script.Path)
         Renderer = New VideoRenderer(pnVideo, FrameServer)

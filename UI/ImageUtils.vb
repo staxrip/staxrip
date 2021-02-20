@@ -124,7 +124,7 @@ Public Class Thumbnails
         Dim count = columnCount * rowCount
         Dim bitmaps As New List(Of Bitmap)
 
-        script.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
+        script.Synchronize(True, True, True)
 
         Using server = FrameServerFactory.Create(script.Path)
             Dim serverPos As Integer

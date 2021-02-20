@@ -89,7 +89,7 @@ Public Class NVEnc
             End If
         End If
 
-        p.Script.Synchronize(False, True, False, TextEncoding.EncodingOfProcess)
+        p.Script.Synchronize()
 
         Using proc As New Proc
             proc.Header = "Video encoding"

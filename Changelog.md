@@ -8,10 +8,12 @@
 - Blocking assistant warnings are shown in red with Next button disabled (stax76)
 - On systems prior Windows 10 1903 using ANSI characters, avs2pipemod is now used
   automatically because DJATOM/Asuna/Patman x265 builds have no working ANSI fallback (stax76)
-- NVEnc 5.29, QSVEnc 4.13, VCEEnc 6.09 (Windows 10 avs Unicode and long path)
+- All important tools support AviSynth Unicode and Long Path on Windows 10 1903
+- vspipe patched with Windows 10 Long Path manifest
+- NVEnc 5.29, QSVEnc 4.13, VCEEnc 6.09 (Windows 10 AviSynth Unicode and Long Path)
+- ffmpeg N-101189 gcc10.2.0 Patman (Windows 10 AviSynth Unicode and Long Path)
 - MP4Box 1.1.0 rev506 gcc10.2 Patman
 - Subtitle Edit 3.6.0
-- ffmpeg N-101069 gcc10.2.0 Patman
 
 
 2.1.8.1 Beta (2021-02-13)

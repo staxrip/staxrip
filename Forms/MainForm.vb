@@ -2281,7 +2281,7 @@ Public Class MainForm
             Dim isCropActive = p.Script.IsFilterActive("Crop")
 
             If isCropActive AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
-                p.SourceScript.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
+                p.SourceScript.Synchronize(True, True, True)
 
                 Using proc As New Proc
                     proc.Header = "Auto Crop"
@@ -2853,15 +2853,9 @@ Public Class MainForm
         End If
 
         If Not p.BatchMode Then
-            If p.SourceFile <> "" Then
-                If p.Script.IsAviSynth AndAlso Not TextEncoding.IsSystemUTF8 AndAlso
-                    Not (TextEncoding.AvsEncoderSupportsUTF8 AndAlso TextEncoding.IsProcessUTF8) AndAlso
-                    Not TextEncoding.ArePathsSupportedBySystemEncoding Then
-
-                    If ProcessTip("The current AviSynth video encoder does not support Unicode.") Then
-                        Return Block("Text Encoding Limitation", lgbEncoder.Label)
-                    End If
-                End If
+            If p.SourceFile <> "" AndAlso p.Script.IsAviSynth AndAlso Not TextEncoding.ArePathsSupportedByProcessEncoding AndAlso
+                ProcessTip("AviSynth Unicode support requires at least Windows 10 1903.") Then
+                Return Block("Text Encoding Limitation", lgbEncoder.Label)
             End If
 
             If p.Script.Filters.Count = 0 OrElse Not p.Script.Filters(0).Active OrElse

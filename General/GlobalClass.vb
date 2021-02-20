@@ -323,8 +323,7 @@ Public Class GlobalClass
 
             If CanEncodeVideo() Then
                 If p.VideoEncoder.CanChunkEncode Then
-                    Dim enc = If(TextEncoding.AvsEncoderSupportsUTF8, TextEncoding.EncodingOfProcess, Nothing)
-                    p.Script.Synchronize(False, True, False, enc)
+                    p.Script.Synchronize()
 
                     For Each i In p.VideoEncoder.GetChunkEncodeActions
                         actions.Add(i)
@@ -528,7 +527,7 @@ Public Class GlobalClass
             Exit Sub
         End If
 
-        script.Synchronize(avsEncoding:=TextEncoding.EncodingOfProcess)
+        script.Synchronize()
         Dim args As String
 
         If script.Engine = ScriptEngine.VapourSynth Then
@@ -1265,7 +1264,7 @@ Public Class GlobalClass
     End Sub
 
     Sub RunAutoCrop(progressAction As Action(Of Double))
-        p.SourceScript.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
+        p.SourceScript.Synchronize(True, True, True)
 
         Using server = FrameServerFactory.Create(p.SourceScript.Path)
             Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)

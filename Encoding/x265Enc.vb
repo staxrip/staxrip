@@ -59,7 +59,7 @@ Public Class x265Enc
         priority As ProcessPriorityClass)
 
         If Not CanChunkEncode() Then
-            p.Script.Synchronize(False, True, False, TextEncoding.EncodingOfProcess)
+            p.Script.Synchronize()
         End If
 
         Using proc As New Proc
@@ -171,7 +171,7 @@ Public Class x265Enc
 
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
         script.Path = p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType
-        script.Synchronize(avsEncoding:=TextEncoding.EncodingOfProcess)
+        script.Synchronize()
 
         Log.WriteLine(BR + script.GetFullScript + BR)
 
@@ -1274,7 +1274,7 @@ Public Class x265Params
                                 sb.Append($" --frames {endFrame - startFrame + 1}")
                             End If
                         Case "ffmpeg"
-                            pipeString = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.LongPathPrefix.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
+                            pipeString = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
 
                             sb.Append(pipeString + Package.x265.Path.Escape)
 

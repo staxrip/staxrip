@@ -3883,42 +3883,30 @@ Public Class TextEncoding
     Shared Property CodePageOfProcess As Integer = Encoding.Default.CodePage
     Shared Property CodePageOfSystem As Integer = Registry.LocalMachine.GetString("SYSTEM\CurrentControlSet\Control\Nls\CodePage", "ACP").ToInt
     Shared Property EncodingOfSystem As Encoding = Encoding.GetEncoding(CodePageOfSystem)
-    Shared Property PathsSupportedBySystemEncoding As New Dictionary(Of String, Boolean)
+    Shared Property PathsSupportedByProcessEncoding As New Dictionary(Of String, Boolean)
     Shared Property UTF8CodePage As Integer = 65001
 
     Shared Function ArePathsSupportedByASCIIEncoding() As Boolean
         Return p.SourceFile.IsASCIIEncodingCompatible AndAlso p.TargetFile.IsASCIIEncodingCompatible
     End Function
 
-    Shared Function ArePathsSupportedBySystemEncoding() As Boolean
-        Return IsPathSupportedBySystemEncoding(p.SourceFile) AndAlso IsPathSupportedBySystemEncoding(p.TargetFile)
+    Shared Function ArePathsSupportedByProcessEncoding() As Boolean
+        Return IsPathSupportedByProcessEncoding(p.SourceFile) AndAlso IsPathSupportedByProcessEncoding(p.TargetFile)
     End Function
 
-    Shared Function IsPathSupportedBySystemEncoding(path As String) As Boolean
+    Shared Function IsPathSupportedByProcessEncoding(path As String) As Boolean
         If path = "" Then
             Return True
         End If
 
-        If Not PathsSupportedBySystemEncoding.ContainsKey(path) Then
-            PathsSupportedBySystemEncoding(path) = path.IsSystemEncodingCompatible
+        If Not PathsSupportedByProcessEncoding.ContainsKey(path) Then
+            PathsSupportedByProcessEncoding(path) = path.IsProcessEncodingCompatible
         End If
 
-        Return PathsSupportedBySystemEncoding(path)
-    End Function
-
-    Shared Function IsSystemUTF8() As Boolean
-        Return CodePageOfSystem = UTF8CodePage
+        Return PathsSupportedByProcessEncoding(path)
     End Function
 
     Shared Function IsProcessUTF8() As Boolean
         Return CodePageOfProcess = UTF8CodePage
-    End Function
-
-    Shared Function AvsEncoderSupportsUTF8(Optional commandLine As String = Nothing) As Boolean
-        If commandLine = "" Then
-            commandLine = p.VideoEncoder.GetCommandLine(True, True)
-        End If
-
-        Return commandLine.ContainsEx(".avs") AndAlso Not commandLine.Contains(Package.ffmpeg.Filename)
     End Function
 End Class

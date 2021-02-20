@@ -286,7 +286,7 @@ Public Class VideoComparisonForm
                 script.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
             End If
 
-            script.Synchronize(True, True, True, TextEncoding.EncodingOfProcess)
+            script.Synchronize(True, True, True)
             Server = FrameServerFactory.Create(script.Path)
             Renderer = New VideoRenderer(VideoPanel, Server)
 

@@ -66,7 +66,7 @@ Public Class x264Enc
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
-        p.Script.Synchronize(avsEncoding:=TextEncoding.EncodingOfProcess)
+        p.Script.Synchronize()
 
         Using proc As New Proc
             proc.Package = Package.x264
@@ -115,7 +115,7 @@ Public Class x264Enc
 
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
         script.Path = p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType
-        script.Synchronize(avsEncoding:=TextEncoding.EncodingOfProcess)
+        script.Synchronize()
 
         Log.WriteLine(BR + script.GetFullScript + BR)
 

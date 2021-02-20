@@ -50,7 +50,7 @@ Public Class aomenc
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
         If Not CanChunkEncode() Then
-            p.Script.Synchronize(False, True, False, TextEncoding.EncodingOfProcess)
+            p.Script.Synchronize()
         End If
 
         Using proc As New Proc

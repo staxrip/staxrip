@@ -852,7 +852,7 @@ Public Class GUIAudioProfile
             Exit Sub
         End If
 
-        Dim args = "-i " + File.LongPathPrefix.Escape
+        Dim args = "-i " + File.Escape
 
         If Not Stream Is Nothing AndAlso Streams.Count > 1 Then
             args += " -map 0:a:" & Stream.Index
@@ -1178,7 +1178,7 @@ Public Class GUIAudioProfile
                 sb.Append($" -analyzeduration {Params.AnalyzeDuration}M")
             End If
 
-            sb.Append(" -i " + File.LongPathPrefix.Escape)
+            sb.Append(" -i " + File.Escape)
         Else
             sb.Append("ffmpeg")
         End If
@@ -1317,7 +1317,7 @@ Public Class GUIAudioProfile
 
         If includePaths AndAlso File <> "" Then
             sb.Append(" -y -hide_banner")
-            sb.Append(" " + GetOutputFile.LongPathPrefix.Escape)
+            sb.Append(" " + GetOutputFile.Escape)
         End If
 
         Return sb.ToString

@@ -83,7 +83,7 @@ Public Class QSVEnc
             End If
         End If
 
-        p.Script.Synchronize(False, True, False, TextEncoding.EncodingOfProcess)
+        p.Script.Synchronize()
         Params.RaiseValueChanged(Nothing)
 
         Using proc As New Proc

@@ -568,6 +568,16 @@ Public Class AppsForm
         End If
     End Sub
 
+    Protected Overrides Sub OnShown(e As EventArgs)
+        MyBase.OnShown(e)
+        AviSynthToolPathAsync()
+    End Sub
+
+    Async Sub AviSynthToolPathAsync()
+        Await Task.Run(AddressOf FrameServerHelp.AviSynthToolPath)
+        ShowActivePackage()
+    End Sub
+
     Protected Overrides Sub OnActivated(e As EventArgs)
         ShowActivePackage()
         Refresh()

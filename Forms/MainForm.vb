@@ -3819,8 +3819,6 @@ Public Class MainForm
 
     <Command("Dialog to manage external tools.")>
     Sub ShowAppsDialog()
-        FrameServerHelp.AviSynthToolPath()
-
         Using form As New AppsForm
             Dim found As Boolean
 

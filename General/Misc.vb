@@ -3886,6 +3886,14 @@ Public Class TextEncoding
     Shared Property PathsSupportedBySystemEncoding As New Dictionary(Of String, Boolean)
     Shared Property UTF8CodePage As Integer = 65001
 
+    Shared Function ArePathsSupportedByASCIIEncoding() As Boolean
+        Return p.SourceFile.IsASCIIEncodingCompatible AndAlso p.TargetFile.IsASCIIEncodingCompatible
+    End Function
+
+    Shared Function ArePathsSupportedBySystemEncoding() As Boolean
+        Return IsPathSupportedBySystemEncoding(p.SourceFile) AndAlso IsPathSupportedBySystemEncoding(p.TargetFile)
+    End Function
+
     Shared Function IsPathSupportedBySystemEncoding(path As String) As Boolean
         If path = "" Then
             Return True
@@ -3900,6 +3908,10 @@ Public Class TextEncoding
 
     Shared Function IsSystemUTF8() As Boolean
         Return CodePageOfSystem = UTF8CodePage
+    End Function
+
+    Shared Function IsProcessUTF8() As Boolean
+        Return CodePageOfProcess = UTF8CodePage
     End Function
 
     Shared Function AvsEncoderSupportsUTF8(Optional commandLine As String = Nothing) As Boolean

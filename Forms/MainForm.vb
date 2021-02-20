@@ -2855,14 +2855,10 @@ Public Class MainForm
         If Not p.BatchMode Then
             If p.SourceFile <> "" Then
                 If p.Script.IsAviSynth AndAlso Not TextEncoding.IsSystemUTF8 AndAlso
-                    Not (TextEncoding.AvsEncoderSupportsUTF8 AndAlso OSVersion.Current >= OSVersion.Windows10) AndAlso
-                    Not TextEncoding.IsPathSupportedBySystemEncoding(p.SourceFile) Then
+                    Not (TextEncoding.AvsEncoderSupportsUTF8 AndAlso TextEncoding.IsProcessUTF8) AndAlso
+                    Not TextEncoding.ArePathsSupportedBySystemEncoding Then
 
-                    If ProcessTip(If(OSVersion.Current >= OSVersion.Windows10,
-                        "The current AviSynth video encoder does not support Unicode.",
-                        "The current AviSynth video encoder does not support Unicode " +
-                        "on systems older than Windows 10.")) Then
-
+                    If ProcessTip("The current AviSynth video encoder does not support Unicode.") Then
                         Return Block("Text Encoding Limitation", lgbEncoder.Label)
                     End If
                 End If

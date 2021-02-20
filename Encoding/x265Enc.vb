@@ -1224,7 +1224,11 @@ Public Class x265Params
                 Case "script"
                     Dim pipeString = ""
 
-                    If pipeTool = "automatic" AndAlso Package.x265Type = x265Type.Vanilla Then
+                    'DJATOM/Asuna/Patman have broken ANSI fallback
+                    If pipeTool = "automatic" AndAlso (Package.x265Type = x265Type.Vanilla OrElse
+                        (p.Script.IsAviSynth AndAlso Not TextEncoding.IsProcessUTF8 AndAlso
+                        Not TextEncoding.ArePathsSupportedByASCIIEncoding)) Then
+
                         If p.Script.IsAviSynth Then
                             pipeTool = "avs2pipemod"
                         Else

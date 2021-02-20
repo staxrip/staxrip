@@ -150,6 +150,10 @@ Module StringExtensions
 
     <Extension>
     Function IsASCIIEncodingCompatible(instance As String) As Boolean
+        If instance = "" Then
+            Return True
+        End If
+
         For Each i In instance
             If Convert.ToInt32(i) > 127 Then
                 Return False

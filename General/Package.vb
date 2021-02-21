@@ -104,7 +104,7 @@ Public Class Package
         .Name = "ffmpeg",
         .Filename = "ffmpeg.exe",
         .Locations = {"Encoders\ffmpeg", "FrameServer\AviSynth"},
-        .Keep = {"AviSynth.dll"},
+        .SupportsAutoUpdate = False,
         .AllowCustomPath = False,
         .WebURL = "http://ffmpeg.org",
         .HelpURL = "http://www.ffmpeg.org/documentation.html",
@@ -518,10 +518,10 @@ Public Class Package
         .Filename = "x264.exe",
         .Locations = {"Encoders\x264", "FrameServer\AviSynth"},
         .Description = "H.264 video encoding console app.",
-        .Keep = {"AviSynth.dll"},
+        .SupportsAutoUpdate = False,
         .AllowCustomPath = False,
-        .WebURL = "https://github.com/DJATOM/x264-aMod",
-        .DownloadURL = "https://github.com/DJATOM/x264-aMod/releases",
+        .WebURL = "https://github.com/staxrip/staxrip/wiki/x264",
+        .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x264",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
         .HelpSwitch = "--fullhelp"})
 
@@ -532,7 +532,7 @@ Public Class Package
         .WebURL = "https://x265.com",
         .HelpURL = "http://x265.readthedocs.org",
         .AllowCustomPath = False,
-        .Keep = {"AviSynth.dll"},
+        .SupportsAutoUpdate = False,
         .HelpSwitch = "--log-level full --fullhelp",
         .Description = "H.265 video encoding console app.",
         .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x265#x265-builds"})
@@ -658,7 +658,6 @@ Public Class Package
         .Filename32 = "VCEEncC.exe",
         .Location = "Encoders\VCEEnc",
         .Description = "AMD hardware video encoder.",
-        .Keep = {"AviSynth.dll"},
         .HelpSwitch = "-h",
         .WebURL = "http://github.com/rigaya/VCEEnc",
         .DownloadURL = "https://github.com/rigaya/VCEEnc/releases"})

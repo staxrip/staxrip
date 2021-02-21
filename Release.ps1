@@ -1,6 +1,4 @@
 
-$ErrorActionPreference = 'Stop'
-
 $output32bit = $false
 
 $include = @(
@@ -78,9 +76,15 @@ else
     $downloadURL = 'https://staxrip.readthedocs.io/introduction.html#stable'
 }
 
-$desktopDir    = [Environment]::GetFolderPath('Desktop')
-$targetDir     = $desktopDir + '\StaxRip-x64-' + $versionInfo.FileVersion + '-' + $releaseType
-$targetDir32   = $desktopDir + '\StaxRip-x86-' + $versionInfo.FileVersion + '-' + $releaseType + "-Experimental"
+$tempDir = 'D:\Work'
+
+if (-not (Test-Path $tempDir))
+{
+    $tempDir = [Environment]::GetFolderPath('Desktop')
+}
+
+$targetDir     = $tempDir + '\StaxRip-x64-' + $versionInfo.FileVersion + '-' + $releaseType
+$targetDir32   = $tempDir + '\StaxRip-x86-' + $versionInfo.FileVersion + '-' + $releaseType + "-Experimental"
 
 if (Test-Path $targetDir)
 {

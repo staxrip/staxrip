@@ -2,6 +2,10 @@
 2.1.8.3 Beta (2021-02-??)
 =========================
 
+- x264 10bit, --synth-lib, VapourSynth reader for DJATOM and Patman Mod
+- x264 0.161.3048+17 gcc10.2.0 Patman Mod
+
+
 2.1.8.2 Beta (2021-02-21)
 =========================
 

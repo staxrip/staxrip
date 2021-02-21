@@ -205,7 +205,7 @@ Public Class x264Enc
         Dim tester As New ConsolAppTester
 
         tester.IgnoredSwitches = "help longhelp fullhelp progress"
-        tester.UndocumentedSwitches = "y4m"
+        tester.UndocumentedSwitches = "y4m fade-compensate log-file log-file-level opts progress-header"
         tester.Package = Package.x264
         tester.CodeFile = Folder.Startup.Parent + "Encoding\x264Enc.vb"
 
@@ -1010,9 +1010,9 @@ Public Class x264Params
             Dim pipeCmd = ""
 
             If pipeTool = "automatic" Then
-                If p.Script.IsAviSynth Then
+                If p.Script.IsAviSynth OrElse Package.x264.Version.ToLower.ContainsAny("amod", "djatom", "patman") Then
                     pipeTool = "none"
-                Else
+                ElseIf p.Script.IsVapourSynth Then
                     pipeTool = "vspipe y4m"
                 End If
             End If
@@ -1086,7 +1086,7 @@ Public Class x264Params
             Dim dmx = Demuxer.ValueText
 
             If pipeTool = "none" AndAlso FrameServerHelp.IsPortable AndAlso
-                Package.x264.Version.Contains("aMod") Then
+                Package.x264.Version.ToLower.ContainsAny("amod", "djatom", "patman") Then
 
                 sb.Append(" --synth-lib " + FrameServerHelp.GetSynthPath.Escape)
             End If

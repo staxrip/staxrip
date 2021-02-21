@@ -127,7 +127,7 @@ Tools
     "SVT-AV1","Console App","SvtAv1EncApp.exe","0.8.6","2020-11-29"
     "VCEEnc","Console App","VCEEncC64.exe","6.09","2021-02-18"
     "vspipe","Console App","vspipe.exe","r52","2021-02-20"
-    "x264","Console App","x264.exe","aMod-core161-r3039+17 DJATOM Mod","2021-01-27"
+    "x264","Console App","x264.exe","0.161.3048+17 gcc10.2.0 Patman Mod","2021-02-20"
     "x265","Console App","x265.exe","3.4+70-aMod-gcc10.2.1 DJATOM Mod","2021-02-02"
     "xvid_encraw","Console App","xvid_encraw.exe","1.3.7",""
     "BDSup2Sub++","GUI App","bdsup2sub++.exe","1.0.3","2018-05-09"
@@ -412,7 +412,7 @@ x264
 
 H.264 video encoding console app.
 
-https://github.com/DJATOM/x264-aMod
+https://github.com/staxrip/staxrip/wiki/x264
 
 
 x265

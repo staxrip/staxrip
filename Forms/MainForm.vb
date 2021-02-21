@@ -3004,7 +3004,7 @@ Public Class MainForm
             End If
 
             If p.Script.IsAviSynth AndAlso TypeOf p.VideoEncoder Is x264Enc AndAlso
-                Not Package.x264.Version.Contains("aMod") AndAlso
+                Not Package.x264.Version.ToLower.ContainsAny("amod", "djatom", "patman") AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV420P8 AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV420P8_ AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV422P8 AndAlso

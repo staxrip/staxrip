@@ -1304,7 +1304,7 @@ An advanced debanding script based on GradFun2DB.
 
 Filters: GradFun2DBmod
 
-http://avisynth.nl/index.php/GradFun2dbmod
+http://avisynth.nl/index.php/GradFun2DBmod
 
 
 HQDeringmod

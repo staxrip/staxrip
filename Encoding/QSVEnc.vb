@@ -173,28 +173,28 @@ Public Class QSVEnc
             .Text = "Quality",
             .Init = 23,
             .VisibleFunc = Function() {"icq", "la-icq", "qvbr-q"}.Contains(Mode.ValueText),
-            .Config = {0, 51}}
+            .Config = {0, 63}}
 
         Property QPI As New NumParam With {
             .HelpSwitch = "--cqp",
             .Text = "QP I",
             .Init = 24,
             .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
-            .Config = {0, 51}}
+            .Config = {0, 63}}
 
         Property QPP As New NumParam With {
             .HelpSwitch = "--cqp",
             .Text = "QP P",
             .Init = 26,
             .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
-            .Config = {0, 51}}
+            .Config = {0, 63}}
 
         Property QPB As New NumParam With {
             .HelpSwitch = "--cqp",
             .Text = "QP B",
             .Init = 27,
             .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
-            .Config = {0, 51}}
+            .Config = {0, 63}}
 
         Property QPOffsetI As New NumParam With {
             .HelpSwitch = "--qp-offset",

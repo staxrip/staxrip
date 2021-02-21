@@ -1,5 +1,8 @@
 
-2.1.8.2 Beta (2021-02-??)
+2.1.8.3 Beta (2021-02-??)
+=========================
+
+2.1.8.2 Beta (2021-02-21)
 =========================
 
 - New Preview dialog feature 'Create job for each selection' (stax76, [#512](/../../issues/512))

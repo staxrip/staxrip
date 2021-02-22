@@ -2,9 +2,15 @@
 Imports System.ComponentModel
 Imports System.Reflection
 Imports System.Text
+
 Imports StaxRip.UI
 
 Public Class Documentation
+    Shared Sub GenerateWikiPages()
+        Dim outDir = Folder.Settings + "Wiki Pages\"
+        FolderHelp.Create(outDir)
+    End Sub
+
     Shared Sub GenerateDynamicFiles()
         GenerateMacroTableFile()
         GenerateToolFile()

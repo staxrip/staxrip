@@ -4777,10 +4777,6 @@ Public Class MainForm
 
         ret.Add("Tools|Advanced", Symbol.More)
 
-        If g.IsDevelopmentPC Then
-            ret.Add("Tools|Advanced|Test and create files...", NameOf(g.DefaultCommands.TestAndDynamicFileCreation), Keys.F12)
-        End If
-
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
         ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
         ret.Add("Tools|Advanced|Add Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
@@ -4795,6 +4791,12 @@ Public Class MainForm
         End If
 
         ret.Add("Tools|Advanced|Ingest HDR", NameOf(g.DefaultCommands.SaveMKVHDR))
+        ret.Add("Tools|Advanced|Generate Wiki Pages", NameOf(g.DefaultCommands.GenerateWikiPages))
+
+        If g.IsDevelopmentPC Then
+            ret.Add("Tools|Advanced|Test and create files...", NameOf(g.DefaultCommands.TestAndDynamicFileCreation), Keys.F12)
+        End If
+
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
 

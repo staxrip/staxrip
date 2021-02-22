@@ -127,6 +127,10 @@
 
     Exits StaxRip
 
+.. option:: -GenerateWikiPages
+
+    Generates various wiki pages.
+
 .. option:: -ImportVideoEncoderCommandLine:commandLine
 
     Changes video encoder settings.

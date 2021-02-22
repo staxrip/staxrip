@@ -48,7 +48,7 @@ Public Class Project
     Public ForcedOutputMod As Integer = 8
     Public HarcodedSubtitle As Boolean
     Public ImportVUIMetadata As Boolean = True
-    Public ITU As Boolean = True
+    Public ITU As Boolean
     Public LastOriginalSourceFile As String
     Public Log As New LogBuilder
     Public MaxAspectRatioError As Double = 2

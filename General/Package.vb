@@ -10,7 +10,6 @@ Public Class Package
     Property AllowCustomPath As Boolean = True
     Property Description As String
     Property DownloadURL As String
-    Property DownloadURLs As StringPair()
     Property Exclude As String()
     Property Filename32 As String
     Property Filter As String
@@ -562,10 +561,9 @@ Public Class Package
         .Location = "Encoders\aomenc",
         .Description = "AV1 video encoder console app.",
         .WebURL = "https://aomedia.org",
+        .DownloadURL = "https://github.com/staxrip/staxrip/wiki/aomenc",
         .RequiredFunc = Function() TypeOf p.VideoEncoder Is aomenc,
-        .HelpSwitch = "--help",
-        .DownloadURLs = {New StringPair("Patman MediaFire Folder", "https://www.mediafire.com/folder/9gxbsrup4j872/StaxRip_Universe#vkt2ckzjvt0qf"),
-                         New StringPair("Marco Sousa appveyor auto build", "https://ci.appveyor.com/project/marcomsousa/build-aom/build/artifacts")}})
+        .HelpSwitch = "--help"})
 
     Shared Property mkvmerge As Package = Add(New Package With {
         .Name = "mkvmerge",
@@ -2061,7 +2059,6 @@ Public Class Package
         dic("Online") = HelpURL
         dic("AviSynth") = HelpUrlAviSynth
         dic("VapourSynth") = HelpUrlVapourSynth
-        dic("Wiki") = "https://github.com/staxrip/staxrip/wiki/" + Name.Replace(" ", "-")
 
         Dim count = dic.Values.Where(Function(val) val <> "").Count
 
@@ -2086,14 +2083,6 @@ Public Class Package
         End If
     End Sub
 
-    Function GetDownloadURL() As String
-        If DownloadURL <> "" Then
-            Return DownloadURL
-        ElseIf Not DownloadURLs Is Nothing Then
-            Return DownloadURLs(0).Value
-        End If
-    End Function
-
     ReadOnly Property HelpFile As String
         Get
             If HelpFilename = "" AndAlso Not HelpSwitch Is Nothing Then
@@ -2116,8 +2105,6 @@ Public Class Package
                 Return HelpUrlVapourSynth
             ElseIf DownloadURL <> "" Then
                 Return DownloadURL
-            ElseIf Not DownloadURLs Is Nothing Then
-                Return DownloadURLs(0).Value
             End If
         End Get
     End Property
@@ -2136,8 +2123,6 @@ Public Class Package
                 Return WebURL
             ElseIf DownloadURL <> "" Then
                 Return DownloadURL
-            ElseIf Not DownloadURLs Is Nothing Then
-                Return DownloadURLs(0).Value
             Else
                 Return "https://github.com/staxrip/staxrip/wiki/" + Name.Replace(" ", "-")
             End If

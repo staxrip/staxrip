@@ -22,7 +22,7 @@ Public Class ToolUpdate
     End Sub
 
     Async Sub Update()
-        Dim content = Await HttpClient.GetStringAsync(Package.GetDownloadURL)
+        Dim content = Await HttpClient.GetStringAsync(Package.DownloadURL)
         Dim matches = Regex.Matches(content, "href=(""|')[^ ]+\.(7z|zip|exe)(""|')")
 
         For Each match As Match In matches
@@ -39,7 +39,7 @@ Public Class ToolUpdate
             url = url.Substring(6, url.Length - 7)
 
             If Not url.StartsWith("http") AndAlso url.StartsWith("/") Then
-                Dim match2 = Regex.Match(Package.GetDownloadURL, "https?://[^/]+")
+                Dim match2 = Regex.Match(Package.DownloadURL, "https?://[^/]+")
                 url = match2.Value + url
             End If
 

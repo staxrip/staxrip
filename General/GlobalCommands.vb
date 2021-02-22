@@ -196,6 +196,11 @@ Public Class GlobalCommands
         End If
     End Sub
 
+    <Command("Generates various wiki pages.")>
+    Sub GenerateWikiPages()
+        Documentation.GenerateWikiPages()
+    End Sub
+
     <Command("Development tests and creation of doc files.")>
     Sub TestAndDynamicFileCreation()
         If Not g.IsDevelopmentPC Then

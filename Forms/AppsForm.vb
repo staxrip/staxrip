@@ -453,7 +453,7 @@ Public Class AppsForm
         miCopyPath.Enabled = path <> ""
         tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.Path <> ""
         miLaunch.Enabled = tsbLaunch.Enabled
-        tsbDownload.Enabled = CurrentPackage.DownloadURL <> "" OrElse Not CurrentPackage.DownloadURLs Is Nothing
+        tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
         miAutoUpdate.Enabled = tsbDownload.Enabled AndAlso CurrentPackage.SupportsAutoUpdate
         tsbWebsite.Enabled = CurrentPackage.URL <> ""
 
@@ -707,18 +707,6 @@ Public Class AppsForm
     Sub tsbDownload_Click(sender As Object, e As EventArgs) Handles tsbDownload.Click
         If CurrentPackage.DownloadURL <> "" Then
             g.ShellExecute(CurrentPackage.DownloadURL)
-        ElseIf Not CurrentPackage.DownloadURLs Is Nothing Then
-            Using td As New TaskDialog(Of String)
-                td.MainInstruction = "Choose a download option."
-
-                For Each pair In CurrentPackage.DownloadURLs
-                    td.AddCommand(pair.Name, pair.Value)
-                Next
-
-                If td.Show <> "" Then
-                    g.ShellExecute(td.SelectedValue)
-                End If
-            End Using
         End If
     End Sub
 
@@ -984,7 +972,7 @@ Public Class AppsForm
     End Sub
 
     Sub miAutoUpdate_Click(sender As Object, e As EventArgs) Handles miAutoUpdate.Click
-        Dim url = CurrentPackage.GetDownloadURL
+        Dim url = CurrentPackage.DownloadURL
 
         If url = "" Then
             Exit Sub

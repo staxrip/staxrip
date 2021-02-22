@@ -6,9 +6,12 @@ Imports System.Text
 Imports StaxRip.UI
 
 Public Class Documentation
-    Shared Sub GenerateWikiPages()
+    Shared Sub GenerateWikiContent()
         Dim outDir = Folder.Settings + "Wiki Pages\"
         FolderHelp.Create(outDir)
+        GetCommands(True).WriteFileUTF8(outDir + "CLI.md")
+        GetCommands(False).WriteFileUTF8(outDir + "Commands.md")
+        g.ShellExecute(outDir)
     End Sub
 
     Shared Sub GenerateDynamicFiles()
@@ -44,62 +47,66 @@ Public Class Documentation
                 title = title.TrimEnd(",:".ToCharArray)
             End If
 
-            sb.Append(".. option:: " + title + BR2)
-            sb.Append(command.Attribute.Description.IndentLines("    ") + BR2)
+            sb.Append("### " + title + BR2)
+            sb.Append(command.Attribute.Description + BR2)
 
             If params.Length > 0 Then
-                sb.Append(".. list-table::" + BR)
-                sb.Append("    :widths: auto" + BR2)
-
-                Dim hasDescription = False
+                Dim needsSecondColumn = False
 
                 For Each param In params
                     Dim descAttrib = param.GetCustomAttribute(Of DescriptionAttribute)
 
-                    If Not descAttrib Is Nothing AndAlso descAttrib.Description <> "" Then
-                        hasDescription = True
-                    End If
+                    If (Not descAttrib Is Nothing AndAlso descAttrib.Description <> "") OrElse
+                        param.ParameterType.IsEnum Then
 
-                    Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
-
-                    If Not nameAttrib Is Nothing AndAlso
-                        Not nameAttrib.DisplayName.IsEqualIgnoreCase(param.Name) Then
-
-                        hasDescription = True
+                        needsSecondColumn = True
                     End If
                 Next
 
+                If needsSecondColumn Then
+                    sb.AppendLine("| Parameter | Description |")
+                    sb.AppendLine("| --- | --- |")
+                Else
+                    sb.AppendLine("| Parameter |")
+                    sb.AppendLine("| --- |")
+                End If
+
                 For Each param In params
-                    sb.Append($"    * - {param.Name} <{param.ParameterType.Name.ToLower.Replace("int32", "integer")}>{BR}")
-
-                    If hasDescription OrElse param.ParameterType.IsEnum Then
-                        sb.Append($"      - ")
-
+                    If needsSecondColumn Then
+                        Dim name = param.Name
                         Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
-                        Dim hasName = False
 
-                        If Not nameAttrib Is Nothing AndAlso
-                            Not nameAttrib.DisplayName.IsEqualIgnoreCase(param.Name) Then
-                            sb.Append(nameAttrib.DisplayName)
-                            hasName = True
+                        If Not nameAttrib Is Nothing Then
+                            name = nameAttrib.DisplayName
                         End If
 
-                        Dim descAttrib = param.GetCustomAttribute(Of DescriptionAttribute)
+                        name += $" \<{param.ParameterType.Name.ToLower.Replace("int32", "integer")}\>"
 
-                        If Not descAttrib Is Nothing Then
-                            If hasName Then
-                                sb.Append(": ")
-                            End If
-
-                            sb.Append(descAttrib.Description)
-                            descAttrib.Description.ThrowIfContainsNewLine
-                        End If
+                        sb.Append($"| {name} |")
 
                         If param.ParameterType.IsEnum Then
-                            sb.Append(" " + System.Enum.GetNames(param.ParameterType).Join(", "))
+                            sb.AppendLine(" " + System.Enum.GetNames(param.ParameterType).Join(", ") + " |")
+                        Else
+                            Dim descAttrib = param.GetCustomAttribute(Of DescriptionAttribute)
+
+                            If Not descAttrib Is Nothing Then
+                                sb.AppendLine($" {descAttrib.Description} |")
+                                descAttrib.Description.ThrowIfContainsNewLine
+                            Else
+                                sb.AppendLine($" |")
+                            End If
+                        End If
+                    Else
+                        Dim name = param.Name
+                        Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
+
+                        If Not nameAttrib Is Nothing Then
+                            name = nameAttrib.DisplayName
                         End If
 
-                        sb.Append(BR)
+                        name += $" \<{param.ParameterType.Name.ToLower.Replace("int32", "integer")}\>"
+
+                        sb.AppendLine($"| {name} |")
                     End If
                 Next
 

@@ -4791,7 +4791,7 @@ Public Class MainForm
         End If
 
         ret.Add("Tools|Advanced|Ingest HDR", NameOf(g.DefaultCommands.SaveMKVHDR))
-        ret.Add("Tools|Advanced|Generate Wiki Pages", NameOf(g.DefaultCommands.GenerateWikiPages))
+        ret.Add("Tools|Advanced|Generate Wiki Pages", NameOf(g.DefaultCommands.GenerateWikiContent), Keys.Control Or Keys.F12)
 
         If g.IsDevelopmentPC Then
             ret.Add("Tools|Advanced|Test and create files...", NameOf(g.DefaultCommands.TestAndDynamicFileCreation), Keys.F12)

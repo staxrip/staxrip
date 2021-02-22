@@ -596,14 +596,14 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
                         New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
+                    Add("Input/Output",
+                        New StringParam With {.Switch = "--input-option", .Text = "Input Option", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw")},
+                        Decoder, Interlace)
                     Add("Other",
                         Custom,
                         New StringParam With {.Switch = "--keyfile", .Text = "Keyframes File", .BrowseFile = True},
                         New StringParam With {.Switch = "--timecode", .Text = "Timecode File"},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
-                        New StringParam With {.Switch = "--input-option", .Text = "Input Option"},
-                        Decoder,
-                        Interlace,
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
                         New NumParam With {.Switch = "--device", .HelpSwitch = "-d", .Text = "Device", .Config = {0, 4}},

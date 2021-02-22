@@ -197,8 +197,8 @@ Public Class GlobalCommands
     End Sub
 
     <Command("Generates various wiki pages.")>
-    Sub GenerateWikiPages()
-        Documentation.GenerateWikiPages()
+    Sub GenerateWikiContent()
+        Documentation.GenerateWikiContent()
     End Sub
 
     <Command("Development tests and creation of doc files.")>

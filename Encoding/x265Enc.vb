@@ -926,7 +926,7 @@ Public Class x265Params
         .Text = "Progress Readframes",
         .Help = "Print how much frames retrieved from reader",
         .Weight = 9,
-        .VisibleFunc = Function() Package.x265Type = x265Type.DJATOM}
+        .VisibleFunc = Function() Package.x265Type = x265Type.DJATOM OrElse Package.x265Type = x265Type.Patman}
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get

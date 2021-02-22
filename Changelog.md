@@ -2,6 +2,9 @@
 2.1.8.3 Beta (2021-02-??)
 =========================
 
+- NVEnc UI options move into new Input/Output section (stax76)
+- AVS SMDegrain filter profiles refurbished (44vince44)
+- x265 supports --reader-options library and --readframes for PatMan builds (Dendraspis)
 - x264 10bit, --synth-lib, VapourSynth reader for DJATOM and Patman Mod
 - x264 0.161.3048+17 gcc10.2.0 Patman Mod
 

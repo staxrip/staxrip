@@ -3129,7 +3129,6 @@ Public Class MainForm
                     value > (p.VideoEncoder.AutoCompCheckValue + 20) Then
 
                     If ProcessTip("Aimed quality value is more than 20% off, change the image or file size to get something between 50% and 70% quality.") Then
-                        'laTarget2.BackColor = Color.Red
                         Return Warn("Quality", tbTargetSize, tbBitrate, tbTargetWidth, tbTargetHeight, laTarget2)
                     End If
                 End If
@@ -3194,38 +3193,25 @@ Public Class MainForm
         gbAssistant.Text = msg
         bnNext.Enabled = False
         CanIgnoreTip = False
-        Highlight(controls)
+        Highlight(True, controls)
     End Function
 
-    'Sub Highlight(c As Control)
-    '    Highlight(True, c)
-    'End Sub
-
-    'Sub Highlight(highlight As Boolean, c As Control)
-    '    If c Is Nothing Then
-    '        Exit Sub
-    '    End If
-
-    '    If highlight Then
-    '        c.BackColor = Color.Orange
-    '    Else
-    '        If TypeOf c Is Label OrElse TypeOf c Is GroupBox Then
-    '            c.BackColor = SystemColors.Control
-    '        ElseIf TypeOf c Is TextBox AndAlso DirectCast(c, TextBox).ReadOnly Then
-    '            c.BackColor = SystemColors.Control
-    '        Else
-    '            c.BackColor = SystemColors.Window
-    '        End If
-    '    End If
-    'End Sub
-
     Sub Highlight(ParamArray controls As Control())
+        Highlight(False, controls)
+    End Sub
+
+    Sub Highlight(highlight As Boolean, ParamArray controls As Control())
         If controls Is Nothing Then Return
 
         Dim theme = ThemeManager.CurrentTheme
 
-        laTip.BackColor = theme.MainForm.laTipBackHighlightColor
-        laTip.ForeColor = theme.MainForm.laTipForeHighlightColor
+        If highlight Then
+            laTip.BackColor = theme.MainForm.laTipBackHighlightColor
+            laTip.ForeColor = theme.MainForm.laTipForeHighlightColor
+        Else
+            laTip.BackColor = theme.MainForm.laTipBackColor
+            laTip.ForeColor = theme.MainForm.laTipForeColor
+        End If
 
         For Each control In controls.OfType(Of Label)
             control.BackColor = theme.General.Controls.Label.BackHighlightColor

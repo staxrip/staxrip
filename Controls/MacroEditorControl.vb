@@ -18,13 +18,13 @@ Public Class MacroEditorControl
 
     Private WithEvents TabControl As TabControl
     Public WithEvents tpEdit As TabPage
-    Friend WithEvents tpPreview As System.Windows.Forms.TabPage
-    Friend WithEvents gb As System.Windows.Forms.GroupBox
+    Friend WithEvents tpPreview As TabPage
+    Friend WithEvents gb As GroupBoxEx
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
     Public WithEvents rtbEdit As RichTextBoxEx
     Public WithEvents rtbPreview As RichTextBoxEx
-    Friend WithEvents tlpMain As System.Windows.Forms.TableLayoutPanel
-    Friend WithEvents flpButtons As System.Windows.Forms.FlowLayoutPanel
+    Friend WithEvents tlpMain As TableLayoutPanel
+    Friend WithEvents flpButtons As FlowLayoutPanelEx
     Friend WithEvents llMacros As ButtonLabel
     Friend WithEvents llHelp As ButtonLabel
     Public WithEvents tpDefaults As TabPage
@@ -34,13 +34,13 @@ Public Class MacroEditorControl
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.TabControl = New System.Windows.Forms.TabControl()
-        Me.tpEdit = New System.Windows.Forms.TabPage()
-        Me.tpPreview = New System.Windows.Forms.TabPage()
-        Me.tpDefaults = New System.Windows.Forms.TabPage()
-        Me.gb = New System.Windows.Forms.GroupBox()
-        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
+        Me.TabControl = New TabControl()
+        Me.tpEdit = New TabPage()
+        Me.tpPreview = New TabPage()
+        Me.tpDefaults = New TabPage()
+        Me.gb = New GroupBoxEx()
+        Me.tlpMain = New TableLayoutPanel()
+        Me.flpButtons = New FlowLayoutPanelEx()
         Me.llMacros = New StaxRip.UI.ButtonLabel()
         Me.llHelp = New StaxRip.UI.ButtonLabel()
         Me.rtbEdit = New StaxRip.UI.RichTextBoxEx()
@@ -58,14 +58,14 @@ Public Class MacroEditorControl
         '
         'TabControl
         '
-        Me.TabControl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.TabControl.Anchor = CType((((AnchorStyles.Top Or AnchorStyles.Bottom) _
+            Or AnchorStyles.Left) _
+            Or AnchorStyles.Right), AnchorStyles)
         Me.TabControl.Controls.Add(Me.tpEdit)
         Me.TabControl.Controls.Add(Me.tpPreview)
         Me.TabControl.Controls.Add(Me.tpDefaults)
         Me.TabControl.Location = New System.Drawing.Point(3, 3)
-        Me.TabControl.Margin = New System.Windows.Forms.Padding(3, 3, 3, 10)
+        Me.TabControl.Margin = New Padding(3, 3, 3, 10)
         Me.TabControl.Name = "TabControl"
         Me.TabControl.SelectedIndex = 0
         Me.TabControl.Size = New System.Drawing.Size(609, 453)
@@ -101,7 +101,7 @@ Public Class MacroEditorControl
         'gb
         '
         Me.gb.Controls.Add(Me.tlpMain)
-        Me.gb.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.gb.Dock = DockStyle.Fill
         Me.gb.Location = New System.Drawing.Point(0, 0)
         Me.gb.Name = "gb"
         Me.gb.Size = New System.Drawing.Size(620, 550)
@@ -110,30 +110,30 @@ Public Class MacroEditorControl
         '
         'tlpMain
         '
-        Me.tlpMain.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpMain.Anchor = CType((((AnchorStyles.Top Or AnchorStyles.Bottom) _
+            Or AnchorStyles.Left) _
+            Or AnchorStyles.Right), AnchorStyles)
         Me.tlpMain.ColumnCount = 1
-        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0!))
         Me.tlpMain.Controls.Add(Me.flpButtons, 0, 1)
         Me.tlpMain.Controls.Add(Me.TabControl, 0, 0)
         Me.tlpMain.Location = New System.Drawing.Point(3, 46)
         Me.tlpMain.Name = "tlpMain"
         Me.tlpMain.RowCount = 2
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0!))
+        Me.tlpMain.RowStyles.Add(New RowStyle())
         Me.tlpMain.Size = New System.Drawing.Size(616, 496)
         Me.tlpMain.TabIndex = 1
         '
         'flpButtons
         '
         Me.flpButtons.AutoSize = True
-        Me.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpButtons.AutoSizeMode = AutoSizeMode.GrowAndShrink
         Me.flpButtons.Controls.Add(Me.llMacros)
         Me.flpButtons.Controls.Add(Me.llHelp)
         Me.flpButtons.Font = New System.Drawing.Font("Segoe UI", 10.0!)
         Me.flpButtons.Location = New System.Drawing.Point(0, 466)
-        Me.flpButtons.Margin = New System.Windows.Forms.Padding(0)
+        Me.flpButtons.Margin = New Padding(0)
         Me.flpButtons.Name = "flpButtons"
         Me.flpButtons.Size = New System.Drawing.Size(269, 54)
         Me.flpButtons.TabIndex = 1
@@ -141,7 +141,6 @@ Public Class MacroEditorControl
         'llMacros
         '
         Me.llMacros.AutoSize = True
-        Me.llMacros.LinkColor = System.Drawing.Color.Empty
         Me.llMacros.Location = New System.Drawing.Point(3, 0)
         Me.llMacros.Name = "llMacros"
         Me.llMacros.Size = New System.Drawing.Size(151, 54)
@@ -152,7 +151,6 @@ Public Class MacroEditorControl
         'llHelp
         '
         Me.llHelp.AutoSize = True
-        Me.llHelp.LinkColor = System.Drawing.Color.Empty
         Me.llHelp.Location = New System.Drawing.Point(160, 0)
         Me.llHelp.Name = "llHelp"
         Me.llHelp.Size = New System.Drawing.Size(106, 54)
@@ -163,10 +161,10 @@ Public Class MacroEditorControl
         'rtbEdit
         '
         Me.rtbEdit.AcceptsTab = True
-        Me.rtbEdit.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.rtbEdit.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.rtbEdit.BorderStyle = BorderStyle.None
+        Me.rtbEdit.Dock = DockStyle.Fill
         Me.rtbEdit.Location = New System.Drawing.Point(0, 0)
-        Me.rtbEdit.Margin = New System.Windows.Forms.Padding(0)
+        Me.rtbEdit.Margin = New Padding(0)
         Me.rtbEdit.Name = "rtbEdit"
         Me.rtbEdit.Size = New System.Drawing.Size(585, 383)
         Me.rtbEdit.TabIndex = 0
@@ -174,8 +172,8 @@ Public Class MacroEditorControl
         '
         'rtbPreview
         '
-        Me.rtbPreview.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.rtbPreview.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.rtbPreview.BorderStyle = BorderStyle.None
+        Me.rtbPreview.Dock = DockStyle.Fill
         Me.rtbPreview.Location = New System.Drawing.Point(0, 0)
         Me.rtbPreview.Name = "rtbPreview"
         Me.rtbPreview.ReadOnly = True
@@ -185,8 +183,8 @@ Public Class MacroEditorControl
         '
         'rtbDefaults
         '
-        Me.rtbDefaults.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.rtbDefaults.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.rtbDefaults.BorderStyle = BorderStyle.None
+        Me.rtbDefaults.Dock = DockStyle.Fill
         Me.rtbDefaults.Location = New System.Drawing.Point(0, 0)
         Me.rtbDefaults.Name = "rtbDefaults"
         Me.rtbDefaults.ReadOnly = True
@@ -197,7 +195,7 @@ Public Class MacroEditorControl
         'MacroEditorControl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.AutoScaleMode = AutoScaleMode.Dpi
         Me.Controls.Add(Me.gb)
         Me.Name = "MacroEditorControl"
         Me.Size = New System.Drawing.Size(620, 550)
@@ -235,10 +233,23 @@ Public Class MacroEditorControl
         rtbEdit.Font = New Font("Consolas", 10 * s.UIScaleFactor)
         rtbPreview.Font = rtbEdit.Font
         rtbDefaults.Font = rtbEdit.Font
-        Dim col = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)
-        llHelp.LinkColor = col
-        llMacros.LinkColor = col
         llHelp.Visible = False
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     <Category("Appearance"), DefaultValue(""), Bindable(True),

@@ -49,7 +49,7 @@ Public Class GlobalCommands
 
             page.ResumeLayout()
 
-            Dim textChanged = Sub()
+            Dim textChanged = Sub(sender As Object, e As EventArgs)
                                   If outputFolder.Edit.Text = "" AndAlso
                                       File.Exists(sourceFile.Edit.Text) Then
 
@@ -771,7 +771,7 @@ Public Class GlobalCommands
 
                     Dim mode = ui.AddMenu(Of Integer)
                     mode.Text = "Row Count Mode"
-                    mode.Expandet = True
+                    mode.Expanded = True
                     mode.Add("Manual", 0)
                     mode.Add("Row count is calculated based on time interval", 1)
                     mode.Button.Value = s.Storage.GetInt("Thumbnail Mode")

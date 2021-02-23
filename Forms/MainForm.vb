@@ -25,41 +25,41 @@ Public Class MainForm
 
     Private components As System.ComponentModel.IContainer
 
-    Public WithEvents tbAudioFile0 As StaxRip.UI.TextBoxEx
-    Public WithEvents tbAudioFile1 As StaxRip.UI.TextBoxEx
+    Public WithEvents tbAudioFile0 As TextEdit
+    Public WithEvents tbAudioFile1 As TextEdit
     Public WithEvents llEditAudio1 As ButtonLabel
     Public WithEvents llEditAudio0 As ButtonLabel
     Public WithEvents bnNext As ButtonEx
-    Public WithEvents tbSourceFile As StaxRip.UI.TextBoxEx
-    Public WithEvents tbTargetFile As StaxRip.UI.TextBoxEx
+    Public WithEvents tbSourceFile As TextEdit
+    Public WithEvents tbTargetFile As TextEdit
     Public WithEvents gbAssistant As System.Windows.Forms.GroupBox
     Public WithEvents lgbFilters As LinkGroupBox
-    Public WithEvents tbTargetSize As System.Windows.Forms.TextBox
-    Public WithEvents laBitrate As System.Windows.Forms.Label
-    Public WithEvents tbBitrate As System.Windows.Forms.TextBox
-    Public WithEvents lTarget1 As System.Windows.Forms.Label
-    Public WithEvents lSource1 As System.Windows.Forms.Label
+    Public WithEvents tbTargetSize As TextEdit
+    Public WithEvents laBitrate As LabelEx
+    Public WithEvents tbBitrate As TextEdit
+    Public WithEvents lTarget1 As LabelEx
+    Public WithEvents lSource1 As LabelEx
     Public WithEvents lgbResize As LinkGroupBox
-    Public WithEvents lPixel As System.Windows.Forms.Label
-    Public WithEvents lPixelText As System.Windows.Forms.Label
+    Public WithEvents lPixel As LabelEx
+    Public WithEvents lPixelText As LabelEx
     Public WithEvents tbResize As System.Windows.Forms.TrackBar
-    Public WithEvents lZoom As System.Windows.Forms.Label
-    Public WithEvents lZoomText As System.Windows.Forms.Label
-    Public WithEvents tbTargetHeight As System.Windows.Forms.TextBox
-    Public WithEvents tbTargetWidth As System.Windows.Forms.TextBox
-    Public WithEvents lTargetHeight As System.Windows.Forms.Label
-    Public WithEvents lTargetWidth As System.Windows.Forms.Label
-    Public WithEvents lDAR As System.Windows.Forms.Label
+    Public WithEvents lZoom As LabelEx
+    Public WithEvents lZoomText As LabelEx
+    Public WithEvents tbTargetHeight As TextEdit
+    Public WithEvents tbTargetWidth As TextEdit
+    Public WithEvents lTargetHeight As LabelEx
+    Public WithEvents lTargetWidth As LabelEx
+    Public WithEvents lDAR As LabelEx
     Public WithEvents blTargetDarText As ButtonLabel
-    Public WithEvents lCrop As System.Windows.Forms.Label
-    Public WithEvents lCropText As System.Windows.Forms.Label
+    Public WithEvents lCrop As LabelEx
+    Public WithEvents lCropText As LabelEx
     Public WithEvents lgbSource As LinkGroupBox
-    Public WithEvents lSource2 As System.Windows.Forms.Label
+    Public WithEvents lSource2 As LabelEx
     Public WithEvents lgbTarget As LinkGroupBox
-    Public WithEvents GroupBox1 As System.Windows.Forms.GroupBox
-    Public WithEvents laTip As System.Windows.Forms.Label
+    Public WithEvents GroupBox1 As GroupBoxEx
+    Public WithEvents laTip As LabelEx
     Public WithEvents lgbEncoder As LinkGroupBox
-    Public WithEvents laTarget2 As System.Windows.Forms.Label
+    Public WithEvents laTarget2 As LabelEx
     Public WithEvents MenuStrip As System.Windows.Forms.MenuStrip
     Public WithEvents llAudioProfile0 As ButtonLabel
     Public WithEvents llAudioProfile1 As ButtonLabel
@@ -69,14 +69,14 @@ Public Class MainForm
     Public WithEvents llMuxer As ButtonLabel
     Public WithEvents lPAR As StaxRip.UI.LabelEx
     Public WithEvents blTargetParText As ButtonLabel
-    Public WithEvents lAspectRatioError As StaxRip.UI.LabelEx
-    Public WithEvents lAspectRatioErrorText As StaxRip.UI.LabelEx
-    Public WithEvents gbAudio As System.Windows.Forms.GroupBox
+    Public WithEvents lAspectRatioError As LabelEx
+    Public WithEvents lAspectRatioErrorText As LabelEx
+    Public WithEvents gbAudio As GroupBoxEx
     Public WithEvents blSourceParText As ButtonLabel
-    Public WithEvents lSourcePAR As System.Windows.Forms.Label
-    Public WithEvents lSourceDar As System.Windows.Forms.Label
-    Public WithEvents lSAR As StaxRip.UI.LabelEx
-    Public WithEvents lSarText As StaxRip.UI.LabelEx
+    Public WithEvents lSourcePAR As LabelEx
+    Public WithEvents lSourceDar As LabelEx
+    Public WithEvents lSAR As LabelEx
+    Public WithEvents lSarText As LabelEx
     Friend WithEvents tlpTarget As TableLayoutPanel
     Friend WithEvents tlpMain As TableLayoutPanel
     Friend WithEvents tlpSource As TableLayoutPanel
@@ -93,60 +93,60 @@ Public Class MainForm
         Me.components = New System.ComponentModel.Container()
         Me.bnNext = New ButtonEx()
         Me.llEditAudio0 = New StaxRip.UI.ButtonLabel()
-        Me.gbAssistant = New System.Windows.Forms.GroupBox()
+        Me.gbAssistant = New GroupBoxEx()
         Me.tlpAssistant = New System.Windows.Forms.TableLayoutPanel()
-        Me.laTip = New System.Windows.Forms.Label()
+        Me.laTip = New LabelEx()
         Me.llEditAudio1 = New StaxRip.UI.ButtonLabel()
-        Me.gbAudio = New System.Windows.Forms.GroupBox()
+        Me.gbAudio = New GroupBoxEx()
         Me.tlpAudio = New System.Windows.Forms.TableLayoutPanel()
-        Me.tbAudioFile0 = New StaxRip.UI.TextBoxEx()
-        Me.tbAudioFile1 = New StaxRip.UI.TextBoxEx()
+        Me.tbAudioFile0 = New TextEdit()
+        Me.tbAudioFile1 = New TextEdit()
         Me.llAudioProfile1 = New StaxRip.UI.ButtonLabel()
         Me.llAudioProfile0 = New StaxRip.UI.ButtonLabel()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
         Me.lgbTarget = New StaxRip.UI.LinkGroupBox()
         Me.tlpTarget = New System.Windows.Forms.TableLayoutPanel()
-        Me.tbTargetFile = New StaxRip.UI.TextBoxEx()
-        Me.laTarget2 = New System.Windows.Forms.Label()
-        Me.tbTargetSize = New System.Windows.Forms.TextBox()
-        Me.lTarget1 = New System.Windows.Forms.Label()
-        Me.tbBitrate = New System.Windows.Forms.TextBox()
-        Me.laBitrate = New System.Windows.Forms.Label()
+        Me.tbTargetFile = New TextEdit()
+        Me.laTarget2 = New LabelEx()
+        Me.tbTargetSize = New TextEdit()
+        Me.lTarget1 = New LabelEx()
+        Me.tbBitrate = New TextEdit()
+        Me.laBitrate = New LabelEx()
         Me.blFilesize = New StaxRip.UI.ButtonLabel()
         Me.lgbSource = New StaxRip.UI.LinkGroupBox()
         Me.tlpSource = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpSourceValues = New System.Windows.Forms.TableLayoutPanel()
         Me.blSourceDarText = New StaxRip.UI.ButtonLabel()
-        Me.lSourcePAR = New System.Windows.Forms.Label()
+        Me.lSourcePAR = New LabelEx()
         Me.blSourceParText = New StaxRip.UI.ButtonLabel()
-        Me.lCrop = New System.Windows.Forms.Label()
-        Me.lCropText = New System.Windows.Forms.Label()
-        Me.lSourceDar = New System.Windows.Forms.Label()
-        Me.tbSourceFile = New StaxRip.UI.TextBoxEx()
-        Me.lSource1 = New System.Windows.Forms.Label()
-        Me.lSource2 = New System.Windows.Forms.Label()
+        Me.lCrop = New LabelEx()
+        Me.lCropText = New LabelEx()
+        Me.lSourceDar = New LabelEx()
+        Me.tbSourceFile = New TextEdit()
+        Me.lSource1 = New LabelEx()
+        Me.lSource2 = New LabelEx()
         Me.lgbResize = New StaxRip.UI.LinkGroupBox()
         Me.tlpResize = New System.Windows.Forms.TableLayoutPanel()
-        Me.lTargetWidth = New System.Windows.Forms.Label()
+        Me.lTargetWidth = New LabelEx()
         Me.tlpResizeValues = New System.Windows.Forms.TableLayoutPanel()
         Me.blTargetDarText = New StaxRip.UI.ButtonLabel()
         Me.lAspectRatioError = New StaxRip.UI.LabelEx()
         Me.lPAR = New StaxRip.UI.LabelEx()
-        Me.lZoom = New System.Windows.Forms.Label()
+        Me.lZoom = New LabelEx()
         Me.lSarText = New StaxRip.UI.LabelEx()
-        Me.lPixel = New System.Windows.Forms.Label()
+        Me.lPixel = New LabelEx()
         Me.blTargetParText = New StaxRip.UI.ButtonLabel()
         Me.lAspectRatioErrorText = New StaxRip.UI.LabelEx()
-        Me.lDAR = New System.Windows.Forms.Label()
-        Me.lZoomText = New System.Windows.Forms.Label()
-        Me.lPixelText = New System.Windows.Forms.Label()
+        Me.lDAR = New LabelEx()
+        Me.lZoomText = New LabelEx()
+        Me.lPixelText = New LabelEx()
         Me.lSAR = New StaxRip.UI.LabelEx()
         Me.tbResize = New System.Windows.Forms.TrackBar()
-        Me.tbTargetWidth = New System.Windows.Forms.TextBox()
-        Me.tbTargetHeight = New System.Windows.Forms.TextBox()
-        Me.lTargetHeight = New System.Windows.Forms.Label()
+        Me.tbTargetWidth = New TextEdit()
+        Me.tbTargetHeight = New TextEdit()
+        Me.lTargetHeight = New LabelEx()
         Me.lgbFilters = New StaxRip.UI.LinkGroupBox()
-        Me.FiltersListView = New StaxRip.FiltersListView()
+        Me.FiltersListView = New FiltersListView()
         Me.lgbEncoder = New StaxRip.UI.LinkGroupBox()
         Me.llMuxer = New StaxRip.UI.ButtonLabel()
         Me.pnEncoder = New System.Windows.Forms.Panel()
@@ -172,11 +172,16 @@ Public Class MainForm
         '
         'bnNext
         '
-        Me.bnNext.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnNext.Cursor = System.Windows.Forms.Cursors.Default
-        Me.bnNext.Margin = New System.Windows.Forms.Padding(0, 0, 6, 0)
+        Me.bnNext.Anchor = AnchorStyles.None
+        Me.bnNext.AutoSize = True
+        Me.bnNext.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        Me.bnNext.Cursor = Cursors.Default
+        Me.bnNext.Margin = New Padding(0, 0, 20, 0)
+        Me.bnNext.Padding = New Padding(0, 0, 0, 0)
+        'Me.bnNext.MinimumSize = New Size(CInt(FontHeight * 3.5), CInt(FontHeight * 1.5))
+        Me.bnNext.MinimumSize = New Size(100, 90)
         Me.bnNext.Name = "bnNext"
-        Me.bnNext.Size = New System.Drawing.Size(240, 100)
+        Me.bnNext.Size = New Size(260, 110)
         Me.bnNext.TabIndex = 39
         Me.bnNext.Text = "Next"
         '
@@ -418,7 +423,7 @@ Public Class MainForm
         Me.tbTargetSize.Name = "tbTargetSize"
         Me.tbTargetSize.Size = New System.Drawing.Size(136, 55)
         Me.tbTargetSize.TabIndex = 55
-        Me.tbTargetSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.tbTargetSize.TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'lTarget1
         '
@@ -439,7 +444,7 @@ Public Class MainForm
         Me.tbBitrate.Name = "tbBitrate"
         Me.tbBitrate.Size = New System.Drawing.Size(139, 55)
         Me.tbBitrate.TabIndex = 41
-        Me.tbBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.tbBitrate.TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'lBitrate
         '
@@ -657,12 +662,12 @@ Public Class MainForm
         Me.tlpResize.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
         Me.tlpResize.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
         Me.tlpResize.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
-        Me.tlpResize.Controls.Add(Me.lTargetWidth, 0, 0)
         Me.tlpResize.Controls.Add(Me.tlpResizeValues, 0, 2)
         Me.tlpResize.Controls.Add(Me.tbResize, 0, 1)
+        Me.tlpResize.Controls.Add(Me.lTargetWidth, 0, 0)
         Me.tlpResize.Controls.Add(Me.tbTargetWidth, 1, 0)
-        Me.tlpResize.Controls.Add(Me.tbTargetHeight, 3, 0)
         Me.tlpResize.Controls.Add(Me.lTargetHeight, 2, 0)
+        Me.tlpResize.Controls.Add(Me.tbTargetHeight, 3, 0)
         Me.tlpResize.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpResize.Location = New System.Drawing.Point(6, 48)
         Me.tlpResize.Name = "tlpResize"
@@ -875,7 +880,8 @@ Public Class MainForm
         Me.tbTargetWidth.Name = "tbTargetWidth"
         Me.tbTargetWidth.Size = New System.Drawing.Size(145, 55)
         Me.tbTargetWidth.TabIndex = 39
-        Me.tbTargetWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.tbTargetWidth.TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.tbTargetWidth.BorderStyle = BorderStyle.FixedSingle
         '
         'tbTargetHeight
         '
@@ -884,7 +890,8 @@ Public Class MainForm
         Me.tbTargetHeight.Name = "tbTargetHeight"
         Me.tbTargetHeight.Size = New System.Drawing.Size(145, 55)
         Me.tbTargetHeight.TabIndex = 40
-        Me.tbTargetHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.tbTargetHeight.TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.tbTargetHeight.BorderStyle = BorderStyle.FixedSingle
         '
         'lTargetHeight
         '
@@ -945,7 +952,7 @@ Public Class MainForm
         Me.lgbEncoder.Size = New System.Drawing.Size(670, 286)
         Me.lgbEncoder.TabIndex = 51
         Me.lgbEncoder.TabStop = False
-        Me.lgbEncoder.Text = "Encoder "
+        Me.lgbEncoder.Text = "Encoder"
         '
         'llMuxer
         '
@@ -1009,6 +1016,7 @@ Public Class MainForm
         Me.MaximizeBox = False
         Me.Name = "MainForm"
         Me.Text = "StaxRip"
+        Me.SetStyle(ControlStyles.SupportsTransparentBackColor, True)
         Me.gbAssistant.ResumeLayout(False)
         Me.tlpAssistant.ResumeLayout(False)
         Me.gbAudio.ResumeLayout(False)
@@ -1121,16 +1129,16 @@ Public Class MainForm
         Audio1FileMenu = New ContextMenuStripEx(components)
         NextContextMenuStrip = New ContextMenuStripEx(components)
 
-        tbTargetFile.ContextMenuStrip = TargetFileMenu
-        tbSourceFile.ContextMenuStrip = SourceFileMenu
-        tbAudioFile0.ContextMenuStrip = Audio0FileMenu
-        tbAudioFile1.ContextMenuStrip = Audio1FileMenu
+        tbTargetFile.TextBox.ContextMenuStrip = TargetFileMenu
+        tbSourceFile.TextBox.ContextMenuStrip = SourceFileMenu
+        tbAudioFile0.TextBox.ContextMenuStrip = Audio0FileMenu
+        tbAudioFile1.TextBox.ContextMenuStrip = Audio1FileMenu
 
         Dim rc = "right-click"
-        tbAudioFile0.SendMessageCue(rc, False)
-        tbAudioFile1.SendMessageCue(rc, False)
-        tbSourceFile.SendMessageCue(rc, False)
-        tbTargetFile.SendMessageCue(rc, False)
+        tbAudioFile0.TextBox.SendMessageCue(rc, False)
+        tbAudioFile1.TextBox.SendMessageCue(rc, False)
+        tbSourceFile.TextBox.SendMessageCue(rc, False)
+        tbTargetFile.TextBox.SendMessageCue(rc, False)
 
         llEditAudio0.AddClickAction(AddressOf AudioEdit0ToolStripMenuItemClick)
         llEditAudio1.AddClickAction(AddressOf AudioEdit1ToolStripMenuItemClick)
@@ -1157,10 +1165,6 @@ Public Class MainForm
         CustomSizeMenu.BuildMenu()
         SizeContextMenuStrip.ResumeLayout()
 
-        bnNext.AutoSize = True
-        bnNext.AutoSizeMode = AutoSizeMode.GrowAndShrink
-        bnNext.MinimumSize = New Size(CInt(FontHeight * 3.5), CInt(FontHeight * 1.5))
-
         NextContextMenuStrip.Add("Add to top and open Jobs", Sub() AddJob(True, 0))
         NextContextMenuStrip.Add("Add to bottom and open Jobs", Sub() AddJob(True, -1))
         NextContextMenuStrip.Add("-")
@@ -1168,7 +1172,99 @@ Public Class MainForm
         NextContextMenuStrip.Add("Add to bottom w/o opening Jobs", Sub() AddJob(False, -1))
 
         g.SetRenderer(MenuStrip)
-        SetMenuStyle()
+        'SetMenuStyle()
+
+        ApplyTheme()
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        'ApplyTheme(theme)      'Called in Assistant()
+        Assistant()
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        ApplyTheme(Me.GetAllControls(), theme)
+    End Sub
+
+    Sub ApplyTheme(controls As IEnumerable(Of Control))
+        ApplyTheme(controls, ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(controls As IEnumerable(Of Control), theme As Theme)
+        BackColor = theme.General.BackColor
+
+        For Each control In controls.OfType(Of Label)
+            If control Is Me.laTip Then
+                control.BackColor = theme.MainForm.laTipBackColor
+                control.ForeColor = theme.MainForm.laTipForeColor
+            Else
+                control.BackColor = theme.General.Controls.Label.BackColor
+                control.ForeColor = theme.General.Controls.Label.ForeColor
+            End If
+        Next
+
+        For Each control In controls.OfType(Of ButtonLabel)
+            If TypeOf control.Parent Is UserControl Then
+                control.BackColor = theme.General.Controls.ListView.BackColor
+            Else
+                control.BackColor = theme.General.Controls.ButtonLabel.BackColor
+            End If
+            control.ForeColor = theme.General.Controls.ButtonLabel.ForeColor
+            control.LinkColor = theme.General.Controls.ButtonLabel.LinkForeColor
+            control.LinkHoverColor = theme.General.Controls.ButtonLabel.LinkForeHoverColor
+        Next
+
+        'For Each control In controls.OfType(Of UserControl)
+        '    control.BackColor = Color.Transparent
+        '    control.Parent.BackColor = Color.Empty
+        'Next
+
+        For Each control In controls.OfType(Of Button)
+            control.BackColor = theme.General.Controls.Button.BackColor
+            control.ForeColor = theme.General.Controls.Button.ForeColor
+        Next
+
+        For Each control In controls.OfType(Of GroupBox)
+            control.BackColor = theme.General.Controls.GroupBox.BackColor
+            control.ForeColor = theme.General.Controls.GroupBox.ForeColor
+        Next
+
+        For Each control In controls.OfType(Of Panel)
+            control.BackColor = theme.General.Controls.Panel.BackColor
+            control.ForeColor = theme.General.Controls.Panel.ForeColor
+        Next
+
+        For Each control In controls.OfType(Of TableLayoutPanel)
+            control.BackColor = theme.General.Controls.TableLayoutPanel.BackColor
+            control.ForeColor = theme.General.Controls.TableLayoutPanel.ForeColor
+        Next
+
+        For Each control In controls.OfType(Of TextBox)
+            control.BackColor = theme.General.Controls.TextBox.BackColor
+            control.ForeColor = theme.General.Controls.TextBox.ForeColor
+        Next
+
+        For Each control In controls.OfType(Of TextBoxEx)
+            control.BorderColor = theme.General.Controls.TextBox.BorderColor
+            control.BorderFocusedColor = theme.General.Controls.TextBox.BorderFocusedColor
+        Next
+
+        For Each control In controls.OfType(Of TextEdit)
+            control.BackColor = theme.General.Controls.TextEdit.BackColor
+            control.ForeColor = theme.General.Controls.TextEdit.ForeColor
+            control.BorderColor = theme.General.Controls.TextEdit.BorderColor
+            control.BorderFocusedColor = theme.General.Controls.TextEdit.BorderFocusedColor
+        Next
+
+        For Each control In controls.OfType(Of TrackBar)
+            control.BackColor = theme.General.Controls.TrackBar.BackColor
+            control.ForeColor = theme.General.Controls.TrackBar.ForeColor
+        Next
     End Sub
 
     Sub LoadSettings()
@@ -1208,7 +1304,7 @@ Public Class MainForm
         Dim col As Color
 
         If ToolStripRendererEx.IsAutoRenderMode Then
-            col = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)
+            col = ControlPaint.Dark(ToolStripRendererEx.BorderColor, 0)
         Else
             col = Color.FromArgb(&HFF004BFF)
         End If
@@ -1302,7 +1398,7 @@ Public Class MainForm
     End Sub
 
     Sub DetectAudioFiles(track As Integer, lang As Boolean, same As Boolean, hq As Boolean)
-        Dim tb, tbOther As TextBox
+        Dim tb, tbOther As TextEdit
         Dim profile As AudioProfile
 
         If track = 0 Then
@@ -1637,6 +1733,14 @@ Public Class MainForm
             tb.DataBindings.Add(New Binding(NameOf(TextBox.Text), obj, prop, False, DataSourceUpdateMode.OnPropertyChanged))
         Else
             tb.DataBindings.Clear()
+        End If
+    End Sub
+
+    Sub SetTextBoxBinding(te As TextEdit, obj As Object, prop As String, add As Boolean)
+        If add Then
+            te.TextBox.DataBindings.Add(New Binding(NameOf(TextBox.Text), obj, prop, False, DataSourceUpdateMode.OnPropertyChanged))
+        Else
+            te.TextBox.DataBindings.Clear()
         End If
     End Sub
 
@@ -2696,23 +2800,7 @@ Public Class MainForm
         tbTargetWidth.ReadOnly = Not isResized
         tbTargetHeight.ReadOnly = Not isResized
 
-        Highlight(False, lSAR)
-        Highlight(False, llAudioProfile0)
-        Highlight(False, llAudioProfile1)
-        Highlight(False, lAspectRatioError)
-        Highlight(False, lZoom)
-        Highlight(False, tbAudioFile0)
-        Highlight(False, tbAudioFile1)
-        Highlight(False, tbBitrate)
-        Highlight(False, tbTargetSize)
-        Highlight(False, tbSourceFile)
-        Highlight(False, tbTargetHeight)
-        Highlight(False, tbTargetFile)
-        Highlight(False, tbTargetWidth)
-        Highlight(False, llMuxer)
-        Highlight(False, lgbEncoder.Label)
-        Highlight(False, laTarget2)
-        Highlight(False, lgbEncoder.Label)
+        ApplyTheme()
 
         Dim cropw = p.SourceWidth
         Dim croph = p.SourceHeight
@@ -2813,7 +2901,6 @@ Public Class MainForm
         End If
 
         laTip.Text = ""
-        laTip.ForeColor = SystemColors.ControlText
         gbAssistant.Text = ""
         AssistantMethod = Nothing
         CanIgnoreTip = True
@@ -2871,7 +2958,7 @@ Public Class MainForm
             End If
 
             If p.SourceFile = p.TargetFile AndAlso ProcessTip("The source and target filepath is identical.") Then
-                Return Block("Invalid Targetpath", tbSourceFile, tbTargetFile)
+                Return Block("Invalid Target Path", tbSourceFile, tbTargetFile)
             End If
 
             If p.RemindToCrop AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
@@ -3041,7 +3128,7 @@ Public Class MainForm
                     value > (p.VideoEncoder.AutoCompCheckValue + 20) Then
 
                     If ProcessTip("Aimed quality value is more than 20% off, change the image or file size to get something between 50% and 70% quality.") Then
-                        laTarget2.BackColor = Color.Red
+                        'laTarget2.BackColor = Color.Red
                         Return Warn("Quality", tbTargetSize, tbBitrate, tbTargetWidth, tbTargetHeight, laTarget2)
                     End If
                 End If
@@ -3098,61 +3185,116 @@ Public Class MainForm
 
     Function Warn(msg As String, a As Action, ParamArray controls As Control()) As Boolean
         AssistantMethod = a
-
-        If Not a Is Nothing Then
-            laTip.ForeColor = Color.Blue
-        End If
-
         gbAssistant.Text = msg
         Highlight(controls)
     End Function
 
     Function Block(msg As String, ParamArray controls As Control()) As Boolean
         gbAssistant.Text = msg
-        laTip.ForeColor = Color.Red
         bnNext.Enabled = False
         CanIgnoreTip = False
         Highlight(controls)
     End Function
 
+    'Sub Highlight(c As Control)
+    '    Highlight(True, c)
+    'End Sub
+
+    'Sub Highlight(highlight As Boolean, c As Control)
+    '    If c Is Nothing Then
+    '        Exit Sub
+    '    End If
+
+    '    If highlight Then
+    '        c.BackColor = Color.Orange
+    '    Else
+    '        If TypeOf c Is Label OrElse TypeOf c Is GroupBox Then
+    '            c.BackColor = SystemColors.Control
+    '        ElseIf TypeOf c Is TextBox AndAlso DirectCast(c, TextBox).ReadOnly Then
+    '            c.BackColor = SystemColors.Control
+    '        Else
+    '            c.BackColor = SystemColors.Window
+    '        End If
+    '    End If
+    'End Sub
+
     Sub Highlight(ParamArray controls As Control())
-        If Not controls Is Nothing Then
-            For Each c In controls
-                Highlight(True, c)
-            Next
-        End If
-    End Sub
+        If controls Is Nothing Then Return
 
-    Sub Highlight(highlight As Boolean, c As Control)
-        If c Is Nothing Then
-            Exit Sub
-        End If
+        Dim theme = ThemeManager.CurrentTheme
 
-        If highlight Then
-            c.BackColor = Color.Orange
-        Else
-            If TypeOf c Is Label OrElse TypeOf c Is GroupBox Then
-                c.BackColor = SystemColors.Control
-            ElseIf TypeOf c Is TextBox AndAlso DirectCast(c, TextBox).ReadOnly Then
-                c.BackColor = SystemColors.Control
+        laTip.BackColor = theme.MainForm.laTipBackHighlightColor
+        laTip.ForeColor = theme.MainForm.laTipForeHighlightColor
+
+        For Each control In controls.OfType(Of Label)
+            control.BackColor = theme.General.Controls.Label.BackHighlightColor
+            control.ForeColor = theme.General.Controls.Label.ForeHighlightColor
+        Next
+
+        For Each control In controls.OfType(Of ButtonLabel)
+            If TypeOf control.Parent Is UserControl Then
+                control.BackColor = theme.General.Controls.ListView.BackHighlightColor
             Else
-                c.BackColor = SystemColors.Window
+                control.BackColor = theme.General.Controls.ButtonLabel.BackHighlightColor
             End If
-        End If
+            control.ForeColor = theme.General.Controls.ButtonLabel.ForeHighlightColor
+            control.LinkColor = theme.General.Controls.ButtonLabel.ForeHighlightColor
+            control.LinkHoverColor = theme.General.Controls.ButtonLabel.ForeHighlightColor
+        Next
+
+        For Each control In controls.OfType(Of Button)
+            control.BackColor = theme.General.Controls.Button.BackHighlightColor
+            control.ForeColor = theme.General.Controls.Button.ForeHighlightColor
+        Next
+
+        For Each control In controls.OfType(Of GroupBox)
+            control.BackColor = theme.General.Controls.GroupBox.BackHighlightColor
+            control.ForeColor = theme.General.Controls.GroupBox.ForeHighlightColor
+        Next
+
+        For Each control In controls.OfType(Of Panel)
+            control.BackColor = theme.General.Controls.Panel.BackHighlightColor
+            control.ForeColor = theme.General.Controls.Panel.ForeHighlightColor
+        Next
+
+        For Each control In controls.OfType(Of TableLayoutPanel)
+            control.BackColor = theme.General.Controls.TableLayoutPanel.BackHighlightColor
+            control.ForeColor = theme.General.Controls.TableLayoutPanel.ForeHighlightColor
+        Next
+
+        For Each control In controls.OfType(Of TextBox)
+            control.BackColor = theme.General.Controls.TextBox.BackHighlightColor
+            control.ForeColor = theme.General.Controls.TextBox.ForeHighlightColor
+        Next
+
+        For Each control In controls.OfType(Of TextBoxEx)
+            control.BorderColor = theme.General.Controls.TextBox.BackHighlightColor
+            control.BorderFocusedColor = theme.General.Controls.TextBox.ForeHighlightColor
+        Next
+
+        For Each control In controls.OfType(Of TextEdit)
+            control.TextBox.BackColor = theme.General.Controls.TextEdit.BackHighlightColor
+            control.TextBox.ForeColor = theme.General.Controls.TextEdit.ForeHighlightColor
+        Next
+
+        For Each control In controls.OfType(Of TrackBar)
+            control.BackColor = theme.General.Controls.TrackBar.BackHighlightColor
+            control.ForeColor = theme.General.Controls.TrackBar.ForeHighlightColor
+        Next
     End Sub
 
     Sub OpenTargetFolder()
         g.ShellExecute(p.TargetFile.Dir)
     End Sub
 
-    Function GetAudioTextBox(ap As AudioProfile) As TextBox
+    Function GetAudioTextBox(ap As AudioProfile) As TextEdit
         If ap Is p.Audio0 Then Return tbAudioFile0
         If ap Is p.Audio1 Then Return tbAudioFile1
     End Function
 
     Dim BlockAudioTextChanged As Boolean
 
-    Sub AudioTextChanged(tb As TextBox, ap As AudioProfile)
+    Sub AudioTextChanged(tb As TextEdit, ap As AudioProfile)
         If BlockAudioTextChanged Then
             Exit Sub
         End If
@@ -3502,6 +3644,15 @@ Public Class MainForm
             '################# User Interface
             ui.CreateFlowPage("User Interface", True)
 
+            Dim theme = ui.AddMenu(Of String)
+            theme.Text = "Theme"
+            theme.Expanded = True
+            theme.Field = NameOf(s.ThemeName)
+            theme.Add(ThemeManager.Themes.Select(Function(x) x.Name))
+            theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
+            theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
+
+
             Dim l = ui.AddLabel("Icon File")
             l.Help = "The Windows Startmenu uses Windows Links which allow to use custom icon files."
 
@@ -3638,7 +3789,8 @@ Public Class MainForm
             l = ui.AddLabel("Don't change Danger Zone settings unless you are" + BR +
                             "an absolute power user with debugging experience." + BR)
 
-            l.ForeColor = Color.Red
+            l.BackColor = ThemeManager.CurrentTheme.General.DangerBackColor
+            l.ForeColor = ThemeManager.CurrentTheme.General.DangerForeColor
 
             l = ui.AddLabel("")
 
@@ -3663,7 +3815,8 @@ Public Class MainForm
                 s.VapourSynthFilterPreferences.Sort()
                 ui.Save()
                 g.SetRenderer(MenuStrip)
-                SetMenuStyle()
+                'SetMenuStyle()
+                'ApplyTheme()
                 s.UpdateRecentProjects(Nothing)
                 UpdateRecentProjectsMenu()
 
@@ -3673,6 +3826,10 @@ Public Class MainForm
 
                 FrameServerHelp.AviSynthToolPath()
                 g.SaveSettings()
+            Else
+                If Not ThemeManager.CurrentTheme.Name.Equals(s.ThemeName, StringComparison.OrdinalIgnoreCase) Then
+                    ThemeManager.SetCurrentTheme(s.ThemeName)
+                End If
             End If
 
             If restartID <> GetRestartID() Then
@@ -4968,7 +5125,7 @@ Public Class MainForm
 
     Sub tbSize_TextChanged() Handles tbTargetSize.TextChanged
         Try
-            If tbTargetSize.Focused Then
+            If tbTargetSize.TextBox.Focused Then
                 p.BitrateIsFixed = False
             End If
 
@@ -4989,7 +5146,7 @@ Public Class MainForm
 
     Sub tbBitrate_TextChanged() Handles tbBitrate.TextChanged
         Try
-            If tbBitrate.Focused Then
+            If tbBitrate.TextBox.Focused Then
                 p.BitrateIsFixed = True
             End If
 
@@ -5576,7 +5733,8 @@ Public Class MainForm
             Case 800 'WM_DWMCOLORIZATIONCOLORCHANGED
                 If ToolStripRendererEx.IsAutoRenderMode Then
                     ToolStripRendererEx.InitColors(s.ToolStripRenderModeEx)
-                    SetMenuStyle()
+                    'SetMenuStyle()
+                    ThemeManager.OnCurrentChanged()
                     MenuStrip.Refresh()
                 End If
         End Select
@@ -6033,7 +6191,7 @@ Public Class MainForm
     End Sub
 
     Sub UpdateAudioFileMenu(
-        m As ContextMenuStripEx, a As Action, ap As AudioProfile, tb As TextBox)
+        m As ContextMenuStripEx, a As Action, ap As AudioProfile, tb As TextEdit)
 
         m.Items.ClearAndDisplose
         Dim exist = File.Exists(ap.File)
@@ -6107,8 +6265,8 @@ Public Class MainForm
         m.Add("Execute", Sub() ExecuteAudio(ap), exist, "Processes the audio profile.")
         m.Add("-")
         m.Add("Copy Path", Sub() Clipboard.SetText(ap.File), tb.Text <> "")
-        m.Add("Copy Selection", Sub() Clipboard.SetText(tb.SelectedText), tb.Text <> "").SetImage(Symbol.Copy)
-        m.Add("Paste", Sub() tb.Paste(), Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
+        m.Add("Copy Selection", Sub() Clipboard.SetText(tb.TextBox.SelectedText), tb.Text <> "").SetImage(Symbol.Copy)
+        m.Add("Paste", Sub() tb.TextBox.Paste(), Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
         m.Add("-")
         m.Add("Remove", Sub() tb.Text = "", tb.Text <> "", "Remove audio file").SetImage(Symbol.Remove)
     End Sub
@@ -6135,8 +6293,8 @@ Public Class MainForm
         TargetFileMenu.Add("Media Info...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), File.Exists(p.TargetFile), "Show MediaInfo for the target file.").SetImage(Symbol.Info)
         TargetFileMenu.Add("Explore...", Sub() g.SelectFileWithExplorer(p.TargetFile), Directory.Exists(p.TargetFile.Dir), "Open the target file directory with File Explorer.").SetImage(Symbol.FileExplorer)
         TargetFileMenu.Add("-")
-        TargetFileMenu.Add("Copy", Sub() tbTargetFile.Copy(), tbTargetFile.Text <> "").SetImage(Symbol.Copy)
-        TargetFileMenu.Add("Paste", Sub() tbTargetFile.Paste(), Clipboard.GetText.Trim <> "" AndAlso File.Exists(p.SourceFile)).SetImage(Symbol.Paste)
+        TargetFileMenu.Add("Copy", Sub() tbTargetFile.TextBox.Copy(), tbTargetFile.Text <> "").SetImage(Symbol.Copy)
+        TargetFileMenu.Add("Paste", Sub() tbTargetFile.TextBox.Paste(), Clipboard.GetText.Trim <> "" AndAlso File.Exists(p.SourceFile)).SetImage(Symbol.Paste)
     End Sub
 
     Sub UpdateSourceFileMenu()
@@ -6148,8 +6306,8 @@ Public Class MainForm
         SourceFileMenu.Add("Media Info...", Sub() g.DefaultCommands.ShowMediaInfo(p.LastOriginalSourceFile), File.Exists(p.LastOriginalSourceFile) AndAlso Not isIndex, "Show MediaInfo for the source file.").SetImage(Symbol.Info)
         SourceFileMenu.Add("Explore...", Sub() g.SelectFileWithExplorer(p.SourceFile), File.Exists(p.SourceFile), "Open the source file directory with File Explorer.").SetImage(Symbol.FileExplorer)
         SourceFileMenu.Items.Add("-")
-        SourceFileMenu.Add("Copy", Sub() tbSourceFile.Copy(), tbSourceFile.Text <> "", "Copies the selected text to the clipboard.").SetImage(Symbol.Copy)
-        SourceFileMenu.Add("Paste", Sub() tbSourceFile.Paste(), Clipboard.GetText.Trim <> "", "Copies the full source file path to the clipboard.").SetImage(Symbol.Paste)
+        SourceFileMenu.Add("Copy", Sub() tbSourceFile.TextBox.Copy(), tbSourceFile.Text <> "", "Copies the selected text to the clipboard.").SetImage(Symbol.Copy)
+        SourceFileMenu.Add("Paste", Sub() tbSourceFile.TextBox.Paste(), Clipboard.GetText.Trim <> "", "Copies the full source file path to the clipboard.").SetImage(Symbol.Paste)
     End Sub
 
     Protected Overrides Sub OnDragEnter(e As DragEventArgs)

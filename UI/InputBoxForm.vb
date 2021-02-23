@@ -5,28 +5,23 @@ Namespace UI
 
 #Region " Designer "
 
-        Sub New()
-            MyBase.New()
-            InitializeComponent()
-        End Sub
-
-        Friend WithEvents bnCancel As System.Windows.Forms.Button
-        Public WithEvents tbInput As System.Windows.Forms.TextBox
-        Public WithEvents laPrompt As System.Windows.Forms.Label
-        Friend WithEvents cb As System.Windows.Forms.CheckBox
-        Friend WithEvents flp As System.Windows.Forms.FlowLayoutPanel
+        Friend WithEvents bnCancel As ButtonEx
+        Public WithEvents tbInput As TextBoxEx
+        Public WithEvents laPrompt As LabelEx
+        Friend WithEvents cb As CheckBoxEx
+        Friend WithEvents flp As FlowLayoutPanel
         Friend WithEvents tlpMain As TableLayoutPanel
         Friend WithEvents tlpTextBox As TableLayoutPanel
-        Public WithEvents bnOK As System.Windows.Forms.Button
+        Public WithEvents bnOK As ButtonEx
         <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-            Me.laPrompt = New System.Windows.Forms.Label()
-            Me.tbInput = New System.Windows.Forms.TextBox()
-            Me.bnCancel = New System.Windows.Forms.Button()
-            Me.bnOK = New System.Windows.Forms.Button()
-            Me.cb = New System.Windows.Forms.CheckBox()
-            Me.flp = New System.Windows.Forms.FlowLayoutPanel()
-            Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-            Me.tlpTextBox = New System.Windows.Forms.TableLayoutPanel()
+            Me.laPrompt = New LabelEx()
+            Me.tbInput = New TextBoxEx()
+            Me.bnCancel = New ButtonEx()
+            Me.bnOK = New ButtonEx()
+            Me.cb = New CheckBoxEx()
+            Me.flp = New FlowLayoutPanel()
+            Me.tlpMain = New TableLayoutPanel()
+            Me.tlpTextBox = New TableLayoutPanel()
             Me.flp.SuspendLayout()
             Me.tlpMain.SuspendLayout()
             Me.tlpTextBox.SuspendLayout()
@@ -34,10 +29,10 @@ Namespace UI
             '
             'laPrompt
             '
-            Me.laPrompt.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.laPrompt.Anchor = CType((AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
             Me.laPrompt.AutoSize = True
             Me.laPrompt.Location = New System.Drawing.Point(12, 12)
-            Me.laPrompt.Margin = New System.Windows.Forms.Padding(12, 12, 12, 20)
+            Me.laPrompt.Margin = New Padding(12, 12, 12, 20)
             Me.laPrompt.Name = "laPrompt"
             Me.laPrompt.Size = New System.Drawing.Size(880, 48)
             Me.laPrompt.TabIndex = 0
@@ -46,20 +41,19 @@ Namespace UI
             '
             'tbInput
             '
-            Me.tbInput.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.tbInput.Anchor = CType((AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
             Me.tbInput.Location = New System.Drawing.Point(0, 0)
-            Me.tbInput.Margin = New System.Windows.Forms.Padding(0)
+            Me.tbInput.Margin = New Padding(0)
             Me.tbInput.Name = "tbInput"
             Me.tbInput.Size = New System.Drawing.Size(880, 55)
             Me.tbInput.TabIndex = 1
             '
             'bnCancel
             '
-            Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
-            Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-            Me.bnCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
+            Me.bnCancel.Anchor = AnchorStyles.None
+            Me.bnCancel.DialogResult = DialogResult.Cancel
             Me.bnCancel.Location = New System.Drawing.Point(495, 0)
-            Me.bnCancel.Margin = New System.Windows.Forms.Padding(0)
+            Me.bnCancel.Margin = New Padding(0)
             Me.bnCancel.Name = "bnCancel"
             Me.bnCancel.Size = New System.Drawing.Size(250, 70)
             Me.bnCancel.TabIndex = 2
@@ -67,12 +61,11 @@ Namespace UI
             '
             'bnOK
             '
-            Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
-            Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
+            Me.bnOK.Anchor = AnchorStyles.None
+            Me.bnOK.DialogResult = DialogResult.OK
             Me.bnOK.Enabled = False
-            Me.bnOK.FlatStyle = System.Windows.Forms.FlatStyle.System
             Me.bnOK.Location = New System.Drawing.Point(233, 0)
-            Me.bnOK.Margin = New System.Windows.Forms.Padding(12, 0, 12, 0)
+            Me.bnOK.Margin = New Padding(12, 0, 12, 0)
             Me.bnOK.Name = "bnOK"
             Me.bnOK.Size = New System.Drawing.Size(250, 70)
             Me.bnOK.TabIndex = 3
@@ -80,26 +73,26 @@ Namespace UI
             '
             'cb
             '
-            Me.cb.Anchor = System.Windows.Forms.AnchorStyles.None
+            Me.cb.Anchor = AnchorStyles.None
             Me.cb.AutoSize = True
             Me.cb.Location = New System.Drawing.Point(0, 9)
-            Me.cb.Margin = New System.Windows.Forms.Padding(0)
+            Me.cb.Margin = New Padding(0)
             Me.cb.Name = "cb"
             Me.cb.Size = New System.Drawing.Size(221, 52)
             Me.cb.TabIndex = 4
             Me.cb.Text = "CheckBox"
-            Me.cb.UseVisualStyleBackColor = True
+            'Me.cb.UseVisualStyleBackColor = True
             '
             'flp
             '
-            Me.flp.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.flp.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Right), AnchorStyles)
             Me.flp.AutoSize = True
-            Me.flp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+            Me.flp.AutoSizeMode = AutoSizeMode.GrowAndShrink
             Me.flp.Controls.Add(Me.cb)
             Me.flp.Controls.Add(Me.bnOK)
             Me.flp.Controls.Add(Me.bnCancel)
             Me.flp.Location = New System.Drawing.Point(147, 147)
-            Me.flp.Margin = New System.Windows.Forms.Padding(12)
+            Me.flp.Margin = New Padding(12)
             Me.flp.Name = "flp"
             Me.flp.Size = New System.Drawing.Size(745, 70)
             Me.flp.TabIndex = 5
@@ -108,35 +101,35 @@ Namespace UI
             'tlpMain
             '
             Me.tlpMain.AutoSize = True
-            Me.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+            Me.tlpMain.AutoSizeMode = AutoSizeMode.GrowAndShrink
             Me.tlpMain.ColumnCount = 1
-            Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+            Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0!))
             Me.tlpMain.Controls.Add(Me.tlpTextBox, 0, 1)
             Me.tlpMain.Controls.Add(Me.laPrompt, 0, 0)
             Me.tlpMain.Controls.Add(Me.flp, 0, 2)
-            Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+            Me.tlpMain.Dock = DockStyle.Fill
             Me.tlpMain.Location = New System.Drawing.Point(0, 0)
             Me.tlpMain.Name = "tlpMain"
             Me.tlpMain.RowCount = 3
-            Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-            Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-            Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+            Me.tlpMain.RowStyles.Add(New RowStyle())
+            Me.tlpMain.RowStyles.Add(New RowStyle())
+            Me.tlpMain.RowStyles.Add(New RowStyle())
             Me.tlpMain.Size = New System.Drawing.Size(904, 225)
             Me.tlpMain.TabIndex = 6
             '
             'tlpTextBox
             '
-            Me.tlpTextBox.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.tlpTextBox.Anchor = CType((AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
             Me.tlpTextBox.AutoSize = True
-            Me.tlpTextBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+            Me.tlpTextBox.AutoSizeMode = AutoSizeMode.GrowAndShrink
             Me.tlpTextBox.ColumnCount = 1
-            Me.tlpTextBox.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+            Me.tlpTextBox.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0!))
             Me.tlpTextBox.Controls.Add(Me.tbInput, 0, 0)
             Me.tlpTextBox.Location = New System.Drawing.Point(12, 80)
-            Me.tlpTextBox.Margin = New System.Windows.Forms.Padding(12, 0, 12, 0)
+            Me.tlpTextBox.Margin = New Padding(12, 0, 12, 0)
             Me.tlpTextBox.Name = "tlpTextBox"
             Me.tlpTextBox.RowCount = 1
-            Me.tlpTextBox.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+            Me.tlpTextBox.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0!))
             Me.tlpTextBox.Size = New System.Drawing.Size(880, 55)
             Me.tlpTextBox.TabIndex = 7
             '
@@ -144,21 +137,21 @@ Namespace UI
             '
             Me.AcceptButton = Me.bnOK
             Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
-            Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+            Me.AutoScaleMode = AutoScaleMode.Dpi
             Me.AutoSize = True
-            Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+            Me.AutoSizeMode = AutoSizeMode.GrowAndShrink
             Me.CancelButton = Me.bnCancel
             Me.ClientSize = New System.Drawing.Size(904, 225)
             Me.Controls.Add(Me.tlpMain)
             Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-            Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+            Me.FormBorderStyle = FormBorderStyle.FixedDialog
             Me.KeyPreview = True
-            Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
+            Me.Margin = New Padding(6, 6, 6, 6)
             Me.MaximizeBox = False
             Me.MinimizeBox = False
             Me.Name = "InputBoxForm"
             Me.ShowInTaskbar = False
-            Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
+            Me.StartPosition = FormStartPosition.CenterParent
             Me.flp.ResumeLayout(False)
             Me.flp.PerformLayout()
             Me.tlpMain.ResumeLayout(False)
@@ -171,6 +164,26 @@ Namespace UI
         End Sub
 
 #End Region
+
+        Sub New()
+            MyBase.New()
+            InitializeComponent()
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            BackColor = theme.General.BackColor
+        End Sub
 
         Sub tbInput_TextChanged() Handles tbInput.TextChanged
             bnOK.Enabled = tbInput.Text <> ""

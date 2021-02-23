@@ -54,6 +54,22 @@ Public Class CommandLineForm
 
         cms.Add("Help about this dialog", AddressOf ShowHelp).SetImage(Symbol.Help)
         cms.Add("Help about " + params.GetPackage.Name, Sub() params.GetPackage.ShowHelp()).SetImage(Symbol.Help)
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     Sub SelectLastPage()

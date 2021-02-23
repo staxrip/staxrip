@@ -184,12 +184,10 @@ Public MustInherit Class VideoEncoder
     Overrides Function CreateEditControl() As Control
         Dim ret As New ToolStripEx
 
-        ret.Renderer = New ToolStripRendererEx(ToolStripRenderModeEx.SystemDefault)
+        ret.Renderer = New ToolStripRendererEx(s.ToolStripRenderModeEx)
         ret.ShowItemToolTips = False
         ret.GripStyle = ToolStripGripStyle.Hidden
-        ret.BackColor = SystemColors.Window
         ret.Dock = DockStyle.Fill
-        ret.BackColor = SystemColors.Window
         ret.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow
         ret.ShowControlBorder = True
         ret.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
@@ -197,7 +195,7 @@ Public MustInherit Class VideoEncoder
         Dim pad = ret.Font.Height \ 9
 
         For Each pair In GetMenu()
-            Dim bn As New ToolStripButton
+            Dim bn As New ToolStripButtonEx
             bn.Margin = New Padding(2, 2, 0, 0)
             bn.Text = pair.Key
             bn.Padding = New Padding(pad)

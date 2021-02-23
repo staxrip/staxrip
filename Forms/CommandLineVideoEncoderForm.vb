@@ -15,35 +15,35 @@ Public Class CommandLineVideoEncoderForm
         MyBase.Dispose(disposing)
     End Sub
     Friend WithEvents EncodingControl As StaxRip.MacroEditorControl
-    Friend WithEvents laType As System.Windows.Forms.Label
+    Friend WithEvents laType As LabelEx
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
     Friend WithEvents CompCheckControl As StaxRip.MacroEditorControl
-    Friend WithEvents cbQualityMode As System.Windows.Forms.CheckBox
+    Friend WithEvents cbQualityMode As CheckBoxEx
     Friend WithEvents numPercent As NumEdit
-    Friend WithEvents laPercent As System.Windows.Forms.Label
+    Friend WithEvents laPercent As LabelEx
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
-    Friend WithEvents tlpMain As System.Windows.Forms.TableLayoutPanel
-    Friend WithEvents tbType As StaxRip.UI.TextBoxEx
+    Friend WithEvents tlpMain As TableLayoutPanel
+    Friend WithEvents tbType As StaxRip.UI.TextEdit
     Friend WithEvents tlpTop As TableLayoutPanel
-    Friend WithEvents flpBottom As FlowLayoutPanel
+    Friend WithEvents flpBottom As FlowLayoutPanelEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.laType = New System.Windows.Forms.Label()
-        Me.cbQualityMode = New System.Windows.Forms.CheckBox()
+        Me.laType = New LabelEx()
+        Me.cbQualityMode = New CheckBoxEx()
         Me.numPercent = New StaxRip.UI.NumEdit()
         Me.CompCheckControl = New StaxRip.MacroEditorControl()
         Me.EncodingControl = New StaxRip.MacroEditorControl()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
-        Me.laPercent = New System.Windows.Forms.Label()
+        Me.laPercent = New LabelEx()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
-        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.flpBottom = New System.Windows.Forms.FlowLayoutPanel()
-        Me.tlpTop = New System.Windows.Forms.TableLayoutPanel()
-        Me.tbType = New StaxRip.UI.TextBoxEx()
+        Me.tlpMain = New TableLayoutPanel()
+        Me.flpBottom = New FlowLayoutPanelEx()
+        Me.tlpTop = New TableLayoutPanel()
+        Me.tbType = New StaxRip.UI.TextEdit()
         Me.tlpMain.SuspendLayout()
         Me.flpBottom.SuspendLayout()
         Me.tlpTop.SuspendLayout()
@@ -51,10 +51,10 @@ Public Class CommandLineVideoEncoderForm
         '
         'laType
         '
-        Me.laType.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.laType.Anchor = AnchorStyles.None
         Me.laType.AutoSize = True
         Me.laType.Location = New System.Drawing.Point(20, 26)
-        Me.laType.Margin = New System.Windows.Forms.Padding(20, 0, 3, 0)
+        Me.laType.Margin = New Padding(20, 0, 3, 0)
         Me.laType.Name = "laType"
         Me.laType.Size = New System.Drawing.Size(289, 48)
         Me.laType.TabIndex = 0
@@ -62,10 +62,10 @@ Public Class CommandLineVideoEncoderForm
         '
         'cbQualityMode
         '
-        Me.cbQualityMode.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.cbQualityMode.Anchor = AnchorStyles.None
         Me.cbQualityMode.AutoSize = True
         Me.cbQualityMode.Location = New System.Drawing.Point(468, 24)
-        Me.cbQualityMode.Margin = New System.Windows.Forms.Padding(50, 3, 3, 3)
+        Me.cbQualityMode.Margin = New Padding(50, 3, 3, 3)
         Me.cbQualityMode.Name = "cbQualityMode"
         Me.cbQualityMode.Size = New System.Drawing.Size(281, 52)
         Me.cbQualityMode.TabIndex = 3
@@ -75,7 +75,7 @@ Public Class CommandLineVideoEncoderForm
         '
         'numPercent
         '
-        Me.numPercent.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.numPercent.Anchor = AnchorStyles.None
         Me.numPercent.Increment = 5.0R
         Me.numPercent.Location = New System.Drawing.Point(1122, 20)
         Me.numPercent.Maximum = 200.0R
@@ -85,10 +85,10 @@ Public Class CommandLineVideoEncoderForm
         '
         'CompCheckControl
         '
-        Me.CompCheckControl.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.CompCheckControl.Dock = DockStyle.Fill
         Me.CompCheckControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.CompCheckControl.Location = New System.Drawing.Point(15, 422)
-        Me.CompCheckControl.Margin = New System.Windows.Forms.Padding(15, 15, 15, 0)
+        Me.CompCheckControl.Margin = New Padding(15, 15, 15, 0)
         Me.CompCheckControl.Name = "CompCheckControl"
         Me.CompCheckControl.Size = New System.Drawing.Size(1363, 286)
         Me.CompCheckControl.TabIndex = 1
@@ -96,10 +96,10 @@ Public Class CommandLineVideoEncoderForm
         '
         'EncodingControl
         '
-        Me.EncodingControl.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.EncodingControl.Dock = DockStyle.Fill
         Me.EncodingControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.EncodingControl.Location = New System.Drawing.Point(15, 106)
-        Me.EncodingControl.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
+        Me.EncodingControl.Margin = New Padding(15, 0, 15, 0)
         Me.EncodingControl.Name = "EncodingControl"
         Me.EncodingControl.Size = New System.Drawing.Size(1363, 301)
         Me.EncodingControl.TabIndex = 0
@@ -107,10 +107,10 @@ Public Class CommandLineVideoEncoderForm
         '
         'laPercent
         '
-        Me.laPercent.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.laPercent.Anchor = AnchorStyles.None
         Me.laPercent.AutoSize = True
         Me.laPercent.Location = New System.Drawing.Point(802, 26)
-        Me.laPercent.Margin = New System.Windows.Forms.Padding(50, 0, 3, 0)
+        Me.laPercent.Margin = New Padding(50, 0, 3, 0)
         Me.laPercent.Name = "laPercent"
         Me.laPercent.Size = New System.Drawing.Size(314, 48)
         Me.laPercent.TabIndex = 4
@@ -118,65 +118,65 @@ Public Class CommandLineVideoEncoderForm
         '
         'bnCancel
         '
-        Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.bnCancel.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Right), AnchorStyles)
+        Me.bnCancel.DialogResult = DialogResult.Cancel
         Me.bnCancel.Location = New System.Drawing.Point(265, 0)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
+        Me.bnCancel.Margin = New Padding(15, 0, 0, 0)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
-        Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
+        Me.bnOK.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Right), AnchorStyles)
+        Me.bnOK.DialogResult = DialogResult.OK
         Me.bnOK.Location = New System.Drawing.Point(0, 0)
-        Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnOK.Margin = New Padding(0)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '
         'tlpMain
         '
         Me.tlpMain.ColumnCount = 1
-        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0!))
         Me.tlpMain.Controls.Add(Me.flpBottom, 0, 3)
         Me.tlpMain.Controls.Add(Me.tlpTop, 0, 0)
         Me.tlpMain.Controls.Add(Me.EncodingControl, 0, 1)
         Me.tlpMain.Controls.Add(Me.CompCheckControl, 0, 2)
-        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Dock = DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
-        Me.tlpMain.Margin = New System.Windows.Forms.Padding(0, 3, 0, 3)
+        Me.tlpMain.Margin = New Padding(0, 3, 0, 3)
         Me.tlpMain.Name = "tlpMain"
         Me.tlpMain.RowCount = 4
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New RowStyle())
+        Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0!))
+        Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0!))
+        Me.tlpMain.RowStyles.Add(New RowStyle())
         Me.tlpMain.Size = New System.Drawing.Size(1393, 809)
         Me.tlpMain.TabIndex = 1
         '
         'flpBottom
         '
-        Me.flpBottom.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.flpBottom.Anchor = AnchorStyles.Right
         Me.flpBottom.AutoSize = True
-        Me.flpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpBottom.AutoSizeMode = AutoSizeMode.GrowAndShrink
         Me.flpBottom.Controls.Add(Me.bnOK)
         Me.flpBottom.Controls.Add(Me.bnCancel)
         Me.flpBottom.Location = New System.Drawing.Point(863, 723)
-        Me.flpBottom.Margin = New System.Windows.Forms.Padding(15)
+        Me.flpBottom.Margin = New Padding(15)
         Me.flpBottom.Name = "flpBottom"
         Me.flpBottom.Size = New System.Drawing.Size(515, 70)
         Me.flpBottom.TabIndex = 4
         '
         'tlpTop
         '
-        Me.tlpTop.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpTop.Anchor = CType((AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
         Me.tlpTop.ColumnCount = 6
-        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpTop.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpTop.ColumnStyles.Add(New ColumnStyle())
+        Me.tlpTop.ColumnStyles.Add(New ColumnStyle())
+        Me.tlpTop.ColumnStyles.Add(New ColumnStyle())
+        Me.tlpTop.ColumnStyles.Add(New ColumnStyle())
+        Me.tlpTop.ColumnStyles.Add(New ColumnStyle())
+        Me.tlpTop.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0!))
         Me.tlpTop.Controls.Add(Me.laType, 0, 0)
         Me.tlpTop.Controls.Add(Me.tbType, 1, 0)
         Me.tlpTop.Controls.Add(Me.cbQualityMode, 2, 0)
@@ -185,27 +185,27 @@ Public Class CommandLineVideoEncoderForm
         Me.tlpTop.Location = New System.Drawing.Point(3, 3)
         Me.tlpTop.Name = "tlpTop"
         Me.tlpTop.RowCount = 1
-        Me.tlpTop.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpTop.RowStyles.Add(New RowStyle())
         Me.tlpTop.Size = New System.Drawing.Size(1387, 100)
         Me.tlpTop.TabIndex = 6
         '
         'tbType
         '
-        Me.tbType.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.tbType.Anchor = AnchorStyles.None
         Me.tbType.Location = New System.Drawing.Point(315, 22)
         Me.tbType.Size = New System.Drawing.Size(100, 55)
-        Me.tbType.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.tbType.TextBox.TextAlign = HorizontalAlignment.Center
         '
         'CommandLineVideoEncoderForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.AutoScaleMode = AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(1393, 809)
         Me.Controls.Add(Me.tlpMain)
         Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
+        Me.FormBorderStyle = FormBorderStyle.Sizable
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(6)
+        Me.Margin = New Padding(6)
         Me.Name = "CommandLineVideoEncoderForm"
         Me.Text = "Command Line Video Encoder"
         Me.tlpMain.ResumeLayout(False)
@@ -239,6 +239,21 @@ Public Class CommandLineVideoEncoderForm
         numPercent.Value = encoder.AutoCompCheckValue
 
         TipProvider.SetTip("Adjusts the target file size or image size after the compressibility check accordingly.", numPercent, laPercent)
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)

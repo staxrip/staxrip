@@ -40,6 +40,22 @@ Public Class VideoComparisonForm
         Menu.Add("Navigate | 100 frame backward", Sub() TrackBar.Value -= 100, Keys.Left Or Keys.Control, enabledFunc)
         Menu.Add("Navigate | 100 frame forward", Sub() TrackBar.Value += 100, Keys.Right Or Keys.Control, enabledFunc)
         Menu.Add("Help", AddressOf Me.Help, Keys.F1)
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     Protected Overrides ReadOnly Property CreateParams() As CreateParams
@@ -239,13 +255,13 @@ Public Class VideoComparisonForm
         Property Server As IFrameServer
         Property Form As VideoComparisonForm
         Property SourceFile As String
-        Property VideoPanel As Panel
+        Property VideoPanel As PanelEx
 
         Private Renderer As VideoRenderer
         Private FrameInfo As String()
 
         Sub New()
-            VideoPanel = New Panel
+            VideoPanel = New PanelEx
             AddHandler VideoPanel.Paint, Sub() Draw()
             Controls.Add(VideoPanel)
         End Sub

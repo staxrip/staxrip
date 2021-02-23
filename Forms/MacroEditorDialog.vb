@@ -16,17 +16,17 @@ Public Class MacroEditorDialog
     End Sub
 
     Friend WithEvents MacroEditorControl As StaxRip.MacroEditorControl
-    Friend WithEvents bnContext As System.Windows.Forms.Button
-    Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
-    Friend WithEvents bnOK As StaxRip.UI.ButtonEx
+    Friend WithEvents bnContext As ButtonEx
+    Friend WithEvents bnCancel As ButtonEx
+    Friend WithEvents bnOK As ButtonEx
     Friend WithEvents tlp As TableLayoutPanel
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.MacroEditorControl = New StaxRip.MacroEditorControl()
-        Me.bnContext = New System.Windows.Forms.Button()
-        Me.bnCancel = New StaxRip.UI.ButtonEx()
-        Me.bnOK = New StaxRip.UI.ButtonEx()
+        Me.bnContext = New ButtonEx
+        Me.bnCancel = New ButtonEx
+        Me.bnOK = New ButtonEx
         Me.tlp = New System.Windows.Forms.TableLayoutPanel()
         Me.tlp.SuspendLayout()
         Me.SuspendLayout()
@@ -49,9 +49,8 @@ Public Class MacroEditorDialog
         Me.bnContext.Location = New System.Drawing.Point(15, 622)
         Me.bnContext.Margin = New System.Windows.Forms.Padding(15)
         Me.bnContext.Name = "bnContext"
-        Me.bnContext.Size = New System.Drawing.Size(182, 70)
+        Me.bnContext.Size = New System.Drawing.Size(350, 70)
         Me.bnContext.TabIndex = 2
-        Me.bnContext.UseVisualStyleBackColor = True
         Me.bnContext.Visible = False
         '
         'bnCancel
@@ -118,6 +117,22 @@ Public Class MacroEditorDialog
         MyBase.New()
         InitializeComponent()
         SetMacroDefaults()
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     Sub SetBatchDefaults()

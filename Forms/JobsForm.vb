@@ -44,6 +44,7 @@ Friend Class JobsForm
         Me.bnDown.Location = New System.Drawing.Point(8, 0)
         Me.bnDown.Margin = New System.Windows.Forms.Padding(8, 0, 0, 0)
         Me.bnDown.Size = New System.Drawing.Size(100, 70)
+        Me.bnDown.TextAlign = ContentAlignment.MiddleCenter
         '
         'bnUp
         '
@@ -52,6 +53,7 @@ Friend Class JobsForm
         Me.bnUp.Location = New System.Drawing.Point(726, 0)
         Me.bnUp.Margin = New System.Windows.Forms.Padding(0, 0, 8, 0)
         Me.bnUp.Size = New System.Drawing.Size(100, 70)
+        Me.bnUp.TextAlign = ContentAlignment.MiddleCenter
         '
         'bnStart
         '
@@ -187,11 +189,12 @@ Friend Class JobsForm
     Private BlockSave As Boolean
 
     Sub New()
+        MyClass.New(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub New(theme As Theme)
         InitializeComponent()
         RestoreClientSize(40, 20)
-
-        bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
-        bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
 
         KeyPreview = True
 
@@ -243,6 +246,30 @@ Friend Class JobsForm
         cms.Add("Sort Alphabetically", Sub() lv.SortItems(), Keys.Control Or Keys.S, Function() lv.Items.Count > 1).SetImage(Symbol.Sort)
         cms.Add("Remove Selection", Sub() bnRemove.PerformClick(), Keys.Control Or Keys.Delete, Function() lv.SelectedItems.Count > 0).SetImage(Symbol.Remove)
         cms.Add("Load Selection", Sub() bnLoad.PerformClick(), Keys.Control Or Keys.L, Function() lv.SelectedItems.Count = 1)
+
+        'bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down, theme.General.Controls.ListView.SymbolImageColor)
+        'bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up, theme.General.Controls.ListView.SymbolImageColor)
+        bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
+        bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
+        'bnDown.SetSymbolAsText(Symbol.fa_arrow_down)
+        bnDown.SetFontSize(12)
+        'bnUp.SetSymbolAsText(Symbol.fa_arrow_up)
+        bnUp.SetFontSize(12)
+
+        ApplyTheme()
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     Sub UncheckAll()
@@ -389,6 +416,7 @@ Friend Class JobsForm
         RemoveHandler FileWatcher.Changed, AddressOf Reload
         RemoveHandler FileWatcher.Created, AddressOf Reload
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
     End Sub
 
     Protected Overrides Sub OnLoad(args As EventArgs)

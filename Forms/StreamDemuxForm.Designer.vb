@@ -24,7 +24,7 @@ Partial Class StreamDemuxForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.gbAudio = New System.Windows.Forms.GroupBox()
+        Me.gbAudio = New GroupBoxEx()
         Me.AudioTableLayoutPanel = New System.Windows.Forms.TableLayoutPanel()
         Me.lvAudio = New StaxRip.UI.ListViewEx()
         Me.flpAudioButtons = New System.Windows.Forms.FlowLayoutPanel()
@@ -33,7 +33,7 @@ Partial Class StreamDemuxForm
         Me.bnAudioEnglish = New StaxRip.UI.ButtonEx()
         Me.bnAudioNative = New StaxRip.UI.ButtonEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.gbSubtitles = New System.Windows.Forms.GroupBox()
+        Me.gbSubtitles = New GroupBoxEx()
         Me.SubtitleTableLayoutPanel = New System.Windows.Forms.TableLayoutPanel()
         Me.lvSubtitles = New StaxRip.UI.ListViewEx()
         Me.flpSubtitleButtons = New System.Windows.Forms.FlowLayoutPanel()
@@ -41,7 +41,7 @@ Partial Class StreamDemuxForm
         Me.bnSubtitleNone = New StaxRip.UI.ButtonEx()
         Me.bnSubtitleEnglish = New StaxRip.UI.ButtonEx()
         Me.bnSubtitleNative = New StaxRip.UI.ButtonEx()
-        Me.gbAttachments = New System.Windows.Forms.GroupBox()
+        Me.gbAttachments = New GroupBoxEx()
         Me.lvAttachments = New StaxRip.UI.ListViewEx()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.cbDemuxVideo = New System.Windows.Forms.CheckBox()
@@ -366,7 +366,7 @@ Partial Class StreamDemuxForm
 
     End Sub
 
-    Friend WithEvents gbAudio As GroupBox
+    Friend WithEvents gbAudio As GroupBoxEx
     Friend WithEvents flpAudioButtons As FlowLayoutPanel
     Friend WithEvents bnAudioAll As ButtonEx
     Friend WithEvents bnAudioNone As ButtonEx
@@ -375,7 +375,7 @@ Partial Class StreamDemuxForm
     Friend WithEvents lvAudio As ListViewEx
     Friend WithEvents AudioTableLayoutPanel As TableLayoutPanel
     Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents gbSubtitles As GroupBox
+    Friend WithEvents gbSubtitles As GroupBoxEx
     Friend WithEvents flpSubtitleButtons As FlowLayoutPanel
     Friend WithEvents bnSubtitleAll As ButtonEx
     Friend WithEvents bnSubtitleNone As ButtonEx
@@ -385,7 +385,7 @@ Partial Class StreamDemuxForm
     Friend WithEvents bnOK As ButtonEx
     Friend WithEvents bnCancel As ButtonEx
     Friend WithEvents SubtitleTableLayoutPanel As TableLayoutPanel
-    Friend WithEvents gbAttachments As GroupBox
+    Friend WithEvents gbAttachments As GroupBoxEx
     Friend WithEvents lvAttachments As ListViewEx
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents cbDemuxVideo As CheckBox

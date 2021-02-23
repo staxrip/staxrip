@@ -10,7 +10,22 @@ Namespace UI
 
         Sub New()
             FlowDirection = FlowDirection.TopDown
-            BackColor = SystemColors.Window
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            BackColor = theme.General.Controls.CriteriaControl.BackColor
+            ForeColor = theme.General.Controls.CriteriaControl.ForeColor
         End Sub
 
         Sub AddItem(criteria As Criteria)

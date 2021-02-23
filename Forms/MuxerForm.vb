@@ -20,13 +20,13 @@ Public Class MuxerForm
     End Sub
 
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
-    Friend WithEvents bnCommandLinePreview As System.Windows.Forms.Button
+    Friend WithEvents bnCommandLinePreview As ButtonEx
     Friend WithEvents CommandLineControl As StaxRip.CommandLineControl
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents tcMain As System.Windows.Forms.TabControl
     Friend WithEvents tpCommandLine As System.Windows.Forms.TabPage
-    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents Label1 As LabelEx
     Friend WithEvents tpOptions As System.Windows.Forms.TabPage
     Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents SimpleUI As StaxRip.SimpleUI
@@ -42,7 +42,7 @@ Public Class MuxerForm
     Friend WithEvents tlpAudio As TableLayoutPanel
     Friend WithEvents flpAudio As FlowLayoutPanel
     Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents pnTab As Panel
+    Friend WithEvents pnTab As PanelEx
     Friend WithEvents tpAttachments As TabPage
     Friend WithEvents tlpAttachments As TableLayoutPanel
     Friend WithEvents flpAttachments As FlowLayoutPanel
@@ -53,33 +53,33 @@ Public Class MuxerForm
     Friend WithEvents dgvTags As DataGridViewEx
     Friend WithEvents tlpSubtitles As TableLayoutPanel
     Friend WithEvents flpSubtitleButtons As FlowLayoutPanel
-    Friend WithEvents bnSubtitleAdd As Button
-    Friend WithEvents bnSubtitleRemove As Button
-    Friend WithEvents bnSubtitleUp As Button
-    Friend WithEvents bnSubtitleDown As Button
+    Friend WithEvents bnSubtitleAdd As ButtonEx
+    Friend WithEvents bnSubtitleRemove As ButtonEx
+    Friend WithEvents bnSubtitleUp As ButtonEx
+    Friend WithEvents bnSubtitleDown As ButtonEx
     Friend WithEvents bnSubtitleSetNames As ButtonEx
     Friend WithEvents bnSubtitlePlay As ButtonEx
     Friend WithEvents bnSubtitleBDSup2SubPP As ButtonEx
     Friend WithEvents bnSubtitleEdit As ButtonEx
-    Friend WithEvents dgvSubtitles As DataGridView
+    Friend WithEvents dgvSubtitles As DataGridViewEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
         Me.CommandLineControl = New StaxRip.CommandLineControl()
-        Me.bnCommandLinePreview = New System.Windows.Forms.Button()
-        Me.bnCancel = New StaxRip.UI.ButtonEx()
-        Me.bnOK = New StaxRip.UI.ButtonEx()
+        Me.bnCommandLinePreview = New ButtonEx()
+        Me.bnCancel = New ButtonEx()
+        Me.bnOK = New ButtonEx()
         Me.tcMain = New System.Windows.Forms.TabControl()
         Me.tpSubtitles = New System.Windows.Forms.TabPage()
         Me.tlpSubtitles = New System.Windows.Forms.TableLayoutPanel()
-        Me.dgvSubtitles = New System.Windows.Forms.DataGridView()
+        Me.dgvSubtitles = New DataGridViewEx()
         Me.flpSubtitleButtons = New System.Windows.Forms.FlowLayoutPanel()
-        Me.bnSubtitleAdd = New System.Windows.Forms.Button()
-        Me.bnSubtitleRemove = New System.Windows.Forms.Button()
-        Me.bnSubtitleUp = New System.Windows.Forms.Button()
-        Me.bnSubtitleDown = New System.Windows.Forms.Button()
+        Me.bnSubtitleAdd = New ButtonEx()
+        Me.bnSubtitleRemove = New ButtonEx()
+        Me.bnSubtitleUp = New ButtonEx()
+        Me.bnSubtitleDown = New ButtonEx()
         Me.bnSubtitleSetNames = New StaxRip.UI.ButtonEx()
         Me.bnSubtitlePlay = New StaxRip.UI.ButtonEx()
         Me.bnSubtitleBDSup2SubPP = New StaxRip.UI.ButtonEx()
@@ -106,9 +106,9 @@ Public Class MuxerForm
         Me.SimpleUI = New StaxRip.SimpleUI()
         Me.tpCommandLine = New System.Windows.Forms.TabPage()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Label1 = New LabelEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.pnTab = New System.Windows.Forms.Panel()
+        Me.pnTab = New PanelEx()
         Me.tcMain.SuspendLayout()
         Me.tpSubtitles.SuspendLayout()
         Me.tlpSubtitles.SuspendLayout()
@@ -804,6 +804,49 @@ Public Class MuxerForm
         dgvSubtitles.DataSource = SubtitleBindingSource
 
         TipProvider.SetTip("Additional command line switches that may contain macros.", tpCommandLine)
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(controls As IEnumerable(Of Control))
+        ApplyTheme(controls, ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        ApplyTheme(Me.GetAllControls(), theme)
+    End Sub
+
+    Sub ApplyTheme(controls As IEnumerable(Of Control), theme As Theme)
+        BackColor = theme.General.BackColor
+
+        For Each control In controls.OfType(Of FlowLayoutPanel)
+            control.BackColor = theme.General.Controls.FlowLayoutPanel.BackColor
+            control.ForeColor = theme.General.Controls.FlowLayoutPanel.ForeColor
+        Next
+
+        For Each control In controls.OfType(Of TableLayoutPanel)
+            control.BackColor = theme.General.Controls.TableLayoutPanel.BackColor
+            control.ForeColor = theme.General.Controls.TableLayoutPanel.ForeColor
+        Next
+
+        For Each control In controls.OfType(Of TabControl)
+            control.BackColor = theme.General.Controls.TabControl.BackColor
+            control.ForeColor = theme.General.Controls.TabControl.ForeColor
+        Next
+
+        For Each control In controls.OfType(Of TabPage)
+            control.BackColor = theme.General.Controls.TabPage.BackColor
+            control.ForeColor = theme.General.Controls.TabPage.ForeColor
+        Next
     End Sub
 
     Public Class AttachmentContainer
@@ -934,6 +977,7 @@ Public Class MuxerForm
         End If
 
         page.ResumeLayout()
+        ApplyTheme()
         lastAction?.Invoke
         UpdateControls()
     End Sub

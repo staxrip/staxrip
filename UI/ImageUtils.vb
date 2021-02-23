@@ -7,15 +7,15 @@ Imports System.Threading.Tasks
 
 Public Class ImageHelp
     Private Shared Coll As PrivateFontCollection
-    Private Shared AwesomePath As String = Folder.Apps + "\Fonts\FontAwesome.ttf"
-    Private Shared SegoePath As String = Folder.Apps + "\Fonts\Segoe-MDL2-Assets.ttf"
-    Private Shared FontFilesExist As Boolean = File.Exists(AwesomePath) AndAlso File.Exists(SegoePath)
+    Private Shared ReadOnly AwesomePath As String = Folder.Apps + "\Fonts\FontAwesome.ttf"
+    Private Shared ReadOnly SegoePath As String = Folder.Apps + "\Fonts\Segoe-MDL2-Assets.ttf"
+    Private Shared ReadOnly FontFilesExist As Boolean = File.Exists(AwesomePath) AndAlso File.Exists(SegoePath)
 
-    Shared Async Function GetSymbolImageAsync(symbol As Symbol) As Task(Of Image)
-        Return Await Task.Run(Of Image)(Function() GetSymbolImage(symbol))
+    Shared Async Function GetSymbolImageAsync(symbol As Symbol, Optional color As Color = Nothing) As Task(Of Image)
+        Return Await Task.Run(Of Image)(Function() GetSymbolImage(symbol, color))
     End Function
 
-    Shared Function GetSymbolImage(symbol As Symbol) As Image
+    Shared Function GetSymbolImage(symbol As Symbol, Optional color As Color = Nothing) As Image
         If Not FontFilesExist Then
             Return Nothing
         End If
@@ -33,7 +33,7 @@ Public Class ImageHelp
 
         Dim family As FontFamily
 
-        If CInt(symbol) > 61400 Then
+        If symbol > 61400 Then
             If Coll.Families.Count > 0 Then
                 family = Coll.Families(0)
             End If
@@ -47,18 +47,21 @@ Public Class ImageHelp
             End If
         End If
 
-        If family Is Nothing Then
-            Return Nothing
-        End If
+        If family Is Nothing Then Return Nothing
 
-        Dim font As New Font(family, 12)
-        Dim fontHeight = font.Height
-        Dim bitmap As New Bitmap(CInt(fontHeight * 1.1F), CInt(fontHeight * 1.1F))
-        Dim graphics = Drawing.Graphics.FromImage(bitmap)
-        graphics.TextRenderingHint = TextRenderingHint.AntiAlias
-        graphics.DrawString(Convert.ToChar(CInt(symbol)), font, Brushes.Black, -fontHeight * 0.1F, fontHeight * 0.07F)
-        graphics.Dispose()
-        font.Dispose()
+        color = If(color = Nothing, ThemeManager.CurrentTheme.General.Controls.ToolStrip.SymbolImageColor.ToColor(), color)
+        Dim bitmap As Bitmap
+
+        Using font As Font = New Font(family, 12)
+            Dim fontHeight = font.Height
+            bitmap = New Bitmap(CInt(fontHeight * 1.1F), CInt(fontHeight * 1.1F))
+            Using graphics As Graphics = Graphics.FromImage(bitmap)
+                graphics.TextRenderingHint = TextRenderingHint.AntiAlias
+                Using brush As Brush = New SolidBrush(color)
+                    graphics.DrawString(Convert.ToChar(symbol), font, brush, -fontHeight * 0.1F, fontHeight * 0.07F)
+                End Using
+            End Using
+        End Using
 
         Return bitmap
     End Function

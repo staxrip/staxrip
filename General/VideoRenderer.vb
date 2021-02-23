@@ -20,20 +20,6 @@ Public Class VideoRenderer
     Private Server As IFrameServer
     Private Control As Control
 
-    Sub New(control As Control, server As IFrameServer)
-        Me.Server = server
-        Me.Control = control
-        Info = server.Info
-
-        Direct2dFactory = D2D1Functions.D2D1CreateFactory(
-            D2D1_FACTORY_TYPE.D2D1_FACTORY_TYPE_SINGLE_THREADED)
-
-        DirectWriteFactory = DWriteFunctions.DWriteCreateFactory(Of IDWriteFactory)(
-            DWRITE_FACTORY_TYPE.DWRITE_FACTORY_TYPE_SHARED)
-
-        AddHandler control.ClientSizeChanged, AddressOf Resize
-    End Sub
-
     Private PositionValue As Integer
 
     Property Position As Integer
@@ -52,6 +38,48 @@ Public Class VideoRenderer
             End If
         End Set
     End Property
+
+
+    Private _backColor As ColorHSL = Color.Empty
+
+    Public Property BackColor As ColorHSL
+        Get
+            Return _backColor
+        End Get
+        Set(value As ColorHSL)
+            _backColor = value
+        End Set
+    End Property
+
+
+    Sub New(control As Control, server As IFrameServer)
+        Me.Server = server
+        Me.Control = control
+        Info = server.Info
+
+        Direct2dFactory = D2D1Functions.D2D1CreateFactory(
+            D2D1_FACTORY_TYPE.D2D1_FACTORY_TYPE_SINGLE_THREADED)
+
+        DirectWriteFactory = DWriteFunctions.DWriteCreateFactory(Of IDWriteFactory)(
+            DWRITE_FACTORY_TYPE.DWRITE_FACTORY_TYPE_SHARED)
+
+        ApplyTheme()
+
+        AddHandler control.ClientSizeChanged, AddressOf Resize
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.Controls.VideoRenderer.BackColor
+    End Sub
 
     Sub Resize(sender As Object, e As EventArgs)
         Dim bitmapSize = New D2D_SIZE_U With {
@@ -75,7 +103,7 @@ Public Class VideoRenderer
             DeviceContext.BeginDraw()
 
             If CropLeft + CropTop + CropRight + CropBottom <> 0 Then
-                Clear(Color.White)
+                Clear(BackColor)
             End If
 
             Dim scaleX = Control.Width / Server.Info.Width

@@ -209,6 +209,7 @@
     <Compile Include="General\GlobalClass.vb" />
     <Compile Include="General\GlobalCommands.vb" />
     <Compile Include="General\Macro.vb" />
+    <Compile Include="General\Mathf.vb" />
     <Compile Include="General\PowerShell.vb" />
     <Compile Include="General\ProcController.vb" />
     <Compile Include="General\StaxRipUpdate.vb" />
@@ -224,6 +225,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\ColorHSL.vb" />
     <Compile Include="UI\DataForm.Designer.vb">
       <DependentUpon>DataForm.vb</DependentUpon>
     </Compile>
@@ -417,6 +419,8 @@
     <Compile Include="UI\Templates\DialogTemplate.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="UI\Theme.vb" />
+    <Compile Include="UI\ThemeManager.vb" />
     <Compile Include="UI\TipProvider.vb">
       <SubType>Component</SubType>
     </Compile>

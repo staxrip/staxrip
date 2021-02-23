@@ -28,7 +28,7 @@ Partial Class CommandLineForm
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.SimpleUI = New StaxRip.SimpleUI()
-        Me.cbGoTo = New System.Windows.Forms.ComboBox()
+        Me.cbGoTo = New ComboBoxEx()
         Me.bnMenu = New StaxRip.UI.ButtonEx()
         Me.cms = New StaxRip.UI.ContextMenuStripEx(Me.components)
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
@@ -181,7 +181,7 @@ Partial Class CommandLineForm
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents SimpleUI As StaxRip.SimpleUI
-    Friend WithEvents cbGoTo As System.Windows.Forms.ComboBox
+    Friend WithEvents cbGoTo As ComboBoxEx
     Friend WithEvents bnMenu As StaxRip.UI.ButtonEx
     Friend WithEvents cms As ContextMenuStripEx
     Friend WithEvents tlpMain As TableLayoutPanel

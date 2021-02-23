@@ -17,16 +17,16 @@ Namespace UI
         Private components As System.ComponentModel.IContainer
 
         Public WithEvents rtb As RichTextBoxEx
-        Public WithEvents bnOK As System.Windows.Forms.Button
-        Public WithEvents cbWrap As System.Windows.Forms.CheckBox
-        Friend WithEvents Panel1 As Panel
-        Public WithEvents bnCancel As System.Windows.Forms.Button
+        Public WithEvents bnOK As ButtonEx
+        Public WithEvents cbWrap As CheckBoxEx
+        Friend WithEvents Panel1 As PanelEx
+        Public WithEvents bnCancel As ButtonEx
         <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-            Me.bnOK = New System.Windows.Forms.Button()
-            Me.bnCancel = New System.Windows.Forms.Button()
+            Me.bnOK = New ButtonEx()
+            Me.bnCancel = New ButtonEx()
             Me.rtb = New StaxRip.UI.RichTextBoxEx()
-            Me.cbWrap = New System.Windows.Forms.CheckBox()
-            Me.Panel1 = New System.Windows.Forms.Panel()
+            Me.cbWrap = New CheckBoxEx()
+            Me.Panel1 = New PanelEx()
             Me.Panel1.SuspendLayout()
             Me.SuspendLayout()
             '
@@ -119,6 +119,21 @@ Namespace UI
             cbWrap.Checked = True
             rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
             ScaleClientSize(41, 24)
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            BackColor = theme.General.BackColor
         End Sub
 
         Sub tb_KeyDown(sender As Object, e As KeyEventArgs) Handles rtb.KeyDown

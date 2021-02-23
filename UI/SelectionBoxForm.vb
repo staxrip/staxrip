@@ -4,33 +4,19 @@ Imports StaxRip.UI
 Public Class SelectionBoxForm
     Inherits FormBase
 
-#Region " Designer "
-
-    Sub New()
-        MyBase.New()
-        InitializeComponent()
-    End Sub
-
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
-
     Private components As System.ComponentModel.IContainer
 
-    Friend WithEvents bnCancel As System.Windows.Forms.Button
-    Public WithEvents bnOK As System.Windows.Forms.Button
+    Friend WithEvents bnCancel As ButtonEx
+    Public WithEvents bnOK As ButtonEx
     Friend WithEvents mb As MenuButton
-    Public WithEvents laText As System.Windows.Forms.Label
+    Public WithEvents laText As LabelEx
+
+#Region " Designer "
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.laText = New System.Windows.Forms.Label()
-        Me.bnCancel = New System.Windows.Forms.Button()
-        Me.bnOK = New System.Windows.Forms.Button()
+        Me.laText = New LabelEx()
+        Me.bnCancel = New ButtonEx()
+        Me.bnOK = New ButtonEx()
         Me.mb = New StaxRip.UI.MenuButton()
         Me.SuspendLayout()
         '
@@ -49,7 +35,6 @@ Public Class SelectionBoxForm
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.bnCancel.Location = New System.Drawing.Point(374, 209)
         Me.bnCancel.Name = "bnCancel"
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
@@ -60,7 +45,6 @@ Public Class SelectionBoxForm
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.bnOK.Location = New System.Drawing.Point(118, 209)
         Me.bnOK.Name = "bnOK"
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
@@ -102,6 +86,35 @@ Public Class SelectionBoxForm
 #End Region
 
     Property ReturnValue As Object
+
+    Sub New()
+        MyBase.New()
+        InitializeComponent()
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
+    End Sub
+
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
+        If disposing Then
+            If Not (components Is Nothing) Then
+                components.Dispose()
+            End If
+        End If
+        MyBase.Dispose(disposing)
+    End Sub
 
     Sub lText_TextChanged() Handles laText.TextChanged
         Using gx = laText.CreateGraphics

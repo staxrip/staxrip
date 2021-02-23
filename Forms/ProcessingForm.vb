@@ -8,16 +8,16 @@ Public Class ProcessingForm
 #Region " Designer "
     Private components As System.ComponentModel.IContainer
 
-    Friend WithEvents bnAbort As System.Windows.Forms.Button
-    Friend WithEvents laWhenfinisheddo As System.Windows.Forms.Label
+    Friend WithEvents bnAbort As ButtonEx
+    Friend WithEvents laWhenfinisheddo As LabelEx
     Friend WithEvents NotifyIcon As System.Windows.Forms.NotifyIcon
-    Friend WithEvents bnJobs As System.Windows.Forms.Button
-    Friend WithEvents flpButtons As System.Windows.Forms.FlowLayoutPanel
+    Friend WithEvents bnJobs As ButtonEx
+    Friend WithEvents flpButtons As FlowLayoutPanel
     Friend WithEvents mbShutdown As MenuButton
-    Friend WithEvents pnLogHost As Panel
-    Friend WithEvents pnStatusHost As Panel
+    Friend WithEvents pnLogHost As PanelEx
+    Friend WithEvents pnStatusHost As PanelEx
     Friend WithEvents flpNav As FlowLayoutPanel
-    Friend WithEvents bnLog As Button
+    Friend WithEvents bnLog As ButtonEx
     Friend WithEvents bnMenu As ButtonEx
     Friend WithEvents tlpMain As TableLayoutPanel
 
@@ -32,17 +32,17 @@ Public Class ProcessingForm
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.bnAbort = New System.Windows.Forms.Button()
-        Me.laWhenfinisheddo = New System.Windows.Forms.Label()
+        Me.bnAbort = New ButtonEx()
+        Me.laWhenfinisheddo = New LabelEx()
         Me.NotifyIcon = New System.Windows.Forms.NotifyIcon(Me.components)
-        Me.bnJobs = New System.Windows.Forms.Button()
+        Me.bnJobs = New ButtonEx()
         Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
-        Me.mbShutdown = New StaxRip.UI.MenuButton()
-        Me.bnLog = New System.Windows.Forms.Button()
-        Me.bnMenu = New StaxRip.UI.ButtonEx()
+        Me.mbShutdown = New MenuButton()
+        Me.bnLog = New ButtonEx()
+        Me.bnMenu = New ButtonEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.pnLogHost = New System.Windows.Forms.Panel()
-        Me.pnStatusHost = New System.Windows.Forms.Panel()
+        Me.pnLogHost = New PanelEx()
+        Me.pnStatusHost = New PanelEx()
         Me.flpNav = New System.Windows.Forms.FlowLayoutPanel()
         Me.flpButtons.SuspendLayout()
         Me.tlpMain.SuspendLayout()
@@ -228,6 +228,21 @@ Public Class ProcessingForm
         CMS.Add("Help", AddressOf ShowHelp).KeyDisplayString = "F1"
 
         bnMenu.ContextMenuStrip = CMS
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     Protected Overrides Sub WndProc(ByRef m As Message)

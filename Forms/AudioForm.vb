@@ -16,46 +16,46 @@ Public Class AudioForm
     End Sub
 
     Friend WithEvents CommandLink1 As StaxRip.UI.CommandLink
-    Friend WithEvents gbBasic As System.Windows.Forms.GroupBox
+    Friend WithEvents gbBasic As GroupBoxEx
     Friend WithEvents numQuality As NumEdit
     Friend WithEvents numBitrate As NumEdit
-    Friend WithEvents lQualiy As System.Windows.Forms.Label
-    Friend WithEvents lCodec As System.Windows.Forms.Label
+    Friend WithEvents lQualiy As LabelEx
+    Friend WithEvents lCodec As LabelEx
     Friend WithEvents mbCodec As StaxRip.UI.MenuButton
     Friend WithEvents mbLanguage As StaxRip.UI.MenuButton
-    Friend WithEvents lLanguage As System.Windows.Forms.Label
+    Friend WithEvents lLanguage As LabelEx
     Friend WithEvents numDelay As NumEdit
-    Friend WithEvents lDelay As System.Windows.Forms.Label
+    Friend WithEvents lDelay As LabelEx
     Friend WithEvents mbChannels As StaxRip.UI.MenuButton
-    Friend WithEvents lChannels As System.Windows.Forms.Label
-    Friend WithEvents gbAdvanced As System.Windows.Forms.GroupBox
-    Friend WithEvents laProfileName As System.Windows.Forms.Label
-    Friend WithEvents tbProfileName As System.Windows.Forms.TextBox
+    Friend WithEvents lChannels As LabelEx
+    Friend WithEvents gbAdvanced As GroupBoxEx
+    Friend WithEvents laProfileName As LabelEx
+    Friend WithEvents tbProfileName As TextEdit
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
     Friend WithEvents mbSamplingRate As StaxRip.UI.MenuButton
-    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents Label1 As LabelEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents mbEncoder As StaxRip.UI.MenuButton
-    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents Label2 As LabelEx
     Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
     Friend WithEvents SimpleUI As StaxRip.SimpleUI
-    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents Label3 As LabelEx
     Friend WithEvents numGain As StaxRip.UI.NumEdit
-    Friend WithEvents Label4 As System.Windows.Forms.Label
+    Friend WithEvents Label4 As LabelEx
     Friend WithEvents tlpMain As TableLayoutPanel
     Friend WithEvents flpButtons As FlowLayoutPanel
     Friend WithEvents tlpBasic As TableLayoutPanel
     Friend WithEvents bnMenu As ButtonEx
     Friend WithEvents tlpRTB As TableLayoutPanel
     Friend WithEvents rtbCommandLine As CommandLineRichTextBox
-    Friend WithEvents laStreamName As Label
-    Friend WithEvents tbStreamName As TextBox
-    Friend WithEvents laCustom As Label
-    Friend WithEvents tbCustom As TextBox
+    Friend WithEvents laStreamName As LabelEx
+    Friend WithEvents tbStreamName As TextEdit
+    Friend WithEvents laCustom As LabelEx
+    Friend WithEvents tbCustom As TextEdit
     Friend WithEvents cbForcedTrack As CheckBoxEx
     Friend WithEvents cbDefaultTrack As CheckBoxEx
-    Friend WithEvents laDecoder As Label
+    Friend WithEvents laDecoder As LabelEx
     Friend WithEvents mbDecoder As MenuButton
     Friend WithEvents tlpAdvanced As TableLayoutPanel
     Friend WithEvents bnAdvanced As ButtonEx
@@ -64,38 +64,38 @@ Public Class AudioForm
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.gbBasic = New System.Windows.Forms.GroupBox()
+        Me.gbBasic = New GroupBoxEx()
         Me.tlpBasic = New System.Windows.Forms.TableLayoutPanel()
-        Me.lCodec = New System.Windows.Forms.Label()
-        Me.tbProfileName = New System.Windows.Forms.TextBox()
-        Me.laProfileName = New System.Windows.Forms.Label()
+        Me.lCodec = New LabelEx()
+        Me.tbProfileName = New TextEdit
+        Me.laProfileName = New LabelEx()
         Me.mbCodec = New StaxRip.UI.MenuButton()
         Me.mbLanguage = New StaxRip.UI.MenuButton()
         Me.mbSamplingRate = New StaxRip.UI.MenuButton()
-        Me.lLanguage = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
+        Me.lLanguage = New LabelEx()
+        Me.Label1 = New LabelEx()
+        Me.Label3 = New LabelEx()
         Me.numBitrate = New StaxRip.UI.NumEdit()
-        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label2 = New LabelEx()
         Me.mbEncoder = New StaxRip.UI.MenuButton()
-        Me.lChannels = New System.Windows.Forms.Label()
+        Me.lChannels = New LabelEx()
         Me.mbChannels = New StaxRip.UI.MenuButton()
-        Me.laStreamName = New System.Windows.Forms.Label()
-        Me.tbStreamName = New System.Windows.Forms.TextBox()
-        Me.laCustom = New System.Windows.Forms.Label()
-        Me.tbCustom = New System.Windows.Forms.TextBox()
+        Me.laStreamName = New LabelEx()
+        Me.tbStreamName = New TextEdit
+        Me.laCustom = New LabelEx()
+        Me.tbCustom = New TextEdit
         Me.cbDefaultTrack = New StaxRip.UI.CheckBoxEx()
         Me.cbForcedTrack = New StaxRip.UI.CheckBoxEx()
-        Me.laDecoder = New System.Windows.Forms.Label()
+        Me.laDecoder = New LabelEx()
         Me.mbDecoder = New StaxRip.UI.MenuButton()
-        Me.lQualiy = New System.Windows.Forms.Label()
+        Me.lQualiy = New LabelEx()
         Me.numQuality = New StaxRip.UI.NumEdit()
-        Me.Label4 = New System.Windows.Forms.Label()
+        Me.Label4 = New LabelEx()
         Me.numGain = New StaxRip.UI.NumEdit()
         Me.cbNormalize = New StaxRip.UI.CheckBoxEx()
         Me.numDelay = New StaxRip.UI.NumEdit()
-        Me.lDelay = New System.Windows.Forms.Label()
-        Me.gbAdvanced = New System.Windows.Forms.GroupBox()
+        Me.lDelay = New LabelEx()
+        Me.gbAdvanced = New GroupBoxEx()
         Me.tlpAdvanced = New System.Windows.Forms.TableLayoutPanel()
         Me.SimpleUI = New StaxRip.SimpleUI()
         Me.bnAdvanced = New StaxRip.UI.ButtonEx()
@@ -379,7 +379,7 @@ Public Class AudioForm
         Me.cbDefaultTrack.AutoSize = True
         Me.tlpBasic.SetColumnSpan(Me.cbDefaultTrack, 4)
         Me.cbDefaultTrack.Location = New System.Drawing.Point(15, 736)
-        Me.cbDefaultTrack.Margin = New System.Windows.Forms.Padding(15, 3, 3, 3)
+        Me.cbDefaultTrack.Margin = New System.Windows.Forms.Padding(15, 1, 3, 1)
         Me.cbDefaultTrack.Size = New System.Drawing.Size(272, 52)
         Me.cbDefaultTrack.Text = "Default Track"
         Me.cbDefaultTrack.UseVisualStyleBackColor = True
@@ -389,7 +389,7 @@ Public Class AudioForm
         Me.cbForcedTrack.AutoSize = True
         Me.tlpBasic.SetColumnSpan(Me.cbForcedTrack, 4)
         Me.cbForcedTrack.Location = New System.Drawing.Point(15, 794)
-        Me.cbForcedTrack.Margin = New System.Windows.Forms.Padding(15, 3, 3, 3)
+        Me.cbForcedTrack.Margin = New System.Windows.Forms.Padding(15, 1, 3, 1)
         Me.cbForcedTrack.Size = New System.Drawing.Size(267, 52)
         Me.cbForcedTrack.Text = "Forced Track"
         Me.cbForcedTrack.UseVisualStyleBackColor = True
@@ -461,7 +461,7 @@ Public Class AudioForm
         Me.cbNormalize.AutoSize = True
         Me.tlpBasic.SetColumnSpan(Me.cbNormalize, 4)
         Me.cbNormalize.Location = New System.Drawing.Point(15, 678)
-        Me.cbNormalize.Margin = New System.Windows.Forms.Padding(15, 3, 3, 3)
+        Me.cbNormalize.Margin = New System.Windows.Forms.Padding(15, 3, 3, 1)
         Me.cbNormalize.Size = New System.Drawing.Size(229, 52)
         Me.cbNormalize.Text = "Normalize"
         Me.cbNormalize.UseVisualStyleBackColor = True
@@ -722,6 +722,22 @@ Public Class AudioForm
         TipProvider.SetTip("Custom command line arguments.", tbCustom, laCustom)
         TipProvider.SetTip("Default MKV Track.", cbDefaultTrack)
         TipProvider.SetTip("Forced MKV Track.", cbForcedTrack)
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
@@ -1002,7 +1018,7 @@ Public Class AudioForm
         If {AudioCodec.W64, AudioCodec.WAV}.Contains(TempProfile.Params.Codec) Then
             Dim mDepth = ui.AddMenu(Of Integer)
             mDepth.Text = "Depth:"
-            mDepth.Expandet = True
+            mDepth.Expanded = True
             mDepth.Button.Value = TempProfile.Depth
             mDepth.Button.SaveAction = Sub(val)
                                            TempProfile.Depth = val
@@ -1048,7 +1064,7 @@ Public Class AudioForm
                     Case AudioCodec.AAC
                         Dim mbRateMode = ui.AddMenu(Of SimpleAudioRateMode)
                         mbRateMode.Text = "Rate Mode"
-                        mbRateMode.Expandet = True
+                        mbRateMode.Expanded = True
                         mbRateMode.Button.Value = TempProfile.Params.SimpleRateMode
                         mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.SimpleRateMode = value
 
@@ -1058,19 +1074,19 @@ Public Class AudioForm
                     Case AudioCodec.Opus
                         Dim mbRateMode = ui.AddMenu(Of OpusRateMode)
                         mbRateMode.Text = "Rate Mode"
-                        mbRateMode.Expandet = True
+                        mbRateMode.Expanded = True
                         mbRateMode.Button.Value = TempProfile.Params.ffmpegOpusRateMode
                         mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.ffmpegOpusRateMode = value
 
                         Dim mbOpusApp = ui.AddMenu(Of OpusApp)
                         mbOpusApp.Text = "Application Type"
-                        mbOpusApp.Expandet = True
+                        mbOpusApp.Expanded = True
                         mbOpusApp.Button.Value = TempProfile.Params.ffmpegOpusApp
                         mbOpusApp.Button.SaveAction = Sub(value) TempProfile.Params.ffmpegOpusApp = value
 
                         Dim frame = ui.AddMenu(Of Double)
                         frame.Text = "Frame Duration"
-                        frame.Expandet = True
+                        frame.Expanded = True
                         frame.Add("2.5", 2.5)
                         frame.Add("5", 5)
                         frame.Add("10", 10)
@@ -1084,7 +1100,7 @@ Public Class AudioForm
 
                         Dim map = ui.AddMenu(Of Integer)
                         map.Text = "Mapping Family"
-                        map.Expandet = True
+                        map.Expanded = True
                         map.Add("-1", -1)
                         map.Add("0", 0)
                         map.Add("1", 1)
@@ -1106,7 +1122,7 @@ Public Class AudioForm
                         If Not {AudioCodec.WAV, AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then
                             Dim mbRateMode = ui.AddMenu(Of AudioRateMode)
                             mbRateMode.Text = "Rate Mode:"
-                            mbRateMode.Expandet = True
+                            mbRateMode.Expanded = True
                             mbRateMode.Button.Value = TempProfile.Params.RateMode
                             mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.RateMode = value
                         End If
@@ -1129,7 +1145,7 @@ Public Class AudioForm
 
                 Dim modeMenu = ui.AddMenu(Of SimpleAudioRateMode)
                 modeMenu.Text = "Rate Mode"
-                modeMenu.Expandet = True
+                modeMenu.Expanded = True
                 modeMenu.HelpAction = getHelpAction("--bitrate-mode")
                 modeMenu.Button.Value = TempProfile.Params.SimpleRateMode
                 modeMenu.Button.SaveAction = Sub(value)
@@ -1139,7 +1155,7 @@ Public Class AudioForm
 
                 Dim profileMenu = ui.AddMenu(Of Integer)
                 profileMenu.Text = "Profile"
-                profileMenu.Expandet = True
+                profileMenu.Expanded = True
                 profileMenu.HelpAction = getHelpAction("--profile")
                 profileMenu.Add("AAC LC", 2)
                 profileMenu.Add("HE-AAC SBR", 5)
@@ -1150,7 +1166,7 @@ Public Class AudioForm
 
                 Dim lowDelaySBR = ui.AddMenu(Of Integer)
                 lowDelaySBR.Text = "Lowdelay SBR"
-                lowDelaySBR.Expandet = True
+                lowDelaySBR.Expanded = True
                 lowDelaySBR.HelpAction = getHelpAction("--lowdelay-sbr")
                 lowDelaySBR.Add("ELD SBR auto configuration", -1)
                 lowDelaySBR.Add("Disable SBR on ELD", 0)
@@ -1159,7 +1175,7 @@ Public Class AudioForm
 
                 Dim sbrRatio = ui.AddMenu(Of Integer)
                 sbrRatio.Text = "SBR Ratio"
-                sbrRatio.Expandet = True
+                sbrRatio.Expanded = True
                 sbrRatio.HelpAction = getHelpAction("--sbr-ratio")
                 sbrRatio.Add("Library Default", 0)
                 sbrRatio.Add("Downsampled SBR (ELD+SBR default)", 1)
@@ -1168,7 +1184,7 @@ Public Class AudioForm
 
                 Dim gaplessMode = ui.AddMenu(Of Integer)
                 gaplessMode.Text = "Gapless Mode"
-                gaplessMode.Expandet = True
+                gaplessMode.Expanded = True
                 gaplessMode.HelpAction = getHelpAction("--gapless-mode")
                 gaplessMode.Add("iTunSMPB", 0)
                 gaplessMode.Add("ISO Standard (EDTS And SGPD)", 1)
@@ -1177,7 +1193,7 @@ Public Class AudioForm
 
                 Dim transportFormat = ui.AddMenu(Of Integer)
                 transportFormat.Text = "Transport Format"
-                transportFormat.Expandet = True
+                transportFormat.Expanded = True
                 transportFormat.HelpAction = getHelpAction("--transport-format")
                 transportFormat.Add("M4A", 0)
                 transportFormat.Add("ADIF", 1)
@@ -1219,7 +1235,7 @@ Public Class AudioForm
             Case GuiAudioEncoder.qaac
                 Dim mbMode = ui.AddMenu(Of Integer)
                 mbMode.Text = "Mode"
-                mbMode.Expandet = True
+                mbMode.Expanded = True
                 mbMode.Add("True VBR", 0)
                 mbMode.Add("Constrained VBR", 1)
                 mbMode.Add("ABR", 2)

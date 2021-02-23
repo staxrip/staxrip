@@ -27,8 +27,8 @@ Partial Class VideoComparisonForm
     Private Sub InitializeComponent()
         Me.TabControl = New StaxRip.UI.TabControlEx()
         Me.TrackBar = New StaxRip.UI.TrackBarEx()
-        Me.laInfo = New System.Windows.Forms.Label()
-        Me.bnMenu = New StaxRip.UI.ButtonEx()
+        Me.laInfo = New LabelEx()
+        Me.bnMenu = New ButtonEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         CType(Me.TrackBar, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tlpMain.SuspendLayout()
@@ -114,7 +114,7 @@ Partial Class VideoComparisonForm
     End Sub
     Friend WithEvents TabControl As TabControlEx
     Friend WithEvents TrackBar As TrackBarEx
-    Friend WithEvents laInfo As System.Windows.Forms.Label
-    Friend WithEvents bnMenu As StaxRip.UI.ButtonEx
+    Friend WithEvents laInfo As LabelEx
+    Friend WithEvents bnMenu As ButtonEx
     Friend WithEvents tlpMain As TableLayoutPanel
 End Class

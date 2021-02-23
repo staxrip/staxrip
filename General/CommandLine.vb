@@ -526,7 +526,7 @@ Namespace CommandLine
         Overloads Sub InitParam(te As SimpleUI.TextBlock)
             TextEdit = te.Edit
             TextEdit.Text = Value
-            AddHandler TextEdit.TextChanged, AddressOf TextChanged
+            AddHandler TextEdit.TextBox.TextChanged, AddressOf TextChanged
             AddHandler TextEdit.Disposed, Sub()
                                               If Not TextEdit Is Nothing Then
                                                   RemoveHandler TextEdit.TextChanged, AddressOf TextChanged
@@ -537,7 +537,7 @@ Namespace CommandLine
             If Not InitAction Is Nothing Then InitAction.Invoke(te)
         End Sub
 
-        Sub TextChanged()
+        Sub TextChanged(sender As Object, e As EventArgs)
             Value = TextEdit.Text
             Params.RaiseValueChanged(Me)
         End Sub

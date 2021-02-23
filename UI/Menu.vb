@@ -367,6 +367,7 @@ Namespace UI
         Property VisibleFunc As Func(Of Boolean)
 
         Sub New()
+            MyBase.New()
         End Sub
 
         Sub New(text As String)
@@ -507,17 +508,17 @@ Namespace UI
             Return ret
         End Function
 
-        Sub SetImage(symbol As Symbol)
-            SetImageAsync(symbol, Me)
+        Sub SetImage(symbol As Symbol, Optional color As Color = Nothing)
+            SetImageAsync(symbol, Me, color)
         End Sub
 
-        Shared Async Sub SetImageAsync(symbol As Symbol, mi As ToolStripMenuItem)
+        Shared Async Sub SetImageAsync(symbol As Symbol, mi As ToolStripMenuItem, Optional color As Color = Nothing)
             If symbol = Symbol.None Then
                 mi.Image = Nothing
                 Exit Sub
             End If
 
-            Dim img = Await ImageHelp.GetSymbolImageAsync(symbol)
+            Dim img = Await ImageHelp.GetSymbolImageAsync(symbol, color)
 
             Try
                 If Not mi.IsDisposed Then
@@ -709,6 +710,7 @@ Namespace UI
         Private FormValue As Form
 
         Sub New()
+            MyBase.New()
         End Sub
 
         Sub New(container As IContainer)
@@ -717,6 +719,7 @@ Namespace UI
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
             MyBase.OnHandleCreated(e)
+            'Renderer = New ToolStripRendererEx()
             g.SetRenderer(Me)
             Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         End Sub
@@ -855,4 +858,18 @@ Namespace UI
             Next
         End Sub
     End Class
+
+
+    'Public Class ToolStripRendererEx
+    '    Inherits ToolStripRenderer
+
+    '    Protected Overrides Sub OnRenderToolStripBorder(e As ToolStripRenderEventArgs)
+    '        'MyBase.OnRenderToolStripBorder(e)
+
+    '        'Dim r = e.AffectedBounds
+    '        'r.Inflate(-1, -1)
+    '        'ControlPaint.DrawBorder(e.Graphics, r, Color.Red, ButtonBorderStyle.Solid)
+    '        'ControlPaint.DrawBorder(e.Graphics, e.AffectedBounds, Color.Yellow, ButtonBorderStyle.Solid)
+    '    End Sub
+    'End Class
 End Namespace

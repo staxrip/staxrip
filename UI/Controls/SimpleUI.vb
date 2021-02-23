@@ -6,7 +6,7 @@ Public Class SimpleUI
 
     Public WithEvents Tree As New TreeViewEx
 
-    Public Host As New Panel
+    Public Host As New PanelEx
 
     Public Event SaveValues()
     Public Event ValueChanged()
@@ -21,7 +21,24 @@ Public Class SimpleUI
     Sub New()
         InitControls()
         SetStyle(ControlStyles.SupportsTransparentBackColor, True)
+
+        ApplyTheme()
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
     End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
+        ForeColor = theme.General.ForeColor
+    End Sub
+
 
     Sub InitControls()
         Tree.Scrollable = False
@@ -217,7 +234,7 @@ Public Class SimpleUI
 
         Dim ret As New NumBlock(Me)
         ret.AutoSize = True
-        ret.UseParenWidth = True
+        ret.UseParentWidth = True
         AddHandler SaveValues, AddressOf ret.NumEdit.Save
         parent.Controls.Add(ret)
         Return ret
@@ -230,7 +247,7 @@ Public Class SimpleUI
 
         Dim ret As New TextBlock(Me)
         ret.AutoSize = True
-        ret.UseParenWidth = True
+        ret.UseParentWidth = True
         AddHandler SaveValues, AddressOf ret.Edit.Save
         parent.Controls.Add(ret)
         Return ret
@@ -243,7 +260,7 @@ Public Class SimpleUI
 
         Dim ret As New TextMenuBlock(Me)
         ret.AutoSize = True
-        ret.UseParenWidth = True
+        ret.UseParentWidth = True
         AddHandler SaveValues, AddressOf ret.Edit.Save
         parent.Controls.Add(ret)
         Return ret
@@ -256,7 +273,7 @@ Public Class SimpleUI
 
         Dim ret As New ColorPickerBlock(Me)
         ret.AutoSize = True
-        ret.UseParenWidth = True
+        ret.UseParentWidth = True
         AddHandler SaveValues, AddressOf ret.Save
         parent.Controls.Add(ret)
         Return ret
@@ -269,7 +286,7 @@ Public Class SimpleUI
 
         Dim ret As New ButtonBlock(Me)
         ret.AutoSize = True
-        ret.UseParenWidth = True
+        ret.UseParentWidth = True
         parent.Controls.Add(ret)
         Return ret
     End Function
@@ -281,7 +298,7 @@ Public Class SimpleUI
 
         Dim ret As New TextButtonBlock(Me)
         ret.AutoSize = True
-        ret.UseParenWidth = True
+        ret.UseParentWidth = True
         AddHandler SaveValues, AddressOf ret.Edit.Save
         parent.Controls.Add(ret)
         Return ret
@@ -294,7 +311,7 @@ Public Class SimpleUI
 
         Dim ret As New MenuBlock(Of T)(Me)
         ret.AutoSize = True
-        ret.UseParenWidth = True
+        ret.UseParentWidth = True
         AddHandler SaveValues, AddressOf ret.Button.Save
         parent.Controls.Add(ret)
         Return ret
@@ -303,7 +320,7 @@ Public Class SimpleUI
     Function AddEmptyBlock(parent As FlowLayoutPanelEx) As EmptyBlock
         Dim ret As New EmptyBlock
         ret.AutoSize = True
-        ret.UseParenWidth = True
+        ret.UseParentWidth = True
         parent.Controls.Add(ret)
         Return ret
     End Function
@@ -385,8 +402,25 @@ Public Class SimpleUI
 
         Sub New()
             TipProvider = New TipProvider(Nothing)
-            AddHandler Disposed, Sub() TipProvider.Dispose()
             FlowDirection = FlowDirection.TopDown
+
+            ApplyTheme()
+
+            AddHandler Disposed, Sub() TipProvider.Dispose()
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            BackColor = theme.General.Controls.FlowPage.BackColor
+            ForeColor = theme.General.Controls.FlowPage.ForeColor
         End Sub
 
         Protected Overrides Sub OnLayout(e As LayoutEventArgs)
@@ -716,6 +750,7 @@ Public Class SimpleUI
         Implements SimpleUIControl
 
         Property Expand As Boolean Implements SimpleUIControl.Expand
+        Property ValueChangedAction As Action(Of T)
         Property SaveAction As Action(Of T)
         Property HelpAction As Action
 
@@ -736,6 +771,7 @@ Public Class SimpleUI
         Protected Overrides Sub OnValueChanged(value As Object)
             MyBase.OnValueChanged(value)
             SimpleUI.RaiseChangeEvent()
+            ValueChangedAction?.Invoke(CType(value, T))
         End Sub
 
         Shadows Property Value As T
@@ -743,7 +779,7 @@ Public Class SimpleUI
                 Return CType(MyBase.Value, T)
             End Get
             Set(value As T)
-                MyBase.Value = CType(value, T)
+                MyBase.Value = value
             End Set
         End Property
 
@@ -1008,8 +1044,8 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             MyBase.New(ui)
-            Button.Width = FontHeight * 2
-            Button.Height = CInt(FontHeight * 1.5)
+            Button.Height = CInt(Edit.Height / s.UIScaleFactor)
+            Button.Width = Button.Height
             Button.ShowMenuSymbol = True
             Button.ContextMenuStrip = New ContextMenuStripEx
             Controls.Add(Button)
@@ -1225,7 +1261,7 @@ Public Class SimpleUI
             End Set
         End Property
 
-        Property Expandet As Boolean
+        Property Expanded As Boolean
             Get
                 Return Button.Expand
             End Get

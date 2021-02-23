@@ -15,31 +15,97 @@ Namespace UI
         Private LastDragOverPos As Point
         Private LastDrawPos As Integer
 
+        Private _backAlternateColor As Color = Color.Empty
+        Private _backHighlightColor As Color = Color.Empty
+        Private _backSelectedColor As Color = Color.Empty
+        Private _foreHighlightColor As Color = Color.Empty
+        Private _foreSelectedColor As Color = Color.Empty
+        Private _symbolImageColor As Color = Color.Empty
+
+        Public Property BackAlternateColor As Color
+            Get
+                Return _backAlternateColor
+            End Get
+            Set(value As Color)
+                _backAlternateColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property BackHighlightColor As Color
+            Get
+                Return _backHighlightColor
+            End Get
+            Set(value As Color)
+                _backHighlightColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property BackSelectedColor As Color
+            Get
+                Return _backSelectedColor
+            End Get
+            Set(value As Color)
+                _backSelectedColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property ForeHighlightColor As Color
+            Get
+                Return _foreHighlightColor
+            End Get
+            Set(value As Color)
+                _foreHighlightColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property ForeSelectedColor As Color
+            Get
+                Return _foreSelectedColor
+            End Get
+            Set(value As Color)
+                _foreSelectedColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property SymbolImageColor As Color
+            Get
+                Return _symbolImageColor
+            End Get
+            Set(value As Color)
+                _symbolImageColor = value
+                Invalidate()
+            End Set
+        End Property
+
+
+
         Event ItemsChanged()
         Event ItemRemoved(item As ListViewItem)
         Event UpdateContextMenu()
 
-        <DefaultValue(GetType(Button), Nothing)>
-        Property UpButton As Button
 
-        <DefaultValue(GetType(Button), Nothing)>
-        Property DownButton As Button
+        <DefaultValue(GetType(ButtonEx), Nothing)>
+        Property UpButton As ButtonEx
 
-        <DefaultValue(GetType(Button), Nothing)>
-        Property RemoveButton As Button
+        <DefaultValue(GetType(ButtonEx), Nothing)>
+        Property DownButton As ButtonEx
 
-        <DefaultValue(GetType(Button()), Nothing)>
+        <DefaultValue(GetType(ButtonEx), Nothing)>
+        Property RemoveButton As ButtonEx
+
+        <DefaultValue(GetType(ButtonEx()), Nothing)>
         Property SingleSelectionButtons As Button()
 
-        <DefaultValue(GetType(Button()), Nothing)>
+        <DefaultValue(GetType(ButtonEx()), Nothing)>
         Property MultiSelectionButtons As Button()
 
         <DefaultValue(CStr(Nothing))>
         Property ItemCheckProperty As String
-
-        Sub OnItemsChanged()
-            RaiseEvent ItemsChanged()
-        End Sub
 
         <DefaultValue(False)>
         Property ShowContextMenuOnLeftClick As Boolean
@@ -52,6 +118,75 @@ Namespace UI
 
         Sub New()
             DoubleBuffered = True
+            'OwnerDraw = True
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            BackColor = theme.General.Controls.ListView.BackColor
+            BackAlternateColor = theme.General.Controls.ListView.BackAlternateColor
+            BackHighlightColor = theme.General.Controls.ListView.BackHighlightColor
+            BackSelectedColor = theme.General.Controls.ListView.BackSelectedColor
+            ForeColor = theme.General.Controls.ListView.ForeColor
+            ForeHighlightColor = theme.General.Controls.ListView.ForeHighlightColor
+            ForeSelectedColor = theme.General.Controls.ListView.ForeSelectedColor
+            SymbolImageColor = theme.General.Controls.ListView.SymbolImageColor
+
+            BorderStyle = BorderStyle.Fixed3D
+            AlternateRowBackColor(theme)
+        End Sub
+
+        Sub AlternateRowBackColor(theme As Theme)
+            If theme Is Nothing Then Return
+
+            SuspendLayout()
+            Dim listViewItems = Items.OfType(Of ListViewItem)
+            For i As Integer = 0 To listViewItems.Count() - 1
+                listViewItems.ElementAt(i).BackColor = If(i Mod 2 = 1, theme.General.Controls.ListView.BackAlternateColor, theme.General.Controls.ListView.BackColor)
+            Next
+            ResumeLayout()
+        End Sub
+
+        Protected Overrides Sub OnDrawItem(e As DrawListViewItemEventArgs)
+            MyBase.OnDrawItem(e)
+            'e.DrawBackground()
+            'If e.Item.Selected = True Then
+            '    Using back = New SolidBrush(BackSelectedColor)
+            '        e.Graphics.FillRectangle(back, e.Bounds)
+            '        e.DrawText(TextFormatFlags.TextBoxControl)
+            '    End Using
+            '    Using fore = New SolidBrush(ForeSelectedColor)
+            '        e.Graphics.DrawString(e.Item.ToString(), e.Item.Font, fore, e.Bounds.Location)
+            '    End Using
+            'Else
+            '    Using back = New SolidBrush(e.Item.BackColor)
+            '        e.Graphics.FillRectangle(back, e.Bounds)
+            '        e.DrawText(TextFormatFlags.TextBoxControl)
+            '    End Using
+            '    Using fore = New SolidBrush(ForeColor)
+            '        e.Graphics.DrawString(e.Item.Text, e.Item.Font, fore, e.Bounds.Location)
+            '    End Using
+            'End If
+        End Sub
+
+        Protected Overrides Sub OnCreateControl()
+            AlternateRowBackColor(ThemeManager.CurrentTheme)
+            MyBase.OnCreateControl()
+        End Sub
+
+        Sub OnItemsChanged()
+            AlternateRowBackColor(ThemeManager.CurrentTheme)
+            RaiseEvent ItemsChanged()
         End Sub
 
         Sub SelectFirst()

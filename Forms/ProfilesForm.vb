@@ -21,13 +21,13 @@ Public Class ProfilesForm
     Friend WithEvents bnLoad As ButtonEx
     Friend WithEvents bnDown As ButtonEx
     Friend WithEvents bnUp As ButtonEx
-    Friend WithEvents bnRemove As System.Windows.Forms.Button
-    Friend WithEvents bnAdd As System.Windows.Forms.Button
-    Friend WithEvents bnEdit As System.Windows.Forms.Button
-    Friend WithEvents bnClone As System.Windows.Forms.Button
+    Friend WithEvents bnRemove As ButtonEx
+    Friend WithEvents bnAdd As ButtonEx
+    Friend WithEvents bnEdit As ButtonEx
+    Friend WithEvents bnClone As ButtonEx
     Friend WithEvents bnRight As ButtonEx
     Friend WithEvents bnLeft As ButtonEx
-    Friend WithEvents bnRestore As System.Windows.Forms.Button
+    Friend WithEvents bnRestore As ButtonEx
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
@@ -35,24 +35,24 @@ Public Class ProfilesForm
     Friend WithEvents pnListBox As Panel
     Friend WithEvents flpRight As FlowLayoutPanel
     Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents bnRename As System.Windows.Forms.Button
+    Friend WithEvents bnRename As ButtonEx
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.bnDown = New StaxRip.UI.ButtonEx()
-        Me.bnUp = New StaxRip.UI.ButtonEx()
-        Me.bnRemove = New System.Windows.Forms.Button()
-        Me.bnRight = New StaxRip.UI.ButtonEx()
-        Me.bnLeft = New StaxRip.UI.ButtonEx()
-        Me.lbMain = New StaxRip.UI.ListBoxEx()
-        Me.bnLoad = New StaxRip.UI.ButtonEx()
-        Me.bnAdd = New System.Windows.Forms.Button()
-        Me.bnRename = New System.Windows.Forms.Button()
-        Me.bnEdit = New System.Windows.Forms.Button()
-        Me.bnClone = New System.Windows.Forms.Button()
-        Me.bnRestore = New System.Windows.Forms.Button()
-        Me.bnCancel = New StaxRip.UI.ButtonEx()
-        Me.bnOK = New StaxRip.UI.ButtonEx()
+        Me.bnDown = New ButtonEx()
+        Me.bnUp = New ButtonEx()
+        Me.bnRemove = New ButtonEx()
+        Me.bnRight = New ButtonEx()
+        Me.bnLeft = New ButtonEx()
+        Me.lbMain = New ListBoxEx()
+        Me.bnLoad = New ButtonEx()
+        Me.bnAdd = New ButtonEx()
+        Me.bnRename = New ButtonEx()
+        Me.bnEdit = New ButtonEx()
+        Me.bnClone = New ButtonEx()
+        Me.bnRestore = New ButtonEx()
+        Me.bnCancel = New ButtonEx()
+        Me.bnOK = New ButtonEx()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
         Me.tlpArrows = New System.Windows.Forms.TableLayoutPanel()
         Me.pnListBox = New System.Windows.Forms.Panel()
@@ -355,6 +355,22 @@ Public Class ProfilesForm
         TipProvider.SetTip("Moves items down, multiselect is available.", "Down", bnDown)
         TipProvider.SetTip("Moves selected profiles to it's parent menu, multiselect is available.", "Left", bnLeft)
         TipProvider.SetTip("Moves profiles into a sub menu, multiselect is available.", "Right", bnRight)
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     Sub UpdateControls()

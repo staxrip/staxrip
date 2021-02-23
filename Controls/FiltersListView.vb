@@ -61,6 +61,7 @@ Public Class FiltersListView
         Next
 
         AutoResizeColumns(True)
+        MyBase.AlternateRowBackColor(ThemeManager.CurrentTheme)
         EndUpdate()
         BlockItemCheck = False
     End Sub

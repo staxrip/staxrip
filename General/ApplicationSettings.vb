@@ -70,6 +70,7 @@ Public Class ApplicationSettings
     Public StringDictionary As Dictionary(Of String, String)
     Public StringList As List(Of String)
     Public TargetImageSizeMenu As String
+    Public ThemeName As String
     Public ThumbnailBackgroundColor As Color = Color.AliceBlue
     Public ToolStripRenderModeEx As ToolStripRenderModeEx = ToolStripRenderModeEx.SystemDefault
     Public UIScaleFactor As Single = 1

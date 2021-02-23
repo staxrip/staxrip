@@ -8,11 +8,9 @@ Public Class LogForm
         InitializeComponent()
         RestoreClientSize(50, 35)
         Text += " - " + p.Log.GetPath
-        lb.BackColor = SystemColors.Control
         lb.ItemHeight = FontHeight * 2
         rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
         rtb.ReadOnly = True
-        rtb.BackColor = SystemColors.Control
         rtb.Text = p.Log.GetPath.ReadAllText
         rtb.DetectUrls = False
 
@@ -43,6 +41,35 @@ Public Class LogForm
         cms.Add("Open in Text Editor", Sub() g.ShellExecute(g.GetTextEditorPath, p.Log.GetPath.Escape), Keys.Control Or Keys.T).SetImage(Symbol.Edit)
         cms.Add("Show in File Explorer", Sub() g.SelectFileWithExplorer(p.Log.GetPath), Keys.Control Or Keys.E).SetImage(Symbol.FileExplorer)
         cms.Add("Show History", Sub() g.ShellExecute(Folder.Settings + "Log Files"), Keys.Control Or Keys.H).SetImage(Symbol.ClockLegacy)
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(controls As IEnumerable(Of Control))
+        ApplyTheme(controls, ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        ApplyTheme(Me.GetAllControls(), theme)
+    End Sub
+
+    Sub ApplyTheme(controls As IEnumerable(Of Control), theme As Theme)
+        BackColor = theme.General.BackColor
+
+        For Each control In controls.OfType(Of TableLayoutPanel)
+            control.BackColor = theme.General.Controls.TableLayoutPanel.BackColor
+            control.ForeColor = theme.General.Controls.TableLayoutPanel.ForeColor
+        Next
     End Sub
 
     Sub lb_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lb.SelectedIndexChanged

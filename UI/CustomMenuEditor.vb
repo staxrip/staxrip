@@ -17,30 +17,30 @@ Namespace UI
 
         Private components As System.ComponentModel.IContainer
 
-        Public WithEvents lParameters As System.Windows.Forms.Label
+        Public WithEvents lParameters As LabelEx
         Public WithEvents pg As PropertyGridEx
-        Public WithEvents laText As System.Windows.Forms.Label
-        Public WithEvents laHotkey As System.Windows.Forms.Label
-        Private WithEvents tbText As System.Windows.Forms.TextBox
+        Public WithEvents laText As LabelEx
+        Public WithEvents laHotkey As LabelEx
+        Private WithEvents tbText As TextEdit
         Friend WithEvents TipProvider As StaxRip.UI.TipProvider
         Friend WithEvents tv As StaxRip.UI.TreeViewEx
-        Friend WithEvents tbHotkey As System.Windows.Forms.TextBox
-        Friend WithEvents tbCommand As System.Windows.Forms.TextBox
+        Friend WithEvents tbHotkey As TextEdit
+        Friend WithEvents tbCommand As TextEdit
         Friend WithEvents bnCommand As ButtonEx
         Friend WithEvents cmsCommand As ContextMenuStripEx
-        Friend WithEvents laCommand As System.Windows.Forms.Label
+        Friend WithEvents laCommand As LabelEx
         Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
         Friend WithEvents ImageList1 As System.Windows.Forms.ImageList
         Friend WithEvents tlpMain As System.Windows.Forms.TableLayoutPanel
         Friend WithEvents tlpCommand As System.Windows.Forms.TableLayoutPanel
         Friend WithEvents flpBottom As System.Windows.Forms.FlowLayoutPanel
-        Friend WithEvents laIcon As Label
+        Friend WithEvents laIcon As LabelEx
         Friend WithEvents tlpSymbol As TableLayoutPanel
-        Friend WithEvents laSymbol As Label
+        Friend WithEvents laSymbol As LabelEx
         Friend WithEvents pbSymbol As PictureBox
         Friend WithEvents bnSymbol As ButtonEx
         Friend WithEvents cmsSymbol As ContextMenuStripEx
-        Friend WithEvents ToolStrip As ToolStrip
+        Friend WithEvents ToolStrip As ToolStripEx
         Friend WithEvents tsbNew As ToolStripButton
         Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
         Friend WithEvents tsbCut As ToolStripButton
@@ -59,25 +59,25 @@ Namespace UI
         Friend WithEvents bnOK As StaxRip.UI.ButtonEx
         <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
             Me.components = New System.ComponentModel.Container()
-            Me.laHotkey = New System.Windows.Forms.Label()
-            Me.lParameters = New System.Windows.Forms.Label()
+            Me.laHotkey = New LabelEx()
+            Me.lParameters = New LabelEx()
             Me.pg = New StaxRip.UI.PropertyGridEx()
-            Me.tbText = New System.Windows.Forms.TextBox()
-            Me.laText = New System.Windows.Forms.Label()
+            Me.tbText = New TextEdit()
+            Me.laText = New LabelEx()
             Me.tv = New StaxRip.UI.TreeViewEx()
             Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
-            Me.tbHotkey = New System.Windows.Forms.TextBox()
-            Me.tbCommand = New System.Windows.Forms.TextBox()
+            Me.tbHotkey = New TextEdit()
+            Me.tbCommand = New TextEdit()
             Me.bnCommand = New StaxRip.UI.ButtonEx()
             Me.cmsCommand = New StaxRip.UI.ContextMenuStripEx(Me.components)
-            Me.laCommand = New System.Windows.Forms.Label()
+            Me.laCommand = New LabelEx()
             Me.bnCancel = New StaxRip.UI.ButtonEx()
             Me.bnOK = New StaxRip.UI.ButtonEx()
             Me.ImageList1 = New System.Windows.Forms.ImageList(Me.components)
             Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
             Me.flpBottom = New System.Windows.Forms.FlowLayoutPanel()
             Me.tlpCommand = New System.Windows.Forms.TableLayoutPanel()
-            Me.ToolStrip = New System.Windows.Forms.ToolStrip()
+            Me.ToolStrip = New ToolStripEx()
             Me.tsbNew = New System.Windows.Forms.ToolStripButton()
             Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
             Me.tsbCut = New System.Windows.Forms.ToolStripButton()
@@ -93,9 +93,9 @@ Namespace UI
             Me.ToolsToolStripDropDownButton = New System.Windows.Forms.ToolStripDropDownButton()
             Me.NewFromDefaultsToolStripMenuItem = New StaxRip.UI.MenuItemEx()
             Me.ResetToolStripMenuItem = New StaxRip.UI.MenuItemEx()
-            Me.laIcon = New System.Windows.Forms.Label()
+            Me.laIcon = New LabelEx()
             Me.tlpSymbol = New System.Windows.Forms.TableLayoutPanel()
-            Me.laSymbol = New System.Windows.Forms.Label()
+            Me.laSymbol = New LabelEx()
             Me.pbSymbol = New System.Windows.Forms.PictureBox()
             Me.bnSymbol = New StaxRip.UI.ButtonEx()
             Me.cmsSymbol = New StaxRip.UI.ContextMenuStripEx(Me.components)
@@ -186,8 +186,8 @@ Namespace UI
             '
             'tbHotkey
             '
-            Me.tbHotkey.AcceptsReturn = True
-            Me.tbHotkey.AcceptsTab = True
+            Me.tbHotkey.TextBox.AcceptsReturn = True
+            Me.tbHotkey.TextBox.AcceptsTab = True
             Me.tbHotkey.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.tbHotkey.Location = New System.Drawing.Point(686, 272)
@@ -599,6 +599,22 @@ Namespace UI
             TipProvider.SetTip("Text to be displayed. Enter minus to create a separator.", tbText, laText)
             TipProvider.SetTip("A key can be deleted by pressing it two times.", tbHotkey, laHotkey)
             TipProvider.SetTip("Command to be executed. Please make a feature request if useful commands are missing.", tbCommand, laCommand)
+
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            BackColor = theme.General.BackColor
         End Sub
 
         Sub PopulateSymbolMenu()

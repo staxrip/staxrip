@@ -89,7 +89,6 @@ Public Class AppsForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tv.AutoCollaps = True
-        Me.tv.BackColor = System.Drawing.SystemColors.Control
         Me.tv.ExpandMode = StaxRip.UI.TreeNodeExpandMode.InclusiveChilds
         Me.tv.FullRowSelect = True
         Me.tv.HideSelection = False
@@ -387,8 +386,8 @@ Public Class AppsForm
 
     Private CurrentPackage As Package
     Private Nodes As New List(Of TreeNode)
-    Private Headers As New Dictionary(Of String, Label)
-    Private Contents As New Dictionary(Of String, Label)
+    Private Headers As New Dictionary(Of String, LabelEx)
+    Private Contents As New Dictionary(Of String, LabelEx)
     Private SetupButton As New ButtonEx
     Private ToolUpdate As ToolUpdate
 
@@ -420,7 +419,7 @@ Public Class AppsForm
         SetupButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
         SetupButton.AutoSize = True
 
-        Dim titleHeaderLabel = New Label With {
+        Dim titleHeaderLabel = New LabelEx With {
             .Font = New Font(flp.Font.FontFamily, 14 * s.UIScaleFactor, FontStyle.Bold),
             .AutoSize = True
         }
@@ -435,6 +434,21 @@ Public Class AppsForm
         AddSection("VapourSynth Filters")
         AddSection("Filters")
         AddSection("Description")
+
+        ApplyTheme()
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     Sub ShowActivePackage()
@@ -480,9 +494,9 @@ Public Class AppsForm
         Contents("Status").Text = CurrentPackage.GetStatusDisplay()
 
         If CurrentPackage.GetStatus <> "" AndAlso CurrentPackage.Required Then
-            Contents("Status").ForeColor = Color.Red
+            Contents("Status").ForeColor = ThemeManager.CurrentTheme.AppsForm.AttentionForeColor
         Else
-            Contents("Status").ForeColor = Color.Black
+            Contents("Status").ForeColor = ThemeManager.CurrentTheme.AppsForm.OkayForeColor
         End If
 
         Contents("Status").Font = New Font("Segoe UI", 10 * s.UIScaleFactor)
@@ -526,13 +540,13 @@ Public Class AppsForm
     Sub AddSection(title As String)
         Dim controlMargin = CInt(FontHeight / 10)
 
-        Dim headerLabel = New Label With {
+        Dim headerLabel = New LabelEx With {
             .Text = title,
             .Font = New Font(flp.Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold),
             .AutoSize = True,
             .Margin = New Padding(controlMargin, controlMargin, 0, 0)}
 
-        Dim contentLabel = New Label With {
+        Dim contentLabel = New LabelEx With {
             .AutoSize = True,
             .Margin = New Padding(controlMargin, CInt(controlMargin / 3), 0, 0)}
 

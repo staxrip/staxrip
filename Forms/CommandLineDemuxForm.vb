@@ -16,23 +16,23 @@ Public Class CommandLineDemuxForm
     End Sub
 
     Friend WithEvents CommandLink1 As StaxRip.UI.CommandLink
-    Friend WithEvents tbName As System.Windows.Forms.TextBox
-    Friend WithEvents tbInput As System.Windows.Forms.TextBox
-    Friend WithEvents tbInputFormats As System.Windows.Forms.TextBox
-    Friend WithEvents tbVideoOut As System.Windows.Forms.TextBox
-    Friend WithEvents tbCommand As System.Windows.Forms.TextBox
-    Friend WithEvents tbArguments As System.Windows.Forms.TextBox
-    Friend WithEvents tbSourceFilters As System.Windows.Forms.TextBox
+    Friend WithEvents tbName As TextEdit
+    Friend WithEvents tbInput As TextEdit
+    Friend WithEvents tbInputFormats As TextEdit
+    Friend WithEvents tbVideoOut As TextEdit
+    Friend WithEvents tbCommand As TextEdit
+    Friend WithEvents tbArguments As TextEdit
+    Friend WithEvents tbSourceFilters As TextEdit
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents tlpMain As System.Windows.Forms.TableLayoutPanel
-    Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents Label3 As System.Windows.Forms.Label
-    Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents Label6 As System.Windows.Forms.Label
-    Friend WithEvents Label7 As System.Windows.Forms.Label
-    Friend WithEvents Label8 As System.Windows.Forms.Label
-    Friend WithEvents Label9 As System.Windows.Forms.Label
+    Friend WithEvents Label2 As LabelEx
+    Friend WithEvents Label3 As LabelEx
+    Friend WithEvents Label1 As LabelEx
+    Friend WithEvents Label6 As LabelEx
+    Friend WithEvents Label7 As LabelEx
+    Friend WithEvents Label8 As LabelEx
+    Friend WithEvents Label9 As LabelEx
     Friend WithEvents bnBrowse As ButtonEx
     Friend WithEvents bnArguments As ButtonEx
     Friend WithEvents cmsArguments As ContextMenuStripEx
@@ -43,13 +43,13 @@ Public Class CommandLineDemuxForm
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.tbName = New System.Windows.Forms.TextBox()
-        Me.tbInput = New System.Windows.Forms.TextBox()
-        Me.tbInputFormats = New System.Windows.Forms.TextBox()
-        Me.tbVideoOut = New System.Windows.Forms.TextBox()
-        Me.tbCommand = New System.Windows.Forms.TextBox()
-        Me.tbArguments = New System.Windows.Forms.TextBox()
-        Me.tbSourceFilters = New System.Windows.Forms.TextBox()
+        Me.tbName = New TextEdit()
+        Me.tbInput = New TextEdit()
+        Me.tbInputFormats = New TextEdit()
+        Me.tbVideoOut = New TextEdit()
+        Me.tbCommand = New TextEdit()
+        Me.tbArguments = New TextEdit()
+        Me.tbSourceFilters = New TextEdit()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
@@ -58,13 +58,13 @@ Public Class CommandLineDemuxForm
         Me.MacrosToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.bnBrowse = New StaxRip.UI.ButtonEx()
-        Me.Label6 = New System.Windows.Forms.Label()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.Label9 = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label7 = New System.Windows.Forms.Label()
+        Me.Label6 = New LabelEx()
+        Me.Label2 = New LabelEx()
+        Me.Label3 = New LabelEx()
+        Me.Label8 = New LabelEx()
+        Me.Label9 = New LabelEx()
+        Me.Label1 = New LabelEx()
+        Me.Label7 = New LabelEx()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
         Me.tlpMain.SuspendLayout()
         Me.cmsArguments.SuspendLayout()
@@ -350,6 +350,22 @@ Public Class CommandLineDemuxForm
         tbCommand.Text = Temp.Command
 
         ActiveControl = bnOK
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     Function ConvertFormat(input As String) As String

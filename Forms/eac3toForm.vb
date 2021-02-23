@@ -35,8 +35,8 @@ Public Class eac3toForm
     Friend WithEvents cbChapters As System.Windows.Forms.CheckBox
     Friend WithEvents laTargetDir As System.Windows.Forms.Label
     Friend WithEvents tlpTarget As System.Windows.Forms.TableLayoutPanel
-    Friend WithEvents gbAudio As System.Windows.Forms.GroupBox
-    Friend WithEvents gbSubtitles As System.Windows.Forms.GroupBox
+    Friend WithEvents gbAudio As GroupBoxEx
+    Friend WithEvents gbSubtitles As GroupBoxEx
     Friend WithEvents cbAudioOutput As System.Windows.Forms.ComboBox
     Friend WithEvents laOptions As System.Windows.Forms.Label
     Friend WithEvents laOutput As System.Windows.Forms.Label
@@ -88,13 +88,13 @@ Public Class eac3toForm
         Me.bnMenu = New StaxRip.UI.ButtonEx()
         Me.cms = New StaxRip.UI.ContextMenuStripEx(Me.components)
         Me.cbChapters = New System.Windows.Forms.CheckBox()
-        Me.gbAudio = New System.Windows.Forms.GroupBox()
+        Me.gbAudio = New GroupBoxEx()
         Me.tlpAudio = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpAudioOptions = New System.Windows.Forms.TableLayoutPanel()
         Me.laOutput = New System.Windows.Forms.Label()
         Me.laOptions = New System.Windows.Forms.Label()
         Me.cbAudioOutput = New System.Windows.Forms.ComboBox()
-        Me.gbSubtitles = New System.Windows.Forms.GroupBox()
+        Me.gbSubtitles = New GroupBoxEx()
         Me.tlpSubtitles = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpVideo = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
@@ -654,6 +654,22 @@ Public Class eac3toForm
         cms.Items.Add(New MenuItemEx("Execute eac3to.exe -test", Sub() g.ShellExecute("cmd.exe", "/k """ + Package.eac3to.Path + """ -test")))
 
         ActiveControl = Nothing
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.BackColor
     End Sub
 
     Sub ShowAudioStreamProfilesHelp()

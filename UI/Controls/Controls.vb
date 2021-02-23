@@ -5,12 +5,21 @@ Imports System.Windows.Forms.VisualStyles
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports System.Drawing.Drawing2D
+Imports System.Drawing.Text
 
 Namespace UI
     Public Class TreeViewEx
         Inherits TreeView
 
         Private AutoCollapsValue As Boolean
+
+        Private _backAlternateColor As Color = Color.Empty
+        Private _backExpandedColor As Color = Color.Empty
+        Private _backHighlightColor As Color = Color.Empty
+        Private _backSelectedColor As Color = Color.Empty
+        Private _foreExpandedColor As Color = Color.Empty
+        Private _foreHighlightColor As Color = Color.Empty
+        Private _foreSelectedColor As Color = Color.Empty
 
         <DefaultValue(False)>
         Property AutoCollaps As Boolean
@@ -20,6 +29,130 @@ Namespace UI
 
         <DefaultValue(False)>
         Property SelectOnMouseDown() As Boolean
+
+        Public Property BackAlternateColor As Color
+            Get
+                Return _backAlternateColor
+            End Get
+            Set(value As Color)
+                _backAlternateColor = value
+            End Set
+        End Property
+
+        Public Property BackExpandedColor As Color
+            Get
+                Return _backExpandedColor
+            End Get
+            Set(value As Color)
+                _backExpandedColor = value
+            End Set
+        End Property
+
+        Public Property BackHighlightColor As Color
+            Get
+                Return _backHighlightColor
+            End Get
+            Set(value As Color)
+                _backHighlightColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property BackSelectedColor As Color
+            Get
+                Return _backSelectedColor
+            End Get
+            Set(value As Color)
+                _backSelectedColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property ForeExpandedColor As Color
+            Get
+                Return _foreExpandedColor
+            End Get
+            Set(value As Color)
+                _foreExpandedColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property ForeHighlightColor As Color
+            Get
+                Return _foreHighlightColor
+            End Get
+            Set(value As Color)
+                _foreHighlightColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property ForeSelectedColor As Color
+            Get
+                Return _foreSelectedColor
+            End Get
+            Set(value As Color)
+                _foreSelectedColor = value
+                Invalidate()
+            End Set
+        End Property
+
+
+        Sub New()
+            MyBase.New()
+            DrawMode = TreeViewDrawMode.OwnerDrawAll
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.TreeView.BackColor
+            BackAlternateColor = theme.General.Controls.TreeView.BackAlternateColor
+            BackExpandedColor = theme.General.Controls.TreeView.BackExpandedColor
+            BackHighlightColor = theme.General.Controls.TreeView.BackHighlightColor
+            BackSelectedColor = theme.General.Controls.TreeView.BackSelectedColor
+            ForeColor = theme.General.Controls.TreeView.ForeColor
+            ForeExpandedColor = theme.General.Controls.TreeView.ForeExpandedColor
+            ForeHighlightColor = theme.General.Controls.TreeView.ForeHighlightColor
+            ForeSelectedColor = theme.General.Controls.TreeView.ForeSelectedColor
+            LineColor = theme.General.Controls.TreeView.LineColor
+            ResumeLayout()
+        End Sub
+
+        Protected Overrides Sub OnDrawNode(e As DrawTreeNodeEventArgs)
+            'MyBase.OnDrawNode(e)
+
+            e.DrawDefault = False
+            Dim font = If(e.Node.NodeFont, e.Node.TreeView.Font)
+            Dim state = e.State
+            Dim text = New String(" "c, e.Node.Level * 4) + e.Node.Text
+            Dim bounds = e.Bounds
+            Dim textFlags = TextFormatFlags.GlyphOverhangPadding Or TextFormatFlags.VerticalCenter Or TextFormatFlags.SingleLine
+
+            If e.Node.IsSelected Then
+                e.Graphics.FillRectangle(New SolidBrush(BackSelectedColor), bounds)
+                'ControlPaint.DrawFocusRectangle(e.Graphics, bounds, ForeSelectedColor, BackSelectedColor)
+                TextRenderer.DrawText(e.Graphics, text, font, bounds, ForeSelectedColor, BackSelectedColor, textFlags)
+            ElseIf e.Node.IsExpanded Then
+                e.Graphics.FillRectangle(New SolidBrush(BackExpandedColor), bounds)
+                TextRenderer.DrawText(e.Graphics, text, font, bounds, ForeExpandedColor, BackExpandedColor, textFlags)
+            Else
+                e.Graphics.FillRectangle(New SolidBrush(BackColor), bounds)
+                TextRenderer.DrawText(e.Graphics, text, font, bounds, ForeColor, BackColor, textFlags)
+            End If
+            MyBase.OnDrawNode(e)
+        End Sub
 
         Protected Overrides Sub OnAfterSelect(e As TreeViewEventArgs)
             If AutoCollaps Then
@@ -154,7 +287,7 @@ Namespace UI
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
             MyBase.OnHandleCreated(e)
-            Native.SetWindowTheme(Handle, "explorer", Nothing)
+            'Native.SetWindowTheme(Handle, "explorer", Nothing)
         End Sub
 
         Function AddNode(path As String) As TreeNode
@@ -274,6 +407,31 @@ Namespace UI
         End Property
     End Class
 
+
+    Public Class ToolStripButtonEx
+        Inherits ToolStripButton
+
+        Sub New()
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            BackColor = theme.General.Controls.ToolStripButton.BackColor
+            ForeColor = theme.General.Controls.ToolStripButton.ForeColor
+        End Sub
+    End Class
+
+
     Public Class LineControl
         Inherits Control
 
@@ -353,6 +511,35 @@ Namespace UI
     Public Class TextBoxEx
         Inherits TextBox
 
+        'Private Const WM_NCPAINT As UInteger = &H85
+        'Private Const RDW_INVALIDATE As UInteger = &H1
+        'Private Const RDW_IUPDATENOW As UInteger = &H100
+        'Private Const RDW_FRAME = &H400
+
+        Private _blockOnTextChanged As Boolean = False
+        Private _borderColor As Color = Color.Empty
+        Private _borderFocusedColor As Color = Color.Empty
+
+        Public Property BorderColor As Color
+            Get
+                Return _borderColor
+            End Get
+            Set(value As Color)
+                _borderColor = value
+                'Native.RedrawWindow(Handle, IntPtr.Zero, IntPtr.Zero, RDW_FRAME Or RDW_IUPDATENOW Or RDW_INVALIDATE)
+            End Set
+        End Property
+
+        Public Property BorderFocusedColor As Color
+            Get
+                Return _borderFocusedColor
+            End Get
+            Set(value As Color)
+                _borderFocusedColor = value
+                'Native.RedrawWindow(Handle, IntPtr.Zero, IntPtr.Zero, RDW_FRAME Or RDW_IUPDATENOW Or RDW_INVALIDATE)
+            End Set
+        End Property
+
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Shadows Property Name() As String
             Get
@@ -373,19 +560,72 @@ Namespace UI
             End Set
         End Property
 
-        Sub SetTextWithoutTextChangedEvent(text As String)
-            BlockOnTextChanged = True
-            Me.Text = text
-            BlockOnTextChanged = False
+        Sub New()
+            ApplyTheme()
+            BorderStyle = BorderStyle.None
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
-        Private BlockOnTextChanged As Boolean
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.TextBox.BackColor
+            ForeColor = theme.General.Controls.TextBox.ForeColor
+            BorderColor = theme.General.Controls.TextBox.BorderColor
+            BorderFocusedColor = theme.General.Controls.TextBox.BorderFocusedColor
+            ResumeLayout()
+        End Sub
+
+        Public Sub SetTextWithoutTextChangedEvent(text As String)
+            _blockOnTextChanged = True
+            Me.Text = text
+            _blockOnTextChanged = False
+        End Sub
 
         Protected Overrides Sub OnTextChanged(e As EventArgs)
-            If Not BlockOnTextChanged Then
+            If Not _blockOnTextChanged Then
                 MyBase.OnTextChanged(e)
             End If
         End Sub
+
+        'Protected Overrides Sub WndProc(ByRef m As Message)
+        '    MyBase.WndProc(m)
+
+        '    If BorderColor <> Color.Empty AndAlso BorderColor <> Color.Transparent AndAlso BorderStyle = BorderStyle.Fixed3D Then
+        '        If m.Msg = WM_NCPAINT Then
+        '            Dim hDC = Native.GetWindowDC(Handle)
+        '            If Me.Focused Then
+        '                Using g = Graphics.FromHdc(hDC)
+        '                    Using p = New Pen(BorderFocusedColor, 2)
+        '                        Dim rect = New Rectangle(1, 1, Me.Width - 2, Me.Height - 2)
+        '                        g.DrawRectangle(p, rect)
+        '                    End Using
+        '                End Using
+        '            Else
+        '                Using g = Graphics.FromHdc(hDC)
+        '                    Using p = New Pen(BorderColor, 2)
+        '                        Dim rect = New Rectangle(1, 1, Me.Width - 2, Me.Height - 2)
+        '                        g.DrawRectangle(p, rect)
+        '                    End Using
+        '                End Using
+        '            End If
+        '            Native.ReleaseDC(Handle, hDC)
+        '        End If
+        '    End If
+        'End Sub
+
+        'Protected Overrides Sub OnSizeChanged(e As EventArgs)
+        '    MyBase.OnSizeChanged(e)
+        '    Native.RedrawWindow(Handle, IntPtr.Zero, IntPtr.Zero, RDW_FRAME Or RDW_IUPDATENOW Or RDW_INVALIDATE)
+        'End Sub
     End Class
 
     Public Class PanelEx
@@ -440,10 +680,128 @@ Namespace UI
                 MyBase.TabIndex = value
             End Set
         End Property
+
+        Sub New()
+            SetStyle(ControlStyles.ResizeRedraw, True)
+            'SetStyle(ControlStyles.Opaque, True)
+            SetStyle(ControlStyles.UserPaint, True)
+            UseVisualStyleBackColor = False
+            FlatStyle = FlatStyle.Standard
+            FlatAppearance.BorderSize = 2
+
+            ApplyTheme()
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            If Appearance.HasFlag(Appearance.Normal) Then
+                FlatStyle = FlatStyle.Standard
+                FlatAppearance.BorderSize = 0
+
+                BackColor = theme.General.Controls.CheckBox.BackColor
+                ForeColor = theme.General.Controls.CheckBox.ForeColor
+                FlatAppearance.BorderColor = theme.General.Controls.CheckBox.BorderColor
+                FlatAppearance.CheckedBackColor = theme.General.Controls.CheckBox.CheckedBackColor
+                FlatAppearance.MouseOverBackColor = theme.General.Controls.CheckBox.BackHighlightColor
+            Else
+                FlatStyle = FlatStyle.Flat
+                FlatAppearance.BorderSize = 0
+
+                BackColor = theme.General.Controls.CheckBox.BackColor
+                ForeColor = theme.General.Controls.Button.ForeColor
+                FlatAppearance.BorderColor = theme.General.Controls.Button.BorderColor
+                FlatAppearance.CheckedBackColor = theme.General.Controls.CheckBox.CheckedBackColor
+                FlatAppearance.MouseOverBackColor = theme.General.Controls.CheckBox.BackHoverColor
+            End If
+            ResumeLayout()
+        End Sub
+
+        Protected Overrides Sub OnPaint(pevent As PaintEventArgs)
+            MyBase.OnPaint(pevent)
+
+            'If Appearance.HasFlag(Appearance.Normal) Then
+            '    Dim bColor = If(Checked, Color.Red, Color.Yellow)
+            '    Dim diameter = pevent.ClipRectangle.Height - 2
+            '    Dim rect = New Rectangle(New Point(0, 1), New Size(diameter, diameter))
+            '    ControlPaint.DrawCheckBox(pevent.Graphics, rect, If(Checked, ButtonState.Checked, ButtonState.Normal))
+            '    ControlPaint.DrawMixedCheckBox(pevent.Graphics, rect, If(Checked, ButtonState.Checked, ButtonState.Normal))
+            '    pevent.Graphics.FillRectangle(New SolidBrush(bColor), rect)
+            'End If
+
+        End Sub
+
+        Protected Overrides Sub OnPaintBackground(pevent As PaintEventArgs)
+            MyBase.OnPaintBackground(pevent)
+        End Sub
+
+        Protected Overrides Sub OnCheckedChanged(e As EventArgs)
+            'ImageIndex = If(Checked, 1, 0)
+            MyBase.OnCheckedChanged(e)
+        End Sub
+    End Class
+
+    Public Class ComboBoxEx
+        Inherits ComboBox
+
+        Sub New()
+            MyBase.FlatStyle = FlatStyle.Flat
+
+            ApplyTheme()
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.ComboBox.BackColor
+            ForeColor = theme.General.Controls.ComboBox.ForeColor
+            ResumeLayout()
+        End Sub
+
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
+        Shadows Property Name() As String
+            Get
+                Return MyBase.Name
+            End Get
+            Set(value As String)
+                MyBase.Name = value
+            End Set
+        End Property
+
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
+        Shadows Property TabIndex As Integer
+            Get
+                Return MyBase.TabIndex
+            End Get
+            Set(value As Integer)
+                MyBase.TabIndex = value
+            End Set
+        End Property
     End Class
 
     Public Class RichTextBoxEx
         Inherits RichTextBox
+
+        Private _backReadonlyColor As Color = Color.Empty
+        Private _borderColor As Color = Color.Empty
+        Private _borderFocusedColor As Color = Color.Empty
+        Private _borderHoverColor As Color = Color.Empty
 
         <Browsable(False)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
@@ -451,8 +809,69 @@ Namespace UI
 
         Private BorderRect As Native.RECT
 
+        Public Property BackReadonlyColor As Color
+            Get
+                Return _backReadonlyColor
+            End Get
+            Set(value As Color)
+                _backReadonlyColor = value
+            End Set
+        End Property
+
+        Public Property BorderColor As Color
+            Get
+                Return _borderColor
+            End Get
+            Set(value As Color)
+                _borderColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property BorderFocusedColor As Color
+            Get
+                Return _borderFocusedColor
+            End Get
+            Set(value As Color)
+                _borderFocusedColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property BorderHoverColor As Color
+            Get
+                Return _borderHoverColor
+            End Get
+            Set(value As Color)
+                _borderHoverColor = value
+                Invalidate()
+            End Set
+        End Property
+
+
         Sub New()
             MyClass.New(True)
+
+            ApplyTheme()
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.RichTextBox.BackColor
+            BackReadonlyColor = theme.General.Controls.RichTextBox.BackReadonlyColor
+            ForeColor = theme.General.Controls.RichTextBox.ForeColor
+            BorderColor = theme.General.Controls.RichTextBox.BorderColor
+            BorderFocusedColor = theme.General.Controls.RichTextBox.BorderFocusedColor
+            ResumeLayout()
         End Sub
 
         Sub New(createMenu As Boolean)
@@ -605,7 +1024,7 @@ Namespace UI
             Native.ExcludeClipRect(hDC, rect.Left, rect.Top, rect.Right, rect.Bottom)
 
             Using g = Graphics.FromHdc(hDC)
-                g.Clear(Color.CadetBlue)
+                g.Clear(BorderColor)
             End Using
 
             Native.ReleaseDC(Handle, hDC)
@@ -641,7 +1060,26 @@ Namespace UI
 
         Sub New()
             TextAlign = Drawing.ContentAlignment.MiddleLeft
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.Label.BackColor
+            ForeColor = theme.General.Controls.Label.ForeColor
+            ResumeLayout()
+        End Sub
+
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Shadows Property Name() As String
@@ -671,6 +1109,44 @@ Namespace UI
 
         Sub New()
             ToolbarVisible = False 'GridView is not ready when PropertySortChanged happens so Init fails
+
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.PropertyGrid.BackColor
+            CategoryForeColor = theme.General.Controls.PropertyGrid.CategoryForeColor
+            CategorySplitterColor = theme.General.Controls.PropertyGrid.CategorySplitterColor
+            CommandsActiveLinkColor = theme.General.Controls.PropertyGrid.CommandsActiveLinkColor
+            CommandsBackColor = theme.General.Controls.PropertyGrid.CommandsBackColor
+            CommandsBorderColor = theme.General.Controls.PropertyGrid.CommandsBorderColor
+            CommandsDisabledLinkColor = theme.General.Controls.PropertyGrid.CommandsDisabledLinkColor
+            CommandsForeColor = theme.General.Controls.PropertyGrid.CommandsForeColor
+            CommandsLinkColor = theme.General.Controls.PropertyGrid.CommandsLinkColor
+            DisabledItemForeColor = theme.General.Controls.PropertyGrid.DisabledItemForeColor
+            ForeColor = theme.General.Controls.PropertyGrid.ForeColor
+            HelpBackColor = theme.General.Controls.PropertyGrid.HelpBackColor
+            HelpBorderColor = theme.General.Controls.PropertyGrid.HelpBorderColor
+            HelpForeColor = theme.General.Controls.PropertyGrid.HelpForeColor
+            LineColor = theme.General.Controls.PropertyGrid.LineColor
+            SelectedItemWithFocusBackColor = theme.General.Controls.PropertyGrid.SelectedItemWithFocusBackColor
+            SelectedItemWithFocusForeColor = theme.General.Controls.PropertyGrid.SelectedItemWithFocusForeColor
+            ViewBackColor = theme.General.Controls.PropertyGrid.ViewBackColor
+            ViewBorderColor = theme.General.Controls.PropertyGrid.ViewBorderColor
+            ViewForeColor = theme.General.Controls.PropertyGrid.ViewForeColor
+
+            ResumeLayout()
         End Sub
 
         Protected Overrides Sub OnSelectedGridItemChanged(e As SelectedGridItemChangedEventArgs)
@@ -710,42 +1186,54 @@ Namespace UI
     Public Class ButtonLabel
         Inherits Label
 
-        Private LinkColorNormal As Color
-        Private LinkColorHover As Color
-
         Property LinkColor As Color
-            Get
-                Return LinkColorNormal
-            End Get
-            Set(value As Color)
-                LinkColorNormal = value
-                LinkColorHover = ControlPaint.Dark(LinkColorNormal)
-                ForeColor = value
-            End Set
-        End Property
+        Property LinkHoverColor As Color
+
+        Sub New()
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.ButtonLabel.BackColor
+            ForeColor = theme.General.Controls.ButtonLabel.ForeColor
+            LinkColor = theme.General.Controls.ButtonLabel.LinkForeColor
+            LinkHoverColor = theme.General.Controls.ButtonLabel.LinkForeHoverColor
+            ResumeLayout()
+        End Sub
 
         Protected Overrides Sub OnMouseEnter(e As EventArgs)
-            SetFontStyle(FontStyle.Bold)
-            ForeColor = LinkColorHover
+            'SetFontStyle(FontStyle.Bold)
+            ForeColor = LinkHoverColor
             MyBase.OnMouseEnter(e)
         End Sub
 
         Protected Overrides Sub OnMouseLeave(e As EventArgs)
-            SetFontStyle(FontStyle.Regular)
-            ForeColor = LinkColorNormal
+            'SetFontStyle(FontStyle.Regular)
+            ForeColor = LinkColor
             MyBase.OnMouseLeave(e)
         End Sub
     End Class
 
     <DefaultEvent("LinkClick")>
     Public Class LinkGroupBox
-        Inherits GroupBox
+        Inherits GroupBoxEx
 
         Public WithEvents Label As New ButtonLabel
         Event LinkClick()
 
         Sub New()
-            Label.Left = 4
+            Label.Left = 15
             Label.AutoSize = True
             Controls.Add(Label)
         End Sub
@@ -754,12 +1242,13 @@ Namespace UI
 
         Overrides Property Text() As String
             Get
-                Return Label.Text
+                'Return Label.Text
             End Get
             Set(value As String)
-                If Not value.EndsWith(" ") Then
-                    value += " "
-                End If
+                value = If(value, "")
+                value = value.Trim()
+                'value = " " + value
+                'value = value + " "
 
                 Label.Text = value
             End Set
@@ -775,6 +1264,31 @@ Namespace UI
         End Sub
     End Class
 
+    Public Class GroupBoxEx
+        Inherits GroupBox
+
+        Sub New()
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.GroupBox.BackColor
+            ForeColor = theme.General.Controls.GroupBox.ForeColor
+            ResumeLayout()
+        End Sub
+    End Class
+
     Public Class MenuButton
         Inherits ButtonEx
 
@@ -787,6 +1301,7 @@ Namespace UI
         Sub New()
             Menu.ShowImageMargin = False
             ShowMenuSymbol = True
+            Padding = New Padding(4, 0, 0, 0)
             AddHandler Menu.Opening, AddressOf MenuOpening
         End Sub
 
@@ -999,7 +1514,7 @@ Namespace UI
         Inherits FlowLayoutPanel
 
         <DefaultValue(False)>
-        Property UseParenWidth As Boolean
+        Property UseParentWidth As Boolean
 
         Property AutomaticOffset As Boolean
 
@@ -1078,7 +1593,7 @@ Namespace UI
         Public Overrides Function GetPreferredSize(proposedSize As Size) As Size
             Dim ret = MyBase.GetPreferredSize(proposedSize)
 
-            If UseParenWidth Then
+            If UseParentWidth Then
                 ret.Width = Parent.Width
             End If
 
@@ -1088,6 +1603,10 @@ Namespace UI
 
     Public Class ButtonEx
         Inherits Button
+
+        Private _backDisabledColor As Color = Color.Empty
+        Private _foreDisabledColor As Color = Color.Empty
+        Private _text As String = ""
 
         <DefaultValue(ButtonSymbol.None)>
         Property Symbol As ButtonSymbol
@@ -1099,12 +1618,27 @@ Namespace UI
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property ClickAction As Action
 
-        Sub New()
-            MyBase.UseVisualStyleBackColor = True
-        End Sub
+        Public Property BackDisabledColor As Color
+            Get
+                Return _backDisabledColor
+            End Get
+            Set(value As Color)
+                _backDisabledColor = value
+            End Set
+        End Property
+
+        Public Property ForeDisabledColor As Color
+            Get
+                Return _foreDisabledColor
+            End Get
+            Set(value As Color)
+                _foreDisabledColor = value
+            End Set
+        End Property
+
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Shadows Property Name() As String
+        Shadows Property Name As String
             Get
                 Return MyBase.Name
             End Get
@@ -1124,9 +1658,25 @@ Namespace UI
             End Set
         End Property
 
+        Shadows Property Text As String
+            Get
+                Return _text
+            End Get
+            Set(value As String)
+                _text = value
+                If AutoSize Then
+                    Dim textSize = TextRenderer.MeasureText(_text, Font)
+                    Dim xSize = TextRenderer.MeasureText("X", Font)
+                    MyBase.AutoSizeMode = AutoSizeMode.GrowOnly
+                    Size = New Size(textSize.Width + Padding.Horizontal + xSize.Height, textSize.Height + xSize.Height \ 2)
+                End If
+                Invalidate(True)
+            End Set
+        End Property
+
         <DefaultValue(True), Browsable(False),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Shadows Property UseVisualStyleBackColor() As Boolean
+        Shadows Property UseVisualStyleBackColor As Boolean
             Get
                 Return True
             End Get
@@ -1140,6 +1690,41 @@ Namespace UI
             End Get
         End Property
 
+
+        Sub New()
+            SetStyle(ControlStyles.ResizeRedraw, True)
+
+            Padding = New Padding(0)
+            MinimumSize = New Size(20, 20)
+            UseCompatibleTextRendering = True
+
+            MyBase.UseVisualStyleBackColor = False
+            FlatStyle = FlatStyle.Flat
+            FlatAppearance.BorderSize = 2
+
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.Button.BackColor
+            BackDisabledColor = theme.General.Controls.Button.BackDisabledColor
+            ForeColor = theme.General.Controls.Button.ForeColor
+            ForeDisabledColor = theme.General.Controls.Button.ForeDisabledColor
+            FlatAppearance.BorderColor = theme.General.Controls.Button.BorderColor
+            ResumeLayout()
+        End Sub
+
         Protected Overrides Sub OnClick(e As EventArgs)
             ClickAction?.Invoke()
             ContextMenuStrip?.Show(Me, 0, Height)
@@ -1148,8 +1733,72 @@ Namespace UI
 
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
             MyBase.OnPaint(e)
-            Dim col = If(Enabled, ForeColor, SystemColors.GrayText)
+
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias
+
+            Dim fore = If(Enabled, ForeColor, ForeDisabledColor)
+            Dim flags As TextFormatFlags
+            'Dim stringFormat As New StringFormat()
+
+            Select Case TextAlign
+                Case Drawing.ContentAlignment.BottomCenter
+                    flags = TextFormatFlags.Bottom Or TextFormatFlags.HorizontalCenter
+                Case Drawing.ContentAlignment.BottomLeft
+                    flags = TextFormatFlags.Bottom Or TextFormatFlags.Left
+                Case Drawing.ContentAlignment.BottomRight
+                    flags = TextFormatFlags.Bottom Or TextFormatFlags.Right
+                Case Drawing.ContentAlignment.MiddleCenter
+                    flags = TextFormatFlags.VerticalCenter Or TextFormatFlags.HorizontalCenter
+                Case Drawing.ContentAlignment.MiddleLeft
+                    flags = TextFormatFlags.VerticalCenter Or TextFormatFlags.Left
+                Case Drawing.ContentAlignment.MiddleRight
+                    flags = TextFormatFlags.VerticalCenter Or TextFormatFlags.Right
+                Case Drawing.ContentAlignment.TopCenter
+                    flags = TextFormatFlags.Top Or TextFormatFlags.HorizontalCenter
+                Case Drawing.ContentAlignment.TopLeft
+                    flags = TextFormatFlags.Top Or TextFormatFlags.Left
+                Case Drawing.ContentAlignment.TopRight
+                    flags = TextFormatFlags.Top Or TextFormatFlags.Right
+            End Select
+
+            'Select Case TextAlign
+            '    Case Drawing.ContentAlignment.BottomCenter
+            '        stringFormat.Alignment = StringAlignment.Center
+            '        stringFormat.LineAlignment = StringAlignment.Far
+            '    Case Drawing.ContentAlignment.BottomLeft
+            '        stringFormat.Alignment = StringAlignment.Near
+            '        stringFormat.LineAlignment = StringAlignment.Far
+            '    Case Drawing.ContentAlignment.BottomRight
+            '        stringFormat.Alignment = StringAlignment.Far
+            '        stringFormat.LineAlignment = StringAlignment.Far
+            '    Case Drawing.ContentAlignment.MiddleCenter
+            '        stringFormat.Alignment = StringAlignment.Center
+            '        stringFormat.LineAlignment = StringAlignment.Center
+            '    Case Drawing.ContentAlignment.MiddleLeft
+            '        stringFormat.Alignment = StringAlignment.Near
+            '        stringFormat.LineAlignment = StringAlignment.Center
+            '    Case Drawing.ContentAlignment.MiddleRight
+            '        stringFormat.Alignment = StringAlignment.Far
+            '        stringFormat.LineAlignment = StringAlignment.Center
+            '    Case Drawing.ContentAlignment.TopCenter
+            '        stringFormat.Alignment = StringAlignment.Center
+            '        stringFormat.LineAlignment = StringAlignment.Near
+            '    Case Drawing.ContentAlignment.TopLeft
+            '        stringFormat.Alignment = StringAlignment.Near
+            '        stringFormat.LineAlignment = StringAlignment.Near
+            '    Case Drawing.ContentAlignment.TopRight
+            '        stringFormat.Alignment = StringAlignment.Far
+            '        stringFormat.LineAlignment = StringAlignment.Near
+            'End Select
+
+            Using foreBrush = New SolidBrush(fore)
+                Dim rect = ClientRectangle
+                rect.Offset(Padding.Left, Padding.Top - If(FlatStyle.HasFlag(FlatStyle.Flat), FlatAppearance.BorderSize \ 2, 0))
+                rect.Inflate(-Padding.Left - Padding.Right, -Padding.Top - Padding.Bottom)
+
+                TextRenderer.DrawText(e.Graphics, Text, Font, rect, fore, flags)
+            End Using
+
 
             If ShowMenuSymbol Then
                 Dim h = CInt(Font.Height * 0.3)
@@ -1164,14 +1813,14 @@ Namespace UI
                 Dim x3 = x1 + w
                 Dim y3 = y1
 
-                Using pen = New Pen(col, Font.Height / 16.0F)
+                Using pen = New Pen(fore, Font.Height / 16.0F)
                     e.Graphics.DrawLine(pen, x1, y1, x2, y2)
                     e.Graphics.DrawLine(pen, x2, y2, x3, y3)
                 End Using
             End If
 
             If Symbol <> ButtonSymbol.None Then
-                Dim p = New Pen(col)
+                Dim p = New Pen(ForeColor)
                 p.Alignment = PenAlignment.Center
                 p.EndCap = LineCap.Round
                 p.StartCap = LineCap.Round
@@ -1360,7 +2009,7 @@ Namespace UI
         Class SymbolDrawer
             Property Point1 As New Point
             Property Point2 As New Point
-            Property Pen As Pen
+            Property Pen As Pen = New Pen(Color.OrangeRed, 4)
             Property Graphics As Graphics
 
             Sub Draw()
@@ -1402,18 +2051,111 @@ Namespace UI
     Public Class ListBoxEx
         Inherits ListBox
 
+        Private _backAlternateColor As Color = Color.Empty
+        Private _backHighlightColor As Color = Color.Empty
+        Private _backSelectedColor As Color = Color.Empty
+        Private _foreHighlightColor As Color = Color.Empty
+        Private _foreSelectedColor As Color = Color.Empty
+        Private _symbolImageColor As Color = Color.Empty
+
+        Private LastTick As Long
+        Private KeyText As String = ""
+        Private BlockOnSelectedIndexChanged As Boolean
+
         <DefaultValue(GetType(Button), Nothing)> Property UpButton As Button
         <DefaultValue(GetType(Button), Nothing)> Property DownButton As Button
         <DefaultValue(GetType(Button), Nothing)> Property RemoveButton As Button
         <DefaultValue(GetType(Button), Nothing)> Property Button1 As Button
         <DefaultValue(GetType(Button), Nothing)> Property Button2 As Button
 
-        Private LastTick As Long
-        Private KeyText As String = ""
-        Private BlockOnSelectedIndexChanged As Boolean
+        Public Property BackAlternateColor As Color
+            Get
+                Return _backAlternateColor
+            End Get
+            Set(value As Color)
+                _backAlternateColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property BackHighlightColor As Color
+            Get
+                Return _backHighlightColor
+            End Get
+            Set(value As Color)
+                _backHighlightColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property BackSelectedColor As Color
+            Get
+                Return _backSelectedColor
+            End Get
+            Set(value As Color)
+                _backSelectedColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property ForeHighlightColor As Color
+            Get
+                Return _foreHighlightColor
+            End Get
+            Set(value As Color)
+                _foreHighlightColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property ForeSelectedColor As Color
+            Get
+                Return _foreSelectedColor
+            End Get
+            Set(value As Color)
+                _foreSelectedColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property SymbolImageColor As Color
+            Get
+                Return _symbolImageColor
+            End Get
+            Set(value As Color)
+                _symbolImageColor = value
+                Invalidate()
+            End Set
+        End Property
+
 
         Sub New()
+            MyBase.New()
             DrawMode = DrawMode.OwnerDrawFixed
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.ListBox.BackColor
+            BackAlternateColor = theme.General.Controls.ListBox.BackAlternateColor
+            BackHighlightColor = theme.General.Controls.ListBox.BackHighlightColor
+            BackSelectedColor = theme.General.Controls.ListBox.BackSelectedColor
+            ForeColor = theme.General.Controls.ListBox.ForeColor
+            ForeHighlightColor = theme.General.Controls.ListBox.ForeHighlightColor
+            ForeSelectedColor = theme.General.Controls.ListBox.ForeSelectedColor
+            SymbolImageColor = theme.General.Controls.ListBox.SymbolImageColor
+            ResumeLayout()
         End Sub
 
         Protected Overrides Sub OnFontChanged(e As EventArgs)
@@ -1424,25 +2166,24 @@ Namespace UI
         Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
             If Items.Count = 0 OrElse e.Index < 0 Then Exit Sub
 
+            Dim back As Color = BackColor
+            Dim fore As Color = ForeColor
+            Dim r = e.Bounds
             Dim g = e.Graphics
             g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
 
-            Dim r = e.Bounds
-
             If (e.State And DrawItemState.Selected) = DrawItemState.Selected Then
+                fore = ForeSelectedColor
+                back = BackSelectedColor
+
                 r.Width -= 1
                 r.Height -= 1
-
                 r.Inflate(-1, -1)
-
-                Using b As New SolidBrush(Color.FromArgb(&HFFB2DFFF))
-                    g.FillRectangle(b, r)
-                End Using
-            Else
-                Using b As New SolidBrush(BackColor)
-                    g.FillRectangle(b, r)
-                End Using
             End If
+
+            Using backBrush As New SolidBrush(back)
+                g.FillRectangle(backBrush, r)
+            End Using
 
             Dim sf As New StringFormat
             sf.FormatFlags = StringFormatFlags.NoWrap
@@ -1452,7 +2193,7 @@ Namespace UI
             r2.X = 2
             r2.Width = e.Bounds.Width
 
-            Dim caption As String = Nothing
+            Dim caption As String
 
             If DisplayMember <> "" Then
                 Try
@@ -1464,7 +2205,9 @@ Namespace UI
                 caption = Items(e.Index).ToString()
             End If
 
-            e.Graphics.DrawString(caption, Font, Brushes.Black, r2, sf)
+            Using foreBrush = New SolidBrush(fore)
+                e.Graphics.DrawString(caption, Font, foreBrush, r2, sf)
+            End Using
         End Sub
 
         Protected Overrides Sub OnSelectedValueChanged(e As EventArgs)
@@ -1617,23 +2360,47 @@ Namespace UI
     Public Class NumEdit
         Inherits UserControl
 
-        WithEvents TextBox As New Edit
+        WithEvents TextEdit As New TextEdit
 
         Private UpControl As New UpDownButton(True)
         Private DownControl As New UpDownButton(False)
-        Private BorderColor As Color = Color.CadetBlue
+        'Private BorderColor As Color = Color.Transparent
         Private TipProvider As TipProvider
+
+        'Private _borderNormalColor As ColorHSL = Color.Empty
+        'Private _borderSelectedColor As ColorHSL = Color.Empty
+
+        'Public Property BorderNormalColor As ColorHSL
+        '    Get
+        '        Return _borderNormalColor
+        '    End Get
+        '    Set(value As ColorHSL)
+        '        _borderNormalColor = value
+        '    End Set
+        'End Property
+
+        'Public Property BorderSelectedColor As ColorHSL
+        '    Get
+        '        Return _borderSelectedColor
+        '    End Get
+        '    Set(value As ColorHSL)
+        '        _borderSelectedColor = value
+        '    End Set
+        'End Property
+
 
         Event ValueChanged(numEdit As NumEdit)
 
         Sub New()
-            SetStyle(ControlStyles.Opaque Or ControlStyles.ResizeRedraw, True)
+            SetStyle(ControlStyles.ResizeRedraw, True)
+            BorderStyle = BorderStyle.FixedSingle
 
-            TextBox.BorderStyle = BorderStyle.None
-            TextBox.TextAlign = HorizontalAlignment.Center
-            TextBox.Text = "0"
+            TextEdit.BorderStyle = BorderStyle.None
+            TextEdit.TextBox.BorderStyle = BorderStyle.None
+            TextEdit.TextBox.TextAlign = HorizontalAlignment.Center
+            TextEdit.Text = "0"
 
-            Controls.Add(TextBox)
+            Controls.Add(TextEdit)
             Controls.Add(UpControl)
             Controls.Add(DownControl)
 
@@ -1647,12 +2414,35 @@ Namespace UI
                                           Value = Math.Round(Value, DecimalPlaces)
                                       End Sub
 
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
             AddHandler UpControl.MouseDown, Sub() Focus()
             AddHandler DownControl.MouseDown, Sub() Focus()
-            AddHandler TextBox.LostFocus, Sub() UpdateText()
-            AddHandler TextBox.GotFocus, Sub() SetColor(Color.CornflowerBlue)
-            AddHandler TextBox.LostFocus, Sub() SetColor(Color.CadetBlue)
-            AddHandler TextBox.MouseWheel, AddressOf Wheel
+            AddHandler TextEdit.LostFocus, Sub() UpdateText()
+            AddHandler TextEdit.GotFocus, AddressOf SetActive
+            AddHandler TextEdit.LostFocus, AddressOf SetNormal
+            AddHandler TextEdit.MouseWheel, AddressOf Wheel
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.NumEdit.BackColor
+            TextEdit.BackColor = theme.General.Controls.NumEdit.BackColor
+            TextEdit.TextBox.BackColor = theme.General.Controls.NumEdit.BackColor
+            TextEdit.TextBox.BorderColor = theme.General.Controls.NumEdit.BorderColor
+            'BorderColor = theme.General.Controls.NumEdit.BorderColor
+            'BorderNormalColor = theme.General.Controls.NumEdit.BorderColor
+            'BorderSelectedColor = theme.General.Controls.NumEdit.BorderSelectedColor
+            ResumeLayout()
         End Sub
 
         WriteOnly Property Help As String
@@ -1661,7 +2451,7 @@ Namespace UI
                     TipProvider = New TipProvider()
                 End If
 
-                TipProvider.SetTip(value, TextBox, UpControl, DownControl)
+                TipProvider.SetTip(value, TextEdit, UpControl, DownControl)
             End Set
         End Property
 
@@ -1717,14 +2507,15 @@ Namespace UI
             End If
         End Sub
 
-        Sub SetColor(c As Color)
-            BorderColor = c
-            Invalidate()
-        End Sub
+        'Sub SetColor(c As Color)
+        '    BorderColor = c
+        '    Invalidate()
+        'End Sub
 
         Protected Overridable Sub OnValueChanged(numEdit As NumEdit)
             RaiseEvent ValueChanged(Me)
         End Sub
+
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
             Dim h = (ClientSize.Height \ 2) - 1
@@ -1736,28 +2527,28 @@ Namespace UI
 
             UpControl.Width = CInt(Height * 0.8)
             UpControl.Height = h
-            UpControl.Top = 2
-            UpControl.Left = ClientSize.Width - UpControl.Width - 2
+            UpControl.Top = 1
+            UpControl.Left = ClientSize.Width - UpControl.Width - 1
 
             DownControl.Width = UpControl.Width
             DownControl.Left = UpControl.Left
-            DownControl.Top = ClientSize.Height - h - 2
+            DownControl.Top = ClientSize.Height - h - 1
             DownControl.Height = h
 
-            TextBox.Top = (ClientSize.Height - TextBox.Height) \ 2 + 1
-            TextBox.Left = 2
-            TextBox.Width = DownControl.Left - 3
-            TextBox.Height = TextRenderer.MeasureText("gG", TextBox.Font).Height
+            TextEdit.Top = (ClientSize.Height - TextEdit.Height) \ 2 + 1
+            TextEdit.Left = 2
+            TextEdit.Width = DownControl.Left - 3
+            TextEdit.Height = TextRenderer.MeasureText("gG", TextEdit.Font).Height
 
             MyBase.OnLayout(levent)
         End Sub
 
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
-            Dim r = ClientRectangle
-            r.Inflate(-1, -1)
-            e.Graphics.FillRectangle(If(Enabled, Brushes.White, SystemBrushes.Control), r)
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, BorderColor, ButtonBorderStyle.Solid)
             MyBase.OnPaint(e)
+            'Dim r = ClientRectangle
+            'r.Inflate(-1, -1)
+            'e.Graphics.FillRectangle(If(Enabled, Brushes.White, SystemBrushes.Control), r)
+            'ControlPaint.DrawBorder(e.Graphics, ClientRectangle, BorderColor, ButtonBorderStyle.Solid)
         End Sub
 
         Protected Overrides ReadOnly Property DefaultSize() As Size
@@ -1785,10 +2576,10 @@ Namespace UI
         End Sub
 
         Sub UpdateText()
-            TextBox.SetTextWithoutTextChanged(ValueValue.ToString("F" & DecimalPlaces))
+            TextEdit.TextBox.SetTextWithoutTextChangedEvent(ValueValue.ToString("F" & DecimalPlaces))
         End Sub
 
-        Sub TextBox_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox.KeyDown
+        Sub TextBox_KeyDown(sender As Object, e As KeyEventArgs) Handles TextEdit.KeyDown
             If e.KeyData = Keys.Up Then
                 Value += Increment
             ElseIf e.KeyData = Keys.Down Then
@@ -1796,29 +2587,39 @@ Namespace UI
             End If
         End Sub
 
-        Sub TextBox_TextChanged(sender As Object, e As EventArgs) Handles TextBox.TextChanged
-            If TextBox.Text.IsDouble Then
-                SetValue(TextBox.Text.ToDouble, False)
+        Sub TextBox_TextChanged(sender As Object, e As EventArgs) Handles TextEdit.TextChanged
+            If TextEdit.Text.IsDouble Then
+                SetValue(TextEdit.Text.ToDouble, False)
             End If
         End Sub
 
-        Class Edit
-            Inherits TextBox
+        Sub SetNormal(sender As Object, e As EventArgs)
+            'DownControl.SetNormal()
+            'UpControl.SetNormal()
+        End Sub
 
-            Private BlockTextChanged As Boolean
+        Sub SetActive(sender As Object, e As EventArgs)
+            'DownControl.SetActive()
+            'UpControl.SetActive()
+        End Sub
 
-            Sub SetTextWithoutTextChanged(val As String)
-                BlockTextChanged = True
-                Text = val
-                BlockTextChanged = False
-            End Sub
+        'Class Edit
+        '    Inherits TextEdit
 
-            Protected Overrides Sub OnTextChanged(e As EventArgs)
-                If Not BlockTextChanged Then
-                    MyBase.OnTextChanged(e)
-                End If
-            End Sub
-        End Class
+        '    Private BlockTextChanged As Boolean
+
+        '    Sub SetTextWithoutTextChanged(val As String)
+        '        BlockTextChanged = True
+        '        Text = val
+        '        BlockTextChanged = False
+        '    End Sub
+
+        '    Protected Overrides Sub OnTextChanged(e As EventArgs)
+        '        If Not BlockTextChanged Then
+        '            MyBase.OnTextChanged(e)
+        '        End If
+        '    End Sub
+        'End Class
 
         Class UpDownButton
             Inherits Control
@@ -1834,11 +2635,8 @@ Namespace UI
                 Me.IsUp = isUp
                 TabStop = False
 
-                SetStyle(
-                    ControlStyles.Opaque Or
-                    ControlStyles.ResizeRedraw Or
-                    ControlStyles.OptimizedDoubleBuffer,
-                    True)
+                SetStyle(ControlStyles.ResizeRedraw, True)
+                SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
             End Sub
 
             Protected Overrides Sub OnMouseEnter(e As EventArgs)
@@ -1859,7 +2657,7 @@ Namespace UI
                 Invalidate()
                 ClickAction.Invoke()
                 LastMouseDownTick = Environment.TickCount
-                MouseDownClicks(1000, LastMouseDownTick)
+                MouseDownClicks(750, LastMouseDownTick)
             End Sub
 
             Protected Overrides Sub OnMouseUp(e As MouseEventArgs)
@@ -1870,18 +2668,19 @@ Namespace UI
 
             Protected Overrides Sub OnPaint(e As PaintEventArgs)
                 MyBase.OnPaint(e)
+
                 Dim gx = e.Graphics
                 gx.SmoothingMode = SmoothingMode.HighQuality
 
                 If IsPressed Then
-                    gx.Clear(Color.LightBlue)
+                    gx.Clear(ThemeManager.CurrentTheme.General.Controls.NumEdit.UpDownButton.BackPressedColor)
                 ElseIf IsHot Then
-                    gx.Clear(Color.AliceBlue)
+                    gx.Clear(ThemeManager.CurrentTheme.General.Controls.NumEdit.UpDownButton.BackHotColor)
                 Else
-                    gx.Clear(SystemColors.Control)
+                    gx.Clear(ThemeManager.CurrentTheme.General.Controls.NumEdit.UpDownButton.BackColor)
                 End If
 
-                ControlPaint.DrawBorder(gx, ClientRectangle, Color.CadetBlue, ButtonBorderStyle.Solid)
+                'ControlPaint.DrawBorder(gx, ClientRectangle, ThemeManager.CurrentTheme.General.Controls.NumEdit.UpDownButton.BorderColor, ButtonBorderStyle.Solid)
 
                 Dim h = CInt(Font.Height * 0.2)
                 Dim w = h * 2
@@ -1901,7 +2700,7 @@ Namespace UI
                     y3 = y1
                 End If
 
-                Using pen = New Pen(If(Enabled, Color.Black, SystemColors.GrayText), Font.Height / 20.0F)
+                Using pen = New Pen(If(Enabled, ThemeManager.CurrentTheme.General.Controls.NumEdit.UpDownButton.ForeColor, ThemeManager.CurrentTheme.General.Controls.NumEdit.UpDownButton.ForeDisabledColor), Font.Height / 20.0F)
                     gx.DrawLine(pen, x1, y1, x2, y2)
                     gx.DrawLine(pen, x2, y2, x3, y3)
                 End Using
@@ -1915,30 +2714,98 @@ Namespace UI
                     MouseDownClicks(20, tick)
                 End If
             End Sub
+
+            Public Sub SetNormal()
+                Invalidate()
+            End Sub
+
+            Public Sub SetActive()
+                Invalidate()
+            End Sub
         End Class
     End Class
 
     Public Class TextEdit
         Inherits UserControl
 
+        Private _backReadonlyColor As Color = Color.Empty
+        Private _borderColor As Color = Color.Empty
+        Private _borderFocusedColor As Color = Color.Empty
+        Private _borderHoverColor As Color = Color.Empty
+        Private _drawBorder As Integer = -1
+
         Public WithEvents TextBox As New TextBoxEx
-        Public Shadows Event TextChanged()
-        Private BorderColor As Color = Color.CadetBlue
+        Public Shadows Event DoubleClick(sender As Object, e As EventArgs)
+        Public Shadows Event KeyDown(sender As Object, e As KeyEventArgs)
+        Public Shadows Event MouseDown(sender As Object, e As MouseEventArgs)
+        Public Shadows Event MouseWheel(sender As Object, e As MouseEventArgs)
+        Public Shadows Event TextChanged(sender As Object, e As EventArgs)
 
-        Sub New()
-            SetStyle(ControlStyles.Opaque Or ControlStyles.ResizeRedraw, True)
-            TextBox.BorderStyle = BorderStyle.None
-            Controls.Add(TextBox)
-            BackColor = Color.White
-            AddHandler TextBox.GotFocus, Sub() SetColor(Color.CornflowerBlue)
-            AddHandler TextBox.LostFocus, Sub() SetColor(Color.CadetBlue)
-            AddHandler TextBox.TextChanged, Sub() RaiseEvent TextChanged()
-        End Sub
 
-        Sub SetColor(c As Color)
-            BorderColor = c
-            Invalidate()
-        End Sub
+        Public Property BackReadonlyColor As Color
+            Get
+                Return _backReadonlyColor
+            End Get
+            Set(value As Color)
+                _backReadonlyColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property BorderColor As Color
+            Get
+                Return _borderColor
+            End Get
+            Set(value As Color)
+                _borderColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property BorderFocusedColor As Color
+            Get
+                Return _borderFocusedColor
+            End Get
+            Set(value As Color)
+                _borderFocusedColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property BorderHoverColor As Color
+            Get
+                Return _borderHoverColor
+            End Get
+            Set(value As Color)
+                _borderHoverColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Public Property DrawBorder As Integer
+            Get
+                If _drawBorder < 0 Then
+                    If Parent IsNot Nothing Then
+                        _drawBorder = If(TypeOf Parent Is NumEdit, 0, 1)
+                    Else
+                        _drawBorder = 1
+                    End If
+                End If
+                Return _drawBorder
+            End Get
+            Set(value As Integer)
+                _drawBorder = value
+            End Set
+        End Property
+
+        Property [ReadOnly] As Boolean
+            Get
+                Return TextBox.ReadOnly
+            End Get
+            Set(value As Boolean)
+                TextBox.ReadOnly = value
+            End Set
+        End Property
 
         <Browsable(True)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)>
@@ -1951,11 +2818,52 @@ Namespace UI
             End Set
         End Property
 
-        WriteOnly Property [ReadOnly] As Boolean
-            Set(value As Boolean)
-                TextBox.ReadOnly = value
-            End Set
-        End Property
+        Sub New()
+            SetStyle(ControlStyles.ResizeRedraw, True)
+            TextBox.BorderStyle = BorderStyle.None
+            Controls.Add(TextBox)
+
+            AddHandler TextBox.DoubleClick, Sub(sender As Object, e As EventArgs) RaiseEvent DoubleClick(sender, e)
+            AddHandler TextBox.KeyDown, Sub(sender As Object, e As KeyEventArgs) RaiseEvent KeyDown(sender, e)
+            AddHandler TextBox.MouseDown, Sub(sender As Object, e As MouseEventArgs) RaiseEvent MouseDown(sender, e)
+            AddHandler TextBox.MouseWheel, Sub(sender As Object, e As MouseEventArgs) RaiseEvent MouseWheel(sender, e)
+            AddHandler TextBox.TextChanged, Sub(sender As Object, e As EventArgs) RaiseEvent TextChanged(sender, e)
+            AddHandler TextBox.GotFocus, AddressOf TextBox_GotFocus
+            AddHandler TextBox.LostFocus, AddressOf TextBox_LostFocus
+            AddHandler TextBox.MouseEnter, AddressOf TextBox_GotFocus
+            AddHandler TextBox.MouseLeave, AddressOf TextBox_LostFocus
+
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.TextEdit.BackColor
+            BackReadonlyColor = theme.General.Controls.TextEdit.BackReadonlyColor
+            ForeColor = theme.General.Controls.TextEdit.ForeColor
+            BorderColor = theme.General.Controls.TextEdit.BorderColor
+            BorderFocusedColor = theme.General.Controls.TextEdit.BorderFocusedColor
+            BorderHoverColor = theme.General.Controls.TextEdit.BorderHoverColor
+            ResumeLayout()
+        End Sub
+
+        Sub TextBox_GotFocus(sender As Object, e As EventArgs)
+            Invalidate()
+        End Sub
+
+        Sub TextBox_LostFocus(sender As Object, e As EventArgs)
+            Invalidate()
+        End Sub
 
         Protected Overrides Sub OnLayout(args As LayoutEventArgs)
             MyBase.OnLayout(args)
@@ -1966,7 +2874,7 @@ Namespace UI
                 TextBox.Width = ClientSize.Width - 4
                 TextBox.Height = ClientSize.Height - 4
             Else
-                TextBox.Top = ((ClientSize.Height - TextBox.Height) \ 2) - 1
+                TextBox.Top = ((ClientSize.Height - TextBox.Height) \ 2)
                 TextBox.Left = 2
                 TextBox.Width = ClientSize.Width - 4
                 Dim h = TextRenderer.MeasureText("gG", TextBox.Font).Height
@@ -1982,15 +2890,19 @@ Namespace UI
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
             MyBase.OnPaint(e)
 
-            Dim cr = ClientRectangle
-            cr.Inflate(-1, -1)
-            Dim col = If(Enabled AndAlso Not TextBox.ReadOnly, BackColor, SystemColors.Control)
+            'Dim col = If(Enabled AndAlso Not TextBox.ReadOnly, BackColor, BackReadonlyColor)
+            'Dim cr = ClientRectangle
+            'cr.Inflate(-1, -1)
 
-            Using brush As New SolidBrush(col)
-                e.Graphics.FillRectangle(brush, cr)
-            End Using
+            'Using brush As New SolidBrush(col)
+            '    e.Graphics.FillRectangle(brush, cr)
+            'End Using
 
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, BorderColor, ButtonBorderStyle.Solid)
+            If Not [ReadOnly] AndAlso DrawBorder > 0 Then
+                Dim borderCol = If(TextBox.Focused OrElse Not GetChildAtPoint(PointToClient(Cursor.Position)) Is Nothing, BorderFocusedColor, BorderColor)
+                borderCol = If(GetChildAtPoint(PointToClient(Cursor.Position)) IsNot Nothing, BorderHoverColor, borderCol)
+                ControlPaint.DrawBorder(e.Graphics, ClientRectangle, borderCol, ButtonBorderStyle.Solid)
+            End If
         End Sub
     End Class
 
@@ -2003,6 +2915,32 @@ Namespace UI
 
     Public Class DataGridViewEx
         Inherits DataGridView
+
+        Sub New()
+            MyBase.New()
+            ApplyTheme()
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            Try
+                BackgroundColor = theme.General.Controls.GridView.BackColor
+                ForeColor = theme.General.Controls.GridView.ForeColor
+                GridColor = theme.General.Controls.GridView.GridColor
+            Catch ex As Exception
+            Finally
+                ResumeLayout()
+            End Try
+        End Sub
 
         Function AddTextBoxColumn() As DataGridViewTextBoxColumn
             Dim ret As New DataGridViewTextBoxColumn
@@ -2096,15 +3034,35 @@ Namespace UI
             SetStyle(ControlStyles.Selectable, False)
             SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
 
-            If BackColor.GetBrightness > 0.5 Then
-                ForeColor = Color.FromArgb(10, 10, 10)
-                BackColor = Color.FromArgb(240, 240, 240)
-                ProgressColor = Color.FromArgb(180, 180, 180)
-            Else
-                ForeColor = Color.FromArgb(240, 240, 240)
-                BackColor = Color.FromArgb(10, 10, 10)
-                ProgressColor = Color.FromArgb(100, 100, 100)
-            End If
+            'If BackColor.GetBrightness > 0.5 Then
+            '    ForeColor = Color.FromArgb(10, 10, 10)
+            '    BackColor = Color.FromArgb(240, 240, 240)
+            '    ProgressColor = Color.FromArgb(180, 180, 180)
+            'Else
+            '    ForeColor = Color.FromArgb(240, 240, 240)
+            '    BackColor = Color.FromArgb(10, 10, 10)
+            '    ProgressColor = Color.FromArgb(100, 100, 100)
+            'End If
+
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            SuspendLayout()
+            BackColor = theme.General.Controls.LabelProgressBar.BackColor
+            ForeColor = theme.General.Controls.LabelProgressBar.ForeColor
+            ProgressColor = theme.General.Controls.LabelProgressBar.ProgressColor
+            ResumeLayout()
         End Sub
 
         Private _Minimum As Double

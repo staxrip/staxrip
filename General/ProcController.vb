@@ -9,7 +9,7 @@ Imports StaxRip.UI
 
 Public Class ProcController
     Property Proc As Proc
-    Property LogTextBox As New TextBox
+    Property LogTextBox As New TextBoxEx
     Property ProgressBar As New LabelProgressBar
     Property ProcForm As ProcessingForm
     Property CheckBox As New CheckBoxEx
@@ -38,6 +38,8 @@ Public Class ProcController
         CheckBox.Width = sz.Width + CheckBox.Font.Height
         CheckBox.Height = CInt(CheckBox.Font.Height * 1.5)
         AddHandler CheckBox.Click, AddressOf Click
+
+        CheckBox.FlatStyle = FlatStyle.Flat
 
         ProgressBar.Dock = DockStyle.Fill
         ProgressBar.Font = New Font("Consolas", 9 * s.UIScaleFactor)

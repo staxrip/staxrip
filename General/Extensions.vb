@@ -1,5 +1,6 @@
 ﻿
 Imports System.Drawing.Drawing2D
+Imports System.Drawing.Text
 Imports System.Globalization
 Imports System.Reflection
 Imports System.Runtime.CompilerServices
@@ -8,6 +9,7 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 
 Imports Microsoft.Win32
+Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
 
 Module StringExtensions
@@ -1107,7 +1109,7 @@ Module RegistryKeyExtensions
     End Sub
 End Module
 
-Module ControlExtension
+Module ControlExtensions
     <Extension()>
     Sub ScaleClientSize(instance As Control, width As Single, height As Single)
         instance.ClientSize = New Size(CInt(instance.Font.Height * width), CInt(instance.Font.Height * height))
@@ -1147,6 +1149,50 @@ Module ControlExtension
         Next
 
         Return ret
+    End Function
+
+    <Extension()>
+    Function SetSymbolAsText(instance As ButtonEx, symbol As Symbol) As ButtonEx
+        Dim awesomePath As String = Folder.Apps + "\Fonts\FontAwesome.ttf"
+        Dim segoePath As String = Folder.Apps + "\Fonts\Segoe-MDL2-Assets.ttf"
+
+        Dim fontFilesExist As Boolean = File.Exists(awesomePath) AndAlso File.Exists(segoePath)
+        If Not fontFilesExist Then Return Nothing
+
+        Dim fontCollection As PrivateFontCollection = New PrivateFontCollection()
+        Dim family As FontFamily
+        Dim legacy = OSVersion.Current < OSVersion.Windows10
+
+        fontCollection.AddFontFile(awesomePath)
+        If legacy Then fontCollection.AddFontFile(segoePath)
+
+        If symbol > 61400 Then
+            If fontCollection.Families.Count > 0 Then family = fontCollection.Families(0)
+        Else
+            If legacy Then
+                If fontCollection.Families.Count > 1 Then family = fontCollection.Families(1)
+            Else
+                family = New FontFamily("Segoe MDL2 Assets")
+            End If
+        End If
+
+        If Not family Is Nothing Then
+            instance.Font = New Font(family, instance.Font.Size)
+            instance.Text = Convert.ToChar(symbol).ToString()
+        End If
+
+        Return instance
+    End Function
+
+    <Extension()>
+    Function GetAllControls(instance As Control) As IEnumerable(Of Control)
+        Dim controls = instance.Controls.Cast(Of Control)
+        Return controls.SelectMany(Function(x) x.GetAllControls()).Concat(controls)
+    End Function
+
+    <Extension()>
+    Function GetAllControls(Of T)(instance As Control) As IEnumerable(Of T)
+        Return instance.GetAllControls.OfType(Of T)
     End Function
 End Module
 
@@ -1223,6 +1269,11 @@ Module UIExtensions
     End Sub
 
     <Extension()>
+    Sub SendMessageCue(te As TextEdit, value As String, hideWhenFocused As Boolean)
+        SendMessageCue(te.TextBox, value, hideWhenFocused)
+    End Sub
+
+    <Extension()>
     Sub SendMessageCue(tb As TextBox, value As String, hideWhenFocused As Boolean)
         Dim wParam = If(hideWhenFocused, 0, 1)
         Native.SendMessage(tb.Handle, Native.EM_SETCUEBANNER, wParam, value)
@@ -1289,4 +1340,11 @@ Module UIExtensions
             bs.ResetBindings(False)
         End If
     End Sub
+End Module
+
+Module SymbolExtensions
+    <Extension()>
+    Function ToChar(symbol As Symbol) As Char
+        Return Convert.ToChar(symbol)
+    End Function
 End Module

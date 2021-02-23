@@ -2,6 +2,7 @@
 2.1.8.3 Beta (2021-02-??)
 =========================
 
+- Introduction of Themes (Dendraspis, testing and appreciated feedback by 44vince44 and JJKylee, [#510](/../../issues/510) & [#518](/../../issues/518))
 - NVEnc UI options move into new Input/Output section (stax76)
 - AVS SMDegrain filter profiles refurbished (44vince44)
 - x265 supports --reader-options library for Patman builds (Dendraspis)

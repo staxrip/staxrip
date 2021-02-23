@@ -42,6 +42,87 @@ Public Class CodeEditor
 
         AutoSizeMode = AutoSizeMode.GrowAndShrink
         AutoSize = True
+
+        ApplyTheme()
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(controls As IEnumerable(Of Control))
+        ApplyTheme(controls, ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        ApplyTheme(Me.GetAllControls(), theme)
+    End Sub
+
+    Sub ApplyTheme(controls As IEnumerable(Of Control), theme As Theme)
+        BackColor = theme.General.BackColor
+
+        'For Each control In controls.OfType(Of Label)
+        '    control.BackColor = theme.General.Controls.Label.BackColor
+        '    control.ForeColor = theme.General.Controls.Label.ForeColor
+        'Next
+
+        'For Each control In controls.OfType(Of ButtonLabel)
+        '    If TypeOf control.Parent Is UserControl Then
+        '        control.BackColor = theme.General.Controls.ListView.BackColor
+        '    Else
+        '        control.BackColor = theme.General.Controls.ButtonLabel.BackColor
+        '    End If
+        '    control.ForeColor = theme.General.Controls.ButtonLabel.ForeColor
+        '    control.LinkColor = theme.General.Controls.ButtonLabel.LinkForeColor
+        '    control.LinkHoverColor = theme.General.Controls.ButtonLabel.LinkForeHoverColor
+        'Next
+
+        'For Each control In controls.OfType(Of Button)
+        '    control.BackColor = theme.General.Controls.Button.BackColor
+        '    control.ForeColor = theme.General.Controls.Button.ForeColor
+        'Next
+
+        'For Each control In controls.OfType(Of GroupBox)
+        '    control.BackColor = theme.General.Controls.GroupBox.BackColor
+        '    control.ForeColor = theme.General.Controls.GroupBox.ForeColor
+        'Next
+
+        'For Each control In controls.OfType(Of Panel)
+        '    control.BackColor = theme.General.Controls.Panel.BackColor
+        '    control.ForeColor = theme.General.Controls.Panel.ForeColor
+        'Next
+
+        'For Each control In controls.OfType(Of TableLayoutPanel)
+        '    control.BackColor = theme.General.Controls.TableLayoutPanel.BackColor
+        '    control.ForeColor = theme.General.Controls.TableLayoutPanel.ForeColor
+        'Next
+
+        'For Each control In controls.OfType(Of TextBox)
+        '    control.BackColor = theme.General.Controls.TextBox.BackColor
+        '    control.ForeColor = theme.General.Controls.TextBox.ForeColor
+        'Next
+
+        'For Each control In controls.OfType(Of TextBoxEx)
+        '    control.BorderColor = theme.General.Controls.TextBox.BorderColor
+        '    control.BorderFocusedColor = theme.General.Controls.TextBox.BorderFocusedColor
+        'Next
+
+        'For Each control In controls.OfType(Of TextEdit)
+        '    control.BackColor = theme.General.Controls.TextEdit.BackColor
+        '    control.ForeColor = theme.General.Controls.TextEdit.ForeColor
+        '    control.BorderColor = theme.General.Controls.TextEdit.BorderColor
+        '    control.BorderFocusedColor = theme.General.Controls.TextEdit.BorderFocusedColor
+        'Next
+
+        'For Each control In controls.OfType(Of TrackBar)
+        '    control.BackColor = theme.General.Controls.TrackBar.BackColor
+        '    control.ForeColor = theme.General.Controls.TrackBar.ForeColor
+        'Next
     End Sub
 
     Sub ModifyMenu()
@@ -444,11 +525,56 @@ Public Class CodeEditor
     Public Class FilterTable
         Inherits TableLayoutPanel
 
+        Private _theme As Theme
+
         Property tbName As New TextEdit
         Property rtbScript As RichTextBoxEx
-        Property cbActive As New CheckBox
+        Property cbActive As New CheckBoxEx
         Property LastTextSize As Size
         Property Editor As CodeEditor
+        Property SplitLeft As PanelEx
+        Property SplitRight As PanelEx
+
+        ReadOnly Property TextSize As Size
+            Get
+                Return TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(100000, 100000))
+            End Get
+        End Property
+
+        ReadOnly Property MaxTextWidth As Integer
+            Get
+                Return Font.Height * 40
+            End Get
+        End Property
+
+        ReadOnly Property MaxTextHeight As Integer
+            Get
+                Return Font.Height * 15
+            End Get
+        End Property
+
+        ReadOnly Property TrimmedTextSize As Size
+            Get
+                Dim ret = TextSize
+
+                If ret.Width > MaxTextWidth Then
+                    ret.Width = MaxTextWidth
+                End If
+
+                If ret.Height > MaxTextHeight Then
+                    ret.Height = MaxTextHeight
+                End If
+
+                Return ret
+            End Get
+        End Property
+
+        ReadOnly Property Theme As Theme
+            Get
+                If _theme Is Nothing Then _theme = ThemeManager.CurrentTheme
+                Return _theme
+            End Get
+        End Property
 
         Sub New()
             AutoSize = True
@@ -517,8 +643,39 @@ Public Class CodeEditor
             t.Controls.Add(tbName, 0, 1)
             t.ResumeLayout()
 
-            Controls.Add(t, 0, 0)
-            Controls.Add(rtbScript, 1, 0)
+            SplitLeft = New PanelEx() With {
+                .AutoSize = True,
+                .Dock = DockStyle.Fill
+            }
+
+            SplitRight = New PanelEx() With {
+                .AutoSize = True,
+                .Dock = DockStyle.Fill
+            }
+
+            Controls.Add(splitLeft, 0, 0)
+            Controls.Add(splitRight, 1, 0)
+            Controls.Add(t, 0, 1)
+            Controls.Add(rtbScript, 1, 1)
+
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            _theme = theme
+
+            BackColor = theme.General.BackColor
+            ForeColor = theme.General.ForeColor
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
@@ -534,50 +691,27 @@ Public Class CodeEditor
         End Sub
 
         Sub SetColor()
-            If cbActive.Checked Then
-                rtbScript.ForeColor = Color.Black
-                tbName.TextBox.ForeColor = Color.Black
-                cbActive.ForeColor = Color.Black
-            Else
-                rtbScript.ForeColor = Color.Gray
-                tbName.TextBox.ForeColor = Color.Gray
-                cbActive.ForeColor = Color.Gray
+            If Theme IsNot Nothing Then
+                If cbActive.Checked Then
+                    cbActive.ForeColor = Theme.CodeEditor.ForeAccentColor
+                    tbName.TextBox.ForeColor = Theme.CodeEditor.ForeAccentColor
+                    rtbScript.BackColor = Theme.CodeEditor.BackAccentColor
+                    rtbScript.BorderColor = Theme.CodeEditor.RichTextBoxBorderAccentColor
+                    rtbScript.ForeColor = Theme.CodeEditor.RichTextBoxForeAccentColor
+                    SplitLeft.BackColor = Theme.CodeEditor.ForeAccentColor
+                    SplitRight.BackColor = SplitLeft.BackColor
+                Else
+                    cbActive.ForeColor = Theme.CodeEditor.ForeColor
+                    tbName.TextBox.ForeColor = Theme.CodeEditor.ForeColor
+                    rtbScript.BackColor = Theme.General.Controls.RichTextBox.BackColor
+                    rtbScript.BorderColor = Theme.CodeEditor.RichTextBoxBorderColor
+                    rtbScript.ForeColor = Theme.CodeEditor.RichTextBoxForeColor
+                    SplitLeft.BackColor = Theme.CodeEditor.ForeColor
+                    SplitRight.BackColor = SplitLeft.BackColor
+                End If
             End If
         End Sub
 
-        ReadOnly Property TextSize As Size
-            Get
-                Return TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(100000, 100000))
-            End Get
-        End Property
-
-        ReadOnly Property MaxTextWidth As Integer
-            Get
-                Return Font.Height * 40
-            End Get
-        End Property
-
-        ReadOnly Property MaxTextHeight As Integer
-            Get
-                Return Font.Height * 15
-            End Get
-        End Property
-
-        ReadOnly Property TrimmedTextSize As Size
-            Get
-                Dim ret = TextSize
-
-                If ret.Width > MaxTextWidth Then
-                    ret.Width = MaxTextWidth
-                End If
-
-                If ret.Height > MaxTextHeight Then
-                    ret.Height = MaxTextHeight
-                End If
-
-                Return ret
-            End Get
-        End Property
 
         Sub SetParameters(parameters As FilterParameters)
             Dim code = rtbScript.Text.FixBreak

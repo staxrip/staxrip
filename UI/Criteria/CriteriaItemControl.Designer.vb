@@ -23,7 +23,7 @@ Namespace UI
             Me.components = New System.ComponentModel.Container()
             Me.LayoutPanel = New System.Windows.Forms.TableLayoutPanel()
             Me.mbProperties = New StaxRip.UI.MenuButton()
-            Me.bnRemove = New System.Windows.Forms.Button()
+            Me.bnRemove = New ButtonEx()
             Me.mbCondition = New StaxRip.UI.MenuButton()
             Me.te = New StaxRip.UI.TextEdit()
             Me.LayoutPanel.SuspendLayout()
@@ -60,14 +60,13 @@ Namespace UI
             'bnRemove
             '
             Me.bnRemove.Anchor = System.Windows.Forms.AnchorStyles.None
-            Me.bnRemove.AutoSize = True
+            Me.bnRemove.AutoSize = False
             Me.bnRemove.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
             Me.bnRemove.Location = New System.Drawing.Point(749, 58)
             Me.bnRemove.Name = "bnRemove"
             Me.bnRemove.Size = New System.Drawing.Size(158, 58)
             Me.bnRemove.TabIndex = 3
             Me.bnRemove.Text = "Remove"
-            Me.bnRemove.UseVisualStyleBackColor = True
             '
             'mbCondition
             '
@@ -79,7 +78,6 @@ Namespace UI
             'te
             '
             Me.te.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.te.BackColor = System.Drawing.Color.White
             Me.te.Location = New System.Drawing.Point(525, 70)
             Me.te.Name = "te"
             Me.te.Size = New System.Drawing.Size(218, 35)
@@ -89,7 +87,6 @@ Namespace UI
             '
             Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
             Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-            Me.BackColor = System.Drawing.SystemColors.Window
             Me.Controls.Add(Me.LayoutPanel)
             Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
             Me.Margin = New System.Windows.Forms.Padding(0)
@@ -102,7 +99,7 @@ Namespace UI
 
         End Sub
         Friend WithEvents LayoutPanel As System.Windows.Forms.TableLayoutPanel
-        Public WithEvents bnRemove As System.Windows.Forms.Button
+        Public WithEvents bnRemove As ButtonEx
         Friend WithEvents te As StaxRip.UI.TextEdit
         Friend WithEvents mbCondition As MenuButton
         Friend WithEvents mbProperties As MenuButton

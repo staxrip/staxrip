@@ -184,7 +184,6 @@ Public Class ProfilesForm
         Me.bnRestore.Size = New System.Drawing.Size(240, 80)
         Me.bnRestore.TabIndex = 15
         Me.bnRestore.Text = "Restore"
-        Me.bnRestore.UseVisualStyleBackColor = True
         '
         'bnCancel
         '

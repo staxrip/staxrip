@@ -566,7 +566,7 @@ Public Class Theme
             Public Property CommandsLinkColor As ColorHSL = SystemColors.ControlText
             Public Property DisabledItemForeColor As ColorHSL = SystemColors.ControlText
             Public Property ForeColor As ColorHSL = SystemColors.ControlText
-            Public Property HelpBackColor As ColorHSL = SystemColors.ControlText
+            Public Property HelpBackColor As ColorHSL = SystemColors.Control
             Public Property HelpBorderColor As ColorHSL = SystemColors.ControlDark
             Public Property HelpForeColor As ColorHSL = SystemColors.ControlText
             Public Property LineColor As ColorHSL = SystemColors.ControlDark

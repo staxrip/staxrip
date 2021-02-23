@@ -752,7 +752,6 @@ Public Class AppsForm
             CurrentPackage.SetVersion(input.Replace(";", "_").Trim)
             ShowActivePackage()
             Application.DoEvents()
-            g.DefaultCommands.Test()
         End If
     End Sub
 

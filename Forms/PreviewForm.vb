@@ -254,7 +254,7 @@ Public Class PreviewForm
     Private CommandManager As New CommandManager
     Private TrackBarBorder As Integer = 1
     Private TrackBarGap As Integer = 1
-    Private TrackBarPosition As Integer = CInt(Control.DefaultFont.Height / 4) - 1
+    Private TrackBarPosition As Integer = CInt(DefaultFont.Height / 4) - 1
     Private VideoSize As Size
     Private ShowPreviewInfo As Boolean
     Private HidePreviewButtons As Boolean

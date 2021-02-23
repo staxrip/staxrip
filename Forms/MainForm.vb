@@ -8,6 +8,7 @@ Imports System.Threading
 Imports System.Threading.Tasks
 
 Imports StaxRip.UI
+
 Imports VB6 = Microsoft.VisualBasic
 
 Public Class MainForm

@@ -264,7 +264,7 @@
                         .HelpBorderColor = _foreColor,
                         .HelpForeColor = _foreColor,
                         .LineColor = _controlBackColor,
-                        .SelectedItemWithFocusBackColor = _accentColor.AddSaturation(-0.2).AddLuminance(-0.35),
+                        .SelectedItemWithFocusBackColor = _backSelectedColor,
                         .SelectedItemWithFocusForeColor = _foreColor,
                         .ViewBackColor = _backColor,
                         .ViewBorderColor = _foreColor,

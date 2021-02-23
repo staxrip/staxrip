@@ -138,7 +138,6 @@ Namespace UI
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.pg.HelpVisible = False
-            Me.pg.LineColor = System.Drawing.SystemColors.ScrollBar
             Me.pg.Location = New System.Drawing.Point(686, 695)
             Me.pg.Margin = New System.Windows.Forms.Padding(0)
             Me.pg.Name = "pg"

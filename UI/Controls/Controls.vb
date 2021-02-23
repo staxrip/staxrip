@@ -1167,7 +1167,7 @@ Namespace UI
                 Dim lines = CInt(Math.Ceiling(CreateGraphics.MeasureString(
                     Description, Font, Width).Height / Font.Height))
 
-                Dim grid As New Reflector(Me, GetType(PropertyGrid))
+                Dim grid As New Reflector(Me, GetType(PropertyGridEx))
                 Dim doc = grid.Invoke("doccomment")
                 doc.Invoke("Lines", lines + 1)
                 doc.Invoke("userSized", True)
@@ -1178,7 +1178,7 @@ Namespace UI
         End Sub
 
         Sub MoveSplitter(x As Integer)
-            Dim grid As New Reflector(Me, GetType(PropertyGrid))
+            Dim grid As New Reflector(Me, GetType(PropertyGridEx))
             grid.Invoke("gridView").Invoke("MoveSplitterTo", x)
         End Sub
     End Class

@@ -561,7 +561,7 @@ clipname.set_output()
     End Function
 
     Shared Function GetAVSLoadCodeFromImports(code As String) As String
-        code = code.ToLower
+        code = code.ToLowerInvariant
         Dim ret = ""
 
         For Each line In code.SplitLinesNoEmpty

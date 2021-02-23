@@ -839,6 +839,14 @@ Public Class Package
             New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoise", "MCTemporalDenoise(settings=""medium"")"),
             New VideoFilter("Noise", "MCTemporalDenoise | MCTemporalDenoisePP", "source=last" + BR + "denoised=FFT3Dfilter()" + BR + "MCTemporalDenoisePP(denoised)")}})
 
+    Shared Property xyVSFilter As Package = Add(New PluginPackage With {
+        .Name = "xy-VSFilter",
+        .Filename = "VSFilter.dll",
+        .Description = "AviSynth subtitle plugin.",
+        .WebURL = "https://github.com/pinterf/xy-VSFilter",
+        .DownloadURL = "https://github.com/pinterf/xy-VSFilter/releases",
+        .AvsFilterNames = {"VobSub", "TextSub"}})
+
     Shared Property DFTTestAVS As Package = Add(New PluginPackage With {
         .Name = "DFTTest",
         .Filename = "dfttest.dll",

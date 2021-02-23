@@ -4990,7 +4990,7 @@ Public Class MainForm
     Sub ShowHardcodedSubtitleDialog()
         Using dialog As New OpenFileDialog
             dialog.SetFilter(FileTypes.SubtitleExludingContainers)
-            dialog.SetInitDir(s.LastSourceDir)
+            dialog.SetInitDir(p.TempDir)
 
             If dialog.ShowDialog = DialogResult.OK Then
                 If dialog.FileName.Ext = "idx" Then

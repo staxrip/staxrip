@@ -250,9 +250,12 @@ Public Class Project
                 Case "idx"
                     filterName = "VobSub"
                 Case "srt", "ass"
-                    filterName = "TextSubMod"
+                    filterName = "TextSub"
                 Case Else
-                    If showErrorMsg Then MsgError("Only idx, srt and ass file types are supported.")
+                    If showErrorMsg Then
+                        MsgError("Only idx, srt and ass file types are supported.")
+                    End If
+
                     Exit Sub
             End Select
 

@@ -9,8 +9,10 @@
 - If the startup folder contained Turkish i character,
   QTGMC and any other avsi file failed to load (stax76)
 - x264 10bit, --synth-lib, VapourSynth reader for DJATOM and Patman Mod
+- Docs moved from readthedocs.io to GitHub Wiki (stax76)
 - x264 0.161.3048+17 gcc10.2 Patman Mod (improved progress display)
 - x265 3.5 RC1+2+23  gcc10.2 Patman Mod (improved progress display)
+- xy-VSFilter 3.2.0.802 (10bit support)
 
 
 2.1.8.2 Beta (2021-02-21)

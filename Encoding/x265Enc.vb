@@ -1293,8 +1293,9 @@ Public Class x265Params
                             End If
                         Case "automatic"
                             sb.Append(pipeString + Package.x265.Path.Escape)
+                            Dim type = Package.x265Type
 
-                            If FrameServerHelp.IsPortable AndAlso (Package.x265Type = x265Type.DJATOM OrElse Package.x265Type = x265Type.Patman) Then
+                            If FrameServerHelp.IsPortable AndAlso (type = x265Type.DJATOM OrElse type = x265Type.Patman) Then
                                 sb.Append(" --reader-options library=" + FrameServerHelp.GetSynthPath.Escape)
                             End If
 

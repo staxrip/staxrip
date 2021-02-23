@@ -1178,7 +1178,7 @@ Namespace UI
         End Sub
 
         Sub MoveSplitter(x As Integer)
-            Dim grid As New Reflector(Me, GetType(PropertyGridEx))
+            Dim grid As New Reflector(Me, GetType(PropertyGrid))
             grid.Invoke("gridView").Invoke("MoveSplitterTo", x)
         End Sub
     End Class

@@ -369,7 +369,7 @@ Public Class EventCommandEditor
     Sub New(ev As EventCommand)
         MyBase.New()
         InitializeComponent()
-
+        IsComposited = False
         ScaleClientSize(37, 30)
         EventCommandValue = ev
         tbName.Text = EventCommandValue.Name

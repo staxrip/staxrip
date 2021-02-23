@@ -1103,8 +1103,8 @@ Public Class GlobalClass
         form.Show()
     End Sub
 
-    Sub ShowPage(page As String)
-        ShellExecute($"https://staxrip.readthedocs.io/{page}.html")
+    Sub ShowPage(title As String)
+        ShellExecute($"https://github.com/staxrip/staxrip/wiki/{title}")
     End Sub
 
     Sub OnUnhandledException(sender As Object, e As ThreadExceptionEventArgs)

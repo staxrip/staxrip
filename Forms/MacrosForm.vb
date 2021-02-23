@@ -297,7 +297,7 @@ Public Class MacrosForm
     End Sub
 
     Sub MacrosForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        g.ShellExecute("https://staxrip.readthedocs.io/macros.html")
+        g.ShowPage("Macros")
     End Sub
 
     Sub TaskForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown

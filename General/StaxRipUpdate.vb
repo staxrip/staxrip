@@ -28,7 +28,7 @@ Public Class StaxRipUpdate
 
             If (DateTime.Now - s.CheckForUpdatesLastRequest).TotalHours >= 24 OrElse force Then
                 Dim changelogUrl = "https://raw.githubusercontent.com/staxrip/staxrip/master/Changelog.md"
-                Dim betaSourcesUrl = "https://staxrip.readthedocs.io/introduction.html"
+                Dim betaSourcesUrl = "https://github.com/staxrip/staxrip"
                 Dim dropboxUrl = "https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0&lst="
                 Dim stableUrl = "https://github.com/staxrip/staxrip/releases"
 

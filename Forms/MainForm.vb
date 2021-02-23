@@ -1141,8 +1141,7 @@ Public Class MainForm
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)
 
-        CustomMainMenu = New CustomMenu(AddressOf GetDefaultMainMenu,
-                s.CustomMenuMainForm, CommandManager, MenuStrip)
+        CustomMainMenu = New CustomMenu(AddressOf GetDefaultMainMenu, s.CustomMenuMainForm, CommandManager, MenuStrip)
 
         OpenProject(g.StartupTemplatePath)
         CustomMainMenu.AddKeyDownHandler(Me)
@@ -4819,7 +4818,7 @@ Public Class MainForm
         ret.Add("Apps|-")
         ret.Add("Apps|Manage...", NameOf(ShowAppsDialog), Keys.F9)
 
-        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.F1, Symbol.Help, {"http://staxrip.readthedocs.io"})
+        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.F1, Symbol.Help, {"https://github.com/staxrip/staxrip/wiki"})
         ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Globe, {"https://github.com/staxrip/staxrip"})
         ret.Add("Help|Apps", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
         ret.Add("Help|Check for Updates", NameOf(g.DefaultCommands.CheckForUpdate))

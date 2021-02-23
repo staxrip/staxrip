@@ -107,7 +107,7 @@ Public Class Package
         .AllowCustomPath = False,
         .WebURL = "http://ffmpeg.org",
         .HelpURL = "http://www.ffmpeg.org/documentation.html",
-        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
+        .DownloadURL = "https://github.com/staxrip/staxrip/wiki/ffmpeg",
         .HelpSwitch = "-h",
         .Description = "Versatile and free audio video convertor console app."})
 
@@ -530,11 +530,11 @@ Public Class Package
         .Filename = "x265.exe",
         .WebURL = "https://x265.com",
         .HelpURL = "http://x265.readthedocs.org",
+        .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x265",
         .AllowCustomPath = False,
         .SupportsAutoUpdate = False,
         .HelpSwitch = "--log-level full --fullhelp",
-        .Description = "H.265 video encoding console app.",
-        .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x265#x265-builds"})
+        .Description = "H.265 video encoding console app."})
 
     Shared Property SVTAV1 As Package = Add(New Package With {
         .Name = "SVT-AV1",
@@ -2123,8 +2123,6 @@ Public Class Package
                 Return WebURL
             ElseIf DownloadURL <> "" Then
                 Return DownloadURL
-            Else
-                Return "https://github.com/staxrip/staxrip/wiki/" + Name.Replace(" ", "-")
             End If
         End Get
     End Property

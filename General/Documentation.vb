@@ -11,16 +11,9 @@ Public Class Documentation
         FolderHelp.Create(outDir)
         GetCommands(True).WriteFileUTF8(outDir + "CLI.md")
         GetCommands(False).WriteFileUTF8(outDir + "Commands.md")
+        GetMacros.WriteFileUTF8(outDir + "Macros.md")
+        GetTools.WriteFileUTF8(outDir + "Tools.md")
         g.ShellExecute(outDir)
-    End Sub
-
-    Shared Sub GenerateDynamicFiles()
-        GenerateMacroTableFile()
-        GenerateToolFile()
-        GenerateScreenshotsFile()
-
-        UpdateFile(Folder.Startup + "..\docs\generated\switches.rst", GetCommands(True))
-        UpdateFile(Folder.Startup + "..\docs\generated\commands.rst", GetCommands(False))
     End Sub
 
     Shared Function GetCommands(cli As Boolean) As String
@@ -117,75 +110,86 @@ Public Class Documentation
         Return sb.ToString
     End Function
 
-    Shared Sub GenerateMacroTableFile()
-        Dim text =
-            ".. csv-table::" + BR +
-            "    :header: ""Name"", ""Description""" + BR +
-            "    :widths: auto" + BR2 +
-            "    " + g.ConvertToCSV(",", Macro.GetTips(False, True)).Right(BR).Right(BR).Replace(BR, BR + "    ")
+    Shared Function GetMacros() As String
+        Dim sb As New StringBuilder("| Name | Description |" + BR + "|---|---|" + BR)
 
-        UpdateFile(Folder.Startup + "..\docs\generated\macro-table.rst", text)
-    End Sub
-
-    Shared Sub GenerateToolFile()
-        Dim sb As New StringBuilder
-        sb.Append("Tools" + BR + "=====" + BR2)
-
-        Dim rows As New List(Of Object)
-
-        For Each pack In Package.Items.Values.OrderBy(Function(i) i.GetTypeName)
-            Dim row = New With {
-                .Name = "", .Type = "", .Filename = "", .Version = "", .ModifiedDate = ""}
-
-            row.Name = pack.Name
-            row.Type = pack.GetTypeName
-            row.Filename = pack.Filename
-
-            If pack.IsVersionCorrect Then
-                row.Version = pack.Version
-            End If
-
-            If File.Exists(pack.Path) Then
-                row.ModifiedDate = File.GetLastWriteTime(pack.Path).ToString("yyyy-MM-dd")
-            End If
-
-            rows.Add(row)
+        For Each tip In Macro.GetTips(False, True)
+            sb.AppendLine("| " + tip.Name + " | " + tip.Value + " |")
         Next
 
-        Dim text =
-            ".. csv-table::" + BR +
-            "    :header: ""Name"", ""Type"", ""Filename"", ""Version"", ""Modified Date""" + BR +
-            "    :widths: auto" + BR2 +
-            "    " + g.ConvertToCSV(",", rows).Right(BR).Right(BR).Replace(BR, BR + "    ")
+        Return sb.ToString
+    End Function
 
-        sb.Append(text + BR2)
+    Shared Function GetTools() As String
+        Dim sb As New StringBuilder()
 
-        sb.Append("Console App" + BR + "-----------" + BR)
+        sb.Append("This page is based on the StaxRip version " + Application.ProductVersion + BR2)
+        sb.Append("[Console App](Tools#console-app)" + BR2)
+        sb.Append("[GUI App](Tools#gui-app)" + BR2)
+        sb.Append("[AviSynth Plugin](Tools#avisynth-plugin)" + BR2)
+        sb.Append("[AviSynth Script](Tools#avisynth-script)" + BR2)
+        sb.Append("[VapourSynth Plugin](Tools#vapoursynth-plugin)" + BR2)
+        sb.Append("[VapourSynth Script](Tools#vapoursynth-script)" + BR2)
+        sb.Append("| Name | Type | Filename | Version | Modified Date |" + BR +
+                  "|------|------|----------|---------|---------------|" + BR)
+
+        For Each pack In Package.Items.Values.OrderBy(Function(i) i.GetTypeName)
+            sb.Append("| " + pack.Name + " | " + pack.GetTypeName + " | " + pack.Filename + " | ")
+
+            If pack.IsVersionCorrect Then
+                sb.Append(pack.Version)
+            End If
+
+            sb.Append(" | ")
+
+            If pack.Path.FileExists Then
+                sb.Append(File.GetLastWriteTime(pack.Path).ToString("yyyy-MM-dd"))
+            End If
+
+            sb.AppendLine(" |")
+        Next
+
+        sb.Append("## Console App" + BR2)
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "Console App" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
-                sb.Append(pack.Description + BR2)
-                sb.Append(pack.WebURL + BR2 + BR)
+                sb.Append("### " + pack.Name + BR2)
+
+                If pack.Description <> "" Then
+                    sb.Append(pack.Description + BR2)
+                End If
+
+                If pack.URL <> "" Then
+                    sb.Append(pack.URL + BR3)
+                End If
             End If
         Next
 
-        sb.Append("GUI App" + BR + "-------" + BR)
+        sb.Append("## GUI App" + BR2)
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "GUI App" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
-                sb.Append(pack.Description + BR2)
-                sb.Append(pack.WebURL + BR2 + BR)
+                sb.Append("### " + pack.Name + BR2)
+
+                If pack.Description <> "" Then
+                    sb.Append(pack.Description + BR2)
+                End If
+
+                If pack.URL <> "" Then
+                    sb.Append(pack.URL + BR3)
+                End If
             End If
         Next
 
-        sb.Append("AviSynth Plugin" + BR + "---------------" + BR)
+        sb.Append("## AviSynth Plugin" + BR2)
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "AviSynth Plugin" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
-                sb.Append(pack.Description + BR2)
+                sb.Append("### " + pack.ID + BR2)
+
+                If pack.Description <> "" Then
+                    sb.Append(pack.Description + BR2)
+                End If
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
@@ -193,16 +197,21 @@ Public Class Documentation
                     sb.Append("Filters: " + plugin.AvsFilterNames.Join(", ") + BR2)
                 End If
 
-                sb.Append(pack.WebURL + BR2 + BR)
+                If pack.URL <> "" Then
+                    sb.Append(pack.URL + BR3)
+                End If
             End If
         Next
 
-        sb.Append("AviSynth Script" + BR + "---------------" + BR)
+        sb.Append("## AviSynth Script" + BR2)
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "AviSynth Script" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
-                sb.Append(pack.Description + BR2)
+                sb.Append("### " + pack.Name + BR2)
+
+                If pack.Description <> "" Then
+                    sb.Append(pack.Description + BR2)
+                End If
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
@@ -210,16 +219,21 @@ Public Class Documentation
                     sb.Append("Filters: " + plugin.AvsFilterNames.Join(", ") + BR2)
                 End If
 
-                sb.Append(pack.WebURL + BR2 + BR)
+                If pack.URL <> "" Then
+                    sb.Append(pack.URL + BR3)
+                End If
             End If
         Next
 
-        sb.Append("VapourSynth Plugin" + BR + "------------------" + BR)
+        sb.Append("## VapourSynth Plugin" + BR2)
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "VapourSynth Plugin" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
-                sb.Append(pack.Description + BR2)
+                sb.Append("### " + pack.ID + BR2)
+
+                If pack.Description <> "" Then
+                    sb.Append(pack.Description + BR2)
+                End If
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
@@ -227,16 +241,21 @@ Public Class Documentation
                     sb.Append("Filters: " + plugin.VSFilterNames.Join(", ") + BR2)
                 End If
 
-                sb.Append(pack.WebURL + BR2 + BR)
+                If pack.URL <> "" Then
+                    sb.Append(pack.URL + BR3)
+                End If
             End If
         Next
 
-        sb.Append("VapourSynth Script" + BR + "------------------" + BR)
+        sb.Append("## VapourSynth Script" + BR2)
 
         For Each pack In Package.Items.Values
             If pack.GetTypeName = "VapourSynth Script" Then
-                sb.Append(pack.Name + BR + "~".Multiply(pack.Name.Length) + BR2)
-                sb.Append(pack.Description + BR2)
+                sb.Append("### " + pack.Name + BR2)
+
+                If pack.Description <> "" Then
+                    sb.Append(pack.Description + BR2)
+                End If
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
@@ -244,33 +263,14 @@ Public Class Documentation
                     sb.Append("Filters: " + plugin.VSFilterNames.Join(", ") + BR2)
                 End If
 
-                sb.Append(pack.WebURL + BR2 + BR)
+                If pack.URL <> "" Then
+                    sb.Append(pack.URL + BR3)
+                End If
             End If
         Next
 
-        UpdateFile(Folder.Startup + "..\docs\generated\tools.rst", sb.ToString)
-    End Sub
-
-    Shared Sub GenerateScreenshotsFile()
-        Dim screenshots = "Screenshots" + BR + "===========" + BR2 + ".. contents::" + BR2
-        Dim screenshotFiles = Directory.GetFiles(Folder.Startup + "..\docs\screenshots").ToList
-        screenshotFiles.Sort(New StringLogicalComparer)
-
-        For Each i In screenshotFiles
-            Dim name = i.Base.Replace("_", " ").Trim
-            screenshots += name + BR + "-".Multiply(name.Length) + BR2 + ".. image:: ../screenshots/" + i.FileName + BR2
-        Next
-
-        UpdateFile(Folder.Startup + "..\docs\generated\screenshots.rst", screenshots)
-    End Sub
-
-    Shared Sub UpdateFile(filepath As String, content As String)
-        Dim currentContent = filepath.ReadAllText
-
-        If content <> currentContent Then
-            content.WriteFileUTF8(filepath)
-        End If
-    End Sub
+        Return sb.ToString()
+    End Function
 
     Shared Sub ShowTip(message As String)
         Dim hash = message.MD5Hash

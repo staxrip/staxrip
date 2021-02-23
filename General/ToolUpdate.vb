@@ -201,7 +201,7 @@ Public Class ToolUpdate
         If input <> "" Then
             Package.SetVersion(input.Replace(";", "_").Trim)
             UpdatePackageDialog()
-            g.DefaultCommands.TestAndDynamicFileCreation()
+            g.DefaultCommands.Test()
         End If
     End Sub
 

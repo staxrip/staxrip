@@ -561,6 +561,7 @@ clipname.set_output()
     End Function
 
     Shared Function GetAVSLoadCodeFromImports(code As String) As String
+        'ToLowerInvariant needed for Turkish i using RegexOptions.IgnoreCase
         code = code.ToLowerInvariant
         Dim ret = ""
 

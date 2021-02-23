@@ -196,18 +196,16 @@ Public Class GlobalCommands
         End If
     End Sub
 
-    <Command("Generates various wiki pages.")>
+    <Command("Generates various wiki content.")>
     Sub GenerateWikiContent()
         Documentation.GenerateWikiContent()
     End Sub
 
-    <Command("Development tests and creation of doc files.")>
-    Sub TestAndDynamicFileCreation()
+    <Command("Development tests.")>
+    Sub Test()
         If Not g.IsDevelopmentPC Then
             Exit Sub
         End If
-
-        Documentation.GenerateDynamicFiles()
 
         Dim msg = ""
 
@@ -246,6 +244,11 @@ Public Class GlobalCommands
         Else
             MsgInfo("All Good!")
         End If
+    End Sub
+
+    <Command("This command is obsolete since 2021.")>
+    Sub TestAndDynamicFileCreation()
+        Test()
     End Sub
 
     <Command("Plays audio file.")>

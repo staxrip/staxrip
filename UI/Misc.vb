@@ -31,6 +31,21 @@ Namespace UI
             End Set
         End Property
 
+        <DefaultValue(True)>
+        Property IsComposited As Boolean = True
+
+        Protected Overrides ReadOnly Property CreateParams() As CreateParams
+            Get
+                Dim ret = MyBase.CreateParams
+
+                If IsComposited Then
+                    ret.ExStyle = ret.ExStyle Or &H2000000 'WS_EX_COMPOSITED
+                End If
+
+                Return ret
+            End Get
+        End Property
+
         Protected Overrides Sub OnDragEnter(e As DragEventArgs)
             MyBase.OnDragEnter(e)
 

@@ -264,6 +264,8 @@ Public Class PreviewForm
     Sub New(script As VideoScript)
         InitializeComponent()
 
+        IsComposited = False
+
         GetType(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty Or
             BindingFlags.Instance Or BindingFlags.NonPublic, Nothing,
             pnTrack, New Object() {True})

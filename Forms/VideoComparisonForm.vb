@@ -1,6 +1,6 @@
 ﻿
 Imports System.Drawing.Imaging
-Imports System.Reflection
+
 Imports StaxRip.UI
 
 Public Class VideoComparisonForm
@@ -57,14 +57,6 @@ Public Class VideoComparisonForm
     Sub ApplyTheme(theme As Theme)
         BackColor = theme.General.BackColor
     End Sub
-
-    Protected Overrides ReadOnly Property CreateParams() As CreateParams
-        Get
-            Dim ret = MyBase.CreateParams
-            ret.ExStyle = ret.ExStyle Or &H2000000 'WS_EX_COMPOSITED
-            Return ret
-        End Get
-    End Property
 
     Sub Add()
         If Not Package.AviSynth.VerifyOK(True) Then

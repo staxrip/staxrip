@@ -335,6 +335,13 @@ Public Class ToolStripRendererEx
     Protected Overloads Overrides Sub OnRenderArrow(e As ToolStripArrowRenderEventArgs)
         Dim gx = e.Graphics
         gx.SmoothingMode = SmoothingMode.HighQuality
+        Dim foreColor As Color
+
+        If e.Item.Selected AndAlso e.Item.Enabled Then
+            foreColor = DropdownTextSelectedColor
+        Else
+            foreColor = DropdownTextDefaultColor
+        End If
 
         If e.Direction = ArrowDirection.Down Then
             Dim h = CInt(e.Item.Font.Height * 0.25)
@@ -350,7 +357,7 @@ Public Class ToolStripRendererEx
             Dim x3 = x1 + w
             Dim y3 = y1
 
-            Using pen = New Pen(e.Item.ForeColor, e.Item.Font.Height / 16.0F)
+            Using pen = New Pen(foreColor, e.Item.Font.Height / 16.0F)
                 gx.DrawLine(pen, x1, y1, x2, y2)
                 gx.DrawLine(pen, x2, y2, x3, y3)
             End Using
@@ -364,7 +371,7 @@ Public Class ToolStripRendererEx
             Dim x3 = x1
             Dim y3 = (e.Item.Height * 0.7F) - 1
 
-            Using pen = New Pen(e.Item.ForeColor, e.Item.Font.Height / 16.0F)
+            Using pen = New Pen(foreColor, e.Item.Font.Height / 16.0F)
                 gx.DrawLine(pen, x1, y1, x2, y2)
                 gx.DrawLine(pen, x2, y2, x3, y3)
             End Using

@@ -366,6 +366,9 @@ Namespace UI
         Property EnabledFunc As Func(Of Boolean)
         Property VisibleFunc As Func(Of Boolean)
 
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
+        Property Path As String
+
         Sub New()
             MyBase.New()
         End Sub

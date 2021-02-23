@@ -3636,9 +3636,9 @@ Public Class MainForm
             theme.Expanded = True
             theme.Field = NameOf(s.ThemeName)
             theme.Add(ThemeManager.Themes.Select(Function(x) x.Name))
+            theme.Button.ShowPath = True
             theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
             theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
-
 
             Dim l = ui.AddLabel("Icon File")
             l.Help = "The Windows Startmenu uses Windows Links which allow to use custom icon files."

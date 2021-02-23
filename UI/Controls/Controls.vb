@@ -1297,6 +1297,7 @@ Namespace UI
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property Items As New List(Of Object)
         Property Menu As New ContextMenuStripEx
+        Property ShowPath As Boolean
 
         Sub New()
             Menu.ShowImageMargin = False
@@ -1344,14 +1345,20 @@ Namespace UI
                         If i.DropDownItems.Count > 0 Then
                             For Each i2 In i.DropDownItems.OfType(Of MenuItemEx)()
                                 If value.Equals(i2.Tag) Then
-                                    Text = i2.Text
+                                    If ShowPath Then
+                                        Text = i2.Path
+                                    Else
+                                        Text = i2.Text
+                                    End If
                                 End If
                             Next
                         End If
                     Next
                 End If
 
-                If Text = "" AndAlso Not value Is Nothing Then Text = value.ToString
+                If Text = "" AndAlso Not value Is Nothing Then
+                    Text = value.ToString
+                End If
 
                 ValueValue = value
             End Set
@@ -1391,6 +1398,7 @@ Namespace UI
 
             Dim ret = MenuItemEx.Add(Menu.Items, path, Sub(o As Object) OnAction(name, o), obj, tip)
             ret.Tag = obj
+            ret.Path = path
             Return ret
         End Function
 

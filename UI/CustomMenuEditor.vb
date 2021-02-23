@@ -562,7 +562,7 @@ Namespace UI
             InitializeComponent()
             ScaleClientSize(32, 30)
             g.SetRenderer(ToolStrip)
-
+            IsComposited = False
             ToolStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
             tsbNew.Image = ImageHelp.GetSymbolImage(Symbol.Page)

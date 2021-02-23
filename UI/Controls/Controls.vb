@@ -1167,7 +1167,7 @@ Namespace UI
                 Dim lines = CInt(Math.Ceiling(CreateGraphics.MeasureString(
                     Description, Font, Width).Height / Font.Height))
 
-                Dim grid As New Reflector(Me, GetType(PropertyGridEx))
+                Dim grid As New Reflector(Me, GetType(PropertyGrid))
                 Dim doc = grid.Invoke("doccomment")
                 doc.Invoke("Lines", lines + 1)
                 doc.Invoke("userSized", True)

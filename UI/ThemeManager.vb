@@ -113,7 +113,7 @@
             Dim _backSelectedColor As ColorHSL = New ColorHSL(_baseHue, _accentColor.S - _backLuma / 4, _accentColor.L - 0.2D, 1)
 
             Dim _controlBackColor As ColorHSL = _backColor.AddLuminance(0.025)
-            Dim _controlBackHighlightColor As ColorHSL = New ColorHSL(_highlightHue, 1, _controlBackColor.L + 0.1D, 1)
+            Dim _controlBackHighlightColor As ColorHSL = New ColorHSL(_highlightHue, 1 - _backLuma * 1.5D, _controlBackColor.L + 0.125D, 1)
             Dim _controlBackSelectedColor As ColorHSL = _controlBackColor.AddSaturation(0.25).AddLuminance(0.25)
             Dim _controlBackReadonlyColor As ColorHSL = _backColor.AddLuminance(-0.1)
             Dim _controlForeHighlightColor As ColorHSL = _foreColor.AddLuminance(0.2)

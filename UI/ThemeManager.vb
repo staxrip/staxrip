@@ -102,7 +102,7 @@
         Public Sub New(Optional name As String = "DarkMode", Optional hue As Integer = 200, Optional highlightHue As Integer = -1, Optional backLuma As Single = 0.11)
             MyBase.New(name)
             _baseHue = hue
-            _highlightHue = Mathf.Clamp(If(highlightHue >= 0, highlightHue, If(_baseHue - 180 < 0, _baseHue + 180, _baseHue - 180)), 0, 359)
+            _highlightHue = Mathf.Clamp(If(highlightHue >= 0, highlightHue, If(highlightHue - 180 < 0, highlightHue + 180, highlightHue - 180)), 0, 359)
             _backLuma = Mathf.Clamp01(backLuma)
             _accentSat = _accentSatDefault - _backLuma / 2
 
@@ -352,8 +352,8 @@
             }
 
             AppsForm = New AppsFormThemeColors() With {
-                .AttentionForeColor = New ColorHSL(10, 1, 0.5, 1),
-                .OkayForeColor = New ColorHSL(130, 1, 0.5, 1)
+                .AttentionForeColor = _foreHighlightColor,
+                .OkayForeColor = _accentColor
             }
 
             CodeEditor = New CodeEditorThemeColors() With {

@@ -707,13 +707,13 @@ Public Class Theme
         Public Property BackColor As ColorHSL = SystemColors.Control
         Public Property ControlBackColor As ColorHSL = Color.Transparent
         Public Property DangerBackColor As ColorHSL = Color.Transparent
-        Public Property DangerForeColor As ColorHSL = Color.Red
+        Public Property DangerForeColor As ColorHSL = New ColorHSL(358, 1, 0.5, 1)
         Public Property ForeColor As ColorHSL = SystemColors.ControlText
     End Class
 
     Public Class AppsFormThemeColors
-        Public Property AttentionForeColor As ColorHSL = New ColorHSL(10, 1, 0.5, 1)
-        Public Property OkayForeColor As ColorHSL = New ColorHSL(130, 1, 0.5, 1)
+        Public Property AttentionForeColor As ColorHSL = New ColorHSL(358, 1, 0.3, 1)
+        Public Property OkayForeColor As ColorHSL = New ColorHSL(120, 1, 0.3, 1)
     End Class
 
     Public Class CodeEditorThemeColors

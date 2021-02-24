@@ -1644,7 +1644,6 @@ Namespace UI
             End Set
         End Property
 
-
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Shadows Property Name As String
             Get
@@ -1674,9 +1673,10 @@ Namespace UI
                 _text = value
                 If AutoSize Then
                     Dim textSize = TextRenderer.MeasureText(_text, Font)
-                    Dim xSize = TextRenderer.MeasureText("X", Font)
-                    MyBase.AutoSizeMode = AutoSizeMode.GrowOnly
-                    Size = New Size(textSize.Width + Padding.Horizontal + xSize.Height, textSize.Height + xSize.Height \ 2)
+                    Dim fh = Font.Height
+                    MinimumSize = New Size(fh * 2, CInt(fh * 1.9))
+                    AutoSizeMode = AutoSizeMode.GrowOnly
+                    Size = New Size(textSize.Width + Padding.Horizontal + fh, textSize.Height + fh \ 2)
                 End If
                 Invalidate(True)
             End Set
@@ -1697,7 +1697,6 @@ Namespace UI
                 Return New Size(250, 70)
             End Get
         End Property
-
 
         Sub New()
             SetStyle(ControlStyles.ResizeRedraw, True)
@@ -2371,7 +2370,6 @@ Namespace UI
 
         Private UpControl As New UpDownButton(True)
         Private DownControl As New UpDownButton(False)
-        'Private BorderColor As Color = Color.Transparent
         Private TipProvider As TipProvider
 
         'Private _borderNormalColor As ColorHSL = Color.Empty

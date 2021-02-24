@@ -1166,8 +1166,6 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             MyBase.New(ui)
-            Button.Width = FontHeight * 2
-            Button.Height = CInt(FontHeight * 1.45)
             Button.AutoSizeMode = AutoSizeMode.GrowOnly
             Button.AutoSize = True
             Button.Text = "..."

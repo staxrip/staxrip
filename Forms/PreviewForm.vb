@@ -143,7 +143,6 @@ Public Class PreviewForm
         '
         Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnMenu.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.bnMenu.ForeColor = System.Drawing.SystemColors.ControlText
         Me.bnMenu.Location = New System.Drawing.Point(753, 629)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(6)
         Me.bnMenu.Size = New System.Drawing.Size(70, 70)
@@ -156,7 +155,6 @@ Public Class PreviewForm
         Me.bnRight3.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnRight3.BackColor = System.Drawing.Color.WhiteSmoke
         Me.bnRight3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnRight3.ForeColor = System.Drawing.SystemColors.ControlText
         Me.bnRight3.Location = New System.Drawing.Point(589, 629)
         Me.bnRight3.Margin = New System.Windows.Forms.Padding(6)
         Me.bnRight3.Size = New System.Drawing.Size(70, 70)
@@ -170,7 +168,6 @@ Public Class PreviewForm
         Me.bnLeft3.BackColor = System.Drawing.Color.WhiteSmoke
         Me.bnLeft3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.bnLeft3.Font = New System.Drawing.Font("Segoe UI", 4.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.bnLeft3.ForeColor = System.Drawing.SystemColors.ControlText
         Me.bnLeft3.Location = New System.Drawing.Point(15, 629)
         Me.bnLeft3.Margin = New System.Windows.Forms.Padding(6)
         Me.bnLeft3.Size = New System.Drawing.Size(70, 70)
@@ -286,6 +283,17 @@ Public Class PreviewForm
         HidePreviewButtons = s.HidePreviewButtons
 
         PreviewScript = script
+
+        bnRight1.ForeColor = SystemColors.ControlText
+        bnLeft1.ForeColor = SystemColors.ControlText
+        bnStartCutRange.ForeColor = SystemColors.ControlText
+        bnEndCutRange.ForeColor = SystemColors.ControlText
+        bnDelete.ForeColor = SystemColors.ControlText
+        bnRight2.ForeColor = SystemColors.ControlText
+        bnLeft2.ForeColor = SystemColors.ControlText
+        bnRight3.ForeColor = SystemColors.ControlText
+        bnLeft3.ForeColor = SystemColors.ControlText
+        bnMenu.ForeColor = SystemColors.ControlText
     End Sub
 
     Sub Fullscreen()

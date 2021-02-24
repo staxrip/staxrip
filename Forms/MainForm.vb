@@ -3611,7 +3611,7 @@ Public Class MainForm
             theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
             theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
 
-            Dim l = ui.AddLabel("Icon File")
+            Dim l = ui.AddLabel("Icon File:")
             l.Help = "The Windows Startmenu uses Windows Links which allow to use custom icon files."
 
             Dim tb = ui.AddTextButton
@@ -3635,7 +3635,7 @@ Public Class MainForm
             t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
 
             n = ui.AddNum()
-            n.Text = "UI Scale Factor"
+            n.Text = "Scale Factor"
             n.Help = "Requires to restart StaxRip."
             n.Config = {0.3, 3, 0.05, 2}
             n.Field = NameOf(s.UIScaleFactor)

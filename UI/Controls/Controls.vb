@@ -1801,8 +1801,7 @@ Namespace UI
 
             Using foreBrush = New SolidBrush(fore)
                 Dim rect = ClientRectangle
-                rect.Offset(Padding.Left, Padding.Top - If(FlatStyle.HasFlag(FlatStyle.Flat), FlatAppearance.BorderSize \ 2, 0))
-                rect.Inflate(-Padding.Left - Padding.Right, -Padding.Top - Padding.Bottom)
+                rect.Offset(0, Padding.Top - If(FlatStyle.HasFlag(FlatStyle.Flat), FlatAppearance.BorderSize \ 2, 0))
 
                 TextRenderer.DrawText(e.Graphics, Text, Font, rect, fore, flags)
             End Using

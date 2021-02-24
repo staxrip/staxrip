@@ -16,7 +16,6 @@ Public Class SearchTextBox
         '
         'Edit
         '
-        Me.Edit.BackColor = System.Drawing.Color.White
         Me.Edit.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Edit.Location = New System.Drawing.Point(0, 0)
         Me.Edit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)

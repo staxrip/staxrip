@@ -33,9 +33,6 @@ Public Class x265Control
         '
         Me.llConfigCodec.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.llConfigCodec.AutoSize = True
-        Me.llConfigCodec.BackColor = System.Drawing.SystemColors.Window
-        Me.llConfigCodec.ForeColor = System.Drawing.Color.DimGray
-        Me.llConfigCodec.LinkColor = System.Drawing.Color.DimGray
         Me.llConfigCodec.Location = New System.Drawing.Point(3, 408)
         Me.llConfigCodec.Margin = New System.Windows.Forms.Padding(3)
         Me.llConfigCodec.Name = "llConfigCodec"
@@ -48,9 +45,6 @@ Public Class x265Control
         '
         Me.llConfigContainer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.llConfigContainer.AutoSize = True
-        Me.llConfigContainer.BackColor = System.Drawing.SystemColors.Window
-        Me.llConfigContainer.ForeColor = System.Drawing.Color.DimGray
-        Me.llConfigContainer.LinkColor = System.Drawing.Color.DimGray
         Me.llConfigContainer.Location = New System.Drawing.Point(346, 408)
         Me.llConfigContainer.Margin = New System.Windows.Forms.Padding(3)
         Me.llConfigContainer.Name = "llConfigContainer"
@@ -63,9 +57,6 @@ Public Class x265Control
         '
         Me.llCompCheck.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.llCompCheck.AutoSize = True
-        Me.llCompCheck.BackColor = System.Drawing.SystemColors.Window
-        Me.llCompCheck.ForeColor = System.Drawing.Color.DimGray
-        Me.llCompCheck.LinkColor = System.Drawing.Color.DimGray
         Me.llCompCheck.Location = New System.Drawing.Point(3, 365)
         Me.llCompCheck.Margin = New System.Windows.Forms.Padding(3)
         Me.llCompCheck.Name = "llCompCheck"

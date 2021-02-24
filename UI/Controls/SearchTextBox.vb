@@ -70,7 +70,7 @@ Public Class SearchTextBox
     End Sub
 
     Sub ApplyTheme(theme As Theme)
-        BackColor = theme.General.Controls.TextBox.BackColor
+        Edit.BackColor = theme.General.Controls.TextBox.BackColor
     End Sub
 
     Protected Overrides Sub OnTextChanged(e As EventArgs)

@@ -710,7 +710,7 @@ Namespace UI
                 BackColor = theme.General.Controls.CheckBox.BackColor
                 ForeColor = theme.General.Controls.CheckBox.ForeColor
                 FlatAppearance.BorderColor = theme.General.Controls.CheckBox.BorderColor
-                FlatAppearance.CheckedBackColor = theme.General.Controls.CheckBox.CheckedBackColor
+                FlatAppearance.CheckedBackColor = theme.General.Controls.Button.BackColor
                 FlatAppearance.MouseOverBackColor = theme.General.Controls.CheckBox.BackHighlightColor
             Else
                 FlatStyle = FlatStyle.Flat
@@ -719,7 +719,7 @@ Namespace UI
                 BackColor = theme.General.Controls.CheckBox.BackColor
                 ForeColor = theme.General.Controls.Button.ForeColor
                 FlatAppearance.BorderColor = theme.General.Controls.Button.BorderColor
-                FlatAppearance.CheckedBackColor = theme.General.Controls.CheckBox.CheckedBackColor
+                FlatAppearance.CheckedBackColor = theme.General.Controls.Button.BackColor
                 FlatAppearance.MouseOverBackColor = theme.General.Controls.CheckBox.BackHoverColor
             End If
             ResumeLayout()

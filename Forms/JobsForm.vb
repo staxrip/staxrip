@@ -215,10 +215,7 @@ Friend Class JobsForm
         bnMenu.ContextMenuStrip = cms
         lv.ContextMenuStrip = cms
 
-        AddHandler Disposed, Sub()
-                                 FileWatcher.Dispose()
-                                 cms.Dispose()
-                             End Sub
+        AddHandler Disposed, Sub() cms.Dispose()
 
         AddHandler lv.ItemRemoved, Sub(item)
                                        Dim fp = DirectCast(item.Tag, Job).Path
@@ -365,10 +362,6 @@ Friend Class JobsForm
         bnStart.Enabled = activeJobs.Count > 0
     End Sub
 
-    Sub SaveJobs(sender As Object, e As EventArgs)
-        SaveJobs()
-    End Sub
-
     Sub SaveJobs()
         If IsLoading Then
             Exit Sub
@@ -412,9 +405,9 @@ Friend Class JobsForm
 
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
         MyBase.OnFormClosing(args)
-
         RemoveHandler FileWatcher.Changed, AddressOf Reload
         RemoveHandler FileWatcher.Created, AddressOf Reload
+        FileWatcher.Dispose()
         RemoveHandler lv.ItemsChanged, AddressOf HandleItemsChanged
         RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
     End Sub

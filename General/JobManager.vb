@@ -52,6 +52,9 @@ Public Class JobManager
                     formatter.Serialize(stream, jobs)
                 End Using
 
+                'otherwise exceptions, better solution not found
+                Thread.Sleep(100)
+
                 Exit While
             Catch ex As Exception
                 Thread.Sleep(500)
@@ -123,9 +126,7 @@ Public Class JobManager
         If File.Exists(jobsPath) Then
             While True
                 Try
-                    Using stream As New FileStream(
-                        jobsPath, FileMode.Open, FileAccess.Read, FileShare.None)
-
+                    Using stream As New FileStream(jobsPath, FileMode.Open, FileAccess.Read, FileShare.None)
                         Try
                             Return DirectCast(formatter.Deserialize(stream), List(Of Job))
                         Catch ex As Exception

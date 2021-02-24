@@ -229,12 +229,6 @@ Public Class ProcessingForm
 
         bnMenu.ContextMenuStrip = CMS
         ApplyTheme()
-
-        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
-    End Sub
-
-    Sub OnThemeChanged(theme As Theme)
-        ApplyTheme(theme)
     End Sub
 
     Sub ApplyTheme()
@@ -321,6 +315,7 @@ Public Class ProcessingForm
         StopAfterCurrentJobMenuItem.Enabled = g.IsJobProcessing
         StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
+        ApplyTheme()
     End Sub
 
     Sub cbShutdown_SelectedIndexChanged() Handles mbShutdown.ValueChangedUser

@@ -189,10 +189,9 @@ Public Class CropForm
         End Set
     End Property
 
-
-
     Sub New()
         InitializeComponent()
+        IsComposited = False
 
         MinimumSize = New Size(CInt(Font.Size * 60), CInt(Font.Size * 60))
 

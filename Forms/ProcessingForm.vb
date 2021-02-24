@@ -236,7 +236,7 @@ Public Class ProcessingForm
     End Sub
 
     Sub ApplyTheme(theme As Theme)
-        BackColor = theme.General.BackColor
+        BackColor = theme.ProcessingForm.BackColor
     End Sub
 
     Protected Overrides Sub WndProc(ByRef m As Message)

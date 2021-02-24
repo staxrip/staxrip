@@ -206,8 +206,8 @@
                     },
                     .LabelProgressBar = New ControlsThemeColors.LabelProgressBarThemeColors() With {
                         .BackColor = _controlBackColor,
-                        .ForeColor = _foreColor,
-                        .ProgressColor = _backSelectedColor
+                        .ForeColor = _foreColor.AddLuminance(0.1),
+                        .ProgressColor = _backSelectedColor.AddLuminance(-0.075)
                     },
                     .ListBox = New ControlsThemeColors.ListBoxThemeColors() With {
                         .BackColor = _controlBackColor,
@@ -378,6 +378,15 @@
                 .laTipForeColor = _accentColor,
                 .laTipForeHighlightColor = _foreHighlightColor
             }
+
+            ProcessingForm = New ProcessingFormThemeColors() With {
+                .BackColor = _backColor,
+                .ProcessButtonBackColor = .BackColor,
+                .ProcessButtonBackSelectedColor = _backSelectedColor,
+                .ProcessButtonForeColor = _foreColor,
+                .ProcessButtonForeSelectedColor = _foreColor.AddLuminance(0.25)
+            }
+
 
         End Sub
 

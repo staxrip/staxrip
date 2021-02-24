@@ -15,6 +15,7 @@ Public Class Theme
     Private _codeEditorThemeColors As CodeEditorThemeColors
     Private _cropFormThemeColors As CropFormThemeColors
     Private _mainFormThemeColors As MainFormThemeColors
+    Private _processingFormThemeColors As ProcessingFormThemeColors
 
     Public Property General As GeneralThemeColors
         Get
@@ -63,6 +64,16 @@ Public Class Theme
         End Get
         Set(value As MainFormThemeColors)
             _mainFormThemeColors = value
+        End Set
+    End Property
+
+    Public Property ProcessingForm As ProcessingFormThemeColors
+        Get
+            _processingFormThemeColors = If(_processingFormThemeColors, New ProcessingFormThemeColors())
+            Return _processingFormThemeColors
+        End Get
+        Set(value As ProcessingFormThemeColors)
+            _processingFormThemeColors = value
         End Set
     End Property
 
@@ -738,6 +749,15 @@ Public Class Theme
         Public Property laTipForeColor As ColorHSL = SystemColors.ControlText
         Public Property laTipForeHighlightColor As ColorHSL = New ColorHSL(355, 1, 0.5, 1)
     End Class
+
+    Public Class ProcessingFormThemeColors
+        Public Property BackColor As ColorHSL = SystemColors.Control
+        Public Property ProcessButtonBackColor As ColorHSL = SystemColors.Control
+        Public Property ProcessButtonBackSelectedColor As ColorHSL = SystemColors.ScrollBar
+        Public Property ProcessButtonForeColor As ColorHSL = SystemColors.ControlText
+        Public Property ProcessButtonForeSelectedColor As ColorHSL = SystemColors.ControlText
+    End Class
+
 End Class
 
 

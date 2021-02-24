@@ -54,9 +54,23 @@ Public Class SearchTextBox
     Sub New()
         InitializeComponent()
         Edit.TextBox.SendMessageCue("Search", False)
-        Edit.BackColor = ThemeManager.CurrentTheme.General.Controls.TextBox.BackColor
-        AddHandler Edit.TextChanged, Sub() OnTextChanged(New EventArgs)
+        ApplyTheme()
+
+        AddHandler Edit.TextChanged, Sub(sender As Object, e As EventArgs) OnTextChanged(e)
         AddHandler Button.Click, Sub() Edit.Text = ""
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        BackColor = theme.General.Controls.TextBox.BackColor
     End Sub
 
     Protected Overrides Sub OnTextChanged(e As EventArgs)

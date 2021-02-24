@@ -8,7 +8,8 @@ Public Class ToolStripRendererEx
     Shared RenderMode As ToolStripRenderModeEx
 
     Shared Property BackgroundColor As Color
-    Shared Property BorderColor As Color
+    Shared Property BorderOuterColor As Color
+    Shared Property BorderInnerColor As Color
     Shared Property BottomColor As Color
     Shared Property CheckedColor As Color
     Shared Property DropdownBackgroundDefaultColor As ColorHSL
@@ -53,7 +54,8 @@ Public Class ToolStripRendererEx
 
             InitColors(Color.FromArgb(argb))
         Else
-            BorderColor = theme.General.Controls.ToolStrip.BorderColor
+            BorderInnerColor = theme.General.Controls.ToolStrip.BorderInnerColor
+            BorderOuterColor = theme.General.Controls.ToolStrip.BorderOuterColor
             DropdownBackgroundDefaultColor = theme.General.Controls.ToolStrip.DropdownBackgroundDefaultColor
             DropdownBackgroundSelectedColor = theme.General.Controls.ToolStrip.DropdownBackgroundSelectedColor
             DropdownTextDefaultColor = theme.General.Controls.ToolStrip.DropdownTextDefaultColor
@@ -89,7 +91,7 @@ Public Class ToolStripRendererEx
             InitColors(Color.FromArgb(argb))
         Else
             CheckedColor = Color.FromArgb(&HFF91C9F7)
-            BorderColor = Color.FromArgb(&HFF83ABDC)
+            BorderOuterColor = Color.FromArgb(&HFF83ABDC)
             TopColor = Color.FromArgb(&HFFE7F0FB)
             BottomColor = Color.FromArgb(&HFF91C9F7)
             BackgroundColor = SystemColors.Control
@@ -105,24 +107,24 @@ Public Class ToolStripRendererEx
         MenuStripBackgroundSelectedColor = HSLColor.Convert(c).ToColorSetLuminosity(180)
         DropdownBackgroundSelectedColor = HSLColor.Convert(c).ToColorSetLuminosity(200)
         DropdownBackgroundDefaultColor = HSLColor.Convert(c).ToColorSetLuminosity(230)
-        BorderColor = HSLColor.Convert(c).ToColorSetLuminosity(100)
+        BorderOuterColor = HSLColor.Convert(c).ToColorSetLuminosity(100)
         CheckedColor = HSLColor.Convert(c).ToColorSetLuminosity(180)
         BackgroundColor = HSLColor.Convert(c).ToColorSetLuminosity(230)
         BottomColor = HSLColor.Convert(c).ToColorSetLuminosity(200)
         TopColor = HSLColor.Convert(c).ToColorSetLuminosity(240)
 
-        ToolStrip1Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderColor, 1)))
-        ToolStrip2Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderColor, 0.7)))
-        ToolStrip3Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderColor, 0.1)))
-        ToolStrip4Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderColor, 0.4)))
+        ToolStrip1Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderOuterColor, 1)))
+        ToolStrip2Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderOuterColor, 0.7)))
+        ToolStrip3Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderOuterColor, 0.1)))
+        ToolStrip4Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderOuterColor, 0.4)))
     End Sub
 
     Protected Overrides Sub OnRenderToolStripBorder(e As ToolStripRenderEventArgs)
         If TypeOf e.ToolStrip IsNot MenuStrip Then
             Dim r = e.AffectedBounds
             r.Inflate(-1, -1)
-            ControlPaint.DrawBorder(e.Graphics, r, DropdownBackgroundDefaultColor, ButtonBorderStyle.Solid)
-            ControlPaint.DrawBorder(e.Graphics, e.AffectedBounds, MenuStripTextDefaultColor, ButtonBorderStyle.Solid)
+            ControlPaint.DrawBorder(e.Graphics, r, BorderInnerColor, ButtonBorderStyle.Solid)
+            ControlPaint.DrawBorder(e.Graphics, e.AffectedBounds, BorderOuterColor, ButtonBorderStyle.Solid)
         End If
     End Sub
 
@@ -215,7 +217,7 @@ Public Class ToolStripRendererEx
                             gx.FillPath(brush, path)
                         End Using
 
-                        Using pen As New Pen(BorderColor)
+                        Using pen As New Pen(BorderOuterColor)
                             gx.DrawPath(pen, path)
                         End Using
                     End Using
@@ -261,7 +263,7 @@ Public Class ToolStripRendererEx
                     gx.FillPath(brush, path)
                 End Using
 
-                Using pen As New Pen(BorderColor)
+                Using pen As New Pen(BorderOuterColor)
                     gx.DrawPath(pen, path)
                 End Using
             End Using

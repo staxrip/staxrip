@@ -1173,9 +1173,8 @@ Public Class MainForm
         NextContextMenuStrip.Add("Add to bottom w/o opening Jobs", Sub() AddJob(False, -1))
 
         g.SetRenderer(MenuStrip)
-        'SetMenuStyle()
-
         ApplyTheme()
+
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
     End Sub
 
@@ -1299,34 +1298,6 @@ Public Class MainForm
                 End Select
             End Using
         End Try
-    End Sub
-
-    Sub SetMenuStyle()
-        Dim col As Color
-
-        If ToolStripRendererEx.IsAutoRenderMode Then
-            col = ControlPaint.Dark(ToolStripRendererEx.BorderColor, 0)
-        Else
-            col = Color.FromArgb(&HFF004BFF)
-        End If
-
-        llAudioProfile0.LinkColor = col
-        llAudioProfile1.LinkColor = col
-        llEditAudio0.LinkColor = col
-        llEditAudio1.LinkColor = col
-        blFilesize.LinkColor = col
-        llMuxer.LinkColor = col
-        blSourceParText.LinkColor = col
-        blSourceDarText.LinkColor = col
-        blTargetParText.LinkColor = col
-        blTargetDarText.LinkColor = col
-
-        lgbEncoder.Label.LinkColor = col
-        lgbFilters.Label.LinkColor = col
-        lgbResize.Label.LinkColor = col
-        lgbSource.Label.LinkColor = col
-        lgbTarget.Label.LinkColor = col
-        laTip.ForeColor = col
     End Sub
 
     Function GetIfoFile() As String
@@ -3802,7 +3773,6 @@ Public Class MainForm
                 s.VapourSynthFilterPreferences.Sort()
                 ui.Save()
                 g.SetRenderer(MenuStrip)
-                'SetMenuStyle()
                 'ApplyTheme()
                 s.UpdateRecentProjects(Nothing)
                 UpdateRecentProjectsMenu()
@@ -5720,7 +5690,6 @@ Public Class MainForm
             Case 800 'WM_DWMCOLORIZATIONCOLORCHANGED
                 If ToolStripRendererEx.IsAutoRenderMode Then
                     ToolStripRendererEx.InitColors(s.ToolStripRenderModeEx)
-                    'SetMenuStyle()
                     ThemeManager.OnCurrentChanged()
                     MenuStrip.Refresh()
                 End If

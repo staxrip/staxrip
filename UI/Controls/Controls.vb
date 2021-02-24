@@ -683,7 +683,6 @@ Namespace UI
 
         Sub New()
             SetStyle(ControlStyles.ResizeRedraw, True)
-            'SetStyle(ControlStyles.Opaque, True)
             SetStyle(ControlStyles.UserPaint, True)
             UseVisualStyleBackColor = False
             FlatStyle = FlatStyle.Standard
@@ -710,7 +709,7 @@ Namespace UI
                 BackColor = theme.General.Controls.CheckBox.BackColor
                 ForeColor = theme.General.Controls.CheckBox.ForeColor
                 FlatAppearance.BorderColor = theme.General.Controls.CheckBox.BorderColor
-                FlatAppearance.CheckedBackColor = theme.General.Controls.Button.BackColor
+                FlatAppearance.CheckedBackColor = theme.General.Controls.CheckBox.BackColor
                 FlatAppearance.MouseOverBackColor = theme.General.Controls.CheckBox.BackHighlightColor
             Else
                 FlatStyle = FlatStyle.Flat

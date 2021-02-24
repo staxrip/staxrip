@@ -902,6 +902,15 @@ Public Class Package
         .AvsFilterNames = {"FFT3DGPU"},
         .AvsFiltersFunc = Function() {New VideoFilter("Noise", "FFT3DFilter | FFT3DGPU", "FFT3DGPU(sigma=1.5, bt=3, bw=32, bh=32, ow=16, oh=16, sharpen=0.4, NVPerf=$select:msg:Enable Nvidia Function;True;False$)")}})
 
+    Shared Property TIVTC As Package = Add(New PluginPackage With {
+        .Name = "TIVTC",
+        .Filename = "TIVTC.dll",
+        .WebURL = "http://github.com/pinterf/TIVTC",
+        .DownloadURL = "https://github.com/pinterf/TIVTC/releases",
+        .HelpURL = "https://github.com/pinterf/TIVTC/tree/master/Doc_TIVTC",
+        .Description = "TIVTC is a plugin package containing 7 different filters and 3 conditional functions.",
+        .AvsFilterNames = {"TFM", "TDecimate", "MergeHints", "FrameDiff", "FieldDiff", "ShowCombedTIVTC", "RequestLinear"}})
+
     Shared Property D2VSourceAVS As Package = Add(New PluginPackage With {
         .Name = "D2VSource",
         .Filename = "D2VSource.dll",
@@ -1432,15 +1441,6 @@ Public Class Package
             .Description = "TDeint is a bi-directionally, motion adaptive, sharp deinterlacer.",
             .AvsFilterNames = {"TDeint"},
             .AvsFiltersFunc = Function() {New VideoFilter("Field", "TDeint", "TDeint()")}})
-
-        Add(New PluginPackage With {
-            .Name = "TIVTC",
-            .Filename = "TIVTC.dll",
-            .WebURL = "http://github.com/pinterf/TIVTC",
-            .DownloadURL = "https://github.com/pinterf/TIVTC/releases",
-            .HelpURL = "https://github.com/pinterf/TIVTC/tree/master/Doc_TIVTC",
-            .Description = "TIVTC is a plugin package containing 7 different filters and 3 conditional functions.",
-            .AvsFilterNames = {"TFM", "TDecimate", "MergeHints", "FrameDiff", "FieldDiff", "ShowCombedTIVTC", "RequestLinear"}})
 
         Add(New PluginPackage With {
             .Name = "masktools2",

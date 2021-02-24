@@ -5,6 +5,7 @@ Imports System.Threading
 Imports System.Threading.Tasks
 
 Imports Microsoft.Win32
+
 Imports StaxRip.UI
 
 Public Class ProcController
@@ -12,7 +13,7 @@ Public Class ProcController
     Property LogTextBox As New TextBoxEx
     Property ProgressBar As New LabelProgressBar
     Property ProcForm As ProcessingForm
-    Property CheckBox As New CheckBoxEx
+    Property Button As New ButtonEx
 
     Private LogAction As Action = New Action(AddressOf LogHandler)
     Private StatusAction As Action(Of String) = New Action(Of String)(AddressOf StatusHandler)
@@ -29,18 +30,14 @@ Public Class ProcController
         ProcForm = g.ProcForm
 
         Dim pad = g.ProcForm.FontHeight \ 6
-        CheckBox.Margin = New Padding(pad, pad, 0, pad)
-        CheckBox.Appearance = Appearance.Button
-        CheckBox.TextAlign = ContentAlignment.MiddleCenter
-        CheckBox.FlatStyle = FlatStyle.Flat
-        CheckBox.Font = New Font("Consolas", 9 * s.UIScaleFactor)
-        CheckBox.Text = " " + proc.Title + " "
-        Dim sz = TextRenderer.MeasureText(CheckBox.Text, CheckBox.Font)
-        CheckBox.Width = sz.Width + CheckBox.Font.Height
-        CheckBox.Height = CInt(CheckBox.Font.Height * 1.5)
-        AddHandler CheckBox.Click, AddressOf Click
-
-        CheckBox.FlatStyle = FlatStyle.Flat
+        Button.Margin = New Padding(pad, pad, 0, pad)
+        Button.Font = New Font("Consolas", 9 * s.UIScaleFactor)
+        Button.Text = " " + proc.Title + " "
+        Dim sz = TextRenderer.MeasureText(Button.Text, Button.Font)
+        Dim fh = Button.Font.Height
+        Button.Width = sz.Width + fh
+        Button.Height = CInt(fh * 1.5)
+        AddHandler Button.Click, AddressOf Click
 
         ProgressBar.Dock = DockStyle.Fill
         ProgressBar.Font = New Font("Consolas", 9 * s.UIScaleFactor)
@@ -54,7 +51,7 @@ Public Class ProcController
 
         ProcForm.pnLogHost.Controls.Add(LogTextBox)
         ProcForm.pnStatusHost.Controls.Add(ProgressBar)
-        ProcForm.flpNav.Controls.Add(CheckBox)
+        ProcForm.flpNav.Controls.Add(Button)
 
         AddHandler proc.ProcDisposed, AddressOf ProcDisposed
         AddHandler proc.OutputDataReceived, AddressOf DataReceived
@@ -279,11 +276,15 @@ Public Class ProcController
     Sub Click(sender As Object, e As EventArgs)
         SyncLock Procs
             For Each i In Procs
-                If Not i.CheckBox Is sender Then i.Deactivate()
+                If Not i.Button Is sender Then
+                    i.Deactivate()
+                End If
             Next
 
             For Each i In Procs
-                If i.CheckBox Is sender Then i.Activate()
+                If i.Button Is sender Then
+                    i.Activate()
+                End If
             Next
         End SyncLock
     End Sub
@@ -357,11 +358,11 @@ Public Class ProcController
             RemoveHandler Proc.OutputDataReceived, AddressOf DataReceived
             RemoveHandler Proc.ErrorDataReceived, AddressOf DataReceived
 
-            ProcForm.flpNav.Controls.Remove(CheckBox)
+            ProcForm.flpNav.Controls.Remove(Button)
             ProcForm.pnLogHost.Controls.Remove(LogTextBox)
             ProcForm.pnStatusHost.Controls.Remove(ProgressBar)
 
-            CheckBox.Dispose()
+            Button.Dispose()
             LogTextBox.Dispose()
             ProgressBar.Dispose()
 
@@ -424,7 +425,7 @@ Public Class ProcController
     End Function
 
     Sub Activate()
-        CheckBox.Checked = True
+        Button.BackColor = ThemeManager.CurrentTheme.General.Controls.Button.BackColor
         Proc.IsSilent = False
         LogTextBox.Visible = True
         LogTextBox.BringToFront()
@@ -434,7 +435,7 @@ Public Class ProcController
     End Sub
 
     Sub Deactivate()
-        CheckBox.Checked = False
+        Button.BackColor = ThemeManager.CurrentTheme.General.BackColor
         Proc.IsSilent = True
         LogTextBox.Visible = False
         ProgressBar.Visible = False

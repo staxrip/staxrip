@@ -2742,12 +2742,12 @@ Namespace UI
         Private _drawBorder As Integer = -1
 
         Public WithEvents TextBox As New TextBoxEx
+
         Public Shadows Event DoubleClick(sender As Object, e As EventArgs)
         Public Shadows Event KeyDown(sender As Object, e As KeyEventArgs)
         Public Shadows Event MouseDown(sender As Object, e As MouseEventArgs)
         Public Shadows Event MouseWheel(sender As Object, e As MouseEventArgs)
         Public Shadows Event TextChanged(sender As Object, e As EventArgs)
-
 
         Public Property BackReadonlyColor As Color
             Get

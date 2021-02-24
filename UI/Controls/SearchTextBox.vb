@@ -54,6 +54,7 @@ Public Class SearchTextBox
     Sub New()
         InitializeComponent()
         Edit.TextBox.SendMessageCue("Search", False)
+        Edit.BackColor = ThemeManager.CurrentTheme.General.Controls.TextBox.BackColor
         AddHandler Edit.TextChanged, Sub() OnTextChanged(New EventArgs)
         AddHandler Button.Click, Sub() Edit.Text = ""
     End Sub

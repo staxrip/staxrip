@@ -121,7 +121,7 @@ Public Class ToolStripRendererEx
         If TypeOf e.ToolStrip IsNot MenuStrip Then
             Dim r = e.AffectedBounds
             r.Inflate(-1, -1)
-            ControlPaint.DrawBorder(e.Graphics, r, DropdownBackgroundDefaultColor, ButtonBorderStyle.Solid)
+            ControlPaint.DrawBorder(e.Graphics, r, BorderColor, ButtonBorderStyle.Solid)
             ControlPaint.DrawBorder(e.Graphics, e.AffectedBounds, MenuStripTextDefaultColor, ButtonBorderStyle.Solid)
         End If
     End Sub

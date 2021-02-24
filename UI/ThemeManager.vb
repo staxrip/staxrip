@@ -207,7 +207,7 @@
                     .LabelProgressBar = New ControlsThemeColors.LabelProgressBarThemeColors() With {
                         .BackColor = _controlBackColor,
                         .ForeColor = _foreColor,
-                        .ProgressColor = _accentColor.AddSaturation(0.25).AddLuminance(-0.375)
+                        .ProgressColor = _backSelectedColor
                     },
                     .ListBox = New ControlsThemeColors.ListBoxThemeColors() With {
                         .BackColor = _controlBackColor,

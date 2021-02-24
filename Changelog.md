@@ -16,6 +16,7 @@
 - x264 0.161.3048+17 gcc10.2 Patman Mod (improved progress display)
 - x265 3.5 RC1+2+23  gcc10.2 Patman Mod (improved progress display)
 - xy-VSFilter 3.2.0.802 (10bit support)
+- Get-MediaInfo 3.6
 
 
 2.1.8.2 Beta (2021-02-21)

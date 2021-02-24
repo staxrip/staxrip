@@ -643,13 +643,14 @@ Public Class Theme
             Public Property MenuStripTextDefaultColor As ColorHSL = New ColorHSL(_baseHue, 0.0, 0.3, 1)
             Public Property MenuStripTextSelectedColor As ColorHSL = New ColorHSL(_baseHue, 0.0, 0.2, 1)
 
-            Public Property BorderColor As ColorHSL = MenuStripBackgroundDefaultColor.AddLuminance(0.05)
-
             Public Property DropdownBackgroundDefaultColor As ColorHSL = MenuStripBackgroundDefaultColor
             Public Property DropdownBackgroundSelectedColor As ColorHSL = MenuStripBackgroundSelectedColor
             Public Property DropdownTextDefaultColor As ColorHSL = MenuStripTextDefaultColor
             Public Property DropdownTextSelectedColor As ColorHSL = MenuStripTextSelectedColor
             Public Property SymbolImageColor As ColorHSL = DropdownTextDefaultColor
+
+            Public Property BorderInnerColor As ColorHSL = DropdownBackgroundDefaultColor.AddLuminance(0.3)
+            Public Property BorderOuterColor As ColorHSL = DropdownBackgroundDefaultColor.AddLuminance(0.15)
         End Class
 
         <Serializable>

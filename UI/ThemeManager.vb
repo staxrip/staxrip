@@ -320,12 +320,13 @@
                         .MenuStripBackgroundSelectedColor = _backSelectedColor,
                         .MenuStripTextDefaultColor = _foreColor.AddLuminance(0.1),
                         .MenuStripTextSelectedColor = _foreColor.AddLuminance(0.2),
-                        .BorderColor = .MenuStripBackgroundDefaultColor.AddLuminance(0.05),
                         .DropdownBackgroundDefaultColor = .MenuStripBackgroundDefaultColor,
                         .DropdownBackgroundSelectedColor = .MenuStripBackgroundSelectedColor,
                         .DropdownTextDefaultColor = .MenuStripTextDefaultColor,
                         .DropdownTextSelectedColor = .MenuStripTextSelectedColor,
-                        .SymbolImageColor = .DropdownTextDefaultColor
+                        .SymbolImageColor = .DropdownTextDefaultColor,
+                        .BorderInnerColor = .DropdownBackgroundDefaultColor.AddLuminance(0.3),
+                        .BorderOuterColor = .DropdownBackgroundDefaultColor.AddLuminance(0.15)
                     },
                     .TrackBar = New ControlsThemeColors.TrackBarThemeColors() With {
                         .BackColor = _controlBackColor,
@@ -336,7 +337,7 @@
                     .TreeView = New ControlsThemeColors.TreeViewThemeColors() With {
                         .BackColor = _controlBackColor,
                         .BackAlternateColor = .BackColor.AddLuminance(0.025),
-                        .BackExpandedColor = _accentColor.AddSaturation(-0.1).AddLuminance(-0.41),
+                        .BackExpandedColor = _backSelectedColor.AddSaturation(-0.2).AddLuminance(-0.1),
                         .BackHighlightColor = _controlBackHighlightColor,
                         .BackSelectedColor = _backSelectedColor,
                         .ForeColor = _foreColor,

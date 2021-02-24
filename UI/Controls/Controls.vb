@@ -1744,7 +1744,6 @@ Namespace UI
 
             Dim fore = If(Enabled, ForeColor, ForeDisabledColor)
             Dim flags As TextFormatFlags
-            'Dim stringFormat As New StringFormat()
 
             Select Case TextAlign
                 Case Drawing.ContentAlignment.BottomCenter
@@ -1767,43 +1766,12 @@ Namespace UI
                     flags = TextFormatFlags.Top Or TextFormatFlags.Right
             End Select
 
-            'Select Case TextAlign
-            '    Case Drawing.ContentAlignment.BottomCenter
-            '        stringFormat.Alignment = StringAlignment.Center
-            '        stringFormat.LineAlignment = StringAlignment.Far
-            '    Case Drawing.ContentAlignment.BottomLeft
-            '        stringFormat.Alignment = StringAlignment.Near
-            '        stringFormat.LineAlignment = StringAlignment.Far
-            '    Case Drawing.ContentAlignment.BottomRight
-            '        stringFormat.Alignment = StringAlignment.Far
-            '        stringFormat.LineAlignment = StringAlignment.Far
-            '    Case Drawing.ContentAlignment.MiddleCenter
-            '        stringFormat.Alignment = StringAlignment.Center
-            '        stringFormat.LineAlignment = StringAlignment.Center
-            '    Case Drawing.ContentAlignment.MiddleLeft
-            '        stringFormat.Alignment = StringAlignment.Near
-            '        stringFormat.LineAlignment = StringAlignment.Center
-            '    Case Drawing.ContentAlignment.MiddleRight
-            '        stringFormat.Alignment = StringAlignment.Far
-            '        stringFormat.LineAlignment = StringAlignment.Center
-            '    Case Drawing.ContentAlignment.TopCenter
-            '        stringFormat.Alignment = StringAlignment.Center
-            '        stringFormat.LineAlignment = StringAlignment.Near
-            '    Case Drawing.ContentAlignment.TopLeft
-            '        stringFormat.Alignment = StringAlignment.Near
-            '        stringFormat.LineAlignment = StringAlignment.Near
-            '    Case Drawing.ContentAlignment.TopRight
-            '        stringFormat.Alignment = StringAlignment.Far
-            '        stringFormat.LineAlignment = StringAlignment.Near
-            'End Select
-
             Using foreBrush = New SolidBrush(fore)
                 Dim rect = ClientRectangle
                 rect.Offset(0, Padding.Top - If(FlatStyle.HasFlag(FlatStyle.Flat), FlatAppearance.BorderSize \ 2, 0))
 
                 TextRenderer.DrawText(e.Graphics, Text, Font, rect, fore, flags)
             End Using
-
 
             If ShowMenuSymbol Then
                 Dim h = CInt(Font.Height * 0.3)

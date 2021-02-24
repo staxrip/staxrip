@@ -861,18 +861,4 @@ Namespace UI
             Next
         End Sub
     End Class
-
-
-    'Public Class ToolStripRendererEx
-    '    Inherits ToolStripRenderer
-
-    '    Protected Overrides Sub OnRenderToolStripBorder(e As ToolStripRenderEventArgs)
-    '        'MyBase.OnRenderToolStripBorder(e)
-
-    '        'Dim r = e.AffectedBounds
-    '        'r.Inflate(-1, -1)
-    '        'ControlPaint.DrawBorder(e.Graphics, r, Color.Red, ButtonBorderStyle.Solid)
-    '        'ControlPaint.DrawBorder(e.Graphics, e.AffectedBounds, Color.Yellow, ButtonBorderStyle.Solid)
-    '    End Sub
-    'End Class
 End Namespace

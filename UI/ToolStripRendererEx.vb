@@ -119,7 +119,10 @@ Public Class ToolStripRendererEx
 
     Protected Overrides Sub OnRenderToolStripBorder(e As ToolStripRenderEventArgs)
         If TypeOf e.ToolStrip IsNot MenuStrip Then
-            MyBase.OnRenderToolStripBorder(e)
+            Dim r = e.AffectedBounds
+            r.Inflate(-1, -1)
+            ControlPaint.DrawBorder(e.Graphics, r, DropdownBackgroundDefaultColor, ButtonBorderStyle.Solid)
+            ControlPaint.DrawBorder(e.Graphics, e.AffectedBounds, MenuStripTextDefaultColor, ButtonBorderStyle.Solid)
         End If
     End Sub
 
@@ -386,13 +389,13 @@ Public Class ToolStripRendererEx
             top -= 1
             Dim bounds = e.Item.Bounds
 
-            Using pen As New Pen(Color.Gray)
+            Using pen As New Pen(MenuStripTextDefaultColor)
                 e.Graphics.DrawLine(pen, New Point(TextOffset, top), New Point(right, top))
             End Using
         ElseIf e.Vertical Then
             Dim bounds = e.Item.Bounds
 
-            Using pen As New Pen(SystemColors.ControlDarkDark)
+            Using pen As New Pen(MenuStripTextDefaultColor)
                 e.Graphics.DrawLine(pen, CInt(bounds.Width / 2), CInt(bounds.Height * 0.15),
                                          CInt(bounds.Width / 2), CInt(bounds.Height * 0.85))
             End Using

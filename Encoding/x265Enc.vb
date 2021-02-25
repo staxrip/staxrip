@@ -1089,9 +1089,8 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--dither", .Text = "Dither (High Quality Downscaling)"},
                     New BoolParam With {.Switch = "--field", .NoSwitch = "--no-field", .Text = "Field Coding"},
                     New BoolParam With {.Switch = "--frame-dup", .Text = "Adaptive frame duplication"})
-                Add("Loop Filter", Deblock, DeblockA, DeblockB,
-                    New NumParam With {.Switch = "--selective-sao", .Text = "Selective SAO", .Init = 4, .Config = {0, 4}},
-                    SAO,
+                Add("Loop Filter", Deblock, DeblockA, DeblockB, SAO,
+                    New NumParam With {.Switch = "--selective-sao", .Text = "Selective SAO", .Init = 0, .Config = {0, 4}},
                     New BoolParam With {.Switch = "--limit-sao", .Text = "Limit Sample Adaptive Offset"},
                     SAOnonDeblock)
                 Add("Other",

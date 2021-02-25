@@ -1078,7 +1078,7 @@ Public Class MainForm
     Private BlockBitrate, BlockSize As Boolean
     Private SkipAssistant As Boolean
     Private BlockSourceTextBoxTextChanged As Boolean
-    Private AssistantMethod As Action
+    Private AssistantClickAction As Action
 
     Sub New()
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
@@ -2874,7 +2874,7 @@ Public Class MainForm
 
         laTip.Text = ""
         gbAssistant.Text = ""
-        AssistantMethod = Nothing
+        AssistantClickAction = Nothing
         CanIgnoreTip = True
         AssistantPassed = False
         bnNext.Enabled = True
@@ -3117,17 +3117,11 @@ Public Class MainForm
 
             If Not (MouseButtons = MouseButtons.Left AndAlso ActiveControl Is tbResize) Then
                 Dim err = p.Script.GetError
-                Dim title = If(err.Count(Function(chr) chr = BR(1)) > 2, "Click Preview to show full error", "Script Error")
-
-                If err <> "" AndAlso Not g.VerifyRequirements Then
-                    If ProcessTip(err) Then
-                        Return Block(title)
-                    End If
-                End If
 
                 If err <> "" Then
                     If ProcessTip(err) Then
-                        Return Block(title)
+                        Dim title = If(err.Count(Function(chr) chr = BR(1)) > 2, "Click on message to show full error", "Script Error")
+                        Return Block(title, Sub() MsgError(err))
                     End If
                 End If
             End If
@@ -3154,13 +3148,18 @@ Public Class MainForm
         Warn(msg, Nothing, controls)
     End Function
 
-    Function Warn(msg As String, a As Action, ParamArray controls As Control()) As Boolean
-        AssistantMethod = a
+    Function Warn(msg As String, clickAction As Action, ParamArray controls As Control()) As Boolean
+        AssistantClickAction = clickAction
         gbAssistant.Text = msg
         Highlight(controls)
     End Function
 
     Function Block(msg As String, ParamArray controls As Control()) As Boolean
+        Block(msg, Nothing, controls)
+    End Function
+
+    Function Block(msg As String, clickAction As Action, ParamArray controls As Control()) As Boolean
+        AssistantClickAction = clickAction
         gbAssistant.Text = msg
         bnNext.Enabled = False
         CanIgnoreTip = False
@@ -5767,8 +5766,8 @@ Public Class MainForm
     End Sub
 
     Sub lTip_Click() Handles laTip.Click
-        If Not AssistantMethod Is Nothing Then
-            AssistantMethod.Invoke()
+        If Not AssistantClickAction Is Nothing Then
+            AssistantClickAction.Invoke()
             Assistant()
         End If
     End Sub

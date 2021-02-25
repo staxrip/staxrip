@@ -951,7 +951,7 @@ Public Class MuxerForm
                                  If i.IsCommon Then
                                      ml.Button.Add(i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
                                  Else
-                                     ml.Button.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
+                                     ml.Button.Add("More | " + i.ToString.Substring(0, 1).ToUpperInvariant + " | " + i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
                                  End If
 
                                  Application.DoEvents()

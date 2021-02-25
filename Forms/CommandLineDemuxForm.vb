@@ -377,15 +377,15 @@ Public Class CommandLineDemuxForm
             input = input.Replace("VC-1", "vc1")
         End If
 
-        Return input.ToLower
+        Return input.ToLowerInvariant
     End Function
 
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
         If DialogResult = DialogResult.OK Then
             Target.Name = tbName.Text
-            Target.InputExtensions = tbInput.Text.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+            Target.InputExtensions = tbInput.Text.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
             Target.InputFormats = ConvertFormat(tbInputFormats.Text).SplitNoEmptyAndWhiteSpace(",", ";", " ")
-            Target.OutputExtensions = tbVideoOut.Text.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+            Target.OutputExtensions = tbVideoOut.Text.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
             Target.SourceFilters = tbSourceFilters.Text.SplitNoEmptyAndWhiteSpace(",", ";", " ")
             Target.Command = tbCommand.Text
             Target.Arguments = tbArguments.Text

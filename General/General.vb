@@ -847,12 +847,12 @@ Public Class CliArg
 
     Function IsMatch(ParamArray values As String()) As Boolean
         For Each i As String In values
-            i = i.ToUpper
-            Dim val As String = Value.ToUpper
+            i = i.ToUpperInvariant
+            Dim val As String = Value.ToUpperInvariant
 
             If "-" + i = val OrElse "/" + i = val OrElse
-                val.ToUpper.StartsWith("-" + i + ":") OrElse
-                val.ToUpper.StartsWith("/" + i + ":") Then
+                val.ToUpperInvariant.StartsWith("-" + i + ":") OrElse
+                val.ToUpperInvariant.StartsWith("/" + i + ":") Then
 
                 Return True
             End If
@@ -1095,8 +1095,8 @@ Public Class CommandManager
     Function ProcessCommandLineArgument(value As String) As Boolean
         For Each i As Command In Commands.Values
             Dim switch = i.MethodInfo.Name.Replace(" ", "")
-            switch = switch.ToUpper
-            Dim test = value.ToUpper
+            switch = switch.ToUpperInvariant
+            Dim test = value.ToUpperInvariant
 
             If test = "-" + switch Then
                 Process(i.MethodInfo.Name, New List(Of Object))

@@ -50,7 +50,7 @@ Public Class Audio
                     Case ".mp4"
                         MP4BoxDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p, True)
                     Case Else
-                        If p.Script.GetFilter("Source").Script.ToLower.Contains("directshowsource") AndAlso
+                        If p.Script.GetFilter("Source").Script.ToLowerInvariant.Contains("directshowsource") AndAlso
                             Not TypeOf ap Is MuxAudioProfile Then
 
                             ConvertDirectShowSource(ap)
@@ -108,7 +108,7 @@ Public Class Audio
             Dim args = "-i " + ap.File.Escape + " -y -hide_banner " + outPath.Escape
 
             Using proc As New Proc
-                proc.Header = "AVS to " + outPath.Ext.ToUpper
+                proc.Header = "AVS to " + outPath.Ext.ToUpperInvariant
                 proc.SkipStrings = {"frame=", "size="}
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.ffmpeg
@@ -135,7 +135,7 @@ Public Class Audio
                 ConvertDirectShowSource(ap)
         End Select
 
-        If p.Script.GetFilter("Source").Script.ToLower.Contains("directshowsource") Then
+        If p.Script.GetFilter("Source").Script.ToLowerInvariant.Contains("directshowsource") Then
             ConvertDirectShowSource(ap)
         End If
 
@@ -307,7 +307,7 @@ Public Class Audio
         args += " -simple -progressnumbers"
 
         Using proc As New Proc
-            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & (ap.GetTrackIndex + 1)
+            proc.Header = "Convert " + ap.File.Ext.ToUpperInvariant + " to " + outPath.Ext.ToUpperInvariant + " " & (ap.GetTrackIndex + 1)
             proc.Package = Package.eac3to
             proc.Arguments = args
             proc.TrimChars = {"-"c, " "c}
@@ -375,7 +375,7 @@ Public Class Audio
         args += " " + outPath.Escape
 
         Using proc As New Proc
-            proc.Header = "Convert " + ap.File.Ext.ToUpper + " to " + outPath.Ext.ToUpper + " " & (ap.GetTrackIndex + 1)
+            proc.Header = "Convert " + ap.File.Ext.ToUpperInvariant + " to " + outPath.Ext.ToUpperInvariant + " " & (ap.GetTrackIndex + 1)
             proc.SkipStrings = {"frame=", "size="}
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg

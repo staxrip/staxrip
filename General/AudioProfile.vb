@@ -52,7 +52,7 @@ Public MustInherit Class AudioProfile
             End If
 
             For Each i As AudioCodec In System.Enum.GetValues(GetType(AudioCodec))
-                If i.ToString.ToLower = OutputFileType Then
+                If i.ToString.ToLowerInvariant = OutputFileType Then
                     Return i
                 End If
             Next
@@ -349,10 +349,10 @@ Public MustInherit Class AudioProfile
             End If
         End If
 
-        Dim outfile = p.TempDir + base + "." + OutputFileType.ToLower
+        Dim outfile = p.TempDir + base + "." + OutputFileType.ToLowerInvariant
 
         If File = outfile Then
-            outfile = outfile.Base + "_new." + OutputFileType.ToLower
+            outfile = outfile.Base + "_new." + OutputFileType.ToLowerInvariant
         End If
 
         Return outfile
@@ -637,7 +637,7 @@ Public Class MuxAudioProfile
                 If i.IsCommon Then
                     mbi.Button.Add(i.ToString, i)
                 Else
-                    mbi.Button.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString, i)
+                    mbi.Button.Add("More | " + i.ToString.Substring(0, 1).ToUpperInvariant + " | " + i.ToString, i)
                 End If
             Next
 
@@ -920,7 +920,7 @@ Public Class GUIAudioProfile
                 Case AudioCodec.Vorbis
                     Return "ogg"
                 Case Else
-                    Return Params.Codec.ToString.ToLower
+                    Return Params.Codec.ToString.ToLowerInvariant
             End Select
         End Get
         Set(value As String)

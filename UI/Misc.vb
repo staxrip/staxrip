@@ -266,7 +266,7 @@ Namespace UI
 
             If Not s.WindowPositionsRemembered.NothingOrEmpty AndAlso Not TypeOf form Is InputBoxForm Then
                 For Each i In s.WindowPositionsRemembered
-                    If text.StartsWith(i) OrElse i.ToLower() = "all" Then
+                    If text.StartsWith(i) OrElse i.ToLowerInvariant() = "all" Then
                         RestorePositionInternal(form)
                         Exit For
                     End If

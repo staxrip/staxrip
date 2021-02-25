@@ -124,7 +124,7 @@ Public Class FolderHelp
     End Sub
 
     Shared Function Compare(dir1 As String, dir2 As String) As Boolean
-        Return dir1.FixDir.ToUpper = dir2.FixDir.ToUpper
+        Return dir1.FixDir.ToUpperInvariant = dir2.FixDir.ToUpperInvariant
     End Function
 End Class
 

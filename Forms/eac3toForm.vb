@@ -879,7 +879,7 @@ Public Class eac3toForm
                             Case "Subtitle (ASS)"
                                 ms.OutputType = "ass"
                             Case Else
-                                ms.OutputType = ms.Codec.ToLower.Replace("-", "")
+                                ms.OutputType = ms.Codec.ToLowerInvariant.Replace("-", "")
                         End Select
                     End If
 
@@ -911,7 +911,7 @@ Public Class eac3toForm
                     stream.ListViewItem = lvAudio.Items.Add(stream.ToString)
                     stream.ListViewItem.Tag = stream
 
-                    Dim autoCode = Project.PreferredAudio.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    Dim autoCode = Project.PreferredAudio.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
                     stream.ListViewItem.Checked = autoCode.ContainsAny("all", stream.Language.TwoLetterCode, stream.Language.ThreeLetterCode)
                 ElseIf stream.IsVideo Then
                     cbVideoStream.Items.Add(stream)
@@ -919,7 +919,7 @@ Public Class eac3toForm
                     Dim item = lvSubtitles.Items.Add(stream.Language.ToString)
                     item.Tag = stream
 
-                    Dim autoCode = Project.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    Dim autoCode = Project.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
                     item.Checked = autoCode.ContainsAny("all", stream.Language.TwoLetterCode, stream.Language.ThreeLetterCode)
                 ElseIf stream.IsChapters Then
                     cbChapters.Visible = True
@@ -961,7 +961,7 @@ Public Class eac3toForm
         Dim videoStream = TryCast(cbVideoStream.SelectedItem, M2TSStream)
 
         If Not videoStream Is Nothing AndAlso Not cbVideoOutput.Text = "Nothing" Then
-            Dim outFile = OutputFolder + baseName + "." + cbVideoOutput.Text.ToLower
+            Dim outFile = OutputFolder + baseName + "." + cbVideoOutput.Text.ToLowerInvariant
             ret += " " & videoStream.ID & ": " + outFile.Escape
             outFiles.Add(outFile)
         End If

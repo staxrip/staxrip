@@ -572,7 +572,7 @@ Public Class Macro
 
             For Each match As Match In mc
                 Dim pack = Package.Items.Values.FirstOrDefault(
-                    Function(pack2) pack2.Name.ToLower = match.Groups(1).Value.ToLower)
+                    Function(pack2) pack2.Name.ToLowerInvariant = match.Groups(1).Value.ToLowerInvariant)
 
                 Dim path = pack?.Path
 
@@ -591,7 +591,7 @@ Public Class Macro
 
             For Each match As Match In mc
                 Dim pack = Package.Items.Values.FirstOrDefault(
-                    Function(pack2) pack2.Name.ToLower = match.Groups(1).Value.ToLower)
+                    Function(pack2) pack2.Name.ToLowerInvariant = match.Groups(1).Value.ToLowerInvariant)
 
                 Dim path = pack?.Path
 
@@ -608,7 +608,7 @@ Public Class Macro
         If value.Contains("%app_dir:") Then
             For Each match As Match In Regex.Matches(value, "%app_dir:(.+?)%")
                 Dim pack = Package.Items.Values.FirstOrDefault(
-                    Function(pack2) pack2.Name.ToLower = match.Groups(1).Value.ToLower)
+                    Function(pack2) pack2.Name.ToLowerInvariant = match.Groups(1).Value.ToLowerInvariant)
 
                 Dim path = pack?.Path
 
@@ -625,7 +625,7 @@ Public Class Macro
         If value.Contains("%app_version:") Then
             For Each match As Match In Regex.Matches(value, "%app_version:(.+?)%")
                 Dim pack = Package.Items.Values.FirstOrDefault(
-                    Function(pack2) pack2.Name.ToLower = match.Groups(1).Value.ToLower)
+                    Function(pack2) pack2.Name.ToLowerInvariant = match.Groups(1).Value.ToLowerInvariant)
 
                 Dim version = pack?.Version
 
@@ -664,7 +664,7 @@ Public Class Macro
 
             For Each i As Match In mc
                 For Each i2 In p.Script.Filters
-                    If i2.Active AndAlso i2.Path.ToUpper = i.Groups(1).Value.ToUpper Then
+                    If i2.Active AndAlso i2.Path.ToUpperInvariant = i.Groups(1).Value.ToUpperInvariant Then
                         value = value.Replace(i.Value, i2.Script)
 
                         If Not value.Contains("%") Then

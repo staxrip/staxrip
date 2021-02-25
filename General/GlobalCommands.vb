@@ -393,7 +393,7 @@ Public Class GlobalCommands
         Try
             For Each i In Directory.GetFiles(Macro.Expand(dir))
                 For Each i2 In filter.SplitNoEmpty(" ")
-                    If i.ToUpper.EndsWith(i2.ToUpper) Then
+                    If i.ToUpperInvariant.EndsWith(i2.ToUpperInvariant) Then
                         FileHelp.Delete(i)
                     End If
                 Next

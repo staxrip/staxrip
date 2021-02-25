@@ -541,7 +541,7 @@ Public Class CommandLineAudioEncoderForm
     End Sub
 
     Sub tbInput_TextChanged() Handles tbInput.TextChanged
-        TempProfile.SupportedInput = tbInput.Text.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+        TempProfile.SupportedInput = tbInput.Text.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
         EditControl.UpdatePreview()
     End Sub
 
@@ -613,7 +613,7 @@ Public Class CommandLineAudioEncoderForm
             If i.IsCommon Then
                 mbLanguage.Add(i.ToString, i)
             Else
-                mbLanguage.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString, i)
+                mbLanguage.Add("More | " + i.ToString.Substring(0, 1).ToUpperInvariant + " | " + i.ToString, i)
             End If
         Next
 

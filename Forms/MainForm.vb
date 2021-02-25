@@ -1525,7 +1525,7 @@ Public Class MainForm
                     iMenuItem.DropDownItems.ClearAndDisplose
 
                     For Each pack In Package.Items.Values
-                        MenuItemEx.Add(iMenuItem.DropDownItems, pack.Name.Substring(0, 1).Upper + " | " + pack.ID, Sub() pack.ShowHelp())
+                        MenuItemEx.Add(iMenuItem.DropDownItems, pack.Name.Substring(0, 1).ToUpperInvariant + " | " + pack.ID, Sub() pack.ShowHelp())
                     Next
                 End If
             End If
@@ -1676,7 +1676,7 @@ Public Class MainForm
             dialog.Filter = "StaxRip Project Files (*.srip)|*.srip"
 
             If dialog.ShowDialog() = DialogResult.OK Then
-                If Not dialog.FileName.ToLower.EndsWith(".srip") Then
+                If Not dialog.FileName.ToLowerInvariant.EndsWith(".srip") Then
                     dialog.FileName += ".srip"
                 End If
 
@@ -1917,8 +1917,8 @@ Public Class MainForm
 
         For Each filter In allFilters
             For Each filterName In filterNames
-                If filter.Script.ToLower.Contains(filterName.ToLower + "(") OrElse
-                    filter.Script.ToLower.Contains(filterName.ToLower + ".") Then
+                If filter.Script.ToLowerInvariant.Contains(filterName.ToLowerInvariant + "(") OrElse
+                    filter.Script.ToLowerInvariant.Contains(filterName.ToLowerInvariant + ".") Then
 
                     If filters.Where(Function(val) val.Name = filter.Name).Count = 0 Then
                         filters.Add(filter.GetCopy)
@@ -1933,10 +1933,10 @@ Public Class MainForm
 
         If files(0).Ext = "srip" Then
             OpenProject(files(0))
-        ElseIf FileTypes.Video.Contains(files(0).Ext.Lower) Then
+        ElseIf FileTypes.Video.Contains(files(0).Ext.ToLowerInvariant) Then
             files.Sort()
             OpenVideoSourceFiles(files)
-        ElseIf FileTypes.Audio.Contains(files(0).Ext.Lower) Then
+        ElseIf FileTypes.Audio.Contains(files(0).Ext.ToLowerInvariant) Then
             tbAudioFile0.Text = files(0)
         Else
             files.Sort()
@@ -1970,7 +1970,7 @@ Public Class MainForm
             For Each i In files
                 Dim name = i.FileName
 
-                If name.ToUpper Like "VTS_0#_0.VOB" Then
+                If name.ToUpperInvariant Like "VTS_0#_0.VOB" Then
                     If MsgQuestion("Are you sure you want to open the file " + name + "," + BR +
                            "the first VOB file usually contains a menu.") = DialogResult.Cancel Then
 
@@ -1978,7 +1978,7 @@ Public Class MainForm
                     End If
                 End If
 
-                If name.ToUpper = "VIDEO_TS.VOB" Then
+                If name.ToUpperInvariant = "VIDEO_TS.VOB" Then
                     MsgWarn("The file VIDEO_TS.VOB can't be opened.")
                     Throw New AbortException
                 End If
@@ -2214,7 +2214,7 @@ Public Class MainForm
 
             For Each i In DriveInfo.GetDrives()
                 If i.DriveType = DriveType.CDRom AndAlso
-                    p.TempDir.ToUpper.StartsWith(i.RootDirectory.ToString.ToUpper) Then
+                    p.TempDir.ToUpperInvariant.StartsWith(i.RootDirectory.ToString.ToUpperInvariant) Then
 
                     MsgWarn("Opening files from a optical drive requires to set a temp files folder in the options.")
                     Throw New AbortException
@@ -2581,12 +2581,12 @@ Public Class MainForm
                 Dim extensions = pref.Name.SplitNoEmptyAndWhiteSpace({",", " ", ";"})
 
                 For Each extension In extensions
-                    extension = extension.ToLower
+                    extension = extension.ToLowerInvariant
                     Dim format = "*"
 
                     If extension.Contains(":") Then
-                        format = extension.Right(":").ToLower
-                        extension = extension.Left(":").ToLower
+                        format = extension.Right(":").ToLowerInvariant
+                        extension = extension.Left(":").ToLowerInvariant
                     End If
 
                     If skipAnyExtension AndAlso extension = "*" Then Continue For
@@ -2595,7 +2595,7 @@ Public Class MainForm
                     If skipNonAnyFormat AndAlso format <> "*" Then Continue For
 
                     If (extension = p.SourceFile.Ext OrElse extension = "*") AndAlso
-                        (format = "*" OrElse format = MediaInfo.GetVideo(p.SourceFile, "Format").ToLower) Then
+                        (format = "*" OrElse format = MediaInfo.GetVideo(p.SourceFile, "Format").ToLowerInvariant) Then
 
                         Dim filters = profiles.Where(
                             Function(cat) cat.Name = "Source").First.Filters.Where(
@@ -2997,7 +2997,7 @@ Public Class MainForm
             Next
 
             If p.VideoEncoder.Muxer.OutputExtFull <> p.TargetFile.ExtFull Then
-                If ProcessTip("The container requires " + p.VideoEncoder.Muxer.OutputExt.ToUpper + " as target file type.") Then
+                If ProcessTip("The container requires " + p.VideoEncoder.Muxer.OutputExt.ToUpperInvariant + " as target file type.") Then
                     Return Block("Invalid File Type", tbTargetFile)
                 End If
             End If
@@ -3062,7 +3062,7 @@ Public Class MainForm
             End If
 
             If p.Script.IsAviSynth AndAlso TypeOf p.VideoEncoder Is x264Enc AndAlso
-                Not Package.x264.Version.ToLower.ContainsAny("amod", "djatom", "patman") AndAlso
+                Not Package.x264.Version.ToLowerInvariant.ContainsAny("amod", "djatom", "patman") AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV420P8 AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV420P8_ AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV422P8 AndAlso
@@ -3344,21 +3344,21 @@ Public Class MainForm
                                     ret = "vc1"
                             End Select
 
-                            Return ret.ToLower
+                            Return ret.ToLowerInvariant
                         End Function
 
-        Dim srcScript = p.Script.GetFilter("Source").Script.ToLower
+        Dim srcScript = p.Script.GetFilter("Source").Script.ToLowerInvariant
 
         For Each i In s.Demuxers
             If Not i.Active AndAlso (i.SourceFilters.NothingOrEmpty OrElse
-                Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "(").ToArray)) Then
+                Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLowerInvariant + "(").ToArray)) Then
 
                 Continue For
             End If
 
             If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(p.SourceFile.Ext) Then
                 If Not srcScript?.Contains("(") OrElse i.SourceFilters.NothingOrEmpty OrElse
-                    srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "(").ToArray) Then
+                    srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLowerInvariant + "(").ToArray) Then
 
                     Dim inputFormats = i.InputFormats.NothingOrEmpty OrElse
                         i.InputFormats.Contains(getFormat())
@@ -3408,7 +3408,7 @@ Public Class MainForm
             Exit Sub
         End If
 
-        Dim codeLower = p.Script.GetFilter("Source").Script.ToLower
+        Dim codeLower = p.Script.GetFilter("Source").Script.ToLowerInvariant
 
         If codeLower.Contains("ffvideosource(") OrElse codeLower.Contains("ffms2.source") Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
@@ -4434,7 +4434,7 @@ Public Class MainForm
 
             Dim moreAudioAction = Sub()
                                       For Each lng In Language.Languages
-                                          prefAudio.AddMenu("More | " + lng.ToString.Substring(0, 1).ToUpper + " | " + lng.ToString +
+                                          prefAudio.AddMenu("More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString +
                                          " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
                                          Sub() prefAudio.Edit.Text += " " + lng.ThreeLetterCode)
                                       Next
@@ -4538,7 +4538,7 @@ Public Class MainForm
 
             Dim moreSubAction = Sub()
                                     For Each lng In Language.Languages
-                                        prefSub.AddMenu("More | " + lng.ToString.Substring(0, 1).ToUpper + " | " + lng.ToString +
+                                        prefSub.AddMenu("More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString +
                                          " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")",
                                          Sub() prefSub.Edit.Text += " " + lng.ThreeLetterCode)
                                     Next
@@ -5453,7 +5453,7 @@ Public Class MainForm
                     srcPath = srcPath + "PLAYLIST\"
                 End If
 
-                If Not srcPath.ToUpper.EndsWith("PLAYLIST\") Then
+                If Not srcPath.ToUpperInvariant.EndsWith("PLAYLIST\") Then
                     MsgWarn("No playlist directory found.")
                     Exit Sub
                 End If
@@ -5662,7 +5662,7 @@ Public Class MainForm
                     End Using
 
                     s.Storage.SetString("last blu-ray target folder", form.OutputFolder)
-                    Dim fs = form.OutputFolder + title + "." + form.cbVideoOutput.Text.ToLower
+                    Dim fs = form.OutputFolder + title + "." + form.cbVideoOutput.Text.ToLowerInvariant
 
                     If File.Exists(fs) Then
                         p.TempDir = form.OutputFolder

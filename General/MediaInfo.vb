@@ -138,7 +138,7 @@ Public Class MediaInfo
                         Case DemuxMode.None
                             at.Enabled = False
                         Case DemuxMode.Preferred, DemuxMode.Dialog
-                            Dim autoCode = p.PreferredAudio.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                            Dim autoCode = p.PreferredAudio.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
                             at.Enabled = autoCode.ContainsAny("all", at.Language.TwoLetterCode, at.Language.ThreeLetterCode)
 
                             For Each i In autoCode
@@ -189,7 +189,7 @@ Public Class MediaInfo
                     subtitle.Format = GetText(index, "Format")
                     subtitle.Size = GetText(index, "StreamSize").ToInt
 
-                    Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
                     subtitle.Enabled = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode,
                         subtitle.Language.ThreeLetterCode) OrElse p.DemuxSubtitles = DemuxMode.All
 

@@ -33,7 +33,7 @@ Public MustInherit Class Demuxer
             Dim tb = ui.AddText(page)
             tb.Label.Text = "Supported Input File Types:"
             tb.Edit.Text = InputExtensions.Join(" ")
-            tb.Edit.SaveAction = Sub(value) InputExtensions = value.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+            tb.Edit.SaveAction = Sub(value) InputExtensions = value.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
 
             Dim cb = ui.AddBool(page)
             cb.Text = "Video Demuxing"
@@ -214,7 +214,7 @@ Public Class eac3toDemuxer
                     End Try
 
                     If Not form.cbVideoOutput.Text = "Nothing" Then
-                        proj.SourceFile = form.OutputFolder + proj.SourceFile.Base + "." + form.cbVideoOutput.Text.ToLower
+                        proj.SourceFile = form.OutputFolder + proj.SourceFile.Base + "." + form.cbVideoOutput.Text.ToLowerInvariant
                         proj.SourceFiles.Clear()
                         proj.SourceFiles.Add(proj.SourceFile)
                         proj.TempDir = form.OutputFolder

@@ -73,7 +73,7 @@ Public Class Documentation
                             name = nameAttrib.DisplayName
                         End If
 
-                        name += $" \<{param.ParameterType.Name.ToLower.Replace("int32", "integer")}\>"
+                        name += $" \<{param.ParameterType.Name.ToLowerInvariant.Replace("int32", "integer")}\>"
 
                         sb.Append($"| {name} |")
 
@@ -97,7 +97,7 @@ Public Class Documentation
                             name = nameAttrib.DisplayName
                         End If
 
-                        name += $" \<{param.ParameterType.Name.ToLower.Replace("int32", "integer")}\>"
+                        name += $" \<{param.ParameterType.Name.ToLowerInvariant.Replace("int32", "integer")}\>"
 
                         sb.AppendLine($"| {name} |")
                     End If

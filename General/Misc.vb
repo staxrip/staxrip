@@ -1250,7 +1250,7 @@ Public Class Subtitle
         Get
             Dim ret = ExtFull
             If ret = "" Then ret = Path.ExtFull
-            Return ret.TrimStart("."c).ToUpper.Replace("SUP", "PGS").Replace("IDX", "VobSub")
+            Return ret.TrimStart("."c).ToUpperInvariant.Replace("SUP", "PGS").Replace("IDX", "VobSub")
         End Get
     End Property
 
@@ -1277,7 +1277,7 @@ Public Class Subtitle
                         st.Language = New Language(CultureInfo.InvariantCulture)
                     End Try
 
-                    Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
                     st.Enabled = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
 
                     If Not st Is Nothing Then
@@ -1333,7 +1333,7 @@ Public Class Subtitle
                 st.Title = title.Left("}").UnescapeIllegalFileSysChars
             End If
 
-            Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+            Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
             st.Enabled = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
             st.Path = path
 

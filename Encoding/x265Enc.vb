@@ -1170,7 +1170,7 @@ Public Class x265Params
         End If
 
         If item Is Hdr10 Then
-            Select Case Hdr10.OptionText.ToLower()
+            Select Case Hdr10.OptionText.ToLowerInvariant()
                 Case "yes"
                     Chromaloc.Value = 2
                 Case "no"
@@ -1215,14 +1215,14 @@ Public Class x265Params
         ApplyTuneDefaultValues()
 
         Dim sb As New StringBuilder
-        Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText.ToLower()
+        Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText.ToLowerInvariant()
         Dim isSingleChunk = endFrame = 0
 
         If includePaths AndAlso includeExecutable Then
             Dim isCropped = (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
                 Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop")
 
-            Select Case Decoder.ValueText.ToLower()
+            Select Case Decoder.ValueText.ToLowerInvariant()
                 Case "script"
                     Dim pipeString = ""
 

@@ -2664,7 +2664,6 @@ Public Class PluginPackage
         End If
 
         If p.Script.IsAviSynth AndAlso Not package.AvsFilterNames.NothingOrEmpty Then
-            'ToLowerInvariant needed for Turkish i using RegexOptions.IgnoreCase
             Dim scriptLower = p.Script.GetScript().ToLowerInvariant
 
             For Each filterName In package.AvsFilterNames

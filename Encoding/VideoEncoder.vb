@@ -272,7 +272,7 @@ Public MustInherit Class VideoEncoder
         g.MainForm.UpdateEncoderStateRelatedControls()
         g.MainForm.SetEncoderControl(p.VideoEncoder.CreateEditControl)
         g.MainForm.lgbEncoder.Text = g.ConvertPath(p.VideoEncoder.Name).Shorten(38)
-        g.MainForm.llMuxer.Text = p.VideoEncoder.Muxer.OutputExt.ToUpper
+        g.MainForm.llMuxer.Text = p.VideoEncoder.Muxer.OutputExt.ToUpperInvariant
 
         If Not QualityMode Then
             If Bitrate = 0 Then
@@ -296,7 +296,7 @@ Public MustInherit Class VideoEncoder
 
         If muxer.Edit = DialogResult.OK Then
             Me.Muxer = muxer
-            g.MainForm.llMuxer.Text = Me.Muxer.OutputExt.ToUpper
+            g.MainForm.llMuxer.Text = Me.Muxer.OutputExt.ToUpperInvariant
             g.MainForm.Refresh()
             g.MainForm.UpdateSizeOrBitrate()
             g.MainForm.Assistant()
@@ -314,10 +314,10 @@ Public MustInherit Class VideoEncoder
     Sub LoadMuxer(profile As Profile)
         Muxer = DirectCast(ObjectHelp.GetCopy(profile), Muxer)
         Muxer.Init()
-        g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpper
+        g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpperInvariant
         Dim newPath = p.TargetFile.ChangeExt(Muxer.OutputExt)
 
-        If p.SourceFile <> "" AndAlso newPath.ToLower = p.SourceFile.ToLower Then
+        If p.SourceFile <> "" AndAlso newPath.ToLowerInvariant = p.SourceFile.ToLowerInvariant Then
             newPath = newPath.Dir + newPath.Base + "_new" + newPath.ExtFull
         End If
 
@@ -514,7 +514,7 @@ Public MustInherit Class BasicVideoEncoder
                                         Dim values = If(optionParam.Values.NothingOrEmpty, optionParam.Options, optionParam.Values)
                                         Dim value = If(a(x + 1).StartsWith("--"), a(x), a(x + 1))
 
-                                        If value.Trim(""""c).ToLower = values(xOpt).ToLower.Replace(" ", "") Then
+                                        If value.Trim(""""c).ToLowerInvariant = values(xOpt).ToLowerInvariant.Replace(" ", "") Then
                                             optionParam.Value = xOpt
                                             params.RaiseValueChanged(param)
                                             exitFor = True

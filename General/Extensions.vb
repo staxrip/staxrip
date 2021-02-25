@@ -81,7 +81,7 @@ Module StringExtensions
             Return ""
         End If
 
-        Return instance.ToLower
+        Return instance.ToLowerInvariant
     End Function
 
     <Extension>
@@ -96,14 +96,14 @@ Module StringExtensions
     <Extension>
     Function PathStartsWith(instance As String, value As String) As Boolean
         If instance <> "" AndAlso value <> "" Then
-            Return instance.ToLower.StartsWith(value.ToLower)
+            Return instance.ToLowerInvariant.StartsWith(value.ToLowerInvariant)
         End If
     End Function
 
     <Extension>
     Function PathEquals(instance As String, value As String) As Boolean
         If instance <> "" AndAlso value <> "" Then
-            Return instance.ToLower = value.ToLower
+            Return instance.ToLowerInvariant = value.ToLowerInvariant
         End If
     End Function
 
@@ -195,23 +195,20 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function Upper(instance As String) As String
-        If instance = "" Then Return ""
-        Return instance.ToUpperInvariant
-    End Function
-
-    <Extension()>
-    Function Lower(instance As String) As String
-        If instance = "" Then Return ""
-        Return instance.ToLowerInvariant
-    End Function
-
-    <Extension()>
     Function ChangeExt(instance As String, value As String) As String
-        If instance = "" Then Return ""
-        If value = "" Then Return instance
-        If Not value.StartsWith(".") Then value = "." + value
-        Return instance.DirAndBase + value.ToLower
+        If instance = "" Then
+            Return ""
+        End If
+
+        If value = "" Then
+            Return instance
+        End If
+
+        If Not value.StartsWith(".") Then
+            value = "." + value
+        End If
+
+        Return instance.DirAndBase + value.ToLowerInvariant
     End Function
 
     <Extension()>
@@ -275,7 +272,7 @@ Module StringExtensions
             End If
 
             If chars(x) = "."c Then
-                Return filepath.Substring(x + If(includeDot, 0, 1)).ToLower()
+                Return filepath.Substring(x + If(includeDot, 0, 1)).ToLowerInvariant()
             End If
         Next
 
@@ -444,7 +441,7 @@ Module StringExtensions
     <Extension()>
     Function ToTitleCase(value As String) As String
         'TextInfo.ToTitleCase won't work on all upper strings
-        Return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLower)
+        Return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLowerInvariant)
     End Function
 
     <Extension()>

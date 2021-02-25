@@ -37,7 +37,7 @@ Public Class x264Enc
             If Params.Muxer.Value = 0 OrElse Params.Muxer.Value = 1 Then
                 Return "h264"
             Else
-                Return Params.Muxer.ValueText.ToLower
+                Return Params.Muxer.ValueText.ToLowerInvariant
             End If
         End Get
     End Property
@@ -1010,7 +1010,7 @@ Public Class x264Params
             Dim pipeCmd = ""
 
             If pipeTool = "automatic" Then
-                If p.Script.IsAviSynth OrElse Package.x264.Version.ToLower.ContainsAny("amod", "djatom", "patman") Then
+                If p.Script.IsAviSynth OrElse Package.x264.Version.ToLowerInvariant.ContainsAny("amod", "djatom", "patman") Then
                     pipeTool = "none"
                 ElseIf p.Script.IsVapourSynth Then
                     pipeTool = "vspipe y4m"
@@ -1086,7 +1086,7 @@ Public Class x264Params
             Dim dmx = Demuxer.ValueText
 
             If pipeTool = "none" AndAlso FrameServerHelp.IsPortable AndAlso
-                Package.x264.Version.ToLower.ContainsAny("amod", "djatom", "patman") Then
+                Package.x264.Version.ToLowerInvariant.ContainsAny("amod", "djatom", "patman") Then
 
                 sb.Append(" --synth-lib " + FrameServerHelp.GetSynthPath.Escape)
             End If

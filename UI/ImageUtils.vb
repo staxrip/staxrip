@@ -200,7 +200,7 @@ Public Class Thumbnails
         Dim channels = MediaInfo.GetAudio(inputFile, "Channel(s)").ToInt
         Dim subSampling = MediaInfo.GetVideo(inputFile, "ChromaSubsampling").Replace(":", "")
         If subSampling = "" Then subSampling = ""
-        Dim colorSpace = MediaInfo.GetVideo(inputFile, "ColorSpace").ToLower
+        Dim colorSpace = MediaInfo.GetVideo(inputFile, "ColorSpace").ToLowerInvariant
         If colorSpace = "" Then colorSpace = ""
         Dim profile = MediaInfo.GetVideo(inputFile, "Format_Profile").Shorten(4)
         If profile = "" Then profile = "Main"
@@ -222,7 +222,7 @@ Public Class Thumbnails
 
         Dim caption = "File: " + inputFile.FileName + BR & "Size: " + MediaInfo.GetGeneral(inputFile, "FileSize") + " bytes" + " (" + infoSize + ")" & ", " + "Duration: " + StaxRip.g.GetTimeString(infoDuration / 1000) + ", avg.bitrate: " + MediaInfo.GetGeneral(inputFile, "OverallBitRate_String") + BR +
             "Audio: " + audioCodecs + ", " + MediaInfo.GetAudio(inputFile, "SamplingRate_String") + ", " + audioSound + ", " + MediaInfo.GetAudio(inputFile, "BitRate_String") + BR +
-            "Video: " + MediaInfo.GetVideo(inputFile, "Format") + " (" + profile + ")" + ", " + colorSpace + subSampling + scanType.Shorten(1).ToLower() + ", " + MediaInfo.GetVideo(inputFile, "Width") & "x" & MediaInfo.GetVideo(inputFile, "Height") & ", " + MediaInfo.GetVideo(inputFile, "BitRate_String") + ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps".Replace(", ", "")
+            "Video: " + MediaInfo.GetVideo(inputFile, "Format") + " (" + profile + ")" + ", " + colorSpace + subSampling + scanType.Shorten(1).ToLowerInvariant() + ", " + MediaInfo.GetVideo(inputFile, "Width") & "x" & MediaInfo.GetVideo(inputFile, "Height") & ", " + MediaInfo.GetVideo(inputFile, "BitRate_String") + ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps".Replace(", ", "")
 
         caption = caption.Replace(" ,", "")
 

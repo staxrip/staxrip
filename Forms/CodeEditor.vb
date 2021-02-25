@@ -142,7 +142,7 @@ Public Class CodeEditor
                     helpMenuItem.DropDownItems.RemoveAt(0)
 
                     For Each pack In Package.Items.Values
-                        cmsMain.Add("Help | " + pack.Name.Substring(0, 1).Upper + " | " + pack.ID, Sub() pack.ShowHelp())
+                        cmsMain.Add("Help | " + pack.Name.Substring(0, 1).ToUpperInvariant + " | " + pack.ID, Sub() pack.ShowHelp())
                     Next
                 End Sub
 
@@ -723,8 +723,8 @@ Public Class CodeEditor
                 Dim skip = False
 
                 For Each parameter In parameters.Parameters
-                    If argument.ToLower.RemoveChars(" ").Contains(
-                        parameter.Name.ToLower.RemoveChars(" ") + "=") Then
+                    If argument.ToLowerInvariant.RemoveChars(" ").Contains(
+                        parameter.Name.ToLowerInvariant.RemoveChars(" ") + "=") Then
 
                         skip = True
                     End If

@@ -626,7 +626,7 @@ Namespace UI
                 If iName.StartsWith("fa_") Then Continue For
                 If IsClosing Then Exit For
                 Dim symbol = DirectCast(System.Enum.Parse(GetType(Symbol), iName), Symbol)
-                Dim path = "Segoe MDL2 Assets    | " + iName.Substring(0, 1).ToUpper + " | " + iName
+                Dim path = "Segoe MDL2 Assets    | " + iName.Substring(0, 1).ToUpperInvariant + " | " + iName
                 MenuItemEx.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol).SetImage(symbol)
                 Application.DoEvents()
             Next
@@ -635,7 +635,7 @@ Namespace UI
                 If Not iName.StartsWith("fa_") Then Continue For
                 If IsClosing Then Exit For
                 Dim symbol = DirectCast(System.Enum.Parse(GetType(Symbol), iName), Symbol)
-                Dim path = "FontAwesome | " + iName.Substring(3, 1).ToUpper + " | " + iName.Substring(3).ToTitleCase.Replace("_", " ")
+                Dim path = "FontAwesome | " + iName.Substring(3, 1).ToUpperInvariant + " | " + iName.Substring(3).ToTitleCase.Replace("_", " ")
                 MenuItemEx.Add(Of Symbol)(cmsSymbol.Items, path, AddressOf HandleSymbol, symbol).SetImage(symbol)
                 Application.DoEvents()
             Next

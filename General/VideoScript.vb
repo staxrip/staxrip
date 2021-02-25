@@ -131,7 +131,7 @@ Public Class VideoScript
         If category = "" OrElse search = "" Then Return False
         Dim filter = GetFilter(category)
 
-        If filter?.Script?.ToLower.Contains(search.ToLower) AndAlso filter?.Active Then
+        If filter?.Script?.ToLowerInvariant.Contains(search.ToLowerInvariant) AndAlso filter?.Active Then
             Return True
         End If
     End Function
@@ -487,7 +487,7 @@ clipname.set_output()
     End Function
 
     Shared Function GetAVSLoadCode(script As String, scriptAlready As String) As String
-        Dim scriptLower = script.ToLower
+        Dim scriptLower = script.ToLowerInvariant
         Dim loadCode = ""
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
 
@@ -499,14 +499,14 @@ clipname.set_output()
                     For Each filterName In plugin.AvsFilterNames
                         If s.LoadAviSynthPlugins AndAlso
                             Not IsAvsPluginInAutoLoadFolder(plugin.Filename) AndAlso
-                            ContainsFunction(scriptLower, filterName.ToLower, 0) Then
+                            ContainsFunction(scriptLower, filterName.ToLowerInvariant, 0) Then
 
                             If plugin.Filename.Ext = "dll" Then
                                 Dim load = "LoadPlugin(""" + fp + """)" + BR
 
-                                If Not scriptLower.Contains(load.ToLower) AndAlso
-                                    Not loadCode.ToLower.Contains(load.ToLower) AndAlso
-                                    Not scriptAlready.ToLower.Contains(load.ToLower) Then
+                                If Not scriptLower.Contains(load.ToLowerInvariant) AndAlso
+                                    Not loadCode.ToLowerInvariant.Contains(load.ToLowerInvariant) AndAlso
+                                    Not scriptAlready.ToLowerInvariant.Contains(load.ToLowerInvariant) Then
 
                                     loadCode += load
                                 End If
@@ -514,9 +514,9 @@ clipname.set_output()
                             ElseIf plugin.Filename.Ext = "avsi" Then
                                 Dim avsiImport = "Import(""" + fp + """)" + BR
 
-                                If Not scriptLower.Contains(avsiImport.ToLower) AndAlso
+                                If Not scriptLower.Contains(avsiImport.ToLowerInvariant) AndAlso
                                     Not loadCode.Contains(avsiImport) AndAlso
-                                    Not scriptAlready.Contains(avsiImport.ToLower) Then
+                                    Not scriptAlready.Contains(avsiImport.ToLowerInvariant) Then
 
                                     loadCode += avsiImport
                                 End If
@@ -561,7 +561,6 @@ clipname.set_output()
     End Function
 
     Shared Function GetAVSLoadCodeFromImports(code As String) As String
-        'ToLowerInvariant needed for Turkish i using RegexOptions.IgnoreCase
         code = code.ToLowerInvariant
         Dim ret = ""
 

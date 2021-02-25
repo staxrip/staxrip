@@ -510,14 +510,14 @@ Public Class AV1Params
         includeExecutable As Boolean) As String
 
         Dim sb As New StringBuilder
-        Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText.ToLower()
+        Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText.ToLowerInvariant()
         Dim isSingleChunk = endFrame = 0
 
         If includePaths AndAlso includeExecutable Then
             Dim isCropped = (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
                 Decoder.ValueText <> "avs" AndAlso p.Script.IsFilterActive("Crop")
 
-            Select Case Decoder.ValueText.ToLower()
+            Select Case Decoder.ValueText.ToLowerInvariant()
                 Case "script"
                     Dim pipeString = ""
 

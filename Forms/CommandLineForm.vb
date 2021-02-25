@@ -328,7 +328,7 @@ Public Class CommandLineForm
             HighlightedControl = Nothing
         End If
 
-        Dim find = cbGoTo.Text.ToLower
+        Dim find = cbGoTo.Text.ToLowerInvariant
         Dim findNoSpace = find.Replace(" ", "")
         Dim matchedItems As New HashSet(Of Item)
 
@@ -362,7 +362,7 @@ Public Class CommandLineForm
 
                 If Not item.Param.Switches Is Nothing Then
                     For Each switch In item.Param.Switches
-                        If switch.ToLower.Contains(find) Then
+                        If switch.ToLowerInvariant.Contains(find) Then
                             matchedItems.Add(item)
                         End If
                     Next
@@ -375,19 +375,19 @@ Public Class CommandLineForm
                         For Each value In param.Options
                             Dim valueNoSpace = value.Replace(" ", "")
 
-                            If value.ToLower.Contains(find) Then
+                            If value.ToLowerInvariant.Contains(find) Then
                                 matchedItems.Add(item)
                             End If
 
-                            If valueNoSpace.ToLower.Contains(findNoSpace) Then
+                            If valueNoSpace.ToLowerInvariant.Contains(findNoSpace) Then
                                 matchedItems.Add(item)
                             End If
 
-                            If value.ToLower.Contains(findNoSpace) Then
+                            If value.ToLowerInvariant.Contains(findNoSpace) Then
                                 matchedItems.Add(item)
                             End If
 
-                            If valueNoSpace.ToLower.Contains(find) Then
+                            If valueNoSpace.ToLowerInvariant.Contains(find) Then
                                 matchedItems.Add(item)
                             End If
                         Next
@@ -397,19 +397,19 @@ Public Class CommandLineForm
                         For Each value In param.Values
                             Dim valueNoSpace = value.Replace(" ", "")
 
-                            If value.ToLower.Contains(find) Then
+                            If value.ToLowerInvariant.Contains(find) Then
                                 matchedItems.Add(item)
                             End If
 
-                            If valueNoSpace.ToLower.Contains(findNoSpace) Then
+                            If valueNoSpace.ToLowerInvariant.Contains(findNoSpace) Then
                                 matchedItems.Add(item)
                             End If
 
-                            If value.ToLower.Contains(findNoSpace) Then
+                            If value.ToLowerInvariant.Contains(findNoSpace) Then
                                 matchedItems.Add(item)
                             End If
 
-                            If valueNoSpace.ToLower.Contains(find) Then
+                            If valueNoSpace.ToLowerInvariant.Contains(find) Then
                                 matchedItems.Add(item)
                             End If
                         Next

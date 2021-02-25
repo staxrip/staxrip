@@ -212,7 +212,7 @@ Public MustInherit Class Muxer
         For Each i In files
             If g.IsSourceSameOrSimilar(i) Then
                 If Not TypeOf Me Is WebMMuxer Then
-                    Dim lower = i.ToLower
+                    Dim lower = i.ToLowerInvariant
 
                     If lower.Contains("chapters") Then
                         If TypeOf Me Is MP4Muxer Then
@@ -964,7 +964,7 @@ Public Class ffmpegMuxer
 
     Public Overrides ReadOnly Property OutputExt As String
         Get
-            Return OutputFormat.ToLower
+            Return OutputFormat.ToLowerInvariant
         End Get
     End Property
 

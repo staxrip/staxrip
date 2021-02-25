@@ -101,13 +101,13 @@ Public Class Proc
             Dim header = ""
 
             If Me.Header <> "" Then
-                header = Me.Header.ToLower
+                header = Me.Header.ToLowerInvariant
             End If
 
             Dim ret = ""
 
             For Each i In Package.Items.Values
-                If header?.Contains(i.Name.ToLower) OrElse Arguments?.Contains(i.Filename) Then
+                If header?.Contains(i.Name.ToLowerInvariant) OrElse Arguments?.Contains(i.Filename) Then
                     ret += " | " + i.Name
                 End If
             Next
@@ -121,7 +121,7 @@ Public Class Proc
     End Property
 
     Shared Function GetSkipStrings(commands As String) As String()
-        commands = commands.ToLower
+        commands = commands.ToLowerInvariant
 
         If commands.Contains("xvid_encraw") Then
             Return {"key=", "frames("}
@@ -429,7 +429,7 @@ Public Class Proc
         Dim dic = process.StartInfo.EnvironmentVariables
         dic("AviSynthDLL") = Package.AviSynth.Path
 
-        Dim keys = dic.Keys.OfType(Of String).Select(Function(key) key.ToLower)
+        Dim keys = dic.Keys.OfType(Of String).Select(Function(key) key.ToLowerInvariant)
 
         For Each mac In Macro.GetMacros(False, False)
             Dim name = mac.Name.Trim("%"c)

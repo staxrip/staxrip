@@ -212,7 +212,7 @@ Public Class ToolUpdate
 
         Dim x86 = {"_win32", "\x86", "-x86", "32-bit", "-win32"}
 
-        If Environment.Is64BitProcess AndAlso value.ToLower.ContainsAny(x86) Then
+        If Environment.Is64BitProcess AndAlso value.ToLowerInvariant.ContainsAny(x86) Then
             Return True
         End If
     End Function

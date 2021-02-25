@@ -658,7 +658,7 @@ Public Class AppsForm
             Dim searchString = pack.Name + pack.Description + pack.Version + pack.WebURL +
                 plugin?.VSFilterNames.Join(" ") + pack.Path + plugin?.AvsFilterNames.Join(" ")
 
-            If searchString?.ToLower.Contains(SearchTextBox.Text?.ToLower) Then
+            If searchString?.ToLowerInvariant.Contains(SearchTextBox.Text?.ToLowerInvariant) Then
                 If plugin Is Nothing Then
                     If pack.TreePath <> "" Then
                         Dim n = tv.AddNode(pack.TreePath + "|" + pack.Name)
@@ -880,7 +880,7 @@ Public Class AppsForm
                               Everything_GetResultFullPathName(CUInt(x), sb, CUInt(size))
                               Dim path = sb.ToString
 
-                              If path.FileName.ToLower = CurrentPackage.Filename.ToLower Then
+                              If path.FileName.ToLowerInvariant = CurrentPackage.Filename.ToLowerInvariant Then
                                   paths.Add(path)
                               End If
 

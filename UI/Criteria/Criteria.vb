@@ -97,13 +97,13 @@ Namespace UI
         Overrides Function Eval() As Boolean
             Select Case Condition
                 Case StringCondition.Contains
-                    Return PropertyValue.Lower.Contains(Value.Lower)
+                    Return PropertyValue.ToLowerInvariant.Contains(Value.ToLowerInvariant)
                 Case StringCondition.DoesntContain
-                    Return Not PropertyValue.Lower.Contains(Value.Lower)
+                    Return Not PropertyValue.ToLowerInvariant.Contains(Value.ToLowerInvariant)
                 Case StringCondition.Is
-                    Return PropertyValue.Lower = Value.Lower
+                    Return PropertyValue.ToLowerInvariant = Value.ToLowerInvariant
                 Case StringCondition.IsNot
-                    Return PropertyValue.Lower <> Value.Lower
+                    Return PropertyValue.ToLowerInvariant <> Value.ToLowerInvariant
             End Select
         End Function
 
@@ -148,7 +148,7 @@ Namespace UI
                 Return Value.ToString
             End Get
             Set(value As String)
-                If Not value Is Nothing AndAlso value.ToUpper = "TRUE" Then
+                If Not value Is Nothing AndAlso value.ToUpperInvariant = "TRUE" Then
                     Me.Value = True
                 Else
                     Me.Value = False
@@ -161,7 +161,7 @@ Namespace UI
                 Return Value.ToString
             End Get
             Set(value As String)
-                If Not value Is Nothing AndAlso value.ToUpper = "TRUE" Then
+                If Not value Is Nothing AndAlso value.ToUpperInvariant = "TRUE" Then
                     PropertyValue = True
                 Else
                     PropertyValue = False

@@ -272,7 +272,7 @@ Public Class MacrosForm
 
     Function Match(search As String, ParamArray values As String()) As Boolean
         For Each i In values
-            If i <> "" AndAlso i.ToLower.Contains(search.ToLower) Then
+            If i <> "" AndAlso i.ToLowerInvariant.Contains(search.ToLowerInvariant) Then
                 Return True
             End If
         Next

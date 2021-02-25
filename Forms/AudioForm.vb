@@ -755,7 +755,7 @@ Public Class AudioForm
             If lng.IsCommon Then
                 mbLanguage.Add(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
             Else
-                mbLanguage.Add("More | " + lng.ToString.Substring(0, 1).ToUpper + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
+                mbLanguage.Add("More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
             End If
         Next
     End Sub
@@ -1046,7 +1046,7 @@ Public Class AudioForm
                 mbStereoDownmix.Button.Value = TempProfile.Params.eac3toStereoDownmixMode
                 mbStereoDownmix.Button.SaveAction = Sub(value) TempProfile.Params.eac3toStereoDownmixMode = value
 
-                If (TempProfile.File = "" OrElse TempProfile.File.ToLower.Contains("dts") OrElse
+                If (TempProfile.File = "" OrElse TempProfile.File.ToLowerInvariant.Contains("dts") OrElse
                     (Not TempProfile.Stream Is Nothing AndAlso TempProfile.Stream.Name.Contains("DTS"))) AndAlso
                     TempProfile.Params.Codec = AudioCodec.DTS Then
 
@@ -1128,7 +1128,7 @@ Public Class AudioForm
                         End If
                 End Select
 
-                If (TempProfile.File = "" OrElse TempProfile.File.ToLower.Contains("dts") OrElse
+                If (TempProfile.File = "" OrElse TempProfile.File.ToLowerInvariant.Contains("dts") OrElse
                     (Not TempProfile.Stream Is Nothing AndAlso TempProfile.Stream.Name.Contains("DTS"))) AndAlso
                     TempProfile.Params.Codec = AudioCodec.DTS Then
 

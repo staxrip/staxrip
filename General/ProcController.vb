@@ -16,10 +16,10 @@ Public Class ProcController
     Property Button As New ButtonEx
 
     Private LogAction As Action = New Action(AddressOf LogHandler)
-    Private StatusAction As Action(Of String) = New Action(Of String)(AddressOf StatusHandler)
-    Private CustomProgressInfoSeparator As String = ", "
+    Private StatusAction As Action(Of String) = New Action(Of String)(AddressOf ProgressHandler)
+    Private ReadOnly CustomProgressInfoSeparator As String = ", "
     Private UseFirstExpression As Boolean = True
-    Private FailCounter As Integer
+    Private FailCounter As Integer = 0
 
     Shared Property Procs As New List(Of ProcController)
     Shared Property Aborted As Boolean
@@ -94,14 +94,14 @@ Public Class ProcController
         LogTextBox.Text = Proc.Log.ToString
     End Sub
 
-    Sub StatusHandler(value As String)
-        SetText(value)
+    Sub ProgressHandler(value As String)
+        SetProgressText(value)
         SetProgress(value)
     End Sub
 
     Shared LastProgress As Double
 
-    Sub SetText(value As String)
+    Sub SetProgressText(value As String)
         If Proc.IsSilent Then
             Exit Sub
         End If

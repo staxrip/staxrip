@@ -139,7 +139,7 @@ Public Class ProcController
             ElseIf Proc.Package Is Package.x265 Then
                 If UseFirstExpression Then
                     'Mod by Patman since x265 3.5-RC1
-                    pattern = "\[(\d+)(\.?\d*)%\]\s+(\d+)/(\d+)\sframes\s@\s(\d+)(\.?\d*)\sfps\s\|\s(\d+)(\.?\d*)\s([a-z]{2}/s)\s\|\s(\d+:\d+:\d+)\s\[-(\d+:\d+:\d+)\]\s\|\s(\d+)(\.\d+)\s([a-z]{1,2})\s\[(\d+)(\.\d+)\s([a-z]{1,2})\]"
+                    pattern = "\[(\d+)(\.?\d*)%\]\s+(\d+)/(\d+)\sframes\s@\s(\d+)(\.?\d*)\sfps\s\|\s(\d+)(\.?\d*)\s([a-z]{2}/s)\s\|\s(\d+:\d+:\d+)\s\[-(\d+:\d+:\d+)\]\s\|\s(\d+)(\.\d+)?\s([a-z]{1,2})\s\[(\d+)(\.\d+)?\s([a-z]{1,2})\]"
                     match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                     If match.Success Then

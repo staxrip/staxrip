@@ -514,22 +514,22 @@ Public Class AppsForm
             Dim plugin = DirectCast(CurrentPackage, PluginPackage)
 
             If Not plugin.AvsFilterNames Is Nothing AndAlso
-                Not plugin.VSFilterNames Is Nothing Then
+                Not plugin.VsFilterNames Is Nothing Then
 
                 Headers("AviSynth Filters").Visible = True
                 Contents("AviSynth Filters").Text = plugin.AvsFilterNames.Join(", ")
                 Contents("AviSynth Filters").Visible = True
 
                 Headers("VapourSynth Filters").Visible = True
-                Contents("VapourSynth Filters").Text = plugin.VSFilterNames.Join(", ")
+                Contents("VapourSynth Filters").Text = plugin.VsFilterNames.Join(", ")
                 Contents("VapourSynth Filters").Visible = True
             ElseIf Not plugin.AvsFilterNames Is Nothing Then
                 Headers("Filters").Visible = True
                 Contents("Filters").Text = plugin.AvsFilterNames.Join(", ")
                 Contents("Filters").Visible = True
-            ElseIf Not plugin.VSFilterNames Is Nothing Then
+            ElseIf Not plugin.VsFilterNames Is Nothing Then
                 Headers("Filters").Visible = True
-                Contents("Filters").Text = plugin.VSFilterNames.Join(", ")
+                Contents("Filters").Text = plugin.VsFilterNames.Join(", ")
                 Contents("Filters").Visible = True
             End If
         End If
@@ -656,7 +656,7 @@ Public Class AppsForm
             Dim plugin = TryCast(pack, PluginPackage)
 
             Dim searchString = pack.Name + pack.Description + pack.Version + pack.WebURL +
-                plugin?.VSFilterNames.Join(" ") + pack.Path + plugin?.AvsFilterNames.Join(" ")
+                plugin?.VsFilterNames.Join(" ") + pack.Path + plugin?.AvsFilterNames.Join(" ")
 
             If searchString?.ToLowerInvariant.Contains(SearchTextBox.Text?.ToLowerInvariant) Then
                 If plugin Is Nothing Then
@@ -676,7 +676,7 @@ Public Class AppsForm
                         n.Tag = pack
                     End If
 
-                    If plugin.VSFilterNames?.Length > 0 Then
+                    If plugin.VsFilterNames?.Length > 0 Then
                         Dim n = tv.AddNode("VapourSynth|" + pack.Name)
                         Nodes.Add(n)
                         n.Tag = pack

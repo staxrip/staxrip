@@ -237,8 +237,8 @@ Public Class Documentation
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
-                If Not plugin.VSFilterNames.NothingOrEmpty Then
-                    sb.Append("Filters: " + plugin.VSFilterNames.Join(", ") + BR2)
+                If Not plugin.VsFilterNames.NothingOrEmpty Then
+                    sb.Append("Filters: " + plugin.VsFilterNames.Join(", ") + BR2)
                 End If
 
                 If pack.URL <> "" Then
@@ -259,8 +259,8 @@ Public Class Documentation
 
                 Dim plugin = DirectCast(pack, PluginPackage)
 
-                If Not plugin.VSFilterNames.NothingOrEmpty Then
-                    sb.Append("Filters: " + plugin.VSFilterNames.Join(", ") + BR2)
+                If Not plugin.VsFilterNames.NothingOrEmpty Then
+                    sb.Append("Filters: " + plugin.VsFilterNames.Join(", ") + BR2)
                 End If
 
                 If pack.URL <> "" Then

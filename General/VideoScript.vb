@@ -392,8 +392,8 @@ clipname.set_output()
             Dim fp = plugin.Path
 
             If fp <> "" Then
-                If Not plugin.VSFilterNames Is Nothing Then
-                    For Each filterName In plugin.VSFilterNames
+                If Not plugin.VsFilterNames Is Nothing Then
+                    For Each filterName In plugin.VsFilterNames
                         If ContainsFunction(script, filterName, 0) Then
                             WriteVSCode(script, code, filterName, plugin)
                         End If
@@ -486,8 +486,9 @@ clipname.set_output()
         End If
     End Function
 
-    Shared Function GetAVSLoadCode(script As String, scriptAlready As String) As String
+    Shared Function GetAvsLoadCode(script As String, scriptAlready As String) As String
         Dim scriptLower = script.ToLowerInvariant
+        Dim scriptAlreadyLower = scriptAlready.ToLowerInvariant
         Dim loadCode = ""
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
 
@@ -506,19 +507,44 @@ clipname.set_output()
 
                                 If Not scriptLower.Contains(load.ToLowerInvariant) AndAlso
                                     Not loadCode.ToLowerInvariant.Contains(load.ToLowerInvariant) AndAlso
-                                    Not scriptAlready.ToLowerInvariant.Contains(load.ToLowerInvariant) Then
+                                    Not scriptAlreadyLower.Contains(load.ToLowerInvariant) Then
 
                                     loadCode += load
                                 End If
-
                             ElseIf plugin.Filename.Ext = "avsi" Then
                                 Dim avsiImport = "Import(""" + fp + """)" + BR
 
                                 If Not scriptLower.Contains(avsiImport.ToLowerInvariant) AndAlso
-                                    Not loadCode.Contains(avsiImport) AndAlso
-                                    Not scriptAlready.Contains(avsiImport.ToLowerInvariant) Then
+                                    Not loadCode.ToLowerInvariant.Contains(avsiImport.ToLowerInvariant) AndAlso
+                                    Not scriptAlreadyLower.Contains(avsiImport.ToLowerInvariant) Then
 
                                     loadCode += avsiImport
+                                End If
+
+                                If Not plugin.Dependencies.NothingOrEmpty Then
+                                    For Each iDependency In plugin.Dependencies
+                                        Dim fp2 = Package.Items.Values.OfType(Of PluginPackage).Where(Function(pack) pack.Filename = iDependency AndAlso Not pack.AvsFilterNames.NothingOrEmpty).First.Path
+
+                                        If fp2.Ext = "dll" Then
+                                            Dim load = "LoadPlugin(""" + fp2 + """)" + BR
+
+                                            If Not scriptLower.Contains(load.ToLowerInvariant) AndAlso
+                                                Not loadCode.ToLowerInvariant.Contains(load.ToLowerInvariant) AndAlso
+                                                Not scriptAlreadyLower.Contains(load.ToLowerInvariant) Then
+
+                                                loadCode += load
+                                            End If
+                                        ElseIf fp2.Ext = "avsi" Then
+                                            avsiImport = "Import(""" + fp2 + """)" + BR
+
+                                            If Not scriptLower.Contains(avsiImport.ToLowerInvariant) AndAlso
+                                                Not loadCode.ToLowerInvariant.Contains(avsiImport.ToLowerInvariant) AndAlso
+                                                Not scriptAlreadyLower.Contains(avsiImport.ToLowerInvariant) Then
+
+                                                loadCode += avsiImport
+                                            End If
+                                        End If
+                                    Next
                                 End If
                             End If
                         End If
@@ -569,7 +595,7 @@ clipname.set_output()
                 Dim match = Regex.Match(line, "\bimport\s*\(\s*""\s*(.+\.avsi*)\s*""\s*\)", RegexOptions.IgnoreCase)
 
                 If match.Success AndAlso File.Exists(match.Groups(1).Value) Then
-                    ret += GetAVSLoadCode(match.Groups(1).Value.ReadAllText, code)
+                    ret += GetAvsLoadCode(match.Groups(1).Value.ReadAllText, code)
                 End If
             End If
         Next
@@ -579,7 +605,7 @@ clipname.set_output()
 
     Shared Function ModifyAVSScript(script As String) As String
         Dim newScript As String
-        Dim loadCode = GetAVSLoadCode(script, "")
+        Dim loadCode = GetAvsLoadCode(script, "")
         newScript = loadCode + script
         newScript = GetAVSLoadCodeFromImports(newScript) + newScript
 
@@ -835,8 +861,8 @@ Public Class FilterCategory
                     filters = i.AvsFiltersFunc.Invoke
                 End If
             Else
-                If Not i.VSFiltersFunc Is Nothing Then
-                    filters = i.VSFiltersFunc.Invoke
+                If Not i.VsFiltersFunc Is Nothing Then
+                    filters = i.VsFiltersFunc.Invoke
                 End If
             End If
 

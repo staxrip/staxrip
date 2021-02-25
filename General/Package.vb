@@ -418,6 +418,7 @@ Public Class Package
         .Name = "MedianBlur2",
         .Filename = "MedianBlur2.dll",
         .WebURL = "http://avisynth.nl/index.php/MedianBlur2",
+        .DownloadURL = "https://github.com/pinterf/MedianBlur2/releases",
         .Description = "Constant time median video filter plugin.",
         .AvsFilterNames = {"MedianBlur", "MedianBlurTemporal"}})
 

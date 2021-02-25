@@ -108,39 +108,41 @@ Public Class ProcController
         value = value.Trim()
 
         If s.ProgressOutputCustomize AndAlso Not CustomProgressFailure Then
+            Dim pattern As String
+            Dim match As Match
 
             If Proc.Package Is Package.x264 Then
                 'Mod by DJATOM since x264 161, using header
-                Dim pattern = "\[\s*((\d+)\.?(\d*))%\]\s+((\d+)/(\d+))\s+((\d+)\.?(\d*))\s+((\d+)\.?(\d*))\s+(\d+:\d+:\d+)\s+(\d+:\d+:\d+)\s+((\d+)\.(\d+))\s([a-z]{1,2})\s+((\d+)\.(\d+))\s([a-z]{1,2})"
-                Dim Match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
+                pattern = "\[\s*((\d+)\.?(\d*))%\]\s+((\d+)/(\d+))\s+((\d+)\.?(\d*))\s+((\d+)\.?(\d*))\s+(\d+:\d+:\d+)\s+(\d+:\d+:\d+)\s+((\d+)\.(\d+))\s([a-z]{1,2})\s+((\d+)\.(\d+))\s([a-z]{1,2})"
+                match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
-                If Match.Success Then
-                    value = $"[{Match.Groups(2).Value,2}.{Match.Groups(3).Value}%] {Match.Groups(5).Value.PadLeft(Match.Groups(6).Value.Length)}/{Match.Groups(6).Value} frames @ {Match.Groups(8).Value}.{Match.Groups(9).Value} fps{CustomProgressInfoSeparator}{Match.Groups(11).Value,4} kb/s{CustomProgressInfoSeparator}{Match.Groups(16).Value} {Match.Groups(18).Value} ({Match.Groups(20).Value}.{Match.Groups(21).Value} {Match.Groups(22).Value}){CustomProgressInfoSeparator}{Match.Groups(13).Value} (-{Match.Groups(14).Value})"
+                If match.Success Then
+                    value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(8).Value}.{match.Groups(9).Value} fps{CustomProgressInfoSeparator}{match.Groups(11).Value,4} kb/s{CustomProgressInfoSeparator}{match.Groups(16).Value} {match.Groups(18).Value} ({match.Groups(20).Value}.{match.Groups(21).Value} {match.Groups(22).Value}){CustomProgressInfoSeparator}{match.Groups(13).Value} (-{match.Groups(14).Value})"
                 Else
                     'Mod by Patman
                     pattern = "\[((\d+)\.?(\d*))%\]\s+((\d+)/(\d+)(\sframes)),\s((\d+)\.?(\d*)(\sfps)),\s((\d+)\.?(\d*)\s([a-z]{2}/s)),\s(\d+)\.(\d+)\s([a-z]{1,2}),\seta\s(\d+:\d+:\d+),\sest\.size\s(\d+)\.(\d+)\s([a-z]{1,2})"
-                    Match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
+                    match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
-                    If Match.Success Then
-                        value = $"[{Match.Groups(2).Value,2}.{Match.Groups(3).Value}%] {Match.Groups(5).Value.PadLeft(Match.Groups(6).Value.Length)}/{Match.Groups(6).Value} frames @ {Match.Groups(9).Value}.{Match.Groups(10).Value} fps{CustomProgressInfoSeparator}{Match.Groups(13).Value,4} {Match.Groups(15).Value}{CustomProgressInfoSeparator}{Match.Groups(16).Value} {Match.Groups(18).Value} ({Match.Groups(20).Value} {Match.Groups(22).Value}){CustomProgressInfoSeparator}-{Match.Groups(19).Value}"
+                    If match.Success Then
+                        value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(9).Value}.{match.Groups(10).Value} fps{CustomProgressInfoSeparator}{match.Groups(13).Value,4} {match.Groups(15).Value}{CustomProgressInfoSeparator}{match.Groups(16).Value} {match.Groups(18).Value} ({match.Groups(20).Value} {match.Groups(22).Value}){CustomProgressInfoSeparator}-{match.Groups(19).Value}"
                     Else
                         CustomProgressFailure = True
                     End If
                 End If
             ElseIf Proc.Package Is Package.x265 Then
-                'Mod by DJATOM since x265 3.4+65, including progress-frames
-                Dim pattern = "\[((\d+)\.?(\d*))%\]\s+((\d+)(\(\d+\))?/(\d+)(\sframes)),\s((\d+)\.?(\d*)(\sfps)),\s((\d+)\.?(\d*)\s([a-z]{2}/s)),\selapsed:\s(\d+:\d+:\d+),\seta:\s(\d+:\d+:\d+),\ssize:\s(\d+)\.(\d+)\s([a-z]{1,2}),\sest\.\ssize:\s(\d+)\.(\d+)\s([a-z]{1,2})"
-                Dim match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
+                'Mod by Patman since x265 3.5-RC1
+                pattern = "\[(\d+)(\.?\d*)%\]\s+(\d+)/(\d+)\sframes\s@\s(\d+)(\.?\d*)\sfps\s\|\s(\d+)(\.?\d*)\s([a-z]{2}/s)\s\|\s(\d+:\d+:\d+)\s\[-(\d+:\d+:\d+)\]\s\|\s(\d+)(\.\d+)\s([a-z]{1,2})\s\[(\d+)(\.\d+)\s([a-z]{1,2})\]"
+                match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                 If match.Success Then
-                    value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(7).Value.Length)}{match.Groups(6).Value}/{match.Groups(7).Value} frames @ {match.Groups(10).Value}.{match.Groups(11).Value} fps{CustomProgressInfoSeparator}{match.Groups(14).Value,4} {match.Groups(16).Value}{CustomProgressInfoSeparator}{match.Groups(19).Value} {match.Groups(21).Value} ({match.Groups(22).Value} {match.Groups(24).Value}){CustomProgressInfoSeparator}{match.Groups(17).Value} (-{match.Groups(18).Value})"
+                    value = $"[{match.Groups(1).Value,2}{match.Groups(2).Value}%] {match.Groups(3).Value.PadLeft(match.Groups(4).Value.Length)}/{match.Groups(4).Value} frames @ {match.Groups(5).Value}{match.Groups(6).Value} fps{CustomProgressInfoSeparator}{match.Groups(7).Value,4} {match.Groups(9).Value}{CustomProgressInfoSeparator}{match.Groups(12).Value}{match.Groups(13).Value} {match.Groups(14).Value} ({match.Groups(15).Value} {match.Groups(17).Value}){CustomProgressInfoSeparator}{match.Groups(10).Value} (-{match.Groups(11).Value})"
                 Else
-                    'Mod by Patman since x265 3.5-RC1
-                    pattern = "\[(\d+)(\.?\d*)%\]\s+(\d+)/(\d+)\sframes\s@\s(\d+)(\.?\d*)\sfps\s\|\s(\d+)(\.?\d*)\s([a-z]{2}/s)\s\|\s(\d+:\d+:\d+)\s\[-(\d+:\d+:\d+)\]\s\|\s(\d+)(\.\d+)\s([a-z]{1,2})\s\[(\d+)(\.\d+)\s([a-z]{1,2})\]"
+                    'Mod by DJATOM since x265 3.4+65, including progress-frames
+                    pattern = "\[((\d+)\.?(\d*))%\]\s+((\d+)(\(\d+\))?/(\d+)(\sframes)),\s((\d+)\.?(\d*)(\sfps)),\s((\d+)\.?(\d*)\s([a-z]{2}/s)),\selapsed:\s(\d+:\d+:\d+),\seta:\s(\d+:\d+:\d+),\ssize:\s(\d+)\.(\d+)\s([a-z]{1,2}),\sest\.\ssize:\s(\d+)\.(\d+)\s([a-z]{1,2})"
                     match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                     If match.Success Then
-                        value = $"[{match.Groups(1).Value,2}{match.Groups(2).Value}%] {match.Groups(3).Value.PadLeft(match.Groups(4).Value.Length)}/{match.Groups(4).Value} frames @ {match.Groups(5).Value}{match.Groups(6).Value} fps{CustomProgressInfoSeparator}{match.Groups(7).Value,4} {match.Groups(9).Value}{CustomProgressInfoSeparator}{match.Groups(12).Value}{match.Groups(13).Value} {match.Groups(14).Value} ({match.Groups(15).Value} {match.Groups(17).Value}){CustomProgressInfoSeparator}{match.Groups(10).Value} (-{match.Groups(11).Value})"
+                        value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(7).Value.Length)}{match.Groups(6).Value}/{match.Groups(7).Value} frames @ {match.Groups(10).Value}.{match.Groups(11).Value} fps{CustomProgressInfoSeparator}{match.Groups(14).Value,4} {match.Groups(16).Value}{CustomProgressInfoSeparator}{match.Groups(19).Value} {match.Groups(21).Value} ({match.Groups(22).Value} {match.Groups(24).Value}){CustomProgressInfoSeparator}{match.Groups(17).Value} (-{match.Groups(18).Value})"
                     Else
                         CustomProgressFailure = True
                     End If

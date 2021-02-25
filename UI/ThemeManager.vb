@@ -51,6 +51,18 @@
         End Get
     End Property
 
+    Public Shared ReadOnly Property ColorCategories As Tuple(Of String, Integer, Integer)()
+        Get
+            Return _colorCategories
+        End Get
+    End Property
+
+    Public Shared ReadOnly Property LumaCategories As KeyValuePair(Of String, Single)()
+        Get
+            Return _lumaCategories
+        End Get
+    End Property
+
 
     Private Sub ThemeManager()
     End Sub

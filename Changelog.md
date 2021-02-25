@@ -2,9 +2,13 @@
 2.1.8.5 Beta (2021-02-??)
 =========================
 
+- x265 --selective-sao default set to 0 (Dendraspis, [#546](/../../issues/546))
+
+
 2.1.8.4 Beta (2021-02-25)
 =========================
 
+- Customized progress text support newest x265 3.5 RC1 build by Patman (Dendraspis)
 - QTGMC 3.377
 - Zs_RF_Shared 1.143
 - TIVTC 1.0.26

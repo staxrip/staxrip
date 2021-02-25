@@ -5,6 +5,7 @@
 - x265 --selective-sao default set to 0 (Dendraspis, [#546](/../../issues/546))
 - Encoder dialogs allow using 1:1 for --sar (stax76, [#546](/../../issues/546))
 - Customized progress text fix for new Patman build (Dendraspis)
+- SMDegrain 3.1.2.111s
 
 
 2.1.8.4 Beta (2021-02-25)

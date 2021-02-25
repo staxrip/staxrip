@@ -2,8 +2,8 @@
     Private Shared _current As Theme
     Private Shared _themes As List(Of Theme)
     Private Shared _lumaCategories() As KeyValuePair(Of String, Single) = {
-        New KeyValuePair(Of String, Single)("Black", 0.0),
-        New KeyValuePair(Of String, Single)("Darker", 0.05),
+        New KeyValuePair(Of String, Single)("Black", 0.01),
+        New KeyValuePair(Of String, Single)("Darker", 0.06),
         New KeyValuePair(Of String, Single)("Dark", 0.11),
         New KeyValuePair(Of String, Single)("Not So Dark", 0.16),
         New KeyValuePair(Of String, Single)("Almost Dark", 0.21),
@@ -106,8 +106,8 @@
             _backLuma = Mathf.Clamp01(backLuma)
             _accentSat = _accentSatDefault - _backLuma / 2
 
-            Dim _backColor As ColorHSL = New ColorHSL(_baseHue, 0.0333, _backLuma, 1)
-            Dim _foreColor As ColorHSL = New ColorHSL(_baseHue, 0.0333, 0.7D - (_backLumaDefault - _backLuma), 1)
+            Dim _backColor As ColorHSL = New ColorHSL(_baseHue, 0.01, _backLuma, 1)
+            Dim _foreColor As ColorHSL = New ColorHSL(_baseHue, 0.03, 0.7D - (_backLumaDefault - _backLuma), 1)
             Dim _accentColor As ColorHSL = New ColorHSL(_baseHue, _accentSat, 0.525D - (_backLumaDefault - _backLuma / 2), 1)
 
             Dim _backSelectedColor As ColorHSL = New ColorHSL(_baseHue, _accentColor.S - _backLuma / 4, _accentColor.L - 0.2D, 1)

@@ -1090,8 +1090,8 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--field", .NoSwitch = "--no-field", .Text = "Field Coding"},
                     New BoolParam With {.Switch = "--frame-dup", .Text = "Adaptive frame duplication"})
                 Add("Loop Filter", Deblock, DeblockA, DeblockB, SAO,
-                    New NumParam With {.Switch = "--selective-sao", .Text = "Selective SAO", .Init = 0, .Config = {0, 4}},
                     New BoolParam With {.Switch = "--limit-sao", .Text = "Limit Sample Adaptive Offset"},
+                    New NumParam With {.Switch = "--selective-sao", .Text = "Selective SAO", .Init = 0, .Config = {0, 4}},
                     SAOnonDeblock)
                 Add("Other",
                     New StringParam With {.Switch = "--lambda-file", .Text = "Lambda File", .BrowseFile = True},

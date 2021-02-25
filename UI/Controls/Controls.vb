@@ -743,7 +743,6 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnCheckedChanged(e As EventArgs)
-            'ImageIndex = If(Checked, 1, 0)
             MyBase.OnCheckedChanged(e)
         End Sub
     End Class
@@ -752,8 +751,6 @@ Namespace UI
         Inherits ComboBox
 
         Sub New()
-            MyBase.FlatStyle = FlatStyle.Flat
-
             ApplyTheme()
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
@@ -769,6 +766,7 @@ Namespace UI
         Sub ApplyTheme(theme As Theme)
             SuspendLayout()
             BackColor = theme.General.Controls.ComboBox.BackColor
+            FlatStyle = theme.General.Controls.ComboBox.FlatStyle
             ForeColor = theme.General.Controls.ComboBox.ForeColor
             ResumeLayout()
         End Sub

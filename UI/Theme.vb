@@ -441,9 +441,10 @@ Public Class Theme
 
         <Serializable>
         Public Class ComboBoxThemeColors
-            Public Property BackColor As ColorHSL = SystemColors.Control
+            Public Property BackColor As ColorHSL = SystemColors.Window
             Public Property BackHighlightColor As ColorHSL = _defaultBackHighlightColor
             Public Property BorderColor As ColorHSL = SystemColors.ActiveBorder
+            Public Property FlatStyle As FlatStyle = FlatStyle.Standard
             Public Property ForeColor As ColorHSL = SystemColors.ControlText
             Public Property ForeHighlightColor As ColorHSL = ForeColor
         End Class

@@ -178,6 +178,7 @@
                         .BackColor = _backColor.AddLuminance(0.1),
                         .BackHighlightColor = _controlBackHighlightColor,
                         .BorderColor = Color.Transparent,
+                        .FlatStyle = FlatStyle.Flat,
                         .ForeColor = _foreColor,
                         .ForeHighlightColor = .ForeColor.AddLuminance(0.15)
                     },
@@ -398,7 +399,6 @@
                 .ProcessButtonForeColor = _foreColor,
                 .ProcessButtonForeSelectedColor = _foreColor.AddLuminance(0.25)
             }
-
 
         End Sub
 

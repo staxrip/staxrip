@@ -3,6 +3,7 @@
 =========================
 
 - x265 --selective-sao default set to 0 (Dendraspis, [#546](/../../issues/546))
+- Encoder dialogs allow using 1:1 for --sar (stax76, [#546](/../../issues/546))
 
 
 2.1.8.4 Beta (2021-02-25)

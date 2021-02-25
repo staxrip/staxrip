@@ -68,7 +68,11 @@ Namespace CommandLine
         Function GetSAR() As String
             Dim param = GetStringParam("--sar")
 
-            If Not param Is Nothing AndAlso param.Value <> "" Then
+            If param?.Value <> "" Then
+                If param.Value.Trim.EqualsAny("1:1", "1/1", "1") Then
+                    Return "--sar 1:1"
+                End If
+
                 Dim targetPAR = Calc.GetTargetPAR
                 Dim val = Calc.ParseCustomAR(param.Value, targetPAR.X, targetPAR.Y)
                 Dim isInTolerance = val = targetPAR AndAlso Not Calc.IsARSignalingRequired

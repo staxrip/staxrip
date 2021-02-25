@@ -5,6 +5,7 @@
 - QTGMC 3.377
 - Zs_RF_Shared 1.143
 - TIVTC 1.0.26
+- MedianBlur2 1.1
 
 
 2.1.8.3 Beta (2021-02-24)

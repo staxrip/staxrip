@@ -525,16 +525,20 @@ Public Class x265Params
     Property qpstep As New NumParam With {
         .Switch = "--qpstep",
         .Text = "QP Step",
-        .Init = 4}
+        .Init = 4,
+        .Config = {1, 70, 1, 0}}
 
     Property qpmin As New NumParam With {
         .Switch = "--qpmin",
-        .Text = "QP Minimum"}
+        .Text = "QP Minimum",
+        .Init = 0,
+        .Config = {0, 68, 1, 0}}
 
     Property qpmax As New NumParam With {
         .Switch = "--qpmax",
         .Text = "QP Maximum",
-        .Init = 69}
+        .Init = 69,
+        .Config = {1, 69, 1, 0}}
 
     Property TUintra As New NumParam With {
         .Switch = "--tu-intra-depth",

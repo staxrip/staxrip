@@ -8,7 +8,7 @@
 - Customized progress text fix for new Patman build (Dendraspis)
 - When a video encoder default value was changed, a compatibility issue
   with old settings was happening, this is finally fixed, but could only
-  be achieved by reseting all video encoder options (stax76, [#546](/../../issues/546))
+  be achieved by resetting all video encoder options (stax76, [#546](/../../issues/546))
 - SMDegrain 3.1.2.111s
 
 

@@ -1,5 +1,6 @@
 ﻿
 Imports System.Text
+
 Imports StaxRip.UI
 
 Namespace CommandLine
@@ -270,8 +271,14 @@ Namespace CommandLine
 
                 ValueValue = value
 
-                If Not Store Is Nothing AndAlso value <> InitialValue Then
-                    Store.Bool(GetKey) = value
+                If Not Store Is Nothing Then
+                    If value = InitialValue Then
+                        If Store.Bool.ContainsKey(GetKey) Then
+                            Store.Bool.Remove(GetKey)
+                        End If
+                    Else
+                        Store.Bool(GetKey) = value
+                    End If
                 End If
 
                 If Not CheckBox Is Nothing Then
@@ -365,8 +372,14 @@ Namespace CommandLine
 
                 ValueValue = value
 
-                If Not Store Is Nothing AndAlso value <> InitialValue Then
-                    Store.Double(GetKey) = value
+                If Not Store Is Nothing Then
+                    If value = InitialValue Then
+                        If Store.Double.ContainsKey(GetKey) Then
+                            Store.Double.Remove(GetKey)
+                        End If
+                    Else
+                        Store.Double(GetKey) = value
+                    End If
                 End If
 
                 If Not NumEdit Is Nothing Then
@@ -478,8 +491,14 @@ Namespace CommandLine
 
                 ValueValue = value
 
-                If Not Store Is Nothing AndAlso value <> InitialValue Then
-                    Store.Int(GetKey) = value
+                If Not Store Is Nothing Then
+                    If value = InitialValue Then
+                        If Store.Int.ContainsKey(GetKey) Then
+                            Store.Int.Remove(GetKey)
+                        End If
+                    Else
+                        Store.Int(GetKey) = value
+                    End If
                 End If
 
                 If Not MenuButton Is Nothing Then
@@ -624,8 +643,14 @@ Namespace CommandLine
 
                 ValueValue = value
 
-                If Not Store Is Nothing AndAlso value <> InitialValue Then
-                    Store.String(GetKey) = value
+                If Not Store Is Nothing Then
+                    If value = InitialValue Then
+                        If Store.String.ContainsKey(GetKey) Then
+                            Store.String.Remove(GetKey)
+                        End If
+                    Else
+                        Store.String(GetKey) = value
+                    End If
                 End If
 
                 If Not TextEdit Is Nothing Then

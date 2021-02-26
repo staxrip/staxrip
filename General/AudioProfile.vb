@@ -1178,6 +1178,10 @@ Public Class GUIAudioProfile
                 sb.Append($" -analyzeduration {Params.AnalyzeDuration}M")
             End If
 
+            If File.Ext.EqualsAny("avs", "vpy") Then
+                sb.Append(" -vn")
+            End If
+
             sb.Append(" -i " + File.Escape)
         Else
             sb.Append("ffmpeg")

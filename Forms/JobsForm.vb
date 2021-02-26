@@ -185,7 +185,6 @@ Friend Class JobsForm
 
     Private FileWatcher As New FileSystemWatcher
     Private IsLoading As Boolean
-    Private Tip As String = "The job list can be processed by multiple StaxRip instances in parallel."
     Private BlockSave As Boolean
 
     Sub New()
@@ -385,7 +384,6 @@ Friend Class JobsForm
             Exit Sub
         End If
 
-        Documentation.ShowTip(Tip)
         Close()
 
         If g.IsJobProcessing Then
@@ -425,10 +423,6 @@ Friend Class JobsForm
         AddHandler lv.ItemsChanged, AddressOf HandleItemsChanged
 
         UpdateControls()
-    End Sub
-
-    Sub JobsForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        MsgInfo(Tip)
     End Sub
 
     Sub ShowForm()

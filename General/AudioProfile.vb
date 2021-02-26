@@ -1183,7 +1183,7 @@ Public Class GUIAudioProfile
             sb.Append("ffmpeg")
         End If
 
-        If Not Stream Is Nothing AndAlso Streams.Count > 1 Then
+        If Not Stream Is Nothing Then
             sb.Append(" -map 0:a:" & Stream.Index)
         End If
 

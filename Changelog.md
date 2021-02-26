@@ -9,6 +9,7 @@
 - When a video encoder default value was changed, a compatibility issue
   with old settings was happening, this is finally fixed, but could only
   be achieved by resetting all video encoder options (stax76, [#546](/../../issues/546))
+- Fix issue with ffmpeg AAC encoding (stax76, [#548](/../../issues/548))
 - SMDegrain 3.1.2.111s
 
 

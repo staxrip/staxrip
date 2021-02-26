@@ -107,7 +107,7 @@ Public Class ApplicationSettings
             Storage = New ObjectStorage
         End If
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 196) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 201) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else

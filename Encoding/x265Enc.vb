@@ -1,4 +1,5 @@
 ﻿
+Imports System.Runtime.Serialization
 Imports System.Text
 
 Imports StaxRip.CommandLine
@@ -147,7 +148,7 @@ Public Class x265Enc
         End If
 
         Dim newParams As New x265Params
-        Dim newStore = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
+        Dim newStore = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(newStore)
 
         Dim enc As New x265Enc
@@ -211,7 +212,7 @@ Public Class x265Enc
 
     Overrides Sub ShowConfigDialog()
         Dim newParams As New x265Params
-        Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
+        Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
         newParams.ApplyPresetDefaultValues()
         newParams.ApplyTuneDefaultValues()
@@ -226,7 +227,7 @@ Public Class x265Enc
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of x265Enc)(Me)
                                         Dim params2 As New x265Params
-                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
+                                        Dim store2 = ObjectHelp.GetCopy(store)
                                         params2.Init(store2)
                                         enc.Params = params2
                                         enc.ParamsStore = store2

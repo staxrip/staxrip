@@ -5,7 +5,6 @@ Imports System.Management
 Imports System.Reflection
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Text
-Imports System.Text.RegularExpressions
 
 Imports Microsoft.VisualBasic.FileIO
 

@@ -31,6 +31,7 @@ Namespace CommandLine
 
         Protected Sub Add(path As String, ParamArray items As CommandLineParam())
             For Each i In items
+                i.WasInitialValueSet = True
                 i.Path = path
                 ItemsValue.Add(i)
             Next
@@ -111,6 +112,7 @@ Namespace CommandLine
         Property HelpSwitch As String
         Property HintText As String
         Property ImportAction As Action(Of String, String)
+        Property WasInitialValueSet As Boolean
         Property Label As String
         Property LeftMargin As Double
         Property Name As String
@@ -197,17 +199,14 @@ Namespace CommandLine
     Public Class BoolParam
         Inherits CommandLineParam
 
-        Property DefaultValue As Boolean
         Property CheckBox As CheckBox
+        Property DefaultValue As Boolean
+        Property InitialValue As Boolean
         Property IntegerValue As Boolean
 
         Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
-
-            If Not store.Bool.ContainsKey(GetKey) Then
-                store.Bool(GetKey) = ValueValue
-            End If
         End Sub
 
         Overloads Sub InitParam(cb As CheckBox)
@@ -257,12 +256,21 @@ Namespace CommandLine
 
         Property Value As Boolean
             Get
-                Return Store.Bool(GetKey)
+                If Store.Bool.ContainsKey(GetKey) Then
+                    Return Store.Bool(GetKey)
+                Else
+                    Return InitialValue
+                End If
             End Get
             Set(value As Boolean)
+                If Not WasInitialValueSet Then
+                    InitialValue = value
+                    WasInitialValueSet = True
+                End If
+
                 ValueValue = value
 
-                If Not Store Is Nothing Then
+                If Not Store Is Nothing AndAlso value <> InitialValue Then
                     Store.Bool(GetKey) = value
                 End If
 
@@ -287,8 +295,9 @@ Namespace CommandLine
     Public Class NumParam
         Inherits CommandLineParam
 
-        Property NumEdit As NumEdit
         Property DefaultValue As Double
+        Property InitialValue As Double
+        Property NumEdit As NumEdit
 
         Private ConfigValue As Double()
 
@@ -323,13 +332,9 @@ Namespace CommandLine
                                          End Sub
         End Sub
 
-        Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
+        Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
-
-            If Not store.Double.ContainsKey(GetKey) Then
-                store.Double(GetKey) = ValueValue
-            End If
         End Sub
 
         Sub ValueChanged(ne As NumEdit)
@@ -346,12 +351,21 @@ Namespace CommandLine
 
         Property Value As Double
             Get
-                Return Store.Double(GetKey)
+                If Store.Double.ContainsKey(GetKey) Then
+                    Return Store.Double(GetKey)
+                Else
+                    Return InitialValue
+                End If
             End Get
             Set(value As Double)
+                If Not WasInitialValueSet Then
+                    InitialValue = value
+                    WasInitialValueSet = True
+                End If
+
                 ValueValue = value
 
-                If Not Store Is Nothing Then
+                If Not Store Is Nothing AndAlso value <> InitialValue Then
                     Store.Double(GetKey) = value
                 End If
 
@@ -389,11 +403,12 @@ Namespace CommandLine
     Public Class OptionParam
         Inherits CommandLineParam
 
+        Property DefaultValue As Integer
+        Property InitialValue As Integer
+        Property IntegerValue As Boolean
+        Property MenuButton As MenuButton
         Property Options As String()
         Property Values As String()
-        Property MenuButton As MenuButton
-        Property DefaultValue As Integer
-        Property IntegerValue As Boolean
 
         Sub ShowOption(value As Integer, visible As Boolean)
             If Not MenuButton Is Nothing Then
@@ -413,13 +428,9 @@ Namespace CommandLine
                                             End Sub
         End Sub
 
-        Public Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
+        Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
-
-            If Not store.Int.ContainsKey(GetKey) Then
-                store.Int(GetKey) = ValueValue
-            End If
         End Sub
 
         ReadOnly Property OptionText As String
@@ -447,13 +458,27 @@ Namespace CommandLine
 
         Property Value As Integer
             Get
-                Dim ret = Store.Int(GetKey)
-                If ret > Options.Length - 1 Then ret = Options.Length - 1
-                Return ret
+                If Store.Int.ContainsKey(GetKey) Then
+                    Dim ret = Store.Int(GetKey)
+
+                    If ret > Options.Length - 1 Then
+                        ret = Options.Length - 1
+                    End If
+
+                    Return ret
+                Else
+                    Return InitialValue
+                End If
             End Get
             Set(value As Integer)
+                If Not WasInitialValueSet Then
+                    InitialValue = value
+                    WasInitialValueSet = True
+                End If
+
                 ValueValue = value
-                If Not Store Is Nothing Then
+
+                If Not Store Is Nothing AndAlso value <> InitialValue Then
                     Store.Int(GetKey) = value
                 End If
 
@@ -502,15 +527,16 @@ Namespace CommandLine
     Public Class StringParam
         Inherits CommandLineParam
 
-        Property DefaultValue As String
-        Property TextEdit As TextEdit
-        Property Quotes As QuotesMode
-        Property RemoveSpace As Boolean
-        Property InitAction As Action(Of SimpleUI.TextBlock)
         Property BrowseFileFilter As String
         Property BrowseFolderText As String
-        Property Menu As String
+        Property DefaultValue As String
         Property Expand As Boolean = True
+        Property InitAction As Action(Of SimpleUI.TextBlock)
+        Property InitialValue As String
+        Property Menu As String
+        Property Quotes As QuotesMode
+        Property RemoveSpace As Boolean
+        Property TextEdit As TextEdit
 
         WriteOnly Property BrowseFile As Boolean
             Set(value As Boolean)
@@ -518,13 +544,9 @@ Namespace CommandLine
             End Set
         End Property
 
-        Overloads Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
+        Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
-
-            If Not store.String.ContainsKey(GetKey) Then
-                store.String(GetKey) = ValueValue
-            End If
         End Sub
 
         Overloads Sub InitParam(te As SimpleUI.TextBlock)
@@ -588,12 +610,21 @@ Namespace CommandLine
 
         Property Value As String
             Get
-                Return Store.String(GetKey)
+                If Store.String.ContainsKey(GetKey) Then
+                    Return Store.String(GetKey)
+                Else
+                    Return InitialValue
+                End If
             End Get
             Set(value As String)
+                If Not WasInitialValueSet Then
+                    InitialValue = value
+                    WasInitialValueSet = True
+                End If
+
                 ValueValue = value
 
-                If Not Store Is Nothing Then
+                If Not Store Is Nothing AndAlso value <> InitialValue Then
                     Store.String(GetKey) = value
                 End If
 

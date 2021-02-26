@@ -5,6 +5,9 @@
 - x265 --selective-sao default set to 0 (Dendraspis, [#546](/../../issues/546))
 - Encoder dialogs allow using 1:1 for --sar (stax76, [#546](/../../issues/546))
 - Customized progress text fix for new Patman build (Dendraspis)
+- When a video encoder default value was changed, a compatibility issue
+  with old settings was happening, this is finally fixed, but could only
+  be achieved by reseting all video encoder options (stax76, [#546](/../../issues/546))
 - SMDegrain 3.1.2.111s
 
 

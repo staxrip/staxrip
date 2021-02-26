@@ -350,7 +350,6 @@ Public MustInherit Class VideoEncoder
 
         ret.Add(New x264Enc)
         ret.Add(New x265Enc)
-
         ret.Add(New aomenc)
         ret.Add(New Rav1e)
         ret.Add(New SVTAV1)

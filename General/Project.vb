@@ -147,7 +147,9 @@ Public Class Project
         If SourceFiles Is Nothing Then SourceFiles = New List(Of String)
         If AudioTracks Is Nothing Then AudioTracks = New List(Of AudioProfile)
 
-        If Check(VideoEncoder, "Video Encoder", 75) Then VideoEncoder = New x265Enc
+        If Check(VideoEncoder, "Video Encoder", 80) Then
+            VideoEncoder = New x265Enc
+        End If
 
         If Check(Audio0, "Audio Track 1", 36) Then
             Audio0 = New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 250}

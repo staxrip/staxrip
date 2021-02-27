@@ -260,7 +260,8 @@ Public Class QSVEnc
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
 
-                    Add("Basic", Mode, Decoder, Codec,
+                    Add("Basic",
+                        Mode, Decoder, Codec,
                         New OptionParam With {.Switch = "--quality", .Text = "Preset", .Options = {"Best", "Higher", "High", "Balanced", "Fast", "Faster", "Fastest"}, .Init = 3},
                         New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileH264", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "Baseline", "Main", "High"}},
                         New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileH265", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "Main", "Main 10"}},
@@ -352,20 +353,6 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"},
                         New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"},
                         New BoolParam With {.Switch = "--timecode", .Text = "Output timecode file"})
-
-                    For Each item In ItemsValue
-                        If item.HelpSwitch <> "" Then
-                            Continue For
-                        End If
-
-                        Dim switches = item.GetSwitches
-
-                        If switches.NothingOrEmpty Then
-                            Continue For
-                        End If
-
-                        item.HelpSwitch = switches(0)
-                    Next
                 End If
 
                 Return ItemsValue

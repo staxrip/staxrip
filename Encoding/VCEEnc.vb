@@ -162,6 +162,7 @@ Public Class VCEEnc
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
+
                     Add("Basic", Decoder, Mode, Codec,
                         New OptionParam With {.Switch = "--quality", .Text = "Preset", .Options = {"Fast", "Balanced", "Slow"}, .Init = 1},
                         New OptionParam With {.Switch = "--profile", .Name = "profile264", .VisibleFunc = Function() Codec.ValueText = "h264", .Text = "Profile", .Options = {"Automatic", "Baseline", "Main", "High"}},
@@ -199,20 +200,6 @@ Public Class VCEEnc
                         New OptionParam With {.Switch = "--motion-est", .Text = "Motion Estimation", .Options = {"Q-pel", "Full-pel", "Half-pel"}},
                         New BoolParam With {.Switch = "--chapter-copy", .Text = "Copy Chapters"},
                         New BoolParam With {.Switch = "--filler", .Text = "Use filler data"})
-
-                    For Each item In ItemsValue
-                        If item.HelpSwitch <> "" Then
-                            Continue For
-                        End If
-
-                        Dim switches = item.GetSwitches
-
-                        If switches.NothingOrEmpty Then
-                            Continue For
-                        End If
-
-                        item.HelpSwitch = switches(0)
-                    Next
                 End If
 
                 Return ItemsValue

@@ -1,5 +1,4 @@
 ﻿
-Imports System.Runtime.Serialization
 Imports System.Text
 
 Imports StaxRip.CommandLine
@@ -1115,20 +1114,6 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--constrained-intra", .NoSwitch = "--no-constrained-intra", .Switches = {"--cip"}, .Text = "Constrained Intra Prediction", .Init = False},
                     New BoolParam With {.Switch = "--lowpass-dct", .Text = "Lowpass DCT"})
                 Add("Custom", Custom, CustomFirstPass, CustomLastPass, CustomNthPass)
-
-                For Each item In ItemsValue
-                    If item.HelpSwitch <> "" Then
-                        Continue For
-                    End If
-
-                    Dim switches = item.GetSwitches
-
-                    If switches.NothingOrEmpty Then
-                        Continue For
-                    End If
-
-                    item.HelpSwitch = switches(0)
-                Next
 
                 ItemsValue = ItemsValue.OrderBy(Function(i) i.Weight).ToList
             End If

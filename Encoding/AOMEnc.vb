@@ -467,21 +467,8 @@ Public Class AV1Params
                     New StringParam With {.Switch = "--annexb", .Text = "Save as Annex-B", .Quotes = QuotesMode.Auto})
 
                 Add("Custom",
-                    CustomFirstPass, CustomSecondPass)
-
-                For Each item In ItemsValue
-                    If item.HelpSwitch <> "" Then
-                        Continue For
-                    End If
-
-                    Dim switches = item.GetSwitches
-
-                    If switches.NothingOrEmpty Then
-                        Continue For
-                    End If
-
-                    item.HelpSwitch = switches(0)
-                Next
+                    CustomFirstPass,
+                    CustomSecondPass)
             End If
 
             Return ItemsValue

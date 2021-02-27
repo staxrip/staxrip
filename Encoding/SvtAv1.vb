@@ -128,20 +128,6 @@ Public Class SVTAV1
                         New OptionParam With {.Switch = "--irefresh-type", .Text = "Intra Refresh Type", .Options = {"1: CRA (Open GOP)", "2: IDR (Closed GOP)"}, .Values = {"1", "2"}},
                         New NumParam With {.Switch = "--keyint", .Text = "Intra Period", .Init = -1, .Config = {-2, 255, 1}},
                         New NumParam With {.Switch = "-q", .Text = "QP", .Init = 50, .Config = {0, 63, 1}})
-
-                    For Each item In ItemsValue
-                        If item.HelpSwitch <> "" Then
-                            Continue For
-                        End If
-
-                        Dim switches = item.GetSwitches
-
-                        If switches.NothingOrEmpty Then
-                            Continue For
-                        End If
-
-                        item.HelpSwitch = switches(0)
-                    Next
                 End If
 
                 Return ItemsValue

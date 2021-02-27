@@ -439,6 +439,7 @@ Public Class NVEnc
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
+
                     Add("Basic",
                         Mode, Codec,
                         New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Init = 6, .Options = {"Default", "Quality", "Performance", "P1 (Performance)", "P2", "P3", "P4 (Default)", "P5", "P6", "P7 (Quality)"}, .Values = {"default", "quality", "performance", "P1", "P2", "P3", "P4", "P5", "P6", "P7"}},
@@ -609,20 +610,6 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--device", .HelpSwitch = "-d", .Text = "Device", .Config = {0, 4}},
                         New BoolParam With {.Switch = "--deblock", .NoSwitch = "--no-deblock", .Text = "Deblock", .Init = True},
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"})
-
-                    For Each item In ItemsValue
-                        If item.HelpSwitch <> "" Then
-                            Continue For
-                        End If
-
-                        Dim switches = item.GetSwitches
-
-                        If switches.NothingOrEmpty Then
-                            Continue For
-                        End If
-
-                        item.HelpSwitch = switches(0)
-                    Next
                 End If
 
                 Return ItemsValue

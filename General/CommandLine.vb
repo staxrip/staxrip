@@ -34,6 +34,15 @@ Namespace CommandLine
             For Each i In items
                 i.WasInitialValueSet = True
                 i.Path = path
+
+                If i.HelpSwitch = "" Then
+                    Dim switches = i.GetSwitches
+
+                    If Not switches.NothingOrEmpty Then
+                        i.HelpSwitch = switches(0)
+                    End If
+                End If
+
                 ItemsValue.Add(i)
             Next
         End Sub

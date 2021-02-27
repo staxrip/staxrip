@@ -210,7 +210,8 @@ Public Class ffmpegEnc
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
 
-                    ItemsValue.AddRange({Decoder, Codec, Mode,
+                    Add("Main",
+                        Decoder, Codec, Mode,
                         New OptionParam With {.Name = "x264/x265 preset", .Text = "Preset", .Switch = "-preset", .Init = 5, .Options = {"Ultrafast", "Superfast", "Veryfast", "Faster", "Fast", "Medium", "Slow", "Slower", "Veryslow", "Placebo"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
                         New OptionParam With {.Name = "x264/x265 tune", .Text = "Tune", .Switch = "-tune", .Options = {"None", "Film", "Animation", "Grain", "Stillimage", "Psnr", "Ssim", "Fastdecode", "Zerolatency"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
                         New OptionParam With {.Switch = "-profile:v", .Text = "Profile", .VisibleFunc = Function() Codec.OptionText = "ProRes", .Init = 3, .IntegerValue = True, .Options = {"Proxy", "LT", "Normal", "HQ"}},
@@ -231,7 +232,7 @@ Public Class ffmpegEnc
                         New NumParam With {.Switch = "-lag-in-frames", .Text = "Lag In Frames", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 25, .DefaultValue = -1},
                         New BoolParam With {.Name = "h264_qsv Lookahead", .Text = "Lookahead", .Switch = "-look_ahead 1", .NoSwitch = "-look_ahead 0", .Value = False, .DefaultValue = True, .VisibleFunc = Function() Codec.ValueText = "h264_qsv"},
                         New BoolParam With {.Name = "h264_qsv VCM", .Text = "VCM", .Switch = "-vcm 1", .NoSwitch = "-vcm 0", .Value = False, .DefaultValue = True, .VisibleFunc = Function() Codec.ValueText = "h264_qsv"},
-                        Custom})
+                        Custom)
                 End If
 
                 Return ItemsValue

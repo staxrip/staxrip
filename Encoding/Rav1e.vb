@@ -261,25 +261,12 @@ Public Class Rav1eParams
             If ItemsValue Is Nothing Then
                 ItemsValue = New List(Of CommandLineParam)
 
-                Add(Tune, Passes, Mode, Speed, Bitrate, Quantizer,
-                New StringParam With {.Switch = "--mastering_display", .Path = "VUI", .Text = "Master Display"},
-                Keyint, MinKeyint, Threads, Limit, Light, MaxFALL, Prime, Matrix, Transfer, Range,
-                   New BoolParam With {.Switch = "--low_latency", .Text = "Low Latency", .Path = "Basic"},
-                Custom)
-
-                For Each item In ItemsValue
-                    If item.HelpSwitch <> "" Then
-                        Continue For
-                    End If
-
-                    Dim switches = item.GetSwitches
-
-                    If switches.NothingOrEmpty Then
-                        Continue For
-                    End If
-
-                    item.HelpSwitch = switches(0)
-                Next
+                Add("Main",
+                    Tune, Passes, Mode, Speed, Bitrate, Quantizer,
+                    New StringParam With {.Switch = "--mastering_display", .Path = "VUI", .Text = "Master Display"},
+                    Keyint, MinKeyint, Threads, Limit, Light, MaxFALL, Prime, Matrix, Transfer, Range,
+                    New BoolParam With {.Switch = "--low_latency", .Text = "Low Latency", .Path = "Basic"},
+                    Custom)
             End If
 
             Return ItemsValue
@@ -288,20 +275,6 @@ Public Class Rav1eParams
 
     Public Overrides Sub ShowHelp(id As String)
         g.ShowCommandLineHelp(Package.Rav1e, id)
-    End Sub
-
-    Shadows Sub Add(ParamArray items As CommandLineParam())
-        For Each i In items
-            If i.HelpSwitch = "" Then
-                Dim switches = i.GetSwitches
-
-                If Not switches.NothingOrEmpty Then
-                    i.HelpSwitch = switches(0)
-                End If
-            End If
-
-            ItemsValue.Add(i)
-        Next
     End Sub
 
     Overloads Overrides Function GetCommandLine(

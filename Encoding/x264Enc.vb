@@ -1,5 +1,6 @@
 ﻿
 Imports System.Text
+
 Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
@@ -935,20 +936,6 @@ Public Class x264Params
                     Custom,
                     CustomFirstPass,
                     CustomSecondPass)
-
-                For Each item In ItemsValue
-                    If item.HelpSwitch <> "" Then
-                        Continue For
-                    End If
-
-                    Dim switches = item.GetSwitches
-
-                    If switches.NothingOrEmpty Then
-                        Continue For
-                    End If
-
-                    item.HelpSwitch = switches(0)
-                Next
             End If
 
             Return ItemsValue

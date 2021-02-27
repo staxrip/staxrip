@@ -6,6 +6,7 @@
 - x265 --qpmin, --qpmax and --qpstep boundaries set (Dendraspis)
 - Encoder dialogs allow using 1:1 for --sar (stax76, [#546](/../../issues/546))
 - Customized progress text fix for new Patman build (Dendraspis)
+- x264 --progress-header not selectable for Patman build (Dendraspis)
 - When a video encoder default value was changed, a compatibility issue
   with old settings was happening, this is finally fixed, but could only
   be achieved by resetting all video encoder options (stax76, [#546](/../../issues/546))

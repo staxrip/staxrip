@@ -20,11 +20,6 @@ Public Class ProcController
     Property ProgressBar As New LabelProgressBar
     Property ProcForm As ProcessingForm
     Property Button As New ButtonEx
-    ReadOnly Property IsActive As Boolean
-        Get
-            Return Not Me.Proc.IsSilent
-        End Get
-    End Property
 
     Shared Property Procs As New List(Of ProcController)
     Shared Property Aborted As Boolean
@@ -120,20 +115,26 @@ Public Class ProcController
             Dim oh = theme.ProcessingForm.OutputHighlighting
             Dim matches As MatchCollection
             Dim help As Integer
+            Dim IsX264 = Proc.Package Is Package.x264
+            Dim IsX265 = Proc.Package Is Package.x265
 
-            help = 1
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)x265\s\[info\]:\s(.+\s|tools):\s.+", RegexOptions.IgnoreCase)
-            For Each m As Match In matches
-                If help Mod 2 = 0 Then
-                    LogTextBox.SelectionFormat(m.Index, m.Length, oh.AlternateBackColor, oh.AlternateForeColor, oh.AlternateFontStyles)
-                End If
-                help += 1
-            Next
+            If IsX265 Then
+                help = 1
+                matches = Regex.Matches(LogTextBox.Text, "(?<=\n)x265\s\[info\]:\s(.+\s|tools):\s.+", RegexOptions.IgnoreCase)
+                For Each m As Match In matches
+                    If help Mod 2 = 0 Then
+                        LogTextBox.SelectionFormat(m.Index, m.Length, oh.AlternateBackColor, oh.AlternateForeColor, oh.AlternateFontStyles)
+                    End If
+                    help += 1
+                Next
+            End If
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(x264|x265)(?=\s\[)", RegexOptions.IgnoreCase)
-            For Each m As Match In matches
-                LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(210), oh.SourceForeColor)
-            Next
+            If IsX265 OrElse IsX264 Then
+                matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(x264|x265)(?=\s\[)", RegexOptions.IgnoreCase)
+                For Each m As Match In matches
+                    LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(210), oh.SourceForeColor)
+                Next
+            End If
 
             matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(avs\+|avs\s|vpy\s)(?=\s\[)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
@@ -202,14 +203,16 @@ Public Class ProcController
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.FrameServerBackColor, oh.FrameServerForeColor, oh.FrameServerFontStyles)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s).*encoder(?:\D*?([^\d\s]*\d+\S*\d[^\d\s]*))(?:\D*(djatom|patman|asuna))?.*(?=\n)", RegexOptions.IgnoreCase)
-            For Each m As Match In matches
-                LogTextBox.SelectionFormat(m.Index, m.Length, oh.EncoderBackColor, oh.EncoderForeColor, oh.EncoderFontStyles)
-                LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.1), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
-                If m.Groups.Count > 2 Then
-                    LogTextBox.SelectionFormat(m.Groups(2).Index, m.Groups(2).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.1), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
-                End If
-            Next
+            If IsX265 OrElse IsX264 Then
+                matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s).*encoder(?:\D*?([^\d\s]*\d+\S*\d[^\d\s]*))(?:.*(djatom|patman|asuna))?.*(?=\n)", RegexOptions.IgnoreCase)
+                For Each m As Match In matches
+                    LogTextBox.SelectionFormat(m.Index, m.Length, oh.EncoderBackColor, oh.EncoderForeColor, oh.EncoderFontStyles)
+                    LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.1), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
+                    If m.Groups.Count > 2 Then
+                        LogTextBox.SelectionFormat(m.Groups(2).Index, m.Groups(2).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.1), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
+                    End If
+                Next
+            End If
 
         Catch ex As Exception
         Finally

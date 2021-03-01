@@ -415,8 +415,8 @@ Namespace UI
 
         Sub KeyDown(sender As Object, e As KeyEventArgs)
             If Enabled AndAlso e.KeyData = Shortcut AndAlso
-                If(EnabledFunc Is Nothing, True, EnabledFunc.Invoke) AndAlso
-                If(VisibleFunc Is Nothing, True, VisibleFunc.Invoke) Then
+                (EnabledFunc Is Nothing OrElse EnabledFunc.Invoke) AndAlso
+                (VisibleFunc Is Nothing OrElse VisibleFunc.Invoke) Then
 
                 PerformClick()
                 e.Handled = True
@@ -471,8 +471,10 @@ Namespace UI
 
             Dim a = path.SplitNoEmpty(" | ")
             Dim l = items
+            Dim p = ""
 
             For x = 0 To a.Length - 1
+                p += If(x = 0, "", " | ") + a(x)
                 Dim found = False
 
                 For Each i In l.OfType(Of ToolStripMenuItem)()
@@ -490,6 +492,7 @@ Namespace UI
                             l.Add(New ToolStripSeparator)
                         Else
                             Dim item As New MenuItemEx(a(x) + g.MenuSpace, action, tip)
+                            item.Path = p
                             item.SetImage(symbol)
                             l.Add(item)
                             l = item.DropDownItems
@@ -498,6 +501,7 @@ Namespace UI
                     Else
                         Dim item As New MenuItemEx()
                         item.Text = a(x) + g.MenuSpace
+                        item.Path = p
                         l.Add(item)
                         l = item.DropDownItems
                     End If

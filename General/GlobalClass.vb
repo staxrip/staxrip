@@ -231,6 +231,7 @@ Public Class GlobalClass
             End If
 
             g.IsJobProcessing = False
+            ThemeManager.SetCurrentTheme(s.ThemeName)
             g.MainForm.OpenProject(jobPath, False)
             ProcController.Finished()
         End Try

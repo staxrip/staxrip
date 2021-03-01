@@ -261,7 +261,7 @@ Public Class Proc
             If Header <> "" Then
                 Log.WriteHeader(Header)
 
-                If Not Package Is Nothing Then
+                If Package IsNot Nothing AndAlso Not s.AllowToolsWithWrongVersion Then
                     Log.WriteLine(Package.Name + " " + Package.Version + BR2)
                 End If
             End If

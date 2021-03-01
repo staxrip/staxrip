@@ -4274,6 +4274,8 @@ Public Class MainForm
             Dim ui = form.SimpleUI
             ui.Store = p
 
+
+            '   ----------------------------------------------------------------
             ui.CreateFlowPage("Image", True)
 
             Dim n = ui.AddNum()
@@ -4296,6 +4298,8 @@ Public Class MainForm
             m.Add(2, 4, 8, 16)
             m.Field = NameOf(p.ForcedOutputMod)
 
+
+            '   ----------------------------------------------------------------
             ui.CreateFlowPage("Image | Aspect Ratio", True)
 
             Dim b = ui.AddBool()
@@ -4334,6 +4338,8 @@ Public Class MainForm
             t.Help = "Custom target pixel aspect ratio."
             t.Field = NameOf(p.CustomTargetPAR)
 
+
+            '   ----------------------------------------------------------------
             Dim cropPage = ui.CreateFlowPage("Image | Crop")
 
             b = ui.AddBool()
@@ -4406,6 +4412,8 @@ Public Class MainForm
                                 End If
                             End Sub
 
+
+            '   ----------------------------------------------------------------
             Dim audioPage = ui.CreateFlowPage("Audio", True)
 
             Dim prefAudio = ui.AddTextMenu
@@ -4467,6 +4475,8 @@ Public Class MainForm
             b.Help = "Sets the AviSynth script (*.avs) as audio source file when loading a source file."
             b.Field = NameOf(p.UseScriptAsAudioSource)
 
+
+            '   ----------------------------------------------------------------
             Dim videoPage = ui.CreateFlowPage("Video", True)
 
             Dim thumbOptions = ui.AddMenu(Of Integer)
@@ -4510,6 +4520,8 @@ Public Class MainForm
             b.Help = "Auto-rotate video after loading when the source file/container supports it."
             b.Field = NameOf(p.AutoRotation)
 
+
+            '   ----------------------------------------------------------------
             Dim subPage = ui.CreateFlowPage("Subtitles", True)
 
             Dim prefSub = ui.AddTextMenu(subPage)
@@ -4577,6 +4589,8 @@ Public Class MainForm
             b.Help = "Automatically hardcodes a subtitle." + BR2 + "Supported formats are SRT, ASS and VobSub."
             b.Field = NameOf(p.HarcodedSubtitle)
 
+
+            '   ----------------------------------------------------------------
             Dim pathPage = ui.CreateFlowPage("Paths")
 
             l = ui.AddLabel(pathPage, "Default Target Folder:")
@@ -4630,6 +4644,8 @@ Public Class MainForm
             tm.AddMenu("Source File Directory", "%source_dir%%source_name%_temp")
             tm.AddMenu("Macros...", macroAction)
 
+
+            '   ----------------------------------------------------------------
             ui.CreateFlowPage("Assistant")
 
             b = ui.AddBool()
@@ -4652,6 +4668,8 @@ Public Class MainForm
             b.Text = "Remind about aspect ratio error"
             b.Field = NameOf(p.RemindArError)
 
+
+            '   ----------------------------------------------------------------
             Dim filtersPage = ui.CreateFlowPage("Filters")
 
             l = ui.AddLabel(filtersPage, "Code appended to trim functions:")
@@ -4678,6 +4696,8 @@ Public Class MainForm
             t.Edit.Text = p.CodeAtTop
             t.Edit.SaveAction = Sub(value) p.CodeAtTop = value
 
+
+            '   ----------------------------------------------------------------
             Dim miscPage = ui.CreateFlowPage("Misc")
             miscPage.SuspendLayout()
 

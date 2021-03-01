@@ -6,6 +6,7 @@ Imports System.Threading
 Imports System.Threading.Tasks
 Imports System.Drawing.Drawing2D
 Imports System.Drawing.Text
+Imports System.Text.RegularExpressions
 
 Namespace UI
     Public Class TreeViewEx
@@ -795,6 +796,8 @@ Namespace UI
     Public Class RichTextBoxEx
         Inherits RichTextBox
 
+        Private BorderRect As Native.RECT
+
         Private _backReadonlyColor As Color = Color.Empty
         Private _borderColor As Color = Color.Empty
         Private _borderFocusedColor As Color = Color.Empty
@@ -803,8 +806,6 @@ Namespace UI
         <Browsable(False)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property BlockPaint As Boolean
-
-        Private BorderRect As Native.RECT
 
         Public Property BackReadonlyColor As Color
             Get
@@ -846,8 +847,20 @@ Namespace UI
         End Property
 
 
+        Public Event AfterThemeApplied(theme As Theme)
+
+
         Sub New()
             MyClass.New(True)
+        End Sub
+        Sub New(createMenu As Boolean)
+            If createMenu Then
+                InitMenu()
+            End If
+
+            If VisualStyleInformation.IsEnabledByUser Then
+                BorderStyle = BorderStyle.None
+            End If
 
             ApplyTheme()
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
@@ -869,16 +882,7 @@ Namespace UI
             BorderColor = theme.General.Controls.RichTextBox.BorderColor
             BorderFocusedColor = theme.General.Controls.RichTextBox.BorderFocusedColor
             ResumeLayout()
-        End Sub
-
-        Sub New(createMenu As Boolean)
-            If createMenu Then
-                InitMenu()
-            End If
-
-            If VisualStyleInformation.IsEnabledByUser Then
-                BorderStyle = BorderStyle.None
-            End If
+            RaiseEvent AfterThemeApplied(theme)
         End Sub
 
         Sub InitMenu()
@@ -922,6 +926,7 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
             MyBase.Dispose(disposing)
             ContextMenuStrip?.Dispose()
         End Sub
@@ -1440,21 +1445,24 @@ Namespace UI
                 Exit Sub
             End If
 
+            Format(commandLine)
+        End Sub
+
+        Sub Format(commandLine As String)
             BlockPaint = True
             Text = commandLine
-            SelectAll()
-            SelectionColor = ForeColor
-            SelectionFont = New Font(Font, FontStyle.Regular)
+
+            ClearAllFormatting()
 
             If LastCommandLine <> "" Then
                 Dim selStart = GetCompareIndex(commandLine, LastCommandLine)
-                Dim selEnd = commandLine.Length - GetCompareIndex(ReverseString(commandLine), ReverseString(LastCommandLine))
+                Dim selEnd = commandLine.Length - GetCompareIndex(commandLine.Reverse(), LastCommandLine.Reverse())
 
                 If selEnd > selStart AndAlso selEnd - selStart < commandLine.Length - 1 Then
                     While selStart > 0 AndAlso selStart + 1 < commandLine.Length AndAlso
                         Not commandLine(selStart - 1) + commandLine(selStart) = " -"
 
-                        selStart = selStart - 1
+                        selStart -= 1
                     End While
 
                     If selEnd - selStart < 25 Then
@@ -1471,6 +1479,18 @@ Namespace UI
                 End If
             End If
 
+            If s.CommandLineHighlighting Then
+                Dim th = ThemeManager.CurrentTheme.General.Controls.CommandLineRichTextBox
+                Dim matches = Regex.Matches(Me.Text, "(?<=\s|^)(--\w[^\s=]*)([\s=]((?!--)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
+                For Each m As Match In matches
+                    Me.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, th.ParameterBackColor, th.ParameterForeColor, th.ParameterFontStyles)
+
+                    If m.Groups.Count > 3 Then
+                        Me.SelectionFormat(m.Groups(3).Index, m.Groups(3).Length, th.ParameterValueBackColor, th.ParameterValueForeColor, th.ParameterValueFontStyles)
+                    End If
+                Next
+            End If
+
             SelectionStart = commandLine.Length
             BlockPaint = False
             Refresh()
@@ -1485,12 +1505,6 @@ Namespace UI
             Next
 
             Return 0
-        End Function
-
-        Function ReverseString(value As String) As String
-            Dim chars = value.ToCharArray
-            Array.Reverse(chars)
-            Return New String(chars)
         End Function
 
         Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated

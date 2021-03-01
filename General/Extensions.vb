@@ -799,6 +799,13 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function Reverse(value As String) As String
+        Dim chars = value.ToCharArray
+        Array.Reverse(chars)
+        Return New String(chars)
+    End Function
+
+    <Extension()>
     Function MD5Hash(instance As String) As String
         Using m = MD5.Create()
             Dim inputBuffer = Encoding.UTF8.GetBytes(instance)
@@ -989,6 +996,11 @@ Module MiscExtensions
             End If
         Next
         Return result
+    End Function
+
+    <Extension()>
+    Function ToColorHSL(color As Color) As ColorHSL
+        Return color
     End Function
 
     <Extension()>
@@ -1191,6 +1203,26 @@ Module ControlExtensions
     Function GetAllControls(Of T)(instance As Control) As IEnumerable(Of T)
         Return instance.GetAllControls.OfType(Of T)
     End Function
+
+    <Extension()>
+    Sub ClearAllFormatting(instance As RichTextBox)
+        instance.Text = instance.Text.ToString()
+    End Sub
+
+    <Extension()>
+    Sub SelectionFormat(instance As RichTextBox, index As Integer, length As Integer, backColor As ColorHSL, foreColor As ColorHSL, ParamArray fontStyles() As FontStyle)
+        If instance Is Nothing Then Return
+
+        instance.SuspendLayout()
+        instance.Select(index, length)
+        instance.SelectionBackColor = backColor
+        instance.SelectionColor = foreColor
+
+        If fontStyles IsNot Nothing AndAlso fontStyles.Length > 0 Then
+            instance.SelectionFont = New Font(instance.Font, fontStyles.Aggregate(instance.Font.Style, Function(a, n) a Or n))
+        End If
+        instance.ResumeLayout()
+    End Sub
 End Module
 
 Module UIExtensions

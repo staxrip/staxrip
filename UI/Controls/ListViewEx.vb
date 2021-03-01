@@ -141,7 +141,6 @@ Namespace UI
             ForeHighlightColor = theme.General.Controls.ListView.ForeHighlightColor
             ForeSelectedColor = theme.General.Controls.ListView.ForeSelectedColor
             SymbolImageColor = theme.General.Controls.ListView.SymbolImageColor
-
             BorderStyle = BorderStyle.Fixed3D
             AlternateRowBackColor(theme)
         End Sub
@@ -152,7 +151,7 @@ Namespace UI
             SuspendLayout()
             Dim listViewItems = Items.OfType(Of ListViewItem)
             For i As Integer = 0 To listViewItems.Count() - 1
-                listViewItems.ElementAt(i).BackColor = If(i Mod 2 = 1, theme.General.Controls.ListView.BackAlternateColor, theme.General.Controls.ListView.BackColor)
+                listViewItems.ElementAt(i).BackColor = If(i Mod 2 = 1, BackAlternateColor, BackColor)
             Next
             ResumeLayout()
         End Sub

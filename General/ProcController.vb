@@ -9,23 +9,28 @@ Imports Microsoft.Win32
 Imports StaxRip.UI
 
 Public Class ProcController
-    Property Proc As Proc
-    Property LogTextBox As New TextBoxEx
-    Property ProgressBar As New LabelProgressBar
-    Property ProcForm As ProcessingForm
-    Property Button As New ButtonEx
-
     Private LogAction As Action = New Action(AddressOf LogHandler)
     Private StatusAction As Action(Of String) = New Action(Of String)(AddressOf ProgressHandler)
     Private ReadOnly CustomProgressInfoSeparator As String = ", "
     Private UseFirstExpression As Boolean = True
     Private FailCounter As Integer = 0
 
+    Property Proc As Proc
+    Property LogTextBox As New RichTextBoxEx
+    Property ProgressBar As New LabelProgressBar
+    Property ProcForm As ProcessingForm
+    Property Button As New ButtonEx
+    ReadOnly Property IsActive As Boolean
+        Get
+            Return Not Me.Proc.IsSilent
+        End Get
+    End Property
+
     Shared Property Procs As New List(Of ProcController)
     Shared Property Aborted As Boolean
     Shared Property LastActivation As Long
-
     Shared Property BlockActivation As Boolean
+
 
     Sub New(proc As Proc)
         Me.Proc = proc
@@ -44,12 +49,13 @@ Public Class ProcController
         ProgressBar.Dock = DockStyle.Fill
         ProgressBar.Font = New Font("Consolas", 9 * s.UIScaleFactor)
 
-        LogTextBox.ScrollBars = ScrollBars.Both
+        LogTextBox.ScrollBars = RichTextBoxScrollBars.Both
         LogTextBox.Multiline = True
         LogTextBox.Dock = DockStyle.Fill
         LogTextBox.ReadOnly = True
         LogTextBox.WordWrap = True
         LogTextBox.Font = New Font("Consolas", 9 * s.UIScaleFactor)
+        AddHandler LogTextBox.AfterThemeApplied, AddressOf HighlightLog
 
         ProcForm.pnLogHost.Controls.Add(LogTextBox)
         ProcForm.pnStatusHost.Controls.Add(ProgressBar)
@@ -91,7 +97,125 @@ Public Class ProcController
     End Sub
 
     Sub LogHandler()
+        'LogTextBox.BlockPaint = True
         LogTextBox.Text = Proc.Log.ToString
+        HighlightLog(ThemeManager.CurrentTheme)
+        'LogTextBox.BlockPaint = False
+    End Sub
+
+    Public Sub HighlightLog(theme As Theme)
+        If Proc.IsSilent Then
+            Exit Sub
+        End If
+
+        If Not s.OutputHighlighting Then
+            LogTextBox.ClearAllFormatting()
+            Return
+        End If
+
+        If theme Is Nothing Then theme = ThemeManager.CurrentTheme
+
+        LogTextBox.BlockPaint = True
+        Try
+            Dim oh = theme.ProcessingForm.OutputHighlighting
+            Dim matches As MatchCollection
+            Dim help As Integer
+
+            help = 1
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)x265\s\[info\]:\s(.+\s|tools):\s.+", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                If help Mod 2 = 0 Then
+                    LogTextBox.SelectionFormat(m.Index, m.Length, oh.AlternateBackColor, oh.AlternateForeColor, oh.AlternateFontStyles)
+                End If
+                help += 1
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(x264|x265)(?=\s\[)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(210), oh.SourceForeColor)
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(avs\+|avs\s|vpy\s)(?=\s\[)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(300), oh.SourceForeColor)
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(raw\s)(?=\s\[)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(200), oh.SourceForeColor)
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n.*\s\[)(warning)\]:\s(.+)\n", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.WarningLabelBackColor, oh.WarningLabelForeColor, oh.WarningLabelFontStyles)
+                LogTextBox.SelectionFormat(m.Groups(2).Index, m.Groups(2).Length, oh.WarningTextBackColor, oh.WarningTextForeColor, oh.WarningTextFontStyles)
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n.*\s\[)info(?=\]:\s)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.InfoLabelBackColor, oh.InfoLabelForeColor)
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\s|^)(--\w[^\s=]*)([\s=]((?!--)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.ParameterBackColor, oh.ParameterForeColor, oh.ParameterFontStyles)
+                If m.Groups.Count > 3 Then
+                    LogTextBox.SelectionFormat(m.Groups(3).Index, m.Groups(3).Length, oh.ParameterValueBackColor, oh.ParameterValueForeColor, oh.ParameterValueFontStyles)
+                End If
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "([A-Z]:\\[\w\\]+\.[eE][xX][eE])|(""[A-Z]:\\[\w\s\\]+\.[eE][xX][eE]"")")
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.ExeFileBackColor, oh.ExeFileForeColor, oh.ExeFileFontStyles)
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(""[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.(json)"")|((?<!"")[A-Z]:\\[\S\\]+\.(json)(?!""))", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.MetadataFileBackColor, oh.MetadataFileForeColor, oh.MetadataFileFontStyles)
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(""[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.(avc|h264|h265|hevc|mkv|mp4)"")|((?<!"")[A-Z]:\\[\S\\]+\.(avc|h264|h265|hevc|mkv|mp4)(?!""))", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.MediaFileBackColor, oh.MediaFileForeColor, oh.MediaFileFontStyles)
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(""[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.(avs|dll|vpy)"")|((?<!"")[A-Z]:\\[\S\\]+\.(avs|dll|vpy)(?!""))", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.ScriptFileBackColor, oh.ScriptFileForeColor, oh.ScriptFileFontStyles)
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\s)frames\s(\d+)\s-\s(\d+)\sof\s(\d+)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.Select(m.Index, m.Length)
+                If m.Groups(1).Value.ToInt() > 0 OrElse m.Groups(2).Value.ToInt() + 1 < m.Groups(3).Value.ToInt() Then
+                    LogTextBox.SelectionFormat(m.Index, m.Length, oh.FramesCuttedBackColor, oh.FramesCuttedForeColor, oh.FramesCuttedFontStyles)
+                    For i = 1 To m.Groups.Count - 1
+                        LogTextBox.SelectionFormat(m.Groups(i).Index, m.Groups(i).Length, oh.FramesCuttedNumberBackColor, oh.FramesCuttedNumberForeColor, oh.FramesCuttedNumberFontStyles)
+                    Next
+                Else
+                    LogTextBox.SelectionFormat(m.Index, m.Length, oh.FramesBackColor, oh.FramesForeColor, oh.FramesFontStyles)
+                End If
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s).*(avisynth\s|avisynth\+|vapoursynth).*\d+.*(?=\n)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.FrameServerBackColor, oh.FrameServerForeColor, oh.FrameServerFontStyles)
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s).*encoder(?:\D*?([^\d\s]*\d+\S*\d[^\d\s]*))(?:\D*(djatom|patman|asuna))?.*(?=\n)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.EncoderBackColor, oh.EncoderForeColor, oh.EncoderFontStyles)
+                LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.1), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
+                If m.Groups.Count > 2 Then
+                    LogTextBox.SelectionFormat(m.Groups(2).Index, m.Groups(2).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.1), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
+                End If
+            Next
+
+        Catch ex As Exception
+        Finally
+            LogTextBox.Select(0, 0)
+            LogTextBox.BlockPaint = False
+        End Try
     End Sub
 
     Sub ProgressHandler(value As String)
@@ -114,23 +238,23 @@ Public Class ProcController
 
             If Proc.Package Is Package.x264 Then
                 If UseFirstExpression Then
+                    'Mod by Patman
+                    pattern = "\[(\d+)(\.?\d*)%\]\s+(\d+)/(\d+)\sframes\s@\s(\d+)(\.?\d*)\sfps\s\|\s(\d+)(\.?\d*)\s([a-z]{2}/s)\s\|\s(\d+:\d+:\d+)\s\[-(\d+:\d+:\d+)\]\s\|\s(\d+)(\.\d+)?\s([a-z]{1,2})\s\[(\d+)(\.\d+)?\s([a-z]{1,2})\]"
+                    match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
+
+                    If match.Success Then
+                        value = $"[{match.Groups(1).Value,2}{match.Groups(2).Value}%] {match.Groups(3).Value.PadLeft(match.Groups(4).Value.Length)}/{match.Groups(4).Value} frames @ {match.Groups(5).Value}{match.Groups(6).Value} fps{CustomProgressInfoSeparator}{match.Groups(7).Value,4} {match.Groups(9).Value}{CustomProgressInfoSeparator}{match.Groups(12).Value}{match.Groups(13).Value} {match.Groups(14).Value} ({match.Groups(15).Value} {match.Groups(17).Value}){CustomProgressInfoSeparator}{match.Groups(10).Value} (-{match.Groups(11).Value})"
+                    Else
+                        UseFirstExpression = Not UseFirstExpression
+                        FailCounter += 1
+                    End If
+                Else
                     'Mod by DJATOM since x264 161, using header
                     pattern = "\[\s*((\d+)\.?(\d*))%\]\s+((\d+)/(\d+))\s+((\d+)\.?(\d*))\s+((\d+)\.?(\d*))\s+(\d+:\d+:\d+)\s+(\d+:\d+:\d+)\s+((\d+)\.(\d+))\s([a-z]{1,2})\s+((\d+)\.(\d+))\s([a-z]{1,2})"
                     match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                     If match.Success Then
                         value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(8).Value}.{match.Groups(9).Value} fps{CustomProgressInfoSeparator}{match.Groups(11).Value,4} kb/s{CustomProgressInfoSeparator}{match.Groups(16).Value} {match.Groups(18).Value} ({match.Groups(20).Value}.{match.Groups(21).Value} {match.Groups(22).Value}){CustomProgressInfoSeparator}{match.Groups(13).Value} (-{match.Groups(14).Value})"
-                    Else
-                        UseFirstExpression = Not UseFirstExpression
-                        FailCounter += 1
-                    End If
-                Else
-                    'Mod by Patman
-                    pattern = "\[((\d+)\.?(\d*))%\]\s+((\d+)/(\d+)(\sframes)),\s((\d+)\.?(\d*)(\sfps)),\s((\d+)\.?(\d*)\s([a-z]{2}/s)),\s(\d+)\.(\d+)\s([a-z]{1,2}),\seta\s(\d+:\d+:\d+),\sest\.size\s(\d+)\.(\d+)\s([a-z]{1,2})"
-                    match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
-
-                    If match.Success Then
-                        value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(9).Value}.{match.Groups(10).Value} fps{CustomProgressInfoSeparator}{match.Groups(13).Value,4} {match.Groups(15).Value}{CustomProgressInfoSeparator}{match.Groups(16).Value} {match.Groups(18).Value} ({match.Groups(20).Value} {match.Groups(22).Value}){CustomProgressInfoSeparator}-{match.Groups(19).Value}"
                     Else
                         UseFirstExpression = Not UseFirstExpression
                         FailCounter += 1
@@ -303,14 +427,10 @@ Public Class ProcController
     Sub Click(sender As Object, e As EventArgs)
         SyncLock Procs
             For Each i In Procs
-                If Not i.Button Is sender Then
-                    i.Deactivate()
-                End If
-            Next
-
-            For Each i In Procs
                 If i.Button Is sender Then
                     i.Activate()
+                Else
+                    i.Deactivate()
                 End If
             Next
         End SyncLock
@@ -318,6 +438,16 @@ Public Class ProcController
 
     Sub ProcDisposed()
         ProcForm.BeginInvoke(Sub() Cleanup())
+    End Sub
+
+    Shared Sub SetOutputHighlighting(value As Boolean, theme As Theme)
+        If value <> s.OutputHighlighting Then
+            s.OutputHighlighting = value
+
+            For Each pc In Procs
+                pc.HighlightLog(theme)
+            Next
+        End If
     End Sub
 
     Shared Sub Abort()
@@ -457,7 +587,7 @@ Public Class ProcController
         Proc.IsSilent = False
         LogTextBox.Visible = True
         LogTextBox.BringToFront()
-        LogTextBox.Text = Proc.Log.ToString
+        LogHandler()
         ProgressBar.Visible = True
         ProgressBar.BringToFront()
     End Sub

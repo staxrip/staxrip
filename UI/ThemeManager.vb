@@ -1,7 +1,7 @@
 ﻿Public NotInheritable Class ThemeManager
     Private Shared _current As Theme
     Private Shared _themes As List(Of Theme)
-    Private Shared _lumaCategories() As KeyValuePair(Of String, Single) = {
+    Private Shared ReadOnly _lumaCategories() As KeyValuePair(Of String, Single) = {
         New KeyValuePair(Of String, Single)("Black", 0.01),
         New KeyValuePair(Of String, Single)("Darker", 0.06),
         New KeyValuePair(Of String, Single)("Dark", 0.11),
@@ -11,21 +11,26 @@
         New KeyValuePair(Of String, Single)("Gray", 0.33),
         New KeyValuePair(Of String, Single)("Light Gray", 0.41)
     }
-    Private Shared _colorCategories() As Tuple(Of String, Integer, Integer) = {
+    Private Shared ReadOnly _colorCategories() As Tuple(Of String, Integer, Integer) = {
         New Tuple(Of String, Integer, Integer)("Red", 358, -1),
         New Tuple(Of String, Integer, Integer)("Orange", 25, 355),
         New Tuple(Of String, Integer, Integer)("Yellow", 48, 355),
-        New Tuple(Of String, Integer, Integer)("Yellow Green", 77, 355),
-        New Tuple(Of String, Integer, Integer)("Green", 105, 355),
-        New Tuple(Of String, Integer, Integer)("Blue Green", 146, 355),
-        New Tuple(Of String, Integer, Integer)("Green Blue", 166, 355),
-        New Tuple(Of String, Integer, Integer)("Turquoise", 180, 355),
-        New Tuple(Of String, Integer, Integer)("Light Blue", 200, 355),
-        New Tuple(Of String, Integer, Integer)("Blue", 220, 355),
-        New Tuple(Of String, Integer, Integer)("Purple", 276, 355),
-        New Tuple(Of String, Integer, Integer)("Purple Pink", 290, 355),
+        New Tuple(Of String, Integer, Integer)("YellowGreen", 80, 355),
+        New Tuple(Of String, Integer, Integer)("Lime", 105, 355),
+        New Tuple(Of String, Integer, Integer)("Green", 120, 355),
+        New Tuple(Of String, Integer, Integer)("Seagreen", 146, 355),
+        New Tuple(Of String, Integer, Integer)("Turquoise Green", 163, 355),
+        New Tuple(Of String, Integer, Integer)("Turquoise", 174, 355),
+        New Tuple(Of String, Integer, Integer)("Teal", 181, 355),
+        New Tuple(Of String, Integer, Integer)("Teal Blue", 194, 355),
+        New Tuple(Of String, Integer, Integer)("Blue", 205, 355),
+        New Tuple(Of String, Integer, Integer)("DarkBlue", 220, 355),
+        New Tuple(Of String, Integer, Integer)("Indigo", 260, 355),
+        New Tuple(Of String, Integer, Integer)("Violet", 271, 355),
+        New Tuple(Of String, Integer, Integer)("Purple", 281, 355),
+        New Tuple(Of String, Integer, Integer)("Magenta", 292, 355),
         New Tuple(Of String, Integer, Integer)("Pink", 313, 10),
-        New Tuple(Of String, Integer, Integer)("Pink Red", 335, -1)
+        New Tuple(Of String, Integer, Integer)("Rose", 335, -1)
     }
 
 
@@ -72,9 +77,9 @@
             New Theme("Default")
         }
 
-        For Each cc In _colorCategories
-            For Each lc In _lumaCategories
-                defaults.Add(New DarkTheme($"{cc.Item1} | {lc.Key}", cc.Item2, cc.Item3, lc.Value))
+        For Each lc In _lumaCategories
+            For Each cc In _colorCategories
+                defaults.Add(New DarkTheme($"{lc.Key} | {cc.Item1}", cc.Item2, cc.Item3, lc.Value))
             Next
         Next
 
@@ -109,20 +114,20 @@
         Private ReadOnly _backLuma As Single = 0
         Private ReadOnly _backLumaDefault As Single = 0.11
         Private ReadOnly _accentSat As Single = 0
-        Private ReadOnly _accentSatDefault As Single = 0.6
+        Private ReadOnly _accentSatDefault As Single = 0.63
 
         Public Sub New(Optional name As String = "DarkMode", Optional hue As Integer = 200, Optional highlightHue As Integer = -1, Optional backLuma As Single = 0.11)
             MyBase.New(name)
             _baseHue = hue
             _highlightHue = Mathf.Clamp(If(highlightHue >= 0, highlightHue, If(highlightHue - 180 < 0, highlightHue + 180, highlightHue - 180)), 0, 359)
             _backLuma = Mathf.Clamp01(backLuma)
-            _accentSat = _accentSatDefault - _backLuma / 2
+            _accentSat = _accentSatDefault
 
             Dim _backColor As ColorHSL = New ColorHSL(_baseHue, 0.01, _backLuma, 1)
             Dim _foreColor As ColorHSL = New ColorHSL(_baseHue, 0.03, 0.7D - (_backLumaDefault - _backLuma), 1)
             Dim _accentColor As ColorHSL = New ColorHSL(_baseHue, _accentSat, 0.525D - (_backLumaDefault - _backLuma / 2), 1)
 
-            Dim _backSelectedColor As ColorHSL = New ColorHSL(_baseHue, _accentColor.S - _backLuma / 4, _accentColor.L - 0.2D, 1)
+            Dim _backSelectedColor As ColorHSL = New ColorHSL(_baseHue, _accentColor.S - _backLuma / 1.5D, _accentColor.L - _backLumaDefault * 1.75D, 1)
 
             Dim _controlBackColor As ColorHSL = _backColor.AddLuminance(0.025)
             Dim _controlBackHighlightColor As ColorHSL = New ColorHSL(_highlightHue, 1 - _backLuma * 1.5D, _controlBackColor.L + 0.125D, 1)
@@ -140,6 +145,10 @@
 
             Dim _dangerBackColor As ColorHSL = _accentColor.AddHue(150).AddLuminance(-0.25)
             Dim _dangerForeColor As ColorHSL = _foreHighlightColor
+
+            Dim _outputHighlightingBackColor As ColorHSL = New ColorHSL(_baseHue, _backSelectedColor.S - _backLuma / 4, 0.255D - _backLumaDefault + _backLuma / 1.75D, 1)
+            Dim _outputHighlightingForeColor As ColorHSL = New ColorHSL(_baseHue, 0.66D - _backLumaDefault + _backLuma * 1.5D, 0.94D - _backLumaDefault)
+            Dim _outputHighlightingStrongForeColor As ColorHSL = New ColorHSL(_baseHue, 0.66D + _backLuma / 2, 0.6D - _backLumaDefault + _backLuma / 2, 1)
 
             General = New GeneralThemeColors() With {
                 .BackColor = _backColor,
@@ -181,6 +190,14 @@
                         .FlatStyle = FlatStyle.Flat,
                         .ForeColor = _foreColor,
                         .ForeHighlightColor = .ForeColor.AddLuminance(0.15)
+                    },
+                    .CommandLineRichTextBox = New ControlsThemeColors.CommandLineRichTextBoxThemeColors() With {
+                        .ParameterBackColor = _controlBackColor,
+                        .ParameterForeColor = _accentColor.SetHue(180).AddSaturation(-0.2).AddLuminance(0.2),
+                        .ParameterFontStyles = {},
+                        .ParameterValueBackColor = .ParameterBackColor,
+                        .ParameterValueForeColor = .ParameterForeColor.SetHue(48),
+                        .ParameterValueFontStyles = {}
                     },
                     .CriteriaControl = New ControlsThemeColors.CriteriaControlThemeColors() With {
                         .BackColor = _controlBackColor,
@@ -386,8 +403,8 @@
             }
 
             MainForm = New MainFormThemeColors() With {
-                .laTipBackColor = Color.Empty,
-                .laTipBackHighlightColor = Color.Empty,
+                .laTipBackColor = Color.Transparent,
+                .laTipBackHighlightColor = Color.Transparent,
                 .laTipForeColor = _accentColor,
                 .laTipForeHighlightColor = _foreHighlightColor
             }
@@ -397,7 +414,68 @@
                 .ProcessButtonBackColor = .BackColor,
                 .ProcessButtonBackSelectedColor = _backSelectedColor,
                 .ProcessButtonForeColor = _foreColor,
-                .ProcessButtonForeSelectedColor = _foreColor.AddLuminance(0.25)
+                .ProcessButtonForeSelectedColor = _foreColor.AddLuminance(0.25),
+                .OutputHighlighting = New ProcessingFormThemeColors.OutputHighlightingThemeColors() With {
+                    .ParameterBackColor = General.Controls.RichTextBox.BackColor,
+                    .ParameterForeColor = _outputHighlightingForeColor.SetHue(85).AddSaturation(-0.15D + _backLuma / 4).AddLuminance(-0.05D - _backLuma / 6),
+                    .ParameterFontStyles = {FontStyle.Bold},
+                    .ParameterValueBackColor = .ParameterBackColor,
+                    .ParameterValueForeColor = _outputHighlightingForeColor.SetHue(210).AddSaturation(0.1D).AddLuminance(-0.05),
+                    .ParameterValueFontStyles = {},
+ _
+                    .ExeFileBackColor = General.Controls.RichTextBox.BackColor,
+                    .ExeFileForeColor = _outputHighlightingForeColor.SetHue(20),
+                    .ExeFileFontStyles = {},
+ _
+                    .MediaFileBackColor = General.Controls.RichTextBox.BackColor,
+                    .MediaFileForeColor = _outputHighlightingForeColor.SetHue(160).AddLuminance(-0.15),
+                    .MediaFileFontStyles = {},
+ _
+                    .MetadataFileBackColor = General.Controls.RichTextBox.BackColor,
+                    .MetadataFileForeColor = _outputHighlightingForeColor.SetHue(290).AddLuminance(-0.15),
+                    .MetadataFileFontStyles = {},
+ _
+                    .ScriptFileBackColor = General.Controls.RichTextBox.BackColor,
+                    .ScriptFileForeColor = _outputHighlightingForeColor.SetHue(300).AddSaturation(-0.4).AddLuminance(-0.25D + _backLuma / 2),
+                    .ScriptFileFontStyles = {},
+ _
+                    .AlternateBackColor = General.Controls.RichTextBox.BackColor.AddLuminance(0.05),
+                    .AlternateForeColor = _foreColor.AddLuminance(0.15),
+                    .AlternateFontStyles = {},
+ _
+                    .SourceBackColor = _outputHighlightingBackColor.AddSaturation(-_backLuma / 4),
+                    .SourceForeColor = _foreColor,
+ _
+                    .InfoLabelBackColor = _outputHighlightingBackColor.SetHue(145),
+                    .InfoLabelForeColor = _foreColor,
+                    .InfoTextBackColor = General.Controls.RichTextBox.BackColor,
+                    .InfoTextForeColor = Color.Purple,
+ _
+                    .WarningLabelBackColor = _outputHighlightingBackColor.SetHue(350),
+                    .WarningLabelForeColor = _outputHighlightingStrongForeColor.SetHue(.WarningLabelBackColor.H).AddLuminance(_backLuma / 2),
+                    .WarningLabelFontStyles = {},
+                    .WarningTextBackColor = General.Controls.RichTextBox.BackColor,
+                    .WarningTextForeColor = _outputHighlightingStrongForeColor.SetHue(.WarningLabelBackColor.H),
+                    .WarningTextFontStyles = {FontStyle.Bold},
+ _
+                    .FramesBackColor = General.Controls.RichTextBox.BackColor,
+                    .FramesForeColor = _outputHighlightingForeColor.SetHue(140).AddLuminance(-0.05),
+                    .FramesFontStyles = {},
+                    .FramesCuttedBackColor = General.Controls.RichTextBox.BackColor,
+                    .FramesCuttedForeColor = _outputHighlightingForeColor.SetHue(50),
+                    .FramesCuttedFontStyles = {},
+                    .FramesCuttedNumberBackColor = General.Controls.RichTextBox.BackColor,
+                    .FramesCuttedNumberForeColor = New ColorHSL(.FramesCuttedForeColor.H - 20, .FramesCuttedForeColor.S + 0.33D, .FramesCuttedForeColor.L - 0.075D),
+                    .FramesCuttedNumberFontStyles = {FontStyle.Bold},
+ _
+                    .FrameServerBackColor = General.Controls.RichTextBox.BackColor,
+                    .FrameServerForeColor = _outputHighlightingStrongForeColor.SetHue(300).AddLuminance(0.1),
+                    .FrameServerFontStyles = {FontStyle.Italic, FontStyle.Bold},
+ _
+                    .EncoderBackColor = General.Controls.RichTextBox.BackColor,
+                    .EncoderForeColor = _outputHighlightingStrongForeColor.SetHue(210).AddLuminance(0.1),
+                    .EncoderFontStyles = {FontStyle.Italic, FontStyle.Bold}
+                }
             }
 
         End Sub

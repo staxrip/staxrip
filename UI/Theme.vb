@@ -100,6 +100,7 @@ Public Class Theme
         Private _buttonLabelThemeColors As ButtonLabelThemeColors
         Private _checkBoxThemeColors As CheckBoxThemeColors
         Private _comboboxThemeColors As ComboBoxThemeColors
+        Private _commandLineRichTextBox As CommandLineRichTextBoxThemeColors
         Private _criteriaControlThemeColors As CriteriaControlThemeColors
         Private _flowLayoutPanelThemeColors As FlowLayoutPanelThemeColors
         Private _flowPageThemeColors As FlowPageThemeColors
@@ -161,6 +162,16 @@ Public Class Theme
             End Get
             Set(value As ComboBoxThemeColors)
                 _comboboxThemeColors = value
+            End Set
+        End Property
+
+        Public Property CommandLineRichTextBox As CommandLineRichTextBoxThemeColors
+            Get
+                _commandLineRichTextBox = If(_commandLineRichTextBox, New CommandLineRichTextBoxThemeColors())
+                Return _commandLineRichTextBox
+            End Get
+            Set(value As CommandLineRichTextBoxThemeColors)
+                _commandLineRichTextBox = value
             End Set
         End Property
 
@@ -450,6 +461,16 @@ Public Class Theme
         End Class
 
         <Serializable>
+        Public Class CommandLineRichTextBoxThemeColors
+            Public Property ParameterBackColor As ColorHSL = SystemColors.Window
+            Public Property ParameterForeColor As ColorHSL = New ColorHSL(220, 0.5, 0.33, 1)
+            Public Property ParameterFontStyles As FontStyle() = {}
+            Public Property ParameterValueBackColor As ColorHSL = SystemColors.Window
+            Public Property ParameterValueForeColor As ColorHSL = New ColorHSL(160, 0.99, 0.4, 1)
+            Public Property ParameterValueFontStyles As FontStyle() = {}
+        End Class
+
+        <Serializable>
         Public Class CriteriaControlThemeColors
             Public Property BackColor As ColorHSL = SystemColors.Window
             Public Property ForeColor As ColorHSL = SystemColors.WindowText
@@ -529,13 +550,12 @@ Public Class Theme
 
         <Serializable>
         Public Class NumEditThemeColors
-            Private _upDownButton As UpDownButtonThemeColors
-
             Public Property BackColor As ColorHSL = SystemColors.Window
             Public Property BorderColor As ColorHSL = BackColor
             Public Property BorderSelectedColor As ColorHSL = SystemColors.ControlText
 
 
+            Private _upDownButton As UpDownButtonThemeColors
             Public Property UpDownButton As UpDownButtonThemeColors
                 Get
                     _upDownButton = If(_upDownButton, New UpDownButtonThemeColors())
@@ -757,6 +777,82 @@ Public Class Theme
         Public Property ProcessButtonBackSelectedColor As ColorHSL = SystemColors.ScrollBar
         Public Property ProcessButtonForeColor As ColorHSL = SystemColors.ControlText
         Public Property ProcessButtonForeSelectedColor As ColorHSL = SystemColors.ControlText
+
+
+        Private _outputHighlighting As OutputHighlightingThemeColors
+        Public Property OutputHighlighting As OutputHighlightingThemeColors
+            Get
+                _outputHighlighting = If(_outputHighlighting, New OutputHighlightingThemeColors())
+                Return _outputHighlighting
+            End Get
+            Set
+                _outputHighlighting = Value
+            End Set
+        End Property
+
+        <Serializable>
+        Public Class OutputHighlightingThemeColors
+            Public Property ParameterBackColor As ColorHSL = Color.Transparent
+            Public Property ParameterForeColor As ColorHSL = New ColorHSL(320, 0.99, 0.5, 1)
+            Public Property ParameterFontStyles As FontStyle() = {}
+            Public Property ParameterValueBackColor As ColorHSL = Color.Transparent
+            Public Property ParameterValueForeColor As ColorHSL = New ColorHSL(270, 0.99, 0.5, 1)
+            Public Property ParameterValueFontStyles As FontStyle() = {}
+
+            Public Property ExeFileBackColor As ColorHSL = Color.Transparent
+            Public Property ExeFileForeColor As ColorHSL = New ColorHSL(180, 0.99, 0.4, 1)
+            Public Property ExeFileFontStyles As FontStyle() = {}
+
+            Public Property MediaFileBackColor As ColorHSL = Color.Transparent
+            Public Property MediaFileForeColor As ColorHSL = New ColorHSL(220, 0.99, 0.4, 1)
+            Public Property MediaFileFontStyles As FontStyle() = {}
+
+            Public Property MetadataFileBackColor As ColorHSL = Color.Transparent
+            Public Property MetadataFileForeColor As ColorHSL = New ColorHSL(290, 0.99, 0.4, 1)
+            Public Property MetadataFileFontStyles As FontStyle() = {}
+
+            Public Property ScriptFileBackColor As ColorHSL = Color.Transparent
+            Public Property ScriptFileForeColor As ColorHSL = New ColorHSL(240, 0.99, 0.4, 1)
+            Public Property ScriptFileFontStyles As FontStyle() = {}
+
+            Public Property AlternateBackColor As ColorHSL = SystemColors.Window.ToColorHSL().AddLuminance(-0.075)
+            Public Property AlternateForeColor As ColorHSL = SystemColors.WindowText
+            Public Property AlternateFontStyles As FontStyle() = {}
+
+            Public Property SourceBackColor As ColorHSL = New ColorHSL(0, 0.5, 0.75, 1)
+            Public Property SourceForeColor As ColorHSL = New ColorHSL(0, 0.25, 0.5, 1)
+
+            Public Property InfoLabelBackColor As ColorHSL = New ColorHSL(130, 0.77, 0.75, 1)
+            Public Property InfoLabelForeColor As ColorHSL = New ColorHSL(0, 0.0, 0.0, 1)
+            Public Property InfoTextBackColor As ColorHSL = New ColorHSL(130, 0.33, 0.2, 1)
+            Public Property InfoTextForeColor As ColorHSL = New ColorHSL(0, 0.0, 0.99, 1)
+
+            Public Property WarningLabelBackColor As ColorHSL = New ColorHSL(0, 0.77, 0.75, 1)
+            Public Property WarningLabelForeColor As ColorHSL = New ColorHSL(0, 0.0, 0.0, 1)
+            Public Property WarningLabelFontStyles As FontStyle() = {}
+            Public Property WarningTextBackColor As ColorHSL = Color.Transparent
+            Public Property WarningTextForeColor As ColorHSL = New ColorHSL(0, 0.99, 0.5, 1)
+            Public Property WarningTextFontStyles As FontStyle() = {}
+
+            Public Property FramesBackColor As ColorHSL = Color.Transparent
+            Public Property FramesForeColor As ColorHSL = New ColorHSL(140, 0.99, 0.33, 1)
+            Public Property FramesFontStyles As FontStyle() = {}
+            Public Property FramesCuttedBackColor As ColorHSL = Color.Transparent
+            Public Property FramesCuttedForeColor As ColorHSL = New ColorHSL(30, 0.99, 0.33, 1)
+            Public Property FramesCuttedFontStyles As FontStyle() = {}
+            Public Property FramesCuttedNumberBackColor As ColorHSL = Color.Transparent
+            Public Property FramesCuttedNumberForeColor As ColorHSL = New ColorHSL(30, 0.99, 0.4, 1)
+            Public Property FramesCuttedNumberFontStyles As FontStyle() = {}
+
+            Public Property FrameServerBackColor As ColorHSL = Color.Transparent
+            Public Property FrameServerForeColor As ColorHSL = New ColorHSL(240, 0.99, 0.33, 1)
+            Public Property FrameServerFontStyles As FontStyle() = {}
+
+            Public Property EncoderBackColor As ColorHSL = Color.Transparent
+            Public Property EncoderForeColor As ColorHSL = New ColorHSL(220, 0.99, 0.33, 1)
+            Public Property EncoderFontStyles As FontStyle() = {}
+
+        End Class
     End Class
 
 End Class

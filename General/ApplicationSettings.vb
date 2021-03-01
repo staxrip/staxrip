@@ -21,6 +21,7 @@ Public Class ApplicationSettings
     Public CmdlPresetsMKV As String
     Public CmdlPresetsMP4 As String
     Public CmdlPresetsX264 As String
+    Public CommandLineHighlighting As Boolean = True
     Public ConvertChromaSubsampling As Boolean = True
     Public CropFrameCount As Integer
     Public CustomMenuCodeEditor As CustomMenuItem
@@ -47,6 +48,7 @@ Public Class ApplicationSettings
     Public MinimizeToTray As Boolean
     Public MinimumDiskSpace As Integer = 20
     Public MuxerProfiles As List(Of Muxer)
+    Public OutputHighlighting As Boolean = True
     Public PackagePaths As Dictionary(Of String, String)
     Public ParallelProcsNum As Integer = 3
     Public ParMenu As String

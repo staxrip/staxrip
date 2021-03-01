@@ -7,6 +7,7 @@ Public Class CommandLineForm
     Private SearchIndex As Integer
     Private Items As New List(Of Item)
     Private HighlightedControl As Control
+    Private CommandLineHighlightingMenuItem As MenuItemEx
 
     Property HTMLHelpFunc As Func(Of String)
 
@@ -42,6 +43,14 @@ Public Class CommandLineForm
         cbGoTo.SendMessageCue("Search")
         cbGoTo.Select()
 
+        CommandLineHighlightingMenuItem = cms.Add("Command Line Highlighting", Sub()
+                                                                                   CommandLineHighlightingMenuItem.Checked = Not CommandLineHighlightingMenuItem.Checked
+                                                                                   s.CommandLineHighlighting = CommandLineHighlightingMenuItem.Checked
+                                                                                   rtbCommandLine.Format(rtbCommandLine.Text.ToString)
+                                                                               End Sub)
+        CommandLineHighlightingMenuItem.Checked = s.CommandLineHighlighting
+
+        cms.Add("-")
         cms.Add("Execute Command Line", Sub() params.Execute(), p.SourceFile <> "").SetImage(Symbol.fa_terminal)
 
         cms.Add("Copy Command Line", Sub()

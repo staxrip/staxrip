@@ -200,6 +200,7 @@ Public Class ProcessingForm
 
     Private TaskbarButtonCreatedMessage As Integer
     Private StopAfterCurrentJobMenuItem As MenuItemEx
+    Private OutputHighlightingMenuItem As MenuItemEx
     Private CMS As ContextMenuStripEx
 
     Property Taskbar As Taskbar
@@ -222,13 +223,26 @@ Public Class ProcessingForm
         CMS.Add("Skip", AddressOf Skip, "Aborts the current job and continues with the next job.")
         StopAfterCurrentJobMenuItem = CMS.Add("Stop After Current", AddressOf StopAfterCurrentJob, "Stops all job processing after the current job.")
         CMS.Add("-")
+        OutputHighlightingMenuItem = CMS.Add("Output Highlighting", AddressOf SetOutputHighlighting)
+        OutputHighlightingMenuItem.KeyDisplayString = "Ctrl+H"
+
+        For Each theme In ThemeManager.Themes
+            CMS.Add($"Theme | {theme.Name}", Sub() ThemeManager.SetCurrentTheme(theme.Name))
+        Next
+
+        CMS.Add("-")
         CMS.Add("Jobs", AddressOf JobsForm.ShowForm, "Shows the Jobs dialog.").KeyDisplayString = "F6"
         CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, "Shows the log file.").KeyDisplayString = "F7"
         CMS.Add("-")
         CMS.Add("Help", AddressOf ShowHelp).KeyDisplayString = "F1"
 
-        bnMenu.ContextMenuStrip = CMS
         ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
     End Sub
 
     Sub ApplyTheme()
@@ -284,6 +298,11 @@ Public Class ProcessingForm
         StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
     End Sub
 
+    Sub SetOutputHighlighting()
+        OutputHighlightingMenuItem.Checked = Not OutputHighlightingMenuItem.Checked
+        ProcController.SetOutputHighlighting(OutputHighlightingMenuItem.Checked, ThemeManager.CurrentTheme)
+    End Sub
+
     Sub Abort()
         If MsgOK("Abort processing?") Then
             ProcController.Abort()
@@ -314,6 +333,8 @@ Public Class ProcessingForm
         bnJobs.Enabled = g.IsJobProcessing
         StopAfterCurrentJobMenuItem.Enabled = g.IsJobProcessing
         StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
+        OutputHighlightingMenuItem.Enabled = g.IsJobProcessing
+        OutputHighlightingMenuItem.Checked = s.OutputHighlighting
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
         ApplyTheme()
     End Sub
@@ -346,9 +367,19 @@ Public Class ProcessingForm
                 JobsForm.ShowForm()
             Case Keys.F7
                 g.DefaultCommands.ShowLogFile()
+            Case Keys.Control Or Keys.H
+                SetOutputHighlighting()
             Case Keys.Escape
                 Abort()
         End Select
+    End Sub
+
+    Sub bnMenu_Click(sender As Object, e As EventArgs) Handles bnMenu.Click
+        For Each item In CMS.GetItems().OfType(Of MenuItemEx).Where(Function(i) i.Path.StartsWith("Theme | "))
+            item.Checked = item.Path.EndsWith($" | {ThemeManager.CurrentTheme.Name}")
+        Next
+
+        CMS.Show(bnMenu, New Point(0, 0), ToolStripDropDownDirection.AboveRight)
     End Sub
 
     Sub ProcessingForm_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested

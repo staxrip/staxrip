@@ -436,7 +436,7 @@
                     .MetadataFileFontStyles = {},
  _
                     .ScriptFileBackColor = General.Controls.RichTextBox.BackColor,
-                    .ScriptFileForeColor = _outputHighlightingForeColor.SetHue(300).AddSaturation(-0.4).AddLuminance(-0.25D + _backLuma / 2),
+                    .ScriptFileForeColor = _outputHighlightingForeColor.SetHue(300).AddSaturation(-0.33).AddLuminance(-0.25D + _backLuma / 2),
                     .ScriptFileFontStyles = {},
  _
                     .AlternateBackColor = General.Controls.RichTextBox.BackColor.AddLuminance(0.05),

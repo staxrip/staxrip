@@ -198,7 +198,7 @@ Public Class ProcController
                 End If
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s).*(avisynth\s|avisynth\+|vapoursynth).*\d+.*(?=\n)", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s)(avisynth|vapoursynth).*\d+.*(?=\n)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.FrameServerBackColor, oh.FrameServerForeColor, oh.FrameServerFontStyles)
             Next

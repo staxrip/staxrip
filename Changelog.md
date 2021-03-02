@@ -1,5 +1,5 @@
 
-2.1.8.5 Beta (2021-02-??)
+2.1.8.5 Beta (2021-03-??)
 =========================
 
 - When a video encoder default value was changed, a compatibility issue
@@ -14,6 +14,7 @@
 - Customized progress text adjusted for new x264 Patman builds (Dendraspis)
 - x265 --selective-sao default set to 0 (Dendraspis, [#546](/../../issues/546))
 - x265 --qpmin, --qpmax and --qpstep boundaries set (Dendraspis)
+- x265 ---psy-rd moved from Other to Analysis (Dendraspis)
 - Encoder dialogs allow using 1:1 for --sar (stax76, [#546](/../../issues/546))
 - Customized progress text fix for new Patman build (Dendraspis)
 - x264 --progress-header disabled for Patman build (Dendraspis)

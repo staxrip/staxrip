@@ -5709,7 +5709,7 @@ Public Class MainForm
             Case 800 'WM_DWMCOLORIZATIONCOLORCHANGED
                 If ToolStripRendererEx.IsAutoRenderMode Then
                     ToolStripRendererEx.InitColors(s.ToolStripRenderModeEx)
-                    ThemeManager.OnCurrentChanged()
+                    ThemeManager.OnCurrentThemeChanged()
                     MenuStrip.Refresh()
                 End If
         End Select

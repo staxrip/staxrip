@@ -93,7 +93,7 @@
         If theme IsNot Nothing Then
             If Not theme.Equals(_current) Then
                 _current = theme
-                OnCurrentChanged()
+                OnCurrentThemeChanged()
             End If
         End If
         Return _current
@@ -101,7 +101,7 @@
 
     Public Shared Event CurrentThemeChanged(theme As Theme)
 
-    Public Shared Function OnCurrentChanged() As Theme
+    Public Shared Function OnCurrentThemeChanged() As Theme
         RaiseEvent CurrentThemeChanged(_current)
         Return _current
     End Function

@@ -132,7 +132,7 @@ Public Class ProcController
             If IsX265 OrElse IsX264 Then
                 matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(x264|x265)(?=\s\[)", RegexOptions.IgnoreCase)
                 For Each m As Match In matches
-                    LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(210), oh.SourceForeColor)
+                    LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(205), oh.SourceForeColor)
                 Next
             End If
 
@@ -143,10 +143,10 @@ Public Class ProcController
 
             matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(raw\s)(?=\s\[)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
-                LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(200), oh.SourceForeColor)
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(175), oh.SourceForeColor)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\n.*\s\[)(warning)\]:\s(.+)\n", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n.*\s\[)(warning)\]:\s(.+)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.WarningLabelBackColor, oh.WarningLabelForeColor, oh.WarningLabelFontStyles)
                 LogTextBox.SelectionFormat(m.Groups(2).Index, m.Groups(2).Length, oh.WarningTextBackColor, oh.WarningTextForeColor, oh.WarningTextFontStyles)
@@ -198,7 +198,7 @@ Public Class ProcController
                 End If
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s)(avisynth|vapoursynth).*\d+.*(?=\n)", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s)(avisynth|vapoursynth).*\d+.*", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.FrameServerBackColor, oh.FrameServerForeColor, oh.FrameServerFontStyles)
             Next

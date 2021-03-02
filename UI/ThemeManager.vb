@@ -432,7 +432,7 @@
                     .MediaFileFontStyles = {},
  _
                     .MetadataFileBackColor = General.Controls.RichTextBox.BackColor,
-                    .MetadataFileForeColor = _outputHighlightingForeColor.SetHue(290).AddLuminance(-0.15),
+                    .MetadataFileForeColor = _outputHighlightingForeColor.SetHue(270).AddLuminance(-0.15),
                     .MetadataFileFontStyles = {},
  _
                     .ScriptFileBackColor = General.Controls.RichTextBox.BackColor,
@@ -473,7 +473,7 @@
                     .FrameServerFontStyles = {FontStyle.Italic, FontStyle.Bold},
  _
                     .EncoderBackColor = General.Controls.RichTextBox.BackColor,
-                    .EncoderForeColor = _outputHighlightingStrongForeColor.SetHue(210).AddLuminance(0.1),
+                    .EncoderForeColor = _outputHighlightingStrongForeColor.SetHue(205).AddLuminance(0.0),
                     .EncoderFontStyles = {FontStyle.Italic, FontStyle.Bold}
                 }
             }

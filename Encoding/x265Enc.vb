@@ -948,30 +948,30 @@ Public Class x265Params
                     Quant, Bitrate)
                 Add("Analysis", RD, PsyRD,
                     New NumParam With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}},
+                    RdRefine,
                     New BoolParam With {.Switch = "--ssim-rd", .Text = "SSIM RDO"},
-                    RdRefine, RSkip,
+                    rdoqLevel, PsyRDOQ, RSkip,
                     New NumParam With {.Switch = "--rskip-edge-threshold", .Text = "RSkip Edge Threshold", .Init = 5, .Config = {0, 100}},
-                    MinCuSize, MaxCuSize, MaxTuSize, LimitRefs)
+                    LimitRefs, MinCuSize, MaxCuSize, MaxTuSize, LimitTU, TUintra, TUinter)
                 Add("Analysis 2",
-                    New NumParam With {.Switch = "--scale-factor", .Text = "Scale Factor"},
-                    LimitTU, TUintra, TUinter, rdoqLevel, PsyRDOQ,
                     New OptionParam With {.Switch = "--refine-mv", .Text = "Refine MV", .IntegerValue = True, .Options = {"Disabled", "Level 1: Search around scaled MV", "Level 2: Level 1 + Search around best AMVP cand", "Level 3: Level 2 + Search around the other AMVP cand"}},
                     New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}},
                     New BoolParam With {.Switch = "--dynamic-refine", .Text = "Dynamic Refine"},
-                    qpadaptationrange)
-                Add("Analysis 3", Rect, AMP,
+                    Rect, AMP,
+                    New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
+                    TskipFast, EarlySkip, FastIntra, BIntra, LimitModes, CUlossless,
+                    New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
+                    New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"},
+                    RefineCtuDistortion)
+                Add("Analysis 3",
                     New StringParam With {.Switch = "--analysis-reuse-file", .Text = "Analysis Reuse File", .BrowseFile = True},
                     New StringParam With {.Switch = "--analysis-save", .Text = "Analysis Save", .BrowseFile = True},
                     New OptionParam With {.Switch = "--analysis-save-reuse-level", .Text = "Save Reuse Level", .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
                     New StringParam With {.Switch = "--analysis-load", .Text = "Analysis Load", .BrowseFile = True},
                     New OptionParam With {.Switch = "--analysis-load-reuse-level", .Text = "Load Reuse Level", .IntegerValue = True, .Options = {" 0 - Default", " 1 - Lookahead information", " 2 - Level 1 + intra/inter modes, ref's", " 3 - Level 1 + intra/inter modes, ref's", " 4 - Level 1 + intra/inter modes, ref's", " 5 - Level 2 + rect-amp", " 6 - Level 2 + rect-amp", " 7 - Level 5 + AVC size CU refinement", " 8 - Level 5 + AVC size Full CU analysis-info", " 9 - Level 5 + AVC size Full CU analysis-info", "10 - Level 5 + Full CU analysis-info"}},
-                    New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
-                    TskipFast, EarlySkip, FastIntra, BIntra, CUlossless, LimitModes,
-                    New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
-                    New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"},
-                    New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False},
-                    RefineCtuDistortion)
+                    New NumParam With {.Switch = "--scale-factor", .Text = "Scale Factor"}
+                    )
                 Add("Rate Control",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .BrowseFile = True},
@@ -1001,9 +1001,11 @@ Public Class x265Params
                     MultiPassOptAnalysis,
                     MultiPassOptDistortion,
                     ConstVBV,
-                    New BoolParam() With {.Switch = "--vbv-live-multi-pass", .Text = "VBV Live Multi Pass"},
-                    New BoolParam() With {.Switch = "--aq-motion", .Text = "AQ Motion"},
-                    New BoolParam() With {.Switch = "--scenecut-aware-qp", .NoSwitch = "--no-scenecut-aware-qp", .Text = "Scenecut Aware QP"})
+                    New BoolParam With {.Switch = "--vbv-live-multi-pass", .Text = "VBV Live Multi Pass"},
+                    New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False},
+                    New BoolParam With {.Switch = "--aq-motion", .Text = "AQ Motion"},
+                    qpadaptationrange,
+                    New BoolParam With {.Switch = "--scenecut-aware-qp", .NoSwitch = "--no-scenecut-aware-qp", .Text = "Scenecut Aware QP"})
                 Add("Motion Search",
                     New StringParam With {.Switch = "--hme-search", .Text = "HME Search"},
                     New StringParam With {.Switch = "--hme-range", .Text = "HME Range", .Init = "16,32,48", .Quotes = QuotesMode.Never, .RemoveSpace = True},

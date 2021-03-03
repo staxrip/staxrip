@@ -266,7 +266,7 @@ Public Class ApplicationSettings
         End If
 
         If CropFrameCount = 0 Then
-            CropFrameCount = 10
+            CropFrameCount = 15
         End If
 
         If Check(CustomMenuCrop, "Menu in crop dialog", 17) Then

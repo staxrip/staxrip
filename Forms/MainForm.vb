@@ -3702,7 +3702,7 @@ Public Class MainForm
 
             n = ui.AddNum
             n.Text = "Number of frames used for auto crop"
-            n.Config = {5, 20}
+            n.Config = {5, 200}
             n.Field = NameOf(s.CropFrameCount)
 
             t = ui.AddText()

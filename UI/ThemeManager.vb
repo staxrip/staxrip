@@ -417,10 +417,10 @@
                 .ProcessButtonForeSelectedColor = _foreColor.AddLuminance(0.25),
                 .OutputHighlighting = New ProcessingFormThemeColors.OutputHighlightingThemeColors() With {
                     .ParameterBackColor = General.Controls.RichTextBox.BackColor,
-                    .ParameterForeColor = _outputHighlightingForeColor.SetHue(85).AddSaturation(-0.15D + _backLuma / 4).AddLuminance(-0.05D - _backLuma / 6),
+                    .ParameterForeColor = _outputHighlightingForeColor.SetHue(85).AddSaturation(-0.15D + _backLuma / 4).AddLuminance(-0.1D - _backLuma / 12),
                     .ParameterFontStyles = {FontStyle.Bold},
                     .ParameterValueBackColor = .ParameterBackColor,
-                    .ParameterValueForeColor = _outputHighlightingForeColor.SetHue(210).AddSaturation(0.1D).AddLuminance(-0.05),
+                    .ParameterValueForeColor = _outputHighlightingForeColor.SetHue(210).AddSaturation(0.1).AddLuminance(-0.05),
                     .ParameterValueFontStyles = {},
  _
                     .ExeFileBackColor = General.Controls.RichTextBox.BackColor,
@@ -455,7 +455,7 @@
                     .WarningLabelForeColor = _outputHighlightingStrongForeColor.SetHue(.WarningLabelBackColor.H).AddLuminance(_backLuma / 2),
                     .WarningLabelFontStyles = {},
                     .WarningTextBackColor = General.Controls.RichTextBox.BackColor,
-                    .WarningTextForeColor = _outputHighlightingStrongForeColor.SetHue(.WarningLabelBackColor.H),
+                    .WarningTextForeColor = _outputHighlightingStrongForeColor.SetHue(.WarningLabelBackColor.H).AddLuminance(-_backLuma / 10),
                     .WarningTextFontStyles = {FontStyle.Bold},
  _
                     .FramesBackColor = General.Controls.RichTextBox.BackColor,
@@ -473,7 +473,7 @@
                     .FrameServerFontStyles = {FontStyle.Italic, FontStyle.Bold},
  _
                     .EncoderBackColor = General.Controls.RichTextBox.BackColor,
-                    .EncoderForeColor = _outputHighlightingStrongForeColor.SetHue(205).AddLuminance(0.0),
+                    .EncoderForeColor = _outputHighlightingStrongForeColor.SetHue(205).AddLuminance(0.05),
                     .EncoderFontStyles = {FontStyle.Italic, FontStyle.Bold}
                 }
             }

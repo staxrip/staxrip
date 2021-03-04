@@ -157,11 +157,11 @@ Public Class ProcController
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.InfoLabelBackColor, oh.InfoLabelForeColor)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\s|^)(--\w[^\s=]*)([\s=]((?!--)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\s|^)(--\w[^\s=]*|-[a-z])(?:[\s=]((?!--|-[a-z]\s)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.ParameterBackColor, oh.ParameterForeColor, oh.ParameterFontStyles)
-                If m.Groups.Count > 3 Then
-                    LogTextBox.SelectionFormat(m.Groups(3).Index, m.Groups(3).Length, oh.ParameterValueBackColor, oh.ParameterValueForeColor, oh.ParameterValueFontStyles)
+                If m.Groups.Count > 2 Then
+                    LogTextBox.SelectionFormat(m.Groups(2).Index, m.Groups(2).Length, oh.ParameterValueBackColor, oh.ParameterValueForeColor, oh.ParameterValueFontStyles)
                 End If
             Next
 
@@ -187,7 +187,6 @@ Public Class ProcController
 
             matches = Regex.Matches(LogTextBox.Text, "(?<=\s)frames\s(\d+)\s-\s(\d+)\sof\s(\d+)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
-                LogTextBox.Select(m.Index, m.Length)
                 If m.Groups(1).Value.ToInt() > 0 OrElse m.Groups(2).Value.ToInt() + 1 < m.Groups(3).Value.ToInt() Then
                     LogTextBox.SelectionFormat(m.Index, m.Length, oh.FramesCuttedBackColor, oh.FramesCuttedForeColor, oh.FramesCuttedFontStyles)
                     For i = 1 To m.Groups.Count - 1

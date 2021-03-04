@@ -257,6 +257,7 @@
                         .ForeColor = _foreColor,
                         .ForeHighlightColor = _controlForeHighlightColor,
                         .ForeSelectedColor = _foreColor.AddLuminance(0.25),
+                        .SeparatorColor = .BackColor.AddLuminance(0.1),
                         .SymbolImageColor = .ForeColor
                     },
                     .NumEdit = New ControlsThemeColors.NumEditThemeColors() With {

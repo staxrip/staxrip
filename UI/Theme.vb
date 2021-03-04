@@ -545,6 +545,7 @@ Public Class Theme
             Public Property ForeColor As ColorHSL = SystemColors.WindowText
             Public Property ForeHighlightColor As ColorHSL = ForeColor
             Public Property ForeSelectedColor As ColorHSL = SystemColors.Window
+            Public Property SeparatorColor As ColorHSL = BackColor.AddLuminance(-0.15)
             Public Property SymbolImageColor As ColorHSL = ForeColor
         End Class
 

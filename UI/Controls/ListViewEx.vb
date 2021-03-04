@@ -1,6 +1,7 @@
 ﻿
 Imports System.ComponentModel
 Imports System.Reflection
+Imports System.Windows.Forms.VisualStyles
 
 Namespace UI
     Public Enum AutoCheckMode
@@ -20,6 +21,7 @@ Namespace UI
         Private _backSelectedColor As Color = Color.Empty
         Private _foreHighlightColor As Color = Color.Empty
         Private _foreSelectedColor As Color = Color.Empty
+        Private _separatorColor As Color = Color.Empty
         Private _symbolImageColor As Color = Color.Empty
 
         Public Property BackAlternateColor As Color
@@ -82,6 +84,16 @@ Namespace UI
             End Set
         End Property
 
+        Public Property SeparatorColor As Color
+            Get
+                Return _separatorColor
+            End Get
+            Set(value As Color)
+                _separatorColor = value
+                Invalidate()
+            End Set
+        End Property
+
 
 
         Event ItemsChanged()
@@ -118,7 +130,8 @@ Namespace UI
 
         Sub New()
             DoubleBuffered = True
-            'OwnerDraw = True
+            OwnerDraw = True
+
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
@@ -140,53 +153,84 @@ Namespace UI
             ForeColor = theme.General.Controls.ListView.ForeColor
             ForeHighlightColor = theme.General.Controls.ListView.ForeHighlightColor
             ForeSelectedColor = theme.General.Controls.ListView.ForeSelectedColor
+            SeparatorColor = theme.General.Controls.ListView.SeparatorColor
             SymbolImageColor = theme.General.Controls.ListView.SymbolImageColor
             BorderStyle = BorderStyle.Fixed3D
-            AlternateRowBackColor(theme)
-        End Sub
-
-        Sub AlternateRowBackColor(theme As Theme)
-            If theme Is Nothing Then Return
-
-            SuspendLayout()
-            Dim listViewItems = Items.OfType(Of ListViewItem)
-            For i As Integer = 0 To listViewItems.Count() - 1
-                listViewItems.ElementAt(i).BackColor = If(i Mod 2 = 1, BackAlternateColor, BackColor)
-            Next
-            ResumeLayout()
         End Sub
 
         Protected Overrides Sub OnDrawItem(e As DrawListViewItemEventArgs)
-            MyBase.OnDrawItem(e)
-            'e.DrawBackground()
-            'If e.Item.Selected = True Then
-            '    Using back = New SolidBrush(BackSelectedColor)
-            '        e.Graphics.FillRectangle(back, e.Bounds)
-            '        e.DrawText(TextFormatFlags.TextBoxControl)
-            '    End Using
-            '    Using fore = New SolidBrush(ForeSelectedColor)
-            '        e.Graphics.DrawString(e.Item.ToString(), e.Item.Font, fore, e.Bounds.Location)
-            '    End Using
-            'Else
-            '    Using back = New SolidBrush(e.Item.BackColor)
-            '        e.Graphics.FillRectangle(back, e.Bounds)
-            '        e.DrawText(TextFormatFlags.TextBoxControl)
-            '    End Using
-            '    Using fore = New SolidBrush(ForeColor)
-            '        e.Graphics.DrawString(e.Item.Text, e.Item.Font, fore, e.Bounds.Location)
-            '    End Using
-            'End If
+            'MyBase.OnDrawItem(e)
+
+            e.DrawDefault = False
+            Dim flags = GetTextAlignment(0)
+            Dim fc = e.Item.ForeColor
+            Dim rect = e.Item.Bounds
+
+            If e.Item.Selected Then
+                Using brush As New SolidBrush(BackSelectedColor)
+                    e.Graphics.FillRectangle(brush, e.Bounds)
+                End Using
+                fc = ForeSelectedColor
+            Else
+                e.Item.BackColor = If(e.ItemIndex Mod 2 = 1, BackAlternateColor, BackColor)
+                e.DrawBackground()
+            End If
+
+            Dim separatorRect = New Rectangle(e.Item.Bounds.Right - 2, e.Item.Bounds.Top, 2, Height)
+            Using brush As New SolidBrush(SeparatorColor)
+                e.Graphics.FillRectangle(brush, separatorRect)
+            End Using
+
+            If CheckBoxes Then
+                Dim checkedState = If(e.Item.Checked, CheckBoxState.CheckedNormal, CheckBoxState.UncheckedNormal)
+                Dim glyphSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, checkedState)
+                Dim hPos = (e.Item.SubItems(0).Bounds.Height - glyphSize.Height) \ 2
+                Dim vPos = hPos + e.Item.SubItems(0).Bounds.Height * e.ItemIndex + 1
+                Dim location = New Point(hPos, vPos)
+                rect.X += CInt(glyphSize.Width * 1.25)
+
+                CheckBoxRenderer.DrawCheckBox(e.Graphics, location, checkedState)
+            End If
+
+            TextRenderer.DrawText(e.Graphics, e.Item.Text, e.Item.Font, rect, fc, flags)
+        End Sub
+
+
+        Protected Overrides Sub OnDrawSubItem(e As DrawListViewSubItemEventArgs)
+            Dim flags = GetTextAlignment(e.ColumnIndex)
+            Dim fc = If(e.Item.Selected, ForeSelectedColor, ForeColor)
+
+            If Not CheckBoxes OrElse e.ColumnIndex <> 0 Then
+                TextRenderer.DrawText(e.Graphics, e.SubItem.Text, e.SubItem.Font, e.Bounds, fc, flags)
+            End If
+
+            Dim separatorRect = New Rectangle(e.SubItem.Bounds.Left - 2, e.SubItem.Bounds.Top, 2, Height)
+            Using brush As New SolidBrush(SeparatorColor)
+                e.Graphics.FillRectangle(brush, separatorRect)
+            End Using
         End Sub
 
         Protected Overrides Sub OnCreateControl()
-            AlternateRowBackColor(ThemeManager.CurrentTheme)
             MyBase.OnCreateControl()
         End Sub
 
         Sub OnItemsChanged()
-            AlternateRowBackColor(ThemeManager.CurrentTheme)
             RaiseEvent ItemsChanged()
         End Sub
+
+        Function GetTextAlignment(columnIndex As Integer) As TextFormatFlags
+            Dim flags As TextFormatFlags = If(View = View.Tile, If(columnIndex = 0, TextFormatFlags.Default, TextFormatFlags.Bottom), TextFormatFlags.VerticalCenter)
+
+            If View = View.Details Then
+                flags = flags Or TextFormatFlags.LeftAndRightPadding
+            End If
+
+            If Not Columns(columnIndex).TextAlign = HorizontalAlignment.Left Then
+                flags = flags Or CType(CInt(Columns(columnIndex).TextAlign ^ 3), TextFormatFlags)
+            End If
+
+            Return flags
+        End Function
 
         Sub SelectFirst()
             If Items.Count > 0 Then

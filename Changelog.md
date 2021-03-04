@@ -19,6 +19,7 @@
 - x264 --progress-header disabled for Patman build (Dendraspis)
 - Customized progress text fix for new Patman build (Dendraspis)
 - Fix resize values are not refreshed after changing them (Dendraspis, [#558](/../../issues/558))
+- Adjustments to match the SI prefix according to IEC (Base 10) (Dendraspis)
 - SMDegrain 3.1.2.111s
 
 

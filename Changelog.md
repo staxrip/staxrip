@@ -6,6 +6,7 @@
   with old settings was happening, this is finally fixed, but could only
   be achieved by resetting all video encoder options (stax76, [#546](/../../issues/546))
 - Fix issue with ffmpeg AAC encoding (stax76, [#548](/../../issues/548))
+- Encoder dialogs allow using 1:1 for --sar (stax76, [#546](/../../issues/546))
 - Introduce Output Highlighing (Dendraspis)
 - Introduce Command Line Highlighing (Dendraspis)
 - Add more colors (Dendraspis)
@@ -15,9 +16,9 @@
 - x265 --selective-sao default set to 0 (Dendraspis, [#546](/../../issues/546))
 - x265 --qpmin, --qpmax and --qpstep boundaries set (Dendraspis)
 - x265 ---psy-rd moved from Other to Analysis (Dendraspis)
-- Encoder dialogs allow using 1:1 for --sar (stax76, [#546](/../../issues/546))
-- Customized progress text fix for new Patman build (Dendraspis)
 - x264 --progress-header disabled for Patman build (Dendraspis)
+- Customized progress text fix for new Patman build (Dendraspis)
+- Fix resize values are not refreshed after changing them (Dendraspis, [#558](/../../issues/558))
 - SMDegrain 3.1.2.111s
 
 

@@ -2766,6 +2766,7 @@ Public Class MainForm
             Return False
         End If
 
+        p.Script.Synchronize(False, False, False)
         Dim isCropped = p.Script.IsFilterActive("Crop")
         Dim isResized = p.Script.IsFilterActive("Resize")
 

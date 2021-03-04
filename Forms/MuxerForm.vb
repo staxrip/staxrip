@@ -1109,10 +1109,10 @@ Public Class MuxerForm
                 Dim size As String
 
                 If i.Size > 0 Then
-                    If i.Size > 1024 ^ 2 Then
-                        size = (i.Size / 1024 ^ 2).ToString("f1") & " MB"
+                    If i.Size > 1000 ^ 2 Then
+                        size = (i.Size / 1000 ^ 2).ToString("f1") & " MB"
                     Else
-                        size = (i.Size / 1024).ToString("f1") & " KB"
+                        size = (i.Size / 1000).ToString("f1") & " KB"
                     End If
                 End If
 

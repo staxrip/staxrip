@@ -62,12 +62,12 @@ Public Class Calc
         If p.TargetWidth = 0 Then Return 0
         If p.TargetHeight = 0 Then Return 0
 
-        Return p.VideoBitrate * 1024L / (p.TargetWidth * p.TargetHeight * CLng(framerate))
+        Return p.VideoBitrate * 1000L / (p.TargetWidth * p.TargetHeight * CLng(framerate))
     End Function
 
     Shared Function GetSize() As Double
         Dim ret = (Calc.GetVideoKBytes() + Calc.GetAudioKBytes() +
-            GetSubtitleKBytes() + Calc.GetOverheadKBytes()) / 1024
+            GetSubtitleKBytes() + Calc.GetOverheadKBytes()) / 1000
 
         If ret < 1 Then ret = 1
 
@@ -79,8 +79,8 @@ Public Class Calc
             Return 0
         End If
 
-        Dim kbytes = p.TargetSize * 1024 - GetAudioKBytes() - GetSubtitleKBytes() - GetOverheadKBytes()
-        Dim ret = kbytes * 8 * 1.024 / p.TargetSeconds
+        Dim kbytes = p.TargetSize * 1000 - GetAudioKBytes() - GetSubtitleKBytes() - GetOverheadKBytes()
+        Dim ret = kbytes * 8 / p.TargetSeconds
 
         If ret < 1 Then
             ret = 1
@@ -90,11 +90,11 @@ Public Class Calc
     End Function
 
     Shared Function GetVideoKBytes() As Double
-        Return ((p.VideoBitrate * p.TargetSeconds) / 8) / 1.024
+        Return ((p.VideoBitrate * p.TargetSeconds) / 8)
     End Function
 
     Shared Function GetSubtitleKBytes() As Double
-        Return Aggregate i In p.VideoEncoder.Muxer.Subtitles Into Sum(If(i.Enabled, i.Size / 1024 / 3, 0))
+        Return Aggregate i In p.VideoEncoder.Muxer.Subtitles Into Sum(If(i.Enabled, i.Size / 1000 / 3, 0))
     End Function
 
     Shared Function GetOverheadKBytes() As Double
@@ -106,7 +106,7 @@ Public Class Calc
             If p.Audio0.File <> "" Then ret += frames * 0.04
             If p.Audio1.File <> "" Then ret += frames * 0.04
         ElseIf p.VideoEncoder.Muxer.OutputExt = "mp4" Then
-            ret += 10.4 / 1024 * frames
+            ret += 10.4 / 1000 * frames
         ElseIf p.VideoEncoder.Muxer.OutputExt = "mkv" Then
             ret += frames * 0.013
         End If
@@ -1289,7 +1289,7 @@ Public Class Subtitle
                     st.StreamOrder = indexData
                     st.Path = path
                     indexData += 1
-                    st.Size = CInt(New FileInfo(path).Length / 1024)
+                    st.Size = CInt(New FileInfo(path).Length / 1000)
                     Dim subFile = path.ChangeExt("sub")
                     If File.Exists(subFile) Then st.Size += New FileInfo(subFile).Length
                     ret.Add(st)

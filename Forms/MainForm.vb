@@ -2838,7 +2838,7 @@ Public Class MainForm
 
         If p.SourceSeconds > 0 Then
             Dim size = If(p.SourceVideoSize > 0, p.SourceVideoSize, p.SourceSize)
-            Dim sizeText = If(size / 1024 ^ 2 < 1024, CInt(size / 1024 ^ 2).ToString + "MiB", (size / 1024 ^ 3).ToString("f1") + "GiB")
+            Dim sizeText = If(size / 1000 ^ 2 < 1000, CInt(size / 1000 ^ 2).ToString + "MB", (size / 1000 ^ 3).ToString("f1") + "GB")
 
             If size <> p.SourceVideoSize Then
                 sizeText = $"[{sizeText}]"
@@ -3308,11 +3308,11 @@ Public Class MainForm
 
             Dim di As New DriveInfo(p.TargetFile.Dir)
 
-            If di.AvailableFreeSpace / 1024 ^ 3 < s.MinimumDiskSpace Then
+            If di.AvailableFreeSpace / 1000 ^ 3 < s.MinimumDiskSpace Then
                 Using td As New TaskDialog(Of String)
                     td.MainInstruction = "Low Disk Space"
                     td.Content = $"The target drive {Path.GetPathRoot(p.TargetFile)} has only " +
-                                 $"{(di.AvailableFreeSpace / 1024 ^ 3).ToString("f2")} GB free disk space."
+                                 $"{(di.AvailableFreeSpace / 1000 ^ 3).ToString("f2")} GB free disk space."
                     td.MainIcon = TaskDialogIcon.Warning
                     td.AddButton("Continue", "Continue")
                     td.AddButton("Abort", "Abort")
@@ -5656,7 +5656,7 @@ Public Class MainForm
                 Try
                     Dim di As New DriveInfo(form.OutputFolder)
 
-                    If di.AvailableFreeSpace / 1024 ^ 3 < 50 Then
+                    If di.AvailableFreeSpace / 1000 ^ 3 < 50 Then
                         MsgError("The target drive has not enough free disk space.")
                         Exit Sub
                     End If

@@ -20,11 +20,11 @@ Public Class DownloadForm
 
     Sub ProgressChanged(sender As Object, e As DownloadProgressChangedEventArgs)
         Try
-            Dim mb = e.TotalBytesToReceive / 1024 / 1024
-            Dim received = e.BytesReceived / 1024 / 1024
+            Dim mb = e.TotalBytesToReceive / 1000 ^ 2
+            Dim received = e.BytesReceived / 1000 ^ 2
             Text = "Download - " + received.ToString("0.#") + " MB of " + mb.ToString("0.#") + " MB"
-            ProgressBar.Maximum = CInt(e.TotalBytesToReceive / 1024)
-            ProgressBar.Value = CInt(e.BytesReceived / 1024)
+            ProgressBar.Maximum = CInt(e.TotalBytesToReceive / 1000)
+            ProgressBar.Value = CInt(e.BytesReceived / 1000)
         Catch
         End Try
     End Sub

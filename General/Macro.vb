@@ -386,7 +386,7 @@ Public Class Macro
         If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", p.Script.GetCachedFrameRate.ToString("f6", CultureInfo.InvariantCulture))
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_size%") Then value = value.Replace("%target_size%", (p.TargetSize * 1024).ToString)
+        If value.Contains("%target_size%") Then value = value.Replace("%target_size%", (p.TargetSize * 1000).ToString)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%target_file%") Then value = value.Replace("%target_file%", p.TargetFile)

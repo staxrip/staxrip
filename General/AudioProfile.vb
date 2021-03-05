@@ -1216,7 +1216,7 @@ Public Class GUIAudioProfile
                     sb.Append(" -c:a eac3")
                 End If
 
-                sb.Append(" -b:a " & CInt(Bitrate) & "k")
+                sb.Append(" -b:a " & If(Bitrate > 960, CInt(Bitrate) + 0.1, CInt(Bitrate)).ToInvariantString() & "k")
             Case AudioCodec.DTS
                 If ExtractDTSCore Then
                     sb.Append(" -bsf:a dca_core -c:a copy")

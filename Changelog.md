@@ -21,6 +21,7 @@
 - Fix resize values are not refreshed after changing them (Dendraspis, [#558](/../../issues/558))
 - Adjustments to match the SI prefix according to IEC (Base 10) (Dendraspis)
 - Set minimum bitrate of 32kbps for (E)AC3 (Dendraspis, 44vince44)
+- Fix ffmpeg DD+ encoding issue with high bitrates by adding 0.1 to bitrate (Dendraspis, [#566](/../../issues/566))
 - SMDegrain 3.1.2.111s
 
 

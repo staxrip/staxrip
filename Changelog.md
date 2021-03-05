@@ -20,6 +20,7 @@
 - Customized progress text fix for new Patman build (Dendraspis)
 - Fix resize values are not refreshed after changing them (Dendraspis, [#558](/../../issues/558))
 - Adjustments to match the SI prefix according to IEC (Base 10) (Dendraspis)
+- Set minimum bitrate of 32kbps for (E)AC3 (Dendraspis, 44vince44)
 - SMDegrain 3.1.2.111s
 
 

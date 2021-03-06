@@ -470,7 +470,7 @@
                     .FramesCuttedNumberFontStyles = {FontStyle.Bold},
  _
                     .FrameServerBackColor = General.Controls.RichTextBox.BackColor,
-                    .FrameServerForeColor = _outputHighlightingStrongForeColor.SetHue(300).AddLuminance(0.1),
+                    .FrameServerForeColor = _outputHighlightingStrongForeColor.SetHue(300).AddSaturation(-0.2),
                     .FrameServerFontStyles = {FontStyle.Italic, FontStyle.Bold},
  _
                     .EncoderBackColor = General.Controls.RichTextBox.BackColor,

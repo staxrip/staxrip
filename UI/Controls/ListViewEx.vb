@@ -187,7 +187,9 @@ Namespace UI
                 Dim hPos = (e.Item.SubItems(0).Bounds.Height - glyphSize.Height) \ 2
                 Dim vPos = hPos + e.Item.SubItems(0).Bounds.Height * e.ItemIndex + 1
                 Dim location = New Point(hPos, vPos)
-                rect.X += CInt(glyphSize.Width * 1.25)
+                Dim textOffset = CInt(glyphSize.Width * 1.25)
+                rect.X += textOffset
+                rect.Width -= textOffset
 
                 CheckBoxRenderer.DrawCheckBox(e.Graphics, location, checkedState)
             End If

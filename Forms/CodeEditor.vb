@@ -55,74 +55,8 @@ Public Class CodeEditor
         ApplyTheme(ThemeManager.CurrentTheme)
     End Sub
 
-    Sub ApplyTheme(controls As IEnumerable(Of Control))
-        ApplyTheme(controls, ThemeManager.CurrentTheme)
-    End Sub
-
     Sub ApplyTheme(theme As Theme)
-        ApplyTheme(Me.GetAllControls(), theme)
-    End Sub
-
-    Sub ApplyTheme(controls As IEnumerable(Of Control), theme As Theme)
         BackColor = theme.General.BackColor
-
-        'For Each control In controls.OfType(Of Label)
-        '    control.BackColor = theme.General.Controls.Label.BackColor
-        '    control.ForeColor = theme.General.Controls.Label.ForeColor
-        'Next
-
-        'For Each control In controls.OfType(Of ButtonLabel)
-        '    If TypeOf control.Parent Is UserControl Then
-        '        control.BackColor = theme.General.Controls.ListView.BackColor
-        '    Else
-        '        control.BackColor = theme.General.Controls.ButtonLabel.BackColor
-        '    End If
-        '    control.ForeColor = theme.General.Controls.ButtonLabel.ForeColor
-        '    control.LinkColor = theme.General.Controls.ButtonLabel.LinkForeColor
-        '    control.LinkHoverColor = theme.General.Controls.ButtonLabel.LinkForeHoverColor
-        'Next
-
-        'For Each control In controls.OfType(Of Button)
-        '    control.BackColor = theme.General.Controls.Button.BackColor
-        '    control.ForeColor = theme.General.Controls.Button.ForeColor
-        'Next
-
-        'For Each control In controls.OfType(Of GroupBox)
-        '    control.BackColor = theme.General.Controls.GroupBox.BackColor
-        '    control.ForeColor = theme.General.Controls.GroupBox.ForeColor
-        'Next
-
-        'For Each control In controls.OfType(Of Panel)
-        '    control.BackColor = theme.General.Controls.Panel.BackColor
-        '    control.ForeColor = theme.General.Controls.Panel.ForeColor
-        'Next
-
-        'For Each control In controls.OfType(Of TableLayoutPanel)
-        '    control.BackColor = theme.General.Controls.TableLayoutPanel.BackColor
-        '    control.ForeColor = theme.General.Controls.TableLayoutPanel.ForeColor
-        'Next
-
-        'For Each control In controls.OfType(Of TextBox)
-        '    control.BackColor = theme.General.Controls.TextBox.BackColor
-        '    control.ForeColor = theme.General.Controls.TextBox.ForeColor
-        'Next
-
-        'For Each control In controls.OfType(Of TextBoxEx)
-        '    control.BorderColor = theme.General.Controls.TextBox.BorderColor
-        '    control.BorderFocusedColor = theme.General.Controls.TextBox.BorderFocusedColor
-        'Next
-
-        'For Each control In controls.OfType(Of TextEdit)
-        '    control.BackColor = theme.General.Controls.TextEdit.BackColor
-        '    control.ForeColor = theme.General.Controls.TextEdit.ForeColor
-        '    control.BorderColor = theme.General.Controls.TextEdit.BorderColor
-        '    control.BorderFocusedColor = theme.General.Controls.TextEdit.BorderFocusedColor
-        'Next
-
-        'For Each control In controls.OfType(Of TrackBar)
-        '    control.BackColor = theme.General.Controls.TrackBar.BackColor
-        '    control.ForeColor = theme.General.Controls.TrackBar.ForeColor
-        'Next
     End Sub
 
     Sub ModifyMenu()
@@ -286,14 +220,48 @@ Public Class CodeEditor
         form.Show()
     End Sub
 
-    <Command("Joins all filters into one filter.")>
-    Sub JoinFilters()
-        Dim firstTable = DirectCast(MainFlowLayoutPanel.Controls(0), FilterTable)
-        firstTable.tbName.Text = "merged"
-        firstTable.rtbScript.Text = MainFlowLayoutPanel.Controls.OfType(Of FilterTable).Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, "# " + BR))).Join(BR) + BR2 + BR2
+    <Command("Joins all active filters into one filter.")>
+    Sub JoinActiveFilters()
+        Dim activeTables = MainFlowLayoutPanel.Controls?.OfType(Of FilterTable)?.Where(Function(i) i.cbActive.Checked AndAlso Not {"source", "crop", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant()))
+        Dim firstActiveTable = activeTables?.FirstOrDefault()
 
-        For x = MainFlowLayoutPanel.Controls.Count - 1 To 1 Step -1
-            MainFlowLayoutPanel.Controls.RemoveAt(x)
+        If firstActiveTable Is Nothing Then Return
+
+        firstActiveTable.tbName.Text = "Actives merged"
+        firstActiveTable.rtbScript.Text = activeTables.Select(Function(arg) arg.rtbScript.Text.Trim).Join(BR) + BR
+
+        For x = activeTables.Count() - 1 To 1 Step -1
+            MainFlowLayoutPanel.Controls.Remove(activeTables.ElementAt(x))
+        Next
+    End Sub
+
+    <Command("Joins all filters into one filter.")>
+    Sub JoinAllFilters()
+        Dim tables = MainFlowLayoutPanel.Controls?.OfType(Of FilterTable)?.Where(Function(i) Not {"source", "crop", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant()))
+        Dim firstTable = tables?.FirstOrDefault()
+
+        If firstTable Is Nothing Then Return
+
+        firstTable.tbName.Text = "Merged"
+        firstTable.rtbScript.Text = tables.Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, "# " + BR))).Join(BR) + BR
+
+        For x = tables.Count - 1 To 1 Step -1
+            MainFlowLayoutPanel.Controls.Remove(tables.ElementAt(x))
+        Next
+    End Sub
+
+    <Command("Joins all inactive filters into one filter.")>
+    Sub JoinInactiveFilters()
+        Dim inactiveTables = MainFlowLayoutPanel.Controls?.OfType(Of FilterTable)?.Where(Function(i) Not i.cbActive.Checked AndAlso Not {"source", "crop", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant()))
+        Dim firstInactiveTable = inactiveTables?.FirstOrDefault()
+
+        If firstInactiveTable Is Nothing Then Return
+
+        firstInactiveTable.tbName.Text = "Inactives merged"
+        firstInactiveTable.rtbScript.Text = inactiveTables.Select(Function(arg) arg.rtbScript.Text.Trim).Join(BR) + BR
+
+        For x = inactiveTables.Count() - 1 To 1 Step -1
+            MainFlowLayoutPanel.Controls.Remove(inactiveTables.ElementAt(x))
         Next
     End Sub
 
@@ -392,7 +360,9 @@ Public Class CodeEditor
         ret.Add("Play", NameOf(PlayWithMpvnet), Keys.F9, Symbol.Play)
         ret.Add("Info...", NameOf(ShowInfo), Keys.Control Or Keys.I, Symbol.Info)
         ret.Add("Advanced Info...", NameOf(ShowAdvancedInfo), Symbol.Lightbulb)
-        ret.Add("Join Filters", NameOf(JoinFilters), Keys.Control Or Keys.J)
+        ret.Add("Join... | All Filters", NameOf(JoinAllFilters), Keys.Control Or Keys.J)
+        ret.Add("Join... | Active Filters", NameOf(JoinActiveFilters), Keys.Control Or Keys.Alt Or Keys.J)
+        ret.Add("Join... | Inactive Filters", NameOf(JoinInactiveFilters), Keys.Control Or Keys.Shift Or Keys.J)
         ret.Add("Profiles...", NameOf(ShowFilterProfilesDialog), Keys.Control Or Keys.P, Symbol.FavoriteStar)
         ret.Add("Macros...", NameOf(g.DefaultCommands.ShowMacrosDialog), Keys.Control Or Keys.M, Symbol.CalculatorPercentage)
         ret.Add("-")
@@ -460,10 +430,11 @@ Public Class CodeEditor
 
         Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TrimmedTextSize.Width)
 
-        For Each table As FilterTable In MainFlowLayoutPanel.Controls
+        For Each table In filterTables
             Dim sizeRTB As Size
             sizeRTB.Width = maxTextWidth + FontHeight
-            sizeRTB.Height = table.TrimmedTextSize.Height + CInt(FontHeight * 0.3)
+            sizeRTB.Height = table.TrimmedTextSize.Height
+            sizeRTB.Height += If(table.TextSize.Height < table.MaxTextHeight, CInt(table.rtbScript.Font.Height * 1.1), 0)
             table.rtbScript.Size = sizeRTB
             table.rtbScript.Refresh()
         Next
@@ -516,7 +487,7 @@ Public Class CodeEditor
         CustomMenu.EnableMenuItemByActionName(NameOf(PlayWithMpvnet), p.SourceFile <> "")
         CustomMenu.EnableMenuItemByActionName(NameOf(ShowInfo), p.SourceFile <> "")
         CustomMenu.EnableMenuItemByActionName(NameOf(ShowAdvancedInfo), p.SourceFile <> "")
-        CustomMenu.EnableMenuItemByActionName(NameOf(JoinFilters), MainFlowLayoutPanel.Controls.Count > 1)
+        CustomMenu.EnableMenuItemByActionName(NameOf(JoinAllFilters), MainFlowLayoutPanel.Controls.Count > 1)
         CustomMenu.EnableMenuItemByActionName(NameOf(Cut), ActiveTable.rtbScript.SelectionLength > 0 AndAlso Not ActiveTable.rtbScript.ReadOnly)
         CustomMenu.EnableMenuItemByActionName(NameOf(Copy), ActiveTable.rtbScript.SelectionLength > 0)
         CustomMenu.EnableMenuItemByActionName(NameOf(Paste), Clipboard.GetText <> "" AndAlso Not ActiveTable.rtbScript.ReadOnly)
@@ -532,24 +503,25 @@ Public Class CodeEditor
         Property cbActive As New CheckBoxEx
         Property LastTextSize As Size
         Property Editor As CodeEditor
-        Property SplitLeft As PanelEx
-        Property SplitRight As PanelEx
+        Property splitLeft As PanelEx
+        Property splitRight As PanelEx
 
         ReadOnly Property TextSize As Size
             Get
-                Return TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(100000, 100000))
+                Dim ret = TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(100000, 100000))
+                Return ret
             End Get
         End Property
 
         ReadOnly Property MaxTextWidth As Integer
             Get
-                Return Font.Height * 40
+                Return rtbScript.Font.Height * 50
             End Get
         End Property
 
         ReadOnly Property MaxTextHeight As Integer
             Get
-                Return Font.Height * 15
+                Return rtbScript.Font.Height * 15
             End Get
         End Property
 
@@ -590,28 +562,10 @@ Public Class CodeEditor
             rtbScript.EnableAutoDragDrop = True
             rtbScript.Dock = DockStyle.Fill
             rtbScript.WordWrap = False
-            rtbScript.ScrollBars = RichTextBoxScrollBars.None
+            rtbScript.ScrollBars = RichTextBoxScrollBars.Vertical
             rtbScript.AcceptsTab = True
             rtbScript.Margin = New Padding(0)
             rtbScript.Font = New Font("Consolas", 10 * s.UIScaleFactor)
-
-            Dim a = Sub(sender As Object, e As EventArgs)
-                        If Parent Is Nothing Then Exit Sub
-                        Dim filterTables = Parent.Controls.OfType(Of FilterTable)
-                        Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TrimmedTextSize.Width)
-
-                        Dim textSizeVar = TrimmedTextSize
-
-                        If textSizeVar.Width > maxTextWidth OrElse
-                            (textSizeVar.Width = maxTextWidth AndAlso
-                            textSizeVar.Width <> LastTextSize.Width) OrElse
-                            LastTextSize.Height <> textSizeVar.Height AndAlso
-                            textSizeVar.Height > FontHeight Then
-
-                            Parent.PerformLayout()
-                            LastTextSize = TrimmedTextSize
-                        End If
-                    End Sub
 
             AddHandler cbActive.CheckedChanged, Sub() SetColor()
 
@@ -621,7 +575,22 @@ Public Class CodeEditor
                                             Editor.EnableMenuItems()
                                         End Sub
 
-            AddHandler rtbScript.TextChanged, a
+            AddHandler rtbScript.TextChanged, Sub(sender As Object, e As EventArgs)
+                                                  If Parent Is Nothing Then Exit Sub
+                                                  Dim filterTables = Parent.Controls.OfType(Of FilterTable)
+                                                  Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TrimmedTextSize.Width)
+                                                  Dim textSizeVar = TrimmedTextSize
+
+                                                  If textSizeVar.Width > maxTextWidth OrElse
+                                                      (textSizeVar.Width = maxTextWidth AndAlso
+                                                      textSizeVar.Width <> LastTextSize.Width) OrElse
+                                                      LastTextSize.Height <> textSizeVar.Height AndAlso
+                                                      textSizeVar.Height > rtbScript.Font.Height Then
+
+                                                      Parent.PerformLayout()
+                                                      LastTextSize = textSizeVar
+                                                  End If
+                                              End Sub
 
             ColumnCount = 2
             ColumnStyles.Add(New ColumnStyle(SizeType.AutoSize))
@@ -643,12 +612,12 @@ Public Class CodeEditor
             t.Controls.Add(tbName, 0, 1)
             t.ResumeLayout()
 
-            SplitLeft = New PanelEx() With {
+            splitLeft = New PanelEx() With {
                 .AutoSize = True,
                 .Dock = DockStyle.Fill
             }
 
-            SplitRight = New PanelEx() With {
+            splitRight = New PanelEx() With {
                 .AutoSize = True,
                 .Dock = DockStyle.Fill
             }
@@ -698,16 +667,16 @@ Public Class CodeEditor
                     rtbScript.BackColor = Theme.CodeEditor.BackAccentColor
                     rtbScript.BorderColor = Theme.CodeEditor.RichTextBoxBorderAccentColor
                     rtbScript.ForeColor = Theme.CodeEditor.RichTextBoxForeAccentColor
-                    SplitLeft.BackColor = Theme.CodeEditor.ForeAccentColor
-                    SplitRight.BackColor = SplitLeft.BackColor
+                    splitLeft.BackColor = Theme.CodeEditor.ForeAccentColor
+                    splitRight.BackColor = splitLeft.BackColor
                 Else
                     cbActive.ForeColor = Theme.CodeEditor.ForeColor
                     tbName.TextBox.ForeColor = Theme.CodeEditor.ForeColor
                     rtbScript.BackColor = Theme.General.Controls.RichTextBox.BackColor
                     rtbScript.BorderColor = Theme.CodeEditor.RichTextBoxBorderColor
                     rtbScript.ForeColor = Theme.CodeEditor.RichTextBoxForeColor
-                    SplitLeft.BackColor = Theme.CodeEditor.ForeColor
-                    SplitRight.BackColor = SplitLeft.BackColor
+                    splitLeft.BackColor = Theme.CodeEditor.ForeColor
+                    splitRight.BackColor = splitLeft.BackColor
                 End If
             End If
         End Sub

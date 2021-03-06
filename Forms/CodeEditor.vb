@@ -228,6 +228,7 @@ Public Class CodeEditor
         If firstActiveTable Is Nothing Then Return
 
         firstActiveTable.tbName.Text = "Actives merged"
+        firstActiveTable.cbActive.Text = "Misc"
         firstActiveTable.rtbScript.Text = activeTables.Select(Function(arg) arg.rtbScript.Text.Trim).Join(BR) + BR
 
         For x = activeTables.Count() - 1 To 1 Step -1
@@ -243,6 +244,7 @@ Public Class CodeEditor
         If firstTable Is Nothing Then Return
 
         firstTable.tbName.Text = "Merged"
+        firstTable.cbActive.Text = "Misc"
         firstTable.rtbScript.Text = tables.Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "# " + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, BR + "# "))).Join(BR) + BR
 
         For x = tables.Count - 1 To 1 Step -1
@@ -258,6 +260,7 @@ Public Class CodeEditor
         If firstInactiveTable Is Nothing Then Return
 
         firstInactiveTable.tbName.Text = "Inactives merged"
+        firstInactiveTable.cbActive.Text = "Misc"
         firstInactiveTable.rtbScript.Text = inactiveTables.Select(Function(arg) arg.rtbScript.Text.Trim).Join(BR) + BR
 
         For x = inactiveTables.Count() - 1 To 1 Step -1
@@ -503,8 +506,8 @@ Public Class CodeEditor
         Property cbActive As New CheckBoxEx
         Property LastTextSize As Size
         Property Editor As CodeEditor
-        Property splitLeft As PanelEx
-        Property splitRight As PanelEx
+        Property SplitLeft As PanelEx
+        Property SplitRight As PanelEx
 
         ReadOnly Property TextSize As Size
             Get
@@ -612,18 +615,18 @@ Public Class CodeEditor
             t.Controls.Add(tbName, 0, 1)
             t.ResumeLayout()
 
-            splitLeft = New PanelEx() With {
+            SplitLeft = New PanelEx() With {
                 .AutoSize = True,
                 .Dock = DockStyle.Fill
             }
 
-            splitRight = New PanelEx() With {
+            SplitRight = New PanelEx() With {
                 .AutoSize = True,
                 .Dock = DockStyle.Fill
             }
 
-            Controls.Add(splitLeft, 0, 0)
-            Controls.Add(splitRight, 1, 0)
+            Controls.Add(SplitLeft, 0, 0)
+            Controls.Add(SplitRight, 1, 0)
             Controls.Add(t, 0, 1)
             Controls.Add(rtbScript, 1, 1)
 
@@ -667,16 +670,16 @@ Public Class CodeEditor
                     rtbScript.BackColor = Theme.CodeEditor.BackAccentColor
                     rtbScript.BorderColor = Theme.CodeEditor.RichTextBoxBorderAccentColor
                     rtbScript.ForeColor = Theme.CodeEditor.RichTextBoxForeAccentColor
-                    splitLeft.BackColor = Theme.CodeEditor.ForeAccentColor
-                    splitRight.BackColor = splitLeft.BackColor
+                    SplitLeft.BackColor = Theme.CodeEditor.ForeAccentColor
+                    SplitRight.BackColor = SplitLeft.BackColor
                 Else
                     cbActive.ForeColor = Theme.CodeEditor.ForeColor
                     tbName.TextBox.ForeColor = Theme.CodeEditor.ForeColor
                     rtbScript.BackColor = Theme.General.Controls.RichTextBox.BackColor
                     rtbScript.BorderColor = Theme.CodeEditor.RichTextBoxBorderColor
                     rtbScript.ForeColor = Theme.CodeEditor.RichTextBoxForeColor
-                    splitLeft.BackColor = Theme.CodeEditor.ForeColor
-                    splitRight.BackColor = splitLeft.BackColor
+                    SplitLeft.BackColor = Theme.CodeEditor.ForeColor
+                    SplitRight.BackColor = SplitLeft.BackColor
                 End If
             End If
         End Sub

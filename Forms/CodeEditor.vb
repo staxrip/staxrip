@@ -243,7 +243,7 @@ Public Class CodeEditor
         If firstTable Is Nothing Then Return
 
         firstTable.tbName.Text = "Merged"
-        firstTable.rtbScript.Text = tables.Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "#" + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, "# " + BR))).Join(BR) + BR
+        firstTable.rtbScript.Text = tables.Select(Function(arg) If(arg.cbActive.Checked, arg.rtbScript.Text.Trim, "# " + arg.rtbScript.Text.Trim.FixBreak.Replace(BR, BR + "# "))).Join(BR) + BR
 
         For x = tables.Count - 1 To 1 Step -1
             MainFlowLayoutPanel.Controls.Remove(tables.ElementAt(x))

@@ -2736,7 +2736,7 @@ Public Class MainForm
         End If
     End Function
 
-    Function Assistant() As Boolean
+    Function Assistant(Optional refreshScript As Boolean = True) As Boolean
         If SkipAssistant Then
             Return False
         End If
@@ -2746,7 +2746,10 @@ Public Class MainForm
             ThemeRefresh = False
         End If
 
-        p.Script.Synchronize(False, False, False)
+        If refreshScript Then
+            p.Script.Synchronize()
+        End If
+
         Dim isCropped = p.Script.IsFilterActive("Crop")
         Dim isResized = p.Script.IsFilterActive("Resize")
 
@@ -4990,7 +4993,6 @@ Public Class MainForm
     End Sub
 
     Sub tbResize_MouseUp(sender As Object, e As MouseEventArgs) Handles tbResize.MouseUp
-        p.Script.GetInfo()
         Assistant()
     End Sub
 
@@ -5008,7 +5010,7 @@ Public Class MainForm
         tbTargetWidth.Text = CInt(320 + tbResize.Value * p.ForcedOutputMod).ToString
         SetImageHeight()
         SkipAssistant = False
-        Assistant()
+        Assistant(False)
     End Sub
 
     Sub SetImageHeight()
@@ -5166,11 +5168,6 @@ Public Class MainForm
         End If
     End Sub
 
-    Sub tbTargetWidth_KeyUp(sender As Object, e As KeyEventArgs) Handles tbTargetWidth.KeyUp
-        p.Script.GetInfo()
-        Assistant()
-    End Sub
-
     Sub tbTargetHeight_KeyDown(sender As Object, e As KeyEventArgs) Handles tbTargetHeight.KeyDown
         If e.KeyData = Keys.Up Then
             e.Handled = True
@@ -5181,11 +5178,6 @@ Public Class MainForm
             Dim modVal = p.ForcedOutputMod
             tbTargetHeight.Text = CInt(((p.TargetHeight - modVal) / modVal) * modVal).ToString()
         End If
-    End Sub
-
-    Sub tbTargetHeight_KeyUp(sender As Object, e As KeyEventArgs) Handles tbTargetHeight.KeyUp
-        p.Script.GetInfo()
-        Assistant()
     End Sub
 
     Sub tbTargetWidth_MouseWheel(sender As Object, e As MouseEventArgs) Handles tbTargetWidth.MouseWheel
@@ -5240,7 +5232,6 @@ Public Class MainForm
             tbTargetHeight.Text = height.ToString
         End If
 
-        p.Script.GetInfo()
         Assistant()
     End Sub
 
@@ -5263,7 +5254,6 @@ Public Class MainForm
         tbTargetWidth.Text = w.ToString()
         tbTargetHeight.Text = h.ToString()
 
-        p.Script.GetInfo()
         Assistant()
     End Sub
 
@@ -6086,11 +6076,13 @@ Public Class MainForm
     Sub UpdateSourceParameters()
         If Not p.SourceScript Is Nothing Then
             Try
-                p.SourceWidth = p.SourceScript.GetInfo.Width
-                p.SourceHeight = p.SourceScript.GetInfo.Height
-                p.SourceSeconds = CInt(p.SourceScript.GetFrameCount / p.SourceScript.GetFramerate)
-                p.SourceFrameRate = p.SourceScript.GetFramerate
-                p.SourceFrames = p.SourceScript.GetFrameCount
+                Dim info = p.SourceScript.GetInfo
+
+                p.SourceWidth = info.Width
+                p.SourceHeight = info.Height
+                p.SourceSeconds = CInt(info.FrameCount / info.FrameRate)
+                p.SourceFrameRate = info.FrameRate
+                p.SourceFrames = info.FrameCount
             Catch ex As Exception
                 MsgError("Source filter returned invalid parameters", p.SourceScript.GetFullScript)
                 Throw New AbortException()

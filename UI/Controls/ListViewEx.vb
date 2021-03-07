@@ -796,6 +796,8 @@ Namespace UI
 
             BeginUpdate()
 
+            Dim offset = CInt(FontHeight / 5)
+
             For Each header As ColumnHeader In Columns
                 Select Case header.Text
                     Case "Hidden"
@@ -810,6 +812,7 @@ Namespace UI
 
                 Dim headerWidth = header.Width
                 header.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent)
+                header.Width += offset
 
                 If header.Width < headerWidth Then
                     header.Width = headerWidth

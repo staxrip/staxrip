@@ -864,7 +864,7 @@ Public Class AppsForm
         End If
     End Sub
 
-    Sub miSearchUsingEverything_Click(sender As Object, e As EventArgs) Handles miFindPath.Click
+    Sub miFindPath_Click(sender As Object, e As EventArgs) Handles miFindPath.Click
         Everything()
     End Sub
 
@@ -930,7 +930,7 @@ Public Class AppsForm
                     bn.Button.Height = CInt(form.FontHeight * 3)
                     bn.Button.Padding = New Padding(form.FontHeight \ 3)
                     AddHandler bn.Button.Click, Sub(sender As Object, e As EventArgs)
-                                                    Dim fp = DirectCast(sender, Button).Text
+                                                    Dim fp = DirectCast(sender, ButtonEx).Text
 
                                                     If Not s.AllowCustomPathsInStartupFolder AndAlso
                                                         fp.ToLowerEx.StartsWithEx(Folder.Startup.ToLowerEx) AndAlso

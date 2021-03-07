@@ -440,8 +440,7 @@ Public Class CodeEditor
         For Each table In filterTables
             Dim sizeRTB As Size
             sizeRTB.Width = maxTextWidth + FontHeight
-            Dim trimmedTextSize = table.TrimmedTextSize
-            sizeRTB.Height = trimmedTextSize.Height
+            sizeRTB.Height = table.TrimmedTextSize.Height
             sizeRTB.Height += CInt(table.rtbScript.Font.Height * 0.3)
             table.rtbScript.Size = sizeRTB
             table.rtbScript.Refresh()

@@ -188,8 +188,6 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnDrawItem(e As DrawListViewItemEventArgs)
-            'MyBase.OnDrawItem(e)
-
             e.DrawDefault = False
             Dim flags = GetTextAlignment(0)
             Dim fc = e.Item.ForeColor
@@ -225,7 +223,6 @@ Namespace UI
 
             TextRenderer.DrawText(e.Graphics, e.Item.Text, e.Item.Font, rect, fc, flags)
         End Sub
-
 
         Protected Overrides Sub OnDrawSubItem(e As DrawListViewSubItemEventArgs)
             Dim flags = GetTextAlignment(e.ColumnIndex)

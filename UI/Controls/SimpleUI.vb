@@ -35,6 +35,10 @@ Public Class SimpleUI
     End Sub
 
     Sub ApplyTheme(theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
         BackColor = theme.General.BackColor
         ForeColor = theme.General.ForeColor
     End Sub
@@ -419,6 +423,10 @@ Public Class SimpleUI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             BackColor = theme.General.Controls.FlowPage.BackColor
             ForeColor = theme.General.Controls.FlowPage.ForeColor
         End Sub

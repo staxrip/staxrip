@@ -64,6 +64,10 @@ Public Class LogForm
     End Sub
 
     Sub ApplyTheme(controls As IEnumerable(Of Control), theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
         BackColor = theme.General.BackColor
 
         For Each control In controls.OfType(Of TableLayoutPanel)

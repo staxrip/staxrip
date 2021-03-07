@@ -117,6 +117,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.TreeView.BackColor
             BackAlternateColor = theme.General.Controls.TreeView.BackAlternateColor
@@ -427,6 +431,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             BackColor = theme.General.Controls.ToolStripButton.BackColor
             ForeColor = theme.General.Controls.ToolStripButton.ForeColor
         End Sub
@@ -577,6 +585,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.TextBox.BackColor
             ForeColor = theme.General.Controls.TextBox.ForeColor
@@ -702,6 +714,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             If Appearance.HasFlag(Appearance.Normal) Then
                 FlatStyle = FlatStyle.Standard
@@ -765,6 +781,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.ComboBox.BackColor
             FlatStyle = theme.General.Controls.ComboBox.FlatStyle
@@ -875,6 +895,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.RichTextBox.BackColor
             BackReadonlyColor = theme.General.Controls.RichTextBox.BackReadonlyColor
@@ -1076,6 +1100,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.Label.BackColor
             ForeColor = theme.General.Controls.Label.ForeColor
@@ -1126,6 +1154,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.PropertyGrid.BackColor
             CategoryForeColor = theme.General.Controls.PropertyGrid.CategoryForeColor
@@ -1188,8 +1220,8 @@ Namespace UI
     Public Class ButtonLabel
         Inherits Label
 
-        Property LinkColor As Color
-        Property LinkHoverColor As Color
+        Property LinkColor As Color = Color.Empty
+        Property LinkHoverColor As Color = Color.Empty
 
         Sub New()
             ApplyTheme()
@@ -1206,6 +1238,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.ButtonLabel.BackColor
             ForeColor = theme.General.Controls.ButtonLabel.ForeColor
@@ -1240,7 +1276,7 @@ Namespace UI
             Controls.Add(Label)
         End Sub
 
-        Property Color As Color
+        Property Color As Color = Color.Empty
 
         Overrides Property Text() As String
             Get
@@ -1284,6 +1320,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.GroupBox.BackColor
             ForeColor = theme.General.Controls.GroupBox.ForeColor
@@ -1734,6 +1774,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.Button.BackColor
             BackDisabledColor = theme.General.Controls.Button.BackDisabledColor
@@ -2131,6 +2175,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.ListBox.BackColor
             BackAlternateColor = theme.General.Controls.ListBox.BackAlternateColor
@@ -2418,6 +2466,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.NumEdit.BackColor
             TextEdit.BackColor = theme.General.Controls.NumEdit.BackColor
@@ -2831,6 +2883,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.TextEdit.BackColor
             BackReadonlyColor = theme.General.Controls.TextEdit.BackReadonlyColor
@@ -2915,6 +2971,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             Try
                 BackgroundColor = theme.General.Controls.GridView.BackColor
@@ -3042,6 +3102,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             SuspendLayout()
             BackColor = theme.General.Controls.LabelProgressBar.BackColor
             ForeColor = theme.General.Controls.LabelProgressBar.ForeColor

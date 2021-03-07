@@ -24,6 +24,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             BackColor = theme.General.Controls.CriteriaControl.BackColor
             ForeColor = theme.General.Controls.CriteriaControl.ForeColor
         End Sub

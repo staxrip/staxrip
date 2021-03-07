@@ -1,6 +1,7 @@
 
 Imports System.Drawing.Drawing2D
 Imports Microsoft.Win32
+Imports StaxRip.UI
 
 Public Class ToolStripRendererEx
     Inherits ToolStripSystemRenderer
@@ -45,7 +46,11 @@ Public Class ToolStripRendererEx
     End Sub
 
     Sub ApplyTheme(theme As Theme)
-        If ToolStripRendererEx.IsAutoRenderMode Then
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
+        If IsAutoRenderMode() Then
             Dim argb = CInt(Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", 0))
 
             If argb = 0 Then

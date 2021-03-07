@@ -2,6 +2,7 @@
 Imports System.Runtime.InteropServices
 
 Imports DirectN
+Imports StaxRip.UI
 
 Public Class VideoRenderer
     Implements IDisposable
@@ -78,6 +79,10 @@ Public Class VideoRenderer
     End Sub
 
     Sub ApplyTheme(theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
         BackColor = theme.General.Controls.VideoRenderer.BackColor
     End Sub
 

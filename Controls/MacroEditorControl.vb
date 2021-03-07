@@ -249,6 +249,10 @@ Public Class MacroEditorControl
     End Sub
 
     Sub ApplyTheme(theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
         BackColor = theme.General.BackColor
     End Sub
 

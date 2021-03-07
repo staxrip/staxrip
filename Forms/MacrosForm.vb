@@ -259,6 +259,10 @@ Public Class MacrosForm
     End Sub
 
     Sub ApplyTheme(theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
         BackColor = theme.General.BackColor
 
         stb.BackColor = theme.General.BackColor.AddLuminance(0.25)

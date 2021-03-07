@@ -38,6 +38,10 @@ Public Class SearchTextBox
     End Sub
 
     Sub ApplyTheme(theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
         BackColor = theme.General.Controls.TextBox.BackColor
     End Sub
 

@@ -146,6 +146,10 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             BackColor = theme.General.Controls.ListView.BackColor
             BackAlternateColor = theme.General.Controls.ListView.BackAlternateColor
             BackHighlightColor = theme.General.Controls.ListView.BackHighlightColor

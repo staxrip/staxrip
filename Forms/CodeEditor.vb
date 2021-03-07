@@ -56,6 +56,10 @@ Public Class CodeEditor
     End Sub
 
     Sub ApplyTheme(theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
         BackColor = theme.General.BackColor
     End Sub
 
@@ -644,6 +648,10 @@ Public Class CodeEditor
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
             _theme = theme
 
             BackColor = theme.General.BackColor

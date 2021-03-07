@@ -174,15 +174,15 @@ Public Class x265Control
         lv.Columns(0).Width = CInt(Width * (32 / 100))
         lv.Columns(1).Width = CInt(Width * (66 / 100))
 
-        'couldn't get scaling to work trying everything
-        blConfigCodec.Left = 5
-        blConfigCodec.Top = Height - blConfigCodec.Height - 5
+        Dim fh = FontHeight
+        blConfigCodec.Left = fh \ 4
+        blConfigCodec.Top = Height - blConfigCodec.Height - fh \ 4
 
-        blCompCheck.Left = 5
-        blCompCheck.Top = Height - blConfigCodec.Height - blCompCheck.Height - 10
+        blCompCheck.Left = fh \ 4
+        blCompCheck.Top = Height - blConfigCodec.Height - blCompCheck.Height - (fh \ 4) * 2
 
-        blConfigContainer.Left = Width - blConfigContainer.Width - 5
-        blConfigContainer.Top = Height - blConfigContainer.Height - 5
+        blConfigContainer.Left = Width - blConfigContainer.Width - fh \ 4
+        blConfigContainer.Top = Height - blConfigContainer.Height - fh \ 4
     End Sub
 
     Sub UpdateMenu()

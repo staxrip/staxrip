@@ -60,8 +60,8 @@ Public Class AppsForm
         Me.tsbVersion = New System.Windows.Forms.ToolStripButton()
         Me.ddbTools = New System.Windows.Forms.ToolStripDropDownButton()
         Me.miEditPath = New StaxRip.UI.MenuItemEx()
-        Me.miClearPaths = New StaxRip.UI.MenuItemEx()
         Me.miFindPath = New StaxRip.UI.MenuItemEx()
+        Me.miClearPaths = New StaxRip.UI.MenuItemEx()
         Me.miCopyPath = New StaxRip.UI.MenuItemEx()
         Me.miPATHEnvVar = New StaxRip.UI.MenuItemEx()
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
@@ -89,6 +89,7 @@ Public Class AppsForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tv.AutoCollaps = True
+        Me.tv.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawAll
         Me.tv.ExpandMode = StaxRip.UI.TreeNodeExpandMode.InclusiveChilds
         Me.tv.FullRowSelect = True
         Me.tv.HideSelection = False
@@ -184,15 +185,6 @@ Public Class AppsForm
         Me.miEditPath.Text = "Edit Path..."
         Me.miEditPath.ToolTipText = "Show Open File dialog to customize the path"
         '
-        'miClearPaths
-        '
-        Me.miClearPaths.Help = Nothing
-        Me.miClearPaths.Name = "miClearPaths"
-        Me.miClearPaths.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.X), System.Windows.Forms.Keys)
-        Me.miClearPaths.Size = New System.Drawing.Size(546, 67)
-        Me.miClearPaths.Text = "Clear Paths..."
-        Me.miClearPaths.ToolTipText = "Clear custom paths"
-        '
         'miFindPath
         '
         Me.miFindPath.Help = Nothing
@@ -202,6 +194,15 @@ Public Class AppsForm
         Me.miFindPath.Size = New System.Drawing.Size(546, 67)
         Me.miFindPath.Text = "Find Path..."
         Me.miFindPath.ToolTipText = "Find path using voidtools Everything"
+        '
+        'miClearPaths
+        '
+        Me.miClearPaths.Help = Nothing
+        Me.miClearPaths.Name = "miClearPaths"
+        Me.miClearPaths.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.X), System.Windows.Forms.Keys)
+        Me.miClearPaths.Size = New System.Drawing.Size(546, 67)
+        Me.miClearPaths.Text = "Clear Paths..."
+        Me.miClearPaths.ToolTipText = "Clear custom paths"
         '
         'miCopyPath
         '
@@ -350,8 +351,8 @@ Public Class AppsForm
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75.0!))
         Me.tlpMain.Controls.Add(Me.tv, 0, 1)
         Me.tlpMain.Controls.Add(Me.flp, 1, 1)
-        Me.tlpMain.Controls.Add(Me.SearchTextBox, 0, 0)
         Me.tlpMain.Controls.Add(Me.ToolStrip, 1, 0)
+        Me.tlpMain.Controls.Add(Me.SearchTextBox, 0, 0)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
         Me.tlpMain.Name = "tlpMain"
@@ -399,6 +400,7 @@ Public Class AppsForm
         tv.Scrollable = True
 
         SearchTextBox_TextChanged()
+        SearchTextBox.Height = ToolStrip.Height - 2
 
         ToolStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         g.SetRenderer(ToolStrip)

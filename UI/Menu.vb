@@ -362,8 +362,13 @@ Namespace UI
 
         Private Action As Action
 
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property Form As Form
+
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property EnabledFunc As Func(Of Boolean)
+
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property VisibleFunc As Func(Of Boolean)
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
@@ -394,6 +399,7 @@ Namespace UI
 
         Private ShortcutValue As Keys
 
+        <DefaultValue(GetType(Keys), "None")>
         Property Shortcut As Keys
             Get
                 Return ShortcutValue

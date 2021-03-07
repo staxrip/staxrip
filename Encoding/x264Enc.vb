@@ -769,9 +769,9 @@ Public Class x264Params
                     Mode,
                     Preset,
                     Tune,
+                    New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
                     Profile,
                     New OptionParam With {.Switch = "--level", .Text = "Level", .Options = {"Automatic", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
-                    New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
                     Quant,
                     Bitrate)
                 Add("Analysis",

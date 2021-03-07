@@ -261,7 +261,7 @@ Public Class QSVEnc
                     ItemsValue = New List(Of CommandLineParam)
 
                     Add("Basic",
-                        Mode, Decoder, Codec,
+                        Mode, Codec,
                         New OptionParam With {.Switch = "--quality", .Text = "Preset", .Options = {"Best", "Higher", "High", "Balanced", "Fast", "Faster", "Fastest"}, .Init = 3},
                         New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileH264", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "Baseline", "Main", "High"}},
                         New OptionParam With {.Switch = "--profile", .Text = "Profile", .Name = "ProfileH265", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "Main", "Main 10"}},
@@ -336,6 +336,7 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--aud", .Text = "AUD"})
                     Add("Input/Output",
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option"},
+                        Decoder,
                         New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Init = 2, .Options = {"Invalid", "NV12", "YV12", "YUV420P", "YUV422P", "YUV444P", "YUV420P9LE", "YUV420P10LE", "YUV420P12LE", "YUV420P14LE", "YUV420P16LE", "P010", "YUV422P9LE", "YUV422P10LE", "YUV422P12LE", "YUV422P14LE", "YUV422P16LE", "YUV444P9LE", "YUV444P10LE", "YUV444P12LE", "YUV444P14LE", "YUV444P16LE"}},
                         New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Undefined", "TFF", "BFF"}})
                     Add("Other",

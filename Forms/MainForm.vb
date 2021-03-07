@@ -3113,7 +3113,10 @@ Public Class MainForm
             End If
         End If
 
-        gbAssistant.Text = "Add Job"
+        'flicker issue
+        If gbAssistant.Text <> "Add Job" Then
+            gbAssistant.Text = "Add Job"
+        End If
 
         If laTip.Font.Size <> (9 * s.UIScaleFactor) Then
             laTip.SetFontSize(9 * s.UIScaleFactor)

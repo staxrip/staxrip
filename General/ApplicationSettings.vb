@@ -281,7 +281,7 @@ Public Class ApplicationSettings
             CustomMenuPreview = PreviewForm.GetDefaultMenu()
         End If
 
-        If Check(CustomMenuCodeEditor, "Menu in code editor", 22) Then
+        If Check(CustomMenuCodeEditor, "Menu in code editor", 23) Then
             CustomMenuCodeEditor = CodeEditor.GetDefaultMenu()
         End If
 

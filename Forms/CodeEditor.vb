@@ -440,8 +440,9 @@ Public Class CodeEditor
         For Each table In filterTables
             Dim sizeRTB As Size
             sizeRTB.Width = maxTextWidth + FontHeight
-            sizeRTB.Height = table.TrimmedTextSize.Height
-            sizeRTB.Height += If(table.TextSize.Height < table.MaxTextHeight, CInt(table.rtbScript.Font.Height * 1.1), 0)
+            Dim trimmedTextSize = table.TrimmedTextSize
+            sizeRTB.Height = trimmedTextSize.Height
+            sizeRTB.Height += CInt(table.rtbScript.Font.Height * 0.3)
             table.rtbScript.Size = sizeRTB
             table.rtbScript.Refresh()
         Next
@@ -515,8 +516,9 @@ Public Class CodeEditor
 
         ReadOnly Property TextSize As Size
             Get
-                Dim ret = TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(100000, 100000))
-                Return ret
+                Dim sz = TextRenderer.MeasureText(rtbScript.Text, rtbScript.Font, New Size(100000, 100000))
+                sz = New Size(sz.Width + SystemInformation.VerticalScrollBarWidth, sz.Height)
+                Return sz
             End Get
         End Property
 

@@ -1045,7 +1045,7 @@ Public Class MainForm
     Private SkipAssistant As Boolean
     Private BlockSourceTextBoxTextChanged As Boolean
     Private AssistantClickAction As Action
-    Private HighlightedControls As Control()
+    Private ThemeRefresh As Boolean
 
     Sub New()
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
@@ -1172,8 +1172,13 @@ Public Class MainForm
 
         For Each control In controls.OfType(Of Label)
             If control Is laTip Then
-                control.BackColor = theme.MainForm.laTipBackColor
-                control.ForeColor = theme.MainForm.laTipForeColor
+                If CanIgnoreTip Then
+                    control.BackColor = theme.MainForm.laTipBackColor
+                    control.ForeColor = theme.MainForm.laTipForeColor
+                Else
+                    control.BackColor = theme.MainForm.laTipBackHighlightColor
+                    control.ForeColor = theme.MainForm.laTipForeHighlightColor
+                End If
             Else
                 control.BackColor = theme.General.Controls.Label.BackColor
                 control.ForeColor = theme.General.Controls.Label.ForeColor
@@ -1192,9 +1197,11 @@ Public Class MainForm
             control.LinkHoverColor = theme.General.Controls.ButtonLabel.LinkForeHoverColor
         Next
 
-        For Each control In controls.OfType(Of Button)
+        For Each control In controls.OfType(Of ButtonEx)
             control.BackColor = theme.General.Controls.Button.BackColor
             control.ForeColor = theme.General.Controls.Button.ForeColor
+            control.BackDisabledColor = theme.General.Controls.Button.BackDisabledColor
+            control.ForeDisabledColor = theme.General.Controls.Button.ForeDisabledColor
         Next
 
         For Each control In controls.OfType(Of GroupBox)
@@ -2734,9 +2741,9 @@ Public Class MainForm
             Return False
         End If
 
-        If Not HighlightedControls.NothingOrEmpty Then
+        If ThemeRefresh Then
             ApplyTheme()
-            HighlightedControls = Nothing
+            ThemeRefresh = False
         End If
 
         p.Script.Synchronize(False, False, False)
@@ -2844,12 +2851,9 @@ Public Class MainForm
             lSource2.Text = ""
         End If
 
-        'laTip.BackColor = ThemeManager.CurrentTheme.MainForm.laTipBackColor
-        'laTip.ForeColor = ThemeManager.CurrentTheme.MainForm.laTipForeColor
         AssistantClickAction = Nothing
         CanIgnoreTip = True
         AssistantPassed = False
-        bnNext.Enabled = True
 
         If p.VideoEncoder.Muxer.TagFile <> "" AndAlso File.Exists(p.VideoEncoder.Muxer.TagFile) AndAlso
             p.VideoEncoder.Muxer.Tags.Count > 0 Then
@@ -3114,6 +3118,9 @@ Public Class MainForm
 
         laTip.Text = "Click on the next button to add a job."
         AssistantPassed = True
+        bnNext.Enabled = True
+        laTip.BackColor = ThemeManager.CurrentTheme.MainForm.laTipBackColor
+        laTip.ForeColor = ThemeManager.CurrentTheme.MainForm.laTipForeColor
     End Function
 
     Function Warn(msg As String, ParamArray controls As Control()) As Boolean
@@ -3122,6 +3129,7 @@ Public Class MainForm
 
     Function Warn(msg As String, clickAction As Action, ParamArray controls As Control()) As Boolean
         AssistantClickAction = clickAction
+        bnNext.Enabled = True
 
         If msg <> gbAssistant.Text Then
             gbAssistant.Text = msg
@@ -3139,6 +3147,7 @@ Public Class MainForm
         gbAssistant.Text = msg
         bnNext.Enabled = False
         CanIgnoreTip = False
+        ThemeRefresh = True
         Highlight(True, controls)
     End Function
 
@@ -3151,7 +3160,9 @@ Public Class MainForm
             Return
         End If
 
-        HighlightedControls = controls
+        If Not controls.NothingOrEmpty Then
+            ThemeRefresh = True
+        End If
 
         Dim theme = ThemeManager.CurrentTheme
 
@@ -6320,15 +6331,6 @@ Public Class MainForm
         StaxRip.StaxRipUpdate.ShowUpdateQuestion()
         StaxRip.StaxRipUpdate.CheckForUpdate(False, s.CheckForUpdatesBeta, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
-
-        'Dim aaa As Color
-        'MsgInfo(aaa = Color.Empty)
-        'Dim myColor As Color = Color.Empty
-        'Dim converter = TypeDescriptor.GetConverter(myColor)
-        ''converter.
-        ''   Dim ccc = TypeDescriptor.GetConverter(Color.Empty).ConvertFrom("Empty")
-        'Dim ccc = DirectCast(converter.ConvertFromString("0"), Color)
-        'Stop
     End Sub
 
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)

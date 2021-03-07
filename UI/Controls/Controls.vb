@@ -794,7 +794,7 @@ Namespace UI
             Dim glyphLocation As Point = New Point(hPos, vPos)
             Dim textLocation As Point = New Point(hPos + glyphSize.Width + hPos, Height - (Height - TextRenderer.MeasureText(Text, Font).Height) \ 3)
             Dim textFlags As TextFormatFlags = TextFormatFlags.SingleLine Or TextFormatFlags.VerticalCenter
-            Dim fColor As ColorHSL = If(MyBase.Checked, _theme.General.Controls.CheckBox.ForeCheckedColor, _theme.General.Controls.CheckBox.ForeColor)
+            Dim fColor As ColorHSL = If(Checked, _theme.General.Controls.CheckBox.ForeCheckedColor, _theme.General.Controls.CheckBox.ForeColor)
 
             CheckBoxRendererEx.DrawCheckBox(pevent.Graphics, glyphLocation, state)
             TextRenderer.DrawText(pevent.Graphics, Text, Font, textLocation, fColor, textFlags)

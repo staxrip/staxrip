@@ -1,4 +1,5 @@
-﻿Imports System.Windows.Forms.VisualStyles
+﻿Imports System.Drawing.Drawing2D
+Imports System.Windows.Forms.VisualStyles
 Imports StaxRip.UI
 
 Public Class CheckBoxRendererEx
@@ -8,6 +9,8 @@ Public Class CheckBoxRendererEx
     End Sub
 
     Public Shared Sub DrawCheckBox(g As Graphics, rect As Rectangle, state As CheckBoxState)
+        g.SmoothingMode = SmoothingMode.AntiAlias
+
         If ThemeManager.CurrentTheme.Name = ThemeManager.DefaultThemeName OrElse DesignHelp.IsDesignMode Then
             CheckBoxRenderer.DrawCheckBox(g, rect.Location, state)
             Return

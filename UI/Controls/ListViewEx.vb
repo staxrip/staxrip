@@ -212,7 +212,7 @@ Namespace UI
 
             If CheckBoxes Then
                 Dim checkedState = If(e.Item.Checked, CheckBoxState.CheckedNormal, CheckBoxState.UncheckedNormal)
-                Dim glyphSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, checkedState)
+                Dim glyphSize = CheckBoxRendererEx.GetGlyphSize(e.Graphics, checkedState)
                 Dim hPos = (e.Bounds.Height - glyphSize.Height) \ 2
                 Dim vPos = hPos + e.Bounds.Y
                 Dim location = New Point(hPos, vPos)
@@ -220,7 +220,7 @@ Namespace UI
                 rect.X += textOffset
                 rect.Width -= textOffset
 
-                CheckBoxRenderer.DrawCheckBox(e.Graphics, location, checkedState)
+                CheckBoxRendererEx.DrawCheckBox(e.Graphics, location, checkedState)
             End If
 
             TextRenderer.DrawText(e.Graphics, e.Item.Text, e.Item.Font, rect, fc, flags)

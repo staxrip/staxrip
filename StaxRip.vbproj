@@ -225,6 +225,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\CheckBoxRendererEx.vb" />
     <Compile Include="UI\ColorHSL.vb" />
     <Compile Include="UI\DataForm.Designer.vb">
       <DependentUpon>DataForm.vb</DependentUpon>

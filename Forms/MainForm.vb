@@ -175,10 +175,8 @@ Public Class MainForm
         '
         Me.bnNext.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnNext.AutoSize = True
-        Me.bnNext.BackDisabledColor = System.Drawing.Color.Empty
         Me.bnNext.Cursor = System.Windows.Forms.Cursors.Default
         Me.bnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.bnNext.ForeDisabledColor = System.Drawing.Color.Empty
         Me.bnNext.Location = New System.Drawing.Point(1880, 33)
         Me.bnNext.Margin = New System.Windows.Forms.Padding(0, 0, 20, 0)
         Me.bnNext.MinimumSize = New System.Drawing.Size(74, 70)
@@ -189,8 +187,6 @@ Public Class MainForm
         '
         Me.llEditAudio0.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.llEditAudio0.AutoSize = True
-        Me.llEditAudio0.LinkColor = System.Drawing.Color.Empty
-        Me.llEditAudio0.LinkHoverColor = System.Drawing.Color.Empty
         Me.llEditAudio0.Location = New System.Drawing.Point(1933, 11)
         Me.llEditAudio0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.llEditAudio0.Name = "llEditAudio0"
@@ -246,8 +242,6 @@ Public Class MainForm
         '
         Me.llEditAudio1.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.llEditAudio1.AutoSize = True
-        Me.llEditAudio1.LinkColor = System.Drawing.Color.Empty
-        Me.llEditAudio1.LinkHoverColor = System.Drawing.Color.Empty
         Me.llEditAudio1.Location = New System.Drawing.Point(1933, 89)
         Me.llEditAudio1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.llEditAudio1.Name = "llEditAudio1"
@@ -298,10 +292,6 @@ Public Class MainForm
         'tbAudioFile0
         '
         Me.tbAudioFile0.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbAudioFile0.BackReadonlyColor = System.Drawing.Color.Empty
-        Me.tbAudioFile0.BorderColor = System.Drawing.Color.Empty
-        Me.tbAudioFile0.BorderFocusedColor = System.Drawing.Color.Empty
-        Me.tbAudioFile0.BorderHoverColor = System.Drawing.Color.Empty
         Me.tbAudioFile0.DrawBorder = 1
         Me.tbAudioFile0.Location = New System.Drawing.Point(6, 7)
         Me.tbAudioFile0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
@@ -313,10 +303,6 @@ Public Class MainForm
         'tbAudioFile1
         '
         Me.tbAudioFile1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbAudioFile1.BackReadonlyColor = System.Drawing.Color.Empty
-        Me.tbAudioFile1.BorderColor = System.Drawing.Color.Empty
-        Me.tbAudioFile1.BorderFocusedColor = System.Drawing.Color.Empty
-        Me.tbAudioFile1.BorderHoverColor = System.Drawing.Color.Empty
         Me.tbAudioFile1.DrawBorder = 1
         Me.tbAudioFile1.Location = New System.Drawing.Point(6, 85)
         Me.tbAudioFile1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
@@ -329,8 +315,6 @@ Public Class MainForm
         '
         Me.llAudioProfile1.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.llAudioProfile1.AutoSize = True
-        Me.llAudioProfile1.LinkColor = System.Drawing.Color.Empty
-        Me.llAudioProfile1.LinkHoverColor = System.Drawing.Color.Empty
         Me.llAudioProfile1.Location = New System.Drawing.Point(1887, 89)
         Me.llAudioProfile1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.llAudioProfile1.Name = "llAudioProfile1"
@@ -343,8 +327,6 @@ Public Class MainForm
         '
         Me.llAudioProfile0.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.llAudioProfile0.AutoSize = True
-        Me.llAudioProfile0.LinkColor = System.Drawing.Color.Empty
-        Me.llAudioProfile0.LinkHoverColor = System.Drawing.Color.Empty
         Me.llAudioProfile0.Location = New System.Drawing.Point(1887, 11)
         Me.llAudioProfile0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.llAudioProfile0.Name = "llAudioProfile0"
@@ -375,7 +357,6 @@ Public Class MainForm
         Me.lgbTarget.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lgbTarget.Color = System.Drawing.Color.Empty
         Me.tlpMain.SetColumnSpan(Me.lgbTarget, 2)
         Me.lgbTarget.Controls.Add(Me.tlpTarget)
         Me.lgbTarget.Location = New System.Drawing.Point(1029, 81)
@@ -385,7 +366,7 @@ Public Class MainForm
         Me.lgbTarget.Size = New System.Drawing.Size(1011, 357)
         Me.lgbTarget.TabIndex = 58
         Me.lgbTarget.TabStop = False
-        Me.lgbTarget.Text = Nothing
+        Me.lgbTarget.Text = "Target"
         '
         'tlpTarget
         '
@@ -416,10 +397,6 @@ Public Class MainForm
         'tbTargetFile
         '
         Me.tbTargetFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbTargetFile.BackReadonlyColor = System.Drawing.Color.Empty
-        Me.tbTargetFile.BorderColor = System.Drawing.Color.Empty
-        Me.tbTargetFile.BorderFocusedColor = System.Drawing.Color.Empty
-        Me.tbTargetFile.BorderHoverColor = System.Drawing.Color.Empty
         Me.tlpTarget.SetColumnSpan(Me.tbTargetFile, 4)
         Me.tbTargetFile.DrawBorder = 1
         Me.tbTargetFile.Location = New System.Drawing.Point(6, 10)
@@ -442,10 +419,6 @@ Public Class MainForm
         'tbTargetSize
         '
         Me.tbTargetSize.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.tbTargetSize.BackReadonlyColor = System.Drawing.Color.Empty
-        Me.tbTargetSize.BorderColor = System.Drawing.Color.Empty
-        Me.tbTargetSize.BorderFocusedColor = System.Drawing.Color.Empty
-        Me.tbTargetSize.BorderHoverColor = System.Drawing.Color.Empty
         Me.tbTargetSize.DrawBorder = 1
         Me.tbTargetSize.Location = New System.Drawing.Point(249, 85)
         Me.tbTargetSize.Margin = New System.Windows.Forms.Padding(0)
@@ -466,10 +439,6 @@ Public Class MainForm
         'tbBitrate
         '
         Me.tbBitrate.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.tbBitrate.BackReadonlyColor = System.Drawing.Color.Empty
-        Me.tbBitrate.BorderColor = System.Drawing.Color.Empty
-        Me.tbBitrate.BorderFocusedColor = System.Drawing.Color.Empty
-        Me.tbBitrate.BorderHoverColor = System.Drawing.Color.Empty
         Me.tbBitrate.DrawBorder = 1
         Me.tbBitrate.Location = New System.Drawing.Point(747, 85)
         Me.tbBitrate.Margin = New System.Windows.Forms.Padding(0)
@@ -494,8 +463,6 @@ Public Class MainForm
         Me.blFilesize.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.blFilesize.LinkColor = System.Drawing.Color.Empty
-        Me.blFilesize.LinkHoverColor = System.Drawing.Color.Empty
         Me.blFilesize.Location = New System.Drawing.Point(6, 75)
         Me.blFilesize.Margin = New System.Windows.Forms.Padding(6, 0, 0, 0)
         Me.blFilesize.Name = "blFilesize"
@@ -510,7 +477,6 @@ Public Class MainForm
         Me.lgbSource.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lgbSource.Color = System.Drawing.Color.Empty
         Me.tlpMain.SetColumnSpan(Me.lgbSource, 2)
         Me.lgbSource.Controls.Add(Me.tlpSource)
         Me.lgbSource.Location = New System.Drawing.Point(9, 81)
@@ -520,7 +486,7 @@ Public Class MainForm
         Me.lgbSource.Size = New System.Drawing.Size(1008, 357)
         Me.lgbSource.TabIndex = 57
         Me.lgbSource.TabStop = False
-        Me.lgbSource.Text = Nothing
+        Me.lgbSource.Text = "Source"
         '
         'tlpSource
         '
@@ -573,8 +539,6 @@ Public Class MainForm
         '
         Me.blSourceDarText.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.blSourceDarText.AutoSize = True
-        Me.blSourceDarText.LinkColor = System.Drawing.Color.Empty
-        Me.blSourceDarText.LinkHoverColor = System.Drawing.Color.Empty
         Me.blSourceDarText.Location = New System.Drawing.Point(446, 15)
         Me.blSourceDarText.Name = "blSourceDarText"
         Me.blSourceDarText.Size = New System.Drawing.Size(97, 48)
@@ -596,8 +560,6 @@ Public Class MainForm
         '
         Me.blSourceParText.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.blSourceParText.AutoSize = True
-        Me.blSourceParText.LinkColor = System.Drawing.Color.Empty
-        Me.blSourceParText.LinkHoverColor = System.Drawing.Color.Empty
         Me.blSourceParText.Location = New System.Drawing.Point(291, 15)
         Me.blSourceParText.Margin = New System.Windows.Forms.Padding(9, 0, 9, 0)
         Me.blSourceParText.Name = "blSourceParText"
@@ -639,10 +601,6 @@ Public Class MainForm
         'tbSourceFile
         '
         Me.tbSourceFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbSourceFile.BackReadonlyColor = System.Drawing.Color.Empty
-        Me.tbSourceFile.BorderColor = System.Drawing.Color.Empty
-        Me.tbSourceFile.BorderFocusedColor = System.Drawing.Color.Empty
-        Me.tbSourceFile.BorderHoverColor = System.Drawing.Color.Empty
         Me.tbSourceFile.DrawBorder = 1
         Me.tbSourceFile.Location = New System.Drawing.Point(6, 10)
         Me.tbSourceFile.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
@@ -672,7 +630,6 @@ Public Class MainForm
         Me.lgbResize.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lgbResize.Color = System.Drawing.Color.Empty
         Me.tlpMain.SetColumnSpan(Me.lgbResize, 2)
         Me.lgbResize.Controls.Add(Me.tlpResize)
         Me.lgbResize.Location = New System.Drawing.Point(688, 438)
@@ -682,7 +639,7 @@ Public Class MainForm
         Me.lgbResize.Size = New System.Drawing.Size(670, 286)
         Me.lgbResize.TabIndex = 55
         Me.lgbResize.TabStop = False
-        Me.lgbResize.Text = Nothing
+        Me.lgbResize.Text = "Resize"
         '
         'tlpResize
         '
@@ -745,8 +702,6 @@ Public Class MainForm
         Me.blTargetDarText.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.blTargetDarText.AutoSize = True
         Me.blTargetDarText.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.blTargetDarText.LinkColor = System.Drawing.Color.Empty
-        Me.blTargetDarText.LinkHoverColor = System.Drawing.Color.Empty
         Me.blTargetDarText.Location = New System.Drawing.Point(0, 0)
         Me.blTargetDarText.Margin = New System.Windows.Forms.Padding(0)
         Me.blTargetDarText.Name = "blTargetDarText"
@@ -809,8 +764,6 @@ Public Class MainForm
         '
         Me.blTargetParText.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.blTargetParText.AutoSize = True
-        Me.blTargetParText.LinkColor = System.Drawing.Color.Empty
-        Me.blTargetParText.LinkHoverColor = System.Drawing.Color.Empty
         Me.blTargetParText.Location = New System.Drawing.Point(0, 46)
         Me.blTargetParText.Margin = New System.Windows.Forms.Padding(0)
         Me.blTargetParText.Name = "blTargetParText"
@@ -895,10 +848,6 @@ Public Class MainForm
         'tbTargetWidth
         '
         Me.tbTargetWidth.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.tbTargetWidth.BackReadonlyColor = System.Drawing.Color.Empty
-        Me.tbTargetWidth.BorderColor = System.Drawing.Color.Empty
-        Me.tbTargetWidth.BorderFocusedColor = System.Drawing.Color.Empty
-        Me.tbTargetWidth.BorderHoverColor = System.Drawing.Color.Empty
         Me.tbTargetWidth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.tbTargetWidth.DrawBorder = 1
         Me.tbTargetWidth.Location = New System.Drawing.Point(167, 13)
@@ -919,10 +868,6 @@ Public Class MainForm
         'tbTargetHeight
         '
         Me.tbTargetHeight.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.tbTargetHeight.BackReadonlyColor = System.Drawing.Color.Empty
-        Me.tbTargetHeight.BorderColor = System.Drawing.Color.Empty
-        Me.tbTargetHeight.BorderFocusedColor = System.Drawing.Color.Empty
-        Me.tbTargetHeight.BorderHoverColor = System.Drawing.Color.Empty
         Me.tbTargetHeight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.tbTargetHeight.DrawBorder = 1
         Me.tbTargetHeight.Location = New System.Drawing.Point(495, 13)
@@ -936,7 +881,6 @@ Public Class MainForm
         Me.lgbFilters.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lgbFilters.Color = System.Drawing.Color.Empty
         Me.lgbFilters.Controls.Add(Me.FiltersListView)
         Me.lgbFilters.Location = New System.Drawing.Point(9, 438)
         Me.lgbFilters.Margin = New System.Windows.Forms.Padding(9, 0, 6, 0)
@@ -945,19 +889,13 @@ Public Class MainForm
         Me.lgbFilters.Size = New System.Drawing.Size(667, 286)
         Me.lgbFilters.TabIndex = 53
         Me.lgbFilters.TabStop = False
-        Me.lgbFilters.Text = Nothing
         '
         'FiltersListView
         '
         Me.FiltersListView.AllowDrop = True
         Me.FiltersListView.AutoCheckMode = StaxRip.UI.AutoCheckMode.None
-        Me.FiltersListView.BackAlternateColor = System.Drawing.Color.Empty
-        Me.FiltersListView.BackHighlightColor = System.Drawing.Color.Empty
-        Me.FiltersListView.BackSelectedColor = System.Drawing.Color.Empty
         Me.FiltersListView.CheckBoxes = True
         Me.FiltersListView.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.FiltersListView.ForeHighlightColor = System.Drawing.Color.Empty
-        Me.FiltersListView.ForeSelectedColor = System.Drawing.Color.Empty
         Me.FiltersListView.FullRowSelect = True
         Me.FiltersListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
         Me.FiltersListView.HideSelection = False
@@ -966,9 +904,7 @@ Public Class MainForm
         Me.FiltersListView.MultiSelect = False
         Me.FiltersListView.Name = "FiltersListView"
         Me.FiltersListView.OwnerDraw = True
-        Me.FiltersListView.SeparatorColor = System.Drawing.Color.Empty
         Me.FiltersListView.Size = New System.Drawing.Size(649, 226)
-        Me.FiltersListView.SymbolImageColor = System.Drawing.Color.Empty
         Me.FiltersListView.TabIndex = 0
         Me.FiltersListView.UseCompatibleStateImageBehavior = False
         Me.FiltersListView.View = System.Windows.Forms.View.Details
@@ -978,7 +914,6 @@ Public Class MainForm
         Me.lgbEncoder.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lgbEncoder.Color = System.Drawing.Color.Empty
         Me.lgbEncoder.Controls.Add(Me.llMuxer)
         Me.lgbEncoder.Controls.Add(Me.pnEncoder)
         Me.lgbEncoder.Location = New System.Drawing.Point(1370, 438)
@@ -988,13 +923,10 @@ Public Class MainForm
         Me.lgbEncoder.Size = New System.Drawing.Size(670, 286)
         Me.lgbEncoder.TabIndex = 51
         Me.lgbEncoder.TabStop = False
-        Me.lgbEncoder.Text = Nothing
         '
         'llMuxer
         '
         Me.llMuxer.AutoSize = True
-        Me.llMuxer.LinkColor = System.Drawing.Color.Empty
-        Me.llMuxer.LinkHoverColor = System.Drawing.Color.Empty
         Me.llMuxer.Location = New System.Drawing.Point(516, 0)
         Me.llMuxer.Name = "llMuxer"
         Me.llMuxer.Size = New System.Drawing.Size(121, 48)
@@ -1113,6 +1045,7 @@ Public Class MainForm
     Private SkipAssistant As Boolean
     Private BlockSourceTextBoxTextChanged As Boolean
     Private AssistantClickAction As Action
+    Private HighlightedControls As Control()
 
     Sub New()
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
@@ -1214,7 +1147,7 @@ Public Class MainForm
     End Sub
 
     Sub OnThemeChanged(theme As Theme)
-        'ApplyTheme(theme)      'Called in Assistant()
+        ApplyTheme()
         Assistant()
     End Sub
 
@@ -1238,7 +1171,7 @@ Public Class MainForm
         BackColor = theme.General.BackColor
 
         For Each control In controls.OfType(Of Label)
-            If control Is Me.laTip Then
+            If control Is laTip Then
                 control.BackColor = theme.MainForm.laTipBackColor
                 control.ForeColor = theme.MainForm.laTipForeColor
             Else
@@ -1253,15 +1186,11 @@ Public Class MainForm
             Else
                 control.BackColor = theme.General.Controls.ButtonLabel.BackColor
             End If
+
             control.ForeColor = theme.General.Controls.ButtonLabel.ForeColor
             control.LinkColor = theme.General.Controls.ButtonLabel.LinkForeColor
             control.LinkHoverColor = theme.General.Controls.ButtonLabel.LinkForeHoverColor
         Next
-
-        'For Each control In controls.OfType(Of UserControl)
-        '    control.BackColor = Color.Transparent
-        '    control.Parent.BackColor = Color.Empty
-        'Next
 
         For Each control In controls.OfType(Of Button)
             control.BackColor = theme.General.Controls.Button.BackColor
@@ -2805,14 +2734,17 @@ Public Class MainForm
             Return False
         End If
 
+        If Not HighlightedControls.NothingOrEmpty Then
+            ApplyTheme()
+            HighlightedControls = Nothing
+        End If
+
         p.Script.Synchronize(False, False, False)
         Dim isCropped = p.Script.IsFilterActive("Crop")
         Dim isResized = p.Script.IsFilterActive("Resize")
 
         tbTargetWidth.ReadOnly = Not isResized
         tbTargetHeight.ReadOnly = Not isResized
-
-        ApplyTheme()
 
         Dim cropw = p.SourceWidth
         Dim croph = p.SourceHeight
@@ -2912,8 +2844,8 @@ Public Class MainForm
             lSource2.Text = ""
         End If
 
-        laTip.Text = ""
-        gbAssistant.Text = ""
+        'laTip.BackColor = ThemeManager.CurrentTheme.MainForm.laTipBackColor
+        'laTip.ForeColor = ThemeManager.CurrentTheme.MainForm.laTipForeColor
         AssistantClickAction = Nothing
         CanIgnoreTip = True
         AssistantPassed = False
@@ -3190,7 +3122,11 @@ Public Class MainForm
 
     Function Warn(msg As String, clickAction As Action, ParamArray controls As Control()) As Boolean
         AssistantClickAction = clickAction
-        gbAssistant.Text = msg
+
+        If msg <> gbAssistant.Text Then
+            gbAssistant.Text = msg
+        End If
+
         Highlight(controls)
     End Function
 
@@ -3211,7 +3147,11 @@ Public Class MainForm
     End Sub
 
     Sub Highlight(highlight As Boolean, ParamArray controls As Control())
-        If controls Is Nothing Then Return
+        If controls Is Nothing Then
+            Return
+        End If
+
+        HighlightedControls = controls
 
         Dim theme = ThemeManager.CurrentTheme
 
@@ -3234,6 +3174,7 @@ Public Class MainForm
             Else
                 control.BackColor = theme.General.Controls.ButtonLabel.BackHighlightColor
             End If
+
             control.ForeColor = theme.General.Controls.ButtonLabel.ForeHighlightColor
             control.LinkColor = theme.General.Controls.ButtonLabel.ForeHighlightColor
             control.LinkHoverColor = theme.General.Controls.ButtonLabel.ForeHighlightColor
@@ -6379,6 +6320,15 @@ Public Class MainForm
         StaxRip.StaxRipUpdate.ShowUpdateQuestion()
         StaxRip.StaxRipUpdate.CheckForUpdate(False, s.CheckForUpdatesBeta, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
+
+        'Dim aaa As Color
+        'MsgInfo(aaa = Color.Empty)
+        'Dim myColor As Color = Color.Empty
+        'Dim converter = TypeDescriptor.GetConverter(myColor)
+        ''converter.
+        ''   Dim ccc = TypeDescriptor.GetConverter(Color.Empty).ConvertFrom("Empty")
+        'Dim ccc = DirectCast(converter.ConvertFromString("0"), Color)
+        'Stop
     End Sub
 
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)

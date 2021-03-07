@@ -16,16 +16,16 @@ Public Class x264Control
 
     Friend WithEvents lv As StaxRip.UI.ListViewEx
     Friend WithEvents blConfigCodec As ButtonLabel
-    Friend WithEvents llConfigContainer As ButtonLabel
-    Friend WithEvents llCompCheck As ButtonLabel
+    Friend WithEvents blConfigContainer As ButtonLabel
+    Friend WithEvents blCompCheck As ButtonLabel
 
     Private components As System.ComponentModel.IContainer
 
     <DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.blConfigCodec = New StaxRip.UI.ButtonLabel()
-        Me.llConfigContainer = New StaxRip.UI.ButtonLabel()
-        Me.llCompCheck = New StaxRip.UI.ButtonLabel()
+        Me.blConfigContainer = New StaxRip.UI.ButtonLabel()
+        Me.blCompCheck = New StaxRip.UI.ButtonLabel()
         Me.lv = New StaxRip.UI.ListViewEx()
         Me.SuspendLayout()
         '
@@ -43,27 +43,27 @@ Public Class x264Control
         '
         'llConfigContainer
         '
-        Me.llConfigContainer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.llConfigContainer.AutoSize = True
-        Me.llConfigContainer.Location = New System.Drawing.Point(280, 223)
-        Me.llConfigContainer.Margin = New System.Windows.Forms.Padding(3)
-        Me.llConfigContainer.Name = "llConfigContainer"
-        Me.llConfigContainer.Size = New System.Drawing.Size(276, 37)
-        Me.llConfigContainer.TabIndex = 2
-        Me.llConfigContainer.TabStop = True
-        Me.llConfigContainer.Text = "Container Options"
+        Me.blConfigContainer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.blConfigContainer.AutoSize = True
+        Me.blConfigContainer.Location = New System.Drawing.Point(280, 223)
+        Me.blConfigContainer.Margin = New System.Windows.Forms.Padding(3)
+        Me.blConfigContainer.Name = "llConfigContainer"
+        Me.blConfigContainer.Size = New System.Drawing.Size(276, 37)
+        Me.blConfigContainer.TabIndex = 2
+        Me.blConfigContainer.TabStop = True
+        Me.blConfigContainer.Text = "Container Options"
         '
         'llCompCheck
         '
-        Me.llCompCheck.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.llCompCheck.AutoSize = True
-        Me.llCompCheck.Location = New System.Drawing.Point(3, 180)
-        Me.llCompCheck.Margin = New System.Windows.Forms.Padding(3)
-        Me.llCompCheck.Name = "llCompCheck"
-        Me.llCompCheck.Size = New System.Drawing.Size(399, 37)
-        Me.llCompCheck.TabIndex = 3
-        Me.llCompCheck.TabStop = True
-        Me.llCompCheck.Text = "Run Compressibility Check"
+        Me.blCompCheck.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.blCompCheck.AutoSize = True
+        Me.blCompCheck.Location = New System.Drawing.Point(3, 180)
+        Me.blCompCheck.Margin = New System.Windows.Forms.Padding(3)
+        Me.blCompCheck.Name = "llCompCheck"
+        Me.blCompCheck.Size = New System.Drawing.Size(399, 37)
+        Me.blCompCheck.TabIndex = 3
+        Me.blCompCheck.TabStop = True
+        Me.blCompCheck.Text = "Run Compressibility Check"
         '
         'lv
         '
@@ -79,9 +79,9 @@ Public Class x264Control
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.Controls.Add(Me.llConfigContainer)
+        Me.Controls.Add(Me.blConfigContainer)
         Me.Controls.Add(Me.blConfigCodec)
-        Me.Controls.Add(Me.llCompCheck)
+        Me.Controls.Add(Me.blCompCheck)
         Me.Controls.Add(Me.lv)
         Me.Name = "x264Control"
         Me.Size = New System.Drawing.Size(559, 263)
@@ -134,6 +134,35 @@ Public Class x264Control
 
         UpdateControls()
         AddHandler lv.UpdateContextMenu, AddressOf UpdateMenu
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
+        SuspendLayout()
+
+        For Each i In {blCompCheck, blConfigContainer, blConfigCodec}
+            i.ForeColor = theme.General.Controls.ButtonLabel.ForeColor
+            i.LinkColor = theme.General.Controls.ButtonLabel.LinkForeColor
+            i.LinkHoverColor = theme.General.Controls.ButtonLabel.LinkForeHoverColor
+            i.BackColor = theme.General.Controls.ListView.BackColor
+        Next
+
+        ResumeLayout()
     End Sub
 
     Protected Overrides Sub OnLayout(e As LayoutEventArgs)
@@ -150,11 +179,11 @@ Public Class x264Control
         blConfigCodec.Left = 5
         blConfigCodec.Top = Height - blConfigCodec.Height - 5
 
-        llCompCheck.Left = 5
-        llCompCheck.Top = Height - blConfigCodec.Height - llCompCheck.Height - 10
+        blCompCheck.Left = 5
+        blCompCheck.Top = Height - blConfigCodec.Height - blCompCheck.Height - 10
 
-        llConfigContainer.Left = Width - llConfigContainer.Width - 5
-        llConfigContainer.Top = Height - llConfigContainer.Height - 5
+        blConfigContainer.Left = Width - blConfigContainer.Width - 5
+        blConfigContainer.Top = Height - blConfigContainer.Height - 5
     End Sub
 
     Sub UpdateMenu()
@@ -234,18 +263,18 @@ Public Class x264Control
         End If
 
         Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
-        llCompCheck.Visible = Params.Mode.Value = x264RateMode.TwoPass Or Params.Mode.Value = x264RateMode.ThreePass
+        blCompCheck.Visible = Params.Mode.Value = x264RateMode.TwoPass Or Params.Mode.Value = x264RateMode.ThreePass
     End Sub
 
     Sub llConfigCodec_Click(sender As Object, e As EventArgs) Handles blConfigCodec.Click
         Encoder.ShowConfigDialog()
     End Sub
 
-    Sub llConfigContainer_Click(sender As Object, e As EventArgs) Handles llConfigContainer.Click
+    Sub llConfigContainer_Click(sender As Object, e As EventArgs) Handles blConfigContainer.Click
         Encoder.OpenMuxerConfigDialog()
     End Sub
 
-    Sub llCompCheck_Click(sender As Object, e As EventArgs) Handles llCompCheck.Click
+    Sub llCompCheck_Click(sender As Object, e As EventArgs) Handles blCompCheck.Click
         Encoder.RunCompCheck()
     End Sub
 

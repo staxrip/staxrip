@@ -5,22 +5,19 @@ Imports System.Windows.Forms.VisualStyles
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports System.Drawing.Drawing2D
-Imports System.Drawing.Text
 Imports System.Text.RegularExpressions
 
 Namespace UI
     Public Class TreeViewEx
         Inherits TreeView
 
-        Private AutoCollapsValue As Boolean
-
-        Private _backAlternateColor As Color = Color.Empty
-        Private _backExpandedColor As Color = Color.Empty
-        Private _backHighlightColor As Color = Color.Empty
-        Private _backSelectedColor As Color = Color.Empty
-        Private _foreExpandedColor As Color = Color.Empty
-        Private _foreHighlightColor As Color = Color.Empty
-        Private _foreSelectedColor As Color = Color.Empty
+        Private _backAlternateColor As Color
+        Private _backExpandedColor As Color
+        Private _backHighlightColor As Color
+        Private _backSelectedColor As Color
+        Private _foreExpandedColor As Color
+        Private _foreHighlightColor As Color
+        Private _foreSelectedColor As Color
 
         <DefaultValue(False)>
         Property AutoCollaps As Boolean
@@ -40,6 +37,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBackAlternateColor() As Boolean
+            Return BackAlternateColor <> Color.Empty
+        End Function
+
         Public Property BackExpandedColor As Color
             Get
                 Return _backExpandedColor
@@ -48,6 +49,10 @@ Namespace UI
                 _backExpandedColor = value
             End Set
         End Property
+
+        Private Function ShouldSerializeBackExpandedColor() As Boolean
+            Return BackExpandedColor <> Color.Empty
+        End Function
 
         Public Property BackHighlightColor As Color
             Get
@@ -59,6 +64,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBackHighlightColor() As Boolean
+            Return BackHighlightColor <> Color.Empty
+        End Function
+
         Public Property BackSelectedColor As Color
             Get
                 Return _backSelectedColor
@@ -68,6 +77,10 @@ Namespace UI
                 Invalidate()
             End Set
         End Property
+
+        Private Function ShouldSerializeBackSelectedColor() As Boolean
+            Return BackSelectedColor <> Color.Empty
+        End Function
 
         Public Property ForeExpandedColor As Color
             Get
@@ -79,6 +92,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeForeExpandedColor() As Boolean
+            Return ForeExpandedColor <> Color.Empty
+        End Function
+
         Public Property ForeHighlightColor As Color
             Get
                 Return _foreHighlightColor
@@ -88,6 +105,10 @@ Namespace UI
                 Invalidate()
             End Set
         End Property
+
+        Private Function ShouldSerializeForeHighlightColor() As Boolean
+            Return ForeHighlightColor <> Color.Empty
+        End Function
 
         Public Property ForeSelectedColor As Color
             Get
@@ -99,6 +120,9 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeForeSelectedColor() As Boolean
+            Return ForeSelectedColor <> Color.Empty
+        End Function
 
         Sub New()
             MyBase.New()
@@ -526,8 +550,8 @@ Namespace UI
         'Private Const RDW_FRAME = &H400
 
         Private _blockOnTextChanged As Boolean = False
-        Private _borderColor As Color = Color.Empty
-        Private _borderFocusedColor As Color = Color.Empty
+        Private _borderColor As Color
+        Private _borderFocusedColor As Color
 
         Public Property BorderColor As Color
             Get
@@ -539,6 +563,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBorderColor() As Boolean
+            Return BorderColor <> Color.Empty
+        End Function
+
         Public Property BorderFocusedColor As Color
             Get
                 Return _borderFocusedColor
@@ -548,6 +576,10 @@ Namespace UI
                 'Native.RedrawWindow(Handle, IntPtr.Zero, IntPtr.Zero, RDW_FRAME Or RDW_IUPDATENOW Or RDW_INVALIDATE)
             End Set
         End Property
+
+        Private Function ShouldSerializeBorderFocusedColor() As Boolean
+            Return BorderFocusedColor <> Color.Empty
+        End Function
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Shadows Property Name() As String
@@ -818,10 +850,10 @@ Namespace UI
 
         Private BorderRect As Native.RECT
 
-        Private _backReadonlyColor As Color = Color.Empty
-        Private _borderColor As Color = Color.Empty
-        Private _borderFocusedColor As Color = Color.Empty
-        Private _borderHoverColor As Color = Color.Empty
+        Private _backReadonlyColor As Color
+        Private _borderColor As Color
+        Private _borderFocusedColor As Color
+        Private _borderHoverColor As Color
 
         <Browsable(False)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
@@ -836,6 +868,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBackReadonlyColor() As Boolean
+            Return BackReadonlyColor <> Color.Empty
+        End Function
+
         Public Property BorderColor As Color
             Get
                 Return _borderColor
@@ -845,6 +881,10 @@ Namespace UI
                 Invalidate()
             End Set
         End Property
+
+        Private Function ShouldSerializeBorderColor() As Boolean
+            Return BorderColor <> Color.Empty
+        End Function
 
         Public Property BorderFocusedColor As Color
             Get
@@ -856,6 +896,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBorderFocusedColor() As Boolean
+            Return BorderFocusedColor <> Color.Empty
+        End Function
+
         Public Property BorderHoverColor As Color
             Get
                 Return _borderHoverColor
@@ -866,9 +910,11 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBorderHoverColor() As Boolean
+            Return BorderHoverColor <> Color.Empty
+        End Function
 
         Public Event AfterThemeApplied(theme As Theme)
-
 
         Sub New()
             MyClass.New(True)
@@ -1220,14 +1266,22 @@ Namespace UI
     Public Class ButtonLabel
         Inherits Label
 
-        Property LinkColor As Color = Color.Empty
-        Property LinkHoverColor As Color = Color.Empty
+        Property LinkColor As Color
+        Property LinkHoverColor As Color
 
         Sub New()
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
+
+        Private Function ShouldSerializeLinkColor() As Boolean
+            Return LinkColor <> Color.Empty
+        End Function
+
+        Private Function ShouldSerializeLinkHoverColor() As Boolean
+            Return LinkHoverColor <> Color.Empty
+        End Function
 
         Sub OnThemeChanged(theme As Theme)
             ApplyTheme(theme)
@@ -1251,13 +1305,11 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnMouseEnter(e As EventArgs)
-            'SetFontStyle(FontStyle.Bold)
             ForeColor = LinkHoverColor
             MyBase.OnMouseEnter(e)
         End Sub
 
         Protected Overrides Sub OnMouseLeave(e As EventArgs)
-            'SetFontStyle(FontStyle.Regular)
             ForeColor = LinkColor
             MyBase.OnMouseLeave(e)
         End Sub
@@ -1271,24 +1323,23 @@ Namespace UI
         Event LinkClick()
 
         Sub New()
-            Label.Left = 15
+            Label.Left = CInt(FontHeight / 4)
             Label.AutoSize = True
             Controls.Add(Label)
         End Sub
 
-        Property Color As Color = Color.Empty
+        Property Color As Color
+
+        Private Function ShouldSerializeColor() As Boolean
+            Return Color <> Color.Empty
+        End Function
 
         Overrides Property Text() As String
             Get
-                'Return Label.Text
+                Return Label.Text
             End Get
             Set(value As String)
-                value = If(value, "")
-                value = value.Trim()
-                'value = " " + value
-                'value = value + " "
-
-                Label.Text = value
+                Label.Text = value.TrimEx
             End Set
         End Property
 
@@ -1298,7 +1349,9 @@ Namespace UI
         End Sub
 
         Sub ShowContext()
-            If Not Label.ContextMenuStrip Is Nothing Then Label.ContextMenuStrip.Show(Label, 0, 16)
+            If Not Label.ContextMenuStrip Is Nothing Then
+                Label.ContextMenuStrip.Show(Label, 0, 16)
+            End If
         End Sub
     End Class
 
@@ -1663,8 +1716,8 @@ Namespace UI
     Public Class ButtonEx
         Inherits Button
 
-        Private _backDisabledColor As Color = Color.Empty
-        Private _foreDisabledColor As Color = Color.Empty
+        Private _backDisabledColor As Color
+        Private _foreDisabledColor As Color
         Private _text As String = ""
 
         <DefaultValue(ButtonSymbol.None)>
@@ -1686,6 +1739,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBackDisabledColor() As Boolean
+            Return BackDisabledColor <> Color.Empty
+        End Function
+
         Public Property ForeDisabledColor As Color
             Get
                 Return _foreDisabledColor
@@ -1694,6 +1751,10 @@ Namespace UI
                 _foreDisabledColor = value
             End Set
         End Property
+
+        Private Function ShouldSerializeForeDisabledColor() As Boolean
+            Return ForeDisabledColor <> Color.Empty
+        End Function
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Shadows Property Name As String
@@ -2080,12 +2141,12 @@ Namespace UI
     Public Class ListBoxEx
         Inherits ListBox
 
-        Private _backAlternateColor As Color = Color.Empty
-        Private _backHighlightColor As Color = Color.Empty
-        Private _backSelectedColor As Color = Color.Empty
-        Private _foreHighlightColor As Color = Color.Empty
-        Private _foreSelectedColor As Color = Color.Empty
-        Private _symbolImageColor As Color = Color.Empty
+        Private _backAlternateColor As Color
+        Private _backHighlightColor As Color
+        Private _backSelectedColor As Color
+        Private _foreHighlightColor As Color
+        Private _foreSelectedColor As Color
+        Private _symbolImageColor As Color
 
         Private LastTick As Long
         Private KeyText As String = ""
@@ -2107,6 +2168,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBackAlternateColor() As Boolean
+            Return BackAlternateColor <> Color.Empty
+        End Function
+
         Public Property BackHighlightColor As Color
             Get
                 Return _backHighlightColor
@@ -2116,6 +2181,10 @@ Namespace UI
                 Invalidate()
             End Set
         End Property
+
+        Private Function ShouldSerializeBackHighlightColor() As Boolean
+            Return BackHighlightColor <> Color.Empty
+        End Function
 
         Public Property BackSelectedColor As Color
             Get
@@ -2127,6 +2196,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBackSelectedColor() As Boolean
+            Return BackSelectedColor <> Color.Empty
+        End Function
+
         Public Property ForeHighlightColor As Color
             Get
                 Return _foreHighlightColor
@@ -2136,6 +2209,10 @@ Namespace UI
                 Invalidate()
             End Set
         End Property
+
+        Private Function ShouldSerializeForeHighlightColor() As Boolean
+            Return ForeHighlightColor <> Color.Empty
+        End Function
 
         Public Property ForeSelectedColor As Color
             Get
@@ -2147,6 +2224,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeForeSelectedColor() As Boolean
+            Return ForeSelectedColor <> Color.Empty
+        End Function
+
         Public Property SymbolImageColor As Color
             Get
                 Return _symbolImageColor
@@ -2157,6 +2238,9 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeSymbolImageColor() As Boolean
+            Return SymbolImageColor <> Color.Empty
+        End Function
 
         Sub New()
             MyBase.New()
@@ -2764,10 +2848,10 @@ Namespace UI
     Public Class TextEdit
         Inherits UserControl
 
-        Private _backReadonlyColor As Color = Color.Empty
-        Private _borderColor As Color = Color.Empty
-        Private _borderFocusedColor As Color = Color.Empty
-        Private _borderHoverColor As Color = Color.Empty
+        Private _backReadonlyColor As Color
+        Private _borderColor As Color
+        Private _borderFocusedColor As Color
+        Private _borderHoverColor As Color
         Private _drawBorder As Integer = -1
 
         Public WithEvents TextBox As New TextBoxEx
@@ -2788,6 +2872,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBackReadonlyColor() As Boolean
+            Return BackReadonlyColor <> Color.Empty
+        End Function
+
         Public Property BorderColor As Color
             Get
                 Return _borderColor
@@ -2797,6 +2885,10 @@ Namespace UI
                 Invalidate()
             End Set
         End Property
+
+        Private Function ShouldSerializeBorderColor() As Boolean
+            Return BorderColor <> Color.Empty
+        End Function
 
         Public Property BorderFocusedColor As Color
             Get
@@ -2808,6 +2900,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBorderFocusedColor() As Boolean
+            Return BorderFocusedColor <> Color.Empty
+        End Function
+
         Public Property BorderHoverColor As Color
             Get
                 Return _borderHoverColor
@@ -2817,6 +2913,10 @@ Namespace UI
                 Invalidate()
             End Set
         End Property
+
+        Private Function ShouldSerializeBorderHoverColor() As Boolean
+            Return BorderHoverColor <> Color.Empty
+        End Function
 
         Public Property DrawBorder As Integer
             Get
@@ -3112,6 +3212,10 @@ Namespace UI
             ProgressColor = theme.General.Controls.LabelProgressBar.ProgressColor
             ResumeLayout()
         End Sub
+
+        Private Function ShouldSerializeProgressColor() As Boolean
+            Return ProgressColor <> Color.Empty
+        End Function
 
         Private _Minimum As Double
 

@@ -16,13 +16,13 @@ Namespace UI
         Private LastDragOverPos As Point
         Private LastDrawPos As Integer
 
-        Private _backAlternateColor As Color = Color.Empty
-        Private _backHighlightColor As Color = Color.Empty
-        Private _backSelectedColor As Color = Color.Empty
-        Private _foreHighlightColor As Color = Color.Empty
-        Private _foreSelectedColor As Color = Color.Empty
-        Private _separatorColor As Color = Color.Empty
-        Private _symbolImageColor As Color = Color.Empty
+        Private _backAlternateColor As Color
+        Private _backHighlightColor As Color
+        Private _backSelectedColor As Color
+        Private _foreHighlightColor As Color
+        Private _foreSelectedColor As Color
+        Private _separatorColor As Color
+        Private _symbolImageColor As Color
 
         Public Property BackAlternateColor As Color
             Get
@@ -34,6 +34,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBackAlternateColor() As Boolean
+            Return BackAlternateColor <> Color.Empty
+        End Function
+
         Public Property BackHighlightColor As Color
             Get
                 Return _backHighlightColor
@@ -43,6 +47,10 @@ Namespace UI
                 Invalidate()
             End Set
         End Property
+
+        Private Function ShouldSerializeBackHighlightColor() As Boolean
+            Return BackHighlightColor <> Color.Empty
+        End Function
 
         Public Property BackSelectedColor As Color
             Get
@@ -54,6 +62,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeBackSelectedColor() As Boolean
+            Return BackSelectedColor <> Color.Empty
+        End Function
+
         Public Property ForeHighlightColor As Color
             Get
                 Return _foreHighlightColor
@@ -63,6 +75,10 @@ Namespace UI
                 Invalidate()
             End Set
         End Property
+
+        Private Function ShouldSerializeForeHighlightColor() As Boolean
+            Return ForeHighlightColor <> Color.Empty
+        End Function
 
         Public Property ForeSelectedColor As Color
             Get
@@ -74,6 +90,10 @@ Namespace UI
             End Set
         End Property
 
+        Private Function ShouldSerializeForeSelectedColor() As Boolean
+            Return ForeSelectedColor <> Color.Empty
+        End Function
+
         Public Property SymbolImageColor As Color
             Get
                 Return _symbolImageColor
@@ -83,6 +103,10 @@ Namespace UI
                 Invalidate()
             End Set
         End Property
+
+        Private Function ShouldSerializeSymbolImageColor() As Boolean
+            Return SymbolImageColor <> Color.Empty
+        End Function
 
         Public Property SeparatorColor As Color
             Get
@@ -94,12 +118,13 @@ Namespace UI
             End Set
         End Property
 
-
+        Private Function ShouldSerializeSeparatorColor() As Boolean
+            Return SeparatorColor <> Color.Empty
+        End Function
 
         Event ItemsChanged()
         Event ItemRemoved(item As ListViewItem)
         Event UpdateContextMenu()
-
 
         <DefaultValue(GetType(ButtonEx), Nothing)>
         Property UpButton As ButtonEx

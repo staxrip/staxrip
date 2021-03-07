@@ -706,6 +706,14 @@ Namespace UI
     Public Class CheckBoxEx
         Inherits CheckBox
 
+        Private _theme As Theme
+
+        Public ReadOnly Property Theme As Theme
+            Get
+                Return _theme
+            End Get
+        End Property
+
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Shadows Property Name() As String
             Get
@@ -746,6 +754,8 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
+            _theme = theme
+
             If DesignHelp.IsDesignMode Then
                 Exit Sub
             End If
@@ -774,17 +784,20 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnPaint(pevent As PaintEventArgs)
-            MyBase.OnPaint(pevent)
+            InvokePaintBackground(Me, pevent)
 
-            'If Appearance.HasFlag(Appearance.Normal) Then
-            '    Dim bColor = If(Checked, Color.Red, Color.Yellow)
-            '    Dim diameter = pevent.ClipRectangle.Height - 2
-            '    Dim rect = New Rectangle(New Point(0, 1), New Size(diameter, diameter))
-            '    ControlPaint.DrawCheckBox(pevent.Graphics, rect, If(Checked, ButtonState.Checked, ButtonState.Normal))
-            '    ControlPaint.DrawMixedCheckBox(pevent.Graphics, rect, If(Checked, ButtonState.Checked, ButtonState.Normal))
-            '    pevent.Graphics.FillRectangle(New SolidBrush(bColor), rect)
-            'End If
+            pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias
+            Dim state As CheckBoxState = If(CheckState = CheckState.Checked, CheckBoxState.CheckedNormal, CheckBoxState.UncheckedNormal)
+            Dim glyphSize As Size = CheckBoxRendererEx.GetGlyphSize(pevent.Graphics, state)
+            Dim vPos As Integer = (Height - glyphSize.Height) \ 2
+            Dim hPos As Integer = 1
+            Dim glyphLocation As Point = New Point(hPos, vPos)
+            Dim textLocation As Point = New Point(hPos + glyphSize.Width + hPos, Height - (Height - TextRenderer.MeasureText(Text, Font).Height) \ 3)
+            Dim textFlags As TextFormatFlags = TextFormatFlags.SingleLine Or TextFormatFlags.VerticalCenter
+            Dim fColor As ColorHSL = If(Checked, _theme.General.Controls.CheckBox.ForeCheckedColor, _theme.General.Controls.CheckBox.ForeColor)
 
+            CheckBoxRendererEx.DrawCheckBox(pevent.Graphics, glyphLocation, state)
+            TextRenderer.DrawText(pevent.Graphics, Text, Font, textLocation, fColor, textFlags)
         End Sub
 
         Protected Overrides Sub OnPaintBackground(pevent As PaintEventArgs)

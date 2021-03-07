@@ -1,4 +1,6 @@
 ﻿Public NotInheritable Class ThemeManager
+    Private Const _defaultThemeName = "Default"
+
     Private Shared _current As Theme
     Private Shared _themes As List(Of Theme)
     Private Shared ReadOnly _lumaCategories() As KeyValuePair(Of String, Single) = {
@@ -49,6 +51,12 @@
         End Get
     End Property
 
+    Public Shared ReadOnly Property DefaultThemeName As String
+        Get
+            Return _defaultThemeName
+        End Get
+    End Property
+
     Public Shared ReadOnly Property Themes As List(Of Theme)
         Get
             _themes = If(_themes, LoadDefaults())
@@ -74,7 +82,7 @@
 
     Private Shared Function LoadDefaults() As List(Of Theme)
         Dim defaults = New List(Of Theme) From {
-            New Theme("Default")
+            New Theme(_defaultThemeName)
         }
 
         For Each lc In _lumaCategories
@@ -86,8 +94,8 @@
         Return defaults
     End Function
 
-    Public Shared Function SetCurrentTheme(Optional name As String = "Default") As Theme
-        If String.IsNullOrWhiteSpace(name) Then name = "Default"
+    Public Shared Function SetCurrentTheme(Optional name As String = _defaultThemeName) As Theme
+        If String.IsNullOrWhiteSpace(name) Then name = _defaultThemeName
 
         Dim theme = Themes?.Where(Function(x) x.Name.Equals(name, StringComparison.OrdinalIgnoreCase))?.FirstOrDefault()
         If theme IsNot Nothing Then
@@ -176,11 +184,16 @@
                     },
                     .CheckBox = New ControlsThemeColors.CheckBoxThemeColors() With {
                         .BackColor = Color.Empty,
+                        .BackCheckedColor = .BackColor,
                         .BackHighlightColor = _controlBackHighlightColor,
                         .BackHoverColor = .BackColor.AddLuminance(0.1),
                         .BorderColor = Color.Transparent,
+                        .BoxColor = _foreColor,
+                        .BoxCheckedColor = .BoxColor,
                         .CheckedBackColor = _backColor,
+                        .CheckmarkColor = _controlBackColor,
                         .ForeColor = _foreColor,
+                        .ForeCheckedColor = .ForeColor.AddLuminance(0.1F),
                         .ForeHighlightColor = .ForeColor.AddLuminance(0.15)
                     },
                     .ComboBox = New ControlsThemeColors.ComboBoxThemeColors() With {

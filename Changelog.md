@@ -26,6 +26,7 @@
 - Code Editor does not join Source, Crop, Resize and Rotation filters automatically (Dendraspis)
 - Code Editor can join (in-)active filters only [Don't forget to reset "Edit Menu" in Code Editor!] (Dendraspis)  
 - Code Editor joined filters have the filter name "Misc" (Dendraspis)
+- Custom checkboxes for better theme experience (Dendraspis)
 - SMDegrain 3.1.2.111s
 
 

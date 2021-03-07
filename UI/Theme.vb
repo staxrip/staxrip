@@ -442,11 +442,16 @@ Public Class Theme
         <Serializable>
         Public Class CheckBoxThemeColors
             Public Property BackColor As ColorHSL = SystemColors.Control
+            Public Property BackCheckedColor As ColorHSL = BackColor
             Public Property BackHighlightColor As ColorHSL = _defaultBackHighlightColor
             Public Property BackHoverColor As ColorHSL = BackColor
             Public Property BorderColor As ColorHSL = SystemColors.ActiveBorder
+            Public Property BoxColor As ColorHSL = SystemColors.Control
+            Public Property BoxCheckedColor As ColorHSL = SystemColors.Control
+            Public Property CheckmarkColor As ColorHSL = SystemColors.ControlText
             Public Property CheckedBackColor As ColorHSL = SystemColors.Control
             Public Property ForeColor As ColorHSL = SystemColors.ControlText
+            Public Property ForeCheckedColor As ColorHSL = ForeColor
             Public Property ForeHighlightColor As ColorHSL = ForeColor
         End Class
 

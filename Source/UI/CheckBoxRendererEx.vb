@@ -17,18 +17,22 @@ Public Class CheckBoxRendererEx
             Return
         End If
 
-        Dim checked = state = CheckBoxState.CheckedDisabled OrElse state = CheckBoxState.CheckedHot OrElse state = CheckBoxState.CheckedNormal OrElse state = CheckBoxState.CheckedPressed
         Dim theme = ThemeManager.CurrentTheme.General.Controls.CheckBox
+        Dim checked = state = CheckBoxState.CheckedDisabled OrElse state = CheckBoxState.CheckedHot OrElse state = CheckBoxState.CheckedNormal OrElse state = CheckBoxState.CheckedPressed
         Dim backColor = If(checked, theme.BoxCheckedColor, theme.BoxColor)
-        Dim penColor = theme.CheckmarkColor
+        Dim borderColor = If(checked, theme.BorderCheckedColor, theme.BorderColor)
+        Dim borderStrength = 2
+        Dim checkmarkColor = theme.CheckmarkColor
+        Dim checkmarkStrength = 5
 
         Select Case state
             Case CheckBoxState.CheckedNormal
                 Using brush As New SolidBrush(backColor)
-                    g.FillRectangle(brush, rect)
+                    Using pen As New Pen(borderColor, borderStrength)
+                        g.FillRectangle(brush, rect)
+                        g.DrawRectangle(pen, rect)
+                    End Using
                 End Using
-
-                Dim penStrength = 4
 
                 Dim startX1 = rect.Left + rect.Width / 4.5F
                 Dim startY1 = rect.Top + rect.Height / 2.25F
@@ -40,13 +44,16 @@ Public Class CheckBoxRendererEx
                 Dim endX2 = rect.Left + rect.Width / 1.2F
                 Dim endY2 = rect.Top + rect.Height / 5.0F
 
-                Using pen As New Pen(penColor, penStrength)
+                Using pen As New Pen(checkmarkColor, checkmarkStrength)
                     g.DrawLine(pen, startX1, startY1, endX1, endY1)
                     g.DrawLine(pen, startX2, startY2, endX2, endY2)
                 End Using
             Case CheckBoxState.UncheckedNormal
                 Using brush As New SolidBrush(backColor)
-                    g.FillRectangle(brush, rect)
+                    Using pen As New Pen(borderColor, borderStrength)
+                        g.FillRectangle(brush, rect)
+                        g.DrawRectangle(pen, rect)
+                    End Using
                 End Using
         End Select
 

@@ -446,6 +446,7 @@ Public Class Theme
             Public Property BackHighlightColor As ColorHSL = _defaultBackHighlightColor
             Public Property BackHoverColor As ColorHSL = BackColor
             Public Property BorderColor As ColorHSL = SystemColors.ActiveBorder
+            Public Property BorderCheckedColor As ColorHSL = SystemColors.ActiveBorder
             Public Property BoxColor As ColorHSL = SystemColors.Control
             Public Property BoxCheckedColor As ColorHSL = SystemColors.Control
             Public Property CheckmarkColor As ColorHSL = SystemColors.ControlText

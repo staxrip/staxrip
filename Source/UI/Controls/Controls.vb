@@ -1336,7 +1336,7 @@ Namespace UI
         Event LinkClick()
 
         Sub New()
-            Label.Left = CInt(FontHeight / 4)
+            Label.Left = 15
             Label.AutoSize = True
             Controls.Add(Label)
         End Sub
@@ -2955,6 +2955,7 @@ Namespace UI
             End Get
             Set(value As Boolean)
                 TextBox.ReadOnly = value
+                Invalidate()
             End Set
         End Property
 

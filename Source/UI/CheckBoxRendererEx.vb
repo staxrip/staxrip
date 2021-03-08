@@ -9,6 +9,7 @@ Public Class CheckBoxRendererEx
     End Sub
 
     Public Shared Sub DrawCheckBox(g As Graphics, rect As Rectangle, state As CheckBoxState)
+        Dim smoothingModeBackup = g.SmoothingMode
         g.SmoothingMode = SmoothingMode.AntiAlias
 
         If ThemeManager.CurrentTheme.Name = ThemeManager.DefaultThemeName OrElse DesignHelp.IsDesignMode Then
@@ -48,6 +49,8 @@ Public Class CheckBoxRendererEx
                     g.FillRectangle(brush, rect)
                 End Using
         End Select
+
+        g.SmoothingMode = smoothingModeBackup
     End Sub
 
     Public Shared Function GetGlyphSize(g As Graphics, state As CheckBoxState) As Size

@@ -27,6 +27,7 @@
 - Code Editor can join (in-)active filters only [Don't forget to reset "Edit Menu" in Code Editor!] (Dendraspis)  
 - Code Editor joined filters have the filter name "Misc" (Dendraspis)
 - Custom checkboxes for better theme experience (Dendraspis)
+- Readme.md refreshed (Dendraspis, stax76)
 - SMDegrain 3.1.2.111s
 
 

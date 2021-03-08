@@ -3742,7 +3742,7 @@ Public Class MainForm
             l = ui.AddLabel("")
 
             l = ui.AddLabel("Don't change Danger Zone settings unless you are" + BR +
-                            "an absolute power user with debugging experience." + BR)
+                            "a power user with debugging experience." + BR)
 
             l.BackColor = ThemeManager.CurrentTheme.General.DangerBackColor
             l.ForeColor = ThemeManager.CurrentTheme.General.DangerForeColor

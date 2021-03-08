@@ -1796,13 +1796,15 @@ Namespace UI
             End Get
             Set(value As String)
                 _text = value
+
                 If AutoSize Then
                     Dim textSize = TextRenderer.MeasureText(_text, Font)
                     Dim fh = Font.Height
-                    MinimumSize = New Size(fh * 2, CInt(fh * 1.9))
+                    MinimumSize = New Size(CInt(fh * 2.2), fh)
                     AutoSizeMode = AutoSizeMode.GrowOnly
                     Size = New Size(textSize.Width + Padding.Horizontal + fh, textSize.Height + fh \ 2)
                 End If
+
                 Invalidate(True)
             End Set
         End Property
@@ -3088,15 +3090,13 @@ Namespace UI
                 Exit Sub
             End If
 
-            SuspendLayout()
-            Try
+            If Not Disposing AndAlso Not IsDisposed Then
+                SuspendLayout()
                 BackgroundColor = theme.General.Controls.GridView.BackColor
                 ForeColor = theme.General.Controls.GridView.ForeColor
                 GridColor = theme.General.Controls.GridView.GridColor
-            Catch ex As Exception
-            Finally
                 ResumeLayout()
-            End Try
+            End If
         End Sub
 
         Function AddTextBoxColumn() As DataGridViewTextBoxColumn

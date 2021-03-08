@@ -81,14 +81,16 @@ Public Class SimpleUI
         Tree.Width = 0
         Tree.Height = Height
 
+        Dim fh = FontHeight
+
         If Tree.Nodes.Count > 1 Then
-            Tree.Width = (Aggregate i In Tree.GetNodes Into Max(i.Bounds.Right)) + FontHeight
+            Tree.Width = (Aggregate i In Tree.GetNodes Into Max(i.Bounds.Right)) + fh
         End If
 
         Host.Top = 0
-        Host.Left = Tree.Right + CInt(FontHeight / 3)
+        Host.Left = Tree.Right + CInt(fh / 3)
         Host.Height = Height
-        Host.Width = Width - Tree.Width - CInt(FontHeight / 3)
+        Host.Width = Width - Tree.Width - CInt(fh / 3)
 
         MyBase.OnLayout(levent)
     End Sub
@@ -1052,6 +1054,10 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             MyBase.New(ui)
+            Button.AutoSizeMode = AutoSizeMode.GrowOnly
+            Button.AutoSize = True
+            Button.Font = New Font("Segoe UI", 9.0! * s.UIScaleFactor)
+            Button.Text = ""
             Button.Height = CInt(Edit.Height / s.UIScaleFactor)
             Button.Width = Button.Height
             Button.ShowMenuSymbol = True
@@ -1176,6 +1182,7 @@ Public Class SimpleUI
             MyBase.New(ui)
             Button.AutoSizeMode = AutoSizeMode.GrowOnly
             Button.AutoSize = True
+            Button.Font = New Font("Segoe UI", 9.0! * s.UIScaleFactor)
             Button.Text = "..."
             Controls.Add(Button)
             AddHandler Edit.EnabledChanged, Sub() Button.Enabled = Edit.Enabled

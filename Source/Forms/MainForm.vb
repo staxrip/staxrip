@@ -2749,7 +2749,7 @@ Public Class MainForm
         End If
 
         If refreshScript Then
-            p.Script.Synchronize()
+            p.Script.Synchronize(False, False)
         End If
 
         Dim isCropped = p.Script.IsFilterActive("Crop")

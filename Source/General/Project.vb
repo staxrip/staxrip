@@ -231,7 +231,7 @@ Public Class Project
         Get
             Return TargetFileValue
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             If value <> TargetFileValue Then
                 If value <> "" AndAlso Not value.FileName.IsValidFileName Then
                     MsgWarn("Filename contains invalid characters.")

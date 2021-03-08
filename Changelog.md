@@ -28,8 +28,18 @@
 - Code Editor joined filters have the filter name "Misc" (Dendraspis)
 - Custom checkboxes for better theme experience (Dendraspis)
 - Readme.md refreshed (Dendraspis, stax76)
+- Error exit codes are interpreted using Err.exe (stax76)
+- arib-srd-b67 changed to arib-std-b67 in NVEnc, QSVEnc, and VCEEnc (JKyle)
+- Detect forced subtitles by filename '_forced' and '.forced.', casing don't matter (stax76)
 - SMDegrain 3.1.2.111s
-- mkvtoolnix 55
+- mkvtoolnix 55 (mkvextract Unicode fix)
+- MP4Box 1.1.0 DEV rev542 gcc10.2.0 Patman (AAC 7.1 fix)
+- rav1e 0.5.0-alpha gcc10.2.0 Patman
+- DGMPGDec 2.0.0.5 (large file handling fix)
+- aomenc 2.0.2-1350-msvc1928 Patman
+- x265 3.5_RC1+2+29-gcc10.2.0 Patman Mod
+- x264 0.161.3048+25-gcc10.2.0 Patman Mod
+- ffmpeg N-101392-gcc10.2.0 Patman
 
 
 2.1.8.4 Beta (2021-02-25)

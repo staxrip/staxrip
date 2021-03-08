@@ -3010,7 +3010,7 @@ Public Class MainForm
                     Return Warn("Cutting", AddressOf ShowPreview)
                 End If
             Else
-                If p.CutFrameRate <> p.Script.GetFramerate Then
+                If p.CutFrameRate <> p.Script.Info.FrameRate Then
                     If ProcessTip("The frame rate was changed after cutting was performed, please ensure that this change is happening after the Cutting filter section in the AviSynth script.") Then
                         Return Warn("Frame Rate Change")
                     End If
@@ -3096,8 +3096,8 @@ Public Class MainForm
                 Next
             End If
 
-            If Not (MouseButtons = MouseButtons.Left AndAlso ActiveControl Is tbResize) Then
-                Dim err = p.Script.GetError
+            If refreshScript AndAlso Not (MouseButtons = MouseButtons.Left AndAlso ActiveControl Is tbResize) Then
+                Dim err = p.Script.Error
 
                 If err <> "" Then
                     If ProcessTip(err) Then

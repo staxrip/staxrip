@@ -342,27 +342,13 @@ Public Class Proc
                 End If
 
                 If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCode) Then
-                    Dim interpretation As String
-                    Dim systemError = New Win32Exception(ExitCode).Message
-
-                    If systemError <> "" AndAlso Not systemError?.StartsWith("Unknown error") Then
-                        interpretation = "It's unclear what the exit code means, in case it's a Windows system error then it possibly means:" + BR2 + systemError
-                    Else
-                        Try
-                            Marshal.ThrowExceptionForHR(ExitCode)
-                        Catch ex As Exception
-                            If ex.Message <> "" AndAlso Not ex.Message?.StartsWith("Exception from HRESULT: 0x") Then
-                                interpretation = "It's unclear what the exit code means, in case it's a COM error then it possibly means:" + BR2 + ex.Message
-                            End If
-                        End Try
-                    End If
-
+                    Dim output = ProcessHelp.GetConsoleOutput(Package.Err.Path, ExitCode.ToString)
                     Dim errorMessage = Header + " returned error exit code: " & ExitCode &
                         " (" + "0x" + ExitCode.ToString("X") + ")"
 
-                    If interpretation <> "" Then
-                        errorMessage += BR2 + interpretation
-                    End If
+                    errorMessage += BR2 + "It's unclear what the exit code means, in case it's " + BR +
+                        "a Windows system error then it possibly means:" + BR2 +
+                        ProcessHelp.GetConsoleOutput(Package.Err.Path, ExitCode.ToString)
 
                     errorMessage += BR2 + Log.ToString() + BR
                     Throw New ErrorAbortException("Error " + Header, errorMessage, Project)

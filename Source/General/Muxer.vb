@@ -191,7 +191,7 @@ Public MustInherit Class Muxer
 
                 For Each iSubtitle In Subtitle.Create(fp)
                     If p.PreferredSubtitles <> "" Then
-                        If fp.Contains("_forced") Then
+                        If fp.ToLowerEx.ContainsAny("_forced", ".forced.") Then
                             iSubtitle.Forced = True
                         End If
 

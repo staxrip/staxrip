@@ -620,6 +620,13 @@ Public Class Package
         .HelpSwitch = "",
         .Description = "AutoCrop console app."})
 
+    Shared Property Err As Package = Add(New Package With {
+        .Name = "Err",
+        .Filename = "Err.exe",
+        .Location = "Support\Err",
+        .HelpSwitch = "",
+        .Description = "Provides Windows error code info."})
+
     Shared Property PNGopt As Package = Add(New Package With {
         .Name = "PNGopt",
         .Filename = "apngopt.exe",

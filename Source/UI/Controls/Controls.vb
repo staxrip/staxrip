@@ -2955,6 +2955,7 @@ Namespace UI
             End Get
             Set(value As Boolean)
                 TextBox.ReadOnly = value
+                Invalidate()
             End Set
         End Property
 

@@ -1336,7 +1336,7 @@ Namespace UI
         Event LinkClick()
 
         Sub New()
-            Label.Left = CInt(FontHeight / 4)
+            Label.Left = 15
             Label.AutoSize = True
             Controls.Add(Label)
         End Sub

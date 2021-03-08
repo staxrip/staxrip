@@ -427,6 +427,12 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
+    <None Include="..\Changelog.md">
+      <Link>Changelog.md</Link>
+    </None>
+    <None Include="..\README.md">
+      <Link>README.md</Link>
+    </None>
     <None Include="bin\Apps\Icons\Black.ico" />
     <Content Include="Black.ico" />
     <None Include="My Project\Application.myapp">

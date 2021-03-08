@@ -441,7 +441,7 @@ Public Class CodeEditor
             Dim sizeRTB As Size
             sizeRTB.Width = maxTextWidth + FontHeight
             sizeRTB.Height = table.TrimmedTextSize.Height
-            sizeRTB.Height += CInt(table.rtbScript.Font.Height * 0.3)
+            sizeRTB.Height += If(table.TextSize.Height < table.MaxTextHeight, CInt(table.rtbScript.Font.Height * 1.1), 0)
             table.rtbScript.Size = sizeRTB
             table.rtbScript.Refresh()
         Next

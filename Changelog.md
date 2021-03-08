@@ -29,6 +29,7 @@
 - Custom checkboxes for better theme experience (Dendraspis)
 - Readme.md refreshed (Dendraspis, stax76)
 - SMDegrain 3.1.2.111s
+- mkvtoolnix 55
 
 
 2.1.8.4 Beta (2021-02-25)

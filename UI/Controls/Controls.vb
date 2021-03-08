@@ -1802,7 +1802,7 @@ Namespace UI
                     Dim fh = Font.Height
                     MinimumSize = New Size(CInt(fh * 2.2), fh)
                     AutoSizeMode = AutoSizeMode.GrowOnly
-                    Size = New Size(textSize.Width + Padding.Horizontal + fh, textSize.Height + fh \ 2)
+                    Size = New Size(textSize.Width + Padding.Horizontal + fh, textSize.Height + CInt(fh * 0.45))
                 End If
 
                 Invalidate(True)

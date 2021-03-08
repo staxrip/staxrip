@@ -1132,7 +1132,7 @@ Public Class GlobalClass
 
             Return IconValue
         End Get
-        Set(ByVal value As Icon)
+        Set(value As Icon)
             IconValue = value
         End Set
     End Property

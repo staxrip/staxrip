@@ -606,8 +606,8 @@ table {
         list.Sort()
 
         For Each i In list
-            WriteH3(HelpDocument.ConvertChars(i.Name))
-            WriteParagraph(HelpDocument.ConvertChars(i.Value))
+            WriteH3(ConvertChars(i.Name))
+            WriteParagraph(ConvertChars(i.Value))
         Next
     End Sub
 
@@ -676,14 +676,14 @@ table {
         For Each pair In list
             Writer.WriteStartElement("tr")
             Writer.WriteStartElement("td")
-            WriteElement("p", HelpDocument.ConvertChars(pair.Name))
+            WriteElement("p", ConvertChars(pair.Name))
             Writer.WriteEndElement() 'td
             Writer.WriteStartElement("td")
 
             If pair.Value Is Nothing Then
                 WriteElement("p", "&nbsp;")
             Else
-                WriteElement("p", HelpDocument.ConvertChars(pair.Value))
+                WriteElement("p", ConvertChars(pair.Value))
             End If
 
             Writer.WriteEndElement() 'td

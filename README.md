@@ -1,4 +1,4 @@
-![Main Window](https://github.com/staxrip/staxrip/blob/master/docs/screenshots/_Main.png)
+![Main Window](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/_Main.png)
 
 # About
 

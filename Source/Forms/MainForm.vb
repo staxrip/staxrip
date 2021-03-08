@@ -853,8 +853,9 @@ Public Class MainForm
         Me.tbTargetWidth.Location = New System.Drawing.Point(167, 13)
         Me.tbTargetWidth.Name = "tbTargetWidth"
         Me.tbTargetWidth.ReadOnly = False
-        Me.tbTargetWidth.Size = New System.Drawing.Size(145, 55)
+        Me.tbTargetWidth.Size = New System.Drawing.Size(130, 55)
         Me.tbTargetWidth.TabIndex = 39
+        Me.tbTargetWidth.TextBox.TextAlign = HorizontalAlignment.Center
         '
         'lTargetHeight
         '
@@ -873,8 +874,9 @@ Public Class MainForm
         Me.tbTargetHeight.Location = New System.Drawing.Point(495, 13)
         Me.tbTargetHeight.Name = "tbTargetHeight"
         Me.tbTargetHeight.ReadOnly = False
-        Me.tbTargetHeight.Size = New System.Drawing.Size(145, 55)
+        Me.tbTargetHeight.Size = New System.Drawing.Size(130, 55)
         Me.tbTargetHeight.TabIndex = 40
+        Me.tbTargetHeight.TextBox.TextAlign = HorizontalAlignment.Center
         '
         'lgbFilters
         '

@@ -27,4 +27,4 @@ Feel also free to join the user chat at [Discord](https://discord.gg/rRn7vGU).
 
 ## Screenshots
 
-![Main Window](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/_Main.png)
+![Main Window](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/Main.png)

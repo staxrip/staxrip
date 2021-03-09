@@ -23,7 +23,7 @@ Public Class CheckBoxRendererEx
         Dim borderColor = If(checked, theme.BorderCheckedColor, theme.BorderColor)
         Dim borderStrength = 2
         Dim checkmarkColor = theme.CheckmarkColor
-        Dim checkmarkStrength = 5
+        Dim checkmarkStrength = 4
 
         Select Case state
             Case CheckBoxState.CheckedNormal
@@ -35,11 +35,11 @@ Public Class CheckBoxRendererEx
                 End Using
 
                 Dim startX1 = rect.Left + rect.Width / 4.5F
-                Dim startY1 = rect.Top + rect.Height / 2.25F
+                Dim startY1 = rect.Top + rect.Height / 2.75F
                 Dim endX1 = rect.Left + rect.Width / 3.0F
                 Dim endY1 = rect.Top + rect.Height / 1.2F
 
-                Dim startX2 = rect.Left + rect.Width / 3.1F
+                Dim startX2 = rect.Left + rect.Width / 3.6F
                 Dim startY2 = rect.Top + rect.Height / 1.3F
                 Dim endX2 = rect.Left + rect.Width / 1.2F
                 Dim endY2 = rect.Top + rect.Height / 5.0F

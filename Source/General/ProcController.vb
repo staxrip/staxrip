@@ -59,6 +59,32 @@ Public Class ProcController
         AddHandler proc.ProcDisposed, AddressOf ProcDisposed
         AddHandler proc.OutputDataReceived, AddressOf DataReceived
         AddHandler proc.ErrorDataReceived, AddressOf DataReceived
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
+        If Proc.IsSilent Then
+            Button.BackColor = theme.ProcessingForm.ProcessButtonBackColor
+            Button.ForeColor = theme.ProcessingForm.ProcessButtonForeColor
+        Else
+            Button.BackColor = theme.ProcessingForm.ProcessButtonBackSelectedColor
+            Button.ForeColor = theme.ProcessingForm.ProcessButtonForeSelectedColor
+        End If
     End Sub
 
     Sub DataReceived(value As String)
@@ -584,22 +610,20 @@ Public Class ProcController
     End Function
 
     Sub Activate()
-        Button.BackColor = ThemeManager.CurrentTheme.ProcessingForm.ProcessButtonBackSelectedColor
-        Button.ForeColor = ThemeManager.CurrentTheme.ProcessingForm.ProcessButtonForeSelectedColor
         Proc.IsSilent = False
         LogTextBox.Visible = True
         LogTextBox.BringToFront()
         LogHandler()
+        ApplyTheme()
         ProgressBar.Visible = True
         ProgressBar.BringToFront()
     End Sub
 
     Sub Deactivate()
-        Button.BackColor = ThemeManager.CurrentTheme.ProcessingForm.ProcessButtonBackColor
-        Button.ForeColor = ThemeManager.CurrentTheme.ProcessingForm.ProcessButtonForeColor
         Proc.IsSilent = True
         LogTextBox.Visible = False
         ProgressBar.Visible = False
+        ApplyTheme()
     End Sub
 
     Shared Sub AddProc(proc As Proc)

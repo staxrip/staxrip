@@ -15,24 +15,24 @@ You can find various informations and instructions on [Wiki](https://github.com/
 
 ## Support
 
-- **Bug Reports / Feature Requests**
-  - Please try the latest [Beta Version](https://github.com/staxrip/staxrip#download) first. Often obvious bugs are already fixed and extensions implemented.
-  - You can also have a look at the [Changelog](https://github.com/staxrip/staxrip/blob/master/Changelog.md) if there is a certain entry already made.
-  - If the latest Beta version does not solve your problem, please use the [Issue Tracker](https://github.com/staxrip/staxrip/issues) and the given templates, to be as precise as possible.
+### **Bug Reports / Feature Requests**
+- Please try the latest [Beta Version](https://github.com/staxrip/staxrip#download) first. Often obvious bugs are already fixed and extensions implemented.
+- You can also have a look at the [Changelog](https://github.com/staxrip/staxrip/blob/master/Changelog.md) if there is a certain entry already made.
+- If the latest Beta version does not solve your problem, please use the [Issue Tracker](https://github.com/staxrip/staxrip/issues) and the given templates, to be as precise as possible.
 
-- **Usage questions**
-  - ...can be asked on the *StaxRip threads* on
-    - [VideoHelp](https://forum.videohelp.com/threads/369913-StaxRip-support-thread) 
-    - [Doom9](https://forum.doom9.org/showthread.php?t=172068)
-  - Feel also free to join the user chat at [Discord](https://discord.gg/rRn7vGU).
+### **Usage questions**
+- Usage questions can be asked on the *StaxRip threads* on
+  - [VideoHelp](https://forum.videohelp.com/threads/369913-StaxRip-support-thread) 
+  - [Doom9](https://forum.doom9.org/showthread.php?t=172068)
+- Feel also free to join the user chat on [Discord](https://discord.gg/rRn7vGU).
 
 ## Download
 
-- **Stable**
-  - [Releases](https://github.com/staxrip/staxrip/releases)
-- **Beta**
-  - [DropBox](https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0)
-  - [OneDrive](https://1drv.ms/u/s!ArwKS_ZUR01g0kH4d4eT_6a3GaKe?e=qbOfGS)
+### **Stable**
+- [Releases](https://github.com/staxrip/staxrip/releases)
+### **Beta**
+- [DropBox](https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0)
+- [OneDrive](https://1drv.ms/u/s!ArwKS_ZUR01g0kH4d4eT_6a3GaKe?e=qbOfGS)
 
 ## Screenshots
 

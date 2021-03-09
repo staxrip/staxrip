@@ -28,3 +28,9 @@ Feel also free to join the user chat at [Discord](https://discord.gg/rRn7vGU).
 ## Screenshots
 
 ![Main Window](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/Main.png)
+
+![Code Edotor](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/CodeEditor.png)
+
+![x265 Options](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/x265.png)
+
+![Processing](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/Processing2.png)

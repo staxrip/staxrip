@@ -226,7 +226,7 @@ Public Class CodeEditor
 
     <Command("Joins all active filters into one filter.")>
     Sub JoinActiveFilters()
-        Dim activeTables = MainFlowLayoutPanel.Controls?.OfType(Of FilterTable)?.Where(Function(i) i.cbActive.Checked AndAlso Not {"source", "crop", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant()))
+        Dim activeTables = MainFlowLayoutPanel.Controls?.OfType(Of FilterTable)?.Where(Function(i) i.cbActive.Checked AndAlso Not {"source", "crop", "cutting", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant()))
         Dim firstActiveTable = activeTables?.FirstOrDefault()
 
         If firstActiveTable Is Nothing Then Return
@@ -242,7 +242,7 @@ Public Class CodeEditor
 
     <Command("Joins all filters into one filter.")>
     Sub JoinAllFilters()
-        Dim tables = MainFlowLayoutPanel.Controls?.OfType(Of FilterTable)?.Where(Function(i) Not {"source", "crop", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant()))
+        Dim tables = MainFlowLayoutPanel.Controls?.OfType(Of FilterTable)?.Where(Function(i) Not {"source", "crop", "cutting", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant()))
         Dim firstTable = tables?.FirstOrDefault()
 
         If firstTable Is Nothing Then Return
@@ -258,7 +258,7 @@ Public Class CodeEditor
 
     <Command("Joins all inactive filters into one filter.")>
     Sub JoinInactiveFilters()
-        Dim inactiveTables = MainFlowLayoutPanel.Controls?.OfType(Of FilterTable)?.Where(Function(i) Not i.cbActive.Checked AndAlso Not {"source", "crop", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant()))
+        Dim inactiveTables = MainFlowLayoutPanel.Controls?.OfType(Of FilterTable)?.Where(Function(i) Not i.cbActive.Checked AndAlso Not {"source", "crop", "cutting", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant()))
         Dim firstInactiveTable = inactiveTables?.FirstOrDefault()
 
         If firstInactiveTable Is Nothing Then Return

@@ -83,7 +83,11 @@ Public Class VideoRenderer
             Exit Sub
         End If
 
-        BackColor = theme.General.Controls.VideoRenderer.BackColor
+        If s.CropColor = Color.Empty Then
+            BackColor = theme.General.Controls.VideoRenderer.BackColor
+        Else
+            BackColor = s.CropColor
+        End If
     End Sub
 
     Sub Resize(sender As Object, e As EventArgs)

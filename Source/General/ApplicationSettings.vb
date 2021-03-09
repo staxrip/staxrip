@@ -23,6 +23,7 @@ Public Class ApplicationSettings
     Public CmdlPresetsX264 As String
     Public CommandLineHighlighting As Boolean = True
     Public ConvertChromaSubsampling As Boolean = True
+    Public CropColor As Color
     Public CropFrameCount As Integer
     Public CustomMenuCodeEditor As CustomMenuItem
     Public CustomMenuCrop As CustomMenuItem

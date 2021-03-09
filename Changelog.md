@@ -1,5 +1,5 @@
 
-2.1.8.5 Beta (2021-03-??)
+2.1.8.5 Beta (2021-03-09)
 =========================
 
 - When a video encoder default value was changed, a compatibility issue
@@ -7,9 +7,9 @@
   be achieved by resetting all video encoder options (stax76, [#546](/../../issues/546))
 - Fix issue with ffmpeg AAC encoding (stax76, [#548](/../../issues/548))
 - Encoder dialogs allow using 1:1 for --sar (stax76, [#546](/../../issues/546))
-- Introduce Output Highlighing (Dendraspis)
-- Introduce Command Line Highlighing (Dendraspis)
-- Add more colors (Dendraspis)
+- Introduce Output Highlighing in processing dialog (Dendraspis)
+- Introduce Command Line Highlighing in command line preview (Dendraspis)
+- Add more theme colors (Dendraspis)
 - Fix Menu Item Path not being stored (Dendraspis)
 - Package Name/Version is not displayed when unknown versions are accepted (Dendraspis)
 - Customized progress text adjusted for new x264 Patman builds (Dendraspis)
@@ -30,7 +30,9 @@
 - Readme.md refreshed (Dendraspis, stax76)
 - Error exit codes are interpreted using Err.exe (stax76)
 - arib-srd-b67 changed to arib-std-b67 in NVEnc, QSVEnc, and VCEEnc (JKyle)
-- Detect forced subtitles by filename '_forced' and '.forced.', casing don't matter (stax76)
+- Detect forced subtitles by filename _forced and .forced. (case-insensitive) (stax76)
+- The crop dialog allows to define the color used for cropping via menu (stax76)
+- StaxRip passes theme colors to MediaInfo.NET via CLI (stax76)
 - SMDegrain 3.1.2.111s
 - mkvtoolnix 55 (mkvextract Unicode fix)
 - MP4Box 1.1.0 DEV rev542 gcc10.2.0 Patman (AAC 7.1 fix)
@@ -40,6 +42,8 @@
 - x265 3.5_RC1+2+29-gcc10.2.0 Patman Mod
 - x264 0.161.3048+25-gcc10.2.0 Patman Mod
 - ffmpeg N-101392-gcc10.2.0 Patman
+- MediaInfo.NET 6.9.0.0 (gets theme colors from StaxRip via CLI)
+- Err 10.0.17763.1
 
 
 2.1.8.4 Beta (2021-02-25)

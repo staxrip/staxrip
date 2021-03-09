@@ -342,7 +342,18 @@ Public Class GlobalCommands
         filepath = Macro.Expand(filepath)
 
         If File.Exists(filepath) Then
-            g.ShellExecute(Package.MediaInfoNET.Path, filepath.Escape)
+            Dim theme = ThemeManager.CurrentTheme
+
+            Dim args = " --theme-colors=" +
+                "Foreground:" + theme.General.Controls.RichTextBox.ForeColor.ToHTML + "," +
+                "Background:" + theme.General.Controls.RichTextBox.BackColor.ToHTML + "," +
+                "TextSelection:" + Color.DeepSkyBlue.ToColorHSL.ToHTML + "," +
+                "ItemSelection:" + theme.General.Controls.ToolStrip.DropdownBackgroundSelectedColor.ToHTML + "," +
+                "ItemHover:" + theme.General.Controls.ToolStrip.DropdownBackgroundSelectedColor.AddLuminance(0.1).ToHTML + "," +
+                "Border:" + theme.General.Controls.RichTextBox.BorderColor.ToHTML + "," +
+                "Highlight:" + Color.Green.ToColorHSL.ToHTML
+
+            g.ShellExecute(Package.MediaInfoNET.Path, filepath.Escape + args)
         Else
             Using dialog As New OpenFileDialog
                 If dialog.ShowDialog = DialogResult.OK Then

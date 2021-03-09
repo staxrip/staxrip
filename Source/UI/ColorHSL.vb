@@ -155,4 +155,8 @@ Public Structure ColorHSL
     Public Overrides Function ToString() As String
         Return String.Format($"HSLA({H:0}, {S:0.00}, {L:0.00}, {A:0.00})")
     End Function
+
+    Function ToHTML() As String
+        Return ColorTranslator.ToHtml(Color.FromArgb(ToColor.ToArgb()))
+    End Function
 End Structure

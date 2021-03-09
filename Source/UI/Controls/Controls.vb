@@ -932,6 +932,7 @@ Namespace UI
         Sub New()
             MyClass.New(True)
         End Sub
+
         Sub New(createMenu As Boolean)
             If createMenu Then
                 InitMenu()

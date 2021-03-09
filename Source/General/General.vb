@@ -350,6 +350,7 @@ Public Class SafeSerialization
         Return t.IsPrimitive OrElse
             t Is GetType(String) OrElse
             t Is GetType(DateTime) OrElse
+            t Is GetType(Color) OrElse
             t Is GetType(SettingBag(Of String)) OrElse
             t Is GetType(SettingBag(Of Boolean)) OrElse
             t Is GetType(SettingBag(Of Integer)) OrElse

@@ -563,6 +563,10 @@ Public Class CropForm
         ret.Add("Navigate 1000 Frames Forward", NameOf(SetRelativePosition), Keys.PageDown Or Keys.Control, {1000})
         ret.Add("Navigate 100 Frames Forward", NameOf(SetRelativePosition), Keys.PageDown, {100})
         ret.Add("-")
+        ret.Add("Crop Color | Theme", NameOf(SetCropColor), {Color.Empty})
+        ret.Add("Crop Color | White", NameOf(SetCropColor), {Color.White})
+        ret.Add("Crop Color | Black", NameOf(SetCropColor), {Color.Black})
+        ret.Add("Crop Color | Light Gray", NameOf(SetCropColor), {Color.LightGray})
         ret.Add("Crop Options...", NameOf(ShowOptions), Keys.O, Symbol.Settings)
         ret.Add("Edit Menu...", NameOf(ShowMenuEditor), Keys.M)
         ret.Add("Help...", NameOf(ShowHelpDialog), Keys.F1, Symbol.Help)
@@ -649,6 +653,13 @@ Public Class CropForm
     Sub ShowOptions()
         g.MainForm.ShowOptionsDialog("Image|Crop")
         UpdateAll()
+    End Sub
+
+    <Command("Sets the color used for cropping.")>
+    Sub SetCropColor(Color As Color)
+        s.CropColor = Color
+        Renderer.ApplyTheme()
+        Renderer.Draw()
     End Sub
 
     <Command("Jumps a given frame count.")>

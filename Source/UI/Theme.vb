@@ -688,6 +688,11 @@ Public Class Theme
             Public Property DropdownTextSelectedColor As ColorHSL = MenuStripTextSelectedColor
             Public Property SymbolImageColor As ColorHSL = DropdownTextDefaultColor
 
+            Public Property BoxColor As ColorHSL = MenuStripBackgroundSelectedColor
+            Public Property BoxSelectedColor As ColorHSL = MenuStripBackgroundSelectedColor
+            Public Property CheckmarkColor As ColorHSL = DropdownTextDefaultColor
+            Public Property CheckmarkSelectedColor As ColorHSL = DropdownTextDefaultColor
+
             Public Property BorderInnerColor As ColorHSL = DropdownBackgroundDefaultColor.AddLuminance(0.3)
             Public Property BorderOuterColor As ColorHSL = DropdownBackgroundDefaultColor.AddLuminance(0.15)
         End Class

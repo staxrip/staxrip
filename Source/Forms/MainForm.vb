@@ -4625,7 +4625,7 @@ Public Class MainForm
             tm.AddMenu("Name of source file directory", "%source_dir_name%")
             tm.AddMenu("Macros...", macroAction)
 
-            l = ui.AddLabel(pathPage, "Temp Files Folder:")
+            l = ui.AddLabel(pathPage, If(s.DeleteTempFilesMode = DeleteMode.Disabled, "Temp Files Folder:", "Temp Files Folder: (MUST end with '_temp\' for Auto-Deletion!)"))
             l.Help = "Leave empty to use the source file folder."
             l.MarginTop = Font.Height
 
@@ -4764,6 +4764,12 @@ Public Class MainForm
 
                 If p.TempDir <> "" Then
                     p.TempDir = p.TempDir.FixDir
+
+                    'If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then
+                    '    MsgWarn("Temp Files Folder", "The folder description, you have chosen, does not end with '_temp\'! " + BR2 +
+                    '            "The folder description must end with '_temp\' in order to automatically delete the folder, otherwise no files are going to be deleted. " +
+                    '            "This is a safety feature to prevent you from unintentionally data loss. ")
+                    'End If
                 End If
 
                 UpdateSizeOrBitrate()

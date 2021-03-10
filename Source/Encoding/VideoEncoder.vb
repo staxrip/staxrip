@@ -635,16 +635,20 @@ Public Class BatchEncoder
 
         Dim script As New VideoScript
         script.Engine = p.Script.Engine
-        script.Filters = p.Script.GetFiltersCopy
+        script.Filters = p.Script.GetFiltersCopy()
         Dim code As String
-        Dim every = ((100 \ p.CompCheckRange) * 14).ToString
+        Dim framerate = p.Script.GetFramerate()
+        Dim totalFrames = p.Script.GetFrameCount()
+        Dim range = framerate * p.CompCheckTestblockSeconds
+        Dim every = (100 / p.CompCheckPercentage) * range
 
         If script.Engine = ScriptEngine.AviSynth Then
-            code = "SelectRangeEvery(" + every + ",14)"
+            code = $"SelectRangeEvery({CInt(every)},{CInt(range)})"
         Else
-            code = "fpsnum = clip.fps_num" + BR + "fpsden = clip.fps_den" + BR +
-                "clip = core.std.SelectEvery(clip = clip, cycle = " + every + ", offsets = range(14))" + BR +
-                "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
+            code = "fpsnum = clip.fps_num" + BR
+            code += "fpsden = clip.fps_den" + BR
+            code += $"clip = core.std.SelectEvery(clip = clip, cycle = {CInt(every)}, offsets = range({CInt(range)}))" + BR
+            code += "clip = core.std.AssumeFPS(clip = clip, fpsnum = fpsnum, fpsden = fpsden)"
         End If
 
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))

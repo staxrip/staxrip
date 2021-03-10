@@ -426,6 +426,7 @@ Public Class MainForm
         Me.tbTargetSize.ReadOnly = False
         Me.tbTargetSize.Size = New System.Drawing.Size(136, 55)
         Me.tbTargetSize.TabIndex = 55
+        Me.tbTargetSize.TextBox.TextAlign = HorizontalAlignment.Center
         '
         'lTarget1
         '
@@ -446,6 +447,7 @@ Public Class MainForm
         Me.tbBitrate.ReadOnly = False
         Me.tbBitrate.Size = New System.Drawing.Size(139, 55)
         Me.tbBitrate.TabIndex = 41
+        Me.tbBitrate.TextBox.TextAlign = HorizontalAlignment.Center
         '
         'laBitrate
         '
@@ -4725,10 +4727,16 @@ Public Class MainForm
             b.SaveAction = Sub(value) p.AutoCompCheck = value
 
             n = ui.AddNum(miscPage)
-            n.Label.Text = "Percentage for comp. check"
-            n.NumEdit.Config = {2, 20}
-            n.NumEdit.Value = p.CompCheckRange
-            n.NumEdit.SaveAction = Sub(value) p.CompCheckRange = CInt(value)
+            n.Label.Text = "Percentage of length to check"
+            n.NumEdit.Config = {1, 25}
+            n.NumEdit.Value = p.CompCheckPercentage
+            n.NumEdit.SaveAction = Sub(value) p.CompCheckPercentage = value
+
+            n = ui.AddNum(miscPage)
+            n.Label.Text = "Seconds per test block"
+            n.NumEdit.Config = {0.5, 10.0, 0.1, 2}
+            n.NumEdit.Value = p.CompCheckTestblockSeconds
+            n.NumEdit.SaveAction = Sub(value) p.CompCheckTestblockSeconds = value
 
             Dim compCheckButton = ui.AddMenu(Of CompCheckAction)(miscPage)
             compCheckButton.Label.Text = "After comp. check adjust"
@@ -4746,8 +4754,12 @@ Public Class MainForm
             If form.ShowDialog() = DialogResult.OK Then
                 ui.Save()
 
-                If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then
-                    p.CompCheckRange = 5
+                If p.CompCheckPercentage < 1 OrElse p.CompCheckPercentage > 25 Then
+                    p.CompCheckPercentage = 5
+                End If
+
+                If p.CompCheckTestblockSeconds < 0.5 OrElse p.CompCheckTestblockSeconds > 10.0 Then
+                    p.CompCheckTestblockSeconds = 2.0
                 End If
 
                 If p.TempDir <> "" Then

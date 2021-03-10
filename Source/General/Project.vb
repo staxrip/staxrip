@@ -26,7 +26,8 @@ Public Class Project
     Public BitrateIsFixed As Boolean = True
     Public CodeAtTop As String = ""
     Public CompCheckAction As CompCheckAction = CompCheckAction.AdjustImageSize
-    Public CompCheckRange As Integer = 5
+    Public CompCheckPercentage As Double = 5.0
+    Public CompCheckTestblockSeconds As Double = 2.0
     Public Compressibility As Double
     Public ConvertSup2Sub As Boolean
     Public CustomSourceDAR As String = ""

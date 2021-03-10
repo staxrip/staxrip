@@ -222,7 +222,7 @@ Public Class ProcessingForm
         CMS.Add("-")
         CMS.Add("Abort", AddressOf Abort, "Aborts all job processing of this StaxRip instance.").KeyDisplayString = "ESC"
         CMS.Add("Skip", AddressOf Skip, "Aborts the current job and continues with the next job.")
-        StopAfterCurrentJobMenuItem = CMS.Add("Stop After Current", AddressOf StopAfterCurrentJob, "Stops all job processing after the current job.")
+        StopAfterCurrentJobMenuItem = CMS.Add("Stop After Current Job", AddressOf StopAfterCurrentJob, "Stops all job processing after the current job.")
         CMS.Add("-")
         OutputHighlightingMenuItem = CMS.Add("Output Highlighting", AddressOf SetOutputHighlighting)
         OutputHighlightingMenuItem.KeyDisplayString = "Ctrl+H"

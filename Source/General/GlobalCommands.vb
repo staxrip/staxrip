@@ -290,13 +290,12 @@ Public Class GlobalCommands
         Select Case topic
             Case "info"
                 form.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
-                form.Doc.Write("Contributions Since 2020", "stax76, Dendraspis, 44vince44, Patman, JKyle, DJATOM")
-                form.Doc.Write("Contributions Before 2020", "stax76, Revan654, 44vince44, Patman, NikosD, ernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+                form.Doc.WriteParagraph($"[file:///{Folder.Startup + "Authors.html"} StaxRip Authors]")
 
                 Dim licensePath = Folder.Startup + "License.txt"
 
-                If File.Exists(licensePath) Then
-                    form.Doc.WriteParagraph(licensePath.ReadAllText, True)
+                If licensePath.FileExists Then
+                    form.Doc.WriteParagraph(licensePath.ReadAllText.Trim, True)
                 End If
             Case Else
                 form.Doc.WriteStart("unknown topic")

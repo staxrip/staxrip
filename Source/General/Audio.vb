@@ -682,9 +682,7 @@ Public Class Audio
     End Sub
 
     Shared Function GetDown2Code() As String
-        Dim a =
-      <a>
-Audiochannels() >= 6 ? Down2(last) : last
+        Return "Audiochannels() >= 6 ? Down2(last) : last
 
 function Down2(clip a) 
 {
@@ -701,9 +699,7 @@ function Down2(clip a)
 	l = MixAudio(l_sl, c_lfe, 1.0, 1.0)
 	r = MixAudio(r_sr, c_lfe, 1.0, 1.0)
 	return MergeChannels(l, r)
-}
-</a>
-        Return a.Value.Trim
+}"
     End Function
 
     Shared Function FileExist(fp As String) As Boolean

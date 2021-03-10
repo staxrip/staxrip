@@ -547,6 +547,7 @@ table {
         Return value
     End Function
 
+    'MediaWiki markup
     Shared Function ConvertMarkup(value As String, stripOnly As Boolean) As String
         If stripOnly Then
             If value.Contains("[") Then

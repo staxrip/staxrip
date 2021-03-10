@@ -434,6 +434,10 @@
       <Link>README.md</Link>
     </None>
     <None Include="bin\Apps\Icons\Black.ico" />
+    <None Include="..\Authors.html">
+      <Link>Authors.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Black.ico" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>

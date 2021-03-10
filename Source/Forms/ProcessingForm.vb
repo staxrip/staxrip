@@ -204,6 +204,8 @@ Public Class ProcessingForm
     Private OutputHighlightingMenuItem As MenuItemEx
     Private CMS As ContextMenuStripEx
 
+    Private Const _themeMenuName As String = "Temporary Theme"
+
     Property Taskbar As Taskbar
 
     Sub New()
@@ -230,7 +232,7 @@ Public Class ProcessingForm
         ProgressReformattingMenuItem.KeyDisplayString = "Ctrl+R"
 
         For Each theme In ThemeManager.Themes
-            CMS.Add($"Theme | {theme.Name}", Sub() ThemeManager.SetCurrentTheme(theme.Name))
+            CMS.Add($"{_themeMenuName} | {theme.Name}", Sub() ThemeManager.SetCurrentTheme(theme.Name))
         Next
 
         CMS.Add("-")
@@ -302,17 +304,14 @@ Public Class ProcessingForm
 
     Sub StopAfterCurrentJob()
         g.StopAfterCurrentJob = Not g.StopAfterCurrentJob
-        StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
     End Sub
 
     Sub SetProgressReformatting()
-        s.ProgressReformatting = Not ProgressReformattingMenuItem.Checked
-        ProgressReformattingMenuItem.Checked = s.ProgressReformatting
+        s.ProgressReformatting = Not s.ProgressReformatting
     End Sub
 
     Sub SetOutputHighlighting()
-        OutputHighlightingMenuItem.Checked = Not OutputHighlightingMenuItem.Checked
-        ProcController.SetOutputHighlighting(OutputHighlightingMenuItem.Checked, ThemeManager.CurrentTheme)
+        ProcController.SetOutputHighlighting(Not OutputHighlightingMenuItem.Checked, ThemeManager.CurrentTheme)
     End Sub
 
     Sub Abort()
@@ -343,12 +342,6 @@ Public Class ProcessingForm
         laWhenfinisheddo.Enabled = g.IsJobProcessing
         mbShutdown.Enabled = g.IsJobProcessing
         bnJobs.Enabled = g.IsJobProcessing
-        StopAfterCurrentJobMenuItem.Enabled = g.IsJobProcessing
-        StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
-        OutputHighlightingMenuItem.Enabled = g.IsJobProcessing
-        OutputHighlightingMenuItem.Checked = s.OutputHighlighting
-        ProgressReformattingMenuItem.Enabled = g.IsJobProcessing
-        ProgressReformattingMenuItem.Checked = s.ProgressReformatting
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
         ApplyTheme()
     End Sub
@@ -391,7 +384,16 @@ Public Class ProcessingForm
     End Sub
 
     Sub bnMenu_Click(sender As Object, e As EventArgs) Handles bnMenu.Click
-        For Each item In CMS.GetItems().OfType(Of MenuItemEx).Where(Function(i) i.Path.StartsWith("Theme | "))
+        StopAfterCurrentJobMenuItem.Enabled = g.IsJobProcessing
+        StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
+
+        OutputHighlightingMenuItem.Enabled = g.IsJobProcessing
+        OutputHighlightingMenuItem.Checked = s.OutputHighlighting
+
+        ProgressReformattingMenuItem.Enabled = g.IsJobProcessing
+        ProgressReformattingMenuItem.Checked = s.ProgressReformatting
+
+        For Each item In CMS.GetItems().OfType(Of MenuItemEx).Where(Function(i) i.Path.StartsWith(_themeMenuName + " | "))
             item.Checked = item.Path.EndsWith($" | {ThemeManager.CurrentTheme.Name}")
         Next
 

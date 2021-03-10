@@ -5,6 +5,7 @@ Next Build
 - CodeEditor does not join "Cutting" filter (Dendraspis)
 - Block size for Compressibility Check can be set in seconds (Dendraspis, [#547](/../../issues/547))
 - The x264 command line preview shows all passes (Dendraspis, [#496](/../../issues/496))
+- The aomenc command line preview shows all passes (Dendraspis, [#496](/../../issues/496))
 
 
 2.1.8.5 Beta (2021-03-09)

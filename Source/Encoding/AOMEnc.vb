@@ -482,8 +482,18 @@ Public Class AV1Params
     Overloads Overrides Function GetCommandLine(
         includePaths As Boolean, includeExecutable As Boolean, Optional pass As Integer = 1) As String
 
-        Return GetArgs(1, 0, 0, Nothing, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
+        Return GetArgs(pass, 0, 0, Nothing, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
                        p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
+    End Function
+
+    Overrides Function GetCommandLinePreview() As String
+        Dim ret = GetCommandLine(True, True)
+
+        If Passes.Value = 1 Then
+            ret += BR2 + GetCommandLine(True, True, 2)
+        End If
+
+        Return ret
     End Function
 
     Overloads Function GetArgs(

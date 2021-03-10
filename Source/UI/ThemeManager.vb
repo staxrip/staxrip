@@ -180,7 +180,7 @@
                         .ForeColor = _accentColor.AddLuminance(0.1),
                         .ForeHighlightColor = _controlForeHighlightColor,
                         .LinkForeColor = .ForeColor,
-                        .LinkForeHoverColor = .LinkForeColor.AddSaturation(1).AddLuminance(0.1)
+                        .LinkForeHoverColor = .LinkForeColor.SetSaturation(1).AddLuminance(0.1)
                     },
                     .CheckBox = New ControlsThemeColors.CheckBoxThemeColors() With {
                         .BackColor = Color.Empty,
@@ -195,7 +195,7 @@
                         .CheckmarkColor = _controlBackColor,
                         .ForeColor = _foreColor,
                         .ForeCheckedColor = .ForeColor.AddLuminance(0.1F),
-                        .ForeHighlightColor = .ForeColor.AddLuminance(0.15)
+                        .ForeHighlightColor = _controlForeHighlightColor.AddLuminance(0.15)
                     },
                     .ComboBox = New ControlsThemeColors.ComboBoxThemeColors() With {
                         .BackColor = _backColor.AddLuminance(0.1),
@@ -424,7 +424,7 @@
             MainForm = New MainFormThemeColors() With {
                 .laTipBackColor = Color.Transparent,
                 .laTipBackHighlightColor = Color.Transparent,
-                .laTipForeColor = _accentColor,
+                .laTipForeColor = _accentColor.AddSaturation(0.1).AddLuminance(0.1),
                 .laTipForeHighlightColor = _foreHighlightColor
             }
 

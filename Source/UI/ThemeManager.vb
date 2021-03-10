@@ -370,6 +370,10 @@
                         .DropdownTextDefaultColor = .MenuStripTextDefaultColor,
                         .DropdownTextSelectedColor = .MenuStripTextSelectedColor,
                         .SymbolImageColor = .DropdownTextDefaultColor,
+                        .BoxColor = .DropdownBackgroundSelectedColor,
+                        .BoxSelectedColor = .DropdownBackgroundSelectedColor,
+                        .CheckmarkColor = .DropdownTextDefaultColor,
+                        .CheckmarkSelectedColor = .DropdownTextSelectedColor,
                         .BorderInnerColor = .DropdownBackgroundDefaultColor.AddLuminance(0.3),
                         .BorderOuterColor = .DropdownBackgroundDefaultColor.AddLuminance(0.15)
                     },

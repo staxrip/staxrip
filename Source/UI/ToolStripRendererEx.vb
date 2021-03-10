@@ -9,9 +9,13 @@ Public Class ToolStripRendererEx
     Shared RenderMode As ToolStripRenderModeEx
 
     Shared Property BackgroundColor As Color
-    Shared Property BorderOuterColor As Color
-    Shared Property BorderInnerColor As Color
+    Shared Property BorderOuterColor As ColorHSL
+    Shared Property BorderInnerColor As ColorHSL
     Shared Property BottomColor As Color
+    Shared Property BoxColor As ColorHSL
+    Shared Property BoxSelectedColor As ColorHSL
+    Shared Property CheckmarkColor As ColorHSL
+    Shared Property CheckmarkSelectedColor As ColorHSL
     Shared Property CheckedColor As Color
     Shared Property DropdownBackgroundDefaultColor As ColorHSL
     Shared Property DropdownBackgroundSelectedColor As ColorHSL
@@ -61,6 +65,10 @@ Public Class ToolStripRendererEx
         Else
             BorderInnerColor = theme.General.Controls.ToolStrip.BorderInnerColor
             BorderOuterColor = theme.General.Controls.ToolStrip.BorderOuterColor
+            BoxColor = theme.General.Controls.ToolStrip.BoxColor
+            BoxSelectedColor = theme.General.Controls.ToolStrip.BoxSelectedColor
+            CheckmarkColor = theme.General.Controls.ToolStrip.CheckmarkColor
+            CheckmarkSelectedColor = theme.General.Controls.ToolStrip.CheckmarkSelectedColor
             DropdownBackgroundDefaultColor = theme.General.Controls.ToolStrip.DropdownBackgroundDefaultColor
             DropdownBackgroundSelectedColor = theme.General.Controls.ToolStrip.DropdownBackgroundSelectedColor
             DropdownTextDefaultColor = theme.General.Controls.ToolStrip.DropdownTextDefaultColor
@@ -320,7 +328,7 @@ Public Class ToolStripRendererEx
 
         If IsFlat() Then
             Dim rect = New Rectangle(2, 0, h, h)
-            Dim col = If(item.Selected, Color.FromArgb(&HFF56B0FA), MenuStripBackgroundSelectedColor.ToColor())
+            Dim col = If(item.Selected, BoxSelectedColor, BoxColor)
 
             Using brush As New SolidBrush(col)
                 gx.FillRectangle(brush, rect)
@@ -336,7 +344,8 @@ Public Class ToolStripRendererEx
         Dim x3 = CInt(x1 + h * 0.37)
         Dim y3 = CInt(y1 - h * 0.37)
 
-        Using pen = New Pen(Color.Black, e.Item.Font.Height / 16.0F)
+        Dim penColor = If(item.Selected, CheckmarkSelectedColor, CheckmarkColor)
+        Using pen = New Pen(penColor, e.Item.Font.Height / 16.0F)
             gx.DrawLine(pen, x1, y1, x2, y2)
             gx.DrawLine(pen, x1, y1, x3, y3)
         End Using

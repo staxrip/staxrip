@@ -1,4 +1,4 @@
-Next Build
+Next Release
 =========================
 
 - CheckBox appearance optimized (Dendraspis)
@@ -7,6 +7,7 @@ Next Build
 - The x264 command line preview shows all passes (Dendraspis, [#496](/../../issues/496))
 - The aomenc command line preview shows all passes (Dendraspis, [#496](/../../issues/496))
 - Extended option descrption for 'Temp Files Folder' if Auto-Deletion is enabled (Dendraspis, [#542](/../../issues/542))
+- Progress Reformatting is a global option like Output Highlighting (Dendraspis)
 
 
 2.1.8.5 Beta (2021-03-09)

@@ -3646,11 +3646,6 @@ Public Class MainForm
             b.Help = "Tooltips can always be shown by right-clicking menu items."
             b.Field = NameOf(s.EnableTooltips)
 
-            b = ui.AddBool()
-            b.Text = "Customized/Shorter encoder progress text"
-            b.Help = "Customized/Shorter progress text while encoding to get a shorter (and different) overview about the progress, especially for low resolution displays."
-            b.Field = NameOf(s.ProgressOutputCustomize)
-
             '############# Preprocessing
             ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(40, 22)
             ui.FormSizeScaleFactor = New Size(33, 22)

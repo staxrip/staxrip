@@ -200,6 +200,7 @@ Public Class ProcessingForm
 
     Private TaskbarButtonCreatedMessage As Integer
     Private StopAfterCurrentJobMenuItem As MenuItemEx
+    Private ProgressReformattingMenuItem As MenuItemEx
     Private OutputHighlightingMenuItem As MenuItemEx
     Private CMS As ContextMenuStripEx
 
@@ -225,6 +226,8 @@ Public Class ProcessingForm
         CMS.Add("-")
         OutputHighlightingMenuItem = CMS.Add("Output Highlighting", AddressOf SetOutputHighlighting)
         OutputHighlightingMenuItem.KeyDisplayString = "Ctrl+H"
+        ProgressReformattingMenuItem = CMS.Add("Progress Reformatting", AddressOf SetProgressReformatting)
+        ProgressReformattingMenuItem.KeyDisplayString = "Ctrl+R"
 
         For Each theme In ThemeManager.Themes
             CMS.Add($"Theme | {theme.Name}", Sub() ThemeManager.SetCurrentTheme(theme.Name))
@@ -302,6 +305,11 @@ Public Class ProcessingForm
         StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
     End Sub
 
+    Sub SetProgressReformatting()
+        s.ProgressReformatting = Not ProgressReformattingMenuItem.Checked
+        ProgressReformattingMenuItem.Checked = s.ProgressReformatting
+    End Sub
+
     Sub SetOutputHighlighting()
         OutputHighlightingMenuItem.Checked = Not OutputHighlightingMenuItem.Checked
         ProcController.SetOutputHighlighting(OutputHighlightingMenuItem.Checked, ThemeManager.CurrentTheme)
@@ -339,6 +347,8 @@ Public Class ProcessingForm
         StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
         OutputHighlightingMenuItem.Enabled = g.IsJobProcessing
         OutputHighlightingMenuItem.Checked = s.OutputHighlighting
+        ProgressReformattingMenuItem.Enabled = g.IsJobProcessing
+        ProgressReformattingMenuItem.Checked = s.ProgressReformatting
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
         ApplyTheme()
     End Sub
@@ -373,6 +383,8 @@ Public Class ProcessingForm
                 g.DefaultCommands.ShowLogFile()
             Case Keys.Control Or Keys.H
                 SetOutputHighlighting()
+            Case Keys.Control Or Keys.R
+                SetProgressReformatting()
             Case Keys.Escape
                 Abort()
         End Select

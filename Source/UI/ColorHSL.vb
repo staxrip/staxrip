@@ -152,11 +152,11 @@ Public Structure ColorHSL
         Return CType(Me, Color)
     End Function
 
-    Public Overrides Function ToString() As String
-        Return String.Format($"HSLA({H:0}, {S:0.00}, {L:0.00}, {A:0.00})")
+    Public Function ToHTML() As String
+        Return ColorTranslator.ToHtml(Me)
     End Function
 
-    Function ToHTML() As String
-        Return ColorTranslator.ToHtml(Color.FromArgb(ToColor.ToArgb()))
+    Public Overrides Function ToString() As String
+        Return String.Format($"HSLA({H:0}, {S:0.00}, {L:0.00}, {A:0.00})")
     End Function
 End Structure

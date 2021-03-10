@@ -981,8 +981,22 @@ Public Class x264Params
     Overloads Overrides Function GetCommandLine(
         includePaths As Boolean, includeExecutable As Boolean, Optional pass As Integer = 1) As String
 
-        Return GetArgs(1, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
+        Return GetArgs(pass, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
                        p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
+    End Function
+
+    Overrides Function GetCommandLinePreview() As String
+        Dim ret = GetCommandLine(True, True)
+
+        If Mode.Value = x264RateMode.TwoPass Then
+            ret += BR2 + GetCommandLine(True, True, 2)
+        ElseIf Mode.Value = x264RateMode.ThreePass Then
+            'Specific order 1 > 3 > 2 is correct!
+            ret += BR2 + GetCommandLine(True, True, 3)
+            ret += BR2 + GetCommandLine(True, True, 2)
+        End If
+
+        Return ret
     End Function
 
     Overloads Function GetArgs(

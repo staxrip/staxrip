@@ -222,21 +222,21 @@ Public Class Folder
                 manual.Script = VideoScript.GetDefaults()(0)
                 manual.Script.Filters(0) = VideoFilter.GetDefault("Source", "Manual")
                 manual.DemuxAudio = DemuxMode.Dialog
-                manual.DemuxSubtitles = DemuxMode.Dialog
+                manual.SubtitleMode = SubtitleMode.Dialog
                 SafeSerialization.Serialize(manual, ret + "Manual Workflow.srip")
 
                 Dim auto As New Project
                 auto.Init()
                 auto.Script.Filters(0) = VideoFilter.GetDefault("Source", "Automatic")
                 auto.DemuxAudio = DemuxMode.All
-                auto.DemuxSubtitles = DemuxMode.All
+                auto.SubtitleMode = SubtitleMode.Preferred
                 SafeSerialization.Serialize(auto, ret + "Automatic Workflow.srip")
 
                 Dim remux As New Project
                 remux.Init()
                 remux.Script.Filters(0) = New VideoFilter("Source", "DSS2/L-Smash", $"srcFile = ""%source_file%""{BR}ext = LCase(RightStr(srcFile, 3)){BR}(ext == ""mp4"") ? LSMASHVideoSource(srcFile, format = ""YUV420P8"") : DSS2(srcFile)")
                 remux.DemuxAudio = DemuxMode.None
-                remux.DemuxSubtitles = DemuxMode.None
+                remux.SubtitleMode = SubtitleMode.Disabled
                 remux.VideoEncoder = New NullEncoder
                 remux.Audio0 = New MuxAudioProfile
                 remux.Audio1 = New MuxAudioProfile

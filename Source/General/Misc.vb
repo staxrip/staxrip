@@ -1722,6 +1722,13 @@ Public Enum DemuxMode
     None
 End Enum
 
+Public Enum SubtitleMode
+    <DispName("Demux and include preferred languages")> Preferred
+    <DispName("Show dialog to choose subtitles to be included")> Dialog
+    <DispName("Include preferred languages directly without demuxing")> Direct
+    <DispName("Don't include subtitles")> Disabled
+End Enum
+
 Public Class StringLogicalComparer
     Implements IComparer, IComparer(Of String)
 

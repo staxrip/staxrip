@@ -213,6 +213,10 @@ Public Class eac3toDemuxer
                         Throw New AbortException
                     End Try
 
+                    If proj Is p Then
+                        p.PreferredAudio = form.Streams.Where(Function(i) i.IsSubtitle AndAlso i.Checked).Select(Function(i) i.Language.ThreeLetterCode).Join(", ")
+                    End If
+
                     If Not form.cbVideoOutput.Text = "Nothing" Then
                         proj.SourceFile = form.OutputFolder + proj.SourceFile.Base + "." + form.cbVideoOutput.Text.ToLowerInvariant
                         proj.SourceFiles.Clear()
@@ -255,7 +259,7 @@ Public Class ffmpegDemuxer
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
             ((audioDemuxing AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
-            (subtitlesDemuxing AndAlso proj.DemuxSubtitles = DemuxMode.Dialog)) OrElse
+            (subtitlesDemuxing AndAlso proj.SubtitleMode = SubtitleMode.Dialog)) OrElse
             Not proj Is p Then
 
             Using form As New StreamDemuxForm(Me, proj.SourceFile, Nothing)
@@ -265,6 +269,10 @@ Public Class ffmpegDemuxer
                     videoDemuxing = form.cbDemuxVideo.Checked
                     audioStreams = form.AudioStreams
                     subtitles = form.Subtitles
+
+                    If proj Is p Then
+                        p.PreferredSubtitles = subtitles.Select(Function(i) i.Language.ThreeLetterCode).Join(", ")
+                    End If
                 Else
                     Throw New AbortException
                 End If
@@ -447,7 +455,7 @@ Public Class MP4BoxDemuxer
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
             ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
-            (demuxSubtitles AndAlso proj.DemuxSubtitles = DemuxMode.Dialog)) OrElse
+            (demuxSubtitles AndAlso proj.SubtitleMode = SubtitleMode.Dialog)) OrElse
             Not proj Is p Then
 
             Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
@@ -456,6 +464,10 @@ Public Class MP4BoxDemuxer
                     demuxChapters = form.cbDemuxChapters.Checked
                     audioStreams = form.AudioStreams
                     subtitles = form.Subtitles
+
+                    If proj Is p Then
+                        p.PreferredSubtitles = subtitles.Select(Function(i) i.Language.ThreeLetterCode).Join(", ")
+                    End If
                 Else
                     Throw New AbortException
                 End If
@@ -478,7 +490,7 @@ Public Class MP4BoxDemuxer
             Next
         End If
 
-        If demuxSubtitles AndAlso proj.DemuxSubtitles <> DemuxMode.None Then
+        If demuxSubtitles AndAlso proj.IsSubtitleDemuxingRequired Then
             If subtitles Is Nothing Then
                 subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
             End If
@@ -691,7 +703,7 @@ Public Class mkvDemuxer
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
             ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
-            (demuxSubtitles AndAlso proj.DemuxSubtitles = DemuxMode.Dialog)) OrElse
+            (demuxSubtitles AndAlso proj.SubtitleMode = SubtitleMode.Dialog)) OrElse
             Not proj Is p Then
 
             Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
@@ -703,19 +715,19 @@ Public Class mkvDemuxer
                 demuxChapters = form.cbDemuxChapters.Checked
                 audioStreams = form.AudioStreams
                 subtitles = form.Subtitles
+
+                If proj Is p Then
+                    p.PreferredSubtitles = subtitles.Select(Function(i) i.Language.ThreeLetterCode).Join(", ")
+                End If
             End Using
         End If
 
-        If demuxAudio AndAlso proj.DemuxAudio <> DemuxMode.None Then
-            If audioStreams Is Nothing Then
-                audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
-            End If
+        If audioStreams Is Nothing AndAlso demuxAudio AndAlso proj.DemuxAudio <> DemuxMode.None Then
+            audioStreams = MediaInfo.GetAudioStreams(proj.SourceFile)
         End If
 
-        If demuxSubtitles AndAlso proj.DemuxSubtitles <> DemuxMode.None Then
-            If subtitles Is Nothing Then
-                subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
-            End If
+        If subtitles Is Nothing AndAlso demuxSubtitles AndAlso proj.IsSubtitleDemuxingRequired Then
+            subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
         End If
 
         Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True,
@@ -810,17 +822,15 @@ Public Class mkvDemuxer
             audioStreams = New List(Of AudioStream)
         End If
 
-        If subtitles Is Nothing Then
-            subtitles = New List(Of Subtitle)
+        If Not subtitles Is Nothing Then
+            subtitles = subtitles.Where(Function(subtitle) subtitle.Enabled)
         End If
 
         If onlyEnabled Then
             audioStreams = audioStreams.Where(Function(arg) arg.Enabled)
         End If
 
-        subtitles = subtitles.Where(Function(subtitle) subtitle.Enabled)
-
-        If audioStreams.Count = 0 AndAlso subtitles.Count = 0 AndAlso Not videoDemuxing Then
+        If audioStreams.Count = 0 AndAlso subtitles.NothingOrEmpty AndAlso Not videoDemuxing Then
             Exit Sub
         End If
 
@@ -847,21 +857,23 @@ Public Class mkvDemuxer
             End If
         End If
 
-        For Each subtitle In subtitles
-            If Not subtitle.Enabled Then
-                Continue For
-            End If
+        If Not subtitles Is Nothing Then
+            For Each subtitle In subtitles
+                If Not p.IsSubtitleDemuxingRequired OrElse Not subtitle.Enabled Then
+                    Continue For
+                End If
 
-            Dim forced = If(subtitle.Forced, "_forced", "")
-            Dim _default = If(subtitle.Default, "_default", "")
-            Dim outPath = proj.TempDir + subtitle.Filename + _default + forced + subtitle.ExtFull
-            args += " " & subtitle.StreamOrder & ":" + outPath.Escape
-            outPaths.Add(outPath)
+                Dim forced = If(subtitle.Forced, "_forced", "")
+                Dim _default = If(subtitle.Default, "_default", "")
+                Dim outPath = proj.TempDir + subtitle.Filename + _default + forced + subtitle.ExtFull
+                args += " " & subtitle.StreamOrder & ":" + outPath.Escape
+                outPaths.Add(outPath)
 
-            If Not outPath.FileExists Then
-                newCount += 1
-            End If
-        Next
+                If Not outPath.FileExists Then
+                    newCount += 1
+                End If
+            Next
+        End If
 
         Dim audioOutPaths As New Dictionary(Of String, AudioStream)
 

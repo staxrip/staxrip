@@ -1124,10 +1124,12 @@ Public Class MainForm
 
         CustomMainMenu = New CustomMenu(AddressOf GetDefaultMainMenu, s.CustomMenuMainForm, CommandManager, MenuStrip)
 
+
         OpenProject(g.StartupTemplatePath)
         CustomMainMenu.AddKeyDownHandler(Me)
         CustomMainMenu.BuildMenu()
         UpdateAudioMenu()
+        UpdateTargetSizeLabel()
         MenuStrip.ResumeLayout()
         SizeContextMenuStrip.SuspendLayout()
 
@@ -3646,7 +3648,11 @@ Public Class MainForm
             b = ui.AddBool()
             b.Text = "Use binary prefix (MiB) instead of decimal prefix (MB) for sizes"
             b.Help = "Binary: 1 MiB = 1024 KiB" + BR + "Decimal: 1 MB = 1000 KB"
-            b.Field = NameOf(s.BinaryPrefix)
+            b.Checked = s.BinaryPrefix
+            b.SaveAction = Sub(value)
+                               s.BinaryPrefix = value
+                               UpdateTargetSizeLabel()
+                           End Sub
 
             b = ui.AddBool()
             b.Text = "Enable tooltips in menus (restart required)"
@@ -6398,6 +6404,10 @@ Public Class MainForm
             Return MyBase.ShowWithoutActivation
         End Get
     End Property
+
+    Sub UpdateTargetSizeLabel()
+        Me.blFilesize.Text = $"Size in {PrefixedSize(2).Unit}:"
+    End Sub
 
     Sub UpdateNextButton()
         If AssistantPassed AndAlso CanIgnoreTip AndAlso

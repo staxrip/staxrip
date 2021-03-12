@@ -12,6 +12,7 @@ Next Release
 - Since v2.1.8.5 StaxRip uses the SI prefix for sizes (Base 10: `1 MB = 1000 KB`)  
   Now it is possible to switch to IEC prefix (Base 2: `1 MiB = 1024 KiB`)  
   *Please note, that the Targetsize menu must be resetted or adjusted by hand after a change!* (Dendraspis)
+- Show target size label including size unit (Dendraspis, VEGAX265, [#580](/../../issues/580))
 
 
 

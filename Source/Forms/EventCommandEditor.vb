@@ -291,7 +291,7 @@ Public Class EventCommandEditor
         Me.bnOK.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Right), AnchorStyles)
         Me.bnOK.DialogResult = DialogResult.OK
         Me.bnOK.Location = New System.Drawing.Point(10, 10)
-        Me.bnOK.Margin = New Padding(10, 10, 0, 10)
+        Me.bnOK.Margin = New Padding(10)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '

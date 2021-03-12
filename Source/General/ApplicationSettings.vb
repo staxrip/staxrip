@@ -12,6 +12,7 @@ Public Class ApplicationSettings
     Public AviSynthFilterPreferences As StringPairList
     Public AviSynthMode As FrameServerMode
     Public AviSynthProfiles As List(Of FilterCategory)
+    Public BinaryPrefix As Boolean = False
     Public CheckForUpdates As Boolean
     Public CheckForUpdatesBeta As Boolean
     Public CheckForUpdatesDismissed As String

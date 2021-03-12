@@ -2823,7 +2823,7 @@ Public Class MainForm
 
         If p.SourceSeconds > 0 Then
             Dim size = If(p.SourceVideoSize > 0, p.SourceVideoSize, p.SourceSize)
-            Dim sizeText = If(size / 1000 ^ 2 < 1000, CInt(size / 1000 ^ 2).ToString + "MB", (size / 1000 ^ 3).ToString("f1") + "GB")
+            Dim sizeText = If(size / PrefixedSize(2).Factor < SizePrefix.Base, CInt(size / PrefixedSize(2).Factor).ToString + PrefixedSize(2).Unit, (size / PrefixedSize(3).Factor).ToString("f1") + PrefixedSize(3).Unit)
 
             If size <> p.SourceVideoSize Then
                 sizeText = $"[{sizeText}]"
@@ -3309,11 +3309,11 @@ Public Class MainForm
 
             Dim di As New DriveInfo(p.TargetFile.Dir)
 
-            If di.AvailableFreeSpace / 1000 ^ 3 < s.MinimumDiskSpace Then
+            If di.AvailableFreeSpace / PrefixedSize(3).Factor < s.MinimumDiskSpace Then
                 Using td As New TaskDialog(Of String)
                     td.MainInstruction = "Low Disk Space"
                     td.Content = $"The target drive {Path.GetPathRoot(p.TargetFile)} has only " +
-                                 $"{(di.AvailableFreeSpace / 1000 ^ 3).ToString("f2")} GB free disk space."
+                                 $"{(di.AvailableFreeSpace / PrefixedSize(3).Factor):f2} {PrefixedSize(3).Unit} free disk space."
                     td.MainIcon = TaskDialogIcon.Warning
                     td.AddButton("Continue", "Continue")
                     td.AddButton("Abort", "Abort")
@@ -3612,6 +3612,11 @@ Public Class MainForm
             theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
             theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
 
+            Dim renderMode = ui.AddMenu(Of ToolStripRenderModeEx)
+            renderMode.Text = "Menu Style"
+            renderMode.Help = "Defines the style used to render main menus, context menus and toolbars."
+            renderMode.Field = NameOf(s.ToolStripRenderModeEx)
+
             Dim l = ui.AddLabel("Icon File:")
             l.Help = "The Windows Startmenu uses Windows Links which allow to use custom icon files."
 
@@ -3622,15 +3627,12 @@ Public Class MainForm
             tb.Edit.Text = s.IconFile
             tb.Edit.SaveAction = Sub(value) s.IconFile = value
 
-            Dim renderMode = ui.AddMenu(Of ToolStripRenderModeEx)
-            renderMode.Text = "Menu Style"
-            renderMode.Help = "Defines the style used to render main menus, context menus and toolbars."
-            renderMode.Field = NameOf(s.ToolStripRenderModeEx)
+            l = ui.AddLabel("Remember Window Positions:")
+            l.Help = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
 
             Dim t = ui.AddText()
-            t.Text = "Remember Window Positions"
             t.Help = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
-            t.Label.Offset = 12
+            t.Label.Visible = False
             t.Edit.Expand = True
             t.Edit.Text = s.WindowPositionsRemembered.Join(", ")
             t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
@@ -3640,6 +3642,11 @@ Public Class MainForm
             n.Help = "Requires to restart StaxRip."
             n.Config = {0.3, 3, 0.05, 2}
             n.Field = NameOf(s.UIScaleFactor)
+
+            b = ui.AddBool()
+            b.Text = "Use binary prefix (MiB) instead of decimal prefix (MB) for sizes"
+            b.Help = "Binary: 1 MiB = 1024 KiB" + BR + "Decimal: 1 MB = 1000 KB"
+            b.Field = NameOf(s.BinaryPrefix)
 
             b = ui.AddBool()
             b.Text = "Enable tooltips in menus (restart required)"
@@ -5221,11 +5228,11 @@ Public Class MainForm
 
     Shared Function GetDefaultMenuSize() As CustomMenuItem
         Dim ret = New CustomMenuItem("Root")
-        ret.Add("DVD/BD-5 (4480 MB)", NameOf(SetSize), {4480})
-        ret.Add("DVD-DL/BD-9 (8145 MB)", NameOf(SetSize), {8145})
+        ret.Add("DVD/BD-5 (4482 MiB / 4700 MB)", NameOf(SetSize), {CInt(4700_000_000 \ PrefixedSize(2).Factor)})
+        ret.Add("DVD-DL/BD-9 (8145 MiB / 8540 MB)", NameOf(SetSize), {CInt(8540_000_000 \ PrefixedSize(2).Factor)})
         ret.Add("-")
-        ret.Add("BD (23450 MB)", NameOf(SetSize), {23450})
-        ret.Add("BD-DL (46900 MB)", NameOf(SetSize), {46900})
+        ret.Add("BD (23842 MiB / 25000 MB)", NameOf(SetSize), {CInt(25000_000_000 \ PrefixedSize(2).Factor)})
+        ret.Add("BD-DL (47684 MiB / 50000 MB)", NameOf(SetSize), {CInt(50000_000_000 \ PrefixedSize(2).Factor)})
         ret.Add("-")
         ret.Add("50%", NameOf(SetPercent), {50})
         ret.Add("60%", NameOf(SetPercent), {60})
@@ -5656,7 +5663,7 @@ Public Class MainForm
                 Try
                     Dim di As New DriveInfo(form.OutputFolder)
 
-                    If di.AvailableFreeSpace / 1000 ^ 3 < 50 Then
+                    If di.AvailableFreeSpace / PrefixedSize(3).Factor < 50 Then
                         MsgError("The target drive has not enough free disk space.")
                         Exit Sub
                     End If

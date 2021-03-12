@@ -1110,13 +1110,13 @@ Public Class MuxerForm
             End If
 
             If File.Exists(i.Path) Then
-                Dim size As String
+                Dim sizeText As String
 
                 If i.Size > 0 Then
-                    If i.Size > 1000 ^ 2 Then
-                        size = (i.Size / 1000 ^ 2).ToString("f1") & " MB"
+                    If i.Size > PrefixedSize(2).Factor Then
+                        sizeText = $"{i.Size / PrefixedSize(2).Factor:f1} {PrefixedSize(2).Unit}"
                     Else
-                        size = (i.Size / 1000).ToString("f1") & " KB"
+                        sizeText = $"{i.Size / PrefixedSize(1).Factor:f1} {PrefixedSize(1).Unit}"
                     End If
                 End If
 
@@ -1150,7 +1150,7 @@ Public Class MuxerForm
                 item.Forced = i.Forced
                 item.ID = id
                 item.TypeName = i.TypeName
-                item.Size = size
+                item.Size = sizeText
                 item.Filename = i.Path.FileName
                 item.Subtitle = i
 

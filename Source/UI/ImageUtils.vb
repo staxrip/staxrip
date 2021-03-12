@@ -214,10 +214,10 @@ Public Class Thumbnails
         If channels = 8 Then audioSound = "Surround Sound"
         If channels = 0 Then audioSound = ""
 
-        If infoLength / 1000 ^ 3 > 1 Then
-            infoSize = (infoLength / 1000 ^ 3).ToInvariantString("f2") + "GB"
+        If infoLength / SizePrefix.Base ^ 3 > 1 Then
+            infoSize = $"{infoLength / PrefixedSize(3).Factor:f2}{PrefixedSize(3).Unit}"
         Else
-            infoSize = CInt(infoLength / 1000 ^ 2).ToString + "MB"
+            infoSize = $"{infoLength / PrefixedSize(2).Factor}{PrefixedSize(2).Unit}"
         End If
 
         Dim caption = "File: " + inputFile.FileName + BR & "Size: " + MediaInfo.GetGeneral(inputFile, "FileSize") + " bytes" + " (" + infoSize + ")" & ", " + "Duration: " + StaxRip.g.GetTimeString(infoDuration / 1000) + ", avg.bitrate: " + MediaInfo.GetGeneral(inputFile, "OverallBitRate_String") + BR +

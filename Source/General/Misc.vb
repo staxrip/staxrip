@@ -16,6 +16,50 @@ Public Module ShortcutModule
     Public s As New ApplicationSettings
 End Module
 
+Public Module SizePrefixModule
+    Private ReadOnly _types() As SizePrefix = {New SizePrefix(0), New SizePrefix(1), New SizePrefix(2), New SizePrefix(3), New SizePrefix(4), New SizePrefix(5)}
+
+    Public ReadOnly Property PrefixedSize(exp As Integer) As SizePrefix
+        Get
+            Return _types(Mathf.Clamp(exp, 0, _types.Length - 1))
+        End Get
+    End Property
+End Module
+
+Public Structure SizePrefix
+    Public Shared ReadOnly Property Base As Integer
+        Get
+            Return If(s.BinaryPrefix, 1024, 1000)
+        End Get
+    End Property
+
+    Public ReadOnly Property Exponent As Integer
+
+    Public ReadOnly Property Factor As Long
+        Get
+            Return Convert.ToInt64(Base ^ Exponent)
+        End Get
+    End Property
+
+    Public ReadOnly Property Prefix As String
+        Get
+            Dim a As String() = If(s.BinaryPrefix, {"", "Ki", "Mi", "Gi", "Ti", "Pi"}, {"", "K", "M", "G", "T", "P"})
+            Return a(Exponent)
+        End Get
+    End Property
+
+    Public ReadOnly Property Unit As String
+        Get
+            Return Prefix + "B"
+        End Get
+    End Property
+
+    Public Sub New(exponent As Integer)
+        Me.Exponent = exponent
+    End Sub
+
+End Structure
+
 <Serializable()>
 Public Class Range
     Implements IComparable(Of Range)
@@ -62,12 +106,12 @@ Public Class Calc
         If p.TargetWidth = 0 Then Return 0
         If p.TargetHeight = 0 Then Return 0
 
-        Return p.VideoBitrate * 1000L / (p.TargetWidth * p.TargetHeight * CLng(framerate))
+        Return p.VideoBitrate * SizePrefix.Base / (p.TargetWidth * p.TargetHeight * CLng(framerate))
     End Function
 
     Shared Function GetSize() As Double
         Dim ret = (Calc.GetVideoKBytes() + Calc.GetAudioKBytes() +
-            GetSubtitleKBytes() + Calc.GetOverheadKBytes()) / 1000
+            GetSubtitleKBytes() + Calc.GetOverheadKBytes()) / SizePrefix.Base
 
         If ret < 1 Then ret = 1
 
@@ -79,7 +123,7 @@ Public Class Calc
             Return 0
         End If
 
-        Dim kbytes = p.TargetSize * 1000 - GetAudioKBytes() - GetSubtitleKBytes() - GetOverheadKBytes()
+        Dim kbytes = p.TargetSize * SizePrefix.Base - GetAudioKBytes() - GetSubtitleKBytes() - GetOverheadKBytes()
         Dim ret = kbytes * 8 / p.TargetSeconds
 
         If ret < 1 Then
@@ -94,7 +138,7 @@ Public Class Calc
     End Function
 
     Shared Function GetSubtitleKBytes() As Double
-        Return Aggregate i In p.VideoEncoder.Muxer.Subtitles Into Sum(If(i.Enabled, i.Size / 1000 / 3, 0))
+        Return Aggregate i In p.VideoEncoder.Muxer.Subtitles Into Sum(If(i.Enabled, i.Size / SizePrefix.Base / 3, 0))
     End Function
 
     Shared Function GetOverheadKBytes() As Double
@@ -106,7 +150,7 @@ Public Class Calc
             If p.Audio0.File <> "" Then ret += frames * 0.04
             If p.Audio1.File <> "" Then ret += frames * 0.04
         ElseIf p.VideoEncoder.Muxer.OutputExt = "mp4" Then
-            ret += 10.4 / 1000 * frames
+            ret += 10.4 / SizePrefix.Base * frames
         ElseIf p.VideoEncoder.Muxer.OutputExt = "mkv" Then
             ret += frames * 0.013
         End If
@@ -115,7 +159,7 @@ Public Class Calc
     End Function
 
     Shared Function GetAudioKBytes() As Double
-        Return ((Calc.GetAudioBitrate() * p.TargetSeconds) / 8) / 1.024
+        Return ((Calc.GetAudioBitrate() * p.TargetSeconds) / 8) / SizePrefix.Base
     End Function
 
     Shared Function GetAudioBitrate() As Double
@@ -133,7 +177,7 @@ Public Class Calc
                 Return 0
             End If
 
-            Dim kBits = New FileInfo(path).Length * 8 / 1000
+            Dim kBits = New FileInfo(path).Length * 8 / 1024
             Return kBits / seconds
         Catch ex As Exception
             g.ShowException(ex)
@@ -1289,7 +1333,7 @@ Public Class Subtitle
                     st.StreamOrder = indexData
                     st.Path = path
                     indexData += 1
-                    st.Size = CInt(New FileInfo(path).Length / 1000)
+                    st.Size = CInt(New FileInfo(path).Length / SizePrefix.Base)
                     Dim subFile = path.ChangeExt("sub")
                     If File.Exists(subFile) Then st.Size += New FileInfo(subFile).Length
                     ret.Add(st)

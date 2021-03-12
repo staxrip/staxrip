@@ -9,6 +9,10 @@ Next Release
 - Extended option descrption for 'Temp Files Folder' if Auto-Deletion is enabled (Dendraspis, [#542](/../../issues/542))
 - Progress Reformatting is a global option like Output Highlighting (Dendraspis)
 - Improved usability for subtitle options (stax76, [#577](/../../issues/577))
+- Since v2.1.8.5 StaxRip uses the SI prefix for sizes (Base 10: `1 MB = 1000 KB`)  
+  Now it is possible to switch to IEC prefix (Base 2: `1 MiB = 1024 KiB`)  
+  *Please note, that the Targetsize menu must be resetted or adjusted by hand after a change!* (Dendraspis)
+
 
 
 2.1.8.5 Beta (2021-03-09)
@@ -31,7 +35,7 @@ Next Release
 - x264 --progress-header disabled for Patman build (Dendraspis)
 - Customized progress text fix for new Patman build (Dendraspis)
 - Fix resize values are not refreshed after changing them (Dendraspis, [#558](/../../issues/558))
-- Adjustments to match the SI prefix according to IEC (Base 10) (Dendraspis)
+- Adjustments to match the SI prefix (Base 10) for sizes instead of IEC prefixes (Base 2) (Dendraspis)
 - Set minimum bitrate of 32kbps for (E)AC3 (Dendraspis, 44vince44)
 - Fix ffmpeg DD+ encoding issue with high bitrates by adding 0.1 to bitrate (Dendraspis, [#566](/../../issues/566))
 - Add vertical scrollbars to Code Editor code-boxes (Dendraspis, [#567](/../../issues/567))

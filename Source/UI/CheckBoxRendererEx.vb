@@ -23,7 +23,7 @@ Public Class CheckBoxRendererEx
         Dim borderColor = If(checked, theme.BorderCheckedColor, theme.BorderColor)
         Dim borderStrength = 2
         Dim checkmarkColor = theme.CheckmarkColor
-        Dim checkmarkStrength = 4
+        Dim checkmarkStrength = rect.Width \ 5
 
         Select Case state
             Case CheckBoxState.CheckedNormal
@@ -48,6 +48,29 @@ Public Class CheckBoxRendererEx
                     g.DrawLine(pen, startX1, startY1, endX1, endY1)
                     g.DrawLine(pen, startX2, startY2, endX2, endY2)
                 End Using
+
+                ' -----------------------
+                ' ---------------- PLAN B
+                ' -----------------------
+                'Dim pad = 0.2F
+
+                'Dim xtl = rect.Left + rect.Width * pad
+                'Dim ytl = rect.Top + rect.Height * pad
+
+                'Dim xtr = rect.Left + rect.Width - rect.Width * pad
+                'Dim ytr = rect.Top + rect.Height * pad
+
+                'Dim xbl = rect.Left + rect.Width * pad
+                'Dim ybl = rect.Top + rect.Height - rect.Height * pad
+
+                'Dim xbr = rect.Left + rect.Width - rect.Width * pad
+                'Dim ybr = rect.Top + rect.Height - rect.Height * pad
+
+                'Using pen As New Pen(checkmarkColor, checkmarkStrength)
+                '    g.DrawLine(pen, xtl, ytl, xbr, ybr)
+                '    g.DrawLine(pen, xtr, ytr, xbl, ybl)
+                'End Using
+                ' -----------------------
             Case CheckBoxState.UncheckedNormal
                 Using brush As New SolidBrush(backColor)
                     Using pen As New Pen(borderColor, borderStrength)

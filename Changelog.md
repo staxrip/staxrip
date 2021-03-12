@@ -8,6 +8,7 @@ Next Release
 - The aomenc command line preview shows all passes (Dendraspis, [#496](/../../issues/496))
 - Extended option descrption for 'Temp Files Folder' if Auto-Deletion is enabled (Dendraspis, [#542](/../../issues/542))
 - Progress Reformatting is a global option like Output Highlighting (Dendraspis)
+- Improved usability for subtitle options (stax76, [#577](/../../issues/577))
 
 
 2.1.8.5 Beta (2021-03-09)

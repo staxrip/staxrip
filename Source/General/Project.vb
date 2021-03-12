@@ -41,7 +41,7 @@ Public Class Project
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
     Public DemuxAudio As DemuxMode = DemuxMode.All
-    Public DemuxSubtitles As DemuxMode = DemuxMode.All
+    Public SubtitleMode As SubtitleMode
     Public ExtractTimestamps As Boolean
     Public FileExistAudio As FileExistMode
     Public FileExistVideo As FileExistMode
@@ -305,4 +305,10 @@ Public Class Project
             Script.InsertAfter(insertCat, filter)
         End If
     End Sub
+
+    ReadOnly Property IsSubtitleDemuxingRequired As Boolean
+        Get
+            Return SubtitleMode = SubtitleMode.Dialog OrElse SubtitleMode = SubtitleMode.Preferred
+        End Get
+    End Property
 End Class

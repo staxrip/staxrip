@@ -253,7 +253,7 @@ Namespace UI
                 flags = flags Or TextFormatFlags.LeftAndRightPadding
             End If
 
-            If Not Columns(columnIndex).TextAlign = HorizontalAlignment.Left Then
+            If columnIndex < Columns.Count AndAlso Not Columns(columnIndex).TextAlign = HorizontalAlignment.Left Then
                 flags = flags Or CType(CInt(Columns(columnIndex).TextAlign ^ 3), TextFormatFlags)
             End If
 

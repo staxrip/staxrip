@@ -921,7 +921,7 @@ Module MiscExtensions
 
     <Extension()>
     Function NothingOrEmpty(strings As IEnumerable(Of String)) As Boolean
-        If Not strings Is Nothing AndAlso strings.Any() Then
+        If strings?.Any() Then
             For Each str In strings
                 If str <> "" Then Return False
             Next
@@ -931,7 +931,7 @@ Module MiscExtensions
 
     <Extension()>
     Function NothingOrEmpty(objects As IEnumerable(Of Object)) As Boolean
-        If Not objects Is Nothing AndAlso objects.Any() Then
+        If objects?.Any() Then
             For Each obj In objects
                 If Not obj Is Nothing Then
                     Return False

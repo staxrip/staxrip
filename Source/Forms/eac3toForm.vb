@@ -592,9 +592,9 @@ Public Class eac3toForm
     Property PlaylistFolder As String
     Property OutputFolder As String
     Property PlaylistID As Integer
+    Property Streams As New BindingList(Of M2TSStream)
 
     Private Output As String
-    Private Streams As New BindingList(Of M2TSStream)
     Private AudioOutputFormats As String() =
         {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd", "thd+ac3"}
 

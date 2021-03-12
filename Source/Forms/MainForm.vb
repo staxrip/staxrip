@@ -4266,7 +4266,7 @@ Public Class MainForm
             "In order to select a template to be loaded on program startup go to:",
             "Tools > Settings > General > Templates > Default Template")
 
-            form.ScaleClientSize(30, 21)
+            form.ScaleClientSize(31, 21)
 
             Dim ui = form.SimpleUI
             ui.Store = p
@@ -4521,9 +4521,14 @@ Public Class MainForm
             '   ----------------------------------------------------------------
             Dim subPage = ui.CreateFlowPage("Subtitles", True)
 
+            Dim subMode = ui.AddMenu(Of SubtitleMode)
+            subMode.Expanded = True
+            subMode.Text = "Subtitles"
+            subMode.Field = NameOf(p.SubtitleMode)
+
             Dim prefSub = ui.AddTextMenu(subPage)
-            prefSub.Text = "Preferred Languages"
-            prefSub.Help = "List of subtitles demuxed and loaded automatically."
+            prefSub.Text = "Languages"
+            prefSub.Help = "List of used subtitle languages."
             prefSub.Field = NameOf(p.PreferredSubtitles)
 
             For x = 1 To 9
@@ -4567,10 +4572,6 @@ Public Class MainForm
             tbm.Field = NameOf(p.SubtitleName)
             tbm.AddMenu("Language English", "%language_english%")
             tbm.AddMenu("Language Native", "%language_native%")
-
-            Dim subDemux = ui.AddMenu(Of DemuxMode)
-            subDemux.Text = "Demux Subtitles"
-            subDemux.Field = NameOf(p.DemuxSubtitles)
 
             Dim mb = ui.AddMenu(Of DefaultSubtitleMode)(subPage)
             mb.Text = "Default Subtitle"

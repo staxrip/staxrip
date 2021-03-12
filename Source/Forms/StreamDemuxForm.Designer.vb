@@ -44,8 +44,8 @@ Partial Class StreamDemuxForm
         Me.gbAttachments = New GroupBoxEx()
         Me.lvAttachments = New StaxRip.UI.ListViewEx()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
-        Me.cbDemuxVideo = New System.Windows.Forms.CheckBox()
-        Me.cbDemuxChapters = New System.Windows.Forms.CheckBox()
+        Me.cbDemuxVideo = New CheckBoxEx()
+        Me.cbDemuxChapters = New CheckBoxEx()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.gbAudio.SuspendLayout()
@@ -388,6 +388,6 @@ Partial Class StreamDemuxForm
     Friend WithEvents gbAttachments As GroupBoxEx
     Friend WithEvents lvAttachments As ListViewEx
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
-    Friend WithEvents cbDemuxVideo As CheckBox
-    Friend WithEvents cbDemuxChapters As CheckBox
+    Friend WithEvents cbDemuxVideo As CheckBoxEx
+    Friend WithEvents cbDemuxChapters As CheckBoxEx
 End Class

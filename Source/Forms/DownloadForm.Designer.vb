@@ -24,9 +24,9 @@ Partial Class DownloadForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.bnCancel = New System.Windows.Forms.Button()
-        Me.ProgressBar = New System.Windows.Forms.ProgressBar()
+        Me.tlpMain = New TableLayoutPanel()
+        Me.bnCancel = New ButtonEx()
+        Me.ProgressBar = New ProgressBar()
         Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -85,6 +85,6 @@ Partial Class DownloadForm
     End Sub
 
     Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents bnCancel As Button
+    Friend WithEvents bnCancel As ButtonEx
     Friend WithEvents ProgressBar As ProgressBar
 End Class

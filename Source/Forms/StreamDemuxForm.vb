@@ -42,9 +42,9 @@ Public Class StreamDemuxForm
         AudioStreams = MediaInfo.GetAudioStreams(sourceFile)
         Subtitles = MediaInfo.GetSubtitles(sourceFile)
 
-        gbAudio.Enabled = AudioStreams.Count > 0
-        gbSubtitles.Enabled = Subtitles.Count > 0
-        gbAttachments.Enabled = Not attachments.NothingOrEmpty
+        'gbAudio.Enabled = AudioStreams.Count > 0
+        'gbSubtitles.Enabled = Subtitles.Count > 0
+        'gbAttachments.Enabled = Not attachments.NothingOrEmpty
 
         bnAudioEnglish.Enabled = AudioStreams.Where(Function(stream) stream.Language.TwoLetterCode = "en").Count > 0
         bnAudioNative.Visible = CultureInfo.CurrentCulture.TwoLetterISOLanguageName <> "en"
@@ -76,6 +76,26 @@ Public Class StreamDemuxForm
                 item.Checked = attachment.Enabled
             Next
         End If
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
+        BackColor = theme.General.BackColor
     End Sub
 
     Sub lvAudio_ItemChecked(sender As Object, e As ItemCheckedEventArgs) Handles lvAudio.ItemChecked

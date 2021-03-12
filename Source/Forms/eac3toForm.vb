@@ -20,26 +20,26 @@ Public Class eac3toForm
         MyBase.Dispose(disposing)
     End Sub
     Friend WithEvents CommandLink1 As StaxRip.UI.CommandLink
-    Friend WithEvents cbVideoOutput As System.Windows.Forms.ComboBox
-    Friend WithEvents laVideo As System.Windows.Forms.Label
+    Friend WithEvents cbVideoOutput As ComboBoxEx
+    Friend WithEvents laVideo As LabelEx
     Friend WithEvents cmdlOptions As StaxRip.CommandLineControl
     Friend WithEvents bnBrowse As StaxRip.UI.ButtonEx
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents lvAudio As ListViewEx
     Friend WithEvents lvSubtitles As StaxRip.UI.ListViewEx
-    Friend WithEvents cbVideoStream As System.Windows.Forms.ComboBox
-    Friend WithEvents laStream As System.Windows.Forms.Label
+    Friend WithEvents cbVideoStream As ComboBoxEx
+    Friend WithEvents laStream As LabelEx
     Friend WithEvents flpAudioLinks As System.Windows.Forms.FlowLayoutPanel
     Friend WithEvents flpSubtitleLinks As System.Windows.Forms.FlowLayoutPanel
-    Friend WithEvents cbChapters As System.Windows.Forms.CheckBox
-    Friend WithEvents laTargetDir As System.Windows.Forms.Label
+    Friend WithEvents cbChapters As CheckBoxEx
+    Friend WithEvents laTargetDir As LabelEx
     Friend WithEvents tlpTarget As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents gbAudio As GroupBoxEx
     Friend WithEvents gbSubtitles As GroupBoxEx
-    Friend WithEvents cbAudioOutput As System.Windows.Forms.ComboBox
-    Friend WithEvents laOptions As System.Windows.Forms.Label
-    Friend WithEvents laOutput As System.Windows.Forms.Label
+    Friend WithEvents cbAudioOutput As ComboBoxEx
+    Friend WithEvents laOptions As LabelEx
+    Friend WithEvents laOutput As LabelEx
     Friend WithEvents bnMenu As StaxRip.UI.ButtonEx
     Friend WithEvents cms As ContextMenuStripEx
     Friend WithEvents bnAudioAll As ButtonEx
@@ -62,8 +62,8 @@ Public Class eac3toForm
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.cmdlOptions = New StaxRip.CommandLineControl()
-        Me.cbVideoOutput = New System.Windows.Forms.ComboBox()
-        Me.laVideo = New System.Windows.Forms.Label()
+        Me.cbVideoOutput = New ComboBoxEx()
+        Me.laVideo = New LabelEx()
         Me.bnBrowse = New StaxRip.UI.ButtonEx()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
@@ -79,21 +79,21 @@ Public Class eac3toForm
         Me.bnAudioNone = New StaxRip.UI.ButtonEx()
         Me.bnAudioEnglish = New StaxRip.UI.ButtonEx()
         Me.bnAudioNative = New StaxRip.UI.ButtonEx()
-        Me.cbVideoStream = New System.Windows.Forms.ComboBox()
-        Me.laStream = New System.Windows.Forms.Label()
+        Me.cbVideoStream = New ComboBoxEx()
+        Me.laStream = New LabelEx()
         Me.tlpTarget = New System.Windows.Forms.TableLayoutPanel()
-        Me.laTargetDir = New System.Windows.Forms.Label()
+        Me.laTargetDir = New LabelEx()
         Me.teTempDir = New StaxRip.UI.TextEdit()
         Me.tlpBottom = New System.Windows.Forms.TableLayoutPanel()
         Me.bnMenu = New StaxRip.UI.ButtonEx()
         Me.cms = New StaxRip.UI.ContextMenuStripEx(Me.components)
-        Me.cbChapters = New System.Windows.Forms.CheckBox()
+        Me.cbChapters = New CheckBoxEx()
         Me.gbAudio = New GroupBoxEx()
         Me.tlpAudio = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpAudioOptions = New System.Windows.Forms.TableLayoutPanel()
-        Me.laOutput = New System.Windows.Forms.Label()
-        Me.laOptions = New System.Windows.Forms.Label()
-        Me.cbAudioOutput = New System.Windows.Forms.ComboBox()
+        Me.laOutput = New LabelEx()
+        Me.laOptions = New LabelEx()
+        Me.cbAudioOutput = New ComboBoxEx()
         Me.gbSubtitles = New GroupBoxEx()
         Me.tlpSubtitles = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpVideo = New System.Windows.Forms.TableLayoutPanel()

@@ -332,7 +332,6 @@ Public Class eac3toForm
         'teTempDir
         '
         Me.teTempDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.teTempDir.BackColor = System.Drawing.Color.White
         Me.teTempDir.Location = New System.Drawing.Point(302, 4)
         Me.teTempDir.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
         Me.teTempDir.Name = "teTempDir"
@@ -623,11 +622,15 @@ Public Class eac3toForm
         lvAudio.FullRowSelect = True
         lvAudio.MultiSelect = False
         lvAudio.HideFocusRectange()
+        lvAudio.OwnerDraw = False
+        lvAudio.Visible = False
 
         lvSubtitles.View = View.SmallIcon
         lvSubtitles.CheckBoxes = True
         lvSubtitles.HeaderStyle = ColumnHeaderStyle.None
         lvSubtitles.AutoCheckMode = AutoCheckMode.SingleClick
+        lvSubtitles.OwnerDraw = False
+        lvSubtitles.Visible = False
 
         cmdlOptions.Presets = s.CmdlPresetsEac3to
         cmdlOptions.RestoreFunc = Function() ApplicationSettings.GetDefaultEac3toMenu.FormatColumn("=")
@@ -780,6 +783,8 @@ Public Class eac3toForm
 
     Sub Init()
         Text = "eac3to"
+        lvAudio.Visible = True
+        lvSubtitles.Visible = True
 
         For Each ctrl As Control In Controls
             ctrl.Enabled = True

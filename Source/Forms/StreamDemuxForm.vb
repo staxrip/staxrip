@@ -26,11 +26,13 @@ Public Class StreamDemuxForm
         lvAudio.MultiSelect = False
         lvAudio.HideFocusRectange()
         lvAudio.AutoCheckMode = AutoCheckMode.SingleClick
+        lvAudio.OwnerDraw = False
 
         lvSubtitles.View = View.SmallIcon
         lvSubtitles.CheckBoxes = True
         lvSubtitles.HeaderStyle = ColumnHeaderStyle.None
         lvSubtitles.AutoCheckMode = AutoCheckMode.SingleClick
+        lvSubtitles.OwnerDraw = False
 
         lvAttachments.View = View.SmallIcon
         lvAttachments.CheckBoxes = True

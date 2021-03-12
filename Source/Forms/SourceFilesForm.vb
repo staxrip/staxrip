@@ -23,7 +23,7 @@ Public Class SourceFilesForm
     Friend WithEvents bnAdd As ButtonEx
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents pnLB As Panel
+    Friend WithEvents pnLB As PanelEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
 
     <System.Diagnostics.DebuggerStepThrough()>
@@ -36,7 +36,7 @@ Public Class SourceFilesForm
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-        Me.pnLB = New System.Windows.Forms.Panel()
+        Me.pnLB = New PanelEx()
         Me.tlpMain.SuspendLayout()
         Me.pnLB.SuspendLayout()
         Me.SuspendLayout()
@@ -194,6 +194,26 @@ Public Class SourceFilesForm
         Next
 
         ActiveControl = bnOK
+
+        ApplyTheme()
+
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
+        End If
+
+        BackColor = theme.General.BackColor
     End Sub
 
     Sub ShowOpenFileDialog()

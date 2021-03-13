@@ -1103,7 +1103,7 @@ Public Class GlobalClass
         form.Show()
     End Sub
 
-    Sub ShowPage(title As String)
+    Sub ShowWikiPage(title As String)
         ShellExecute($"https://github.com/staxrip/staxrip/wiki/{title}")
     End Sub
 

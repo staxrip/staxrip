@@ -48,6 +48,7 @@ Public Class AppsForm
     Friend WithEvents miHelp As MenuItemEx
     Friend WithEvents miCopyPath As MenuItemEx
     Friend WithEvents miPATHEnvVar As MenuItemEx
+    Friend WithEvents miUpdateRequest As MenuItemEx
     Friend WithEvents tsbExplore As System.Windows.Forms.ToolStripButton
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AppsForm))
@@ -70,6 +71,7 @@ Public Class AppsForm
         Me.miShowGrid = New StaxRip.UI.MenuItemEx()
         Me.miStatus = New StaxRip.UI.MenuItemEx()
         Me.miAutoUpdate = New StaxRip.UI.MenuItemEx()
+        Me.miUpdateRequest = New StaxRip.UI.MenuItemEx()
         Me.miDownload = New StaxRip.UI.MenuItemEx()
         Me.miWebsite = New StaxRip.UI.MenuItemEx()
         Me.miExplore = New StaxRip.UI.MenuItemEx()
@@ -169,7 +171,7 @@ Public Class AppsForm
         '
         Me.ddbTools.AutoToolTip = False
         Me.ddbTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miEditPath, Me.miFindPath, Me.miClearPaths, Me.miCopyPath, Me.miPATHEnvVar, Me.ToolStripMenuItem1, Me.miEditVersion, Me.miEditChangelog, Me.miShowGrid, Me.miStatus, Me.miAutoUpdate, Me.miDownload, Me.miWebsite, Me.miExplore, Me.miLaunch, Me.miHelp})
+        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miEditPath, Me.miFindPath, Me.miClearPaths, Me.miCopyPath, Me.miPATHEnvVar, Me.ToolStripMenuItem1, Me.miEditVersion, Me.miEditChangelog, Me.miShowGrid, Me.miStatus, Me.miAutoUpdate, Me.miUpdateRequest, Me.miDownload, Me.miWebsite, Me.miExplore, Me.miLaunch, Me.miHelp})
         Me.ddbTools.Image = CType(resources.GetObject("ddbTools.Image"), System.Drawing.Image)
         Me.ddbTools.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ddbTools.Name = "ddbTools"
@@ -181,7 +183,7 @@ Public Class AppsForm
         Me.miEditPath.Help = Nothing
         Me.miEditPath.Name = "miEditPath"
         Me.miEditPath.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.P), System.Windows.Forms.Keys)
-        Me.miEditPath.Size = New System.Drawing.Size(546, 67)
+        Me.miEditPath.Size = New System.Drawing.Size(594, 67)
         Me.miEditPath.Text = "Edit Path..."
         Me.miEditPath.ToolTipText = "Show Open File dialog to customize the path"
         '
@@ -190,7 +192,7 @@ Public Class AppsForm
         Me.miFindPath.Help = Nothing
         Me.miFindPath.Name = "miFindPath"
         Me.miFindPath.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
-        Me.miFindPath.Size = New System.Drawing.Size(546, 67)
+        Me.miFindPath.Size = New System.Drawing.Size(594, 67)
         Me.miFindPath.Text = "Find Path..."
         Me.miFindPath.ToolTipText = "Find path using voidtools Everything"
         '
@@ -199,7 +201,7 @@ Public Class AppsForm
         Me.miClearPaths.Help = Nothing
         Me.miClearPaths.Name = "miClearPaths"
         Me.miClearPaths.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.X), System.Windows.Forms.Keys)
-        Me.miClearPaths.Size = New System.Drawing.Size(546, 67)
+        Me.miClearPaths.Size = New System.Drawing.Size(594, 67)
         Me.miClearPaths.Text = "Clear Paths..."
         Me.miClearPaths.ToolTipText = "Clear custom paths"
         '
@@ -207,27 +209,27 @@ Public Class AppsForm
         '
         Me.miCopyPath.Help = Nothing
         Me.miCopyPath.Name = "miCopyPath"
-        Me.miCopyPath.Size = New System.Drawing.Size(546, 67)
+        Me.miCopyPath.Size = New System.Drawing.Size(594, 67)
         Me.miCopyPath.Text = "Copy Path"
         '
         'miPATHEnvVar
         '
         Me.miPATHEnvVar.Help = Nothing
         Me.miPATHEnvVar.Name = "miPATHEnvVar"
-        Me.miPATHEnvVar.Size = New System.Drawing.Size(546, 67)
+        Me.miPATHEnvVar.Size = New System.Drawing.Size(594, 67)
         Me.miPATHEnvVar.Text = "PATH Env Var..."
         '
         'ToolStripMenuItem1
         '
         Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(543, 6)
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(591, 6)
         '
         'miEditVersion
         '
         Me.miEditVersion.Help = Nothing
         Me.miEditVersion.Name = "miEditVersion"
         Me.miEditVersion.ShortcutKeys = System.Windows.Forms.Keys.F12
-        Me.miEditVersion.Size = New System.Drawing.Size(546, 67)
+        Me.miEditVersion.Size = New System.Drawing.Size(594, 67)
         Me.miEditVersion.Text = "Edit Version"
         Me.miEditVersion.ToolTipText = "Edits the apps version"
         '
@@ -236,7 +238,7 @@ Public Class AppsForm
         Me.miEditChangelog.Help = Nothing
         Me.miEditChangelog.Name = "miEditChangelog"
         Me.miEditChangelog.ShortcutKeys = System.Windows.Forms.Keys.F10
-        Me.miEditChangelog.Size = New System.Drawing.Size(546, 67)
+        Me.miEditChangelog.Size = New System.Drawing.Size(594, 67)
         Me.miEditChangelog.Text = "Edit Changelog"
         '
         'miShowGrid
@@ -244,7 +246,7 @@ Public Class AppsForm
         Me.miShowGrid.Help = Nothing
         Me.miShowGrid.Name = "miShowGrid"
         Me.miShowGrid.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.G), System.Windows.Forms.Keys)
-        Me.miShowGrid.Size = New System.Drawing.Size(546, 67)
+        Me.miShowGrid.Size = New System.Drawing.Size(594, 67)
         Me.miShowGrid.Text = "Show Grid"
         Me.miShowGrid.ToolTipText = "Show tools in grid view"
         '
@@ -253,7 +255,7 @@ Public Class AppsForm
         Me.miStatus.Help = Nothing
         Me.miStatus.Name = "miStatus"
         Me.miStatus.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
-        Me.miStatus.Size = New System.Drawing.Size(546, 67)
+        Me.miStatus.Size = New System.Drawing.Size(594, 67)
         Me.miStatus.Text = "Check All"
         Me.miStatus.ToolTipText = "Check status of all required tools"
         '
@@ -262,16 +264,23 @@ Public Class AppsForm
         Me.miAutoUpdate.Help = Nothing
         Me.miAutoUpdate.Name = "miAutoUpdate"
         Me.miAutoUpdate.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.U), System.Windows.Forms.Keys)
-        Me.miAutoUpdate.Size = New System.Drawing.Size(546, 67)
+        Me.miAutoUpdate.Size = New System.Drawing.Size(594, 67)
         Me.miAutoUpdate.Text = "Auto Update"
         Me.miAutoUpdate.ToolTipText = "Full automatic update"
+        '
+        'miUpdateRequest
+        '
+        Me.miUpdateRequest.Name = "miUpdateRequest"
+        Me.miUpdateRequest.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.R), System.Windows.Forms.Keys)
+        Me.miUpdateRequest.Size = New System.Drawing.Size(594, 66)
+        Me.miUpdateRequest.Text = "Update Request"
         '
         'miDownload
         '
         Me.miDownload.Help = Nothing
         Me.miDownload.Name = "miDownload"
         Me.miDownload.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.D), System.Windows.Forms.Keys)
-        Me.miDownload.Size = New System.Drawing.Size(546, 67)
+        Me.miDownload.Size = New System.Drawing.Size(594, 67)
         Me.miDownload.Text = "Download"
         Me.miDownload.ToolTipText = "Opens the apps download web page"
         '
@@ -280,7 +289,7 @@ Public Class AppsForm
         Me.miWebsite.Help = Nothing
         Me.miWebsite.Name = "miWebsite"
         Me.miWebsite.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.W), System.Windows.Forms.Keys)
-        Me.miWebsite.Size = New System.Drawing.Size(546, 67)
+        Me.miWebsite.Size = New System.Drawing.Size(594, 67)
         Me.miWebsite.Text = "Website"
         Me.miWebsite.ToolTipText = "Opens the apps website"
         '
@@ -289,7 +298,7 @@ Public Class AppsForm
         Me.miExplore.Help = Nothing
         Me.miExplore.Name = "miExplore"
         Me.miExplore.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.E), System.Windows.Forms.Keys)
-        Me.miExplore.Size = New System.Drawing.Size(546, 67)
+        Me.miExplore.Size = New System.Drawing.Size(594, 67)
         Me.miExplore.Text = "Explore"
         Me.miExplore.ToolTipText = "Opens the apps folder in File Explorer"
         '
@@ -298,7 +307,7 @@ Public Class AppsForm
         Me.miLaunch.Help = Nothing
         Me.miLaunch.Name = "miLaunch"
         Me.miLaunch.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.L), System.Windows.Forms.Keys)
-        Me.miLaunch.Size = New System.Drawing.Size(546, 67)
+        Me.miLaunch.Size = New System.Drawing.Size(594, 67)
         Me.miLaunch.Text = "Launch"
         Me.miLaunch.ToolTipText = "Launches the app"
         '
@@ -307,7 +316,7 @@ Public Class AppsForm
         Me.miHelp.Help = Nothing
         Me.miHelp.Name = "miHelp"
         Me.miHelp.ShortcutKeys = System.Windows.Forms.Keys.F1
-        Me.miHelp.Size = New System.Drawing.Size(546, 67)
+        Me.miHelp.Size = New System.Drawing.Size(594, 67)
         Me.miHelp.Text = "Help"
         Me.miHelp.ToolTipText = "Opens the apps help"
         '
@@ -1084,5 +1093,9 @@ Public Class AppsForm
         Catch ex As Exception
             g.ShowException(ex)
         End Try
+    End Sub
+
+    Sub miUpdateRequest_Click(sender As Object, e As EventArgs) Handles miUpdateRequest.Click
+        g.ShowWikiPage("Tool-Update-Requests")
     End Sub
 End Class

@@ -33,7 +33,7 @@ Public Class QSVEnc
 
     Overrides Sub ShowConfigDialog()
         Dim params1 As New EncoderParams
-        Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
+        Dim store = ObjectHelp.GetCopy(ParamsStore)
         params1.Init(store)
 
         Using form As New CommandLineForm(params1)
@@ -41,20 +41,21 @@ Public Class QSVEnc
                 $"<p><a href=""https://github.com/staxrip/staxrip/wiki/qsvenc-bitrate-modes"">QSVEnc bitrate modes</a></p>" +
                 $"<pre>{HelpDocument.ConvertChars(Package.QSVEnc.CreateHelpfile())}</pre>"
 
-            Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of QSVEnc)(Me)
-                                        Dim params2 As New EncoderParams
-                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
-                                        params2.Init(store2)
-                                        enc.Params = params2
-                                        enc.ParamsStore = store2
-                                        SaveProfile(enc)
-                                    End Sub
+            Dim a = Sub()
+                        Dim enc = ObjectHelp.GetCopy(Of QSVEnc)(Me)
+                        Dim params2 As New EncoderParams
+                        Dim store2 = ObjectHelp.GetCopy(store)
+                        params2.Init(store2)
+                        enc.Params = params2
+                        enc.ParamsStore = store2
+                        SaveProfile(enc)
+                    End Sub
 
-            MenuItemEx.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
-            form.cms.Items.Add(New MenuItemEx("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-environment"))))
-            form.cms.Items.Add(New MenuItemEx("Check Hardware", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-hw"))))
-            form.cms.Items.Add(New MenuItemEx("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features"))))
+            form.cms.Add("Check Hardware", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-hw")))
+            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features")), Keys.Control Or Keys.F)
+            form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-environment")))
+            form.cms.Add("-")
+            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S).SetImage(Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = params1

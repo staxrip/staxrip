@@ -43,26 +43,37 @@ Public Class CommandLineForm
         cbGoTo.SendMessageCue("Search")
         cbGoTo.Select()
 
-        CommandLineHighlightingMenuItem = cms.Add("Command Line Highlighting", Sub()
-                                                                                   CommandLineHighlightingMenuItem.Checked = Not CommandLineHighlightingMenuItem.Checked
-                                                                                   s.CommandLineHighlighting = CommandLineHighlightingMenuItem.Checked
-                                                                                   rtbCommandLine.Format(rtbCommandLine.Text.ToString)
-                                                                               End Sub)
+        cms.Form = Me
+
+        cms.Add("Execute Command Line", Sub() params.Execute(), Keys.Control Or Keys.E, p.SourceFile <> "").SetImage(Symbol.fa_terminal)
+
+        Dim a = Sub()
+                    Clipboard.SetText(params.GetCommandLine(True, True))
+                    MsgInfo("Command Line was copied.")
+                End Sub
+
+        cms.Add("Copy Command Line", a, Keys.Control Or Keys.Shift Or Keys.C).SetImage(Symbol.Copy)
+        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLinePreview), Keys.F5)
+        cms.Add("Import Command Line...", Sub() If MsgQuestion("Import command line from clipboard?", Clipboard.GetText) = DialogResult.OK Then BasicVideoEncoder.ImportCommandLine(Clipboard.GetText, params), Keys.Control Or Keys.I).SetImage(Symbol.Download)
+
+        a = Sub()
+                CommandLineHighlightingMenuItem.Checked = Not CommandLineHighlightingMenuItem.Checked
+                s.CommandLineHighlighting = CommandLineHighlightingMenuItem.Checked
+                rtbCommandLine.Format(rtbCommandLine.Text.ToString)
+            End Sub
+
+        CommandLineHighlightingMenuItem = cms.Add("Command Line Highlighting", a, Keys.Control Or Keys.H)
         CommandLineHighlightingMenuItem.Checked = s.CommandLineHighlighting
 
         cms.Add("-")
-        cms.Add("Execute Command Line", Sub() params.Execute(), p.SourceFile <> "").SetImage(Symbol.fa_terminal)
 
-        cms.Add("Copy Command Line", Sub()
-                                         Clipboard.SetText(params.GetCommandLine(True, True))
-                                         MsgInfo("Command Line was copied.")
-                                     End Sub).SetImage(Symbol.Copy)
+        Dim help = cms.Add("Help about this dialog", AddressOf ShowHelp)
+        help.SetImage(Symbol.Help)
+        help.ShortcutKeyDisplayString = "F1"
 
-        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLinePreview))
-        cms.Add("Import Command Line...", Sub() If MsgQuestion("Import command line from clipboard?", Clipboard.GetText) = DialogResult.OK Then BasicVideoEncoder.ImportCommandLine(Clipboard.GetText, params)).SetImage(Symbol.Download)
+        cms.Add("Help about " + params.GetPackage.Name, Sub() params.GetPackage.ShowHelp(), Keys.Control Or Keys.F1).SetImage(Symbol.Help)
 
-        cms.Add("Help about this dialog", AddressOf ShowHelp).SetImage(Symbol.Help)
-        cms.Add("Help about " + params.GetPackage.Name, Sub() params.GetPackage.ShowHelp()).SetImage(Symbol.Help)
+        cms.Add("-")
 
         ApplyTheme()
 
@@ -295,7 +306,9 @@ Public Class CommandLineForm
     End Sub
 
     Sub CommandLineForm_HelpRequested(sender As Object, hlpevent As HelpEventArgs) Handles Me.HelpRequested
-        ShowHelp()
+        If ModifierKeys = Keys.None Then
+            ShowHelp()
+        End If
     End Sub
 
     Sub ShowHelp()
@@ -306,12 +319,13 @@ Public Class CommandLineForm
 
         form.Doc.WriteH2("How to use the video encoder dialog")
 
+        form.Doc.WriteParagraph("The context help is shown by right-clicking a label, dropdown or checkbox.")
+
         If cbGoTo.Visible Then
             form.Doc.WriteParagraph("The Search dropdown field at the dialog bottom left lists options and can be used to quickly find options, it searches command line switches, labels and dropdowns. Multiple matches can be cycled by pressing enter.")
         End If
 
         form.Doc.WriteParagraph("Numeric values and dropdown menu options can be reset to their default value by double clicking on the label.")
-        form.Doc.WriteParagraph("The context help is shown with a right-click on a label, dropdown menu or checkbox.")
         form.Doc.WriteParagraph("The command line preview at the bottom of the dialog has a context menu that allows to quickly find and show options.")
 
         If Not HTMLHelpFunc Is Nothing Then
@@ -518,6 +532,7 @@ Public Class CommandLineForm
                                                      End Sub)
             End If
 
+            cmsCommandLine.ApplyMarginFix()
             cmsCommandLine.Show(rtbCommandLine, e.Location)
         End If
     End Sub

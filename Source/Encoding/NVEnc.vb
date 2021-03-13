@@ -38,24 +38,24 @@ Public Class NVEnc
 
         Using form As New CommandLineForm(newParams)
             form.HTMLHelpFunc = Function() "<h2>NVEnc Help</h2>" +
-                 "<p>Right-clicking an option shows the local console help for the option.</p>" +
                 $"<h2>NVEnc Online Help</h2><p><a href=""{Package.NVEnc.HelpURL}"">NVEnc Online Help</a></p>" +
                 $"<h2>NVEnc Console Help</h2><pre>{HelpDocument.ConvertChars(Package.NVEnc.CreateHelpfile())}</pre>"
 
-            Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of NVEnc)(Me)
-                                        Dim params2 As New EncoderParams
-                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
-                                        params2.Init(store2)
-                                        enc.Params = params2
-                                        enc.ParamsStore = store2
-                                        SaveProfile(enc)
-                                    End Sub
+            Dim a = Sub()
+                        Dim enc = ObjectHelp.GetCopy(Of NVEnc)(Me)
+                        Dim params2 As New EncoderParams
+                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
+                        params2.Init(store2)
+                        enc.Params = params2
+                        enc.ParamsStore = store2
+                        SaveProfile(enc)
+                    End Sub
 
-            form.cms.Items.Add(New MenuItemEx("Check Hardware", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw"))))
-            form.cms.Items.Add(New MenuItemEx("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-features"))))
-            form.cms.Items.Add(New MenuItemEx("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-environment"))))
-            MenuItemEx.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
+            form.cms.Add("Check Hardware", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw")))
+            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-features")), Keys.Control Or Keys.F)
+            form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-environment")))
+            form.cms.Add("-")
+            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S).SetImage(Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams

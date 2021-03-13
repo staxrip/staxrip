@@ -755,6 +755,10 @@ Namespace UI
             Return Add(path, action, key, True, Nothing, Nothing)
         End Function
 
+        Function Add(path As String, action As Action, key As Keys, enabled As Boolean) As MenuItemEx
+            Return Add(path, action, key, enabled, Nothing, Nothing)
+        End Function
+
         Function Add(path As String, action As Action, help As String) As MenuItemEx
             Return Add(path, action, True, help)
         End Function
@@ -811,7 +815,7 @@ Namespace UI
         'I wasn't able to find out why it's only needed in some menus 
         Sub ApplyMarginFix()
             For Each i In GetItems.OfType(Of MenuItemEx)
-                i.ShortcutKeyDisplayString = KeysHelp.GetKeyString(i.Shortcut) + " ".Multiply(CInt(g.DPI / 96))
+                i.ShortcutKeyDisplayString += " ".Multiply(CInt(g.DPI / 96))
             Next
         End Sub
 

@@ -222,22 +222,20 @@ Public Class x265Enc
 
         Using form As New CommandLineForm(newParams)
             form.HTMLHelpFunc = Function() "<h2>x265 Help</h2>" +
-                "<p>Right-clicking a option shows the help for the option.</p>" +
-                "<p>Setting the Bitrate option to 0 will use the bitrate defined in the project/template in the main dialog.</p>" +
                $"<h2>x265 Online Help</h2><p><a href=""{Package.x265.HelpURL}"">x265 Online Help</a></p>" +
                $"<h2>x265 Console Help</h2><pre>{HelpDocument.ConvertChars(Package.x265.CreateHelpfile())}</pre>"
 
-            Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of x265Enc)(Me)
-                                        Dim params2 As New x265Params
-                                        Dim store2 = ObjectHelp.GetCopy(store)
-                                        params2.Init(store2)
-                                        enc.Params = params2
-                                        enc.ParamsStore = store2
-                                        SaveProfile(enc)
-                                    End Sub
+            Dim a = Sub()
+                        Dim enc = ObjectHelp.GetCopy(Of x265Enc)(Me)
+                        Dim params2 As New x265Params
+                        Dim store2 = ObjectHelp.GetCopy(store)
+                        params2.Init(store2)
+                        enc.Params = params2
+                        enc.ParamsStore = store2
+                        SaveProfile(enc)
+                    End Sub
 
-            MenuItemEx.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
+            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S).SetImage(Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
                 AutoCompCheckValue = CInt(newParams.CompCheckAimedQuality.Value)

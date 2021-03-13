@@ -2067,21 +2067,21 @@ Public Class Package
 
         If HelpFilename <> "" Then
             If Not HelpSwitch Is Nothing AndAlso HelpFilename = Name + " Help.txt" Then
-                dic("Console") = Directory + HelpFilename
+                dic("Console Help") = Directory + HelpFilename
             Else
-                dic("Local") = Directory + HelpFilename
+                dic("Local Help") = Directory + HelpFilename
             End If
         End If
 
-        dic("Online") = HelpURL
-        dic("AviSynth") = HelpUrlAviSynth
-        dic("VapourSynth") = HelpUrlVapourSynth
+        dic("Online Help") = HelpURL
+        dic("AviSynth Help") = HelpUrlAviSynth
+        dic("VapourSynth Help") = HelpUrlVapourSynth
 
         Dim count = dic.Values.Where(Function(val) val <> "").Count
 
         If count > 1 Then
             Using dialog As New TaskDialog(Of String)
-                dialog.MainInstruction = "Choose a help option"
+                dialog.MainInstruction = "Choose a option"
 
                 For Each pair In dic
                     If pair.Value <> "" Then

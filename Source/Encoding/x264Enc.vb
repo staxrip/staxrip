@@ -92,7 +92,7 @@ Public Class x264Enc
         End If
 
         Dim newParams As New x264Params
-        Dim newStore = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
+        Dim newStore = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(newStore)
 
         Dim enc As New x264Enc
@@ -158,22 +158,20 @@ Public Class x264Enc
 
         Using form As New CommandLineForm(newParams)
             form.HTMLHelpFunc = Function() "<h2>x264 Help</h2>" +
-                "<p>Right-clicking a option shows the help for the option.</p>" +
-                "<p>Setting the Bitrate option to 0 will use the bitrate defined in the project/template in the main dialog.</p>" +
                $"<h2>x264 Online Help</h2><p><a href=""{Package.x264.HelpURL}"">x264 Online Help</a></p>" +
                $"<h2>x264 Console Help</h2><pre>{HelpDocument.ConvertChars(Package.x264.CreateHelpfile())}</pre>"
 
-            Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of x264Enc)(Me)
-                                        Dim params2 As New x264Params
-                                        Dim store2 = ObjectHelp.GetCopy(store)
-                                        params2.Init(store2)
-                                        enc.Params = params2
-                                        enc.ParamsStore = store2
-                                        SaveProfile(enc)
-                                    End Sub
+            Dim a = Sub()
+                        Dim enc = ObjectHelp.GetCopy(Of x264Enc)(Me)
+                        Dim params2 As New x264Params
+                        Dim store2 = ObjectHelp.GetCopy(store)
+                        params2.Init(store2)
+                        enc.Params = params2
+                        enc.ParamsStore = store2
+                        SaveProfile(enc)
+                    End Sub
 
-            MenuItemEx.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
+            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S).SetImage(Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
                 AutoCompCheckValue = CInt(newParams.CompCheckAimedQuality.Value)

@@ -626,7 +626,13 @@ Namespace UI
         Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
             If e.Button = MouseButtons.Right AndAlso Help <> "" Then
                 CloseAll(Me)
-                g.ShowHelp(Text, Help)
+                Dim title = Text
+
+                If ShortcutKeyDisplayString <> "" Then
+                    title += $" ({ShortcutKeyDisplayString})"
+                End If
+
+                g.ShowHelp(title, Help)
             End If
 
             MyBase.OnMouseDown(e)

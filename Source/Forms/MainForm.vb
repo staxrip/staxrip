@@ -4948,7 +4948,7 @@ Public Class MainForm
         End If
 
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
-        ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
+        ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Keys.F3, Symbol.Settings, {""})
 
         ret.Add("Apps|Subtitles|Subtitle Edit", NameOf(g.DefaultCommands.StartTool), {"Subtitle Edit"})
         ret.Add("Apps|Subtitles|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})

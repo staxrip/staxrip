@@ -427,11 +427,20 @@ Namespace UI
         End Sub
 
         Sub RemoveSelection()
-            If MsgQuestion("Remove Selection?") <> DialogResult.OK Then
-                Exit Sub
-            End If
-
             If SelectedItems.Count > 0 Then
+                Dim name = SelectedItems(0).Text
+
+                If name = "" Then
+                    Try
+                        name = CStr(SelectedItems(0).Tag)
+                    Catch
+                    End Try
+                End If
+
+                If MsgQuestion("Remove Selection?", name) <> DialogResult.OK Then
+                    Exit Sub
+                End If
+
                 BeginUpdate()
 
                 If Not MultiSelect Then

@@ -276,7 +276,7 @@ Public Class FiltersListView
     End Sub
 
     Sub RemoveClick()
-        If MsgQuestion("Remove Selection?") = DialogResult.OK AndAlso SelectedItems.Count > 0 Then
+        If SelectedItems.Count > 0 AndAlso MsgQuestion($"Remove {SelectedItems(0).Tag.ToString}?") = DialogResult.OK Then
             p.Script.RemoveFilterAt(SelectedItems(0).Index)
         End If
     End Sub

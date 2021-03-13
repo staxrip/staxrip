@@ -214,7 +214,7 @@ Public Class Thumbnails
         If channels = 8 Then audioSound = "Surround Sound"
         If channels = 0 Then audioSound = ""
 
-        If infoLength / SizePrefix.Base ^ 3 > 1 Then
+        If infoLength / PrefixedSize(3).Factor > 1 Then
             infoSize = $"{infoLength / PrefixedSize(3).Factor:f2}{PrefixedSize(3).Unit}"
         Else
             infoSize = $"{infoLength / PrefixedSize(2).Factor}{PrefixedSize(2).Unit}"

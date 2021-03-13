@@ -15,6 +15,7 @@ Next Release
 - Show target size label including size unit (Dendraspis, VEGAX265, [#580](/../../issues/580))
 - Set "Dark | Blue" as default theme (Dendraspis)
 - Theme "Default" is now "System Colors" (Dendraspis)
+- Priority for current selected process can be set via menu on Processing window (Dendraspis)
 
 
 2.1.8.5 Beta (2021-03-09)

@@ -539,6 +539,22 @@ Public Class ProcController
         Return ret
     End Function
 
+    Shared Function GetProcessPriority() As ProcessPriorityClass
+        For Each pc In Procs
+            If Not pc.Proc.IsSilent Then
+                Return pc.Proc.Process.PriorityClass
+            End If
+        Next
+    End Function
+
+    Shared Sub SetProcessPriority(priority As ProcessPriorityClass)
+        For Each pc In Procs
+            If Not pc.Proc.IsSilent Then
+                pc.Proc.Process.PriorityClass = priority
+            End If
+        Next
+    End Sub
+
     Sub Cleanup()
         SyncLock Procs
             Procs.Remove(Me)

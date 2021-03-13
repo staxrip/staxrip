@@ -126,6 +126,8 @@
 
         Public Sub New(name As String, Optional hue As Integer = 200, Optional highlightHue As Integer = -1, Optional backLuma As Single = 0.11)
             MyBase.New(name)
+            MyBase._usesSystemColors = False
+
             _baseHue = hue
             _highlightHue = Mathf.Clamp(If(highlightHue >= 0, highlightHue, If(highlightHue - 180 < 0, highlightHue + 180, highlightHue - 180)), 0, 359)
             _backLuma = Mathf.Clamp01(backLuma)

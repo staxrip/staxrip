@@ -12,7 +12,7 @@ Public Class CheckBoxRendererEx
         Dim smoothingModeBackup = g.SmoothingMode
         g.SmoothingMode = SmoothingMode.AntiAlias
 
-        If ThemeManager.CurrentTheme.Name = ThemeManager.DefaultThemeName OrElse DesignHelp.IsDesignMode Then
+        If ThemeManager.CurrentTheme.UsesSystemColors OrElse DesignHelp.IsDesignMode Then
             CheckBoxRenderer.DrawCheckBox(g, rect.Location, state)
             Return
         End If

@@ -406,12 +406,15 @@ Namespace UI
         End Property
 
         Sub KeyDown(sender As Object, e As KeyEventArgs)
-            If Enabled AndAlso e.KeyData = Shortcut AndAlso
-                (EnabledFunc Is Nothing OrElse EnabledFunc.Invoke) AndAlso
-                (VisibleFunc Is Nothing OrElse VisibleFunc.Invoke) Then
+            If e.KeyData = Shortcut Then
+                If Not EnabledFunc Is Nothing Then
+                    Enabled = EnabledFunc.Invoke
+                End If
 
-                PerformClick()
-                e.Handled = True
+                If Enabled AndAlso (VisibleFunc Is Nothing OrElse VisibleFunc.Invoke) Then
+                    PerformClick()
+                    e.Handled = True
+                End If
             End If
         End Sub
 
@@ -730,6 +733,7 @@ Namespace UI
             Set(value As Form)
                 AddHandler value.Disposed, Sub() Dispose()
                 FormValue = value
+                value.KeyPreview = True
             End Set
         End Property
 

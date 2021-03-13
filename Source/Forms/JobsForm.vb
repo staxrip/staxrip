@@ -195,8 +195,6 @@ Friend Class JobsForm
         InitializeComponent()
         RestoreClientSize(40, 20)
 
-        KeyPreview = True
-
         lv.UpButton = bnUp
         lv.DownButton = bnDown
         lv.RemoveButton = bnRemove

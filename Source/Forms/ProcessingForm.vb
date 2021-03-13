@@ -184,7 +184,6 @@ Public Class ProcessingForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(1742, 814)
         Me.Controls.Add(Me.tlpMain)
-        Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(9)
         Me.Name = "ProcessingForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
@@ -312,7 +311,8 @@ Public Class ProcessingForm
     End Sub
 
     Sub SetOutputHighlighting()
-        ProcController.SetOutputHighlighting(Not OutputHighlightingMenuItem.Checked, ThemeManager.CurrentTheme)
+        OutputHighlightingMenuItem.Checked = Not OutputHighlightingMenuItem.Checked
+        ProcController.SetOutputHighlighting(OutputHighlightingMenuItem.Checked, ThemeManager.CurrentTheme)
     End Sub
 
     Sub Abort()
@@ -343,6 +343,7 @@ Public Class ProcessingForm
         laWhenfinisheddo.Enabled = g.IsJobProcessing
         mbShutdown.Enabled = g.IsJobProcessing
         bnJobs.Enabled = g.IsJobProcessing
+        OutputHighlightingMenuItem.Checked = s.OutputHighlighting
         mbShutdown.Value = CType(Registry.CurrentUser.GetInt("Software\" + Application.ProductName, "ShutdownMode"), ShutdownMode)
         ApplyTheme()
     End Sub
@@ -372,7 +373,6 @@ Public Class ProcessingForm
         StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
 
         OutputHighlightingMenuItem.Enabled = g.IsJobProcessing
-        OutputHighlightingMenuItem.Checked = s.OutputHighlighting
 
         ProgressReformattingMenuItem.Enabled = g.IsJobProcessing
         ProgressReformattingMenuItem.Checked = s.ProgressReformatting

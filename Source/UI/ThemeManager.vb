@@ -1,5 +1,5 @@
 ﻿Public NotInheritable Class ThemeManager
-    Private Const _defaultThemeName = "Default"
+    Private Const _defaultThemeName = "Dark | Blue"
 
     Private Shared _current As Theme
     Private Shared _themes As List(Of Theme)
@@ -82,7 +82,7 @@
 
     Private Shared Function LoadDefaults() As List(Of Theme)
         Dim defaults = New List(Of Theme) From {
-            New Theme(_defaultThemeName)
+            New Theme("System Colors")
         }
 
         For Each lc In _lumaCategories
@@ -124,7 +124,7 @@
         Private ReadOnly _accentSat As Single = 0
         Private ReadOnly _accentSatDefault As Single = 0.63
 
-        Public Sub New(Optional name As String = "DarkMode", Optional hue As Integer = 200, Optional highlightHue As Integer = -1, Optional backLuma As Single = 0.11)
+        Public Sub New(name As String, Optional hue As Integer = 200, Optional highlightHue As Integer = -1, Optional backLuma As Single = 0.11)
             MyBase.New(name)
             _baseHue = hue
             _highlightHue = Mathf.Clamp(If(highlightHue >= 0, highlightHue, If(highlightHue - 180 < 0, highlightHue + 180, highlightHue - 180)), 0, 359)

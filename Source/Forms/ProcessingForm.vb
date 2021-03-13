@@ -197,12 +197,21 @@ Public Class ProcessingForm
     End Sub
 #End Region
 
+    Private Shared ReadOnly _priorities() As KeyValuePair(Of ProcessPriorityClass, String) = {
+        New KeyValuePair(Of ProcessPriorityClass, String)(ProcessPriorityClass.High, "High"),
+        New KeyValuePair(Of ProcessPriorityClass, String)(ProcessPriorityClass.AboveNormal, "Above Normal"),
+        New KeyValuePair(Of ProcessPriorityClass, String)(ProcessPriorityClass.Normal, "Normal"),
+        New KeyValuePair(Of ProcessPriorityClass, String)(ProcessPriorityClass.BelowNormal, "Below Normal"),
+        New KeyValuePair(Of ProcessPriorityClass, String)(ProcessPriorityClass.Idle, "Idle")
+    }
+
     Private TaskbarButtonCreatedMessage As Integer
     Private StopAfterCurrentJobMenuItem As MenuItemEx
     Private ProgressReformattingMenuItem As MenuItemEx
     Private OutputHighlightingMenuItem As MenuItemEx
     Private CMS As ContextMenuStripEx
 
+    Private Const _priorityMenuName As String = "Priority"
     Private Const _themeMenuName As String = "Temporary Theme"
 
     Property Taskbar As Taskbar
@@ -221,6 +230,11 @@ Public Class ProcessingForm
         CMS.Form = Me
         CMS.Add("Suspend", AddressOf ProcController.Suspend, "Suspends the current process, might not work with all tools.")
         CMS.Add("Resume", AddressOf ProcController.ResumeProcs, "Resumes a suspended process.")
+
+        For Each priority In _priorities
+            CMS.Add($"{_priorityMenuName} | {priority.Value}", Sub() ProcController.SetProcessPriority(priority.Key))
+        Next
+
         CMS.Add("-")
         CMS.Add("Abort", AddressOf Abort, Keys.Escape, "Aborts all job processing of this StaxRip instance.")
         CMS.Add("Skip", AddressOf Skip, "Aborts the current job and continues with the next job.")
@@ -376,6 +390,11 @@ Public Class ProcessingForm
 
         ProgressReformattingMenuItem.Enabled = g.IsJobProcessing
         ProgressReformattingMenuItem.Checked = s.ProgressReformatting
+
+        Dim priorityText = _priorities.First(Function(x) x.Key = ProcController.GetProcessPriority()).Value
+        For Each item In CMS.GetItems().OfType(Of MenuItemEx).Where(Function(i) i.Path.StartsWith(_priorityMenuName + " | "))
+            item.Checked = item.Path.EndsWith($" | {priorityText}")
+        Next
 
         For Each item In CMS.GetItems().OfType(Of MenuItemEx).Where(Function(i) i.Path.StartsWith(_themeMenuName + " | "))
             item.Checked = item.Path.EndsWith($" | {ThemeManager.CurrentTheme.Name}")

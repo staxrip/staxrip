@@ -292,7 +292,6 @@ Public Class MainForm
         'tbAudioFile0
         '
         Me.tbAudioFile0.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbAudioFile0.DrawBorder = 1
         Me.tbAudioFile0.Location = New System.Drawing.Point(6, 7)
         Me.tbAudioFile0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.tbAudioFile0.Name = "tbAudioFile0"
@@ -303,7 +302,6 @@ Public Class MainForm
         'tbAudioFile1
         '
         Me.tbAudioFile1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbAudioFile1.DrawBorder = 1
         Me.tbAudioFile1.Location = New System.Drawing.Point(6, 85)
         Me.tbAudioFile1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.tbAudioFile1.Name = "tbAudioFile1"
@@ -398,7 +396,6 @@ Public Class MainForm
         '
         Me.tbTargetFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpTarget.SetColumnSpan(Me.tbTargetFile, 4)
-        Me.tbTargetFile.DrawBorder = 1
         Me.tbTargetFile.Location = New System.Drawing.Point(6, 10)
         Me.tbTargetFile.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.tbTargetFile.Name = "tbTargetFile"
@@ -419,7 +416,6 @@ Public Class MainForm
         'tbTargetSize
         '
         Me.tbTargetSize.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.tbTargetSize.DrawBorder = 1
         Me.tbTargetSize.Location = New System.Drawing.Point(249, 85)
         Me.tbTargetSize.Margin = New System.Windows.Forms.Padding(0)
         Me.tbTargetSize.Name = "tbTargetSize"
@@ -440,7 +436,6 @@ Public Class MainForm
         'tbBitrate
         '
         Me.tbBitrate.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.tbBitrate.DrawBorder = 1
         Me.tbBitrate.Location = New System.Drawing.Point(747, 85)
         Me.tbBitrate.Margin = New System.Windows.Forms.Padding(0)
         Me.tbBitrate.Name = "tbBitrate"
@@ -603,7 +598,6 @@ Public Class MainForm
         'tbSourceFile
         '
         Me.tbSourceFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbSourceFile.DrawBorder = 1
         Me.tbSourceFile.Location = New System.Drawing.Point(6, 10)
         Me.tbSourceFile.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.tbSourceFile.Name = "tbSourceFile"
@@ -851,7 +845,6 @@ Public Class MainForm
         '
         Me.tbTargetWidth.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.tbTargetWidth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.tbTargetWidth.DrawBorder = 1
         Me.tbTargetWidth.Location = New System.Drawing.Point(167, 13)
         Me.tbTargetWidth.Name = "tbTargetWidth"
         Me.tbTargetWidth.ReadOnly = False
@@ -872,7 +865,6 @@ Public Class MainForm
         '
         Me.tbTargetHeight.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.tbTargetHeight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.tbTargetHeight.DrawBorder = 1
         Me.tbTargetHeight.Location = New System.Drawing.Point(495, 13)
         Me.tbTargetHeight.Name = "tbTargetHeight"
         Me.tbTargetHeight.ReadOnly = False

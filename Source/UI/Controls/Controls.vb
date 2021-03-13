@@ -1791,6 +1791,17 @@ Namespace UI
             End Set
         End Property
 
+        'The designer is not able to serialize the Text property probably
+        'because it shadows the base Text property, Text2 is used as workaround
+        Property Text2 As String
+            Get
+                Return _text
+            End Get
+            Set(value As String)
+                _text = value
+            End Set
+        End Property
+
         Shadows Property Text As String
             Get
                 Return _text
@@ -1830,11 +1841,14 @@ Namespace UI
             SetStyle(ControlStyles.ResizeRedraw, True)
 
             Padding = New Padding(0)
-            MinimumSize = New Size(20, 20)
-            UseCompatibleTextRendering = True
 
-            MyBase.UseVisualStyleBackColor = False
-            FlatStyle = FlatStyle.Flat
+            If Not DesignHelp.IsDesignMode Then
+                MinimumSize = New Size(20, 20)
+                UseCompatibleTextRendering = True
+                MyBase.UseVisualStyleBackColor = False
+                FlatStyle = FlatStyle.Flat
+            End If
+
             FlatAppearance.BorderSize = 2
 
             ApplyTheme()
@@ -2934,7 +2948,7 @@ Namespace UI
             Return BorderHoverColor <> Color.Empty
         End Function
 
-        Public Property DrawBorder As Integer
+        ReadOnly Property DrawBorder As Integer
             Get
                 If _drawBorder < 0 Then
                     If Parent IsNot Nothing Then
@@ -2945,11 +2959,9 @@ Namespace UI
                 End If
                 Return _drawBorder
             End Get
-            Set(value As Integer)
-                _drawBorder = value
-            End Set
         End Property
 
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property [ReadOnly] As Boolean
             Get
                 Return TextBox.ReadOnly
@@ -2968,6 +2980,16 @@ Namespace UI
             End Get
             Set(value As String)
                 TextBox.Text = value
+            End Set
+        End Property
+
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
+        Shadows Property TabIndex As Integer
+            Get
+                Return MyBase.TabIndex
+            End Get
+            Set(value As Integer)
+                MyBase.TabIndex = value
             End Set
         End Property
 

@@ -978,15 +978,15 @@ Namespace UI
 
             Dim cutItem = cms.Add("Cut")
             cutItem.SetImage(Symbol.Cut)
-            cutItem.KeyDisplayString = "Ctrl+X"
+            cutItem.ShortcutKeyDisplayString = "Ctrl+X"
 
             Dim copyItem = cms.Add("Copy", Sub() Clipboard.SetText(SelectedText))
             copyItem.SetImage(Symbol.Copy)
-            copyItem.KeyDisplayString = "Ctrl+C"
+            copyItem.ShortcutKeyDisplayString = "Ctrl+C"
 
             Dim pasteItem = cms.Add("Paste")
             pasteItem.SetImage(Symbol.Paste)
-            pasteItem.KeyDisplayString = "Ctrl+V"
+            pasteItem.ShortcutKeyDisplayString = "Ctrl+V"
 
             cms.Add("Copy Everything", Sub() Clipboard.SetText(Text))
 
@@ -1337,7 +1337,7 @@ Namespace UI
         Event LinkClick()
 
         Sub New()
-            Label.Left = 15
+            Label.Left = 14
             Label.AutoSize = True
             Controls.Add(Label)
         End Sub

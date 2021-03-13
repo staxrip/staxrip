@@ -314,14 +314,6 @@ Namespace UI
                         mi.ShortcutKeyDisplayString = keys
                     End If
 
-                    If mi.ShortcutKeyDisplayString Is Nothing Then
-                        mi.ShortcutKeyDisplayString += ""
-                    End If
-
-                    If Not mi.ShortcutKeyDisplayString.EndsWith(" ") Then
-                        mi.ShortcutKeyDisplayString += g.MenuSpace
-                    End If
-
                     If cmi.Symbol <> Symbol.None Then
                         mi.ImageScaling = ToolStripItemImageScaling.None
                         mi.SetImage(cmi.Symbol)
@@ -407,15 +399,9 @@ Namespace UI
             Set(value As Keys)
                 If value <> Keys.None Then
                     ShortcutValue = value
-                    ShortcutKeyDisplayString = KeysHelp.GetKeyString(value) + g.MenuSpace
+                    ShortcutKeyDisplayString = KeysHelp.GetKeyString(value)
                     AddHandler Form.KeyDown, AddressOf KeyDown
                 End If
-            End Set
-        End Property
-
-        WriteOnly Property KeyDisplayString As String
-            Set(value As String)
-                ShortcutKeyDisplayString = value + g.MenuSpace
             End Set
         End Property
 
@@ -485,7 +471,7 @@ Namespace UI
 
                 For Each i In l.OfType(Of ToolStripMenuItem)()
                     If x < a.Length - 1 Then
-                        If i.Text = a(x) + g.MenuSpace Then
+                        If i.Text = a(x) Then
                             found = True
                             l = i.DropDownItems
                         End If
@@ -497,7 +483,7 @@ Namespace UI
                         If a(x) = "-" Then
                             l.Add(New ToolStripSeparator)
                         Else
-                            Dim item As New MenuItemEx(a(x) + g.MenuSpace, action, tip)
+                            Dim item As New MenuItemEx(a(x), action, tip)
                             item.Path = p
                             item.SetImage(symbol)
                             l.Add(item)
@@ -506,7 +492,7 @@ Namespace UI
                         End If
                     Else
                         Dim item As New MenuItemEx()
-                        item.Text = a(x) + g.MenuSpace
+                        item.Text = a(x)
                         item.Path = p
                         l.Add(item)
                         l = item.DropDownItems
@@ -732,7 +718,6 @@ Namespace UI
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
             MyBase.OnHandleCreated(e)
-            'Renderer = New ToolStripRendererEx()
             g.SetRenderer(Me)
             Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         End Sub
@@ -812,6 +797,13 @@ Namespace UI
 
             Return ret
         End Function
+
+        'I wasn't able to find out why it's only needed in some menus 
+        Sub ApplyMarginFix()
+            For Each i In GetItems.OfType(Of MenuItemEx)
+                i.ShortcutKeyDisplayString = KeysHelp.GetKeyString(i.Shortcut) + " ".Multiply(CInt(g.DPI / 96))
+            Next
+        End Sub
 
         Function GetTips() As StringPairList
             Dim ret As New StringPairList

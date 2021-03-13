@@ -1072,7 +1072,6 @@ Public Class MainForm
         SetStyle(ControlStyles.SupportsTransparentBackColor, True)
         ScaleClientSize(41, 26.5)
         g.DPI = DeviceDpi
-        g.MenuSpace = " ".Multiply(CInt(g.DPI / 96))
 
         If components Is Nothing Then
             components = New System.ComponentModel.Container

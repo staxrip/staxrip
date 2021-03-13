@@ -483,7 +483,7 @@ Public Class CommandLineForm
             cmsCommandLine.Items.Clear()
 
             Dim copyItem = cmsCommandLine.Add("Copy Selection", Sub() Clipboard.SetText(rtbCommandLine.SelectedText))
-            copyItem.KeyDisplayString = "Ctrl+C"
+            copyItem.ShortcutKeyDisplayString = "Ctrl+C"
             copyItem.Visible = rtbCommandLine.SelectionLength > 0
 
             cmsCommandLine.Add("Copy Command Line", Sub() Clipboard.SetText(Params.GetCommandLine(True, True)))

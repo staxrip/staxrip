@@ -22,7 +22,6 @@ Public Class GlobalClass
     Property IsJobProcessing As Boolean
     Property MainForm As MainForm
     Property MAX_PATH As Integer = 260
-    Property MenuSpace As String
     Property MinimizedWindows As Boolean
     Property ProcForm As ProcessingForm
     Property ProjectPath As String

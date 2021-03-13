@@ -64,9 +64,9 @@ Public Class CodeEditor
     End Sub
 
     Sub ModifyMenu()
-        CustomMenu.GetMenuItemByText("Cut").KeyDisplayString = "Ctrl+X"
-        CustomMenu.GetMenuItemByText("Copy").KeyDisplayString = "Ctrl+C"
-        CustomMenu.GetMenuItemByText("Paste").KeyDisplayString = "Ctrl+V"
+        CustomMenu.GetMenuItemByText("Cut").ShortcutKeyDisplayString = "Ctrl+X"
+        CustomMenu.GetMenuItemByText("Copy").ShortcutKeyDisplayString = "Ctrl+C"
+        CustomMenu.GetMenuItemByText("Paste").ShortcutKeyDisplayString = "Ctrl+V"
 
         Dim helpMenuItem = cmsMain.Add("Help")
         helpMenuItem.SetImage(Symbol.Help)

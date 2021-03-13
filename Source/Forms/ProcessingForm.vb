@@ -219,27 +219,28 @@ Public Class ProcessingForm
         RestoreClientSize(42, 28)
 
         CMS = New ContextMenuStripEx(components)
+        CMS.Form = Me
         CMS.Add("Suspend", AddressOf ProcController.Suspend, "Suspends the current process, might not work with all tools.")
         CMS.Add("Resume", AddressOf ProcController.ResumeProcs, "Resumes a suspended process.")
         CMS.Add("-")
-        CMS.Add("Abort", AddressOf Abort, "Aborts all job processing of this StaxRip instance.").KeyDisplayString = "ESC"
+        CMS.Add("Abort", AddressOf Abort, Keys.Escape, "Aborts all job processing of this StaxRip instance.")
         CMS.Add("Skip", AddressOf Skip, "Aborts the current job and continues with the next job.")
         StopAfterCurrentJobMenuItem = CMS.Add("Stop After Current Job", AddressOf StopAfterCurrentJob, "Stops all job processing after the current job.")
         CMS.Add("-")
-        OutputHighlightingMenuItem = CMS.Add("Output Highlighting", AddressOf SetOutputHighlighting)
-        OutputHighlightingMenuItem.KeyDisplayString = "Ctrl+H"
-        ProgressReformattingMenuItem = CMS.Add("Progress Reformatting", AddressOf SetProgressReformatting)
-        ProgressReformattingMenuItem.KeyDisplayString = "Ctrl+R"
+        OutputHighlightingMenuItem = CMS.Add("Output Highlighting", AddressOf SetOutputHighlighting, Keys.Control Or Keys.H)
+        ProgressReformattingMenuItem = CMS.Add("Progress Reformatting", AddressOf SetProgressReformatting, Keys.Control Or Keys.R)
 
         For Each theme In ThemeManager.Themes
             CMS.Add($"{_themeMenuName} | {theme.Name}", Sub() ThemeManager.SetCurrentTheme(theme.Name))
         Next
 
         CMS.Add("-")
-        CMS.Add("Jobs", AddressOf JobsForm.ShowForm, "Shows the Jobs dialog.").KeyDisplayString = "F6"
-        CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, "Shows the log file.").KeyDisplayString = "F7"
+        CMS.Add("Jobs", AddressOf JobsForm.ShowForm, Keys.F6, "Shows the Jobs dialog.")
+        CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, Keys.F7, "Shows the log file.")
         CMS.Add("-")
-        CMS.Add("Help", AddressOf ShowHelp).KeyDisplayString = "F1"
+        CMS.Add("Help", AddressOf ShowHelp, Keys.F1)
+
+        CMS.ApplyMarginFix()
 
         ApplyTheme()
 
@@ -364,23 +365,6 @@ Public Class ProcessingForm
 
     Sub bnLog_Click(sender As Object, e As EventArgs) Handles bnLog.Click
         g.DefaultCommands.ShowLogFile()
-    End Sub
-
-    Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
-        MyBase.OnKeyUp(e)
-
-        Select Case e.KeyData
-            Case Keys.F6
-                JobsForm.ShowForm()
-            Case Keys.F7
-                g.DefaultCommands.ShowLogFile()
-            Case Keys.Control Or Keys.H
-                SetOutputHighlighting()
-            Case Keys.Control Or Keys.R
-                SetProgressReformatting()
-            Case Keys.Escape
-                Abort()
-        End Select
     End Sub
 
     Sub bnMenu_Click(sender As Object, e As EventArgs) Handles bnMenu.Click

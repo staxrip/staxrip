@@ -189,7 +189,6 @@ Public Class AppsForm
         '
         Me.miFindPath.Help = Nothing
         Me.miFindPath.Name = "miFindPath"
-        Me.miFindPath.ShortcutKeyDisplayString = ""
         Me.miFindPath.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
         Me.miFindPath.Size = New System.Drawing.Size(546, 67)
         Me.miFindPath.Text = "Find Path..."
@@ -262,7 +261,6 @@ Public Class AppsForm
         '
         Me.miAutoUpdate.Help = Nothing
         Me.miAutoUpdate.Name = "miAutoUpdate"
-        Me.miAutoUpdate.ShortcutKeyDisplayString = ""
         Me.miAutoUpdate.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.U), System.Windows.Forms.Keys)
         Me.miAutoUpdate.Size = New System.Drawing.Size(546, 67)
         Me.miAutoUpdate.Text = "Auto Update"

@@ -74,7 +74,7 @@ Public Class PreprocessingControl
         Me.bnRemove.Location = New System.Drawing.Point(0, 90)
         Me.bnRemove.Margin = New System.Windows.Forms.Padding(0, 0, 0, 10)
         Me.bnRemove.Size = New System.Drawing.Size(260, 80)
-        Me.bnRemove.Text = "   Remove"
+        Me.bnRemove.Text = "    Remove"
         '
         'bnEdit
         '

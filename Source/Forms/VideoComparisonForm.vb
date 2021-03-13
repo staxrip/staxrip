@@ -10,8 +10,6 @@ Public Class VideoComparisonForm
 
     Shadows Menu As ContextMenuStripEx
 
-    Event UpdateMenu()
-
     Sub New()
         InitializeComponent()
         RestoreClientSize(53, 36)
@@ -39,7 +37,9 @@ Public Class VideoComparisonForm
         Menu.Add("Navigate | 1 frame forward", Sub() TrackBar.Value += 1, Keys.Right, enabledFunc)
         Menu.Add("Navigate | 100 frame backward", Sub() TrackBar.Value -= 100, Keys.Left Or Keys.Control, enabledFunc)
         Menu.Add("Navigate | 100 frame forward", Sub() TrackBar.Value += 100, Keys.Right Or Keys.Control, enabledFunc)
-        Menu.Add("Help", AddressOf Me.Help, Keys.F1)
+        Menu.Add("Help", AddressOf Help, Keys.F1)
+
+        Menu.ApplyMarginFix()
 
         ApplyTheme()
 
@@ -87,7 +87,6 @@ Public Class VideoComparisonForm
             Dim tab = TabControl.SelectedTab
             TabControl.TabPages.Remove(tab)
             tab.Dispose()
-            RaiseEvent UpdateMenu()
         End If
     End Sub
 
@@ -113,7 +112,6 @@ Public Class VideoComparisonForm
             Dim page = DirectCast(TabControl.SelectedTab, VideoTab)
             page.DoLayout()
             page.TrackBarValueChanged()
-            RaiseEvent UpdateMenu()
         Else
             tab.Dispose()
         End If

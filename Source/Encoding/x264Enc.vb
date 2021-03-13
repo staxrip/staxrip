@@ -158,7 +158,7 @@ Public Class x264Enc
 
         Using form As New CommandLineForm(newParams)
             form.HTMLHelpFunc = Function() "<h2>x264 Help</h2>" +
-                "<p>Right-clicking a option shows the local console help for the option, pressing Ctrl or Shift while right-clicking a option shows the online help for the option.</p>" +
+                "<p>Right-clicking a option shows the help for the option.</p>" +
                 "<p>Setting the Bitrate option to 0 will use the bitrate defined in the project/template in the main dialog.</p>" +
                $"<h2>x264 Online Help</h2><p><a href=""{Package.x264.HelpURL}"">x264 Online Help</a></p>" +
                $"<h2>x264 Console Help</h2><pre>{HelpDocument.ConvertChars(Package.x264.CreateHelpfile())}</pre>"
@@ -166,7 +166,7 @@ Public Class x264Enc
             Dim saveProfileAction = Sub()
                                         Dim enc = ObjectHelp.GetCopy(Of x264Enc)(Me)
                                         Dim params2 As New x264Params
-                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
+                                        Dim store2 = ObjectHelp.GetCopy(store)
                                         params2.Init(store2)
                                         enc.Params = params2
                                         enc.ParamsStore = store2
@@ -947,11 +947,18 @@ Public Class x264Params
     End Property
 
     Public Overrides Sub ShowHelp(id As String)
-        If Control.ModifierKeys = Keys.Control OrElse Control.ModifierKeys = Keys.Shift Then
-            g.ShellExecute("http://www.chaneru.com/Roku/HLS/X264_Settings.htm#" + id.TrimStart("-"c))
-        Else
-            g.ShowCommandLineHelp(Package.x264, id)
-        End If
+        Using td As New TaskDialog(Of String)
+            td.MainInstruction = id
+            td.AddCommand("Online Help")
+            td.AddCommand("Console Help")
+
+            Select Case td.Show
+                Case "Online Help"
+                    g.ShellExecute("http://www.chaneru.com/Roku/HLS/X264_Settings.htm#" + id.TrimStart("-"c))
+                Case "Console Help"
+                    g.ShowCommandLineHelp(Package.x264, id)
+            End Select
+        End Using
     End Sub
 
     Private BlockValueChanged As Boolean

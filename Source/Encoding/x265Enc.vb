@@ -222,7 +222,7 @@ Public Class x265Enc
 
         Using form As New CommandLineForm(newParams)
             form.HTMLHelpFunc = Function() "<h2>x265 Help</h2>" +
-                "<p>Right-clicking a option shows the local console help for the option, pressing Ctrl or Shift while right-clicking a option shows the online help for the option.</p>" +
+                "<p>Right-clicking a option shows the help for the option.</p>" +
                 "<p>Setting the Bitrate option to 0 will use the bitrate defined in the project/template in the main dialog.</p>" +
                $"<h2>x265 Online Help</h2><p><a href=""{Package.x265.HelpURL}"">x265 Online Help</a></p>" +
                $"<h2>x265 Console Help</h2><pre>{HelpDocument.ConvertChars(Package.x265.CreateHelpfile())}</pre>"
@@ -1142,11 +1142,18 @@ Public Class x265Params
     End Function
 
     Public Overrides Sub ShowHelp(id As String)
-        If Control.ModifierKeys = Keys.Control OrElse Control.ModifierKeys = Keys.Shift Then
-            g.ShellExecute("https://x265.readthedocs.io/en/latest/cli.html#cmdoption-" + id.TrimStart("-"c))
-        Else
-            g.ShowCommandLineHelp(Package.x265, id)
-        End If
+        Using td As New TaskDialog(Of String)
+            td.MainInstruction = id
+            td.AddCommand("Online Help")
+            td.AddCommand("Console Help")
+
+            Select Case td.Show
+                Case "Online Help"
+                    g.ShellExecute("https://x265.readthedocs.io/en/latest/cli.html#cmdoption-" + id.TrimStart("-"c))
+                Case "Console Help"
+                    g.ShowCommandLineHelp(Package.x265, id)
+            End Select
+        End Using
     End Sub
 
     Private BlockValueChanged As Boolean

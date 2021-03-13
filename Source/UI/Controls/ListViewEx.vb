@@ -24,6 +24,8 @@ Namespace UI
         Private _separatorColor As Color
         Private _symbolImageColor As Color
 
+        Event ControlsUpdated()
+
         Public Property BackAlternateColor As Color
             Get
                 Return _backAlternateColor
@@ -341,6 +343,8 @@ Namespace UI
                     button.Enabled = SelectedItems.Count > 0
                 Next
             End If
+
+            RaiseEvent ControlsUpdated()
         End Sub
 
         Function CanMoveUp() As Boolean

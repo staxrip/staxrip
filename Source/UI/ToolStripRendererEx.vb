@@ -94,7 +94,7 @@ Public Class ToolStripRendererEx
     End Function
 
     Shared Sub InitColors(renderMode As ToolStripRenderModeEx)
-        If ToolStripRendererEx.IsAutoRenderMode Then
+        If IsAutoRenderMode() Then
             Dim argb = CInt(Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", 0))
 
             If argb = 0 Then

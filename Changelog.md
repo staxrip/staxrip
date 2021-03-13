@@ -13,7 +13,8 @@ Next Release
   Now it is possible to switch to IEC prefix (Base 2: `1 MiB = 1024 KiB`)  
   *Please note, that the Targetsize menu must be resetted or adjusted by hand after a change!* (Dendraspis)
 - Show target size label including size unit (Dendraspis, VEGAX265, [#580](/../../issues/580))
-
+- Set "Dark | Blue" as default theme (Dendraspis)
+- Theme "Default" is now "System Colors" (Dendraspis)
 
 
 2.1.8.5 Beta (2021-03-09)

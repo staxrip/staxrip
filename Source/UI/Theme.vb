@@ -8,7 +8,16 @@ Public Class Theme
     Private Shared _highlightHue As Integer = 0
     Private Shared _defaultBackHighlightColor As ColorHSL = New ColorHSL(_highlightHue, 0.75, 0.75, 1)
 
+    Protected _usesSystemColors As Boolean = True
+
     Public ReadOnly Property Name As String
+
+    Public ReadOnly Property UsesSystemColors As Boolean
+        Get
+            Return _usesSystemColors
+        End Get
+    End Property
+
 
     Private _generalThemeColors As GeneralThemeColors
     Private _appsFormThemeColors As AppsFormThemeColors
@@ -76,7 +85,6 @@ Public Class Theme
             _processingFormThemeColors = value
         End Set
     End Property
-
 
 
 

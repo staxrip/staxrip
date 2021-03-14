@@ -568,10 +568,9 @@ Public Class GlobalClass
         End If
     End Function
 
-    Sub ShowCode(title As String, content As String)
-        Dim form As New HelpForm()
-        form.Doc.WriteStart(title)
-        form.Doc.Writer.WriteRaw("<pre><code>" + content + "</pre></code>")
+    Sub ShowCode(title As String, content As String, Optional find As String = Nothing)
+        Dim form As New CodeForm(content, find)
+        form.Text = title
         form.Show()
     End Sub
 
@@ -1063,7 +1062,7 @@ Public Class GlobalClass
         g.ShellExecute(Package.mpvnet.Path.Escape, file.Escape)
     End Sub
 
-    Sub ShowCommandLineHelp(package As Package, switch As String)
+    Sub ShowConsoleHelp(package As Package, switch As String)
         Dim content = package.CreateHelpfile()
 
         If package Is StaxRip.Package.x264 Then
@@ -1098,9 +1097,7 @@ Public Class GlobalClass
             Exit Sub
         End If
 
-        Dim form As New TextHelpForm(content, find)
-        form.Text = package.Name + " Help"
-        form.Show()
+        g.ShowCode(package.Name + " Help", content, find)
     End Sub
 
     Sub ShowWikiPage(title As String)
@@ -1219,17 +1216,7 @@ Public Class GlobalClass
     End Function
 
     Sub ShowCodePreview(code As String)
-        Using form As New StringEditorForm
-            form.ScaleClientSize(50, 30)
-            form.rtb.ReadOnly = True
-            form.cbWrap.Checked = False
-            form.cbWrap.Visible = False
-            form.rtb.Text = code
-            form.Text = "Code Preview"
-            form.bnOK.Visible = False
-            form.bnCancel.Text = "Close"
-            form.ShowDialog()
-        End Using
+        ShowCode("Code Preview", code)
     End Sub
 
     Sub ShowScriptInfo(script As VideoScript)

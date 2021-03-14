@@ -1149,7 +1149,7 @@ Public Class x265Params
                 Case "Online Help"
                     g.ShellExecute("https://x265.readthedocs.io/en/latest/cli.html#cmdoption-" + id.TrimStart("-"c))
                 Case "Console Help"
-                    g.ShowCommandLineHelp(Package.x265, id)
+                    g.ShowConsoleHelp(Package.x265, id)
             End Select
         End Using
     End Sub

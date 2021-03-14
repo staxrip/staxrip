@@ -954,7 +954,7 @@ Public Class x264Params
                 Case "Online Help"
                     g.ShellExecute("http://www.chaneru.com/Roku/HLS/X264_Settings.htm#" + id.TrimStart("-"c))
                 Case "Console Help"
-                    g.ShowCommandLineHelp(Package.x264, id)
+                    g.ShowConsoleHelp(Package.x264, id)
             End Select
         End Using
     End Sub

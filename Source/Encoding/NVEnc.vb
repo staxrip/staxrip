@@ -51,7 +51,7 @@ Public Class NVEnc
                         SaveProfile(enc)
                     End Sub
 
-            form.cms.Add("Check Hardware", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw")))
+            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw")))
             form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-features")), Keys.Control Or Keys.F)
             form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-environment")))
             form.cms.Add("-")
@@ -617,7 +617,7 @@ Public Class NVEnc
         End Property
 
         Public Overrides Sub ShowHelp(id As String)
-            g.ShowCommandLineHelp(Package.NVEnc, id)
+            g.ShowConsoleHelp(Package.NVEnc, id)
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)

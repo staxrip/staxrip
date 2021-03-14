@@ -51,7 +51,7 @@ Public Class QSVEnc
                         SaveProfile(enc)
                     End Sub
 
-            form.cms.Add("Check Hardware", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-hw")))
+            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-hw")))
             form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features")), Keys.Control Or Keys.F)
             form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-environment")))
             form.cms.Add("-")
@@ -362,7 +362,7 @@ Public Class QSVEnc
         End Property
 
         Public Overrides Sub ShowHelp(id As String)
-            g.ShowCommandLineHelp(Package.QSVEnc, id)
+            g.ShowConsoleHelp(Package.QSVEnc, id)
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)

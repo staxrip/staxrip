@@ -183,7 +183,7 @@ Public Class ProcController
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.InfoLabelBackColor, oh.InfoLabelForeColor)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\s|^)(--\w[^\s=]*|-[a-z])(?:[\s=]((?!--|-[a-z]\s)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\s|^)(--\w[^\s=]*|-[a-z](?=[\s=]))(?:[\s=]((?!--|-[a-z]\s)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.ParameterBackColor, oh.ParameterForeColor, oh.ParameterFontStyles)
                 If m.Groups.Count > 2 Then

@@ -17,6 +17,8 @@ Next Release
 - Theme "Default" is renamed to "System Colors" (Dendraspis)
 - Priority for current selected process can be set via menu on Processing window (Dendraspis)
 - Multiple theme related adjustments (Dendraspis, stax76)
+- New shortcuts for ***O**utput Highlighting* and ***P**rogress Reformatting* on Processing window (Dendraspis)
+- New shortcuts for existing actions on Jobs window (stax76)
 
 
 2.1.8.5 Beta (2021-03-09)

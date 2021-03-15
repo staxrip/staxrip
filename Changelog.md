@@ -21,6 +21,7 @@ Next Release
 - New shortcuts for existing actions on Jobs window (stax76)
 - Fix x265 Slower preset default values (tkozybski)
 - Removal of Menu Styles (Dendraspis, [#589](/../../issues/589))
+- In quality mode main dialog shows count and type of active subtitles (stax76)
 
 
 2.1.8.5 Beta (2021-03-09)

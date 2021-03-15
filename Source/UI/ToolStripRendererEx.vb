@@ -271,26 +271,4 @@ Public Class ToolStripRendererEx
             End Using
         End If
     End Sub
-
-    Shared Function CreateRoundRectangle(r As Rectangle, radius As Integer) As GraphicsPath
-        Dim path As New GraphicsPath()
-
-        Dim l = r.Left
-        Dim t = r.Top
-        Dim w = r.Width
-        Dim h = r.Height
-        Dim d = radius << 1
-
-        path.AddArc(l, t, d, d, 180, 90)
-        path.AddLine(l + radius, t, l + w - radius, t)
-        path.AddArc(l + w - d, t, d, d, 270, 90)
-        path.AddLine(l + w, t + radius, l + w, t + h - radius)
-        path.AddArc(l + w - d, t + h - d, d, d, 0, 90)
-        path.AddLine(l + w - radius, t + h, l + radius, t + h)
-        path.AddArc(l, t + h - d, d, d, 90, 90)
-        path.AddLine(l, t + h - radius, l, t + radius)
-        path.CloseFigure()
-
-        Return path
-    End Function
 End Class

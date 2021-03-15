@@ -2829,10 +2829,10 @@ Public Class MainForm
                 p.SourceVideoFormat, p.SourceVideoFormatProfile)
 
             lSource2.Text = lSource1.GetMaxTextSpace(
-                    p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.SourceColorSpace,
-                    p.SourceChromaSubsampling, If(p.SourceVideoBitDepth <> 0, p.SourceVideoBitDepth & "Bits", ""),
-                    p.SourceVideoHdrFormat,
-                    p.SourceScanType, If(p.SourceScanType = "Interlaced", p.SourceScanOrder, ""))
+                p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.SourceColorSpace,
+                p.SourceChromaSubsampling, If(p.SourceVideoBitDepth <> 0, p.SourceVideoBitDepth & "Bits", ""),
+                p.SourceVideoHdrFormat,
+                p.SourceScanType, If(p.SourceScanType = "Interlaced", p.SourceScanOrder, ""))
 
             lTarget1.Text = lSource1.GetMaxTextSpace(g.GetTimeString(p.TargetSeconds),
                 p.TargetFrameRate.ToString.Shorten(9) + "fps", p.Script.Info.Width & "x" & p.Script.Info.Height,
@@ -2842,6 +2842,9 @@ Public Class MainForm
                 laTarget2.Text = lSource1.GetMaxTextSpace(
                     "Quality: " & CInt(Calc.GetPercent).ToString() + " %",
                     "Compressibility: " + p.Compressibility.ToString("f2"))
+            Else
+                Dim subtitles = p.VideoEncoder.Muxer.Subtitles.Where(Function(i) i.Enabled)
+                laTarget2.Text = "Subtitles: " & subtitles.Count & " " + subtitles.Select(Function(i) i.TypeName).Distinct.Join("/")
             End If
         Else
             lTarget1.Text = ""
@@ -5431,7 +5434,6 @@ Public Class MainForm
         tbTargetSize.Visible = Not p.VideoEncoder.QualityMode
         laBitrate.Visible = Not p.VideoEncoder.QualityMode
         tbBitrate.Visible = Not p.VideoEncoder.QualityMode
-        laTarget2.Visible = p.VideoEncoder.IsCompCheckEnabled
     End Sub
 
     <Command("Dialog to open a single file source.")>

@@ -11,6 +11,7 @@ Public Class CodeForm
 
         rtb.Text = text
         rtb.ReadOnly = True
+        rtb.WordWrap = False
 
         Me.Find = find
 
@@ -40,6 +41,12 @@ Public Class CodeForm
         If Find <> "" Then
             rtb.Find(Find)
             rtb.ScrollToCaret()
+        End If
+    End Sub
+
+    Sub CodeForm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.KeyData = Keys.Escape Then
+            Close()
         End If
     End Sub
 End Class

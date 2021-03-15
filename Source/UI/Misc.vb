@@ -75,7 +75,10 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnLoad(args As EventArgs)
-            KeyPreview = True
+            If Not DesignHelp.IsDesignMode Then
+                KeyPreview = True
+            End If
+
             SetTabIndexes(Me)
 
             If s.UIScaleFactor <> 1 Then

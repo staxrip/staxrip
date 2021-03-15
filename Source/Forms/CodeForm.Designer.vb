@@ -31,22 +31,20 @@ Partial Class CodeForm
         '
         Me.rtb.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.rtb.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.rtb.Font = New System.Drawing.Font("Consolas", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.rtb.Location = New System.Drawing.Point(0, 0)
         Me.rtb.Name = "rtb"
         Me.rtb.Size = New System.Drawing.Size(1281, 1106)
         Me.rtb.TabIndex = 0
         Me.rtb.Text = ""
         '
-        'TextHelpForm
+        'CodeForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(1281, 1106)
         Me.Controls.Add(Me.rtb)
-        Me.Name = "TextHelpForm"
+        Me.Name = "CodeForm"
         Me.ShowIcon = False
-        Me.Text = "Help"
         Me.ResumeLayout(False)
 
     End Sub

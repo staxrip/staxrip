@@ -33,21 +33,21 @@ Public Class SVTAV1
 
     Overrides Sub ShowConfigDialog()
         Dim encParams As New EncoderParams
-        Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
+        Dim store = ObjectHelp.GetCopy(ParamsStore)
         encParams.Init(store)
 
         Using form As New CommandLineForm(encParams)
-            Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of SVTAV1)(Me)
-                                        Dim encParamsCopy As New EncoderParams
-                                        Dim storeCopy = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
-                                        encParamsCopy.Init(storeCopy)
-                                        enc.Params = encParamsCopy
-                                        enc.ParamsStore = storeCopy
-                                        SaveProfile(enc)
-                                    End Sub
+            Dim a = Sub()
+                        Dim enc = ObjectHelp.GetCopy(Me)
+                        Dim encParamsCopy As New EncoderParams
+                        Dim storeCopy = ObjectHelp.GetCopy(store)
+                        encParamsCopy.Init(storeCopy)
+                        enc.Params = encParamsCopy
+                        enc.ParamsStore = storeCopy
+                        SaveProfile(enc)
+                    End Sub
 
-            MenuItemEx.Add(form.cms.Items, "Save Profile...", saveProfileAction, Symbol.Save)
+            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = encParams

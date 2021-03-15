@@ -37,12 +37,12 @@ Public Class QSVEnc
         params1.Init(store)
 
         Using form As New CommandLineForm(params1)
-            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.QSVEnc.HelpURL}"">QSVEnc online help</a></p>" +
+            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.QSVEnc.HelpURL}"">QSVEnc Online Help</a></p>" +
                 $"<p><a href=""https://github.com/staxrip/staxrip/wiki/qsvenc-bitrate-modes"">QSVEnc bitrate modes</a></p>" +
                 $"<pre>{HelpDocument.ConvertChars(Package.QSVEnc.CreateHelpfile())}</pre>"
 
             Dim a = Sub()
-                        Dim enc = ObjectHelp.GetCopy(Of QSVEnc)(Me)
+                        Dim enc = ObjectHelp.GetCopy(Me)
                         Dim params2 As New EncoderParams
                         Dim store2 = ObjectHelp.GetCopy(store)
                         params2.Init(store2)
@@ -55,7 +55,7 @@ Public Class QSVEnc
             form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features")), Keys.Control Or Keys.F)
             form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-environment")))
             form.cms.Add("-")
-            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S).SetImage(Symbol.Save)
+            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = params1

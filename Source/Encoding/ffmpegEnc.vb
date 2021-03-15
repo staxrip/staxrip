@@ -38,21 +38,21 @@ Public Class ffmpegEnc
 
     Overrides Sub ShowConfigDialog()
         Dim newParams = New EncoderParams
-        Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
+        Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
 
         Using form As New CommandLineForm(newParams)
             Dim a1 = Sub()
-                         Dim enc = ObjectHelp.GetCopy(Of ffmpegEnc)(Me)
+                         Dim enc = ObjectHelp.GetCopy(Me)
                          Dim params2 As New EncoderParams
-                         Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
+                         Dim store2 = ObjectHelp.GetCopy(store)
                          params2.Init(store2)
                          enc.Params = params2
                          enc.ParamsStore = store2
                          SaveProfile(enc)
                      End Sub
 
-            form.cms.Add("Save Profile...", a1)
+            form.cms.Add("Save Profile...", a1, Keys.Control Or Keys.S, Symbol.Save)
 
             Dim a2 = Sub()
                          Dim codecText = newParams.Codec.OptionText

@@ -33,25 +33,26 @@ Public Class VCEEnc
 
     Overrides Sub ShowConfigDialog()
         Dim params1 As New EncoderParams
-        Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
+        Dim store = ObjectHelp.GetCopy(ParamsStore)
         params1.Init(store)
 
-        Using f As New CommandLineForm(params1)
-            Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of VCEEnc)(Me)
-                                        Dim params2 As New EncoderParams
-                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
-                                        params2.Init(store2)
-                                        enc.Params = params2
-                                        enc.ParamsStore = store2
-                                        SaveProfile(enc)
-                                    End Sub
+        Using form As New CommandLineForm(params1)
+            Dim a = Sub()
+                        Dim enc = ObjectHelp.GetCopy(Me)
+                        Dim params2 As New EncoderParams
+                        Dim store2 = ObjectHelp.GetCopy(store)
+                        params2.Init(store2)
+                        enc.Params = params2
+                        enc.ParamsStore = store2
+                        SaveProfile(enc)
+                    End Sub
 
-            f.cms.Items.Add(New MenuItemEx("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.VCEEnc.Path, "--check-features"))))
-            f.cms.Items.Add(New MenuItemEx("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.VCEEnc.Path, "--check-hw"))))
-            MenuItemEx.Add(f.cms.Items, "Save Profile...", saveProfileAction, Symbol.Save)
+            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.VCEEnc.Path, "--check-features")))
+            form.cms.Add("Check VCE Support", Sub() MsgInfo(ProcessHelp.GetConsoleOutput(Package.VCEEnc.Path, "--check-hw")))
+            form.cms.Add("-")
+            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
-            If f.ShowDialog() = DialogResult.OK Then
+            If form.ShowDialog() = DialogResult.OK Then
                 Params = params1
                 ParamsStore = store
                 OnStateChange()

@@ -757,6 +757,10 @@ Namespace UI
             Return Add(path, action, key, True, Nothing, Nothing)
         End Function
 
+        Function Add(path As String, action As Action, key As Keys, symbol As Symbol) As MenuItemEx
+            Return Add(path, action, key, True, Nothing, Nothing, symbol)
+        End Function
+
         Function Add(path As String, action As Action, key As Keys, enabled As Boolean) As MenuItemEx
             Return Add(path, action, key, enabled, Nothing, Nothing)
         End Function
@@ -795,7 +799,8 @@ Namespace UI
             key As Keys,
             enabled As Boolean,
             enabledFunc As Func(Of Boolean),
-            Optional help As String = Nothing) As MenuItemEx
+            Optional help As String = Nothing,
+            Optional symbol As Symbol = Symbol.None) As MenuItemEx
 
             Dim ret = MenuItemEx.Add(Items, path, action)
 
@@ -808,6 +813,7 @@ Namespace UI
             ret.Enabled = enabled
             ret.EnabledFunc = enabledFunc
             ret.Help = help
+            ret.SetImage(symbol)
 
             AddHandler Opening, AddressOf ret.Opening
 

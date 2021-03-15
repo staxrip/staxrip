@@ -152,17 +152,16 @@ Public Class x264Enc
 
     Overrides Sub ShowConfigDialog()
         Dim newParams As New x264Params
-        Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
+        Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
         newParams.ApplyValues(True)
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelpFunc = Function() "<h2>x264 Help</h2>" +
-               $"<h2>x264 Online Help</h2><p><a href=""{Package.x264.HelpURL}"">x264 Online Help</a></p>" +
+            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.x264.HelpURL}"">x264 Online Help</a></p>" +
                $"<h2>x264 Console Help</h2><pre>{HelpDocument.ConvertChars(Package.x264.CreateHelpfile())}</pre>"
 
             Dim a = Sub()
-                        Dim enc = ObjectHelp.GetCopy(Of x264Enc)(Me)
+                        Dim enc = ObjectHelp.GetCopy(Me)
                         Dim params2 As New x264Params
                         Dim store2 = ObjectHelp.GetCopy(store)
                         params2.Init(store2)
@@ -171,7 +170,7 @@ Public Class x264Enc
                         SaveProfile(enc)
                     End Sub
 
-            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S).SetImage(Symbol.Save)
+            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
                 AutoCompCheckValue = CInt(newParams.CompCheckAimedQuality.Value)

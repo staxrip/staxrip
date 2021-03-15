@@ -33,18 +33,17 @@ Public Class NVEnc
 
     Overrides Sub ShowConfigDialog()
         Dim newParams As New EncoderParams
-        Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
+        Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelpFunc = Function() "<h2>NVEnc Help</h2>" +
-                $"<h2>NVEnc Online Help</h2><p><a href=""{Package.NVEnc.HelpURL}"">NVEnc Online Help</a></p>" +
+            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.NVEnc.HelpURL}"">NVEnc Online Help</a></p>" +
                 $"<h2>NVEnc Console Help</h2><pre>{HelpDocument.ConvertChars(Package.NVEnc.CreateHelpfile())}</pre>"
 
             Dim a = Sub()
-                        Dim enc = ObjectHelp.GetCopy(Of NVEnc)(Me)
+                        Dim enc = ObjectHelp.GetCopy(Me)
                         Dim params2 As New EncoderParams
-                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
+                        Dim store2 = ObjectHelp.GetCopy(store)
                         params2.Init(store2)
                         enc.Params = params2
                         enc.ParamsStore = store2
@@ -55,7 +54,7 @@ Public Class NVEnc
             form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-features")), Keys.Control Or Keys.F)
             form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-environment")))
             form.cms.Add("-")
-            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S).SetImage(Symbol.Save)
+            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams

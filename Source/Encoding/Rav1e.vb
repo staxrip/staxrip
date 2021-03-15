@@ -72,21 +72,21 @@ Public Class Rav1e
 
     Overrides Sub ShowConfigDialog()
         Dim newParams As New Rav1eParams
-        Dim store = DirectCast(ObjectHelp.GetCopy(ParamsStore), PrimitiveStore)
+        Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
 
         Using form As New CommandLineForm(newParams)
-            Dim saveProfileAction = Sub()
-                                        Dim enc = ObjectHelp.GetCopy(Of Rav1e)(Me)
-                                        Dim params2 As New Rav1eParams
-                                        Dim store2 = DirectCast(ObjectHelp.GetCopy(store), PrimitiveStore)
-                                        params2.Init(store2)
-                                        enc.Params = params2
-                                        enc.ParamsStore = store2
-                                        SaveProfile(enc)
-                                    End Sub
+            Dim a = Sub()
+                        Dim enc = ObjectHelp.GetCopy(Me)
+                        Dim params2 As New Rav1eParams
+                        Dim store2 = ObjectHelp.GetCopy(store)
+                        params2.Init(store2)
+                        enc.Params = params2
+                        enc.ParamsStore = store2
+                        SaveProfile(enc)
+                    End Sub
 
-            MenuItemEx.Add(form.cms.Items, "Save Profile...", saveProfileAction).SetImage(Symbol.Save)
+            form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams

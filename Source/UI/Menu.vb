@@ -173,8 +173,9 @@ Namespace UI
             Me.ToolStrip = toolStrip
         End Sub
 
-        Sub AddKeyDownHandler(control As Control)
-            AddHandler control.KeyDown, AddressOf OnKeyDown
+        Sub AddKeyDownHandler(form As Form)
+            form.KeyPreview = True
+            AddHandler form.KeyDown, AddressOf OnKeyDown
         End Sub
 
         Sub RemoveKeyDownHandler(control As Control)
@@ -242,6 +243,7 @@ Namespace UI
         Sub OnKeyDown(sender As Object, e As KeyEventArgs)
             For Each i As CustomMenuItem In Items
                 If i.KeyData = e.KeyData AndAlso i.MenuItem.Enabled Then
+                    e.Handled = True
                     OnCommand(i)
                     Exit For
                 End If

@@ -975,7 +975,6 @@ Public Class MainForm
         Me.Controls.Add(Me.tlpMain)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.HelpButton = True
-        Me.KeyPreview = True
         Me.MainMenuStrip = Me.MenuStrip
         Me.Margin = New System.Windows.Forms.Padding(9, 12, 9, 12)
         Me.MaximizeBox = False

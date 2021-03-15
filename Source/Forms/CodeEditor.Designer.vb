@@ -99,7 +99,6 @@ Partial Class CodeEditor
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(642, 404)
         Me.Controls.Add(Me.tlpMain)
-        Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "CodeEditor"
         Me.Text = "Code Editor"

@@ -229,7 +229,6 @@ Public Class PreviewForm
         Me.BackColor = System.Drawing.Color.Black
         Me.ClientSize = New System.Drawing.Size(837, 714)
         Me.Controls.Add(Me.pnVideo)
-        Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "PreviewForm"
         Me.ShowInTaskbar = True

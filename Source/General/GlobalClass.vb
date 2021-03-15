@@ -1221,6 +1221,11 @@ Public Class GlobalClass
 
     Sub ShowScriptInfo(script As VideoScript)
         script.Synchronize()
+
+        If Not script.Path.FileExists Then
+            Exit Sub
+        End If
+
         Dim text = If(script.Error = "", script.Info.GetInfoText(-1), script.Error)
         text = BR + "  " + text.FixBreak.Replace(BR, BR + "  ") + BR
 
@@ -1427,6 +1432,12 @@ Public Class GlobalClass
     End Function
 
     Sub ShowAdvancedScriptInfo(script As VideoScript)
+        script.Synchronize()
+
+        If Not script.Path.FileExists Then
+            Exit Sub
+        End If
+
         If script.Engine = ScriptEngine.AviSynth Then
             Using td As New TaskDialog(Of String)
                 td.MainInstruction = "Choose below"

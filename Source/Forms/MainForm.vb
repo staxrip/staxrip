@@ -4924,9 +4924,12 @@ Public Class MainForm
 
         ret.Add("Tools|Advanced", Symbol.More)
 
+        ret.Add("Tools|Advanced|Add Hardcoded Subtitle to script...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
+        ret.Add("Tools|Advanced|Script Info...", NameOf(ShowScriptInfo), Keys.F2)
+        ret.Add("Tools|Advanced|Advanced Script Info...", NameOf(ShowAdvancedScriptInfo), Keys.Control Or Keys.F2)
+        ret.Add("Tools|Advanced|-")
         ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
         ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
-        ret.Add("Tools|Advanced|Add Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
         ret.Add("Tools|Advanced|Event Command...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
         ret.Add("Tools|Advanced|Reset Setting...", NameOf(g.DefaultCommands.ResetSettings))
         ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_terminal, {"cmd.exe", False, False, False, "%working_dir%"})
@@ -5283,9 +5286,13 @@ Public Class MainForm
         p.BitrateIsFixed = False
     End Sub
 
-    <Command("Shows script info using various console tools.")>
+    <Command("Shows info about the output AviSynth/VapourSynth script.")>
     Sub ShowScriptInfo()
-        p.Script.Synchronize()
+        g.ShowScriptInfo(p.Script)
+    End Sub
+
+    <Command("Shows advanced AviSynth/VapourSynth output script info using various tools.")>
+    Sub ShowAdvancedScriptInfo()
         g.ShowAdvancedScriptInfo(p.Script)
     End Sub
 

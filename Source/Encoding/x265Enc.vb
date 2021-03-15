@@ -1672,7 +1672,7 @@ Public Class x265Params
                 EarlySkip.Value = False
                 FastIntra.Value = False
                 LimitModes.Value = True
-                LimitRefs.Value = 0
+                LimitRefs.Value = 1
                 LimitTU.Value = 4
                 LookaheadSlices.Value = 0
                 MaxMerge.Value = 4
@@ -1951,7 +1951,7 @@ Public Class x265Params
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = False
                 LimitModes.DefaultValue = True
-                LimitRefs.DefaultValue = 0
+                LimitRefs.DefaultValue = 1
                 LimitTU.DefaultValue = 4
                 LookaheadSlices.DefaultValue = 0
                 MaxMerge.DefaultValue = 4

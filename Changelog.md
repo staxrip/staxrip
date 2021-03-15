@@ -20,6 +20,7 @@ Next Release
 - New shortcuts for ***O**utput Highlighting* and ***P**rogress Reformatting* on Processing window (Dendraspis)
 - New shortcuts for existing actions on Jobs window (stax76)
 - Fix x265 Slower preset default values (tkozybski)
+- Fix x265 params --atc-sei and --pic-struct wrong parameter type (Dendraspis, [#593](/../../issues/593))
 - Removal of Menu Styles (Dendraspis, [#589](/../../issues/589))
 - In quality mode main dialog shows count and type of active subtitles (stax76)
 - Main dialog and code editor show script info with F2 key and

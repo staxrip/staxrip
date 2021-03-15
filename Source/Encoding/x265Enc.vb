@@ -1055,11 +1055,11 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-STD-B67", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}},
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"Undefined", "Limited", "Full"}},
                     minLuma, maxLuma, MaxCLL, MaxFALL,
-                    New BoolParam With {.Switch = "--hdr10-opt", .NoSwitch = "--no-hdr10-opt", .Text = "Block-level luma and chroma QP optimization for HDR10 content"},
-                    New BoolParam With {.Switch = "--dhdr10-opt", .Text = "Limit frames for which tone mapping information is inserted as SEI message"},
+                    New NumParam With {.Switch = "--atc-sei", .Text = "Alt. transfer characteristics SEI:", .Init = -1, .Config = {-1, 12, 1}},
+                    New NumParam With {.Switch = "--pic-struct", .Text = "Picture structure in SEI:", .Init = -1, .Config = {-1, 12, 1}},
                     New BoolParam With {.Switch = "--cll", .NoSwitch = "--no-cll", .Text = "Emit content light level info SEI", .Init = True},
-                    New NumParam With {.Switch = "--atc-sei", .Label = "Alternative transfer characteristics SEI:", .Init = -1, .Config = {-1, 100, 1}},
-                    New NumParam With {.Switch = "--pic-struct", .Label = "Picture structure in picture timing SEI:", .Init = -1, .Config = {-1, 100, 1}})
+                    New BoolParam With {.Switch = "--hdr10-opt", .NoSwitch = "--no-hdr10-opt", .Text = "Block-level luma and chroma QP optimization for HDR10 content"},
+                    New BoolParam With {.Switch = "--dhdr10-opt", .Text = "Limit frames for which tone mapping information is inserted as SEI message"})
                 Add("VUI 2",
                     New StringParam With {.Switch = "--nalu-file", .Text = "Nalu File", .BrowseFile = True},
                     New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},

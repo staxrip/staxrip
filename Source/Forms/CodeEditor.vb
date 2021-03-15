@@ -365,7 +365,7 @@ Public Class CodeEditor
         ret.Add("Preview Video...", NameOf(ShowVideoPreview), Keys.F5, Symbol.Photo)
         ret.Add("Preview Code...", NameOf(ShowCodePreview), Symbol.Code)
         ret.Add("Play", NameOf(PlayWithMpvnet), Keys.F9, Symbol.Play)
-        ret.Add("Info...", NameOf(ShowInfo), Keys.Control Or Keys.F2, Symbol.Info)
+        ret.Add("Info...", NameOf(ShowInfo), Keys.F2, Symbol.Info)
         ret.Add("Advanced Info...", NameOf(ShowAdvancedInfo), Symbol.Lightbulb)
         ret.Add("Join... | All Filters", NameOf(JoinAllFilters), Keys.Control Or Keys.J)
         ret.Add("Join... | Active Filters", NameOf(JoinActiveFilters), Keys.Control Or Keys.Alt Or Keys.J)

@@ -1384,15 +1384,6 @@ Public Enum ShutdownMode
     Shutdown
 End Enum
 
-Public Enum ToolStripRenderModeEx
-    <DispName("System Theme Color")> SystemAuto
-    <DispName("System Default Color")> SystemDefault
-    <DispName("Win 7 Theme Color")> Win7Auto
-    <DispName("Win 7 Default Color")> Win7Default
-    <DispName("Win 10 Theme Color")> Win10Auto
-    <DispName("Win 10 Default Color")> Win10Default
-End Enum
-
 Public Class PowerRequest
     Private Shared CurrentPowerRequest As IntPtr
 

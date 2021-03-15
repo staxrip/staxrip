@@ -1059,8 +1059,8 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--hdr10-opt", .NoSwitch = "--no-hdr10-opt", .Text = "Block-level luma and chroma QP optimization for HDR10 content"},
                     New BoolParam With {.Switch = "--dhdr10-opt", .Text = "Limit frames for which tone mapping information is inserted as SEI message"},
                     New BoolParam With {.Switch = "--cll", .NoSwitch = "--no-cll", .Text = "Emit content light level info SEI", .Init = True},
-                    New NumParam With {.Switch = "--atc-sei", .Text = "Emit the alternative transfer characteristics SEI message", .Init = -1, .Config = {-1, 100, 1}},
-                    New NumParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message", .Init = -1, .Config = {-1, 100, 1}})
+                    New NumParam With {.Switch = "--atc-sei", .Text = "Alternative transfer characteristics SEI", .Init = -1, .Config = {-1, 100, 1}},
+                    New NumParam With {.Switch = "--pic-struct", .Text = "Picture structure in picture timing SEI", .Init = -1, .Config = {-1, 100, 1}})
                 Add("VUI 2",
                     New StringParam With {.Switch = "--nalu-file", .Text = "Nalu File", .BrowseFile = True},
                     New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},

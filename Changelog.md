@@ -19,6 +19,7 @@ Next Release
 - Multiple theme related adjustments (Dendraspis, stax76)
 - New shortcuts for ***O**utput Highlighting* and ***P**rogress Reformatting* on Processing window (Dendraspis)
 - New shortcuts for existing actions on Jobs window (stax76)
+- Fix x265 Slower preset default values (tkozybski)
 
 
 2.1.8.5 Beta (2021-03-09)

@@ -1672,7 +1672,7 @@ Public Class x265Params
                 EarlySkip.Value = False
                 FastIntra.Value = False
                 LimitModes.Value = True
-                LimitRefs.Value = 0
+                LimitRefs.Value = 1
                 LimitTU.Value = 4
                 LookaheadSlices.Value = 0
                 MaxMerge.Value = 4
@@ -1686,9 +1686,9 @@ Public Class x265Params
                 SAO.Value = True
                 Scenecut.Value = 40
                 SignHide.Value = True
-                SubME.Value = 3
-                TUinter.Value = 2
-                TUintra.Value = 2
+                SubME.Value = 4
+                TUinter.Value = 3
+                TUintra.Value = 3
                 Weightb.Value = True
                 Weightp.Value = True
             Case 8 'veryslow
@@ -1951,7 +1951,7 @@ Public Class x265Params
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = False
                 LimitModes.DefaultValue = True
-                LimitRefs.DefaultValue = 0
+                LimitRefs.DefaultValue = 1
                 LimitTU.DefaultValue = 4
                 LookaheadSlices.DefaultValue = 0
                 MaxMerge.DefaultValue = 4
@@ -1965,9 +1965,9 @@ Public Class x265Params
                 SAO.DefaultValue = True
                 Scenecut.DefaultValue = 40
                 SignHide.DefaultValue = True
-                SubME.DefaultValue = 3
-                TUinter.DefaultValue = 2
-                TUintra.DefaultValue = 2
+                SubME.DefaultValue = 4
+                TUinter.DefaultValue = 3
+                TUintra.DefaultValue = 3
                 Weightb.DefaultValue = True
                 Weightp.DefaultValue = True
             Case 8 'veryslow

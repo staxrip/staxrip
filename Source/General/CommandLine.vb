@@ -86,6 +86,18 @@ Namespace CommandLine
 
                 Dim targetPAR = Calc.GetTargetPAR
                 Dim val = Calc.ParseCustomAR(param.Value, targetPAR.X, targetPAR.Y)
+
+                If param?.Value = "auto" AndAlso val = New Point(1, 1) AndAlso
+                    (p.CustomTargetPAR.TrimEx.EqualsAny("1:1", "1/1", "1") OrElse
+                    p.CustomTargetPAR = "force" OrElse p.CustomSourcePAR = "force") Then
+
+                    Return "--sar 1:1"
+                End If
+
+                If param?.Value = "force" AndAlso val = New Point(1, 1) Then
+                    Return "--sar 1:1"
+                End If
+
                 Dim isInTolerance = val = targetPAR AndAlso Not Calc.IsARSignalingRequired
 
                 If val.X <> 0 AndAlso val <> New Point(1, 1) AndAlso Not isInTolerance Then

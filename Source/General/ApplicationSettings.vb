@@ -369,6 +369,7 @@ Custom... = $enter_text:Enter a custom Display Aspect Ratio.$"
     Shared Function GetParMenu() As String
         Dim ret =
 "Automatic = auto
+Forced = force
 1:1 = 1:1
 
 PAL 1.33 16:15 = 16:15

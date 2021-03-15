@@ -5977,7 +5977,8 @@ Public Class MainForm
 
         p.CustomSourcePAR = tup.Value
         p.CustomSourceDAR = ""
-        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then
+
+        If value <> "force" AndAlso Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then
             p.CustomSourcePAR = ""
         End If
 
@@ -6013,7 +6014,7 @@ Public Class MainForm
         p.CustomTargetPAR = tup.Value
         p.CustomTargetDAR = ""
 
-        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then
+        If value <> "force" AndAlso Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then
             p.CustomTargetPAR = ""
         End If
 

@@ -33,7 +33,7 @@ Public Class ProcController
 
         Dim pad = g.ProcForm.FontHeight \ 6
         Button.Margin = New Padding(pad, pad, 0, pad)
-        Button.Font = New Font("Consolas", 9 * s.UIScaleFactor)
+        Button.Font = g.GetCodeFont(9)
         Button.Text = " " + proc.Title + " "
         Dim sz = TextRenderer.MeasureText(Button.Text, Button.Font)
         Dim fh = Button.Font.Height
@@ -42,14 +42,14 @@ Public Class ProcController
         AddHandler Button.Click, AddressOf Click
 
         ProgressBar.Dock = DockStyle.Fill
-        ProgressBar.Font = New Font("Consolas", 9 * s.UIScaleFactor)
+        ProgressBar.Font = g.GetCodeFont(9)
 
         LogTextBox.ScrollBars = RichTextBoxScrollBars.Both
         LogTextBox.Multiline = True
         LogTextBox.Dock = DockStyle.Fill
         LogTextBox.ReadOnly = True
         LogTextBox.WordWrap = True
-        LogTextBox.Font = New Font("Consolas", 9 * s.UIScaleFactor)
+        LogTextBox.Font = g.GetCodeFont(9)
         AddHandler LogTextBox.AfterThemeApplied, AddressOf HighlightLog
 
         ProcForm.pnLogHost.Controls.Add(LogTextBox)

@@ -573,7 +573,7 @@ Public Class CodeEditor
             rtbScript.ScrollBars = RichTextBoxScrollBars.Vertical
             rtbScript.AcceptsTab = True
             rtbScript.Margin = New Padding(0)
-            rtbScript.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+            rtbScript.Font = g.GetCodeFont
 
             AddHandler cbActive.CheckedChanged, Sub() SetColor()
 

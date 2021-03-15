@@ -9,9 +9,10 @@ Public Class CodeForm
 
         RestoreClientSize(50, 35)
 
-        rtb.Text = text
         rtb.ReadOnly = True
         rtb.WordWrap = False
+        rtb.Font = g.GetCodeFont
+        rtb.Text = text
 
         Me.Find = find
 

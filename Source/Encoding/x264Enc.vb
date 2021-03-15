@@ -275,7 +275,7 @@ Public Class x264Params
         .AlwaysOn = True,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+                          tb.Edit.TextBox.Font = g.GetCodeFont
                       End Sub}
 
     Property CustomFirstPass As New StringParam With {
@@ -283,7 +283,7 @@ Public Class x264Params
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+                          tb.Edit.TextBox.Font = g.GetCodeFont
                       End Sub}
 
     Property CustomSecondPass As New StringParam With {
@@ -291,7 +291,7 @@ Public Class x264Params
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+                          tb.Edit.TextBox.Font = g.GetCodeFont
                       End Sub}
 
     Property Deblock As New BoolParam With {

@@ -117,7 +117,7 @@ Namespace UI
             MyBase.New()
             InitializeComponent()
             cbWrap.Checked = True
-            rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+            rtb.Font = g.GetCodeFont
             ScaleClientSize(41, 24)
             ApplyTheme()
 

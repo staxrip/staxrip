@@ -1616,7 +1616,7 @@ Namespace UI
 
         Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated
             If Not DesignMode Then
-                Font = New Font("Consolas", 10 * s.UIScaleFactor)
+                Font = g.GetCodeFont
             End If
         End Sub
 

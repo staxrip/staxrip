@@ -154,7 +154,14 @@ Public Class VideoRenderer
 
         Dim text = Info.GetInfoText(Position)
         Dim layout As IDWriteTextLayout
-        Dim format = DirectWriteFactory.CreateTextFormat("Consolas", 13)
+
+        Dim fontName As String
+
+        Using font = g.GetCodeFont
+            fontName = font.Name
+        End Using
+
+        Dim format = DirectWriteFactory.CreateTextFormat(fontName, 13)
 
         DirectWriteFactory.Object.CreateTextLayout(
             text,

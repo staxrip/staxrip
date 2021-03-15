@@ -22,6 +22,7 @@ Public Class ApplicationSettings
     Public CmdlPresetsMKV As String
     Public CmdlPresetsMP4 As String
     Public CmdlPresetsX264 As String
+    Public CodeFont As String = "Consolas"
     Public CommandLineHighlighting As Boolean = True
     Public ConvertChromaSubsampling As Boolean = True
     Public CropColor As Color

@@ -230,7 +230,7 @@ Public Class MacroEditorControl
         MyBase.New()
         InitializeComponent()
         rtbEdit.EnableAutoDragDrop = True
-        rtbEdit.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+        rtbEdit.Font = g.GetCodeFont
         rtbPreview.Font = rtbEdit.Font
         rtbDefaults.Font = rtbEdit.Font
         llHelp.Visible = False

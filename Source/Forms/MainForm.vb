@@ -3607,6 +3607,23 @@ Public Class MainForm
             theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
             theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
 
+            Dim m = ui.AddMenu(Of String)
+            m.Text = "Console Font"
+            m.Field = NameOf(s.CodeFont)
+            m.Add({"Consolas", "Courier New"})
+
+            Using font = New Font("Cascadia Code", 9)
+                If font.Name = "Cascadia Code" Then
+                    m.Add("Cascadia Code")
+                End If
+            End Using
+
+            n = ui.AddNum()
+            n.Text = "Scale Factor"
+            n.Help = "Requires to restart StaxRip."
+            n.Config = {0.3, 3, 0.05, 2}
+            n.Field = NameOf(s.UIScaleFactor)
+
             Dim l = ui.AddLabel("Icon File:")
             l.Help = "The Windows Startmenu uses Windows Links which allow to use custom icon files."
 
@@ -3626,12 +3643,6 @@ Public Class MainForm
             t.Edit.Expand = True
             t.Edit.Text = s.WindowPositionsRemembered.Join(", ")
             t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
-
-            n = ui.AddNum()
-            n.Text = "Scale Factor"
-            n.Help = "Requires to restart StaxRip."
-            n.Config = {0.3, 3, 0.05, 2}
-            n.Field = NameOf(s.UIScaleFactor)
 
             b = ui.AddBool()
             b.Text = "Use binary prefix (MiB) instead of decimal prefix (MB) for sizes"
@@ -3706,12 +3717,12 @@ Public Class MainForm
             t = ui.AddText()
             t.Text = "x264 quality definitions"
             t.Help = "Create custom quality definitions for x264." + BR2 +
-                     "Use this format to create your custom values with optional description:" + BR +
-                     "number""text""" + BR +
-                     "number: can be used with optional decimal separator (, or .)" + BR +
-                     "text: description, optionally empty" + BR2 +
-                     "Example:" + BR +
-                     "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
+                         "Use this format to create your custom values with optional description:" + BR +
+                         "number""text""" + BR +
+                         "number: can be used with optional decimal separator (, or .)" + BR +
+                         "text: description, optionally empty" + BR2 +
+                         "Example:" + BR +
+                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
             t.Edit.Expand = True
             t.Edit.Text = s.X264QualityDefinitions.ToSeparatedString()
             t.Edit.SaveAction = Sub(value) s.X264QualityDefinitions = value.ToX264QualityItems()?.ToList()
@@ -3719,22 +3730,22 @@ Public Class MainForm
             t = ui.AddText()
             t.Text = "x265 quality definitions"
             t.Help = "Create custom quality definitions for x265." + BR2 +
-                     "Use this format to create your custom values with optional description:" + BR +
-                     "number""text""" + BR +
-                     "number: can be used with optional decimal separator (, or .)" + BR +
-                     "text: description, optionally empty" + BR2 +
-                     "Example:" + BR +
-                     "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
+                         "Use this format to create your custom values with optional description:" + BR +
+                         "number""text""" + BR +
+                         "number: can be used with optional decimal separator (, or .)" + BR +
+                         "text: description, optionally empty" + BR2 +
+                         "Example:" + BR +
+                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
             t.Edit.Expand = True
             t.Edit.Text = s.X265QualityDefinitions.ToSeparatedString()
             t.Edit.SaveAction = Sub(value) s.X265QualityDefinitions = value.ToX265QualityItems()?.ToList()
 
             '############# Source Filters
             Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth",
-                s.AviSynthFilterPreferences, s.AviSynthProfiles)
+                    s.AviSynthFilterPreferences, s.AviSynthProfiles)
 
             Dim bsVS = AddFilterPreferences(ui, "Source Filters | VapourSynth",
-                s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
+                    s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
 
             '############### Danger Zone
             Dim dangerZonePage = ui.CreateFlowPage("Danger Zone", True)
@@ -3742,7 +3753,7 @@ Public Class MainForm
             l = ui.AddLabel("")
 
             l = ui.AddLabel("Don't change Danger Zone settings unless you are" + BR +
-                            "a power user with debugging experience." + BR)
+                                "a power user with debugging experience." + BR)
 
             l.BackColor = ThemeManager.CurrentTheme.General.DangerBackColor
             l.ForeColor = ThemeManager.CurrentTheme.General.DangerForeColor

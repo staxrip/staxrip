@@ -248,7 +248,7 @@ Public Class AV1Params
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+                          tb.Edit.TextBox.Font = g.GetCodeFont
                       End Sub}
 
     Property CustomSecondPass As New StringParam With {
@@ -256,10 +256,8 @@ Public Class AV1Params
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+                          tb.Edit.TextBox.Font = g.GetCodeFont
                       End Sub}
-
-
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get

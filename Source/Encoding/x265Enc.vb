@@ -783,7 +783,7 @@ Public Class x265Params
         .Text = "Master Display",
         .InitAction = Sub(tb)
                           tb.Edit.TextBox.Multiline = True
-                          tb.Edit.MultilineHeightFactor = 2.2
+                          tb.Edit.MultilineHeightFactor = 2.3
                       End Sub}
 
     Property MaxCLL As New NumParam With {

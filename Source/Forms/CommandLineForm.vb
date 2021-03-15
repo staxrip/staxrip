@@ -198,7 +198,10 @@ Public Class CommandLineForm
                 Dim tempNumParam = DirectCast(param, NumParam)
                 Dim nParam = DirectCast(param, NumParam)
                 Dim numBlock = SimpleUI.AddNum(parent)
-                numBlock.Label.Text = If(param.Text.EndsWith(":"), param.Text, param.Text + ":")
+
+                If param.Text <> "" Then
+                    numBlock.Label.Text = If(param.Text.EndsWithEx(":"), param.Text, param.Text + ":")
+                End If
 
                 If param.HelpSwitch <> "" Then
                     Dim helpID = param.HelpSwitch

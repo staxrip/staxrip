@@ -934,7 +934,7 @@ Public Class SimpleUI
             Set(value As String)
                 If value.EndsWith(":") Then
                     Label.Text = value
-                Else
+                ElseIf value <> "" Then
                     Label.Text = value + ":"
                 End If
             End Set

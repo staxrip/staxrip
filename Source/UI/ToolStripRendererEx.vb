@@ -6,8 +6,6 @@ Imports StaxRip.UI
 Public Class ToolStripRendererEx
     Inherits ToolStripSystemRenderer
 
-    Shared RenderMode As ToolStripRenderModeEx
-
     Shared Property BackgroundColor As Color
     Shared Property BorderOuterColor As ColorHSL
     Shared Property BorderInnerColor As ColorHSL
@@ -34,8 +32,7 @@ Public Class ToolStripRendererEx
 
     Private TextOffset As Integer
 
-    Sub New(mode As ToolStripRenderModeEx)
-        RenderMode = mode
+    Sub New()
         ApplyTheme()
 
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
@@ -54,82 +51,26 @@ Public Class ToolStripRendererEx
             Exit Sub
         End If
 
-        If IsAutoRenderMode() Then
-            Dim argb = CInt(Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", 0))
+        BorderInnerColor = theme.General.Controls.ToolStrip.BorderInnerColor
+        BorderOuterColor = theme.General.Controls.ToolStrip.BorderOuterColor
+        BoxColor = theme.General.Controls.ToolStrip.BoxColor
+        BoxSelectedColor = theme.General.Controls.ToolStrip.BoxSelectedColor
+        CheckmarkColor = theme.General.Controls.ToolStrip.CheckmarkColor
+        CheckmarkSelectedColor = theme.General.Controls.ToolStrip.CheckmarkSelectedColor
+        DropdownBackgroundDefaultColor = theme.General.Controls.ToolStrip.DropdownBackgroundDefaultColor
+        DropdownBackgroundSelectedColor = theme.General.Controls.ToolStrip.DropdownBackgroundSelectedColor
+        DropdownTextDefaultColor = theme.General.Controls.ToolStrip.DropdownTextDefaultColor
+        DropdownTextSelectedColor = theme.General.Controls.ToolStrip.DropdownTextSelectedColor
+        MenuStripBackgroundDefaultColor = theme.General.Controls.ToolStrip.MenuStripBackgroundDefaultColor
+        MenuStripBackgroundSelectedColor = theme.General.Controls.ToolStrip.MenuStripBackgroundSelectedColor
+        MenuStripTextDefaultColor = theme.General.Controls.ToolStrip.MenuStripTextDefaultColor
+        MenuStripTextSelectedColor = theme.General.Controls.ToolStrip.MenuStripTextSelectedColor
+        SymbolImageColor = theme.General.Controls.ToolStrip.SymbolImageColor
 
-            If argb = 0 Then
-                argb = Color.LightBlue.ToArgb
-            End If
-
-            InitColors(Color.FromArgb(argb))
-        Else
-            BorderInnerColor = theme.General.Controls.ToolStrip.BorderInnerColor
-            BorderOuterColor = theme.General.Controls.ToolStrip.BorderOuterColor
-            BoxColor = theme.General.Controls.ToolStrip.BoxColor
-            BoxSelectedColor = theme.General.Controls.ToolStrip.BoxSelectedColor
-            CheckmarkColor = theme.General.Controls.ToolStrip.CheckmarkColor
-            CheckmarkSelectedColor = theme.General.Controls.ToolStrip.CheckmarkSelectedColor
-            DropdownBackgroundDefaultColor = theme.General.Controls.ToolStrip.DropdownBackgroundDefaultColor
-            DropdownBackgroundSelectedColor = theme.General.Controls.ToolStrip.DropdownBackgroundSelectedColor
-            DropdownTextDefaultColor = theme.General.Controls.ToolStrip.DropdownTextDefaultColor
-            DropdownTextSelectedColor = theme.General.Controls.ToolStrip.DropdownTextSelectedColor
-            MenuStripBackgroundDefaultColor = theme.General.Controls.ToolStrip.MenuStripBackgroundDefaultColor
-            MenuStripBackgroundSelectedColor = theme.General.Controls.ToolStrip.MenuStripBackgroundSelectedColor
-            MenuStripTextDefaultColor = theme.General.Controls.ToolStrip.MenuStripTextDefaultColor
-            MenuStripTextSelectedColor = theme.General.Controls.ToolStrip.MenuStripTextSelectedColor
-            SymbolImageColor = theme.General.Controls.ToolStrip.SymbolImageColor
-
-            ToolStrip1Color = theme.General.Controls.ToolStrip.MenuStripBackgroundDefaultColor
-            ToolStrip2Color = theme.General.Controls.ToolStrip.MenuStripBackgroundDefaultColor
-            ToolStrip3Color = theme.General.Controls.ToolStrip.MenuStripBackgroundDefaultColor
-            ToolStrip4Color = theme.General.Controls.ToolStrip.MenuStripBackgroundDefaultColor
-        End If
-    End Sub
-
-    Shared Function IsAutoRenderMode() As Boolean
-        Return _
-            RenderMode = ToolStripRenderModeEx.SystemAuto OrElse
-            RenderMode = ToolStripRenderModeEx.Win7Auto OrElse
-            RenderMode = ToolStripRenderModeEx.Win10Auto
-    End Function
-
-    Shared Sub InitColors(renderMode As ToolStripRenderModeEx)
-        If IsAutoRenderMode() Then
-            Dim argb = CInt(Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", 0))
-
-            If argb = 0 Then
-                argb = Color.LightBlue.ToArgb
-            End If
-
-            InitColors(Color.FromArgb(argb))
-        Else
-            CheckedColor = Color.FromArgb(&HFF91C9F7)
-            BorderOuterColor = Color.FromArgb(&HFF83ABDC)
-            TopColor = Color.FromArgb(&HFFE7F0FB)
-            BottomColor = Color.FromArgb(&HFF91C9F7)
-            BackgroundColor = SystemColors.Control
-
-            ToolStrip1Color = Color.FromArgb(&HFFFDFEFF)
-            ToolStrip2Color = Color.FromArgb(&HFFF0F0F0)
-            ToolStrip3Color = Color.FromArgb(&HFFDCE6F4)
-            ToolStrip4Color = Color.FromArgb(&HFFDDE9F7)
-        End If
-    End Sub
-
-    Shared Sub InitColors(c As Color)
-        MenuStripBackgroundSelectedColor = HSLColor.Convert(c).ToColorSetLuminosity(180)
-        DropdownBackgroundSelectedColor = HSLColor.Convert(c).ToColorSetLuminosity(200)
-        DropdownBackgroundDefaultColor = HSLColor.Convert(c).ToColorSetLuminosity(230)
-        BorderOuterColor = HSLColor.Convert(c).ToColorSetLuminosity(100)
-        CheckedColor = HSLColor.Convert(c).ToColorSetLuminosity(180)
-        BackgroundColor = HSLColor.Convert(c).ToColorSetLuminosity(230)
-        BottomColor = HSLColor.Convert(c).ToColorSetLuminosity(200)
-        TopColor = HSLColor.Convert(c).ToColorSetLuminosity(240)
-
-        ToolStrip1Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderOuterColor, 1)))
-        ToolStrip2Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderOuterColor, 0.7)))
-        ToolStrip3Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderOuterColor, 0.1)))
-        ToolStrip4Color = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(BorderOuterColor, 0.4)))
+        ToolStrip1Color = theme.General.Controls.ToolStrip.MenuStripBackgroundDefaultColor
+        ToolStrip2Color = theme.General.Controls.ToolStrip.MenuStripBackgroundDefaultColor
+        ToolStrip3Color = theme.General.Controls.ToolStrip.MenuStripBackgroundDefaultColor
+        ToolStrip4Color = theme.General.Controls.ToolStrip.MenuStripBackgroundDefaultColor
     End Sub
 
     Protected Overrides Sub OnRenderToolStripBorder(e As ToolStripRenderEventArgs)
@@ -173,25 +114,14 @@ Public Class ToolStripRendererEx
     End Sub
 
     Protected Overrides Sub OnRenderToolStripBackground(e As ToolStripRenderEventArgs)
-        If Not TypeOf e.ToolStrip Is ToolStripDropDownMenu AndAlso
+        If TypeOf e.ToolStrip IsNot ToolStripDropDownMenu AndAlso
             Not e.ToolStrip.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow Then
 
             Dim rect As New Rectangle(0, 0, e.AffectedBounds.Width, e.AffectedBounds.Height)
 
-            If IsFlat() Then
-                Using b As New SolidBrush(MenuStripBackgroundDefaultColor)
-                    e.Graphics.FillRectangle(b, rect)
-                End Using
-            Else
-                Dim cb As New ColorBlend()
-                cb.Colors = {ToolStrip1Color, ToolStrip2Color, ToolStrip3Color, ToolStrip4Color}
-                cb.Positions = {0.0F, 0.5F, 0.5F, 1.0F}
-
-                Using brush As New LinearGradientBrush(rect, ToolStrip1Color, ToolStrip4Color, 90)
-                    brush.InterpolationColors = cb
-                    e.Graphics.FillRectangle(brush, rect)
-                End Using
-            End If
+            Using b As New SolidBrush(MenuStripBackgroundDefaultColor)
+                e.Graphics.FillRectangle(b, rect)
+            End Using
         End If
     End Sub
 
@@ -211,38 +141,9 @@ Public Class ToolStripRendererEx
             Else
                 Dim rect2 = New Rectangle(rect.X + 2, rect.Y, rect.Width - 3, rect.Height)
 
-                If IsFlat() Then
-                    Using brush As New SolidBrush(DropdownBackgroundSelectedColor)
-                        gx.FillRectangle(brush, rect2)
-                    End Using
-                Else
-                    rect2 = New Rectangle(rect2.X, rect2.Y, rect2.Width - 1, rect2.Height - 1)
-
-                    gx.SmoothingMode = SmoothingMode.AntiAlias
-
-                    Using path = CreateRoundRectangle(rect2, 3)
-                        Using brush As New LinearGradientBrush(
-                            rect2,
-                            ControlPaint.LightLight(ControlPaint.LightLight(TopColor)),
-                            ControlPaint.LightLight(ControlPaint.LightLight(DropdownBackgroundSelectedColor)),
-                            90.0F)
-
-                            gx.FillPath(brush, path)
-                        End Using
-
-                        Using pen As New Pen(BorderOuterColor)
-                            gx.DrawPath(pen, path)
-                        End Using
-                    End Using
-
-                    rect2.Inflate(-1, -1)
-
-                    Using path = CreateRoundRectangle(rect2, 3)
-                        Using brush As New LinearGradientBrush(rect2, TopColor, DropdownBackgroundSelectedColor, 90.0F)
-                            gx.FillPath(brush, path)
-                        End Using
-                    End Using
-                End If
+                Using brush As New SolidBrush(DropdownBackgroundSelectedColor)
+                    gx.FillRectangle(brush, rect2)
+                End Using
             End If
         End If
     End Sub
@@ -251,54 +152,9 @@ Public Class ToolStripRendererEx
         Dim gx = e.Graphics
         Dim rect = New Rectangle(Point.Empty, e.Item.Size)
 
-        If IsFlat() Then
-            Using brush As New SolidBrush(MenuStripBackgroundSelectedColor)
-                gx.FillRectangle(brush, rect)
-            End Using
-        Else
-            rect = New Rectangle(rect.X, rect.Y, rect.Width - 1, rect.Height - 1)
-
-            gx.SmoothingMode = SmoothingMode.AntiAlias
-
-            Dim c1 = HSLColor.Convert(ToolStrip1Color).ToColorAddLuminosity(15)
-            Dim c2 = HSLColor.Convert(ToolStrip2Color).ToColorAddLuminosity(15)
-            Dim c3 = HSLColor.Convert(ToolStrip3Color).ToColorAddLuminosity(15)
-            Dim c4 = HSLColor.Convert(ToolStrip4Color).ToColorAddLuminosity(15)
-
-            Dim cb As New ColorBlend()
-
-            cb.Colors = {c1, c2, c3, c4}
-            cb.Positions = {0.0F, 0.5F, 0.5F, 1.0F}
-
-            Using path = CreateRoundRectangle(rect, 3)
-                Using brush As New LinearGradientBrush(rect, c1, c4, 90)
-                    brush.InterpolationColors = cb
-                    gx.FillPath(brush, path)
-                End Using
-
-                Using pen As New Pen(BorderOuterColor)
-                    gx.DrawPath(pen, path)
-                End Using
-            End Using
-
-            rect.Inflate(-1, -1)
-
-            c1 = HSLColor.Convert(ToolStrip1Color).ToColorAddLuminosity(5)
-            c2 = HSLColor.Convert(ToolStrip2Color).ToColorAddLuminosity(5)
-            c3 = HSLColor.Convert(ToolStrip3Color).ToColorAddLuminosity(-10)
-            c4 = HSLColor.Convert(ToolStrip4Color).ToColorAddLuminosity(-10)
-
-            cb.Colors = {c1, c2, c3, c4}
-            cb.Positions = {0.0F, 0.5F, 0.5F, 1.0F}
-
-            Using brush As New LinearGradientBrush(rect, c1, c4, 90)
-                brush.InterpolationColors = cb
-
-                Using path = CreateRoundRectangle(rect, 3)
-                    gx.FillPath(brush, path)
-                End Using
-            End Using
-        End If
+        Using brush As New SolidBrush(MenuStripBackgroundSelectedColor)
+            gx.FillRectangle(brush, rect)
+        End Using
     End Sub
 
     Protected Overrides Sub OnRenderDropDownButtonBackground(e As ToolStripItemRenderEventArgs)
@@ -326,14 +182,12 @@ Public Class ToolStripRendererEx
         gx.SmoothingMode = SmoothingMode.AntiAlias
         Dim h = item.Height
 
-        If IsFlat() Then
-            Dim rect = New Rectangle(2, 0, h, h)
-            Dim col = If(item.Selected, BoxSelectedColor, BoxColor)
+        Dim rect = New Rectangle(2, 0, h, h)
+        Dim col = If(item.Selected, BoxSelectedColor, BoxColor)
 
-            Using brush As New SolidBrush(col)
-                gx.FillRectangle(brush, rect)
-            End Using
-        End If
+        Using brush As New SolidBrush(col)
+            gx.FillRectangle(brush, rect)
+        End Using
 
         Dim x1 = CInt(2 + h * 0.4)
         Dim y1 = CInt(h * 0.7)
@@ -438,17 +292,5 @@ Public Class ToolStripRendererEx
         path.CloseFigure()
 
         Return path
-    End Function
-
-    Shared Function IsFlat() As Boolean
-        If RenderMode = ToolStripRenderModeEx.Win10Default Then Return True
-        If RenderMode = ToolStripRenderModeEx.Win10Auto Then Return True
-
-        If (RenderMode = ToolStripRenderModeEx.SystemDefault OrElse
-            RenderMode = ToolStripRenderModeEx.SystemAuto) AndAlso
-            OSVersion.Current >= OSVersion.Windows8 Then
-
-            Return True
-        End If
     End Function
 End Class

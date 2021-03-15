@@ -184,7 +184,7 @@ Public MustInherit Class VideoEncoder
     Overrides Function CreateEditControl() As Control
         Dim ret As New ToolStripEx
 
-        ret.Renderer = New ToolStripRendererEx(s.ToolStripRenderModeEx)
+        ret.Renderer = New ToolStripRendererEx()
         ret.ShowItemToolTips = False
         ret.GripStyle = ToolStripGripStyle.Hidden
         ret.Dock = DockStyle.Fill

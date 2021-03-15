@@ -76,7 +76,6 @@ Public Class ApplicationSettings
     Public TargetImageSizeMenu As String
     Public ThemeName As String
     Public ThumbnailBackgroundColor As Color = Color.AliceBlue
-    Public ToolStripRenderModeEx As ToolStripRenderModeEx = ToolStripRenderModeEx.SystemDefault
     Public UIScaleFactor As Single = 1
     Public VapourSynthFilterPreferences As StringPairList
     Public VapourSynthMode As FrameServerMode
@@ -177,10 +176,6 @@ Public Class ApplicationSettings
             VapourSynthFilterPreferences.Add("d2v", "MPEG2Source")
             VapourSynthFilterPreferences.Add("mp4 m4v mov", "LibavSMASHSource")
             VapourSynthFilterPreferences.Add("ts m2ts mts m2t m2v", "LWLibavSource")
-        End If
-
-        If Check(ToolStripRenderModeEx, "menu style", 1) Then
-            ToolStripRenderModeEx = ToolStripRenderModeEx.SystemDefault
         End If
 
         If Check(eac3toProfiles, "eac3to Audio Stream Profiles", 4) Then

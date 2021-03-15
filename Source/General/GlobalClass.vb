@@ -1052,7 +1052,7 @@ Public Class GlobalClass
 
     Sub SetRenderer(ms As ToolStrip)
         If VisualStyleInformation.IsEnabledByUser Then
-            ms.Renderer = New ToolStripRendererEx(s.ToolStripRenderModeEx)
+            ms.Renderer = New ToolStripRendererEx()
         Else
             ms.Renderer = New ToolStripSystemRenderer()
         End If

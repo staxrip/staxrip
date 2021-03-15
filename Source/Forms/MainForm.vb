@@ -3605,11 +3605,6 @@ Public Class MainForm
             theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
             theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
 
-            Dim renderMode = ui.AddMenu(Of ToolStripRenderModeEx)
-            renderMode.Text = "Menu Style"
-            renderMode.Help = "Defines the style used to render main menus, context menus and toolbars."
-            renderMode.Field = NameOf(s.ToolStripRenderModeEx)
-
             Dim l = ui.AddLabel("Icon File:")
             l.Help = "The Windows Startmenu uses Windows Links which allow to use custom icon files."
 
@@ -5710,15 +5705,6 @@ Public Class MainForm
     End Function
 
     Protected Overrides Sub WndProc(ByRef m As Message)
-        Select Case m.Msg
-            Case 800 'WM_DWMCOLORIZATIONCOLORCHANGED
-                If ToolStripRendererEx.IsAutoRenderMode Then
-                    ToolStripRendererEx.InitColors(s.ToolStripRenderModeEx)
-                    ThemeManager.OnCurrentThemeChanged()
-                    MenuStrip.Refresh()
-                End If
-        End Select
-
         MyBase.WndProc(m)
     End Sub
 

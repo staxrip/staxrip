@@ -539,7 +539,6 @@ Public Class BatchMuxer
             tb.Label.Visible = False
             tb.Edit.Expand = True
             tb.Edit.MultilineHeightFactor = 6
-            tb.Edit.TextBox.Multiline = True
             tb.Edit.Text = CommandLines
             tb.Edit.UseCommandlineEditor = True
             tb.Edit.SaveAction = Sub(value) CommandLines = value

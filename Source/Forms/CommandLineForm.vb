@@ -15,7 +15,7 @@ Public Class CommandLineForm
 
     Sub New(params As CommandLineParams)
         InitializeComponent()
-        SimpleUI.ScaleClientSize(38, 26)
+        SimpleUI.ScaleClientSize(40, 26)
 
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
         rtbCommandLine.ContextMenuStrip.Dispose()

@@ -658,7 +658,6 @@ Public Class SimpleUI
 
         Property Expand As Boolean Implements SimpleUIControl.Expand
         Property SaveAction As Action(Of String)
-        Property MultilineHeightFactor As Integer = 4
         Property WidthFactor As Integer = 10
         Property SimpleUI As SimpleUI
 
@@ -668,9 +667,21 @@ Public Class SimpleUI
             AddHandler SimpleUI.SaveValues, AddressOf Save
         End Sub
 
+        Private _MultilineHeightFactor As Single = 4
+
+        Property MultilineHeightFactor As Single
+            Get
+                Return _MultilineHeightFactor
+            End Get
+            Set(value As Single)
+                _MultilineHeightFactor = value
+                TextBox.Multiline = True
+            End Set
+        End Property
+
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
             If TextBox.Multiline Then
-                Height = FontHeight * MultilineHeightFactor
+                Height = CInt(FontHeight * MultilineHeightFactor)
             Else
                 If Not Expand Then
                     Width = FontHeight * WidthFactor

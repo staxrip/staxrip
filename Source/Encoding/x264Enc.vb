@@ -274,8 +274,6 @@ Public Class x264Params
         .Quotes = QuotesMode.Never,
         .AlwaysOn = True,
         .InitAction = Sub(tb)
-                          tb.Edit.Expand = True
-                          tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
@@ -284,8 +282,6 @@ Public Class x264Params
         .Text = "Custom" + BR + "First Pass",
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
-                          tb.Edit.Expand = True
-                          tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
@@ -294,8 +290,6 @@ Public Class x264Params
         .Text = "Custom" + BR + "Second Pass",
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
-                          tb.Edit.Expand = True
-                          tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}

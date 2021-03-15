@@ -247,8 +247,6 @@ Public Class AV1Params
         .Text = "Custom 1st pass",
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
-                          tb.Edit.Expand = True
-                          tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
@@ -257,8 +255,6 @@ Public Class AV1Params
         .Text = "Custom 2nd pass",
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
-                          tb.Edit.Expand = True
-                          tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}

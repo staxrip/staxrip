@@ -780,7 +780,11 @@ Public Class x265Params
 
     Property MasterDisplay As New StringParam With {
         .Switch = "--master-display",
-        .Text = "Master Display"}
+        .Text = "Master Display",
+        .InitAction = Sub(tb)
+                          tb.Edit.TextBox.Multiline = True
+                          tb.Edit.MultilineHeightFactor = 2.2
+                      End Sub}
 
     Property MaxCLL As New NumParam With {
         .Text = "Maximum CLL",
@@ -816,8 +820,6 @@ Public Class x265Params
         .Quotes = QuotesMode.Never,
         .AlwaysOn = True,
         .InitAction = Sub(tb)
-                          tb.Edit.Expand = True
-                          tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
@@ -826,8 +828,6 @@ Public Class x265Params
         .Text = "Custom" + BR + "First Pass",
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
-                          tb.Edit.Expand = True
-                          tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
@@ -836,8 +836,6 @@ Public Class x265Params
         .Text = "Custom" + BR + "Last Pass",
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
-                          tb.Edit.Expand = True
-                          tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
@@ -846,8 +844,6 @@ Public Class x265Params
         .Text = "Custom" + BR + "Nth Pass",
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
-                          tb.Edit.Expand = True
-                          tb.Edit.TextBox.Multiline = True
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = New Font("Consolas", 10 * s.UIScaleFactor)
                       End Sub}
@@ -1054,7 +1050,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-STD-B67", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}},
                     New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"Undefined", "Limited", "Full"}},
                     minLuma, maxLuma, MaxCLL, MaxFALL,
-                    New NumParam With {.Switch = "--atc-sei", .Text = "Alt. transfer characteristics SEI:", .Init = -1, .Config = {-1, 12, 1}},
+                    New NumParam With {.Switch = "--atc-sei", .Text = "Alternative transfer SEI:", .Init = -1, .Config = {-1, 12, 1}},
                     New NumParam With {.Switch = "--pic-struct", .Text = "Picture structure in SEI:", .Init = -1, .Config = {-1, 12, 1}},
                     New BoolParam With {.Switch = "--cll", .NoSwitch = "--no-cll", .Text = "Emit content light level info SEI", .Init = True},
                     New BoolParam With {.Switch = "--hdr10-opt", .NoSwitch = "--no-hdr10-opt", .Text = "Block-level luma and chroma QP optimization for HDR10 content"},

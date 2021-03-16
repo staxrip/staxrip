@@ -4956,6 +4956,7 @@ Public Class MainForm
             ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         End If
 
+        ret.Add("Tools|-")
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
         ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Keys.F3, Symbol.Settings, {""})
 

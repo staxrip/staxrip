@@ -3607,14 +3607,15 @@ Public Class MainForm
             theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
             theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
 
-            Dim m = ui.AddMenu(Of String)
+            Dim m = ui.AddTextMenu
             m.Text = "Console Font"
             m.Field = NameOf(s.CodeFont)
-            m.Add({"Consolas", "Courier New"})
+            m.AddMenu("Consolas", "Consolas")
+            m.AddMenu("Courier New", "Courier New")
 
             Using font = New Font("Cascadia Code", 9)
                 If font.Name = "Cascadia Code" Then
-                    m.Add("Cascadia Code")
+                    m.AddMenu("Cascadia Code", "Cascadia Code")
                 End If
             End Using
 

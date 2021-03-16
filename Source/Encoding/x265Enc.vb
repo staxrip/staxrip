@@ -1133,17 +1133,21 @@ Public Class x265Params
         Return ret
     End Function
 
-    Public Overrides Sub ShowHelp(id As String)
+    Public Overrides Sub ShowHelp(options As String())
         Using td As New TaskDialog(Of String)
-            td.MainInstruction = id
+            td.MainInstruction = String.Join(", ", options)
             td.AddCommand("Online Help")
             td.AddCommand("Console Help")
 
             Select Case td.Show
                 Case "Online Help"
-                    g.ShellExecute("https://x265.readthedocs.io/en/latest/cli.html#cmdoption-" + id.TrimStart("-"c))
+                    Dim ret = GetHelpOption(options)
+
+                    If ret <> "" Then
+                        g.ShellExecute("https://x265.readthedocs.io/en/latest/cli.html#cmdoption-" + ret.TrimStart("-"c))
+                    End If
                 Case "Console Help"
-                    g.ShowConsoleHelp(Package.x265, id)
+                    ShowConsoleHelp(Package.x265, options)
             End Select
         End Using
     End Sub

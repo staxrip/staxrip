@@ -937,17 +937,21 @@ Public Class x264Params
         End Get
     End Property
 
-    Public Overrides Sub ShowHelp(id As String)
+    Public Overrides Sub ShowHelp(options As String())
         Using td As New TaskDialog(Of String)
-            td.MainInstruction = id
+            td.MainInstruction = String.Join(", ", options)
             td.AddCommand("Online Help")
             td.AddCommand("Console Help")
 
             Select Case td.Show
                 Case "Online Help"
-                    g.ShellExecute("http://www.chaneru.com/Roku/HLS/X264_Settings.htm#" + id.TrimStart("-"c))
+                    Dim ret = GetHelpOption(options)
+
+                    If ret <> "" Then
+                        g.ShellExecute("http://www.chaneru.com/Roku/HLS/X264_Settings.htm#" + ret.TrimStart("-"c))
+                    End If
                 Case "Console Help"
-                    g.ShowConsoleHelp(Package.x264, id)
+                    ShowConsoleHelp(Package.x264, options)
             End Select
         End Using
     End Sub

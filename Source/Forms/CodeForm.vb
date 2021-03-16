@@ -3,6 +3,7 @@ Imports StaxRip.UI
 
 Public Class CodeForm
     Property Find As String
+    Property Content As String
 
     Sub New(text As String, find As String)
         InitializeComponent()
@@ -15,6 +16,7 @@ Public Class CodeForm
         rtb.Text = text
 
         Me.Find = find
+        Content = text
 
         ApplyTheme()
 
@@ -40,8 +42,38 @@ Public Class CodeForm
 
     Sub TextHelpForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         If Find <> "" Then
-            rtb.Find(Find)
-            rtb.ScrollToCaret()
+            FindByIndex(0)
+        End If
+    End Sub
+
+    Sub FindByIndex(startIndex As Integer)
+        If startIndex >= Content.Length Then
+            Exit Sub
+        End If
+
+        rtb.Find(Find, startIndex, RichTextBoxFinds.None)
+        rtb.ScrollToCaret()
+
+        Dim start = rtb.SelectionStart
+
+        If start > startIndex Then
+            While True
+                start -= 1
+
+                If start = 0 Then
+                    Exit While
+                End If
+
+                Dim ch = Content(start)
+
+                If ch = BR(1) Then
+                    Exit While
+                End If
+            End While
+
+            If (rtb.SelectionStart - start) > 15 Then
+                FindByIndex(rtb.SelectionStart + rtb.SelectionLength)
+            End If
         End If
     End Sub
 

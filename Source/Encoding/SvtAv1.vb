@@ -134,8 +134,8 @@ Public Class SVTAV1
             End Get
         End Property
 
-        Public Overrides Sub ShowHelp(switch As String)
-            g.ShowConsoleHelp(Package.SVTAV1, switch)
+        Public Overrides Sub ShowHelp(options As String())
+            ShowConsoleHelp(Package.SVTAV1, options)
         End Sub
 
         Overrides Function GetCommandLine(

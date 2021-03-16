@@ -469,8 +469,8 @@ Public Class AV1Params
         End Get
     End Property
 
-    Overrides Sub ShowHelp(id As String)
-        g.ShowConsoleHelp(Package.aomenc, id)
+    Overrides Sub ShowHelp(options As String())
+        ShowConsoleHelp(Package.aomenc, options)
     End Sub
 
     Overloads Overrides Function GetCommandLine(

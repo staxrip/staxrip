@@ -185,8 +185,8 @@ Public Class CommandLineForm
                 checkBox.Text = param.Text
 
                 If param.HelpSwitch <> "" Then
-                    Dim helpID = param.HelpSwitch
-                    checkBox.HelpAction = Sub() Params.ShowHelp(helpID)
+                    Dim helpOptions = param.GetSwitches
+                    checkBox.HelpAction = Sub() Params.ShowHelp(helpOptions)
                 Else
                     checkBox.Help = help
                 End If
@@ -204,8 +204,8 @@ Public Class CommandLineForm
                 End If
 
                 If param.HelpSwitch <> "" Then
-                    Dim helpID = param.HelpSwitch
-                    numBlock.Label.HelpAction = Sub() Params.ShowHelp(helpID)
+                    Dim helpOptions = param.GetSwitches
+                    numBlock.Label.HelpAction = Sub() Params.ShowHelp(helpOptions)
                 Else
                     numBlock.Label.Help = help
                 End If
@@ -226,9 +226,9 @@ Public Class CommandLineForm
                 menuBlock.Label.Text = If(param.Text.EndsWith(":"), param.Text, param.Text + ":")
 
                 If param.HelpSwitch <> "" Then
-                    Dim helpID = param.HelpSwitch
-                    menuBlock.Label.HelpAction = Sub() Params.ShowHelp(helpID)
-                    menuBlock.Button.HelpAction = Sub() Params.ShowHelp(helpID)
+                    Dim helpOptions = param.GetSwitches
+                    menuBlock.Label.HelpAction = Sub() Params.ShowHelp(helpOptions)
+                    menuBlock.Button.HelpAction = Sub() Params.ShowHelp(helpOptions)
                 Else
                     menuBlock.Help = help
                 End If
@@ -270,8 +270,8 @@ Public Class CommandLineForm
                 textBlock.Label.Text = If(param.Text.EndsWith(":"), param.Text, param.Text + ":")
 
                 If param.HelpSwitch <> "" Then
-                    Dim helpID = param.HelpSwitch
-                    textBlock.Label.HelpAction = Sub() Params.ShowHelp(helpID)
+                    Dim helpOptions = param.GetSwitches
+                    textBlock.Label.HelpAction = Sub() Params.ShowHelp(helpOptions)
                 Else
                     textBlock.Label.Help = help
                 End If

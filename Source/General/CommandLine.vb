@@ -63,8 +63,68 @@ Namespace CommandLine
             OnValueChanged(item)
         End Sub
 
-        Overridable Sub ShowHelp(id As String)
+        Overridable Sub ShowHelp(options As String())
         End Sub
+
+        Shared Sub ShowConsoleHelp(package As Package, options As String())
+            Dim opt = GetHelpOption(options)
+
+            If opt = "" Then
+                Exit Sub
+            End If
+
+            Dim content = package.CreateHelpfile()
+            Dim find As String
+
+            If content.Contains(opt.Replace("--", "--(no-)") + " ") Then
+                find = opt.Replace("--", "--(no-)") + " "
+            ElseIf content.Contains(opt.Replace("--", "--(no-)")) Then
+                find = opt.Replace("--", "--(no-)")
+            ElseIf content.Contains(opt.Replace("--", "--[no-]") + " ") Then
+                find = opt.Replace("--", "--[no-]") + " "
+            ElseIf content.Contains(opt.Replace("--", "--[no-]")) Then
+                find = opt.Replace("--", "--[no-]")
+            ElseIf content.Contains(", " + opt + " ") Then
+                find = ", " + opt + " "
+            ElseIf content.Contains(",  " + opt + " ") Then
+                find = ",  " + opt + " "
+            ElseIf content.Contains("  " + opt + " ") Then
+                find = "  " + opt + " "
+            ElseIf content.Contains(opt + " ") Then
+                find = opt + " "
+            ElseIf content.Contains(opt) Then
+                find = opt
+            End If
+
+            If find = "" Then
+                MsgError($"{opt} not found", "This option is either undocumented or deprecated.")
+                Exit Sub
+            End If
+
+            g.ShowCode(package.Name + " Help", content, find)
+        End Sub
+
+        Shared Function GetHelpOption(options As String()) As String
+            If options.NothingOrEmpty Then
+                Return Nothing
+            End If
+
+            options = options.Where(Function(i) i.Length > 3).ToArray
+
+            If options.Length = 1 Then
+                Return options(0)
+            ElseIf options.Length > 1 Then
+                Using td As New TaskDialog(Of String)
+                    td.MainInstruction = "Choose option"
+
+                    For Each i In options
+                        td.AddCommand(i)
+                    Next
+
+                    Return td.Show()
+                End Using
+            End If
+        End Function
 
         Protected Overridable Sub OnValueChanged(item As CommandLineParam)
             For Each i In Items
@@ -156,7 +216,7 @@ Namespace CommandLine
         Overridable Function GetArgs() As String
         End Function
 
-        Function GetSwitches() As HashSet(Of String)
+        Function GetSwitches() As String()
             Dim ret As New HashSet(Of String)
 
             If Switch <> "" Then ret.Add(Switch)
@@ -171,7 +231,7 @@ Namespace CommandLine
                 Next
             End If
 
-            Return ret
+            Return ret.ToArray
         End Function
 
         Property VisibleValue As Boolean = True

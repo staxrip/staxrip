@@ -273,8 +273,8 @@ Public Class Rav1eParams
         End Get
     End Property
 
-    Public Overrides Sub ShowHelp(id As String)
-        g.ShowConsoleHelp(Package.Rav1e, id)
+    Public Overrides Sub ShowHelp(options As String())
+        ShowConsoleHelp(Package.Rav1e, options)
     End Sub
 
     Overloads Overrides Function GetCommandLine(

@@ -615,8 +615,8 @@ Public Class NVEnc
             End Get
         End Property
 
-        Public Overrides Sub ShowHelp(id As String)
-            g.ShowConsoleHelp(Package.NVEnc, id)
+        Public Overrides Sub ShowHelp(options As String())
+            ShowConsoleHelp(Package.NVEnc, options)
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)

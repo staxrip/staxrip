@@ -207,8 +207,8 @@ Public Class VCEEnc
             End Get
         End Property
 
-        Public Overrides Sub ShowHelp(id As String)
-            g.ShowConsoleHelp(Package.VCEEnc, id)
+        Public Overrides Sub ShowHelp(options As String())
+            ShowConsoleHelp(Package.VCEEnc, options)
         End Sub
 
         Overrides Function GetCommandLine(

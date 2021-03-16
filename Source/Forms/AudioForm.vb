@@ -1,4 +1,5 @@
 
+Imports StaxRip.CommandLine
 Imports StaxRip.UI
 
 Public Class AudioForm
@@ -1146,7 +1147,7 @@ Public Class AudioForm
                                     End Sub
                 End If
             Case GuiAudioEncoder.fdkaac
-                Dim getHelpAction = Function(switch As String) Sub() g.ShowConsoleHelp(Package.fdkaac, switch)
+                Dim getHelpAction = Function(switch As String) Sub() CommandLineParams.ShowConsoleHelp(Package.fdkaac, {switch})
 
                 Dim modeMenu = ui.AddMenu(Of SimpleAudioRateMode)
                 modeMenu.Text = "Rate Mode"

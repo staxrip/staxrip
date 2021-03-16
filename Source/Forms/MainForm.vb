@@ -4943,7 +4943,7 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Reset Settings...", NameOf(g.DefaultCommands.ResetSettings))
         ret.Add("Tools|Advanced|-")
         ret.Add("Tools|Advanced|Command Prompt", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_terminal, {"cmd.exe", False, False, False, "%working_dir%"})
-        ret.Add("Tools|Advanced|PowerShell Terminal", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.Control Or Keys.T, Symbol.fa_terminal, {"powershell.exe -nologo -executionpolicy unrestricted", False, False, False, "%working_dir%"})
+        ret.Add("Tools|Advanced|PowerShell Terminal", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_terminal, {"powershell.exe -nologo -executionpolicy bypass", False, False, False, "%working_dir%"})
 
         If g.IsWindowsTerminalAvailable Then
             ret.Add("Tools|Advanced|Windows Terminal", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.Control Or Keys.T, Symbol.fa_terminal, {"wt.exe", False, False, False, "%working_dir%"})

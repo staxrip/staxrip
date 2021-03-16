@@ -361,8 +361,8 @@ Public Class QSVEnc
             End Get
         End Property
 
-        Public Overrides Sub ShowHelp(id As String)
-            g.ShowConsoleHelp(Package.QSVEnc, id)
+        Public Overrides Sub ShowHelp(options As String())
+            ShowConsoleHelp(Package.QSVEnc, options)
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)

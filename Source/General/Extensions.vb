@@ -1377,3 +1377,31 @@ Module SymbolExtensions
         Return Convert.ToChar(symbol)
     End Function
 End Module
+
+Module FontExtensions
+    <Extension()>
+    Function IsMonospace(fontFamily As FontFamily) As Boolean
+        Using bmp As Bitmap = New Bitmap(1, 1)
+            Using g As Graphics = Graphics.FromImage(bmp)
+                Using f = New Font(fontFamily.Name, 20)
+                    Dim w1 = g.MeasureString("ii", f).Width
+                    Dim w2 = g.MeasureString("WW", f).Width
+                    Return w1 = w2
+                End Using
+            End Using
+        End Using
+    End Function
+
+    <Extension()>
+    Function IsMonospace(font As Font) As Boolean
+        Using bmp As Bitmap = New Bitmap(1, 1)
+            Using g As Graphics = Graphics.FromImage(bmp)
+                Using f = New Font(font.Name, 20)
+                    Dim w1 = g.MeasureString("ii", f).Width
+                    Dim w2 = g.MeasureString("WW", f).Width
+                    Return w1 = w2
+                End Using
+            End Using
+        End Using
+    End Function
+End Module

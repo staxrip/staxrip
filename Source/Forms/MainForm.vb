@@ -3610,14 +3610,16 @@ Public Class MainForm
             Dim m = ui.AddTextMenu
             m.Text = "Console Font"
             m.Field = NameOf(s.CodeFont)
-            m.AddMenu("Consolas", "Consolas")
-            m.AddMenu("Courier New", "Courier New")
 
-            Using font = New Font("Cascadia Code", 9)
-                If font.Name = "Cascadia Code" Then
-                    m.AddMenu("Cascadia Code", "Cascadia Code")
-                End If
-            End Using
+            For Each ff In FontFamily.Families.Where(Function(x) x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
+                m.AddMenu(ff.Name, ff.Name)
+            Next
+
+            'Using font = New Font("Cascadia Code", 9)
+            '    If font.Name = "Cascadia Code" Then
+            '        m.AddMenu("Cascadia Code", "Cascadia Code")
+            '    End If
+            'End Using
 
             n = ui.AddNum()
             n.Text = "Scale Factor"

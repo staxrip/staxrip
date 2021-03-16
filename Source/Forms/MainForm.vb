@@ -3609,6 +3609,7 @@ Public Class MainForm
 
             Dim m = ui.AddTextMenu
             m.Text = "Console Font"
+            m.Expandet = True
             m.Field = NameOf(s.CodeFont)
 
             For Each ff In FontFamily.Families.Where(Function(x) x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())

@@ -94,7 +94,7 @@ Public Class JobManager
         Dim jobs = GetJobs()
 
         For Each job In jobs.ToArray
-            If job.Path = path Then
+            If job.Path.ToLowerEx() = path.ToLowerEx() Then
                 jobs.Remove(job)
             End If
         Next

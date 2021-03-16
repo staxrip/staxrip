@@ -234,7 +234,7 @@ Public Class x264Params
         .Name = "Quant",
         .Text = "Quality",
         .DefaultValue = 23,
-        .Init = 20,
+        .Value = 20,
         .VisibleFunc = Function() Mode.Value = 1 OrElse Mode.Value = 2,
         .Config = {0, 69, 0.5, 1}}
 
@@ -1079,7 +1079,7 @@ Public Class x264Params
                 sb.Append(" --qp " + CInt(Quant.Value).ToString)
             End If
         ElseIf Mode.Value = x264RateMode.Quality Then
-            If Not IsCustom(pass, "--crf") Then
+            If Quant.Value <> Quant.DefaultValue AndAlso Not IsCustom(pass, "--crf") Then
                 sb.Append(" --crf " + Quant.Value.ToInvariantString)
             End If
         Else

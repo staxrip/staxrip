@@ -233,7 +233,8 @@ Public Class x264Params
         .Switches = {"--crf", "--qp"},
         .Name = "Quant",
         .Text = "Quality",
-        .Init = 22,
+        .DefaultValue = 23,
+        .Init = 20,
         .VisibleFunc = Function() Mode.Value = 1 OrElse Mode.Value = 2,
         .Config = {0, 69, 0.5, 1}}
 
@@ -611,6 +612,11 @@ Public Class x264Params
 
         Select Case Preset.Value
             Case 0 'ultrafast
+                setVal(I4x4, False)
+                setVal(P4x4, False)
+                setVal(B8x8, False)
+                setVal(I8x8, False)
+                setVal(P8x8, False)
                 setVal(Deblock, False)
                 setVal(_8x8dct, False)
                 setVal(BFrames, 0)
@@ -628,13 +634,13 @@ Public Class x264Params
                 setVal(Trellis, 0)
                 setVal(Weightb, False)
             Case 1 'superfast
+                setVal(P4x4, False)
+                setVal(B8x8, False)
+                setVal(P8x8, False)
                 setVal(Weightp, 1)
                 setVal(Mbtree, False)
                 setVal(Me_, 0)
                 setVal(MixedRefs, False)
-                setVal(P4x4, False)
-                setVal(B8x8, False)
-                setVal(P8x8, False)
                 setVal(RcLookahead, 0)
                 setVal(Ref, 1)
                 setVal(Subme, 1)

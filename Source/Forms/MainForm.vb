@@ -3616,12 +3616,6 @@ Public Class MainForm
                 m.AddMenu(ff.Name, ff.Name)
             Next
 
-            'Using font = New Font("Cascadia Code", 9)
-            '    If font.Name = "Cascadia Code" Then
-            '        m.AddMenu("Cascadia Code", "Cascadia Code")
-            '    End If
-            'End Using
-
             n = ui.AddNum()
             n.Text = "Scale Factor"
             n.Help = "Requires to restart StaxRip."

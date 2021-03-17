@@ -14,3 +14,6 @@
 /Source/Tools/AutoCrop/.vs
 /Source/Tools/AutoCrop/obj
 /Source/VideoData
+/Source/TaskDialog/obj
+/Source/TaskDialog/WPFTest/bin
+/Source/TaskDialog/WPFTest/obj

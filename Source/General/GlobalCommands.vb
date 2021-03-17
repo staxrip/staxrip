@@ -290,7 +290,7 @@ Public Class GlobalCommands
         Select Case topic
             Case "info"
                 form.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
-                form.Doc.WriteParagraph($"[file:///{Folder.Startup + "Authors.html"} StaxRip Authors]")
+                form.Doc.WriteParagraph($"[file:///{Uri.EscapeDataString(Folder.Startup + "Authors.html")} StaxRip Authors]")
 
                 Dim licensePath = Folder.Startup + "License.txt"
 

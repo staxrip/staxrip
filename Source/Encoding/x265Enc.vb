@@ -590,6 +590,10 @@ Public Class x265Params
         .Switch = "--cu-lossless",
         .Text = "CU Lossless"}
 
+    Property Tskip As New BoolParam With {
+        .Switch = "--tskip",
+        .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"}
+
     Property TskipFast As New BoolParam With {
         .Switch = "--tskip-fast",
         .Text = "Only evaluate transform skip for NxN intra predictions (4x4 blocks)"}
@@ -954,9 +958,7 @@ Public Class x265Params
                     New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}},
                     New BoolParam With {.Switch = "--dynamic-refine", .Text = "Dynamic Refine"},
-                    Rect, AMP,
-                    New BoolParam With {.Switch = "--tskip", .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"},
-                    TskipFast, EarlySkip, FastIntra, BIntra, LimitModes, CUlossless,
+                    Rect, AMP, Tskip, TskipFast, EarlySkip, FastIntra, BIntra, LimitModes, CUlossless,
                     New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
                     New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"},
                     RefineCtuDistortion)
@@ -1719,6 +1721,7 @@ Public Class x265Params
             Case 9 'placebo
                 [Me].Value = 3
                 AMP.Value = True
+                Tskip.Value = True
                 BAdapt.Value = 2
                 BFrames.Value = 8
                 BIntra.Value = True
@@ -1998,6 +2001,7 @@ Public Class x265Params
             Case 9 'placebo
                 [Me].DefaultValue = 3
                 AMP.DefaultValue = True
+                Tskip.DefaultValue = True
                 BAdapt.DefaultValue = 2
                 BFrames.DefaultValue = 8
                 BIntra.DefaultValue = True

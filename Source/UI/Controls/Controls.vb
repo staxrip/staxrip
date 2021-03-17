@@ -792,7 +792,7 @@ Namespace UI
             Dim vPos As Integer = (Height - glyphSize.Height) \ 2
             Dim hPos As Integer = 1
             Dim glyphLocation As Point = New Point(hPos, vPos)
-            Dim textLocation As Point = New Point(hPos + glyphSize.Width + hPos, Height - (Height - TextRenderer.MeasureText(Text, Font).Height) \ 3)
+            Dim textLocation As Point = New Point(hPos + glyphSize.Width + hPos, 1 + Height - (Height - CInt(pevent.Graphics.MeasureString(Text, Font).Height)) \ 3)
             Dim textFlags As TextFormatFlags = TextFormatFlags.SingleLine Or TextFormatFlags.VerticalCenter
             Dim fColor As ColorHSL = If(Checked, _theme.General.Controls.CheckBox.ForeCheckedColor, _theme.General.Controls.CheckBox.ForeColor)
 

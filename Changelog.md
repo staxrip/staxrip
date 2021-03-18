@@ -29,6 +29,7 @@ Next Release
 - x264 default CRF value set while setting initial value to 20 (Dendraspis, [#594](/../../issues/594))
 - x264 fix UltraFast preset value sync (Dendraspis, [#594](/../../issues/594))
 - Video encoder context console help was fixed and improved (stax76, [#595](/../../issues/595))
+- Fix x265 --tskip default value for Placebo preset (tkozybski, Dendraspis, [#600](/../../issues/600))
 
 
 2.1.8.5 Beta (2021-03-09)

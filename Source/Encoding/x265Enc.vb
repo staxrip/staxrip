@@ -1488,7 +1488,7 @@ Public Class x265Params
         PsyRDOQ.Value = 0
         QComp.Value = 0.6
         RSkip.Value = 1
-        TSkip.Value = 0
+        TSkip.Value = False
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1769,7 +1769,7 @@ Public Class x265Params
         PsyRDOQ.DefaultValue = 0
         QComp.DefaultValue = 0.6
         RSkip.DefaultValue = 1
-        TSkip.DefaultValue = 0
+        TSkip.DefaultValue = False
 
         Select Case Preset.Value
             Case 0 'ultrafast

@@ -590,11 +590,11 @@ Public Class x265Params
         .Switch = "--cu-lossless",
         .Text = "CU Lossless"}
 
-    Property Tskip As New BoolParam With {
+    Property TSkip As New BoolParam With {
         .Switch = "--tskip",
         .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"}
 
-    Property TskipFast As New BoolParam With {
+    Property TSkipFast As New BoolParam With {
         .Switch = "--tskip-fast",
         .Text = "Only evaluate transform skip for NxN intra predictions (4x4 blocks)"}
 
@@ -958,7 +958,7 @@ Public Class x265Params
                     New NumParam With {.Switch = "--refine-intra", .Text = "Refine Intra", .Config = {0, 4}},
                     New NumParam With {.Switch = "--refine-inter", .Text = "Refine Inter", .Config = {0, 3}},
                     New BoolParam With {.Switch = "--dynamic-refine", .Text = "Dynamic Refine"},
-                    Rect, AMP, Tskip, TskipFast, EarlySkip, FastIntra, BIntra, LimitModes, CUlossless,
+                    Rect, AMP, TSkip, TSkipFast, EarlySkip, FastIntra, BIntra, LimitModes, CUlossless,
                     New BoolParam With {.Switch = "--cu-stats", .Text = "CU Stats"},
                     New BoolParam With {.Switch = "--splitrd-skip", .Text = "Enable skipping split RD analysis"},
                     RefineCtuDistortion)
@@ -1488,6 +1488,7 @@ Public Class x265Params
         PsyRDOQ.Value = 0
         QComp.Value = 0.6
         RSkip.Value = 1
+        TSkip.Value = 0
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -1721,7 +1722,6 @@ Public Class x265Params
             Case 9 'placebo
                 [Me].Value = 3
                 AMP.Value = True
-                Tskip.Value = True
                 BAdapt.Value = 2
                 BFrames.Value = 8
                 BIntra.Value = True
@@ -1741,6 +1741,7 @@ Public Class x265Params
                 Scenecut.Value = 40
                 SignHide.Value = True
                 SubME.Value = 5
+                TSkip.Value = True
                 TUinter.Value = 4
                 TUintra.Value = 4
                 Weightb.Value = True
@@ -1768,6 +1769,7 @@ Public Class x265Params
         PsyRDOQ.DefaultValue = 0
         QComp.DefaultValue = 0.6
         RSkip.DefaultValue = 1
+        TSkip.DefaultValue = 0
 
         Select Case Preset.Value
             Case 0 'ultrafast
@@ -2001,7 +2003,6 @@ Public Class x265Params
             Case 9 'placebo
                 [Me].DefaultValue = 3
                 AMP.DefaultValue = True
-                Tskip.DefaultValue = True
                 BAdapt.DefaultValue = 2
                 BFrames.DefaultValue = 8
                 BIntra.DefaultValue = True
@@ -2023,6 +2024,7 @@ Public Class x265Params
                 SubME.DefaultValue = 5
                 TUinter.DefaultValue = 4
                 TUintra.DefaultValue = 4
+                TSkip.DefaultValue = True
                 Weightb.DefaultValue = True
                 Weightp.DefaultValue = True
         End Select

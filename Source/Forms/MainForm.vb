@@ -5159,7 +5159,7 @@ Public Class MainForm
                 BlockBitrate = True
 
                 If Not BlockSize Then
-                    tbTargetSize.Text = CInt(Calc.GetSize).ToString
+                    tbTargetSize.Text = $"{CInt(Calc.GetSizeInBytes \ PrefixedSize(2).Factor)}"
                 End If
 
                 BlockBitrate = False

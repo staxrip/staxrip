@@ -106,12 +106,11 @@ Public Class Calc
         If p.TargetWidth = 0 Then Return 0
         If p.TargetHeight = 0 Then Return 0
 
-        Return p.VideoBitrate * SizePrefix.Base / (p.TargetWidth * p.TargetHeight * CLng(framerate))
+        Return p.VideoBitrate * 1000L / (p.TargetWidth * p.TargetHeight * CLng(framerate))
     End Function
 
-    Shared Function GetSize() As Double
-        Dim ret = (Calc.GetVideoKBytes() + Calc.GetAudioKBytes() +
-            GetSubtitleKBytes() + Calc.GetOverheadKBytes()) / SizePrefix.Base
+    Shared Function GetSizeInBytes() As Long
+        Dim ret = (GetVideoBytes() + GetAudioBytes() + GetSubtitleBytes() + GetOverheadBytes())
 
         If ret < 1 Then ret = 1
 
@@ -123,8 +122,8 @@ Public Class Calc
             Return 0
         End If
 
-        Dim kbytes = p.TargetSize * SizePrefix.Base - GetAudioKBytes() - GetSubtitleKBytes() - GetOverheadKBytes()
-        Dim ret = kbytes * 8 / p.TargetSeconds
+        Dim bytes = p.TargetSize * PrefixedSize(2).Factor - GetAudioBytes() - GetSubtitleBytes() - GetOverheadBytes()
+        Dim ret = bytes * 8 / 1000 / p.TargetSeconds
 
         If ret < 1 Then
             ret = 1
@@ -133,15 +132,15 @@ Public Class Calc
         Return ret
     End Function
 
-    Shared Function GetVideoKBytes() As Double
-        Return ((p.VideoBitrate * p.TargetSeconds) / 8)
+    Shared Function GetVideoBytes() As Long
+        Return (p.VideoBitrate \ 8) * 1000L * p.TargetSeconds
     End Function
 
-    Shared Function GetSubtitleKBytes() As Double
-        Return Aggregate i In p.VideoEncoder.Muxer.Subtitles Into Sum(If(i.Enabled, i.Size / SizePrefix.Base / 3, 0))
+    Shared Function GetSubtitleBytes() As Long
+        Return Aggregate i In p.VideoEncoder.Muxer.Subtitles Into Sum(If(i.Enabled, i.Size \ 3, 0))
     End Function
 
-    Shared Function GetOverheadKBytes() As Double
+    Shared Function GetOverheadBytes() As Long
         Dim ret As Double
         Dim frames = p.Script.GetFrameCount
 
@@ -150,16 +149,16 @@ Public Class Calc
             If p.Audio0.File <> "" Then ret += frames * 0.04
             If p.Audio1.File <> "" Then ret += frames * 0.04
         ElseIf p.VideoEncoder.Muxer.OutputExt = "mp4" Then
-            ret += 10.4 / SizePrefix.Base * frames
+            ret += frames * 10.4
         ElseIf p.VideoEncoder.Muxer.OutputExt = "mkv" Then
             ret += frames * 0.013
         End If
 
-        Return ret
+        Return CLng(ret)
     End Function
 
-    Shared Function GetAudioKBytes() As Double
-        Return ((Calc.GetAudioBitrate() * p.TargetSeconds) / 8) / SizePrefix.Base
+    Shared Function GetAudioBytes() As Long
+        Return (CLng(GetAudioBitrate() / 8) * 1000L * p.TargetSeconds)
     End Function
 
     Shared Function GetAudioBitrate() As Double

@@ -149,12 +149,12 @@ Public Class Calc
             If p.Audio0.File <> "" Then ret += frames * 0.04
             If p.Audio1.File <> "" Then ret += frames * 0.04
         ElseIf p.VideoEncoder.Muxer.OutputExt = "mp4" Then
-            ret += frames * 10.4
-        ElseIf p.VideoEncoder.Muxer.OutputExt = "mkv" Then
             ret += frames * 0.013
+        ElseIf p.VideoEncoder.Muxer.OutputExt = "mkv" Then
+            ret += frames * 0.014
         End If
 
-        Return CLng(ret)
+        Return CLng(ret * 1024)
     End Function
 
     Shared Function GetAudioBytes() As Long

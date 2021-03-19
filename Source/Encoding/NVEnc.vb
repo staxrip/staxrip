@@ -257,10 +257,10 @@ Public Class NVEnc
             .Config = {0, 51, 1, 1},
             .VisibleFunc = Function() Mode.Value = 3 OrElse Mode.Value = 4,
             .ArgsFunc = Function()
-                            If ConstantQualityMode.Value OrElse
+                            If ConstantQualityMode.Value AndAlso
                                 VbrQuality.Value <> VbrQuality.DefaultValue Then
 
-                                Return "--vbr-quality " & VbrQuality.Value
+                                Return "--vbr-quality " & VbrQuality.Value.ToInvariantString
                             End If
                         End Function}
 

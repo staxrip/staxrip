@@ -30,6 +30,8 @@ Next Release
 - x264 fix UltraFast preset value sync (Dendraspis, [#594](/../../issues/594))
 - Video encoder context console help was fixed and improved (stax76, [#595](/../../issues/595))
 - Fix x265 --tskip default value for Placebo preset (tkozybski, Dendraspis, [#600](/../../issues/600))
+- Fix NVEnc VBR Quality value localization (Dendraspis, [#604](/../../issues/604))
+- Fix NVEnc VBR Quality applies even it's disabled (Dendraspis, [#605](/../../issues/605))
 
 
 2.1.8.5 Beta (2021-03-09)

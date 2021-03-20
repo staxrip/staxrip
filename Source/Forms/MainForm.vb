@@ -3649,6 +3649,7 @@ Public Class MainForm
             b.SaveAction = Sub(value)
                                s.BinaryPrefix = value
                                UpdateTargetSizeLabel()
+                               UpdateSizeOrBitrate()
                            End Sub
 
             b = ui.AddBool()

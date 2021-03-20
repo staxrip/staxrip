@@ -36,6 +36,7 @@ Next Release
 - Fix NVEnc VBR Quality value localization (Dendraspis, [#604](/../../issues/604))
 - Fix NVEnc VBR Quality applies even it's disabled (Dendraspis, [#605](/../../issues/605))
 - Fix audio bitrate calculation for calculation video bitrate (Dendraspis, [#608](/../../issues/608))
+- When toggling size prefix target size/bitrate are refreshed (Dendraspis)
 
 
 2.1.8.5 Beta (2021-03-09)

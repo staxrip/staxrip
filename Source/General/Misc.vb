@@ -176,7 +176,7 @@ Public Class Calc
                 Return 0
             End If
 
-            Dim kBits = New FileInfo(path).Length * 8 / 1024
+            Dim kBits = New FileInfo(path).Length * 8 / 1000
             Return kBits / seconds
         Catch ex As Exception
             g.ShowException(ex)

@@ -1,11 +1,11 @@
-Next Release
+2.1.9.0 Beta (2021-03-21)
 =========================
 
-- [X] Might break settings from previous version
+- [X] Might break settings from previous version, so starting with new settings is recommended
 - [X] Might break templates and jobs from previous version
-- [X] Changed menus that need a menu reset or manual setting in order to see them
+- [X] Changed menus that need a menu reset, manual setting or global settings reset in order to see them
 - Since v2.1.8.5 StaxRip uses the SI prefix for sizes (Base 10: `1 MB = 1000 KB`)  
-  Now it is possible to switch (back) to IEC prefix (Base 2: `1 MiB = 1024 KiB`)  
+  Now it is possible to switch (back) to IEC prefix (Base 2: `1 MiB = 1024 KiB`) in the settings  
   *Please note, that the target size menu must be resetted or adjusted by hand after a change!* (Dendraspis)
 - Set "Dark | Blue" as default theme (Dendraspis)
 - CheckBox appearance optimized (Dendraspis)
@@ -37,6 +37,16 @@ Next Release
 - Fix NVEnc VBR Quality applies even it's disabled (Dendraspis, [#605](/../../issues/605))
 - Fix audio bitrate calculation for calculation video bitrate (Dendraspis, [#608](/../../issues/608))
 - When toggling size prefix target size/bitrate are refreshed (Dendraspis)
+- AddGrainC v1.8.3.0
+- AnimeIVTC v2.34 2020-12-19 mod
+- AVSMeter v3.0.8.0
+- chapterEditor v1.27
+- CropResize 2021-02-01
+- MediaInfo.NET v7.0.0.0
+- MP4Box v1.1.0 DEV rev589 gcc10.2.0 Patman
+- MTN Thumbnailer v3.4
+- SangNom2 v0.6.0
+- xy-VSFilter v3.2.0.804
 
 
 2.1.8.5 Beta (2021-03-09)

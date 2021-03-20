@@ -748,7 +748,7 @@ Public Class GUIAudioProfile
         Params.Migrate()
     End Sub
 
-    Function GetBitrate() As Integer
+    Public Function GetBitrate() As Integer
         If Params.RateMode = AudioRateMode.VBR Then
             Select Case Params.Codec
                 Case AudioCodec.AAC

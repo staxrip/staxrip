@@ -38,8 +38,10 @@ Namespace UI
             Get
                 Dim ret = MyBase.CreateParams
 
-                If IsComposited Then
-                    ret.ExStyle = ret.ExStyle Or &H2000000 'WS_EX_COMPOSITED
+                If Not DesignHelp.IsDesignMode Then
+                    If IsComposited Then
+                        ret.ExStyle = ret.ExStyle Or &H2000000 'WS_EX_COMPOSITED
+                    End If
                 End If
 
                 Return ret

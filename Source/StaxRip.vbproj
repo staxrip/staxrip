@@ -417,6 +417,15 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\TaskDialog.vb" />
+    <Compile Include="UI\TaskDialog2.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\TaskDialogForm.Designer.vb">
+      <DependentUpon>TaskDialogForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TaskDialogForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="UI\Templates\DialogTemplate.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -427,6 +436,9 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
+    <EmbeddedResource Include="UI\TaskDialogForm.resx">
+      <DependentUpon>TaskDialogForm.vb</DependentUpon>
+    </EmbeddedResource>
     <None Include="..\Changelog.md">
       <Link>Changelog.md</Link>
     </None>

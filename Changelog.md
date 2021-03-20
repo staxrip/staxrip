@@ -3,7 +3,7 @@ Next Release
 
 - [X] Might break settings from previous version
 - [X] Might break templates and jobs from previous version
-- [X] Changed menus that need a menu reset or manual setting in order to see them
+- [X] Changed menus that need a menu reset, manual setting or global settings reset in order to see them
 - Since v2.1.8.5 StaxRip uses the SI prefix for sizes (Base 10: `1 MB = 1000 KB`)  
   Now it is possible to switch (back) to IEC prefix (Base 2: `1 MiB = 1024 KiB`)  
   *Please note, that the target size menu must be resetted or adjusted by hand after a change!* (Dendraspis)

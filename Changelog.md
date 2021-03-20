@@ -1,6 +1,13 @@
 Next Release
 =========================
 
+- [X] Might break settings from previous version
+- [X] Might break templates and jobs from previous version
+- [X] Changed menus that need a menu reset or manual setting in order to see them
+- Since v2.1.8.5 StaxRip uses the SI prefix for sizes (Base 10: `1 MB = 1000 KB`)  
+  Now it is possible to switch (back) to IEC prefix (Base 2: `1 MiB = 1024 KiB`)  
+  *Please note, that the target size menu must be resetted or adjusted by hand after a change!* (Dendraspis)
+- Set "Dark | Blue" as default theme (Dendraspis)
 - CheckBox appearance optimized (Dendraspis)
 - CodeEditor does not join "Cutting" filter (Dendraspis)
 - Block size for Compressibility Check can be set in seconds (Dendraspis, [#547](/../../issues/547))
@@ -9,11 +16,7 @@ Next Release
 - Extended option descrption for 'Temp Files Folder' if Auto-Deletion is enabled (Dendraspis, [#542](/../../issues/542))
 - Progress Reformatting is a global option like Output Highlighting (Dendraspis)
 - Improved usability for subtitle options (stax76, [#577](/../../issues/577))
-- Since v2.1.8.5 StaxRip uses the SI prefix for sizes (Base 10: `1 MB = 1000 KB`)  
-  Now it is possible to switch (back) to IEC prefix (Base 2: `1 MiB = 1024 KiB`)  
-  *Please note, that the target size menu must be resetted or adjusted by hand after a change!* (Dendraspis)
 - Show target size label including size unit (Dendraspis, VEGAX265, [#580](/../../issues/580))
-- Set "Dark | Blue" as default theme (Dendraspis)
 - Theme "Default" is renamed to "System Colors" (Dendraspis)
 - Priority for current selected process can be set via menu on Processing window (Dendraspis)
 - Multiple theme related adjustments (Dendraspis, stax76)
@@ -32,6 +35,7 @@ Next Release
 - Fix x265 --tskip default value for Placebo preset (tkozybski, Dendraspis, [#600](/../../issues/600))
 - Fix NVEnc VBR Quality value localization (Dendraspis, [#604](/../../issues/604))
 - Fix NVEnc VBR Quality applies even it's disabled (Dendraspis, [#605](/../../issues/605))
+- Fix audio bitrate calculation for calculation video bitrate (Dendraspis, [#608](/../../issues/608))
 
 
 2.1.8.5 Beta (2021-03-09)

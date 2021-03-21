@@ -1,12 +1,22 @@
 ﻿
+Imports StaxRip.UI
+
 Public Class TaskDialog2(Of T)
     Inherits TaskDialogForm
 
     Property Commands As New List(Of Command)
+    Property Buttons As New List(Of Button)
     Property tbContent As TextBox
     Property tbExpandedContent As TextBox
+    Property SelectedValue As T
+    Property SelectedText As String
+    Property MainInstruction As String
+    Property Content As String
+    Property ExpandedInformation As String
 
     Shared Function Test() As Boolean
+        'Return False
+
         'Dim nativeTaskDialog As New TaskDialog(Of String)
         'nativeTaskDialog.MainInstruction = "Hallo"
         'nativeTaskDialog.MainIcon = TaskDialogIcon.Info
@@ -20,70 +30,53 @@ Public Class TaskDialog2(Of T)
         'nativeTaskDialog.Show()
         'Return True
 
-        'MsgInfo("aaaaa ".Multiply(20), ("bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb" + BR).Multiply(10))
-        'Return True
+        MsgError("aaaaa ".Multiply(20), ("bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb bbbbb" + BR).Multiply(10))
+        Return True
 
         'Application.Run(New TestForm)
         'Return True
 
         Dim td As New TaskDialog2(Of String)
-        td.MainInstruction = "Hallo ".Multiply(20)
+        'td.MainInstruction = "Hallo ".Multiply(20)
         td.Content = "Hi there"
+
         td.AddCommand("Hallo 1 ".Multiply(5))
         td.AddCommand("", "Description ".Multiply(5), "")
         td.AddCommand("Hallo 3".Multiply(5), "Ha Ha Ha ".Multiply(5), "")
+
+        'td.MainInstruction = "Save changed project?"
+
+
+        'Dim td As New TaskDialog2(Of DialogResult)
+        ''td.MainInstruction = "Hallo ".Multiply(20)
+        'td.Content = "Hi there"
+
+        'td.AddCommand("Hallo 1 ".Multiply(5))
+        'td.AddCommand("", "Description ".Multiply(5), "")
+        'td.AddCommand("Hallo 3".Multiply(5), "Ha Ha Ha ".Multiply(5), "")
+
+        'td.MainInstruction = "Save changed project?"
+
+        'td.AddButton("Save", DialogResult.Yes)
+        'td.AddButton("Don't Save !!!!!!!!!!", DialogResult.No)
+        'td.AddButton("Cancel", DialogResult.Cancel)
+
         'td.AddCommand("Hi there", "What's up?", "")
         td.Show()
 
         Return True
     End Function
 
-    Private _MainInstruction As String
-
-    Property MainInstruction As String
-        Get
-            Return _MainInstruction
-        End Get
-        Set(value As String)
-            _MainInstruction = value
-        End Set
-    End Property
-
-    Private _Content As String
-
-    Property Content As String
-        Get
-            Return _Content
-        End Get
-        Set(Value As String)
-            _Content = Value
-        End Set
-    End Property
-
-    Private _ExpandedInformation As String
-
-    Property ExpandedInformation As String
-        Get
-            Return _ExpandedInformation
-        End Get
-        Set(Value As String)
-            _ExpandedInformation = Value
-        End Set
-    End Property
-
     Sub Init()
         paIcon.Visible = False
-        cbVerification.Visible = False
-        flpButtons.Visible = False
-        llFooter.Visible = False
-        mbMenu.Visible = False
-        teInput.Visible = False
 
         laMainInstruction.Font = New Font("Segoe UI", 12)
         laMainInstruction.Text = MainInstruction
 
         If Content <> "" Then
             tbContent = New TextBox
+            tbContent.BackColor = Theme.General.BackColor
+            tbContent.ForeColor = Theme.General.Controls.Label.ForeColor
             tbContent.ReadOnly = True
             tbContent.Multiline = True
             tbContent.HideSelection = True
@@ -95,16 +88,40 @@ Public Class TaskDialog2(Of T)
 
         If ExpandedInformation <> "" Then
             tbExpandedContent = New TextBox
+            tbExpandedContent.BackColor = Theme.General.BackColor
+            tbExpandedContent.ForeColor = Theme.General.Controls.Label.ForeColor
+            tbExpandedContent.ReadOnly = True
+            tbExpandedContent.Multiline = True
+            tbExpandedContent.HideSelection = True
+            tbExpandedContent.Margin = New Padding(0)
+            tbExpandedContent.BorderStyle = BorderStyle.None
             tbExpandedContent.Text = ExpandedInformation
+            tbExpandedContent.Visible = True
             paMain.Controls.Add(tbExpandedContent)
         End If
 
         For Each command In Commands
             Dim cb As New CommandButton
-            cb.Title = command.Title
+            cb.Title = command.Text
             cb.Description = command.Description
             cb.Tag = command
+            AddHandler cb.Click, AddressOf CommandClick
             paMain.Controls.Add(cb)
+        Next
+
+        For Each button In Buttons
+            If Not flpButtons.Visible Then
+                flpButtons.Visible = True
+                flpButtons.AutoSizeMode = AutoSizeMode.GrowAndShrink
+                flpButtons.AutoSize = True
+            End If
+
+            Dim b As New ButtonEx
+            b.Text = button.Text
+            b.Tag = button.Value
+
+            flpButtons.Controls.Add(b)
+            AddHandler b.Click, AddressOf ButtonClick
         Next
 
         ActiveControl = laMainInstruction
@@ -124,7 +141,30 @@ Public Class TaskDialog2(Of T)
     End Sub
 
     Sub AddCommand(text As String, description As String, value As T)
-        Commands.Add(New Command With {.Title = text, .Description = description, .Value = value})
+        If value Is Nothing Then
+            value = CType(CObj(text), T)
+        End If
+
+        Commands.Add(New Command With {.Text = text, .Description = description, .Value = value})
+    End Sub
+
+    Sub AddButton(text As String, value As T)
+        Buttons.Add(New Button With {.Text = text, .Value = value})
+    End Sub
+
+    Sub CommandClick(sender As Object, e As EventArgs)
+        Dim tag = DirectCast(sender, CommandButton).Tag
+        Dim cmd = DirectCast(tag, Command)
+        SelectedText = cmd.Text
+        SelectedValue = cmd.Value
+        Close()
+    End Sub
+
+    Sub ButtonClick(sender As Object, e As EventArgs)
+        Dim button = DirectCast(sender, ButtonEx)
+        SelectedText = button.Text
+        SelectedValue = DirectCast(button.Tag, T)
+        Close()
     End Sub
 
     Sub SetHeight()
@@ -135,7 +175,12 @@ Public Class TaskDialog2(Of T)
             h += last.Top + last.Height
         End If
 
-        h += tlpBottom.Height
+        h += spBottom.Height
+
+        If spBottom.Controls.OfType(Of Control).Where(Function(i) i.Visible).Count > 0 Then
+            h += spBottom.Margin.Vertical
+        End If
+
         h += CInt(FontHeight * 0.7)
 
         Dim nonClientHeight = Height - ClientSize.Height
@@ -150,18 +195,38 @@ Public Class TaskDialog2(Of T)
 
     Protected Overrides Sub OnLoad(args As EventArgs)
         MyBase.OnLoad(args)
+
+        For Each i As ButtonEx In flpButtons.Controls
+            Using g = i.CreateGraphics
+                Dim minWidth = CInt(g.MeasureString(i.Text, i.Font).Width + i.Font.Height)
+
+                If i.Width < minWidth Then
+                    i.Width = minWidth
+                End If
+            End Using
+
+            i.Margin = New Padding(CInt(FontHeight * 0.4), 0, 0, 0)
+        Next
+
+        flpButtons.Margin = New Padding(0, 0, CInt(FontHeight * 0.7), 0)
+
         SetHeight()
     End Sub
 
-    Overloads Sub Show()
+    Overloads Function Show() As T
         Init()
-        'ShowDialog()
-        Application.Run(Me)
-    End Sub
+        ShowDialog()
+        Return SelectedValue
+    End Function
 
     Public Class Command
-        Property Title As String
+        Property Text As String
         Property Description As String
+        Property Value As T
+    End Class
+
+    Public Class Button
+        Property Text As String
         Property Value As T
     End Class
 End Class

@@ -3320,4 +3320,25 @@ Namespace UI
             MyBase.OnPaint(e)
         End Sub
     End Class
+
+    Public Class StackPanel
+        Inherits FlowLayoutPanel
+
+        Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            MyBase.OnLayout(levent)
+
+            If Not WrapContents AndAlso (FlowDirection = FlowDirection.TopDown OrElse FlowDirection = FlowDirection.BottomUp) Then
+                For Each i As Control In Controls
+                    If (i.Anchor And AnchorStyles.Right) = AnchorStyles.Right AndAlso
+                        (i.Anchor And AnchorStyles.Left) = AnchorStyles.Left Then
+
+                        i.Left = i.Margin.Left
+                        i.Width = ClientSize.Width - i.Margin.Horizontal
+                    ElseIf (i.Anchor And AnchorStyles.Right) = AnchorStyles.Right Then
+                        i.Left = ClientSize.Width - (i.Width + i.Margin.Right)
+                    End If
+                Next
+            End If
+        End Sub
+    End Class
 End Namespace

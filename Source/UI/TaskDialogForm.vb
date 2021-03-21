@@ -2,6 +2,15 @@
 Imports StaxRip.UI
 
 Public Class TaskDialogForm
+    Property Theme As Theme = ThemeManager.CurrentTheme
+
+    Public Sub New()
+        InitializeComponent()
+        BackColor = Theme.General.BackColor
+        laMainInstruction.ForeColor = Theme.General.Controls.Label.ForeColor
+
+    End Sub
+
     Class TaskDialogPanel
         Inherits Panel
 
@@ -19,7 +28,7 @@ Public Class TaskDialogForm
                     Dim c = Controls(x)
 
                     If x <> 0 Then
-                        c.Top = previous.Top + previous.Height + 1
+                        c.Top = previous.Top + previous.Height + CInt(fh * 0.2)
                     End If
 
                     c.Left = CInt(fh * 0.7)
@@ -27,7 +36,7 @@ Public Class TaskDialogForm
 
                     If TypeOf c Is TextBox Then
                         Dim sz = g.MeasureString(c.Text, c.Font, c.ClientSize.Width)
-                        c.Height = CInt(sz.Height)
+                        c.Height = CInt(sz.Height + fh / 2)
                     End If
 
                     TryCast(c, CommandButton)?.AdjustSize()
@@ -138,4 +147,20 @@ Public Class TaskDialogForm
             TitleFont.Dispose()
         End Sub
     End Class
+
+    Sub llDetails_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llDetails.LinkClicked
+
+    End Sub
+
+    Sub llFooter_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llFooter.LinkClicked
+
+    End Sub
+
+    Sub cbVerification_CheckedChanged(sender As Object, e As EventArgs) Handles cbVerification.CheckedChanged
+
+    End Sub
+
+    Sub teInput_Load(sender As Object, e As EventArgs) Handles teInput.Load
+
+    End Sub
 End Class

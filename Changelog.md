@@ -1,12 +1,24 @@
-Next Release
+2.2.0 (2021-03-??)
 =========================
 
-- [X] Might break settings from previous version
+- [X] Might break settings from previous STABLE version, so starting with new settings is recommended
+- [X] Might break templates and jobs from previous STABLE version
+- [X] Changed menus from previous STABLE versions that need a menu reset, manual setting or global settings reset in order to see them
+- Start of new versioning (no beta versions anymore, but stripped DEV versions)
+- Check for updates adjusted (Dendraspis)
+- MTN Thumbnailer description adjusted (JJKylee)
+- JPSDR 3.2.5 (Clang AVX version)
+
+
+2.1.9.0 Beta (2021-03-21)
+=========================
+
+- [X] Might break settings from previous version, so starting with new settings is recommended
 - [X] Might break templates and jobs from previous version
 - [X] Changed menus that need a menu reset, manual setting or global settings reset in order to see them
 - Since v2.1.8.5 StaxRip uses the SI prefix for sizes (Base 10: `1 MB = 1000 KB`)  
-  Now it is possible to switch (back) to IEC prefix (Base 2: `1 MiB = 1024 KiB`)  
-  *Please note, that the target size menu must be resetted or adjusted by hand after a change!* (Dendraspis)
+  Now it is possible to switch (back) to IEC prefix (Base 2: `1 MiB = 1024 KiB`) in the settings  
+  *Please note, that the target size menu must be resetted or adjusted by hand after a change!* (Dendraspis, 44vince44)
 - Set "Dark | Blue" as default theme (Dendraspis)
 - CheckBox appearance optimized (Dendraspis)
 - CodeEditor does not join "Cutting" filter (Dendraspis)
@@ -22,21 +34,31 @@ Next Release
 - Multiple theme related adjustments (Dendraspis, stax76)
 - New shortcuts for ***O**utput Highlighting* and ***P**rogress Reformatting* on Processing window (Dendraspis)
 - New shortcuts for existing actions on Jobs window (stax76)
+- Fix x265 --tskip default value for Placebo preset (tkozybski, Dendraspis, [#600](/../../issues/600))
 - Fix x265 Slower preset default values (tkozybski)
 - Fix x265 params --atc-sei and --pic-struct wrong parameter type (Dendraspis, [#593](/../../issues/593))
+- x264 default CRF value set while setting initial value to 20 (Dendraspis, [#594](/../../issues/594))
+- x264 fix UltraFast preset value sync (Dendraspis, [#594](/../../issues/594))
+- Fix NVEnc VBR Quality value localization (Dendraspis, [#604](/../../issues/604))
+- Fix NVEnc VBR Quality applies even it's disabled (Dendraspis, [#605](/../../issues/605))
 - Removal of Menu Styles (Dendraspis, [#589](/../../issues/589))
 - In quality mode main dialog shows count and type of active subtitles (stax76)
 - Main dialog and code editor show script info with F2 key and
-  advanced script info with Ctrl+F2, requires menus to be reset manually
+  advanced script info with Ctrl+F2, requires menus to be reset manually (stax76)
 - New setting to customize the code and console font (stax76)
-- x264 default CRF value set while setting initial value to 20 (Dendraspis, [#594](/../../issues/594))
-- x264 fix UltraFast preset value sync (Dendraspis, [#594](/../../issues/594))
 - Video encoder context console help was fixed and improved (stax76, [#595](/../../issues/595))
-- Fix x265 --tskip default value for Placebo preset (tkozybski, Dendraspis, [#600](/../../issues/600))
-- Fix NVEnc VBR Quality value localization (Dendraspis, [#604](/../../issues/604))
-- Fix NVEnc VBR Quality applies even it's disabled (Dendraspis, [#605](/../../issues/605))
-- Fix audio bitrate calculation for calculation video bitrate (Dendraspis, [#608](/../../issues/608))
+- Fix audio bitrate calculation for calculation of video bitrate (Dendraspis, 44vince44, [#608](/../../issues/608))
 - When toggling size prefix target size/bitrate are refreshed (Dendraspis)
+- AddGrainC v1.8.3.0
+- AnimeIVTC v2.34 2020-12-19 mod
+- AVSMeter v3.0.8.0
+- chapterEditor v1.27
+- CropResize 2021-02-01
+- MediaInfo.NET v7.0.0.0
+- MP4Box v1.1.0 DEV rev589 gcc10.2.0 Patman
+- MTN Thumbnailer v3.4
+- SangNom2 v0.6.0
+- xy-VSFilter v3.2.0.804
 
 
 2.1.8.5 Beta (2021-03-09)

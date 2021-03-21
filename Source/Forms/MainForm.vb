@@ -3522,8 +3522,8 @@ Public Class MainForm
             b.Field = NameOf(s.CheckForUpdates)
 
             b = ui.AddBool
-            b.Text = "Include beta versions for update check"
-            b.Field = NameOf(s.CheckForUpdatesBeta)
+            b.Text = "Include Dev builds for update check"
+            b.Field = NameOf(s.CheckForUpdatesDev)
 
             b = ui.AddBool
             b.Text = "Save projects automatically"
@@ -6350,7 +6350,7 @@ Public Class MainForm
         Refresh()
         ProcessCommandLine(Environment.GetCommandLineArgs)
         StaxRip.StaxRipUpdate.ShowUpdateQuestion()
-        StaxRip.StaxRipUpdate.CheckForUpdate(False, s.CheckForUpdatesBeta, Environment.Is64BitProcess)
+        StaxRip.StaxRipUpdate.CheckForUpdate(False, s.CheckForUpdatesDev, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
     End Sub
 

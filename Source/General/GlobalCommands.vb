@@ -13,7 +13,7 @@ Imports VB6 = Microsoft.VisualBasic
 Public Class GlobalCommands
     <Command("Checks if a update is available.")>
     Sub CheckForUpdate()
-        StaxRipUpdate.CheckForUpdate(True, s.CheckForUpdatesBeta, Environment.Is64BitProcess)
+        StaxRipUpdate.CheckForUpdate(True, s.CheckForUpdatesDev, Environment.Is64BitProcess)
     End Sub
 
     <Command("Shows the log file with the built-in log file viewer.")>
@@ -272,25 +272,41 @@ Public Class GlobalCommands
         End Try
     End Sub
 
-    Function GetReleaseType() As String
+    Function GetApplicationDetails(Optional includeName As Boolean = True, Optional includeVersion As Boolean = True, Optional includeReleaseType As Boolean = True) As String
+        Dim sb = New StringBuilder()
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
 
-        If version.MinorRevision <> 0 Then
-            Return "Beta"
+        If includeName Then sb.Append(" StaxRip")
+        If includeVersion Then
+            sb.Append($" v{version.Major}.{version.Minor}")
+
+            If version.Build > 0 Then
+                sb.Append($".{version.Build}")
+            End If
         End If
+        If includeReleaseType Then
+            If version.Build > 0 Then
+                sb.Append(" DEV")
+            End If
+        End If
+
+        Return sb.ToString.Trim()
     End Function
 
-    <Command("Opens a given help topic In the help browser.")>
+    <Command("Opens a given help topic in the help browser.")>
     Sub OpenHelpTopic(
         <DispName("Help Topic"),
-        Description("Name Of the help topic To be opened.")> topic As String)
+        Description("Name of the help topic to be opened.")> topic As String)
 
         Dim form As New HelpForm()
 
         Select Case topic
             Case "info"
-                form.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
-                form.Doc.WriteParagraph($"[file:///{Uri.EscapeDataString(Folder.Startup + "Authors.html")} StaxRip Authors]")
+                form.Doc.WriteStart(GetApplicationDetails())
+                'form.Doc.WriteParagraph($"[file:///{Uri.EscapeDataString(Folder.Startup + "Authors.html")} StaxRip Authors]")
+                form.Doc.Write("Active Authors", "stax76, Dendraspis, DJATOM, Patman, JKyle, 44vince44")
+                form.Doc.Write("Retired Authors", "Revan654, NikosD, ernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+                form.Doc.Writer.WriteRaw("<hr>")
 
                 Dim licensePath = Folder.Startup + "License.txt"
 

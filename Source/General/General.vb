@@ -547,7 +547,7 @@ table {
         Return value
     End Function
 
-    'MediaWiki markup
+    'TODO: convert media wiki link to markdown link
     Shared Function ConvertMarkup(value As String, stripOnly As Boolean) As String
         If stripOnly Then
             If value.Contains("[") Then
@@ -588,6 +588,7 @@ table {
         Return value
     End Function
 
+    'TODO: convert media wiki link to markdown link
     Shared Function MustConvert(value As String) As Boolean
         If value <> "" AndAlso (value.Contains("[") OrElse value.Contains("'''")) Then
             Return True
@@ -1146,44 +1147,41 @@ Public Module MainModule
     Public Const BR3 As String = VB6.vbCrLf + VB6.vbCrLf + VB6.vbCrLf
     Public Log As LogBuilder
 
-    Sub MsgInfo(text As Object, Optional content As Object = Nothing)
-        Dim text1 = text?.ToString
+    Sub MsgInfo(title As Object, Optional content As Object = Nothing)
+        Dim title1 = title?.ToString
         Dim content1 = content?.ToString
-        Msg(text1, content1, MsgIcon.Info, TaskDialogButtons.Ok)
+        Msg(title1, content1, TaskIcon.Info, TaskButton.Ok)
     End Sub
 
-    Sub MsgError(text As String, Optional content As String = Nothing)
-        MsgError(text, content, IntPtr.Zero)
+    Sub MsgError(title As String, Optional content As String = Nothing)
+        MsgError(title, content, IntPtr.Zero)
     End Sub
 
-    Sub MsgError(text As String, content As String, handle As IntPtr)
-        If text = "" Then
-            text = content
+    Sub MsgError(title As String, content As String, handle As IntPtr)
+        If title = "" Then
+            title = content
         End If
 
-        If text = "" Then
+        If title = "" Then
             Exit Sub
         End If
 
-        Using td As New TaskDialog(Of String)
+        Using td As New TaskDialog2(Of String)
             If content = "" Then
-                If text.Length < 80 Then
-                    td.MainInstruction = text
+                If title.Length < 80 Then
+                    td.Title = title
                 Else
-                    td.Content = text
+                    td.Content = title
                 End If
             Else
-                td.MainInstruction = text
+                td.Title = title
                 td.Content = content
             End If
 
-            If handle <> IntPtr.Zero Then
-                td.Config.hwndParent = handle
-            End If
-
-            td.AllowCancel = False
-            td.MainIcon = TaskDialogIcon.Error
-            td.Footer = "[copymsg: Copy Message]"
+            td.Owner = handle
+            td.Icon = TaskIcon.Error
+            td.ShowCopyButton = True
+            td.AddButton("OK")
             td.Show()
         End Using
     End Sub
@@ -1195,70 +1193,60 @@ Public Module MainModule
             Exit Sub
         End If
 
-        Msg(text, content, MsgIcon.Warning, TaskDialogButtons.Ok)
+        Msg(text, content, TaskIcon.Warning, TaskButton.Ok)
 
         If onlyOnce Then
             ShownMessages += text + content
         End If
     End Sub
 
-    Function MsgOK(text As String) As Boolean
-        Return Msg(text, Nothing, MsgIcon.Question, TaskDialogButtons.OkCancel) = DialogResult.OK
+    Function MsgOK(title As String) As Boolean
+        Return Msg(title, Nothing, TaskIcon.Question, TaskButton.OkCancel) = DialogResult.OK
     End Function
 
     Function MsgQuestion(
-        text As String,
-        Optional buttons As TaskDialogButtons = TaskDialogButtons.OkCancel) As DialogResult
+        title As String,
+        Optional buttons As TaskButton = TaskButton.OkCancel) As DialogResult
 
-        Return Msg(text, Nothing, MsgIcon.Question, buttons)
+        Return Msg(title, Nothing, TaskIcon.Question, buttons)
     End Function
 
-    Function MsgQuestion(heading As String,
+    Function MsgQuestion(title As String,
                          content As String,
-                         Optional buttons As TaskDialogButtons = TaskDialogButtons.OkCancel) As DialogResult
-        Return Msg(heading, content, MsgIcon.Question, buttons)
+                         Optional buttons As TaskButton = TaskButton.OkCancel) As DialogResult
+        Return Msg(title, content, TaskIcon.Question, buttons)
     End Function
 
-    Function Msg(mainInstruction As String,
+    Function Msg(title As String,
                  content As String,
-                 icon As MsgIcon,
-                 buttons As TaskDialogButtons,
-                 Optional defaultButton As DialogResult = DialogResult.None) As DialogResult
+                 icon As TaskIcon,
+                 buttons As TaskButton) As DialogResult
 
-        If mainInstruction Is Nothing Then
-            mainInstruction = ""
+        If title Is Nothing Then
+            title = ""
         End If
 
-        Using td As New TaskDialog(Of DialogResult)
-            td.AllowCancel = False
-            td.DefaultButton = defaultButton
+        Using td As New TaskDialog2(Of DialogResult)
+            td.Icon = icon
 
             If content Is Nothing Then
-                If mainInstruction.Length < 80 Then
-                    td.MainInstruction = mainInstruction
+                If title.Length < 80 Then
+                    td.Title = title
                 Else
-                    td.Content = mainInstruction
+                    td.Content = title
                 End If
             Else
-                td.MainInstruction = mainInstruction
+                td.Title = title
                 td.Content = content
             End If
 
-            Select Case icon
-                Case MsgIcon.Error
-                    td.MainIcon = TaskDialogIcon.Error
-                Case MsgIcon.Warning
-                    td.MainIcon = TaskDialogIcon.Warning
-                Case MsgIcon.Info
-                    td.MainIcon = TaskDialogIcon.Info
-            End Select
+            For Each i In {TaskButton.Ok, TaskButton.Yes, TaskButton.No,
+                TaskButton.Cancel, TaskButton.Retry, TaskButton.Close}
 
-            If buttons = TaskDialogButtons.OkCancel Then
-                td.AddButton("OK", DialogResult.OK)
-                td.AddButton("Cancel", DialogResult.Cancel) 'don't use system language
-            Else
-                td.CommonButtons = buttons
-            End If
+                If buttons.HasFlag(i) Then
+                    td.AddButton(i.ToString, TaskDialog2(Of DialogResult).GetDialogResultFromButton(i))
+                End If
+            Next
 
             Return td.Show()
         End Using

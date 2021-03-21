@@ -10,7 +10,7 @@ Public Class StaxRipUpdate
     Shared Sub ShowUpdateQuestion()
         If Not s.CheckForUpdatesQuestion Then
             s.CheckForUpdates = MsgQuestion("Would you like StaxRip to check for updates once per day?",
-                TaskDialogButtons.YesNo) = DialogResult.Yes
+                TaskButton.YesNo) = DialogResult.Yes
 
             s.CheckForUpdatesQuestion = True
         End If

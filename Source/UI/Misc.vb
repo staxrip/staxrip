@@ -31,6 +31,16 @@ Namespace UI
             End Set
         End Property
 
+        ReadOnly Property IsDisposingOrDisposed As Boolean
+            Get
+                Try
+                    Return Disposing OrElse IsDisposed
+                Catch
+                    Return True
+                End Try
+            End Get
+        End Property
+
         <DefaultValue(True)>
         Property IsComposited As Boolean = True
 
@@ -112,7 +122,7 @@ Namespace UI
             End If
 
             If StartPosition = FormStartPosition.CenterScreen Then
-                WindowPositions.CenterScreen(Me)
+                CenterScreen
             End If
 
             If Not DesignHelp.IsDesignMode Then
@@ -257,13 +267,6 @@ Namespace UI
                     form.Location = pos
                 End If
             End If
-        End Sub
-
-        Shared Sub CenterScreen(form As Form)
-            form.StartPosition = FormStartPosition.Manual
-            Dim wa = Screen.FromControl(form).WorkingArea
-            form.Left = (wa.Width - form.Width) \ 2
-            form.Top = (wa.Height - form.Height) \ 2
         End Sub
 
         Sub RestorePosition(form As Form)

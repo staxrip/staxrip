@@ -2849,6 +2849,7 @@ Public Enum Symbol
     SettingsLegacy = &HE115
     Share = &HE72D
     ShareBroadband = &HE83A
+    Shield = &HEA18
     Shop = &HE719
     ShopLegacy = &HE14D
     ShoppingCart = &HE7BF

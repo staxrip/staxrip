@@ -532,6 +532,7 @@ Public Class SimpleUI
                     parent = parent.Parent
                 End While
 
+                'TODO: convert media wiki link to markdown link
                 If value.StartsWith("http") Then
                     value = $"[{value} {value}]"
                 End If
@@ -866,6 +867,7 @@ Public Class SimpleUI
 
         WriteOnly Property Help As String
             Set(value As String)
+                'TODO: convert media wiki link to markdown link
                 If value.StartsWith("http") Then
                     value = $"[{value} {value}]"
                 End If

@@ -1418,8 +1418,8 @@ Public Class MainForm
                 Return False
             End If
 
-            Using td As New TaskDialog(Of DialogResult)
-                td.MainInstruction = "Save changed project?"
+            Using td As New TaskDialog2(Of DialogResult)
+                td.Title = "Save changed project?"
                 td.AddButton("Save", DialogResult.Yes)
                 td.AddButton("Don't Save", DialogResult.No)
                 td.AddButton("Cancel", DialogResult.Cancel)

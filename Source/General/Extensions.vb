@@ -826,6 +826,16 @@ End Module
 
 Module MiscExtensions
     <Extension()>
+    Sub CenterScreen(instance As Form)
+        If Not instance Is Nothing Then
+            instance.StartPosition = FormStartPosition.Manual
+            Dim wa = Screen.FromControl(instance).WorkingArea
+            instance.Left = (wa.Width - instance.Width) \ 2
+            instance.Top = (wa.Height - instance.Height) \ 2
+        End If
+    End Sub
+
+    <Extension()>
     Function ToInvariantString(value As Double, format As String) As String
         Return value.ToString(format, CultureInfo.InvariantCulture)
     End Function

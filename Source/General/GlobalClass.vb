@@ -995,39 +995,40 @@ Public Class GlobalClass
 
     Sub ShowException(
         ex As Exception,
-        Optional mainInstruction As String = Nothing,
+        Optional title As String = Nothing,
         Optional content As String = Nothing,
         Optional timeout As Integer = 0)
 
         Try
-            Using td As New TaskDialog(Of String)
-                If mainInstruction = "" Then
+            Using td As New TaskDialog2(Of String)
+                If title = "" Then
                     If TypeOf ex Is ErrorAbortException Then
-                        td.MainInstruction = DirectCast(ex, ErrorAbortException).Title + $" ({Application.ProductVersion})"
+                        td.Title = DirectCast(ex, ErrorAbortException).Title + $" ({Application.ProductVersion})"
                     Else
-                        td.MainInstruction = ex.GetType.Name + $" ({Application.ProductVersion})"
+                        td.Title = ex.GetType.Name + $" ({Application.ProductVersion})"
                     End If
                 Else
-                    td.MainInstruction = mainInstruction
+                    td.Title = title
                 End If
 
                 td.Timeout = timeout
                 td.Content = (ex.Message + BR2 + content).Trim
-                td.MainIcon = TaskDialogIcon.Error
-                td.ExpandedInformation = ex.ToString
-                td.Footer = "[copymsg: Copy Message]"
+                td.Icon = TaskIcon.Error
+                td.ExpandedContent = ex.ToString
+                td.ShowCopyButton = True
+                td.AddButton("OK")
                 td.Show()
             End Using
         Catch
-            Dim title As String
+            Dim msg As String
 
             If TypeOf ex Is ErrorAbortException Then
-                title = DirectCast(ex, ErrorAbortException).Title
+                msg = DirectCast(ex, ErrorAbortException).Title
             Else
-                title = ex.GetType.Name
+                msg = ex.GetType.Name
             End If
 
-            VB6.MsgBox(title + BR2 + ex.Message + BR2 + ex.ToString, VB6.MsgBoxStyle.Critical)
+            VB6.MsgBox(msg + BR2 + ex.Message + BR2 + ex.ToString, VB6.MsgBoxStyle.Critical)
         End Try
     End Sub
 
@@ -1112,14 +1113,14 @@ Public Class GlobalClass
         Dim fp = Log.GetPath
 
         If MsgQuestion("An error occured", "Do you want to open the log file?",
-                       TaskDialogButtons.YesNo) = DialogResult.Yes Then
+                       TaskButton.YesNo) = DialogResult.Yes Then
 
             g.ShellExecute(g.GetTextEditorPath(), fp.Escape)
             logfileOpened = True
         End If
 
         If MsgQuestion("Bug Report", "Do you want to report an issue or bug?",
-                       TaskDialogButtons.YesNo) = DialogResult.Yes Then
+                       TaskButton.YesNo) = DialogResult.Yes Then
 
             If Not logfileOpened Then
                 g.ShellExecute(g.GetTextEditorPath(), fp.Escape)

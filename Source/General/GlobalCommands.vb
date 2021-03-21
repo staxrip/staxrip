@@ -290,6 +290,7 @@ Public Class GlobalCommands
         Select Case topic
             Case "info"
                 form.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
+                'TODO: convert media wiki link to markdown link
                 form.Doc.WriteParagraph($"[file:///{Uri.EscapeDataString(Folder.Startup + "Authors.html")} StaxRip Authors]")
 
                 Dim licensePath = Folder.Startup + "License.txt"
@@ -317,9 +318,9 @@ Public Class GlobalCommands
         Optional content As String = Nothing,
         <DispName("Icon")>
         <DefaultValue(GetType(MsgIcon), "Info")>
-        Optional icon As MsgIcon = MsgIcon.Info)
+        Optional icon As TaskIcon = TaskIcon.Info)
 
-        Msg(Macro.Expand(mainInstruction), Macro.Expand(content), icon, TaskDialogButtons.Ok)
+        Msg(Macro.Expand(mainInstruction), Macro.Expand(content), icon, TaskButton.Ok)
     End Sub
 
     <Command("Shows a Open File dialog to show media info.")>

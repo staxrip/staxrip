@@ -1087,6 +1087,7 @@ Namespace UI
             Dim form As New HelpForm()
             form.Doc.WriteStart(Text)
             form.Doc.WriteParagraph("The menu editor allows to customize the text, location, shortcut key and command of a menu item. Menu items can be rearranged with '''Drag & Drop'''. Pressing Ctrl while dragging moves as sub-item.")
+            'TODO: convert media wiki link to markdown link
             form.Doc.WriteParagraph("[http://fontawesome.io/cheatsheet FontAwesome icons]")
             form.Doc.WriteParagraph("[https://docs.microsoft.com/en-us/windows/uwp/style/segoe-ui-symbol-font Segoe MDL2 icons]")
             form.Doc.WriteTable("Commands", GenericMenu.CommandManager.GetTips)

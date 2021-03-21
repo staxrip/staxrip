@@ -1,6 +1,4 @@
 
-Imports System.ComponentModel
-Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
@@ -342,7 +340,7 @@ Public Class Proc
                 End If
 
                 If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCode) Then
-                    Dim output = ProcessHelp.GetConsoleOutput(Package.Err.Path, ExitCode.ToString)
+                    Dim output = ProcessHelp.GetConsoleOutput(Package.Err.Path, "/ntstatus.h /vfw.h /winerror.h " & ExitCode)
                     Dim errorMessage = Header + " returned error exit code: " & ExitCode &
                         " (" + "0x" + ExitCode.ToString("X") + ")"
 

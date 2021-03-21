@@ -12,10 +12,14 @@ Public Class ImageHelp
     Private Shared ReadOnly FontFilesExist As Boolean = File.Exists(AwesomePath) AndAlso File.Exists(SegoePath)
 
     Shared Async Function GetSymbolImageAsync(symbol As Symbol, Optional color As Color = Nothing) As Task(Of Image)
-        Return Await Task.Run(Of Image)(Function() GetSymbolImage(symbol, color))
+        Return Await Task.Run(Function() GetSymbolImage(symbol, color))
     End Function
 
-    Shared Function GetSymbolImage(symbol As Symbol, Optional color As Color = Nothing) As Image
+    Shared Function GetSymbolImage(
+        symbol As Symbol,
+        Optional color As Color = Nothing,
+        Optional fontSize As Integer = 12) As Image
+
         If Not FontFilesExist Then
             Return Nothing
         End If
@@ -47,14 +51,18 @@ Public Class ImageHelp
             End If
         End If
 
-        If family Is Nothing Then Return Nothing
+        If family Is Nothing Then
+            Return Nothing
+        End If
 
         color = If(color = Nothing, ThemeManager.CurrentTheme.General.Controls.ToolStrip.SymbolImageColor.ToColor(), color)
+
         Dim bitmap As Bitmap
 
-        Using font As Font = New Font(family, 12)
+        Using font As Font = New Font(family, fontSize)
             Dim fontHeight = font.Height
             bitmap = New Bitmap(CInt(fontHeight * 1.1F), CInt(fontHeight * 1.1F))
+
             Using graphics As Graphics = Graphics.FromImage(bitmap)
                 graphics.TextRenderingHint = TextRenderingHint.AntiAlias
                 Using brush As Brush = New SolidBrush(color)

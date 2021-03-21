@@ -1282,6 +1282,7 @@ Namespace UI
 
         Property LinkColor As Color
         Property LinkHoverColor As Color
+        Property ClickAction As Action
 
         Sub New()
             ApplyTheme()
@@ -1326,6 +1327,11 @@ Namespace UI
         Protected Overrides Sub OnMouseLeave(e As EventArgs)
             ForeColor = LinkColor
             MyBase.OnMouseLeave(e)
+        End Sub
+
+        Protected Overrides Sub OnClick(e As EventArgs)
+            MyBase.OnClick(e)
+            ClickAction?.Invoke
         End Sub
     End Class
 
@@ -1789,6 +1795,12 @@ Namespace UI
             Set(value As Integer)
                 MyBase.TabIndex = value
             End Set
+        End Property
+
+        Protected Overrides ReadOnly Property ShowFocusCues As Boolean
+            Get
+                Return True
+            End Get
         End Property
 
         'The designer is not able to serialize the Text property probably

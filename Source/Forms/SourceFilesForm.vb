@@ -250,7 +250,7 @@ Public Class SourceFilesForm
                             Dim opt = SearchOption.TopDirectoryOnly
 
                             If Directory.GetDirectories(dialog.SelectedPath).Count > 0 Then
-                                If MsgQuestion("Include sub folders?", TaskDialogButtons.YesNo) = DialogResult.Yes Then
+                                If MsgQuestion("Include sub folders?", TaskButton.YesNo) = DialogResult.Yes Then
                                     opt = SearchOption.AllDirectories
                                 End If
                             End If

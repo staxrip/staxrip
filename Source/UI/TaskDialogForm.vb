@@ -1,20 +1,47 @@
 ﻿
+Imports System.Runtime.InteropServices
+
 Imports StaxRip.UI
 
 Public Class TaskDialogForm
     Property Theme As Theme = ThemeManager.CurrentTheme
 
+    Overridable Sub AdjustHeight()
+    End Sub
+
     Public Sub New()
         InitializeComponent()
-        BackColor = Theme.General.BackColor
-        laMainInstruction.ForeColor = Theme.General.Controls.Label.ForeColor
 
+        If Not DesignHelp.IsDesignMode Then
+            BackColor = Theme.General.BackColor
+            laMainInstruction.ForeColor = Theme.General.Controls.Label.ForeColor
+        End If
     End Sub
+
+    <DllImport("user32.dll", EntryPoint:="SetWindowLong")>
+    Shared Function SetWindowLong32(hWnd As IntPtr, nIndex As Integer, dwNewLong As Integer) As Integer
+    End Function
+
+    <DllImport("user32.dll", EntryPoint:="SetWindowLongPtr")>
+    Shared Function SetWindowLongPtr64(hWnd As IntPtr, nIndex As Integer, dwNewLong As IntPtr) As IntPtr
+    End Function
+
+    Shared Function SetWindowLongPtr(hWnd As IntPtr, nIndex As Integer, dwNewLong As IntPtr) As IntPtr
+        If IntPtr.Size = 8 Then
+            Return SetWindowLongPtr64(hWnd, nIndex, dwNewLong)
+        Else
+            Return New IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong.ToInt32))
+        End If
+    End Function
 
     Class TaskDialogPanel
         Inherits Panel
 
+        Property Form As TaskDialogForm
+
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+            MyBase.OnLayout(levent)
+
             If DesignMode OrElse Controls.Count = 0 Then
                 MyBase.OnLayout(levent)
                 Exit Sub
@@ -37,6 +64,16 @@ Public Class TaskDialogForm
                     If TypeOf c Is TextBox Then
                         Dim sz = g.MeasureString(c.Text, c.Font, c.ClientSize.Width)
                         c.Height = CInt(sz.Height + fh / 2)
+
+                        If c.Name = "ExpandedInformation" Then
+                            If Form Is Nothing Then
+                                Form = DirectCast(c.FindForm, TaskDialogForm)
+                            End If
+
+                            If Form.blDetails.Text = "Show Details" Then
+                                c.Height = 0
+                            End If
+                        End If
                     End If
 
                     TryCast(c, CommandButton)?.AdjustSize()
@@ -119,6 +156,20 @@ Public Class TaskDialogForm
             Return New Size(CInt(sz.Width), CInt(sz.Height))
         End Function
 
+        Protected Overrides Sub OnGotFocus(e As EventArgs)
+            MyBase.OnGotFocus(e)
+            BackColor = ThemeManager.CurrentTheme.General.Controls.Button.BackColor
+            ForeColor = ThemeManager.CurrentTheme.General.Controls.Button.ForeColor
+            FlatAppearance.BorderColor = ThemeManager.CurrentTheme.General.Controls.Button.BorderColor
+        End Sub
+
+        Protected Overrides Sub OnLostFocus(e As EventArgs)
+            MyBase.OnLostFocus(e)
+            BackColor = ThemeManager.CurrentTheme.ProcessingForm.ProcessButtonBackColor
+            ForeColor = ThemeManager.CurrentTheme.ProcessingForm.ProcessButtonForeColor
+            FlatAppearance.BorderColor = ThemeManager.CurrentTheme.General.BackColor
+        End Sub
+
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
             MyBase.OnPaint(e)
 
@@ -148,19 +199,14 @@ Public Class TaskDialogForm
         End Sub
     End Class
 
-    Sub llDetails_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llDetails.LinkClicked
+    Sub blDetails_Click(sender As Object, e As EventArgs) Handles blDetails.Click
+        If blDetails.Text = "Show Details" Then
+            blDetails.Text = "Hide Details"
+        Else
+            blDetails.Text = "Show Details"
+        End If
 
-    End Sub
-
-    Sub llFooter_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llFooter.LinkClicked
-
-    End Sub
-
-    Sub cbVerification_CheckedChanged(sender As Object, e As EventArgs) Handles cbVerification.CheckedChanged
-
-    End Sub
-
-    Sub teInput_Load(sender As Object, e As EventArgs) Handles teInput.Load
-
+        paMain.PerformLayout()
+        AdjustHeight()
     End Sub
 End Class

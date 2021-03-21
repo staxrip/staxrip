@@ -439,6 +439,7 @@ Public Class HelpDocument
 
 body {
     font-family: Tahoma, Geneva, sans-serif;
+    font-size: 90%;
     color:#DDDDDD;
     background-color:#323232;
 }
@@ -702,7 +703,7 @@ table {
             IsClosed = True
 
             Writer.WriteRaw("<p>&nbsp;</p>" + BR)
-            Writer.WriteRaw("<h5 align=""center"">Copyright (C) 2002-" & DateTime.Now.Year & " StaxRip authors</h5><br>")
+            Writer.WriteRaw("<h5 align=""center"">Copyright (C) 2002-" & Date.Now.Year & " StaxRip Authors</h5><br>")
             Writer.WriteEndElement() 'body
             Writer.WriteEndElement() 'html
             Writer.Close()

@@ -18,7 +18,7 @@ Public Class StaxRipUpdate
 
     Shared Async Sub CheckForUpdate(
         Optional force As Boolean = False,
-        Optional includeBeta As Boolean = False,
+        Optional includeDevBuilds As Boolean = False,
         Optional x64 As Boolean = True)
 
         Try
@@ -26,67 +26,32 @@ Public Class StaxRipUpdate
                 Exit Sub
             End If
 
-            If (DateTime.Now - s.CheckForUpdatesLastRequest).TotalHours >= 24 OrElse force Then
+            If (Date.Now - s.CheckForUpdatesLastRequest).TotalHours >= 24 OrElse force Then
                 Dim changelogUrl = "https://raw.githubusercontent.com/staxrip/staxrip/master/Changelog.md"
-                Dim betaSourcesUrl = "https://github.com/staxrip/staxrip"
-                Dim dropboxUrl = "https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0&lst="
-                Dim stableUrl = "https://github.com/staxrip/staxrip/releases"
+                Dim releaseUrl = "https://github.com/staxrip/staxrip/releases"
 
                 Dim currentVersion = Reflection.Assembly.GetEntryAssembly.GetName.Version
-                Dim latestVersions = New List(Of (Version As Version, Status As String,
-                    SourceSite As String, DownloadUri As String, FileName As String))
+                Dim latestVersions = New List(Of (Version As Version, ReleaseType As String, SourceSite As String, DownloadUri As String, FileName As String))
+                Dim response = Await HttpClient.GetAsync(releaseUrl)
+                response.EnsureSuccessStatusCode()
+                Dim content = Await response.Content.ReadAsStringAsync()
+                Dim linkMatches = Regex.Matches(content, "(?<="")/staxrip/staxrip/releases/download/(\d+\.\d+\.\d+(?:\.\d+)?)/(StaxRip-v(\d+\.\d+\.\d+(?:\.\d+)?)[^""]*\.7z)(?="")")
 
-                Dim response = Await HttpClient.GetAsync(stableUrl)
+                For Each linkMatch As Match In linkMatches
+                    Dim onlineVersion = Version.Parse(linkMatch.Groups(3).Value)
 
-                If response.IsSuccessStatusCode Then
-                    Dim content = Await response.Content.ReadAsStringAsync()
-                    Dim titleMatch = Regex.Match(content, "title=""(\d+\.\d+\.\d+\.\d+)""")
-                    Dim onlineVersion = Version.Parse(titleMatch.Groups(1).Value)
-                    Dim linkMatch = Regex.Match(content, "(https://[^""]*/([^""/]*StaxRip[^""?]*)[^""]*)\\""")
+                    If onlineVersion <= currentVersion Then
+                        Exit For
+                    End If
 
-                    latestVersions.Add((onlineVersion, "Stable", stableUrl,
-                        linkMatch.Groups(1).Value, linkMatch.Groups(2).Value))
-
-                ElseIf Not includeBeta Then
-                    response.EnsureSuccessStatusCode()
-                End If
-
-                If includeBeta Then
-                    Try
-                        Dim dropboxResponse = Await HttpClient.GetAsync(dropboxUrl)
-
-                        If Not dropboxResponse.IsSuccessStatusCode Then
-                            Dim betaSourcesResponse = Await HttpClient.GetAsync(betaSourcesUrl)
-                            Dim betaSourcesContent = Await betaSourcesResponse.Content.ReadAsStringAsync()
-                            Dim dropboxMatch = Regex.Match(betaSourcesContent, "(https://www\.dropbox\.com[^""]*)""")
-
-                            If dropboxMatch.Success Then
-                                dropboxResponse = Await HttpClient.GetAsync(dropboxMatch.Groups(1).Value)
-                            End If
+                    If onlineVersion.Build > 0 Then
+                        If includeDevBuilds Then
+                            latestVersions.Add((onlineVersion, "DEV", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
                         End If
-
-                        dropboxResponse.EnsureSuccessStatusCode()
-                        Dim dropboxContent = Await dropboxResponse.Content.ReadAsStringAsync()
-                        Dim betaPattern = If(x64, "(https://[^""]*/([^""/]*StaxRip[^""/?]*x64[^""?]*)[^""]*)\\""",
-                                                  "(https://[^""]*/([^""/]*StaxRip[^""/?]*x86[^""?]*)[^""]*)\\""")
-                        Dim betaMatches = Regex.Matches(dropboxContent, betaPattern)
-
-                        If betaMatches.Count > 0 Then
-                            Dim sortedMatches = New Match(betaMatches.Count - 1) {}
-                            betaMatches.CopyTo(sortedMatches, 0)
-                            sortedMatches.OrderBy(Function(x) Regex.Replace(x.Groups(2).Value, "\d+", "$&".PadLeft(11, "0"c)))
-                            Dim lastMatch = sortedMatches.Last()
-
-                            Dim uri = lastMatch.Groups(1).Value.Replace("?dl=0", "?dl=1")
-                            Dim filename = lastMatch.Groups(2).Value
-                            Dim versionMatch = Regex.Match(filename, ".*(\d+\.\d+\.\d+\.\d+).*")
-                            Dim betaOnlineVersion = Version.Parse(versionMatch.Groups(1).Value)
-
-                            latestVersions.Add((betaOnlineVersion, "Beta", stableUrl, uri, filename))
-                        End If
-                    Catch
-                    End Try
-                End If
+                    Else
+                        latestVersions.Add((onlineVersion, "Stable", releaseUrl, linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
+                    End If
+                Next
 
                 If latestVersions.Count > 0 Then
                     Dim latestVersion = latestVersions.OrderBy(Function(x) x.Version).Last()
@@ -95,7 +60,7 @@ Public Class StaxRipUpdate
                         Version.Parse(s.CheckForUpdatesDismissed) <> latestVersion.Version OrElse force) Then
 
                         Using td As New TaskDialog(Of String)
-                            td.MainInstruction = "A new " + latestVersion.Status + " version was found: " + latestVersion.Version.ToString()
+                            td.MainInstruction = "A new " + latestVersion.ReleaseType + " version was found: " + latestVersion.Version.ToString()
 
                             Dim changelogResponse = Await HttpClient.GetAsync(changelogUrl)
 
@@ -140,7 +105,7 @@ Public Class StaxRipUpdate
                                         .FileName = latestVersion.FileName,
                                         .Filter = "7-zip archive (*.7z)|*.7z",
                                         .OverwritePrompt = True,
-                                        .Title = "Save new " + latestVersion.Status + " version as..."
+                                        .Title = "Save new " + latestVersion.ReleaseType + " version as..."
                                     }
 
                                     If saveFileDialog.ShowDialog() = DialogResult.OK Then

@@ -5,7 +5,7 @@ It executes and controls console apps like x265, mkvmerge and ffmpeg and uses th
 
 
 ***StaxRip is no One-Click-Encoder!***  
-Due to its possibilities, StaxRip forces you to know what you want to achieve and how to set up the options.
+Due to its possibilities, StaxRip requires you to know what you want to achieve and how to set up the options.
 Especially at the beginning you have to learn the settings and maybe do some tests to learn how StaxRip works and what is possible. That being said, StaxRip also offers you an assistent, that takes care of your settings and changes. 
 
 When you struggle, there are multiple ways to get help from the community.
@@ -29,9 +29,9 @@ You can find various informations and instructions on [Wiki](https://github.com/
 
 # Download
 
-### **Stable**
+### **Stable and Public Beta**
 - [Releases](https://github.com/staxrip/staxrip/releases)
-### **Beta**
+### **Older Beta**
 - [DropBox](https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0)
 - [OneDrive](https://1drv.ms/u/s!ArwKS_ZUR01g0kH4d4eT_6a3GaKe?e=qbOfGS)
 

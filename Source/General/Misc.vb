@@ -164,8 +164,8 @@ Public Class Calc
     Shared Function GetAudioBitrate() As Double
         Dim b0, b1 As Double
 
-        If p.Audio0.File <> "" Then b0 = p.Audio0.Bitrate
-        If p.Audio1.File <> "" Then b1 = p.Audio1.Bitrate
+        If p.Audio0.File <> "" Then b0 = If(TypeOf p.Audio0 Is GUIAudioProfile, DirectCast(p.Audio0, GUIAudioProfile).GetBitrate, p.Audio0.Bitrate)
+        If p.Audio1.File <> "" Then b1 = If(TypeOf p.Audio1 Is GUIAudioProfile, DirectCast(p.Audio1, GUIAudioProfile).GetBitrate, p.Audio1.Bitrate)
 
         Return b0 + b1 + p.AudioTracks.Sum(Function(arg) arg.Bitrate)
     End Function
@@ -176,7 +176,7 @@ Public Class Calc
                 Return 0
             End If
 
-            Dim kBits = New FileInfo(path).Length * 8 / 1024
+            Dim kBits = New FileInfo(path).Length * 8 / 1000
             Return kBits / seconds
         Catch ex As Exception
             g.ShowException(ex)

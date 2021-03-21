@@ -365,7 +365,7 @@ Public Class Package
         .Name = "mtn",
         .Filename = "mtn.exe",
         .Location = "Thumbnails\MTN",
-        .Description = "Movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.",
+        .Description = "Movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files.",
         .WebURL = "https://github.com/Revan654/Movie-Thumbnailer-mtn",
         .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html",
         .HelpSwitch = ""})

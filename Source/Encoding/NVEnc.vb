@@ -255,7 +255,7 @@ Public Class NVEnc
             .Switch = "--vbr-quality",
             .Text = "VBR Quality",
             .Config = {0, 51, 1, 1},
-            .VisibleFunc = Function() Mode.Value = 3 OrElse Mode.Value = 4,
+            .VisibleFunc = Function() (Mode.Value = 3 OrElse Mode.Value = 4) AndAlso ConstantQualityMode.Value,
             .ArgsFunc = Function()
                             If ConstantQualityMode.Value AndAlso
                                 VbrQuality.Value <> VbrQuality.DefaultValue Then
@@ -456,10 +456,10 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Init = 17500, .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Config = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() AQ.Value},
-                        VbrQuality,
                         ConstantQualityMode,
+                        VbrQuality,
                         AQ,
+                        New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() AQ.Value},
                         New BoolParam With {.Switch = "--aq-temporal", .Text = "Adaptive Quantization (Temporal)"},
                         Lossless)
                     Add("Slice Decision",

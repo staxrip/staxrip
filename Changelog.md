@@ -1,10 +1,11 @@
-2.2 (2021-03-??)
+2.2.0 (2021-03-??)
 =========================
 
-- [X] Might break settings from previous version, so starting with new settings is recommended
-- [X] Might break templates and jobs from previous version
-- [X] Changed menus that need a menu reset, manual setting or global settings reset in order to see them
-- Start of new versioning
+- [X] Might break settings from previous STABLE version, so starting with new settings is recommended
+- [X] Might break templates and jobs from previous STABLE version
+- [X] Changed menus from previous STABLE versions that need a menu reset, manual setting or global settings reset in order to see them
+- Start of new versioning (no beta versions anymore, but stripped DEV versions)
+- Check for updates adjusted (Dendraspis)
 - JPSDR 3.2.5
 
 

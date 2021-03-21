@@ -275,9 +275,9 @@ Public Class GlobalCommands
     Function GetReleaseType() As String
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
 
-        If version.MinorRevision <> 0 Then
+        If version.Revision <> 0 Then
             Return "DEV"
-        ElseIf version.MajorRevision <> 0 Then
+        ElseIf version.Build <> 0 Then
             Return "Beta"
         End If
     End Function

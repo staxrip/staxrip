@@ -276,11 +276,13 @@ Public Class GlobalCommands
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
 
         If version.MinorRevision <> 0 Then
+            Return "DEV"
+        ElseIf version.MajorRevision <> 0 Then
             Return "Beta"
         End If
     End Function
 
-    <Command("Opens a given help topic In the help browser.")>
+    <Command("Opens a given help topic in the help browser.")>
     Sub OpenHelpTopic(
         <DispName("Help Topic"),
         Description("Name Of the help topic To be opened.")> topic As String)
@@ -290,7 +292,10 @@ Public Class GlobalCommands
         Select Case topic
             Case "info"
                 form.Doc.WriteStart("StaxRip " + Application.ProductVersion + " " + GetReleaseType())
-                form.Doc.WriteParagraph($"[file:///{Uri.EscapeDataString(Folder.Startup + "Authors.html")} StaxRip Authors]")
+                'form.Doc.WriteParagraph($"[file:///{Uri.EscapeDataString(Folder.Startup + "Authors.html")} StaxRip Authors]")
+                form.Doc.Write("Active Authors", "stax76, Dendraspis, DJATOM, Patman, JKyle, 44vince44")
+                form.Doc.Write("Retired Authors", "Revan654, NikosD, ernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+                form.Doc.Writer.WriteRaw("<hr>")
 
                 Dim licensePath = Folder.Startup + "License.txt"
 

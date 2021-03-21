@@ -6,7 +6,8 @@
 - [X] Changed menus from previous STABLE versions that need a menu reset, manual setting or global settings reset in order to see them
 - Start of new versioning (no beta versions anymore, but stripped DEV versions)
 - Check for updates adjusted (Dendraspis)
-- JPSDR 3.2.5
+- MTN Thumbnailer description adjusted (JJKylee)
+- JPSDR 3.2.5 (Clang AVX version)
 
 
 2.1.9.0 Beta (2021-03-21)

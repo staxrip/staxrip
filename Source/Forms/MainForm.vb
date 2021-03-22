@@ -3512,6 +3512,15 @@ Public Class MainForm
 
     <Command("Shows the settings dialog.")>
     Sub ShowSettingsDialog()
+        Dim monospaceFonts = New Dictionary(Of String, String)
+        Dim fontTask = Task.Run(Sub()
+                                    Dim families = FontFamily.Families.Where(Function(x) x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
+
+                                    For Each ff In families
+                                        monospaceFonts.Add(ff.Name.Replace("Cascadia ", "Cascadia | "), ff.Name)
+                                    Next
+                                End Sub)
+
         Dim restartID = GetRestartID()
 
         Using form As New SimpleSettingsForm("Settings")
@@ -3616,19 +3625,11 @@ Public Class MainForm
             codeFontMenu.Expandet = True
             codeFontMenu.Field = NameOf(s.CodeFont)
 
-            AddHandler form.Shown, Sub()
-                                       Task.Run(Sub()
-                                                    Dim families = FontFamily.Families.Where(Function(x) x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
+            fontTask.Wait()
+            For Each mf In monospaceFonts
+                codeFontMenu.AddMenu(mf.Key, mf.Value)
+            Next
 
-                                                    If Not form.IsDisposingOrDisposed Then
-                                                        form.Invoke(Sub()
-                                                                        For Each ff In families
-                                                                            codeFontMenu.AddMenu(ff.Name.Replace("Cascadia ", "Cascadia | "), ff.Name)
-                                                                        Next
-                                                                    End Sub)
-                                                    End If
-                                                End Sub)
-                                   End Sub
             n = ui.AddNum()
             n.Text = "Scale Factor"
             n.Help = "Requires to restart StaxRip."

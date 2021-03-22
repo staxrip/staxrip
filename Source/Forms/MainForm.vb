@@ -3620,11 +3620,11 @@ Public Class MainForm
                                            td.Title = "Choose a monospaced font"
                                            td.Symbol = Symbol.Font
 
-                                           For Each ff In FontFamily.Families.Where(Function(x) x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
+                                           For Each ff In FontFamily.Families.Where(Function(x) Not x.Name.ToLowerEx().ContainsAny(" mdl2", " assets", "marlett") AndAlso x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
                                                td.AddCommand(ff.Name, ff)
                                            Next
 
-                                           If Not td.Show Is Nothing Then
+                                           If td.Show IsNot Nothing Then
                                                codeFont.Edit.Text = td.SelectedText
                                            End If
                                        End Using

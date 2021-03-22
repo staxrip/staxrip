@@ -8,6 +8,7 @@ Public Class CommandLineForm
     Private Items As New List(Of Item)
     Private HighlightedControl As Control
     Private CommandLineHighlightingMenuItem As MenuItemEx
+    Private CommandLineMouseUpSearchMenuItem As MenuItemEx
 
     Property HTMLHelpFunc As Func(Of String)
 
@@ -62,8 +63,16 @@ Public Class CommandLineForm
                 rtbCommandLine.Format(rtbCommandLine.Text.ToString)
             End Sub
 
-        CommandLineHighlightingMenuItem = cms.Add("Command Line Highlighting", a, Keys.Control Or Keys.H)
+        CommandLineHighlightingMenuItem = cms.Add("Settings | Command Line Highlighting", a, Keys.Control Or Keys.H)
         CommandLineHighlightingMenuItem.Checked = s.CommandLineHighlighting
+
+        a = Sub()
+                CommandLineMouseUpSearchMenuItem.Checked = Not CommandLineMouseUpSearchMenuItem.Checked
+                s.CommandLinePreviewMouseUpSearch = CommandLineMouseUpSearchMenuItem.Checked
+            End Sub
+
+        CommandLineMouseUpSearchMenuItem = cms.Add("Settings | Preview Mouse-Up Search", a, Keys.Control Or Keys.P, "Clicking on a option in the preview navigates directly to the UI control.")
+        CommandLineMouseUpSearchMenuItem.Checked = s.CommandLinePreviewMouseUpSearch
 
         cms.Add("-")
 
@@ -496,7 +505,14 @@ Public Class CommandLineForm
     End Sub
 
     Sub rtbCommandLine_MouseUp(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseUp
-        If e.Button = MouseButtons.Right Then
+        If e.Button = MouseButtons.Left AndAlso s.CommandLinePreviewMouseUpSearch Then
+            Dim find = FindOptionInPreview()
+
+            If find <> "" Then
+                cbGoTo.Text = find
+                cbGoTo.Focus()
+            End If
+        ElseIf e.Button = MouseButtons.Right Then
             cmsCommandLine.Items.Clear()
 
             Dim copyItem = cmsCommandLine.Add("Copy Selection", Sub() Clipboard.SetText(rtbCommandLine.SelectedText))
@@ -505,30 +521,9 @@ Public Class CommandLineForm
 
             cmsCommandLine.Add("Copy Command Line", Sub() Clipboard.SetText(Params.GetCommandLine(True, True)))
 
-            Dim find = rtbCommandLine.SelectedText
+            Dim find = FindOptionInPreview()
 
-            If find.Length = 0 Then
-                Dim pos = rtbCommandLine.SelectionStart
-                Dim leftString = rtbCommandLine.Text.Substring(0, pos)
-                Dim left = leftString.LastIndexOf(" ") + 1
-                Dim right = rtbCommandLine.Text.Length
-                Dim rightString = rtbCommandLine.Text.Substring(pos)
-                Dim index = rightString.IndexOf(" ")
-
-                If index > -1 Then
-                    right = pos + index
-                End If
-
-                If right - left > 0 Then
-                    find = rtbCommandLine.Text.Substring(left, right - left)
-                End If
-            End If
-
-            If find.Length > 0 Then
-                If find.Contains("=") Then
-                    find = find.Left("=")
-                End If
-
+            If find <> "" Then
                 cmsCommandLine.Add("Search " + find, Sub()
                                                          cbGoTo.Text = find
                                                          cbGoTo.Focus()
@@ -539,6 +534,35 @@ Public Class CommandLineForm
             cmsCommandLine.Show(rtbCommandLine, e.Location)
         End If
     End Sub
+
+    Function FindOptionInPreview() As String
+        Dim find = rtbCommandLine.SelectedText
+
+        If find.Length = 0 Then
+            Dim pos = rtbCommandLine.SelectionStart
+            Dim leftString = rtbCommandLine.Text.Substring(0, pos)
+            Dim left = leftString.LastIndexOf(" ") + 1
+            Dim right = rtbCommandLine.Text.Length
+            Dim rightString = rtbCommandLine.Text.Substring(pos)
+            Dim index = rightString.IndexOf(" ")
+
+            If index > -1 Then
+                right = pos + index
+            End If
+
+            If right - left > 0 Then
+                find = rtbCommandLine.Text.Substring(left, right - left)
+            End If
+        End If
+
+        If find.Length > 0 Then
+            If find.Contains("=") Then
+                find = find.Left("=")
+            End If
+
+            Return find
+        End If
+    End Function
 
     Sub rtbCommandLine_MouseDown(sender As Object, e As MouseEventArgs) Handles rtbCommandLine.MouseDown
         If e.Button = MouseButtons.Right AndAlso rtbCommandLine.SelectedText = "" Then

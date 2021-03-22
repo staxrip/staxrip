@@ -9,6 +9,8 @@
 - MTN Thumbnailer description adjusted (JJKylee)
 - Fixed 'Reset Setting' feature in the Advanced menu (stax76)
 - New task dialog with color theme support (stax76)
+- Clicking a option in the video encoder command line preview navigates
+  directly to the UI control (stax76, [#617](/../../issues/617))
 - JPSDR 3.2.5 (Clang W7 AVX version)
 
 

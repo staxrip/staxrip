@@ -3,7 +3,7 @@ Imports System.Runtime.InteropServices
 
 Imports StaxRip.UI
 
-Public Class TaskDialogForm
+Public Class TaskDialogBaseForm
     Property Theme As Theme = ThemeManager.CurrentTheme
 
     Overridable Sub AdjustHeight()
@@ -14,7 +14,7 @@ Public Class TaskDialogForm
 
         If Not DesignHelp.IsDesignMode Then
             BackColor = Theme.General.BackColor
-            laMainInstruction.ForeColor = Theme.General.Controls.Label.ForeColor
+            TitleLabel.ForeColor = Theme.General.Controls.Label.ForeColor
         End If
     End Sub
 
@@ -37,7 +37,8 @@ Public Class TaskDialogForm
     Class TaskDialogPanel
         Inherits Panel
 
-        Property Form As TaskDialogForm
+        Property Form As TaskDialogBaseForm
+        Property LineBreaks As Integer
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
             MyBase.OnLayout(levent)
@@ -47,6 +48,10 @@ Public Class TaskDialogForm
                 Exit Sub
             End If
 
+            If Form Is Nothing Then
+                Form = DirectCast(FindForm(), TaskDialogBaseForm)
+            End If
+
             Dim fh = FontHeight
             Dim previous As Control
 
@@ -54,29 +59,29 @@ Public Class TaskDialogForm
                 For x = 0 To Controls.Count - 1
                     Dim c = Controls(x)
 
-                    If x <> 0 Then
+                    If x = 0 Then
+                        c.Top = 0
+                    Else
                         c.Top = previous.Top + previous.Height + CInt(fh * 0.2)
                     End If
 
                     c.Left = CInt(fh * 0.7)
                     c.Width = ClientSize.Width - CInt(fh * 0.7 * 2)
 
-                    If TypeOf c Is TextBox Then
-                        Dim sz = g.MeasureString(c.Text, c.Font, c.ClientSize.Width)
-                        c.Height = CInt(sz.Height + fh / 2)
-
-                        If c.Name = "ExpandedInformation" Then
-                            If Form Is Nothing Then
-                                Form = DirectCast(c.FindForm, TaskDialogForm)
-                            End If
-
-                            If Form.blDetails.Text = "Show Details" Then
-                                c.Height = 0
-                            End If
+                    If TypeOf c Is Label Then
+                        If c.Name = "ExpandedInformation" AndAlso Form.blDetails.Text = "Show Details" Then
+                            c.Visible = False
+                            c.Height = 0
+                        Else
+                            c.Visible = True
+                            Dim sz = g.MeasureString(c.Text, c.Font, c.Width)
+                            c.Height = CInt(sz.Height + fh / 2)
                         End If
                     End If
 
-                    TryCast(c, CommandButton)?.AdjustSize()
+                    If TryCast(c, CommandButton)?.AdjustSize() Then
+                        LineBreaks += 1
+                    End If
 
                     previous = c
                 Next
@@ -93,24 +98,38 @@ Public Class TaskDialogForm
         Property TitleFont As Font = New Font("Segoe UI", 12)
         Property DescriptionFont As Font = New Font("Segoe UI", 9)
 
-        Sub AdjustSize()
-            Dim tf = TitleFont.Height
+        Function AdjustSize() As Boolean
+            Dim titleFontHeight = TitleFont.Height
             Dim h As Integer
+            Dim hasLineBreak As Boolean
 
             If Title <> "" AndAlso Description <> "" Then
                 Dim ts = GetTitleSize()
                 Dim ds = GetDescriptionSize()
-                h = CInt(tf * 0.2 * 2) + ts.Height + ds.Height
+                h = CInt(titleFontHeight * 0.2 * 2) + ts.Height + ds.Height
+
+                If titleFontHeight * 2 < ts.Height Then
+                    hasLineBreak = True
+                End If
             ElseIf Title <> "" Then
                 Dim ts = GetTitleSize()
-                h = CInt(tf * 0.2 * 2) + ts.Height
+                h = CInt(titleFontHeight * 0.2 * 2) + ts.Height
+
+                If titleFontHeight * 2 < ts.Height Then
+                    hasLineBreak = True
+                End If
             ElseIf Description <> "" Then
                 Dim ds = GetDescriptionSize()
-                h = CInt(tf * 0.2 * 2) + ds.Height
+                h = CInt(titleFontHeight * 0.2 * 2) + ds.Height
+
+                If FontHeight * 2 < ds.Height Then
+                    hasLineBreak = True
+                End If
             End If
 
             ClientSize = New Size(ClientSize.Width, h)
-        End Sub
+            Return hasLineBreak
+        End Function
 
         Function GetTitleSize(Optional g1 As Graphics = Nothing) As Size
             If Title = "" Then
@@ -174,7 +193,9 @@ Public Class TaskDialogForm
             MyBase.OnPaint(e)
 
             Dim g = e.Graphics
+            g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
             Dim titleFontHeight = TitleFont.Height
+
             Dim x = CInt(titleFontHeight * 0.3)
             Dim y = CInt(titleFontHeight * 0.2)
             Dim w = ClientSize.Width - x * 2
@@ -200,6 +221,8 @@ Public Class TaskDialogForm
     End Class
 
     Sub blDetails_Click(sender As Object, e As EventArgs) Handles blDetails.Click
+        paMain.ScrollControlIntoView(paMain.Controls(0))
+
         If blDetails.Text = "Show Details" Then
             blDetails.Text = "Hide Details"
         Else

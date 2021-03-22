@@ -278,17 +278,17 @@ Public Class Project
                 Case "srt"
                     filterName = "core.vsfm.TextSubMod"
                 Case "ass"
-                    Dim sb As New SelectionBox(Of String)
-                    sb.Title = "ASS Subtitle Renderer"
-                    sb.Text = "Please select a renderer."
-                    sb.AddItem("core.vsfm.TextSubMod")
-                    sb.AddItem("core.sub.TextFile")
+                    Using td As New TaskDialog(Of String)
+                        td.Title = "Please select a ASS renderer"
+                        td.AddCommand("core.vsfm.TextSubMod")
+                        td.AddCommand("core.sub.TextFile")
 
-                    If sb.Show = DialogResult.OK Then
-                        filterName = sb.SelectedValue
-                    Else
-                        Exit Sub
-                    End If
+                        If td.Show <> "" Then
+                            filterName = td.SelectedValue
+                        Else
+                            Exit Sub
+                        End If
+                    End Using
                 Case "sup"
                     filterName = "core.sub.ImageFile"
                 Case Else

@@ -127,39 +127,39 @@ Public Class Folder
                     End If
                 Next
 
-                SettingsValue = Registry.CurrentUser.GetString("Software\StaxRip\SettingsLocation", Folder.Startup)
+                SettingsValue = Registry.CurrentUser.GetString("Software\StaxRip\SettingsLocation", Startup)
 
                 If Not Directory.Exists(SettingsValue) Then
                     Dim td As New TaskDialog(Of String)
 
-                    td.MainInstruction = "Settings Directory"
+                    td.Title = "Settings Directory"
                     td.Content = "Select the location of the settings directory."
 
-                    td.AddCommand(Folder.AppDataRoaming + "StaxRip")
-                    td.AddCommand(Folder.Startup + "Settings")
+                    td.AddCommand(AppDataRoaming + "StaxRip")
+                    td.AddCommand(Startup + "Settings")
                     td.AddCommand("Browse for custom directory", "custom")
 
                     Dim dir = td.Show
 
                     If dir = "custom" Then
                         Using dialog As New FolderBrowserDialog
-                            dialog.SelectedPath = Folder.Startup
+                            dialog.SelectedPath = Startup
 
                             If dialog.ShowDialog = DialogResult.OK Then
                                 dir = dialog.SelectedPath
                             Else
-                                dir = Folder.AppDataCommon + "StaxRip"
+                                dir = AppDataCommon + "StaxRip"
                             End If
                         End Using
                     ElseIf dir = "" Then
-                        dir = Folder.AppDataCommon + "StaxRip"
+                        dir = AppDataCommon + "StaxRip"
                     End If
 
                     If Not dir.DirExists Then
                         Try
                             Directory.CreateDirectory(dir)
                         Catch
-                            dir = Folder.AppDataCommon + "StaxRip"
+                            dir = AppDataCommon + "StaxRip"
 
                             If Not dir.DirExists Then
                                 Directory.CreateDirectory(dir)
@@ -1167,18 +1167,9 @@ Public Module MainModule
             Exit Sub
         End If
 
-        Using td As New TaskDialog2(Of String)
-            If content = "" Then
-                If title.Length < 80 Then
-                    td.Title = title
-                Else
-                    td.Content = title
-                End If
-            Else
-                td.Title = title
-                td.Content = content
-            End If
-
+        Using td As New TaskDialog(Of String)
+            td.Title = title
+            td.Content = content
             td.Owner = handle
             td.Icon = TaskIcon.Error
             td.ShowCopyButton = True
@@ -1223,32 +1214,11 @@ Public Module MainModule
                  icon As TaskIcon,
                  buttons As TaskButton) As DialogResult
 
-        If title Is Nothing Then
-            title = ""
-        End If
-
-        Using td As New TaskDialog2(Of DialogResult)
+        Using td As New TaskDialog(Of DialogResult)
             td.Icon = icon
-
-            If content Is Nothing Then
-                If title.Length < 80 Then
-                    td.Title = title
-                Else
-                    td.Content = title
-                End If
-            Else
-                td.Title = title
-                td.Content = content
-            End If
-
-            For Each i In {TaskButton.Ok, TaskButton.Yes, TaskButton.No,
-                TaskButton.Cancel, TaskButton.Retry, TaskButton.Close}
-
-                If buttons.HasFlag(i) Then
-                    td.AddButton(i.ToString, TaskDialog2(Of DialogResult).GetDialogResultFromButton(i))
-                End If
-            Next
-
+            td.Title = title
+            td.Content = content
+            td.Buttons = buttons
             Return td.Show()
         End Using
     End Function

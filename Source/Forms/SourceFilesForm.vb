@@ -237,13 +237,13 @@ Public Class SourceFilesForm
         End If
 
         Using td As New TaskDialog(Of String)
-            td.AddCommand("Add files", "files")
-            td.AddCommand("Add folder", "folder")
+            td.AddCommand("Add files")
+            td.AddCommand("Add folder")
 
             Select Case td.Show
-                Case "files"
+                Case "Add files"
                     ShowOpenFileDialog()
-                Case "folder"
+                Case "Add folder"
                     Using dialog As New FolderBrowserDialog
                         If dialog.ShowDialog = DialogResult.OK Then
                             Dim subfolders = Directory.GetDirectories(dialog.SelectedPath)

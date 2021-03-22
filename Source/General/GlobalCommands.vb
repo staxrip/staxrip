@@ -66,7 +66,7 @@ Public Class GlobalCommands
                 Directory.Exists(outputFolder.Edit.Text) Then
 
                 Using td As New TaskDialog(Of Demuxer)
-                    td.MainInstruction = "Select a demuxer."
+                    td.Title = "Select a demuxer"
 
                     If sourceFile.Edit.Text.Ext = "mkv" Then
                         td.AddCommand("mkvextract", New mkvDemuxer)
@@ -303,9 +303,8 @@ Public Class GlobalCommands
         Select Case topic
             Case "info"
                 form.Doc.WriteStart(GetApplicationDetails())
-                'form.Doc.WriteParagraph($"[file:///{Uri.EscapeDataString(Folder.Startup + "Authors.html")} StaxRip Authors]")
                 form.Doc.Write("Active Authors", "stax76, Dendraspis, DJATOM, Patman, JKyle, 44vince44")
-                form.Doc.Write("Retired Authors", "Revan654, NikosD, ernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+                form.Doc.Write("Retired Authors", "Revan654, NikosD, jernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
                 form.Doc.Writer.WriteRaw("<hr>")
 
                 Dim licensePath = Folder.Startup + "License.txt"
@@ -939,8 +938,8 @@ Public Class GlobalCommands
         sb.Items.Sort()
 
         If sb.Show = DialogResult.OK Then
-            s.Versions(sb.SelectedValue) = 0
-            MsgInfo("Will be reseted on next startup.")
+            s.Versions(sb.SelectedValue) = -1
+            MsgInfo("Will be reseted on next startup.", sb.SelectedValue)
         End If
     End Sub
 

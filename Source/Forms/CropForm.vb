@@ -316,10 +316,11 @@ Public Class CropForm
 
         If err <> "" Then
             Using td As New TaskDialog(Of String)
-                td.MainInstruction = "Script Error"
+                td.Title = "Script Error"
+                td.Icon = TaskIcon.Error
                 td.Content = err
-                td.AddButton("OK", "OK")
-                td.AddButton("Exit", "Exit")
+                td.AddButton("OK")
+                td.AddButton("Exit")
 
                 If td.Show() = "OK" Then
                     args.Cancel = True

@@ -409,21 +409,17 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\SelectionBox.vb" />
-    <Compile Include="UI\SelectionBoxForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="UI\StockIcon.vb" />
     <Compile Include="UI\StringEditorForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\TaskDialog.vb" />
-    <Compile Include="UI\TaskDialog2.vb">
+    <Compile Include="UI\TaskDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\TaskDialogForm.Designer.vb">
-      <DependentUpon>TaskDialogForm.vb</DependentUpon>
+    <Compile Include="UI\TaskDialogBaseForm.Designer.vb">
+      <DependentUpon>TaskDialogBaseForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="UI\TaskDialogForm.vb">
+    <Compile Include="UI\TaskDialogBaseForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\Templates\DialogTemplate.vb">
@@ -436,8 +432,8 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
-    <EmbeddedResource Include="UI\TaskDialogForm.resx">
-      <DependentUpon>TaskDialogForm.vb</DependentUpon>
+    <EmbeddedResource Include="UI\TaskDialogBaseForm.resx">
+      <DependentUpon>TaskDialogBaseForm.vb</DependentUpon>
     </EmbeddedResource>
     <None Include="..\Changelog.md">
       <Link>Changelog.md</Link>
@@ -609,9 +605,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Misc.resx">
       <DependentUpon>Misc.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\SelectionBoxForm.resx">
-      <DependentUpon>SelectionBoxForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\StringEditorForm.resx">
       <DependentUpon>StringEditorForm.vb</DependentUpon>

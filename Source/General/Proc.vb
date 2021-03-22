@@ -339,14 +339,13 @@ Public Class Proc
                     Throw New SkipException
                 End If
 
-                If AllowedExitCodes.Length > 0 AndAlso Not AllowedExitCodes.Contains(ExitCode) Then
+                If Not AllowedExitCodes.ContainsEx(ExitCode) Then
                     Dim output = ProcessHelp.GetConsoleOutput(Package.Err.Path, "/ntstatus.h /vfw.h /winerror.h " & ExitCode)
                     Dim errorMessage = Header + " returned error exit code: " & ExitCode &
                         " (" + "0x" + ExitCode.ToString("X") + ")"
 
                     errorMessage += BR2 + "It's unclear what the exit code means, in case it's " + BR +
-                        "a Windows system error then it possibly means:" + BR2 +
-                        ProcessHelp.GetConsoleOutput(Package.Err.Path, ExitCode.ToString)
+                        "a Windows system error then it possibly means:" + BR2 + output
 
                     errorMessage += BR2 + Log.ToString() + BR
                     Throw New ErrorAbortException("Error " + Header, errorMessage, Project)

@@ -219,7 +219,7 @@ Public Class ProcessingForm
     Sub New()
         InitializeComponent()
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
-        mbShutdown.Add(System.Enum.GetValues(GetType(ShutdownMode)).Cast(Of Object))
+        mbShutdown.AddRange(System.Enum.GetValues(GetType(ShutdownMode)).Cast(Of Object))
         Icon = g.Icon
         NotifyIcon.Icon = g.Icon
         NotifyIcon.Text = "StaxRip"

@@ -1257,11 +1257,11 @@ Public Class SimpleUI
         End Sub
 
         Sub Add(items As IEnumerable(Of Object))
-            Button.Add(items)
+            Button.AddRange(items)
         End Sub
 
         Sub Add(ParamArray items As Object())
-            Button.Add(items)
+            Button.AddRange(items)
         End Sub
 
         Sub Add(path As String, obj As T)

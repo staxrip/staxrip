@@ -60,7 +60,7 @@ Public Class StaxRipUpdate
                         Version.Parse(s.CheckForUpdatesDismissed) <> latestVersion.Version OrElse force) Then
 
                         Using td As New TaskDialog(Of String)
-                            td.MainInstruction = "A new " + latestVersion.ReleaseType + " version was found: " + latestVersion.Version.ToString()
+                            td.Title = "A new " + latestVersion.ReleaseType + " version was found: " + latestVersion.Version.ToString()
 
                             Dim changelogResponse = Await HttpClient.GetAsync(changelogUrl)
 
@@ -90,13 +90,13 @@ Public Class StaxRipUpdate
                                 End If
                             End If
 
-                            td.AddCommand("Download and save as...", "downloadsaveas")
-                            td.AddCommand("Download via browser", "downloadbrowser")
+                            td.AddCommand("Download and save as...", "dl-save-as")
+                            td.AddCommand("Download via browser", "dl-browser")
                             td.AddCommand("Open source website", "open")
                             td.AddCommand("Dismiss version " + latestVersion.Version.ToString(), "dismiss")
 
                             Select Case td.Show
-                                Case "downloadsaveas"
+                                Case "dl-save-as"
                                     Dim saveFileDialog = New SaveFileDialog With {
                                         .AddExtension = True,
                                         .AutoUpgradeEnabled = True,
@@ -116,7 +116,7 @@ Public Class StaxRipUpdate
                                             MessageBox.Show("This may take a while." + BR + "You'll be informed when the download finished." + BR2 + "Please do not close this instance till the download is finished!", "Downloading...", MessageBoxButtons.OK)
                                         End Using
                                     End If
-                                Case "downloadbrowser"
+                                Case "dl-browser"
                                     g.ShellExecute(latestVersion.DownloadUri)
                                 Case "open"
                                     g.ShellExecute(latestVersion.SourceSite)

@@ -1247,12 +1247,12 @@ Public Class MainForm
             End Using
         Catch ex As Exception
             Using td As New TaskDialog(Of String)
-                td.MainInstruction = "The settings failed to load!"
+                td.Title = "The settings failed to load!"
                 td.Content = ex.Message
-                td.MainIcon = TaskDialogIcon.Error
-                td.AddButton("Retry", "Retry")
-                td.AddButton("Reset", "Reset")
-                td.AddButton("Exit", "Exit")
+                td.Icon = TaskIcon.Error
+                td.AddButton("Retry")
+                td.AddButton("Reset")
+                td.AddButton("Exit")
 
                 Select Case td.Show
                     Case "Retry"
@@ -1418,7 +1418,7 @@ Public Class MainForm
                 Return False
             End If
 
-            Using td As New TaskDialog2(Of DialogResult)
+            Using td As New TaskDialog(Of DialogResult)
                 td.Title = "Save changed project?"
                 td.AddButton("Save", DialogResult.Yes)
                 td.AddButton("Don't Save", DialogResult.No)
@@ -1862,9 +1862,9 @@ Public Class MainForm
         Dim td As New TaskDialog(Of VideoFilter)
 
         If p.Script.IsAviSynth Then
-            td.MainInstruction = "Select a AviSynth source filter."
+            td.Title = "Select a AviSynth source filter."
         Else
-            td.MainInstruction = "Select a VapourSynth source filter."
+            td.Title = "Select a VapourSynth source filter."
         End If
 
         For Each filter In filters
@@ -1872,6 +1872,7 @@ Public Class MainForm
         Next
 
         Dim ret = td.Show
+        td.Dispose()
 
         If ret Is Nothing Then
             Throw New AbortException
@@ -1955,8 +1956,13 @@ Public Class MainForm
                 End If
             Next
 
+            Debug.WriteLine(isEncoding)
+            Debug.WriteLine(p.SourceFile)
+
             If p.SourceFile <> "" AndAlso Not isEncoding Then
                 Dim templates = Directory.GetFiles(Folder.Template, "*.srip")
+
+                Debug.WriteLine(templates.Length)
 
                 If templates.Length = 1 Then
                     If Not OpenProject(templates(0), True) Then
@@ -3096,11 +3102,8 @@ Public Class MainForm
             If refreshScript AndAlso Not (MouseButtons = MouseButtons.Left AndAlso ActiveControl Is tbResize) Then
                 Dim err = p.Script.Error
 
-                If err <> "" Then
-                    If ProcessTip(err) Then
-                        Dim title = If(err.Count(Function(chr) chr = BR(1)) > 2, "Click on message to show full error", "Script Error")
-                        Return Block(title, Sub() MsgError(err))
-                    End If
+                If err <> "" AndAlso ProcessTip(err) Then
+                    Return Block("Click on the error message", Sub() MsgError("Script Error", err))
                 End If
             End If
         Else
@@ -3306,12 +3309,12 @@ Public Class MainForm
 
             If di.AvailableFreeSpace / PrefixedSize(3).Factor < s.MinimumDiskSpace Then
                 Using td As New TaskDialog(Of String)
-                    td.MainInstruction = "Low Disk Space"
+                    td.Title = "Low Disk Space"
                     td.Content = $"The target drive {Path.GetPathRoot(p.TargetFile)} has only " +
                                  $"{(di.AvailableFreeSpace / PrefixedSize(3).Factor):f2} {PrefixedSize(3).Unit} free disk space."
-                    td.MainIcon = TaskDialogIcon.Warning
-                    td.AddButton("Continue", "Continue")
-                    td.AddButton("Abort", "Abort")
+                    td.Icon = TaskIcon.Warning
+                    td.AddButton("Continue")
+                    td.AddButton("Abort")
 
                     If td.Show <> "Continue" Then
                         Return True
@@ -3475,16 +3478,17 @@ Public Class MainForm
     End Sub
 
     Function LoadTemplateWithSelectionDialog() As Boolean
-        Dim td As New TaskDialog(Of String)
-        td.MainInstruction = "Please select a template"
+        Using td As New TaskDialog(Of String)
+            td.Title = "Please select a template"
 
-        For Each fp In Directory.GetFiles(Folder.Template, "*.srip")
-            td.AddCommand(fp.Base, fp)
-        Next
+            For Each fp In Directory.GetFiles(Folder.Template, "*.srip")
+                td.AddCommand(fp.Base, fp)
+            Next
 
-        If td.Show <> "" Then
-            Return OpenProject(td.SelectedValue, True)
-        End If
+            If td.Show <> "" Then
+                Return OpenProject(td.SelectedValue, True)
+            End If
+        End Using
     End Function
 
     <Command("Shows the Event Command dialog.")>
@@ -4145,15 +4149,15 @@ Public Class MainForm
                 Select Case p.FileExistVideo
                     Case FileExistMode.Ask
                         Using td As New TaskDialog(Of String)
-                            td.MainInstruction = "A video encoding output file already exists"
+                            td.Title = "A video encoding output file already exists"
                             td.Content = "Would you like to skip video encoding and reuse the existing video encoder output file or would you like to re-encode and overwrite it?"
-                            td.AddCommand("Reuse", "skip")
-                            td.AddCommand("Re-encode", "encode")
+                            td.AddCommand("Reuse")
+                            td.AddCommand("Re-encode")
 
                             Select Case td.Show
-                                Case "skip"
+                                Case "Reuse"
                                     p.SkipVideoEncoding = True
-                                Case "encode"
+                                Case "Re-encode"
                                     p.SkipVideoEncoding = False
                                 Case Else
                                     Exit Sub
@@ -4174,15 +4178,15 @@ Public Class MainForm
                 Select Case p.FileExistAudio
                     Case FileExistMode.Ask
                         Using td As New TaskDialog(Of String)
-                            td.MainInstruction = "An audio encoding output file already exists"
+                            td.Title = "An audio encoding output file already exists"
                             td.Content = "Would you like to skip audio encoding and reuse existing audio encoding output files or would you like to re-encode and overwrite?"
-                            td.AddCommand("Reuse", "skip")
-                            td.AddCommand("Re-encode", "encode")
+                            td.AddCommand("Reuse")
+                            td.AddCommand("Re-encode")
 
                             Select Case td.Show
-                                Case "skip"
+                                Case "Reuse"
                                     p.SkipAudioEncoding = True
-                                Case "encode"
+                                Case "Re-encode"
                                     p.SkipAudioEncoding = False
                                 Case Else
                                     Exit Sub
@@ -5509,20 +5513,21 @@ Public Class MainForm
                     a.RemoveAt(0)
                 End If
 
-                Dim td2 As New TaskDialog(Of Integer)
-                td2.MainInstruction = "Please select a playlist."
+                Using td As New TaskDialog(Of Integer)
+                    td.Title = "Please select a playlist."
 
-                For Each i In a
-                    If i.Contains(BR) Then
-                        td2.AddCommand(i.Left(BR).Trim, i.Right(BR).TrimEnd, a.IndexOf(i) + 1)
+                    For Each i In a
+                        If i.Contains(BR) Then
+                            td.AddCommand(i.Left(BR).Trim, i.Right(BR).TrimEnd, a.IndexOf(i) + 1)
+                        End If
+                    Next
+
+                    If td.Show() = 0 Then
+                        Exit Sub
                     End If
-                Next
 
-                If td2.Show() = 0 Then
-                    Exit Sub
-                End If
-
-                OpenEac3toDemuxForm(srcPath, td2.SelectedValue)
+                    OpenEac3toDemuxForm(srcPath, td.SelectedValue)
+                End Using
             End If
         End Using
     End Sub
@@ -5601,24 +5606,24 @@ Public Class MainForm
 
     <Command("Dialog to open source files.")>
     Sub ShowOpenSourceDialog()
-        Dim td As New TaskDialog(Of String)
+        Using td As New TaskDialog(Of String)
+            td.Title = "Select a method for opening a source."
+            td.AddCommand("Single File")
+            td.AddCommand("Blu-ray Folder")
+            td.AddCommand("Merge Files")
+            td.AddCommand("File Batch")
 
-        td.MainInstruction = "Select a method for opening a source."
-        td.AddCommand("Single File", "Single File")
-        td.AddCommand("Blu-ray Folder", "Blu-ray Folder")
-        td.AddCommand("Merge Files", "Merge Files")
-        td.AddCommand("File Batch", "File Batch")
-
-        Select Case td.Show
-            Case "Single File"
-                ShowOpenSourceSingleFileDialog()
-            Case "Merge Files"
-                ShowOpenSourceMergeFilesDialog()
-            Case "File Batch"
-                ShowOpenSourceBatchFilesDialog()
-            Case "Blu-ray Folder"
-                ShowOpenSourceBlurayFolderDialog()
-        End Select
+            Select Case td.Show
+                Case "Single File"
+                    ShowOpenSourceSingleFileDialog()
+                Case "Merge Files"
+                    ShowOpenSourceMergeFilesDialog()
+                Case "File Batch"
+                    ShowOpenSourceBatchFilesDialog()
+                Case "Blu-ray Folder"
+                    ShowOpenSourceBlurayFolderDialog()
+            End Select
+        End Using
     End Sub
 
     Sub OpenEac3toDemuxForm(playlistFolder As String, playlistID As Integer)

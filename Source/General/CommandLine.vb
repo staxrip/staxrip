@@ -115,7 +115,7 @@ Namespace CommandLine
                 Return options(0)
             ElseIf options.Length > 1 Then
                 Using td As New TaskDialog(Of String)
-                    td.MainInstruction = "Choose option"
+                    td.Title = "Choose option"
 
                     For Each i In options
                         td.AddCommand(i)

@@ -46,31 +46,21 @@ Public Class SelectionBox(Of T)
     End Sub
 
     Function Show() As DialogResult
-        Using form As New SelectionBoxForm
+        Using td As New TaskDialog(Of DialogResult)
             If Items.Count > 0 Then
-                form.mb.Add(Items)
-                form.mb.Value = SelectedBag
+                td.MenuButton.AddRange(Items)
+                td.MenuButton.Value = SelectedBag
             End If
 
-            For Each i In Items
-                Dim textWidth = TextRenderer.MeasureText(i.ToString, form.mb.Font).Width + form.FontHeight * 3
+            td.Text = If(Title = "", Application.ProductName, Title)
+            td.Title = Text
+            td.Buttons = TaskButton.OkCancel
 
-                If form.mb.Width < textWidth Then
-                    form.Width += textWidth - form.mb.Width
-                End If
-            Next
-
-            form.Text = Title
-
-            If form.Text = "" Then
-                form.Text = Application.ProductName
+            If td.Show() = DialogResult.OK Then
+                SelectedBag = DirectCast(td.MenuButton.Value, ListBag(Of T))
             End If
 
-            form.laText.Text = Text
-            Dim ret = form.ShowDialog
-            SelectedBag = DirectCast(form.mb.Value, ListBag(Of T))
-
-            Return ret
+            Return td.SelectedValue
         End Using
     End Function
 End Class

@@ -7,6 +7,7 @@
 - Start of new versioning (no beta versions anymore, but stripped DEV versions)
 - Check for updates adjusted (Dendraspis)
 - MTN Thumbnailer description adjusted (JJKylee)
+- Fixed 'Reset Setting' feature in the Advanced menu (stax76)
 - JPSDR 3.2.5 (Clang AVX version)
 
 

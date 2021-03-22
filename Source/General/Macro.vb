@@ -283,10 +283,10 @@ Public Class Macro
                 If items.Count > 0 Then
                     Using td As New TaskDialog(Of String)
                         If items?(0)?.StartsWith("msg:") Then
-                            td.MainInstruction = items(0).Substring(4)
+                            td.Title = items(0).Substring(4)
                             items.RemoveAt(0)
                         Else
-                            td.MainInstruction = "Please select one of the options."
+                            td.Title = "Please select one of the options."
                         End If
 
                         For Each iItem As String In items

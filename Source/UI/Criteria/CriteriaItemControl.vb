@@ -84,7 +84,7 @@ Namespace UI
                     Next
 
                     mbCondition.Menu.Items.ClearAndDisplose
-                    mbCondition.Add(CriteriaValue.ConditionNames)
+                    mbCondition.AddRange(CriteriaValue.ConditionNames)
                     mbCondition.Value = CriteriaValue.ConditionName
 
                     te.TextBox.SetTextWithoutTextChangedEvent(CriteriaValue.ValueString)

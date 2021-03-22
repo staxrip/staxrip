@@ -855,6 +855,13 @@ Module MiscExtensions
     End Function
 
     <Extension()>
+    Function ContainsEx(Of T)(instance As IEnumerable(Of T), value As T) As Boolean
+        If Not instance Is Nothing Then
+            Return instance.Contains(value)
+        End If
+    End Function
+
+    <Extension()>
     Function ContainsAny(Of T)(instance As IEnumerable(Of T), ParamArray values As T()) As Boolean
         Return instance.Where(Function(arg) values.Contains(arg)).Count > 0
     End Function

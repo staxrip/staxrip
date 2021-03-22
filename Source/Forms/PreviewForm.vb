@@ -858,7 +858,7 @@ Public Class PreviewForm
         End If
 
         Using td As New TaskDialog(Of String)
-            td.MainInstruction = "Select a chapter"
+            td.Title = "Select a chapter"
 
             For Each line In File.ReadAllLines(fp)
                 Dim left = line.Left("=")

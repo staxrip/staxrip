@@ -792,7 +792,7 @@ Public Class AppsForm
         Next
 
         Using td As New TaskDialog(Of String)
-            td.MainInstruction = "Choose how to show"
+            td.Title = "Choose how to show"
             td.AddCommand("Show as CSV file", "csv")
             td.AddCommand("Show using PowerShell", "ogv")
 
@@ -857,7 +857,7 @@ Public Class AppsForm
 
         If packs.Count > 0 Then
             Using td As New TaskDialog(Of Package)
-                td.MainInstruction = "Choose a path to be cleared."
+                td.Title = "Choose a path to be cleared."
 
                 For Each pack In packs
                     td.AddCommand(pack.Name, pack.GetStoredPath, pack)
@@ -921,41 +921,27 @@ Public Class AppsForm
         End If
 
         If paths.Count > 0 Then
-            Using form As New SimpleSettingsForm("Choose Path")
-                form.ScaleClientSize(35, 20)
-                form.bnOK.Visible = False
-                form.bnCancel.Visible = False
-                form.LineControl.Visible = False
-                form.HelpButton = False
-                form.Height = CInt(form.FontHeight * 3.6 * paths.Count + form.FontHeight * 2.5)
-
-                Dim ui = form.SimpleUI
+            Using td As New TaskDialog(Of String)
+                td.Title = "Choose Path"
 
                 For Each path In paths
-                    Dim bn = ui.AddButton
-                    bn.Button.Text = path
-                    bn.Button.Expand = True
-                    bn.Button.TextAlign = ContentAlignment.MiddleLeft
-                    bn.Button.Height = CInt(form.FontHeight * 3)
-                    bn.Button.Padding = New Padding(form.FontHeight \ 3)
-                    AddHandler bn.Button.Click, Sub(sender As Object, e As EventArgs)
-                                                    Dim fp = DirectCast(sender, ButtonEx).Text
-
-                                                    If Not s.AllowCustomPathsInStartupFolder AndAlso
-                                                        fp.ToLowerEx.StartsWithEx(Folder.Startup.ToLowerEx) AndAlso
-                                                        Not fp.ToLowerEx.StartsWithEx(Folder.Settings.ToLowerEx) Then
-
-                                                        MsgError("Custom paths within the startup folder are not permitted.")
-                                                        Exit Sub
-                                                    End If
-
-                                                    CurrentPackage.SetStoredPath(fp)
-                                                    ShowActivePackage()
-                                                    form.Close()
-                                                End Sub
+                    td.AddCommand("", path, path)
                 Next
 
-                form.ShowDialog()
+                If td.Show.FileExists Then
+                    If Not s.AllowCustomPathsInStartupFolder AndAlso
+                        td.SelectedValue.ToLowerEx.StartsWithEx(Folder.Startup.ToLowerEx) AndAlso
+                        Not td.SelectedValue.ToLowerEx.StartsWithEx(Folder.Settings.ToLowerEx) Then
+
+                        MsgError("Custom paths within the startup folder are not permitted.")
+                        Exit Sub
+                    End If
+
+                    CurrentPackage.SetStoredPath(td.SelectedValue)
+                    ShowActivePackage()
+                ElseIf td.SelectedValue <> "" Then
+                    MsgError("File not found", td.SelectedValue)
+                End If
             End Using
         Else
             MsgInfo("Nothing found.")
@@ -1062,7 +1048,7 @@ Public Class AppsForm
             path = path.Replace(";;", ";").TrimEnd(";"c)
 
             Using td As New TaskDialog(Of String)
-                td.MainInstruction = "Modify the user PATH environment variable"
+                td.Title = "Modify the user PATH environment variable"
                 td.AddCommand("Add", $"Add {CurrentPackage.Name} to user PATH environment variable", "add")
                 td.AddCommand("Remove", $"Remove {CurrentPackage.Name} from user PATH environment variable", "remove")
                 td.AddCommand("Editor", "Show environment variable editor", "edit")

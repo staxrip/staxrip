@@ -962,11 +962,6 @@ Public Class Startup
         AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
         Application.EnableVisualStyles()
         Application.SetCompatibleTextRenderingDefault(False)
-
-        If TaskDialog2(Of String).Test() Then
-            Exit Sub
-        End If
-
         Application.Run(New MainForm())
     End Sub
 End Class

@@ -106,7 +106,7 @@ Public Class ToolUpdate
                 UpdatePackageDialog()
 
                 Using td As New TaskDialog(Of String)
-                    td.MainInstruction = "Choose subfolder to extract."
+                    td.Title = "Choose subfolder to extract."
 
                     For Each subDir In subDirs
                         Dim name = subDir.Replace(ExtractDir, "").TrimEnd("\"c)

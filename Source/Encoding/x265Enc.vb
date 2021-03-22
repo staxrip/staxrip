@@ -1137,7 +1137,7 @@ Public Class x265Params
 
     Public Overrides Sub ShowHelp(options As String())
         Using td As New TaskDialog(Of String)
-            td.MainInstruction = String.Join(", ", options)
+            td.Title = String.Join(", ", options)
             td.AddCommand("Online Help")
             td.AddCommand("Console Help")
 

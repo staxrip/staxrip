@@ -2080,18 +2080,18 @@ Public Class Package
         Dim count = dic.Values.Where(Function(val) val <> "").Count
 
         If count > 1 Then
-            Using dialog As New TaskDialog(Of String)
-                dialog.MainInstruction = "Choose a option"
+            Using td As New TaskDialog(Of String)
+                td.Title = "Choose a option"
 
                 For Each pair In dic
                     If pair.Value <> "" Then
-                        dialog.AddCommand(pair.Key, pair.Value)
+                        td.AddCommand(pair.Key, pair.Value)
                     End If
                 Next
 
-                If dialog.Show <> "" Then
+                If td.Show <> "" Then
                     CreateHelpfile()
-                    g.ShellExecute(dialog.SelectedValue)
+                    g.ShellExecute(td.SelectedValue)
                 End If
             End Using
         Else

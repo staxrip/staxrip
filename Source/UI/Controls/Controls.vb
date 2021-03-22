@@ -1491,13 +1491,7 @@ Namespace UI
             RaiseEvent ValueChangedUser(value)
         End Sub
 
-        Sub Add(items As IEnumerable(Of Object))
-            For Each i In items
-                Add(i.ToString, i, Nothing)
-            Next
-        End Sub
-
-        Sub Add(ParamArray items As Object())
+        Sub AddRange(items As IEnumerable(Of Object))
             For Each i In items
                 Add(i.ToString, i, Nothing)
             Next

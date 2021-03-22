@@ -1000,7 +1000,7 @@ Public Class GlobalClass
         Optional timeout As Integer = 0)
 
         Try
-            Using td As New TaskDialog2(Of String)
+            Using td As New TaskDialog(Of String)
                 If title = "" Then
                     If TypeOf ex Is ErrorAbortException Then
                         td.Title = DirectCast(ex, ErrorAbortException).Title + $" ({Application.ProductVersion})"
@@ -1403,7 +1403,7 @@ Public Class GlobalClass
 
         If script.Engine = ScriptEngine.AviSynth Then
             Using td As New TaskDialog(Of String)
-                td.MainInstruction = "Choose below"
+                td.Title = "Choose below"
                 td.AddCommand("Info()")
                 td.AddCommand("avsmeter benchmark")
                 td.AddCommand("avsmeter info")
@@ -1433,7 +1433,7 @@ Public Class GlobalClass
             End Using
         Else
             Using td As New TaskDialog(Of String)
-                td.MainInstruction = "Choose below"
+                td.Title = "Choose below"
                 td.AddCommand("ClipInfo()")
                 td.AddCommand("vspipe info")
 

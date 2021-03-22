@@ -1360,7 +1360,7 @@ Public Class MuxerForm
 
     Sub bnSubtitleSetNames_Click(sender As Object, e As EventArgs) Handles bnSubtitleSetNames.Click
         Using td As New TaskDialog(Of Integer)
-            td.MainInstruction = "Set names for all streams."
+            td.Title = "Set names for all streams."
             td.AddCommand("Set language in English", 1)
 
             If CultureInfo.CurrentCulture.NeutralCulture.TwoLetterISOLanguageName <> "en" Then

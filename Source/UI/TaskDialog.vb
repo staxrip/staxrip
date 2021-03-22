@@ -1,207 +1,275 @@
 ﻿
-Imports System.Runtime.InteropServices
 Imports System.Text
-Imports System.Text.RegularExpressions
+Imports System.Threading
 
-Public Delegate Function PFTASKDIALOGCALLBACK(
-    hwnd As IntPtr, msg As UInteger, wParam As IntPtr, lParam As IntPtr, lpRefData As IntPtr) As Integer
+Imports StaxRip.UI
 
 Public Class TaskDialog(Of T)
-    Inherits TaskDialog
-    Implements IDisposable
+    Inherits TaskDialogBaseForm
 
-    Private IdValueDic As New Dictionary(Of Integer, T)
-    Private IdTextDic As New Dictionary(Of Integer, String)
-    Private CommandLinkShieldList As New List(Of Integer)
-    Private ButtonArray As IntPtr, RadioButtonArray As IntPtr
-    Private Buttons As New List(Of TASKDIALOG_BUTTON)
-    Private RadioButtons As New List(Of TASKDIALOG_BUTTON)
+    Property Commands As New List(Of CommandDefinition)
+    Property ButtonDefinitions As New List(Of ButtonDefinition)
+    Property SelectedValue As T
+    Property SelectedText As String
+    Property Title As String
+    Property Content As String
+    Property ExpandedContent As String
+    Property Timeout As Integer
 
-    Property Config As TASKDIALOGCONFIG
+    Overloads Property Icon As TaskIcon
+    Overloads Property Owner As IntPtr
 
-    Const TDN_CREATED As Integer = 0
-    Const TDN_BUTTON_CLICKED As Integer = 2
-    Const TDN_HYPERLINK_CLICKED As Integer = 3
-    Const TDN_TIMER As Integer = 4
-    Const TDN_RADIO_BUTTON_CLICKED As Integer = 6
-    Const TDM_CLICK_BUTTON As Integer = &H400 + 102
-    Const TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE As Integer = &H400 + 115
+    Private tbContent As Label
+    Private tbExpandedContent As Label
 
-    Sub New()
-        Config = New TASKDIALOGCONFIG()
-        Config.cbSize = CUInt(Marshal.SizeOf(Config))
-        Config.cButtons = 0
-        Config.cRadioButtons = 0
-        Config.cxWidth = 0
-        Config.dwCommonButtons = TaskDialogButtons.None
-        Config.dwFlags = Flags.TDF_ALLOW_DIALOG_CANCELLATION
-        Config.FooterIcon = New TASKDIALOGCONFIG_ICON_UNION(0)
-        Config.hInstance = IntPtr.Zero
-        Config.hwndParent = GetHandle()
-        Config.MainIcon = New TASKDIALOGCONFIG_ICON_UNION(0)
-        Config.nDefaultButton = 0
-        Config.nDefaultRadioButton = 0
-        Config.pButtons = IntPtr.Zero
-        Config.pfCallback = New PFTASKDIALOGCALLBACK(AddressOf DialogProc)
-        Config.pRadioButtons = IntPtr.Zero
-        Config.pszCollapsedControlText = Nothing
-        Config.pszContent = ""
-        Config.pszExpandedControlText = Nothing
-        Config.pszExpandedInformation = Nothing
-        Config.pszFooter = Nothing
-        Config.pszMainInstruction = ""
-        Config.pszVerificationText = Nothing
-        Config.pszWindowTitle = Application.ProductName
+    Sub Init()
+        ShowInTaskbar = False
+        Text = Application.ProductName
+        Font = New Font("Segoe UI", 9)
+        Width = FontHeight * 22
+
+        If Content = "" AndAlso Title?.Length > 80 Then
+            Content = Title
+            Title = ""
+        End If
+
+        If MenuButton.Items.Count > 0 Then
+            MenuButton.Visible = True
+
+            For Each i In MenuButton.Items
+                Dim textWidth = TextRenderer.MeasureText(i.ToString, Font).Width + FontHeight * 3
+
+                If MenuButton.Width < textWidth Then
+                    Width += textWidth - MenuButton.Width
+                End If
+            Next
+        End If
+
+        If Content?.Length > 1000 OrElse ExpandedContent?.Length > 1000 Then
+            Width = FontHeight * 35
+        End If
+
+        ShowIcon = False
+        StartPosition = FormStartPosition.CenterScreen
+
+        If Icon <> TaskIcon.None Then
+            pbIcon.Visible = True
+        End If
+
+        Select Case Icon
+            Case TaskIcon.Warning
+                pbIcon.Image = StockIcon.GetImage(StockIconIdentifier.Warning)
+            Case TaskIcon.Error
+                pbIcon.Image = StockIcon.GetImage(StockIconIdentifier.Error)
+            Case TaskIcon.Info
+                pbIcon.Image = StockIcon.GetImage(StockIconIdentifier.Info)
+            Case TaskIcon.Shield
+                pbIcon.Image = StockIcon.GetImage(StockIconIdentifier.Shield)
+            Case TaskIcon.Question
+                pbIcon.Image = StockIcon.GetImage(StockIconIdentifier.Help)
+        End Select
+
+        TitleLabel.Font = New Font("Segoe UI", 12)
+        TitleLabel.Text = Title
+
+        If Content <> "" Then
+            tbContent = New Label
+            tbContent.BackColor = Theme.General.BackColor
+            tbContent.ForeColor = Theme.General.Controls.Label.ForeColor
+            tbContent.Margin = New Padding(0)
+            tbContent.BorderStyle = BorderStyle.None
+            tbContent.Text = Content
+            paMain.Controls.Add(tbContent)
+        End If
+
+        If ExpandedContent <> "" Then
+            tbExpandedContent = New Label
+            tbExpandedContent.BackColor = Theme.General.BackColor
+            tbExpandedContent.ForeColor = Theme.General.Controls.Label.ForeColor
+            tbExpandedContent.Margin = New Padding(0)
+            tbExpandedContent.BorderStyle = BorderStyle.None
+            tbExpandedContent.Text = ExpandedContent
+            tbExpandedContent.Name = "ExpandedInformation"
+            blDetails.Visible = True
+            paMain.Controls.Add(tbExpandedContent)
+        End If
+
+        Dim firstCommandButton As CommandButton
+
+        For Each command In Commands
+            Dim cb As New CommandButton
+            cb.Title = command.Text
+            cb.Description = command.Description
+            cb.Tag = command
+            cb.BackColor = Theme.ProcessingForm.ProcessButtonBackColor
+            cb.ForeColor = Theme.ProcessingForm.ProcessButtonForeColor
+            cb.FlatAppearance.BorderColor = Theme.General.BackColor
+            AddHandler cb.Click, AddressOf CommandClick
+            paMain.Controls.Add(cb)
+
+            If firstCommandButton Is Nothing Then
+                firstCommandButton = cb
+            End If
+        Next
+
+        For Each i In ButtonDefinitions
+            If Not flpButtons.Visible Then
+                flpButtons.Visible = True
+                flpButtons.AutoSizeMode = AutoSizeMode.GrowAndShrink
+                flpButtons.AutoSize = True
+            End If
+
+            Dim b As New ButtonEx
+            b.Text = i.Text
+            b.Tag = i.Value
+
+            flpButtons.Controls.Add(b)
+            i.Button = b
+            AddHandler b.Click, AddressOf ButtonClick
+        Next
+
+        If Timeout > 0 Then
+            g.RunTask(Sub()
+                          Thread.Sleep(Timeout * 1000)
+
+                          If Not IsDisposingOrDisposed Then
+                              Invoke(Sub() Close())
+                          End If
+                      End Sub)
+        End If
+
+        If TypeOf SelectedValue Is DialogResult Then
+            If SelectedValue.Equals(DialogResult.None) Then
+                If ButtonDefinitions.Where(Function(i) i.Value.Equals(DialogResult.No)).Any Then
+                    SelectedValue = CType(CObj(DialogResult.No), T)
+                End If
+
+                If ButtonDefinitions.Where(Function(i) i.Value.Equals(DialogResult.Cancel)).Any Then
+                    SelectedValue = CType(CObj(DialogResult.Cancel), T)
+                End If
+            End If
+
+            Dim ok = ButtonDefinitions.Where(Function(i) i.Value.Equals(DialogResult.OK)).FirstOrDefault
+
+            If Not ok Is Nothing Then
+                ActiveControl = ok.Button
+            End If
+
+            If ActiveControl Is Nothing Then
+                Dim yes = ButtonDefinitions.Where(Function(i) i.Value.Equals(DialogResult.Yes)).FirstOrDefault
+
+                If Not yes Is Nothing Then
+                    ActiveControl = yes.Button
+                End If
+            End If
+        End If
+
+        If ActiveControl Is Nothing Then
+            If firstCommandButton Is Nothing Then
+                ActiveControl = TitleLabel
+            Else
+                ActiveControl = firstCommandButton
+            End If
+        End If
+
+        If Owner = IntPtr.Zero Then
+            Owner = GetHandle()
+        End If
     End Sub
 
-    WriteOnly Property AllowCancel() As Boolean
-        Set(Value As Boolean)
-            If Value Then
-                Config.dwFlags = Config.dwFlags Or Flags.TDF_ALLOW_DIALOG_CANCELLATION
-            ElseIf (Config.dwFlags And Flags.TDF_ALLOW_DIALOG_CANCELLATION) = Flags.TDF_ALLOW_DIALOG_CANCELLATION Then
-                Config.dwFlags = Config.dwFlags Xor Flags.TDF_ALLOW_DIALOG_CANCELLATION
-            End If
-        End Set
-    End Property
+    Sub AddCommand(text As String, Optional value As T = Nothing)
+        AddCommand(text, Nothing, value)
+    End Sub
 
-    Property MainInstruction() As String
-        Get
-            Return Config.pszMainInstruction
-        End Get
-        Set(Value As String)
-            Config.pszMainInstruction = Value
-        End Set
-    End Property
+    Sub AddCommand(text As String, description As String, value As T)
+        If value Is Nothing Then
+            value = CType(CObj(text), T)
+        End If
 
-    Property Content() As String
-        Get
-            Return Config.pszContent
-        End Get
-        Set(Value As String)
-            Config.pszContent = ExpandWikiMarkup(Value)
-        End Set
-    End Property
+        Commands.Add(New CommandDefinition With {.Text = text, .Description = description, .Value = value})
+    End Sub
 
-    Property ExpandedInformation() As String
-        Get
-            Return Config.pszExpandedInformation
-        End Get
-        Set(Value As String)
-            Config.pszExpandedInformation = ExpandWikiMarkup(Value)
-        End Set
-    End Property
+    Sub AddButton(text As String)
+        AddButton(text, CType(CObj(text), T))
+    End Sub
 
-    Property VerificationText() As String
-        Get
-            Return Config.pszVerificationText
-        End Get
-        Set(Value As String)
-            Config.pszVerificationText = Value
-        End Set
-    End Property
+    Sub AddButton(text As String, value As T)
+        ButtonDefinitions.Add(New ButtonDefinition With {.Text = text, .Value = value})
+    End Sub
 
-    Property DefaultButton() As DialogResult
-        Get
-            Return CType(Config.nDefaultButton, DialogResult)
-        End Get
-        Set(Value As DialogResult)
-            Config.nDefaultButton = Value
-        End Set
-    End Property
+    Sub AddButton(value As T)
+        ButtonDefinitions.Add(New ButtonDefinition With {.Text = value.ToString, .Value = value})
+    End Sub
 
-    Property Footer() As String
-        Get
-            Return Config.pszFooter
-        End Get
-        Set(Value As String)
-            Config.pszFooter = ExpandWikiMarkup(Value)
-        End Set
-    End Property
+    WriteOnly Property Buttons As TaskButton
+        Set(value As TaskButton)
+            For Each i In {TaskButton.Ok, TaskButton.Yes, TaskButton.No,
+                TaskButton.Cancel, TaskButton.Retry, TaskButton.Close}
 
-    WriteOnly Property MainIcon() As TaskDialogIcon
-        Set(Value As TaskDialogIcon)
-            Config.MainIcon = New TASKDIALOGCONFIG_ICON_UNION(Value)
-        End Set
-    End Property
-
-    Private SelectedIDValue As Integer = -1
-
-    Property SelectedID As Integer
-        Get
-            Return SelectedIDValue
-        End Get
-        Set(value As Integer)
-            For Each i In IdValueDic
-                If i.Key = value Then
-                    SelectedIDValue = value
+                If value.HasFlag(i) Then
+                    AddButton(i.ToString, CType(CObj(GetDialogResultFromButton(i)), T))
                 End If
             Next
         End Set
     End Property
 
-    Private SelectedValueValue As T
+    Sub CommandClick(sender As Object, e As EventArgs)
+        Dim tag = DirectCast(sender, CommandButton).Tag
+        Dim cmd = DirectCast(tag, CommandDefinition)
+        SelectedText = If(cmd.Text = "", cmd.Description, cmd.Text)
+        SelectedValue = cmd.Value
+        Close()
+    End Sub
 
-    Property SelectedValue() As T
-        Get
-            If IdValueDic.ContainsKey(SelectedID) Then
-                Return IdValueDic(SelectedID)
-            End If
+    Sub ButtonClick(sender As Object, e As EventArgs)
+        Dim button = DirectCast(sender, ButtonEx)
+        SelectedText = button.Text
+        SelectedValue = DirectCast(button.Tag, T)
+        Close()
+    End Sub
 
-            Return SelectedValueValue
-        End Get
-        Set(value As T)
-            SelectedValueValue = value
-        End Set
-    End Property
+    Overrides Sub AdjustHeight()
+        Dim h = tlpTop.Height
 
-    Private SelectedTextValue As String
+        If paMain.Controls.Count > 0 Then
+            Dim last = paMain.Controls(paMain.Controls.Count - 1)
+            h += last.Top + last.Height
+        End If
 
-    Property SelectedText() As String
-        Get
-            If IdTextDic.ContainsKey(SelectedID) Then
-                Return IdTextDic(SelectedID)
-            End If
+        h += spBottom.Height
 
-            Return SelectedTextValue
-        End Get
-        Set(value As String)
-            SelectedTextValue = value
-        End Set
-    End Property
+        If spBottom.Controls.OfType(Of Control).Where(Function(i) i.Visible).Count > 0 Then
+            h += spBottom.Margin.Vertical
+        End If
 
-    Property CheckBoxChecked() As Boolean
-        Get
-            Return (Config.dwFlags And Flags.TDF_VERIFICATION_FLAG_CHECKED) = Flags.TDF_VERIFICATION_FLAG_CHECKED
-        End Get
+        h += CInt(FontHeight * 0.7)
+
+        Dim nonClientHeight = Height - ClientSize.Height
+        Dim maxHeight = Screen.FromControl(Me).WorkingArea.Height
+        Dim w = ClientSize.Width
+
+        If (h + nonClientHeight) > maxHeight Then
+            h = maxHeight - nonClientHeight
+            w = FontHeight * 40
+        End If
+
+        If paMain.LineBreaks > 2 Then
+            w = FontHeight * 40
+        End If
+
+        ClientSize = New Size(w, h)
+        CenterScreen
+    End Sub
+
+    WriteOnly Property ShowCopyButton As Boolean
         Set(value As Boolean)
             If value Then
-                Config.dwFlags = Config.dwFlags Or Flags.TDF_VERIFICATION_FLAG_CHECKED
-            ElseIf CheckBoxChecked Then
-                Config.dwFlags = Config.dwFlags Xor Flags.TDF_VERIFICATION_FLAG_CHECKED
-            End If
-        End Set
-    End Property
-
-    Property CommonButtons() As TaskDialogButtons
-        Get
-            Return Config.dwCommonButtons
-        End Get
-        Set(Value As TaskDialogButtons)
-            Config.dwCommonButtons = Value
-        End Set
-    End Property
-
-    Private TimeoutValue As Integer
-
-    Property Timeout As Integer
-        Get
-            Return CInt(TimeoutValue / 1000)
-        End Get
-        Set(Value As Integer)
-            TimeoutValue = Value * 1000
-
-            If Value > 0 Then
-                Config.dwFlags = Config.dwFlags Or Flags.TDF_CALLBACK_TIMER
+                Button.Text = "Copy Message"
+                Button.Visible = True
+                Button.ClickAction = Sub()
+                                         Clipboard.SetText(GetText)
+                                         MsgInfo("Message was copied to clipboard.")
+                                     End Sub
             End If
         End Set
     End Property
@@ -216,271 +284,115 @@ Public Class TaskDialog(Of T)
         End If
     End Function
 
-    Sub AddButton(text As String, value As T)
-        Dim id = 1000 + IdValueDic.Count + 1
-        IdValueDic(id) = value
-        Buttons.Add(New TASKDIALOG_BUTTON(id, text))
-    End Sub
+    Function GetText() As String
+        Dim ret = TitleLabel.Text
 
-    Function ExpandWikiMarkup(value As String) As String
-        If value.Contains("[") Then
-            Dim regex As New Regex("\[(\w+?:.*?) (.+?)\]")
-            Dim match = regex.Match(value)
-
-            If match.Success Then
-                Config.dwFlags = Config.dwFlags Or Flags.TDF_ENABLE_HYPERLINKS
-                value = regex.Replace(value, "<a href=""$1"">$2</a>")
-            End If
+        If Content <> "" Then
+            ret += BR2 + Content
         End If
 
-        Return value
+        If ExpandedContent <> "" Then
+            ret += BR2 + ExpandedContent
+        End If
+
+        Return ret
     End Function
 
-    Sub AddCommand(text As String, Optional value As T = Nothing)
-        Dim id = 1000 + IdValueDic.Count + 1
-        Dim temp As Object = text
-        IdValueDic(id) = If(value Is Nothing, CType(temp, T), value)
-        IdTextDic(id) = text
-        Buttons.Add(New TASKDIALOG_BUTTON(id, text))
-        Config.dwFlags = Config.dwFlags Or Flags.TDF_USE_COMMAND_LINKS
+    Shared Function GetDialogResultFromButton(button As TaskButton) As DialogResult
+        Select Case button
+            Case TaskButton.Ok
+                Return DialogResult.OK
+            Case TaskButton.Cancel, TaskButton.Close
+                Return DialogResult.Cancel
+            Case TaskButton.Yes
+                Return DialogResult.Yes
+            Case TaskButton.No
+                Return DialogResult.No
+            Case TaskButton.None
+                Return DialogResult.None
+            Case TaskButton.Retry
+                Return DialogResult.Retry
+        End Select
+    End Function
+
+    Protected Overrides Sub OnLoad(args As EventArgs)
+        MyBase.OnLoad(args)
+        Dim fh = FontHeight
+
+        For Each i As ButtonEx In flpButtons.Controls
+            i.Height = CInt(fh * 1.5)
+            i.Width = fh * 5
+
+            Using g = i.CreateGraphics
+                Dim minWidth = CInt(g.MeasureString(i.Text, i.Font).Width + fh)
+
+                If i.Width < minWidth Then
+                    i.Width = minWidth
+                End If
+            End Using
+
+            i.Margin = New Padding(CInt(fh * 0.4), 0, 0, 0)
+        Next
+
+        MenuButton.Margin = New Padding(CInt(fh * 0.7), MenuButton.Margin.Top, CInt(fh * 0.7), MenuButton.Margin.Bottom)
+        flpButtons.Margin = New Padding(0, 0, CInt(fh * 0.7), 0)
+
+        AdjustHeight()
+        AdjustHeight()
+
+        If Owner <> IntPtr.Zero Then
+            Dim GWLP_HWNDPARENT = -8
+            SetWindowLongPtr(Handle, GWLP_HWNDPARENT, Owner)
+        End If
     End Sub
 
-    Sub AddCommand(text As String, description As String, value As T, Optional setShield As Boolean = False)
-        Dim id = 1000 + IdValueDic.Count + 1
-        IdValueDic(id) = value
+    Overloads Function Show() As T
+        If Application.MessageLoop Then
+            Init()
 
-        If setShield Then
-            CommandLinkShieldList.Add(id)
-        End If
-
-        If description <> "" Then
-            text = text + Microsoft.VisualBasic.vbLf + description
-        End If
-
-        Buttons.Add(New TASKDIALOG_BUTTON(id, text))
-        Config.dwFlags = Config.dwFlags Or Flags.TDF_USE_COMMAND_LINKS
-    End Sub
-
-    Sub AddRadioButton(text As String, value As T)
-        Dim id = 1000 + IdValueDic.Count + 1
-        IdValueDic(id) = value
-        RadioButtons.Add(New TASKDIALOG_BUTTON(id, text))
-    End Sub
-
-    Function Show() As T
-        MarshalDialogControlStructs()
-        Dim checked As Boolean
-        Dim hr = TaskDialogIndirect(Config, Nothing, Nothing, checked)
-        CheckBoxChecked = checked
-
-        If hr < 0 Then
-            Marshal.ThrowExceptionForHR(hr)
-        End If
-
-        If TypeOf SelectedValue Is DialogResult Then
-            SelectedValue = DirectCast(CObj(SelectedID), T)
+            Using Me
+                ShowDialog()
+            End Using
+        Else
+            Init()
+            Application.Run(Me)
         End If
 
         Return SelectedValue
     End Function
 
-    Private ExitTickCount As Integer
-
-    Function DialogProc(hwnd As IntPtr, msg As UInteger, wParam As IntPtr,
-                        lParam As IntPtr, lpRefData As IntPtr) As Integer
-        Select Case msg
-            Case TDN_BUTTON_CLICKED, TDN_RADIO_BUTTON_CLICKED
-                If TypeOf SelectedValue Is DialogResult Then
-                    SelectedIDValue = wParam.ToInt32
-                Else
-                    SelectedID = wParam.ToInt32
-                End If
-            Case TDN_TIMER
-                If ExitTickCount = 0 Then
-                    ExitTickCount = Environment.TickCount + Timeout * 1000
-                End If
-
-                If Environment.TickCount > ExitTickCount Then
-                    Native.SendMessage(hwnd, TDM_CLICK_BUTTON, DialogResult.OK, 0)
-                End If
-            Case TDN_HYPERLINK_CLICKED
-                Dim url = Marshal.PtrToStringUni(lParam)
-
-                If url.StartsWith("mailto:") OrElse url Like "http*://*" Then
-                    g.ShellExecute(url)
-                ElseIf url = "copymsg:" Then
-                    g.MainForm.BeginInvoke(Sub()
-                                               Clipboard.SetText(MainInstruction + BR2 + Content + BR2 + ExpandedInformation)
-                                               MsgInfo("Message was copied to clipboard.")
-                                           End Sub)
-                End If
-            Case TDN_CREATED
-                For Each i In CommandLinkShieldList
-                    Native.SendMessage(hwnd, TDM_SET_BUTTON_ELEVATION_REQUIRED_STATE, i, 1)
-                Next
-        End Select
-
-        Return 0
-    End Function
-
-    Sub MarshalDialogControlStructs()
-        If Not Buttons Is Nothing AndAlso Buttons.Count > 0 Then
-            ButtonArray = AllocateAndMarshalButtons(Buttons)
-            Config.pButtons = ButtonArray
-            Config.cButtons = CUInt(Buttons.Count)
-        End If
-
-        If Not RadioButtons Is Nothing AndAlso RadioButtons.Count > 0 Then
-            RadioButtonArray = AllocateAndMarshalButtons(RadioButtons)
-            Config.pRadioButtons = RadioButtonArray
-            Config.cRadioButtons = CUInt(RadioButtons.Count)
-        End If
-    End Sub
-
-    Shared Function AllocateAndMarshalButtons(structs As List(Of TASKDIALOG_BUTTON)) As IntPtr
-        Dim initialPtr = Marshal.AllocHGlobal(Marshal.SizeOf(GetType(TASKDIALOG_BUTTON)) * structs.Count)
-        Dim currentPtr = initialPtr
-
-        For Each button In structs
-            Marshal.StructureToPtr(button, currentPtr, False)
-            currentPtr = CType((currentPtr.ToInt64 + Marshal.SizeOf(button)), IntPtr)
-        Next
-
-        Return initialPtr
-    End Function
-
-    Private disposed As Boolean
-
-    Sub Dispose() Implements IDisposable.Dispose
-        Dispose(True)
-        GC.SuppressFinalize(Me)
-    End Sub
-
-    Protected Overrides Sub Finalize()
-        Try
-            Dispose(False)
-        Finally
-            MyBase.Finalize()
-        End Try
-    End Sub
-
-    Protected Sub Dispose(disposing As Boolean)
-        If Not disposed Then
-            disposed = True
-
-            If ButtonArray <> IntPtr.Zero Then
-                Marshal.FreeHGlobal(ButtonArray)
-                ButtonArray = IntPtr.Zero
-            End If
-
-            If RadioButtonArray <> IntPtr.Zero Then
-                Marshal.FreeHGlobal(RadioButtonArray)
-                RadioButtonArray = IntPtr.Zero
-            End If
-        End If
-    End Sub
-End Class
-
-Public Class TaskDialog
-    <DllImport("comctl32.dll", CharSet:=CharSet.Unicode)>
-    Shared Function TaskDialogIndirect(pTaskConfig As TASKDIALOGCONFIG, ByRef pnButton As Integer,
-        ByRef pnRadioButton As Integer, ByRef pVerificationFlagChecked As Boolean) As Integer
-    End Function
-
-    <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)>
-    Public Class TASKDIALOGCONFIG
-        Public cbSize As UInteger
-        Public hwndParent As IntPtr
-        Public hInstance As IntPtr
-        Public dwFlags As Flags
-        Public dwCommonButtons As TaskDialogButtons
-        Public pszWindowTitle As String
-        Public MainIcon As TASKDIALOGCONFIG_ICON_UNION
-        Public pszMainInstruction As String
-        Public pszContent As String
-        Public cButtons As UInteger
-        Public pButtons As IntPtr
-        Public nDefaultButton As Integer
-        Public cRadioButtons As UInteger
-        Public pRadioButtons As IntPtr
-        Public nDefaultRadioButton As Integer
-        Public pszVerificationText As String
-        Public pszExpandedInformation As String
-        Public pszExpandedControlText As String
-        Public pszCollapsedControlText As String
-        Public FooterIcon As TASKDIALOGCONFIG_ICON_UNION
-        Public pszFooter As String
-        Public pfCallback As PFTASKDIALOGCALLBACK
-        Public lpCallbackData As IntPtr
-        Public cxWidth As UInteger
+    Public Class CommandDefinition
+        Property Text As String
+        Property Description As String
+        Property Value As T
     End Class
 
-    Public Enum Flags
-        NONE = 0
-        TDF_ENABLE_HYPERLINKS = &H1
-        TDF_USE_HICON_MAIN = &H2
-        TDF_USE_HICON_FOOTER = &H4
-        TDF_ALLOW_DIALOG_CANCELLATION = &H8
-        TDF_USE_COMMAND_LINKS = &H10
-        TDF_USE_COMMAND_LINKS_NO_ICON = &H20
-        TDF_EXPAND_FOOTER_AREA = &H40
-        TDF_EXPANDED_BY_DEFAULT = &H80
-        TDF_VERIFICATION_FLAG_CHECKED = &H100
-        TDF_SHOW_PROGRESS_BAR = &H200
-        TDF_SHOW_MARQUEE_PROGRESS_BAR = &H400
-        TDF_CALLBACK_TIMER = &H800
-        TDF_POSITION_RELATIVE_TO_WINDOW = &H1000
-        TDF_RTL_LAYOUT = &H2000
-        TDF_NO_DEFAULT_RADIO_BUTTON = &H4000
-    End Enum
-
-    <StructLayout(LayoutKind.Explicit, CharSet:=CharSet.Unicode)>
-    Public Structure TASKDIALOGCONFIG_ICON_UNION
-        <FieldOffset(0)> Public hMainIcon As Integer
-        <FieldOffset(0)> Public pszIcon As Integer
-        <FieldOffset(0)> Public spacer As IntPtr
-
-        Sub New(i As Integer)
-            spacer = IntPtr.Zero
-            pszIcon = 0
-            hMainIcon = i
-        End Sub
-    End Structure
-
-    <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)>
-    Public Structure TASKDIALOG_BUTTON
-        Public nButtonID As Integer
-        Public pszButtonText As String
-
-        Sub New(n As Integer, txt As String)
-            nButtonID = n
-            pszButtonText = txt
-        End Sub
-    End Structure
+    Public Class ButtonDefinition
+        Property Text As String
+        Property Value As T
+        Property Button As ButtonEx
+    End Class
 End Class
 
-Public Enum TaskDialogButtons
-    None = &H0
-    Ok = &H1
-    Yes = &H2
-    No = &H4
-    Cancel = &H8
-    Retry = &H10
-    RetryCancel = Retry Or Cancel
-    Close = &H20
+Public Enum TaskIcon
+    None
+    Info
+    Warning
+    Question
+    [Error]
+    Shield
+End Enum
+
+Public Enum TaskButton
+    None = 0
+    Ok = 1
+    Yes = 2
+    No = 4
+    Cancel = 8
+    Retry = 16
+    Close = 32
     OkCancel = Ok Or Cancel
     YesNo = Yes Or No
     YesNoCancel = YesNo Or Cancel
-End Enum
-
-Public Enum TaskDialogIcon
-    Warning = 65535
-    [Error] = 65534
-    Info = 65533
-    Shield = 65532
-    SecurityShieldBlue = 65531
-    SecurityWarning = 65530
-    SecurityError = 65529
-    SecuritySuccess = 65528
-    SecurityShieldGray = 65527
+    RetryCancel = Retry Or Cancel
 End Enum

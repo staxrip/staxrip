@@ -9,7 +9,7 @@
 - MTN Thumbnailer description adjusted (JJKylee)
 - Fixed 'Reset Setting' feature in the Advanced menu (stax76)
 - New task dialog with color theme support (stax76)
-- JPSDR 3.2.5 (Clang AVX version)
+- JPSDR 3.2.5 (Clang W7 AVX version)
 
 
 2.1.9.0 Beta (2021-03-21)

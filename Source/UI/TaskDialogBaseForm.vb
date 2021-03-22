@@ -95,8 +95,17 @@ Public Class TaskDialogBaseForm
         Property Title As String
         Property Description As String
 
-        Property TitleFont As Font = New Font("Segoe UI", 12)
-        Property DescriptionFont As Font = New Font("Segoe UI", 9)
+        Private _TitleFont As Font
+
+        ReadOnly Property TitleFont As Font
+            Get
+                If _TitleFont Is Nothing Then
+                    _TitleFont = New Font(Font.FontFamily, 11)
+                End If
+
+                Return _TitleFont
+            End Get
+        End Property
 
         Function AdjustSize() As Boolean
             Dim titleFontHeight = TitleFont.Height

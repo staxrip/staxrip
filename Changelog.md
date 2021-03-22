@@ -11,6 +11,7 @@
 - New task dialog with color theme support (stax76)
 - Clicking a option in the video encoder command line preview navigates
   directly to the UI control (stax76, [#617](/../../issues/617))
+- New font picking task dialog to choose the console font (stax76)
 - JPSDR 3.2.5 (Clang W7 AVX version)
 
 

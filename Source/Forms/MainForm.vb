@@ -3512,15 +3512,6 @@ Public Class MainForm
 
     <Command("Shows the settings dialog.")>
     Sub ShowSettingsDialog()
-        Dim monospaceFonts = New Dictionary(Of String, String)
-        Dim fontTask = Task.Run(Sub()
-                                    Dim families = FontFamily.Families.Where(Function(x) x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
-
-                                    For Each ff In families
-                                        monospaceFonts.Add(ff.Name.Replace("Cascadia ", "Cascadia | "), ff.Name)
-                                    Next
-                                End Sub)
-
         Dim restartID = GetRestartID()
 
         Using form As New SimpleSettingsForm("Settings")
@@ -3620,15 +3611,24 @@ Public Class MainForm
             theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
             theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
 
-            Dim codeFontMenu = ui.AddTextMenu
-            codeFontMenu.Text = "Console Font"
-            codeFontMenu.Expandet = True
-            codeFontMenu.Field = NameOf(s.CodeFont)
+            Dim codeFont = ui.AddTextButton()
+            codeFont.Text = "Console Font"
+            codeFont.Expandet = True
+            codeFont.Field = NameOf(s.CodeFont)
+            codeFont.ClickAction = Sub()
+                                       Using td As New TaskDialog(Of FontFamily)
+                                           td.Title = "Choose a monospaced font"
+                                           td.Symbol = Symbol.Font
 
-            fontTask.Wait()
-            For Each mf In monospaceFonts
-                codeFontMenu.AddMenu(mf.Key, mf.Value)
-            Next
+                                           For Each ff In FontFamily.Families.Where(Function(x) x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
+                                               td.AddCommand(ff.Name, ff)
+                                           Next
+
+                                           If Not td.Show Is Nothing Then
+                                               codeFont.Edit.Text = td.SelectedText
+                                           End If
+                                       End Using
+                                   End Sub
 
             n = ui.AddNum()
             n.Text = "Scale Factor"

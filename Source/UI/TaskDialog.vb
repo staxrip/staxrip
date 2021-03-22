@@ -7,7 +7,7 @@ Imports StaxRip.UI
 Public Class TaskDialog(Of T)
     Inherits TaskDialogBaseForm
 
-    Property Commands As New List(Of CommandDefinition)
+    Property CommandDefinitions As New List(Of CommandDefinition)
     Property ButtonDefinitions As New List(Of ButtonDefinition)
     Property SelectedValue As T
     Property SelectedText As String
@@ -74,7 +74,7 @@ Public Class TaskDialog(Of T)
             pbIcon.Image = ImageHelp.GetSymbolImage(Symbol, Nothing, 20)
         End If
 
-        TitleLabel.Font = New Font("Segoe UI", 12)
+        TitleLabel.Font = New Font("Segoe UI", 11)
         TitleLabel.Text = Title
 
         If Content <> "" Then
@@ -101,7 +101,7 @@ Public Class TaskDialog(Of T)
 
         Dim firstCommandButton As CommandButton
 
-        For Each command In Commands
+        For Each command In CommandDefinitions
             Dim cb As New CommandButton
             cb.Title = command.Text
             cb.Description = command.Description
@@ -109,6 +109,11 @@ Public Class TaskDialog(Of T)
             cb.BackColor = Theme.ProcessingForm.ProcessButtonBackColor
             cb.ForeColor = Theme.ProcessingForm.ProcessButtonForeColor
             cb.FlatAppearance.BorderColor = Theme.General.BackColor
+
+            If TypeOf command.Value Is FontFamily Then
+                cb.Font = New Font(command.Text, FontHeight)
+            End If
+
             AddHandler cb.Click, AddressOf CommandClick
             paMain.Controls.Add(cb)
 
@@ -195,7 +200,7 @@ Public Class TaskDialog(Of T)
             value = CType(CObj(text), T)
         End If
 
-        Commands.Add(New CommandDefinition With {.Text = text, .Description = description, .Value = value})
+        CommandDefinitions.Add(New CommandDefinition With {.Text = text, .Description = description, .Value = value})
     End Sub
 
     Sub AddCommands(values As IEnumerable(Of T))
@@ -271,16 +276,66 @@ Public Class TaskDialog(Of T)
 
         If (h + nonClientHeight) > maxHeight Then
             h = maxHeight - nonClientHeight
-            w = FontHeight * 40
+            Dim longestLine = GetMaxLineLength()
+            Dim predictedWidth = CInt(longestLine * FontHeight * 0.5)
+
+            If predictedWidth > Width Then
+                w = predictedWidth
+            End If
+
+            Dim max = FontHeight * 40
+
+            If w > max Then
+                w = max
+            End If
         End If
 
         If paMain.LineBreaks > 2 Then
-            w = FontHeight * 40
+            Dim longestLine = GetMaxLineLength()
+            Dim predictedWidth = CInt(longestLine * FontHeight * 0.5)
+
+            If predictedWidth > Width Then
+                w = predictedWidth
+            End If
+
+            Dim max = FontHeight * 40
+
+            If w > max Then
+                w = max
+            End If
         End If
 
         ClientSize = New Size(w, h)
         CenterScreen
     End Sub
+
+    Function GetMaxLineLength() As Integer
+        Dim ret As Integer
+
+        For Each txt In {Title, Content, ExpandedContent}
+            If txt <> "" Then
+                For Each line In txt.Split(BR(1))
+                    If line.Length > ret Then
+                        ret = line.Length
+                    End If
+                Next
+            End If
+        Next
+
+        For Each def In CommandDefinitions
+            For Each txt In {def.Text, def.Description}
+                If txt <> "" Then
+                    For Each line In txt.Split(BR(1))
+                        If line.Length > ret Then
+                            ret = line.Length
+                        End If
+                    Next
+                End If
+            Next
+        Next
+
+        Return ret
+    End Function
 
     WriteOnly Property ShowCopyButton As Boolean
         Set(value As Boolean)

@@ -3611,15 +3611,24 @@ Public Class MainForm
             theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
             theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
 
-            Dim m = ui.AddTextMenu
-            m.Text = "Console Font"
-            m.Expandet = True
-            m.Field = NameOf(s.CodeFont)
+            Dim codeFontMenu = ui.AddTextMenu
+            codeFontMenu.Text = "Console Font"
+            codeFontMenu.Expandet = True
+            codeFontMenu.Field = NameOf(s.CodeFont)
 
-            For Each ff In FontFamily.Families.Where(Function(x) x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
-                m.AddMenu(ff.Name, ff.Name)
-            Next
+            AddHandler form.Shown, Sub()
+                                       Task.Run(Sub()
+                                                    Dim families = FontFamily.Families.Where(Function(x) x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
 
+                                                    If Not form.IsDisposingOrDisposed Then
+                                                        form.Invoke(Sub()
+                                                                        For Each ff In families
+                                                                            codeFontMenu.AddMenu(ff.Name.Replace("Cascadia ", "Cascadia | "), ff.Name)
+                                                                        Next
+                                                                    End Sub)
+                                                    End If
+                                                End Sub)
+                                   End Sub
             n = ui.AddNum()
             n.Text = "Scale Factor"
             n.Help = "Requires to restart StaxRip."
@@ -3784,7 +3793,6 @@ Public Class MainForm
                 s.VapourSynthFilterPreferences.Sort()
                 ui.Save()
                 g.SetRenderer(MenuStrip)
-                'ApplyTheme()
                 s.UpdateRecentProjects(Nothing)
                 UpdateRecentProjectsMenu()
 
@@ -6354,9 +6362,13 @@ Public Class MainForm
         IsLoading = False
         Refresh()
         ProcessCommandLine(Environment.GetCommandLineArgs)
-        StaxRip.StaxRipUpdate.ShowUpdateQuestion()
-        StaxRip.StaxRipUpdate.CheckForUpdate(False, s.CheckForUpdatesDev, Environment.Is64BitProcess)
+        StaxRipUpdate.ShowUpdateQuestion()
+        StaxRipUpdate.CheckForUpdate(False, s.CheckForUpdatesDev, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
+
+        If TypeOf p.VideoEncoder Is x265Enc Then
+            g.RunTask(Sub() Equals(Package.x265Type))
+        End If
     End Sub
 
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)

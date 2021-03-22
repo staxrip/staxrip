@@ -2279,9 +2279,6 @@ Public Class Package
         Return Not Path.PathStartsWith(Folder.System) AndAlso AllowCustomPath
     End Function
 
-    Shared x265FileSize As Long
-    Shared x265TypeValue As x265Type
-
     Shared ReadOnly Property x265Type As x265Type
         Get
             Dim filePath = x265.Path
@@ -2289,23 +2286,25 @@ Public Class Package
             If filePath <> "" Then
                 Dim size = New FileInfo(filePath).Length
 
-                If size <> x265FileSize Then
+                If size <> s.Storage.GetInt("x265 size") Then
                     Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", True)
+                    Dim value As Integer
 
                     If output.Contains("DJATOM") Then
-                        x265TypeValue = x265Type.DJATOM
+                        value = x265Type.DJATOM
                     ElseIf output.Contains("Asuna") Then
-                        x265TypeValue = x265Type.Asuna
+                        value = x265Type.Asuna
                     ElseIf output.Contains("Patman") Then
-                        x265TypeValue = x265Type.Patman
+                        value = x265Type.Patman
                     Else
-                        x265TypeValue = x265Type.Vanilla
+                        value = x265Type.Vanilla
                     End If
 
-                    x265FileSize = size
+                    s.Storage.SetInt("x265 size", CInt(size))
+                    s.Storage.SetInt("x265 type", value)
                 End If
 
-                Return x265TypeValue
+                Return CType(s.Storage.GetInt("x265 type"), x265Type)
             End If
         End Get
     End Property

@@ -510,7 +510,6 @@ Public Class CommandLineForm
 
             If find <> "" Then
                 cbGoTo.Text = find
-                cbGoTo.Focus()
             End If
         ElseIf e.Button = MouseButtons.Right Then
             cmsCommandLine.Items.Clear()
@@ -524,10 +523,12 @@ Public Class CommandLineForm
             Dim find = FindOptionInPreview()
 
             If find <> "" Then
-                cmsCommandLine.Add("Search " + find, Sub()
-                                                         cbGoTo.Text = find
-                                                         cbGoTo.Focus()
-                                                     End Sub)
+                Dim a = Sub()
+                            cbGoTo.Text = find
+                            cbGoTo.Focus()
+                        End Sub
+
+                cmsCommandLine.Add("Search " + find, a)
             End If
 
             cmsCommandLine.ApplyMarginFix()

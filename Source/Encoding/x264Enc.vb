@@ -1084,7 +1084,7 @@ Public Class x264Params
             End If
         Else
             If Not IsCustom(pass, "--bitrate") Then
-                sb.Append(" --bitrate " & Bitrate.Value)
+                sb.Append(" --bitrate " & If(pass = 1, Bitrate.Value, p.VideoBitrate))
             End If
         End If
 

@@ -466,7 +466,7 @@ Public Class BatchAudioProfile
                     Bitrate = bitrateFromFile
 
                     If Not p.VideoEncoder.QualityMode Then
-                        Log.WriteLine("Video Bitrate adjustment: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR2)
+                        Log.WriteLine("Video Bitrate Adjustment: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR2)
                     End If
                 End If
 
@@ -833,7 +833,7 @@ Public Class GUIAudioProfile
                     Bitrate = bitrateFromFile
 
                     If Not p.VideoEncoder.QualityMode Then
-                        Log.WriteLine("Video Bitrate adjustment: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR2)
+                        Log.WriteLine("Video Bitrate Adjustment: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR2)
                     End If
                 End If
 

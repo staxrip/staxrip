@@ -654,7 +654,7 @@ Public Class AV1Params
             End If
         Else
             If Not IsCustom(pass, "--target-bitrate") Then
-                If TargetBitrate.Value <> 0 Then
+                If TargetBitrate.Value <> 0 AndAlso pass = 1 Then
                     sb.Append(" --target-bitrate=" & TargetBitrate.Value)
                 Else
                     sb.Append(" --target-bitrate=" & p.VideoBitrate)

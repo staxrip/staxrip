@@ -460,17 +460,17 @@ Public Class BatchAudioProfile
             Next
 
             If g.FileExists(targetPath) Then
-                File = targetPath
-
                 If Not p.BitrateIsFixed Then
-                    Bitrate = Calc.GetBitrateFromFile(File, p.TargetSeconds)
-                    p.VideoBitrate = CInt(Calc.GetVideoBitrate)
+                    Dim bitrateFromFile = Calc.GetBitrateFromFile(targetPath, p.TargetSeconds)
+                    p.VideoBitrate = p.VideoBitrate + CInt(Calc.GetAudioBitrateFromAudioProfile(Me)) - CInt(bitrateFromFile)
+                    Bitrate = bitrateFromFile
 
                     If Not p.VideoEncoder.QualityMode Then
-                        Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR)
+                        Log.WriteLine("Video Bitrate adjustment: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR2)
                     End If
                 End If
 
+                File = targetPath
                 Log.WriteLine(MediaInfo.GetSummary(File))
             Else
                 Log.Write("Error", "no output found")
@@ -827,17 +827,17 @@ Public Class GUIAudioProfile
             End Using
 
             If g.FileExists(targetPath) Then
-                File = targetPath
-
                 If Not p.BitrateIsFixed Then
-                    Bitrate = Calc.GetBitrateFromFile(File, p.TargetSeconds)
-                    p.VideoBitrate = CInt(Calc.GetVideoBitrate)
+                    Dim bitrateFromFile = Calc.GetBitrateFromFile(targetPath, p.TargetSeconds)
+                    p.VideoBitrate = p.VideoBitrate + CInt(Calc.GetAudioBitrateFromAudioProfile(Me)) - CInt(bitrateFromFile)
+                    Bitrate = bitrateFromFile
 
                     If Not p.VideoEncoder.QualityMode Then
-                        Log.WriteLine("Video Bitrate: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR)
+                        Log.WriteLine("Video Bitrate adjustment: " + bitrateBefore.ToString() + " -> " & p.VideoBitrate & BR2)
                     End If
                 End If
 
+                File = targetPath
                 Log.WriteLine(MediaInfo.GetSummary(File))
             Else
                 Throw New ErrorAbortException("Error audio encoding", "The output file is missing")

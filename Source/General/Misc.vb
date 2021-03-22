@@ -162,12 +162,16 @@ Public Class Calc
     End Function
 
     Shared Function GetAudioBitrate() As Double
-        Dim b0, b1 As Double
-
-        If p.Audio0.File <> "" Then b0 = If(TypeOf p.Audio0 Is GUIAudioProfile, DirectCast(p.Audio0, GUIAudioProfile).GetBitrate, p.Audio0.Bitrate)
-        If p.Audio1.File <> "" Then b1 = If(TypeOf p.Audio1 Is GUIAudioProfile, DirectCast(p.Audio1, GUIAudioProfile).GetBitrate, p.Audio1.Bitrate)
+        Dim b0 As Double = GetAudioBitrateFromAudioProfile(p.Audio0)
+        Dim b1 As Double = GetAudioBitrateFromAudioProfile(p.Audio1)
 
         Return b0 + b1 + p.AudioTracks.Sum(Function(arg) arg.Bitrate)
+    End Function
+
+    Shared Function GetAudioBitrateFromAudioProfile(profile As AudioProfile) As Double
+        Dim ret As Double = 0.0
+        If profile.File <> "" Then ret = If(TypeOf profile Is GUIAudioProfile, DirectCast(profile, GUIAudioProfile).GetBitrate, profile.Bitrate)
+        Return ret
     End Function
 
     Shared Function GetBitrateFromFile(path As String, seconds As Integer) As Double

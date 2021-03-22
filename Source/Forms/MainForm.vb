@@ -1103,8 +1103,8 @@ Public Class MainForm
         tbSourceFile.TextBox.SendMessageCue(rc, False)
         tbTargetFile.TextBox.SendMessageCue(rc, False)
 
-        llEditAudio0.AddClickAction(AddressOf AudioEdit0ToolStripMenuItemClick)
-        llEditAudio1.AddClickAction(AddressOf AudioEdit1ToolStripMenuItemClick)
+        llEditAudio0.ClickAction = AddressOf AudioEdit0ToolStripMenuItemClick
+        llEditAudio1.ClickAction = AddressOf AudioEdit1ToolStripMenuItemClick
 
         MenuStrip.SuspendLayout()
         MenuStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
@@ -4838,11 +4838,11 @@ Public Class MainForm
             dialog.bnContext.Text = " Restore Defaults... "
             dialog.bnContext.Visible = True
             dialog.MacroEditorControl.rtbDefaults.Text = g.GetFilterProfilesText(getDefaults())
-            dialog.bnContext.AddClickAction(Sub()
-                                                If MsgOK("Restore defaults?") Then
-                                                    dialog.MacroEditorControl.Value = g.GetFilterProfilesText(getDefaults())
-                                                End If
-                                            End Sub)
+            dialog.bnContext.ClickAction = Sub()
+                                               If MsgOK("Restore defaults?") Then
+                                                   dialog.MacroEditorControl.Value = g.GetFilterProfilesText(getDefaults())
+                                               End If
+                                           End Sub
 
             If dialog.ShowDialog() = DialogResult.OK Then
                 filterProfiles.Clear()

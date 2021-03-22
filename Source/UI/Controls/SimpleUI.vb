@@ -1201,6 +1201,12 @@ Public Class SimpleUI
             AddHandler Edit.EnabledChanged, Sub() Button.Enabled = Edit.Enabled
         End Sub
 
+        WriteOnly Property ClickAction As Action
+            Set(value As Action)
+                Button.ClickAction = value
+            End Set
+        End Property
+
         Sub BrowseFile(filterTypes As String())
             BrowseFile(FileTypes.GetFilter(filterTypes))
         End Sub

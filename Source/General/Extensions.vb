@@ -1152,11 +1152,6 @@ Module ControlExtensions
     End Sub
 
     <Extension()>
-    Sub AddClickAction(instance As Control, action As Action)
-        AddHandler instance.Click, Sub() action()
-    End Sub
-
-    <Extension()>
     Function ClientMousePos(instance As Control) As Point
         Return instance.PointToClient(Control.MousePosition)
     End Function

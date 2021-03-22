@@ -726,17 +726,9 @@ Namespace UI
             MyBase.OnHandleCreated(e)
             Native.SetWindowTheme(Handle, "explorer", Nothing)
 
-            If Not UpButton Is Nothing Then
-                UpButton.AddClickAction(AddressOf MoveSelectionUp)
-            End If
-
-            If Not DownButton Is Nothing Then
-                DownButton.AddClickAction(AddressOf MoveSelectionDown)
-            End If
-
-            If Not RemoveButton Is Nothing Then
-                RemoveButton.AddClickAction(AddressOf RemoveSelection)
-            End If
+            If Not UpButton Is Nothing Then UpButton.ClickAction = AddressOf MoveSelectionUp
+            If Not DownButton Is Nothing Then DownButton.ClickAction = AddressOf MoveSelectionDown
+            If Not RemoveButton Is Nothing Then RemoveButton.ClickAction = AddressOf RemoveSelection
 
             If ItemCheckProperty <> "" Then
                 AddHandler ItemCheck, Sub(sender As Object, e2 As ItemCheckEventArgs)

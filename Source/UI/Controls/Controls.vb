@@ -2184,15 +2184,13 @@ Namespace UI
         Private _foreSelectedColor As Color
         Private _symbolImageColor As Color
 
-        Private LastTick As Long
-        Private KeyText As String = ""
         Private BlockOnSelectedIndexChanged As Boolean
 
-        <DefaultValue(GetType(Button), Nothing)> Property UpButton As Button
-        <DefaultValue(GetType(Button), Nothing)> Property DownButton As Button
-        <DefaultValue(GetType(Button), Nothing)> Property RemoveButton As Button
-        <DefaultValue(GetType(Button), Nothing)> Property Button1 As Button
-        <DefaultValue(GetType(Button), Nothing)> Property Button2 As Button
+        <DefaultValue(GetType(ButtonEx), Nothing)> Property UpButton As ButtonEx
+        <DefaultValue(GetType(ButtonEx), Nothing)> Property DownButton As ButtonEx
+        <DefaultValue(GetType(ButtonEx), Nothing)> Property RemoveButton As ButtonEx
+        <DefaultValue(GetType(ButtonEx), Nothing)> Property Button1 As ButtonEx
+        <DefaultValue(GetType(ButtonEx), Nothing)> Property Button2 As ButtonEx
 
         Public Property BackAlternateColor As Color
             Get
@@ -2469,9 +2467,9 @@ Namespace UI
             MyBase.OnCreateControl()
 
             If Not DesignMode Then
-                If Not UpButton Is Nothing Then UpButton.AddClickAction(AddressOf MoveSelectionUp)
-                If Not DownButton Is Nothing Then DownButton.AddClickAction(AddressOf MoveSelectionDown)
-                If Not RemoveButton Is Nothing Then RemoveButton.AddClickAction(AddressOf RemoveSelection)
+                If Not UpButton Is Nothing Then UpButton.ClickAction = AddressOf MoveSelectionUp
+                If Not DownButton Is Nothing Then DownButton.ClickAction = AddressOf MoveSelectionDown
+                If Not RemoveButton Is Nothing Then RemoveButton.ClickAction = AddressOf RemoveSelection
                 UpdateControls()
             End If
         End Sub

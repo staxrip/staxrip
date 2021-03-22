@@ -15,6 +15,7 @@ Public Class TaskDialog(Of T)
     Property Content As String
     Property ExpandedContent As String
     Property Timeout As Integer
+    Property Symbol As Symbol
 
     Overloads Property Icon As TaskIcon
     Overloads Property Owner As IntPtr
@@ -52,7 +53,7 @@ Public Class TaskDialog(Of T)
         ShowIcon = False
         StartPosition = FormStartPosition.CenterScreen
 
-        If Icon <> TaskIcon.None Then
+        If Icon <> TaskIcon.None OrElse Symbol <> Symbol.None Then
             pbIcon.Visible = True
         End If
 
@@ -68,6 +69,10 @@ Public Class TaskDialog(Of T)
             Case TaskIcon.Question
                 pbIcon.Image = StockIcon.GetImage(StockIconIdentifier.Help)
         End Select
+
+        If Symbol <> Symbol.None Then
+            pbIcon.Image = ImageHelp.GetSymbolImage(Symbol, Nothing, 20)
+        End If
 
         TitleLabel.Font = New Font("Segoe UI", 12)
         TitleLabel.Text = Title
@@ -177,6 +182,10 @@ Public Class TaskDialog(Of T)
         End If
     End Sub
 
+    Sub AddCommand(value As T)
+        AddCommand(value.ToString, Nothing, value)
+    End Sub
+
     Sub AddCommand(text As String, Optional value As T = Nothing)
         AddCommand(text, Nothing, value)
     End Sub
@@ -189,6 +198,12 @@ Public Class TaskDialog(Of T)
         Commands.Add(New CommandDefinition With {.Text = text, .Description = description, .Value = value})
     End Sub
 
+    Sub AddCommands(values As IEnumerable(Of T))
+        For Each i In values
+            AddCommand(i)
+        Next
+    End Sub
+
     Sub AddButton(text As String)
         AddButton(text, CType(CObj(text), T))
     End Sub
@@ -199,6 +214,12 @@ Public Class TaskDialog(Of T)
 
     Sub AddButton(value As T)
         ButtonDefinitions.Add(New ButtonDefinition With {.Text = value.ToString, .Value = value})
+    End Sub
+
+    Sub AddButtons(values As IEnumerable(Of T))
+        For Each i In values
+            AddButton(i)
+        Next
     End Sub
 
     WriteOnly Property Buttons As TaskButton

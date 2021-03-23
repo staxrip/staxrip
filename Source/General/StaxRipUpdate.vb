@@ -49,7 +49,7 @@ Public Class StaxRipUpdate
                             latestVersions.Add((onlineVersion, "DEV", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
                         End If
                     Else
-                        latestVersions.Add((onlineVersion, "Stable", releaseUrl, linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
+                        latestVersions.Add((onlineVersion, "Stable", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
                     End If
                 Next
 
@@ -60,7 +60,7 @@ Public Class StaxRipUpdate
                         Version.Parse(s.CheckForUpdatesDismissed) <> latestVersion.Version OrElse force) Then
 
                         Using td As New TaskDialog(Of String)
-                            td.Title = "A new " + latestVersion.ReleaseType + " version was found: " + latestVersion.Version.ToString()
+                            td.Title = "A new " + latestVersion.ReleaseType + " version was found: v" + latestVersion.Version.ToString()
 
                             Dim changelogResponse = Await HttpClient.GetAsync(changelogUrl)
 

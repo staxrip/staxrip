@@ -270,7 +270,7 @@ Namespace UI
         Sub RestorePosition(form As Form)
             Dim text = GetText(form)
 
-            If Not s.WindowPositionsRemembered.NothingOrEmpty AndAlso Not TypeOf form Is InputBoxForm Then
+            If Not s.WindowPositionsRemembered.NothingOrEmpty Then
                 For Each i In s.WindowPositionsRemembered
                     If text.StartsWith(i) OrElse i.ToLowerInvariant() = "all" Then
                         RestorePositionInternal(form)
@@ -349,5 +349,53 @@ Namespace UI
                 Return IsDesignModeValue.Value
             End Get
         End Property
+    End Class
+
+    Public Class InputBox
+        Property Title As String
+        Property Text As String
+        Property Value As String
+        Property CheckBoxText As String
+        Property Checked As Boolean
+
+        Shared Function Show(title As String,
+                             Optional value As String = Nothing,
+                             Optional text As String = Nothing) As String
+
+            Dim box As New InputBox
+            box.Title = title
+            box.Text = text
+            box.Value = value
+
+            If box.Show = DialogResult.OK Then
+                Return box.Value
+            Else
+                Return Nothing
+            End If
+        End Function
+
+        Function Show() As DialogResult
+            Using td As New TaskDialog(Of DialogResult)
+                td.Title = Title
+                td.Content = Text
+                td.InputTextEdit.Visible = True
+                td.InputTextEdit.Text = Value
+                td.StartPosition = FormStartPosition.CenterParent
+                td.Buttons = TaskButton.OkCancel
+
+                If CheckBoxText <> "" Then
+                    td.CheckBox.Visible = True
+                    td.CheckBox.Checked = Checked
+                    td.CheckBox.Text = CheckBoxText
+                End If
+
+                If td.Show() = DialogResult.OK Then
+                    Checked = td.CheckBox.Checked
+                    Value = td.InputTextEdit.Text
+                End If
+
+                Return td.SelectedValue
+            End Using
+        End Function
     End Class
 End Namespace

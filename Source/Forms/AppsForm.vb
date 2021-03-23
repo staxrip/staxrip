@@ -742,7 +742,6 @@ Public Class AppsForm
             Exit Sub
         End If
 
-        Dim msg = "What's the name of this version?"
         Dim version = FileVersionInfo.GetVersionInfo(CurrentPackage.Path)
 
         Dim fileVersionString = version.FileMajorPart & "." & version.FileMinorPart & "." &
@@ -750,6 +749,7 @@ Public Class AppsForm
 
         Dim productVersionString = version.ProductMajorPart & "." & version.ProductMinorPart & "." &
                                    version.ProductBuildPart & "." & version.ProductPrivatePart
+        Dim msg As String
 
         If fileVersionString <> "0.0.0.0" Then
             msg += BR2 + "File Version: " + fileVersionString + " (often not correct!)"
@@ -759,7 +759,7 @@ Public Class AppsForm
             msg += BR2 + "Product Version: " + productVersionString + " (often not correct!)"
         End If
 
-        Dim input = InputBox.Show(msg, "StaxRip", CurrentPackage.Version)
+        Dim input = InputBox.Show("What's the name of this version?", CurrentPackage.Version, msg.Trim)
 
         If input <> "" Then
             CurrentPackage.SetVersion(input.Replace(";", "_").Trim)

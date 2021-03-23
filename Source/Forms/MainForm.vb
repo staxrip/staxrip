@@ -5642,9 +5642,8 @@ Public Class MainForm
 
             Dim workDir = playlistFolder.Parent.Parent
 
-            Dim title = InputBox.Show("Enter a short title used as filename.",
-                "Title", playlistFolder.Parent.Parent.DirName)
-
+            Dim title = InputBox.Show("Enter a short title used as filename",
+                                      playlistFolder.Parent.Parent.DirName)
             If title = "" Then
                 Exit Sub
             End If

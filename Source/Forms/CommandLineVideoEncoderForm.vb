@@ -71,7 +71,6 @@ Public Class CommandLineVideoEncoderForm
         Me.cbQualityMode.TabIndex = 3
         Me.cbQualityMode.Text = "Quality Mode"
         Me.TipProvider.SetTipText(Me.cbQualityMode, "In Quality Mode bitrate related features are disabled.")
-        Me.cbQualityMode.UseVisualStyleBackColor = True
         '
         'numPercent
         '

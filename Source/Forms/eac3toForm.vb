@@ -385,7 +385,6 @@ Public Class eac3toForm
         Me.cbChapters.Size = New System.Drawing.Size(323, 52)
         Me.cbChapters.TabIndex = 2
         Me.cbChapters.Text = "Extract Chapters"
-        Me.cbChapters.UseVisualStyleBackColor = True
         Me.cbChapters.Visible = False
         '
         'gbAudio

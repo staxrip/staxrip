@@ -31,10 +31,10 @@ Partial Class TaskDialogBaseForm
         Me.pbIcon = New System.Windows.Forms.PictureBox()
         Me.paMain = New StaxRip.TaskDialogBaseForm.TaskDialogPanel()
         Me.spBottom = New StaxRip.UI.StackPanel()
-        Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
-        Me.teInput = New StaxRip.UI.TextEdit()
+        Me.InputTextEdit = New StaxRip.UI.TextEdit()
         Me.MenuButton = New StaxRip.UI.MenuButton()
-        Me.cbVerification = New StaxRip.UI.CheckBoxEx()
+        Me.CheckBox = New StaxRip.UI.CheckBoxEx()
+        Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
         Me.blDetails = New StaxRip.UI.ButtonLabel()
         Me.Button = New StaxRip.UI.ButtonLabel()
         Me.tlpMain.SuspendLayout()
@@ -58,7 +58,7 @@ Partial Class TaskDialogBaseForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
-        Me.tlpMain.Size = New System.Drawing.Size(705, 614)
+        Me.tlpMain.Size = New System.Drawing.Size(705, 663)
         Me.tlpMain.TabIndex = 0
         '
         'tlpTop
@@ -88,9 +88,9 @@ Partial Class TaskDialogBaseForm
         Me.TitleLabel.Location = New System.Drawing.Point(160, 51)
         Me.TitleLabel.Margin = New System.Windows.Forms.Padding(20)
         Me.TitleLabel.Name = "TitleLabel"
-        Me.TitleLabel.Size = New System.Drawing.Size(295, 48)
+        Me.TitleLabel.Size = New System.Drawing.Size(172, 48)
         Me.TitleLabel.TabIndex = 1
-        Me.TitleLabel.Text = "laMainInstruction"
+        Me.TitleLabel.Text = "TitleLabel"
         '
         'pbIcon
         '
@@ -117,7 +117,7 @@ Partial Class TaskDialogBaseForm
         Me.paMain.Location = New System.Drawing.Point(0, 150)
         Me.paMain.Margin = New System.Windows.Forms.Padding(0)
         Me.paMain.Name = "paMain"
-        Me.paMain.Size = New System.Drawing.Size(705, 26)
+        Me.paMain.Size = New System.Drawing.Size(705, 45)
         Me.paMain.TabIndex = 2
         '
         'spBottom
@@ -127,69 +127,69 @@ Partial Class TaskDialogBaseForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.spBottom.AutoSize = True
         Me.spBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.spBottom.Controls.Add(Me.teInput)
+        Me.spBottom.Controls.Add(Me.InputTextEdit)
         Me.spBottom.Controls.Add(Me.MenuButton)
-        Me.spBottom.Controls.Add(Me.cbVerification)
+        Me.spBottom.Controls.Add(Me.CheckBox)
         Me.spBottom.Controls.Add(Me.flpButtons)
         Me.spBottom.Controls.Add(Me.blDetails)
         Me.spBottom.Controls.Add(Me.Button)
         Me.spBottom.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        Me.spBottom.Location = New System.Drawing.Point(0, 176)
+        Me.spBottom.Location = New System.Drawing.Point(0, 195)
         Me.spBottom.Margin = New System.Windows.Forms.Padding(0, 0, 0, 30)
         Me.spBottom.Name = "spBottom"
-        Me.spBottom.Size = New System.Drawing.Size(705, 408)
+        Me.spBottom.Size = New System.Drawing.Size(705, 438)
         Me.spBottom.TabIndex = 3
         Me.spBottom.WrapContents = False
+        '
+        'InputTextEdit
+        '
+        Me.InputTextEdit.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.InputTextEdit.Location = New System.Drawing.Point(30, 0)
+        Me.InputTextEdit.Margin = New System.Windows.Forms.Padding(30, 0, 30, 30)
+        Me.InputTextEdit.Name = "InputTextEdit"
+        Me.InputTextEdit.Size = New System.Drawing.Size(645, 60)
+        Me.InputTextEdit.Text = "InputTextEdit"
+        Me.InputTextEdit.Visible = False
+        '
+        'MenuButton
+        '
+        Me.MenuButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.MenuButton.FlatAppearance.BorderSize = 2
+        Me.MenuButton.Location = New System.Drawing.Point(30, 90)
+        Me.MenuButton.Margin = New System.Windows.Forms.Padding(30, 0, 30, 30)
+        Me.MenuButton.Padding = New System.Windows.Forms.Padding(4, 0, 0, 0)
+        Me.MenuButton.ShowMenuSymbol = True
+        Me.MenuButton.ShowPath = False
+        Me.MenuButton.Size = New System.Drawing.Size(645, 70)
+        Me.MenuButton.Text2 = "MenuButton"
+        Me.MenuButton.Visible = False
+        '
+        'CheckBox
+        '
+        Me.CheckBox.AutoSize = True
+        Me.CheckBox.FlatAppearance.BorderSize = 2
+        Me.CheckBox.Location = New System.Drawing.Point(30, 190)
+        Me.CheckBox.Margin = New System.Windows.Forms.Padding(30, 0, 0, 0)
+        Me.CheckBox.Size = New System.Drawing.Size(399, 52)
+        Me.CheckBox.Text = "VerificationCheckBox"
+        Me.CheckBox.UseVisualStyleBackColor = False
+        Me.CheckBox.Visible = False
         '
         'flpButtons
         '
         Me.flpButtons.Anchor = System.Windows.Forms.AnchorStyles.Right
-        Me.flpButtons.Location = New System.Drawing.Point(505, 212)
+        Me.flpButtons.Location = New System.Drawing.Point(505, 242)
         Me.flpButtons.Margin = New System.Windows.Forms.Padding(0)
         Me.flpButtons.Name = "flpButtons"
         Me.flpButtons.Size = New System.Drawing.Size(200, 100)
         Me.flpButtons.TabIndex = 2
         Me.flpButtons.Visible = False
         '
-        'teInput
-        '
-        Me.teInput.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.teInput.Location = New System.Drawing.Point(30, 0)
-        Me.teInput.Margin = New System.Windows.Forms.Padding(30, 0, 30, 0)
-        Me.teInput.Name = "teInput"
-        Me.teInput.Size = New System.Drawing.Size(645, 60)
-        Me.teInput.Text = "teInput"
-        Me.teInput.Visible = False
-        '
-        'MenuButton
-        '
-        Me.MenuButton.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.MenuButton.FlatAppearance.BorderSize = 2
-        Me.MenuButton.Location = New System.Drawing.Point(30, 60)
-        Me.MenuButton.Margin = New System.Windows.Forms.Padding(30, 0, 30, 30)
-        Me.MenuButton.Padding = New System.Windows.Forms.Padding(4, 0, 0, 0)
-        Me.MenuButton.ShowMenuSymbol = True
-        Me.MenuButton.ShowPath = False
-        Me.MenuButton.Size = New System.Drawing.Size(645, 70)
-        Me.MenuButton.Text2 = "mbMenu"
-        Me.MenuButton.Visible = False
-        '
-        'cbVerification
-        '
-        Me.cbVerification.AutoSize = True
-        Me.cbVerification.FlatAppearance.BorderSize = 2
-        Me.cbVerification.Location = New System.Drawing.Point(30, 160)
-        Me.cbVerification.Margin = New System.Windows.Forms.Padding(30, 0, 0, 0)
-        Me.cbVerification.Size = New System.Drawing.Size(282, 52)
-        Me.cbVerification.Text = "cbVerification"
-        Me.cbVerification.UseVisualStyleBackColor = False
-        Me.cbVerification.Visible = False
-        '
         'blDetails
         '
         Me.blDetails.AutoSize = True
         Me.blDetails.ClickAction = Nothing
-        Me.blDetails.Location = New System.Drawing.Point(20, 312)
+        Me.blDetails.Location = New System.Drawing.Point(20, 342)
         Me.blDetails.Margin = New System.Windows.Forms.Padding(20, 0, 0, 0)
         Me.blDetails.Name = "blDetails"
         Me.blDetails.Size = New System.Drawing.Size(223, 48)
@@ -201,7 +201,7 @@ Partial Class TaskDialogBaseForm
         '
         Me.Button.AutoSize = True
         Me.Button.ClickAction = Nothing
-        Me.Button.Location = New System.Drawing.Point(20, 360)
+        Me.Button.Location = New System.Drawing.Point(20, 390)
         Me.Button.Margin = New System.Windows.Forms.Padding(20, 0, 0, 0)
         Me.Button.Name = "Button"
         Me.Button.Size = New System.Drawing.Size(126, 48)
@@ -209,17 +209,18 @@ Partial Class TaskDialogBaseForm
         Me.Button.Text = "Button"
         Me.Button.Visible = False
         '
-        'TaskDialogForm
+        'TaskDialogBaseForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(705, 614)
+        Me.ClientSize = New System.Drawing.Size(705, 663)
         Me.Controls.Add(Me.tlpMain)
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "TaskDialogForm"
+        Me.Name = "TaskDialogBaseForm"
         Me.ShowIcon = False
+        Me.Text = "StaxRip"
         Me.tlpMain.ResumeLayout(False)
         Me.tlpMain.PerformLayout()
         Me.tlpTop.ResumeLayout(False)
@@ -232,9 +233,9 @@ Partial Class TaskDialogBaseForm
     End Sub
 
     Friend WithEvents tlpMain As TableLayoutPanel
-    Friend WithEvents cbVerification As CheckBoxEx
+    Friend WithEvents CheckBox As CheckBoxEx
     Friend WithEvents flpButtons As FlowLayoutPanel
-    Friend WithEvents teInput As TextEdit
+    Friend WithEvents InputTextEdit As TextEdit
     Friend WithEvents tlpTop As TableLayoutPanel
     Friend WithEvents TitleLabel As Label
     Friend WithEvents MenuButton As MenuButton

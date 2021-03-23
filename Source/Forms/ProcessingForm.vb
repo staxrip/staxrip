@@ -81,7 +81,6 @@ Public Class ProcessingForm
         Me.bnJobs.Size = New System.Drawing.Size(260, 70)
         Me.bnJobs.TabIndex = 9
         Me.bnJobs.Text = "Jobs (F6)"
-        Me.bnJobs.UseVisualStyleBackColor = True
         '
         'flpButtons
         '
@@ -116,7 +115,6 @@ Public Class ProcessingForm
         Me.bnLog.Size = New System.Drawing.Size(260, 70)
         Me.bnLog.TabIndex = 13
         Me.bnLog.Text = "Log (F7)"
-        Me.bnLog.UseVisualStyleBackColor = True
         '
         'bnMenu
         '

@@ -1151,7 +1151,7 @@ Public Module MainModule
     Sub MsgInfo(title As Object, Optional content As Object = Nothing)
         Dim title1 = title?.ToString
         Dim content1 = content?.ToString
-        Msg(title1, content1, TaskIcon.Info, TaskButton.Ok)
+        Msg(title1, content1, TaskIcon.Info, TaskButton.OK)
     End Sub
 
     Sub MsgError(title As String, Optional content As String = Nothing)
@@ -1185,7 +1185,7 @@ Public Module MainModule
             Exit Sub
         End If
 
-        Msg(text, content, TaskIcon.Warning, TaskButton.Ok)
+        Msg(text, content, TaskIcon.Warning, TaskButton.OK)
 
         If onlyOnce Then
             ShownMessages += text + content

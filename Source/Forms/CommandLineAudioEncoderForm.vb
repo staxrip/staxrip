@@ -377,7 +377,6 @@ Public Class CommandLineAudioEncoderForm
         Me.cbDefault.Size = New System.Drawing.Size(180, 52)
         Me.cbDefault.TabIndex = 3
         Me.cbDefault.Text = "Default"
-        Me.cbDefault.UseVisualStyleBackColor = True
         '
         'cbForced
         '
@@ -387,7 +386,6 @@ Public Class CommandLineAudioEncoderForm
         Me.cbForced.Size = New System.Drawing.Size(175, 52)
         Me.cbForced.TabIndex = 4
         Me.cbForced.Text = "Forced"
-        Me.cbForced.UseVisualStyleBackColor = True
         '
         'tlpMain
         '
@@ -513,8 +511,8 @@ Public Class CommandLineAudioEncoderForm
     End Sub
 
     Sub SaveProfile()
-        Dim gap = ObjectHelp.GetCopy(Of BatchAudioProfile)(TempProfile)
-        Dim name = InputBox.Show("Enter the profile name.", "Save Profile", gap.Name)
+        Dim gap = ObjectHelp.GetCopy(TempProfile)
+        Dim name = InputBox.Show("Enter the profile name", gap.Name)
 
         If name <> "" Then
             gap.Name = name

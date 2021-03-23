@@ -548,7 +548,7 @@ Public Class PreviewForm
     Sub GoToTime()
         Dim d As Date
         d = d.AddSeconds(Renderer.Position / FrameServer.FrameRate)
-        Dim value = InputBox.Show("Time:", "Go To Time", d.ToString("HH:mm:ss.fff"))
+        Dim value = InputBox.Show("Go To Time", d.ToString("HH:mm:ss.fff"))
 
         If value <> "" Then
             SetPos(CInt((TimeSpan.Parse(value).TotalMilliseconds / 1000) * FrameServer.FrameRate))
@@ -557,7 +557,7 @@ Public Class PreviewForm
 
     <Command("Dialog to jump to a specific frame.")>
     Sub GoToFrame()
-        Dim value = InputBox.Show("Frame:", "Go To Frame", Renderer.Position.ToString)
+        Dim value = InputBox.Show("Go To Frame", Renderer.Position.ToString)
         Dim pos As Integer
 
         If Integer.TryParse(value, pos) Then
@@ -825,7 +825,8 @@ Public Class PreviewForm
         path As String)
 
         path = Macro.Expand(path)
-        Dim result = InputBox.Show("Enter the compression quality.", "Compression Quality", s.Storage.GetInt("preview compression quality", 95).ToString)
+        Dim result = InputBox.Show("Enter the compression quality",
+                                   s.Storage.GetInt("preview compression quality", 95).ToString)
 
         If result.IsInt Then
             s.Storage.SetInt("preview compression quality", result.ToInt)

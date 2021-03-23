@@ -152,7 +152,6 @@ Public Class MuxerForm
         Me.bnCommandLinePreview.Size = New System.Drawing.Size(320, 70)
         Me.bnCommandLinePreview.TabIndex = 4
         Me.bnCommandLinePreview.Text = "Command Line..."
-        Me.bnCommandLinePreview.UseVisualStyleBackColor = True
         '
         'bnCancel
         '
@@ -198,7 +197,6 @@ Public Class MuxerForm
         Me.tpSubtitles.Size = New System.Drawing.Size(1628, 880)
         Me.tpSubtitles.TabIndex = 3
         Me.tpSubtitles.Text = " Subtitles "
-        Me.tpSubtitles.UseVisualStyleBackColor = True
         '
         'tlpSubtitles
         '
@@ -331,7 +329,6 @@ Public Class MuxerForm
         Me.tpAudio.Size = New System.Drawing.Size(1628, 880)
         Me.tpAudio.TabIndex = 4
         Me.tpAudio.Text = "   Audio   "
-        Me.tpAudio.UseVisualStyleBackColor = True
         '
         'tlpAudio
         '
@@ -438,7 +435,6 @@ Public Class MuxerForm
         Me.tpAttachments.Size = New System.Drawing.Size(1628, 880)
         Me.tpAttachments.TabIndex = 5
         Me.tpAttachments.Text = "  Attachments  "
-        Me.tpAttachments.UseVisualStyleBackColor = True
         '
         'tlpAttachments
         '
@@ -503,7 +499,6 @@ Public Class MuxerForm
         Me.tpTags.Size = New System.Drawing.Size(1628, 880)
         Me.tpTags.TabIndex = 6
         Me.tpTags.Text = "  Tags"
-        Me.tpTags.UseVisualStyleBackColor = True
         '
         'dgvTags
         '
@@ -526,7 +521,6 @@ Public Class MuxerForm
         Me.tpOptions.Size = New System.Drawing.Size(1628, 880)
         Me.tpOptions.TabIndex = 2
         Me.tpOptions.Text = "  Options  "
-        Me.tpOptions.UseVisualStyleBackColor = True
         '
         'SimpleUI
         '
@@ -549,7 +543,6 @@ Public Class MuxerForm
         Me.tpCommandLine.Size = New System.Drawing.Size(1628, 880)
         Me.tpCommandLine.TabIndex = 1
         Me.tpCommandLine.Text = "  Command Line  "
-        Me.tpCommandLine.UseVisualStyleBackColor = True
         '
         'TableLayoutPanel1
         '

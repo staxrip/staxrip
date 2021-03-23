@@ -334,7 +334,7 @@ Public Class GlobalCommands
         <DefaultValue(GetType(MsgIcon), "Info")>
         Optional icon As TaskIcon = TaskIcon.Info)
 
-        Msg(Macro.Expand(mainInstruction), Macro.Expand(content), icon, TaskButton.Ok)
+        Msg(Macro.Expand(mainInstruction), Macro.Expand(content), icon, TaskButton.OK)
     End Sub
 
     <Command("Shows a Open File dialog to show media info.")>

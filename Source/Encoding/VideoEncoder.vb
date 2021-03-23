@@ -402,7 +402,7 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Shared Sub SaveProfile(encoder As VideoEncoder)
-        Dim name = InputBox.Show("Please enter a profile name.", "Profile Name", encoder.Name)
+        Dim name = InputBox.Show("Please enter a profile name", encoder.Name)
 
         If name <> "" Then
             encoder.Name = name

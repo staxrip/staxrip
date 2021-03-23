@@ -11,6 +11,7 @@ Public Class TaskDialogBaseForm
 
     Public Sub New()
         InitializeComponent()
+        AddHandler InputTextEdit.TextBox.KeyDown, AddressOf InputTextEditTextBoxKeyDown
 
         If Not DesignHelp.IsDesignMode Then
             BackColor = Theme.General.BackColor
@@ -240,5 +241,11 @@ Public Class TaskDialogBaseForm
 
         paMain.PerformLayout()
         AdjustHeight()
+    End Sub
+
+    Sub InputTextEditTextBoxKeyDown(sender As Object, e As KeyEventArgs)
+        If e.KeyData = Keys.Enter AndAlso Not AcceptButton Is Nothing Then
+            AcceptButton.PerformClick()
+        End If
     End Sub
 End Class

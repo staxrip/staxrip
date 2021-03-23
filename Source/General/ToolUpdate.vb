@@ -196,7 +196,7 @@ Public Class ToolUpdate
         Dim msg = "What's the name of the new version?" + BR2 + DownloadFile.FileName
 
         UpdatePackageDialog()
-        Dim input = InputBox.Show(msg, "StaxRip", DownloadFile.Base)
+        Dim input = InputBox.Show(msg, DownloadFile.Base)
 
         If input <> "" Then
             Package.SetVersion(input.Replace(";", "_").Trim)

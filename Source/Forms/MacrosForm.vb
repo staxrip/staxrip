@@ -143,7 +143,6 @@ Public Class MacrosForm
         Me.bnCopy.Size = New System.Drawing.Size(273, 62)
         Me.bnCopy.TabIndex = 11
         Me.bnCopy.Text = "Copy"
-        Me.bnCopy.UseVisualStyleBackColor = True
         '
         'tlpRight
         '

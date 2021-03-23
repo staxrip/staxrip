@@ -151,7 +151,6 @@ Public Class ProfilesForm
         Me.bnRename.Size = New System.Drawing.Size(240, 80)
         Me.bnRename.TabIndex = 5
         Me.bnRename.Text = "     Rename"
-        Me.bnRename.UseVisualStyleBackColor = True
         '
         'bnEdit
         '
@@ -162,7 +161,6 @@ Public Class ProfilesForm
         Me.bnEdit.Size = New System.Drawing.Size(240, 80)
         Me.bnEdit.TabIndex = 4
         Me.bnEdit.Text = " Edit..."
-        Me.bnEdit.UseVisualStyleBackColor = True
         '
         'bnClone
         '
@@ -173,7 +171,6 @@ Public Class ProfilesForm
         Me.bnClone.Size = New System.Drawing.Size(240, 80)
         Me.bnClone.TabIndex = 6
         Me.bnClone.Text = "  Clone"
-        Me.bnClone.UseVisualStyleBackColor = True
         '
         'bnRestore
         '
@@ -434,8 +431,8 @@ Public Class ProfilesForm
         Dim pm = AddProfileMethod()
 
         If Not pm Is Nothing Then
-            pm = DirectCast(ObjectHelp.GetCopy(pm), Profile)
-            pm.Name = InputBox.Show("Enter the name of the new profile.", "Name", pm.Name)
+            pm = ObjectHelp.GetCopy(pm)
+            pm.Name = InputBox.Show("Enter the name of the new profile", pm.Name)
 
             If Not pm.Name Is Nothing Then
                 Dim remove As Profile = Nothing
@@ -469,11 +466,11 @@ Public Class ProfilesForm
     End Sub
 
     Sub bnRename_Click() Handles bnRename.Click
-        Dim p = DirectCast(lbMain.SelectedItem, Profile)
-        Dim ret = InputBox.Show("Please enter a name.", "Rename Profile", p.Name)
+        Dim profile = DirectCast(lbMain.SelectedItem, Profile)
+        Dim ret = InputBox.Show("Please enter a name to rename the profile", profile.Name)
 
         If Not ret Is Nothing Then
-            p.Name = ret
+            profile.Name = ret
             lbMain.UpdateSelection()
             UpdateControls()
         End If
@@ -520,7 +517,7 @@ Public Class ProfilesForm
     End Sub
 
     Sub bnRightRight_Click(sender As Object, e As EventArgs) Handles bnRight.Click
-        Dim inputName = InputBox.Show("Enter a name for a sub menu.")
+        Dim inputName = InputBox.Show("Enter a name for a sub menu")
 
         If inputName <> "" Then
             lbMain.SaveSelection()

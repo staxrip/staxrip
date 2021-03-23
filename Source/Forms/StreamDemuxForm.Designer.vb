@@ -309,7 +309,6 @@ Partial Class StreamDemuxForm
         Me.cbDemuxVideo.Size = New System.Drawing.Size(280, 52)
         Me.cbDemuxVideo.TabIndex = 2
         Me.cbDemuxVideo.Text = "Demux Video"
-        Me.cbDemuxVideo.UseVisualStyleBackColor = True
         '
         'cbDemuxChapters
         '

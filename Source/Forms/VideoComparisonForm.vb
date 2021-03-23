@@ -223,7 +223,7 @@ Public Class VideoComparisonForm
     End Sub
 
     Sub GoToFrame()
-        Dim value = InputBox.Show("Frame:", "Go To Frame", TrackBar.Value.ToString)
+        Dim value = InputBox.Show("Go To Frame", TrackBar.Value.ToString)
         Dim pos As Integer
 
         If Integer.TryParse(value, pos) Then
@@ -235,7 +235,7 @@ Public Class VideoComparisonForm
         Dim tab = DirectCast(TabControl.SelectedTab, VideoTab)
         Dim d As Date
         d = d.AddSeconds(Pos / tab.Server.FrameRate)
-        Dim value = InputBox.Show("Time:", "Go To Time", d.ToString("HH:mm:ss.fff"))
+        Dim value = InputBox.Show("Go To Time", d.ToString("HH:mm:ss.fff"))
         Dim time As TimeSpan
 
         If value <> "" AndAlso TimeSpan.TryParse(value, time) Then

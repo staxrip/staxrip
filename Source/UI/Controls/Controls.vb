@@ -807,6 +807,10 @@ Namespace UI
         Protected Overrides Sub OnCheckedChanged(e As EventArgs)
             MyBase.OnCheckedChanged(e)
         End Sub
+
+        Private Function ShouldSerializeUseVisualStyleBackColor() As Boolean
+            Return False
+        End Function
     End Class
 
     Public Class ComboBoxEx
@@ -1827,15 +1831,9 @@ Namespace UI
             End Set
         End Property
 
-        <DefaultValue(True), Browsable(False),
-        DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Shadows Property UseVisualStyleBackColor As Boolean
-            Get
-                Return True
-            End Get
-            Set(value As Boolean)
-            End Set
-        End Property
+        Private Function ShouldSerializeUseVisualStyleBackColor() As Boolean
+            Return False
+        End Function
 
         Protected Overrides ReadOnly Property DefaultSize As Size
             Get
@@ -1851,7 +1849,7 @@ Namespace UI
             If Not DesignHelp.IsDesignMode Then
                 MinimumSize = New Size(20, 20)
                 UseCompatibleTextRendering = True
-                MyBase.UseVisualStyleBackColor = False
+                UseVisualStyleBackColor = False
                 FlatStyle = FlatStyle.Flat
             End If
 
@@ -2984,6 +2982,7 @@ Namespace UI
             End Get
             Set(value As String)
                 TextBox.Text = value
+                MyBase.Text = value
             End Set
         End Property
 
@@ -3072,14 +3071,6 @@ Namespace UI
 
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
             MyBase.OnPaint(e)
-
-            'Dim col = If(Enabled AndAlso Not TextBox.ReadOnly, BackColor, BackReadonlyColor)
-            'Dim cr = ClientRectangle
-            'cr.Inflate(-1, -1)
-
-            'Using brush As New SolidBrush(col)
-            '    e.Graphics.FillRectangle(brush, cr)
-            'End Using
 
             If Not [ReadOnly] AndAlso DrawBorder > 0 Then
                 Dim borderCol = If(TextBox.Focused OrElse Not GetChildAtPoint(PointToClient(Cursor.Position)) Is Nothing, BorderFocusedColor, BorderColor)

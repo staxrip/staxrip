@@ -54,7 +54,6 @@ Partial Class DownloadForm
         Me.bnCancel.Size = New System.Drawing.Size(200, 50)
         Me.bnCancel.TabIndex = 0
         Me.bnCancel.Text = "Cancel"
-        Me.bnCancel.UseVisualStyleBackColor = True
         '
         'ProgressBar
         '

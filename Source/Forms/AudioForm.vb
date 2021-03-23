@@ -383,7 +383,6 @@ Public Class AudioForm
         Me.cbDefaultTrack.Margin = New System.Windows.Forms.Padding(15, 1, 3, 1)
         Me.cbDefaultTrack.Size = New System.Drawing.Size(272, 52)
         Me.cbDefaultTrack.Text = "Default Track"
-        Me.cbDefaultTrack.UseVisualStyleBackColor = True
         '
         'cbForcedTrack
         '
@@ -393,7 +392,6 @@ Public Class AudioForm
         Me.cbForcedTrack.Margin = New System.Windows.Forms.Padding(15, 1, 3, 1)
         Me.cbForcedTrack.Size = New System.Drawing.Size(267, 52)
         Me.cbForcedTrack.Text = "Forced Track"
-        Me.cbForcedTrack.UseVisualStyleBackColor = True
         '
         'laDecoder
         '
@@ -465,7 +463,6 @@ Public Class AudioForm
         Me.cbNormalize.Margin = New System.Windows.Forms.Padding(15, 3, 3, 1)
         Me.cbNormalize.Size = New System.Drawing.Size(229, 52)
         Me.cbNormalize.Text = "Normalize"
-        Me.cbNormalize.UseVisualStyleBackColor = True
         '
         'numDelay
         '
@@ -956,8 +953,8 @@ Public Class AudioForm
     End Sub
 
     Sub SaveProfile()
-        Dim gap = ObjectHelp.GetCopy(Of GUIAudioProfile)(TempProfile)
-        Dim name = InputBox.Show("Enter the profile name.", "Save Profile", gap.Name)
+        Dim gap = ObjectHelp.GetCopy(TempProfile)
+        Dim name = InputBox.Show("Enter the profile name", gap.Name)
 
         If name <> "" Then
             gap.Name = name
@@ -968,7 +965,7 @@ Public Class AudioForm
 
     Sub LoadProfile(gap As GUIAudioProfile)
         Profile = gap
-        TempProfile = ObjectHelp.GetCopy(Of GUIAudioProfile)(gap)
+        TempProfile = ObjectHelp.GetCopy(gap)
         LoadProfile()
     End Sub
 

@@ -16,16 +16,14 @@ Public Class TaskDialog(Of T)
     Property ExpandedContent As String
     Property Timeout As Integer
     Property Symbol As Symbol
+    Property ContentLabel As Label
+    Property ExpandedContentLabel As Label
 
     Overloads Property Icon As TaskIcon
     Overloads Property Owner As IntPtr
 
-    Private tbContent As Label
-    Private tbExpandedContent As Label
-
     Sub Init()
         ShowInTaskbar = False
-        Text = Application.ProductName
         Font = New Font("Segoe UI", 9)
         Width = FontHeight * 22
 
@@ -78,25 +76,25 @@ Public Class TaskDialog(Of T)
         TitleLabel.Text = Title
 
         If Content <> "" Then
-            tbContent = New Label
-            tbContent.BackColor = Theme.General.BackColor
-            tbContent.ForeColor = Theme.General.Controls.Label.ForeColor
-            tbContent.Margin = New Padding(0)
-            tbContent.BorderStyle = BorderStyle.None
-            tbContent.Text = Content
-            paMain.Controls.Add(tbContent)
+            ContentLabel = New Label
+            ContentLabel.BackColor = Theme.General.BackColor
+            ContentLabel.ForeColor = Theme.General.Controls.Label.ForeColor
+            ContentLabel.Margin = New Padding(0)
+            ContentLabel.BorderStyle = BorderStyle.None
+            ContentLabel.Text = Content
+            paMain.Controls.Add(ContentLabel)
         End If
 
         If ExpandedContent <> "" Then
-            tbExpandedContent = New Label
-            tbExpandedContent.BackColor = Theme.General.BackColor
-            tbExpandedContent.ForeColor = Theme.General.Controls.Label.ForeColor
-            tbExpandedContent.Margin = New Padding(0)
-            tbExpandedContent.BorderStyle = BorderStyle.None
-            tbExpandedContent.Text = ExpandedContent
-            tbExpandedContent.Name = "ExpandedInformation"
+            ExpandedContentLabel = New Label
+            ExpandedContentLabel.BackColor = Theme.General.BackColor
+            ExpandedContentLabel.ForeColor = Theme.General.Controls.Label.ForeColor
+            ExpandedContentLabel.Margin = New Padding(0)
+            ExpandedContentLabel.BorderStyle = BorderStyle.None
+            ExpandedContentLabel.Text = ExpandedContent
+            ExpandedContentLabel.Name = "ExpandedInformation"
             blDetails.Visible = True
-            paMain.Controls.Add(tbExpandedContent)
+            paMain.Controls.Add(ExpandedContentLabel)
         End If
 
         Dim firstCommandButton As CommandButton
@@ -132,6 +130,10 @@ Public Class TaskDialog(Of T)
             Dim b As New ButtonEx
             b.Text = i.Text
             b.Tag = i.Value
+
+            If AcceptButton Is Nothing AndAlso i.Text = "OK" Then
+                AcceptButton = b
+            End If
 
             flpButtons.Controls.Add(b)
             i.Button = b
@@ -229,7 +231,7 @@ Public Class TaskDialog(Of T)
 
     WriteOnly Property Buttons As TaskButton
         Set(value As TaskButton)
-            For Each i In {TaskButton.Ok, TaskButton.Yes, TaskButton.No,
+            For Each i In {TaskButton.OK, TaskButton.Yes, TaskButton.No,
                 TaskButton.Cancel, TaskButton.Retry, TaskButton.Close}
 
                 If value.HasFlag(i) Then
@@ -376,7 +378,7 @@ Public Class TaskDialog(Of T)
 
     Shared Function GetDialogResultFromButton(button As TaskButton) As DialogResult
         Select Case button
-            Case TaskButton.Ok
+            Case TaskButton.OK
                 Return DialogResult.OK
             Case TaskButton.Cancel, TaskButton.Close
                 Return DialogResult.Cancel
@@ -411,7 +413,13 @@ Public Class TaskDialog(Of T)
         Next
 
         MenuButton.Margin = New Padding(CInt(fh * 0.7), MenuButton.Margin.Top, CInt(fh * 0.7), MenuButton.Margin.Bottom)
+        InputTextEdit.Margin = MenuButton.Margin
         flpButtons.Margin = New Padding(0, 0, CInt(fh * 0.7), 0)
+
+        If InputTextEdit.Visible Then
+            ActiveControl = InputTextEdit
+            InputTextEdit.TextBox.SelectAll()
+        End If
 
         AdjustHeight()
         AdjustHeight()
@@ -461,13 +469,13 @@ End Enum
 
 Public Enum TaskButton
     None = 0
-    Ok = 1
+    OK = 1
     Yes = 2
     No = 4
     Cancel = 8
     Retry = 16
     Close = 32
-    OkCancel = Ok Or Cancel
+    OkCancel = OK Or Cancel
     YesNo = Yes Or No
     YesNoCancel = YesNo Or Cancel
     RetryCancel = Retry Or Cancel

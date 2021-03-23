@@ -245,7 +245,7 @@ Public Class Macro
         If Not ret.Value.Contains("$") Then Return ret
 
         If ret.Value.Contains("$enter_text$") Then
-            Dim inputText = InputBox.Show("Please enter text/value.")
+            Dim inputText = InputBox.Show("Please enter text/value")
 
             If inputText = "" Then
                 ret.Cancel = True

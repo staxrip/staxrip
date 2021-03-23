@@ -141,7 +141,6 @@ Public Class EventCommandEditor
         Me.rbMatchAllCriteria.TabStop = True
         Me.rbMatchAllCriteria.Text = "Match All"
         Me.TipProvider.SetTipText(Me.rbMatchAllCriteria, "Command gets only executed if all criteria is true.")
-        Me.rbMatchAllCriteria.UseVisualStyleBackColor = True
         '
         'rbMatchAnyCriteria
         '
@@ -153,7 +152,6 @@ Public Class EventCommandEditor
         Me.rbMatchAnyCriteria.TabStop = True
         Me.rbMatchAnyCriteria.Text = "Match Any"
         Me.TipProvider.SetTipText(Me.rbMatchAnyCriteria, "Command gets executed if any criteria is true.")
-        Me.rbMatchAnyCriteria.UseVisualStyleBackColor = True
         '
         'pgParameters
         '

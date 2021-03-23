@@ -5,12 +5,13 @@
 - [X] Might break templates and jobs from previous STABLE version
 - [X] Changed menus from previous STABLE versions that need a menu reset, manual setting or global settings reset in order to see them
 - Start of new versioning (no beta versions anymore, but stripped DEV versions)
-- Check for updates adjusted (Dendraspis)
+- Check for updates updated to support new versioning (Dendraspis)
+- Fix re-calculation of video bitrate on multi-pass encode and audio encodes (Dendraspis, [#580](/../../issues/580)
+- Template *Automatic Workflow* uses Copy/Mux as audio profile (Dendraspis)
 - MTN Thumbnailer description adjusted (JJKylee)
 - Fixed 'Reset Setting' feature in the Advanced menu (stax76)
 - New task dialog with color theme support (stax76)
-- Clicking a option in the video encoder command line preview navigates
-  directly to the UI control (stax76, [#617](/../../issues/617))
+- Clicking an option in the video encoder command line preview navigates directly to the UI control (stax76, [#617](/../../issues/617))
 - New font picking task dialog to choose the console font (stax76)
 - JPSDR 3.2.5 (Clang W7 AVX version)
 

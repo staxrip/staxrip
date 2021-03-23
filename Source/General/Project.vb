@@ -152,14 +152,16 @@ Public Class Project
             VideoEncoder = New x265Enc
         End If
 
-        If Check(Audio0, "Audio Track 1", 36) Then
-            Audio0 = New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 250}
-            Audio0.Language = New Language(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, True)
+        If Check(Audio0, "Audio Track 1", 37) Then
+            Audio0 = New MuxAudioProfile With {
+                .Language = New Language(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, True)
+            }
         End If
 
-        If Check(Audio1, "Audio Track 2", 36) Then
-            Audio1 = New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 250}
-            Audio1.Language = New Language("en", True)
+        If Check(Audio1, "Audio Track 2", 37) Then
+            Audio1 = New MuxAudioProfile With {
+                .Language = New Language("en", True)
+            }
         End If
 
         If Check(Script, "Filter Setup", 50) Then Script = StaxRip.VideoScript.GetDefaults()(0)
@@ -262,11 +264,12 @@ Public Class Project
                     Exit Sub
             End Select
 
-            Dim filter As New VideoFilter
-            filter.Category = "Subtitle"
-            filter.Path = path.FileName
-            filter.Active = True
-            filter.Script = filterName + "(""" + path + """)"
+            Dim filter As New VideoFilter With {
+                .Category = "Subtitle",
+                .Path = path.FileName,
+                .Active = True,
+                .Script = filterName + "(""" + path + """)"
+            }
             Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")
             Script.InsertAfter(insertCat, filter)
         Else
@@ -296,11 +299,12 @@ Public Class Project
                     Exit Sub
             End Select
 
-            Dim filter As New VideoFilter
-            filter.Category = "Subtitle"
-            filter.Path = path.FileName
-            filter.Active = True
-            filter.Script = "clip = " + filterName + "(clip, file = r""" + path + """)"
+            Dim filter As New VideoFilter With {
+                .Category = "Subtitle",
+                .Path = path.FileName,
+                .Active = True,
+                .Script = "clip = " + filterName + "(clip, file = r""" + path + """)"
+            }
             Dim insertCat = If(p.Script.IsFilterActive("Crop"), "Crop", "Source")
             Script.InsertAfter(insertCat, filter)
         End If

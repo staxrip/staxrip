@@ -111,7 +111,7 @@ Public Class TaskDialog(Of T)
             cb.FlatAppearance.BorderColor = Theme.General.BackColor
 
             If TypeOf command.Value Is FontFamily Then
-                cb.Font = New Font(command.Text, FontHeight)
+                cb.Font = New Font(command.Text, Font.Size)
             End If
 
             AddHandler cb.Click, AddressOf CommandClick

@@ -42,7 +42,7 @@ Public Class Project
     Public DefaultTargetName As String = ""
     Public DemuxAudio As DemuxMode = DemuxMode.All
     Public DemuxChapters As Boolean = True
-    Public DemuxVideo As Boolean = True
+    Public DemuxVideo As Boolean = False
     Public ExtractTimestamps As Boolean
     Public FileExistAudio As FileExistMode
     Public FileExistVideo As FileExistMode
@@ -314,7 +314,7 @@ Public Class Project
 
     ReadOnly Property IsSubtitleDemuxingRequired As Boolean
         Get
-            Return SubtitleMode = SubtitleMode.Dialog OrElse SubtitleMode = SubtitleMode.Preferred
+            Return SubtitleMode = SubtitleMode.Dialog OrElse SubtitleMode = SubtitleMode.Preferred OrElse SubtitleMode = SubtitleMode.PreferredNoMux
         End Get
     End Property
 End Class

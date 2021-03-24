@@ -484,12 +484,20 @@ Public Class MP4BoxDemuxer
                 subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
             End If
 
-            For Each st In subtitles
-                If Not st.Enabled Then
+            Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+
+            For Each subtitle In subtitles
+                If proj.SubtitleMode = SubtitleMode.PreferredNoMux Then
+                    If autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) Then
+                        subtitle.Enabled = True
+                    End If
+                End If
+
+                If Not subtitle.Enabled Then
                     Continue For
                 End If
 
-                Dim outpath = proj.TempDir + st.Filename + st.ExtFull
+                Dim outpath = proj.TempDir + subtitle.Filename + subtitle.ExtFull
 
                 If Not OverrideExisting AndAlso outpath.FileExists Then
                     Continue For
@@ -498,7 +506,7 @@ Public Class MP4BoxDemuxer
                 FileHelp.Delete(outpath)
                 Dim args As String
 
-                Select Case st.ExtFull
+                Select Case subtitle.ExtFull
                     Case ""
                         Continue For
                     Case ".srt"
@@ -507,7 +515,7 @@ Public Class MP4BoxDemuxer
                         args = "-raw "
                 End Select
 
-                args += st.ID & " -out " + outpath.Escape + " " + proj.SourceFile.Escape
+                args += subtitle.ID & " -out " + outpath.Escape + " " + proj.SourceFile.Escape
 
                 Using proc As New Proc
                     proc.Project = proj
@@ -847,8 +855,16 @@ Public Class mkvDemuxer
             End If
         End If
 
-        If Not subtitles Is Nothing Then
+        If subtitles IsNot Nothing Then
+            Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+
             For Each subtitle In subtitles
+                If proj.SubtitleMode = SubtitleMode.PreferredNoMux Then
+                    If autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) Then
+                        subtitle.Enabled = True
+                    End If
+                End If
+
                 If Not p.IsSubtitleDemuxingRequired OrElse Not subtitle.Enabled Then
                     Continue For
                 End If

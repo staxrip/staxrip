@@ -185,7 +185,7 @@ Public Class MediaInfo
                     subtitle.Format = GetText(index, "Format")
                     subtitle.Size = GetText(index, "StreamSize").ToInt
 
-                    If p.SubtitleMode = SubtitleMode.Disabled Then
+                    If p.SubtitleMode = SubtitleMode.Disabled OrElse p.SubtitleMode = SubtitleMode.PreferredNoMux Then
                         subtitle.Enabled = False
                     Else
                         Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")

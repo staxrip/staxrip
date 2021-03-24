@@ -1,8 +1,8 @@
 2.2.0 (2021-03-??)
 =========================
 
-- [X] Might break settings from previous STABLE version, so starting with new settings is recommended
-- [X] Might break templates and jobs from previous STABLE version
+- [X] Might break settings from previous version, so starting with new settings is recommended
+- [X] Might break templates and jobs from previous version
 - [X] Changed menus from previous STABLE versions that need a menu reset, manual setting or global settings reset in order to see them
 - Start of new versioning (no beta versions anymore, but stripped DEV versions)
 - Check for updates updated to support new versioning (Dendraspis)
@@ -10,6 +10,7 @@
 - New projects use Copy/Mux as audio profile (Dendraspis)
 - Fix misleading audio stream delay detection (Dendraspis)
 - Demuxing of video and chapters is set via Options window instead of Preprocessing (Dendraspis)
+- Add option to demux subtitles without including them (Dendraspis, [#622](/../../issues/622)
 - MTN Thumbnailer description adjusted (JJKylee)
 - Fixed 'Reset Setting' feature in the Advanced menu (stax76)
 - New task dialog with color theme support (stax76)

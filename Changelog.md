@@ -9,6 +9,7 @@
 - Fix re-calculation of video bitrate on multi-pass encode and audio encodes (Dendraspis, [#580](/../../issues/580)
 - Template *Automatic Workflow* uses Copy/Mux as audio profile (Dendraspis)
 - Fix misleading audio stream delay detection (Dendraspis)
+- Demuxing of video and chapters is set via Options window instead of Preprocessing (Dendraspis)
 - MTN Thumbnailer description adjusted (JJKylee)
 - Fixed 'Reset Setting' feature in the Advanced menu (stax76)
 - New task dialog with color theme support (stax76)

@@ -4435,6 +4435,56 @@ Public Class MainForm
 
 
             '   ----------------------------------------------------------------
+            Dim videoPage = ui.CreateFlowPage("Video", True)
+
+            Dim thumbOptions = ui.AddMenu(Of Integer)
+            Dim videoExist = ui.AddMenu(Of FileExistMode)
+            Dim demuxVideo = ui.AddBool()
+            Dim staxRipThumbnailOption = ui.AddBool()
+            Dim mtnThumbnailOption = ui.AddBool()
+
+            thumbOptions.Text = "Thumbnail Choices:"
+            thumbOptions.Add("StaxRip Thumbnails", 0)
+            thumbOptions.Add("MTN Thumbnails", 1)
+            thumbOptions.Button.Value = s.Storage.GetInt("Thumbnail Choices", 1)
+            thumbOptions.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Choices", value)
+            AddHandler thumbOptions.Button.ValueChangedUser, Sub()
+                                                                 staxRipThumbnailOption.Visible = thumbOptions.Button.Value = 0
+                                                                 mtnThumbnailOption.Visible = thumbOptions.Button.Value = 1
+                                                             End Sub
+
+            staxRipThumbnailOption.Text = "Create Thumbnails"
+            staxRipThumbnailOption.Help = "Saves thumbnails to Source Location using the StaxRip Engine"
+            staxRipThumbnailOption.Field = NameOf(p.SaveThumbnails)
+
+            mtnThumbnailOption.Text = "Create Thumbnails"
+            mtnThumbnailOption.Visible = True
+            mtnThumbnailOption.Help = "Saves thumbnails to Source Location using the MTN Engine"
+            mtnThumbnailOption.Field = NameOf(p.MTN)
+
+            staxRipThumbnailOption.Visible = thumbOptions.Button.Value = 0
+            mtnThumbnailOption.Visible = thumbOptions.Button.Value = 1
+
+            videoExist.Text = "Existing Video Output"
+            videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
+            videoExist.Field = NameOf(p.FileExistVideo)
+
+            demuxVideo.Text = "Demux Video"
+            demuxVideo.Checked = p.DemuxVideo
+            demuxVideo.SaveAction = Sub(val) p.DemuxVideo = val
+
+            b = ui.AddBool
+            b.Text = "Import VUI metadata"
+            b.Help = "Imports VUI metadata such as HDR from the source file to the video encoder."
+            b.Field = NameOf(p.ImportVUIMetadata)
+
+            b = ui.AddBool
+            b.Text = "Auto-rotate video after loading when possible"
+            b.Help = "Auto-rotate video after loading when the source file/container supports it."
+            b.Field = NameOf(p.AutoRotation)
+
+
+            '   ----------------------------------------------------------------
             Dim audioPage = ui.CreateFlowPage("Audio", True)
 
             Dim prefAudio = ui.AddTextMenu
@@ -4482,9 +4532,9 @@ Public Class MainForm
             cut.Help = "Defines which method to use for cutting."
             cut.Field = NameOf(p.CuttingMode)
 
-            Dim audioDemux = ui.AddMenu(Of DemuxMode)
-            audioDemux.Text = "Demux Audio"
-            audioDemux.Field = NameOf(p.DemuxAudio)
+            Dim demuxAudio = ui.AddMenu(Of DemuxMode)
+            demuxAudio.Text = "Demux Audio"
+            demuxAudio.Field = NameOf(p.DemuxAudio)
 
             Dim audioExist = ui.AddMenu(Of FileExistMode)
             audioExist.Text = "Existing Output"
@@ -4495,51 +4545,6 @@ Public Class MainForm
             b.Text = "On load use AviSynth script as audio source"
             b.Help = "Sets the AviSynth script (*.avs) as audio source file when loading a source file."
             b.Field = NameOf(p.UseScriptAsAudioSource)
-
-
-            '   ----------------------------------------------------------------
-            Dim videoPage = ui.CreateFlowPage("Video", True)
-
-            Dim thumbOptions = ui.AddMenu(Of Integer)
-            Dim videoExist = ui.AddMenu(Of FileExistMode)
-            Dim staxRipThumbnailOption = ui.AddBool()
-            Dim mtnThumbnailOption = ui.AddBool()
-
-            thumbOptions.Text = "Thumbnail Choices:"
-            thumbOptions.Add("StaxRip Thumbnails", 0)
-            thumbOptions.Add("MTN Thumbnails", 1)
-            thumbOptions.Button.Value = s.Storage.GetInt("Thumbnail Choices", 1)
-            thumbOptions.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Choices", value)
-            AddHandler thumbOptions.Button.ValueChangedUser, Sub()
-                                                                 staxRipThumbnailOption.Visible = thumbOptions.Button.Value = 0
-                                                                 mtnThumbnailOption.Visible = thumbOptions.Button.Value = 1
-                                                             End Sub
-
-            staxRipThumbnailOption.Text = "Create Thumbnails"
-            staxRipThumbnailOption.Help = "Saves thumbnails to Source Location using the StaxRip Engine"
-            staxRipThumbnailOption.Field = NameOf(p.SaveThumbnails)
-
-            mtnThumbnailOption.Text = "Create Thumbnails"
-            mtnThumbnailOption.Visible = True
-            mtnThumbnailOption.Help = "Saves thumbnails to Source Location using the MTN Engine"
-            mtnThumbnailOption.Field = NameOf(p.MTN)
-
-            staxRipThumbnailOption.Visible = thumbOptions.Button.Value = 0
-            mtnThumbnailOption.Visible = thumbOptions.Button.Value = 1
-
-            videoExist.Text = "Existing Video Output"
-            videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
-            videoExist.Field = NameOf(p.FileExistVideo)
-
-            b = ui.AddBool
-            b.Text = "Import VUI metadata"
-            b.Help = "Imports VUI metadata such as HDR from the source file to the video encoder."
-            b.Field = NameOf(p.ImportVUIMetadata)
-
-            b = ui.AddBool
-            b.Text = "Auto-rotate video after loading when possible"
-            b.Help = "Auto-rotate video after loading when the source file/container supports it."
-            b.Field = NameOf(p.AutoRotation)
 
 
             '   ----------------------------------------------------------------
@@ -4610,6 +4615,15 @@ Public Class MainForm
             b.Text = "Add hardcoded subtitle"
             b.Help = "Automatically hardcodes a subtitle." + BR2 + "Supported formats are SRT, ASS and VobSub."
             b.Field = NameOf(p.HarcodedSubtitle)
+
+
+            '   ----------------------------------------------------------------
+            Dim chaptersPage = ui.CreateFlowPage("Chapters")
+
+            b = ui.AddBool(chaptersPage)
+            b.Text = "Demux Chapters"
+            b.Checked = p.DemuxChapters
+            b.SaveAction = Sub(val) p.DemuxChapters = val
 
 
             '   ----------------------------------------------------------------

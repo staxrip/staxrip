@@ -270,7 +270,8 @@ Public Class TaskDialog(Of T)
             h += spBottom.Margin.Vertical
         End If
 
-        h += CInt(FontHeight * 0.7)
+        Dim fh = FontHeight
+        h += CInt(fh * 0.7)
 
         Dim nonClientHeight = Height - ClientSize.Height
         Dim maxHeight = Screen.FromControl(Me).WorkingArea.Height
@@ -279,31 +280,27 @@ Public Class TaskDialog(Of T)
         If (h + nonClientHeight) > maxHeight Then
             h = maxHeight - nonClientHeight
             Dim secondLongestLine = GetSecondLongestLineLength()
-            Dim predictedWidth = CInt(secondLongestLine * FontHeight * 0.5)
+            Dim predictedWidth = CInt(secondLongestLine * fh * 0.5)
 
             If predictedWidth > Width Then
                 w = predictedWidth
             End If
 
-            Dim max = FontHeight * 40
-
-            If w > max Then
-                w = max
+            If w > fh * 40 Then
+                w = fh * 40
             End If
         End If
 
         If paMain.LineBreaks > 2 Then
             Dim secondLongestLine = GetSecondLongestLineLength()
-            Dim predictedWidth = CInt(secondLongestLine * FontHeight * 0.5)
+            Dim predictedWidth = CInt(secondLongestLine * fh * 0.5)
 
             If predictedWidth > Width Then
                 w = predictedWidth
             End If
 
-            Dim max = FontHeight * 40
-
-            If w > max Then
-                w = max
+            If w > fh * 40 Then
+                w = fh * 40
             End If
         End If
 

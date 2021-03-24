@@ -278,8 +278,8 @@ Public Class TaskDialog(Of T)
 
         If (h + nonClientHeight) > maxHeight Then
             h = maxHeight - nonClientHeight
-            Dim longestLine = GetMaxLineLength()
-            Dim predictedWidth = CInt(longestLine * FontHeight * 0.5)
+            Dim secondLongestLine = GetSecondLongestLineLength()
+            Dim predictedWidth = CInt(secondLongestLine * FontHeight * 0.5)
 
             If predictedWidth > Width Then
                 w = predictedWidth
@@ -293,8 +293,8 @@ Public Class TaskDialog(Of T)
         End If
 
         If paMain.LineBreaks > 2 Then
-            Dim longestLine = GetMaxLineLength()
-            Dim predictedWidth = CInt(longestLine * FontHeight * 0.5)
+            Dim secondLongestLine = GetSecondLongestLineLength()
+            Dim predictedWidth = CInt(secondLongestLine * FontHeight * 0.5)
 
             If predictedWidth > Width Then
                 w = predictedWidth
@@ -311,15 +311,13 @@ Public Class TaskDialog(Of T)
         CenterScreen
     End Sub
 
-    Function GetMaxLineLength() As Integer
-        Dim ret As Integer
+    Function GetSecondLongestLineLength() As Integer
+        Dim list As New List(Of Integer)({51, 52})
 
         For Each txt In {Title, Content, ExpandedContent}
             If txt <> "" Then
                 For Each line In txt.Split(BR(1))
-                    If line.Length > ret Then
-                        ret = line.Length
-                    End If
+                    list.Add(line.Length)
                 Next
             End If
         Next
@@ -328,15 +326,15 @@ Public Class TaskDialog(Of T)
             For Each txt In {def.Text, def.Description}
                 If txt <> "" Then
                     For Each line In txt.Split(BR(1))
-                        If line.Length > ret Then
-                            ret = line.Length
-                        End If
+                        list.Add(line.Length)
                     Next
                 End If
             Next
         Next
 
-        Return ret
+        list.Sort()
+        list.Reverse()
+        Return list(1)
     End Function
 
     WriteOnly Property ShowCopyButton As Boolean

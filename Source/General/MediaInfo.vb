@@ -111,10 +111,6 @@ Public Class MediaInfo
 
                     at.Delay = GetAudio(index, "Video_Delay").ToInt
 
-                    If at.Delay = 0 Then
-                        at.Delay = GetAudio(index, "Source_Delay").ToInt
-                    End If
-
                     Dim channels = GetAudio(index, "Channel(s)")
                     at.Channels = channels.ToInt
 

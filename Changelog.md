@@ -7,7 +7,7 @@
 - Start of new versioning (no beta versions anymore, but stripped DEV versions)
 - Check for updates updated to support new versioning (Dendraspis)
 - Fix re-calculation of video bitrate on multi-pass encode and audio encodes (Dendraspis, [#580](/../../issues/580)
-- Template *Automatic Workflow* uses Copy/Mux as audio profile (Dendraspis)
+- New projects use Copy/Mux as audio profile (Dendraspis)
 - Fix misleading audio stream delay detection (Dendraspis)
 - Demuxing of video and chapters is set via Options window instead of Preprocessing (Dendraspis)
 - MTN Thumbnailer description adjusted (JJKylee)

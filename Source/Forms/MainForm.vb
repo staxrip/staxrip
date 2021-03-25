@@ -3553,6 +3553,7 @@ Public Class MainForm
             mb.Text = "Startup Template"
             mb.Help = "Template loaded when StaxRip starts."
             mb.Field = NameOf(s.StartupTemplate)
+            mb.Expanded = True
             mb.Add(From i In Directory.GetFiles(Folder.Template) Select i.Base)
 
             Dim n = ui.AddNum()

@@ -12,6 +12,7 @@
 - Demuxing of video and chapters is set via Options window instead of Preprocessing (Dendraspis)
 - Add option to demux subtitles without including them (Dendraspis, [#622](/../../issues/622)
 - Make Checkboxes grow and shrink with UIScaleFactor (Dendraspis)
+- Fix menu button graphics issue (Dendraspis, [#623](/../../issues/623))
 - MTN Thumbnailer description adjusted (JJKylee)
 - Fixed 'Reset Setting' feature in the Advanced menu (stax76)
 - New task dialog with color theme support (stax76)

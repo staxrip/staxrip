@@ -1430,11 +1430,6 @@ Namespace UI
 
             For Each mi As MenuItemEx In Menu.Items
                 mi.Font = New Font("Segoe UI", 9 * s.UIScaleFactor, If(Not Value Is Nothing AndAlso Value.Equals(mi.Tag), FontStyle.Bold, FontStyle.Regular))
-
-                If (Menu.Width - mi.Width) > 2 Then
-                    mi.AutoSize = False
-                    mi.Width = Menu.Width - 1
-                End If
             Next
         End Sub
 

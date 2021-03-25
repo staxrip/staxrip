@@ -1,6 +1,5 @@
 ﻿
-Imports StaxRip.CommandLine
-Imports StaxRip.UI
+Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
 Public Class QSVEnc

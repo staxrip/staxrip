@@ -1,8 +1,7 @@
 ﻿
 Imports System.Text
 
-Imports StaxRip.CommandLine
-Imports StaxRip.UI
+Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
 Public Class Rav1e

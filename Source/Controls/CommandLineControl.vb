@@ -128,6 +128,7 @@ Public Class CommandLineControl
                 dialog.bnContext.ClickAction = Sub()
                                                    If MsgOK("Restore defaults?") Then
                                                        dialog.MacroEditorControl.Value = RestoreFunc.Invoke
+                                                       MsgInfo("Defaults were restored.")
                                                    End If
                                                End Sub
 

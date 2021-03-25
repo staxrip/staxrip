@@ -2,7 +2,7 @@
 Imports System.Text.RegularExpressions
 
 Imports StaxRip.UI
-Imports StaxRip.CommandLine
+Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
 Public MustInherit Class VideoEncoder

@@ -1,7 +1,7 @@
 ﻿
 Imports System.Text
 
-Imports StaxRip.CommandLine
+Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
 Public Class x265Enc

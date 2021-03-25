@@ -3,7 +3,7 @@ Imports System.Text
 
 Imports StaxRip.UI
 
-Namespace CommandLine
+Namespace VideoEncoderCommandLine
     Public MustInherit Class CommandLineParams
         Property Title As String
         Property Separator As String = " "

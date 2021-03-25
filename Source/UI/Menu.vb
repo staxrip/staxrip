@@ -675,7 +675,12 @@ Namespace UI
                 If defaults <> "" Then
                     dialog.bnContext.Text = " Restore Defaults... "
                     dialog.bnContext.Visible = True
-                    dialog.bnContext.ClickAction = Sub() If MsgOK("Restore defaults?") Then dialog.MacroEditorControl.Value = defaults
+                    dialog.bnContext.ClickAction = Sub()
+                                                       If MsgOK("Restore defaults?") Then
+                                                           dialog.MacroEditorControl.Value = defaults
+                                                           MsgInfo("Defaults were restored.")
+                                                       End If
+                                                   End Sub
                 End If
 
                 If dialog.ShowDialog(owner) = DialogResult.OK Then

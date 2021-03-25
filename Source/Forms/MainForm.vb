@@ -4830,7 +4830,9 @@ Public Class MainForm
     <Command("Dialog to configure filter profiles.")>
     Sub ShowFilterProfilesDialog()
         Dim filterProfiles = If(p.Script.IsAviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
-        Dim getDefaults = If(p.Script.IsAviSynth, Function() FilterCategory.GetAviSynthDefaults, Function() FilterCategory.GetVapourSynthDefaults)
+        Dim getDefaults = If(p.Script.IsAviSynth,
+            Function() FilterCategory.GetAviSynthDefaults,
+            Function() FilterCategory.GetVapourSynthDefaults)
 
         Using dialog As New MacroEditorDialog
             dialog.SetScriptDefaults()
@@ -4840,71 +4842,42 @@ Public Class MainForm
             dialog.bnContext.Visible = True
             dialog.MacroEditorControl.rtbDefaults.Text = g.GetFilterProfilesText(getDefaults())
             dialog.bnContext.ClickAction = Sub()
-                                               If MsgOK("Restore defaults?") Then
+                                               If Msg("Restore defaults?", Nothing, TaskIcon.Warning, TaskButton.OkCancel) = DialogResult.OK Then
                                                    dialog.MacroEditorControl.Value = g.GetFilterProfilesText(getDefaults())
+                                                   MsgInfo("Defaults were restored.")
                                                End If
                                            End Sub
 
             If dialog.ShowDialog() = DialogResult.OK Then
-                filterProfiles.Clear()
-                Dim cat As FilterCategory
-                Dim filter As VideoFilter
+                Try
+                    filterProfiles = FilterCategory.ParseFilterProfilesIniContent(dialog.MacroEditorControl.Value)
 
-                For Each line In dialog.MacroEditorControl.Value.SplitLinesNoEmpty
-                    Dim multiline = line.StartsWith("    ") OrElse line.StartsWith(VB6.vbTab)
+                    For Each i In getDefaults()
+                        Dim found As Boolean
 
-                    If line.StartsWith("[") AndAlso line.EndsWith("]") Then
-                        cat = New FilterCategory(line.Substring(1, line.Length - 2).Trim)
-                        filterProfiles.Add(cat)
-                    End If
-
-                    If multiline Then
-                        If Not filter Is Nothing Then
-                            If filter.Script = "" Then
-                                If line.StartsWith(VB6.vbTab) Then
-                                    filter.Script += line.Substring(1)
-                                End If
-
-                                If line.StartsWith("    ") Then
-                                    filter.Script += line.Substring(4)
-                                End If
-                            Else
-                                If line.StartsWith(VB6.vbTab) Then
-                                    filter.Script += BR + line.Substring(1)
-                                End If
-
-                                If line.StartsWith("    ") Then
-                                    filter.Script += BR + line.Substring(4)
-                                End If
+                        For Each i2 In filterProfiles
+                            If i.Name = i2.Name Then
+                                found = True
                             End If
-                        End If
-                    Else
-                        Dim filterName = line.Left("=").Trim
+                        Next
 
-                        If filterName <> "" Then
-                            filter = New VideoFilter(cat.Name, filterName, line.Right("=").Trim)
-                            cat.Filters.Add(filter)
-                        End If
-                    End If
-                Next
-
-                For Each i In getDefaults()
-                    Dim found As Boolean
-
-                    For Each i2 In filterProfiles
-                        If i.Name = i2.Name Then
-                            found = True
+                        If Not found AndAlso {"Source", "Crop", "Resize"}.Contains(i.Name) Then
+                            MsgWarn($"The category '{i.Name}' was recreated. A Source, Crop and Resize category is mandatory.")
+                            filterProfiles.Add(i)
                         End If
                     Next
 
-                    If Not found AndAlso {"Source", "Crop", "Resize"}.Contains(i.Name) Then
-                        MsgWarn("The category '" + i.Name + "' was recreated. A Source, Crop and Resize category is mandatory.")
-                        filterProfiles.Add(i)
+                    If p.Script.IsAviSynth Then
+                        s.AviSynthProfiles = filterProfiles
+                    Else
+                        s.VapourSynthProfiles = filterProfiles
                     End If
-                Next
 
-                g.SaveSettings()
-                g.MainForm.FiltersListView.RebuildMenu()
+                    g.SaveSettings()
+                    g.MainForm.FiltersListView.RebuildMenu()
+                Catch ex As Exception
+                    g.ShowException(ex)
+                End Try
             End If
         End Using
     End Sub

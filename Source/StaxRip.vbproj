@@ -203,7 +203,7 @@
     <Compile Include="General\AsyncStreamReader.vb" />
     <Compile Include="General\Documentation.vb" />
     <Compile Include="General\Extras.vb" />
-    <Compile Include="General\FrameServer.vb" />
+    <Compile Include="Video\FrameServer.vb" />
     <Compile Include="General\JobManager.vb" />
     <Compile Include="General\LogBuilder.vb" />
     <Compile Include="General\GlobalClass.vb" />
@@ -215,7 +215,7 @@
     <Compile Include="General\StaxRipUpdate.vb" />
     <Compile Include="General\Test.vb" />
     <Compile Include="General\ToolUpdate.vb" />
-    <Compile Include="General\VideoRenderer.vb" />
+    <Compile Include="Video\VideoRenderer.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
@@ -292,7 +292,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\Audio.vb" />
-    <Compile Include="General\CommandLine.vb" />
+    <Compile Include="Video\VideoEncoderCommandLine.vb" />
     <Compile Include="UI\ImageUtils.vb" />
     <Compile Include="Encoding\x265Enc.vb" />
     <Compile Include="UI\Controls\ListViewEx.vb">
@@ -324,7 +324,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="General\AudioProfile.vb" />
-    <Compile Include="General\VideoScript.vb">
+    <Compile Include="Video\VideoScript.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="General\Help.vb" />
@@ -428,6 +428,8 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
+    <EmbeddedResource Include="Video\AviSynthFilterProfileDefaults.txt" />
+    <EmbeddedResource Include="Video\VapourSynthFilterProfileDefaults.txt" />
     <EmbeddedResource Include="UI\TaskDialogBaseForm.resx">
       <DependentUpon>TaskDialogBaseForm.vb</DependentUpon>
     </EmbeddedResource>

@@ -511,7 +511,7 @@
                 .BackColor = _controlBackColor,
                 .ForeColor = _foreColor.AddLuminance(0.1),
                 .CommandButton = New TaskDialogThemeColors.CommandButtonThemeColors() With {
-                    .BackColor = _controlBackColor.AddLuminance(0.025),
+                    .BackColor = _controlBackColor.AddLuminance(0.005),
                     .BorderColor = .BackColor.AddLuminance(0.05),
                     .ForeColor = _foreColor.AddLuminance(0.1)
                 }

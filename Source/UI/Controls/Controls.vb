@@ -1430,7 +1430,7 @@ Namespace UI
             Dim minItemSize As Integer = Menu.MinimumSize.Width
 
             For Each mi As MenuItemEx In Menu.Items
-                mi.Font = New Font("Segoe UI", 9 * s.UIScaleFactor, If(Not Value Is Nothing AndAlso Value.Equals(mi.Tag), FontStyle.Bold, FontStyle.Regular))
+                mi.Font = New Font("Segoe UI", 9 * s.UIScaleFactor, If(Value IsNot Nothing AndAlso Value.Equals(mi.Tag), FontStyle.Bold, FontStyle.Regular))
                 mi.AutoSize = True
                 minItemSize = Math.Max(minItemSize, mi.Width)
             Next

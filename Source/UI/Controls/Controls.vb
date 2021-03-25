@@ -1437,7 +1437,7 @@ Namespace UI
 
             For Each mi As MenuItemEx In Menu.Items
                 mi.AutoSize = False
-                mi.Width = minItemSize + 16
+                mi.Width = minItemSize
             Next
         End Sub
 

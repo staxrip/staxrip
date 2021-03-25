@@ -539,7 +539,7 @@ Public Class ProfilesForm
             td.Title = "How to restore?"
             td.AddCommand("Clean Restore", "Clean")
             td.AddCommand("Overwrite current profiles with default profiles", "Current profiles will be overwritten by the defaults, profiles with different name remain.", "Overwrite")
-            td.AddCommand("Cancel", "Cancel")
+            td.AddButton("Cancel", "Cancel")
 
             Select Case td.Show
                 Case "Clean"

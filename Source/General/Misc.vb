@@ -1326,7 +1326,7 @@ Public Class Subtitle
 
                     Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
                     Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
-                    Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux
+                    Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux AndAlso p.SubtitleMode <> SubtitleMode.Disabled
                     st.Enabled = prefLang AndAlso goodMode
 
                     st.IndexIDX = CInt(Regex.Match(line, ", index: (\d+)").Groups(1).Value)
@@ -1358,7 +1358,7 @@ Public Class Subtitle
 
                 Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
                 Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
-                Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux
+                Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux AndAlso p.SubtitleMode <> SubtitleMode.Disabled
                 st.Enabled = prefLang AndAlso goodMode
                 st.Path = path
 
@@ -1387,7 +1387,7 @@ Public Class Subtitle
 
             Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
             Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
-            Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux
+            Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux AndAlso p.SubtitleMode <> SubtitleMode.Disabled
             st.Enabled = prefLang AndAlso goodMode
             st.Path = path
 

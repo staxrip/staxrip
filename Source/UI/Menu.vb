@@ -726,11 +726,34 @@ Namespace UI
 
         Sub New()
             MyBase.New()
+            ApplyTheme()
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
         Sub New(container As IContainer)
             MyBase.New(container)
+            ApplyTheme()
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
+            SuspendLayout()
+            BackColor = theme.General.Controls.ToolStrip.DropdownBackgroundDefaultColor
+            ResumeLayout()
+        End Sub
+
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
             MyBase.OnHandleCreated(e)

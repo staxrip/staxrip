@@ -27,7 +27,7 @@ Partial Class TaskDialogBaseForm
         Me.components = New System.ComponentModel.Container()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         Me.tlpTop = New System.Windows.Forms.TableLayoutPanel()
-        Me.TitleLabel = New System.Windows.Forms.Label()
+        Me.TitleLabel = New StaxRip.UI.LabelEx()
         Me.pbIcon = New System.Windows.Forms.PictureBox()
         Me.paMain = New StaxRip.TaskDialogBaseForm.TaskDialogPanel()
         Me.spBottom = New StaxRip.UI.StackPanel()
@@ -36,7 +36,7 @@ Partial Class TaskDialogBaseForm
         Me.CheckBox = New StaxRip.UI.CheckBoxEx()
         Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
         Me.blDetails = New StaxRip.UI.ButtonLabel()
-        Me.Button = New StaxRip.UI.ButtonLabel()
+        Me.blCopyMessage = New StaxRip.UI.ButtonLabel()
         Me.tlpMain.SuspendLayout()
         Me.tlpTop.SuspendLayout()
         CType(Me.pbIcon, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -74,7 +74,7 @@ Partial Class TaskDialogBaseForm
         Me.tlpTop.Controls.Add(Me.TitleLabel, 1, 0)
         Me.tlpTop.Controls.Add(Me.pbIcon, 0, 0)
         Me.tlpTop.Location = New System.Drawing.Point(0, 0)
-        Me.tlpTop.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpTop.Margin = New System.Windows.Forms.Padding(0, 0, 0, 30)
         Me.tlpTop.Name = "tlpTop"
         Me.tlpTop.RowCount = 1
         Me.tlpTop.RowStyles.Add(New System.Windows.Forms.RowStyle())
@@ -132,7 +132,7 @@ Partial Class TaskDialogBaseForm
         Me.spBottom.Controls.Add(Me.CheckBox)
         Me.spBottom.Controls.Add(Me.flpButtons)
         Me.spBottom.Controls.Add(Me.blDetails)
-        Me.spBottom.Controls.Add(Me.Button)
+        Me.spBottom.Controls.Add(Me.blCopyMessage)
         Me.spBottom.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
         Me.spBottom.Location = New System.Drawing.Point(0, 195)
         Me.spBottom.Margin = New System.Windows.Forms.Padding(0, 0, 0, 30)
@@ -199,21 +199,21 @@ Partial Class TaskDialogBaseForm
         '
         'Button
         '
-        Me.Button.AutoSize = True
-        Me.Button.ClickAction = Nothing
-        Me.Button.Location = New System.Drawing.Point(20, 390)
-        Me.Button.Margin = New System.Windows.Forms.Padding(20, 0, 0, 0)
-        Me.Button.Name = "Button"
-        Me.Button.Size = New System.Drawing.Size(126, 48)
-        Me.Button.TabIndex = 7
-        Me.Button.Text = "Button"
-        Me.Button.Visible = False
+        Me.blCopyMessage.AutoSize = True
+        Me.blCopyMessage.ClickAction = Nothing
+        Me.blCopyMessage.Location = New System.Drawing.Point(20, 390)
+        Me.blCopyMessage.Margin = New System.Windows.Forms.Padding(20, 0, 0, 0)
+        Me.blCopyMessage.Name = "blCopyMessage"
+        Me.blCopyMessage.Size = New System.Drawing.Size(126, 48)
+        Me.blCopyMessage.TabIndex = 7
+        Me.blCopyMessage.Text = "Copy Message"
+        Me.blCopyMessage.Visible = False
         '
         'TaskDialogBaseForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(705, 663)
+        Me.ClientSize = New System.Drawing.Size(705, 683)
         Me.Controls.Add(Me.tlpMain)
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
@@ -237,11 +237,11 @@ Partial Class TaskDialogBaseForm
     Friend WithEvents flpButtons As FlowLayoutPanel
     Friend WithEvents InputTextEdit As TextEdit
     Friend WithEvents tlpTop As TableLayoutPanel
-    Friend WithEvents TitleLabel As Label
+    Friend WithEvents TitleLabel As LabelEx
     Friend WithEvents MenuButton As MenuButton
     Friend WithEvents paMain As TaskDialogPanel
     Friend WithEvents spBottom As StackPanel
-    Friend WithEvents Button As ButtonLabel
+    Friend WithEvents blCopyMessage As ButtonLabel
     Friend WithEvents blDetails As ButtonLabel
     Friend WithEvents pbIcon As PictureBox
 End Class

@@ -1427,9 +1427,17 @@ Namespace UI
 
         Sub MenuOpening(sender As Object, e As CancelEventArgs)
             Menu.MinimumSize = New Size(Width, 0)
+            Dim minItemSize As Integer = Menu.MinimumSize.Width
 
             For Each mi As MenuItemEx In Menu.Items
                 mi.Font = New Font("Segoe UI", 9 * s.UIScaleFactor, If(Not Value Is Nothing AndAlso Value.Equals(mi.Tag), FontStyle.Bold, FontStyle.Regular))
+                mi.AutoSize = True
+                minItemSize = Math.Max(minItemSize, mi.Width)
+            Next
+
+            For Each mi As MenuItemEx In Menu.Items
+                mi.AutoSize = False
+                mi.Width = minItemSize + 8
             Next
         End Sub
 

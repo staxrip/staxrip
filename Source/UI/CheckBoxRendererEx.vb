@@ -84,7 +84,9 @@ Public Class CheckBoxRendererEx
     End Sub
 
     Public Shared Function GetGlyphSize(g As Graphics, state As CheckBoxState) As Size
-        Return CheckBoxRenderer.GetGlyphSize(g, state)
+        Dim defaultSize = CheckBoxRenderer.GetGlyphSize(g, state)
+        Dim uiSize = New Size(CInt(defaultSize.Width * s.UIScaleFactor), CInt(defaultSize.Height * s.UIScaleFactor))
+        Return uiSize
     End Function
 
 End Class

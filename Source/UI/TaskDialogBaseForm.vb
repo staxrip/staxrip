@@ -272,8 +272,9 @@ Public Class TaskDialogBaseForm
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
-            MyBase.Dispose(disposing)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
             TitleFont.Dispose()
+            MyBase.Dispose(disposing)
         End Sub
     End Class
 

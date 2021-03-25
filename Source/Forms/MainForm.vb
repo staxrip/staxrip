@@ -4290,7 +4290,7 @@ Public Class MainForm
             "In order to select a template to be loaded on program startup go to:",
             "Tools > Settings > General > Templates > Default Template")
 
-            form.ScaleClientSize(31, 21)
+            form.ScaleClientSize(33, 22)
 
             Dim ui = form.SimpleUI
             ui.Store = p

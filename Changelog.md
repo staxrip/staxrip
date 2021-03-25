@@ -3,7 +3,7 @@
 
 - [X] Might break settings from previous version, so starting with new settings is recommended
 - [X] Might break templates and jobs from previous version
-- [X] Changed menus from previous STABLE versions that need a menu reset, manual setting or global settings reset in order to see them
+- [X] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
 - Start of new versioning (no beta versions anymore, but stripped DEV versions)
 - Check for updates updated to support new versioning (Dendraspis)
 - Fix re-calculation of video bitrate on multi-pass encode and audio encodes (Dendraspis, [#580](/../../issues/580)

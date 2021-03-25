@@ -100,6 +100,7 @@ Anti-Aliasing | Sangnom = clip = core.sangnom.SangNom(clip)
 Anti-Aliasing | Santiag = clip = havsfunc.santiag(c=clip, opencl=$select:msg:Use GPU Enabled Feature?;True;False$)
 Anti-Aliasing | TAAmbk = clip = taa.TAAmbk(clip, preaa=-1, aatype=4, mtype=1, mthr=24, sharp=-1,aarepair=-20, postaa=False, stabilize=1)
 Sharpen | aWarpSharpen2 = clip = core.warp.AWarpSharp2(clip=clip, blur=2)
+Sharpen | DetailSharpen = clip = G41Fun.DetailSharpen(clip, z=4, sstr=1.5, power=4, ldmp=1, mode=1, med=False)
 Sharpen | FineSharp = $select:msg:Select Strength;Light|clip = finesharp.sharpen(clip, mode=1, sstr=2, cstr=0.8, xstr=0.19, lstr=1.49, pstr=1.272);Moderate|clip = finesharp.sharpen(clip, mode=2, sstr=2.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472);Strong|clip = finesharp.sharpen(clip, mode=3, sstr=6.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472)$
 Sharpen | LSFmod = clip = havsfunc.LSFmod(clip, defaults='slow', strength=100, Smode=5, Smethod=3, kernel=11, secure=True, Szrp= 16, Spwr= 4, SdmpLo= 4, SdmpHi= 48, Lmode=4, overshoot=1, undershoot=1, soft=-2, soothe=True, keep=20, edgemode=0, edgemaskHQ=True, ss_x= 1.50, ss_y=1.50)
 Sharpen | McDegrainSharp = clip = mcdegrainsharp.mcdegrainsharp(clip, plane=4)

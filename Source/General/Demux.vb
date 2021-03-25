@@ -484,16 +484,21 @@ Public Class MP4BoxDemuxer
                 subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
             End If
 
-            Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+            Dim autoCode = proj.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
 
             For Each subtitle In subtitles
+                Dim prefLang As Boolean = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode)
+                Dim skip As Boolean = False
+
                 If proj.SubtitleMode = SubtitleMode.PreferredNoMux Then
-                    If autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) Then
-                        subtitle.Enabled = True
+                    If Not prefLang Then
+                        skip = True
                     End If
+                Else
+                    skip = Not subtitle.Enabled
                 End If
 
-                If Not subtitle.Enabled Then
+                If skip Then
                     Continue For
                 End If
 
@@ -820,10 +825,6 @@ Public Class mkvDemuxer
             audioStreams = New List(Of AudioStream)
         End If
 
-        If Not subtitles Is Nothing Then
-            subtitles = subtitles.Where(Function(subtitle) subtitle.Enabled)
-        End If
-
         If onlyEnabled Then
             audioStreams = audioStreams.Where(Function(arg) arg.Enabled)
         End If
@@ -855,17 +856,22 @@ Public Class mkvDemuxer
             End If
         End If
 
-        If subtitles IsNot Nothing Then
-            Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+        If subtitles IsNot Nothing AndAlso proj.IsSubtitleDemuxingRequired Then
+            Dim autoCode = proj.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
 
             For Each subtitle In subtitles
+                Dim prefLang As Boolean = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode)
+                Dim skip As Boolean = False
+
                 If proj.SubtitleMode = SubtitleMode.PreferredNoMux Then
-                    If autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) Then
-                        subtitle.Enabled = True
+                    If Not prefLang Then
+                        skip = True
                     End If
+                Else
+                    skip = Not subtitle.Enabled
                 End If
 
-                If Not p.IsSubtitleDemuxingRequired OrElse Not subtitle.Enabled Then
+                If skip Then
                     Continue For
                 End If
 

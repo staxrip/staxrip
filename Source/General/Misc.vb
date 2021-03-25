@@ -1325,11 +1325,11 @@ Public Class Subtitle
                     End Try
 
                     Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                    st.Enabled = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
+                    Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
+                    Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux
+                    st.Enabled = prefLang AndAlso goodMode
 
-                    If Not st Is Nothing Then
-                        st.IndexIDX = CInt(Regex.Match(line, ", index: (\d+)").Groups(1).Value)
-                    End If
+                    st.IndexIDX = CInt(Regex.Match(line, ", index: (\d+)").Groups(1).Value)
                 End If
 
                 If Not st Is Nothing AndAlso line.StartsWith("timestamp: ") Then
@@ -1344,20 +1344,25 @@ Public Class Subtitle
                 End If
             Next
         ElseIf path.Ext.EqualsAny("mkv", "mp4", "m2ts", "webm") Then
-            For Each i In MediaInfo.GetSubtitles(path)
-                If i.Size = 0 Then
-                    Select Case i.TypeName
+            For Each st In MediaInfo.GetSubtitles(path)
+                If st.Size = 0 Then
+                    Select Case st.TypeName
                         Case "SRT"
-                            i.Size = 10L * p.TargetSeconds
+                            st.Size = 10L * p.TargetSeconds
                         Case "VobSub"
-                            i.Size = 1250L * p.TargetSeconds
+                            st.Size = 1250L * p.TargetSeconds
                         Case "PGS"
-                            i.Size = 5000L * p.TargetSeconds
+                            st.Size = 5000L * p.TargetSeconds
                     End Select
                 End If
 
-                i.Path = path
-                ret.Add(i)
+                Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
+                Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux
+                st.Enabled = prefLang AndAlso goodMode
+                st.Path = path
+
+                ret.Add(st)
             Next
         Else
             Dim st As New Subtitle()
@@ -1381,7 +1386,9 @@ Public Class Subtitle
             End If
 
             Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-            st.Enabled = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
+            Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
+            Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux
+            st.Enabled = prefLang AndAlso goodMode
             st.Path = path
 
             For Each i In autoCode

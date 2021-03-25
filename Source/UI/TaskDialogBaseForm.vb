@@ -4,19 +4,36 @@ Imports System.Runtime.InteropServices
 Imports StaxRip.UI
 
 Public Class TaskDialogBaseForm
-    Property Theme As Theme = ThemeManager.CurrentTheme
-
     Overridable Sub AdjustHeight()
     End Sub
 
     Public Sub New()
         InitializeComponent()
-        AddHandler InputTextEdit.TextBox.KeyDown, AddressOf InputTextEditTextBoxKeyDown
+        ApplyTheme()
 
-        If Not DesignHelp.IsDesignMode Then
-            BackColor = Theme.General.BackColor
-            TitleLabel.ForeColor = Theme.General.Controls.Label.ForeColor
+        AddHandler InputTextEdit.TextBox.KeyDown, AddressOf InputTextEditTextBoxKeyDown
+        AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Sub OnThemeChanged(theme As Theme)
+        ApplyTheme(theme)
+    End Sub
+
+    Sub ApplyTheme()
+        ApplyTheme(ThemeManager.CurrentTheme)
+    End Sub
+
+    Sub ApplyTheme(theme As Theme)
+        If DesignHelp.IsDesignMode Then
+            Exit Sub
         End If
+
+        SuspendLayout()
+        BackColor = theme.TaskDialog.BackColor
+        ForeColor = theme.TaskDialog.ForeColor
+        blCopyMessage.BackColor = BackColor
+        blDetails.BackColor = BackColor
+        ResumeLayout()
     End Sub
 
     <DllImport("user32.dll", EntryPoint:="SetWindowLong")>
@@ -36,7 +53,7 @@ Public Class TaskDialogBaseForm
     End Function
 
     Class TaskDialogPanel
-        Inherits Panel
+        Inherits PanelEx
 
         Property Form As TaskDialogBaseForm
         Property LineBreaks As Integer
@@ -69,7 +86,7 @@ Public Class TaskDialogBaseForm
                     c.Left = CInt(fh * 0.7)
                     c.Width = ClientSize.Width - CInt(fh * 0.7 * 2)
 
-                    If TypeOf c Is Label Then
+                    If TypeOf c Is LabelEx Then
                         If c.Name = "ExpandedInformation" AndAlso Form.blDetails.Text = "Show Details" Then
                             c.Visible = False
                             c.Height = 0
@@ -91,7 +108,7 @@ Public Class TaskDialogBaseForm
     End Class
 
     Class CommandButton
-        Inherits ButtonEx
+        Inherits Button
 
         Property Title As String
         Property Description As String
@@ -107,6 +124,42 @@ Public Class TaskDialogBaseForm
                 Return _TitleFont
             End Get
         End Property
+
+        Sub New()
+            If Not DesignHelp.IsDesignMode Then
+                MinimumSize = New Size(20, 20)
+                UseCompatibleTextRendering = False
+                UseVisualStyleBackColor = False
+                FlatStyle = FlatStyle.Flat
+            End If
+
+            FlatAppearance.BorderSize = 2
+
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
+            SuspendLayout()
+            BackColor = theme.TaskDialog.CommandButton.BackColor
+            ForeColor = theme.TaskDialog.CommandButton.ForeColor
+            FlatAppearance.BorderColor = theme.TaskDialog.CommandButton.BorderColor
+            ResumeLayout()
+        End Sub
+
 
         Function AdjustSize() As Boolean
             Dim titleFontHeight = TitleFont.Height
@@ -187,16 +240,10 @@ Public Class TaskDialogBaseForm
 
         Protected Overrides Sub OnGotFocus(e As EventArgs)
             MyBase.OnGotFocus(e)
-            BackColor = ThemeManager.CurrentTheme.General.Controls.Button.BackColor
-            ForeColor = ThemeManager.CurrentTheme.General.Controls.Button.ForeColor
-            FlatAppearance.BorderColor = ThemeManager.CurrentTheme.General.Controls.Button.BorderColor
         End Sub
 
         Protected Overrides Sub OnLostFocus(e As EventArgs)
             MyBase.OnLostFocus(e)
-            BackColor = ThemeManager.CurrentTheme.ProcessingForm.ProcessButtonBackColor
-            ForeColor = ThemeManager.CurrentTheme.ProcessingForm.ProcessButtonForeColor
-            FlatAppearance.BorderColor = ThemeManager.CurrentTheme.General.BackColor
         End Sub
 
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
@@ -213,14 +260,14 @@ Public Class TaskDialogBaseForm
             Dim r = New Rectangle(x, y, w, h)
 
             If Title <> "" AndAlso Description <> "" Then
-                g.DrawString(Title, TitleFont, Brushes.White, r)
+                TextRenderer.DrawText(g, Title, TitleFont, r, ForeColor, TextFormatFlags.VerticalCenter Or TextFormatFlags.Left)
                 y = CInt(titleFontHeight * 0.2) + GetTitleSize().Height
                 r = New Rectangle(x, y, w, h)
-                g.DrawString(Description, Font, Brushes.White, r)
+                TextRenderer.DrawText(g, Description, Font, r, ForeColor, TextFormatFlags.VerticalCenter Or TextFormatFlags.Left)
             ElseIf Title <> "" Then
-                g.DrawString(Title, TitleFont, Brushes.White, r)
+                TextRenderer.DrawText(g, Title, TitleFont, r, ForeColor, TextFormatFlags.VerticalCenter Or TextFormatFlags.Left)
             ElseIf Description <> "" Then
-                g.DrawString(Description, Font, Brushes.White, r)
+                TextRenderer.DrawText(g, Description, Font, r, ForeColor, TextFormatFlags.VerticalCenter Or TextFormatFlags.Left)
             End If
         End Sub
 

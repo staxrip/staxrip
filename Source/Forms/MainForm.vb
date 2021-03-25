@@ -5604,7 +5604,7 @@ Public Class MainForm
     <Command("Dialog to open source files.")>
     Sub ShowOpenSourceDialog()
         Using td As New TaskDialog(Of String)
-            td.Title = "Select a method for opening a source."
+            td.Title = "Select a method for opening a source:"
             td.AddCommand("Single File")
             td.AddCommand("Blu-ray Folder")
             td.AddCommand("Merge Files")

@@ -114,6 +114,14 @@
         Return _current
     End Function
 
+
+    '   -----
+    '   #####   #####   #####   #####   #####   #####   #####
+    '   -----   -----   -----   -----   -----   -----   -----
+    '   #####   #####   #####   #####   #####   #####   #####
+    '   -----
+
+
     Private Class DarkTheme
         Inherits Theme
 
@@ -496,6 +504,16 @@
                     .EncoderBackColor = General.Controls.RichTextBox.BackColor,
                     .EncoderForeColor = _outputHighlightingStrongForeColor.SetHue(205).AddLuminance(0.05),
                     .EncoderFontStyles = {FontStyle.Italic, FontStyle.Bold}
+                }
+            }
+
+            TaskDialog = New TaskDialogThemeColors() With {
+                .BackColor = _controlBackColor,
+                .ForeColor = _foreColor.AddLuminance(0.1),
+                .CommandButton = New TaskDialogThemeColors.CommandButtonThemeColors() With {
+                    .BackColor = _controlBackColor.AddLuminance(0.025),
+                    .BorderColor = .BackColor.AddLuminance(0.05),
+                    .ForeColor = _foreColor.AddLuminance(0.1)
                 }
             }
 

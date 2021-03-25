@@ -25,6 +25,7 @@ Public Class Theme
     Private _cropFormThemeColors As CropFormThemeColors
     Private _mainFormThemeColors As MainFormThemeColors
     Private _processingFormThemeColors As ProcessingFormThemeColors
+    Private _taskDialogThemeColors As TaskDialogThemeColors
 
     Public Property General As GeneralThemeColors
         Get
@@ -83,6 +84,16 @@ Public Class Theme
         End Get
         Set(value As ProcessingFormThemeColors)
             _processingFormThemeColors = value
+        End Set
+    End Property
+
+    Public Property TaskDialog As TaskDialogThemeColors
+        Get
+            _taskDialogThemeColors = If(_taskDialogThemeColors, New TaskDialogThemeColors())
+            Return _taskDialogThemeColors
+        End Get
+        Set(value As TaskDialogThemeColors)
+            _taskDialogThemeColors = value
         End Set
     End Property
 
@@ -743,6 +754,7 @@ Public Class Theme
     End Class
 
 
+    <Serializable>
     Public Class GeneralThemeColors
         Private _controlsThemeColors As ControlsThemeColors
 
@@ -763,11 +775,13 @@ Public Class Theme
         Public Property ForeColor As ColorHSL = SystemColors.ControlText
     End Class
 
+    <Serializable>
     Public Class AppsFormThemeColors
         Public Property AttentionForeColor As ColorHSL = New ColorHSL(358, 1, 0.3, 1)
         Public Property OkayForeColor As ColorHSL = New ColorHSL(120, 1, 0.3, 1)
     End Class
 
+    <Serializable>
     Public Class CodeEditorThemeColors
         Public Property BackAccentColor As ColorHSL = SystemColors.Window
         Public Property ForeColor As ColorHSL = SystemColors.ControlDark
@@ -778,12 +792,14 @@ Public Class Theme
         Public Property RichTextBoxForeAccentColor As ColorHSL = SystemColors.WindowText
     End Class
 
+    <Serializable>
     Public Class CropFormThemeColors
         Public Property BackColor As ColorHSL = SystemColors.Window
         Public Property BorderColor As ColorHSL = SystemColors.ControlDark
         Public Property BorderSelectedColor As ColorHSL = SystemColors.Control
     End Class
 
+    <Serializable>
     Public Class MainFormThemeColors
         Public Property laTipBackColor As ColorHSL = Color.Transparent
         Public Property laTipBackHighlightColor As ColorHSL = Color.Transparent
@@ -791,6 +807,7 @@ Public Class Theme
         Public Property laTipForeHighlightColor As ColorHSL = New ColorHSL(355, 1, 0.5, 1)
     End Class
 
+    <Serializable>
     Public Class ProcessingFormThemeColors
         Public Property BackColor As ColorHSL = SystemColors.Control
         Public Property ProcessButtonBackColor As ColorHSL = SystemColors.Control
@@ -875,6 +892,31 @@ Public Class Theme
         End Class
     End Class
 
+    <Serializable>
+    Public Class TaskDialogThemeColors
+        Public Property BackColor As ColorHSL = SystemColors.Control
+        Public Property ForeColor As ColorHSL = SystemColors.ControlText
+
+
+        Private _commandButton As CommandButtonThemeColors
+        Public Property CommandButton As CommandButtonThemeColors
+            Get
+                _commandButton = If(_commandButton, New CommandButtonThemeColors())
+                Return _commandButton
+            End Get
+            Set
+                _commandButton = Value
+            End Set
+        End Property
+
+        <Serializable>
+        Public Class CommandButtonThemeColors
+            Public Property BackColor As ColorHSL = SystemColors.ScrollBar
+            Public Property BorderColor As ColorHSL = SystemColors.ActiveBorder
+            Public Property ForeColor As ColorHSL = SystemColors.ControlText
+        End Class
+    End Class
 End Class
+
 
 

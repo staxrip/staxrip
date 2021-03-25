@@ -16,8 +16,8 @@ Public Class TaskDialog(Of T)
     Property ExpandedContent As String
     Property Timeout As Integer
     Property Symbol As Symbol
-    Property ContentLabel As Label
-    Property ExpandedContentLabel As Label
+    Property ContentLabel As LabelEx
+    Property ExpandedContentLabel As LabelEx
 
     Overloads Property Icon As TaskIcon
     Overloads Property Owner As IntPtr
@@ -76,9 +76,7 @@ Public Class TaskDialog(Of T)
         TitleLabel.Text = Title
 
         If Content <> "" Then
-            ContentLabel = New Label
-            ContentLabel.BackColor = Theme.General.BackColor
-            ContentLabel.ForeColor = Theme.General.Controls.Label.ForeColor
+            ContentLabel = New LabelEx
             ContentLabel.Margin = New Padding(0)
             ContentLabel.BorderStyle = BorderStyle.None
             ContentLabel.Text = Content
@@ -86,9 +84,7 @@ Public Class TaskDialog(Of T)
         End If
 
         If ExpandedContent <> "" Then
-            ExpandedContentLabel = New Label
-            ExpandedContentLabel.BackColor = Theme.General.BackColor
-            ExpandedContentLabel.ForeColor = Theme.General.Controls.Label.ForeColor
+            ExpandedContentLabel = New LabelEx
             ExpandedContentLabel.Margin = New Padding(0)
             ExpandedContentLabel.BorderStyle = BorderStyle.None
             ExpandedContentLabel.Text = ExpandedContent
@@ -104,9 +100,6 @@ Public Class TaskDialog(Of T)
             cb.Title = command.Text
             cb.Description = command.Description
             cb.Tag = command
-            cb.BackColor = Theme.ProcessingForm.ProcessButtonBackColor
-            cb.ForeColor = Theme.ProcessingForm.ProcessButtonForeColor
-            cb.FlatAppearance.BorderColor = Theme.General.BackColor
 
             If TypeOf command.Value Is FontFamily Then
                 cb.Font = New Font(command.Text, Font.Size)
@@ -123,7 +116,6 @@ Public Class TaskDialog(Of T)
         For Each i In ButtonDefinitions
             If Not flpButtons.Visible Then
                 flpButtons.Visible = True
-                flpButtons.AutoSizeMode = AutoSizeMode.GrowAndShrink
                 flpButtons.AutoSize = True
             End If
 
@@ -257,7 +249,7 @@ Public Class TaskDialog(Of T)
     End Sub
 
     Overrides Sub AdjustHeight()
-        Dim h = tlpTop.Height
+        Dim h = tlpTop.Height + tlpTop.Margin.Vertical
 
         If paMain.Controls.Count > 0 Then
             Dim last = paMain.Controls(paMain.Controls.Count - 1)
@@ -337,12 +329,12 @@ Public Class TaskDialog(Of T)
     WriteOnly Property ShowCopyButton As Boolean
         Set(value As Boolean)
             If value Then
-                Button.Text = "Copy Message"
-                Button.Visible = True
-                Button.ClickAction = Sub()
-                                         Clipboard.SetText(GetText)
-                                         MsgInfo("Message was copied to clipboard.")
-                                     End Sub
+                blCopyMessage.Text = "Copy Message"
+                blCopyMessage.Visible = True
+                blCopyMessage.ClickAction = Sub()
+                                                Clipboard.SetText(GetText)
+                                                MsgInfo("Message was copied to clipboard.")
+                                            End Sub
             End If
         End Set
     End Property

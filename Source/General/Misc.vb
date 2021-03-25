@@ -1771,6 +1771,7 @@ End Enum
 
 Public Enum SubtitleMode
     <DispName("Demux and include preferred languages")> Preferred
+    <DispName("Demux preferred languages but don't include them")> PreferredNoMux
     <DispName("Show dialog to choose subtitles to be included")> Dialog
     <DispName("Include preferred languages directly without demuxing")> Direct
     <DispName("Don't include subtitles")> Disabled

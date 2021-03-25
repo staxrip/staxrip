@@ -41,7 +41,8 @@ Public Class Project
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
     Public DemuxAudio As DemuxMode = DemuxMode.All
-    Public SubtitleMode As SubtitleMode
+    Public DemuxChapters As Boolean = True
+    Public DemuxVideo As Boolean = False
     Public ExtractTimestamps As Boolean
     Public FileExistAudio As FileExistMode
     Public FileExistVideo As FileExistMode
@@ -92,6 +93,7 @@ Public Class Project
     Public SourceVideoHdrFormat As String = ""
     Public SourceVideoSize As Long
     Public SourceWidth As Integer = 1920
+    Public SubtitleMode As SubtitleMode
     Public SubtitleName As String = ""
     Public TargetFrameRate As Double
     Public TargetHeight As Integer = 1080
@@ -312,7 +314,7 @@ Public Class Project
 
     ReadOnly Property IsSubtitleDemuxingRequired As Boolean
         Get
-            Return SubtitleMode = SubtitleMode.Dialog OrElse SubtitleMode = SubtitleMode.Preferred
+            Return SubtitleMode = SubtitleMode.Dialog OrElse SubtitleMode = SubtitleMode.Preferred OrElse SubtitleMode = SubtitleMode.PreferredNoMux
         End Get
     End Property
 End Class

@@ -9,11 +9,6 @@ Public Class StreamDemuxForm
 
     Sub New(demuxer As Demuxer, sourceFile As String, attachments As List(Of Attachment))
         InitializeComponent()
-
-        cbDemuxChapters.Checked = demuxer.ChaptersDemuxing
-        cbDemuxChapters.Visible = MediaInfo.GetMenu(sourceFile, "Chapters_Pos_End").ToInt - MediaInfo.GetMenu(sourceFile, "Chapters_Pos_Begin").ToInt > 0
-        cbDemuxVideo.Checked = demuxer.VideoDemuxing
-
         ScaleClientSize(42, 30)
         StartPosition = FormStartPosition.CenterParent
 
@@ -78,6 +73,9 @@ Public Class StreamDemuxForm
                 item.Checked = attachment.Enabled
             Next
         End If
+
+        cbDemuxChapters.Checked = p.DemuxChapters
+        cbDemuxVideo.Checked = p.DemuxVideo
 
         ApplyTheme()
 

@@ -13,9 +13,6 @@ Public MustInherit Class Demuxer
     Overridable Property OutputExtensions As String() = {}
     Overridable Property SourceFilters As String() = {}
 
-    Property VideoDemuxing As Boolean
-    Property VideoDemuxed As Boolean
-    Property ChaptersDemuxing As Boolean = True
     Property OverrideExisting As Boolean
 
     Overridable ReadOnly Property HasConfigDialog() As Boolean
@@ -36,16 +33,6 @@ Public MustInherit Class Demuxer
             tb.Edit.SaveAction = Sub(value) InputExtensions = value.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
 
             Dim cb = ui.AddBool(page)
-            cb.Text = "Video Demuxing"
-            cb.Checked = VideoDemuxing
-            cb.SaveAction = Sub(val) VideoDemuxing = val
-
-            cb = ui.AddBool(page)
-            cb.Text = "Chapters Demuxing"
-            cb.Checked = ChaptersDemuxing
-            cb.SaveAction = Sub(val) ChaptersDemuxing = val
-
-            cb = ui.AddBool(page)
             cb.Text = "Recreate already existing files"
             cb.Help = "Demux even when ouput files already exist."
             cb.Checked = OverrideExisting
@@ -249,7 +236,7 @@ Public Class ffmpegDemuxer
     Public Overrides Sub Run(proj As Project)
         Dim audioStreams As List(Of AudioStream)
         Dim subtitles As List(Of Subtitle)
-        Dim videoDemuxing = Me.VideoDemuxing
+        Dim videoDemuxing = proj.DemuxVideo
 
         Dim audioDemuxing = Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
             TypeOf proj.Audio1 Is NullAudioProfile) AndAlso
@@ -435,6 +422,8 @@ End Class
 Public Class MP4BoxDemuxer
     Inherits Demuxer
 
+    Private _videoDemuxing As Boolean = True
+
     Sub New()
         Name = "MP4Box: Demux"
         InputExtensions = {"mp4", "m4v", "mov"}
@@ -450,8 +439,8 @@ Public Class MP4BoxDemuxer
 
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim attachments = GetAttachments(proj.SourceFile)
-        Dim demuxChapters = ChaptersDemuxing
-        VideoDemuxed = VideoDemuxing
+        Dim demuxChapters = proj.DemuxChapters
+        _videoDemuxing = proj.DemuxVideo
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
             ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
@@ -460,7 +449,7 @@ Public Class MP4BoxDemuxer
 
             Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
                 If form.ShowDialog() = DialogResult.OK Then
-                    VideoDemuxed = form.cbDemuxVideo.Checked
+                    _videoDemuxing = form.cbDemuxVideo.Checked
                     demuxChapters = form.cbDemuxChapters.Checked
                     audioStreams = form.AudioStreams
                     subtitles = form.Subtitles
@@ -474,7 +463,7 @@ Public Class MP4BoxDemuxer
             End Using
         End If
 
-        If VideoDemuxed Then
+        If _videoDemuxing Then
             DemuxVideo(proj, OverrideExisting)
         End If
 
@@ -495,12 +484,20 @@ Public Class MP4BoxDemuxer
                 subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
             End If
 
-            For Each st In subtitles
-                If Not st.Enabled Then
+            Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+
+            For Each subtitle In subtitles
+                If proj.SubtitleMode = SubtitleMode.PreferredNoMux Then
+                    If autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) Then
+                        subtitle.Enabled = True
+                    End If
+                End If
+
+                If Not subtitle.Enabled Then
                     Continue For
                 End If
 
-                Dim outpath = proj.TempDir + st.Filename + st.ExtFull
+                Dim outpath = proj.TempDir + subtitle.Filename + subtitle.ExtFull
 
                 If Not OverrideExisting AndAlso outpath.FileExists Then
                     Continue For
@@ -509,7 +506,7 @@ Public Class MP4BoxDemuxer
                 FileHelp.Delete(outpath)
                 Dim args As String
 
-                Select Case st.ExtFull
+                Select Case subtitle.ExtFull
                     Case ""
                         Continue For
                     Case ".srt"
@@ -518,7 +515,7 @@ Public Class MP4BoxDemuxer
                         args = "-raw "
                 End Select
 
-                args += st.ID & " -out " + outpath.Escape + " " + proj.SourceFile.Escape
+                args += subtitle.ID & " -out " + outpath.Escape + " " + proj.SourceFile.Escape
 
                 Using proc As New Proc
                     proc.Project = proj
@@ -562,7 +559,7 @@ Public Class MP4BoxDemuxer
 
     Public Overrides Property OutputExtensions As String()
         Get
-            If VideoDemuxing OrElse VideoDemuxed Then
+            If p.DemuxVideo OrElse _videoDemuxing Then
                 Return {"avi", "mpg", "h264", "h265"}
             End If
 
@@ -680,6 +677,8 @@ End Class
 Public Class mkvDemuxer
     Inherits Demuxer
 
+    Private _videoDemuxing As Boolean = True
+
     Sub New()
         Name = "mkvextract: Demux"
         InputExtensions = {"mkv", "webm"}
@@ -698,8 +697,8 @@ Public Class mkvDemuxer
 
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim attachments = GetAttachments(stdout)
-        Dim demuxChapters = ChaptersDemuxing
-        VideoDemuxed = VideoDemuxing
+        Dim demuxChapters = proj.DemuxChapters
+        Dim _videoDemuxing = proj.DemuxVideo
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
             ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
@@ -711,7 +710,7 @@ Public Class mkvDemuxer
                     Throw New AbortException
                 End If
 
-                VideoDemuxed = form.cbDemuxVideo.Checked
+                _videoDemuxing = form.cbDemuxVideo.Checked
                 demuxChapters = form.cbDemuxChapters.Checked
                 audioStreams = form.AudioStreams
                 subtitles = form.Subtitles
@@ -730,8 +729,7 @@ Public Class mkvDemuxer
             subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
         End If
 
-        Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True,
-              VideoDemuxed, OverrideExisting, "Demux MKV", True)
+        Demux(proj.SourceFile, audioStreams, subtitles, Nothing, proj, True, _videoDemuxing, OverrideExisting, "Demux MKV", True)
 
         If demuxChapters AndAlso stdout.Contains("Chapters: ") Then
             Using proc As New Proc
@@ -796,7 +794,7 @@ Public Class mkvDemuxer
 
     Public Overrides Property OutputExtensions As String()
         Get
-            If VideoDemuxing OrElse VideoDemuxed Then
+            If p.DemuxVideo OrElse _videoDemuxing Then
                 Return {"avi", "mpg", "h264", "h265"}
             End If
 
@@ -857,8 +855,16 @@ Public Class mkvDemuxer
             End If
         End If
 
-        If Not subtitles Is Nothing Then
+        If subtitles IsNot Nothing Then
+            Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+
             For Each subtitle In subtitles
+                If proj.SubtitleMode = SubtitleMode.PreferredNoMux Then
+                    If autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) Then
+                        subtitle.Enabled = True
+                    End If
+                End If
+
                 If Not p.IsSubtitleDemuxingRequired OrElse Not subtitle.Enabled Then
                     Continue For
                 End If

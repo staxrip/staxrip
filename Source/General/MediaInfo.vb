@@ -111,10 +111,6 @@ Public Class MediaInfo
 
                     at.Delay = GetAudio(index, "Video_Delay").ToInt
 
-                    If at.Delay = 0 Then
-                        at.Delay = GetAudio(index, "Source_Delay").ToInt
-                    End If
-
                     Dim channels = GetAudio(index, "Channel(s)")
                     at.Channels = channels.ToInt
 
@@ -189,7 +185,7 @@ Public Class MediaInfo
                     subtitle.Format = GetText(index, "Format")
                     subtitle.Size = GetText(index, "StreamSize").ToInt
 
-                    If p.SubtitleMode = SubtitleMode.Disabled Then
+                    If p.SubtitleMode = SubtitleMode.Disabled OrElse p.SubtitleMode = SubtitleMode.PreferredNoMux Then
                         subtitle.Enabled = False
                     Else
                         Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")

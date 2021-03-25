@@ -172,7 +172,7 @@ Public Class ProcController
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(175), oh.SourceForeColor)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\n.*\s\[)(warning)\]:\s(.+)", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n.*\s\[)(warn(?:ing)?)\]:\s(.+)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.WarningLabelBackColor, oh.WarningLabelForeColor, oh.WarningLabelFontStyles)
                 LogTextBox.SelectionFormat(m.Groups(2).Index, m.Groups(2).Length, oh.WarningTextBackColor, oh.WarningTextForeColor, oh.WarningTextFontStyles)

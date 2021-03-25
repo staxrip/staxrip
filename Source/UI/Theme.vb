@@ -803,7 +803,7 @@ Public Class Theme
     Public Class MainFormThemeColors
         Public Property laTipBackColor As ColorHSL = Color.Transparent
         Public Property laTipBackHighlightColor As ColorHSL = Color.Transparent
-        Public Property laTipForeColor As ColorHSL = SystemColors.ControlText
+        Public Property laTipForeColor As ColorHSL = New ColorHSL(_baseHue, 1, 0.5, 1)
         Public Property laTipForeHighlightColor As ColorHSL = New ColorHSL(355, 1, 0.5, 1)
     End Class
 

@@ -260,20 +260,21 @@ Public Class TaskDialogBaseForm
             Dim r = New Rectangle(x, y, w, h)
 
             If Title <> "" AndAlso Description <> "" Then
-                TextRenderer.DrawText(g, Title, TitleFont, r, ForeColor, TextFormatFlags.VerticalCenter Or TextFormatFlags.Left)
+                TextRenderer.DrawText(g, Title, TitleFont, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak)
                 y = CInt(titleFontHeight * 0.2) + GetTitleSize().Height
                 r = New Rectangle(x, y, w, h)
-                TextRenderer.DrawText(g, Description, Font, r, ForeColor, TextFormatFlags.VerticalCenter Or TextFormatFlags.Left)
+                TextRenderer.DrawText(g, Description, Font, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak)
             ElseIf Title <> "" Then
-                TextRenderer.DrawText(g, Title, TitleFont, r, ForeColor, TextFormatFlags.VerticalCenter Or TextFormatFlags.Left)
+                TextRenderer.DrawText(g, Title, TitleFont, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak)
             ElseIf Description <> "" Then
-                TextRenderer.DrawText(g, Description, Font, r, ForeColor, TextFormatFlags.VerticalCenter Or TextFormatFlags.Left)
+                TextRenderer.DrawText(g, Description, Font, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak)
             End If
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
-            MyBase.Dispose(disposing)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
             TitleFont.Dispose()
+            MyBase.Dispose(disposing)
         End Sub
     End Class
 

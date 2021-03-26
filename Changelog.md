@@ -1,4 +1,12 @@
-2.2.0 (2021-03-??)
+2.3.0 (2021-04-??)
+=========================
+
+- [ ] Might break settings from previous version, so starting with new settings is recommended
+- [ ] Might break templates and jobs from previous version
+- [ ] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
+
+
+2.2.0 (2021-03-26)
 =========================
 
 - [X] Might break settings from previous version, so starting with new settings is recommended
@@ -13,6 +21,8 @@
 - Add option to demux subtitles without including them (Dendraspis, [#622](/../../issues/622)
 - Make Checkboxes grow and shrink with UIScaleFactor (Dendraspis)
 - Fix menu button graphics issue (Dendraspis, [#623](/../../issues/623))
+- New *Check for updates* dialog (Dendraspis)
+- Extended Settings Directory Location Selection at first run from new folder (Dendraspis)
 - MTN Thumbnailer description adjusted (JJKylee)
 - Fixed 'Reset Setting' feature in the Advanced menu (stax76)
 - New task dialog with color theme support (stax76)
@@ -20,6 +30,8 @@
 - New font picking task dialog to choose the console font (stax76)
 - DetailSharpen VapourSynth filter profile added (JJKylee, [#624](/../../issues/624)
 - JPSDR 3.2.5 (Clang W7 AVX version)
+- SangNom2 v0.6.0
+- x265 3.5+9+14-6c69ed37d [Mod by Patman]
 
 
 2.1.9.0 Beta (2021-03-21)

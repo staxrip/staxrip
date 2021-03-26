@@ -9,10 +9,23 @@ Public Class StaxRipUpdate
 
     Shared Sub ShowUpdateQuestion()
         If Not s.CheckForUpdatesQuestion Then
-            s.CheckForUpdates = MsgQuestion("Would you like StaxRip to check for updates once per day?",
-                TaskButton.YesNo) = DialogResult.Yes
+            's.CheckForUpdatesQuestion = True
+            's.CheckForUpdates = MsgQuestion("Would you like StaxRip to check for updates once per day?", TaskButton.YesNo) = DialogResult.Yes
 
-            s.CheckForUpdatesQuestion = True
+            Using td As New TaskDialog(Of String)()
+                td.Title = "Check for updates"
+                td.Content = "Would you like StaxRip to check for updates once per day? Each check will only query these sites:" + BR +
+                                        "'githubusercontent.com' and " + BR +
+                                        "'github.com'"
+
+                td.AddCommand("Yes", "Yes")
+                td.AddCommand("No", "No")
+                td.AddCommand("Ask me later", "Ask me later")
+
+                Dim answer = td.Show
+                s.CheckForUpdatesQuestion = answer <> "Ask me later"
+                s.CheckForUpdates = answer = "Yes"
+            End Using
         End If
     End Sub
 
@@ -46,10 +59,10 @@ Public Class StaxRipUpdate
 
                     If onlineVersion.Build > 0 Then
                         If includeDevBuilds Then
-                            latestVersions.Add((onlineVersion, "DEV", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
+                            latestVersions.Add((onlineVersion, "DEV version", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
                         End If
                     Else
-                        latestVersions.Add((onlineVersion, "Stable", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
+                        latestVersions.Add((onlineVersion, "Release", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
                     End If
                 Next
 
@@ -60,7 +73,7 @@ Public Class StaxRipUpdate
                         Version.Parse(s.CheckForUpdatesDismissed) <> latestVersion.Version OrElse force) Then
 
                         Using td As New TaskDialog(Of String)
-                            td.Title = "A new " + latestVersion.ReleaseType + " version was found: v" + latestVersion.Version.ToString()
+                            td.Title = "A new " + latestVersion.ReleaseType + " was found: v" + latestVersion.Version.ToString()
 
                             Dim changelogResponse = Await HttpClient.GetAsync(changelogUrl)
 

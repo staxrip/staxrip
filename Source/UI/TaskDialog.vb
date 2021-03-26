@@ -110,6 +110,7 @@ Public Class TaskDialog(Of T)
 
             If firstCommandButton Is Nothing Then
                 firstCommandButton = cb
+                firstCommandButton.Margin = New Padding(0, 10, 0, 0)
             End If
         Next
 

@@ -11,16 +11,18 @@ Public Class StaxRipUpdate
         If Not s.CheckForUpdatesQuestion Then
             Using td As New TaskDialog(Of String)()
                 td.Title = "Check for updates"
-                td.Content = "Would you like StaxRip to check for updates once per day? Each check will only query these sites:" + BR +
-                                        "'githubusercontent.com' and " + BR +
-                                        "'github.com'"
+                td.Icon = TaskIcon.Question
+                td.Content = "Would you like StaxRip to check for updates once per day?" + BR +
+                             "Each check will only query these sites:" + BR +
+                             "'githubusercontent.com' and " + BR +
+                             "'github.com'"
 
-                td.AddCommand("Yes", "Yes")
-                td.AddCommand("No", "No")
-                td.AddCommand("Ask me later", "Ask me later")
+                td.AddCommand("Yes")
+                td.AddCommand("No")
+                td.AddCommand("Ask me later")
 
                 Dim answer = td.Show
-                s.CheckForUpdatesQuestion = answer <> "Ask me later"
+                s.CheckForUpdatesQuestion = answer.EqualsAny("Yes", "No")
                 s.CheckForUpdates = answer = "Yes"
             End Using
         End If

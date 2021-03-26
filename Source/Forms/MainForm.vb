@@ -980,6 +980,7 @@ Public Class MainForm
         Me.MaximizeBox = False
         Me.Name = "MainForm"
         Me.Text = "StaxRip"
+        Me.StartPosition = FormStartPosition.CenterScreen
         Me.gbAssistant.ResumeLayout(False)
         Me.tlpAssistant.ResumeLayout(False)
         Me.tlpAssistant.PerformLayout()
@@ -1067,6 +1068,7 @@ Public Class MainForm
 
         MenuItemEx.UseTooltips = s.EnableTooltips
         Icon = g.Icon
+
         InitializeComponent()
         SetStyle(ControlStyles.SupportsTransparentBackColor, True)
         ScaleClientSize(41, 26.5)

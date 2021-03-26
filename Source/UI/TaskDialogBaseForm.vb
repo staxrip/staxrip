@@ -1,6 +1,5 @@
 ﻿
 Imports System.Runtime.InteropServices
-
 Imports StaxRip.UI
 
 Public Class TaskDialogBaseForm
@@ -284,10 +283,12 @@ Public Class TaskDialogBaseForm
         If blDetails.Text = "Show Details" Then
             blDetails.Text = "Hide Details"
         Else
+            Width = FontHeight * 22
             blDetails.Text = "Show Details"
         End If
 
         paMain.PerformLayout()
+        AdjustHeight()
         AdjustHeight()
     End Sub
 

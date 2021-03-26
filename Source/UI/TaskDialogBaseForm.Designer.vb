@@ -74,7 +74,7 @@ Partial Class TaskDialogBaseForm
         Me.tlpTop.Controls.Add(Me.TitleLabel, 1, 0)
         Me.tlpTop.Controls.Add(Me.pbIcon, 0, 0)
         Me.tlpTop.Location = New System.Drawing.Point(0, 0)
-        Me.tlpTop.Margin = New System.Windows.Forms.Padding(0, 0, 0, 30)
+        Me.tlpTop.Margin = New System.Windows.Forms.Padding(0, 15, 0, 15)
         Me.tlpTop.Name = "tlpTop"
         Me.tlpTop.RowCount = 1
         Me.tlpTop.RowStyles.Add(New System.Windows.Forms.RowStyle())

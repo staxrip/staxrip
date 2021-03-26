@@ -268,57 +268,60 @@ Public Class TaskDialog(Of T)
         Dim nonClientHeight = Height - ClientSize.Height
         Dim maxHeight = Screen.FromControl(Me).WorkingArea.Height
         Dim w = ClientSize.Width
+        Dim secondLongestLine = GetSecondLongestLineLength()
+        Dim predictedWidth = CInt(secondLongestLine * fh * 0.45)
 
-        If (h + nonClientHeight) > maxHeight Then
-            h = maxHeight - nonClientHeight
-            Dim secondLongestLine = GetSecondLongestLineLength()
-            Dim predictedWidth = CInt(secondLongestLine * fh * 0.5)
-
-            If predictedWidth > Width Then
-                w = predictedWidth
-            End If
-
-            If w > fh * 40 Then
-                w = fh * 40
-            End If
+        If predictedWidth > Width Then
+            w = predictedWidth
         End If
 
-        If paMain.LineBreaks > 2 Then
-            Dim secondLongestLine = GetSecondLongestLineLength()
-            Dim predictedWidth = CInt(secondLongestLine * fh * 0.5)
-
-            If predictedWidth > Width Then
-                w = predictedWidth
-            End If
-
-            If w > fh * 40 Then
-                w = fh * 40
-            End If
+        If w > fh * 40 Then
+            w = fh * 40
         End If
 
-        ClientSize = New Size(w, h)
-        CenterScreen
+        Dim ncx = Width - ClientSize.Width
+        Dim ncy = Height - ClientSize.Height
+
+        w += ncx
+        h += ncy
+
+        Dim s = Screen.FromControl(Me)
+
+        Dim l = (s.Bounds.Width - w) \ 2
+        Dim t = (s.Bounds.Height - h) \ 2
+
+        Native.SetWindowPos(Handle, IntPtr.Zero, l, t, w, h, 64)
     End Sub
 
     Function GetSecondLongestLineLength() As Integer
         Dim list As New List(Of Integer)({51, 52})
 
-        For Each txt In {Title, Content, ExpandedContent}
-            If txt <> "" Then
-                For Each line In txt.Split(BR(1))
+        If Content <> "" Then
+            For Each line In Content.Split(BR(1))
+                list.Add(line.Length)
+            Next
+        End If
+
+        If ExpandedContent <> "" AndAlso ExpandedContentLabel.Height > 0 Then
+            For Each line In ExpandedContent.Split(BR(1))
+                list.Add(line.Length)
+            Next
+        End If
+
+        For Each def In CommandDefinitions
+            If def.Description <> "" Then
+                For Each line In def.Description.Split(BR(1))
                     list.Add(line.Length)
                 Next
             End If
         Next
 
         For Each def In CommandDefinitions
-            For Each txt In {def.Text, def.Description}
-                If txt <> "" Then
-                    For Each line In txt.Split(BR(1))
-                        list.Add(line.Length)
-                    Next
-                End If
-            Next
+            If def.Text <> "" Then
+                For Each line In def.Text.Split(BR(1))
+                    list.Add(CInt(line.Length / 11 * 9))
+                Next
+            End If
         Next
 
         list.Sort()

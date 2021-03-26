@@ -540,6 +540,7 @@ Public Class ProfilesForm
             td.AddCommand("Clean Restore", "Clean")
             td.AddCommand("Overwrite current profiles with default profiles", "Current profiles will be overwritten by the defaults, profiles with different name remain.", "Overwrite")
             td.AddButton("Cancel", "Cancel")
+            td.Icon = TaskIcon.Question
 
             Select Case td.Show
                 Case "Clean"
@@ -550,8 +551,6 @@ Public Class ProfilesForm
                     lbMain.Items.Clear()
                     lbMain.Items.AddRange(uniqueProfiles)
                     lbMain.Items.AddRange(DefaultsFunc().OfType(Of Profile).ToArray())
-                Case "Cancel"
-
             End Select
         End Using
 

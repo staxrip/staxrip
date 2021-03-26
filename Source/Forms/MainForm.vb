@@ -3659,7 +3659,9 @@ Public Class MainForm
 
             b = ui.AddBool()
             b.Text = "Use binary prefix (MiB) instead of decimal prefix (MB) for sizes"
-			b.Help = "Binary: 1 MiB = 1024 KiB" + BR + "Decimal: 1 MB = 1000 KB" + BR2 + "When selected, Staxrip will use binary prefix instead of decimal in the display and caclulation of sizes." + "This will not affect encoders information display which is usually decimal."
+            b.Help = "Binary: 1 MiB = 1024 KiB" + BR + "Decimal: 1 MB = 1000 KB" + BR2 +
+                            "When selected, Staxrip will use binary prefix instead of decimal in the display and calculation of sizes." + BR +
+                            "This will not affect external tools behavior nor their displayed information."
             b.Checked = s.BinaryPrefix
             b.SaveAction = Sub(value)
                                s.BinaryPrefix = value

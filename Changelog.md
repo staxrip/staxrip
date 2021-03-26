@@ -23,6 +23,7 @@
 - Fix menu button graphics issue (Dendraspis, [#623](/../../issues/623))
 - New *Check for updates* dialog (Dendraspis)
 - Extended Settings Directory Location Selection at first run from new folder (Dendraspis)
+- Fix crash on app version editing (Dendraspis, [#628](/../../issues/628))
 - MTN Thumbnailer description adjusted (JJKylee)
 - Fixed 'Reset Setting' feature in the Advanced menu (stax76)
 - New task dialog with color theme support (stax76)

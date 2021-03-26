@@ -759,7 +759,7 @@ Public Class AppsForm
             msg += BR2 + "Product Version: " + productVersionString + " (often not correct!)"
         End If
 
-        Dim input = InputBox.Show("What's the name of this version?", CurrentPackage.Version, msg.Trim)
+        Dim input = InputBox.Show("What's the name of this version?", CurrentPackage.Version, msg?.Trim)
 
         If input <> "" Then
             CurrentPackage.SetVersion(input.Replace(";", "_").Trim)

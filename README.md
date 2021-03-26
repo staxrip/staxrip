@@ -29,11 +29,9 @@ You can find various informations and instructions on [Wiki](https://github.com/
 
 # Download
 
-### **Stable and Public Beta**
-- [Releases](https://github.com/staxrip/staxrip/releases)
-### **Older Beta**
-- [DropBox](https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0)
-- [OneDrive](https://1drv.ms/u/s!ArwKS_ZUR01g0kH4d4eT_6a3GaKe?e=qbOfGS)
+- [Releases and DEV Pre-Releases](https://github.com/staxrip/staxrip/releases)
+- [DropBox (old beta versions)](https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0)
+- [OneDrive (old beta versions)](https://1drv.ms/u/s!ArwKS_ZUR01g0kH4d4eT_6a3GaKe?e=qbOfGS)
 
 # Screenshots
 

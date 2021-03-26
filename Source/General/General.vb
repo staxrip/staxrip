@@ -130,18 +130,20 @@ Public Class Folder
                 SettingsValue = Registry.CurrentUser.GetString("Software\StaxRip\SettingsLocation", Startup)
 
                 If Not Directory.Exists(SettingsValue) Then
-                    Dim td As New TaskDialog(Of String)
+                    Dim td As New TaskDialog(Of String) With {
+                        .Title = "Settings Directory",
+                        .Content = "Select the location of the settings directory:"
+                    }
 
-                    td.Title = "Settings Directory"
-                    td.Content = "Select the location of the settings directory."
-
-                    td.AddCommand(AppDataRoaming + "StaxRip")
-                    td.AddCommand(Startup + "Settings")
-                    td.AddCommand("Browse for custom directory", "custom")
+                    td.AddCommand(Startup + "Settings", "This is the recommended path as long as you have write permissions. Settings are more bound to their StaxRip version and won't be automatically or accidentely transfered to the next version.", Startup + "Settings")
+                    td.AddCommand(AppDataRoaming + "StaxRip", "A good choice if you don't have write permissions in the StaxRip folder or if you want to store the settings in a more common place along with other app settings.", AppDataRoaming + "StaxRip")
+                    td.AddCommand(AppDataCommon + "StaxRip", "This is another option for common settings and also the fallback directory, in case you don't select another directory.", AppDataCommon + "StaxRip")
+                    td.AddCommand("Browse for custom directory", "You prefer another directory? Feel free to select a directory of your choice. Make sure necessary write permissions are granted.", "Custom")
 
                     Dim dir = td.Show
+                    td.Dispose()
 
-                    If dir = "custom" Then
+                    If dir = "Custom" Then
                         Using dialog As New FolderBrowserDialog
                             dialog.SelectedPath = Startup
 

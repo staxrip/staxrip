@@ -24,7 +24,7 @@ Public Class TaskDialog(Of T)
 
     Sub Init()
         ShowInTaskbar = False
-        Font = New Font("Segoe UI", 9)
+        Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         Width = FontHeight * 22
 
         If Content = "" AndAlso Title?.Length > 80 Then
@@ -72,7 +72,7 @@ Public Class TaskDialog(Of T)
             pbIcon.Image = ImageHelp.GetSymbolImage(Symbol, Nothing, 20)
         End If
 
-        TitleLabel.Font = New Font("Segoe UI", 11)
+        TitleLabel.Font = New Font("Segoe UI", 11 * s.UIScaleFactor)
         TitleLabel.Text = Title
 
         If Content <> "" Then
@@ -110,6 +110,7 @@ Public Class TaskDialog(Of T)
 
             If firstCommandButton Is Nothing Then
                 firstCommandButton = cb
+                firstCommandButton.Margin = New Padding(0, 10, 0, 0)
             End If
         Next
 

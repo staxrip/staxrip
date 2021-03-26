@@ -5,7 +5,7 @@ Partial Class TaskDialogBaseForm
     Inherits FormBase
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -22,7 +22,7 @@ Partial Class TaskDialogBaseForm
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
@@ -74,7 +74,7 @@ Partial Class TaskDialogBaseForm
         Me.tlpTop.Controls.Add(Me.TitleLabel, 1, 0)
         Me.tlpTop.Controls.Add(Me.pbIcon, 0, 0)
         Me.tlpTop.Location = New System.Drawing.Point(0, 0)
-        Me.tlpTop.Margin = New System.Windows.Forms.Padding(0, 15, 0, 15)
+        Me.tlpTop.Margin = New System.Windows.Forms.Padding(0, 15, 0, 20)
         Me.tlpTop.Name = "tlpTop"
         Me.tlpTop.RowCount = 1
         Me.tlpTop.RowStyles.Add(New System.Windows.Forms.RowStyle())

@@ -1,4 +1,4 @@
-2.3.0 (2021-04-??)
+v2.3.0 (2021-04-??)
 =========================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
@@ -8,7 +8,7 @@
 - Demux dialog has buttons to enable/disable all attachment demuxing (stax76)
 
 
-2.2.0 (2021-03-26)
+v2.2.0 (2021-03-26)
 =========================
 
 - [X] Might break settings from previous version, so starting with new settings is recommended

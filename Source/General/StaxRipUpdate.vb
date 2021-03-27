@@ -13,9 +13,9 @@ Public Class StaxRipUpdate
                 td.Title = "Check for updates"
                 td.Icon = TaskIcon.Question
                 td.Content = "Would you like StaxRip to check for updates once per day?" + BR +
-                             "Each check will only query these sites:" + BR +
-                             "'githubusercontent.com' and " + BR +
-                             "'github.com'"
+                             "Each time it is checked, only these websites are queried:" + BR +
+                             "'github.com' and " + BR +
+                             "'githubusercontent.com'"
 
                 td.AddCommand("Yes")
                 td.AddCommand("No")

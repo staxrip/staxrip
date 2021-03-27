@@ -248,7 +248,7 @@ Public Class TaskDialog(Of T)
         Close()
     End Sub
 
-    Overrides Sub AdjustHeight()
+    Overrides Sub AdjustSize()
         Dim h = tlpTop.Height + tlpTop.Margin.Vertical
 
         If paMain.Controls.Count > 0 Then
@@ -285,10 +285,14 @@ Public Class TaskDialog(Of T)
         w += ncx
         h += ncy
 
-        Dim s = Screen.FromControl(Me)
+        If h > maxHeight Then
+            h = maxHeight
+        End If
 
-        Dim l = (s.Bounds.Width - w) \ 2
-        Dim t = (s.Bounds.Height - h) \ 2
+        Dim s = Screen.FromControl(Me).WorkingArea
+
+        Dim l = (s.Width - w) \ 2
+        Dim t = (s.Height - h) \ 2
 
         Native.SetWindowPos(Handle, IntPtr.Zero, l, t, w, h, 64)
     End Sub
@@ -411,8 +415,8 @@ Public Class TaskDialog(Of T)
             InputTextEdit.TextBox.SelectAll()
         End If
 
-        AdjustHeight()
-        AdjustHeight()
+        AdjustSize()
+        AdjustSize()
 
         If Owner <> IntPtr.Zero Then
             Dim GWLP_HWNDPARENT = -8

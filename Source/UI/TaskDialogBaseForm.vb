@@ -3,7 +3,7 @@ Imports System.Runtime.InteropServices
 Imports StaxRip.UI
 
 Public Class TaskDialogBaseForm
-    Overridable Sub AdjustHeight()
+    Overridable Sub AdjustSize()
     End Sub
 
     Public Sub New()
@@ -288,8 +288,8 @@ Public Class TaskDialogBaseForm
         End If
 
         paMain.PerformLayout()
-        AdjustHeight()
-        AdjustHeight()
+        AdjustSize()
+        AdjustSize()
     End Sub
 
     Sub InputTextEditTextBoxKeyDown(sender As Object, e As KeyEventArgs)

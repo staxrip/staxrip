@@ -1864,9 +1864,9 @@ Public Class MainForm
         Dim td As New TaskDialog(Of VideoFilter)
 
         If p.Script.IsAviSynth Then
-            td.Title = "Select a AviSynth source filter."
+            td.Title = "Select an AviSynth source filter:"
         Else
-            td.Title = "Select a VapourSynth source filter."
+            td.Title = "Select a VapourSynth source filter:"
         End If
 
         For Each filter In filters

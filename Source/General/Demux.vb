@@ -249,7 +249,7 @@ Public Class ffmpegDemuxer
             (subtitlesDemuxing AndAlso proj.SubtitleMode = SubtitleMode.Dialog)) OrElse
             Not proj Is p Then
 
-            Using form As New StreamDemuxForm(Me, proj.SourceFile, Nothing)
+            Using form As New StreamDemuxForm(proj.SourceFile, Nothing)
                 form.cbDemuxChapters.Visible = False
 
                 If form.ShowDialog() = DialogResult.OK Then
@@ -447,7 +447,7 @@ Public Class MP4BoxDemuxer
             (demuxSubtitles AndAlso proj.SubtitleMode = SubtitleMode.Dialog)) OrElse
             Not proj Is p Then
 
-            Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
+            Using form As New StreamDemuxForm(proj.SourceFile, attachments)
                 If form.ShowDialog() = DialogResult.OK Then
                     _videoDemuxing = form.cbDemuxVideo.Checked
                     demuxChapters = form.cbDemuxChapters.Checked
@@ -710,7 +710,7 @@ Public Class mkvDemuxer
             (demuxSubtitles AndAlso proj.SubtitleMode = SubtitleMode.Dialog)) OrElse
             Not proj Is p Then
 
-            Using form As New StreamDemuxForm(Me, proj.SourceFile, attachments)
+            Using form As New StreamDemuxForm(proj.SourceFile, attachments)
                 If form.ShowDialog() <> DialogResult.OK Then
                     Throw New AbortException
                 End If

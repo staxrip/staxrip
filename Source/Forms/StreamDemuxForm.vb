@@ -7,9 +7,10 @@ Public Class StreamDemuxForm
     Property AudioStreams As List(Of AudioStream)
     Property Subtitles As List(Of Subtitle)
 
-    Sub New(demuxer As Demuxer, sourceFile As String, attachments As List(Of Attachment))
+    Sub New(sourceFile As String, attachments As List(Of Attachment))
         InitializeComponent()
         ScaleClientSize(42, 30)
+        Owner = g.MainForm
         StartPosition = FormStartPosition.CenterParent
 
         lvAudio.View = View.Details
@@ -33,15 +34,12 @@ Public Class StreamDemuxForm
         lvAttachments.CheckBoxes = True
         lvAttachments.HeaderStyle = ColumnHeaderStyle.None
         lvAttachments.AutoCheckMode = AutoCheckMode.SingleClick
+        lvAttachments.OwnerDraw = False
 
         AddHandler Load, Sub() lvAudio.Columns(0).Width = lvAudio.ClientSize.Width
 
         AudioStreams = MediaInfo.GetAudioStreams(sourceFile)
         Subtitles = MediaInfo.GetSubtitles(sourceFile)
-
-        'gbAudio.Enabled = AudioStreams.Count > 0
-        'gbSubtitles.Enabled = Subtitles.Count > 0
-        'gbAttachments.Enabled = Not attachments.NothingOrEmpty
 
         bnAudioEnglish.Enabled = AudioStreams.Where(Function(stream) stream.Language.TwoLetterCode = "en").Count > 0
         bnAudioNative.Visible = CultureInfo.CurrentCulture.TwoLetterISOLanguageName <> "en"
@@ -177,6 +175,18 @@ Public Class StreamDemuxForm
             If stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName Then
                 item.Checked = True
             End If
+        Next
+    End Sub
+
+    Sub bnAllAttachments_Click(sender As Object, e As EventArgs) Handles bnAllAttachments.Click
+        For Each item As ListViewItem In lvAttachments.Items
+            item.Checked = True
+        Next
+    End Sub
+
+    Sub bnNoneAttachments_Click(sender As Object, e As EventArgs) Handles bnNoneAttachments.Click
+        For Each item As ListViewItem In lvAttachments.Items
+            item.Checked = False
         Next
     End Sub
 End Class

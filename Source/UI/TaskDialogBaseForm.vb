@@ -1,5 +1,6 @@
 ﻿
 Imports System.Runtime.InteropServices
+
 Imports StaxRip.UI
 
 Public Class TaskDialogBaseForm

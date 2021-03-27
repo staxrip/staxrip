@@ -603,6 +603,7 @@ Public Class eac3toForm
         InitializeComponent()
         Project = proj
         ScaleClientSize(40, 30)
+        Owner = g.MainForm
 
         cbAudioOutput.Sorted = True
         cbAudioOutput.Items.AddRange(AudioOutputFormats)
@@ -782,8 +783,6 @@ Public Class eac3toForm
 
     Sub Init()
         Text = "eac3to"
-        lvAudio.Visible = True
-        lvSubtitles.Visible = True
 
         For Each ctrl As Control In Controls
             ctrl.Enabled = True
@@ -850,11 +849,19 @@ Public Class eac3toForm
                     If ms.IsAudio Then
                         ms.TypeID = aid
                         aid += 1
+
+                        If Not lvAudio.Visible Then
+                            lvAudio.Visible = True
+                        End If
                     End If
 
                     If ms.IsSubtitle Then
                         ms.TypeID = sid
                         sid += 1
+
+                        If Not lvSubtitles.Visible Then
+                            lvSubtitles.Visible = True
+                        End If
                     End If
 
                     If ms.IsAudio OrElse ms.IsSubtitle Then

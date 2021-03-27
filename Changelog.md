@@ -4,6 +4,8 @@
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version
 - [ ] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
+- Demux dialog attachments checkbox render bug fixed (stax76)
+- Demux dialog has buttons to enable/disable all attachment demuxing (stax76)
 
 
 2.2.0 (2021-03-26)

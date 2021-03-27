@@ -266,7 +266,8 @@ Public Class TaskDialog(Of T)
         h += CInt(fh * 0.7)
 
         Dim nonClientHeight = Height - ClientSize.Height
-        Dim maxHeight = Screen.FromControl(Me).WorkingArea.Height
+        Dim workingArea = Screen.FromControl(Me).WorkingArea
+        Dim maxHeight = workingArea.Height
         Dim w = ClientSize.Width
         Dim secondLongestLine = GetSecondLongestLineLength()
         Dim predictedWidth = CInt(secondLongestLine * fh * 0.45)
@@ -289,10 +290,8 @@ Public Class TaskDialog(Of T)
             h = maxHeight
         End If
 
-        Dim s = Screen.FromControl(Me).WorkingArea
-
-        Dim l = (s.Width - w) \ 2
-        Dim t = (s.Height - h) \ 2
+        Dim l = (workingArea.Width - w) \ 2
+        Dim t = (workingArea.Height - h) \ 2
 
         Native.SetWindowPos(Handle, IntPtr.Zero, l, t, w, h, 64)
     End Sub

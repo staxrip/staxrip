@@ -1,35 +1,35 @@
 # About
 
-StaxRip is a powerful video encoding GUI for Windows.  
-It executes and controls console apps like x265, mkvmerge and ffmpeg and uses the scripting based frame servers AviSynth+ and VapourSynth for video processing.
+StaxRip is a powerful video/audio encoding GUI for Windows.  
+It executes and controls console apps such as x265, mkvmerge, ffmpeg, etc. and uses scripting based frame servers, AviSynth+ and VapourSynth, for video processing.
 
 
-***StaxRip is no One-Click-Encoder!***  
-Due to its possibilities, StaxRip requires you to know what you want to achieve and how to set up the options.
-Especially at the beginning you have to learn the settings and maybe do some tests to learn how StaxRip works and what is possible. That being said, StaxRip also offers you an assistent, that takes care of your settings and changes. 
+***StaxRip is no One-Click Encoder!***  
+StaxRip is capable of performing a wide variety of jobs for video/audio processing. To unleash its full power, users are required to know what they want to achieve and how to set up StaxRip to meet their needs.
+If your are a first-time user, it is especially strongly recommended that you learn the basics referring to the documents and do some tests to understand how StaxRip works and what you can achieve with it. However, StaxRip also provides an 'Assistent' feature that will guide you through your jobs step by step so that you can start more easily and prevent mistakes.
 
-When you struggle, there are multiple ways to get help from the community.
+There are a lot of resources in StaxRip-related communities. Users are strongly encouraged to visit those communities for help and more information.
 
 # Documentation
 
-You can find various informations and instructions on [Wiki](https://github.com/staxrip/staxrip/wiki) and on [ReadTheDocs](https://staxrip.readthedocs.io/index.html).
+You can find plenty of information and instructions on [Wiki](https://github.com/staxrip/staxrip/wiki) and on [ReadTheDocs](https://staxrip.readthedocs.io/index.html).
 
 # Support
 
 ### **Bug Reports / Feature Requests**
-- Please try the latest [Beta Version](https://github.com/staxrip/staxrip#download) first. Often obvious bugs are already fixed and extensions implemented.
-- You can also have a look at the [Changelog](https://github.com/staxrip/staxrip/blob/master/Changelog.md) if there is a certain entry already made.
-- If the latest Beta version does not solve your problem, please use the [Issue Tracker](https://github.com/staxrip/staxrip/issues) and the given templates, to be as precise as possible.
+- Please try the latest [Release Version](https://github.com/staxrip/staxrip#download) first. Usually you will find that many outstanding bugs are already fixed in the latest release versions.
+- You can also have a look at the [Changelog](https://github.com/staxrip/staxrip/blob/master/Changelog.md) to see if there is an entry already made for the bug/feature request you are experiencing/desiring.
+- If the latest release version does not resolve your problem, please use the [Issue Tracker](https://github.com/staxrip/staxrip/issues). You need to be as precise as possible using the Issue Tracker template when opening a thread in it.
 
 ### **Usage questions**
 - Usage questions can be asked on the *StaxRip threads* on
   - [VideoHelp](https://forum.videohelp.com/threads/369913-StaxRip-support-thread) 
   - [Doom9](https://forum.doom9.org/showthread.php?t=172068)
-- Feel also free to join the user chat on [Discord](https://discord.gg/rRn7vGU).
+- Also feel free to join in the StaxRip users chat on [Discord](https://discord.gg/rRn7vGU).
 
 # Download
 
-- [Releases and DEV Pre-Releases](https://github.com/staxrip/staxrip/releases)
+- [Releases](https://github.com/staxrip/staxrip/releases)
 - [DropBox (old beta versions)](https://www.dropbox.com/sh/4ctl2y928xkak4f/AAADEZj_hFpGQaNOdd3yqcAHa?dl=0)
 - [OneDrive (old beta versions)](https://1drv.ms/u/s!ArwKS_ZUR01g0kH4d4eT_6a3GaKe?e=qbOfGS)
 

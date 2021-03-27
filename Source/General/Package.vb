@@ -1391,10 +1391,9 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "yadifmod2",
             .Filename = "yadifmod2.dll",
-            .Description = "Yet Another Deinterlacing Filter mod",
+            .Description = "Yet Another Deinterlacing Filter mod for Avisynth2.6/Avisynth+",
             .WebURL = "https://github.com/Asd-g/yadifmod2",
-            .HelpUrlAviSynth = "https://github.com/Asd-g/yadifmod2/blob/master-1/avisynth/readme.md",
-            .HelpUrlVapourSynth = "https://github.com/Asd-g/yadifmod2/blob/master-1/vapoursynth/readme.md",
+            .HelpUrl = "https://github.com/Asd-g/yadifmod2/blob/master-1/readme.md",
             .AvsFilterNames = {"yadifmod2"}})
 
         Add(New PluginPackage With {

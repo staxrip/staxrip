@@ -1,6 +1,6 @@
 
 $td = New-Object TaskDialog[string]
-$td.MainInstruction = 'Select a option.'
+$td.Title = 'Select a option.'
 $td.AddCommand('Option A', 'aaa')
 $td.AddCommand('Option B' , 'bbb')
 $result = $td.Show()

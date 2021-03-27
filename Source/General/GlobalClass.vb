@@ -27,6 +27,7 @@ Public Class GlobalClass
     Property ProjectPath As String
     Property SavedProject As New Project
     Property StopAfterCurrentJob As Boolean
+    Property ActiveForm As Form
 
     Event JobMuxed()
     Event JobProcessed()

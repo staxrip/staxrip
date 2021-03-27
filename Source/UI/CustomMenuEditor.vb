@@ -588,6 +588,7 @@ Namespace UI
 
             tv.SelectedNode = tv.Nodes(0)
             CancelButton = Nothing
+            tbHotkey.ReadOnly = True
             ToolStrip.ImageScalingSize = SystemInformation.SmallIconSize
 
             For Each i In ToolStrip.Items.OfType(Of ToolStripItem)()

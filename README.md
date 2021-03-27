@@ -12,7 +12,7 @@ There are a lot of resources in StaxRip-related communities. Users are strongly 
 
 # Documentation
 
-You can find plenty of information and instructions on [Wiki](https://github.com/staxrip/staxrip/wiki) and on [ReadTheDocs](https://staxrip.readthedocs.io/index.html).
+You can find plenty of information and instructions on [Wiki](https://github.com/staxrip/staxrip/wiki).
 
 # Support
 

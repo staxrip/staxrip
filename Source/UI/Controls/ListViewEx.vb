@@ -250,6 +250,7 @@ Namespace UI
 
         Function GetTextAlignment(columnIndex As Integer) As TextFormatFlags
             Dim flags As TextFormatFlags = If(View = View.Tile, If(columnIndex = 0, TextFormatFlags.Default, TextFormatFlags.Bottom), TextFormatFlags.VerticalCenter)
+            flags = flags Or TextFormatFlags.NoPrefix
 
             If View = View.Details Then
                 flags = flags Or TextFormatFlags.LeftAndRightPadding

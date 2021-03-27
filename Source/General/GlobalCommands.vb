@@ -11,7 +11,7 @@ Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
 
 Public Class GlobalCommands
-    <Command("Checks if a update is available.")>
+    <Command("Checks if an update is available.")>
     Sub CheckForUpdate()
         StaxRipUpdate.CheckForUpdate(True, s.CheckForUpdatesDev, Environment.Is64BitProcess)
     End Sub

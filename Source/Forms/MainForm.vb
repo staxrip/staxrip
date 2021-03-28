@@ -2646,7 +2646,7 @@ Public Class MainForm
                     proc.WriteLog(path.FileName + BR2)
                     proc.File = Package.BDSup2SubPP.Path
                     proc.Arguments = "--forced-only -o " + (path.DirAndBase + "_forced.idx").Escape + " " + path.Escape
-                    proc.AllowedExitCodes = {}
+                    proc.AllowedExitCodes = {0, 1, 4}
                     proc.Start()
                 End Using
             End If

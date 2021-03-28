@@ -6,6 +6,7 @@ v2.3.0 (2021-04-??)
 - [ ] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
 - Demux dialog attachments checkbox render bug fixed (stax76)
 - Demux dialog has buttons to enable/disable all attachment demuxing (stax76)
+- Fix crash when extracting forced subtitles (Dendraspis, [#634](/../../issues/634))
 
 
 v2.2.0 (2021-03-26)

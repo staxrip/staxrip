@@ -69,11 +69,12 @@ Public MustInherit Class Demuxer
     Shared Function GetDefaults() As List(Of Demuxer)
         Dim ret As New List(Of Demuxer)
 
+        ret.Add(New eac3toDemuxer With {.Active = False})
         ret.Add(New ffmpegDemuxer)
 
         Dim tsToMkv As New CommandLineDemuxer
-        tsToMkv.Name = "ffmpeg: Re-mux TS to MKV"
-        tsToMkv.InputExtensions = {"ts"}
+        tsToMkv.Name = "ffmpeg: Re-mux (M2)TS to MKV"
+        tsToMkv.InputExtensions = {"m2ts", "ts"}
         tsToMkv.OutputExtensions = {"mkv"}
         tsToMkv.InputFormats = {"hevc", "avc"}
         tsToMkv.Command = "%app:ffmpeg%"
@@ -82,7 +83,6 @@ Public MustInherit Class Demuxer
 
         ret.Add(New mkvDemuxer)
         ret.Add(New MP4BoxDemuxer)
-        ret.Add(New eac3toDemuxer)
 
         Dim dgIndex As New CommandLineDemuxer
         dgIndex.Name = "DGIndex: Demux & Index MPEG-2"

@@ -1,12 +1,22 @@
-v2.3.0 (2021-04-??)
+v2.4.0 (2021-04-??)
 =========================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version
 - [ ] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
+
+
+v2.3.0 (2021-03-28)
+=========================
+
+- [ ] Might break settings from previous version, so starting with new settings is recommended
+- [ ] Might break templates and jobs from previous version
+- [X] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
 - Demux dialog attachments checkbox render bug fixed (stax76)
 - Demux dialog has buttons to enable/disable all attachment demuxing (stax76)
+- Disable *eac3to* preprocessing by default and extend re-muxing with *ffmpeg* to m2ts files (Dendraspis, stax76, JKyle, 44vince44, [#632](/../../issues/632))
 - Fix crash when extracting forced subtitles (Dendraspis, [#634](/../../issues/634))
+- Fix possible crash when converting subtitles (stax76)
 
 
 v2.2.0 (2021-03-26)

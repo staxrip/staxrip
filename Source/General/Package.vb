@@ -981,6 +981,7 @@ Public Class Package
             .Filename = "JincResize.dll",
             .Description = "Jinc (EWA Lanczos) resampling plugin for AviSynth 2.6/AviSynth+.",
             .HelpFilename = "Readme.txt",
+            .HelpUrl = "https://github.com/Asd-g/AviSynth-JincResize/blob/2.0.1/README.md",
             .WebURL = "http://avisynth.nl/index.php/JincResize",
             .AvsFilterNames = {"Jinc36Resize", "Jinc64Resize", "Jinc144Resize", "Jinc256Resize"}})
 
@@ -1391,10 +1392,9 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "yadifmod2",
             .Filename = "yadifmod2.dll",
-            .Description = "Yet Another Deinterlacing Filter mod",
+            .Description = "Yet Another Deinterlacing Filter mod for Avisynth2.6/Avisynth+",
             .WebURL = "https://github.com/Asd-g/yadifmod2",
-            .HelpUrlAviSynth = "https://github.com/Asd-g/yadifmod2/blob/master-1/avisynth/readme.md",
-            .HelpUrlVapourSynth = "https://github.com/Asd-g/yadifmod2/blob/master-1/vapoursynth/readme.md",
+            .HelpUrl = "https://github.com/Asd-g/yadifmod2/blob/master-1/readme.md",
             .AvsFilterNames = {"yadifmod2"}})
 
         Add(New PluginPackage With {

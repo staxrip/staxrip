@@ -1880,7 +1880,7 @@ Public Class Package
                 If Description.ContainsEx("GUI app") Then
                     LaunchActionValue = Sub() g.ShellExecute(Path)
                 ElseIf Not HelpSwitch Is Nothing Then
-                    LaunchActionValue = Sub() g.DefaultCommands.ExecutePowerShellScript(
+                    LaunchActionValue = Sub() g.DefaultCommands.ExecutePowerShellCode(
                         $"& '{Path}' {If(HelpSwitch.Contains("stderr"), HelpSwitch.Replace("stderr", ""), HelpSwitch)}", True)
                 ElseIf Filename.Ext.EqualsAny("avsi", "py") Then
                     LaunchActionValue = Sub() g.ShellExecute(g.GetTextEditorPath, Path.Escape)

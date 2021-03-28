@@ -911,6 +911,18 @@ Public Class Command
     Property Attribute As CommandAttribute
     Property MethodInfo As MethodInfo
 
+    ReadOnly Property Path As String
+        Get
+            Return MethodInfo?.Name
+        End Get
+    End Property
+
+    ReadOnly Property Description As String
+        Get
+            Return Attribute?.Description
+        End Get
+    End Property
+
     Function FixParameters(params As List(Of Object)) As List(Of Object)
         Dim copiedParams As New List(Of Object)(params)
         Dim checkedParams As New List(Of Object)(GetDefaultParameters)
@@ -965,13 +977,15 @@ Public Class Command
         Return MethodInfo.Name.CompareTo(other.MethodInfo.Name)
     End Function
 
-    Shared Sub PopulateCommandMenu(items As ToolStripItemCollection,
-                                   commands As List(Of Command),
-                                   clickSub As Action(Of Command))
+    Shared Sub PopulateCommandMenu(
+        items As ToolStripItemCollection,
+        commands As List(Of Command),
+        clickSub As Action(Of Command))
+
         commands.Sort()
 
         For Each i In commands
-            Dim path = i.MethodInfo.Name
+            Dim path = i.Path
 
             If path.StartsWith("Run") Then path = "Run | " + path
             If path.StartsWith("Save") Then path = "Save | " + path

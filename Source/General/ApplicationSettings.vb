@@ -336,6 +336,26 @@ Public Class ApplicationSettings
             LastSourceDir = ""
         End If
 
+        'migration code for commands that were renamed
+
+        Dim menuUpdateVersion = 2
+
+        If Not Storage.GetInt("menu update version") = menuUpdateVersion Then
+            Dim nameDic As New Dictionary(Of String, String)
+
+            nameDic("ExecutePowerShellScript") = "ExecutePowerShellCode"
+            nameDic("ExecuteScriptFile") = "ExecutePowerShellFile"
+            nameDic("TestAndDynamicFileCreation") = "Test"
+            nameDic("ShowLAVFiltersConfigDialog") = "ShowRemovedFunctionalityMessage"
+            nameDic("ExecuteBatchScript") = "ShowRemovedFunctionalityMessage"
+            nameDic("MediainfoMKV") = "ShowMkvInfo"
+            nameDic("MediaInfoShowMedia") = "ShowMediaInfoBrowse"
+
+            Dim allMenus = {CustomMenuCodeEditor, CustomMenuCrop, CustomMenuMainForm, CustomMenuPreview, CustomMenuSize}
+            CustomMenuItem.UpdateObsoleteCommands(nameDic, allMenus)
+            Storage.SetInt("menu update version", menuUpdateVersion)
+        End If
+
         Migrate()
     End Sub
 

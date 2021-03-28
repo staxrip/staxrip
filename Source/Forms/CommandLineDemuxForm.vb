@@ -117,12 +117,14 @@ Public Class CommandLineDemuxForm
         '
         'tbArguments
         '
-        Me.tbArguments.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbArguments.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.tbArguments, 2)
         Me.tbArguments.Location = New System.Drawing.Point(295, 450)
         Me.tbArguments.Margin = New System.Windows.Forms.Padding(0, 10, 0, 10)
         Me.tbArguments.Name = "tbArguments"
-        Me.tbArguments.Size = New System.Drawing.Size(1081, 115)
+        Me.tbArguments.Size = New System.Drawing.Size(1081, 162)
         '
         'tbSourceFilters
         '
@@ -136,7 +138,7 @@ Public Class CommandLineDemuxForm
         'bnCancel
         '
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(1391, 590)
+        Me.bnCancel.Location = New System.Drawing.Point(1391, 637)
         Me.bnCancel.Margin = New System.Windows.Forms.Padding(15, 15, 0, 0)
         Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text2 = "Cancel"
@@ -144,7 +146,7 @@ Public Class CommandLineDemuxForm
         'bnOK
         '
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(1126, 590)
+        Me.bnOK.Location = New System.Drawing.Point(1126, 637)
         Me.bnOK.Margin = New System.Windows.Forms.Padding(0, 15, 0, 0)
         Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text2 = "OK"
@@ -185,16 +187,16 @@ Public Class CommandLineDemuxForm
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.tlpMain.Size = New System.Drawing.Size(1641, 671)
+        Me.tlpMain.Size = New System.Drawing.Size(1641, 707)
         Me.tlpMain.TabIndex = 21
         '
         'bnArguments
         '
         Me.bnArguments.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnArguments.ContextMenuStrip = Me.cmsArguments
-        Me.bnArguments.Location = New System.Drawing.Point(1391, 472)
+        Me.bnArguments.Location = New System.Drawing.Point(1391, 496)
         Me.bnArguments.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
         Me.bnArguments.ShowMenuSymbol = True
         Me.bnArguments.Size = New System.Drawing.Size(250, 70)
@@ -290,7 +292,7 @@ Public Class CommandLineDemuxForm
         '
         Me.Label7.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(3, 483)
+        Me.Label7.Location = New System.Drawing.Point(3, 507)
         Me.Label7.Size = New System.Drawing.Size(202, 48)
         Me.Label7.Text = "Arguments:"
         Me.Label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -301,7 +303,7 @@ Public Class CommandLineDemuxForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1671, 701)
+        Me.ClientSize = New System.Drawing.Size(1671, 737)
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)

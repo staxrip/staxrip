@@ -46,13 +46,26 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Function InvokePowerShellCode(code As String) As Collection(Of PSObject)
-        Return InvokePowerShellCode(code, Nothing, Nothing)
+    Function InvokePowerShellCode(code As String, Optional args As String() = Nothing) As Collection(Of PSObject)
+        Return InvokePowerShellCode(code, Nothing, Nothing, args)
     End Function
 
-    Function InvokePowerShellCode(code As String, varName As String, varValue As Object) As Collection(Of PSObject)
+    Function InvokePowerShellCode(
+        code As String,
+        variableName As String,
+        variableValue As Object) As Collection(Of PSObject)
+
+        InvokePowerShellCode(code, variableName, variableValue, Nothing)
+    End Function
+
+    Function InvokePowerShellCode(
+        code As String,
+        variableName As String,
+        variableValue As Object,
+        args As String()) As Collection(Of PSObject)
+
         Try
-            Return PowerShell.Invoke(code, varName, varValue)
+            Return PowerShell.Invoke(code, variableName, variableValue, args)
         Catch ex As RuntimeException
             g.ShowException(ex, "PowerShell Scipt Exception",
                 ex.ErrorRecord.ScriptStackTrace.Replace(" <ScriptBlock>, <No file>", ""))
@@ -65,7 +78,7 @@ Public Class GlobalClass
         For Each dirPath In {Folder.Apps + "Scripts", Folder.Scripts + "Auto Load"}
             If dirPath.DirExists Then
                 For Each fp In Directory.GetFiles(dirPath, "*.ps1")
-                    g.DefaultCommands.ExecuteScriptFile(fp)
+                    g.DefaultCommands.ExecutePowerShellFile(fp)
                 Next
             End If
         Next
@@ -784,7 +797,7 @@ Public Class GlobalClass
         Dim scriptPath = Folder.Scripts + ae.ToString + ".ps1"
 
         If File.Exists(scriptPath) Then
-            g.DefaultCommands.ExecuteScriptFile(scriptPath)
+            g.DefaultCommands.ExecutePowerShellFile(scriptPath)
         End If
 
         For Each ec In s.EventCommands

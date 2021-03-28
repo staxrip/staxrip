@@ -1528,9 +1528,8 @@ Public Class MainForm
 
                     For Each path In files
                         If Not events.Contains(path.FileName.Left(".")) AndAlso Not path.FileName.StartsWith("_") Then
-                            MenuItemEx.Add(menuItem.DropDownItems,
-                                               path.FileName.Base,
-                                               Sub() g.DefaultCommands.ExecuteScriptFile(path))
+                            MenuItemEx.Add(menuItem.DropDownItems, path.FileName.Base,
+                                Sub() g.DefaultCommands.ExecutePowerShellFile(path))
                         End If
                     Next
 

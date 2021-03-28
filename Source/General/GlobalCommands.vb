@@ -4,11 +4,10 @@ Imports System.Drawing.Design
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Text
+
 Imports DirectN
 Imports Microsoft.Win32
 Imports StaxRip.UI
-
-Imports VB6 = Microsoft.VisualBasic
 
 Public Class GlobalCommands
     <Command("Checks if an update is available.")>
@@ -150,18 +149,6 @@ Public Class GlobalCommands
         End Using
     End Sub
 
-    <Command("Executes a PowerShell PS1 script file.")>
-    Sub ExecuteScriptFile(
-        <DispName("File Path")>
-        <Description("Filepath to a PowerShell PS1 script file. May contain macros.")>
-        <Editor(GetType(OpenFileDialogEditor), GetType(UITypeEditor))>
-        filepath As String)
-
-        filepath = Macro.Expand(filepath)
-
-        ExecutePowerShellScript(filepath.ReadAllText)
-    End Sub
-
     <Command("Starts a tool by name as shown in the app manage dialog.")>
     Sub StartTool(
         <DispName("Tool Name")>
@@ -177,8 +164,8 @@ Public Class GlobalCommands
         End Try
     End Sub
 
-    <Command("Executes PowerShell script code.")>
-    Sub ExecutePowerShellScript(
+    <Command("Executes PowerShell code.")>
+    Sub ExecutePowerShellCode(
         <DispName("Script Code")>
         <Description("PowerShell script code to be executed. Macros are expanded.")>
         <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
@@ -194,6 +181,19 @@ Public Class GlobalCommands
         Else
             g.InvokePowerShellCode(code)
         End If
+    End Sub
+
+    <Command("Executes a PowerShell script file.")>
+    Sub ExecutePowerShellFile(
+        <DispName("File Path")>
+        <Description("Filepath to a PowerShell script file. May contain macros.")>
+        <Editor(GetType(OpenFileDialogEditor), GetType(UITypeEditor))>
+        filepath As String,
+        <DispName("Arguments")>
+        <Description("Semicolon separated arguments passed to the script host. May contain macros.")>
+        Optional args As String = Nothing)
+
+        g.InvokePowerShellCode(Macro.Expand(filepath).ReadAllText, Macro.Expand(args).SplitNoEmpty(";"c))
     End Sub
 
     <Command("Generates various wiki content.")>
@@ -244,11 +244,6 @@ Public Class GlobalCommands
         Else
             MsgInfo("All Good!")
         End If
-    End Sub
-
-    <Command("This command is obsolete since 2021.")>
-    Sub TestAndDynamicFileCreation()
-        Test()
     End Sub
 
     <Command("Plays audio file.")>
@@ -943,75 +938,9 @@ Public Class GlobalCommands
         End If
     End Sub
 
-    <Command("This command is obsolete since 2020.")>
-    Sub ShowLAVFiltersConfigDialog()
-        Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.LAVVideoDecoder.ToString + "\InprocServer32", Nothing)
-
-        If File.Exists(ret) Then
-            Static loaded As Boolean
-
-            If Not loaded Then
-                Native.LoadLibrary(ret)
-                loaded = True
-            End If
-
-            OpenConfiguration(Nothing, Nothing, Nothing, Nothing)
-        Else
-            MsgError("The LAV Filters video decoder library could not be located.")
-        End If
-    End Sub
-
-    <DllImport("LAVVideo.ax")>
-    Shared Sub OpenConfiguration(hwnd As IntPtr, hinst As IntPtr, lpszCmdLine As String, nCmdShow As Integer)
-    End Sub
-
-    <Command("This command is obsolete since 2020.")>
-    Sub ShowCommandPrompt()
-        g.RunCommandInTerminal("cmd.exe")
-    End Sub
-
-    <Command("This command is obsolete since 2020.")>
-    Sub ShowPowerShell()
-        g.RunCommandInTerminal("powershell.exe")
-    End Sub
-
-    <Command("This command is obsolete since 2020.")>
-    Sub ExecuteBatchScript(
-        <DispName("Batch Script Code"),
-        Description("Batch script code to be executed. Macros are solved as well as passed in as environment variables."),
-        Editor(GetType(CommandLineTypeEditor), GetType(UITypeEditor))>
-        batchScript As String)
-
-        Dim batchPath = Folder.Temp + Guid.NewGuid.ToString + ".bat"
-        Dim batchCode = Macro.Expand(batchScript)
-        batchCode.WriteFileSystemEncoding(batchPath)
-        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
-
-        Using proc As New Proc
-            proc.Header = "Execute Batch Script"
-            proc.WriteLog(batchCode + BR2)
-            proc.File = "cmd.exe"
-            proc.Arguments = "/C call """ + batchPath + """"
-            proc.Wait = True
-            proc.Process.StartInfo.UseShellExecute = False
-
-            Try
-                proc.Start()
-            Catch ex As Exception
-                g.ShowException(ex)
-                Log.WriteLine(ex.Message)
-            End Try
-        End Using
-    End Sub
-
-    <Command("This command is obsolete since 2020.")>
-    Sub MediainfoMKV()
-        ShowMkvInfo()
-    End Sub
-
-    <Command("This command is obsolete since 2020.")>
-    Sub MediaInfoShowMedia()
-        ShowMediaInfoBrowse()
+    <Command("Shows a message about removed functionality.")>
+    Sub ShowRemovedFunctionalityMessage()
+        MsgWarn("Functionality is no longer available.")
     End Sub
 
     <Command("Adds tags to the container (works only with mkvmerge).")>

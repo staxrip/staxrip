@@ -7,21 +7,22 @@ Public Class PowerShell
     Shared References As New List(Of Object)
     Shared Property InitCode As String
 
-    Shared Function Invoke(code As String) As Object
-        Invoke(code, Nothing, Nothing)
-    End Function
+    Shared Function Invoke(
+        code As String,
+        Optional variableName As String = Nothing,
+        Optional variableValue As Object = Nothing,
+        Optional args As String() = Nothing) As Collection(Of PSObject)
 
-    Shared Function Invoke(code As String, varName As String, varValue As Object) As Collection(Of PSObject)
         Dim runspace = RunspaceFactory.CreateRunspace()
         runspace.ApartmentState = Threading.ApartmentState.STA
         runspace.ThreadOptions = PSThreadOptions.UseCurrentThread
         runspace.Open()
 
         Dim pipeline = runspace.CreatePipeline()
-        Dim cmd = New Runspaces.Command("Set-ExecutionPolicy")
-        cmd.Parameters.Add("ExecutionPolicy", "Unrestricted")
-        cmd.Parameters.Add("Scope", "Process")
-        pipeline.Commands.Add(cmd)
+        Dim policyCommand = New Runspaces.Command("Set-ExecutionPolicy")
+        policyCommand.Parameters.Add("ExecutionPolicy", "Unrestricted")
+        policyCommand.Parameters.Add("Scope", "Process")
+        pipeline.Commands.Add(policyCommand)
 
         If InitCode <> "" Then
             pipeline.Commands.AddScript(InitCode)
@@ -29,8 +30,16 @@ Public Class PowerShell
 
         pipeline.Commands.AddScript(code)
 
-        If varName <> "" Then
-            runspace.SessionStateProxy.SetVariable(varName, varValue)
+        If Not args.NothingOrEmpty Then
+            Dim scriptCommand = pipeline.Commands(pipeline.Commands.Count - 1)
+
+            For Each arg In args
+                scriptCommand.Parameters.Add(Nothing, arg)
+            Next
+        End If
+
+        If variableName <> "" Then
+            runspace.SessionStateProxy.SetVariable(variableName, variableValue)
         End If
 
         If code.Contains("Register-ObjectEvent") Then

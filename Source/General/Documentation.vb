@@ -23,10 +23,6 @@ Public Class Documentation
         commands.Sort()
 
         For Each command In commands
-            If command.Attribute.Description.StartsWith("This command is obsolete") Then
-                Continue For
-            End If
-
             Dim params = command.MethodInfo.GetParameters
             Dim title = command.MethodInfo.Name
 

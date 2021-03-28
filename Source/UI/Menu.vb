@@ -145,6 +145,18 @@ Namespace UI
         Function GetClone() As CustomMenuItem
             Return ObjectHelp.GetCopy(Me)
         End Function
+
+        Shared Sub UpdateObsoleteCommands(newNames As Dictionary(Of String, String), menus As CustomMenuItem())
+            For Each menu In menus
+                For Each item In menu.GetAllItems
+                    For Each pair In newNames
+                        If item.MethodName = pair.Key Then
+                            item.MethodName = pair.Value
+                        End If
+                    Next
+                Next
+            Next
+        End Sub
     End Class
 
     Public Class CustomMenu

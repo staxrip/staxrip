@@ -970,19 +970,6 @@ Public Class Startup
     End Sub
 End Class
 
-'obsolete since 2017 
-<Serializable()>
-Public Class Dummy
-End Class
-
-Public Class KeyValueList(Of T1, T2)
-    Inherits List(Of KeyValuePair(Of T1, T2))
-
-    Overloads Sub Add(key As T1, value As T2)
-        Add(New KeyValuePair(Of T1, T2)(key, value))
-    End Sub
-End Class
-
 Public Class GUIDS
     Shared Property LAVSplitter As String = "{171252A0-8820-4AFE-9DF8-5C92B2D66B04}"
     Shared Property LAVVideoDecoder As String = "{EE30215D-164F-4A92-A4EB-9D4C13390F9F}"

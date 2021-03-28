@@ -2618,8 +2618,7 @@ Public Class MainForm
                     proc.Header = "Convert sup to sub"
                     proc.SkipStrings = {"#>", "#<", "Decoding frame"}
                     proc.File = Package.BDSup2SubPP.Path
-                    proc.Arguments = "-o """ + i.DirAndBase + ".idx"" """ + i + """"
-                    proc.AllowedExitCodes = {}
+                    proc.Arguments = "-o """ + i.DirAndBase + ".idx"" " + i.Escape
                     proc.Start()
                 End Using
             End If

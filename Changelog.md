@@ -3,7 +3,8 @@ v2.4.0 (2021-04-??)
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
-- [ ] Changed menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
+- [X] Changed menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
+- Fix ffmpeg re-mux remuxes only one stream per stream type (Dendraspis, JKyle)
 
 
 v2.3.0 (2021-03-28)

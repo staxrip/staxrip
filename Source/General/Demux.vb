@@ -78,7 +78,7 @@ Public MustInherit Class Demuxer
             .OutputExtensions = {"mkv"},
             .InputFormats = {"hevc", "avc"},
             .Command = "%app:ffmpeg%",
-            .Arguments = "-y -hide_banner -probesize 10M -i ""%source_file%"" -dn -c copy -ignore_unknown ""%temp_file%.mkv"""
+            .Arguments = "-y -hide_banner -probesize 10M -i ""%source_file%"" -map 0 -dn -c copy -ignore_unknown ""%temp_file%.mkv"""
         }
         ret.Add(tsToMkv)
 

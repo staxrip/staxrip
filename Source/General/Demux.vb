@@ -70,7 +70,6 @@ Public MustInherit Class Demuxer
         Dim ret As New List(Of Demuxer)
 
         ret.Add(New eac3toDemuxer With {.Active = False})
-        ret.Add(New ffmpegDemuxer)
 
         Dim tsToMkv As New CommandLineDemuxer
         tsToMkv.Name = "ffmpeg: Re-mux (M2)TS to MKV"
@@ -81,6 +80,7 @@ Public MustInherit Class Demuxer
         tsToMkv.Arguments = "-probesize 10M -i ""%source_file%"" -map 0 -c copy -ignore_unknown -y -hide_banner ""%temp_file%.mkv"""
         ret.Add(tsToMkv)
 
+        ret.Add(New ffmpegDemuxer)
         ret.Add(New mkvDemuxer)
         ret.Add(New MP4BoxDemuxer)
 

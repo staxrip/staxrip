@@ -17,6 +17,13 @@ v2.3.0 (2021-03-28)
 - Disable *eac3to* preprocessing by default and extend re-muxing with *ffmpeg* to m2ts files (Dendraspis, stax76, JKyle, 44vince44, [#632](/../../issues/632))
 - Fix crash when extracting forced subtitles (Dendraspis, [#634](/../../issues/634))
 - Fix possible crash when converting subtitles (stax76)
+- aomenc 3.0.0-205-g0a5da45c7-x64-gcc10.2.0 Patman
+- ffmpeg N 101743-gcad3a5d715-x64-gcc10.2.0 Patman
+- Mp4Box 1.1.0 DEV rev635 g9c51f2274-x64-gcc10.2.0 Patman
+- rav1e 0.5.0 alpha (p20210323-5-ge9efcf35)-x64-gcc10.2.0 Patman
+- SvtAv1EncApp v0.8.6-76-g44486d233-x64-gcc10.2.0 Patman
+- JincResize v2.0.1
+- yadifmod2 v0.2.7
 
 
 v2.2.0 (2021-03-26)

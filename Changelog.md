@@ -2,37 +2,42 @@ v2.4.0 (2021-04-??)
 =========================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
-- [ ] Might break templates and jobs from previous version
-- [ ] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
+- [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
+- [ ] Changed menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 
 
 v2.3.0 (2021-03-28)
 =========================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
-- [ ] Might break templates and jobs from previous version
-- [X] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
+- [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
+- [X] Changed menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - Demux dialog attachments checkbox render bug fixed (stax76)
 - Demux dialog has buttons to enable/disable all attachment demuxing (stax76)
 - Fix possible crash when converting subtitles (stax76)
 - Disable *eac3to* preprocessing by default and extend re-muxing with *ffmpeg* to m2ts files (Dendraspis, stax76, JKyle, 44vince44, [#632](/../../issues/632))
 - Fix crash when extracting forced subtitles (Dendraspis, [#634](/../../issues/634))
 - Rearrange settings sections (Dendraspis)
+- Fix ffmpeg not being able to re-mux files with menus (Dendraspis)
+- Fix ffmpeg demux issues (Dendraspis)
+- Add missing parameters to ffmpeg calls (Dendraspis, JKyle, [#636](/../../issues/636))
 - aomenc 3.0.0-205-g0a5da45c7-x64-gcc10.2.0 Patman
 - ffmpeg N 101743-gcad3a5d715-x64-gcc10.2.0 Patman
 - Mp4Box 1.1.0 DEV rev635 g9c51f2274-x64-gcc10.2.0 Patman
 - rav1e 0.5.0 alpha (p20210323-5-ge9efcf35)-x64-gcc10.2.0 Patman
 - SvtAv1EncApp v0.8.6-76-g44486d233-x64-gcc10.2.0 Patman
-- JincResize v2.0.1
+- JincResize v2.0.2
+- JPSDR 3.2.4 (Clang W7 AVX version)
 - yadifmod2 v0.2.7
+- VSFilterMod r5.2.4
 
 
 v2.2.0 (2021-03-26)
 =========================
 
 - [X] Might break settings from previous version, so starting with new settings is recommended
-- [X] Might break templates and jobs from previous version
-- [X] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
+- [X] Might break templates and jobs from previous version, so checking or renewing them is recommended
+- [X] Changed menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - Start of new versioning (no beta versions anymore, but stripped DEV versions)
 - Check for updates updated to support new versioning (Dendraspis)
 - Fix re-calculation of video bitrate on multi-pass encode and audio encodes (Dendraspis, [#580](/../../issues/580))

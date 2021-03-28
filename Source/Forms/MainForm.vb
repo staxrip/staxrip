@@ -3580,105 +3580,6 @@ Public Class MainForm
             n.Config = {10, 90, 5}
             n.Field = NameOf(s.PreviewSize)
 
-            '################# Frameserver
-            ui.CreateFlowPage("Frameserver", True)
-
-            Dim avsMode = ui.AddMenu(Of FrameServerMode)()
-            avsMode.Text = "AviSynth Mode"
-            avsMode.Field = NameOf(s.AviSynthMode)
-
-            Dim vsMode = ui.AddMenu(Of FrameServerMode)()
-            vsMode.Text = "VapourSynth Mode"
-            vsMode.Field = NameOf(s.VapourSynthMode)
-
-            b = ui.AddBool()
-            b.Text = "Load AviSynth plugins"
-            b.Help = "Detects and adds necessary LoadPlugin calls."
-            b.Field = NameOf(s.LoadAviSynthPlugins)
-
-            b = ui.AddBool()
-            b.Text = "Load VapourSynth plugins"
-            b.Help = "Detects and adds necessary LoadPlugin calls."
-            b.Field = NameOf(s.LoadVapourSynthPlugins)
-
-            '################# User Interface
-            ui.CreateFlowPage("User Interface", True)
-
-            Dim theme = ui.AddMenu(Of String)
-            theme.Text = "Theme"
-            theme.Expanded = True
-            theme.Field = NameOf(s.ThemeName)
-            theme.Add(ThemeManager.Themes.Select(Function(x) x.Name))
-            theme.Button.ShowPath = True
-            theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
-            theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
-
-            Dim codeFont = ui.AddTextButton()
-            codeFont.Text = "Console Font"
-            codeFont.Expandet = True
-            codeFont.Field = NameOf(s.CodeFont)
-            codeFont.ClickAction = Sub()
-                                       Using td As New TaskDialog(Of FontFamily)
-                                           td.Title = "Choose a monospaced font"
-                                           td.Symbol = Symbol.Font
-
-                                           For Each ff In FontFamily.Families.Where(Function(x) Not x.Name.ToLowerEx().ContainsAny(" mdl2", " assets", "marlett", "ms outlook", "mt extra", "wingdings 2") AndAlso x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
-                                               td.AddCommand(ff.Name, ff)
-                                           Next
-
-                                           If td.Show IsNot Nothing Then
-                                               codeFont.Edit.Text = td.SelectedText
-                                           End If
-                                       End Using
-                                   End Sub
-
-            n = ui.AddNum()
-            n.Text = "Scale Factor"
-            n.Help = "Requires to restart StaxRip."
-            n.Config = {0.3, 3, 0.05, 2}
-            n.Field = NameOf(s.UIScaleFactor)
-
-            Dim l = ui.AddLabel("Icon File:")
-            l.Help = "The Windows Startmenu uses Windows Links which allow to use custom icon files."
-
-            Dim tb = ui.AddTextButton
-            tb.Label.Visible = False
-            tb.BrowseFile("ico|*.ico", Folder.Startup + "Apps\Icons")
-            tb.Edit.Expand = True
-            tb.Edit.Text = s.IconFile
-            tb.Edit.SaveAction = Sub(value) s.IconFile = value
-
-            l = ui.AddLabel("Remember Window Positions:")
-            l.Help = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
-
-            Dim t = ui.AddText()
-            t.Help = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
-            t.Label.Visible = False
-            t.Edit.Expand = True
-            t.Edit.Text = s.WindowPositionsRemembered.Join(", ")
-            t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
-
-            b = ui.AddBool()
-            b.Text = "Use binary prefix (MiB) instead of decimal prefix (MB) for sizes"
-            b.Help = "Binary: 1 MiB = 1024 KiB" + BR + "Decimal: 1 MB = 1000 KB" + BR2 +
-                            "When selected, Staxrip will use binary prefix instead of decimal in the display and calculation of sizes." + BR +
-                            "This will not affect external tools behavior nor their displayed information."
-            b.Checked = s.BinaryPrefix
-            b.SaveAction = Sub(value)
-                               s.BinaryPrefix = value
-                               UpdateTargetSizeLabel()
-                               UpdateSizeOrBitrate()
-                           End Sub
-
-            b = ui.AddBool()
-            b.Text = "Enable tooltips in menus (restart required)"
-            b.Help = "Tooltips can always be shown by right-clicking menu items."
-            b.Field = NameOf(s.EnableTooltips)
-
-            '############# Preprocessing
-            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(40, 22)
-            ui.FormSizeScaleFactor = New Size(33, 22)
-
             '############# System
             Dim systemPage = ui.CreateFlowPage("System", True)
 
@@ -3731,7 +3632,7 @@ Public Class MainForm
             n.Config = {5, 200}
             n.Field = NameOf(s.CropFrameCount)
 
-            t = ui.AddText()
+            Dim t = ui.AddText()
             t.Text = "x264 quality definitions"
             t.Help = "Create custom quality definitions for x264." + BR2 +
                          "Use this format to create your custom values with optional description:" + BR +
@@ -3756,6 +3657,105 @@ Public Class MainForm
             t.Edit.Expand = True
             t.Edit.Text = s.X265QualityDefinitions.ToSeparatedString()
             t.Edit.SaveAction = Sub(value) s.X265QualityDefinitions = value.ToX265QualityItems()?.ToList()
+
+            '################# User Interface
+            ui.CreateFlowPage("User Interface", True)
+
+            Dim theme = ui.AddMenu(Of String)
+            theme.Text = "Theme"
+            theme.Expanded = True
+            theme.Field = NameOf(s.ThemeName)
+            theme.Add(ThemeManager.Themes.Select(Function(x) x.Name))
+            theme.Button.ShowPath = True
+            theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
+            theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
+
+            Dim codeFont = ui.AddTextButton()
+            codeFont.Text = "Console Font"
+            codeFont.Expandet = True
+            codeFont.Field = NameOf(s.CodeFont)
+            codeFont.ClickAction = Sub()
+                                       Using td As New TaskDialog(Of FontFamily)
+                                           td.Title = "Choose a monospaced font"
+                                           td.Symbol = Symbol.Font
+
+                                           For Each ff In FontFamily.Families.Where(Function(x) Not x.Name.ToLowerEx().ContainsAny(" mdl2", " assets", "marlett", "ms outlook", "mt extra", "wingdings 2") AndAlso x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
+                                               td.AddCommand(ff.Name, ff)
+                                           Next
+
+                                           If td.Show IsNot Nothing Then
+                                               codeFont.Edit.Text = td.SelectedText
+                                           End If
+                                       End Using
+                                   End Sub
+
+            n = ui.AddNum()
+            n.Text = "Scale Factor"
+            n.Help = "Requires to restart StaxRip."
+            n.Config = {0.3, 3, 0.05, 2}
+            n.Field = NameOf(s.UIScaleFactor)
+
+            Dim l = ui.AddLabel("Icon File:")
+            l.Help = "The Windows Startmenu uses Windows Links which allow to use custom icon files."
+
+            Dim tb = ui.AddTextButton
+            tb.Label.Visible = False
+            tb.BrowseFile("ico|*.ico", Folder.Startup + "Apps\Icons")
+            tb.Edit.Expand = True
+            tb.Edit.Text = s.IconFile
+            tb.Edit.SaveAction = Sub(value) s.IconFile = value
+
+            l = ui.AddLabel("Remember Window Positions:")
+            l.Help = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
+
+            t = ui.AddText()
+            t.Help = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
+            t.Label.Visible = False
+            t.Edit.Expand = True
+            t.Edit.Text = s.WindowPositionsRemembered.Join(", ")
+            t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
+
+            b = ui.AddBool()
+            b.Text = "Use binary prefix (MiB) instead of decimal prefix (MB) for sizes"
+            b.Help = "Binary: 1 MiB = 1024 KiB" + BR + "Decimal: 1 MB = 1000 KB" + BR2 +
+                            "When selected, Staxrip will use binary prefix instead of decimal in the display and calculation of sizes." + BR +
+                            "This will not affect external tools behavior nor their displayed information."
+            b.Checked = s.BinaryPrefix
+            b.SaveAction = Sub(value)
+                               s.BinaryPrefix = value
+                               UpdateTargetSizeLabel()
+                               UpdateSizeOrBitrate()
+                           End Sub
+
+            b = ui.AddBool()
+            b.Text = "Enable tooltips in menus (restart required)"
+            b.Help = "Tooltips can always be shown by right-clicking menu items."
+            b.Field = NameOf(s.EnableTooltips)
+
+            '################# Frameserver
+            ui.CreateFlowPage("Frameserver", True)
+
+            Dim avsMode = ui.AddMenu(Of FrameServerMode)()
+            avsMode.Text = "AviSynth Mode"
+            avsMode.Field = NameOf(s.AviSynthMode)
+
+            Dim vsMode = ui.AddMenu(Of FrameServerMode)()
+            vsMode.Text = "VapourSynth Mode"
+            vsMode.Field = NameOf(s.VapourSynthMode)
+
+            b = ui.AddBool()
+            b.Text = "Load AviSynth plugins"
+            b.Help = "Detects and adds necessary LoadPlugin calls."
+            b.Field = NameOf(s.LoadAviSynthPlugins)
+
+            b = ui.AddBool()
+            b.Text = "Load VapourSynth plugins"
+            b.Help = "Detects and adds necessary LoadPlugin calls."
+            b.Field = NameOf(s.LoadVapourSynthPlugins)
+
+            '############# Preprocessing
+            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(40, 22)
+            ui.FormSizeScaleFactor = New Size(33, 22)
 
             '############# Source Filters
             Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth",

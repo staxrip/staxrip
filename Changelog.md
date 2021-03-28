@@ -14,9 +14,10 @@ v2.3.0 (2021-03-28)
 - [X] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
 - Demux dialog attachments checkbox render bug fixed (stax76)
 - Demux dialog has buttons to enable/disable all attachment demuxing (stax76)
+- Fix possible crash when converting subtitles (stax76)
 - Disable *eac3to* preprocessing by default and extend re-muxing with *ffmpeg* to m2ts files (Dendraspis, stax76, JKyle, 44vince44, [#632](/../../issues/632))
 - Fix crash when extracting forced subtitles (Dendraspis, [#634](/../../issues/634))
-- Fix possible crash when converting subtitles (stax76)
+- Rearrange settings sections (Dendraspis)
 - aomenc 3.0.0-205-g0a5da45c7-x64-gcc10.2.0 Patman
 - ffmpeg N 101743-gcad3a5d715-x64-gcc10.2.0 Patman
 - Mp4Box 1.1.0 DEV rev635 g9c51f2274-x64-gcc10.2.0 Patman

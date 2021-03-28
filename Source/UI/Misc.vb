@@ -56,6 +56,11 @@ Namespace UI
             End Get
         End Property
 
+        Protected Overrides Sub OnActivated(e As EventArgs)
+            MyBase.OnActivated(e)
+            g.ActiveForm = Me
+        End Sub
+
         Protected Overrides Sub OnDragEnter(e As DragEventArgs)
             MyBase.OnDragEnter(e)
 

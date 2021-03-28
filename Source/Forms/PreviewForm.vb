@@ -3,6 +3,7 @@ Imports System.ComponentModel
 Imports System.Drawing.Imaging
 Imports System.Reflection
 Imports System.Runtime.InteropServices
+
 Imports StaxRip.UI
 
 Public Class PreviewForm
@@ -1207,7 +1208,7 @@ Public Class PreviewForm
         Dim p1 = New Point(sb.Width, 0)
         Dim p2 = PointToScreen(e.Location)
 
-        If Math.Abs(p1.X - p2.X) <10 AndAlso Math.Abs(p1.Y - p2.Y) <10 Then
+        If Math.Abs(p1.X - p2.X) < 10 AndAlso Math.Abs(p1.Y - p2.Y) < 10 Then
             Close()
         End If
     End Sub

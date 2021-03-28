@@ -14,6 +14,7 @@ Public Class PowerShell
     Shared Function Invoke(code As String, varName As String, varValue As Object) As Collection(Of PSObject)
         Dim runspace = RunspaceFactory.CreateRunspace()
         runspace.ApartmentState = Threading.ApartmentState.STA
+        runspace.ThreadOptions = PSThreadOptions.UseCurrentThread
         runspace.Open()
 
         Dim pipeline = runspace.CreatePipeline()

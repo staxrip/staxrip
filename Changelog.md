@@ -1,4 +1,4 @@
-2.3.0 (2021-04-??)
+v2.3.0 (2021-04-??)
 =========================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
@@ -6,9 +6,10 @@
 - [ ] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
 - Demux dialog attachments checkbox render bug fixed (stax76)
 - Demux dialog has buttons to enable/disable all attachment demuxing (stax76)
+- Fix crash when extracting forced subtitles (Dendraspis, [#634](/../../issues/634))
 
 
-2.2.0 (2021-03-26)
+v2.2.0 (2021-03-26)
 =========================
 
 - [X] Might break settings from previous version, so starting with new settings is recommended
@@ -16,11 +17,11 @@
 - [X] Changed menus from previous versions that need a menu reset, manual setting or global settings reset in order to see them
 - Start of new versioning (no beta versions anymore, but stripped DEV versions)
 - Check for updates updated to support new versioning (Dendraspis)
-- Fix re-calculation of video bitrate on multi-pass encode and audio encodes (Dendraspis, [#580](/../../issues/580)
+- Fix re-calculation of video bitrate on multi-pass encode and audio encodes (Dendraspis, [#580](/../../issues/580))
 - New projects use Copy/Mux as audio profile (Dendraspis)
 - Fix misleading audio stream delay detection (Dendraspis)
 - Demuxing of video and chapters is set via Options window instead of Preprocessing (Dendraspis)
-- Add option to demux subtitles without including them (Dendraspis, [#622](/../../issues/622)
+- Add option to demux subtitles without including them (Dendraspis, [#622](/../../issues/622))
 - Make Checkboxes grow and shrink with UIScaleFactor (Dendraspis)
 - Fix menu button graphics issue (Dendraspis, [#623](/../../issues/623))
 - New *Check for updates* dialog (Dendraspis)

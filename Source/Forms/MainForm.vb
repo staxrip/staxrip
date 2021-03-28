@@ -1864,9 +1864,9 @@ Public Class MainForm
         Dim td As New TaskDialog(Of VideoFilter)
 
         If p.Script.IsAviSynth Then
-            td.Title = "Select a AviSynth source filter."
+            td.Title = "Select an AviSynth source filter:"
         Else
-            td.Title = "Select a VapourSynth source filter."
+            td.Title = "Select a VapourSynth source filter:"
         End If
 
         For Each filter In filters
@@ -2618,8 +2618,7 @@ Public Class MainForm
                     proc.Header = "Convert sup to sub"
                     proc.SkipStrings = {"#>", "#<", "Decoding frame"}
                     proc.File = Package.BDSup2SubPP.Path
-                    proc.Arguments = "-o """ + i.DirAndBase + ".idx"" """ + i + """"
-                    proc.AllowedExitCodes = {}
+                    proc.Arguments = "-o """ + i.DirAndBase + ".idx"" " + i.Escape
                     proc.Start()
                 End Using
             End If
@@ -2646,7 +2645,7 @@ Public Class MainForm
                     proc.WriteLog(path.FileName + BR2)
                     proc.File = Package.BDSup2SubPP.Path
                     proc.Arguments = "--forced-only -o " + (path.DirAndBase + "_forced.idx").Escape + " " + path.Escape
-                    proc.AllowedExitCodes = {}
+                    proc.AllowedExitCodes = {0, 1, 4}
                     proc.Start()
                 End Using
             End If

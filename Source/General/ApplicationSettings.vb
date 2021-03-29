@@ -336,13 +336,14 @@ Public Class ApplicationSettings
             LastSourceDir = ""
         End If
 
-        'migration code for commands that were renamed
+        'migration code for gloabl commands that were renamed
 
         Dim menuUpdateVersion = 2
 
-        If Not Storage.GetInt("menu update version") = menuUpdateVersion Then
+        If Storage.GetInt("menu update version") <> menuUpdateVersion Then
             Dim nameDic As New Dictionary(Of String, String)
 
+            'global commands renamed 2021:
             nameDic("ExecutePowerShellScript") = "ExecutePowerShellCode"
             nameDic("ExecuteScriptFile") = "ExecutePowerShellFile"
             nameDic("TestAndDynamicFileCreation") = "Test"
@@ -351,6 +352,7 @@ Public Class ApplicationSettings
             nameDic("MediainfoMKV") = "ShowMkvInfo"
             nameDic("MediaInfoShowMedia") = "ShowMediaInfoBrowse"
 
+            'all menus because all renamed commands where global commands
             Dim allMenus = {CustomMenuCodeEditor, CustomMenuCrop, CustomMenuMainForm, CustomMenuPreview, CustomMenuSize}
             CustomMenuItem.UpdateObsoleteCommands(nameDic, allMenus)
             Storage.SetInt("menu update version", menuUpdateVersion)

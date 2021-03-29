@@ -1742,7 +1742,7 @@ Namespace UI
         Private _text As String = ""
 
         <DefaultValue(ButtonSymbol.None)>
-        Property Symbol As ButtonSymbol
+        Property SymbolButton As ButtonSymbol
 
         <DefaultValue(False)>
         Property ShowMenuSymbol As Boolean
@@ -1750,6 +1750,53 @@ Namespace UI
         <Browsable(False)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property ClickAction As Action
+
+        <Browsable(False)>
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
+        Property EnabledImage As Image
+
+        <Browsable(False)>
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
+        Property DisabledImage As Image
+
+        Private _Symbol As Symbol
+
+        Property Symbol As Symbol
+            Get
+                Return _Symbol
+            End Get
+            Set(value As Symbol)
+                _Symbol = value
+
+                If Enabled Then
+                    EnabledImage = ImageHelp.GetSymbolImage(value)
+                    Image = EnabledImage
+                Else
+                    DisabledImage = ImageHelp.GetSymbolImage(value, ControlPaint.DarkDark(ForeDisabledColor))
+                    Image = DisabledImage
+                End If
+            End Set
+        End Property
+
+        Protected Overrides Sub OnEnabledChanged(e As EventArgs)
+            MyBase.OnEnabledChanged(e)
+
+            If Symbol <> Symbol.None Then
+                If Enabled Then
+                    If EnabledImage Is Nothing Then
+                        EnabledImage = ImageHelp.GetSymbolImage(Symbol)
+                    End If
+
+                    Image = EnabledImage
+                Else
+                    If DisabledImage Is Nothing Then
+                        DisabledImage = ImageHelp.GetSymbolImage(Symbol, ControlPaint.DarkDark(ForeDisabledColor))
+                    End If
+
+                    Image = DisabledImage
+                End If
+            End If
+        End Sub
 
         Public Property BackDisabledColor As Color
             Get
@@ -1946,7 +1993,7 @@ Namespace UI
                 End Using
             End If
 
-            If Symbol <> ButtonSymbol.None Then
+            If SymbolButton <> ButtonSymbol.None Then
                 Dim p = New Pen(ForeColor)
                 p.Alignment = PenAlignment.Center
                 p.EndCap = LineCap.Round
@@ -1962,7 +2009,7 @@ Namespace UI
                 d.Point1.Height = ClientSize.Height
                 d.Point2.Height = ClientSize.Height
 
-                Select Case Symbol
+                Select Case SymbolButton
                     Case ButtonSymbol.Open
                         d.Point1.MoveRight(0.6)
                         d.Point1.MoveDown(0.3)

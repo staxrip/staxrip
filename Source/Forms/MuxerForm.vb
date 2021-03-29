@@ -681,23 +681,30 @@ Public Class MuxerForm
         dgvTags.Columns(1).Width = FontHeight * 20
         dgvTags.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
 
-        bnAudioAdd.Image = ImageHelp.GetSymbolImage(Symbol.Add)
-        bnAudioRemove.Image = ImageHelp.GetSymbolImage(Symbol.Remove)
-        bnAudioPlay.Image = ImageHelp.GetSymbolImage(Symbol.Play)
-        bnAudioUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
-        bnAudioDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
-        bnAudioEdit.Image = ImageHelp.GetSymbolImage(Symbol.Repair)
+        bnAudioAdd.Symbol = Symbol.Add
+        bnAudioRemove.Symbol = Symbol.Remove
+        bnAudioPlay.Symbol = Symbol.Play
+        bnAudioUp.Symbol = Symbol.Up
+        bnAudioDown.Symbol = Symbol.Down
+        bnAudioEdit.Symbol = Symbol.Repair
 
-        bnAttachmentAdd.Image = ImageHelp.GetSymbolImage(Symbol.Add)
-        bnAttachmentRemove.Image = ImageHelp.GetSymbolImage(Symbol.Remove)
+        bnSubtitleAdd.Symbol = Symbol.Add
+        bnSubtitleRemove.Symbol = Symbol.Remove
+        bnSubtitlePlay.Symbol = Symbol.Play
+        bnSubtitleUp.Symbol = Symbol.Up
+        bnSubtitleDown.Symbol = Symbol.Down
 
-        For Each bn In {bnAudioAdd, bnAudioRemove, bnAudioPlay, bnAudioUp,
-                        bnAudioDown, bnAudioEdit, bnAttachmentAdd, bnAttachmentRemove}
+        bnAttachmentAdd.Symbol = Symbol.Add
+        bnAttachmentRemove.Symbol = Symbol.Remove
+
+        For Each bn In {bnAudioAdd, bnAudioRemove, bnAudioPlay, bnAudioUp, bnAudioDown, bnAudioEdit,
+                        bnSubtitleAdd, bnSubtitleRemove, bnSubtitlePlay, bnSubtitleUp, bnSubtitleDown,
+                        bnAttachmentAdd, bnAttachmentRemove}
 
             bn.TextImageRelation = TextImageRelation.Overlay
             bn.ImageAlign = ContentAlignment.MiddleLeft
             Dim pad = bn.Padding
-            pad.Left = Control.DefaultFont.Height \ 10
+            pad.Left = FontHeight \ 10
             pad.Right = pad.Left
             bn.Padding = pad
         Next
@@ -726,21 +733,6 @@ Public Class MuxerForm
         dgvSubtitles.SelectionMode = DataGridViewSelectionMode.FullRowSelect
         dgvSubtitles.MultiSelect = False
         dgvSubtitles.ClipboardCopyMode = DataGridViewClipboardCopyMode.Disable
-
-        bnSubtitleAdd.Image = ImageHelp.GetSymbolImage(Symbol.Add)
-        bnSubtitleRemove.Image = ImageHelp.GetSymbolImage(Symbol.Remove)
-        bnSubtitlePlay.Image = ImageHelp.GetSymbolImage(Symbol.Play)
-        bnSubtitleUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
-        bnSubtitleDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
-
-        For Each bn In {bnSubtitleAdd, bnSubtitleRemove, bnSubtitlePlay, bnSubtitleUp, bnSubtitleDown}
-            bn.TextImageRelation = TextImageRelation.Overlay
-            bn.ImageAlign = ContentAlignment.MiddleLeft
-            Dim pad = bn.Padding
-            pad.Left = Control.DefaultFont.Height \ 10
-            pad.Right = pad.Left
-            bn.Padding = pad
-        Next
 
         Dim enabledColumn As New DataGridViewCheckBoxColumn
         enabledColumn.HeaderText = "Enabled"
@@ -1249,6 +1241,10 @@ Public Class MuxerForm
         UpdateControls()
     End Sub
 
+    Sub dgvAudio_SelectionChanged(sender As Object, e As EventArgs) Handles dgvAudio.SelectionChanged
+        UpdateControls()
+    End Sub
+
     Sub dgvAudio_DragEnter(sender As Object, e As DragEventArgs) Handles dgvAudio.DragEnter
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
@@ -1420,6 +1416,14 @@ Public Class MuxerForm
     End Sub
 
     Sub dgvSubtitles_DataBindingComplete(sender As Object, e As DataGridViewBindingCompleteEventArgs) Handles dgvSubtitles.DataBindingComplete
+        UpdateControls()
+    End Sub
+
+    Sub dgvSubtitles_KeyUp(sender As Object, e As KeyEventArgs) Handles dgvSubtitles.KeyUp
+        UpdateControls()
+    End Sub
+
+    Sub dgvSubtitles_SelectionChanged(sender As Object, e As EventArgs) Handles dgvSubtitles.SelectionChanged
         UpdateControls()
     End Sub
 End Class

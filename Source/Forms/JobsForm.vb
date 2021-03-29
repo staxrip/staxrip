@@ -241,8 +241,9 @@ Friend Class JobsForm
         cms.Add("Remove Selection", Sub() bnRemove.PerformClick(), Keys.Delete, Function() lv.SelectedItems.Count > 0).SetImage(Symbol.Remove)
         cms.Add("Load Selection", Sub() bnLoad.PerformClick(), Keys.L, Function() lv.SelectedItems.Count = 1)
 
-        bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down)
-        bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up)
+        bnDown.Symbol = Symbol.Down
+        bnUp.Symbol = Symbol.Up
+
         bnDown.SetFontSize(12)
         bnUp.SetFontSize(12)
 
@@ -427,19 +428,5 @@ Friend Class JobsForm
         Using form As New JobsForm()
             form.ShowDialog()
         End Using
-    End Sub
-
-    Sub lv_ControlsUpdate() Handles lv.ControlsUpdated
-        If bnUp.Enabled Then
-            bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up, ThemeManager.CurrentTheme.General.Controls.Button.ForeColor)
-        Else
-            bnUp.Image = ImageHelp.GetSymbolImage(Symbol.Up, ThemeManager.CurrentTheme.General.Controls.Button.ForeDisabledColor)
-        End If
-
-        If bnDown.Enabled Then
-            bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down, ThemeManager.CurrentTheme.General.Controls.Button.ForeColor)
-        Else
-            bnDown.Image = ImageHelp.GetSymbolImage(Symbol.Down, ThemeManager.CurrentTheme.General.Controls.Button.ForeDisabledColor)
-        End If
     End Sub
 End Class

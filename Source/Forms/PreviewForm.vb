@@ -64,7 +64,7 @@ Public Class PreviewForm
         Me.bnDelete.Location = New System.Drawing.Point(671, 629)
         Me.bnDelete.Margin = New System.Windows.Forms.Padding(6)
         Me.bnDelete.Size = New System.Drawing.Size(70, 70)
-        Me.bnDelete.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Delete
+        Me.bnDelete.SymbolButton = StaxRip.UI.ButtonEx.ButtonSymbol.Delete
         Me.bnDelete.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnDelete, "Deletes the cut selection that encloses the current position.")
         '
@@ -76,7 +76,7 @@ Public Class PreviewForm
         Me.bnRight1.Location = New System.Drawing.Point(425, 629)
         Me.bnRight1.Margin = New System.Windows.Forms.Padding(6)
         Me.bnRight1.Size = New System.Drawing.Size(70, 70)
-        Me.bnRight1.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Right1
+        Me.bnRight1.SymbolButton = StaxRip.UI.ButtonEx.ButtonSymbol.Right1
         Me.bnRight1.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnRight1, "Forward 1 Frames")
         '
@@ -88,7 +88,7 @@ Public Class PreviewForm
         Me.bnLeft1.Location = New System.Drawing.Point(179, 629)
         Me.bnLeft1.Margin = New System.Windows.Forms.Padding(6)
         Me.bnLeft1.Size = New System.Drawing.Size(70, 70)
-        Me.bnLeft1.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Left1
+        Me.bnLeft1.SymbolButton = StaxRip.UI.ButtonEx.ButtonSymbol.Left1
         Me.bnLeft1.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnLeft1, "Backward 1 Frame")
         '
@@ -100,7 +100,7 @@ Public Class PreviewForm
         Me.bnStartCutRange.Location = New System.Drawing.Point(261, 629)
         Me.bnStartCutRange.Margin = New System.Windows.Forms.Padding(6)
         Me.bnStartCutRange.Size = New System.Drawing.Size(70, 70)
-        Me.bnStartCutRange.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Open
+        Me.bnStartCutRange.SymbolButton = StaxRip.UI.ButtonEx.ButtonSymbol.Open
         Me.bnStartCutRange.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnStartCutRange, "Sets a start cut point. Press F1 for help about cutting")
         '
@@ -112,7 +112,7 @@ Public Class PreviewForm
         Me.bnEndCutRange.Location = New System.Drawing.Point(343, 629)
         Me.bnEndCutRange.Margin = New System.Windows.Forms.Padding(6)
         Me.bnEndCutRange.Size = New System.Drawing.Size(70, 70)
-        Me.bnEndCutRange.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Close
+        Me.bnEndCutRange.SymbolButton = StaxRip.UI.ButtonEx.ButtonSymbol.Close
         Me.bnEndCutRange.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnEndCutRange, "Sets a end cut point. Press F1 for help about cutting")
         '
@@ -124,7 +124,7 @@ Public Class PreviewForm
         Me.bnRight2.Location = New System.Drawing.Point(507, 629)
         Me.bnRight2.Margin = New System.Windows.Forms.Padding(6)
         Me.bnRight2.Size = New System.Drawing.Size(70, 70)
-        Me.bnRight2.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Right2
+        Me.bnRight2.SymbolButton = StaxRip.UI.ButtonEx.ButtonSymbol.Right2
         Me.bnRight2.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnRight2, "Forward 10 Frames")
         '
@@ -136,7 +136,7 @@ Public Class PreviewForm
         Me.bnLeft2.Location = New System.Drawing.Point(97, 629)
         Me.bnLeft2.Margin = New System.Windows.Forms.Padding(6)
         Me.bnLeft2.Size = New System.Drawing.Size(70, 70)
-        Me.bnLeft2.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Left2
+        Me.bnLeft2.SymbolButton = StaxRip.UI.ButtonEx.ButtonSymbol.Left2
         Me.bnLeft2.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnLeft2, "Backward 10 Frames")
         '
@@ -147,7 +147,7 @@ Public Class PreviewForm
         Me.bnMenu.Location = New System.Drawing.Point(753, 629)
         Me.bnMenu.Margin = New System.Windows.Forms.Padding(6)
         Me.bnMenu.Size = New System.Drawing.Size(70, 70)
-        Me.bnMenu.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Menu
+        Me.bnMenu.SymbolButton = StaxRip.UI.ButtonEx.ButtonSymbol.Menu
         Me.bnMenu.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnMenu, "Shows the menu")
         '
@@ -159,7 +159,7 @@ Public Class PreviewForm
         Me.bnRight3.Location = New System.Drawing.Point(589, 629)
         Me.bnRight3.Margin = New System.Windows.Forms.Padding(6)
         Me.bnRight3.Size = New System.Drawing.Size(70, 70)
-        Me.bnRight3.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Right3
+        Me.bnRight3.SymbolButton = StaxRip.UI.ButtonEx.ButtonSymbol.Right3
         Me.bnRight3.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnRight3, "Forward 100 Frames")
         '
@@ -172,7 +172,7 @@ Public Class PreviewForm
         Me.bnLeft3.Location = New System.Drawing.Point(15, 629)
         Me.bnLeft3.Margin = New System.Windows.Forms.Padding(6)
         Me.bnLeft3.Size = New System.Drawing.Size(70, 70)
-        Me.bnLeft3.Symbol = StaxRip.UI.ButtonEx.ButtonSymbol.Left3
+        Me.bnLeft3.SymbolButton = StaxRip.UI.ButtonEx.ButtonSymbol.Left3
         Me.bnLeft3.TabStop = False
         Me.ToolTip.SetToolTip(Me.bnLeft3, "Backward 100 Frames")
         '

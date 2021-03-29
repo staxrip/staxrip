@@ -17,7 +17,7 @@ ColorYUV | AutoAdjust = AutoAdjust(gamma_limit=1.0, scd_threshold=16, gain_mode=
 ColorYUV | AutoGain = ColorYUV(autogain=$select:msg:Enable AutoGain?;true;false$, autowhite=$select:msg:Enable AutoWhite?;true;false$)
 ColorYUV | Levels = $select:TV to PC|ColorYUV(levels="TV->PC");PC to TV|ColorYUV(levels="PC->TV")$
 ColorYUV | Stack = $select:To Stack|ConvertToStacked();From Stacked|ConvertFromStacked()$
-ColorYUV | Tweak = Tweak(realcalc=true, dither_strength=1.0, sat=0.75, startHue=105, endHue=138 )
+ColorYUV | Tweak = $select:Neutral|Tweak(hue = 0, sat = 1, bright = 0, cont = 1, coring = false, realcalc = true);Vivid|Tweak(hue = 0, sat = 1.15, bright = 2, cont = 1.08, coring = false, realcalc = true);Less Contrast|Tweak(hue = 0, sat = 0.95, bright = 8, cont = 0.9, coring = false, realcalc = true);Less color|Tweak(hue = 0, sat = 0.82, bright = 0, cont = 0.96, coring = false, realcalc = true);Selective Blue|Tweak(sat=2, startHue=300, endHue=50, coring=false, realcalc=true);Selective Yellow Red|Tweak(sat=2, startHue=50, endHue=200, coring=false, realcalc=true)$
 Convert | ConvertBits = ConvertBits($select:msg:Select the Bit Depth You want to Convert To;8;10;12;14;16;32$)
 Convert | ConvertFromDoubleWidth = ConvertFromDoubleWidth(bits=$select:msg:Select the Bit Depth;8;10;12;14;16;32$)
 Convert | ConvertTo = ConvertTo$enter_text:Enter The Format You Wish To Convert To$()

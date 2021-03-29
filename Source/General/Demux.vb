@@ -71,38 +71,42 @@ Public MustInherit Class Demuxer
 
         ret.Add(New eac3toDemuxer With {.Active = False})
 
-        Dim tsToMkv As New CommandLineDemuxer
-        tsToMkv.Name = "ffmpeg: Re-mux (M2)TS to MKV"
-        tsToMkv.InputExtensions = {"m2ts", "ts"}
-        tsToMkv.OutputExtensions = {"mkv"}
-        tsToMkv.InputFormats = {"hevc", "avc"}
-        tsToMkv.Command = "%app:ffmpeg%"
-        tsToMkv.Arguments = "-probesize 10M -i ""%source_file%"" -map 0 -c copy -ignore_unknown -y -hide_banner ""%temp_file%.mkv"""
+        Dim tsToMkv As New CommandLineDemuxer With {
+            .Name = "ffmpeg: Re-mux (M2)TS to MKV",
+            .Active = False,
+            .InputExtensions = {"m2ts", "ts"},
+            .OutputExtensions = {"mkv"},
+            .InputFormats = {"hevc", "avc"},
+            .Command = "%app:ffmpeg%",
+            .Arguments = "-y -hide_banner -probesize 10M -i ""%source_file%"" -map 0 -dn -c copy -ignore_unknown ""%temp_file%.mkv"""
+        }
         ret.Add(tsToMkv)
 
         ret.Add(New ffmpegDemuxer)
         ret.Add(New mkvDemuxer)
         ret.Add(New MP4BoxDemuxer)
 
-        Dim dgIndex As New CommandLineDemuxer
-        dgIndex.Name = "DGIndex: Demux & Index MPEG-2"
-        dgIndex.InputExtensions = {"mpg", "vob", "m2ts", "m2v", "mts", "m2t"}
-        dgIndex.OutputExtensions = {"d2v"}
-        dgIndex.InputFormats = {"mpeg2"}
-        dgIndex.Command = "%app:DGIndex%"
-        dgIndex.Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -o ""%temp_file%"" -hide -exit"
-        dgIndex.SourceFilters = {"MPEG2Source", "D2VSource", "d2v.Source"}
+        Dim dgIndex As New CommandLineDemuxer With {
+            .Name = "DGIndex: Demux & Index MPEG-2",
+            .InputExtensions = {"mpg", "vob", "m2ts", "m2v", "mts", "m2t"},
+            .OutputExtensions = {"d2v"},
+            .InputFormats = {"mpeg2"},
+            .Command = "%app:DGIndex%",
+            .Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -o ""%temp_file%"" -hide -exit",
+            .SourceFilters = {"MPEG2Source", "D2VSource", "d2v.Source"}
+        }
         ret.Add(dgIndex)
 
-        Dim d2vWitch As New CommandLineDemuxer
-        d2vWitch.Name = "D2V Witch: Demux & Index MPEG-2"
-        d2vWitch.InputExtensions = {"mpg", "vob", "m2ts", "m2v", "mts", "m2t"}
-        d2vWitch.OutputExtensions = {"d2v"}
-        d2vWitch.InputFormats = {"mpeg2"}
-        d2vWitch.Command = "cmd.exe"
-        d2vWitch.Arguments = "/S /C """"%app:D2V Witch%"" --audio-ids all --output ""%temp_file%.d2v"" %source_files%"""
-        d2vWitch.SourceFilters = {"MPEG2Source", "D2VSource", "d2v.Source"}
-        d2vWitch.Active = False
+        Dim d2vWitch As New CommandLineDemuxer With {
+            .Name = "D2V Witch: Demux & Index MPEG-2",
+            .InputExtensions = {"mpg", "vob", "m2ts", "m2v", "mts", "m2t"},
+            .OutputExtensions = {"d2v"},
+            .InputFormats = {"mpeg2"},
+            .Command = "cmd.exe",
+            .Arguments = "/S /C """"%app:D2V Witch%"" --audio-ids all --output ""%temp_file%.d2v"" %source_files%""",
+            .SourceFilters = {"MPEG2Source", "D2VSource", "d2v.Source"},
+            .Active = False
+        }
         ret.Add(d2vWitch)
 
         Return ret
@@ -230,7 +234,7 @@ Public Class ffmpegDemuxer
 
     Sub New()
         Name = "ffmpeg: Demux"
-        InputExtensions = {"avi", "flv"}
+        InputExtensions = {"avi", "flv", "m2ts", "ts"}
     End Sub
 
     Public Overrides Sub Run(proj As Project)
@@ -247,7 +251,7 @@ Public Class ffmpegDemuxer
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
             ((audioDemuxing AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
             (subtitlesDemuxing AndAlso proj.SubtitleMode = SubtitleMode.Dialog)) OrElse
-            Not proj Is p Then
+            proj IsNot p Then
 
             Using form As New StreamDemuxForm(proj.SourceFile, Nothing)
                 form.cbDemuxChapters.Visible = False
@@ -298,8 +302,8 @@ Public Class ffmpegDemuxer
             Exit Sub
         End If
 
-        Dim args = "-i " + proj.SourceFile.Escape
-        args += " -c:v copy -an -sn -y -hide_banner"
+        Dim args = "-y -hide_banner -probesize 10M -i " + proj.SourceFile.Escape
+        args += " -c:v copy -an -sn"
         args += " " + outPath.Escape
 
         Using proc As New Proc
@@ -334,18 +338,22 @@ Public Class ffmpegDemuxer
         End If
 
         Dim streamIndex = stream.StreamOrder
-        Dim args = "-i " + sourcefile.Escape
+        Dim args = "-y -hide_banner -probesize 10M -i " + sourcefile.Escape
 
         If MediaInfo.GetAudioCount(sourcefile) > 1 Then
             args += " -map 0:a:" & stream.Index
         End If
 
-        args += " -vn -sn -y -hide_banner"
+        args += " -vn -sn"
 
         If outPath.Ext = "wav" Then
             args += " -c:a pcm_s16le"
         Else
             args += " -c:a copy"
+
+            If stream.FormatString.ToLowerEx().StartsWith("dts") Then
+                args += " -f dts"
+            End If
         End If
 
         args += " " + outPath.Escape
@@ -362,7 +370,7 @@ Public Class ffmpegDemuxer
         End Using
 
         If File.Exists(outPath) Then
-            If Not ap Is Nothing Then
+            If ap IsNot Nothing Then
                 ap.File = outPath
             End If
 
@@ -382,14 +390,14 @@ Public Class ffmpegDemuxer
                 Continue For
             End If
 
-            Dim args = "-i " + proj.SourceFile.Escape
+            Dim args = "-y -hide_banner -probesize 10M -i " + proj.SourceFile.Escape
             Dim outpath = proj.TempDir + subtitle.Filename + subtitle.ExtFull
 
             If MediaInfo.GetSubtitleCount(proj.SourceFile) > 1 Then
                 args += " -map 0:s:" & subtitle.Index
             End If
 
-            args += " -c:s copy -vn -an -y -hide_banner " + outpath.Escape
+            args += " -c:s copy -vn -an " + outpath.Escape
 
             Using proc As New Proc
                 proc.Project = proj
@@ -445,7 +453,7 @@ Public Class MP4BoxDemuxer
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
             ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
             (demuxSubtitles AndAlso proj.SubtitleMode = SubtitleMode.Dialog)) OrElse
-            Not proj Is p Then
+            proj IsNot p Then
 
             Using form As New StreamDemuxForm(proj.SourceFile, attachments)
                 If form.ShowDialog() = DialogResult.OK Then

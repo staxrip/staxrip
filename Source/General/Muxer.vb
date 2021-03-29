@@ -986,7 +986,7 @@ Public Class ffmpegMuxer
     End Function
 
     Overrides Sub Mux()
-        Dim args = "-i "
+        Dim args = "-y -hide_banner -probesize 10M -i "
 
         If File.Exists(p.VideoEncoder.OutputPath) Then
             args += p.VideoEncoder.OutputPath.Escape
@@ -998,20 +998,20 @@ Public Class ffmpegMuxer
         Dim mapping = " -map 0:v"
 
         For Each track In {p.Audio0, p.Audio1}
-            If Not TypeOf track Is NullAudioProfile AndAlso File.Exists(track.File) AndAlso
+            If TypeOf track IsNot NullAudioProfile AndAlso File.Exists(track.File) AndAlso
                 IsSupported(track.OutputFileType) Then
 
                 id += 1
                 args += " -i " + track.File.Escape
                 mapping += " -map " & id
 
-                If Not track.Stream Is Nothing Then
+                If track.Stream IsNot Nothing Then
                     mapping += ":" & track.Stream.StreamOrder
                 End If
             End If
         Next
 
-        args += mapping + " -c:v copy -c:a copy -y -hide_banner -strict -2 " + p.TargetFile.Escape
+        args += mapping + " -c:v copy -c:a copy -strict -2 " + p.TargetFile.Escape
 
         Using proc As New Proc
             proc.Header = "Muxing to " + OutputFormat

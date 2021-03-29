@@ -169,16 +169,25 @@ Advanced | SuperRes = $select:msg:Select Version;SuperResXBR|SuperResXBR;SuperRe
 Resize... = $select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;Lanczos4Resize;LanczosResize;PointResize;SincResize;Jinc36Resize;Jinc64Resize;Jinc144Resize;Jinc256Resize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)
 
 [Restoration]
+ChromaStabilize | CNR2 = Cnr2(mode="oxx", scdthr=10.0, ln=35, lm=192, un=47, um=255, vn=47, vm=255, log=false, sceneChroma=false)
+ColorDeBand | Gradfun3 = GradFun3(thr=0.5, radius=12, mode=6, smode=1)
+ColorDeBand | Gradfun3_16bit =
+    ConvertBits(16)
+    ConvertToStacked()
+    GradFun3(thr=0.5, radius=12, mode=6, smode=1)
+    ConvertFromStacked()
+    
+ColorDeBand | Neo_f3kdb = neo_f3kdb(preset=$select:msg:Select Profile;Depth|"depth";Low|"low";Low and No Grain|"low/nograin";Medium|"medium";Medium and No Grain|"medium/nograin";High (Default)|"high";High and No Grain|"high/nograin";Very High|"veryhigh";Very High and No Grain|"veryhigh/nograin";No Grain|"nograin";Luma|"luma";Chroma|"chroma"$, output_depth=$select:msg:Select Output Depth;8 Bit|8;16 Bit|16$)
+ColorDeBand | F3kdb = f3kdb()
+
 DeBlock | DeBlock_QED = Deblock_QED(quant1=24, quant2=26, aOff1=1, aOff2=1, bOff1=2, bOff2=2, uv=3)
 DeBlock | DeBock = Deblock(quant=25, aOffset=0, bOffset=0)
 DeBlock | MipSmooth = MipSmooth(downsizer="lanczos", upsizer="bilinear", scalefactor=1.5, method="strong")
 DeBlock | SmoothD2 = SmoothD2(quant=3, num_shift=3, Matrix=3, Qtype=1, ZW=1, ZWce=1, ZWlmDark=0, ZWlmBright=255, ncpu=4)
+Decomb | Vinverse = $select:Vinverse|vinverse(sstr=2.7, amnt=255, uv=3, scl=0.25);Vinverse2|vinverse2(sstr=2.7, amnt=255, uv=3, scl=0.25)$
 DeHalo | DehaloAlpha = DeHalo_alpha_mt(rx=2.0, ry=2.0, darkstr=1.0, brightstr=1.0, lowsens=50, highsens=50, ss=1.5)
 DeHalo | FineDehalo = FineDehalo(rx=2.0, ry=2.0, thmi=80, thma=128, thlimi=50, thlima=100, darkstr=1.0, brightstr=1.0, showmask=0, contra=0.0, excl=true)
 DeHalo | HQDeringmod = HQDeringmod()
-RCR | CNR2 = Cnr2(mode="oxx", scdthr=10.0, ln=35, lm=192, un=47, um=255, vn=47, vm=255, log=false, sceneChroma=false)
-RCR | ColorBanding = $select:GradFun3|GradFun3();f3kdb|f3kdb()$
-RCR | Vinverse = $select:Vinverse|vinverse(sstr=2.7, amnt=255, uv=3, scl=0.25);Vinverse2|vinverse2(sstr=2.7, amnt=255, uv=3, scl=0.25)$
 
 [Rotation]
 Left = TurnLeft()

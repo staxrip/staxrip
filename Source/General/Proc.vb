@@ -340,7 +340,7 @@ Public Class Proc
                 End If
 
                 If Not AllowedExitCodes.ContainsEx(ExitCode) Then
-                    Dim errOutput = ProcessHelp.GetConsoleOutput(Package.Err.Path, "/ntstatus.h /vfw.h /winerror.h " & ExitCode)
+                    Dim errOutput = ProcessHelp.GetConsoleOutput(Package.Err.Path, "/ntstatus.h /winerror.h " & ExitCode)
                     Dim sb = New StringBuilder()
                     sb.Append($"{Header} returned exit code: {ExitCode} (0x{ExitCode:X})")
 

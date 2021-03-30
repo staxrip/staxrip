@@ -977,13 +977,13 @@ Namespace UI
             End If
 
             Block = True
-            tv.MoveSelectionLeft()
+            tv.MoveSelectedNodeLeft()
             Block = False
         End Sub
 
         Sub tsbMoveRight_Click() Handles tsbMoveRight.Click
             Block = True
-            tv.MoveSelectionRight()
+            tv.MoveSelectedNodeRight()
             Block = False
         End Sub
 
@@ -999,7 +999,7 @@ Namespace UI
             End If
 
             Block = True
-            tv.MoveSelectionUp()
+            tv.MoveSelectedNodeUp()
             Block = False
         End Sub
 
@@ -1014,7 +1014,7 @@ Namespace UI
             End If
 
             Block = True
-            tv.MoveSelectionDown()
+            tv.MoveSelectedNodeDown()
             Block = False
         End Sub
 

@@ -216,7 +216,7 @@ Namespace UI
             MyBase.WndProc(m)
         End Sub
 
-        Sub MoveSelectionLeft()
+        Sub MoveSelectedNodeLeft()
             Dim n As TreeNode = SelectedNode
 
             If Not n Is Nothing AndAlso Not n.Parent Is Nothing Then
@@ -231,7 +231,7 @@ Namespace UI
             End If
         End Sub
 
-        Sub MoveSelectionUp()
+        Sub MoveSelectedNodeUp()
             Dim n As TreeNode = SelectedNode
 
             If Not n Is Nothing Then
@@ -254,7 +254,7 @@ Namespace UI
             End If
         End Sub
 
-        Sub MoveSelectionRight()
+        Sub MoveSelectedNodeRight()
             Dim n As TreeNode = SelectedNode
 
             If Not n Is Nothing Then
@@ -267,7 +267,7 @@ Namespace UI
             End If
         End Sub
 
-        Sub MoveSelectionDown()
+        Sub MoveSelectedNodeDown()
             Dim n As TreeNode = SelectedNode
 
             If Not n Is Nothing Then
@@ -287,6 +287,18 @@ Namespace UI
                 End If
 
                 SelectedNode = n
+            End If
+        End Sub
+
+        Sub MoveSelectionDown()
+            If SelectedNode?.NextNode IsNot Nothing Then
+                SelectedNode = SelectedNode.NextNode
+            End If
+        End Sub
+
+        Sub MoveSelectionUp()
+            If SelectedNode?.PrevNode IsNot Nothing Then
+                SelectedNode = SelectedNode.PrevNode
             End If
         End Sub
 

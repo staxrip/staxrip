@@ -6,7 +6,8 @@ Imports StaxRip.UI
 Public Class SearchTextBox
     Inherits UserControl
 
-    Private Edit As TextEdit
+    Property Edit As TextEdit
+
     Private XButton As ClearButton
 
     Sub New()

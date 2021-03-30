@@ -409,6 +409,8 @@ Public Class AppsForm
         SearchTextBox_TextChanged()
         SearchTextBox.Height = ToolStrip.Height - 2
 
+        AddHandler SearchTextBox.Edit.TextBox.KeyDown, AddressOf SearchTextBoxKeyDown
+
         ToolStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         g.SetRenderer(ToolStrip)
 
@@ -462,6 +464,16 @@ Public Class AppsForm
         End If
 
         BackColor = theme.General.BackColor
+    End Sub
+
+    Sub SearchTextBoxKeyDown(sender As Object, e As KeyEventArgs)
+        If e.KeyData = Keys.Down Then
+            tv.MoveSelectionDown()
+            e.Handled = True
+        ElseIf e.KeyData = Keys.Up Then
+            tv.MoveSelectionUp()
+            e.Handled = True
+        End If
     End Sub
 
     Sub ShowActivePackage()

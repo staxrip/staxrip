@@ -36,6 +36,7 @@ Hardware Encoder = # hardware encoder crops
 
 [Field]
 Assume = $select:TFF|AssumeTFF();BFF|AssumeTFF()$
+Decimate = Decimate(cycle=5)
 EEDI3 = EEDI3()
 FieldDeinterlace = FieldDeinterlace()
 
@@ -51,9 +52,22 @@ QTGMC | QTGMC With Repair =
     $select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Dither_Repair16(QTGMC1, QTGMC2, 1)$
 
 QTGMC | QTGMC... = QTGMC(preset="$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, sourceMatch=3, sharpness=0.2, tr2=2, ediThreads=8)
-Select = $select:Even|SelectEven();Odd|SelectOdd()$
-TDeint = TDeint()
-yadifmod2 = yadifmod2()
+SelectField = $select:Even|SelectEven();Odd|SelectOdd()$
+SelectLinesEven =
+    AssumeFrameBased()
+    SeparateFields()
+    SelectEven()
+    AssumeFrameBased()
+
+SelectLinesOdd =
+    AssumeFrameBased()
+    SeparateFields()
+    SelectOdd()
+    AssumeFrameBased()
+
+SwapFields = SwapFields()
+TDeint = TDeint($select:msg:Select Mode;Progressive DoubleHeight ELA|mode=-2;Progressive DoubleHeight ELA2|mode=-1;Same Rate (Default)|mode=0;Double Rate Bobbing|mode=1;Smart Bobbed Field matching|mode=2$)
+yadifmod2 = YadifMod2($select:msg:Select Mode;Same Rate(Default)|mode=0;Double Rate|mode=1;Same Rate No Spatial Check|mode=2;Double Rate No Spatial Check|mode=3$)
 
 [Frame Rate]
 AssumeFPS = AssumeFPS($select:msg:Select a frame rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;50;59.940|60000, 1001;60;120;144;240$)

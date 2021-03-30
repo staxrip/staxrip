@@ -339,12 +339,12 @@ Public Class Proc
                     Throw New SkipException
                 End If
 
-                If Not AllowedExitCodes.ContainsEx(ExitCode) Then
-                    Dim errOutput = ProcessHelp.GetConsoleOutput(Package.Err.Path, "/ntstatus.h /vfw.h /winerror.h " & ExitCode)
+                If ExitCode > 0 AndAlso Not AllowedExitCodes.ContainsEx(ExitCode) Then
                     Dim sb = New StringBuilder()
                     sb.Append($"{Header} returned exit code: {ExitCode} (0x{ExitCode:X})")
 
                     If s.ErrorMessageExtendedByErr Then
+                        Dim errOutput = ProcessHelp.GetConsoleOutput(Package.Err.Path, "/ntstatus.h /vfw.h /winerror.h " & ExitCode)
                         sb.Append($"{BR2}It's unclear what this exit code means, in case it's")
                         sb.Append($"{BR}a Windows system error then it possibly means:")
                         sb.Append($"{BR2}{errOutput}")

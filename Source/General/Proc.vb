@@ -340,15 +340,19 @@ Public Class Proc
                 End If
 
                 If Not AllowedExitCodes.ContainsEx(ExitCode) Then
-                    Dim output = ProcessHelp.GetConsoleOutput(Package.Err.Path, "/ntstatus.h /vfw.h /winerror.h " & ExitCode)
-                    Dim errorMessage = Header + " returned error exit code: " & ExitCode &
-                        " (" + "0x" + ExitCode.ToString("X") + ")"
+                    Dim errOutput = ProcessHelp.GetConsoleOutput(Package.Err.Path, "/ntstatus.h /vfw.h /winerror.h " & ExitCode)
+                    Dim sb = New StringBuilder()
+                    sb.Append($"{Header} returned exit code: {ExitCode} (0x{ExitCode:X})")
 
-                    errorMessage += BR2 + "It's unclear what the exit code means, in case it's " + BR +
-                        "a Windows system error then it possibly means:" + BR2 + output
+                    If s.ErrorMessageExtendedByErr Then
+                        sb.Append($"{BR2}It's unclear what this exit code means, in case it's")
+                        sb.Append($"{BR}a Windows system error then it possibly means:")
+                        sb.Append($"{BR2}{errOutput}")
+                    End If
 
-                    errorMessage += BR2 + Log.ToString() + BR
-                    Throw New ErrorAbortException("Error " + Header, errorMessage, Project)
+                    sb.Append($"{BR2}{Log}{BR}")
+
+                    Throw New ErrorAbortException("Error " + Header, sb.ToString(), Project)
                 End If
 
                 Succeeded = True

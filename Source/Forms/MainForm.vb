@@ -3603,6 +3603,10 @@ Public Class MainForm
             n.Field = NameOf(s.ShutdownTimeout)
 
             b = ui.AddBool
+            b.Text = "Extend error messages with the help of 'Err'"
+            b.Field = NameOf(s.ErrorMessageExtendedByErr)
+
+            b = ui.AddBool
             b.Text = "Force closing running apps when shutdown and for hybrid mode"
             b.Field = NameOf(s.ShutdownForce)
 

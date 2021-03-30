@@ -77,19 +77,15 @@ End Class
 
 Public Class Thumbnails
     Shared Sub SaveThumbnails(inputFile As String, proj As Project)
-        If Not File.Exists(inputFile) Then
-            Exit Sub
-        End If
-
-        If Not Package.AviSynth.VerifyOK(True) Then
-            Exit Sub
-        End If
+        If Not File.Exists(inputFile) Then Exit Sub
+        If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
 
         If proj Is Nothing Then
             proj = New Project
             proj.Init()
             proj.SourceFile = inputFile
         End If
+
 
         Dim fontname = "DejaVu Serif"
         Dim fontOptions = "Mikadan"
@@ -101,10 +97,10 @@ Public Class Thumbnails
         Dim height = CInt(width / Convert.ToSingle(dar, CultureInfo.InvariantCulture))
         Dim gap = CInt((width * columnCount) * (s.Storage.GetInt("Thumbnail Margin", 5) / 1000))
         Dim font = New Font(fontname, (width * columnCount) \ 80, FontStyle.Bold, GraphicsUnit.Pixel)
-        Dim foreColor = Color.Black
+        Dim foreColor = Color.White
 
-        width = width - width Mod 16
-        height = height - height Mod 16
+        width -= width Mod 16
+        height -= height Mod 16
 
         Dim script As New VideoScript
         script.Path = Path.Combine(Folder.Temp + "Thumbnails.avs")
@@ -142,50 +138,50 @@ Public Class Thumbnails
 
             For x = 1 To count
                 serverPos = CInt((frames / count) * x) - CInt((frames / count) / 2)
-                Dim bitmap = BitmapUtil.CreateBitmap(server, serverPos)
+                Using bitmap = BitmapUtil.CreateBitmap(server, serverPos)
+                    Using g = Graphics.FromImage(bitmap)
+                        g.InterpolationMode = InterpolationMode.HighQualityBicubic
+                        g.TextRenderingHint = TextRenderingHint.AntiAlias
+                        g.SmoothingMode = SmoothingMode.AntiAlias
+                        g.PixelOffsetMode = PixelOffsetMode.HighQuality
 
-                Using g = Graphics.FromImage(bitmap)
-                    g.InterpolationMode = InterpolationMode.HighQualityBicubic
-                    g.TextRenderingHint = TextRenderingHint.AntiAlias
-                    g.SmoothingMode = SmoothingMode.AntiAlias
-                    g.PixelOffsetMode = PixelOffsetMode.HighQuality
+                        Dim dur = TimeSpan.FromSeconds(server.Info.FrameCount / server.FrameRate)
+                        Dim timestamp = StaxRip.g.GetTimeString(serverPos / server.FrameRate)
+                        Dim ft As New Font("Segoe UI", font.Size, FontStyle.Bold, GraphicsUnit.Pixel)
 
-                    Dim dur = TimeSpan.FromSeconds(server.Info.FrameCount / server.FrameRate)
-                    Dim timestamp = StaxRip.g.GetTimeString(serverPos / server.FrameRate)
-                    Dim ft As New Font("Segoe UI", font.Size, FontStyle.Bold, GraphicsUnit.Pixel)
+                        Using gp As New GraphicsPath()
+                            Dim sz = g.MeasureString(timestamp, ft)
+                            Dim pt As Point
+                            Dim pos = s.Storage.GetInt("Thumbnail Position", 1)
 
-                    Using gp As New GraphicsPath()
-                        Dim sz = g.MeasureString(timestamp, ft)
-                        Dim pt As Point
-                        Dim pos = s.Storage.GetInt("Thumbnail Position", 1)
+                            If pos = 0 OrElse pos = 2 Then
+                                pt.X = ft.Height \ 10
+                            Else
+                                pt.X = CInt(bitmap.Width - sz.Width - ft.Height / 10)
+                            End If
 
-                        If pos = 0 OrElse pos = 2 Then
-                            pt.X = ft.Height \ 10
-                        Else
-                            pt.X = CInt(bitmap.Width - sz.Width - ft.Height / 10)
-                        End If
+                            If pos = 2 OrElse pos = 3 Then
+                                pt.Y = CInt(bitmap.Height - sz.Height)
+                            Else
+                                pt.Y = 0
+                            End If
 
-                        If pos = 2 OrElse pos = 3 Then
-                            pt.Y = CInt(bitmap.Height - sz.Height)
-                        Else
-                            pt.Y = 0
-                        End If
+                            gp.AddString(timestamp, ft.FontFamily, CInt(ft.Style), ft.Size, pt, New StringFormat())
 
-                        gp.AddString(timestamp, ft.FontFamily, CInt(ft.Style), ft.Size, pt, New StringFormat())
+                            Using pen As New Pen(Color.Black, ft.Height \ 5)
+                                g.DrawPath(pen, gp)
+                            End Using
 
-                        Using pen As New Pen(Color.Black, ft.Height \ 5)
-                            g.DrawPath(pen, gp)
+                            g.FillPath(Brushes.Gainsboro, gp)
                         End Using
-
-                        g.FillPath(Brushes.Gainsboro, gp)
                     End Using
-                End Using
 
-                bitmaps.Add(bitmap)
+                    bitmaps.Add(New Bitmap(bitmap))
+                End Using
             Next
 
-            width = width + gap
-            height = height + gap
+            width += gap
+            height += gap
         End Using
 
         If inputFile.Ext = "mp4" Then
@@ -314,5 +310,11 @@ Public Class Thumbnails
                 g.ShowException(ex)
             End Try
         End Using
+
+        If bitmaps IsNot Nothing AndAlso bitmaps.Any() Then
+            For Each bitmap In bitmaps
+                bitmap.Dispose()
+            Next
+        End If
     End Sub
 End Class

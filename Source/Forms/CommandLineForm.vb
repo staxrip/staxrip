@@ -57,13 +57,15 @@ Public Class CommandLineForm
         cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLinePreview), Keys.F5)
         cms.Add("Import Command Line...", Sub() If MsgQuestion("Import command line from clipboard?", Clipboard.GetText) = DialogResult.OK Then BasicVideoEncoder.ImportCommandLine(Clipboard.GetText, params), Keys.Control Or Keys.I).SetImage(Symbol.Download)
 
+        cms.Add("-")
+
         a = Sub()
                 CommandLineHighlightingMenuItem.Checked = Not CommandLineHighlightingMenuItem.Checked
                 s.CommandLineHighlighting = CommandLineHighlightingMenuItem.Checked
                 rtbCommandLine.Format(rtbCommandLine.Text.ToString)
             End Sub
 
-        CommandLineHighlightingMenuItem = cms.Add("Settings | Command Line Highlighting", a, Keys.Control Or Keys.H)
+        CommandLineHighlightingMenuItem = cms.Add("Command Line Highlighting", a, Keys.Control Or Keys.H)
         CommandLineHighlightingMenuItem.Checked = s.CommandLineHighlighting
 
         a = Sub()
@@ -71,7 +73,7 @@ Public Class CommandLineForm
                 s.CommandLinePreviewMouseUpSearch = CommandLineMouseUpSearchMenuItem.Checked
             End Sub
 
-        CommandLineMouseUpSearchMenuItem = cms.Add("Settings | Preview Mouse-Up Search", a, Keys.Control Or Keys.P, "Clicking on a option in the preview navigates directly to the UI control.")
+        CommandLineMouseUpSearchMenuItem = cms.Add("Preview Mouse-Up Search", a, Keys.Control Or Keys.P, "Clicking on an option in the preview navigates directly to the UI control.")
         CommandLineMouseUpSearchMenuItem.Checked = s.CommandLinePreviewMouseUpSearch
 
         cms.Add("-")

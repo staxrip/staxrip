@@ -626,7 +626,7 @@ Public Class Audio
         Using proc As New Proc
             proc.Header = "Create avi file for audio cutting " & (ap.GetTrackIndex + 1)
             proc.SkipStrings = {"frame=", "size="}
-            proc.WriteLog("mkvmerge cannot cut audio without video so a avi file has to be created" + BR2)
+            proc.WriteLog("mkvmerge cannot cut audio without video so an avi file has to be created" + BR2)
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
             proc.Arguments = args

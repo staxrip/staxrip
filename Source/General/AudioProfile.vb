@@ -603,7 +603,7 @@ Public Class MuxAudioProfile
 
     Private Overloads Function Edit(showProjectSettings As Boolean) As DialogResult
         Using form As New SimpleSettingsForm("Audio Mux Options",
-            "The Audio Mux options allow to add a audio file without reencoding.")
+            "The Audio Mux options allow to add an audio file without reencoding.")
 
             form.ScaleClientSize(30, 15)
 

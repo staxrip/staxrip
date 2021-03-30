@@ -1456,7 +1456,7 @@ Public Class Subtitle
             Using proc As New Proc
                 proc.Header = "Create avi file for subtitle cutting"
                 proc.SkipStrings = {"frame=", "size="}
-                proc.WriteLog("mkvmerge cannot cut subtitles without video so a avi file has to be created" + BR2)
+                proc.WriteLog("mkvmerge cannot cut subtitles without video so an avi file has to be created" + BR2)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.ffmpeg
                 proc.Arguments = args

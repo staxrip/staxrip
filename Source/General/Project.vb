@@ -284,7 +284,7 @@ Public Class Project
                     filterName = "core.vsfm.TextSubMod"
                 Case "ass"
                     Using td As New TaskDialog(Of String)
-                        td.Title = "Please select a ASS renderer"
+                        td.Title = "Please select an ASS renderer"
                         td.AddCommand("core.vsfm.TextSubMod")
                         td.AddCommand("core.sub.TextFile")
 

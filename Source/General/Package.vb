@@ -1096,7 +1096,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Deblock_QED",
             .Filename = "Deblock_QED.avsi",
-            .Description = "Designed to provide 8x8 deblocking sensitive to the amount of blocking in the source, compared to other deblockers which apply a uniform deblocking across every frame. ",
+            .Description = "Designed to provide 8x8 deblocking sensitive to the amount of blocking in the source, compared to other deblockers which apply an uniform deblocking across every frame. ",
             .HelpFilename = "Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/Deblock_QED",
             .AvsFilterNames = {"Deblock_QED"}})
@@ -1980,7 +1980,7 @@ Public Class Package
 
         If count > 1 Then
             Using td As New TaskDialog(Of String)
-                td.Title = "Choose a option"
+                td.Title = "Choose an option"
 
                 For Each pair In dic
                     If pair.Value <> "" Then

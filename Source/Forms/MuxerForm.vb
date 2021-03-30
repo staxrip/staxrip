@@ -1043,7 +1043,7 @@ Public Class MuxerForm
     Sub AddAudio(path As String)
         Dim profileSelection As New SelectionBox(Of AudioProfile)
         profileSelection.Title = "Audio Profile"
-        profileSelection.Text = "Please select a audio profile."
+        profileSelection.Text = "Please select an audio profile."
 
         For Each audioProfile In s.AudioProfiles
             profileSelection.AddItem(audioProfile)
@@ -1069,7 +1069,7 @@ Public Class MuxerForm
         If Not ap.Stream Is Nothing Then
             Dim streamSelection As New SelectionBox(Of AudioStream)
             streamSelection.Title = "Stream Selection"
-            streamSelection.Text = "Please select a audio stream."
+            streamSelection.Text = "Please select an audio stream."
 
             For Each stream In ap.Streams
                 streamSelection.AddItem(stream)

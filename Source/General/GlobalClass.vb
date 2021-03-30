@@ -861,9 +861,9 @@ Public Class GlobalClass
                         Catch
                             MsgWarn("Failed to create a temp directory. By default it's created " +
                                     "in the directory of the source file so it's not possible " +
-                                    "to open files directly from a optical drive unless a temp directory  " +
+                                    "to open files directly from an optical drive unless a temp directory  " +
                                     "is defined in the options. Usually discs are copied to the hard drive " +
-                                    "first using a application like MakeMKV, DVDFab or AnyDVD.")
+                                    "first using an application like MakeMKV, DVDFab or AnyDVD.")
                             Throw New AbortException
                         End Try
                     End Try

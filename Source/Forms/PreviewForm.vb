@@ -114,7 +114,7 @@ Public Class PreviewForm
         Me.bnEndCutRange.Size = New System.Drawing.Size(70, 70)
         Me.bnEndCutRange.SymbolButton = StaxRip.UI.ButtonEx.ButtonSymbol.Close
         Me.bnEndCutRange.TabStop = False
-        Me.ToolTip.SetToolTip(Me.bnEndCutRange, "Sets a end cut point. Press F1 for help about cutting")
+        Me.ToolTip.SetToolTip(Me.bnEndCutRange, "Sets an end cut point. Press F1 for help about cutting")
         '
         'bnRight2
         '

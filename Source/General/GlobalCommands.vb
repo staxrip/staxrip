@@ -332,7 +332,7 @@ Public Class GlobalCommands
         Msg(Macro.Expand(mainInstruction), Macro.Expand(content), icon, TaskButton.OK)
     End Sub
 
-    <Command("Shows a Open File dialog to show media info.")>
+    <Command("Shows an Open File dialog to show media info.")>
     Sub ShowMediaInfoBrowse()
         Using dialog As New OpenFileDialog
             If dialog.ShowDialog = DialogResult.OK Then
@@ -442,7 +442,7 @@ Public Class GlobalCommands
         g.MainForm.Assistant()
     End Sub
 
-    <Command("Sets a filter replacing a existing filter of same category.")>
+    <Command("Sets a filter replacing an existing filter of same category.")>
     Sub SetFilter(name As String,
                   category As String,
                   <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> script As String)
@@ -463,7 +463,7 @@ Public Class GlobalCommands
         g.MainForm.OpenVideoSourceFile(path)
     End Sub
 
-    <Command("Shows a Open File dialog to open a file to be shown by the console tool mkvinfo.")>
+    <Command("Shows an Open File dialog to open a file to be shown by the console tool mkvinfo.")>
     Sub ShowMkvInfo()
         Using dialog As New OpenFileDialog
             dialog.Filter = "MKV|*.mkv"
@@ -474,7 +474,7 @@ Public Class GlobalCommands
         End Using
     End Sub
 
-    <Command("Shows a Open File dialog to add the remaining HDR10 Metadata to a MKV file.")>
+    <Command("Shows an Open File dialog to add the remaining HDR10 Metadata to a MKV file.")>
     Sub SaveMKVHDR()
         Using dialog As New OpenFileDialog
             dialog.Filter = "mkv|*.mkv"
@@ -489,7 +489,7 @@ Public Class GlobalCommands
         End Using
     End Sub
 
-    <Command("Shows a Open File dialog to generate a short GIF.")>
+    <Command("Shows an Open File dialog to generate a short GIF.")>
     Sub SaveGIF()
         Using dialog As New OpenFileDialog
             dialog.Multiselect = True
@@ -588,7 +588,7 @@ Public Class GlobalCommands
         End Using
     End Sub
 
-    <Command("Shows a Open File dialog to generate thumbnails using mtn engine")>
+    <Command("Shows an Open File dialog to generate thumbnails using mtn engine")>
     Sub SaveMTN()
         Using dialog As New OpenFileDialog
             dialog.Multiselect = True
@@ -675,7 +675,7 @@ Public Class GlobalCommands
         End Using
     End Sub
 
-    <Command("Shows a open file dialog to create a high quality PNG animation.")>
+    <Command("Shows an Open File dialog to create a high quality PNG animation.")>
     Sub SavePNG()
         Using dialog As New OpenFileDialog
             dialog.Multiselect = True

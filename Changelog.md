@@ -7,7 +7,7 @@ v2.4.0 (2021-04-??)
 - Fix ffmpeg re-mux remuxes only one stream per stream type (Dendraspis, JKyle)
 - Optimized, extended and new AviSynth filter (44vince44)
 - Make Err error messages optional via settings (Dendraspis)
-- Bring Command Line options from *Settings* back to top list (Dendraspis)
+- Bring Command Line options from *Settings* sub-menu back to main menu (Dendraspis)
 
 
 v2.3.0 (2021-03-28)

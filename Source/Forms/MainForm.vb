@@ -2194,7 +2194,7 @@ Public Class MainForm
                 If i.DriveType = DriveType.CDRom AndAlso
                     p.TempDir.ToUpperInvariant.StartsWith(i.RootDirectory.ToString.ToUpperInvariant) Then
 
-                    MsgWarn("Opening files from a optical drive requires to set a temp files folder in the options.")
+                    MsgWarn("Opening files from an optical drive requires to set a temp files folder in the options.")
                     Throw New AbortException
                 End If
             Next
@@ -4109,7 +4109,7 @@ Public Class MainForm
         FileHelp.Delete(Folder.Settings + "Jobs.dat")
     End Sub
 
-    <Command("Loads a audio or video profile.")>
+    <Command("Loads an audio or video profile.")>
     Sub LoadProfile(<DispName("Video")> videoProfile As String,
                     <DispName("Audio 1")> audioProfile1 As String,
                     <DispName("Audio 2")> audioProfile2 As String)
@@ -4545,7 +4545,7 @@ Public Class MainForm
 
             Dim audioExist = ui.AddMenu(Of FileExistMode)
             audioExist.Text = "Existing Output"
-            audioExist.Help = "What to do in case a audio encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite."
+            audioExist.Help = "What to do in case an audio encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite."
             audioExist.Field = NameOf(p.FileExistAudio)
 
             b = ui.AddBool
@@ -5564,7 +5564,7 @@ Public Class MainForm
                                 proc.Start()
                             Catch ex As Exception
                                 g.ShowException(ex)
-                                MsgInfo("Manual Merging", "Please merge the files manually with a appropriate tool or visit the support forum].")
+                                MsgInfo("Manual Merging", "Please merge the files manually with an appropriate tool or visit the support forum].")
                                 Throw New AbortException
                             End Try
 

@@ -1050,7 +1050,7 @@ Public Class SimpleUI
             End Set
         End Property
 
-        Property Expandet As Boolean
+        Property Expanded As Boolean
             Get
                 Return Edit.Expand
             End Get

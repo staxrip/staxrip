@@ -877,13 +877,13 @@ Public Class MuxerForm
 
         Dim tb = UI.AddTextButton()
         tb.Text = "Cover"
-        tb.Expandet = True
+        tb.Expanded = True
         tb.Property = NameOf(Muxer.CoverFile)
         tb.BrowseFile("jpg, png, bmp|*.jpg;*.png;*.bmp")
 
         Dim mb = UI.AddTextMenu()
         mb.Text = "Chapters"
-        mb.Expandet = True
+        mb.Expanded = True
         mb.Help = "Chapter file to be muxed."
         mb.Property = NameOf(Muxer.ChapterFile)
         mb.AddMenu("Browse File...", Function() g.BrowseFile("txt, xml|*.txt;*.xml"))
@@ -894,7 +894,7 @@ Public Class MuxerForm
 
             mb = UI.AddTextMenu()
             mb.Text = "Tags"
-            mb.Expandet = True
+            mb.Expanded = True
             mb.Help = "Tag file to be muxed."
             mb.Property = NameOf(Muxer.TagFile)
             mb.AddMenu("Browse File...", Function() g.BrowseFile("xml|*.xml"))
@@ -903,13 +903,13 @@ Public Class MuxerForm
             tb = UI.AddTextButton()
             tb.Text = "Timestamps"
             tb.Help = "txt or mkv file"
-            tb.Expandet = True
+            tb.Expanded = True
             tb.Property = NameOf(Muxer.TimestampsFile)
             tb.BrowseFile("txt, mkv|*.txt;*.mkv")
 
             tb = UI.AddTextButton()
             tb.Text = "Title"
-            tb.Expandet = True
+            tb.Expanded = True
             tb.Property = NameOf(MkvMuxer.Title)
             tb.Button.Text = "%"
             tb.Button.ClickAction = Sub() MacrosForm.ShowDialogForm()
@@ -917,7 +917,7 @@ Public Class MuxerForm
             Dim t = UI.AddText()
             t.Text = "Video Track Name"
             t.Help = "Optional name of the video stream that may contain macros."
-            t.Expandet = True
+            t.Expanded = True
             t.Property = NameOf(Muxer.VideoTrackName)
 
             Dim tm = UI.AddTextMenu()
@@ -955,7 +955,7 @@ Public Class MuxerForm
             Dim txt = UI.AddText()
             txt.Text = "Video Track Name"
             txt.Help = "Optional name of the video stream that may contain macros."
-            txt.Expandet = True
+            txt.Expanded = True
             txt.Property = NameOf(Muxer.VideoTrackName)
 
             Dim textMenu = UI.AddTextMenu()

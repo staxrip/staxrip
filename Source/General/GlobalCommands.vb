@@ -644,6 +644,7 @@ Public Class GlobalCommands
                     output.SaveAction = Sub(value) s.Storage.SetBool("MTNOutput", value)
 
                     Dim customDir = ui.AddTextMenu() 'Custom Output Directory
+                    customDir.Expanded = True
                     customDir.Label.Visible = False
                     customDir.Edit.Text = s.Storage.GetString("MTNDirectory", p.DefaultTargetFolder)
                     customDir.Edit.SaveAction = Sub(value) s.Storage.SetString("MTNDirectory", value)
@@ -875,7 +876,7 @@ Public Class GlobalCommands
 
                     Dim customDir = ui.AddTextButton()
                     customDir.Visible = output.Checked
-                    customDir.Expandet = True
+                    customDir.Expanded = True
                     customDir.Label.Visible = False
                     customDir.Edit.Text = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
                     customDir.Edit.SaveAction = Sub(value) s.Storage.SetString("StaxRipDirectory", value)

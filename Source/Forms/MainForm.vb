@@ -1720,7 +1720,7 @@ Public Class MainForm
 
             SetBindings(p, True)
 
-            Text = path.Base + " - " + Application.ProductName + " " + Application.ProductVersion
+            Text = path.Base + " - " + Application.ProductName + " v" + Application.ProductVersion
 
             If Not Environment.Is64BitProcess Then
                 Text += " (32 bit)"
@@ -3671,7 +3671,7 @@ Public Class MainForm
 
             Dim codeFont = ui.AddTextButton()
             codeFont.Text = "Console Font"
-            codeFont.Expandet = True
+            codeFont.Expanded = True
             codeFont.Field = NameOf(s.CodeFont)
             codeFont.ClickAction = Sub()
                                        Using td As New TaskDialog(Of FontFamily)

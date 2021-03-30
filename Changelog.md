@@ -5,7 +5,7 @@ v2.4.0 (2021-04-??)
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
 - [X] Changed menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - Fix ffmpeg re-mux remuxes only one stream per stream type (Dendraspis, JKyle)
-- Optimized, extended and new AviSynth scripts (44vince44)
+- Optimized, extended and new AviSynth filter (44vince44)
 
 
 v2.3.0 (2021-03-28)

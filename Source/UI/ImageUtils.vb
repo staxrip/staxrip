@@ -194,7 +194,8 @@ Public Class Thumbnails
         Dim infoWidth = MediaInfo.GetVideo(inputFile, "Width")
         Dim infoHeight = MediaInfo.GetVideo(inputFile, "Height")
         Dim infoLength = New FileInfo(inputFile).Length
-        Dim infoDuration = MediaInfo.GetGeneral(inputFile, "Duration").ToInt
+        Dim infoDuration = MediaInfo.GetVideo(inputFile, "Duration/String3")
+        infoDuration = If(infoDuration.StartsWith("00:"), infoDuration.Substring(3), infoDuration)
         Dim audioCodecs = MediaInfo.GetAudioCodecs(inputFile)
 
         If audioCodecs = "" Then
@@ -219,12 +220,12 @@ Public Class Thumbnails
         If channels = 0 Then audioSound = ""
 
         If infoLength / PrefixedSize(3).Factor > 1 Then
-            infoSize = $"{infoLength / PrefixedSize(3).Factor:f2}{PrefixedSize(3).Unit}"
+            infoSize = $"{infoLength / PrefixedSize(3).Factor:f2} {PrefixedSize(3).Unit}"
         Else
-            infoSize = $"{infoLength / PrefixedSize(2).Factor}{PrefixedSize(2).Unit}"
+            infoSize = $"{infoLength / PrefixedSize(2).Factor:f2} {PrefixedSize(2).Unit}"
         End If
 
-        Dim caption = "File: " + inputFile.FileName + BR & "Size: " + MediaInfo.GetGeneral(inputFile, "FileSize") + " bytes" + " (" + infoSize + ")" & ", " + "Duration: " + StaxRip.g.GetTimeString(infoDuration / 1000) + ", avg.bitrate: " + MediaInfo.GetGeneral(inputFile, "OverallBitRate_String") + BR +
+        Dim caption = "File: " + inputFile.FileName + BR & "Size: " + MediaInfo.GetGeneral(inputFile, "FileSize") + " bytes" + " (" + infoSize + ")" & ", " + "Duration: " + infoDuration + ", avg.bitrate: " + MediaInfo.GetGeneral(inputFile, "OverallBitRate_String") + BR +
             "Audio: " + audioCodecs + ", " + MediaInfo.GetAudio(inputFile, "SamplingRate_String") + ", " + audioSound + ", " + MediaInfo.GetAudio(inputFile, "BitRate_String") + BR +
             "Video: " + MediaInfo.GetVideo(inputFile, "Format") + " (" + profile + ")" + ", " + colorSpace + subSampling + scanType.Shorten(1).ToLowerInvariant() + ", " + MediaInfo.GetVideo(inputFile, "Width") & "x" & MediaInfo.GetVideo(inputFile, "Height") & ", " + MediaInfo.GetVideo(inputFile, "BitRate_String") + ", " & MediaInfo.GetVideo(inputFile, "FrameRate").ToSingle.ToInvariantString + "fps".Replace(", ", "")
 

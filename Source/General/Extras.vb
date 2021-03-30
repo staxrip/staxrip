@@ -169,7 +169,7 @@ Class MTN
                 Proc.SkipStrings = {"frame=", "size="}
                 Proc.Encoding = Encoding.UTF8
                 Proc.Package = Package.MTN
-                Proc.AllowedExitCodes = {1}
+                Proc.AllowedExitCodes = {0, 1}
                 Proc.Arguments = """" + inputFile + """" + " -c " & Col & " -r " & Rows &
                     " -h " & SizeHeight & " -w " & SizeWidth & " -j " & PictureQuality &
                     " -D " & PictureDepth & " -P " & " -O " & """" & DirectoryLocation & """"
@@ -180,8 +180,8 @@ Class MTN
                 Proc.Header = "Creating Thumbnail"
                 Proc.SkipStrings = {"frame=", "size="}
                 Proc.Encoding = Encoding.UTF8
-                Proc.AllowedExitCodes = {1}
                 Proc.Package = Package.MTN
+                Proc.AllowedExitCodes = {0, 1}
                 Proc.Arguments = """" + inputFile + """" + " -c " & Col & " -r " & Rows &
                     " -h " & SizeHeight & " -w " & SizeWidth & " -j " & PictureQuality & " -D " & PictureDepth & " -P "
                 Proc.Start()

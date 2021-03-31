@@ -1221,15 +1221,14 @@ Public Class GlobalClass
     End Sub
 
     Sub AddHardcodedSubtitle()
-        For Each subtitle In p.VideoEncoder.Muxer.Subtitles
-            If subtitle.Path.Ext.EqualsAny("srt", "ass", "idx") Then
-                If subtitle.Enabled Then
-                    subtitle.Enabled = False
-                    p.AddHardcodedSubtitleFilter(subtitle.Path, False)
-                    Exit Sub
-                End If
-            End If
-        Next
+        Dim validSubtitles = p.VideoEncoder?.Muxer?.Subtitles?.Where(Function(x) x.Path.Ext().ToLowerEx().EqualsAny("srt", "ass", "idx"))
+        Dim enabledValidSubtitles = validSubtitles?.Where(Function(x) x.Enabled)
+        Dim selectedSubtitle As Subtitle = If(enabledValidSubtitles?.Any(), enabledValidSubtitles?.FirstOrDefault(), validSubtitles?.FirstOrDefault())
+
+        If selectedSubtitle IsNot Nothing Then
+            selectedSubtitle.Enabled = False
+            p.AddHardcodedSubtitleFilter(selectedSubtitle.Path, False)
+        End If
     End Sub
 
     Sub RunAutoCrop(progressAction As Action(Of Double))

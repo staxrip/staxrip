@@ -6,6 +6,7 @@ v2.4.0 (2021-04-??)
 - [X] Changed menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - Fix ffmpeg re-mux remuxes only one stream per stream type (Dendraspis, JKyle)
 - Fix StaxRip Thumbnailer (Dendraspis, [#596](/../../issues/596))
+- Fix adding hardcoded subtitle not working properly (Dendraspis, [#643](/../../issues/643))
 - Make 'Err' error messages optional via settings (Dendraspis)
 - Remove '/vfw.h' from 'Err' (stax76)
 - Bring Command Line options from *Settings* sub-menu back to top level (Dendraspis)

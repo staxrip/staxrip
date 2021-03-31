@@ -13,21 +13,21 @@ Manual = # shows the filter selection dialog
 MPEG2Source = MPEG2Source("%source_file%")
 
 [Color]
-ColorYUV | AutoAdjust = AutoAdjust(gamma_limit=1.0, scd_threshold=16, gain_mode=1, auto_gain=$select:msg:Enable Auto Gain?;true;false$, auto_balance=$select:msg:Enable Auto Balance?;true;false$, Input_tv=$select:msg:Is the Input using TV Range?;true;false$, output_tv=$select:msg:Do you want to use TV Range for Output?;true;false$, use_dither=$select:msg:Use Dither?;true;false$, high_quality=$select:msg:Use High Quality Mode?;true;false$, high_bitdepth=$select:msg:Use High Bit Depth Mode?;true;false$, threads_count=$enter_text:How Many Threads do You Wish to use?$)
+ColorYUV | AutoAdjust = AutoAdjust(gamma_limit=1.0, scd_threshold=16, gain_mode=1, auto_gain=$select:msg:Enable Auto Gain?;true;false$, auto_balance=$select:msg:Enable Auto Balance?;true;false$, Input_tv=$select:msg:Is the Input using TV Range?;true;false$, output_tv=$select:msg:Do you want to use TV Range for Output?;true;false$, use_dither=$select:msg:Use Dither?;true;false$, high_quality=$select:msg:Use High Quality Mode?;true;false$, high_bitdepth=$select:msg:Use High Bit Depth Mode?;true;false$, threads_count=$enter_text:How Many Threads do you wish to use?$)
 ColorYUV | AutoGain = ColorYUV(autogain=$select:msg:Enable AutoGain?;true;false$, autowhite=$select:msg:Enable AutoWhite?;true;false$)
 ColorYUV | Levels = $select:TV to PC|ColorYUV(levels="TV->PC");PC to TV|ColorYUV(levels="PC->TV")$
 ColorYUV | Stack = $select:To Stack|ConvertToStacked();From Stacked|ConvertFromStacked()$
 ColorYUV | Tweak = $select:Neutral|Tweak(hue = 0, sat = 1, bright = 0, cont = 1, coring = false, realcalc = true);Vivid|Tweak(hue = 0, sat = 1.15, bright = 2, cont = 1.08, coring = false, realcalc = true);Less Contrast|Tweak(hue = 0, sat = 0.95, bright = 8, cont = 0.9, coring = false, realcalc = true);Less color|Tweak(hue = 0, sat = 0.82, bright = 0, cont = 0.96, coring = false, realcalc = true);Selective Blue|Tweak(sat=2, startHue=300, endHue=50, coring=false, realcalc=true);Selective Yellow Red|Tweak(sat=2, startHue=50, endHue=200, coring=false, realcalc=true)$
-Convert | ConvertBits = ConvertBits($select:msg:Select the Bit Depth You want to Convert To;8;10;12;14;16;32$)
+Convert | ConvertBits = ConvertBits($select:msg:Select the Bit Depth you want to convert to;8;10;12;14;16;32$)
 Convert | ConvertFromDoubleWidth = ConvertFromDoubleWidth(bits=$select:msg:Select the Bit Depth;8;10;12;14;16;32$)
-Convert | ConvertTo = ConvertTo$enter_text:Enter The Format You Wish To Convert To$()
-Convert | Format = z_ConvertFormat(pixel_type="$enter_text:Enter the Format You Wish to Convert to$", colorspace_op="$select:msg:Select Input Color Matrix;rgb;709;unspec;fcc;470bg;170m;240;ycgco;2020ncl;2020cl;chromancl;chromacl;ictcp$:$select:msg:Select Input Color Transfer;709;unspec;470m;470bg;601;240m;linear;log100;log316;xvycc;srgb;2020_10;2020_12;st2084;std-b67$:$select:msg:Select Input Color Primaries;709;unspec;470m;470bg;170m;240m;film;2020;st428;st431-2;st432-1;jedec-p22$:$select:msg:Select Pixel Range;limited;l;full;f$=>$select:msg:Select Output Color Matrix;rgb;709;unspec;fcc;470bg;170m;240;ycgco;2020ncl;2020cl;chromancl;chromacl;ictcp$:$select:msg:Select Output Color Transfer;709;unspec;470m;470bg;601;240m;linear;log100;log316;xvycc;srgb;2020_10;2020_12;st2084;std-b67$:$select:msg:Select Output Color Primaries;709;unspec;470m;470bg;170m;240m;film;2020;st428;st431-2;st432-1;jedec-p22$:$select:msg:Select Pixel Range;limited;l;full;f$", dither_type="$select:msg:Select Dither Type;none;ordered;random;error_diffusion$")
+Convert | ConvertTo = ConvertTo$enter_text:Enter the Format you wish to convert to$()
+Convert | Format = z_ConvertFormat(pixel_type="$enter_text:Enter the Format you wish to convert to$", colorspace_op="$select:msg:Select Input Color Matrix;rgb;709;unspec;fcc;470bg;170m;240;ycgco;2020ncl;2020cl;chromancl;chromacl;ictcp$:$select:msg:Select Input Color Transfer;709;unspec;470m;470bg;601;240m;linear;log100;log316;xvycc;srgb;2020_10;2020_12;st2084;std-b67$:$select:msg:Select Input Color Primaries;709;unspec;470m;470bg;170m;240m;film;2020;st428;st431-2;st432-1;jedec-p22$:$select:msg:Select Pixel Range;limited;l;full;f$=>$select:msg:Select Output Color Matrix;rgb;709;unspec;fcc;470bg;170m;240;ycgco;2020ncl;2020cl;chromancl;chromacl;ictcp$:$select:msg:Select Output Color Transfer;709;unspec;470m;470bg;601;240m;linear;log100;log316;xvycc;srgb;2020_10;2020_12;st2084;std-b67$:$select:msg:Select Output Color Primaries;709;unspec;470m;470bg;170m;240m;film;2020;st428;st431-2;st432-1;jedec-p22$:$select:msg:Select Pixel Range;limited;l;full;f$", dither_type="$select:msg:Select Dither Type;none;ordered;random;error_diffusion$")
 Dither | 8Bit to 16Bit = Dither_convert_8_to_16()
 Dither | DFTTest(LSB) = dfttest(lsb=true)
 Dither | DitherPost = DitherPost()
-Dither | Gamma / Linear = $select:Gamma To Linear|Dither_y_gamma_to_linear;Linear To Gamma|Dither_y_linear_to_gamma$(curve="$select:msg:Select the Color Curve;601;709;2020$")
+Dither | Gamma / Linear = $select:Gamma to Linear|Dither_y_gamma_to_linear;Linear to Gamma|Dither_y_linear_to_gamma$(curve="$select:msg:Select the Color Curve;601;709;2020$")
 Dither | Sigmoid = $select:Sigmoid Direct|Dither_sigmoid_direct();Sigmoid Inverse|Dither_sigmoid_inverse()$
-Dither | YUV / RGB = $select:RGB To YUV|Dither_convert_rgb_to_yuv();YUV To RGB|Dither_convert_yuv_to_rgb()$
+Dither | YUV / RGB = $select:RGB to YUV|Dither_convert_rgb_to_yuv();YUV to RGB|Dither_convert_yuv_to_rgb()$
 HDRCore | Cube = Cube("$browse_file$")
 
 [Crop]
@@ -49,10 +49,11 @@ nnedi3 = nnedi3(field=1)
 QTGMC | QTGMC With Repair =
     QTGMC1 = QTGMC(preset="Slower", inputType=2)
     QTGMC2 = QTGMC(preset="Slower", inputType=3, prevGlobals="Reuse")
-    $select:msg:Select Repair Mode To Use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Dither_Repair16(QTGMC1, QTGMC2, 1)$
+    $select:msg:Select Repair Mode to use;Repair|Repair(QTGMC1, QTGMC2, 1);Repair16|Dither_Repair16(QTGMC1, QTGMC2, 1)$
 
-QTGMC | QTGMC... = QTGMC(preset="$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, sourceMatch=3, sharpness=0.2, tr2=2, ediThreads=8)
+QTGMC | QTGMC... = QTGMC(preset="$select:msg:Select a Preset;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, sourceMatch=3, sharpness=0.2, tr2=2, ediThreads=8)
 SelectField = $select:Even|SelectEven();Odd|SelectOdd()$
+
 SelectLinesEven =
     AssumeFrameBased()
     SeparateFields()
@@ -70,11 +71,11 @@ TDeint = TDeint($select:msg:Select Mode;Progressive DoubleHeight ELA|mode=-2;Pro
 yadifmod2 = YadifMod2($select:msg:Select Mode;Same Rate(Default)|mode=0;Double Rate|mode=1;Same Rate No Spatial Check|mode=2;Double Rate No Spatial Check|mode=3$)
 
 [Frame Rate]
-AssumeFPS = AssumeFPS($select:msg:Select a frame rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;50;59.940|60000, 1001;60;120;144;240$)
+AssumeFPS = AssumeFPS($select:msg:Select a Frame Rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;50;59.940|60000, 1001;60;120;144;240$)
 AssumeFPS Source File = AssumeFPS(%media_info_video:FrameRate%)
-ChangeFPS = ChangeFPS($select:msg:Select a frame rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;50;59.940|60000, 1001;60;120;144;240$)
-ConvertFPS = ConvertFPS($select:msg:Select a frame rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;50;59.940|60000, 1001;60;120;144;240$)
-InterFrame = InterFrame(preset="Medium", tuning="$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$", newNum=$enter_text:Enter the NewNum Value.$, newDen=$enter_text:Enter the NewDen Value$, cores=$enter_text:Enter the Number of Cores You want to use$, overrideAlgo=$select:msg:Which Algorithm Do you want to Use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)
+ChangeFPS = ChangeFPS($select:msg:Select a Frame Rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;50;59.940|60000, 1001;60;120;144;240$)
+ConvertFPS = ConvertFPS($select:msg:Select a Frame Rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;50;59.940|60000, 1001;60;120;144;240$)
+InterFrame = InterFrame(preset="Medium", tuning="$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$", newNum=$enter_text:Enter the New Num Value$, newDen=$enter_text:Enter the New Den Value$, cores=$enter_text:Enter the Number of Cores you want to use$, overrideAlgo=$select:msg:Which Algorithm do you want to use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)
 
 SVPFlow =
     Threads = 8
@@ -101,14 +102,13 @@ Sharpen | MultiSharpen = MultiSharpen(1)
 Sharpen | pSharpen = pSharpen(strength=25, threshold=75, ss_x=1.0, ss_y=1.0)
 
 [Misc]
-AddBorders = AddBorders(0,0,0,0) #left,top,right,bottom
-f3kdb Neo = neo_f3kdb(y=64, cb=64, cr=64, grainy=0, grainc=0)
+AddBorders = AddBorders(0, 0, 0, 0) #left, top, right, bottom
 Histogram = Histogram("levels", bits=$select:msg:Select BitDepth;8;10;12$)
-MTMode | Prefetch = Prefetch($enter_text:Enter the Number of Threads to Use$)
-MTMode | Set Max Memory = SetMemoryMax($enter_text:Enter the Maximum Memory Avisynth Can use$)
-MTMode | Set Threads = threads=$enter_text:Enter The Number of Threads to Use$
-MTMode | SetMTMode Filter = SetFilterMTMode("$enter_text:Enter The FilterName$",$enter_text:Enter Mode You Wish to Use$)
-SelectRangeEvery = SelectRangeEvery(1500,50)
+MTMode | Prefetch = Prefetch($enter_text:Enter the Number of Threads to use$)
+MTMode | Set Max Memory = SetMemoryMax($enter_text:Enter the Maximum Memory Avisynth can use$)
+MTMode | Set Threads = threads=$enter_text:Enter the Number of Threads to use$
+MTMode | SetMTMode Filter = SetFilterMTMode("$enter_text:Enter the Filter Name$", $enter_text:Enter Mode you wish to use$)
+SelectRangeEvery = SelectRangeEvery(1500, 50)
 SplitVertical = Splitvertical=true
 
 [Noise]
@@ -116,7 +116,7 @@ AddGrainC = AddGrainC(var=1.0, uvar=0.0, hcorr=0.0, vcorr=0.0, seed=6, constant=
 DeGrainMedian = DeGrainMedian(limitY=4, limitUV=6, mode=1, interlaced=false, norow=false)
 DeNoise | Denoise MD = DeNoiseMD1(sigma=4, overlap=2, thcomp=80, str=0.8)DitherPost(mode=7, ampo=1, ampn=0)
 DeNoise | Denoise MF = DenoiseMF2(s1=2.0, s2=2.5, s3=3.0, s4=2.0, overlap=4, thcomp=80, str=0.8, gpu=$select:msg:Use GPU Enabled Feature?;True;False$)
-DFTTest = dfttest($select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong Static|sigma=64, tbsize=1;Strong Temporal|sigma=64, tbsize=3$,$select:msg:Reduce Banding?;No Deband| dither=0;Deband| dither=1;Add Noise| dither=2;More Noise| dither=3$)
+DFTTest = dfttest($select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong Static|sigma=64, tbsize=1;Strong Temporal|sigma=64, tbsize=3$, $select:msg:Reduce Banding?;No Deband|dither=0;Deband|dither=1;Add Noise|dither=2;More Noise|dither=3$)
 DFTTest Neo = neo_dfttest(ftype=0, sigma=2.0, y=3, u=3, v=3)
 FFT3D Neo = neo_fft3d(sigma=2.0, bt=3, y=3, u=3, v=3)
 FFT3DFilter | FFT3DFilter = FFT3DFilter()
@@ -133,7 +133,7 @@ MCTemporalDenoise | MCTemporalDenoisePP =
 MiniDeen = MiniDeen(radius=1, thrY=10, thrUV=12, Y=3, U=3, V=3)
 NLMeans | KNLMeansCL = KNLMeansCL(D=1, A=1, h=$select:msg:Select Strength;Light|2;Medium|4;Strong|4$, device_type="auto")
 NLMeans | TNLMeans = TNLMeans(Ax=4, Ay=4, Az=0, Sx=2, Sy=2, Bx=1, By=1, ms=false, rm=4, a=1.0, h=1.8, sse=true)
-NLMeans | xNLMeans = xnlmeans(a=4,h=2.2,vcomp=0.5,s=1)
+NLMeans | xNLMeans = xnlmeans(a=4, h=2.2, vcomp=0.5, s=1)
 RemoveGrain | RemoveGrain = RemoveGrain(mode=2, modeU=2, modeV=2, planar=false)
 
 RemoveGrain | RemoveGrain | RemoveGrain16 with Repair16 =
@@ -179,20 +179,20 @@ Advanced | Dither_Resize16 In Linear Light =
 
 Advanced | Hardware Encoder = # hardware encoder resizes
 Advanced | ResizeMT = $select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;Lanczos4ResizeMT;LanczosResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch=4)
-Advanced | SuperRes = $select:msg:Select Version;SuperResXBR|SuperResXBR;SuperRes|SuperRes;SuperXBR|SuperXBR$(passes=$select:msg:How Many Passes Do you wish to Perform?;2;3;4;5$, factor=$select:msg:Factor Increase by?;2;4$)
+Advanced | SuperRes = $select:msg:Select Version;SuperResXBR|SuperResXBR;SuperRes|SuperRes;SuperXBR|SuperXBR$(passes=$select:msg:How many Passes do you wish to perform?;2;3;4;5$, factor=$select:msg:Factor Increase by?;2;4$)
 Resize... = $select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;Lanczos4Resize;LanczosResize;PointResize;SincResize;Jinc36Resize;Jinc64Resize;Jinc144Resize;Jinc256Resize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)
 
 [Restoration]
 ChromaStabilize | CNR2 = Cnr2(mode="oxx", scdthr=10.0, ln=35, lm=192, un=47, um=255, vn=47, vm=255, log=false, sceneChroma=false)
+ColorDeBand | f3kdb = f3kdb()
+ColorDeBand | f3kdb Neo = neo_f3kdb(preset=$select:msg:Select Profile;Depth|"depth";Low|"low";Low and No Grain|"low/nograin";Medium|"medium";Medium and No Grain|"medium/nograin";High (Default)|"high";High and No Grain|"high/nograin";Very High|"veryhigh";Very High and No Grain|"veryhigh/nograin";No Grain|"nograin";Luma|"luma";Chroma|"chroma"$, output_depth=$select:msg:Select Output Depth;8 Bit|8;16 Bit|16$)
 ColorDeBand | Gradfun3 = GradFun3(thr=0.5, radius=12, mode=6, smode=1)
+
 ColorDeBand | Gradfun3_16bit =
     ConvertBits(16)
     ConvertToStacked()
     GradFun3(thr=0.5, radius=12, mode=6, smode=1)
     ConvertFromStacked()
-    
-ColorDeBand | Neo_f3kdb = neo_f3kdb(preset=$select:msg:Select Profile;Depth|"depth";Low|"low";Low and No Grain|"low/nograin";Medium|"medium";Medium and No Grain|"medium/nograin";High (Default)|"high";High and No Grain|"high/nograin";Very High|"veryhigh";Very High and No Grain|"veryhigh/nograin";No Grain|"nograin";Luma|"luma";Chroma|"chroma"$, output_depth=$select:msg:Select Output Depth;8 Bit|8;16 Bit|16$)
-ColorDeBand | F3kdb = f3kdb()
 
 DeBlock | DeBlock_QED = Deblock_QED(quant1=24, quant2=26, aOff1=1, aOff2=1, bOff1=2, bOff2=2, uv=3)
 DeBlock | DeBock = Deblock(quant=25, aOffset=0, bOffset=0)

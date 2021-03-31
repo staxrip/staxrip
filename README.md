@@ -6,7 +6,7 @@ It executes and controls console apps such as x265, mkvmerge, ffmpeg, etc. and u
 
 ***StaxRip is no One-Click Encoder!***  
 StaxRip is capable of performing a wide variety of jobs for video/audio processing. To unleash its full power, users are required to know what they want to achieve and how to set up StaxRip to meet their needs.
-If your are a first-time user, it is especially strongly recommended that you learn the basics referring to the documents and do some tests to understand how StaxRip works and what you can achieve with it. However, StaxRip also provides an 'Assistent' feature that will guide you through your jobs step by step so that you can start more easily and prevent mistakes.
+If you are a first-time user, it is especially strongly recommended that you learn the basics referring to the documents and do some tests to understand how StaxRip works and what you can achieve with it. However, StaxRip also provides an 'Assistant' feature that will guide you through your jobs step by step so that you can start more easily and prevent mistakes.
 
 There are a lot of resources in StaxRip-related communities. Users are strongly encouraged to visit those communities for help and more information.
 

@@ -35,7 +35,7 @@ Crop = $select:msg:Select Version;Crop;Dither_Crop16$(%crop_left%, %crop_top%, -
 Hardware Encoder = # hardware encoder crops
 
 [Field]
-Assume = $select:TFF|AssumeTFF();BFF|AssumeTFF()$
+Assume = $select:TFF|AssumeTFF();BFF|AssumeBFF()$
 Decimate = Decimate(cycle=5)
 EEDI3 = EEDI3()
 FieldDeinterlace = FieldDeinterlace()

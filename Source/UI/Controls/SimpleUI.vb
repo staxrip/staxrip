@@ -1134,8 +1134,14 @@ Public Class SimpleUI
                 _Color = value
                 Edit.BackColor = value
                 Edit.TextBox.BackColor = value
+                SimpleUI.RaiseChangeEvent()
+                ValueChangedAction?.Invoke(value)
             End Set
         End Property
+
+        Property SaveAction As Action(Of Color)
+        Property ValueChangedAction As Action(Of Color)
+
 
         Sub New(ui As SimpleUI)
             MyBase.New(ui)
@@ -1145,6 +1151,8 @@ Public Class SimpleUI
             Button.ClickAction = Sub()
                                      Using cd As New ColorDialog
                                          cd.Color = Color
+                                         cd.FullOpen = True
+                                         cd.AnyColor = True
 
                                          If cd.ShowDialog() = DialogResult.OK Then
                                              Color = cd.Color
@@ -1153,7 +1161,13 @@ Public Class SimpleUI
                                  End Sub
         End Sub
 
+        Protected Overrides Sub OnBackColorChanged(e As EventArgs)
+            MyBase.OnBackColorChanged(e)
+        End Sub
+
         Sub Save()
+            SaveAction?.Invoke(Color)
+
             If Field <> "" Then
                 SimpleUI.Store.GetType.GetField(Field).SetValue(SimpleUI.Store, Color)
             ElseIf [Property] <> "" Then

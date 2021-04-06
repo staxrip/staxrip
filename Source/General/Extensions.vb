@@ -522,6 +522,15 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function ToColor(str As String, Optional defaultColor As Color = Nothing) As Color
+        Try
+            Return ColorTranslator.FromHtml(str)
+        Catch ex As Exception
+            Return defaultColor
+        End Try
+    End Function
+
+    <Extension()>
     Function FormatColumn(value As String, delimiter As String) As String
         If value = "" Then Return ""
         Dim lines = value.SplitKeepEmpty(BR)

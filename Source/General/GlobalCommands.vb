@@ -1,10 +1,12 @@
 ﻿
+Imports System.Collections.Concurrent
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 Imports System.Text
-
+Imports System.Threading
+Imports System.Threading.Tasks
 Imports DirectN
 Imports Microsoft.Win32
 Imports StaxRip.UI
@@ -588,92 +590,6 @@ Public Class GlobalCommands
         End Using
     End Sub
 
-    <Command("Shows an Open File dialog to generate thumbnails using mtn engine")>
-    Sub SaveMTN()
-        Using dialog As New OpenFileDialog
-            dialog.Multiselect = True
-
-            If dialog.ShowDialog = DialogResult.OK Then
-                Using form As New SimpleSettingsForm("Thumbnail Options")
-                    form.ScaleClientSize(27, 15)
-
-                    Dim ui = form.SimpleUI
-                    Dim page = ui.CreateFlowPage("main page")
-                    ui.Store = s
-                    page.SuspendLayout()
-
-                    Dim column = ui.AddNum()
-                    column.Text = "Columns:"
-                    column.Config = {1, 12}
-                    column.NumEdit.Value = s.Storage.GetInt("MTNColumn", 4)
-                    column.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNColumn", CInt(value))
-
-                    Dim row = ui.AddNum()
-                    row.Text = "Rows:"
-                    row.Config = {1, 12}
-                    row.NumEdit.Value = s.Storage.GetInt("MTNRow", 6)
-                    row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNRow", CInt(value))
-
-                    Dim quality = ui.AddNum()
-                    quality.Text = "Quality:"
-                    quality.Config = {25, 100}
-                    quality.NumEdit.Value = s.Storage.GetInt("MTNQuality", 95)
-                    quality.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNQuality", CInt(value))
-
-                    Dim height = ui.AddNum()
-                    height.Text = "Height:"
-                    height.Config = {150, 500}
-                    height.NumEdit.Value = s.Storage.GetInt("MTNHeight", 250)
-                    height.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNHeight", CInt(value))
-
-                    Dim width = ui.AddNum()
-                    width.Text = "Width:"
-                    width.Config = {960, 2000}
-                    width.NumEdit.Value = s.Storage.GetInt("MTNWidth", 1920)
-                    width.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNWidth", CInt(value))
-
-                    Dim depth = ui.AddNum()
-                    depth.Text = "Depth:"
-                    depth.Config = {4, 12}
-                    depth.NumEdit.Value = s.Storage.GetInt("MTNDepth", 12)
-                    depth.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNDepth", CInt(value))
-
-                    Dim output = ui.AddBool()
-                    output.Text = "Custom Output"
-                    output.Checked = s.Storage.GetBool("MTNOutput", False)
-                    output.SaveAction = Sub(value) s.Storage.SetBool("MTNOutput", value)
-
-                    Dim customDir = ui.AddTextMenu() 'Custom Output Directory
-                    customDir.Expanded = True
-                    customDir.Label.Visible = False
-                    customDir.Edit.Text = s.Storage.GetString("MTNDirectory", p.DefaultTargetFolder)
-                    customDir.Edit.SaveAction = Sub(value) s.Storage.SetString("MTNDirectory", value)
-                    customDir.AddMenu("Browse Folder...", Function() g.BrowseFolder(p.DefaultTargetFolder))
-
-                    AddHandler output.CheckStateChanged, Sub()
-                                                             customDir.Visible = output.Checked = True
-                                                         End Sub
-
-                    customDir.Visible = output.Checked = True
-
-                    page.ResumeLayout()
-
-                    If form.ShowDialog() = DialogResult.OK Then
-                        ui.Save()
-
-                        For Each i In dialog.FileNames
-                            Try
-                                MTN.Thumbnails(i, Nothing)
-                            Catch ex As Exception
-                                g.ShowException(ex)
-                            End Try
-                        Next
-
-                    End If
-                End Using
-            End If
-        End Using
-    End Sub
 
     <Command("Shows an Open File dialog to create a high quality PNG animation.")>
     Sub SavePNG()
@@ -772,134 +688,112 @@ Public Class GlobalCommands
         End Using
     End Sub
 
-    <Command("Shows a dialog to generate thumbnails.")>
-    Sub ShowBatchGenerateThumbnailsDialog()
-        Using dialog As New OpenFileDialog
+    <Command("Shows a dialog to select files, for those thumbnail sheets are created.")>
+    Async Sub ShowThumbnailerDialogAsync()
+        Using dialog As New OpenFileDialog()
+            dialog.Title = "Select the video files - for Thumbnailer settings go to Options!"
             dialog.SetFilter(FileTypes.Video)
             dialog.Multiselect = True
 
-            If dialog.ShowDialog = DialogResult.OK Then
-                Using form As New SimpleSettingsForm("Thumbnail Options")
-                    form.ScaleClientSize(27, 20)
+            If dialog.ShowDialog() = DialogResult.OK Then
+                Dim filePaths = dialog.FileNames
+                If filePaths.Length > 0 Then
+                    Dim sw = New Stopwatch()
+                    sw.Start()
 
-                    Dim ui = form.SimpleUI
-                    Dim page = ui.CreateFlowPage("main page")
-                    ui.Store = s
-                    page.SuspendLayout()
+                    Dim reportWhenFinished = True
+                    Dim reportTD As TaskDialog(Of DialogResult)
+                    Dim summaryTD As TaskDialog(Of DialogResult)
+                    Dim closingTD As TaskDialog(Of DialogResult)
+                    Dim mainFormClosingHandler As FormClosingEventHandler
+                    Dim cts = New CancellationTokenSource()
 
-                    Dim row As SimpleUI.NumBlock
-                    Dim interval As SimpleUI.NumBlock
+                    mainFormClosingHandler = Sub(sender As Object, e As FormClosingEventArgs)
+                                                 If Not e.Cancel Then
+                                                     Using closingTD
+                                                         closingTD = New TaskDialog(Of DialogResult)(DialogResult.Yes)
+                                                         closingTD.Icon = TaskIcon.Warning
+                                                         closingTD.Title = "Close while Thumbnailer is running?"
+                                                         closingTD.Content = "StaxRip shall be closed while Thumbnailer is still running."
+                                                         closingTD.Content += $"{BR2}These are your options:"
+                                                         closingTD.Content += $"{BR}(1) Leave this dialog open and StaxRip will continue the closing procedure as soon as Thumbnailer finishes."
+                                                         closingTD.Content += $" If you have modified the project, you may be asked to save it first."
+                                                         closingTD.Content += $"{BR}(2) YES - Forces Thumbnailer to stop immediately and StaxRip will continue closing."
+                                                         closingTD.Content += $"{BR}(3) NO  - Cancels the closing procedure and StaxRip keeps running."
+                                                         closingTD.AddButton(DialogResult.Yes)
+                                                         closingTD.AddButton(DialogResult.No)
 
-                    Dim mode = ui.AddMenu(Of Integer)
-                    mode.Text = "Row Count Mode"
-                    mode.Expanded = True
-                    mode.Add("Manual", 0)
-                    mode.Add("Row count is calculated based on time interval", 1)
-                    mode.Button.Value = s.Storage.GetInt("Thumbnail Mode")
-                    mode.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Mode", value)
+                                                         If closingTD.Show() = DialogResult.No Then
+                                                             e.Cancel = True
+                                                         End If
+                                                     End Using
+                                                 End If
+                                             End Sub
+                    AddHandler g.MainForm.FormClosing, mainFormClosingHandler
 
-                    AddHandler mode.Button.ValueChangedUser, Sub()
-                                                                 row.Visible = mode.Button.Value = 0
-                                                                 interval.Visible = mode.Button.Value = 1
-                                                             End Sub
-                    Dim m = ui.AddMenu(Of Integer)
-                    m.Text = "Timestamp Position"
-                    m.Add("Left Top", 0)
-                    m.Add("Right Top", 1)
-                    m.Add("Left Bottom", 2)
-                    m.Add("Right Bottom", 3)
-                    m.Button.Value = s.Storage.GetInt("Thumbnail Position", 3)
-                    m.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Position", value)
+                    Dim thumbnailerTask = Task.Run(
+                        Async Function()
 
-                    Dim k = ui.AddMenu(Of String)
-                    k.Text = "Picture Format:"
-                    k.Add("JPG", "jpg")
-                    k.Add("PNG", "png")
-                    k.Add("TIFF", "tiff")
-                    k.Add("BMP", "bmp")
-                    k.Button.Value = s.Storage.GetString("Picture Format", "png")
-                    k.Button.SaveAction = Sub(value) s.Storage.SetString("Picture Format", CStr(value))
+                            Dim proceededSources = Await Thumbnailer.RunAsync(cts.Token, p, filePaths)
 
-                    Dim cp = ui.AddColorPicker()
-                    cp.Text = "Background Color"
-                    cp.Field = NameOf(s.ThumbnailBackgroundColor)
+                            If reportTD IsNot Nothing AndAlso Not reportTD.IsDisposingOrDisposed Then
+                                reportTD.Close()
+                            End If
+                            If closingTD IsNot Nothing AndAlso Not closingTD.IsDisposingOrDisposed Then
+                                closingTD.Close()
+                            End If
 
-                    Dim nb = ui.AddNum()
-                    nb.Text = "Thumbnail Width:"
-                    nb.Config = {200, 4000, 10}
-                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 500)
-                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Width", CInt(value))
+                            sw.Stop()
 
-                    nb = ui.AddNum()
-                    nb.Text = "Column Count:"
-                    nb.Config = {1, 20}
-                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Columns", 4)
-                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Columns", CInt(value))
+                            RemoveHandler g.MainForm.FormClosing, mainFormClosingHandler
+                            Return proceededSources
+                        End Function,
+                        cts.Token)
 
-                    row = ui.AddNum()
-                    row.Text = "Row Count:"
-                    row.Config = {1, 20}
-                    row.NumEdit.Value = s.Storage.GetInt("Thumbnail Rows", 6)
-                    row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Rows", CInt(value))
+                    Using reportTD
+                        reportTD = New TaskDialog(Of DialogResult)(DialogResult.Yes)
+                        reportTD.Icon = TaskIcon.Question
+                        reportTD.Title = "This might take a while..."
+                        reportTD.Content = If(filePaths.Length = 1,
+                            "The thumbnail sheet is generated in the background. Do you want to get informed when the thumbnail sheet is processed?",
+                            "The thumbnail sheets are generated in the background. Do you want to get informed when all thumbnail sheets are processed?")
+                        reportTD.AddButton(DialogResult.Yes)
+                        reportTD.AddButton(DialogResult.No)
+                        reportWhenFinished = reportTD.Show() = DialogResult.Yes
+                    End Using
 
-                    interval = ui.AddNum()
-                    interval.Text = "Interval (seconds):"
-                    interval.NumEdit.Value = s.Storage.GetInt("Thumbnail Interval")
-                    interval.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Interval", CInt(value))
+                    If reportWhenFinished Then
+                        Dim proceededSources = Await thumbnailerTask
+                        RemoveHandler g.MainForm.FormClosing, mainFormClosingHandler
+                        If proceededSources Is Nothing OrElse Not proceededSources.Any() Then Return
 
-                    row.Visible = mode.Button.Value = 0
-                    interval.Visible = mode.Button.Value = 1
+                        Dim proceededFailedSources = proceededSources.Where(Function(x) Not x.Value)
+                        Dim proceededSucceededSources = proceededSources.Where(Function(x) x.Value)
+                        Dim attention = proceededFailedSources.Any()
+                        Using summaryTD
+                            summaryTD = New TaskDialog(Of DialogResult)
+                            summaryTD.Icon = If(attention, TaskIcon.Warning, TaskIcon.Info)
+                            summaryTD.Title = If(proceededSources.Count = 1,
+                                                If(attention, "Thumbnail sheet creation failed!", "Thumbnail sheet has been created"),
+                                                If(attention, If(proceededSucceededSources.Any(), "Some thumbnail sheet creation failed!", "All thumbnail sheet creation failed!"), "All thumbnail sheets have been created"))
 
-                    Dim margin = ui.AddNum()
-                    margin.Text = "Margin:"
-                    margin.Config = {0, 100}
-                    margin.NumEdit.Value = s.Storage.GetInt("Thumbnail Margin", 5)
-                    margin.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Margin", CInt(value))
+                            For i = 0 To proceededSources.Count - 1
+                                Dim key = proceededSources.ElementAtOrDefault(i).Key
+                                Dim value = proceededSources.ElementAtOrDefault(i).Value
 
-                    Dim cq = ui.AddNum()
-                    cq.Text = "Compression Quality:"
-                    cq.Config = {1, 100}
-                    cq.NumEdit.Value = s.Storage.GetInt("Thumbnail Compression Quality", 95)
-                    cq.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Compression Quality", CInt(value))
-                    AddHandler k.Button.ValueChangedUser, Sub() cq.Visible = k.Button.Value = "jpg"
+                                If value Then
+                                    summaryTD.ExpandedContent += $"✔ ""{key}""{BR}"
+                                Else
+                                    summaryTD.Content += $"❌ ""{key}""{BR}"
+                                End If
+                            Next
 
-                    Dim logo = ui.AddBool()
-                    logo.Text = "Disable StaxRip Logo"
-                    logo.Help = "Enable or disable the StaxRip Watermark"
-                    logo.Checked = s.Storage.GetBool("Logo", False)
-                    logo.SaveAction = Sub(value) s.Storage.SetBool("Logo", CBool(value))
-
-                    Dim output = ui.AddBool()
-                    output.Text = "Output Path"
-                    output.Checked = s.Storage.GetBool("StaxRipOutput", False)
-                    output.SaveAction = Sub(value) s.Storage.SetBool("StaxRipOutput", value)
-
-                    Dim customDir = ui.AddTextButton()
-                    customDir.Visible = output.Checked
-                    customDir.Expanded = True
-                    customDir.Label.Visible = False
-                    customDir.Edit.Text = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
-                    customDir.Edit.SaveAction = Sub(value) s.Storage.SetString("StaxRipDirectory", value)
-                    customDir.BrowseFolder()
-
-                    AddHandler output.CheckStateChanged, Sub() customDir.Visible = output.Checked = True
-
-                    page.ResumeLayout()
-
-                    If form.ShowDialog() = DialogResult.OK Then
-                        ui.Save()
-
-                        For Each i In dialog.FileNames
-                            Try
-                                Thumbnails.SaveThumbnails(i, Nothing)
-                            Catch ex As Exception
-                                g.ShowException(ex)
-                            End Try
-                        Next
-
-                        MsgInfo("Thumbnails have been created.")
+                            summaryTD.ExpandedContent += $"Duration: {sw.ElapsedMilliseconds} ms"
+                            summaryTD.AddButton(DialogResult.OK)
+                            summaryTD.Show()
+                        End Using
                     End If
-                End Using
+                End If
             End If
         End Using
     End Sub

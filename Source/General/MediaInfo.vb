@@ -1,4 +1,5 @@
 
+Imports System.Collections.Concurrent
 Imports System.Runtime.InteropServices
 Imports System.Text.RegularExpressions
 
@@ -257,11 +258,11 @@ Public Class MediaInfo
     End Function
 
     Shared Function GetInfo(path As String, streamKind As MediaInfoStreamKind, parameter As String) As String
-        If path = "" Then
-            Return ""
-        End If
+        Return If(path = "", "", GetMediaInfo(path).GetInfo(streamKind, parameter))
+    End Function
 
-        Return GetMediaInfo(path).GetInfo(streamKind, parameter)
+    Shared Function GetInfo(path As String, streamKind As MediaInfoStreamKind, streamNumber As Integer, parameter As String) As String
+        Return If(path = "", "", GetMediaInfo(path).GetInfo(streamKind, streamNumber, parameter))
     End Function
 
     Shared Function GetMenu(path As String, parameter As String) As String
@@ -270,6 +271,10 @@ Public Class MediaInfo
 
     Shared Function GetAudio(path As String, parameter As String) As String
         Return GetInfo(path, MediaInfoStreamKind.Audio, parameter)
+    End Function
+
+    Shared Function GetAudio(path As String, streamNumber As Integer, parameter As String) As String
+        Return GetInfo(path, MediaInfoStreamKind.Audio, streamNumber, parameter)
     End Function
 
     Function GetVideo(parameter As String) As String
@@ -282,6 +287,14 @@ Public Class MediaInfo
 
     Shared Function GetVideo(path As String, parameter As String) As String
         Return GetInfo(path, MediaInfoStreamKind.Video, parameter)
+    End Function
+
+    Shared Function GetVideo(path As String, streamNumber As Integer, parameter As String) As String
+        Return GetInfo(path, MediaInfoStreamKind.Video, streamNumber, parameter)
+    End Function
+
+    Shared Function GetText(path As String, streamNumber As Integer, parameter As String) As String
+        Return GetInfo(path, MediaInfoStreamKind.Text, streamNumber, parameter)
     End Function
 
     Function GetGeneral(parameter As String) As String
@@ -396,7 +409,7 @@ Public Class MediaInfo
         Return GetMediaInfo(path).GetSubtitleCount
     End Function
 
-    Shared Cache As New Dictionary(Of String, MediaInfo)
+    Shared Cache As ConcurrentDictionary(Of String, MediaInfo) = New ConcurrentDictionary(Of String, MediaInfo)
 
     Shared Function GetMediaInfo(path As String) As MediaInfo
         If path = "" Then
@@ -409,7 +422,7 @@ Public Class MediaInfo
             Return Cache(key)
         End If
 
-        Dim ret As New MediaInfo(path)
+        Dim ret = New MediaInfo(path)
         Cache(key) = ret
         Return ret
     End Function

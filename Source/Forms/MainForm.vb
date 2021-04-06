@@ -2327,7 +2327,7 @@ Public Class MainForm
             ExtractForcedVobSubSubtitles()
             p.VideoEncoder.Muxer.Init()
 
-            If p.HarcodedSubtitle Then
+            If p.HardcodedSubtitle Then
                 g.AddHardcodedSubtitle()
             End If
 
@@ -3901,7 +3901,7 @@ Public Class MainForm
         Try
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
-            Text = path.Base + " - " + Application.ProductName + " " + Application.ProductVersion
+            Text = path.Base + " - " + Application.ProductName + " v" + Application.ProductVersion
             s.UpdateRecentProjects(path)
             UpdateRecentProjectsMenu()
         Catch ex As Exception
@@ -4444,33 +4444,8 @@ Public Class MainForm
             '   ----------------------------------------------------------------
             Dim videoPage = ui.CreateFlowPage("Video", True)
 
-            Dim thumbOptions = ui.AddMenu(Of Integer)
             Dim videoExist = ui.AddMenu(Of FileExistMode)
             Dim demuxVideo = ui.AddBool()
-            Dim staxRipThumbnailOption = ui.AddBool()
-            Dim mtnThumbnailOption = ui.AddBool()
-
-            thumbOptions.Text = "Thumbnail Choices:"
-            thumbOptions.Add("StaxRip Thumbnails", 0)
-            thumbOptions.Add("MTN Thumbnails", 1)
-            thumbOptions.Button.Value = s.Storage.GetInt("Thumbnail Choices", 1)
-            thumbOptions.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Choices", value)
-            AddHandler thumbOptions.Button.ValueChangedUser, Sub()
-                                                                 staxRipThumbnailOption.Visible = thumbOptions.Button.Value = 0
-                                                                 mtnThumbnailOption.Visible = thumbOptions.Button.Value = 1
-                                                             End Sub
-
-            staxRipThumbnailOption.Text = "Create Thumbnails"
-            staxRipThumbnailOption.Help = "Saves thumbnails to Source Location using the StaxRip Engine"
-            staxRipThumbnailOption.Field = NameOf(p.SaveThumbnails)
-
-            mtnThumbnailOption.Text = "Create Thumbnails"
-            mtnThumbnailOption.Visible = True
-            mtnThumbnailOption.Help = "Saves thumbnails to Source Location using the MTN Engine"
-            mtnThumbnailOption.Field = NameOf(p.MTN)
-
-            staxRipThumbnailOption.Visible = thumbOptions.Button.Value = 0
-            mtnThumbnailOption.Visible = thumbOptions.Button.Value = 1
 
             videoExist.Text = "Existing Video Output"
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
@@ -4621,7 +4596,7 @@ Public Class MainForm
             b = ui.AddBool(subPage)
             b.Text = "Add hardcoded subtitle"
             b.Help = "Automatically hardcodes a subtitle." + BR2 + "Supported formats are SRT, ASS and VobSub."
-            b.Field = NameOf(p.HarcodedSubtitle)
+            b.Field = NameOf(p.HardcodedSubtitle)
 
 
             '   ----------------------------------------------------------------
@@ -4631,6 +4606,198 @@ Public Class MainForm
             b.Text = "Demux Chapters"
             b.Checked = p.DemuxChapters
             b.SaveAction = Sub(val) p.DemuxChapters = val
+
+
+            '   ----------------------------------------------------------------
+            ui.CreateFlowPage("Thumbnails", True)
+
+            b = ui.AddBool()
+            b.Text = "Create a thumbnail sheet automatically after encoding"
+            b.Field = NameOf(p.Thumbnailer)
+
+            Dim thumbsImageFormat = ui.AddMenu(Of String)
+            Dim thumbsQuality = ui.AddNum()
+
+            thumbsImageFormat.Text = "Image Format"
+            thumbsImageFormat.Expanded = True
+            thumbsImageFormat.Add("BITMAP", "bmp")
+            thumbsImageFormat.Add("GIF", "gif")
+            thumbsImageFormat.Add("JPEG", "jpg")
+            thumbsImageFormat.Add("PNG", "png")
+            thumbsImageFormat.Add("TIFF", "tif")
+            thumbsImageFormat.Button.Value = p.ThumbnailerSettings.GetString("ImageFileFormat", "jpg")
+            thumbsImageFormat.Button.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("ImageFileFormat", value)
+            thumbsImageFormat.Button.ValueChangedAction = Sub(value)
+                                                              thumbsQuality.Visible = value = "jpg"
+                                                          End Sub
+
+            thumbsQuality.Text = "Quality (%):"
+            thumbsQuality.Config = {1, 100, 1}
+            thumbsQuality.NumEdit.Value = p.ThumbnailerSettings.GetInt("ImageQuality", 70)
+            thumbsQuality.NumEdit.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("ImageQuality", CInt(value))
+
+            Dim thumbsHeaderBackColor As SimpleUI.ColorPickerBlock
+
+            Dim thumbsImageBackColor = ui.AddColorPicker()
+            thumbsImageBackColor.Text = "Background Color:"
+            thumbsImageBackColor.Expanded = True
+            thumbsImageBackColor.Color = p.ThumbnailerSettings.GetString("ImageBackColor", New ColorHSL(0, 0, 0.05, 1).ToHTML()).ToColor()
+            thumbsImageBackColor.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("ImageBackColor", ColorTranslator.ToHtml(value))
+            thumbsImageBackColor.ValueChangedAction = Sub(value) If thumbsHeaderBackColor IsNot Nothing Then thumbsHeaderBackColor.Color = value
+
+            n = ui.AddNum()
+            n.Text = "Spacer (%):"
+            n.Config = {0, 1000, 1}
+            n.NumEdit.Value = p.ThumbnailerSettings.GetInt("SpacerPercent", 20)
+            n.NumEdit.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("SpacerPercent", CInt(value))
+
+            ui.AddLabel(n, " between thumbs, header and sides")
+
+
+            '   ----------------------------------------------------------------
+            ui.CreateFlowPage("Thumbnails | Header", True)
+
+            b = ui.AddBool()
+            b.Text = "Draw Header"
+            b.Checked= p.ThumbnailerSettings.GetBool("Header",  True)
+            b.SaveAction = Sub(value) p.ThumbnailerSettings.SetBool("Header", value)
+
+            Dim headerFont = ui.AddTextButton()
+            headerFont.Text = "Font Name:"
+            headerFont.Expanded = True
+            headerFont.Edit.Text = p.ThumbnailerSettings.GetString("HeaderFontName", "Consolas")
+            headerFont.Edit.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("HeaderFontName", value)
+            headerFont.ClickAction = Sub()
+                                         Using td As New TaskDialog(Of FontFamily)
+                                             td.Title = "Choose a font for the header"
+                                             td.Symbol = Symbol.Font
+
+                                             For Each ff In FontFamily.Families.Where(Function(x) Not x.Name.ToLowerEx().ContainsAny(" mdl2", " assets", "marlett", "ms outlook", "mt extra", "wingdings 2") AndAlso x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
+                                                 td.AddCommand(ff.Name, ff)
+                                             Next
+
+                                             If td.Show IsNot Nothing Then
+                                                 headerFont.Edit.Text = td.SelectedText
+                                             End If
+                                         End Using
+                                     End Sub
+
+            Dim cp = ui.AddColorPicker()
+            cp.Text = "Font Color:"
+            cp.Expanded = True
+            cp.Color = p.ThumbnailerSettings.GetString("HeaderFontColor", New ColorHSL(0, 0, 0.8, 1).ToHTML()).ToColor()
+            cp.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("HeaderFontColor", ColorTranslator.ToHtml(value))
+
+            n = ui.AddNum()
+            n.Text = "Font Size (%):"
+            n.Config = {10, 1000, 1}
+            n.NumEdit.Value = p.ThumbnailerSettings.GetInt("HeaderFontSizePercent", 100)
+            n.NumEdit.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("HeaderFontSizePercent", CInt(value))
+
+            thumbsHeaderBackColor = ui.AddColorPicker()
+            thumbsHeaderBackColor.Text = "Background Color:"
+            thumbsHeaderBackColor.Expanded = True
+            thumbsHeaderBackColor.Color = p.ThumbnailerSettings.GetString("HeaderBackColor", ColorTranslator.ToHtml(thumbsImageBackColor.Color)).ToColor()
+            thumbsHeaderBackColor.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("HeaderBackColor", ColorTranslator.ToHtml(value))
+
+            n = ui.AddNum()
+            n.Text = "Separator Size (%):"
+            n.Config = {0, 1000, 2}
+            n.NumEdit.Value = p.ThumbnailerSettings.GetInt("HeaderSeparatorHeightPercent", 0)
+            n.NumEdit.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("HeaderSeparatorHeightPercent", CInt(value))
+
+
+            '   ----------------------------------------------------------------
+            ui.CreateFlowPage("Thumbnails | Thumbs", True)
+
+            Dim thumbstimestampAlign = ui.AddMenu(Of ContentAlignment)
+            thumbstimestampAlign.Text = "Timestamp Alignment:"
+            thumbstimestampAlign.Expanded = True
+            thumbstimestampAlign.Button.Value = DirectCast([Enum].Parse(GetType(ContentAlignment), p.ThumbnailerSettings.GetString("TimestampAlignment", ContentAlignment.BottomLeft.ToString()).ToString()), ContentAlignment)
+            thumbstimestampAlign.Button.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("TimestampAlignment", value.ToString())
+
+            Dim timestampFont = ui.AddTextButton()
+            timestampFont.Text = "Timestamp Font Name:"
+            timestampFont.Expanded = True
+            timestampFont.Edit.Text = p.ThumbnailerSettings.GetString("TimestampFontName", "Consolas")
+            timestampFont.Edit.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("TimestampFontName", value)
+            timestampFont.ClickAction = Sub()
+                                            Using td As New TaskDialog(Of FontFamily)
+                                                td.Title = "Choose a font for the timestamps"
+                                                td.Symbol = Symbol.Font
+
+                                                For Each ff In FontFamily.Families.Where(Function(x) Not x.Name.ToLowerEx().ContainsAny(" mdl2", " assets", "marlett", "ms outlook", "mt extra", "wingdings 2") AndAlso x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
+                                                    td.AddCommand(ff.Name, ff)
+                                                Next
+
+                                                If td.Show IsNot Nothing Then
+                                                    timestampFont.Edit.Text = td.SelectedText
+                                                End If
+                                            End Using
+                                        End Sub
+
+            cp = ui.AddColorPicker()
+            cp.Text = "Timestamp Font Color:"
+            cp.Expanded = True
+            cp.Color = p.ThumbnailerSettings.GetString("TimestampFontColor", New ColorHSL(0, 0, 0.9, 1).ToHTML()).ToColor()
+            cp.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("TimestampFontColor", ColorTranslator.ToHtml(value))
+
+            n = ui.AddNum()
+            n.Text = "Timestamp Font Size (%):"
+            n.Config = {10, 1000, 1}
+            n.NumEdit.Value = p.ThumbnailerSettings.GetInt("TimestampFontSizePercent", 100)
+            n.NumEdit.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("TimestampFontSizePercent", CInt(value))
+
+            cp = ui.AddColorPicker()
+            cp.Text = "Timestamp Outline Color:"
+            cp.Expanded = True
+            cp.Color = p.ThumbnailerSettings.GetString("TimestampOutlineColor", New ColorHSL(0, 0, 0.1, 1).ToHTML()).ToColor()
+            cp.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("TimestampOutlineColor", ColorTranslator.ToHtml(value))
+
+            n = ui.AddNum()
+            n.Text = "Timestamp Outline Strength (%):"
+            n.Config = {0, 1000, 2}
+            n.NumEdit.Value = p.ThumbnailerSettings.GetInt("TimestampOutlineStrengthPercent", 100)
+            n.NumEdit.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("TimestampOutlineStrengthPercent", CInt(value))
+
+
+            Dim thumbsMode = ui.AddMenu(Of ThumbnailerRowMode)
+            Dim thumbsColumns = ui.AddNum()
+            Dim thumbsRows = ui.AddNum()
+            Dim thumbsInterval = ui.AddNum()
+
+            thumbsMode.Text = "Mode to set number of rows:"
+            thumbsMode.Expanded = True
+            thumbsMode.Button.Value = DirectCast([Enum].Parse(GetType(ThumbnailerRowMode), p.ThumbnailerSettings.GetInt("RowMode", ThumbnailerRowMode.Fixed).ToString()), ThumbnailerRowMode)
+            thumbsMode.Button.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("RowMode", value)
+            thumbsMode.Button.ValueChangedAction = Sub(value)
+                                                       thumbsRows.Visible = value = ThumbnailerRowMode.Fixed
+                                                       thumbsInterval.Visible = value = ThumbnailerRowMode.TimeInterval
+                                                   End Sub
+
+            thumbsColumns.Text = "Columns:"
+            thumbsColumns.Config = {1, 50, 1}
+            thumbsColumns.NumEdit.Value = p.ThumbnailerSettings.GetInt("Columns", 4)
+            thumbsColumns.NumEdit.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("Columns", CInt(value))
+
+            thumbsRows.Text = "Rows:"
+            thumbsRows.Visible = thumbsMode.Button.Value = ThumbnailerRowMode.Fixed
+            thumbsRows.Config = {1, 80, 1}
+            thumbsRows.NumEdit.Value = p.ThumbnailerSettings.GetInt("Rows", 6)
+            thumbsRows.NumEdit.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("Rows", CInt(value))
+
+            thumbsInterval.Text = "Interval (s):"
+            thumbsInterval.Visible = thumbsMode.Button.Value = ThumbnailerRowMode.TimeInterval
+            thumbsInterval.Config = {1, 1800, 1}
+            thumbsInterval.NumEdit.Value = p.ThumbnailerSettings.GetInt("Interval", 60)
+            thumbsInterval.NumEdit.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("Interval", CInt(value))
+
+            n = ui.AddNum()
+            n.Text = "Width of each thumb (px):"
+            n.Config = {0, 1920, 10}
+            n.NumEdit.Value = p.ThumbnailerSettings.GetInt("ThumbWidth", 600)
+            n.NumEdit.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("ThumbWidth", CInt(value))
+
 
 
             '   ----------------------------------------------------------------
@@ -4686,6 +4853,20 @@ Public Class MainForm
             tm.AddMenu("Browse Folder...", tempDirFunc)
             tm.AddMenu("Source File Directory", "%source_dir%%source_name%_temp")
             tm.AddMenu("Macros...", macroAction)
+
+            l = ui.AddLabel(pathPage, "Default Thumbnails Path without extension:")
+            l.Help = "Leave empty to save it next to the video file"
+            l.MarginTop = Font.Height
+
+            tm = ui.AddTextMenu(pathPage)
+            tm.Label.Visible = False
+            tm.Edit.Expand = True
+            tm.Edit.Text = p.ThumbnailerSettings.GetString("ImageFilePathWithoutExtension", "")
+            tm.Edit.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("ImageFilePathWithoutExtension", value)
+            tm.AddMenu("Path of target file without extension + Postfix", "%target_dir%%target_name%_Thumbnail")
+            tm.AddMenu("Path of target file without extension", "%target_dir%%target_name%")
+            tm.AddMenu("Macros...", macroAction)
+
 
 
             '   ----------------------------------------------------------------
@@ -4978,8 +5159,7 @@ Public Class MainForm
         ret.Add("Apps|Players|MPC", NameOf(g.DefaultCommands.StartTool), {"MPC"})
         ret.Add("Apps|Indexing|D2V Witch", NameOf(g.DefaultCommands.StartTool), {"D2V Witch"})
         ret.Add("Apps|Indexing|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
-        ret.Add("Apps|Thumbnails|MTN Thumbnailer", NameOf(g.DefaultCommands.SaveMTN))
-        ret.Add("Apps|Thumbnails|StaxRip Thumbnailer", NameOf(g.DefaultCommands.ShowBatchGenerateThumbnailsDialog))
+        ret.Add("Apps|Thumbnails|StaxRip Thumbnailer (using project options)", NameOf(g.DefaultCommands.ShowThumbnailerDialogAsync))
         ret.Add("Apps|Animation|Animated GIF", NameOf(g.DefaultCommands.SaveGIF))
         ret.Add("Apps|Animation|Animated PNG", NameOf(g.DefaultCommands.SavePNG))
         ret.Add("Apps|Other|MKVToolnix GUI", NameOf(g.DefaultCommands.StartTool), {"MKVToolnix GUI"})

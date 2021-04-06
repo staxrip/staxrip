@@ -12,19 +12,34 @@ Public Class TaskDialog(Of T)
     Property SelectedValue As T
     Property SelectedText As String
     Property Title As String
-    Property Content As String
-    Property ExpandedContent As String
     Property Timeout As Integer
     Property Symbol As Symbol
+    Property Content As String
     Property ContentLabel As LabelEx
+    Property ExpandedContent As String
     Property ExpandedContentLabel As LabelEx
 
     Overloads Property Icon As TaskIcon
     Overloads Property Owner As IntPtr
 
+
+    Public Sub New()
+        MyBase.New()
+    End Sub
+
+    Public Sub New(defaultValue As T)
+        MyClass.New()
+        SelectedValue = defaultValue
+    End Sub
+
+    Public Sub New(defaultText As String, defaultValue As T)
+        MyClass.New(defaultValue)
+        SelectedText = defaultText
+    End Sub
+
+
     Sub Init()
         ShowInTaskbar = False
-        Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         Width = FontHeight * 22
 
         If Content = "" AndAlso Title?.Length > 80 Then
@@ -253,7 +268,7 @@ Public Class TaskDialog(Of T)
 
         If paMain.Controls.Count > 0 Then
             Dim last = paMain.Controls(paMain.Controls.Count - 1)
-            h += last.Top + last.Height
+            h += last.Top + last.Height + last.Margin.Vertical
         End If
 
         h += spBottom.Height
@@ -305,7 +320,7 @@ Public Class TaskDialog(Of T)
             Next
         End If
 
-        If ExpandedContent <> "" AndAlso ExpandedContentLabel.Height > 0 Then
+        If ExpandedContent <> "" AndAlso ExpandedContentLabel?.Height > 0 Then
             For Each line In ExpandedContent.Split(BR(1))
                 list.Add(line.Length)
             Next
@@ -388,6 +403,7 @@ Public Class TaskDialog(Of T)
 
     Protected Overrides Sub OnLoad(args As EventArgs)
         MyBase.OnLoad(args)
+        Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         Dim fh = FontHeight
 
         For Each i As ButtonEx In flpButtons.Controls
@@ -424,14 +440,13 @@ Public Class TaskDialog(Of T)
     End Sub
 
     Overloads Function Show() As T
-        If Application.MessageLoop Then
-            Init()
+        Init()
 
+        If Application.MessageLoop Then
             Using Me
                 ShowDialog()
             End Using
         Else
-            Init()
             Application.Run(Me)
         End If
 

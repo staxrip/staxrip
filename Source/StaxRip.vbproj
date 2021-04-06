@@ -29,7 +29,7 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <GenerateManifests>false</GenerateManifests>
     <SignManifests>false</SignManifests>
     <ManifestCertificateThumbprint>B078FD33BBCE3920206E3C0C0490CA18E86315AF</ManifestCertificateThumbprint>
@@ -40,6 +40,9 @@
     <OptionInfer>On</OptionInfer>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -57,8 +60,6 @@
     <ApplicationVersion>0.9.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup />
@@ -114,6 +115,7 @@
     <Reference Include="Microsoft.VisualBasic">
       <Name>Microsoft.VisualBasic</Name>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -203,6 +205,7 @@
     <Compile Include="General\AsyncStreamReader.vb" />
     <Compile Include="General\Documentation.vb" />
     <Compile Include="General\Extras.vb" />
+    <Compile Include="General\Thumbnailer.vb" />
     <Compile Include="Video\FrameServer.vb" />
     <Compile Include="General\JobManager.vb" />
     <Compile Include="General\LogBuilder.vb" />

@@ -361,12 +361,8 @@ Public Class GlobalClass
 
             g.RaiseAppEvent(ApplicationEvent.JobMuxed)
 
-            If p.SaveThumbnails Then
-                Thumbnails.SaveThumbnails(p.TargetFile, p)
-            End If
-
-            If p.MTN Then
-                MTN.Thumbnails(p.TargetFile, p)
+            If p.Thumbnailer Then
+                Dim unused = Thumbnailer.RunAsync(Nothing, p, p.TargetFile)
             End If
 
             Log.WriteHeader("Job Complete")
@@ -713,7 +709,7 @@ Public Class GlobalClass
                 Directory.CreateDirectory(backupPath)
             End If
 
-            FileHelp.Copy(g.SettingsFile, backupPath + "Settings(" + Application.ProductVersion + ").dat")
+            FileHelp.Copy(g.SettingsFile, backupPath + "Settings(v" + Application.ProductVersion + ").dat")
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -1017,9 +1013,9 @@ Public Class GlobalClass
             Using td As New TaskDialog(Of String)
                 If title = "" Then
                     If TypeOf ex Is ErrorAbortException Then
-                        td.Title = DirectCast(ex, ErrorAbortException).Title + $" ({Application.ProductVersion})"
+                        td.Title = DirectCast(ex, ErrorAbortException).Title + $" (v{Application.ProductVersion})"
                     Else
-                        td.Title = ex.GetType.Name + $" ({Application.ProductVersion})"
+                        td.Title = ex.GetType.Name + $" (v{Application.ProductVersion})"
                     End If
                 Else
                     td.Title = title

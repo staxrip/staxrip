@@ -48,13 +48,12 @@ Public Class Project
     Public FileExistVideo As FileExistMode
     Public FirstOriginalSourceFile As String
     Public ForcedOutputMod As Integer = 8
-    Public HarcodedSubtitle As Boolean
+    Public HardcodedSubtitle As Boolean
     Public ImportVUIMetadata As Boolean = True
     Public ITU As Boolean
     Public LastOriginalSourceFile As String
     Public Log As New LogBuilder
     Public MaxAspectRatioError As Double = 2
-    Public MTN As Boolean
     Public NoDialogs As Boolean
     Public NoTempDir As Boolean
     Public PreferredAudio As String
@@ -67,7 +66,6 @@ Public Class Project
     Public RemindToDoCompCheck As Boolean = False
     Public RemindToSetFilters As Boolean = False
     Public ResizeSliderMaxWidth As Integer
-    Public SaveThumbnails As Boolean
     Public Script As TargetVideoScript
     Public SkipAudioEncoding As Boolean
     Public SkippedAssistantTips As List(Of String)
@@ -102,6 +100,8 @@ Public Class Project
     Public TargetWidth As Integer = 1920
     Public TempDir As String
     Public TemplateName As String = ""
+    Public Thumbnailer As Boolean = False
+    Public ThumbnailerSettings As ObjectStorage
     Public TrimCode As String = ""
     Public UseScriptAsAudioSource As Boolean
     Public Versions As Dictionary(Of String, Integer)
@@ -125,6 +125,7 @@ Public Class Project
         If TempDir Is Nothing Then TempDir = ""
         If Log Is Nothing Then Log = New LogBuilder
         If Storage Is Nothing Then Storage = New ObjectStorage
+        If ThumbnailerSettings Is Nothing Then ThumbnailerSettings = New ObjectStorage()
         If Ranges Is Nothing Then Ranges = New List(Of Range)
         If SourceFile Is Nothing Then SourceFile = ""
         If TargetFile Is Nothing Then TargetFile = ""

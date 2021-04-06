@@ -5,7 +5,8 @@ v2.4.0 (2021-04-??)
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
 - [X] Changed menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - Fix ffmpeg re-mux remuxes only one stream per stream type (Dendraspis, JKyle)
-- Fix StaxRip Thumbnailer (Dendraspis, [#596](/../../issues/596))
+- Fix old StaxRip Thumbnailer (Dendraspis, [#596](/../../issues/596))
+- Refurbish StaxRip Thumbnailer (Dendraspis, [#596](/../../issues/596))
 - Fix adding hardcoded subtitle not working properly (Dendraspis, [#643](/../../issues/643))
 - Make 'Err' error messages optional via settings (Dendraspis)
 - Remove '/vfw.h' from 'Err' (stax76)
@@ -13,6 +14,8 @@ v2.4.0 (2021-04-??)
 - Improve keyboard support in apps dialog (stax76)
 - Optimize, extend and add new AviSynth filters (44vince44)
 - Typo and consistency fixes (JKyle)
+- Fix AssumeBFF filter selection (JKyle)
+- Removal of MTN Thumbnailer (~60MB unzipped, ~10MB zipped) (Dendraspis)
 
 
 v2.3.0 (2021-03-28)

@@ -359,15 +359,6 @@ Public Class Package
         .DownloadURL = "https://github.com/amichaeltm/BDSup2SubPlusPlus/releases",
         .Description = "GUI app that converts Blu-ray subtitles to other formats like VobSub."})
 
-    Shared Property MTN As Package = Add(New Package With {
-        .Name = "mtn",
-        .Filename = "mtn.exe",
-        .Location = "Thumbnails\MTN",
-        .Description = "Movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files.",
-        .WebURL = "https://github.com/Revan654/Movie-Thumbnailer-mtn",
-        .HelpURL = "http://moviethumbnail.sourceforge.net/usage.en.html",
-        .HelpSwitch = ""})
-
     Shared Property SubtitleEdit As Package = Add(New Package With {
         .Name = "Subtitle Edit",
         .Filename = "SubtitleEdit.exe",

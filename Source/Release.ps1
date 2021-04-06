@@ -30,6 +30,7 @@ $excludeBinPatternsRegEx = '(?i)' + (($excludeBinPatterns | foreach {$_}) -join 
 $projectFiles = Get-ChildItem -Path $PSScriptRoot -Recurse -File -Include $includeProjectFiles
 foreach( $file in $projectFiles ) {
     if( $file.FullName.Contains('\Apps\') ) { continue }
+    if( $file.FullName.EndsWith('.vb') ) { continue }
 
     $lines = Get-Content $file
 

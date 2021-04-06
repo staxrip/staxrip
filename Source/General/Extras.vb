@@ -138,55 +138,6 @@ Public Class Animation
         Else
             File.Move(Path, NewFile)
         End If
-
-    End Sub
-
-End Class
-
-Class MTN
-    Shared Sub Thumbnails(inputFile As String, proj As Project)
-        If Not File.Exists(inputFile) Then Exit Sub
-        If Not Package.MTN.VerifyOK(True) Then Exit Sub
-
-        If proj Is Nothing Then
-            proj = New Project
-            proj.Init()
-            proj.SourceFile = inputFile
-        End If
-
-        Dim Col = s.Storage.GetInt("MTNColumn", 4)
-        Dim Rows = s.Storage.GetInt("MTNRow", 6)
-        Dim SizeWidth = s.Storage.GetInt("MTNWidth", 1920)
-        Dim SizeHeight = s.Storage.GetInt("MTNHeight", 200)
-        Dim PictureQuality = s.Storage.GetInt("MTNQuality", 95)
-        Dim PictureDepth = s.Storage.GetInt("MTNDepth", 12)
-        Dim DirectoryStatus = s.Storage.GetBool("MTNOutput", False)
-        Dim DirectoryLocation = s.Storage.GetString("MTNDirectory", p.DefaultTargetFolder)
-
-        If DirectoryStatus = True Then
-            Using Proc As New Proc
-                Proc.Header = "Creating Thumbnail"
-                Proc.SkipStrings = {"frame=", "size="}
-                Proc.Encoding = Encoding.UTF8
-                Proc.Package = Package.MTN
-                Proc.AllowedExitCodes = {0, 1}
-                Proc.Arguments = """" + inputFile + """" + " -c " & Col & " -r " & Rows &
-                    " -h " & SizeHeight & " -w " & SizeWidth & " -j " & PictureQuality &
-                    " -D " & PictureDepth & " -P " & " -O " & """" & DirectoryLocation & """"
-                Proc.Start()
-            End Using
-        Else
-            Using Proc As New Proc
-                Proc.Header = "Creating Thumbnail"
-                Proc.SkipStrings = {"frame=", "size="}
-                Proc.Encoding = Encoding.UTF8
-                Proc.Package = Package.MTN
-                Proc.AllowedExitCodes = {0, 1}
-                Proc.Arguments = """" + inputFile + """" + " -c " & Col & " -r " & Rows &
-                    " -h " & SizeHeight & " -w " & SizeWidth & " -j " & PictureQuality & " -D " & PictureDepth & " -P "
-                Proc.Start()
-            End Using
-        End If
     End Sub
 End Class
 

@@ -16,6 +16,14 @@ v2.4.0 (2021-04-??)
 - Typo and consistency fixes (JKyle)
 - Fix AssumeBFF filter selection (JKyle)
 - Removal of MTN Thumbnailer (~60MB unzipped, ~10MB zipped) (Dendraspis)
+- CTMF r5
+- finesharp 2020-11-03
+- fmtconv r22
+- fvsfunc 2020-10-11
+- muvsfunc v0.3.0
+- mvtools v23
+- MediaInfo.NET 7.1.0.0
+- MKVToolNix 56.0.0
 
 
 v2.3.0 (2021-03-28)

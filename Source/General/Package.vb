@@ -1093,31 +1093,28 @@ Public Class Package
             .AvsFilterNames = {"Deblock_QED"}})
 
         Add(New PluginPackage With {
-            .Name = "nnedi3 AVSI",
-            .Filename = "nnedi3_16.avsi",
-            .HelpFilename = "Readme.txt",
-            .Description = "nnedi3 is an AviSynth 2.5 plugin, but supports all new planar colorspaces when used with AviSynth 2.6",
-            .Location = "Plugins\AVS\NNEDI3",
-            .WebURL = "http://avisynth.nl/index.php/nnedi3",
+            .Name = "nnedi3_resize16 AVSI",
+            .Filename = "nnedi3_resize16.avsi",
+            .Description = "nnedi3_resize16 is an advanced script for image resizing and colorspace conversion.",
+            .Location = "Plugins\AVS\Scripts",
+            .WebURL = "http://avisynth.nl/index.php/Nnedi3_resize16",
             .AvsFilterNames = {"nnedi3_resize16"}})
 
         Add(New PluginPackage With {
             .Name = "nnedi3x AVSI",
             .Filename = "nnedi3x.avsi",
-            .HelpFilename = "Readme.txt",
-            .Description = "nnedi3x is an AviSynth 2.5 plugin, but supports all new planar colorspaces when used with AviSynth 2.6",
-            .Location = "Plugins\AVS\NNEDI3",
-            .WebURL = "http://avisynth.nl/index.php/nnedi3",
+            .Description = "nnedi3x script function is the same as nnedi3ocl but supports RGB24 and YUY2. It also doesn't complain if you feed it with the now removed parameters from the original nnedi3.",
+            .Location = "Plugins\AVS\Scripts",
+            .WebURL = "http://avisynth.nl/index.php/Nnedi3ocl/nnedi3x",
             .AvsFilterNames = {"nnedi3x"}})
 
         Add(New PluginPackage With {
             .Name = "edi_rpow2 AVSI",
-            .Filename = "edi_rpow2.avsi",
-            .HelpFilename = "Readme.txt",
             .Description = "An improved rpow2 function for nnedi3, nnedi3ocl, eedi3, and eedi2.",
-            .Location = "Plugins\AVS\NNEDI3",
-            .WebURL = "http://avisynth.nl/index.php/nnedi3",
-            .AvsFilterNames = {"nnedi3_rpow2"}})
+            .Filename = "edi_rpow2.avsi",
+            .Location = "Plugins\AVS\Scripts",
+            .WebURL = "https://github.com/realfinder/AVS-Stuff/tree/Community/avs%202.6%20and%20up",
+            .AvsFilterNames = {"edi_rpow2"}})
 
         Add(New PluginPackage With {
             .Name = "SmoothD2",
@@ -1354,7 +1351,7 @@ Public Class Package
             .WebURL = "https://github.com/jpsdr/plugins_JPSDR",
             .DownloadURL = "https://github.com/jpsdr/plugins_JPSDR/releases",
             .Description = "Merge of AutoYUY2, NNEDI3, HDRTools, aWarpSharpMT and ResampleMT. Included is the W7 AVX variant.",
-            .AvsFilterNames = {"aBlur", "aSobel", "AutoYUY2", "aWarp", "aWarp4", "aWarpSharp2", "BicubicResizeMT", "BilinearResizeMT", "BlackmanResizeMT", "ConvertLinearRGBtoYUV", "ConvertRGB_Hable_HDRtoSDR", "ConvertRGB_Mobius_HDRtoSDR", "ConvertRGB_Reinhard_HDRtoSDR", "ConvertRGBtoXYZ", "ConvertXYZ_Hable_HDRtoSDR", "ConvertXYZ_Mobius_HDRtoSDR", "ConvertXYZ_Reinhard_HDRtoSDR", "ConvertXYZ_Scale_HDRtoSDR", "ConvertXYZ_Scale_SDRtoHDR", "ConvertXYZtoRGB", "ConvertXYZtoYUV", "ConvertYUVtoLinearRGB", "ConvertYUVtoXYZ", "DeBicubicResizeMT", "DeBilinearResizeMT", "DeBlackmanResizeMT", "DeGaussResizeMT", "DeLanczos4ResizeMT", "DeLanczosResizeMT", "DeSincResizeMT", "DeSpline16ResizeMT", "DeSpline36ResizeMT", "DeSpline64ResizeMT", "GaussResizeMT", "Lanczos4ResizeMT", "LanczosResizeMT", "nnedi3", "PointResizeMT", "SincResizeMT", "Spline16ResizeMT", "Spline36ResizeMT", "Spline64ResizeMT"}})
+            .AvsFilterNames = {"aBlur", "aSobel", "AutoYUY2", "aWarp", "aWarp4", "aWarpSharp2", "BicubicResizeMT", "BilinearResizeMT", "BlackmanResizeMT", "ConvertLinearRGBtoYUV", "ConvertRGB_Hable_HDRtoSDR", "ConvertRGB_Mobius_HDRtoSDR", "ConvertRGB_Reinhard_HDRtoSDR", "ConvertRGBtoXYZ", "ConvertXYZ_Hable_HDRtoSDR", "ConvertXYZ_Mobius_HDRtoSDR", "ConvertXYZ_Reinhard_HDRtoSDR", "ConvertXYZ_Scale_HDRtoSDR", "ConvertXYZ_Scale_SDRtoHDR", "ConvertXYZtoRGB", "ConvertXYZtoYUV", "ConvertYUVtoLinearRGB", "ConvertYUVtoXYZ", "DeBicubicResizeMT", "DeBilinearResizeMT", "DeBlackmanResizeMT", "DeGaussResizeMT", "DeLanczos4ResizeMT", "DeLanczosResizeMT", "DeSincResizeMT", "DeSpline16ResizeMT", "DeSpline36ResizeMT", "DeSpline64ResizeMT", "GaussResizeMT", "Lanczos4ResizeMT", "LanczosResizeMT", "nnedi3", "nnedi3_rpow2", "PointResizeMT", "SincResizeMT", "Spline16ResizeMT", "Spline36ResizeMT", "Spline64ResizeMT"}})
 
         Add(New PluginPackage With {
             .Name = "TDeint",

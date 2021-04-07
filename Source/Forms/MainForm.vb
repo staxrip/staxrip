@@ -2252,13 +2252,12 @@ Public Class MainForm
                 End If
 
                 If content.Contains("Frame_Rate=29970") Then
-                    Dim m = Regex.Match(content, "FINISHED +(\d+).+FILM")
+                    Dim m = Regex.Match(content, "FINISHED\s+(\d{1,2}(?:\.\d{1,2}))\s?%\s+FILM")
 
                     If m.Success Then
-                        Dim film = m.Groups(1).Value.ToInt
-
-                        If film >= 95 Then
-                            content = content.Replace("Field_Operation=0" + BR + "Frame_Rate=29970 (30000/1001)", "Field_Operation=1" + BR + "Frame_Rate=23976 (24000/1001)")
+                        Dim film = m.Groups(1).Value.ToSingle()
+                        If film >= p.D2VAutoForceFilmThreshold Then
+                            content = content.Replace($"Field_Operation=0{BR}Frame_Rate=29970 (30000/1001)", $"Field_Operation=1{BR}Frame_Rate=23976 (24000/1001)")
                             content.WriteFileSystemEncoding(p.SourceFile)
                         End If
                     End If
@@ -4465,6 +4464,12 @@ Public Class MainForm
             b.Help = "Auto-rotate video after loading when the source file/container supports it."
             b.Field = NameOf(p.AutoRotation)
 
+            n = ui.AddNum()
+            n.Text = "Film Threshold for D2V files:"
+            n.Help = ""
+            n.Config = {0, 100, 0.1, 2}
+            n.Field = NameOf(p.D2VAutoForceFilmThreshold)
+
 
             '   ----------------------------------------------------------------
             Dim audioPage = ui.CreateFlowPage("Audio", True)
@@ -4659,7 +4664,7 @@ Public Class MainForm
 
             b = ui.AddBool()
             b.Text = "Draw Header"
-            b.Checked= p.ThumbnailerSettings.GetBool("Header",  True)
+            b.Checked = p.ThumbnailerSettings.GetBool("Header", True)
             b.SaveAction = Sub(value) p.ThumbnailerSettings.SetBool("Header", value)
 
             Dim headerFont = ui.AddTextButton()

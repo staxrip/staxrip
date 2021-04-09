@@ -1,4 +1,12 @@
-v2.4.0 (2021-04-??)
+v2.5.0 (not published yet)
+=========================
+
+- [ ] Might break settings from previous version, so starting with new settings is recommended
+- [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
+- [ ] Changed menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
+
+
+v2.4.0 (2021-04-09)
 =========================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
@@ -13,7 +21,7 @@ v2.4.0 (2021-04-??)
 - Bring Command Line options from *Settings* sub-menu back to top level (Dendraspis)
 - Improve keyboard support in apps dialog (stax76)
 - Remove NVEnc encode modes cbrhq and vbrhq (Dendraspis, [#652](/../../issues/652))
-- Add Film Threshold for D2V files to project options (Dendraspis, [#641](/../../issues/641))
+- Add Auto Film Threshold for D2V files to project options (Dendraspis, [#641](/../../issues/641))
 - Optimize, extend and add new AviSynth filters (44vince44)
 - Typo and consistency fixes (JKyle)
 - Fix AssumeBFF filter selection (JKyle)
@@ -25,8 +33,8 @@ v2.4.0 (2021-04-??)
 - fvsfunc 2020-10-11
 - muvsfunc v0.3.0
 - mvtools v23
-- MediaInfo.NET 7.1.0.0
-- MKVToolNix 56.0.0
+- MediaInfo.NET v7.1.0.0
+- MKVToolNix v56.0.0
 - nnedi3_resize16 v3.3
 
 

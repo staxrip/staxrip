@@ -2624,6 +2624,10 @@ Public Class MainForm
     End Sub
 
     Sub ExtractForcedVobSubSubtitles()
+        If Not p.ExtractForcedSubSubtitles Then
+            Exit Sub
+        End If
+
         For Each path In g.GetFilesInTempDirAndParent
             If path.ExtFull = ".idx" AndAlso g.IsSourceSameOrSimilar(path) AndAlso
                     Not path.Contains("_forced") AndAlso
@@ -4597,6 +4601,11 @@ Public Class MainForm
             b.Text = "Convert Sup (PGS/Blu-ray) to IDX (Sub/VobSub/DVD)"
             b.Help = "Works only with demuxed subtitles."
             b.Field = NameOf(p.ConvertSup2Sub)
+
+            b = ui.AddBool(subPage)
+            b.Text = "Extract forced subtitles from IDX files (Sub/VobSub/DVD)"
+            b.Help = "Works only with demuxed subtitles."
+            b.Field = NameOf(p.ExtractForcedSubSubtitles)
 
             b = ui.AddBool(subPage)
             b.Text = "Add hardcoded subtitle"

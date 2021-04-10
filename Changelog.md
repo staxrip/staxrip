@@ -5,6 +5,7 @@ v2.5.0 (not published yet)
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
 - [ ] Changed menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - Add option to disable extraction of forced subtitles for IDX files (Dendraspis, 44vince44)
+- Opened video files are sorted before they are processed (Dendraspis)
 
 
 v2.4.0 (2021-04-09)

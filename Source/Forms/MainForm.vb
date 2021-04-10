@@ -1934,7 +1934,7 @@ Public Class MainForm
         AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
 
         Try
-            files = files.Select(Function(filePath) New FileInfo(filePath).FullName).AsEnumerable()
+            files = files.Select(Function(filePath) New FileInfo(filePath).FullName).OrderBy( Function(filePath) filePath, StringComparer.InvariantCultureIgnoreCase)
 
             If Not g.VerifySource(files) Then
                 Throw New AbortException

@@ -389,8 +389,10 @@ Public Class ProcessingForm
         ProgressReformattingMenuItem.Enabled = g.IsJobProcessing
         ProgressReformattingMenuItem.Checked = s.ProgressReformatting
 
-        Dim priorityText = _priorities.First(Function(x) x.Key = ProcController.GetProcessPriority()).Value
+        Dim priority = ProcController.GetProcessPriority()
+        Dim priorityText = If(priority.HasValue, _priorities.First(Function(x) x.Key = priority.Value).Value, "")
         For Each item In CMS.GetItems().OfType(Of MenuItemEx).Where(Function(i) i.Path.StartsWith(_priorityMenuName + " | "))
+            item.Enabled = priority.HasValue
             item.Checked = item.Path.EndsWith($" | {priorityText}")
         Next
 

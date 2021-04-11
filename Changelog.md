@@ -7,6 +7,8 @@ v2.5.0 (not published yet)
 - Add option to disable extraction of forced subtitles for IDX files (Dendraspis, 44vince44)
 - Opened video files are sorted before they are processed (Dendraspis)
 - Fix app crash on opening menu between encodes (Dendraspis)
+- MKVToolNix v56.1.0
+- NVEnc v5.30
 
 
 v2.4.0 (2021-04-09)

@@ -8,6 +8,7 @@ v2.5.0 (not published yet)
 - Sort video files before they are opened and processed (Dendraspis)
 - Fix app crash on opening menu between encodes (Dendraspis)
 - Disable file drop in Code Editor (Dendraspis)
+- Fix multiple suspensions on running processes (Dendraspis)
 - MKVToolNix v56.1.0
 - NVEnc v5.30
 

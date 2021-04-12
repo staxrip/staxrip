@@ -503,6 +503,7 @@ Public Class ProcController
         For Each process In GetProcesses()
             For Each thread As ProcessThread In process.Threads
                 Dim handle = OpenThread(ThreadAccess.SUSPEND_RESUME, False, thread.Id)
+                ResumeThread(handle)
                 SuspendThread(handle)
                 CloseHandle(handle)
             Next
@@ -512,9 +513,9 @@ Public Class ProcController
     Shared Sub ResumeProcs()
         For Each process In GetProcesses()
             For x = process.Threads.Count - 1 To 0 Step -1
-                Dim h = OpenThread(ThreadAccess.SUSPEND_RESUME, False, process.Threads(x).Id)
-                ResumeThread(h)
-                CloseHandle(h)
+                Dim handle = OpenThread(ThreadAccess.SUSPEND_RESUME, False, process.Threads(x).Id)
+                ResumeThread(handle)
+                CloseHandle(handle)
             Next
         Next
     End Sub

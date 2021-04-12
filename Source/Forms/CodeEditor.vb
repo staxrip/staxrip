@@ -567,7 +567,7 @@ Public Class CodeEditor
             tbName.Margin = New Padding(0, 0, 0, 0)
 
             rtbScript = New RichTextBoxEx(False)
-            rtbScript.EnableAutoDragDrop = True
+            rtbScript.EnableAutoDragDrop = False
             rtbScript.Dock = DockStyle.Fill
             rtbScript.WordWrap = False
             rtbScript.ScrollBars = RichTextBoxScrollBars.Vertical

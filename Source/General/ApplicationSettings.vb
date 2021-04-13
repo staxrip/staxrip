@@ -71,7 +71,7 @@ Public Class ApplicationSettings
     Public ShowPreviewInfo As Boolean
     Public ShowTemplateSelection As Boolean
     Public ShutdownForce As Boolean
-    Public ShutdownTimeout As Integer
+    Public ShutdownTimeout As Integer = 90
     Public StartupTemplate As String
     Public Storage As ObjectStorage
     Public StringDictionary As Dictionary(Of String, String)

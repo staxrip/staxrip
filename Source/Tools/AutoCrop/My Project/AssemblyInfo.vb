@@ -10,9 +10,9 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("AutoCrop")>
 <Assembly: AssemblyDescription("AutoCrop")>
-<Assembly: AssemblyCompany("StaxRip authors")>
+<Assembly: AssemblyCompany("StaxRip Authors")>
 <Assembly: AssemblyProduct("AutoCrop")>
-<Assembly: AssemblyCopyright("Copyright (C) 2020 StaxRip authors")>
+<Assembly: AssemblyCopyright("Copyright (C) 2021 StaxRip Authors")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")>
 
-<Assembly: AssemblyVersion("2.1.0.0")>
-<Assembly: AssemblyFileVersion("2.1.0.0")>
+<Assembly: AssemblyVersion("2.2.0.0")>
+<Assembly: AssemblyFileVersion("2.2.0.0")>

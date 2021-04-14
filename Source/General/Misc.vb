@@ -1303,8 +1303,6 @@ Public Class Subtitle
                 If line.StartsWith("id: ") AndAlso line Like "id: ??, index: *" Then
                     st = New Subtitle
 
-                    If path.Contains("forced") Then st.Forced = True
-
                     Try
                         st.Language = New Language(New CultureInfo(line.Substring(4, 2)))
                     Catch
@@ -1315,6 +1313,7 @@ Public Class Subtitle
                     Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
                     Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux AndAlso p.SubtitleMode <> SubtitleMode.Disabled
                     st.Enabled = prefLang AndAlso goodMode
+                    st.Forced = path.ToLowerEx().Contains("forced")
 
                     st.IndexIDX = CInt(Regex.Match(line, ", index: (\d+)").Groups(1).Value)
                 End If
@@ -1377,6 +1376,7 @@ Public Class Subtitle
             Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux AndAlso p.SubtitleMode <> SubtitleMode.Disabled
             st.Enabled = prefLang AndAlso goodMode
             st.Path = path
+            st.Forced = path.ToLowerEx().Contains("forced")
 
             For Each i In autoCode
                 If i.IsInt AndAlso st.Path.Contains("ID" & i.ToInt & " ") Then

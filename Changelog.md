@@ -11,6 +11,7 @@ v2.5.0 (not published yet)
 - Fix multiple suspensions on running processes (Dendraspis)
 - Fix and enhance Thumbnailer (Dendraspis)
 - Fix Autocrop showing unrounded progress percentage (Dendraspis, [#659](/../../issues/659))
+- Set subtitle *forced* value if file name contains "forced" (Dendraspis)
 - Set initial shutdown timeout of 90s (44vince44)
 - MKVToolNix v56.1.0
 - NVEnc v5.30

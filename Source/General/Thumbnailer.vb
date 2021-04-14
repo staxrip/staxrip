@@ -15,20 +15,8 @@ End Enum
 
 Public Class Thumbnailer
     Public Shared Function Run(pProject As Project, ParamArray pSourcePaths As String()) As ConcurrentDictionary(Of String, Boolean)
-        Dim proceededSources = New ConcurrentDictionary(Of String, Boolean)
-
-        If pSourcePaths Is Nothing OrElse pSourcePaths.Length = 0 Then Return proceededSources
-        If Not Package.VapourSynth.VerifyOK(True) Then Return proceededSources
-
         Dim cts = New CancellationTokenSource()
-        Parallel.For(0, pSourcePaths.Length, New ParallelOptions() With {.CancellationToken = cts.Token, .MaxDegreeOfParallelism = 3},
-                Sub(i)
-                    Dim succeeded = RunAsync(pProject, pSourcePaths(i), cts.Token).Result
-                    proceededSources(pSourcePaths(i)) = succeeded
-                End Sub
-        )
-
-        Return proceededSources
+        Return Task.Run(Async Function() await RunAsync(cts.Token, pProject, pSourcePaths)).Result
     End Function
 
     Public Shared Async Function RunAsync(pToken As CancellationToken, pProject As Project, ParamArray pSourcePaths As String()) As Task(Of ConcurrentDictionary(Of String, Boolean))
@@ -88,7 +76,7 @@ Public Class Thumbnailer
         thumbWidth -= thumbWidth Mod 4
         thumbHeight -= thumbHeight Mod 4
 
-        Dim scriptTask = PrepareVapoursynthVideoScript(pSourcePath, New Size(thumbWidth, thumbHeight), True)
+        Dim scriptTask = PrepareVapoursynthVideoScriptAsync(pSourcePath, New Size(thumbWidth, thumbHeight), True, pToken)
 
         Dim interval = Mathf.Clamp(settings.GetInt("Interval", 60), 1, 1800)
         Dim columns = Mathf.Clamp(settings.GetInt("Columns", 4), 1, 50)
@@ -156,7 +144,7 @@ Public Class Thumbnailer
 
         Dim imageFilePathWithoutExtension = settings.GetString("ImageFilePathWithoutExtension", "")
         Dim imageFilePath = Macro.Expand(
-                                    If(String.IsNullOrWhiteSpace(imageFilePathWithoutExtension), "%source_dir%%source_name%_Thumbnail", imageFilePathWithoutExtension),
+                                    If(String.IsNullOrWhiteSpace(imageFilePathWithoutExtension), "%target_dir%%target_name%_Thumbnail", imageFilePathWithoutExtension),
                                     If(String.IsNullOrWhiteSpace(proj?.SourceFile) OrElse String.IsNullOrWhiteSpace(proj.TargetFile), New Project() With {.SourceFile = pSourcePath, .TargetFile = pSourcePath}, proj)
                             ) + "." + imageFileFormat
 
@@ -287,7 +275,7 @@ Public Class Thumbnailer
 
 
 
-    Private Shared Async Function PrepareVapoursynthVideoScript(filePath As String, size As Size, synchronize As Boolean) As Task(Of VideoScript)
+    Private Shared Async Function PrepareVapoursynthVideoScriptAsync(filePath As String, size As Size, synchronize As Boolean, pToken As CancellationToken) As Task(Of VideoScript)
         Dim script As VideoScript = Nothing
 
         If Not File.Exists(filePath) Then Return script
@@ -295,18 +283,20 @@ Public Class Thumbnailer
         Await Task.Run(
             Sub()
                 Dim scriptFilePath = Path.Combine(Folder.Temp, $"{filePath.Base()}_Thumbnails.vpy")
-                Dim cacheFilePath = Path.Combine(Folder.Temp, $"{filePath.FileName}.ffindex")
+                Dim cacheFilePath = Path.Combine(Folder.Temp, $"{filePath.FileName}_Thumbnails.ffindex")
 
                 script = New VideoScript() With {
                     .Engine = ScriptEngine.VapourSynth,
                     .Path = scriptFilePath
                 }
 
-                script.Filters.Add(New VideoFilter($"clip = core.ffms2.Source(r""{filePath}"", cachefile=r""{cacheFilePath}"")"))
+                script.Filters.Add(New VideoFilter($"clip = core.ffms2.Source(r""{filePath}"", cachefile=r""{cacheFilePath}"", cache=False)"))
 
                 If size <> Size.Empty Then
                     script.Filters.Add(New VideoFilter($"clip = core.resize.Spline64(clip, {size.Width},{size.Height})"))
                 End If
+
+                pToken.ThrowIfCancellationRequested()
 
                 If synchronize Then script.Synchronize(True, True, True)
 
@@ -314,7 +304,7 @@ Public Class Thumbnailer
                 If errorMsg <> "" Then
                     script = Nothing
                 End If
-            End Sub
+            End Sub, pToken
         )
 
         Return script

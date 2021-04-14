@@ -359,11 +359,50 @@ Public Class GlobalClass
 
             p.VideoEncoder.Muxer.Mux()
 
-            g.RaiseAppEvent(ApplicationEvent.JobMuxed)
+            Dim cts = New CancellationTokenSource()
+            Dim closingTD As TaskDialog(Of DialogResult)
+            Dim mainFormClosingHandler As FormClosingEventHandler
 
             If p.Thumbnailer Then
-                Dim unused = Thumbnailer.RunAsync(Nothing, p, p.TargetFile)
+                mainFormClosingHandler = Sub(sender As Object, e As FormClosingEventArgs)
+                                             If Not e.Cancel Then
+                                                 Using closingTD
+                                                     closingTD = New TaskDialog(Of DialogResult)(DialogResult.Yes)
+                                                     closingTD.Icon = TaskIcon.Warning
+                                                     closingTD.Title = "Close while Thumbnailer is running?"
+                                                     closingTD.Content = "StaxRip shall be closed while Thumbnailer is still running."
+                                                     closingTD.Content += $"{BR2}These are your options:"
+                                                     closingTD.Content += $"{BR}(1) Leave this dialog open and StaxRip will continue the closing procedure as soon as Thumbnailer finishes."
+                                                     closingTD.Content += $" If you have modified the project, you may be asked to save it first."
+                                                     closingTD.Content += $"{BR}(2) YES - Forces Thumbnailer to stop immediately and StaxRip will continue closing."
+                                                     closingTD.Content += $"{BR}(3) NO  - Cancels the closing procedure and StaxRip keeps running."
+                                                     closingTD.AddButton(DialogResult.Yes)
+                                                     closingTD.AddButton(DialogResult.No)
+
+                                                     If closingTD.Show() = DialogResult.No Then
+                                                         e.Cancel = True
+                                                     End If
+                                                 End Using
+                                             End If
+                                         End Sub
+
+                Dim thumbnailerTask = Task.Run(
+                    Async Function()
+                        AddHandler g.MainForm.FormClosing, mainFormClosingHandler
+
+                        Dim proceededSources = Await Thumbnailer.RunAsync(cts.Token, p, p.TargetFile)
+
+                        If closingTD IsNot Nothing AndAlso Not closingTD.IsDisposingOrDisposed Then
+                            closingTD.Close()
+                        End If
+
+                        RemoveHandler g.MainForm.FormClosing, mainFormClosingHandler
+                        Return proceededSources
+                    End Function,
+                    cts.Token)
             End If
+
+            g.RaiseAppEvent(ApplicationEvent.JobMuxed)
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)

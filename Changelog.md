@@ -9,8 +9,12 @@ v2.5.0 (not published yet)
 - Fix app crash on opening menu between encodes (Dendraspis)
 - Disable file drop in Code Editor (Dendraspis)
 - Fix multiple suspensions on running processes (Dendraspis)
+- Fix and enhance Thumbnailer (Dendraspis)
+- Fix Autocrop showing unrounded progress percentage (Dendraspis, [#659](/../../issues/659))
+- Set initial shutdown timeout of 90s (44vince44)
 - MKVToolNix v56.1.0
 - NVEnc v5.30
+- AutoCrop v2.2
 
 
 v2.4.0 (2021-04-09)

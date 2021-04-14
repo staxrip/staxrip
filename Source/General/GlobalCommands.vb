@@ -705,9 +705,8 @@ Public Class GlobalCommands
                     Dim reportTD As TaskDialog(Of DialogResult)
                     Dim summaryTD As TaskDialog(Of DialogResult)
                     Dim closingTD As TaskDialog(Of DialogResult)
-                    Dim mainFormClosingHandler As FormClosingEventHandler
                     Dim cts = New CancellationTokenSource()
-
+                    Dim mainFormClosingHandler As FormClosingEventHandler
                     mainFormClosingHandler = Sub(sender As Object, e As FormClosingEventArgs)
                                                  If Not e.Cancel Then
                                                      Using closingTD
@@ -729,10 +728,10 @@ Public Class GlobalCommands
                                                      End Using
                                                  End If
                                              End Sub
-                    AddHandler g.MainForm.FormClosing, mainFormClosingHandler
 
                     Dim thumbnailerTask = Task.Run(
                         Async Function()
+                            AddHandler g.MainForm.FormClosing, mainFormClosingHandler
 
                             Dim proceededSources = Await Thumbnailer.RunAsync(cts.Token, p, filePaths)
 

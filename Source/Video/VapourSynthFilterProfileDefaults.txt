@@ -107,6 +107,7 @@ Sharpen | McDegrainSharp = clip = mcdegrainsharp.mcdegrainsharp(clip, plane=4)
 Sharpen | MSharpen = clip = core.msmoosh.MSharpen(clip, threshold=6.0, strength=39)
 Sharpen | pSharpen = clip = psharpen.psharpen(clip)
 Sharpen | SharpAAMcmod = clip = muvsfunc.SharpAAMcmod(clip)
+Sharpen | Sharpen = clip = muvsfunc.Sharpen(clip, $enter_text:Enter the Amount of Sharpness in decimal (from -1.58 to 1.0)$)
 
 [Misc]
 

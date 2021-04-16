@@ -100,6 +100,7 @@ Sharpen | LSFmod = LSFmod(defaults="slow", strength=100, Smode=5, Smethod=3, ker
 Sharpen | MSharpen = MSharpen(threshold=10, strength=100, highq=true, mask=false)
 Sharpen | MultiSharpen = MultiSharpen(1)
 Sharpen | pSharpen = pSharpen(strength=25, threshold=75, ss_x=1.0, ss_y=1.0)
+Sharpen | Sharpen = Sharpen($enter_text:Enter the Amount of Sharpness in decimal (from -1.58 to 1.0)$)
 
 [Misc]
 AddBorders = AddBorders(0, 0, 0, 0) #left, top, right, bottom

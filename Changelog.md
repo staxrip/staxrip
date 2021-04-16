@@ -13,9 +13,19 @@ v2.5.0 (not published yet)
 - Fix Autocrop showing unrounded progress percentage (Dendraspis, [#659](/../../issues/659))
 - Set subtitle *forced* value if file name contains "forced" (Dendraspis)
 - Set initial shutdown timeout of 90s (44vince44)
+- Add Sharpen to default AVS/VS profiles (JKyle)
+- Add AVS filter CAS and its profile script (JKyle)
 - MKVToolNix v56.1.0
 - NVEnc v5.30
 - AutoCrop v2.2
+- AnimeIVTC v2.381 2021-03-30 mod
+- CAS v1.0.1
+- D2VSource v1.2.3
+- edi_rpow2 v1.0 mod 86
+- FineDehalo v1.1 mod8.79
+- HQDN3D v1.0.1
+- QTGMC v3.379, by Vit, 2012, 2021 mod by A.SONY
+- xy-VSFilter v3.2.0.806 pfmod
 
 
 v2.4.0 (2021-04-09)

@@ -979,8 +979,9 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "HQDN3D",
             .Filename = "Hqdn3d.dll",
-             .HelpFilename = "Readme.txt",
-            .WebURL = "http://avisynth.nl/index.php/Hqdn3d",
+            .HelpFilename = "Readme.txt",
+            .HelpURL = "https://github.com/Asd-g/hqdn3d",
+            .WebURL = "https://github.com/Asd-g/hqdn3d",
             .AvsFilterNames = {"HQDN3D"}})
 
         Add(New PluginPackage With {

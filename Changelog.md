@@ -17,6 +17,7 @@ v2.5.0 (not published yet)
 - Add AVS filter CAS and its profile script (JKyle)
 - MKVToolNix v56.1.0
 - NVEnc v5.30
+- VCEEnc v6.10
 - AutoCrop v2.2
 - AnimeIVTC v2.381 2021-03-30 mod
 - CAS v1.0.1

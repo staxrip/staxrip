@@ -1804,6 +1804,15 @@ Public Class Package
             .WebURL = "https://forum.videohelp.com/threads/393752-CropResize-Cropping-resizing-script",
             .AvsFilterNames = {"CropResize"}})
 
+        Add(New PluginPackage With {
+            .Name = "CAS",
+            .Filename = "CAS.dll",
+            .Description = "Contrast Adaptive Sharpening. This is a port of the VapourSynth plugin CAS.",
+            .WebURL = "https://github.com/Asd-g/AviSynth-CAS",
+            .HelpURL = "http://avisynth.nl/index.php/CAS",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-CAS/releases",
+            .AvsFilterNames = {"CAS"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

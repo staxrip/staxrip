@@ -1792,8 +1792,8 @@ Public Class MainForm
             Assistant()
             s.UpdateRecentProjects(path)
             UpdateRecentProjectsMenu()
-            g.RaiseAppEvent(ApplicationEvent.ProjectLoaded)
-            g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
+            g.RaiseAppEvent(ApplicationEvent.AfterProjectLoaded)
+            g.RaiseAppEvent(ApplicationEvent.AfterProjectOrSourceLoaded)
             FiltersListView.RebuildMenu()
 
             If p.SourceFile <> "" AndAlso Not g.VerifyRequirements Then
@@ -2373,7 +2373,7 @@ Public Class MainForm
 
             Assistant()
             g.RaiseAppEvent(ApplicationEvent.AfterSourceLoaded)
-            g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
+            g.RaiseAppEvent(ApplicationEvent.AfterProjectOrSourceLoaded)
             Log.Save()
         Catch ex As AbortException
             Log.Save()

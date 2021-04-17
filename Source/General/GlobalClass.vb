@@ -29,13 +29,14 @@ Public Class GlobalClass
     Property StopAfterCurrentJob As Boolean
     Property ActiveForm As Form
 
-    Event JobMuxed()
-    Event JobProcessed()
-    Event JobsProcessed()
-    Event ProjectLoaded()
-    Event ProjectOrSourceLoaded()
+    Event AfterJobFailed()
+    Event AfterJobMuxed()
+    Event AfterJobProcessed()
+    Event AfterJobsProcessed()
+    Event AfterProjectLoaded()
+    Event AfterProjectOrSourceLoaded()
     Event AfterSourceLoaded()
-    Event VideoEncoded()
+    Event AfterVideoEncoded()
     Event ApplicationExit()
     Event BeforeJobProcessed()
     Event BeforeProcessing()
@@ -215,10 +216,10 @@ Public Class GlobalClass
             jobs = JobManager.GetJobs
 
             If jobs.Count = 0 Then
-                g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
+                g.RaiseAppEvent(ApplicationEvent.AfterJobsProcessed)
                 g.ShutdownPC()
             ElseIf JobManager.ActiveJobs.Count = 0 OrElse g.StopAfterCurrentJob Then
-                g.RaiseAppEvent(ApplicationEvent.JobsProcessed)
+                g.RaiseAppEvent(ApplicationEvent.AfterJobsProcessed)
 
                 If Process.GetProcessesByName("StaxRip").Count = 1 Then
                     g.ShutdownPC()
@@ -355,7 +356,7 @@ Public Class GlobalClass
 
             Log.Save()
 
-            g.RaiseAppEvent(ApplicationEvent.VideoEncoded)
+            g.RaiseAppEvent(ApplicationEvent.AfterVideoEncoded)
 
             p.VideoEncoder.Muxer.Mux()
 
@@ -402,7 +403,7 @@ Public Class GlobalClass
                     cts.Token)
             End If
 
-            g.RaiseAppEvent(ApplicationEvent.JobMuxed)
+            g.RaiseAppEvent(ApplicationEvent.AfterJobMuxed)
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
@@ -410,7 +411,7 @@ Public Class GlobalClass
 
             g.ArchiveLogFile(Log.GetPath)
             g.DeleteTempFiles()
-            g.RaiseAppEvent(ApplicationEvent.JobProcessed)
+            g.RaiseAppEvent(ApplicationEvent.AfterJobProcessed)
             JobManager.RemoveJob(jobPath)
 
             If jobPath.StartsWith(Folder.Settings + "Batch Projects\") Then
@@ -421,6 +422,7 @@ Public Class GlobalClass
             ProcController.Aborted = False
         Catch ex As ErrorAbortException
             Log.Save()
+            g.RaiseAppEvent(ApplicationEvent.AfterJobFailed)
             g.ShowException(ex, Nothing, Nothing, 50)
             g.ShellExecute(g.GetTextEditorPath(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
             ProcController.Aborted = False
@@ -807,20 +809,22 @@ Public Class GlobalClass
 
     Sub RaiseAppEvent(ae As ApplicationEvent)
         Select Case ae
-            Case ApplicationEvent.JobMuxed
-                RaiseEvent JobMuxed()
-            Case ApplicationEvent.JobProcessed
-                RaiseEvent JobProcessed()
-            Case ApplicationEvent.JobsProcessed
-                RaiseEvent JobsProcessed()
-            Case ApplicationEvent.ProjectLoaded
-                RaiseEvent ProjectLoaded()
-            Case ApplicationEvent.ProjectOrSourceLoaded
-                RaiseEvent ProjectOrSourceLoaded()
+            Case ApplicationEvent.AfterJobFailed
+                RaiseEvent AfterJobFailed()
+            Case ApplicationEvent.AfterJobMuxed
+                RaiseEvent AfterJobMuxed()
+            Case ApplicationEvent.AfterJobProcessed
+                RaiseEvent AfterJobProcessed()
+            Case ApplicationEvent.AfterJobsProcessed
+                RaiseEvent AfterJobsProcessed()
+            Case ApplicationEvent.AfterProjectLoaded
+                RaiseEvent AfterProjectLoaded()
+            Case ApplicationEvent.AfterProjectOrSourceLoaded
+                RaiseEvent AfterProjectOrSourceLoaded()
             Case ApplicationEvent.AfterSourceLoaded
                 RaiseEvent AfterSourceLoaded()
-            Case ApplicationEvent.VideoEncoded
-                RaiseEvent VideoEncoded()
+            Case ApplicationEvent.AfterVideoEncoded
+                RaiseEvent AfterVideoEncoded()
             Case ApplicationEvent.ApplicationExit
                 RaiseEvent ApplicationExit()
             Case ApplicationEvent.BeforeJobProcessed

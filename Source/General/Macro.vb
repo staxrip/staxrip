@@ -159,7 +159,7 @@ Public Class Macro
         ret.Add(New Macro("player", "Player", GetType(Integer), "Path of the media player."))
         ret.Add(New Macro("plugin_dir", "Plugin Directory", GetType(String), "AviSynth/VapourSynth plugin auto load directory."))
         ret.Add(New Macro("pos_frame", "Position In Frames", GetType(Integer), "Current preview position in frames."))
-        ret.Add(New Macro("pos_ms", "Position In Millisecons", GetType(Integer), "Current preview position in milliseconds."))
+        ret.Add(New Macro("pos_ms", "Position In Milliseconds", GetType(Integer), "Current preview position in milliseconds."))
         ret.Add(New Macro("processing", "Processing", GetType(String), "Returns 'True' if a job is currently processing otherwise 'False'."))
         ret.Add(New Macro("programs_dir", "Programs Directory", GetType(String), "Programs system directory."))
         ret.Add(New Macro("script_dir", "Script Directory", GetType(String), "Users PowerShell scripts directory."))

@@ -45,4 +45,4 @@ You can find plenty of information and instructions on [Wiki](https://github.com
 
 ![Processing](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/Processing2.png)
 
-![Thumbnailer](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/ThumbnailsOptions2.png)
+![Thumbnailer](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/ThumbnailsOptions3.png)

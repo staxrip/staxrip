@@ -35,8 +35,14 @@ You can find plenty of information and instructions on [Wiki](https://github.com
 
 ![Main Window](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/Main.png)
 
-![Code Edotor](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/CodeEditor.png)
+![Code Editor](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/CodeEditor.png)
+
+![Event Command Editor](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/EventCommandEditor.png)
 
 ![x265 Options](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/x265.png)
 
+![NVEnc Options](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/NVEnc.png)
+
 ![Processing](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/Processing2.png)
+
+![Thumbnailer](https://github.com/staxrip/staxrip/blob/master/Image/Screenshots/ThumbnailsOptions2.png)

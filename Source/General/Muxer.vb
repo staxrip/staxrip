@@ -435,7 +435,7 @@ Public Class MP4Muxer
 
     Overrides ReadOnly Property SupportedInputTypes() As String()
         Get
-            Return {"ts", "m2ts", "ivf",
+            Return {"ts", "m2ts", "ivf", "obu",
                     "mpg", "m2v",
                     "avi", "ac3", "opus", "eac3", "thd",
                     "mp4", "m4a", "aac", "mov",
@@ -900,7 +900,7 @@ Public Class MkvMuxer
 
     Overrides ReadOnly Property SupportedInputTypes() As String()
         Get
-            Return {"avi", "wav", "ivf",
+            Return {"avi", "wav", "ivf", "obu",
                     "mp4", "m4v", "m4a", "aac",
                     "flv", "mov",
                     "264", "h264", "avc",

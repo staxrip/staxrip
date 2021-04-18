@@ -281,17 +281,18 @@ Namespace VideoEncoderCommandLine
     Public Class BoolParam
         Inherits CommandLineParam
 
-        Property CheckBox As CheckBox
+        Property CheckBox As CheckBoxEx
         Property DefaultValue As Boolean
         Property InitialValue As Boolean
         Property IntegerValue As Boolean
+        Property ValueChangedAction As Action(Of Boolean)
 
         Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
         End Sub
 
-        Overloads Sub InitParam(cb As CheckBox)
+        Overloads Sub InitParam(cb As CheckBoxEx)
             CheckBox = cb
             CheckBox.Checked = Value
             AddHandler CheckBox.CheckedChanged, AddressOf CheckedChanged
@@ -304,6 +305,7 @@ Namespace VideoEncoderCommandLine
         Sub CheckedChanged(sender As Object, e As EventArgs)
             Value = CheckBox.Checked
             Params.RaiseValueChanged(Me)
+            ValueChangedAction?.Invoke(Value)
         End Sub
 
         Overrides Function GetArgs() As String

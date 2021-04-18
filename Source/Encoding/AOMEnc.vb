@@ -32,6 +32,8 @@ Public Class aomenc
 
     Overrides ReadOnly Property OutputExt As String
         Get
+            If Params.OutputIvf.Value Then Return "ivf"
+            If Params.OutputObu.Value Then Return "obu"
             Return "webm"
         End Get
     End Property
@@ -119,10 +121,10 @@ Public Class aomenc
     End Function
 
     Overrides Function GetMenu() As MenuList
-        Dim menuList As New MenuList
-        menuList.Add("Encoder Options", AddressOf ShowConfigDialog)
-        menuList.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
-        Return menuList
+        Return New MenuList From {
+            {"Encoder Options", AddressOf ShowConfigDialog},
+            {"Container Configuration", AddressOf OpenMuxerConfigDialog}
+        }
     End Function
 
     Overrides Sub ShowConfigDialog()
@@ -258,6 +260,37 @@ Public Class AV1Params
                           tb.Edit.TextBox.Font = g.GetCodeFont
                       End Sub}
 
+    Property OutputIvf As New BoolParam With {
+        .Switch = "--ivf",
+        .Text = "Output IVF",
+        .Value = True,
+        .ValueChangedAction = Sub(value As Boolean)
+                                  If Not value Then Return
+                                  OutputObu.Value = False
+                                  OutputWebm.Value = False
+                              End Sub}
+
+    Property OutputObu As New BoolParam With {
+        .Switch = "--obu",
+        .Text = "Output OBU",
+        .Value = False,
+        .ValueChangedAction = Sub(value As Boolean)
+                                  If Not value Then Return
+                                  OutputIvf.Value = False
+                                  OutputWebm.Value = False
+                              End Sub}
+
+    Property OutputWebm As New BoolParam With {
+        .Switch = "--webm",
+        .Text = "Output WEBM (enabled by default when WebM IO is enabled)",
+        .Value = False,
+        .ValueChangedAction = Sub(value As Boolean)
+                                  If Not value Then Return
+                                  OutputIvf.Value = False
+                                  OutputObu.Value = False
+                              End Sub}
+
+
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
             If ItemsValue Is Nothing Then
@@ -283,9 +316,7 @@ Public Class AV1Params
                     Decoder, PipingToolAVS, PipingToolVS, Chunks,
                     New OptionParam With {.Switch = "--input-bit-depth", .Text = "Input Bit Depth", .Options = {"Automatic", "8", "10", "12"}},
                     New OptionParam With {.Switch = "--bit-depth", .Text = "Bit Depth", .Options = {"8", "10", "12"}, .Init = 1, .AlwaysOn = True},
-                    New BoolParam With {.Switch = "--webm", .Text = "Output WEBM (enabled by default when WebM IO is enabled)"},
-                    New BoolParam With {.Switch = "--ivf", .Text = "Output IVF", .Value = True},
-                    New BoolParam With {.Switch = "--obu", .Text = "Output OBU"})
+                    OutputIvf, OutputObu, OutputWebm)
 
                 'New OptionParam With {.Switch = "--profile", .Text = "Profile", .IntegerValue = True, .Options = {"Main", "High", "Professional"}},
                 Add("Encoder Global 1",

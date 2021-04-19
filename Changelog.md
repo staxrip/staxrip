@@ -17,6 +17,7 @@ v2.5.0 (not published yet)
 - Set initial shutdown timeout of 90s (44vince44)
 - Add Sharpen to default AVS/VS profiles (JKyle)
 - Add AVS filter CAS and its profile script (JKyle)
+- Add AVS filter MDegrain3 and update MDegrain2 (JKyle)
 - MKVToolNix v56.1.0
 - NVEnc v5.30
 - VCEEnc v6.10

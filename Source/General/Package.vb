@@ -946,10 +946,11 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "mvtools2",
             .Filename = "mvtools2.dll",
+            .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
             .WebURL = "http://github.com/pinterf/mvtools",
             .DownloadURL = "https://github.com/pinterf/mvtools/releases",
-            .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
-            .AvsFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDeGrain1", "MDeGrain2", "MDegrain3"}})
+            .HelpURL = "http://avisynth.nl/index.php/MVTools",
+            .AvsFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDegrain1", "MDegrain2", "MDegrain3"}})
 
         Add(New PluginPackage With {
             .Name = "DePan",

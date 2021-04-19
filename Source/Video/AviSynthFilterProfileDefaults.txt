@@ -132,6 +132,26 @@ MCTemporalDenoise | MCTemporalDenoisePP =
     denoised=FFT3Dfilter()
     MCTemporalDenoisePP(denoised)
 
+MDegrain | MDegrain2 (matching SMDegrain) =
+    # The following code block matches a simple SMDegrain() call (for SD resolutions)
+    super_search = Dither_Luma_Rebuild(S0=1.0, c=0.0625).MSuper(rfilter=4)
+    bv1 = super_search.MAnalyse(isb=true, delta=1, overlap=4)
+    bv2 = super_search.MAnalyse(isb=true, delta=2, overlap=4)
+    fv1 = super_search.MAnalyse(isb=false, delta=1, overlap=4)
+    fv2 = super_search.MAnalyse(isb=false, delta=2, overlap=4)
+    MDegrain2(MSuper(levels=1), bv1, fv1, bv2, fv2, thSAD=300, thSADC=150)
+    # The above code block matches a simple SMDegrain() call (for SD resolutions)
+
+MDegrain | MDegrain3 =
+    super_search = Dither_Luma_Rebuild(S0=1.0, c=0.0625).MSuper(rfilter=4)
+    bv1 = super_search.MAnalyse(isb=true, delta=1, overlap=4)
+    bv2 = super_search.MAnalyse(isb=true, delta=2, overlap=4)
+    bv3 = super_search.MAnalyse(isb=true, delta=3, overlap=4)
+    fv1 = super_search.MAnalyse(isb=false, delta=1, overlap=4)
+    fv2 = super_search.MAnalyse(isb=false, delta=2, overlap=4)
+    fv3 = super_search.MAnalyse(isb=false, delta=3, overlap=4)
+    MDegrain3(MSuper(levels=1), bv1, fv1, bv2, fv2, bv3, fv3, thSAD=300, thSADC=150)
+
 MiniDeen = MiniDeen(radius=1, thrY=10, thrUV=12, Y=3, U=3, V=3)
 NLMeans | KNLMeansCL = KNLMeansCL(D=1, A=1, h=$select:msg:Select Strength;Light|2;Medium|4;Strong|4$, device_type="auto")
 NLMeans | TNLMeans = TNLMeans(Ax=4, Ay=4, Az=0, Sx=2, Sy=2, Bx=1, By=1, ms=false, rm=4, a=1.0, h=1.8, sse=true)
@@ -148,15 +168,6 @@ RemoveGrain | RemoveGrain With Repair =
 
 SMDegrain | SMDegrain Hard Grain = SMDegrain(tr=6, thSAD=600, contrasharp=true, refinemotion=true)
 SMDegrain | SMDegrain Light Grain = SMDegrain(tr=1, thSAD=300, contrasharp=true)
-
-SMDegrain | SMDegrain MDegrain2 =
-    super_search = Dither_Luma_Rebuild(S0=1.0, c=0.0625).MSuper(rfilter=4)
-    bv2 = super_search.MAnalyse(isb=true,  delta=2, overlap=4)
-    bv1 = super_search.MAnalyse(isb=true,  delta=1, overlap=4)
-    fv1 = super_search.MAnalyse(isb=false, delta=1, overlap=4)
-    fv2 = super_search.MAnalyse(isb=false, delta=2, overlap=4)
-    MDegrain2(MSuper(levels=1), bv1, fv1, bv2, fv2, thSAD=300, thSADC=150)
-
 TemporalDegrain2 = TemporalDegrain2(degrainTR=2, postFFT=3, postSigma=3)
 VagueDenoiser = VagueDenoiser(threshold=0.8, method=1, nsteps=6, chromaT=0.8)
 

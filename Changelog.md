@@ -29,6 +29,7 @@ v2.5.0 (not published yet)
 - HQDN3D v1.0.1
 - QTGMC v3.379, by Vit, 2012, 2021 mod by A.SONY
 - xy-VSFilter v3.2.0.806 pfmod
+- Zs_RF_Shared v1.151
 
 
 v2.4.0 (2021-04-09)

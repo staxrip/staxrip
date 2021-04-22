@@ -950,7 +950,7 @@ Public Class Package
             .WebURL = "http://github.com/pinterf/mvtools",
             .DownloadURL = "https://github.com/pinterf/mvtools/releases",
             .HelpURL = "http://avisynth.nl/index.php/MVTools",
-            .AvsFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MDegrain1", "MDegrain2", "MDegrain3"}})
+            .AvsFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MSCDetection", "MShow", "MDepan", "MFlow", "MFlowInter", "MFlowFps", "MBlockFps", "MFlowBlur", "MDegrain1", "MDegrain2", "MDegrain3", "MDegrain4", "MDegrain5", "MDegrain6", "MDegrainN", "MRecalculate", "MVShow"}})
 
         Add(New PluginPackage With {
             .Name = "DePan",

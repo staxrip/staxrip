@@ -3,7 +3,7 @@ v2.5.0 (not published yet)
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
-- [ ] Changed menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
+- [x] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - Add option to disable extraction of forced subtitles for IDX files (Dendraspis, 44vince44)
 - Sort video files before they are opened and processed (Dendraspis)
 - Fix app crash on opening menu between encodes (Dendraspis)
@@ -15,13 +15,17 @@ v2.5.0 (not published yet)
 - Add *After Job Failed* event (Dendraspis)
 - Muxer and AOMEnc adjustments to handle all AOMEnc output extensions (Dendraspis, [#669](/../../issues/669))
 - Set initial shutdown timeout of 90s (44vince44)
-- Add Sharpen to default AVS/VS profiles (JKyle)
-- Add AVS filter CAS and its profile script (JKyle)
-- Add AVS filter MDegrain3 and update MDegrain2 (JKyle)
+- Add Sharpen filter profile for AviSynth/VapourSynth (JKyle)
+- Add CAS filter profile for AviSynth/VapourSynth (JKyle)
+- Add MDegrain3 filter profile for AviSynth (JKyle)
+- Update MDegrain2 filter profile (JKyle)
+- Add MVTools 2 missing filters (JKyle)
+- AutoCrop v2.2
 - MKVToolNix v56.1.0
 - NVEnc v5.30
+- Python v3.9.4
+- VapourSynth R53
 - VCEEnc v6.10
-- AutoCrop v2.2
 - AnimeIVTC v2.381 2021-03-30 mod
 - CAS v1.0.1
 - D2VSource v1.2.3

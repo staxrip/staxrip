@@ -1720,7 +1720,7 @@ Public Class MainForm
             If proj IsNot Nothing Then
                 p = proj
             Else
-                p = New Project
+                p = New Project()
                 p.Init()
             End If
 

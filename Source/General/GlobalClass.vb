@@ -189,9 +189,26 @@ Public Class GlobalClass
             form.Close()
         Next
 
+        Dim tempProject = ObjectHelp.GetCopy(p)
+        Dim projectPath = g.ProjectPath
+        Dim mainFormText = g.MainForm.Text
+        Dim targetFile = p.TargetFile
+
         FrameServerHelp.AviSynthToolPath()
         g.StopAfterCurrentJob = False
         ProcessJobsRecursive()
+
+        Dim restore = Not (File.Exists(tempProject.SourceFile) AndAlso Not Directory.Exists(tempProject.TempDir) AndAlso Not File.Exists(projectPath))
+        If restore Then
+            g.MainForm.OpenProject(tempProject, projectPath)
+            g.MainForm.tbTargetFile.Text = targetFile
+            g.MainForm.Text = mainFormText
+            g.ProjectPath = projectPath
+            g.UpdateTrim(p.Script)
+            g.MainForm.UpdateFilters()
+        Else
+            g.MainForm.OpenProject(Nothing, "")
+        End If
     End Sub
 
     Sub ProcessJobsRecursive()

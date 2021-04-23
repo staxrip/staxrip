@@ -1661,10 +1661,9 @@ Public Class MainForm
     Sub SetBindings(proj As Project, add As Boolean)
         SetTextBoxBinding(tbTargetFile, proj, NameOf(Project.TargetFile), add)
 
+        RemoveHandler proj.PropertyChanged, AddressOf ProjectPropertyChanged
         If add Then
             AddHandler proj.PropertyChanged, AddressOf ProjectPropertyChanged
-        Else
-            RemoveHandler proj.PropertyChanged, AddressOf ProjectPropertyChanged
         End If
     End Sub
 
@@ -1673,18 +1672,18 @@ Public Class MainForm
     End Sub
 
     Sub SetTextBoxBinding(tb As TextBox, obj As Object, prop As String, add As Boolean)
+        tb.DataBindings.Clear()
+
         If add Then
             tb.DataBindings.Add(New Binding(NameOf(TextBox.Text), obj, prop, False, DataSourceUpdateMode.OnPropertyChanged))
-        Else
-            tb.DataBindings.Clear()
         End If
     End Sub
 
     Sub SetTextBoxBinding(te As TextEdit, obj As Object, prop As String, add As Boolean)
+        te.TextBox.DataBindings.Clear()
+
         If add Then
             te.TextBox.DataBindings.Add(New Binding(NameOf(TextBox.Text), obj, prop, False, DataSourceUpdateMode.OnPropertyChanged))
-        Else
-            te.TextBox.DataBindings.Clear()
         End If
     End Sub
 
@@ -1698,8 +1697,6 @@ Public Class MainForm
                 Return False
             End If
 
-            SetBindings(p, False)
-
             If path = "" OrElse Not File.Exists(path) Then
                 path = g.StartupTemplatePath
             End If
@@ -1711,6 +1708,25 @@ Public Class MainForm
                 p = New Project
                 p.Init()
             End Try
+
+            Return OpenProject(p, path)
+        Catch ex As Exception
+            OpenProject(g.StartupTemplatePath)
+        End Try
+    End Function
+
+    Function OpenProject(proj As Project, Optional path As String = "") As Boolean
+        Try
+            If proj IsNot Nothing Then
+                p = proj
+            Else
+                p = New Project
+                p.Init()
+            End If
+
+            If String.IsNullOrWhiteSpace(path) OrElse Not File.Exists(path) Then
+                path = g.StartupTemplatePath
+            End If
 
             Log = p.Log
 
@@ -1934,7 +1950,7 @@ Public Class MainForm
         AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
 
         Try
-            files = files.Select(Function(filePath) New FileInfo(filePath).FullName).OrderBy( Function(filePath) filePath, StringComparer.InvariantCultureIgnoreCase)
+            files = files.Select(Function(filePath) New FileInfo(filePath).FullName).OrderBy(Function(filePath) filePath, StringComparer.InvariantCultureIgnoreCase)
 
             If Not g.VerifySource(files) Then
                 Throw New AbortException

@@ -657,9 +657,9 @@ Public Class PreviewForm
             Exit Sub
         End If
 
-        If MsgQuestion("Save current project?") = DialogResult.OK Then
-            g.MainForm.IsSaveCanceled()
-        End If
+        Dim tempProject = ObjectHelp.GetCopy(p)
+        Dim projectPath = g.ProjectPath
+        Dim mainFormText = g.MainForm.Text
 
         Dim ranges = p.Ranges.ToArray
         Dim targetFile = p.TargetFile
@@ -673,8 +673,11 @@ Public Class PreviewForm
             g.MainForm.AddJob(False)
         Next
 
+        g.MainForm.OpenProject(tempProject, g.ProjectPath)
         g.MainForm.tbTargetFile.Text = targetFile
-        p.Ranges = ranges.ToList
+        g.MainForm.Text = mainFormText
+        g.ProjectPath = projectPath
+
         g.UpdateTrim(p.Script)
         g.MainForm.UpdateFilters()
         g.MainForm.ShowJobsDialog()

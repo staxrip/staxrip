@@ -431,7 +431,7 @@ Public Class Theme
                 Dim formatter As IFormatter = New BinaryFormatter()
                 formatter.Serialize(stream, Me)
                 stream.Seek(0, SeekOrigin.Begin)
-                Return CType(formatter.Deserialize(stream), ControlsThemeColors)
+                Return DirectCast(formatter.Deserialize(stream), ControlsThemeColors)
             End Using
         End Function
 

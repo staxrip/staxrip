@@ -1278,7 +1278,8 @@ Public Class Package
             .Location = "Plugins\AVS\GradFun2DB",
             .Filename = "GradFun2DBmod.avsi",
             .HelpFilename = "Readme.txt",
-            .WebURL = "http://avisynth.nl/index.php/GradFun2DBmod",
+            .HelpURL = "http://avisynth.nl/index.php/GradFun2DBmod",
+            .WebURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/GradFun2DBmod.avsi",
             .Description = "An advanced debanding script based on GradFun2DB.",
             .AvsFilterNames = {"GradFun2DBmod"}})
 

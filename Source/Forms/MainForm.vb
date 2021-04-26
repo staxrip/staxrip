@@ -1639,11 +1639,7 @@ Public Class MainForm
         Using dialog As New SaveFileDialog
             dialog.SetInitDir(p.TempDir)
 
-            If p.SourceFile <> "" Then
-                dialog.FileName = p.TargetFile.Base
-            Else
-                dialog.FileName = "Untitled"
-            End If
+            dialog.FileName = If(p.SourceFile <> "", p.TargetFile.Base, "Untitled")
 
             dialog.Filter = "StaxRip Project Files (*.srip)|*.srip"
 
@@ -1705,7 +1701,7 @@ Public Class MainForm
                 p = SafeSerialization.Deserialize(New Project, path)
             Catch ex As Exception
                 g.ShowException(ex, "Project file failed to load", "It will be reset to defaults." + BR2 + path)
-                p = New Project
+                p = New Project()
                 p.Init()
             End Try
 
@@ -1717,17 +1713,11 @@ Public Class MainForm
 
     Function OpenProject(proj As Project, Optional path As String = "") As Boolean
         Try
-            If proj IsNot Nothing Then
-                p = proj
-            Else
-                p = New Project()
-                p.Init()
-            End If
-
             If String.IsNullOrWhiteSpace(path) OrElse Not File.Exists(path) Then
                 path = g.StartupTemplatePath
             End If
 
+            p = If(proj, SafeSerialization.Deserialize(New Project(), path))
             Log = p.Log
 
             If File.Exists(Folder.Temp + "staxrip.log") Then
@@ -1878,11 +1868,7 @@ Public Class MainForm
 
         Dim td As New TaskDialog(Of VideoFilter)
 
-        If p.Script.IsAviSynth Then
-            td.Title = "Select an AviSynth source filter:"
-        Else
-            td.Title = "Select a VapourSynth source filter:"
-        End If
+        td.Title = If(p.Script.IsAviSynth, "Select an AviSynth source filter:", "Select a VapourSynth source filter:")
 
         For Each filter In filters
             td.AddCommand(filter.Name, filter)

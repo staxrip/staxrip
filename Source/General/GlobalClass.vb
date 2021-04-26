@@ -198,7 +198,7 @@ Public Class GlobalClass
         g.StopAfterCurrentJob = False
         ProcessJobsRecursive()
 
-        Dim restore = Not (File.Exists(tempProject.SourceFile) AndAlso Not Directory.Exists(tempProject.TempDir) AndAlso Not File.Exists(projectPath))
+        Dim restore = String.IsNullOrWhiteSpace(tempProject.SourceFile) OrElse (File.Exists(tempProject.SourceFile) AndAlso Directory.Exists(tempProject.TempDir) AndAlso File.Exists(projectPath))
         If restore Then
             g.MainForm.OpenProject(tempProject, projectPath)
             g.MainForm.tbTargetFile.Text = targetFile
@@ -207,7 +207,7 @@ Public Class GlobalClass
             g.UpdateTrim(p.Script)
             g.MainForm.UpdateFilters()
         Else
-            g.MainForm.OpenProject(Nothing, "")
+            g.MainForm.OpenProject("", False)
         End If
     End Sub
 

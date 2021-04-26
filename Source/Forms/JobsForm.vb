@@ -222,14 +222,14 @@ Friend Class JobsForm
                                        End If
                                    End Sub
 
-        cms.Add("Select All", Sub() SelectAll(), Keys.Control Or Keys.A, Function() lv.Items.Count > lv.SelectedItems.Count)
-        cms.Add("Select None", Sub() SelectNone(), Keys.Shift Or Keys.A, Function() lv.SelectedItems.Count > 0)
+        cms.Add("Select All", Sub() SelectAll(), Keys.Control Or Keys.S, Function() lv.Items.Count > lv.SelectedItems.Count)
+        cms.Add("Select None", Sub() SelectNone(), Keys.Shift Or Keys.S, Function() lv.SelectedItems.Count > 0)
         cms.Add("-")
-        cms.Add("Check Selection", Sub() CheckSelection(), Keys.None, Function() lv.SelectedItems.Count > lv.CheckedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count).ShortcutKeyDisplayString = "Space"
-        cms.Add("Check All", Sub() CheckAll(), Keys.A, Function() lv.Items.Count > lv.CheckedItems.Count)
+        cms.Add("Check Selection", Sub() CheckSelection(), Keys.Shift Or Keys.C, Function() lv.SelectedItems.Count > lv.CheckedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count).ShortcutKeyDisplayString = "Space"
+        cms.Add("Check All", Sub() CheckAll(), Keys.Control Or Keys.C, Function() lv.Items.Count > lv.CheckedItems.Count)
         cms.Add("-")
-        cms.Add("Uncheck Selection", Sub() UncheckSelection(), Keys.None, Function() lv.SelectedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count > 0).ShortcutKeyDisplayString = "Space"
-        cms.Add("Uncheck All", Sub() UncheckAll(), Keys.Control Or Keys.Shift Or Keys.A, Function() lv.CheckedItems.Count > 0)
+        cms.Add("Uncheck Selection", Sub() UncheckSelection(), Keys.Shift Or Keys.U, Function() lv.SelectedItems.OfType(Of ListViewItem).Where(Function(item) item.Checked).Count > 0).ShortcutKeyDisplayString = "Space"
+        cms.Add("Uncheck All", Sub() UncheckAll(), Keys.Control Or Keys.U, Function() lv.CheckedItems.Count > 0)
         cms.Add("-")
         cms.Add("Move Selection Up", Sub() bnUp.PerformClick(), Keys.Control Or Keys.Up, Function() lv.CanMoveUp).SetImage(Symbol.Up)
         cms.Add("Move Selection Down", Sub() bnDown.PerformClick(), Keys.Control Or Keys.Down, Function() lv.CanMoveDown).SetImage(Symbol.Down)
@@ -237,9 +237,9 @@ Friend Class JobsForm
         cms.Add("Move Selection To Top", Sub() lv.MoveSelectionTop(), Keys.Control Or Keys.Home, Function() lv.CanMoveUp)
         cms.Add("Move Selection To Bottom", Sub() lv.MoveSelectionBottom(), Keys.Control Or Keys.End, Function() lv.CanMoveDown)
         cms.Add("-")
-        cms.Add("Sort Alphabetically", Sub() lv.SortItems(), Keys.S, Function() lv.Items.Count > 1).SetImage(Symbol.Sort)
+        cms.Add("Sort Alphabetically", Sub() lv.SortItems(), Keys.Control Or Keys.Shift Or Keys.S, Function() lv.Items.Count > 1).SetImage(Symbol.Sort)
         cms.Add("Remove Selection", Sub() bnRemove.PerformClick(), Keys.Delete, Function() lv.SelectedItems.Count > 0).SetImage(Symbol.Remove)
-        cms.Add("Load Selection", Sub() bnLoad.PerformClick(), Keys.L, Function() lv.SelectedItems.Count = 1)
+        cms.Add("Load Selection", Sub() bnLoad.PerformClick(), Keys.Control Or Keys.L, Function() lv.SelectedItems.Count = 1)
 
         bnDown.Symbol = Symbol.Down
         bnUp.Symbol = Symbol.Up

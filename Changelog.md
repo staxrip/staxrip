@@ -21,6 +21,7 @@ v2.5.0 (not published yet)
 - Add Sharpen filter profile for AviSynth/VapourSynth (JKyle)
 - Add CAS filter profile for AviSynth/VapourSynth (JKyle)
 - Add MDegrain3 filter profile for AviSynth (JKyle)
+- Update InterFrame and YFRC filter profiles (44vince44)
 - Update MDegrain2 filter profile (JKyle)
 - Add MVTools 2 missing filters (JKyle)
 - AutoCrop v2.2

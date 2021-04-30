@@ -75,7 +75,7 @@ AssumeFPS = AssumeFPS($select:msg:Select a Frame Rate;23.976|24000, 1001;24;25;2
 AssumeFPS Source File = AssumeFPS(%media_info_video:FrameRate%)
 ChangeFPS = ChangeFPS($select:msg:Select a Frame Rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;50;59.940|60000, 1001;60;120;144;240$)
 ConvertFPS = ConvertFPS($select:msg:Select a Frame Rate;23.976|24000, 1001;24;25;29.970|30000, 1001;30;50;59.940|60000, 1001;60;120;144;240$)
-InterFrame = InterFrame(preset="Medium", tuning="$select:msg:Select the Tuning Preset;Animation;Film;Smooth;Weak$", newNum=$enter_text:Enter the New Num Value$, newDen=$enter_text:Enter the New Den Value$, cores=$enter_text:Enter the Number of Cores you want to use$, overrideAlgo=$select:msg:Which Algorithm do you want to use?;Strong Predictions|2;Intelligent|13;Smoothest|23$, GPU=$select:msg:Enable GPU Feature?;True;False$)
+InterFrame = InterFrame(preset="Medium", tuning="$select:msg:Select the Tuning Preset;Film;Animation;Smooth;Weak$", newNum=$enter_text:Enter the New Num value for output fps$, newDen=$enter_text:Enter the New Den value for output fps$, cores=$enter_text:Enter the Number of Cores you want to use$, overrideAlgo=$select:msg:Which Algorithm do you want to use?;Strong Predictions (Animation Default)|2;Intelligent (Default)|13;Smoothest (Smooth Default)|23$, GPU=$select:msg:Enable GPU Feature?;True;False$, InputType=$select:msg:Is your source a 3D Video?;No it is 2D (Default)|"2D";3D Full SBS|"SBS";3D Full OU|"OU";3D Half SBS|"HSBS";3D Half OU|"HOU"$)
 
 SVPFlow =
     Threads = 8
@@ -88,7 +88,7 @@ SVPFlow =
     #Prefetch(threads) must be added at the end of the script and Threads=9 after the source
     Prefetch(threads)
 
-YRFC = YFRC(BlockH=16, BlockV=16, OverlayType=0, MaskExpand=1)
+YFRC = YFRC(BlockH=16, BlockV=16, OverlayType=0, MaskExpand=1)
 
 [Line]
 Anti-Aliasing | DAA = daa3mod()

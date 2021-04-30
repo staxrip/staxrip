@@ -4,13 +4,13 @@ Namespace UI
         Inherits DialogBase
 
 #Region " Designer "
-        Friend WithEvents tv As System.Windows.Forms.TreeView
+        Friend WithEvents tv As TreeViewEx
         <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-            Me.tv = New System.Windows.Forms.TreeView()
+            Me.tv = New TreeViewEx()
             Me.bnCancel = New StaxRip.UI.ButtonEx()
             Me.bnOK = New StaxRip.UI.ButtonEx()
             Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
-            Me.pnTreeView = New System.Windows.Forms.Panel()
+            Me.pnTreeView = New PanelEx()
             Me.tlpMain.SuspendLayout()
             Me.pnTreeView.SuspendLayout()
             Me.SuspendLayout()
@@ -92,7 +92,7 @@ Namespace UI
         Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
         Friend WithEvents bnOK As StaxRip.UI.ButtonEx
         Friend WithEvents tlpMain As TableLayoutPanel
-        Friend WithEvents pnTreeView As Panel
+        Friend WithEvents pnTreeView As PanelEx
 
 #End Region
 
@@ -102,6 +102,25 @@ Namespace UI
             InitializeComponent()
             PopulateTreeView(item, Nothing)
             tv.ExpandAll()
+
+            ApplyTheme()
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
+            BackColor = theme.General.BackColor
         End Sub
 
         Sub PopulateTreeView(item As CustomMenuItem, node As TreeNode)

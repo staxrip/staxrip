@@ -39,6 +39,7 @@ v2.5.0 (not published yet)
 - FineDehalo v1.1 mod8.79
 - GradFun2DBmod v1.5 2020.06.27 mod
 - HQDN3D v1.0.1
+- JPSDR v3.2.6 (W7 AVX2)
 - L-SMASH-Works 20210423 HolyWu
 - MCTemporalDenoise v1.4.21
 - QTGMC v3.379, by Vit, 2012, 2021 mod by A.SONY

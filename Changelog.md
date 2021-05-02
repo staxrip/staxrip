@@ -25,13 +25,18 @@ v2.5.0 (not published yet)
 - Update InterFrame and YFRC filter profiles (44vince44)
 - Update MDegrain2 filter profile (JKyle)
 - Add MVTools 2 missing filters (JKyle)
+- AOMEnc v3.0.0-375-g4d1ace0ad-x64-gcc10.2.0 Patman
 - AutoCrop v2.2
 - MKVToolNix v56.1.0
+- Mp4Box v1.1.0-DEV-rev802-gc0ea96c7b-x64-gcc10.2.0 Patman
 - NVEnc v5.30
 - Python v3.9.4
 - qaac v2.72
+- rav1e v0.5.0-alpha-(p20210427-1-gf54b23b6)-x64-gcc10.2.0 Patman
+- SVT-AV1 v0.8.6-93-g7cb05bf7 Patman
 - VapourSynth R53
 - VCEEnc v6.10
+- x265 v3.5+10+13-7c9bc0cb14 [Mod-by-Patman]
 - AnimeIVTC v2.381 2021-03-30 mod
 - CAS v1.0.1
 - D2VSource v1.2.3

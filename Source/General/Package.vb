@@ -427,10 +427,11 @@ Public Class Package
 
     Shared Property EEDI3 As Package = Add(New PluginPackage With {
         .Name = "EEDI3",
-        .Filename = "EEDI3.dll",
+        .Filename = "eedi3.dll",
         .WebURL = "http://avisynth.nl/index.php/EEDI3",
+        .DownloadURL = "https://github.com/pinterf/EEDI3/releases",
         .Description = "EEDI3 (Enhanced Edge Directed Interpolation) resizes an image by 2x in the vertical direction by copying the existing image to 2*y(n) and interpolating the missing field.",
-        .AvsFilterNames = {"EEDI3"}})
+        .AvsFilterNames = {"eedi3", "eedi3_rpow2"}})
 
     Shared Property EEDI2 As Package = Add(New PluginPackage With {
         .Name = "EEDI2",
@@ -800,8 +801,9 @@ Public Class Package
     Shared Property MCTemporalDenoise As Package = Add(New PluginPackage With {
         .Name = "MCTemporalDenoise",
         .Filename = "MCTemporalDenoise.avsi",
-        .WebURL = "http://avisynth.nl/index.php/MCTemporalDenoise",
         .Description = "A motion compensated noise removal script with an accompanying post-processing component.",
+        .WebURL = "http://avisynth.nl/index.php/MCTemporalDenoise",
+        .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/MCTemporalDenoise.avsi",
         .Dependencies = {"Zs_RF_Shared.avsi"},
         .AvsFilterNames = {"MCTemporalDenoise", "MCTemporalDenoisePP"}})
 
@@ -941,6 +943,7 @@ Public Class Package
             .Name = "AnimeIVTC",
             .Filename = "AnimeIVTC.avsi",
             .WebURL = "http://avisynth.nl/index.php/AnimeIVTC",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/AnimeIVTC.avsi",
             .AvsFilterNames = {"AnimeIVTC"}})
 
         Add(New PluginPackage With {
@@ -989,6 +992,7 @@ Public Class Package
             .Name = "HQDeringmod",
             .Filename = "HQDeringmod.avsi",
             .HelpFilename = "Readme.txt",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/HQDeringmod.avsi",
             .WebURL = "http://avisynth.nl/index.php/HQDering_mod",
             .Description = "Applies deringing by using a smart smoother near edges (where ringing occurs) only.",
             .AvsFilterNames = {"HQDeringmod"}})
@@ -1000,6 +1004,7 @@ Public Class Package
             .Description = "A frame interpolation script that makes accurate estimations about the content of frames",
             .Location = "Plugins\AVS\InterFrame2",
             .WebURL = "http://avisynth.nl/index.php/InterFrame",
+            .HelpURL = "https://www.spirton.com/uploads/InterFrame/InterFrame2.html",
             .AvsFilterNames = {"InterFrame"}})
 
         Add(New PluginPackage With {
@@ -1041,6 +1046,7 @@ Public Class Package
             .Filename = "FineDehalo.avsi",
             .Description = "Halo removal script that uses DeHalo_alpha with a few masks and optional contra-sharpening to try remove halos without removing important details (like line edges). It also includes FineDehalo2, this function tries to remove 2nd order halos. See script for extensive information. ",
             .WebURL = "http://avisynth.nl/index.php/FineDehalo",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/FineDehalo.avsi",
             .HelpFilename = "Readme.txt",
             .AvsFilterNames = {"FineDehalo"}})
 
@@ -1083,13 +1089,15 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "ResizeX",
             .Filename = "ResizeX.avsi",
-            .WebURL = "http://avisynth.nl",
+            .Description = "ResizeX is a wrapper function for AviSynth's internal resizers and Dither_resize16 that corrects for the chroma shift caused by the internal resizers when they're used on horizontally subsampled chroma with MPEG2 placement.",
+            .WebURL = "http://avisynth.nl/index.php/External_filters#Resizers",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.6%20and%20up/ResizeX.avsi",
             .AvsFilterNames = {"ResizeX"}})
 
         Add(New PluginPackage With {
             .Name = "Deblock_QED",
             .Filename = "Deblock_QED.avsi",
-            .Description = "Designed to provide 8x8 deblocking sensitive to the amount of blocking in the source, compared to other deblockers which apply an uniform deblocking across every frame. ",
+            .Description = "Designed to provide 8x8 deblocking sensitive to the amount of blocking in the source, compared to other deblockers which apply an uniform deblocking across every frame.",
             .HelpFilename = "Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/Deblock_QED",
             .AvsFilterNames = {"Deblock_QED"}})
@@ -1100,6 +1108,7 @@ Public Class Package
             .Description = "nnedi3_resize16 is an advanced script for image resizing and colorspace conversion.",
             .Location = "Plugins\AVS\Scripts",
             .WebURL = "http://avisynth.nl/index.php/Nnedi3_resize16",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.6%20and%20up/nnedi3_resize16.avsi",
             .AvsFilterNames = {"nnedi3_resize16"}})
 
         Add(New PluginPackage With {
@@ -1115,7 +1124,9 @@ Public Class Package
             .Description = "An improved rpow2 function for nnedi3, nnedi3ocl, eedi3, and eedi2.",
             .Filename = "edi_rpow2.avsi",
             .Location = "Plugins\AVS\Scripts",
-            .WebURL = "https://github.com/realfinder/AVS-Stuff/tree/Community/avs%202.6%20and%20up",
+            .Dependencies = {"ResizeX.avsi"},
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1738351#post1738351",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.6%20and%20up/edi_rpow2.avsi",
             .AvsFilterNames = {"edi_rpow2"}})
 
         Add(New PluginPackage With {
@@ -1155,16 +1166,18 @@ Public Class Package
             .Name = "MAA2Mod",
             .Location = "Plugins\AVS\MAA2",
             .Filename = "maa2mod.avsi",
-            .Description = "Updated version of the MAA2+ antialising script from AnimeIVTC. MAA2 uses tp7's SangNom2, which provide a nice speedup for SangNom-based antialiasing. Mod version also includes support for EEDI3 along with a few other new functions.",
+            .Description = "Updated version of the MAA antialising script from AnimeIVTC. MAA2 uses tp7's SangNom2, which provides a nice speedup for SangNom-based antialiasing, especially when only processing the luma plane. Mod version also includes support for EEDI3 along with a few other new functions.",
             .HelpFilename = "Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/MAA2",
-            .AvsFilterNames = {"MAA2"}})
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.6%20and%20up/maa2.avsi",
+            .AvsFilterNames = {"maa2", "Sangnom2AA", "maa2ee"}})
 
         Add(New PluginPackage With {
             .Name = "DAA3Mod",
             .Filename = "daa3mod.avsi",
-            .Description = "Motion-Compensated Anti-aliasing with contra-sharpening, can deal with ifade too, created because when applied daa3 to fixed scenes, it could damage some details and other issues.",
-            .WebURL = "http://avisynth.nl/index.php/daa3",
+            .Description = "Motion-compensated anti-aliasing with contra-sharpening, can deal with ifade too, created because when applied daa3 to fixed scenes, it could damage some details and other issues.",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/daa3MOD.avsi",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1639679#post1639679",
             .AvsFilterNames = {"daa3mod", "mcdaa3"}})
 
         Add(New PluginPackage With {
@@ -1188,7 +1201,7 @@ Public Class Package
             .Name = "FrameRateConverter DLL",
             .Filename = "FrameRateConverter-x64.dll",
             .Location = "Plugins\AVS\FrameRateConverter",
-            .Description = "Increases the frame rate with interpolation and fine artifact removal ",
+            .Description = "Increases the frame rate with interpolation and fine artifact removal.",
             .WebURL = "https://github.com/mysteryx93/FrameRateConverter",
             .AvsFilterNames = {"FrameRateConverter"}})
 
@@ -1196,21 +1209,21 @@ Public Class Package
             .Name = "FrameRateConverter AVSI",
             .Filename = "FrameRateConverter.avsi",
             .Location = "Plugins\AVS\FrameRateConverter",
-            .Description = "Increases the frame rate with interpolation and fine artifact removal ",
+            .Description = "Increases the frame rate with interpolation and fine artifact removal.",
             .WebURL = "https://github.com/mysteryx93/FrameRateConverter",
             .AvsFilterNames = {"FrameRateConverter"}})
 
         Add(New PluginPackage With {
             .Name = "DeNoiseMD",
             .Filename = "DeNoiseMD.avsi",
-            .Description = "A fast and accurate denoiser for a Full HD video from a H.264 camera. ",
+            .Description = "A fast and accurate denoiser for a Full HD video from a H.264 camera.",
             .WebURL = "http://avisynth.nl",
             .AvsFilterNames = {"DeNoiseMD1", "DenoiseMD2"}})
 
         Add(New PluginPackage With {
             .Name = "DeNoiseMF",
             .Filename = "DeNoiseMF.avsi",
-            .Description = "A fast and accurate denoiser for a Full HD video from a H.264 camera. ",
+            .Description = "A fast and accurate denoiser for a Full HD video from a H.264 camera.",
             .WebURL = "http://avisynth.nl",
             .AvsFilterNames = {"DeNoiseMF1", "DenoiseMF2"}})
 
@@ -1224,7 +1237,7 @@ Public Class Package
 
         Add(New PluginPackage With {
             .Name = "TEMmod",
-            .Description = "TEMmod creates an edge mask using gradient vector magnitude. ",
+            .Description = "TEMmod creates an edge mask using gradient vector magnitude.",
             .Filename = "TEMmod.dll",
             .HelpFilename = "Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/TEMmod",
@@ -1245,6 +1258,7 @@ Public Class Package
             .HelpFilename = "dither.html",
             .Location = "Plugins\AVS\Dither",
             .Filename = "dither.avsi",
+            .DownloadURL = "https://forum.doom9.org/showpost.php?p=1386559&postcount=3",
             .WebURL = "http://avisynth.nl/index.php/Dither",
             .AvsFilterNames = {"Dither_y_gamma_to_linear", "Dither_y_linear_to_gamma", "Dither_convert_8_to_16", "Dither1Pre", "Dither1Pre", "Dither_repair16", "Dither_convert_yuv_to_rgb", "Dither_convert_rgb_to_yuv", "Dither_resize16", "DitherPost", "Dither_crop16", "DitherBuildMask", "SmoothGrad", "GradFun3", "Dither_box_filter16", "Dither_bilateral16", "Dither_limit_dif16", "Dither_resize16nr", "Dither_srgb_display", "Dither_convey_yuv4xxp16_on_yvxx", "Dither_convey_rgb48_on_yv12", "Dither_removegrain16", "Dither_median16", "Dither_get_msb", "Dither_get_lsb", "Dither_addborders16", "Dither_lut8", "Dither_lutxy8", "Dither_lutxyz8", "Dither_lut16", "Dither_add16", "Dither_sub16", "Dither_max_dif16", "Dither_min_dif16", "Dither_merge16", "Dither_merge16_8", "Dither_sigmoid_direct", "Dither_sigmoid_inverse", "Dither_add_grain16", "Dither_Luma_Rebuild"}})
 
@@ -1254,6 +1268,7 @@ Public Class Package
             .Description = "This package offers a set of tools to manipulate high-bitdepth (16 bits per plane) video clips. The most proeminent features are color banding artifact removal, dithering to 8 bits, colorspace conversions and resizing.",
             .HelpFilename = "dither.html",
             .Filename = "dither.dll",
+            .DownloadURL = "https://forum.doom9.org/showpost.php?p=1386559&postcount=3",
             .WebURL = "http://avisynth.nl/index.php/Dither",
             .AvsFilterNames = {"Dither_y_gamma_to_linear", "Dither_y_linear_to_gamma", "Dither_convert_8_to_16", "Dither1Pre", "Dither1Pre", "Dither_repair16", "Dither_convert_yuv_to_rgb", "Dither_convert_rgb_to_yuv", "Dither_resize16", "DitherPost", "Dither_crop16", "DitherBuildMask", "SmoothGrad", "GradFun3", "Dither_box_filter16", "Dither_bilateral16", "Dither_limit_dif16", "Dither_resize16nr", "Dither_srgb_display", "Dither_convey_yuv4xxp16_on_yvxx", "Dither_convey_rgb48_on_yv12", "Dither_removegrain16", "Dither_median16", "Dither_get_msb", "Dither_get_lsb", "Dither_addborders16", "Dither_lut8", "Dither_lutxy8", "Dither_lutxyz8", "Dither_lut16", "Dither_add16", "Dither_sub16", "Dither_max_dif16", "Dither_min_dif16", "Dither_merge16", "Dither_merge16_8", "Dither_sigmoid_direct", "Dither_sigmoid_inverse", "Dither_add_grain16", "Dither_Luma_Rebuild"}})
 
@@ -1278,8 +1293,8 @@ Public Class Package
             .Location = "Plugins\AVS\GradFun2DB",
             .Filename = "GradFun2DBmod.avsi",
             .HelpFilename = "Readme.txt",
-            .HelpURL = "http://avisynth.nl/index.php/GradFun2DBmod",
-            .WebURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/GradFun2DBmod.avsi",
+            .WebURL = "http://avisynth.nl/index.php/GradFun2DBmod",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/GradFun2DBmod.avsi",
             .Description = "An advanced debanding script based on GradFun2DB.",
             .AvsFilterNames = {"GradFun2DBmod"}})
 
@@ -1795,8 +1810,9 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "FineSharp",
             .Filename = "FineSharp.avsi",
-            .Description = "Small and fast realtime-sharpening function for 1080p, or after scaling 720p -> 1080p. It's a generic sharpener only for good quality sources!",
+            .Description = "Small and relatively fast realtime-sharpening function, for 1080p, or after scaling 720p -> 1080p during playback (to make 720p look more like being 1080p). It's a generic sharpener. Only for good quality sources!",
             .WebURL = "http://avisynth.nl/index.php/FineSharp",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/FineSharp.avsi",
             .AvsFilterNames = {"FineSharp"}})
 
         Add(New PluginPackage With {

@@ -1,4 +1,4 @@
-v2.5.0 (not published yet)
+v2.5.0 (2021-05-03)
 =========================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended

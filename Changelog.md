@@ -27,6 +27,7 @@ v2.5.0 (not published yet)
 - Add MVTools 2 missing filters (JKyle)
 - AOMEnc v3.0.0-375-g4d1ace0ad-x64-gcc10.2.0 Patman
 - AutoCrop v2.2
+- chapterEditor v1.28
 - MKVToolNix v56.1.0
 - Mp4Box v1.1.0-DEV-rev802-gc0ea96c7b-x64-gcc10.2.0 Patman
 - NVEnc v5.30

@@ -137,7 +137,7 @@ FFT3D Neo = clip = core.neo_fft3d.FFT3D(clip, sigma=2.0, bt=3, planes=[0,1,2])
 HQDN3D = clip = core.hqdn3d.Hqdn3d(clip=clip)
 KNLMeansCL = clip = core.knlm.KNLMeansCL(clip, d=1, a=1, h=$select:msg:Select Strength;Light|2;Medium|4;Strong|4$, device_type='auto')
 mClean = clip = G41Fun.mClean(clip)
-MCTemporalDenoise = clip = havsfunc.MCTemporalDenoise(i=clip, settings='$select:msg:Select Strength;Very Low;Low;Medium;High;Very High$')
+MCTemporalDenoise = clip = havsfunc.MCTemporalDenoise(i=clip, settings='$select:msg:Select Strength;Very Low|very low;Low(Default)|low;Medium|medium;High|high;Very High|very high$')
 MiniDeen = clip = core.neo_minideen.MiniDeen(clip, radius=[1,1,1], threshold=[10,12,12], planes=[0,1,2])
 RemoveGrain | RemoveGrain | RemoveGrain = clip = core.rgvs.RemoveGrain(clip, 1)
 

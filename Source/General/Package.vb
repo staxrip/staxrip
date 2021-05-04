@@ -1831,6 +1831,13 @@ Public Class Package
             .DownloadURL = "https://github.com/Asd-g/AviSynth-CAS/releases",
             .AvsFilterNames = {"CAS"}})
 
+        Add(New PluginPackage With {
+            .Name = "TTempSmooth",
+            .Filename = "TTempSmooth.dll",
+            .Description = "TTempSmooth is a motion adaptive (it only works on stationary parts of the picture), temporal smoothing filter. TTempSmoothF is a faster (50-75%) version of TTempSmooth that doesn't take the mdiff/mdiffC parameters (it is equivalent to running TTempSmooth with mdiff/mdiffC set equal to or greater then LThresh-1/CThresh-1).",
+            .WebURL = "http://avisynth.nl/index.php/TTempSmooth",
+            .AvsFilterNames = {"TTempSmooth", "TTempSmoothF"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

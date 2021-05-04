@@ -1848,6 +1848,14 @@ Public Class Package
             .DownloadURL = "https://github.com/Asd-g/AviSynth-vsTTempSmooth/releases",
             .AvsFilterNames = {"vsTTempSmooth"}})
 
+        Add(New PluginPackage With {
+            .Name = "CASm",
+            .Filename = "CASm.avsi",
+            .Description = "An improved sharpening script based on CAS and aWarpSharp2. Originally composed by Atak_Snajpera for RipBot264, and renamed/modded by JKyle for StaxRip.",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1942236#post1942236",
+            .Dependencies = {"Plugins_JPSDR.dll"},
+            .AvsFilterNames = {"CASm"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

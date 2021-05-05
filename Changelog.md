@@ -4,8 +4,9 @@ not published yet
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
 - [ ] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
-- Fix timestamp extraction setting being ignored (Dendraspis, 44vince44)
 - Enable Timestamp Extraction for VFR MKV files by default (Dendraspis, 44vince)
+- Fix timestamp extraction setting being ignored (Dendraspis, 44vince44)
+- Autoload (extracted) timestamps file (Dendraspis)
 
 
 v2.5.0 (2021-05-03)

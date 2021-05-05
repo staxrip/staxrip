@@ -224,6 +224,12 @@ Public MustInherit Class Muxer
                                 ChapterFile = i
                             End If
                         End If
+                    ElseIf lower.Contains("timestamps") Then
+                        If TypeOf Me is MkvMuxer
+                            If i.Ext = "txt" Then
+                                TimestampsFile = i
+                            End If
+                        End If
                     End If
                 End If
             End If

@@ -1,3 +1,12 @@
+not published yet
+=========================
+
+- [ ] Might break settings from previous version, so starting with new settings is recommended
+- [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
+- [ ] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
+- Fix timestamp extraction setting being ignored (Dendraspis, 44vince44)
+
+
 v2.5.0 (2021-05-03)
 =========================
 

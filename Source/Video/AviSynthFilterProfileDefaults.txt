@@ -28,6 +28,8 @@ Dither | DitherPost = DitherPost()
 Dither | Gamma / Linear = $select:Gamma to Linear|Dither_y_gamma_to_linear;Linear to Gamma|Dither_y_linear_to_gamma$(curve="$select:msg:Select the Color Curve;601;709;2020$")
 Dither | Sigmoid = $select:Sigmoid Direct|Dither_sigmoid_direct();Sigmoid Inverse|Dither_sigmoid_inverse()$
 Dither | YUV / RGB = $select:RGB to YUV|Dither_convert_rgb_to_yuv();YUV to RGB|Dither_convert_yuv_to_rgb()$
+Grayscale | Desaturate = Tweak(sat = 0)
+Grayscale | Grayscale = Grayscale()
 HDRCore | Cube = Cube("$browse_file$")
 
 [Crop]

@@ -31,6 +31,8 @@ Dither | Sigmoid = $select:Sigmoid Inverse|clip = havsfunc.SigmoidInverse(clip);
 Dither | SmoothGrad = clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1)
 Dither | Stack = $select:Native to Stack16|clip = core.fmtc.nativetostack16(clip);Stack16 to Native|clip = fmtc.stack16tonative(clip)$
 Dither | To RGB / YUV = clip = $select:To RGB|mvsfunc.ToRGB;To YUV|mvsfunc.ToYUV$(clip,matrix='$select:msg:Select Matrix;470bg;240;709;2020;2020cl;bt2020c$')
+Grayscale | Desaturate = clip = adjust.Tweak(clip, sat=0)
+Grayscale | Grayscale = clip = mvsfunc.GrayScale(clip)
 
 [Crop]
 Crop = clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)

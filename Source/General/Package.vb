@@ -2178,6 +2178,34 @@ Public Class Package
         Return Not Path.PathStartsWith(Folder.System) AndAlso AllowCustomPath
     End Function
 
+    Shared ReadOnly Property x264Type As x264Type
+        Get
+            Dim filePath = x264.Path
+
+            If filePath <> "" Then
+                Dim size = New FileInfo(filePath).Length
+
+                If size <> s.Storage.GetInt("x264 size") Then
+                    Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", True)
+                    Dim value As Integer
+
+                    If output.Contains("DJATOM") Then
+                        value = x264Type.DJATOM
+                    ElseIf output.Contains("Patman") Then
+                        value = x264Type.Patman
+                    Else
+                        value = x264Type.Vanilla
+                    End If
+
+                    s.Storage.SetInt("x264 size", CInt(size))
+                    s.Storage.SetInt("x264 type", value)
+                End If
+
+                Return CType(s.Storage.GetInt("x264 type"), x264Type)
+            End If
+        End Get
+    End Property
+
     Shared ReadOnly Property x265Type As x265Type
         Get
             Dim filePath = x265.Path

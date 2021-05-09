@@ -7,6 +7,7 @@ not published yet
 - Enable Timestamp Extraction for VFR MKV files by default (Dendraspis, 44vince)
 - Fix timestamp extraction setting being ignored (Dendraspis, 44vince44)
 - Autoload (extracted) timestamps file (Dendraspis)
+- Fix x264 --progress-header param not being shown correctly (Dendraspis, [#696](/../../issues/696))
 
 
 v2.5.0 (2021-05-03)

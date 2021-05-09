@@ -920,7 +920,7 @@ Public Class x264Params
                     New BoolParam With {.Switch = "--quiet", .Text = "Quiet Mode"},
                     New BoolParam With {.Switch = "--verbose", .Switches = {"-v"}, .Text = "Print stats for each frame"},
                     New BoolParam With {.Switch = "--dts-compress", .Text = "Eliminate initial delay with container DTS hack"},
-                    New BoolParam With {.Switch = "--progress-header", .NoSwitch = "--no-progress-header", .Text = "Show progress header", .Init = True, .VisibleFunc = Function() Package.x265Type <> x265Type.Patman})
+                    New BoolParam With {.Switch = "--progress-header", .NoSwitch = "--no-progress-header", .Text = "Show progress header", .Init = True, .VisibleFunc = Function() Package.x264Type <> x264Type.Patman})
                 Add("Other",
                     New StringParam With {.Switch = "--video-filter", .Switches = {"--vf"}, .Text = "Video Filter"},
                     New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
@@ -1205,4 +1205,10 @@ Public Enum x264RateMode
     Quality
     <DispName("Two Pass")> TwoPass
     <DispName("Three Pass")> ThreePass
+End Enum
+
+Public Enum x264Type
+    Vanilla
+    Patman
+    DJATOM
 End Enum

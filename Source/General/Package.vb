@@ -1851,6 +1851,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "CASm",
             .Filename = "CASm.avsi",
+            .Location = "Plugins\AVS\Scripts",
             .Description = "An improved sharpening script based on CAS and aWarpSharp2. Originally composed by Atak_Snajpera for RipBot264, and renamed/modded by JKyle for StaxRip.",
             .WebURL = "https://forum.doom9.org/showthread.php?p=1942236#post1942236",
             .Dependencies = {"Plugins_JPSDR.dll"},

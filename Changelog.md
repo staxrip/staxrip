@@ -3,11 +3,20 @@ not published yet
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
-- [ ] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
+- [X] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - Enable Timestamp Extraction for VFR MKV files by default (Dendraspis, 44vince)
 - Fix timestamp extraction setting being ignored (Dendraspis, 44vince44)
 - Autoload (extracted) timestamps file (Dendraspis)
 - Fix x264 --progress-header param not being shown correctly (Dendraspis, [#696](/../../issues/696))
+- Fix MCTemporalDenoise high settings cause error (Dendraspis, [#690](/../../issues/690))
+- Update various filter profiles for both AVS and VS (JKyle)
+- Add Grayscale filter profiles for AviSynth/VapourSynth (JKyle)
+- AOMEnc v3.1.0-176 Patman
+- AVSMeter v3.0.9.0
+- CASm 2021-04-22 by JKyle
+- NVEnc v5.31
+- QSVEnc v5.01
+- vsTTempSmooth v1.1.3
 
 
 v2.5.0 (2021-05-03)

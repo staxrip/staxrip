@@ -24,7 +24,7 @@ Public Class MuxerForm
     Friend WithEvents CommandLineControl As StaxRip.CommandLineControl
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
-    Friend WithEvents tcMain As System.Windows.Forms.TabControl
+    Friend WithEvents tcMain As TabControlEx
     Friend WithEvents tpCommandLine As System.Windows.Forms.TabPage
     Friend WithEvents Label1 As LabelEx
     Friend WithEvents tpOptions As System.Windows.Forms.TabPage
@@ -71,7 +71,7 @@ Public Class MuxerForm
         Me.bnCommandLinePreview = New ButtonEx()
         Me.bnCancel = New ButtonEx()
         Me.bnOK = New ButtonEx()
-        Me.tcMain = New System.Windows.Forms.TabControl()
+        Me.tcMain = New TabControlEx()
         Me.tpSubtitles = New System.Windows.Forms.TabPage()
         Me.tlpSubtitles = New System.Windows.Forms.TableLayoutPanel()
         Me.dgvSubtitles = New DataGridViewEx()

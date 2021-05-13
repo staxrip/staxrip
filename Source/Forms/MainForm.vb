@@ -3045,7 +3045,7 @@ Public Class MainForm
                         Return Block("Invalid Target File", tbTargetFile)
                     End If
                 Else
-                    If ProcessTip("The target file already exist." + BR + p.TargetFile) Then
+                    If ProcessTip("The target file already exists." + BR + p.TargetFile) Then
                         Return Warn("Target File", tbTargetFile)
                     End If
                 End If

@@ -658,6 +658,7 @@ Public Class Theme
         Public Class TabControlThemeColors
             Public Property BackColor As ColorHSL = SystemColors.Control
             Public Property BackHighlightColor As ColorHSL = _defaultBackHighlightColor
+            Public Property BorderColor As ColorHSL = SystemColors.Control
             Public Property ForeColor As ColorHSL = SystemColors.ControlText
             Public Property ForeHighlightColor As ColorHSL = ForeColor
         End Class

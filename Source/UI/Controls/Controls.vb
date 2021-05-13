@@ -3154,6 +3154,7 @@ Namespace UI
 
         Sub New()
             MyBase.New()
+
             ApplyTheme()
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
@@ -3197,7 +3198,38 @@ Namespace UI
         Inherits TabControl
 
         Private DragStartPosition As Point = Point.Empty
+        Private ItemArgs As Dictionary(Of Integer, DrawItemEventArgs) = New Dictionary(Of Integer, DrawItemEventArgs)
         Private TabType As Type
+
+        Sub New()
+            MyBase.New()
+
+            ApplyTheme()
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+
+            'AddHandler DrawItem, AddressOf DrawItemHandler
+        End Sub
+
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
+            If Not Disposing AndAlso Not IsDisposed Then
+                SuspendLayout()
+                BackColor = theme.General.Controls.TabControl.BackColor
+                ForeColor = theme.General.Controls.TabControl.ForeColor
+                ResumeLayout()
+            End If
+        End Sub
 
         Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
             DragStartPosition = New Point(e.X, e.Y)
@@ -3224,9 +3256,7 @@ Namespace UI
         Protected Overrides Sub OnDragOver(e As DragEventArgs)
             Dim hoverTab = Me.HoverTab()
 
-            If hoverTab Is Nothing Then
-                e.Effect = DragDropEffects.None
-            Else
+            If hoverTab IsNot Nothing Then
                 If e.Data.GetDataPresent(TabType) Then
                     e.Effect = DragDropEffects.Move
                     Dim dragTab = DirectCast(e.Data.GetData(TabType), TabPage)
@@ -3260,6 +3290,46 @@ Namespace UI
             TabPages(index1) = tp2
             TabPages(index2) = tp1
         End Sub
+
+
+        'Private Sub DrawItemHandler(sender As Object, e As DrawItemEventArgs)
+        '    If Not ItemArgs.ContainsKey(e.Index) Then
+        '        ItemArgs.Add(e.Index, e)
+        '    Else
+        '        ItemArgs(e.Index) = e
+        '    End If
+        'End Sub
+
+        'Protected Overrides Sub WndProc(ByRef m As Message)
+        '    MyBase.WndProc(m)
+
+        '    If m.Msg = 15 Then  'WM_PAINT
+        '        Using g = Me.CreateGraphics()
+        '            Dim bufferedGraph = BufferedGraphicsManager.Current.Allocate(g, ClientRectangle)
+        '            Dim rect = ClientRectangle
+        '            rect.Height = DisplayRectangle.Height + 1
+        '            rect.Y = DisplayRectangle.Y - 1
+        '            rect.Width -= 5
+        '            rect.X += 1
+
+        '            If Enabled Then
+        '                bufferedGraph.Graphics.FillRectangle(New SolidBrush(ThemeManager.CurrentTheme.General.Controls.TabControl.BackColor), rect)
+        '                bufferedGraph.Graphics.DrawRectangle(New Pen(ThemeManager.CurrentTheme.General.Controls.TabControl.BorderColor), rect)
+        '            Else
+        '                bufferedGraph.Graphics.FillRectangle(Brushes.LightGray, rect)
+        '                bufferedGraph.Graphics.DrawRectangle(Pens.DarkGray, rect)
+        '            End If
+
+        '            bufferedGraph.Render()
+        '            bufferedGraph.Dispose()
+
+        '            For Each index In ItemArgs.Keys
+        '                OnDrawItem(ItemArgs(index))
+        '            Next
+        '        End Using
+        '    End If
+        'End Sub
+
     End Class
 
     Public Class LabelProgressBar

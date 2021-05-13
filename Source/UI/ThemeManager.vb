@@ -343,6 +343,7 @@
                     .TabControl = New ControlsThemeColors.TabControlThemeColors() With {
                         .BackColor = _controlBackColor,
                         .BackHighlightColor = _controlBackHighlightColor,
+                        .BorderColor = _controlBackColor.AddLuminance(-0.1),
                         .ForeColor = _foreColor,
                         .ForeHighlightColor = _controlForeHighlightColor
                     },

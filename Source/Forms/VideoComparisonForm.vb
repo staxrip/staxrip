@@ -14,12 +14,14 @@ Public Class VideoComparisonForm
         InitializeComponent()
         RestoreClientSize(53, 36)
 
+        AllowDrop = True
         KeyPreview = True
         bnMenu.TabStop = False
         TabControl.AllowDrop = True
         TrackBar.NoMouseWheelEvent = True
+        tlpMain.AllowDrop = True
 
-        Dim enabledFunc = Function() Not TabControl.SelectedTab Is Nothing
+        Dim enabledFunc = Function() TabControl.SelectedTab IsNot Nothing
         Menu = New ContextMenuStripEx()
         Menu.Form = Me
 
@@ -41,8 +43,12 @@ Public Class VideoComparisonForm
 
         Menu.ApplyMarginFix()
 
-        ApplyTheme()
+        AddHandler tlpMain.DragOver, AddressOf TabControlOnDragOver
+        AddHandler tlpMain.DragDrop, AddressOf TabControlOnDragDrop
+        AddHandler TabControl.DragOver, AddressOf TabControlOnDragOver
+        AddHandler TabControl.DragDrop, AddressOf TabControlOnDragDrop
 
+        ApplyTheme()
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
     End Sub
 
@@ -62,28 +68,95 @@ Public Class VideoComparisonForm
         BackColor = theme.General.BackColor
     End Sub
 
+    Protected Overrides Sub OnDragEnter(e As DragEventArgs)
+        MyBase.OnDragEnter(e)
+
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+
+        If Not files.NothingOrEmpty Then
+            e.Effect = DragDropEffects.Copy
+        End If
+    End Sub
+
+    Protected Overrides Sub OnDragDrop(e As DragEventArgs)
+        MyBase.OnDragDrop(e)
+
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+
+        If Not files.NothingOrEmpty Then
+            BeginInvoke(Sub() Add(files))
+        End If
+    End Sub
+
+    Sub TabControlOnDragOver(sender As Object, e As DragEventArgs)
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+
+        If Not files.NothingOrEmpty Then
+            e.Effect = DragDropEffects.Copy
+        End If
+    End Sub
+
+    Sub TabControlOnDragDrop(sender As Object, e As DragEventArgs)
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+
+        If Not files.NothingOrEmpty Then
+            BeginInvoke(Sub() Add(files))
+        End If
+    End Sub
+
     Sub Add()
         If Not Package.AviSynth.VerifyOK(True) Then
             Exit Sub
         End If
 
-        Using dialog As New OpenFileDialog
-            dialog.SetFilter(FileTypes.Video)
-            dialog.Multiselect = True
-            dialog.SetInitDir(s.Storage.GetString("video comparison folder"))
+        If File.Exists(p.SourceFile) Then
+            Add(p.SourceFile)
+            If File.Exists(p.TargetFile) Then Add(p.TargetFile)
+        Else
+            Using dialog As New OpenFileDialog
+                dialog.SetFilter(FileTypes.Video)
+                dialog.Multiselect = True
+                dialog.SetInitDir(s.Storage.GetString("video comparison folder"))
 
-            If dialog.ShowDialog() = DialogResult.OK Then
-                s.Storage.SetString("video comparison folder", dialog.FileName.Dir)
+                If dialog.ShowDialog() = DialogResult.OK Then
+                    s.Storage.SetString("video comparison folder", dialog.FileName.Dir)
+                    Add(dialog.FileNames)
+                End If
+            End Using
+        End If
 
-                For Each file In dialog.FileNames
-                    Add(file)
-                Next
+    End Sub
+
+    Sub Add(sourePath As String)
+        Dim tab = New VideoTab()
+        tab.AllowDrop = True
+        tab.Form = Me
+        tab.VideoPanel.ContextMenuStrip = TabControl.ContextMenuStrip
+
+        If tab.Open(sourePath) Then
+            TabControl.TabPages.Add(tab)
+
+            AddHandler tab.DragOver, AddressOf TabControlOnDragOver
+            AddHandler tab.DragDrop, AddressOf TabControlOnDragDrop
+
+            Dim page = DirectCast(TabControl.SelectedTab, VideoTab)
+            page.DoLayout()
+            page.TrackBarValueChanged()
+        Else
+            tab.Dispose()
+        End If
+    End Sub
+
+    Sub Add(sourePaths As String())
+        For Each path In sourePaths
+            If File.Exists(path) Then
+                Add(path)
             End If
-        End Using
+        Next
     End Sub
 
     Sub Remove()
-        If Not TabControl.SelectedTab Is Nothing Then
+        If TabControl.SelectedTab IsNot Nothing Then
             Dim tab = TabControl.SelectedTab
             TabControl.TabPages.Remove(tab)
             tab.Dispose()
@@ -100,21 +173,6 @@ Public Class VideoComparisonForm
         Next
 
         MsgInfo("Images were saved in the source file directory.")
-    End Sub
-
-    Sub Add(sourePath As String)
-        Dim tab = New VideoTab()
-        tab.Form = Me
-        tab.VideoPanel.ContextMenuStrip = TabControl.ContextMenuStrip
-
-        If tab.Open(sourePath) Then
-            TabControl.TabPages.Add(tab)
-            Dim page = DirectCast(TabControl.SelectedTab, VideoTab)
-            page.DoLayout()
-            page.TrackBarValueChanged()
-        Else
-            tab.Dispose()
-        End If
     End Sub
 
     Sub TrackBar_ValueChanged(sender As Object, e As EventArgs) Handles TrackBar.ValueChanged

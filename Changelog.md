@@ -8,7 +8,10 @@ not published yet
 - Fix timestamp extraction setting being ignored (Dendraspis, 44vince44)
 - Autoload (extracted) timestamps file (Dendraspis)
 - Fix x264 --progress-header param not being shown correctly (Dendraspis, [#696](/../../issues/696))
-- Fix MCTemporalDenoise high settings cause error (Dendraspis, [#690](/../../issues/690))
+- Add Jobs window to remembered window positions (Dendraspis)
+- Refurbish Next button (Dendraspis)
+- Add settings to change modifier key behavior on Next / AddJob button (Dendraspis)
+- Fix MCTemporalDenoise high settings cause error (JKyle, [#690](/../../issues/690))
 - Update various filter profiles for both AVS and VS (JKyle)
 - Add Grayscale filter profiles for AviSynth/VapourSynth (JKyle)
 - AOMEnc v3.1.0-176 Patman

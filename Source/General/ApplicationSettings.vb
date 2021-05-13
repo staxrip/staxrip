@@ -44,6 +44,8 @@ Public Class ApplicationSettings
     Public FixFrameRate As Boolean = True
     Public HidePreviewButtons As Boolean
     Public IconFile As String
+    Public InvertCtrlKeyOnNextButton As Boolean = False
+    Public InvertShiftKeyOnNextButton As Boolean = False
     Public LastPosition As Integer
     Public LastSourceDir As String
     Public LoadAviSynthPlugins As Boolean = True
@@ -190,7 +192,7 @@ Public Class ApplicationSettings
         End If
 
         If Check(WindowPositionsRemembered, "Remembered Window Positions", 1) Then
-            WindowPositionsRemembered = {"StaxRip", "Crop", "Preview", "Help"}
+            WindowPositionsRemembered = {"StaxRip", "Crop", "Jobs", "Preview", "Help"}
         End If
 
         If Check(WindowPositions, "Remembered Window Positions 2", 1) Then

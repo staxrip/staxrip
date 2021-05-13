@@ -174,13 +174,14 @@ Public Class MainForm
         'bnNext
         '
         Me.bnNext.Anchor = System.Windows.Forms.AnchorStyles.None
-        Me.bnNext.AutoSize = True
+        Me.bnNext.AutoSize = False
+        Me.bnNext.AutoSizeMode = AutoSizeMode.GrowAndShrink
         Me.bnNext.Cursor = System.Windows.Forms.Cursors.Default
         Me.bnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bnNext.Location = New System.Drawing.Point(1880, 33)
         Me.bnNext.Margin = New System.Windows.Forms.Padding(0, 0, 20, 0)
-        Me.bnNext.MinimumSize = New System.Drawing.Size(74, 70)
-        Me.bnNext.Size = New System.Drawing.Size(119, 70)
+        'Me.bnNext.MinimumSize = New System.Drawing.Size(265, 85)
+        Me.bnNext.Size = New System.Drawing.Size(CInt(275 * s.UIScaleFactor), CInt(105 * s.UIScaleFactor))
         Me.bnNext.UseCompatibleTextRendering = True
         '
         'llEditAudio0
@@ -3129,11 +3130,12 @@ Public Class MainForm
             laTip.SetFontSize(9 * s.UIScaleFactor)
         End If
 
-        laTip.Text = "Click on the next button to add a job."
+        laTip.Text = "Click on the right button to add a job to the job list."
         AssistantPassed = True
         bnNext.Enabled = True
         laTip.BackColor = ThemeManager.CurrentTheme.MainForm.laTipBackColor
         laTip.ForeColor = ThemeManager.CurrentTheme.MainForm.laTipForeColor
+        UpdateNextButton()
     End Function
 
     Function Warn(msg As String, ParamArray controls As Control()) As Boolean
@@ -3149,6 +3151,7 @@ Public Class MainForm
         End If
 
         Highlight(controls)
+        UpdateNextButton()
     End Function
 
     Function Block(msg As String, ParamArray controls As Control()) As Boolean
@@ -3162,6 +3165,7 @@ Public Class MainForm
         CanIgnoreTip = False
         ThemeRefresh = True
         Highlight(True, controls)
+        UpdateNextButton()
     End Function
 
     Sub Highlight(ParamArray controls As Control())
@@ -3736,6 +3740,16 @@ Public Class MainForm
                            End Sub
 
             b = ui.AddBool()
+            b.Text = "Invert CTRL key behavior on 'Add Job' button"
+            b.Help = ""
+            b.Field = NameOf(s.InvertCtrlKeyOnNextButton)
+
+            b = ui.AddBool()
+            b.Text = "Invert SHIFT key behavior on 'Add Job' button"
+            b.Help = ""
+            b.Field = NameOf(s.InvertShiftKeyOnNextButton)
+
+            b = ui.AddBool()
             b.Text = "Enable tooltips in menus (restart required)"
             b.Help = "Tooltips can always be shown by right-clicking menu items."
             b.Field = NameOf(s.EnableTooltips)
@@ -3808,6 +3822,7 @@ Public Class MainForm
                 g.SetRenderer(MenuStrip)
                 s.UpdateRecentProjects(Nothing)
                 UpdateRecentProjectsMenu()
+                UpdateNextButton()
 
                 If Not Icon Is g.Icon Then
                     Icon = g.Icon
@@ -6614,35 +6629,34 @@ Public Class MainForm
     End Sub
 
     Sub UpdateNextButton()
-        If AssistantPassed AndAlso CanIgnoreTip AndAlso
-            (ModifierKeys.HasFlag(Keys.Shift) OrElse ModifierKeys.HasFlag(Keys.Control)) Then
+        If AssistantPassed AndAlso CanIgnoreTip Then
+            Dim toTop = ModifierKeys.HasFlag(Keys.Shift)
+            toTop = If(s.InvertShiftKeyOnNextButton, Not toTop, toTop)
+            Dim hideList = ModifierKeys.HasFlag(Keys.Control)
+            hideList = If(s.InvertCtrlKeyOnNextButton, Not hideList, hideList)
 
-            Dim txt = "Add"
-
-            If ModifierKeys.HasFlag(Keys.Shift) Then
-                txt += " to top"
-            End If
-
-            If ModifierKeys.HasFlag(Keys.Control) Then
-                txt += BR + "w/o opening"
-            End If
+            Dim txt = "Add job"
+            txt += If(toTop, " to top", "")
+            txt += If(hideList, $"{BR}w/o showing list", "")
 
             bnNext.Text = txt
         Else
-            bnNext.Text = "Next"
+            bnNext.Text = "Accept / Next"
         End If
     End Sub
 
     Sub bnNext_Click(sender As Object, e As EventArgs) Handles bnNext.Click
-        Dim showJobsDialog = Not Control.ModifierKeys.HasFlag(Keys.Control)
-        Dim position = If(Control.ModifierKeys.HasFlag(Keys.Shift), 0, -1)
+        Dim toTop = ModifierKeys.HasFlag(Keys.Shift)
+        toTop = If(s.InvertShiftKeyOnNextButton, Not toTop, toTop)
+        Dim hideList = ModifierKeys.HasFlag(Keys.Control)
+        hideList = If(s.InvertCtrlKeyOnNextButton, Not hideList, hideList)
 
-        AddJob(showJobsDialog, position)
+        AddJob(Not hideList, If(toTop, 0, -1))
     End Sub
 
     Sub bnNext_MouseDown(sender As Object, e As MouseEventArgs) Handles bnNext.MouseDown
         If e.Button = MouseButtons.Right AndAlso AssistantPassed AndAlso CanIgnoreTip Then
-            NextContextMenuStrip.Show(bnNext, 0, bnNext.Height)
+            NextContextMenuStrip.Show(bnNext, New Point(bnNext.Width, 0), ToolStripDropDownDirection.AboveLeft)
         End If
     End Sub
 End Class

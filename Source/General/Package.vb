@@ -1061,7 +1061,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Lazy Utilities",
             .Filename = "LUtils.avsi",
-            .Description = "A collection of helper and wrapper functions meant to help script authors in handling common operations",
+            .Description = "A collection of helper and wrapper functions meant to help script authors in handling common operations.",
             .WebURL = "https://github.com/AviSynth/avs-scripts",
             .AvsFilterNames = {"LuStackedNto16", "LuPlanarToStacked", "LuRGB48YV12ToRGB48Y", "LuIsFunction", "LuSeparateColumns", "LuMergePlanes", "LuIsHD", "LuConvCSP", "Lu8To16", "Lu16To8", "LuIsEq", "LuSubstrAtIdx", "LuSubstrCnt", "LuReplaceStr", "LUIsDefined", "LuMerge", "LuLut", "LuLimitDif", "LuBlankClip", "LuIsSameRes"}})
 

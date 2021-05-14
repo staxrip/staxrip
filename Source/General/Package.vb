@@ -795,7 +795,7 @@ Public Class Package
         .Name = "BM3D",
         .Filename = "BM3D.dll",
         .VsFilterNames = {"bm3d.RGB2OPP", "bm3d.OPP2RGB", "bm3d.Basic", "bm3d.Final", "bm3d.VBasic", "bm3d.VFinal", "bm3d.VAggregate"},
-        .Description = "BM3D denoising filter for VapourSynth",
+        .Description = "BM3D denoising filter for VapourSynth.",
         .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-BM3D"})
 
     Shared Property MCTemporalDenoise As Package = Add(New PluginPackage With {
@@ -904,7 +904,7 @@ Public Class Package
             .Name = "DSS2mod",
             .Filename = "avss.dll",
             .WebURL = "http://code.google.com/p/xvid4psp/downloads/detail?name=DSS2%20mod%20%2B%20LAVFilters.7z&can=2&q=",
-            .Description = "Direct Show source filter",
+            .Description = "Direct Show source filter.",
             .AvsFilterNames = {"DSS2"}})
 
         Add(New PluginPackage With {
@@ -1001,7 +1001,7 @@ Public Class Package
             .Name = "InterFrame",
             .Filename = "InterFrame.avsi",
             .HelpFilename = "InterFrame.html",
-            .Description = "A frame interpolation script that makes accurate estimations about the content of frames",
+            .Description = "A frame interpolation script that makes accurate estimations about the content of frames.",
             .Location = "Plugins\AVS\InterFrame2",
             .WebURL = "http://avisynth.nl/index.php/InterFrame",
             .HelpURL = "https://www.spirton.com/uploads/InterFrame/InterFrame2.html",
@@ -1011,7 +1011,7 @@ Public Class Package
             .Name = "SVPFlow 1",
             .Location = "Plugins\AVS\SVPFlow",
             .HelpFilename = "Readme.txt",
-            .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin",
+            .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin.",
             .Filename = "svpflow1.dll",
             .WebURL = "http://avisynth.nl/index.php/SVPFlow",
             .AvsFilterNames = {"analyse_params", "super_params", "SVSuper", "SVAnalyse"}})
@@ -1020,7 +1020,7 @@ Public Class Package
             .Name = "SVPFlow 2",
             .Location = "Plugins\AVS\SVPFlow",
             .HelpFilename = "Readme.txt",
-            .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin",
+            .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin.",
             .Filename = "svpflow2.dll",
             .WebURL = "http://avisynth.nl/index.php/SVPFlow",
             .AvsFilterNames = {"smoothfps_params", "SVConvert", "SVSmoothFps"}})
@@ -1044,7 +1044,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "FineDehalo",
             .Filename = "FineDehalo.avsi",
-            .Description = "Halo removal script that uses DeHalo_alpha with a few masks and optional contra-sharpening to try remove halos without removing important details (like line edges). It also includes FineDehalo2, this function tries to remove 2nd order halos. See script for extensive information. ",
+            .Description = "Halo removal script that uses DeHalo_alpha with a few masks and optional contra-sharpening to try remove halos without removing important details (like line edges). It also includes FineDehalo2, this function tries to remove 2nd order halos. See script for extensive information.",
             .WebURL = "http://avisynth.nl/index.php/FineDehalo",
             .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/FineDehalo.avsi",
             .HelpFilename = "Readme.txt",
@@ -1061,14 +1061,14 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Lazy Utilities",
             .Filename = "LUtils.avsi",
-            .Description = "A collection of helper and wrapper functions meant to help script authors in handling common operations ",
+            .Description = "A collection of helper and wrapper functions meant to help script authors in handling common operations.",
             .WebURL = "https://github.com/AviSynth/avs-scripts",
             .AvsFilterNames = {"LuStackedNto16", "LuPlanarToStacked", "LuRGB48YV12ToRGB48Y", "LuIsFunction", "LuSeparateColumns", "LuMergePlanes", "LuIsHD", "LuConvCSP", "Lu8To16", "Lu16To8", "LuIsEq", "LuSubstrAtIdx", "LuSubstrCnt", "LuReplaceStr", "LUIsDefined", "LuMerge", "LuLut", "LuLimitDif", "LuBlankClip", "LuIsSameRes"}})
 
         Add(New PluginPackage With {
             .Name = "MultiSharpen",
             .Filename = "MultiSharpen.avsi",
-            .Description = "A small but useful Sharpening Function",
+            .Description = "A small but useful Sharpening Function.",
             .AvsFilterNames = {"MultiSharpen"}})
 
         Add(New PluginPackage With {
@@ -1151,7 +1151,7 @@ Public Class Package
             .Name = "xNLMeans",
             .Filename = "xNLMeans.dll",
             .WebURL = "http://avisynth.nl/index.php/xNLMeans",
-            .Description = "XNLMeans is an AviSynth plugin implementation of the Non Local Means denoising algorithm",
+            .Description = "XNLMeans is an AviSynth plugin implementation of the Non Local Means denoising algorithm.",
             .HelpFilename = "Readme.txt",
             .AvsFilterNames = {"xNLMeans"}})
 
@@ -1193,7 +1193,7 @@ Public Class Package
             .Name = "DeNoise Histogram",
             .Location = "Plugins\AVS\DeNoiseMD",
             .Filename = "DiffCol.avsi",
-            .Description = "Histogram for both DenoiseMD and DenoiseMF",
+            .Description = "Histogram for both DenoiseMD and DenoiseMF.",
             .WebURL = "http://avisynth.nl",
             .AvsFilterNames = {"DiffCol"}})
 
@@ -1398,7 +1398,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "yadifmod2",
             .Filename = "yadifmod2.dll",
-            .Description = "Yet Another Deinterlacing Filter mod for Avisynth2.6/Avisynth+",
+            .Description = "Yet Another Deinterlacing Filter mod for Avisynth2.6/Avisynth+.",
             .WebURL = "https://github.com/Asd-g/yadifmod2",
             .HelpUrl = "https://github.com/Asd-g/yadifmod2/blob/master-1/readme.md",
             .AvsFilterNames = {"yadifmod2"}})
@@ -1512,7 +1512,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "fvsfunc",
             .Filename = "fvsfunc.py",
-            .Description = "Small collection of VapourSynth functions",
+            .Description = "Small collection of VapourSynth functions.",
             .Location = "Plugins\VS\Scripts",
             .WebURL = "https://github.com/Irrational-Encoding-Wizardry/fvsfunc",
             .VsFilterNames = {"fvsfunc.GradFun3mod", "fvsfunc.DescaleM", "fvsfunc.Downscale444", "fvsfunc.JIVTC", "fvsfunc.OverlayInter", "fvsfunc.AutoDeblock", "fvsfunc.ReplaceFrames", "fvsfunc.maa", "fvsfunc.TemporalDegrain", "fvsfunc.DescaleAA", "fvsfunc.InsertSign"}})
@@ -1522,7 +1522,7 @@ Public Class Package
             .Filename = "nnedi3_rpow2.py",
             .Location = "Plugins\VS\Scripts",
             .WebURL = "https://github.com/Irrational-Encoding-Wizardry/fvsfunc",
-            .Description = "nnedi3_rpow2 ported from Avisynth for VapourSynth",
+            .Description = "nnedi3_rpow2 ported from Avisynth for VapourSynth.",
             .VsFilterNames = {"nnedi3_rpow2"}})
 
         Add(New PluginPackage With {
@@ -1714,7 +1714,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "SVPFlow 1",
             .Location = "Plugins\VS\SVPFlow",
-            .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin",
+            .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin.",
             .Filename = "svpflow1_vs64.dll",
             .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
             .VsFilterNames = {"svp1.Super", "svp1.Analyse", "svp1.Convert"}})
@@ -1722,7 +1722,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "SVPFlow 2",
             .Location = "Plugins\VS\SVPFlow",
-            .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin",
+            .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin.",
             .Filename = "svpflow2_vs64.dll",
             .WebURL = "https://www.svp-team.com/wiki/Manual:SVPflow",
             .VsFilterNames = {"svp2.SmoothFps"}})
@@ -1730,7 +1730,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Dither",
             .Location = "Plugins\VS\Scripts",
-            .Description = "VapourSynth port of DitherTools",
+            .Description = "VapourSynth port of DitherTools.",
             .Filename = "Dither.py",
             .WebURL = "https://github.com/IFeelBloated/VaporSynth-Functions",
             .VsFilterNames = {"Dither.sigmoid_direct", "Dither.sigmoid_inverse", "Dither.linear_to_gamma", "Dither.gamma_to_linear", "Dither.clamp16", "Dither.sbr16", "Dither.Resize16nr", "Dither.get_msb", "Dither.get_lsb"}})
@@ -1773,7 +1773,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "DegrainMedian",
             .Filename = "libdegrainmedian.dll",
-            .Description = "VapourSynth port of DegrainMedian",
+            .Description = "VapourSynth port of DegrainMedian.",
             .WebURL = "https://github.com/dubhater/vapoursynth-degrainmedian",
             .VsFilterNames = {"dgm.DegrainMedian"}})
 
@@ -1781,13 +1781,13 @@ Public Class Package
             .Name = "psharpen",
             .Filename = "psharpen.py",
             .Location = "Plugins\VS\Scripts",
-            .Description = "VapourSynth port of pSharpen",
+            .Description = "VapourSynth port of pSharpen.",
             .VsFilterNames = {"psharpen.psharpen"}})
 
         Add(New PluginPackage With {
             .Name = "AWarpSharp2",
             .Filename = "libawarpsharp2.dll",
-            .Description = "VapourSynth port of AWarpSharp2",
+            .Description = "VapourSynth port of AWarpSharp2.",
             .WebURL = "https://github.com/dubhater/vapoursynth-awarpsharp2",
             .VsFilterNames = {"warp.AWarpSharp2"}})
 

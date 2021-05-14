@@ -13,6 +13,7 @@ not published yet
 - Add Jobs window to remembered window positions (Dendraspis)
 - Refurbish Next button (Dendraspis)
 - Add settings to change modifier key behavior on Next/AddJob button (Dendraspis)
+- Disable 'Err' error messages by default (Dendraspis)
 - Fix MCTemporalDenoise high settings cause error (JKyle, [#690](/../../issues/690))
 - Update various filter profiles for both AVS and VS (JKyle)
 - Add Grayscale filter profiles for AviSynth/VapourSynth (JKyle)

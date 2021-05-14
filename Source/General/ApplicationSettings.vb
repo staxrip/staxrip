@@ -38,7 +38,7 @@ Public Class ApplicationSettings
     Public Demuxers As List(Of Demuxer)
     Public eac3toProfiles As List(Of eac3toProfile)
     Public EnableTooltips As Boolean
-    Public ErrorMessageExtendedByErr As Boolean = True
+    Public ErrorMessageExtendedByErr As Boolean = False
     Public EventCommands As List(Of EventCommand)
     Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public FixFrameRate As Boolean = True

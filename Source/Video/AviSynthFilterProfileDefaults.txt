@@ -127,7 +127,7 @@ FFT3D Neo = neo_fft3d(sigma=2.0, bt=3, y=3, u=3, v=3)
 FFT3DFilter | FFT3DFilter = FFT3DFilter()
 FFT3DFilter | FFT3DGPU = FFT3DGPU(sigma=1.5, bt=3, bw=32, bh=32, ow=16, oh=16, sharpen=0.4, NVPerf=$select:msg:Enable Nvidia Function;True;False$)
 HQDN3D = HQDN3D(ls=4.0, cs=3.0, lt=6.0, ct=4.5, restart=7)
-mClean = mClean()
+mClean = mClean(thSAD = 400, chroma=true, sharp=10, rn=14, deband=4, depth=0, strength=20)
 MCTemporalDenoise | MCTemporalDenoise = MCTemporalDenoise(settings="$select:msg:Select Strength;Very Low|very low;Low(Default)|low;Medium|medium;High|high;Very High|very high$")
 
 MCTemporalDenoise | MCTemporalDenoisePP =

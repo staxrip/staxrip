@@ -11,6 +11,7 @@ not published yet
 - Add Drag'n'Drop to Video Comparison (Dendraspis, [#697](/../../issues/697))
 - Video Comparison loads source file directly and also the target file, if it exists (Dendraspis)
 - Add Jobs window to remembered window positions (Dendraspis)
+- Add x264 --synth-lib param for non-vanilla builds only (Dendraspis, 44Vince44, [#711](/../../issues/711))
 - Refurbish Next button (Dendraspis)
 - Add settings to change modifier key behavior on Next/AddJob button (Dendraspis)
 - Disable 'Err' error messages by default (Dendraspis)

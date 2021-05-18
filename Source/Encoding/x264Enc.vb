@@ -1098,9 +1098,7 @@ Public Class x264Params
             Dim input = If(pipeTool = "none", script.Path.Escape, "-")
             Dim dmx = Demuxer.ValueText
 
-            If pipeTool = "none" AndAlso FrameServerHelp.IsPortable AndAlso
-                Package.x264.Version.ToLowerInvariant.ContainsAny("amod", "djatom", "patman") Then
-
+            If pipeTool = "none" AndAlso FrameServerHelp.IsPortable AndAlso Package.x264Type <> x264Type.Vanilla Then
                 sb.Append(" --synth-lib " + FrameServerHelp.GetSynthPath.Escape)
             End If
 

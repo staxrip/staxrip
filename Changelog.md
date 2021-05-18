@@ -19,10 +19,20 @@ not published yet
 - Add Grayscale filter profiles for AviSynth/VapourSynth (JKyle)
 - AOMEnc v3.1.0-176 Patman
 - AVSMeter v3.0.9.0
+- AVSTP v1.0.4
 - CASm 2021-04-22 by JKyle
-- NVEnc v5.31
-- QSVEnc v5.01
+- DAA3Mod v3.63
+- Dither v1.28.1
+- ffmpeg N v102464-gc6ae560a18-x64-gcc10.3.0 Patman
+- FineSharp mod v2020.04.12 HBD
+- FrameRateConverter v1.3
+- Mp4Box v1.1.0-DEV-rev856-g1372064e6-x64-gcc10.3.0 Patman
+- NVEnc v5.32
+- QSVEnc v5.02
+- Rav1e v0.5.0-alpha-(p20210511-42-g7b1d05ae) Patman
+- SVT-AV1 v0.8.7-3-g99b647b1-x64-gcc10.3.0 Patman
 - vsTTempSmooth v1.1.3
+- x264 v0.163.3059+11-1aa8b82-.Mod-by-Patman.-x64-gcc10.3.0
 
 
 v2.5.0 (2021-05-03)

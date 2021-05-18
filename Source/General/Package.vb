@@ -511,8 +511,8 @@ Public Class Package
 
     Shared Property x265 As Package = Add(New Package With {
         .Name = "x265",
-        .Locations = {"Encoders\x265", "FrameServer\AviSynth"},
         .Filename = "x265.exe",
+        .Locations = {"Encoders\x265", "FrameServer\AviSynth"},
         .WebURL = "https://x265.com",
         .HelpURL = "http://x265.readthedocs.org",
         .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x265",
@@ -2228,7 +2228,7 @@ Public Class Package
                 Dim size = New FileInfo(filePath).Length
 
                 If size <> s.Storage.GetInt("x264 size") Then
-                    Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", True)
+                    Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", False)
                     Dim value As Integer
 
                     If output.Contains("DJATOM") Then

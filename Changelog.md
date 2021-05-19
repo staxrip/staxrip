@@ -3,6 +3,14 @@ not published yet
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
+- [ ] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
+
+
+v2.6.0 (2021-05-20)
+=========================
+
+- [ ] Might break settings from previous version, so starting with new settings is recommended
+- [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
 - [X] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - Enable Timestamp Extraction for VFR MKV files by default (Dendraspis, 44vince)
 - Fix timestamp extraction setting being ignored (Dendraspis, 44vince44)
@@ -27,11 +35,17 @@ not published yet
 - ffmpeg N v102464-gc6ae560a18-x64-gcc10.3.0 Patman
 - FineSharp mod v2020.04.12 HBD
 - FrameRateConverter v1.3
+- HQDering mod v1.8
+- LimitedSharpenFaster v2.193
+- Maa2mod v0.435
+- mClean v3.2 Jmod 4 (2021-05-14)
 - Mp4Box v1.1.0-DEV-rev856-g1372064e6-x64-gcc10.3.0 Patman
 - NVEnc v5.32
 - QSVEnc v5.02
 - Rav1e v0.5.0-alpha-(p20210511-42-g7b1d05ae) Patman
+- ResizeX v1.0.1 mod 9.39
 - SVT-AV1 v0.8.7-3-g99b647b1-x64-gcc10.3.0 Patman
+- TTempSmooth v0.9.4
 - vsTTempSmooth v1.1.3
 - x264 v0.163.3059+11-1aa8b82-.Mod-by-Patman.-x64-gcc10.3.0
 

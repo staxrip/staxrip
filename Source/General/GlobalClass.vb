@@ -1541,15 +1541,21 @@ Public Class GlobalClass
     End Sub
 
     Sub UpdateTrim(script As VideoScript)
-        script.RemoveFilter("Cutting")
+        If script Is Nothing Then Exit Sub
+
+        Dim filter As VideoFilter = script.GetFilter("Cutting")
 
         If p.Ranges.Count > 0 Then
-            Dim cutFilter As New VideoFilter
-            cutFilter.Path = "Cutting"
-            cutFilter.Category = "Cutting"
-            cutFilter.Script = GetTrim(script)
-            cutFilter.Active = True
-            script.Filters.Add(cutFilter)
+            if filter Is Nothing Then
+                filter =  New VideoFilter()
+                script.Filters.Add(filter)
+            End If
+            filter.Path = "Cutting"
+            filter.Category = "Cutting"
+            filter.Script = GetTrim(script)
+            filter.Active = True
+        Else
+            script.RemoveFilter("Cutting")
         End If
     End Sub
 

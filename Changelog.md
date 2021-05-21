@@ -21,6 +21,7 @@ v2.6.0 (2021-05-20)
 - Add Jobs window to remembered window positions (Dendraspis)
 - Add x264 --synth-lib param for non-vanilla builds only (Dendraspis, 44Vince44, [#711](/../../issues/711))
 - Edit Cutting filter instead of re-creating it (Dendraspis, [#710](/../../issues/710))
+- Add multiple params for VCEEnc (Dendraspis, [#551](/../../issues/551))
 - Refurbish Next button (Dendraspis)
 - Add settings to change modifier key behavior on Next/AddJob button (Dendraspis)
 - Disable 'Err' error messages by default (Dendraspis)
@@ -47,6 +48,7 @@ v2.6.0 (2021-05-20)
 - ResizeX v1.0.1 mod 9.39
 - SVT-AV1 v0.8.7-3-g99b647b1-x64-gcc10.3.0 Patman
 - TTempSmooth v0.9.4
+- VCEEnc v6.11
 - vsTTempSmooth v1.1.3
 - x264 v0.163.3059+11-1aa8b82-.Mod-by-Patman.-x64-gcc10.3.0
 

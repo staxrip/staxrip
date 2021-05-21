@@ -595,7 +595,7 @@ Public Class NVEnc
                     Add("Other",
                         Custom,
                         New StringParam With {.Switch = "--keyfile", .Text = "Keyframes File", .BrowseFile = True},
-                        New StringParam With {.Switch = "--timecode", .Text = "Timecode File"},
+                        New StringParam With {.Switch = "--timecode", .Text = "Timecode File", .BrowseFile = True},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}},
@@ -613,7 +613,7 @@ Public Class NVEnc
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-            If Not Decoder.MenuButton Is Nothing AndAlso (item Is Decoder OrElse item Is Nothing) Then
+            If Decoder.MenuButton IsNot Nothing AndAlso (item Is Decoder OrElse item Is Nothing) Then
                 Dim isIntelPresent = OS.VideoControllers.Where(Function(val) val.Contains("Intel")).Count > 0
 
                 For x = 0 To Decoder.Options.Length - 1
@@ -623,7 +623,7 @@ Public Class NVEnc
                 Next
             End If
 
-            If Not QPI.NumEdit Is Nothing Then
+            If QPI.NumEdit IsNot Nothing Then
                 NnediField.MenuButton.Enabled = Deinterlacer.Value = 3
                 NnediNns.MenuButton.Enabled = Deinterlacer.Value = 3
                 NnediNsize.MenuButton.Enabled = Deinterlacer.Value = 3

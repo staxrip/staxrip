@@ -30,7 +30,7 @@ v2.6.0 (2021-05-20)
 - Fix MCTemporalDenoise high settings cause error (JKyle, [#690](/../../issues/690))
 - Update various filter profiles for both AVS and VS (JKyle)
 - Add Grayscale filter profiles for AviSynth/VapourSynth (JKyle)
-- AOMEnc v3.1.0-176 Patman
+- AOMEnc v3.1.0-243-g87682566c-x64-gcc10.3.0 Patman
 - AVSMeter v3.0.9.0
 - AVSTP v1.0.4
 - CASm 2021-04-22 by JKyle
@@ -43,13 +43,14 @@ v2.6.0 (2021-05-20)
 - LimitedSharpenFaster v2.193
 - Maa2mod v0.435
 - mClean v3.2 Jmod 4 (2021-05-14)
-- Mp4Box v1.1.0-DEV-rev856-g1372064e6-x64-gcc10.3.0 Patman
+- Mp4Box v1.1.0-DEV-rev904-g00a2e202a-x64-gcc10.3.0 Patman
 - NVEnc v5.32
+- Qaac-2.72-x64-msvc1928 Patman
 - QSVEnc v5.02
-- Rav1e v0.5.0-alpha-(p20210511-42-g7b1d05ae) Patman
+- Rav1e v0.5.0-alpha-(p20210518-3-ge1926975)-x64-gcc10.3.0 Patman
 - ResizeX v1.0.1 mod 9.39
 - Subtitle Edit v3.6.1
-- SVT-AV1 v0.8.7-3-g99b647b1-x64-gcc10.3.0 Patman
+- SVT-AV1 v0.8.7-4-g786c4dac-x64-gcc10.3.0 Patman
 - TTempSmooth v0.9.4
 - VCEEnc v6.11
 - vsTTempSmooth v1.1.3

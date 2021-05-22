@@ -6,7 +6,7 @@ not published yet
 - [ ] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 
 
-v2.6.0 (2021-05-20)
+v2.6.0 (2021-05-22)
 =========================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended

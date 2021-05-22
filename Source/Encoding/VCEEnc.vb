@@ -367,6 +367,7 @@ Public Class VCEEnc
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .Options = {"Main", "High"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New OptionParam With {.Switch = "--motion-est", .Text = "Motion Estimation", .Options = {"Q-pel", "Full-pel", "Half-pel"}},
+                        New NumParam With {.Switch = "--input-analyze", .Text = "Input Analyze", .Init = 5, .Config = {1, 600, 0.1, 1}},
                         New BoolParam With {.Switch = "--chapter-copy", .Text = "Copy Chapters"},
                         New BoolParam With {.Switch = "--filler", .Text = "Use filler data"})
                 End If

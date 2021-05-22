@@ -591,7 +591,8 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
                     Add("Input/Output",
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw")},
-                        Decoder, Interlace)
+                        Decoder, Interlace,
+                        New NumParam With {.Switch = "--input-analyze", .Text = "Input Analyze", .Init = 5, .Config = {1, 600, 0.1, 1}})
                     Add("Other",
                         Custom,
                         New StringParam With {.Switch = "--keyfile", .Text = "Keyframes File", .BrowseFile = True},

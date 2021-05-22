@@ -4159,10 +4159,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Sub AddJob(
-        Optional showJobsDialog As Boolean = True,
-        Optional position As Integer = -1)
-
+    Sub AddJob(Optional showJobsDialog As Boolean = True, Optional position As Integer = -1)
         If Not CanIgnoreTip Then
             MsgWarn("Assistant warning cannot be skipped.")
             Exit Sub
@@ -4175,6 +4172,10 @@ Public Class MainForm
         If Not g.VerifyRequirements() Then
             Exit Sub
         End If
+
+        For Each form In PreviewForm.Instances.ToArray
+            form.Close()
+        Next
 
         If AssistantPassed Then
             If AbortDueToLowDiskSpace() Then

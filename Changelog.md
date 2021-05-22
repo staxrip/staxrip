@@ -20,6 +20,7 @@ v2.6.0 (2021-05-20)
 - Video Comparison loads source file directly and also the target file, if it exists (Dendraspis)
 - Add Jobs window to remembered window positions (Dendraspis)
 - Add x264 --synth-lib param for non-vanilla builds only (Dendraspis, 44Vince44, [#711](/../../issues/711))
+- Close all Preview windows when adding a job (Dendraspis, 44Vince44)
 - Edit Cutting filter instead of re-creating it (Dendraspis, [#710](/../../issues/710))
 - Add multiple params for VCEEnc (Dendraspis, [#551](/../../issues/551))
 - Refurbish Next button (Dendraspis)
@@ -46,6 +47,7 @@ v2.6.0 (2021-05-20)
 - QSVEnc v5.02
 - Rav1e v0.5.0-alpha-(p20210511-42-g7b1d05ae) Patman
 - ResizeX v1.0.1 mod 9.39
+- Subtitle Edit v3.6.1
 - SVT-AV1 v0.8.7-3-g99b647b1-x64-gcc10.3.0 Patman
 - TTempSmooth v0.9.4
 - VCEEnc v6.11

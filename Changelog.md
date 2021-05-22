@@ -4,6 +4,7 @@ not published yet
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
 - [ ] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
+- 
 
 
 v2.6.0 (2021-05-22)
@@ -12,15 +13,15 @@ v2.6.0 (2021-05-22)
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
 - [X] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
-- Enable Timestamp Extraction for VFR MKV files by default (Dendraspis, 44vince)
+- Enable Timestamp Extraction for VFR MKV files by default (Dendraspis, 44vince44)
 - Fix timestamp extraction setting being ignored (Dendraspis, 44vince44)
 - Autoload (extracted) timestamps file (Dendraspis)
 - Fix x264 --progress-header param not being shown correctly (Dendraspis, [#696](/../../issues/696))
 - Add Drag'n'Drop to Video Comparison (Dendraspis, [#697](/../../issues/697))
 - Video Comparison loads source file directly and also the target file, if it exists (Dendraspis)
 - Add Jobs window to remembered window positions (Dendraspis)
-- Add x264 --synth-lib param for non-vanilla builds only (Dendraspis, 44Vince44, [#711](/../../issues/711))
-- Close all Preview windows when adding a job (Dendraspis, 44Vince44)
+- Add x264 --synth-lib param for non-vanilla builds only (Dendraspis, 44vince44, [#711](/../../issues/711))
+- Close all Preview windows when adding a job (Dendraspis, 44vince44)
 - Edit Cutting filter instead of re-creating it (Dendraspis, [#710](/../../issues/710))
 - Add multiple params for VCEEnc (Dendraspis, [#551](/../../issues/551))
 - Add --input-analyze param for NVEnc/VCEEnc (Dendraspis)

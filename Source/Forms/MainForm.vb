@@ -1607,7 +1607,16 @@ Public Class MainForm
         LoadProject(Folder.Template + name + ".srip")
     End Sub
 
-    <Command("Adds a batch job.")>
+    <Command("Adds a batch job for multiple files.")>
+    Sub AddBatchJob(sourcefiles As String())
+        If sourcefiles Is Nothing Then Return
+
+        For Each sourcefile In sourcefiles
+            AddBatchJob(sourcefile)
+        Next
+    End Sub
+
+    <Command("Adds a batch job for a single file.")>
     Sub AddBatchJob(sourcefile As String)
         Dim batchFolder = Folder.Settings + "Batch Projects\"
 
@@ -3130,7 +3139,7 @@ Public Class MainForm
             laTip.SetFontSize(9 * s.UIScaleFactor)
         End If
 
-        laTip.Text = "Click on the right button to add a job to the job list."
+        laTip.Text = "Click on the button to the right to add a job to the job list."
         AssistantPassed = True
         bnNext.Enabled = True
         laTip.BackColor = ThemeManager.CurrentTheme.MainForm.laTipBackColor

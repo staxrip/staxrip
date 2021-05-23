@@ -68,6 +68,7 @@ SelectLinesOdd =
     SelectOdd()
     AssumeFrameBased()
 
+SeparateFields = SeparateFields()
 SwapFields = SwapFields()
 TDeint = TDeint($select:msg:Select Mode;Progressive DoubleHeight ELA|mode=-2;Progressive DoubleHeight ELA2|mode=-1;Same Rate (Default)|mode=0;Double Rate Bobbing|mode=1;Smart Bobbed Field matching|mode=2$)
 yadifmod2 = YadifMod2($select:msg:Select Mode;Same Rate(Default)|mode=0;Double Rate|mode=1;Same Rate No Spatial Check|mode=2;Double Rate No Spatial Check|mode=3$)

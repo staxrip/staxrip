@@ -61,7 +61,6 @@ Public Class Project
     Public PreferredAudio As String
     Public PreferredSubtitles As String
     Public Ranges As List(Of Range)
-    Public RemindArError As Boolean = True
     Public RemindOversize As Boolean = True
     Public RemindToCrop As Boolean = False
     Public RemindToCut As Boolean = False
@@ -109,6 +108,8 @@ Public Class Project
     Public Versions As Dictionary(Of String, Integer)
     Public VideoBitrate As Integer = 5000
     Public VideoEncoder As VideoEncoder
+    Public WarnArError As Boolean = True
+    Public WarnNoAudio As Boolean = False
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

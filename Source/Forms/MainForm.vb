@@ -1608,7 +1608,7 @@ Public Class MainForm
     End Sub
 
     <Command("Adds a batch job for multiple files.")>
-    Sub AddBatchJob(sourcefiles As String())
+    Sub AddBatchJobs(sourcefiles As String())
         If sourcefiles Is Nothing Then Return
 
         For Each sourcefile In sourcefiles
@@ -2932,10 +2932,18 @@ Public Class MainForm
                 Return Block("Invalid Target Path", tbSourceFile, tbTargetFile)
             End If
 
-            If p.RemindToCrop AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
+            If p.RemindToCrop AndAlso TypeOf p.VideoEncoder IsNot NullEncoder AndAlso
                 ProcessTip("Click here to open the crop dialog. When done continue with Next.") Then
 
                 Return Warn("Crop", AddressOf ShowCropDialog)
+            End If
+
+            If p.WarnNoAudio Then
+                If (TypeOf p.Audio0 Is NullAudioProfile OrElse p.Audio0.File = "") AndAlso (TypeOf p.Audio1 Is NullAudioProfile OrElse p.Audio1.File = "") Then
+                    If ProcessTip("There will be no audio in the output file.") Then
+                        Return Warn("No audio", tbAudioFile0, tbAudioFile1)
+                    End If
+                End If
             End If
 
             If (p.Audio0.File <> "" AndAlso p.Audio0.File = p.Audio1.File AndAlso p.Audio0.Stream Is Nothing) OrElse
@@ -3010,9 +3018,9 @@ Public Class MainForm
             Dim ae = Calc.GetAspectRatioError()
 
             If Not isValidAnamorphicSize AndAlso (ae > p.MaxAspectRatioError OrElse ae < -p.MaxAspectRatioError) AndAlso
-                isResized AndAlso p.RemindArError AndAlso p.CustomTargetPAR <> "1:1" Then
+                isResized AndAlso p.WarnArError AndAlso p.CustomTargetPAR <> "1:1" Then
 
-                If ProcessTip("Use the resize slider to correct the aspect ratio error or click next to encode anamorphic.") Then
+                If ProcessTip("Use the resize slider to correct the aspect ratio error or click Next to encode anamorphic.") Then
                     Return Warn("Aspect Ratio Error", lAspectRatioError)
                 End If
             End If
@@ -4930,8 +4938,12 @@ Public Class MainForm
             b.Field = NameOf(p.RemindToSetFilters)
 
             b = ui.AddBool()
-            b.Text = "Remind about aspect ratio error"
-            b.Field = NameOf(p.RemindArError)
+            b.Text = "Warn on aspect ratio error"
+            b.Field = NameOf(p.WarnArError)
+
+            b = ui.AddBool()
+            b.Text = "Warn if no audio in output"
+            b.Field = NameOf(p.WarnNoAudio)
 
 
             '   ----------------------------------------------------------------

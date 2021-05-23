@@ -6,6 +6,8 @@ not published yet
 - [ ] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - Add Assistent option to warn if no audio in output (Dendraspis, [#709](/../../issues/709))
 - FFT3DFilter v2.9
+- MKVToolNix v57.0
+- NVEnc v5.33
 
 
 v2.6.0 (2021-05-22)

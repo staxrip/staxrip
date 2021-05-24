@@ -179,9 +179,9 @@ Public Class MainForm
         Me.bnNext.Cursor = System.Windows.Forms.Cursors.Default
         Me.bnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.bnNext.Location = New System.Drawing.Point(1880, 33)
-        Me.bnNext.Margin = New System.Windows.Forms.Padding(0, 0, 20, 0)
+        Me.bnNext.Margin = New System.Windows.Forms.Padding(0, 0, 20, 5)
         'Me.bnNext.MinimumSize = New System.Drawing.Size(265, 85)
-        Me.bnNext.Size = New System.Drawing.Size(CInt(275 * s.UIScaleFactor), CInt(105 * s.UIScaleFactor))
+        Me.bnNext.Size = New System.Drawing.Size(CInt(285 * s.UIScaleFactor), CInt(105 * s.UIScaleFactor))
         Me.bnNext.UseCompatibleTextRendering = True
         '
         'llEditAudio0

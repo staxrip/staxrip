@@ -1359,9 +1359,10 @@ Public Class Package
             .Filename = "RgTools.dll",
             .WebURL = "http://github.com/pinterf/RgTools",
             .DownloadURL = "https://github.com/pinterf/RgTools/releases",
-            .HelpURL = "https://github.com/pinterf/RgTools/blob/master/RgTools/documentation/RgTools.txt",
-            .Description = "RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, ForwardClense and VerticalCleaner all in a single plugin.",
-            .AvsFilterNames = {"RemoveGrain", "Clense", "ForwardClense", "BackwardClense", "Repair", "VerticalCleaner"}})
+            .HelpURL = "http://avisynth.nl/index.php/RgTools",
+            .HelpFilename = "README.md",
+            .Description = "RgTools is a modern rewrite of RemoveGrain, Repair, BackwardClense, Clense, ForwardClense, VerticalCleaner and TemporalRepair in a single plugin.",
+            .AvsFilterNames = {"RemoveGrain", "Repair", "BackwardClense", "Clense", "ForwardClense", "VerticalCleaner", "TemporalRepair"}})
 
         Add(New PluginPackage With {
             .Name = "JPSDR",

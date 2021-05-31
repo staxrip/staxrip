@@ -130,7 +130,7 @@ UnSpec =
     clip = core.std.SetFrameProp(clip=clip, prop='_ColorRange', intval=1)
 
 [Noise]
-
+AddGrain = clip = core.grain.Add(clip, var=1.0, uvar=0.0, hcorr=0.0, vcorr=0.0, seed=-1, constant=False, opt=0)
 BM3D = clip = mvsfunc.BM3D(clip, sigma=[3,3,3], radius1=0)
 DegrainMedian = clip = core.dgm.DegrainMedian(clip=clip, interlaced=False)
 DFTTest = $select:msg:Select Strength;Light|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3,opt=3);Moderate|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5,opt=3);Strong|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1,opt=3)$

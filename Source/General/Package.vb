@@ -1858,6 +1858,13 @@ Public Class Package
             .Dependencies = {"Plugins_JPSDR.dll"},
             .AvsFilterNames = {"CASm"}})
 
+        Add(New PluginPackage With {
+            .Name = "AddGrain",
+            .Filename = "AddGrain.dll",
+            .Description = "AddGrain generates film like grain or other effects (like rain) by adding random noise to a video clip. This noise may optionally be horizontally or vertically correlated to cause streaking. VapourSynth port of AddGrainC.",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-AddGrain",
+            .VsFilterNames = {"grain.Add"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

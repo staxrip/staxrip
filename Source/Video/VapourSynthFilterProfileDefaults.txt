@@ -114,6 +114,7 @@ Sharpen | Sharpen = clip = muvsfunc.Sharpen(clip, $enter_text:Enter the Amount o
 
 [Misc]
 AddBorders = clip = core.std.AddBorders(clip, left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$)
+FillBorders = clip = core.fb.FillBorders(clip, left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$, mode="$select:msg:Select Mode;repeat (Default)|repeat;mirror|mirror;fillmargins|fillmargins$", interlaced=0)
 
 Anamorphic to Standard =
     clip = core.fmtc.resample (clip, w=1280, h=720, css='444')

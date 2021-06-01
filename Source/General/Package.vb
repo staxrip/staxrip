@@ -1875,6 +1875,23 @@ Public Class Package
             .DownloadURL = "https://github.com/Asd-g/AviSynth-BWDIF/releases",
             .AvsFilterNames = {"BWDIF"}})
 
+        Add(New PluginPackage With {
+            .Name = "FillBorders",
+            .Filename = "libfillborders.dll",
+            .Description = "This is a simple filter that fills the borders of a clip, without changing the clip's dimensions.",
+            .WebURL = "https://github.com/dubhater/vapoursynth-fillborders",
+            .VsFilterNames = {"fb.FillBorders"}})
+
+        Add(New PluginPackage With {
+            .Name = "FillBorders",
+            .Filename = "FillBorders.dll",
+            .Description = "A simple filter that fills the borders of a clip, without changing the clip's dimensions. This is a port of the VapourSynth plugin FillBorders.",
+            .WebURL = "https://github.com/Asd-g/AviSynth-FillBorders",
+            .HelpURL = "http://avisynth.nl/index.php/FillBorders",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-FillBorders/releases",
+            .AvsFilterNames = {"FillBorders", "FillMargins"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

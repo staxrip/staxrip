@@ -1865,6 +1865,16 @@ Public Class Package
             .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-AddGrain",
             .VsFilterNames = {"grain.Add"}})
 
+        Add(New PluginPackage With {
+            .Name = "Bwdif",
+            .Filename = "BWDIF.dll",
+            .Description = "Motion adaptive deinterlacing based on yadif with the use of w3fdif and cubic interpolation algorithms. This is a port of the VapourSynth plugin Bwdif, which is again a port of FFmpeg's libavfilter bwdif.",
+            .WebURL = "https://github.com/Asd-g/AviSynth-BWDIF",
+            .HelpURL = "http://avisynth.nl/index.php/BWDIF",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-BWDIF/releases",
+            .AvsFilterNames = {"BWDIF"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

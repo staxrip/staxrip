@@ -38,6 +38,7 @@ Hardware Encoder = # hardware encoder crops
 
 [Field]
 Assume = $select:TFF|AssumeTFF();BFF|AssumeBFF()$
+Bwdif = BWDIF(field=$select:msg:Select Mode;Double rate, AviSynth internal order|-2;Same rate, AviSynth internal order (Default)|-1;Same rate, keep Bottom field|0;Same rate, keep Top field|1;Double rate, starts with Bottom|2;Double rate, starts with Top|3$)
 Decimate = Decimate(cycle=5)
 EEDI3 = EEDI3()
 FieldDeinterlace = FieldDeinterlace()

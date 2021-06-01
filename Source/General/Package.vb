@@ -1843,8 +1843,8 @@ Public Class Package
             .Name = "vsTTempSmooth",
             .Filename = "vsTTempSmooth.dll",
             .Description = "TTempSmooth is a motion adaptive (it only works on stationary parts of the picture), temporal smoothing filter. This is a port of the VapourSynth plugin TTempSmooth.",
-            .WebURL = "http://avisynth.nl/index.php/VsTTempSmooth",
-            .HelpURL = "https://github.com/Asd-g/AviSynth-vsTTempSmooth",
+            .WebURL = "https://github.com/Asd-g/AviSynth-vsTTempSmooth",
+            .HelpURL = "http://avisynth.nl/index.php/VsTTempSmooth",
             .HelpFilename = "README.md",
             .DownloadURL = "https://github.com/Asd-g/AviSynth-vsTTempSmooth/releases",
             .AvsFilterNames = {"vsTTempSmooth"}})

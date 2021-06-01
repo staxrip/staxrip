@@ -38,7 +38,7 @@ Grayscale | Grayscale = clip = mvsfunc.GrayScale(clip)
 Crop = clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)
 
 [Field]
-Bwdif = clip = core.bwdif.Bwdif(clip, field=0)
+Bwdif = clip = core.bwdif.Bwdif(clip, field=$select:msg:Select Mode;Same rate, keep Bottom field|0;Same rate, keep Top field|1;Double rate, starts with Bottom|2;Double rate, starts with Top|3$)
 eedi = $select:eedi2|clip = core.eedi2.EEDI2;eedi3|clip = core.eedi3m.EEDI3$(clip,$select:msg:Select Field;Bottom Field|0;Top Field|1;Alternate Each Frame Bottom Field|2;Alternate Each Frame Top Field|3$)
 Field Base = $select:Frame Based|clip = core.std.SetFieldBased(clip, 0);Bottom Field First|clip = core.std.SetFieldBased(clip, 1);Top Field First|clip = core.std.SetFieldBased(clip, 2)$
 

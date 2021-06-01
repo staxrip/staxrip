@@ -795,14 +795,7 @@ Public Class NVEnc
         End Function
 
         Function GetPaddingArgs() As String
-            If Pad.Value Then
-                Dim ret = ""
-                If PadLeft.Value <> PadLeft.DefaultValue Then ret += "," & PadLeft.Value
-                If PadTop.Value <> PadTop.DefaultValue Then ret += "," & PadTop.Value
-                If PadRight.Value <> PadRight.DefaultValue Then ret += "," & PadRight.Value
-                If PadBottom.Value <> PadBottom.DefaultValue Then ret += "," & PadBottom.Value
-                If ret <> "" Then Return "--vpp-pad " + ret.TrimStart(","c)
-            End If
+            Return If(Pad.Value, $"--vpp-pad {PadLeft.Value},{PadTop.Value},{PadRight.Value},{PadBottom.Value}", "")
         End Function
 
         Function GetKnnArgs() As String

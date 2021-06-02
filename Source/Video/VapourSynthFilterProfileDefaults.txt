@@ -59,7 +59,9 @@ QTGMC | QTGMC with Repair =
     clip = core.rgvs.Repair(QTGMC1,QTGMC2, mode=1)
 
 Select = $select:Even|clip = clip[::2];Odd|clip = clip[1::2]$
+SeparateFields = clip = core.std.SeparateFields(clip)
 W3FDIF = clip = core.w3fdif.W3FDIF(clip,$select:msg:Select Order Option;BFF|0;TFF|1$,$select:msg:Select Interlacing Filter Coefficients;Simple|0;Complex|1$)
+Weave = clip = havsfunc.Weave(clip, tff=True)
 Yadifmod = clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field=0), order=1, field=-1, mode=0)
 
 [Frame Rate]

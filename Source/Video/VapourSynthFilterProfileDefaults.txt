@@ -115,8 +115,6 @@ Sharpen | SharpAAMcmod = clip = muvsfunc.SharpAAMcmod(clip)
 Sharpen | Sharpen = clip = muvsfunc.Sharpen(clip, $enter_text:Enter the Amount of Sharpness in decimal (from -1.58 to 1.0)$)
 
 [Misc]
-AddBorders = clip = core.std.AddBorders(clip, left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$)
-FillBorders = clip = core.fb.FillBorders(clip, left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$, mode="$select:msg:Select Mode;repeat (Default)|repeat;mirror|mirror;fillmargins|fillmargins$", interlaced=0)
 
 Anamorphic to Standard =
     clip = core.fmtc.resample (clip, w=1280, h=720, css='444')
@@ -124,8 +122,9 @@ Anamorphic to Standard =
     clip = core.fmtc.transfer (clip, transs='1886', transd='srgb')
     clip = core.fmtc.bitdepth (clip, bits=8)
 
+Borders | AddBorders = clip = core.std.AddBorders(clip, left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$)
+Borders | FillBorders = clip = core.fb.FillBorders(clip, left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$, mode="$select:msg:Select Mode;repeat (Default)|repeat;mirror|mirror;fillmargins|fillmargins$", interlaced=0)
 Cube = clip = core.timecube.Cube(clip, cube=r"$browse_file$")
-f3kdb Neo = clip = core.neo_f3kdb.Deband(clip, y=64, cb=64, cr=64, grainy=0, grainc=0)
 Histogram = clip = muvsfunc.DisplayHistogram(clip)
 
 UnSpec =
@@ -160,11 +159,15 @@ ReSampleHQ = clip = resamplehq.resamplehq(clip, %target_width%, %target_height%,
 Resize... = clip = $select:Bilinear|core.resize.Bilinear;Bicubic|core.resize.Bicubic;Point|core.resize.Point;Lanczos|core.resize.Lanczos;Spline16|core.resize.Spline16;Spline36|core.resize.Spline36;Spline64|core.resize.Spline64;Dither_Resize16|Dither.Resize16nr;Resample|core.fmtc.resample$(clip, %target_width%, %target_height%)
 
 [Restoration]
+Chroma Fix | CNR2 = clip = core.cnr2.Cnr2(clip)
+DeBand | Legacy = $select:GradFun3|clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1);f3kdb|clip = core.f3kdb.Deband(clip)$
+DeBand | f3kdb Neo = clip = core.neo_f3kdb.Deband(clip, y=64, cb=64, cr=64, grainy=0, grainc=0)
 DeBlock | Auto-Deblock = clip = fvsfunc.AutoDeblock(clip)
 DeBlock | DeBlock = clip = core.deblock.Deblock(clip, quant=25, aoffset=0, boffset=0)
 DeBlock | DeBlock PP7 = $select:msg:Select Strength;Medium|clip = core.pp7.DeblockPP7(clip=clip, mode=2);Hard|clip = core.pp7.DeblockPP7(clip=clip);Soft|clip = core.pp7.DeblockPP7(clip=clip, mode=1)$
 DeBlock | Deblock_QED = clip = havsfunc.Deblock_QED(clip)
 DeBlock | MSmooth = clip = core.msmoosh.MSmooth(clip, threshold=3.0, strength=1)
+DeComb | Vinverse = $select:Vinverse|clip = havsfunc.Vinverse(clip);Vinverse2|clip = havsfunc.Vinverse2(clip)$
 DeHalo | BlindDeHalo3 = clip = muvsfunc.BlindDeHalo3(clip, interlaced=False)
 DeHalo | DeHaloAlpha = clip = havsfunc.DeHalo_alpha(clip)
 DeHalo | EdgeCleaner = clip = havsfunc.EdgeCleaner(clip)
@@ -172,15 +175,11 @@ DeHalo | FineDehalo = clip = havsfunc.FineDehalo(clip)
 DeHalo | HQDering = clip = havsfunc.HQDeringmod(clip, nrmode=2, darkthr=3.0)
 DeHalo | MDeRing = clip = muvsfunc.mdering(clip)
 DeHalo | YAHR = $select:YAHR|clip = havsfunc.YAHR(clip);YAHRmod|clip = muvsfunc.YAHRmod(clip)$
-RCR | CNR2 = clip = core.cnr2.Cnr2(clip)
-RCR | ColorBanding = $select:GradFun3|clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1);f3kdb|clip = core.f3kdb.Deband(clip)$
 
-RCR | Fix Telecined Fades =
+Fix Telecined Fades =
     clip = core.fmtc.bitdepth (clip, bits=32)
     clip = core.ftf.FixFades(clip)
     clip = core.fmtc.bitdepth (clip, bits=8)
-
-RCR | Vinverse = $select:Vinverse|clip = havsfunc.Vinverse(clip);Vinverse2|clip = havsfunc.Vinverse2(clip)$
 
 [Rotation]
 

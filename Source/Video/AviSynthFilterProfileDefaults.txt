@@ -117,7 +117,21 @@ MTMode | Prefetch = Prefetch($enter_text:Enter the Number of Threads to use$)
 MTMode | Set Max Memory = SetMemoryMax($enter_text:Enter the Maximum Memory Avisynth can use$)
 MTMode | Set Threads = threads=$enter_text:Enter the Number of Threads to use$
 MTMode | SetMTMode Filter = SetFilterMTMode("$enter_text:Enter the Filter Name$", $enter_text:Enter Mode you wish to use$)
-SelectRangeEvery = SelectRangeEvery(1500, 50)
+
+SelectEvery =
+    # SelectEvery(step-size, offset1, offset2, ...)
+    # offset2, ... are optional.
+    # offsets are non-negative integers smaller than step-size, representing selected frames.
+    # Modify the following example:
+    SelectEvery(10, 3, 6, 7) # select frames 3, 6, 7, 13, 16, 17, 23, 26, 27, ...
+
+SelectRangeEvery =
+    # SelectRangeEvery(every, length, offset)
+    # all arguments are optional.
+    # By default, select length=50 frames every=1500 frames, starting with frame 0 (offset=0)
+    # Modify the following example:
+    SelectRangeEvery(1500, 50)
+
 SplitVertical = Splitvertical=true
 
 [Noise]

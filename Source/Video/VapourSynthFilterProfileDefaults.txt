@@ -58,7 +58,7 @@ QTGMC | QTGMC with Repair =
     QTGMC2 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=3)
     clip = core.rgvs.Repair(QTGMC1,QTGMC2, mode=1)
 
-Select = $select:Even|clip = clip[::2];Odd|clip = clip[1::2]$
+SelectField = $select:Even|clip = clip[::2];Odd|clip = clip[1::2]$
 SeparateFields = clip = core.std.SeparateFields(clip)
 W3FDIF = clip = core.w3fdif.W3FDIF(clip,$select:msg:Select Order Option;BFF|0;TFF|1$,$select:msg:Select Interlacing Filter Coefficients;Simple|0;Complex|1$)
 Weave = clip = havsfunc.Weave(clip, tff=True)
@@ -126,6 +126,13 @@ Borders | AddBorders = clip = core.std.AddBorders(clip, left=$enter_text:Number 
 Borders | FillBorders = clip = core.fb.FillBorders(clip, left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$, mode="$select:msg:Select Mode;repeat (Default)|repeat;mirror|mirror;fillmargins|fillmargins$", interlaced=0)
 Cube = clip = core.timecube.Cube(clip, cube=r"$browse_file$")
 Histogram = clip = muvsfunc.DisplayHistogram(clip)
+
+SelectEvery =
+    # SelectEvery(clip, cycle=, offsets=)
+    # offsets is a single number, or a list of numbers, representing selected frames.
+    # numbers in offsets should be a non-negative integer smaller than cycle.
+    # Modify the following example:
+    clip = core.std.SelectEvery(clip, cycle=5, offsets=[1, 2, 3, 4]) # only first frame in every cycle of 5 is removed.
 
 UnSpec =
     clip = core.resize.Point(clip, matrix_in_s='unspec',range_s='limited')

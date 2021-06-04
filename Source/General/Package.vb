@@ -452,7 +452,8 @@ Public Class Package
         .Filename = "flash3kyuu_deband.dll",
         .WebURL = "http://forum.doom9.org/showthread.php?t=161411",
         .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",
-        .Description = "Simple debanding filter that can be quite effective for some anime sources.",
+        .DownloadURL = "https://gitlab.com/uvz/AviSynthPlus-Plugins-Scripts/-/tree/master/plugins64%2B",
+        .Description = "Simple debanding filter that can be quite effective for some anime sources. Included is an independent build.",
         .VsFilterNames = {"f3kdb.Deband"},
         .AvsFilterNames = {"f3kdb"}})
 
@@ -461,8 +462,8 @@ Public Class Package
         .Filename = "neo-f3kdb.dll",
         .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb",
         .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",
-        .DownloadURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb/releases",
-        .Description = "Debanding filter forked from flash3kyuu_deband.",
+        .DownloadURL = "https://gitlab.com/uvz/AviSynthPlus-Plugins-Scripts/-/tree/master/plugins64%2B",
+        .Description = "Debanding filter forked from flash3kyuu_deband. Included is an independent build.",
         .AvsFilterNames = {"neo_f3kdb"},
         .VsFilterNames = {"neo_f3kdb.Deband"}})
 

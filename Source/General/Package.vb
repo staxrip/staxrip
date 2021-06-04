@@ -1892,6 +1892,15 @@ Public Class Package
             .DownloadURL = "https://github.com/Asd-g/AviSynth-FillBorders/releases",
             .AvsFilterNames = {"FillBorders", "FillMargins"}})
 
+        Add(New PluginPackage With {
+            .Name = "DeRainbow",
+            .Filename = "DeRainbow.avsi",
+            .Location = "Plugins\AVS\Scripts",
+            .Description = "A simple script to reduce rainbows.",
+            .WebURL = "http://forum.doom9.org/showthread.php?p=398106#post398106",
+            .HelpURL = "http://avisynth.nl/index.php/DeRainbow",
+            .AvsFilterNames = {"DeRainbow", "DeRainbowYUY2"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

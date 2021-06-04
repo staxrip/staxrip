@@ -218,6 +218,7 @@ Resize... = $select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;Lanc
 
 [Restoration]
 Chroma Fix | CNR2 = Cnr2(mode="oxx", scdthr=10.0, ln=35, lm=192, un=47, um=255, vn=47, vm=255, log=false, sceneChroma=false)
+Chroma Fix | DeRainbow = $select:msg:Source Color Format?;YV12|DeRainbow;YUY2|DeRainbowYUY2$(thresh=10, interlaced=false)
 DeBand | f3kdb = f3kdb()
 DeBand | f3kdb Neo = neo_f3kdb(preset=$select:msg:Select Profile;Depth|"depth";Low|"low";Low and No Grain|"low/nograin";Medium|"medium";Medium and No Grain|"medium/nograin";High (Default)|"high";High and No Grain|"high/nograin";Very High|"veryhigh";Very High and No Grain|"veryhigh/nograin";No Grain|"nograin";Luma|"luma";Chroma|"chroma"$, output_depth=$select:msg:Select Output Depth;8 Bit|8;16 Bit|16$)
 DeBand | Gradfun3 = GradFun3(thr=0.5, radius=12, mode=6, smode=1)

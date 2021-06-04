@@ -1919,6 +1919,16 @@ Public Class Package
             .WebURL = "https://github.com/myrsloik/DotKill",
             .VsFilterNames = {"dotkill.DotKillS", "dotkill.DotKillZ", "dotkill.DotKillT"}})
 
+        Add(New PluginPackage With {
+            .Name = "vsCnr2",
+            .Filename = "vsCnr2.dll",
+            .Description = "vsCnr2 is a temporal denoiser designed to denoise only the chroma, suited for stationary rainbows or noisy analog captures. This is a port of the VapourSynth plugin Cnr2.",
+            .WebURL = "https://github.com/Asd-g/AviSynth-vsCnr2",
+            .HelpURL = "http://avisynth.nl/index.php/VsCnr2",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-vsCnr2/releases",
+            .AvsFilterNames = {"vsCnr2"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

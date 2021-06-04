@@ -217,7 +217,7 @@ Advanced | SuperRes = $select:msg:Select Version;SuperResXBR|SuperResXBR;SuperRe
 Resize... = $select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;Lanczos4Resize;LanczosResize;PointResize;SincResize;Jinc36Resize;Jinc64Resize;Jinc144Resize;Jinc256Resize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)
 
 [Restoration]
-Chroma Fix | CNR2 = Cnr2(mode="oxx", scdthr=10.0, ln=35, lm=192, un=47, um=255, vn=47, vm=255, log=false, sceneChroma=false)
+Chroma Fix | CNR2 = vsCnr2(mode="oxx", scdthr=10.0, ln=35, lm=192, un=47, um=255, vn=47, vm=255, sceneChroma=false)
 Chroma Fix | DeRainbow = $select:msg:Source Color Format?;YV12|DeRainbow;YUY2|DeRainbowYUY2$(thresh=10, interlaced=false)
 Chroma Fix | DotKill | DotKillS = DotKillS(iterations=1)
 

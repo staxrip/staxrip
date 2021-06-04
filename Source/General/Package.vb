@@ -1901,6 +1901,23 @@ Public Class Package
             .HelpURL = "http://avisynth.nl/index.php/DeRainbow",
             .AvsFilterNames = {"DeRainbow", "DeRainbowYUY2"}})
 
+        Add(New PluginPackage With {
+            .Name = "DotKill",
+            .Filename = "DotKill.dll",
+            .Description = "A spatio-temporal dotcrawl and rainbow remover for AviSynth/AviSynth+. This is a port of the VapourSynth plugin DotKill.",
+            .WebURL = "https://github.com/Asd-g/AviSynth-DotKill",
+            .HelpURL = "http://avisynth.nl/index.php/DotKill",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-DotKill/releases",
+            .AvsFilterNames = {"DotKillS", "DotKillZ", "DotKillT"}})
+
+        Add(New PluginPackage With {
+            .Name = "DotKill",
+            .Filename = "DotKill.dll",
+            .Description = "A spatio-temporal dotcrawl and rainbow remover for VapourSynth.",
+            .WebURL = "https://github.com/myrsloik/DotKill",
+            .VsFilterNames = {"dotkill.DotKillS", "dotkill.DotKillZ", "dotkill.DotKillT"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

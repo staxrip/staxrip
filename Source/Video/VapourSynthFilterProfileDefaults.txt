@@ -158,6 +158,7 @@ RemoveGrain | RemoveGrain | RemoveGrain with Repair =
     clip = core.rgvs.Repair(clip,Processed, mode=2)
 
 RemoveGrain | SMDegrain = clip = havsfunc.SMDegrain(clip, contrasharp=True)
+TemporalDegrain2 = clip = G41Fun.TemporalDegrain2(clip, degrainTR=2, postFFT=3, postSigma=3)
 TTempSmooth = clip =  core.ttmpsm.TTempSmooth(clip)
 VagueDenoiser = clip = core.vd.VagueDenoiser(clip=clip, method=$select:msg:Select Strength;Soft|1;Hard|0$)
 

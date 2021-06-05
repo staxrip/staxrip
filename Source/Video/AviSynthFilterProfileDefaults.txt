@@ -102,6 +102,16 @@ SVPFlow =
     #Prefetch(threads) must be added at the end of the script and Threads=9 after the source
     Prefetch(threads)
 
+TimecodeFPS =
+    # Convert VFR to CFR using MKV timestamps file
+    # Only FFMS2 and FFVideoSource work with this filter
+    tcFile = "%temp_file%_timestamps.txt" # timestamps file path
+    tcArg = Exist(tcFile) ? tcFile : Assert(false, tcFile + " does not exist! Set Option to extract the Timestamps file automatically.")
+    TimecodeFPS(timecodes=tcArg, fpsnum=$enter_text:Enter the Exact Framerate Numerator to convert to (in integer)$, \
+        fpsden=$enter_text:Enter the Exact Framerate Denominator to convert to (in integer)$, \
+        report=$select:msg:Show an Informative Messagebox on script load?;Yes|true;No (Default)|false$, \
+        threshone=0.4, threshmore=0.9, start=$select:msg:Is the 0th timecode in the timestamps file the 0 time?;Yes|true;No (Default)|false$)
+
 YFRC = YFRC(BlockH=16, BlockV=16, OverlayType=0, MaskExpand=1)
 
 [Line]

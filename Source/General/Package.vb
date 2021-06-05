@@ -1929,6 +1929,15 @@ Public Class Package
             .DownloadURL = "https://github.com/Asd-g/AviSynth-vsCnr2/releases",
             .AvsFilterNames = {"vsCnr2"}})
 
+        Add(New PluginPackage With {
+            .Name = "TimecodeFPS",
+            .Filename = "TimecodeFPS.dll",
+            .Description = "AviSynth plugin to convert VFR to CFR using MKV timecodes. This filter works only with FFMS2 and FFVideoSource source filters.",
+            .WebURL = "https://github.com/Asd-g/TimecodeFPS",
+            .HelpURL = "http://avisynth.nl/index.php/TimecodeFPS",
+            .DownloadURL = "https://github.com/Asd-g/TimecodeFPS/releases",
+            .AvsFilterNames = {"TimecodeFPS"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

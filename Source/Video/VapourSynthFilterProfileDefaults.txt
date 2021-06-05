@@ -3,7 +3,12 @@
 Automatic = # can be configured at: Tools > Settings > Source Filters
 AVISource = clip = core.avisource.AVISource(r"%source_file%")
 d2vsource = clip = core.d2v.Source(r"%source_file%")
-ffms2 = clip = core.ffms2.Source(r"%source_file%", cachefile=r"%source_temp_file%.ffindex")
+
+ffms2 =
+    tcFile = r"%temp_file%_timestamps.txt" # timestamps file path
+    tcArg = tcFile if os.path.exists(tcFile) else "" # tests if the timestamps file exists
+    clip = core.ffms2.Source(r"%source_file%", cachefile=r"%source_temp_file%.ffindex", timecodes=tcArg)
+
 LibavSMASHSource = clip = core.lsmas.LibavSMASHSource(r"%source_file%")
 LWLibavSource = clip = core.lsmas.LWLibavSource(r"%source_file%", cachefile=r"%source_temp_file%.lwi")
 Manual = # shows filter selection dialog

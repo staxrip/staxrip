@@ -1938,6 +1938,15 @@ Public Class Package
             .DownloadURL = "https://github.com/Asd-g/TimecodeFPS/releases",
             .AvsFilterNames = {"TimecodeFPS"}})
 
+        Add(New PluginPackage With {
+            .Name = "VfrToCfr",
+            .Filename = "vfrtocfr.dll",
+            .Description = "This plugin converts variable frame rate clips to constant frame rate by inserting null frames (exact copies of previous frames). This filter works only with FFmpegSource2 plugin filters, that is, FFMS2 and FFVideoSource source filters.",
+            .WebURL = "https://github.com/jojje/VfrToCfr-the-other-one",
+            .HelpURL = "http://avisynth.nl/index.php/VfrToCfr",
+            .DownloadURL = "https://github.com/jojje/VfrToCfr-the-other-one/releases",
+            .AvsFilterNames = {"VfrToCfr"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

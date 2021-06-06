@@ -21,11 +21,11 @@ You can find plenty of information and instructions on [Wiki](https://github.com
 - You can also have a look at the [Changelog](https://github.com/staxrip/staxrip/blob/master/Changelog.md) to see if there is an entry already made for the bug/feature request you are experiencing/desiring.
 - If the latest release version does not resolve your problem, please use the [Issue Tracker](https://github.com/staxrip/staxrip/issues). You need to be as precise as possible using the Issue Tracker template when opening a thread in it.
 
-### **Usage questions**
+### **Community & Usage questions**
 - Feel free to join in the [StaxRip Community on Discord](https://discord.gg/uz8pVR79Bd), where you can chat and share knowledge with us and other StaxRip users.
 - Usage questions can also be asked on the *StaxRip threads* on
-  - [VideoHelp](https://forum.videohelp.com/threads/369913-StaxRip-support-thread) 
   - [Doom9](https://forum.doom9.org/showthread.php?t=172068)
+  - [VideoHelp](https://forum.videohelp.com/threads/369913-StaxRip-support-thread) 
 
 # Download
 

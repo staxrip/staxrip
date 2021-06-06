@@ -4,10 +4,20 @@ not published yet
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
 - [ ] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
+- New Discord Server: [Link](https://discord.gg/uz8pVR79Bd)
 - Add Assistent option to warn if no audio in output (Dendraspis, [#709](/../../issues/709))
+- Fix --vpp-pad param output for NVEnc and VCEEnc (Dendraspis, [#723](/../../issues/723))
+- Fix crash when copy error message for some exception (Dendraspis)
+- Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)
+- Add AVS SeparateFields filter (44vince44)
+- Update RgTools URLs, description, and filter list (JKyle, [#720](/../../issues/720))
+- Big filter profile update (JKyle, [#725](/../../issues/725))
+- flash3kyuu_deband v2.0.0-1 (Avisynth+ plugins pack r14)
+- Neon F3KDB r7 (Avisynth+ plugins pack r58)
 - FFT3DFilter v2.9
 - MKVToolNix v57.0
 - NVEnc v5.33
+- QSVEnc v5.04
 
 
 v2.6.0 (2021-05-22)

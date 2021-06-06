@@ -15,6 +15,7 @@ $excludeBinPatterns = @(
     '.*\.ini$',
     '.*help\.txt$',
     '.*\\eac3to\\log\.txt$',
+    '.*\\qaac\\QTfiles.*',
     '.*\\FrameServer\.exp$',
     '.*\\FrameServer\.ilk$',
     '.*\\FrameServer\.lib$',

@@ -1932,7 +1932,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "TimecodeFPS",
             .Filename = "TimecodeFPS.dll",
-            .Description = "AviSynth plugin to convert VFR(variable frame rate) to CFR(constant frame rate) using MKV timecodes. This filter works only with FFmpegSource2 plugin filters, that is, FFMS2 and FFVideoSource source filters.",
+            .Description = "An AviSynth plugin to convert VFR(variable frame rate) to CFR(constant frame rate) using MKV timecodes. This filter works only with FFmpegSource2 plugin filters, that is, FFMS2 and FFVideoSource source filters.",
             .WebURL = "https://github.com/Asd-g/TimecodeFPS",
             .HelpURL = "http://avisynth.nl/index.php/TimecodeFPS",
             .DownloadURL = "https://github.com/Asd-g/TimecodeFPS/releases",

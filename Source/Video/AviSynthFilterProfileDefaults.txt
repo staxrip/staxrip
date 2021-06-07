@@ -10,14 +10,14 @@ FFMS2 =
     tcFile = "%temp_file%_timestamps.txt" # timestamps file path
     # Test if the timestamps file is already extracted by mkvextract according to
     # "Options > Misc" setting for VFR MKV
-    tcArg = Exist(tcFile) ? tcFile : "%temp_file%_timestamps_ff.txt"
+    tcArg = Exist(tcFile) ? tcFile : "%temp_file%_timecodes_ff.txt"
     FFMS2("%source_file%", atrack=-1, cachefile="%source_temp_file%.ffindex", timecodes=tcArg)
 
 FFVideoSource =
     tcFile = "%temp_file%_timestamps.txt" # timestamps file path
     # Test if the timestamps file is already extracted by mkvextract according to
     # "Options > Misc" setting for VFR MKV
-    tcArg = Exist(tcFile) ? tcFile : "%temp_file%_timestamps_ff.txt"
+    tcArg = Exist(tcFile) ? tcFile : "%temp_file%_timecodes_ff.txt"
     FFVideoSource("%source_file%", cachefile="%source_temp_file%.ffindex", timecodes=tcArg)
 
 LSMASHVideoSource = LSMASHVideoSource("%source_file%")
@@ -107,13 +107,13 @@ SVPFlow =
     Prefetch(threads)
 
 VFR to CFR | TimecodeFPS =
-    # Converts VFR to CFR using MKV timestamps file
+    # Converts VFR to CFR using MKV timecodes file
     # Only FFMS2 and FFVideoSource work with this filter
     Assert(VarExist("tcArg"), "Use FFMS2 or FFVideoSource source filter for TimecodeFPS filter!")
     TimecodeFPS(timecodes=tcArg, \
         fpsnum=$enter_text:Enter the Numerator of the target FPS (in integer)$, fpsden=$enter_text:Enter the Denominator of the target FPS (in integer)$, \
         report=$select:msg:Show an Informative Messagebox on script load?;Yes|true;No (Default)|false$, \
-        threshone=0.4, threshmore=0.9, start=$select:msg:Is the 0th timecode in the timestamps file the 0 time?;Yes|true;No (Default)|false$)
+        threshone=0.4, threshmore=0.9, start=$select:msg:Is the 0th timecode in the timecodes file the 0 time?;Yes|true;No (Default)|false$)
 
 VFR to CFR | VfrToCfr =
     # Converts VFR to CFR by inserting null frames (exact copies of previous frames)

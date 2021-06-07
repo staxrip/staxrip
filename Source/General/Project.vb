@@ -61,6 +61,7 @@ Public Class Project
     Public PreferredAudio As String
     Public PreferredSubtitles As String
     Public Ranges As List(Of Range)
+    Public RangesBasedOnFPS As Double = 0
     Public RemindOversize As Boolean = True
     Public RemindToCrop As Boolean = False
     Public RemindToCut As Boolean = False

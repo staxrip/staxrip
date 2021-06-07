@@ -4,13 +4,13 @@ Imports System.Text
 Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
-Public Class aomenc
+Public Class AOMEnc
     Inherits BasicVideoEncoder
 
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "AV1 | aomenc"
+        Name = "AV1 | AOMEnc"
     End Sub
 
     <NonSerialized>
@@ -55,7 +55,7 @@ Public Class aomenc
         End If
 
         Using proc As New Proc
-            proc.Package = Package.aomenc
+            proc.Package = Package.AOMEnc
             proc.Encoding = Encoding.UTF8
             proc.Header = passName
             proc.Priority = priority
@@ -172,7 +172,7 @@ Public Class AV1Params
     Inherits CommandLineParams
 
     Sub New()
-        Title = "aomenc Options"
+        Title = "AOMEnc Options"
         Separator = "="
     End Sub
 
@@ -500,7 +500,7 @@ Public Class AV1Params
     End Property
 
     Overrides Sub ShowHelp(options As String())
-        ShowConsoleHelp(Package.aomenc, options)
+        ShowConsoleHelp(Package.AOMEnc, options)
     End Sub
 
     Overloads Overrides Function GetCommandLine(
@@ -555,7 +555,7 @@ Public Class AV1Params
                             Dim chunk = If(isSingleChunk, "", $" -trim={startFrame},{endFrame}")
                             Dim dll = If(FrameServerHelp.IsPortable, $" -dll={Package.AviSynth.Path.Escape}", "")
                             pipeString = Package.avs2pipemod.Path.Escape + dll + chunk + " -y4mp " + script.Path.Escape + " | "
-                            sb.Append(pipeString + Package.aomenc.Path.Escape)
+                            sb.Append(pipeString + Package.AOMEnc.Path.Escape)
 
                             If isSingleChunk Then
                                 If Skip.Value > 0 Then
@@ -573,7 +573,7 @@ Public Class AV1Params
                             Dim chunk = If(isSingleChunk, "", $" --start={startFrame} --end={endFrame}")
                             pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m" + chunk + " | "
 
-                            sb.Append(pipeString + Package.aomenc.Path.Escape)
+                            sb.Append(pipeString + Package.AOMEnc.Path.Escape)
                             If isSingleChunk Then
                                 If Skip.Value > 0 Then
                                     sb.Append($" --skip={Skip.Value}")
@@ -589,7 +589,7 @@ Public Class AV1Params
                         Case "ffmpeg"
                             pipeString = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
 
-                            sb.Append(pipeString + Package.aomenc.Path.Escape)
+                            sb.Append(pipeString + Package.AOMEnc.Path.Escape)
 
                             If isSingleChunk Then
                                 If Skip.Value > 0 Then
@@ -607,7 +607,7 @@ Public Class AV1Params
                     End Select
                 Case "qs"
                     Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
-                    sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.aomenc.Path.Escape)
+                    sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.AOMEnc.Path.Escape)
                     If isSingleChunk Then
                         If Skip.Value > 0 Then
                             sb.Append($" --skip={Skip.Value}")
@@ -622,7 +622,7 @@ Public Class AV1Params
                     End If
                 Case "ffqsv"
                     Dim crop = If(isCropped, $" -vf ""crop={p.SourceWidth - p.CropLeft - p.CropRight}:{p.SourceHeight - p.CropTop - p.CropBottom}:{p.CropLeft}:{p.CropTop}""", "")
-                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Escape + " -f yuv4mpegpipe -strict -1" + crop + " -loglevel fatal -hide_banner - | " + Package.aomenc.Path.Escape)
+                    sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel qsv -i " + p.SourceFile.Escape + " -f yuv4mpegpipe -strict -1" + crop + " -loglevel fatal -hide_banner - | " + Package.AOMEnc.Path.Escape)
                     If isSingleChunk Then
                         If Skip.Value > 0 Then
                             sb.Append($" --skip={Skip.Value}")
@@ -640,7 +640,7 @@ Public Class AV1Params
                     Dim pix_fmt = If(p.SourceVideoBitDepth = 10, "yuv420p10le", "yuv420p")
                     sb.Append(Package.ffmpeg.Path.Escape + " -threads 1 -hwaccel dxva2 -i " + p.SourceFile.Escape +
                               " -f yuv4mpegpipe -pix_fmt " + pix_fmt + " -strict -1" + crop +
-                              " -loglevel fatal -hide_banner - | " + Package.aomenc.Path.Escape)
+                              " -loglevel fatal -hide_banner - | " + Package.AOMEnc.Path.Escape)
                     If isSingleChunk Then
                         If Skip.Value > 0 Then
                             sb.Append($" --skip={Skip.Value}")
@@ -741,6 +741,6 @@ Public Class AV1Params
 
 
     Public Overrides Function GetPackage() As Package
-        Return Package.aomenc
+        Return Package.AOMEnc
     End Function
 End Class

@@ -540,14 +540,14 @@ Public Class Package
         .DownloadURL = "https://github.com/xiph/rav1e/releases",
         .HelpSwitch = "--help"})
 
-    Shared Property aomenc As Package = Add(New Package With {
-        .Name = "aomenc",
+    Shared Property AOMEnc As Package = Add(New Package With {
+        .Name = "AOMEnc",
         .Filename = "aomenc.exe",
-        .Location = "Encoders\aomenc",
+        .Location = "Encoders\AOMEnc",
         .Description = "AV1 video encoder console app.",
         .WebURL = "https://aomedia.org",
         .DownloadURL = "https://github.com/staxrip/staxrip/wiki/aomenc",
-        .RequiredFunc = Function() TypeOf p.VideoEncoder Is aomenc,
+        .RequiredFunc = Function() TypeOf p.VideoEncoder Is AOMEnc,
         .HelpSwitch = "--help"})
 
     Shared Property mkvmerge As Package = Add(New Package With {

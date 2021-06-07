@@ -426,7 +426,7 @@ Public Class ProcController
                     Exit Sub
                 End If
             End If
-        ElseIf Proc.Package Is Package.aomenc AndAlso Proc.FrameCount > 0 AndAlso value.Contains(" frame ") Then
+        ElseIf Proc.Package Is Package.AOMEnc AndAlso Proc.FrameCount > 0 AndAlso value.Contains(" frame ") Then
             Dim right = value.Right(" frame ")
             Dim left = right.Left("/").Trim
 

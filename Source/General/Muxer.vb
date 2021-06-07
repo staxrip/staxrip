@@ -691,7 +691,7 @@ Public Class MkvMuxer
         End If
 
         If MediaInfo.GetFrameRate(p.VideoEncoder.OutputPath, 0) = 0 OrElse
-            (TypeOf p.VideoEncoder Is aomenc AndAlso
+            (TypeOf p.VideoEncoder Is AOMEnc AndAlso
             Not p.VideoEncoder.GetCommandLine(True, True).Contains(" --ivf")) Then
 
             args += " --default-duration 0:" + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps"

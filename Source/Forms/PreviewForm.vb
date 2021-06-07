@@ -977,7 +977,7 @@ Public Class PreviewForm
             Case NameOf(CloseDialog), NameOf(PlayWithMPC), NameOf(PlayWithMpvnet)
                 ProcessMenu(e.Item)
             Case Else
-                For Each i In Instances
+                For Each i In Instances.ToArray()
                     i.ProcessMenu(e.Item)
                 Next
         End Select

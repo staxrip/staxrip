@@ -1540,14 +1540,29 @@ Public Class GlobalClass
                  End Sub)
     End Sub
 
+    Function RunSTATask(action As Action) As Task
+        Dim tcs = New TaskCompletionSource(Of Object)()
+        Dim thread = New Thread(Sub()
+                                    Try
+                                        action?.Invoke()
+                                        tcs.SetResult(Nothing)
+                                    Catch ex As Exception
+                                        tcs.SetException(ex)
+                                    End Try
+                                End Sub)
+        thread.SetApartmentState(ApartmentState.STA)
+        thread.Start()
+        Return tcs.Task
+    End Function
+
     Sub UpdateTrim(script As VideoScript)
         If script Is Nothing Then Exit Sub
 
         Dim filter As VideoFilter = script.GetFilter("Cutting")
 
         If p.Ranges.Count > 0 Then
-            if filter Is Nothing Then
-                filter =  New VideoFilter()
+            If filter Is Nothing Then
+                filter = New VideoFilter()
                 script.Filters.Add(filter)
             End If
             filter.Path = "Cutting"

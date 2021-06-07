@@ -1,7 +1,7 @@
 ﻿
 Imports System.Text
 Imports System.Threading
-
+Imports System.Threading.Tasks
 Imports StaxRip.UI
 
 Public Class TaskDialog(Of T)
@@ -353,8 +353,10 @@ Public Class TaskDialog(Of T)
                 blCopyMessage.Text = "Copy Message"
                 blCopyMessage.Visible = True
                 blCopyMessage.ClickAction = Sub()
-                                                Clipboard.SetText(GetText)
-                                                MsgInfo("Message was copied to clipboard.")
+                                                g.RunSTATask(Sub()
+                                                                 Clipboard.SetText(GetText)
+                                                                 MsgInfo("Message was copied to clipboard.")
+                                                             End Sub)
                                             End Sub
             End If
         End Set

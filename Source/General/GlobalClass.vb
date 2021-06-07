@@ -1555,22 +1555,22 @@ Public Class GlobalClass
         Return tcs.Task
     End Function
 
-    Sub UpdateTrim(script As VideoScript)
+    Sub UpdateTrim(script As VideoScript, Optional moveToTheEnd As Boolean = False)
         If script Is Nothing Then Exit Sub
+        If moveToTheEnd OrElse Not p.Ranges.Any() Then script.RemoveFilter("Cutting")
 
+        p.RangesBasedOnFPS = script.OriginalInfo.FrameRate
         Dim filter As VideoFilter = script.GetFilter("Cutting")
 
-        If p.Ranges.Count > 0 Then
-            If filter Is Nothing Then
-                filter = New VideoFilter()
+        If p.Ranges.Any() Then
+            if filter Is Nothing Then
+                filter =  New VideoFilter()
                 script.Filters.Add(filter)
             End If
             filter.Path = "Cutting"
             filter.Category = "Cutting"
             filter.Script = GetTrim(script)
             filter.Active = True
-        Else
-            script.RemoveFilter("Cutting")
         End If
     End Sub
 

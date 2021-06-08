@@ -45,31 +45,31 @@ Grayscale | Grayscale = clip = mvsfunc.GrayScale(clip)
 Crop = clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)
 
 [Field]
-Bwdif = clip = core.bwdif.Bwdif(clip, field=$select:msg:Select Mode;Same rate, keep Bottom field|0;Same rate, keep Top field|1;Double rate, starts with Bottom|2;Double rate, starts with Top|3$)
-eedi = $select:eedi2|clip = core.eedi2.EEDI2;eedi3|clip = core.eedi3m.EEDI3$(clip,$select:msg:Select Field;Bottom Field|0;Top Field|1;Alternate Each Frame Bottom Field|2;Alternate Each Frame Top Field|3$)
+Deinterlace | Bwdif = clip = core.bwdif.Bwdif(clip, field=$select:msg:Select Mode;Same rate, keep Bottom field|0;Same rate, keep Top field|1;Double rate, starts with Bottom|2;Double rate, starts with Top|3$)
+Deinterlace | eedi = $select:eedi2|clip = core.eedi2.EEDI2;eedi3|clip = core.eedi3m.EEDI3$(clip,$select:msg:Select Field;Bottom Field|0;Top Field|1;Alternate Each Frame Bottom Field|2;Alternate Each Frame Top Field|3$)
+Deinterlace | nnedi3 = $select:znedi3|clip = core.znedi3.nnedi3;nnedi3cl|clip = core.nnedi3cl.NNEDI3CL;nnedi3|clip = core.nnedi3.nnedi3$(clip, field=$select:msg:Select Field Option;Same Rate Bottom Field|0;Same Rate Top Field|1;Double Rate Alternates Bottom Field|2;Double Rate Alternates Top Field|3$)
+
+Deinterlace | QTGMC | QTGMC =
+    clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF
+    clip = havsfunc.QTGMC(clip, TFF=True, Preset='$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$', InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2)
+
+Deinterlace | QTGMC | QTGMC with Repair =
+    clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF
+    QTGMC1 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=2)
+    QTGMC2 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=3)
+    clip = core.rgvs.Repair(QTGMC1, QTGMC2, mode=1)
+
+Deinterlace | W3FDIF = clip = core.w3fdif.W3FDIF(clip,$select:msg:Select Order Option;BFF|0;TFF|1$,$select:msg:Select Interlacing Filter Coefficients;Simple|0;Complex|1$)
+Deinterlace | Yadifmod = clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field=0), order=1, field=-1, mode=0)
 Field Base = $select:Frame Based|clip = core.std.SetFieldBased(clip, 0);Bottom Field First|clip = core.std.SetFieldBased(clip, 1);Top Field First|clip = core.std.SetFieldBased(clip, 2)$
 
 IVTC =
     clip = core.vivtc.VFM(clip, 1)
     clip = core.vivtc.VDecimate(clip)
 
-nnedi3 = $select:znedi3|clip = core.znedi3.nnedi3;nnedi3cl|clip = core.nnedi3cl.NNEDI3CL;nnedi3|clip = core.nnedi3.nnedi3$(clip, field=$select:msg:Select Field Option;Same Rate Bottom Field|0;Same Rate Top Field|1;Double Rate Alternates Bottom Field|2;Double Rate Alternates Top Field|3$)
-
-QTGMC | QTGMC =
-    clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF
-    clip = havsfunc.QTGMC(clip, TFF=True, Preset='$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$', InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2)
-
-QTGMC | QTGMC with Repair =
-    clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF
-    QTGMC1 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=2)
-    QTGMC2 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=3)
-    clip = core.rgvs.Repair(QTGMC1,QTGMC2, mode=1)
-
-SelectField = $select:Even|clip = clip[::2];Odd|clip = clip[1::2]$
+Select Every Other = $select:Even|clip = clip[::2];Odd|clip = clip[1::2]$
 SeparateFields = clip = core.std.SeparateFields(clip)
-W3FDIF = clip = core.w3fdif.W3FDIF(clip,$select:msg:Select Order Option;BFF|0;TFF|1$,$select:msg:Select Interlacing Filter Coefficients;Simple|0;Complex|1$)
 Weave = clip = havsfunc.Weave(clip, tff=True)
-Yadifmod = clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field=0), order=1, field=-1, mode=0)
 
 [Frame Rate]
 AssumeFPS | AssumeFPS = clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;24000/1001|24000, 1001;24|24, 1;25|25, 1;30000/1001|30000, 1001;30|30, 1;50|50, 1;60000/1001|60000, 1001;60|60, 1$)

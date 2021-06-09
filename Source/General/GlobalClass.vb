@@ -10,7 +10,7 @@ Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports System.Windows.Forms.VisualStyles
-
+Imports Microsoft.VisualBasic.FileIO
 Imports Microsoft.Win32
 Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
@@ -458,7 +458,7 @@ Public Class GlobalClass
 
                 If moreJobsToProcessInTempDir.Count = 0 Then
                     If s.DeleteTempFilesMode = DeleteMode.RecycleBin Then
-                        FolderHelp.Delete(p.TempDir, VB6.FileIO.RecycleOption.SendToRecycleBin)
+                        FolderHelp.Delete(p.TempDir, RecycleOption.SendToRecycleBin)
                     Else
                         FolderHelp.Delete(p.TempDir)
                     End If
@@ -1563,8 +1563,8 @@ Public Class GlobalClass
         Dim filter As VideoFilter = script.GetFilter("Cutting")
 
         If p.Ranges.Any() Then
-            if filter Is Nothing Then
-                filter =  New VideoFilter()
+            If filter Is Nothing Then
+                filter = New VideoFilter()
                 script.Filters.Add(filter)
             End If
             filter.Path = "Cutting"

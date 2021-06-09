@@ -94,9 +94,7 @@ Public Class FolderHelp
         End If
     End Sub
 
-    Shared Sub Delete(
-        filepath As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
-
+    Shared Sub Delete(filepath As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
         If Directory.Exists(filepath) Then
             Try
                 FileSystem.DeleteDirectory(filepath, UIOption.OnlyErrorDialogs, recycleOption)

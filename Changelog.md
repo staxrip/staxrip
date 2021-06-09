@@ -7,7 +7,7 @@ not published yet
 - New Discord Server: [Link](https://discord.gg/uz8pVR79Bd)
 - Add Assistant option to warn if no audio in output (Dendraspis, [#709](/../../issues/709))
 - Fix --vpp-pad param output for NVEnc and VCEEnc (Dendraspis, [#723](/../../issues/723))
-- Fix crash using "Create job for each selection" (Dendraspis, [#727](/../../issues/773))
+- Fix crash using "Create job for each selection" (Dendraspis, [#727](/../../issues/727))
 - Fix crash when copy error message for some exception (Dendraspis)
 - Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)
 - Add AVS SeparateFields filter (44vince44)

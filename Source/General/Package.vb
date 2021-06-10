@@ -1947,6 +1947,34 @@ Public Class Package
             .DownloadURL = "https://github.com/jojje/VfrToCfr-the-other-one/releases",
             .AvsFilterNames = {"VfrToCfr"}})
 
+        Add(New PluginPackage With {
+            .Name = "GRunT",
+            .Filename = "grunt.dll",
+            .Description = "Gavino's Run-Time for AviSynth.",
+            .WebURL = "https://github.com/pinterf/GRunT",
+            .HelpURL = "http://avisynth.nl/index.php/GRunT",
+            .DownloadURL = "https://github.com/pinterf/GRunT/releases",
+            .AvsFilterNames = {"GScriptClip", "GFrameEvaluate", "GConditionalFilter", "GWriteFile", "GWriteFileIf"}})
+
+        Add(New PluginPackage With {
+            .Name = "Srestore",
+            .Filename = "Srestore.avsi",
+            .Description = "An AviSynth field-blending/frame-blending removal script function that uses conditional frame evaluation for the output calculation.",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1944371#post1944371",
+            .HelpURL = "http://avisynth.nl/index.php/Srestore",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/Srestore.avsi",
+            .AvsFilterNames = {"Srestore"}})
+
+        Add(New PluginPackage With {
+            .Name = "ReduceFlicker",
+            .Filename = "ReduceFlicker.dll",
+            .Description = "A AviSynth 2.6/AviSynth+ plugin to reduce temporal oscillations.",
+            .WebURL = "https://github.com/Asd-g/ReduceFlicker",
+            .HelpURL = "http://avisynth.nl/index.php/ReduceFlicker",
+            .HelpFilename = "readme.md",
+            .DownloadURL = "https://github.com/Asd-g/ReduceFlicker/releases",
+            .AvsFilterNames = {"ReduceFlicker"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

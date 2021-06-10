@@ -65,6 +65,7 @@ Deinterlace | QTGMC | QTGMC with Repair =
 
 Deinterlace | TDeint = TDeint($select:msg:Select Mode;Progressive DoubleHeight ELA|mode=-2;Progressive DoubleHeight ELA2|mode=-1;Same Rate (Default)|mode=0;Double Rate Bobbing|mode=1;Smart Bobbed Field Matching|mode=2$)
 Deinterlace | yadifmod2 = yadifmod2($select:msg:Select Mode;Same Rate (Default)|mode=0;Double Rate|mode=1;Same Rate No Spatial Check|mode=2;Double Rate No Spatial Check|mode=3$)
+IVTC | AnimeIVTC = AnimeIVTC(mode=$select:msg:Choose Mode;Hard telecined|1;Field blended|2;Double hard telecine|3;Hybrid|4$, omode=$select:msg:Output Framerate?;CFR|1;VFR (intended for MKV files)|2$)
 IVTC | Decomb IVTC = Telecide(guide=1).Decimate()
 IVTC | TIVTC = TFM().TDecimate()
 Select Every Other = $select:Even|SelectEven();Odd|SelectOdd()$
@@ -264,6 +265,7 @@ DeBlock | DeBock = Deblock(quant=25, aOffset=0, bOffset=0)
 DeBlock | MipSmooth = MipSmooth(downsizer="lanczos", upsizer="bilinear", scalefactor=1.5, method="strong")
 DeBlock | SmoothD2 = SmoothD2(quant=3, num_shift=3, Matrix=3, Qtype=1, ZW=1, ZWce=1, ZWlmDark=0, ZWlmBright=255, ncpu=4)
 DeComb | Vinverse = $select:Vinverse|vinverse(sstr=2.7, amnt=255, uv=3, scl=0.25);Vinverse2|vinverse2(sstr=2.7, amnt=255, uv=3, scl=0.25)$
+DeFlicker | ReduceFlicker = ReduceFlicker(strength=$select:msg:Choose Strength;Weak|1;Mediaum (Default)|2;Strong|3$)
 DeHalo | DehaloAlpha = DeHalo_alpha_mt(rx=2.0, ry=2.0, darkstr=1.0, brightstr=1.0, lowsens=50, highsens=50, ss=1.5)
 DeHalo | FineDehalo = FineDehalo(rx=2.0, ry=2.0, thmi=80, thma=128, thlimi=50, thlima=100, darkstr=1.0, brightstr=1.0, showmask=0, contra=0.0, excl=true)
 DeHalo | HQDeringmod = HQDeringmod()

@@ -101,6 +101,12 @@ SVPFlow | MV =
     fvec = core.mv.Analyse(sup, blksize=16, isb=False, chroma=True, search=3, searchparam=1)
     $select:msg:Select FPS Filter to Use;FlowFPS|clip = core.mv.FlowFPS(clip, sup, bvec, fvec, mask=2;BlockFPS|clip = core.mv.BlockFPS(clip, sup, bvec, fvec, mode=3, thscd2=12$, num=$enter_text:Enter The Num Value$, den=$enter_text:Enter The Den Value$)
 
+VFR to CFR | VFRToCFR =
+    try:
+        clip = core.vfrtocfr.VFRToCFR(clip, timecodes=tcArg, fpsnum=$enter_text:Numerator of the target FPS (in integer)?$, fpsden=$enter_text:Denominator of the target FPS (in integer)?$)
+    except:
+        raise vs.Error("Use ffms2 source filter for VFRToCFR filter!")
+
 [Line]
 
 Anti-Aliasing | DAA = clip = havsfunc.daa(clip)

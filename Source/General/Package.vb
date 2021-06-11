@@ -1975,6 +1975,13 @@ Public Class Package
             .DownloadURL = "https://github.com/Asd-g/ReduceFlicker/releases",
             .AvsFilterNames = {"ReduceFlicker"}})
 
+        Add(New PluginPackage With {
+            .Name = "VFRToCFR",
+            .Filename = "VFRToCFRVapoursynth.dll",
+            .Description = "Converts Variable Frame Rate (VFR) video to a Constant Frame Rate (CFR) video through the use of Matroska Version 2 Timecodes. Ported from the Avisynth plugin written by Nicholai Main.",
+            .WebURL = "https://github.com/Irrational-Encoding-Wizardry/Vapoursynth-VFRToCFR",
+            .VsFilterNames = {"vfrtocfr.VFRToCFR"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

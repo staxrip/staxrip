@@ -137,6 +137,12 @@ Anamorphic to Standard =
 
 Borders | AddBorders = clip = core.std.AddBorders(clip, left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$)
 Borders | FillBorders = clip = core.fb.FillBorders(clip, left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$, mode="$select:msg:Select Mode;repeat (Default)|repeat;mirror|mirror;fillmargins|fillmargins$", interlaced=0)
+
+Borders | Letterbox =
+    lb_l, lb_r, lb_t, lb_b = $enter_text:Number of Left Pixels$, $enter_text:Number of Right Pixels$, $enter_text:Number of Top Pixels$, $enter_text:Number of Bottom Pixels$
+    clip = core.std.Crop(clip, left=lb_l, right=lb_r, top=lb_t, bottom=lb_b)
+    clip = core.std.AddBorders(clip, left=lb_l, right=lb_r, top=lb_t, bottom=lb_b)
+
 Cube = clip = core.timecube.Cube(clip, cube=r"$browse_file$")
 Histogram = clip = muvsfunc.DisplayHistogram(clip)
 

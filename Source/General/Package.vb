@@ -415,14 +415,14 @@ Public Class Package
         .Name = "AutoAdjust",
         .Filename = "AutoAdjust.dll",
         .WebURL = "http://forum.doom9.org/showthread.php?t=167573",
-        .Description = "Automatic adjustement video filter plugin that calculates statistics of clip, stabilizes them temporally and uses them to adjust luminance gain & color balance.",
+        .Description = "Automatic adjustment video filter plugin that calculates statistics of clip, stabilizes them temporally and uses them to adjust luminance gain & color balance.",
         .AvsFilterNames = {"AutoAdjust"}})
 
     Shared Property SmoothAdjust As Package = Add(New PluginPackage With {
         .Name = "SmoothAdjust",
         .Filename = "SmoothAdjust.dll",
         .WebURL = "http://forum.doom9.org/showthread.php?t=154971",
-        .Description = "SmoothAdjust is a video filter plugin to make YUV adjustements.",
+        .Description = "SmoothAdjust is a video filter plugin to make YUV adjustments.",
         .AvsFilterNames = {"SmoothTweak", "SmoothCurve", "SmoothCustom", "SmoothTools"}})
 
     Shared Property EEDI3 As Package = Add(New PluginPackage With {
@@ -746,7 +746,7 @@ Public Class Package
         .Filename = "QTGMC.avsi",
         .WebURL = "http://avisynth.nl/index.php/QTGMC",
         .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.6%20and%20up/QTGMC.avsi",
-        .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Dide.",
+        .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
         .AvsFilterNames = {"QTGMC"}})
 
     Shared Property SMDegrain As Package = Add(New PluginPackage With {
@@ -1798,7 +1798,7 @@ Public Class Package
             .Name = "finesharp",
             .Filename = "finesharp.py",
             .Location = "Plugins\VS\Scripts",
-            .Description = "Port of Didie's FineSharp script to VapourSynth.",
+            .Description = "Port of Didée's FineSharp script to VapourSynth.",
             .WebURL = "http://forum.doom9.org/showthread.php?p=1777860#post1777860",
             .VsFilterNames = {"finesharp.sharpen"}})
 

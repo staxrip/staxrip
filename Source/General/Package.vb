@@ -399,8 +399,9 @@ Public Class Package
     Shared Property checkmate As Package = Add(New PluginPackage With {
         .Name = "checkmate",
         .Filename = "checkmate.dll",
-        .WebURL = "http://github.com/tp7/checkmate",
-        .Description = "Spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes.",
+        .WebURL = "https://github.com/tp7/checkmate",
+        .HelpURL = "http://avisynth.nl/index.php/Checkmate",
+        .Description = "A spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes.",
         .AvsFilterNames = {"checkmate"}})
 
     Shared Property MedianBlur2 As Package = Add(New PluginPackage With {
@@ -1999,15 +2000,6 @@ Public Class Package
             .Description = "This is a VapourSynth port of Bifrost, a temporal derainbowing filter created by Fredrik Mellbin. The original Avisynth plugin (version 1.1) worked on the whole frame or not at all. This version works on blocks, meaning that static parts of the image can be processed even if something moves on screen. This VapourSynth plugin will accept any 8 bit YUV formats.",
             .WebURL = "https://github.com/dubhater/vapoursynth-bifrost",
             .VsFilterNames = {"bifrost.Bifrost"}})
-
-        Add(New PluginPackage With {
-            .Name = "Checkmate",
-            .Filename = "checkmate.dll",
-            .Description = "A faster and open source version of checkmate, a spatial and temporal dot crawl reducer originally written by prunedtree. It is most effective in static or low motion scenes.",
-            .WebURL = "https://github.com/tp7/checkmate",
-            .HelpURL = "http://avisynth.nl/index.php/Checkmate",
-            .DownloadURL = "https://github.com/tp7/checkmate/releases",
-            .AvsFilterNames = {"checkmate"}})
 
         Add(New Package With {
             .Name = "DirectX 9",

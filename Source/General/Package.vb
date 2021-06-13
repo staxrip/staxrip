@@ -1083,6 +1083,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "AvsResize",
             .Filename = "avsresize.dll",
+            .Description = "z.lib resizers for AviSynth+.",
             .HelpFilename = "README.md",
             .WebURL = "http://avisynth.nl/index.php/Avsresize",
             .AvsFilterNames = {"z_ConvertFormat", "z_PointResize", "z_BilinearResize", "z_BicubicResize", "z_LanczosResize", "z_Lanczos4Resize", "z_Spline16Resize", "z_Spline36Resize", "z_Spline64Resize"}})
@@ -1981,6 +1982,32 @@ Public Class Package
             .Description = "Converts Variable Frame Rate (VFR) video to a Constant Frame Rate (CFR) video through the use of Matroska Version 2 Timecodes. Ported from the Avisynth plugin written by Nicholai Main.",
             .WebURL = "https://github.com/Irrational-Encoding-Wizardry/Vapoursynth-VFRToCFR",
             .VsFilterNames = {"vfrtocfr.VFRToCFR"}})
+
+        Add(New PluginPackage With {
+            .Name = "Bifrost",
+            .Filename = "Bifrost.dll",
+            .Description = "A temporal derainbowing filter created by Fredrik Mellbin. The original Avisynth plugin (version 1.1) worked on the whole frame or not at all. This version works on blocks, meaning that static parts of the image can be processed even if something moves on screen.",
+            .WebURL = "https://github.com/Asd-g/AviSynth-bifrost",
+            .HelpURL = "http://avisynth.nl/index.php/Bifrost",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-bifrost/releases",
+            .AvsFilterNames = {"Bifrost"}})
+
+        Add(New PluginPackage With {
+            .Name = "Bifrost",
+            .Filename = "libbifrost.dll",
+            .Description = "This is a VapourSynth port of Bifrost, a temporal derainbowing filter created by Fredrik Mellbin. The original Avisynth plugin (version 1.1) worked on the whole frame or not at all. This version works on blocks, meaning that static parts of the image can be processed even if something moves on screen. This VapourSynth plugin will accept any 8 bit YUV formats.",
+            .WebURL = "https://github.com/dubhater/vapoursynth-bifrost",
+            .VsFilterNames = {"bifrost.Bifrost"}})
+
+        Add(New PluginPackage With {
+            .Name = "Checkmate",
+            .Filename = "checkmate.dll",
+            .Description = "A faster and open source version of checkmate, a spatial and temporal dot crawl reducer originally written by prunedtree. It is most effective in static or low motion scenes.",
+            .WebURL = "https://github.com/tp7/checkmate",
+            .HelpURL = "http://avisynth.nl/index.php/Checkmate",
+            .DownloadURL = "https://github.com/tp7/checkmate/releases",
+            .AvsFilterNames = {"checkmate"}})
 
         Add(New Package With {
             .Name = "DirectX 9",

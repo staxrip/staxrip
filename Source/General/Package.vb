@@ -2010,6 +2010,15 @@ Public Class Package
             .HelpURL = "http://avisynth.nl/index.php/ChubbyRain2",
             .AvsFilterNames = {"ChubbyRain2"}})
 
+        Add(New PluginPackage With {
+            .Name = "DeFlicker",
+            .Filename = "Deflicker.dll",
+            .Description = "DeFlicker plugin can remove old film intensity flicker by temporal mean luma smoothing. Also it can correct blinding of automatic gain control after flashes. The luma stabilizing not only improves visual impression, but can help to following noise reduction.",
+            .WebURL = "https://github.com/pinterf/Deflicker",
+            .HelpURL = "http://avisynth.nl/index.php/DeFlicker",
+            .DownloadURL = "https://github.com/pinterf/Deflicker/releases",
+            .AvsFilterNames = {"Deflicker"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

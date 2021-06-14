@@ -2005,8 +2005,8 @@ Public Class Package
             .Name = "ChubbyRain2",
             .Filename = "ChubbyRain2.avsi",
             .Location = "Plugins\AVS\Scripts",
-            .Description = "A spatio-temporal rainbow reducing script composed by Lothar based on Mug Funky's ChubbyRain. Included is a mod version by Asd-g and JKyle.",
-            .WebURL = "https://forum.doom9.org/showthread.php?p=1944945#post1944945",
+            .Description = "A spatio-temporal rainbow reducing script composed by Lothar based on Mug Funky's ChubbyRain. Included is a mod version by Asd-g.",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1945054#post1945054",
             .HelpURL = "http://avisynth.nl/index.php/ChubbyRain2",
             .AvsFilterNames = {"ChubbyRain2"}})
 

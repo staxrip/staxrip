@@ -69,19 +69,8 @@ IVTC | AnimeIVTC = AnimeIVTC(mode=$select:msg:Choose Mode;Hard telecined|1;Field
 IVTC | Decomb IVTC = Telecide(guide=1).Decimate()
 IVTC | TIVTC = TFM().TDecimate()
 Select Every Other = $select:Even|SelectEven();Odd|SelectOdd()$
-
-Select Lines | Select Even Lines =
-    AssumeFrameBased()
-    SeparateFields()
-    SelectEven()
-    AssumeFrameBased()
-
-Select Lines | Select Odd Lines =
-    AssumeFrameBased()
-    SeparateFields()
-    SelectOdd()
-    AssumeFrameBased()
-
+Select Lines | Select Even Lines = SeparateRows(2).SelectEven()
+Select Lines | Select Odd Lines = SeparateRows(2).SelectOdd()
 SeparateFields = SeparateFields()
 SwapFields = SwapFields()
 Weave = Weave()
@@ -241,6 +230,7 @@ Resize... = $select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;Lanc
 [Restoration]
 Chroma Fix | Bifrost = Bifrost(luma_thresh=10.0, variation=5, interlaced=$select:msg:Is the input video Interlaced?;Yes (Default)|true;No|false$, blockx=4, blocky=4)
 Chroma Fix | Checkmate = checkmate(thr=12, max=12, tthr2=0)
+Chroma Fix | ChubbyRain2 = ChubbyRain2(th=10, radius=10, sft=10, interlaced=$select:msg:Is the input video Interlaced?;Yes|true;No (Default)|false$)
 Chroma Fix | CNR2 = vsCnr2(mode="oxx", scdthr=10.0, ln=35, lm=192, un=47, um=255, vn=47, vm=255, sceneChroma=false)
 Chroma Fix | DeRainbow = $select:msg:Source Color Format?;YV12|DeRainbow;YUY2|DeRainbowYUY2$(thresh=10, interlaced=false)
 Chroma Fix | DotKill | DotKillS = DotKillS(iterations=1)

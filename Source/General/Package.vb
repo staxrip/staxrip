@@ -2001,6 +2001,15 @@ Public Class Package
             .WebURL = "https://github.com/dubhater/vapoursynth-bifrost",
             .VsFilterNames = {"bifrost.Bifrost"}})
 
+        Add(New PluginPackage With {
+            .Name = "ChubbyRain2",
+            .Filename = "ChubbyRain2.avsi",
+            .Location = "Plugins\AVS\Scripts",
+            .Description = "A spatio-temporal rainbow reducing script composed by Lothar based on Mug Funky's ChubbyRain. Included is a mod version by Asd-g and JKyle.",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1944945#post1944945",
+            .HelpURL = "http://avisynth.nl/index.php/ChubbyRain2",
+            .AvsFilterNames = {"ChubbyRain2"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

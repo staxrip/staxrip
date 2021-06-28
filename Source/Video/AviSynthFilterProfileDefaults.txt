@@ -121,7 +121,7 @@ Sharpen | Sharpen = Sharpen($enter_text:Enter the Amount of Sharpness in decimal
 
 [Misc]
 Borders | AddBorders = AddBorders(0, 0, 0, 0) #left, top, right, bottom
-Borders | FillBorders = FillBorders(left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$, mode=$select:msg:Select Mode;fillmargins (Default)|0;repeat|1;mirror|2;reflect|3;wrap|4;fade|5$)
+Borders | FillBorders = FillBorders(left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$, mode=$select:msg:Select Mode;fillmargins (Default)|0;repeat|1;mirror|2;reflect|3;wrap|4;fade|5;fixborders|6$)
 Borders | Letterbox = Letterbox($enter_text:Number of Top Pixels$, $enter_text:Number of Bottom Pixels$, x1=$enter_text:Number of Left Pixels$, x2=$enter_text:Number of Right Pixels$)
 Histogram = Histogram("levels", bits=$select:msg:Select BitDepth;8;10;12$)
 MTMode | Prefetch = Prefetch($enter_text:Enter the Number of Threads to use$)

@@ -107,8 +107,8 @@ Public Class SVTAV1
         End Sub
 
         Property Mode As New OptionParam With {
-            .Switch = "-rc",
-            .Switches = {"-tbr"},
+            .Switch = "--rc",
+            .Switches = {"--tbr"},
             .Text = "Mode",
             .IntegerValue = True,
             .Options = {"0: CQP", "1: VBR", "2: CVBR"}}
@@ -126,7 +126,7 @@ Public Class SVTAV1
                         New OptionParam With {.Switch = "--scm", .Text = "Screen Content Mode", .IntegerValue = True, .Options = {"0: OFF", "1: ON", "2: Content Based Detection"}},
                         New OptionParam With {.Switch = "--irefresh-type", .Text = "Intra Refresh Type", .Options = {"1: CRA (Open GOP)", "2: IDR (Closed GOP)"}, .Values = {"1", "2"}},
                         New NumParam With {.Switch = "--keyint", .Text = "Intra Period", .Init = -1, .Config = {-2, 255, 1}},
-                        New NumParam With {.Switch = "-q", .Text = "QP", .Init = 50, .Config = {0, 63, 1}})
+                        New NumParam With {.Switch = "--qp", .Text = "QP", .Init = 50, .Config = {0, 63, 1}})
                 End If
 
                 Return ItemsValue
@@ -160,7 +160,7 @@ Public Class SVTAV1
             End If
 
             If Mode.Value <> 0 Then
-                ret += " -tbr " & p.VideoBitrate
+                ret += " --tbr " & p.VideoBitrate
             End If
 
             If ret.Contains("%") Then

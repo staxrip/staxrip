@@ -9,12 +9,13 @@ not published yet
 - Fix --vpp-pad param output for NVEnc and VCEEnc (Dendraspis, [#723](/../../issues/723))
 - Fix crash using "Create job for each selection" (Dendraspis, [#727](/../../issues/727))
 - Fix crash when copy error message for some exception (Dendraspis)
+- Update SVT-AV1 parameters (Dendraspis, [#731](/../../issues/731))
 - Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)
 - Add AVS SeparateFields filter (44vince44)
 - Update RgTools URLs, description, and filter list (JKyle, [#720](/../../issues/720))
 - Big filter profile update (JKyle, [#725](/../../issues/725))
     - Added filters:  
-    AddGrain(VS), Bwdif(AVS), DeRainbow(AVS), DotKill(AVS/VS), FillBorders(AVS/VS), TimecodeFPS(AVS), VfrToCfr(AVS), vsCnr2(AVS)
+    AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), GRunT(AVS plugin), Letterbox(AVS/VS), Bwdif(AVS), DeRainbow(AVS), DotKill(AVS/VS), FillBorders(AVS/VS), ReduceFlicker(AVS), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
     - Updated filter profiles:  
     AddBorders(VS), AddGrainC(AVS), Bwdif(VS), DeRainbow(VS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
     - Updated filter files:  

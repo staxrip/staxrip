@@ -399,8 +399,9 @@ Public Class Package
     Shared Property checkmate As Package = Add(New PluginPackage With {
         .Name = "checkmate",
         .Filename = "checkmate.dll",
-        .WebURL = "http://github.com/tp7/checkmate",
-        .Description = "Spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes.",
+        .WebURL = "https://github.com/tp7/checkmate",
+        .HelpURL = "http://avisynth.nl/index.php/Checkmate",
+        .Description = "A spatial and temporal dot crawl reducer. Checkmate is most effective in static or low motion scenes.",
         .AvsFilterNames = {"checkmate"}})
 
     Shared Property MedianBlur2 As Package = Add(New PluginPackage With {
@@ -415,14 +416,14 @@ Public Class Package
         .Name = "AutoAdjust",
         .Filename = "AutoAdjust.dll",
         .WebURL = "http://forum.doom9.org/showthread.php?t=167573",
-        .Description = "Automatic adjustement video filter plugin that calculates statistics of clip, stabilizes them temporally and uses them to adjust luminance gain & color balance.",
+        .Description = "Automatic adjustment video filter plugin that calculates statistics of clip, stabilizes them temporally and uses them to adjust luminance gain & color balance.",
         .AvsFilterNames = {"AutoAdjust"}})
 
     Shared Property SmoothAdjust As Package = Add(New PluginPackage With {
         .Name = "SmoothAdjust",
         .Filename = "SmoothAdjust.dll",
         .WebURL = "http://forum.doom9.org/showthread.php?t=154971",
-        .Description = "SmoothAdjust is a video filter plugin to make YUV adjustements.",
+        .Description = "SmoothAdjust is a video filter plugin to make YUV adjustments.",
         .AvsFilterNames = {"SmoothTweak", "SmoothCurve", "SmoothCustom", "SmoothTools"}})
 
     Shared Property EEDI3 As Package = Add(New PluginPackage With {
@@ -452,7 +453,8 @@ Public Class Package
         .Filename = "flash3kyuu_deband.dll",
         .WebURL = "http://forum.doom9.org/showthread.php?t=161411",
         .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",
-        .Description = "Simple debanding filter that can be quite effective for some anime sources.",
+        .DownloadURL = "https://gitlab.com/uvz/AviSynthPlus-Plugins-Scripts/-/tree/master/plugins64%2B",
+        .Description = "Simple debanding filter that can be quite effective for some anime sources. Included is an independent build.",
         .VsFilterNames = {"f3kdb.Deband"},
         .AvsFilterNames = {"f3kdb"}})
 
@@ -461,8 +463,8 @@ Public Class Package
         .Filename = "neo-f3kdb.dll",
         .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb",
         .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",
-        .DownloadURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb/releases",
-        .Description = "Debanding filter forked from flash3kyuu_deband.",
+        .DownloadURL = "https://gitlab.com/uvz/AviSynthPlus-Plugins-Scripts/-/tree/master/plugins64%2B",
+        .Description = "Debanding filter forked from flash3kyuu_deband. Included is an independent build.",
         .AvsFilterNames = {"neo_f3kdb"},
         .VsFilterNames = {"neo_f3kdb.Deband"}})
 
@@ -745,7 +747,7 @@ Public Class Package
         .Filename = "QTGMC.avsi",
         .WebURL = "http://avisynth.nl/index.php/QTGMC",
         .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.6%20and%20up/QTGMC.avsi",
-        .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Dide.",
+        .Description = "A very high quality deinterlacer with a range of features for both quality and convenience. These include a simple presets system, extensive noise processing capabilities, support for repair of progressive material, precision source matching, shutter speed simulation, etc. Originally based on TempGaussMC by Didée.",
         .AvsFilterNames = {"QTGMC"}})
 
     Shared Property SMDegrain As Package = Add(New PluginPackage With {
@@ -1082,6 +1084,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "AvsResize",
             .Filename = "avsresize.dll",
+            .Description = "z.lib resizers for AviSynth+.",
             .HelpFilename = "README.md",
             .WebURL = "http://avisynth.nl/index.php/Avsresize",
             .AvsFilterNames = {"z_ConvertFormat", "z_PointResize", "z_BilinearResize", "z_BicubicResize", "z_LanczosResize", "z_Lanczos4Resize", "z_Spline16Resize", "z_Spline36Resize", "z_Spline64Resize"}})
@@ -1797,7 +1800,7 @@ Public Class Package
             .Name = "finesharp",
             .Filename = "finesharp.py",
             .Location = "Plugins\VS\Scripts",
-            .Description = "Port of Didie's FineSharp script to VapourSynth.",
+            .Description = "Port of Didée's FineSharp script to VapourSynth.",
             .WebURL = "http://forum.doom9.org/showthread.php?p=1777860#post1777860",
             .VsFilterNames = {"finesharp.sharpen"}})
 
@@ -1843,8 +1846,8 @@ Public Class Package
             .Name = "vsTTempSmooth",
             .Filename = "vsTTempSmooth.dll",
             .Description = "TTempSmooth is a motion adaptive (it only works on stationary parts of the picture), temporal smoothing filter. This is a port of the VapourSynth plugin TTempSmooth.",
-            .WebURL = "http://avisynth.nl/index.php/VsTTempSmooth",
-            .HelpURL = "https://github.com/Asd-g/AviSynth-vsTTempSmooth",
+            .WebURL = "https://github.com/Asd-g/AviSynth-vsTTempSmooth",
+            .HelpURL = "http://avisynth.nl/index.php/VsTTempSmooth",
             .HelpFilename = "README.md",
             .DownloadURL = "https://github.com/Asd-g/AviSynth-vsTTempSmooth/releases",
             .AvsFilterNames = {"vsTTempSmooth"}})
@@ -1857,6 +1860,164 @@ Public Class Package
             .WebURL = "https://forum.doom9.org/showthread.php?p=1942236#post1942236",
             .Dependencies = {"Plugins_JPSDR.dll"},
             .AvsFilterNames = {"CASm"}})
+
+        Add(New PluginPackage With {
+            .Name = "AddGrain",
+            .Filename = "AddGrain.dll",
+            .Description = "AddGrain generates film like grain or other effects (like rain) by adding random noise to a video clip. This noise may optionally be horizontally or vertically correlated to cause streaking. VapourSynth port of AddGrainC.",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-AddGrain",
+            .VsFilterNames = {"grain.Add"}})
+
+        Add(New PluginPackage With {
+            .Name = "Bwdif",
+            .Filename = "BWDIF.dll",
+            .Description = "Motion adaptive deinterlacing based on yadif with the use of w3fdif and cubic interpolation algorithms. This is a port of the VapourSynth plugin Bwdif, which is again a port of FFmpeg's libavfilter bwdif.",
+            .WebURL = "https://github.com/Asd-g/AviSynth-BWDIF",
+            .HelpURL = "http://avisynth.nl/index.php/BWDIF",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-BWDIF/releases",
+            .AvsFilterNames = {"BWDIF"}})
+
+        Add(New PluginPackage With {
+            .Name = "FillBorders",
+            .Filename = "libfillborders.dll",
+            .Description = "This is a simple filter that fills the borders of a clip, without changing the clip's dimensions.",
+            .WebURL = "https://github.com/dubhater/vapoursynth-fillborders",
+            .VsFilterNames = {"fb.FillBorders"}})
+
+        Add(New PluginPackage With {
+            .Name = "FillBorders",
+            .Filename = "FillBorders.dll",
+            .Description = "A simple filter that fills the borders of a clip, without changing the clip's dimensions. This is a port of the VapourSynth plugin FillBorders.",
+            .WebURL = "https://github.com/Asd-g/AviSynth-FillBorders",
+            .HelpURL = "http://avisynth.nl/index.php/FillBorders",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-FillBorders/releases",
+            .AvsFilterNames = {"FillBorders", "FillMargins"}})
+
+        Add(New PluginPackage With {
+            .Name = "DeRainbow",
+            .Filename = "DeRainbow.avsi",
+            .Location = "Plugins\AVS\Scripts",
+            .Description = "A simple script to reduce rainbows.",
+            .WebURL = "http://forum.doom9.org/showthread.php?p=398106#post398106",
+            .HelpURL = "http://avisynth.nl/index.php/DeRainbow",
+            .AvsFilterNames = {"DeRainbow", "DeRainbowYUY2"}})
+
+        Add(New PluginPackage With {
+            .Name = "DotKill",
+            .Filename = "DotKill.dll",
+            .Description = "A spatio-temporal dotcrawl and rainbow remover for AviSynth/AviSynth+. This is a port of the VapourSynth plugin DotKill.",
+            .WebURL = "https://github.com/Asd-g/AviSynth-DotKill",
+            .HelpURL = "http://avisynth.nl/index.php/DotKill",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-DotKill/releases",
+            .AvsFilterNames = {"DotKillS", "DotKillZ", "DotKillT"}})
+
+        Add(New PluginPackage With {
+            .Name = "DotKill",
+            .Filename = "DotKill.dll",
+            .Description = "A spatio-temporal dotcrawl and rainbow remover for VapourSynth.",
+            .WebURL = "https://github.com/myrsloik/DotKill",
+            .VsFilterNames = {"dotkill.DotKillS", "dotkill.DotKillZ", "dotkill.DotKillT"}})
+
+        Add(New PluginPackage With {
+            .Name = "vsCnr2",
+            .Filename = "vsCnr2.dll",
+            .Description = "vsCnr2 is a temporal denoiser designed to denoise only the chroma, suited for stationary rainbows or noisy analog captures. This is a port of the VapourSynth plugin Cnr2.",
+            .WebURL = "https://github.com/Asd-g/AviSynth-vsCnr2",
+            .HelpURL = "http://avisynth.nl/index.php/VsCnr2",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-vsCnr2/releases",
+            .AvsFilterNames = {"vsCnr2"}})
+
+        Add(New PluginPackage With {
+            .Name = "TimecodeFPS",
+            .Filename = "TimecodeFPS.dll",
+            .Description = "An AviSynth plugin to convert VFR(variable frame rate) to CFR(constant frame rate) using MKV timecodes. This filter works only with FFmpegSource2 plugin filters, that is, FFMS2 and FFVideoSource source filters.",
+            .WebURL = "https://github.com/Asd-g/TimecodeFPS",
+            .HelpURL = "http://avisynth.nl/index.php/TimecodeFPS",
+            .DownloadURL = "https://github.com/Asd-g/TimecodeFPS/releases",
+            .AvsFilterNames = {"TimecodeFPS"}})
+
+        Add(New PluginPackage With {
+            .Name = "VfrToCfr",
+            .Filename = "vfrtocfr.dll",
+            .Description = "This plugin converts variable frame rate clips to constant frame rate by inserting null frames (exact copies of previous frames). This filter works only with FFmpegSource2 plugin filters, that is, FFMS2 and FFVideoSource source filters.",
+            .WebURL = "https://github.com/jojje/VfrToCfr-the-other-one",
+            .HelpURL = "http://avisynth.nl/index.php/VfrToCfr",
+            .DownloadURL = "https://github.com/jojje/VfrToCfr-the-other-one/releases",
+            .AvsFilterNames = {"VfrToCfr"}})
+
+        Add(New PluginPackage With {
+            .Name = "GRunT",
+            .Filename = "grunt.dll",
+            .Description = "Gavino's Run-Time for AviSynth.",
+            .WebURL = "https://github.com/pinterf/GRunT",
+            .HelpURL = "http://avisynth.nl/index.php/GRunT",
+            .DownloadURL = "https://github.com/pinterf/GRunT/releases",
+            .AvsFilterNames = {"GScriptClip", "GFrameEvaluate", "GConditionalFilter", "GWriteFile", "GWriteFileIf"}})
+
+        Add(New PluginPackage With {
+            .Name = "Srestore",
+            .Filename = "Srestore.avsi",
+            .Description = "An AviSynth field-blending/frame-blending removal script function that uses conditional frame evaluation for the output calculation.",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1944371#post1944371",
+            .HelpURL = "http://avisynth.nl/index.php/Srestore",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/Srestore.avsi",
+            .AvsFilterNames = {"Srestore"}})
+
+        Add(New PluginPackage With {
+            .Name = "ReduceFlicker",
+            .Filename = "ReduceFlicker.dll",
+            .Description = "A AviSynth 2.6/AviSynth+ plugin to reduce temporal oscillations.",
+            .WebURL = "https://github.com/Asd-g/ReduceFlicker",
+            .HelpURL = "http://avisynth.nl/index.php/ReduceFlicker",
+            .HelpFilename = "readme.md",
+            .DownloadURL = "https://github.com/Asd-g/ReduceFlicker/releases",
+            .AvsFilterNames = {"ReduceFlicker"}})
+
+        Add(New PluginPackage With {
+            .Name = "VFRToCFR",
+            .Filename = "VFRToCFRVapoursynth.dll",
+            .Description = "Converts Variable Frame Rate (VFR) video to a Constant Frame Rate (CFR) video through the use of Matroska Version 2 Timecodes. Ported from the Avisynth plugin written by Nicholai Main.",
+            .WebURL = "https://github.com/Irrational-Encoding-Wizardry/Vapoursynth-VFRToCFR",
+            .VsFilterNames = {"vfrtocfr.VFRToCFR"}})
+
+        Add(New PluginPackage With {
+            .Name = "Bifrost",
+            .Filename = "Bifrost.dll",
+            .Description = "A temporal derainbowing filter created by Fredrik Mellbin. The original Avisynth plugin (version 1.1) worked on the whole frame or not at all. This version works on blocks, meaning that static parts of the image can be processed even if something moves on screen.",
+            .WebURL = "https://github.com/Asd-g/AviSynth-bifrost",
+            .HelpURL = "http://avisynth.nl/index.php/Bifrost",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-bifrost/releases",
+            .AvsFilterNames = {"Bifrost"}})
+
+        Add(New PluginPackage With {
+            .Name = "Bifrost",
+            .Filename = "libbifrost.dll",
+            .Description = "This is a VapourSynth port of Bifrost, a temporal derainbowing filter created by Fredrik Mellbin. The original Avisynth plugin (version 1.1) worked on the whole frame or not at all. This version works on blocks, meaning that static parts of the image can be processed even if something moves on screen. This VapourSynth plugin will accept any 8 bit YUV formats.",
+            .WebURL = "https://github.com/dubhater/vapoursynth-bifrost",
+            .VsFilterNames = {"bifrost.Bifrost"}})
+
+        Add(New PluginPackage With {
+            .Name = "ChubbyRain2",
+            .Filename = "ChubbyRain2.avsi",
+            .Location = "Plugins\AVS\Scripts",
+            .Description = "A spatio-temporal rainbow reducing script composed by Lothar based on Mug Funky's ChubbyRain. Included is a mod version by Asd-g and JKyle.",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1945063#post1945063",
+            .HelpURL = "http://avisynth.nl/index.php/ChubbyRain2",
+            .AvsFilterNames = {"ChubbyRain2"}})
+
+        Add(New PluginPackage With {
+            .Name = "DeFlicker",
+            .Filename = "Deflicker.dll",
+            .Description = "DeFlicker plugin can remove old film intensity flicker by temporal mean luma smoothing. Also it can correct blinding of automatic gain control after flashes. The luma stabilizing not only improves visual impression, but can help to following noise reduction.",
+            .WebURL = "https://github.com/pinterf/Deflicker",
+            .HelpURL = "http://avisynth.nl/index.php/DeFlicker",
+            .DownloadURL = "https://github.com/pinterf/Deflicker/releases",
+            .AvsFilterNames = {"Deflicker"}})
 
         Add(New Package With {
             .Name = "DirectX 9",

@@ -3,7 +3,14 @@
 Automatic = # can be configured at: Tools > Settings > Source Filters
 AVISource = clip = core.avisource.AVISource(r"%source_file%")
 d2vsource = clip = core.d2v.Source(r"%source_file%")
-ffms2 = clip = core.ffms2.Source(r"%source_file%", cachefile=r"%source_temp_file%.ffindex")
+
+ffms2 =
+    tcFile = r"%temp_file%_timestamps.txt" # timestamps file path
+    # Test if the timestamps file is already extracted by mkvextract according to
+    # "Options > Misc" setting for VFR MKV
+    tcArg = tcFile if os.path.exists(tcFile) else r"%temp_file%_timecodes_ff.txt"
+    clip = core.ffms2.Source(r"%source_file%", cachefile=r"%source_temp_file%.ffindex", timecodes=tcArg)
+
 LibavSMASHSource = clip = core.lsmas.LibavSMASHSource(r"%source_file%")
 LWLibavSource = clip = core.lsmas.LWLibavSource(r"%source_file%", cachefile=r"%source_temp_file%.lwi")
 Manual = # shows filter selection dialog
@@ -38,29 +45,31 @@ Grayscale | Grayscale = clip = mvsfunc.GrayScale(clip)
 Crop = clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)
 
 [Field]
-Bwdif = clip = core.bwdif.Bwdif(clip, field=0)
-eedi = $select:eedi2|clip = core.eedi2.EEDI2;eedi3|clip = core.eedi3m.EEDI3$(clip,$select:msg:Select Field;Bottom Field|0;Top Field|1;Alternate Each Frame Bottom Field|2;Alternate Each Frame Top Field|3$)
+Deinterlace | Bwdif = clip = core.bwdif.Bwdif(clip, field=$select:msg:Select Mode;Same rate, keep Bottom field|0;Same rate, keep Top field|1;Double rate, starts with Bottom|2;Double rate, starts with Top|3$)
+Deinterlace | eedi = $select:eedi2|clip = core.eedi2.EEDI2;eedi3|clip = core.eedi3m.EEDI3$(clip,$select:msg:Select Field;Bottom Field|0;Top Field|1;Alternate Each Frame Bottom Field|2;Alternate Each Frame Top Field|3$)
+Deinterlace | nnedi3 = $select:znedi3|clip = core.znedi3.nnedi3;nnedi3cl|clip = core.nnedi3cl.NNEDI3CL;nnedi3|clip = core.nnedi3.nnedi3$(clip, field=$select:msg:Select Field Option;Same Rate Bottom Field|0;Same Rate Top Field|1;Double Rate Alternates Bottom Field|2;Double Rate Alternates Top Field|3$)
+
+Deinterlace | QTGMC | QTGMC =
+    clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF
+    clip = havsfunc.QTGMC(clip, TFF=True, Preset='$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$', InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2)
+
+Deinterlace | QTGMC | QTGMC with Repair =
+    clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF
+    QTGMC1 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=2)
+    QTGMC2 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=3)
+    clip = core.rgvs.Repair(QTGMC1, QTGMC2, mode=1)
+
+Deinterlace | W3FDIF = clip = core.w3fdif.W3FDIF(clip,$select:msg:Select Order Option;BFF|0;TFF|1$,$select:msg:Select Interlacing Filter Coefficients;Simple|0;Complex|1$)
+Deinterlace | Yadifmod = clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field=0), order=1, field=-1, mode=0)
 Field Base = $select:Frame Based|clip = core.std.SetFieldBased(clip, 0);Bottom Field First|clip = core.std.SetFieldBased(clip, 1);Top Field First|clip = core.std.SetFieldBased(clip, 2)$
 
 IVTC =
     clip = core.vivtc.VFM(clip, 1)
     clip = core.vivtc.VDecimate(clip)
 
-nnedi3 = $select:znedi3|clip = core.znedi3.nnedi3;nnedi3cl|clip = core.nnedi3cl.NNEDI3CL;nnedi3|clip = core.nnedi3.nnedi3$(clip, field=$select:msg:Select Field Option;Same Rate Bottom Field|0;Same Rate Top Field|1;Double Rate Alternates Bottom Field|2;Double Rate Alternates Top Field|3$)
-
-QTGMC | QTGMC =
-    clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF
-    clip = havsfunc.QTGMC(clip, TFF=True, Preset='$select:msg:Select a preset.;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$', InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, SourceMatch=3, Sharpness=0.2)
-
-QTGMC | QTGMC with Repair =
-    clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF
-    QTGMC1 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=2)
-    QTGMC2 = havsfunc.QTGMC(clip, TFF=True, Preset='Slower', InputType=3)
-    clip = core.rgvs.Repair(QTGMC1,QTGMC2, mode=1)
-
-Select = $select:Even|clip = clip[::2];Odd|clip = clip[1::2]$
-W3FDIF = clip = core.w3fdif.W3FDIF(clip,$select:msg:Select Order Option;BFF|0;TFF|1$,$select:msg:Select Interlacing Filter Coefficients;Simple|0;Complex|1$)
-Yadifmod = clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field=0), order=1, field=-1, mode=0)
+Select Every Other = $select:Even|clip = clip[::2];Odd|clip = clip[1::2]$
+SeparateFields = clip = core.std.SeparateFields(clip)
+Weave = clip = havsfunc.Weave(clip, tff=True)
 
 [Frame Rate]
 AssumeFPS | AssumeFPS = clip = core.std.AssumeFPS(clip, None, $select:msg:Select a frame rate.;24000/1001|24000, 1001;24|24, 1;25|25, 1;30000/1001|30000, 1001;30|30, 1;50|50, 1;60000/1001|60000, 1001;60|60, 1$)
@@ -92,6 +101,12 @@ SVPFlow | MV =
     fvec = core.mv.Analyse(sup, blksize=16, isb=False, chroma=True, search=3, searchparam=1)
     $select:msg:Select FPS Filter to Use;FlowFPS|clip = core.mv.FlowFPS(clip, sup, bvec, fvec, mask=2;BlockFPS|clip = core.mv.BlockFPS(clip, sup, bvec, fvec, mode=3, thscd2=12$, num=$enter_text:Enter The Num Value$, den=$enter_text:Enter The Den Value$)
 
+VFR to CFR | VFRToCFR =
+    try:
+        clip = core.vfrtocfr.VFRToCFR(clip, timecodes=tcArg, fpsnum=$enter_text:Numerator of the target FPS (in integer)?$, fpsden=$enter_text:Denominator of the target FPS (in integer)?$)
+    except:
+        raise vs.Error("Use ffms2 source filter for VFRToCFR filter!")
+
 [Line]
 
 Anti-Aliasing | DAA = clip = havsfunc.daa(clip)
@@ -120,9 +135,23 @@ Anamorphic to Standard =
     clip = core.fmtc.transfer (clip, transs='1886', transd='srgb')
     clip = core.fmtc.bitdepth (clip, bits=8)
 
+Borders | AddBorders = clip = core.std.AddBorders(clip, left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$)
+Borders | FillBorders = clip = core.fb.FillBorders(clip, left=$enter_text:Number of Left Pixels$, top=$enter_text:Number of Top Pixels$, right=$enter_text:Number of Right Pixels$, bottom=$enter_text:Number of Bottom Pixels$, mode="$select:msg:Select Mode;repeat (Default)|repeat;mirror|mirror;fillmargins|fillmargins$", interlaced=0)
+
+Borders | Letterbox =
+    lb_l, lb_r, lb_t, lb_b = $enter_text:Number of Left Pixels$, $enter_text:Number of Right Pixels$, $enter_text:Number of Top Pixels$, $enter_text:Number of Bottom Pixels$
+    clip = core.std.Crop(clip, left=lb_l, right=lb_r, top=lb_t, bottom=lb_b)
+    clip = core.std.AddBorders(clip, left=lb_l, right=lb_r, top=lb_t, bottom=lb_b)
+
 Cube = clip = core.timecube.Cube(clip, cube=r"$browse_file$")
-f3kdb Neo = clip = core.neo_f3kdb.Deband(clip, y=64, cb=64, cr=64, grainy=0, grainc=0)
 Histogram = clip = muvsfunc.DisplayHistogram(clip)
+
+SelectEvery =
+    # SelectEvery(clip, cycle=, offsets=)
+    # offsets is a single number, or a list of numbers, representing selected frames.
+    # numbers in offsets should be a non-negative integer smaller than cycle.
+    # Modify the following example:
+    clip = core.std.SelectEvery(clip, cycle=5, offsets=[1, 2, 3, 4]) # only first frame in every cycle of 5 is removed.
 
 UnSpec =
     clip = core.resize.Point(clip, matrix_in_s='unspec',range_s='limited')
@@ -130,14 +159,14 @@ UnSpec =
     clip = core.std.SetFrameProp(clip=clip, prop='_ColorRange', intval=1)
 
 [Noise]
-
+AddGrain = clip = core.grain.Add(clip, var=1.0, uvar=0.0, hcorr=0.0, vcorr=0.0, seed=-1, constant=False, opt=0)
 BM3D = clip = mvsfunc.BM3D(clip, sigma=[3,3,3], radius1=0)
 DegrainMedian = clip = core.dgm.DegrainMedian(clip=clip, interlaced=False)
 DFTTest = $select:msg:Select Strength;Light|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3,opt=3);Moderate|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5,opt=3);Strong|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1,opt=3)$
 DFTTest Neo = clip = core.neo_dfttest.DFTTest(clip, ftype=0, sigma=2.0, planes=[0,1,2])
 FFT3D Neo = clip = core.neo_fft3d.FFT3D(clip, sigma=2.0, bt=3, planes=[0,1,2])
 HQDN3D = clip = core.hqdn3d.Hqdn3d(clip=clip)
-KNLMeansCL = clip = core.knlm.KNLMeansCL(clip, d=1, a=1, h=$select:msg:Select Strength;Light|2;Medium|4;Strong|4$, device_type='auto')
+KNLMeansCL = clip = core.knlm.KNLMeansCL(clip, d=1, a=1, h=$select:msg:Select Strength;Light|2;Medium|4;Strong|8$, device_type='auto')
 mClean = clip = G41Fun.mClean(clip, thSAD=400, chroma=True, sharp=10, rn=14, deband=0, depth=0, strength=20)
 MCTemporalDenoise = clip = havsfunc.MCTemporalDenoise(i=clip, settings='$select:msg:Select Strength;Very Low|very low;Low(Default)|low;Medium|medium;High|high;Very High|very high$')
 MiniDeen = clip = core.neo_minideen.MiniDeen(clip, radius=[1,1,1], threshold=[10,12,12], planes=[0,1,2])
@@ -148,6 +177,7 @@ RemoveGrain | RemoveGrain | RemoveGrain with Repair =
     clip = core.rgvs.Repair(clip,Processed, mode=2)
 
 RemoveGrain | SMDegrain = clip = havsfunc.SMDegrain(clip, contrasharp=True)
+TemporalDegrain2 = clip = G41Fun.TemporalDegrain2(clip, degrainTR=2, postFFT=3, postSigma=3)
 TTempSmooth = clip =  core.ttmpsm.TTempSmooth(clip)
 VagueDenoiser = clip = core.vd.VagueDenoiser(clip=clip, method=$select:msg:Select Strength;Soft|1;Hard|0$)
 
@@ -156,11 +186,27 @@ ReSampleHQ = clip = resamplehq.resamplehq(clip, %target_width%, %target_height%,
 Resize... = clip = $select:Bilinear|core.resize.Bilinear;Bicubic|core.resize.Bicubic;Point|core.resize.Point;Lanczos|core.resize.Lanczos;Spline16|core.resize.Spline16;Spline36|core.resize.Spline36;Spline64|core.resize.Spline64;Dither_Resize16|Dither.Resize16nr;Resample|core.fmtc.resample$(clip, %target_width%, %target_height%)
 
 [Restoration]
+Chroma Fix | Bifrost = clip = core.bifrost.Bifrost(clip, luma_thresh=10.0, variation=5, interlaced=$select:msg:Is the input video Interlaced?;Yes (Default)|True;No|False$, blockx=4, blocky=4)
+Chroma Fix | CNR2 = clip = core.cnr2.Cnr2(clip, mode="oxx", scdthr=10.0, ln=35, lm=192, un=47, um=255, vn=47, vm=255, scenechroma=False)
+Chroma Fix | DeRainbow = clip = havsfunc.LUTDeRainbow(clip, cthresh=10, ythresh=10, y=True, linkUV=True, mask=False)
+Chroma Fix | DotKill | DotKillS = clip = core.dotkill.DotKillS(clip, iterations=1)
+
+Chroma Fix | DotKill | DotKillZ =
+    # 3:2 pulldown NTSC source, spatial
+    clip = core.dotkill.DotKillZ(clip, order=0, offset=0)
+
+Chroma Fix | DotKill | DotKillT =
+    # 3:2 pulldown NTSC source, spatio-temporal
+    clip = core.dotkill.DotKillT(clip, order=0, offset=0, dupthresh=64, tratio=3)
+
+DeBand | Legacy = $select:GradFun3|clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1);f3kdb|clip = core.f3kdb.Deband(clip)$
+DeBand | f3kdb Neo = clip = core.neo_f3kdb.Deband(clip, y=64, cb=64, cr=64, grainy=0, grainc=0)
 DeBlock | Auto-Deblock = clip = fvsfunc.AutoDeblock(clip)
 DeBlock | DeBlock = clip = core.deblock.Deblock(clip, quant=25, aoffset=0, boffset=0)
 DeBlock | DeBlock PP7 = $select:msg:Select Strength;Medium|clip = core.pp7.DeblockPP7(clip=clip, mode=2);Hard|clip = core.pp7.DeblockPP7(clip=clip);Soft|clip = core.pp7.DeblockPP7(clip=clip, mode=1)$
 DeBlock | Deblock_QED = clip = havsfunc.Deblock_QED(clip)
 DeBlock | MSmooth = clip = core.msmoosh.MSmooth(clip, threshold=3.0, strength=1)
+DeComb | Vinverse = $select:Vinverse|clip = havsfunc.Vinverse(clip);Vinverse2|clip = havsfunc.Vinverse2(clip)$
 DeHalo | BlindDeHalo3 = clip = muvsfunc.BlindDeHalo3(clip, interlaced=False)
 DeHalo | DeHaloAlpha = clip = havsfunc.DeHalo_alpha(clip)
 DeHalo | EdgeCleaner = clip = havsfunc.EdgeCleaner(clip)
@@ -168,15 +214,11 @@ DeHalo | FineDehalo = clip = havsfunc.FineDehalo(clip)
 DeHalo | HQDering = clip = havsfunc.HQDeringmod(clip, nrmode=2, darkthr=3.0)
 DeHalo | MDeRing = clip = muvsfunc.mdering(clip)
 DeHalo | YAHR = $select:YAHR|clip = havsfunc.YAHR(clip);YAHRmod|clip = muvsfunc.YAHRmod(clip)$
-RCR | CNR2 = clip = core.cnr2.Cnr2(clip)
-RCR | ColorBanding = $select:GradFun3|clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1);f3kdb|clip = core.f3kdb.Deband(clip)$
 
-RCR | Fix Telecined Fades =
+Fix Telecined Fades =
     clip = core.fmtc.bitdepth (clip, bits=32)
     clip = core.ftf.FixFades(clip)
     clip = core.fmtc.bitdepth (clip, bits=8)
-
-RCR | Vinverse = $select:Vinverse|clip = havsfunc.Vinverse(clip);Vinverse2|clip = havsfunc.Vinverse2(clip)$
 
 [Rotation]
 

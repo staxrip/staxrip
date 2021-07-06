@@ -18,14 +18,41 @@ not published yet
     AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), GRunT(AVS plugin), Letterbox(AVS/VS), Bwdif(AVS), DeRainbow(AVS), DotKill(AVS/VS), FillBorders(AVS/VS), ReduceFlicker(AVS), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
     - Updated filter profiles:  
     AddBorders(VS), AddGrainC(AVS), Bwdif(VS), DeRainbow(VS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
-    - Updated filter files:  
-    Bwdif(VS), FFT3DFilter(AVS), flash3kyuu_deband(Dual), f3kdb Neo(Dual), RgTools(AVS), TemporalDegrain2(AVS), VSFilterMod(Dual), Zs_RF_Shared(AVS)
-- flash3kyuu_deband v2.0.0-1 (Avisynth+ plugins pack r14)
-- Neo F3KDB r7 (Avisynth+ plugins pack r58)
+- AddGrain r8
+- AvsResize r6 StvG
+- Bifrost v2.1.0 (AVS) / v2.2 (VS)
+- Bwdif v1.2.1 (AVS) / r3 (VS)
+- CASm 2021-05-19
+- ChubbyRain2 mod 2021-06-14
+- DeFlicker v0.6
+- DeRainbow 2014-02-23
+- DotKill v1.0.0 (AVS) / R2 (VS)
 - FFT3DFilter v2.9
-- MKVToolNix v57.0
-- NVEnc v5.33
-- QSVEnc v5.04
+- FillBorders v1.3.0 (AVS) / v2 (VS)
+- flash3kyuu_deband v2.0.0-1 (Avisynth+ plugins pack r14)
+- GRunT v1.0.2
+- MvTools2 v2.7.45
+- Neo F3KDB r7 (Avisynth+ plugins pack r58)
+- QTGMC v3.382s
+- ReduceFlicker v0.1.1
+- RgTools v1.2
+- Srestore v2.797
+- TEMmod v0.2.2
+- TemporalDegrain2 v2.3.1
+- TimecodeFPS v1.1.1
+- VfrToCfr v1.1.1
+- vsCnr2 v1.0.0
+- VSFilterMod v5.2.5
+- Zs_RF_Shared v1.153
+- AOMEnc v3.1.0-297-gf19edfa95-x64-gcc10.3.0 Patman
+- chapterEditor v1.29
+- MKVToolNix v58.0
+- MP4Box v1.1.0-DEV-rev964-g35c58ce38-x64-gcc10.3.0 Patman
+- mpv.net v5.4.9.0
+- NVEnc v5.34
+- QSVEnc v5.05
+- Rav1e v0.5.0-alpha-(p20210601-1-g1c8ad5b1)-x64-gcc10.3.0 Patman
+- SVT-AV1 v0.8.7-15-gf6db3119-x64-gcc10.3.0 Patman
 
 
 v2.6.0 (2021-05-22)

@@ -28,18 +28,17 @@ ColorSpace | Respec =
     clip = core.fmtc.bitdepth (clip, bits=8, fulls=$select:msg:Select Input Range;Limited|False;Full|True$, fulld=$select:msg:Select Output Range;Limited|False;Full|True$)
 
 ColorSpace | Transfer = clip = core.fmtc.transfer(clip, transs='$select:msg:Select Input;Linear;470m;470bg;240m;SRGB;709;2020;2084$', transd='$select:msg:Select Output;Linear;470m;470bg;240m;SRGB;709;2020;2084$')
+ColorYUV | Tweak = $select:Neutral|clip = adjust.Tweak(clip, hue=0, sat=1, bright=0, cont=1);Desaturate|clip = adjust.Tweak(clip, hue=0, sat=0, bright=0, cont=1);Brighter|clip = adjust.Tweak(clip, hue=0, sat=1, bright=20, cont=1.04);Less Contrast|clip = adjust.Tweak(clip, hue=0, sat=0.95, bright=8, cont=0.9);Vivid|clip = adjust.Tweak(clip, hue=0, sat=1.15, bright=2, cont=1.08);$
+ColorYUV | Grayscale = clip = mvsfunc.GrayScale(clip)
 Convert | BitDepth (fmtc) = clip = core.fmtc.bitdepth(clip, bits=$select:msg:Select BitDepth;8;10;12;16;32$)
 Convert | Convert To = clip = core.resize.Bicubic(clip, format=vs.$select:COMPATBGR32;COMPATYUY2;GRAY16;GRAY8;GRAYH;GRAYS;RGB24;RGB27;RGB30;RGB48;RGBH;RGBS;YUV410P8;YUV411P8;YUV420P8;YUV420P9;YUV420P10;YUV420P12;YUV420P14;YUV420P16;YUV422P8;YUV422P9;YUV422P10;YUV422P12;YUV422P14;YUV422P16;YUV440P8;YUV444P8;YUV444P9;YUV444P10;YUV444P12;YUV444P14;YUV444P16;YUV444PH;YUV444PS$)
 Convert | Format = clip = core.avs.z_ConvertFormat(clip, pixel_type='$enter_text:Enter the Format You Wish to Convert to$', colorspace_op='$select:msg:Select Input Color Matrix;rgb;709;unspec;fcc;470bg;170m;240;ycgco;2020ncl;2020cl;chromancl;chromacl;ictcp$:$select:msg:Select Input Color Transfer;709;unspec;470m;470bg;601;240m;linear;log100;log316;xvycc;srgb;2020_10;2020_12;st2084;std-b67$:$select:msg:Select Input Color Primaries;709;unspec;470m;470bg;170m;240m;film;2020;st428;st431-2;st432-1;jedec-p22$:$select:msg:Select Pixel Range;limited;l;full;f$=>$select:msg:Select Output Color Matrix;rgb;709;unspec;fcc;470bg;170m;240;ycgco;2020ncl;2020cl;chromancl;chromacl;ictcp$:$select:msg:Select Output Color Transfer;709;unspec;470m;470bg;601;240m;linear;log100;log316;xvycc;srgb;2020_10;2020_12;st2084;std-b67$:$select:msg:Select Output Color Primaries;709;unspec;470m;470bg;170m;240m;film;2020;st428;st431-2;st432-1;jedec-p22$:$select:msg:Select Pixel Range;limited;l;full;f$', dither_type='$select:msg:Select Dither Type;none;ordered;random;error_diffusion$')
 Convert | To 444 = clip = core.fmtc.resample(clip, css='444')
-Convert | Tweak = clip = adjust.Tweak(clip, sat=0.75, hue=115-138)
 Dither | Gamma / Linear = clip = $select:Gamma To Linear|Dither.gamma_to_linear;Linear To Gamma|Dither.linear_to_gamma$(clip, curve='$select:msg:Select the Color Curve;601;709;2020$')
 Dither | Sigmoid = $select:Sigmoid Inverse|clip = havsfunc.SigmoidInverse(clip);Sigmoid Direct|clip = havsfunc.SigmoidDirect(clip)$
 Dither | SmoothGrad = clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1)
 Dither | Stack = $select:Native to Stack16|clip = core.fmtc.nativetostack16(clip);Stack16 to Native|clip = fmtc.stack16tonative(clip)$
 Dither | To RGB / YUV = clip = $select:To RGB|mvsfunc.ToRGB;To YUV|mvsfunc.ToYUV$(clip,matrix='$select:msg:Select Matrix;470bg;240;709;2020;2020cl;bt2020c$')
-Grayscale | Desaturate = clip = adjust.Tweak(clip, sat=0)
-Grayscale | Grayscale = clip = mvsfunc.GrayScale(clip)
 
 [Crop]
 Crop = clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)

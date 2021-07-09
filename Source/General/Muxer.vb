@@ -358,11 +358,11 @@ Public Class MP4Muxer
         For Each st In Subtitles
             If st.Enabled AndAlso File.Exists(st.Path) Then
                 If st.Path.Ext = "idx" Then
-                    args.Append(" -add """ + st.Path + "#" & st.IndexIDX + 1 &
-                                ":name=" + Macro.Expand(st.Title) & """")
+                    args.Append(" -add """ + st.Path + "#" & (st.IndexIDX + 1) &
+                                ":name=" + Macro.Expand(st.Title) + If(st.Forced ,":txtflags=0xC0000000", "") + """")
                 Else
                     args.Append(" -add """ + st.Path + ":lang=" + st.Language.ThreeLetterCode +
-                                ":name=" + Macro.Expand(st.Title) + """")
+                                ":name=" + Macro.Expand(st.Title) + If(st.Forced ,":txtflags=0xC0000000", "") + """")
                 End If
             End If
         Next

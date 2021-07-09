@@ -9,7 +9,8 @@ not published yet
 - Fix crash when copy error message for some exception (Dendraspis)
 - Update SVT-AV1 parameters (Dendraspis, [#731](/../../issues/731))
 - Add option to extract timestamps from all mkv files (Dendraspis)
-- Add setting to prefer Windows Terminal over Powershell when installed (Dendraspis)
+- Add setting to prefer Windows Terminal over Powershell when present (Dendraspis)
+- Fix *Forced* subtitle setting for MP4Box (Dendraspis, [#737](/../../issues/737))
 - Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)
 - Add AVS SeparateFields filter (44vince44)
 - Update RgTools URLs, description, and filter list (JKyle, [#720](/../../issues/720))
@@ -32,7 +33,7 @@ not published yet
 - flash3kyuu_deband v2.0.0-1 (Avisynth+ plugins pack r14)
 - GRunT v1.0.2
 - MvTools2 v2.7.45
-- Neo F3KDB r7 (Avisynth+ plugins pack r58)
+- Neo F3KDB r7
 - QTGMC v3.382s
 - ReduceFlicker v0.1.1
 - RgTools v1.2

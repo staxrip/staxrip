@@ -10,7 +10,7 @@ not published yet
 - Fix crash using "Create job for each selection" (Dendraspis, [#727](/../../issues/727))
 - Fix crash when copy error message for some exception (Dendraspis)
 - Update SVT-AV1 parameters (Dendraspis, [#731](/../../issues/731))
-- Add option to extract  timestamps from all mkv files (Dendraspis)
+- Add option to extract timestamps from all mkv files (Dendraspis)
 - Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)
 - Add AVS SeparateFields filter (44vince44)
 - Update RgTools URLs, description, and filter list (JKyle, [#720](/../../issues/720))

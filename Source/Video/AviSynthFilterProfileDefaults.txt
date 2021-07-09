@@ -28,9 +28,10 @@ MPEG2Source = MPEG2Source("%source_file%")
 [Color]
 ColorYUV | AutoAdjust = AutoAdjust(gamma_limit=1.0, scd_threshold=16, gain_mode=1, auto_gain=$select:msg:Enable Auto Gain?;true;false$, auto_balance=$select:msg:Enable Auto Balance?;true;false$, Input_tv=$select:msg:Is the Input using TV Range?;true;false$, output_tv=$select:msg:Do you want to use TV Range for Output?;true;false$, use_dither=$select:msg:Use Dither?;true;false$, high_quality=$select:msg:Use High Quality Mode?;true;false$, high_bitdepth=$select:msg:Use High Bit Depth Mode?;true;false$, threads_count=$enter_text:How Many Threads do you wish to use?$)
 ColorYUV | AutoGain = ColorYUV(autogain=$select:msg:Enable AutoGain?;true;false$, autowhite=$select:msg:Enable AutoWhite?;true;false$)
+ColorYUV | Grayscale = Grayscale()
 ColorYUV | Levels = $select:TV to PC|ColorYUV(levels="TV->PC");PC to TV|ColorYUV(levels="PC->TV")$
 ColorYUV | Stack = $select:To Stack|ConvertToStacked();From Stacked|ConvertFromStacked()$
-ColorYUV | Tweak = $select:Neutral|Tweak(hue=0, sat=1, bright=0, cont=1, coring=false, realcalc=true);Brighter|Tweak(hue=0, sat=1, bright=25, cont=1, coring=false, realcalc=true);Less Contrast|Tweak(hue=0, sat=0.95, bright=8, cont=0.9, coring=false, realcalc=true);Vivid|Tweak(hue=0, sat=1.15, bright=2, cont=1.08, coring=false, realcalc=true);Less color|Tweak(hue=0, sat=0.82, bright=0, cont=0.96, coring=false, realcalc=true);Selective Blue|Tweak(sat=2, startHue=300, endHue=50, coring=false, realcalc=true);Selective Yellow Red|Tweak(sat=2, startHue=50, endHue=200, coring=false, realcalc=true)$
+ColorYUV | Tweak = Tweak($select:Neutral|hue=0, sat=1, bright=0, cont=1, coring=false, realcalc=true;Brighter|hue=0, sat=1, bright=25, cont=1, coring=false, realcalc=true;Less Contrast|hue=0, sat=0.95, bright=8, cont=0.9, coring=false, realcalc=true;Vivid|hue=0, sat=1.15, bright=2, cont=1.08, coring=false, realcalc=true;Less color|hue=0, sat=0.82, bright=0, cont=0.96, coring=false, realcalc=true;Selective Blue|sat=2, startHue=300, endHue=50, coring=false, realcalc=true;Selective Yellow Red|sat=2, startHue=50, endHue=200, coring=false, realcalc=true;Desaturate|sat=0$)
 Convert | ConvertBits = ConvertBits($select:msg:Select the Bit Depth you want to convert to;8;10;12;14;16;32$)
 Convert | ConvertFromDoubleWidth = ConvertFromDoubleWidth(bits=$select:msg:Select the Bit Depth;8;10;12;14;16;32$)
 Convert | ConvertTo = ConvertTo$enter_text:Enter the Format you wish to convert to$()
@@ -41,8 +42,6 @@ Dither | DitherPost = DitherPost()
 Dither | Gamma / Linear = $select:Gamma to Linear|Dither_y_gamma_to_linear;Linear to Gamma|Dither_y_linear_to_gamma$(curve="$select:msg:Select the Color Curve;601;709;2020$")
 Dither | Sigmoid = $select:Sigmoid Direct|Dither_sigmoid_direct();Sigmoid Inverse|Dither_sigmoid_inverse()$
 Dither | YUV / RGB = $select:RGB to YUV|Dither_convert_rgb_to_yuv();YUV to RGB|Dither_convert_yuv_to_rgb()$
-Grayscale | Desaturate = Tweak(sat=0)
-Grayscale | Grayscale = Grayscale()
 HDRCore | Cube = Cube("$browse_file$")
 
 [Crop]

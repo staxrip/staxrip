@@ -787,19 +787,21 @@ Public Class mkvDemuxer
             End Using
         End If
 
-        If p.ExtractTimestamps AndAlso MediaInfo.GetVideo(proj.SourceFile, "FrameRate_Mode") = "VFR" Then
-            Dim streamOrder = MediaInfo.GetVideo(proj.SourceFile, "StreamOrder").ToInt
+        If p.ExtractTimestamps Then
+            If Not p.ExtractTimestampsVfrOnly OrElse MediaInfo.GetVideo(proj.SourceFile, "FrameRate_Mode") = "VFR" Then
+                Dim streamOrder = MediaInfo.GetVideo(proj.SourceFile, "StreamOrder").ToInt
 
-            Using proc As New Proc
-                proc.Project = proj
-                proc.Header = "Demux timestamps"
-                proc.SkipString = "Progress: "
-                proc.Encoding = Encoding.UTF8
-                proc.Package = Package.mkvextract
-                proc.Arguments = "timestamps_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + (proj.TempDir + proj.SourceFile.Base + "_timestamps.txt").Escape
-                proc.AllowedExitCodes = {0, 1, 2}
-                proc.Start()
-            End Using
+                Using proc As New Proc
+                    proc.Project = proj
+                    proc.Header = "Demux timestamps"
+                    proc.SkipString = "Progress: "
+                    proc.Encoding = Encoding.UTF8
+                    proc.Package = Package.mkvextract
+                    proc.Arguments = "timestamps_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + (proj.TempDir + proj.SourceFile.Base + "_timestamps.txt").Escape
+                    proc.AllowedExitCodes = {0, 1, 2}
+                    proc.Start()
+                End Using
+            End If
         End If
 
         Log.Save(proj)

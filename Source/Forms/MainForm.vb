@@ -1370,8 +1370,8 @@ Public Class MainForm
             End If
 
             For Each iPath In files
-                If track = 1 AndAlso iPath.Base = p.Audio0.File.Base Then Continue For
                 If track = 0 AndAlso iPath.Base = p.Audio1.File.Base Then Continue For
+                If track = 1 AndAlso iPath.Base = p.Audio0.File.Base Then Continue For
                 If tbOther.Text = iPath Then Continue For
                 If Not iPath.Ext = iExt Then Continue For
                 If iPath.Contains("_cut_") Then Continue For
@@ -1607,7 +1607,7 @@ Public Class MainForm
         LoadProject(Folder.Template + name + ".srip")
     End Sub
 
-    <Command("Adds a batch job for multiple files.")>
+    <Command("Adds batch jobs for multiple files.")>
     Sub AddBatchJobs(sourcefiles As String())
         If sourcefiles Is Nothing Then Return
 
@@ -4658,6 +4658,20 @@ Public Class MainForm
 
 
             '   ----------------------------------------------------------------
+            Dim timestampsPage = ui.CreateFlowPage("Timestamps")
+
+            b = ui.AddBool(timestampsPage)
+            b.Text = "Extract timestamps from MKV files (if existing)"
+            b.Checked = p.ExtractTimestamps
+            b.SaveAction = Sub(value) p.ExtractTimestamps = value
+
+            b = ui.AddBool(timestampsPage)
+            b.Text = "    ...only extract timestamps from VFR MKV files"
+            b.Checked = p.ExtractTimestampsVfrOnly
+            b.SaveAction = Sub(value) p.ExtractTimestampsVfrOnly = value
+
+
+            '   ----------------------------------------------------------------
             ui.CreateFlowPage("Thumbnails", True)
 
             b = ui.AddBool()
@@ -4982,11 +4996,6 @@ Public Class MainForm
             b.Text = "Hide dialogs asking to demux, source filter etc."
             b.Checked = p.NoDialogs
             b.SaveAction = Sub(value) p.NoDialogs = value
-
-            b = ui.AddBool(miscPage)
-            b.Text = "Extract timestamps from VFR MKV files"
-            b.Checked = p.ExtractTimestamps
-            b.SaveAction = Sub(value) p.ExtractTimestamps = value
 
             b = ui.AddBool(miscPage)
             b.Text = "Use source file folder for temp files"

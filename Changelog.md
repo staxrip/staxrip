@@ -1,9 +1,7 @@
 not published yet
 =========================
 
-- [ ] Might break settings from previous version, so starting with new settings is recommended
-- [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
-- [X] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
+- [!!!] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - New Discord Server: [Link](https://discord.gg/uz8pVR79Bd)
 - Add Assistant option to warn if no audio in output (Dendraspis, [#709](/../../issues/709))
 - Fix --vpp-pad param output for NVEnc and VCEEnc (Dendraspis, [#723](/../../issues/723))
@@ -11,6 +9,7 @@ not published yet
 - Fix crash when copy error message for some exception (Dendraspis)
 - Update SVT-AV1 parameters (Dendraspis, [#731](/../../issues/731))
 - Add option to extract timestamps from all mkv files (Dendraspis)
+- Add setting to prefer Windows Terminal over Powershell when installed (Dendraspis)
 - Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)
 - Add AVS SeparateFields filter (44vince44)
 - Update RgTools URLs, description, and filter list (JKyle, [#720](/../../issues/720))
@@ -44,7 +43,7 @@ not published yet
 - VfrToCfr v1.1.1
 - vsCnr2 v1.0.0
 - VSFilterMod v5.2.5
-- Zs_RF_Shared v1.153
+- Zs_RF_Shared v1.154
 - AOMEnc v3.1.0-297-gf19edfa95-x64-gcc10.3.0 Patman
 - chapterEditor v1.29
 - MKVToolNix v58.0

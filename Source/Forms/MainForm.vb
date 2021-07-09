@@ -3644,6 +3644,11 @@ Public Class MainForm
             b.Text = "Minimize processing dialog to tray"
             b.Field = NameOf(s.MinimizeToTray)
 
+            b = ui.AddBool
+            b.Text = "Prefer Windows Terminal over Powershell if present"
+            b.Field = NameOf(s.PreferWindowsTerminal)
+
+
             '############# Video
             Dim videoPage = ui.CreateFlowPage("Video")
 

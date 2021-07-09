@@ -59,6 +59,7 @@ Public Class ApplicationSettings
     Public PackagePaths As Dictionary(Of String, String)
     Public ParallelProcsNum As Integer = 3
     Public ParMenu As String
+    Public PreferWindowsTerminal As Boolean = False
     Public PreventStandby As Boolean = True
     Public PreviewFormBorderStyle As FormBorderStyle
     Public PreviewSize As Integer = 70

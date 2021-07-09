@@ -177,7 +177,7 @@ Namespace VideoEncoderCommandLine
 
             p.Script.Synchronize()
 
-            If g.IsWindowsTerminalAvailable Then
+            If s.PreferWindowsTerminal AndAlso g.IsWindowsTerminalAvailable Then
                 cl = "cmd.exe /S /K --% """ + cl + """"
                 Dim base64 = Convert.ToBase64String(Encoding.Unicode.GetBytes(cl)) 'UTF16LE
                 g.Execute("wt.exe", "powershell.exe -NoLogo -NoExit -NoProfile -EncodedCommand """ + base64 + """")

@@ -97,7 +97,7 @@ Public Class GlobalClass
     Sub RunCodeInTerminal(code As String)
         Dim base64 = Convert.ToBase64String(Encoding.Unicode.GetBytes(code)) 'UTF16LE
 
-        If g.IsWindowsTerminalAvailable Then
+        If s.PreferWindowsTerminal AndAlso g.IsWindowsTerminalAvailable Then
             RunCommandInTerminal("wt.exe", $"powershell.exe -NoLogo -NoExit -NoProfile -EncodedCommand ""{base64}""")
         Else
             RunCommandInTerminal("powershell.exe", $"-NoLogo -NoExit -NoProfile -EncodedCommand ""{base64}""")
@@ -931,7 +931,7 @@ Public Class GlobalClass
     Sub ShowCommandLinePreview(title As String, value As String)
         Environment.SetEnvironmentVariable("CommandLineToShow", BR + value + BR)
 
-        If g.IsWindowsTerminalAvailable Then
+        If s.PreferWindowsTerminal AndAlso g.IsWindowsTerminalAvailable Then
             g.Execute("wt.exe", "powershell.exe -NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
         Else
             g.Execute("powershell.exe", "-NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")

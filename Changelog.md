@@ -20,7 +20,7 @@ not published yet
     - Updated filter profiles:  
     AddBorders(VS), AddGrainC(AVS), Bwdif(VS), DeRainbow(VS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
 - AddGrain r8
-- AvsResize r6 StvG
+- AvsResize r9 StvG
 - Bifrost v2.1.0 (AVS) / v2.2 (VS)
 - Bwdif v1.2.1 (AVS) / r3 (VS)
 - CASm 2021-05-19

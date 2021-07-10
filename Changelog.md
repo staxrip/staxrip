@@ -47,7 +47,7 @@ not published yet
 - Zs_RF_Shared v1.154
 - AOMEnc v3.1.0-297-gf19edfa95-x64-gcc10.3.0 Patman
 - chapterEditor v1.29
-- MKVToolNix v58.0
+- MKVToolNix v59.0
 - MP4Box v1.1.0-DEV-rev964-g35c58ce38-x64-gcc10.3.0 Patman
 - mpv.net v5.4.9.0
 - NVEnc v5.34

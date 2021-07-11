@@ -3068,6 +3068,25 @@ Public Class MainForm
                 End If
             End If
 
+            If TypeOf p.VideoEncoder.Muxer Is MkvMuxer AndAlso Not String.IsNullOrWhiteSpace(p.VideoEncoder.Muxer.TimestampsFile) Then
+                Dim sfc = p.SourceScript.GetFrameCount()
+                Dim tfc = p.Script.GetFrameCount()
+                If sfc <> tfc Then
+                    If ProcessTip("The duration changed and doesn't fit the original timestamps, which can cause unwanted results. You can delete/change the timestamps file selection under Container Options > Options.") Then
+                        Return Warn("Changed Length", lSource1, lTarget1)
+                    End If
+                End If
+
+                Dim sfr = p.SourceScript.GetFramerate()
+                Dim tfr = p.Script.GetFramerate()
+                If sfr <> tfr Then
+                    If ProcessTip("The frame rate changed and could not fit the original timestamps anymore, which can cause unwanted results. You can delete/change the timestamps file selection under Container Options > Options.") Then
+                        Return Warn("Changed Frame Rate", lSource1, lTarget1)
+                    End If
+                End If
+
+            End If
+
             If p.Script.IsAviSynth AndAlso TypeOf p.VideoEncoder Is x264Enc AndAlso
                 Not Package.x264.Version.ToLowerInvariant.ContainsAny("amod", "djatom", "patman") AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV420P8 AndAlso

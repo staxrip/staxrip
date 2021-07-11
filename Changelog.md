@@ -9,6 +9,7 @@ not published yet
 - Fix crash when copy error message for some exception (Dendraspis)
 - Update SVT-AV1 parameters (Dendraspis, [#731](/../../issues/731))
 - Add option to extract timestamps from all mkv files (Dendraspis)
+- Add Assistant condition for MKV file with timestamps and changed frame rate or count (Dendraspis, [#729](/../../issues/729))
 - Add setting to prefer Windows Terminal over Powershell when present (Dendraspis)
 - Fix *Forced* subtitle setting for MP4Box (Dendraspis, [#737](/../../issues/737))
 - Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)

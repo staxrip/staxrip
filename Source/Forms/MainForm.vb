@@ -3656,7 +3656,7 @@ Public Class MainForm
             b.Field = NameOf(s.ShutdownForce)
 
             b = ui.AddBool
-            b.Text = "Prevent system entering standby mode while encoding"
+            b.Text = "Prevent system from entering standby mode while encoding"
             b.Field = NameOf(s.PreventStandby)
 
             b = ui.AddBool

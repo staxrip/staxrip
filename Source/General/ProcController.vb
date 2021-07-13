@@ -23,8 +23,14 @@ Public Class ProcController
 
     Shared Property Procs As New List(Of ProcController)
     Shared Property Aborted As Boolean
-    Shared Property LastActivation As Long
+    Shared Property LastActivation As Integer
     Shared Property BlockActivation As Boolean
+    Shared ReadOnly Property SecondsSinceLastActivation As Integer
+        Get
+            Return (Environment.TickCount - LastActivation) \ 1000
+        End Get
+    End Property
+
 
 
     Sub New(proc As Proc)
@@ -628,10 +634,6 @@ Public Class ProcController
             mainSub.Invoke
         End If
     End Sub
-
-    Shared Function IsLastActivationLessThan(sec As Integer) As Boolean
-        Return (LastActivation + sec * 1000) < Environment.TickCount
-    End Function
 
     Sub Activate()
         Proc.IsSilent = False

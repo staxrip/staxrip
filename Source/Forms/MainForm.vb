@@ -3630,10 +3630,12 @@ Public Class MainForm
             Dim procPriority = ui.AddMenu(Of ProcessPriorityClass)
             procPriority.Text = "Process Priority"
             procPriority.Help = "Process priority of the applications StaxRip launches."
+            procPriority.Expanded = True
             procPriority.Field = NameOf(s.ProcessPriority)
 
             Dim tempDelete = ui.AddMenu(Of DeleteMode)
             tempDelete.Text = "Delete temp files"
+            tempDelete.Expanded = True
             tempDelete.Field = NameOf(s.DeleteTempFilesMode)
 
             n = ui.AddNum
@@ -3645,7 +3647,24 @@ Public Class MainForm
             n = ui.AddNum
             n.Text = "Shutdown Timeout"
             n.Help = "Timeout in seconds before the shutdown is executed."
+            n.Config = {0, 10000}
             n.Field = NameOf(s.ShutdownTimeout)
+
+            n = ui.AddNum
+            n.Text = "Focus Steal prevention until"
+            n.Help = "Timeout to prevent focus steal after a process finishes in less than this seconds"
+            n.Config = {-1, 1000000}
+            n.Field = NameOf(s.PreventFocusStealBefore)
+
+            n = ui.AddNum
+            n.Text = "Focus Steal prevention after"
+            n.Help = "Timeout to prevent focus steal after a process finishes in at least this seconds"
+            n.Config = {-1, 1000000}
+            n.Field = NameOf(s.PreventFocusStealAfter)
+
+            b = ui.AddBool
+            b.Text = "Minimize processing dialog to tray"
+            b.Field = NameOf(s.MinimizeToTray)
 
             b = ui.AddBool
             b.Text = "Extend error messages with the help of 'Err'"
@@ -3658,10 +3677,6 @@ Public Class MainForm
             b = ui.AddBool
             b.Text = "Prevent system from entering standby mode while encoding"
             b.Field = NameOf(s.PreventStandby)
-
-            b = ui.AddBool
-            b.Text = "Minimize processing dialog to tray"
-            b.Field = NameOf(s.MinimizeToTray)
 
             b = ui.AddBool
             b.Text = "Prefer Windows Terminal over Powershell if present"
@@ -6670,7 +6685,9 @@ Public Class MainForm
             If ProcController.BlockActivation Then
                 ProcController.BlockActivation = False
 
-                If ProcController.IsLastActivationLessThan(60) Then
+                If s.PreventFocusStealBefore >= 0 AndAlso ProcController.SecondsSinceLastActivation <= s.PreventFocusStealBefore Then
+                    Return True
+                ElseIf s.PreventFocusStealAfter >= 0 AndAlso ProcController.SecondsSinceLastActivation >= s.PreventFocusStealAfter Then
                     Return True
                 End If
             End If

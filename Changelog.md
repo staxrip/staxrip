@@ -1,7 +1,7 @@
 not published yet
 =========================
 
-- New Discord Server: [Link](https://discord.gg/uz8pVR79Bd)
+- New Discord Server Link: https://discord.gg/uz8pVR79Bd
 - [!!!] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
 - Add Assistant option to warn if no audio in output (Dendraspis, [#709](/../../issues/709))
 - Fix --vpp-pad param output for NVEnc and VCEEnc (Dendraspis, [#723](/../../issues/723))
@@ -13,6 +13,7 @@ not published yet
 - Add setting to prefer Windows Terminal over Powershell when present (Dendraspis)
 - Fix *Forced* subtitle setting for MP4Box (Dendraspis, [#737](/../../issues/737))
 - Make Main window focus after processing adjustable (Dendraspis, [#333](/../../issues/333))
+- Add "Code Preview" to Remembered Window Positions (Dendraspis)
 - Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)
 - Add AVS SeparateFields filter (44vince44)
 - Update RgTools URLs, description, and filter list (JKyle, [#720](/../../issues/720))

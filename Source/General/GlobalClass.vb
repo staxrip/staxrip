@@ -929,17 +929,22 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowCommandLinePreview(title As String, value As String)
-        If s.CommandLinePreviewViaCodeForm Then
-            ShowCodePreview(value, Nothing, True)
-        Else
-            Environment.SetEnvironmentVariable("CommandLineToShow", BR + value + BR)
-
-            If s.PreferWindowsTerminal AndAlso g.IsWindowsTerminalAvailable Then
-                g.Execute("wt.exe", "powershell.exe -NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
-            Else
+        Select Case s.CommandLinePreview
+            Case CommandLinePreview.CodePreview
+                ShowCodePreview(value, Nothing, True)
+            Case CommandLinePreview.Powershell
+                Environment.SetEnvironmentVariable("CommandLineToShow", BR + value + BR)
                 g.Execute("powershell.exe", "-NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
-            End If
-        End If
+            Case CommandLinePreview.WindowsTerminal
+                Environment.SetEnvironmentVariable("CommandLineToShow", BR + value + BR)
+
+                If g.IsWindowsTerminalAvailable Then
+                    g.Execute("wt.exe", "powershell.exe -NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
+                Else
+                    MsgWarn("Windows Terminal not found!", "Windows Terminal could not be found and thus Powershell will be used to show the command line preview!")
+                    g.Execute("powershell.exe", "-NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
+                End If
+        End Select
     End Sub
 
     Sub ShowCodePreview(code As String, Optional find As String = Nothing, Optional wordwrap As Boolean = False)

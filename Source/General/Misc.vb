@@ -3925,6 +3925,12 @@ Public Enum ApplicationEvent
     <DispName("Before Processing")> BeforeProcessing
 End Enum
 
+Public Enum CommandLinePreview
+    <DispName("Code Preview")> CodePreview
+    <DispName("Powershell")> Powershell
+    <DispName("Windows Terminal")> WindowsTerminal
+End Enum
+
 Public Interface IUpdateUI
     Sub UpdateUI()
 End Interface

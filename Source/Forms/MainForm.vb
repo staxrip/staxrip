@@ -3638,6 +3638,11 @@ Public Class MainForm
             tempDelete.Expanded = True
             tempDelete.Field = NameOf(s.DeleteTempFilesMode)
 
+            Dim cmdline = ui.AddMenu(Of CommandLinePreview)
+            cmdline.Text = "Command Line Preview"
+            cmdline.Expanded = True
+            cmdline.Field = NameOf(s.CommandLinePreview)
+
             n = ui.AddNum
             n.Text = "Minimum Disk Space"
             n.Help = "Minimum allowed disk space in GB before StaxRip shows an error message."
@@ -3677,10 +3682,6 @@ Public Class MainForm
             b = ui.AddBool
             b.Text = "Prevent system from entering standby mode while encoding"
             b.Field = NameOf(s.PreventStandby)
-
-            b = ui.AddBool
-            b.Text = "Use Code Preview for Command Line previews instead of Powershell"
-            b.Field = NameOf(s.CommandLinePreviewViaCodeForm)
 
             b = ui.AddBool
             b.Text = "Prefer Windows Terminal over Powershell if present"

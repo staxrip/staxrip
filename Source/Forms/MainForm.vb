@@ -3676,7 +3676,7 @@ Public Class MainForm
             b.Field = NameOf(s.ErrorMessageExtendedByErr)
 
             b = ui.AddBool
-            b.Text = "Force closing running apps when shutdown and for hybrid mode"
+            b.Text = "Force close running apps at shutdown or in hybrid mode"
             b.Field = NameOf(s.ShutdownForce)
 
             b = ui.AddBool

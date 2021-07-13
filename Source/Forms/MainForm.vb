@@ -3657,13 +3657,13 @@ Public Class MainForm
 
             n = ui.AddNum
             n.Text = "Focus Steal prevention until"
-            n.Help = "Timeout to prevent focus steal after a process finishes in less than this seconds"
+            n.Help = "StaxRip Main window does not steal focus from other active programs within the given time after a work in StaxRip (in the same instance) starts."
             n.Config = {-1, 1000000}
-            n.Field = NameOf(s.PreventFocusStealBefore)
+            n.Field = NameOf(s.PreventFocusStealUntil)
 
             n = ui.AddNum
             n.Text = "Focus Steal prevention after"
-            n.Help = "Timeout to prevent focus steal after a process finishes in at least this seconds"
+            n.Help = "StaxRip Main window does not steal focus from other active programs if a work in StaxRip (in the same instance) takes longer than the given time."
             n.Config = {-1, 1000000}
             n.Field = NameOf(s.PreventFocusStealAfter)
 
@@ -6690,7 +6690,7 @@ Public Class MainForm
             If ProcController.BlockActivation Then
                 ProcController.BlockActivation = False
 
-                If s.PreventFocusStealBefore >= 0 AndAlso ProcController.SecondsSinceLastActivation <= s.PreventFocusStealBefore Then
+                If s.PreventFocusStealUntil >= 0 AndAlso ProcController.SecondsSinceLastActivation <= s.PreventFocusStealUntil Then
                     Return True
                 ElseIf s.PreventFocusStealAfter >= 0 AndAlso ProcController.SecondsSinceLastActivation >= s.PreventFocusStealAfter Then
                     Return True

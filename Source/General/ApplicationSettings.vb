@@ -62,8 +62,8 @@ Public Class ApplicationSettings
     Public ParallelProcsNum As Integer = 3
     Public ParMenu As String
     Public PreferWindowsTerminal As Boolean = False
-    Public PreventFocusStealBefore As Integer = -1
     Public PreventFocusStealAfter As Integer = 45
+    Public PreventFocusStealUntil As Integer = -1
     Public PreventStandby As Boolean = True
     Public PreviewFormBorderStyle As FormBorderStyle
     Public PreviewSize As Integer = 70

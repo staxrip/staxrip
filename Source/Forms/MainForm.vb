@@ -3679,6 +3679,10 @@ Public Class MainForm
             b.Field = NameOf(s.PreventStandby)
 
             b = ui.AddBool
+            b.Text = "Use Code Preview for Command Line previews instead of Powershell"
+            b.Field = NameOf(s.CommandLinePreviewViaCodeForm)
+
+            b = ui.AddBool
             b.Text = "Prefer Windows Terminal over Powershell if present"
             b.Field = NameOf(s.PreferWindowsTerminal)
 

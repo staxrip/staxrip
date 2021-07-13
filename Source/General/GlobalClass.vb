@@ -636,8 +636,8 @@ Public Class GlobalClass
         End If
     End Function
 
-    Sub ShowCode(title As String, content As String, Optional find As String = Nothing)
-        Dim form As New CodeForm(content, find)
+    Sub ShowCode(title As String, content As String, Optional find As String = Nothing, Optional wordwrap As Boolean = False)
+        Dim form As New CodeForm(content, find, wordwrap)
         form.Text = title
         form.Show()
     End Sub
@@ -929,13 +929,21 @@ Public Class GlobalClass
     End Sub
 
     Sub ShowCommandLinePreview(title As String, value As String)
-        Environment.SetEnvironmentVariable("CommandLineToShow", BR + value + BR)
-
-        If s.PreferWindowsTerminal AndAlso g.IsWindowsTerminalAvailable Then
-            g.Execute("wt.exe", "powershell.exe -NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
+        If s.CommandLinePreviewViaCodeForm Then
+            ShowCodePreview(value, Nothing, True)
         Else
-            g.Execute("powershell.exe", "-NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
+            Environment.SetEnvironmentVariable("CommandLineToShow", BR + value + BR)
+
+            If s.PreferWindowsTerminal AndAlso g.IsWindowsTerminalAvailable Then
+                g.Execute("wt.exe", "powershell.exe -NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
+            Else
+                g.Execute("powershell.exe", "-NoLogo -NoExit -NoProfile -Command $env:CommandLineToShow")
+            End If
         End If
+    End Sub
+
+    Sub ShowCodePreview(code As String, Optional find As String = Nothing, Optional wordwrap As Boolean = False)
+        ShowCode("Code Preview", code, find, wordwrap)
     End Sub
 
     Sub ffmsindex(
@@ -1247,10 +1255,6 @@ Public Class GlobalClass
             End If
         End Using
     End Function
-
-    Sub ShowCodePreview(code As String)
-        ShowCode("Code Preview", code)
-    End Sub
 
     Sub ShowScriptInfo(script As VideoScript)
         script.Synchronize()

@@ -5,13 +5,13 @@ Public Class CodeForm
     Property Find As String
     Property Content As String
 
-    Sub New(text As String, find As String)
+    Sub New(text As String, find As String, Optional wordwrap As Boolean = False)
         InitializeComponent()
 
         RestoreClientSize(50, 35)
 
         rtb.ReadOnly = True
-        rtb.WordWrap = False
+        rtb.WordWrap = wordwrap
         rtb.Font = g.GetCodeFont
         rtb.Text = text
 

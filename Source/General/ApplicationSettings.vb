@@ -25,6 +25,7 @@ Public Class ApplicationSettings
     Public CodeFont As String = "Consolas"
     Public CommandLineHighlighting As Boolean = True
     Public CommandLinePreviewMouseUpSearch As Boolean = True
+    Public CommandLinePreviewViaCodeForm As Boolean = True
     Public ConvertChromaSubsampling As Boolean = True
     Public CropColor As Color
     Public CropFrameCount As Integer

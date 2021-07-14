@@ -2019,6 +2019,33 @@ Public Class Package
             .DownloadURL = "https://github.com/pinterf/Deflicker/releases",
             .AvsFilterNames = {"Deflicker"}})
 
+        Add(New PluginPackage With {
+            .Name = "FillDrops",
+            .Filename = "FillDrops.avsi",
+            .Location = "Plugins\AVS\Scripts",
+            .Description = "An AviSynth filter to detect and replace duplicate frames with a motion-interpolation of the adjacent frames. Included is a mod by Selur.",
+            .WebURL = "https://forum.videohelp.com/threads/402416-repair-Videos-with-duplicates-and-dropped-frames#post2624936",
+            .DownloadURL = "https://github.com/JJKylee/Filter-Scripts/blob/main/AviSynth/FillDrops.avsi",
+            .AvsFilterNames = {"FillDrops"}})
+
+        Add(New PluginPackage With {
+            .Name = "FillDrops",
+            .Filename = "filldrops.py",
+            .Location = "Plugins\VS\Scripts",
+            .Description = "A filter to detect and replace duplicate frames with a motion-interpolation of the adjacent frames. This is a VapourSynth port of FillDrops by Selur and Myrsloik, modded by JKyle.",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1947291#post1947291",
+            .DownloadURL = "https://github.com/JJKylee/Filter-Scripts/blob/main/VapourSynth/filldrops.py",
+            .VsFilterNames = {"filldrops.FillDrops"}})
+
+        Add(New PluginPackage With {
+            .Name = "DeJump",
+            .Filename = "DeJump.avsi",
+            .Location = "Plugins\AVS\Scripts",
+            .Description = "An AviSynth filter that smooths out jumps and drops preserving the original frame rate. Composed and modded by JKyle based on John Meyer's script.",
+            .WebURL = "https://forum.videohelp.com/threads/402416-repair-Videos-with-duplicates-and-dropped-frames#post2625159",
+            .DownloadURL = "https://github.com/JJKylee/Filter-Scripts/blob/main/AviSynth/DeJump.avsi",
+            .AvsFilterNames = {"DeJump"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

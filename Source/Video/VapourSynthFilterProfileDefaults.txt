@@ -206,6 +206,7 @@ DeBlock | DeBlock PP7 = $select:msg:Select Strength;Medium|clip = core.pp7.Deblo
 DeBlock | Deblock_QED = clip = havsfunc.Deblock_QED(clip)
 DeBlock | MSmooth = clip = core.msmoosh.MSmooth(clip, threshold=3.0, strength=1)
 DeComb | Vinverse = $select:Vinverse|clip = havsfunc.Vinverse(clip);Vinverse2|clip = havsfunc.Vinverse2(clip)$
+DeDupe | FillDrops = clip = filldrops.FillDrops(clip, thresh=$enter_text:Enter the Luma Difference Threshold in decimal (Default: 0.1)$)
 DeHalo | BlindDeHalo3 = clip = muvsfunc.BlindDeHalo3(clip, interlaced=False)
 DeHalo | DeHaloAlpha = clip = havsfunc.DeHalo_alpha(clip)
 DeHalo | EdgeCleaner = clip = havsfunc.EdgeCleaner(clip)

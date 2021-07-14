@@ -131,7 +131,6 @@ MTMode | SetMTMode Filter = SetFilterMTMode("$enter_text:Enter the Filter Name$"
 SelectEvery =
     # SelectEvery(step-size, offset1, offset2, ...)
     # offset2, ... are optional.
-    # offsets are non-negative integers smaller than step-size, representing selected frames.
     # Modify the following example:
     SelectEvery(10, 3, 6, 7) # select frames 3, 6, 7, 13, 16, 17, 23, 26, 27, ...
 

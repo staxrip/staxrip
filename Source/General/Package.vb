@@ -2029,7 +2029,7 @@ Public Class Package
             .AvsFilterNames = {"FillDrops"}})
 
         Add(New PluginPackage With {
-            .Name = "FillDrops",
+            .Name = "filldrops",
             .Filename = "filldrops.py",
             .Location = "Plugins\VS\Scripts",
             .Description = "A filter to detect and replace duplicate frames with a motion-interpolation of the adjacent frames. This is a VapourSynth port of FillDrops by Selur and Myrsloik, modded by JKyle.",

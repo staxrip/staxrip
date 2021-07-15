@@ -20,7 +20,7 @@ not published yet
 - Update RgTools URLs, description, and filter list (JKyle, [#720](/../../issues/720))
 - Big filter profile update (JKyle, [#725](/../../issues/725))
     - Added filters:  
-    AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), GRunT(AVS plugin), Letterbox(AVS/VS), Bwdif(AVS), DeRainbow(AVS), DotKill(AVS/VS), FillBorders(AVS/VS), ReduceFlicker(AVS), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
+    AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Bwdif(AVS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), DeRainbow(AVS), DotKill(AVS/VS), ExactDeDup(AVS), FillBorders(AVS/VS), Fix Horizontal Rainbow(AVS profile), GRunT(AVS plugin), Letterbox(AVS/VS), ReduceFlicker(AVS), RT_Stats(AVS plugin), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
     - Updated filter profiles:  
     AddBorders(VS), AddGrainC(AVS), Bwdif(VS), DeRainbow(VS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
 - AddGrain r8
@@ -30,10 +30,13 @@ not published yet
 - CASm 2021-05-19
 - ChubbyRain2 mod 2021-06-14
 - DeFlicker v0.6
+- DeJump mod 2021-07-14 by JKyle
 - DeRainbow 2014-02-23
 - DotKill v1.0.0 (AVS) / R2 (VS)
+- ExactDedup v0.0.7Beta
 - FFT3DFilter v2.9
 - FillBorders v1.3.0 (AVS) / v2 (VS)
+- FillDrops mod 2021-07-11 by JKyle (VS)
 - flash3kyuu_deband v2.0.0-1 (Avisynth+ plugins pack r14)
 - GRunT v1.0.2
 - MvTools2 v2.7.45
@@ -41,6 +44,7 @@ not published yet
 - QTGMC v3.382s
 - ReduceFlicker v0.1.1
 - RgTools v1.2
+- RT_Stats v2.00Beta13
 - Srestore v2.797
 - TEMmod v0.2.2
 - TemporalDegrain2 v2.3.1

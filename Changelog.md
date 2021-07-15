@@ -20,7 +20,7 @@ not published yet
 - Update RgTools URLs, description, and filter list (JKyle, [#720](/../../issues/720))
 - Big filter profile update (JKyle, [#725](/../../issues/725))
     - Added filters:  
-    AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Bwdif(AVS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), DeRainbow(AVS), DotKill(AVS/VS), ExactDeDup(AVS), FillBorders(AVS/VS), Fix Horizontal Rainbow(AVS profile), GRunT(AVS plugin), Letterbox(AVS/VS), ReduceFlicker(AVS), RT_Stats(AVS plugin), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
+    AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Bwdif(AVS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), DeJump(AVS), DeRainbow(AVS), DotKill(AVS/VS), ExactDeDup(AVS), FillBorders(AVS/VS), FillDrops(AVS/VS), Fix Horizontal Rainbow(AVS profile), GRunT(AVS plugin), Letterbox(AVS/VS), ReduceFlicker(AVS), RT_Stats(AVS plugin), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
     - Updated filter profiles:  
     AddBorders(VS), AddGrainC(AVS), Bwdif(VS), DeRainbow(VS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
 - AddGrain r8
@@ -36,7 +36,7 @@ not published yet
 - ExactDedup v0.0.7Beta
 - FFT3DFilter v2.9
 - FillBorders v1.3.0 (AVS) / v2 (VS)
-- FillDrops mod 2021-07-11 by JKyle (VS)
+- FillDrops mod 2021-07-10 by Selur (AVS) / mod 2021-07-11 by JKyle (VS)
 - flash3kyuu_deband v2.0.0-1 (Avisynth+ plugins pack r14)
 - GRunT v1.0.2
 - MvTools2 v2.7.45

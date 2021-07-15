@@ -241,6 +241,15 @@ Chroma Fix | DotKill | DotKillT =
     # 3:2 pulldown NTSC source, spatio-temporal
     DotKillT(order=0, offset=0, dupthresh=64, tratio=3)
 
+Chroma Fix | Fix Horizontal Rainbow =
+    Assert(Last.ComponentSize==1, "The bit depth must be 8. Consider using ConvertBits(8) before this filter profile.")
+    ConvertToYV12(interlaced=$select:msg:Is the input clip Interlaced?;Yes|true;No|false$)
+    $select:msg:Input Field Order (if interlaced input) or Field Separation Order (if progressive input)?;Top Field First|AssumeTFF();Bottom Field First|AssumeBFF()$.SeparateFields()
+    AddGrainC(var=3)
+    even=SelectEven().DeRainbow(thresh=1).DeRainbow(thresh=1).CASm(1)
+    odd=SelectOdd().DeRainbow(thresh=1).DeRainbow(thresh=1).CASm(1)
+    Interleave(even, odd).AssumeFieldBased().Weave() # Returns interlaced clip. A Deinterlacer should follow.
+
 DeBand | f3kdb = f3kdb()
 DeBand | f3kdb Neo = neo_f3kdb(preset="$select:msg:Select Profile;Depth|depth;Low|low;Low and No Grain|low/nograin;Medium|medium;Medium and No Grain|medium/nograin;High (Default)|high;High and No Grain|high/nograin;Very High|veryhigh;Very High and No Grain|veryhigh/nograin;No Grain|nograin;Luma|luma;Chroma|chroma$", output_depth=$select:msg:Select Output Depth;8 Bit|8;16 Bit|16$)
 DeBand | Gradfun3 = GradFun3(thr=0.5, radius=12, mode=6, smode=1)

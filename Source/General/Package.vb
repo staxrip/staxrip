@@ -2019,6 +2019,51 @@ Public Class Package
             .DownloadURL = "https://github.com/pinterf/Deflicker/releases",
             .AvsFilterNames = {"Deflicker"}})
 
+        Add(New PluginPackage With {
+            .Name = "FillDrops",
+            .Filename = "FillDrops.avsi",
+            .Location = "Plugins\AVS\Scripts",
+            .Description = "An AviSynth filter to detect and replace duplicate frames with a motion-interpolation of the adjacent frames. Included is a mod by Selur.",
+            .WebURL = "https://forum.videohelp.com/threads/402416-repair-Videos-with-duplicates-and-dropped-frames#post2624936",
+            .DownloadURL = "https://github.com/JJKylee/Filter-Scripts/blob/main/AviSynth/FillDrops.avsi",
+            .AvsFilterNames = {"FillDrops"}})
+
+        Add(New PluginPackage With {
+            .Name = "FillDrops",
+            .Filename = "filldrops.py",
+            .Location = "Plugins\VS\Scripts",
+            .Description = "A filter to detect and replace duplicate frames with a motion-interpolation of the adjacent frames. This is a VapourSynth port of FillDrops by Selur and Myrsloik, modded by JKyle.",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1947291#post1947291",
+            .DownloadURL = "https://github.com/JJKylee/Filter-Scripts/blob/main/VapourSynth/filldrops.py",
+            .VsFilterNames = {"filldrops.FillDrops"}})
+
+        Add(New PluginPackage With {
+            .Name = "DeJump",
+            .Filename = "DeJump.avsi",
+            .Location = "Plugins\AVS\Scripts",
+            .Description = "An AviSynth filter that smooths out jumps and drops preserving the original frame rate. Composed and modded by JKyle based on John Meyer's script.",
+            .WebURL = "https://forum.videohelp.com/threads/402416-repair-Videos-with-duplicates-and-dropped-frames#post2625159",
+            .DownloadURL = "https://github.com/JJKylee/Filter-Scripts/blob/main/AviSynth/DeJump.avsi",
+            .AvsFilterNames = {"DeJump"}})
+
+        Add(New PluginPackage With {
+            .Name = "RT_Stats",
+            .Filename = "RT_Stats_x64.dll",
+            .Description = "StainlessS's compile-time/runtime functions for AviSynth.",
+            .WebURL = "https://forum.doom9.org/showthread.php?t=165479",
+            .HelpURL = "http://avisynth.nl/index.php/RT_Stats",
+            .DownloadURL = "https://www.mediafire.com/folder/hb26mthbjz7z6/StainlessS",
+            .AvsFilterNames = {"RT_Stats", "RT_GraphLink", "RT_Subtitle", "RT_FSelOpen", "RT_FSelSaveAs", "RT_FSelFolder", "RT_Debug", "RT_DebugF", "RT_Call", "RT_YankChain", "RT_ForceProcess", "RT_ColorSpaceXMod", "RT_ColorSpaceYMod", "RT_GetProcessName", "RT_GetPid", "RT_GetLastError", "RT_GetLastErrorString", "RT_Version", "RT_VersionString", "RT_VersionDll", "RT_GetSystemEnv", "RT_RandInt", "RT_LocalTimeString", "RT_StrAddStr", "RT_StrReplace", "RT_StrReplaceDeep", "RT_StrReplaceMulti", "RT_QuoteStr", "RT_StrPad", "RT_FindStr", "RT_TxtAddStr", "RT_TxtQueryLines", "RT_TxtGetLine", "RT_TxtFindStr", "RT_String", "RT_TxtSort", "RT_GetWorkingDir", "RT_FilenameSplit", "RT_GetFullPathName", "RT_GetFileExtension", "RT_FileRename", "RT_FileQueryLines", "RT_WriteFile", "RT_TxtWriteFile", "RT_ReadTxtFromFile", "RT_WriteFileList", "RT_FileDelete", "RT_FileDuplicate", "RT_FileFindStr", "RT_GetFileTime", "RT_Hex", "RT_HexValue", "RT_NumberString", "RT_NumberValue", "RT_BitNOT", "RT_BitAND", "RT_BitOR", "RT_BitXOR", "RT_BitLSL", "RT_BitLSR", "RT_BitASL", "RT_BitASR", "RT_BitTST", "RT_BitCLR", "RT_BitSET", "RT_BitCHG", "RT_BitROR", "RT_BitROL", "RT_BitSetCount", "RT_ArrayAlloc", "RT_ArrayGetDim", "RT_ArrayGetType", "RT_ArrayGetElSize", "RT_ArrayGetDim1Max", "RT_ArrayGet", "RT_ArraySet", "RT_ArrayExtend", "RT_ArrayAppend", "RT_ArrayGetAttrib", "RT_ArraySetAttrib", "RT_ArrayGetStrAttrib", "RT_ArraySetStrAttrib", "RT_ArrayTypeName", "RT_ArrayGetID", "RT_ArraySetID", "RT_ArrayCheckID", "RT_DBaseAlloc", "RT_DBaseRecords", "RT_DBaseRecordSize", "RT_DBaseFields", "RT_DBaseFieldType", "RT_DBaseFieldSize", "RT_DBaseRecordsMax", "RT_DBaseGetTypeString", "RT_DBaseGetField", "RT_DBaseSetField", "RT_DBaseSet", "RT_DBaseExtend", "RT_DBaseAppend", "RT_DBaseGetAttrib", "RT_DBaseSetAttrib", "RT_DBaseGetStrAttrib", "RT_DBaseSetStrAttrib", "RT_DBaseTypeName", "RT_DBaseGetID", "RT_DBaseSetID", "RT_DBaseCheckID", "RT_DBaseCmpField", "RT_DBaseRecordSwap", "RT_DBaseQuickSort", "RT_DBaseInsertSort", "RT_DBaseReadCSV", "RT_DBaseWriteCSV", "RT_DBaseFindSeq", "RT_DBaseRgbColorCount", "RT_DBaseDeleteRecord", "RT_Undefined", "RT_VarExist", "RT_FunctionExist", "RT_Ord", "RT_Timer", "RT_TimerHP", "RT_Sleep", "RT_IncrGlobal", "RT_ScriptDir", "RT_ScriptFile", "RT_ScriptName", "RT_PluginDir", "RT_InternalFunctions", "RT_PluginFunctions", "RT_PluginParam", "RT_VarType", "RT_VarIsSame", "RT_FloatAsRGBA", "RT_RGB32AsFloat", "RT_RGB32AsInt", "RT_YPlaneMin", "RT_YPlaneMax", "RT_YPlaneMinMaxDifference", "RT_YPlaneMedian", "RT_AverageLuma", "RT_YPlaneStdev", "RT_YInRange", "RT_YPNorm", "RT_Ystats", "RT_RgbChanMin", "RT_RgbChanMax", "RT_RgbChanMinMaxDifference", "RT_RgbChanMedian", "RT_RgbChanAve", "RT_RgbChanStdev", "RT_RgbChanInRange", "RT_RgbChanPNorm", "RT_RgbChanStats", "RT_RgbInRange", "RT_ChanAve", "RT_AvgLumaDif", "RT_YDifference", "RT_LumaDifference", "RT_LumaCorrelation", "RT_LumaPixelsDifferent", "RT_LumaPixelsDifferentCount", "RT_FrameDifference", "RT_FrameMovement", "RT_QueryColor", "RT_GetSAR", "RT_GetDAR", "RT_SignalDAR", "RT_SignalDAR2", "RT_GetCropDAR", "RT_QueryLumaMinMax", "RT_QueryBorderCrop", "RT_YInRangeLocate", "RT_RgbInRangeLocate", "RT_QwikScanCreate", "RT_QwikScan", "RT_QwikScanEstimateLumaTol"}})
+
+        Add(New PluginPackage With {
+            .Name = "ExactDedup",
+            .Filename = "ExactDeDup_x64.dll",
+            .Description = "ExactDedup is an AviSynth filter intended to remove frames that are exact duplicates of each other, leaving only the first and (optionally) last frames of a run intact, and generates a Matroska v2 timecodes file with timing information for the ensuing stream. Due to the particulars of the AviSynth API, ExactDedup requires two passes to function efficiently. It could theoretically be designed to run with one pass, but this would result in a very long startup delay while the plugin precomputes all of the duplicate frame information and timecodes.",
+            .WebURL = "https://forum.doom9.org/showthread.php?t=176111",
+            .HelpURL = "http://avisynth.nl/index.php/ExactDedup",
+            .DownloadURL = "https://www.mediafire.com/folder/hb26mthbjz7z6/StainlessS",
+            .AvsFilterNames = {"ExactDedup"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

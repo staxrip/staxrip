@@ -19,7 +19,7 @@ MPEG2Source = clip = core.dgdecode.MPEG2Source(r"%source_file%")
 [Color]
 ColorSpace | Matrix = clip = core.fmtc.matrix(clip, mat='$select:msg:Select Matrix;Linear;470m;470bg;240m;SRGB;709;2020$')
 ColorSpace | Primaries = clip = core.fmtc.primaries(clip, prims='$select:msg:Select Input;470m;470bg;240m;SRGB;709;2020$', primd='$select:msg:Select Output;Linear;470m;470bg;240m;SRGB;709;2020$')
-ColorSpace | Range = $select:msg:Select Range;PC to TV|clip = core.fmtc.bitdepth(clip, fulls=True, fulld=False);TV to PC|clip = core.fmtc.bitdepth (clip, fulls=False, fulld=True)$
+ColorSpace | Range = clip = core.fmtc.bitdepth(clip, $select:msg:Select Range;PC to TV|fulls=True, fulld=False;TV to PC|fulls=False, fulld=True$)
 
 ColorSpace | Respec =
     clip = core.fmtc.resample (clip, css='444')
@@ -60,7 +60,7 @@ Deinterlace | QTGMC | QTGMC with Repair =
 
 Deinterlace | W3FDIF = clip = core.w3fdif.W3FDIF(clip,$select:msg:Select Order Option;BFF|0;TFF|1$,$select:msg:Select Interlacing Filter Coefficients;Simple|0;Complex|1$)
 Deinterlace | Yadifmod = clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field=0), order=1, field=-1, mode=0)
-Field Base = $select:Frame Based|clip = core.std.SetFieldBased(clip, 0);Bottom Field First|clip = core.std.SetFieldBased(clip, 1);Top Field First|clip = core.std.SetFieldBased(clip, 2)$
+Field Base = clip = core.std.SetFieldBased(clip, $select:Frame Based|0;Bottom Field First|1;Top Field First|2$)
 
 IVTC =
     clip = core.vivtc.VFM(clip, 1)
@@ -118,7 +118,7 @@ Anti-Aliasing | TAAmbk = clip = taa.TAAmbk(clip, preaa=-1, aatype=4, mtype=1, mt
 Sharpen | aWarpSharpen2 = clip = core.warp.AWarpSharp2(clip=clip, blur=2)
 Sharpen | CAS = clip = core.cas.CAS(clip, $enter_text:Enter the Amount of Sharpness in decimal (between 0.0 and 1.0)$)
 Sharpen | DetailSharpen = clip = G41Fun.DetailSharpen(clip, z=4, sstr=1.5, power=4, ldmp=1, mode=1, med=False)
-Sharpen | FineSharp = $select:msg:Select Strength;Light|clip = finesharp.sharpen(clip, mode=1, sstr=2, cstr=0.8, xstr=0.19, lstr=1.49, pstr=1.272);Moderate|clip = finesharp.sharpen(clip, mode=2, sstr=2.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472);Strong|clip = finesharp.sharpen(clip, mode=3, sstr=6.0,  cstr=1.3, xstr=0.0,  lstr=1.49, pstr=1.472)$
+Sharpen | FineSharp = clip = finesharp.sharpen(clip, $select:msg:Select Strength;Light|mode=1, sstr=2, cstr=0.8, xstr=0.19, lstr=1.49, pstr=1.272;Moderate|mode=2, sstr=2.0, cstr=1.3, xstr=0.0, lstr=1.49, pstr=1.472;Strong|mode=3, sstr=6.0, cstr=1.3, xstr=0.0, lstr=1.49, pstr=1.472$)
 Sharpen | LSFmod = clip = havsfunc.LSFmod(clip, defaults='slow', strength=100, Smode=5, Smethod=3, kernel=11, secure=True, Szrp= 16, Spwr= 4, SdmpLo= 4, SdmpHi= 48, Lmode=4, overshoot=1, undershoot=1, soft=-2, soothe=True, keep=20, edgemode=0, edgemaskHQ=True, ss_x= 1.50, ss_y=1.50)
 Sharpen | McDegrainSharp = clip = mcdegrainsharp.mcdegrainsharp(clip, plane=4)
 Sharpen | MSharpen = clip = core.msmoosh.MSharpen(clip, threshold=6.0, strength=39)
@@ -161,8 +161,8 @@ UnSpec =
 AddGrain = clip = core.grain.Add(clip, var=1.0, uvar=0.0, hcorr=0.0, vcorr=0.0, seed=-1, constant=False, opt=0)
 BM3D = clip = mvsfunc.BM3D(clip, sigma=[3,3,3], radius1=0)
 DegrainMedian = clip = core.dgm.DegrainMedian(clip=clip, interlaced=False)
-DFTTest = $select:msg:Select Strength;Light|clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3,opt=3);Moderate|clip = core.dfttest.DFTTest(clip, sigma=16, tbsize=5,opt=3);Strong|clip = core.dfttest.DFTTest(clip, sigma=64, tbsize=1,opt=3)$
-DFTTest Neo = clip = core.neo_dfttest.DFTTest(clip, ftype=0, sigma=2.0, planes=[0,1,2])
+DFTTest | DFTTest = clip = core.dfttest.DFTTest(clip, $select:msg:Select Strength;Light|sigma=6, tbsize=3, opt=3;Moderate|sigma=16, tbsize=5, opt=3;Strong|sigma=64, tbsize=1, opt=3$)
+DFTTest | DFTTest Neo = clip = core.neo_dfttest.DFTTest(clip, ftype=0, sigma=2.0, planes=[0,1,2])
 FFT3D Neo = clip = core.neo_fft3d.FFT3D(clip, sigma=2.0, bt=3, planes=[0,1,2])
 HQDN3D = clip = core.hqdn3d.Hqdn3d(clip=clip)
 KNLMeansCL = clip = core.knlm.KNLMeansCL(clip, d=1, a=1, h=$select:msg:Select Strength;Light|2;Medium|4;Strong|8$, device_type='auto')
@@ -202,10 +202,11 @@ DeBand | Legacy = $select:GradFun3|clip = muvsfunc.GradFun3(src=clip, mode=6, sm
 DeBand | f3kdb Neo = clip = core.neo_f3kdb.Deband(clip, y=64, cb=64, cr=64, grainy=0, grainc=0)
 DeBlock | Auto-Deblock = clip = fvsfunc.AutoDeblock(clip)
 DeBlock | DeBlock = clip = core.deblock.Deblock(clip, quant=25, aoffset=0, boffset=0)
-DeBlock | DeBlock PP7 = $select:msg:Select Strength;Medium|clip = core.pp7.DeblockPP7(clip=clip, mode=2);Hard|clip = core.pp7.DeblockPP7(clip=clip);Soft|clip = core.pp7.DeblockPP7(clip=clip, mode=1)$
+DeBlock | DeBlock PP7 = clip = core.pp7.DeblockPP7($select:msg:Select Strength;Medium|clip=clip, mode=2;Hard|clip=clip;Soft|clip=clip, mode=1$)
 DeBlock | Deblock_QED = clip = havsfunc.Deblock_QED(clip)
 DeBlock | MSmooth = clip = core.msmoosh.MSmooth(clip, threshold=3.0, strength=1)
 DeComb | Vinverse = $select:Vinverse|clip = havsfunc.Vinverse(clip);Vinverse2|clip = havsfunc.Vinverse2(clip)$
+DeDupe | FillDrops = clip = filldrops.FillDrops(clip, thresh=$enter_text:Enter the Luma Difference Threshold in decimal (Default: 0.1)$)
 DeHalo | BlindDeHalo3 = clip = muvsfunc.BlindDeHalo3(clip, interlaced=False)
 DeHalo | DeHaloAlpha = clip = havsfunc.DeHalo_alpha(clip)
 DeHalo | EdgeCleaner = clip = havsfunc.EdgeCleaner(clip)

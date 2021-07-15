@@ -256,6 +256,17 @@ DeBlock | DeBock = Deblock(quant=25, aOffset=0, bOffset=0)
 DeBlock | MipSmooth = MipSmooth(downsizer="lanczos", upsizer="bilinear", scalefactor=1.5, method="strong")
 DeBlock | SmoothD2 = SmoothD2(quant=3, num_shift=3, Matrix=3, Qtype=1, ZW=1, ZWce=1, ZWlmDark=0, ZWlmBright=255, ncpu=4)
 DeComb | Vinverse = $select:Vinverse|vinverse(sstr=2.7, amnt=255, uv=3, scl=0.25);Vinverse2|vinverse2(sstr=2.7, amnt=255, uv=3, scl=0.25)$
+
+DeDupe | ExactDeDup =
+    DUPTXT = "%temp_file%_dupinfo_dd.txt"
+    DUPTXT = RT_GetFullPathName(DUPTXT)
+    TIMETXT = "%temp_file%_timecodes_dd.txt"
+    TIMETXT = RT_GetFullPathName(TIMETXT)
+    ExactDedup(firstpass=true, dupinfo=DUPTXT, times=TIMETXT, maxdupcount=1000000, keeplastframe=false)
+    RT_ForceProcess()
+    ExactDedup(firstpass=false, dupinfo=DUPTXT, times=TIMETXT, maxdupcount=1000000, keeplastframe=false)
+    # Don't forget to mux TIMETXT timecodes file in the output mkv
+
 DeDupe | FillDrops = FillDrops(thresh=$enter_text:Enter the Luma Difference Threshold in decimal (Default: 0.1)$)
 DeFlicker | DeFlicker = Deflicker(percent=85.0, lag=25, noise=10.0, scene=$enter_text:New Scene Threshold? (Default: 40, Range: 0 to 255)$, info=false)
 DeFlicker | ReduceFlicker = ReduceFlicker(strength=$select:msg:Choose Strength;Weak|1;Medium (Default)|2;Strong|3$)

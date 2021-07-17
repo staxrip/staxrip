@@ -6,10 +6,7 @@ d2vsource = clip = core.d2v.Source(r"%source_file%")
 
 ffms2 =
     tcFile = r"%temp_file%_timestamps.txt" # timestamps file path
-    # Test if the timestamps file is already extracted by mkvextract according to
-    # "Options > Misc" setting for VFR MKV
-    tcArg = tcFile if os.path.exists(tcFile) else r"%temp_file%_timecodes_ff.txt"
-    clip = core.ffms2.Source(r"%source_file%", cachefile=r"%source_temp_file%.ffindex", timecodes=tcArg)
+    clip = core.ffms2.Source(r"%source_file%", cachefile=r"%source_temp_file%.ffindex", timecodes=tcFile) if os.path.exists(tcFile) else core.ffms2.Source(r"%source_file%", cachefile=r"%source_temp_file%.ffindex")
 
 LibavSMASHSource = clip = core.lsmas.LibavSMASHSource(r"%source_file%")
 LWLibavSource = clip = core.lsmas.LWLibavSource(r"%source_file%", cachefile=r"%source_temp_file%.lwi")
@@ -101,10 +98,12 @@ SVPFlow | MV =
     $select:msg:Select FPS Filter to Use;FlowFPS|clip = core.mv.FlowFPS(clip, sup, bvec, fvec, mask=2;BlockFPS|clip = core.mv.BlockFPS(clip, sup, bvec, fvec, mode=3, thscd2=12$, num=$enter_text:Enter The Num Value$, den=$enter_text:Enter The Den Value$)
 
 VFR to CFR | VFRToCFR =
+    tcFile = r"%temp_file%_timestamps.txt" # timestamps file path
     try:
-        clip = core.vfrtocfr.VFRToCFR(clip, timecodes=tcArg, fpsnum=$enter_text:Numerator of the target FPS (in integer)?$, fpsden=$enter_text:Denominator of the target FPS (in integer)?$)
+        clip = core.vfrtocfr.VFRToCFR(clip, timecodes=tcFile, fpsnum=$enter_text:Numerator of the target FPS (in integer)?$, fpsden=$enter_text:Denominator of the target FPS (in integer)?$)
     except:
-        raise vs.Error("Use ffms2 source filter for VFRToCFR filter!")
+        raise vs.Error("Timestamps extraction from MKV must be turned on in Options. Remux your input to MKV if it is not an MKV file.")
+    # Don't forget to mux the timestamps file in the output mkv
 
 [Line]
 

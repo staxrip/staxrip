@@ -8,17 +8,11 @@ DSS2 = DSS2("%source_file%")
 
 FFMS2 =
     tcFile = "%temp_file%_timestamps.txt" # timestamps file path
-    # Test if the timestamps file is already extracted by mkvextract according to
-    # "Options > Misc" setting for VFR MKV
-    tcArg = Exist(tcFile) ? tcFile : "%temp_file%_timecodes_ff.txt"
-    FFMS2("%source_file%", atrack=-1, cachefile="%source_temp_file%.ffindex", timecodes=tcArg)
+    Exist(tcFile) ? FFMS2("%source_file%", atrack=-2, cachefile="%source_temp_file%.ffindex", timecodes=tcFile) : FFMS2("%source_file%", atrack=-2, cachefile="%source_temp_file%.ffindex")
 
 FFVideoSource =
     tcFile = "%temp_file%_timestamps.txt" # timestamps file path
-    # Test if the timestamps file is already extracted by mkvextract according to
-    # "Options > Misc" setting for VFR MKV
-    tcArg = Exist(tcFile) ? tcFile : "%temp_file%_timecodes_ff.txt"
-    FFVideoSource("%source_file%", cachefile="%source_temp_file%.ffindex", timecodes=tcArg)
+    Exist(tcFile) ? FFVideoSource("%source_file%", cachefile="%source_temp_file%.ffindex", timecodes=tcFile) : FFVideoSource("%source_file%", cachefile="%source_temp_file%.ffindex")
 
 LSMASHVideoSource = LSMASHVideoSource("%source_file%")
 LWLibavVideoSource = LWLibavVideoSource("%source_file%", cachefile="%source_temp_file%.lwi")
@@ -93,20 +87,22 @@ SVPFlow =
     Prefetch(threads)
 
 VFR to CFR | TimecodeFPS =
-    # Converts VFR to CFR using MKV timecodes file
-    Assert(VarExist("tcArg"), "Use FFMS2 or FFVideoSource source filter for TimecodeFPS filter!")
-    TimecodeFPS(timecodes=tcArg, fpsnum=$enter_text:Numerator of the target FPS (in integer)?$, fpsden=$enter_text:Denominator of the target FPS (in integer)?$, report=$select:msg:Show an Informative Messagebox on script load?;Yes|true;No (Default)|false$, threshone=0.4, threshmore=0.9, start=$select:msg:Is the 0th timecode in the timecodes file the 0 time?;Yes|true;No (Default)|false$)
+    # Converts VFR to CFR using MKV timestamps file
+    Assert(VarExist("tcFile") && Exist(tcFile), "Use FFMS2 or FFVideoSource source filters only. Timestamps extraction from MKV must be turned on in Options. Remux your input to MKV if it is not an MKV file.")
+    TimecodeFPS(timecodes=tcFile, fpsnum=$enter_text:Numerator of the target FPS (in integer)?$, fpsden=$enter_text:Denominator of the target FPS (in integer)?$, report=false, threshone=0.4, threshmore=0.9, start=$select:msg:Is the 0th timestamp in the timestamps file the 0 time?;Yes|true;No (Default)|false$)
+    # Don't forget to mux the timestamps file in the output mkv
 
 VFR to CFR | VfrToCfr =
     # Converts VFR to CFR by inserting null frames (exact copies of previous frames)
-    Assert(VarExist("tcArg"), "Use FFMS2 or FFVideoSource source filter for VfrToCfr filter!")
-    VfrToCfr(timecodes=tcArg, fpsnum=$enter_text:Numerator of the target FPS (in integer)?$, fpsden=$enter_text:Denominator of the target FPS (in integer)?$)
+    Assert(VarExist("tcFile") && Exist(tcFile), "Use FFMS2 or FFVideoSource source filters only. Timestamps extraction from MKV must be turned on in Options. Remux your input to MKV if it is not an MKV file.")
+    VfrToCfr(timecodes=tcFile, fpsnum=$enter_text:Numerator of the target FPS (in integer)?$, fpsden=$enter_text:Denominator of the target FPS (in integer)?$)
+    # Don't forget to mux the timestamps file in the output mkv
 
 YFRC = YFRC(BlockH=16, BlockV=16, OverlayType=0, MaskExpand=1)
 
 [Line]
 Anti-Aliasing | DAA = daa3mod()
-Anti-Aliasing | MMA2 = MAA2(mask=1, chroma=false, ss=2.0, aa=48, aac=40, threads=4, show=0)
+Anti-Aliasing | MAA2 = MAA2(mask=1, chroma=false, ss=2.0, aa=48, aac=40, threads=4, show=0)
 Anti-Aliasing | SangNom2 = Sangnom2()
 Sharpen | aWarpSharp2 = aWarpSharp2(thresh=128, blur=2, type=0, depth=16, chroma=3)
 Sharpen | CAS = CAS($enter_text:Enter the Amount of Sharpness in decimal (between 0.0 and 1.0)$)
@@ -269,12 +265,12 @@ DeComb | Vinverse = $select:Vinverse|vinverse(sstr=2.7, amnt=255, uv=3, scl=0.25
 DeDupe | ExactDeDup =
     DUPTXT = "%temp_file%_dupinfo_edd.txt"
     DUPTXT = RT_GetFullPathName(DUPTXT)
-    TIMETXT = "%temp_file%_timecodes_edd.txt"
+    TIMETXT = "%temp_file%_timestamps_edd.txt"
     TIMETXT = RT_GetFullPathName(TIMETXT)
     ExactDedup(firstpass=true, dupinfo=DUPTXT, times=TIMETXT, maxdupcount=1000000, keeplastframe=false)
     RT_ForceProcess()
     ExactDedup(firstpass=false, dupinfo=DUPTXT, times=TIMETXT, maxdupcount=1000000, keeplastframe=false)
-    # Don't forget to mux TIMETXT timecodes file in the output mkv
+    # Don't forget to mux TIMETXT timestamps file in the output mkv
 
 DeDupe | FillDrops = FillDrops(thresh=$enter_text:Enter the Luma Difference Threshold in decimal (Default: 0.1)$)
 DeFlicker | DeFlicker = Deflicker(percent=85.0, lag=25, noise=10.0, scene=$enter_text:New Scene Threshold? (Default: 40, Range: 0 to 255)$, info=false)

@@ -207,7 +207,7 @@ Public Class x264Enc
         Dim tester As New ConsolAppTester
 
         tester.IgnoredSwitches = "help longhelp fullhelp progress"
-        tester.UndocumentedSwitches = "y4m fade-compensate log-file log-file-level opts progress-header"
+        tester.UndocumentedSwitches = "y4m fade-compensate log-file log-file-level progress-header"
         tester.Package = Package.x264
         tester.CodeFile = Folder.Startup.Parent + "Encoding\x264Enc.vb"
 
@@ -897,7 +897,6 @@ Public Class x264Params
                     New OptionParam With {.Switch = "--pulldown", .Text = "Pulldown", .Options = {"None", "22", "32", "64", "Double", "Triple", "Euro"}},
                     New OptionParam With {.Switch = "--avcintra-class", .Text = "AVC Intra Class", .Options = {"None", "50", "100", "200"}},
                     New OptionParam With {.Switch = "--avcintra-flavor", .Text = "AVC Intra Flavor", .Options = {"Panasonic", "Sony"}},
-                    New OptionParam With {.Switch = "--opts", .Text = "SEI writing options", .Init = 3, .IntegerValue = True, .Options = {"None", "Information", "Options", "Information and Options"}},
                     New NumParam With {.Switch = "--threads", .Text = "Threads"},
                     New NumParam With {.Switch = "--lookahead-threads", .Text = "Lookahead Threads"},
                     New NumParam With {.Switch = "--seek", .Text = "Seek"},

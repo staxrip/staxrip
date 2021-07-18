@@ -690,7 +690,7 @@ Public Class AudioForm
         numBitrate.Maximum = 16000
         numGain.DecimalPlaces = 1
 
-        cbDefaultTrack.Visible = TypeOf p.VideoEncoder.Muxer Is MkvMuxer
+        'cbDefaultTrack.Visible = TypeOf p.VideoEncoder.Muxer Is MkvMuxer
         cbForcedTrack.Visible = TypeOf p.VideoEncoder.Muxer Is MkvMuxer
 
         If components Is Nothing Then

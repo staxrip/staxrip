@@ -643,15 +643,17 @@ Public Class MuxAudioProfile
 
             Dim cb = ui.AddBool(page)
             cb.Text = "Default"
-            cb.Help = "Flaged as default in MKV."
+            cb.Help = "Flaged as default."
             cb.Checked = [Default]
             cb.SaveAction = Sub(value) [Default] = value
 
-            cb = ui.AddBool(page)
-            cb.Text = "Forced"
-            cb.Help = "Flaged as forced in MKV."
-            cb.Checked = Forced
-            cb.SaveAction = Sub(value) Forced = value
+            If TypeOf p.VideoEncoder.Muxer Is MkvMuxer Then
+                cb = ui.AddBool(page)
+                cb.Text = "Forced"
+                cb.Help = "Flaged as forced in MKV."
+                cb.Checked = Forced
+                cb.SaveAction = Sub(value) Forced = value
+            End If
 
             cb = ui.AddBool(page)
             cb.Text = "Extract DTS Core"

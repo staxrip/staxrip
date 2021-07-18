@@ -10,7 +10,7 @@ not published yet
 - Update SVT-AV1 parameters (Dendraspis, [#731](/../../issues/731))
 - Add option to extract timestamps from all mkv files (Dendraspis)
 - Add Assistant condition for MKV file with timestamps and changed frame rate or count (Dendraspis, [#729](/../../issues/729))
-- Fix *Forced* subtitle setting for MP4Box (Dendraspis, [#737](/../../issues/737))
+- Fix *Default* and *Forced* track settings for MP4Box (Dendraspis, [#737](/../../issues/737))
 - Add setting to prefer Windows Terminal over Powershell when present (Dendraspis, [#738](/../../issues/738))
 - Command Line Preview now uses the Code Preview window primarily, but is optional (Dendraspis, [#738](/../../issues/738))
 - Make Main window focus after processing adjustable (Dendraspis, [#333](/../../issues/333))

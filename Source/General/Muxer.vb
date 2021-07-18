@@ -225,7 +225,7 @@ Public MustInherit Class Muxer
                             End If
                         End If
                     ElseIf lower.Contains("timestamps") Then
-                        If TypeOf Me is MkvMuxer
+                        If TypeOf Me Is MkvMuxer Then
                             If i.Ext = "txt" Then
                                 TimestampsFile = i
                             End If
@@ -359,10 +359,10 @@ Public Class MP4Muxer
             If st.Enabled AndAlso File.Exists(st.Path) Then
                 If st.Path.Ext = "idx" Then
                     args.Append(" -add """ + st.Path + "#" & (st.IndexIDX + 1) &
-                                ":name=" + Macro.Expand(st.Title) + If(st.Forced ,":txtflags=0xC0000000", "") + """")
+                                ":name=" + Macro.Expand(st.Title) + If(st.Default, ":group=1", "") + If(st.Forced, ":txtflags=0xC0000000", "") + """")
                 Else
                     args.Append(" -add """ + st.Path + ":lang=" + st.Language.ThreeLetterCode +
-                                ":name=" + Macro.Expand(st.Title) + If(st.Forced ,":txtflags=0xC0000000", "") + """")
+                                ":name=" + Macro.Expand(st.Title) + If(st.Default, ":group=1", "") + If(st.Forced, ":txtflags=0xC0000000", "") + """")
                 End If
             End If
         Next
@@ -415,6 +415,11 @@ Public Class MP4Muxer
             End If
 
             args.Append(":name=" + ap.ExpandMacros(ap.StreamName))
+
+            If ap.Default Then
+                args.Append(":group=1")
+            End If
+
             args.Append("""")
         End If
     End Sub

@@ -14,9 +14,11 @@ not published yet
 - Add setting to prefer Windows Terminal over Powershell when present (Dendraspis, [#738](/../../issues/738))
 - Command Line Preview now uses the Code Preview window primarily, but is optional (Dendraspis, [#738](/../../issues/738))
 - Make Main window focus after processing adjustable (Dendraspis, [#333](/../../issues/333))
+- Delete 'SEI writing options'(--opts) in x264 options (Dendraspis, [#748](/../../issues/748))
 - Add "Code Preview" to Remembered Window Positions (Dendraspis)
 - Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)
 - Add AVS SeparateFields filter (44vince44)
+- Add two missing filters to JPSDR (JKyle, [#747](/../../issues/747))
 - Update RgTools URLs, description, and filter list (JKyle, [#720](/../../issues/720))
 - Big filter profile update (JKyle, [#725](/../../issues/725))
     - Added filters:  

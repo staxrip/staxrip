@@ -102,7 +102,7 @@ YFRC = YFRC(BlockH=16, BlockV=16, OverlayType=0, MaskExpand=1)
 
 [Line]
 Anti-Aliasing | DAA = daa3mod()
-Anti-Aliasing | MMA2 = MAA2(mask=1, chroma=false, ss=2.0, aa=48, aac=40, threads=4, show=0)
+Anti-Aliasing | MAA2 = MAA2(mask=1, chroma=false, ss=2.0, aa=48, aac=40, threads=4, show=0)
 Anti-Aliasing | SangNom2 = Sangnom2()
 Sharpen | aWarpSharp2 = aWarpSharp2(thresh=128, blur=2, type=0, depth=16, chroma=3)
 Sharpen | CAS = CAS($enter_text:Enter the Amount of Sharpness in decimal (between 0.0 and 1.0)$)

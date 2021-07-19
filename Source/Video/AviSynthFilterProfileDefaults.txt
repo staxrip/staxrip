@@ -38,6 +38,18 @@ Dither | Sigmoid = $select:Sigmoid Direct|Dither_sigmoid_direct();Sigmoid Invers
 Dither | YUV / RGB = $select:RGB to YUV|Dither_convert_rgb_to_yuv();YUV to RGB|Dither_convert_yuv_to_rgb()$
 HDRCore | Cube = Cube("$browse_file$")
 
+HDR to SDR | HDRTools | HLG =
+    ConvertYUVtoXYZ(Color=0, HDRMode=2, OOTF=false, OutputMode=2)
+    ConverXYZ_BT2446_C_HDRtoSDR(PQMode=false, Lhdr=$enter_text:HDR max mastering luminance level (in cd/m2)? (Default: 1000.0)$, Lsdr=100.0, pColor=0)
+    ConvertXYZtoYUV(Color=2, pColor=0, OOTF=false, OutputMode=2)
+    ConvertBits(8)
+
+HDR to SDR | HDRTools | PQ =
+    ConvertYUVtoXYZ(Color=0, HDRMode=0, OOTF=false, OutputMode=2)
+    ConverXYZ_BT2446_C_HDRtoSDR(PQMode=true, Lhdr=$enter_text:HDR max mastering luminance level (in cd/m2)? (Default: 10000.0)$, Lsdr=100.0, pColor=0)
+    ConvertXYZtoYUV(Color=2, pColor=0, OOTF=false, OutputMode=2)
+    ConvertBits(8)
+
 [Crop]
 Crop = $select:msg:Select Version;Crop;Dither_Crop16$(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)
 Hardware Encoder = # hardware encoder crops

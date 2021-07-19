@@ -2064,6 +2064,14 @@ Public Class Package
             .DownloadURL = "https://www.mediafire.com/folder/hb26mthbjz7z6/StainlessS",
             .AvsFilterNames = {"ExactDedup"}})
 
+        Add(New PluginPackage With {
+            .Name = "Santiag",
+            .Filename = "Santiag.avsi",
+            .Description = "Simple anti-aliasing with independent horizontal and vertical strength.",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1393006#post1393006",
+            .HelpURL = "http://avisynth.nl/index.php/Santiag",
+            .AvsFilterNames = {"santiag"}})
+
         Add(New Package With {
             .Name = "DirectX 9",
             .Filename = "d3d9.dll",

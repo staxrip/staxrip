@@ -238,7 +238,7 @@ Resize... = $select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;Lanc
 [Restoration]
 Chroma Fix | Bifrost = Bifrost(luma_thresh=10.0, variation=5, interlaced=$select:msg:Is the input video Interlaced?;Yes (Default)|true;No|false$, blockx=4, blocky=4)
 Chroma Fix | Checkmate = checkmate(thr=12, max=12, tthr2=0)
-Chroma Fix | ChubbyRain2 = ChubbyRain2(th=10, radius=10, sft=10, interlaced=$select:msg:Is the input video Interlaced?;Yes|true;No (Default)|false$)
+Chroma Fix | ChubbyRain2 = ChubbyRain2(th=10, radius=10, sft=10) # progressive sources only
 Chroma Fix | CNR2 = vsCnr2(mode="oxx", scdthr=10.0, ln=35, lm=192, un=47, um=255, vn=47, vm=255, sceneChroma=false)
 Chroma Fix | DeRainbow = $select:msg:Source Color Format?;YV12|DeRainbow;YUY2|DeRainbowYUY2$(thresh=10, interlaced=false)
 Chroma Fix | DotKill | DotKillS = DotKillS(iterations=1)

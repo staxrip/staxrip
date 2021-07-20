@@ -17,6 +17,7 @@ not published yet
 - Delete 'SEI writing options'(--opts) in x264 options (Dendraspis, [#748](/../../issues/748))
 - Add "Code Preview" to Remembered Window Positions (Dendraspis)
 - Extend Crop side limits to 80% (Dendraspis)
+- Use MkvExtract to extract timestamps for Command Line Demuxers (Dendraspis)
 - Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)
 - Add AVS SeparateFields filter (44vince44)
 - Add two missing filters to JPSDR (JKyle, [#747](/../../issues/747))

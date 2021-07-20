@@ -156,6 +156,23 @@ Public Class CommandLineDemuxer
                 FileHelp.Move(p.TempDir + p.SourceFile.Base + ".demuxed.m2v", p.TempDir + p.SourceFile.Base + ".m2v")
             End If
         End Using
+
+        If p.ExtractTimestamps AndAlso proj.SourceFile.ToLowerEx().EndsWithEx(".mkv") Then
+            If Not p.ExtractTimestampsVfrOnly OrElse MediaInfo.GetVideo(proj.SourceFile, "FrameRate_Mode") = "VFR" Then
+                Dim streamOrder = MediaInfo.GetVideo(proj.SourceFile, "StreamOrder").ToInt
+
+                Using proc As New Proc
+                    proc.Project = proj
+                    proc.Header = "Demux timestamps"
+                    proc.SkipString = "Progress: "
+                    proc.Encoding = Encoding.UTF8
+                    proc.Package = Package.mkvextract
+                    proc.Arguments = "timestamps_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + (proj.TempDir + proj.SourceFile.Base + "_timestamps.txt").Escape
+                    proc.AllowedExitCodes = {0, 1, 2}
+                    proc.Start()
+                End Using
+            End If
+        End If
     End Sub
 
     Shared Function IsActive(value As String) As Boolean

@@ -38,6 +38,18 @@ Dither | Sigmoid = $select:Sigmoid Direct|Dither_sigmoid_direct();Sigmoid Invers
 Dither | YUV / RGB = $select:RGB to YUV|Dither_convert_rgb_to_yuv();YUV to RGB|Dither_convert_yuv_to_rgb()$
 HDRCore | Cube = Cube("$browse_file$")
 
+HDR to SDR | HDRTools | HLG =
+    ConvertYUVtoXYZ(Color=0, HDRMode=2, OOTF=false, OutputMode=2)
+    ConverXYZ_BT2446_C_HDRtoSDR(PQMode=false, Lhdr=$enter_text:HDR max mastering luminance level (in cd/m2)? (Default: 1000.0)$, Lsdr=100.0, pColor=0)
+    ConvertXYZtoYUV(Color=2, pColor=0, OOTF=false, OutputMode=2)
+    ConvertBits(8)
+
+HDR to SDR | HDRTools | PQ =
+    ConvertYUVtoXYZ(Color=0, HDRMode=0, OOTF=false, OutputMode=2)
+    ConverXYZ_BT2446_C_HDRtoSDR(PQMode=true, Lhdr=$enter_text:HDR max mastering luminance level (in cd/m2)? (Default: 10000.0)$, Lsdr=100.0, pColor=0)
+    ConvertXYZtoYUV(Color=2, pColor=0, OOTF=false, OutputMode=2)
+    ConvertBits(8)
+
 [Crop]
 Crop = $select:msg:Select Version;Crop;Dither_Crop16$(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)
 Hardware Encoder = # hardware encoder crops
@@ -48,7 +60,7 @@ Decimate = Decimate(cycle=5)
 Deinterlace | Bwdif = BWDIF(field=$select:msg:Select Mode;Double rate, AviSynth internal order|-2;Same rate, AviSynth internal order (Default)|-1;Same rate, keep Bottom field|0;Same rate, keep Top field|1;Double rate, starts with Bottom|2;Double rate, starts with Top|3$)
 Deinterlace | EEDI3 = eedi3()
 Deinterlace | FieldDeinterlace = FieldDeinterlace()
-Deinterlace | nnedi3 = nnedi3(field=1)
+Deinterlace | NNEDI3 = nnedi3(field=1)
 Deinterlace | QTGMC | QTGMC... = QTGMC(preset="$select:msg:Select a Preset;Draft;Ultra Fast;Super Fast;Very Fast;Faster;Fast;Medium;Slow;Slower;Very Slow;Placebo$", InputType=$select:msg:Select Input Type;Interlaced|0;Progressive|1;Progressive Repair Details|2;Progressive Full Repair|3$, sourceMatch=3, sharpness=0.2, tr2=2, ediThreads=8)
 
 Deinterlace | QTGMC | QTGMC with Repair =
@@ -218,9 +230,10 @@ Advanced | Dither_Resize16 In Linear Light =
     Dither_convert_rgb_to_yuv(r, g, b, matrix="2020", lsb=true)
 
 Advanced | Hardware Encoder = # hardware encoder resizes
-Advanced | ResizeMT = $select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;Lanczos4ResizeMT;LanczosResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch=4)
+Advanced | NNEDI3_rpow2 = nnedi3_rpow2(rfactor=$select:msg:Enlargement Factor?;2;4;8;16$, cshift="$select:msg:Center Shift Correction Algorithm?;BicubicResize;BilinearResize;BlackmanResize;GaussResize;LanczosResize;Lanczos4Resize;PointResize;SincResize;Spline16Resize;Spline36Resize;Spline64Resize$", fwidth=%target_width%, fheight=%target_height%)
+Advanced | ResizeMT = $select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;LanczosResizeMT;Lanczos4ResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch=4)
 Advanced | SuperRes = $select:msg:Select Version;SuperResXBR|SuperResXBR;SuperRes|SuperRes;SuperXBR|SuperXBR$(passes=$select:msg:How many Passes do you wish to perform?;2;3;4;5$, factor=$select:msg:Factor Increase by?;2;4$)
-Resize... = $select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;Lanczos4Resize;LanczosResize;PointResize;SincResize;Jinc36Resize;Jinc64Resize;Jinc144Resize;Jinc256Resize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)
+Resize... = $select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;LanczosResize;Lanczos4Resize;PointResize;SincResize;Jinc36Resize;Jinc64Resize;Jinc144Resize;Jinc256Resize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)
 
 [Restoration]
 Chroma Fix | Bifrost = Bifrost(luma_thresh=10.0, variation=5, interlaced=$select:msg:Is the input video Interlaced?;Yes (Default)|true;No|false$, blockx=4, blocky=4)

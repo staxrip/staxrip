@@ -464,20 +464,23 @@ Public Class CropForm
     End Function
 
     Sub UpdateAll()
-        If p.CropLeft > p.SourceWidth * 0.4 Then
-            p.CropLeft = FixMod(CInt(p.SourceWidth * 0.4))
+        Dim maxWidth = CInt(p.SourceWidth * 0.8)
+        Dim maxHeight = CInt(p.SourceHeight * 0.8)
+
+        If p.CropLeft > maxWidth Then
+            p.CropLeft = FixMod(maxWidth)
         End If
 
-        If p.CropTop > p.SourceHeight * 0.4 Then
-            p.CropTop = FixMod(CInt(p.SourceHeight * 0.4))
+        If p.CropTop > maxHeight Then
+            p.CropTop = FixMod(maxHeight)
         End If
 
-        If p.CropRight > p.SourceWidth * 0.4 Then
-            p.CropRight = FixMod(CInt(p.SourceWidth * 0.4))
+        If p.CropRight > maxWidth Then
+            p.CropRight = FixMod(maxWidth)
         End If
 
-        If p.CropBottom > p.SourceHeight * 0.4 Then
-            p.CropBottom = FixMod(CInt(p.SourceHeight * 0.4))
+        If p.CropBottom > maxHeight Then
+            p.CropBottom = FixMod(maxHeight)
         End If
 
         Renderer.CropLeft = p.CropLeft

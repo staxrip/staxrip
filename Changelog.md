@@ -16,13 +16,14 @@ not published yet
 - Make Main window focus after processing adjustable (Dendraspis, [#333](/../../issues/333))
 - Delete 'SEI writing options'(--opts) in x264 options (Dendraspis, [#748](/../../issues/748))
 - Add "Code Preview" to Remembered Window Positions (Dendraspis)
+- Extend Crop side limits to 80% (Dendraspis)
 - Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)
 - Add AVS SeparateFields filter (44vince44)
 - Add two missing filters to JPSDR (JKyle, [#747](/../../issues/747))
 - Update RgTools URLs, description, and filter list (JKyle, [#720](/../../issues/720))
-- Big filter profile update (JKyle, [#725](/../../issues/725))
+- Big filter profile update (JKyle, [#725](/../../issues/725) and more)
     - Added filters:  
-    AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Bwdif(AVS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), DeJump(AVS), DeRainbow(AVS), DotKill(AVS/VS), ExactDeDup(AVS), FillBorders(AVS/VS), FillDrops(AVS/VS), Fix Horizontal Rainbow(AVS profile), GRunT(AVS plugin), Letterbox(AVS/VS), ReduceFlicker(AVS), RT_Stats(AVS plugin), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
+    AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Bwdif(AVS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), DeJump(AVS), DeRainbow(AVS), DotKill(AVS/VS), ExactDeDup(AVS), FillBorders(AVS/VS), FillDrops(AVS/VS), Fix Horizontal Rainbow(AVS profile), GRunT(AVS plugin), HDRTools(AVS), Letterbox(AVS/VS), NNEDI3_rpow2(AVS/VS), ReduceFlicker(AVS), RT_Stats(AVS plugin), Santiag(AVS), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
     - Updated filter profiles:  
     AddBorders(VS), AddGrainC(AVS), Bwdif(VS), DeRainbow(VS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
 - AddGrain r8

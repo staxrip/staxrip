@@ -551,10 +551,14 @@ Public Class AppsForm
             ElseIf Not plugin.AvsFilterNames Is Nothing Then
                 Headers("Filters").Visible = True
                 Contents("Filters").Text = plugin.AvsFilterNames.Join(", ")
+                Contents("Filters").AutoEllipsis = True
+                Contents("Filters").MaximumSize = New Size(Contents("Filters").Parent.Width - Contents("Filters").Left - Contents("Filters").Padding.Left, 333)
                 Contents("Filters").Visible = True
             ElseIf Not plugin.VsFilterNames Is Nothing Then
                 Headers("Filters").Visible = True
                 Contents("Filters").Text = plugin.VsFilterNames.Join(", ")
+                Contents("Filters").AutoEllipsis = True
+                Contents("Filters").MaximumSize = New Size(Contents("Filters").Parent.Width - Contents("Filters").Left - Contents("Filters").Padding.Left, 333)
                 Contents("Filters").Visible = True
             End If
         End If

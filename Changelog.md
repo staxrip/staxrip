@@ -26,13 +26,13 @@ not published yet
     - Added filters:  
     AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Bwdif(AVS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), DeJump(AVS), DeRainbow(AVS), DotKill(AVS/VS), ExactDeDup(AVS), FillBorders(AVS/VS), FillDrops(AVS/VS), Fix Horizontal Rainbow(AVS profile), GRunT(AVS plugin), HDRTools(AVS), Letterbox(AVS/VS), NNEDI3_rpow2(AVS/VS), ReduceFlicker(AVS), RT_Stats(AVS plugin), Santiag(AVS), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
     - Updated filter profiles:  
-    AddBorders(VS), AddGrainC(AVS), Bwdif(VS), DeRainbow(VS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
+    AddBorders(VS), AddGrainC(AVS), Bwdif(VS), ChubbyRain2(AVS), DeRainbow(VS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
 - AddGrain r8
 - AvsResize r9 StvG
 - Bifrost v2.1.0 (AVS) / v2.2 (VS)
 - Bwdif v1.2.1 (AVS) / r3 (VS)
 - CASm 2021-05-19
-- ChubbyRain2 mod 2021-06-14
+- ChubbyRain2 2021-07-20 mod by Asd-g
 - DeFlicker v0.6
 - DeJump mod 2021-07-14 by JKyle
 - DeRainbow 2014-02-23
@@ -43,6 +43,7 @@ not published yet
 - FillDrops mod 2021-07-10 by Selur (AVS) / mod 2021-07-11 by JKyle (VS)
 - flash3kyuu_deband v2.0.0-1 (Avisynth+ plugins pack r14)
 - GRunT v1.0.2
+- JPSDR v3.2.7 W7 AVX2
 - MvTools2 v2.7.45
 - Neo F3KDB r7
 - QTGMC v3.382s

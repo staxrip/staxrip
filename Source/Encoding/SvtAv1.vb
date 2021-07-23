@@ -1,4 +1,5 @@
 ﻿
+Imports System.Text
 Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
@@ -65,17 +66,29 @@ Public Class SVTAV1
     Overrides Sub Encode()
         p.Script.Synchronize()
 
+        Encode("Video encoding", Params.GetCommandLine(True, True, 1), s.ProcessPriority)
+
+        If Params.Passes.Value = 1 Then
+            Encode("Video encoding second pass", Params.GetCommandLine(True, True, 2), s.ProcessPriority)
+        End If
+
+        AfterEncoding()
+    End Sub
+
+    Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
+        p.Script.Synchronize()
+
         Using proc As New Proc
-            proc.Header = "Video encoding"
+            proc.Header = passName
             proc.Package = Package.SVTAV1
+            proc.Encoding = Encoding.UTF8
+            proc.Priority = priority
             proc.IntegerFrameOutput = True
             proc.FrameCount = p.Script.GetFrameCount
             proc.File = "cmd.exe"
-            proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
+            proc.Arguments = "/S /C """ + commandLine + """"
             proc.Start()
         End Using
-
-        AfterEncoding()
     End Sub
 
     Overrides Function GetMenu() As MenuList
@@ -106,6 +119,11 @@ Public Class SVTAV1
             Title = "SVT-AV1 Options"
         End Sub
 
+        Property Custom As New StringParam With {
+            .Text = "Custom",
+            .Quotes = QuotesMode.Never,
+            .AlwaysOn = True}
+
         Property Mode As New OptionParam With {
             .Switch = "--rc",
             .Switches = {"--tbr"},
@@ -113,16 +131,24 @@ Public Class SVTAV1
             .IntegerValue = True,
             .Options = {"0: CQP", "1: VBR", "2: CVBR"}}
 
+        Property Passes As New OptionParam With {
+            .HelpSwitch = "--passes",
+            .Text = "Passes",
+            .Init = 0,
+            .Options = {"1 Pass", "2 Passes"},
+            .Values = {"1", "2"}}
+
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
 
                     Add("Basic",
-                        New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
+                        Custom,
                         Mode,
                         New OptionParam With {.Switch = "--preset", .Text = "Preset", .Init = 8, .IntegerValue = True, .Options = {"0: Very Slow", "1: Slower", "2: Slow", "3: Medium", "4: Fast", "5: Faster", "6: Very Fast", "7: Super Fast", "8: Ultra Fast"}},
                         New OptionParam With {.Switch = "--profile", .Text = "Profile", .IntegerValue = True, .Options = {"0: Main", "1: High", "2: Professional"}},
+                        Passes,
                         New OptionParam With {.Switch = "--scm", .Text = "Screen Content Mode", .IntegerValue = True, .Options = {"0: OFF", "1: ON", "2: Content Based Detection"}},
                         New OptionParam With {.Switch = "--irefresh-type", .Text = "Intra Refresh Type", .Options = {"1: CRA (Open GOP)", "2: IDR (Closed GOP)"}, .Values = {"1", "2"}},
                         New NumParam With {.Switch = "--keyint", .Text = "Intra Period", .Init = -1, .Config = {-2, 255, 1}},
@@ -142,8 +168,9 @@ Public Class SVTAV1
             includeExecutable As Boolean,
             Optional pass As Integer = 1) As String
 
+            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt).Escape
+            Dim statsPath = p.VideoEncoder.OutputPath.ChangeExt(".stat").Escape
             Dim ret = ""
-            Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
             If includePaths AndAlso includeExecutable Then
                 ret = Package.ffmpeg.Path.Escape +
@@ -153,7 +180,11 @@ Public Class SVTAV1
                     Package.SVTAV1.Path.Escape
             End If
 
-            Dim q = From i In Items Where i.GetArgs <> ""
+            If Passes.Value > 0 Then
+                ret += " --pass " & pass
+            End If
+
+            Dim q = From i In Items Where i.GetArgs <> "" AndAlso Not IsCustom(pass, i.Switch)
 
             If q.Count > 0 Then
                 ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
@@ -168,7 +199,9 @@ Public Class SVTAV1
             End If
 
             If includePaths Then
-                ret += " -n " & p.Script.GetFrameCount & " -i stdin -b " + targetPath.Escape
+                ret += " -n " & p.Script.GetFrameCount & " -i stdin"
+                ret += If(Passes.Value = 1, " --stats " + statsPath, "")
+                ret += If(Passes.Value = 0 OrElse (Passes.Value = 1 AndAlso pass = 2), " -b " + targetPath, "")
             End If
 
             Return ret.Trim
@@ -177,5 +210,16 @@ Public Class SVTAV1
         Public Overrides Function GetPackage() As Package
             Return Package.SVTAV1
         End Function
+
+        Function IsCustom(pass As Integer, switch As String) As Boolean
+            If switch = "" Then
+                Return False
+            End If
+
+            If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then
+                Return True
+            End If
+        End Function
+
     End Class
 End Class

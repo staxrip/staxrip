@@ -52,11 +52,7 @@ Public Class x265Enc
         AfterEncoding()
     End Sub
 
-    Overloads Sub Encode(
-        passName As String,
-        commandLine As String,
-        priority As ProcessPriorityClass)
-
+    Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
         If Not CanChunkEncode() Then
             p.Script.Synchronize()
         End If
@@ -208,8 +204,7 @@ Public Class x265Enc
         script As VideoScript,
         Optional includePaths As Boolean = True) As String
 
-        Return Params.GetArgs(pass, startFrame, endFrame, chunkName, script,
-                              OutputPath.DirAndBase + OutputExtFull, includePaths, True)
+        Return Params.GetArgs(pass, startFrame, endFrame, chunkName, script, OutputPath.DirAndBase + OutputExtFull, includePaths, True)
     End Function
 
     Overrides Sub ShowConfigDialog()

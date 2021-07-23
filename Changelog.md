@@ -1,25 +1,32 @@
 not published yet
 =========================
 
+- New Discord Server Link: https://discord.gg/uz8pVR79Bd , if you haven't joined in yet
+- Nothing more ... yet
+
+
+v2.7.0 (2021-07-26) (not published yet)
+=========================
+
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd
-- [!!!] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them
+- [!!!] Changed names cause all encoder profiles to be reset. This means you have to re-set them by hand or backup and restore them after update.
+- [!!!] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them.
 - Add Assistant option to warn if no audio in output (Dendraspis, [#709](/../../issues/709))
 - Fix --vpp-pad param output for NVEnc and VCEEnc (Dendraspis, [#723](/../../issues/723))
 - Fix crash using "Create job for each selection" (Dendraspis, [#727](/../../issues/727))
-- Fix crash when copy error message for some exception (Dendraspis)
-- Update SVT-AV1 parameters (Dendraspis, [#731](/../../issues/731))
+- Fix crash when copy error message of some exceptions (Dendraspis)
+- Add and update SVT-AV1 parameters (Dendraspis, [#731](/../../issues/731))
 - Add option to extract timestamps from all mkv files (Dendraspis)
 - Add Assistant condition for MKV file with timestamps and changed frame rate or count (Dendraspis, [#729](/../../issues/729))
 - Fix *Default* and *Forced* track settings for MP4Box (Dendraspis, [#737](/../../issues/737))
 - Add setting to prefer Windows Terminal over Powershell when present (Dendraspis, [#738](/../../issues/738))
 - Command Line Preview now uses the Code Preview window primarily, but is optional (Dendraspis, [#738](/../../issues/738))
 - Make Main window focus after processing adjustable (Dendraspis, [#333](/../../issues/333))
-- Delete 'SEI writing options'(--opts) in x264 options (Dendraspis, [#748](/../../issues/748))
+- Remove 'SEI writing options'(--opts) from x264 options (deprecated) (Dendraspis, [#748](/../../issues/748))
 - Add "Code Preview" to Remembered Window Positions (Dendraspis)
 - Extend Crop side limits to 80% (Dendraspis)
 - Use MkvExtract to extract timestamps for Command Line Demuxers (Dendraspis)
 - Fix wrong TargetFile after renaming via "After Video Encoded" event (Dendraspis, [#755](/../../issues/755))
-- Add Multipass options to SVT-AV1 (Dendraspis, [#731](/../../issues/731))
 - Fix f3kdb AVS issues (Dendraspis, JKyle, 44vince44)
 - Add AVS SeparateFields filter (44vince44)
 - Add two missing filters to JPSDR (JKyle, [#747](/../../issues/747))
@@ -29,46 +36,50 @@ not published yet
     AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Bwdif(AVS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), DeJump(AVS), DeRainbow(AVS), DotKill(AVS/VS), ExactDeDup(AVS), FillBorders(AVS/VS), FillDrops(AVS/VS), Fix Horizontal Rainbow(AVS profile), GRunT(AVS plugin), HDRTools(AVS), Letterbox(AVS/VS), NNEDI3_rpow2(AVS/VS), ReduceFlicker(AVS), RT_Stats(AVS plugin), Santiag(AVS), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
     - Updated filter profiles:  
     AddBorders(VS), AddGrainC(AVS), Bwdif(VS), ChubbyRain2(AVS), DeRainbow(VS), DirectShowSource(AVS), DSS2(AVS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
-- AddGrain r8
-- AvsResize r9 StvG
-- Bifrost v2.1.0 (AVS) / v2.2 (VS)
-- Bwdif v1.2.1 (AVS) / r3 (VS)
-- CASm 2021-05-19
-- ChubbyRain2 2021-07-20 mod by Asd-g
-- DeFlicker v0.6
-- DeJump mod 2021-07-14 by JKyle
-- DeRainbow 2014-02-23
-- DotKill v1.0.0 (AVS) / R2 (VS)
-- ExactDedup v0.0.7Beta
-- FFT3DFilter v2.9
-- FillBorders v1.3.0 (AVS) / v2 (VS)
-- FillDrops mod 2021-07-10 by Selur (AVS) / mod 2021-07-11 by JKyle (VS)
-- flash3kyuu_deband v2.0.0-1 (Avisynth+ plugins pack r14)
-- GRunT v1.0.2
-- JPSDR v3.2.7 W7 AVX2
-- MvTools2 v2.7.45
-- Neo F3KDB r7
-- QTGMC v3.382s
-- ReduceFlicker v0.1.1
-- RgTools v1.2
-- RT_Stats v2.00Beta13
-- Srestore v2.797
-- TEMmod v0.2.2
-- TemporalDegrain2 v2.3.1
-- TimecodeFPS v1.1.1
-- VfrToCfr v1.1.1
-- vsCnr2 v1.0.0
-- VSFilterMod v5.2.5
-- Zs_RF_Shared v1.154
-- AOMEnc v3.1.0-297-gf19edfa95-x64-gcc10.3.0 Patman
-- chapterEditor v1.29
-- MKVToolNix v59.0
-- MP4Box v1.1.0-DEV-rev964-g35c58ce38-x64-gcc10.3.0 Patman
-- mpv.net v5.4.9.0
-- NVEnc v5.34
-- QSVEnc v5.05
-- Rav1e v0.5.0-alpha-(p20210601-1-g1c8ad5b1)-x64-gcc10.3.0 Patman
-- SVT-AV1 v0.8.7-15-gf6db3119-x64-gcc10.3.0 Patman
+- Updated tools
+  - AOMEnc v3.1.0-297-gf19edfa95-x64-gcc10.3.0 Patman
+  - chapterEditor v1.29
+  - MKVToolNix v59.0
+  - MP4Box v1.1.0-DEV-rev964-g35c58ce38-x64-gcc10.3.0 Patman
+  - mpv.net v5.4.9.0
+  - NVEnc v5.35
+  - QSVEnc v5.05
+  - Python v3.9.6
+  - Rav1e v0.5.0-alpha-(p20210601-1-g1c8ad5b1)-x64-gcc10.3.0 Patman
+  - SVT-AV1 v0.8.7-15-gf6db3119-x64-gcc10.3.0 Patman
+  - VapourSynth R54
+- Updated Filters
+  - AddGrain r8
+  - AvsResize r9 StvG
+  - Bifrost v2.1.0 (AVS) / v2.2 (VS)
+  - Bwdif v1.2.1 (AVS) / r3 (VS)
+  - CASm 2021-05-19
+  - ChubbyRain2 2021-07-20 mod by Asd-g
+  - DeFlicker v0.6
+  - DeJump mod 2021-07-14 by JKyle
+  - DeRainbow 2014-02-23
+  - DotKill v1.0.0 (AVS) / R2 (VS)
+  - ExactDedup v0.0.7Beta
+  - FFT3DFilter v2.9
+  - FillBorders v1.3.0 (AVS) / v2 (VS)
+  - FillDrops mod 2021-07-10 by Selur (AVS) / mod 2021-07-11 by JKyle (VS)
+  - flash3kyuu_deband v2.0.0-1 (Avisynth+ plugins pack r14)
+  - GRunT v1.0.2
+  - JPSDR v3.2.7 W7 AVX2
+  - MvTools2 v2.7.45
+  - Neo F3KDB r7
+  - QTGMC v3.382s
+  - ReduceFlicker v0.1.1
+  - RgTools v1.2
+  - RT_Stats v2.00Beta13
+  - Srestore v2.797
+  - TEMmod v0.2.2
+  - TemporalDegrain2 v2.3.1
+  - TimecodeFPS v1.1.1
+  - VfrToCfr v1.1.1
+  - vsCnr2 v1.0.0
+  - VSFilterMod v5.2.5
+  - Zs_RF_Shared v1.154
 
 
 v2.6.0 (2021-05-22)

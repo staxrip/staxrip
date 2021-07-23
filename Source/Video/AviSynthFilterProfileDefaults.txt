@@ -3,8 +3,8 @@
 Automatic = # can be configured at: Tools > Settings > Source Filters
 AviSource = AviSource("%source_file%", audio=false)
 D2VSource = D2VSource("%source_file%")
-DirectShowSource = DirectShowSource("%source_file%", audio=false)
-DSS2 = DSS2("%source_file%")
+DirectShowSource = DirectShowSource("%source_file%", audio=false) # specify the frame rate with fps=... for wmv or mov files
+DSS2 = DSS2("%source_file%") # specify the frame rate with fps=... for wmv or mov files
 
 FFMS2 =
     tcFile = "%temp_file%_timestamps.txt" # timestamps file path

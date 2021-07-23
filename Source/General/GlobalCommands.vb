@@ -457,7 +457,13 @@ Public Class GlobalCommands
                       <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
                       path As String)
 
+        Dim oldEncodeFile = p.TempDir + p.TargetFile.Base + "_out." + p.VideoEncoder.OutputExt
         p.TargetFile = Macro.Expand(path)
+        Dim newEncodeFile = p.TempDir + p.TargetFile.Base + "_out." + p.VideoEncoder.OutputExt
+
+        If File.Exists(oldEncodeFile) Then
+            File.Move(oldEncodeFile, newEncodeFile)
+        End If
     End Sub
 
     <Command("Loads a source file.")>

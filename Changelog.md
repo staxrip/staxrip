@@ -15,6 +15,7 @@ not published yet
 - Command Line Preview now uses the Code Preview window primarily, but is optional (Dendraspis, [#738](/../../issues/738))
 - Make Main window focus after processing adjustable (Dendraspis, [#333](/../../issues/333))
 - Delete 'SEI writing options'(--opts) in x264 options (Dendraspis, [#748](/../../issues/748))
+- Fix wrong TargetFile after renaming via "After Video Encoded" event (Dendraspis, [#755](/../../issues/755))
 - Add "Code Preview" to Remembered Window Positions (Dendraspis)
 - Extend Crop side limits to 80% (Dendraspis)
 - Use MkvExtract to extract timestamps for Command Line Demuxers (Dendraspis)
@@ -26,7 +27,7 @@ not published yet
     - Added filters:  
     AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Bwdif(AVS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), DeJump(AVS), DeRainbow(AVS), DotKill(AVS/VS), ExactDeDup(AVS), FillBorders(AVS/VS), FillDrops(AVS/VS), Fix Horizontal Rainbow(AVS profile), GRunT(AVS plugin), HDRTools(AVS), Letterbox(AVS/VS), NNEDI3_rpow2(AVS/VS), ReduceFlicker(AVS), RT_Stats(AVS plugin), Santiag(AVS), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
     - Updated filter profiles:  
-    AddBorders(VS), AddGrainC(AVS), Bwdif(VS), ChubbyRain2(AVS), DeRainbow(VS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
+    AddBorders(VS), AddGrainC(AVS), Bwdif(VS), ChubbyRain2(AVS), DeRainbow(VS), DirectShowSource(AVS), DSS2(AVS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
 - AddGrain r8
 - AvsResize r9 StvG
 - Bifrost v2.1.0 (AVS) / v2.2 (VS)

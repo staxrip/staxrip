@@ -37,16 +37,16 @@ v2.7.0 (2021-07-26) (not published yet)
     - Updated filter profiles:  
     AddBorders(VS), AddGrainC(AVS), Bwdif(VS), ChubbyRain2(AVS), DeRainbow(VS), DirectShowSource(AVS), DSS2(AVS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
 - Updated tools
-  - AOMEnc v3.1.0-297-gf19edfa95-x64-gcc10.3.0 Patman
+  - AOMEnc v3.1.2-553-g997549cf4-x64-gcc10.3.0 Patman
   - chapterEditor v1.29
   - MKVToolNix v59.0
-  - MP4Box v1.1.0-DEV-rev964-g35c58ce38-x64-gcc10.3.0 Patman
+  - MP4Box v1.1.0-DEV-rev1143-g91d397ddc-x64-gcc10.3.0 Patman
   - mpv.net v5.4.9.0
   - NVEnc v5.35
   - QSVEnc v5.05
   - Python v3.9.6
-  - Rav1e v0.5.0-alpha-(p20210601-1-g1c8ad5b1)-x64-gcc10.3.0 Patman
-  - SVT-AV1 v0.8.7-15-gf6db3119-x64-gcc10.3.0 Patman
+  - Rav1e v0.5.0-alpha-(p20210720-4-g0f25619a)-x64-gcc10.3.0 Patman
+  - SVT-AV1 v0.8.7-30-g3af80294-x64-gcc10.3.0 Patman
   - VapourSynth R54
 - Updated Filters
   - AddGrain r8

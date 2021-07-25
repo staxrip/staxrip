@@ -5,7 +5,7 @@ not published yet
 - Nothing more ... yet
 
 
-v2.7.0 (2021-07-26) (not published yet)
+v2.7.0 (2021-07-25)
 =========================
 
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd

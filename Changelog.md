@@ -3,6 +3,7 @@ not published yet
 
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd , if you haven't joined in yet
 - Separate checking all and required only apps on AppsForm (Dendraspis)
+- Add more parameters for VCEEnc (Dendraspis, [#757](/../../issues/757))
 - Updated tools
   - VCEEnc v6.12
 

@@ -109,7 +109,9 @@ Public Class VCEEnc
             audio-ignore-decode-error audio-ignore-notrack-error audio-resampler raw help input-file
             audio-samplerate audio-source audio-stream avs avvce-analyze output-file seek skip-frame
             check-avversion check-codecs check-decoders check-encoders check-filters check-protocols
-            check-formats dar format fps input-res log-framelist mux-option"
+            check-formats dar format fps input-res log-framelist mux-option
+            vpp-delogo vpp-delogo-cb vpp-delogo-cr vpp-delogo-depth output
+            vpp-delogo-pos vpp-delogo-select vpp-delogo-y"
 
         tester.Package = Package.VCEEnc
         tester.CodeFile = Folder.Startup.Parent + "Encoding\vceenc.vb"
@@ -157,6 +159,15 @@ Public Class VCEEnc
             .Value = 27,
             .VisibleFunc = Function() Mode.Value = 0,
             .Config = {0, 51}}
+
+        Property Pa As New BoolParam With {.Switch = "--pa", .Text = "Pre-Analysis to enhance quality", .ArgsFunc = AddressOf GetPaArgs}
+        Property PaSc As New OptionParam With {.Text = "      Sensitivity of scene change detection", .HelpSwitch = "--pa-sc", .Init = 2, .Options = {"None", "Low", "Medium", "High"}}
+        Property PaSs As New OptionParam With {.Text = "      Sensitivity of static scene detection", .HelpSwitch = "--pa-ss", .Init = 2, .Options = {"None", "Low", "Medium", "High"}}
+        Property PaActivityType As New OptionParam With {.Text = "      Block activity calcualtion mode", .HelpSwitch = "--pa-activity-type", .Init = 0, .Options = {"Y", "YUV"}}
+        Property PaCaqStrength As New OptionParam With {.Text = "      Content Adaptive Quantization (CAQ) strength", .HelpSwitch = "--pa-caq-strength", .Init = 1, .Options = {"Low", "Medium", "High"}}
+        Property PaInitqpsc As New NumParam With {.Text = "      Initial qp after scene change", .HelpSwitch = "--pa-initqpsc", .Init = -1.0, .Config = {-1.0, 100.0, 1, 0}}
+        Property PaFskipMaxqp As New NumParam With {.Text = "      Threshold to insert skip frame on static scene", .HelpSwitch = "--pa-fskip-maxqp", .Init = 35.0, .Config = {0.0, 100.0, 1, 0}}
+
 
         Property Tweak As New BoolParam With {.Switch = "--vpp-tweak", .Text = "Tweaking", .ArgsFunc = AddressOf GetTweakArgs}
         Property TweakContrast As New NumParam With {.Text = "      Contrast", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {-2.0, 2.0, 0.1, 1}}
@@ -295,6 +306,7 @@ Public Class VCEEnc
                         New OptionParam With {.Switch = "--profile", .Name = "profile265", .VisibleFunc = Function() Codec.ValueText = "hevc", .Text = "Profile", .Options = {"Main"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelH264", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelH265", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "hevc", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
+                        New OptionParam With {.Switch = "--tier", .Text = "Tier", .Options = {"Main", "High"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         QPI, QPP, QPB)
                     Add("Slice Decision",
                         New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},
@@ -310,6 +322,9 @@ Public Class VCEEnc
                         New NumParam With {.Switch = "--qp-max", .Text = "QP Max", .Config = {0, 100}, .Init = 100},
                         New NumParam With {.Switch = "--b-deltaqp", .Text = "Non-ref Bframe QP Offset"},
                         New NumParam With {.Switch = "--bref-deltaqp", .Text = "Ref Bframe QP Offset"})
+                    Add("Pre...",
+                        New BoolParam With {.Switch = "--pe", .Text = "Pre-Encode assisted rate control"},
+                        Pa, PaSc, PaSs, PaActivityType, PaCaqStrength, PaInitqpsc, PaFskipMaxqp)
                     Add("VPP | Misc",
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
@@ -364,11 +379,11 @@ Public Class VCEEnc
                         New StringParam With {.Switch = "--chapter", .Text = "Chapters", .BrowseFile = True},
                         New StringParam With {.Switch = "--log", .Text = "Log File", .BrowseFile = True},
                         New StringParam With {.Switch = "--timecode", .Text = "Timecode File", .BrowseFile = True},
-                        New OptionParam With {.Switch = "--tier", .Text = "Tier", .Options = {"Main", "High"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New OptionParam With {.Switch = "--motion-est", .Text = "Motion Estimation", .Options = {"Q-pel", "Full-pel", "Half-pel"}},
                         New NumParam With {.Switch = "--input-analyze", .Text = "Input Analyze", .Init = 5, .Config = {1, 600, 0.1, 1}},
                         New BoolParam With {.Switch = "--chapter-copy", .Text = "Copy Chapters"},
+                        New BoolParam With {.Switch = "--vbaq", .Text = "Adaptive quantization in frame"},
                         New BoolParam With {.Switch = "--filler", .Text = "Use filler data"})
                 End If
 
@@ -448,6 +463,13 @@ Public Class VCEEnc
                 TweakSaturation.NumEdit.Enabled = Tweak.Value
                 TweakHue.NumEdit.Enabled = Tweak.Value
                 TweakBrightness.NumEdit.Enabled = Tweak.Value
+
+                PaSc.MenuButton.Enabled = Pa.Value
+                PaSs.MenuButton.Enabled = Pa.Value
+                PaActivityType.MenuButton.Enabled = Pa.Value
+                PaCaqStrength.MenuButton.Enabled = Pa.Value
+                PaInitqpsc.NumEdit.Enabled = Pa.Value
+                PaFskipMaxqp.NumEdit.Enabled = Pa.Value
 
                 PmdApplyCount.NumEdit.Enabled = Pmd.Value
                 PmdStrength.NumEdit.Enabled = Pmd.Value
@@ -546,7 +568,20 @@ Public Class VCEEnc
                 If PmdApplyCount.Value <> PmdApplyCount.DefaultValue Then ret += ",apply_count=" & PmdApplyCount.Value
                 If PmdStrength.Value <> PmdStrength.DefaultValue Then ret += ",strength=" & PmdStrength.Value
                 If PmdThreshold.Value <> PmdThreshold.DefaultValue Then ret += ",threshold=" & PmdThreshold.Value
-                Return "--vpp-pmd " + ret.TrimStart(","c)
+                Return ("--vpp-pmd " + ret.TrimStart(","c)).Trim()
+            End If
+        End Function
+
+        Function GetPaArgs() As String
+            If Pa.Value Then
+                Dim ret = ""
+                If PaSc.Value <> PaSc.DefaultValue Then ret += " --pa-sc " & PaSc.OptionText.ToInvariantString
+                If PaSs.Value <> PaSs.DefaultValue Then ret += " --pa-ss " & PaSs.OptionText.ToInvariantString
+                If PaActivityType.Value <> PaActivityType.DefaultValue Then ret += " --pa-activity-type " & PaActivityType.OptionText.ToInvariantString
+                If PaCaqStrength.Value <> PaCaqStrength.DefaultValue Then ret += " --pa-caq-strength " & PaCaqStrength.OptionText.ToInvariantString
+                If PaInitqpsc.Value <> PaInitqpsc.DefaultValue Then ret += " --pa-initqpsc " & PaInitqpsc.Value.ToInvariantString
+                If PaFskipMaxqp.Value <> PaFskipMaxqp.DefaultValue Then ret += " --pa-fskip-maxqp " & PaFskipMaxqp.Value.ToInvariantString
+                Return ("--pa " + ret.TrimStart(" "c)).Trim()
             End If
         End Function
 
@@ -558,7 +593,7 @@ Public Class VCEEnc
                 If TweakSaturation.Value <> TweakSaturation.DefaultValue Then ret += ",saturation=" & TweakSaturation.Value.ToInvariantString
                 If TweakGamma.Value <> TweakGamma.DefaultValue Then ret += ",gamma=" & TweakGamma.Value.ToInvariantString
                 If TweakHue.Value <> TweakHue.DefaultValue Then ret += ",hue=" & TweakHue.Value.ToInvariantString
-                Return "--vpp-tweak " + ret.TrimStart(","c)
+                Return ("--vpp-tweak " + ret.TrimStart(","c)).Trim()
             End If
         End Function
 

@@ -37,6 +37,7 @@ Public Class AppsForm
     Friend WithEvents miFindPath As MenuItemEx
     Friend WithEvents miShowGrid As MenuItemEx
     Friend WithEvents miStatus As MenuItemEx
+    Friend WithEvents miStatusRequired As MenuItemEx
     Friend WithEvents ToolStripMenuItem1 As ToolStripSeparator
     Friend WithEvents miAutoUpdate As MenuItemEx
     Friend WithEvents miEditVersion As MenuItemEx
@@ -70,6 +71,7 @@ Public Class AppsForm
         Me.miEditChangelog = New StaxRip.UI.MenuItemEx()
         Me.miShowGrid = New StaxRip.UI.MenuItemEx()
         Me.miStatus = New StaxRip.UI.MenuItemEx()
+        Me.miStatusRequired = New StaxRip.UI.MenuItemEx()
         Me.miAutoUpdate = New StaxRip.UI.MenuItemEx()
         Me.miUpdateRequest = New StaxRip.UI.MenuItemEx()
         Me.miDownload = New StaxRip.UI.MenuItemEx()
@@ -171,7 +173,7 @@ Public Class AppsForm
         '
         Me.ddbTools.AutoToolTip = False
         Me.ddbTools.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miEditPath, Me.miFindPath, Me.miClearPaths, Me.miCopyPath, Me.miPATHEnvVar, Me.ToolStripMenuItem1, Me.miEditVersion, Me.miEditChangelog, Me.miShowGrid, Me.miStatus, Me.miAutoUpdate, Me.miUpdateRequest, Me.miDownload, Me.miWebsite, Me.miExplore, Me.miLaunch, Me.miHelp})
+        Me.ddbTools.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miEditPath, Me.miFindPath, Me.miClearPaths, Me.miCopyPath, Me.miPATHEnvVar, Me.ToolStripMenuItem1, Me.miEditVersion, Me.miEditChangelog, Me.miShowGrid, Me.miStatus, Me.miStatusRequired, Me.miAutoUpdate, Me.miUpdateRequest, Me.miDownload, Me.miWebsite, Me.miExplore, Me.miLaunch, Me.miHelp})
         Me.ddbTools.Image = CType(resources.GetObject("ddbTools.Image"), System.Drawing.Image)
         Me.ddbTools.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ddbTools.Name = "ddbTools"
@@ -257,7 +259,16 @@ Public Class AppsForm
         Me.miStatus.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
         Me.miStatus.Size = New System.Drawing.Size(594, 67)
         Me.miStatus.Text = "Check All"
-        Me.miStatus.ToolTipText = "Check status of all required tools"
+        Me.miStatus.ToolTipText = "Check status of all tools"
+        '
+        'miStatusRequired
+        '
+        Me.miStatusRequired.Help = Nothing
+        Me.miStatusRequired.Name = "miStatusRequired"
+        Me.miStatusRequired.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Y), System.Windows.Forms.Keys)
+        Me.miStatusRequired.Size = New System.Drawing.Size(594, 67)
+        Me.miStatusRequired.Text = "Check All Required"
+        Me.miStatusRequired.ToolTipText = "Check status of all required tools"
         '
         'miAutoUpdate
         '
@@ -829,13 +840,31 @@ Public Class AppsForm
         For Each pair In Package.Items
             Dim pack = pair.Value
 
-            If pack.Required AndAlso pack.GetStatus <> "" Then
+            If pack.GetStatus <> "" Then
                 txt += pack.Name + ": " + pack.GetStatus + BR2
             End If
         Next
 
         If txt = "" Then
             MsgInfo("OK!", "All tools have OK status!")
+        Else
+            MsgInfo(txt)
+        End If
+    End Sub
+
+    Sub miStatusRequired_Click(sender As Object, e As EventArgs) Handles miStatusRequired.Click
+        Dim txt As String
+
+        For Each pair In Package.Items
+            Dim pack = pair.Value
+
+            If pack.Required AndAlso pack.GetStatus <> "" Then
+                txt += pack.Name + ": " + pack.GetStatus + BR2
+            End If
+        Next
+
+        If txt = "" Then
+            MsgInfo("OK!", "All required tools have OK status!")
         Else
             MsgInfo(txt)
         End If

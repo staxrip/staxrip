@@ -2,8 +2,9 @@ not published yet
 =========================
 
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd , if you haven't joined in yet
-- Nothing more ... yet
-
+- Separate checking all and required only apps on AppsForm (Dendraspis)
+- Updated tools
+  - VCEEnc v6.12
 
 v2.7.0 (2021-07-25)
 =========================

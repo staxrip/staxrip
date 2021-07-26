@@ -5,7 +5,11 @@ not published yet
 - Separate checking all and required only apps on AppsForm (Dendraspis)
 - Add more parameters for VCEEnc (Dendraspis, [#757](/../../issues/757))
 - Updated tools
+  - ffmpeg-N-103081-gf7958d0883-x64-gcc10.3.0 Patman
   - VCEEnc v6.12
+- Updated filters
+  - SMDegrain v3.1.2.115s by JKyle
+
 
 v2.7.0 (2021-07-25)
 =========================

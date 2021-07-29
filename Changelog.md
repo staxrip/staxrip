@@ -6,7 +6,8 @@ not published yet
 - Add more parameters for VCEEnc (Dendraspis, [#757](/../../issues/757))
 - Updated tools
   - ffmpeg-N-103081-gf7958d0883-x64-gcc10.3.0 Patman
-  - VCEEnc v6.12
+  - QSVEnc v5.06
+  - VCEEnc v6.13
 - Updated filters
   - SMDegrain v3.1.2.115s by JKyle
 

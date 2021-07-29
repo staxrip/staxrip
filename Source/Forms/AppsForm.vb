@@ -267,7 +267,7 @@ Public Class AppsForm
         Me.miStatusRequired.Name = "miStatusRequired"
         Me.miStatusRequired.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Y), System.Windows.Forms.Keys)
         Me.miStatusRequired.Size = New System.Drawing.Size(594, 67)
-        Me.miStatusRequired.Text = "Check All Required"
+        Me.miStatusRequired.Text = "Check Required Only"
         Me.miStatusRequired.ToolTipText = "Check status of all required tools"
         '
         'miAutoUpdate

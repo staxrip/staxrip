@@ -835,6 +835,7 @@ Public Class AppsForm
     End Sub
 
     Sub miStatus_Click(sender As Object, e As EventArgs) Handles miStatus.Click
+        Dim counter As Integer = 0
         Dim txt As String
 
         For Each pair In Package.Items
@@ -842,17 +843,19 @@ Public Class AppsForm
 
             If pack.GetStatus <> "" Then
                 txt += pack.Name + ": " + pack.GetStatus + BR2
+                counter += 1
             End If
         Next
 
         If txt = "" Then
             MsgInfo("OK!", "All tools have OK status!")
         Else
-            MsgInfo(txt)
+            MsgInfo($"{counter} apps found!", txt)
         End If
     End Sub
 
     Sub miStatusRequired_Click(sender As Object, e As EventArgs) Handles miStatusRequired.Click
+        Dim counter As Integer = 0
         Dim txt As String
 
         For Each pair In Package.Items
@@ -860,13 +863,14 @@ Public Class AppsForm
 
             If pack.Required AndAlso pack.GetStatus <> "" Then
                 txt += pack.Name + ": " + pack.GetStatus + BR2
+                counter += 1
             End If
         Next
 
         If txt = "" Then
             MsgInfo("OK!", "All required tools have OK status!")
         Else
-            MsgInfo(txt)
+            MsgInfo($"{counter} apps found!", txt)
         End If
     End Sub
 

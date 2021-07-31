@@ -1022,7 +1022,8 @@ Public Class x265Params
                     Ref)
                 Add("Slice Decision 2", MinKeyint, Keyint, Bpyramid, OpenGop, IntraRefresh,
                     New BoolParam() With {.Switch = "--fades", .Text = "Detection and handling of fade-in regions"},
-                    New BoolParam() With {.Switch = "--hist-scenecut", .NoSwitch = "--no-hist-scenecut", .Text = "Scenecut detection using luma edge and chroma histograms"})
+                    New BoolParam() With {.Switch = "--hist-scenecut", .NoSwitch = "--no-hist-scenecut", .Text = "Scenecut detection using luma edge and chroma histograms"},
+                    New BoolParam() With {.Switch = "--traditional-scenecut", .NoSwitch = "--no-traditional-scenecut", .Init = True, .Text = "Traditional scenecut detection using intra and inter cost when '--hist-scenecut` is used."})
                 Add("Performance",
                     New StringParam With {.Switch = "--pools", .Switches = {"--numa-pools"}, .Text = "Pools"},
                     New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},

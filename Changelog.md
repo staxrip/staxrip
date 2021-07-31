@@ -1,15 +1,28 @@
-v2.8.0 (2021-08-01) (not published yet)
+not published yet
+=========================
+
+- see below...
+
+
+v2.8.0 (2021-08-01)
 =========================
 
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd , if you haven't joined in yet
 - Separate checking all and required only apps on AppsForm (Dendraspis)
 - Add more parameters for VCEEnc (Dendraspis, [#757](/../../issues/757))
-- Add --chroma-qp-offset param to NVEnc (Dendraspis)
+- Add --chroma-qp-offset param for NVEnc (Dendraspis)
+- Add --traditional-scenecut param for x265 (Dendraspis)
 - Updated tools
+  - AOMEnc v3.1.2-588-gd1b830121-x64-gcc10.3.0 Patman
   - ffmpeg-N-103081-gf7958d0883-x64-gcc10.3.0 Patman
+  - MP4Box v1.1.0-DEV-rev1161-g2dfbf0c7a-x64-gcc10.3.0 Patman
   - NVEnc v5.36
   - QSVEnc v5.06
+  - Rav1e v0.5.0-alpha-(p20210727)-x64-gcc10.3.0 Patman
+  - SVT-AV1 v0.8.7-31-g6c8c2e18-x64-gcc10.3.0 Patman
   - VCEEnc v6.13
+  - x264 v0.164.3065+9-7a0e6e8-.Mod-by-Patman.-x64-gcc10.3.0
+  - x265 v3.5+12+14-106329cbd-.Mod-by-Patman.-x64-gcc10.3.0
 - Updated filters
   - SMDegrain v3.1.2.115s by JKyle
 

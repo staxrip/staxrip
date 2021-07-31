@@ -1,11 +1,13 @@
-not published yet
+v2.8.0 (2021-08-01) (not published yet)
 =========================
 
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd , if you haven't joined in yet
 - Separate checking all and required only apps on AppsForm (Dendraspis)
 - Add more parameters for VCEEnc (Dendraspis, [#757](/../../issues/757))
+- Add --chroma-qp-offset param to NVEnc (Dendraspis)
 - Updated tools
   - ffmpeg-N-103081-gf7958d0883-x64-gcc10.3.0 Patman
+  - NVEnc v5.36
   - QSVEnc v5.06
   - VCEEnc v6.13
 - Updated filters

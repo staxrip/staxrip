@@ -2,7 +2,7 @@ not published yet
 =========================
 
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd , if you haven't joined in yet
-- see below...
+- Fix Check for Updates (Dendraspis)
 
 
 v2.8.0 (2021-08-01)

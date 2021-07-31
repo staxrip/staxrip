@@ -47,7 +47,7 @@ Public Class StaxRipUpdate
                 Dim response = Await HttpClient.GetAsync(releaseUrl)
                 response.EnsureSuccessStatusCode()
                 Dim content = Await response.Content.ReadAsStringAsync()
-                Dim linkMatches = Regex.Matches(content, "(?<="")/staxrip/staxrip/releases/download/(\d+\.\d+\.\d+(?:\.\d+)?)/(StaxRip-v(\d+\.\d+\.\d+(?:\.\d+)?)[^""]*\.7z)(?="")")
+                Dim linkMatches = Regex.Matches(content, "(?<="")/staxrip/staxrip/releases/download/v?(\d+\.\d+\.\d+(?:\.\d+)?)/(StaxRip-v(\d+\.\d+\.\d+(?:\.\d+)?)[^""]*\.7z)(?="")")
 
                 For Each linkMatch As Match In linkMatches
                     Dim onlineVersion = Version.Parse(linkMatch.Groups(3).Value)

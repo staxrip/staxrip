@@ -51,6 +51,7 @@ Public Class Project
     Public FileExistVideo As FileExistMode
     Public FirstOriginalSourceFile As String
     Public ForcedOutputMod As Integer = 8
+    Public ForcedOutputModOnlyIfCropped As Boolean = False
     Public HardcodedSubtitle As Boolean
     Public ImportVUIMetadata As Boolean = True
     Public ITU As Boolean

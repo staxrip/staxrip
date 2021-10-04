@@ -1,13 +1,10 @@
 not published yet
 =========================
 
-
-v2.9.0 (2021-10-05 .. probably)
-=========================
-
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd , if you haven't joined in yet
 - Fix Check for Updates (Dendraspis)
 - Add --thread-affinity to NVEnc (Dendraspis)
+- Add "Warn for invalid Output Mod only if video is cropped" option (Dendraspis)
 - Updated tools
   - MKVToolNix v61.0
   - NVEnc v5.40

@@ -3103,7 +3103,7 @@ Public Class MainForm
                 End If
             End If
 
-            If p.Script.Info.Width Mod p.ForcedOutputMod <> 0 Then
+            If p.Script.Info.Width Mod p.ForcedOutputMod <> 0 AndAlso (Not p.ForcedOutputModOnlyIfCropped OrElse p.Script.Info.Width <> p.SourceScript.Info.Width) Then
                 If ProcessTip("Change output width to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
                     CanIgnoreTip = Not p.AutoCorrectCropValues
@@ -3111,7 +3111,7 @@ Public Class MainForm
                 End If
             End If
 
-            If p.Script.Info.Height Mod p.ForcedOutputMod <> 0 Then
+            If p.Script.Info.Height Mod p.ForcedOutputMod <> 0 AndAlso (Not p.ForcedOutputModOnlyIfCropped OrElse p.Script.Info.Height <> p.SourceScript.Info.Height) Then
                 If ProcessTip("Change output height to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
                     CanIgnoreTip = Not p.AutoCorrectCropValues
@@ -4408,13 +4408,17 @@ Public Class MainForm
             m.Add(2, 4, 8, 16)
             m.Field = NameOf(p.ForcedOutputMod)
 
+            Dim b = ui.AddBool()
+            b.Text = "Warn for invalid Output Mod only if video is cropped"
+            b.Field = NameOf(p.ForcedOutputModOnlyIfCropped)
+
 
             '   ----------------------------------------------------------------
             ui.CreateFlowPage("Image | Aspect Ratio", True)
 
-            Dim b = ui.AddBool()
+            b = ui.AddBool()
             b.Text = "Use ITU-R BT.601 compliant aspect ratio"
-            b.Help = "Calculates the aspect ratio according to ITU-R BT.601 standard. "
+            b.Help = "Calculates the aspect ratio according to ITU-R BT.601 standard."
             b.Field = NameOf(p.ITU)
 
             b = ui.AddBool()

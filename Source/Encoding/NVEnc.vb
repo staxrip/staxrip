@@ -578,6 +578,7 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--aud", .Text = "Insert Access Unit Delimiter NAL"},
                         New BoolParam With {.Switch = "--repeat-headers", .Text = "Output VPS, SPS and PPS for every IDR frame"})
                     Add("Performance",
+                        New StringParam With {.Switch = "--thread-affinity", .Text = "Thread Affinity"},
                         New StringParam With {.Switch = "--perf-monitor", .Text = "Perf. Monitor"},
                         New OptionParam With {.Switch = "--cuda-schedule", .Text = "Cuda Schedule", .Init = 3, .Options = {"Let cuda driver to decide", "CPU will spin when waiting GPU tasks", "CPU will yield when waiting GPU tasks", "CPU will sleep when waiting GPU tasks"}, .Values = {"auto", "spin", "yield", "sync"}},
                         New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer", .Options = {"8", "16", "32", "64", "128"}},

@@ -1,8 +1,26 @@
 not published yet
 =========================
 
+
+v2.9.0 (2021-10-05 .. probably)
+=========================
+
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd , if you haven't joined in yet
 - Fix Check for Updates (Dendraspis)
+- Add --thread-affinity to NVEnc (Dendraspis)
+- Updated tools
+  - MKVToolNix v61.0
+  - NVEnc v5.40
+  - Python v3.9.7
+  - QSVEnc v6.03
+  - Subtitle Edit v3.6.2
+  - VapourSynth R56
+  - VCEEnc v6.16
+- Updated filters
+  - JincResize v2.1.0
+  - ffms2 v2.40.1285+13 1c6169a StvG
+  - FFT3D Neo r11
+  - L-SMASH-Works v20210811
 
 
 v2.8.0 (2021-08-01)

@@ -2,6 +2,8 @@ not published yet
 =========================
 
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd, if you haven't joined in yet
+- Updated tools
+  - MediaInfo v21.09
 
 
 v2.9.0 (2021-10-05)

@@ -1,4 +1,10 @@
-v2.9.0 (not published yet)
+not published yet
+=========================
+
+- New Discord Server Link: https://discord.gg/uz8pVR79Bd, if you haven't joined in yet
+
+
+v2.9.0 (2021-10-05)
 =========================
 
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd, if you haven't joined in yet
@@ -25,7 +31,6 @@ v2.9.0 (not published yet)
 v2.8.0 (2021-08-01)
 =========================
 
-- New Discord Server Link: https://discord.gg/uz8pVR79Bd , if you haven't joined in yet
 - Separate checking all and required only apps on AppsForm (Dendraspis)
 - Add more parameters for VCEEnc (Dendraspis, [#757](/../../issues/757))
 - Add --chroma-qp-offset param for NVEnc (Dendraspis)
@@ -48,7 +53,6 @@ v2.8.0 (2021-08-01)
 v2.7.0 (2021-07-25)
 =========================
 
-- New Discord Server Link: https://discord.gg/uz8pVR79Bd
 - [!!!] Changed names cause all encoder profiles to be reset. This means you have to re-set them by hand or backup and restore them after update.
 - [!!!] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them.
 - Add Assistant option to warn if no audio in output (Dendraspis, [#709](/../../issues/709))

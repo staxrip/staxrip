@@ -367,7 +367,7 @@ clipname.set_output()
             code =
                 "import os, sys" + BR +
                 "import vapoursynth as vs" + BR +
-                "core = vs.get_core()" + BR +
+                "core = vs.core" + BR +
                 GetVsPortableAutoLoadPluginCode() + BR +
                 "sys.path.append(r""" + Folder.Startup + "Apps\Plugins\VS\Scripts"")" + BR + code
         End If

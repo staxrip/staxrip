@@ -2,6 +2,8 @@ not published yet
 =========================
 
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd, if you haven't joined in yet
+- Remove Extension folder from mpv.net (Dendraspis, [#770](/../../issues/770))
+- Replace obsolete vs.get_core() with vs.core (Dendraspis, [#787](/../../issues/787))
 - Updated tools
   - MediaInfo v21.09
 

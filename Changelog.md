@@ -6,6 +6,7 @@ v2.9.0 (not published yet)
 - Add --thread-affinity to NVEnc (Dendraspis)
 - Add "Warn for invalid Output Mod only if video is cropped" option (Dendraspis)
 - Fix --quant-b-adapt for AOMEnc (Dendraspis, [#785](/../../issues/785))
+- Fix non-synced bitrate between options and main window for AOMEnc (Dendraspis, [#785](/../../issues/785))
 - Updated tools
   - MKVToolNix v61.0
   - NVEnc v5.40

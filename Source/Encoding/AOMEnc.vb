@@ -16,6 +16,15 @@ Public Class AOMEnc
     <NonSerialized>
     Private ParamsValue As AV1Params
 
+    Overrides Property Bitrate As Integer
+        Get
+            Return CInt(Params.TargetBitrate.Value)
+        End Get
+        Set(value As Integer)
+            Params.TargetBitrate.Value = value
+        End Set
+    End Property
+
     Property Params As AV1Params
         Get
             If ParamsValue Is Nothing Then

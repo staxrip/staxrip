@@ -2228,7 +2228,7 @@ Public Class MainForm
                 p.Script.Engine = ScriptEngine.VapourSynth
                 p.Script.Filters.Clear()
                 Dim code = "import vapoursynth as vs" + BR +
-                           "core = vs.core" + BR +
+                           "core = vs.get_core()" + BR +
                            "from importlib.machinery import SourceFileLoader" + BR +
                            $"SourceFileLoader('clip', r""{p.SourceFile}"").load_module()" + BR +
                            "clip = vs.get_output()"

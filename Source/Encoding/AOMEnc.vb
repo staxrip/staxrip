@@ -444,7 +444,7 @@ Public Class AV1Params
                     New BoolParam With {.Switch = "--use-intra-dct-only", .Text = "DCT only for INTRA modes"},
                     New BoolParam With {.Switch = "--use-inter-dct-only", .Text = "DCT only for INTER modes"},
                     New BoolParam With {.Switch = "--use-intra-default-tx-only", .Text = "Default-transform only for INTRA modes"},
-                    New BoolParam With {.Switch = "--quant-b-adapt", .Text = "Adaptive quantize_b"},
+                    New OptionParam With {.Switch = "--quant-b-adapt", .Text = "Adaptive quantize_b", .IntegerValue = True, .Init = 0, .Options = {"Off", "On"}},
                     New OptionParam With {.Switch = "--coeff-cost-upd-freq", .Text = "Update freq for coeff costs", .IntegerValue = True, .Init = 2, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
                     New OptionParam With {.Switch = "--mode-cost-upd-freq", .Text = "Update freq for mode costs", .IntegerValue = True, .Init = 2, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
                     New OptionParam With {.Switch = "--mv-cost-upd-freq", .Text = "Update freq for mv costs", .IntegerValue = True, .Init = 2, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},

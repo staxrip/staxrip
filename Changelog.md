@@ -2,6 +2,12 @@ not published yet
 =========================
 
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd, if you haven't joined in yet
+
+
+v2.10.0 (2021-10-05)
+=========================
+
+- New Discord Server Link: https://discord.gg/uz8pVR79Bd, if you haven't joined in yet
 - Remove Extension folder from mpv.net (Dendraspis, [#770](/../../issues/770))
 - Replace obsolete vs.get_core() with vs.core (Dendraspis, [#787](/../../issues/787))
 - Updated tools
@@ -11,7 +17,6 @@ not published yet
 v2.9.0 (2021-10-05)
 =========================
 
-- New Discord Server Link: https://discord.gg/uz8pVR79Bd, if you haven't joined in yet
 - Fix Check for Updates (Dendraspis)
 - Add --thread-affinity to NVEnc (Dendraspis)
 - Add "Warn for invalid Output Mod only if video is cropped" option (Dendraspis)

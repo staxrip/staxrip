@@ -164,7 +164,7 @@ Public Class AOMEnc
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.RateMode.ValueText.EqualsAny("cq", "q")
+            Return Params.RateMode.ValueText.Equals("q")
         End Get
         Set(Value As Boolean)
         End Set
@@ -251,7 +251,8 @@ Public Class AV1Params
     Property TargetBitrate As New NumParam With {
         .HelpSwitch = "--target-bitrate",
         .Text = "Target Bitrate",
-        .VisibleFunc = Function() RateMode.Value <> 2 AndAlso RateMode.Value <> 3}
+        .Init = 5000,
+        .VisibleFunc = Function() RateMode.Value <> 3}
 
     Property CustomFirstPass As New StringParam With {
         .Text = "Custom 1st pass",
@@ -691,12 +692,12 @@ Public Class AV1Params
             If Not IsCustom(pass, "--cq-level") Then
                 sb.Append(" --cq-level=" & CqLevel.Value)
             End If
-        Else
+        End If
+
+        If Not RateMode.ValueText.Equals("q") Then
             If Not IsCustom(pass, "--target-bitrate") Then
-                If TargetBitrate.Value <> 0 AndAlso pass = 1 Then
+                If TargetBitrate.Value <> 0 Then
                     sb.Append(" --target-bitrate=" & TargetBitrate.Value)
-                Else
-                    sb.Append(" --target-bitrate=" & p.VideoBitrate)
                 End If
             End If
         End If

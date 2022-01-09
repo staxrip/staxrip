@@ -189,7 +189,7 @@ Public Class AV1Params
     Property Chunks As New NumParam With {
         .Text = "Chunks",
         .Init = 1,
-        .Config = {1, 16}}
+        .Config = {1, 999}}
 
     Property CqLevel As New NumParam With {
         .Path = "Rate Control 1",  '.Path = "AV1 Specific 2",    moved to "Rate Control 1" for better usage
@@ -209,6 +209,8 @@ Public Class AV1Params
         .Switch = "--enable-restoration",
         .Text = "Restoration",
         .IntegerValue = True,
+        .AlwaysOn = True,
+        .Init = 1,
         .Options = {"Off (default in Realtime mode)", "On (default in Non-realtime mode)"}}
 
     Property Passes As New OptionParam With {
@@ -383,25 +385,32 @@ Public Class AV1Params
                     New NumParam With {.Switch = "--kf-max-dist", .Text = "Max keyframe interval", .Init = 9999, .Value = 120, .Config = {1, 9999}},
                     New BoolParam With {.Switch = "--disable-kf", .Text = "Disable keyframe placement"})
 
+                Add("Grain Synthesis",
+                    New OptionParam With {.Switch = "--film-grain-test", .Text = "Film grain test vectors", .IntegerValue = True, .Options = {"None (default)", "test-1", "test-2", "test-3", "test-4", "test-5", "test-6", "test-7", "test-8", "test-9", "test-10", "test-11", "test-12", "test-13", "test-14", "test-15", "test-16"}},
+                    New StringParam With {.Switch = "--film-grain-table", .Text = "Film Grain Table", .Quotes = QuotesMode.Auto, .BrowseFile = True},
+                    New NumParam With {.Switch = "--denoise-noise-level", .Text = "Denoise Level", .Config = {0, 50}},
+                    New NumParam With {.Switch = "--denoise-block-size", .Text = "Denoise Block Size", .Config = {0, 64}, .Init = 32},
+                    New BoolParam With {.Switch = "--enable-dnl-denoising", .Text = "Apply denoise-noise-level denoising to encoded frame", .Init = True, .IntegerValue = True})
+
                 'New OptionParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}},
                 'New BoolParam With {.Switch = "--enable-tpl-model", .Text = "TPL model", .Init = True, .IntegerValue = True},
                 Add("AV1 Specific 1",
                     New OptionParam With {.Switch = "--cpu-used", .Text = "CPU Used", .Value = 4, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Ultra Fast", "9 - Fastest"}},
-                    New NumParam With {.Switch = "--auto-alt-ref", .Text = "Auto Alt Ref", .Init = 1, .AlwaysOn = True},
+                    New NumParam With {.Switch = "--auto-alt-ref", .Text = "Auto Alt Ref", .Init = 1},
                     New NumParam With {.Switch = "--sharpness", .Text = "Sharpness", .Init = 0, .Config = {0, 7}},
-                    New NumParam With {.Switch = "--static-thresh", .Text = "Static Thresh", .AlwaysOn = True},
+                    New NumParam With {.Switch = "--static-thresh", .Text = "Static Thresh", .Init = 0},
                     New BoolParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .Init = True, .IntegerValue = True},
                     New NumParam With {.Switch = "--tile-columns", .Text = "Tile Columns", .Init = 2, .AlwaysOn = True},
                     New NumParam With {.Switch = "--tile-rows", .Text = "Tile Rows", .Init = 1, .AlwaysOn = True},
-                    New OptionParam With {.Switch = "--enable-tpl-model", .Text = "TPL model", .Value = 1, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Off", "1 - Backward source based"}},
-                    New OptionParam With {.Switch = "--enable-keyframe-filtering", .Text = "Keyframe Filtering", .Init = 1, .IntegerValue = True, .Options = {"0 - No filter", "1 - Filter without overlay (default)", "2 - Filter with overlay"}},
+                    New OptionParam With {.Switch = "--enable-tpl-model", .Text = "TPL model", .Value = 1, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Off", "1 - Backward source based (default)"}},
+                    New OptionParam With {.Switch = "--enable-keyframe-filtering", .Text = "Keyframe Filtering", .Init = 1, .IntegerValue = True, .Options = {"0 - No filter", "1 - Filter without overlay (default)", "2 - Filter with overlay (Experimental)"}},
                     New NumParam With {.Switch = "--arnr-maxframes", .Text = "ARNR Max Frames", .Config = {0, 15}},
                     New NumParam With {.Switch = "--arnr-strength", .Text = "ARNR Filter Strength", .Config = {0, 6}})
 
                 'CqLevel) moved to "Rate Control 1" for better usage
                 'New OptionParam With {.Switch = "--enable-cdef", .Text = "Enable CDEF", .Init = 1, .IntegerValue = True, .Options = {"Off", "On"}})
                 Add("AV1 Specific 2",
-                    New OptionParam With {.Switch = "--tune", .Text = "Tune", .Options = {"psnr", "ssim", "vmaf_with_preprocessing", "vmaf_without_preprocessing", "vmaf", "vmaf_neg"}},
+                    New OptionParam With {.Switch = "--tune", .Text = "Tune", .IntegerValue = True, .Options = {"psnr", "ssim", "vmaf_with_preprocessing", "vmaf_without_preprocessing", "vmaf", "vmaf_neg", "butteraugli"}, .Values = {"0", "1", "4", "5", "6", "7", "8"}},
                     New NumParam With {.Switch = "--max-intra-rate", .Text = "Max Intra Rate"},
                     New NumParam With {.Switch = "--max-inter-rate", .Text = "Max Inter Rate"},
                     New NumParam With {.Switch = "--gf-cbr-boost", .Text = "GF CBR Boost"},
@@ -411,8 +420,8 @@ Public Class AV1Params
                     New BoolParam With {.Switch = "--enable-rect-partitions", .Text = "Rectangular partitions", .Init = True, .IntegerValue = True},
                     New BoolParam With {.Switch = "--enable-ab-partitions", .Text = "AB partitions", .Init = True, .IntegerValue = True},
                     New BoolParam With {.Switch = "--enable-1to4-partitions", .Text = "14 And 41 partitions", .Init = True, .IntegerValue = True},
-                    New OptionParam With {.Switch = "--min-partition-size", .Text = "Min partition size", .Value = 0, .AlwaysOn = False, .IntegerValue = True, .Options = {"0 - Disabled", "4 - 4x4", "8 - 8x8", "16 - 16x16", "32 - 32x32", "64 - 64x64", "128 - 128x128"}, .Values = {"0", "4", "8", "16", "32", "64", "128"}},
-                    New OptionParam With {.Switch = "--max-partition-size", .Text = "Max partition size", .Value = 0, .AlwaysOn = False, .IntegerValue = True, .Options = {"0 - Disabled", "4 - 4x4", "8 - 8x8", "16 - 16x16", "32 - 32x32", "64 - 64x64", "128 - 128x128"}, .Values = {"0", "4", "8", "16", "32", "64", "128"}})
+                    New OptionParam With {.Switch = "--min-partition-size", .Text = "Min partition size", .Value = 0, .IntegerValue = True, .Options = {"0 - Disabled", "4 - 4x4", "8 - 8x8", "16 - 16x16", "32 - 32x32", "64 - 64x64", "128 - 128x128"}, .Values = {"0", "4", "8", "16", "32", "64", "128"}},
+                    New OptionParam With {.Switch = "--max-partition-size", .Text = "Max partition size", .Value = 0, .IntegerValue = True, .Options = {"0 - Disabled", "4 - 4x4", "8 - 8x8", "16 - 16x16", "32 - 32x32", "64 - 64x64", "128 - 128x128"}, .Values = {"0", "4", "8", "16", "32", "64", "128"}})
 
                 Add("AV1 Specific 3",
                     New BoolParam With {.Switch = "--enable-dual-filter", .Text = "Dual filter", .Init = True, .IntegerValue = True},
@@ -444,7 +453,7 @@ Public Class AV1Params
                     New BoolParam With {.Switch = "--enable-palette", .Text = "Palette prediction mode", .Init = True, .IntegerValue = True},
                     New BoolParam With {.Switch = "--enable-intrabc", .Text = "Intra block copy prediction mode", .Init = True, .IntegerValue = True},
                     New BoolParam With {.Switch = "--enable-angle-delta", .Text = "Intra angle delta", .Init = True, .IntegerValue = True},
-                    New OptionParam With {.Switch = "--disable-trellis-quant", .Text = "Disable Trellis Quant", .IntegerValue = True, .Options = {"0 - False", "1 - True", "2 - True for RD Search", "3 - True for estimare yrd search (default)"}},
+                    New OptionParam With {.Switch = "--disable-trellis-quant", .Text = "Disable Trellis Quant", .Init = 3, .IntegerValue = True, .Options = {"0 - False", "1 - True", "2 - True for RD Search", "3 - True for estimare yrd search (default)"}},
                     New BoolParam With {.Switch = "--enable-qm", .Text = "Enable QM", .Init = False, .IntegerValue = True},
                     New NumParam With {.Switch = "--qm-min", .Text = "Min QM Flatness", .Init = 8, .Config = {0, 15}},
                     New NumParam With {.Switch = "--qm-max", .Text = "Max QM Flatness", .Init = 15, .Config = {0, 15}})
@@ -455,17 +464,18 @@ Public Class AV1Params
                     New BoolParam With {.Switch = "--use-inter-dct-only", .Text = "DCT only for INTER modes"},
                     New BoolParam With {.Switch = "--use-intra-default-tx-only", .Text = "Default-transform only for INTRA modes"},
                     New OptionParam With {.Switch = "--quant-b-adapt", .Text = "Adaptive quantize_b", .IntegerValue = True, .Init = 0, .Options = {"Off", "On"}},
-                    New OptionParam With {.Switch = "--coeff-cost-upd-freq", .Text = "Update freq for coeff costs", .IntegerValue = True, .Init = 2, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
-                    New OptionParam With {.Switch = "--mode-cost-upd-freq", .Text = "Update freq for mode costs", .IntegerValue = True, .Init = 2, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
-                    New OptionParam With {.Switch = "--mv-cost-upd-freq", .Text = "Update freq for mv costs", .IntegerValue = True, .Init = 2, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
+                    New OptionParam With {.Switch = "--coeff-cost-upd-freq", .Text = "Update freq for coeff costs", .IntegerValue = True, .Init = 0, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
+                    New OptionParam With {.Switch = "--mode-cost-upd-freq", .Text = "Update freq for mode costs", .IntegerValue = True, .Init = 0, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
+                    New OptionParam With {.Switch = "--mv-cost-upd-freq", .Text = "Update freq for mv costs", .IntegerValue = True, .Init = 0, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
                     New BoolParam With {.Switch = "--frame-parallel", .Text = "Frame Parallel", .Init = False, .IntegerValue = True},
                     New BoolParam With {.Switch = "--error-resilient", .Text = "Error Resilient", .Init = False, .IntegerValue = True},
                     New OptionParam With {.Switch = "--aq-mode", .Text = "AQ Mode", .IntegerValue = True, .Options = {"Disabled", "Variance", "Complexity", "Cyclic Refresh"}},
-                    New OptionParam With {.Switch = "--deltaq-mode", .Text = "Delta QIndex Mode", .IntegerValue = True, .Options = {"Disabled", "Deltaq Objective (default)", "Deltaq perceptual (requires enable-tpl-model)"}},
+                    New OptionParam With {.Switch = "--deltaq-mode", .Text = "Delta QIndex Mode", .Init = 1, .AlwaysOn = True, .IntegerValue = True, .Options = {"Disabled", "Deltaq Objective (default)", "Deltaq perceptual (requires enable-tpl-model)", "Deltaq All-Intra", "Deltaq user ratings based", "Deltaq HDR"}},
+                    New NumParam With {.Switch = "--deltaq-strength", .Text = "Delta QIndex Strengh %", .Init = 100, .Config = {0, 1000}},
                     New BoolParam With {.Switch = "--delta-lf-mode", .Text = "Delta-lf-Mode", .Init = False, .IntegerValue = True},
                     New BoolParam With {.Switch = "--frame-boost", .Text = "Enable frame periodic boost", .Init = False, .IntegerValue = True},
                     New NumParam With {.Switch = "--noise-sensitivity", .Text = "Noise Sensitivity"},
-                    New OptionParam With {.Switch = "--tune-content", .Text = "Tune Content", .Options = {"Default", "Screen"}})
+                    New OptionParam With {.Switch = "--tune-content", .Text = "Tune Content", .Options = {"Default", "Screen", "Film"}})
 
                 Add("AV1 Specific 6",
                     New OptionParam With {.Switch = "--cdf-update-mode", .Text = "CDF Update", .IntegerValue = True, .Options = {"No Update", "Update CDF on all frames(default)", "Selectively Update CDF on some frames"}, .Init = 1},
@@ -480,11 +490,7 @@ Public Class AV1Params
                     New OptionParam With {.Switch = "--sb-size", .Text = "Superblock size", .Options = {"Dynamic", "64", "128"}},
                     New NumParam With {.Switch = "--num-tile-groups", .Text = "Num Tile Groups", .Init = 1},
                     New NumParam With {.Switch = "--mtu-size", .Text = "MTU Size"},
-                    New OptionParam With {.Switch = "--timing-info", .Text = "Timing info", .Options = {"Unspecified", "Constant", "Model"}},
-                    New OptionParam With {.Switch = "--film-grain-test", .Text = "Film grain test vectors", .IntegerValue = True, .Options = {"None (default)", "test-1", "test-2", "test-3", "test-4", "test-5", "test-6", "test-7", "test-8", "test-9", "test-10", "test-11", "test-12", "test-13", "test-14", "test-15", "test-16"}},
-                    New StringParam With {.Switch = "--film-grain-table", .Text = "Film Grain Table", .Quotes = QuotesMode.Auto, .BrowseFile = True},
-                    New NumParam With {.Switch = "--denoise-noise-level", .Text = "Denoise Level", .Config = {0, 50}},
-                    New NumParam With {.Switch = "--denoise-block-size", .Text = "Denoise Block Size", .Config = {0, 64}, .Init = 32})
+                    New OptionParam With {.Switch = "--timing-info", .Text = "Timing info", .Options = {"Unspecified", "Constant", "Model"}})
 
                 Add("AV1 Specific 7",
                     New NumParam With {.Switch = "--max-reference-frames", .Text = "Max ref frames per frame", .Config = {3, 7}, .Init = 7},

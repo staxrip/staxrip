@@ -580,7 +580,7 @@ Public Class AV1Params
                                 sb.Append($" --limit={endFrame - startFrame + 1}")
                             End If
                         Case "vspipe"
-                            Dim chunk = If(isSingleChunk, "", $" --start={startFrame} --end={endFrame}")
+                            Dim chunk = If(isSingleChunk, "", $" --start {startFrame} --end {endFrame}")
                             pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m" + chunk + " | "
 
                             sb.Append(pipeString + Package.AOMEnc.Path.Escape)

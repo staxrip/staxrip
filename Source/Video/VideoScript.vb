@@ -226,10 +226,6 @@ Public Class VideoScript
 
                 Dim vsCode = ""
 
-                If flipVertical Then
-                    vsCode += BR + "clipname = core.std.FlipVertical(clipname)" + BR
-                End If
-
                 vsCode += "
 m_rgb = 0
 m_709 = 1
@@ -278,7 +274,8 @@ else:
     else:
         primaries = p_709
 
-clipname = clipname.resize.Bicubic(matrix_in = matrix, transfer_in = transfer, primaries_in = primaries, format = vs.COMPATBGR32)
+clipname = clipname.resize.Bicubic(matrix_in = matrix, transfer_in = transfer, primaries_in = primaries, format = vs.RGB24)
+clipname = clipname.libp2p.Pack()
 clipname.set_output()
 "
                 vsCode = vsCode.Replace("clipname", clipname)
@@ -367,7 +364,7 @@ clipname.set_output()
             code =
                 "import os, sys" + BR +
                 "import vapoursynth as vs" + BR +
-                "core = vs.get_core()" + BR +
+                "core = vs.core" + BR +
                 GetVsPortableAutoLoadPluginCode() + BR +
                 "sys.path.append(r""" + Folder.Startup + "Apps\Plugins\VS\Scripts"")" + BR + code
         End If

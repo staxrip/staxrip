@@ -1,7 +1,14 @@
-not published yet
+v2.11.0 (not published yet)
 =========================
 
-- New Discord Server Link: https://discord.gg/uz8pVR79Bd, if you haven't joined in yet
+- Fix typo in Settings Directory dialog (bdr99, [#798](/../../issues/798))
+- Update tools
+  - MKVToolNix v66.0
+  - NVEnc v5.46
+  - qaac v2.73
+  - QSVEnc v6.10
+  - Subtitle Edit v3.6.5
+  - VCEEnc v6.17
 
 
 v2.10.0 (2021-10-06)
@@ -10,7 +17,7 @@ v2.10.0 (2021-10-06)
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd, if you haven't joined in yet
 - Remove Extension folder from mpv.net (Dendraspis, [#770](/../../issues/770))
 - ~~Replace obsolete vs.get_core() with vs.core (Dendraspis, [#787](/../../issues/787))~~
-- Updated tools
+- Update tools
   - MediaInfo v21.09
   - VapourSynth R54 [back due to compatibility issues]
 
@@ -23,7 +30,7 @@ v2.9.0 (2021-10-05)
 - Add "Warn for invalid Output Mod only if video is cropped" option (Dendraspis)
 - Fix --quant-b-adapt for AOMEnc (Dendraspis, [#785](/../../issues/785))
 - Fix non-synced bitrate between options and main window for AOMEnc (Dendraspis, [#785](/../../issues/785))
-- Updated tools
+- Update tools
   - MKVToolNix v61.0
   - NVEnc v5.40
   - Python v3.9.7
@@ -31,7 +38,7 @@ v2.9.0 (2021-10-05)
   - Subtitle Edit v3.6.2
   - VapourSynth R56
   - VCEEnc v6.16
-- Updated filters
+- Update filters
   - JincResize v2.1.0
   - ffms2 v2.40.1285+13 1c6169a StvG
   - FFT3D Neo r11
@@ -45,7 +52,7 @@ v2.8.0 (2021-08-01)
 - Add more parameters for VCEEnc (Dendraspis, [#757](/../../issues/757))
 - Add --chroma-qp-offset param for NVEnc (Dendraspis)
 - Add --traditional-scenecut param for x265 (Dendraspis)
-- Updated tools
+- Update tools
   - AOMEnc v3.1.2-588-gd1b830121-x64-gcc10.3.0 Patman
   - ffmpeg-N-103081-gf7958d0883-x64-gcc10.3.0 Patman
   - MP4Box v1.1.0-DEV-rev1161-g2dfbf0c7a-x64-gcc10.3.0 Patman
@@ -56,7 +63,7 @@ v2.8.0 (2021-08-01)
   - VCEEnc v6.13
   - x264 v0.164.3065+9-7a0e6e8-.Mod-by-Patman.-x64-gcc10.3.0
   - x265 v3.5+12+14-106329cbd-.Mod-by-Patman.-x64-gcc10.3.0
-- Updated filters
+- Update filters
   - SMDegrain v3.1.2.115s by JKyle
 
 
@@ -90,7 +97,7 @@ v2.7.0 (2021-07-25)
     AddGrain(VS), AnimeIVTC(AVS), Bifrost(AVS/VS), Bwdif(AVS), Checkmate(AVS), ChubbyRain2(AVS), DeFlicker(AVS), DeJump(AVS), DeRainbow(AVS), DotKill(AVS/VS), ExactDeDup(AVS), FillBorders(AVS/VS), FillDrops(AVS/VS), Fix Horizontal Rainbow(AVS profile), GRunT(AVS plugin), HDRTools(AVS), Letterbox(AVS/VS), NNEDI3_rpow2(AVS/VS), ReduceFlicker(AVS), RT_Stats(AVS plugin), Santiag(AVS), Srestore(AVS plugin), TimecodeFPS(AVS), TIVTC(AVS), VFRToCFR(AVS/VS), vsCnr2(AVS)
     - Updated filter profiles:  
     AddBorders(VS), AddGrainC(AVS), Bwdif(VS), ChubbyRain2(AVS), DeRainbow(VS), DirectShowSource(AVS), DSS2(AVS), FFMS2(AVS/VS), FFVideoSource(AVS), KNLMeansCL(AVS/VS), SelectEvery(AVS/VS), SelectRangeEvery(AVS), SeparateFields(VS), TemporalDegrain2(VS), Weave(AVS/VS)
-- Updated tools
+- Update tools
   - AOMEnc v3.1.2-553-g997549cf4-x64-gcc10.3.0 Patman
   - chapterEditor v1.29
   - MKVToolNix v59.0
@@ -102,7 +109,7 @@ v2.7.0 (2021-07-25)
   - Rav1e v0.5.0-alpha-(p20210720-4-g0f25619a)-x64-gcc10.3.0 Patman
   - SVT-AV1 v0.8.7-30-g3af80294-x64-gcc10.3.0 Patman
   - VapourSynth R54
-- Updated Filters
+- Update Filters
   - AddGrain r8
   - AvsResize r9 StvG
   - Bifrost v2.1.0 (AVS) / v2.2 (VS)

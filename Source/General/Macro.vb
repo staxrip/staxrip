@@ -138,6 +138,7 @@ Public Class Macro
             ret.Add(New Macro("filter:name", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
             ret.Add(New Macro("media_info_audio:property", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
             ret.Add(New Macro("media_info_video:property", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
+            ret.Add(New Macro("random:digits", "Random Number", GetType(Integer), "Returns a 'digits' long random number."))
         End If
 
         ret.Add(New Macro("audio_bitrate", "Audio Bitrate", GetType(Integer), "Overall audio bitrate."))
@@ -150,6 +151,9 @@ Public Class Macro
         ret.Add(New Macro("crop_right", "Crop Right", GetType(Integer), "Right crop value."))
         ret.Add(New Macro("crop_top", "Crop Top", GetType(Integer), "Top crop value."))
         ret.Add(New Macro("crop_width", "Crop Width", GetType(Integer), "Crop width."))
+        ret.Add(New Macro("current_date", "Current Date", GetType(String), "Returns the current date."))
+        ret.Add(New Macro("current_time", "Current Time (12h)", GetType(String), "Returns the current time (12h)."))
+        ret.Add(New Macro("current_time24", "Current Time (24h)", GetType(String), "Returns the current time (24h)."))
         ret.Add(New Macro("delay", "Audio Delay 1", GetType(Integer), "Audio delay of the first audio track."))
         ret.Add(New Macro("delay2", "Audio Delay 2", GetType(Integer), "Audio delay of the second audio track."))
         ret.Add(New Macro("dpi", "Main Dialog DPI", GetType(Integer), "DPI value of the main dialog."))
@@ -322,6 +326,15 @@ Public Class Macro
         If value = "" Then Return ""
         If proj Is Nothing Then Return ""
 
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%current_date%") Then value = value.Replace("%current_date%", Date.Now.ToString("yyyy-MM-dd"))
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%current_time%") Then value = value.Replace("%current_time%", Date.Now.ToString("hh-mm-ss"))
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%current_time24%") Then value = value.Replace("%current_time24%", Date.Now.ToString("HH-mm-ss"))
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_file%") Then value = value.Replace("%source_file%", proj.SourceFile)
@@ -659,6 +672,23 @@ Public Class Macro
         If value.Contains("%media_info_audio:") Then
             For Each i As Match In Regex.Matches(value, "%media_info_audio:(.+?)%")
                 value = value.Replace(i.Value, MediaInfo.GetAudio(proj.LastOriginalSourceFile, i.Groups(1).Value))
+
+                If Not value.Contains("%") Then
+                    Return value
+                End If
+            Next
+        End If
+
+        If value.Contains("%random:") Then
+            For Each i As Match In Regex.Matches(value, "%random(?::(\d+))?%")
+                Dim digits = 6
+                If Integer.TryParse(i.Groups(1).Value, digits) Then
+                    digits = If(digits < 1, 1, digits)
+                    digits = If(digits > 10, 10, digits)
+                End If
+                Dim random = New Random()
+                Dim randomInt = random.Next(0, Enumerable.Repeat(10, digits).Aggregate(1, Function(a, b) a * b))
+                value = value.Replace(i.Value, randomInt.ToString().PadLeft(digits, "0"C))
 
                 If Not value.Contains("%") Then
                     Return value

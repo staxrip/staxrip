@@ -4,6 +4,7 @@ v2.11.0 (not published yet)
 - Fix typo in Settings Directory dialog (bdr99, [#798](/../../issues/798))
 - Rearrange SMDegrain list position and definition for VS ([#797](/../../issues/797))
 - Add "Processing" to remembered window positions
+- Add new macros "random:digits", "current_date", "current_time", "current_time24" ([#802](/../../issues/802))
 - Update tools
   - MKVToolNix v66.0
   - NVEnc v5.46

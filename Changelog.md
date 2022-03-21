@@ -3,6 +3,7 @@ v2.11.0 (not published yet)
 
 - Fix typo in Settings Directory dialog (bdr99, [#798](/../../issues/798))
 - Rearrange SMDegrain list position and definition for VS ([#797](/../../issues/797))
+- Add "Processing" to remembered window positions
 - Update tools
   - MKVToolNix v66.0
   - NVEnc v5.46

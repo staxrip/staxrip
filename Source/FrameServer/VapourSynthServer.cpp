@@ -65,7 +65,7 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
             vss_getVSScriptAPI = reinterpret_cast<decltype(vss_getVSScriptAPI)>(GetProcAddress(m_vssDLL, x64 ? "getVSScriptAPI" : "_getVSScriptAPI@4"));
 
             if (!vss_getVSScriptAPI)
-                throw std::exception("Failed to load getVSScriptAPI function. Upgrade Vapoursynth to R55 or never!");
+                throw std::exception("Failed to load getVSScriptAPI function. Upgrade Vapoursynth to R55 or newer!");
         }
 
         wasResolved = true;

@@ -168,13 +168,13 @@ KNLMeansCL = clip = core.knlm.KNLMeansCL(clip, d=1, a=1, h=$select:msg:Select St
 mClean = clip = G41Fun.mClean(clip, thSAD=400, chroma=True, sharp=10, rn=14, deband=0, depth=0, strength=20)
 MCTemporalDenoise = clip = havsfunc.MCTemporalDenoise(i=clip, settings='$select:msg:Select Strength;Very Low|very low;Low(Default)|low;Medium|medium;High|high;Very High|very high$')
 MiniDeen = clip = core.neo_minideen.MiniDeen(clip, radius=[1,1,1], threshold=[10,12,12], planes=[0,1,2])
-RemoveGrain | RemoveGrain | RemoveGrain = clip = core.rgvs.RemoveGrain(clip, 1)
+RemoveGrain | RemoveGrain = clip = core.rgvs.RemoveGrain(clip, 1)
 
-RemoveGrain | RemoveGrain | RemoveGrain with Repair =
+RemoveGrain | RemoveGrain with Repair =
     Processed = core.rgvs.RemoveGrain(clip, 1)
     clip = core.rgvs.Repair(clip,Processed, mode=2)
 
-RemoveGrain | SMDegrain = clip = havsfunc.SMDegrain(clip, contrasharp=True)
+SMDegrain = clip = havsfunc.SMDegrain(clip, tr=2, thSAD=300, thSADC=150, contrasharp=True, RefineMotion=True)
 TemporalDegrain2 = clip = G41Fun.TemporalDegrain2(clip, degrainTR=2, postFFT=3, postSigma=3)
 TTempSmooth = clip =  core.ttmpsm.TTempSmooth(clip)
 VagueDenoiser = clip = core.vd.VagueDenoiser(clip=clip, method=$select:msg:Select Strength;Soft|1;Hard|0$)

@@ -1487,7 +1487,7 @@ Public Class Subtitle
                 proc.SkipString = "Progress: "
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvmerge
-                proc.Arguments = args
+                proc.Arguments = args + " --ui-language en"
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
             End Using

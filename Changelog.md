@@ -17,7 +17,8 @@ v2.11.0 (not published yet)
   - QSVEnc v6.10
   - Subtitle Edit v3.6.5
   - VCEEnc v6.17
-
+- Update filters
+  - TemporalDegrain2 v2.4.3
 
 v2.10.0 (2021-10-06)
 =========================

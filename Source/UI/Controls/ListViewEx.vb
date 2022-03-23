@@ -429,16 +429,21 @@ Namespace UI
 
         Sub RemoveSelection()
             If SelectedItems.Count > 0 Then
-                Dim name = SelectedItems(0).Text
+                Const maxToDisplay As Integer = 15
+                Dim names = SelectedItems.OfType(Of ListViewItem).Take(maxToDisplay).Select(Function(x) x.Text).Join(BR, True)
 
-                If name = "" Then
+                If names = "" Then
                     Try
-                        name = CStr(SelectedItems(0).Tag)
+                        names = SelectedItems.OfType(Of ListViewItem).Take(maxToDisplay).Select(Function(x) CStr(x.Tag)).Join(BR, True)
                     Catch
                     End Try
                 End If
+                
+                If SelectedItems.Count > maxToDisplay AndAlso names.Length > 4 Then
+                    names = names + BR + "... and more ..."
+                End If
 
-                If MsgQuestion("Remove Selection?", name) <> DialogResult.OK Then
+                If MsgQuestion("Remove Selection?", names) <> DialogResult.OK Then
                     Exit Sub
                 End If
 

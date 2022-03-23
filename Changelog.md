@@ -6,6 +6,7 @@ v2.11.0 (not published yet)
 - Add "Processing" to remembered window positions
 - Add new macros "random:digits", "current_date", "current_time", "current_time24" ([#802](/../../issues/802))
 - Fix UI issues regarding mkvextract
+- Fix remove confirmation on Lists showing first item name only even if multiple items are selected
 - Update tools
   - MKVToolNix v66.0
   - NVEnc v5.46

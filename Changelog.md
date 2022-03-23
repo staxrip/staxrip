@@ -10,6 +10,7 @@ v2.11.0 (not published yet)
 - Add NVEnc parameters --lut3d, --lut3d_interp, --dolby-vision-rpu, --dolby-vision-profile
 - Add VCEEnc parameter --thread-affinity
 - Add x265 Dolby Vision Profile 8.4
+- Fix minor mkvextract demux issue
 - Update tools
   - MKVToolNix v66.0
   - NVEnc v5.46

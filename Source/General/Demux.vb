@@ -860,7 +860,7 @@ Public Class mkvDemuxer
             Exit Sub
         End If
 
-        Dim args = sourcefile.Escape + " tracks"
+        Dim args = "--ui-language en " + sourcefile.Escape + " tracks"
         Dim newCount As Integer
         Dim outPaths As New List(Of String)
 
@@ -951,7 +951,7 @@ Public Class mkvDemuxer
             proc.SkipString = "Progress: "
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.mkvextract
-            proc.Arguments = args + " --ui-language en"
+            proc.Arguments = args
             proc.AllowedExitCodes = {0, 1, 2}
             proc.OutputFiles = outPaths
             proc.Start()

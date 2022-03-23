@@ -598,6 +598,8 @@ Public Class CommandLineAudioEncoderForm
         macroList.Add("%channels%", "Audio channels count")
         macroList.Add("%language_native%", "Native language name")
         macroList.Add("%language_english%", "English language name")
+        macroList.Add("%streamid0%", "ID of the stream (starts with 0)")
+        macroList.Add("%streamid1%", "ID of the stream (starts with 1)")
 
         form.Doc.WriteTable("Command Line Audio Macros",
                             "The following macros are available in the command line audio dialog and override global macros with the same name.",

@@ -376,15 +376,15 @@ Public MustInherit Class AudioProfile
 
     Function ExpandMacros(value As String, silent As Boolean) As String
         If value = "" Then Return ""
-        If value.Contains("""%input%""") Then value = value.Replace("""%input%""", File.Escape)
         If value.Contains("%input%") Then value = value.Replace("%input%", File.Escape)
-        If value.Contains("""%output%""") Then value = value.Replace("""%output%""", GetOutputFile.Escape)
         If value.Contains("%output%") Then value = value.Replace("%output%", GetOutputFile.Escape)
         If value.Contains("%bitrate%") Then value = value.Replace("%bitrate%", Bitrate.ToString)
         If value.Contains("%channels%") Then value = value.Replace("%channels%", Channels.ToString)
         If value.Contains("%language_native%") Then value = value.Replace("%language_native%", Language.CultureInfo.NativeName)
         If value.Contains("%language_english%") Then value = value.Replace("%language_english%", Language.Name)
         If value.Contains("%delay%") Then value = value.Replace("%delay%", Delay.ToString)
+        If value.Contains("%streamid0%") AndAlso Stream IsNot Nothing Then value = value.Replace("%streamid0%", (Stream?.ID - 1)?.ToString)
+        If value.Contains("%streamid1%") Then value = value.Replace("%streamid1%", Stream?.ID.ToString)
 
         Return Macro.Expand(value)
     End Function

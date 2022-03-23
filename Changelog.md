@@ -12,6 +12,7 @@ v2.11.0 (not published yet)
 - Add x265 Dolby Vision Profile 8.4
 - Fix minor mkvextract demux issue ([#833](/../../issues/833))
 - Add demux support for DVBSUB subtitles ([#833](/../../issues/833))
+- Add new audio command line macros %streamid0% and %streamid1% ([#842](/../../issues/842))
 - Update tools
   - MKVToolNix v66.0
   - NVEnc v5.46
@@ -21,6 +22,7 @@ v2.11.0 (not published yet)
   - VCEEnc v6.17
 - Update filters
   - TemporalDegrain2 v2.4.3
+
 
 v2.10.0 (2021-10-06)
 =========================

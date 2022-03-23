@@ -408,6 +408,8 @@ Public Class NVEnc
         Property ColorspaceTransferTo As New OptionParam With {.Text = New String(" "c, 12) + "Transfer To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "arib-std-b67"}, .VisibleFunc = Function() ColorspaceTransferFrom.Value > 0}
         Property ColorspaceRangeFrom As New OptionParam With {.Text = New String(" "c, 6) + "Range From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "limited", "full"}}
         Property ColorspaceRangeTo As New OptionParam With {.Text = New String(" "c, 12) + "Range To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "limited", "full"}, .VisibleFunc = Function() ColorspaceRangeFrom.Value > 0}
+        Property ColorspaceLut3d As New StringParam With {.Text = New String(" "c, 6) + "Lut3D", .HelpSwitch = "--vpp-colorspace", .Init = "", .BrowseFile = True}
+        Property ColorspaceLut3dinterp As New OptionParam With {.Text = New String(" "c, 12) + "Interpolation", .HelpSwitch = "--vpp-colorspace", .Init = 1, .Options = {"nearest", "trilinear", "tetrahedral"}, .VisibleFunc = Function() ColorspaceLut3d.Value.Trim().Length > 0}
         Property ColorspaceHdr2sdr As New OptionParam With {.Text = New String(" "c, 0) + "HDR10 to SDR using this tonemapping:", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"none", "hable", "mobius", "reinhard", "bt2390"}}
         Property ColorspaceHdr2sdrSourcepeak As New NumParam With {.Text = New String(" "c, 6) + "Source Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1000, .Config = {0, 10000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
         Property ColorspaceHdr2sdrLdrnits As New NumParam With {.Text = New String(" "c, 6) + "Target brightness", .HelpSwitch = "--vpp-colorspace", .Init = 100.0, .Config = {0, 1000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
@@ -514,7 +516,9 @@ Public Class NVEnc
                         ColorspaceTransferFrom,
                         ColorspaceTransferTo,
                         ColorspaceRangeFrom,
-                        ColorspaceRangeTo)
+                        ColorspaceRangeTo,
+                        ColorspaceLut3d,
+                        ColorspaceLut3dinterp)
                     Add("VPP | Colorspace | HDR2SDR",
                         ColorspaceHdr2sdr,
                         ColorspaceHdr2sdrSourcepeak,
@@ -566,6 +570,8 @@ Public Class NVEnc
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "h265"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
+                        New StringParam With {.Switch = "--dolby-vision-rpu", .Text = "Dolby Vision RPU", .BrowseFile = True},
+                        New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Options = {"Undefined", "5.0", "8.1", "8.2", "8.4"}},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},
@@ -644,6 +650,8 @@ Public Class NVEnc
                 ColorspaceTransferTo.MenuButton.Enabled = Colorspace.Value
                 ColorspaceRangeFrom.MenuButton.Enabled = Colorspace.Value
                 ColorspaceRangeTo.MenuButton.Enabled = Colorspace.Value
+                ColorspaceLut3d.TextEdit.Enabled = Colorspace.Value
+                ColorspaceLut3dinterp.MenuButton.Enabled = Colorspace.Value
                 ColorspaceHdr2sdr.MenuButton.Enabled = Colorspace.Value
                 ColorspaceHdr2sdrSourcepeak.NumEdit.Enabled = Colorspace.Value
                 ColorspaceHdr2sdrLdrnits.NumEdit.Enabled = Colorspace.Value
@@ -746,6 +754,7 @@ Public Class NVEnc
                 If ColorspaceColorprimFrom.Value <> ColorspaceColorprimFrom.DefaultValue Then ret += $",colorprim={ColorspaceColorprimFrom.ValueText}:{ColorspaceColorprimTo.ValueText}"
                 If ColorspaceTransferFrom.Value <> ColorspaceTransferFrom.DefaultValue Then ret += $",transfer={ColorspaceTransferFrom.ValueText}:{ColorspaceTransferTo.ValueText}"
                 If ColorspaceRangeFrom.Value <> ColorspaceRangeFrom.DefaultValue Then ret += $",range={ColorspaceRangeFrom.ValueText}:{ColorspaceRangeTo.ValueText}"
+                If ColorspaceLut3d.Value <> ColorspaceLut3d.DefaultValue Then ret += $",lut3d={ColorspaceLut3d.Value},lut3d_interp={ColorspaceLut3dinterp.ValueText}"
                 If ColorspaceHdr2sdr.Value <> ColorspaceHdr2sdr.DefaultValue Then
                     ret += $",hdr2sdr={ColorspaceHdr2sdr.ValueText}"
                     If ColorspaceHdr2sdrSourcepeak.Value <> ColorspaceHdr2sdrSourcepeak.DefaultValue Then ret += $",source_peak={ColorspaceHdr2sdrSourcepeak.Value.ToInvariantString("0.0")}"

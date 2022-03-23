@@ -384,7 +384,8 @@ Public Class VCEEnc
                         New NumParam With {.Switch = "--input-analyze", .Text = "Input Analyze", .Init = 5, .Config = {1, 600, 0.1, 1}},
                         New BoolParam With {.Switch = "--chapter-copy", .Text = "Copy Chapters"},
                         New BoolParam With {.Switch = "--vbaq", .Text = "Adaptive quantization in frame"},
-                        New BoolParam With {.Switch = "--filler", .Text = "Use filler data"})
+                        New BoolParam With {.Switch = "--filler", .Text = "Use filler data"},
+                        New StringParam With {.Switch = "--thread-affinity", .Text = "Thread Affinity"})
                 End If
 
                 Return ItemsValue

@@ -22,6 +22,7 @@ v2.11.0 (not published yet)
   - VCEEnc v6.17
 - Update filters
   - TemporalDegrain2 v2.4.3
+  - G41Fun v2021-09-23
 
 
 v2.10.0 (2021-10-06)

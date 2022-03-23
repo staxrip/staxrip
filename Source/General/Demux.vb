@@ -905,11 +905,27 @@ Public Class mkvDemuxer
                 Dim forced = If(subtitle.Forced, "_forced", "")
                 Dim _default = If(subtitle.Default, "_default", "")
                 Dim outPath = proj.TempDir + subtitle.Filename + _default + forced + subtitle.ExtFull
-                args += " " & subtitle.StreamOrder & ":" + outPath.Escape
-                outPaths.Add(outPath)
 
-                If Not outPath.FileExists Then
-                    newCount += 1
+                If subtitle.Ext = "mks" Then
+                    Dim arguments = "--ui-language en --no-audio --no-video --no-global-tags --no-attachments --no-buttons -o " + outPath.Escape + " " + sourcefile.Escape
+
+                    Using proc As New Proc
+                        proc.Project = proj
+                        proc.Header = title
+                        proc.SkipString = "Progress: "
+                        proc.Encoding = Encoding.UTF8
+                        proc.Package = Package.mkvmerge
+                        proc.Arguments = arguments
+                        proc.AllowedExitCodes = {0, 1, 2}
+                        proc.Start()
+                    End Using
+                Else
+                    args += " " & subtitle.StreamOrder & ":" + outPath.Escape
+                    outPaths.Add(outPath)
+
+                    If Not outPath.FileExists Then
+                        newCount += 1
+                    End If
                 End If
             Next
         End If

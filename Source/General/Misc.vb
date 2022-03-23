@@ -1274,6 +1274,8 @@ Public Class Subtitle
                     Return "ssa"
                 Case "S_TEXT/USF", "USF"
                     Return "usf"
+                Case "S_DVBSUB", "DVB Subtitle"
+                    Return "mks"
                 Case Else
                     Return Path.Ext
             End Select

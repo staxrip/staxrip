@@ -9,6 +9,7 @@ v2.11.0 (not published yet)
 - Fix remove confirmation on Lists showing first item name only even if multiple items are selected
 - Add NVEnc parameters --lut3d, --lut3d_interp, --dolby-vision-rpu, --dolby-vision-profile
 - Add VCEEnc parameter --thread-affinity
+- Add x265 Dolby Vision Profile 8.4
 - Update tools
   - MKVToolNix v66.0
   - NVEnc v5.46

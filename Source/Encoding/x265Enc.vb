@@ -1061,7 +1061,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--display-window", .Text = "Display Window", .Options = {"Undefined", "Left", "Top", "Right", "Top"}},
                     Chromaloc)
                 Add("Bitstream",
-                    New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Options = {"0", "5", "8.1", "8.2"}},
+                    New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Options = {"0", "5", "8.1", "8.2", "8.4"}},
                     New StringParam With {.Switch = "--dolby-vision-rpu", .Text = "Dolby Vision RPU", .BrowseFile = True},
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "Maximum Picture Order Count", .Init = 8},
                     Info, RepeatHeaders, AUD, HRD,

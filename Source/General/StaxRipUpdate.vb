@@ -61,7 +61,7 @@ Public Class StaxRipUpdate
                             latestVersions.Add((onlineVersion, "DEV version", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
                         End If
                     Else
-                        latestVersions.Add((onlineVersion, "Release", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
+                        latestVersions.Add((onlineVersion, "release", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
                     End If
                 Next
 
@@ -78,7 +78,8 @@ Public Class StaxRipUpdate
 
                             If changelogResponse.IsSuccessStatusCode Then
                                 Dim changelogContent = Await changelogResponse.Content.ReadAsStringAsync()
-                                Dim splits = Regex.Split(changelogContent, "\n\n\n")
+                                Dim cleanedChangelogContent = Regex.Replace(changelogContent, "<!--.*?-->", "").TrimStart()
+                                Dim splits = Regex.Split(cleanedChangelogContent, "\n\n\n")
 
                                 If splits.Any() Then
                                     Dim split = splits.Where(Function(x) x.Contains(latestVersion.Version.ToString()))?.LastOrDefault()
@@ -89,10 +90,10 @@ Public Class StaxRipUpdate
                                         td.Content += "Changes in this version:" + BR
 
                                         For Each line In Regex.Split(split, "\n")
-                                            If changes >= 20 Then
+                                            If changes >= 30 Then
                                                 td.Content += "..."
                                                 Exit For
-                                            ElseIf line.StartsWith("-") Then
+                                            ElseIf line.TrimStart().StartsWith("-") Then
                                                 line = Regex.Replace(line, "\(/\.\./\.\./issues/\d+\)", "")
                                                 td.Content += line + BR
                                                 changes += 1
@@ -117,7 +118,7 @@ Public Class StaxRipUpdate
                                         .FileName = latestVersion.FileName,
                                         .Filter = "7-zip archive (*.7z)|*.7z",
                                         .OverwritePrompt = True,
-                                        .Title = "Save new " + latestVersion.ReleaseType + " version as..."
+                                        .Title = "Save new " + latestVersion.ReleaseType + " as..."
                                     }
 
                                     If saveFileDialog.ShowDialog() = DialogResult.OK Then

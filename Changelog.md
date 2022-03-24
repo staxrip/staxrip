@@ -13,6 +13,7 @@ v2.11.0 (not published yet)
 - Fix minor mkvextract demux issue ([#833](/../../issues/833))
 - Add demux support for DVBSUB subtitles ([#833](/../../issues/833))
 - Add new audio command line macros %streamid0% and %streamid1% ([#842](/../../issues/842))
+- Raise x265 atc-sei parameter upper limit ([#815](/../../issues/815))
 - Update tools
   - MKVToolNix v66.0
   - NVEnc v5.46

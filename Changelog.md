@@ -21,6 +21,7 @@ v2.11.0 (not published yet)
 - Add new audio command line macros %streamid0% and %streamid1% ([#842](/../../issues/842))
 - Raise x265 atc-sei parameter upper limit ([#815](/../../issues/815))
 - Optimize Check for Updates
+- Show also the path of the project when it's not found
 - Update tools
   - MKVToolNix v66.0
   - NVEnc v5.46

@@ -1636,7 +1636,7 @@ Public Class MainForm
         Refresh()
 
         If Not File.Exists(path) Then
-            MsgWarn("Project file not found.")
+            MsgWarn("Project file not found.", $"{path}{BR}could not be found.")
             s.UpdateRecentProjects(path)
             UpdateRecentProjectsMenu()
             UpdateTemplatesMenuAsync()

@@ -4720,6 +4720,15 @@ Public Class MainForm
 
 
             '   ----------------------------------------------------------------
+            Dim attachmentsPage = ui.CreateFlowPage("Attachments")
+
+            b = ui.AddBool(attachmentsPage)
+            b.Text = "Demux Attachments"
+            b.Checked = p.DemuxAttachments
+            b.SaveAction = Sub(val) p.DemuxAttachments = val
+
+
+            '   ----------------------------------------------------------------
             ui.CreateFlowPage("Thumbnails", True)
 
             b = ui.AddBool()

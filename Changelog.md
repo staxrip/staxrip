@@ -22,6 +22,7 @@ v2.11.0 (not published yet)
 - Raise x265 atc-sei parameter upper limit ([#815](/../../issues/815))
 - Optimize Check for Updates
 - Show also the path of the project when it's not found
+- Add "Demux Attachments" to project options
 - Update tools
   - MKVToolNix v66.0
   - NVEnc v5.46

@@ -30,6 +30,15 @@ Public Class VCEEnc
         End Set
     End Property
 
+    Public Sub New()
+        MyBase.New()
+    End Sub
+
+    Public Sub New(codecIndex As Integer)
+        MyBase.New()
+        Params.Codec.Value = If(codecIndex > 0 AndAlso codecIndex < Params.Codec.Values.Length, codecIndex, 0)
+    End Sub
+
     Overrides Sub ShowConfigDialog()
         Dim params1 As New EncoderParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)

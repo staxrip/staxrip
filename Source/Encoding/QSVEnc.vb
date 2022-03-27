@@ -30,6 +30,15 @@ Public Class QSVEnc
         End Set
     End Property
 
+    Public Sub New()
+        MyBase.New()
+    End Sub
+
+    Public Sub New(codecIndex As Integer)
+        MyBase.New()
+        Params.Codec.Value = If(codecIndex > 0 AndAlso codecIndex < Params.Codec.Values.Length, codecIndex, 0)
+    End Sub
+
     Overrides Sub ShowConfigDialog()
         Dim params1 As New EncoderParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
@@ -158,8 +167,8 @@ Public Class QSVEnc
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
-            .Options = {"Intel H.264", "Intel H.265", "Intel MPEG-2"},
-            .Values = {"h264", "hevc", "mpeg2"}}
+            .Options = {"Intel H.264", "Intel H.265", "Intel MPEG-2", "Intel VP9"},
+            .Values = {"h264", "hevc", "mpeg2", "vp9"}}
 
         Property Mode As New OptionParam With {
             .Switches = {"--avbr", "--cbr", "--vbr", "--qvbr-q", "--cqp", "--icq", "--la-icq", "--vcm", "--la", "--la-hrd", "--qvbr"},
@@ -324,6 +333,9 @@ Public Class QSVEnc
                     Add("VUI",
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
+                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
+                        New StringParam With {.Switch = "--dolby-vision-rpu", .Text = "Dolby Vision RPU", .BrowseFile = True},
+                        New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Options = {"Undefined", "5.0", "8.1", "8.2", "8.4"}},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 NC", "BT 2020 C", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}},
@@ -353,7 +365,8 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--tskip", .Text = "T-Skip", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"},
                         New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"},
-                        New BoolParam With {.Switch = "--timecode", .Text = "Output timecode file"})
+                        New BoolParam With {.Switch = "--timecode", .Text = "Output timecode file"},
+                        New StringParam With {.Switch = "--thread-affinity", .Text = "Thread Affinity"})
                 End If
 
                 Return ItemsValue

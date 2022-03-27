@@ -15,8 +15,13 @@ Public Class ffmpegEnc
         End Get
     End Property
 
-    Sub New()
+    Public Sub New()
         Muxer = New ffmpegMuxer("AVI")
+    End Sub
+
+    Public Sub New(codecIndex As Integer)
+        Me.New()
+        Params.Codec.Value = If(codecIndex > 0 AndAlso codecIndex < Params.Codec.Values.Length, codecIndex, 0)
     End Sub
 
     <NonSerialized>

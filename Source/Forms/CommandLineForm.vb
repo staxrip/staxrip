@@ -26,10 +26,10 @@ Public Class CommandLineForm
 
         For Each param In params.Items
             If param.GetKey = "" OrElse singleList.Contains(param.GetKey) Then
-                Throw New Exception("key found twice: " + param.GetKey)
+                'Throw New Exception("key found twice: " + param.GetKey)
+            Else
+                singleList.Add(param.GetKey)
             End If
-
-            singleList.Add(param.GetKey)
         Next
 
         Me.Params = params

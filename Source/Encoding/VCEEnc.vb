@@ -30,6 +30,15 @@ Public Class VCEEnc
         End Set
     End Property
 
+    Overrides Property Bitrate As Integer
+        Get
+            Return CInt(Params.Bitrate.Value)
+        End Get
+        Set(value As Integer)
+            Params.Bitrate.Value = value
+        End Set
+    End Property
+
     Public Sub New()
         MyBase.New()
     End Sub
@@ -135,21 +144,55 @@ Public Class VCEEnc
             Title = "VCEEnc Options"
         End Sub
 
-        Property Mode As New OptionParam With {
-            .Name = "Mode",
-            .Text = "Mode",
-            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "VBR - Variable Bitrate"}}
-
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
             .Options = {"AMD H.264", "AMD H.265"},
             .Values = {"h264", "hevc"}}
 
+        Property Mode264 As New OptionParam With {
+            .Name = "Mode",
+            .Text = "Mode",
+            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "VBR - Variable Bitrate", "QVBR - Quality-Defined Variable Bitrate"},
+            .VisibleFunc = Function() Codec.Value = 0}
+
+        Property Mode265 As New OptionParam With {
+            .Name = "Mode",
+            .Text = "Mode",
+            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "VBR - Variable Bitrate"},
+            .VisibleFunc = Function() Codec.Value = 1}
+
+        ReadOnly Property Mode As OptionParam
+            Get
+                Select Case Codec.Value
+                    Case 0
+                        Return Mode264
+                    Case 1
+                        Return Mode265
+                    Case Else
+                        Throw New ArgumentException("Invalid Codec Value!")
+                End Select
+            End Get
+        End Property
+
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
             .Options = {"AviSynth/VapourSynth", "VCEEnc (VCE)", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
             .Values = {"avs", "vce", "qs", "ffqsv", "ffdxva"}}
+
+        Property Bitrate As New NumParam With {
+            .HelpSwitch = "--bitrate",
+            .Text = "Bitrate",
+            .Init = 5000,
+            .VisibleFunc = Function() Mode.Value > 0,
+            .Config = {0, 1000000, 100}}
+
+        Property QvbrQuality As New NumParam With {
+            .Switch = "--qvbr-quality",
+            .Text = "QVBR Quality",
+            .Init = 23,
+            .VisibleFunc = Function() Mode.Value = 3,
+            .Config = {0, 51, 1}}
 
         Property QPI As New NumParam With {
             .Text = "QP I",
@@ -308,7 +351,7 @@ Public Class VCEEnc
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
 
-                    Add("Basic", Decoder, Mode, Codec,
+                    Add("Basic", Decoder, Codec, Mode264, Mode265,
                         New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
                         New OptionParam With {.Switch = "--quality", .Text = "Preset", .Options = {"Fast", "Balanced", "Slow"}, .Init = 1},
                         New OptionParam With {.Switch = "--profile", .Name = "profile264", .VisibleFunc = Function() Codec.ValueText = "h264", .Text = "Profile", .Options = {"Automatic", "Baseline", "Main", "High"}},
@@ -316,7 +359,7 @@ Public Class VCEEnc
                         New OptionParam With {.Switch = "--level", .Name = "LevelH264", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelH265", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "hevc", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .Options = {"Main", "High"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
-                        QPI, QPP, QPB)
+                        QPI, QPP, QPB, Bitrate, QvbrQuality)
                     Add("Slice Decision",
                         New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},
                         New NumParam With {.Switch = "--bframes", .Text = "B-Frames", .Config = {0, 16}},
@@ -795,9 +838,11 @@ Public Class VCEEnc
                 Case 0
                     ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
                 Case 1
-                    ret += " --cbr " & p.VideoBitrate
+                    ret += " --cbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
                 Case 2
-                    ret += " --vbr " & p.VideoBitrate
+                    ret += " --vbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                Case 3
+                    ret += " --qvbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
             End Select
 
             If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso

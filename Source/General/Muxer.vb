@@ -234,8 +234,10 @@ Public MustInherit Class Muxer
                 End If
             End If
 
-            If TypeOf Me Is MkvMuxer AndAlso i.Contains("_attachment_") Then
-                Attachments.Add(i)
+            If Not p.AddAttachmentsToMuxer Then
+                If TypeOf Me Is MkvMuxer AndAlso i.Contains("_attachment_") Then
+                    Attachments.Add(i)
+                End If
             End If
         Next
 

@@ -4727,6 +4727,11 @@ Public Class MainForm
             b.Checked = p.DemuxAttachments
             b.SaveAction = Sub(val) p.DemuxAttachments = val
 
+            b = ui.AddBool(attachmentsPage)
+            b.Text = "Add Attachments to Muxing"
+            b.Checked = p.AddAttachmentsToMuxer
+            b.SaveAction = Sub(val) p.AddAttachmentsToMuxer = val
+
 
             '   ----------------------------------------------------------------
             ui.CreateFlowPage("Thumbnails", True)

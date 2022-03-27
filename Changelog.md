@@ -15,7 +15,7 @@ v2.11.0 (not published yet)
 - Fix remove confirmation on Lists showing first item name only even if multiple items are selected
 - Reorganize encoder profiles
 - Add NVEnc parameters --lut3d, --lut3d_interp, --dolby-vision-rpu, --dolby-vision-profile
-- Add VCEEnc parameter --thread-affinity, --qvbr, --qvbr-quality
+- Add VCEEnc parameter --thread-affinity, --qvbr, --qvbr-quality ([#792](/../../issues/792))
 - Add QSVEnc parameters --thread-affinity, --dhdr10-info, --dolby-vision-rpu, --dolby-vision-profile, --qvbr, --qvbr-quality
 - Add x265 Dolby Vision Profile 8.4
 - Fix minor mkvextract demux issue ([#833](/../../issues/833))
@@ -24,7 +24,7 @@ v2.11.0 (not published yet)
 - Raise x265 atc-sei parameter upper limit ([#815](/../../issues/815))
 - Optimize Check for Updates
 - Show also the path of the project when it's not found
-- Add "Demux Attachments" to project options
+- Add "Demux Attachments" and "Add Attachments to Muxer" to project options
 - Add "Bitrate" to VCEEnc and QSVEnc options
 - Update tools
   - MKVToolNix v66.0

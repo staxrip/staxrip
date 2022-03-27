@@ -12,6 +12,7 @@ Public Class Project
 
     Private Storage As ObjectStorage
 
+    Public AddAttachmentsToMuxer As Boolean = True
     Public AdjustHeight As Boolean = True
     Public Audio0 As AudioProfile
     Public Audio1 As AudioProfile

@@ -350,35 +350,29 @@ Public MustInherit Class VideoEncoder
 
         ret.Add(New x264Enc)
         ret.Add(New x265Enc)
+
+        Dim nvEnc = New NVEnc()
+        For x = 0 To nvEnc.Params.Codec.Options.Length - 1
+            ret.Add(New NVEnc(x))
+        Next
+
+        Dim vceEnc = New VCEEnc()
+        For x = 0 To vceEnc.Params.Codec.Options.Length - 1
+            ret.Add(New VCEEnc(x))
+        Next
+
+        Dim qsvEnc = New QSVEnc()
+        For x = 0 To qsvEnc.Params.Codec.Options.Length - 1
+            ret.Add(New QSVEnc(x))
+        Next
+
         ret.Add(New AOMEnc)
         ret.Add(New Rav1e)
         ret.Add(New SVTAV1)
 
-        Dim nvidia264 As New NVEnc()
-        ret.Add(nvidia264)
-
-        Dim nvidia265 As New NVEnc()
-        nvidia265.Params.Codec.Value = 1
-        ret.Add(nvidia265)
-
-        ret.Add(New QSVEnc())
-
-        Dim intel265 As New QSVEnc()
-        intel265.Params.Codec.Value = 1
-        ret.Add(intel265)
-
-        ret.Add(New VCEEnc())
-
-        Dim amd265 As New VCEEnc()
-        amd265.Params.Codec.Value = 1
-        ret.Add(amd265)
-
         Dim ffmpeg = New ffmpegEnc()
-
         For x = 0 To ffmpeg.Params.Codec.Options.Length - 1
-            Dim ffmpeg2 = New ffmpegEnc()
-            ffmpeg2.Params.Codec.Value = x
-            ret.Add(ffmpeg2)
+            ret.Add(New ffmpegEnc(x))
         Next
 
         Dim cmdl As New BatchEncoder()

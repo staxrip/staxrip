@@ -13,6 +13,7 @@ v2.11.0 (not published yet)
 - Add new macros "random:digits", "current_date", "current_time", "current_time24" ([#802](/../../issues/802))
 - Fix UI issues regarding mkvextract
 - Fix remove confirmation on Lists showing first item name only even if multiple items are selected
+- Reorganize encoder profiles
 - Add NVEnc parameters --lut3d, --lut3d_interp, --dolby-vision-rpu, --dolby-vision-profile
 - Add VCEEnc parameter --thread-affinity
 - Add QSVEnc parameters --thread-affinity, --dhdr10-info, --dolby-vision-rpu, --dolby-vision-profile

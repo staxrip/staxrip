@@ -1632,7 +1632,7 @@ Public Class MainForm
         JobManager.AddJob(sourcefile.Base, jobPath)
     End Sub
 
-    Sub LoadProject(path As String)
+    Function LoadProject(path As String) As Boolean
         Refresh()
 
         If Not File.Exists(path) Then
@@ -1640,10 +1640,11 @@ Public Class MainForm
             s.UpdateRecentProjects(path)
             UpdateRecentProjectsMenu()
             UpdateTemplatesMenuAsync()
+            Return False
         Else
-            OpenProject(path)
+            Return OpenProject(path)
         End If
-    End Sub
+    End Function
 
     Function OpenSaveProjectDialog() As Boolean
         Using dialog As New SaveFileDialog

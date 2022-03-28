@@ -24,6 +24,7 @@ v2.11.0 (not published yet)
 - Raise x265 atc-sei parameter upper limit ([#815](/../../issues/815))
 - Optimize Check for Updates
 - Show also the path of the project when it's not found
+- Don't close Jobs window if project fails to load
 - Add "Demux Attachments" and "Add Attachments to Muxer" to project options
 - Add "Bitrate" to VCEEnc and QSVEnc options
 - Update tools

@@ -8,9 +8,10 @@ v2.11.0 (not published yet)
 =========================
 
 - Fix typo in Settings Directory dialog (bdr99, [#798](/../../issues/798))
+- Update parameters for AOMEnc (badcf00d, Dendraspis, [#821](/../../issues/821))
 - Rearrange SMDegrain's list position and definition for VS ([#797](/../../issues/797))
 - Add "Processing" to remembered window positions
-- Add new macros "random:digits", "current_date", "current_time", "current_time24" ([#802](/../../issues/802))
+- Add new macros %random:digits%, %current_date%, %current_time%, %current_time24% ([#802](/../../issues/802))
 - Fix UI issues regarding mkvextract
 - Fix remove confirmation on Lists showing first item name only even if multiple items are selected
 - Reorganize encoder profiles
@@ -28,11 +29,16 @@ v2.11.0 (not published yet)
 - Add "Demux Attachments" and "Add Attachments to Muxer" to project options
 - Add "Bitrate" to VCEEnc and QSVEnc options
 - Update tools
+  - AOMEnc v3.2.0-393-g402e264b9-x64-gcc11.2.0 Patman
+  - ffmpeg-N v106445-g723065a346-x64-gcc11.2.0 Patman
+  - MP4Box v2.1-DEV-rev79-gdf29bc8a0-x64-gcc11.2.0 Patman
   - MKVToolNix v66.0
   - NVEnc v5.46
   - qaac v2.73
   - QSVEnc v6.10
+  - Rav1e v0.5.0 (p20220322-2-gcbdf0703)-x64-gcc11.2.0 Patman
   - Subtitle Edit v3.6.5
+  - SvtAv1EncApp v0.9.1-81-gdf313c62-x64-gcc11.2.0 Patman
   - VCEEnc v6.17
 - Update filters
   - TemporalDegrain2 v2.4.3

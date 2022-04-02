@@ -255,8 +255,8 @@ Public Class ffmpegDemuxer
     End Sub
 
     Public Overrides Sub Run(proj As Project)
-        Dim audioStreams As List(Of AudioStream)
-        Dim subtitles As List(Of Subtitle)
+        Dim audioStreams As List(Of AudioStream) = Nothing
+        Dim subtitles As List(Of Subtitle) = Nothing
         Dim videoDemuxing = proj.DemuxVideo
 
         Dim audioDemuxing = Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
@@ -455,8 +455,8 @@ Public Class MP4BoxDemuxer
     End Sub
 
     Overrides Sub Run(proj As Project)
-        Dim audioStreams As List(Of AudioStream)
-        Dim subtitles As List(Of Subtitle)
+        Dim audioStreams As List(Of AudioStream) = Nothing
+        Dim subtitles As List(Of Subtitle) = Nothing
         Dim attachments = GetAttachments(proj.SourceFile)
 
         Dim demuxAudio = Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
@@ -655,7 +655,7 @@ Public Class MP4BoxDemuxer
         End If
 
         FileHelp.Delete(outPath)
-        Dim args As String
+        Dim args = ""
 
         If stream.Format.EqualsAny("AAC", "Opus") Then
             args += "-single"
@@ -716,8 +716,8 @@ Public Class mkvDemuxer
     End Sub
 
     Overrides Sub Run(proj As Project)
-        Dim audioStreams As List(Of AudioStream)
-        Dim subtitles As List(Of Subtitle)
+        Dim audioStreams As List(Of AudioStream) = Nothing
+        Dim subtitles As List(Of Subtitle) = Nothing
 
         Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify --ui-language en " +
             proj.SourceFile.Escape)

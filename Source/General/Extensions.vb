@@ -1167,7 +1167,7 @@ Module ControlExtensions
 
     <Extension()>
     Function GetMaxTextSpace(instance As Control, ParamArray values As String()) As String
-        Dim ret As String
+        Dim ret = ""
 
         For x = 4 To 2 Step -1
             ret = values.Join("".PadRight(x))
@@ -1190,7 +1190,7 @@ Module ControlExtensions
         If Not fontFilesExist Then Return Nothing
 
         Dim fontCollection As PrivateFontCollection = New PrivateFontCollection()
-        Dim family As FontFamily
+        Dim family As FontFamily = Nothing
         Dim legacy = OSVersion.Current < OSVersion.Windows10
 
         fontCollection.AddFontFile(awesomePath)

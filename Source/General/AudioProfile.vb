@@ -930,8 +930,8 @@ Public Class GUIAudioProfile
     End Property
 
     Function GetEac3toCommandLine(includePaths As Boolean) As String
-        Dim id As String
-        Dim sb As New StringBuilder
+        Dim id = ""
+        Dim sb As New StringBuilder()
 
         If File.Ext.EqualsAny("ts", "m2ts", "mkv") AndAlso Not Stream Is Nothing Then
             id = (Stream.StreamOrder + 1) & ": "
@@ -1339,7 +1339,7 @@ Public Class GUIAudioProfile
                 Exit Property
             End If
 
-            Dim ch As String
+            Dim ch = ""
 
             Select Case Params.ChannelsMode
                 Case ChannelsMode._8

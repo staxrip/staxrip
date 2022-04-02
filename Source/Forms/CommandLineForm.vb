@@ -120,8 +120,8 @@ Public Class CommandLineForm
 
     Sub InitUI()
         Dim flowPanels As New List(Of Control)
-        Dim helpControl As Control
-        Dim currentFlow As SimpleUI.FlowPage
+        Dim helpControl As Control = Nothing
+        Dim currentFlow As SimpleUI.FlowPage = Nothing
 
         For x = 0 To Params.Items.Count - 1
             Dim param = Params.Items(x)

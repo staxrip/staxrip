@@ -578,6 +578,7 @@ Public Class VCEEnc
                 If SmoothPrec.Value <> SmoothPrec.DefaultValue Then ret += ",prec=" & SmoothPrec.ValueText
                 Return "--vpp-smooth " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetColorspaceArgs() As String
@@ -613,6 +614,7 @@ Public Class VCEEnc
                 End If
                 If ret <> "" Then Return "--vpp-colorspace " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetPmdArgs() As String
@@ -623,6 +625,7 @@ Public Class VCEEnc
                 If PmdThreshold.Value <> PmdThreshold.DefaultValue Then ret += ",threshold=" & PmdThreshold.Value
                 Return ("--vpp-pmd " + ret.TrimStart(","c)).Trim()
             End If
+            Return ""
         End Function
 
         Function GetPaArgs() As String
@@ -636,6 +639,7 @@ Public Class VCEEnc
                 If PaFskipMaxqp.Value <> PaFskipMaxqp.DefaultValue Then ret += " --pa-fskip-maxqp " & PaFskipMaxqp.Value.ToInvariantString
                 Return ("--pa " + ret.TrimStart(" "c)).Trim()
             End If
+            Return ""
         End Function
 
         Function GetTweakArgs() As String
@@ -648,6 +652,7 @@ Public Class VCEEnc
                 If TweakHue.Value <> TweakHue.DefaultValue Then ret += ",hue=" & TweakHue.Value.ToInvariantString
                 Return ("--vpp-tweak " + ret.TrimStart(","c)).Trim()
             End If
+            Return ""
         End Function
 
         Function GetPaddingArgs() As String
@@ -663,6 +668,7 @@ Public Class VCEEnc
                 If KnnThLerp.Value <> KnnThLerp.DefaultValue Then ret += ",th_lerp=" & KnnThLerp.Value.ToInvariantString
                 Return "--vpp-knn " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetDebandArgs() As String
@@ -682,6 +688,7 @@ Public Class VCEEnc
                 If DebandRandEachFrame.Value Then ret += ",rand_each_frame"
                 Return "--vpp-deband " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetEdge() As String
@@ -693,6 +700,7 @@ Public Class VCEEnc
                 If EdgelevelWhite.Value <> EdgelevelWhite.DefaultValue Then ret += ",white=" & EdgelevelWhite.Value.ToInvariantString
                 Return "--vpp-edgelevel " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetUnsharp() As String
@@ -703,6 +711,7 @@ Public Class VCEEnc
                 If UnsharpThreshold.Value <> UnsharpThreshold.DefaultValue Then ret += ",threshold=" & UnsharpThreshold.Value.ToInvariantString
                 Return "--vpp-unsharp " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetWarpsharpArgs() As String
@@ -715,6 +724,7 @@ Public Class VCEEnc
                 If WarpsharpChroma.Value <> WarpsharpChroma.DefaultValue Then ret += ",chroma=" & WarpsharpChroma.Value.ToInvariantString
                 Return "--vpp-warpsharp " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetTransform() As String
@@ -723,6 +733,7 @@ Public Class VCEEnc
             If TransformFlipY.Value Then ret += ",flip_y=true"
             If TransformTranspose.Value Then ret += ",transpose=true"
             If ret <> "" Then Return ("--vpp-transform " + ret.TrimStart(","c))
+            Return ""
         End Function
 
         Function GetDeinterlacerArgs() As String
@@ -786,8 +797,8 @@ Public Class VCEEnc
             includeExecutable As Boolean,
             Optional pass As Integer = 1) As String
 
-            Dim ret As String
-            Dim sourcePath As String
+            Dim ret As String = ""
+            Dim sourcePath As String = ""
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
             If includePaths AndAlso includeExecutable Then

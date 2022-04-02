@@ -62,7 +62,7 @@ Namespace UI
                 Exit Sub
             End If
 
-            Dim title As String
+            Dim title = ""
 
             For Each ctrl In controls
                 If TypeOf ctrl Is Label OrElse TypeOf ctrl Is CheckBox Then

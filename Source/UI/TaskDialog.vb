@@ -108,7 +108,7 @@ Public Class TaskDialog(Of T)
             paMain.Controls.Add(ExpandedContentLabel)
         End If
 
-        Dim firstCommandButton As CommandButton
+        Dim firstCommandButton As CommandButton = Nothing
 
         For Each command In CommandDefinitions
             Dim cb As New CommandButton

@@ -410,7 +410,7 @@ Public Class Audio
     End Function
 
     Shared Function GetDynAudNormArgs(params As GUIAudioProfile.Parameters) As String
-        Dim ret As String
+        Dim ret = ""
 
         If params.ffmpegDynaudnormF <> 500 Then ret += ":f=" + params.ffmpegDynaudnormF.ToInvariantString
         If params.ffmpegDynaudnormG <> 31 Then ret += ":g=" + params.ffmpegDynaudnormG.ToInvariantString

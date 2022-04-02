@@ -261,9 +261,9 @@ Public Class NVEnc
             .Config = {0, 51, 1, 1},
             .VisibleFunc = Function() Mode.Value = 2 AndAlso ConstantQualityMode.Value,
             .ArgsFunc = Function()
-                            If ConstantQualityMode.Value AndAlso VbrQuality.Value <> VbrQuality.DefaultValue Then
-                                Return "--vbr-quality " & VbrQuality.Value.ToInvariantString
-                            End If
+                            Return If(ConstantQualityMode.Value AndAlso VbrQuality.Value <> VbrQuality.DefaultValue,
+                                "--vbr-quality " & VbrQuality.Value.ToInvariantString,
+                                "")
                         End Function}
 
         Property AQ As New BoolParam With {
@@ -754,6 +754,7 @@ Public Class NVEnc
                 If SmoothPrec.Value <> SmoothPrec.DefaultValue Then ret += ",prec=" & SmoothPrec.ValueText
                 Return "--vpp-smooth " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetColorspaceArgs() As String
@@ -790,6 +791,7 @@ Public Class NVEnc
                 End If
                 If ret <> "" Then Return "--vpp-colorspace " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetPmdArgs() As String
@@ -800,6 +802,7 @@ Public Class NVEnc
                 If PmdThreshold.Value <> PmdThreshold.DefaultValue Then ret += ",threshold=" & PmdThreshold.Value
                 Return "--vpp-pmd " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetTweakArgs() As String
@@ -812,6 +815,7 @@ Public Class NVEnc
                 If TweakHue.Value <> TweakHue.DefaultValue Then ret += ",hue=" & TweakHue.Value.ToInvariantString
                 Return "--vpp-tweak " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetPaddingArgs() As String
@@ -827,6 +831,7 @@ Public Class NVEnc
                 If KnnThLerp.Value <> KnnThLerp.DefaultValue Then ret += ",th_lerp=" & KnnThLerp.Value.ToInvariantString
                 Return "--vpp-knn " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetDebandArgs() As String
@@ -846,6 +851,7 @@ Public Class NVEnc
                 If DebandRandEachFrame.Value Then ret += ",rand_each_frame"
                 Return "--vpp-deband " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetEdge() As String
@@ -857,6 +863,7 @@ Public Class NVEnc
                 If EdgelevelWhite.Value <> EdgelevelWhite.DefaultValue Then ret += ",white=" & EdgelevelWhite.Value.ToInvariantString
                 Return "--vpp-edgelevel " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetUnsharp() As String
@@ -867,6 +874,7 @@ Public Class NVEnc
                 If UnsharpThreshold.Value <> UnsharpThreshold.DefaultValue Then ret += ",threshold=" & UnsharpThreshold.Value.ToInvariantString
                 Return "--vpp-unsharp " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetWarpsharpArgs() As String
@@ -879,6 +887,7 @@ Public Class NVEnc
                 If WarpsharpChroma.Value <> WarpsharpChroma.DefaultValue Then ret += ",chroma=" & WarpsharpChroma.Value.ToInvariantString
                 Return "--vpp-warpsharp " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetTransform() As String
@@ -887,6 +896,7 @@ Public Class NVEnc
             If TransformFlipY.Value Then ret += ",flip_y=true"
             If TransformTranspose.Value Then ret += ",transpose=true"
             If ret <> "" Then Return ("--vpp-transform " + ret.TrimStart(","c))
+            Return ""
         End Function
 
         Function GetSelectEvery() As String
@@ -896,6 +906,7 @@ Public Class NVEnc
                 ret += "," + SelectEveryOffsets.Value.SplitNoEmptyAndWhiteSpace(" ", ",", ";").Select(Function(item) "offset=" + item).Join(",")
                 If ret <> "" Then Return "--vpp-select-every " + ret.TrimStart(","c)
             End If
+            Return ""
         End Function
 
         Function GetDeinterlacerArgs() As String
@@ -950,13 +961,14 @@ Public Class NVEnc
                 Case 2
                     Return "--vbr " & rate
             End Select
+            Return ""
         End Function
 
         Overrides Function GetCommandLine(
             includePaths As Boolean, includeExe As Boolean, Optional pass As Integer = 1) As String
 
-            Dim ret As String
-            Dim sourcePath As String
+            Dim ret As String = ""
+            Dim sourcePath As String = ""
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
             If includePaths AndAlso includeExe Then
@@ -1048,6 +1060,7 @@ Public Class NVEnc
             If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then
                 Return True
             End If
+            Return False
         End Function
 
         Public Overrides Function GetPackage() As Package

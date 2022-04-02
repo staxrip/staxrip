@@ -71,7 +71,7 @@ Public Class TaskDialogBaseForm
             End If
 
             Dim fh = FontHeight
-            Dim previous As Control
+            Dim previous As Control = Nothing
 
             Using g = CreateGraphics()
                 For x = 0 To Controls.Count - 1

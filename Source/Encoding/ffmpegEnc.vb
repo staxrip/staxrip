@@ -340,6 +340,7 @@ Public Class ffmpegEnc
             If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then
                 Return True
             End If
+            Return False
         End Function
 
         Public Overrides Function GetPackage() As Package
@@ -368,6 +369,7 @@ Public Class ffmpegEnc
                     End If
                 End If
             End If
+            Return ""
         End Function
     End Class
 

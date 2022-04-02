@@ -776,7 +776,7 @@ Public Class AppsForm
 
         Dim productVersionString = version.ProductMajorPart & "." & version.ProductMinorPart & "." &
                                    version.ProductBuildPart & "." & version.ProductPrivatePart
-        Dim msg As String
+        Dim msg = ""
 
         If fileVersionString <> "0.0.0.0" Then
             msg += BR2 + "File Version: " + fileVersionString + " (often not correct!)"
@@ -836,7 +836,7 @@ Public Class AppsForm
 
     Sub miStatus_Click(sender As Object, e As EventArgs) Handles miStatus.Click
         Dim counter As Integer = 0
-        Dim txt As String
+        Dim txt = ""
 
         For Each pair In Package.Items
             Dim pack = pair.Value
@@ -856,7 +856,7 @@ Public Class AppsForm
 
     Sub miStatusRequired_Click(sender As Object, e As EventArgs) Handles miStatusRequired.Click
         Dim counter As Integer = 0
-        Dim txt As String
+        Dim txt = ""
 
         For Each pair In Package.Items
             Dim pack = pair.Value

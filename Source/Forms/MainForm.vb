@@ -1542,7 +1542,7 @@ Public Class MainForm
     End Sub
 
     Async Sub UpdateTemplatesMenuAsync()
-        Dim files As String()
+        Dim files As String() = Nothing
 
         Await Task.Run(Sub()
                            Thread.Sleep(500)
@@ -2039,7 +2039,7 @@ Public Class MainForm
 
             FiltersListView.IsLoading = True
 
-            Dim preferredSourceFilter As VideoFilter
+            Dim preferredSourceFilter As VideoFilter = Nothing
 
             If p.SourceFiles.Count = 1 AndAlso
                 p.Script.Filters(0).Name = "Manual" AndAlso
@@ -2049,7 +2049,7 @@ Public Class MainForm
                 preferredSourceFilter = ShowSourceFilterSelectionDialog(files(0))
             End If
 
-            If Not preferredSourceFilter Is Nothing Then
+            If preferredSourceFilter IsNot Nothing Then
                 Dim isVapourSynth = preferredSourceFilter.Script.Replace(" ", "").Contains("clip=core.") OrElse
                     preferredSourceFilter.Script = "#vs"
 
@@ -2425,7 +2425,7 @@ Public Class MainForm
             Dim rot = MediaInfo.GetVideo(p.SourceFile, "Rotation").ToDouble
 
             If rot <> 0 Then
-                Dim name As String
+                Dim name = ""
 
                 Select Case rot
                     Case 90
@@ -4762,7 +4762,7 @@ Public Class MainForm
             thumbsQuality.NumEdit.Value = p.ThumbnailerSettings.GetInt("ImageQuality", 70)
             thumbsQuality.NumEdit.SaveAction = Sub(value) p.ThumbnailerSettings.SetInt("ImageQuality", CInt(value))
 
-            Dim thumbsHeaderBackColor As SimpleUI.ColorPickerBlock
+            Dim thumbsHeaderBackColor As SimpleUI.ColorPickerBlock = Nothing
 
             Dim thumbsImageBackColor = ui.AddColorPicker()
             thumbsImageBackColor.Text = "Background Color:"

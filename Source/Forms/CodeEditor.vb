@@ -301,7 +301,7 @@ Public Class CodeEditor
 
                 Select Case id
                     Case DynamicMenuItemID.InsertFilters, DynamicMenuItemID.ReplaceFilters, DynamicMenuItemID.AddFilters
-                        Dim action As Action(Of VideoFilter)
+                        Dim action As Action(Of VideoFilter) = Nothing
 
                         Select Case id
                             Case DynamicMenuItemID.InsertFilters

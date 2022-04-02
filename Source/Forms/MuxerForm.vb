@@ -866,7 +866,7 @@ Public Class MuxerForm
     Protected Overrides Sub OnShown(e As EventArgs)
         MyBase.OnShown(e)
 
-        Dim lastAction As Action
+        Dim lastAction As Action = Nothing
 
         Dim UI = SimpleUI
         UI.Store = Muxer
@@ -1095,7 +1095,7 @@ Public Class MuxerForm
             End If
 
             If File.Exists(i.Path) Then
-                Dim sizeText As String
+                Dim sizeText = ""
 
                 If i.Size > 0 Then
                     If i.Size > PrefixedSize(2).Factor Then

@@ -2358,7 +2358,7 @@ Public Class Package
     End Function
 
     Function GetStatusVersion() As String
-        Dim ret As String
+        Dim ret = ""
 
         If Not IsVersionValid() Then
             If IsVersionOld() Then
@@ -2505,7 +2505,7 @@ Public Class Package
     End Sub
 
     Function GetStoredPath() As String
-        Dim ret As String
+        Dim ret = ""
 
         If Not s Is Nothing AndAlso Not s.Storage Is Nothing Then
             ret = s.Storage.GetString(Name + "custom path")

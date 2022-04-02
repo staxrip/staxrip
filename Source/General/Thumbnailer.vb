@@ -186,7 +186,7 @@ Public Class Thumbnailer
                 imageGraphics.PixelOffsetMode = PixelOffsetMode.HighQuality
                 imageGraphics.Clear(imageBackColor)
 
-                Dim drawHeaderTask As Task
+                Dim drawHeaderTask As Task = Task.CompletedTask
                 If header Then
                     drawHeaderTask = Task.Run(
                         Sub()

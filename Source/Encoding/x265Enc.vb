@@ -861,6 +861,8 @@ Public Class x265Params
                             End If
                         ElseIf Deblock.DefaultValue Then
                             Return "--no-deblock"
+                        Else
+                            Return ""
                         End If
                     End Function,
         .ImportAction = Sub(param, arg)
@@ -1462,6 +1464,8 @@ Public Class x265Params
         If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then
             Return True
         End If
+
+        Return False
     End Function
 
     Sub ApplyPresetValues()

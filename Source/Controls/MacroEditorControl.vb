@@ -365,7 +365,7 @@ Public Class MacroEditorControl
     Sub EditTextChanged(sender As Object, e As EventArgs)
         Dim editText = Value
         HelpPaths.Clear()
-        Dim caption As String
+        Dim caption = ""
 
         For Each pack In Package.Items.Values
             If editText.Contains(pack.Name) Then

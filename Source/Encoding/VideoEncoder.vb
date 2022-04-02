@@ -65,7 +65,7 @@ Public MustInherit Class VideoEncoder
             Exit Sub
         End If
 
-        Dim cl As String
+        Dim cl = ""
         Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
 
         Select Case colour_primaries

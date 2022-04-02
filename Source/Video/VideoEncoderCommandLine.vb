@@ -74,7 +74,7 @@ Namespace VideoEncoderCommandLine
             End If
 
             Dim content = package.CreateHelpfile()
-            Dim find As String
+            Dim find = ""
 
             If content.Contains(opt.Replace("--", "--(no-)") + " ") Then
                 find = opt.Replace("--", "--(no-)") + " "

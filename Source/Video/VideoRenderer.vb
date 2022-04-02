@@ -153,7 +153,7 @@ Public Class VideoRenderer
         End If
 
         Dim text = Info.GetInfoText(Position)
-        Dim layout As IDWriteTextLayout
+        Dim layout As IDWriteTextLayout = Nothing
 
         Dim fontName As String
 
@@ -268,7 +268,7 @@ Public Class VideoRenderer
             .width = CUInt(Server.Info.Width),
             .height = CUInt(Server.Info.Height)}
 
-        Dim bitmap As ID2D1Bitmap
+        Dim bitmap As ID2D1Bitmap = Nothing
         DeviceContext.CreateBitmap(bitmapSize, pixelPtr, CUInt(pitch), bitmapProperties, bitmap).ThrowOnError()
         Return bitmap
     End Function

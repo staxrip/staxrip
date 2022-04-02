@@ -426,7 +426,7 @@ Public Class QSVEnc
             includeExecutable As Boolean,
             Optional pass As Integer = 1) As String
 
-            Dim ret As String
+            Dim ret As String = ""
             Dim sourcePath = p.Script.Path
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
@@ -537,6 +537,7 @@ Public Class QSVEnc
                     Return "--vpp-mctf"
                 End If
             End If
+            Return ""
         End Function
 
         Public Overrides Function GetPackage() As Package

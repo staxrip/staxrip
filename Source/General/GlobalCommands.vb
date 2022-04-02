@@ -708,11 +708,11 @@ Public Class GlobalCommands
                     sw.Start()
 
                     Dim reportWhenFinished = True
-                    Dim reportTD As TaskDialog(Of DialogResult)
-                    Dim summaryTD As TaskDialog(Of DialogResult)
-                    Dim closingTD As TaskDialog(Of DialogResult)
+                    Dim reportTD As TaskDialog(Of DialogResult) = Nothing
+                    Dim summaryTD As TaskDialog(Of DialogResult) = Nothing
+                    Dim closingTD As TaskDialog(Of DialogResult) = Nothing
                     Dim cts = New CancellationTokenSource()
-                    Dim mainFormClosingHandler As FormClosingEventHandler
+                    Dim mainFormClosingHandler As FormClosingEventHandler = Nothing
                     mainFormClosingHandler = Sub(sender As Object, e As FormClosingEventArgs)
                                                  If Not e.Cancel Then
                                                      Using closingTD

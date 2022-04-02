@@ -757,6 +757,8 @@ Public Class AV1Params
                 Return True
             End If
         End If
+
+        Return False
     End Function
 
 

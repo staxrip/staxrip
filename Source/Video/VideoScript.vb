@@ -334,7 +334,7 @@ clipname.set_output()
 
     Shared Function GetVsPortableAutoLoadPluginCode() As String
         If FrameServerHelp.IsPortable Then
-            Dim ret As String
+            Dim ret = ""
             Dim dir = Folder.Settings + "Plugins\VapourSynth\"
 
             If dir.DirExists Then
@@ -613,7 +613,7 @@ clipname.set_output()
         newScript = loadCode + script
         newScript = GetAVSLoadCodeFromImports(newScript) + newScript
 
-        Dim initCode As String
+        Dim initCode = ""
 
         If FrameServerHelp.IsPortable Then
             initCode = "AddAutoloadDir(""" + Package.AviSynth.Directory + "plugins"")" + BR
@@ -874,8 +874,8 @@ Public Class FilterCategory
 
     Shared Function ParseFilterProfilesIniContent(content As String) As List(Of FilterCategory)
         Dim ret As New List(Of FilterCategory)
-        Dim cat As FilterCategory
-        Dim filter As VideoFilter
+        Dim cat As FilterCategory = Nothing
+        Dim filter As VideoFilter = Nothing
 
         For Each line In content.SplitLinesNoEmpty
             Dim multiline = line.StartsWith("    ") OrElse line.StartsWith(VB.vbTab)
@@ -886,7 +886,7 @@ Public Class FilterCategory
             End If
 
             If multiline Then
-                If Not filter Is Nothing Then
+                If filter IsNot Nothing Then
                     If filter.Script = "" Then
                         If line.StartsWith(VB.vbTab) Then
                             filter.Script += line.Substring(1)
@@ -908,7 +908,7 @@ Public Class FilterCategory
             Else
                 Dim filterName = line.Left("=").Trim
 
-                If filterName <> "" Then
+                If filterName <> "" AndAlso cat IsNot Nothing Then
                     filter = New VideoFilter(cat.Name, filterName, line.Right("=").Trim)
                     cat.Filters.Add(filter)
                 End If
@@ -1129,7 +1129,7 @@ Public Class FilterParameters
     Shared Function SplitCSV(input As String) As String()
         Dim chars = input.ToCharArray()
         Dim values As New List(Of String)()
-        Dim tempString As String
+        Dim tempString As String = ""
         Dim isString As Boolean
         Dim characterCount As Integer
         Dim level As Integer

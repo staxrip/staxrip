@@ -43,7 +43,7 @@ Public Class ConsolAppTester
         log += fullHelp
         'log.WriteUTF8File(Folder.Desktop + Package.Name + ".txt")
 
-        Dim message As String
+        Dim message = ""
 
         If unnecessaryIgnore.Count > 0 Then
             message += BR3 + $"unnecessary on {Package.Name} ignore list:" + BR2 + unnecessaryIgnore.Join(" ")

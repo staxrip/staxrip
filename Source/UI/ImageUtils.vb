@@ -35,7 +35,7 @@ Public Class ImageHelp
             End If
         End If
 
-        Dim family As FontFamily
+        Dim family As FontFamily = Nothing
 
         If symbol > 61400 Then
             If Coll.Families.Count > 0 Then
@@ -59,7 +59,7 @@ Public Class ImageHelp
 
         Dim bitmap As Bitmap
 
-        Using font As Font = New Font(family, fontSize)
+        Using font As New Font(family, fontSize)
             Dim fontHeight = font.Height
             bitmap = New Bitmap(CInt(fontHeight * 1.1F), CInt(fontHeight * 1.1F))
 

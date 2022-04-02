@@ -318,6 +318,7 @@ Public Class x264Params
                         ElseIf Deblock.DefaultValue Then
                             Return "--no-deblock"
                         End If
+                        Return ""
                     End Function}
 
     Property DeblockA As New NumParam With {
@@ -470,6 +471,7 @@ Public Class x264Params
                                 Return "--no-psy"
                             End If
                         End If
+                        Return ""
                     End Function}
 
     Property PsyRD As New NumParam With {
@@ -1035,7 +1037,7 @@ Public Class x264Params
                 Case "vspipe raw"
                     pipeCmd = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - | "
                 Case "avs2pipemod y4m"
-                    Dim dll As String
+                    Dim dll As String = ""
 
                     If FrameServerHelp.IsPortable Then
                         dll = " -dll=" + Package.AviSynth.Path.Escape
@@ -1043,7 +1045,7 @@ Public Class x264Params
 
                     pipeCmd = Package.avs2pipemod.Path.Escape + dll + " -y4mp " + script.Path.Escape + " | "
                 Case "avs2pipemod raw"
-                    Dim dll As String
+                    Dim dll As String = ""
 
                     If FrameServerHelp.IsPortable Then
                         dll = " -dll=" + Package.AviSynth.Path.Escape
@@ -1154,7 +1156,7 @@ Public Class x264Params
             Return "--partitions none"
         End If
 
-        Dim partitions As String
+        Dim partitions As String = ""
 
         If I4x4.Value Then partitions += "i4x4,"
         If I8x8.Value Then partitions += "i8x8,"
@@ -1165,6 +1167,8 @@ Public Class x264Params
         If partitions <> "" Then
             Return "--partitions " + partitions.TrimEnd(","c)
         End If
+
+        Return ""
     End Function
 
     Function IsCustom(pass As Integer, switch As String) As Boolean
@@ -1189,6 +1193,8 @@ Public Class x264Params
         If Custom.Value?.Contains(switch + " ") OrElse Custom.Value?.EndsWith(switch) Then
             Return True
         End If
+
+        Return False
     End Function
 
     Public Overrides Function GetPackage() As Package

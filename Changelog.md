@@ -32,7 +32,9 @@ v2.11.0 (2022-04-03)
   - AOMEnc v3.2.0-393-g402e264b9-x64-gcc11.2.0 Patman
   - ffmpeg-N v106445-g723065a346-x64-gcc11.2.0 Patman
   - MediaInfo v22.03
+  - MediaInfo.NET v7.3.0.0
   - MP4Box v2.1-DEV-rev79-gdf29bc8a0-x64-gcc11.2.0 Patman
+  - mpvnet v5.7.0.0
   - MKVToolNix v66.0
   - NVEnc v5.46
   - qaac v2.73

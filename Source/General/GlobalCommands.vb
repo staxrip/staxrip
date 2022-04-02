@@ -300,8 +300,8 @@ Public Class GlobalCommands
         Select Case topic
             Case "info"
                 form.Doc.WriteStart(GetApplicationDetails())
-                form.Doc.Write("Active Authors", "Dendraspis, JKyle, Patman, DJATOM")
-                form.Doc.Write("Retired Authors", "stax76, 44vince44, Revan654, NikosD, jernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+                form.Doc.Write("Active Authors", "Dendraspis, Patman, DJATOM")
+                form.Doc.Write("Retired Authors", "stax76, JKyle, 44vince44, Revan654, NikosD, jernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
                 form.Doc.Writer.WriteRaw("<hr>")
 
                 Dim licensePath = Folder.Startup + "License.txt"

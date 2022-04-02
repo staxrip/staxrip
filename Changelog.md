@@ -4,7 +4,7 @@ v2.12.0 (not published yet)
 -->
 
 
-v2.11.0 (2022-04-03)
+v2.11.0 (2022-04-02)
 ====================
 
 - Fix typo in Settings Directory dialog (bdr99, [#798](/../../issues/798))

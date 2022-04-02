@@ -1,11 +1,11 @@
 <!--
 v2.12.0 (not published yet)
-=========================
+====================
 -->
 
 
 v2.11.0 (2022-04-03)
-=========================
+====================
 
 - Fix typo in Settings Directory dialog (bdr99, [#798](/../../issues/798))
 - Update parameters for AOMEnc (badcf00d, Dendraspis, [#821](/../../issues/821))
@@ -49,7 +49,7 @@ v2.11.0 (2022-04-03)
 
 
 v2.10.0 (2021-10-06)
-=========================
+====================
 
 - New Discord Server Link: https://discord.gg/uz8pVR79Bd, if you haven't joined in yet
 - Remove Extension folder from mpv.net (Dendraspis, [#770](/../../issues/770))
@@ -60,7 +60,7 @@ v2.10.0 (2021-10-06)
 
 
 v2.9.0 (2021-10-05)
-=========================
+===================
 
 - Fix Check for Updates (Dendraspis)
 - Add --thread-affinity to NVEnc (Dendraspis)
@@ -83,7 +83,7 @@ v2.9.0 (2021-10-05)
 
 
 v2.8.0 (2021-08-01)
-=========================
+===================
 
 - Separate checking all and required only apps on AppsForm (Dendraspis)
 - Add more parameters for VCEEnc (Dendraspis, [#757](/../../issues/757))
@@ -105,7 +105,7 @@ v2.8.0 (2021-08-01)
 
 
 v2.7.0 (2021-07-25)
-=========================
+===================
 
 - [!!!] Changed names cause all encoder profiles to be reset. This means you have to re-set them by hand or backup and restore them after update.
 - [!!!] Changed (context-)menus from earlier versions must be restored, manually adjusted or need a global settings reset in order to see and use them.
@@ -181,7 +181,7 @@ v2.7.0 (2021-07-25)
 
 
 v2.6.0 (2021-05-22)
-=========================
+===================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
@@ -232,7 +232,7 @@ v2.6.0 (2021-05-22)
 
 
 v2.5.0 (2021-05-03)
-=========================
+===================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
@@ -287,7 +287,7 @@ v2.5.0 (2021-05-03)
 
 
 v2.4.0 (2021-04-09)
-=========================
+===================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [X] Might break templates and jobs from previous version, so checking or renewing them is recommended
@@ -319,7 +319,7 @@ v2.4.0 (2021-04-09)
 
 
 v2.3.0 (2021-03-28)
-=========================
+===================
 
 - [ ] Might break settings from previous version, so starting with new settings is recommended
 - [ ] Might break templates and jobs from previous version, so checking or renewing them is recommended
@@ -345,7 +345,7 @@ v2.3.0 (2021-03-28)
 
 
 v2.2.0 (2021-03-26)
-=========================
+===================
 
 - [X] Might break settings from previous version, so starting with new settings is recommended
 - [X] Might break templates and jobs from previous version, so checking or renewing them is recommended

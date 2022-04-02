@@ -78,7 +78,7 @@ Public Class StaxRipUpdate
 
                             If changelogResponse.IsSuccessStatusCode Then
                                 Dim changelogContent = Await changelogResponse.Content.ReadAsStringAsync()
-                                Dim cleanedChangelogContent = Regex.Replace(changelogContent, "<!--.*?-->", "").TrimStart()
+                                Dim cleanedChangelogContent = Regex.Replace(changelogContent, "<!--[\s\S]*?-->", "").TrimStart()
                                 Dim splits = Regex.Split(cleanedChangelogContent, "\n\n\n")
 
                                 If splits.Any() Then

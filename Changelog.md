@@ -4,7 +4,7 @@ v2.12.0 (not published yet)
 -->
 
 
-v2.11.0 (not published yet)
+v2.11.0 (2022-04-03)
 =========================
 
 - Fix typo in Settings Directory dialog (bdr99, [#798](/../../issues/798))
@@ -31,6 +31,7 @@ v2.11.0 (not published yet)
 - Update tools
   - AOMEnc v3.2.0-393-g402e264b9-x64-gcc11.2.0 Patman
   - ffmpeg-N v106445-g723065a346-x64-gcc11.2.0 Patman
+  - MediaInfo v22.03
   - MP4Box v2.1-DEV-rev79-gdf29bc8a0-x64-gcc11.2.0 Patman
   - MKVToolNix v66.0
   - NVEnc v5.46
@@ -40,6 +41,8 @@ v2.11.0 (not published yet)
   - Subtitle Edit v3.6.5
   - SvtAv1EncApp v0.9.1-81-gdf313c62-x64-gcc11.2.0 Patman
   - VCEEnc v6.17
+  - x264 v0.164.3094+13-7816202-[Mod-by-Patman]-x64-gcc11.2.0
+  - x265 v3.5+37+12-4e46995bc-[Mod-by-Patman]-x64-msvc1931
 - Update filters
   - TemporalDegrain2 v2.4.3
   - G41Fun v2021-09-23

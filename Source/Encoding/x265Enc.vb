@@ -475,7 +475,7 @@ Public Class x265Params
         .Switch = "--aq-mode",
         .Text = "AQ Mode",
         .IntegerValue = True,
-        .Options = {"0: Disabled", "1: AQ enabled", "2: AQ enabled with auto-variance", "3: AQ enabled with auto-variance with bias to dark scenes", "4: AQ enabled with auto-variance and edge information"}}
+        .Options = {"0: Disabled", "1: AQ enabled", "2: AQ enabled with auto-variance", "3: AQ enabled with auto-variance with bias to dark scenes", "4: AQ enabled with auto-variance and edge information", "5: AQ enabled with auto-variance, edge information and bias to dark scenes."}}
 
     Property AQStrength As New NumParam With {
         .Switch = "--aq-strength",

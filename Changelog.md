@@ -1,6 +1,8 @@
 <!--
 v2.12.0 (not published yet)
 ====================
+
+- x265: Add new supported option "--aq-mode 5", which was ported from modded x264 (DJATOM, Patman)
 -->
 
 

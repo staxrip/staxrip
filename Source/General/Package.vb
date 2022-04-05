@@ -1423,12 +1423,23 @@ Public Class Package
             .VsFilterNames = {"ftf.FixFades"}})
 
         Add(New PluginPackage With {
+            .Name = "vcm",
+            .Filename = "vcm.dll",
+            .HelpFilename = "vcm.html",
+            .Description = "vcm plugin for VapourSynth.",
+            .WebURL = "http://www.avisynth.nl/users/vcmohan/vcm/vcm.html",
+            .VsFilterNames = {"vcm.Median", "vcm.Variance", "vcm.Amp", "vcm.GBlur", "vcm.MBlur", "vcm.Hist", "vcm.Fan", "vcm.Mean", "vcm.Neural", "vcm.Veed", "vcm.SaltPepper",
+                               "vcm.DeBarrel", "vcm.DeJitter", "vcm.Reform", "vcm.Rotate", "vcm.Fisheye", 
+                               "vcm.F1Quiver", "vcm.F1QClean", "vcm.F1QLimit", "vcm.F2Quiver", "vcm.F2QLimit", "vcm.F2QBlur", "vcm.F2QBokeh", "vcm.F2QCorr", "vcm.F2QSharp", 
+                               "vcm.Bokeh", "vcm.ColorBox", "vcm.Grid", "vcm.Jitter", "vcm.Pattern", "vcm.StepFilter", "vcm.Circles"}})
+
+        Add(New PluginPackage With {
             .Name = "vcmod",
             .Filename = "vcmod.dll",
             .HelpFilename = "vcmod.html",
             .Description = "vcmod plugin for VapourSynth.",
             .WebURL = "http://www.avisynth.nl/users/vcmohan/vcmod/vcmod.html",
-            .VsFilterNames = {"vcmod.Median", "vcmod.Variance", "vcmod.Amplitude", "vcmod.GBlur", "vcmod.MBlur", "vcmod.Histogram", "vcmod.Fan", "vcmod.Variance", "vcmod.Neural", "vcmod.Veed", "vcmod.SaltPepper"}})
+            .VsFilterNames = {"vcmod.Median", "vcmod.Amplitude", "vcmod.GBlur", "vcmod.MBlur", "vcmod.Histogram", "vcmod.Fan", "vcmod.Variance", "vcmod.Neural", "vcmod.Veed", "vcmod.SaltPepper"}})
 
         Add(New PluginPackage With {
             .Name = "vcmove",

@@ -426,23 +426,24 @@ Public Class Proc
             End If
         Next
 
-        Dim path = dic("Path")
+        Dim path = Environment.GetEnvironmentVariable("Path")
+
 
         For Each pack In Package.Items.Values
             If pack.Path.Ext = "exe" AndAlso pack.HelpSwitch IsNot Nothing AndAlso
-                pack.Path.FileExists AndAlso Not path.Contains(pack.Directory + ";") Then
+                pack.Path.FileExists AndAlso Not path.Contains(pack.Directory + IO.Path.PathSeparator) Then
 
-                path = pack.Directory + ";" + path
+                path = pack.Directory + IO.Path.PathSeparator + path
             End If
         Next
 
         Dim cppDir = IO.Path.Combine(Folder.Startup, "Apps", "Support", "VC")
 
-        If Not path.Contains(cppDir + ";") Then
-            path = cppDir + ";" + path
+        If Not path.Contains(cppDir + IO.Path.PathSeparator) Then
+            path = cppDir + IO.Path.PathSeparator + path
         End If
 
-        dic("path") = path
+        dic("Path") = path
     End Sub
 
     Function ProcessData(value As String) As (Data As String, Skip As Boolean)

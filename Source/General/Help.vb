@@ -85,13 +85,11 @@ End Class
 
 Public Class FolderHelp
     Shared Function HasFiles(path As String, Optional searchPattern As String = "*") As Boolean
-        Return Directory.Exists(path) AndAlso Directory.GetFiles(path, searchPattern).Count > 0
+        Return Directory.Exists(path) AndAlso Directory.GetFiles(path, searchPattern).Any()
     End Function
 
     Shared Sub Create(path As String)
-        If Not Directory.Exists(path) Then
-            Directory.CreateDirectory(path)
-        End If
+        Directory.CreateDirectory(path)
     End Sub
 
     Shared Sub Delete(filepath As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)

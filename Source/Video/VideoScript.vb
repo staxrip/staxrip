@@ -289,6 +289,7 @@ clipname.set_output()
         code = Macro.Expand(code)
 
         If Me.Error <> "" OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
+
             If Path.Dir.DirExists Then
                 If Engine = ScriptEngine.VapourSynth Then
                     ModifyScript(code, Engine).WriteFileUTF8(Path)
@@ -335,7 +336,7 @@ clipname.set_output()
     Shared Function GetVsPortableAutoLoadPluginCode() As String
         If FrameServerHelp.IsPortable Then
             Dim ret = ""
-            Dim dir = Folder.Settings + "Plugins\VapourSynth\"
+            Dim dir = IO.Path.Combine(Folder.Settings, "Plugins", "VapourSynth")
 
             If dir.DirExists Then
                 For Each file In Directory.GetFiles(dir, "*.dll")
@@ -343,7 +344,7 @@ clipname.set_output()
                 Next
             End If
 
-            dir = Folder.Settings + "Plugins\Dual\"
+            dir = IO.Path.Combine(Folder.Settings, "Plugins", "Dual")
 
             If dir.DirExists Then
                 For Each file In Directory.GetFiles(dir, "*.dll")
@@ -369,7 +370,7 @@ clipname.set_output()
                 "import vapoursynth as vs" + BR +
                 "core = vs.get_core()" + BR +
                 GetVsPortableAutoLoadPluginCode() + BR +
-                "sys.path.append(r""" + Folder.Startup + "Apps\Plugins\VS\Scripts"")" + BR + code
+                "sys.path.append(r""" + IO.Path.Combine(Folder.Startup, "Apps", "Plugins", "VS", "Scripts") + """)" + BR + code
         End If
 
         Dim clip As String
@@ -458,30 +459,30 @@ clipname.set_output()
     Shared Function IsVsPluginInAutoLoadFolder(filename As String) As Boolean
         If FrameServerHelp.IsPortable Then
             Dim folders = {
-                Package.VapourSynth.Directory + "vapoursynth64\plugins\",
-                Package.VapourSynth.Directory + "vapoursynth64\coreplugins\",
-                Folder.Settings + "Plugins\VapourSynth\",
-                Folder.Settings + "Plugins\Dual\"}
+                IO.Path.Combine(Package.VapourSynth.Directory, "vapoursynth64", "plugins"),
+                IO.Path.Combine(Package.VapourSynth.Directory, "vapoursynth64", "coreplugins"),
+                IO.Path.Combine(Folder.Settings, "Plugins", "VapourSynth"),
+                IO.Path.Combine(Folder.Settings, "Plugins", "Dual")}
 
             For Each folder In folders
-                If File.Exists(folder + filename) Then
+                If File.Exists(IO.Path.Combine(folder, filename)) Then
                     Return True
                 End If
             Next
         Else
-            Return File.Exists(Folder.Plugins + filename)
+            Return File.Exists(IO.Path.Combine(Folder.Plugins, filename))
         End If
     End Function
 
     Shared Function IsAvsPluginInAutoLoadFolder(filename As String) As Boolean
         If FrameServerHelp.IsPortable Then
             Dim folders = {
-                Package.AviSynth.Directory + "plugins\",
-                Folder.Settings + "Plugins\AviSynth\",
-                Folder.Settings + "Plugins\Dual\"}
+                IO.Path.Combine(Package.AviSynth.Directory, "plugins"),
+                IO.Path.Combine(Folder.Settings, "Plugins", "AviSynth"),
+                IO.Path.Combine(Folder.Settings, "Plugins", "Dual")}
 
             For Each folder In folders
-                If File.Exists(folder + filename) Then
+                If File.Exists(IO.Path.Combine(folder, filename)) Then
                     Return True
                 End If
             Next
@@ -616,15 +617,15 @@ clipname.set_output()
         Dim initCode = ""
 
         If FrameServerHelp.IsPortable Then
-            initCode = "AddAutoloadDir(""" + Package.AviSynth.Directory + "plugins"")" + BR
+            initCode = "AddAutoloadDir(""" + IO.Path.Combine(Package.AviSynth.Directory, "plugins") + IO.Path.DirectorySeparatorChar + """)" + BR
 
-            Dim pluginDir = Folder.Settings + "Plugins\AviSynth"
+            Dim pluginDir = IO.Path.Combine(Folder.Settings, "Plugins", "AviSynth") + IO.Path.DirectorySeparatorChar
 
             If FolderHelp.HasFiles(pluginDir) Then
                 initCode += "AddAutoloadDir(""" + pluginDir + """)" + BR
             End If
 
-            pluginDir = Folder.Settings + "Plugins\Dual"
+            pluginDir = IO.Path.Combine(Folder.Settings, "Plugins", "Dual") + IO.Path.DirectorySeparatorChar
 
             If FolderHelp.HasFiles(pluginDir) Then
                 initCode += "AddAutoloadDir(""" + pluginDir + """)" + BR
@@ -724,7 +725,7 @@ Public Class TargetVideoScript
                 Return ""
             End If
 
-            Return p.TempDir + p.TargetFile.Base + "." + FileType
+            Return IO.Path.Combine(p.TempDir, p.TargetFile.Base + "." + FileType)
         End Get
         Set(value As String)
         End Set
@@ -741,7 +742,7 @@ Public Class SourceVideoScript
                 Return ""
             End If
 
-            Return p.TempDir + p.TargetFile.Base + "_source." + FileType
+            Return IO.Path.Combine(p.TempDir, p.TargetFile.Base + "_source." + FileType)
         End Get
         Set(value As String)
         End Set

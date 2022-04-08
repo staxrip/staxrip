@@ -132,7 +132,7 @@ Public Class VCEEnc
             vpp-delogo-pos vpp-delogo-select vpp-delogo-y"
 
         tester.Package = Package.VCEEnc
-        tester.CodeFile = Folder.Startup.Parent + "Encoding\vceenc.vb"
+        tester.CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "vceenc.vb")
 
         Return tester.Test
     End Function

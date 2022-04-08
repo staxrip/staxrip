@@ -37,7 +37,7 @@ Public Class JobManager
             name = p.SourceFile.Base
         End If
 
-        Return p.TempDir + name + ".srip"
+        Return Path.Combine(p.TempDir, name + ".srip")
     End Function
 
     Shared Sub SaveJobs(jobs As List(Of Job))
@@ -46,7 +46,7 @@ Public Class JobManager
 
         While True
             Try
-                Using stream As New FileStream(Folder.Settings + "Jobs.dat",
+                Using stream As New FileStream(Path.Combine(Folder.Settings, "Jobs.dat"),
                     FileMode.Create, FileAccess.Write, FileShare.None)
 
                     formatter.Serialize(stream, jobs)
@@ -120,7 +120,7 @@ Public Class JobManager
 
     Shared Function GetJobs() As List(Of Job)
         Dim formatter As New BinaryFormatter
-        Dim jobsPath = Folder.Settings + "Jobs.dat"
+        Dim jobsPath = Path.Combine(Folder.Settings, "Jobs.dat")
         Dim counter As Integer
 
         If File.Exists(jobsPath) Then

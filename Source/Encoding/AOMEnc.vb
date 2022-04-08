@@ -722,7 +722,7 @@ Public Class AV1Params
 
         If includePaths Then
             If Passes.Value = 1 Then
-                sb.Append(" --fpf=" + (p.TempDir + p.TargetFile.Base + chunkName + ".fpf").Escape)
+                sb.Append(" --fpf=" + (Path.Combine(p.TempDir, p.TargetFile.Base + chunkName + ".fpf")).Escape)
             End If
 
             sb.Append(" -o " + (targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape)

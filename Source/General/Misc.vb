@@ -1450,7 +1450,7 @@ Public Class Subtitle
             Dim inSub = subtitles(x)
 
             If Not inSub.Enabled OrElse Not File.Exists(inSub.Path) OrElse inSub.Path.Contains("_cut_") Then Continue For
-            Dim aviPath = p.TempDir + inSub.Path.Base + "_cut_mm.avi"
+            Dim aviPath = IO.Path.Combine(p.TempDir, inSub.Path.Base + "_cut_mm.avi")
             Dim d = (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture)
             Dim r = p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture)
             Dim args = $"-f lavfi -i color=c=black:s=16x16:d={d}:r={r} -y -hide_banner -c:v copy " + aviPath.Escape
@@ -1472,7 +1472,7 @@ Public Class Subtitle
             End If
 
             Dim id = If(FileTypes.SubtitleSingle.Contains(inSub.Path.Ext), 0, inSub.StreamOrder)
-            Dim mkvPath = p.TempDir + inSub.Path.Base + " ID" & id & "_cut_sub.mkv"
+            Dim mkvPath = IO.Path.Combine(p.TempDir, inSub.Path.Base + " ID" & id & "_cut_sub.mkv")
             args = "-o " + mkvPath.Escape + " " + aviPath.Escape
 
             If Not FileTypes.SubtitleExludingContainers.Contains(inSub.Path.Ext) Then
@@ -1500,7 +1500,7 @@ Public Class Subtitle
                 Log.WriteLine(MediaInfo.GetSummary(mkvPath))
             End If
 
-            Dim subPath = p.TempDir + inSub.Path.Base + " ID" & id & "_cut_" + inSub.ExtFull
+            Dim subPath = IO.Path.Combine(p.TempDir, inSub.Path.Base + " ID" & id & "_cut_" + inSub.ExtFull)
             args = "tracks " + mkvPath.Escape + " 1:" + subPath.Escape
 
             Using proc As New Proc

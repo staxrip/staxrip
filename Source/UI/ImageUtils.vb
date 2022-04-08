@@ -7,8 +7,8 @@ Imports System.Threading.Tasks
 
 Public Class ImageHelp
     Private Shared Coll As PrivateFontCollection
-    Private Shared ReadOnly AwesomePath As String = Folder.Apps + "\Fonts\FontAwesome.ttf"
-    Private Shared ReadOnly SegoePath As String = Folder.Apps + "\Fonts\Segoe-MDL2-Assets.ttf"
+    Private Shared ReadOnly AwesomePath As String = Path.Combine(Folder.Apps, "Fonts", "FontAwesome.ttf")
+    Private Shared ReadOnly SegoePath As String = Path.Combine(Folder.Apps, "Fonts", "Segoe-MDL2-Assets.ttf")
     Private Shared ReadOnly FontFilesExist As Boolean = File.Exists(AwesomePath) AndAlso File.Exists(SegoePath)
 
     Shared Async Function GetSymbolImageAsync(symbol As Symbol, Optional color As Color = Nothing) As Task(Of Image)

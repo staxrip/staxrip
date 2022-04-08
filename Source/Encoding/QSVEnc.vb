@@ -156,7 +156,7 @@ Public Class QSVEnc
 
         tester.UndocumentedSwitches = "input-thread chromaloc videoformat colormatrix colorprim transfer fullrange"
         tester.Package = Package.QSVEnc
-        tester.CodeFile = Folder.Startup.Parent + "Encoding\qsvenc.vb"
+        tester.CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "qsvenc.vb")
 
         Return tester.Test
     End Function

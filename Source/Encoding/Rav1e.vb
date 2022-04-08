@@ -115,7 +115,7 @@ Public Class Rav1e
         tester.IgnoredSwitches = "fullhelp output help psnr version verbose"
         tester.UndocumentedSwitches = "y4m help version verbose"
         tester.Package = Package.Rav1e
-        tester.CodeFile = Folder.Startup.Parent + "Encoding\Rav1e.vb"
+        tester.CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "Rav1e.vb")
 
         Return tester.Test
     End Function

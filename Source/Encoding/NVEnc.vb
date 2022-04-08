@@ -148,7 +148,7 @@ Public Class NVEnc
 
         tester.UndocumentedSwitches = ""
         tester.Package = Package.NVEnc
-        tester.CodeFile = Folder.Startup.Parent + "Encoding\nvenc.vb"
+        tester.CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "nvenc.vb")
 
         Return tester.Test
     End Function

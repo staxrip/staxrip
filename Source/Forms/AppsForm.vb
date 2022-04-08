@@ -662,11 +662,11 @@ Public Class AppsForm
                                 ToolUpdate.Extract()
                             Else
                                 ToolUpdate = New ToolUpdate(CurrentPackage, Me)
-                                ToolUpdate.ExtractDir = Folder.Temp + Guid.NewGuid.ToString + "\"
+                                ToolUpdate.ExtractDir = Path.Combine(Folder.Temp, Guid.NewGuid.ToString())
                                 Directory.CreateDirectory(ToolUpdate.ExtractDir)
 
                                 For Each i In files
-                                    FileHelp.Copy(i, ToolUpdate.ExtractDir + i.FileName)
+                                    FileHelp.Copy(i, Path.Combine(ToolUpdate.ExtractDir, i.FileName))
                                 Next
 
                                 ToolUpdate.DeleteOldFiles()
@@ -825,7 +825,7 @@ Public Class AppsForm
 
             Select Case td.Show
                 Case "csv"
-                    Dim csvFile = Folder.Temp + "staxrip tools.csv"
+                    Dim csvFile = Path.Combine(Folder.Temp, "staxrip tools.csv")
                     g.ConvertToCSV(";", rows).WriteFileUTF8(csvFile)
                     g.ShellExecute(g.GetAppPathForExtension("csv", "txt"), csvFile.Escape)
                 Case "ogv"
@@ -1051,7 +1051,7 @@ Public Class AppsForm
     End Sub
 
     Sub miEditChangelog_Click(sender As Object, e As EventArgs) Handles miEditChangelog.Click
-        Dim path = Folder.Startup + "..\Changelog.md"
+        Dim path = IO.Path.Combine(Folder.Startup, "..", "Changelog.md")
 
         If File.Exists(path) Then
             g.ShellExecute(path)
@@ -1104,18 +1104,18 @@ Public Class AppsForm
 
                 Select Case td.Show
                     Case "add"
-                        If path.Contains(dir + ";") OrElse path.EndsWith(";" + dir) Then
+                        If path.Split(IO.Path.PathSeparator).Contains(dir) Then
                             MsgError("Folder is already in PATH")
                         Else
-                            Environment.SetEnvironmentVariable("path", path + ";" + dir, EnvironmentVariableTarget.User)
+                            Environment.SetEnvironmentVariable("path", path + IO.Path.PathSeparator + dir, EnvironmentVariableTarget.User)
                             MsgInfo("Folder was added to PATH")
                         End If
                     Case "remove"
-                        If path.Contains(dir + ";") Then
-                            Environment.SetEnvironmentVariable("path", path.Replace(dir + ";", ""), EnvironmentVariableTarget.User)
+                        If path.Contains(dir + IO.Path.PathSeparator) Then
+                            Environment.SetEnvironmentVariable("path", path.Replace(dir + IO.Path.PathSeparator, ""), EnvironmentVariableTarget.User)
                             MsgInfo("Folder was removed from PATH")
-                        ElseIf path.EndsWith(";" + dir) Then
-                            path = path.Substring(0, path.Length - (";" + dir).Length)
+                        ElseIf path.EndsWith(IO.Path.PathSeparator + dir) Then
+                            path = path.Substring(0, path.Length - (IO.Path.PathSeparator + dir).Length)
                             Environment.SetEnvironmentVariable("path", path, EnvironmentVariableTarget.User)
                             MsgInfo("Folder was removed from PATH")
                         Else

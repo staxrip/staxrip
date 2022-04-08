@@ -243,7 +243,7 @@ Public MustInherit Class Muxer
 
         For Each iDir In {p.TempDir, p.TempDir.Parent}
             For Each iExt In {"jpg", "png"}
-                Dim fp = iDir + "cover." + iExt
+                Dim fp = Path.Combine(iDir, "cover." + iExt)
 
                 If File.Exists(fp) Then
                     CoverFile = fp
@@ -604,7 +604,7 @@ Public Class MkvMuxer
         For Each iDir In {p.TempDir, p.TempDir.Parent}
             For Each iBase In {"small_cover", "cover_land", "small_cover_land"}
                 For Each iExt In {".jpg", ".png"}
-                    Dim fp = iDir + iBase + iExt
+                    Dim fp = Path.Combine(iDir, iBase + iExt)
 
                     If File.Exists(fp) Then
                         AdditionalSwitches += " --attach-file " + fp.Escape
@@ -652,7 +652,7 @@ Public Class MkvMuxer
                       %>
                   </Tags>
 
-        Dim filepath = p.TempDir + p.TargetFile.Base + "_tags.xml"
+        Dim filepath = Path.Combine(p.TempDir, p.TargetFile.Base + "_tags.xml")
         xml.Save(filepath)
         TagFile = filepath
     End Sub

@@ -976,14 +976,14 @@ Public Class eac3toForm
         Dim videoStream = TryCast(cbVideoStream.SelectedItem, M2TSStream)
 
         If Not videoStream Is Nothing AndAlso Not cbVideoOutput.Text = "Nothing" Then
-            Dim outFile = OutputFolder + baseName + "." + cbVideoOutput.Text.ToLowerInvariant
+            Dim outFile = Path.Combine(OutputFolder, baseName + "." + cbVideoOutput.Text.ToLowerInvariant)
             ret += " " & videoStream.ID & ": " + outFile.Escape
             outFiles.Add(outFile)
         End If
 
         For Each stream In Streams
             If stream.IsAudio AndAlso stream.Checked Then
-                Dim outFile = OutputFolder + baseName + " ID" & stream.TypeID
+                Dim outFile = Path.Combine(OutputFolder, baseName + " ID" & stream.TypeID)
 
                 If stream.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
                     outFile += " " + stream.Language.CultureInfo.EnglishName
@@ -1001,7 +1001,7 @@ Public Class eac3toForm
 
         For Each stream In Streams
             If stream.IsSubtitle AndAlso stream.Checked Then
-                Dim outFile = OutputFolder + baseName + " ID" & stream.TypeID
+                Dim outFile = Path.Combine(OutputFolder, baseName + " ID" & stream.TypeID)
 
                 If stream.Language.CultureInfo.TwoLetterISOLanguageName <> "iv" Then
                     outFile += " " + stream.Language.CultureInfo.EnglishName
@@ -1013,7 +1013,7 @@ Public Class eac3toForm
             End If
 
             If stream.IsChapters AndAlso cbChapters.Checked Then
-                Dim outFile = OutputFolder + baseName + "_chapters.txt"
+                Dim outFile = Path.Combine(OutputFolder, baseName + "_chapters.txt")
                 outFiles.Add(outFile)
                 ret += " " & stream.ID & ": " + outFile.Escape
             End If

@@ -76,7 +76,7 @@ Public Class GlobalClass
     End Function
 
     Sub LoadPowerShellScripts()
-        For Each dirPath In {Folder.Apps + "Scripts", Folder.Scripts + "Auto Load"}
+        For Each dirPath In {Path.Combine(Folder.Apps, "Scripts"), Folder.Scripts + "Auto Load"}
             If dirPath.DirExists Then
                 For Each fp In Directory.GetFiles(dirPath, "*.ps1")
                     g.DefaultCommands.ExecutePowerShellFile(fp)
@@ -91,7 +91,7 @@ Public Class GlobalClass
     End Function
 
     Function IsWindowsTerminalAvailable() As Boolean
-        Return File.Exists(Folder.AppDataLocal + "Microsoft\WindowsApps\wt.exe")
+        Return File.Exists(Path.Combine(Folder.AppDataLocal, "Microsoft", "WindowsApps", "wt.exe"))
     End Function
 
     Sub RunCodeInTerminal(code As String)
@@ -134,23 +134,17 @@ Public Class GlobalClass
     Sub ShellExecute(fileName As String, Optional arguments As String = Nothing)
         Try
             If Not fileName.StartsWith("http") AndAlso fileName.Ext.EqualsAny("htm", "html") Then
-                Dim browser = g.GetAppPathForExtension("htm", "html")
-
-                If Not browser.FileName.EqualsAny("chrome.exe", "firefox.exe") Then
-                    browser = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-                End If
-
-                If Not browser.FileExists Then
-                    browser = Package.FindEverywhere({"chrome.exe", "firefox.exe"})
-                End If
-
-                If browser.FileExists Then
-                    arguments = fileName.Escape
-                    fileName = browser
-                End If
+                Dim param = New ProcessStartInfo(fileName.Escape)
+                param.UseShellExecute = True
+                Process.Start(param)?.Dispose()
+                Return
             End If
 
-            Process.Start(fileName, arguments)?.Dispose()
+            Dim param2 = New ProcessStartInfo(fileName.Escape)
+            param2.UseShellExecute = True
+            param2.Arguments = arguments
+
+            Process.Start(param2)?.Dispose()
         Catch ex As Exception
             g.ShowException(ex, "Failed to start process", "Filename:" + BR2 + fileName + BR2 + "Arguments:" + BR2 + arguments)
         End Try
@@ -165,8 +159,8 @@ Public Class GlobalClass
         Dim newPath = path
 
         For Each d In dirs
-            If d.DirExists AndAlso Not d.StartsWith(Folder.System) AndAlso Not path.Contains(d + ";") Then
-                newPath = d + ";" + newPath
+            If d.DirExists AndAlso Not d.StartsWith(Folder.System) AndAlso Not path.Contains(d + IO.Path.PathSeparator) Then
+                newPath = IO.Path.Combine(d, newPath)
             End If
         Next
 
@@ -288,7 +282,7 @@ Public Class GlobalClass
                 End If
 
                 g.MainForm.OpenVideoSourceFiles(p.SourceFiles, True)
-                g.ProjectPath = p.TempDir + p.TargetFile.Base + ".srip"
+                g.ProjectPath = Path.Combine(p.TempDir, p.TargetFile.Base + ".srip")
                 p.BatchMode = False
                 g.MainForm.SaveProjectPath(g.ProjectPath)
             Else
@@ -431,7 +425,7 @@ Public Class GlobalClass
             g.RaiseAppEvent(ApplicationEvent.AfterJobProcessed)
             JobManager.RemoveJob(jobPath)
 
-            If jobPath.StartsWith(Folder.Settings + "Batch Projects\") Then
+            If jobPath.StartsWith(Path.Combine(Folder.Settings, "Batch Projects")) Then
                 File.Delete(jobPath)
             End If
         Catch ex As SkipException
@@ -441,7 +435,7 @@ Public Class GlobalClass
             Log.Save()
             g.RaiseAppEvent(ApplicationEvent.AfterJobFailed)
             g.ShowException(ex, Nothing, Nothing, 50)
-            g.ShellExecute(g.GetTextEditorPath(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
+            g.ShellExecute(g.GetTextEditorPath(), """" + Path.Combine(p.TempDir, p.TargetFile.Base, "_staxrip.log") + """")
             ProcController.Aborted = False
         End Try
     End Sub
@@ -452,7 +446,7 @@ Public Class GlobalClass
     End Function
 
     Sub DeleteTempFiles()
-        If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then
+        If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso New DirectoryInfo(p.TempDir).Name.EndsWith("_temp") Then
             Try
                 Dim moreJobsToProcessInTempDir = JobManager.GetJobs.Where(Function(a) a.Active AndAlso a.Path.Contains(p.TempDir))
 
@@ -470,10 +464,10 @@ Public Class GlobalClass
 
     ReadOnly Property StartupTemplatePath() As String
         Get
-            Dim ret = Folder.Template + s.StartupTemplate + ".srip"
+            Dim ret = Path.Combine(Folder.Template, s.StartupTemplate + ".srip")
 
             If Not File.Exists(ret) Then
-                ret = Folder.Template + "Automatic Workflow.srip"
+                ret = Path.Combine(Folder.Template, "Automatic Workflow.srip")
                 s.StartupTemplate = "Automatic Workflow"
             End If
 
@@ -483,7 +477,7 @@ Public Class GlobalClass
 
     ReadOnly Property SettingsFile() As String
         Get
-            Return Folder.Settings + "Settings.dat"
+            Return Path.Combine(Folder.Settings, "Settings.dat")
         End Get
     End Property
 
@@ -629,7 +623,7 @@ Public Class GlobalClass
     End Function
 
     Function GetSourceBase() As String
-        If p.TempDir.EndsWithEx("_temp\") Then
+        If New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp") Then
             Return "temp"
         Else
             Return p.SourceFile.Base
@@ -761,13 +755,13 @@ Public Class GlobalClass
                 mutex.ReleaseMutex()
             End Using
 
-            Dim backupPath = Folder.Settings + "Backup\"
+            Dim backupPath = Path.Combine(Folder.Settings, "Backup")
 
             If Not Directory.Exists(backupPath) Then
                 Directory.CreateDirectory(backupPath)
             End If
 
-            FileHelp.Copy(g.SettingsFile, backupPath + "Settings(v" + Application.ProductVersion + ").dat")
+            FileHelp.Copy(g.SettingsFile, Path.Combine(backupPath, "Settings(v" + Application.ProductVersion + ").dat"))
         Catch ex As Exception
             g.ShowException(ex)
         End Try
@@ -850,7 +844,7 @@ Public Class GlobalClass
                 RaiseEvent BeforeProcessing()
         End Select
 
-        Dim scriptPath = Folder.Scripts + ae.ToString + ".ps1"
+        Dim scriptPath = Path.Combine(Folder.Scripts, ae.ToString, ".ps1")
 
         If File.Exists(scriptPath) Then
             g.DefaultCommands.ExecutePowerShellFile(scriptPath)
@@ -895,10 +889,10 @@ Public Class GlobalClass
                 p.TempDir = Macro.Expand(p.TempDir)
 
                 If p.TempDir = "" Then
-                    If p.SourceFile.Dir.EndsWith("_temp\") Then
+                    If New DirectoryInfo(p.SourceFile.Dir).Name.EndsWithEx("_temp") Then
                         p.TempDir = p.SourceFile.Dir
                     Else
-                        p.TempDir = p.SourceFile.Dir + p.SourceFile.Base + "_temp\"
+                        p.TempDir = Path.Combine(p.SourceFile.Dir, p.SourceFile.Base + "_temp")
                     End If
                 End If
 
@@ -909,7 +903,7 @@ Public Class GlobalClass
                         Directory.CreateDirectory(p.TempDir)
                     Catch
                         Try
-                            p.TempDir = p.SourceFile.DirAndBase + "_temp\"
+                            p.TempDir = p.SourceFile.DirAndBase + "_temp"
 
                             If Not Directory.Exists(p.TempDir) Then
                                 Directory.CreateDirectory(p.TempDir)
@@ -965,7 +959,7 @@ Public Class GlobalClass
                 proc.SkipString = "Indexing, please wait..."
                 proc.Project = proj
                 proc.Priority = ProcessPriorityClass.Normal
-                proc.File = Package.ffms2.Directory + "ffmsindex.exe"
+                proc.File = Path.Combine(Package.ffms2.Directory, "ffmsindex.exe")
                 proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.LongPathPrefix.Escape +
                     " " + cachePath.LongPathPrefix.Escape
                 proc.Start()
@@ -1010,7 +1004,7 @@ Public Class GlobalClass
             dirs.Add(p.TempDir)
         End If
 
-        If p.TempDir?.EndsWith("_temp\") Then
+        If New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp") Then
             dirs.Add(p.TempDir.Parent)
         End If
 
@@ -1059,7 +1053,7 @@ Public Class GlobalClass
                         name = p.SourceFile.Base
                     End If
 
-                    g.MainForm.SaveProjectPath(p.SourceFile.Dir + "recovery.srip")
+                    g.MainForm.SaveProjectPath(Path.Combine(p.SourceFile.Dir, "recovery.srip"))
                 End If
 
                 g.SaveSettings()
@@ -1117,13 +1111,13 @@ Public Class GlobalClass
 
     Sub ArchiveLogFile(path As String)
         Try
-            Dim logFolder = Folder.Settings + "Log Files\"
+            Dim logFolder = IO.Path.Combine(Folder.Settings, "Log Files")
 
             If Not Directory.Exists(logFolder) Then
                 Directory.CreateDirectory(logFolder)
             End If
 
-            FileHelp.Copy(path, logFolder + Date.Now.ToString("yyyy-MM-dd - HH.mm.ss") + " - " + path.FileName)
+            FileHelp.Copy(path, IO.Path.Combine(logFolder, Date.Now.ToString("yyyy-MM-dd - HH.mm.ss") + " - " + path.FileName))
             Dim di As New DirectoryInfo(logFolder)
 
             While di.GetFiles("*.log").Length > s.LogFileNum
@@ -1499,7 +1493,7 @@ Public Class GlobalClass
                         infoScript.AddFilter(New VideoFilter($"Import(""{script.Path}"")"))
                         Dim infoCode = $"Info(size={(script.GetInfo().Height * 0.05).ToInvariantString()})"
                         infoScript.AddFilter(New VideoFilter(infoCode))
-                        infoScript.Path = p.TempDir + p.TargetFile.Base + $"_info." + script.FileType
+                        infoScript.Path = Path.Combine(p.TempDir, p.TargetFile.Base + $"_info." + script.FileType)
 
                         If infoScript.GetError() <> "" Then
                             MsgError("Script Error", infoScript.GetError())
@@ -1520,7 +1514,7 @@ Public Class GlobalClass
                         g.RunCodeInTerminal($"""`n{Package.vspipe.Name} {Package.vspipe.Version}`n""; & '{Package.vspipe.Path}' --info '{script.Path}' -;""""")
                     Case "ClipInfo()"
                         Dim infoScript = script.GetNewScript
-                        infoScript.Path = p.TempDir + p.TargetFile.Base + "_info." + script.FileType
+                        infoScript.Path = Path.Combine(p.TempDir, p.TargetFile.Base + "_info." + script.FileType)
                         infoScript.AddFilter(New VideoFilter("clip = clip.resize.Bicubic(720, (720 / clip.width * clip.height) // 8 * 8)"))
                         infoScript.AddFilter(New VideoFilter("clip = core.text.ClipInfo(clip)"))
 
@@ -1536,7 +1530,7 @@ Public Class GlobalClass
     End Sub
 
     Function IsDevelopmentPC() As Boolean
-        Return Application.StartupPath.EndsWith("\bin") OrElse Application.StartupPath.EndsWith("\bin-x86")
+        Return New DirectoryInfo(Application.StartupPath).Name.EndsWithEx("bin") OrElse New DirectoryInfo(Application.StartupPath).Name.EndsWithEx("\bin-x86")
     End Function
 
     Sub RunTask(action As Action)

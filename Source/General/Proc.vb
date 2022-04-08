@@ -436,7 +436,7 @@ Public Class Proc
             End If
         Next
 
-        Dim cppDir = Folder.Startup + "Apps\Support\VC"
+        Dim cppDir = IO.Path.Combine(Folder.Startup, "Apps", "Support", "VC")
 
         If Not path.Contains(cppDir + ";") Then
             path = cppDir + ";" + path

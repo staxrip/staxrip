@@ -1367,75 +1367,36 @@ Public Enum ShutdownMode
 End Enum
 
 Public Class PowerRequest
-    Private Shared CurrentPowerRequest As IntPtr
 
     Shared Sub SuppressStandby()
-        If CurrentPowerRequest <> IntPtr.Zero Then
-            PowerClearRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)
-            CurrentPowerRequest = IntPtr.Zero
-        End If
+        Dim previousState = SetThreadExecutionState(EXECUTION_STATE.ES_CONTINUOUS Or EXECUTION_STATE.ES_SYSTEM_REQUIRED)
 
-        Dim pContext As POWER_REQUEST_CONTEXT
-        pContext.Flags = &H1 'POWER_REQUEST_CONTEXT_SIMPLE_STRING
-        pContext.Version = 0 'POWER_REQUEST_CONTEXT_VERSION
-        pContext.SimpleReasonString = "Standby suppressed by StaxRip"  'shown when the command "powercfg -requests" is executed
-
-        CurrentPowerRequest = PowerCreateRequest(pContext)
-
-        If CurrentPowerRequest = IntPtr.Zero Then
-            Dim err = Marshal.GetLastWin32Error()
-
-            If err <> 0 Then
-                Throw New Win32Exception(err)
-            End If
-        End If
-
-        Dim success = PowerSetRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)
-
-        If Not success Then
-            CurrentPowerRequest = IntPtr.Zero
-            Dim err = Marshal.GetLastWin32Error()
-
-            If err <> 0 Then
-                Throw New Win32Exception(err)
-            End If
+        If previousState = EXECUTION_STATE.ES_ERROR Then
+            Throw New Win32Exception("expected last EXECUTION_STATE but got 0 indicating an error" + previousState.ToString)
         End If
     End Sub
 
     Shared Sub EnableStandby()
-        If CurrentPowerRequest <> IntPtr.Zero Then
-            Dim success = PowerClearRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)
+        Dim previousState = SetThreadExecutionState(EXECUTION_STATE.ES_CONTINUOUS)
 
-            If Not success Then
-                CurrentPowerRequest = IntPtr.Zero
-                Dim err = Marshal.GetLastWin32Error()
-
-                If err <> 0 Then
-                    Throw New Win32Exception(err)
-                End If
-            Else
-                CurrentPowerRequest = IntPtr.Zero
-            End If
+        If previousState = EXECUTION_STATE.ES_ERROR Then
+            Throw New Win32Exception("expected last EXECUTION_STATE but got 0 indicating an error" + previousState.ToString)
         End If
     End Sub
 
-    Enum PowerRequestType
-        PowerRequestDisplayRequired
-        PowerRequestSystemRequired
-        PowerRequestAwayModeRequired
-        PowerRequestExecutionRequired
+    <Flags>
+    Enum EXECUTION_STATE : uint
+        ES_ERROR = 0 ' indicating an error
+        ES_SYSTEM_REQUIRED = &H1
+        ES_DISPLAY_REQUIRED = &H2
+        ES_AWAYMODE_REQUIRED = &H40
+        ES_CONTINUOUS = &H80000000
+        ' Legacy flag, should Not be used.
+        ' ES_USER_PRESENT = &H00000004
     End Enum
 
-    <DllImport("kernel32.dll")>
-    Shared Function PowerCreateRequest(ByRef Context As POWER_REQUEST_CONTEXT) As IntPtr
-    End Function
-
-    <DllImport("kernel32.dll")>
-    Shared Function PowerSetRequest(PowerRequestHandle As IntPtr, RequestType As PowerRequestType) As Boolean
-    End Function
-
-    <DllImport("kernel32.dll")>
-    Shared Function PowerClearRequest(PowerRequestHandle As IntPtr, RequestType As PowerRequestType) As Boolean
+    <DllImport("kernel32.dll", CharSet:=CharSet.Auto, SetLastError:=True)>
+    Shared Function SetThreadExecutionState(esFlags As EXECUTION_STATE) As EXECUTION_STATE
     End Function
 
     <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode)>

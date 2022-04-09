@@ -2264,7 +2264,7 @@ Public Class Package
                 HelpFilename = Name + " Help.txt"
             End If
 
-            Return IO.Path.Combine(Directory, HelpFilename)
+            Return IO.Path.Combine(Directory, If(HelpFilename, ""))
         End Get
     End Property
 

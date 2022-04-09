@@ -1093,8 +1093,8 @@ Public Class AppsForm
         'crash report by user
         Try
             Dim dir = CurrentPackage.Directory.TrimTrailingSeparator
-            Dim path = Environment.GetEnvironmentVariable("path", EnvironmentVariableTarget.User)
-            path = path.Replace(";;", ";").TrimEnd(";"c)
+            Dim pathVar = If(Environment.GetEnvironmentVariable("path", EnvironmentVariableTarget.User), "")
+            Dim pathItems = pathVar.Split(New String() {Path.PathSeparator}, StringSplitOptions.RemoveEmptyEntries).ToList()
 
             Using td As New TaskDialog(Of String)
                 td.Title = "Modify the user PATH environment variable"
@@ -1104,19 +1104,17 @@ Public Class AppsForm
 
                 Select Case td.Show
                     Case "add"
-                        If path.Split(IO.Path.PathSeparator).Contains(dir) Then
+                        If pathItems.Contains(dir) Then
                             MsgError("Folder is already in PATH")
                         Else
-                            Environment.SetEnvironmentVariable("path", path + IO.Path.PathSeparator + dir, EnvironmentVariableTarget.User)
+                            pathItems.Add(dir)
+                            Environment.SetEnvironmentVariable("path", String.Join(Path.PathSeparator, pathItems), EnvironmentVariableTarget.User)
                             MsgInfo("Folder was added to PATH")
                         End If
                     Case "remove"
-                        If path.Contains(dir + IO.Path.PathSeparator) Then
-                            Environment.SetEnvironmentVariable("path", path.Replace(dir + IO.Path.PathSeparator, ""), EnvironmentVariableTarget.User)
-                            MsgInfo("Folder was removed from PATH")
-                        ElseIf path.EndsWith(IO.Path.PathSeparator + dir) Then
-                            path = path.Substring(0, path.Length - (IO.Path.PathSeparator + dir).Length)
-                            Environment.SetEnvironmentVariable("path", path, EnvironmentVariableTarget.User)
+                        If pathItems.Contains(dir) Then
+                            pathItems.Remove(dir)
+                            Environment.SetEnvironmentVariable("path", String.Join(Path.PathSeparator, pathItems), EnvironmentVariableTarget.User)
                             MsgInfo("Folder was removed from PATH")
                         Else
                             MsgError("Folder is not in PATH")

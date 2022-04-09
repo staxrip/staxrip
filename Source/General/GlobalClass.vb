@@ -623,11 +623,10 @@ Public Class GlobalClass
     End Function
 
     Function GetSourceBase() As String
-        If New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp") Then
+        If Not String.IsNullOrWhiteSpace(p.TempDir) AndAlso New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp") Then
             Return "temp"
-        Else
-            Return p.SourceFile.Base
         End If
+        Return p.SourceFile.Base
     End Function
 
     Sub ShowCode(title As String, content As String, Optional find As String = Nothing, Optional wordwrap As Boolean = False)

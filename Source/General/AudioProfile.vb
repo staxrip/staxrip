@@ -1062,10 +1062,11 @@ Public Class GUIAudioProfile
     End Function
 
     Function GetQaacCommandLine(includePaths As Boolean) As String
+        Dim usePipe = DecodingMode = AudioDecodingMode.Pipe OrElse ( Params.ChannelsMode <> ChannelsMode.Original AndAlso SupportedInput.Contains(File.Ext) )
         Dim sb As New StringBuilder
         includePaths = includePaths And File <> ""
 
-        If DecodingMode = AudioDecodingMode.Pipe Then
+        If usePipe Then
             sb.Append(GetPipeCommandLine(includePaths))
         End If
 
@@ -1123,7 +1124,7 @@ Public Class GUIAudioProfile
             sb.Append(" " + Params.CustomSwitches)
         End If
 
-        Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.Escape)
+        Dim input = If(usePipe, "-", File.Escape)
 
         If includePaths Then
             sb.Append(" " + input + " -o " + GetOutputFile.Escape)

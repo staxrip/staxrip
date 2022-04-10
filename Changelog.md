@@ -12,6 +12,7 @@ v2.12.0 (not published yet)
 - Fix not muxing attachments due to opposed working checkbox ([#847](/../../issues/847))
 - Fix missing VS plugin due to G41Fun update ([#848](/../../issues/848))
 - Remove unneccessary quotation marks from Command Line Audio Profile ([#853](/../../issues/853))
+- Use pipe when modifying channels for qaac ([#854](/../../issues/854))
 - Update VapourSynth plugin
     - vcm v2020-09
 

@@ -399,7 +399,7 @@ Public MustInherit Class AudioProfile
         ret.Add(New GUIAudioProfile(AudioCodec.MP3, 4))
         ret.Add(New GUIAudioProfile(AudioCodec.AC3, 1.0) With {.Channels = 6, .Bitrate = 640})
         ret.Add(New GUIAudioProfile(AudioCodec.EAC3, 1.0) With {.Channels = 6, .Bitrate = 640})
-        ret.Add(New BatchAudioProfile(640, {}, "ac3", 6, """%app:ffmpeg%"" -i ""%input%"" -b:a %bitrate%k -y -hide_banner ""%output%"""))
+        ret.Add(New BatchAudioProfile(640, {}, "ac3", 6, """%app:ffmpeg%"" -i %input% -b:a %bitrate%k -y -hide_banner %output%"))
         ret.Add(New MuxAudioProfile())
         ret.Add(New NullAudioProfile())
 

@@ -176,8 +176,8 @@ Public Class QSVEnc
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
-            .Options = {"Intel H.264", "Intel H.265", "Intel MPEG-2", "Intel VP9"},
-            .Values = {"h264", "hevc", "mpeg2", "vp9"}}
+            .Options = {"Intel H.264", "Intel H.265", "Intel MPEG-2", "Intel VP9", "Intel AV1 (Experimental)"},
+            .Values = {"h264", "hevc", "mpeg2", "vp9", "av1"}}
 
         Property Mode As New OptionParam With {
             .Switches = {"--avbr", "--cbr", "--vbr", "--cqp", "--icq", "--la-icq", "--vcm", "--la", "--la-hrd", "--qvbr"},

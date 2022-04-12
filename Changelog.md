@@ -14,11 +14,13 @@ v2.12.0 (not published yet)
 - Fix missing VS plugin due to G41Fun update ([#848](/../../issues/848))
 - Remove unneccessary quotation marks from Command Line Audio Profile ([#853](/../../issues/853))
 - Use pipe when modifying channels for qaac ([#854](/../../issues/854))
+- Use existing/cached video information after muxing instead of reloading the script to prevent broken generated files ([#777](/../../issues/777))
 - Update tools
-    - AviSynth+ v3.7.2
-    - QSVEnc v7.00
+  - AviSynth+ v3.7.2
+  - MKVToolNix v67.0
+  - QSVEnc v7.00
 - Update VapourSynth plugins
-    - vcm v2020-09
+  - vcm v2020-09
 
 
 v2.11.0 (2022-04-02)

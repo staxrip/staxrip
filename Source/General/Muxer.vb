@@ -701,7 +701,7 @@ Public Class MkvMuxer
             (TypeOf p.VideoEncoder Is AOMEnc AndAlso
             Not p.VideoEncoder.GetCommandLine(True, True).Contains(" --ivf")) Then
 
-            args += " --default-duration 0:" + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
+            args += " --default-duration 0:" + p.Script.GetCachedFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
         End If
 
         If TimestampsFile <> "" Then

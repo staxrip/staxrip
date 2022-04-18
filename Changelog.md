@@ -5,7 +5,7 @@ v2.13.0 (not published yet)
 - 
 -->
 
-v2.12.0 (not published yet)
+v2.12.0 (2022-04-19)
 ====================
 
 - x265: Add new supported option "--aq-mode 5", which was ported from modded x264 (DJATOM, Patman)

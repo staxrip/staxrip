@@ -9,6 +9,7 @@ v2.12.0 (not published yet)
 ====================
 
 - x265: Add new supported option "--aq-mode 5", which was ported from modded x264 (DJATOM, Patman)
+- NVEnc: Add new param "--vpp-convolution3d"
 - QSVEnc: Add experimental AV1 codec
 - Fix not muxing attachments due to opposed working checkbox ([#847](/../../issues/847))
 - Fix missing VS plugin due to G41Fun update ([#848](/../../issues/848))
@@ -18,7 +19,8 @@ v2.12.0 (not published yet)
 - Update tools
   - AviSynth+ v3.7.2
   - MKVToolNix v67.0
-  - QSVEnc v7.00
+  - NVEnc v6.00
+  - QSVEnc v7.01
 - Update VapourSynth plugins
   - vcm v2020-09
 

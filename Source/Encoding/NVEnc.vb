@@ -326,6 +326,14 @@ Public Class NVEnc
         Property KnnLerp As New NumParam With {.Text = "      Lerp", .Init = 0.2, .Config = {0, Integer.MaxValue, 0.1, 1}}
         Property KnnThLerp As New NumParam With {.Text = "      TH Lerp", .Init = 0.8, .Config = {0, 1, 0.1, 1}}
 
+        Property Convolution As New BoolParam With {.Switch = "--vpp-convolution3d", .Text = "3D noise reduction", .ArgsFunc = AddressOf GetConvolution3dArgs}
+        Property ConvolutionMatrix As New OptionParam With {.Text = "      Matrix", .Init = 0, .Options = {"Original", "Standard", "Simple"}, .Values = {"original", "standard", "simple"}}
+        Property ConvolutionFast As New OptionParam With {.Text = "      Fast", .Init = 0, .Options = {"False", "True"}, .Values = {"false", "true"}}
+        Property ConvolutionYthresh As New NumParam With {.Text = "      Spatial luma threshold", .Init = 3, .Config = {0, 255, 1, 1}}
+        Property ConvolutionCthresh As New NumParam With {.Text = "      Spatial chroma threshold", .Init = 4, .Config = {0, 255, 1, 1}}
+        Property ConvolutionTYthresh As New NumParam With {.Text = "      Temporal luma threshold", .Init = 3, .Config = {0, 255, 1, 1}}
+        Property ConvolutionTCthresh As New NumParam With {.Text = "      Temporal chroma threshold", .Init = 4, .Config = {0, 255, 1, 1}}
+
         Property Pad As New BoolParam With {.Switch = "--vpp-pad", .Text = "Padding", .ArgsFunc = AddressOf GetPaddingArgs}
         Property PadLeft As New NumParam With {.Text = "      Left"}
         Property PadTop As New NumParam With {.Text = "      Top"}
@@ -569,6 +577,7 @@ Public Class NVEnc
                         AfsShift, AfsDrop, AfsSmooth, Afs24fps, AfsTune, AfsRFF, AfsTimecode, AfsLog)
                     Add("VPP | Denoise",
                         Knn, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
+                        Convolution, ConvolutionMatrix, ConvolutionFast, ConvolutionYthresh, ConvolutionCthresh, ConvolutionTYthresh, ConvolutionTCthresh,
                         Pmd, PmdApplyCount, PmdStrength, PmdThreshold)
                     Add("VPP | Sharpness",
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
@@ -701,6 +710,13 @@ Public Class NVEnc
                 KnnLerp.NumEdit.Enabled = Knn.Value
                 KnnThLerp.NumEdit.Enabled = Knn.Value
 
+                ConvolutionMatrix.MenuButton.Enabled = Convolution.Value
+                ConvolutionFast.MenuButton.Enabled = Convolution.Value
+                ConvolutionYthresh.NumEdit.Enabled = Convolution.Value
+                ConvolutionCthresh.NumEdit.Enabled = Convolution.Value
+                ConvolutionTYthresh.NumEdit.Enabled = Convolution.Value
+                ConvolutionTCthresh.NumEdit.Enabled = Convolution.Value
+
                 PadLeft.NumEdit.Enabled = Pad.Value
                 PadTop.NumEdit.Enabled = Pad.Value
                 PadRight.NumEdit.Enabled = Pad.Value
@@ -830,6 +846,20 @@ Public Class NVEnc
                 If KnnLerp.Value <> KnnLerp.DefaultValue Then ret += ",lerp=" & KnnLerp.Value.ToInvariantString
                 If KnnThLerp.Value <> KnnThLerp.DefaultValue Then ret += ",th_lerp=" & KnnThLerp.Value.ToInvariantString
                 Return "--vpp-knn " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetConvolution3dArgs() As String
+            If Convolution.Value Then
+                Dim ret = ""
+                If ConvolutionMatrix .Value <> ConvolutionMatrix.DefaultValue Then ret += ",matrix=" & ConvolutionMatrix.ValueText
+                If ConvolutionFast.Value <> ConvolutionFast.DefaultValue Then ret += ",fast=" & ConvolutionFast.ValueText
+                If ConvolutionYthresh.Value <> ConvolutionYthresh.DefaultValue Then ret += ",ythresh=" & ConvolutionYthresh.Value.ToInvariantString
+                If ConvolutionCthresh.Value <> ConvolutionCthresh.DefaultValue Then ret += ",cthresh=" & ConvolutionCthresh.Value.ToInvariantString
+                If ConvolutionTYthresh.Value <> ConvolutionTYthresh.DefaultValue Then ret += ",t_ythresh=" & ConvolutionTYthresh.Value.ToInvariantString
+                If ConvolutionTCthresh.Value <> ConvolutionTCthresh.DefaultValue Then ret += ",t_cthresh=" & ConvolutionTCthresh.Value.ToInvariantString
+                Return "--vpp-convolution3d " + ret.TrimStart(","c)
             End If
             Return ""
         End Function

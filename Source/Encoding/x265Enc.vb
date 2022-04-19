@@ -482,6 +482,13 @@ Public Class x265Params
         .Text = "AQ Strength",
         .Config = {0, 3, 0.05, 2}}
 
+    Property AQBiasStrength As New NumParam With {
+        .Switch = "--aq-bias-strength",
+        .Text = "AQ Bias Strength",
+        .VisibleFunc = Function() AQmode.Value = 3 OrElse AQmode.Value = 5,
+        .Init = 1,
+        .Config = {0, 3, 0.05, 2}}
+
     Property CUtree As New BoolParam With {
         .Switch = "--cutree",
         .NoSwitch = "--no-cutree",
@@ -970,7 +977,7 @@ Public Class x265Params
                 Add("Rate Control",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .BrowseFile = True},
-                    AQmode, qgSize, AQStrength, QComp, qpmin, qpmax, qpstep,
+                    AQmode, qgSize, AQStrength, AQBiasStrength, QComp, qpmin, qpmax, qpstep,
                     New NumParam With {.Switch = "--qp-delta-ref", .Text = "QP Delta Ref", .Init = 5, .Config = {0, 10, 0.5, 1}},
                     New NumParam With {.Switch = "--qp-delta-nonref", .Text = "QP Delta NonRef", .Init = 5, .Config = {0, 10, 0.5, 1}},
                     New NumParam With {.Switch = "--cbqpoffs", .Text = "CB QP Offset", .Config = {-12, 12}},
@@ -1471,6 +1478,7 @@ Public Class x265Params
     Sub ApplyPresetValues()
         AQmode.Value = 2
         AQStrength.Value = 1
+        AQBiasStrength.Value = 1
         CUtree.Value = True
         Deblock.Value = True
         DeblockA.Value = 0
@@ -2031,6 +2039,7 @@ Public Class x265Params
     End Sub
 
     Sub ApplyTuneValues()
+        AQBiasStrength.Value = 1
         RcGrain.Value = False
         qpstep.Value = 4
         ConstVBV.Value = False

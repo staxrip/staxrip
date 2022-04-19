@@ -5,10 +5,16 @@ v2.13.0 (not published yet)
 - 
 -->
 
+v2.13.0 (not published yet)
+====================
+
+- x265: Add "--aq-bias-strength" param for AQ Modes 3 and 5
+
+
 v2.12.0 (2022-04-19)
 ====================
 
-- x265: Add new supported option "--aq-mode 5", which was ported from modded x264 (DJATOM, Patman)
+- x265: Add new supported option "--aq-mode 5", which was introduced in x265 aMod (DJATOM, Patman)
 - NVEnc: Add new param "--vpp-convolution3d"
 - QSVEnc: Add experimental AV1 codec
 - Fix not muxing attachments due to opposed working checkbox ([#847](/../../issues/847))

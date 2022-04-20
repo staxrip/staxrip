@@ -1,5 +1,5 @@
 <!--
-v2.13.0 (not published yet)
+v2.14.0 (not published yet)
 ====================
 
 - 
@@ -9,7 +9,8 @@ v2.13.0 (not published yet)
 ====================
 
 - x265: Add "--aq-bias-strength" param for AQ Modes 3 and 5
-- svt-av1: Add and update multiple params
+- svt-av1: Add and update multiple params ([#863](/../../issues/863))
+- Show current frame number on Crop window on status bar
 
 
 v2.12.0 (2022-04-19)

@@ -338,6 +338,7 @@ Public Class CropForm
     Sub TrackLength_Scroll() Handles tbPosition.Scroll
         Renderer.Position = tbPosition.Value
         Renderer.Draw()
+        UpdateAll()
     End Sub
 
     Protected Overrides Sub OnSizeChanged(args As EventArgs)
@@ -497,12 +498,13 @@ Public Class CropForm
         Dim err = If(isResized AndAlso Not isValidAnamorphicSize, Calc.GetAspectRatioError.ToString("f2") + "%", "n/a")
 
         laStatus.Text =
-            "  Size: " & cropw & "/" & croph &
-            "  X: " & p.CropLeft & "/" & p.CropRight &
-            "  Y: " & p.CropTop & "/" & p.CropBottom &
-            "  Mod: " + Calc.GetMod(cropw, croph, False) +
-            "  Error: " + err +
-            "  DAR: " + Calc.GetTargetDAR().ToString("f6")
+            "  Frame: " & Renderer.Position.ToString().PadLeft(5) &
+            "  |  Size: " & cropw & "/" & croph &
+            "  |  X: " & p.CropLeft & "/" & p.CropRight &
+            "  |  Y: " & p.CropTop & "/" & p.CropBottom &
+            "  |  Mod: " + Calc.GetMod(cropw, croph, False) +
+            "  |  Error: " + err +
+            "  |  DAR: " + Calc.GetTargetDAR().ToString("f6")
     End Sub
 
     Sub pVideo_MouseMove(sender As Object, e As MouseEventArgs) Handles pnVideo.MouseMove
@@ -673,6 +675,7 @@ Public Class CropForm
         Renderer.Position += offset
         tbPosition.Value = Renderer.Position
         Renderer.Draw()
+        UpdateAll()
     End Sub
 
     <Command("Opens the help of the crop dialog.")>
@@ -702,4 +705,5 @@ Public Class CropForm
     Sub tsbMenu_Click(sender As Object, e As EventArgs) Handles tsbMenu.Click
         ContextMenuStrip.Show(MousePosition)
     End Sub
+
 End Class

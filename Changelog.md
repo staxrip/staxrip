@@ -9,6 +9,7 @@ v2.13.0 (not published yet)
 ====================
 
 - x265: Add "--aq-bias-strength" param for AQ Modes 3 and 5
+- svt-av1: Add and update multiple params
 
 
 v2.12.0 (2022-04-19)

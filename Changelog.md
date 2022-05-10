@@ -5,10 +5,11 @@ v2.14.0 (not published yet)
 - 
 - Update tools
 - Update AviSynth+ plugins
+- Update Dual plugins
 - Update VapourSynth plugins
 -->
 
-v2.13.0 (not published yet)
+v2.13.0 (2022-05-10)
 ====================
 
 - x265: Add "--aq-bias-strength" param for AQ Modes 3 and 5

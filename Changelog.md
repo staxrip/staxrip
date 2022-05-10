@@ -3,6 +3,9 @@ v2.14.0 (not published yet)
 ====================
 
 - 
+- Update tools
+- Update AviSynth+ plugins
+- Update VapourSynth plugins
 -->
 
 v2.13.0 (not published yet)
@@ -11,6 +14,42 @@ v2.13.0 (not published yet)
 - x265: Add "--aq-bias-strength" param for AQ Modes 3 and 5
 - svt-av1: Add and update multiple params ([#863](/../../issues/863))
 - Show current frame number on Crop window on status bar
+- Update tools
+  - NVEnc v6.01
+  - VCEEnc v7.00
+- Update AviSynth+ plugins
+  - AddGrainC v1.8.4
+  - AnimeIVTC v2.386 2022-03-20 mod
+  - Average v0.95
+  - AvsResize r14
+  - CropResize 2022-01-28
+  - D2VSource v1.2.4
+  - Deblock_QED 2020.04.06 HBD
+  - DeHalo_alpha 2021.04.05
+  - DeHaloHmod v2.472
+  - DTFTest v1.9.7 (MSVC)
+  - EEDI2 v1.0.0
+  - FFT3DFilter v2.10
+  - hqdn3d v1.1.1
+  - JPSDR v3.2.8 (W7 AVX2)
+  - Masktools2 v2.2.30
+  - pSharpen 2020.10.31 HBD
+  - QTGMC v3.384s
+  - ResizeX v1.0.1 mod 9.40
+  - SMDegrain v3.5.0d
+  - TComb v2.3
+  - TNLMeans v1.1
+  - VapourSource v0.2
+  - Vinverse v0.9.4
+  - Vscube v1.3
+  - Zs_RF_Shared v1.158
+- Update Dual plugins
+  - DGIndex v2.0.0.7
+  - DGMPGDec v2.0.0.7
+  - ffms2 v3.0.1.0 1325+16 6ad7738 StvG
+  - L-SMASH-Works v20220505
+- Update VapourSynth plugins
+  - ...
 
 
 v2.12.0 (2022-04-19)

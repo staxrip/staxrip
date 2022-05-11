@@ -1,5 +1,5 @@
 <!--
-v2.14.0 (not published yet)
+v2.15.0 (not published yet)
 ====================
 
 - 
@@ -8,6 +8,22 @@ v2.14.0 (not published yet)
 - Update Dual plugins
 - Update VapourSynth plugins
 -->
+
+v2.14.0 (not published yet)
+====================
+
+- 
+- Update tools
+    - AOMEnc v3.2.0-393-g402e264b9-x64-gcc11.3.0 Patman
+    - MP4Box v2.1-DEV-rev79-gdf29bc8a0-x64-gcc11.3.0 Patman
+    - Rav1e v0.5.0-(p20220426-4-gb5c76736)-x64-gcc11.3.0 Patman
+    - SvtAv1EncApp v1.0.0-4-g879ba80a-x64-msvc1931 Patman
+- Update AviSynth+ plugins
+    - ModPlus v2020-06-26
+- Update Dual plugins
+  - DGMPGDec v2.0.0.7 (replace wrong version in v2.13.0)
+- Update VapourSynth plugins
+
 
 v2.13.0 (2022-05-10)
 ====================
@@ -49,8 +65,6 @@ v2.13.0 (2022-05-10)
   - DGMPGDec v2.0.0.7
   - ffms2 v3.0.1.0 1325+16 6ad7738 StvG
   - L-SMASH-Works v20220505
-- Update VapourSynth plugins
-  - ...
 
 
 v2.12.0 (2022-04-19)

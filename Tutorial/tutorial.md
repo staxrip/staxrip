@@ -28,7 +28,7 @@ The configuration of StaxRip takes place on two levels. On the one hand there ar
 
 Let's go to the **Image** page.
 
-![staxrip-projectoptions-image.png](img\staxrip-projectoptions-image.png)
+![staxrip-projectoptions-image.png](img/staxrip-projectoptions-image.png)
 
 **Output mod** sets the mod value that the final cropped and possibly scaled image must adhere to. There is little to be said against setting the minimum requirement to **2**, i.e. the height and width must each be evenly divisible by 2. A stricter value is only necessary if our playback device cannot handle mod-2. Then **16** is the best choice for maximum compatibility.
 
@@ -36,7 +36,7 @@ Let's go to the **Image** page.
 
 Continue on to the **Aspect-Ratio** page.
 
-![staxrip-projectoptions-ar.png](img\staxrip-projectoptions-ar.png)
+![staxrip-projectoptions-ar.png](img/staxrip-projectoptions-ar.png)
 
 If we have anamorphic encoding in mind, **Auto aspect ratio signaling** is important. This option automatically configures the encoder and muxer so that both write the necessary AR flag to the video stream or container. Therefore, we should definitely leave it enabled. On encodings with square pixels this option has no decisive effect.
 
@@ -46,7 +46,7 @@ With the **Maximum aspect ratio error** we define how large the maximum percenta
 
 The **Crop** page remains to complete the configuration for the video image.
 
-![staxrip-projectoptions-crop.png](img\staxrip-projectoptions-crop.png)
+![staxrip-projectoptions-crop.png](img/staxrip-projectoptions-crop.png)
 
 **Auto correct crop values** ensures that the restrictions of the used color space are respected when cropping. Since we rarely encounter anything other than YV12, this means that all crop values can only be even numbers.
 
@@ -66,7 +66,7 @@ A click on **OK** brings us back to the main window. To avoid having to repeat t
 
 **T**he program-wide configuration applies independently of the project and is saved automatically. Therefore we need the menu item **Tools > Settings** ideally only once directly after the StaxRip installation.
 
-![staxrip-settings-general.png](img\staxrip-settings-general.png)
+![staxrip-settings-general.png](img/staxrip-settings-general.png)
 
 On the **General** page, under **Startup Template**, we can set the project options template that will be loaded when StaxRip starts. There is already the template we just saved.
 
@@ -76,7 +76,7 @@ For those who work with many different configurations, **Show template selection
 
 **T**he **Settings** window is now closed. It remains to look into the configuration of the external tools. There is a whole list of them, because after all StaxRip does not do the encoding itself, but only controls the bunch of programs that are responsible for the actual work. Via **Tools > Applications** we reach the appropriate window.
 
-![staxrip-applications.png](img\staxrip-applications.png)
+![staxrip-applications.png](img/staxrip-applications.png)
 
 On the left side we see a tree view of all tools StaxRip can work with. On the right, information about the currently selected tool is displayed. The StaxRip download package contains most of the tools, so missing programs are usually not a problem.
 
@@ -94,7 +94,7 @@ All tools that StaxRip comes with are located in the *Apps* subfolder of the Sta
 
 To load the source video, we click on the **Source** link in the top left corner of the main StaxRip window or double-click in the input field below it.
 
-![staxrip-mainwin-source-link.png](img\staxrip-mainwin-source-link.png)
+![staxrip-mainwin-source-link.png](img/staxrip-mainwin-source-link.png)
 
 Which option we choose in the following dialog box depends on the type of source.
 
@@ -104,11 +104,11 @@ Which option we choose in the following dialog box depends on the type of source
 
 We select **Single File** in the Source Open dialog and pick the file in the following dialog.
 
-![staxrip-source-single-file.png](img\staxrip-source-single-file.png)
+![staxrip-source-single-file.png](img/staxrip-source-single-file.png)
 
 Alternatively, we can drag the file from the file manager into the main StaxRip window. Both methods will then open the source filter selection dialog.
 
-![staxrip-choose-source-filter.png](img\staxrip-choose-source-filter.png)
+![staxrip-choose-source-filter.png](img/staxrip-choose-source-filter.png)
 
 For most encodings, **Automatic AviSynth+** is a good choice. This gives us a very reliable source filter, and if necessary, the full range of AviSynth scripting and filtering is available.
 
@@ -120,7 +120,7 @@ The **Demuxing** dialog follows, where we select which audio and subtitle tracks
 
 StaxRip can still handle main movie VOBs. To do this, we select **Merge Files** in the Source Open dialog.
 
-![staxrip-source-merge-files.png](img\staxrip-source-merge-files.png)
+![staxrip-source-merge-files.png](img/staxrip-source-merge-files.png)
 
 In the following **Merge** dialog we load all VOBs of the main movie via the **Add** button. If we add all VOBs at once, StaxRip will sort them alphabetically. With the **Up** and **Down** buttons we can adjust the order if necessary.
 
@@ -134,13 +134,13 @@ With both methods the selection dialog for the source filter opens afterwards, a
 
 We then select **Blu-ray Folder** in the Open Source dialog. Then we pick the Blu-ray drive or folder with the copied disc. StaxRip now starts eac3to analyze the disc. This may take a moment, then a dialog box appears where we select the playlist of the main movie.
 
-![staxrip-br-playlist-selection.png](img\staxrip-br-playlist-selection.png)
+![staxrip-br-playlist-selection.png](img/staxrip-br-playlist-selection.png)
 
 The playlists are sorted by length. How we reliably recognize the entry for the main movie is in the [Manual part for Blu-ray demuxing](https://encodingwissen.de/praxis/handarbeit/quelle/blu-ray-demuxing/#bluray-hauptfilm-heraussuchen).
 
 By clicking on the main movie list we start the second, more detailed analysis run. Depending on the disc, this may take a minute. StaxRip shows the next configuration window right away, but the progress bar in the title bar likes to wait a bit. So be patient: StaxRip did not crash. After the end of the analysis we set everything necessary for demuxing.
 
-![staxrip-br-streamselect-top.png](img\staxrip-br-streamselect-top.png)
+![staxrip-br-streamselect-top.png](img/staxrip-br-streamselect-top.png)
 
 We always demux the video to **MKV**, because it is the best way to continue working with it. If the playlist contains several variants of the video (most different resolutions), we select the appropriate one in **Stream**. In the **Audio** section we check all the audio tracks we need and set the way we want to demux each of them. StaxRip automatically selects the options so that they are actually only extracted and not immediately re-encoded.
 
@@ -148,7 +148,7 @@ In the case of DTS Master Audio, we may need to do some hand-coding. The full lo
 
 Then we turn to the lower part of the window.
 
-![staxrip-br-streamselect-bottom.png](img\staxrip-br-streamselect-bottom.png)
+![staxrip-br-streamselect-bottom.png](img/staxrip-br-streamselect-bottom.png)
 
 In the **Subtitles** section we check the required subtitle tracks. In order not to forget any forced subtitles, it is best to extract all tracks of all necessary languages. We decide later which of them we actually want to have in the final encoding.
 
@@ -158,11 +158,11 @@ StaxRip saves the created single tracks in the folder specified under **Target D
 
 **I**t doesn't matter if it's a DVD, Blu-ray or any other video: When the loading is done, the Source section of the StaxRip window will show the name of the source file and the key data of the movie.
 
-![staxrip-source.png](img\staxrip-source.png)
+![staxrip-source.png](img/staxrip-source.png)
 
 Under **Crop** we see the automatically cropped resolution; of course, only if we have enabled auto-cropping. The aspect ratio of the source is automatically detected by StaxRip. For DVDs and Blu-rays this usually works reliably. For more exotic sources, e.g. TV recordings or camcorder videos, not necessarily. Therefore, we can call up a menu via the **PAR** link and select the appropriate value manually.
 
-![staxrip-custom-ar-menu.png](img\staxrip-custom-ar-menu.png)
+![staxrip-custom-ar-menu.png](img/staxrip-custom-ar-menu.png)
 
 The two items **Automatic 16:9** and **Automatic 4:3** on the first menu level force StaxRip to assume a DAR of 16:9 or 4:3 for the source video. In most cases, one of these two settings should be sufficient to straighten out an incorrectly detected aspect ratio. In the **DAR** and **PAR** submenus we have more options to force 16:9, 4:3 or square pixels (1:1). If all else fails, we open the **Options** main menu and go to **Image > Aspect Ratio**. There in the two **Custom Source** fields we can enter any display AR or pixel AR.
 
@@ -178,7 +178,7 @@ The **Preview** function (**F5**) shows us the image in its final form, i.e. inc
 
 **I**n the **Target** section, StaxRip has already suggested a name for the target file, which we can customize to our liking. Then we select the [container format](https://encodingwissen.de/hintergrund/formatedschungel/container/) of our target file directly below with the right blue link.
 
-![staxrip-mainwin-containermenu.png](img\staxrip-mainwin-containermenu.png)
+![staxrip-mainwin-containermenu.png](img/staxrip-mainwin-containermenu.png)
 
 - **MKV** is the abbreviation of the Matroska container, the standard container for normal encodings.
 
@@ -196,17 +196,17 @@ The **Preview** function (**F5**) shows us the image in its final form, i.e. inc
 
 To configure the container, i.e. include chapters and dynamic [subtitles](https://encodingwissen.de/hintergrund/formatedschungel/untertitel/), we click **Config Container** or **Container Configuration**, depending on which encoder is selected.
 
-![staxrip-container-config.png](img\staxrip-container-config.png)
+![staxrip-container-config.png](img/staxrip-container-config.png)
 
 ### Matroska
 
 **T**he subtitles dialog for the Matroska container looks like this:
 
-![staxrip-mkv-subtitles.png](img\staxrip-mkv-subtitles.png)
+![staxrip-mkv-subtitles.png](img/staxrip-mkv-subtitles.png)
 
 Using the **Add** button under Subtitles we load Blu-ray or Vobsub graphic subtitles or text subtitles in SubRip, Substation Alpha (SSA and ASS) or MPEG-4 Timed Text (TTXT) formats. For each track we can then select the language (**Language**) and name (**Name**) to be displayed in the player. On the **Options** tab we configure the remaining metadata.
 
-![staxrip-mkv-misc.png](img\staxrip-mkv-misc.png)
+![staxrip-mkv-misc.png](img/staxrip-mkv-misc.png)
 
 Under **Chapters** we load the chapter list. Normally this is in the simple Ogg format as a *.txt* file. However, we can also load Matroska's structured chapters (*.xml* file), even if StaxRip does not explicitly offer this option in the dialog.
 
@@ -224,7 +224,7 @@ Under **Chapters** we load the chapter list. Normally this is in the simple Ogg 
 
 **F**or a [2-pass encoding](https://encodingwissen.de/codecs/encodingmethoden/) we need one last step to complete the configuration of the target file. For this we turn to the **Target** section in the main window.
 
-![staxrip-target.png](img\staxrip-target.png)
+![staxrip-target.png](img/staxrip-target.png)
 
 Here you can already see the suggested filename for the final movie. The file extension will be automatically adjusted for the selected container. If we have chosen 2-Pass as the encoding method, we set the size of the movie in **Size**. Either we select one of the available defaults by clicking on **Size** or we type in the MByte value ourselves. For 1-pass encoding, the unnecessary fields are hidden.
 
@@ -240,7 +240,7 @@ Nevertheless: Audio transcoding with StaxRip is hardly less flexible than manual
 
 **I**n the **Audio** section of the StaxRip main window we add the audio tracks to our encoding. In the first line we enter the track that should be the first in the container and thus usually preferred during playback. Since StaxRip wants to save us as much work as possible, the program automatically searches for audio tracks that are likely to fit when opening the source video. Chances are, therefore, that we won't have to worry about loading the audio source files at all.
 
-![staxrip-audio-tracks.png](img\staxrip-audio-tracks.png)
+![staxrip-audio-tracks.png](img/staxrip-audio-tracks.png)
 
 For each of the two audio tracks, StaxRip shows the source file, next to it as a link the name of the transcoding profile and on the far right the **Edit** link for adjusting the settings.
 
@@ -248,7 +248,7 @@ For each of the two audio tracks, StaxRip shows the source file, next to it as a
 
 We load the source file by double-clicking in the file name field. Clicking on the blue profile name then opens an audio menu with the list of available profiles.
 
-![staxrip-audio-contextmenu.png](img\staxrip-audio-contextmenu.png)
+![staxrip-audio-contextmenu.png](img/staxrip-audio-contextmenu.png)
 
 We decide on an [audio format](https://encodingwissen.de/hintergrund/formatedschungel/audiocodecs/) by selecting the appropriate profile from the menu. For example, to convert an original AC-3 to a high quality 6-channel HE-AAC track, we would take from the profile **AAC VBR 5.1 ~192 kbps**. The menu item **Just Mux** takes the source file unchanged into the encoding. The most typical case for this is an original audio track directly from the disc. But also manually transcoded files come into question. **No Audio** completely ignores the specified source file, as if we had never loaded it.
 
@@ -256,7 +256,7 @@ We decide on an [audio format](https://encodingwissen.de/hintergrund/formatedsch
 
 **I**f none of the predefined profiles suits our needs, we simply select any of them and adjust the transcoding settings with the **Edit** link.
 
-![staxrip-audioconfig-left.png](img\staxrip-audioconfig-left.png)
+![staxrip-audioconfig-left.png](img/staxrip-audioconfig-left.png)
 
 The screenshot shows the left side of the transcoding dialog. We leave the **Encoder** set to Automatic. StaxRip then selects BeSweet, eac3to or FFmpeg according to the source and destination format. Important settings are the desired **Codec**, the number of **Channels** and the encoder **Quality**. In the manual chapters on [BeSweet/BeLight](https://encodingwissen.de/praxis/handarbeit/audio/besweet/) and [FFmpeg](https://encodingwissen.de/praxis/handarbeit/audio/ffmpeg/) we have already dealt in detail with audio encoding. As a reminder, here is an overview of suitable settings for good quality.
 
@@ -275,13 +275,13 @@ The **Language** and **Delay** fields are also important. Under **Language** we 
 
 This brings us to the right side of the transcoding dialog, which looks slightly different depending on the encoder. The screenshot shows the variant for AC-3 to AAC.
 
-![staxrip-audioconfig-right.png](img\staxrip-audioconfig-right.png)
+![staxrip-audioconfig-right.png](img/staxrip-audioconfig-right.png)
 
 Here we can enter a short description of the audio track under **Stream Name**, which many players display when switching audio tracks. This is especially useful to mark special tracks, e.g. audio commentaries.
 
 This completes the configuration of the audio track and we can close the dialog by clicking **OK**. If we don't want to transcode at all, but just want to use **Just Mux** to include an existing audio track unchanged, the configuration dialog also looks simpler.
 
-![staxrip-audiojustmux.png](img\staxrip-audiojustmux.png)
+![staxrip-audiojustmux.png](img/staxrip-audiojustmux.png)
 
 Only the metadata fields **Stream Name** and **Language** as well as the field for the **Delay** specification are present.
 
@@ -291,7 +291,7 @@ Only the metadata fields **Stream Name** and **Language** as well as the field f
 
 In the profile dialog we create a new profile with the **Add** button. StaxRip offers us a list of existing profiles, from which we select one as the basis for the new profile. If we choose one directly from the audio menu, the transcoding dialog discussed above will appear. Normally this is quite sufficient. Only if we want to build an unusual configuration, we select the **Command Line** profile as the basis and then get the Expert dialog, in which we can directly change the command line for transcoding.
 
-![staxrip-audioconfig-cli.png](img\staxrip-audioconfig-cli.png)
+![staxrip-audioconfig-cli.png](img/staxrip-audioconfig-cli.png)
 
 Under **Output File Type** we set the target format of the transcoding. We have to make sure manually that this is really what we create with our command line. Under **Bitrate** we enter the value that can be expected with our configuration under normal circumstances. This doesn't have to be an exact value, because after transcoding StaxRip calculates with the actual value anyway.
 
@@ -314,7 +314,7 @@ In addition, we configure the AviSynth filters and, in exceptional cases, includ
 
 **W**hen the source video is loaded, StaxRip performs automatic cropping by default. This works well, but it is not always perfect, so we better check it again. We reach the cropping dialog via **F4** or **Crop** in the main menu.
 
-![staxrip-crop.png](img\staxrip-crop.png)
+![staxrip-crop.png](img/staxrip-crop.png)
 
 To correct the cropping values, we use the large slider to find a place with the brightest possible image edges, so that we can clearly see the transition between the image and the black bar. Then we move the mouse to that edge of the image that we want to change (do not click). There a light blue bar will appear (in the screenshot on the right edge), which activates this page. With the **plus** and **minus** keys on the numeric keypad (and only there) we can now cut off more or less pixels for the respective active page. Rotating the mouse wheel also works. We can also hold down **Ctrl** and the active and opposite edges will be cropped at the same time. With **Shift** we crop in larger steps.
 
@@ -324,7 +324,7 @@ The goal is to remove the black bars completely. If in doubt, it's better to rem
 
 In the status bar at the bottom of the window StaxRip provides us with all information about cropping.
 
-![staxrip-crop-statusbar.png](img\staxrip-crop-statusbar.png)
+![staxrip-crop-statusbar.png](img/staxrip-crop-statusbar.png)
 
 **Size** shows the resolution after cropping. Under **X** we see the number of pixel rows cut off at the left and right edges, and **Y** tells us the values for the top and bottom edges.
 
@@ -338,7 +338,7 @@ In the status bar at the bottom of the window StaxRip provides us with all infor
 
 **A**fter cropping, we close the cropping dialog and select the target resolution via the slider under **Resize** - of course only if we do not keep the original resolution and have a good reason for the loss of detail by reducing the image. Usually this is only the case for 2-pass encoding with an extremely tight target size.
 
-![staxrip-resize.png](img\staxrip-resize.png)
+![staxrip-resize.png](img/staxrip-resize.png)
 
 So we choose a resolution that fits the encoding. We have already looked at the relationship between resolution and quality in more detail in the [chapter on target resolution](https://encodingwissen.de/hintergrund/videobild/zielaufloesung/#aufloesung-und-qualitaet-im-2-pass). In addition, there is the desire for an aspect ratio error that is as small as possible. StaxRip displays this error at **Error**. The value is the same as in the **Crop** dialog.
 
@@ -346,7 +346,7 @@ So we choose a resolution that fits the encoding. We have already looked at the 
 
 **A**t the end of the "image processing" we still have to configure the AviSynth filters. This is the responsibility of the **Filters** section to the left of the resolution slider. There we see a list of filters that are applied to the video in the order they appear in the list. With the mouse we can drag each filter to a different position. The checkbox in front of each line toggles the filter on and off.
 
-![staxrip-filters.png](img\staxrip-filters.png)
+![staxrip-filters.png](img/staxrip-filters.png)
 
 The **Resize** entry controls the resizing filter for scaled encodings. For original resolution encodings, the filter must be disabled, i.e. the **Resize** entry unchecked. With a right click we can select different variants. **Bilinear** has a blurring effect, which is useful for extremely compressed encodings. Through **Bicubic**, **Lanczos**, and **Lanczos4**, the image becomes sharper and less compressible. The most common filter is clearly **Lanczos**.
 
@@ -366,7 +366,7 @@ Via a right click and **Add** we can choose from a whole list of additional filt
 
 Using the video encoder link in the configuration section on the right side of the main StaxRip window, we select the video codec we want to use. Depending on the [Encoding Method](https://encodingwissen.de/codecs/encodingmethoden/), we will need a profile directly from the first level of the menu (1 pass) or from the **2 pass** submenu.
 
-![staxrip-video-menu.png](img\staxrip-video-menu.png)
+![staxrip-video-menu.png](img/staxrip-video-menu.png)
 
 If the finished movie has to hit a given file size as closely as possible, we need two encoding passes. If we are mainly interested in quality, without needing to hit a given size, a single encoding pass will suffice.
 
@@ -376,7 +376,7 @@ To reiterate, because the legend persists: 2-pass is *not* better in quality tha
 
 **x**264 we can configure very comfortably directly in the StaxRip main window. We first select one of the 1-pass CRF or 2-pass profiles from the encoder menu depending on the encoding method. In the box directly below, StaxRip offers us all the necessary options.
 
-![staxrip-x264config-quickconfig.png](img\staxrip-x264config-quickconfig.png)
+![staxrip-x264config-quickconfig.png](img/staxrip-x264config-quickconfig.png)
 
 By clicking on **Quality**, we set the desired CRF value in the 1-pass. The choices in the menu range from 18 to 26, which should be enough for any quality requirement. My default CRF is 19 for DVDs and 20 for Blu-rays. DVDs get a little more quality because they have the smaller resolution. Of course, if the video is scaled to full screen when you watch it, this will also enlarge any encoding artifacts and make them more visible.
 
@@ -388,9 +388,9 @@ Finally, with **Device** we can adjust the encoding to the requirements of speci
 
 **E**ven if we want to do it ourselves, it makes sense to use the templates to set a configuration that comes close to what we want. For the changes that are then still necessary, we call up the configuration dialog by clicking on the **Options** link. The [x264 reference](https://encodingwissen.de/codecs/x264/referenz/) from the codec knowledge is best suited to explain the dialog, because StaxRip takes the mapping between CLI parameters and GUI option from us in both directions.
 
-![staxrip-x264config-balloon-tip.png](img\staxrip-x264config-balloon-tip.png)
+![staxrip-x264config-balloon-tip.png](img/staxrip-x264config-balloon-tip.png)
 
-![staxrip-x264config-cli-search.png](img\staxrip-x264config-cli-search.png)
+![staxrip-x264config-cli-search.png](img/staxrip-x264config-cli-search.png)
 
 If we move the mouse to a setting in the configuration dialog and leave it there for a moment, a speech bubble opens with the corresponding parameter for the command line. The other way around we can search for a specific parameter in the lower left corner of the dialog with the **Search** combo box or expand the list and select one directly. StaxRip then jumps to the appropriate place in the dialog.
 
@@ -400,11 +400,11 @@ If we move the mouse to a setting in the configuration dialog and leave it there
 
 The compression test is started via the corresponding entry in the configuration list.
 
-![staxrip-compcheck-menu.png](img\staxrip-compcheck-menu.png)
+![staxrip-compcheck-menu.png](img/staxrip-compcheck-menu.png)
 
 A click on **Run Compressibility Check** executes the test, and StaxRip is reduced to a status window. After the test we take a look at the **Target** section.
 
-![staxrip-compcheck-result.png](img\staxrip-compcheck-result.png)
+![staxrip-compcheck-result.png](img/staxrip-compcheck-result.png)
 
 Under **Quality** there is now a percentage value that was determined with the test. The reasonable range is from 50 to 90 percent for x264 and from 60 to 90 percent for Xvid.
 
@@ -418,7 +418,7 @@ If the percentage is too low, we must either make room (smaller audio tracks, hi
 
 It may take several clicks, because first we click **Next** at the bottom right of the StaxRip window until the job list window appears.
 
-![staxrip-joblist.png](img\staxrip-joblist.png)
+![staxrip-joblist.png](img/staxrip-joblist.png)
 
 This is where the final click on the **Start** button happens. After that, we can sit back and put on coffee.
 

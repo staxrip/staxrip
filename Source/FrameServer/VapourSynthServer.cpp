@@ -1,6 +1,12 @@
 
 #include "VapourSynthServer.h"
 
+void logMessageHandler(int msgType, const char* msg, void* userData)
+{
+    if (msgType > mtWarning) {
+        reinterpret_cast<VapourSynthServer*>(userData)->setError(msg);
+    }
+}
 
 // IUnknown
 
@@ -36,7 +42,6 @@ ULONG __stdcall VapourSynthServer::Release() {
     return refs;
 }
 
-
 // IFrameServer
 
 HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
@@ -47,9 +52,9 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
 
         if (!wasResolved)
         {
-            HMODULE dll = LoadLibrary(L"VSScript.dll");
+            m_vssDLL = LoadLibrary(L"VSScript.dll");
 
-            if (!dll)
+            if (!m_vssDLL)
             {
                 std::string msg = GetWinErrorMessage(GetLastError());
                 throw std::runtime_error("Failed to load VapourSynth:\r\n\r\n" + msg);
@@ -57,47 +62,44 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
 
             bool x64 = sizeof(void*) == 8;
 
-            std::array resolvePairs = {
-                std::pair((void**)&vs_init,           x64 ? "vsscript_init"           : "_vsscript_init@0"),
-                std::pair((void**)&vs_finalize,       x64 ? "vsscript_finalize"       : "_vsscript_finalize@0"),
-                std::pair((void**)&vs_evaluateScript, x64 ? "vsscript_evaluateScript" : "_vsscript_evaluateScript@16"),
-                std::pair((void**)&vs_evaluateFile,   x64 ? "vsscript_evaluateFile"   : "_vsscript_evaluateFile@12"),
-                std::pair((void**)&vs_freeScript,     x64 ? "vsscript_freeScript"     : "_vsscript_freeScript@4"),
-                std::pair((void**)&vs_getError,       x64 ? "vsscript_getError"       : "_vsscript_getError@4"),
-                std::pair((void**)&vs_getOutput,      x64 ? "vsscript_getOutput"      : "_vsscript_getOutput@8"),
-                std::pair((void**)&vs_clearOutput,    x64 ? "vsscript_clearOutput"    : "_vsscript_clearOutput@8"),
-                std::pair((void**)&vs_getCore,        x64 ? "vsscript_getCore"        : "_vsscript_getCore@4"),
-                std::pair((void**)&vs_getVSApi,       x64 ? "vsscript_getVSApi"       : "_vsscript_getVSApi@0")
-            };
+            vss_getVSScriptAPI = reinterpret_cast<decltype(vss_getVSScriptAPI)>(GetProcAddress(m_vssDLL, x64 ? "getVSScriptAPI" : "_getVSScriptAPI@4"));
 
-            for (auto& i : resolvePairs)
-                if (NULL == (*(i.first) = GetProcAddress(dll, i.second)))
-                    throw std::exception("Failed to resolve VapourSynth vsscript functions");
+            if (!vss_getVSScriptAPI)
+                throw std::exception("Failed to load getVSScriptAPI function. Upgrade Vapoursynth to R55 or newer!");
         }
 
         wasResolved = true;
 
-        if (!(m_vsInit = vs_init()))
+        m_vsScriptAPI = vss_getVSScriptAPI(VSSCRIPT_API_VERSION);
+
+        if (!m_vsScriptAPI)
             throw std::exception("Failed to initialize VapourSynth");
 
-        m_vsAPI = vs_getVSApi();
+        m_vsAPI = m_vsScriptAPI->getVSAPI(VAPOURSYNTH_API_VERSION);
 
         if (!m_vsAPI)
-            throw std::exception("Failed to call VapourSynth vsscript_getVSApi");
+            throw std::exception("Failed to get VapourSynth API");
 
         std::string utf8file = ConvertWideToUtf8(file);
 
-        if (vs_evaluateFile(&m_vsScript, utf8file.c_str(), 0))
+        m_vsCore = m_vsAPI->createCore(0);
+        m_vsAPI->addLogHandler(logMessageHandler, nullptr, this, m_vsCore);
+
+        m_vsScript = m_vsScriptAPI->createScript(m_vsCore);
+        m_vsScriptAPI->evalSetWorkingDir(m_vsScript, 1);
+
+        m_vsScriptAPI->evaluateFile(m_vsScript, utf8file.c_str());
+        if (m_vsScriptAPI->getError(m_vsScript))
         {
-            m_Error = ConvertUtf8ToWide(vs_getError(m_vsScript));
+            m_Error = ConvertUtf8ToWide(m_vsScriptAPI->getError(m_vsScript));
             Free();
             return E_FAIL;
         }
 
-        m_vsNode = vs_getOutput(m_vsScript, 0);
+        m_vsNode = m_vsScriptAPI->getOutputNode(m_vsScript, 0);
 
-        if (!m_vsNode)
-            throw std::exception("Failed to get VapourSynth output");
+        if (!m_vsNode || m_vsAPI->getNodeType(m_vsNode) != mtVideo)
+            throw std::exception("Failed to find usable output at VapourSynth node 0");
 
         m_vsInfo = m_vsAPI->getVideoInfo(m_vsNode);
 
@@ -110,12 +112,10 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
         m_Info.FrameRateNum = m_vsInfo->fpsNum;
         m_Info.FrameRateDen = m_vsInfo->fpsDen;
 
-        const VSFormat* format = m_vsInfo->format;
-        int id = format->id;
+        const VSVideoFormat format = m_vsInfo->format;
+        int id = m_vsAPI->queryVideoFormatID(format.colorFamily, format.sampleType, format.bitsPerSample, format.subSamplingW, format.subSamplingH, m_vsCore);
 
-        if      (id == pfCompatBGR32)  m_Info.ColorSpace = VideoInfo::CS_BGR32;
-        else if (id == pfCompatYUY2)   m_Info.ColorSpace = VideoInfo::CS_YUY2;
-        else if (id == pfYUV444P8)     m_Info.ColorSpace = VideoInfo::CS_YV24;
+        if (id == pfYUV444P8)          m_Info.ColorSpace = VideoInfo::CS_YV24;
         else if (id == pfYUV422P8)     m_Info.ColorSpace = VideoInfo::CS_YV16;
         else if (id == pfYUV420P8)     m_Info.ColorSpace = VideoInfo::CS_YV12;
         else if (id == pfYUV410P8)     m_Info.ColorSpace = VideoInfo::CS_YUV9;
@@ -140,19 +140,19 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
         else if (id == pfRGB30)        m_Info.ColorSpace = VideoInfo::CS_RGBP10;
         else if (id == pfRGB48)        m_Info.ColorSpace = VideoInfo::CS_RGBP16;
         else if (id == pfGrayS)        m_Info.ColorSpace = VideoInfo::CS_Y32;
-        else if (format->bitsPerSample == 12 && format->colorFamily == cmRGB)
+        else if (format.bitsPerSample == 12 && format.colorFamily == cfRGB)
             m_Info.ColorSpace = VideoInfo::CS_RGBP12;
-        else if (format->bitsPerSample == 14 && format->colorFamily == cmRGB)
+        else if (format.bitsPerSample == 14 && format.colorFamily == cfRGB)
             m_Info.ColorSpace = VideoInfo::CS_RGBP14;
-        else if (format->bitsPerSample == 32 && format->colorFamily == cmYUV && format->sampleType == stFloat && format->subSamplingH == 0 && format->subSamplingW == 1)
+        else if (format.bitsPerSample == 32 && format.colorFamily == cfYUV && format.sampleType == stFloat && format.subSamplingH == 0 && format.subSamplingW == 1)
             m_Info.ColorSpace = VideoInfo::CS_YUV422PS;
-        else if (format->bitsPerSample == 32 && format->colorFamily == cmYUV && format->sampleType == stFloat && format->subSamplingH == 1 && format->subSamplingW == 1)
+        else if (format.bitsPerSample == 32 && format.colorFamily == cfYUV && format.sampleType == stFloat && format.subSamplingH == 1 && format.subSamplingW == 1)
             m_Info.ColorSpace = VideoInfo::CS_YUV420PS;
-        else if (format->bitsPerSample == 12 && format->colorFamily == cmGray && format->sampleType == stInteger)
+        else if (format.bitsPerSample == 12 && format.colorFamily == cfGray && format.sampleType == stInteger)
             m_Info.ColorSpace = VideoInfo::CS_Y12;
-        else if (format->bitsPerSample == 10 && format->colorFamily == cmGray && format->sampleType == stInteger)
+        else if (format.bitsPerSample == 10 && format.colorFamily == cfGray && format.sampleType == stInteger)
             m_Info.ColorSpace = VideoInfo::CS_Y10;
-        else if (format->bitsPerSample == 14 && format->colorFamily == cmGray && format->sampleType == stInteger)
+        else if (format.bitsPerSample == 14 && format.colorFamily == cfGray && format.sampleType == stInteger)
             m_Info.ColorSpace = VideoInfo::CS_Y14;
 
         return S_OK;
@@ -175,7 +175,7 @@ HRESULT __stdcall VapourSynthServer::GetFrame(int position, void** data, int& pi
     if (!m_vsAPI || !m_vsNode)
         return E_FAIL;
 
-    const VSFrameRef* frame = m_vsAPI->getFrame(position, m_vsNode, m_vsErrorMessage, sizeof(m_vsErrorMessage));
+    const VSFrame* frame = m_vsAPI->getFrame(position, m_vsNode, m_vsErrorMessage, sizeof(m_vsErrorMessage));
 
     if (!frame)
     {
@@ -220,6 +220,11 @@ VapourSynthServer::~VapourSynthServer()
     Free();
 }
 
+void __stdcall VapourSynthServer::setError(const char* msg)
+{
+    m_Error = ConvertUtf8ToWide(msg);
+}
+
 
 void VapourSynthServer::Free()
 {
@@ -240,14 +245,14 @@ void VapourSynthServer::Free()
     
     if (m_vsScript)
     {
-        vs_freeScript(m_vsScript);
+        m_vsScriptAPI->freeScript(m_vsScript);
         m_vsScript = NULL;
     }
 
-    if (m_vsInit)
+    if (m_vssDLL)
     {
-        vs_finalize();
-        m_vsInit = 0;
+        FreeLibrary(m_vssDLL);
+        m_vssDLL = nullptr;
     }
 }
 

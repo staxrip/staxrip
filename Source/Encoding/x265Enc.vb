@@ -938,6 +938,17 @@ Public Class x265Params
         .Weight = 9,
         .VisibleFunc = Function() Package.x265Type = x265Type.DJATOM}
 
+    Property LogLevel As New OptionParam With {
+        .Switch = "--log-level",
+        .Switches = {"--log"},
+        .Text = "Log Level",
+        .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"},
+        If Package.x265Type = x265Type.Patman Then
+            .Values = {"NONE", "FLAW", "WARN", "INFO", "DEBU", "FULL"},
+            Else .Values = {"none", "error", "warning", "info", "debug", "full"},
+            End If
+        .Init = 5}
+
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
             If ItemsValue Is Nothing Then
@@ -1043,7 +1054,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"})
                 Add("Statistic",
                     New StringParam With {.Switch = "--csv", .Text = "CSV", .BrowseFile = True},
-                    New OptionParam With {.Switch = "--log-level", .Switches = {"--log"}, .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Init = 5},
+                    LogLevel,
                     New OptionParam With {.Switch = "--csv-log-level", .Text = "CSV Log Level", .IntegerValue = True, .Options = {"Default", "Summary", "Frame"}},
                     New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
                     New BoolParam With {.Switch = "--psnr", .Text = "PSNR"},

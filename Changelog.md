@@ -13,11 +13,16 @@ v2.14.0 (not published yet)
 ====================
 
 - 
+- NVEnc: Add multiple new params
+- VCEEnc: Add multiple new params
 - Update tools
     - AOMEnc v3.2.0-393-g402e264b9-x64-gcc11.3.0 Patman
     - MP4Box v2.1-DEV-rev79-gdf29bc8a0-x64-gcc11.3.0 Patman
+    - NVEnc v7.20
+    - QSVEnc v7.35
     - Rav1e v0.5.0-(p20220426-4-gb5c76736)-x64-gcc11.3.0 Patman
     - SvtAv1EncApp v1.0.0-4-g879ba80a-x64-msvc1931 Patman
+    - VCEEnc v8.09
 - Update AviSynth+ plugins
     - ModPlus v2020-06-26
 - Update Dual plugins

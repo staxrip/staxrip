@@ -756,8 +756,38 @@ Public Class Package
         .WebURL = "http://avisynth.nl/index.php/SMDegrain",
         .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/SMDegrain.avsi",
         .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
-        .Dependencies = {"MedianBlur2.dll"},
+        .Dependencies = {"MedianBlur2.dll", "ExTools.avsi", "ResizersPack.avsi", "SharpenersPack.avsi"},
         .AvsFilterNames = {"SMDegrain"}})
+        '.Dependencies = {"MedianBlur2.dll", "ExTools", "ResizersPack", "SharpenersPack"},
+
+    Shared Property ExTools As Package = Add(New PluginPackage With {
+        .Name = "ExTools",
+        .Filename = "ExTools.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ExTools.avsi",
+        .Description = "Pack of masktools2/removegrain replacement functions with internal Expr() and many extra features.",
+        .AvsFilterNames = {"ex_bs"}})
+
+    Shared Property ResizersPack As Package = Add(New PluginPackage With {
+        .Name = "ResizersPack",
+        .Filename = "ResizersPack.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ResizersPack.avsi",
+        .Description = "",
+        .Dependencies = {},
+        .AvsFilterNames = {"deep_resize"}})
+
+    Shared Property SharpenersPack As Package = Add(New PluginPackage With {
+        .Name = "SharpenersPack",
+        .Filename = "SharpenersPack.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MIX%20mods/SharpenersPack.avsi",
+        .Description = "",
+        .Dependencies = {},
+        .AvsFilterNames = {"Adaptive_Sharpen"}})
 
     Shared Property Zs_RF_Shared As Package = Add(New PluginPackage With {
         .Name = "Zs_RF_Shared",

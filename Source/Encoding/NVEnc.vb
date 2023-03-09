@@ -404,8 +404,13 @@ Public Class NVEnc
         Property NnediWeightfile As New StringParam With {.Text = "Weight File", .HelpSwitch = "--vpp-nnedi", .BrowseFile = True, .VisibleFunc = Function() Deinterlacer.Value = 3}
 
         Property SelectEvery As New BoolParam With {.Text = "Select Every", .Switches = {"--vpp-select-every"}, .ArgsFunc = AddressOf GetSelectEvery}
-        Property SelectEveryValue As New NumParam With {.Text = "     Value", .HelpSwitch = "--vpp-select-every", .Init = 2}
-        Property SelectEveryOffsets As New StringParam With {.Text = "     Offsets", .HelpSwitch = "--vpp-select-every", .Expand = False}
+        Property SelectEveryValue As New NumParam With {.Text = "      Value", .HelpSwitch = "--vpp-select-every", .Init = 2}
+        Property SelectEveryOffsets As New StringParam With {.Text = "      Offsets", .HelpSwitch = "--vpp-select-every", .Expand = False}
+
+        Property Resize As New BoolParam With {.Text = "Resize", .Switches = {"--vpp-resize"}, .ArgsFunc = AddressOf GetResizeArgs}
+        Property ResizeAlgo As New OptionParam With {.Text = "      Algo", .HelpSwitch = "--vpp-resize", .Init = 0, .IntegerValue = False, .Options = {"Auto", "bilinear	 - linear interpolation", "spline16 - 4x4 spline curve interpolation", "spline36 - 6x6 spline curve interpolation", "spline64 - 8x8 spline curve interpolation", "lanczos2 - 4x4 Lanczos resampling", "lanczos3 - 6x6 Lanczos resampling", "lanczos4 - 8x8 Lanczos resampling", "nn - nearest neighbor", "npp_linear - linear interpolation by NPP library", "cubic - 4x4 cubic interpolation", "super - So called 'super sampling' by NPP library (downscale only)", "lanczos - Lanczos interpolation", "nvvfx-superres - Super Resolution based on nvvfx library (upscale only)"}, .Values = {"auto", "bilinear", "spline16", "spline36", "spline64", "lanczos2", "lanczos3", "lanczos4", "nn", "npp_linear", "cubic", "super", "lanczos", "nvvfx-superres"}}
+        Property ResizeSuperresMode As New OptionParam With {.Text = "      Superres-Mode", .HelpSwitch = "--vpp-resize", .Init = 0, .IntegerValue = True, .Options = {"0 - conservative (default)", "1 - aggressive"}, .VisibleFunc = Function() ResizeAlgo.Value = 13}
+        Property ResizeSuperresStrength As New NumParam With {.Text = "      Superres-Strength", .HelpSwitch = "--vpp-resize", .Init = 1, .Config = {0, 1, 0.05, 2}, .VisibleFunc = Function() ResizeAlgo.Value = 13}
 
         Property TransformFlipX As New BoolParam With {.Switch = "--vpp-transform", .Text = "Flip X", .Label = "Transform", .LeftMargin = g.MainForm.FontHeight * 1.5, .ArgsFunc = AddressOf GetTransform}
         Property TransformFlipY As New BoolParam With {.Text = "Flip Y", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
@@ -413,7 +418,7 @@ Public Class NVEnc
 
         Property Smooth As New BoolParam With {.Text = "Smooth", .Switch = "--vpp-smooth", .ArgsFunc = AddressOf GetSmoothArgs}
         Property SmoothQuality As New NumParam With {.Text = "      Quality", .HelpSwitch = "--vpp-smooth", .Init = 3, .Config = {1, 6}}
-        Property SmoothQP As New NumParam With {.Text = "      QP", .HelpSwitch = "--vpp-smooth", .Config = {0, 100, 10, 1}}
+        Property SmoothQP As New NumParam With {.Text = "      QP", .HelpSwitch = "--vpp-smooth", .Config = {0, 100, 5, 1}}
         Property SmoothPrec As New OptionParam With {.Text = "      Precision", .HelpSwitch = "--vpp-smooth", .Options = {"Auto", "FP16", "FP32"}}
 
         Property Colorspace As New BoolParam With {.Text = "Colorspace", .Switch = "--vpp-colorspace", .ArgsFunc = AddressOf GetColorspaceArgs}
@@ -498,12 +503,10 @@ Public Class NVEnc
                         New StringParam With {.Switch = "--vpp-curves", .Text = "Curves"},
                         New StringParam With {.Switch = "--vpp-overlay", .Text = "Overlay"},
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
-                        New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}},
                         New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw")},
-                        SelectEvery,
-                        SelectEveryValue,
-                        SelectEveryOffsets)
+                        Resize, ResizeAlgo, ResizeSuperresMode, ResizeSuperresStrength,
+                        SelectEvery, SelectEveryValue, SelectEveryOffsets)
                     Add("VPP | Misc 2",
                         Tweak,
                         TweakBrightness,
@@ -707,6 +710,10 @@ Public Class NVEnc
                 SelectEveryValue.NumEdit.Enabled = SelectEvery.Value
                 SelectEveryOffsets.TextEdit.Enabled = SelectEvery.Value
 
+                ResizeAlgo.MenuButton.Enabled = Resize.Value
+                ResizeSuperresMode.MenuButton.Enabled = Resize.Value
+                ResizeSuperresStrength.NumEdit.Enabled = Resize.Value
+
                 KnnRadius.NumEdit.Enabled = Knn.Value
                 KnnStrength.NumEdit.Enabled = Knn.Value
                 KnnLerp.NumEdit.Enabled = Knn.Value
@@ -855,7 +862,7 @@ Public Class NVEnc
         Function GetConvolution3dArgs() As String
             If Convolution.Value Then
                 Dim ret = ""
-                If ConvolutionMatrix .Value <> ConvolutionMatrix.DefaultValue Then ret += ",matrix=" & ConvolutionMatrix.ValueText
+                If ConvolutionMatrix.Value <> ConvolutionMatrix.DefaultValue Then ret += ",matrix=" & ConvolutionMatrix.ValueText
                 If ConvolutionFast.Value <> ConvolutionFast.DefaultValue Then ret += ",fast=" & ConvolutionFast.ValueText
                 If ConvolutionYthresh.Value <> ConvolutionYthresh.DefaultValue Then ret += ",ythresh=" & ConvolutionYthresh.Value.ToInvariantString
                 If ConvolutionCthresh.Value <> ConvolutionCthresh.DefaultValue Then ret += ",cthresh=" & ConvolutionCthresh.Value.ToInvariantString
@@ -940,6 +947,18 @@ Public Class NVEnc
             End If
             Return ""
         End Function
+
+        Function GetResizeArgs() As String
+            If Resize.Value Then
+                Dim ret = ""
+                If ResizeAlgo.Value <> ResizeAlgo.DefaultValue Then ret += ",algo=" & ResizeAlgo.ValueText.ToInvariantString
+                If ResizeSuperresMode.Value <> ResizeSuperresMode.DefaultValue AndAlso ResizeAlgo.Value = 13 Then ret += ",superres-mode=" & ResizeSuperresMode.Value.ToInvariantString
+                If ResizeSuperresStrength.Value <> ResizeSuperresStrength.DefaultValue AndAlso ResizeAlgo.Value = 13 Then ret += ",superres-strength=" & ResizeSuperresStrength.Value.ToInvariantString
+                Return "--vpp-resize " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
 
         Function GetDeinterlacerArgs() As String
             Dim ret = ""

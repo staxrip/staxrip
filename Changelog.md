@@ -12,9 +12,11 @@ v2.15.0 (not published yet)
 v2.14.0 (not published yet)
 ====================
 
-- 
 - NVEnc: Add multiple new params
+- NVEnc: Add missing/deprecated options for "--vpp-resize" ([#964](/../../issues/964))
 - VCEEnc: Add multiple new params
+- x265: Fixed missing option for "--display-window"
+- 
 - Update tools
     - AOMEnc v3.2.0-393-g402e264b9-x64-gcc11.3.0 Patman
     - MP4Box v2.1-DEV-rev79-gdf29bc8a0-x64-gcc11.3.0 Patman

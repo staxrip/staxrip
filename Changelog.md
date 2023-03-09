@@ -13,10 +13,10 @@ v2.14.0 (not published yet)
 ====================
 
 - NVEnc: Add multiple new params
-- NVEnc: Add missing/deprecated options for "--vpp-resize" ([#964](/../../issues/964))
+- NVEnc: Add missing/new options for "--vpp-resize" ([#964](/../../issues/964))
 - VCEEnc: Add multiple new params
 - x265: Fixed missing option for "--display-window"
-- Fix AVS mClean not working properly due to maskTools update
+- Fix AVS mClean not working properly due to Masktools update
 - Fix AVS QTGMC not working properly
 - Fix AVS SMDegrain not working due to missing dependencies ([#931](/../../issues/931))
 - Update tools
@@ -38,7 +38,6 @@ v2.14.0 (not published yet)
 - Update Dual plugins
   - DGMPGDec v2.0.0.7 (replace wrong version in v2.13.0)
   - ffms2 v3.0.1.0 1329+20 ad42af1 StvG
-- Update VapourSynth plugins
 
 
 v2.13.0 (2022-05-10)

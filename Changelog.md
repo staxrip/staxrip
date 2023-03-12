@@ -18,7 +18,7 @@ v2.14.0 (not published yet)
 - x265: Fixed missing option for "--display-window"
 - Fix AVS mClean not working properly due to Masktools update
 - Fix AVS QTGMC not working properly
-- Fix AVS SMDegrain not working due to missing dependencies ([#931](/../../issues/931))
+- Fix AVS SMDegrain not working properly due to missing dependencies ([#931](/../../issues/931))
 - Update tools
   - AOMEnc v3.2.0-393-g402e264b9-x64-gcc11.3.0 Patman
   - MediaInfo v22.12
@@ -28,7 +28,7 @@ v2.14.0 (not published yet)
   - QSVEnc v7.35
   - Rav1e v0.5.0-(p20220426-4-gb5c76736)-x64-gcc11.3.0 Patman
   - SvtAv1EncApp v1.0.0-4-g879ba80a-x64-msvc1931 Patman
-  - VCEEnc v8.09
+  - VCEEnc v8.10
 - Update AviSynth+ plugins
     - ExTools v10.0
     - ModPlus v2020-06-26

@@ -1364,6 +1364,10 @@ Public Class Subtitle
             For Each lng In Language.Languages
                 If path.Contains(lng.CultureInfo.EnglishName) Then
                     st.Language = lng
+                End If
+
+                If path.FileName.Contains(lng.CultureInfo.EnglishName) Then
+                    st.Language = lng
                     Exit For
                 End If
             Next

@@ -9,26 +9,40 @@ v2.15.0 (not published yet)
 - Update VapourSynth plugins
 -->
 
+v2.15.0 (not published yet)
+====================
+
+- Fix misleading language name fetch from path for subtitles ([#924](/../../issues/924))
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
 v2.14.0 (2023-03-12)
 ====================
 
 - NVEnc: Add multiple new params
-- NVEnc: Add missing/new options for "--vpp-resize" ([#964](/../../issues/964))
+- NVEnc: Add missing/new options for "--vpp-resize" ([#921](/../../issues/921)), ([#964](/../../issues/964))
 - VCEEnc: Add multiple new params
 - x265: Fixed missing option for "--display-window"
 - Fix AVS mClean not working properly due to Masktools update
 - Fix AVS QTGMC not working properly
 - Fix AVS SMDegrain not working properly due to missing dependencies ([#931](/../../issues/931))
 - Update tools
-  - AOMEnc v3.2.0-393-g402e264b9-x64-gcc11.3.0 Patman
-  - MediaInfo v22.12
-  - MKVToolNix v74.0
-  - MP4Box v2.1-DEV-rev79-gdf29bc8a0-x64-gcc11.3.0 Patman
-  - NVEnc v7.20
-  - QSVEnc v7.35
-  - Rav1e v0.5.0-(p20220426-4-gb5c76736)-x64-gcc11.3.0 Patman
-  - SvtAv1EncApp v1.0.0-4-g879ba80a-x64-msvc1931 Patman
-  - VCEEnc v8.10
+    - AOMEnc v3.2.0-393-g402e264b9-x64-gcc11.3.0 Patman
+    - MediaInfo v22.12
+    - MKVToolNix v74.0
+    - MP4Box v2.1-DEV-rev79-gdf29bc8a0-x64-gcc11.3.0 Patman
+    - NVEnc v7.20
+    - QSVEnc v7.35
+    - Rav1e v0.5.0-(p20220426-4-gb5c76736)-x64-gcc11.3.0 Patman
+    - SvtAv1EncApp v1.0.0-4-g879ba80a-x64-msvc1931 Patman
+    - VCEEnc v8.10
 - Update AviSynth+ plugins
     - ExTools v10.0
     - ModPlus v2020-06-26
@@ -36,8 +50,8 @@ v2.14.0 (2023-03-12)
     - Sharpeners Pack v5.0
     - SMDegrain v4.0.0.d
 - Update Dual plugins
-  - DGMPGDec v2.0.0.7 (replace wrong version in v2.13.0)
-  - ffms2 v3.0.1.0 1329+20 ad42af1 StvG
+    - DGMPGDec v2.0.0.7 (replace wrong version in v2.13.0)
+    - ffms2 v3.0.1.0 1329+20 ad42af1 StvG
 
 
 v2.13.0 (2022-05-10)

@@ -9,7 +9,7 @@ v2.15.0 (not published yet)
 - Update VapourSynth plugins
 -->
 
-v2.14.0 (2013-03-12)
+v2.14.0 (2023-03-12)
 ====================
 
 - NVEnc: Add multiple new params

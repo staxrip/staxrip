@@ -387,7 +387,7 @@ Public Class VCEEnc
                         Pa, PaSc, PaSs, PaActivityType, PaCaqStrength, PaInitqpsc, PaFskipMaxqp, PaLookahead, PaLtr, PaPaq, PaTaq, PaMotionQuality)
                     Add("VPP | Misc",
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
-                        New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
+                        New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "advanced", "bilinear", "spline16", "spline36", "spline64", "lanczos2", "lanczos3", "lanczos4", "amf_bilinear", "amf_bicubic", "amf_fsr", "amf_point"}},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}})
                     Add("VPP | Misc 2",
                         Tweak, TweakBrightness, TweakContrast, TweakSaturation, TweakGamma, TweakHue, TweakSwapuv,

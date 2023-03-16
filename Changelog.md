@@ -14,6 +14,7 @@ v2.15.0 (not published yet)
 
 - Fix misleading language name fetch from path for subtitles ([#924](/../../issues/924))
 - Add *.av1* to valid input extensions for mkvmerge ([#982](/../../issues/982))
+- Add SharpenersPack funtions
 - Update tools
     - ...
 - Update AviSynth+ plugins

@@ -758,7 +758,6 @@ Public Class Package
         .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
         .Dependencies = {"MedianBlur2.dll", "ExTools.avsi", "ResizersPack.avsi", "SharpenersPack.avsi"},
         .AvsFilterNames = {"SMDegrain"}})
-        '.Dependencies = {"MedianBlur2.dll", "ExTools", "ResizersPack", "SharpenersPack"},
 
     Shared Property ExTools As Package = Add(New PluginPackage With {
         .Name = "ExTools",
@@ -786,8 +785,8 @@ Public Class Package
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MIX%20mods/SharpenersPack.avsi",
         .Description = "",
-        .Dependencies = {},
-        .AvsFilterNames = {"Adaptive_Sharpen"}})
+        .Dependencies = {"ExTools.avsi", "ResizersPack.avsi", "RgTools.dll"},
+        .AvsFilterNames = {"Adaptive_Sharpen", "blah", "CASP", "DelicateSharp", "DetailSharpen", "ex_ContraSharpening", "ex_sharpen22", "ex_SootheSS2", "ex_unsharp", "FineSharpPlus", "halomaskM", "MedianSharp", "MedSharp", "NonlinUSM", "NVSharpen", "ReCon", "RSharpen", "SeeSaw", "SeeSaw2", "SeeSawMulti", "SlopeBend", "SSSharp", "SSSharpEX", "SSSharpFaster", "SSW", "TblurNL", "TMed2"}})
 
     Shared Property Zs_RF_Shared As Package = Add(New PluginPackage With {
         .Name = "Zs_RF_Shared",

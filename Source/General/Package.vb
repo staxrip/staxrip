@@ -786,7 +786,7 @@ Public Class Package
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MIX%20mods/SharpenersPack.avsi",
         .Description = "",
         .Dependencies = {"ExTools.avsi", "ResizersPack.avsi", "RgTools.dll"},
-        .AvsFilterNames = {"Adaptive_Sharpen", "blah", "CASP", "DelicateSharp", "DetailSharpen", "ex_ContraSharpening", "ex_sharpen22", "ex_SootheSS2", "ex_unsharp", "FineSharpPlus", "halomaskM", "MedianSharp", "MedSharp", "NonlinUSM", "NVSharpen", "ReCon", "RSharpen", "SeeSaw", "SeeSaw2", "SeeSawMulti", "SlopeBend", "SSSharp", "SSSharpEX", "SSSharpFaster", "SSW", "TblurNL", "TMed2"}})
+        .AvsFilterNames = {"Adaptive_Sharpen", "blah", "CASm", "CASP", "DelicateSharp", "DetailSharpen", "DGSharpen2", "ex_ContraSharpening", "ex_sharpen22", "ex_SootheSS2", "ex_unsharp", "FineSharpPlus", "halomaskM", "LindaSharp", "MedianSharp", "MedSharp", "MultiSharpen2", "NonlinUSM", "NVSharpen", "pSharpen", "ReCon", "RSharpen", "SeeSaw", "SeeSaw2", "SeeSawMulti", "SharpenComplex2", "SlopeBend", "SSSharp", "SSSharpEX", "SSSharpFaster", "SSW", "TblurNL", "TMed2", "XSharpenPlus"}})
 
     Shared Property Zs_RF_Shared As Package = Add(New PluginPackage With {
         .Name = "Zs_RF_Shared",

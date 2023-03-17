@@ -18,9 +18,10 @@ v2.15.0 (not published yet)
 - NVEncC: add --vpp-nnedi fields ([#962](/../../issues/962))
 - VCEEnc: Fix deprecated --vpp-resize paremeters ([#921](/../../issues/921))
 - Update tools
-    - ...
+    - NVEnc v7.21
 - Update AviSynth+ plugins
-    - ...
+    - QTGMC v3.384s (2022-10-17)
+    - Sharpeners Pack v5.1
 - Update Dual plugins
     - ...
 - Update VapourSynth plugins

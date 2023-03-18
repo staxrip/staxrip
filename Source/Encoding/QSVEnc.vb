@@ -207,6 +207,13 @@ Public Class QSVEnc
             .VisibleFunc = Function() {"icq", "la-icq"}.Contains(Mode.ValueText),
             .Config = {0, 63}}
 
+        Property OutputDepth As New OptionParam With {
+            .Switch = "--output-depth",
+            .Text = "Output Depth",
+            .Options = {"8bit", "10bit"},
+            .Values = {"8", "10"},
+            .Init = 0}
+
         Property QPI As New NumParam With {
             .HelpSwitch = "--cqp",
             .Text = "QP I",
@@ -302,7 +309,7 @@ Public Class QSVEnc
                         New OptionParam With {.Switch = "--level", .Name = "LevelHEVC", .Text = "Level", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelMPEG2", .Text = "Level", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "low", "main", "high", "High1440"}},
-                        QPI, QPP, QPB, Bitrate, QvbrQuality, Quality)
+                        OutputDepth, QPI, QPP, QPB, Bitrate, QvbrQuality, Quality)
                     Add("Analysis",
                         New OptionParam With {.Switch = "--trellis", .Text = "Trellis", .Options = {"Automatic", "Off", "I", "IP", "All"}},
                         New OptionParam With {.Switch = "--ctu", .Text = "CTU", .Options = {"16", "32", "64"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},

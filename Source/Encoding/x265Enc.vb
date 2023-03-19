@@ -385,6 +385,14 @@ Public Class x265Params
         .Text = "Scenecut",
         .Config = {0, 900, 10}}
 
+    Property ScenecutAwareQp As New OptionParam With {
+        .HelpSwitch = "--scenecut-aware-qp",
+        .Text = "Scenecut Aware Qp",
+        .Options = {"0 - Disabled", "1 - Forward masking, applies after the scenecut.", "2 - Backward masking, applies before the scenecut.", "3 - Bi-directional masking, applies before and after the scenecut."},
+        .IntegerValue = True,
+        .Init = 0,
+        .VisibleFunc = Function() Mode.Value = x265RateMode.TwoPass Or Mode.Value = x265RateMode.ThreePass}
+
     Property Ref As New NumParam With {
         .Switch = "--ref",
         .Text = "Ref Frames",
@@ -1007,7 +1015,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False},
                     New BoolParam With {.Switch = "--aq-motion", .Text = "AQ Motion"},
                     qpadaptationrange,
-                    New OptionParam With {.Switch = "--scenecut-aware-qp", .Text = "Scenecut Aware QP", .IntegerValue = True, .Options = {"0 - Disabled.", "1 - Forward masking. Applies QP modification for frames after the scenecut.", "2 - Backward masking. Applies QP modification for frames before the scenecut.", "3 - Bi-directional masking. Applies QP modification for frames before and after the scenecut."}},
+                    ScenecutAwareQp)
                 Add("Motion Search",
                     New StringParam With {.Switch = "--hme-search", .Text = "HME Search"},
                     New StringParam With {.Switch = "--hme-range", .Text = "HME Range", .Init = "16,32,48", .Quotes = QuotesMode.Never, .RemoveSpace = True},
@@ -1376,6 +1384,9 @@ Public Class x265Params
                     sb.Append(" " + CustomFirstPass.Value)
                 End If
             ElseIf pass = 2 Then
+                If ScenecutAwareQp.Value <> ScenecutAwareQp.DefaultValue Then
+                    sb.Append(" --scenecut-aware-qp " + ScenecutAwareQp.Value.ToString())
+                End If
                 If CustomLastPass.Value <> "" Then
                     sb.Append(" " + CustomLastPass.Value)
                 End If

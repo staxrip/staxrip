@@ -1595,6 +1595,7 @@ Public Class OSVersion
     Shared ReadOnly Property Windows7 As Single = 6.1
     Shared ReadOnly Property Windows8 As Single = 6.2
     Shared ReadOnly Property Windows10 As Single = 10.0
+    Shared ReadOnly Property Windows11 As Single = 11.0
     Shared ReadOnly Property Current As Single = CSng(Environment.OSVersion.Version.Major + Environment.OSVersion.Version.Minor / 10)
 End Class
 

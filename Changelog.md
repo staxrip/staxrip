@@ -13,12 +13,18 @@ v2.15.0 (not published yet)
 ====================
 
 - Fix misleading language name fetch from path for subtitles ([#924](/../../issues/924))
-- Add *.av1* to valid input extensions for mkvmerge ([#982](/../../issues/982))
+- Add .av1 to valid input file extensions for mkvmerge ([#982](/../../issues/982))
 - Add SharpenersPack funtions for dependencies
-- NVEncC: add --vpp-nnedi fields ([#962](/../../issues/962))
-- QSVEnc: add --output-depth parameter ([#984](/../../issues/984))
-- VCEEnc: Fix deprecated --vpp-resize paremeters ([#921](/../../issues/921))
+- NVEncC: Add "--vpp-nnedi" fields ([#962](/../../issues/962))
+- QSVEnc: Add "--output-depth" parameter ([#984](/../../issues/984))
+- VCEEnc: Add missing/new options for "--vpp-resize" ([#921](/../../issues/921))
+- x265: Add missing/new options for "--scenecut-aware-qp" ([#891](/../../issues/891)) (thanks to sheik124 ([#917](/../../pull/917)))
+- x265: Fix not working console help (thanks to sheik124 ([#917](/../../pull/917)))
 - Update tools
+    - ffmpeg n6.0-8-g18dde8d4cf-20230319
+    - qaac v2.79
+        - libsndfile v1.2.0
+        - libFLAC v1.4.2
     - NVEnc v7.21
 - Update AviSynth+ plugins
     - QTGMC v3.384s (2022-10-17)

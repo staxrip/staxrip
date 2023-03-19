@@ -1007,7 +1007,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False},
                     New BoolParam With {.Switch = "--aq-motion", .Text = "AQ Motion"},
                     qpadaptationrange,
-                    New BoolParam With {.Switch = "--scenecut-aware-qp", .NoSwitch = "--no-scenecut-aware-qp", .Text = "Scenecut Aware QP"})
+                    New OptionParam With {.Switch = "--scenecut-aware-qp", .Text = "Scenecut Aware QP", .IntegerValue = True, .Options = {"0 - Disabled.", "1 - Forward masking. Applies QP modification for frames after the scenecut.", "2 - Backward masking. Applies QP modification for frames before the scenecut.", "3 - Bi-directional masking. Applies QP modification for frames before and after the scenecut."}},
                 Add("Motion Search",
                     New StringParam With {.Switch = "--hme-search", .Text = "HME Search"},
                     New StringParam With {.Switch = "--hme-range", .Text = "HME Range", .Init = "16,32,48", .Quotes = QuotesMode.Never, .RemoveSpace = True},
@@ -1043,7 +1043,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"})
                 Add("Statistic",
                     New StringParam With {.Switch = "--csv", .Text = "CSV", .BrowseFile = True},
-                    New OptionParam With {.Switch = "--log-level", .Switches = {"--log"}, .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Init = 3},
+                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .IntegerValue = True, .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Init = 5},
                     New OptionParam With {.Switch = "--csv-log-level", .Text = "CSV Log Level", .IntegerValue = True, .Options = {"Default", "Summary", "Frame"}},
                     New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
                     New BoolParam With {.Switch = "--psnr", .Text = "PSNR"},

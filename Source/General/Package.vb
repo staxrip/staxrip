@@ -520,7 +520,7 @@ Public Class Package
         .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x265",
         .AllowCustomPath = False,
         .SupportsAutoUpdate = False,
-        .HelpSwitch = "--log-level full --fullhelp",
+        .HelpSwitch = "--fullhelp",
         .Description = "H.265 video encoding console app."})
 
     Shared Property SVTAV1 As Package = Add(New Package With {

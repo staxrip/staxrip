@@ -22,10 +22,12 @@ v2.15.0 (not published yet)
 - x265: Fix not working console help (thanks to sheik124 ([#917](/../../pull/917)))
 - Update tools
     - ffmpeg n6.0-8-g18dde8d4cf-20230319
+    - MediaInfo v23.03
+    - NVEnc v7.21
     - qaac v2.79
         - libsndfile v1.2.0
         - libFLAC v1.4.2
-    - NVEnc v7.21
+    - QSVEnc v7.36
 - Update AviSynth+ plugins
     - QTGMC v3.384s (2022-10-17)
     - Sharpeners Pack v5.1

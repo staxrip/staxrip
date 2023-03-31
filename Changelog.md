@@ -18,6 +18,7 @@ v2.15.0 (not published yet)
 - NVEncC: Add "--vpp-nnedi" fields ([#962](/../../issues/962))
 - QSVEnc: Add "--output-depth" parameter ([#984](/../../issues/984))
 - VCEEnc: Add missing/new options for "--vpp-resize" ([#921](/../../issues/921))
+- VCEEnc: Add new "--no-deblock" parameter
 - x265: Add missing/new options for "--scenecut-aware-qp" ([#891](/../../issues/891)) (thanks to sheik124 ([#917](/../../pull/917)))
 - x265: Fix not working console help (thanks to sheik124 ([#917](/../../pull/917)))
 - Update tools
@@ -28,6 +29,7 @@ v2.15.0 (not published yet)
         - libsndfile v1.2.0
         - libFLAC v1.4.2
     - QSVEnc v7.36
+    - VCEEnc v8.11
 - Update AviSynth+ plugins
     - QTGMC v3.384s (2022-10-17)
     - Sharpeners Pack v5.1

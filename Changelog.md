@@ -9,7 +9,7 @@ v2.15.0 (not published yet)
 - Update VapourSynth plugins
 -->
 
-v2.15.0 (not published yet)
+v2.15.0 (2023-04-07)
 ====================
 
 - Fix misleading language name fetch from path for subtitles ([#924](/../../issues/924))
@@ -33,10 +33,6 @@ v2.15.0 (not published yet)
 - Update AviSynth+ plugins
     - QTGMC v3.384s (2022-10-17)
     - Sharpeners Pack v5.1
-- Update Dual plugins
-    - ...
-- Update VapourSynth plugins
-    - ...
 
 
 v2.14.0 (2023-03-12)

@@ -1,13 +1,30 @@
 <!--
-v2.15.0 (not published yet)
+v2.xx.0 (not published yet)
 ====================
 
-- 
+- ...
 - Update tools
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins
 -->
+
+
+v2.16.0 (not published yet)
+====================
+
+- ...
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - GradePack v9.0
+    - MasksPack v6.6
+    - TransformsPack v1.6
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
 
 v2.15.0 (2023-04-07)
 ====================

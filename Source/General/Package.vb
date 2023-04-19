@@ -768,6 +768,26 @@ Public Class Package
         .Description = "Pack of masktools2/removegrain replacement functions with internal Expr() and many extra features.",
         .AvsFilterNames = {"ex_bs"}})
 
+    Shared Property GradePack As Package = Add(New PluginPackage With {
+        .Name = "GradePack",
+        .Filename = "GradePack.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MasksPack.avsi",
+        .Description = "",
+        .Dependencies = {"ExTools.avsi", "MasksPack.avsi", "ResizersPack.avsi", "TransformsPack - Main.avsi"},
+        .AvsFilterNames = {"ex_vibrance", "ex_contrast", "ex_levels", "ex_autolevels", "ex_blend", "ex_glow", "ex_posterize", "Skin_Qualifier", "HSVxHSV", "GamutWarning", "PseudoColor", "Vignette", "greyscale_rgb", "FindTemp", "GreyWorld", "WhitePoint", "GradientLinear"}})
+
+    Shared Property MasksPack As Package = Add(New PluginPackage With {
+        .Name = "MasksPack",
+        .Filename = "MasksPack.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MasksPack.avsi",
+        .Description = "",
+        .Dependencies = {"ExTools.avsi", "ResizersPack.avsi", "GradePack.avsi"},
+        .AvsFilterNames = {"BoxMask", "FlatMask", "LumaMask", "CornerMask", "MotionMask", "ex_limitdif", "ex_limitchange", "Soothe"}})
+
     Shared Property ResizersPack As Package = Add(New PluginPackage With {
         .Name = "ResizersPack",
         .Filename = "ResizersPack.avsi",
@@ -775,7 +795,7 @@ Public Class Package
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ResizersPack.avsi",
         .Description = "",
-        .Dependencies = {},
+        .Dependencies = {"ExTools.avsi"},
         .AvsFilterNames = {"deep_resize"}})
 
     Shared Property SharpenersPack As Package = Add(New PluginPackage With {
@@ -787,6 +807,17 @@ Public Class Package
         .Description = "",
         .Dependencies = {"ExTools.avsi", "ResizersPack.avsi", "RgTools.dll"},
         .AvsFilterNames = {"Adaptive_Sharpen", "blah", "CASm", "CASP", "DelicateSharp", "DetailSharpen", "DGSharpen2", "ex_ContraSharpening", "ex_sharpen22", "ex_SootheSS2", "ex_unsharp", "FineSharpPlus", "halomaskM", "LindaSharp", "MedianSharp", "MedSharp", "MultiSharpen2", "NonlinUSM", "NVSharpen", "pSharpen", "ReCon", "RSharpen", "SeeSaw", "SeeSaw2", "SeeSawMulti", "SharpenComplex2", "SlopeBend", "SSSharp", "SSSharpEX", "SSSharpFaster", "SSW", "TblurNL", "TMed2", "XSharpenPlus"}})
+
+    Shared Property TransformsPack As Package = Add(New PluginPackage With {
+        .Name = "TransformsPack",
+        .Filename = "TransformsPack - Main.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Main.avsi",
+        .Description = "",
+        .Dependencies = {"TransformsPack - Models.avsi", "TransformsPack - Transfers.avsi"},
+        .AvsFilterNames = {"Display_Referred", "MatchClip", "ConvertFormat"}})
+
 
     Shared Property Zs_RF_Shared As Package = Add(New PluginPackage With {
         .Name = "Zs_RF_Shared",
@@ -1007,7 +1038,7 @@ Public Class Package
             .Filename = "JincResize.dll",
             .Description = "Jinc (EWA Lanczos) resampling plugin for AviSynth 2.6/AviSynth+.",
             .HelpFilename = "Readme.txt",
-            .HelpUrl = "https://github.com/Asd-g/AviSynth-JincResize/blob/2.0.1/README.md",
+            .HelpURL = "https://github.com/Asd-g/AviSynth-JincResize/blob/2.0.1/README.md",
             .WebURL = "http://avisynth.nl/index.php/JincResize",
             .AvsFilterNames = {"Jinc36Resize", "Jinc64Resize", "Jinc144Resize", "Jinc256Resize"}})
 
@@ -1433,7 +1464,7 @@ Public Class Package
             .Filename = "yadifmod2.dll",
             .Description = "Yet Another Deinterlacing Filter mod for Avisynth2.6/Avisynth+.",
             .WebURL = "https://github.com/Asd-g/yadifmod2",
-            .HelpUrl = "https://github.com/Asd-g/yadifmod2/blob/master-1/readme.md",
+            .HelpURL = "https://github.com/Asd-g/yadifmod2/blob/master-1/readme.md",
             .AvsFilterNames = {"yadifmod2"}})
 
         Add(New PluginPackage With {
@@ -1458,8 +1489,8 @@ Public Class Package
             .Description = "vcm plugin for VapourSynth.",
             .WebURL = "http://www.avisynth.nl/users/vcmohan/vcm/vcm.html",
             .VsFilterNames = {"vcm.Median", "vcm.Variance", "vcm.Amp", "vcm.GBlur", "vcm.MBlur", "vcm.Hist", "vcm.Fan", "vcm.Mean", "vcm.Neural", "vcm.Veed", "vcm.SaltPepper",
-                               "vcm.DeBarrel", "vcm.DeJitter", "vcm.Reform", "vcm.Rotate", "vcm.Fisheye", 
-                               "vcm.F1Quiver", "vcm.F1QClean", "vcm.F1QLimit", "vcm.F2Quiver", "vcm.F2QLimit", "vcm.F2QBlur", "vcm.F2QBokeh", "vcm.F2QCorr", "vcm.F2QSharp", 
+                               "vcm.DeBarrel", "vcm.DeJitter", "vcm.Reform", "vcm.Rotate", "vcm.Fisheye",
+                               "vcm.F1Quiver", "vcm.F1QClean", "vcm.F1QLimit", "vcm.F2Quiver", "vcm.F2QLimit", "vcm.F2QBlur", "vcm.F2QBokeh", "vcm.F2QCorr", "vcm.F2QSharp",
                                "vcm.Bokeh", "vcm.ColorBox", "vcm.Grid", "vcm.Jitter", "vcm.Pattern", "vcm.StepFilter", "vcm.Circles"}})
 
         Add(New PluginPackage With {

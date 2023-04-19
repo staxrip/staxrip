@@ -13,17 +13,16 @@ v2.xx.0 (not published yet)
 v2.16.0 (not published yet)
 ====================
 
-- ...
+- NVEnc: Add "bicubic" option for "--vpp-resize algo" parameter
+- QSVEnc: Add "--tune" parameter
+- MP4Box: Can import EC3 files ([#999](/../../issues/999))
 - Update tools
-    - ...
+    - NVEnc v7.22
+    - QSVEnc v7.37
 - Update AviSynth+ plugins
     - GradePack v9.0
     - MasksPack v6.6
     - TransformsPack v1.6
-- Update Dual plugins
-    - ...
-- Update VapourSynth plugins
-    - ...
 
 
 v2.15.0 (2023-04-07)

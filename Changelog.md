@@ -10,7 +10,7 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.16.0 (not published yet)
+v2.16.0 (2023-04-20)
 ====================
 
 - NVEnc: Add "bicubic" option for "--vpp-resize algo" parameter

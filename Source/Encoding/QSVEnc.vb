@@ -294,6 +294,12 @@ Public Class QSVEnc
             .Config = {0, Integer.MaxValue, 50},
             .VisibleFunc = Function() Codec.ValueText = "hevc"}
 
+    Property Tune As New OptionParam With {
+        .Switch = "--tune",
+        .Text = "Tune",
+        .Options = {"Default", "PSNR", "SSIM", "MS_SSIM", "VMAF", "Perceptual"}}
+
+
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
@@ -309,7 +315,7 @@ Public Class QSVEnc
                         New OptionParam With {.Switch = "--level", .Name = "LevelHEVC", .Text = "Level", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelMPEG2", .Text = "Level", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "low", "main", "high", "High1440"}},
-                        OutputDepth, QPI, QPP, QPB, Bitrate, QvbrQuality, Quality)
+                        Tune,OutputDepth, QPI, QPP, QPB, Bitrate, QvbrQuality, Quality)
                     Add("Analysis",
                         New OptionParam With {.Switch = "--trellis", .Text = "Trellis", .Options = {"Automatic", "Off", "I", "IP", "All"}},
                         New OptionParam With {.Switch = "--ctu", .Text = "CTU", .Options = {"16", "32", "64"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
@@ -334,7 +340,7 @@ Public Class QSVEnc
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
-                        QPOffsetI, QPOffsetP, QPOffsetB,
+                        QPOffsetI, QPOffsetP, QPOffsetB, 
                         New NumParam With {.Switch = "--avbr-unitsize", .Text = "AVBR Unitsize", .Init = 90},
                         New BoolParam With {.Switch = "--mbbrc", .Text = "Per macro block rate control"})
                     Add("Motion Search",

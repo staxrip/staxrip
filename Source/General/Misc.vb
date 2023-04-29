@@ -1457,7 +1457,7 @@ Public Class Subtitle
             Dim aviPath = p.TempDir + inSub.Path.Base + "_cut_mm.avi"
             Dim d = (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture)
             Dim r = p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture)
-            Dim args = $"-f lavfi -i color=c=black:s=16x16:d={d}:r={r} -y -hide_banner -c:v ffv1 -g 1 " + aviPath.Escape
+            Dim args = $"-f lavfi -i color=c=black:s=2x2:d={d}:r={r} -y -hide_banner -c:v ffv1 -g 1 " + aviPath.Escape
 
             Using proc As New Proc
                 proc.Header = "Create avi file for subtitle cutting"

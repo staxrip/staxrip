@@ -19,6 +19,9 @@ v2.17.0 (not published yet)
 - NVEnc: Fix "--bref-mode" parameter options ([#1007](/../../issues/1007))
 - Update tools
     - AviSynth+ v3.7.3 r3982 Clang
+    - FFmpeg v6.0 N-110665-g47430a3cb1-20230519
+    - NVEnc v7.25
+    - QSVEnc v7.41
 - Update AviSynth+ plugins
     - SMDegrain v4.4.0d
     - Zs_RF_Shared v1.161

@@ -9,7 +9,7 @@ Public Class VCEEnc
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "AMD | " + Params.Codec.OptionText.Replace("AMD ", "")
+            Return "VCEEncC (AMD) | " + Params.Codec.OptionText.Replace("AMD ", "")
         End Get
     End Property
 
@@ -64,8 +64,8 @@ Public Class VCEEnc
                         SaveProfile(enc)
                     End Sub
 
-            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.VCEEnc.Path, "--check-hw")))
-            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.VCEEnc.Path, "--check-features")), Keys.Control Or Keys.F)
+            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.VCEEncC.Path, "--check-hw")))
+            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.VCEEncC.Path, "--check-features")), Keys.Control Or Keys.F)
             form.cms.Add("-")
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
@@ -88,7 +88,7 @@ Public Class VCEEnc
 
         Using proc As New Proc
             proc.Header = "Video encoding"
-            proc.Package = Package.VCEEnc
+            proc.Package = Package.VCEEncC
             proc.SkipStrings = {"%]", " frames: "}
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
@@ -131,7 +131,7 @@ Public Class VCEEnc
             vpp-delogo vpp-delogo-cb vpp-delogo-cr vpp-delogo-depth output
             vpp-delogo-pos vpp-delogo-select vpp-delogo-y"
 
-        tester.Package = Package.VCEEnc
+        tester.Package = Package.VCEEncC
         tester.CodeFile = Folder.Startup.Parent + "Encoding\vceenc.vb"
 
         Return tester.Test
@@ -141,13 +141,13 @@ Public Class VCEEnc
         Inherits CommandLineParams
 
         Sub New()
-            Title = "VCEEnc Options"
+            Title = "VCEEncC Options"
         End Sub
 
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
-            .Options = {"AMD H.264", "AMD H.265"},
+            .Options = {"H.264", "H.265"},
             .Values = {"h264", "hevc"}}
 
         Property Mode264 As New OptionParam With {
@@ -584,7 +584,7 @@ Public Class VCEEnc
 
 
         Public Overrides Sub ShowHelp(options As String())
-            ShowConsoleHelp(Package.VCEEnc, options)
+            ShowConsoleHelp(Package.VCEEncC, options)
         End Sub
 
         Function GetSmoothArgs() As String
@@ -828,7 +828,7 @@ Public Class VCEEnc
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
             If includePaths AndAlso includeExecutable Then
-                ret = Package.VCEEnc.Path.Escape
+                ret = Package.VCEEncC.Path.Escape
             End If
 
             Select Case Decoder.ValueText
@@ -842,7 +842,7 @@ Public Class VCEEnc
                     sourcePath = "-"
 
                     If includePaths Then
-                        ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
+                        ret = If(includePaths, Package.QSVEncC.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.VCEEncC.Path.Escape, "VCEEncC64")
                     End If
                 Case "ffdxva"
                     sourcePath = "-"
@@ -852,13 +852,13 @@ Public Class VCEEnc
                         ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") +
                             " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") +
                             " -f yuv4mpegpipe -pix_fmt " + pix_fmt + " -strict -1 -loglevel fatal - | " +
-                            If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
+                            If(includePaths, Package.VCEEncC.Path.Escape, "VCEEncC64")
                     End If
                 Case "ffqsv"
                     sourcePath = "-"
 
                     If includePaths Then
-                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal - | " + If(includePaths, Package.VCEEnc.Path.Escape, "VCEEncC64")
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal - | " + If(includePaths, Package.VCEEncC.Path.Escape, "VCEEncC64")
                     End If
                 Case "vce"
                     sourcePath = p.LastOriginalSourceFile
@@ -911,7 +911,7 @@ Public Class VCEEnc
         End Function
 
         Public Overrides Function GetPackage() As Package
-            Return Package.VCEEnc
+            Return Package.VCEEncC
         End Function
     End Class
 End Class

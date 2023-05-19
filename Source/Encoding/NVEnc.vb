@@ -9,7 +9,7 @@ Public Class NVEnc
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "Nvidia | " + Params.Codec.OptionText.Replace("Nvidia ", "")
+            Return "NVEncC (Nvidia) | " + Params.Codec.OptionText.Replace("Nvidia ", "")
         End Get
     End Property
 
@@ -45,8 +45,8 @@ Public Class NVEnc
         newParams.Init(store)
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.NVEnc.HelpURL}"">NVEnc Online Help</a></p>" +
-                $"<h2>NVEnc Console Help</h2><pre>{HelpDocument.ConvertChars(Package.NVEnc.CreateHelpfile())}</pre>"
+            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.NVEncC.HelpURL}"">NVEncC Online Help</a></p>" +
+                $"<h2>NVEncC Console Help</h2><pre>{HelpDocument.ConvertChars(Package.NVEncC.CreateHelpfile())}</pre>"
 
             Dim a = Sub()
                         Dim enc = ObjectHelp.GetCopy(Me)
@@ -58,9 +58,9 @@ Public Class NVEnc
                         SaveProfile(enc)
                     End Sub
 
-            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw")))
-            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-features")), Keys.Control Or Keys.F)
-            form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-environment")))
+            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.NVEncC.Path, "--check-hw")))
+            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.NVEncC.Path, "--check-features")), Keys.Control Or Keys.F)
+            form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.NVEncC.Path, "--check-environment")))
             form.cms.Add("-")
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
@@ -89,10 +89,10 @@ Public Class NVEnc
 
     Overrides Sub Encode()
         If OutputExt = "h265" Then
-            Dim codecs = ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw").Right("Codec(s)")
+            Dim codecs = ProcessHelp.GetConsoleOutput(Package.NVEncC.Path, "--check-hw").Right("Codec(s)")
 
             If Not codecs.ToLowerInvariant.Contains("hevc") Then
-                Throw New ErrorAbortException("NVEnc Error", "H.265/HEVC isn't supported by the graphics card.")
+                Throw New ErrorAbortException("NVEncC Error", "H.265/HEVC isn't supported by the graphics card.")
             End If
         End If
 
@@ -100,7 +100,7 @@ Public Class NVEnc
 
         Using proc As New Proc
             proc.Header = "Video encoding"
-            proc.Package = Package.NVEnc
+            proc.Package = Package.NVEncC
             proc.SkipStrings = {"%]", " frames: "}
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
@@ -147,7 +147,7 @@ Public Class NVEnc
             metadata attachment-copy chapter-no-trim video-metadata input-csp sub-source"
 
         tester.UndocumentedSwitches = ""
-        tester.Package = Package.NVEnc
+        tester.Package = Package.NVEncC
         tester.CodeFile = Folder.Startup.Parent + "Encoding\nvenc.vb"
 
         Return tester.Test
@@ -157,7 +157,7 @@ Public Class NVEnc
         Inherits CommandLineParams
 
         Sub New()
-            Title = "NVEnc Options"
+            Title = "NVEncC Options"
         End Sub
 
         Property Decoder As New OptionParam With {
@@ -641,7 +641,7 @@ Public Class NVEnc
         End Property
 
         Public Overrides Sub ShowHelp(options As String())
-            ShowConsoleHelp(Package.NVEnc, options)
+            ShowConsoleHelp(Package.NVEncC, options)
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
@@ -1023,7 +1023,7 @@ Public Class NVEnc
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
             If includePaths AndAlso includeExe Then
-                ret = Package.NVEnc.Path.Escape
+                ret = Package.NVEncC.Path.Escape
             End If
 
             Select Case Decoder.ValueText
@@ -1043,7 +1043,7 @@ Public Class NVEnc
                     sourcePath = "-"
 
                     If includePaths Then
-                        ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+                        ret = If(includePaths, Package.QSVEncC.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.NVEncC.Path.Escape, "NVEncC64")
                     End If
                 Case "ffdxva"
                     sourcePath = "-"
@@ -1053,13 +1053,13 @@ Public Class NVEnc
                         ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") +
                             " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") +
                             " -f yuv4mpegpipe -pix_fmt " + pix_fmt + " -strict -1 -loglevel fatal -hide_banner - | " +
-                            If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+                            If(includePaths, Package.NVEncC.Path.Escape, "NVEncC64")
                     End If
                 Case "ffqsv"
                     sourcePath = "-"
 
                     If includePaths Then
-                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEncC.Path.Escape, "NVEncC64")
                     End If
             End Select
 
@@ -1115,7 +1115,7 @@ Public Class NVEnc
         End Function
 
         Public Overrides Function GetPackage() As Package
-            Return Package.NVEnc
+            Return Package.NVEncC
         End Function
     End Class
 End Class

@@ -622,8 +622,8 @@ Public Class Package
         .HelpSwitch = "",
         .Description = "Opt Tools For Creating PNG"})
 
-    Shared Property NVEnc As Package = Add(New Package With {
-        .Name = "NVEnc",
+    Shared Property NVEncC As Package = Add(New Package With {
+        .Name = "NVEncC",
         .Filename = "NVEncC64.exe",
         .Filename32 = "NVEncC.exe",
         .Location = "Encoders\NVEnc",
@@ -633,8 +633,8 @@ Public Class Package
         .DownloadURL = "https://github.com/rigaya/NVEnc/releases",
         .Description = "NVIDIA hardware video encoder."})
 
-    Shared Property QSVEnc As Package = Add(New Package With {
-        .Name = "QSVEnc",
+    Shared Property QSVEncC As Package = Add(New Package With {
+        .Name = "QSVEncC",
         .Filename = "QSVEncC64.exe",
         .Filename32 = "QSVEncC.exe",
         .Location = "Encoders\QSVEnc",
@@ -644,8 +644,8 @@ Public Class Package
         .HelpURL = "https://github.com/rigaya/QSVEnc/blob/master/QSVEncC_Options.en.md",
         .HelpSwitch = "-h"})
 
-    Shared Property VCEEnc As Package = Add(New Package With {
-        .Name = "VCEEnc",
+    Shared Property VCEEncC As Package = Add(New Package With {
+        .Name = "VCEEncC",
         .Filename = "VCEEncC64.exe",
         .Filename32 = "VCEEncC.exe",
         .Location = "Encoders\VCEEnc",

@@ -1327,7 +1327,7 @@ Public Class x265Params
                     End Select
                 Case "qs"
                     Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
-                    sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)
+                    sb.Append(Package.QSVEncC.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)
                     If isSingleChunk Then
                         If Seek.Value > 0 Then
                             sb.Append($" --seek {Seek.Value}")

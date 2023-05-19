@@ -17,16 +17,25 @@ v2.17.0 (not published yet)
 - AVS: Fix missing function definitions for TransformsPack ([#1009](/../../issues/1009))
 - FFmpeg: Fix audio (and subtitle) cutting issues caused by ffmpeg upstream ([#997](/../../issues/997)) (thanks to sheik124 ([#1005](/../../pull/1005)))
 - NVEnc: Fix "--bref-mode" parameter options ([#1007](/../../issues/1007))
+- Rename encoder and category/group names
 - Update tools
+    - AOMEnc v3.6.0-564-gea9a06fd1
     - AviSynth+ v3.7.3 r3982 Clang
+    - chapterEditor v1.37
+    - DGIndex v2.0.0.8
+    - eac3to v3.36
     - FFmpeg v6.0 N-110665-g47430a3cb1-20230519
+    - MKVToolNix v76.0
+    - MP4Box v2.3-DEV-rev221-g200100727
+    - mpv.net v6.0.3.2 beta
     - NVEnc v7.25
     - QSVEnc v7.41
+    - Subtitle Edit v3.6.13
 - Update AviSynth+ plugins
     - SMDegrain v4.4.0d
     - Zs_RF_Shared v1.161
 - Update Dual plugins
-    - ...
+    - DGMPGDec v2.0.0.8
 - Update VapourSynth plugins
     - ...
 

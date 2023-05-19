@@ -9,7 +9,7 @@ Public Class QSVEnc
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "Intel | " + Params.Codec.OptionText.Replace("Intel ", "")
+            Return "QSVEncC (Intel) | " + Params.Codec.OptionText.Replace("Intel ", "")
         End Get
     End Property
 
@@ -54,9 +54,9 @@ Public Class QSVEnc
         params1.Init(store)
 
         Using form As New CommandLineForm(params1)
-            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.QSVEnc.HelpURL}"">QSVEnc Online Help</a></p>" +
+            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.QSVEncC.HelpURL}"">QSVEnc Online Help</a></p>" +
                 $"<p><a href=""https://github.com/staxrip/staxrip/wiki/qsvenc-bitrate-modes"">QSVEnc bitrate modes</a></p>" +
-                $"<pre>{HelpDocument.ConvertChars(Package.QSVEnc.CreateHelpfile())}</pre>"
+                $"<pre>{HelpDocument.ConvertChars(Package.QSVEncC.CreateHelpfile())}</pre>"
 
             Dim a = Sub()
                         Dim enc = ObjectHelp.GetCopy(Me)
@@ -68,9 +68,9 @@ Public Class QSVEnc
                         SaveProfile(enc)
                     End Sub
 
-            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-hw")))
-            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features")), Keys.Control Or Keys.F)
-            form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-environment")))
+            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.QSVEncC.Path, "--check-hw")))
+            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.QSVEncC.Path, "--check-features")), Keys.Control Or Keys.F)
+            form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.QSVEncC.Path, "--check-environment")))
             form.cms.Add("-")
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
@@ -94,7 +94,7 @@ Public Class QSVEnc
 
     Overrides Sub Encode()
         If OutputExt = "hevc" Then
-            Dim codecs = ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features").Right("Codec")
+            Dim codecs = ProcessHelp.GetConsoleOutput(Package.QSVEncC.Path, "--check-features").Right("Codec")
 
             If Not codecs.ToLowerEx.Contains("hevc") Then
                 Throw New ErrorAbortException("QSVEnc Error", "H.265/HEVC isn't supported by your Hardware.")
@@ -106,7 +106,7 @@ Public Class QSVEnc
 
         Using proc As New Proc
             proc.Header = "Video encoding"
-            proc.Package = Package.QSVEnc
+            proc.Package = Package.QSVEncC
             proc.SkipString = " frames: "
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
@@ -155,7 +155,7 @@ Public Class QSVEnc
             metadata video-metadata video-tag attachment-copy sub-source process-codepage"
 
         tester.UndocumentedSwitches = "input-thread chromaloc videoformat colormatrix colorprim transfer fullrange"
-        tester.Package = Package.QSVEnc
+        tester.Package = Package.QSVEncC
         tester.CodeFile = Folder.Startup.Parent + "Encoding\qsvenc.vb"
 
         Return tester.Test
@@ -165,7 +165,7 @@ Public Class QSVEnc
         Inherits CommandLineParams
 
         Sub New()
-            Title = "QSVEnc Options"
+            Title = "QSVEncC Options"
         End Sub
 
         Property Decoder As New OptionParam With {
@@ -176,7 +176,7 @@ Public Class QSVEnc
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
-            .Options = {"Intel H.264", "Intel H.265", "Intel MPEG-2", "Intel VP9", "Intel AV1 (Experimental)"},
+            .Options = {"H.264", "H.265", "MPEG-2", "VP9", "AV1 (Experimental)"},
             .Values = {"h264", "hevc", "mpeg2", "vp9", "av1"}}
 
         Property Mode As New OptionParam With {
@@ -410,7 +410,7 @@ Public Class QSVEnc
         End Property
 
         Public Overrides Sub ShowHelp(options As String())
-            ShowConsoleHelp(Package.QSVEnc, options)
+            ShowConsoleHelp(Package.QSVEncC, options)
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
@@ -444,7 +444,7 @@ Public Class QSVEnc
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
             If includePaths AndAlso includeExecutable Then
-                ret = Package.QSVEnc.Path.Escape
+                ret = Package.QSVEncC.Path.Escape
             End If
 
             Select Case Decoder.ValueText
@@ -468,13 +468,13 @@ Public Class QSVEnc
                         ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " +
                             If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt " +
                             pix_fmt + " -strict -1 -loglevel fatal -hide_banner - | " +
-                            If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64")
+                            If(includePaths, Package.QSVEncC.Path.Escape, "QSVEncC64")
                     End If
                 Case "ffqsv"
                     sourcePath = "-"
 
                     If includePaths Then
-                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64")
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEncC.Path.Escape, "QSVEncC64")
                     End If
             End Select
 
@@ -554,7 +554,7 @@ Public Class QSVEnc
         End Function
 
         Public Overrides Function GetPackage() As Package
-            Return Package.QSVEnc
+            Return Package.QSVEncC
         End Function
     End Class
 End Class

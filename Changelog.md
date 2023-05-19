@@ -10,6 +10,20 @@ v2.xx.0 (not published yet)
 -->
 
 
+v2.17.0 (not published yet)
+====================
+
+- Add more frame rates to AviSynth frame rate filter selections ([#995](/../../issues/995))
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
 v2.16.0 (2023-04-20)
 ====================
 

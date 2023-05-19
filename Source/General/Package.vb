@@ -218,7 +218,7 @@ Public Class Package
         .AllowCustomPath = False,
         .WebURL = "https://github.com/AviSynth/AviSynthPlus",
         .HelpURL = "http://avisynth.nl",
-        .DownloadURL = "https://github.com/AviSynth/AviSynthPlus/releases",
+        .DownloadURL = "https://gitlab.com/uvz/AviSynthPlus-Builds/-/tree/main",
         .Description = "Video processing scripting library.",
         .Exclude = {"_arm64", "_xp", ".exe"},
         .HintDirFunc = Function() Package.AviSynth.GetAviSynthHintDir,
@@ -753,10 +753,10 @@ Public Class Package
     Shared Property SMDegrain As Package = Add(New PluginPackage With {
         .Name = "SMDegrain",
         .Filename = "SMDegrain.avsi",
-        .WebURL = "http://avisynth.nl/index.php/SMDegrain",
-        .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/SMDegrain.avsi",
-        .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
-        .Dependencies = {"MedianBlur2.dll", "ExTools.avsi", "ResizersPack.avsi", "SharpenersPack.avsi"},
+        .WebURL = "https://raw.githack.com/Dogway/Avisynth-Scripts/master/SMDegrain/SMDegrain.html",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/SMDegrain/SMDegrain.avsi",
+        .Description = "SMDegrain is a simple wrapper for MVTools and client functions for general purpose temporal denoising.",
+        .Dependencies = {"dfttest.dll", "ExTools.avsi", "GradePack.avsi", "MedianBlur2.dll", "mvtools2.dll", "ResizersPack.avsi", "RgTools.dll", "SharpenersPack.avsi"},
         .AvsFilterNames = {"SMDegrain"}})
 
     Shared Property ExTools As Package = Add(New PluginPackage With {

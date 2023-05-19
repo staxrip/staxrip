@@ -15,10 +15,12 @@ v2.17.0 (not published yet)
 
 - AVS: Add more frame rates to frame rate filter selections ([#995](/../../issues/995))
 - AVS: Fix missing function definitions for TransformsPack ([#1009](/../../issues/1009))
+- NVEnc: Fix "--bref-mode" parameter options ([#1007](/../../issues/1007))
 - Update tools
-    - ...
+    - AviSynth+ v3.7.3 r3982 Clang
 - Update AviSynth+ plugins
-    - ...
+    - SMDegrain v4.4.0d
+    - Zs_RF_Shared v1.161
 - Update Dual plugins
     - ...
 - Update VapourSynth plugins

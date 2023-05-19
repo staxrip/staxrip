@@ -816,7 +816,7 @@ Public Class Package
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Main.avsi",
         .Description = "",
         .Dependencies = {"TransformsPack - Models.avsi", "TransformsPack - Transfers.avsi"},
-        .AvsFilterNames = {"Display_Referred", "MatchClip", "ConvertFormat"}})
+        .AvsFilterNames = {"Display_Referred", "MatchClip", "ConvertFormat", "color_Fuzzy_Search", "color_propGet", "format_Fuzzy_Search", "bicubic_coeffs", "chroma_placement", "color_coef", "moncurve_coef", "ExtractClip", "MatrixClip", "DotClip", "DotClipA", "MatrixDot", "MatrixInvert", "MatrixTranspose", "Broadcast", "Cross", "Dot"}})
 
 
     Shared Property Zs_RF_Shared As Package = Add(New PluginPackage With {

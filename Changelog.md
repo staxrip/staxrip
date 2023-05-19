@@ -13,7 +13,8 @@ v2.xx.0 (not published yet)
 v2.17.0 (not published yet)
 ====================
 
-- Add more frame rates to AviSynth frame rate filter selections ([#995](/../../issues/995))
+- AVS: Add more frame rates to frame rate filter selections ([#995](/../../issues/995))
+- AVS: Fix missing function definitions for TransformsPack ([#1009](/../../issues/1009))
 - Update tools
     - ...
 - Update AviSynth+ plugins

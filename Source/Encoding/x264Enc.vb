@@ -209,7 +209,7 @@ Public Class x264Enc
         tester.IgnoredSwitches = "help longhelp fullhelp progress"
         tester.UndocumentedSwitches = "y4m fade-compensate log-file log-file-level progress-header"
         tester.Package = Package.x264
-        tester.CodeFile = Folder.Startup.Parent + "Encoding\x264Enc.vb"
+        tester.CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "x264Enc.vb")
 
         Return tester.Test
     End Function

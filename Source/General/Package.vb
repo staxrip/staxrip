@@ -838,7 +838,6 @@ Public Class Package
         .Dependencies = {},
         .AvsFilterNames = {}})
 
-
     Shared Property Zs_RF_Shared As Package = Add(New PluginPackage With {
         .Name = "Zs_RF_Shared",
         .Filename = "Zs_RF_Shared.avsi",

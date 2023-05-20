@@ -14,6 +14,8 @@ v2.18.0 (not published yet)
 ====================
 
 - Set timestamp extraction for VFR MKV files only as default project option ([#817](/../../issues/817), [#1006](/../../issues/1006))
+- NVEncC: Adjust some codec dependent parameters
+- NVEncC: AV1 support ([#949](/../../issues/949))
 - Update tools
 - Update AviSynth+ plugins
 - Update Dual plugins
@@ -27,7 +29,7 @@ v2.17.0 (2023-05-20)
 - AVS: Fix missing function and package definitions for TransformsPack ([#1009](/../../issues/1009))
 - AVS: Prevent importing duplicates on dependencies
 - FFmpeg: Fix audio (and subtitle) cutting issues caused by ffmpeg upstream ([#997](/../../issues/997)) (thanks to sheik124 ([#1005](/../../pull/1005)))
-- NVEnc: Fix "--bref-mode" parameter options ([#1007](/../../issues/1007))
+- NVEncC: Fix "--bref-mode" parameter options ([#1007](/../../issues/1007))
 - Rename encoder and category/group names
 - Update tools
     - AOMEnc v3.6.0-564-gea9a06fd1

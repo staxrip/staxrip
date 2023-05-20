@@ -277,7 +277,7 @@ Public Class x265Enc
             scenecut-window"
 
         tester.Package = Package.x265
-        tester.CodeFile = Folder.Startup.Parent + "Encoding\x265Enc.vb"
+        tester.CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "x265Enc.vb")
 
         Return tester.Test
     End Function

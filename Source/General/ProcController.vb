@@ -168,12 +168,12 @@ Public Class ProcController
                 Next
             End If
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(avs\+|avs\s|vpy\s)(?=\s\[)", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(avs\+|avs|vpy)(?=\s+\[)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(300), oh.SourceForeColor)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(raw\s)(?=\s\[)", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(raw)(?=\s+\[)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(175), oh.SourceForeColor)
             Next

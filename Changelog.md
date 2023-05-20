@@ -14,13 +14,28 @@ v2.18.0 (not published yet)
 ====================
 
 - Set timestamp extraction for VFR MKV files only as default project option ([#817](/../../issues/817), [#1006](/../../issues/1006))
+- Fix minor issue with TransformsPack package definition
 - NVEncC: Adjust some codec dependent parameters
 - NVEncC: AV1 support ([#949](/../../issues/949))
 - SVTAV1: Set "--key-init" to default value of -2 (thanks to samkatakouzinos ([#1011](/../../pull/1011)))
 - Update tools
+    - rav1e v0.6.4
+    - SVTAV1EncApp v1.5.0
 - Update AviSynth+ plugins
+    - CropResize 2022-11-19
+    - JPSDR v3.3.4 (W7 AVX2)
+    - SmoothD2 + SmoothD2C vA3
+    - TemporalDegrain2 v2.6.6
+    - TimecodeFPS v1.1.4
+    - vsCnr2 v1.0.1
+    - vsTTempSmooth v1.2.3
+    - xy-VSFilter + XySubFilter v3.2.0.808
 - Update Dual plugins
-- Update VapourSynth plugins
+    - f3kdb Neo vR9
+    - DFTTest Neo vR8
+    - MiniDeen vR11
+    - SVPflow v4.3.0.168
+    - VSFilterMod v5.2.6
 
 
 v2.17.0 (2023-05-20)

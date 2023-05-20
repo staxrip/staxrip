@@ -710,13 +710,13 @@ Public Class AppsForm
                         n.Tag = pack
                     End If
                 Else
-                    If plugin.AvsFilterNames?.Length > 0 Then
+                    If plugin.AvsFilterNames?.Length >= 0 Then
                         Dim n = tv.AddNode("AviSynth|" + pack.Name)
                         Nodes.Add(n)
                         n.Tag = pack
                     End If
 
-                    If plugin.VsFilterNames?.Length > 0 Then
+                    If plugin.VsFilterNames?.Length >= 0 Then
                         Dim n = tv.AddNode("VapourSynth|" + pack.Name)
                         Nodes.Add(n)
                         n.Tag = pack
@@ -861,7 +861,7 @@ Public Class AppsForm
         For Each pair In Package.Items
             Dim pack = pair.Value
 
-            If pack.Required AndAlso pack.GetStatus <> "" Then
+            If pack.GetStatus <> "" AndAlso pack.Required Then
                 txt += pack.Name + ": " + pack.GetStatus + BR2
                 counter += 1
             End If

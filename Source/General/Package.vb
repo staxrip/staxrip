@@ -815,6 +815,7 @@ Public Class Package
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Main.avsi",
         .Description = "",
+        .Siblings = {"TransformsPackModels", "TransformsPackTransfers"},
         .Dependencies = {"TransformsPack - Models.avsi", "TransformsPack - Transfers.avsi"},
         .AvsFilterNames = {"Display_Referred", "MatchClip", "ConvertFormat", "color_Fuzzy_Search", "color_propGet", "format_Fuzzy_Search", "bicubic_coeffs", "chroma_placement", "color_coef", "moncurve_coef", "ExtractClip", "MatrixClip", "DotClip", "DotClipA", "MatrixDot", "MatrixInvert", "MatrixTranspose", "Broadcast", "Cross", "Dot"}})
 
@@ -825,6 +826,7 @@ Public Class Package
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Models.avsi",
         .Description = "",
+        .Siblings = {"TransformsPack avs", "TransformsPackTransfers"},
         .Dependencies = {},
         .AvsFilterNames = {}})
 
@@ -835,6 +837,7 @@ Public Class Package
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Transfers.avsi",
         .Description = "",
+        .Siblings = {"TransformsPack avs", "TransformsPackModels"},
         .Dependencies = {},
         .AvsFilterNames = {}})
 
@@ -1093,7 +1096,7 @@ Public Class Package
             .Location = "Plugins\AVS\SVPFlow",
             .HelpFilename = "Readme.txt",
             .Description = "Motion vectors search plugin  is a deeply refactored and modified version of MVTools2 Avisynth plugin.",
-            .Filename = "svpflow1.dll",
+            .Filename = "svpflow1_64.dll",
             .WebURL = "http://avisynth.nl/index.php/SVPFlow",
             .AvsFilterNames = {"analyse_params", "super_params", "SVSuper", "SVAnalyse"}})
 
@@ -1102,7 +1105,7 @@ Public Class Package
             .Location = "Plugins\AVS\SVPFlow",
             .HelpFilename = "Readme.txt",
             .Description = "Motion vectors search plugin is a deeply refactored and modified version of MVTools2 Avisynth plugin.",
-            .Filename = "svpflow2.dll",
+            .Filename = "svpflow2_64.dll",
             .WebURL = "http://avisynth.nl/index.php/SVPFlow",
             .AvsFilterNames = {"smoothfps_params", "SVConvert", "SVSmoothFps"}})
 

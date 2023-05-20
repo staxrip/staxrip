@@ -73,7 +73,7 @@ Public Class x264Enc
             proc.Package = Package.x264
             proc.Header = passName
             proc.Priority = priority
-            proc.SkipStrings = {"kb/s, eta", "%]"}
+            proc.SkipStrings = {"kb/s, eta", "est.size", "%]"}
 
             If commandLine.Contains("|") Then
                 proc.File = "cmd.exe"

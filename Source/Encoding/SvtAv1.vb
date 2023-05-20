@@ -166,7 +166,7 @@ Public Class SVTAV1
                         Passes,
                         New OptionParam With {.Switch = "--scm", .Text = "Screen Content Mode", .IntegerValue = True, .Options = {"0: OFF", "1: ON", "2: Content Based Detection"}},
                         New OptionParam With {.Switch = "--irefresh-type", .Text = "Intra Refresh Type", .Options = {"1: CRA (Open GOP)", "2: IDR (Closed GOP)"}, .Values = {"1", "2"}},
-                        New NumParam With {.Switch = "--keyint", .Text = "Intra Period", .Init = -1, .Config = {-2, 255, 1}},
+                        New NumParam With {.Switch = "--keyint", .Text = "Intra Period", .Init = -2, .Config = {-2, 255, 1}},
                         New NumParam With {.Switch = "--qp", .Text = "QP", .Init = 35, .Config = {0, 63, 1}})
                 End If
 

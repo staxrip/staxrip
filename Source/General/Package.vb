@@ -818,6 +818,26 @@ Public Class Package
         .Dependencies = {"TransformsPack - Models.avsi", "TransformsPack - Transfers.avsi"},
         .AvsFilterNames = {"Display_Referred", "MatchClip", "ConvertFormat", "color_Fuzzy_Search", "color_propGet", "format_Fuzzy_Search", "bicubic_coeffs", "chroma_placement", "color_coef", "moncurve_coef", "ExtractClip", "MatrixClip", "DotClip", "DotClipA", "MatrixDot", "MatrixInvert", "MatrixTranspose", "Broadcast", "Cross", "Dot"}})
 
+    Shared Property TransformsPackModels As Package = Add(New PluginPackage With {
+        .Name = "TransformsPackModels",
+        .Filename = "TransformsPack - Models.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Models.avsi",
+        .Description = "",
+        .Dependencies = {},
+        .AvsFilterNames = {}})
+
+    Shared Property TransformsPackTransfers As Package = Add(New PluginPackage With {
+        .Name = "TransformsPackTransfers",
+        .Filename = "TransformsPack - Transfers.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Transfers.avsi",
+        .Description = "",
+        .Dependencies = {},
+        .AvsFilterNames = {}})
+
 
     Shared Property Zs_RF_Shared As Package = Add(New PluginPackage With {
         .Name = "Zs_RF_Shared",

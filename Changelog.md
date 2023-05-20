@@ -10,7 +10,7 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.17.0 (not published yet)
+v2.17.0 (2023-05-20)
 ====================
 
 - AVS: Add more frame rates to frame rate filter selections ([#995](/../../issues/995))
@@ -37,8 +37,6 @@ v2.17.0 (not published yet)
     - Zs_RF_Shared v1.161
 - Update Dual plugins
     - DGMPGDec v2.0.0.8
-- Update VapourSynth plugins
-    - ...
 
 
 v2.16.0 (2023-04-20)

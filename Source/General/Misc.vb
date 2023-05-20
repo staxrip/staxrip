@@ -1364,6 +1364,10 @@ Public Class Subtitle
             For Each lng In Language.Languages
                 If path.Contains(lng.CultureInfo.EnglishName) Then
                     st.Language = lng
+                End If
+
+                If path.FileName.Contains(lng.CultureInfo.EnglishName) Then
+                    st.Language = lng
                     Exit For
                 End If
             Next
@@ -1453,7 +1457,7 @@ Public Class Subtitle
             Dim aviPath = IO.Path.Combine(p.TempDir, inSub.Path.Base + "_cut_mm.avi")
             Dim d = (p.CutFrameCount / p.CutFrameRate).ToString("f9", CultureInfo.InvariantCulture)
             Dim r = p.CutFrameRate.ToString("f9", CultureInfo.InvariantCulture)
-            Dim args = $"-f lavfi -i color=c=black:s=16x16:d={d}:r={r} -y -hide_banner -c:v copy " + aviPath.Escape
+            Dim args = $"-f lavfi -i color=c=black:s=16x16:d={d}:r={r} -y -hide_banner -c:v ffv1 -g 1 " + aviPath.Escape
 
             Using proc As New Proc
                 proc.Header = "Create avi file for subtitle cutting"
@@ -1591,6 +1595,7 @@ Public Class OSVersion
     Shared ReadOnly Property Windows7 As Single = 6.1
     Shared ReadOnly Property Windows8 As Single = 6.2
     Shared ReadOnly Property Windows10 As Single = 10.0
+    Shared ReadOnly Property Windows11 As Single = 11.0
     Shared ReadOnly Property Current As Single = CSng(Environment.OSVersion.Version.Major + Environment.OSVersion.Version.Minor / 10)
 End Class
 

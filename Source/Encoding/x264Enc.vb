@@ -810,7 +810,7 @@ Public Class x264Params
                     New NumParam With {.Switch = "--crf-max", .Text = "Maximum CRF"},
                     New NumParam With {.Switch = "--qpmin", .Text = "Minimum QP"},
                     New NumParam With {.Switch = "--qpmax", .Text = "Maximum QP", .Init = 69},
-                    New NumParam With {.Switch = "--fade-compensate", .Text = "Fade Compensate", .Config = {0, 0, 0.1, 1}})
+                    New NumParam With {.Switch = "--fade-compensate", .Text = "Fade Compensate", .Config = {-1, 10, 0.05, 2}})
                 Add("Rate Control 2",
                     New NumParam With {.Switch = "--qpstep", .Text = "QP Step", .Init = 4},
                     New NumParam With {.Switch = "--ratetol", .Text = "Rate Tolerance", .Config = {0, 0, 0.1, 1}, .Init = 1},

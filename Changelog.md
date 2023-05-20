@@ -1,10 +1,176 @@
 <!--
-v2.12.0 (not published yet)
+v2.xx.0 (not published yet)
 ====================
 
-- x265: Add new supported option "--aq-mode 5", which was ported from modded x264 (DJATOM, Patman)
-- Fix not muxing attachments due to opposed working checkbox ([#847](/../../issues/847))
+- ...
+- Update tools
+- Update AviSynth+ plugins
+- Update Dual plugins
+- Update VapourSynth plugins
 -->
+
+
+v2.17.0 (2023-05-20)
+====================
+
+- AVS: Add more frame rates to frame rate filter selections ([#995](/../../issues/995))
+- AVS: Fix missing function and package definitions for TransformsPack ([#1009](/../../issues/1009))
+- AVS: Prevent importing duplicates on dependencies
+- FFmpeg: Fix audio (and subtitle) cutting issues caused by ffmpeg upstream ([#997](/../../issues/997)) (thanks to sheik124 ([#1005](/../../pull/1005)))
+- NVEnc: Fix "--bref-mode" parameter options ([#1007](/../../issues/1007))
+- Rename encoder and category/group names
+- Update tools
+    - AOMEnc v3.6.0-564-gea9a06fd1
+    - AviSynth+ v3.7.3 r3982 Clang
+    - chapterEditor v1.37
+    - DGIndex v2.0.0.8
+    - eac3to v3.36
+    - FFmpeg v6.0 N-110665-g47430a3cb1-20230519
+    - MKVToolNix v76.0
+    - MP4Box v2.3-DEV-rev221-g200100727
+    - mpv.net v6.0.3.2 beta
+    - NVEnc v7.25
+    - QSVEnc v7.41
+    - Subtitle Edit v3.6.13
+- Update AviSynth+ plugins
+    - SMDegrain v4.4.0d
+    - Zs_RF_Shared v1.161
+- Update Dual plugins
+    - DGMPGDec v2.0.0.8
+
+
+v2.16.0 (2023-04-20)
+====================
+
+- NVEnc: Add "bicubic" option for "--vpp-resize algo" parameter
+- QSVEnc: Add "--tune" parameter
+- MP4Box: Can import EC3 files ([#999](/../../issues/999))
+- Update tools
+    - NVEnc v7.22
+    - QSVEnc v7.37
+- Update AviSynth+ plugins
+    - GradePack v9.0
+    - MasksPack v6.6
+    - TransformsPack v1.6
+
+
+v2.15.0 (2023-04-07)
+====================
+
+- Fix misleading language name fetch from path for subtitles ([#924](/../../issues/924))
+- Add .av1 to valid input file extensions for mkvmerge ([#982](/../../issues/982))
+- Add SharpenersPack funtions for dependencies
+- NVEncC: Add "--vpp-nnedi" fields ([#962](/../../issues/962))
+- QSVEnc: Add "--output-depth" parameter ([#984](/../../issues/984))
+- VCEEnc: Add missing/new options for "--vpp-resize" ([#921](/../../issues/921))
+- VCEEnc: Add new "--no-deblock" parameter
+- x265: Add missing/new options for "--scenecut-aware-qp" ([#891](/../../issues/891)) (thanks to sheik124 ([#917](/../../pull/917)))
+- x265: Fix not working console help (thanks to sheik124 ([#917](/../../pull/917)))
+- Update tools
+    - ffmpeg n6.0-8-g18dde8d4cf-20230319
+    - MediaInfo v23.03
+    - NVEnc v7.21
+    - qaac v2.79
+        - libsndfile v1.2.0
+        - libFLAC v1.4.2
+    - QSVEnc v7.36
+    - VCEEnc v8.11
+- Update AviSynth+ plugins
+    - QTGMC v3.384s (2022-10-17)
+    - Sharpeners Pack v5.1
+
+
+v2.14.0 (2023-03-12)
+====================
+
+- NVEnc: Add multiple new params
+- NVEnc: Add missing/new options for "--vpp-resize" ([#921](/../../issues/921)), ([#964](/../../issues/964))
+- VCEEnc: Add multiple new params
+- x265: Fixed missing option for "--display-window"
+- Fix AVS mClean not working properly due to Masktools update
+- Fix AVS QTGMC not working properly
+- Fix AVS SMDegrain not working properly due to missing dependencies ([#931](/../../issues/931))
+- Update tools
+    - AOMEnc v3.2.0-393-g402e264b9-x64-gcc11.3.0 Patman
+    - MediaInfo v22.12
+    - MKVToolNix v74.0
+    - MP4Box v2.1-DEV-rev79-gdf29bc8a0-x64-gcc11.3.0 Patman
+    - NVEnc v7.20
+    - QSVEnc v7.35
+    - Rav1e v0.5.0-(p20220426-4-gb5c76736)-x64-gcc11.3.0 Patman
+    - SvtAv1EncApp v1.0.0-4-g879ba80a-x64-msvc1931 Patman
+    - VCEEnc v8.10
+- Update AviSynth+ plugins
+    - ExTools v10.0
+    - ModPlus v2020-06-26
+    - Resizers Functions Pack v11.4
+    - Sharpeners Pack v5.0
+    - SMDegrain v4.0.0.d
+- Update Dual plugins
+    - DGMPGDec v2.0.0.7 (replace wrong version in v2.13.0)
+    - ffms2 v3.0.1.0 1329+20 ad42af1 StvG
+
+
+v2.13.0 (2022-05-10)
+====================
+
+- x265: Add "--aq-bias-strength" param for AQ Modes 3 and 5
+- svt-av1: Add and update multiple params ([#863](/../../issues/863))
+- Show current frame number on Crop window on status bar
+- Update tools
+  - NVEnc v6.01
+  - VCEEnc v7.00
+- Update AviSynth+ plugins
+  - AddGrainC v1.8.4
+  - AnimeIVTC v2.386 2022-03-20 mod
+  - Average v0.95
+  - AvsResize r14
+  - CropResize 2022-01-28
+  - D2VSource v1.2.4
+  - Deblock_QED 2020.04.06 HBD
+  - DeHalo_alpha 2021.04.05
+  - DeHaloHmod v2.472
+  - DTFTest v1.9.7 (MSVC)
+  - EEDI2 v1.0.0
+  - FFT3DFilter v2.10
+  - hqdn3d v1.1.1
+  - JPSDR v3.2.8 (W7 AVX2)
+  - Masktools2 v2.2.30
+  - pSharpen 2020.10.31 HBD
+  - QTGMC v3.384s
+  - ResizeX v1.0.1 mod 9.40
+  - SMDegrain v3.5.0d
+  - TComb v2.3
+  - TNLMeans v1.1
+  - VapourSource v0.2
+  - Vinverse v0.9.4
+  - Vscube v1.3
+  - Zs_RF_Shared v1.158
+- Update Dual plugins
+  - DGIndex v2.0.0.7
+  - DGMPGDec v2.0.0.7
+  - ffms2 v3.0.1.0 1325+16 6ad7738 StvG
+  - L-SMASH-Works v20220505
+
+
+v2.12.0 (2022-04-19)
+====================
+
+- x265: Add new supported option "--aq-mode 5", which was introduced in x265 aMod (DJATOM, Patman)
+- NVEnc: Add new param "--vpp-convolution3d"
+- QSVEnc: Add experimental AV1 codec
+- Fix not muxing attachments due to opposed working checkbox ([#847](/../../issues/847))
+- Fix missing VS plugin due to G41Fun update ([#848](/../../issues/848))
+- Remove unneccessary quotation marks from Command Line Audio Profile ([#853](/../../issues/853))
+- Use pipe when modifying channels for qaac ([#854](/../../issues/854))
+- Use existing/cached video information after muxing instead of reloading the script to prevent broken generated files ([#777](/../../issues/777))
+- Update tools
+  - AviSynth+ v3.7.2
+  - MKVToolNix v67.0
+  - NVEnc v6.00
+  - QSVEnc v7.01
+- Update VapourSynth plugins
+  - vcm v2020-09
 
 
 v2.11.0 (2022-04-02)

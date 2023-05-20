@@ -131,12 +131,26 @@ Public Class SVTAV1
             .IntegerValue = True,
             .Options = {"0: CQP", "1: VBR", "2: CVBR"}}
 
+        Property AqMode As New OptionParam With {
+            .Switch = "--aq-mode",
+            .Text = "AQ Mode",
+            .IntegerValue = True,
+            .Init = 2,
+            .Options = {"0: Off", "1: Variance base using AV1 segments", "2: Deltaq pred efficiency"}}
+
         Property Passes As New OptionParam With {
             .HelpSwitch = "--passes",
             .Text = "Passes",
             .Init = 0,
             .Options = {"1 Pass", "2 Passes"},
             .Values = {"1", "2"}}
+
+        Property Preset As New OptionParam With {
+            .Switch = "--preset",
+            .Text = "Preset",
+            .Init = 12,
+            .Options = {"-2: Debug Option 2", "-1: Debug Option 1", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower", "5: Slow", "6: Medium", "7: Fast", "8: Faster", "9: Very Fast", "10: Mega Fast", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
+            .Values = {"-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"}}
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
@@ -146,13 +160,14 @@ Public Class SVTAV1
                     Add("Basic",
                         Custom,
                         Mode,
-                        New OptionParam With {.Switch = "--preset", .Text = "Preset", .Init = 8, .IntegerValue = True, .Options = {"0: Very Slow", "1: Slower", "2: Slow", "3: Medium", "4: Fast", "5: Faster", "6: Very Fast", "7: Super Fast", "8: Ultra Fast"}},
+                        AqMode,
+                        Preset,
                         New OptionParam With {.Switch = "--profile", .Text = "Profile", .IntegerValue = True, .Options = {"0: Main", "1: High", "2: Professional"}},
                         Passes,
                         New OptionParam With {.Switch = "--scm", .Text = "Screen Content Mode", .IntegerValue = True, .Options = {"0: OFF", "1: ON", "2: Content Based Detection"}},
                         New OptionParam With {.Switch = "--irefresh-type", .Text = "Intra Refresh Type", .Options = {"1: CRA (Open GOP)", "2: IDR (Closed GOP)"}, .Values = {"1", "2"}},
                         New NumParam With {.Switch = "--keyint", .Text = "Intra Period", .Init = -1, .Config = {-2, 255, 1}},
-                        New NumParam With {.Switch = "--qp", .Text = "QP", .Init = 50, .Config = {0, 63, 1}})
+                        New NumParam With {.Switch = "--qp", .Text = "QP", .Init = 35, .Config = {0, 63, 1}})
                 End If
 
                 Return ItemsValue

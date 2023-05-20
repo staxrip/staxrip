@@ -385,6 +385,14 @@ Public Class x265Params
         .Text = "Scenecut",
         .Config = {0, 900, 10}}
 
+    Property ScenecutAwareQp As New OptionParam With {
+        .HelpSwitch = "--scenecut-aware-qp",
+        .Text = "Scenecut Aware Qp",
+        .Options = {"0 - Disabled", "1 - Forward masking, applies after the scenecut.", "2 - Backward masking, applies before the scenecut.", "3 - Bi-directional masking, applies before and after the scenecut."},
+        .IntegerValue = True,
+        .Init = 0,
+        .VisibleFunc = Function() Mode.Value = x265RateMode.TwoPass Or Mode.Value = x265RateMode.ThreePass}
+
     Property Ref As New NumParam With {
         .Switch = "--ref",
         .Text = "Ref Frames",
@@ -480,6 +488,13 @@ Public Class x265Params
     Property AQStrength As New NumParam With {
         .Switch = "--aq-strength",
         .Text = "AQ Strength",
+        .Config = {0, 3, 0.05, 2}}
+
+    Property AQBiasStrength As New NumParam With {
+        .Switch = "--aq-bias-strength",
+        .Text = "AQ Bias Strength",
+        .VisibleFunc = Function() AQmode.Value = 3 OrElse AQmode.Value = 5,
+        .Init = 1,
         .Config = {0, 3, 0.05, 2}}
 
     Property CUtree As New BoolParam With {
@@ -970,7 +985,7 @@ Public Class x265Params
                 Add("Rate Control",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .BrowseFile = True},
-                    AQmode, qgSize, AQStrength, QComp, qpmin, qpmax, qpstep,
+                    AQmode, qgSize, AQStrength, AQBiasStrength, QComp, qpmin, qpmax, qpstep,
                     New NumParam With {.Switch = "--qp-delta-ref", .Text = "QP Delta Ref", .Init = 5, .Config = {0, 10, 0.5, 1}},
                     New NumParam With {.Switch = "--qp-delta-nonref", .Text = "QP Delta NonRef", .Init = 5, .Config = {0, 10, 0.5, 1}},
                     New NumParam With {.Switch = "--cbqpoffs", .Text = "CB QP Offset", .Config = {-12, 12}},
@@ -1000,7 +1015,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--hevc-aq", .Text = "Mode for HEVC Adaptive Quantization", .Init = False},
                     New BoolParam With {.Switch = "--aq-motion", .Text = "AQ Motion"},
                     qpadaptationrange,
-                    New BoolParam With {.Switch = "--scenecut-aware-qp", .NoSwitch = "--no-scenecut-aware-qp", .Text = "Scenecut Aware QP"})
+                    ScenecutAwareQp)
                 Add("Motion Search",
                     New StringParam With {.Switch = "--hme-search", .Text = "HME Search"},
                     New StringParam With {.Switch = "--hme-range", .Text = "HME Range", .Init = "16,32,48", .Quotes = QuotesMode.Never, .RemoveSpace = True},
@@ -1036,7 +1051,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"})
                 Add("Statistic",
                     New StringParam With {.Switch = "--csv", .Text = "CSV", .BrowseFile = True},
-                    New OptionParam With {.Switch = "--log-level", .Switches = {"--log"}, .Text = "Log Level", .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Init = 3},
+                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .IntegerValue = True, .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Init = 5},
                     New OptionParam With {.Switch = "--csv-log-level", .Text = "CSV Log Level", .IntegerValue = True, .Options = {"Default", "Summary", "Frame"}},
                     New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
                     New BoolParam With {.Switch = "--psnr", .Text = "PSNR"},
@@ -1060,7 +1075,7 @@ Public Class x265Params
                     New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                     New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "Component", "PAL", "NTSC", "SECAM", "MAC"}},
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"Undefined", "Show", "Crop"}},
-                    New OptionParam With {.Switch = "--display-window", .Text = "Display Window", .Options = {"Undefined", "Left", "Top", "Right", "Top"}},
+                    New OptionParam With {.Switch = "--display-window", .Text = "Display Window", .Options = {"Undefined", "Left", "Top", "Right", "Bottom"}},
                     Chromaloc)
                 Add("Bitstream",
                     New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Options = {"0", "5", "8.1", "8.2", "8.4"}},
@@ -1312,7 +1327,7 @@ Public Class x265Params
                     End Select
                 Case "qs"
                     Dim crop = If(isCropped, " --crop " & p.CropLeft & "," & p.CropTop & "," & p.CropRight & "," & p.CropBottom, "")
-                    sb.Append(Package.QSVEnc.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)
+                    sb.Append(Package.QSVEncC.Path.Escape + " -o - -c raw" + crop + " -i " + p.SourceFile.Escape + " | " + Package.x265.Path.Escape)
                     If isSingleChunk Then
                         If Seek.Value > 0 Then
                             sb.Append($" --seek {Seek.Value}")
@@ -1369,6 +1384,9 @@ Public Class x265Params
                     sb.Append(" " + CustomFirstPass.Value)
                 End If
             ElseIf pass = 2 Then
+                If ScenecutAwareQp.Value <> ScenecutAwareQp.DefaultValue Then
+                    sb.Append(" --scenecut-aware-qp " + ScenecutAwareQp.Value.ToString())
+                End If
                 If CustomLastPass.Value <> "" Then
                     sb.Append(" " + CustomLastPass.Value)
                 End If
@@ -1471,6 +1489,7 @@ Public Class x265Params
     Sub ApplyPresetValues()
         AQmode.Value = 2
         AQStrength.Value = 1
+        AQBiasStrength.Value = 1
         CUtree.Value = True
         Deblock.Value = True
         DeblockA.Value = 0
@@ -2031,6 +2050,7 @@ Public Class x265Params
     End Sub
 
     Sub ApplyTuneValues()
+        AQBiasStrength.Value = 1
         RcGrain.Value = False
         qpstep.Value = 4
         ConstVBV.Value = False

@@ -501,7 +501,7 @@ clipname.set_output()
             Dim fp = plugin.Path
 
             If fp <> "" Then
-                If Not plugin.AvsFilterNames Is Nothing Then
+                If plugin.AvsFilterNames IsNot Nothing Then
                     For Each filterName In plugin.AvsFilterNames
                         If s.LoadAviSynthPlugins AndAlso
                             Not IsAvsPluginInAutoLoadFolder(plugin.Filename) AndAlso
@@ -528,7 +528,7 @@ clipname.set_output()
 
                                 If Not plugin.Dependencies.NothingOrEmpty Then
                                     For Each iDependency In plugin.Dependencies
-                                        Dim fp2 = Package.Items.Values.OfType(Of PluginPackage).Where(Function(pack) pack.Filename = iDependency AndAlso Not pack.AvsFilterNames.NothingOrEmpty).First.Path
+                                        Dim fp2 = Package.Items.Values.OfType(Of PluginPackage).Where(Function(pack) pack.Filename = iDependency).First.Path
 
                                         If fp2.Ext = "dll" Then
                                             Dim load = "LoadPlugin(""" + fp2 + """)" + BR
@@ -605,7 +605,7 @@ clipname.set_output()
             End If
         Next
 
-        Return ret
+        Return ret.SplitLinesNoEmpty.Distinct.Join(BR)
     End Function
 
     Shared Function ModifyAVSScript(script As String) As String

@@ -9,7 +9,7 @@ Public Class QSVEnc
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "Intel | " + Params.Codec.OptionText.Replace("Intel ", "")
+            Return "QSVEncC (Intel) | " + Params.Codec.OptionText.Replace("Intel ", "")
         End Get
     End Property
 
@@ -54,9 +54,9 @@ Public Class QSVEnc
         params1.Init(store)
 
         Using form As New CommandLineForm(params1)
-            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.QSVEnc.HelpURL}"">QSVEnc Online Help</a></p>" +
+            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.QSVEncC.HelpURL}"">QSVEnc Online Help</a></p>" +
                 $"<p><a href=""https://github.com/staxrip/staxrip/wiki/qsvenc-bitrate-modes"">QSVEnc bitrate modes</a></p>" +
-                $"<pre>{HelpDocument.ConvertChars(Package.QSVEnc.CreateHelpfile())}</pre>"
+                $"<pre>{HelpDocument.ConvertChars(Package.QSVEncC.CreateHelpfile())}</pre>"
 
             Dim a = Sub()
                         Dim enc = ObjectHelp.GetCopy(Me)
@@ -68,9 +68,9 @@ Public Class QSVEnc
                         SaveProfile(enc)
                     End Sub
 
-            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-hw")))
-            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features")), Keys.Control Or Keys.F)
-            form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-environment")))
+            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.QSVEncC.Path, "--check-hw")))
+            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.QSVEncC.Path, "--check-features")), Keys.Control Or Keys.F)
+            form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.QSVEncC.Path, "--check-environment")))
             form.cms.Add("-")
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
@@ -94,7 +94,7 @@ Public Class QSVEnc
 
     Overrides Sub Encode()
         If OutputExt = "hevc" Then
-            Dim codecs = ProcessHelp.GetConsoleOutput(Package.QSVEnc.Path, "--check-features").Right("Codec")
+            Dim codecs = ProcessHelp.GetConsoleOutput(Package.QSVEncC.Path, "--check-features").Right("Codec")
 
             If Not codecs.ToLowerEx.Contains("hevc") Then
                 Throw New ErrorAbortException("QSVEnc Error", "H.265/HEVC isn't supported by your Hardware.")
@@ -106,7 +106,7 @@ Public Class QSVEnc
 
         Using proc As New Proc
             proc.Header = "Video encoding"
-            proc.Package = Package.QSVEnc
+            proc.Package = Package.QSVEncC
             proc.SkipString = " frames: "
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
@@ -155,7 +155,7 @@ Public Class QSVEnc
             metadata video-metadata video-tag attachment-copy sub-source process-codepage"
 
         tester.UndocumentedSwitches = "input-thread chromaloc videoformat colormatrix colorprim transfer fullrange"
-        tester.Package = Package.QSVEnc
+        tester.Package = Package.QSVEncC
         tester.CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "qsvenc.vb")
 
         Return tester.Test
@@ -165,7 +165,7 @@ Public Class QSVEnc
         Inherits CommandLineParams
 
         Sub New()
-            Title = "QSVEnc Options"
+            Title = "QSVEncC Options"
         End Sub
 
         Property Decoder As New OptionParam With {
@@ -176,8 +176,8 @@ Public Class QSVEnc
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
-            .Options = {"Intel H.264", "Intel H.265", "Intel MPEG-2", "Intel VP9"},
-            .Values = {"h264", "hevc", "mpeg2", "vp9"}}
+            .Options = {"H.264", "H.265", "MPEG-2", "VP9", "AV1 (Experimental)"},
+            .Values = {"h264", "hevc", "mpeg2", "vp9", "av1"}}
 
         Property Mode As New OptionParam With {
             .Switches = {"--avbr", "--cbr", "--vbr", "--cqp", "--icq", "--la-icq", "--vcm", "--la", "--la-hrd", "--qvbr"},
@@ -206,6 +206,13 @@ Public Class QSVEnc
             .Init = 23,
             .VisibleFunc = Function() {"icq", "la-icq"}.Contains(Mode.ValueText),
             .Config = {0, 63}}
+
+        Property OutputDepth As New OptionParam With {
+            .Switch = "--output-depth",
+            .Text = "Output Depth",
+            .Options = {"8bit", "10bit"},
+            .Values = {"8", "10"},
+            .Init = 0}
 
         Property QPI As New NumParam With {
             .HelpSwitch = "--cqp",
@@ -287,6 +294,12 @@ Public Class QSVEnc
             .Config = {0, Integer.MaxValue, 50},
             .VisibleFunc = Function() Codec.ValueText = "hevc"}
 
+    Property Tune As New OptionParam With {
+        .Switch = "--tune",
+        .Text = "Tune",
+        .Options = {"Default", "PSNR", "SSIM", "MS_SSIM", "VMAF", "Perceptual"}}
+
+
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
@@ -302,7 +315,7 @@ Public Class QSVEnc
                         New OptionParam With {.Switch = "--level", .Name = "LevelHEVC", .Text = "Level", .VisibleFunc = Function() Codec.Value = 1, .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.Value = 0, .Options = {"Automatic", "1", "1b", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelMPEG2", .Text = "Level", .VisibleFunc = Function() Codec.Value = 2, .Options = {"Automatic", "low", "main", "high", "High1440"}},
-                        QPI, QPP, QPB, Bitrate, QvbrQuality, Quality)
+                        Tune,OutputDepth, QPI, QPP, QPB, Bitrate, QvbrQuality, Quality)
                     Add("Analysis",
                         New OptionParam With {.Switch = "--trellis", .Text = "Trellis", .Options = {"Automatic", "Off", "I", "IP", "All"}},
                         New OptionParam With {.Switch = "--ctu", .Text = "CTU", .Options = {"16", "32", "64"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
@@ -327,7 +340,7 @@ Public Class QSVEnc
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
-                        QPOffsetI, QPOffsetP, QPOffsetB,
+                        QPOffsetI, QPOffsetP, QPOffsetB, 
                         New NumParam With {.Switch = "--avbr-unitsize", .Text = "AVBR Unitsize", .Init = 90},
                         New BoolParam With {.Switch = "--mbbrc", .Text = "Per macro block rate control"})
                     Add("Motion Search",
@@ -360,11 +373,11 @@ Public Class QSVEnc
                         New StringParam With {.Switch = "--dolby-vision-rpu", .Text = "Dolby Vision RPU", .BrowseFile = True},
                         New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Options = {"Undefined", "5.0", "8.1", "8.2", "8.4"}},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
-                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 NC", "BT 2020 C", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
-                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}},
-                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}},
+                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "Auto", "BT 709",  "SMPTE 170 M", "BT 470 BG", "SMPTE 240 M", "YCgCo", "FCC", "GBR", "BT 2020 NC", "BT 2020 C"}},
+                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}},
+                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}},
                         New OptionParam With {.Switch = "--atc-sei", .Text = "ATC SEI", .Init = 1, .Options = {"Undef", "Unknown", "Auto", "Auto_Res", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}},
-                        New OptionParam With {.Switch = "--colorrange", .Text = "Colorrange", .Options = {"Undefined", "Limited", "TV", "Full", "PC", "Auto"}},
+                        New OptionParam With {.Switch = "--colorrange", .Text = "Colorrange", .Options = {"Limited", "Full", "Auto"}},
                         MaxCLL, MaxFALL, Chromaloc,
                         New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Fullrange"},
@@ -397,7 +410,7 @@ Public Class QSVEnc
         End Property
 
         Public Overrides Sub ShowHelp(options As String())
-            ShowConsoleHelp(Package.QSVEnc, options)
+            ShowConsoleHelp(Package.QSVEncC, options)
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
@@ -431,7 +444,7 @@ Public Class QSVEnc
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
             If includePaths AndAlso includeExecutable Then
-                ret = Package.QSVEnc.Path.Escape
+                ret = Package.QSVEncC.Path.Escape
             End If
 
             Select Case Decoder.ValueText
@@ -455,13 +468,13 @@ Public Class QSVEnc
                         ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel dxva2 -i " +
                             If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -pix_fmt " +
                             pix_fmt + " -strict -1 -loglevel fatal -hide_banner - | " +
-                            If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64")
+                            If(includePaths, Package.QSVEncC.Path.Escape, "QSVEncC64")
                     End If
                 Case "ffqsv"
                     sourcePath = "-"
 
                     If includePaths Then
-                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64")
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.LastOriginalSourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.QSVEncC.Path.Escape, "QSVEncC64")
                     End If
             End Select
 
@@ -541,7 +554,7 @@ Public Class QSVEnc
         End Function
 
         Public Overrides Function GetPackage() As Package
-            Return Package.QSVEnc
+            Return Package.QSVEncC
         End Function
     End Class
 End Class

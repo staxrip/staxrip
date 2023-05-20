@@ -9,7 +9,7 @@ Public Class NVEnc
 
     Public Overrides ReadOnly Property DefaultName As String
         Get
-            Return "Nvidia | " + Params.Codec.OptionText.Replace("Nvidia ", "")
+            Return "NVEncC (Nvidia) | " + Params.Codec.OptionText.Replace("Nvidia ", "")
         End Get
     End Property
 
@@ -45,8 +45,8 @@ Public Class NVEnc
         newParams.Init(store)
 
         Using form As New CommandLineForm(newParams)
-            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.NVEnc.HelpURL}"">NVEnc Online Help</a></p>" +
-                $"<h2>NVEnc Console Help</h2><pre>{HelpDocument.ConvertChars(Package.NVEnc.CreateHelpfile())}</pre>"
+            form.HTMLHelpFunc = Function() $"<p><a href=""{Package.NVEncC.HelpURL}"">NVEncC Online Help</a></p>" +
+                $"<h2>NVEncC Console Help</h2><pre>{HelpDocument.ConvertChars(Package.NVEncC.CreateHelpfile())}</pre>"
 
             Dim a = Sub()
                         Dim enc = ObjectHelp.GetCopy(Me)
@@ -58,9 +58,9 @@ Public Class NVEnc
                         SaveProfile(enc)
                     End Sub
 
-            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw")))
-            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-features")), Keys.Control Or Keys.F)
-            form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-environment")))
+            form.cms.Add("Check Hardware", Sub() g.ShowCode("Check Hardware", ProcessHelp.GetConsoleOutput(Package.NVEncC.Path, "--check-hw")))
+            form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.NVEncC.Path, "--check-features")), Keys.Control Or Keys.F)
+            form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.NVEncC.Path, "--check-environment")))
             form.cms.Add("-")
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
@@ -89,10 +89,10 @@ Public Class NVEnc
 
     Overrides Sub Encode()
         If OutputExt = "h265" Then
-            Dim codecs = ProcessHelp.GetConsoleOutput(Package.NVEnc.Path, "--check-hw").Right("Codec(s)")
+            Dim codecs = ProcessHelp.GetConsoleOutput(Package.NVEncC.Path, "--check-hw").Right("Codec(s)")
 
             If Not codecs.ToLowerInvariant.Contains("hevc") Then
-                Throw New ErrorAbortException("NVEnc Error", "H.265/HEVC isn't supported by the graphics card.")
+                Throw New ErrorAbortException("NVEncC Error", "H.265/HEVC isn't supported by the graphics card.")
             End If
         End If
 
@@ -100,7 +100,7 @@ Public Class NVEnc
 
         Using proc As New Proc
             proc.Header = "Video encoding"
-            proc.Package = Package.NVEnc
+            proc.Package = Package.NVEncC
             proc.SkipStrings = {"%]", " frames: "}
             proc.File = "cmd.exe"
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
@@ -147,7 +147,7 @@ Public Class NVEnc
             metadata attachment-copy chapter-no-trim video-metadata input-csp sub-source"
 
         tester.UndocumentedSwitches = ""
-        tester.Package = Package.NVEnc
+        tester.Package = Package.NVEncC
         tester.CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "nvenc.vb")
 
         Return tester.Test
@@ -157,7 +157,7 @@ Public Class NVEnc
         Inherits CommandLineParams
 
         Sub New()
-            Title = "NVEnc Options"
+            Title = "NVEncC Options"
         End Sub
 
         Property Decoder As New OptionParam With {
@@ -326,6 +326,14 @@ Public Class NVEnc
         Property KnnLerp As New NumParam With {.Text = "      Lerp", .Init = 0.2, .Config = {0, Integer.MaxValue, 0.1, 1}}
         Property KnnThLerp As New NumParam With {.Text = "      TH Lerp", .Init = 0.8, .Config = {0, 1, 0.1, 1}}
 
+        Property Convolution As New BoolParam With {.Switch = "--vpp-convolution3d", .Text = "3D noise reduction", .ArgsFunc = AddressOf GetConvolution3dArgs}
+        Property ConvolutionMatrix As New OptionParam With {.Text = "      Matrix", .Init = 0, .Options = {"Original", "Standard", "Simple"}, .Values = {"original", "standard", "simple"}}
+        Property ConvolutionFast As New OptionParam With {.Text = "      Fast", .Init = 0, .Options = {"False", "True"}, .Values = {"false", "true"}}
+        Property ConvolutionYthresh As New NumParam With {.Text = "      Spatial luma threshold", .Init = 3, .Config = {0, 255, 1, 1}}
+        Property ConvolutionCthresh As New NumParam With {.Text = "      Spatial chroma threshold", .Init = 4, .Config = {0, 255, 1, 1}}
+        Property ConvolutionTYthresh As New NumParam With {.Text = "      Temporal luma threshold", .Init = 3, .Config = {0, 255, 1, 1}}
+        Property ConvolutionTCthresh As New NumParam With {.Text = "      Temporal chroma threshold", .Init = 4, .Config = {0, 255, 1, 1}}
+
         Property Pad As New BoolParam With {.Switch = "--vpp-pad", .Text = "Padding", .ArgsFunc = AddressOf GetPaddingArgs}
         Property PadLeft As New NumParam With {.Text = "      Left"}
         Property PadTop As New NumParam With {.Text = "      Top"}
@@ -386,7 +394,7 @@ Public Class NVEnc
         Property WarpsharpDepth As New NumParam With {.Text = "     Depth", .HelpSwitch = "--vpp-warpsharp", .Init = 16, .Config = {-128, 128, 1, 1}}
         Property WarpsharpChroma As New NumParam With {.Text = "     Chroma", .HelpSwitch = "--vpp-warpsharp", .Init = 0, .Config = {0, 1, 1, 0}}
 
-        Property NnediField As New OptionParam With {.Text = "Field", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "top", "bottom"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property NnediField As New OptionParam With {.Text = "Field", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "top", "bottom", "bob", "bob_tff", "bob_bff"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
         Property NnediNns As New OptionParam With {.Text = "NNS", .HelpSwitch = "--vpp-nnedi", .Init = 1, .Options = {"16", "32", "64", "128", "256"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
         Property NnediNsize As New OptionParam With {.Text = "N Size", .HelpSwitch = "--vpp-nnedi", .Init = 6, .Options = {"8x6", "16x6", "32x6", "48x6", "8x4", "16x4", "32x4"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
         Property NnediQuality As New OptionParam With {.Text = "Quality", .HelpSwitch = "--vpp-nnedi", .Options = {"fast", "slow"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
@@ -396,8 +404,13 @@ Public Class NVEnc
         Property NnediWeightfile As New StringParam With {.Text = "Weight File", .HelpSwitch = "--vpp-nnedi", .BrowseFile = True, .VisibleFunc = Function() Deinterlacer.Value = 3}
 
         Property SelectEvery As New BoolParam With {.Text = "Select Every", .Switches = {"--vpp-select-every"}, .ArgsFunc = AddressOf GetSelectEvery}
-        Property SelectEveryValue As New NumParam With {.Text = "     Value", .HelpSwitch = "--vpp-select-every", .Init = 2}
-        Property SelectEveryOffsets As New StringParam With {.Text = "     Offsets", .HelpSwitch = "--vpp-select-every", .Expand = False}
+        Property SelectEveryValue As New NumParam With {.Text = "      Value", .HelpSwitch = "--vpp-select-every", .Init = 2}
+        Property SelectEveryOffsets As New StringParam With {.Text = "      Offsets", .HelpSwitch = "--vpp-select-every", .Expand = False}
+
+        Property Resize As New BoolParam With {.Text = "Resize", .Switches = {"--vpp-resize"}, .ArgsFunc = AddressOf GetResizeArgs}
+        Property ResizeAlgo As New OptionParam With {.Text = "      Algo", .HelpSwitch = "--vpp-resize", .Init = 0, .IntegerValue = False, .Options = {"Auto", "bilinear	 - linear interpolation", "bicubic - bicubic interpolation", "spline16 - 4x4 spline curve interpolation", "spline36 - 6x6 spline curve interpolation", "spline64 - 8x8 spline curve interpolation", "lanczos2 - 4x4 Lanczos resampling", "lanczos3 - 6x6 Lanczos resampling", "lanczos4 - 8x8 Lanczos resampling", "nn - nearest neighbor", "npp_linear - linear interpolation by NPP library", "cubic - 4x4 cubic interpolation", "super - So called 'super sampling' by NPP library (downscale only)", "lanczos - Lanczos interpolation", "nvvfx-superres - Super Resolution based on nvvfx library (upscale only)"}, .Values = {"auto", "bilinear", "bicubic", "spline16", "spline36", "spline64", "lanczos2", "lanczos3", "lanczos4", "nn", "npp_linear", "cubic", "super", "lanczos", "nvvfx-superres"}}
+        Property ResizeSuperresMode As New OptionParam With {.Text = "      Superres-Mode", .HelpSwitch = "--vpp-resize", .Init = 0, .IntegerValue = True, .Options = {"0 - conservative (default)", "1 - aggressive"}, .VisibleFunc = Function() ResizeAlgo.Value = 13}
+        Property ResizeSuperresStrength As New NumParam With {.Text = "      Superres-Strength", .HelpSwitch = "--vpp-resize", .Init = 1, .Config = {0, 1, 0.05, 2}, .VisibleFunc = Function() ResizeAlgo.Value = 13}
 
         Property TransformFlipX As New BoolParam With {.Switch = "--vpp-transform", .Text = "Flip X", .Label = "Transform", .LeftMargin = g.MainForm.FontHeight * 1.5, .ArgsFunc = AddressOf GetTransform}
         Property TransformFlipY As New BoolParam With {.Text = "Flip Y", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
@@ -405,7 +418,7 @@ Public Class NVEnc
 
         Property Smooth As New BoolParam With {.Text = "Smooth", .Switch = "--vpp-smooth", .ArgsFunc = AddressOf GetSmoothArgs}
         Property SmoothQuality As New NumParam With {.Text = "      Quality", .HelpSwitch = "--vpp-smooth", .Init = 3, .Config = {1, 6}}
-        Property SmoothQP As New NumParam With {.Text = "      QP", .HelpSwitch = "--vpp-smooth", .Config = {0, 100, 10, 1}}
+        Property SmoothQP As New NumParam With {.Text = "      QP", .HelpSwitch = "--vpp-smooth", .Config = {0, 100, 5, 1}}
         Property SmoothPrec As New OptionParam With {.Text = "      Precision", .HelpSwitch = "--vpp-smooth", .Options = {"Auto", "FP16", "FP32"}}
 
         Property Colorspace As New BoolParam With {.Text = "Colorspace", .Switch = "--vpp-colorspace", .ArgsFunc = AddressOf GetColorspaceArgs}
@@ -418,7 +431,7 @@ Public Class NVEnc
         Property ColorspaceRangeFrom As New OptionParam With {.Text = New String(" "c, 6) + "Range From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "limited", "full"}}
         Property ColorspaceRangeTo As New OptionParam With {.Text = New String(" "c, 12) + "Range To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "limited", "full"}, .VisibleFunc = Function() ColorspaceRangeFrom.Value > 0}
         Property ColorspaceLut3d As New StringParam With {.Text = New String(" "c, 6) + "Lut3D", .HelpSwitch = "--vpp-colorspace", .Init = "", .BrowseFile = True}
-        Property ColorspaceLut3dinterp As New OptionParam With {.Text = New String(" "c, 12) + "Interpolation", .HelpSwitch = "--vpp-colorspace", .Init = 1, .Options = {"nearest", "trilinear", "tetrahedral"}, .VisibleFunc = Function() ColorspaceLut3d.Value.Trim().Length > 0}
+        Property ColorspaceLut3dinterp As New OptionParam With {.Text = New String(" "c, 12) + "Interpolation", .HelpSwitch = "--vpp-colorspace", .Init = 1, .Options = {"nearest", "trilinear", "tetrahedral", "pyramid", "prism"}, .VisibleFunc = Function() ColorspaceLut3d.Value.Trim().Length > 0}
         Property ColorspaceHdr2sdr As New OptionParam With {.Text = New String(" "c, 0) + "HDR10 to SDR using this tonemapping:", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"none", "hable", "mobius", "reinhard", "bt2390"}}
         Property ColorspaceHdr2sdrSourcepeak As New NumParam With {.Text = New String(" "c, 6) + "Source Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1000, .Config = {0, 10000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
         Property ColorspaceHdr2sdrLdrnits As New NumParam With {.Text = New String(" "c, 6) + "Target brightness", .HelpSwitch = "--vpp-colorspace", .Init = 100.0, .Config = {0, 1000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
@@ -469,7 +482,7 @@ Public Class NVEnc
                         Lossless)
                     Add("Slice Decision",
                         New OptionParam With {.Switch = "--direct", .Text = "B-Direct Mode", .Options = {"Automatic", "None", "Spatial", "Temporal"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
-                        New OptionParam With {.Switch = "--bref-mode", .Text = "B-Frame Ref. Mode", .Options = {"Disabled", "Each", "Middle"}},
+                        New OptionParam With {.Switch = "--bref-mode", .Text = "B-Frame Ref. Mode", .Options = {"Auto", "Disabled", "Each", "Middle"}},
                         New NumParam With {.Switch = "--bframes", .HelpSwitch = "-b", .Text = "B-Frames", .Init = 3, .Config = {0, 16}},
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Init = 3, .Config = {0, 16}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
@@ -487,13 +500,13 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--cu-max", .Text = "Maximum CU Size", .Config = {0, 64, 16}},
                         New BoolParam With {.Switch = "--weightp", .Text = "Enable weighted prediction in P slices"})
                     Add("VPP | Misc",
+                        New StringParam With {.Switch = "--vpp-curves", .Text = "Curves"},
+                        New StringParam With {.Switch = "--vpp-overlay", .Text = "Overlay"},
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
-                        New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "Default", "Bilinear", "Cubic", "Cubic_B05C03", "Cubic_bSpline", "Cubic_Catmull", "Lanczos", "NN", "NPP_Linear", "Spline 36", "Super"}},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}},
                         New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw")},
-                        SelectEvery,
-                        SelectEveryValue,
-                        SelectEveryOffsets)
+                        Resize, ResizeAlgo, ResizeSuperresMode, ResizeSuperresStrength,
+                        SelectEvery, SelectEveryValue, SelectEveryOffsets)
                     Add("VPP | Misc 2",
                         Tweak,
                         TweakBrightness,
@@ -569,6 +582,7 @@ Public Class NVEnc
                         AfsShift, AfsDrop, AfsSmooth, Afs24fps, AfsTune, AfsRFF, AfsTimecode, AfsLog)
                     Add("VPP | Denoise",
                         Knn, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
+                        Convolution, ConvolutionMatrix, ConvolutionFast, ConvolutionYthresh, ConvolutionCthresh, ConvolutionTYthresh, ConvolutionTCthresh,
                         Pmd, PmdApplyCount, PmdStrength, PmdThreshold)
                     Add("VPP | Sharpness",
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
@@ -627,7 +641,7 @@ Public Class NVEnc
         End Property
 
         Public Overrides Sub ShowHelp(options As String())
-            ShowConsoleHelp(Package.NVEnc, options)
+            ShowConsoleHelp(Package.NVEncC, options)
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
@@ -696,10 +710,21 @@ Public Class NVEnc
                 SelectEveryValue.NumEdit.Enabled = SelectEvery.Value
                 SelectEveryOffsets.TextEdit.Enabled = SelectEvery.Value
 
+                ResizeAlgo.MenuButton.Enabled = Resize.Value
+                ResizeSuperresMode.MenuButton.Enabled = Resize.Value
+                ResizeSuperresStrength.NumEdit.Enabled = Resize.Value
+
                 KnnRadius.NumEdit.Enabled = Knn.Value
                 KnnStrength.NumEdit.Enabled = Knn.Value
                 KnnLerp.NumEdit.Enabled = Knn.Value
                 KnnThLerp.NumEdit.Enabled = Knn.Value
+
+                ConvolutionMatrix.MenuButton.Enabled = Convolution.Value
+                ConvolutionFast.MenuButton.Enabled = Convolution.Value
+                ConvolutionYthresh.NumEdit.Enabled = Convolution.Value
+                ConvolutionCthresh.NumEdit.Enabled = Convolution.Value
+                ConvolutionTYthresh.NumEdit.Enabled = Convolution.Value
+                ConvolutionTCthresh.NumEdit.Enabled = Convolution.Value
 
                 PadLeft.NumEdit.Enabled = Pad.Value
                 PadTop.NumEdit.Enabled = Pad.Value
@@ -834,6 +859,20 @@ Public Class NVEnc
             Return ""
         End Function
 
+        Function GetConvolution3dArgs() As String
+            If Convolution.Value Then
+                Dim ret = ""
+                If ConvolutionMatrix.Value <> ConvolutionMatrix.DefaultValue Then ret += ",matrix=" & ConvolutionMatrix.ValueText
+                If ConvolutionFast.Value <> ConvolutionFast.DefaultValue Then ret += ",fast=" & ConvolutionFast.ValueText
+                If ConvolutionYthresh.Value <> ConvolutionYthresh.DefaultValue Then ret += ",ythresh=" & ConvolutionYthresh.Value.ToInvariantString
+                If ConvolutionCthresh.Value <> ConvolutionCthresh.DefaultValue Then ret += ",cthresh=" & ConvolutionCthresh.Value.ToInvariantString
+                If ConvolutionTYthresh.Value <> ConvolutionTYthresh.DefaultValue Then ret += ",t_ythresh=" & ConvolutionTYthresh.Value.ToInvariantString
+                If ConvolutionTCthresh.Value <> ConvolutionTCthresh.DefaultValue Then ret += ",t_cthresh=" & ConvolutionTCthresh.Value.ToInvariantString
+                Return "--vpp-convolution3d " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
         Function GetDebandArgs() As String
             If Deband.Value Then
                 Dim ret = ""
@@ -909,6 +948,18 @@ Public Class NVEnc
             Return ""
         End Function
 
+        Function GetResizeArgs() As String
+            If Resize.Value Then
+                Dim ret = ""
+                If ResizeAlgo.Value <> ResizeAlgo.DefaultValue Then ret += ",algo=" & ResizeAlgo.ValueText.ToInvariantString
+                If ResizeSuperresMode.Value <> ResizeSuperresMode.DefaultValue AndAlso ResizeAlgo.Value = 13 Then ret += ",superres-mode=" & ResizeSuperresMode.Value.ToInvariantString
+                If ResizeSuperresStrength.Value <> ResizeSuperresStrength.DefaultValue AndAlso ResizeAlgo.Value = 13 Then ret += ",superres-strength=" & ResizeSuperresStrength.Value.ToInvariantString
+                Return "--vpp-resize " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+
         Function GetDeinterlacerArgs() As String
             Dim ret = ""
             Select Case Deinterlacer.Value
@@ -972,7 +1023,7 @@ Public Class NVEnc
             Dim targetPath = p.VideoEncoder.OutputPath.ChangeExt(p.VideoEncoder.OutputExt)
 
             If includePaths AndAlso includeExe Then
-                ret = Package.NVEnc.Path.Escape
+                ret = Package.NVEncC.Path.Escape
             End If
 
             Select Case Decoder.ValueText
@@ -992,7 +1043,7 @@ Public Class NVEnc
                     sourcePath = "-"
 
                     If includePaths Then
-                        ret = If(includePaths, Package.QSVEnc.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+                        ret = If(includePaths, Package.QSVEncC.Path.Escape, "QSVEncC64") + " -o - -c raw" + " -i " + If(includePaths, p.SourceFile.Escape, "path") + " | " + If(includePaths, Package.NVEncC.Path.Escape, "NVEncC64")
                     End If
                 Case "ffdxva"
                     sourcePath = "-"
@@ -1002,13 +1053,13 @@ Public Class NVEnc
                         ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") +
                             " -threads 1 -hwaccel dxva2 -i " + If(includePaths, p.SourceFile.Escape, "path") +
                             " -f yuv4mpegpipe -pix_fmt " + pix_fmt + " -strict -1 -loglevel fatal -hide_banner - | " +
-                            If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+                            If(includePaths, Package.NVEncC.Path.Escape, "NVEncC64")
                     End If
                 Case "ffqsv"
                     sourcePath = "-"
 
                     If includePaths Then
-                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEnc.Path.Escape, "NVEncC64")
+                        ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal -hide_banner - | " + If(includePaths, Package.NVEncC.Path.Escape, "NVEncC64")
                     End If
             End Select
 
@@ -1064,7 +1115,7 @@ Public Class NVEnc
         End Function
 
         Public Overrides Function GetPackage() As Package
-            Return Package.NVEnc
+            Return Package.NVEncC
         End Function
     End Class
 End Class

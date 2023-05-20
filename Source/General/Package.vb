@@ -219,7 +219,7 @@ Public Class Package
         .AllowCustomPath = False,
         .WebURL = "https://github.com/AviSynth/AviSynthPlus",
         .HelpURL = "http://avisynth.nl",
-        .DownloadURL = "https://github.com/AviSynth/AviSynthPlus/releases",
+        .DownloadURL = "https://gitlab.com/uvz/AviSynthPlus-Builds/-/tree/main",
         .Description = "Video processing scripting library.",
         .Exclude = {"_arm64", "_xp", ".exe"},
         .HintDirFunc = Function() Package.AviSynth.GetAviSynthHintDir,
@@ -521,7 +521,7 @@ Public Class Package
         .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x265",
         .AllowCustomPath = False,
         .SupportsAutoUpdate = False,
-        .HelpSwitch = "--log-level full --fullhelp",
+        .HelpSwitch = "--fullhelp",
         .Description = "H.265 video encoding console app."})
 
     Shared Property SVTAV1 As Package = Add(New Package With {
@@ -623,8 +623,8 @@ Public Class Package
         .HelpSwitch = "",
         .Description = "Opt Tools For Creating PNG"})
 
-    Shared Property NVEnc As Package = Add(New Package With {
-        .Name = "NVEnc",
+    Shared Property NVEncC As Package = Add(New Package With {
+        .Name = "NVEncC",
         .Filename = "NVEncC64.exe",
         .Filename32 = "NVEncC.exe",
         .Location = IO.Path.Combine("Encoders", "NVEnc"),
@@ -634,8 +634,8 @@ Public Class Package
         .DownloadURL = "https://github.com/rigaya/NVEnc/releases",
         .Description = "NVIDIA hardware video encoder."})
 
-    Shared Property QSVEnc As Package = Add(New Package With {
-        .Name = "QSVEnc",
+    Shared Property QSVEncC As Package = Add(New Package With {
+        .Name = "QSVEncC",
         .Filename = "QSVEncC64.exe",
         .Filename32 = "QSVEncC.exe",
         .Location = IO.Path.Combine("Encoders", "QSVEnc"),
@@ -645,8 +645,8 @@ Public Class Package
         .HelpURL = "https://github.com/rigaya/QSVEnc/blob/master/QSVEncC_Options.en.md",
         .HelpSwitch = "-h"})
 
-    Shared Property VCEEnc As Package = Add(New Package With {
-        .Name = "VCEEnc",
+    Shared Property VCEEncC As Package = Add(New Package With {
+        .Name = "VCEEncC",
         .Filename = "VCEEncC64.exe",
         .Filename32 = "VCEEncC.exe",
         .Location = IO.Path.Combine("Encoders", "VCEEnc"),
@@ -754,11 +754,91 @@ Public Class Package
     Shared Property SMDegrain As Package = Add(New PluginPackage With {
         .Name = "SMDegrain",
         .Filename = "SMDegrain.avsi",
-        .WebURL = "http://avisynth.nl/index.php/SMDegrain",
-        .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/SMDegrain.avsi",
-        .Description = "SMDegrain, the Simple MDegrain Mod, is mainly a convenience function for using MVTools.",
-        .Dependencies = {"MedianBlur2.dll"},
+        .WebURL = "https://raw.githack.com/Dogway/Avisynth-Scripts/master/SMDegrain/SMDegrain.html",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/SMDegrain/SMDegrain.avsi",
+        .Description = "SMDegrain is a simple wrapper for MVTools and client functions for general purpose temporal denoising.",
+        .Dependencies = {"dfttest.dll", "ExTools.avsi", "GradePack.avsi", "MedianBlur2.dll", "mvtools2.dll", "ResizersPack.avsi", "RgTools.dll", "SharpenersPack.avsi"},
         .AvsFilterNames = {"SMDegrain"}})
+
+    Shared Property ExTools As Package = Add(New PluginPackage With {
+        .Name = "ExTools",
+        .Filename = "ExTools.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ExTools.avsi",
+        .Description = "Pack of masktools2/removegrain replacement functions with internal Expr() and many extra features.",
+        .AvsFilterNames = {"ex_bs"}})
+
+    Shared Property GradePack As Package = Add(New PluginPackage With {
+        .Name = "GradePack",
+        .Filename = "GradePack.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MasksPack.avsi",
+        .Description = "",
+        .Dependencies = {"ExTools.avsi", "MasksPack.avsi", "ResizersPack.avsi", "TransformsPack - Main.avsi"},
+        .AvsFilterNames = {"ex_vibrance", "ex_contrast", "ex_levels", "ex_autolevels", "ex_blend", "ex_glow", "ex_posterize", "Skin_Qualifier", "HSVxHSV", "GamutWarning", "PseudoColor", "Vignette", "greyscale_rgb", "FindTemp", "GreyWorld", "WhitePoint", "GradientLinear"}})
+
+    Shared Property MasksPack As Package = Add(New PluginPackage With {
+        .Name = "MasksPack",
+        .Filename = "MasksPack.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MasksPack.avsi",
+        .Description = "",
+        .Dependencies = {"ExTools.avsi", "ResizersPack.avsi", "GradePack.avsi"},
+        .AvsFilterNames = {"BoxMask", "FlatMask", "LumaMask", "CornerMask", "MotionMask", "ex_limitdif", "ex_limitchange", "Soothe"}})
+
+    Shared Property ResizersPack As Package = Add(New PluginPackage With {
+        .Name = "ResizersPack",
+        .Filename = "ResizersPack.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ResizersPack.avsi",
+        .Description = "",
+        .Dependencies = {"ExTools.avsi"},
+        .AvsFilterNames = {"deep_resize"}})
+
+    Shared Property SharpenersPack As Package = Add(New PluginPackage With {
+        .Name = "SharpenersPack",
+        .Filename = "SharpenersPack.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MIX%20mods/SharpenersPack.avsi",
+        .Description = "",
+        .Dependencies = {"ExTools.avsi", "ResizersPack.avsi", "RgTools.dll"},
+        .AvsFilterNames = {"Adaptive_Sharpen", "blah", "CASm", "CASP", "DelicateSharp", "DetailSharpen", "DGSharpen2", "ex_ContraSharpening", "ex_sharpen22", "ex_SootheSS2", "ex_unsharp", "FineSharpPlus", "halomaskM", "LindaSharp", "MedianSharp", "MedSharp", "MultiSharpen2", "NonlinUSM", "NVSharpen", "pSharpen", "ReCon", "RSharpen", "SeeSaw", "SeeSaw2", "SeeSawMulti", "SharpenComplex2", "SlopeBend", "SSSharp", "SSSharpEX", "SSSharpFaster", "SSW", "TblurNL", "TMed2", "XSharpenPlus"}})
+
+    Shared Property TransformsPack As Package = Add(New PluginPackage With {
+        .Name = "TransformsPack",
+        .Filename = "TransformsPack - Main.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Main.avsi",
+        .Description = "",
+        .Dependencies = {"TransformsPack - Models.avsi", "TransformsPack - Transfers.avsi"},
+        .AvsFilterNames = {"Display_Referred", "MatchClip", "ConvertFormat", "color_Fuzzy_Search", "color_propGet", "format_Fuzzy_Search", "bicubic_coeffs", "chroma_placement", "color_coef", "moncurve_coef", "ExtractClip", "MatrixClip", "DotClip", "DotClipA", "MatrixDot", "MatrixInvert", "MatrixTranspose", "Broadcast", "Cross", "Dot"}})
+
+    Shared Property TransformsPackModels As Package = Add(New PluginPackage With {
+        .Name = "TransformsPackModels",
+        .Filename = "TransformsPack - Models.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Models.avsi",
+        .Description = "",
+        .Dependencies = {},
+        .AvsFilterNames = {}})
+
+    Shared Property TransformsPackTransfers As Package = Add(New PluginPackage With {
+        .Name = "TransformsPackTransfers",
+        .Filename = "TransformsPack - Transfers.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Transfers.avsi",
+        .Description = "",
+        .Dependencies = {},
+        .AvsFilterNames = {}})
+
 
     Shared Property Zs_RF_Shared As Package = Add(New PluginPackage With {
         .Name = "Zs_RF_Shared",
@@ -1424,12 +1504,23 @@ Public Class Package
             .VsFilterNames = {"ftf.FixFades"}})
 
         Add(New PluginPackage With {
+            .Name = "vcm",
+            .Filename = "vcm.dll",
+            .HelpFilename = "vcm.html",
+            .Description = "vcm plugin for VapourSynth.",
+            .WebURL = "http://www.avisynth.nl/users/vcmohan/vcm/vcm.html",
+            .VsFilterNames = {"vcm.Median", "vcm.Variance", "vcm.Amp", "vcm.GBlur", "vcm.MBlur", "vcm.Hist", "vcm.Fan", "vcm.Mean", "vcm.Neural", "vcm.Veed", "vcm.SaltPepper",
+                               "vcm.DeBarrel", "vcm.DeJitter", "vcm.Reform", "vcm.Rotate", "vcm.Fisheye",
+                               "vcm.F1Quiver", "vcm.F1QClean", "vcm.F1QLimit", "vcm.F2Quiver", "vcm.F2QLimit", "vcm.F2QBlur", "vcm.F2QBokeh", "vcm.F2QCorr", "vcm.F2QSharp",
+                               "vcm.Bokeh", "vcm.ColorBox", "vcm.Grid", "vcm.Jitter", "vcm.Pattern", "vcm.StepFilter", "vcm.Circles"}})
+
+        Add(New PluginPackage With {
             .Name = "vcmod",
             .Filename = "vcmod.dll",
             .HelpFilename = "vcmod.html",
             .Description = "vcmod plugin for VapourSynth.",
             .WebURL = "http://www.avisynth.nl/users/vcmohan/vcmod/vcmod.html",
-            .VsFilterNames = {"vcmod.Median", "vcmod.Variance", "vcmod.Amplitude", "vcmod.GBlur", "vcmod.MBlur", "vcmod.Histogram", "vcmod.Fan", "vcmod.Variance", "vcmod.Neural", "vcmod.Veed", "vcmod.SaltPepper"}})
+            .VsFilterNames = {"vcmod.Median", "vcmod.Amplitude", "vcmod.GBlur", "vcmod.MBlur", "vcmod.Histogram", "vcmod.Fan", "vcmod.Variance", "vcmod.Neural", "vcmod.Veed", "vcmod.SaltPepper"}})
 
         Add(New PluginPackage With {
             .Name = "vcmove",

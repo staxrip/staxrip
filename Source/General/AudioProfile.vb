@@ -399,7 +399,7 @@ Public MustInherit Class AudioProfile
         ret.Add(New GUIAudioProfile(AudioCodec.MP3, 4))
         ret.Add(New GUIAudioProfile(AudioCodec.AC3, 1.0) With {.Channels = 6, .Bitrate = 640})
         ret.Add(New GUIAudioProfile(AudioCodec.EAC3, 1.0) With {.Channels = 6, .Bitrate = 640})
-        ret.Add(New BatchAudioProfile(640, {}, "ac3", 6, """%app:ffmpeg%"" -i ""%input%"" -b:a %bitrate%k -y -hide_banner ""%output%"""))
+        ret.Add(New BatchAudioProfile(640, {}, "ac3", 6, """%app:ffmpeg%"" -i %input% -b:a %bitrate%k -y -hide_banner %output%"))
         ret.Add(New MuxAudioProfile())
         ret.Add(New NullAudioProfile())
 
@@ -1062,10 +1062,11 @@ Public Class GUIAudioProfile
     End Function
 
     Function GetQaacCommandLine(includePaths As Boolean) As String
+        Dim usePipe = DecodingMode = AudioDecodingMode.Pipe OrElse ( Params.ChannelsMode <> ChannelsMode.Original AndAlso SupportedInput.Contains(File.Ext) )
         Dim sb As New StringBuilder
         includePaths = includePaths And File <> ""
 
-        If DecodingMode = AudioDecodingMode.Pipe Then
+        If usePipe Then
             sb.Append(GetPipeCommandLine(includePaths))
         End If
 
@@ -1123,7 +1124,7 @@ Public Class GUIAudioProfile
             sb.Append(" " + Params.CustomSwitches)
         End If
 
-        Dim input = If(DecodingMode = AudioDecodingMode.Pipe, "-", File.Escape)
+        Dim input = If(usePipe, "-", File.Escape)
 
         If includePaths Then
             sb.Append(" " + input + " -o " + GetOutputFile.Escape)

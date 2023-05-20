@@ -450,7 +450,8 @@ Public Class MP4Muxer
         Get
             Return {"ts", "m2ts", "ivf", "obu",
                     "mpg", "m2v",
-                    "avi", "ac3", "opus", "eac3", "thd",
+                    "avi", "opus", 
+                    "ac3", "ec3", "eac3", "thd",
                     "mp4", "m4a", "aac", "mov",
                     "264", "h264", "avc",
                     "265", "h265", "hevc", "hvc",
@@ -701,7 +702,7 @@ Public Class MkvMuxer
             (TypeOf p.VideoEncoder Is AOMEnc AndAlso
             Not p.VideoEncoder.GetCommandLine(True, True).Contains(" --ivf")) Then
 
-            args += " --default-duration 0:" + p.Script.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
+            args += " --default-duration 0:" + p.Script.GetCachedFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
         End If
 
         If TimestampsFile <> "" Then
@@ -918,6 +919,7 @@ Public Class MkvMuxer
                     "flv", "mov",
                     "264", "h264", "avc",
                     "265", "h265", "hevc", "hvc",
+                    "av1",
                     "ac3", "ec3", "eac3", "thd+ac3", "thd",
                     "mkv", "mka", "webm",
                     "mp2", "mpa", "mp3",

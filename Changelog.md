@@ -20,6 +20,7 @@ v2.18.0 (not published yet)
 - NVEncC: AV1 support ([#949](/../../issues/949))
 - SVTAV1: Set "--key-init" to default value of -2 (thanks to samkatakouzinos ([#1011](/../../pull/1011)))
 - Update tools
+    - FFmpeg v6.0 N-110467-gefc2587260-g0e580806d8+2
     - rav1e v0.6.4
     - SVTAV1EncApp v1.5.0
 - Update AviSynth+ plugins

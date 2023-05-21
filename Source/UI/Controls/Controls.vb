@@ -804,11 +804,12 @@ Namespace UI
             Dim vPos As Integer = (Height - glyphSize.Height) \ 2
             Dim hPos As Integer = 1
             Dim glyphLocation As Point = New Point(hPos, vPos)
-            Dim textLocation As Point = New Point(hPos + glyphSize.Width + hPos, CInt(Height / 2.0F - pevent.Graphics.MeasureString(Text, Font).Height / 2.0F))
+            Dim textLocation As Point = New Point(hPos + glyphSize.Width + hPos, 1 + Height - (Height - CInt(pevent.Graphics.MeasureString(Text, Font).Height)) \ 3)
+            Dim textFlags As TextFormatFlags = TextFormatFlags.SingleLine Or TextFormatFlags.VerticalCenter
             Dim fColor As ColorHSL = If(Checked, _theme.General.Controls.CheckBox.ForeCheckedColor, _theme.General.Controls.CheckBox.ForeColor)
 
             CheckBoxRendererEx.DrawCheckBox(pevent.Graphics, glyphLocation, state)
-            pevent.Graphics.DrawString(Text, Font, New SolidBrush(fColor), textLocation)
+            TextRenderer.DrawText(pevent.Graphics, Text, Font, textLocation, fColor, textFlags)
         End Sub
 
         Protected Overrides Sub OnPaintBackground(pevent As PaintEventArgs)

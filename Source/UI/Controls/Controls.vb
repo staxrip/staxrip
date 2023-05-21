@@ -803,13 +803,19 @@ Namespace UI
             Dim glyphSize As Size = CheckBoxRendererEx.GetGlyphSize(pevent.Graphics, state)
             Dim vPos As Integer = (Height - glyphSize.Height) \ 2
             Dim hPos As Integer = 1
+            Dim measuredStringHeight As Single = pevent.Graphics.MeasureString(Text, Font).Height
             Dim glyphLocation As Point = New Point(hPos, vPos)
-            Dim textLocation As Point = New Point(hPos + glyphSize.Width + hPos, 1 + Height - (Height - CInt(pevent.Graphics.MeasureString(Text, Font).Height)) \ 3)
+            Dim textLocation As Point = New Point(hPos + glyphSize.Width + hPos, If(s.UIFallback, CInt(Height / 2.0F - measuredStringHeight / 2.0F), 1 + Height - (Height - CInt(measuredStringHeight)) \ 3))
             Dim textFlags As TextFormatFlags = TextFormatFlags.SingleLine Or TextFormatFlags.VerticalCenter
             Dim fColor As ColorHSL = If(Checked, _theme.General.Controls.CheckBox.ForeCheckedColor, _theme.General.Controls.CheckBox.ForeColor)
 
             CheckBoxRendererEx.DrawCheckBox(pevent.Graphics, glyphLocation, state)
-            TextRenderer.DrawText(pevent.Graphics, Text, Font, textLocation, fColor, textFlags)
+
+            If s.UIFallback Then
+                pevent.Graphics.DrawString(Text, Font, New SolidBrush(fColor), textLocation)
+            Else
+                TextRenderer.DrawText(pevent.Graphics, Text, Font, textLocation, fColor, textFlags)
+            End If
         End Sub
 
         Protected Overrides Sub OnPaintBackground(pevent As PaintEventArgs)

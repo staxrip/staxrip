@@ -86,7 +86,8 @@ Public Class ApplicationSettings
     Public TargetImageSizeMenu As String
     Public ThemeName As String
     Public ThumbnailBackgroundColor As Color = Color.AliceBlue
-    Public UIScaleFactor As Single = 1
+    Public UIFallback As Boolean = False
+    Public UIScaleFactor As Single = 1.0F
     Public VapourSynthFilterPreferences As StringPairList
     Public VapourSynthMode As FrameServerMode
     Public VapourSynthProfiles As List(Of FilterCategory)

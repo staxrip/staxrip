@@ -3744,6 +3744,15 @@ Public Class MainForm
             theme.Button.SaveAction = Sub(value) ThemeManager.SetCurrentTheme(value)
             theme.Button.ValueChangedAction = Sub(value) ThemeManager.SetCurrentTheme(value)
 
+            Dim uiFallback = ui.AddMenu(Of Boolean)
+            uiFallback.Text = "UI Fallback"
+            uiFallback.Expanded = True
+            uiFallback.Field = NameOf(s.UIFallback)
+            uiFallback.Add(New String() {"False", "True"})
+            uiFallback.Button.ShowPath = True
+            uiFallback.Button.SaveAction = Sub(value) s.UIFallback = value
+            uiFallback.Button.ValueChangedAction = Sub(value) s.UIFallback = value
+
             Dim codeFont = ui.AddTextButton()
             codeFont.Text = "Console Font"
             codeFont.Expanded = True

@@ -1627,7 +1627,7 @@ Public Class MainForm
         Dim batchProject = ObjectHelp.GetCopy(Of Project)(p)
         batchProject.BatchMode = True
         batchProject.SourceFiles = {sourcefile}.ToList
-        Dim jobPath = Path.Combine(batchFolder, sourcefile.Dir.Replace("\", "-").Replace(":", "-") + " " + p.TemplateName + " - " + sourcefile.FileName + ".srip")
+        Dim jobPath = Path.Combine(batchFolder, sourcefile.Dir.Replace(Path.DirectorySeparatorChar, "-").Replace(":", "-") + " " + p.TemplateName + " - " + sourcefile.FileName + ".srip")
         SafeSerialization.Serialize(batchProject, jobPath)
         JobManager.AddJob(sourcefile.Base, jobPath)
     End Sub

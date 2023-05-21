@@ -71,7 +71,7 @@ Public Class Audio
     Shared Function GetBaseNameForStream(path As String, stream As AudioStream) As String
         Dim base As String
 
-        If New DirectoryInfo(p.TempDir).Name.EndsWith("_temp") AndAlso path.Base.StartsWithEx(p.SourceFile.Base) Then
+	If Not String.IsNullOrWhiteSpace(p.TempDir) AndAlso New DirectoryInfo(p.TempDir).Name.EndsWith("_temp") AndAlso path.Base.StartsWithEx(p.SourceFile.Base) Then
             base = path.Base.Substring(p.SourceFile.Base.Length)
         Else
             base = path.Base

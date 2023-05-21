@@ -10,7 +10,19 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.18.0 (not published yet)
+<!--
+v2.19.0 (not published yet)
+====================
+
+- ...
+- Update tools
+- Update AviSynth+ plugins
+- Update Dual plugins
+- Update VapourSynth plugins
+-->
+
+
+v2.18.0 (2023-05-22)
 ====================
 
 - Set timestamp extraction for VFR MKV files only as default project option ([#817](/../../issues/817), [#1006](/../../issues/1006))

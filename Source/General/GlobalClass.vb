@@ -133,18 +133,12 @@ Public Class GlobalClass
 
     Sub ShellExecute(fileName As String, Optional arguments As String = Nothing)
         Try
-            If Not fileName.StartsWith("http") AndAlso fileName.Ext.EqualsAny("htm", "html") Then
-                Dim param = New ProcessStartInfo(fileName.Escape)
-                param.UseShellExecute = True
-                Process.Start(param)?.Dispose()
-                Return
-            End If
+            Dim psi = New ProcessStartInfo(fileName.Escape) With {
+                .UseShellExecute = True,
+                .Arguments = arguments
+            }
 
-            Dim param2 = New ProcessStartInfo(fileName.Escape)
-            param2.UseShellExecute = True
-            param2.Arguments = arguments
-
-            Process.Start(param2)?.Dispose()
+            Process.Start(psi)?.Dispose()
         Catch ex As Exception
             g.ShowException(ex, "Failed to start process", "Filename:" + BR2 + fileName + BR2 + "Arguments:" + BR2 + arguments)
         End Try
@@ -159,8 +153,8 @@ Public Class GlobalClass
         Dim newPath = path
 
         For Each d In dirs
-            If d.DirExists AndAlso Not d.StartsWith(Folder.System) AndAlso Not path.Contains(d + IO.Path.PathSeparator) Then
-                newPath = IO.Path.Combine(d, newPath)
+            If d.DirExists AndAlso Not d.StartsWith(Folder.System) AndAlso Not path.Contains(d + ";") Then
+                newPath = d + ";" + newPath
             End If
         Next
 
@@ -446,7 +440,7 @@ Public Class GlobalClass
     End Function
 
     Sub DeleteTempFiles()
-        If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso New DirectoryInfo(p.TempDir).Name.EndsWith("_temp") Then
+        If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso Not String.IsNullOrWhiteSpace(p.TempDir) AndAlso New DirectoryInfo(p.TempDir).Name.EndsWith("_temp") Then
             Try
                 Dim moreJobsToProcessInTempDir = JobManager.GetJobs.Where(Function(a) a.Active AndAlso a.Path.Contains(p.TempDir))
 
@@ -1003,7 +997,7 @@ Public Class GlobalClass
             dirs.Add(p.TempDir)
         End If
 
-        If New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp") Then
+        If Not String.IsNullOrWhiteSpace(p.TempDir) AndAlso New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp") Then
             dirs.Add(p.TempDir.Parent)
         End If
 
@@ -1529,7 +1523,7 @@ Public Class GlobalClass
     End Sub
 
     Function IsDevelopmentPC() As Boolean
-        Return New DirectoryInfo(Application.StartupPath).Name.EndsWithEx("bin") OrElse New DirectoryInfo(Application.StartupPath).Name.EndsWithEx("\bin-x86")
+        Return New DirectoryInfo(Application.StartupPath).Name.EndsWithEx("bin") OrElse New DirectoryInfo(Application.StartupPath).Name.EndsWithEx("bin-x86")
     End Function
 
     Sub RunTask(action As Action)

@@ -10,16 +10,16 @@ v2.xx.0 (not published yet)
 -->
 
 
-<!--
+
 v2.19.0 (not published yet)
 ====================
 
 - ...
 - Update tools
+    - >VCEEncC v8.12
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins
--->
 
 
 v2.18.0 (2023-05-22)
@@ -71,8 +71,8 @@ v2.17.0 (2023-05-20)
     - MKVToolNix v76.0
     - MP4Box v2.3-DEV-rev221-g200100727
     - mpv.net v6.0.3.2 beta
-    - NVEnc v7.25
-    - QSVEnc v7.41
+    - NVEncC v7.25
+    - QSVEncC v7.41
     - Subtitle Edit v3.6.13
 - Update AviSynth+ plugins
     - SMDegrain v4.4.0d
@@ -88,8 +88,8 @@ v2.16.0 (2023-04-20)
 - QSVEnc: Add "--tune" parameter
 - MP4Box: Can import EC3 files ([#999](/../../issues/999))
 - Update tools
-    - NVEnc v7.22
-    - QSVEnc v7.37
+    - NVEncC v7.22
+    - QSVEncC v7.37
 - Update AviSynth+ plugins
     - GradePack v9.0
     - MasksPack v6.6
@@ -111,12 +111,12 @@ v2.15.0 (2023-04-07)
 - Update tools
     - ffmpeg n6.0-8-g18dde8d4cf-20230319
     - MediaInfo v23.03
-    - NVEnc v7.21
+    - NVEncC v7.21
     - qaac v2.79
         - libsndfile v1.2.0
         - libFLAC v1.4.2
-    - QSVEnc v7.36
-    - VCEEnc v8.11
+    - QSVEncC v7.36
+    - VCEEncC v8.11
 - Update AviSynth+ plugins
     - QTGMC v3.384s (2022-10-17)
     - Sharpeners Pack v5.1

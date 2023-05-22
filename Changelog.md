@@ -14,7 +14,8 @@ v2.xx.0 (not published yet)
 v2.19.0 (not published yet)
 ====================
 
-- ...
+- QSVEncC: (better) AV1 support ([#919](/../../issues/919))
+- QSVEncC: Add parameters
 - Update tools
     - >VCEEncC v8.12
 - Update AviSynth+ plugins

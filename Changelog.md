@@ -14,10 +14,11 @@ v2.xx.0 (not published yet)
 v2.19.0 (not published yet)
 ====================
 
+- Add possibility to open multiple source files. StaxRip opens each file in a new instance sequentially ([#926](/../../issues/926))
 - QSVEncC: (better) AV1 support ([#919](/../../issues/919))
 - QSVEncC: Add parameters
 - Update tools
-    - >VCEEncC v8.12
+    - VCEEncC v8.12
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins

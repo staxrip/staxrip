@@ -471,6 +471,11 @@ Public Class GlobalCommands
         g.MainForm.OpenVideoSourceFile(path)
     End Sub
 
+    <Command("Loads multiple source files.")>
+    Sub LoadSourceFiles(<DispName("Source File Paths")> paths As String)
+        g.MainForm.OpenVideoSourceFiles(paths.Split({";"}, StringSplitOptions.RemoveEmptyEntries))
+    End Sub
+
     <Command("Shows an Open File dialog to open a file to be shown by the console tool mkvinfo.")>
     Sub ShowMkvInfo()
         Using dialog As New OpenFileDialog

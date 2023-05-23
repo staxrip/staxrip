@@ -1995,7 +1995,7 @@ Public Class MainForm
                 End If
             End If
 
-            p.SourceFiles = files.ToList
+            p.SourceFiles = files.ToList()
             p.SourceFile = files(0)
 
             If p.SourceFile.Ext.EqualsAny(FileTypes.Image) Then
@@ -2378,6 +2378,15 @@ Public Class MainForm
                 If p.AutoSmartCrop Then
                     g.SmartCrop()
                 End If
+            End If
+
+            If files.Count() > 1 Then
+                Dim psi = New ProcessStartInfo(Application.ExecutablePath, "-LoadSourceFiles:""" + files.Skip(1).Join(""";""", False) + """") With {
+                    .UseShellExecute = False,
+                    .CreateNoWindow = True
+                }
+
+                Process.Start(psi)?.Dispose()
             End If
 
             If p.AutoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled Then
@@ -5221,7 +5230,7 @@ Public Class MainForm
     Shared Function GetDefaultMainMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
-        ret.Add("File|Open Video Source File...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control)
+        ret.Add("File|Open Video Source File(s)...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control)
         ret.Add("File|-")
         ret.Add("File|Open Project...", NameOf(ShowFileBrowserToOpenProject))
         ret.Add("File|Save Project", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)
@@ -5787,6 +5796,19 @@ Public Class MainForm
         End Using
     End Sub
 
+    <Command("Dialog to open multiple file sources.")>
+    Sub ShowOpenSourceMultipleFilesDialog()
+        Using dialog As New OpenFileDialog
+            dialog.SetFilter(FileTypes.Video)
+            dialog.SetInitDir(s.LastSourceDir)
+            dialog.Multiselect = True
+
+            If dialog.ShowDialog() = DialogResult.OK Then
+                OpenVideoSourceFiles(dialog.FileNames)
+            End If
+        End Using
+    End Sub
+
     <Command("Dialog to open a Blu-ray folder source.")>
     Sub ShowOpenSourceBlurayFolderDialog()
         If p.SourceFile <> "" Then
@@ -5926,6 +5948,7 @@ Public Class MainForm
         Using td As New TaskDialog(Of String)
             td.Title = "Select a method for opening a source:"
             td.AddCommand("Single File")
+            td.AddCommand("Multiple Files")
             td.AddCommand("Blu-ray Folder")
             td.AddCommand("Merge Files")
             td.AddCommand("File Batch")
@@ -5933,6 +5956,8 @@ Public Class MainForm
             Select Case td.Show
                 Case "Single File"
                     ShowOpenSourceSingleFileDialog()
+                Case "Multiple Files"
+                    ShowOpenSourceMultipleFilesDialog()
                 Case "Merge Files"
                     ShowOpenSourceMergeFilesDialog()
                 Case "File Batch"

@@ -85,10 +85,10 @@ Public Class Package
 
     Shared Property NicAudio As Package = Add(New PluginPackage With {
         .Name = "NicAudio",
-        .Filename = "NicAudio.dll",
+        .Filename = "NicAudio_x64.dll",
         .WebURL = "http://avisynth.org.ru/docs/english/externalfilters/nicaudio.htm",
         .Description = "AviSynth audio source filter plugin.",
-        .AvsFilterNames = {"NicAC3Source", "NicDTSSource", "NicMPASource", "RaWavSource"}})
+        .AvsFilterNames = {"NicAC3Source", "NicDTSSource", "NicMPASource", "NicMPG123Source", "NicLPCMSource", "RaWavSource"}})
 
     Shared Property UnDot As Package = Add(New PluginPackage With {
         .Name = "UnDot",
@@ -626,7 +626,7 @@ Public Class Package
         .Name = "NVEncC",
         .Filename = "NVEncC64.exe",
         .Filename32 = "NVEncC.exe",
-        .Location = "Encoders\NVEnc",
+        .Location = "Encoders\NVEncC",
         .HelpSwitch = "-h",
         .WebURL = "http://github.com/rigaya/NVEnc",
         .HelpURL = "https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md",
@@ -637,7 +637,7 @@ Public Class Package
         .Name = "QSVEncC",
         .Filename = "QSVEncC64.exe",
         .Filename32 = "QSVEncC.exe",
-        .Location = "Encoders\QSVEnc",
+        .Location = "Encoders\QSVEncC",
         .Description = "Intel hardware video encoder.",
         .WebURL = "http://github.com/rigaya/QSVEnc",
         .DownloadURL = "https://github.com/rigaya/QSVEnc/releases",
@@ -648,7 +648,7 @@ Public Class Package
         .Name = "VCEEncC",
         .Filename = "VCEEncC64.exe",
         .Filename32 = "VCEEncC.exe",
-        .Location = "Encoders\VCEEnc",
+        .Location = "Encoders\VCEEncC",
         .Description = "AMD hardware video encoder.",
         .HelpSwitch = "-h",
         .WebURL = "http://github.com/rigaya/VCEEnc",
@@ -996,7 +996,8 @@ Public Class Package
             .Filename = "Deblock.dll",
             .Description = "Deblocking plugin using the deblocking filter of h264.",
             .HelpFilename = "Readme.txt",
-            .WebURL = "http://avisynth.nl/index.php/DeBlock",
+            .HelpURL = "http://avisynth.nl/index.php/DeBlock",
+            .WebURL = "https://github.com/299792458m/Avisynth-Deblock",
             .Location = "Plugins\AVS\Deblock",
             .AvsFilterNames = {"Deblock"}})
 
@@ -2103,6 +2104,16 @@ Public Class Package
             .WebURL = "https://forum.doom9.org/showthread.php?p=1945063#post1945063",
             .HelpURL = "http://avisynth.nl/index.php/ChubbyRain2",
             .AvsFilterNames = {"ChubbyRain2"}})
+
+        Add(New PluginPackage With {
+            .Name = "ChubbyRain3",
+            .Filename = "ChubbyRain3.avsi",
+            .Location = "Plugins\AVS\Scripts",
+            .Description = "A spatio-temporal rainbow reducing script composed by Lothar based on Mug Funky's ChubbyRain. Included is a mod version by Asd-g that accepts progressive sources only.",
+            .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/ChubbyRain3.avsi",
+            .WebURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/ChubbyRain3.avsi",
+            .HelpURL = "http://avisynth.nl/index.php/ChubbyRain2",
+            .AvsFilterNames = {"ChubbyRain3"}})
 
         Add(New PluginPackage With {
             .Name = "DeFlicker",

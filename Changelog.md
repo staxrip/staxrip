@@ -4,6 +4,7 @@ v2.xx.0 (not published yet)
 
 - ...
 - Update tools
+    - vvencFFapp v1.8.0
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins
@@ -18,8 +19,19 @@ v2.19.0 (not published yet)
 - QSVEncC: (better) AV1 support ([#919](/../../issues/919))
 - QSVEncC: Add parameters
 - Update tools
+    - MP4Box v2.3-DEV-rev267-ga6ae93532
+    - rav1e v0.6.6
     - VCEEncC v8.12
 - Update AviSynth+ plugins
+    - AvsResize vR21
+    - AVSTP v1.0.4.1
+    - BWDIF v1.2.5
+    - ChubbyRain3
+    - D2VSource v1.3.0
+    - Deblock v2020-08-30
+    - LSFmod v2.193 (fixed on 2022-10-21 with same version number)
+    - NicAudio v2.0.6
+    - nnedi3_resize16 v3.3 2023-03-27
 - Update Dual plugins
 - Update VapourSynth plugins
 
@@ -38,7 +50,7 @@ v2.18.0 (2023-05-22)
     - rav1e v0.6.4
     - SVTAV1EncApp v1.5.0
 - Update AviSynth+ plugins
-    - CropResize 2022-11-19
+    - CropResize v2022-11-19
     - JPSDR v3.3.4 (W7 AVX2)
     - SmoothD2 + SmoothD2C vA3
     - TemporalDegrain2 v2.6.6

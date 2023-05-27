@@ -11,16 +11,17 @@ v2.xx.0 (not published yet)
 -->
 
 
-
 v2.19.0 (not published yet)
 ====================
 
 - Add possibility to open multiple source files. StaxRip opens each file in a new instance sequentially ([#926](/../../issues/926))
-- Remove "-strict experimental" from ffmpeg call when av1 codec is used
+- FFmpeg: Remove "-strict experimental" from parameter call when av1 codec is used
+- NVEncC: Add new "--split-enc" parameter
 - QSVEncC: (better) AV1 support ([#919](/../../issues/919))
 - QSVEncC: Add parameters
 - Update tools
     - MP4Box v2.3-DEV-rev267-ga6ae93532
+    - NVEncC v7.26
     - rav1e v0.6.6
     - VCEEncC v8.12
 - Update AviSynth+ plugins

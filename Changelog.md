@@ -16,6 +16,7 @@ v2.19.0 (not published yet)
 ====================
 
 - Add possibility to open multiple source files. StaxRip opens each file in a new instance sequentially ([#926](/../../issues/926))
+- Remove "-strict experimental" from ffmpeg call when av1 codec is used
 - QSVEncC: (better) AV1 support ([#919](/../../issues/919))
 - QSVEncC: Add parameters
 - Update tools

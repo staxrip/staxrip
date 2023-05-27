@@ -307,8 +307,6 @@ Public Class ffmpegEnc
             Select Case Codec.OptionText
                 Case "XviD"
                     sb.Append(" -tag:v xvid")
-                Case "AV1"
-                    sb.Append(" -strict experimental")
             End Select
 
             Dim targetPath As String

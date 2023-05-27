@@ -4,14 +4,13 @@ v2.xx.0 (not published yet)
 
 - ...
 - Update tools
-    - vvencFFapp v1.8.0
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins
 -->
 
 
-v2.19.0 (not published yet)
+v2.19.0 (2023-05-27)
 ====================
 
 - Add possibility to open multiple source files. StaxRip opens each file in a new instance sequentially ([#926](/../../issues/926))
@@ -34,8 +33,6 @@ v2.19.0 (not published yet)
     - LSFmod v2.193 (fixed on 2022-10-21 with same version number)
     - NicAudio v2.0.6
     - nnedi3_resize16 v3.3 2023-03-27
-- Update Dual plugins
-- Update VapourSynth plugins
 
 
 v2.18.0 (2023-05-22)

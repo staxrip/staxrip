@@ -4,10 +4,22 @@ v2.xx.0 (not published yet)
 
 - ...
 - Update tools
+    - vvencFFapp v1.8.0
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins
 -->
+
+
+v2.20.0 (not published yet)
+====================
+
+- AVS: Fix wrong importation of dependencies- 
+- Update tools
+- Update AviSynth+ plugins
+    - BWDIF v1.2.1  (due to QTGMC issues using EdiMode="BWDIF+NNEDI3")
+- Update Dual plugins
+- Update VapourSynth plugins
 
 
 v2.19.0 (2023-05-27)

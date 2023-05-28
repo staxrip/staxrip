@@ -611,7 +611,7 @@ clipname.set_output()
         Dim newScript As String
         Dim loadCode = GetAvsLoadCode(script, "")
         newScript = loadCode + script
-        newScript = GetAVSLoadCodeFromImports(newScript) + newScript
+        newScript = GetAVSLoadCodeFromImports(newScript) + BR + newScript
 
         Dim initCode = ""
 

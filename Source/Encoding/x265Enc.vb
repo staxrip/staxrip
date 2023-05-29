@@ -1174,9 +1174,15 @@ Public Class x265Params
             Exit Sub
         End If
 
-        If item Is Preset OrElse item Is Tune Then
+        If item Is Preset Then
             BlockValueChanged = True
             ApplyPresetValues()
+            ApplyTuneValues()
+            BlockValueChanged = False
+        End If
+
+        If item Is Tune Then
+            BlockValueChanged = True
             ApplyTuneValues()
             BlockValueChanged = False
         End If

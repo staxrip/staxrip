@@ -11,18 +11,20 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.20.0 (not published yet)
+v2.20.0 (2023-06-07)
 ====================
 
 - Fix Updater due to changed GitHub pages ([#1019](/../../issues/1019))
 - AVS: Fix wrong importation of dependencies
 - x265: Selecting a Tune won't apply the preset settings anymore ([#894](/../../issues/894))
 - Update tools
+    - NVEncC v7.28
+    - QSVEncC v7.44
+    - VCEEncC v8.14
 - Update AviSynth+ plugins
     - BWDIF v1.2.1 (due to QTGMC issues using EdiMode="BWDIF+NNEDI3")
 - Update Dual plugins
     - SVPflow v4.2.0.133 (due to usage changes (red rectangle around the video frame))
-- Update VapourSynth plugins
 
 
 v2.19.0 (2023-05-27)

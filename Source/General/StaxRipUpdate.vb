@@ -3,6 +3,7 @@ Imports System.ComponentModel
 Imports System.Net
 Imports System.Net.Http
 Imports System.Text.RegularExpressions
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 
 Public Class StaxRipUpdate
     Shared HttpClient As New HttpClient
@@ -47,21 +48,26 @@ Public Class StaxRipUpdate
                 Dim response = Await HttpClient.GetAsync(releaseUrl)
                 response.EnsureSuccessStatusCode()
                 Dim content = Await response.Content.ReadAsStringAsync()
-                Dim linkMatches = Regex.Matches(content, "(?<="")/staxrip/staxrip/releases/download/v?(\d+\.\d+\.\d+(?:\.\d+)?)/(StaxRip-v(\d+\.\d+\.\d+(?:\.\d+)?)[^""]*\.7z)(?="")")
+                Dim linkMatches = Regex.Matches(content, "(?<="")/staxrip/staxrip/releases/tag/v?(\d+\.\d+\.\d+(?:\.\d+)?)(?="")")
 
                 For Each linkMatch As Match In linkMatches
-                    Dim onlineVersion = Version.Parse(linkMatch.Groups(3).Value)
+                    Dim onlineVersionString = linkMatch.Groups(1).Value
+                    Dim onlineVersion = Version.Parse(linkMatch.Groups(1).Value)
 
                     If onlineVersion <= currentVersion Then
                         Exit For
                     End If
 
+                    'https://github.com/staxrip/staxrip/releases/download/v2.19.0/StaxRip-v2.19.0-x64.7z
+                    Dim filename = $"StaxRip-v{onlineVersionString}-x64.7z"
+                    Dim downloadUri = $"https://github.com/staxrip/staxrip/releases/download/v{onlineVersionString}/{filename}"
+
                     If onlineVersion.Build > 0 Then
                         If includeDevBuilds Then
-                            latestVersions.Add((onlineVersion, "DEV version", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
+                            latestVersions.Add((onlineVersion, "DEV version", releaseUrl, downloadUri, filename))
                         End If
                     Else
-                        latestVersions.Add((onlineVersion, "release", releaseUrl, "https://github.com" + linkMatch.Groups(0).Value, linkMatch.Groups(2).Value))
+                        latestVersions.Add((onlineVersion, "release", releaseUrl, downloadUri, filename))
                     End If
                 Next
 

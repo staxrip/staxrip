@@ -14,6 +14,7 @@ v2.xx.0 (not published yet)
 v2.20.0 (not published yet)
 ====================
 
+- Fix Updater due to changed GitHub pages ([#1019](/../../issues/1019))
 - AVS: Fix wrong importation of dependencies
 - x265: Selecting a Tune won't apply the preset settings anymore ([#894](/../../issues/894))
 - Update tools

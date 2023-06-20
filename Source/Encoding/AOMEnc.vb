@@ -481,7 +481,7 @@ Public Class AV1Params
                     New OptionParam With {.Switch = "--cdf-update-mode", .Text = "CDF Update", .IntegerValue = True, .Options = {"No Update", "Update CDF on all frames(default)", "Selectively Update CDF on some frames"}, .Init = 1},
                     New OptionParam With {.Switch = "--color-primaries", .Text = "Color Primaries", .Options = {"unspecified", "BT2020", "BT601", "BT709", "BT470M", "BT470BG", "SMPTE170", "XYZ", "SMPTE240", "SMPTE431", "SMPTE432", "FILM", "EBU3213"}},
                     New OptionParam With {.Switch = "--transfer-characteristics", .Text = "Transfer Characteristics", .Options = {"unspecified", "BT709", "BT470M", "BT470BG", "BT601", "SMPTE240", "LIN", "LOG100", "LOG100SQ 10", "IEC 61966", "BT 1361", "SRGB", "BT2020-10bit", "BT2020-12bit", "SMPTE2084", "HLG", "SMPTE428"}},
-                    New OptionParam With {.Switch = "--matrix-coefficients", .Text = "Matrix Coefficients", .Options = {" unspecified", "identity", "BT2020NC", "BT2020CL", "BT601", "FCC73", "BT709", "BT470BG", "SMPTE2085", "YCGCO", "SMPTE240", "ICTCP", "CHROMNCL", "CHROMCL"}},
+                    New OptionParam With {.Switch = "--matrix-coefficients", .Text = "Matrix Coefficients", .Options = {" unspecified", "identity", "BT470BG", "BT601", "BT709", "BT2020NCL", "BT2020CL", "CHROMNCL", "CHROMCL", "FCC73", "ICTCP", "SMPTE2085", "SMPTE240", "YCGCO"}},
                     New OptionParam With {.Switch = "--chroma-sample-position", .Text = "Chroma Sample Position", .Options = {"Unknown", "Vertical", "Colocated"}},
                     New NumParam With {.Switch = "--min-gf-interval", .Text = "Min GF Interval"},
                     New NumParam With {.Switch = "--max-gf-interval", .Text = "Max GF Interval"},

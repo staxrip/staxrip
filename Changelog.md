@@ -11,6 +11,16 @@ v2.xx.0 (not published yet)
 -->
 
 
+v2.21.0 (not published yet)
+====================
+
+- AOMEnc: Fix "--matrix-coefficients" options ([#1023](/../../issues/1023))
+- Update tools
+- Update AviSynth+ plugins
+- Update Dual plugins
+- Update VapourSynth plugins
+
+
 v2.20.0 (2023-06-07)
 ====================
 

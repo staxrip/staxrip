@@ -196,7 +196,7 @@ Public Class NVEnc
             .Values = {"h264", "h265", "av1"},
             .ImportAction = Sub(param, arg) Codec.Value = If(arg.EqualsAny("h264", "avc"), 0, If(arg.EqualsAny("h265", "hevc"), 1, 2))}
 
-        Property Profile As New OptionParam With {
+        Property ProfileH264 As New OptionParam With {
             .Switch = "--profile",
             .Text = "Profile",
             .Name = "ProfileH264",
@@ -280,7 +280,7 @@ Public Class NVEnc
         Property Lossless As New BoolParam With {
             .Switch = "--lossless",
             .Text = "Lossless",
-            .VisibleFunc = Function() (Codec.ValueText = "h264" OrElse Codec.ValueText = "h265") AndAlso Profile.Visible}
+            .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"}
 
         Property MaxCLL As New NumParam With {
             .Switch = "--max-cll",
@@ -467,7 +467,7 @@ Public Class NVEnc
                         Mode, Codec,
                         New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Init = 6, .Options = {"Default", "Quality", "Performance", "P1 (Performance)", "P2", "P3", "P4 (Default)", "P5", "P6", "P7 (Quality)"}, .Values = {"default", "quality", "performance", "P1", "P2", "P3", "P4", "P5", "P6", "P7"}},
                         New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
-                        Profile, ProfileH265, ProfileAV1,
+                        ProfileH264, ProfileH265, ProfileAV1,
                         New OptionParam With {.Name = "TierH265", .Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}},
                         New OptionParam With {.Name = "TierAV1", .Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "av1", .Options = {"0", "1"}},
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Auto", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},

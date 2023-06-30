@@ -15,6 +15,7 @@ v2.21.0 (not published yet)
 ====================
 
 - AOMEnc: Fix "--matrix-coefficients" options ([#1023](/../../issues/1023))
+- NVEncC: Fix "--lossless" being visible for H264 only
 - Update tools
 - Update AviSynth+ plugins
 - Update Dual plugins

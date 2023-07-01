@@ -546,6 +546,31 @@ Public Class MuxAudioProfile
         CanEditValue = True
     End Sub
 
+    Private ChannelsValue As Integer = 0
+
+    Public Overrides Property Channels As Integer
+        Get
+            If Not Stream Is Nothing Then
+                If Stream.Channels > Stream.Channels2 Then
+                    Return Stream.Channels
+                Else
+                    Return Stream.Channels2
+                End If
+            ElseIf IO.File.Exists(File) Then
+
+                If ChannelsValue = 0 Then
+                    ChannelsValue = MediaInfo.GetChannels(File)
+                End If
+
+                Return ChannelsValue
+            Else
+                Return 6
+            End If
+        End Get
+        Set(value As Integer)
+        End Set
+    End Property
+
     Public Overrides Property OutputFileType As String
         Get
             If Stream Is Nothing Then
@@ -1062,7 +1087,7 @@ Public Class GUIAudioProfile
     End Function
 
     Function GetQaacCommandLine(includePaths As Boolean) As String
-        Dim usePipe = DecodingMode = AudioDecodingMode.Pipe OrElse ( Params.ChannelsMode <> ChannelsMode.Original AndAlso SupportedInput.Contains(File.Ext) )
+        Dim usePipe = DecodingMode = AudioDecodingMode.Pipe OrElse (Params.ChannelsMode <> ChannelsMode.Original AndAlso SupportedInput.Contains(File.Ext))
         Dim sb As New StringBuilder
         includePaths = includePaths And File <> ""
 

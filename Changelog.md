@@ -11,12 +11,14 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.21.0 (not published yet)
+v2.21.0 (2023-07-03)
 ====================
 
 - AOMEnc: Fix "--matrix-coefficients" options ([#1023](/../../issues/1023))
 - NVEncC: Fix "--lossless" being visible for H264 only
+- Fix wrong channel recognition and extraction for temp audio files ([#1027](/../../issues/1027))
 - Update tools
+    - MediaInfo v23.06
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins

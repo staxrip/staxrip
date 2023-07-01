@@ -16,9 +16,10 @@ v2.21.0 (2023-07-03)
 
 - AOMEnc: Fix "--matrix-coefficients" options ([#1023](/../../issues/1023))
 - NVEncC: Fix "--lossless" being visible for H264 only
-- QSVEnc: Add "--tile-col" and "--tile-row" parameters
-- QSVEnc: Add "--max-framesize" parameter
-- QSVEnc: Add "--hevc-gpb" parameter
+- QSVEncC: Add "--tile-col" and "--tile-row" parameters
+- QSVEncC: Add "--max-framesize" parameter
+- QSVEncC: Add "--hevc-gpb" parameter
+- QSVEncC: Set "--tile-row 2" as default parameter/value
 - Fix wrong channel recognition and extraction for temp audio files ([#1027](/../../issues/1027))
 - Fix stealing focus on job completion ([#333](/../../issues/333))
 - Fix opening multiple VOB files in multiple instances instead of the running one
@@ -35,8 +36,8 @@ v2.21.0 (2023-07-03)
     - ExTools v10.2
     - FFTW v3.3.10
 - Update Dual plugins
-    - SVPFlow1 v4.5.0.200  (Thanks to Nuihc88)
-    - SVPFlow2 v4.3.0.161  (Thanks to Nuihc88)
+    - SVPFlow1 v4.5.0.200 (Thanks to Nuihc88)
+    - SVPFlow2 v4.3.0.161 (Thanks to Nuihc88)
 
 
 v2.20.0 (2023-06-07)

@@ -407,7 +407,7 @@ Public Class QSVEnc
                         New NumParam With {.Switch = "--max-framesize", .Text = "Max frame size in bytes", .Config = {0, Integer.MaxValue}},
                         New NumParam With {.Switch = "--max-framesize-i", .Text = "Max frame size in bytes for I-frames", .Config = {0, Integer.MaxValue}},
                         New NumParam With {.Switch = "--max-framesize-p", .Text = "Max frame size in bytes for P/B frames", .Config = {0, Integer.MaxValue}},
-                        New NumParam With {.Switch = "--tile-row", .Text = "Number of tile rows", .Init = 1, .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Codec.ValueText = "av1"},
+                        New NumParam With {.Switch = "--tile-row", .Text = "Number of tile rows", .Init = 2, .DefaultValue = 1, .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Codec.ValueText = "av1"},
                         New NumParam With {.Switch = "--tile-col", .Text = "Number of tile columns", .Init = 1, .Config = {0, 100}, .VisibleFunc = Function() Codec.ValueText = "av1"},
                         New BoolParam With {.Switch = "--no-deblock", .Text = "No Deblock", .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New BoolParam With {.Switch = "--fallback-rc", .Text = "Enable fallback for unsupported modes", .Value = True},

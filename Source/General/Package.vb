@@ -868,10 +868,10 @@ Public Class Package
         .Name = "L-SMASH-Works",
         .Filename = "LSMASHSource.dll",
         .Description = "AviSynth and VapourSynth source filter based on Libav supporting a wide range of input formats.",
-        .WebURL = "https://github.com/HolyWu/L-SMASH-Works",
-        .DownloadURL = "https://github.com/HolyWu/L-SMASH-Works/releases",
-        .HelpUrlAviSynth = "https://github.com/HolyWu/L-SMASH-Works/blob/master/AviSynth/README",
-        .HelpUrlVapourSynth = "https://github.com/HolyWu/L-SMASH-Works/blob/master/VapourSynth/README",
+        .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/L-SMASH-Works",
+        .DownloadURL = "https://github.com/HomeOfAviSynthPlusEvolution/L-SMASH-Works/releases",
+        .HelpUrlAviSynth = "https://github.com/HomeOfAviSynthPlusEvolution/L-SMASH-Works/blob/master/AviSynth/README",
+        .HelpUrlVapourSynth = "https://github.com/HomeOfAviSynthPlusEvolution/L-SMASH-Works/blob/master/VapourSynth/README",
         .AvsFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
         .VsFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"}})
 
@@ -1600,7 +1600,7 @@ Public Class Package
             .Name = "G41Fun",
             .Filename = "G41Fun.py",
             .Location = "Plugins\VS\Scripts",
-            .WebURL = "https://github.com/Helenerineium/hnwvsfunc",
+            .WebURL = "https://github.com/Vapoursynth-Plugins-Gitify/G41Fun",
             .Description = "The replaced script for hnwvsfunc with re-written functions.",
             .VsFilterNames = {"G41Fun.mClean", "G41Fun.NonlinUSM", "G41Fun.DetailSharpen", "G41Fun.LUSM", "G41Fun.JohnFPS", "G41Fun.TemporalDegrain2",
                 "G41Fun.MCDegrainSharp", "G41Fun.FineSharp", "G41Fun.psharpen", "G41Fun.QTGMC", "G41Fun.SMDegrain", "G41Fun.daamod",
@@ -1634,7 +1634,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "Sangnom",
             .Filename = "libsangnom.dll",
-            .WebURL = "https://bitbucket.org/James1201/vapoursynth-sangnom/overview",
+            .WebURL = "https://github.com/dubhater/vapoursynth-sangnom",
             .Description = "SangNom is a single field deinterlacer using edge-directed interpolation but nowadays it's mainly used in anti-aliasing scripts.",
             .VsFilterNames = {"sangnom.SangNom"}})
 
@@ -1737,7 +1737,7 @@ Public Class Package
             .Filename = "Vine.py",
             .Location = "Plugins\VS\Scripts",
             .Description = "Plum is a sharpening/blind deconvolution suite with certain advanced features like Non-Local error, Block Matching, etc..",
-            .WebURL = "https://github.com/IFeelBloated/Plum",
+            .WebURL = "https://github.com/IFeelBloated/Vine",
             .VsFilterNames = {"Vine.Super", "Vine.Basic", "Vine.Final", "Vine.Dilation", "Vine.Erosion", "Vine.Closing", "Vine.Opening", "Vine.Gradient", "Vine.TopHat", "Vine.Blackhat"}})
 
         Add(New PluginPackage With {

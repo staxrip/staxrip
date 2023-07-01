@@ -16,6 +16,9 @@ v2.21.0 (2023-07-03)
 
 - AOMEnc: Fix "--matrix-coefficients" options ([#1023](/../../issues/1023))
 - NVEncC: Fix "--lossless" being visible for H264 only
+- QSVEnc: Add "--tile-col" and "--tile-row" parameters
+- QSVEnc: Add "--max-framesize" parameter
+- QSVEnc: Add "--hevc-gpb" parameter
 - Fix wrong channel recognition and extraction for temp audio files ([#1027](/../../issues/1027))
 - Update tools
     - MediaInfo v23.06

@@ -399,19 +399,26 @@ Public Class QSVEnc
                     Add("Other",
                         New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
+                        New StringParam With {.Switch = "--thread-affinity", .Text = "Thread Affinity"},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Init = 3},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
-                        New OptionParam With {.Switch = "--sao", .Text = "SAO", .Options = {"Auto", "None", "Luma", "Chroma", "All"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
-                        New BoolParam With {.Switch = "--no-deblock", .Text = "No Deblock"},
+                        New OptionParam With {.Switch = "--sao", .Text = "SAO", .Options = {"Auto", "None", "Luma", "Chroma", "All"}, .VisibleFunc = Function() Codec.ValueText = "hevc"})
+                    Add("Other 2",
+                        New NumParam With {.Switch = "--max-framesize", .Text = "Max frame size in bytes", .Config = {0, Integer.MaxValue}},
+                        New NumParam With {.Switch = "--max-framesize-i", .Text = "Max frame size in bytes for I-frames", .Config = {0, Integer.MaxValue}},
+                        New NumParam With {.Switch = "--max-framesize-p", .Text = "Max frame size in bytes for P/B frames", .Config = {0, Integer.MaxValue}},
+                        New NumParam With {.Switch = "--tile-row", .Text = "Number of tile rows", .Init = 1, .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Codec.ValueText = "av1"},
+                        New NumParam With {.Switch = "--tile-col", .Text = "Number of tile columns", .Init = 1, .Config = {0, 100}, .VisibleFunc = Function() Codec.ValueText = "av1"},
+                        New BoolParam With {.Switch = "--no-deblock", .Text = "No Deblock", .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New BoolParam With {.Switch = "--fallback-rc", .Text = "Enable fallback for unsupported modes", .Value = True},
                         New BoolParam With {.Switch = "--timer-period-tuning", .NoSwitch = "--no-timer-period-tuning", .Text = "Timer Period Tuning", .Init = True},
                         New BoolParam With {.Switch = "--fixed-func", .Text = "Use fixed func instead of GPU EU"},
+                        New BoolParam With {.Switch = "--hevc-gpb", .Text = "Use GPB for P-frames", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray"},
                         New BoolParam With {.Switch = "--tskip", .Text = "Transform Skip", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"},
                         New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"},
-                        New BoolParam With {.Switch = "--timecode", .Text = "Output timecode file"},
-                        New StringParam With {.Switch = "--thread-affinity", .Text = "Thread Affinity"})
+                        New BoolParam With {.Switch = "--timecode", .Text = "Output timecode file"})
                 End If
 
                 Return ItemsValue

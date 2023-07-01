@@ -728,7 +728,7 @@ Public Class Package
     Shared Property FFTW As Package = Add(New Package With {
         .Name = "FFTW",
         .Location = "Support\FFTW",
-        .Filename = "libfftw3-3.dll",
+        .Filename = "libfftw3f-3.dll",
         .Description = "Library required by various AviSynth and VapourSynth plugins.",
         .WebURL = "http://www.fftw.org"})
 

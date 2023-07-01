@@ -33,8 +33,10 @@ v2.21.0 (2023-07-03)
 - Update AviSynth+ plugins
     - CropResize 2023-06-02
     - ExTools v10.2
+    - FFTW v3.3.10
 - Update Dual plugins
-- Update VapourSynth plugins
+    - SVPFlow1 v4.5.0.200  (Thanks to Nuihc88)
+    - SVPFlow2 v4.3.0.161  (Thanks to Nuihc88)
 
 
 v2.20.0 (2023-06-07)

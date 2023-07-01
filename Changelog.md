@@ -21,12 +21,18 @@ v2.21.0 (2023-07-03)
 - QSVEnc: Add "--hevc-gpb" parameter
 - Fix wrong channel recognition and extraction for temp audio files ([#1027](/../../issues/1027))
 - Fix stealing focus on job completion ([#333](/../../issues/333))
+- Fix opening multiple VOB files in multiple instances instead of the running one
 - Update tools
+    - AOMEnc v3.6.1-733-g233000f66e
+    - chapterEditor v1.38
     - MediaInfo v23.06
+    - MKVToolNix v77.0
     - NVEncC v7.30
     - QSVEncC v7.46
     - VCEEncC v8.16
 - Update AviSynth+ plugins
+    - CropResize 2023-06-02
+    - ExTools v10.2
 - Update Dual plugins
 - Update VapourSynth plugins
 

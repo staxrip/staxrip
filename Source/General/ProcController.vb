@@ -207,7 +207,7 @@ Public Class ProcController
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.MetadataFileBackColor, oh.MetadataFileForeColor, oh.MetadataFileFontStyles)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(""[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.(avc|h264|h265|hevc|mkv|mp4)"")|((?<!"")[A-Z]:\\[\S\\]+\.(avc|h264|h265|hevc|mkv|mp4)(?!""))", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(""[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.(avc|h264|h265|hevc|mkv|mp4|vob)"")|((?<!"")[A-Z]:\\[\S\\]+\.(avc|h264|h265|hevc|mkv|mp4|vob)(?!""))", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.MediaFileBackColor, oh.MediaFileForeColor, oh.MediaFileFontStyles)
             Next

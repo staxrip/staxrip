@@ -2380,8 +2380,10 @@ Public Class MainForm
                 End If
             End If
 
-            If files.Count() > 1 Then
-                Dim psi = New ProcessStartInfo(Application.ExecutablePath, "-LoadSourceFiles:""" + files.Skip(1).Join(""";""", False) + """") With {
+            Dim nonDvdFiles = files.Where(Function(x) Not Regex.IsMatch(x, ".*VTS_\d\d_\d\.vob", RegexOptions.IgnoreCase))
+
+            If nonDvdFiles.Count() > 1 Then
+                Dim psi = New ProcessStartInfo(Application.ExecutablePath, "-LoadSourceFiles:""" + nonDvdFiles.Skip(1).Join(""";""", False) + """") With {
                     .UseShellExecute = False,
                     .CreateNoWindow = True
                 }

@@ -304,7 +304,14 @@ Public Class ProcessingForm
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
         UpdateControls()
-        ProcController.LastActivation = Environment.TickCount
+        If Not ProcController.BlockActivation Then
+            ProcController.LastActivation = Environment.TickCount
+            ProcController.BlockActivation = False
+        End If
+    End Sub
+
+    Protected Overrides Sub OnShown(e As EventArgs)
+        MyBase.OnShown(e)
     End Sub
 
     Shared Property WasHandleCreated As Boolean

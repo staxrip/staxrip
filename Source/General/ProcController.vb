@@ -566,6 +566,8 @@ Public Class ProcController
     End Sub
 
     Sub Cleanup()
+        ProcController.BlockActivation = True
+
         SyncLock Procs
             Procs.Remove(Me)
 

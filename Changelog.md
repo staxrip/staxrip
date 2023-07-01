@@ -20,8 +20,12 @@ v2.21.0 (2023-07-03)
 - QSVEnc: Add "--max-framesize" parameter
 - QSVEnc: Add "--hevc-gpb" parameter
 - Fix wrong channel recognition and extraction for temp audio files ([#1027](/../../issues/1027))
+- Fix stealing focus on job completion ([#333](/../../issues/333))
 - Update tools
     - MediaInfo v23.06
+    - NVEncC v7.30
+    - QSVEncC v7.46
+    - VCEEncC v8.16
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins

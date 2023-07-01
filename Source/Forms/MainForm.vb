@@ -3667,13 +3667,13 @@ Public Class MainForm
 
             n = ui.AddNum
             n.Text = "Focus Steal prevention until"
-            n.Help = "StaxRip Main window does not steal focus from other active programs within the given time after a work in StaxRip (in the same instance) starts."
+            n.Help = "StaxRip Main window will not steal focus from other active programs within the given time (in seconds) after a job in StaxRip (in the same instance) has started."
             n.Config = {-1, 1000000}
             n.Field = NameOf(s.PreventFocusStealUntil)
 
             n = ui.AddNum
             n.Text = "Focus Steal prevention after"
-            n.Help = "StaxRip Main window does not steal focus from other active programs if a work in StaxRip (in the same instance) takes longer than the given time."
+            n.Help = "StaxRip Main window will not steal focus from other active programs, if a job in StaxRip (in the same instance) takes longer than the given time (in seconds)."
             n.Config = {-1, 1000000}
             n.Field = NameOf(s.PreventFocusStealAfter)
 

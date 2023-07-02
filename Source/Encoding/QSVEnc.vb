@@ -125,7 +125,7 @@ Public Class QSVEnc
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.Mode.ValueText.EqualsAny("cqp", "vqp", "icq", "la-icq", "qvbr-q")
+            Return Params.Mode.ValueText.EqualsAny("cqp", "icq", "la-icq", "qvbr", "vcm")
         End Get
         Set(Value As Boolean)
         End Set
@@ -185,7 +185,7 @@ Public Class QSVEnc
             .Values = {"h264", "hevc", "mpeg2", "vp9", "av1"}}
 
         Property Mode As New OptionParam With {
-            .Switches = {"--avbr", "--cbr", "--vbr", "--cqp", "--icq", "--la-icq", "--vcm", "--la", "--la-hrd", "--qvbr"},
+            .Switches = {"--avbr", "--cbr", "--cqp", "--icq", "--la", "--la-hrd", "--la-icq", "--qvbr", "--vbr", "--vcm"},
             .Name = "Mode",
             .Text = "Mode",
             .Options = {"AVBR - Average Variable Bitrate", "CBR - Constant Bitrate", "CQP - Constant QP", "ICQ - Intelligent Constant Quality", "LA - VBR Lookahead", "LA-HRD - VBR HRD Lookahead", "LA-ICQ - Intelligent Constant Quality Lookahead", "QVBR - Quality-Defined Variable Bitrate", "VBR - Variable Bitrate", "VCM - Video Conferencing Mode"},
@@ -196,7 +196,7 @@ Public Class QSVEnc
             .HelpSwitch = "--bitrate",
             .Text = "Bitrate",
             .Init = 5000,
-            .VisibleFunc = Function() Mode.Value < 2 OrElse Mode.Value = 4 OrElse Mode.Value = 5 OrElse Mode.Value = 7 OrElse Mode.Value = 8,
+            .VisibleFunc = Function() Mode.Value < 2 OrElse Mode.Value = 4 OrElse Mode.Value = 5 OrElse Mode.Value = 7 OrElse Mode.Value = 8 OrElse Mode.Value = 9,
             .Config = {0, 1000000, 100}}
 
         Property QvbrQuality As New NumParam With {
@@ -404,9 +404,9 @@ Public Class QSVEnc
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New OptionParam With {.Switch = "--sao", .Text = "SAO", .Options = {"Auto", "None", "Luma", "Chroma", "All"}, .VisibleFunc = Function() Codec.ValueText = "hevc"})
                     Add("Other 2",
-                        New NumParam With {.Switch = "--max-framesize", .Text = "Max frame size in bytes", .Config = {0, Integer.MaxValue}},
-                        New NumParam With {.Switch = "--max-framesize-i", .Text = "Max frame size in bytes for I-frames", .Config = {0, Integer.MaxValue}},
-                        New NumParam With {.Switch = "--max-framesize-p", .Text = "Max frame size in bytes for P/B frames", .Config = {0, Integer.MaxValue}},
+                        New NumParam With {.Switch = "--max-framesize", .Text = "Max frame size in bytes", .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Bitrate.Visible},
+                        New NumParam With {.Switch = "--max-framesize-i", .Text = "Max frame size in bytes for I-frames", .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Bitrate.Visible},
+                        New NumParam With {.Switch = "--max-framesize-p", .Text = "Max frame size in bytes for P/B frames", .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Bitrate.Visible},
                         New NumParam With {.Switch = "--tile-row", .Text = "Number of tile rows", .Init = 2, .DefaultValue = 1, .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Codec.ValueText = "av1"},
                         New NumParam With {.Switch = "--tile-col", .Text = "Number of tile columns", .Init = 1, .Config = {0, 100}, .VisibleFunc = Function() Codec.ValueText = "av1"},
                         New BoolParam With {.Switch = "--no-deblock", .Text = "No Deblock", .VisibleFunc = Function() Codec.ValueText = "h264"},
@@ -430,19 +430,6 @@ Public Class QSVEnc
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-            If Not Mode.MenuButton Is Nothing AndAlso (item Is Codec OrElse item Is Nothing) Then
-                For x = 0 To Mode.Values.Length - 1
-                    Select Case Codec.ValueText
-                        Case "h264"
-                            Mode.ShowOption(x, True)
-                        Case "hevc"
-                            Mode.ShowOption(x, Mode.Values(x).EqualsAny("cbr", "vbr", "cqp", "icq", "vcm"))
-                        Case "mpeg2"
-                            Mode.ShowOption(x, Mode.Values(x).EqualsAny("cbr", "vbr", "avbr", "cqp"))
-                    End Select
-                Next
-            End If
-
             If Not QPI.NumEdit Is Nothing Then
                 mctfval.NumEdit.Enabled = mctf.Value
             End If
@@ -494,17 +481,11 @@ Public Class QSVEnc
                     End If
             End Select
 
-            Dim q = From i In Items Where i.GetArgs <> ""
-
-            If q.Count > 0 Then
-                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
-            End If
-
             Select Case Mode.ValueText
+                Case "avbr", "cbr", "la", "la-hrd", "qvbr", "vbr", "vcm"
+                    ret += " --" + Mode.ValueText + " " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
                 Case "icq", "la-icq"
                     ret += " --" + Mode.ValueText + " " & CInt(Quality.Value)
-                Case "qvbr"
-                    ret += " --qvbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
                 Case "cqp"
                     ret += " --cqp " & CInt(QPI.Value) & ":" & CInt(QPP.Value) & ":" & CInt(QPB.Value)
 
@@ -517,6 +498,12 @@ Public Class QSVEnc
                 Case Else
                     ret += " --" + Mode.ValueText + " " & p.VideoBitrate
             End Select
+
+            Dim q = From i In Items Where i.GetArgs <> ""
+
+            If q.Count > 0 Then
+                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+            End If
 
             If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
                 (p.Script.IsFilterActive("Crop", "Hardware Encoder") OrElse

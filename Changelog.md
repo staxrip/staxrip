@@ -20,6 +20,7 @@ v2.21.0 (2023-07-03)
 - QSVEncC: Add "--max-framesize" parameter
 - QSVEncC: Add "--hevc-gpb" parameter
 - QSVEncC: Set "--tile-row 2" as default parameter/value
+- QSVEncC: Fix some UI bugs
 - Fix wrong channel recognition and extraction for temp audio files ([#1027](/../../issues/1027))
 - Fix stealing focus on job completion ([#333](/../../issues/333))
 - Fix opening multiple VOB files in multiple instances instead of the running one

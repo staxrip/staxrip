@@ -32,6 +32,8 @@ v2.21.0 (2023-07-03)
     - MKVToolNix v77.0
     - NVEncC v7.30
     - QSVEncC v7.46
+    - rav1e v0.6.1-(p20230627-3-ge379128)-x64-gcc13.1.0
+    - SvtAv1EncApp v1.6.0-x64-msvc1936
     - VCEEncC v8.16
 - Update AviSynth+ plugins
     - CropResize 2023-06-02

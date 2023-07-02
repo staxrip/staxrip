@@ -10,11 +10,11 @@ If you are a first-time user, it is especially strongly recommended that you lea
 
 There are a lot of resources in StaxRip-related communities. Users are strongly encouraged to visit those communities for help and more information.
 
-# Documentation & usefull links
+# Documentation & useful links
 
 - You can find plenty of information and instructions on [Wiki](https://github.com/staxrip/staxrip/wiki).
 - For the current changelog click here: [Changelog](https://github.com/staxrip/staxrip/blob/master/Changelog.md) - it's worth taking a look at it.
-- To download StaxRip browse through all [Releases](https://github.com/staxrip/staxrip/releases) or jump to the [Latest Release](https://github.com/staxrip/staxrip/releases/latest).
+- To download StaxRip browse through all [Releases](https://github.com/staxrip/staxrip/releases) or jump directly to the [Latest Release](https://github.com/staxrip/staxrip/releases/latest).
 
 # Contribution / Support
 
@@ -27,7 +27,7 @@ If you want to donate for the huge amount of time and effort, you can do it by u
 - https://ko-fi.com/dendraspis
 - https://www.buymeacoffee.com/dendraspis
 
-It doesn't matter what amount you think is appropriate, any amount is highly appreciated! 
+Any contribution is highly appreciated! 
 
 ### **Bug Reports / Feature Requests**
 - Please try the latest [Release Version](https://github.com/staxrip/staxrip#download) first. Usually you will find that many outstanding bugs are already fixed in the latest release versions.

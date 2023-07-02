@@ -7,7 +7,7 @@
     <ProjectGuid>{8DB07BD5-D3DD-49CB-85ED-AB35EAF3C951}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>Black.ico</ApplicationIcon>
+    <ApplicationIcon>SR_blue.ico</ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>StaxRip</AssemblyName>
@@ -431,6 +431,9 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
+    <None Include="Resources\SR_blue_3.ico" />
+    <None Include="SR_blue.ico" />
+    <Content Include="SR_blue_3.ico" />
     <EmbeddedResource Include="Video\AviSynthFilterProfileDefaults.txt" />
     <EmbeddedResource Include="Video\VapourSynthFilterProfileDefaults.txt" />
     <EmbeddedResource Include="UI\TaskDialogBaseForm.resx">

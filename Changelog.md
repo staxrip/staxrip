@@ -23,7 +23,7 @@ v2.21.0 (2023-07-03)
 - QSVEncC: Fix some UI bugs
 - Fix wrong channel recognition and extraction for temp audio files ([#1027](/../../issues/1027))
 - Fix stealing focus on job completion ([#333](/../../issues/333))
-- Fix opening multiple VOB files in multiple instances instead of the running one
+- Fix opening multiple VOB files in multiple instances instead of running just one
 - Replace app icon
 - Update tools
     - AOMEnc v3.6.1-807-g7e0293d9c-x64-msvc1936

@@ -11,6 +11,18 @@ v2.xx.0 (not published yet)
 -->
 
 
+v2.22.0 (not published yet)
+====================
+
+- Add conversion speed relative the video framerate for x264 and x265 reformatted progress output ([#781](/../../issues/781))
+- Update tools
+    - vvencFFapp v1.8.0 r178-d6da65c
+    - x264 v0.164.3107+9-30c58f9-.Mod-by-Patman.-x64-gcc13.1.0
+- Update AviSynth+ plugins
+- Update Dual plugins
+- Update VapourSynth plugins
+
+
 v2.21.0 (2023-07-03)
 ====================
 

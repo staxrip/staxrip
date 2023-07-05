@@ -1,4 +1,7 @@
 ﻿
+Imports Microsoft
+Imports Microsoft.VisualBasic.Logging
+Imports System.Runtime.InteropServices.ComTypes
 Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
@@ -305,6 +308,88 @@ Public Class QSVEnc
             .Options = {"Default", "PSNR", "SSIM", "MS_SSIM", "VMAF", "Perceptual"}}
 
 
+        Property Edgelevel As New BoolParam With {.Text = "Edgelevel filter to enhance edge", .Switches = {"--vpp-edgelevel"}, .ArgsFunc = AddressOf GetEdge}
+        Property EdgelevelStrength As New NumParam With {.Text = "     Strength", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
+        Property EdgelevelThreshold As New NumParam With {.Text = "     Threshold", .HelpSwitch = "--vpp-edgelevel", .Init = 20, .Config = {0, 255, 1, 1}}
+        Property EdgelevelBlack As New NumParam With {.Text = "     Black", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
+        Property EdgelevelWhite As New NumParam With {.Text = "     White", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
+
+        Property Unsharp As New BoolParam With {.Text = "Unsharp Filter", .Switches = {"--vpp-unsharp"}, .ArgsFunc = AddressOf GetUnsharp}
+        Property UnsharpRadius As New NumParam With {.Text = "     Radius", .HelpSwitch = "--vpp-unsharp", .Init = 3, .Config = {1, 9}}
+        Property UnsharpWeight As New NumParam With {.Text = "     Weight", .HelpSwitch = "--vpp-unsharp", .Init = 0.5, .Config = {0, 10, 0.5, 1}}
+        Property UnsharpThreshold As New NumParam With {.Text = "     Threshold", .HelpSwitch = "--vpp-unsharp", .Init = 10, .Config = {0, 255, 1, 1}}
+
+        Property Warpsharp As New BoolParam With {.Text = "Warpsharp filter", .Switches = {"--vpp-warpsharp"}, .ArgsFunc = AddressOf GetWarpsharpArgs}
+        Property WarpsharpThreshold As New NumParam With {.Text = "     Threshold", .HelpSwitch = "--vpp-warpsharp", .Init = 128, .Config = {0, 255, 1, 1}}
+        Property WarpsharpBlur As New NumParam With {.Text = "     Blur", .HelpSwitch = "--vpp-warpsharp", .Init = 2, .Config = {0, 30, 1, 0}}
+        Property WarpsharpType As New NumParam With {.Text = "     Type", .HelpSwitch = "--vpp-warpsharp", .Init = 0, .Config = {0, 1, 1, 0}}
+        Property WarpsharpDepth As New NumParam With {.Text = "     Depth", .HelpSwitch = "--vpp-warpsharp", .Init = 16, .Config = {-128, 128, 1, 1}}
+        Property WarpsharpChroma As New NumParam With {.Text = "     Chroma", .HelpSwitch = "--vpp-warpsharp", .Init = 0, .Config = {0, 1, 1, 0}}
+
+        Property Tweak As New BoolParam With {.Switch = "--vpp-tweak", .Text = "Tweaking", .ArgsFunc = AddressOf GetTweakArgs}
+        Property TweakContrast As New NumParam With {.Text = "      Contrast", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {-2.0, 2.0, 0.1, 1}}
+        Property TweakGamma As New NumParam With {.Text = "      Gamma", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {0.1, 10.0, 0.1, 1}}
+        Property TweakSaturation As New NumParam With {.Text = "      Saturation", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {0.0, 3.0, 0.1, 1}}
+        Property TweakHue As New NumParam With {.Text = "      Hue", .HelpSwitch = "--vpp-tweak", .Config = {-180.0, 180.0, 0.1, 1}}
+        Property TweakBrightness As New NumParam With {.Text = "      Brightness", .HelpSwitch = "--vpp-tweak", .Config = {-1.0, 1.0, 0.1, 1}}
+        Property TweakSwapuv As New OptionParam With {.Text = "      Swapuv", .HelpSwitch = "--vpp-tweak", .IntegerValue = False, .Init = 0, .Options = {"False", "True"}, .Values = {"false", "true"}}
+
+        Property Pad As New BoolParam With {.Switch = "--vpp-pad", .Text = "Padding", .ArgsFunc = AddressOf GetPaddingArgs}
+        Property PadLeft As New NumParam With {.Text = "      Left"}
+        Property PadTop As New NumParam With {.Text = "      Top"}
+        Property PadRight As New NumParam With {.Text = "      Right"}
+        Property PadBottom As New NumParam With {.Text = "      Bottom"}
+
+        Property Smooth As New BoolParam With {.Text = "Smooth", .Switch = "--vpp-smooth", .ArgsFunc = AddressOf GetSmoothArgs}
+        Property SmoothQuality As New NumParam With {.Text = "      Quality", .HelpSwitch = "--vpp-smooth", .Init = 3, .Config = {1, 6}}
+        Property SmoothQP As New NumParam With {.Text = "      QP", .HelpSwitch = "--vpp-smooth", .Config = {0, 100, 10, 1}}
+        Property SmoothPrec As New OptionParam With {.Text = "      Precision", .HelpSwitch = "--vpp-smooth", .Options = {"Auto", "FP16", "FP32"}}
+
+        Property TransformFlipX As New BoolParam With {.Switch = "--vpp-transform", .Text = "Flip X", .Label = "Transform", .LeftMargin = g.MainForm.FontHeight * 1.5, .ArgsFunc = AddressOf GetTransform}
+        Property TransformFlipY As New BoolParam With {.Text = "Flip Y", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
+        Property TransformTranspose As New BoolParam With {.Text = "Transpose", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
+
+        Property Colorspace As New BoolParam With {.Text = "Colorspace", .Switch = "--vpp-colorspace", .ArgsFunc = AddressOf GetColorspaceArgs}
+        Property ColorspaceMatrixFrom As New OptionParam With {.Text = New String(" "c, 6) + "Matrix From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR", "bt2020nc", "bt2020c"}}
+        Property ColorspaceMatrixTo As New OptionParam With {.Text = New String(" "c, 12) + "Matrix To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR", "bt2020nc", "bt2020c"}, .VisibleFunc = Function() ColorspaceMatrixFrom.Value > 0}
+        Property ColorspaceColorprimFrom As New OptionParam With {.Text = New String(" "c, 6) + "Colorprim From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "film", "bt2020"}}
+        Property ColorspaceColorprimTo As New OptionParam With {.Text = New String(" "c, 12) + "Colorprim To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "film", "bt2020"}, .VisibleFunc = Function() ColorspaceColorprimFrom.Value > 0}
+        Property ColorspaceTransferFrom As New OptionParam With {.Text = New String(" "c, 6) + "Transfer From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "arib-std-b67"}}
+        Property ColorspaceTransferTo As New OptionParam With {.Text = New String(" "c, 12) + "Transfer To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "bt709", "smpte170m", "bt470m", "bt470bg", "smpte240m", "linear", "log100", "log316", "iec61966-2-4", "iec61966-2-1", "bt2020-10", "bt2020-12", "smpte2084", "arib-std-b67"}, .VisibleFunc = Function() ColorspaceTransferFrom.Value > 0}
+        Property ColorspaceRangeFrom As New OptionParam With {.Text = New String(" "c, 6) + "Range From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "limited", "full"}}
+        Property ColorspaceRangeTo As New OptionParam With {.Text = New String(" "c, 12) + "Range To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "limited", "full"}, .VisibleFunc = Function() ColorspaceRangeFrom.Value > 0}
+        Property ColorspaceHdr2sdr As New OptionParam With {.Text = New String(" "c, 0) + "HDR10 to SDR using this tonemapping:", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"none", "hable", "mobius", "reinhard", "bt2390"}}
+        Property ColorspaceHdr2sdrSourcepeak As New NumParam With {.Text = New String(" "c, 6) + "Source Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1000, .Config = {0, 10000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
+        Property ColorspaceHdr2sdrLdrnits As New NumParam With {.Text = New String(" "c, 6) + "Target brightness", .HelpSwitch = "--vpp-colorspace", .Init = 100.0, .Config = {0, 1000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
+        Property ColorspaceHdr2sdrDesatbase As New NumParam With {.Text = New String(" "c, 6) + "Offset for desaturation curve", .HelpSwitch = "--vpp-colorspace", .Init = 0.18, .Config = {0, 10, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
+        Property ColorspaceHdr2sdrDesatstrength As New NumParam With {.Text = New String(" "c, 6) + "Strength of desaturation curve", .HelpSwitch = "--vpp-colorspace", .Init = 0.75, .Config = {0, 10, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
+        Property ColorspaceHdr2sdrDesatexp As New NumParam With {.Text = New String(" "c, 6) + "Exponent of the desaturation curve", .HelpSwitch = "--vpp-colorspace", .Init = 1.5, .Config = {0, 100, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
+        Property ColorspaceHdr2sdrHableA As New NumParam With {.Text = New String(" "c, 6) + "a", .HelpSwitch = "--vpp-colorspace", .Init = 0.22, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrHableB As New NumParam With {.Text = New String(" "c, 6) + "b", .HelpSwitch = "--vpp-colorspace", .Init = 0.3, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrHableC As New NumParam With {.Text = New String(" "c, 6) + "c", .HelpSwitch = "--vpp-colorspace", .Init = 0.1, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrHableD As New NumParam With {.Text = New String(" "c, 6) + "d", .HelpSwitch = "--vpp-colorspace", .Init = 0.2, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrHableE As New NumParam With {.Text = New String(" "c, 6) + "e", .HelpSwitch = "--vpp-colorspace", .Init = 0.01, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrHableF As New NumParam With {.Text = New String(" "c, 6) + "f", .HelpSwitch = "--vpp-colorspace", .Init = 0.3, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 1}
+        Property ColorspaceHdr2sdrMobiusTransition As New NumParam With {.Text = New String(" "c, 6) + "Transition", .HelpSwitch = "--vpp-colorspace", .Init = 0.3, .Config = {0, 10, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 2}
+        Property ColorspaceHdr2sdrMobiusPeak As New NumParam With {.Text = New String(" "c, 6) + "Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1.0, .Config = {0, 100, 0.05, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 2, .Name = "MobiusPeak"}
+        Property ColorspaceHdr2sdrReinhardContrast As New NumParam With {.Text = New String(" "c, 6) + "Contrast", .HelpSwitch = "--vpp-colorspace", .Init = 0.5, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3}
+        Property ColorspaceHdr2sdrReinhardPeak As New NumParam With {.Text = New String(" "c, 6) + "Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1.0, .Config = {0, 100, 0.05, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3, .Name = "ReinhardPeak"}
+
+        Property Deband As New BoolParam With {.Text = "Deband", .Switch = "--vpp-deband", .ArgsFunc = AddressOf GetDebandArgs}
+        Property DebandRange As New NumParam With {.Text = "     Range", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 127}}
+        Property DebandSample As New NumParam With {.Text = "     Sample", .HelpSwitch = "--vpp-deband", .Init = 1, .Config = {0, 2}}
+        Property DebandThre As New NumParam With {.Text = "     Threshold", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandThreY As New NumParam With {.Text = "          Y", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandThreCB As New NumParam With {.Text = "          CB", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandThreCR As New NumParam With {.Text = "          CR", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandDither As New NumParam With {.Text = "     Dither", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandDitherY As New NumParam With {.Text = "          Y", .HelpSwitch = "--vpp-deband", .Name = "vpp-deband_dither_y", .Init = 15, .Config = {0, 31}}
+        Property DebandDitherC As New NumParam With {.Text = "          C", .HelpSwitch = "--vpp-deband", .Init = 15, .Config = {0, 31}}
+        Property DebandSeed As New NumParam With {.Text = "     Seed", .HelpSwitch = "--vpp-deband", .Init = 1234}
+        Property DebandBlurfirst As New BoolParam With {.Text = "Blurfirst", .HelpSwitch = "--vpp-deband", .LeftMargin = g.MainForm.FontHeight * 1.3}
+        Property DebandRandEachFrame As New BoolParam With {.Text = "Rand Each Frame", .HelpSwitch = "--vpp-deband", .LeftMargin = g.MainForm.FontHeight * 1.3}
+
+
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
                 If ItemsValue Is Nothing Then
@@ -364,17 +449,44 @@ Public Class QSVEnc
                         New NumParam With {.Switch = "--async-depth", .Text = "Async Depth", .Config = {0, 64}},
                         New BoolParam With {.Switch = "--min-memory", .Text = "Minimize memory usage"},
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
-                    Add("VPP",
-                        New StringParam With {.Switch = "--vpp-colorspace", .Text = "Colorspace"},
-                        New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"0", "90", "180", "270"}},
+                    Add("VPP | Misc",
+                        New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
+                        New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"auto", "simple", "advanced", "bilinear", "bicubic", "spline16", "spline36", "spline64", "lanczos2", "lanczos3", "lanczos4"}},
+                        New OptionParam With {.Switch = "--vpp-resize-mode", .Text = "Resize Mode", .Options = {"auto", "lowpower", "quality"}},
+                        New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}},
                         New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer", .Options = {"Disabled", "Upscale", "Box"}},
                         New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image", .Options = {"Disabled", "H", "V"}},
-                        New OptionParam With {.Switch = "--vpp-resize", .Text = "Scaling Quality", .Options = {"Auto", "Simple", "Fine"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}},
                         New NumParam With {.Switch = "--vpp-denoise", .Text = "Denoise", .Config = {0, 100}},
                         New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhance", .Config = {0, 100}},
                         mctf,
                         mctfval)
+                    Add("VPP | Misc 2",
+                        Tweak, TweakBrightness, TweakContrast, TweakSaturation, TweakGamma, TweakHue, TweakSwapuv,
+                        Pad, PadLeft, PadTop, PadRight, PadBottom,
+                        Smooth, SmoothQuality, SmoothQP, SmoothPrec)
+                    Add("VPP | Misc 3",
+                        TransformFlipX, TransformFlipY, TransformTranspose,
+                        New StringParam With {.Switch = "--vpp-decimate", .Text = "Decimate"},
+                        New StringParam With {.Switch = "--vpp-mpdecimate", .Text = "MP Decimate"})
+                    Add("VPP | Colorspace",
+                        Colorspace,
+                        ColorspaceMatrixFrom, ColorspaceMatrixTo,
+                        ColorspaceColorprimFrom, ColorspaceColorprimTo,
+                        ColorspaceTransferFrom, ColorspaceTransferTo,
+                        ColorspaceRangeFrom, ColorspaceRangeTo)
+                    Add("VPP | Colorspace | HDR2SDR",
+                        ColorspaceHdr2sdr,
+                        ColorspaceHdr2sdrSourcepeak, ColorspaceHdr2sdrLdrnits, ColorspaceHdr2sdrDesatbase, ColorspaceHdr2sdrDesatstrength, ColorspaceHdr2sdrDesatexp,
+                        ColorspaceHdr2sdrHableA, ColorspaceHdr2sdrHableB, ColorspaceHdr2sdrHableC, ColorspaceHdr2sdrHableD, ColorspaceHdr2sdrHableE, ColorspaceHdr2sdrHableF,
+                        ColorspaceHdr2sdrMobiusTransition, ColorspaceHdr2sdrMobiusPeak, ColorspaceHdr2sdrReinhardContrast, ColorspaceHdr2sdrReinhardPeak)
+                    Add("VPP | Deband",
+                        Deband, DebandRange, DebandSample, DebandThre, DebandThreY, DebandThreCB, DebandThreCR,
+                        DebandDither, DebandDitherY, DebandDitherC, DebandSeed, DebandBlurfirst, DebandRandEachFrame)
+                    Add("VPP | Sharpness",
+                        Edgelevel, EdgelevelStrength, EdgelevelThreshold, EdgelevelBlack, EdgelevelWhite,
+                        Unsharp, UnsharpRadius, UnsharpWeight, UnsharpThreshold,
+                        Warpsharp, WarpsharpThreshold, WarpsharpBlur, WarpsharpType, WarpsharpDepth, WarpsharpChroma)
                     Add("VUI",
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
@@ -430,8 +542,71 @@ Public Class QSVEnc
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-            If Not QPI.NumEdit Is Nothing Then
+            If QPI.NumEdit IsNot Nothing Then
                 mctfval.NumEdit.Enabled = mctf.Value
+
+                ColorspaceMatrixFrom.MenuButton.Enabled = Colorspace.Value
+                ColorspaceMatrixTo.MenuButton.Enabled = Colorspace.Value
+                ColorspaceColorprimFrom.MenuButton.Enabled = Colorspace.Value
+                ColorspaceColorprimTo.MenuButton.Enabled = Colorspace.Value
+                ColorspaceTransferFrom.MenuButton.Enabled = Colorspace.Value
+                ColorspaceTransferTo.MenuButton.Enabled = Colorspace.Value
+                ColorspaceRangeFrom.MenuButton.Enabled = Colorspace.Value
+                ColorspaceRangeTo.MenuButton.Enabled = Colorspace.Value
+                ColorspaceHdr2sdr.MenuButton.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrSourcepeak.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrLdrnits.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrDesatbase.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrDesatstrength.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrDesatexp.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableA.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableB.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableC.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableD.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableE.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrHableF.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrMobiusTransition.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrMobiusPeak.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrReinhardContrast.NumEdit.Enabled = Colorspace.Value
+                ColorspaceHdr2sdrReinhardPeak.NumEdit.Enabled = Colorspace.Value
+
+                EdgelevelStrength.NumEdit.Enabled = Edgelevel.Value
+                EdgelevelThreshold.NumEdit.Enabled = Edgelevel.Value
+                EdgelevelBlack.NumEdit.Enabled = Edgelevel.Value
+                EdgelevelWhite.NumEdit.Enabled = Edgelevel.Value
+
+                UnsharpRadius.NumEdit.Enabled = Unsharp.Value
+                UnsharpWeight.NumEdit.Enabled = Unsharp.Value
+                UnsharpThreshold.NumEdit.Enabled = Unsharp.Value
+
+                WarpsharpBlur.NumEdit.Enabled = Warpsharp.Value
+                WarpsharpChroma.NumEdit.Enabled = Warpsharp.Value
+                WarpsharpDepth.NumEdit.Enabled = Warpsharp.Value
+                WarpsharpThreshold.NumEdit.Enabled = Warpsharp.Value
+                WarpsharpType.NumEdit.Enabled = Warpsharp.Value
+
+                PadLeft.NumEdit.Enabled = Pad.Value
+                PadTop.NumEdit.Enabled = Pad.Value
+                PadRight.NumEdit.Enabled = Pad.Value
+                PadBottom.NumEdit.Enabled = Pad.Value
+
+                SmoothQuality.NumEdit.Enabled = Smooth.Value
+                SmoothQP.NumEdit.Enabled = Smooth.Value
+                SmoothPrec.MenuButton.Enabled = Smooth.Value
+
+                TweakContrast.NumEdit.Enabled = Tweak.Value
+                TweakGamma.NumEdit.Enabled = Tweak.Value
+                TweakSaturation.NumEdit.Enabled = Tweak.Value
+                TweakHue.NumEdit.Enabled = Tweak.Value
+                TweakBrightness.NumEdit.Enabled = Tweak.Value
+                TweakSwapuv.MenuButton.Enabled = Tweak.Value
+
+                For Each i In {DebandRange, DebandSample, DebandThre, DebandThreY, DebandThreCB, DebandThreCR, DebandDither, DebandDitherY, DebandDitherC, DebandSeed}
+                    i.NumEdit.Enabled = Deband.Value
+                Next
+
+                DebandRandEachFrame.CheckBox.Enabled = Deband.Value
+                DebandBlurfirst.CheckBox.Enabled = Deband.Value
             End If
 
             MyBase.OnValueChanged(item)
@@ -555,6 +730,137 @@ Public Class QSVEnc
             End If
             Return ""
         End Function
+
+        Function GetSmoothArgs() As String
+            If Smooth.Value Then
+                Dim ret = ""
+                If SmoothQuality.Value <> SmoothQuality.DefaultValue Then ret += ",quality=" & SmoothQuality.Value
+                If SmoothQP.Value <> SmoothQP.DefaultValue Then ret += ",qp=" & SmoothQP.Value.ToInvariantString
+                If SmoothPrec.Value <> SmoothPrec.DefaultValue Then ret += ",prec=" & SmoothPrec.ValueText
+                Return "--vpp-smooth " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetColorspaceArgs() As String
+            If Colorspace.Value Then
+                Dim ret = ""
+                If ColorspaceMatrixFrom.Value <> ColorspaceMatrixFrom.DefaultValue Then ret += $",matrix={ColorspaceMatrixFrom.ValueText}:{ColorspaceMatrixTo.ValueText}"
+                If ColorspaceColorprimFrom.Value <> ColorspaceColorprimFrom.DefaultValue Then ret += $",colorprim={ColorspaceColorprimFrom.ValueText}:{ColorspaceColorprimTo.ValueText}"
+                If ColorspaceTransferFrom.Value <> ColorspaceTransferFrom.DefaultValue Then ret += $",transfer={ColorspaceTransferFrom.ValueText}:{ColorspaceTransferTo.ValueText}"
+                If ColorspaceRangeFrom.Value <> ColorspaceRangeFrom.DefaultValue Then ret += $",range={ColorspaceRangeFrom.ValueText}:{ColorspaceRangeTo.ValueText}"
+                If ColorspaceHdr2sdr.Value <> ColorspaceHdr2sdr.DefaultValue Then
+                    ret += $",hdr2sdr={ColorspaceHdr2sdr.ValueText}"
+                    If ColorspaceHdr2sdrSourcepeak.Value <> ColorspaceHdr2sdrSourcepeak.DefaultValue Then ret += $",source_peak={ColorspaceHdr2sdrSourcepeak.Value.ToInvariantString("0.0")}"
+                    If ColorspaceHdr2sdrLdrnits.Value <> ColorspaceHdr2sdrLdrnits.DefaultValue Then ret += $",ldr_nits={ColorspaceHdr2sdrLdrnits.Value.ToInvariantString("0.0")}"
+                    If ColorspaceHdr2sdrDesatbase.Value <> ColorspaceHdr2sdrDesatbase.DefaultValue Then ret += $",desat_base={ColorspaceHdr2sdrDesatbase.Value.ToInvariantString("0.00")}"
+                    If ColorspaceHdr2sdrDesatstrength.Value <> ColorspaceHdr2sdrDesatstrength.DefaultValue Then ret += $",desat_strength={ColorspaceHdr2sdrDesatstrength.Value.ToInvariantString("0.00")}"
+                    If ColorspaceHdr2sdrDesatexp.Value <> ColorspaceHdr2sdrDesatexp.DefaultValue Then ret += $",desat_exp={ColorspaceHdr2sdrDesatexp.Value.ToInvariantString("0.00")}"
+                    If ColorspaceHdr2sdr.Value = 1 Then
+                        If ColorspaceHdr2sdrHableA.Value <> ColorspaceHdr2sdrHableA.DefaultValue Then ret += $",a={ColorspaceHdr2sdrHableA.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrHableB.Value <> ColorspaceHdr2sdrHableB.DefaultValue Then ret += $",b={ColorspaceHdr2sdrHableB.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrHableC.Value <> ColorspaceHdr2sdrHableC.DefaultValue Then ret += $",c={ColorspaceHdr2sdrHableC.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrHableD.Value <> ColorspaceHdr2sdrHableD.DefaultValue Then ret += $",d={ColorspaceHdr2sdrHableD.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrHableE.Value <> ColorspaceHdr2sdrHableE.DefaultValue Then ret += $",e={ColorspaceHdr2sdrHableE.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrHableF.Value <> ColorspaceHdr2sdrHableF.DefaultValue Then ret += $",f={ColorspaceHdr2sdrHableF.Value.ToInvariantString("0.00")}"
+                    End If
+                    If ColorspaceHdr2sdr.Value = 2 Then
+                        If ColorspaceHdr2sdrMobiusTransition.Value <> ColorspaceHdr2sdrMobiusTransition.DefaultValue Then ret += $",transition={ColorspaceHdr2sdrMobiusTransition.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrMobiusPeak.Value <> ColorspaceHdr2sdrMobiusPeak.DefaultValue Then ret += $",peak={ColorspaceHdr2sdrMobiusPeak.Value.ToInvariantString("0.00")}"
+                    End If
+                    If ColorspaceHdr2sdr.Value = 3 Then
+                        If ColorspaceHdr2sdrReinhardContrast.Value <> ColorspaceHdr2sdrReinhardContrast.DefaultValue Then ret += $",contrast={ColorspaceHdr2sdrReinhardContrast.Value.ToInvariantString("0.00")}"
+                        If ColorspaceHdr2sdrReinhardPeak.Value <> ColorspaceHdr2sdrReinhardPeak.DefaultValue Then ret += $",peak={ColorspaceHdr2sdrReinhardPeak.Value.ToInvariantString("0.00")}"
+                    End If
+                End If
+                If ret <> "" Then Return "--vpp-colorspace " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetTweakArgs() As String
+            If Tweak.Value Then
+                Dim ret = ""
+                If TweakBrightness.Value <> TweakBrightness.DefaultValue Then ret += ",brightness=" & TweakBrightness.Value.ToInvariantString
+                If TweakContrast.Value <> TweakContrast.DefaultValue Then ret += ",contrast=" & TweakContrast.Value.ToInvariantString
+                If TweakSaturation.Value <> TweakSaturation.DefaultValue Then ret += ",saturation=" & TweakSaturation.Value.ToInvariantString
+                If TweakGamma.Value <> TweakGamma.DefaultValue Then ret += ",gamma=" & TweakGamma.Value.ToInvariantString
+                If TweakHue.Value <> TweakHue.DefaultValue Then ret += ",hue=" & TweakHue.Value.ToInvariantString
+                If TweakSwapuv.Value <> TweakSwapuv.DefaultValue Then ret += ",swapuv=" & TweakSwapuv.ValueText.ToInvariantString
+                Return ("--vpp-tweak " + ret.TrimStart(","c)).Trim()
+            End If
+            Return ""
+        End Function
+
+        Function GetPaddingArgs() As String
+            Return If(Pad.Value, $"--vpp-pad {PadLeft.Value},{PadTop.Value},{PadRight.Value},{PadBottom.Value}", "")
+        End Function
+
+        Function GetDebandArgs() As String
+            If Deband.Value Then
+                Dim ret = ""
+                If DebandRange.Value <> DebandRange.DefaultValue Then ret += ",range=" & DebandRange.Value
+                If DebandSample.Value <> DebandSample.DefaultValue Then ret += ",sample=" & DebandSample.Value
+                If DebandThre.Value <> DebandThre.DefaultValue Then ret += ",thre=" & DebandThre.Value
+                If DebandThreY.Value <> DebandThreY.DefaultValue Then ret += ",thre_y=" & DebandThreY.Value
+                If DebandThreCB.Value <> DebandThreCB.DefaultValue Then ret += ",thre_cb=" & DebandThreCB.Value
+                If DebandThreCR.Value <> DebandThreCR.DefaultValue Then ret += ",thre_cr=" & DebandThreCR.Value
+                If DebandDither.Value <> DebandDither.DefaultValue Then ret += ",dither=" & DebandDither.Value
+                If DebandDitherY.Value <> DebandDitherY.DefaultValue Then ret += ",dither_y=" & DebandDitherY.Value
+                If DebandDitherC.Value <> DebandDitherC.DefaultValue Then ret += ",dither_c=" & DebandDitherC.Value
+                If DebandSeed.Value <> DebandSeed.DefaultValue Then ret += ",seed=" & DebandSeed.Value
+                If DebandBlurfirst.Value Then ret += ",blurfirst"
+                If DebandRandEachFrame.Value Then ret += ",rand_each_frame"
+                Return "--vpp-deband " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetTransform() As String
+            Dim ret = ""
+            If TransformFlipX.Value Then ret += ",flip_x=true"
+            If TransformFlipY.Value Then ret += ",flip_y=true"
+            If TransformTranspose.Value Then ret += ",transpose=true"
+            If ret <> "" Then Return ("--vpp-transform " + ret.TrimStart(","c))
+            Return ""
+        End Function
+
+        Function GetEdge() As String
+            If Edgelevel.Value Then
+                Dim ret = ""
+                If EdgelevelStrength.Value <> EdgelevelStrength.DefaultValue Then ret += ",strength=" & EdgelevelStrength.Value.ToInvariantString
+                If EdgelevelThreshold.Value <> EdgelevelThreshold.DefaultValue Then ret += ",threshold=" & EdgelevelThreshold.Value.ToInvariantString
+                If EdgelevelBlack.Value <> EdgelevelBlack.DefaultValue Then ret += ",black=" & EdgelevelBlack.Value.ToInvariantString
+                If EdgelevelWhite.Value <> EdgelevelWhite.DefaultValue Then ret += ",white=" & EdgelevelWhite.Value.ToInvariantString
+                Return "--vpp-edgelevel " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetUnsharp() As String
+            If Unsharp.Value Then
+                Dim ret = ""
+                If UnsharpRadius.Value <> UnsharpRadius.DefaultValue Then ret += ",radius=" & UnsharpRadius.Value.ToInvariantString
+                If UnsharpWeight.Value <> UnsharpWeight.DefaultValue Then ret += ",weight=" & UnsharpWeight.Value.ToInvariantString
+                If UnsharpThreshold.Value <> UnsharpThreshold.DefaultValue Then ret += ",threshold=" & UnsharpThreshold.Value.ToInvariantString
+                Return "--vpp-unsharp " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetWarpsharpArgs() As String
+            If Warpsharp.Value Then
+                Dim ret = ""
+                If WarpsharpThreshold.Value <> WarpsharpThreshold.DefaultValue Then ret += ",threshold=" & WarpsharpThreshold.Value.ToInvariantString
+                If WarpsharpBlur.Value <> WarpsharpBlur.DefaultValue Then ret += ",blur=" & WarpsharpBlur.Value.ToInvariantString
+                If WarpsharpType.Value <> WarpsharpType.DefaultValue Then ret += ",type=" & WarpsharpType.Value.ToInvariantString
+                If WarpsharpDepth.Value <> WarpsharpDepth.DefaultValue Then ret += ",depth=" & WarpsharpDepth.Value.ToInvariantString
+                If WarpsharpChroma.Value <> WarpsharpChroma.DefaultValue Then ret += ",chroma=" & WarpsharpChroma.Value.ToInvariantString
+                Return "--vpp-warpsharp " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
 
         Public Overrides Function GetPackage() As Package
             Return Package.QSVEncC

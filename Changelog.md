@@ -15,6 +15,7 @@ v2.22.0 (2023-07-06)
 
 - Add conversion speed information relative to video framerate for x264 and x265 reformatted progress output ([#781](/../../issues/781))
 - Fix stealing focus on job completion again ([#333](/../../issues/333))
+- QSVEncC: Add missing parameters ([#1016](/../../issues/1016))
 - Update tools
     - FFmpeg v6.0 N-111327-g695789eacc-x64-gcc13.1.0
     - Mp4Box v2.3-DEV-rev395-g98979a443-x64-msvc1936

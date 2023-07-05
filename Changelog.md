@@ -10,6 +10,17 @@ v2.xx.0 (not published yet)
 -->
 
 
+v2.23.0 (not published yet)
+====================
+
+- vvencFFapp: Add basic implementation
+- Update tools
+    - vvencFFapp v1.8.0 r178-d6da65c
+- Update AviSynth+ plugins
+- Update Dual plugins
+- Update VapourSynth plugins
+
+
 v2.22.0 (2023-07-06)
 ====================
 

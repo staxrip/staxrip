@@ -348,8 +348,9 @@ Public MustInherit Class VideoEncoder
     Shared Function GetDefaults() As List(Of VideoEncoder)
         Dim ret As New List(Of VideoEncoder)
 
-        ret.Add(New x264Enc)
+        ret.Add(New VvencffappEnc)
         ret.Add(New x265Enc)
+        ret.Add(New x264Enc)
 
         Dim nvEnc = New NVEnc()
         For x = 0 To nvEnc.Params.Codec.Options.Length - 1

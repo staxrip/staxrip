@@ -170,6 +170,9 @@
     <Compile Include="Controls\PreprocessingControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\VvencffappControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\x264Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
@@ -183,6 +186,7 @@
     <Compile Include="Encoding\ffmpegEnc.vb" />
     <Compile Include="Encoding\QSVEnc.vb" />
     <Compile Include="Encoding\NVEnc.vb" />
+    <Compile Include="Encoding\VvencffappEnc.vb" />
     <Compile Include="Encoding\x264Enc.vb" />
     <Compile Include="Forms\DownloadForm.Designer.vb">
       <DependentUpon>DownloadForm.vb</DependentUpon>
@@ -431,9 +435,9 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
-    <None Include="Resources\SR_blue_3.ico" />
-    <None Include="SR_blue.ico" />
-    <Content Include="SR_blue_3.ico" />
+    <EmbeddedResource Include="Controls\VvencffappControl.resx">
+      <DependentUpon>VvencffappControl.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Video\AviSynthFilterProfileDefaults.txt" />
     <EmbeddedResource Include="Video\VapourSynthFilterProfileDefaults.txt" />
     <EmbeddedResource Include="UI\TaskDialogBaseForm.resx">

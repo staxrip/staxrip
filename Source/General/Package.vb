@@ -523,6 +523,17 @@ Public Class Package
         .HelpSwitch = "--fullhelp",
         .Description = "H.265 video encoding console app."})
 
+    Shared Property VVenCFFapp As Package = Add(New Package With {
+        .Name = "vvencFFapp",
+        .Filename = "vvencFFapp.exe",
+        .Location = "Encoders\vvencFFapp",
+        .Description = "The Fraunhofer Versatile Video Encoder (VVenC) is a fast and efficient H.266/VVC encoder implementation.",
+        .HelpSwitch = "--fullhelp",
+        .AllowCustomPath = False,
+        .SupportsAutoUpdate = False,
+        .WebURL = "https://github.com/fraunhoferhhi/vvenc",
+        .DownloadURL = "https://github.com/f11894/VVenC_Build_Actions/releases"})
+
     Shared Property SVTAV1 As Package = Add(New Package With {
         .Name = "SVT-AV1",
         .Location = "Encoders\SVT-AV1",

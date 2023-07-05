@@ -99,6 +99,7 @@ Public Class ApplicationSettings
     Public WriteDebugLog As Boolean
     Public X264QualityDefinitions As List(Of x264Control.QualityItem)
     Public X265QualityDefinitions As List(Of x265Control.QualityItem)
+    Public VvencffappQualityDefinitions As List(Of VvencffappControl.QualityItem)
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated
 

@@ -969,6 +969,11 @@ Module MiscExtensions
     End Function
 
     <Extension()>
+    Function ToColorHSL(color As Color) As ColorHSL
+        Return color
+    End Function
+
+    <Extension()>
     Function ToSeparatedString(list As IEnumerable(Of x264Control.QualityItem)) As String
         If list Is Nothing OrElse Not list.Any() Then
             Return ""
@@ -984,6 +989,15 @@ Module MiscExtensions
         End If
 
         Return String.Join("_", s.X265QualityDefinitions.OrderBy(Function(x) x.Value).Select(Function(x) $"{x.Value:0.#}{If(String.IsNullOrWhiteSpace(x.Text), "", $"""{x.Text.Trim()}""")}"))
+    End Function
+
+    <Extension()>
+    Function ToSeparatedString(list As IEnumerable(Of VvencffappControl.QualityItem)) As String
+        If list Is Nothing OrElse Not list.Any() Then
+            Return ""
+        End If
+
+        Return String.Join("_", s.VvencffappQualityDefinitions.OrderBy(Function(x) x.Value).Select(Function(x) $"{x.Value:0.#}{If(String.IsNullOrWhiteSpace(x.Text), "", $"""{x.Text.Trim()}""")}"))
     End Function
 
     <Extension()>
@@ -1025,11 +1039,6 @@ Module MiscExtensions
     End Function
 
     <Extension()>
-    Function ToColorHSL(color As Color) As ColorHSL
-        Return color
-    End Function
-
-    <Extension()>
     Function ToX265QualityItems(input As String) As IEnumerable(Of x265Control.QualityItem)
         Dim result = New List(Of x265Control.QualityItem)
 
@@ -1061,6 +1070,45 @@ Module MiscExtensions
                 If value >= qualityConfig(0) AndAlso value <= qualityConfig(1) AndAlso Not result.Where(Function(x) x.Value = value).Any() Then
                     text = If(match.Groups.Count > 4, match.Groups(4).Value.Trim(), text)
                     result.Add(New x265Control.QualityItem(value, text, ""))
+                End If
+            End If
+        Next
+
+        Return result
+    End Function
+
+    <Extension()>
+    Function ToVvencffappQualityItems(input As String) As IEnumerable(Of VvencffappControl.QualityItem)
+        Dim result = New List(Of VvencffappControl.QualityItem)
+
+        If String.IsNullOrWhiteSpace(input) Then
+            Return result
+        End If
+
+        Dim pattern = "(\d{1,2}([\.,]\d{1,3})?)(""([^""]*)"")?"
+        Dim matches = Regex.Matches(input, pattern, RegexOptions.IgnoreCase)
+
+        If matches.Count = 0 Then
+            Return result
+        End If
+
+        Dim qualityConfig = If(TypeOf p.VideoEncoder Is VvencffappEnc, DirectCast(p.VideoEncoder, VvencffappEnc).Params.Quant.Config, {0, 63, 0, 1})
+
+        For Each match As Match In matches
+            If Not match.Success Then
+                Continue For
+            End If
+
+            Dim value = 0.0
+            Dim text = ""
+
+            If Double.TryParse(Regex.Replace(match.Groups(1).Value, "\.|,", NumberFormatInfo.CurrentInfo.NumberDecimalSeparator), value) Then
+                Dim powed = Math.Pow(10, qualityConfig(3))
+                value = CInt(Math.Floor(value * powed)) / powed
+
+                If value >= qualityConfig(0) AndAlso value <= qualityConfig(1) AndAlso Not result.Where(Function(x) x.Value = value).Any() Then
+                    text = If(match.Groups.Count > 4, match.Groups(4).Value.Trim(), text)
+                    result.Add(New VvencffappControl.QualityItem(value, text, ""))
                 End If
             End If
         Next

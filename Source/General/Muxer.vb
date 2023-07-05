@@ -455,6 +455,7 @@ Public Class MP4Muxer
                     "mp4", "m4a", "aac", "mov",
                     "264", "h264", "avc",
                     "265", "h265", "hevc", "hvc",
+                    "266", "h266", "vvc",
                     "mp2", "mpa", "mp3"}
         End Get
     End Property

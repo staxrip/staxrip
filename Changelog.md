@@ -15,6 +15,7 @@ v2.22.0 (not published yet)
 ====================
 
 - Add conversion speed information relative to video framerate for x264 and x265 reformatted progress output ([#781](/../../issues/781))
+- Fix stealing focus on job completion again ([#333](/../../issues/333))
 - Update tools
     - qaac v2.80
     - vvencFFapp v1.8.0 r178-d6da65c

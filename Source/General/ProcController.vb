@@ -612,7 +612,7 @@ Public Class ProcController
     End Sub
 
     Sub Cleanup()
-        ProcController.BlockActivation = True
+        BlockActivation = True
 
         SyncLock Procs
             Procs.Remove(Me)
@@ -739,7 +739,7 @@ Public Class ProcController
         End SyncLock
 
         g.ProcForm.Invoke(Sub()
-                              If Not g.ProcForm.WindowState = FormWindowState.Minimized Then
+                              If Not g.ProcForm.WindowState = FormWindowState.Minimized OrElse Not BlockActivation Then
                                   g.ProcForm.Show()
                                   g.ProcForm.WindowState = FormWindowState.Normal
                                   g.ProcForm.Activate()

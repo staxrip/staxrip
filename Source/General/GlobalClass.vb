@@ -1168,7 +1168,7 @@ Public Class GlobalClass
                     IconValue = New Icon(s.IconFile)
                     LastIconFile = s.IconFile
                 Else
-                    IconValue = My.Resources.SR_blue
+                    IconValue = My.Resources.Black
                 End If
             End If
 

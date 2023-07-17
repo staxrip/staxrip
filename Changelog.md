@@ -15,7 +15,9 @@ v2.23.0 (not published yet)
 
 - AOMEnc: Fix missing target bitrate for constrained quality ([#1044](/../../issues/1044))
 - vvencFFapp: Add basic implementation
+- Fix typo ([#1042](/../../issues/1042))
 - Update tools
+    - MKVToolNix v78.0
     - vvencFFapp v1.9.0-rc2 r182-3fcfd93
 - Update AviSynth+ plugins
 - Update Dual plugins

@@ -271,7 +271,7 @@ DeBand | Gradfun3_16bit =
     ConvertFromStacked()
 
 DeBlock | DeBlock_QED = Deblock_QED(quant1=24, quant2=26, aOff1=1, aOff2=1, bOff1=2, bOff2=2, uv=3)
-DeBlock | DeBock = Deblock(quant=25, aOffset=0, bOffset=0)
+DeBlock | DeBlock = Deblock(quant=25, aOffset=0, bOffset=0)
 DeBlock | MipSmooth = MipSmooth(downsizer="lanczos", upsizer="bilinear", scalefactor=1.5, method="strong")
 DeBlock | SmoothD2 = SmoothD2(quant=3, num_shift=3, Matrix=3, Qtype=1, ZW=1, ZWce=1, ZWlmDark=0, ZWlmBright=255, ncpu=4)
 DeComb | Vinverse = $select:Vinverse|vinverse(sstr=2.7, amnt=255, uv=3, scl=0.25);Vinverse2|vinverse2(sstr=2.7, amnt=255, uv=3, scl=0.25)$

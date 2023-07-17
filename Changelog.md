@@ -13,9 +13,10 @@ v2.xx.0 (not published yet)
 v2.23.0 (not published yet)
 ====================
 
+- AOMEnc: Fix missing target bitrate for constrained quality ([#1044](/../../issues/1044))
 - vvencFFapp: Add basic implementation
 - Update tools
-    - vvencFFapp v1.8.0 r178-d6da65c
+    - vvencFFapp v1.9.0-rc2 r182-3fcfd93
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins

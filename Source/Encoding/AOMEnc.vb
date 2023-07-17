@@ -191,14 +191,6 @@ Public Class AV1Params
         .Init = 1,
         .Config = {1, 128}}
 
-    Property CqLevel As New NumParam With {
-        .Path = "Rate Control 1",  '.Path = "AV1 Specific 2",    moved to "Rate Control 1" for better usage
-        .HelpSwitch = "--cq-level",
-        .Text = "CQ Level",
-        .AlwaysOn = True,
-        .Init = 24,
-        .VisibleFunc = Function() RateMode.Value = 2 OrElse RateMode.Value = 3}
-
     Property DeltaqMode As New OptionParam With {
         .Switch = "--deltaq-mode",
         .Text = "Delta QIndex Mode (req. enable-tpl-model)",
@@ -248,6 +240,21 @@ Public Class AV1Params
         .AlwaysOn = True,
         .Init = 3}
 
+    Property CqLevel As New NumParam With {
+        .Path = "Rate Control 1",  '.Path = "AV1 Specific 2",    moved to "Rate Control 1" for better usage
+        .HelpSwitch = "--cq-level",
+        .Text = "CQ Level",
+        .AlwaysOn = True,
+        .Init = 24,
+        .VisibleFunc = Function() RateMode.Value = 2 OrElse RateMode.Value = 3}
+
+    Property TargetBitrate As New NumParam With {
+        .HelpSwitch = "--target-bitrate",
+        .Text = "Target Bitrate",
+        .Init = 5000,
+        .VisibleFunc = Function() RateMode.Value <> 3,
+        .Config = {0, 1000000, 100}}
+
     Property Skip As New NumParam With {
         .Switch = "--skip",
         .Text = "Skip first n frames"}
@@ -255,13 +262,6 @@ Public Class AV1Params
     Property Limit As New NumParam With {
         .Switch = "--limit",
         .Text = "Stop after n frames"}
-
-    Property TargetBitrate As New NumParam With {
-        .HelpSwitch = "--target-bitrate",
-        .Text = "Target Bitrate",
-        .Init = 5000,
-        .VisibleFunc = Function() RateMode.Value <> 2 AndAlso RateMode.Value <> 3,
-        .Config = {0, 1000000, 100}}
 
     Property CustomFirstPass As New StringParam With {
         .Text = "Custom 1st pass",
@@ -702,11 +702,12 @@ Public Class AV1Params
                 End If
         End Select
 
-        If RateMode.ValueText.EqualsAny("cq", "q") Then
+        If RateMode.Value = 2 OrElse RateMode.Value = 3 Then
             If Not IsCustom(pass, "--cq-level") Then
                 sb.Append(" --cq-level=" & CqLevel.Value)
             End If
-        Else
+        End If
+        If RateMode.Value <> 3 Then
             If Not IsCustom(pass, "--target-bitrate") Then
                 sb.Append(" --target-bitrate=" & If(pass = 1, TargetBitrate.Value, p.VideoBitrate))
             End If

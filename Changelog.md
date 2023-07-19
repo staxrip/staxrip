@@ -13,6 +13,7 @@ v2.xx.0 (not published yet)
 v2.23.0 (not published yet)
 ====================
 
+- AOMEnc: Multiple changes to default values ([#1012](/../../issues/1012))
 - AOMEnc: Fix missing target bitrate for constrained quality ([#1044](/../../issues/1044))
 - vvencFFapp: Add basic implementation
 - Fix typo ([#1042](/../../issues/1042))

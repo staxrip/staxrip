@@ -356,7 +356,7 @@ Public Class AV1Params
                     New StringParam With {.Switch = "--timebase", .Text = "Timebase precision"},
                     New StringParam With {.Switch = "--fps", .Text = "Frame Rate"},
                     New StringParam With {.Switch = "--global-error-resilient", .Text = "Global Error Resilient"},
-                    New NumParam With {.Switch = "--lag-in-frames", .Text = "Lag In Frames", .Init = 25},
+                    New NumParam With {.Switch = "--lag-in-frames", .Text = "Lag In Frames", .Init = 35, .Config = {0, 999}},
                     New OptionParam With {.Switch = "--large-scale-tile", .Text = "Large Scale Tile Coding", .IntegerValue = True, .Options = {"Off", "On"}},
                     New BoolParam With {.Switch = "--monochrome", .Text = "Monochrome"},
                     New BoolParam With {.Switch = "--full-still-picture-hdr", .Text = "Full header for still picture"},
@@ -388,8 +388,8 @@ Public Class AV1Params
 
                 Add("Keyframe Placement",
                     New NumParam With {.Switch = "--enable-fwd-kf", .Text = "Enable forward reference keyframes"},
-                    New NumParam With {.Switch = "--kf-min-dist", .Text = "Min keyframe interval", .Init = 0, .Value = 12, .Config = {0, 9999}},
-                    New NumParam With {.Switch = "--kf-max-dist", .Text = "Max keyframe interval", .Init = 9999, .Value = 120, .Config = {1, 9999}},
+                    New NumParam With {.Switch = "--kf-min-dist", .Text = "Min keyframe interval", .DefaultValue = 0, .Value = 12, .Config = {0, 9999}},
+                    New NumParam With {.Switch = "--kf-max-dist", .Text = "Max keyframe interval", .DefaultValue = 9999, .Value = 300, .Config = {1, 9999}},
                     New BoolParam With {.Switch = "--disable-kf", .Text = "Disable keyframe placement"})
 
                 'New OptionParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}},
@@ -398,14 +398,14 @@ Public Class AV1Params
                     New OptionParam With {.Switch = "--cpu-used", .Text = "CPU Used", .Value = 4, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Ultra Fast", "9 - Fastest"}},
                     New NumParam With {.Switch = "--auto-alt-ref", .Text = "Auto Alt Ref", .Init = 1, .AlwaysOn = True},
                     New NumParam With {.Switch = "--sharpness", .Text = "Sharpness", .Init = 0, .Config = {0, 7}},
-                    New NumParam With {.Switch = "--static-thresh", .Text = "Static Thresh", .AlwaysOn = True},
+                    New NumParam With {.Switch = "--static-thresh", .Text = "Static Threshold", .Init = 0, .AlwaysOn = True, .Config = {0, 9999}},
                     New BoolParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .Init = True, .IntegerValue = True},
-                    New NumParam With {.Switch = "--tile-columns", .Text = "Tile Columns", .Init = 2, .AlwaysOn = True},
-                    New NumParam With {.Switch = "--tile-rows", .Text = "Tile Rows", .Init = 1, .AlwaysOn = True},
+                    New NumParam With {.Switch = "--tile-columns", .Text = "Tile Columns", .DefaultValue = 0, .Value = 2},
+                    New NumParam With {.Switch = "--tile-rows", .Text = "Tile Rows", .DefaultValue = 0, .Value = 1},
                     New OptionParam With {.Switch = "--enable-tpl-model", .Text = "TPL model", .Value = 1, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Off", "1 - Backward source based"}},
                     New OptionParam With {.Switch = "--enable-keyframe-filtering", .Text = "Keyframe Filtering", .Init = 1, .IntegerValue = True, .Options = {"0 - No filter", "1 - Filter without overlay (default)", "2 - Filter with overlay (Experimental)"}},
-                    New NumParam With {.Switch = "--arnr-maxframes", .Text = "ARNR Max Frames", .Config = {0, 15}},
-                    New NumParam With {.Switch = "--arnr-strength", .Text = "ARNR Filter Strength", .Config = {0, 6}})
+                    New NumParam With {.Switch = "--arnr-maxframes", .Text = "ARNR Max Frames", .Init = 7, .Config = {0, 15}},
+                    New NumParam With {.Switch = "--arnr-strength", .Text = "ARNR Filter Strength", .Init = 5, .Config = {0, 6}})
 
                 'CqLevel) moved to "Rate Control 1" for better usage
                 'New OptionParam With {.Switch = "--enable-cdef", .Text = "Enable CDEF", .Init = 1, .IntegerValue = True, .Options = {"Off", "On"}})
@@ -464,9 +464,9 @@ Public Class AV1Params
                     New BoolParam With {.Switch = "--use-inter-dct-only", .Text = "DCT only for INTER modes"},
                     New BoolParam With {.Switch = "--use-intra-default-tx-only", .Text = "Default-transform only for INTRA modes"},
                     New OptionParam With {.Switch = "--quant-b-adapt", .Text = "Adaptive quantize_b", .IntegerValue = True, .Init = 0, .Options = {"Off", "On"}},
-                    New OptionParam With {.Switch = "--coeff-cost-upd-freq", .Text = "Update freq for coeff costs", .IntegerValue = True, .Init = 0, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
-                    New OptionParam With {.Switch = "--mode-cost-upd-freq", .Text = "Update freq for mode costs", .IntegerValue = True, .Init = 0, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
-                    New OptionParam With {.Switch = "--mv-cost-upd-freq", .Text = "Update freq for mv costs", .IntegerValue = True, .Init = 0, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
+                    New OptionParam With {.Switch = "--coeff-cost-upd-freq", .Text = "Update freq for coeff costs", .Init = 0, .Options = {"Undefined", "0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}, .Values = {"undefined", "0", "1", "2", "3"}},
+                    New OptionParam With {.Switch = "--mode-cost-upd-freq", .Text = "Update freq for mode costs", .Init = 0, .Options = {"Undefined", "0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}, .Values = {"undefined", "0", "1", "2", "3"}},
+                    New OptionParam With {.Switch = "--mv-cost-upd-freq", .Text = "Update freq for mv costs", .Init = 0, .Options = {"Undefined", "0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}, .Values = {"undefined", "0", "1", "2", "3"}},
                     New BoolParam With {.Switch = "--frame-parallel", .Text = "Frame Parallel", .Init = False, .IntegerValue = True},
                     New BoolParam With {.Switch = "--error-resilient", .Text = "Error Resilient", .Init = False, .IntegerValue = True},
                     New OptionParam With {.Switch = "--aq-mode", .Text = "AQ Mode", .IntegerValue = True, .Options = {"Disabled", "Variance", "Complexity", "Cyclic Refresh"}},

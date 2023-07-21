@@ -345,6 +345,15 @@ Public Class QSVEnc
         Property SmoothQP As New NumParam With {.Text = "      QP", .HelpSwitch = "--vpp-smooth", .Config = {0, 100, 10, 1}}
         Property SmoothPrec As New OptionParam With {.Text = "      Precision", .HelpSwitch = "--vpp-smooth", .Options = {"Auto", "FP16", "FP32"}}
 
+        Property Pmd As New BoolParam With {.Text = "Pmd", .Switch = "--vpp-pmd", .ArgsFunc = AddressOf GetPmdArgs}
+        Property PmdApplyCount As New NumParam With {.Text = "      Apply Count", .HelpSwitch = "--vpp-pmd", .Init = 2, .Config = {1, Integer.MaxValue, 1}}
+        Property PmdStrength As New NumParam With {.Text = "      Strength", .HelpSwitch = "--vpp-pmd", .Init = 100, .Config = {0, 100, 1, 1}}
+        Property PmdThreshold As New NumParam With {.Text = "      Threshold", .HelpSwitch = "--vpp-pmd", .Init = 100, .Config = {0, 255, 1}}
+
+        Property Denoise As New BoolParam With {.Text = "Denoise", .Switch = "--vpp-denoise", .ArgsFunc = AddressOf GetDenoiseArgs}
+        Property DenoiseMode As New OptionParam With {.Text = "      Mode", .HelpSwitch = "--vpp-denoise", .Init = 0, .Options = {"Auto (Default)", "Auto BD Rate", "Auto Subjective", "Auto Adjust", "Pre-Processing", "Post-Processing"}, .Values = {"auto", "auto_bdrate", "auto_subjective", "auto_adjust", "pre", "post"}}
+        Property DenoiseStrength As New NumParam With {.Text = "      Strength", .HelpSwitch = "--vpp-denoise", .Init = 100, .Config = {0, 100, 1, 0}}
+
         Property TransformFlipX As New BoolParam With {.Switch = "--vpp-transform", .Text = "Flip X", .Label = "Transform", .LeftMargin = g.MainForm.FontHeight * 1.5, .ArgsFunc = AddressOf GetTransform}
         Property TransformFlipY As New BoolParam With {.Text = "Flip Y", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
         Property TransformTranspose As New BoolParam With {.Text = "Transpose", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
@@ -457,7 +466,6 @@ Public Class QSVEnc
                         New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer", .Options = {"Disabled", "Upscale", "Box"}},
                         New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image", .Options = {"Disabled", "H", "V"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}},
-                        New NumParam With {.Switch = "--vpp-denoise", .Text = "Denoise", .Config = {0, 100}},
                         New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhance", .Config = {0, 100}},
                         mctf,
                         mctfval)
@@ -483,6 +491,9 @@ Public Class QSVEnc
                     Add("VPP | Deband",
                         Deband, DebandRange, DebandSample, DebandThre, DebandThreY, DebandThreCB, DebandThreCR,
                         DebandDither, DebandDitherY, DebandDitherC, DebandSeed, DebandBlurfirst, DebandRandEachFrame)
+                    Add("VPP | Denoise",
+                        Pmd, PmdApplyCount, PmdStrength, PmdThreshold,
+                        Denoise, DenoiseMode, DenoiseStrength)
                     Add("VPP | Sharpness",
                         Edgelevel, EdgelevelStrength, EdgelevelThreshold, EdgelevelBlack, EdgelevelWhite,
                         Unsharp, UnsharpRadius, UnsharpWeight, UnsharpThreshold,
@@ -738,6 +749,27 @@ Public Class QSVEnc
                 If SmoothQP.Value <> SmoothQP.DefaultValue Then ret += ",qp=" & SmoothQP.Value.ToInvariantString
                 If SmoothPrec.Value <> SmoothPrec.DefaultValue Then ret += ",prec=" & SmoothPrec.ValueText
                 Return "--vpp-smooth " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetPmdArgs() As String
+            If Pmd.Value Then
+                Dim ret = ""
+                If PmdApplyCount.Value <> PmdApplyCount.DefaultValue Then ret += ",apply_count=" & PmdApplyCount.Value
+                If PmdStrength.Value <> PmdStrength.DefaultValue Then ret += ",strength=" & PmdStrength.Value.ToInvariantString
+                If PmdThreshold.Value <> PmdThreshold.DefaultValue Then ret += ",threshold=" & PmdThreshold.Value
+                Return "--vpp-pmd " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetDenoiseArgs() As String
+            If Denoise.Value Then
+                Dim ret = ""
+                If DenoiseMode.Value <> DenoiseMode.DefaultValue Then ret += ",mode=" & DenoiseMode.ValueText
+                If DenoiseStrength.Value <> DenoiseStrength.DefaultValue Then ret += ",strength=" & DenoiseStrength.Value
+                Return "--vpp-denoise " + ret.TrimStart(","c)
             End If
             Return ""
         End Function

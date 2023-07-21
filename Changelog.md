@@ -15,6 +15,7 @@ v2.23.0 (not published yet)
 
 - AOMEnc: Multiple changes to default values ([#1012](/../../issues/1012))
 - AOMEnc: Fix missing target bitrate for constrained quality ([#1044](/../../issues/1044))
+- QSVEncC: Add --vpp-pmd and --vpp-denoise parameters ([#1016](/../../issues/1016))
 - SvtAv1EncApp: Remake whole implementation and add parameters ([#893](/../../issues/893), [#1045](/../../issues/1045))
 - vvencFFapp: Add basic implementation
 - Fix typo ([#1042](/../../issues/1042))
@@ -23,9 +24,6 @@ v2.23.0 (not published yet)
     - MediaInfo v23.07
     - MKVToolNix v78.0
     - vvencFFapp v1.9.0-rc2 r182-3fcfd93
-- Update AviSynth+ plugins
-- Update Dual plugins
-- Update VapourSynth plugins
 
 
 v2.22.0 (2023-07-06)

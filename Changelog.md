@@ -20,6 +20,7 @@ v2.23.0 (not published yet)
 - Fix typo ([#1042](/../../issues/1042))
 - Update tools
     - AviSynth+ v3.7.3 (official release)
+    - MediaInfo v23.07
     - MKVToolNix v78.0
     - vvencFFapp v1.9.0-rc2 r182-3fcfd93
 - Update AviSynth+ plugins

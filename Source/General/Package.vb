@@ -530,17 +530,19 @@ Public Class Package
         .Description = "The Fraunhofer Versatile Video Encoder (VVenC) is a fast and efficient H.266/VVC encoder implementation.",
         .HelpSwitch = "--fullhelp",
         .AllowCustomPath = False,
+        .RequiredFunc = Function() TypeOf p.VideoEncoder Is VvencffappEnc,
         .SupportsAutoUpdate = False,
         .WebURL = "https://github.com/fraunhoferhhi/vvenc",
         .DownloadURL = "https://github.com/f11894/VVenC_Build_Actions/releases"})
 
-    Shared Property SVTAV1 As Package = Add(New Package With {
-        .Name = "SVT-AV1",
-        .Location = "Encoders\SVT-AV1",
+    Shared Property SvtAv1EncApp As Package = Add(New Package With {
+        .Name = "SvtAv1EncApp",
+        .Location = "Encoders\SvtAv1EncApp",
         .Filename = "SvtAv1EncApp.exe",
         .WebURL = "https://github.com/OpenVisualCloud/SVT-AV1",
         .HelpURL = "https://github.com/OpenVisualCloud/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
+        .RequiredFunc = Function() TypeOf p.VideoEncoder Is SvtAv1Enc,
         .HelpSwitch = "--help",
         .Description = "Intel AV1 encoder."})
 
@@ -551,6 +553,7 @@ Public Class Package
         .Description = "AV1 Video Encoder.",
         .WebURL = "https://github.com/xiph/rav1e",
         .DownloadURL = "https://github.com/xiph/rav1e/releases",
+        .RequiredFunc = Function() TypeOf p.VideoEncoder Is Rav1e,
         .HelpSwitch = "--help"})
 
     Shared Property AOMEnc As Package = Add(New Package With {

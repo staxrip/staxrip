@@ -181,11 +181,11 @@
     </Compile>
     <Compile Include="Encoding\AOMEnc.vb" />
     <Compile Include="Encoding\Rav1e.vb" />
-    <Compile Include="Encoding\SVTAV1.vb" />
     <Compile Include="Encoding\VCEEnc.vb" />
     <Compile Include="Encoding\ffmpegEnc.vb" />
     <Compile Include="Encoding\QSVEnc.vb" />
     <Compile Include="Encoding\NVEnc.vb" />
+    <Compile Include="Encoding\SvtAv1Enc.vb" />
     <Compile Include="Encoding\VvencffappEnc.vb" />
     <Compile Include="Encoding\x264Enc.vb" />
     <Compile Include="Forms\DownloadForm.Designer.vb">

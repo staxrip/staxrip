@@ -369,7 +369,7 @@ Public MustInherit Class VideoEncoder
 
         ret.Add(New AOMEnc)
         ret.Add(New Rav1e)
-        ret.Add(New SVTAV1)
+        ret.Add(New SvtAv1Enc)
 
         Dim ffmpeg = New ffmpegEnc()
         For x = 0 To ffmpeg.Params.Codec.Options.Length - 1

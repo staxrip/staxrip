@@ -10,7 +10,7 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.23.0 (not published yet)
+v2.23.0 (2023-07-24)
 ====================
 
 - Add shortcut "Ctrl + E" to Event Commands

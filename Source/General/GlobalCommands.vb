@@ -308,7 +308,7 @@ Public Class GlobalCommands
                                          "<br><a href=""https://github.com/staxrip/staxrip/blob/master/Changelog.md"">Changelog on GitHub</a>" &
                                          "<br><a href=""https://github.com/staxrip/staxrip/wiki"">Wiki on GitHub</a>" &
                                          "<br><a href=""https://discord.gg/uz8pVR79Bd"">StaxRip Community on Discord</a>")
-                'form.Doc.WriteElement("p", "<a href=""https://discord.gg/uz8pVR79Bd"">StaxRip Community on Discord</a>")
+                form.Doc.Writer.WriteRaw("<hr>")
 
                 Dim licensePath = Folder.Startup + "License.txt"
 

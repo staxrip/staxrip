@@ -14,18 +14,19 @@ v2.23.0 (not published yet)
 ====================
 
 - Add shortcut "Ctrl + E" to Event Commands
-- Add vertical scrollbar in Event Commands to make it less glitchy when adding multiple criteria - still glitchy ([#1048](/../../issues/1048))
-- Fix crashing bug in Event Commands
+- Add vertical scrollbar to Event Commands to make it less glitchy when adding multiple criteria - still glitchy ([#1048](/../../issues/1048))
 - Add new macro %encoder_profile% ([#1047](/../../issues/1047))
+- Create separate category for "Add filter to convert chroma subsampling to 4:2:0" added filter, after "Source" for progressive and at the end for interlaced sources (thanks to youer-mam) ([#1021](/../../issues/1021))
+- Fix crashing bug in Event Commands
+- Fix typo ([#1042](/../../issues/1042))
 - Rename macros %video_encoder_profile% to %encoder_profile% and %video_encoder_settings% to %encoder_settings%
 - Move "Add filter to convert chroma subsampling to 4:2:0" to Project
-- Create separate category for "Add filter to convert chroma subsampling to 4:2:0" added filter, after "Source" for progressive and at the end for interlaced sources (thanks to youer-mam) ([#1021](/../../issues/1021))
 - AOMEnc: Multiple changes to default values ([#1012](/../../issues/1012))
 - AOMEnc: Fix missing target bitrate for constrained quality ([#1044](/../../issues/1044))
 - QSVEncC: Add --vpp-pmd and --vpp-denoise parameters ([#1016](/../../issues/1016))
+- QSVEncC: Add --vpp-perc-pre-enc parameter
 - SvtAv1EncApp: Remake whole implementation and add parameters ([#893](/../../issues/893), [#1045](/../../issues/1045))
 - vvencFFapp: Add basic implementation
-- Fix typo ([#1042](/../../issues/1042))
 - Update tools
     - AviSynth+ v3.7.3 (official release)
     - MediaInfo v23.07

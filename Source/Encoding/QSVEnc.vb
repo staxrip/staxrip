@@ -467,6 +467,7 @@ Public Class QSVEnc
                         New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image", .Options = {"Disabled", "H", "V"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}},
                         New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhance", .Config = {0, 100}},
+                        New BoolParam With {.Switch = "--vpp-perc-pre-enc", .Text = "Perceptual Pre Encode"},
                         mctf,
                         mctfval)
                     Add("VPP | Misc 2",

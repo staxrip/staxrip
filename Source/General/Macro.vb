@@ -157,8 +157,11 @@ Public Class Macro
         ret.Add(New Macro("delay", "Audio Delay 1", GetType(Integer), "Audio delay of the first audio track."))
         ret.Add(New Macro("delay2", "Audio Delay 2", GetType(Integer), "Audio delay of the second audio track."))
         ret.Add(New Macro("dpi", "Main Dialog DPI", GetType(Integer), "DPI value of the main dialog."))
+        ret.Add(New Macro("encoder", "Video Encoder", GetType(String), "Name of the active video encoder."))
         ret.Add(New Macro("encoder_ext", "Encoder File Extension", GetType(String), "File extension of the format the encoder of the active project outputs."))
         ret.Add(New Macro("encoder_out_file", "Encoder Output File", GetType(String), "Output file of the video encoder."))
+        ret.Add(New Macro("encoder_profile", "Video Encoder Profile", GetType(String), "Name of the selected video encoder profile name."))
+        ret.Add(New Macro("encoder_settings", "Video Encoder Settings", GetType(String), "Settings of the active video encoder."))
         ret.Add(New Macro("muxer_ext", "Muxer Extension", GetType(String), "Output extension of the active muxer."))
         ret.Add(New Macro("player", "Player", GetType(Integer), "Path of the media player."))
         ret.Add(New Macro("plugin_dir", "Plugin Directory", GetType(String), "AviSynth/VapourSynth plugin auto load directory."))
@@ -211,8 +214,6 @@ Public Class Macro
         ret.Add(New Macro("text_editor", "Text Editor", GetType(String), "Path of the application currently associated with TXT files."))
         ret.Add(New Macro("version", "Version", GetType(String), "StaxRip version."))
         ret.Add(New Macro("video_bitrate", "Video Bitrate", GetType(Integer), "Video bitrate in Kbps"))
-        ret.Add(New Macro("video_encoder", "Video Encoder", GetType(String), "Name of the active video encoder."))
-        ret.Add(New Macro("video_encoder_settings", "Video Encoder Settings", GetType(String), "Settings of the active video encoder."))
         ret.Add(New Macro("working_dir", "Working Directory", GetType(String), "Directory of the source file or the temp directory if enabled."))
 
         ret.Sort()
@@ -478,6 +479,15 @@ Public Class Macro
         If value.Contains("%compressibility%") Then value = value.Replace("%compressibility%", Math.Round(proj.Compressibility, 3).ToString.Replace(",", "."))
         If Not value.Contains("%") Then Return value
 
+        If value.Contains("%encoder%") Then value = value.Replace("%encoder%", TryCast(proj.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage.Name)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%encoder_profile%") Then value = value.Replace("%encoder_profile%", proj.VideoEncoder.Name)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%encoder_settings%") Then value = value.Replace("%encoder_settings%", TryCast(proj.VideoEncoder, BasicVideoEncoder)?.GetCommandLine(False, True).Replace("--", ""))
+        If Not value.Contains("%") Then Return value
+
         If value.Contains("%encoder_out_file%") Then value = value.Replace("%encoder_out_file%", proj.VideoEncoder.OutputPath)
         If Not value.Contains("%") Then Return value
 
@@ -506,12 +516,6 @@ Public Class Macro
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%processing%") Then value = value.Replace("%processing%", g.IsJobProcessing.ToString)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%video_encoder%") Then value = value.Replace("%video_encoder%", TryCast(proj.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage.Name)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%video_encoder_settings%") Then value = value.Replace("%video_encoder_settings%", TryCast(proj.VideoEncoder, BasicVideoEncoder)?.GetCommandLine(False, True).Replace("--", ""))
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%dpi%") Then value = value.Replace("%dpi%", g.DPI.ToString())

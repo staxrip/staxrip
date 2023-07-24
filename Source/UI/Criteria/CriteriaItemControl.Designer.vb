@@ -31,6 +31,7 @@ Namespace UI
             '
             'LayoutPanel
             '
+            Me.LayoutPanel.AutoScroll = True
             Me.LayoutPanel.AutoSize = True
             Me.LayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
             Me.LayoutPanel.ColumnCount = 4
@@ -71,6 +72,7 @@ Namespace UI
             'mbCondition
             '
             Me.mbCondition.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.mbCondition.Enabled = False
             Me.mbCondition.Location = New System.Drawing.Point(301, 70)
             Me.mbCondition.ShowMenuSymbol = True
             Me.mbCondition.Size = New System.Drawing.Size(218, 35)
@@ -78,6 +80,7 @@ Namespace UI
             'te
             '
             Me.te.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.te.Enabled = False
             Me.te.Location = New System.Drawing.Point(525, 70)
             Me.te.Name = "te"
             Me.te.Size = New System.Drawing.Size(218, 35)

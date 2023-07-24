@@ -113,7 +113,7 @@ Namespace UI
                 Return Value
             End Get
             Set(value As String)
-                Me.Value = value
+                Me.Value = If(value, "")
             End Set
         End Property
 

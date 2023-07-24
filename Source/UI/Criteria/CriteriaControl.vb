@@ -6,7 +6,7 @@ Namespace UI
 
         <Browsable(False),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Property AllCrieria As List(Of Criteria)
+        Property AllCriteria As List(Of Criteria)
 
         Sub New()
             FlowDirection = FlowDirection.TopDown
@@ -33,7 +33,7 @@ Namespace UI
         End Sub
 
         Sub AddItem(criteria As Criteria)
-            Dim c As New CriteriaItemControl(AllCrieria)
+            Dim c As New CriteriaItemControl(AllCriteria)
             c.Criteria = criteria
             c.Width = ClientSize.Width
             Controls.Add(c)

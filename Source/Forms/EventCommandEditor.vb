@@ -183,6 +183,7 @@ Public Class EventCommandEditor
             Or AnchorStyles.Left) _
             Or AnchorStyles.Right), AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.gbCriteria, 2)
+        Me.gbCriteria.AutoSize = True
         Me.gbCriteria.Controls.Add(Me.FlowLayoutPanel1)
         Me.gbCriteria.Controls.Add(Me.CriteriaControl)
         Me.gbCriteria.Location = New System.Drawing.Point(10, 170)
@@ -196,6 +197,7 @@ Public Class EventCommandEditor
         '
         'FlowLayoutPanel1
         '
+        Me.FlowLayoutPanel1.AutoScroll = True
         Me.FlowLayoutPanel1.AutoSize = True
         Me.FlowLayoutPanel1.AutoSizeMode = AutoSizeMode.GrowAndShrink
         Me.FlowLayoutPanel1.Controls.Add(Me.rbMatchAllCriteria)
@@ -390,7 +392,7 @@ Public Class EventCommandEditor
 
         allCriteria.Sort(New Comparer(Of Criteria)(NameOf(Criteria.Name)))
 
-        CriteriaControl.AllCrieria = allCriteria
+        CriteriaControl.AllCriteria = allCriteria
         CriteriaControl.CriteriaList = EventCommandValue.CriteriaList
 
         If Not EventCommandValue.CommandParameters Is Nothing Then

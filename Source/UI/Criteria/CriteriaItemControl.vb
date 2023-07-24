@@ -68,12 +68,12 @@ Namespace UI
 
         Private CriteriaValue As Criteria
 
-        Property Criteria() As Criteria
+        Property Criteria As Criteria
             Get
                 Return CriteriaValue
             End Get
             Set(Value As Criteria)
-                If Not Value Is Nothing Then
+                If Value IsNot Nothing Then
                     CriteriaValue = DirectCast(ObjectHelp.GetCopy(Value), Criteria)
 
                     For Each c As Criteria In mbProperties.Items
@@ -83,10 +83,12 @@ Namespace UI
                         End If
                     Next
 
+                    mbCondition.Enabled = True
                     mbCondition.Menu.Items.ClearAndDisplose
                     mbCondition.AddRange(CriteriaValue.ConditionNames)
                     mbCondition.Value = CriteriaValue.ConditionName
 
+                    te.Enabled = True
                     te.TextBox.SetTextWithoutTextChangedEvent(CriteriaValue.ValueString)
                 End If
             End Set

@@ -14,6 +14,7 @@ v2.23.0 (not published yet)
 ====================
 
 - Add shortcut "Ctrl + E" to Event Commands
+- Fix crashing bug in Event Commands
 - Add new macro %encoder_profile% ([#1047](/../../issues/1047))
 - Rename macros %video_encoder_profile% to %encoder_profile% and %video_encoder_settings% to %encoder_settings%
 - Move "Add filter to convert chroma subsampling to 4:2:0" to Project

@@ -13,8 +13,9 @@ v2.xx.0 (not published yet)
 v2.23.0 (not published yet)
 ====================
 
+- Add shortcut "Ctrl + E" to Event Commands
 - Move "Add filter to convert chroma subsampling to 4:2:0" to Project
-- Create separate category for "Add filter to convert chroma subsampling to 4:2:0" added filter, after "Source" for progressive and at the end for interlaced sources
+- Create separate category for "Add filter to convert chroma subsampling to 4:2:0" added filter, after "Source" for progressive and at the end for interlaced sources ([#1021](/../../issues/1021))
 - AOMEnc: Multiple changes to default values ([#1012](/../../issues/1012))
 - AOMEnc: Fix missing target bitrate for constrained quality ([#1044](/../../issues/1044))
 - QSVEncC: Add --vpp-pmd and --vpp-denoise parameters ([#1016](/../../issues/1016))

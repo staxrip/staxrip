@@ -33,16 +33,16 @@ Namespace UI
             '
             Me.LayoutPanel.AutoScroll = True
             Me.LayoutPanel.AutoSize = True
-            Me.LayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+            Me.LayoutPanel.AutoSizeMode = AutoSizeMode.GrowAndShrink
             Me.LayoutPanel.ColumnCount = 4
-            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.0!))
+            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.0!))
             Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.0!))
             Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.0!))
             Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
             Me.LayoutPanel.Controls.Add(Me.mbProperties, 0, 0)
-            Me.LayoutPanel.Controls.Add(Me.bnRemove, 3, 0)
             Me.LayoutPanel.Controls.Add(Me.mbCondition, 1, 0)
             Me.LayoutPanel.Controls.Add(Me.te, 2, 0)
+            Me.LayoutPanel.Controls.Add(Me.bnRemove, 3, 0)
             Me.LayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill
             Me.LayoutPanel.Location = New System.Drawing.Point(0, 0)
             Me.LayoutPanel.Name = "LayoutPanel"
@@ -90,6 +90,7 @@ Namespace UI
             '
             Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
             Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+            Me.AutoScroll = True
             Me.Controls.Add(Me.LayoutPanel)
             Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
             Me.Margin = New System.Windows.Forms.Padding(0)

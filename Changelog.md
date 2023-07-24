@@ -14,6 +14,7 @@ v2.23.0 (not published yet)
 ====================
 
 - Add shortcut "Ctrl + E" to Event Commands
+- Add vertical scrollbar in Event Commands to make it less glitchy when adding multiple criteria - still glitchy ([#1048](/../../issues/1048))
 - Fix crashing bug in Event Commands
 - Add new macro %encoder_profile% ([#1047](/../../issues/1047))
 - Rename macros %video_encoder_profile% to %encoder_profile% and %video_encoder_settings% to %encoder_settings%
@@ -29,6 +30,7 @@ v2.23.0 (not published yet)
     - AviSynth+ v3.7.3 (official release)
     - MediaInfo v23.07
     - MKVToolNix v78.0
+    - QSVEncC v7.47
     - vvencFFapp v1.9.0-rc2 r182-3fcfd93
 - Update AviSynth+ plugins
     - yadifmod2 v0.2.8

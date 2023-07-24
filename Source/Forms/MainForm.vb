@@ -1,6 +1,7 @@
 
 Imports System.ComponentModel
 Imports System.Drawing.Design
+Imports System.Drawing.Drawing2D
 Imports System.Globalization
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -2532,17 +2533,32 @@ Public Class MainForm
             End If
         End If
 
-        If p.SourceChromaSubsampling <> "4:2:0" AndAlso s.ConvertChromaSubsampling Then
+        If p.SourceChromaSubsampling <> "4:2:0" AndAlso p.ConvertChromaSubsampling Then
+            Dim interlaced = p.SourceScanType = "Interlaced"
+
             If editVS Then
                 Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
                 Dim matrix = If(sourceHeight = 0 OrElse sourceHeight > 576, "709", "470bg")
                 Dim format = If(p.SourceVideoBitDepth = 10, "YUV420P10", "YUV420P8")
-                p.Script.GetFilter("Source").Script += BR + "clip = clip.resize.Bicubic(matrix_s = '" +
-                    matrix + $"', format = vs.{format})"
-            ElseIf editAVS AndAlso Not sourceFilter.Script.ContainsAny("ConvertToYV12", "ConvertToYUV420") AndAlso
-                Not sourceFilter.Script.Contains("ConvertToYUV420") Then
+                Dim category = "Color"
+                Dim name = $"Convert To {format}"
+                Dim script = $"clip = clip.resize.Bicubic(matrix_s = '{matrix}', format = vs.{format})"
 
-                p.Script.GetFilter("Source").Script += BR + "ConvertToYUV420()"
+                If interlaced Then
+                    p.Script.Filters.Add(New VideoFilter(category, name, script, True))
+                Else
+                    p.Script.Filters.Insert(1, New VideoFilter(category, name, script, True))
+                End If
+            ElseIf editAVS Then
+                Dim category = "Color"
+                Dim name = $"ConvertToYUV420()"
+                Dim script = $"ConvertToYUV420()"
+
+                If interlaced Then
+                    p.Script.Filters.Add(New VideoFilter(category, name, script, True))
+                Else
+                    p.Script.Filters.Insert(1, New VideoFilter(category, name, script, True))
+                End If
             End If
         End If
 
@@ -3704,11 +3720,6 @@ Public Class MainForm
             Dim videoPage = ui.CreateFlowPage("Video")
 
             b = ui.AddBool
-            b.Text = "Add filter to convert chroma subsampling to 4:2:0"
-            b.Help = "After a source is loaded, automatically add a filter to convert chroma subsampling to 4:2:0"
-            b.Field = NameOf(s.ConvertChromaSubsampling)
-
-            b = ui.AddBool
             b.Text = "Add filter to automatically correct the frame rate."
             b.Field = NameOf(s.FixFrameRate)
 
@@ -4579,6 +4590,11 @@ Public Class MainForm
             b.Text = "Import VUI metadata"
             b.Help = "Imports VUI metadata such as HDR from the source file to the video encoder."
             b.Field = NameOf(p.ImportVUIMetadata)
+
+            b = ui.AddBool
+            b.Text = "Add filter to convert chroma subsampling to 4:2:0"
+            b.Help = "After a source is loaded, automatically add a filter to convert chroma subsampling to 4:2:0"
+            b.Field = NameOf(p.ConvertChromaSubsampling)
 
             b = ui.AddBool
             b.Text = "Auto-rotate video after loading when possible"

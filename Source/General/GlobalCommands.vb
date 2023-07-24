@@ -304,6 +304,11 @@ Public Class GlobalCommands
                 form.Doc.Write("Active Contributors", "Patman86, DJATOM")
                 form.Doc.Write("Retired Authors", "stax76, JKyle, 44vince44, Revan654, NikosD, jernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
                 form.Doc.Writer.WriteRaw("<hr>")
+                form.Doc.Write("Links", "<a href=""https://github.com/staxrip/staxrip"">Source on GitHub</a>" &
+                                         "<br><a href=""https://github.com/staxrip/staxrip/blob/master/Changelog.md"">Changelog on GitHub</a>" &
+                                         "<br><a href=""https://github.com/staxrip/staxrip/wiki"">Wiki on GitHub</a>" &
+                                         "<br><a href=""https://discord.gg/uz8pVR79Bd"">StaxRip Community on Discord</a>")
+                'form.Doc.WriteElement("p", "<a href=""https://discord.gg/uz8pVR79Bd"">StaxRip Community on Discord</a>")
 
                 Dim licensePath = Folder.Startup + "License.txt"
 

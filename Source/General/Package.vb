@@ -1619,7 +1619,8 @@ Public Class Package
             .VsFilterNames = {"G41Fun.mClean", "G41Fun.NonlinUSM", "G41Fun.DetailSharpen", "G41Fun.LUSM", "G41Fun.JohnFPS", "G41Fun.TemporalDegrain2",
                 "G41Fun.MCDegrainSharp", "G41Fun.FineSharp", "G41Fun.psharpen", "G41Fun.QTGMC", "G41Fun.SMDegrain", "G41Fun.daamod",
                 "G41Fun.STPressoHD", "G41Fun.MLDegrain", "G41Fun.Hysteria", "G41Fun.SuperToon", "G41Fun.EdgeDetect", "G41Fun.SpotLess",
-                "G41Fun.HQDeringmod", "G41Fun.LSFmod", "G41Fun.SeeSaw", "G41Fun.MaskedDHA"}})
+                "G41Fun.HQDeringmod", "G41Fun.LSFmod", "G41Fun.SeeSaw", "G41Fun.MaskedDHA"},
+            .Dependencies = {"libfftw3f-3.dll", "neo-dfttest.dll"}})
 
         Add(New PluginPackage With {
             .Name = "fvsfunc",

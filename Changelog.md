@@ -13,6 +13,8 @@ v2.xx.0 (not published yet)
 v2.23.0 (not published yet)
 ====================
 
+- Move "Add filter to convert chroma subsampling to 4:2:0" to Project
+- Create separate category for "Add filter to convert chroma subsampling to 4:2:0" added filter, after "Source" for progressive and at the end for interlaced sources
 - AOMEnc: Multiple changes to default values ([#1012](/../../issues/1012))
 - AOMEnc: Fix missing target bitrate for constrained quality ([#1044](/../../issues/1044))
 - QSVEncC: Add --vpp-pmd and --vpp-denoise parameters ([#1016](/../../issues/1016))
@@ -24,6 +26,10 @@ v2.23.0 (not published yet)
     - MediaInfo v23.07
     - MKVToolNix v78.0
     - vvencFFapp v1.9.0-rc2 r182-3fcfd93
+- Update AviSynth+ plugins
+    - yadifmod2 v0.2.8
+- Update Dual plugins
+    - FFTW v3.3.5
 
 
 v2.22.0 (2023-07-06)
@@ -67,8 +73,8 @@ v2.21.0 (2023-07-03)
 - Update AviSynth+ plugins
     - CropResize 2023-06-02
     - ExTools v10.2
-    - FFTW v3.3.10
 - Update Dual plugins
+    - FFTW v3.3.10
     - SVPFlow1 v4.5.0.200 (Thanks to Nuihc88)
     - SVPFlow2 v4.3.0.161 (Thanks to Nuihc88)
 

@@ -27,7 +27,6 @@ Public Class ApplicationSettings
     Public CommandLinePreviewMouseUpSearch As Boolean = True
     Public CommandLinePreviewViaCodeForm As Boolean = True    
     Public CommandLinePreview As CommandLinePreview = CommandLinePreview.CodePreview
-    Public ConvertChromaSubsampling As Boolean = True
     Public CropColor As Color
     Public CropFrameCount As Integer
     Public CustomMenuCodeEditor As CustomMenuItem

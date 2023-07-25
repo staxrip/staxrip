@@ -164,7 +164,7 @@ Public Class AOMEnc
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.RateMode.ValueText.EqualsAny("cq", "q")
+            Return Params.RateMode.Value = 3
         End Get
         Set(Value As Boolean)
         End Set

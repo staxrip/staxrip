@@ -13,6 +13,7 @@ v2.xx.0 (not published yet)
 v2.24.0 (not published yet)
 ====================
 
+- AOMEnc: Fix not saved target bitrate for CQ rate mode ([#1052](/../../issues/1052))
 - SvtAv1EncApp: Fix output path with spaces causing error ([#1045](/../../issues/1045))
 - Update tools
 - Update AviSynth+ plugins

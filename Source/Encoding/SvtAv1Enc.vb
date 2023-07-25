@@ -508,7 +508,8 @@ Public Class SvtAv1EncParams
                 ItemsValue = New List(Of CommandLineParam)
 
                 Add("Basic", Decoder, PipingToolAVS, PipingToolVS,
-                    Preset, Profile, Level, EnableHdr,
+                    Preset, Profile, Level, 
+                    Passes, EnableHdr,
                     FrameSkip, FramesToBeEncoded,
                     CompCheck, CompCheckAimedQuality,
                     Chunks
@@ -516,9 +517,6 @@ Public Class SvtAv1EncParams
                 Add("Rate Control",
                     RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp, AqMode,
                     EnableQm, QmMax, QmMin
-                )
-                Add("Multi-Pass",
-                    Passes
                 )
                 Add("GOP size/type",
                     KeyInt, KeyIntCrf,

@@ -10,12 +10,13 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.24.0 (2023-07-25)
+v2.24.0 (2023-07-26)
 ====================
 
 - AVS: Fix InterFrame not working with SVPFlow ([#1046](/../../issues/1046))
 - AOMEnc: Fix not saved target bitrate for CQ rate mode ([#1052](/../../issues/1052))
 - SvtAv1EncApp: Fix output path with spaces causing error ([#1045](/../../issues/1045))
+- SvtAv1EncApp: Move Passes to Basic category
 - Update tools
 - Update AviSynth+ plugins
 - Update Dual plugins

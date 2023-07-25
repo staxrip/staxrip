@@ -35,9 +35,9 @@ Namespace UI
             Me.LayoutPanel.AutoSize = True
             Me.LayoutPanel.AutoSizeMode = AutoSizeMode.GrowAndShrink
             Me.LayoutPanel.ColumnCount = 4
-            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.0!))
-            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.0!))
-            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.0!))
+            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.0!))
+            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
+            Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.0!))
             Me.LayoutPanel.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
             Me.LayoutPanel.Controls.Add(Me.mbProperties, 0, 0)
             Me.LayoutPanel.Controls.Add(Me.mbCondition, 1, 0)

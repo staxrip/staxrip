@@ -668,7 +668,7 @@ Public Class SvtAv1EncParams
 
             sb.Append($" --input {input}")
             sb.Append($" --width {p.TargetWidth} --height {p.TargetHeight}")
-            sb.Append($" --output {targetPath}")
+            sb.Append($" --output {targetPath.Escape}")
         End If
 
         If isSingleChunk Then

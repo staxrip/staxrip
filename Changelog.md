@@ -10,6 +10,16 @@ v2.xx.0 (not published yet)
 -->
 
 
+v2.24.0 (not published yet)
+====================
+
+- SvtAv1EncApp: Fix output path with spaces causing error ([#1045](/../../issues/1045))
+- Update tools
+- Update AviSynth+ plugins
+- Update Dual plugins
+- Update VapourSynth plugins
+
+
 v2.23.0 (2023-07-24)
 ====================
 

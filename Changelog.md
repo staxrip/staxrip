@@ -10,17 +10,20 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.24.0 (2023-07-26)
+v2.24.0 (2023-07-28)
 ====================
 
 - AVS: Fix InterFrame not working with SVPFlow ([#1046](/../../issues/1046))
 - AOMEnc: Fix not saved target bitrate for CQ rate mode ([#1052](/../../issues/1052))
 - SvtAv1EncApp: Fix output path with spaces causing error ([#1045](/../../issues/1045))
 - SvtAv1EncApp: Move Passes to Basic category
+- SvtAv1EncApp: Fix deprecated URLs
 - Update tools
+    - chapterEditor v1.39
 - Update AviSynth+ plugins
+    - edi_rpow2 v1.0 mod 87
 - Update Dual plugins
-- Update VapourSynth plugins
+    - FFTW v3.3.10
 
 
 v2.23.0 (2023-07-24)

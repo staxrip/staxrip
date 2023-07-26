@@ -539,8 +539,8 @@ Public Class Package
         .Name = "SvtAv1EncApp",
         .Location = "Encoders\SvtAv1EncApp",
         .Filename = "SvtAv1EncApp.exe",
-        .WebURL = "https://github.com/OpenVisualCloud/SVT-AV1",
-        .HelpURL = "https://github.com/OpenVisualCloud/SVT-AV1/blob/master/Docs/svt-av1_encoder_user_guide.md",
+        .WebURL = "https://gitlab.com/AOMediaCodec/SVT-AV1",
+        .HelpURL = "https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Parameters.md",
         .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
         .RequiredFunc = Function() TypeOf p.VideoEncoder Is SvtAv1Enc,
         .HelpSwitch = "--help",
@@ -742,7 +742,7 @@ Public Class Package
     Shared Property FFTW As Package = Add(New Package With {
         .Name = "FFTW",
         .Location = "Support\FFTW",
-        .Filename = "libfftw3f-3.dll",
+        .Filename = "libfftw3-3.dll",
         .Description = "Library required by various AviSynth and VapourSynth plugins.",
         .WebURL = "http://www.fftw.org"})
 
@@ -1619,8 +1619,7 @@ Public Class Package
             .VsFilterNames = {"G41Fun.mClean", "G41Fun.NonlinUSM", "G41Fun.DetailSharpen", "G41Fun.LUSM", "G41Fun.JohnFPS", "G41Fun.TemporalDegrain2",
                 "G41Fun.MCDegrainSharp", "G41Fun.FineSharp", "G41Fun.psharpen", "G41Fun.QTGMC", "G41Fun.SMDegrain", "G41Fun.daamod",
                 "G41Fun.STPressoHD", "G41Fun.MLDegrain", "G41Fun.Hysteria", "G41Fun.SuperToon", "G41Fun.EdgeDetect", "G41Fun.SpotLess",
-                "G41Fun.HQDeringmod", "G41Fun.LSFmod", "G41Fun.SeeSaw", "G41Fun.MaskedDHA"},
-            .Dependencies = {"libfftw3f-3.dll", "neo-dfttest.dll"}})
+                "G41Fun.HQDeringmod", "G41Fun.LSFmod", "G41Fun.SeeSaw", "G41Fun.MaskedDHA"}})
 
         Add(New PluginPackage With {
             .Name = "fvsfunc",

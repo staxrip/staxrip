@@ -15,9 +15,10 @@ v2.24.0 (2023-07-28)
 
 - AVS: Fix InterFrame not working with SVPFlow ([#1046](/../../issues/1046))
 - AOMEnc: Fix not saved target bitrate for CQ rate mode ([#1052](/../../issues/1052))
+- SvtAv1EncApp: Add --progress parameter
+- SvtAv1EncApp: Fix deprecated URLs
 - SvtAv1EncApp: Fix output path with spaces causing error ([#1045](/../../issues/1045))
 - SvtAv1EncApp: Move Passes to Basic category
-- SvtAv1EncApp: Fix deprecated URLs
 - Update tools
     - chapterEditor v1.39
 - Update AviSynth+ plugins

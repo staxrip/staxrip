@@ -473,6 +473,15 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() FilmGrain.Value > 0
     }
 
+    Property Progress As New OptionParam With {
+        .Switch = "--progress",
+        .Text = "Progress",
+        .DefaultValue = 1,
+        .Value = 2,
+        .Options = {"0: No Output", "1: Normal (Default)", "2: AOMEnc Style Output"},
+        .Values = {"0", "1", "2"}
+    }
+
     Property Custom As New StringParam With {
         .Text = "Custom",
         .Quotes = QuotesMode.Never,
@@ -508,6 +517,7 @@ Public Class SvtAv1EncParams
                 ItemsValue = New List(Of CommandLineParam)
 
                 Add("Basic", Decoder, PipingToolAVS, PipingToolVS,
+                    Progress,
                     Preset, Profile, Level, 
                     Passes, EnableHdr,
                     FrameSkip, FramesToBeEncoded,

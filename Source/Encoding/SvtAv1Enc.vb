@@ -56,8 +56,9 @@ Public Class SvtAv1Enc
             proc.Header = passName
             proc.Encoding = Encoding.UTF8
             proc.Priority = priority
-            proc.IntegerFrameOutput = True
             proc.FrameCount = p.Script.GetFrameCount
+            proc.IntegerFrameOutput = Params.Progress.Value < 2
+            proc.SkipStrings = {"Encoding frame", " Frames @ "}
 
             If commandLine.Contains("|") Then
                 proc.File = "cmd.exe"

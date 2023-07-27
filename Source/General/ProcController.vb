@@ -294,7 +294,7 @@ Public Class ProcController
 
                             If fpsParse AndAlso ProjectScriptFrameRate > 0 Then
                                 Dim speed = fps / ProjectScriptFrameRate
-                                speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture )}x)"
+                                speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                             End If
 
                             value = $"[{match.Groups(1).Value,2}{match.Groups(2).Value}%] {match.Groups(3).Value.PadLeft(match.Groups(4).Value.Length)}/{match.Groups(4).Value} frames @ {match.Groups(5).Value}{match.Groups(6).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(7).Value,4} {match.Groups(9).Value}{CustomProgressInfoSeparator}{match.Groups(12).Value}{match.Groups(13).Value} {match.Groups(14).Value} ({match.Groups(15).Value} {match.Groups(17).Value}){CustomProgressInfoSeparator}{match.Groups(10).Value} (-{match.Groups(11).Value})"
@@ -314,7 +314,7 @@ Public Class ProcController
 
                             If fpsParse AndAlso ProjectScriptFrameRate > 0 Then
                                 Dim speed = fps / ProjectScriptFrameRate
-                                speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture )}x)"
+                                speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                             End If
 
                             value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(8).Value}.{match.Groups(9).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(11).Value,4} kb/s{CustomProgressInfoSeparator}{match.Groups(16).Value} {match.Groups(18).Value} ({match.Groups(20).Value}.{match.Groups(21).Value} {match.Groups(22).Value}){CustomProgressInfoSeparator}{match.Groups(13).Value} (-{match.Groups(14).Value})"
@@ -336,7 +336,7 @@ Public Class ProcController
 
                             If fpsParse AndAlso ProjectScriptFrameRate > 0 Then
                                 Dim speed = fps / ProjectScriptFrameRate
-                                speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture )}x)"
+                                speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                             End If
 
                             value = $"[{match.Groups(1).Value,2}{match.Groups(2).Value}%] {match.Groups(3).Value.PadLeft(match.Groups(4).Value.Length)}/{match.Groups(4).Value} frames @ {match.Groups(5).Value}{match.Groups(6).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(7).Value,4} {match.Groups(9).Value}{CustomProgressInfoSeparator}{match.Groups(12).Value}{match.Groups(13).Value} {match.Groups(14).Value} ({match.Groups(15).Value} {match.Groups(17).Value}){CustomProgressInfoSeparator}{match.Groups(10).Value} (-{match.Groups(11).Value})"
@@ -356,7 +356,7 @@ Public Class ProcController
 
                             If fpsParse AndAlso ProjectScriptFrameRate > 0 Then
                                 Dim speed = fps / ProjectScriptFrameRate
-                                speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture )}x)"
+                                speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                             End If
 
                             value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(7).Value.Length)}{match.Groups(6).Value}/{match.Groups(7).Value} frames @ {match.Groups(10).Value}.{match.Groups(11).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(14).Value,4} {match.Groups(16).Value}{CustomProgressInfoSeparator}{match.Groups(19).Value} {match.Groups(21).Value} ({match.Groups(22).Value} {match.Groups(24).Value}){CustomProgressInfoSeparator}{match.Groups(17).Value} (-{match.Groups(18).Value})"
@@ -419,11 +419,11 @@ Public Class ProcController
 
                 Exit Sub
             End If
-        ElseIf Proc.FrameCount > 0 AndAlso value.Contains("frame=") AndAlso value.Contains("fps=") Then
-            Dim frameString = value.Left("fps=").Right("frame=")
+        ElseIf Proc.FrameCount > 0 AndAlso value.Contains("frame") Then
+            Dim match = Regex.Match(value, "frame\s+(\d+)(?:\s|/)", RegexOptions.IgnoreCase)
 
-            If frameString.IsInt Then
-                Dim frame = frameString.ToInt
+            If match.Success Then
+                Dim frame = match.Groups(1).Value.ToInt()
 
                 If frame < Proc.FrameCount Then
                     Dim progressValue = CSng(frame / Proc.FrameCount * 100)
@@ -463,27 +463,6 @@ Public Class ProcController
 
             If str.IsInt Then
                 Dim frame = str.ToInt
-
-                If frame < Proc.FrameCount Then
-                    Dim progressValue = CSng(frame / Proc.FrameCount * 100)
-
-                    If LastProgress <> progressValue Then
-                        ProcForm.Taskbar?.SetState(TaskbarStates.Normal)
-                        ProcForm.Taskbar?.SetValue(Math.Max(progressValue, 1), 100)
-                        ProcForm.NotifyIcon.Text = progressValue & "%"
-                        ProgressBar.Value = progressValue
-                        LastProgress = progressValue
-                    End If
-
-                    Exit Sub
-                End If
-            End If
-        ElseIf Proc.Package Is Package.AOMEnc AndAlso Proc.FrameCount > 0 AndAlso value.Contains(" frame ") Then
-            Dim right = value.Right(" frame ")
-            Dim left = right.Left("/").Trim
-
-            If left.IsInt Then
-                Dim frame = left.ToInt
 
                 If frame < Proc.FrameCount Then
                     Dim progressValue = CSng(frame / Proc.FrameCount * 100)

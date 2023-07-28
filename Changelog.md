@@ -22,6 +22,8 @@ v2.24.0 (2023-07-28)
 - SvtAv1EncApp: Fix encoding output and crash for  "--progress 2" ([#1045](/../../issues/1045))
 - Update tools
     - chapterEditor v1.39
+    - MP4Box v2.3-DEV-rev472-g2a2327c3b
+    - vvencFFapp v1.9.0
 - Update AviSynth+ plugins
     - edi_rpow2 v1.0 mod 87
 - Update Dual plugins

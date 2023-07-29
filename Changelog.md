@@ -10,7 +10,7 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.24.0 (2023-07-28)
+v2.24.0 (2023-07-29)
 ====================
 
 - AVS: Fix InterFrame not working with SVPFlow ([#1046](/../../issues/1046))

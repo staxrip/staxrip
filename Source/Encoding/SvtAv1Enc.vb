@@ -454,21 +454,21 @@ Public Class SvtAv1EncParams
         .Text = "Frames To Be Skipped"}
 
     Property FramesToBeEncoded As New NumParam With {
-        .HelpSwitch = "--n",
+        .HelpSwitch = "--frames",
         .Text = "Frames To Be Encoded"}
 
 
     Property FilmGrain As New NumParam With {
-        .Switch = "--film-grain", 
-        .Text = "Film Grain Denoising Level", 
-        .Init = 0, 
+        .Switch = "--film-grain",
+        .Text = "Film Grain Denoising Level",
+        .Init = 0,
         .Config = {0, 50, 1}
     }
 
     Property FilmGrainDenoise As New OptionParam With {
-        .Switch = "--film-grain-denoise", 
-        .Text = "Film Grain Denoise", 
-        .Init = 1, 
+        .Switch = "--film-grain-denoise",
+        .Text = "Film Grain Denoise",
+        .Init = 1,
         .IntegerValue = True,
         .Options = {"0: no denoising, film grain data is still in frame header", "1: level of denoising is set by the film-grain parameter"},
         .VisibleFunc = Function() FilmGrain.Value > 0
@@ -519,7 +519,7 @@ Public Class SvtAv1EncParams
 
                 Add("Basic", Decoder, PipingToolAVS, PipingToolVS,
                     Progress,
-                    Preset, Profile, Level, 
+                    Preset, Profile, Level,
                     Passes, EnableHdr,
                     FrameSkip, FramesToBeEncoded,
                     CompCheck, CompCheckAimedQuality,
@@ -685,13 +685,13 @@ Public Class SvtAv1EncParams
                 sb.Append($" --skip {FrameSkip.Value}")
             End If
 
-            If FramesToBeEncoded.Value > 0 AndAlso Not IsCustom(pass, "--n") Then
-                sb.Append($" --n {Math.Min(script.GetFrameCount - FrameSkip.Value, FramesToBeEncoded.Value)}")
+            If FramesToBeEncoded.Value > 0 AndAlso Not IsCustom(pass, "--frames") Then
+                sb.Append($" --frames {Math.Min(script.GetFrameCount - FrameSkip.Value, FramesToBeEncoded.Value)}")
+            Else
+                sb.Append($" --frames {script.GetFrameCount - FrameSkip.Value}")
             End If
-            'Else
-            '    If includePaths Then
-            '        sb.Append($" --skip {startFrame} --n {endFrame - startFrame + 1}")
-            '    End If
+        Else
+            sb.Append($" --frames {endFrame - startFrame + 1}")
         End If
 
         If Passes.Value > 0 Then

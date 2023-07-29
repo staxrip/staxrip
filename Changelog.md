@@ -13,8 +13,11 @@ v2.xx.0 (not published yet)
 v2.25.0 (not published yet)
 ====================
 
-- ...
+- SvtAv1EncApp: Fix wrong parameter for encoding frames
+- SvtAv1EncApp: Add support for modified progress in @Patman86's mod
+- Minor changes to progress detection
 - Update tools
+    - SvtAv1EncApp v1.6.0-4-g903ff3ad-[Mod-by-Patman]-x64-msvc1936
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins

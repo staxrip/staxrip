@@ -61,6 +61,7 @@ Public Class AudioForm
     Friend WithEvents tlpAdvanced As TableLayoutPanel
     Friend WithEvents bnAdvanced As ButtonEx
     Friend WithEvents cbNormalize As CheckBoxEx
+    Friend WithEvents cbCommentaryTrack As CheckBoxEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -94,6 +95,7 @@ Public Class AudioForm
         Me.Label4 = New LabelEx()
         Me.numGain = New StaxRip.UI.NumEdit()
         Me.cbNormalize = New StaxRip.UI.CheckBoxEx()
+        Me.cbCommentaryTrack = New StaxRip.UI.CheckBoxEx()
         Me.numDelay = New StaxRip.UI.NumEdit()
         Me.lDelay = New LabelEx()
         Me.gbAdvanced = New GroupBoxEx()
@@ -158,15 +160,16 @@ Public Class AudioForm
         Me.tlpBasic.Controls.Add(Me.tbStreamName, 1, 8)
         Me.tlpBasic.Controls.Add(Me.laCustom, 0, 9)
         Me.tlpBasic.Controls.Add(Me.tbCustom, 1, 9)
+        Me.tlpBasic.Controls.Add(Me.cbNormalize, 0, 10)
         Me.tlpBasic.Controls.Add(Me.cbDefaultTrack, 0, 11)
         Me.tlpBasic.Controls.Add(Me.cbForcedTrack, 0, 12)
+        Me.tlpBasic.Controls.Add(Me.cbCommentaryTrack, 0, 13)
         Me.tlpBasic.Controls.Add(Me.laDecoder, 0, 1)
         Me.tlpBasic.Controls.Add(Me.mbDecoder, 1, 1)
         Me.tlpBasic.Controls.Add(Me.lQualiy, 2, 1)
         Me.tlpBasic.Controls.Add(Me.numQuality, 3, 1)
         Me.tlpBasic.Controls.Add(Me.Label4, 2, 2)
         Me.tlpBasic.Controls.Add(Me.numGain, 3, 2)
-        Me.tlpBasic.Controls.Add(Me.cbNormalize, 0, 10)
         Me.tlpBasic.Controls.Add(Me.numDelay, 3, 3)
         Me.tlpBasic.Controls.Add(Me.lDelay, 2, 3)
         Me.tlpBasic.Dock = System.Windows.Forms.DockStyle.Fill
@@ -392,6 +395,16 @@ Public Class AudioForm
         Me.cbForcedTrack.Margin = New System.Windows.Forms.Padding(15, 1, 3, 1)
         Me.cbForcedTrack.Size = New System.Drawing.Size(267, 52)
         Me.cbForcedTrack.Text = "Forced Track"
+        '
+        'cbCommentaryTrack
+        '
+        Me.cbCommentaryTrack.AutoSize = true
+        Me.tlpBasic.SetColumnSpan(Me.cbCommentaryTrack, 4)
+        Me.cbCommentaryTrack.Location = New System.Drawing.Point(15, 852)
+        Me.cbCommentaryTrack.Margin = New System.Windows.Forms.Padding(15, 1, 3, 1)
+        Me.cbCommentaryTrack.Size = New System.Drawing.Size(290, 52)
+        Me.cbCommentaryTrack.Text = "Commentary Track"
+        Me.cbCommentaryTrack.UseVisualStyleBackColor = false
         '
         'laDecoder
         '
@@ -692,6 +705,7 @@ Public Class AudioForm
 
         'cbDefaultTrack.Visible = TypeOf p.VideoEncoder.Muxer Is MkvMuxer
         cbForcedTrack.Visible = TypeOf p.VideoEncoder.Muxer Is MkvMuxer
+        cbCommentaryTrack.Visible = TypeOf p.VideoEncoder.Muxer Is MkvMuxer
 
         If components Is Nothing Then
             components = New System.ComponentModel.Container
@@ -720,6 +734,7 @@ Public Class AudioForm
         TipProvider.SetTip("Custom command line arguments.", tbCustom, laCustom)
         TipProvider.SetTip("Default MKV Track.", cbDefaultTrack)
         TipProvider.SetTip("Forced MKV Track.", cbForcedTrack)
+        TipProvider.SetTip("Commentary MKV Track.", cbCommentaryTrack)
 
         ApplyTheme()
 
@@ -771,6 +786,7 @@ Public Class AudioForm
         gap.Gain = TempProfile.Gain
         gap.Default = TempProfile.Default
         gap.Forced = TempProfile.Forced
+        gap.Commentary = TempProfile.Commentary
         gap.Params = TempProfile.Params
         gap.Decoder = TempProfile.Decoder
         gap.DecodingMode = TempProfile.DecodingMode
@@ -981,6 +997,7 @@ Public Class AudioForm
 
         cbDefaultTrack.Checked = TempProfile.Default
         cbForcedTrack.Checked = TempProfile.Forced
+        cbCommentaryTrack.Checked = TempProfile.Commentary
         cbNormalize.Checked = TempProfile.Params.Normalize
 
         mbCodec.Value = TempProfile.Params.Codec
@@ -1334,6 +1351,10 @@ Public Class AudioForm
 
     Sub cbForcedTrack_CheckedChanged(sender As Object, e As EventArgs) Handles cbForcedTrack.CheckedChanged
         TempProfile.Forced = cbForcedTrack.Checked
+    End Sub
+
+    Sub cbCommentaryTrack_CheckedChanged(sender As Object, e As EventArgs) Handles cbCommentaryTrack.CheckedChanged
+        TempProfile.Commentary = cbCommentaryTrack.Checked
     End Sub
 
     Sub mbEncoder_ValueChangedUser(value As Object) Handles mbEncoder.ValueChangedUser

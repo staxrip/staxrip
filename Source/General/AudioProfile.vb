@@ -16,6 +16,7 @@ Public MustInherit Class AudioProfile
     Property Streams As List(Of AudioStream) = New List(Of AudioStream)
     Property [Default] As Boolean
     Property Forced As Boolean
+    Property Commentary As Boolean
     Property ExtractDTSCore As Boolean
     Property Decoder As AudioDecoderMode
     Property DecodingMode As AudioDecodingMode
@@ -94,6 +95,7 @@ Public MustInherit Class AudioProfile
                     Language = Stream.Language
                     Forced = Stream.Forced
                     Me.Default = Stream.Default
+                    Commentary = Stream.Commentary
 
                     If StreamName = "" AndAlso Stream.Title <> "" Then
                         StreamName = Stream.Title
@@ -678,6 +680,12 @@ Public Class MuxAudioProfile
                 cb.Help = "Flaged as forced in MKV."
                 cb.Checked = Forced
                 cb.SaveAction = Sub(value) Forced = value
+
+                cb = ui.AddBool(page)
+                cb.Text = "Commentary"
+                cb.Help = "Flaged as commentary in MKV."
+                cb.Checked = Commentary
+                cb.SaveAction = Sub(value) Commentary = value
             End If
 
             cb = ui.AddBool(page)

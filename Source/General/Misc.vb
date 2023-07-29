@@ -1034,6 +1034,7 @@ Public Class AudioStream
     Property Bitrate2 As Integer
     Property Channels As Integer
     Property Channels2 As Integer
+    Property Commentary As Boolean
     Property Delay As Integer
     Property Enabled As Boolean = True
     Property Forced As Boolean

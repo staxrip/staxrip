@@ -367,7 +367,7 @@ Public Class ProcController
                     End If
                 ElseIf Proc.Package Is Package.SvtAv1EncApp Then
                     'Mod by Patman
-                    pattern = "^Encoding:\s+(\d+)/(\s*\d+)\sFrames\s@\s(\d+\.\d+)\sfps\s\|\s(\d+\.\d+)\skbps\s\|\sTime:\s(\d\d:\d\d:\d\d)\s\[(-?\d\d:\d\d:\d\d)\]\s\|\sEst\.\sSize:\s(-?\d+\.\d+)\s(.B)"
+                    pattern = "^Encoding:\s+(\d+)/(\s*\d+)\sFrames\s@\s(\d+\.\d+)\sfps\s\|\s(\d+)\.\d+\skbps\s\|\sTime:\s(\d\d:\d\d:\d\d)\s\[(-?\d\d:\d\d:\d\d)\]\s\|\sSize:\s(-?\d+\.\d+)\s(.B)\s\[(-?\d+)\.\d+\s(.B)\]"
                     match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                     If match.Success Then
@@ -379,8 +379,6 @@ Public Class ProcController
                         Dim fps = 0.0f
                         Dim fpsParse = Single.TryParse($"{match.Groups(3).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, fps)
                         Dim speedString = ""
-                        Dim kbps = 0.0f
-                        Dim kbpsParse = Single.TryParse($"{match.Groups(4).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, kbps)
 
                         If frameParse AndAlso framesParse Then
                             Dim percent = frame / frames * 100
@@ -392,7 +390,7 @@ Public Class ProcController
                             speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                         End If
 
-                        value = $"{percentString} {match.Groups(1).Value.PadLeft(match.Groups(2).Value.Length)}/{match.Groups(2).Value.Trim()} frames @ {match.Groups(3).Value} fps{speedString}{CustomProgressInfoSeparator}{kbps:0,4} kb/s{CustomProgressInfoSeparator}({match.Groups(7).Value} {match.Groups(8).Value}){CustomProgressInfoSeparator}{match.Groups(5).Value} ({match.Groups(6).Value})"
+                        value = $"{percentString} {match.Groups(1).Value.PadLeft(match.Groups(2).Value.Length)}/{match.Groups(2).Value.Trim()} frames @ {match.Groups(3).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(4).Value,4} kb/s{CustomProgressInfoSeparator}{match.Groups(7).Value,5} {match.Groups(8).Value} ({match.Groups(9).Value} {match.Groups(10).Value}){CustomProgressInfoSeparator}{match.Groups(5).Value} ({match.Groups(6).Value})"
                     Else
                         FailCounter += 1
                     End If
@@ -421,7 +419,7 @@ Public Class ProcController
             If match.Success Then
                 progress = match.Groups(1).Value.ToSingle()
             Else
-                match = Regex.Match(value, "frame\s+(\d+)(?:\s|/)", RegexOptions.IgnoreCase)
+                match = Regex.Match(value, "frame=?\s+(\d+)(?:\s|/)", RegexOptions.IgnoreCase)
                 If match.Success Then
                     frame = match.Groups(1).Value.ToInt()
                 Else

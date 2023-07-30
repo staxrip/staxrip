@@ -760,6 +760,18 @@ Public Class MuxerForm
         forcedColumn.DataPropertyName = "Forced"
         dgvSubtitles.Columns.Add(forcedColumn)
 
+        If Typeof muxer Is MkvMuxer Then
+            Dim commentaryColumn As New DataGridViewCheckBoxColumn
+            commentaryColumn.HeaderText = "Commentary"
+            commentaryColumn.DataPropertyName = "Commentary"
+            dgvSubtitles.Columns.Add(commentaryColumn)
+
+            Dim hearingimpairedColumn As New DataGridViewCheckBoxColumn
+            hearingimpairedColumn.HeaderText = "Hearingimpaired"
+            hearingimpairedColumn.DataPropertyName = "Hearingimpaired"
+            dgvSubtitles.Columns.Add(hearingimpairedColumn)
+        End If
+
         Dim idColumn As New DataGridViewTextBoxColumn
         idColumn.ReadOnly = True
         idColumn.HeaderText = "ID"
@@ -854,8 +866,10 @@ Public Class MuxerForm
         Property Enabled As Boolean
         Property Language As Language
         Property Title As String
-        Property Forced As Boolean
         Property [Default] As Boolean
+        Property Forced As Boolean
+        Property Commentary As Boolean
+        Property Hearingimpaired As Boolean
         Property ID As Integer
         Property TypeName As String
         Property Size As String
@@ -997,8 +1011,10 @@ Public Class MuxerForm
             subtitle.Subtitle.Language = subtitle.Language
             subtitle.Subtitle.Enabled = subtitle.Enabled
             subtitle.Subtitle.Title = subtitle.Title
-            subtitle.Subtitle.Forced = subtitle.Forced
             subtitle.Subtitle.Default = subtitle.Default
+            subtitle.Subtitle.Forced = subtitle.Forced
+            subtitle.Subtitle.Commentary = subtitle.Commentary
+            subtitle.Subtitle.Hearingimpaired = subtitle.Hearingimpaired
 
             If subtitle.Subtitle.Title Is Nothing Then
                 subtitle.Subtitle.Title = ""
@@ -1105,17 +1121,13 @@ Public Class MuxerForm
                     End If
                 End If
 
-                Dim _option As String
+                Dim _option As String = ""
 
-                If i.Default AndAlso i.Forced Then
-                    _option = "default, forced"
-                ElseIf i.Default Then
-                    _option = "default"
-                ElseIf i.Forced Then
-                    _option = "forced"
-                Else
-                    _option = ""
-                End If
+                If i.Default Then _option &= ", default"
+                If i.Forced Then _option &= ", forced"
+                If i.Commentary Then _option &= ", comment"
+                If i.Hearingimpaired Then _option &= ", hearingimpaired"
+                _option = _option.TrimStart(","c).Trim()
 
                 Dim id As Integer
 
@@ -1133,6 +1145,8 @@ Public Class MuxerForm
                 item.Title = i.Title
                 item.Default = i.Default
                 item.Forced = i.Forced
+                item.Commentary = i.Commentary
+                item.Hearingimpaired = i.Hearingimpaired
                 item.ID = id
                 item.TypeName = i.TypeName
                 item.Size = sizeText
@@ -1361,9 +1375,9 @@ Public Class MuxerForm
                     For Each i In SubtitleItems
                         i.Title = i.Language.CultureInfo.EnglishName
 
-                        If i.Forced Then
-                            i.Title += " (forced)"
-                        End If
+                        If i.Forced Then i.Title += " (forced)"
+                        If i.Commentary Then i.Title += " (commentary)"
+                        If i.Hearingimpaired Then i.Title += " (hearingimpaired)"
                     Next
 
                     SubtitleBindingSource.ResetBindings(False)
@@ -1371,9 +1385,9 @@ Public Class MuxerForm
                     For Each i In SubtitleItems
                         i.Title = i.Language.CultureInfo.NeutralCulture.DisplayName
 
-                        If i.Forced Then
-                            i.Title += " (forced)"
-                        End If
+                        If i.Forced Then i.Title += " (forced)"
+                        If i.Commentary Then i.Title += " (commentary)"
+                        If i.Hearingimpaired Then i.Title += " (hearingimpaired)"
                     Next
 
                     SubtitleBindingSource.ResetBindings(False)

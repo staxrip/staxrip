@@ -16,6 +16,9 @@ v2.25.0 (not published yet)
 - SvtAv1EncApp: Fix wrong parameter for encoding frames
 - SvtAv1EncApp: Add support for modified progress in @Patman86's mod
 - Minor changes to progress detection
+- Add Commentary flag setting for audio tracks ([#959](/../../issues/959))
+- Add Commentary flag setting for subtitle tracks ([#959](/../../issues/959))
+- Add Hearing Impaired flag setting for subtitle tracks ([#960](/../../issues/960))
 - Update tools
     - SvtAv1EncApp v1.6.0-4-g903ff3ad-[Mod-by-Patman]-x64-msvc1936
 - Update AviSynth+ plugins

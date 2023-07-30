@@ -1229,6 +1229,8 @@ Public Class Subtitle
     Property Language As Language
     Property [Default] As Boolean
     Property Forced As Boolean
+    Property Commentary As Boolean
+    Property Hearingimpaired As Boolean
     Property Enabled As Boolean = True
     Property Size As Long
 
@@ -1316,6 +1318,8 @@ Public Class Subtitle
                     Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux AndAlso p.SubtitleMode <> SubtitleMode.Disabled
                     st.Enabled = prefLang AndAlso goodMode
                     st.Forced = path.ToLowerEx().Contains("forced")
+                    st.Commentary = path.ToLowerEx().Contains("commentary")
+                    st.Hearingimpaired = path.ToLowerEx().Contains("hearingimpaired")
 
                     st.IndexIDX = CInt(Regex.Match(line, ", index: (\d+)").Groups(1).Value)
                 End If
@@ -1383,6 +1387,8 @@ Public Class Subtitle
             st.Enabled = prefLang AndAlso goodMode
             st.Path = path
             st.Forced = path.ToLowerEx().Contains("forced")
+            st.Commentary = path.ToLowerEx().Contains("commentary")
+            st.Hearingimpaired = path.ToLowerEx().Contains("hearingimpaired")
 
             For Each i In autoCode
                 If i.IsInt AndAlso st.Path.Contains("ID" & i.ToInt & " ") Then
@@ -1528,10 +1534,12 @@ Public Class Subtitle
             If Not subs.NothingOrEmpty Then
                 Dim outSub = Subtitle.Create(subPath)(0)
                 outSub.Language = inSub.Language
-                outSub.Forced = inSub.Forced
-                outSub.Default = inSub.Default
                 outSub.Title = inSub.Title
                 outSub.Enabled = True
+                outSub.Default = inSub.Default
+                outSub.Forced = inSub.Forced
+                outSub.Commentary = inSub.Commentary
+                outSub.Hearingimpaired = inSub.Hearingimpaired
                 subtitles(x) = outSub
             Else
                 emptySubs.Add(subtitles(x))

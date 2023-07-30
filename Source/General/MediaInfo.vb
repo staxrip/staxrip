@@ -173,8 +173,10 @@ Public Class MediaInfo
                         End If
                     End If
 
-                    subtitle.Forced = GetText(index, "Forced") = "Yes"
                     subtitle.Default = GetText(index, "Default") = "Yes"
+                    subtitle.Forced = GetText(index, "Forced") = "Yes"
+                    subtitle.Commentary = GetText(index, "Commentary") = "Yes"
+                    subtitle.Hearingimpaired = GetText(index, "HearingImpaired") = "Yes"
                     subtitle.ID = GetText(index, "ID").ToInt
                     subtitle.Title = GetText(index, "Title").Trim
                     subtitle.CodecString = GetText(index, "Codec/String")

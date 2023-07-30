@@ -194,6 +194,12 @@ Public MustInherit Class Muxer
                         If fp.ToLowerEx.ContainsAny("_forced", ".forced.") Then
                             iSubtitle.Forced = True
                         End If
+                        If fp.ToLowerEx.ContainsAny("_commentary", ".commentary.") Then
+                            iSubtitle.Commentary = True
+                        End If
+                        If fp.ToLowerEx.ContainsAny("_hearingimpaired", ".hearingimpaired.") Then
+                            iSubtitle.Hearingimpaired = True
+                        End If
 
                         Subtitles.Add(iSubtitle)
                     End If
@@ -751,9 +757,11 @@ Public Class MkvMuxer
 
                 Dim isContainer = FileTypes.VideoAudio.Contains(subtitle.Path.Ext)
 
-                args += " --forced-track " & id & ":" & If(subtitle.Forced, 1, 0)
-                args += " --default-track " & id & ":" & If(subtitle.Default, 1, 0)
                 args += " --language " & id & ":" + subtitle.Language.ThreeLetterCode
+                args += " --default-track-flag " & id & ":" & If(subtitle.Default, 1, 0)
+                args += " --forced-display-flag " & id & ":" & If(subtitle.Forced, 1, 0)
+                args += " --commentary-flag " & id & ":" & If(subtitle.Commentary, 1, 0)
+                args += " --hearing-impaired-flag " & id & ":" & If(subtitle.Hearingimpaired, 1, 0)
 
                 If Compression <> CompressionMode.zlib Then
                     args += " --compression " & id & ":" + Compression.ToString
@@ -907,8 +915,9 @@ Public Class MkvMuxer
                 End If
             End If
 
-            args += " --default-track " & tid & ":" & If(ap.Default, 1, 0)
-            args += " --forced-track " & tid & ":" & If(ap.Forced, 1, 0)
+            args += " --default-track-flag " & tid & ":" & If(ap.Default, 1, 0)
+            args += " --forced-display-flag " & tid & ":" & If(ap.Forced, 1, 0)
+            args += " --commentary-flag " & tid & ":" & If(ap.Commentary, 1, 0)
             args += " " + ap.File.LongPathPrefix.Escape
         End If
     End Sub

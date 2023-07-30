@@ -24,6 +24,7 @@ v2.25.0 (not published yet)
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins
+    - FFTW v3.3.10 (thanks to Nuihc88)
 
 
 v2.24.0 (2023-07-29)
@@ -43,7 +44,7 @@ v2.24.0 (2023-07-29)
 - Update AviSynth+ plugins
     - edi_rpow2 v1.0 mod 87
 - Update Dual plugins
-    - FFTW v3.3.10
+    - FFTW v3.3.10/v3.3.5
 
 
 v2.23.0 (2023-07-24)

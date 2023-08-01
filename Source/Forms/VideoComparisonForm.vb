@@ -1,6 +1,6 @@
 ﻿
 Imports System.Drawing.Imaging
-
+Imports Microsoft.VisualBasic.FileIO
 Imports StaxRip.UI
 
 Public Class VideoComparisonForm
@@ -30,15 +30,16 @@ Public Class VideoComparisonForm
 
         Menu.Add("Add files to compare...", AddressOf Add, Keys.O, "Video files to compare, the file browser has multiselect enabled.")
         Menu.Add("Close selected tab", AddressOf Remove, Keys.Delete, enabledFunc)
+        Menu.Add("Select next tab", AddressOf NextTab, Keys.Space, enabledFunc)
         Menu.Add("Save PNGs at current position", AddressOf Save, Keys.S, enabledFunc, "Saves a PNG image for every file/tab at the current position in the directory of the source file.")
         Menu.Add("Crop and Zoom...", AddressOf CropZoom, Keys.C)
         Menu.Add("Go To Frame...", AddressOf GoToFrame, Keys.F, enabledFunc)
         Menu.Add("Go To Time...", AddressOf GoToTime, Keys.T, enabledFunc)
-        Menu.Add("Select next tab", AddressOf NextTab, Keys.Space, enabledFunc)
         Menu.Add("Navigate | 1 frame backward", Sub() TrackBar.Value -= 1, Keys.Left, enabledFunc)
         Menu.Add("Navigate | 1 frame forward", Sub() TrackBar.Value += 1, Keys.Right, enabledFunc)
         Menu.Add("Navigate | 100 frame backward", Sub() TrackBar.Value -= 100, Keys.Left Or Keys.Control, enabledFunc)
         Menu.Add("Navigate | 100 frame forward", Sub() TrackBar.Value += 100, Keys.Right Or Keys.Control, enabledFunc)
+        Menu.Add("Reload all tabs", AddressOf Reload, Keys.R, enabledFunc)
         Menu.Add("Help", AddressOf Help, Keys.F1)
 
         Menu.ApplyMarginFix()
@@ -114,7 +115,7 @@ Public Class VideoComparisonForm
             If File.Exists(p.TargetFile) Then Add(p.TargetFile)
         Else
             Using dialog As New OpenFileDialog
-                dialog.SetFilter(FileTypes.Video)
+                dialog.SetFilter(FileTypes.VideoComparisonInput)
                 dialog.Multiselect = True
                 dialog.SetInitDir(s.Storage.GetString("video comparison folder"))
 
@@ -165,7 +166,7 @@ Public Class VideoComparisonForm
 
     Sub Save()
         For Each tab As VideoTab In TabControl.TabPages
-            Dim outputPath = tab.SourceFile.Dir & Pos & " " + tab.SourceFile.Base + ".png"
+            Dim outputPath = tab.SourceFilePath.Dir & Pos & " " + tab.SourceFilePath.Base + ".png"
 
             Using bmp = tab.GetBitmap
                 bmp.Save(outputPath, ImageFormat.Png)
@@ -306,7 +307,9 @@ Public Class VideoComparisonForm
 
         Property Server As IFrameServer
         Property Form As VideoComparisonForm
-        Property SourceFile As String
+        Property FileType As VideoComparisonFileType = VideoComparisonFileType.Video
+        Property TempFilePath As String
+        Property SourceFilePath As String
         Property VideoPanel As PanelEx
 
         Private Renderer As VideoRenderer
@@ -319,52 +322,85 @@ Public Class VideoComparisonForm
         End Sub
 
         Sub Reload()
+            Renderer.Dispose()
             Server.Dispose()
-            Open(SourceFile)
+            Open(SourceFilePath)
         End Sub
 
-        Function Open(sourePath As String) As Boolean
-            Text = sourePath.Base
-            SourceFile = sourePath
+        Function Open(sourcePath As String) As Boolean
+            Text = sourcePath.Base
+            SourceFilePath = sourcePath
 
-            Dim script As New VideoScript
-            script.Engine = ScriptEngine.AviSynth
-            script.Path = Folder.Temp + Guid.NewGuid.ToString + ".avs"
-            AddHandler Disposed, Sub() FileHelp.Delete(script.Path)
+            Select Case sourcePath.Ext()
+                Case "avs"
+                    FileType = VideoComparisonFileType.AviSynthScript
+                    TempFilePath = sourcePath.DirAndBase + "_compare" + sourcePath.ExtFull
+                Case "vpy"
+                    FileType = VideoComparisonFileType.VapourSynthScript
+                    TempFilePath = sourcePath.DirAndBase + "_compare" + sourcePath.ExtFull
+                Case "png"
+                    FileType = VideoComparisonFileType.Picture
+                    TempFilePath = Folder.Temp + Guid.NewGuid.ToString + ".avs"
+                Case Else
+                    FileType = VideoComparisonFileType.Video
+                    TempFilePath = Folder.Temp + Guid.NewGuid.ToString + ".avs"
+            End Select
 
-            script.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
+            Dim script As New VideoScript With {
+                .Engine = If(FileType = VideoComparisonFileType.VapourSynthScript, ScriptEngine.VapourSynth, ScriptEngine.AviSynth),
+                .Path = TempFilePath
+            }
 
-            If sourePath.Ext = "png" Then
-                script.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
-            Else
-                Try
-                    Dim cachePath = Folder.Temp + Guid.NewGuid.ToString + ".ffindex"
-                    AddHandler Disposed, Sub() FileHelp.Delete(cachePath)
-                Catch
-                End Try
+            AddHandler Disposed, Sub() FileHelp.Delete(script.Path, RecycleOption.DeletePermanently)
 
-                If sourePath.EndsWith("mp4") Then
-                    script.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourePath + "" + """, format = ""YV12"")"))
-                Else
-                    script.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + "" + """, colorspace = ""YV12"")"))
-                End If
-            End If
+            Select Case FileType
+                Case VideoComparisonFileType.AviSynthScript
+                    script.Filters.Add(New VideoFilter("Source", "Source", File.ReadAllText(sourcePath)))
+                Case VideoComparisonFileType.VapourSynthScript
+                    script.Filters.Add(New VideoFilter("Source", "Source", File.ReadAllText(sourcePath)))
+                Case VideoComparisonFileType.Video
+                    If sourcePath.EndsWith("mp4") Then
+                        script.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourcePath + "" + """, format = ""YV12"")"))
+                    Else
+                        script.Filters.Add(New VideoFilter("FFVideoSource(""" + sourcePath + "" + """, colorspace = ""YV12"")"))
+                    End If
+                    script.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
+                Case VideoComparisonFileType.Picture
+                    script.Filters.Add(New VideoFilter("ImageSource(""" + sourcePath + """, end = 0)"))
+                    script.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
+                Case Else
+                    Throw New NotSupportedException("VideoComparisonFileType unhandled!")
+            End Select
 
-            If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
-                script.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
-            End If
+            Select Case FileType
+                Case VideoComparisonFileType.Picture
+                    If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
+                        script.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
+                    End If
+                Case VideoComparisonFileType.Video
+                    If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
+                        script.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
+                    End If
+                Case VideoComparisonFileType.AviSynthScript
+                Case VideoComparisonFileType.VapourSynthScript
+                Case Else
+                    Throw New NotSupportedException("VideoComparisonFileType unhandled!")
+            End Select
 
             script.Synchronize(True, True, True)
+
             Server = FrameServerFactory.Create(script.Path)
             Renderer = New VideoRenderer(VideoPanel, Server)
-
-            FileHelp.Delete(sourePath + ".ffindex")
 
             If Form.TrackBar.Maximum < Server.Info.FrameCount - 1 Then
                 Form.TrackBar.Maximum = Server.Info.FrameCount - 1
             End If
 
-            Dim csvFile = sourePath.DirAndBase + ".csv"
+            If Server.Error <> "" Then
+                MsgError(Server.Error)
+            End If
+
+            Dim csvFile = sourcePath.DirAndBase + ".csv"
 
             If File.Exists(csvFile) Then
                 Dim len = Form.TrackBar.Maximum
@@ -389,7 +425,6 @@ Public Class VideoComparisonForm
                     Next
                 End If
             End If
-
             Return True
         End Function
 

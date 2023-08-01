@@ -608,11 +608,29 @@ clipname.set_output()
     End Function
 
     Shared Function ModifyAVSScript(script As String) As String
+        Dim sb = New StringBuilder()
         Dim newScript As String
         Dim loadCode = GetAvsLoadCode(script, "")
         newScript = loadCode + script
         newScript = GetAVSLoadCodeFromImports(newScript) + BR + newScript
 
+        Using sr As New StringReader(newScript)
+            Dim line As String
+            Do
+                line = sr.ReadLine()
+                If line IsNot Nothing Then
+                    If line.StartsWithEx("AddAutoloadDir(") Then
+                        sb.Insert(0, line)
+                    Else 
+                        sb.AppendLine(line)
+                    End If
+                Else
+                    Exit Do
+                End If
+            Loop
+        End Using
+
+        newScript = sb.ToString()
         Dim initCode = ""
 
         If FrameServerHelp.IsPortable Then

@@ -5264,7 +5264,7 @@ Public Class MainForm
         ret.Add("File|Open Video Source File(s)...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control)
         ret.Add("File|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
         ret.Add("File|-")
-        ret.Add("File|Video Comparison...", NameOf(ShowVideoComparison), Keys.F6)
+        ret.Add("File|Video Comparison...", NameOf(ShowVideoComparison), Keys.F5, Symbol.VideoLegacy)
         ret.Add("File|-")
         ret.Add("File|Open Project...", NameOf(ShowFileBrowserToOpenProject))
         ret.Add("File|Save Project", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)
@@ -5274,12 +5274,12 @@ Public Class MainForm
         ret.Add("File|Project Templates", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
         ret.Add("File|Recent Projects", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.RecentProjects})
 
-        ret.Add("Crop", NameOf(ShowCropDialog), Keys.F4)
-        ret.Add("Preview", NameOf(ShowPreview), Keys.F5)
+        ret.Add("Crop", NameOf(ShowCropDialog), Keys.F3)
+        ret.Add("Preview", NameOf(ShowPreview), Keys.F4)
 
         ret.Add("Options", NameOf(ShowOptionsDialog), Keys.F9)
 
-        ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F7, Symbol.MultiSelectLegacy)
+        ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F6, Symbol.MultiSelectLegacy)
         ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ShowLogFile), Keys.F8, Symbol.Page)
         ret.Add("Tools|Folders", Symbol.Folder)
         ret.Add("Tools|Folders|Log Files", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%Log Files"""})

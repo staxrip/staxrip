@@ -15,13 +15,15 @@ v2.25.0 (not published yet)
 
 - Reorganize main menu slightly
 - Alter some main menu shortcuts
-- SvtAv1EncApp: Fix wrong parameter for encoding frames
-- SvtAv1EncApp: Add support for modified progress in @Patman86's mod
+- Add Reload function to Video Comparison
+- Add Video Comparison support for AviSynth and VapourSynth scripts ([#1055](/../../issues/1055))
 - Minor changes to progress detection
 - Fix broken progress detection for ffmpeg ([#1054](/../../issues/1054))
 - Add Commentary flag setting for audio tracks ([#959](/../../issues/959))
 - Add Commentary flag setting for subtitle tracks ([#959](/../../issues/959))
 - Add Hearing Impaired flag setting for subtitle tracks ([#960](/../../issues/960))
+- SvtAv1EncApp: Fix wrong parameter for encoding frames
+- SvtAv1EncApp: Add support for modified progress in @Patman86's mod
 - Update tools
     - SvtAv1EncApp v1.6.0-4+7-0abb2b72-[Mod-by-Patman]-x64-msvc1936
 - Update AviSynth+ plugins

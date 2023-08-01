@@ -5262,6 +5262,9 @@ Public Class MainForm
         Dim ret As New CustomMenuItem("Root")
 
         ret.Add("File|Open Video Source File(s)...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control)
+        ret.Add("File|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
+        ret.Add("File|-")
+        ret.Add("File|Video Comparison...", NameOf(ShowVideoComparison), Keys.F6)
         ret.Add("File|-")
         ret.Add("File|Open Project...", NameOf(ShowFileBrowserToOpenProject))
         ret.Add("File|Save Project", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)
@@ -5274,10 +5277,10 @@ Public Class MainForm
         ret.Add("Crop", NameOf(ShowCropDialog), Keys.F4)
         ret.Add("Preview", NameOf(ShowPreview), Keys.F5)
 
-        ret.Add("Options", NameOf(ShowOptionsDialog), Keys.F8)
+        ret.Add("Options", NameOf(ShowOptionsDialog), Keys.F9)
 
-        ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F6, Symbol.MultiSelectLegacy)
-        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ShowLogFile), Keys.F7, Symbol.Page)
+        ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F7, Symbol.MultiSelectLegacy)
+        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ShowLogFile), Keys.F8, Symbol.Page)
         ret.Add("Tools|Folders", Symbol.Folder)
         ret.Add("Tools|Folders|Log Files", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%Log Files"""})
         ret.Add("Tools|Folders|Plugins", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%plugin_dir%"""})
@@ -5298,8 +5301,6 @@ Public Class MainForm
         ret.Add("Tools|Advanced|Add Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
         ret.Add("Tools|Advanced|Script Info...", NameOf(ShowScriptInfo), Keys.F2)
         ret.Add("Tools|Advanced|Advanced Script Info...", NameOf(ShowAdvancedScriptInfo), Keys.Control Or Keys.F2)
-        ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
-        ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
         ret.Add("Tools|Advanced|-")
         ret.Add("Tools|Advanced|Event Command...", NameOf(ShowEventCommandsDialog), Keys.Control Or Keys.E, Symbol.LightningBolt)
         ret.Add("Tools|Advanced|Reset Settings...", NameOf(g.DefaultCommands.ResetSettings))
@@ -5312,16 +5313,12 @@ Public Class MainForm
         End If
 
         ret.Add("Tools|Advanced|-")
-        ret.Add("Tools|Advanced|Generate Wiki Content", NameOf(g.DefaultCommands.GenerateWikiContent), Keys.Control Or Keys.F12)
+        ret.Add("Tools|Advanced|Generate Wiki Content", NameOf(g.DefaultCommands.GenerateWikiContent))
         ret.Add("Tools|Advanced|Ingest HDR", NameOf(g.DefaultCommands.SaveMKVHDR))
-
-        If g.IsDevelopmentPC Then
-            ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
-        End If
 
         ret.Add("Tools|-")
         ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
-        ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Keys.F3, Symbol.Settings, {""})
+        ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Keys.F10, Symbol.Settings, {""})
 
         ret.Add("Apps|Subtitles|Subtitle Edit", NameOf(g.DefaultCommands.StartTool), {"Subtitle Edit"})
         ret.Add("Apps|Subtitles|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
@@ -5339,7 +5336,11 @@ Public Class MainForm
         ret.Add("Apps|Other|MKVToolnix GUI", NameOf(g.DefaultCommands.StartTool), {"MKVToolnix GUI"})
         ret.Add("Apps|Other|chapterEditor", NameOf(g.DefaultCommands.StartTool), {"chapterEditor"})
         ret.Add("Apps|-")
-        ret.Add("Apps|Manage...", NameOf(ShowAppsDialog), Keys.F9)
+        ret.Add("Apps|Manage...", NameOf(ShowAppsDialog), Keys.F11)
+
+        If g.IsDevelopmentPC Then
+            ret.Add("Apps|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
+        End If
 
         ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.F1, Symbol.Help, {"https://github.com/staxrip/staxrip/wiki"})
         ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Globe, {"https://github.com/staxrip/staxrip"})

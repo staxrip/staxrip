@@ -515,6 +515,32 @@ clipname.set_output()
 
                                     loadCode += load
                                 End If
+
+                                If Not plugin.Dependencies.NothingOrEmpty Then
+                                    For Each iDependency In plugin.Dependencies
+                                        Dim fp2 = Package.Items.Values.OfType(Of PluginPackage).Where(Function(pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx()).FirstOrDefault()?.Path
+
+                                        If fp2.Ext = "dll" Then
+                                            load = "LoadPlugin(""" + fp2 + """)" + BR
+
+                                            If Not scriptLower.Contains(load.ToLowerInvariant) AndAlso
+                                                Not loadCode.ToLowerInvariant.Contains(load.ToLowerInvariant) AndAlso
+                                                Not scriptAlreadyLower.Contains(load.ToLowerInvariant) Then
+
+                                                loadCode += load
+                                            End If
+                                        ElseIf fp2.Ext = "avsi" Then
+                                            Dim avsiImport = "Import(""" + fp2 + """)" + BR
+
+                                            If Not scriptLower.Contains(avsiImport.ToLowerInvariant) AndAlso
+                                                Not loadCode.ToLowerInvariant.Contains(avsiImport.ToLowerInvariant) AndAlso
+                                                Not scriptAlreadyLower.Contains(avsiImport.ToLowerInvariant) Then
+
+                                                loadCode += avsiImport
+                                            End If
+                                        End If
+                                    Next
+                                End If
                             ElseIf plugin.Filename.Ext = "avsi" Then
                                 Dim avsiImport = "Import(""" + fp + """)" + BR
 
@@ -527,7 +553,7 @@ clipname.set_output()
 
                                 If Not plugin.Dependencies.NothingOrEmpty Then
                                     For Each iDependency In plugin.Dependencies
-                                        Dim fp2 = Package.Items.Values.OfType(Of PluginPackage).Where(Function(pack) pack.Filename = iDependency).First.Path
+                                        Dim fp2 = Package.Items.Values.OfType(Of PluginPackage).Where(Function(pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx()).FirstOrDefault()?.Path
 
                                         If fp2.Ext = "dll" Then
                                             Dim load = "LoadPlugin(""" + fp2 + """)" + BR

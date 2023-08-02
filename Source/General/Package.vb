@@ -1187,6 +1187,25 @@ Public Class Package
             .AvsFilterNames = {"z_ConvertFormat", "z_PointResize", "z_BilinearResize", "z_BicubicResize", "z_LanczosResize", "z_Lanczos4Resize", "z_Spline16Resize", "z_Spline36Resize", "z_Spline64Resize"}})
 
         Add(New PluginPackage With {
+            .Name = "DPID",
+            .Filename = "DPID.dll",
+            .Description = "dpid is an algorithm that preserves visually important details in downscaled images and is especially suited for large downscaling factors.",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-DPID/releases/",
+            .WebURL = "https://github.com/Asd-g/AviSynth-DPID",
+            .Dependencies = {"avsresize.dll"},
+            .AvsFilterNames = {"DPID", "DPIDraw"}})
+
+        Add(New PluginPackage With {
+            .Name = "AVS_LibPlacebo",
+            .Filename = "avs_libplacebo.dll",
+            .Description = "An AviSynth+ plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders." + BR2 + "This is a port of the VapourSynth plugin vs-placebo.",
+            .HelpFilename = "README.md",
+            .DownloadURL = "https://github.com/Asd-g/avslibplacebo/releases/",
+            .WebURL = "https://github.com/Asd-g/avslibplacebo",
+            .AvsFilterNames = {"libplacebo_Deband", "libplacebo_Resample", "libplacebo_Shader", "libplacebo_Tonemap"}})
+
+        Add(New PluginPackage With {
             .Name = "ResizeX",
             .Filename = "ResizeX.avsi",
             .Description = "ResizeX is a wrapper function for AviSynth's internal resizers and Dither_resize16 that corrects for the chroma shift caused by the internal resizers when they're used on horizontally subsampled chroma with MPEG2 placement.",

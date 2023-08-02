@@ -13,8 +13,8 @@ v2.xx.0 (not published yet)
 v2.25.0 (not published yet)
 ====================
 
-- Reorganize main menu slightly
 - Alter some main menu shortcuts
+- Reorganize main menu slightly
 - Add Reload function to Video Comparison
 - Add Video Comparison support for AviSynth and VapourSynth scripts ([#1055](/../../issues/1055))
 - Minor changes to progress detection
@@ -27,9 +27,13 @@ v2.25.0 (not published yet)
 - Update tools
     - SvtAv1EncApp v1.6.0-4+7-0abb2b72-[Mod-by-Patman]-x64-msvc1936
 - Update AviSynth+ plugins
+    - avs_libplacebo v1.3.0
+    - DPID v1.1.0
+    - MasksPack v6.7
+    - Resizers Functions Pack v12.0
+    - TransformsPack v2.2.0
 - Update Dual plugins
     - FFTW v3.3.10 (thanks to Nuihc88)
-- Update VapourSynth plugins
 
 
 v2.24.0 (2023-07-29)
@@ -248,7 +252,7 @@ v2.15.0 (2023-04-07)
 
 - Fix misleading language name fetch from path for subtitles ([#924](/../../issues/924))
 - Add .av1 to valid input file extensions for mkvmerge ([#982](/../../issues/982))
-- Add SharpenersPack funtions for dependencies
+- Add SharpenersPack functions for dependencies
 - NVEncC: Add "--vpp-nnedi" fields ([#962](/../../issues/962))
 - QSVEnc: Add "--output-depth" parameter ([#984](/../../issues/984))
 - VCEEnc: Add missing/new options for "--vpp-resize" ([#921](/../../issues/921))

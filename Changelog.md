@@ -15,6 +15,7 @@ v2.25.0 (not published yet)
 
 - Alter some main menu shortcuts
 - Reorganize main menu slightly
+- Save settings when selecting new startup template ([#1057](/../../issues/1057))
 - Add Reload function to Video Comparison
 - Add Video Comparison support for AviSynth and VapourSynth scripts ([#1055](/../../issues/1055))
 - Minor changes to progress detection

@@ -4056,6 +4056,7 @@ Public Class MainForm
 
                 If box.Checked Then
                     s.StartupTemplate = box.Value
+                    g.SaveSettings()
                 End If
             End If
         Else

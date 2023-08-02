@@ -10,7 +10,7 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.25.0 (not published yet)
+v2.25.0 (2023-08-02)
 ====================
 
 - Alter some main menu shortcuts

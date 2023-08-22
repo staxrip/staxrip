@@ -158,7 +158,7 @@ Public Class StaxRipUpdate
 
     Shared Sub OnDownloadComplete(sender As Object, e As AsyncCompletedEventArgs)
         If Not e.Cancelled AndAlso e.Error Is Nothing Then
-            MsgInfo("Download successed!")
+            MsgInfo("Download succeeded!")
         Else
             MsgError("Download failed!")
         End If

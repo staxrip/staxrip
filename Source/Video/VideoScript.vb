@@ -274,11 +274,11 @@ else:
     else:
         primaries = p_709
 
-clipname = clipname.resize.Bicubic(matrix_in = matrix, transfer_in = transfer, primaries_in = primaries, format = vs.RGB24)
-core.std.LoadPlugin(r""D:\Code\Github\staxrip\staxrip\Source\bin\Apps\Plugins\VS\LibP2P\LibP2P.dll"", altsearchpath=True)
+clipname = clipname.resize.Bicubic(matrix_in = matrix, transfer_in = transfer, primaries_in = primaries, format = vs.RGB24)"
+                If Not vsCode.ContainsEx(Package.LibP2P.Filename) Then vsCode += BR + "core.std.LoadPlugin(r""" + Package.LibP2P.Path + """, altsearchpath=True)"
+                vsCode += "
 clipname = clipname.libp2p.Pack()
-clipname.set_output()
-"
+clipname.set_output()" + BR
                 vsCode = vsCode.Replace("clipname", clipname)
                 code = code.Replace(match.Value, vsCode).Trim
             End If
@@ -645,7 +645,7 @@ clipname.set_output()
                 If line IsNot Nothing Then
                     If line.StartsWithEx("AddAutoloadDir(") Then
                         sb.Insert(0, line)
-                    Else 
+                    Else
                         sb.AppendLine(line)
                     End If
                 Else

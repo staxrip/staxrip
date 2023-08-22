@@ -9,8 +9,15 @@ v2.xx.0 (not published yet)
 - Update VapourSynth plugins
 -->
 
+v2.27.0 (2023-08-22)
+====================
 
-v2.26.0 (2023-08-23)
+- Fix grammar (thanks to @LittleVulpix ([#1083](/../../pull/1083)))
+- Fix pathing issue on VapourSynth
+- Adjust SMDegrain presets
+
+
+v2.26.0 (2023-08-22)
 ====================
 
 - Big VapourSynth update from R54 to R63 (Big thanks to @DJATOM and @jlw4049 for contributing, @pat-e and @Patman86 for helping and testing!)

@@ -273,7 +273,7 @@ Public Class GlobalCommands
         Dim sb = New StringBuilder()
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
 
-        If includeName Then sb.Append(" StaxRip")
+        If includeName Then sb.Append(Application.ProductName)
         If includeVersion Then
             sb.Append($" v{version.Major}.{version.Minor}")
 
@@ -301,8 +301,8 @@ Public Class GlobalCommands
             Case "info"
                 form.Doc.WriteStart(GetApplicationDetails())
                 form.Doc.Write("Active Authors", "Dendraspis")
-                form.Doc.Write("Active Contributors", "Patman86, DJATOM")
-                form.Doc.Write("Retired Authors", "stax76, JKyle, 44vince44, Revan654, NikosD, jernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+                form.Doc.Write("Active Contributors", "Patman86")
+                form.Doc.Write("Retired Authors", "stax76, JKyle, 44vince44, DJATOM, Revan654, NikosD, jernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
                 form.Doc.Writer.WriteRaw("<hr>")
                 form.Doc.Write("Links", "<a href=""https://github.com/staxrip/staxrip"">Source on GitHub</a>" &
                                          "<br><a href=""https://github.com/staxrip/staxrip/blob/master/Changelog.md"">Changelog on GitHub</a>" &

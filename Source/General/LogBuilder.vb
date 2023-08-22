@@ -19,6 +19,12 @@ Public Class LogBuilder
         End SyncLock
     End Sub
 
+    Sub Clear()
+        SyncLock Log
+            Dim unused = Log.Clear()
+        End SyncLock
+    End Sub
+
     Function EndsWith(value As String) As Boolean
         If Last = "" Then
             Return False
@@ -95,7 +101,7 @@ Public Class LogBuilder
 
         If EnvironmentString = "" Then EnvironmentString =
             "StaxRip:v" + Application.ProductVersion + BR +
-            "Windows:" + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + " " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") + BR +
+            "Windows:" + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + " " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion") + " " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") + " (" + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "BuildLabEx") + ")" + BR +
             "Language:" + CultureInfo.CurrentCulture.EnglishName + BR +
             "CPU:" + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + BR +
             "GPU:" + String.Join(", ", OS.VideoControllers) + BR +

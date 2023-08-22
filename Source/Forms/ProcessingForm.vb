@@ -247,7 +247,7 @@ Public Class ProcessingForm
 
         CMS.Add("-")
         CMS.Add("Jobs", AddressOf JobsForm.ShowForm, Keys.F6, "Shows the Jobs dialog.")
-        CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, Keys.F7, "Shows the log file.")
+        CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, Keys.F8, "Shows the log file.")
         CMS.Add("-")
         CMS.Add("Help", AddressOf ShowHelp).ShortcutKeyDisplayString = "F1"
 

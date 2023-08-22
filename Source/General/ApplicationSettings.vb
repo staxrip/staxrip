@@ -76,6 +76,7 @@ Public Class ApplicationSettings
     Public ShowPathsInCommandLine As Boolean
     Public ShowPreviewInfo As Boolean
     Public ShowTemplateSelection As Boolean
+    Public ShowWindows7Warning As Boolean = True
     Public ShutdownForce As Boolean
     Public ShutdownTimeout As Integer = 90
     Public StartupTemplate As String
@@ -113,15 +114,13 @@ Public Class ApplicationSettings
     End Function
 
     Sub Init() Implements ISafeSerialization.Init
-        If Versions Is Nothing Then
-            Versions = New Dictionary(Of String, Integer)
-        End If
+        Versions = If(Versions, New Dictionary(Of String, Integer))
 
-        If Check(Storage, "Misc", 2) Then
+        If Check(Storage, "Misc", 3) Then
             Storage = New ObjectStorage
         End If
 
-        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 201) Then
+        If Check(VideoEncoderProfiles, "Video Encoder Profiles", 202) Then
             If VideoEncoderProfiles Is Nothing Then
                 VideoEncoderProfiles = VideoEncoder.GetDefaults()
             Else
@@ -142,7 +141,7 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(AudioProfiles, "Audio Profiles", 116) Then
+        If Check(AudioProfiles, "Audio Profiles", 117) Then
             If AudioProfiles Is Nothing Then
                 AudioProfiles = AudioProfile.GetDefaults()
             Else
@@ -160,52 +159,54 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(Demuxers, "Demuxers", 109) Then
+        If Check(Demuxers, "Demuxers", 110) Then
             Demuxers = Demuxer.GetDefaults()
         End If
 
-        If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 9) Then
-            AviSynthFilterPreferences = New StringPairList
-            AviSynthFilterPreferences.Add("*", "FFVideoSource")
-            AviSynthFilterPreferences.Add("*:VP9", "LWLibavVideoSource")
-            AviSynthFilterPreferences.Add("264 h264 avc", "LWLibavVideoSource")
-            AviSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavVideoSource")
-            AviSynthFilterPreferences.Add("d2v", "MPEG2Source")
-            AviSynthFilterPreferences.Add("mp4 m4v mov", "LSMASHVideoSource")
-            AviSynthFilterPreferences.Add("ts m2ts mts m2t m2v", "LWLibavVideoSource")
-            AviSynthFilterPreferences.Add("vdr", "AviSource")
-            AviSynthFilterPreferences.Add("wmv", "DSS2")
+        If Check(AviSynthFilterPreferences, "AviSynth Source Filter Preferences", 10) Then
+            AviSynthFilterPreferences = New StringPairList From {
+                {"*", "FFVideoSource"},
+                {"*:VP9", "LWLibavVideoSource"},
+                {"264 h264 avc", "LWLibavVideoSource"},
+                {"265 h265 hevc hvc", "LWLibavVideoSource"},
+                {"d2v", "MPEG2Source"},
+                {"mp4 m4v mov", "LSMASHVideoSource"},
+                {"ts m2ts mts m2t m2v", "LWLibavVideoSource"},
+                {"vdr", "AviSource"},
+                {"wmv", "DSS2"}
+            }
         End If
 
-        If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 8) Then
-            VapourSynthFilterPreferences = New StringPairList
-            VapourSynthFilterPreferences.Add("*", "ffms2")
-            VapourSynthFilterPreferences.Add("*:VP9", "LWLibavSource")
-            VapourSynthFilterPreferences.Add("264 h264 avc", "LWLibavSource")
-            VapourSynthFilterPreferences.Add("265 h265 hevc hvc", "LWLibavSource")
-            VapourSynthFilterPreferences.Add("avs vdr", "AVISource")
-            VapourSynthFilterPreferences.Add("d2v", "MPEG2Source")
-            VapourSynthFilterPreferences.Add("mp4 m4v mov", "LibavSMASHSource")
-            VapourSynthFilterPreferences.Add("ts m2ts mts m2t m2v", "LWLibavSource")
+        If Check(VapourSynthFilterPreferences, "VapourSynth Source Filter Preference", 10) Then
+            VapourSynthFilterPreferences = New StringPairList From {
+                {"*", "ffms2"},
+                {"*:VP9", "LWLibavSource"},
+                {"264 h264 avc", "LWLibavSource"},
+                {"265 h265 hevc hvc", "LWLibavSource"},
+                {"avs vdr", "AVISource"},
+                {"d2v", "MPEG2Source"},
+                {"mp4 m4v mov", "LibavSMASHSource"},
+                {"ts m2ts mts m2t m2v", "LWLibavSource"}
+            }
         End If
 
-        If Check(eac3toProfiles, "eac3to Audio Stream Profiles", 4) Then
+        If Check(eac3toProfiles, "eac3to Audio Stream Profiles", 5) Then
             eac3toProfiles = New List(Of eac3toProfile)
         End If
 
-        If Check(EventCommands, "Event Commands", 0) Then
+        If Check(EventCommands, "Event Commands", 5) Then
             EventCommands = New List(Of EventCommand)
         End If
 
-        If Check(WindowPositionsRemembered, "Remembered Window Positions", 1) Then
+        If Check(WindowPositionsRemembered, "Remembered Window Positions", 5) Then
             WindowPositionsRemembered = {"StaxRip", "Crop", "Jobs", "Processing", "Preview", "Code Preview", "Help"}
         End If
 
-        If Check(WindowPositions, "Remembered Window Positions 2", 1) Then
+        If Check(WindowPositions, "Window Positions", 5) Then
             WindowPositions = New WindowPositions
         End If
 
-        If Check(StartupTemplate, "Startup Template", 2) Then
+        If Check(StartupTemplate, "Startup Template", 5) Then
             StartupTemplate = "Automatic Workflow"
         End If
 
@@ -217,7 +218,7 @@ Public Class ApplicationSettings
             RecentProjects = New List(Of String)
         End If
 
-        If Check(MuxerProfiles, "Container Profiles", 40) Then
+        If Check(MuxerProfiles, "Container Profiles", 41) Then
             MuxerProfiles = New List(Of Muxer)
             MuxerProfiles.AddRange(Muxer.GetDefaults())
         End If
@@ -230,21 +231,21 @@ Public Class ApplicationSettings
             RecentOptionsPage = ""
         End If
 
-        If Check(CmdlPresetsMKV, "MKV custom command line menu presets", 7) Then
+        If Check(CmdlPresetsMKV, "MKV custom command line menu presets", 8) Then
             CmdlPresetsMKV = "File Attachment = --attach-file ""$browse_file$""" + BR +
                              "Attachment Description = --attachment-description ""$enter_text$""" + BR +
                              "Process Priority = --priority $select:lowest;lower;normal;higher;highest$"
         End If
 
-        If Check(CmdlPresetsEac3to, "eac3to custom command line menu presets", 7) Then
+        If Check(CmdlPresetsEac3to, "eac3to custom command line menu presets", 8) Then
             CmdlPresetsEac3to = GetDefaultEac3toMenu()
         End If
 
-        If Check(CmdlPresetsMP4, "MP4 custom command line menu presets", 1) Then
+        If Check(CmdlPresetsMP4, "MP4 custom command line menu presets", 8) Then
             CmdlPresetsMP4 = "iPod = -ipod"
         End If
 
-        If Check(CmdlPresetsX264, "x264 custom command line menu presets", 6) OrElse CmdlPresetsX264 = "" Then
+        If Check(CmdlPresetsX264, "x264 custom command line menu presets", 8) OrElse CmdlPresetsX264 = "" Then
             CmdlPresetsX264 = "SAR | PAL | 4:3 = --sar 12:11" + BR +
                               "SAR | PAL | 16:9 = --sar 16:11" + BR +
                               "SAR | NTSC | 4:3 = --sar 10:11" + BR +
@@ -253,15 +254,15 @@ Public Class ApplicationSettings
                               "Stats = --stats ""%target_temp_file%.stats"""
         End If
 
-        If Check(ParMenu, "Source PAR menu", 10) Then
+        If Check(ParMenu, "Source PAR menu", 11) Then
             ParMenu = GetParMenu()
         End If
 
-        If Check(DarMenu, "Source DAR menu", 10) Then
+        If Check(DarMenu, "Source DAR menu", 11) Then
             DarMenu = GetDarMenu()
         End If
 
-        If Check(TargetImageSizeMenu, "Target image size menu", 15) Then
+        If Check(TargetImageSizeMenu, "Target image size menu", 16) Then
             TargetImageSizeMenu = GetDefaultTargetImageSizeMenu()
         End If
 
@@ -277,27 +278,27 @@ Public Class ApplicationSettings
             CropFrameCount = 15
         End If
 
-        If Check(CustomMenuCrop, "Menu in crop dialog", 17) Then
+        If Check(CustomMenuCrop, "Menu in crop dialog", 18) Then
             CustomMenuCrop = CropForm.GetDefaultMenuCrop
         End If
 
-        If Check(CustomMenuMainForm, "Main menu in main window", 164) Then
+        If Check(CustomMenuMainForm, "Main menu in main window", 165) Then
             CustomMenuMainForm = MainForm.GetDefaultMainMenu
         End If
 
-        If Check(CustomMenuPreview, "Menu in preview dialog", 54) Then
+        If Check(CustomMenuPreview, "Menu in preview dialog", 55) Then
             CustomMenuPreview = PreviewForm.GetDefaultMenu()
         End If
 
-        If Check(CustomMenuCodeEditor, "Menu in code editor", 23) Then
+        If Check(CustomMenuCodeEditor, "Menu in code editor", 24) Then
             CustomMenuCodeEditor = CodeEditor.GetDefaultMenu()
         End If
 
-        If Check(CustomMenuSize, "Target size menu in main dialog", 31) Then
+        If Check(CustomMenuSize, "Target size menu in main dialog", 32) Then
             CustomMenuSize = MainForm.GetDefaultMenuSize
         End If
 
-        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 154) Then
+        If Check(AviSynthProfiles, "AviSynth Filter Profiles", 155) Then
             If AviSynthProfiles Is Nothing Then
                 AviSynthProfiles = FilterCategory.GetAviSynthDefaults
             Else
@@ -317,7 +318,7 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 35) Then
+        If Check(VapourSynthProfiles, "VapourSynth Filter Profiles", 36) Then
             If VapourSynthProfiles Is Nothing Then
                 VapourSynthProfiles = FilterCategory.GetVapourSynthDefaults
             Else
@@ -337,34 +338,12 @@ Public Class ApplicationSettings
             End If
         End If
 
-        If Check(FilterSetupProfiles, "Filter Setup Profiles", 101) Then
+        If Check(FilterSetupProfiles, "Filter Setup Profiles", 102) Then
             FilterSetupProfiles = VideoScript.GetDefaults
         End If
 
         If LastSourceDir = "" Then
             LastSourceDir = ""
-        End If
-
-        'migration code for gloabl commands that were renamed
-
-        Dim menuUpdateVersion = 2
-
-        If Storage.GetInt("menu update version") <> menuUpdateVersion Then
-            Dim nameDic As New Dictionary(Of String, String)
-
-            'global commands renamed 2021:
-            nameDic("ExecutePowerShellScript") = "ExecutePowerShellCode"
-            nameDic("ExecuteScriptFile") = "ExecutePowerShellFile"
-            nameDic("TestAndDynamicFileCreation") = "Test"
-            nameDic("ShowLAVFiltersConfigDialog") = "ShowRemovedFunctionalityMessage"
-            nameDic("ExecuteBatchScript") = "ShowRemovedFunctionalityMessage"
-            nameDic("MediainfoMKV") = "ShowMkvInfo"
-            nameDic("MediaInfoShowMedia") = "ShowMediaInfoBrowse"
-
-            'all menus because all renamed commands where global commands
-            Dim allMenus = {CustomMenuCodeEditor, CustomMenuCrop, CustomMenuMainForm, CustomMenuPreview, CustomMenuSize}
-            CustomMenuItem.UpdateObsoleteCommands(nameDic, allMenus)
-            Storage.SetInt("menu update version", menuUpdateVersion)
         End If
 
         Migrate()
@@ -421,11 +400,15 @@ Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$"
     End Function
 
     Shared Function GetDefaultTargetImageSizeMenu() As String
-        Return "3840 x auto = 3840 x 0
+        Return "7680 x auto = 7680 x 0
+5760 x auto = 5760 x 0
+
+3840 x auto = 3840 x 0
 3200 x auto = 3200 x 0
 2560 x auto = 2560 x 0
 
 1920 x auto = 1920 x 0
+1680 x auto = 1680 x 0
 1280 x auto = 1280 x 0
 960 x auto = 960 x 0
 

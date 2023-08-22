@@ -159,6 +159,7 @@ Public Class ProcController
             Dim help As Integer
             Dim IsX264 = Proc.Package Is Package.x264
             Dim IsX265 = Proc.Package Is Package.x265
+            Dim IsSvtAv1 = Proc.Package Is Package.SvtAv1EncApp
 
             If IsX265 Then
                 help = 1
@@ -171,12 +172,12 @@ Public Class ProcController
                 Next
             End If
 
-            If IsX265 OrElse IsX264 Then
-                matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(x264|x265)(?=\s\[)", RegexOptions.IgnoreCase)
+            'If IsX265 OrElse IsX264 OrElse IsSvtAv1 Then
+                matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(x264|x265|svt|avs2pipemod|vspipe)(?=\s?\[)", RegexOptions.IgnoreCase)
                 For Each m As Match In matches
                     LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(205), oh.SourceForeColor)
                 Next
-            End If
+            'End If
 
             matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(avs\+|avs|vpy)(?=\s+\[)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
@@ -188,18 +189,18 @@ Public Class ProcController
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(175), oh.SourceForeColor)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\n.*\s\[)(warn(?:ing)?)\]:\s(.+)", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n.*(?:\s|svt|pipe|mod)\[)(warn(?:ing)?)\]:\s(.+)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.WarningLabelBackColor, oh.WarningLabelForeColor, oh.WarningLabelFontStyles)
                 LogTextBox.SelectionFormat(m.Groups(2).Index, m.Groups(2).Length, oh.WarningTextBackColor, oh.WarningTextForeColor, oh.WarningTextFontStyles)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\n.*\s\[)info(?=\]:\s)", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n.*(?:\s|svt|pipe|mod)\[)info(?=\]:\s)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.InfoLabelBackColor, oh.InfoLabelForeColor)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\s|^)(--\w[^\s=]*|-[a-z](?=[\s=]))(?:[\s=]((?!--|-[a-z]\s)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\s|^)(--\w[^\s=]*|-[a-z](?=[\s=]))(?:[\s=]((?!--|-[a-z]{1,2}\s)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.ParameterBackColor, oh.ParameterForeColor, oh.ParameterFontStyles)
                 If m.Groups.Count > 2 Then
@@ -217,7 +218,7 @@ Public Class ProcController
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.MetadataFileBackColor, oh.MetadataFileForeColor, oh.MetadataFileFontStyles)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(""[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.(avc|h264|h265|hevc|mkv|mp4|vob)"")|((?<!"")[A-Z]:\\[\S\\]+\.(avc|h264|h265|hevc|mkv|mp4|vob)(?!""))", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(""[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.(avc|avi|h264|h265|hevc|mkv|mp4|vob)"")|((?<!"")[A-Z]:\\[\S\\]+\.(avc|avi|h264|h265|hevc|mkv|mp4|vob)(?!""))", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.MediaFileBackColor, oh.MediaFileForeColor, oh.MediaFileFontStyles)
             Next
@@ -245,7 +246,7 @@ Public Class ProcController
             Next
 
             If IsX265 OrElse IsX264 Then
-                matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s).*encoder(?:\D*?([^\d\s]*\d+\S*\d[^\d\s]*))(?:.*(djatom|patman|asuna))?.*(?=\n)", RegexOptions.IgnoreCase)
+                matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s).*encoder(?:\D*?([^\d\s]*\d+\S*\d[^\d\s]*))(?:.*(djatom|patman))?.*(?=\n)", RegexOptions.IgnoreCase)
                 For Each m As Match In matches
                     LogTextBox.SelectionFormat(m.Index, m.Length, oh.EncoderBackColor, oh.EncoderForeColor, oh.EncoderFontStyles)
                     LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.175), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)

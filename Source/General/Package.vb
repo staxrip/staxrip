@@ -122,6 +122,54 @@ Public Class Package
                        "Custom build with non-free libraries like fdk-aac.",
         .RequiredFunc = Function() Audio.CommandContains("libfdk_aac")})
 
+    Shared Property OpusDec As Package = Add(New Package With {
+        .Name = "OpusDec",
+        .Filename = "opusdec.exe",
+        .Location = "Audio\Opus",
+        .WebURL = "",
+        .DownloadURL = "",
+        .HelpSwitch = "--help",
+        .SupportsAutoUpdate = False,
+        .RequiredFunc = Function() False,
+        .Description = "Opus is a totally open, royalty-free, highly versatile audio codec. Opus is unmatched for interactive speech and music transmission over the Internet, but is also intended for storage and streaming applications."})
+
+    Shared Property OpusEnc As Package = Add(New Package With {
+        .Name = "OpusEnc",
+        .Filename = "opusenc.exe",
+        .Location = "Audio\Opus",
+        .WebURL = "",
+        .DownloadURL = "",
+        .HelpSwitch = "--help",
+        .SupportsAutoUpdate = False,
+        .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.opusenc),
+        .Description = "Opus is a totally open, royalty-free, highly versatile audio codec. Opus is unmatched for interactive speech and music transmission over the Internet, but is also intended for storage and streaming applications."})
+
+    Shared Property DEE As Package = Add(New Package With {
+        .Name = "DEE",
+        .Filename = "dee.exe",
+        .Locations = {"Audio\DEE", "Audio\DeeZy", "Audio\DeeZy\DEE", "Audio\DeeZy\Apps\DEE", Folder.Settings + "Tools\DEE"},
+        .WebURL = "https://customer.dolby.com/content-creation-and-delivery/dolby-encoding-engine-with-ac-4",
+        .DownloadURL = "https://customer.dolby.com/content-creation-and-delivery/dolby-encoding-engine-with-ac-4",
+        .HelpSwitch = "--help",
+        .IsIncluded = False,
+        .VersionAllowAny = True,
+        .Find = False,
+        .SupportsAutoUpdate = False,
+        .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.deezy),
+        .Description = "Dolby Encoding Engine."})
+
+    Shared Property DeeZy As Package = Add(New Package With {
+        .Name = "DeeZy",
+        .Filename = "deezy.exe",
+        .Location = "Audio\DeeZy",
+        .WebURL = "https://github.com/jlw4049/DeeZy",
+        .DownloadURL = "https://github.com/jlw4049/DeeZy/releases",
+        .HelpURL = "https://github.com/jlw4049/DeeZy",
+        .HelpSwitch = "--help",
+        .SupportsAutoUpdate = False,
+        .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.deezy),
+        .Description = "Simple Dolby Encoding Engine CLI Wrapper."})
+
     Shared Property qaac As Package = Add(New Package With {
         .Name = "qaac",
         .Filename = "qaac64.exe",
@@ -739,6 +787,22 @@ Public Class Package
         .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-DCTFilter",
         .VsFilterNames = {"dctf.DCTFilter"}})
 
+    Shared Property RemoveGrainVS As Package = Add(New PluginPackage With {
+        .Name = "RemoveGrain",
+        .Filename = "RemoveGrainVS.dll",
+        .Location = "Plugins\VS\RemoveGrainVS",
+        .Description = "VapourSynth port of RemoveGrain and Repair plugins from Avisynth.",
+        .WebURL = "https://github.com/vapoursynth/vs-removegrain",
+        .VsFilterNames = {"rgvs.RemoveGrain", "rgvs.BackwardClense", "rgvs.Clense", "rgvs.ForwardClense", "rgvs.Repair", "rgvs.VerticalCleaner"}})
+
+    Shared Property LibP2P As Package = Add(New PluginPackage With {
+        .Name = "LibP2P",
+        .Filename = "LibP2P.dll",
+        .Location = "Plugins\VS\LibP2P",
+        .Description = "Vapoursynth plugin for packing/unpacking of RGB clips.",
+        .WebURL = "https://github.com/DJATOM/LibP2P-Vapoursynth",
+        .VsFilterNames = {"libp2p.pack", "libp2p.unpack"}})
+
     Shared Property FFTW As Package = Add(New Package With {
         .Name = "FFTW",
         .Location = "Support\FFTW",
@@ -754,6 +818,7 @@ Public Class Package
         .Description = "Various popular AviSynth scripts ported To VapourSynth.",
         .Filename = "havsfunc.py",
         .Location = "Plugins\VS\Scripts",
+        .Dependencies = {"DCTFilter.dll", "libfftw3f-3.dll", "RemoveGrainVS.dll"},
         .VsFilterNames = {"havsfunc.aaf", "havsfunc.AverageFrames", "havsfunc.Bob", "havsfunc.ChangeFPS", "havsfunc.Clamp", "havsfunc.ContraSharpening", "havsfunc.daa", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha", "havsfunc.DitherLumaRebuild", "havsfunc.EdgeCleaner", "havsfunc.FastLineDarkenMOD", "havsfunc.FineDehalo", "havsfunc.FixChromaBleedingMod", "havsfunc.GrainFactory3", "havsfunc.GrainStabilizeMC", "havsfunc.HQDeringmod", "havsfunc.InterFrame", "havsfunc.ivtc_txt60mc", "havsfunc.KNLMeansCL", "havsfunc.logoNR", "havsfunc.LSFmod", "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.MCTemporalDenoise", "havsfunc.MinBlur", "havsfunc.mt_deflate_multi", "havsfunc.mt_expand_multi", "havsfunc.mt_inflate_multi", "havsfunc.mt_inpand_multi", "havsfunc.Overlay", "havsfunc.Padding", "havsfunc.QTGMC", "havsfunc.Resize", "havsfunc.santiag", "havsfunc.sbr", "havsfunc.SCDetect", "havsfunc.SigmoidDirect", "havsfunc.SigmoidInverse", "havsfunc.smartfademod", "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.srestore", "havsfunc.Stab", "havsfunc.STPresso", "havsfunc.TemporalDegrain", "havsfunc.Toon", "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.Weave", "havsfunc.YAHR"}})
 
     Shared Property QTGMC As Package = Add(New PluginPackage With {
@@ -770,14 +835,24 @@ Public Class Package
         .WebURL = "https://raw.githack.com/Dogway/Avisynth-Scripts/master/SMDegrain/SMDegrain.html",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/SMDegrain/SMDegrain.avsi",
         .Description = "SMDegrain is a simple wrapper for MVTools and client functions for general purpose temporal denoising.",
-        .Dependencies = {"dfttest.dll", "ExTools.avsi", "GradePack.avsi", "MedianBlur2.dll", "mvtools2.dll", "ResizersPack.avsi", "RgTools.dll", "SharpenersPack.avsi"},
+        .Dependencies = {"Average.dll", "dfttest.dll", "ExTools.avsi", "GradePack.avsi", "KNLMeansCL.dll", "LSFplus.avsi", "MasksPack.avsi", "MedianBlur2.dll", "mvtools2.dll", "nnedi3cl.dll", "ResizersPack.avsi", "RgTools.dll", "SharpenersPack.avsi", "vsTTempSmooth.dll"},
         .AvsFilterNames = {"SMDegrain"}})
+
+    Shared Property BBorders As Package = Add(New PluginPackage With {
+        .Name = "BBorders",
+        .Filename = "bborders.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "https://github.com/Asd-g/AviSynthPlus-Scripts/blob/master/bborders.avsi",
+        .DownloadURL = "https://github.com/Asd-g/AviSynthPlus-Scripts/blob/master/bborders.avsi",
+        .Description = "bbmod is a balanceborders mod that uses division instead subtraction for the filtering.",
+        .Dependencies = {"avsresize.dll"},
+        .AvsFilterNames = {"BalanceBorders", "bbmod", "bb_process", "BalanceTopBorder", "btb", "chroma_shift_"}})
 
     Shared Property ExTools As Package = Add(New PluginPackage With {
         .Name = "ExTools",
         .Filename = "ExTools.avsi",
         .Location = "Plugins\AVS\Scripts",
-        .WebURL = "",
+        .WebURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ExTools.avsi",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ExTools.avsi",
         .Description = "Pack of masktools2/removegrain replacement functions with internal Expr() and many extra features.",
         .AvsFilterNames = {"ex_bs"}})
@@ -786,7 +861,7 @@ Public Class Package
         .Name = "GradePack",
         .Filename = "GradePack.avsi",
         .Location = "Plugins\AVS\Scripts",
-        .WebURL = "",
+        .WebURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MasksPack.avsi",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MasksPack.avsi",
         .Description = "",
         .Dependencies = {"ExTools.avsi", "MasksPack.avsi", "ResizersPack.avsi", "TransformsPack - Main.avsi"},
@@ -812,13 +887,23 @@ Public Class Package
         .Dependencies = {"ExTools.avsi"},
         .AvsFilterNames = {"deep_resize"}})
 
+    Shared Property ScenesPack As Package = Add(New PluginPackage With {
+        .Name = "ScenesPack",
+        .Filename = "ScenesPack.avsi",
+        .Location = "Plugins\AVS\Scripts",
+        .WebURL = "",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ScenesPack.avsi",
+        .Description = "SceneStats does a robust Scene Change Detection and calculates scene's statistics.",
+        .Dependencies = {"ExTools.avsi", "TransformsPack - Models.avsi", "TransformsPack - Transfers.avsi"},
+        .AvsFilterNames = {"ClipStats", "ReadStats", "SceneStats"}})
+
     Shared Property SharpenersPack As Package = Add(New PluginPackage With {
         .Name = "SharpenersPack",
         .Filename = "SharpenersPack.avsi",
         .Location = "Plugins\AVS\Scripts",
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MIX%20mods/SharpenersPack.avsi",
-        .Description = "",
+        .Description = "Collection of high quality sharpeners for AviSynth+.",
         .Dependencies = {"ExTools.avsi", "ResizersPack.avsi", "RgTools.dll"},
         .AvsFilterNames = {"Adaptive_Sharpen", "blah", "CASm", "CASP", "DelicateSharp", "DetailSharpen", "DGSharpen2", "ex_ContraSharpening", "ex_sharpen22", "ex_SootheSS2", "ex_unsharp", "FineSharpPlus", "halomaskM", "LindaSharp", "MedianSharp", "MedSharp", "MultiSharpen2", "NonlinUSM", "NVSharpen", "pSharpen", "ReCon", "RSharpen", "SeeSaw", "SeeSaw2", "SeeSawMulti", "SharpenComplex2", "SlopeBend", "SSSharp", "SSSharpEX", "SSSharpFaster", "SSW", "TblurNL", "TMed2", "XSharpenPlus"}})
 
@@ -871,12 +956,28 @@ Public Class Package
         .Description = "A LimitedSharpenFaster mod with a lot of new features and optimizations.",
         .AvsFilterNames = {"LSFmod"}})
 
+    Shared Property LSFplus As Package = Add(New PluginPackage With {
+        .Name = "LSFplus",
+        .Filename = "LSFplus.avsi",
+        .WebURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MIX%20mods/LSFplus.avsi",
+        .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MIX%20mods/LSFplus.avsi",
+        .Description = "LimitedSharpenFaster+, HBD Performance mod of LSFmod by Dogway.",
+        .AvsFilterNames = {"LSFplus"}})
+
     Shared Property TemporalDegrain2 As Package = Add(New PluginPackage With {
         .Name = "TemporalDegrain2",
         .Filename = "TemporalDegrain2.avsi",
         .WebURL = "http://avisynth.nl/index.php/TemporalDegrain2",
         .Description = "Builds on Temporal Degrain but it is able to clean the noise even further while impoving the sharpness in cases where orignal version had severe drops in visual quality.",
         .AvsFilterNames = {"TemporalDegrain2"}})
+
+    Shared Property NNEDI3CL As Package = Add(New PluginPackage With {
+        .Name = "NNEDI3CL",
+        .Filename = "nnedi3cl.dll",
+        .WebURL = "http://avisynth.nl/index.php/NNEDI3CL",
+        .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-NNEDI3CL",
+        .Description = "nnedi3 is an intra-field only deinterlacer. It takes a frame, throws away one field, and then interpolates the missing pixels using only information from the remaining field. It is also good for enlarging images by powers of two.",
+        .AvsFilterNames = {"nnedi3cl"}})
 
     Shared Property LSmashWorks As Package = Add(New PluginPackage With {
         .Name = "L-SMASH-Works",
@@ -1206,6 +1307,15 @@ Public Class Package
             .AvsFilterNames = {"libplacebo_Deband", "libplacebo_Resample", "libplacebo_Shader", "libplacebo_Tonemap"}})
 
         Add(New PluginPackage With {
+            .Name = "libvs_placebo",
+            .Filename = "libvs_placebo.dll",
+            .Description = "A VapourSynth plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders.",
+            .DownloadURL = "https://github.com/Lypheo/vs-placebo/releases",
+            .WebURL = "https://github.com/Lypheo/vs-placebo",
+            .HelpURL = "https://github.com/Lypheo/vs-placebo/blob/master/README.md",
+            .VsFilterNames = {"placebo.Deband", "placebo.Resample", "placebo.Shader", "placebo.Tonemap"}})
+
+        Add(New PluginPackage With {
             .Name = "ResizeX",
             .Filename = "ResizeX.avsi",
             .Description = "ResizeX is a wrapper function for AviSynth's internal resizers and Dither_resize16 that corrects for the chroma shift caused by the internal resizers when they're used on horizontally subsampled chroma with MPEG2 placement.",
@@ -1524,6 +1634,14 @@ Public Class Package
             .AvsFilterNames = {"yadifmod2"}})
 
         Add(New PluginPackage With {
+            .Name = "LibDedot",
+            .Filename = "libdedot.dll",
+            .Description = "Temporal rainbow and dotcrawl filter.",
+            .WebURL = "https://github.com/dubhater/vapoursynth-dedot",
+            .DownloadURL = "https://github.com/dubhater/vapoursynth-dedot/releases",
+            .VsFilterNames = {"dedot.Dedot"}})
+
+        Add(New PluginPackage With {
             .Name = "Yadifmod",
             .Filename = "Yadifmod.dll",
             .Description = "Modified version of Fizick's avisynth filter port of yadif from mplayer. This version doesn't internally generate spatial predictions, but takes them from an external clip.",
@@ -1552,9 +1670,8 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "vcmod",
             .Filename = "vcmod.dll",
-            .HelpFilename = "vcmod.html",
             .Description = "vcmod plugin for VapourSynth.",
-            .WebURL = "http://www.avisynth.nl/users/vcmohan/vcmod/vcmod.html",
+            .WebURL = "https://github.com/AmusementClub/vcm",
             .VsFilterNames = {"vcmod.Median", "vcmod.Amplitude", "vcmod.GBlur", "vcmod.MBlur", "vcmod.Histogram", "vcmod.Fan", "vcmod.Variance", "vcmod.Neural", "vcmod.Veed", "vcmod.SaltPepper"}})
 
         Add(New PluginPackage With {
@@ -1589,6 +1706,13 @@ Public Class Package
             .VsFilterNames = {"fft3dfilter.FFT3DFilter"}})
 
         Add(New PluginPackage With {
+            .Name = "MiscFilters",
+            .Filename = "MiscFilters.dll",
+            .WebURL = "https://github.com/vapoursynth/vs-miscfilters-obsolete",
+            .Description = "",
+            .VsFilterNames = {"misc.AverageFrames", "misc.Hysteresis", "misc.SCDetect"}})
+
+        Add(New PluginPackage With {
             .Name = "mvtools",
             .Filename = "libmvtools.dll",
             .WebURL = "http://github.com/dubhater/vapoursynth-mvtools",
@@ -1600,7 +1724,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "mvtools-sf",
             .Filename = "libmvtools_sf_em64t.dll",
-            .WebURL = "http://github.com/dubhater/vapoursynth-mvtools",
+            .WebURL = "https://github.com/IFeelBloated/vapoursynth-mvtools-sf",
             .Description = "MVTools is a set of filters for motion estimation and compensation.",
             .VsFilterNames = {"mvsf.Super", "mvsf.Analyse", "mvsf.Recalculate", "mvsf.Compensate", "mvsf.Degrain1", "mvsf.Degrain2",
                 "mvsf.Degrain3", "mvsf.Mask", "mvsf.Finest", "mvsf.Flow", "mvsf.FlowBlur", "mvsf.FlowInter", "mvsf.FlowFPS", "mvsf.BlockFPS", "mvsf.SCDetection",
@@ -1627,6 +1751,7 @@ Public Class Package
             .Location = "Plugins\VS\Scripts",
             .WebURL = "https://gist.github.com/4re/b5399b1801072458fc80#file-mcdegrainsharp-py",
             .Description = "TemporalMedian is a temporal denoising filter. It replaces every pixel with the median of its temporal neighbourhood.",
+            .Dependencies = {"TCanny.dll"},
             .VsFilterNames = {"mcdegrainsharp.mcdegrainsharp"}})
 
         Add(New PluginPackage With {
@@ -1649,14 +1774,6 @@ Public Class Package
             .VsFilterNames = {"fvsfunc.GradFun3mod", "fvsfunc.DescaleM", "fvsfunc.Downscale444", "fvsfunc.JIVTC", "fvsfunc.OverlayInter", "fvsfunc.AutoDeblock", "fvsfunc.ReplaceFrames", "fvsfunc.maa", "fvsfunc.TemporalDegrain", "fvsfunc.DescaleAA", "fvsfunc.InsertSign"}})
 
         Add(New PluginPackage With {
-            .Name = "nnedi3_rpow2",
-            .Filename = "nnedi3_rpow2.py",
-            .Location = "Plugins\VS\Scripts",
-            .WebURL = "https://github.com/Irrational-Encoding-Wizardry/fvsfunc",
-            .Description = "nnedi3_rpow2 ported from Avisynth for VapourSynth.",
-            .VsFilterNames = {"nnedi3_rpow2"}})
-
-        Add(New PluginPackage With {
             .Name = "mvmulti",
             .Filename = "mvmulti.py",
             .Location = "Plugins\VS\Scripts",
@@ -1672,6 +1789,22 @@ Public Class Package
             .VsFilterNames = {"sangnom.SangNom"}})
 
         Add(New PluginPackage With {
+            .Name = "CAS",
+            .Filename = "CAS.dll",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-CAS",
+            .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-CAS/releases",
+            .Description = "Contrast Adaptive Sharpening.",
+            .VsFilterNames = {"cas.CAS"}})
+
+        Add(New PluginPackage With {
+            .Name = "nnedi3_rpow2",
+            .Filename = "nnedi3_rpow2.py",
+            .Location = "Plugins\VS\Scripts",
+            .WebURL = "https://github.com/Irrational-Encoding-Wizardry/fvsfunc",
+            .Description = "nnedi3_rpow2 ported from Avisynth for VapourSynth.",
+            .VsFilterNames = {"nnedi3_rpow2"}})
+
+        Add(New PluginPackage With {
             .Name = "znedi3",
             .Filename = "vsznedi3.dll",
             .Location = "Plugins\VS\nnedi3",
@@ -1679,14 +1812,6 @@ Public Class Package
             .WebURL = "https://github.com/sekrit-twc/znedi3",
             .Description = "znedi3 is a CPU-optimized version of nnedi.",
             .VsFilterNames = {"znedi3.nnedi3"}})
-
-        Add(New PluginPackage With {
-            .Name = "CAS",
-            .Filename = "CAS.dll",
-            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-CAS",
-            .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-CAS/releases",
-            .Description = "Contrast Adaptive Sharpening.",
-            .VsFilterNames = {"cas.CAS"}})
 
         Add(New PluginPackage With {
             .Name = "nnedi3cl",
@@ -1781,7 +1906,7 @@ Public Class Package
             .VsFilterNames = {"tcanny.TCanny"}})
 
         Add(New PluginPackage With {
-            .Name = "taa",
+            .Name = "vsTAAmbk",
             .Filename = "vsTAAmbk.py",
             .Description = "A ported AA-script from Avisynth.",
             .Location = "Plugins\VS\Scripts",

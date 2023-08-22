@@ -10,6 +10,95 @@ v2.xx.0 (not published yet)
 -->
 
 
+v2.26.0 (2023-08-23)
+====================
+
+- Big VapourSynth update from R54 to R63 (Big thanks to @DJATOM and @jlw4049 for contributing, @pat-e and @Patman86 for helping and testing!)
+- Remove no-pipe call for x264 using VapourSynth due to incompatibility reasons
+- Add .mpeg as supported input file type for DGIndex/D2VWitch
+- Add DeeZy and OpusEnc as new audio encoders
+- Add new Tonemap presets
+- Add option to tonemap videos in Crop window
+- Add option to enhance contrast in Crop window for easier cropping
+- Add Reload command in Preview
+- Add line numbers to Code Preview
+- Let Enabling/Disabling a filter in Code Editor make refresh the script for the preview
+- Fix shortcut for Preview in Code Editor
+- Fix command line parameter issue with quotes
+- Improve Output Highlighting a tiny bit
+- Check also for negative error codes
+- Show warning for Windows 7 users regarding possible incompatibility issues at first start
+- Add new macros %audio_bitrate1%, %audio_bitrate2%, %audio_channels1%, %audio_channels2%, %audio_codec1%, %audio_codec2% ([#1075](/../../issues/1075))
+- Rename macro %delay1% to %audio_delay1% and %delay2% to %audio_delay2%
+- Fix "Auto Chroma Subsampling to 4:2:0" for VapourSynth not working on some sources ([#1033](/../../issues/1033))
+- Fix internally called AutoCrop not adding/enabling Crop-filter ([#1075](/../../issues/1075))
+- Fix internally called SmartAutoCrop not adding/enabling Crop-filter
+- Add more resize defaults ([#1079](/../../issues/1079))
+- Add possibility to reset window position when holding CTRL+SHIFT while window opens
+- Adjust Resize slider minimum/maximum values
+- Fix logs from processes being saved into templates ([#905](/../../issues/905))
+- SvtAv1EncApp: Fix infinite app calling loop when SvtAv1EncApp encoder profile selected while opening a file ([#1068](/../../issues/1068))
+- SvtAv1EncApp: Fix wrong multi-pass paremeter combination ([#1076](/../../issues/1076))
+- SvtAv1EncApp: Add proper 3-pass support
+- SvtAv1EncApp: Move Passes option to rate control to keep related settings together
+- Update tools
+    - AOMEnc v3.6.1-1047-gea674a22d0-x64-msvc1937
+    - DeeZy v0.1.0
+    - ffmpeg 6.0 N-111762-ga1928dff2c-x64-gcc13.2.0
+    - libFLAC v1.4.3 (used by eac3to)
+    - libsndfile v1.2.2 (used by qaac)
+    - Mp4Box v2.3-DEV-rev478-g892852666-x64-msvc1937
+    - mpv.net v6.0.4.0
+    - OpusEnc v1.4.6
+    - qaac v2.80
+    - QSVEncC v7.48
+    - rav1e v0.6.1-(p20230808)-x64-gcc13.2.0
+    - SvtAv1EncApp v1.6.0-12+12-02ddf03c-[Mod-by-Patman]-x64-msvc1937
+    - VapourSynth R63
+    - vvencFFapp v1.9.0
+    - x264 v0.164.3107+12-d987552-[Mod-by-Patman]-x64-gcc13.2.0
+    - x265 v3.5+104+20-5f9a54004-[Mod-by-Patman]-x64-msvc1937
+- Update AviSynth+ plugins
+    - AnimeIVTC v2.389 2023-07-20 mod
+    - BBorders v2023-04-28
+    - LSFplus v6.0 mix
+    - NNEDI3CL v1.0.8
+    - ScenesPack v4.5
+- Update Dual plugins
+    - L-SMASH-Works v1129.0.1.0 20230806
+- Update VapourSynth plugins
+    - AddGrain r10
+    - Bwdif r4.1
+    - edi_rpow2 v2021
+    - EEDI3m r4
+    - fmtconv r30
+    - fvsfunc v2022-10-14
+    - havsfunc r33 [modified by @jlw4049 and @Dendraspis]
+    - LibDedot v1.0
+    - LibP2P R2
+    - libvs_placebo v1.4.4
+    - mcdegrainsharp v2020-11-03
+    - MiscFilters R2
+    - muvsfunc v0.4.0
+    - mvmulti v2020-14-10
+    - mvsfunc r10
+    - nnedi_rpow2 v1.1.0
+    - NNEDI3CL v8
+    - Oyster v2021-05-16 [modified by @jlw4049 and @Dendraspis]
+    - Plum v2021-03-27 [modified by @jlw4049 and @Dendraspis]
+    - resamplehq v2.1.2
+    - RemoveGrain r1
+    - SangNom r42
+    - TCanny v14
+    - TimeCube v3.1
+    - TTempSmooth v4.1
+    - vcmod 2022-02-10.AC3
+    - Vine v2020-07-12 [modified by @jlw4049 and @Dendraspis]
+    - vsTAAmbk v0.8.2
+    - znedi3 r2.1
+    - ...and some more existing scripts updated to be compliant with VapourSynth R63
+
+
 v2.25.0 (2023-08-02)
 ====================
 

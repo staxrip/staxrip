@@ -83,6 +83,7 @@ Public Structure ServerInfo
     Public FrameRateDen As Integer
     Public FrameCount As Integer
     Public ColorSpace As ColorSpace
+    Public BitsPerPixel As Integer
 
     ReadOnly Property FrameRate As Double
         Get
@@ -228,6 +229,7 @@ Public Class VfwFrameServer
             info2.FrameRateNum = CInt(aviInfo.dwRate)
             info2.Width = aviInfo.rcFrame.Right
             info2.Height = aviInfo.rcFrame.Bottom
+            
             info2.ColorSpace = GetColorSpace(aviInfo.fccHandler)
             Info = info2
         Catch ex As Exception

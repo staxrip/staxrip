@@ -339,7 +339,7 @@ Public Class Proc
                     Throw New SkipException
                 End If
 
-                If ExitCode > 0 AndAlso Not AllowedExitCodes.ContainsEx(ExitCode) Then
+                If ExitCode <> 0 AndAlso Not AllowedExitCodes.ContainsEx(ExitCode) Then
                     Dim sb = New StringBuilder()
                     sb.Append($"{Header} returned exit code: {ExitCode} (0x{ExitCode:X})")
 

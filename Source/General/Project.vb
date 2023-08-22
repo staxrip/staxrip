@@ -32,6 +32,8 @@ Public Class Project
     Public Compressibility As Double
     Public ConvertChromaSubsampling As Boolean = True
     Public ConvertSup2Sub As Boolean
+    Public CropWithTonemapping As Boolean = True
+    Public CropWithHighContrast As Boolean = True
     Public CustomSourceDAR As String = ""
     Public CustomSourcePAR As String = ""
     Public CustomTargetDAR As String = ""

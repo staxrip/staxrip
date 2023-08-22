@@ -1022,6 +1022,8 @@ Public Class MainForm
     Public AssistantPassed As Boolean
     Public CommandManager As New CommandManager
 
+    Property PreviewScript As VideoScript
+
     Private AudioMenu0 As ContextMenuStripEx
     Private AudioMenu1 As ContextMenuStripEx
     Private TargetAspectRatioMenu As ContextMenuStripEx
@@ -1144,6 +1146,7 @@ Public Class MainForm
         ApplyTheme()
 
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        AddHandler FiltersListView.Changed, AddressOf ApplyFilters
     End Sub
 
     Sub OnThemeChanged(theme As Theme)
@@ -1738,12 +1741,13 @@ Public Class MainForm
 
             SetBindings(p, True)
 
-            Text = path.Base + " - " + Application.ProductName + " v" + Application.ProductVersion
+            Text = path.Base + " - " + g.DefaultCommands.GetApplicationDetails(True, True, True)
 
             If Not Environment.Is64BitProcess Then
                 Text += " (32 bit)"
             End If
 
+            PreviewScript = Nothing
             SkipAssistant = True
 
             If path.StartsWith(Folder.Template) Then
@@ -1825,8 +1829,8 @@ Public Class MainForm
     End Function
 
     Sub SetSlider()
-        Dim w = If(p.ResizeSliderMaxWidth = 0, p.SourceWidth, p.ResizeSliderMaxWidth)
-        tbResize.Maximum = CInt((Calc.FixMod16(w) - 320) / p.ForcedOutputMod)
+        Dim w = If(p.ResizeSliderMaxWidth = 0, p.SourceWidth * 2, p.ResizeSliderMaxWidth)
+        tbResize.Maximum = CInt((Calc.FixMod16(w) - 720) / p.ForcedOutputMod)
     End Sub
 
     Sub SetSavedProject()
@@ -2039,6 +2043,7 @@ Public Class MainForm
             End If
 
             FiltersListView.IsLoading = True
+            PreviewScript = Nothing
 
             Dim preferredSourceFilter As VideoFilter = Nothing
 
@@ -2230,7 +2235,7 @@ Public Class MainForm
                 p.Script.Engine = ScriptEngine.VapourSynth
                 p.Script.Filters.Clear()
                 Dim code = "import vapoursynth as vs" + BR +
-                           "core = vs.get_core()" + BR +
+                           "core = vs.core" + BR +
                            "from importlib.machinery import SourceFileLoader" + BR +
                            $"SourceFileLoader('clip', r""{p.SourceFile}"").load_module()" + BR +
                            "clip = vs.get_output()"
@@ -2534,7 +2539,7 @@ Public Class MainForm
         End If
 
         If p.SourceChromaSubsampling <> "4:2:0" AndAlso p.ConvertChromaSubsampling Then
-            Dim interlaced = p.SourceScanType = "Interlaced"
+            Dim interlaced = p.SourceScanType.EqualsAny("Interlaced", "MBAFF")
 
             If editVS Then
                 Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
@@ -2542,7 +2547,7 @@ Public Class MainForm
                 Dim format = If(p.SourceVideoBitDepth = 10, "YUV420P10", "YUV420P8")
                 Dim category = "Color"
                 Dim name = $"Convert To {format}"
-                Dim script = $"clip = clip.resize.Bicubic(matrix_s = '{matrix}', format = vs.{format})"
+                Dim script = $"clip = clip.resize.Bicubic(format = vs.{format})"
 
                 If interlaced Then
                     p.Script.Filters.Add(New VideoFilter(category, name, script, True))
@@ -2836,7 +2841,7 @@ Public Class MainForm
         lZoom.Text = widthZoom.ToString("f1") + "/" + heightZoom.ToString("f1")
         lPixel.Text = CInt(p.TargetWidth * p.TargetHeight).ToString
 
-        Dim trackBarValue = CInt((p.TargetWidth - 320) / p.ForcedOutputMod)
+        Dim trackBarValue = CInt((p.TargetWidth - 720) / p.ForcedOutputMod)
 
         If trackBarValue < tbResize.Minimum Then
             trackBarValue = tbResize.Minimum
@@ -2881,7 +2886,7 @@ Public Class MainForm
                 p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.SourceColorSpace,
                 p.SourceChromaSubsampling, If(p.SourceVideoBitDepth <> 0, p.SourceVideoBitDepth & "Bits", ""),
                 p.SourceVideoHdrFormat,
-                p.SourceScanType, If(p.SourceScanType = "Interlaced", p.SourceScanOrder, ""))
+                p.SourceScanType, If(p.SourceScanType.EqualsAny("Interlaced", "MBAFF"), p.SourceScanOrder, ""))
 
             lTarget1.Text = lSource1.GetMaxTextSpace(g.GetTimeString(p.TargetSeconds),
                 p.TargetFrameRate.ToString.Shorten(9) + "fps", p.Script.Info.Width & "x" & p.Script.Info.Height,
@@ -3724,7 +3729,7 @@ Public Class MainForm
             b.Field = NameOf(s.FixFrameRate)
 
             n = ui.AddNum
-            n.Text = "Number of frames used for auto crop"
+            n.Text = "Number of frames used for auto-crop"
             n.Config = {5, 200}
             n.Field = NameOf(s.CropFrameCount)
 
@@ -4025,9 +4030,10 @@ Public Class MainForm
         End If
 
         Try
+            p.Log.Clear()
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
-            Text = path.Base + " - " + Application.ProductName + " v" + Application.ProductVersion
+            Text = path.Base + " - " + g.DefaultCommands.GetApplicationDetails(True, True, True)
             s.UpdateRecentProjects(path)
             UpdateRecentProjectsMenu()
         Catch ex As Exception
@@ -4191,6 +4197,14 @@ Public Class MainForm
         End If
     End Sub
 
+    '<Command("Applies the current filter state.")>
+    Sub ApplyFilters(Optional filters As List(Of VideoFilter) = Nothing)
+        If PreviewScript Is Nothing Then Exit Sub
+
+        PreviewScript.Filters = If(filters, p.Script.Filters)
+        PreviewScript.RemoveFilter("Cutting")
+    End Sub
+
     <Command("Dialog to preview or cut the video.")>
     Sub ShowPreview()
         If p.SourceFile = "" Then
@@ -4200,16 +4214,23 @@ Public Class MainForm
                 Exit Sub
             End If
 
-            Dim script = p.Script.GetNewScript
-            script.Path = p.TempDir + p.TargetFile.Base + "_view." + script.FileType
-            script.RemoveFilter("Cutting")
+            If PreviewScript Is Nothing Then
+                PreviewScript = p.Script.GetNewScript()
+                If PreviewScript Is Nothing Then
+                    Exit Sub
+                End If
+                PreviewScript.Path = p.TempDir + p.TargetFile.Base + "_view." + PreviewScript.FileType
+                PreviewScript.RemoveFilter("Cutting")
+            Else
+                ApplyFilters()
+            End If
 
-            If script.GetError <> "" Then
-                MsgError("Script Error", script.GetError)
+            If PreviewScript.GetError <> "" Then
+                MsgError("Script Error", PreviewScript.GetError)
                 Exit Sub
             End If
 
-            Dim form As New PreviewForm(script)
+            Dim form As New PreviewForm(PreviewScript)
             form.Show()
         End If
     End Sub
@@ -4517,6 +4538,16 @@ Public Class MainForm
             n.Help = "On small devices it can help to restrict the aspect ratio and overcrop the width instead."
             n.Config = {0, 2, 0.1, 3}
             n.Field = NameOf(p.AutoSmartOvercrop)
+
+            b = ui.AddBool()
+            b.Text = "Tonemapping for HDR videos"
+            b.Help = "Tonemap sources with a higher Bit Depth than 8bit."
+            b.Field = NameOf(p.CropWithTonemapping)
+
+            b = ui.AddBool()
+            b.Text = "High contrast for easier cropping"
+            b.Help = ""
+            b.Field = NameOf(p.CropWithHighContrast)
 
             ui.AddLine(cropPage, "Crop Values")
 
@@ -5182,7 +5213,7 @@ Public Class MainForm
     Sub DisableCropFilter()
         Dim f = p.Script.GetFilter("Crop")
 
-        If Not f Is Nothing AndAlso CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
+        If f IsNot Nothing AndAlso CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
             f.Active = False
             FiltersListView.Load()
         End If
@@ -5262,7 +5293,7 @@ Public Class MainForm
     Shared Function GetDefaultMainMenu() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
-        ret.Add("File|Open Video Source File(s)...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control)
+        ret.Add("File|Open Video Source File(s)...", NameOf(ShowOpenSourceDialog), Keys.O Or Keys.Control, Symbol.Preview)
         ret.Add("File|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
         ret.Add("File|-")
         ret.Add("File|Video Comparison...", NameOf(ShowVideoComparison), Keys.F5, Symbol.VideoLegacy)
@@ -5275,8 +5306,8 @@ Public Class MainForm
         ret.Add("File|Project Templates", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
         ret.Add("File|Recent Projects", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.RecentProjects})
 
-        ret.Add("Crop", NameOf(ShowCropDialog), Keys.F3)
-        ret.Add("Preview", NameOf(ShowPreview), Keys.F4)
+        ret.Add("Crop", NameOf(ShowCropDialog), Keys.F3, Symbol.fa_scissors)
+        ret.Add("Preview", NameOf(ShowPreview), Keys.F4, Symbol.fa_eye)
 
         ret.Add("Options", NameOf(ShowOptionsDialog), Keys.F9)
 
@@ -5404,7 +5435,7 @@ Public Class MainForm
             End If
         End If
 
-        tbTargetWidth.Text = CInt(320 + tbResize.Value * p.ForcedOutputMod).ToString
+        tbTargetWidth.Text = CInt(720 + tbResize.Value * p.ForcedOutputMod).ToString
         SetImageHeight()
         SkipAssistant = False
         Assistant(False)
@@ -5684,12 +5715,32 @@ Public Class MainForm
     <Command("Crops borders automatically.")>
     Sub StartAutoCrop()
         g.RunAutoCrop(Nothing)
+
+        If Not g.EnableFilter("Crop") Then
+            If p.Script.IsAviSynth Then
+                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
+            Else
+                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)"))
+            End If
+        End If
+
+        DisableCropFilter()
         Assistant()
     End Sub
 
     <Command("Crops borders automatically until the proper aspect ratio is found.")>
     Sub StartSmartCrop()
         g.SmartCrop()
+
+        If Not g.EnableFilter("Crop") Then
+            If p.Script.IsAviSynth Then
+                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
+            Else
+                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)"))
+            End If
+        End If
+
+        DisableCropFilter()
         Assistant()
     End Sub
 
@@ -5726,20 +5777,18 @@ Public Class MainForm
     Sub LoadFilterSetup(profileInterface As Profile)
         Dim profile = DirectCast(ObjectHelp.GetCopy(profileInterface), TargetVideoScript)
 
-        If profile.Engine = ScriptEngine.AviSynth OrElse
-            (Package.Python.VerifyOK(True) AndAlso
-            Package.VapourSynth.VerifyOK(True) AndAlso
-            Package.vspipe.VerifyOK(True)) Then
-
+        If profile.Engine = ScriptEngine.AviSynth OrElse (Package.Python.VerifyOK(True) AndAlso Package.VapourSynth.VerifyOK(True) AndAlso Package.vspipe.VerifyOK(True)) Then
             Dim currentSetup = p.Script
 
             Try
                 p.Script = profile
+                PreviewScript = Nothing
                 ModifyFilters()
                 FiltersListView.OnChanged()
                 Assistant()
             Catch ex As Exception
                 p.Script = currentSetup
+                PreviewScript = Nothing
                 ModifyFilters()
                 FiltersListView.OnChanged()
                 Assistant()
@@ -5749,7 +5798,41 @@ Public Class MainForm
         FiltersListView.RebuildMenu()
     End Sub
 
-    Sub ProcessCommandLine(args As String())
+    Function ParseCommandLine(commandLine As String) As String()
+        If String.IsNullOrWhiteSpace(commandLine) Then Return New List(Of String)().ToArray()
+
+        Dim args = New List(Of String)
+        Dim sb = New StringBuilder()
+        Dim insideQuote = False
+
+        For i = 0 To commandLine.Length - 1
+            If commandLine.Chars(i) = """" Then
+                If insideQuote Then
+                    insideQuote = False
+                Else
+                    insideQuote = True
+                End If
+            ElseIf commandLine.Chars(i) = " " Then
+                If insideQuote Then
+                    sb.Append(commandLine.Chars(i))
+                Else
+                    args.Add(sb.ToString())
+                    sb = New StringBuilder()
+                End If
+            Else
+                sb.Append(commandLine.Chars(i))
+            End If
+        Next
+
+        If sb.Length > 0 Then args.Add(sb.ToString())
+
+        Return args.ToArray()
+    End Function
+
+    Sub ProcessCommandLine(commandLine As String)
+        If String.IsNullOrWhiteSpace(commandLine) Then Exit Sub
+
+        Dim args = ParseCommandLine(commandLine)
         If args.Length > 1 Then
             Package.LoadConfAll()
         Else
@@ -5758,24 +5841,24 @@ Public Class MainForm
 
         Dim files As New List(Of String)
 
-        For Each arg In CliArg.GetArgs(args)
+        For Each arg In args.Skip(1)
             Try
-                If Not arg.IsFile AndAlso files.Count > 0 Then
+                If Not arg.FileExists() AndAlso files.Count > 0 Then
                     Dim files2 As New List(Of String)(files)
                     Refresh()
                     OpenAnyFile(files2)
                     files.Clear()
                 End If
 
-                If arg.IsFile Then
-                    files.Add(arg.Value)
+                If arg.FileExists() Then
+                    files.Add(arg)
                 Else
-                    If Not CommandManager.ProcessCommandLineArgument(arg.Value) Then
+                    If Not CommandManager.ProcessCommandLineArgument(arg) Then
                         Throw New Exception
                     End If
                 End If
             Catch ex As Exception
-                MsgWarn("Error parsing argument:" + BR2 + arg.Value + BR2 + ex.Message)
+                MsgWarn("Error parsing argument:" + BR2 + arg + BR2 + ex.Message)
             End Try
         Next
 
@@ -6727,7 +6810,8 @@ Public Class MainForm
         UpdateTemplatesMenuAsync()
         IsLoading = False
         Refresh()
-        ProcessCommandLine(Environment.GetCommandLineArgs)
+        CheckForWindows7()
+        ProcessCommandLine(Environment.CommandLine)
         StaxRipUpdate.ShowUpdateQuestion()
         StaxRipUpdate.CheckForUpdate(False, s.CheckForUpdatesDev, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
@@ -6821,5 +6905,12 @@ Public Class MainForm
         If e.Button = MouseButtons.Right AndAlso AssistantPassed AndAlso CanIgnoreTip Then
             NextContextMenuStrip.Show(bnNext, New Point(bnNext.Width, 0), ToolStripDropDownDirection.AboveLeft)
         End If
+    End Sub
+
+    Sub CheckForWindows7()
+        If s.ShowWindows7Warning AndAlso OSVersion.Current = OSVersion.Windows7 Then
+            MsgWarn("Compatibility problem!", "Whereas Windows 7 is supported by StaxRip itself, some tools don't do it anymore. This can cause tools denying to work correctly or at whole. Currently those tools are 'MKVToolNix (mkvmerge)' and 'Python', which you have to downgrade or try to avoid. For further help join our Discord server.")
+        End If
+        s.ShowWindows7Warning = False
     End Sub
 End Class

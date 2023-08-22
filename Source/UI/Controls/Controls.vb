@@ -1526,8 +1526,8 @@ Namespace UI
             Items.Add(obj)
             Dim name = path
 
-            If path.Contains("|") Then
-                name = path.RightLast("|").Trim
+            If name.Contains("|") Then
+                name = name.RightLast("|").Trim
             End If
 
             Dim ret = MenuItemEx.Add(Menu.Items, path, Sub(o As Object) OnAction(name, o), obj, tip)

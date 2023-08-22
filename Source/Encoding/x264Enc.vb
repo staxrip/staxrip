@@ -541,14 +541,14 @@ Public Class x264Params
     Property PipingToolAVS As New OptionParam With {
         .Text = "Pipe",
         .Name = "PipingToolAVS",
-        .VisibleFunc = Function() p.Script.IsAviSynth,
+        .VisibleFunc = Function() p.Script.Engine = ScriptEngine.AviSynth,
         .Options = {"Automatic", "None", "avs2pipemod y4m", "avs2pipemod raw", "ffmpeg y4m", "ffmpeg raw"}}
 
     Property PipingToolVS As New OptionParam With {
         .Text = "Pipe",
         .Name = "PipingToolVS",
         .VisibleFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .Options = {"Automatic", "None", "vspipe y4m", "vspipe raw", "ffmpeg y4m", "ffmpeg raw"}}
+        .Options = {"Automatic", "vspipe y4m", "vspipe raw", "ffmpeg y4m", "ffmpeg raw"}}
 
     Sub ApplyValues(isDefault As Boolean)
         Dim setVal = Sub(param As CommandLineParam, value As Object)
@@ -1024,11 +1024,17 @@ Public Class x264Params
             Dim pipeCmd = ""
 
             If pipeTool = "automatic" Then
-                If p.Script.IsAviSynth OrElse Package.x264.Version.ToLowerInvariant.ContainsAny("amod", "djatom", "patman") Then
-                    pipeTool = "none"
+                If p.Script.IsAviSynth Then
+                    'pipeTool = If(Package.x264Type = x264Type.Vanilla, "avs2pipemod y4m", "none")
+                    pipeTool = "avs2pipemod y4m"
                 ElseIf p.Script.IsVapourSynth Then
                     pipeTool = "vspipe y4m"
                 End If
+                'If p.Script.IsAviSynth OrElse Package.x264.Version.ToLowerInvariant.ContainsAny("amod", "djatom", "patman") Then
+                '    pipeTool = "none"
+                'ElseIf p.Script.IsVapourSynth Then
+                '    pipeTool = "vspipe y4m"
+                'End If
             End If
 
             Select Case pipeTool

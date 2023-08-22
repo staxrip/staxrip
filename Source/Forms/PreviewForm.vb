@@ -247,7 +247,8 @@ Public Class PreviewForm
     Private Renderer As VideoRenderer
     Private StartRange As Integer = -1
     Private EndRange As Integer = -1
-    Private PreviewScript As VideoScript
+    Private SourceFilePath As String
+    Private PreviewScript As New VideoScript
     Private CommandManager As New CommandManager
     Private TrackBarBorder As Integer = 1
     Private TrackBarGap As Integer = 1
@@ -258,22 +259,17 @@ Public Class PreviewForm
 
     Private WithEvents GenericMenu As CustomMenu
 
-    Sub New(script As VideoScript)
+    Sub New(ByRef script As VideoScript)
         InitializeComponent()
-
-        IsComposited = False
-
-        GetType(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty Or
-            BindingFlags.Instance Or BindingFlags.NonPublic, Nothing,
-            pnTrack, New Object() {True})
+        GetType(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty Or BindingFlags.Instance Or BindingFlags.NonPublic, Nothing, pnTrack, New Object() {True})
 
         Icon = g.Icon
+        IsComposited = False
 
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)
 
-        GenericMenu = New CustomMenu(AddressOf GetDefaultMenu,
-            s.CustomMenuPreview, CommandManager, cmsMain)
+        GenericMenu = New CustomMenu(AddressOf GetDefaultMenu, s.CustomMenuPreview, CommandManager, cmsMain)
 
         GenericMenu.AddKeyDownHandler(Me)
         GenericMenu.BuildMenu()
@@ -294,6 +290,73 @@ Public Class PreviewForm
         bnRight3.ForeColor = SystemColors.ControlText
         bnLeft3.ForeColor = SystemColors.ControlText
         bnMenu.ForeColor = SystemColors.ControlText
+    End Sub
+
+    Protected Overrides Sub OnLoad(args As EventArgs)
+        MyBase.OnLoad(args)
+        Open(True)
+        ShowButtons(Not s.HidePreviewButtons)
+    End Sub
+
+    Sub Open(initSize As Boolean)
+        PreviewScript.Synchronize(True, True, True)
+
+        If PreviewScript.Error <> "" Then
+            MsgError("Script Error", PreviewScript.Error)
+            Exit Sub
+        End If
+
+        FrameServer = FrameServerFactory.Create(PreviewScript.Path)
+        Renderer = New VideoRenderer(pnVideo, FrameServer) With {
+            .Info = PreviewScript.OriginalInfo,
+            .ShowInfo = s.ShowPreviewInfo
+        }
+
+        If s.LastPosition < FrameServer.Info.FrameCount - 1 Then
+            Renderer.Position = s.LastPosition
+        End If
+
+        Dim info = FrameServer.Info
+
+        VideoSize = If(Calc.IsARSignalingRequired,
+            New Size(CInt(info.Height * Calc.GetTargetDAR), CInt(info.Height)),
+            New Size(CInt(info.Width), CInt(info.Height)))
+
+        p.CutFrameCount = info.FrameCount
+        p.CutFrameRate = FrameServer.FrameRate
+
+        Dim workingArea = Screen.FromControl(Me).WorkingArea
+        Dim initHeight = CInt((workingArea.Height / 100) * s.PreviewSize)
+
+        SetSize(initHeight)
+
+        If s.PreviewFormBorderStyle = FormBorderStyle.None Then
+            Fullscreen()
+        Else
+            NormalScreen()
+        End If
+
+        AfterPositionChanged()
+    End Sub
+
+    <Command("Reloads the preview script.")>
+    Sub Reload()
+        Renderer.Dispose()
+        FrameServer.Dispose()
+
+        If PreviewScript.GetError <> "" Then
+            MsgError("Script Error", PreviewScript.GetError)
+            Exit Sub
+        End If
+
+        Open(False)
+    End Sub
+
+    Sub NormalScreen()
+        FormBorderStyle = FormBorderStyle.Sizable
+        s.PreviewFormBorderStyle = FormBorderStyle
+        WindowState = FormWindowState.Normal
+        pnVideo.Dock = DockStyle.Fill
     End Sub
 
     Sub Fullscreen()
@@ -321,13 +384,6 @@ Public Class PreviewForm
 
         BlockVideoPaint = False
         pnVideo.Refresh()
-    End Sub
-
-    Sub NormalScreen()
-        FormBorderStyle = FormBorderStyle.Sizable
-        s.PreviewFormBorderStyle = FormBorderStyle
-        WindowState = FormWindowState.Normal
-        pnVideo.Dock = DockStyle.Fill
     End Sub
 
     Sub ShowButtons(vis As Boolean)
@@ -912,6 +968,7 @@ Public Class PreviewForm
         ret.Add("Cut|-")
         ret.Add("Cut|Create job for each selection", NameOf(CreateJobForEachSelection))
 
+        ret.Add("View|Reload", NameOf(Reload), Keys.R, Symbol.CircleRing)
         ret.Add("View|Info", NameOf(ToggleInfos), Keys.I, Symbol.Info)
         ret.Add("View|Fullscreen", NameOf(SwitchWindowState), Keys.Enter, Symbol.FullScreen)
         ret.Add("View|-")
@@ -974,7 +1031,7 @@ Public Class PreviewForm
         e.Handled = True
 
         Select Case e.Item.MethodName
-            Case NameOf(CloseDialog), NameOf(PlayWithMPC), NameOf(PlayWithMpvnet)
+            Case NameOf(CloseDialog), NameOf(PlayWithMPC), NameOf(PlayWithMpvnet), NameOf(Reload)
                 ProcessMenu(e.Item)
             Case Else
                 For Each i In Instances.ToArray()
@@ -1033,45 +1090,6 @@ Public Class PreviewForm
     Protected Overrides Sub OnHelpButtonClicked(e As CancelEventArgs)
         e.Cancel = True
         OpenHelp()
-    End Sub
-
-    Protected Overrides Sub OnLoad(args As EventArgs)
-        MyBase.OnLoad(args)
-
-        PreviewScript.Synchronize(True, True, True)
-        FrameServer = FrameServerFactory.Create(PreviewScript.Path)
-        Renderer = New VideoRenderer(pnVideo, FrameServer)
-        Renderer.Info = PreviewScript.OriginalInfo
-        Renderer.ShowInfo = s.ShowPreviewInfo
-
-        If s.LastPosition < FrameServer.Info.FrameCount - 1 Then
-            Renderer.Position = s.LastPosition
-        End If
-
-        Dim info = FrameServer.Info
-
-        If Calc.IsARSignalingRequired Then
-            VideoSize = New Size(CInt(info.Height * Calc.GetTargetDAR), CInt(info.Height))
-        Else
-            VideoSize = New Size(CInt(info.Width), CInt(info.Height))
-        End If
-
-        p.CutFrameCount = info.FrameCount
-        p.CutFrameRate = FrameServer.FrameRate
-
-        Dim workingArea = Screen.FromControl(Me).WorkingArea
-        Dim initHeight = CInt((workingArea.Height / 100) * s.PreviewSize)
-
-        SetSize(initHeight)
-
-        If s.PreviewFormBorderStyle = FormBorderStyle.None Then
-            Fullscreen()
-        Else
-            NormalScreen()
-        End If
-
-        AfterPositionChanged()
-        ShowButtons(Not s.HidePreviewButtons)
     End Sub
 
     Sub SetSize(newHeight As Integer)

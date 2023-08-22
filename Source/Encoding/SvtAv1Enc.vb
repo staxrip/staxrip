@@ -43,6 +43,10 @@ Public Class SvtAv1Enc
             Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
 
+        If Params.Passes.Value > 0 Then
+            Encode("Video encoding third pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
+        End If
+
         AfterEncoding()
     End Sub
 
@@ -106,12 +110,18 @@ Public Class SvtAv1Enc
                 name = "_chunk" & (chunk + 1)
             End If
 
-            If Params.Passes.Value > 0 Then
+            If Params.Passes.Visible Then
                 ret.Add(Sub()
                             Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "),
                                    GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
-                            Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                            If Params.Passes.Value > 0 Then
+                                Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "),
+                                       GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                            End If
+                            If Params.Passes.Value > 1 Then
+                                Encode("Video encoding pass 3" + name.Replace("_chunk", " chunk "),
+                                       GetArgs(3, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                            End If
                         End Sub)
             Else
                 ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "),
@@ -426,8 +436,9 @@ Public Class SvtAv1EncParams
         .Switches = {"--pass", "--passes", "--stats"},
         .Text = "Passes",
         .Init = 0,
-        .Options = {"One-pass encode", "Multi-pass encode"},
-        .Values = {"1", "2"}}
+        .Options = {"1-pass encode", "2-pass encode", "3-pass encode"},
+        .Values = {"1", "2", "3"},
+        .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncRateMode.Quality}
 
 
     Property KeyInt As New OptionParam With {
@@ -520,13 +531,13 @@ Public Class SvtAv1EncParams
                 Add("Basic", Decoder, PipingToolAVS, PipingToolVS,
                     Progress,
                     Preset, Profile, Level,
-                    Passes, EnableHdr,
+                    EnableHdr,
                     FrameSkip, FramesToBeEncoded,
                     CompCheck, CompCheckAimedQuality,
                     Chunks
                 )
                 Add("Rate Control",
-                    RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp, AqMode,
+                    RateControlMode, ConstantRateFactor, QuantizationParameter, Passes, TargetBitrate, MaximumBitrate, MaxQp, MinQp, AqMode,
                     EnableQm, QmMax, QmMin
                 )
                 Add("GOP size/type",
@@ -575,6 +586,10 @@ Public Class SvtAv1EncParams
 
         If Passes.Value > 0 Then
             ret += BR2 + GetCommandLine(True, True, 2)
+        End If
+
+        If Passes.Value > 1 Then
+            ret += BR2 + GetCommandLine(True, True, 3)
         End If
 
         Return ret
@@ -686,16 +701,15 @@ Public Class SvtAv1EncParams
             End If
 
             If FramesToBeEncoded.Value > 0 AndAlso Not IsCustom(pass, "--frames") Then
-                sb.Append($" --frames {Math.Min(script.GetFrameCount - FrameSkip.Value, FramesToBeEncoded.Value)}")
+                sb.Append($" --frames {Math.Min(p.SourceFrames - FrameSkip.Value, FramesToBeEncoded.Value)}")
             Else
-                sb.Append($" --frames {script.GetFrameCount - FrameSkip.Value}")
+                sb.Append($" --frames {p.SourceFrames - FrameSkip.Value}")
             End If
         Else
             sb.Append($" --frames {endFrame - startFrame + 1}")
         End If
 
-        If Passes.Value > 0 Then
-            sb.Append(" --passes " & Passes.ValueText)
+        If Passes.Visible Then
             sb.Append(" --pass " & pass)
             sb.Append(" --stats " + statsPath)
 

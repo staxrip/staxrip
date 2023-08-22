@@ -219,6 +219,13 @@ Public Class Folder
                     Next
                 End If
 
+                Dim auto As New Project
+                auto.Init()
+                auto.Script.Filters(0) = VideoFilter.GetDefault("Source", "Automatic", ScriptEngine.AviSynth)
+                auto.DemuxAudio = DemuxMode.All
+                auto.SubtitleMode = SubtitleMode.Preferred
+                SafeSerialization.Serialize(auto, ret + "Automatic Workflow.srip")
+
                 Dim manual As New Project
                 manual.Init()
                 manual.Script = VideoScript.GetDefaults()(0)
@@ -226,13 +233,6 @@ Public Class Folder
                 manual.DemuxAudio = DemuxMode.Dialog
                 manual.SubtitleMode = SubtitleMode.Dialog
                 SafeSerialization.Serialize(manual, ret + "Manual Workflow.srip")
-
-                Dim auto As New Project
-                auto.Init()
-                auto.Script.Filters(0) = VideoFilter.GetDefault("Source", "Automatic")
-                auto.DemuxAudio = DemuxMode.All
-                auto.SubtitleMode = SubtitleMode.Preferred
-                SafeSerialization.Serialize(auto, ret + "Automatic Workflow.srip")
 
                 Dim remux As New Project
                 remux.Init()
@@ -384,19 +384,13 @@ Public Class SafeSerialization
         Public Name As String
     End Class
 
-    Shared Function Check(iface As ISafeSerialization,
-                          obj As Object,
-                          key As String,
-                          version As Integer) As Boolean
-
-        If obj Is Nothing OrElse
-            Not iface.Versions.ContainsKey(key) OrElse
-            iface.Versions(key) <> version Then
-
+    Shared Function Check(iface As ISafeSerialization, obj As Object, key As String, version As Integer) As Boolean
+        If obj Is Nothing OrElse Not iface.Versions.ContainsKey(key) OrElse iface.Versions(key) <> version Then
             iface.Versions(key) = version
             iface.WasUpdated = True
             Return True
         End If
+
         Return False
     End Function
 

@@ -225,9 +225,7 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Sub AutoSetImageSize()
-        If p.VideoEncoder.AutoCompCheckValue > 0 AndAlso Calc.GetPercent <> 0 AndAlso
-            p.Script.IsFilterActive("Resize") Then
-
+        If p.VideoEncoder.AutoCompCheckValue > 0 AndAlso Calc.GetPercent <> 0 AndAlso p.Script.IsFilterActive("Resize") Then
             Dim oldWidth = p.TargetWidth
             Dim oldHeight = p.TargetHeight
 
@@ -242,7 +240,7 @@ Public MustInherit Class VideoEncoder
             p.TargetHeight = Calc.FixMod16(CInt(p.TargetWidth / Calc.GetTargetDAR()))
 
             While Calc.GetPercent < p.VideoEncoder.AutoCompCheckValue
-                If p.TargetWidth - 16 >= 320 Then
+                If p.TargetWidth - 16 >= 720 Then
                     p.TargetWidth -= 16
                     p.TargetHeight = Calc.FixMod16(CInt(p.TargetWidth / Calc.GetTargetDAR()))
                 Else

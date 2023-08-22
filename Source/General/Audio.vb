@@ -730,6 +730,8 @@ function Down2(clip a)
         End If
     End Function
 
+
+
     Shared Function CommandContains(find As String) As Boolean
         If p.Audio0.IsUsedAndContainsCommand(find) OrElse p.Audio1.IsUsedAndContainsCommand(find) Then
             Return True

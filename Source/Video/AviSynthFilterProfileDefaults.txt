@@ -50,6 +50,12 @@ HDR to SDR | HDRTools | PQ =
     ConvertXYZtoYUV(Color=2, pColor=0, OOTF=false, OutputMode=2)
     ConvertBits(8)
 
+Tonemap | Placebo =
+    ConvertBits(16)
+    libplacebo_Tonemap(src_csp=$select:msg:Select Source Color Space;SDR|0;HDR10|1;HLG|2;Dolby Vision|3$, dst_csp=$select:msg:Select Target Color Space;SDR|0;HDR10|1;HLG|2;Dolby Vision|3$, dynamic_peak_detection=$select:msg:Dynamic Peak Detection?;Yes (default)|True;No|False$, tone_mapping_function=$select:msg:Tonemapping Function;Auto (default)|0;Clip|1;ST2094_40|2;ST2094_10|3;BT2390|4;BT2446a|5;Spline|6;Reinhard|7;Mobius|8;Hable|9;Gamma|10;Linear|11$, tone_mapping_mode=$select:msg:Tonemapping Mode;Auto (default)|0;RGB|1;MAX|2;HYBRID|3;LUMA|4$)
+    # ConvertBits(8)
+    # ConvertToYUV420()
+
 [Crop]
 Crop = $select:msg:Select Version;Crop;Dither_Crop16$(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)
 Hardware Encoder = # hardware encoder crops
@@ -205,8 +211,8 @@ RemoveGrain | RemoveGrain With Repair =
     Processed = RemoveGrain(mode=2, modeU=2, modeV=2, planar=false)
     Repair(Processed, mode=2, modeU=2, modeV=2, planar=false)
 
-SMDegrain | SMDegrain Hard Grain = SMDegrain(tr=6, thSAD=600, contrasharp=true, refinemotion=true)
-SMDegrain | SMDegrain Light Grain = SMDegrain(tr=1, thSAD=300, contrasharp=true)
+SMDegrain | SMDegrain Hard Grain = SMDegrain(tr=4, thSAD=600, contrasharp=true, refinemotion=true, prefilter=3)
+SMDegrain | SMDegrain Light Grain = SMDegrain(tr=2, thSAD=300, contrasharp=true, refinemotion=true, prefilter=3)
 TemporalDegrain2 = TemporalDegrain2(degrainTR=2, postFFT=3, postSigma=3)
 VagueDenoiser = VagueDenoiser(threshold=0.8, method=1, nsteps=6, chromaT=0.8)
 

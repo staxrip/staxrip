@@ -142,6 +142,14 @@ Public Class Macro
         End If
 
         ret.Add(New Macro("audio_bitrate", "Audio Bitrate", GetType(Integer), "Overall audio bitrate."))
+        ret.Add(New Macro("audio_bitrate1", "Audio Bitrate 1", GetType(Integer), "Audio bitrate of the first audio track."))
+        ret.Add(New Macro("audio_bitrate2", "Audio Bitrate 2", GetType(Integer), "Audio bitrate of the second audio track."))
+        ret.Add(New Macro("audio_channels1", "Audio Channels 1", GetType(Integer), "Audio channels of the first audio track."))
+        ret.Add(New Macro("audio_channels2", "Audio Channels 2", GetType(Integer), "Audio channels of the second audio track."))
+        ret.Add(New Macro("audio_codec1", "Audio Codec 1", GetType(String), "Audio codec of the first audio track."))
+        ret.Add(New Macro("audio_codec2", "Audio Codec 2", GetType(String), "Audio codec of the second audio track."))
+        ret.Add(New Macro("audio_delay1", "Audio Delay 1", GetType(Integer), "Audio delay of the first audio track."))
+        ret.Add(New Macro("audio_delay2", "Audio Delay 2", GetType(Integer), "Audio delay of the second audio track."))
         ret.Add(New Macro("audio_file1", "First Audio File", GetType(String), "File path of the first audio file."))
         ret.Add(New Macro("audio_file2", "Second Audio File", GetType(String), "File path of the second audio file."))
         ret.Add(New Macro("compressibility", "Compressibility", GetType(Integer), "Compressibility value."))
@@ -154,8 +162,6 @@ Public Class Macro
         ret.Add(New Macro("current_date", "Current Date", GetType(String), "Returns the current date."))
         ret.Add(New Macro("current_time", "Current Time (12h)", GetType(String), "Returns the current time (12h)."))
         ret.Add(New Macro("current_time24", "Current Time (24h)", GetType(String), "Returns the current time (24h)."))
-        ret.Add(New Macro("delay", "Audio Delay 1", GetType(Integer), "Audio delay of the first audio track."))
-        ret.Add(New Macro("delay2", "Audio Delay 2", GetType(Integer), "Audio delay of the second audio track."))
         ret.Add(New Macro("dpi", "Main Dialog DPI", GetType(Integer), "DPI value of the main dialog."))
         ret.Add(New Macro("encoder", "Encoder", GetType(String), "Name of the active video encoder."))
         ret.Add(New Macro("encoder_ext", "Encoder File Extension", GetType(String), "File extension of the format the encoder of the active project outputs."))
@@ -443,16 +449,34 @@ Public Class Macro
         If value.Contains("%audio_bitrate%") Then value = value.Replace("%audio_bitrate%", (proj.Audio0.Bitrate + proj.Audio1.Bitrate).ToString)
         If Not value.Contains("%") Then Return value
 
+        If value.Contains("%audio_bitrate1%") Then value = value.Replace("%audio_bitrate1%", proj.Audio0.Bitrate.ToString)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%audio_bitrate2%") Then value = value.Replace("%audio_bitrate2%", proj.Audio1.Bitrate.ToString)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%audio_channels1%") Then value = value.Replace("%audio_channels1%", proj.Audio0.Channels.ToString)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%audio_channels2%") Then value = value.Replace("%audio_channels2%", proj.Audio1.Channels.ToString)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%audio_codec1%") Then value = value.Replace("%audio_codec1%", proj.Audio0.AudioCodec.ToString)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%audio_codec2%") Then value = value.Replace("%audio_codec2%", proj.Audio1.AudioCodec.ToString)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%audio_delay1%") Then value = value.Replace("%audio_delay1%", proj.Audio0.Delay.ToString)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%audio_delay2%") Then value = value.Replace("%audio_delay2%", proj.Audio1.Delay.ToString)
+        If Not value.Contains("%") Then Return value
+
         If value.Contains("%audio_file1%") Then value = value.Replace("%audio_file1%", proj.Audio0.File)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%audio_file2%") Then value = value.Replace("%audio_file2%", proj.Audio1.File)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%delay%") Then value = value.Replace("%delay%", proj.Audio0.Delay.ToString)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%delay2%") Then value = value.Replace("%delay2%", proj.Audio1.Delay.ToString)
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%startup_dir%") Then value = value.Replace("%startup_dir%", Folder.Startup)

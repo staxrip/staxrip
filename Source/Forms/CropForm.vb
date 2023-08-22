@@ -293,6 +293,24 @@ Public Class CropForm
             script.Filters.Add(p.Script.GetFilter("Rotation").GetCopy())
         End If
 
+        If p.CropWithTonemapping Then
+            If p.SourceVideoBitDepth > 8 Then
+                If p.Script.Engine = ScriptEngine.AviSynth Then
+                    script.Filters.Add(New VideoFilter("Color", "Tonemap", "ConvertBits(16)" + BR + "libplacebo_Tonemap()" + BR + "ConvertToYUV420()" + BR + "ConvertBits(8)"))
+                Else
+                    script.Filters.Add(New VideoFilter("Color", "Tonemap", "clip = core.fmtc.bitdepth(clip, bits=16)" + BR + "clip = core.placebo.Tonemap(clip, src_csp=1, dst_csp=0, dynamic_peak_detection=0, tone_mapping_function=7)" + BR + $"clip = clip.resize.Bicubic(format = vs.YUV420P8)"))
+                End If
+            End If
+        End If
+
+        If p.CropWithHighContrast Then
+            If p.Script.Engine = ScriptEngine.AviSynth Then
+                script.Filters.Add(New VideoFilter("Levels", "Levels", "Levels(0, 2.5, 255, 0, 255, coring=true)"))
+            Else
+                script.Filters.Add(New VideoFilter("Levels", "Levels", "clip = core.std.Levels(clip, gamma=2.5, planes=0)"))
+            End If
+        End If
+
         script.Synchronize(True, True, True)
 
         FrameServer = FrameServerFactory.Create(script.Path)
@@ -305,6 +323,10 @@ Public Class CropForm
         tbPosition.Value = Renderer.Position
         SelectBorder(AnchorStyles.Top)
         UpdateAll()
+
+        If FrameServer.Error <> "" Then
+            MsgError("CROP", FrameServer.Error)
+        End If
     End Sub
 
 

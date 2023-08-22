@@ -88,7 +88,7 @@ Public MustInherit Class Demuxer
 
         Dim dgIndex As New CommandLineDemuxer With {
             .Name = "DGIndex: Demux & Index MPEG-2",
-            .InputExtensions = {"mpg", "vob", "m2ts", "m2v", "mts", "m2t"},
+            .InputExtensions = {"mpg", "mpeg", "vob", "m2ts", "m2v", "mts", "m2t"},
             .OutputExtensions = {"d2v"},
             .InputFormats = {"mpeg2"},
             .Command = "%app:DGIndex%",
@@ -99,7 +99,7 @@ Public MustInherit Class Demuxer
 
         Dim d2vWitch As New CommandLineDemuxer With {
             .Name = "D2V Witch: Demux & Index MPEG-2",
-            .InputExtensions = {"mpg", "vob", "m2ts", "m2v", "mts", "m2t"},
+            .InputExtensions = {"mpg", "mpeg", "vob", "m2ts", "m2v", "mts", "m2t"},
             .OutputExtensions = {"d2v"},
             .InputFormats = {"mpeg2"},
             .Command = "cmd.exe",

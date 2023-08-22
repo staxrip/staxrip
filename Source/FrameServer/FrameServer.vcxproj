@@ -195,6 +195,9 @@
   <ItemGroup>
     <ResourceCompile Include="FrameServer.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="FrameServer.aps" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

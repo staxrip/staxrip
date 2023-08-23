@@ -500,7 +500,7 @@ Public Class VvencffappParams
                             sb.Append(pipeString & " | " & Package.VVenCFFapp.Path.Escape)
                         Case "vspipe"
                             Dim chunk = If(isSingleChunk, "", $" --start {startFrame} --end {endFrame}")
-                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m" + chunk
+                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - -c y4m" + chunk
 
                             sb.Append(pipeString & " | " & Package.VVenCFFapp.Path.Escape)
                         Case "ffmpeg"

@@ -1273,7 +1273,7 @@ Public Class x265Params
                             End If
                         Case "vspipe"
                             Dim chunk = If(isSingleChunk, "", $" --start {startFrame} --end {endFrame}")
-                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m" + chunk + " | "
+                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - -c y4m" + chunk + " | "
 
                             sb.Append(pipeString + Package.x265.Path.Escape)
                             If isSingleChunk Then

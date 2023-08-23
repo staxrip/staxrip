@@ -1039,7 +1039,7 @@ Public Class x264Params
 
             Select Case pipeTool
                 Case "vspipe y4m"
-                    pipeCmd = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m | "
+                    pipeCmd = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - -c y4m | "
                 Case "vspipe raw"
                     pipeCmd = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - | "
                 Case "avs2pipemod y4m"

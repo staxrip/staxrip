@@ -338,7 +338,7 @@ Public Class SvtAv1EncParams
         .Init = 0}
 
     Property EnableHdr As New BoolParam With {
-        .Switch = "--enable-hdr",
+        .Switch = "--enable-hdr 1",
         .Text = "Enable HDR",
         .Init = False
     }
@@ -660,7 +660,7 @@ Public Class SvtAv1EncParams
                             sb.Append(pipeString & " | " & Package.SvtAv1EncApp.Path.Escape)
                         Case "vspipe"
                             Dim chunk = If(isSingleChunk, "", $" --start {startFrame} --end {endFrame}")
-                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m" + chunk
+                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - -c y4m" + chunk
 
                             sb.Append(pipeString & " | " & Package.SvtAv1EncApp.Path.Escape)
                         Case "ffmpeg"

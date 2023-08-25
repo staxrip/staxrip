@@ -1034,17 +1034,17 @@ Public Class GUIAudioProfile
                 Throw New NotImplementedException("GetDeezyCommandLine")
         End Select
 
-        If Stream IsNot Nothing Then sb.Append(" --track-index " & Stream.Index)
-        sb.Append($" --bitrate {CInt(Bitrate)}")
-        If Delay <> 0 Then sb.Append($" --delay {CInt(Delay)}ms")
+        If Stream IsNot Nothing Then sb.Append($" --track-index={Stream.Index}")
+        sb.Append($" --bitrate={CInt(Bitrate)}")
+        If Delay <> 0 Then sb.Append($" --delay={Delay}ms")
         If Params.DeezyKeeptemp Then sb.Append(" --keep-temp")
-        If Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd <> DeezyChannelsDd.Original Then sb.Append($" --channels {Params.DeezyChannelsDd.ToString().TrimStart("_"c)}")
-        If Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyChannelsDdp <> DeezyChannelsDdp.Original Then sb.Append($" --channels {Params.DeezyChannelsDdp.ToString().TrimStart("_"c)}")
-        If ((Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd = DeezyChannelsDd._2) OrElse (Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyChannelsDdp = DeezyChannelsDdp._2)) AndAlso Params.DeezyStereodownmix <> DeezyStereodownmix.Standard Then sb.Append($" --stereo-down-mix {CInt(Params.DeezyStereodownmix)}")
-        If Params.DeezyDynamicrangecompression <> DeezyDynamicrangecompression.Music_Light Then sb.Append($" --dynamic-range-compression {CInt(Params.DeezyDynamicrangecompression)}")
+        If Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd <> DeezyChannelsDd.Original Then sb.Append($" --channels={Params.DeezyChannelsDd.ToString().TrimStart("_"c)}")
+        If Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyChannelsDdp <> DeezyChannelsDdp.Original Then sb.Append($" --channels={Params.DeezyChannelsDdp.ToString().TrimStart("_"c)}")
+        If ((Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd = DeezyChannelsDd._2) OrElse (Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyChannelsDdp = DeezyChannelsDdp._2)) AndAlso Params.DeezyStereodownmix <> DeezyStereodownmix.Standard Then sb.Append($" --stereo-down-mix={CInt(Params.DeezyStereodownmix)}")
+        If Params.DeezyDynamicrangecompression <> DeezyDynamicrangecompression.Music_Light Then sb.Append($" --dynamic-range-compression={CInt(Params.DeezyDynamicrangecompression)}")
         If Params.Normalize AndAlso Params.Codec = AudioCodec.EAC3 Then sb.Append(" --normalize")
         If Params.CustomSwitches <> "" Then sb.Append(" " + Params.CustomSwitches)
-        If includePaths Then sb.Append(" --output " + GetOutputFile.LongPathPrefix.Escape + " " + File.Escape)
+        If includePaths Then sb.Append($" --output={GetOutputFile.LongPathPrefix.Escape} {File.Escape}")
 
         Return sb.ToString()
     End Function

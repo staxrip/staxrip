@@ -10,6 +10,16 @@ v2.xx.0 (not published yet)
 -->
 
 
+v2.29.0 (not published yet)
+====================
+
+- DeeZy: Fix issue with negative delay
+- Update tools
+- Update AviSynth+ plugins
+- Update Dual plugins
+- Update VapourSynth plugins
+
+
 v2.28.0 (2023-08-25)
 ====================
 

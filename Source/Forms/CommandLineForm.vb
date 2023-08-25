@@ -54,7 +54,7 @@ Public Class CommandLineForm
                 End Sub
 
         cms.Add("Copy Command Line", a, Keys.Control Or Keys.Shift Or Keys.C).SetImage(Symbol.Copy)
-        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLinePreview), Keys.F4, Symbol.Code)
+        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", params.GetCommandLinePreview, False), Keys.F4, Symbol.Code)
         cms.Add("Import Command Line...", Sub() If MsgQuestion("Import command line from clipboard?", Clipboard.GetText) = DialogResult.OK Then BasicVideoEncoder.ImportCommandLine(Clipboard.GetText, params), Keys.Control Or Keys.I).SetImage(Symbol.Download)
 
         cms.Add("-")
@@ -293,11 +293,12 @@ Public Class CommandLineForm
                 tempItem.InitParam(textBlock)
             End If
 
-            If Not helpControl Is Nothing Then
-                Dim item As New Item
-                item.Control = helpControl
-                item.Page = currentFlow
-                item.Param = param
+            If helpControl IsNot Nothing Then
+                Dim item As New Item With {
+                    .Control = helpControl,
+                    .Page = currentFlow,
+                    .Param = param
+                }
                 Items.Add(item)
             End If
         Next
@@ -342,7 +343,7 @@ Public Class CommandLineForm
         form.Doc.WriteParagraph("Numeric values and dropdown menu options can be reset to their default value by double clicking on the label.")
         form.Doc.WriteParagraph("The command line preview at the bottom of the dialog has a context menu that allows to quickly find and show options.")
 
-        If Not HTMLHelpFunc Is Nothing Then
+        If HTMLHelpFunc IsNot Nothing Then
             form.Doc.Writer.WriteRaw(HTMLHelpFunc.Invoke)
         End If
 
@@ -364,7 +365,7 @@ Public Class CommandLineForm
     End Sub
 
     Sub cbGoTo_TextChanged(sender As Object, e As EventArgs) Handles cbGoTo.TextChanged
-        If Not HighlightedControl Is Nothing Then
+        If HighlightedControl IsNot Nothing Then
             HighlightedControl.Font = New Font(HighlightedControl.Font.FontFamily, HighlightedControl.Font.Size, FontStyle.Regular)
             HighlightedControl = Nothing
         End If
@@ -382,7 +383,7 @@ Public Class CommandLineForm
                     matchedItems.Add(item)
                 End If
 
-                If Not item.Param.Switches Is Nothing Then
+                If item.Param.Switches IsNot Nothing Then
                     For Each switch In item.Param.Switches
                         If switch = cbGoTo.Text Then
                             matchedItems.Add(item)
@@ -401,7 +402,7 @@ Public Class CommandLineForm
                     matchedItems.Add(item)
                 End If
 
-                If Not item.Param.Switches Is Nothing Then
+                If item.Param.Switches IsNot Nothing Then
                     For Each switch In item.Param.Switches
                         If switch.ToLowerInvariant.Contains(find) Then
                             matchedItems.Add(item)
@@ -412,7 +413,7 @@ Public Class CommandLineForm
                 If TypeOf item.Param Is OptionParam Then
                     Dim param = DirectCast(item.Param, OptionParam)
 
-                    If Not param.Options Is Nothing Then
+                    If param.Options IsNot Nothing Then
                         For Each value In param.Options
                             Dim valueNoSpace = value.Replace(" ", "")
 
@@ -434,7 +435,7 @@ Public Class CommandLineForm
                         Next
                     End If
 
-                    If Not param.Values Is Nothing Then
+                    If param.Values IsNot Nothing Then
                         For Each value In param.Values
                             Dim valueNoSpace = value.Replace(" ", "")
 
@@ -479,7 +480,7 @@ Public Class CommandLineForm
 
         For Each i In Items
             If i.Param.Visible Then
-                If Not i.Param.Switches Is Nothing Then
+                If i.Param.Switches IsNot Nothing Then
                     For Each switch In i.Param.Switches
                         If Not cbGoTo.Items.Contains(switch) Then
                             cbGoTo.Items.Add(switch)

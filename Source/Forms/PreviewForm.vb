@@ -328,7 +328,9 @@ Public Class PreviewForm
         Dim workingArea = Screen.FromControl(Me).WorkingArea
         Dim initHeight = CInt((workingArea.Height / 100) * s.PreviewSize)
 
-        SetSize(initHeight)
+        If initSize Then
+            SetSize(initHeight)
+        End If
 
         If s.PreviewFormBorderStyle = FormBorderStyle.None Then
             Fullscreen()

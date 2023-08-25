@@ -19,7 +19,11 @@ Public Class DirectFrameServer
         End If
 
         NativeServer.OpenFile(path)
-        Info = Marshal.PtrToStructure(Of ServerInfo)(NativeServer.GetInfo())
+
+        Dim infoPtr = NativeServer.GetInfo()
+        If infoPtr <> IntPtr.Zero Then
+            Info = Marshal.PtrToStructure(Of ServerInfo)(infoPtr)
+        End If
     End Sub
 
     ReadOnly Property [Error] As String Implements IFrameServer.Error
@@ -34,11 +38,7 @@ Public Class DirectFrameServer
         End Get
     End Property
 
-    Function GetFrame(
-        position As Integer,
-        ByRef data As IntPtr,
-        ByRef pitch As Integer) As Integer Implements IFrameServer.GetFrame
-
+    Function GetFrame(position As Integer, ByRef data As IntPtr, ByRef pitch As Integer) As Integer Implements IFrameServer.GetFrame
         Return NativeServer.GetFrame(position, data, pitch)
     End Function
 
@@ -229,7 +229,7 @@ Public Class VfwFrameServer
             info2.FrameRateNum = CInt(aviInfo.dwRate)
             info2.Width = aviInfo.rcFrame.Right
             info2.Height = aviInfo.rcFrame.Bottom
-            
+
             info2.ColorSpace = GetColorSpace(aviInfo.fccHandler)
             Info = info2
         Catch ex As Exception

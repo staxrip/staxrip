@@ -847,15 +847,13 @@ Public Class GUIAudioProfile
                     proc.TrimChars = {"-"c, " "c}
                     proc.AddToPath(Package.NeroAAC.Directory)
                 ElseIf cl.Contains("ffmpeg") Then
-                    If cl.Contains("libfdk_aac") Then
-                        proc.Package = Package.ffmpeg_non_free
-                    Else
-                        proc.Package = Package.ffmpeg
-                    End If
-
+                    proc.Package = If(cl.Contains("libfdk_aac"), Package.ffmpeg_non_free, Package.ffmpeg)
                     proc.SkipStrings = {"frame=", "size="}
                     proc.Encoding = Encoding.UTF8
                     proc.Duration = GetDuration()
+                ElseIf cl.Contains("deezy") Then
+                    proc.Package = Package.DeeZy
+                    proc.SkipStrings = {"%"}
                 End If
 
                 proc.Start()

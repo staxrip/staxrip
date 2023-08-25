@@ -494,7 +494,7 @@ End Sub
         TipProvider.SetTip("Forced MKV Track.", cbForced)
 
         cms.Add("Copy Command Line", Sub() Clipboard.SetText(TempProfile.GetCode))
-        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Lines", TempProfile.GetCode))
+        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Lines", TempProfile.GetCode, False))
         cms.Add("Save Profile...", AddressOf SaveProfile, "Saves the current settings as profile").SetImage(Symbol.Save)
         cms.Add("Help", AddressOf ShowHelp).SetImage(Symbol.Help)
 
@@ -600,17 +600,17 @@ End Sub
         form.Doc.WriteH2("Options")
         form.Doc.WriteTips(TipProvider.GetTips, EditControl.TipProvider.GetTips)
 
-        Dim macroList As New StringPairList
-
-        macroList.Add("%input%", "Audio source file")
-        macroList.Add("%output%", "Audio target File")
-        macroList.Add("%bitrate%", "Audio bitrate")
-        macroList.Add("%delay%", "Audio delay")
-        macroList.Add("%channels%", "Audio channels count")
-        macroList.Add("%language_native%", "Native language name")
-        macroList.Add("%language_english%", "English language name")
-        macroList.Add("%streamid0%", "ID of the stream (starts with 0)")
-        macroList.Add("%streamid1%", "ID of the stream (starts with 1)")
+        Dim macroList As New StringPairList From {
+            {"%input%", "Audio source file"},
+            {"%output%", "Audio target File"},
+            {"%bitrate%", "Audio bitrate"},
+            {"%delay%", "Audio delay"},
+            {"%channels%", "Audio channels count"},
+            {"%language_native%", "Native language name"},
+            {"%language_english%", "English language name"},
+            {"%streamid0%", "ID of the stream (starts with 0)"},
+            {"%streamid1%", "ID of the stream (starts with 1)"}
+        }
 
         form.Doc.WriteTable("Command Line Audio Macros",
                             "The following macros are available in the command line audio dialog and override global macros with the same name.",

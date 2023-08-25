@@ -203,6 +203,9 @@ HRESULT __stdcall VapourSynthServer::GetFrame(int position, void** data, int& pi
 
 ServerInfo* __stdcall VapourSynthServer::GetInfo()
 {
+    if (!m_vsInfo)
+        return nullptr;
+
     return &m_Info;
 }
 

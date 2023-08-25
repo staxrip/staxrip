@@ -86,7 +86,7 @@ Public Class GlobalCommands
                     proj.TargetFile = sourceFile.Edit.Text
                     proj.TempDir = outputFolder.Edit.Text.FixDir
 
-                    If Not td.Show Is Nothing Then
+                    If td.Show IsNot Nothing Then
                         td.SelectedValue.Run(proj)
                         s.LastSourceDir = proj.SourceFile.Dir
                         proj.Log.Save(proj)

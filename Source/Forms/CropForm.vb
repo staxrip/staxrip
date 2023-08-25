@@ -9,9 +9,7 @@ Public Class CropForm
 #Region " Designer "
     Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
+            components?.Dispose()
         End If
         MyBase.Dispose(disposing)
     End Sub
@@ -289,7 +287,7 @@ Public Class CropForm
         script.Path = p.TempDir + p.TargetFile.Base + "_crop." + script.FileType
         script.Filters.Add(p.Script.GetFilter("Source").GetCopy())
 
-        If Not p.Script.GetFilter("Rotation") Is Nothing Then
+        If p.Script.GetFilter("Rotation") IsNot Nothing Then
             script.Filters.Add(p.Script.GetFilter("Rotation").GetCopy())
         End If
 

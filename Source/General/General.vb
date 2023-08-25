@@ -146,12 +146,7 @@ Public Class Folder
                     If dir = "Custom" Then
                         Using dialog As New FolderBrowserDialog
                             dialog.SelectedPath = Startup
-
-                            If dialog.ShowDialog = DialogResult.OK Then
-                                dir = dialog.SelectedPath
-                            Else
-                                dir = AppDataCommon + "StaxRip"
-                            End If
+                            dir = If(dialog.ShowDialog = DialogResult.OK, dialog.SelectedPath, AppDataCommon + "StaxRip")
                         End Using
                     ElseIf dir = "" Then
                         dir = AppDataCommon + "StaxRip"
@@ -277,18 +272,14 @@ Public Class SafeSerialization
             BindingFlags.Instance)
 
             If Not i.IsNotSerialized Then
-                Dim mc As New FieldContainer
-                mc.Name = i.Name
+                Dim mc As New FieldContainer With {
+                    .Name = i.Name
+                }
 
                 Dim value = i.GetValue(o)
 
-                If Not value Is Nothing Then
-                    If IsSimpleType(i.FieldType) Then
-                        mc.Value = value
-                    Else
-                        mc.Value = GetObjectData(value)
-                    End If
-
+                If value IsNot Nothing Then
+                    mc.Value = If(IsSimpleType(i.FieldType), value, GetObjectData(value))
                     list.Add(mc)
                 End If
             End If
@@ -650,7 +641,7 @@ table {
             list.Sort()
         End If
 
-        If Not title Is Nothing Then
+        If title IsNot Nothing Then
             Writer.WriteElementString("h2", title)
         End If
 
@@ -762,7 +753,7 @@ Public Class ReflectionSettingBag(Of T)
         Get
             Dim field = Obj.GetType.GetField(Name, BindingFlags.Public Or BindingFlags.NonPublic Or BindingFlags.Instance)
 
-            If Not field Is Nothing Then
+            If field IsNot Nothing Then
                 Return DirectCast(field.GetValue(Obj), T)
             Else
                 Return DirectCast(Obj.GetType.GetProperty(Name).GetValue(Obj, Nothing), T)
@@ -771,7 +762,7 @@ Public Class ReflectionSettingBag(Of T)
         Set(value As T)
             Dim f = Obj.GetType.GetField(Name)
 
-            If Not f Is Nothing Then
+            If f IsNot Nothing Then
                 f.SetValue(Obj, value)
             Else
                 Obj.GetType.GetProperty(Name).SetValue(Obj, value, Nothing)
@@ -796,7 +787,7 @@ Public Class StringPair
     End Sub
 
     Function CompareTo(other As StringPair) As Integer Implements IComparable(Of StringPair).CompareTo
-        If Not Name Is Nothing Then
+        If Name IsNot Nothing Then
             Return Name.CompareTo(other.Name)
         End If
     End Function
@@ -1065,10 +1056,11 @@ Public Class CommandManager
             Dim attributes = DirectCast(i.GetCustomAttributes(GetType(CommandAttribute), False), CommandAttribute())
 
             If attributes.Length > 0 Then
-                Dim cmd As New Command
-                cmd.MethodInfo = i
-                cmd.Attribute = attributes(0)
-                cmd.Object = obj
+                Dim cmd As New Command With {
+                    .MethodInfo = i,
+                    .Attribute = attributes(0),
+                    .Object = obj
+                }
                 AddCommand(cmd)
             End If
         Next
@@ -1083,7 +1075,7 @@ Public Class CommandManager
     End Sub
 
     Sub Process(cp As CommandParameters)
-        If Not cp Is Nothing Then
+        If cp IsNot Nothing Then
             Process(cp.MethodName, cp.Parameters)
         End If
     End Sub
@@ -1267,7 +1259,7 @@ Public Class Reflector
         Set(Value As Object)
             ValueValue = Value
 
-            If Not Value Is Nothing Then
+            If Value IsNot Nothing Then
                 Type = Value.GetType
             End If
         End Set
@@ -1330,9 +1322,10 @@ End Class
 
 Public Class Shutdown
     Shared Sub Commit(mode As ShutdownMode)
-        Dim psi = New ProcessStartInfo("shutdown.exe")
-        psi.CreateNoWindow = True
-        psi.UseShellExecute = False
+        Dim psi = New ProcessStartInfo("shutdown.exe") With {
+            .CreateNoWindow = True,
+            .UseShellExecute = False
+        }
 
         Select Case mode
             Case ShutdownMode.Standby

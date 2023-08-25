@@ -9,6 +9,26 @@ v2.xx.0 (not published yet)
 - Update VapourSynth plugins
 -->
 
+
+v2.28.0 (2023-08-25)
+====================
+
+- Add BackgroundColor from VideoComparison to Themes
+- Make line numbers added to code lines optional via Settings
+- Fix Code Preview not shown in selected windows/app
+- Reloading of Preview does not change the window size any more
+- DeeZy: Fix output progress detectation ([#1092](/../../issues/1092))
+- SvtAv1EncApp: Fix --enable-hdr parameter printout
+- SvtAv1EncApp: Fix wrong frames value
+- VapourSynth: Fix extreme rare bug when opening a source which causes a crash
+- vspipe: Fix deprecated parameter call
+- Update tools
+    - MKVToolNix v79.0
+- Update VapourSynth plugins
+    - SubText r4
+    - VSFilterMod v5.2.7
+
+
 v2.27.0 (2023-08-22)
 ====================
 

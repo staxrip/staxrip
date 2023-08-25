@@ -366,10 +366,10 @@ Public Class Package
         .Locations = {Folder.System, "Support\VC"},
         .TreePath = "Runtimes"})
 
-    Shared Property VisualCpp2019 As Package = Add(New Package With {
-        .Name = "Visual C++ 2015-2019",
+    Shared Property VisualCpp2022 As Package = Add(New Package With {
+        .Name = "Visual C++ 2015-2022",
         .Filename = "msvcp140.dll",
-        .Description = "Visual C++ 2015-2019 Redistributable.",
+        .Description = "Visual C++ 2015-2022 Redistributable.",
         .DownloadURL = "https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads",
         .VersionAllowAny = True,
         .Locations = {Folder.System, "Support\VC"},
@@ -751,8 +751,8 @@ Public Class Package
         .Name = "VSFilterMod",
         .Filename = "VSFilterMod.dll",
         .Description = "AviSynth and VapourSynth subtitle plugin with support for vobsub srt and ass.",
-        .WebURL = "https://github.com/sorayuki/VSFilterMod",
-        .DownloadURL = "https://github.com/sorayuki/VSFilterMod/releases",
+        .WebURL = "https://github.com/kedaitinh12/VSFilterMod",
+        .DownloadURL = "https://github.com/kedaitinh12/VSFilterMod/releases",
         .AvsFilterNames = {"VobSub", "TextSubMod"},
         .VsFilterNames = {"vsfm.VobSub", "vsfm.TextSubMod"}})
 
@@ -1929,6 +1929,14 @@ Public Class Package
                 "mvsfunc.AssumeBFF", "mvsfunc.AssumeField", "mvsfunc.AssumeCombed", "mvsfunc.CheckVersion",
                 "mvsfunc.GetMatrix", "mvsfunc.zDepth", "mvsfunc.GetPlane", "mvsfunc.PlaneAverage",
                 "mvsfunc.Preview", "mvsfunc.GrayScale"}})
+
+        Add(New PluginPackage With {
+            .Name = "SubText",
+            .Filename = "SubText.dll",
+            .Description = "Subtitle plugin for VapourSynth based on libass.",
+            .WebURL = "https://github.com/vapoursynth/subtext",
+            .DownloadURL = "https://github.com/vapoursynth/subtext/releases",
+            .VsFilterNames = {"sub.TextFile"}})
 
         Add(New PluginPackage With {
             .Name = "Bwdif",

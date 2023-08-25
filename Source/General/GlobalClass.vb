@@ -300,6 +300,7 @@ Public Class GlobalClass
 
             g.RaiseAppEvent(ApplicationEvent.BeforeProcessing)
 
+            Log.WriteEnvironment()
             Log.WriteConfiguration()
 
             Log.WriteHeader($"{p.Script.Engine} Script")
@@ -629,16 +630,13 @@ Public Class GlobalClass
     End Function
 
     Function GetSourceBase() As String
-        If p.TempDir.EndsWithEx("_temp\") Then
-            Return "temp"
-        Else
-            Return p.SourceFile.Base
-        End If
+        Return If(p.TempDir.EndsWithEx("_temp\"), "temp", p.SourceFile.Base)
     End Function
 
     Sub ShowCode(title As String, content As String, Optional find As String = Nothing, Optional wordwrap As Boolean = False)
-        Dim form As New CodeForm(content, find, wordwrap)
-        form.Text = title
+        Dim form As New CodeForm(content, find, wordwrap) With {
+            .Text = title
+        }
         form.Show()
     End Sub
 
@@ -895,11 +893,7 @@ Public Class GlobalClass
                 p.TempDir = Macro.Expand(p.TempDir)
 
                 If p.TempDir = "" Then
-                    If p.SourceFile.Dir.EndsWith("_temp\") Then
-                        p.TempDir = p.SourceFile.Dir
-                    Else
-                        p.TempDir = p.SourceFile.Dir + p.SourceFile.Base + "_temp\"
-                    End If
+                    p.TempDir = If(p.SourceFile.Dir.EndsWith("_temp\"), p.SourceFile.Dir, p.SourceFile.Dir + p.SourceFile.Base + "_temp\")
                 End If
 
                 p.TempDir = p.TempDir.FixDir
@@ -928,7 +922,18 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub ShowCommandLinePreview(title As String, value As String)
+    Sub ShowCommandLinePreview(title As String, value As String, lineNumbers As Boolean)
+        If lineNumbers Then
+            Dim sb = New StringBuilder()
+            Dim lines = Regex.Split(value, "\r\n|\r|\n")
+
+            For i = 0 To lines.Length - 1
+                sb.AppendLine($"{i + 1,3}: {lines(i)}")
+            Next
+
+            value = sb.ToString()
+        End If
+
         Select Case s.CommandLinePreview
             Case CommandLinePreview.CodePreview
                 ShowCodePreview(value, Nothing, True)
@@ -1076,15 +1081,11 @@ Public Class GlobalClass
 
         Try
             Using td As New TaskDialog(Of String)
-                If title = "" Then
-                    If TypeOf ex Is ErrorAbortException Then
-                        td.Title = DirectCast(ex, ErrorAbortException).Title + $" (v{Application.ProductVersion})"
-                    Else
-                        td.Title = ex.GetType.Name + $" (v{Application.ProductVersion})"
-                    End If
-                Else
-                    td.Title = title
-                End If
+                td.Title = If(title = "",
+                    If(TypeOf ex Is ErrorAbortException,
+                        DirectCast(ex, ErrorAbortException).Title + $" (v{Application.ProductVersion})",
+                        ex.GetType.Name + $" (v{Application.ProductVersion})"),
+                    title)
 
                 td.Timeout = timeout
                 td.Content = (ex.Message + BR2 + content).Trim
@@ -1095,13 +1096,7 @@ Public Class GlobalClass
                 td.Show()
             End Using
         Catch
-            Dim msg As String
-
-            If TypeOf ex Is ErrorAbortException Then
-                msg = DirectCast(ex, ErrorAbortException).Title
-            Else
-                msg = ex.GetType.Name
-            End If
+            Dim msg = If(TypeOf ex Is ErrorAbortException, DirectCast(ex, ErrorAbortException).Title, ex.GetType.Name)
 
             VB6.MsgBox(msg + BR2 + ex.Message + BR2 + ex.ToString, VB6.MsgBoxStyle.Critical)
         End Try
@@ -1127,11 +1122,7 @@ Public Class GlobalClass
     End Sub
 
     Sub SetRenderer(ms As ToolStrip)
-        If VisualStyleInformation.IsEnabledByUser Then
-            ms.Renderer = New ToolStripRendererEx()
-        Else
-            ms.Renderer = New ToolStripSystemRenderer()
-        End If
+        ms.Renderer = If(VisualStyleInformation.IsEnabledByUser, New ToolStripRendererEx(), DirectCast(New ToolStripSystemRenderer(), ToolStripRenderer))
     End Sub
 
     Sub Play(file As String)
@@ -1594,11 +1585,7 @@ Public Class GlobalClass
             End If
         Next
 
-        If script.Engine = ScriptEngine.AviSynth Then
-            Return ret
-        Else
-            Return "clip = " + ret
-        End If
+        Return If(script.Engine = ScriptEngine.AviSynth, ret, "clip = " + ret)
     End Function
 
     Function ContainsPipeTool(value As String) As Boolean

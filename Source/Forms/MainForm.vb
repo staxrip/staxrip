@@ -1064,8 +1064,9 @@ Public Class MainForm
                 File.Delete(filePath)
             End If
 
-            Dim listener = New TextWriterTraceListener(filePath)
-            listener.TraceOutputOptions = TraceOptions.ThreadId Or TraceOptions.DateTime
+            Dim listener = New TextWriterTraceListener(filePath) With {
+                .TraceOutputOptions = TraceOptions.ThreadId Or TraceOptions.DateTime
+            }
             Trace.Listeners.Add(listener)
             Trace.AutoFlush = True
         End If
@@ -1189,12 +1190,7 @@ Public Class MainForm
         Next
 
         For Each control In controls.OfType(Of ButtonLabel)
-            If TypeOf control.Parent Is UserControl Then
-                control.BackColor = theme.General.Controls.ListView.BackColor
-            Else
-                control.BackColor = theme.General.Controls.ButtonLabel.BackColor
-            End If
-
+            control.BackColor = If(TypeOf control.Parent Is UserControl, theme.General.Controls.ListView.BackColor, theme.General.Controls.ButtonLabel.BackColor)
             control.ForeColor = theme.General.Controls.ButtonLabel.ForeColor
             control.LinkColor = theme.General.Controls.ButtonLabel.LinkForeColor
             control.LinkHoverColor = theme.General.Controls.ButtonLabel.LinkForeHoverColor
@@ -2158,7 +2154,7 @@ Public Class MainForm
 
             Dim mkvMuxer = TryCast(p.VideoEncoder.Muxer, MkvMuxer)
 
-            If Not mkvMuxer Is Nothing AndAlso mkvMuxer.Title = "" Then
+            If mkvMuxer IsNot Nothing AndAlso mkvMuxer.Title = "" Then
                 mkvMuxer.Title = MediaInfo.GetGeneral(p.LastOriginalSourceFile, "Movie")
             End If
 
@@ -2324,7 +2320,7 @@ Public Class MainForm
                             End If
                         Next
 
-                        If Not p.Audio0.Stream Is Nothing AndAlso Not p.Audio1.Stream Is Nothing AndAlso
+                        If p.Audio0.Stream IsNot Nothing AndAlso p.Audio1.Stream IsNot Nothing AndAlso
                             p.Audio0.Stream.ID = p.Audio1.Stream.ID Then
 
                             tbAudioFile1.Text = ""
@@ -2339,7 +2335,7 @@ Public Class MainForm
 
             s.LastPosition = 0
 
-            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
+            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFrameCount, p.Script.GetFramerate)
             DemuxVobSubSubtitles()
             ConvertBluRaySubtitles()
             ExtractForcedVobSubSubtitles()
@@ -2581,12 +2577,7 @@ Public Class MainForm
 
     Function FixFrameRate(num As Integer, den As Integer) As (num As Integer, den As Integer)
         Dim rate = num / den
-
-        If rate < 50 AndAlso rate > 49 Then
-            Return (50, 1)
-        End If
-
-        Return (num, den)
+        Return If(rate < 50 AndAlso rate > 49, (50, 1), (num, den))
     End Function
 
     Sub SetSourceFilter(
@@ -2828,12 +2819,7 @@ Public Class MainForm
         End If
 
         lAspectRatioError.Text = Calc.GetAspectRatioError.ToString("f2") + "%"
-
-        If isCropped Then
-            lCrop.Text = cropw.ToString() + "/" + croph.ToString()
-        Else
-            lCrop.Text = "disabled"
-        End If
+        lCrop.Text = If(isCropped, cropw.ToString() + "/" + croph.ToString(), "disabled")
 
         Dim widthZoom = p.TargetWidth / cropw * 100
         Dim heightZoom = p.TargetHeight / croph * 100
@@ -2855,12 +2841,7 @@ Public Class MainForm
 
         Dim par = Calc.GetTargetPAR
 
-        If Calc.IsARSignalingRequired OrElse (par.X = 1 AndAlso par.Y = 1) Then
-            lPAR.Text = par.X & ":" & par.Y
-        Else
-            lPAR.Text = "n/a"
-        End If
-
+        lPAR.Text = If(Calc.IsARSignalingRequired OrElse (par.X = 1 AndAlso par.Y = 1), par.X & ":" & par.Y, "n/a")
         lDAR.Text = Calc.GetTargetDAR.ToString.Shorten(8)
         lSAR.Text = (p.TargetWidth / p.TargetHeight).ToString.Shorten(8)
         lSourceDar.Text = Calc.GetSourceDAR.ToString.Shorten(8)
@@ -2933,7 +2914,7 @@ Public Class MainForm
             Dim enc = DirectCast(p.VideoEncoder, BasicVideoEncoder)
             Dim param = enc.CommandLineParams.GetOptionParam("--vpp-resize")
 
-            If Not param Is Nothing AndAlso param.Value > 0 AndAlso
+            If param IsNot Nothing AndAlso param.Value > 0 AndAlso
                 Not p.Script.IsFilterActive("Resize", "Hardware Encoder") Then
 
                 If ProcessTip("In order to use a resize filter of the hardware encoder select 'Hardware Encoder' as resize filter from the filters menu.") Then
@@ -2980,7 +2961,7 @@ Public Class MainForm
             End If
 
             If (p.Audio0.File <> "" AndAlso p.Audio0.File = p.Audio1.File AndAlso p.Audio0.Stream Is Nothing) OrElse
-                (Not p.Audio0.Stream Is Nothing AndAlso Not p.Audio1.Stream Is Nothing AndAlso
+                (p.Audio0.Stream IsNot Nothing AndAlso p.Audio1.Stream IsNot Nothing AndAlso
                 p.Audio0.Stream.StreamOrder = p.Audio1.Stream.StreamOrder) Then
 
                 If ProcessTip("The first and second audio source files or streams are identical.") Then
@@ -3063,7 +3044,7 @@ Public Class MainForm
             End If
 
             If p.Ranges.Count = 0 Then
-                If p.RemindToCut AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
+                If p.RemindToCut AndAlso TypeOf p.VideoEncoder IsNot NullEncoder AndAlso
                     ProcessTip("Click here to open the preview for cutting if necessary. When done continue with Next.") Then
 
                     Return Warn("Cutting", AddressOf ShowPreview)
@@ -3266,12 +3247,7 @@ Public Class MainForm
         Next
 
         For Each control In controls.OfType(Of ButtonLabel)
-            If TypeOf control.Parent Is UserControl Then
-                control.BackColor = theme.General.Controls.ListView.BackHighlightColor
-            Else
-                control.BackColor = theme.General.Controls.ButtonLabel.BackHighlightColor
-            End If
-
+            control.BackColor = If(TypeOf control.Parent Is UserControl, theme.General.Controls.ListView.BackHighlightColor, theme.General.Controls.ButtonLabel.BackHighlightColor)
             control.ForeColor = theme.General.Controls.ButtonLabel.ForeHighlightColor
             control.LinkColor = theme.General.Controls.ButtonLabel.ForeHighlightColor
             control.LinkHoverColor = theme.General.Controls.ButtonLabel.ForeHighlightColor
@@ -3865,6 +3841,11 @@ Public Class MainForm
             b.Help = "Tooltips can always be shown by right-clicking menu items."
             b.Field = NameOf(s.EnableTooltips)
 
+            b = ui.AddBool()
+            b.Text = "Add line numbers to generated code"
+            b.Help = ""
+            b.Field = NameOf(s.CommandLinePreviewWithLineNumbers)
+
             '################# Frameserver
             ui.CreateFlowPage("Frameserver", True)
 
@@ -3935,7 +3916,7 @@ Public Class MainForm
                 UpdateRecentProjectsMenu()
                 UpdateNextButton()
 
-                If Not Icon Is g.Icon Then
+                If Icon IsNot g.Icon Then
                     Icon = g.Icon
                 End If
 
@@ -4132,9 +4113,10 @@ Public Class MainForm
     End Sub
 
     Function GetNewVideoEncoderProfile() As Profile
-        Dim sb As New SelectionBox(Of VideoEncoder)
-        sb.Title = "Add New Profile"
-        sb.Text = "Please select a profile from the defaults."
+        Dim sb As New SelectionBox(Of VideoEncoder) With {
+            .Title = "Add New Profile",
+            .Text = "Please select a profile from the defaults."
+        }
         sb.AddItem("Current Project", p.VideoEncoder)
 
         For Each i In VideoEncoder.GetDefaults()
@@ -4310,7 +4292,7 @@ Public Class MainForm
                 Exit Sub
             End If
 
-            If Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath) Then
+            If TypeOf p.VideoEncoder IsNot NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath) Then
                 Select Case p.FileExistVideo
                     Case FileExistMode.Ask
                         Using td As New TaskDialog(Of String)
@@ -5399,9 +5381,10 @@ Public Class MainForm
                         Exit Sub
                     End If
 
-                    Dim sb As New SelectionBox(Of Subtitle)
-                    sb.Title = "Language"
-                    sb.Text = "Please select a subtitle."
+                    Dim sb As New SelectionBox(Of Subtitle) With {
+                        .Title = "Language",
+                        .Text = "Please select a subtitle."
+                    }
 
                     For Each i In subs
                         sb.AddItem(i.Language.Name, i)
@@ -5758,10 +5741,10 @@ Public Class MainForm
     End Sub
 
     Function GetScriptAsProfile() As Profile
-        Dim sb As New SelectionBox(Of TargetVideoScript)
-
-        sb.Title = "New Profile"
-        sb.Text = "Please select a profile."
+        Dim sb As New SelectionBox(Of TargetVideoScript) With {
+            .Title = "New Profile",
+            .Text = "Please select a profile."
+        }
 
         sb.AddItem("Current Project", p.Script)
 
@@ -5807,11 +5790,7 @@ Public Class MainForm
 
         For i = 0 To commandLine.Length - 1
             If commandLine.Chars(i) = """" Then
-                If insideQuote Then
-                    insideQuote = False
-                Else
-                    insideQuote = True
-                End If
+                insideQuote = Not insideQuote
             ElseIf commandLine.Chars(i) = " " Then
                 If insideQuote Then
                     sb.Append(commandLine.Chars(i))
@@ -5943,11 +5922,11 @@ Public Class MainForm
                 Dim srcPath = dialog.SelectedPath.FixDir
 
                 If Directory.Exists(srcPath + "BDMV") Then
-                    srcPath = srcPath + "BDMV\"
+                    srcPath += "BDMV\"
                 End If
 
                 If Directory.Exists(srcPath + "PLAYLIST") Then
-                    srcPath = srcPath + "PLAYLIST\"
+                    srcPath += "PLAYLIST\"
                 End If
 
                 If Not srcPath.ToUpperInvariant.EndsWith("PLAYLIST\") Then
@@ -6214,9 +6193,10 @@ Public Class MainForm
     End Function
 
     Function GetNewAudioProfile(currentProfile As AudioProfile) As AudioProfile
-        Dim sb As New SelectionBox(Of AudioProfile)
-        sb.Title = "New Profile"
-        sb.Text = "Please select a profile."
+        Dim sb As New SelectionBox(Of AudioProfile) With {
+            .Title = "New Profile",
+            .Text = "Please select a profile."
+        }
 
         If Not currentProfile Is Nothing Then
             sb.AddItem("Current Project", currentProfile)
@@ -6264,8 +6244,9 @@ Public Class MainForm
         End If
     End Sub
 
-    Sub UpdateTargetParameters(seconds As Integer, frameRate As Double)
+    Sub UpdateTargetParameters(seconds As Integer, frames As Integer, frameRate As Double)
         p.TargetSeconds = seconds
+        p.TargetFrames = frames
         p.TargetFrameRate = frameRate
         UpdateSizeOrBitrate()
     End Sub
@@ -6313,13 +6294,9 @@ Public Class MainForm
 
     <Command("Dialog to manage audio profiles.")>
     Sub ShowAudioProfilesDialog(<DispName("Track Number (0 or 1)")> number As Integer)
-        Dim form As ProfilesForm
-
-        If number = 0 Then
-            form = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile0, AddressOf GetAudioProfile0, AddressOf AudioProfile.GetDefaults)
-        Else
-            form = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile1, AddressOf GetAudioProfile1, AddressOf AudioProfile.GetDefaults)
-        End If
+        Dim form = If(number = 0,
+            New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile0, AddressOf GetAudioProfile0, AddressOf AudioProfile.GetDefaults),
+            New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile1, AddressOf GetAudioProfile1, AddressOf AudioProfile.GetDefaults))
 
         form.ShowDialog()
         form.Dispose()
@@ -6340,7 +6317,7 @@ Public Class MainForm
         If Not IsLoading AndAlso Not FiltersListView.IsLoading Then
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
-                UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
+                UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFrameCount, p.Script.GetFramerate)
             End If
 
             Assistant()
@@ -6351,7 +6328,7 @@ Public Class MainForm
         FiltersListView.Load()
 
         If g.IsValidSource(False) Then
-            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
+            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFrameCount, p.Script.GetFramerate)
         End If
     End Sub
 
@@ -6565,7 +6542,7 @@ Public Class MainForm
     End Sub
 
     Sub UpdateSourceParameters()
-        If Not p.SourceScript Is Nothing Then
+        If p.SourceScript IsNot Nothing Then
             Try
                 Dim info = p.SourceScript.GetInfo
 
@@ -6832,10 +6809,7 @@ Public Class MainForm
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
         MyBase.OnFormClosed(e)
 
-        If Not g.ProcForm Is Nothing Then
-            g.ProcForm.Invoke(Sub() g.ProcForm.Close())
-        End If
-
+        g.ProcForm?.Invoke(Sub() g.ProcForm.Close())
         g.SaveSettings()
         g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
     End Sub

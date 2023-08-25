@@ -5,6 +5,7 @@ Imports StaxRip.UI
 
 Public Class VideoComparisonForm
     Shared Property Pos As Integer
+    Shared Property TabBackColor As ColorHSL
 
     Public CropLeft, CropTop, CropRight, CropBottom As Integer
 
@@ -22,8 +23,9 @@ Public Class VideoComparisonForm
         tlpMain.AllowDrop = True
 
         Dim enabledFunc = Function() TabControl.SelectedTab IsNot Nothing
-        Menu = New ContextMenuStripEx()
-        Menu.Form = Me
+        Menu = New ContextMenuStripEx With {
+            .Form = Me
+        }
 
         bnMenu.ContextMenuStrip = Menu
         TabControl.ContextMenuStrip = Menu
@@ -66,7 +68,9 @@ Public Class VideoComparisonForm
             Exit Sub
         End If
 
-        BackColor = theme.General.BackColor
+        BackColor = theme.VideoComparisonForm.BackColor
+        TabBackColor = theme.VideoComparisonForm.TabBackColor
+        
     End Sub
 
     Protected Overrides Sub OnDragEnter(e As DragEventArgs)
@@ -129,9 +133,11 @@ Public Class VideoComparisonForm
     End Sub
 
     Sub Add(sourePath As String)
-        Dim tab = New VideoTab()
-        tab.AllowDrop = True
-        tab.Form = Me
+        Dim tab = New VideoTab With {
+            .AllowDrop = True,
+            .Form = Me,
+            .BackColor = TabBackColor
+        }
         tab.VideoPanel.ContextMenuStrip = TabControl.ContextMenuStrip
 
         If tab.Open(sourePath) Then
@@ -219,11 +225,11 @@ Public Class VideoComparisonForm
         Dim value = 100
 
         If e.Delta < 0 Then
-            value = value * -1
+            value *= -1
         End If
 
         If s.ReverseVideoScrollDirection Then
-            value = value * -1
+            value *= -1
         End If
 
         TrackBar.Value += value
@@ -442,7 +448,7 @@ Public Class VideoComparisonForm
                 Pos = Form.TrackBar.Value
                 Draw()
 
-                If Not FrameInfo Is Nothing Then
+                If FrameInfo IsNot Nothing Then
                     Form.laInfo.Text = FrameInfo(Form.TrackBar.Value)
                 Else
                     Dim frameRate = If(Calc.IsValidFrameRate(Server.FrameRate), Server.FrameRate, 25)
@@ -502,9 +508,7 @@ Public Class VideoComparisonForm
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
-            If Not Server Is Nothing Then
-                Server.Dispose()
-            End If
+            Server?.Dispose()
 
             MyBase.Dispose(disposing)
         End Sub

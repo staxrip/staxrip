@@ -1,6 +1,7 @@
 ﻿
 Imports System.Globalization
 Imports System.Text
+Imports Microsoft.VisualBasic.Devices
 Imports Microsoft.Win32
 
 <Serializable>
@@ -99,11 +100,14 @@ Public Class LogBuilder
 
         WriteHeader("System Environment")
 
+        Dim computerInfo = New ComputerInfo()
+
         If EnvironmentString = "" Then EnvironmentString =
             "StaxRip:v" + Application.ProductVersion + BR +
             "Windows:" + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + " " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion") + " " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") + " (" + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "BuildLabEx") + ")" + BR +
             "Language:" + CultureInfo.CurrentCulture.EnglishName + BR +
             "CPU:" + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + BR +
+            $"RAM:{computerInfo.TotalPhysicalMemory / 1024 ^ 3:0}GB" + BR +
             "GPU:" + String.Join(", ", OS.VideoControllers) + BR +
             "Resolution:" & Screen.PrimaryScreen.Bounds.Width & " x " & Screen.PrimaryScreen.Bounds.Height & BR +
             "DPI:" & g.DPI & BR &
@@ -123,6 +127,7 @@ Public Class LogBuilder
 
         If ConfigurationString = "" Then ConfigurationString =
             $"Template: {p.TemplateName}{BR}" +
+            $"Video Encoder: {p.VideoEncoder.GetType().Name}{BR}" +
             $"Video Encoder Profile: {p.VideoEncoder.Name}{BR}" +
             $"Container/Muxer Profile: {p.VideoEncoder.Muxer.Name}{BR}"
 

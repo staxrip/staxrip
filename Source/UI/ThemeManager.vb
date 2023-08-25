@@ -77,6 +77,7 @@
     End Property
 
 
+    <CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification:="<Pending>")>
     Private Sub ThemeManager()
     End Sub
 
@@ -516,6 +517,11 @@
                     .BorderColor = .BackColor.AddLuminance(0.05),
                     .ForeColor = _foreColor.AddLuminance(0.1)
                 }
+            }
+
+            VideoComparisonForm = New VideoComparisonFormThemeColors() With {
+                .BackColor = _backColor,
+                .TabBackColor = .BackColor.AddLuminance(-0.05)
             }
 
         End Sub

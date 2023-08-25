@@ -340,7 +340,8 @@ Public Class SvtAv1EncParams
     Property EnableHdr As New BoolParam With {
         .Switch = "--enable-hdr",
         .Text = "Enable HDR",
-        .Init = False
+        .Init = False,
+        .IntegerValue = True
     }
 
 
@@ -660,7 +661,7 @@ Public Class SvtAv1EncParams
                             sb.Append(pipeString & " | " & Package.SvtAv1EncApp.Path.Escape)
                         Case "vspipe"
                             Dim chunk = If(isSingleChunk, "", $" --start {startFrame} --end {endFrame}")
-                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m" + chunk
+                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --container y4m" + chunk
 
                             sb.Append(pipeString & " | " & Package.SvtAv1EncApp.Path.Escape)
                         Case "ffmpeg"
@@ -701,9 +702,9 @@ Public Class SvtAv1EncParams
             End If
 
             If FramesToBeEncoded.Value > 0 AndAlso Not IsCustom(pass, "--frames") Then
-                sb.Append($" --frames {Math.Min(p.SourceFrames - FrameSkip.Value, FramesToBeEncoded.Value)}")
+                sb.Append($" --frames {Math.Min(p.TargetFrames - FrameSkip.Value, FramesToBeEncoded.Value)}")
             Else
-                sb.Append($" --frames {p.SourceFrames - FrameSkip.Value}")
+                sb.Append($" --frames {p.TargetFrames - FrameSkip.Value}")
             End If
         Else
             sb.Append($" --frames {endFrame - startFrame + 1}")

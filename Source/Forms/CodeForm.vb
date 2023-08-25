@@ -15,18 +15,7 @@ Public Class CodeForm
         rtb.ReadOnly = True
         rtb.WordWrap = wordwrap
         rtb.Font = g.GetCodeFont
-        'rtb.Text = text
-
-        Dim sb = New StringBuilder()
-        Dim i = 1
-        Dim lines = Regex.Split(text, "\r\n|\r|\n")
-
-        For Each line As String In lines
-            sb.AppendLine($"{i,3}: {line}")
-            i += 1
-        Next
-
-        rtb.Text = sb.ToString()
+        rtb.Text = text
 
         Me.Find = find
         Content = text

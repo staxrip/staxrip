@@ -197,7 +197,7 @@ Public Class VideoScript
 
         Dim srcFilter = GetFilter("Source")
 
-        If Not srcFilter Is Nothing AndAlso Not srcFilter.Script.Contains("(") Then
+        If srcFilter IsNot Nothing AndAlso Not srcFilter.Script.Contains("(") Then
             Exit Sub
         End If
 

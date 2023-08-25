@@ -71,11 +71,7 @@ Public Class Proc
             Return ProjectValue
         End Get
         Set(value As Project)
-            If value Is Nothing Then
-                ProjectValue = p
-            Else
-                ProjectValue = value
-            End If
+            ProjectValue = If(value, p)
         End Set
     End Property
 
@@ -92,7 +88,7 @@ Public Class Proc
 
     ReadOnly Property Title As String
         Get
-            If Not Package Is Nothing Then
+            If Package IsNot Nothing Then
                 Return Package.Name
             End If
 
@@ -146,11 +142,7 @@ Public Class Proc
             Return Process.StartInfo.FileName
         End Get
         Set(Value As String)
-            If Value?.Contains("%") Then
-                Process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(Value)
-            Else
-                Process.StartInfo.FileName = Value
-            End If
+            Process.StartInfo.FileName = If(Value?.Contains("%"), Environment.ExpandEnvironmentVariables(Value), Value)
         End Set
     End Property
 
@@ -278,7 +270,7 @@ Public Class Proc
                 ProcController.Start(Me)
             End If
 
-            If Not LogItems Is Nothing Then
+            If LogItems IsNot Nothing Then
                 For Each line In LogItems
                     Log.WriteLine(line)
                 Next
@@ -450,7 +442,7 @@ Public Class Proc
             Return ("", False)
         End If
 
-        If Not TrimChars Is Nothing Then
+        If TrimChars IsNot Nothing Then
             value = value.Trim(TrimChars)
         End If
 
@@ -458,7 +450,7 @@ Public Class Proc
             Return (value, True)
         End If
 
-        If Not SkipStrings Is Nothing Then
+        If SkipStrings IsNot Nothing Then
             For Each i In SkipStrings
                 If value.Contains(i) Then
                     Return (value, True)

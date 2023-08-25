@@ -12,9 +12,7 @@ Public Class MuxerForm
 
     Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
+            components?.Dispose()
         End If
         MyBase.Dispose(disposing)
     End Sub
@@ -854,11 +852,7 @@ Public Class MuxerForm
         Property Filepath As String
 
         Public Overrides Function ToString() As String
-            If Filepath.Contains("_attachment_") Then
-                Return Filepath.Right("_attachment_")
-            End If
-
-            Return Path.GetFileName(Filepath)
+            Return If(Filepath.Contains("_attachment_"), Filepath.Right("_attachment_"), Path.GetFileName(Filepath))
         End Function
     End Class
 
@@ -1057,9 +1051,10 @@ Public Class MuxerForm
     End Sub
 
     Sub AddAudio(path As String)
-        Dim profileSelection As New SelectionBox(Of AudioProfile)
-        profileSelection.Title = "Audio Profile"
-        profileSelection.Text = "Please select an audio profile."
+        Dim profileSelection As New SelectionBox(Of AudioProfile) With {
+            .Title = "Audio Profile",
+            .Text = "Please select an audio profile."
+        }
 
         For Each audioProfile In s.AudioProfiles
             profileSelection.AddItem(audioProfile)
@@ -1082,7 +1077,7 @@ Public Class MuxerForm
 
         ap.SetStreamOrLanguage()
 
-        If Not ap.Stream Is Nothing Then
+        If ap.Stream IsNot Nothing Then
             Dim streamSelection As New SelectionBox(Of AudioStream)
             streamSelection.Title = "Stream Selection"
             streamSelection.Text = "Please select an audio stream."
@@ -1114,11 +1109,9 @@ Public Class MuxerForm
                 Dim sizeText = ""
 
                 If i.Size > 0 Then
-                    If i.Size > PrefixedSize(2).Factor Then
-                        sizeText = $"{i.Size / PrefixedSize(2).Factor:f1} {PrefixedSize(2).Unit}"
-                    Else
-                        sizeText = $"{i.Size / PrefixedSize(1).Factor:f1} {PrefixedSize(1).Unit}"
-                    End If
+                    sizeText = If(i.Size > PrefixedSize(2).Factor,
+                        $"{i.Size / PrefixedSize(2).Factor:f1} {PrefixedSize(2).Unit}",
+                        $"{i.Size / PrefixedSize(1).Factor:f1} {PrefixedSize(1).Unit}")
                 End If
 
                 Dim _option As String = ""
@@ -1129,29 +1122,23 @@ Public Class MuxerForm
                 If i.Hearingimpaired Then _option &= ", hearingimpaired"
                 _option = _option.TrimStart(","c).Trim()
 
-                Dim id As Integer
-
                 Dim match = Regex.Match(i.Path, " ID(\d+)")
+                Dim id = If(match.Success, CInt(match.Groups(1).Value), i.StreamOrder + 1)
 
-                If match.Success Then
-                    id = CInt(match.Groups(1).Value)
-                Else
-                    id = i.StreamOrder + 1
-                End If
-
-                Dim item As New SubtitleItem
-                item.Enabled = i.Enabled
-                item.Language = i.Language
-                item.Title = i.Title
-                item.Default = i.Default
-                item.Forced = i.Forced
-                item.Commentary = i.Commentary
-                item.Hearingimpaired = i.Hearingimpaired
-                item.ID = id
-                item.TypeName = i.TypeName
-                item.Size = sizeText
-                item.Filename = i.Path.FileName
-                item.Subtitle = i
+                Dim item As New SubtitleItem With {
+                    .Enabled = i.Enabled,
+                    .Language = i.Language,
+                    .Title = i.Title,
+                    .Default = i.Default,
+                    .Forced = i.Forced,
+                    .Commentary = i.Commentary,
+                    .Hearingimpaired = i.Hearingimpaired,
+                    .ID = id,
+                    .TypeName = i.TypeName,
+                    .Size = sizeText,
+                    .Filename = i.Path.FileName,
+                    .Subtitle = i
+                }
 
                 SubtitleItems.Add(item)
             End If
@@ -1180,7 +1167,7 @@ Public Class MuxerForm
 
     Sub bnCommandLinePreview_Click(sender As Object, e As EventArgs) Handles bnCommandLinePreview.Click
         SetValues()
-        g.ShowCommandLinePreview("Command Line", Muxer.GetCommandLine)
+        g.ShowCommandLinePreview("Command Line", Muxer.GetCommandLine, False)
     End Sub
 
     Sub bnAudioAdd_Click(sender As Object, e As EventArgs) Handles bnAudioAdd.Click

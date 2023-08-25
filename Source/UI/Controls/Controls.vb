@@ -354,8 +354,9 @@ Namespace UI
                 Next
 
                 If Not found Then
-                    ret = New TreeNode
-                    ret.Text = " " + iNodeName
+                    ret = New TreeNode With {
+                        .Text = " " + iNodeName
+                    }
                     currentNodeList.Add(ret)
                     currentNodeList = ret.Nodes
                 End If
@@ -424,11 +425,7 @@ Namespace UI
         Protected Overrides Sub OnItemClicked(e As ToolStripItemClickedEventArgs)
             If SingleAutoChecked Then
                 For Each i In Items.OfType(Of ToolStripButton)()
-                    If i Is e.ClickedItem Then
-                        i.Checked = True
-                    Else
-                        i.Checked = False
-                    End If
+                    i.Checked = i Is e.ClickedItem
                 Next
             End If
 
@@ -804,8 +801,8 @@ Namespace UI
             Dim vPos As Integer = (Height - glyphSize.Height) \ 2
             Dim hPos As Integer = 1
             Dim measuredStringHeight As Single = pevent.Graphics.MeasureString(Text, Font).Height
-            Dim glyphLocation As Point = New Point(hPos, vPos)
-            Dim textLocation As Point = New Point(hPos + glyphSize.Width + hPos, If(s.UIFallback, CInt(Height / 2.0F - measuredStringHeight / 2.0F), 1 + Height - (Height - CInt(measuredStringHeight)) \ 3))
+            Dim glyphLocation As New Point(hPos, vPos)
+            Dim textLocation As New Point(hPos + glyphSize.Width + hPos, If(s.UIFallback, CInt(Height / 2.0F - measuredStringHeight / 2.0F), 1 + Height - (Height - CInt(measuredStringHeight)) \ 3))
             Dim textFlags As TextFormatFlags = TextFormatFlags.SingleLine Or TextFormatFlags.VerticalCenter
             Dim fColor As ColorHSL = If(Checked, _theme.General.Controls.CheckBox.ForeCheckedColor, _theme.General.Controls.CheckBox.ForeColor)
 
@@ -826,6 +823,7 @@ Namespace UI
             MyBase.OnCheckedChanged(e)
         End Sub
 
+        <CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification:="<Pending>")>
         Private Function ShouldSerializeUseVisualStyleBackColor() As Boolean
             Return False
         End Function
@@ -1391,9 +1389,7 @@ Namespace UI
         End Sub
 
         Sub ShowContext()
-            If Not Label.ContextMenuStrip Is Nothing Then
-                Label.ContextMenuStrip.Show(Label, 0, 16)
-            End If
+            Label.ContextMenuStrip?.Show(Label, 0, 16)
         End Sub
     End Class
 
@@ -1478,25 +1474,21 @@ Namespace UI
                     End If
                 End If
 
-                If Not value Is Nothing Then
+                If value IsNot Nothing Then
                     For Each i In Menu.Items.OfType(Of MenuItemEx)()
                         If value.Equals(i.Tag) Then Text = i.Text
 
                         If i.DropDownItems.Count > 0 Then
                             For Each i2 In i.DropDownItems.OfType(Of MenuItemEx)()
                                 If value.Equals(i2.Tag) Then
-                                    If ShowPath Then
-                                        Text = i2.Path
-                                    Else
-                                        Text = i2.Text
-                                    End If
+                                    Text = If(ShowPath, i2.Path, i2.Text)
                                 End If
                             Next
                         End If
                     Next
                 End If
 
-                If Text = "" AndAlso Not value Is Nothing Then
+                If Text = "" AndAlso value IsNot Nothing Then
                     Text = value.ToString
                 End If
 
@@ -1599,13 +1591,7 @@ Namespace UI
 
                     If selEnd - selStart < 25 Then
                         SelectionStart = selStart
-
-                        If selEnd - selStart = commandLine.Length Then
-                            SelectionLength = 0
-                        Else
-                            SelectionLength = selEnd - selStart
-                        End If
-
+                        SelectionLength = If(selEnd - selStart = commandLine.Length, 0, selEnd - selStart)
                         SelectionFont = New Font(Font, FontStyle.Bold)
                     End If
                 End If
@@ -1899,6 +1885,7 @@ Namespace UI
             End Set
         End Property
 
+        <CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification:="<Pending>")>
         Private Function ShouldSerializeUseVisualStyleBackColor() As Boolean
             Return False
         End Function
@@ -2018,9 +2005,10 @@ Namespace UI
                 p.StartCap = LineCap.Round
                 p.Width = CInt(Height / 14)
 
-                Dim d As New SymbolDrawer()
-                d.Graphics = e.Graphics
-                d.Pen = p
+                Dim d As New SymbolDrawer With {
+                    .Graphics = e.Graphics,
+                    .Pen = p
+                }
 
                 d.Point1.Width = ClientSize.Width
                 d.Point2.Width = ClientSize.Width
@@ -3021,11 +3009,7 @@ Namespace UI
         ReadOnly Property DrawBorder As Integer
             Get
                 If _drawBorder < 0 Then
-                    If Parent IsNot Nothing Then
-                        _drawBorder = If(TypeOf Parent Is NumEdit, 0, 1)
-                    Else
-                        _drawBorder = 1
-                    End If
+                    _drawBorder = If(Parent IsNot Nothing, If(TypeOf Parent Is NumEdit, 0, 1), 1)
                 End If
                 Return _drawBorder
             End Get
@@ -3204,7 +3188,7 @@ Namespace UI
         Inherits TabControl
 
         Private DragStartPosition As Point = Point.Empty
-        Private ItemArgs As Dictionary(Of Integer, DrawItemEventArgs) = New Dictionary(Of Integer, DrawItemEventArgs)
+        'Private ItemArgs As Dictionary(Of Integer, DrawItemEventArgs) = New Dictionary(Of Integer, DrawItemEventArgs)
         Private TabType As Type
 
         Sub New()

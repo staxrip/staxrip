@@ -541,7 +541,7 @@ Public Class ProcController
         SyncLock Procs
             For Each pc In Procs
                 If Not pc.Proc.IsSilent Then
-                    Return pc.Proc.Process.PriorityClass
+                    Return pc.Proc.Process?.PriorityClass
                 End If
             Next
         End SyncLock

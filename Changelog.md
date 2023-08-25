@@ -13,8 +13,10 @@ v2.xx.0 (not published yet)
 v2.29.0 (not published yet)
 ====================
 
+- Fix crash when trying to open the menu in Processing window
 - DeeZy: Fix issue with negative delay
 - Update tools
+    - libFLAC v1.3.3 (used by eac3to)
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins

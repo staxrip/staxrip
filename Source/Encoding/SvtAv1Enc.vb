@@ -712,7 +712,9 @@ Public Class SvtAv1EncParams
 
         If Passes.Visible Then
             sb.Append(" --pass " & pass)
-            sb.Append(" --stats " + statsPath)
+            If includePaths Then
+                sb.Append(" --stats " + statsPath)
+            End If
 
             If pass = 1 Then
                 If CustomFirstPass.Value <> "" Then

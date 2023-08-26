@@ -17,6 +17,7 @@ v2.29.0 (not published yet)
 - Add proper identification for HDR tonemapping in Crop window ([#1096](/../../issues/1096))
 - Add header for target file Media Info
 - Add new (event) command to open blocking Preview window ([#1102](/../../issues/1102))
+- Add possiblity to dismiss the saving PNGs done message in VideoComparison ([#1067](/../../issues/1067))
 - Extend title name length for demuxed file names
 - Fix Vapoursynth filter resamplehq wrong call ([#1101](/../../issues/1101))
 - Log mismatch between frame count from FrameServer and target file after encode

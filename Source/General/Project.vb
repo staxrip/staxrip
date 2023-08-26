@@ -49,8 +49,7 @@ Public Class Project
     Public DemuxAudio As DemuxMode = DemuxMode.All
     Public DemuxChapters As Boolean = True
     Public DemuxVideo As Boolean = False
-    Public ExtractTimestamps As Boolean = True
-    Public ExtractTimestampsVfrOnly As Boolean = True
+    Public ExtractTimestamps As TimestampsMode = TimestampsMode.VfrOnly
     Public ExtractForcedSubSubtitles As Boolean = True
     Public FileExistAudio As FileExistMode
     Public FileExistVideo As FileExistMode

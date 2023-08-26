@@ -7,6 +7,7 @@ Public Class VideoComparisonForm
     Shared Property Pos As Integer
     Shared Property TabBackColor As ColorHSL
 
+    Private ShowMessageSavedPngs As Boolean = True
     Public CropLeft, CropTop, CropRight, CropBottom As Integer
 
     Shadows Menu As ContextMenuStripEx
@@ -70,7 +71,7 @@ Public Class VideoComparisonForm
 
         BackColor = theme.VideoComparisonForm.BackColor
         TabBackColor = theme.VideoComparisonForm.TabBackColor
-        
+
     End Sub
 
     Protected Overrides Sub OnDragEnter(e As DragEventArgs)
@@ -179,7 +180,19 @@ Public Class VideoComparisonForm
             End Using
         Next
 
-        MsgInfo("Images were saved in the source file directory.")
+        If ShowMessageSavedPngs Then
+            Using td As New TaskDialog(Of String)
+                td.Title = "Images were saved in the source file directory."
+                td.AddCommand("OK")
+                td.AddCommand("Dismiss this message for this session", "Dismiss")
+
+                Select Case td.Show
+                    Case "OK"
+                    Case "Dismiss"
+                        ShowMessageSavedPngs = False
+                End Select
+            End Using
+        End If
     End Sub
 
     Sub TrackBar_ValueChanged(sender As Object, e As EventArgs) Handles TrackBar.ValueChanged

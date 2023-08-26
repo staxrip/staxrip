@@ -883,7 +883,7 @@ Public Class GlobalClass
 
                 If (ec.CriteriaList.Count = 0 OrElse (ec.OrOnly AndAlso matches > 0) OrElse
                     (Not ec.OrOnly AndAlso matches = ec.CriteriaList.Count)) AndAlso
-                    Not ec.CommandParameters Is Nothing Then
+                    ec.CommandParameters IsNot Nothing Then
 
                     Dim command = g.MainForm.CustomMainMenu.CommandManager.GetCommand(ec.CommandParameters.MethodName)
 

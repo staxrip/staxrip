@@ -4188,7 +4188,16 @@ Public Class MainForm
     End Sub
 
     <Command("Dialog to preview or cut the video.")>
+    Sub ShowPreviewDialog()
+        ShowPreview(True)
+    End Sub
+
+    <Command("Window to preview or cut the video.")>
     Sub ShowPreview()
+        ShowPreview(False)
+    End Sub
+
+    Sub ShowPreview(modal As Boolean)
         If p.SourceFile = "" Then
             ShowOpenSourceDialog()
         Else
@@ -4212,8 +4221,14 @@ Public Class MainForm
                 Exit Sub
             End If
 
-            Dim form As New PreviewForm(PreviewScript)
-            form.Show()
+            If modal Then
+                Using form As New PreviewForm(PreviewScript)
+                    form.ShowDialog()
+                End Using
+            Else
+                Dim form As New PreviewForm(PreviewScript)
+                form.Show()
+            End If
         End If
     End Sub
 

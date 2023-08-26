@@ -148,43 +148,14 @@ Public Class CropForm
 
     Private FrameServer As IFrameServer
     Private Renderer As VideoRenderer
-    'Private SelectedBorderColor As Color = ToolStripRendererEx.BorderColor
     Private Side As AnchorStyles
     Private ActiveCropSide As AnchorStyles
     Private CommandManager As New CommandManager
     Private WithEvents CustomMenu As CustomMenu
 
-
-    Private _borderColor As ColorHSL = Color.Empty
-    Private _borderSelectedColor As ColorHSL = Color.Empty
-    Private _rendererBackColor As ColorHSL = Color.Empty
-
-    Public Property BorderColor As ColorHSL
-        Get
-            Return _borderColor
-        End Get
-        Set(value As ColorHSL)
-            _borderColor = value
-        End Set
-    End Property
-
-    Public Property BorderSelectedColor As ColorHSL
-        Get
-            Return _borderSelectedColor
-        End Get
-        Set(value As ColorHSL)
-            _borderSelectedColor = value
-        End Set
-    End Property
-
-    Public Property RendererBackColor As ColorHSL
-        Get
-            Return _rendererBackColor
-        End Get
-        Set(value As ColorHSL)
-            _rendererBackColor = value
-        End Set
-    End Property
+    Public Property BorderColor As ColorHSL = Color.Empty
+    Public Property BorderSelectedColor As ColorHSL = Color.Empty
+    Public Property RendererBackColor As ColorHSL = Color.Empty
 
     Sub New()
         InitializeComponent()

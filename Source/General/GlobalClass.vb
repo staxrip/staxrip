@@ -116,9 +116,10 @@ Public Class GlobalClass
     End Sub
 
     Sub Execute(fileName As String, Optional arguments As String = Nothing)
-        Dim info As New ProcessStartInfo
-        info.UseShellExecute = False
-        info.FileName = fileName
+        Dim info As New ProcessStartInfo With {
+            .UseShellExecute = False,
+            .FileName = fileName
+        }
 
         If arguments <> "" Then
             info.Arguments = arguments
@@ -430,7 +431,7 @@ Public Class GlobalClass
                 Log.WriteHeader("Frame Mismatch")
                 Dim has = MediaInfo.GetVideo(p.TargetFile, "FrameCount").ToInt()
                 Dim should = p.TargetFrames
-                Log.WriteLine($"Target file has {has} frames, but should have {should} frames!")
+                Log.WriteLine($"WARNING: Target file has {has} frames, but should have {should} frames!")
                 Log.WriteLine($"Encoding was terminated at {has / should * 100:0.0}%!")
             End If
 
@@ -596,7 +597,7 @@ Public Class GlobalClass
 
         Dim ap = GetAudioProfileForScriptPlayback()
 
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso
+        If ap IsNot Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso
             p.Ranges.Count = 0 Then
 
             args += " /dub " + ap.File.Escape
@@ -628,7 +629,7 @@ Public Class GlobalClass
 
         Dim ap = GetAudioProfileForScriptPlayback()
 
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso p.Ranges.Count = 0 Then
+        If ap IsNot Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso p.Ranges.Count = 0 Then
             args += " --audio-files=" + ap.File.Escape
         End If
 
@@ -699,7 +700,7 @@ Public Class GlobalClass
             Next
         Next
 
-        If Not dialogAction Is Nothing Then
+        If dialogAction IsNot Nothing Then
             ic.Add(New ToolStripSeparator)
             ic.Add(New MenuItemEx("Edit Profiles...", dialogAction, "Opens the profiles editor"))
         End If
@@ -735,11 +736,7 @@ Public Class GlobalClass
     Function GetTextEditorPath() As String
         Dim ret = GetAppPathForExtension("txt")
 
-        If ret <> "" Then
-            Return ret
-        End If
-
-        Return "notepad.exe"
+        Return If(ret <> "", ret, "notepad.exe")
     End Function
 
     Function GetAppPathForExtension(ParamArray extensions As String()) As String
@@ -1062,7 +1059,7 @@ Public Class GlobalClass
             ExceptionHandled = True
         End If
 
-        If Not TypeOf ex Is AbortException Then
+        If TypeOf ex IsNot AbortException Then
             Try
                 If File.Exists(p.SourceFile) Then
                     Dim name = p.TargetFile.Base
@@ -1182,7 +1179,7 @@ Public Class GlobalClass
             Exit Sub
         End If
 
-        If Not e Is Nothing Then
+        If e IsNot Nothing Then
             If Log.IsEmpty Then Log.WriteEnvironment()
             Log.WriteHeader("Exception")
             Log.WriteLine(e.ToString)

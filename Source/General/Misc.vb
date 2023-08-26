@@ -1782,6 +1782,12 @@ Public Enum MsgIcon
     Question = MessageBoxIcon.Question
 End Enum
 
+Public Enum TimestampsMode
+    Never
+    <DispName("VFR only")> VfrOnly
+    Always
+End Enum
+
 Public Enum DemuxMode
     <DispName("Show Dialog")> Dialog
     <DispName("Preferred Languages")> Preferred

@@ -4787,15 +4787,10 @@ Public Class MainForm
             '   ----------------------------------------------------------------
             Dim timestampsPage = ui.CreateFlowPage("Timestamps")
 
-            b = ui.AddBool(timestampsPage)
-            b.Text = "Extract timestamps from MKV files (if existing)"
-            b.Checked = p.ExtractTimestamps
-            b.SaveAction = Sub(value) p.ExtractTimestamps = value
-
-            b = ui.AddBool(timestampsPage)
-            b.Text = "    ...only extract timestamps from VFR MKV files"
-            b.Checked = p.ExtractTimestampsVfrOnly
-            b.SaveAction = Sub(value) p.ExtractTimestampsVfrOnly = value
+            Dim timestamps = ui.AddMenu(Of TimestampsMode)
+            timestamps.Expanded = False
+            timestamps.Text = "Extract timestamps from MKV files (if existing)"
+            timestamps.Field = NameOf(p.ExtractTimestamps)
 
 
             '   ----------------------------------------------------------------

@@ -292,7 +292,7 @@ Public Class CropForm
         End If
 
         If p.CropWithTonemapping Then
-            If p.SourceVideoBitDepth > 8 Then
+            If p.SourceVideoBitDepth > 8 AndAlso Not p.SourceVideoHdrFormat.ContainsAny("", "SDR") Then
                 If p.Script.Engine = ScriptEngine.AviSynth Then
                     script.Filters.Add(New VideoFilter("Color", "Tonemap", "ConvertBits(16)" + BR + "libplacebo_Tonemap()" + BR + "ConvertToYUV420()" + BR + "ConvertBits(8)"))
                 Else

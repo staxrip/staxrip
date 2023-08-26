@@ -946,14 +946,7 @@ Public Class mkvDemuxer
                 ext = "aac"
             End If
 
-            Dim base As String
-
-            If useStreamName Then
-                base = Audio.GetBaseNameForStream(sourcefile, stream)
-            Else
-                base = sourcefile.Base
-            End If
-
+            Dim base = If(useStreamName, Audio.GetBaseNameForStream(sourcefile, stream), sourcefile.Base)
             Dim outPath = proj.TempDir + base + "." + ext
             audioOutPaths.Add(outPath, stream)
             outPaths.Add(outPath)

@@ -677,11 +677,7 @@ Module StringExtensions
 
     <Extension()>
     Function Shorten(value As String, maxLength As Integer) As String
-        If value = "" OrElse value.Length <= maxLength Then
-            Return value
-        End If
-
-        Return value.Substring(0, maxLength)
+        Return If(value = "" OrElse value.Length <= maxLength, value, value.Substring(0, maxLength))
     End Function
 
     <Extension()>

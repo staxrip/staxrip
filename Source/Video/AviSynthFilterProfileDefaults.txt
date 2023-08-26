@@ -211,8 +211,9 @@ RemoveGrain | RemoveGrain With Repair =
     Processed = RemoveGrain(mode=2, modeU=2, modeV=2, planar=false)
     Repair(Processed, mode=2, modeU=2, modeV=2, planar=false)
 
-SMDegrain | SMDegrain Hard Grain = SMDegrain(tr=4, thSAD=600, contrasharp=true, refinemotion=true, prefilter=4)
-SMDegrain | SMDegrain Light Grain = SMDegrain(tr=2, thSAD=300, contrasharp=true, refinemotion=true, prefilter=3)
+SMDegrain | SMDegrain Hard Grain = SMDegrain(tr=4, thSAD=600, prefilter=3, contrasharp=true, refinemotion=true)
+SMDegrain | SMDegrain Normal Grain = SMDegrain(tr=2, thSAD=300, prefilter=3, contrasharp=true, refinemotion=true)
+SMDegrain | SMDegrain Light Grain = SMDegrain(tr=1, thSAD=300, prefilter=3, contrasharp=true, refinemotion=true)
 TemporalDegrain2 = TemporalDegrain2(degrainTR=2, postFFT=3, postSigma=3)
 VagueDenoiser = VagueDenoiser(threshold=0.8, method=1, nsteps=6, chromaT=0.8)
 

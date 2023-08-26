@@ -445,6 +445,7 @@ Public Class MP4Muxer
             Throw New ErrorAbortException("MP4 output file is missing.", GetArgs())
         End If
 
+        Log.WriteHeader("Media Info Target File")
         Log.WriteLine(MediaInfo.GetSummary(p.TargetFile))
     End Sub
 
@@ -641,6 +642,7 @@ Public Class MkvMuxer
             Log.Write("Error MKV output file is missing", p.TargetFile)
         End If
 
+        Log.WriteHeader("Media Info Target File")
         Log.WriteLine(MediaInfo.GetSummary(p.TargetFile))
     End Sub
 

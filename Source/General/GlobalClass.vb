@@ -425,6 +425,15 @@ Public Class GlobalClass
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
+
+            If Not WasEncodeSuccessful(p.TargetFile) Then
+                Log.WriteHeader("Frame Mismatch")
+                Dim has = MediaInfo.GetVideo(p.TargetFile, "FrameCount").ToInt()
+                Dim should = p.TargetFrames
+                Log.WriteLine($"Target file has {has} frames, but should have {should} frames!")
+                Log.WriteLine($"Encoding was terminated at {has / should * 100:0.0}%!")
+            End If
+
             Log.Save()
 
             g.ArchiveLogFile(Log.GetPath)
@@ -448,8 +457,14 @@ Public Class GlobalClass
     End Sub
 
     Function CanEncodeVideo() As Boolean
-        Return Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
-            File.Exists(p.VideoEncoder.OutputPath))
+        Return Not (p.SkipVideoEncoding AndAlso TypeOf p.VideoEncoder IsNot NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath))
+    End Function
+
+    Function WasEncodeSuccessful(targetPath As String) As Boolean
+        If String.IsNullOrEmpty(targetPath) Then Return False
+        If Not targetPath.FileExists() Then Return False
+
+        Return p.TargetFrames = MediaInfo.GetVideo(targetPath, "FrameCount").ToInt()
     End Function
 
     Sub DeleteTempFiles()

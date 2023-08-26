@@ -451,11 +451,7 @@ Module StringExtensions
 
     <Extension()>
     Function ToInt(value As String, Optional defaultValue As Integer = 0) As Integer
-        If Not Integer.TryParse(value, Nothing) Then
-            Return defaultValue
-        End If
-
-        Return CInt(value)
+        Return If(Not Integer.TryParse(value, Nothing), defaultValue, CInt(value))
     End Function
 
     <Extension()>

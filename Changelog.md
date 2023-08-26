@@ -16,6 +16,7 @@ v2.29.0 (not published yet)
 - Fix crash when trying to open the menu in Processing window
 - Add proper identification for HDR tonemapping in Crop window ([#1096](/../../issues/1096))
 - Add header for target file Media Info
+- Fix Vapoursynth filter resamplehq wrong call ([#1101](/../../issues/1101))
 - Adjust SMDegrain presets
 - DeeZy: Fix issue with negative delay
 - Update tools

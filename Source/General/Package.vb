@@ -1743,7 +1743,7 @@ Public Class Package
             .Location = "Plugins\VS\Scripts",
             .WebURL = "https://gist.github.com/4re/b5399b1801072458fc80#file-mcdegrainsharp-py",
             .Description = "TemporalMedian is a temporal denoising filter. It replaces every pixel with the median of its temporal neighbourhood.",
-            .VsFilterNames = {"resamplehq.resamplehq"}})
+            .VsFilterNames = {"resamplehq.resample_hq"}})
 
         Add(New PluginPackage With {
             .Name = "mcdegrainsharp",

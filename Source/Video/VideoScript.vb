@@ -820,11 +820,7 @@ Public Class VideoFilter
         Me.New("???", "???", code, True)
     End Sub
 
-    Sub New(category As String,
-            name As String,
-            script As String,
-            Optional active As Boolean = True)
-
+    Sub New(category As String, name As String, script As String, Optional active As Boolean = True)
         Me.Path = name
         Me.Script = script
         Me.Category = category
@@ -833,11 +829,7 @@ Public Class VideoFilter
 
     ReadOnly Property Name As String
         Get
-            If Path.Contains("|") Then
-                Return Path.RightLast("|").Trim
-            End If
-
-            Return Path
+            Return If(Path.Contains("|"), Path.RightLast("|").Trim, Path)
         End Get
     End Property
 
@@ -853,12 +845,9 @@ Public Class VideoFilter
         Return Path.CompareTo(other.Path)
     End Function
 
-    Shared Function GetDefault(
-        category As String, name As String,
-        Optional scriptEngine As ScriptEngine = ScriptEngine.AviSynth) As VideoFilter
+    Shared Function GetDefault(category As String, name As String, Optional scriptEngine As ScriptEngine = ScriptEngine.AviSynth) As VideoFilter
+        Dim defaults = If(scriptEngine = ScriptEngine.AviSynth, FilterCategory.GetAviSynthDefaults(), FilterCategory.GetVapourSynthDefaults())
 
-        Dim defaults = If(scriptEngine = ScriptEngine.AviSynth,
-            FilterCategory.GetAviSynthDefaults(), FilterCategory.GetVapourSynthDefaults())
         Return defaults.Where(Function(i) i.Name = category).FirstOrDefault()?.Filters.Where(Function(i) i.Name = name).FirstOrDefault()
     End Function
 End Class

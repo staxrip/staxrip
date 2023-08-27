@@ -971,28 +971,23 @@ Public Class FilterParameters
             If DefinitionsValue Is Nothing Then
                 DefinitionsValue = New List(Of FilterParameters)
 
-                Dim add = Sub(func As String(),
-                              path As String,
-                              params As FilterParameter())
-
+                Dim add = Sub(func As String(), path As String, params As FilterParameter())
                               For Each i In func
-                                  Dim ret As New FilterParameters
-                                  ret.FunctionName = i
-                                  ret.Text = path
+                                  Dim ret As New FilterParameters With {
+                                      .FunctionName = i,
+                                      .Text = path
+                                  }
                                   DefinitionsValue.Add(ret)
                                   ret.Parameters.AddRange(params)
                               Next
                           End Sub
 
-                Dim add2 = Sub(func As String(),
-                               param As String,
-                               value As String,
-                               path As String)
-
+                Dim add2 = Sub(func As String(), param As String, value As String, path As String)
                                For Each i In func
-                                   Dim ret As New FilterParameters
-                                   ret.FunctionName = i
-                                   ret.Text = path
+                                   Dim ret As New FilterParameters With {
+                                       .FunctionName = i,
+                                       .Text = path
+                                   }
                                    DefinitionsValue.Add(ret)
                                    ret.Parameters.Add(New FilterParameter(param, value))
                                Next

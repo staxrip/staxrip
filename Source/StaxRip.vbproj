@@ -444,9 +444,9 @@
     <EmbeddedResource Include="UI\TaskDialogBaseForm.resx">
       <DependentUpon>TaskDialogBaseForm.vb</DependentUpon>
     </EmbeddedResource>
-    <None Include="..\Changelog.md">
+    <EmbeddedResource Include="..\Changelog.md">
       <Link>Changelog.md</Link>
-    </None>
+    </EmbeddedResource>
     <None Include="..\README.md">
       <Link>README.md</Link>
     </None>

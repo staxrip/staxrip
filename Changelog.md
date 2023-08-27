@@ -10,9 +10,10 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.29.0 (not published yet)
+v2.29.0 (2023-09-06) (not published yet)
 ====================
 
+- Show Changelog at first start
 - Fix crash when trying to open the menu in Processing window
 - Add proper identification for HDR tonemapping in Crop window ([#1096](/../../issues/1096))
 - Add header for target file Media Info

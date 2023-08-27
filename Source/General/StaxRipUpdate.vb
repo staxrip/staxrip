@@ -9,7 +9,7 @@ Public Class StaxRipUpdate
     Shared HttpClient As New HttpClient
 
     Shared Sub ShowUpdateQuestion()
-        If Not s.CheckForUpdatesQuestion Then
+        If Not g.IsDevelopmentPC AndAlso Not s.CheckForUpdatesQuestion Then
             Using td As New TaskDialog(Of String)()
                 td.Title = "Check for updates"
                 td.Icon = TaskIcon.Question
@@ -29,11 +29,7 @@ Public Class StaxRipUpdate
         End If
     End Sub
 
-    Shared Async Sub CheckForUpdate(
-        Optional force As Boolean = False,
-        Optional includeDevBuilds As Boolean = False,
-        Optional x64 As Boolean = True)
-
+    Shared Async Sub CheckForUpdate(Optional force As Boolean = False, Optional includeDevBuilds As Boolean = False, Optional x64 As Boolean = True)
         Try
             If Not s.CheckForUpdates AndAlso Not force Then
                 Exit Sub

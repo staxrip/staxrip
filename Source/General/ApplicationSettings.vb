@@ -74,6 +74,7 @@ Public Class ApplicationSettings
     Public RecentOptionsPage As String
     Public RecentProjects As List(Of String)
     Public ReverseVideoScrollDirection As Boolean
+    Public ShowChangelog As String
     Public ShowPathsInCommandLine As Boolean
     Public ShowPreviewInfo As Boolean
     Public ShowTemplateSelection As Boolean

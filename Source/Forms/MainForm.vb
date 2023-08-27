@@ -3,6 +3,7 @@ Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Drawing.Drawing2D
 Imports System.Globalization
+Imports System.Reflection
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
@@ -1878,9 +1879,9 @@ Public Class MainForm
             filters.Insert(0, New VideoFilter("Source", "Automatic", "#vs"))
         End If
 
-        Dim td As New TaskDialog(Of VideoFilter)
-
-        td.Title = If(p.Script.IsAviSynth, "Select an AviSynth source filter:", "Select a VapourSynth source filter:")
+        Dim td As New TaskDialog(Of VideoFilter) With {
+            .Title = If(p.Script.IsAviSynth, "Select an AviSynth source filter:", "Select a VapourSynth source filter:")
+        }
 
         For Each filter In filters
             td.AddCommand(filter.Name, filter)
@@ -3976,11 +3977,11 @@ Public Class MainForm
 
         filterPage.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
 
-        Dim ret2 As New BindingSource
-
-        ret2.DataSource = ObjectHelp.GetCopy(
+        Dim ret2 As New BindingSource With {
+            .DataSource = ObjectHelp.GetCopy(
             New StringPairList(preferences.Where(
                                Function(a) filterNames.Contains(a.Value) AndAlso a.Name <> "")))
+        }
 
         filterPage.DataSource = ret2
         Return ret2
@@ -4030,11 +4031,12 @@ Public Class MainForm
     <Command("Saves the current project as template.")>
     Sub SaveProjectAsTemplate()
         If p.SourceFile = "" Then
-            Dim box As New InputBox
-            box.Text = "Enter the name of the template."
-            box.Title = "Save Template"
-            box.Value = p.TemplateName
-            box.CheckBoxText = "Load template on startup"
+            Dim box As New InputBox With {
+                .Text = "Enter the name of the template.",
+                .Title = "Save Template",
+                .Value = p.TemplateName,
+                .CheckBoxText = "Load template on startup"
+            }
 
             If box.Show = DialogResult.OK Then
                 p.TemplateName = box.Value.RemoveChars(Path.GetInvalidFileNameChars)
@@ -5366,9 +5368,10 @@ Public Class MainForm
             ret.Add("Apps|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
         End If
 
-        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.F1, Symbol.Help, {"https://github.com/staxrip/staxrip/wiki"})
-        ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Globe, {"https://github.com/staxrip/staxrip"})
         ret.Add("Help|Apps", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
+        ret.Add("Help|-")
+        ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Globe, {"https://github.com/staxrip/staxrip"})
+        ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.F1, Symbol.Help, {"https://github.com/staxrip/staxrip/wiki"})
         ret.Add("Help|Check for Updates", NameOf(g.DefaultCommands.CheckForUpdate))
         ret.Add("Help|-")
         ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})
@@ -6798,6 +6801,7 @@ Public Class MainForm
         IsLoading = False
         Refresh()
         CheckForWindows7()
+        ShowChangelog()
         ProcessCommandLine(Environment.CommandLine)
         StaxRipUpdate.ShowUpdateQuestion()
         StaxRipUpdate.CheckForUpdate(False, s.CheckForUpdatesDev, Environment.Is64BitProcess)
@@ -6896,5 +6900,50 @@ Public Class MainForm
             MsgWarn("Compatibility problem!", "Whereas Windows 7 is supported by StaxRip itself, some tools don't do it anymore. This can cause tools denying to work correctly or at whole. Currently those tools are 'MKVToolNix (mkvmerge)' and 'Python', which you have to downgrade or try to avoid. For further help join our Discord server.")
         End If
         s.ShowWindows7Warning = False
+    End Sub
+
+    Sub ShowChangelog()
+        If g.IsDevelopmentPC Then Exit Sub
+        If Assembly.GetExecutingAssembly.GetName.Version.Build <> 0 Then Exit Sub
+        
+        Dim appDetails = g.DefaultCommands.GetApplicationDetails(True, True, True)
+        If s.ShowChangelog = appDetails Then Exit Sub
+
+        Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StaxRip.Changelog.md")
+            Using reader As New StreamReader(stream)
+                Dim sb As New StringBuilder()
+                Dim relevant = False
+
+                Do While Not reader.EndOfStream
+                    Dim line = reader.ReadLine()
+
+                    If line Like "========*" Then Continue Do
+                    If Regex.IsMatch(line, "v\d\.\d\d\.?\d*\W+\(20\d\d-\d\d-\d\d\).*") Then
+                        If relevant Then Exit Do
+
+                        relevant = True
+                        Continue Do
+                    End If
+
+                    If Not relevant Then Continue Do
+                    If String.IsNullOrWhiteSpace(line) Then Continue Do
+
+                    line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)$)", "", RegexOptions.CultureInvariant)
+                    sb.AppendLine(line)
+                Loop
+
+                Using td As New TaskDialog(Of String)()
+                    td.Title = $"What's new in {g.DefaultCommands.GetApplicationDetails(True, True, True)}:"
+                    td.Icon = TaskIcon.Shield
+                    td.Content = sb.ToString() + BR
+
+                    td.AddCommand("OK")
+
+                    Dim answer = td.Show
+
+                    s.ShowChangelog = appDetails
+                End Using
+            End Using
+        End Using
     End Sub
 End Class

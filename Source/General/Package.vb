@@ -812,14 +812,23 @@ Public Class Package
 
     Shared Property havsfunc As Package = Add(New PluginPackage With {
         .Name = "havsfunc",
+        .Filename = "havsfunc.py",
+        .Location = "Plugins\VS\Scripts",
         .WebURL = "http://github.com/HomeOfVapourSynthEvolution/havsfunc",
         .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/havsfunc/releases",
         .HelpURL = "http://forum.doom9.org/showthread.php?t=166582",
         .Description = "Various popular AviSynth scripts ported To VapourSynth.",
-        .Filename = "havsfunc.py",
-        .Location = "Plugins\VS\Scripts",
         .Dependencies = {"DCTFilter.dll", "libfftw3f-3.dll", "RemoveGrainVS.dll"},
         .VsFilterNames = {"havsfunc.aaf", "havsfunc.AverageFrames", "havsfunc.Bob", "havsfunc.ChangeFPS", "havsfunc.Clamp", "havsfunc.ContraSharpening", "havsfunc.daa", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha", "havsfunc.DitherLumaRebuild", "havsfunc.EdgeCleaner", "havsfunc.FastLineDarkenMOD", "havsfunc.FineDehalo", "havsfunc.FixChromaBleedingMod", "havsfunc.GrainFactory3", "havsfunc.GrainStabilizeMC", "havsfunc.HQDeringmod", "havsfunc.InterFrame", "havsfunc.ivtc_txt60mc", "havsfunc.KNLMeansCL", "havsfunc.logoNR", "havsfunc.LSFmod", "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.MCTemporalDenoise", "havsfunc.MinBlur", "havsfunc.mt_deflate_multi", "havsfunc.mt_expand_multi", "havsfunc.mt_inflate_multi", "havsfunc.mt_inpand_multi", "havsfunc.Overlay", "havsfunc.Padding", "havsfunc.QTGMC", "havsfunc.Resize", "havsfunc.santiag", "havsfunc.sbr", "havsfunc.SCDetect", "havsfunc.SigmoidDirect", "havsfunc.SigmoidInverse", "havsfunc.smartfademod", "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.srestore", "havsfunc.Stab", "havsfunc.STPresso", "havsfunc.TemporalDegrain", "havsfunc.Toon", "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.Weave", "havsfunc.YAHR"}})
+
+    Shared Property DescaleAVS As Package = Add(New PluginPackage With {
+        .Name = "Descale",
+        .Filename = "libdescale.dll",
+        .Location = "Plugins\AVS\Descale",
+        .WebURL = "https://github.com/Irrational-Encoding-Wizardry/descale",
+        .DownloadURL = "https://github.com/Irrational-Encoding-Wizardry/descale/releases",
+        .Description = "Video/Image filter to undo upscaling.",
+        .AvsFilterNames = {"Debilinear", "Debicubic", "Delanczos", "Despline16", "Despline36", "Despline64", "Descale"}})
 
     Shared Property QTGMC As Package = Add(New PluginPackage With {
         .Name = "QTGMC",
@@ -1022,6 +1031,52 @@ Public Class Package
         .WebURL = "https://github.com/pinterf/dfttest",
         .DownloadURL = "https://github.com/pinterf/dfttest/releases",
         .AvsFilterNames = {"dfttest"}})
+
+    Shared Property DescaleVS As Package = Add(New PluginPackage With {
+        .Name = "Descale",
+        .Filename = "libdescale.dll",
+        .Location = "Plugins\VS\Descale",
+        .WebURL = "https://github.com/Irrational-Encoding-Wizardry/descale",
+        .DownloadURL = "https://github.com/Irrational-Encoding-Wizardry/descale/releases",
+        .Description = "Video/Image filter to undo upscaling.",
+        .VsFilterNames = {"descale.Debilinear", "descale.Debicubic", "descale.Delanczos", "descale.Despline16", "descale.Despline36", "descale.Despline64", "descale.Descale"}})
+
+    Shared Property InsaneAA As Package = Add(New PluginPackage With {
+        .Name = "insaneAA",
+        .Filename = "insaneAA.py",
+        .Location = "Plugins\VS\insaneAA",
+        .WebURL = "https://github.com/Beatrice-Raws/VapourSynth-insaneAA",
+        .DownloadURL = "https://github.com/Beatrice-Raws/VapourSynth-insaneAA/releases",
+        .Description = "InsaneAA Anti-Aliasing Script (VS port). Original idea by tonik && tophf, edited and ported by DJATOM. Use this script to fix ugly upscaled anime BDs.",
+        .Dependencies = {"eedi3.dll", "havsfunc.py", "libdescale.dll", "libnnedi3.dll", "NNEDI3CL.dll", "vsznedi3.dll"},
+        .VsFilterNames = {"insaneAA.insaneAA", "insaneAA.revert_upscale", "insaneAA.rescale", "insaneAA.eedi3_instance", "insaneAA.nnedi3_superclip", "insaneAA.validateInput"}})
+
+    Shared Property DeCross As Package = Add(New PluginPackage With {
+        .Name = "DeCross",
+        .Filename = "libdecross.dll",
+        .Location = "Plugins\VS\DeCross",
+        .WebURL = "https://github.com/dubhater/vapoursynth-decross",
+        .DownloadURL = "https://github.com/dubhater/vapoursynth-decross/releases",
+        .Description = "DeCross is a spatio-temporal cross color (rainbow) reduction filter. DeCross must be used right after the source filter, before any field matching or deinterlacing. The luma is returned unchanged. This is a port of the DeCross Avisynth plugin, which is in turn based on the AviUtl plugin CrossColor.",
+        .VsFilterNames = {"decross.DeCross"}})
+
+    Shared Property TemporalSoften2 As Package = Add(New PluginPackage With {
+        .Name = "TemporalSoften2",
+        .Filename = "libtemporalsoften2.dll",
+        .Location = "Plugins\VS\TemporalSoften2",
+        .WebURL = "https://github.com/dubhater/vapoursynth-temporalsoften2",
+        .DownloadURL = "https://github.com/dubhater/vapoursynth-temporalsoften2/releases",
+        .Description = "TemporalSoften filter for VapourSynth.",
+        .VsFilterNames = {"focus2.TemporalSoften2"}})
+
+    Shared Property MotionMask As Package = Add(New PluginPackage With {
+        .Name = "MotionMask",
+        .Filename = "libmotionmask.dll",
+        .Location = "Plugins\VS\MotionMask",
+        .WebURL = "https://github.com/dubhater/vapoursynth-motionmask",
+        .DownloadURL = "https://github.com/dubhater/vapoursynth-motionmask/releases",
+        .Description = "MotionMask creates a mask of moving pixels. Every output pixel will be set to the absolute difference between the current frame and the previous frame. This is a port of the mt_motion filter from pinterf's updated version of the Avisynth plugin MaskTools.",
+        .VsFilterNames = {"motionmask.MotionMask"}})
 
     Shared Property DFTTestVS As Package = Add(New PluginPackage With {
         .Name = "DFTTest",
@@ -1741,9 +1796,18 @@ Public Class Package
             .Name = "resamplehq",
             .Filename = "resamplehq.py",
             .Location = "Plugins\VS\Scripts",
-            .WebURL = "https://gist.github.com/4re/b5399b1801072458fc80#file-mcdegrainsharp-py",
+            .WebURL = "https://github.com/4re/resamplehq",
             .Description = "TemporalMedian is a temporal denoising filter. It replaces every pixel with the median of its temporal neighbourhood.",
             .VsFilterNames = {"resamplehq.resample_hq"}})
+
+        Add(New PluginPackage With {
+            .Name = "ASTDR",
+            .Filename = "ASTDR.py",
+            .Location = "Plugins\VS\Scripts",
+            .WebURL = "https://github.com/dubhater/vapoursynth-astdr",
+            .Description = "ASTDR is a derainbow function for VapourSynth. ASTDRmc performs motion compensation before calling ASTDR. This is a port of the Avisynth function of the same name, version 1.74.",
+            .Dependencies = {"adjust.py", "MiscFilters.dll", "fft3dfilter.dll", "libawarpsharp2.dll", "libfluxsmooth.dll", "libhqdn3d.dll", "libdecross.dll", "libmotionmask.dll", "libtemporalsoften2"},
+            .VsFilterNames = {"ASTDR.ASTDR", "ASTDR.ASTDRmc", "ASTDR.BlurForASTDR"}})
 
         Add(New PluginPackage With {
             .Name = "mcdegrainsharp",

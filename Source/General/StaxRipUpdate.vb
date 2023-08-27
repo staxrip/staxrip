@@ -96,7 +96,7 @@ Public Class StaxRipUpdate
                                                 td.Content += "..."
                                                 Exit For
                                             ElseIf line.TrimStart().StartsWith("-") Then
-                                                line = Regex.Replace(line, "\(/\.\./\.\./issues/\d+\)", "")
+                                                line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)$)", "", RegexOptions.CultureInvariant)
                                                 td.Content += line + BR
                                                 changes += 1
                                             End If

@@ -27,8 +27,15 @@ v2.29.0 (2023-09-06) (not published yet)
 - Update tools
     - libFLAC v1.3.3 (used by eac3to)
 - Update AviSynth+ plugins
+    - Descale v2023-04-02 8c53f5d
 - Update Dual plugins
 - Update VapourSynth plugins
+    - ASTDR v4
+    - DeCross v1
+    - Descale v2023-04-02 8c53f5d
+    - insaneAA v0.91
+    - MotionMask v2
+    - TemporalSoften2 v1
 
 
 v2.28.0 (2023-08-25)

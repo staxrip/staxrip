@@ -20,7 +20,7 @@ v2.29.0 (2023-09-06) (not published yet)
 - Add new (event) command to open blocking Preview window ([#1102](/../../issues/1102))
 - Add possiblity to dismiss the saving PNGs done message in VideoComparison ([#1067](/../../issues/1067))
 - Extend title name length for demuxed file names
-- Fix Vapoursynth filter resamplehq wrong call ([#1101](/../../issues/1101))
+- Fix Vapoursynth filter resamplehq linkage ([#1101](/../../issues/1101))
 - Log mismatch between frame count from FrameServer and target file after encode
 - Adjust SMDegrain presets
 - DeeZy: Fix issue with negative delay

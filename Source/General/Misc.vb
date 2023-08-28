@@ -540,12 +540,16 @@ Public Class Language
         Me.New("")
     End Sub
 
-    Sub New(ci As CultureInfo, Optional isCommon As Boolean = False)
+    Sub New(ci As CultureInfo, Optional isCommon As Boolean = False, Optional isInitial As Boolean = False)
         Me.IsCommon = isCommon
-        CultureInfoValue = ci
+        If isInitial OrElse Languages.Select(Function(x) x.TwoLetterCode).ContainsEx(twoLetterCode) Then
+            CultureInfoValue = ci
+        Else
+            CultureInfoValue = CultureInfo.InvariantCulture
+        End If
     End Sub
 
-    Sub New(twoLetterCode As String, Optional isCommon As Boolean = False)
+    Sub New(twoLetterCode As String, Optional isCommon As Boolean = False, Optional isInitial As Boolean = False)
         Try
             Me.IsCommon = isCommon
 
@@ -556,7 +560,11 @@ Public Class Language
                     twoLetterCode = "ja"
             End Select
 
-            CultureInfoValue = New CultureInfo(twoLetterCode)
+            If isInitial OrElse Languages.Select(Function(x) x.TwoLetterCode).ContainsEx(twoLetterCode) Then
+                CultureInfoValue = New CultureInfo(twoLetterCode)
+            Else
+                CultureInfoValue = CultureInfo.InvariantCulture
+            End If
         Catch ex As Exception
             CultureInfoValue = CultureInfo.InvariantCulture
         End Try
@@ -636,25 +644,24 @@ Public Class Language
     Shared ReadOnly Property Languages() As List(Of Language)
         Get
             If LanguagesValue Is Nothing Then
-                Dim l As New List(Of Language)
-
-                l.Add(New Language("en", True))
-                l.Add(New Language("es", True))
-                l.Add(New Language("de", True))
-                l.Add(New Language("fr", True))
-                l.Add(New Language("it", True))
-                l.Add(New Language("ru", True))
-                l.Add(New Language("zh", True))
-                l.Add(New Language("hi", True))
-                l.Add(New Language("ja", True))
-                l.Add(New Language("pt", True))
-                l.Add(New Language("ar", True))
-                l.Add(New Language("bn", True))
-                l.Add(New Language("pa", True))
-                l.Add(New Language("ms", True))
-                l.Add(New Language("ko", True))
-
-                l.Add(New Language(CultureInfo.InvariantCulture, True))
+                Dim l As New List(Of Language) From {
+                    New Language("en", True, True),
+                    New Language("es", True, True),
+                    New Language("de", True, True),
+                    New Language("fr", True, True),
+                    New Language("it", True, True),
+                    New Language("ru", True, True),
+                    New Language("zh", True, True),
+                    New Language("hi", True, True),
+                    New Language("ja", True, True),
+                    New Language("pt", True, True),
+                    New Language("ar", True, True),
+                    New Language("bn", True, True),
+                    New Language("pa", True, True),
+                    New Language("ms", True, True),
+                    New Language("ko", True, True),
+                    New Language(CultureInfo.InvariantCulture, True, True)
+                }
 
                 Dim current = l.Where(Function(a) a.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).FirstOrDefault
 
@@ -667,7 +674,7 @@ Public Class Language
                 Dim l2 As New List(Of Language)
 
                 For Each i In CultureInfo.GetCultures(CultureTypes.NeutralCultures)
-                    l2.Add(New Language(i))
+                    l2.Add(New Language(i, False, True))
                 Next
 
                 l2.Sort()
@@ -1325,7 +1332,7 @@ Public Class Subtitle
                     st.IndexIDX = CInt(Regex.Match(line, ", index: (\d+)").Groups(1).Value)
                 End If
 
-                If Not st Is Nothing AndAlso line.StartsWith("timestamp: ") Then
+                If st IsNot Nothing AndAlso line.StartsWith("timestamp: ") Then
                     st.StreamOrder = indexData
                     st.Path = path
                     indexData += 1

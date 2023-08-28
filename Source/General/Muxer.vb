@@ -64,11 +64,7 @@ Public MustInherit Class Muxer
             Return AdditionalSwitchesValue
         End Get
         Set(Value As String)
-            If Value = "" Then
-                AdditionalSwitchesValue = Nothing
-            Else
-                AdditionalSwitchesValue = Value
-            End If
+            AdditionalSwitchesValue = If(Value = "", Nothing, Value)
         End Set
     End Property
 
@@ -217,7 +213,7 @@ Public MustInherit Class Muxer
 
         For Each i In files
             If g.IsSourceSameOrSimilar(i) Then
-                If Not TypeOf Me Is WebMMuxer Then
+                If TypeOf Me IsNot WebMMuxer Then
                     Dim lower = i.ToLowerInvariant
 
                     If lower.Contains("chapters") Then
@@ -457,7 +453,7 @@ Public Class MP4Muxer
         Get
             Return {"ts", "m2ts", "ivf", "obu",
                     "mpg", "m2v",
-                    "avi", "opus", 
+                    "avi", "opus",
                     "ac3", "ec3", "eac3", "thd",
                     "mp4", "m4a", "aac", "mov",
                     "264", "h264", "avc",
@@ -711,7 +707,7 @@ Public Class MkvMuxer
             (TypeOf p.VideoEncoder Is AOMEnc AndAlso
             Not p.VideoEncoder.GetCommandLine(True, True).Contains(" --ivf")) Then
 
-            args += " --default-duration 0:" + p.Script.GetCachedFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
+            args += " --default-duration 0:" + p.Script.GetCachedFrameRate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
         End If
 
         If TimestampsFile <> "" Then
@@ -777,7 +773,7 @@ Public Class MkvMuxer
             End If
         Next
 
-        If Not TypeOf Me Is WebMMuxer AndAlso File.Exists(ChapterFile) Then
+        If TypeOf Me IsNot WebMMuxer AndAlso File.Exists(ChapterFile) Then
             If p.Ranges.Count > 0 AndAlso ChapterFile.Ext = "xml" Then
                 Dim xDoc = XDocument.Load(ChapterFile)
                 Dim lstTimeRanges As New List(Of (StartTime As TimeSpan, EndTime As TimeSpan, Offset As TimeSpan))
@@ -859,7 +855,7 @@ Public Class MkvMuxer
             Dim tid = 0
             Dim isCombo As Boolean
 
-            If Not ap.Stream Is Nothing Then
+            If ap.Stream IsNot Nothing Then
                 tid = ap.Stream.StreamOrder
                 isCombo = ap.Stream.Name.Contains("THD+AC3")
 
@@ -996,18 +992,14 @@ Public Class ffmpegMuxer
 
     Public Overrides ReadOnly Property SupportedInputTypes As String()
         Get
-            If OutputExt = "avi" Then
-                Return AVITypes
-            End If
+            If OutputExt = "avi" Then Return AVITypes
 
             Return MyBase.SupportedInputTypes
         End Get
     End Property
 
     Overrides Function IsSupported(type As String) As Boolean
-        If OutputExt = "avi" Then
-            Return AVITypes.Contains(type)
-        End If
+        If OutputExt = "avi" Then Return AVITypes.Contains(type)
 
         Return True
     End Function

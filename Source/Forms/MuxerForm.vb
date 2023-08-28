@@ -642,10 +642,10 @@ Public Class MuxerForm
 
 #End Region
 
-    Private Muxer As Muxer
-    Private AudioBindingSource As New BindingSource
-    Private SubtitleBindingSource As New BindingSource
-    Private SubtitleItems As New BindingList(Of SubtitleItem)
+    Private ReadOnly Muxer As Muxer
+    Private ReadOnly AudioBindingSource As New BindingSource
+    Private ReadOnly SubtitleBindingSource As New BindingSource
+    Private ReadOnly SubtitleItems As New BindingList(Of SubtitleItem)
 
     Sub New(muxer As Muxer)
         MyBase.New()
@@ -758,7 +758,7 @@ Public Class MuxerForm
         forcedColumn.DataPropertyName = "Forced"
         dgvSubtitles.Columns.Add(forcedColumn)
 
-        If Typeof muxer Is MkvMuxer Then
+        If TypeOf muxer Is MkvMuxer Then
             Dim commentaryColumn As New DataGridViewCheckBoxColumn
             commentaryColumn.HeaderText = "Commentary"
             commentaryColumn.DataPropertyName = "Commentary"
@@ -859,7 +859,7 @@ Public Class MuxerForm
     Public Class SubtitleItem
         Property Enabled As Boolean
         Property Language As Language
-        Property Title As String
+        Property Title As String = ""
         Property [Default] As Boolean
         Property Forced As Boolean
         Property Commentary As Boolean
@@ -1078,9 +1078,10 @@ Public Class MuxerForm
         ap.SetStreamOrLanguage()
 
         If ap.Stream IsNot Nothing Then
-            Dim streamSelection As New SelectionBox(Of AudioStream)
-            streamSelection.Title = "Stream Selection"
-            streamSelection.Text = "Please select an audio stream."
+            Dim streamSelection As New SelectionBox(Of AudioStream) With {
+                .Title = "Stream Selection",
+                .Text = "Please select an audio stream."
+            }
 
             For Each stream In ap.Streams
                 streamSelection.AddItem(stream)

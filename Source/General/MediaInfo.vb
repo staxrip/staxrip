@@ -6,7 +6,7 @@ Imports System.Text.RegularExpressions
 Public Class MediaInfo
     Implements IDisposable
 
-    Private Handle As IntPtr
+    Private ReadOnly Handle As IntPtr
     Private Shared Loaded As Boolean
 
     Sub New(path As String)
@@ -29,8 +29,9 @@ Public Class MediaInfo
 
                 If count > 0 Then
                     For index = 0 To count - 1
-                        Dim at As New VideoStream
-                        at.Index = index
+                        Dim at As New VideoStream With {
+                            .Index = index
+                        }
 
                         Dim streamOrder = GetVideo(index, "StreamOrder")
                         If Not streamOrder.IsInt Then streamOrder = (index + 1).ToString
@@ -56,8 +57,9 @@ Public Class MediaInfo
 
             If count > 0 Then
                 For index = 0 To count - 1
-                    Dim at As New AudioStream
-                    at.Index = index
+                    Dim at As New AudioStream With {
+                        .Index = index
+                    }
 
                     Dim streamOrder = GetAudio(index, "StreamOrder")
 
@@ -161,16 +163,14 @@ Public Class MediaInfo
 
             If count > 0 Then
                 For index = 0 To count - 1
-                    Dim subtitle As New Subtitle(New Language(GetText(index, "Language")))
-                    subtitle.Index = index
+                    Dim subtitle As New Subtitle(New Language(GetText(index, "Language"))) With {
+                        .Index = index
+                    }
+
                     Dim streamOrder = GetText(index, "StreamOrder")
 
                     If streamOrder <> "" Then
-                        If streamOrder.Contains("-") Then
-                            subtitle.StreamOrder = streamOrder.Right("-").ToInt + offset
-                        Else
-                            subtitle.StreamOrder = streamOrder.ToInt
-                        End If
+                        subtitle.StreamOrder = If(streamOrder.Contains("-"), streamOrder.Right("-").ToInt + offset, streamOrder.ToInt)
                     End If
 
                     subtitle.Default = GetText(index, "Default") = "Yes"
@@ -193,10 +193,7 @@ Public Class MediaInfo
                     Else
                         Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
 
-                        subtitle.Enabled = autoCode.ContainsAny(
-                                "all",
-                                subtitle.Language.TwoLetterCode,
-                                subtitle.Language.ThreeLetterCode)
+                        subtitle.Enabled = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode)
 
                         For Each i In autoCode
                             If i.IsInt AndAlso i.ToInt = (index + 1) Then
@@ -411,7 +408,7 @@ Public Class MediaInfo
         Return GetMediaInfo(path).GetSubtitleCount
     End Function
 
-    Shared Cache As ConcurrentDictionary(Of String, MediaInfo) = New ConcurrentDictionary(Of String, MediaInfo)
+    Shared ReadOnly Cache As ConcurrentDictionary(Of String, MediaInfo) = New ConcurrentDictionary(Of String, MediaInfo)
 
     Shared Function GetMediaInfo(path As String) As MediaInfo
         If path = "" Then

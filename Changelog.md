@@ -26,6 +26,8 @@ v2.29.0 (2023-09-06) (not published yet)
 - DeeZy: Fix issue with negative delay
 - Update tools
     - libFLAC v1.3.3 (used by eac3to)
+    - NVEncC v7.31
+    - SvtAv1EncApp v1.7.0-0+13-b922871f-[Mod-by-Patman]-x64-msvc1937
 - Update AviSynth+ plugins
     - Descale v2023-04-02 8c53f5d
 - Update Dual plugins

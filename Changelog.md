@@ -22,6 +22,7 @@ v2.29.0 (2023-09-06) (not published yet)
 - Extend title name length for demuxed file names
 - Fix Vapoursynth filter resamplehq linkage ([#1101](/../../issues/1101))
 - Log mismatch between frame count from FrameServer and target file after encode
+- Allow multiple file selecttion in muxer for audio files
 - Adjust SMDegrain presets
 - DeeZy: Fix issue with negative delay
 - Update tools

@@ -1173,6 +1173,7 @@ Public Class MuxerForm
 
     Sub bnAudioAdd_Click(sender As Object, e As EventArgs) Handles bnAudioAdd.Click
         Using dialog As New OpenFileDialog
+            dialog.Multiselect = True
             dialog.SetFilter(FileTypes.Audio.Union(FileTypes.VideoAudio))
             dialog.SetInitDir(p.TempDir)
 
@@ -1213,8 +1214,8 @@ Public Class MuxerForm
 
     Sub bnAttachmentAdd_Click(sender As Object, e As EventArgs) Handles bnAttachmentAdd.Click
         Using dialog As New OpenFileDialog
-            dialog.SetFilter({"ttf", "txt", "jpg", "png", "otf", "jpeg", "xml", "nfo"})
             dialog.Multiselect = True
+            dialog.SetFilter({"ttf", "txt", "jpg", "png", "otf", "jpeg", "xml", "nfo"})
             dialog.SetInitDir(p.TempDir)
 
             If dialog.ShowDialog = DialogResult.OK Then
@@ -1320,8 +1321,8 @@ Public Class MuxerForm
 
     Sub bnSubtitleAdd_Click(sender As Object, e As EventArgs) Handles bnSubtitleAdd.Click
         Using dialog As New OpenFileDialog
-            dialog.SetFilter(FileTypes.SubtitleIncludingContainers)
             dialog.Multiselect = True
+            dialog.SetFilter(FileTypes.SubtitleIncludingContainers)
             dialog.SetInitDir(s.LastSourceDir)
 
             If dialog.ShowDialog = DialogResult.OK Then

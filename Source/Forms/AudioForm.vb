@@ -685,6 +685,8 @@ Public Class AudioForm
 
     Private Profile, TempProfile As GUIAudioProfile
 
+    Private CommandLineHighlightingMenuItem As MenuItemEx
+
     Sub New()
         MyBase.New()
         InitializeComponent()
@@ -714,11 +716,23 @@ Public Class AudioForm
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
 
         Dim cms As New ContextMenuStripEx(components)
+        cms.Form = Me
         bnMenu.ContextMenuStrip = cms
 
-        cms.Add("Copy Command Line", Sub() Clipboard.SetText(TempProfile.GetCommandLine(True))).SetImage(Symbol.Copy)
         cms.Add("Execute Command Line", AddressOf Execute).SetImage(Symbol.fa_terminal)
+        cms.Add("Copy Command Line", Sub() Clipboard.SetText(TempProfile.GetCommandLine(True))).SetImage(Symbol.Copy)
         cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", TempProfile.GetCommandLine(True), False))
+        cms.Add("-")
+
+        Dim a = Sub()
+                CommandLineHighlightingMenuItem.Checked = Not CommandLineHighlightingMenuItem.Checked
+                s.CommandLineHighlighting = CommandLineHighlightingMenuItem.Checked
+                rtbCommandLine.Format(rtbCommandLine.Text.ToString)
+            End Sub
+
+        CommandLineHighlightingMenuItem = cms.Add("Command Line Highlighting", a, Keys.Control Or Keys.H)
+        CommandLineHighlightingMenuItem.Checked = s.CommandLineHighlighting
+
         cms.Add("-")
         cms.Add("Save Profile...", AddressOf SaveProfile, "Saves the current settings as profile").SetImage(Symbol.Save)
         cms.Add("-")

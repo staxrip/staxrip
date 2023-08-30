@@ -842,6 +842,14 @@ Public Class Theme
 
         <Serializable>
         Public Class OutputHighlightingThemeColors
+            Public Property HeaderBackColor As ColorHSL = Color.Transparent
+            Public Property HeaderForeColor As ColorHSL = New ColorHSL(333, 0.99, 0.5, 1)
+            Public Property HeaderFontStyles As FontStyle() = {}
+
+            Public Property EncoderTitleBackColor As ColorHSL = Color.Transparent
+            Public Property EncoderTitleForeColor As ColorHSL = New ColorHSL(12, 0.99, 0.5, 1)
+            Public Property EncoderTitleFontStyles As FontStyle() = {}
+
             Public Property ParameterBackColor As ColorHSL = Color.Transparent
             Public Property ParameterForeColor As ColorHSL = New ColorHSL(320, 0.99, 0.5, 1)
             Public Property ParameterFontStyles As FontStyle() = {}

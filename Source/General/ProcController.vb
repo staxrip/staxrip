@@ -161,9 +161,19 @@ Public Class ProcController
             Dim IsX265 = Proc.Package Is Package.x265
             Dim IsSvtAv1 = Proc.Package Is Package.SvtAv1EncApp
 
-            If IsX265 Then
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)----------.*----------(?=\n)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.HeaderBackColor, oh.HeaderForeColor, oh.HeaderFontStyles)
+            Next
+
+            matches = Regex.Matches(LogTextBox.Text, "(?<=----------\n\n).*(?=\n\n)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.EncoderTitleBackColor, oh.EncoderTitleForeColor, oh.EncoderTitleFontStyles)
+            Next
+
+            If IsX265 OrElse IsSvtAv1 Then
                 help = 1
-                matches = Regex.Matches(LogTextBox.Text, "(?<=\n)x265\s\[info\]:\s(.+\s|tools):\s.+", RegexOptions.IgnoreCase)
+                matches = Regex.Matches(LogTextBox.Text, "((?<=\n)x265\s\[info\]|SVT\s\[config\]):\s(.+\s:|.+\sprofile|tools)\s.+", RegexOptions.IgnoreCase)
                 For Each m As Match In matches
                     If help Mod 2 = 0 Then
                         LogTextBox.SelectionFormat(m.Index, m.Length, oh.AlternateBackColor, oh.AlternateForeColor, oh.AlternateFontStyles)
@@ -172,12 +182,10 @@ Public Class ProcController
                 Next
             End If
 
-            'If IsX265 OrElse IsX264 OrElse IsSvtAv1 Then
-                matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(x264|x265|svt|avs2pipemod|vspipe)(?=\s?\[)", RegexOptions.IgnoreCase)
-                For Each m As Match In matches
-                    LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(205), oh.SourceForeColor)
-                Next
-            'End If
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(x264|x265|svt|avs2pipemod|vspipe)(?=\s?\[)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(205), oh.SourceForeColor)
+            Next
 
             matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(avs\+|avs|vpy)(?=\s+\[)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
@@ -200,7 +208,7 @@ Public Class ProcController
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.InfoLabelBackColor, oh.InfoLabelForeColor)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\s|^)(--\w[^\s=]*|-[a-z](?=[\s=]))(?:[\s=]((?!--|-[a-z]{1,2}\s)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\s|^)(--\w[^\s=]*|-[^-\s]+(?=[\s=]))(?:[\s=]((?!--|-[\S]+\s)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.ParameterBackColor, oh.ParameterForeColor, oh.ParameterFontStyles)
                 If m.Groups.Count > 2 Then
@@ -245,16 +253,14 @@ Public Class ProcController
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.FrameServerBackColor, oh.FrameServerForeColor, oh.FrameServerFontStyles)
             Next
 
-            If IsX265 OrElse IsX264 Then
-                matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s).*encoder(?:\D*?([^\d\s]*\d+\S*\d[^\d\s]*))(?:.*(djatom|patman))?.*(?=\n)", RegexOptions.IgnoreCase)
-                For Each m As Match In matches
-                    LogTextBox.SelectionFormat(m.Index, m.Length, oh.EncoderBackColor, oh.EncoderForeColor, oh.EncoderFontStyles)
-                    LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.175), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
-                    If m.Groups.Count > 2 Then
-                        LogTextBox.SelectionFormat(m.Groups(2).Index, m.Groups(2).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.175), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
-                    End If
-                Next
-            End If
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s)[^:]*encoder(?:\D*?([^\d\s]*\d+\S*\d[^\d\s]*))(?:.*(djatom|patman))?.*(?=\n)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                LogTextBox.SelectionFormat(m.Index, m.Length, oh.EncoderBackColor, oh.EncoderForeColor, oh.EncoderFontStyles)
+                LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.175), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
+                If m.Groups.Count > 2 Then
+                    LogTextBox.SelectionFormat(m.Groups(2).Index, m.Groups(2).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.175), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
+                End If
+            Next
 
         Catch ex As Exception
         Finally
@@ -372,12 +378,12 @@ Public Class ProcController
                     match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                     If match.Success Then
-                        Dim frame = 0.0f
+                        Dim frame = 0.0F
                         Dim frameParse = Single.TryParse($"{match.Groups(1).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, frame)
-                        Dim frames = 0.0f
+                        Dim frames = 0.0F
                         Dim framesParse = Single.TryParse($"{match.Groups(2).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, frames)
                         Dim percentString = "Encoding:"
-                        Dim fps = 0.0f
+                        Dim fps = 0.0F
                         Dim fpsParse = Single.TryParse($"{match.Groups(3).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, fps)
                         Dim speedString = ""
 

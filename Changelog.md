@@ -25,6 +25,7 @@ v2.29.0 (2023-09-06) (not published yet)
 - Allow multiple file selecttion in muxer for audio files
 - Adjust SMDegrain presets
 - DeeZy: Fix issue with negative delay
+- QSVEncC: Fix bitrate issue in QBVR mode ([#1106](/../../issues/1106))
 - Update tools
     - libFLAC v1.3.3 (used by eac3to)
     - NVEncC v7.31

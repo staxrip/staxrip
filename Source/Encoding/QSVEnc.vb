@@ -128,7 +128,7 @@ Public Class QSVEnc
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.Mode.ValueText.EqualsAny("cqp", "icq", "la-icq", "qvbr", "vcm")
+            Return Params.Mode.ValueText.EqualsAny("cqp", "icq", "la-icq", "vcm")
         End Get
         Set(Value As Boolean)
         End Set

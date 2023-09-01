@@ -185,7 +185,7 @@ Public Class ProcessingForm
         Me.Margin = New System.Windows.Forms.Padding(9)
         Me.Name = "ProcessingForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
-        Me.Text = "StaxRip - Processing..."
+        Me.Text = $"Processing... - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.flpButtons.ResumeLayout(False)
         Me.flpButtons.PerformLayout()
         Me.tlpMain.ResumeLayout(False)

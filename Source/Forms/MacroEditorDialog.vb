@@ -103,7 +103,7 @@ Public Class MacroEditorDialog
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "MacroEditorDialog"
-        Me.Text = "Text"
+        Me.Text = $"Macro Editor - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.tlp.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -140,21 +140,21 @@ Public Class MacroEditorDialog
     End Sub
 
     Sub SetBatchDefaults()
-        Text = "Batch Editor"
+        Text = $"Batch Editor - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         HelpText = "Editor for batch script editing."
         MacroEditorControl.SetCommandLineDefaults()
         ScaleClientSize(35, 22)
     End Sub
 
     Sub SetMacroDefaults()
-        Text = "Macro Editor"
+        Text = $"Macro Editor - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         HelpText = "Editor for strings that may contain macros."
         MacroEditorControl.SetMacroDefaults()
         ScaleClientSize(35, 25)
     End Sub
 
     Sub SetScriptDefaults()
-        Text = "Script Editor"
+        Text = $"Script Editor - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         HelpText = "Editor for scripts that may contain macros."
         MacroEditorControl.SetScriptDefaults()
         ScaleClientSize(45, 30)

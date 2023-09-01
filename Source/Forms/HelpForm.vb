@@ -37,7 +37,7 @@ Public Class HelpForm
         Me.Controls.Add(Me.Browser)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
-        Me.Name = "HelpForm"
+        Me.Name = $"{g.DefaultCommands.GetApplicationDetails()} - HelpForm"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.ResumeLayout(False)
 

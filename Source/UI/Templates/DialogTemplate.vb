@@ -24,7 +24,7 @@ Public Class DialogTemplate
         '
         Me.ClientSize = New System.Drawing.Size(306, 271)
         Me.Name = "DialogTemplate"
-        Me.Text = "DialogTemplate"
+        Me.Text = $"DialogTemplate - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.ResumeLayout(False)
 
     End Sub

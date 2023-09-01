@@ -394,7 +394,7 @@ Public Class AppsForm
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(10)
         Me.Name = "AppsForm"
-        Me.Text = "Apps"
+        Me.Text = $"Apps - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.ToolStrip.ResumeLayout(False)
         Me.ToolStrip.PerformLayout()
         Me.tlpMain.ResumeLayout(False)

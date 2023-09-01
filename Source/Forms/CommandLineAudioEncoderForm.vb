@@ -423,7 +423,7 @@ Public Class CommandLineAudioEncoderForm
         Me.KeyPreview = true
         Me.Margin = New System.Windows.Forms.Padding(6, 5, 6, 5)
         Me.Name = "CommandLineAudioEncoderForm"
-        Me.Text = "Audio Command Lines"
+        Me.Text = $"Audio Command Lines - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.TableLayoutPanel1.ResumeLayout(false)
         Me.TableLayoutPanel1.PerformLayout
         Me.tlpBitrateEtcValues.ResumeLayout(false)

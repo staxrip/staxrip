@@ -286,7 +286,7 @@ Public Class ProfilesForm
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(9)
         Me.Name = "ProfilesForm"
-        Me.Text = "Profiles"
+        Me.Text = $"Profiles - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.tlpArrows.ResumeLayout(False)
         Me.pnListBox.ResumeLayout(False)
         Me.flpRight.ResumeLayout(False)
@@ -313,7 +313,7 @@ Public Class ProfilesForm
 
         MyBase.New()
         InitializeComponent()
-        Text = title
+        Text = $"{title} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
 
         Me.Profiles = profiles
         Me.DefaultsFunc = defaultsFunc

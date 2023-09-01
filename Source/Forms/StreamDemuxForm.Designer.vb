@@ -396,7 +396,7 @@ Partial Class StreamDemuxForm
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "StreamDemuxForm"
-        Me.Text = "Demux"
+        Me.Text = $"Demux - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.gbAudio.ResumeLayout(False)
         Me.AudioTableLayoutPanel.ResumeLayout(False)
         Me.AudioTableLayoutPanel.PerformLayout()

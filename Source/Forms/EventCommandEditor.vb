@@ -342,7 +342,7 @@ Public Class EventCommandEditor
         Me.KeyPreview = True
         Me.Margin = New Padding(9)
         Me.Name = "EventCommandEditor"
-        Me.Text = "Event Command Editor"
+        Me.Text = $"Event Command Editor - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.gbCriteria.ResumeLayout(False)
         Me.gbCriteria.PerformLayout()
         Me.FlowLayoutPanel1.ResumeLayout(False)

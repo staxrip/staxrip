@@ -224,7 +224,7 @@ Public Class MacrosForm
         Me.KeyPreview = True
         Me.Margin = New Padding(11, 9, 11, 9)
         Me.Name = "MacrosForm"
-        Me.Text = "Macros"
+        Me.Text = $"Macros - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.tlpRight.ResumeLayout(False)
         Me.tlpLeft.ResumeLayout(False)
         Me.tlpMain.ResumeLayout(False)

@@ -101,7 +101,7 @@ Partial Class CodeEditor
         Me.Controls.Add(Me.tlpMain)
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "CodeEditor"
-        Me.Text = "Code Editor"
+        Me.Text = $"Code Editor - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.tlpMain.ResumeLayout(False)
         Me.tlpMain.PerformLayout()
         Me.FlowLayoutPanel1.ResumeLayout(False)

@@ -982,7 +982,7 @@ Public Class MainForm
         Me.Margin = New System.Windows.Forms.Padding(9, 12, 9, 12)
         Me.MaximizeBox = False
         Me.Name = "MainForm"
-        Me.Text = "StaxRip"
+        Me.Text = $"{g.DefaultCommands.GetApplicationDetails()}"
         Me.StartPosition = FormStartPosition.CenterScreen
         Me.gbAssistant.ResumeLayout(False)
         Me.tlpAssistant.ResumeLayout(False)
@@ -1738,7 +1738,7 @@ Public Class MainForm
 
             SetBindings(p, True)
 
-            Text = path.Base + " - " + g.DefaultCommands.GetApplicationDetails(True, True, True)
+            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
 
             If Not Environment.Is64BitProcess Then
                 Text += " (32 bit)"
@@ -4015,7 +4015,7 @@ Public Class MainForm
             p.Log.Clear()
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
-            Text = path.Base + " - " + g.DefaultCommands.GetApplicationDetails(True, True, True)
+            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
             s.UpdateRecentProjects(path)
             UpdateRecentProjectsMenu()
         Catch ex As Exception
@@ -5238,7 +5238,7 @@ Public Class MainForm
 
         Using dialog As New MacroEditorDialog
             dialog.SetScriptDefaults()
-            dialog.Text = "Filter Profiles"
+            dialog.Text = $"Filter Profiles - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
             dialog.MacroEditorControl.Value = g.GetFilterProfilesText(filterProfiles)
             dialog.bnContext.Text = " Restore Defaults... "
             dialog.bnContext.Visible = True
@@ -5982,7 +5982,7 @@ Public Class MainForm
     <Command("Dialog to open a merged files source.")>
     Sub ShowOpenSourceMergeFilesDialog()
         Using form As New SourceFilesForm()
-            form.Text = "Merge"
+            form.Text = $"Merge - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
             form.IsMerge = True
 
             If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
@@ -6031,7 +6031,7 @@ Public Class MainForm
         End If
 
         Using form As New SourceFilesForm()
-            form.Text = "File Batch"
+            form.Text = $"File Batch - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
 
             If p.DefaultTargetName = "%source_dir_name%" Then
                 p.DefaultTargetName = "%source_name%"

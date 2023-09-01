@@ -135,7 +135,7 @@ Public Class CropForm
         Me.MinimumSize = New System.Drawing.Size(200, 200)
         Me.Name = "CropForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
-        Me.Text = "Crop"
+        Me.Text = $"Crop - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         CType(Me.tbPosition, System.ComponentModel.ISupportInitialize).EndInit()
         Me.StatusStrip.ResumeLayout(False)
         Me.StatusStrip.PerformLayout()

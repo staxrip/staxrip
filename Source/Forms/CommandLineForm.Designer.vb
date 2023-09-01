@@ -170,7 +170,7 @@ Partial Class CommandLineForm
         Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(4)
-        Me.Name = "CommandLineForm"
+        Me.Name = $"{g.DefaultCommands.GetApplicationDetails()} - CommandLineForm"
         Me.tlpMain.ResumeLayout(False)
         Me.tlpMain.PerformLayout()
         Me.tlpRTB.ResumeLayout(False)

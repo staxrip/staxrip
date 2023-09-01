@@ -322,7 +322,7 @@ Public Class CommandLineDemuxForm
         Me.Margin = New System.Windows.Forms.Padding(11, 10, 11, 10)
         Me.Name = "CommandLineDemuxForm"
         Me.Padding = New System.Windows.Forms.Padding(15)
-        Me.Text = "Demux Configuration"
+        Me.Text = $"Demux Configuration - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.tlpMain.ResumeLayout(False)
         Me.tlpMain.PerformLayout()
         Me.cmsArguments.ResumeLayout(False)

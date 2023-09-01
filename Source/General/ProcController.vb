@@ -426,7 +426,7 @@ Public Class ProcController
             If match.Success Then
                 progress = match.Groups(1).Value.ToSingle()
             Else
-                match = Regex.Match(value, "frame=?\s+(\d+)(?:\s|/)", RegexOptions.IgnoreCase)
+                match = Regex.Match(value, "frame(?:(?:=\s*)|\s+)(\d+)(?:\s|/)", RegexOptions.IgnoreCase)
                 If match.Success Then
                     frame = match.Groups(1).Value.ToInt()
                 Else
@@ -453,7 +453,7 @@ Public Class ProcController
         End If
 
         If progress < 0 Then
-            ProcForm.NotifyIcon.Text = "StaxRip"
+            ProcForm.NotifyIcon.Text = g.DefaultCommands.GetApplicationDetails()
             ProcForm.Taskbar?.SetState(TaskbarStates.NoProgress)
             LastProgress = 0
         End If

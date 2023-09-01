@@ -132,6 +132,7 @@ Sharpen | MSharpen = MSharpen(threshold=10, strength=100, highq=true, mask=false
 Sharpen | MultiSharpen = MultiSharpen(1)
 Sharpen | pSharpen = pSharpen(strength=25, threshold=75, ss_x=1.0, ss_y=1.0)
 Sharpen | Sharpen = Sharpen($enter_text:Enter the Amount of Sharpness in decimal (from -1.58 to 1.0)$)
+Sharpen | vsMSharpen = vsMSharpen(threshold=6.0, strength=39.0, mask=false, luma=true, chroma=false)
 
 [Misc]
 Borders | AddBorders = AddBorders(0, 0, 0, 0) #left, top, right, bottom

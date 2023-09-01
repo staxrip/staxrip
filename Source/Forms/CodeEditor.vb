@@ -146,17 +146,18 @@ Public Class CodeEditor
 
     <Command("Shows a code preview with solved macros.")>
     Sub ShowCodePreview()
-        Dim script As New VideoScript
-        script.Engine = Engine
-        script.Filters = GetFilters()
-        g.ShowCodePreview(script.GetFullScript)
+        Dim script As New VideoScript With {
+            .Engine = Engine,
+            .Filters = GetFilters()
+        }
+        g.ShowCommandLinePreview("", script.GetFullScript(), True)
     End Sub
 
     <Command("Shows script parameters like framecount and colorspace.")>
     Sub ShowInfo()
         Dim script = CreateTempScript()
 
-        If Not script Is Nothing Then
+        If script IsNot Nothing Then
             g.ShowScriptInfo(script)
         End If
     End Sub
@@ -174,7 +175,7 @@ Public Class CodeEditor
 
     <Command("Cuts selected text.")>
     Sub Cut()
-        If Not ActiveTable Is Nothing Then
+        If ActiveTable IsNot Nothing Then
             Clipboard.SetText(ActiveTable.rtbScript.SelectedText)
             ActiveTable.rtbScript.SelectedText = ""
         End If
@@ -182,7 +183,7 @@ Public Class CodeEditor
 
     <Command("Copies selected text.")>
     Sub Copy()
-        If Not ActiveTable Is Nothing Then
+        If ActiveTable IsNot Nothing Then
             Clipboard.SetText(ActiveTable.rtbScript.SelectedText)
         End If
     End Sub

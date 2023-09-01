@@ -114,6 +114,7 @@ VFR to CFR | VFRToCFR =
 
 Anti-Aliasing | DAA = clip = havsfunc.daa(clip)
 Anti-Aliasing | ediAA = clip = muvsfunc.ediaa(clip)
+Anti-Aliasing | insaneAA = clip = insaneAA.insaneAA(clip, external_aa=None, external_mask=None, faster_aa=False, eedi3_mode=insaneAA.EEDI3Mode.CPU, eedi3_device=-1, eedi3_opt=0, nnedi3_mode=insaneAA.NNEDI3Mode.NNEDI3, nnedi3_device=-1, nnedi3_opt=0, descale_strength=0.3, kernel='bilinear', bicubic_b=1/3, bicubic_c=1/3, lanczos_taps=3, descale_width=None, descale_height=720, pscrn=1, alpha=0.2, beta=0.25, gamma=1000.0, nrad=2, mdis=20, nsize=0, nns=4, output_mode=insaneAA.ClipMode.FULL, input_mode=insaneAA.ClipMode.FULL)
 Anti-Aliasing | MAA = clip = muvsfunc.maa(clip)
 Anti-Aliasing | nnedi3AA = clip = muvsfunc.nnedi3aa(clip)
 Anti-Aliasing | Sangnom = clip = core.sangnom.SangNom(clip)
@@ -166,6 +167,7 @@ AddGrain = clip = core.grain.Add(clip, var=1.0, uvar=0.0, hcorr=0.0, vcorr=0.0, 
 BM3D = clip = mvsfunc.BM3D(clip, sigma=[3,3,3], radius1=0)
 DegrainMedian = clip = core.dgm.DegrainMedian(clip=clip, interlaced=False)
 DFTTest | DFTTest = clip = core.dfttest.DFTTest(clip, $select:msg:Select Strength;Light|sigma=6, tbsize=3, opt=3;Moderate|sigma=16, tbsize=5, opt=3;Strong|sigma=64, tbsize=1, opt=3$)
+DFTTest | DFTTest2 = clip = dfttest2.DFTTest(clip, $select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong|sigma=64, tbsize=1$, backend=dfttest2.Backend.$select:msg:Select the Backend;NVRTC|NVRTC;cuFFT|cuFFT;CPU|CPU;GCC|GCC$)
 DFTTest | DFTTest Neo = clip = core.neo_dfttest.DFTTest(clip, ftype=0, sigma=2.0, planes=[0,1,2])
 FFT3D Neo = clip = core.neo_fft3d.FFT3D(clip, sigma=2.0, bt=3, planes=[0,1,2])
 HQDN3D = clip = core.hqdn3d.Hqdn3d(clip=clip)

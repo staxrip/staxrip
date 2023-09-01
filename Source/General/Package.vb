@@ -1078,6 +1078,47 @@ Public Class Package
         .Description = "MotionMask creates a mask of moving pixels. Every output pixel will be set to the absolute difference between the current frame and the previous frame. This is a port of the mt_motion filter from pinterf's updated version of the Avisynth plugin MaskTools.",
         .VsFilterNames = {"motionmask.MotionMask"}})
 
+    Shared Property DFTTest2 As Package = Add(New PluginPackage With {
+        .Siblings = {"dfttest2_NVRTC vs", "dfttest2_CUDA vs", "dfttest2_CPU vs"},
+        .Name = "dfttest2",
+        .Filename = "dfttest2.py",
+        .Location = "Plugins\VS\DFTTest2",
+        .Description = "DFTTest re-implemetation for VapourSynth (CPU and CUDA).",
+        .WebURL = "https://github.com/AmusementClub/vs-dfttest2",
+        .DownloadURL = "https://github.com/AmusementClub/vs-dfttest2/releases",
+        .Dependencies = {"dfttest2_cpu.dll", "dfttest2_cuda.dll", "dfttest2_nvrtc.dll"},
+        .VsFilterNames = {"dfttest2.DFTTest"}})
+
+    Shared Property DFTTest2CPU As Package = Add(New PluginPackage With {
+        .Siblings = {"dfttest2 vs", "dfttest2_NVRTC vs", "dfttest2_CUDA vs"},
+        .Name = "dfttest2_CPU",
+        .Filename = "dfttest2_cpu.dll",
+        .Location = "Plugins\VS\DFTTest2",
+        .Description = "",
+        .WebURL = "https://github.com/AmusementClub/vs-dfttest2",
+        .DownloadURL = "https://github.com/AmusementClub/vs-dfttest2/releases",
+        .VsFilterNames = {"dfttest2_cpu.RDFT", "dfttest2_cpu.DFTTest"}})
+
+    Shared Property DFTTest2CUDA As Package = Add(New PluginPackage With {
+        .Siblings = {"dfttest2 vs", "dfttest2_NVRTC vs", "dfttest2_CPU vs"},
+        .Name = "dfttest2_CUDA",
+        .Filename = "dfttest2_cuda.dll",
+        .Location = "Plugins\VS\DFTTest2",
+        .Description = "",
+        .WebURL = "https://github.com/AmusementClub/vs-dfttest2",
+        .DownloadURL = "https://github.com/AmusementClub/vs-dfttest2/releases",
+        .VsFilterNames = {"dfttest2_cuda.RDFT", "dfttest2_cuda.DFTTest"}})
+
+    Shared Property DFTTest2NVRTC As Package = Add(New PluginPackage With {
+        .Siblings = {"dfttest2 vs", "dfttest2_CUDA vs", "dfttest2_CPU vs"},
+        .Name = "dfttest2_NVRTC",
+        .Filename = "dfttest2_nvrtc.dll",
+        .Location = "Plugins\VS\DFTTest2",
+        .Description = "",
+        .WebURL = "https://github.com/AmusementClub/vs-dfttest2",
+        .DownloadURL = "https://github.com/AmusementClub/vs-dfttest2/releases",
+        .VsFilterNames = {"dfttest2_nvrtc.RDFT", "dfttest2_nvrtc.DFTTest"}})
+
     Shared Property DFTTestVS As Package = Add(New PluginPackage With {
         .Name = "DFTTest",
         .Filename = "DFTTest.dll",
@@ -1624,6 +1665,15 @@ Public Class Package
             .AvsFilterNames = {"MSharpen"}})
 
         Add(New PluginPackage With {
+            .Name = "vsMSharpen",
+            .Filename = "vsMSharpen.dll",
+            .Location = "Plugins\AVS\vsMSharpen",
+            .WebURL = "https://github.com/Asd-g/AviSynth-vsMSharpen",
+            .DownloadURL = "https://github.com/Asd-g/AviSynth-vsMSharpen/releases",
+            .HelpFilename = "Readme.md",
+            .AvsFilterNames = {"vsMSharpen"}})
+
+        Add(New PluginPackage With {
             .Name = "mClean",
             .Filename = "mClean.avsi",
             .WebURL = "http://forum.doom9.org/showthread.php?t=174804",
@@ -1866,7 +1916,7 @@ Public Class Package
             .Location = "Plugins\VS\Scripts",
             .WebURL = "https://github.com/Irrational-Encoding-Wizardry/fvsfunc",
             .Description = "nnedi3_rpow2 ported from Avisynth for VapourSynth.",
-            .VsFilterNames = {"nnedi3_rpow2"}})
+            .VsFilterNames = {"nnedi3_rpow2.nnedi3_rpow2"}})
 
         Add(New PluginPackage With {
             .Name = "znedi3",
@@ -2781,10 +2831,10 @@ Public Class Package
                     Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", False)
                     Dim value As Integer
 
-                    If output.Contains("DJATOM") Then
-                        value = x264Type.DJATOM
-                    ElseIf output.Contains("Patman") Then
+                    If output.Contains("Patman") Then
                         value = x264Type.Patman
+                    ElseIf output.Contains("DJATOM") Then
+                        value = x264Type.DJATOM
                     Else
                         value = x264Type.Vanilla
                     End If
@@ -2809,12 +2859,10 @@ Public Class Package
                     Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", True)
                     Dim value As Integer
 
-                    If output.Contains("DJATOM") Then
-                        value = x265Type.DJATOM
-                    ElseIf output.Contains("Asuna") Then
-                        value = x265Type.Asuna
-                    ElseIf output.Contains("Patman") Then
+                    If output.Contains("Patman") Then
                         value = x265Type.Patman
+                    ElseIf output.Contains("DJATOM") Then
+                        value = x265Type.DJATOM
                     Else
                         value = x265Type.Vanilla
                     End If

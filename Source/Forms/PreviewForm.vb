@@ -573,7 +573,7 @@ Public Class PreviewForm
             time = time.Substring(3)
         End If
 
-        Text = $"Preview  {s.LastPosition}  {time} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Text = $"Preview  Frame {s.LastPosition} @ {time} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
     End Sub
 
     <Command("Jumps to a given frame.")>

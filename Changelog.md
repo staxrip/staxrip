@@ -20,25 +20,35 @@ v2.29.0 (2023-09-06) (not published yet)
 - Add new (event) command to open blocking Preview window ([#1102](/../../issues/1102))
 - Add possiblity to dismiss the PNGs saved message in VideoComparison ([#1067](/../../issues/1067))
 - Extend title name length for demuxed file names
+- Fix broken progress detection for ffmpeg ([#1109](/../../issues/1109))
 - Fix Vapoursynth filter resamplehq linkage ([#1101](/../../issues/1101))
 - Log mismatch between frame count from FrameServer and target file after encode
-- Allow multiple file selecttion in muxer for audio files
+- Allow multiple file selection in muxer for audio files
 - Enhance Command Line Highlighting
 - Enhance Output Highlighting
 - Adjust SMDegrain presets
 - DeeZy: Fix issue with negative delay
 - QSVEncC: Fix bitrate issue in QBVR mode ([#1106](/../../issues/1106))
 - Update tools
-    - libFLAC v1.3.3 (used by eac3to)
+    - AOMEnc v3.7.0-363-g02b419c62e-x64-msvc1937
+    - chapterEditor v1.40
+    - DeeZy v0.1.1
+    - libFLAC v1.3.3
+    - MP4Box v2.3-DEV-rev512-g0cdcdbaaa-x64-msvc1937
     - NVEncC v7.31
+    - Subtitle Edit v4.0
     - SvtAv1EncApp v1.7.0-0+13-b922871f-[Mod-by-Patman]-x64-msvc1937
+    - vvencFFapp v1.9.0 r189-19efe30
+    - x265 v3.5+109+15-855d85447-.Mod-by-Patman.-x64-msvc1937
 - Update AviSynth+ plugins
     - Descale v2023-04-02 8c53f5d
-- Update Dual plugins
+    - JincResize v2.1.2
+    - vsMSharpen v2.0.1
 - Update VapourSynth plugins
     - ASTDR v4
     - DeCross v1
     - Descale v2023-04-02 8c53f5d
+    - DFTTest2 v6
     - insaneAA v0.91
     - MotionMask v2
     - TemporalSoften2 v1

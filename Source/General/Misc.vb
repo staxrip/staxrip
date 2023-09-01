@@ -542,7 +542,7 @@ Public Class Language
 
     Sub New(ci As CultureInfo, Optional isCommon As Boolean = False, Optional isInitial As Boolean = False)
         Me.IsCommon = isCommon
-        If isInitial OrElse Languages.Select(Function(x) x.TwoLetterCode).ContainsEx(twoLetterCode) Then
+        If isInitial OrElse ci IsNot Nothing OrElse Languages.Select(Function(x) x.TwoLetterCode).ContainsEx(twoLetterCode) Then
             CultureInfoValue = ci
         Else
             CultureInfoValue = CultureInfo.InvariantCulture

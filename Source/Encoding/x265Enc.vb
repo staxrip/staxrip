@@ -2168,5 +2168,4 @@ Public Enum x265Type
     Vanilla
     Patman
     DJATOM
-    Asuna
 End Enum

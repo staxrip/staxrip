@@ -97,6 +97,7 @@ Public Class StaxRipUpdate
                                                 Exit For
                                             ElseIf line.TrimStart().StartsWith("-") Then
                                                 line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)$)", "", RegexOptions.CultureInvariant)
+                                                line = Regex.Replace(line, "(?<=^| ) (?= |-)", "  ", RegexOptions.CultureInvariant)
                                                 td.Content += line + BR
                                                 changes += 1
                                             End If

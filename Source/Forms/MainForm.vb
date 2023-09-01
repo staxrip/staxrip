@@ -1738,7 +1738,7 @@ Public Class MainForm
 
             SetBindings(p, True)
 
-            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails(True, True, True)}"
 
             If Not Environment.Is64BitProcess Then
                 Text += " (32 bit)"
@@ -4015,7 +4015,7 @@ Public Class MainForm
             p.Log.Clear()
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
-            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails(True, True, True)}"
             s.UpdateRecentProjects(path)
             UpdateRecentProjectsMenu()
         Catch ex As Exception
@@ -5294,7 +5294,7 @@ Public Class MainForm
         ret.Add("File|-")
         ret.Add("File|Open Project...", NameOf(ShowFileBrowserToOpenProject))
         ret.Add("File|Save Project", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)
-        ret.Add("File|Save Project As...", NameOf(SaveProjectAs))
+        ret.Add("File|Save Project As...", NameOf(SaveProjectAs), Keys.S Or Keys.Control Or Keys.Shift, Symbol.SaveAs)
         ret.Add("File|Save Project As Template...", NameOf(SaveProjectAsTemplate))
         ret.Add("File|-")
         ret.Add("File|Project Templates", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
@@ -6903,10 +6903,9 @@ Public Class MainForm
     End Sub
 
     Sub ShowChangelog()
-        If g.IsDevelopmentPC Then Exit Sub
         If Assembly.GetExecutingAssembly.GetName.Version.Build <> 0 Then Exit Sub
-        
-        Dim appDetails = g.DefaultCommands.GetApplicationDetails(True, True, True)
+
+        Dim appDetails = g.DefaultCommands.GetApplicationDetails(True, True, False)
         If s.ShowChangelog = appDetails Then Exit Sub
 
         Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StaxRip.Changelog.md")
@@ -6929,20 +6928,23 @@ Public Class MainForm
                     If String.IsNullOrWhiteSpace(line) Then Continue Do
 
                     line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)$)", "", RegexOptions.CultureInvariant)
+                    line = Regex.Replace(line, "(?<=^| ) (?= |-)", "  ", RegexOptions.CultureInvariant)
                     sb.AppendLine(line)
                 Loop
 
-                Using td As New TaskDialog(Of String)()
-                    td.Title = $"What's new in {g.DefaultCommands.GetApplicationDetails(True, True, True)}:"
-                    td.Icon = TaskIcon.Shield
-                    td.Content = sb.ToString() + BR
+                If Not String.IsNullOrWhiteSpace(sb.ToString()) Then
+                    Using td As New TaskDialog(Of String)()
+                        td.Title = $"What's new in {g.DefaultCommands.GetApplicationDetails(True, True, True)}:"
+                        td.Icon = TaskIcon.Shield
+                        td.Content = sb.ToString() + BR
 
-                    td.AddCommand("OK")
+                        td.AddCommand("OK")
 
-                    Dim answer = td.Show
+                        Dim answer = td.Show
 
-                    s.ShowChangelog = appDetails
-                End Using
+                        s.ShowChangelog = appDetails
+                    End Using
+                End If
             End Using
         End Using
     End Sub

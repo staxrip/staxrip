@@ -483,7 +483,20 @@ Public Class x265Params
         .Switch = "--aq-mode",
         .Text = "AQ Mode",
         .IntegerValue = True,
-        .Options = {"0: Disabled", "1: AQ enabled", "2: AQ enabled with auto-variance", "3: AQ enabled with auto-variance with bias to dark scenes", "4: AQ enabled with auto-variance and edge information", "5: AQ enabled with auto-variance, edge information and bias to dark scenes."}}
+        .DefaultValue = 2,
+        .AlwaysOn = True,
+        .Options = {"0: Disabled", "1: AQ enabled", "2: AQ enabled with auto-variance", "3: AQ enabled with auto-variance with bias to dark scenes", "4: AQ enabled with auto-variance and edge information"},
+        .ValueChangedAction = Sub(x) AQmodeExtended.Value = x,
+        .VisibleFunc = Function() Package.x265Type = x265Type.Vanilla}
+
+    Property AQmodeExtended As New OptionParam With {
+        .Switch = "--aq-mode",
+        .Text = "AQ Mode",
+        .IntegerValue = True,
+        .DefaultValue = 2,
+        .AlwaysOn = True,
+        .Options = {"0: Disabled", "1: AQ enabled", "2: AQ enabled with auto-variance", "3: AQ enabled with auto-variance with bias to dark scenes", "4: AQ enabled with auto-variance and edge information", "5: AQ enabled with auto-variance, edge information and bias to dark scenes."},
+        .VisibleFunc = Function() Package.x265Type = x265Type.Patman OrElse Package.x265Type = x265Type.DJATOM OrElse Package.x265Type = x265Type.JPSDR}
 
     Property AQStrength As New NumParam With {
         .Switch = "--aq-strength",
@@ -493,9 +506,9 @@ Public Class x265Params
     Property AQBiasStrength As New NumParam With {
         .Switch = "--aq-bias-strength",
         .Text = "AQ Bias Strength",
-        .VisibleFunc = Function() AQmode.Value = 3 OrElse AQmode.Value = 5,
         .Init = 1,
-        .Config = {0, 3, 0.05, 2}}
+        .Config = {0, 3, 0.05, 2},
+        .VisibleFunc = Function() AQmodeExtended.Visible AndAlso (AQmodeExtended.Value = 3 OrElse AQmodeExtended.Value = 5)}
 
     Property CUtree As New BoolParam With {
         .Switch = "--cutree",
@@ -985,7 +998,7 @@ Public Class x265Params
                 Add("Rate Control",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .BrowseFile = True},
-                    AQmode, qgSize, AQStrength, AQBiasStrength, QComp, qpmin, qpmax, qpstep,
+                    AQmode, AQmodeExtended, qgSize, AQStrength, AQBiasStrength, QComp, qpmin, qpmax, qpstep,
                     New NumParam With {.Switch = "--qp-delta-ref", .Text = "QP Delta Ref", .Init = 5, .Config = {0, 10, 0.5, 1}},
                     New NumParam With {.Switch = "--qp-delta-nonref", .Text = "QP Delta NonRef", .Init = 5, .Config = {0, 10, 0.5, 1}},
                     New NumParam With {.Switch = "--cbqpoffs", .Text = "CB QP Offset", .Config = {-12, 12}},
@@ -1310,7 +1323,7 @@ Public Class x265Params
                             sb.Append(pipeString + Package.x265.Path.Escape)
                             Dim type = Package.x265Type
 
-                            If FrameServerHelp.IsPortable AndAlso (type = x265Type.DJATOM OrElse type = x265Type.Patman) Then
+                            If FrameServerHelp.IsPortable AndAlso (type = x265Type.Patman OrElse type = x265Type.DJATOM OrElse type = x265Type.JPSDR) Then
                                 sb.Append(" --reader-options library=" + FrameServerHelp.GetSynthPath.Escape)
                             End If
 
@@ -2168,4 +2181,5 @@ Public Enum x265Type
     Vanilla
     Patman
     DJATOM
+    JPSDR
 End Enum

@@ -29,10 +29,12 @@ v2.29.0 (2023-09-06) (not published yet)
 - Adjust SMDegrain presets
 - DeeZy: Fix issue with negative delay
 - QSVEncC: Fix bitrate issue in QBVR mode ([#1106](/../../issues/1106))
+- x265: Minor UI improvements
 - Update tools
     - AOMEnc v3.7.0-363-g02b419c62e-x64-msvc1937
     - chapterEditor v1.40
     - DeeZy v0.1.1
+    - FFmpeg N-111918-g0adaa90d89-x64-gcc13.2.0
     - libFLAC v1.3.3
     - MP4Box v2.3-DEV-rev512-g0cdcdbaaa-x64-msvc1937
     - NVEncC v7.31

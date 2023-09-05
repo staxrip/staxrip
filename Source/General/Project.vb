@@ -178,7 +178,7 @@ Public Class Project
             }
         End If
 
-        If Check(Script, "Filter Setup", 50) Then Script = StaxRip.VideoScript.GetDefaults()(0)
+        If Check(Script, "Filter Setup", 50) Then Script = VideoScript.GetDefaults()(0)
 
         Migrate()
     End Sub

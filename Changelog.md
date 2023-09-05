@@ -10,7 +10,7 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.29.0 (2023-09-06) (not published yet)
+v2.29.0 (2023-09-06)
 ====================
 
 - Add header for target file Media Info
@@ -20,6 +20,7 @@ v2.29.0 (2023-09-06) (not published yet)
 - UI: Show Changelog at first start
 - UI: Add possiblity to dismiss the PNGs saved message in VideoComparison ([#1067](/../../issues/1067))
 - UI: Add proper identification for HDR tonemapping in Crop window ([#1096](/../../issues/1096))
+- UI: Add Shortcut for "Save Project As"
 - UI: Allow multiple file selection in muxer for audio files
 - UI: Apply Crop filter when changing Frameserver
 - UI: Change Crop filter addition/setting behaviour
@@ -44,7 +45,7 @@ v2.29.0 (2023-09-06) (not published yet)
     - Subtitle Edit v4.0
     - SvtAv1EncApp v1.7.0-0+13-b922871f-[Mod-by-Patman]-x64-msvc1937
     - vvencFFapp v1.9.0 r189-19efe30
-    - x265 v3.5+109+15-855d85447-.Mod-by-Patman.-x64-msvc1937
+    - x265 v3.5+147+17-e8947f740-.Mod-by-Patman.-x64-avx2-msvc1937
 - Update AviSynth+ plugins
     - Descale v2023-04-02 8c53f5d
     - JincResize v2.1.2

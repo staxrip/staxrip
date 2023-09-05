@@ -4164,18 +4164,11 @@ Public Class MainForm
                 Exit Sub
             End If
 
-            If Not g.EnableFilter("Crop") Then
-                If p.Script.IsAviSynth Then
-                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
-                Else
-                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)"))
-                End If
-            End If
-
             Using form As New CropForm
                 form.ShowDialog()
             End Using
 
+            SetCropFilter()
             DisableCropFilter()
             Assistant()
         End If
@@ -5204,6 +5197,20 @@ Public Class MainForm
         End Using
     End Sub
 
+    Sub SetCropFilter()
+        If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
+            If Not g.EnableFilter("Crop") Then
+                If p.Script.IsAviSynth Then
+                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
+                Else
+                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)"))
+                End If
+            End If
+
+            FiltersListView.Load()
+        End If
+    End Sub
+
     Sub DisableCropFilter()
         Dim f = p.Script.GetFilter("Crop")
 
@@ -5778,6 +5785,7 @@ Public Class MainForm
 
             Try
                 p.Script = profile
+                SetCropFilter()
                 PreviewScript = Nothing
                 ModifyFilters()
                 FiltersListView.OnChanged()

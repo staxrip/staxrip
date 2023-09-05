@@ -13,24 +13,26 @@ v2.xx.0 (not published yet)
 v2.29.0 (2023-09-06) (not published yet)
 ====================
 
-- Show Changelog at first start
-- Fix crash when trying to open the menu in Processing window
-- Add proper identification for HDR tonemapping in Crop window ([#1096](/../../issues/1096))
 - Add header for target file Media Info
 - Add new (event) command to open blocking Preview window ([#1102](/../../issues/1102))
-- Add possiblity to dismiss the PNGs saved message in VideoComparison ([#1067](/../../issues/1067))
 - Extend title name length for demuxed file names
-- Fix broken progress detection for ffmpeg ([#1109](/../../issues/1109))
-- Fix Vapoursynth filter resamplehq linkage ([#1101](/../../issues/1101))
 - Log mismatch between frame count from FrameServer and target file after encode
-- Allow multiple file selection in muxer for audio files
-- Enhance Command Line Highlighting
-- Enhance Output Highlighting
-- Adjust SMDegrain presets
+- UI: Show Changelog at first start
+- UI: Add possiblity to dismiss the PNGs saved message in VideoComparison ([#1067](/../../issues/1067))
+- UI: Add proper identification for HDR tonemapping in Crop window ([#1096](/../../issues/1096))
+- UI: Allow multiple file selection in muxer for audio files
+- UI: Apply Crop filter when changing Frameserver
+- UI: Change Crop filter addition/setting behaviour
+- UI: Enhance Command Line Highlighting
+- UI: Enhance Output Highlighting
+- UI: Fix broken progress detection for ffmpeg ([#1109](/../../issues/1109))
+- UI: Fix crash when trying to open the menu in Processing window
+- Filters: Fix Vapoursynth filter resamplehq linkage ([#1101](/../../issues/1101))
+- Filters: Adjust SMDegrain presets
 - DeeZy: Fix issue with negative delay
 - QSVEncC: Fix bitrate issue in QBVR mode ([#1106](/../../issues/1106))
 - x265: Minor UI improvements
-- x265: Remove deprecated params --hist-threshold and --traditional-scenecut
+- x265: Remove deprecated params --hist-threshold and --traditional-scenecut ([#1110](/../../issues/1110))
 - Update tools
     - AOMEnc v3.7.0-363-g02b419c62e-x64-msvc1937
     - chapterEditor v1.40

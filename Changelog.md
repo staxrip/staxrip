@@ -30,6 +30,7 @@ v2.29.0 (2023-09-06) (not published yet)
 - DeeZy: Fix issue with negative delay
 - QSVEncC: Fix bitrate issue in QBVR mode ([#1106](/../../issues/1106))
 - x265: Minor UI improvements
+- x265: Remove deprecated params --hist-threshold and --traditional-scenecut
 - Update tools
     - AOMEnc v3.7.0-363-g02b419c62e-x64-msvc1937
     - chapterEditor v1.40

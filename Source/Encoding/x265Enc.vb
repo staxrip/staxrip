@@ -1062,7 +1062,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--copy-pic", .NoSwitch = "--no-copy-pic", .Init = True, .Text = "Copy Pic"})
                 Add("Statistic",
                     New StringParam With {.Switch = "--csv", .Text = "CSV", .BrowseFile = True},
-                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .IntegerValue = True, .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Init = 5},
+                    New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Init = 3, .Options = {"None", "Error", "Warning", "Info", "Debug", "Full"}, .Values = {"-1", "0", "1", "2", "3", "4"}},
                     New OptionParam With {.Switch = "--csv-log-level", .Text = "CSV Log Level", .IntegerValue = True, .Options = {"Default", "Summary", "Frame"}},
                     New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
                     New BoolParam With {.Switch = "--psnr", .Text = "PSNR"},

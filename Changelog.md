@@ -10,6 +10,16 @@ v2.xx.0 (not published yet)
 -->
 
 
+v2.30.0 (not published yet)
+====================
+
+- x265: Fix --log-level param values
+- Update tools
+- Update AviSynth+ plugins
+- Update Dual plugins
+- Update VapourSynth plugins
+
+
 v2.29.0 (2023-09-06)
 ====================
 

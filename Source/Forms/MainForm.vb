@@ -4,6 +4,7 @@ Imports System.Drawing.Design
 Imports System.Drawing.Drawing2D
 Imports System.Globalization
 Imports System.Reflection
+Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
@@ -4007,12 +4008,12 @@ Public Class MainForm
                 MsgWarn("A template cannot be created after a source file was opened.")
                 Exit Sub
             End If
+            p.Log.Clear()
         Else
             g.ProjectPath = path
         End If
 
         Try
-            p.Log.Clear()
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
             Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails(True, True, True)}"

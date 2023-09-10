@@ -35,7 +35,7 @@ Partial Class TestForm
         Me.Name = "TestForm"
         Me.ShowIcon = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = $"Test - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"Test - {g.DefaultCommands.GetApplicationDetails()}"
         Me.ResumeLayout(False)
 
     End Sub

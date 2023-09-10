@@ -652,7 +652,7 @@ Public Class MuxerForm
         InitializeComponent()
         SetMinimumSize(30, 21)
         RestoreClientSize(45, 22)
-        Text += $" - {muxer.Name} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Text += $" - {muxer.Name} - {g.DefaultCommands.GetApplicationDetails()}"
         Me.Muxer = muxer
         AddSubtitles(muxer.Subtitles)
         CommandLineControl.tb.Text = muxer.AdditionalSwitches

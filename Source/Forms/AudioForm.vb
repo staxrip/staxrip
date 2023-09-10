@@ -666,7 +666,7 @@ Public Class AudioForm
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(7)
         Me.Name = "AudioForm"
-        Me.Text = $"Audio Settings - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"Audio Settings - {g.DefaultCommands.GetApplicationDetails()}"
         Me.gbBasic.ResumeLayout(False)
         Me.tlpBasic.ResumeLayout(False)
         Me.tlpBasic.PerformLayout()

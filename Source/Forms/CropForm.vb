@@ -135,7 +135,7 @@ Public Class CropForm
         Me.MinimumSize = New System.Drawing.Size(200, 200)
         Me.Name = "CropForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
-        Me.Text = $"Crop - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"Crop - {g.DefaultCommands.GetApplicationDetails()}"
         CType(Me.tbPosition, System.ComponentModel.ISupportInitialize).EndInit()
         Me.StatusStrip.ResumeLayout(False)
         Me.StatusStrip.PerformLayout()
@@ -262,7 +262,7 @@ Public Class CropForm
             script.Filters.Add(p.Script.GetFilter("Rotation").GetCopy())
         End If
 
-        If p.CropWithTonemapping Then
+        If p.CropWithTonemapping AndAlso Vulkan.IsSupported Then
             If p.SourceVideoBitDepth > 8 AndAlso Not p.SourceVideoHdrFormat.ContainsAny("", "SDR") Then
                 If p.Script.Engine = ScriptEngine.AviSynth Then
                     script.Filters.Add(New VideoFilter("Color", "Tonemap", "ConvertBits(16)" + BR + "libplacebo_Tonemap()" + BR + "ConvertToYUV420()" + BR + "ConvertBits(8)"))
@@ -274,9 +274,9 @@ Public Class CropForm
 
         If p.CropWithHighContrast Then
             If p.Script.Engine = ScriptEngine.AviSynth Then
-                script.Filters.Add(New VideoFilter("Levels", "Levels", "Levels(0, 2.5, 255, 0, 255, coring=true)"))
+                script.Filters.Add(New VideoFilter("Levels", "Levels", "Levels(0, 2.2, 255, 0, 255, coring=true)"))
             Else
-                script.Filters.Add(New VideoFilter("Levels", "Levels", "clip = core.std.Levels(clip, gamma=2.5, planes=0)"))
+                script.Filters.Add(New VideoFilter("Levels", "Levels", "clip = core.std.Levels(clip, gamma=2.2, planes=0)"))
             End If
         End If
 

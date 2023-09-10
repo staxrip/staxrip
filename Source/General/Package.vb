@@ -27,6 +27,7 @@ Public Class Package
     Property Locations As String()
     Property Name As String
     Property RequiredFunc As Func(Of Boolean)
+    Property RequirementsFunc As Func(Of Boolean)
     Property SetupAction As Action
     Property Siblings As String()
     Property StatusFunc As Func(Of String)
@@ -338,6 +339,14 @@ Public Class Package
         .RequiredFunc = Function() TypeOf p.VideoEncoder Is BatchEncoder AndAlso DirectCast(p.VideoEncoder, BatchEncoder).CommandLines.Contains("xvid_encraw"),
         .IsIncluded = False,
         .HelpSwitch = "-h"})
+
+    Shared Property Vulkan As Package = Add(New Package With {
+        .Name = "Vulkan Runtime Library",
+        .Filename = "vulkan-1.dll",
+        .Location = "Support\Vulkan",
+        .Description = "Vulkan Runtime Library.",
+        .VersionAllowAny = True,
+        .TreePath = "Runtimes"})
 
     Shared Property VisualCpp2010 As Package = Add(New Package With {
         .Name = "Visual C++ 2010",
@@ -1260,6 +1269,15 @@ Public Class Package
             .AvsFilterNames = {"DePan", "DePanInterleave", "DePanStabilize", "DePanScenes"}})
 
         Add(New PluginPackage With {
+            .Name = "RemoveDirt",
+            .Filename = "RemoveDirt.dll",
+            .Location = "Plugins\AVS\RemoveDirt",
+            .HelpURL = "http://avisynth.nl/index.php/RemoveDirt",
+            .WebURL = "https://github.com/pinterf/RemoveDirt",
+            .DownloadURL = "https://github.com/pinterf/RemoveDirt/releases",
+            .AvsFilterNames = {"RestoreMotionBlocks", "SCSelect"}})
+
+        Add(New PluginPackage With {
             .Name = "DePanEstimate",
             .Location = "Plugins\AVS\MVTools2",
             .Filename = "DePanEstimate.dll",
@@ -1396,6 +1414,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "AVS_LibPlacebo",
             .Filename = "avs_libplacebo.dll",
+            .RequirementsFunc = Function() StaxRip.Vulkan.IsSupported,
             .Description = "An AviSynth+ plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders." + BR2 + "This is a port of the VapourSynth plugin vs-placebo.",
             .HelpFilename = "README.md",
             .DownloadURL = "https://github.com/Asd-g/avslibplacebo/releases/",
@@ -1405,6 +1424,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "libvs_placebo",
             .Filename = "libvs_placebo.dll",
+            .RequirementsFunc = Function() StaxRip.Vulkan.IsSupported,
             .Description = "A VapourSynth plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders.",
             .DownloadURL = "https://github.com/Lypheo/vs-placebo/releases",
             .WebURL = "https://github.com/Lypheo/vs-placebo",
@@ -2503,11 +2523,7 @@ Public Class Package
 
     Property Filename As String
         Get
-            If Not Environment.Is64BitProcess AndAlso Filename32 <> "" Then
-                Return Filename32
-            End If
-
-            Return FilenameValue
+            Return If(Not Environment.Is64BitProcess AndAlso Filename32 <> "", Filename32, FilenameValue)
         End Get
         Set(value As String)
             FilenameValue = value
@@ -2521,7 +2537,7 @@ Public Class Package
             If LaunchActionValue Is Nothing Then
                 If Description.ContainsEx("GUI app") Then
                     LaunchActionValue = Sub() g.ShellExecute(Path)
-                ElseIf Not HelpSwitch Is Nothing Then
+                ElseIf HelpSwitch IsNot Nothing Then
                     LaunchActionValue = Sub() g.DefaultCommands.ExecutePowerShellCode(
                         $"& '{Path}' {If(HelpSwitch.Contains("stderr"), HelpSwitch.Replace("stderr", ""), HelpSwitch)}", True)
                 ElseIf Filename.Ext.EqualsAny("avsi", "py") Then
@@ -2538,21 +2554,23 @@ Public Class Package
 
     Private RequiredValue As Boolean = True
 
-    Overridable Property Required() As Boolean
+    Overridable Property Required As Boolean
         Get
-            If Not RequiredFunc Is Nothing Then
-                Return RequiredFunc.Invoke
-            End If
-
-            Return RequiredValue
+            Return If(RequiredFunc IsNot Nothing, RequiredFunc.Invoke, RequiredValue)
         End Get
         Set(value As Boolean)
             RequiredValue = value
         End Set
     End Property
 
+    Overridable ReadOnly Property RequirementsFulfilled As Boolean
+        Get
+            Return RequirementsFunc Is Nothing OrElse RequirementsFunc.Invoke
+        End Get
+    End Property
+
     Function GetTypeName() As String
-        If Not HelpSwitch Is Nothing Then
+        If HelpSwitch IsNot Nothing Then
             Return "Console App"
         ElseIf Description.ContainsEx("GUI app") Then
             Return "GUI App"
@@ -2598,7 +2616,7 @@ Public Class Package
     Sub ShowHelp()
         Dim dic As New SortedDictionary(Of String, String)
 
-        If HelpFilename = "" AndAlso Not HelpSwitch Is Nothing Then
+        If HelpFilename = "" AndAlso HelpSwitch IsNot Nothing Then
             HelpFilename = Name + " Help.txt"
 
             If CreateHelpfile() = "" Then
@@ -2607,7 +2625,7 @@ Public Class Package
         End If
 
         If HelpFilename <> "" Then
-            If Not HelpSwitch Is Nothing AndAlso HelpFilename = Name + " Help.txt" Then
+            If HelpSwitch IsNot Nothing AndAlso HelpFilename = Name + " Help.txt" Then
                 dic("Console Help") = Directory + HelpFilename
             Else
                 dic("Local Help") = Directory + HelpFilename
@@ -2643,7 +2661,7 @@ Public Class Package
 
     ReadOnly Property HelpFile As String
         Get
-            If HelpFilename = "" AndAlso Not HelpSwitch Is Nothing Then
+            If HelpFilename = "" AndAlso HelpSwitch IsNot Nothing Then
                 HelpFilename = Name + " Help.txt"
             End If
 
@@ -2691,7 +2709,7 @@ Public Class Package
         End If
 
         Try
-            If Not HelpSwitch Is Nothing Then
+            If HelpSwitch IsNot Nothing Then
                 Dim stderr = HelpSwitch.Contains("stderr")
                 Dim switch = If(stderr, HelpSwitch.Replace("stderr", ""), HelpSwitch)
 
@@ -2707,7 +2725,7 @@ Public Class Package
     End Function
 
     Function VerifyOK(Optional showEvenIfNotRequired As Boolean = False) As Boolean
-        If (Required() OrElse showEvenIfNotRequired) AndAlso (Required AndAlso GetStatus() <> "") Then
+        If (Required OrElse showEvenIfNotRequired) AndAlso (Required AndAlso GetStatus() <> "") Then
             Using form As New AppsForm
                 form.ShowPackage(Me)
                 form.ShowDialog()
@@ -2736,7 +2754,7 @@ Public Class Package
             End If
         End If
 
-        If Not StatusFunc Is Nothing Then
+        If StatusFunc IsNot Nothing Then
             Return StatusFunc.Invoke
         End If
     End Function
@@ -2746,11 +2764,9 @@ Public Class Package
 
         If Not IsVersionValid() Then
             If IsVersionOld() Then
-                If Not VersionAllowOld Then
-                    ret = $"The currently used version of {Name} is not compatible (too old)."
-                Else
-                    ret = $"An old {Name} version was found, click on Version (F12) and enter the name of this version or install a newer version."
-                End If
+                ret = If(Not VersionAllowOld,
+                    $"The currently used version of {Name} is not compatible (too old).",
+                    $"An old {Name} version was found, click on Version (F12) and enter the name of this version or install a newer version.")
             End If
 
             If IsVersionNew() Then

@@ -1739,7 +1739,7 @@ Public Class MainForm
 
             SetBindings(p, True)
 
-            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails(True, True, True)}"
+            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails()}"
 
             If Not Environment.Is64BitProcess Then
                 Text += " (32 bit)"
@@ -4016,7 +4016,7 @@ Public Class MainForm
         Try
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
-            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails(True, True, True)}"
+            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails()}"
             s.UpdateRecentProjects(path)
             UpdateRecentProjectsMenu()
         Catch ex As Exception
@@ -4535,6 +4535,7 @@ Public Class MainForm
             b = ui.AddBool()
             b.Text = "Tonemapping for HDR videos"
             b.Help = "Tonemap sources with a higher Bit Depth than 8bit."
+            b.Enabled = Vulkan.IsSupported
             b.Field = NameOf(p.CropWithTonemapping)
 
             b = ui.AddBool()
@@ -5246,7 +5247,7 @@ Public Class MainForm
 
         Using dialog As New MacroEditorDialog
             dialog.SetScriptDefaults()
-            dialog.Text = $"Filter Profiles - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            dialog.Text = $"Filter Profiles - {g.DefaultCommands.GetApplicationDetails()}"
             dialog.MacroEditorControl.Value = g.GetFilterProfilesText(filterProfiles)
             dialog.bnContext.Text = " Restore Defaults... "
             dialog.bnContext.Visible = True
@@ -5991,7 +5992,7 @@ Public Class MainForm
     <Command("Dialog to open a merged files source.")>
     Sub ShowOpenSourceMergeFilesDialog()
         Using form As New SourceFilesForm()
-            form.Text = $"Merge - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            form.Text = $"Merge - {g.DefaultCommands.GetApplicationDetails()}"
             form.IsMerge = True
 
             If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
@@ -6040,7 +6041,7 @@ Public Class MainForm
         End If
 
         Using form As New SourceFilesForm()
-            form.Text = $"File Batch - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            form.Text = $"File Batch - {g.DefaultCommands.GetApplicationDetails()}"
 
             If p.DefaultTargetName = "%source_dir_name%" Then
                 p.DefaultTargetName = "%source_name%"
@@ -6914,7 +6915,7 @@ Public Class MainForm
     Sub ShowChangelog()
         If Assembly.GetExecutingAssembly.GetName.Version.Build <> 0 Then Exit Sub
 
-        Dim appDetails = g.DefaultCommands.GetApplicationDetails(True, True, False)
+        Dim appDetails = g.DefaultCommands.GetApplicationDetails()
         If s.ShowChangelog = appDetails Then Exit Sub
 
         Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StaxRip.Changelog.md")
@@ -6943,7 +6944,7 @@ Public Class MainForm
 
                 If Not String.IsNullOrWhiteSpace(sb.ToString()) Then
                     Using td As New TaskDialog(Of String)()
-                        td.Title = $"What's new in {g.DefaultCommands.GetApplicationDetails(True, True, True)}:"
+                        td.Title = $"What's new in {g.DefaultCommands.GetApplicationDetails()}:"
                         td.Icon = TaskIcon.Shield
                         td.Content = sb.ToString() + BR
 

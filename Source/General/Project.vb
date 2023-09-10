@@ -32,7 +32,7 @@ Public Class Project
     Public Compressibility As Double
     Public ConvertChromaSubsampling As Boolean = True
     Public ConvertSup2Sub As Boolean
-    Public CropWithTonemapping As Boolean = False
+    Public CropWithTonemapping As Boolean = Vulkan.IsSupported
     Public CropWithHighContrast As Boolean = False
     Public CustomSourceDAR As String = ""
     Public CustomSourcePAR As String = ""

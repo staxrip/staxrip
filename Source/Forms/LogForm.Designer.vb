@@ -80,7 +80,7 @@ Partial Class LogForm
         Me.Name = "LogForm"
         Me.ShowIcon = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = $"Log File Viewer - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"Log File Viewer - {g.DefaultCommands.GetApplicationDetails()}"
         Me.tlpMain.ResumeLayout(False)
         Me.ResumeLayout(False)
 

@@ -104,7 +104,7 @@ Namespace UI
             Me.ShowIcon = False
             Me.ShowInTaskbar = False
             Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-            Me.Text = $"String Editor - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            Me.Text = $"String Editor - {g.DefaultCommands.GetApplicationDetails()}"
             Me.Panel1.ResumeLayout(False)
             Me.ResumeLayout(False)
             Me.PerformLayout()

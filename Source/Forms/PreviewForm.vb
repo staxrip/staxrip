@@ -233,7 +233,7 @@ Public Class PreviewForm
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "PreviewForm"
         Me.ShowInTaskbar = True
-        Me.Text = $"Preview - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"Preview - {g.DefaultCommands.GetApplicationDetails()}"
         Me.pnVideo.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -573,7 +573,7 @@ Public Class PreviewForm
             time = time.Substring(3)
         End If
 
-        Text = $"Preview  Frame {s.LastPosition} @ {time} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Text = $"Preview  Frame {s.LastPosition} @ {time} - {g.DefaultCommands.GetApplicationDetails()}"
     End Sub
 
     <Command("Jumps to a given frame.")>

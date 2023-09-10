@@ -394,7 +394,7 @@ Public Class AppsForm
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(10)
         Me.Name = "AppsForm"
-        Me.Text = $"Apps - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"Apps - {g.DefaultCommands.GetApplicationDetails()}"
         Me.ToolStrip.ResumeLayout(False)
         Me.ToolStrip.PerformLayout()
         Me.tlpMain.ResumeLayout(False)
@@ -529,13 +529,7 @@ Public Class AppsForm
         End If
 
         Contents("Status").Text = CurrentPackage.GetStatusDisplay()
-
-        If CurrentPackage.GetStatus <> "" AndAlso CurrentPackage.Required Then
-            Contents("Status").ForeColor = ThemeManager.CurrentTheme.AppsForm.AttentionForeColor
-        Else
-            Contents("Status").ForeColor = ThemeManager.CurrentTheme.AppsForm.OkayForeColor
-        End If
-
+        Contents("Status").ForeColor = If(CurrentPackage.GetStatus <> "" AndAlso CurrentPackage.Required, ThemeManager.CurrentTheme.AppsForm.AttentionForeColor, ThemeManager.CurrentTheme.AppsForm.OkayForeColor)
         Contents("Status").Font = New Font("Segoe UI", 10 * s.UIScaleFactor)
 
         Headers("AviSynth Filters").Visible = False

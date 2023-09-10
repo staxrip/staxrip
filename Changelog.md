@@ -14,9 +14,11 @@ v2.30.0 (not published yet)
 ====================
 
 - Log: Fix not showing Media Info of source files in logs ([#1114](/../../issues/1114))
+- UI: Optimize addition of Tonemapping in Crop window
 - x265: Fix --log-level param values
 - Update tools
 - Update AviSynth+ plugins
+    - RemoveDirt v0.9.3
 - Update Dual plugins
 - Update VapourSynth plugins
 

@@ -657,7 +657,7 @@ Public Class GlobalClass
 
     Sub ShowCode(title As String, content As String, Optional find As String = Nothing, Optional wordwrap As Boolean = False)
         Dim form As New CodeForm(content, find, wordwrap) With {
-            .Text = $"{title} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            .Text = $"{title} - {g.DefaultCommands.GetApplicationDetails()}"
         }
         form.Show()
     End Sub
@@ -1279,7 +1279,7 @@ Public Class GlobalClass
             form.cbWrap.Checked = False
             form.cbWrap.Visible = False
             form.rtb.Text = text
-            form.Text = $"{script.Path} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            form.Text = $"{script.Path} - {g.DefaultCommands.GetApplicationDetails()}"
             form.bnOK.Visible = False
             form.bnCancel.Text = "Close"
             form.ShowDialog()

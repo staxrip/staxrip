@@ -1473,3 +1473,27 @@ Public Class CRC32
         End If
     End Function
 End Class
+
+Public Class Vulkan
+    Private Shared _pApiVersion As UInteger
+    Private Shared _result As VkResult = Nothing
+
+    <DllImport("vulkan-1.dll")>
+    Public Shared Function vkEnumerateInstanceVersion(ByRef pApiVersion As UInteger) As VkResult
+    End Function
+
+    Public Shared ReadOnly Property IsSupported As Boolean
+        Get
+            If _result = Nothing Then
+                _result = vkEnumerateInstanceVersion(_pApiVersion)
+            End If
+            Return _result = VkResult.Success
+        End Get
+    End Property
+
+    Public Shared ReadOnly Property Version As String
+        Get
+            Return If(IsSupported, $"{_pApiVersion >> 22}.{(_pApiVersion >> 12) And &H3FF}.{_pApiVersion And &HFFF}", "")
+        End Get
+    End Property
+End Class

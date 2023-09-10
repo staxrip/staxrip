@@ -561,7 +561,7 @@ Public Class eac3toForm
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(10)
         Me.Name = "eac3toForm"
-        Me.Text = $"eac3to Demuxing - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"eac3to Demuxing - {g.DefaultCommands.GetApplicationDetails()}"
         Me.flpSubtitleLinks.ResumeLayout(False)
         Me.flpAudioLinks.ResumeLayout(False)
         Me.tlpTarget.ResumeLayout(False)
@@ -691,7 +691,7 @@ Public Class eac3toForm
 
     Sub ShowAudioStreamProfiles()
         Using form As New DataForm
-            form.Text = $"Audio Stream Profiles - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            form.Text = $"Audio Stream Profiles - {g.DefaultCommands.GetApplicationDetails()}"
             form.FormBorderStyle = FormBorderStyle.Sizable
             form.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
             form.dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells

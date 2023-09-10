@@ -106,7 +106,7 @@ Partial Class VideoComparisonForm
         Me.Name = "VideoComparisonForm"
         Me.ShowIcon = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = $"Video Comparison - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"Video Comparison - {g.DefaultCommands.GetApplicationDetails()}"
         CType(Me.TrackBar, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tlpMain.ResumeLayout(False)
         Me.ResumeLayout(False)

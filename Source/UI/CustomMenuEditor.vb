@@ -533,7 +533,7 @@ Namespace UI
             Me.KeyPreview = True
             Me.Margin = New System.Windows.Forms.Padding(13, 14, 13, 14)
             Me.Name = "CustomMenuEditor"
-            Me.Text = $"Menu Editor - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            Me.Text = $"Menu Editor - {g.DefaultCommands.GetApplicationDetails()}"
             Me.tlpMain.ResumeLayout(False)
             Me.tlpMain.PerformLayout()
             Me.flpBottom.ResumeLayout(False)

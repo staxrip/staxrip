@@ -120,7 +120,7 @@ Public Class CommandLineControl
         Using dialog As New MacroEditorDialog
             dialog.SetMacroDefaults()
             dialog.MacroEditorControl.Value = Presets.FormatColumn("=")
-            dialog.Text = $"Menu Editor - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            dialog.Text = $"Menu Editor - {g.DefaultCommands.GetApplicationDetails()}"
 
             If Not RestoreFunc Is Nothing Then
                 dialog.bnContext.Text = " Restore Defaults... "

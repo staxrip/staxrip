@@ -99,9 +99,10 @@ Public Class VCEEnc
     End Sub
 
     Overrides Function GetMenu() As MenuList
-        Dim ret As New MenuList
-        ret.Add("Encoder Options", AddressOf ShowConfigDialog)
-        ret.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
+        Dim ret As New MenuList From {
+            {"Encoder Options", AddressOf ShowConfigDialog},
+            {"Container Configuration", AddressOf OpenMuxerConfigDialog}
+        }
         Return ret
     End Function
 
@@ -147,20 +148,26 @@ Public Class VCEEnc
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
-            .Options = {"H.264", "H.265"},
-            .Values = {"h264", "hevc"}}
+            .Options = {"H.264", "H.265", "AV1"},
+            .Values = {"h264", "hevc", "av1"}}
 
         Property Mode264 As New OptionParam With {
             .Name = "Mode",
             .Text = "Mode",
-            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "VBR - Variable Bitrate", "QVBR - Quality-Defined Variable Bitrate"},
-            .VisibleFunc = Function() Codec.Value = 0}
+            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "CBRHQ - High Quality Constant Bitrate", "VBR - Variable Bitrate", "VBRHQ - High Quality Variable Bitrate", "QVBR - Quality-Defined Variable Bitrate"},
+            .VisibleFunc = Function() Codec.Value = 0 OrElse Codec.Value = 2}
 
         Property Mode265 As New OptionParam With {
             .Name = "Mode",
             .Text = "Mode",
             .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "VBR - Variable Bitrate"},
             .VisibleFunc = Function() Codec.Value = 1}
+
+        Property ModeAV1 As New OptionParam With {
+            .Name = "Mode",
+            .Text = "Mode",
+            .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "CBRHQ - High Quality Constant Bitrate", "VBR - Variable Bitrate", "VBRHQ - High Quality Variable Bitrate", "QVBR - Quality-Defined Variable Bitrate"},
+            .VisibleFunc = Function() Codec.Value = 2}
 
         ReadOnly Property Mode As OptionParam
             Get
@@ -169,6 +176,8 @@ Public Class VCEEnc
                         Return Mode264
                     Case 1
                         Return Mode265
+                    Case 2
+                        Return ModeAV1
                     Case Else
                         Throw New ArgumentException("Invalid Codec Value!")
                 End Select
@@ -191,7 +200,7 @@ Public Class VCEEnc
             .Switch = "--qvbr-quality",
             .Text = "QVBR Quality",
             .Init = 23,
-            .VisibleFunc = Function() Mode.Value = 3,
+            .VisibleFunc = Function() Mode.Value = 5,
             .Config = {0, 51, 1}}
 
         Property QPI As New NumParam With {
@@ -212,6 +221,13 @@ Public Class VCEEnc
             .VisibleFunc = Function() Mode.Value = 0,
             .Config = {0, 51}}
 
+        Property Tiles As New NumParam With {.Switch = "--tiles", .Text = "Tiles", .Value = 1, .Config = {0, 64}, .VisibleFunc = Function() Codec.Value = 2}
+        Property CdefMode As New OptionParam With {.Switch = "--cdef-mode", .Text = "CDEF Mode", .Init = 0, .Options = {"Off", "On"}, .Values = {"off", "on"}, .VisibleFunc = Function() Codec.Value = 2}
+        Property CdfUpdate As New BoolParam With {.Switch = "--cdf-update", .Text = "CDF Update", .Init = False, .VisibleFunc = Function() Codec.Value = 2}
+        Property CdfFrameEndUpdate As New BoolParam With {.Switch = "--cdf-frame-end-update", .Text = "CDF Frame End Update", .Init = False, .VisibleFunc = Function() Codec.Value = 2}
+        Property TemporalLayers As New NumParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers", .Value = 0, .Config = {0, 1000}, .VisibleFunc = Function() Codec.Value = 2}
+        Property AqMode As New OptionParam With {.Switch = "--aq-mode", .Text = "AQ Mode", .Init = 0, .Options = {"None", "CAQ"}, .Values = {"none", "caq"}, .VisibleFunc = Function() Codec.Value = 2}
+
         Property Pa As New BoolParam With {.Switch = "--pa", .Text = "Pre-Analysis to enhance quality", .ArgsFunc = AddressOf GetPaArgs}
         Property PaSc As New OptionParam With {.Text = "      Sensitivity of scene change detection", .HelpSwitch = "--pa", .Init = 2, .Options = {"None", "Low", "Medium", "High"}}
         Property PaSs As New OptionParam With {.Text = "      Sensitivity of static scene detection", .HelpSwitch = "--pa", .Init = 3, .Options = {"None", "Low", "Medium", "High"}}
@@ -220,10 +236,10 @@ Public Class VCEEnc
         Property PaInitqpsc As New NumParam With {.Text = "      Initial qp after scene change", .HelpSwitch = "--pa", .Init = -1.0, .Config = {-1.0, 100.0, 1, 0}}
         Property PaFskipMaxqp As New NumParam With {.Text = "      Threshold to insert skip frame on static scene", .HelpSwitch = "--pa", .Init = 35.0, .Config = {0.0, 100.0, 1, 0}}
         Property PaLookahead As New NumParam With {.Text = "      Lookahead buffer size", .HelpSwitch = "--pa", .Init = 0, .Config = {0.0, 100.0, 1, 0}}
-        Property PaLtr As New OptionParam With {.Text = "      Enable automatic LTR frame management", .HelpSwitch = "--pa", .IntegerValue = False , .Init = 0, .Options = {"False", "True"}, .Values = {"false", "true"}}
-        Property PaPaq As New OptionParam With {.Text = "      Perceptual AQ mode", .HelpSwitch = "--pa", .IntegerValue = False , .Init = 0, .Options = {"None", "CAQ"}, .Values = {"none", "caq"}}
-        Property PaTaq As New OptionParam With {.Text = "      Temporal AQ mode", .HelpSwitch = "--pa", .IntegerValue = True , .Init = 0, .Options = {"0", "1", "2"}}
-        Property PaMotionQuality As New OptionParam With {.Text = "      High motion quality boost mode", .HelpSwitch = "--pa", .IntegerValue = False , .Init = 0, .Options = {"None", "Auto"}, .Values = {"none", "auto"}}
+        Property PaLtr As New OptionParam With {.Text = "      Enable automatic LTR frame management", .HelpSwitch = "--pa", .IntegerValue = False, .Init = 0, .Options = {"False", "True"}, .Values = {"false", "true"}}
+        Property PaPaq As New OptionParam With {.Text = "      Perceptual AQ mode", .HelpSwitch = "--pa", .IntegerValue = False, .Init = 0, .Options = {"None", "CAQ"}, .Values = {"none", "caq"}}
+        Property PaTaq As New OptionParam With {.Text = "      Temporal AQ mode", .HelpSwitch = "--pa", .IntegerValue = True, .Init = 0, .Options = {"0", "1", "2"}}
+        Property PaMotionQuality As New OptionParam With {.Text = "      High motion quality boost mode", .HelpSwitch = "--pa", .IntegerValue = False, .Init = 0, .Options = {"None", "Auto"}, .Values = {"none", "auto"}}
 
 
         Property Tweak As New BoolParam With {.Switch = "--vpp-tweak", .Text = "Tweaking", .ArgsFunc = AddressOf GetTweakArgs}
@@ -232,7 +248,7 @@ Public Class VCEEnc
         Property TweakSaturation As New NumParam With {.Text = "      Saturation", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {0.0, 3.0, 0.1, 1}}
         Property TweakHue As New NumParam With {.Text = "      Hue", .HelpSwitch = "--vpp-tweak", .Config = {-180.0, 180.0, 0.1, 1}}
         Property TweakBrightness As New NumParam With {.Text = "      Brightness", .HelpSwitch = "--vpp-tweak", .Config = {-1.0, 1.0, 0.1, 1}}
-        Property TweakSwapuv As New OptionParam With{ .Text = "      Swapuv", .HelpSwitch = "--vpp-tweak", .IntegerValue = False , .Init = 0, .Options = {"False", "True"}, .Values = {"false", "true"}}
+        Property TweakSwapuv As New OptionParam With {.Text = "      Swapuv", .HelpSwitch = "--vpp-tweak", .IntegerValue = False, .Init = 0, .Options = {"False", "True"}, .Values = {"false", "true"}}
 
         Property Pad As New BoolParam With {.Switch = "--vpp-pad", .Text = "Padding", .ArgsFunc = AddressOf GetPaddingArgs}
         Property PadLeft As New NumParam With {.Text = "      Left"}
@@ -385,6 +401,8 @@ Public Class VCEEnc
                     Add("Pre...",
                         New BoolParam With {.Switch = "--pe", .Text = "Pre-Encode assisted rate control"},
                         Pa, PaSc, PaSs, PaActivityType, PaCaqStrength, PaInitqpsc, PaFskipMaxqp, PaLookahead, PaLtr, PaPaq, PaTaq, PaMotionQuality)
+                    Add("AV1 Specific",
+                        Tiles, TemporalLayers, AqMode, CdefMode, CdfUpdate, CdfFrameEndUpdate)
                     Add("VPP | Misc",
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
                         New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "advanced", "bilinear", "spline16", "spline36", "spline64", "lanczos2", "lanczos3", "lanczos4", "amf_bilinear", "amf_bicubic", "amf_fsr", "amf_point"}},
@@ -426,7 +444,7 @@ Public Class VCEEnc
                         Unsharp, UnsharpRadius, UnsharpWeight, UnsharpThreshold,
                         Warpsharp, WarpsharpThreshold, WarpsharpBlur, WarpsharpType, WarpsharpDepth, WarpsharpChroma)
                     Add("VUI",
-                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
+                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True, .VisibleFunc = Function() Codec.Value = 1 OrElse Codec.Value = 2},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},

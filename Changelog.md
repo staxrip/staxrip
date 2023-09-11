@@ -15,6 +15,8 @@ v2.30.0 (not published yet)
 
 - Log: Fix not showing Media Info of source files in logs ([#1114](/../../issues/1114))
 - UI: Optimize addition of Tonemapping in Crop window
+- VCEEncC: Add AV1 support ([#1117](/../../issues/1117))
+- VCEEncC: Fix minor issues and codec related params
 - x265: Fix --log-level param values
 - Update tools
 - Update AviSynth+ plugins

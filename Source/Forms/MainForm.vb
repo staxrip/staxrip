@@ -3582,10 +3582,6 @@ Public Class MainForm
             b.Field = NameOf(s.CheckForUpdates)
 
             b = ui.AddBool
-            b.Text = "Include Dev builds for update check"
-            b.Field = NameOf(s.CheckForUpdatesDev)
-
-            b = ui.AddBool
             b.Text = "Save projects automatically"
             b.Field = NameOf(s.AutoSaveProject)
 
@@ -3611,6 +3607,7 @@ Public Class MainForm
             mb.Field = NameOf(s.StartupTemplate)
             mb.Expanded = True
             mb.Add(From i In Directory.GetFiles(Folder.Template) Select i.Base)
+            mb.Button.SaveAction = Sub(value) UpdateTemplatesMenuAsync()
 
             Dim n = ui.AddNum()
             n.Text = "Number of log files to keep"
@@ -3915,7 +3912,6 @@ Public Class MainForm
                 ui.Save()
                 g.SetRenderer(MenuStrip)
                 s.UpdateRecentProjects(Nothing)
-                UpdateTemplatesMenuAsync()
                 UpdateRecentProjectsMenu()
                 UpdateNextButton()
 
@@ -6815,7 +6811,7 @@ Public Class MainForm
         ShowChangelog()
         ProcessCommandLine(Environment.CommandLine)
         StaxRipUpdate.ShowUpdateQuestion()
-        StaxRipUpdate.CheckForUpdate(False, s.CheckForUpdatesDev, Environment.Is64BitProcess)
+        StaxRipUpdate.CheckForUpdateAsync(False, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
 
         If TypeOf p.VideoEncoder Is x265Enc Then

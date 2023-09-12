@@ -3915,6 +3915,7 @@ Public Class MainForm
                 ui.Save()
                 g.SetRenderer(MenuStrip)
                 s.UpdateRecentProjects(Nothing)
+                UpdateTemplatesMenuAsync()
                 UpdateRecentProjectsMenu()
                 UpdateNextButton()
 

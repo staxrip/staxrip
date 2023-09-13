@@ -775,7 +775,7 @@ Public Class GlobalCommands
                             "The thumbnail sheets are generated in the background. Do you want to get informed when all thumbnail sheets are processed?")
                         reportTD.AddButton(DialogResult.Yes)
                         reportTD.AddButton(DialogResult.No)
-                        reportWhenFinished = reportTD.Show() = DialogResult.Yes
+                        reportWhenFinished = reportTD.ShowDialog() = DialogResult.Yes
                     End Using
 
                     If reportWhenFinished Then
@@ -787,11 +787,11 @@ Public Class GlobalCommands
                         Dim proceededSucceededSources = proceededSources.Where(Function(x) x.Value)
                         Dim attention = proceededFailedSources.Any()
                         Using summaryTD
-                            summaryTD = New TaskDialog(Of DialogResult)
+                            summaryTD = New TaskDialog(Of DialogResult)()
                             summaryTD.Icon = If(attention, TaskIcon.Warning, TaskIcon.Info)
                             summaryTD.Title = If(proceededSources.Count = 1,
-                                                If(attention, "Thumbnail sheet creation failed!", "Thumbnail sheet has been created"),
-                                                If(attention, If(proceededSucceededSources.Any(), "Some thumbnail sheet creation failed!", "All thumbnail sheet creation failed!"), "All thumbnail sheets have been created"))
+                                                If(attention, "Thumbnail sheet creation failed!", "Thumbnail sheet has been created."),
+                                                If(attention, If(proceededSucceededSources.Any(), "Some thumbnail sheet creation failed!", "All thumbnail sheet creation failed!"), "All thumbnail sheets have been created."))
 
                             For i = 0 To proceededSources.Count - 1
                                 Dim key = proceededSources.ElementAtOrDefault(i).Key
@@ -806,7 +806,7 @@ Public Class GlobalCommands
 
                             summaryTD.ExpandedContent += $"Duration: {sw.ElapsedMilliseconds} ms"
                             summaryTD.AddButton(DialogResult.OK)
-                            summaryTD.Show()
+                            summaryTD.ShowDialog()
                         End Using
                     End If
                 End If

@@ -4534,6 +4534,7 @@ Public Class MainForm
             b.Help = "Tonemap sources with a higher Bit Depth than 8bit."
             b.Enabled = Vulkan.IsSupported
             b.Field = NameOf(p.CropWithTonemapping)
+            b.Checked = b.Checked AndAlso Vulkan.IsSupported
 
             b = ui.AddBool()
             b.Text = "High contrast for easier cropping"

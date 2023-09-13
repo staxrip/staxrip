@@ -559,7 +559,7 @@ Public Class SvtAv1EncParams
                     New BoolParam With {.Switch = "--fast-decode", .Text = "Fast Decoder Levels", .Init = False, .IntegerValue = True},
                     New BoolParam With {.Switch = "--enable-tf", .Text = "ALT-REF Frames", .Init = True, .IntegerValue = True},
                     New BoolParam With {.Switch = "--enable-overlays", .Text = "Insertion of Overlayer Pictures", .Init = False, .IntegerValue = True},
-                    New OptionParam With {.Switch = "--tune", .Text = "Tune", .Init = 1, .IntegerValue = True, .Options = {"0: VQ", "1: PSNR"}},
+                    New OptionParam With {.Switch = "--tune", .Text = "Tune", .Init = 1, .IntegerValue = True, .Options = {"0: VQ", "1: PSNR", "2: SSIM"}},
                     New OptionParam With {.Switch = "--scm", .Text = "Screen Content Detection Level", .Init = 2, .IntegerValue = True, .Options = {"0: Off", "1: On", "2: Content Adaptive"}},
                     New BoolParam With {.Switch = "--rmv", .Text = "Restrict Motion Vectors", .Init = False, .IntegerValue = True}
                 )

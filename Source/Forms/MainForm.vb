@@ -2147,6 +2147,7 @@ Public Class MainForm
             p.SourceSize = New FileInfo(p.LastOriginalSourceFile).Length
             p.SourceVideoSize = MediaInfo.GetVideo(p.LastOriginalSourceFile, "StreamSize").ToLong()
             p.SourceBitrate = CInt(MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitRate").ToInt / 1000)
+            p.SourceFrameRateMode = MediaInfo.GetVideo(p.LastOriginalSourceFile, "FrameRate_Mode")
             p.SourceScanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
             p.SourceScanOrder = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanOrder")
 
@@ -2861,13 +2862,14 @@ Public Class MainForm
                 sizeText,
                 If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToString("f1") + "Mb/s", ""),
                 p.SourceFrameRate.ToString.Shorten(9) + "fps",
-                p.SourceVideoFormat, p.SourceVideoFormatProfile)
+                p.SourceFrameRateMode)
 
             lSource2.Text = lSource1.GetMaxTextSpace(
                 p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.SourceColorSpace,
                 p.SourceChromaSubsampling, If(p.SourceVideoBitDepth <> 0, p.SourceVideoBitDepth & "Bits", ""),
                 p.SourceVideoHdrFormat,
-                p.SourceScanType, If(p.SourceScanType.EqualsAny("Interlaced", "MBAFF"), p.SourceScanOrder, ""))
+                p.SourceScanType, If(p.SourceScanType.EqualsAny("Interlaced", "MBAFF"), p.SourceScanOrder, ""),
+                p.SourceVideoFormat, p.SourceVideoFormatProfile)
 
             lTarget1.Text = lSource1.GetMaxTextSpace(g.GetTimeString(p.TargetSeconds),
                 p.TargetFrameRate.ToString.Shorten(9) + "fps", p.Script.Info.Width & "x" & p.Script.Info.Height,
@@ -3023,7 +3025,7 @@ Public Class MainForm
                 End If
             End If
 
-            If Not p.VideoEncoder.GetError Is Nothing Then
+            If p.VideoEncoder.GetError IsNot Nothing Then
                 If ProcessTip(p.VideoEncoder.GetError) Then
                     Return Block("Encoder Error")
                 End If
@@ -3454,7 +3456,6 @@ Public Class MainForm
         p.Script.Synchronize()
     End Sub
 
-    Private BlockIndexingRecursion As Boolean = False
 
     Sub Indexing()
         If p.SourceFile.Ext.EqualsAny("avs", "vpy") Then
@@ -6561,20 +6562,20 @@ Public Class MainForm
     End Sub
 
     Sub UpdateSourceParameters()
-        If p.SourceScript IsNot Nothing Then
-            Try
-                Dim info = p.SourceScript.GetInfo
+        If p.SourceScript Is Nothing Then Exit Sub
 
-                p.SourceWidth = info.Width
-                p.SourceHeight = info.Height
-                p.SourceSeconds = CInt(info.FrameCount / info.FrameRate)
-                p.SourceFrameRate = info.FrameRate
-                p.SourceFrames = info.FrameCount
-            Catch ex As Exception
-                MsgError("Source filter returned invalid parameters", p.SourceScript.GetFullScript)
-                Throw New AbortException()
-            End Try
-        End If
+        Try
+            Dim info = p.SourceScript.GetInfo
+
+            p.SourceWidth = info.Width
+            p.SourceHeight = info.Height
+            p.SourceSeconds = CInt(info.FrameCount / info.FrameRate)
+            p.SourceFrameRate = info.FrameRate
+            p.SourceFrames = info.FrameCount
+        Catch ex As Exception
+            MsgError("Source filter returned invalid parameters", p.SourceScript.GetFullScript)
+            Throw New AbortException()
+        End Try
     End Sub
 
     Sub tbSource_TextChanged(sender As Object, e As EventArgs) Handles tbSourceFile.TextChanged

@@ -14,6 +14,7 @@ v2.30.0 (not published yet)
 ====================
 
 - Log: Fix not showing Media Info of source files in logs ([#1114](/../../issues/1114))
+- UI: Add Frame Rate Mode information on main window for source files
 - UI: Optimize addition of Tonemapping in Crop window
 - UI: Fix Video Comparison not being able to open more files when source file is loaded
 - SvtAv1EncApp: Add new SSIM tune option ([#1118](/../../issues/1118))
@@ -21,10 +22,13 @@ v2.30.0 (not published yet)
 - VCEEncC: Fix minor issues and codec related params
 - x265: Fix --log-level param values
 - Update tools
+    - None
 - Update AviSynth+ plugins
     - RemoveDirt v0.9.3
 - Update Dual plugins
+    - None
 - Update VapourSynth plugins
+    - None
 
 
 v2.29.0 (2023-09-06)

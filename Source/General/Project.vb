@@ -84,7 +84,8 @@ Public Class Project
     Public SourceColorSpace As String
     Public SourceFile As String
     Public SourceFiles As List(Of String)
-    Public SourceFrameRate As Double
+    Public SourceFrameRate As Decimal
+    Public SourceFrameRateMode As String
     Public SourceFrames As Integer
     Public SourceHeight As Integer = 1080
     Public SourcePAR As Point = New Point(1, 1)

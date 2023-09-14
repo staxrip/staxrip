@@ -158,7 +158,7 @@ Public Class CommandLineDemuxer
         End Using
 
         If p.ExtractTimestamps <> TimestampsMode.Never AndAlso proj.SourceFile.ToLowerEx().EndsWithEx(".mkv") Then
-            If p.ExtractTimestamps = TimestampsMode.Always OrElse MediaInfo.GetVideo(proj.SourceFile, "FrameRate_Mode") = "VFR" Then
+            If p.ExtractTimestamps = TimestampsMode.Always OrElse proj.SourceFrameRateMode = "VFR" Then
                 Dim streamOrder = MediaInfo.GetVideo(proj.SourceFile, "StreamOrder").ToInt
 
                 Using proc As New Proc

@@ -1193,6 +1193,27 @@ Public Class Package
         .WebURL = "http://github.com/dwbuiten/d2vsource",
         .VsFilterNames = {"d2v.Source"}})
 
+    Shared Property AVSLibPlacebo As Package = Add(New PluginPackage With {
+        .Name = "AVS_LibPlacebo",
+        .Filename = "avs_libplacebo.dll",
+        .RequirementsFunc = Function() StaxRip.Vulkan.IsSupported,
+        .Description = "An AviSynth+ plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders." + BR2 + "This is a port of the VapourSynth plugin vs-placebo.",
+        .HelpFilename = "README.md",
+        .DownloadURL = "https://github.com/Asd-g/avslibplacebo/releases/",
+        .WebURL = "https://github.com/Asd-g/avslibplacebo",
+        .AvsFilterNames = {"libplacebo_Deband", "libplacebo_Resample", "libplacebo_Shader", "libplacebo_Tonemap"}})
+
+    Shared Property VSLibPlacebo As Package = Add(New PluginPackage With {
+        .Name = "libvs_placebo",
+        .Filename = "libvs_placebo.dll",
+        .RequirementsFunc = Function() StaxRip.Vulkan.IsSupported,
+        .Description = "A VapourSynth plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders.",
+        .DownloadURL = "https://github.com/Lypheo/vs-placebo/releases",
+        .WebURL = "https://github.com/Lypheo/vs-placebo",
+        .HelpURL = "https://github.com/Lypheo/vs-placebo/blob/master/README.md",
+        .VsFilterNames = {"placebo.Deband", "placebo.Resample", "placebo.Shader", "placebo.Tonemap"}})
+
+
     Shared Sub New()
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",
@@ -1410,26 +1431,6 @@ Public Class Package
             .WebURL = "https://github.com/Asd-g/AviSynth-DPID",
             .Dependencies = {"avsresize.dll"},
             .AvsFilterNames = {"DPID", "DPIDraw"}})
-
-        Add(New PluginPackage With {
-            .Name = "AVS_LibPlacebo",
-            .Filename = "avs_libplacebo.dll",
-            .RequirementsFunc = Function() StaxRip.Vulkan.IsSupported,
-            .Description = "An AviSynth+ plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders." + BR2 + "This is a port of the VapourSynth plugin vs-placebo.",
-            .HelpFilename = "README.md",
-            .DownloadURL = "https://github.com/Asd-g/avslibplacebo/releases/",
-            .WebURL = "https://github.com/Asd-g/avslibplacebo",
-            .AvsFilterNames = {"libplacebo_Deband", "libplacebo_Resample", "libplacebo_Shader", "libplacebo_Tonemap"}})
-
-        Add(New PluginPackage With {
-            .Name = "libvs_placebo",
-            .Filename = "libvs_placebo.dll",
-            .RequirementsFunc = Function() StaxRip.Vulkan.IsSupported,
-            .Description = "A VapourSynth plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders.",
-            .DownloadURL = "https://github.com/Lypheo/vs-placebo/releases",
-            .WebURL = "https://github.com/Lypheo/vs-placebo",
-            .HelpURL = "https://github.com/Lypheo/vs-placebo/blob/master/README.md",
-            .VsFilterNames = {"placebo.Deband", "placebo.Resample", "placebo.Shader", "placebo.Tonemap"}})
 
         Add(New PluginPackage With {
             .Name = "ResizeX",

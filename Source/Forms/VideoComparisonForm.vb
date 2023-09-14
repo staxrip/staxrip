@@ -318,7 +318,7 @@ Public Class VideoComparisonForm
         Dim time As TimeSpan
 
         If value <> "" AndAlso TimeSpan.TryParse(value, time) Then
-            TrackBar.Value = CInt((time.TotalMilliseconds / 1000) * tab.Server.FrameRate)
+            TrackBar.Value = CInt(time.TotalMilliseconds / 1000 * tab.Server.FrameRate)
         End If
     End Sub
 
@@ -411,14 +411,10 @@ Public Class VideoComparisonForm
 
             Server = FrameServerFactory.Create(script.Path)
             Renderer = New VideoRenderer(VideoPanel, Server)
+            Dim maximum = Server.Info.FrameCount - 1
+            Form.TrackBar.Maximum = If(Form.TrackBar.Maximum < maximum, maximum, Form.TrackBar.Maximum)
 
-            If Form.TrackBar.Maximum < Server.Info.FrameCount - 1 Then
-                Form.TrackBar.Maximum = Server.Info.FrameCount - 1
-            End If
-
-            If Server.Error <> "" Then
-                MsgError(Server.Error)
-            End If
+            If Server.Error <> "" Then MsgError(Server.Error)
 
             Dim csvFile = sourcePath.DirAndBase + ".csv"
 

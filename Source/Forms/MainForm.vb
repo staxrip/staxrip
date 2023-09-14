@@ -1447,9 +1447,7 @@ Public Class MainForm
     End Function
 
     Sub UpdateRecentProjectsMenu()
-        If Disposing OrElse IsDisposed Then
-            Exit Sub
-        End If
+        If Disposing OrElse IsDisposed Then Exit Sub
 
         For Each mi In CustomMainMenu.MenuItems
             If mi.CustomMenuItem?.MethodName = "DynamicMenuItem" AndAlso

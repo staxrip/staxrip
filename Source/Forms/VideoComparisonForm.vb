@@ -111,12 +111,13 @@ Public Class VideoComparisonForm
     End Sub
 
     Sub Add()
-        If Not Package.AviSynth.VerifyOK(True) Then
-            Exit Sub
-        End If
+        If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
 
-        If File.Exists(p.SourceFile) Then
-            Add(p.SourceFile)
+        Dim sourcePath = p.SourceFile
+        Dim sourceAlreadyOpen = If(TabControl.TabPages.Cast(Of VideoTab)?.Where(Function(x) x.SourceFilePath.Equals(sourcePath, StringComparison.InvariantCultureIgnoreCase))?.Any(), False)
+
+        If Not sourceAlreadyOpen AndAlso File.Exists(sourcePath) Then
+            Add(sourcePath)
             If File.Exists(p.TargetFile) Then Add(p.TargetFile)
         Else
             Using dialog As New OpenFileDialog

@@ -128,8 +128,8 @@ Namespace VideoEncoderCommandLine
 
         Protected Overridable Sub OnValueChanged(item As CommandLineParam)
             For Each i In Items
-                If Not i.VisibleFunc Is Nothing Then
-                    i.Visible = i.Visible
+                If i.VisibleFunc IsNot Nothing Then
+                    i.Visible = i.VisibleFunc.Invoke()
                 End If
             Next
 
@@ -510,7 +510,7 @@ Namespace VideoEncoderCommandLine
         Property ValueChangedAction As Action(Of Integer)
 
         Sub ShowOption(value As Integer, visible As Boolean)
-            If Not MenuButton Is Nothing Then
+            If MenuButton IsNot Nothing Then
                 For Each i In MenuButton.Menu.Items.OfType(Of ToolStripMenuItem)
                     If value.Equals(i.Tag) Then i.Visible = visible
                 Next

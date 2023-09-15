@@ -1181,9 +1181,7 @@ Public Class x265Params
     Private BlockValueChanged As Boolean
 
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-        If BlockValueChanged Then
-            Exit Sub
-        End If
+        If BlockValueChanged Then Exit Sub
 
         If item Is Preset Then
             BlockValueChanged = True
@@ -1208,12 +1206,12 @@ Public Class x265Params
             End Select
         End If
 
-        If Not DeblockA.NumEdit Is Nothing Then
-            If Not DeblockA.NumEdit Is Nothing Then
+        If DeblockA.NumEdit IsNot Nothing Then
+            If DeblockA.NumEdit IsNot Nothing Then
                 DeblockA.NumEdit.Enabled = Deblock.Value
             End If
 
-            If Not DeblockB.NumEdit Is Nothing Then
+            If DeblockB.NumEdit IsNot Nothing Then
                 DeblockB.NumEdit.Enabled = Deblock.Value
             End If
         End If
@@ -1255,11 +1253,7 @@ Public Class x265Params
                         (p.Script.IsAviSynth AndAlso Not TextEncoding.IsProcessUTF8 AndAlso
                         Not TextEncoding.ArePathsSupportedByASCIIEncoding)) Then
 
-                        If p.Script.IsAviSynth Then
-                            pipeTool = "avs2pipemod"
-                        Else
-                            pipeTool = "vspipe"
-                        End If
+                        pipeTool = If(p.Script.IsAviSynth, "avs2pipemod", "vspipe")
                     End If
 
                     Select Case pipeTool

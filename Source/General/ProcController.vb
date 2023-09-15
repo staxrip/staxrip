@@ -141,18 +141,18 @@ Public Class ProcController
     End Sub
 
     Public Sub HighlightLog(theme As Theme)
-        If Proc.IsSilent Then
-            Exit Sub
-        End If
+        If Proc.IsSilent Then Exit Sub
 
         If Not s.OutputHighlighting Then
             LogTextBox.ClearAllFormatting()
-            Return
+            Exit Sub
         End If
 
         If theme Is Nothing Then theme = ThemeManager.CurrentTheme
 
+        Dim sw = If(g.IsDevelopmentPC(), Stopwatch.StartNew(), Nothing)
         LogTextBox.BlockPaint = True
+
         Try
             Dim oh = theme.ProcessingForm.OutputHighlighting
             Dim matches As MatchCollection
@@ -253,7 +253,7 @@ Public Class ProcController
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.FrameServerBackColor, oh.FrameServerForeColor, oh.FrameServerFontStyles)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s)[^:]*encoder(?:\D*?([^\d\s]*\d+\S*\d[^\d\s]*))(?:.*(djatom|patman))?.*(?=\n)", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\]:\s)[^:]*encoder(?:\D*?([^\d\s]*\d+\S*\d[^\d\s]*))(?:.*(djatom|patman|jpsdr))?.*(?=\n)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.EncoderBackColor, oh.EncoderForeColor, oh.EncoderFontStyles)
                 LogTextBox.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, oh.EncoderBackColor, oh.EncoderForeColor.AddSaturation(0.1).AddLuminance(0.175), oh.EncoderFontStyles.Union({FontStyle.Bold}).ToArray)
@@ -266,6 +266,10 @@ Public Class ProcController
         Finally
             LogTextBox.Select(0, 0)
             LogTextBox.BlockPaint = False
+            If sw IsNot Nothing AndAlso ProcForm IsNot Nothing Then
+                sw.Stop()
+                ProcForm.Text = $"Output Highlighting took {sw.ElapsedMilliseconds}ms"
+            End If
         End Try
     End Sub
 
@@ -277,9 +281,7 @@ Public Class ProcController
     Shared LastProgress As Double
 
     Sub SetProgressText(value As String)
-        If Proc.IsSilent Then
-            Exit Sub
-        End If
+        If Proc.IsSilent Then Exit Sub
 
         value = value.Trim()
 
@@ -426,7 +428,7 @@ Public Class ProcController
             If match.Success Then
                 progress = match.Groups(1).Value.ToSingle()
             Else
-                match = Regex.Match(value, "frame(?:(?:=\s*)|\s+)(\d+)(?:\s|/)", RegexOptions.IgnoreCase)
+                match = Regex.Match(value, "frame(?:(?:=\s*)|\s+)(\d+)(?:\s|\/)", RegexOptions.IgnoreCase)
                 If match.Success Then
                     frame = match.Groups(1).Value.ToInt()
                 Else

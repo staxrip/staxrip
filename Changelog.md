@@ -17,6 +17,7 @@ v2.30.0 (not published yet)
 - UI: Add Frame Rate Mode information on main window for source files
 - UI: Optimize addition of Tonemapping in Crop window
 - UI: Fix Video Comparison not being able to open more files when source file is loaded
+- UI: Fix progress detections for ffmpeg depending on used codec
 - SvtAv1EncApp: Add new SSIM tune option ([#1118](/../../issues/1118))
 - SvtAv1EncApp: Extend --keyint parameter options
 - VCEEncC: Add AV1 support ([#1117](/../../issues/1117))

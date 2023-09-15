@@ -22,8 +22,9 @@ v2.30.0 (not published yet)
 - VCEEncC: Fix minor issues and codec related params
 - x265: Fix --log-level param values
 - Update tools
-    - None
+    - MediaInfo v23.09
 - Update AviSynth+ plugins
+    - avs_libplacebo v1.4.1
     - RemoveDirt v0.9.3
 - Update Dual plugins
     - None

@@ -445,8 +445,8 @@ Public Class SvtAv1EncParams
     Property KeyInt As New OptionParam With {
         .Switch = "--keyint",
         .Text = "GOP size",
-        .Options = {"-2: ~5 seconds", "0: ""infinite"""},
-        .Values = {"-2", "0"},
+        .Options = {"-2: ~5 seconds", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+        .Values = {"-2", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
         .VisibleFunc = Function() Not ConstantRateFactor.Visible,
         .ValueChangedAction = Sub(x) KeyIntCrf.Value = x
     }
@@ -454,8 +454,8 @@ Public Class SvtAv1EncParams
     Property KeyIntCrf As New OptionParam With {
         .Switch = "--keyint",
         .Text = "GOP size",
-        .Options = {"-2: ~5 seconds", "-1: ""infinite"""},
-        .Values = {"-2", "-1"},
+        .Options = {"-2: ~5 seconds", "-1: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+        .Values = {"-2", "-1", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
         .VisibleFunc = Function() ConstantRateFactor.Visible,
         .ValueChangedAction = Sub(x) KeyInt.Value = x
     }

@@ -413,6 +413,7 @@ Public Class SvtAv1EncParams
     Property EnableQm As New BoolParam With {
         .Switch = "--enable-qm",
         .Text = "Enable quantisation matrices",
+        .IntegerValue = True,
         .Init = False
     }
 

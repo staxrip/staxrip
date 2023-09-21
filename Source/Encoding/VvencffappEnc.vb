@@ -328,8 +328,8 @@ Public Class VvencffappParams
     Property Preset As New OptionParam With {
         .Switch = "--preset",
         .Text = "Preset",
-        .Options = {"Faster", "Fast", "Medium", "Slow", "Slower"},
-        .Init = 2}
+        .Options = {"None", "Faster", "Fast", "Medium", "Slow", "Slower", "Medium_LowDecEnergy", "Firstpass", "ToolTest"},
+        .Init = 3}
 
     Property FrameSkip As New NumParam With {
         .HelpSwitch = "--FrameSkip",

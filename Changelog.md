@@ -23,9 +23,12 @@ v2.30.0 (not published yet)
 - SvtAv1EncApp: Fix --enable-qm parameter definition ([#1122](/../../issues/1122))
 - VCEEncC: Add AV1 support ([#1117](/../../issues/1117))
 - VCEEncC: Fix minor issues and codec related params
+- vvencFFapp: Add new presets
 - x265: Fix --log-level param values
 - Update tools
     - MediaInfo v23.09
+    - Subtitle Edit v4.0.1
+    - vvencFFapp v1.9.1
 - Update AviSynth+ plugins
     - avs_libplacebo v1.4.1
     - RemoveDirt v0.9.3

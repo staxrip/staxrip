@@ -18,6 +18,7 @@ v2.30.0 (not published yet)
 - UI: Optimize addition of Tonemapping in Crop window
 - UI: Fix Video Comparison not being able to open more files when source file is loaded
 - UI: Fix progress detections for ffmpeg depending on used codec
+- UI: Add Auto-Tonemapping support for Thumbnailer
 - SvtAv1EncApp: Add new SSIM tune option ([#1118](/../../issues/1118))
 - SvtAv1EncApp: Extend --keyint parameter options
 - SvtAv1EncApp: Fix --enable-qm parameter definition ([#1122](/../../issues/1122))
@@ -26,6 +27,7 @@ v2.30.0 (not published yet)
 - vvencFFapp: Add new presets
 - x265: Fix --log-level param values
 - Update tools
+    - eac3to v3.34
     - MediaInfo v23.09
     - Subtitle Edit v4.0.1
     - vvencFFapp v1.9.1

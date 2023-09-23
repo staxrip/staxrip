@@ -6146,8 +6146,7 @@ Public Class MainForm
                         pr.SkipStrings = {"analyze: ", "process: "}
                         pr.Package = Package.eac3to
                         Dim outFiles As New List(Of String)
-                        pr.Process.StartInfo.Arguments = form.GetArgs(
-                            playlistFolder.Escape + " " & playlistID & ")", title, outFiles)
+                        pr.Process.StartInfo.Arguments = form.GetArgs(playlistFolder.Escape + " " & playlistID & ")", title, outFiles)
                         pr.OutputFiles = outFiles
 
                         Try

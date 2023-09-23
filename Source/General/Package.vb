@@ -126,7 +126,7 @@ Public Class Package
     Shared Property OpusDec As Package = Add(New Package With {
         .Name = "OpusDec",
         .Filename = "opusdec.exe",
-        .Location = "Audio\Opus",
+        .Location = IO.Path.Combine("Audio", "Opus"),
         .WebURL = "",
         .DownloadURL = "",
         .HelpSwitch = "--help",
@@ -137,7 +137,7 @@ Public Class Package
     Shared Property OpusEnc As Package = Add(New Package With {
         .Name = "OpusEnc",
         .Filename = "opusenc.exe",
-        .Location = "Audio\Opus",
+        .Location = IO.Path.Combine("Audio", "Opus"),
         .WebURL = "",
         .DownloadURL = "",
         .HelpSwitch = "--help",
@@ -148,7 +148,7 @@ Public Class Package
     Shared Property DEE As Package = Add(New Package With {
         .Name = "DEE",
         .Filename = "dee.exe",
-        .Locations = {"Audio\DEE", "Audio\DeeZy", "Audio\DeeZy\DEE", "Audio\DeeZy\Apps\DEE", Folder.Settings + "Tools\DEE"},
+        .Locations = {IO.Path.Combine("Audio", "DEE"), IO.Path.Combine("Audio", "DeeZy"), IO.Path.Combine("Audio", "DeeZy", "DEE"), IO.Path.Combine("Audio", "DeeZy", "Apps", "DEE"), IO.Path.Combine(Folder.Settings, "Tools", "DEE")},
         .WebURL = "https://customer.dolby.com/content-creation-and-delivery/dolby-encoding-engine-with-ac-4",
         .DownloadURL = "https://customer.dolby.com/content-creation-and-delivery/dolby-encoding-engine-with-ac-4",
         .HelpSwitch = "--help",
@@ -162,7 +162,7 @@ Public Class Package
     Shared Property DeeZy As Package = Add(New Package With {
         .Name = "DeeZy",
         .Filename = "deezy.exe",
-        .Location = "Audio\DeeZy",
+        .Location = IO.Path.Combine("Audio", "DeeZy"),
         .WebURL = "https://github.com/jlw4049/DeeZy",
         .DownloadURL = "https://github.com/jlw4049/DeeZy/releases",
         .HelpURL = "https://github.com/jlw4049/DeeZy",
@@ -373,7 +373,7 @@ Public Class Package
         .Description = "Visual C++ 2015-2022 Redistributable.",
         .DownloadURL = "https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads",
         .VersionAllowAny = True,
-        .Locations = {Folder.System, "Support", "VC"},
+        .Locations = {Folder.System, IO.Path.Combine("Support", "VC")},
         .TreePath = "Runtimes"})
 
     Shared Property Decomb As Package = Add(New PluginPackage With {
@@ -791,7 +791,7 @@ Public Class Package
     Shared Property RemoveGrainVS As Package = Add(New PluginPackage With {
         .Name = "RemoveGrain",
         .Filename = "RemoveGrainVS.dll",
-        .Location = "Plugins\VS\RemoveGrainVS",
+        .Location = IO.Path.Combine("Plugins", "VS", "RemoveGrainVS"),
         .Description = "VapourSynth port of RemoveGrain and Repair plugins from Avisynth.",
         .WebURL = "https://github.com/vapoursynth/vs-removegrain",
         .VsFilterNames = {"rgvs.RemoveGrain", "rgvs.BackwardClense", "rgvs.Clense", "rgvs.ForwardClense", "rgvs.Repair", "rgvs.VerticalCleaner"}})
@@ -799,7 +799,7 @@ Public Class Package
     Shared Property LibP2P As Package = Add(New PluginPackage With {
         .Name = "LibP2P",
         .Filename = "LibP2P.dll",
-        .Location = "Plugins\VS\LibP2P",
+        .Location = IO.Path.Combine("Plugins", "VS", "LibP2P"),
         .Description = "Vapoursynth plugin for packing/unpacking of RGB clips.",
         .WebURL = "https://github.com/DJATOM/LibP2P-Vapoursynth",
         .VsFilterNames = {"libp2p.pack", "libp2p.unpack"}})
@@ -825,7 +825,7 @@ Public Class Package
     Shared Property DescaleAVS As Package = Add(New PluginPackage With {
         .Name = "Descale",
         .Filename = "libdescale.dll",
-        .Location = "Plugins\AVS\Descale",
+        .Location = IO.Path.Combine("Plugins", "AVS", "Descale"),
         .WebURL = "https://github.com/Irrational-Encoding-Wizardry/descale",
         .DownloadURL = "https://github.com/Irrational-Encoding-Wizardry/descale/releases",
         .Description = "Video/Image filter to undo upscaling.",
@@ -851,7 +851,7 @@ Public Class Package
     Shared Property BBorders As Package = Add(New PluginPackage With {
         .Name = "BBorders",
         .Filename = "bborders.avsi",
-        .Location = "Plugins\AVS\Scripts",
+        .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
         .WebURL = "https://github.com/Asd-g/AviSynthPlus-Scripts/blob/master/bborders.avsi",
         .DownloadURL = "https://github.com/Asd-g/AviSynthPlus-Scripts/blob/master/bborders.avsi",
         .Description = "bbmod is a balanceborders mod that uses division instead subtraction for the filtering.",
@@ -861,7 +861,7 @@ Public Class Package
     Shared Property ExTools As Package = Add(New PluginPackage With {
         .Name = "ExTools",
         .Filename = "ExTools.avsi",
-        .Location = "Plugins\AVS\Scripts",
+        .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
         .WebURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ExTools.avsi",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ExTools.avsi",
         .Description = "Pack of masktools2/removegrain replacement functions with internal Expr() and many extra features.",
@@ -870,7 +870,7 @@ Public Class Package
     Shared Property GradePack As Package = Add(New PluginPackage With {
         .Name = "GradePack",
         .Filename = "GradePack.avsi",
-        .Location = "Plugins\AVS\Scripts",
+        .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
         .WebURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MasksPack.avsi",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MasksPack.avsi",
         .Description = "",
@@ -880,7 +880,7 @@ Public Class Package
     Shared Property MasksPack As Package = Add(New PluginPackage With {
         .Name = "MasksPack",
         .Filename = "MasksPack.avsi",
-        .Location = "Plugins\AVS\Scripts",
+        .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MasksPack.avsi",
         .Description = "",
@@ -890,7 +890,7 @@ Public Class Package
     Shared Property ResizersPack As Package = Add(New PluginPackage With {
         .Name = "ResizersPack",
         .Filename = "ResizersPack.avsi",
-        .Location = "Plugins\AVS\Scripts",
+        .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ResizersPack.avsi",
         .Description = "",
@@ -900,7 +900,7 @@ Public Class Package
     Shared Property ScenesPack As Package = Add(New PluginPackage With {
         .Name = "ScenesPack",
         .Filename = "ScenesPack.avsi",
-        .Location = "Plugins\AVS\Scripts",
+        .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/ScenesPack.avsi",
         .Description = "SceneStats does a robust Scene Change Detection and calculates scene's statistics.",
@@ -910,7 +910,7 @@ Public Class Package
     Shared Property SharpenersPack As Package = Add(New PluginPackage With {
         .Name = "SharpenersPack",
         .Filename = "SharpenersPack.avsi",
-        .Location = "Plugins\AVS\Scripts",
+        .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/MIX%20mods/SharpenersPack.avsi",
         .Description = "Collection of high quality sharpeners for AviSynth+.",
@@ -920,7 +920,7 @@ Public Class Package
     Shared Property TransformsPack As Package = Add(New PluginPackage With {
         .Name = "TransformsPack",
         .Filename = "TransformsPack - Main.avsi",
-        .Location = "Plugins\AVS\Scripts",
+        .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Main.avsi",
         .Description = "",
@@ -931,7 +931,7 @@ Public Class Package
     Shared Property TransformsPackModels As Package = Add(New PluginPackage With {
         .Name = "TransformsPackModels",
         .Filename = "TransformsPack - Models.avsi",
-        .Location = "Plugins\AVS\Scripts",
+        .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Models.avsi",
         .Description = "",
@@ -942,7 +942,7 @@ Public Class Package
     Shared Property TransformsPackTransfers As Package = Add(New PluginPackage With {
         .Name = "TransformsPackTransfers",
         .Filename = "TransformsPack - Transfers.avsi",
-        .Location = "Plugins\AVS\Scripts",
+        .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
         .WebURL = "",
         .DownloadURL = "https://github.com/Dogway/Avisynth-Scripts/blob/master/TransformsPack%20-%20Transfers.avsi",
         .Description = "",
@@ -1036,7 +1036,7 @@ Public Class Package
     Shared Property DescaleVS As Package = Add(New PluginPackage With {
         .Name = "Descale",
         .Filename = "libdescale.dll",
-        .Location = "Plugins\VS\Descale",
+        .Location = IO.Path.Combine("Plugins", "VS", "Descale"),
         .WebURL = "https://github.com/Irrational-Encoding-Wizardry/descale",
         .DownloadURL = "https://github.com/Irrational-Encoding-Wizardry/descale/releases",
         .Description = "Video/Image filter to undo upscaling.",
@@ -1045,7 +1045,7 @@ Public Class Package
     Shared Property InsaneAA As Package = Add(New PluginPackage With {
         .Name = "insaneAA",
         .Filename = "insaneAA.py",
-        .Location = "Plugins\VS\insaneAA",
+        .Location = IO.Path.Combine("Plugins", "VS", "insaneAA"),
         .WebURL = "https://github.com/Beatrice-Raws/VapourSynth-insaneAA",
         .DownloadURL = "https://github.com/Beatrice-Raws/VapourSynth-insaneAA/releases",
         .Description = "InsaneAA Anti-Aliasing Script (VS port). Original idea by tonik && tophf, edited and ported by DJATOM. Use this script to fix ugly upscaled anime BDs.",
@@ -1055,7 +1055,7 @@ Public Class Package
     Shared Property DeCross As Package = Add(New PluginPackage With {
         .Name = "DeCross",
         .Filename = "libdecross.dll",
-        .Location = "Plugins\VS\DeCross",
+        .Location = IO.Path.Combine("Plugins", "VS", "DeCross"),
         .WebURL = "https://github.com/dubhater/vapoursynth-decross",
         .DownloadURL = "https://github.com/dubhater/vapoursynth-decross/releases",
         .Description = "DeCross is a spatio-temporal cross color (rainbow) reduction filter. DeCross must be used right after the source filter, before any field matching or deinterlacing. The luma is returned unchanged. This is a port of the DeCross Avisynth plugin, which is in turn based on the AviUtl plugin CrossColor.",
@@ -1064,7 +1064,7 @@ Public Class Package
     Shared Property TemporalSoften2 As Package = Add(New PluginPackage With {
         .Name = "TemporalSoften2",
         .Filename = "libtemporalsoften2.dll",
-        .Location = "Plugins\VS\TemporalSoften2",
+        .Location = IO.Path.Combine("Plugins", "VS", "TemporalSoften2"),
         .WebURL = "https://github.com/dubhater/vapoursynth-temporalsoften2",
         .DownloadURL = "https://github.com/dubhater/vapoursynth-temporalsoften2/releases",
         .Description = "TemporalSoften filter for VapourSynth.",
@@ -1073,7 +1073,7 @@ Public Class Package
     Shared Property MotionMask As Package = Add(New PluginPackage With {
         .Name = "MotionMask",
         .Filename = "libmotionmask.dll",
-        .Location = "Plugins\VS\MotionMask",
+        .Location = IO.Path.Combine("Plugins", "VS", "MotionMask"),
         .WebURL = "https://github.com/dubhater/vapoursynth-motionmask",
         .DownloadURL = "https://github.com/dubhater/vapoursynth-motionmask/releases",
         .Description = "MotionMask creates a mask of moving pixels. Every output pixel will be set to the absolute difference between the current frame and the previous frame. This is a port of the mt_motion filter from pinterf's updated version of the Avisynth plugin MaskTools.",
@@ -1083,7 +1083,7 @@ Public Class Package
         .Siblings = {"dfttest2_NVRTC vs", "dfttest2_CUDA vs", "dfttest2_CPU vs"},
         .Name = "dfttest2",
         .Filename = "dfttest2.py",
-        .Location = "Plugins\VS\DFTTest2",
+        .Location = IO.Path.Combine("Plugins", "VS", "DFTTest2"),
         .Description = "DFTTest re-implemetation for VapourSynth (CPU and CUDA).",
         .WebURL = "https://github.com/AmusementClub/vs-dfttest2",
         .DownloadURL = "https://github.com/AmusementClub/vs-dfttest2/releases",
@@ -1094,7 +1094,7 @@ Public Class Package
         .Siblings = {"dfttest2 vs", "dfttest2_NVRTC vs", "dfttest2_CUDA vs"},
         .Name = "dfttest2_CPU",
         .Filename = "dfttest2_cpu.dll",
-        .Location = "Plugins\VS\DFTTest2",
+        .Location = IO.Path.Combine("Plugins", "VS", "DFTTest2"),
         .Description = "",
         .WebURL = "https://github.com/AmusementClub/vs-dfttest2",
         .DownloadURL = "https://github.com/AmusementClub/vs-dfttest2/releases",
@@ -1104,7 +1104,7 @@ Public Class Package
         .Siblings = {"dfttest2 vs", "dfttest2_NVRTC vs", "dfttest2_CPU vs"},
         .Name = "dfttest2_CUDA",
         .Filename = "dfttest2_cuda.dll",
-        .Location = "Plugins\VS\DFTTest2",
+        .Location = IO.Path.Combine("Plugins", "VS", "DFTTest2"),
         .Description = "",
         .WebURL = "https://github.com/AmusementClub/vs-dfttest2",
         .DownloadURL = "https://github.com/AmusementClub/vs-dfttest2/releases",
@@ -1114,7 +1114,7 @@ Public Class Package
         .Siblings = {"dfttest2 vs", "dfttest2_CUDA vs", "dfttest2_CPU vs"},
         .Name = "dfttest2_NVRTC",
         .Filename = "dfttest2_nvrtc.dll",
-        .Location = "Plugins\VS\DFTTest2",
+        .Location = IO.Path.Combine("Plugins", "VS", "DFTTest2"),
         .Description = "",
         .WebURL = "https://github.com/AmusementClub/vs-dfttest2",
         .DownloadURL = "https://github.com/AmusementClub/vs-dfttest2/releases",
@@ -1668,7 +1668,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "vsMSharpen",
             .Filename = "vsMSharpen.dll",
-            .Location = "Plugins\AVS\vsMSharpen",
+            .Location = IO.Path.Combine("Plugins", "AVS", "vsMSharpen"),
             .WebURL = "https://github.com/Asd-g/AviSynth-vsMSharpen",
             .DownloadURL = "https://github.com/Asd-g/AviSynth-vsMSharpen/releases",
             .HelpFilename = "Readme.md",
@@ -1854,7 +1854,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "ASTDR",
             .Filename = "ASTDR.py",
-            .Location = "Plugins\VS\Scripts",
+            .Location = IO.Path.Combine("Plugins", "VS", "Scripts"),
             .WebURL = "https://github.com/dubhater/vapoursynth-astdr",
             .Description = "ASTDR is a derainbow function for VapourSynth. ASTDRmc performs motion compensation before calling ASTDR. This is a port of the Avisynth function of the same name, version 1.74.",
             .Dependencies = {"adjust.py", "MiscFilters.dll", "fft3dfilter.dll", "libawarpsharp2.dll", "libfluxsmooth.dll", "libhqdn3d.dll", "libdecross.dll", "libmotionmask.dll", "libtemporalsoften2"},
@@ -1914,7 +1914,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "nnedi3_rpow2",
             .Filename = "nnedi3_rpow2.py",
-            .Location = "Plugins\VS\Scripts",
+            .Location = IO.Path.Combine("Plugins", "VS", "Scripts"),
             .WebURL = "https://github.com/Irrational-Encoding-Wizardry/fvsfunc",
             .Description = "nnedi3_rpow2 ported from Avisynth for VapourSynth.",
             .VsFilterNames = {"nnedi3_rpow2.nnedi3_rpow2"}})
@@ -2389,7 +2389,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "ChubbyRain3",
             .Filename = "ChubbyRain3.avsi",
-            .Location = "Plugins\AVS\Scripts",
+            .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
             .Description = "A spatio-temporal rainbow reducing script composed by Lothar based on Mug Funky's ChubbyRain. Included is a mod version by Asd-g that accepts progressive sources only.",
             .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/ChubbyRain3.avsi",
             .WebURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/ChubbyRain3.avsi",

@@ -1,4 +1,5 @@
 ﻿
+Imports System.Xml.Serialization
 Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
@@ -124,7 +125,7 @@ Public Class VCEEnc
         Dim tester As New ConsolAppTester
 
         tester.IgnoredSwitches = "audio-bitrate audio-codec video-streamid video-track vpy vpy-mt
-            audio-filter avsw device input-analyze caption2ass audio-file sub-copy version audio-copy
+            audio-filter avsw device input-analyze audio-file sub-copy version audio-copy
             audio-ignore-decode-error audio-ignore-notrack-error audio-resampler raw help input-file
             audio-samplerate audio-source audio-stream avs avvce-analyze output-file seek skip-frame
             check-avversion check-codecs check-decoders check-encoders check-filters check-protocols
@@ -155,7 +156,7 @@ Public Class VCEEnc
             .Name = "Mode",
             .Text = "Mode",
             .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "CBRHQ - High Quality Constant Bitrate", "VBR - Variable Bitrate", "VBRHQ - High Quality Variable Bitrate", "QVBR - Quality-Defined Variable Bitrate"},
-            .VisibleFunc = Function() Codec.Value = 0 OrElse Codec.Value = 2}
+            .VisibleFunc = Function() Codec.Value = 0}
 
         Property Mode265 As New OptionParam With {
             .Name = "Mode",
@@ -199,26 +200,37 @@ Public Class VCEEnc
         Property QvbrQuality As New NumParam With {
             .Switch = "--qvbr-quality",
             .Text = "QVBR Quality",
-            .Init = 23,
+            .Init = 28,
             .VisibleFunc = Function() Mode.Value = 5,
             .Config = {0, 51, 1}}
 
+        Property QPAdvanced As New BoolParam With {
+            .Text = "Show advanced QP settings",
+            .VisibleFunc = Function() Mode.Value = 0}
+
+        Property QP As New NumParam With {
+            .HelpSwitch = "--cqp",
+            .Text = "QP",
+            .Init = 18,
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso Not QPAdvanced.Value,
+            .Config = {0, 51}}
+
         Property QPI As New NumParam With {
             .Text = "QP I",
-            .Value = 22,
-            .VisibleFunc = Function() Mode.Value = 0,
+            .Value = 18,
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
             .Config = {0, 51}}
 
         Property QPP As New NumParam With {
             .Text = "QP P",
-            .Value = 24,
-            .VisibleFunc = Function() Mode.Value = 0,
+            .Value = 20,
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
             .Config = {0, 51}}
 
         Property QPB As New NumParam With {
             .Text = "QP B",
-            .Value = 27,
-            .VisibleFunc = Function() Mode.Value = 0,
+            .Value = 24,
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
             .Config = {0, 51}}
 
         Property Tiles As New NumParam With {.Switch = "--tiles", .Text = "Tiles", .Value = 1, .Config = {0, 64}, .VisibleFunc = Function() Codec.Value = 2}
@@ -346,6 +358,9 @@ Public Class VCEEnc
         Property EdgelevelBlack As New NumParam With {.Text = "     Black", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
         Property EdgelevelWhite As New NumParam With {.Text = "     White", .HelpSwitch = "--vpp-edgelevel", .Config = {0, 31, 1, 1}}
 
+        Property VppResize As New OptionParam With {.Text = "Resize", .Switch = "--vpp-resize", .Options = {"Disabled", "advanced", "bilinear", "spline16", "spline36", "spline64", "lanczos2", "lanczos3", "lanczos4", "amf_bilinear", "amf_bicubic", "amf_fsr"}}
+        Property VppScalerSharpness As New NumParam With {.Text = "Scaler Sharpness", .Switch = "--vpp-scaler-sharpness", .Config = {0, 2, 0.1, 2}, .Init = 0.5, .VisibleFunc = Function() VppResize.ValueText = "amf_fsr"}
+
         Property Unsharp As New BoolParam With {.Text = "Unsharp Filter", .Switches = {"--vpp-unsharp"}, .ArgsFunc = AddressOf GetUnsharp}
         Property UnsharpRadius As New NumParam With {.Text = "     Radius", .HelpSwitch = "--vpp-unsharp", .Init = 3, .Config = {1, 9}}
         Property UnsharpWeight As New NumParam With {.Text = "     Weight", .HelpSwitch = "--vpp-unsharp", .Init = 0.5, .Config = {0, 10, 0.5, 1}}
@@ -375,7 +390,7 @@ Public Class VCEEnc
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
 
-                    Add("Basic", Decoder, Codec, Mode264, Mode265,
+                    Add("Basic", Decoder, Codec, Mode264, Mode265, ModeAV1,
                         New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
                         New OptionParam With {.Switch = "--quality", .Text = "Preset", .Options = {"Fast", "Balanced", "Slow"}, .Init = 1},
                         New OptionParam With {.Switch = "--profile", .Name = "profile264", .VisibleFunc = Function() Codec.ValueText = "h264", .Text = "Profile", .Options = {"Automatic", "Baseline", "Main", "High"}},
@@ -383,7 +398,7 @@ Public Class VCEEnc
                         New OptionParam With {.Switch = "--level", .Name = "LevelH264", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelH265", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "hevc", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .Options = {"Main", "High"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
-                        QPI, QPP, QPB, Bitrate, QvbrQuality)
+                        QPAdvanced, QP, QPI, QPP, QPB, Bitrate, QvbrQuality)
                     Add("Slice Decision",
                         New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},
                         New NumParam With {.Switch = "--bframes", .Text = "B-Frames", .Config = {0, 16}},
@@ -405,8 +420,8 @@ Public Class VCEEnc
                         Tiles, TemporalLayers, AqMode, CdefMode, CdfUpdate, CdfFrameEndUpdate)
                     Add("VPP | Misc",
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
-                        New OptionParam With {.Switch = "--vpp-resize", .Text = "Resize", .Options = {"Disabled", "advanced", "bilinear", "spline16", "spline36", "spline64", "lanczos2", "lanczos3", "lanczos4", "amf_bilinear", "amf_bicubic", "amf_fsr", "amf_point"}},
-                        New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}})
+                        New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}},
+                        VppResize, VppScalerSharpness)
                     Add("VPP | Misc 2",
                         Tweak, TweakBrightness, TweakContrast, TweakSaturation, TweakGamma, TweakHue, TweakSwapuv,
                         Pad, PadLeft, PadTop, PadRight, PadBottom,
@@ -414,7 +429,8 @@ Public Class VCEEnc
                     Add("VPP | Misc 3",
                         TransformFlipX, TransformFlipY, TransformTranspose,
                         New StringParam With {.Switch = "--vpp-decimate", .Text = "Decimate"},
-                        New StringParam With {.Switch = "--vpp-mpdecimate", .Text = "MP Decimate"})
+                        New StringParam With {.Switch = "--vpp-mpdecimate", .Text = "MP Decimate"},
+                        New BoolParam With {.Switch = "--vpp-rff", .Text = "RFF", .Init = True})
                     Add("VPP | Colorspace",
                         Colorspace,
                         ColorspaceMatrixFrom, ColorspaceMatrixTo,
@@ -889,16 +905,56 @@ Public Class VCEEnc
                 ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
             End If
 
-            Select Case Mode.Value
-                Case 0
-                    ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
-                Case 1
-                    ret += " --cbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
-                Case 2
-                    ret += " --vbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
-                Case 3
-                    ret += " --qvbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+            Select Case Codec.ValueText
+                Case "h264"
+                    Select Case Mode.Value
+                        Case 0
+                            ret += If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
+                        Case 1
+                            ret += " --cbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case 2
+                            ret += " --cbrhq " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case 3
+                            ret += " --vbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case 4
+                            ret += " --vbrhq " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case 5
+                            ret += " --qvbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case Else
+                            Throw New NotImplementedException("Mode not supported")
+                    End Select
+                Case "hevc"
+                    Select Case Mode.Value
+                        Case 0
+                            ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
+                        Case 1
+                            ret += " --cbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case 2
+                            ret += " --vbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case Else
+                            Throw New NotImplementedException("Mode not supported")
+                    End Select
+                Case "av1"
+                    Select Case Mode.Value
+                        Case 0
+                            ret += If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
+                        Case 1
+                            ret += " --cbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case 2
+                            ret += " --cbrhq " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case 3
+                            ret += " --vbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case 4
+                            ret += " --vbrhq " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case 5
+                            ret += " --qvbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                        Case Else
+                            Throw New NotImplementedException("Mode not supported")
+                    End Select
+                Case Else
+                    Throw New NotImplementedException("Codec not supported")
             End Select
+
 
             If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso
                 (p.Script.IsFilterActive("Crop", "Hardware Encoder") OrElse

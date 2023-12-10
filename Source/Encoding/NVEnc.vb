@@ -111,15 +111,16 @@ Public Class NVEnc
     End Sub
 
     Overrides Function GetMenu() As MenuList
-        Dim ret As New MenuList
-        ret.Add("Encoder Options", AddressOf ShowConfigDialog)
-        ret.Add("Container Configuration", AddressOf OpenMuxerConfigDialog)
+        Dim ret As New MenuList From {
+            {"Encoder Options", AddressOf ShowConfigDialog},
+            {"Container Configuration", AddressOf OpenMuxerConfigDialog}
+        }
         Return ret
     End Function
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.Mode.Value = 0 OrElse Params.Mode.Value = 2 AndAlso Params.ConstantQualityMode.Value
+            Return Params.Mode.Value = 0 OrElse Params.Mode.Value = 1 OrElse Params.Mode.Value = 3 AndAlso Params.ConstantQualityMode.Value
         End Get
         Set(Value As Boolean)
         End Set
@@ -136,7 +137,7 @@ Public Class NVEnc
 
         tester.IgnoredSwitches = "help version check-device input-analyze input-format output-format
             video-streamid video-track vpp-delogo vpp-delogo-cb vpp-delogo-cr vpp-delogo-depth output
-            vpp-delogo-pos vpp-delogo-select vpp-delogo-y check-avversion check-codecs caption2ass log
+            vpp-delogo-pos vpp-delogo-select vpp-delogo-y check-avversion check-codecs log
             check-encoders check-decoders check-formats check-protocols log-framelist fps audio-delay
             check-filters input raw avs vpy vpy-mt key-on-chapter video-tag audio-ignore-decode-error
             avcuvid-analyze audio-source audio-file seek format audio-copy audio-ignore-notrack-error
@@ -172,10 +173,11 @@ Public Class NVEnc
 
         Property Mode As New OptionParam With {
             .Text = "Mode",
-            .Switches = {"--cqp", "--cbr", "--vbr"},
-            .Options = {"CQP: Constant QP",
-                        "CBR: Constant Bitrate",
-                        "VBR: Variable Bitrate"},
+            .Switches = {"--qvbr", "--cqp", "--cbr", "--vbr"},
+            .Options = {"QVBR: Constant Quality Mode",
+                         "CQP: Constant QP",
+                         "CBR: Constant Bitrate",
+                         "VBR: Variable Bitrate"},
             .VisibleFunc = Function() Not Lossless.Value,
             .ArgsFunc = AddressOf GetModeArgs,
             .ImportAction = Sub(param, arg)
@@ -214,59 +216,73 @@ Public Class NVEnc
         Property ProfileAV1 As New OptionParam With {
             .Switch = "--profile",
             .Text = "Profile",
-            .Name = "ProfileH265",
+            .Name = "ProfileAV1",
             .VisibleFunc = Function() Codec.ValueText = "av1",
             .Options = {"Auto", "Main", "High"}}
+
+        Property OutputDepth As New OptionParam With {
+            .Switch = "--output-depth",
+            .Text = "Output Depth",
+            .Options = {"8-Bit", "10-Bit"},
+            .Values = {"8", "10"},
+            .Init = 0}
 
         Property ConstantQualityMode As New BoolParam With {
             .Switches = {"--vbr-quality"},
             .Text = "Constant Quality Mode",
-            .VisibleFunc = Function() Mode.Value = 2}
-
-        Property QPAdvanced As New BoolParam With {
-            .Text = "Show advanced QP settings",
-            .VisibleFunc = Function() Mode.Value = 0}
+            .VisibleFunc = Function() Mode.Value = 3}
 
         Property Bitrate As New NumParam With {
             .Switches = {"--cbr", "--vbr"},
             .Text = "Bitrate",
             .Init = 5000,
-            .VisibleFunc = Function() Mode.Value > 0,
+            .VisibleFunc = Function() Mode.Value > 1,
             .Config = {0, 1000000, 100}}
+
+        Property QPAdvanced As New BoolParam With {
+            .Text = "Show advanced QP settings",
+            .VisibleFunc = Function() Mode.Value = 1}
+
+        Property QVBR As New NumParam With {
+            .Switches = {"--qvbr"},
+            .Text = "QP",
+            .Init = 28,
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso Not QPAdvanced.Value,
+            .Config = {0, 255, 1, 1}}
 
         Property QP As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP",
             .Init = 18,
-            .VisibleFunc = Function() Mode.Value = 0 AndAlso Not QPAdvanced.Value,
-            .Config = {0, 51}}
+            .VisibleFunc = Function() Mode.Value = 1 AndAlso Not QPAdvanced.Value,
+            .Config = {0, 63}}
 
         Property QPI As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP I",
             .Init = 18,
-            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
-            .Config = {0, 51}}
+            .VisibleFunc = Function() Mode.Value = 1 AndAlso QPAdvanced.Value,
+            .Config = {0, 63}}
 
         Property QPP As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP P",
             .Init = 20,
-            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
-            .Config = {0, 51}}
+            .VisibleFunc = Function() Mode.Value = 1 AndAlso QPAdvanced.Value,
+            .Config = {0, 63}}
 
         Property QPB As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP B",
-            .Init = 22,
-            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
-            .Config = {0, 51}}
+            .Init = 24,
+            .VisibleFunc = Function() Mode.Value = 1 AndAlso QPAdvanced.Value,
+            .Config = {0, 63}}
 
         Property VbrQuality As New NumParam With {
             .Switch = "--vbr-quality",
             .Text = "VBR Quality",
-            .Config = {0, 51, 1, 1},
-            .VisibleFunc = Function() Mode.Value = 2 AndAlso ConstantQualityMode.Value,
+            .Config = {0, 63, 1, 1},
+            .VisibleFunc = Function() Mode.Value = 3 AndAlso ConstantQualityMode.Value,
             .ArgsFunc = Function()
                             Return If(ConstantQualityMode.Value AndAlso VbrQuality.Value <> VbrQuality.DefaultValue,
                                 "--vbr-quality " & VbrQuality.Value.ToInvariantString,
@@ -379,7 +395,7 @@ Public Class NVEnc
         Property AfsSmooth As New BoolParam With {.Text = "Smooth", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
         Property Afs24fps As New BoolParam With {.Text = "24 FPS", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
         Property AfsTune As New BoolParam With {.Text = "Tune", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
-        Property AfsRFF As New BoolParam With {.Text = "RFF", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
+        Property AfsRFF As New BoolParam With {.Text = "RFF", .HelpSwitch = "--vpp-afs", .Init = True, .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
         Property AfsTimecode As New BoolParam With {.Text = "Timecode", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
         Property AfsLog As New BoolParam With {.Text = "Log", .HelpSwitch = "--vpp-afs", .LeftMargin = g.MainForm.FontHeight * 1.3, .VisibleFunc = Function() Deinterlacer.Value = 2}
 
@@ -466,17 +482,18 @@ Public Class NVEnc
                     Add("Basic",
                         Mode, Codec,
                         New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Init = 6, .Options = {"Default", "Quality", "Performance", "P1 (Performance)", "P2", "P3", "P4 (Default)", "P5", "P6", "P7 (Quality)"}, .Values = {"default", "quality", "performance", "P1", "P2", "P3", "P4", "P5", "P6", "P7"}},
-                        New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
+                        OutputDepth,
+                        New OptionParam With {.Switch = "--output-csp", .Text = "Colorspace", .Options = {"yuv420 (default)", "yuv444"}, .Values = {"yuv420", "yuv444"}},
                         ProfileH264, ProfileH265, ProfileAV1,
                         New OptionParam With {.Name = "TierH265", .Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}},
                         New OptionParam With {.Name = "TierAV1", .Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "av1", .Options = {"0", "1"}},
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Auto", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Auto", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Name = "LevelAV1", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "av1", .Options = {"Auto", "2", "2.1", "2.2", "2.3", "3", "3.1", "3.2", "3.3", "4", "4.1", "4.2", "4.3", "5", "5.1", "5.2", "5.3", "6", "6.1", "6.2", "6.3", "7", "7.1", "7.2", "7.3"}},
-                        QPAdvanced, Bitrate, QP, QPI, QPP, QPB)
+                        QPAdvanced, Bitrate, QVBR, QP, QPI, QPP, QPB)
                     Add("Rate Control",
                         New StringParam With {.Switch = "--dynamic-rc", .Text = "Dynamic RC"},
-                        New OptionParam With {.Switch = "--multipass", .Text = "Multipass", .Options = {"None", "2Pass-Quarter", "2Pass-Full"}, .VisibleFunc = Function() Mode.Value > 0},
+                        New OptionParam With {.Switch = "--multipass", .Text = "Multipass", .Options = {"None", "2Pass-Quarter", "2Pass-Full"}, .VisibleFunc = Function() Mode.Value > 1},
                         New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
@@ -635,7 +652,8 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"})
                     Add("Statistic",
                         New StringParam With {.Switch = "--vmaf", .Text = "VMAF"},
-                        New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
+                        New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error", "Quiet"}},
+                        New OptionParam With {.Switch = "--disable-nvml", .Text = "NVML GPU Monitoring", .Options = {"Enabled NVML (default)", "Disable NVML when system has one CUDA devices", "Always disable NVML"}, .IntegerValue = True},
                         New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
                         New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
                     Add("Input/Output",
@@ -1024,10 +1042,12 @@ Public Class NVEnc
 
             Select Case Mode.Value
                 Case 0
-                    Return If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
+                    Return "--qvbr " & QVBR.Value.ToInvariantString()
                 Case 1
-                    Return "--cbr " & rate
+                    Return If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
                 Case 2
+                    Return "--cbr " & rate
+                Case 3
                     Return "--vbr " & rate
             End Select
             Return ""

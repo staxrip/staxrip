@@ -18,6 +18,7 @@ v2.30.0 (not published yet)
 - UI: Optimize addition of Tonemapping in Crop window
 - UI: Fix Video Comparison not being able to open more files when source file is loaded
 - UI: Fix progress detections for ffmpeg depending on used codec
+- UI: Fix progress detections for opusenc ([#1147](/../../issues/1147))
 - UI: Fix progress detections for given percentual values ([#1143](/../../issues/1143))
 - UI: Add Auto-Tonemapping support for Thumbnailer
 - UI: Fix ShowMessageBox Icon parameter

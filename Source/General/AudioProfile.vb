@@ -851,6 +851,9 @@ Public Class GUIAudioProfile
                     proc.SkipStrings = {"frame=", "size="}
                     proc.Encoding = Encoding.UTF8
                     proc.Duration = GetDuration()
+                ElseIf cl.Contains("opusenc") Then
+                    proc.Package = Package.OpusEnc
+                    proc.SkipStrings = {"%"}
                 ElseIf cl.Contains("deezy") Then
                     proc.Package = Package.DeeZy
                     proc.SkipStrings = {"%"}

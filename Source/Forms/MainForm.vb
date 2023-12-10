@@ -5815,7 +5815,9 @@ Public Class MainForm
                 If insideQuote Then
                     sb.Append(commandLine.Chars(i))
                 Else
-                    args.Add(sb.ToString())
+                    If Not String.IsNullOrWhiteSpace(sb.ToString()) Then
+                        args.Add(sb.ToString())
+                    End If
                     sb = New StringBuilder()
                 End If
             Else
@@ -5832,7 +5834,7 @@ Public Class MainForm
         If String.IsNullOrWhiteSpace(commandLine) Then Exit Sub
 
         Dim args = ParseCommandLine(commandLine)
-        If args.Length > 1 Then
+        If args.Any() Then
             Package.LoadConfAll()
         Else
             Exit Sub

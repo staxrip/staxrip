@@ -1218,11 +1218,7 @@ Public Module MainModule
         Return Msg(title, content, TaskIcon.Question, buttons)
     End Function
 
-    Function Msg(title As String,
-                 content As String,
-                 icon As TaskIcon,
-                 buttons As TaskButton) As DialogResult
-
+    Function Msg(title As String, content As String, icon As TaskIcon, buttons As TaskButton) As DialogResult
         Using td As New TaskDialog(Of DialogResult)
             td.Icon = icon
             td.Title = title

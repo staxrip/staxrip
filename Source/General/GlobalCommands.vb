@@ -334,7 +334,7 @@ Public Class GlobalCommands
         <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
         Optional content As String = Nothing,
         <DispName("Icon")>
-        <DefaultValue(GetType(MsgIcon), "Info")>
+        <DefaultValue(GetType(TaskIcon), "Info")>
         Optional icon As TaskIcon = TaskIcon.Info)
 
         Msg(Macro.Expand(mainInstruction), Macro.Expand(content), icon, TaskButton.OK)

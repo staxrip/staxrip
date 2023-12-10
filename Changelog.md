@@ -41,12 +41,17 @@ v2.30.0 (not published yet)
 - vvencFFapp: Add new presets
 - x265: Fix --log-level param options
 - Update tools
+    - DeeZy v0.1.4
     - eac3to v3.34
-    - MediaInfo v23.09
-    - Subtitle Edit v4.0.1
+    - MediaInfo v23.11
+    - MKVToolNix v81.0
+    - NVEncC v7.40
+    - QSVEncC v7.57
+    - Subtitle Edit v4.0.2
+    - VCEEncC v8.21
     - vvencFFapp v1.10.0 RC1 r204-d685b9c
 - Update AviSynth+ plugins
-    - avs_libplacebo v1.4.1
+    - avs_libplacebo v1.5.2
     - RemoveDirt v0.9.3
 - Update Dual plugins
     - None

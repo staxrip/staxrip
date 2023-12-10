@@ -420,7 +420,7 @@ Public Class ProcController
         Dim frame As Integer = 0
         Dim progress As Single = -1
 
-        match = Regex.Match(value, "(?:\s|^)\[?\s*(\d+(?:[.,]\d+))%\]?\s?", RegexOptions.IgnoreCase)
+        match = Regex.Match(value, "(?:\s|^)\[?\s*(\d+(?:[.,]\d+)?)%\]?\s?", RegexOptions.IgnoreCase)
         If match.Success Then
             progress = match.Groups(1).Value.ToSingle()
         Else

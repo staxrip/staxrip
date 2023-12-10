@@ -18,19 +18,32 @@ v2.30.0 (not published yet)
 - UI: Optimize addition of Tonemapping in Crop window
 - UI: Fix Video Comparison not being able to open more files when source file is loaded
 - UI: Fix progress detections for ffmpeg depending on used codec
+- UI: Fix progress detections for given percentual values ([#1143](/../../issues/1143))
 - UI: Add Auto-Tonemapping support for Thumbnailer
+- UI: Fix ShowMessageBox Icon parameter
+- UI: Fix ShowMessageBox call through CommandLine leads to an exception message ([#1141](/../../issues/1141))
+- NVEncC: Add --qvbr parameter ([#1139](/../../issues/1139))
+- NVEncC: Add --output-csp parameter
+- NVEncC: Add --disable-nvml parameter
+- NVEncC: Add Quiet Log Level
+- QSVEncC: Add Quiet Log Level
+- QSVEncC: Add --vpp-rff parameter
+- QSVEncC: Make --icq mode default encode mode
 - SvtAv1EncApp: Add new SSIM tune option ([#1118](/../../issues/1118))
 - SvtAv1EncApp: Extend --keyint parameter options
 - SvtAv1EncApp: Fix --enable-qm parameter definition ([#1122](/../../issues/1122))
 - VCEEncC: Add AV1 support ([#1117](/../../issues/1117))
-- VCEEncC: Fix minor issues and codec related params
+- VCEEncC: Add --vpp-rff parameter
+- VCEEncC: Add --vpp-scaler-sharpness parameter
+- VCEEncC: Fix some issues and codec related params
+- VCEEncC: Remove --vpp-resize amf_point parameter option
 - vvencFFapp: Add new presets
-- x265: Fix --log-level param values
+- x265: Fix --log-level param options
 - Update tools
     - eac3to v3.34
     - MediaInfo v23.09
     - Subtitle Edit v4.0.1
-    - vvencFFapp v1.9.1
+    - vvencFFapp v1.10.0 RC1 r204-d685b9c
 - Update AviSynth+ plugins
     - avs_libplacebo v1.4.1
     - RemoveDirt v0.9.3

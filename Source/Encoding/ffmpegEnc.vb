@@ -179,13 +179,18 @@ Public Class ffmpegEnc
             .Switch = "-c:v",
             .Text = "Codec",
             .AlwaysOn = True,
-            .Options = {"x264", "x265", "AV1", "XviD", "MPEG-4", "Theora", "ProRes",
-                        "R210", "V210", "UT Video", "FFV1", "VP | VP8", "VP | VP9",
-                        "Intel | Intel H.264", "Intel | Intel H.265",
-                        "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265"},
+            .Options = {"x264", "x265", "AOM-AV1", "XviD", "MPEG-4", "Theora", "ProRes",
+                        "R210", "V210", "UT Video", "FFV1", 
+                        "AMD | AMD AMF H264", "AMD | AMD AMF HEVC", "AMD | AMD AMF AV1",
+                        "Intel | Intel H.264", "Intel | Intel H.265", "Intel | Intel AV1",
+                        "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265", "Nvidia | Nvidia AV1",
+                        "VP | VP8", "VP | VP9"},
             .Values = {"libx264", "libx265", "libaom-av1", "libxvid", "mpeg4", "libtheora", "prores",
-                       "r210", "v210", "utvideo", "ffv1", "libvpx", "libvpx-vp9",
-                       "h264_qsv", "hevc_qsv", "h264_nvenc", "hevc_nvenc"}}
+                       "r210", "v210", "utvideo", "ffv1", 
+                       "h264_amf", "hevc_amf", "av1_amf", 
+                       "h264_qsv", "hevc_qsv", "av1_qsv",
+                       "h264_nvenc", "hevc_nvenc", "av1_nvenc",
+                       "libvpx", "libvpx-vp9"}}
 
         Property Mode As New OptionParam With {
             .Name = "Mode",

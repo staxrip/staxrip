@@ -229,6 +229,10 @@ Fix Telecined Fades =
     clip = core.ftf.FixFades(clip)
     clip = core.fmtc.bitdepth (clip, bits=8)
 
+[Flip]
+Flip | Horizontal = clip = core.std.FlipHorizontal(clip)
+Flip | Vertical = clip = core.std.FlipVertical(clip)
+
 [Rotation]
 
 Left =

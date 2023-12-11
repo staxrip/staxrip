@@ -23,6 +23,7 @@ v2.30.0 (not published yet)
 - UI: Add Auto-Tonemapping support for Thumbnailer
 - UI: Fix ShowMessageBox Icon parameter
 - UI: Fix ShowMessageBox call through CommandLine leads to an exception message ([#1141](/../../issues/1141))
+- UI: Add Flip filter profiles
 - NVEncC: Add --qvbr parameter ([#1139](/../../issues/1139))
 - NVEncC: Add --output-csp parameter
 - NVEncC: Add --disable-nvml parameter
@@ -30,6 +31,7 @@ v2.30.0 (not published yet)
 - QSVEncC: Add Quiet Log Level
 - QSVEncC: Add --vpp-rff parameter
 - QSVEncC: Make --icq mode default encode mode
+- rav1e: Fix wrong parameter spelling that crash the encode ([#1138](/../../issues/1138))
 - SvtAv1EncApp: Add new SSIM tune option ([#1118](/../../issues/1118))
 - SvtAv1EncApp: Extend --keyint parameter options
 - SvtAv1EncApp: Fix --enable-qm parameter definition ([#1122](/../../issues/1122))

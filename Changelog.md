@@ -28,6 +28,7 @@ v2.30.0 (not published yet)
 - NVEncC: Add --output-csp parameter
 - NVEncC: Add --disable-nvml parameter
 - NVEncC: Add Quiet Log Level
+- NVEncC: Fix AV1 CQ parameter values ([#1153](/../../issues/1153))
 - QSVEncC: Add Quiet Log Level
 - QSVEncC: Add --vpp-rff parameter
 - QSVEncC: Make --icq mode default encode mode

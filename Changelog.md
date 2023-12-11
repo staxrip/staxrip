@@ -24,6 +24,7 @@ v2.30.0 (not published yet)
 - UI: Fix ShowMessageBox Icon parameter
 - UI: Fix ShowMessageBox call through CommandLine leads to an exception message ([#1141](/../../issues/1141))
 - UI: Add Flip filter profiles
+- DeeZy: Fix audio delay handled by encoder and muxer
 - FFmpeg: Add hardware AV1 support for AMD/Intel/NVidia ([#1145](/../../issues/1145))
 - NVEncC: Add --qvbr parameter ([#1139](/../../issues/1139))
 - NVEncC: Add --output-csp parameter

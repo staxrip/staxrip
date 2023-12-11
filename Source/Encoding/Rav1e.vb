@@ -262,9 +262,9 @@ Public Class Rav1eParams
 
                 Add("Main",
                     Tune, Passes, Mode, Speed, Bitrate, Quantizer,
-                    New StringParam With {.Switch = "--mastering_display", .Path = "VUI", .Text = "Master Display"},
+                    New StringParam With {.Switch = "--mastering-display", .Path = "VUI", .Text = "Master Display"},
                     Keyint, MinKeyint, Threads, Limit, Light, MaxFALL, Prime, Matrix, Transfer, Range,
-                    New BoolParam With {.Switch = "--low_latency", .Text = "Low Latency", .Path = "Basic"},
+                    New BoolParam With {.Switch = "--low-latency", .Text = "Low Latency", .Path = "Basic"},
                     Custom)
             End If
 

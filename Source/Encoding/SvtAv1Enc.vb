@@ -112,20 +112,16 @@ Public Class SvtAv1Enc
 
             If Params.Passes.Visible Then
                 ret.Add(Sub()
-                            Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                            Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "), GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                             If Params.Passes.Value > 0 Then
-                                Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "),
-                                       GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                                Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "), GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                             End If
                             If Params.Passes.Value > 1 Then
-                                Encode("Video encoding pass 3" + name.Replace("_chunk", " chunk "),
-                                       GetArgs(3, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                                Encode("Video encoding pass 3" + name.Replace("_chunk", " chunk "), GetArgs(3, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                             End If
                         End Sub)
             Else
-                ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "),
-                    GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority))
+                ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "), GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority))
             End If
         Next
 
@@ -694,7 +690,7 @@ Public Class SvtAv1EncParams
 
             sb.Append($" --input {input}")
             sb.Append($" --width {p.TargetWidth} --height {p.TargetHeight}")
-            sb.Append($" --output {targetPath.Escape}")
+            sb.Append($" --output {(targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape}")
         End If
 
         If isSingleChunk Then

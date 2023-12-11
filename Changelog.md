@@ -35,6 +35,7 @@ v2.30.0 (not published yet)
 - SvtAv1EncApp: Add new SSIM tune option ([#1118](/../../issues/1118))
 - SvtAv1EncApp: Extend --keyint parameter options
 - SvtAv1EncApp: Fix --enable-qm parameter definition ([#1122](/../../issues/1122))
+- SvtAv1EncApp: Fix chunk encoding ([#1136](/../../issues/1136))
 - VCEEncC: Add AV1 support ([#1117](/../../issues/1117))
 - VCEEncC: Add --vpp-rff parameter
 - VCEEncC: Add --vpp-scaler-sharpness parameter

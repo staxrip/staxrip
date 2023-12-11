@@ -418,13 +418,14 @@ Public Class ProcController
 
         Dim match As Match
         Dim frame As Integer = 0
+        Dim frames As Integer = Proc.FrameCount
         Dim progress As Single = -1
 
         match = Regex.Match(value, "(?:\s|^)\[?\s*(\d+(?:[.,]\d+)?)%\]?\s?", RegexOptions.IgnoreCase)
         If match.Success Then
             progress = match.Groups(1).Value.ToSingle()
         Else
-            match = Regex.Match(value, "(\d+(?:[.,]\d+))/100", RegexOptions.IgnoreCase)
+            match = Regex.Match(value, "(\d+(?:[.,]\d+))\/100", RegexOptions.IgnoreCase)
             If match.Success Then
                 progress = match.Groups(1).Value.ToSingle()
             Else
@@ -432,9 +433,10 @@ Public Class ProcController
                 If match.Success Then
                     frame = match.Groups(1).Value.ToInt()
                 Else
-                    match = Regex.Match(value, "\s(\d+)(?:\s?/\s?(\d+))?\sframes", RegexOptions.IgnoreCase)
+                    match = Regex.Match(value, "\s(\d+)(?:\s?\/\s?(\d+))?\sframes", RegexOptions.IgnoreCase)
                     If match.Success Then
                         frame = match.Groups(1).Value.ToInt()
+                        frames = match.Groups(2).Value.ToInt()
                     Else
 
                     End If
@@ -442,8 +444,8 @@ Public Class ProcController
             End If
         End If
 
-        If frame < Proc.FrameCount AndAlso progress < 0 Then
-            progress = CSng(frame / Proc.FrameCount * 100)
+        If frame < frames AndAlso progress < 0 Then
+            progress = CSng(frame / frames * 100)
         End If
 
         If progress >= 0 AndAlso LastProgress <> progress Then

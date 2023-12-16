@@ -10,7 +10,7 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.30.0 (not published yet)
+v2.30.0 (2023-12-17)
 ====================
 
 - Log: Fix not showing Media Info of source files in logs ([#1114](/../../issues/1114))
@@ -22,7 +22,7 @@ v2.30.0 (not published yet)
 - UI: Fix progress detections for given percentual values ([#1143](/../../issues/1143))
 - UI: Add Auto-Tonemapping support for Thumbnailer
 - UI: Fix ShowMessageBox Icon parameter
-- UI: Fix ShowMessageBox call through CommandLine leads to an exception message ([#1141](/../../issues/1141))
+- UI: Fix ShowMessageBox call through Command Line leads to an exception message ([#1141](/../../issues/1141))
 - UI: Add Flip filter profiles
 - DeeZy: Fix audio delay handled by encoder and muxer
 - FFmpeg: Add hardware AV1 support for AMD/Intel/NVidia ([#1145](/../../issues/1145))
@@ -48,19 +48,20 @@ v2.30.0 (not published yet)
 - x265: Fix --log-level param options
 - Update tools
     - DeeZy v0.1.4
-    - eac3to v3.34
+    - eac3to v3.36
+    - FFmpeg N-112998-g1f56bfc986-20231216
     - MediaInfo v23.11
     - MKVToolNix v81.0
     - NVEncC v7.40
     - QSVEncC v7.57
     - Subtitle Edit v4.0.2
     - VCEEncC v8.21
-    - vvencFFapp v1.10.0 RC1 r204-d685b9c
+    - vvencFFapp v1.10.0
 - Update AviSynth+ plugins
     - avs_libplacebo v1.5.2
     - RemoveDirt v0.9.3
 - Update Dual plugins
-    - None
+    - L-SMASH-Works v1156 [20231117]
 - Update VapourSynth plugins
     - None
 

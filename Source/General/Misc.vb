@@ -542,6 +542,7 @@ Public Class Language
 
     Sub New(ci As CultureInfo, Optional isCommon As Boolean = False, Optional isInitial As Boolean = False)
         Me.IsCommon = isCommon
+
         If isInitial OrElse ci IsNot Nothing OrElse Languages.Select(Function(x) x.TwoLetterCode).ContainsEx(twoLetterCode) Then
             CultureInfoValue = ci
         Else
@@ -558,6 +559,8 @@ Public Class Language
                     twoLetterCode = "he"
                 Case "jp"
                     twoLetterCode = "ja"
+                Case "no"
+                    twoLetterCode = "nr"
             End Select
 
             If isInitial OrElse Languages.Select(Function(x) x.TwoLetterCode).ContainsEx(twoLetterCode) Then
@@ -1365,8 +1368,9 @@ Public Class Subtitle
                 ret.Add(st)
             Next
         Else
-            Dim st As New Subtitle()
-            st.Size = New FileInfo(path).Length
+            Dim st As New Subtitle With {
+                .Size = New FileInfo(path).Length
+            }
             Dim match = Regex.Match(path, " ID(\d+)")
 
             If match.Success Then
@@ -1803,10 +1807,11 @@ Public Enum DemuxMode
 End Enum
 
 Public Enum SubtitleMode
+    <DispName("Demux all languages")> All
     <DispName("Demux and include preferred languages")> Preferred
     <DispName("Demux preferred languages but don't include them")> PreferredNoMux
-    <DispName("Show dialog to choose subtitles to be included")> Dialog
     <DispName("Include preferred languages directly without demuxing")> Direct
+    <DispName("Show dialog to choose subtitles to be included")> Dialog
     <DispName("Don't include subtitles")> Disabled
 End Enum
 

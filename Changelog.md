@@ -14,6 +14,7 @@ v2.31.0 (not published yet)
 ====================
 
 - UI: Fix crash on startup on non Vulkan systems ([#1158](/../../issues/1158))
+- UI: Fix recognizing and interpreting source (subtitle) languages ([#1120](/../../issues/1120), [#1152](/../../issues/1152))
 - Update tools
 - Update AviSynth+ plugins
 - Update Dual plugins

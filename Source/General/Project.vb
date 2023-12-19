@@ -319,7 +319,7 @@ Public Class Project
 
     ReadOnly Property IsSubtitleDemuxingRequired As Boolean
         Get
-            Return SubtitleMode = SubtitleMode.Dialog OrElse SubtitleMode = SubtitleMode.Preferred OrElse SubtitleMode = SubtitleMode.PreferredNoMux
+            Return SubtitleMode = SubtitleMode.All OrElse SubtitleMode = SubtitleMode.Dialog OrElse SubtitleMode = SubtitleMode.Preferred OrElse SubtitleMode = SubtitleMode.PreferredNoMux
         End Get
     End Property
 End Class

@@ -163,7 +163,7 @@ Public Class MediaInfo
 
             If count > 0 Then
                 For index = 0 To count - 1
-                    Dim subtitle As New Subtitle(New Language(GetText(index, "Language"))) With {
+                    Dim subtitle As New Subtitle(New Language(GetText(index, "Language/String2"))) With {
                         .Index = index
                     }
 

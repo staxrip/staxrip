@@ -67,47 +67,40 @@ Public MustInherit Class Demuxer
     End Function
 
     Shared Function GetDefaults() As List(Of Demuxer)
-        Dim ret As New List(Of Demuxer)
-
-        ret.Add(New eac3toDemuxer With {.Active = False})
-
-        Dim tsToMkv As New CommandLineDemuxer With {
-            .Name = "ffmpeg: Re-mux (M2)TS to MKV",
-            .Active = False,
-            .InputExtensions = {"m2ts", "ts"},
-            .OutputExtensions = {"mkv"},
-            .InputFormats = {"hevc", "avc"},
-            .Command = "%app:ffmpeg%",
-            .Arguments = "-y -hide_banner -probesize 10M -i ""%source_file%"" -map 0 -dn -c copy -ignore_unknown ""%temp_file%.mkv"""
+        Dim ret As New List(Of Demuxer) From {
+            New eac3toDemuxer With {.Active = False},
+            New CommandLineDemuxer With {
+                .Name = "ffmpeg: Re-mux (M2)TS to MKV",
+                .Active = False,
+                .InputExtensions = {"m2ts", "ts"},
+                .OutputExtensions = {"mkv"},
+                .InputFormats = {"hevc", "avc"},
+                .Command = "%app:ffmpeg%",
+                .Arguments = "-y -hide_banner -probesize 10M -i ""%source_file%"" -map 0 -dn -c copy -ignore_unknown ""%temp_file%.mkv"""
+            },
+            New ffmpegDemuxer,
+            New mkvDemuxer,
+            New MP4BoxDemuxer,
+            New CommandLineDemuxer With {
+                .Name = "DGIndex: Demux & Index MPEG-2",
+                .InputExtensions = {"mpg", "mpeg", "vob", "m2ts", "m2v", "mts", "m2t"},
+                .OutputExtensions = {"d2v"},
+                .InputFormats = {"mpeg2"},
+                .Command = "%app:DGIndex%",
+                .Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -o ""%temp_file%"" -hide -exit",
+                .SourceFilters = {"MPEG2Source", "D2VSource", "d2v.Source"}
+            },
+            New CommandLineDemuxer With {
+                .Name = "D2V Witch: Demux & Index MPEG-2",
+                .InputExtensions = {"mpg", "mpeg", "vob", "m2ts", "m2v", "mts", "m2t"},
+                .OutputExtensions = {"d2v"},
+                .InputFormats = {"mpeg2"},
+                .Command = "cmd.exe",
+                .Arguments = "/S /C """"%app:D2V Witch%"" --audio-ids all --output ""%temp_file%.d2v"" %source_files%""",
+                .SourceFilters = {"MPEG2Source", "D2VSource", "d2v.Source"},
+                .Active = False
+            }
         }
-        ret.Add(tsToMkv)
-
-        ret.Add(New ffmpegDemuxer)
-        ret.Add(New mkvDemuxer)
-        ret.Add(New MP4BoxDemuxer)
-
-        Dim dgIndex As New CommandLineDemuxer With {
-            .Name = "DGIndex: Demux & Index MPEG-2",
-            .InputExtensions = {"mpg", "mpeg", "vob", "m2ts", "m2v", "mts", "m2t"},
-            .OutputExtensions = {"d2v"},
-            .InputFormats = {"mpeg2"},
-            .Command = "%app:DGIndex%",
-            .Arguments = "-i %source_files% -ia 2 -fo 0 -yr 1 -tn 1 -om 2 -drc 2 -dsd 0 -dsa 0 -o ""%temp_file%"" -hide -exit",
-            .SourceFilters = {"MPEG2Source", "D2VSource", "d2v.Source"}
-        }
-        ret.Add(dgIndex)
-
-        Dim d2vWitch As New CommandLineDemuxer With {
-            .Name = "D2V Witch: Demux & Index MPEG-2",
-            .InputExtensions = {"mpg", "mpeg", "vob", "m2ts", "m2v", "mts", "m2t"},
-            .OutputExtensions = {"d2v"},
-            .InputFormats = {"mpeg2"},
-            .Command = "cmd.exe",
-            .Arguments = "/S /C """"%app:D2V Witch%"" --audio-ids all --output ""%temp_file%.d2v"" %source_files%""",
-            .SourceFilters = {"MPEG2Source", "D2VSource", "d2v.Source"},
-            .Active = False
-        }
-        ret.Add(d2vWitch)
 
         Return ret
     End Function
@@ -458,11 +451,7 @@ Public Class MP4BoxDemuxer
         Dim audioStreams As List(Of AudioStream) = Nothing
         Dim subtitles As List(Of Subtitle) = Nothing
         Dim attachments = GetAttachments(proj.SourceFile)
-
-        Dim demuxAudio = Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
-            TypeOf proj.Audio1 Is NullAudioProfile) AndAlso
-            MediaInfo.GetAudioCount(proj.SourceFile) > 0
-
+        Dim demuxAudio = Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso TypeOf proj.Audio1 Is NullAudioProfile) AndAlso MediaInfo.GetAudioCount(proj.SourceFile) > 0
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim demuxChapters = proj.DemuxChapters
         Dim demuxAttachments = proj.DemuxAttachments
@@ -708,7 +697,7 @@ End Class
 Public Class mkvDemuxer
     Inherits Demuxer
 
-    Private _videoDemuxing As Boolean = True
+    Private ReadOnly _videoDemuxing As Boolean = True
 
     Sub New()
         Name = "mkvextract: Demux"
@@ -718,16 +707,9 @@ Public Class mkvDemuxer
     Overrides Sub Run(proj As Project)
         Dim audioStreams As List(Of AudioStream) = Nothing
         Dim subtitles As List(Of Subtitle) = Nothing
-
-        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify --ui-language en " +
-            proj.SourceFile.Escape)
-
+        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify --ui-language en " + proj.SourceFile.Escape)
         Dim attachments = GetAttachments(stdout)
-
-        Dim demuxAudio = (Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
-            TypeOf proj.Audio1 Is NullAudioProfile)) AndAlso
-            MediaInfo.GetAudioCount(proj.SourceFile) > 0
-
+        Dim demuxAudio = (Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso TypeOf proj.Audio1 Is NullAudioProfile)) AndAlso MediaInfo.GetAudioCount(proj.SourceFile) > 0
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim demuxChapters = proj.DemuxChapters
         Dim demuxAttachments = proj.DemuxAttachments
@@ -895,13 +877,16 @@ Public Class mkvDemuxer
                 Dim prefLang As Boolean = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode)
                 Dim skip As Boolean = False
 
-                If proj.SubtitleMode = SubtitleMode.PreferredNoMux Then
-                    If Not prefLang Then
-                        skip = True
-                    End If
-                Else
-                    skip = Not subtitle.Enabled
-                End If
+                Select Case proj.SubtitleMode
+                    Case SubtitleMode.All
+                        skip = False
+                    Case SubtitleMode.PreferredNoMux
+                        If Not prefLang Then
+                            skip = True
+                        End If
+                    Case Else
+                        skip = Not subtitle.Enabled
+                End Select
 
                 If skip Then
                     Continue For

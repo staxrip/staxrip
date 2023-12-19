@@ -10,6 +10,16 @@ v2.xx.0 (not published yet)
 -->
 
 
+v2.31.0 (not published yet)
+====================
+
+- UI: Fix crash on startup on non Vulkan systems ([#1158](/../../issues/1158))
+- Update tools
+- Update AviSynth+ plugins
+- Update Dual plugins
+- Update VapourSynth plugins
+
+
 v2.30.0 (2023-12-17)
 ====================
 

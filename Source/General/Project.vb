@@ -143,19 +143,11 @@ Public Class Project
         If TargetFile Is Nothing Then TargetFile = ""
 
         If Check(PreferredSubtitles, "Automatically Included Subtitles", 2) Then
-            If Language.CurrentCulture.TwoLetterCode = "en" Then
-                PreferredSubtitles = "eng und"
-            Else
-                PreferredSubtitles = Language.CurrentCulture.ThreeLetterCode + " eng und"
-            End If
+            PreferredSubtitles = If(Language.CurrentCulture.TwoLetterCode = "en", "eng und", Language.CurrentCulture.ThreeLetterCode + " eng und")
         End If
 
         If Check(PreferredAudio, "Preferred Audio Languages", 1) Then
-            If Language.CurrentCulture.TwoLetterCode = "en" Then
-                PreferredAudio = "eng und"
-            Else
-                PreferredAudio = Language.CurrentCulture.ThreeLetterCode + " eng und"
-            End If
+            PreferredAudio = If(Language.CurrentCulture.TwoLetterCode = "en", "eng und", Language.CurrentCulture.ThreeLetterCode + " eng und")
         End If
 
         If SourceScript Is Nothing Then SourceScript = New SourceVideoScript

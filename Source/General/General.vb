@@ -406,7 +406,7 @@ Public Interface ISafeSerialization
 End Interface
 
 Public Class HelpDocument
-    Private Path As String
+    Private ReadOnly Path As String
     Private IsClosed As Boolean
 
     Property Writer As XmlTextWriter
@@ -461,8 +461,9 @@ table {
 }
 </style>"
 
-        Writer = New XmlTextWriter(Path, Encoding.UTF8)
-        Writer.Formatting = Formatting.Indented
+        Writer = New XmlTextWriter(Path, Encoding.UTF8) With {
+            .Formatting = Formatting.Indented
+        }
         Writer.WriteRaw("<!doctype html>")
         Writer.WriteStartElement("html")
         Writer.WriteStartElement("head")
@@ -720,8 +721,8 @@ End Class
 Public Class FieldSettingBag(Of T)
     Inherits SettingBag(Of T)
 
-    Private Obj As Object
-    Private Name As String
+    Private ReadOnly Obj As Object
+    Private ReadOnly Name As String
 
     Sub New(obj As Object, fieldName As String)
         Me.Obj = obj
@@ -741,8 +742,8 @@ End Class
 Public Class ReflectionSettingBag(Of T)
     Inherits SettingBag(Of T)
 
-    Private Obj As Object
-    Private Name As String
+    Private ReadOnly Obj As Object
+    Private ReadOnly Name As String
 
     Sub New(obj As Object, name As String)
         Me.Obj = obj
@@ -1231,7 +1232,7 @@ End Module
 
 Public Class Reflector
     Public Type As Type
-    Private BasicFlags As BindingFlags = BindingFlags.Static Or BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.NonPublic
+    Private ReadOnly BasicFlags As BindingFlags = BindingFlags.Static Or BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.NonPublic
 
     Sub New(obj As Object)
         Me.Value = obj
@@ -1431,7 +1432,7 @@ Public Class PowerRequest
 End Class
 
 Public Class CRC32
-    Shared Table As UInteger() = New UInteger(255) {}
+    Shared ReadOnly Table As UInteger() = New UInteger(255) {}
 
     Shared Sub New()
         Dim poly = &HEDB88320UI
@@ -1480,9 +1481,13 @@ Public Class Vulkan
 
     Public Shared ReadOnly Property IsSupported As Boolean
         Get
-            If _result = Nothing Then
-                _result = vkEnumerateInstanceVersion(_pApiVersion)
-            End If
+            Try
+                If _result = Nothing Then
+                    _result = vkEnumerateInstanceVersion(_pApiVersion)
+                End If
+            Catch ex As Exception
+                _result = VkResult.ErrorInitializationFailed
+            End Try
             Return _result = VkResult.Success
         End Get
     End Property

@@ -2995,7 +2995,7 @@ Public Class Package
                 End If
             End If
 
-            If Not HintDirFunc Is Nothing Then
+            If HintDirFunc IsNot Nothing Then
                 ret = HintDirFunc.Invoke + Filename
 
                 If File.Exists(ret) Then
@@ -3005,8 +3005,8 @@ Public Class Package
 
             Dim plugin = TryCast(Me, PluginPackage)
 
-            If Not plugin Is Nothing Then
-                If Not plugin.VsFilterNames Is Nothing AndAlso Not plugin.AvsFilterNames Is Nothing Then
+            If plugin IsNot Nothing Then
+                If plugin.VsFilterNames IsNot Nothing AndAlso plugin.AvsFilterNames IsNot Nothing Then
                     ret = Folder.Apps + "Plugins\Dual\" + Name + "\" + Filename
 
                     If File.Exists(ret) Then
@@ -3030,11 +3030,7 @@ Public Class Package
             End If
 
             If Find Then
-                If Exclude.NothingOrEmpty Then
-                    ret = FindEverywhere(Filename)
-                Else
-                    ret = FindEverywhere(Filename, Exclude(0))
-                End If
+                ret = FindEverywhere(Filename, If(Exclude.NothingOrEmpty, Nothing, Exclude(0)))
 
                 If ret <> "" Then
                     Return ret

@@ -1008,7 +1008,7 @@ Public Class AudioForm
 
     Sub mbLanguage_ValueChanged() Handles mbLanguage.ValueChangedUser
         TempProfile.Language = mbLanguage.GetValue(Of Language)()
-        mbLanguage.Text = TempProfile.Language.Name
+        mbLanguage.Text = TempProfile.Language.EnglishName
         UpdateControls()
     End Sub
 

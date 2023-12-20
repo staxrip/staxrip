@@ -543,28 +543,46 @@ Public Class Language
     Sub New(ci As CultureInfo, Optional isCommon As Boolean = False, Optional isInitial As Boolean = False)
         Me.IsCommon = isCommon
 
-        If isInitial OrElse ci IsNot Nothing OrElse Languages.Select(Function(x) x.TwoLetterCode).ContainsEx(twoLetterCode) Then
+        If isInitial OrElse ci IsNot Nothing OrElse Languages.Select(Function(x) x.Name).ContainsEx(ci.Name) Then
             CultureInfoValue = ci
         Else
             CultureInfoValue = CultureInfo.InvariantCulture
         End If
     End Sub
 
-    Sub New(twoLetterCode As String, Optional isCommon As Boolean = False, Optional isInitial As Boolean = False)
+    Sub New(lang As String, Optional isCommon As Boolean = False, Optional isInitial As Boolean = False)
         Try
+            If String.IsNullOrWhiteSpace(lang) Then Throw New ArgumentNullException("lang")
+
             Me.IsCommon = isCommon
 
-            Select Case twoLetterCode
-                Case "iw"
-                    twoLetterCode = "he"
-                Case "jp"
-                    twoLetterCode = "ja"
-                Case "no"
-                    twoLetterCode = "nr"
+            If isInitial Then
+                CultureInfoValue = New CultureInfo(lang)
+                Return
+            End If
+            
+            Dim selectedLanguages As IEnumerable(Of String)
+
+            Select Case lang.Length
+                Case 2
+                    Select Case lang
+                        Case "iw"
+                            lang = "he"
+                        Case "jp"
+                            lang = "ja"
+                        Case "no"
+                            lang = "nr"
+                    End Select
+
+                    selectedLanguages = Languages.Select(Function(x) x.TwoLetterCode)
+                Case 3
+                    selectedLanguages = Languages.Select(Function(x) x.ThreeLetterCode)
+                Case Else
+                    selectedLanguages = Languages.Select(Function(x) x.Name)
             End Select
 
-            If isInitial OrElse Languages.Select(Function(x) x.TwoLetterCode).ContainsEx(twoLetterCode) Then
-                CultureInfoValue = New CultureInfo(twoLetterCode)
+            If selectedLanguages.ContainsEx(lang) Then
+                CultureInfoValue = New CultureInfo(lang)
             Else
                 CultureInfoValue = CultureInfo.InvariantCulture
             End If
@@ -635,6 +653,16 @@ Public Class Language
     ReadOnly Property Name() As String
         Get
             If CultureInfo.TwoLetterISOLanguageName = "iv" Then
+                Return "und"
+            Else
+                Return CultureInfo.Name
+            End If
+        End Get
+    End Property
+
+    ReadOnly Property EnglishName() As String
+        Get
+            If CultureInfo.TwoLetterISOLanguageName = "iv" Then
                 Return "Undetermined"
             Else
                 Return CultureInfo.EnglishName
@@ -663,6 +691,7 @@ Public Class Language
                     New Language("pa", True, True),
                     New Language("ms", True, True),
                     New Language("ko", True, True),
+                    New Language("no-NO", True, True),
                     New Language(CultureInfo.InvariantCulture, True, True)
                 }
 
@@ -676,7 +705,7 @@ Public Class Language
 
                 Dim l2 As New List(Of Language)
 
-                For Each i In CultureInfo.GetCultures(CultureTypes.NeutralCultures)
+                For Each i In CultureInfo.GetCultures(CultureTypes.AllCultures)
                     l2.Add(New Language(i, False, True))
                 Next
 
@@ -697,7 +726,7 @@ Public Class Language
 
 
     Overrides Function ToString() As String
-        Return Name
+        Return $"{EnglishName} [{Name}]"
     End Function
 
     Function CompareTo(other As Language) As Integer Implements System.IComparable(Of Language).CompareTo
@@ -1128,7 +1157,7 @@ Public Class AudioStream
             End If
 
             If Language.TwoLetterCode <> "iv" Then
-                ret += " " + Language.Name
+                ret += " " + Language.EnglishName
             End If
 
             If Title <> "" AndAlso Title <> " " Then
@@ -1256,10 +1285,10 @@ Public Class Subtitle
     ReadOnly Property Filename As String
         Get
             Dim ret = "ID" & (Index + 1)
-            ret += " " + Language.Name
+            ret += "_" + Language.Name
 
             If Title <> "" AndAlso Title <> " " AndAlso p.SourceFile <> "" Then
-                ret += " {" + Title.Shorten(50).EscapeIllegalFileSysChars + "}"
+                ret += "__" + Title.Shorten(50).EscapeIllegalFileSysChars
             End If
 
             Return ret
@@ -1371,26 +1400,30 @@ Public Class Subtitle
             Dim st As New Subtitle With {
                 .Size = New FileInfo(path).Length
             }
-            Dim match = Regex.Match(path, " ID(\d+)")
+            Dim idMatch = Regex.Match(path, "\\ID(\d+)")
 
-            If match.Success Then
-                st.StreamOrder = match.Groups(1).Value.ToInt - 1
+            If idMatch.Success Then
+                st.StreamOrder = idMatch.Groups(1).Value.ToInt - 1
             End If
 
-            For Each lng In Language.Languages
-                If path.Contains(lng.CultureInfo.EnglishName) Then
+            For Each lng In Language.Languages.OrderByDescending( Function(x) x.Name.Length )
+                If path.Contains(lng.EnglishName) Then
                     st.Language = lng
                 End If
 
-                If path.FileName.Contains(lng.CultureInfo.EnglishName) Then
+                If path.Contains(lng.Name) Then
+                    st.Language = lng
+                End If
+
+                If path.FileName.LeftLast(".").Contains(lng.Name) Then
                     st.Language = lng
                     Exit For
                 End If
             Next
 
-            If path.Contains("{") Then
-                Dim title = path.Right("{")
-                st.Title = title.Left("}").UnescapeIllegalFileSysChars
+            If path.Contains("__") Then
+                Dim title = path.Right("__").LeftLast(".")
+                st.Title = title.UnescapeIllegalFileSysChars
             End If
 
             Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")

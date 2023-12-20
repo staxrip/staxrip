@@ -123,7 +123,7 @@ Public MustInherit Class Muxer
                 End If
 
                 If i.Title.Contains("%language_english%") Then
-                    i.Title = i.Title.Replace("%language_english%", i.Language.Name)
+                    i.Title = i.Title.Replace("%language_english%", i.Language.EnglishName)
                 End If
 
                 If i.Title.Contains("%") Then
@@ -755,7 +755,7 @@ Public Class MkvMuxer
 
                 Dim isContainer = FileTypes.VideoAudio.Contains(subtitle.Path.Ext)
 
-                args += " --language " & id & ":" + subtitle.Language.ThreeLetterCode
+                args += " --language " & id & ":" + subtitle.Language.Name
                 args += " --default-track-flag " & id & ":" & If(subtitle.Default, 1, 0)
                 args += " --forced-display-flag " & id & ":" & If(subtitle.Forced, 1, 0)
                 args += " --commentary-flag " & id & ":" & If(subtitle.Commentary, 1, 0)
@@ -879,10 +879,10 @@ Public Class MkvMuxer
             End If
 
             args += " --audio-tracks " + If(isCombo, tid & "," & tid + 1, tid.ToString)
-            args += " --language " & tid & ":" + ap.Language.ThreeLetterCode
+            args += " --language " & tid & ":" + ap.Language.Name
 
             If isCombo Then
-                args += " --language " & tid + 1 & ":" + ap.Language.ThreeLetterCode
+                args += " --language " & tid + 1 & ":" + ap.Language.Name
             End If
 
             If ap.OutputFileType = "aac" AndAlso ap.File.Contains("SBR") Then

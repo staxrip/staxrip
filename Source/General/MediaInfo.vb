@@ -129,7 +129,7 @@ Public Class MediaInfo
                         End If
                     End If
 
-                    at.Language = New Language(GetAudio(index, "Language/String2"))
+                    at.Language = New Language(GetAudio(index, "Language"))
 
                     Select Case p.DemuxAudio
                         Case DemuxMode.All
@@ -163,7 +163,7 @@ Public Class MediaInfo
 
             If count > 0 Then
                 For index = 0 To count - 1
-                    Dim subtitle As New Subtitle(New Language(GetText(index, "Language/String2"))) With {
+                    Dim subtitle As New Subtitle(New Language(GetText(index, "Language"))) With {
                         .Index = index
                     }
 

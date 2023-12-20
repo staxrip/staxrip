@@ -1329,7 +1329,7 @@ Public Class MainForm
                                 End If
 
                                 If stream.Language.TwoLetterCode <> "iv" Then
-                                    base += " " + stream.Language.Name
+                                    base += " " + stream.Language.EnglishName
                                 End If
 
                                 If stream.Title <> "" Then
@@ -1392,7 +1392,7 @@ Public Class MainForm
                         lng = If(track = 0, New Language(), New Language("en"))
                     End If
 
-                    If Not iPath.Contains(lng.Name) Then
+                    If Not iPath.Contains(lng.EnglishName) Then
                         Continue For
                     End If
                 End If
@@ -5406,7 +5406,7 @@ Public Class MainForm
                     }
 
                     For Each i In subs
-                        sb.AddItem(i.Language.Name, i)
+                        sb.AddItem(i.Language.EnglishName, i)
                     Next
 
                     If sb.Show = DialogResult.Cancel Then

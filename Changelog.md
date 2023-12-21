@@ -16,6 +16,7 @@ v2.31.0 (not published yet)
 - UI: Fix crash on startup on non Vulkan systems ([#1158](/../../issues/1158))
 - UI: Fix recognizing and interpreting source (subtitle) languages ([#1120](/../../issues/1120), [#1152](/../../issues/1152))
 - UI: Switch languages internally from 2-/3-letter codes to country-language except preferred languages options, not completely yet
+- NVEncC: Fix missing Multipass parameter for QBVR mode ([#1162](/../../issues/1162))
 - vvencFFapp: Extend "Frames to be encoded" for templates ([#1161](/../../issues/1161))
 - Update tools
 - Update AviSynth+ plugins

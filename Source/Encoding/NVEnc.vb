@@ -236,7 +236,7 @@ Public Class NVEnc
             .Switches = {"--cbr", "--vbr"},
             .Text = "Bitrate",
             .Init = 5000,
-            .VisibleFunc = Function() Mode.Value > 1,
+            .VisibleFunc = Function() Mode.Value > 1 AndAlso Not ConstantQualityMode.Value,
             .Config = {0, 1000000, 100}}
 
         Property QPAdvanced As New BoolParam With {
@@ -245,71 +245,72 @@ Public Class NVEnc
 
         Property QVBR As New NumParam With {
             .Switches = {"--qvbr"},
-            .Text = "QP",
+            .Text = "VBR Quality",
             .Init = 28,
-            .VisibleFunc = Function() Mode.Value = 0 AndAlso Not QPAdvanced.Value,
-            .Config = {0, 51, 1, 1}}
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso Not (QPAdvanced.Value AndAlso QPAdvanced.Visible),
+            .Config = {0, 51, 0.5, 1}}
 
         Property QP As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP",
             .Init = 18,
-            .VisibleFunc = Function() Mode.Value = 1 AndAlso Codec.Value <> 2 AndAlso Not QPAdvanced.Value,
+            .VisibleFunc = Function() Mode.Value = 1 AndAlso Codec.Value <> 2 AndAlso Not (QPAdvanced.Value AndAlso QPAdvanced.Visible),
             .Config = {0, 63}}
 
         Property QPAV1 As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP",
             .Init = 50,
-            .VisibleFunc = Function() Mode.Value = 1 AndAlso Codec.Value = 2 AndAlso Not QPAdvanced.Value,
+            .VisibleFunc = Function() Mode.Value = 1 AndAlso Codec.Value = 2 AndAlso Not (QPAdvanced.Value AndAlso QPAdvanced.Visible),
             .Config = {0, 255}}
 
         Property QPI As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP I",
             .Init = 18,
-            .VisibleFunc = Function() Codec.Value <> 2 AndAlso QPAdvanced.Value,
+            .VisibleFunc = Function() Codec.Value <> 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
             .Config = {0, 63}}
 
         Property QPIAV1 As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP I",
             .Init = 50,
-            .VisibleFunc = Function() Codec.Value = 2 AndAlso QPAdvanced.Value,
+            .VisibleFunc = Function() Codec.Value = 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
             .Config = {0, 255}}
 
         Property QPP As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP P",
             .Init = 20,
-            .VisibleFunc = Function() Codec.Value <> 2 AndAlso QPAdvanced.Value,
+            .VisibleFunc = Function() Codec.Value <> 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
             .Config = {0, 63}}
 
         Property QPPAV1 As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP P",
             .Init = 70,
-            .VisibleFunc = Function() Codec.Value = 2 AndAlso QPAdvanced.Value,
+            .VisibleFunc = Function() Codec.Value = 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
             .Config = {0, 255}}
 
         Property QPB As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP B",
             .Init = 24,
-            .VisibleFunc = Function() Codec.Value <> 2 AndAlso QPAdvanced.Value,
+            .VisibleFunc = Function() Codec.Value <> 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
             .Config = {0, 63}}
 
         Property QPBAV1 As New NumParam With {
             .Switches = {"--cqp"},
             .Text = "QP B",
             .Init = 100,
-            .VisibleFunc = Function() Codec.Value = 2 AndAlso QPAdvanced.Value,
+            .VisibleFunc = Function() Codec.Value = 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
             .Config = {0, 255}}
 
         Property VbrQuality As New NumParam With {
             .Switch = "--vbr-quality",
             .Text = "VBR Quality",
-            .Config = {0, 51, 1, 1},
+            .Config = {0, 51, 0.5, 1},
+            .Value = 18,
             .VisibleFunc = Function() Mode.Value = 3 AndAlso ConstantQualityMode.Value,
             .ArgsFunc = Function()
                             Return If(ConstantQualityMode.Value AndAlso VbrQuality.Value <> VbrQuality.DefaultValue,
@@ -518,7 +519,7 @@ Public Class NVEnc
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Auto", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Auto", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Name = "LevelAV1", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "av1", .Options = {"Auto", "2", "2.1", "2.2", "2.3", "3", "3.1", "3.2", "3.3", "4", "4.1", "4.2", "4.3", "5", "5.1", "5.2", "5.3", "6", "6.1", "6.2", "6.3", "7", "7.1", "7.2", "7.3"}},
-                        QPAdvanced, Bitrate, QVBR, QP, QPAV1, QPI, QPIAV1, QPP, QPPAV1, QPB, QPBAV1)
+                        ConstantQualityMode, Bitrate, VbrQuality, QVBR, QPAdvanced, QP, QPAV1, QPI, QPIAV1, QPP, QPPAV1, QPB, QPBAV1)
                     Add("Rate Control",
                         New StringParam With {.Switch = "--dynamic-rc", .Text = "Dynamic RC"},
                         New OptionParam With {.Switch = "--multipass", .Text = "Multipass", .Options = {"None", "2Pass-Quarter", "2Pass-Full"}, .VisibleFunc = Function() Mode.Value = 0 OrElse Mode.Value > 1},
@@ -528,8 +529,6 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--chroma-qp-offset", .Text = "QP offset for chroma", .Config = {0, Integer.MaxValue, 1}, .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"},
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Init = 17500, .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Config = {0, Integer.MaxValue, 1}},
-                        ConstantQualityMode,
-                        VbrQuality,
                         AQ,
                         New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() AQ.Value},
                         New BoolParam With {.Switch = "--aq-temporal", .Text = "Adaptive Quantization (Temporal)"},

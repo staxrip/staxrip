@@ -553,7 +553,9 @@ Public Class VvencffappParams
             End If
 
             If FramesToBeEncoded.Value > 0 AndAlso Not IsCustom(pass, "--FramesToBeEncoded") Then
-                sb.Append($" --FramesToBeEncoded {Math.Min(script.GetFrameCount - FrameSkip.Value, FramesToBeEncoded.Value)}")
+                Dim maxFrames = If(script.GetFrameCount > 0, script.GetFrameCount - FrameSkip.Value, FramesToBeEncoded.Value)
+                maxFrames = If(maxFrames < 0, 0, maxFrames)
+                sb.Append($" --FramesToBeEncoded {Math.Min(maxFrames, FramesToBeEncoded.Value)}")
             End If
             'Else
             '    If includePaths Then

@@ -694,7 +694,7 @@ Public Class NVEnc
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New OptionParam With {.Switch = "--mv-precision", .Text = "MV Precision", .Options = {"Automatic", "Q-pel", "Half-pel", "Full-pel"}},
                         New OptionParam With {.Switches = {"--cabac", "--cavlc"}, .Text = "Cabac/Cavlc", .Options = {"Disabled", "Cabac", "Cavlc"}, .Values = {"", "--cabac", "--cavlc"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
-                        New NumParam With {.Switch = "--device", .HelpSwitch = "-d", .Text = "Device", .Config = {0, 4}},
+                        New NumParam With {.Switch = "--device", .HelpSwitch = "-d", .Text = "Device", .Init = -1, .Config = {-1, 16}},
                         New BoolParam With {.Switch = "--deblock", .NoSwitch = "--no-deblock", .Text = "Deblock", .Init = True, .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New BoolParam With {.Switch = "--bluray", .Text = "Blu-ray", .VisibleFunc = Function() Codec.ValueText = "h264"})
                 End If

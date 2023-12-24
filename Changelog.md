@@ -19,6 +19,7 @@ v2.31.0 (not published yet)
 - NVEncC: Fix missing Multipass parameter for QBVR mode ([#1162](/../../issues/1162))
 - NVEncC: Fix minor issues with invisible parameters due to selection order
 - NVEncC: Fix incomplete definition of --device parameter
+- NVEncC: Fix incomplete definition of --split-enc parameter
 - NVEncC: Rename QBVR mode quality setting name ([#1162](/../../issues/1162))
 - vvencFFapp: Extend "Frames to be encoded" for templates ([#1161](/../../issues/1161))
 - Update tools

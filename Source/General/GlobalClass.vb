@@ -21,7 +21,7 @@ Public Class GlobalClass
     Property IsAdmin As Boolean = New WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator)
     Property IsJobProcessing As Boolean
     Property MainForm As MainForm
-    Property MAX_PATH As Integer = 260
+    Shared Property MAX_PATH As Integer = 260
     Property MinimizedWindows As Boolean
     Property ProcForm As ProcessingForm
     Property ProjectPath As String

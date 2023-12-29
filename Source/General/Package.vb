@@ -736,8 +736,8 @@ Public Class Package
     Shared Property ffms2 As Package = Add(New PluginPackage With {
         .Name = "ffms2",
         .Filename = "ffms2.dll",
-        .WebURL = "http://github.com/FFMS/ffms2",
-        .HelpURL = "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md",
+        .WebURL = "https://codeberg.org/StvG/ffms2",
+        .HelpURL = "https://codeberg.org/StvG/ffms2/src/branch/main/README.md",
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource", "FFMS2"},
         .VsFilterNames = {"ffms2"}})

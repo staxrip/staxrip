@@ -1840,7 +1840,7 @@ Public Enum DemuxMode
 End Enum
 
 Public Enum SubtitleMode
-    <DispName("Demux all languages")> All
+    <DispName("Demux and include all languages")> All
     <DispName("Demux and include preferred languages")> Preferred
     <DispName("Demux preferred languages but don't include them")> PreferredNoMux
     <DispName("Include preferred languages directly without demuxing")> Direct

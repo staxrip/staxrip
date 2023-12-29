@@ -4176,7 +4176,6 @@ Public Class MainForm
         If PreviewScript Is Nothing Then Exit Sub
 
         PreviewScript.Filters = If(filters, p.Script.Filters)
-        PreviewScript.RemoveFilter("Cutting")
     End Sub
 
     <Command("Dialog to preview or cut the video.")>

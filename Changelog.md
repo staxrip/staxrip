@@ -24,8 +24,17 @@ v2.31.0 (2024-01-01) (not published yet)
 - NVEncC: Rename QBVR mode quality setting name ([#1162](/../../issues/1162))
 - vvencFFapp: Extend "Frames to be encoded" for templates ([#1161](/../../issues/1161))
 - Update tools
+    - AOMEnc v3.8.0-178-ge065e0fead-x64-msvc1938
+    - FFmpeg N-113112-gf5f414d9c4-x64-gcc13.2.0
+    - MP4Box v2.3-DEV-rev724-g8684dfbcc-x64-msvc1938
+    - rav1e v0.6.1 (p20231226)-x64-gcc13.2.0
+    - SvtAv1EncApp v1.8.0-1+3-43997134-[Mod-by-Patman]-x64-msvc1938
+    - VapourSynth R65
+    - x264 v0.164.3172+8-d0a13eb-.Mod-by-Patman.-x64-gcc13.2.0
+    - x265 v3.5+153+14-caf1c2580-.Mod-by-Patman.-x64-avx2-msvc1938
 - Update AviSynth+ plugins
 - Update Dual plugins
+    - ffms2 v3.0.1.0 1357+34 r1391 4fbfa13 StvG
 - Update VapourSynth plugins
 
 

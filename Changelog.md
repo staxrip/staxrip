@@ -10,7 +10,7 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.31.0 (2024-01-01) (not published yet)
+v2.31.0 (2024-01-01)
 ====================
 
 - UI: Fix crash on startup on non Vulkan systems ([#1158](/../../issues/1158))
@@ -42,7 +42,6 @@ v2.31.0 (2024-01-01) (not published yet)
 - Update Dual plugins
     - ffms2 v3.0.1.0 1357+34 r1391 4fbfa13 StvG
     - L-SMASH-Works v1160 [20231214]
-- Update VapourSynth plugins
 
 
 v2.30.0 (2023-12-17)

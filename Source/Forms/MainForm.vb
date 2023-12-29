@@ -4202,10 +4202,11 @@ Public Class MainForm
                     Exit Sub
                 End If
                 PreviewScript.Path = p.TempDir + p.TargetFile.Base + "_view." + PreviewScript.FileType
-                PreviewScript.RemoveFilter("Cutting")
             Else
                 ApplyFilters()
             End If
+
+            PreviewScript.RemoveFilter("Cutting")
 
             If PreviewScript.GetError <> "" Then
                 MsgError("Script Error", PreviewScript.GetError)

@@ -143,19 +143,19 @@ Public Class VideoScript
     Sub ActivateFilter(category As String)
         Dim filter = GetFilter(category)
 
-        If Not filter Is Nothing Then
+        If filter IsNot Nothing Then
             filter.Active = True
         End If
     End Sub
 
     Function IsFilterActive(category As String) As Boolean
         Dim filter = GetFilter(category)
-        Return Not filter Is Nothing AndAlso filter.Active
+        Return filter IsNot Nothing AndAlso filter.Active
     End Function
 
     Function IsFilterActive(category As String, name As String) As Boolean
         Dim filter = GetFilter(category)
-        Return Not filter Is Nothing AndAlso filter.Active AndAlso filter.Name = name
+        Return filter IsNot Nothing AndAlso filter.Active AndAlso filter.Name = name
     End Function
 
     Function GetFiltersCopy() As List(Of VideoFilter)

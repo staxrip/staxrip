@@ -341,6 +341,20 @@ Public Class VideoComparisonForm
             Controls.Add(VideoPanel)
         End Sub
 
+        Private Function AdjustName(name As String, Optional lengthLimit As Integer = 50) As String
+            If String.IsNullOrWhiteSpace(name) Then Return "<empty>"
+
+            Const replacement = "....."
+
+            If name.Length > lengthLimit Then
+                Dim firstHalfLength = lengthLimit \ 2
+                Dim secondHalfLength = lengthLimit - firstHalfLength
+                Return $"{name.Substring(0, firstHalfLength)}{replacement}{name.Substring(name.Length - secondHalfLength)}"
+            End If
+
+            Return name
+        End Function
+
         Sub Reload()
             Renderer.Dispose()
             Server.Dispose()
@@ -348,7 +362,7 @@ Public Class VideoComparisonForm
         End Sub
 
         Function Open(sourcePath As String) As Boolean
-            Text = sourcePath.Base
+            Text = AdjustName(sourcePath.Base)
             SourceFilePath = sourcePath
 
             Select Case sourcePath.Ext()

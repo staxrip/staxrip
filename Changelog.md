@@ -17,6 +17,7 @@ v2.31.0 (2024-01-01) (not published yet)
 - UI: Fix recognising and interpreting source (subtitle) languages ([#1120](/../../issues/1120), [#1152](/../../issues/1152))
 - UI: Fix issues with disappearing Cutting filter and the misleading Assistant message ([#1124](/../../issues/1124))
 - UI: Fix command line long path issues for qaac ([#1166](/../../issues/1166))
+- UI: Fix flickering on Video Comparison when window too small to fit all tabs ([#1127](/../../issues/1127))
 - UI: Shorten long file names in Video Comparison to enhence usability
 - UI: Switch languages internally from 2-/3-letter codes to country-language except preferred languages options, not completely yet
 - NVEncC: Fix missing Multipass parameter for QBVR mode ([#1162](/../../issues/1162))

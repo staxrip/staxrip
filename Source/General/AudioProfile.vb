@@ -1324,7 +1324,7 @@ Public Class GUIAudioProfile
         Dim input = If(usePipe, "-", File.Escape)
 
         If includePaths Then
-            sb.Append(" " + input + " -o " + GetOutputFile.LongPathPrefix.Escape)
+            sb.Append(" " + input + " -o " + GetOutputFile.Escape)
         End If
 
         Return sb.ToString

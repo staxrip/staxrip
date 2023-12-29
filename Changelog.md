@@ -10,12 +10,13 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.31.0 (not published yet)
+v2.31.0 (2024-01-01) (not published yet)
 ====================
 
 - UI: Fix crash on startup on non Vulkan systems ([#1158](/../../issues/1158))
 - UI: Fix recognising and interpreting source (subtitle) languages ([#1120](/../../issues/1120), [#1152](/../../issues/1152))
 - UI: Switch languages internally from 2-/3-letter codes to country-language except preferred languages options, not completely yet
+- UI: Fix command line long path issues for qaac ([#1166](/../../issues/1166))
 - NVEncC: Fix missing Multipass parameter for QBVR mode ([#1162](/../../issues/1162))
 - NVEncC: Fix minor issues with invisible parameters due to selection order
 - NVEncC: Fix incomplete definition of --device parameter

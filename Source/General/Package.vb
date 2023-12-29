@@ -2779,11 +2779,7 @@ Public Class Package
     End Function
 
     Function GetStatusDisplay() As String
-        If GetStatus() <> "" Then
-            Return GetStatus()
-        End If
-
-        Return "OK"
+        Return If(GetStatus() <> "", GetStatus(), "OK")
     End Function
 
     Function GetStatusLocation() As String

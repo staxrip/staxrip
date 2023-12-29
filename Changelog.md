@@ -34,8 +34,11 @@ v2.31.0 (2024-01-01) (not published yet)
     - x264 v0.164.3172+8-d0a13eb-.Mod-by-Patman.-x64-gcc13.2.0
     - x265 v3.5+153+14-caf1c2580-.Mod-by-Patman.-x64-avx2-msvc1938
 - Update AviSynth+ plugins
+    - TDeint v1.9
+    - TIVTC v1.0.28
 - Update Dual plugins
     - ffms2 v3.0.1.0 1357+34 r1391 4fbfa13 StvG
+    - L-SMASH-Works v1160 [20231214]
 - Update VapourSynth plugins
 
 

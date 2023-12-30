@@ -2904,7 +2904,7 @@ Public Class Package
     Function GetStoredPath() As String
         Dim ret = ""
 
-        If Not s Is Nothing AndAlso Not s.Storage Is Nothing Then
+        If s IsNot Nothing AndAlso s.Storage IsNot Nothing Then
             ret = s.Storage.GetString(Name + "custom path")
 
             If ret <> "" Then
@@ -3100,7 +3100,7 @@ Public Class Package
     Shared Function FindInMuiCacheKey(ParamArray fileNames As String()) As String
         For Each exeName In fileNames
             Using key = Registry.ClassesRoot.OpenSubKey("Local Settings\Software\Microsoft\Windows\Shell\MuiCache")
-                If Not key Is Nothing Then
+                If key IsNot Nothing Then
                     For Each valueName In key.GetValueNames
                         If valueName.Contains(exeName) Then
                             Dim ret = valueName.Left(exeName) + exeName
@@ -3114,7 +3114,7 @@ Public Class Package
             End Using
 
             Using key = Registry.CurrentUser.OpenSubKey("Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\MuiCache")
-                If Not key Is Nothing Then
+                If key IsNot Nothing Then
                     For Each valueName In key.GetValueNames
                         If valueName.Contains(exeName) Then
                             Dim ret = valueName.Left(exeName) + exeName

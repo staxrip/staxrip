@@ -14,6 +14,7 @@ v2.31.0 (2024-01-01) (not published yet)
 ====================
 
 - UI: Fix crash on startup on non Vulkan systems ([#1158](/../../issues/1158))
+- UI: Fix error message on source files with a long file path ([#1168](/../../issues/1168))
 - UI: Fix recognising and interpreting source (subtitle) languages ([#1120](/../../issues/1120), [#1152](/../../issues/1152))
 - UI: Fix issues with disappearing Cutting filter and the misleading Assistant message ([#1124](/../../issues/1124))
 - UI: Fix command line long path issues for qaac ([#1166](/../../issues/1166))

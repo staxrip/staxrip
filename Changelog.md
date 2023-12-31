@@ -10,10 +10,21 @@ v2.xx.0 (not published yet)
 -->
 
 
+v2.32.0 (not published yet)
+====================
+
+- UI: Enhance Output Highlighting
+- Update tools
+    - Subtitle Edit v4.0.3
+- Update AviSynth+ plugins
+- Update Dual plugins
+- Update VapourSynth plugins
+
+
 v2.31.0 (2024-01-01)
 ====================
 
-- UI: Fix crash on startup on non Vulkan systems ([#1158](/../../issues/1158))
+- UI: Fix crash at startup on non Vulkan systems ([#1158](/../../issues/1158))
 - UI: Fix error message on source files with a long file path ([#1168](/../../issues/1168))
 - UI: Fix recognizing and interpreting source (subtitle) languages ([#1120](/../../issues/1120), [#1152](/../../issues/1152))
 - UI: Fix issues with disappearing Cutting filter and the misleading Assistant message ([#1124](/../../issues/1124))

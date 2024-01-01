@@ -13,6 +13,7 @@ v2.xx.0 (not published yet)
 v2.32.0 (not published yet)
 ====================
 
+- Thumbnailer: Fix crash on some video files with higher Bit Depth
 - UI: Enhance Output Highlighting
 - Update tools
     - Subtitle Edit v4.0.3

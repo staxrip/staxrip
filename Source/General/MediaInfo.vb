@@ -417,7 +417,7 @@ Public Class MediaInfo
 
         Dim key = path & File.GetLastWriteTime(path).Ticks
 
-        If Cache.ContainsKey(key) Then
+        If Cache.ContainsKey(key) AndAlso Cache(key) IsNot Nothing Then
             Return Cache(key)
         End If
 

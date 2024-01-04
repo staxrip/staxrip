@@ -1414,6 +1414,8 @@ Public Class MainForm
         'ObjectHelp.GetCompareString(p).WriteFile(Folder.Desktop + "\test2.txt", Encoding.ASCII)
 
         If ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p) Then
+            'If String.IsNullOrWhiteSpace(p.SourceFile) AndAlso Log.Length > 0 Then Return False
+
             If s.AutoSaveProject AndAlso p.SourceFile <> "" Then
                 If g.ProjectPath Is Nothing Then
                     g.ProjectPath = p.TempDir + p.TargetFile.Base + ".srip"
@@ -2052,8 +2054,7 @@ Public Class MainForm
             End If
 
             If preferredSourceFilter IsNot Nothing Then
-                Dim isVapourSynth = preferredSourceFilter.Script.Replace(" ", "").Contains("clip=core.") OrElse
-                    preferredSourceFilter.Script = "#vs"
+                Dim isVapourSynth = preferredSourceFilter.Script.Replace(" ", "").Contains("clip=core.") OrElse preferredSourceFilter.Script = "#vs"
 
                 If isVapourSynth Then
                     If Not Package.Python.VerifyOK(True) OrElse
@@ -2067,18 +2068,14 @@ Public Class MainForm
                         p.Script = VideoScript.GetDefaults()(1)
                     End If
                 Else
-                    If Not Package.AviSynth.VerifyOK(True) Then
-                        Throw New AbortException
-                    End If
+                    If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
 
                     If p.Script.Engine = ScriptEngine.VapourSynth Then
                         p.Script = VideoScript.GetDefaults()(0)
                     End If
                 End If
 
-                p.Script.SetFilter(preferredSourceFilter.Category,
-                                   preferredSourceFilter.Name,
-                                   preferredSourceFilter.Script)
+                p.Script.SetFilter(preferredSourceFilter.Category, preferredSourceFilter.Name, preferredSourceFilter.Script)
             End If
 
             If Not g.VerifyRequirements() Then
@@ -2133,7 +2130,7 @@ Public Class MainForm
 
             p.SourceVideoHdrFormat = MediaInfo.GetVideo(p.LastOriginalSourceFile, "HDR_Format_Commercial")
 
-            If p.SourceVideoHdrFormat = "" Then
+            If String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) Then
                 p.SourceVideoHdrFormat = "SDR"
             ElseIf p.SourceVideoHdrFormat.Contains("Blu-ray / HDR10") OrElse p.SourceVideoHdrFormat.Contains("Dolby") Then
                 p.SourceVideoHdrFormat = "DV"
@@ -2150,8 +2147,6 @@ Public Class MainForm
             p.SourceFrameRateMode = MediaInfo.GetVideo(p.LastOriginalSourceFile, "FrameRate_Mode")
             p.SourceScanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
             p.SourceScanOrder = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanOrder")
-
-            p.VideoEncoder.SetMetaData(p.LastOriginalSourceFile)
 
             Dim mkvMuxer = TryCast(p.VideoEncoder.Muxer, MkvMuxer)
 
@@ -2217,9 +2212,20 @@ Public Class MainForm
 
             Demux()
 
-            If p.LastOriginalSourceFile <> p.SourceFile AndAlso
-                Not FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
+            If p.ExtractHdrmetadata <> HdrmetadataMode.None AndAlso Not String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) Then
+                Select Case p.ExtractHdrmetadata
+                    Case HdrmetadataMode.DolbyVision
+                        ExtractDolbyVisionMetadata(p)
+                    Case HdrmetadataMode.HDR10Plus
+                        ExtractHdr10PlusMetadata(p)
+                    Case Else
+                        ExtractHdrMetadata(p)
+                End Select
+            End If
 
+            p.VideoEncoder.SetMetaData(p.LastOriginalSourceFile)
+
+            If p.LastOriginalSourceFile <> p.SourceFile AndAlso Not FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
                 p.LastOriginalSourceFile = p.SourceFile
             End If
 
@@ -3388,6 +3394,67 @@ Public Class MainForm
         g.ProcessJobs()
     End Sub
 
+    <Command("Extract dynamic HDR metadata from a source file.")>
+    Sub ExtractHdrMetadata(sourcePath As String)
+        Dim proj = New Project() With {
+            .SourceFile = sourcePath
+        }
+        ExtractHdrMetadata(proj)
+    End Sub
+
+    Sub ExtractHdrMetadata(proj As Project)
+        ExtractHdr10PlusMetadata(proj)
+        ExtractDolbyVisionMetadata(proj)
+    End Sub
+
+    Sub ExtractHdr10PlusMetadata(proj As Project)
+        If proj Is Nothing Then Return
+        If String.IsNullOrWhiteSpace(proj.SourceFile) Then Return
+
+        Dim sourcePath = proj.SourceFile
+
+        If File.Exists(sourcePath) Then
+            Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
+            If Not String.IsNullOrWhiteSpace(fileHdrFormat) AndAlso fileHdrFormat.ContainsAny("HDR10+") Then
+                Dim jsonPath = sourcePath.ChangeExt("json")
+                If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
+                    jsonPath = If(sourcePath.Contains(proj.TempDir), jsonPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, sourcePath.Base + ".json"})}", jsonPath))
+                End If
+
+                If Not jsonPath.FileExists() Then
+                    Dim commandLine = $"""{Package.ffmpeg.Path.Escape}"" -hide_banner -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | ""{Package.HDR10PlusTool.Path.Escape}"" extract -o ""{jsonPath}"" -"
+
+                    Using proc As New Proc
+                        proc.Project = If(proj, p)
+                        proc.Header = "Extract dynamic HDR metadata"
+                        proc.Encoding = Encoding.UTF8
+                        proc.File = "cmd.exe"
+                        proc.Arguments = "/S /C """ + commandLine + """"
+                        proc.AllowedExitCodes = {0}
+                        proc.OutputFiles = {jsonPath}
+                        proc.Start()
+                    End Using
+                End If
+
+                proj.HdrmetadataFile = jsonPath
+            End If
+        End If
+    End Sub
+
+    Sub ExtractDolbyVisionMetadata(proj As Project)
+        If proj Is Nothing Then Return
+        If String.IsNullOrWhiteSpace(proj.SourceFile) Then Return
+
+        Dim sourcePath = proj.SourceFile
+
+        If File.Exists(sourcePath) Then
+            Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
+            If Not String.IsNullOrWhiteSpace(fileHdrFormat) AndAlso fileHdrFormat.ContainsAny("DV", "Dolby Vision") Then
+                'TODO: Implement DV
+            End If
+        End If
+    End Sub
+
     Sub Demux()
         Dim getFormat = Function() As String
                             Dim ret = MediaInfo.GetVideo(p.SourceFile, "Format")
@@ -3405,9 +3472,7 @@ Public Class MainForm
         Dim srcScript = p.Script.GetFilter("Source").Script.ToLowerInvariant
 
         For Each i In s.Demuxers
-            If Not i.Active AndAlso (i.SourceFilters.NothingOrEmpty OrElse
-                Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLowerInvariant + "(").ToArray)) Then
-
+            If Not i.Active AndAlso (i.SourceFilters.NothingOrEmpty OrElse Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLowerInvariant + "(").ToArray)) Then
                 Continue For
             End If
 
@@ -4600,6 +4665,8 @@ Public Class MainForm
 
             Dim videoExist = ui.AddMenu(Of FileExistMode)
             Dim demuxVideo = ui.AddBool()
+            Dim extractHdrmetadata = ui.AddMenu(Of HdrmetadataMode)
+            Dim dolbyVisionProfile = ui.AddMenu(Of DolbyVisionProfile)
 
             videoExist.Text = "Existing Video Output"
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
@@ -4607,7 +4674,16 @@ Public Class MainForm
 
             demuxVideo.Text = "Demux Video"
             demuxVideo.Checked = p.DemuxVideo
-            demuxVideo.SaveAction = Sub(val) p.DemuxVideo = val
+            demuxVideo.SaveAction = Sub(value) p.DemuxVideo = value
+
+            extractHdrmetadata.Text = "Extract HDR metadata"
+            extractHdrmetadata.Help = "Extract dynamic HDR10+ and DolbyVision metadata if available"
+            extractHdrmetadata.Field = NameOf(p.ExtractHdrmetadata)
+            extractHdrmetadata.Button.ValueChangedAction = Sub(value) dolbyVisionProfile.Visible = value = HdrmetadataMode.All OrElse value = HdrmetadataMode.DolbyVision
+
+            dolbyVisionProfile.Text = "Dolby Vision Profile"
+            dolbyVisionProfile.Help = "Sets the Dolby Vision Profile that will be used to extract and save the metadata."
+            dolbyVisionProfile.Field = NameOf(p.DolbyVisionProfile)
 
             b = ui.AddBool
             b.Text = "Import VUI metadata"

@@ -1826,6 +1826,22 @@ Public Enum MsgIcon
     Question = MessageBoxIcon.Question
 End Enum
 
+Public Enum HdrmetadataMode
+    None
+    <DispName("HDR10+ only")> HDR10Plus
+    <DispName("Dolby Vision only")> DolbyVision
+    All
+End Enum
+
+Public Enum DolbyVisionProfile
+    <DispName("Profile 4")> Profile4
+    <DispName("Profile 5")> Profile5
+    <DispName("Profile 7")> Profile7
+    <DispName("Profile 8.1")> Profile81
+    <DispName("Profile 8.2")> Profile82
+    <DispName("Profile 8.4")> Profile84
+End Enum
+
 Public Enum TimestampsMode
     Never
     <DispName("VFR only")> VfrOnly

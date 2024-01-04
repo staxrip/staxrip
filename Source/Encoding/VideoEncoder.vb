@@ -61,9 +61,7 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Sub SetMetaData(sourceFile As String)
-        If Not p.ImportVUIMetadata Then
-            Exit Sub
-        End If
+        If Not p.ImportVUIMetadata Then Exit Sub
 
         Dim cl = ""
         Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
@@ -159,6 +157,22 @@ Public MustInherit Class VideoEncoder
                     cl += " --range limited"
                     cl += " --hrd"
                     cl += " --aud"
+                End If
+
+                If Not String.IsNullOrWhiteSpace(p.HdrmetadataFile) AndAlso p.HdrmetadataFile.FileExists() Then
+                    If {"json"}.ContainsAny(p.HdrmetadataFile.Ext()) Then
+                        cl += $" --dhdr10-info ""{p.HdrmetadataFile}"""
+                    ElseIf {"bin", "rpu"}.ContainsAny(p.HdrmetadataFile.Ext()) Then
+                        cl += $" --dolby-vision-rpu ""{p.HdrmetadataFile}"""
+                        Select Case p.DolbyVisionProfile
+                            Case DolbyVisionProfile.Profile5
+                                cl += $" --dolby-vision-profile 5"
+                            Case DolbyVisionProfile.Profile81
+                                cl += $" --dolby-vision-profile 8.1"
+                            Case DolbyVisionProfile.Profile82
+                                cl += $" --dolby-vision-profile 8.2"
+                        End Select
+                    End If
                 End If
             End If
         End If
@@ -459,7 +473,7 @@ Public MustInherit Class BasicVideoEncoder
 
             For x = 0 To a.Length - 1
                 For Each param In params.Items
-                    If Not param.ImportAction Is Nothing AndAlso
+                    If param.ImportAction IsNot Nothing AndAlso
                         param.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
 
                         param.ImportAction.Invoke(a(x), a(x + 1))

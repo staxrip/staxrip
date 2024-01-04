@@ -14,12 +14,15 @@ v2.32.0 (not published yet)
 ====================
 
 - Thumbnailer: Fix crash on some video files with higher Bit Depth
+- UI: Add HDR metadata extraction to project options
+- UI: Add HDR metadata file to encoder settings when using Import VUI metadata
 - UI: Enhance Output Highlighting
 - Update tools
     - Subtitle Edit v4.0.3
 - Update AviSynth+ plugins
 - Update Dual plugins
 - Update VapourSynth plugins
+    - ...
 
 
 v2.31.0 (2024-01-01)

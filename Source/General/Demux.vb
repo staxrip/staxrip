@@ -813,11 +813,7 @@ Public Class mkvDemuxer
 
     Public Overrides Property OutputExtensions As String()
         Get
-            If p.DemuxVideo OrElse _videoDemuxing Then
-                Return {"avi", "mpg", "h264", "h265"}
-            End If
-
-            Return {}
+            Return If(p.DemuxVideo OrElse _videoDemuxing, {"avi", "mpg", "h264", "h265", "hevc"}, {})
         End Get
         Set(value As String())
         End Set
@@ -962,7 +958,7 @@ Public Class mkvDemuxer
 
         For Each outPath In audioOutPaths.Keys
             If File.Exists(outPath) Then
-                If Not ap Is Nothing Then
+                If ap IsNot Nothing Then
                     ap.File = outPath
                 End If
 

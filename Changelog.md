@@ -15,11 +15,13 @@ v2.32.0 (not published yet)
 
 - Thumbnailer: Fix crash on some video files with higher Bit Depth
 - UI: Add HDR metadata extraction to project options
-- UI: Add HDR metadata file to encoder settings when using Import VUI metadata
+- UI: Add HDR metadata file to encoder settings when using "Import VUI metadata"
+- UI: Search for HDR metadata file next to source file and in temp folder to let it import via "Import VUI metadata"
 - UI: Enhance Output Highlighting
 - UI: Enhance language recognition of subtitles from paths ([#1174](/../../issues/1174))
 - UI: Fix subtitles not being enabled after import even if set so ([#1174](/../../issues/1174))
 - UI: Fix UI response delay when opening Audio Settings window ([#1175](/../../issues/1175))
+- UI: Multiple little minor changes
 - Update tools
     - Subtitle Edit v4.0.3
 - Update AviSynth+ plugins

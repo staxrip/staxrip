@@ -2212,7 +2212,11 @@ Public Class MainForm
 
             Demux()
 
-            If p.ExtractHdrmetadata <> HdrmetadataMode.None AndAlso Not String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) Then
+            If String.IsNullOrWhiteSpace(p.HdrmetadataFile) Then
+                p.HdrmetadataFile = Task.Run(Async Function() Await FindHdrMetadataAsync(p)).Result
+            End If
+
+            If p.ExtractHdrmetadata <> HdrmetadataMode.None AndAlso String.IsNullOrWhiteSpace(p.HdrmetadataFile) AndAlso Not String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) Then
                 Select Case p.ExtractHdrmetadata
                     Case HdrmetadataMode.DolbyVision
                         ExtractDolbyVisionMetadata(p)
@@ -3397,7 +3401,8 @@ Public Class MainForm
     <Command("Extract dynamic HDR metadata from a source file.")>
     Sub ExtractHdrMetadata(sourcePath As String)
         Dim proj = New Project() With {
-            .SourceFile = sourcePath
+            .SourceFile = sourcePath,
+            .FirstOriginalSourceFile = sourcePath
         }
         ExtractHdrMetadata(proj)
     End Sub
@@ -3418,13 +3423,14 @@ Public Class MainForm
             If Not String.IsNullOrWhiteSpace(fileHdrFormat) AndAlso fileHdrFormat.ContainsAny("HDR10+") Then
                 Dim jsonPath = sourcePath.ChangeExt("json")
                 If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
-                    jsonPath = If(sourcePath.Contains(proj.TempDir), jsonPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, sourcePath.Base + ".json"})}", jsonPath))
+                    jsonPath = If(sourcePath.Contains(proj.TempDir), jsonPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDRmetadata.json"})}", jsonPath))
                 End If
 
                 If Not jsonPath.FileExists() Then
-                    Dim commandLine = $"""{Package.ffmpeg.Path.Escape}"" -hide_banner -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | ""{Package.HDR10PlusTool.Path.Escape}"" extract -o ""{jsonPath}"" -"
+                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.HDR10PlusTool.Path.Escape} extract -o ""{jsonPath}"" -"
 
                     Using proc As New Proc
+                        proc.Package = Package.HDR10PlusTool
                         proc.Project = If(proj, p)
                         proc.Header = "Extract dynamic HDR metadata"
                         proc.Encoding = Encoding.UTF8
@@ -3449,11 +3455,71 @@ Public Class MainForm
 
         If File.Exists(sourcePath) Then
             Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
-            If Not String.IsNullOrWhiteSpace(fileHdrFormat) AndAlso fileHdrFormat.ContainsAny("DV", "Dolby Vision") Then
-                'TODO: Implement DV
+            If Not String.IsNullOrWhiteSpace(fileHdrFormat) AndAlso fileHdrFormat.ContainsAny("Blu-ray / HDR10", "Dolby Vision") Then
+                Dim crop = " -c"
+                Dim mode = If(proj.DoviMode = 0, "", " -m " + (proj.DoviMode + 0).ToString())
+                Dim rpuPath = sourcePath.ChangeExt("bin")
+
+                If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
+                    rpuPath = If(sourcePath.Contains(proj.TempDir), rpuPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDRmetadata.bin"})}", rpuPath))
+                End If
+
+                If Not rpuPath.FileExists() Then
+                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode}{crop} extract-rpu - -o ""{rpuPath}"""
+
+                    Using proc As New Proc
+                        proc.Package = Package.DoViTool
+                        proc.Project = If(proj, p)
+                        proc.Header = "Extract dynamic HDR metadata"
+                        proc.Encoding = Encoding.UTF8
+                        proc.File = "cmd.exe"
+                        proc.Arguments = "/S /C """ + commandLine + """"
+                        proc.AllowedExitCodes = {0}
+                        proc.OutputFiles = {rpuPath}
+                        proc.Start()
+                    End Using
+                End If
+
+                proj.HdrmetadataFile = rpuPath
             End If
         End If
     End Sub
+
+    Async Function FindHdrMetadataAsync(proj As Project) As Task(Of String)
+        If proj Is Nothing Then Return Nothing
+        If Not String.IsNullOrWhiteSpace(proj.HdrmetadataFile) Then Return proj.HdrmetadataFile
+        If String.IsNullOrWhiteSpace(proj.SourceFile) Then Return Nothing
+
+        Dim sourcePath = proj.SourceFile
+        Dim ret As String = Nothing
+        Dim files As IEnumerable(Of String)
+
+        Dim searchTask = Task.Run(Sub()
+                                      Try
+                                          files = Directory.GetFiles(proj.SourceFile.Dir(), $"{proj.SourceFile.Base}*.*", SearchOption.TopDirectoryOnly)
+                                          files = files?.Where(Function(x) {".json", ".bin", ".rpu"}.Contains(x.ExtFull))
+
+                                          If files?.Any() Then
+                                              ret = files.FirstOrDefault()
+                                          Else
+                                              If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
+                                                  files = Directory.GetFiles(proj.TempDir, "*.*", SearchOption.TopDirectoryOnly)
+                                                  files = files?.Where(Function(x) {".json", ".bin", ".rpu"}.Contains(x.ExtFull))
+
+                                                  If files?.Any() Then
+                                                      ret = files.FirstOrDefault()
+                                                  End If
+                                              End If
+                                          End If
+                                      Catch ex As Exception
+                                          Log.WriteLine(ex.Message)
+                                          Log.Save()
+                                      End Try
+                                  End Sub)
+        
+        Await searchTask
+        Return ret
+    End Function
 
     Sub Demux()
         Dim getFormat = Function() As String

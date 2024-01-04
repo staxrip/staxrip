@@ -160,9 +160,9 @@ Public MustInherit Class VideoEncoder
                 End If
 
                 If Not String.IsNullOrWhiteSpace(p.HdrmetadataFile) AndAlso p.HdrmetadataFile.FileExists() Then
-                    If {"json"}.ContainsAny(p.HdrmetadataFile.Ext()) Then
+                    If {"json"}.Contains(p.HdrmetadataFile.Ext()) Then
                         cl += $" --dhdr10-info ""{p.HdrmetadataFile}"""
-                    ElseIf {"bin", "rpu"}.ContainsAny(p.HdrmetadataFile.Ext()) Then
+                    ElseIf {"bin", "rpu"}.Contains(p.HdrmetadataFile.Ext()) Then
                         cl += $" --dolby-vision-rpu ""{p.HdrmetadataFile}"""
                         Select Case p.DolbyVisionProfile
                             Case DolbyVisionProfile.Profile5

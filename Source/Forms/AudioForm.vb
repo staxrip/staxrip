@@ -3,6 +3,7 @@ Imports StaxRip.VideoEncoderCommandLine
 Imports StaxRip.UI
 Imports DirectN
 Imports System.Text
+Imports System.Threading.Tasks
 
 Public Class AudioForm
     Inherits DialogBase
@@ -687,6 +688,8 @@ Public Class AudioForm
 
     Private CommandLineHighlightingMenuItem As MenuItemEx
 
+    Private mbLanguageLock As New Object()
+
     Sub New()
         MyBase.New()
         InitializeComponent()
@@ -725,10 +728,10 @@ Public Class AudioForm
         cms.Add("-")
 
         Dim a = Sub()
-                CommandLineHighlightingMenuItem.Checked = Not CommandLineHighlightingMenuItem.Checked
-                s.CommandLineHighlighting = CommandLineHighlightingMenuItem.Checked
-                rtbCommandLine.Format(rtbCommandLine.Text.ToString)
-            End Sub
+                    CommandLineHighlightingMenuItem.Checked = Not CommandLineHighlightingMenuItem.Checked
+                    s.CommandLineHighlighting = CommandLineHighlightingMenuItem.Checked
+                    rtbCommandLine.Format(rtbCommandLine.Text.ToString)
+                End Sub
 
         CommandLineHighlightingMenuItem = cms.Add("Command Line Highlighting", a, Keys.Control Or Keys.H)
         CommandLineHighlightingMenuItem.Checked = s.CommandLineHighlighting
@@ -781,14 +784,58 @@ Public Class AudioForm
         UpdateControls()
         Refresh()
         ActiveControl = mbCodec
+        PopulateLanguagesAsync()
+    End Sub
 
-        For Each lng In Language.Languages
-            If lng.IsCommon Then
-                mbLanguage.Add(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
-            Else
-                mbLanguage.Add("More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
-            End If
-        Next
+    Sub PopulateLanguage(path As String, obj As Object)
+        If IsDisposingOrDisposed Then Return
+
+        If InvokeRequired Then
+            Try
+                Invoke(New MethodInvoker(Sub() PopulateLanguage(path, obj)))
+            Catch ex As Exception
+            End Try
+        Else
+            Try
+                mbLanguage.Add(path, obj)
+            Catch ex As Exception
+            End Try
+        End If
+    End Sub
+
+    Sub PopulateLanguages()
+        Try
+            mbLanguage.Menu.Enabled = False
+            mbLanguage.Enabled = False
+
+            For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
+                If IsDisposingOrDisposed Then Return
+
+                If lng.IsCommon Then
+                    PopulateLanguage(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
+                Else
+                    PopulateLanguage("More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
+                End If
+            Next
+        Catch ex As Exception
+        Finally
+            mbLanguage.Menu.Enabled = True
+            mbLanguage.Enabled = True
+        End Try
+    End Sub
+
+    Async Sub PopulateLanguagesAsync()
+        Dim task As Task
+
+        Try
+            SyncLock mbLanguageLock
+                task = Task.Run(AddressOf PopulateLanguages)
+            End SyncLock
+        Catch ex As Exception
+        Finally
+        End Try
+
+        Await task
     End Sub
 
     Sub SetValues(gap As GUIAudioProfile)
@@ -1008,7 +1055,7 @@ Public Class AudioForm
 
     Sub mbLanguage_ValueChanged() Handles mbLanguage.ValueChangedUser
         TempProfile.Language = mbLanguage.GetValue(Of Language)()
-        mbLanguage.Text = TempProfile.Language.EnglishName
+        mbLanguage.Text = TempProfile.Language.Name
         UpdateControls()
     End Sub
 
@@ -1051,10 +1098,12 @@ Public Class AudioForm
 
         mbCodec.Value = TempProfile.Params.Codec
         mbChannels.Value = TempProfile.Params.ChannelsMode
-        mbLanguage.Value = TempProfile.Language
         mbSamplingRate.Value = TempProfile.Params.SamplingRate
         mbEncoder.Value = TempProfile.Params.Encoder
         mbDecoder.Value = TempProfile.Decoder
+
+        mbLanguage.Value = TempProfile.Language
+        mbLanguage.Text = TempProfile.Language.Name
 
         SetQuality(TempProfile.Params.Quality)
 

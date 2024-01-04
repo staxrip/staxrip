@@ -19,6 +19,7 @@ v2.32.0 (not published yet)
 - UI: Enhance Output Highlighting
 - UI: Enhance language recognition of subtitles from paths ([#1174](/../../issues/1174))
 - UI: Fix subtitles not being enabled after import even if set so ([#1174](/../../issues/1174))
+- UI: Fix UI response delay when opening Audio Settings window ([#1175](/../../issues/1175))
 - Update tools
     - Subtitle Edit v4.0.3
 - Update AviSynth+ plugins

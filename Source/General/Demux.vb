@@ -502,7 +502,7 @@ Public Class MP4BoxDemuxer
             Dim autoCode = proj.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
 
             For Each subtitle In subtitles
-                Dim prefLang As Boolean = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode)
+                Dim prefLang As Boolean = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) OrElse proj.SubtitleMode = SubtitleMode.All
                 Dim skip As Boolean = False
 
                 If proj.SubtitleMode = SubtitleMode.PreferredNoMux Then

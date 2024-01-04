@@ -691,7 +691,6 @@ Public Class Language
                     New Language("pa", True, True),
                     New Language("ms", True, True),
                     New Language("ko", True, True),
-                    New Language("no-NO", True, True),
                     New Language(CultureInfo.InvariantCulture, True, True)
                 }
 

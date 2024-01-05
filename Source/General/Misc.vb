@@ -1413,6 +1413,9 @@ Public Class Subtitle
                     If extracted = lng.Name Then
                         st.Language = lng
                         Exit For
+                    ElseIf extracted = lng.EnglishName Then
+                        st.Language = lng
+                        Exit For
                     ElseIf extracted = lng.ThreeLetterCode Then
                         st.Language = lng
                         Exit For
@@ -1484,22 +1487,20 @@ Public Class Subtitle
 
         Select Case p.DefaultSubtitle
             Case DefaultSubtitleMode.Single
-                If enabledSubs.Count = 1 Then
-                    enabledSubs(0).Default = True
-                End If
+                If enabledSubs.Count = 1 Then enabledSubs(0).Default = True
             Case DefaultSubtitleMode.First
-                If enabledSubs.Count > 0 Then
-                    enabledSubs(0).Default = True
-                End If
+                If enabledSubs.Count > 0 Then enabledSubs(0).Default = True
             Case DefaultSubtitleMode.Second
-                If enabledSubs.Count > 1 Then
-                    enabledSubs(1).Default = True
-                End If
+                If enabledSubs.Count > 1 Then enabledSubs(1).Default = True
             Case DefaultSubtitleMode.Default
                 For Each st In enabledSubs
-                    If st.Path.Contains("_default") Then
-                        st.Default = True
-                    End If
+                    If st.Path.Contains("_default") Then st.Default = True
+                Next
+            Case DefaultSubtitleMode.DefaultOrFirst
+                If enabledSubs.Any() Then enabledSubs(0).Default = True
+
+                For Each st In enabledSubs
+                    If st.Path.Contains("_default") Then st.Default = True
                 Next
         End Select
 
@@ -4008,6 +4009,7 @@ Public Enum DefaultSubtitleMode
     English
     Native
     [Default]
+    DefaultOrFirst
 End Enum
 
 Public Class Attachment

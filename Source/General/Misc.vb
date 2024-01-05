@@ -1284,10 +1284,10 @@ Public Class Subtitle
     ReadOnly Property Filename As String
         Get
             Dim ret = "ID" & (Index + 1)
-            ret += "_" + Language.Name
+            ret += "_[" + Language.Name + "]"
 
             If Title <> "" AndAlso Title <> " " AndAlso p.SourceFile <> "" Then
-                ret += "__" + Title.Shorten(50).EscapeIllegalFileSysChars
+                ret += " {" + Title.Shorten(50).EscapeIllegalFileSysChars + "}"
             End If
 
             Return ret
@@ -1353,7 +1353,7 @@ Public Class Subtitle
                     End Try
 
                     Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                    Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
+                    Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode) OrElse p.SubtitleMode = SubtitleMode.All
                     Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux AndAlso p.SubtitleMode <> SubtitleMode.Disabled
                     st.Enabled = prefLang AndAlso goodMode
                     st.Forced = path.ToLowerEx().Contains("forced")
@@ -1406,41 +1406,59 @@ Public Class Subtitle
             End If
 
             Dim filename = path.FileName.LeftLast(".")
+            Dim extracted = filename.Right("_[").Left("]")
 
-            For Each lng In Language.Languages.OrderByDescending(Function(x) x.Name.Length)
-                If filename.Contains(lng.TwoLetterCode) Then
-                    st.Language = lng
-                End If
-
-                If filename.Contains(lng.ThreeLetterCode) Then
-                    st.Language = lng
-                End If
-
-                If path.Contains(lng.EnglishName.Left(" (")) Then
-                    st.Language = lng
-                End If
-
-                If path.Contains(lng.EnglishName) Then
-                    st.Language = lng
-
-                    If filename.Contains(lng.EnglishName) Then
+            If Not String.IsNullOrWhiteSpace(extracted) Then
+                For Each lng In Language.Languages.OrderBy(Function(x) x.Name.Length)
+                    If extracted = lng.Name Then
+                        st.Language = lng
+                        Exit For
+                    ElseIf extracted = lng.ThreeLetterCode Then
+                        st.Language = lng
+                        Exit For
+                    ElseIf extracted = lng.TwoLetterCode Then
                         st.Language = lng
                         Exit For
                     End If
-                End If
+                Next
+            End If
 
-                If path.Contains(lng.Name) Then
-                    st.Language = lng
-
-                    If filename.Contains(lng.Name) Then
+            If st.Language Is Nothing Then
+                For Each lng In Language.Languages.OrderByDescending(Function(x) x.Name.Length)
+                    If filename.Contains(lng.TwoLetterCode) Then
                         st.Language = lng
-                        Exit For
                     End If
-                End If
-            Next
 
-            If path.Contains("__") Then
-                Dim title = path.Right("__").LeftLast(".")
+                    If filename.Contains(lng.ThreeLetterCode) Then
+                        st.Language = lng
+                    End If
+
+                    If path.Contains(lng.EnglishName.Left(" (")) Then
+                        st.Language = lng
+                    End If
+
+                    If path.Contains(lng.EnglishName) Then
+                        st.Language = lng
+
+                        If filename.Contains(lng.EnglishName) Then
+                            st.Language = lng
+                            Exit For
+                        End If
+                    End If
+
+                    If path.Contains(lng.Name) Then
+                        st.Language = lng
+
+                        If filename.Contains(lng.Name) Then
+                            st.Language = lng
+                            Exit For
+                        End If
+                    End If
+                Next
+            End If
+
+            If path.Contains(" {") Then
+                Dim title = path.Right(" {").Left("}")
                 st.Title = title.UnescapeIllegalFileSysChars
             End If
 

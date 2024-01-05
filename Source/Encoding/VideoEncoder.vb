@@ -159,6 +159,7 @@ Public MustInherit Class VideoEncoder
                     cl += " --aud"
                 End If
 
+
                 If Not String.IsNullOrWhiteSpace(p.HdrmetadataFile) AndAlso p.HdrmetadataFile.FileExists() Then
                     If {"json"}.Contains(p.HdrmetadataFile.Ext()) Then
                         cl += $" --dhdr10-info ""{p.HdrmetadataFile}"""
@@ -457,9 +458,7 @@ Public MustInherit Class BasicVideoEncoder
 
     Overloads Shared Sub ImportCommandLine(commandLine As String, params As CommandLineParams)
         Try
-            If commandLine = "" Then
-                Exit Sub
-            End If
+            If commandLine = "" Then Exit Sub
 
             For Each i In {"tune", "preset", "profile"}
                 Dim match = Regex.Match(commandLine, "(.*)(--" + i + "\s\w+)(.*)")
@@ -469,7 +468,7 @@ Public MustInherit Class BasicVideoEncoder
                 End If
             Next
 
-            Dim a = commandLine.SplitNoEmptyAndWhiteSpace(" ")
+            Dim a = g.MainForm.ParseCommandLine(commandLine)
 
             For x = 0 To a.Length - 1
                 For Each param In params.Items

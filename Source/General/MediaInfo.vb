@@ -193,7 +193,7 @@ Public Class MediaInfo
                     Else
                         Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
 
-                        subtitle.Enabled = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode)
+                        subtitle.Enabled = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) OrElse p.SubtitleMode = SubtitleMode.All
 
                         For Each i In autoCode
                             If i.IsInt AndAlso i.ToInt = (index + 1) Then

@@ -266,6 +266,7 @@ Public Class ProcController
         Finally
             LogTextBox.Select(0, 0)
             LogTextBox.BlockPaint = False
+
             If sw IsNot Nothing AndAlso ProcForm IsNot Nothing Then
                 sw.Stop()
                 ProcForm.Text = $"Output Highlighting took {sw.ElapsedMilliseconds}ms"

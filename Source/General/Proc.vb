@@ -446,7 +446,7 @@ Public Class Proc
             value = value.Trim(TrimChars)
         End If
 
-        If SkipString <> "" AndAlso value.Contains(SkipString) Then
+        If Not String.IsNullOrWhiteSpace(SkipString) AndAlso value.Contains(SkipString) Then
             Return (value, True)
         End If
 

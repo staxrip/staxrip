@@ -670,6 +670,24 @@ Public Class Package
         .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
         .Description = "MKV muxing/demuxing GUI app."})
 
+    Shared Property HDR10PlusTool As Package = Add(New Package With {
+        .Name = "HDR10Plus_Tool",
+        .Filename = "hdr10plus_tool.exe",
+        .Location = "Support\HDR10Plus_Tool",
+        .WebURL = "https://github.com/quietvoid/hdr10plus_tool",
+        .HelpURL = "https://github.com/quietvoid/hdr10plus_tool/blob/main/README.md",
+        .DownloadURL = "https://github.com/quietvoid/hdr10plus_tool/releases",
+        .Description = "CLI utility to work with HDR10+ in HEVC files."})
+
+    Shared Property DoViTool As Package = Add(New Package With {
+        .Name = "DoVi_Tool",
+        .Filename = "dovi_tool.exe",
+        .Location = "Support\DoVi_Tool",
+        .WebURL = "https://github.com/quietvoid/dovi_tool",
+        .HelpURL = "https://github.com/quietvoid/dovi_tool/blob/main/README.md",
+        .DownloadURL = "https://github.com/quietvoid/dovi_tool/releases",
+        .Description = "CLI tool combining multiple utilities for working with Dolby Vision."})
+
     Shared Property AutoCrop As Package = Add(New Package With {
         .Name = "AutoCrop",
         .Filename = "AutoCrop.exe",

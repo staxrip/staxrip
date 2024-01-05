@@ -182,7 +182,7 @@ Public Class ProcController
                 Next
             End If
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(x264|x265|svt|avs2pipemod|vspipe|y4m|vvenc|vvencFFapp)(?=\s?\[)", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\n)(x264|x265|svt|avs2pipemod|vspipe|y4m|vvenc|vvencFFapp)(?=\s*\[)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.SourceBackColor.SetHue(205), oh.SourceForeColor)
             Next

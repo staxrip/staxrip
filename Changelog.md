@@ -17,15 +17,25 @@ v2.32.0 (not published yet)
 - UI: Add HDR metadata extraction to project options
 - UI: Add HDR metadata file to encoder settings when using "Import VUI metadata"
 - UI: Search for HDR metadata file next to source file and in temp folder to let it import via "Import VUI metadata"
-- UI: Enhance Output Highlighting
+- UI: Add "DefaultOrFirst" to "Default Subtitles" option
+- UI: Change default option for "Default Subtitles" to "Default"
+- UI: Enhance "Output Highlighting"
 - UI: Enhance language recognition of subtitles from paths ([#1174](/../../issues/1174))
 - UI: Fix subtitles not being enabled after import even if set so ([#1174](/../../issues/1174))
-- UI: Fix UI response delay when opening Audio Settings window ([#1175](/../../issues/1175))
+- UI: Fix UI response delay when opening "Audio Settings" window ([#1175](/../../issues/1175))
 - UI: Multiple minor fixes and improvements
 - Update tools
+    - DoVi_Tool v2.1.0
+    - HDR10Plus_Tool v1.6.0
+    - MKVToolNix v82.0
+    - QSVEncC v7.58
     - Subtitle Edit v4.0.3
+    - SvtAv1EncApp v1.8.0-1+3-43997134-[Mod-by-Patman]-x64-gcc13.2.0
 - Update AviSynth+ plugins
+    - QTGMC v3.385s (2023-12-28)
+    - xy-VSFilter + XySubFilter v3.2.0.809
 - Update Dual plugins
+    - L-SMASH-Works v1164 [20240106]
 - Update VapourSynth plugins
     - ...
 

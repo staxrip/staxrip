@@ -42,7 +42,7 @@ Public Class Project
     Public CutFrameRate As Double
     Public CuttingMode As CuttingMode
     Public D2VAutoForceFilmThreshold As Single = 95.0F
-    Public DefaultSubtitle As DefaultSubtitleMode
+    Public DefaultSubtitle As DefaultSubtitleMode = DefaultSubtitleMode.Default
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
     Public DemuxAttachments As Boolean = True

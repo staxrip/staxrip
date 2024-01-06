@@ -137,7 +137,6 @@ Public MustInherit Class VideoEncoder
                     cl += " --range limited"
                     cl += " --hrd"
                     cl += " --aud"
-                    cl += " --vbv-bufsize 160000 --vbv-maxrate 160000"
                 End If
 
                 If MasteringDisplay_ColorPrimaries.Contains("DCI P3") Then
@@ -148,7 +147,6 @@ Public MustInherit Class VideoEncoder
                     cl += " --range limited"
                     cl += " --hrd"
                     cl += " --aud"
-                    cl += " --vbv-bufsize 160000 --vbv-maxrate 160000"
                 End If
 
                 If MasteringDisplay_ColorPrimaries.Contains("BT.2020") Then
@@ -159,7 +157,6 @@ Public MustInherit Class VideoEncoder
                     cl += " --range limited"
                     cl += " --hrd"
                     cl += " --aud"
-                    cl += " --vbv-bufsize 160000 --vbv-maxrate 160000"
                 End If
 
 
@@ -534,7 +531,7 @@ Public MustInherit Class BasicVideoEncoder
                                     Exit For
                                 End If
                             ElseIf a.Length - 1 = x Then
-                                If Not optionParam.Values Is Nothing Then
+                                If optionParam.Values IsNot Nothing Then
                                     For xOpt = 0 To optionParam.Values.Length - 1
                                         If a(x) = optionParam.Values(xOpt) AndAlso optionParam.Values(xOpt).StartsWith("--") Then
                                             optionParam.Value = xOpt

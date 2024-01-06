@@ -27,12 +27,16 @@ v2.32.0 (not published yet)
 - UI: Fix UI response delay when opening "Audio Settings" window ([#1175](/../../issues/1175))
 - UI: Multiple minor fixes and improvements
 - Update tools
+    - AOMEnc v3.8.0-188-g1cc70eeadf-x64-msvc1937
     - DoVi_Tool v2.1.0
     - HDR10Plus_Tool v1.6.0
     - MKVToolNix v82.0
+    - MP4Box v2.3-DEV-rev724-g8684dfbcc-x64-msvc1937
     - QSVEncC v7.58
+    - rav1e v0.7.0-(p20240102-2-g7d773ea)-x64-gcc13.2.0
     - Subtitle Edit v4.0.3
-    - SvtAv1EncApp v1.8.0-1+3-43997134-[Mod-by-Patman]-x64-gcc13.2.0
+    - SvtAv1EncApp v1.8.0-3+6-0bd9640d-[Mod-by-Patman]-x64-msvc1937
+    - x265 v3.5+153+15-813ccbff0-.Mod-by-Patman.-x64-avx2-msvc1937
 - Update AviSynth+ plugins
     - QTGMC v3.385s (2023-12-28)
     - xy-VSFilter + XySubFilter v3.2.0.809

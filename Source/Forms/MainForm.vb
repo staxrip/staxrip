@@ -1702,13 +1702,8 @@ Public Class MainForm
 
     Function OpenProject(path As String, saveCurrent As Boolean) As Boolean
         Try
-            If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then
-                Return False
-            End If
-
-            If path = "" OrElse Not File.Exists(path) Then
-                path = g.StartupTemplatePath
-            End If
+            If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then Return False
+            If String.IsNullOrWhiteSpace(path) OrElse Not File.Exists(path) Then path = g.StartupTemplatePath
 
             Try
                 p = SafeSerialization.Deserialize(New Project, path)
@@ -4181,6 +4176,11 @@ Public Class MainForm
         End If
     End Sub
 
+    <Command("Closes the current project.")>
+    Sub CloseProject()
+        OpenProject(g.StartupTemplatePath)
+    End Sub
+
     <Command("Starts the compressibility check.")>
     Sub StartCompCheck()
         p.VideoEncoder.RunCompCheck()
@@ -5444,6 +5444,7 @@ Public Class MainForm
         ret.Add("File|Save Project", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)
         ret.Add("File|Save Project As...", NameOf(SaveProjectAs), Keys.S Or Keys.Control Or Keys.Shift, Symbol.SaveAs)
         ret.Add("File|Save Project As Template...", NameOf(SaveProjectAsTemplate))
+        ret.Add("File|Close Project", NameOf(CloseProject), Keys.W Or Keys.Control)
         ret.Add("File|-")
         ret.Add("File|Project Templates", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
         ret.Add("File|Recent Projects", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.RecentProjects})

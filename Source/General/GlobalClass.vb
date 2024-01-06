@@ -491,7 +491,7 @@ Public Class GlobalClass
         End If
     End Sub
 
-    ReadOnly Property StartupTemplatePath() As String
+    ReadOnly Property StartupTemplatePath As String
         Get
             Dim ret = Folder.Template + s.StartupTemplate + ".srip"
 
@@ -504,7 +504,7 @@ Public Class GlobalClass
         End Get
     End Property
 
-    ReadOnly Property SettingsFile() As String
+    ReadOnly Property SettingsFile As String
         Get
             Return Folder.Settings + "Settings.dat"
         End Get

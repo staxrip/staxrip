@@ -18,6 +18,7 @@ v2.32.0 (not published yet)
 - UI: Add HDR metadata file to encoder settings when using "Import VUI metadata"
 - UI: Search for HDR metadata file next to source file and in temp folder to let it import via "Import VUI metadata"
 - UI: Add "DefaultOrFirst" to "Default Subtitles" option
+- UI: Add "Close Project" to Main Menu
 - UI: Change default option for "Default Subtitles" to "Default"
 - UI: Enhance "Output Highlighting"
 - UI: Enhance language recognition of subtitles from paths ([#1174](/../../issues/1174))

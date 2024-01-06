@@ -3448,7 +3448,7 @@ Public Class MainForm
                     Using proc As New Proc
                         proc.Package = Package.HDR10PlusTool
                         proc.Project = If(proj, p)
-                        proc.Header = "Extract dynamic HDR metadata"
+                        proc.Header = "Extract HDR10+ metadata"
                         proc.Encoding = Encoding.UTF8
                         proc.File = "cmd.exe"
                         proc.Arguments = "/S /C """ + commandLine + """"
@@ -3473,7 +3473,7 @@ Public Class MainForm
             Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
             If Not String.IsNullOrWhiteSpace(fileHdrFormat) AndAlso fileHdrFormat.ContainsAny("Blu-ray / HDR10", "Dolby Vision") Then
                 Dim crop = " -c"
-                Dim mode = If(proj.DoviMode = 0, "", " -m " + (proj.DoviMode + 0).ToString())
+                Dim mode = If(proj.DoviMode < 0, "", " -m " + (proj.DoviMode).ToString())
                 Dim rpuPath = sourcePath.ChangeExt("bin")
 
                 If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
@@ -3486,7 +3486,7 @@ Public Class MainForm
                     Using proc As New Proc
                         proc.Package = Package.DoViTool
                         proc.Project = If(proj, p)
-                        proc.Header = "Extract dynamic HDR metadata"
+                        proc.Header = "Extract Dolby Vision metadata"
                         proc.Encoding = Encoding.UTF8
                         proc.File = "cmd.exe"
                         proc.Arguments = "/S /C """ + commandLine + """"

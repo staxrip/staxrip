@@ -342,7 +342,7 @@ Public Class Proc
                         sb.Append($"{BR2}{errOutput}")
                     End If
 
-                    sb.Append($"{BR2}{Log}{BR}")
+                    'sb.Append($"{BR2}{Log}{BR}")
 
                     Throw New ErrorAbortException("Error " + Header, sb.ToString(), Project)
                 End If

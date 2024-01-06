@@ -13,6 +13,7 @@ v2.xx.0 (not published yet)
 v2.32.0 (not published yet)
 ====================
 
+- CommandLine: Add new parameter "-ExitWithoutSaving" to exit StaxRip without saving an unsaved project
 - Thumbnailer: Fix crash on some video files with higher Bit Depth
 - UI: Add HDR metadata extraction to project options
 - UI: Add HDR metadata file to encoder settings when using "Import VUI metadata"

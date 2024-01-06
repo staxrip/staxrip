@@ -4063,6 +4063,12 @@ Public Enum CommandLinePreview
     <DispName("Windows Terminal")> WindowsTerminal
 End Enum
 
+Public Enum ApplicationExitMode
+    Regular
+    BypassProjectSaving
+    ForceProjectSaving
+End Enum
+
 Public Enum VkResult
     Success = 0
     NotReady = 1

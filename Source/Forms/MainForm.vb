@@ -1410,8 +1410,27 @@ Public Class MainForm
     End Sub
 
     Function IsSaveCanceled() As Boolean
-        'ObjectHelp.GetCompareString(g.SavedProject).WriteFile(Folder.Desktop + "\test1.txt", Encoding.ASCII)
-        'ObjectHelp.GetCompareString(p).WriteFile(Folder.Desktop + "\test2.txt", Encoding.ASCII)
+        If s.ApplicationExitMode <> ApplicationExitMode.Regular Then
+            Select Case s.ApplicationExitMode
+                Case ApplicationExitMode.BypassProjectSaving
+                    Return False
+                Case ApplicationExitMode.ForceProjectSaving
+                    If g.ProjectPath IsNot Nothing Then
+                        SaveProjectPath(g.ProjectPath)
+                    End If
+                    Return False
+                Case Else
+                    Throw New NotImplementedException()
+            End Select
+
+            If g.ProjectPath Is Nothing Then
+                If Not OpenSaveProjectDialog() Then
+                    Return True
+                End If
+            Else
+                SaveProjectPath(g.ProjectPath)
+            End If
+        End If
 
         If ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p) Then
             'If String.IsNullOrWhiteSpace(p.SourceFile) AndAlso Log.Length > 0 Then Return False
@@ -1443,6 +1462,8 @@ Public Class MainForm
                     End If
                 ElseIf td.SelectedValue = DialogResult.Cancel Then
                     Return True
+                Else
+                    Return False
                 End If
             End Using
         End If
@@ -3511,7 +3532,7 @@ Public Class MainForm
                                           Log.Save()
                                       End Try
                                   End Sub)
-        
+
         Await searchTask
         Return ret
     End Function
@@ -4188,6 +4209,12 @@ Public Class MainForm
 
     <Command("Exits StaxRip")>
     Sub [Exit]()
+        Close()
+    End Sub
+
+    <Command("Exits StaxRip without saving an unsaved project.")>
+    Sub ExitWithoutSaving()
+        s.ApplicationExitMode = ApplicationExitMode.BypassProjectSaving
         Close()
     End Sub
 

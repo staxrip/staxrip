@@ -137,6 +137,7 @@ Public MustInherit Class VideoEncoder
                     cl += " --range limited"
                     cl += " --hrd"
                     cl += " --aud"
+                    cl += " --vbv-bufsize 160000 --vbv-maxrate 160000"
                 End If
 
                 If MasteringDisplay_ColorPrimaries.Contains("DCI P3") Then
@@ -147,6 +148,7 @@ Public MustInherit Class VideoEncoder
                     cl += " --range limited"
                     cl += " --hrd"
                     cl += " --aud"
+                    cl += " --vbv-bufsize 160000 --vbv-maxrate 160000"
                 End If
 
                 If MasteringDisplay_ColorPrimaries.Contains("BT.2020") Then
@@ -157,6 +159,7 @@ Public MustInherit Class VideoEncoder
                     cl += " --range limited"
                     cl += " --hrd"
                     cl += " --aud"
+                    cl += " --vbv-bufsize 160000 --vbv-maxrate 160000"
                 End If
 
 
@@ -165,13 +168,12 @@ Public MustInherit Class VideoEncoder
                         cl += $" --dhdr10-info ""{p.HdrmetadataFile}"""
                     ElseIf {"bin", "rpu"}.Contains(p.HdrmetadataFile.Ext()) Then
                         cl += $" --dolby-vision-rpu ""{p.HdrmetadataFile}"""
-                        Select Case p.DolbyVisionProfile
-                            Case DolbyVisionProfile.Profile5
-                                cl += $" --dolby-vision-profile 5"
-                            Case DolbyVisionProfile.Profile81
+
+                        Select Case p.DoviMode
+                            Case DoviMode.Mode4
+                                cl += $" --dolby-vision-profile 8.4"
+                            Case Else
                                 cl += $" --dolby-vision-profile 8.1"
-                            Case DolbyVisionProfile.Profile82
-                                cl += $" --dolby-vision-profile 8.2"
                         End Select
                     End If
                 End If

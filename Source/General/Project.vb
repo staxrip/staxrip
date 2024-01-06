@@ -49,7 +49,7 @@ Public Class Project
     Public DemuxAudio As DemuxMode = DemuxMode.All
     Public DemuxChapters As Boolean = True
     Public DemuxVideo As Boolean = False
-    Public DolbyVisionProfile As DolbyVisionProfile = DolbyVisionProfile.Profile81
+    Public DoviMode As DoviMode = DoviMode.Mode2
     Public ExtractHdrmetadata As HdrmetadataMode = HdrmetadataMode.All
     Public ExtractTimestamps As TimestampsMode = TimestampsMode.VfrOnly
     Public ExtractForcedSubSubtitles As Boolean = True

@@ -4732,7 +4732,7 @@ Public Class MainForm
             Dim videoExist = ui.AddMenu(Of FileExistMode)
             Dim demuxVideo = ui.AddBool()
             Dim extractHdrmetadata = ui.AddMenu(Of HdrmetadataMode)
-            Dim dolbyVisionProfile = ui.AddMenu(Of DolbyVisionProfile)
+            Dim doviMode = ui.AddMenu(Of DoviMode)
 
             videoExist.Text = "Existing Video Output"
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
@@ -4744,12 +4744,14 @@ Public Class MainForm
 
             extractHdrmetadata.Text = "Extract HDR metadata"
             extractHdrmetadata.Help = "Extract dynamic HDR10+ and DolbyVision metadata if available"
+            extractHdrmetadata.Expanded = True
             extractHdrmetadata.Field = NameOf(p.ExtractHdrmetadata)
-            extractHdrmetadata.Button.ValueChangedAction = Sub(value) dolbyVisionProfile.Visible = value = HdrmetadataMode.All OrElse value = HdrmetadataMode.DolbyVision
+            extractHdrmetadata.Button.ValueChangedAction = Sub(value) doviMode.Visible = value = HdrmetadataMode.All OrElse value = HdrmetadataMode.DolbyVision
 
-            dolbyVisionProfile.Text = "Dolby Vision Profile"
-            dolbyVisionProfile.Help = "Sets the Dolby Vision Profile that will be used to extract and save the metadata."
-            dolbyVisionProfile.Field = NameOf(p.DolbyVisionProfile)
+            doviMode.Text = "RPU Conversion Mode"
+            doviMode.Help = "Sets the mode for RPU processing."
+            doviMode.Expanded = True
+            doviMode.Field = NameOf(p.DoviMode)
 
             b = ui.AddBool
             b.Text = "Import VUI metadata"

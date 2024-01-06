@@ -1870,13 +1870,14 @@ Public Enum HdrmetadataMode
     All
 End Enum
 
-Public Enum DolbyVisionProfile
-    <DispName("Profile 4")> Profile4
-    <DispName("Profile 5")> Profile5
-    <DispName("Profile 7")> Profile7
-    <DispName("Profile 8.1")> Profile81
-    <DispName("Profile 8.2")> Profile82
-    <DispName("Profile 8.4")> Profile84
+Public Enum DoviMode
+    <DispName("Untouched")> Untouched = -1
+    <DispName("0: Parses RPU, rewrites it untouched")> Mode0 = 0
+    <DispName("1: Convert RPU to be MEL compatible")> Mode1 = 1
+    <DispName("2: Convert RPU to be 8.1 compatible")> Mode2 = 2
+    <DispName("3: Convert 5 to 8.1")> Mode3 = 3
+    <DispName("4: Convert to 8.4")> Mode4 = 4
+    <DispName("5: Convert to 8.1, preserves mapping")> Mode5 = 5
 End Enum
 
 Public Enum TimestampsMode

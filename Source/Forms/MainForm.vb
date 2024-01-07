@@ -5293,6 +5293,10 @@ Public Class MainForm
             b.Checked = p.NoTempDir
             b.SaveAction = Sub(value) p.NoTempDir = value
 
+            b = ui.AddBool(miscPage)
+            b.Text = "Abort on Frame Mismatch"
+            b.Field = NameOf(p.AbortOnFrameMismatch)
+
             ui.AddLine(miscPage, "Compressibility Check")
 
             b = ui.AddBool(miscPage)

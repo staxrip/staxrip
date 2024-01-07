@@ -12,6 +12,7 @@ Public Class Project
 
     Private Storage As ObjectStorage
 
+    Public AbortOnFrameMismatch As Boolean = True
     Public AddAttachmentsToMuxer As Boolean = True
     Public AdjustHeight As Boolean = True
     Public Audio0 As AudioProfile

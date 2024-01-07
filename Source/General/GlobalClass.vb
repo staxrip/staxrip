@@ -439,6 +439,9 @@ Public Class GlobalClass
                 Dim should = p.TargetFrames
                 Log.WriteLine($"WARNING: Target file has {has} frames, but should have {should} frames!")
                 Log.WriteLine($"Encoding was terminated at {has / should * 100:0.0}%!")
+                If p.AbortOnFrameMismatch Then
+                    Throw New ErrorAbortException("Frame Mismatch", $"Target file has {has} frames, but should have {should} frames!", p)
+                End If
             End If
 
             Log.Save()

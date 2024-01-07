@@ -10,7 +10,7 @@ v2.xx.0 (not published yet)
 -->
 
 
-v2.32.0 (not published yet)
+v2.32.0 (2024-01-08)
 ====================
 
 - CommandLine: Add new parameter "-ExitWithoutSaving" to exit StaxRip without saving an unsaved project

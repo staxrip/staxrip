@@ -2669,9 +2669,7 @@ Public Class MainForm
     End Sub
 
     Sub ConvertBluRaySubtitles()
-        If Not p.ConvertSup2Sub Then
-            Exit Sub
-        End If
+        If Not p.ConvertSup2Sub Then Exit Sub
 
         For Each i In g.GetFilesInTempDirAndParent
             If i.Ext = "sup" AndAlso g.IsSourceSameOrSimilar(i) AndAlso Not File.Exists(i.DirAndBase + ".idx") Then
@@ -2687,9 +2685,7 @@ Public Class MainForm
     End Sub
 
     Sub ExtractForcedVobSubSubtitles()
-        If Not p.ExtractForcedSubSubtitles Then
-            Exit Sub
-        End If
+        If Not p.ExtractForcedSubSubtitles Then Exit Sub
 
         For Each path In g.GetFilesInTempDirAndParent
             If path.ExtFull = ".idx" AndAlso g.IsSourceSameOrSimilar(path) AndAlso
@@ -2718,19 +2714,13 @@ Public Class MainForm
     End Sub
 
     Sub DemuxVobSubSubtitles()
-        If Not {"vob", "m2v"}.Contains(p.LastOriginalSourceFile.Ext) Then
-            Exit Sub
-        End If
+        If p.SubtitleMode = SubtitleMode.Disabled Then Exit Sub
+        If Not {"vob", "m2v"}.Contains(p.LastOriginalSourceFile.Ext) Then Exit Sub
 
         Dim ifoPath = GetIfoFile()
 
-        If ifoPath = "" Then
-            Exit Sub
-        End If
-
-        If File.Exists(p.TempDir + p.SourceFile.Base + ".idx") Then
-            Exit Sub
-        End If
+        If ifoPath = "" Then Exit Sub
+        If File.Exists(p.TempDir + p.SourceFile.Base + ".idx") Then Exit Sub
 
         Dim subtitleCount = MediaInfo.GetSubtitleCount(ifoPath)
 

@@ -25,6 +25,7 @@ v2.32.0 (not published yet)
 - UI: Enhance language recognition of subtitles from paths ([#1174](/../../issues/1174))
 - UI: Fix subtitles not being enabled after import even if set so ([#1174](/../../issues/1174))
 - UI: Fix UI response delay when opening "Audio Settings" window ([#1175](/../../issues/1175))
+- UI: Fix demuxing VOBs ignores settings ([#577](/../../issues/577))
 - UI: Multiple minor fixes and improvements
 - Update tools
     - AOMEnc v3.8.0-188-g1cc70eeadf-x64-msvc1937
@@ -36,6 +37,7 @@ v2.32.0 (not published yet)
     - rav1e v0.7.0-(p20240102-2-g7d773ea)-x64-gcc13.2.0
     - Subtitle Edit v4.0.3
     - SvtAv1EncApp v1.8.0-3+6-0bd9640d-[Mod-by-Patman]-x64-msvc1937
+    - vvencFFapp v1.10.0 r208-c2ace2a
     - x265 v3.5+153+15-813ccbff0-.Mod-by-Patman.-x64-avx2-msvc1937
 - Update AviSynth+ plugins
     - QTGMC v3.385s (2023-12-28)

@@ -3433,7 +3433,7 @@ Public Class MainForm
                 End If
 
                 If Not jsonPath.FileExists() Then
-                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.HDR10PlusTool.Path.Escape} extract -o ""{jsonPath}"" -"
+                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.HDR10PlusTool.Path.Escape} extract -o ""{jsonPath}"" -"
 
                     Using proc As New Proc
                         proc.Package = Package.HDR10PlusTool
@@ -3463,7 +3463,7 @@ Public Class MainForm
             Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
             If Not String.IsNullOrWhiteSpace(fileHdrFormat) AndAlso fileHdrFormat.ContainsAny("Blu-ray / HDR10", "Dolby Vision") Then
                 Dim crop = " -c"
-                Dim mode = If(proj.DoviMode < 0, "", " -m " + (proj.DoviMode).ToString())
+                Dim mode = If(proj.DoviMode < 0, "", " -m " + (proj.DoviMode + 0).ToString())
                 Dim rpuPath = sourcePath.ChangeExt("bin")
 
                 If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
@@ -3471,7 +3471,7 @@ Public Class MainForm
                 End If
 
                 If Not rpuPath.FileExists() Then
-                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode}{crop} extract-rpu - -o ""{rpuPath}"""
+                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode}{crop} extract-rpu - -o ""{rpuPath}"""
 
                     Using proc As New Proc
                         proc.Package = Package.DoViTool

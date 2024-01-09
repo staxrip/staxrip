@@ -536,6 +536,13 @@ Public Class Language
     <NonSerialized>
     Public IsCommon As Boolean
 
+    Public ReadOnly Property IsDetermined As Boolean
+        Get
+            If CultureInfo IsNot Nothing Then Return CultureInfo.TwoLetterISOLanguageName <> "iv"
+            Return ThreeLetterCodeValue <> "und"
+        End Get
+    End Property
+
     Sub New()
         Me.New("")
     End Sub
@@ -1426,7 +1433,7 @@ Public Class Subtitle
                 Next
             End If
 
-            If st.Language Is Nothing Then
+            If st.Language Is Nothing OrElse Not st.Language.IsDetermined Then
                 For Each lng In Language.Languages.OrderByDescending(Function(x) x.Name.Length)
                     If filename.Contains(lng.TwoLetterCode) Then
                         st.Language = lng

@@ -1,5 +1,5 @@
 <!--
-v2.xx.0 (not published yet)
+v2.3x.0 (not published yet)
 ====================
 
 - ...
@@ -8,6 +8,20 @@ v2.xx.0 (not published yet)
 - Update Dual plugins
 - Update VapourSynth plugins
 -->
+
+
+v2.33.0 (not published yet)
+====================
+
+- UI: Fix language recognition of subtitles from paths ([#1174](/../../issues/1174))
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
 
 
 v2.32.0 (2024-01-08)

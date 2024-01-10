@@ -947,7 +947,7 @@ Namespace UI
             Return BorderHoverColor <> Color.Empty
         End Function
 
-        Public Event AfterThemeApplied(theme As Theme)
+        Public Event AfterThemeApplied(text As String, theme As Theme)
 
         Sub New()
             MyClass.New(True)
@@ -986,7 +986,7 @@ Namespace UI
             BorderColor = theme.General.Controls.RichTextBox.BorderColor
             BorderFocusedColor = theme.General.Controls.RichTextBox.BorderFocusedColor
             ResumeLayout()
-            RaiseEvent AfterThemeApplied(theme)
+            RaiseEvent AfterThemeApplied(Nothing, theme)
         End Sub
 
         Sub InitMenu()

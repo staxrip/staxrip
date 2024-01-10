@@ -189,23 +189,23 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Sub AfterEncoding()
-        If Not g.FileExists(OutputPath) Then
-            Throw New ErrorAbortException("Encoder output file is missing", OutputPath)
-        Else
-            Log.WriteLine(MediaInfo.GetSummary(OutputPath))
-        End If
+        If Not g.FileExists(OutputPath) Then Throw New ErrorAbortException("Encoder output file is missing", OutputPath)
+
+        Log.WriteLine(MediaInfo.GetSummary(OutputPath))
+
+        Log.Save()
     End Sub
 
     Overrides Function CreateEditControl() As Control
-        Dim ret As New ToolStripEx
-
-        ret.Renderer = New ToolStripRendererEx()
-        ret.ShowItemToolTips = False
-        ret.GripStyle = ToolStripGripStyle.Hidden
-        ret.Dock = DockStyle.Fill
-        ret.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow
-        ret.ShowControlBorder = True
-        ret.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        Dim ret As New ToolStripEx With {
+            .Renderer = New ToolStripRendererEx(),
+            .ShowItemToolTips = False,
+            .GripStyle = ToolStripGripStyle.Hidden,
+            .Dock = DockStyle.Fill,
+            .LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow,
+            .ShowControlBorder = True,
+            .Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        }
 
         Dim pad = ret.Font.Height \ 9
 

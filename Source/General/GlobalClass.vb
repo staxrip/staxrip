@@ -385,11 +385,11 @@ Public Class GlobalClass
 
             p.VideoEncoder.Muxer.Mux()
 
-            Dim cts = New CancellationTokenSource()
-            Dim closingTD As TaskDialog(Of DialogResult) = Nothing
-            Dim mainFormClosingHandler As FormClosingEventHandler = Nothing
-
             If p.Thumbnailer Then
+                Dim cts = New CancellationTokenSource()
+                Dim closingTD As TaskDialog(Of DialogResult) = Nothing
+                Dim mainFormClosingHandler As FormClosingEventHandler = Nothing
+
                 mainFormClosingHandler = Sub(sender As Object, e As FormClosingEventArgs)
                                              If Not e.Cancel Then
                                                  Using closingTD
@@ -418,7 +418,7 @@ Public Class GlobalClass
 
                         Dim proceededSources = Await Thumbnailer.RunAsync(cts.Token, p, p.TargetFile)
 
-                        If closingTD IsNot Nothing AndAlso Not closingTD.IsDisposingOrDisposed Then
+                        If closingTD?.IsDisposingOrDisposed Then
                             closingTD.Close()
                         End If
 
@@ -433,20 +433,20 @@ Public Class GlobalClass
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
 
-            If Not WasEncodeSuccessful(p.TargetFile) Then
-                Log.WriteHeader("Frame Mismatch")
-                Dim has = MediaInfo.GetVideo(p.TargetFile, "FrameCount").ToInt()
-                Dim should = p.TargetFrames
-                Log.WriteLine($"WARNING: Target file has {has} frames, but should have {should} frames!")
-                Log.WriteLine($"Encoding was terminated at {has / should * 100:0.0}%!")
-                If p.AbortOnFrameMismatch Then
-                    Throw New ErrorAbortException("Frame Mismatch", $"Target file has {has} frames, but should have {should} frames!", p)
+            If FileTypes.Video.Contains(p.TargetFile.Ext()) Then
+                Dim hasFrames = MediaInfo.GetVideo(p.TargetFile, "FrameCount").ToInt(-1)
+                Dim shouldFrames = p.TargetFrames
+                If hasFrames <> shouldFrames Then
+                    Log.WriteHeader("Frame Mismatch")
+                    Log.WriteLine($"WARNING: Target file has {hasFrames} frames, but should have {shouldFrames} frames!")
+                    Log.WriteLine($"Encoding was probably terminated at {hasFrames / shouldFrames * 100:0.0}%!")
+                    If hasFrames > -1 AndAlso p.AbortOnFrameMismatch Then Throw New ErrorAbortException("Frame Mismatch", $"Target file has {hasFrames} frames, but should have {shouldFrames} frames!", p)
                 End If
             End If
 
             Log.Save()
 
-            g.ArchiveLogFile(Log.GetPath)
+            g.ArchiveLogFile(Log.GetPath())
             g.DeleteTempFiles()
             g.RaiseAppEvent(ApplicationEvent.AfterJobProcessed)
             JobManager.RemoveJob(jobPath)
@@ -461,20 +461,13 @@ Public Class GlobalClass
             Log.Save()
             g.RaiseAppEvent(ApplicationEvent.AfterJobFailed)
             g.ShowException(ex, Nothing, Nothing, 50)
-            g.ShellExecute(g.GetTextEditorPath(), """" + p.TempDir + p.TargetFile.Base + "_staxrip.log" + """")
+            g.ShellExecute(g.GetTextEditorPath(), """" + p.Log.GetPath() + """")
             ProcController.Aborted = False
         End Try
     End Sub
 
     Function CanEncodeVideo() As Boolean
         Return Not (p.SkipVideoEncoding AndAlso TypeOf p.VideoEncoder IsNot NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath))
-    End Function
-
-    Function WasEncodeSuccessful(targetPath As String) As Boolean
-        If String.IsNullOrEmpty(targetPath) Then Return False
-        If Not targetPath.FileExists() Then Return False
-
-        Return p.TargetFrames = MediaInfo.GetVideo(targetPath, "FrameCount").ToInt()
     End Function
 
     Sub DeleteTempFiles()

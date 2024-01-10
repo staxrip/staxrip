@@ -1684,7 +1684,7 @@ Public Class FileTypes
     Shared Property VideoOnly As String() = {"264", "265", "avc", "gif", "h264", "h265", "hevc", "hvc", "ivf", "m2v", "mpv", "apng", "png", "y4m"}
     Shared Property VideoRaw As String() = {"264", "265", "h264", "h265", "avc", "hevc", "hvc", "ivf"}
     Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs", "vpy"}
-    Shared Property VideoDemuxOutput As String() = {"avi", "mpg", "h264", "h265"}
+    Shared Property VideoDemuxOutput As String() = {"avi", "mpg", "h264", "h265", "hevc"}
     Shared Property Image As String() = {"bmp", "jpg", "png", "gif", "tif", "jpe", "jpeg", "psd"}
     Shared Property DeezyInput As String() = VideoAudio.Concat(Audio).ToArray()
 

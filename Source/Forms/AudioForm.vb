@@ -894,6 +894,7 @@ Public Class AudioForm
         }
 
         Select Case TempProfile.Params.Codec
+            Case AudioCodec.None
             Case AudioCodec.AAC
                 list.Add(GuiAudioEncoder.eac3to)
                 list.Add(GuiAudioEncoder.fdkaac)

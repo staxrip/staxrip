@@ -342,7 +342,7 @@ Public Class Proc
                         sb.Append($"{BR2}{errOutput}")
                     End If
 
-                    'sb.Append($"{BR2}{Log}{BR}")
+                    sb.Append($"{BR2}{Log}{BR}")
 
                     Throw New ErrorAbortException("Error " + Header, sb.ToString(), Project)
                 End If
@@ -353,13 +353,8 @@ Public Class Proc
             Throw e
         End Try
 
-        If Abort Then
-            Throw New AbortException
-        End If
-
-        If Skip Then
-            Throw New SkipException
-        End If
+        If Abort Then Throw New AbortException
+        If Skip Then Throw New SkipException
     End Sub
 
     Private DisposedValue As Boolean = False

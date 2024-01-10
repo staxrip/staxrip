@@ -149,9 +149,7 @@ Public Class TaskDialogBaseForm
         End Sub
 
         Sub ApplyTheme(theme As Theme)
-            If DesignHelp.IsDesignMode Then
-                Exit Sub
-            End If
+            If DesignHelp.IsDesignMode Then Exit Sub
 
             SuspendLayout()
             BackColor = theme.TaskDialog.CommandButton.BackColor
@@ -195,16 +193,9 @@ Public Class TaskDialogBaseForm
         End Function
 
         Function GetTitleSize(Optional g1 As Graphics = Nothing) As Size
-            If Title = "" Then
-                Exit Function
-            End If
+            If Title = "" Then Exit Function
 
-            Dim g2 = g1
-
-            If g2 Is Nothing Then
-                g2 = CreateGraphics()
-            End If
-
+            Dim g2 = If(g1, CreateGraphics())
             Dim tf = TitleFont.Height
             Dim w = ClientSize.Width - CInt(tf * 0.3 * 2)
             Dim sz = g2.MeasureString(Title, TitleFont, w)
@@ -217,16 +208,9 @@ Public Class TaskDialogBaseForm
         End Function
 
         Function GetDescriptionSize(Optional g1 As Graphics = Nothing) As Size
-            If Description = "" Then
-                Exit Function
-            End If
+            If Description = "" Then Exit Function
 
-            Dim g2 = g1
-
-            If g2 Is Nothing Then
-                g2 = CreateGraphics()
-            End If
-
+            Dim g2 = If(g1, CreateGraphics())
             Dim tf = TitleFont.Height
             Dim w = ClientSize.Width - CInt(tf * 0.3 * 2)
             Dim sz = g2.MeasureString(Description, Font, w)
@@ -294,7 +278,7 @@ Public Class TaskDialogBaseForm
     End Sub
 
     Sub InputTextEditTextBoxKeyDown(sender As Object, e As KeyEventArgs)
-        If e.KeyData = Keys.Enter AndAlso Not AcceptButton Is Nothing Then
+        If e.KeyData = Keys.Enter AndAlso AcceptButton IsNot Nothing Then
             AcceptButton.PerformClick()
         End If
     End Sub

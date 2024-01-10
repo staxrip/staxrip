@@ -2362,7 +2362,7 @@ Public Class MainForm
 
             s.LastPosition = 0
 
-            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFrameCount, p.Script.GetFramerate)
+            UpdateTargetParameters(p)
             DemuxVobSubSubtitles()
             ConvertBluRaySubtitles()
             ExtractForcedVobSubSubtitles()
@@ -3435,17 +3435,24 @@ Public Class MainForm
                 If Not jsonPath.FileExists() Then
                     Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.HDR10PlusTool.Path.Escape} extract -o ""{jsonPath}"" -"
 
-                    Using proc As New Proc
-                        proc.Package = Package.HDR10PlusTool
-                        proc.Project = If(proj, p)
-                        proc.Header = "Extract HDR10+ metadata"
-                        proc.Encoding = Encoding.UTF8
-                        proc.File = "cmd.exe"
-                        proc.Arguments = "/S /C """ + commandLine + """"
-                        proc.AllowedExitCodes = {0}
-                        proc.OutputFiles = {jsonPath}
-                        proc.Start()
-                    End Using
+                    Try
+                        Using proc As New Proc
+                            proc.Package = Package.HDR10PlusTool
+                            proc.Project = If(proj, p)
+                            proc.Header = "Extract HDR10+ metadata"
+                            proc.Encoding = Encoding.UTF8
+                            proc.File = "cmd.exe"
+                            proc.Arguments = "/S /C """ + commandLine + """"
+                            proc.AllowedExitCodes = {0}
+                            proc.OutputFiles = {jsonPath}
+                            proc.Start()
+                        End Using
+                    Catch ex As AbortException
+                        Throw ex
+                    Catch ex As Exception
+                        g.ShowException(ex)
+                        Throw New AbortException
+                    End Try
                 End If
 
                 proj.HdrmetadataFile = jsonPath
@@ -3474,17 +3481,24 @@ Public Class MainForm
                 If Not rpuPath.FileExists() Then
                     Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode}{crop} extract-rpu - -o ""{rpuPath}"""
 
-                    Using proc As New Proc
-                        proc.Package = Package.DoViTool
-                        proc.Project = If(proj, p)
-                        proc.Header = "Extract Dolby Vision metadata"
-                        proc.Encoding = Encoding.UTF8
-                        proc.File = "cmd.exe"
-                        proc.Arguments = "/S /C """ + commandLine + """"
-                        proc.AllowedExitCodes = {0}
-                        proc.OutputFiles = {rpuPath}
-                        proc.Start()
-                    End Using
+                    Try
+                        Using proc As New Proc
+                            proc.Package = Package.DoViTool
+                            proc.Project = If(proj, p)
+                            proc.Header = "Extract Dolby Vision metadata"
+                            proc.Encoding = Encoding.UTF8
+                            proc.File = "cmd.exe"
+                            proc.Arguments = "/S /C """ + commandLine + """"
+                            proc.AllowedExitCodes = {0}
+                            proc.OutputFiles = {rpuPath}
+                            proc.Start()
+                        End Using
+                    Catch ex As AbortException
+                        Throw ex
+                    Catch ex As Exception
+                        g.ShowException(ex)
+                        Throw New AbortException
+                    End Try
                 End If
 
                 proj.HdrmetadataFile = rpuPath
@@ -6426,16 +6440,24 @@ Public Class MainForm
     End Sub
 
     Sub lTip_Click() Handles laTip.Click
-        If Not AssistantClickAction Is Nothing Then
+        If AssistantClickAction IsNot Nothing Then
             AssistantClickAction.Invoke()
             Assistant()
         End If
+    End Sub
+
+    Sub UpdateTargetParameters(proj As Project)
+        If proj Is Nothing Then Exit Sub
+        If proj.Script Is Nothing Then Exit Sub
+
+        UpdateTargetParameters(proj.Script.GetSeconds, proj.Script.GetFrameCount, proj.Script.GetFramerate)
     End Sub
 
     Sub UpdateTargetParameters(seconds As Integer, frames As Integer, frameRate As Double)
         p.TargetSeconds = seconds
         p.TargetFrames = frames
         p.TargetFrameRate = frameRate
+
         UpdateSizeOrBitrate()
     End Sub
 
@@ -6505,7 +6527,7 @@ Public Class MainForm
         If Not IsLoading AndAlso Not FiltersListView.IsLoading Then
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
-                UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFrameCount, p.Script.GetFramerate)
+                UpdateTargetParameters(p)
             End If
 
             Assistant()
@@ -6516,7 +6538,7 @@ Public Class MainForm
         FiltersListView.Load()
 
         If g.IsValidSource(False) Then
-            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFrameCount, p.Script.GetFramerate)
+            UpdateTargetParameters(p)
         End If
     End Sub
 

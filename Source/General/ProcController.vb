@@ -90,9 +90,7 @@ Public Class ProcController
     End Sub
 
     Sub ApplyTheme(theme As Theme)
-        If DesignHelp.IsDesignMode Then
-            Exit Sub
-        End If
+        If DesignHelp.IsDesignMode Then Exit Sub
 
         If Proc.IsSilent Then
             Button.BackColor = theme.ProcessingForm.ProcessButtonBackColor
@@ -104,15 +102,10 @@ Public Class ProcController
     End Sub
 
     Sub DataReceived(value As String)
-        If value = "" Then
-            Exit Sub
-        End If
+        If value = "" Then Exit Sub
 
         Dim ret = Proc.ProcessData(value)
-
-        If ret.Data = "" Then
-            Exit Sub
-        End If
+        If ret.Data = "" Then Exit Sub
 
         If ret.Skip Then
             If Proc.IntegerFrameOutput AndAlso Proc.FrameCount > 0 AndAlso ret.Data.IsInt Then
@@ -157,9 +150,9 @@ Public Class ProcController
             Dim oh = theme.ProcessingForm.OutputHighlighting
             Dim matches As MatchCollection
             Dim help As Integer
-            Dim IsX264 = Proc.Package Is Package.x264
-            Dim IsX265 = Proc.Package Is Package.x265
-            Dim IsSvtAv1 = Proc.Package Is Package.SvtAv1EncApp
+            Dim isX264 = Proc.Package Is Package.x264
+            Dim isX265 = Proc.Package Is Package.x265
+            Dim isSvtAv1 = Proc.Package Is Package.SvtAv1EncApp
 
             matches = Regex.Matches(LogTextBox.Text, "(?<=\n)----------.*----------(?=\n)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
@@ -171,7 +164,7 @@ Public Class ProcController
                 LogTextBox.SelectionFormat(m.Index, m.Length, oh.EncoderTitleBackColor, oh.EncoderTitleForeColor, oh.EncoderTitleFontStyles)
             Next
 
-            If IsX265 OrElse IsSvtAv1 Then
+            If isX265 OrElse isSvtAv1 Then
                 help = 1
                 matches = Regex.Matches(LogTextBox.Text, "((?<=\n)x265\s\[info\]|SVT\s\[config\]):\s(.+\s:|.+\sprofile|tools)\s.+", RegexOptions.IgnoreCase)
                 For Each m As Match In matches

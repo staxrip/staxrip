@@ -13,9 +13,10 @@ v2.3x.0 (not published yet)
 v2.33.0 (not published yet)
 ====================
 
+- UI: Enhance "HDR metadata extraction"
+- UI: Fix crash on "HDR metadata extraction" on some systems
 - UI: Fix language recognition of subtitles from paths ([#1174](/../../issues/1174))
-- UI: Enhance HDR metadata extraction
-- UI: Fix crash on HDR metadata extraction on some systems
+- UI: Let "Frame Mismatch" start at an earler stage
 - Update tools
     - ...
 - Update AviSynth+ plugins

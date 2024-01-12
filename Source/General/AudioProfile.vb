@@ -250,9 +250,7 @@ Public MustInherit Class AudioProfile
     End Function
 
     Sub SetStreamOrLanguage()
-        If File = "" Then
-            Exit Sub
-        End If
+        If File = "" Then Exit Sub
 
         If File <> p.LastOriginalSourceFile Then
             For Each i In Language.Languages

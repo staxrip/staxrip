@@ -1467,10 +1467,8 @@ Public Class Subtitle
                 Next
             End If
 
-            If path.Contains(" {") Then
-                Dim title = path.Right(" {").Left("}")
-                st.Title = title.UnescapeIllegalFileSysChars
-            End If
+            Dim trackname = g.ExtractTrackNameFromFilename(path)
+            st.Title = If(trackname, st.Title)
 
             Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
             Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode) OrElse p.SubtitleMode = SubtitleMode.All

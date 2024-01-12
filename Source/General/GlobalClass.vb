@@ -647,6 +647,10 @@ Public Class GlobalClass
         End If
     End Function
 
+    Function ExtractTrackNameFromFilename(filename As String) As String
+        Return If(filename.Base().Contains(" {"), filename.Base().Right(" {").Left("}").UnescapeIllegalFileSysChars, Nothing)
+    End Function
+
     Function GetSourceBase() As String
         Return If(p.TempDir.EndsWithEx("_temp\"), "temp", p.SourceFile.Base)
     End Function

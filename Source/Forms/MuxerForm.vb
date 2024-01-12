@@ -1060,6 +1060,8 @@ Public Class MuxerForm
             profileSelection.AddItem(audioProfile)
         Next
 
+        profileSelection.SelectedText = "Copy/Mux"
+
         If profileSelection.Show <> DialogResult.OK Then
             Exit Sub
         End If
@@ -1070,6 +1072,9 @@ Public Class MuxerForm
         If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
             ap.Delay = g.ExtractDelay(ap.File)
         End If
+
+        Dim trackname = g.ExtractTrackNameFromFilename(path)
+        ap.StreamName = If(trackname, ap.StreamName)
 
         If FileTypes.VideoAudio.Contains(ap.File.Ext) Then
             ap.Streams = MediaInfo.GetAudioStreams(ap.File)

@@ -3324,9 +3324,7 @@ Public Class MainForm
     Dim BlockAudioTextChanged As Boolean
 
     Sub AudioTextChanged(tb As TextEdit, ap As AudioProfile)
-        If BlockAudioTextChanged Then
-            Exit Sub
-        End If
+        If BlockAudioTextChanged Then Exit Sub
 
         If tb.Text.Contains(":\") OrElse tb.Text.StartsWith("\\") Then
             If tb.Text <> ap.File Then

@@ -21,7 +21,8 @@ v2.33.0 (2024-01-15)
 - UI: Fix ffmpeg not being able to extract "Timed Text" subtitles properly ([#1185](/../../issues/1185))
 - UI: Improve "Output Highlighting"
 - UI: Let ffmpeg Demuxer also extracts all subtitles
-- UI: Let "Frame Mismatch" start at an earler stage
+- UI: Run "Frame Mismatch" only on video files
+- UI: Better handling for "Frame Mismatch" errors
 
 
 v2.32.0 (2024-01-08)

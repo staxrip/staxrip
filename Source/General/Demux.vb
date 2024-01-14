@@ -250,12 +250,11 @@ Public Class ffmpegDemuxer
     Public Overrides Sub Run(proj As Project)
         Dim audioStreams As List(Of AudioStream) = Nothing
         Dim subtitles As List(Of Subtitle) = Nothing
-        Dim videoDemuxing = proj.DemuxVideo
 
+        Dim videoDemuxing = proj.DemuxVideo
         Dim audioDemuxing = Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
             TypeOf proj.Audio1 Is NullAudioProfile) AndAlso
             MediaInfo.GetAudioCount(proj.SourceFile) > 0
-
         Dim subtitlesDemuxing = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
@@ -294,6 +293,14 @@ Public Class ffmpegDemuxer
                     DemuxAudio(proj.SourceFile, stream, Nothing, proj, OverrideExisting)
                 End If
             Next
+        End If
+
+        If subtitlesDemuxing Then
+            If subtitles Is Nothing Then
+                subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
+            End If
+
+            DemuxSubtitles(subtitles, proj, OverrideExisting)
         End If
 
         Log.Save(proj)
@@ -390,24 +397,22 @@ Public Class ffmpegDemuxer
         End If
     End Sub
 
-    Sub DemuxSubtitles(subtitles As List(Of Subtitle), proj As Project)
-        If subtitles.Where(Function(subtitle) subtitle.Enabled).Count = 0 Then
-            Exit Sub
-        End If
+    Sub DemuxSubtitles(subtitles As List(Of Subtitle), proj As Project, overrideExisting As Boolean)
+        If subtitles Is Nothing Then Exit Sub
+        If proj Is Nothing Then Exit Sub
 
-        For Each subtitle In subtitles
-            If Not subtitle.Enabled Then
-                Continue For
-            End If
-
-            Dim args = "-y -hide_banner -probesize 10M -i " + proj.SourceFile.Escape
+        For Each subtitle In subtitles.Where(Function(x) x.Enabled)
             Dim outpath = proj.TempDir + subtitle.Filename + subtitle.ExtFull
+            Dim args = "-y -hide_banner -probesize 10M -i " + proj.SourceFile.Escape
+            Dim codec = If(subtitle.Ext = "srt", "srt", "copy")
+
+            If Not overrideExisting AndAlso outpath.FileExists Then Exit Sub
 
             If MediaInfo.GetSubtitleCount(proj.SourceFile) > 1 Then
                 args += " -map 0:s:" & subtitle.Index
             End If
 
-            args += " -c:s copy -vn -an " + outpath.Escape
+            args += $" -c:s {codec} -vn -an {outpath.Escape}"
 
             Using proc As New Proc
                 proc.Project = proj

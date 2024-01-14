@@ -10,24 +10,18 @@ v2.3x.0 (not published yet)
 -->
 
 
-v2.33.0 (not published yet)
+v2.33.0 (2024-01-15)
 ====================
 
+- UI: Audio import via container options reads the track name from the file name ([#1184](/../../issues/1184))
 - UI: Enhance "HDR metadata extraction"
-- UI: Optimize "Output Highlighting"
+- UI: Extend two-letter language codes
 - UI: Fix crash on "HDR metadata extraction" on some systems
 - UI: Fix language recognition of subtitles from paths ([#1174](/../../issues/1174))
-- UI: Extend two-letter language codes
+- UI: Fix ffmpeg not being able to extract "Timed Text" subtitles properly ([#1185](/../../issues/1185))
+- UI: Improve "Output Highlighting"
+- UI: Let ffmpeg Demuxer also extracts all subtitles
 - UI: Let "Frame Mismatch" start at an earler stage
-- UI: Audio import via container options reads the track name from the file name ([#1184](/../../issues/1184))
-- Update tools
-    - ...
-- Update AviSynth+ plugins
-    - ...
-- Update Dual plugins
-    - ...
-- Update VapourSynth plugins
-    - ...
 
 
 v2.32.0 (2024-01-08)

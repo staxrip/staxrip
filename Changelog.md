@@ -17,6 +17,7 @@ v2.33.0 (not published yet)
 - UI: Optimize "Output Highlighting"
 - UI: Fix crash on "HDR metadata extraction" on some systems
 - UI: Fix language recognition of subtitles from paths ([#1174](/../../issues/1174))
+- UI: Extend two-letter language codes
 - UI: Let "Frame Mismatch" start at an earler stage
 - UI: Audio import via container options reads the track name from the file name ([#1184](/../../issues/1184))
 - Update tools

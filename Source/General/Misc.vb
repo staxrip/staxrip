@@ -572,16 +572,7 @@ Public Class Language
 
             Select Case lang.Length
                 Case 2
-                    Select Case lang
-                        Case "iw"
-                            lang = "he"
-                        Case "jp"
-                            lang = "ja"
-                        Case "no"
-                            lang = "nr"
-                    End Select
-
-                    selectedLanguages = Languages.Select(Function(x) x.TwoLetterCode)
+                    selectedLanguages = Languages.Select(Function(x) x.TwoLetterCode).Union(Languages.Select(Function(x) x.CultureInfo.IetfLanguageTag))
                 Case 3
                     selectedLanguages = Languages.Select(Function(x) x.ThreeLetterCode)
                 Case Else
@@ -659,21 +650,13 @@ Public Class Language
 
     ReadOnly Property Name() As String
         Get
-            If CultureInfo.TwoLetterISOLanguageName = "iv" Then
-                Return "und"
-            Else
-                Return CultureInfo.Name
-            End If
+            Return If(CultureInfo.TwoLetterISOLanguageName = "iv", "und", CultureInfo.Name)
         End Get
     End Property
 
     ReadOnly Property EnglishName() As String
         Get
-            If CultureInfo.TwoLetterISOLanguageName = "iv" Then
-                Return "Undetermined"
-            Else
-                Return CultureInfo.EnglishName
-            End If
+            Return If(CultureInfo.TwoLetterISOLanguageName = "iv", "Undetermined", CultureInfo.EnglishName)
         End Get
     End Property
 

@@ -15,7 +15,7 @@ Public Class ProcController
     Private ReadOnly CustomProgressInfoSeparator As String = ", "
     Private UseFirstExpression As Boolean = True
     Private FailCounter As Integer = 0
-    Private _ProjectScriptFrameRate As Double = -1.0
+    Private _projectScriptFrameRate As Double = -1.0
 
     Property Proc As Proc
     Property LogTextBox As New RichTextBoxEx
@@ -24,10 +24,10 @@ Public Class ProcController
     Property Button As New ButtonEx
     ReadOnly Property ProjectScriptFrameRate As Double
         Get
-            If _ProjectScriptFrameRate < 0 Then
-                _ProjectScriptFrameRate = If(Proc?.Project?.Script Is Nothing, 0.0, Proc.Project.Script.GetFramerate())
+            If _projectScriptFrameRate < 0 Then
+                _projectScriptFrameRate = If(Proc?.Project?.Script Is Nothing, 0.0, Proc.Project.Script.GetFramerate())
             End If
-            Return _ProjectScriptFrameRate
+            Return _projectScriptFrameRate
         End Get
     End Property
 

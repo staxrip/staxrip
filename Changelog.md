@@ -4,10 +4,27 @@ v2.3x.0 (not published yet)
 
 - ...
 - Update tools
+    - ...
 - Update AviSynth+ plugins
+    - ...
 - Update Dual plugins
+    - ...
 - Update VapourSynth plugins
+    - ...
 -->
+
+v2.34.0 (not published yet)
+====================
+
+- ...
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
 
 
 v2.33.0 (2024-01-15)
@@ -20,7 +37,7 @@ v2.33.0 (2024-01-15)
 - UI: Fix language recognition of subtitles from paths ([#1174](/../../issues/1174))
 - UI: Fix ffmpeg not being able to extract "Timed Text" subtitles properly ([#1185](/../../issues/1185))
 - UI: Improve "Output Highlighting"
-- UI: Let ffmpeg Demuxer also extracts all subtitles
+- UI: Let ffmpeg Demuxer also extract all subtitles
 - UI: Run "Frame Mismatch" only on video files
 - UI: Better handling for "Frame Mismatch" errors
 

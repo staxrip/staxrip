@@ -3460,8 +3460,9 @@ Public Class MainForm
         Dim sourcePath = proj.SourceFile
 
         If File.Exists(sourcePath) Then
-            Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
-            If Not String.IsNullOrWhiteSpace(fileHdrFormat) AndAlso fileHdrFormat.ContainsAny("Blu-ray / HDR10", "Dolby Vision") Then
+            Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format/String")
+            Dim fileHdrFormatCommercial = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
+            If Not String.IsNullOrWhiteSpace(fileHdrFormatCommercial) AndAlso (fileHdrFormat.ContainsAny("SMPTE ST 2094") OrElse fileHdrFormatCommercial.ContainsAny("Blu-ray / HDR10", "Dolby Vision")) Then
                 Dim crop = " -c"
                 Dim mode = If(proj.DoviMode < 0, "", " -m " + (proj.DoviMode + 0).ToString())
                 Dim rpuPath = sourcePath.ChangeExt("bin")

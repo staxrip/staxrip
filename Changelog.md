@@ -16,7 +16,7 @@ v2.3x.0 (not published yet)
 v2.34.0 (not published yet)
 ====================
 
-- ...
+- Fix delay when opening and closing Muxer window
 - Update tools
     - ...
 - Update AviSynth+ plugins

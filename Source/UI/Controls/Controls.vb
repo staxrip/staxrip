@@ -1669,7 +1669,7 @@ Namespace UI
                     If ctrl.Visible Then
                         nextPos += ctrl.Margin.Left + ctrl.Width + ctrl.Margin.Right
 
-                        Dim expandetControl = TryCast(ctrl, SimpleUI.SimpleUIControl)
+                        Dim expandetControl = TryCast(ctrl, SimpleUI.ISimpleUIControl)
 
                         If Not expandetControl Is Nothing AndAlso expandetControl.Expand Then
                             Dim diff = Aggregate i2 In Controls.OfType(Of Control)() Into Sum(If(i2.Visible, i2.Width + i2.Margin.Left + i2.Margin.Right, 0))

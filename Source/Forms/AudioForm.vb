@@ -718,8 +718,9 @@ Public Class AudioForm
 
         rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
 
-        Dim cms As New ContextMenuStripEx(components)
-        cms.Form = Me
+        Dim cms As New ContextMenuStripEx(components) With {
+            .Form = Me
+        }
         bnMenu.ContextMenuStrip = cms
 
         cms.Add("Execute Command Line", AddressOf Execute).SetImage(Symbol.fa_terminal)

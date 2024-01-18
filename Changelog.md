@@ -16,7 +16,8 @@ v2.3x.0 (not published yet)
 v2.34.0 (not published yet)
 ====================
 
-- Fix delay when opening and closing Muxer window
+- UI: Fix delay when opening and closing Muxer window
+- x265: Add Assistant check for VBV settings when using DolbyVision
 - Update tools
     - ...
 - Update AviSynth+ plugins

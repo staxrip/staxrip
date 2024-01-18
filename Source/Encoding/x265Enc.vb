@@ -931,6 +931,16 @@ Public Class x265Params
         .Text = "Limit TU",
         .Config = {0, 4}}
 
+    Property VbvBufSize As New NumParam With {
+        .Switch = "--vbv-bufsize",
+        .Text = "VBV Bufsize",
+        .Config = {0, 1000000, 100}}
+
+    Property VbvMaxRate As New NumParam With {
+        .Switch = "--vbv-maxrate",
+        .Text = "VBV Maxrate",
+        .Config = {0, 1000000, 100}}
+
     Property ConstVBV As New BoolParam With {
         .Switch = "--const-vbv",
         .NoSwitch = "--no-const-vbv",
@@ -1005,8 +1015,7 @@ Public Class x265Params
                     New NumParam With {.Switch = "--crqpoffs", .Text = "CR QP Offset", .Config = {-12, 12}},
                     NRintra, NRinter, CRFmin, CRFmax)
                 Add("Rate Control 2",
-                    New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Config = {0, 1000000, 100}},
-                    New NumParam With {.Switch = "--vbv-maxrate", .Text = "VBV Maxrate", .Config = {0, 1000000, 100}},
+                    VbvBufsize, VbvMaxRate,
                     New NumParam With {.Switch = "--vbv-init", .Text = "VBV Init", .Config = {0.5, 1.0, 0.1, 1}, .Init = 0.9},
                     New NumParam With {.Switch = "--vbv-end", .Text = "VBV End", .Config = {0, 1.0, 0.1, 1}},
                     New NumParam With {.Switch = "--vbv-end-fr-adj", .Text = "VBV Adjust", .Config = {0, 1, 0.1, 1}},

@@ -102,6 +102,7 @@ Public Class GlobalCommands
     End Sub
 
     <Command("Placeholder for dynamically updated menu items.")>
+    <CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification:="<Pending>")>
     Sub DynamicMenuItem(<DispName("ID")> id As DynamicMenuItemID)
     End Sub
 

@@ -19,6 +19,7 @@ v2.34.0 (not published yet)
 - CommandLine: Add new parameter "-SetCrop" to set the crop values, best used with a source file as first parameter
 - UI: Fix delay when opening and closing Muxer/Container options window
 - UI: Fix Assistant displaying issues
+- UI: Fix crash on sources with multiple video tracks on newer versions of eac3to
 - UI: Let "HDR metadata extraction" also set the json file when an rpu file was found/set
 - x265: Add Assistant check for VBV settings when using DolbyVision
 - Update tools

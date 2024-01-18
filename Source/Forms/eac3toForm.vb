@@ -825,14 +825,14 @@ Public Class eac3toForm
                 Dim match = Regex.Match(line, "^(\d+): (.+)$")
 
                 If match.Success Then
-                    Dim ms As New M2TSStream
-                    ms.Text = line.Trim
-                    ms.ID = match.Groups(1).Value.ToInt
-                    ms.Codec = match.Groups(2).Value
+                    Dim ms As New M2TSStream With {
+                        .Text = line.Trim,
+                        .ID = match.Groups(1).Value.ToInt,
+                        .Codec = match.Groups(2).Value
+                    }
 
-                    If ms.Codec.Contains(",") Then
-                        ms.Codec = ms.Codec.Left(",")
-                    End If
+                    If ms.Codec.Contains(",") Then ms.Codec = ms.Codec.Left(",")
+                    If ms.Codec.StartsWith("*") Then ms.Codec = ms.Codec.Right("*")
 
                     ms.IsVideo = ms.Codec.EqualsAny("h264/AVC", "h265/HEVC", "VC-1", "MPEG2")
 

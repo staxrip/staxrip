@@ -16,8 +16,9 @@ v2.3x.0 (not published yet)
 v2.34.0 (not published yet)
 ====================
 
-- UI: Fix delay when opening and closing Muxer window
+- UI: Fix delay when opening and closing Muxer/Container options window
 - UI: Fix Assistant displaying issues
+- UI: Let "HDR metadata extraction" also set the json file when an rpu file was found/set
 - x265: Add Assistant check for VBV settings when using DolbyVision
 - Update tools
     - ...

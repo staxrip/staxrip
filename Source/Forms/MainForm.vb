@@ -2228,11 +2228,13 @@ Public Class MainForm
 
             Demux()
 
-            If String.IsNullOrWhiteSpace(p.HdrmetadataFile) Then
-                p.HdrmetadataFile = Task.Run(Async Function() Await FindHdrMetadataAsync(p)).Result
+            If String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile) Then
+                Dim metadatas = Task.Run(Async Function() Await FindHdrMetadataAsync(p)).Result
+                p.Hdr10PlusMetadataFile = metadatas.Item1
+                p.HdrDolbyVisionMetadataFile = metadatas.Item2
             End If
 
-            If p.ExtractHdrmetadata <> HdrmetadataMode.None AndAlso String.IsNullOrWhiteSpace(p.HdrmetadataFile) AndAlso Not String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) Then
+            If p.ExtractHdrmetadata <> HdrmetadataMode.None AndAlso (String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile)) AndAlso Not String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) Then
                 Select Case p.ExtractHdrmetadata
                     Case HdrmetadataMode.DolbyVision
                         ExtractDolbyVisionMetadata(p)
@@ -3458,7 +3460,7 @@ Public Class MainForm
                     End Try
                 End If
 
-                proj.HdrmetadataFile = jsonPath
+                proj.Hdr10PlusMetadataFile = jsonPath
             End If
         End If
     End Sub
@@ -3504,36 +3506,30 @@ Public Class MainForm
                     End Try
                 End If
 
-                proj.HdrmetadataFile = rpuPath
+                proj.HdrDolbyVisionMetadataFile = rpuPath
             End If
         End If
     End Sub
 
-    Async Function FindHdrMetadataAsync(proj As Project) As Task(Of String)
+    Async Function FindHdrMetadataAsync(proj As Project) As Task(Of (String, String))
         If proj Is Nothing Then Return Nothing
-        If Not String.IsNullOrWhiteSpace(proj.HdrmetadataFile) Then Return proj.HdrmetadataFile
         If String.IsNullOrWhiteSpace(proj.SourceFile) Then Return Nothing
 
         Dim sourcePath = proj.SourceFile
-        Dim ret As String = Nothing
+        Dim jsonFile As String = ""
+        Dim rpuFile As String = ""
         Dim files As IEnumerable(Of String)
 
         Dim searchTask = Task.Run(Sub()
                                       Try
                                           files = Directory.GetFiles(proj.SourceFile.Dir(), $"{proj.SourceFile.Base}*.*", SearchOption.TopDirectoryOnly)
-                                          files = files?.Where(Function(x) {".json", ".bin", ".rpu"}.Contains(x.ExtFull))
+                                          jsonFile = files.Where(Function(x) {"json"}.Contains(x.Ext))?.FirstOrDefault()
+                                          rpuFile = files.Where(Function(x) {".bin", ".rpu"}.Contains(x.Ext))?.FirstOrDefault()
 
-                                          If files?.Any() Then
-                                              ret = files.FirstOrDefault()
-                                          Else
-                                              If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
-                                                  files = Directory.GetFiles(proj.TempDir, "*.*", SearchOption.TopDirectoryOnly)
-                                                  files = files?.Where(Function(x) {".json", ".bin", ".rpu"}.Contains(x.ExtFull))
-
-                                                  If files?.Any() Then
-                                                      ret = files.FirstOrDefault()
-                                                  End If
-                                              End If
+                                          If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
+                                              files = Directory.GetFiles(proj.TempDir, "*.*", SearchOption.TopDirectoryOnly)
+                                              jsonFile = If(String.IsNullOrWhiteSpace(jsonFile), files?.Where(Function(x) {"json"}.Contains(x.Ext))?.FirstOrDefault(), "")
+                                              rpuFile = If(String.IsNullOrWhiteSpace(rpuFile), files?.Where(Function(x) {".bin", ".rpu"}.Contains(x.Ext))?.FirstOrDefault(), "")
                                           End If
                                       Catch ex As Exception
                                           Log.WriteLine(ex.Message)
@@ -3542,7 +3538,7 @@ Public Class MainForm
                                   End Sub)
 
         Await searchTask
-        Return ret
+        Return (jsonFile, rpuFile)
     End Function
 
     Sub Demux()

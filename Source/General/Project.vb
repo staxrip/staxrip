@@ -60,7 +60,8 @@ Public Class Project
     Public ForcedOutputMod As Integer = 8
     Public ForcedOutputModOnlyIfCropped As Boolean = False
     Public HardcodedSubtitle As Boolean
-    Public HdrmetadataFile As String
+    Public Hdr10PlusMetadataFile As String
+    Public HdrDolbyVisionMetadataFile As String
     Public ImportVUIMetadata As Boolean = True
     Public ITU As Boolean
     Public LastOriginalSourceFile As String

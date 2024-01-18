@@ -16,6 +16,7 @@ v2.3x.0 (not published yet)
 v2.34.0 (not published yet)
 ====================
 
+- CommandLine: Add new parameter "-SetCrop" to set the crop values, best used with a source file as first parameter
 - UI: Fix delay when opening and closing Muxer/Container options window
 - UI: Fix Assistant displaying issues
 - UI: Let "HDR metadata extraction" also set the json file when an rpu file was found/set

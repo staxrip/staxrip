@@ -198,6 +198,34 @@ Public Class GlobalCommands
         g.InvokePowerShellCode(Macro.Expand(filepath).ReadAllText, Macro.Expand(args).SplitNoEmpty(";"c))
     End Sub
 
+    <Command("Sets crop values")>
+    Sub SetCrop(
+        <DispName("Left Crop")>
+        <Description("Sets the left crop value.")>
+        <DefaultValue(0)>
+        left As Integer,
+        <DispName("Top Crop")>
+        <Description("Sets the top crop value.")>
+        <DefaultValue(0)>
+        top As Integer,
+        <DispName("Right Crop")>
+        <Description("Sets the right crop value.")>
+        <DefaultValue(0)>
+        right As Integer,
+        <DispName("Bottom Crop")>
+        <Description("Sets the bottom crop value.")>
+        <DefaultValue(0)>
+        bottom As Integer)
+
+        p.CropLeft = Math.Max(left, 0)
+        p.CropTop = Math.Max(top, 0)
+        p.CropRight = Math.Max(right, 0)
+        p.CropBottom = Math.Max(bottom, 0)
+
+        g.MainForm.SetCropFilter()
+        g.CorrectCropMod()
+    End Sub
+
     <Command("Generates various wiki content.")>
     Sub GenerateWikiContent()
         Documentation.GenerateWikiContent()

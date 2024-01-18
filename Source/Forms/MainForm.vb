@@ -2795,9 +2795,7 @@ Public Class MainForm
     End Function
 
     Function Assistant(Optional refreshScript As Boolean = True) As Boolean
-        If SkipAssistant Then
-            Return False
-        End If
+        If SkipAssistant Then Return False
 
         If ThemeRefresh Then
             ApplyTheme()
@@ -3230,7 +3228,7 @@ Public Class MainForm
             gbAssistant.Text = msg
         End If
 
-        Highlight(controls)
+        Highlight(True, controls)
         UpdateNextButton()
     End Function
 
@@ -3253,14 +3251,6 @@ Public Class MainForm
     End Sub
 
     Sub Highlight(highlight As Boolean, ParamArray controls As Control())
-        If controls Is Nothing Then
-            Return
-        End If
-
-        If Not controls.NothingOrEmpty Then
-            ThemeRefresh = True
-        End If
-
         Dim theme = ThemeManager.CurrentTheme
 
         If highlight Then
@@ -3270,6 +3260,9 @@ Public Class MainForm
             laTip.BackColor = theme.MainForm.laTipBackColor
             laTip.ForeColor = theme.MainForm.laTipForeColor
         End If
+
+        If controls Is Nothing Then Return
+        If Not controls.NothingOrEmpty Then ThemeRefresh = True
 
         For Each control In controls.OfType(Of Label)
             control.BackColor = theme.General.Controls.Label.BackHighlightColor

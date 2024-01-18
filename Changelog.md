@@ -17,6 +17,7 @@ v2.34.0 (not published yet)
 ====================
 
 - UI: Fix delay when opening and closing Muxer window
+- UI: Fix Assistant displaying issues
 - x265: Add Assistant check for VBV settings when using DolbyVision
 - Update tools
     - ...

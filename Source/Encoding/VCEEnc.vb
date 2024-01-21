@@ -1,5 +1,6 @@
 ﻿
 Imports System.Xml.Serialization
+Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
@@ -49,7 +50,7 @@ Public Class VCEEnc
         Params.Codec.Value = If(codecIndex > 0 AndAlso codecIndex < Params.Codec.Values.Length, codecIndex, 0)
     End Sub
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Dim params1 As New EncoderParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         params1.Init(store)
@@ -69,6 +70,10 @@ Public Class VCEEnc
             form.cms.Add("Check Features", Sub() g.ShowCode("Check Features", ProcessHelp.GetConsoleOutput(Package.VCEEncC.Path, "--check-features")), Keys.Control Or Keys.F)
             form.cms.Add("-")
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
+
+            If Not String.IsNullOrWhiteSpace(path) Then
+                form.SimpleUI.ShowPage(path)
+            End If
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = params1

@@ -3,6 +3,7 @@ Imports Microsoft
 Imports Microsoft.VisualBasic.Logging
 Imports System.Runtime.InteropServices.ComTypes
 Imports StaxRip.VideoEncoderCommandLine
+Imports StaxRip.UI
 
 <Serializable()>
 Public Class QSVEnc
@@ -51,7 +52,7 @@ Public Class QSVEnc
         Params.Codec.Value = If(codecIndex > 0 AndAlso codecIndex < Params.Codec.Values.Length, codecIndex, 0)
     End Sub
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Dim params1 As New EncoderParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         params1.Init(store)
@@ -76,6 +77,10 @@ Public Class QSVEnc
             form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.QSVEncC.Path, "--check-environment")))
             form.cms.Add("-")
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
+
+            If Not String.IsNullOrWhiteSpace(path) Then
+                form.SimpleUI.ShowPage(path)
+            End If
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = params1

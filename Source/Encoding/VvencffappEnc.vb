@@ -1,4 +1,5 @@
 ﻿Imports System.Text
+Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
@@ -192,7 +193,7 @@ Public Class VvencffappEnc
         Return Params.GetArgs(pass, startFrame, endFrame, chunkName, script, OutputPath.DirAndBase + OutputExtFull, includePaths, True)
     End Function
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Dim newParams As New VvencffappParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
@@ -213,6 +214,10 @@ Public Class VvencffappEnc
                     End Sub
 
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
+
+            If Not String.IsNullOrWhiteSpace(path) Then
+                form.SimpleUI.ShowPage(path)
+            End If
 
             If form.ShowDialog() = DialogResult.OK Then
                 AutoCompCheckValue = CInt(newParams.CompCheckAimedQuality.Value)

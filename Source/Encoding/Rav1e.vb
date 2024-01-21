@@ -1,5 +1,6 @@
 ﻿
 Imports System.Text
+Imports StaxRip.UI
 
 Imports StaxRip.VideoEncoderCommandLine
 
@@ -69,7 +70,7 @@ Public Class Rav1e
         Return ret
     End Function
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Dim newParams As New Rav1eParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
@@ -86,6 +87,10 @@ Public Class Rav1e
                     End Sub
 
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
+
+            If Not String.IsNullOrWhiteSpace(path) Then
+                form.SimpleUI.ShowPage(path)
+            End If
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams

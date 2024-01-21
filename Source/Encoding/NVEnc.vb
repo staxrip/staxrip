@@ -1,4 +1,5 @@
 ﻿
+Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
@@ -39,7 +40,7 @@ Public Class NVEnc
         Params.Codec.Value = If(codecIndex > 0 AndAlso codecIndex < Params.Codec.Values.Length, codecIndex, 0)
     End Sub
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Dim newParams As New EncoderParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
@@ -63,6 +64,10 @@ Public Class NVEnc
             form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.NVEncC.Path, "--check-environment")))
             form.cms.Add("-")
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
+
+            If Not String.IsNullOrWhiteSpace(path) Then
+                form.SimpleUI.ShowPage(path)
+            End If
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams

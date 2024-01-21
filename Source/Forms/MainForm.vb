@@ -3964,6 +3964,11 @@ Public Class MainForm
             t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
 
             b = ui.AddBool()
+            b.Text = "Expand Preview window automatically depending on its size"
+            b.Help = ""
+            b.Field = NameOf(s.ExpandPreviewWindow)
+
+            b = ui.AddBool()
             b.Text = "Use binary prefix (MiB) instead of decimal prefix (MB) for sizes"
             b.Help = "Binary: 1 MiB = 1024 KiB" + BR + "Decimal: 1 MB = 1000 KB" + BR2 +
                             "When selected, Staxrip will use binary prefix instead of decimal in the display and calculation of sizes." + BR +

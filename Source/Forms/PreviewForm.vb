@@ -225,7 +225,7 @@ Public Class PreviewForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.Black
-        Me.ClientSize = New System.Drawing.Size(837, 714)
+        'Me.ClientSize = New System.Drawing.Size(837, 1714)
         Me.Controls.Add(Me.pnVideo)
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "PreviewForm"
@@ -258,6 +258,7 @@ Public Class PreviewForm
 
     Sub New(ByRef script As VideoScript)
         InitializeComponent()
+        RestoreClientSize(64, 36)
         GetType(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty Or BindingFlags.Instance Or BindingFlags.NonPublic, Nothing, pnTrack, New Object() {True})
 
         Icon = g.Icon
@@ -325,7 +326,9 @@ Public Class PreviewForm
         Dim workingArea = Screen.FromControl(Me).WorkingArea
         Dim initHeight = CInt((workingArea.Height / 100) * s.PreviewSize)
 
-        If initSize Then
+        If Not s.ExpandPreviewWindow Then
+            SetSize(s.Storage.GetInt(Me.GetType().Name + "height"))
+        ElseIf initSize Then
             SetSize(initHeight)
         End If
 

@@ -21,6 +21,7 @@ v2.34.0 (not published yet)
 - UI: Fix Assistant displaying issues
 - UI: Fix crash on sources with multiple video tracks on newer versions of eac3to
 - UI: Let "HDR metadata extraction" also set the json file when an rpu file was found/set
+- UI: Add option to save Preview window size ([#986](/../../issues/986))
 - x265: Add Assistant check for VBV settings when using DolbyVision
 - Update tools
     - ...

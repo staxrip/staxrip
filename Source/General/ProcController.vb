@@ -16,6 +16,7 @@ Public Class ProcController
     Private UseFirstExpression As Boolean = True
     Private FailCounter As Integer = 0
     Private _projectScriptFrameRate As Double = -1.0
+    Private _lastHighlightedText As String = ""
 
     Property Proc As Proc
     Property LogTextBox As New RichTextBoxEx
@@ -139,8 +140,12 @@ Public Class ProcController
         If text = "" OrElse Not s.OutputHighlighting Then
             LogTextBox.Text = text
             LogTextBox.BlockPaint = False
+            _lastHighlightedText = ""
             Exit Sub
         End If
+
+        If _lastHighlightedText = text Then Exit Sub
+        _lastHighlightedText = text
 
         'If LogTextBox.BlockPaint Then Exit Sub
 
@@ -234,7 +239,7 @@ Public Class ProcController
                 format(m.Index, m.Length, oh.MetadataFileBackColor, oh.MetadataFileForeColor, oh.MetadataFileFontStyles)
             Next
 
-            duplicate = FileTypes.Video.Union(FileTypes.Audio).Join("|")
+            duplicate = FileTypes.Video.Union(FileTypes.Audio).Union(FileTypes.SubtitleExludingContainers).Select(Function(x) Regex.Escape(x)).Join("|")
             matches = Regex.Matches(LogTextBox.Text, $"(""[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.({duplicate})"")|((?<!"")[A-Z]:\\[\S\\]+\.({duplicate})(?!""))", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 format(m.Index, m.Length, oh.MediaFileBackColor, oh.MediaFileForeColor, oh.MediaFileFontStyles)
@@ -281,6 +286,8 @@ Public Class ProcController
                 sw.Stop()
                 ProcForm.Text = $"Output Highlighting took {sw.ElapsedMilliseconds}ms"
             End If
+
+            SetAndHighlightLog(_lastHighlightedText, theme)
         End Try
     End Sub
 

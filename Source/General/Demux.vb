@@ -252,9 +252,7 @@ Public Class ffmpegDemuxer
         Dim subtitles As List(Of Subtitle) = Nothing
 
         Dim videoDemuxing = proj.DemuxVideo
-        Dim audioDemuxing = Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso
-            TypeOf proj.Audio1 Is NullAudioProfile) AndAlso
-            MediaInfo.GetAudioCount(proj.SourceFile) > 0
+        Dim audioDemuxing = p.AudioTracks.Where(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile)?.Any() AndAlso MediaInfo.GetAudioCount(proj.SourceFile) > 0
         Dim subtitlesDemuxing = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
@@ -462,7 +460,7 @@ Public Class MP4BoxDemuxer
         Dim audioStreams As List(Of AudioStream) = Nothing
         Dim subtitles As List(Of Subtitle) = Nothing
         Dim attachments = GetAttachments(proj.SourceFile)
-        Dim demuxAudio = Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso TypeOf proj.Audio1 Is NullAudioProfile) AndAlso MediaInfo.GetAudioCount(proj.SourceFile) > 0
+        Dim demuxAudio = p.AudioTracks.Where(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile)?.Any() AndAlso MediaInfo.GetAudioCount(proj.SourceFile) > 0
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim demuxChapters = proj.DemuxChapters
         Dim demuxAttachments = proj.DemuxAttachments
@@ -720,7 +718,7 @@ Public Class mkvDemuxer
         Dim subtitles As List(Of Subtitle) = Nothing
         Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify --ui-language en " + proj.SourceFile.Escape)
         Dim attachments = GetAttachments(stdout)
-        Dim demuxAudio = (Not (TypeOf proj.Audio0 Is NullAudioProfile AndAlso TypeOf proj.Audio1 Is NullAudioProfile)) AndAlso MediaInfo.GetAudioCount(proj.SourceFile) > 0
+        Dim demuxAudio = p.AudioTracks.Where(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile)?.Any() AndAlso MediaInfo.GetAudioCount(proj.SourceFile) > 0
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim demuxChapters = proj.DemuxChapters
         Dim demuxAttachments = proj.DemuxAttachments

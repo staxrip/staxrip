@@ -654,7 +654,7 @@ Public Class MuxerForm
         lbAttachments.Items.AddRange(muxer.Attachments.Select(Function(val) New AttachmentContainer With {.Filepath = val}).ToArray)
         lbAttachments.RemoveButton = bnAttachmentRemove
 
-        AudioBindingSource.DataSource = ObjectHelp.GetCopy(p.AudioTracks)
+        AudioBindingSource.DataSource = ObjectHelp.GetCopy(p.AudioFiles)
 
         dgvAudio.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         dgvAudio.MultiSelect = False
@@ -977,7 +977,7 @@ Public Class MuxerForm
         SetValues()
 
         If DialogResult = DialogResult.OK Then
-            p.AudioTracks = DirectCast(AudioBindingSource.DataSource, List(Of AudioProfile))
+            p.AudioFiles = DirectCast(AudioBindingSource.DataSource, List(Of AudioProfile))
             Muxer.Attachments.Clear()
             Muxer.Attachments.AddRange(lbAttachments.Items.OfType(Of AttachmentContainer).Select(Function(val) val.Filepath))
         End If
@@ -1261,7 +1261,7 @@ Public Class MuxerForm
     Sub bnAudioEdit_Click(sender As Object, e As EventArgs) Handles bnAudioEdit.Click
         Dim ap = DirectCast(AudioBindingSource(dgvAudio.SelectedRows(0).Index), AudioProfile)
         ap.EditProject()
-        g.MainForm.UpdateAudioMenu()
+        g.MainForm.UpdateAudioMenus()
         g.MainForm.UpdateSizeOrBitrate()
         AudioBindingSource.ResetBindings(False)
     End Sub

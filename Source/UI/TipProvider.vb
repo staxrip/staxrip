@@ -58,9 +58,7 @@ Namespace UI
         End Sub
 
         Sub SetTip(tipText As String, ParamArray controls As Control())
-            If tipText = "" Then
-                Exit Sub
-            End If
+            If tipText = "" Then Exit Sub
 
             Dim title = ""
 
@@ -87,11 +85,7 @@ Namespace UI
                 tipText = tipText.TrimEnd("."c)
 
                 If tipText.Length > 80 Then
-                    If HasContextMenu(control) Then
-                        tipText = Nothing
-                    Else
-                        tipText = "Right-click for help"
-                    End If
+                    tipText = If(HasContextMenu(control), Nothing, "Right-click for help")
                 ElseIf HelpDocument.MustConvert(tipText) Then
                     tipText = HelpDocument.ConvertMarkup(tipText, True)
                 End If

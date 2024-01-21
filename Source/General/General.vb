@@ -234,8 +234,14 @@ Public Class Folder
                 remux.DemuxAudio = DemuxMode.None
                 remux.SubtitleMode = SubtitleMode.Disabled
                 remux.VideoEncoder = New NullEncoder
-                remux.Audio0 = New MuxAudioProfile
-                remux.Audio1 = New MuxAudioProfile
+                For index = 0 To remux.AudioTracksAvailable - 1
+                    remux.AudioTracks.Add(New AudioTrack() With {
+                                                .AudioProfile = New MuxAudioProfile(),
+                                                .EditLabel = New AudioEditButtonLabel(index),
+                                                .NameLabel = New AudioNameButtonLabel(index),
+                                                .TextEdit = New AudioTextEdit(index)
+                                          })
+                Next
                 SafeSerialization.Serialize(remux, Path.Combine(ret, "Re-mux.srip"))
             End If
 

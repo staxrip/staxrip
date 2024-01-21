@@ -703,17 +703,23 @@ function Down2(clip a)
     End Function
 
     Shared Function IsEncoderUsed(encoder As GuiAudioEncoder) As Boolean
-        If IsEncoderUsed(p.Audio0, encoder) OrElse IsEncoderUsed(p.Audio1, encoder) Then
-            Return True
+        If Not p.AudioTracks.NothingOrEmpty() Then
+            For Each track In p.AudioTracks
+                If IsEncoderUsed(track.AudioProfile, encoder) Then
+                    Return True
+                End If
+            Next
         End If
 
-        If Not p.AudioTracks.NothingOrEmpty Then
-            For Each ap In p.AudioTracks
+        If Not p.AudioFiles.NothingOrEmpty Then
+            For Each ap In p.AudioFiles
                 If IsEncoderUsed(ap, encoder) Then
                     Return True
                 End If
             Next
         End If
+
+        Return False
     End Function
 
     Shared Function IsEncoderUsed(ap As AudioProfile, encoder As GuiAudioEncoder) As Boolean
@@ -729,17 +735,23 @@ function Down2(clip a)
 
 
     Shared Function CommandContains(find As String) As Boolean
-        If p.Audio0.IsUsedAndContainsCommand(find) OrElse p.Audio1.IsUsedAndContainsCommand(find) Then
-            Return True
+        If Not p.AudioTracks.NothingOrEmpty() Then
+            For Each track In p.AudioTracks
+                If track.AudioProfile.IsUsedAndContainsCommand(find) Then
+                    Return True
+                End If
+            Next
         End If
 
-        If Not p.AudioTracks.NothingOrEmpty Then
-            For Each ap In p.AudioTracks
+        If Not p.AudioFiles.NothingOrEmpty Then
+            For Each ap In p.AudioFiles
                 If ap.IsUsedAndContainsCommand(find) Then
                     Return True
                 End If
             Next
         End If
+
+        Return False
     End Function
 End Class
 

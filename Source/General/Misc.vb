@@ -151,8 +151,9 @@ Public Class Calc
 
         If {"avi", "divx"}.Contains(p.VideoEncoder.Muxer.OutputExt) Then
             ret += frames * 0.024
-            If p.Audio0.File <> "" Then ret += frames * 0.04
-            If p.Audio1.File <> "" Then ret += frames * 0.04
+            For Each track In p.AudioTracks
+                If track.AudioProfile.File <> "" Then ret += frames * 0.04
+            Next
         ElseIf p.VideoEncoder.Muxer.OutputExt = "mp4" Then
             ret += frames * 0.013
         ElseIf p.VideoEncoder.Muxer.OutputExt = "mkv" Then
@@ -167,15 +168,26 @@ Public Class Calc
     End Function
 
     Shared Function GetAudioBitrate() As Double
-        Dim b0 As Double = GetAudioBitrateFromAudioProfile(p.Audio0)
-        Dim b1 As Double = GetAudioBitrateFromAudioProfile(p.Audio1)
+        Dim ret As Double = 0
 
-        Return b0 + b1 + p.AudioTracks.Sum(Function(arg) arg.Bitrate)
+        For Each tracks In p.AudioTracks
+            ret += GetAudioBitrateFromAudioProfile(tracks.AudioProfile)
+        Next
+
+        ret += p.AudioFiles.Sum(Function(arg) arg.Bitrate)
+
+        Return ret
     End Function
 
     Shared Function GetAudioBitrateFromAudioProfile(profile As AudioProfile) As Double
         Dim ret As Double = 0.0
-        If profile.File <> "" Then ret = If(TypeOf profile Is GUIAudioProfile, DirectCast(profile, GUIAudioProfile).GetBitrate, profile.Bitrate)
+        If profile.File <> "" Then
+            ret = If(TypeOf profile Is GUIAudioProfile, DirectCast(profile, GUIAudioProfile).GetBitrate(), profile.Bitrate)
+        Else
+            If profile.Stream IsNot Nothing Then
+                ret = profile.Bitrate
+            End If
+        End If
         Return ret
     End Function
 
@@ -878,6 +890,83 @@ Public MustInherit Class Profile
 End Class
 
 <Serializable()>
+Public Class AudioTrack
+    Private _audioProfile As AudioProfile
+    <NonSerialized>
+    Private _editLabel As AudioEditButtonLabel
+    <NonSerialized>
+    Private _languageLabel As AudioLanguageLabel
+    <NonSerialized>
+    Private _nameLabel As AudioNameButtonLabel
+    <NonSerialized>
+    Private _textEdit As AudioTextEdit
+
+    Public Property AudioProfile As AudioProfile
+        Get
+            Return _audioProfile
+        End Get
+        Set
+            _audioProfile = Value
+        End Set
+    End Property
+
+    Public Property EditLabel As AudioEditButtonLabel
+        Get
+            Dim ret = If(_editLabel, New AudioEditButtonLabel())
+            ret.Text = "Edit"
+            Return ret
+        End Get
+        Set
+            _editLabel = Value
+        End Set
+    End Property
+
+    Public Property LanguageLabel As AudioLanguageLabel
+        Get
+            Dim ret = If(_languageLabel, New AudioLanguageLabel())
+            ret.Text = If(_audioProfile IsNot Nothing, _audioProfile.Language.Name, ret.Text)
+            Return ret
+        End Get
+        Set
+            _languageLabel = Value
+        End Set
+    End Property
+
+    Public Property NameLabel As AudioNameButtonLabel
+        Get
+            Dim ret = If(_nameLabel, New AudioNameButtonLabel())
+            ret.Text = If(_audioProfile IsNot Nothing, _audioProfile.Name, ret.Text)
+            Return ret
+        End Get
+        Set
+            _nameLabel = Value
+        End Set
+    End Property
+
+    Public Property TextEdit As AudioTextEdit
+        Get
+            Dim ret = If(_textEdit, New AudioTextEdit())
+            ret.Text = If(ret.Text <> "", ret.Text, _audioProfile.File)
+            Return ret
+        End Get
+        Set
+            _textEdit = Value
+        End Set
+    End Property
+
+    Public Sub New()
+    End Sub
+
+    Public Sub Remove()
+        _audioProfile.Reset()
+
+        _textEdit.Text = ""
+        _textEdit.Refresh()
+    End Sub
+End Class
+
+
+<Serializable()>
 Public Class ObjectStorage
     Private StringDictionary As New Dictionary(Of String, String)
     Private IntDictionary As New Dictionary(Of String, Integer)
@@ -982,8 +1071,7 @@ Public Class EventCommand
 End Class
 
 Public Enum DynamicMenuItemID
-    Audio1Profiles
-    Audio2Profiles
+    AudioProfiles
     EncoderProfiles
     FilterSetupProfiles
     MuxerProfiles

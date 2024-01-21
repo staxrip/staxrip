@@ -344,11 +344,12 @@ Public Class MP4Muxer
             Next
         End If
 
-        AddAudio(p.Audio0, args)
-        AddAudio(p.Audio1, args)
-
         For Each track In p.AudioTracks
-            AddAudio(track, args)
+            AddAudio(track.AudioProfile, args)
+        Next
+
+        For Each ap In p.AudioFiles
+            AddAudio(ap, args)
         Next
 
         ExpandMacros()
@@ -724,11 +725,12 @@ Public Class MkvMuxer
             Next
         End If
 
-        AddAudioArgs(p.Audio0, args)
-        AddAudioArgs(p.Audio1, args)
+        For Each track In p.AudioTracks
+            AddAudioArgs(track.AudioProfile, args)
+        Next
 
-        For Each i In p.AudioTracks
-            AddAudioArgs(i, args)
+        For Each ap In p.AudioFiles
+            AddAudioArgs(ap, args)
         Next
 
         ExpandMacros()
@@ -1008,16 +1010,14 @@ Public Class ffmpegMuxer
         Dim id As Integer
         Dim mapping = " -map 0:v"
 
-        For Each track In {p.Audio0, p.Audio1}
-            If TypeOf track IsNot NullAudioProfile AndAlso File.Exists(track.File) AndAlso
-                IsSupported(track.OutputFileType) Then
-
+        For Each track In p.AudioTracks
+            If TypeOf track.AudioProfile IsNot NullAudioProfile AndAlso File.Exists(track.AudioProfile.File) AndAlso IsSupported(track.AudioProfile.OutputFileType) Then
                 id += 1
-                args += " -i " + track.File.Escape
+                args += " -i " + track.AudioProfile.File.Escape
                 mapping += " -map " & id
 
-                If track.Stream IsNot Nothing Then
-                    mapping += ":" & track.Stream.StreamOrder
+                If track.AudioProfile.Stream IsNot Nothing Then
+                    mapping += ":" & track.AudioProfile.Stream.StreamOrder
                 End If
             End If
         Next

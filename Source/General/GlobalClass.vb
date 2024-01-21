@@ -322,28 +322,23 @@ Public Class GlobalClass
 
             Dim actions As New List(Of Action)
 
-            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio0.GetOutputFile) Then
-                p.Audio0.File = p.Audio0.GetOutputFile()
-            Else
-                actions.Add(Sub()
-                                Audio.Process(p.Audio0)
-                                p.Audio0.Encode()
-                            End Sub)
-            End If
-
-            If p.SkipAudioEncoding AndAlso File.Exists(p.Audio1.GetOutputFile) Then
-                p.Audio1.File = p.Audio1.GetOutputFile()
-            Else
-                actions.Add(Sub()
-                                Audio.Process(p.Audio1)
-                                p.Audio1.Encode()
-                            End Sub)
-            End If
-
             For Each track In p.AudioTracks
+                Dim temp = track.AudioProfile
+
+                If p.SkipAudioEncoding AndAlso File.Exists(track.AudioProfile.GetOutputFile()) Then
+                    track.AudioProfile.File = track.AudioProfile.GetOutputFile()
+                Else
+                    actions.Add(Sub()
+                                    Audio.Process(temp)
+                                    temp.Encode()
+                                End Sub)
+                End If
+            Next
+
+            For Each track In p.AudioFiles
                 Dim temp = track
 
-                If p.SkipAudioEncoding AndAlso File.Exists(track.GetOutputFile) Then
+                If p.SkipAudioEncoding AndAlso File.Exists(track.GetOutputFile()) Then
                     track.File = track.GetOutputFile()
                 Else
                     actions.Add(Sub()
@@ -612,17 +607,15 @@ Public Class GlobalClass
     End Sub
 
     Function GetAudioProfileForScriptPlayback() As AudioProfile
-        If File.Exists(p.Audio0.File) AndAlso FileTypes.Audio.Contains(p.Audio0.File.Ext) Then
-            Return p.Audio0
-        ElseIf File.Exists(p.Audio1.File) AndAlso FileTypes.Audio.Contains(p.Audio1.File.Ext) Then
-            Return p.Audio1
-        End If
+        For Each track In p.AudioTracks
+            If File.Exists(track.AudioProfile.File) AndAlso FileTypes.Audio.Contains(track.AudioProfile.File.Ext()) Then
+                Return track.AudioProfile
+            End If
+        Next
     End Function
 
     Sub PlayScriptWithMPC(script As VideoScript, Optional cliArgs As String = Nothing)
-        If script Is Nothing Then
-            Exit Sub
-        End If
+        If script Is Nothing Then Exit Sub
 
         script.Synchronize()
         Dim playerPath = Package.MPC.Path
@@ -631,9 +624,7 @@ Public Class GlobalClass
             playerPath = Package.MPC.Path
         End If
 
-        If Not playerPath.FileExists Then
-            Exit Sub
-        End If
+        If Not playerPath.FileExists Then Exit Sub
 
         Dim args = ""
 
@@ -701,7 +692,7 @@ Public Class GlobalClass
         Dim ret As New Language(CultureInfo.InvariantCulture)
         Dim filename = path.FileName.LeftLast(".")
 
-        For Each extracted In {filename.Right("_[").Left("]").Trim(), filename.Right("[").Left("]").Trim(), filename.Left(".").Trim(), filename.Right(".").Left(".").Trim(), Regex.Replace(filename, "{.*?}", "").Trim()}
+        For Each extracted In {Regex.Replace(filename, "{.*?}", "").Trim(), filename.Right(".").Left(".").Trim(), filename.Left(".").Trim(), filename.Right("[").Left("]").Trim(), filename.Right(".[").Left("]").Trim(), filename.Right("_[").Left("]").Trim()}
             If String.IsNullOrWhiteSpace(extracted) Then Continue For
 
             For Each lng In Language.Languages.OrderBy(Function(x) x.Name.Length)
@@ -913,36 +904,37 @@ Public Class GlobalClass
         MainForm.Assistant()
     End Sub
 
-    Sub LoadAudioProfile0(profile As Profile)
-        Dim file = p.Audio0.File
-        Dim delay = p.Audio0.Delay
-        Dim language = p.Audio0.Language
-        Dim stream = p.Audio0.Stream
-        Dim streams = p.Audio0.Streams
-        p.Audio0 = DirectCast(ObjectHelp.GetCopy(profile), AudioProfile)
-        p.Audio0.File = file
-        p.Audio0.Language = language
-        p.Audio0.Stream = stream
-        p.Audio0.Streams = streams
-        p.Audio0.Delay = delay
-        g.MainForm.llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
-        g.MainForm.UpdateSizeOrBitrate()
-        g.MainForm.Assistant()
-    End Sub
+    Sub LoadAudioProfile(profile As Profile, index As Integer)
+        If profile Is Nothing Then Exit Sub
+        If index < 0 Then Exit Sub
+        If index > p.AudioTracksAvailable - 1 Then Exit Sub
+        If p.AudioTracks Is Nothing Then Exit Sub
+        If p.AudioTracks.Count < 1 Then Exit Sub
+        If p.AudioTracks(index).AudioProfile Is Nothing Then Exit Sub
 
-    Sub LoadAudioProfile1(profile As Profile)
-        Dim file = p.Audio1.File
-        Dim delay = p.Audio1.Delay
-        Dim language = p.Audio1.Language
-        Dim stream = p.Audio1.Stream
-        Dim streams = p.Audio1.Streams
-        p.Audio1 = DirectCast(ObjectHelp.GetCopy(profile), AudioProfile)
-        p.Audio1.File = file
-        p.Audio1.Language = language
-        p.Audio1.Stream = stream
-        p.Audio1.Streams = streams
-        p.Audio1.Delay = delay
-        g.MainForm.llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
+        Dim audioTrack = p.AudioTracks(index)
+
+        Dim commentary = audioTrack.AudioProfile.Commentary
+        Dim [default] = audioTrack.AudioProfile.Default
+        Dim file = audioTrack.AudioProfile.File
+        Dim forced = audioTrack.AudioProfile.Forced
+        Dim delay = audioTrack.AudioProfile.Delay
+        Dim language = audioTrack.AudioProfile.Language
+        Dim stream = audioTrack.AudioProfile.Stream
+        Dim streamName = audioTrack.AudioProfile.StreamName
+        Dim streams = audioTrack.AudioProfile.Streams
+        audioTrack.AudioProfile = DirectCast(ObjectHelp.GetCopy(profile), AudioProfile)
+        audioTrack.AudioProfile.Commentary = commentary
+        audioTrack.AudioProfile.Default = [default]
+        audioTrack.AudioProfile.File = file
+        audioTrack.AudioProfile.Forced = forced
+        audioTrack.AudioProfile.Language = language
+        audioTrack.AudioProfile.Stream = stream
+        audioTrack.AudioProfile.StreamName = streamName
+        audioTrack.AudioProfile.Streams = streams
+        audioTrack.AudioProfile.Delay = delay
+
+        audioTrack.NameLabel.Refresh()
         g.MainForm.UpdateSizeOrBitrate()
         g.MainForm.Assistant()
     End Sub

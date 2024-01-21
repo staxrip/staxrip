@@ -111,22 +111,28 @@ Public MustInherit Class AudioProfile
         Get
             Dim ret As String
 
-            If Stream Is Nothing Then
-                Dim streams = MediaInfo.GetAudioStreams(File)
+            If File?.FileExists() Then
+                If Stream Is Nothing Then
+                    Dim streams = MediaInfo.GetAudioStreams(File)
 
-                If streams.Count > 0 Then
-                    Dim firstStream = streams(0)
+                    If streams.Count > 0 Then
+                        Dim firstStream = streams(0)
 
-                    If firstStream.Bitrate = 0 AndAlso firstStream.Bitrate2 = 0 Then
-                        firstStream.Bitrate = CInt(Calc.GetBitrateFromFile(File, p.SourceSeconds))
+                        If firstStream.Bitrate = 0 AndAlso firstStream.Bitrate2 = 0 Then
+                            firstStream.Bitrate = CInt(Calc.GetBitrateFromFile(File, p.SourceSeconds))
+                        End If
+
+                        ret = GetAudioText(firstStream, File)
+                    Else
+                        ret = File.FileName
                     End If
-
-                    ret = GetAudioText(firstStream, File)
                 Else
-                    ret = File.FileName
+                    ret = $"{Stream.Name} ({File?.Ext()})"
                 End If
             Else
-                ret = Stream.Name + " (" + File.Ext + ")"
+                If Stream IsNot Nothing Then
+                    ret = $"{Stream.Name} ({p.SourceFile?.Ext()})"
+                End If
             End If
 
             Return ret
@@ -162,6 +168,13 @@ Public MustInherit Class AudioProfile
             Return Stream IsNot Nothing
         End Get
     End Property
+
+    Overridable Sub Reset()
+        File = ""
+        Language = New Language()
+        SourceSamplingRateValue = 0
+        Stream = Nothing
+    End Sub
 
     Overridable Sub Migrate()
         If Depth = 0 Then
@@ -255,24 +268,26 @@ Public MustInherit Class AudioProfile
         If File <> p.LastOriginalSourceFile Then
             Language = g.ExtractLanguageFromPath(File)
         Else
-            For Each i In Streams
-                If FileTypes.AudioHQ.Contains(i.Ext) AndAlso i.Language.Equals(Language) Then
-                    Stream = i
-                    Exit For
-                End If
-            Next
-
-            If Stream Is Nothing Then
+            If Streams IsNot Nothing Then
                 For Each i In Streams
-                    If Not FileTypes.AudioHQ.Contains(i.Ext) AndAlso i.Language.Equals(Language) Then
+                    If FileTypes.AudioHQ.Contains(i.Ext) AndAlso i.Language.Equals(Language) Then
                         Stream = i
                         Exit For
                     End If
                 Next
-            End If
 
-            If Stream Is Nothing AndAlso Streams.Count > 0 Then
-                Stream = Streams(0)
+                If Stream Is Nothing Then
+                    For Each i In Streams
+                        If Not FileTypes.AudioHQ.Contains(i.Ext) AndAlso i.Language.Equals(Language) Then
+                            Stream = i
+                            Exit For
+                        End If
+                    Next
+                End If
+
+                If Stream Is Nothing AndAlso Streams.Count > 0 Then
+                    Stream = Streams(0)
+                End If
             End If
         End If
     End Sub
@@ -295,12 +310,15 @@ Public MustInherit Class AudioProfile
     End Function
 
     Function GetTrackIndex() As Integer
-        If Me Is p.Audio0 Then Return 0
-        If Me Is p.Audio1 Then Return 1
+        If Not p.AudioTracks.NothingOrEmpty() Then
+            For index = 0 To p.AudioTracks.Count - 1
+                If Me Is p.AudioTracks.ElementAt(index).AudioProfile Then Return index
+            Next
+        End If
 
-        For x = 0 To p.AudioTracks.Count - 1
-            If Me Is p.AudioTracks(x) Then
-                Return x + 2
+        For x = 0 To p.AudioFiles.Count - 1
+            If Me Is p.AudioFiles(x) Then
+                Return x + If(p.AudioTracks?.Count, 0)
             End If
         Next
     End Function
@@ -354,15 +372,12 @@ Public MustInherit Class AudioProfile
     End Function
 
     Shared Function GetProfiles() As IEnumerable(Of AudioProfile)
-        If p.AudioTracks.Count = 0 Then
-            Return {p.Audio0, p.Audio1}
-        Else
-            Dim ret As New List(Of AudioProfile)
-            ret.Add(p.Audio0)
-            ret.Add(p.Audio1)
-            ret.AddRange(p.AudioTracks)
-            Return ret
-        End If
+        Dim ret As New List(Of AudioProfile)
+
+        If Not p.AudioTracks.NothingOrEmpty() Then ret.AddRange(p.AudioTracks.Select(Function(x) x.AudioProfile))
+        If Not p.AudioFiles.NothingOrEmpty() Then ret.AddRange(p.AudioFiles)
+
+        Return ret
     End Function
 
     Function ExpandMacros(value As String) As String
@@ -546,12 +561,8 @@ Public Class MuxAudioProfile
 
     Public Overrides Property Channels As Integer
         Get
-            If Not Stream Is Nothing Then
-                If Stream.Channels > Stream.Channels2 Then
-                    Return Stream.Channels
-                Else
-                    Return Stream.Channels2
-                End If
+            If Stream IsNot Nothing Then
+                Return If(Stream.Channels > Stream.Channels2, Stream.Channels, Stream.Channels2)
             ElseIf IO.File.Exists(File) Then
 
                 If ChannelsValue = 0 Then
@@ -569,11 +580,7 @@ Public Class MuxAudioProfile
 
     Public Overrides Property OutputFileType As String
         Get
-            If Stream Is Nothing Then
-                Return File.Ext
-            Else
-                Return Stream.Ext
-            End If
+            Return If(Stream Is Nothing, File.Ext, Stream.Ext)
         End Get
         Set(value As String)
         End Set
@@ -699,6 +706,8 @@ Public Class MuxAudioProfile
             Return ret
         End Using
     End Function
+
+
 End Class
 
 <Serializable()>
@@ -764,13 +773,14 @@ Public Class GUIAudioProfile
 
     ReadOnly Property TargetSamplingRate As Integer
         Get
-            If Params.SamplingRate <> 0 Then
-                Return Params.SamplingRate
-            Else
-                Return SourceSamplingRate
-            End If
+            Return If(Params.SamplingRate <> 0, Params.SamplingRate, SourceSamplingRate)
         End Get
     End Property
+
+    Public Overrides Sub Reset()
+        MyBase.Reset()
+        ChannelsValue = 0        
+    End Sub
 
     Public Overrides Sub Migrate()
         MyBase.Migrate()

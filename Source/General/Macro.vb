@@ -342,6 +342,8 @@ Public Class Macro
         If value = "" Then Return ""
         If proj Is Nothing Then Return ""
 
+        Dim matches As MatchCollection = Nothing
+
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%current_date%") Then value = value.Replace("%current_date%", Date.Now.ToString("yyyy-MM-dd"))
@@ -455,37 +457,59 @@ Public Class Macro
         If value.Contains("%video_bitrate%") Then value = value.Replace("%video_bitrate%", proj.VideoBitrate.ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%audio_bitrate%") Then value = value.Replace("%audio_bitrate%", (proj.Audio0.Bitrate + proj.Audio1.Bitrate).ToString)
+        If value.Contains("%audio_bitrate%") Then value = value.Replace("%audio_bitrate%", proj.AudioTracks.Sum(Function(x) x.AudioProfile.Bitrate).ToString)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%audio_bitrate1%") Then value = value.Replace("%audio_bitrate1%", proj.Audio0.Bitrate.ToString)
+        matches = Regex.Matches(value, "%audio_bitrate(\d+)?%")
+        For Each match As Match In matches
+            Select Case match.Groups.Count
+                Case 1
+                    value = value.Replace(match.Value, proj.AudioTracks.Sum(Function(x) x.AudioProfile.Bitrate).ToString)
+                Case 2
+                    Dim track = match.Groups(1).Value.ToInt() - 1
+                    If track < proj.AudioTracks.Count Then
+                        value = value.Replace(match.Value, proj.AudioTracks(track).AudioProfile.Bitrate.ToString)
+                    End If
+                Case Else
+                    Throw New NotImplementedException("Macro %audio_bitrate%")
+            End Select
+        Next
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%audio_bitrate2%") Then value = value.Replace("%audio_bitrate2%", proj.Audio1.Bitrate.ToString)
+        matches = Regex.Matches(value, "%audio_channels(\d+)%")
+        For Each match As Match In matches
+            Dim track = match.Groups(1).Value.ToInt() - 1
+            If track < proj.AudioTracks.Count Then
+                value = value.Replace(match.Value, proj.AudioTracks(track).AudioProfile.Channels.ToString)
+            End If
+        Next
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%audio_channels1%") Then value = value.Replace("%audio_channels1%", proj.Audio0.Channels.ToString)
+        matches = Regex.Matches(value, "%audio_codec(\d+)%")
+        For Each match As Match In matches
+            Dim track = match.Groups(1).Value.ToInt() - 1
+            If track < proj.AudioTracks.Count Then
+                value = value.Replace(match.Value, proj.AudioTracks(track).AudioProfile.AudioCodec.ToString)
+            End If
+        Next
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%audio_channels2%") Then value = value.Replace("%audio_channels2%", proj.Audio1.Channels.ToString)
+        matches = Regex.Matches(value, "%audio_delay(\d+)%")
+        For Each match As Match In matches
+            Dim track = match.Groups(1).Value.ToInt() - 1
+            If track < proj.AudioTracks.Count Then
+                value = value.Replace(match.Value, proj.AudioTracks(track).AudioProfile.Delay.ToString)
+            End If
+        Next
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%audio_codec1%") Then value = value.Replace("%audio_codec1%", proj.Audio0.AudioCodec.ToString)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%audio_codec2%") Then value = value.Replace("%audio_codec2%", proj.Audio1.AudioCodec.ToString)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%audio_delay1%") Then value = value.Replace("%audio_delay1%", proj.Audio0.Delay.ToString)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%audio_delay2%") Then value = value.Replace("%audio_delay2%", proj.Audio1.Delay.ToString)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%audio_file1%") Then value = value.Replace("%audio_file1%", proj.Audio0.File)
-        If Not value.Contains("%") Then Return value
-
-        If value.Contains("%audio_file2%") Then value = value.Replace("%audio_file2%", proj.Audio1.File)
+        matches = Regex.Matches(value, "%audio_file(\d+)%")
+        For Each match As Match In matches
+            Dim track = match.Groups(1).Value.ToInt() - 1
+            If track < proj.AudioTracks.Count Then
+                value = value.Replace(match.Value, proj.AudioTracks(track).AudioProfile.File)
+            End If
+        Next
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%startup_dir%") Then value = value.Replace("%startup_dir%", Folder.Startup)
@@ -766,7 +790,7 @@ Public Class Macro
 
         If value.Contains("%eval:") Then
             If Not value.Contains("%eval:<expression>%") AndAlso Not value.Contains("%eval:expression%") Then
-                Dim matches = Regex.Matches(value, "%eval:(.+?)%")
+                matches = Regex.Matches(value, "%eval:(.+?)%")
 
                 For Each ma As Match In matches
                     Try
@@ -785,7 +809,7 @@ Public Class Macro
         'Obsolete since 2020
         If value.Contains("%eval_ps:") Then
             If Not value.Contains("%eval_ps:<expression>%") AndAlso Not value.Contains("%eval_ps:expression%") Then
-                Dim matches = Regex.Matches(value, "%eval_ps:(.+?)%")
+                matches = Regex.Matches(value, "%eval_ps:(.+?)%")
 
                 For Each ma As Match In matches
                     Try

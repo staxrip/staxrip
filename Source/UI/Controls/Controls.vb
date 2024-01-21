@@ -6,6 +6,7 @@ Imports System.Threading
 Imports System.Threading.Tasks
 Imports System.Drawing.Drawing2D
 Imports System.Text.RegularExpressions
+Imports System.Reflection
 
 Namespace UI
     Public Class TreeViewEx
@@ -3566,4 +3567,103 @@ Namespace UI
             End If
         End Sub
     End Class
+
+
+    <Serializable()>
+    Public Class AudioTextEdit
+        Inherits TextEdit
+
+        Public Sub New()
+            AutoSize = True
+            Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
+            Location = New Point(6, 7)
+            Margin = New Padding(FontHeight \ 3, FontHeight \ 6, FontHeight \ 3, FontHeight \ 4)
+            [ReadOnly] = False
+        End Sub
+
+        Public Sub New(row As Integer)
+            Me.New()
+        End Sub
+    End Class
+
+    <Serializable()>
+    Public Class AudioLanguageLabel
+        Inherits Label
+
+        Private _contextMenuStripEx As ContextMenuStripEx
+        Public Property ContextMenuStripEx As ContextMenuStripEx
+            Get
+                Return _contextMenuStripEx
+            End Get
+            Set(ByVal value As ContextMenuStripEx)
+                _contextMenuStripEx = value
+            End Set
+        End Property
+
+        Public Sub New()
+            AutoSize = True
+            Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
+            BorderStyle = BorderStyle.None
+            Location = New Point(1687, 7)
+            Margin = New Padding(0, FontHeight \ 3, 0, FontHeight \ 7)
+            TabStop = True
+            Text = "Audio Language"
+            TextAlign = Drawing.ContentAlignment.BottomLeft
+        End Sub
+
+        Public Sub New(row As Integer)
+            Me.New()
+        End Sub
+    End Class
+
+    <Serializable()>
+    Public Class AudioNameButtonLabel
+        Inherits ButtonLabel
+
+        Private _contextMenuStripEx As ContextMenuStripEx
+        Public Property ContextMenuStripEx As ContextMenuStripEx
+            Get
+                Return _contextMenuStripEx
+            End Get
+            Set(ByVal value As ContextMenuStripEx)
+                _contextMenuStripEx = value
+            End Set
+        End Property
+
+        Public Sub New()
+            AutoSize = True
+            Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
+            BorderStyle = BorderStyle.None
+            Location = New Point(1887, 7)
+            Margin = New Padding(0, FontHeight \ 3, 0, FontHeight \ 7)
+            TabStop = True
+            Text = "Audio Profile"
+            TextAlign = Drawing.ContentAlignment.BottomLeft
+        End Sub
+
+        Public Sub New(row As Integer)
+            Me.New()
+        End Sub
+    End Class
+
+    <Serializable()>
+    Public Class AudioEditButtonLabel
+        Inherits AudioNameButtonLabel
+
+        Public Sub New()
+            AutoSize = True
+            Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
+            BorderStyle = BorderStyle.None
+            Location = New Point(1933, 7)
+            Margin = New Padding(FontHeight \ 3, FontHeight \ 3, FontHeight \ 3, FontHeight \ 7)
+            TabStop = True
+            Text = "Edit"
+            TextAlign = Drawing.ContentAlignment.BottomLeft
+        End Sub
+
+        Public Sub New(row As Integer)
+            Me.New()
+        End Sub
+    End Class
+
 End Namespace

@@ -486,7 +486,7 @@ Public Class FrameServerHelp
     End Function
 
     Shared Function IsffmpegUsed() As Boolean
-        If "avs".EqualsAny(p.Audio0.File.Ext, p.Audio1.File.Ext) Then
+        If "avs".EqualsAny(p.AudioTracks.Select(Function(x) x.AudioProfile.File.Ext).ToArray()) Then
             Return True
         End If
 

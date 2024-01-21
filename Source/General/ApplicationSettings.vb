@@ -7,6 +7,7 @@ Public Class ApplicationSettings
 
     Public AllowCustomPathsInStartupFolder As Boolean
     Public AllowToolsWithWrongVersion As Boolean
+    Public ApplicationExitMode As ApplicationExitMode = ApplicationExitMode.Regular
     Public AudioProfiles As List(Of AudioProfile)
     Public AutoSaveProject As Boolean
     Public AviSynthFilterPreferences As StringPairList
@@ -42,7 +43,6 @@ Public Class ApplicationSettings
     Public EventCommands As List(Of EventCommand)
     Public EventWhileProcessingCooldown As Integer = 60
     Public ExpandPreviewWindow As Boolean = True
-    Public ApplicationExitMode As ApplicationExitMode = ApplicationExitMode.Regular
     Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public FirstRunOnVersion As KeyValuePair(Of String, DateTime) = New KeyValuePair(Of String, Date)(g.DefaultCommands.GetApplicationDetails(), DateTime.Now)
     Public FixFrameRate As Boolean = True

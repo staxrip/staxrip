@@ -2,6 +2,7 @@
 Imports System.ComponentModel
 Imports System.Globalization
 Imports System.Runtime.CompilerServices
+Imports StaxRip.UI
 
 <Serializable()>
 Public Class Project
@@ -15,9 +16,9 @@ Public Class Project
     Public AbortOnFrameMismatch As Boolean = True
     Public AddAttachmentsToMuxer As Boolean = True
     Public AdjustHeight As Boolean = True
-    Public Audio0 As AudioProfile
-    Public Audio1 As AudioProfile
-    Public AudioTracks As List(Of AudioProfile)
+    Public AudioFiles As New List(Of AudioProfile)
+    Public AudioTracks As New List(Of AudioTrack)
+    Public AudioTracksAvailable As Integer = 6
     Public AutoCompCheck As Boolean
     Public AutoCorrectCropValues As Boolean = True
     Public AutoCropDolbyVisionThresholdBegin As Integer = 0
@@ -173,23 +174,31 @@ Public Class Project
         If SourceScript Is Nothing Then SourceScript = New SourceVideoScript
         If SkippedAssistantTips Is Nothing Then SkippedAssistantTips = New List(Of String)
         If SourceFiles Is Nothing Then SourceFiles = New List(Of String)
-        If AudioTracks Is Nothing Then AudioTracks = New List(Of AudioProfile)
+        If AudioFiles Is Nothing Then AudioFiles = New List(Of AudioProfile)
+        If AudioTracks Is Nothing Then AudioTracks = New List(Of AudioTrack)
 
         If Check(VideoEncoder, "Video Encoder", 80) Then
             VideoEncoder = New x265Enc
         End If
 
-        If Check(Audio0, "Audio Track 1", 37) Then
-            Audio0 = New MuxAudioProfile With {
-                .Language = New Language(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, True)
-            }
-        End If
-
-        If Check(Audio1, "Audio Track 2", 37) Then
-            Audio1 = New MuxAudioProfile With {
-                .Language = New Language("en", True)
-            }
-        End If
+        'If Check(AudioTracks, "Audio Tracks", 1) Then
+        '    AudioTracks.Add(New AudioTrack() With {
+        '                        .AudioProfile = New MuxAudioProfile With {
+        '                                            .Language = New Language(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, True)
+        '                                        },
+        '                        .EditLabel = New AudioEditButtonLabel(0),
+        '                        .NameLabel = New AudioNameButtonLabel(0),
+        '                        .TextEdit = New AudioTextEdit(0)
+        '                    })
+        '    AudioTracks.Add(New AudioTrack() With {
+        '                        .AudioProfile = New MuxAudioProfile With {
+        '                                            .Language = New Language("en", True)
+        '                                        },
+        '                        .EditLabel = New AudioEditButtonLabel(1),
+        '                        .NameLabel = New AudioNameButtonLabel(1),
+        '                        .TextEdit = New AudioTextEdit(1)
+        '                    })
+        'End If
 
         If Check(Script, "Filter Setup", 50) Then Script = VideoScript.GetDefaults()(0)
 
@@ -197,11 +206,12 @@ Public Class Project
     End Sub
 
     Sub Migrate()
-        Audio0.Migrate()
-        Audio1.Migrate()
+        For Each track In AudioTracks
+            track.AudioProfile.Migrate()
+        Next
 
-        For Each i In AudioTracks
-            i.Migrate()
+        For Each ap In AudioFiles
+            ap.Migrate()
         Next
     End Sub
 

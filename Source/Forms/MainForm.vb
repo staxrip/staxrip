@@ -5,10 +5,13 @@ Imports System.Drawing.Drawing2D
 Imports System.Globalization
 Imports System.Reflection
 Imports System.Runtime.InteropServices
+Imports System.Security.Cryptography
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
+Imports System.Xml
+Imports ManagedCuda.DriverAPINativeMethods
 Imports MS.Internal.IO
 
 Imports StaxRip.UI
@@ -22,10 +25,6 @@ Public Class MainForm
     Private components As System.ComponentModel.IContainer
     Private Const filterHeight As Integer = 536
 
-    Public WithEvents tbAudioFile0 As TextEdit
-    Public WithEvents tbAudioFile1 As TextEdit
-    Public WithEvents llEditAudio0 As ButtonLabel
-    Public WithEvents llEditAudio1 As ButtonLabel
     Public WithEvents bnNext As ButtonEx
     Public WithEvents tbSourceFile As TextEdit
     Public WithEvents tbTargetFile As TextEdit
@@ -58,8 +57,6 @@ Public Class MainForm
     Public WithEvents lgbEncoder As LinkGroupBox
     Public WithEvents laTarget2 As LabelEx
     Public WithEvents MenuStrip As System.Windows.Forms.MenuStrip
-    Public WithEvents llAudioProfile0 As ButtonLabel
-    Public WithEvents llAudioProfile1 As ButtonLabel
     Public WithEvents pnEncoder As System.Windows.Forms.Panel
     Public WithEvents FiltersListView As StaxRip.FiltersListView
     Public WithEvents blFilesize As ButtonLabel
@@ -89,17 +86,11 @@ Public Class MainForm
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.bnNext = New StaxRip.UI.ButtonEx()
-        Me.llEditAudio0 = New StaxRip.UI.ButtonLabel()
         Me.gbAssistant = New StaxRip.UI.GroupBoxEx()
         Me.tlpAssistant = New System.Windows.Forms.TableLayoutPanel()
         Me.laTip = New StaxRip.UI.LabelEx()
-        Me.llEditAudio1 = New StaxRip.UI.ButtonLabel()
         Me.gbAudio = New StaxRip.UI.GroupBoxEx()
         Me.tlpAudio = New System.Windows.Forms.TableLayoutPanel()
-        Me.tbAudioFile0 = New StaxRip.UI.TextEdit()
-        Me.tbAudioFile1 = New StaxRip.UI.TextEdit()
-        Me.llAudioProfile1 = New StaxRip.UI.ButtonLabel()
-        Me.llAudioProfile0 = New StaxRip.UI.ButtonLabel()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
         Me.lgbTarget = New StaxRip.UI.LinkGroupBox()
         Me.tlpTarget = New System.Windows.Forms.TableLayoutPanel()
@@ -180,19 +171,6 @@ Public Class MainForm
         Me.bnNext.Size = New System.Drawing.Size(CInt(285 * s.UIScaleFactor), CInt(105 * s.UIScaleFactor))
         Me.bnNext.UseCompatibleTextRendering = True
         '
-        'llEditAudio0
-        '
-        Me.llEditAudio0.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
-        Me.llEditAudio0.AutoSize = True
-        Me.llEditAudio0.Location = New System.Drawing.Point(1933, 11)
-        Me.llEditAudio0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.llEditAudio0.Name = "llEditAudio0"
-        Me.llEditAudio0.Size = New System.Drawing.Size(80, 48)
-        Me.llEditAudio0.TabIndex = 20
-        Me.llEditAudio0.TabStop = True
-        Me.llEditAudio0.Text = "Edit"
-        Me.llEditAudio0.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
         'gbAssistant
         '
         Me.gbAssistant.Anchor = CType((((System.Windows.Forms.AnchorStyles.Bottom) _
@@ -235,19 +213,6 @@ Public Class MainForm
         Me.laTip.Size = New System.Drawing.Size(1880, 137)
         Me.laTip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'llEditAudio1
-        '
-        Me.llEditAudio1.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
-        Me.llEditAudio1.AutoSize = True
-        Me.llEditAudio1.Location = New System.Drawing.Point(1933, 89)
-        Me.llEditAudio1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.llEditAudio1.Name = "llEditAudio1"
-        Me.llEditAudio1.Size = New System.Drawing.Size(80, 48)
-        Me.llEditAudio1.TabIndex = 21
-        Me.llEditAudio1.TabStop = True
-        Me.llEditAudio1.Text = "Edit"
-        Me.llEditAudio1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
         'gbAudio
         '
         Me.gbAudio.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -266,70 +231,18 @@ Public Class MainForm
         '
         'tlpAudio
         '
-        Me.tlpAudio.ColumnCount = 3
+        Me.tlpAudio.ColumnCount = 4
         Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpAudio.Controls.Add(Me.tbAudioFile0, 0, 0)
-        Me.tlpAudio.Controls.Add(Me.llAudioProfile0, 1, 0)
-        Me.tlpAudio.Controls.Add(Me.llEditAudio0, 2, 0)
-        Me.tlpAudio.Controls.Add(Me.tbAudioFile1, 0, 1)
-        Me.tlpAudio.Controls.Add(Me.llAudioProfile1, 1, 1)
-        Me.tlpAudio.Controls.Add(Me.llEditAudio1, 2, 1)
+        Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.tlpAudio.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpAudio.Location = New System.Drawing.Point(6, 48)
         Me.tlpAudio.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpAudio.Name = "tlpAudio"
-        Me.tlpAudio.RowCount = 3
-        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70.0!))
-        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70.0!))
-        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70.0!))
+        Me.tlpAudio.RowCount = 0
         Me.tlpAudio.Size = New System.Drawing.Size(2019, 456)
         Me.tlpAudio.TabIndex = 62
-        '
-        'tbAudioFile0
-        '
-        Me.tbAudioFile0.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
-        Me.tbAudioFile0.Location = New System.Drawing.Point(6, 7)
-        Me.tbAudioFile0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.tbAudioFile0.Name = "tbAudioFile0"
-        Me.tbAudioFile0.ReadOnly = False
-        Me.tbAudioFile0.Size = New System.Drawing.Size(1869, 55)
-        Me.tbAudioFile0.TabIndex = 22
-        '
-        'tbAudioFile1
-        '
-        Me.tbAudioFile1.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
-        Me.tbAudioFile1.Location = New System.Drawing.Point(6, 85)
-        Me.tbAudioFile1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.tbAudioFile1.Name = "tbAudioFile1"
-        Me.tbAudioFile1.ReadOnly = False
-        Me.tbAudioFile1.Size = New System.Drawing.Size(1869, 55)
-        Me.tbAudioFile1.TabIndex = 23
-        '
-        'llAudioProfile1
-        '
-        Me.llAudioProfile1.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
-        Me.llAudioProfile1.AutoSize = True
-        Me.llAudioProfile1.Location = New System.Drawing.Point(1887, 89)
-        Me.llAudioProfile1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.llAudioProfile1.Name = "llAudioProfile1"
-        Me.llAudioProfile1.Size = New System.Drawing.Size(34, 48)
-        Me.llAudioProfile1.TabIndex = 26
-        Me.llAudioProfile1.Text = "-"
-        Me.llAudioProfile1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'llAudioProfile0
-        '
-        Me.llAudioProfile0.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
-        Me.llAudioProfile0.AutoSize = True
-        Me.llAudioProfile0.Location = New System.Drawing.Point(1887, 11)
-        Me.llAudioProfile0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.llAudioProfile0.Name = "llAudioProfile0"
-        Me.llAudioProfile0.Size = New System.Drawing.Size(34, 48)
-        Me.llAudioProfile0.TabIndex = 25
-        Me.llAudioProfile0.Text = "-"
-        Me.llAudioProfile0.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'MenuStrip
         '
@@ -1012,7 +925,7 @@ Public Class MainForm
         'Me.MaximumSize = New Size(1300, 1600)
         'Me.Size = New Size(1110, 958)
 
-        Me.SetMinimumSize(42, 31)
+        Me.SetMinimumSize(42, 31.25)
         Me.SetMaximumSize(59, 80)
         Me.ScaleSize(44, 44)
     End Sub
@@ -1028,8 +941,6 @@ Public Class MainForm
 
     Property PreviewScript As VideoScript
 
-    Private AudioMenu0 As ContextMenuStripEx
-    Private AudioMenu1 As ContextMenuStripEx
     Private TargetAspectRatioMenu As ContextMenuStripEx
     Private SizeContextMenuStrip As ContextMenuStripEx
     Private EncoderMenu As ContextMenuStripEx
@@ -1037,8 +948,6 @@ Public Class MainForm
     Private SourceAspectRatioMenu As ContextMenuStripEx
     Private TargetFileMenu As ContextMenuStripEx
     Private SourceFileMenu As ContextMenuStripEx
-    Private Audio0FileMenu As ContextMenuStripEx
-    Private Audio1FileMenu As ContextMenuStripEx
     Private NextContextMenuStrip As ContextMenuStripEx
     Private BlockAviSynthItemCheck As Boolean
     Private CanChangeSize As Boolean = True
@@ -1081,18 +990,16 @@ Public Class MainForm
         Icon = g.Icon
 
         InitializeComponent()
-        RestoreClientSize(44, 37)
+        RestoreClientSize(44, 39)
         SetStyle(ControlStyles.SupportsTransparentBackColor, True)
         g.DPI = DeviceDpi
 
         If components Is Nothing Then
-            components = New System.ComponentModel.Container
+            components = New Container()
         End If
 
         SetTip()
 
-        AudioMenu0 = New ContextMenuStripEx(components)
-        AudioMenu1 = New ContextMenuStripEx(components)
         TargetAspectRatioMenu = New ContextMenuStripEx(components)
         SizeContextMenuStrip = New ContextMenuStripEx(components)
         EncoderMenu = New ContextMenuStripEx(components)
@@ -1100,24 +1007,14 @@ Public Class MainForm
         SourceAspectRatioMenu = New ContextMenuStripEx(components)
         TargetFileMenu = New ContextMenuStripEx(components)
         SourceFileMenu = New ContextMenuStripEx(components)
-        Audio0FileMenu = New ContextMenuStripEx(components)
-        Audio1FileMenu = New ContextMenuStripEx(components)
-        Audio1FileMenu = New ContextMenuStripEx(components)
         NextContextMenuStrip = New ContextMenuStripEx(components)
 
         tbTargetFile.TextBox.ContextMenuStrip = TargetFileMenu
         tbSourceFile.TextBox.ContextMenuStrip = SourceFileMenu
-        tbAudioFile0.TextBox.ContextMenuStrip = Audio0FileMenu
-        tbAudioFile1.TextBox.ContextMenuStrip = Audio1FileMenu
 
         Dim rc = "right-click"
-        tbAudioFile0.TextBox.SendMessageCue(rc, False)
-        tbAudioFile1.TextBox.SendMessageCue(rc, False)
         tbSourceFile.TextBox.SendMessageCue(rc, False)
         tbTargetFile.TextBox.SendMessageCue(rc, False)
-
-        llEditAudio0.ClickAction = AddressOf AudioEdit0ToolStripMenuItemClick
-        llEditAudio1.ClickAction = AddressOf AudioEdit1ToolStripMenuItemClick
 
         MenuStrip.SuspendLayout()
         MenuStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
@@ -1131,7 +1028,7 @@ Public Class MainForm
         OpenProject(g.StartupTemplatePath)
         CustomMainMenu.AddKeyDownHandler(Me)
         CustomMainMenu.BuildMenu()
-        UpdateAudioMenu()
+        UpdateAudioMenus()
         UpdateTargetSizeLabel()
         MenuStrip.ResumeLayout()
         SizeContextMenuStrip.SuspendLayout()
@@ -1357,70 +1254,6 @@ Public Class MainForm
         Next
     End Sub
 
-    Sub DetectAudioFiles(track As Integer, lang As Boolean, same As Boolean, hq As Boolean)
-        Dim tb, tbOther As TextEdit
-        Dim profile As AudioProfile
-
-        If track = 0 Then
-            tb = tbAudioFile0
-            tbOther = tbAudioFile1
-            profile = p.Audio0
-        Else
-            tb = tbAudioFile1
-            tbOther = tbAudioFile0
-            profile = p.Audio1
-        End If
-
-        If tb.Text <> "" OrElse TypeOf profile Is NullAudioProfile Then
-            Exit Sub
-        End If
-
-        Dim files = g.GetFilesInTempDirAndParent
-        files.Sort(New StringLogicalComparer)
-
-        For Each iExt In FileTypes.Audio
-            If iExt = "avs" Then
-                Continue For
-            End If
-
-            For Each iPath In files
-                If track = 0 AndAlso iPath.Base = p.Audio1.File.Base Then Continue For
-                If track = 1 AndAlso iPath.Base = p.Audio0.File.Base Then Continue For
-                If tbOther.Text = iPath Then Continue For
-                If Not iPath.Ext = iExt Then Continue For
-                If iPath.Contains("_cut_") Then Continue For
-                If iPath.Contains("_out") Then Continue For
-                If Not g.IsSourceSame(iPath) Then Continue For
-                If hq AndAlso Not iPath.Ext.EqualsAny(FileTypes.AudioHQ) Then Continue For
-
-                If same AndAlso tbOther.Text <> "" AndAlso tbOther.Text.ExtFull <> iPath.ExtFull Then
-                    Continue For
-                End If
-
-                If lang Then
-                    Dim lng = profile.Language
-
-                    If profile.Language.ThreeLetterCode = "und" Then
-                        lng = If(track = 0, New Language(), New Language("en"))
-                    End If
-
-                    If Not iPath.Contains(lng.EnglishName) Then
-                        Continue For
-                    End If
-                End If
-
-                If iPath.Ext = "mp4" AndAlso p.SourceFile.IsSameBase(iPath) Then
-                    Continue For
-                End If
-
-                If Not (track = 1 AndAlso p.Audio0.File = iPath) AndAlso Not (track = 0 AndAlso p.Audio1.File = iPath) Then
-                    tb.Text = iPath
-                    Exit Sub
-                End If
-            Next
-        Next
-    End Sub
-
     Function IsSaveCanceled() As Boolean
         If s.ApplicationExitMode <> ApplicationExitMode.Regular Then
             Select Case s.ApplicationExitMode
@@ -1524,8 +1357,7 @@ Public Class MainForm
     Sub UpdateDynamicMenu()
         PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
         PopulateProfileMenu(DynamicMenuItemID.MuxerProfiles)
-        PopulateProfileMenu(DynamicMenuItemID.Audio1Profiles)
-        PopulateProfileMenu(DynamicMenuItemID.Audio2Profiles)
+        PopulateProfileMenu(DynamicMenuItemID.AudioProfiles)
         PopulateProfileMenu(DynamicMenuItemID.FilterSetupProfiles)
 
         For Each iMenuItem In CustomMainMenu.MenuItems
@@ -1665,7 +1497,7 @@ Public Class MainForm
         batchProject.BatchMode = True
         batchProject.SourceFiles = {sourcefile}.ToList
         Dim splits = sourcefile.Dir.Split(Path.DirectorySeparatorChar)
-        Dim joins = splits.Select(Function(x) x.Substring(0,Math.Min(x.Length, 128 \ splits.Length))).Join("-").Replace(":", "-")
+        Dim joins = splits.Select(Function(x) x.Substring(0, Math.Min(x.Length, 128 \ splits.Length))).Join("-").Replace(":", "-")
         Dim jobPath = Path.Combine(batchFolder, joins + " " + p.TemplateName + " - " + sourcefile.FileName + ".srip")
         SafeSerialization.Serialize(batchProject, jobPath)
         JobManager.AddJob(sourcefile.Base, jobPath)
@@ -1765,10 +1597,7 @@ Public Class MainForm
             p = If(proj, SafeSerialization.Deserialize(New Project(), path))
             Log = p.Log
 
-            If File.Exists(IO.Path.Combine(Folder.Temp, "staxrip.log")) Then
-                FileHelp.Delete(IO.Path.Combine(Folder.Temp, "staxrip.log"))
-            End If
-
+            FileHelp.Delete(IO.Path.Combine(Folder.Temp, "staxrip.log"))
             SetBindings(p, True)
 
             Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails()}"
@@ -1801,12 +1630,6 @@ Public Class MainForm
 
             Dim targetPath = p.TargetFile
 
-            Dim audio0 = p.Audio0.File
-            Dim audio1 = p.Audio1.File
-
-            Dim delay0 = p.Audio0.Delay
-            Dim delay1 = p.Audio1.Delay
-
             BlockSourceTextBoxTextChanged = True
             tbSourceFile.Text = p.SourceFile
             BlockSourceTextBoxTextChanged = False
@@ -1815,14 +1638,7 @@ Public Class MainForm
                 s.LastSourceDir = p.SourceFile.Dir
             End If
 
-            tbAudioFile0.Text = audio0
-            tbAudioFile1.Text = audio1
-
-            llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
-            llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
-
-            p.Audio0.Delay = delay0
-            p.Audio1.Delay = delay1
+            SetAudioTracks(p)
 
             If p.BitrateIsFixed Then
                 tbBitrate.Text = ""
@@ -1866,6 +1682,318 @@ Public Class MainForm
 
     Sub SetSavedProject()
         g.SavedProject = ObjectHelp.GetCopy(Of Project)(p)
+    End Sub
+
+    Sub SetAudioTracks(Optional proj As Project = Nothing)
+        proj = If(proj, p)
+        proj.AudioTracks = If(proj.AudioTracks, New List(Of AudioTrack))
+        Dim availableAudioTracks = Mathf.Clamp(proj.AudioTracksAvailable, 1, 25)
+        Dim sourceFile = p.LastOriginalSourceFile
+        Dim streams = If(sourceFile.FileExists(), MediaInfo.GetAudioStreams(sourceFile), New List(Of AudioStream))
+
+        'tlpAudio.SuspendLayout()
+        Try
+            tlpAudio.Controls.Clear()
+            tlpAudio.RowStyles.Clear()
+
+            If proj.AudioTracks.Count > availableAudioTracks Then
+                For index = proj.AudioTracks.Count - 1 To availableAudioTracks - 1 Step -1
+                    proj.AudioTracks(index).TextEdit.Dispose()
+                    proj.AudioTracks(index).LanguageLabel.Dispose()
+                    proj.AudioTracks(index).NameLabel.Dispose()
+                    proj.AudioTracks(index).EditLabel.Dispose()
+                    proj.AudioTracks.RemoveAt(index)
+                Next
+            End If
+
+            For i = 0 To availableAudioTracks - 1
+                Dim index = i
+
+                Dim textEditContextMenuStripEx = New ContextMenuStripEx(components)
+                Dim audioTrack As AudioTrack
+                Dim audioProfile As AudioProfile = If(index < proj.AudioTracks.Count AndAlso proj.AudioTracks(index)?.AudioProfile IsNot Nothing, proj.AudioTracks(index)?.AudioProfile, New MuxAudioProfile())
+                If audioProfile.Streams Is Nothing OrElse Not audioProfile.Streams.Any() Then audioProfile.Streams = streams
+                Dim textEdit = New AudioTextEdit(index)
+                Dim languageLabel = New AudioLanguageLabel(index) With {
+                    .Text = audioProfile.Language.Name
+                }
+                Dim nameLabel = New AudioNameButtonLabel(index) With {
+                    .ContextMenuStripEx = New ContextMenuStripEx(components),
+                    .ClickAction = Sub()
+                                       .ContextMenuStripEx.Show(audioTrack.NameLabel, 0, 16)
+                                   End Sub
+                }
+                Dim editLabel = New AudioEditButtonLabel(index) With {
+                    .ClickAction = Sub()
+                                       audioTrack.AudioProfile.EditProject()
+                                       UpdateAudioMenus()
+                                       UpdateSizeOrBitrate()
+                                       nameLabel.Text = g.ConvertPath(audioTrack.AudioProfile.Name)
+                                       languageLabel.Text = audioTrack.AudioProfile.Language.Name
+                                       ShowAudioTip(audioTrack.AudioProfile)
+                                   End Sub
+                }
+
+                textEdit.TextBox.ContextMenuStrip = textEditContextMenuStripEx
+
+                TipProvider.SetTip("Opens audio settings for the current project/template", editLabel)
+                TipProvider.SetTip("Shows audio profiles", nameLabel)
+
+                Dim textEditTextChanged = Sub(sender As Object, e As EventArgs)
+                                              AudioTextEditChanged(audioTrack)
+                                          End Sub
+                Dim textEditDoubleClick = Sub(sender As Object, e As EventArgs)
+                                              AudioTextEditDoubleClick(audioTrack)
+                                          End Sub
+                Dim textEditMouseDown = Sub(sender As Object, e As MouseEventArgs)
+                                            If e.Button = MouseButtons.Right Then
+                                                UpdateAudioFileMenu(audioTrack, Sub() textEditDoubleClick(Nothing, Nothing))
+                                            End If
+                                        End Sub
+
+                AddHandler textEdit.TextChanged, textEditTextChanged
+                AddHandler textEdit.DoubleClick, textEditDoubleClick
+                AddHandler textEdit.MouseDown, textEditMouseDown
+
+                If proj.AudioTracks.ElementAtOrDefault(index) Is Nothing Then
+                    audioTrack = New AudioTrack() With {.AudioProfile = audioProfile, .EditLabel = editLabel, .LanguageLabel = languageLabel, .NameLabel = nameLabel, .TextEdit = textEdit}
+                    proj.AudioTracks.Add(audioTrack)
+                Else
+                    audioTrack = New AudioTrack() With {.AudioProfile = proj.AudioTracks(index).AudioProfile, .EditLabel = editLabel, .LanguageLabel = languageLabel, .NameLabel = nameLabel, .TextEdit = textEdit}
+                    proj.AudioTracks(index) = audioTrack
+                End If
+            Next
+
+            For index = 0 To proj.AudioTracks.Count - 1
+                tlpAudio.Controls.Add(proj.AudioTracks(index).TextEdit, 0, index)
+                tlpAudio.Controls.Add(proj.AudioTracks(index).LanguageLabel, 1, index)
+                tlpAudio.Controls.Add(proj.AudioTracks(index).NameLabel, 2, index)
+                tlpAudio.Controls.Add(proj.AudioTracks(index).EditLabel, 3, index)
+            Next
+
+        Catch ex As Exception
+        Finally
+            tlpAudio.RowCount = availableAudioTracks
+
+            For Each ate In tlpAudio.Controls.OfType(Of AudioTextEdit)
+                ate.TextBox.SendMessageCue("right-click", False)
+                tlpAudio.RowStyles.Add(New RowStyle(SizeType.AutoSize))
+            Next
+
+            'tlpAudio.ResumeLayout()
+            UpdateAudioMenus()
+            PopulateProfileMenu(DynamicMenuItemID.AudioProfiles)
+        End Try
+    End Sub
+
+    Sub AddAudioTracks()
+        If p.AudioTracks.Count = 0 Then Exit Sub
+
+        Dim files = g.GetFilesInTempDirAndParent().AsEnumerable()
+        files = files.Where(Function(x) FileTypes.Audio.Contains(x.Ext.ToLowerInvariant()))
+        files = files.Where(Function(x) g.IsSourceSame(x))
+        files = files.Where(Function(x) x.Ext.ToLowerInvariant() <> "avs")
+        files = files.Where(Function(x) Not x.ToLowerInvariant().Contains("_cut_"))
+        files = files.Where(Function(x) Not x.ToLowerInvariant().Contains("_out"))
+        files = files.OrderBy(Function(x) x, New StringLogicalComparer())
+
+        Dim hqAudioFiles = files.Where(Function(x) FileTypes.AudioHQ.Contains(x.Ext()))
+        Dim normalAudioFiles = files.Where(Function(x) (FileTypes.Audio.Except(FileTypes.AudioHQ)).Contains(x.Ext()))
+        Dim orderedAudioFiles = hqAudioFiles.Concat(normalAudioFiles).Distinct()
+        Dim groupedAudioFiles = orderedAudioFiles.GroupBy(Function(x) g.ExtractLanguageFromPath(x)).ToList()
+
+        Dim preferredAudios = p.PreferredAudio.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ").Distinct()
+
+        Dim audioTracks(p.AudioTracksAvailable - 1) As (FilePath As String, Language As Language, Title As String, Stream As AudioStream)
+        Dim audioTrackId = 0
+
+        Dim addAudioTrack = Sub(groupIndex As Integer, pathIndex As Integer)
+                                If groupedAudioFiles.Count <= groupIndex Then Exit Sub
+                                If groupedAudioFiles(groupIndex) Is Nothing Then Exit Sub
+                                If groupedAudioFiles(groupIndex).Count() <= pathIndex Then Exit Sub
+                                If groupedAudioFiles(groupIndex)(pathIndex) = "" Then Exit Sub
+                                If audioTrackId >= p.AudioTracksAvailable Then Exit Sub
+
+                                Dim filePath = groupedAudioFiles(groupIndex)(pathIndex)
+                                Dim baseName = UnescapeIllegalFileSysChars(filePath.Base)
+                                Dim titleMatch = Regex.Match(baseName, "\{(.+)\}", RegexOptions.IgnoreCase)
+                                Dim title = If(titleMatch.Success, titleMatch.Groups(1).Value, "")
+
+                                If Not audioTracks?.Where(Function(x) x.FilePath = filePath)?.Any() Then
+                                    audioTracks(audioTrackId) = (filePath, groupedAudioFiles(groupIndex).Key, title, Nothing)
+                                    audioTrackId += 1
+                                End If
+                            End Sub
+
+        Dim audioStreams = New MediaInfo(p.SourceFile)?.AudioStreams
+        Dim addAudioStream = Sub(index As Integer)
+                                 If index >= audioStreams.Count Then Exit Sub
+                                 If audioStreams(index) Is Nothing Then Exit Sub
+                                 If audioTrackId >= p.AudioTracksAvailable Then Exit Sub
+
+                                 If Not audioTracks?.Where(Function(x) x.Stream?.Name = audioStreams(index).Name)?.Any() Then
+                                     audioTracks(audioTrackId) = (audioStreams(index).Name, audioStreams(index).Language, audioStreams(index).Title, audioStreams(index))
+                                     audioTrackId += 1
+                                 End If
+                             End Sub
+
+
+        For i = 0 To preferredAudios.Count() - 1
+            Dim preferredAudio = preferredAudios(i)
+
+            Dim idMatch = Regex.Match(preferredAudio, "^(\d+)([^,; ]*)$", RegexOptions.IgnoreCase)
+            Dim languageMatch = Regex.Match(preferredAudio, "^([a-z]{2,}|[a-z]{2,4}(?:-[a-z]{2,})-[a-z]{2,5})([^,; ]*)$", RegexOptions.IgnoreCase)
+
+            If idMatch.Success Then
+                Dim id = idMatch.Groups(1).Value
+                Dim fileAdded = False
+
+                For j = 0 To groupedAudioFiles.Count() - 1
+                    Dim item = groupedAudioFiles(j)
+
+                    If item IsNot Nothing Then
+                        If Not Regex.IsMatch(item.First().Base(), $"ID{id}\D") Then Continue For
+
+                        For k = 0 To item.Count()
+                            addAudioTrack(j, k)
+                        Next
+
+                        fileAdded = True
+                    End If
+                Next
+
+                If Not fileAdded Then
+                    addAudioStream(id.ToInt() - 1)
+                End If
+            ElseIf languageMatch.Success Then
+                Dim prefLangString = languageMatch.Groups(1).Value
+                Dim prefLang = New Language(prefLangString)
+
+                For j = 0 To groupedAudioFiles.Count() - 1
+                    Dim item = groupedAudioFiles(j)
+
+                    If item IsNot Nothing Then
+                        If prefLangString.ToLowerInvariant() <> "all" AndAlso prefLang.ThreeLetterCode <> item.Key.ThreeLetterCode AndAlso prefLang.Name <> item.Key.Name Then Continue For
+
+                        For k = 0 To item.Count()
+                            addAudioTrack(j, k)
+                        Next
+                    End If
+                Next
+
+                For j = 0 To audioStreams.Count() - 1
+                    Dim item = audioStreams(j)
+
+                    If item IsNot Nothing Then
+                        If prefLangString.ToLowerInvariant() <> "all" AndAlso prefLang.ThreeLetterCode <> item.Language.ThreeLetterCode AndAlso prefLang.Name <> item.Language.Name Then Continue For
+                        If audioTracks?.Where(Function(x) x.FilePath.ContainsEx("ID" + (item.Index + 1).ToString()) AndAlso x.Language.ThreeLetterCode = item.Language.ThreeLetterCode)?.Any() Then Continue For
+
+                        addAudioStream(j)
+                    End If
+                Next
+            End If
+        Next
+
+        Dim addTrack = Sub(source As (FilePath As String, Language As Language, Title As String, Stream As AudioStream), dest As AudioTrack)
+                           If source.FilePath = "" Then Return
+                           If dest Is Nothing Then Return
+                           
+                           dest.AudioProfile.Reset()
+
+                           If source.Stream Is Nothing Then
+                               dest.TextEdit.Text = source.FilePath
+                               dest.AudioProfile.File = source.FilePath
+                           Else
+                               dest.AudioProfile.File = p.SourceFile
+                               dest.AudioProfile.Stream = source.Stream
+                               dest.TextEdit.Text = $"{source.Stream.Name} ({p.SourceFile?.Ext()})"
+                           End If
+
+                           dest.AudioProfile.Language = source.Language
+                           dest.LanguageLabel.Refresh()
+                       End Sub
+
+        For index = 0 To audioTracks.Length - 1
+            Dim i = index
+            If String.IsNullOrWhiteSpace(audioTracks(i).FilePath) Then Continue For
+
+            Dim sameLanguages = p.AudioTracks.Where(Function(x) x.TextEdit.Text = "" AndAlso
+                                                        TypeOf x.AudioProfile IsNot NullAudioProfile AndAlso
+                                                        x.AudioProfile.Language.ThreeLetterCode = audioTracks(i).Language.ThreeLetterCode)
+
+            If sameLanguages.Any() Then
+                addTrack(audioTracks(i), sameLanguages.First())
+            Else
+                For index2 = 0 To p.AudioTracks.Count - 1
+                    Dim j = index2
+
+                    If TypeOf p.AudioTracks(j).AudioProfile Is NullAudioProfile Then Continue For
+                    If p.AudioTracks(j).TextEdit.Text <> "" Then Continue For
+                    If p.AudioTracks(j).AudioProfile.Language.IsDetermined AndAlso p.AudioTracks(j).AudioProfile.Language.ThreeLetterCode <> audioTracks(i).Language.ThreeLetterCode Then Continue For
+
+                    addTrack(audioTracks(i), p.AudioTracks(j))
+                    Exit For
+                Next
+            End If
+        Next
+    End Sub
+
+    Function GetAudioTextBox(ap As AudioProfile) As TextEdit
+        Return p.AudioTracks.Where(Function(x) x.AudioProfile Is ap)?.FirstOrDefault()?.TextEdit
+    End Function
+
+    Dim BlockAudioTextChanged As Boolean
+
+    Sub AudioTextEditChanged(audioTrack As AudioTrack)
+        If audioTrack Is Nothing Then Exit Sub
+        If BlockAudioTextChanged Then Exit Sub
+
+        Dim te = audioTrack.TextEdit
+        Dim ap = audioTrack.AudioProfile
+
+        If te.Text.Contains(":\") OrElse te.Text.StartsWith("\\") Then
+            If te.Text <> ap.File Then
+                ap.Reset()
+                ap.File = te.Text
+
+                If FileTypes.Audio.Contains(ap.File.Ext) Then
+                    If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
+                        ap.Delay = g.ExtractDelay(ap.File)
+                    End If
+
+                    If ap.StreamName = "" AndAlso ap.File.Contains("{") Then
+                        Dim title = ap.File.Right("{")
+                        ap.StreamName = title.Left("}").UnescapeIllegalFileSysChars
+                    End If
+                End If
+
+                ap.SetStreamOrLanguage()
+            End If
+
+            UpdateSizeOrBitrate()
+
+            BlockAudioTextChanged = True
+            te.Text = ap.DisplayName
+            BlockAudioTextChanged = False
+        ElseIf te.Text = "" Then
+            audioTrack.Remove()
+            UpdateSizeOrBitrate()
+        End If
+
+        audioTrack.LanguageLabel?.Refresh()
+    End Sub
+
+    Sub AudioTextEditDoubleClick(audioTrack As AudioTrack)
+        Using dialog As New OpenFileDialog
+            Dim filter = FileTypes.Audio.ToList()
+            filter.Insert(0, "avs")
+            dialog.SetFilter(filter)
+            dialog.SetInitDir(p.TempDir, s.LastSourceDir)
+
+            If dialog.ShowDialog() = DialogResult.OK Then
+                audioTrack.TextEdit.Text = dialog.FileName
+            End If
+        End Using
     End Sub
 
     Function GetPathFromIndexFile(sourcePath As String) As String
@@ -1958,8 +2086,19 @@ Public Class MainForm
         ElseIf FileTypes.Video.Contains(files(0).Ext.ToLowerInvariant) Then
             files.Sort()
             OpenVideoSourceFiles(files, timeout)
-        ElseIf FileTypes.Audio.Contains(files(0).Ext.ToLowerInvariant) Then
-            tbAudioFile0.Text = files(0)
+        ElseIf FileTypes.Audio.ContainsAny(files.Select(Function(s) s.Ext.ToLowerInvariant)) Then
+            Dim audioFiles = files.Where(Function(x) FileTypes.Audio.Contains(x.Ext().ToLowerInvariant())).OrderBy(Function(x) x, New StringLogicalComparer())
+            Dim fileIndex = 0
+            Dim freeAudioTracks = p.AudioTracks.Where(Function(x) x.TextEdit.Text = "")
+
+            If audioFiles?.Any() AndAlso freeAudioTracks?.Any() Then
+                For Each track In freeAudioTracks
+                    If fileIndex >= audioFiles.Count() Then Exit For
+
+                    track.TextEdit.Text = audioFiles(fileIndex)
+                    fileIndex += 1
+                Next
+            End If
         Else
             files.Sort()
             OpenVideoSourceFiles(files, timeout)
@@ -2301,8 +2440,10 @@ Public Class MainForm
             RenameDVDTracks()
 
             If FileTypes.VideoAudio.Contains(p.LastOriginalSourceFile.Ext) Then
-                p.Audio0.Streams = MediaInfo.GetAudioStreams(p.LastOriginalSourceFile)
-                p.Audio1.Streams = p.Audio0.Streams
+                Dim streams = MediaInfo.GetAudioStreams(p.LastOriginalSourceFile)
+                For Each track In p.AudioTracks
+                    track.AudioProfile.Streams = streams
+                Next
             End If
 
             If p.SourceFile.Ext = "d2v" Then
@@ -2337,51 +2478,11 @@ Public Class MainForm
 
             UpdateSourceParameters()
             SetSlider()
-
-            DetectAudioFiles(0, True, True, True)
-            DetectAudioFiles(1, True, True, True)
-            DetectAudioFiles(0, True, False, True)
-            DetectAudioFiles(1, True, False, True)
-
-            DetectAudioFiles(0, True, True, False)
-            DetectAudioFiles(1, True, True, False)
-            DetectAudioFiles(0, True, False, False)
-            DetectAudioFiles(1, True, False, False)
-
-            DetectAudioFiles(0, False, True, False)
-            DetectAudioFiles(1, False, True, False)
-
-            DetectAudioFiles(0, False, False, False)
-            DetectAudioFiles(1, False, False, False)
+            AddAudioTracks()
 
             If p.UseScriptAsAudioSource Then
-                tbAudioFile0.Text = p.Script.Path
-            Else
-                If p.Audio0.File = "" AndAlso p.Audio1.File = "" AndAlso
-                    FileTypes.VideoExtensionSupportsAudio(p.LastOriginalSourceFile.Ext) Then
-
-                    Dim audioCount = MediaInfo.GetAudioCount(p.LastOriginalSourceFile)
-
-                    If audioCount > 0 Then
-                        For Each iAP In {p.Audio0, p.Audio1}
-                            If TypeOf iAP Is NullAudioProfile Then
-                                Continue For
-                            End If
-
-                            Dim tb = GetAudioTextBox(iAP)
-                            tb.Text = p.LastOriginalSourceFile
-
-                            If audioCount = 1 Then
-                                Exit For
-                            End If
-                        Next
-
-                        If p.Audio0.Stream IsNot Nothing AndAlso p.Audio1.Stream IsNot Nothing AndAlso
-                            p.Audio0.Stream.ID = p.Audio1.Stream.ID Then
-
-                            tbAudioFile1.Text = ""
-                        End If
-                    End If
+                If p.AudioTracks.Any() Then
+                    p.AudioTracks(0).TextEdit.Text = p.Script.Path
                 End If
             End If
 
@@ -3004,19 +3105,24 @@ Public Class MainForm
             End If
 
             If p.WarnNoAudio Then
-                If (TypeOf p.Audio0 Is NullAudioProfile OrElse p.Audio0.File = "") AndAlso (TypeOf p.Audio1 Is NullAudioProfile OrElse p.Audio1.File = "") Then
+                If Not p.AudioTracks.Where(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile OrElse track.AudioProfile.File <> "")?.Any() Then
                     If ProcessTip("There will be no audio in the output file.") Then
-                        Return Warn("No audio", tbAudioFile0, tbAudioFile1)
+                        Return Warn("No audio", p.AudioTracks.Select(Function(x) x.TextEdit).ToArray())
                     End If
                 End If
             End If
 
-            If (p.Audio0.File <> "" AndAlso p.Audio0.File = p.Audio1.File AndAlso p.Audio0.Stream Is Nothing) OrElse
-                (p.Audio0.Stream IsNot Nothing AndAlso p.Audio1.Stream IsNot Nothing AndAlso
-                p.Audio0.Stream.StreamOrder = p.Audio1.Stream.StreamOrder) Then
+            Dim fileGroups = p.AudioTracks.Where(Function(x) x.TextEdit.Text <> "" AndAlso x.AudioProfile.Stream Is Nothing).GroupBy(Function(g) g.AudioProfile.File).Where(Function(x) x.Count() > 1)
+            If fileGroups.Any() Then
+                If ProcessTip($"Some audio source files are identical.") Then
+                    Return Warn("Suspicious Audio Settings", fileGroups.SelectMany(Function(x) x.AsEnumerable().Select(Function(s) s.TextEdit)).ToArray())
+                End If
+            End If
 
-                If ProcessTip("The first and second audio source files or streams are identical.") Then
-                    Return Warn("Invalid Audio Settings", tbAudioFile0, tbAudioFile1)
+            Dim streamGroups = p.AudioTracks.Where(Function(x) x.AudioProfile.Stream IsNot Nothing).GroupBy(Function(g) g.AudioProfile.Stream.Index).Where(Function(x) x.Count() > 1)
+            If streamGroups.Any() Then
+                If ProcessTip($"Some audio source streams are identical.") Then
+                    Return Warn("Suspicious Audio Settings", streamGroups.SelectMany(Function(x) x.AsEnumerable().Select(Function(s) s.TextEdit)).ToArray())
                 End If
             End If
 
@@ -3027,9 +3133,7 @@ Public Class MainForm
             End If
 
             For Each ap In AudioProfile.GetProfiles
-                If ap.File = "" Then
-                    Continue For
-                End If
+                If ap.File = "" Then Continue For
 
                 If TypeOf ap Is GUIAudioProfile Then
                     Dim gap = DirectCast(ap, GUIAudioProfile)
@@ -3417,59 +3521,6 @@ Public Class MainForm
 
     Sub OpenTargetFolder()
         g.ShellExecute(p.TargetFile.Dir)
-    End Sub
-
-    Function GetAudioTextBox(ap As AudioProfile) As TextEdit
-        If ap Is p.Audio0 Then Return tbAudioFile0
-        If ap Is p.Audio1 Then Return tbAudioFile1
-    End Function
-
-    Dim BlockAudioTextChanged As Boolean
-
-    Sub AudioTextChanged(tb As TextEdit, ap As AudioProfile)
-        If BlockAudioTextChanged Then Exit Sub
-
-        If tb.Text.Contains(":\") OrElse tb.Text.StartsWith("\\") Then
-            If tb.Text <> ap.File Then
-                ap.File = tb.Text
-
-                If FileTypes.Audio.Contains(ap.File.Ext) Then
-                    If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
-                        ap.Delay = g.ExtractDelay(ap.File)
-                    End If
-
-                    If ap.StreamName = "" AndAlso ap.File.Contains("{") Then
-                        Dim title = ap.File.Right("{")
-                        ap.StreamName = title.Left("}").UnescapeIllegalFileSysChars
-                    End If
-                End If
-
-                ap.SetStreamOrLanguage()
-            End If
-
-            UpdateSizeOrBitrate()
-            BlockAudioTextChanged = True
-            tb.Text = ap.DisplayName
-
-            If tb Is tbAudioFile0 Then
-                llAudioProfile0.Text = g.ConvertPath(ap.Name)
-            Else
-                llAudioProfile1.Text = g.ConvertPath(ap.Name)
-            End If
-
-            BlockAudioTextChanged = False
-        ElseIf tb.Text = "" Then
-            ap.File = ""
-            UpdateSizeOrBitrate()
-        End If
-    End Sub
-
-    Sub tbAudioFile0_TextChanged() Handles tbAudioFile0.TextChanged
-        AudioTextChanged(tbAudioFile0, p.Audio0)
-    End Sub
-
-    Sub tbAudioFile1_TextChanged() Handles tbAudioFile1.TextChanged
-        AudioTextChanged(tbAudioFile1, p.Audio1)
     End Sub
 
     Function AbortDueToLowDiskSpace() As Boolean
@@ -3890,7 +3941,7 @@ Public Class MainForm
             mb.Expanded = True
             mb.Add(From i In Directory.GetFiles(Folder.Template) Select i.Base)
             mb.Button.SaveAction = Sub(value)
-                                       If value <> s.StartupTemplate AndAlso p.SourceFile = ""
+                                       If value <> s.StartupTemplate AndAlso p.SourceFile = "" Then
                                            LoadProject(Path.Combine(Folder.Template, value + ".srip"))
                                        End If
                                        UpdateTemplatesMenuAsync()
@@ -4029,6 +4080,7 @@ Public Class MainForm
             t.Edit.Expand = True
             t.Edit.Text = s.VvencffappQualityDefinitions.ToSeparatedString()
             t.Edit.SaveAction = Sub(value) s.VvencffappQualityDefinitions = value.ToVvencffappQualityItems()?.ToList()
+
 
             '################# User Interface
             ui.CreateFlowPage("User Interface", True)
@@ -4449,9 +4501,7 @@ Public Class MainForm
 
     Sub PopulateProfileMenu(id As DynamicMenuItemID)
         For Each i In CustomMainMenu.MenuItems
-            If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
-                i.CustomMenuItem.Parameters(0).Equals(id) Then
-
+            If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso i.CustomMenuItem.Parameters(0).Equals(id) Then
                 i.DropDownItems.ClearAndDisplose
 
                 Select Case id
@@ -4459,10 +4509,11 @@ Public Class MainForm
                         g.PopulateProfileMenu(i.DropDownItems, s.VideoEncoderProfiles, AddressOf ShowEncoderProfilesDialog, AddressOf g.LoadVideoEncoder)
                     Case DynamicMenuItemID.MuxerProfiles
                         g.PopulateProfileMenu(i.DropDownItems, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf p.VideoEncoder.LoadMuxer)
-                    Case DynamicMenuItemID.Audio1Profiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf g.LoadAudioProfile0)
-                    Case DynamicMenuItemID.Audio2Profiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf g.LoadAudioProfile1)
+                    Case DynamicMenuItemID.AudioProfiles
+                        For j = 0 To p.AudioTracks.Count - 1
+                            Dim index = j
+                            g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(index), Sub(profile) g.LoadAudioProfile(profile, index))
+                        Next
                     Case DynamicMenuItemID.FilterSetupProfiles
                         g.PopulateProfileMenu(i.DropDownItems, s.FilterSetupProfiles, AddressOf ShowFilterSetupProfilesDialog, AddressOf LoadFilterSetup)
                 End Select
@@ -4582,7 +4633,7 @@ Public Class MainForm
         If audioProfile1 <> "" Then
             For Each i In s.AudioProfiles
                 If i.Name = audioProfile1 Then
-                    g.LoadAudioProfile0(i)
+                    g.LoadAudioProfile(i, 0)
                 End If
             Next
         End If
@@ -4590,7 +4641,7 @@ Public Class MainForm
         If audioProfile2 <> "" Then
             For Each i In s.AudioProfiles
                 If i.Name = audioProfile2 Then
-                    g.LoadAudioProfile1(i)
+                    g.LoadAudioProfile(i, 1)
                 End If
             Next
         End If
@@ -4657,11 +4708,9 @@ Public Class MainForm
                 End If
             End If
 
-            If (p.Audio0.File <> "" AndAlso (TypeOf p.Audio0 Is GUIAudioProfile OrElse
-                TypeOf p.Audio0 Is BatchAudioProfile) AndAlso File.Exists(p.Audio0.GetOutputFile)) OrElse
-                (p.Audio1.File <> "" AndAlso (TypeOf p.Audio1 Is GUIAudioProfile OrElse
-                TypeOf p.Audio1 Is BatchAudioProfile) AndAlso File.Exists(p.Audio1.GetOutputFile)) Then
-
+            If p.AudioTracks.Where(Function(track) track.AudioProfile.File <> "" AndAlso
+                                       (TypeOf track.AudioProfile Is GUIAudioProfile OrElse TypeOf track.AudioProfile Is BatchAudioProfile) AndAlso
+                                       File.Exists(track.AudioProfile.GetOutputFile()))?.Any() Then
                 Select Case p.FileExistAudio
                     Case FileExistMode.Ask
                         Using td As New TaskDialog(Of String)
@@ -4905,21 +4954,21 @@ Public Class MainForm
             fsFixedNumber.Help = "Fixed number of frames being analyzed over the whole video."
             fsFixedNumber.Config = {1, 7200, 5, 0}
             fsFixedNumber.Field = NameOf(p.AutoCropFixedNumberFrameSelection)
-            fsFixedNumber.Margin = New Padding(0,6,0,3)
+            fsFixedNumber.Margin = New Padding(0, 6, 0, 3)
 
             Dim fsTimeInterval = ui.AddNum()
             fsTimeInterval.Text = "Time interval in seconds:"
             fsTimeInterval.Help = "Time interval in seconds betwen analyzed frames."
             fsTimeInterval.Config = {1, 3600, 5, 0}
             fsTimeInterval.Field = NameOf(p.AutoCropTimeIntervalFrameSelection)
-            fsTimeInterval.Margin = New Padding(0,6,0,3)
+            fsTimeInterval.Margin = New Padding(0, 6, 0, 3)
 
             ui.AddLine(autoCropPage, "Dolby Vision")
 
             Dim autoCropDVMode = ui.AddMenu(Of AutoCropDolbyVisionMode)()
 
             eb = ui.AddEmptyBlock(autoCropPage)
-            eb.Margin = New Padding(0,6,0,3)
+            eb.Margin = New Padding(0, 6, 0, 3)
             Dim l = ui.AddLabel(eb, "Threshold at:", 7)
             ui.AddLabel(eb, "Beginning:", 2)
             Dim doviThresholdBegin = ui.AddNumeric(eb)
@@ -5093,6 +5142,12 @@ Public Class MainForm
             audioExist.Text = "Existing Output"
             audioExist.Help = "What to do in case an audio encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite."
             audioExist.Field = NameOf(p.FileExistAudio)
+
+            n = ui.AddNum
+            n.Text = "Audio Tracks"
+            n.Config = {2, 20, 1}
+            n.Field = NameOf(p.AudioTracksAvailable)
+            'n.NumEdit.SaveAction = Sub(x) SetAudioTracks(CType(x, Integer))
 
             b = ui.AddBool
             b.Text = "On load use AviSynth script as audio source"
@@ -5746,6 +5801,7 @@ Public Class MainForm
                 UpdateSizeOrBitrate()
                 tbBitrate_TextChanged()
                 SetSlider()
+                SetAudioTracks(p)
                 Assistant()
             End If
 
@@ -6768,21 +6824,13 @@ Public Class MainForm
         End Using
     End Sub
 
-    Function GetAudioProfile0() As Profile
-        Return GetNewAudioProfile(p.Audio0)
-    End Function
-
-    Function GetAudioProfile1() As Profile
-        Return GetNewAudioProfile(p.Audio1)
-    End Function
-
     Function GetNewAudioProfile(currentProfile As AudioProfile) As AudioProfile
         Dim sb As New SelectionBox(Of AudioProfile) With {
             .Title = "New Profile",
             .Text = "Please select a profile."
         }
 
-        If Not currentProfile Is Nothing Then
+        If currentProfile IsNot Nothing Then
             sb.AddItem("Current Project", currentProfile)
         End If
 
@@ -6794,32 +6842,6 @@ Public Class MainForm
             Return sb.SelectedValue
         End If
     End Function
-
-    Sub tbAudioFile0_DoubleClick() Handles tbAudioFile0.DoubleClick
-        Using dialog As New OpenFileDialog
-            Dim filter = FileTypes.Audio.ToList
-            filter.Insert(0, "avs")
-            dialog.SetFilter(filter)
-            dialog.SetInitDir(p.TempDir, s.LastSourceDir)
-
-            If dialog.ShowDialog() = DialogResult.OK Then
-                tbAudioFile0.Text = dialog.FileName
-            End If
-        End Using
-    End Sub
-
-    Sub tbAudioFile1_DoubleClick() Handles tbAudioFile1.DoubleClick
-        Using dialog As New OpenFileDialog
-            Dim filter = FileTypes.Audio.ToList
-            filter.Insert(0, "avs")
-            dialog.SetFilter(filter)
-            dialog.SetInitDir(p.TempDir, s.LastSourceDir)
-
-            If dialog.ShowDialog() = DialogResult.OK Then
-                tbAudioFile1.Text = dialog.FileName
-            End If
-        End Using
-    End Sub
 
     Sub lTip_Click() Handles laTip.Click
         If AssistantClickAction IsNot Nothing Then
@@ -6859,22 +6881,6 @@ Public Class MainForm
         Assistant()
     End Sub
 
-    Sub AudioEdit0ToolStripMenuItemClick()
-        p.Audio0.EditProject()
-        UpdateAudioMenu()
-        UpdateSizeOrBitrate()
-        llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
-        ShowAudioTip(p.Audio0)
-    End Sub
-
-    Sub AudioEdit1ToolStripMenuItemClick()
-        p.Audio1.EditProject()
-        UpdateAudioMenu()
-        UpdateSizeOrBitrate()
-        llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
-        ShowAudioTip(p.Audio1)
-    End Sub
-
     Sub ShowAudioTip(ap As AudioProfile)
         If TypeOf ap Is GUIAudioProfile Then
             Dim gap = DirectCast(ap, GUIAudioProfile)
@@ -6888,33 +6894,33 @@ Public Class MainForm
         End If
     End Sub
 
-    Sub AudioSource0ToolStripMenuItemClick()
-        tbAudioFile0_DoubleClick()
-    End Sub
-
-    Sub AudioSource1ToolStripMenuItemClick()
-        tbAudioFile1_DoubleClick()
-    End Sub
-
     <Command("Dialog to manage audio profiles.")>
-    Sub ShowAudioProfilesDialog(<DispName("Track Number (0 or 1)")> number As Integer)
-        Dim form = If(number = 0,
-            New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile0, AddressOf GetAudioProfile0, AddressOf AudioProfile.GetDefaults),
-            New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile1, AddressOf GetAudioProfile1, AddressOf AudioProfile.GetDefaults))
+    Sub ShowAudioProfilesDialog(<DispName("Track Number")> number As Integer)
+        Dim form = New ProfilesForm("Audio Profiles", s.AudioProfiles, Sub(profile) g.LoadAudioProfile(profile, number), Function() GetNewAudioProfile(p.AudioTracks(number).AudioProfile), AddressOf AudioProfile.GetDefaults)
 
         form.ShowDialog()
         form.Dispose()
 
-        UpdateAudioMenu()
-        PopulateProfileMenu(DynamicMenuItemID.Audio1Profiles)
-        PopulateProfileMenu(DynamicMenuItemID.Audio2Profiles)
+        UpdateAudioMenus()
+        PopulateProfileMenu(DynamicMenuItemID.AudioProfiles)
     End Sub
 
-    Sub UpdateAudioMenu()
-        AudioMenu0.Items.ClearAndDisplose
-        AudioMenu1.Items.ClearAndDisplose
-        g.PopulateProfileMenu(AudioMenu0.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf g.LoadAudioProfile0)
-        g.PopulateProfileMenu(AudioMenu1.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf g.LoadAudioProfile1)
+    Sub UpdateAudioMenus()
+        If p.AudioTracksAvailable < 1 Then Exit Sub
+        Dim nameControls = tlpAudio?.Controls?.OfType(Of AudioNameButtonLabel)?.Where(Function(x) x.GetType() Is GetType(AudioNameButtonLabel))
+        If nameControls Is Nothing Then Exit Sub
+        If nameControls.Count < 1 Then Exit Sub
+
+        For i = 0 To nameControls.Count - 1
+            Dim index = i
+            Dim control = nameControls(index)
+
+            control.ContextMenuStripEx = If(control.ContextMenuStripEx, New ContextMenuStripEx(components))
+
+            control.ContextMenuStripEx.Items.ClearAndDisplose()
+
+            g.PopulateProfileMenu(control.ContextMenuStripEx.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(index), Sub(profile) g.LoadAudioProfile(profile, index))
+        Next
     End Sub
 
     Sub AviSynthListView_ScriptChanged() Handles FiltersListView.Changed
@@ -6953,14 +6959,6 @@ Public Class MainForm
     Sub llSize_Click() Handles blFilesize.Click
         UpdateSizeMenu()
         SizeContextMenuStrip.Show(blFilesize, 0, 16)
-    End Sub
-
-    Sub lAudioProfile0_Click() Handles llAudioProfile0.Click
-        AudioMenu0.Show(llAudioProfile0, 0, 16)
-    End Sub
-
-    Sub lAudioProfile1_Click() Handles llAudioProfile1.Click
-        AudioMenu1.Show(llAudioProfile1, 0, 16)
     End Sub
 
     Sub llContainer_Click() Handles llMuxer.Click
@@ -7136,9 +7134,6 @@ Public Class MainForm
             .SetTip("Target File Size (Up/Down key)", tbTargetSize)
             .SetTip("Source file", tbSourceFile)
             .SetTip("Target file", tbTargetFile)
-            .SetTip("Opens audio settings for the current project/template", llEditAudio0, llEditAudio1)
-            .SetTip("Shows audio profiles", llAudioProfile0)
-            .SetTip("Shows audio profiles", llAudioProfile1)
             .SetTip("Shows a menu with Container/Muxer profiles", llMuxer)
             .SetTip("Shows a menu with video encoder profiles", lgbEncoder.Label)
             .SetTip("Shows a menu with AviSynth filter options", lgbFilters.Label)
@@ -7209,57 +7204,45 @@ Public Class MainForm
         End If
     End Sub
 
-    Sub tbAudioFile0_MouseDown(sender As Object, e As MouseEventArgs) Handles tbAudioFile0.MouseDown
-        If e.Button = MouseButtons.Right Then
-            UpdateAudioFileMenu(Audio0FileMenu, AddressOf tbAudioFile0_DoubleClick, p.Audio0, tbAudioFile0)
-        End If
-    End Sub
-
-    Sub tbAudioFile1_MouseDown(sender As Object, e As MouseEventArgs) Handles tbAudioFile1.MouseDown
-        If e.Button = MouseButtons.Right Then
-            UpdateAudioFileMenu(Audio1FileMenu, AddressOf tbAudioFile1_DoubleClick, p.Audio1, tbAudioFile1)
-        End If
-    End Sub
-
-    Sub UpdateAudioFileMenu(
-        m As ContextMenuStripEx, a As Action, ap As AudioProfile, tb As TextEdit)
-
-        m.Items.ClearAndDisplose
+    Sub UpdateAudioFileMenu(audioTrack As AudioTrack, a As Action)
+        Dim cms = DirectCast(audioTrack.TextEdit.TextBox.ContextMenuStrip, ContextMenuStripEx)
+        Dim ap = audioTrack.AudioProfile
+        Dim te = audioTrack.TextEdit
         Dim exist = File.Exists(ap.File)
+        Dim convertName = Function(name As String)
+                              Return name.Replace(" | ", " - ")
+                          End Function
 
-        If ap.Streams.Count > 0 Then
+        cms.Items.ClearAndDisplose
+
+        If ap.Streams IsNot Nothing AndAlso ap.Streams.Count > 0 Then
             For Each i In ap.Streams
                 Dim temp = i
 
                 Dim menuAction = Sub()
                                      If ap.File <> p.LastOriginalSourceFile Then
-                                         tb.Text = p.LastOriginalSourceFile
+                                         te.Text = p.LastOriginalSourceFile
                                      End If
 
-                                     tb.Text = temp.Name + " (" + ap.File.Ext + ")"
+                                     te.Text = temp.Name + " (" + ap.File.Ext + ")"
                                      ap.Stream = temp
 
-                                     If tb Is tbAudioFile0 Then
-                                         llAudioProfile0.Text = g.ConvertPath(ap.Name)
-                                     Else
-                                         llAudioProfile1.Text = g.ConvertPath(ap.Name)
-                                     End If
-
+                                     audioTrack.LanguageLabel.Refresh()
                                      UpdateSizeOrBitrate()
                                  End Sub
 
                 If ap.Streams.Count > 10 Then
-                    m.Add("Streams | " + i.Name, menuAction)
+                    cms.Add("Streams | " + convertName(i.Name), menuAction)
                 Else
-                    m.Add(i.Name, menuAction)
+                    cms.Add(convertName(i.Name), menuAction)
                 End If
             Next
 
-            m.Items.Add("-")
+            cms.Items.Add("-")
         End If
 
         If p.SourceFile.Ext = "avs" OrElse p.Script.GetScript.ToLowerInvariant.Contains("audiodub(") Then
-            m.Add(p.Script.Path.FileName, Sub() tb.Text = p.Script.Path)
+            cms.Add(p.Script.Path.FileName, Sub() te.Text = p.Script.Path)
         End If
 
         If p.TempDir <> "" AndAlso Directory.Exists(p.TempDir) Then
@@ -7273,13 +7256,13 @@ Public Class MainForm
                     Dim temp = i
 
                     If audioFiles.Count > 10 Then
-                        m.Add("Files | " + i.FileName, Sub() tb.Text = temp)
+                        cms.Add("Files | " + i.FileName, Sub() te.Text = temp)
                     Else
-                        m.Add(i.FileName, Sub() tb.Text = temp)
+                        cms.Add(i.FileName, Sub() te.Text = temp)
                     End If
                 Next
 
-                m.Items.Add("-")
+                cms.Items.Add("-")
             End If
         End If
 
@@ -7288,18 +7271,19 @@ Public Class MainForm
                                   p.VideoEncoder.OpenMuxerConfigDialog()
                               End Sub
 
-        m.Add("Open File", a, "Change the audio source file.").SetImage(Symbol.OpenFile)
-        m.Add("Add more files...", moreFilesAction, exist)
-        m.Add("Play", Sub() g.PlayAudio(ap), exist, "Plays the audio source file with a media player.").SetImage(Symbol.Play)
-        m.Add("Media Info...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), exist, "Show MediaInfo for the audio source file.").SetImage(Symbol.Info)
-        m.Add("Explore", Sub() g.SelectFileWithExplorer(ap.File), exist, "Open the audio source file directory with File Explorer.").SetImage(Symbol.FileExplorer)
-        m.Add("Execute", Sub() ExecuteAudio(ap), exist, "Processes the audio profile.")
-        m.Add("-")
-        m.Add("Copy Path", Sub() Clipboard.SetText(ap.File), tb.Text <> "")
-        m.Add("Copy Selection", Sub() Clipboard.SetText(tb.TextBox.SelectedText), tb.Text <> "").SetImage(Symbol.Copy)
-        m.Add("Paste", Sub() tb.TextBox.Paste(), Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
-        m.Add("-")
-        m.Add("Remove", Sub() tb.Text = "", tb.Text <> "", "Remove audio file").SetImage(Symbol.Remove)
+        cms.Add("Open File", a, "Change the audio source file.").SetImage(Symbol.OpenFile)
+        cms.Add("Add more files...", moreFilesAction, exist)
+        cms.Add("Play", Sub() g.PlayAudio(ap), exist, "Plays the audio source file with a media player.").SetImage(Symbol.Play)
+        cms.Add("Media Info...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), exist, "Show MediaInfo for the audio source file.").SetImage(Symbol.Info)
+        cms.Add("Explore", Sub() g.SelectFileWithExplorer(ap.File), exist, "Open the audio source file directory with File Explorer.").SetImage(Symbol.FileExplorer)
+        cms.Add("-")
+        cms.Add("Execute", Sub() ExecuteAudio(ap), exist, "Processes the audio profile.")
+        cms.Add("-")
+        cms.Add("Copy Path", Sub() Clipboard.SetText(ap.File), te.Text <> "")
+        cms.Add("Copy Selection", Sub() Clipboard.SetText(te.TextBox.SelectedText), te.Text <> "").SetImage(Symbol.Copy)
+        cms.Add("Paste", Sub() te.TextBox.Paste(), Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
+        cms.Add("-")
+        cms.Add("Remove", Sub() audioTrack.Remove(), te.Text <> "", "Remove audio file").SetImage(Symbol.Remove)
     End Sub
 
     Sub ExecuteAudio(ap As AudioProfile)

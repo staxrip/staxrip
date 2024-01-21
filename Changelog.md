@@ -20,6 +20,8 @@ v2.42.0 (not published yet)
 - UI: Enlarge Settings window
 - UI: Enlarge Options window
 - UI: Extend main window and make it resizeable
+- UI: Make number of audio tracks on main window optional
+- UI: Re-implement audio track detection and reordering
 - Update tools
     - ...
 - Update AviSynth+ plugins
@@ -508,6 +510,7 @@ v2.34.0 (2024-01-26)
 - UI: Let "HDR metadata extraction" also set the json file when an rpu file was found/set
 - UI: Add option to save Preview window size ([#986](/../../issues/986))
 - UI: Improve "Output Highlighting"
+- Make number of audio tracks on main window optional
 - NVEncC: Add --vpp-denoise-dct parameter
 - x265: Add Assistant check for VBV settings when using DolbyVision
 - Update tools

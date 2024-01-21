@@ -86,11 +86,11 @@ Namespace UI
             End If
         End Sub
 
-        Sub SetMaximumSize(w As Integer, h As Integer)
+        Sub SetMaximumSize(w As Single, h As Single)
             MaximumSize = New Size(CInt(Font.Height * w), CInt(Font.Height * h))
         End Sub
 
-        Sub SetMinimumSize(w As Integer, h As Integer)
+        Sub SetMinimumSize(w As Single, h As Single)
             MinimumSize = New Size(CInt(Font.Height * w), CInt(Font.Height * h))
         End Sub
 

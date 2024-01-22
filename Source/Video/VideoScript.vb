@@ -500,16 +500,14 @@ clipname.set_output()" + BR
             If fp <> "" Then
                 If plugin.AvsFilterNames IsNot Nothing Then
                     For Each filterName In plugin.AvsFilterNames
-                        If s.LoadAviSynthPlugins AndAlso
-                            Not IsAvsPluginInAutoLoadFolder(plugin.Filename) AndAlso
-                            ContainsFunction(scriptLower, filterName.ToLowerInvariant, 0) Then
-
+                        If s.LoadAviSynthPlugins AndAlso ContainsFunction(scriptLower, filterName.ToLowerInvariant, 0) Then
                             If plugin.Filename.Ext = "dll" Then
                                 Dim load = "LoadPlugin(""" + fp + """)" + BR
 
                                 If Not scriptLower.Contains(load.ToLowerInvariant) AndAlso
                                     Not loadCode.ToLowerInvariant.Contains(load.ToLowerInvariant) AndAlso
-                                    Not scriptAlreadyLower.Contains(load.ToLowerInvariant) Then
+                                    Not scriptAlreadyLower.Contains(load.ToLowerInvariant) AndAlso
+                                    Not IsAvsPluginInAutoLoadFolder(plugin.Filename) Then
 
                                     loadCode += load
                                 End If
@@ -544,7 +542,8 @@ clipname.set_output()" + BR
 
                                 If Not scriptLower.Contains(avsiImport.ToLowerInvariant) AndAlso
                                     Not loadCode.ToLowerInvariant.Contains(avsiImport.ToLowerInvariant) AndAlso
-                                    Not scriptAlreadyLower.Contains(avsiImport.ToLowerInvariant) Then
+                                    Not scriptAlreadyLower.Contains(avsiImport.ToLowerInvariant) AndAlso
+                                    Not IsAvsPluginInAutoLoadFolder(plugin.Filename) Then
 
                                     loadCode += avsiImport
                                 End If

@@ -64,7 +64,7 @@ Deinterlace | W3FDIF = clip = core.w3fdif.W3FDIF(clip,$select:msg:Select Order O
 Deinterlace | Yadifmod = clip = core.yadifmod.Yadifmod(clip, core.nnedi3.nnedi3(clip, field=0), order=1, field=-1, mode=0)
 Field Base = clip = core.std.SetFieldBased(clip, $select:Frame Based|0;Bottom Field First|1;Top Field First|2$)
 
-IVTC =
+VIVTC =
     clip = core.vivtc.VFM(clip, 1)
     clip = core.vivtc.VDecimate(clip)
 

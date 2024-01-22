@@ -830,6 +830,15 @@ Public Class Package
         .WebURL = "https://github.com/DJATOM/LibP2P-Vapoursynth",
         .VsFilterNames = {"libp2p.pack", "libp2p.unpack"}})
 
+    Shared Property VIVTC As Package = Add(New PluginPackage With {
+        .Name = "VIVTC",
+        .Filename = "VIVTC.dll",
+        .Location = "Plugins\VS\VIVTC",
+        .Description = "Field matcher and decimation filter for VapourSynth similar to TIVTC.",
+        .WebURL = "https://github.com/vapoursynth/vivtc",
+        .DownloadURL = "https://github.com/vapoursynth/vivtc/releases",
+        .VsFilterNames = {"vivtc.VFM", "vivtc.VDecimate"}})
+
     Shared Property FFTW As Package = Add(New Package With {
         .Name = "FFTW",
         .Location = "Support\FFTW",
@@ -2810,7 +2819,7 @@ Public Class Package
         Dim filepath = Path
 
         If filepath <> "" Then
-            If (VersionDate - File.GetLastWriteTimeUtc(filepath)).TotalDays > 3 Then
+            If (VersionDate - File.GetLastWriteTimeUtc(filepath)).TotalDays > 2 Then
                 Return True
             End If
         End If
@@ -2820,7 +2829,7 @@ Public Class Package
         Dim filepath = Path
 
         If filepath <> "" Then
-            If (VersionDate - File.GetLastWriteTimeUtc(filepath)).TotalDays < -3 Then
+            If (VersionDate - File.GetLastWriteTimeUtc(filepath)).TotalDays < -2 Then
                 Return True
             End If
         End If
@@ -2831,20 +2840,10 @@ Public Class Package
     End Function
 
     Overridable Function IsVersionValid() As Boolean
-        If VersionAllowAny Then
-            Return True
-        End If
+        If VersionAllowAny Then Return True
+        If IsVersionNew() AndAlso VersionAllowNew Then Return True
 
-        If IsVersionNew() AndAlso VersionAllowNew Then
-            Return True
-        End If
-
-        Dim filepath = Path
-
-        If filepath <> "" Then
-            Dim dt = File.GetLastWriteTimeUtc(filepath)
-            Return dt.AddDays(-2) < VersionDate AndAlso dt.AddDays(2) > VersionDate
-        End If
+        Return IsVersionCorrect()
     End Function
 
     Function IsCustomPathAllowed() As Boolean

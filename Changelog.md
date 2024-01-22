@@ -24,11 +24,19 @@ v2.34.0 (not published yet)
 - UI: Add option to save Preview window size ([#986](/../../issues/986))
 - x265: Add Assistant check for VBV settings when using DolbyVision
 - Update tools
-    - ...
+    - chapterEditor v1.42
+    - DeeZy v0.1.6
+    - eac3to v3.47
+    - libFLAC v1.4.3
+    - NVEncC v7.41
+    - qaac v2.81
+    - vvencFFapp v1.10.0 r209-8fe23c7
 - Update AviSynth+ plugins
-    - ...
+    - SMDegrain v4.5.0d
+    - xy-VSFilter + XySubFilter v3.2.0.810
 - Update Dual plugins
-    - ...
+    - ffms2 v3.0.1.0 1357+36 r1393 1c0dcfa391 StvG
+    - L-SMASH-Works v1167 [20240112]
 - Update VapourSynth plugins
     - ...
 
@@ -83,8 +91,6 @@ v2.32.0 (2024-01-08)
     - xy-VSFilter + XySubFilter v3.2.0.809
 - Update Dual plugins
     - L-SMASH-Works v1164 [20240106]
-- Update VapourSynth plugins
-    - ...
 
 
 v2.31.0 (2024-01-01)
@@ -117,7 +123,7 @@ v2.31.0 (2024-01-01)
     - TDeint v1.9
     - TIVTC v1.0.28
 - Update Dual plugins
-    - ffms2 v3.0.1.0 1357+34 r1391 4fbfa13 StvG
+    - ffms2 v3.0.1.0 1357+34 r1391 4fbfa13ea1 StvG
     - L-SMASH-Works v1160 [20231214]
 
 

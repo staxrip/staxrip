@@ -24,6 +24,7 @@ v2.34.0 (not published yet)
 - UI: When a Dolby Vision metadata file is used for "Import VUI metadata", the Crop filter will be applied
 - UI: Let "HDR metadata extraction" also set the json file when an rpu file was found/set
 - UI: Add option to save Preview window size ([#986](/../../issues/986))
+- NVEncC: Add --vpp-denoise-dct parameter
 - x265: Add Assistant check for VBV settings when using DolbyVision
 - Update tools
     - chapterEditor v1.42

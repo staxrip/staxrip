@@ -20,11 +20,12 @@ Public Class MainForm
 
 #Region " Designer "
     Private components As System.ComponentModel.IContainer
+    Private Const filterHeight As Integer = 536
 
     Public WithEvents tbAudioFile0 As TextEdit
     Public WithEvents tbAudioFile1 As TextEdit
-    Public WithEvents llEditAudio1 As ButtonLabel
     Public WithEvents llEditAudio0 As ButtonLabel
+    Public WithEvents llEditAudio1 As ButtonLabel
     Public WithEvents bnNext As ButtonEx
     Public WithEvents tbSourceFile As TextEdit
     Public WithEvents tbTargetFile As TextEdit
@@ -181,7 +182,7 @@ Public Class MainForm
         '
         'llEditAudio0
         '
-        Me.llEditAudio0.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.llEditAudio0.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         Me.llEditAudio0.AutoSize = True
         Me.llEditAudio0.Location = New System.Drawing.Point(1933, 11)
         Me.llEditAudio0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
@@ -194,12 +195,12 @@ Public Class MainForm
         '
         'gbAssistant
         '
-        Me.gbAssistant.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.gbAssistant.Anchor = CType((((System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.gbAssistant, 4)
         Me.gbAssistant.Controls.Add(Me.tlpAssistant)
-        Me.gbAssistant.Location = New System.Drawing.Point(9, 934)
+        Me.gbAssistant.Location = New System.Drawing.Point(9, 1534)
         Me.gbAssistant.Margin = New System.Windows.Forms.Padding(9, 0, 9, 9)
         Me.gbAssistant.Name = "gbAssistant"
         Me.gbAssistant.Padding = New System.Windows.Forms.Padding(6, 0, 6, 6)
@@ -236,7 +237,7 @@ Public Class MainForm
         '
         'llEditAudio1
         '
-        Me.llEditAudio1.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.llEditAudio1.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         Me.llEditAudio1.AutoSize = True
         Me.llEditAudio1.Location = New System.Drawing.Point(1933, 89)
         Me.llEditAudio1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
@@ -258,7 +259,7 @@ Public Class MainForm
         Me.gbAudio.Margin = New System.Windows.Forms.Padding(9, 0, 9, 0)
         Me.gbAudio.Name = "gbAudio"
         Me.gbAudio.Padding = New System.Windows.Forms.Padding(6, 0, 6, 6)
-        Me.gbAudio.Size = New System.Drawing.Size(2031, 210)
+        Me.gbAudio.Size = New System.Drawing.Size(2031, 510)
         Me.gbAudio.TabIndex = 59
         Me.gbAudio.TabStop = False
         Me.gbAudio.Text = "Audio"
@@ -279,15 +280,16 @@ Public Class MainForm
         Me.tlpAudio.Location = New System.Drawing.Point(6, 48)
         Me.tlpAudio.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpAudio.Name = "tlpAudio"
-        Me.tlpAudio.RowCount = 2
-        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45.0!))
-        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55.0!))
-        Me.tlpAudio.Size = New System.Drawing.Size(2019, 156)
+        Me.tlpAudio.RowCount = 3
+        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70.0!))
+        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70.0!))
+        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70.0!))
+        Me.tlpAudio.Size = New System.Drawing.Size(2019, 456)
         Me.tlpAudio.TabIndex = 62
         '
         'tbAudioFile0
         '
-        Me.tbAudioFile0.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbAudioFile0.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         Me.tbAudioFile0.Location = New System.Drawing.Point(6, 7)
         Me.tbAudioFile0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.tbAudioFile0.Name = "tbAudioFile0"
@@ -297,7 +299,7 @@ Public Class MainForm
         '
         'tbAudioFile1
         '
-        Me.tbAudioFile1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbAudioFile1.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         Me.tbAudioFile1.Location = New System.Drawing.Point(6, 85)
         Me.tbAudioFile1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.tbAudioFile1.Name = "tbAudioFile1"
@@ -307,7 +309,7 @@ Public Class MainForm
         '
         'llAudioProfile1
         '
-        Me.llAudioProfile1.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.llAudioProfile1.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         Me.llAudioProfile1.AutoSize = True
         Me.llAudioProfile1.Location = New System.Drawing.Point(1887, 89)
         Me.llAudioProfile1.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
@@ -319,7 +321,7 @@ Public Class MainForm
         '
         'llAudioProfile0
         '
-        Me.llAudioProfile0.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.llAudioProfile0.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         Me.llAudioProfile0.AutoSize = True
         Me.llAudioProfile0.Location = New System.Drawing.Point(1887, 11)
         Me.llAudioProfile0.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
@@ -619,16 +621,14 @@ Public Class MainForm
         '
         'lgbResize
         '
-        Me.lgbResize.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lgbResize.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         Me.tlpMain.SetColumnSpan(Me.lgbResize, 2)
         Me.lgbResize.Controls.Add(Me.tlpResize)
         Me.lgbResize.Location = New System.Drawing.Point(688, 438)
         Me.lgbResize.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lgbResize.Name = "lgbResize"
         Me.lgbResize.Padding = New System.Windows.Forms.Padding(6, 0, 6, 6)
-        Me.lgbResize.Size = New System.Drawing.Size(670, 286)
+        Me.lgbResize.Size = New System.Drawing.Size(670, filterHeight)
         Me.lgbResize.TabIndex = 55
         Me.lgbResize.TabStop = False
         Me.lgbResize.Text = "Resize"
@@ -872,15 +872,13 @@ Public Class MainForm
         '
         'lgbFilters
         '
-        Me.lgbFilters.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lgbFilters.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         Me.lgbFilters.Controls.Add(Me.FiltersListView)
         Me.lgbFilters.Location = New System.Drawing.Point(9, 438)
         Me.lgbFilters.Margin = New System.Windows.Forms.Padding(9, 0, 6, 0)
         Me.lgbFilters.Name = "lgbFilters"
         Me.lgbFilters.Padding = New System.Windows.Forms.Padding(9, 3, 9, 9)
-        Me.lgbFilters.Size = New System.Drawing.Size(667, 286)
+        Me.lgbFilters.Size = New System.Drawing.Size(667, filterHeight)
         Me.lgbFilters.TabIndex = 53
         Me.lgbFilters.TabStop = False
         '
@@ -905,16 +903,14 @@ Public Class MainForm
         '
         'lgbEncoder
         '
-        Me.lgbEncoder.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lgbEncoder.Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
         Me.lgbEncoder.Controls.Add(Me.llMuxer)
         Me.lgbEncoder.Controls.Add(Me.pnEncoder)
         Me.lgbEncoder.Location = New System.Drawing.Point(1370, 438)
         Me.lgbEncoder.Margin = New System.Windows.Forms.Padding(6, 0, 9, 0)
         Me.lgbEncoder.Name = "lgbEncoder"
         Me.lgbEncoder.Padding = New System.Windows.Forms.Padding(9, 3, 9, 9)
-        Me.lgbEncoder.Size = New System.Drawing.Size(670, 286)
+        Me.lgbEncoder.Size = New System.Drawing.Size(670, filterHeight)
         Me.lgbEncoder.TabIndex = 51
         Me.lgbEncoder.TabStop = False
         '
@@ -938,19 +934,20 @@ Public Class MainForm
         '
         'tlpMain
         '
+        Me.tlpMain.AutoSize = False
         Me.tlpMain.ColumnCount = 4
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33!))
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67!))
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67!))
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33!))
-        Me.tlpMain.Controls.Add(Me.lgbTarget, 2, 1)
-        Me.tlpMain.Controls.Add(Me.gbAssistant, 0, 4)
-        Me.tlpMain.Controls.Add(Me.gbAudio, 0, 3)
-        Me.tlpMain.Controls.Add(Me.lgbSource, 0, 1)
-        Me.tlpMain.Controls.Add(Me.lgbResize, 1, 2)
         Me.tlpMain.Controls.Add(Me.MenuStrip, 0, 0)
+        Me.tlpMain.Controls.Add(Me.lgbSource, 0, 1)
+        Me.tlpMain.Controls.Add(Me.lgbTarget, 2, 1)
         Me.tlpMain.Controls.Add(Me.lgbFilters, 0, 2)
+        Me.tlpMain.Controls.Add(Me.lgbResize, 1, 2)
         Me.tlpMain.Controls.Add(Me.lgbEncoder, 3, 2)
+        Me.tlpMain.Controls.Add(Me.gbAudio, 0, 3)
+        Me.tlpMain.Controls.Add(Me.gbAssistant, 0, 4)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
         Me.tlpMain.Margin = New System.Windows.Forms.Padding(0)
@@ -958,10 +955,10 @@ Public Class MainForm
         Me.tlpMain.RowCount = 5
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 81.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 357.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 210.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, filterHeight))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 250.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 200.0!))
-        Me.tlpMain.Size = New System.Drawing.Size(2049, 1134)
+        Me.tlpMain.Size = New System.Drawing.Size(2049, 2334)
         Me.tlpMain.TabIndex = 61
         '
         'MainForm
@@ -969,9 +966,8 @@ Public Class MainForm
         Me.AllowDrop = True
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.ClientSize = New System.Drawing.Size(2049, 1134)
         Me.Controls.Add(Me.tlpMain)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.HelpButton = True
         Me.MainMenuStrip = Me.MenuStrip
         Me.Margin = New System.Windows.Forms.Padding(9, 12, 9, 12)
@@ -1007,6 +1003,13 @@ Public Class MainForm
         Me.tlpMain.ResumeLayout(False)
         Me.ResumeLayout(False)
 
+        'Me.MinimumSize = New Size(1000, 740)
+        'Me.MaximumSize = New Size(1300, 1600)
+        'Me.Size = New Size(1110, 958)
+
+        Me.SetMinimumSize(42, 31)
+        Me.SetMaximumSize(59, 80)
+        Me.ScaleSize(44, 44)
     End Sub
 
 #End Region
@@ -1073,8 +1076,8 @@ Public Class MainForm
         Icon = g.Icon
 
         InitializeComponent()
+        RestoreClientSize(44, 37)
         SetStyle(ControlStyles.SupportsTransparentBackColor, True)
-        ScaleClientSize(41, 26.5)
         g.DPI = DeviceDpi
 
         If components Is Nothing Then
@@ -3843,6 +3846,8 @@ Public Class MainForm
         Dim restartID = GetRestartID()
 
         Using form As New SimpleSettingsForm("Settings")
+            form.ScaleClientSize(38, 26)
+
             Dim ui = form.SimpleUI
             ui.Store = s
 
@@ -4145,8 +4150,7 @@ Public Class MainForm
             b.Field = NameOf(s.LoadVapourSynthPlugins)
 
             '############# Preprocessing
-            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(40, 24)
-            ui.FormSizeScaleFactor = New Size(33, 24)
+            ui.AddControlPage(New PreprocessingControl, "Preprocessing")
 
             '############# Source Filters
             Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth",
@@ -4759,7 +4763,7 @@ Public Class MainForm
             "In order to select a template to be loaded on program startup go to:",
             "Tools > Settings > General > Templates > Default Template")
 
-            form.ScaleClientSize(36, 28)
+            form.ScaleClientSize(38, 28)
 
             Dim ui = form.SimpleUI
             ui.Store = p
@@ -4984,6 +4988,7 @@ Public Class MainForm
 
             videoExist.Text = "Existing Video Output"
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
+            videoExist.Expanded = True
             videoExist.Field = NameOf(p.FileExistVideo)
             videoExist.Expanded = True
 
@@ -7388,6 +7393,12 @@ Public Class MainForm
         StaxRipUpdate.ShowUpdateQuestion()
         StaxRipUpdate.CheckForUpdateAsync(False, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
+        'Text = $"{Size.Width}x{Size.Height}"
+    End Sub
+
+    Protected Overrides Sub OnResize(e As EventArgs)
+        MyBase.OnResize(e)
+        'Text = $"{Size.Width}x{Size.Height}"
     End Sub
 
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)

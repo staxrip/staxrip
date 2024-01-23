@@ -86,6 +86,10 @@ Namespace UI
             End If
         End Sub
 
+        Sub SetMaximumSize(w As Integer, h As Integer)
+            MaximumSize = New Size(CInt(Font.Height * w), CInt(Font.Height * h))
+        End Sub
+
         Sub SetMinimumSize(w As Integer, h As Integer)
             MinimumSize = New Size(CInt(Font.Height * w), CInt(Font.Height * h))
         End Sub
@@ -141,7 +145,7 @@ Namespace UI
         Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
             MyBase.OnFormClosing(args)
 
-            If Not s.WindowPositions Is Nothing Then
+            If s.WindowPositions IsNot Nothing Then
                 s.WindowPositions.Save(Me)
             End If
 

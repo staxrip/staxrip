@@ -1160,6 +1160,11 @@ Module ControlExtensions
     End Sub
 
     <Extension()>
+    Sub ScaleSize(instance As Control, width As Single, height As Single)
+        instance.Size = New Size(CInt(instance.Font.Height * width), CInt(instance.Font.Height * height))
+    End Sub
+
+    <Extension()>
     Sub SetFontStyle(instance As Control, style As FontStyle)
         instance.Font = New Font(instance.Font.FontFamily, instance.Font.Size, style)
     End Sub

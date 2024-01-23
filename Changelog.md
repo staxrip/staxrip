@@ -17,7 +17,9 @@ v2.4x.0 (not published yet)
 v2.42.0 (not published yet)
 ====================
 
-- ...
+- UI: Enlarge Settings window
+- UI: Enlarge Options window
+- UI: Extend main window and make it resizeable
 - Update tools
     - ...
 - Update AviSynth+ plugins

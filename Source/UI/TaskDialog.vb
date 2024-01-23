@@ -40,7 +40,7 @@ Public Class TaskDialog(Of T)
 
     Sub Init()
         ShowInTaskbar = False
-        Width = FontHeight * 30
+        Width = FontHeight * 34
 
         Content = If(Content = "", " ", Content)
         Title = If(Title = "", " ", Title)

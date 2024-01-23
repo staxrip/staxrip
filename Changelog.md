@@ -13,7 +13,7 @@ v2.3x.0 (not published yet)
     - ...
 -->
 
-v2.34.0 (not published yet)
+v2.34.0 (2024-01-26)
 ====================
 
 - CommandLine: Add new parameter "-SetCrop" to set the crop values, best used with a source file as first parameter
@@ -41,8 +41,6 @@ v2.34.0 (not published yet)
 - Update Dual plugins
     - ffms2 v3.0.1.0 1357+36 r1393 1c0dcfa391 StvG
     - L-SMASH-Works v1167 [20240112]
-- Update VapourSynth plugins
-    - ...
 
 
 v2.33.0 (2024-01-15)

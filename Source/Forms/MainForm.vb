@@ -2228,13 +2228,16 @@ Public Class MainForm
 
             Demux()
 
-            If String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile) Then
+            If String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse Not p.HdrDolbyVisionMetadataFiles?.Any() Then
                 Dim metadatas = Task.Run(Async Function() Await FindHdrMetadataAsync(p)).Result
-                p.Hdr10PlusMetadataFile = metadatas.Item1
-                p.HdrDolbyVisionMetadataFile = metadatas.Item2
+                p.Hdr10PlusMetadataFile = metadatas.jsonFile
+                p.HdrDolbyVisionMetadataFiles = metadatas.rpuFiles.Select(Function(x) New DolbyVisionMetadataFile(x))
             End If
 
-            If p.ExtractHdrmetadata <> HdrmetadataMode.None AndAlso (String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile)) AndAlso Not String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) Then
+            If p.ExtractHdrmetadata <> HdrmetadataMode.None AndAlso
+                Not String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) AndAlso
+                (String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse Not p.HdrDolbyVisionMetadataFiles?.Any()) Then
+
                 Select Case p.ExtractHdrmetadata
                     Case HdrmetadataMode.DolbyVision
                         ExtractDolbyVisionMetadata(p)
@@ -3482,61 +3485,85 @@ Public Class MainForm
             Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format/String")
             Dim fileHdrFormatCommercial = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
             If Not String.IsNullOrWhiteSpace(fileHdrFormatCommercial) AndAlso (fileHdrFormat.ContainsAny("SMPTE ST 2094") OrElse fileHdrFormatCommercial.ContainsAny("Blu-ray / HDR10", "Dolby Vision")) Then
-                Dim crop = " -c"
-                Dim mode = If(proj.DoviMode < 0, "", " -m " + (proj.DoviMode + 0).ToString())
-                Dim rpuPath = sourcePath.ChangeExt("bin")
+                Dim mode = If(proj.HdrDolbyVisionMode < 0, "", " -m " + (proj.HdrDolbyVisionMode + 0).ToString())
+                Dim rpuCroppedPath = sourcePath.DirAndBase() & "_RPUcropped.bin"
+                Dim rpuUncroppedPath = sourcePath.DirAndBase() & "_RPUuncropped.bin"
+                Dim actions As New List(Of Action)
 
                 If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
-                    rpuPath = If(sourcePath.Contains(proj.TempDir), rpuPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDRmetadata.bin"})}", rpuPath))
+                    rpuCroppedPath = If(sourcePath.Contains(proj.TempDir), rpuCroppedPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDRmetadataCropped.bin"})}", rpuCroppedPath))
+                    rpuUncroppedPath = If(sourcePath.Contains(proj.TempDir), rpuUncroppedPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDRmetadataUncropped.bin"})}", rpuUncroppedPath))
                 End If
 
-                If Not rpuPath.FileExists() Then
-                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode}{crop} extract-rpu - -o ""{rpuPath}"""
+                If Not rpuCroppedPath.FileExists() Then
+                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 20M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode} -c extract-rpu - -o ""{rpuCroppedPath}"""
 
-                    Try
-                        Using proc As New Proc
-                            proc.Package = Package.DoViTool
-                            proc.Project = If(proj, p)
-                            proc.Header = "Extract Dolby Vision metadata"
-                            proc.Encoding = Encoding.UTF8
-                            proc.File = "cmd.exe"
-                            proc.Arguments = "/S /C """ + commandLine + """"
-                            proc.AllowedExitCodes = {0}
-                            proc.OutputFiles = {rpuPath}
-                            proc.Start()
-                        End Using
-                    Catch ex As AbortException
-                        Throw ex
-                    Catch ex As Exception
-                        g.ShowException(ex)
-                        Throw New AbortException
-                    End Try
+                    actions.Add(Sub()
+                                    Using croppedProc As New Proc
+                                        croppedProc.Package = Package.DoViTool
+                                        croppedProc.Project = If(proj, p)
+                                        croppedProc.Header = "Extract cropped Dolby Vision metadata"
+                                        croppedProc.Encoding = Encoding.UTF8
+                                        croppedProc.File = "cmd.exe"
+                                        croppedProc.Arguments = "/S /C """ + commandLine + """"
+                                        croppedProc.AllowedExitCodes = {0}
+                                        croppedProc.OutputFiles = {rpuCroppedPath}
+                                        croppedProc.Start()
+                                    End Using
+                                End Sub)
                 End If
 
-                proj.HdrDolbyVisionMetadataFile = rpuPath
+                If Not rpuUncroppedPath.FileExists() Then
+                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 20M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode} extract-rpu - -o ""{rpuUncroppedPath}"""
+
+                    actions.Add(Sub()
+                                    Using uncroppedProc As New Proc
+                                        uncroppedProc.Package = Package.DoViTool
+                                        uncroppedProc.Project = If(proj, p)
+                                        uncroppedProc.Header = "Extract uncropped Dolby Vision metadata"
+                                        uncroppedProc.Encoding = Encoding.UTF8
+                                        uncroppedProc.File = "cmd.exe"
+                                        uncroppedProc.Arguments = "/S /C """ + commandLine + """"
+                                        uncroppedProc.AllowedExitCodes = {0}
+                                        uncroppedProc.OutputFiles = {rpuUncroppedPath}
+                                        uncroppedProc.Start()
+                                    End Using
+                                End Sub)
+                End If
+
+                Try
+                    Parallel.Invoke(New ParallelOptions() With {.MaxDegreeOfParallelism = s.ParallelProcsNum}, actions.ToArray())
+                Catch ex As AbortException
+                    Throw ex
+                Catch ex As Exception
+                    g.ShowException(ex)
+                    Throw New AbortException
+                End Try
+
+                proj.HdrDolbyVisionMetadataFiles = New HashSet(Of DolbyVisionMetadataFile) From {New DolbyVisionMetadataFile(rpuCroppedPath), New DolbyVisionMetadataFile(rpuUncroppedPath)}
             End If
         End If
     End Sub
 
-    Async Function FindHdrMetadataAsync(proj As Project) As Task(Of (String, String))
+    Async Function FindHdrMetadataAsync(proj As Project) As Task(Of (jsonFile As String, rpuFiles As IEnumerable(Of String)))
         If proj Is Nothing Then Return Nothing
         If String.IsNullOrWhiteSpace(proj.SourceFile) Then Return Nothing
 
         Dim sourcePath = proj.SourceFile
         Dim jsonFile As String = ""
-        Dim rpuFile As String = ""
+        Dim rpuFiles As IEnumerable(Of String)
         Dim files As IEnumerable(Of String)
 
         Dim searchTask = Task.Run(Sub()
                                       Try
                                           files = Directory.GetFiles(proj.SourceFile.Dir(), $"{proj.SourceFile.Base}*.*", SearchOption.TopDirectoryOnly)
                                           jsonFile = files.Where(Function(x) {"json"}.Contains(x.Ext))?.FirstOrDefault()
-                                          rpuFile = files.Where(Function(x) {".bin", ".rpu"}.Contains(x.Ext))?.FirstOrDefault()
+                                          rpuFiles = files.Where(Function(x) {"bin", "rpu"}.Contains(x.Ext))
 
                                           If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
                                               files = Directory.GetFiles(proj.TempDir, "*.*", SearchOption.TopDirectoryOnly)
                                               jsonFile = If(String.IsNullOrWhiteSpace(jsonFile), files?.Where(Function(x) {"json"}.Contains(x.Ext))?.FirstOrDefault(), "")
-                                              rpuFile = If(String.IsNullOrWhiteSpace(rpuFile), files?.Where(Function(x) {".bin", ".rpu"}.Contains(x.Ext))?.FirstOrDefault(), "")
+                                              rpuFiles = If(Not rpuFiles?.Any(), files?.Where(Function(x) {"bin", "rpu"}.Contains(x.Ext)), rpuFiles)
                                           End If
                                       Catch ex As Exception
                                           Log.WriteLine(ex.Message)
@@ -3545,7 +3572,7 @@ Public Class MainForm
                                   End Sub)
 
         Await searchTask
-        Return (jsonFile, rpuFile)
+        Return (jsonFile, rpuFiles)
     End Function
 
     Sub Demux()
@@ -4776,6 +4803,7 @@ Public Class MainForm
             Dim demuxVideo = ui.AddBool()
             Dim extractHdrmetadata = ui.AddMenu(Of HdrmetadataMode)
             Dim doviMode = ui.AddMenu(Of DoviMode)
+            Dim doviCropMode = ui.AddMenu(Of DoviCropMode)
 
             videoExist.Text = "Existing Video Output"
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
@@ -4789,12 +4817,21 @@ Public Class MainForm
             extractHdrmetadata.Help = "Extract dynamic HDR10+ and DolbyVision metadata if available"
             extractHdrmetadata.Expanded = True
             extractHdrmetadata.Field = NameOf(p.ExtractHdrmetadata)
-            extractHdrmetadata.Button.ValueChangedAction = Sub(value) doviMode.Visible = value = HdrmetadataMode.All OrElse value = HdrmetadataMode.DolbyVision
+            extractHdrmetadata.Button.ValueChangedAction = Sub(value)
+                                                               Dim visible = value = HdrmetadataMode.All OrElse value = HdrmetadataMode.DolbyVision
+                                                               doviMode.Visible = visible
+                                                               doviCropMode.Visible = visible
+                                                           End Sub
 
             doviMode.Text = "RPU Conversion Mode"
             doviMode.Help = "Sets the mode for RPU processing."
             doviMode.Expanded = True
-            doviMode.Field = NameOf(p.DoviMode)
+            doviMode.Field = NameOf(p.HdrDolbyVisionMode)
+
+            doviCropMode.Text = "RPU Crop Mode"
+            doviCropMode.Help = "Let the RPU 'Untouched' if you don't want to crop the video or 'Crop' if you want to remove the black bars."
+            doviCropMode.Expanded = True
+            doviCropMode.Field = NameOf(p.HdrDolbyVisionCropMode)
 
             b = ui.AddBool
             b.Text = "Import VUI metadata"

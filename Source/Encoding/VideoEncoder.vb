@@ -164,10 +164,58 @@ Public MustInherit Class VideoEncoder
                     cl += $" --dhdr10-info ""{p.Hdr10PlusMetadataFile}"""
                 End If
 
-                If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile) AndAlso p.HdrDolbyVisionMetadataFile.FileExists() Then
-                    cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile}"""
+                Dim rpuFile = ""
+                Select Case p.HdrDolbyVisionCropMode
+                    Case DoviCropMode.Untouched
+                        rpuFile = p.HdrDolbyVisionMetadataFiles.Where(Function(x) x.Path.FileExists() AndAlso x.Crop <> Padding.Empty).FirstOrDefault().Path
 
-                    Select Case p.DoviMode
+                        If String.IsNullOrWhiteSpace(rpuFile) Then
+                            rpuFile = p.HdrDolbyVisionMetadataFiles.Where(Function(x) x.Path.FileExists() AndAlso x.Crop = Padding.Empty).FirstOrDefault().Path
+                        End If
+
+                        p.CropBottom = 0
+                        p.CropLeft = 0
+                        p.CropRight = 0
+                        p.CropTop = 0
+
+                        g.MainForm.SetCropFilter()
+                    Case DoviCropMode.Cropped
+                        Dim cropValuesFile = p.HdrDolbyVisionMetadataFiles.Where(Function(x) x.Path.FileExists() AndAlso x.Crop <> Padding.Empty).FirstOrDefault()
+                        Dim croppedFile = p.HdrDolbyVisionMetadataFiles.Where(Function(x) x.Path.FileExists() AndAlso x.Crop = Padding.Empty).FirstOrDefault()
+
+                        If cropValuesFile IsNot Nothing Then
+                            Dim recalculateValues = Function(side1 As Integer, side2 As Integer) As (side1 As Integer, side2 As Integer)
+                                                        If (side1 + side2) Mod 2 <> 0 Then
+                                                            If side2 > 0 Then
+                                                                side2 -= 1
+                                                            Else
+                                                                side1 -= 1
+                                                            End If
+                                                        End If
+
+                                                        Return (side1, side2)
+                                                    End Function
+
+                            rpuFile = croppedFile.Path
+
+                            Dim topBottom = recalculateValues(cropValuesFile.Crop.Top, cropValuesFile.Crop.Bottom)
+                            Dim leftRight = recalculateValues(cropValuesFile.Crop.Left, cropValuesFile.Crop.Right)
+
+                            p.CropTop = topBottom.side1
+                            p.CropBottom = topBottom.side2
+                            p.CropLeft = leftRight.side1
+                            p.CropRight = leftRight.side2
+
+                            g.MainForm.SetCropFilter()
+                        End If
+                    Case Else
+                        Throw New NotImplementedException(NameOf(DoviCropMode))
+                End Select
+
+                If Not String.IsNullOrWhiteSpace(rpuFile) Then
+                    cl += $" --dolby-vision-rpu ""{rpuFile}"""
+
+                    Select Case p.HdrDolbyVisionMode
                         Case DoviMode.Untouched
                         Case DoviMode.Mode4
                             cl += $" --dolby-vision-profile 8.4"

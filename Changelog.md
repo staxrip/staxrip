@@ -20,6 +20,8 @@ v2.34.0 (not published yet)
 - UI: Fix delay when opening and closing Muxer/Container options window
 - UI: Fix Assistant displaying issues
 - UI: Fix crash on sources with multiple video tracks on newer versions of eac3to
+- UI: Fix Dolby Vision wrong RPU file handling ([#1190](/../../issues/1190))
+- UI: When a Dolby Vision metadata file is used for "Import VUI metadata", the Crop filter will be applied
 - UI: Let "HDR metadata extraction" also set the json file when an rpu file was found/set
 - UI: Add option to save Preview window size ([#986](/../../issues/986))
 - x265: Add Assistant check for VBV settings when using DolbyVision

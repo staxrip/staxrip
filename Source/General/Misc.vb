@@ -7,8 +7,10 @@ Imports System.Management
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.Threading.Tasks
 Imports Microsoft.Win32
 Imports StaxRip.UI
+Imports StaxRip.VideoEncoder
 
 Public Module ShortcutModule
     Public g As New GlobalClass
@@ -1867,6 +1869,65 @@ Public Enum DoviMode
     <DispName("4: Convert to 8.4")> Mode4 = 4
     <DispName("5: Convert to 8.1, preserves mapping")> Mode5 = 5
 End Enum
+
+Public Enum DoviCropMode
+    <DispName("Untouched")> Untouched = -1
+    <DispName("Cropped")> Cropped = 0
+End Enum
+
+<Serializable>
+Public Class DolbyVisionMetadataFile
+    Public Property Crop As Padding = New Padding(0)
+    Public ReadOnly Property Path As String = Nothing
+
+    Private Sub New()
+    End Sub
+
+    Public Sub New(filePath As String)
+        Me.Path = filePath
+
+        RefreshCropValues()
+    End Sub
+
+    Public Sub New(filePath As String, crop As Padding)
+        Me.Path = filePath
+        Me.Crop = crop
+    End Sub
+
+    Public Sub RefreshCropValues()
+        If String.IsNullOrWhiteSpace(Path) Then Return
+        If Not Path.FileExists() Then Return
+
+        Try
+            Dim output = ProcessHelp.GetConsoleOutput(Package.DoViTool.Path, $"info -i {Path.Escape()} -f 0")
+            Dim strippedOutput = output?.Right("""Level5"": {")?.Left("""Level6"": {")
+            If String.IsNullOrWhiteSpace(strippedOutput) Then Return
+            Dim matches = Regex.Matches(strippedOutput, """active_area_(?<side>\w+)_offset"": (?<value>\d+)")
+            If matches?.Count < 1 Then Return
+
+            Dim left = 0
+            Dim right = 0
+            Dim top = 0
+            Dim bottom = 0
+
+            For Each match As Match In matches
+                Select Case match.Groups("side").Value
+                    Case "left"
+                        left = match.Groups("value").Value.ToInt()
+                    Case "right"
+                        right = match.Groups("value").Value.ToInt()
+                    Case "top"
+                        top = match.Groups("value").Value.ToInt()
+                    Case "bottom"
+                        bottom = match.Groups("value").Value.ToInt()
+                End Select
+            Next
+
+            Me.Crop = New Padding(left, top, right, bottom)
+        Catch ex As Exception
+        End Try
+    End Sub
+End Class
 
 Public Enum TimestampsMode
     Never

@@ -47,8 +47,6 @@ Public Class SvtAv1Enc
         If Params.Passes.Value > 0 Then
             Encode("Video encoding third pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
-
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)

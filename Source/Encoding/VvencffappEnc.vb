@@ -43,8 +43,6 @@ Public Class VvencffappEnc
         If Params.Mode.Value = VvencffappRateMode.TwoPass Then
             Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
-
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)

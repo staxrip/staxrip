@@ -1,5 +1,6 @@
 ﻿
 Imports System.Text
+Imports System.Threading.Tasks
 Imports StaxRip.UI
 
 Imports StaxRip.VideoEncoderCommandLine
@@ -33,6 +34,18 @@ Public Class x265Enc
         End Set
     End Property
 
+    Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
+        Get
+            Return String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value)
+        End Get
+    End Property
+
+    Overrides ReadOnly Property ResizingStatus As String
+        Get
+            Return If(String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value), "", "Resizing would interfere with the Dolby Vision metadata. Disable the 'Resize' filter or the Dolby Vision RPU file.")
+        End Get
+    End Property
+
     Overrides ReadOnly Property OutputExt As String
         Get
             Return "hevc"
@@ -49,8 +62,6 @@ Public Class x265Enc
             Encode("Video encoding Nth pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
             Encode("Video encoding last pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
-
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
@@ -75,6 +86,21 @@ Public Class x265Enc
             proc.Start()
         End Using
     End Sub
+
+    Overrides Function BeforeEncoding() As Boolean
+        If p.Script.IsFilterActive("Crop") AndAlso Not String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value) AndAlso Params.DolbyVisionRpu.Value = p.HdrDolbyVisionMetadataFile?.Path AndAlso Params.DolbyVisionRpu.Value.FileExists() Then
+            If (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
+                p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom), True)
+                Dim newPath = p.HdrDolbyVisionMetadataFile.WriteCroppedRpu(True)
+                If Not String.IsNullOrWhiteSpace(newPath) Then
+                    Params.DolbyVisionRpu.Value = newPath
+                Else
+                    Return False
+                End If
+            End If
+        End If
+        Return True
+    End Function
 
     Overrides Property Bitrate As Integer
         Get
@@ -778,6 +804,21 @@ Public Class x265Params
         .Options = {"Undefined", "Yes", "No"},
         .Values = {"", "--hdr10", "--no-hdr10"}}
 
+    Property DhdrInfo As New StringParam With {
+        .Switch = "--dhdr10-info",
+        .Text = "HDR10 Info File",
+        .BrowseFile = True}
+
+    Property DolbyVisionProfile As New OptionParam With {
+        .Switch = "--dolby-vision-profile",
+        .Text = "Dolby Vision Profile",
+        .Options = {"0", "5", "8.1", "8.2", "8.4"}}
+
+    Property DolbyVisionRpu As New StringParam With {
+        .Switch = "--dolby-vision-rpu",
+        .Text = "Dolby Vision RPU",
+        .BrowseFile = True}
+
     Property FrameThreads As New NumParam With {
         .Switch = "--frame-threads",
         .Switches = {"-F"},
@@ -1020,7 +1061,7 @@ Public Class x265Params
                     New NumParam With {.Switch = "--crqpoffs", .Text = "CR QP Offset", .Config = {-12, 12}},
                     NRintra, NRinter, CRFmin, CRFmax)
                 Add("Rate Control 2",
-                    VbvBufsize, VbvMaxRate,
+                    VbvBufSize, VbvMaxRate,
                     New NumParam With {.Switch = "--vbv-init", .Text = "VBV Init", .Config = {0.5, 1.0, 0.1, 1}, .Init = 0.9},
                     New NumParam With {.Switch = "--vbv-end", .Text = "VBV End", .Config = {0, 1.0, 0.1, 1}},
                     New NumParam With {.Switch = "--vbv-end-fr-adj", .Text = "VBV Adjust", .Config = {0, 1, 0.1, 1}},
@@ -1083,8 +1124,7 @@ Public Class x265Params
                     ProgressReadframes)
                 Add("VUI",
                     MasterDisplay,
-                    New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
-                    Hdr10,
+                    DhdrInfo, Hdr10,
                     New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},
                     New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "Chroma-Derived-C", "Chroma-Derived-NC", "FCC", "GBR", "ICTCP", "SMPTE 170 M", "SMPTE 2085", "SMPTE 240 M", "YCgCo"}},
                     New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-STD-B67", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}},
@@ -1103,8 +1143,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--display-window", .Text = "Display Window", .Options = {"Undefined", "Left", "Top", "Right", "Bottom"}},
                     Chromaloc)
                 Add("Bitstream",
-                    New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Options = {"0", "5", "8.1", "8.2", "8.4"}},
-                    New StringParam With {.Switch = "--dolby-vision-rpu", .Text = "Dolby Vision RPU", .BrowseFile = True},
+                    DolbyVisionProfile, DolbyVisionRpu,
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "Maximum Picture Order Count", .Init = 8},
                     Info, RepeatHeaders, AUD, HRD,
                     New BoolParam With {.Switch = "--hrd-concat", .Init = False, .Text = "HRD Concat"},

@@ -136,8 +136,6 @@ Public Class ffmpegEnc
         Else
             Encode(Params.GetCommandLine(True, False))
         End If
-
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(args As String)

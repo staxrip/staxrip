@@ -40,7 +40,6 @@ Public Class Rav1e
     Overrides Sub Encode()
         p.Script.Synchronize()
         Encode("Video encoding", GetArgs(1, p.Script), s.ProcessPriority)
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)

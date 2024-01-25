@@ -62,8 +62,6 @@ Public Class x264Enc
             Encode("Video encoding Nth pass", GetArgs(3, p.Script), s.ProcessPriority)
             Encode("Video encoding last pass", GetArgs(2, p.Script), s.ProcessPriority)
         End If
-
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)

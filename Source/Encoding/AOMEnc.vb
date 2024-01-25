@@ -55,8 +55,6 @@ Public Class AOMEnc
         If Params.Passes.Value = 1 Then
             Encode("Video encoding pass 2", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
-
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)

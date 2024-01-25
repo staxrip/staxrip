@@ -1872,7 +1872,7 @@ End Enum
 
 Public Enum DoviCropMode
     <DispName("Untouched")> Untouched = -1
-    <DispName("Cropped")> Cropped = 0
+    <DispName("Crop")> Crop = 0
 End Enum
 
 <Serializable>
@@ -1880,13 +1880,33 @@ Public Class DolbyVisionMetadataFile
     Public Property Crop As Padding = New Padding(0)
     Public ReadOnly Property Path As String = Nothing
 
+    Public ReadOnly Property Level5JsonFilePath As String
+        Get
+            Return If(String.IsNullOrWhiteSpace(Path), "", $"{Path.DirAndBase()}_L5.json")
+        End Get
+    End Property
+
+    Public ReadOnly Property EditorConfigFilePath As String
+        Get
+            Return If(String.IsNullOrWhiteSpace(Path), "", $"{Path.DirAndBase()}_Config.json")
+        End Get
+    End Property
+
+    Public ReadOnly Property CroppedRpuFilePath As String
+        Get
+            Return If(String.IsNullOrWhiteSpace(Path), "", $"{Path.DirAndBase()}_Cropped.rpu")
+        End Get
+    End Property
+
+
     Private Sub New()
     End Sub
 
     Public Sub New(filePath As String)
         Me.Path = filePath
 
-        RefreshCropValues()
+        WriteLevel5Export(False)
+        ReadLevel5Export()
     End Sub
 
     Public Sub New(filePath As String, crop As Padding)
@@ -1894,39 +1914,137 @@ Public Class DolbyVisionMetadataFile
         Me.Crop = crop
     End Sub
 
-    Public Sub RefreshCropValues()
-        If String.IsNullOrWhiteSpace(Path) Then Return
-        If Not Path.FileExists() Then Return
+    Public Sub ReadLevel5Export()
+        If Not Path?.FileExists() Then Return
+        If Not Level5JsonFilePath.FileExists() Then Return
 
         Try
-            Dim output = ProcessHelp.GetConsoleOutput(Package.DoViTool.Path, $"info -i {Path.Escape()} -f 0")
-            Dim strippedOutput = output?.Right("""Level5"": {")?.Left("""Level6"": {")
-            If String.IsNullOrWhiteSpace(strippedOutput) Then Return
-            Dim matches = Regex.Matches(strippedOutput, """active_area_(?<side>\w+)_offset"": (?<value>\d+)")
-            If matches?.Count < 1 Then Return
+            Dim jsonContent = Level5JsonFilePath.ReadAllText()
+            Dim strippedJsonContent = jsonContent.Right("presets").Left("edits")
+            strippedJsonContent = Regex.Replace(strippedJsonContent, "\s", "")
+            Dim presetMatches = Regex.Matches(strippedJsonContent, "\{.+?:(?<id>\d+),.+?:(?<left>\d+),.+?:(?<right>\d+),.+?:(?<top>\d+),.+?:(?<bottom>\d+)\}")
 
-            Dim left = 0
-            Dim right = 0
-            Dim top = 0
-            Dim bottom = 0
+            If presetMatches.Count = 0 Then Return
 
-            For Each match As Match In matches
-                Select Case match.Groups("side").Value
-                    Case "left"
-                        left = match.Groups("value").Value.ToInt()
-                    Case "right"
-                        right = match.Groups("value").Value.ToInt()
-                    Case "top"
-                        top = match.Groups("value").Value.ToInt()
-                    Case "bottom"
-                        bottom = match.Groups("value").Value.ToInt()
-                End Select
+            Dim newCrop As New Padding(Integer.MaxValue)
+
+            For Each match As Match In presetMatches
+                newCrop.Left = Math.Min(newCrop.Left, match.Groups("left").Value.ToInt())
+                newCrop.Top = Math.Min(newCrop.Top, match.Groups("top").Value.ToInt())
+                newCrop.Right = Math.Min(newCrop.Right, match.Groups("right").Value.ToInt())
+                newCrop.Bottom = Math.Min(newCrop.Bottom, match.Groups("bottom").Value.ToInt())
             Next
 
-            Me.Crop = New Padding(left, top, right, bottom)
+            Me.Crop = newCrop
+        Catch ex As AbortException
+            Throw ex
         Catch ex As Exception
+            g.ShowException(ex)
+            Throw New AbortException
         End Try
     End Sub
+
+    Public Sub WriteLevel5Export(Optional overwrite As Boolean = False)
+        If Not Path?.FileExists() Then Return
+        If Not overwrite AndAlso Level5JsonFilePath.FileExists() Then Return
+
+        Try
+            Dim arguments = $"export --data ""level5={Level5JsonFilePath}"" -i ""{Path}"""
+            Using proc As New Proc
+                proc.Package = Package.DoViTool
+                proc.Project = p
+                proc.Header = "Extract Level5 data from RPU metadata file"
+                proc.Encoding = Encoding.UTF8
+                proc.Arguments = arguments
+                proc.AllowedExitCodes = {0}
+                proc.OutputFiles = {Level5JsonFilePath}
+                proc.Start()
+            End Using
+        Catch ex As AbortException
+            Throw ex
+        Catch ex As Exception
+            g.ShowException(ex)
+            Throw New AbortException
+        End Try
+
+        ReadLevel5Export()
+    End Sub
+
+    Public Sub WriteEditorConfigFile(offset As Padding, Optional overwrite As Boolean = True)
+        If Not Level5JsonFilePath?.FileExists() Then Return
+        If Not overwrite AndAlso EditorConfigFilePath.FileExists() Then Return
+        If offset = Padding.Empty Then Return
+        If offset.Left < 0 OrElse offset.Top < 0 OrElse offset.Right < 0 OrElse offset.Bottom < 0 Then Throw New ArgumentOutOfRangeException(NameOf(offset))
+
+        Try
+            Dim jsonContent = Level5JsonFilePath.ReadAllText()
+            jsonContent = Regex.Replace(jsonContent, "\s", "")
+            Dim presetMatches = Regex.Matches(jsonContent.Left("""edits"":{"), "\{.+?:(?<id>\d+),.+?:(?<left>\d+),.+?:(?<right>\d+),.+?:(?<top>\d+),.+?:(?<bottom>\d+)\}")
+            Dim edits = jsonContent.Right("""edits"":{").Left("}")
+
+            If presetMatches.Count = 0 Then Return
+            If String.IsNullOrWhiteSpace(edits) Then Return
+
+            Dim presets = ""
+            For Each match As Match In presetMatches
+                Dim left = match.Groups("left").Value.ToInt() - offset.Left
+                Dim top = match.Groups("top").Value.ToInt() - offset.Top
+                Dim right = match.Groups("right").Value.ToInt() - offset.Right
+                Dim bottom = match.Groups("bottom").Value.ToInt() - offset.Bottom
+
+                If left < 0 Then Throw New ArgumentOutOfRangeException(NameOf(left), "Negative values are not valid offsets for RPU files")
+                If top < 0 Then Throw New ArgumentOutOfRangeException(NameOf(top), "Negative values are not valid offsets for RPU files")
+                If right < 0 Then Throw New ArgumentOutOfRangeException(NameOf(right), "Negative values are not valid offsets for RPU files")
+                If bottom < 0 Then Throw New ArgumentOutOfRangeException(NameOf(bottom), "Negative values are not valid offsets for RPU files")
+
+                presets += $"{{"
+                presets += $"""id"":{match.Groups("id").Value},"
+                presets += $"""left"":{left},"
+                presets += $"""right"":{right},"
+                presets += $"""top"":{top},"
+                presets += $"""bottom"":{bottom}"
+                presets += $"}},"
+            Next
+            presets = presets.TrimEnd(","c)
+            presets = $"""presets"":[{presets}]"
+            edits = $"""edits"":{{{edits}}}"
+            Dim result = $"{{""active_area"":{{{presets},{edits}}}}}"
+
+            result.WriteFileUTF8(EditorConfigFilePath)
+        Catch ex As AbortException
+            Throw ex
+        Catch ex As Exception
+            g.ShowException(ex)
+            Throw New AbortException
+        End Try
+    End Sub
+
+    Public Function WriteCroppedRpu(Optional overwrite As Boolean = True) As String
+        If Not Path?.FileExists() Then Return Nothing
+        If Not EditorConfigFilePath?.FileExists() Then Return Nothing
+        If Not overwrite AndAlso CroppedRpuFilePath.FileExists() Then Return Nothing
+
+        Try
+        Dim arguments = $"editor -i ""{Path}"" -j ""{EditorConfigFilePath}"" -o ""{CroppedRpuFilePath}"""
+        Using proc As New Proc
+            proc.Package = Package.DoViTool
+            proc.Project = p
+            proc.Header = "Creating new RPU metadata file"
+            proc.Encoding = Encoding.UTF8
+            proc.Arguments = arguments
+            proc.AllowedExitCodes = {0}
+            proc.OutputFiles = {CroppedRpuFilePath}
+            proc.Start()
+        End Using
+        Catch ex As AbortException
+            Throw ex
+        Catch ex As Exception
+            g.ShowException(ex)
+            Throw New AbortException
+        End Try
+
+        Return CroppedRpuFilePath
+    End Function
 End Class
 
 Public Enum TimestampsMode

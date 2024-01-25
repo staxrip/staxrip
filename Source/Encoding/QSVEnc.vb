@@ -120,8 +120,6 @@ Public Class QSVEnc
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
             proc.Start()
         End Using
-
-        AfterEncoding()
     End Sub
 
     Overrides Function GetMenu() As MenuList

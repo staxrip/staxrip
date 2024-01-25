@@ -365,11 +365,18 @@ Public Class GlobalClass
                 If p.VideoEncoder.CanChunkEncode Then
                     p.Script.Synchronize()
 
-                    For Each i In p.VideoEncoder.GetChunkEncodeActions
-                        actions.Add(i)
-                    Next
+                    If p.VideoEncoder.BeforeEncoding() Then
+                        For Each i In p.VideoEncoder.GetChunkEncodeActions()
+                            actions.Add(i)
+                        Next
+                    End If
                 Else
-                    actions.Add(AddressOf p.VideoEncoder.Encode)
+                    actions.Add(Sub()
+                                    If p.VideoEncoder.BeforeEncoding() Then
+                                        p.VideoEncoder.Encode()
+                                        p.VideoEncoder.AfterEncoding()
+                                    End If
+                                End Sub)
                 End If
             End If
 
@@ -380,6 +387,7 @@ Public Class GlobalClass
             End Try
 
             Log.Save()
+            p.VideoEncoder.AfterEncoding()
 
             g.RaiseAppEvent(ApplicationEvent.AfterVideoEncoded)
 
@@ -1300,34 +1308,43 @@ Public Class GlobalClass
     Sub RunAutoCrop(progressAction As Action(Of Double))
         p.SourceScript.Synchronize(True, True, True)
 
-        Using server = FrameServerFactory.Create(p.SourceScript.Path)
-            Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)
-            Dim crops(s.CropFrameCount - 1) As AutoCrop
-            Dim pos As Integer
+        If p.HdrDolbyVisionMetadataFile?.Crop <> Padding.Empty Then
+            p.CropLeft = p.HdrDolbyVisionMetadataFile.Crop.Left
+            p.CropTop = p.HdrDolbyVisionMetadataFile.Crop.Top
+            p.CropRight = p.HdrDolbyVisionMetadataFile.Crop.Right
+            p.CropBottom = p.HdrDolbyVisionMetadataFile.Crop.Bottom
 
-            For x = 1 To s.CropFrameCount
-                progressAction?.Invoke((x - 1) / s.CropFrameCount * 100)
-                pos = len * x
+            CorrectCropMod(False, False)
+        Else
+            Using server = FrameServerFactory.Create(p.SourceScript.Path)
+                Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)
+                Dim crops(s.CropFrameCount - 1) As AutoCrop
+                Dim pos As Integer
 
-                Using bmp = BitmapUtil.CreateBitmap(server, pos)
-                    crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), pos)
-                End Using
-            Next
+                For x = 1 To s.CropFrameCount
+                    progressAction?.Invoke((x - 1) / s.CropFrameCount * 100)
+                    pos = len * x
 
-            Dim leftCrops = crops.SelectMany(Function(arg) arg.Left).OrderBy(Function(arg) arg)
-            p.CropLeft = leftCrops(leftCrops.Count \ 10)
+                    Using bmp = BitmapUtil.CreateBitmap(server, pos)
+                        crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), pos)
+                    End Using
+                Next
 
-            Dim topCrops = crops.SelectMany(Function(arg) arg.Top).OrderBy(Function(arg) arg)
-            p.CropTop = topCrops(topCrops.Count \ 10)
+                Dim leftCrops = crops.SelectMany(Function(arg) arg.Left).OrderBy(Function(arg) arg)
+                p.CropLeft = leftCrops(leftCrops.Count \ 10)
 
-            Dim rightCrops = crops.SelectMany(Function(arg) arg.Right).OrderBy(Function(arg) arg)
-            p.CropRight = rightCrops(rightCrops.Count \ 10)
+                Dim topCrops = crops.SelectMany(Function(arg) arg.Top).OrderBy(Function(arg) arg)
+                p.CropTop = topCrops(topCrops.Count \ 10)
 
-            Dim bottomCrops = crops.SelectMany(Function(arg) arg.Bottom).OrderBy(Function(arg) arg)
-            p.CropBottom = bottomCrops(bottomCrops.Count \ 10)
+                Dim rightCrops = crops.SelectMany(Function(arg) arg.Right).OrderBy(Function(arg) arg)
+                p.CropRight = rightCrops(rightCrops.Count \ 10)
+
+                Dim bottomCrops = crops.SelectMany(Function(arg) arg.Bottom).OrderBy(Function(arg) arg)
+                p.CropBottom = bottomCrops(bottomCrops.Count \ 10)
+            End Using
 
             CorrectCropMod()
-        End Using
+        End If
     End Sub
 
     Sub SmartCrop()
@@ -1429,12 +1446,19 @@ Public Class GlobalClass
         CorrectCropMod(True)
     End Sub
 
-    Sub CorrectCropMod(force As Boolean)
+    Sub CorrectCropMod(force As Boolean, Optional increase As Boolean = True)
         If p.AutoCorrectCropValues OrElse force Then
-            p.CropLeft += p.CropLeft Mod 2
-            p.CropRight += p.CropRight Mod 2
-            p.CropTop += p.CropTop Mod 2
-            p.CropBottom += p.CropBottom Mod 2
+            If increase Then
+                p.CropLeft += p.CropLeft Mod 2
+                p.CropRight += p.CropRight Mod 2
+                p.CropTop += p.CropTop Mod 2
+                p.CropBottom += p.CropBottom Mod 2
+            Else
+                p.CropLeft -= p.CropLeft Mod 2
+                p.CropRight -= p.CropRight Mod 2
+                p.CropTop -= p.CropTop Mod 2
+                p.CropBottom -= p.CropBottom Mod 2
+            End If
 
             Dim modValue = 4
 
@@ -1443,23 +1467,40 @@ Public Class GlobalClass
             End If
 
             Dim whalf = ((p.SourceWidth - p.CropLeft - p.CropRight) Mod modValue) \ 2
-
-            If p.CropLeft > p.CropRight Then
-                p.CropLeft += whalf - whalf Mod 2
-                p.CropRight += whalf + whalf Mod 2
-            Else
-                p.CropRight += whalf - whalf Mod 2
-                p.CropLeft += whalf + whalf Mod 2
-            End If
-
             Dim hhalf = ((p.SourceHeight - p.CropTop - p.CropBottom) Mod modValue) \ 2
 
-            If p.CropTop > p.CropBottom Then
-                p.CropTop += hhalf - hhalf Mod 2
-                p.CropBottom += hhalf + hhalf Mod 2
+            If increase Then
+                If p.CropLeft > p.CropRight Then
+                    p.CropLeft += whalf - whalf Mod 2
+                    p.CropRight += whalf + whalf Mod 2
+                Else
+                    p.CropRight += whalf - whalf Mod 2
+                    p.CropLeft += whalf + whalf Mod 2
+                End If
+
+                If p.CropTop > p.CropBottom Then
+                    p.CropTop += hhalf - hhalf Mod 2
+                    p.CropBottom += hhalf + hhalf Mod 2
+                Else
+                    p.CropBottom += hhalf - hhalf Mod 2
+                    p.CropTop += hhalf + hhalf Mod 2
+                End If
             Else
-                p.CropBottom += hhalf - hhalf Mod 2
-                p.CropTop += hhalf + hhalf Mod 2
+                If p.CropLeft > p.CropRight Then
+                    p.CropLeft -= whalf - whalf Mod 2
+                    p.CropRight -= whalf + whalf Mod 2
+                Else
+                    p.CropRight -= whalf - whalf Mod 2
+                    p.CropLeft -= whalf + whalf Mod 2
+                End If
+
+                If p.CropTop > p.CropBottom Then
+                    p.CropTop -= hhalf - hhalf Mod 2
+                    p.CropBottom -= hhalf + hhalf Mod 2
+                Else
+                    p.CropBottom -= hhalf - hhalf Mod 2
+                    p.CropTop -= hhalf + hhalf Mod 2
+                End If
             End If
 
             g.MainForm.FiltersListView.Load()

@@ -26,6 +26,18 @@ Public MustInherit Class VideoEncoder
         CanEditValue = True
     End Sub
 
+    Public Overridable ReadOnly Property IsOvercroppingAllowed As Boolean
+        Get
+            Return True
+        End Get
+    End Property
+
+    Public Overridable ReadOnly Property ResizingStatus As String
+        Get
+            Return ""
+        End Get
+    End Property
+
     ReadOnly Property OutputExtFull As String
         Get
             Return "." + OutputExt
@@ -59,6 +71,19 @@ Public MustInherit Class VideoEncoder
 
     Overridable Sub ImportCommandLine(commandLine As String)
     End Sub
+
+    Overridable Function BeforeEncoding() As Boolean
+        Return True
+    End Function
+
+    Overridable Function AfterEncoding() As Boolean
+        If Not g.FileExists(OutputPath) Then Throw New ErrorAbortException("Encoder output file is missing", OutputPath)
+
+        Log.WriteLine(MediaInfo.GetSummary(OutputPath))
+        Log.Save()
+
+        Return True
+    End Function
 
     Sub SetMetaData(sourceFile As String)
         If Not p.ImportVUIMetadata Then Exit Sub
@@ -164,60 +189,20 @@ Public MustInherit Class VideoEncoder
                     cl += $" --dhdr10-info ""{p.Hdr10PlusMetadataFile}"""
                 End If
 
-                Dim rpuFile = ""
                 Select Case p.HdrDolbyVisionCropMode
                     Case DoviCropMode.Untouched
-                        rpuFile = p.HdrDolbyVisionMetadataFiles.Where(Function(x) x.Path.FileExists() AndAlso x.Crop <> Padding.Empty).FirstOrDefault().Path
-
-                        If String.IsNullOrWhiteSpace(rpuFile) Then
-                            rpuFile = p.HdrDolbyVisionMetadataFiles.Where(Function(x) x.Path.FileExists() AndAlso x.Crop = Padding.Empty).FirstOrDefault().Path
-                        End If
-
-                        p.CropBottom = 0
-                        p.CropLeft = 0
-                        p.CropRight = 0
-                        p.CropTop = 0
-
+                    Case DoviCropMode.Crop
+                        g.RunAutoCrop(Nothing)
                         g.MainForm.SetCropFilter()
-                    Case DoviCropMode.Cropped
-                        Dim cropValuesFile = p.HdrDolbyVisionMetadataFiles.Where(Function(x) x.Path.FileExists() AndAlso x.Crop <> Padding.Empty).FirstOrDefault()
-                        Dim croppedFile = p.HdrDolbyVisionMetadataFiles.Where(Function(x) x.Path.FileExists() AndAlso x.Crop = Padding.Empty).FirstOrDefault()
-
-                        If cropValuesFile IsNot Nothing Then
-                            Dim recalculateValues = Function(side1 As Integer, side2 As Integer) As (side1 As Integer, side2 As Integer)
-                                                        If (side1 + side2) Mod 2 <> 0 Then
-                                                            If side2 > 0 Then
-                                                                side2 -= 1
-                                                            Else
-                                                                side1 -= 1
-                                                            End If
-                                                        End If
-
-                                                        Return (side1, side2)
-                                                    End Function
-
-                            rpuFile = croppedFile.Path
-
-                            Dim topBottom = recalculateValues(cropValuesFile.Crop.Top, cropValuesFile.Crop.Bottom)
-                            Dim leftRight = recalculateValues(cropValuesFile.Crop.Left, cropValuesFile.Crop.Right)
-
-                            p.CropTop = topBottom.side1
-                            p.CropBottom = topBottom.side2
-                            p.CropLeft = leftRight.side1
-                            p.CropRight = leftRight.side2
-
-                            g.MainForm.SetCropFilter()
-                        End If
                     Case Else
                         Throw New NotImplementedException(NameOf(DoviCropMode))
                 End Select
 
-                If Not String.IsNullOrWhiteSpace(rpuFile) Then
-                    cl += $" --dolby-vision-rpu ""{rpuFile}"""
+                If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+                    cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
 
                     Select Case p.HdrDolbyVisionMode
-                        Case DoviMode.Untouched
-                        Case DoviMode.Mode4
+                        Case DoviMode.Untouched, DoviMode.Mode4
                             cl += $" --dolby-vision-profile 8.4"
                         Case Else
                             cl += $" --dolby-vision-profile 8.1"
@@ -234,14 +219,6 @@ Public MustInherit Class VideoEncoder
         End If
 
         ImportCommandLine(cl)
-    End Sub
-
-    Sub AfterEncoding()
-        If Not g.FileExists(OutputPath) Then Throw New ErrorAbortException("Encoder output file is missing", OutputPath)
-
-        Log.WriteLine(MediaInfo.GetSummary(OutputPath))
-
-        Log.Save()
     End Sub
 
     Overrides Function CreateEditControl() As Control

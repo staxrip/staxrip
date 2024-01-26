@@ -13,6 +13,21 @@ v2.3x.0 (not published yet)
     - ...
 -->
 
+
+v2.35.0 (not published yet)
+====================
+
+- UI: Set "Output Mod" default value to 4
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
 v2.34.0 (2024-01-26)
 ====================
 

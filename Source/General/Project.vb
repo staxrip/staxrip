@@ -60,7 +60,7 @@ Public Class Project
     Public ForcedOutputModOnlyIfCropped As Boolean = False
     Public HardcodedSubtitle As Boolean
     Public Hdr10PlusMetadataFile As String
-    Public HdrDolbyVisionMetadataFiles As IEnumerable(Of DolbyVisionMetadataFile)
+    Public HdrDolbyVisionMetadataFiles As New List(Of DolbyVisionMetadataFile)
     Public HdrDolbyVisionCropMode As DoviCropMode = DoviCropMode.Cropped
     Public HdrDolbyVisionMode As DoviMode = DoviMode.Mode2
     Public ImportVUIMetadata As Boolean = True

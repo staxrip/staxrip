@@ -2231,7 +2231,7 @@ Public Class MainForm
             If String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse Not p.HdrDolbyVisionMetadataFiles?.Any() Then
                 Dim metadatas = Task.Run(Async Function() Await FindHdrMetadataAsync(p)).Result
                 p.Hdr10PlusMetadataFile = metadatas.jsonFile
-                p.HdrDolbyVisionMetadataFiles = metadatas.rpuFiles.Select(Function(x) New DolbyVisionMetadataFile(x))
+                p.HdrDolbyVisionMetadataFiles = metadatas.rpuFiles.Select(Function(x) New DolbyVisionMetadataFile(x)).ToList()
             End If
 
             If p.ExtractHdrmetadata <> HdrmetadataMode.None AndAlso
@@ -3540,7 +3540,7 @@ Public Class MainForm
                     Throw New AbortException
                 End Try
 
-                proj.HdrDolbyVisionMetadataFiles = New HashSet(Of DolbyVisionMetadataFile) From {New DolbyVisionMetadataFile(rpuCroppedPath), New DolbyVisionMetadataFile(rpuUncroppedPath)}
+                proj.HdrDolbyVisionMetadataFiles = New List(Of DolbyVisionMetadataFile) From {New DolbyVisionMetadataFile(rpuCroppedPath), New DolbyVisionMetadataFile(rpuUncroppedPath)}
             End If
         End If
     End Sub

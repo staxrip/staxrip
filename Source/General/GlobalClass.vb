@@ -1344,7 +1344,7 @@ Public Class GlobalClass
             End Using
 
             CorrectCropMod()
-        End If
+        End If                
     End Sub
 
     Sub SmartCrop()

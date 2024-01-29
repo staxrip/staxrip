@@ -189,15 +189,6 @@ Public MustInherit Class VideoEncoder
                     cl += $" --dhdr10-info ""{p.Hdr10PlusMetadataFile}"""
                 End If
 
-                Select Case p.HdrDolbyVisionCropMode
-                    Case DoviCropMode.Untouched
-                    Case DoviCropMode.Crop
-                        g.RunAutoCrop(Nothing)
-                        g.MainForm.SetCropFilter()
-                    Case Else
-                        Throw New NotImplementedException(NameOf(DoviCropMode))
-                End Select
-
                 If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
                     cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
 

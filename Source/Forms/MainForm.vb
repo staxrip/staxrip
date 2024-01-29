@@ -2377,36 +2377,10 @@ Public Class MainForm
                 g.AddHardcodedSubtitle()
             End If
 
-            Dim isCropActive = p.Script.IsFilterActive("Crop")
-
-            If isCropActive AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
-                p.SourceScript.Synchronize(True, True, True)
-
-                Using proc As New Proc
-                    proc.Header = "Auto Crop"
-                    proc.SkipString = "%"
-                    proc.Package = Package.AutoCrop
-                    proc.Arguments = p.SourceScript.Path.Escape + " " & s.CropFrameCount & " " &
-                        If(FrameServerHelp.IsVfwUsed, 1, 0)
-                    proc.Start()
-
-                    Dim output = proc.Log.ToString
-                    Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
-
-                    If match.Success Then
-                        p.CropLeft = match.Groups(1).Value.ToInt
-                        p.CropTop = match.Groups(2).Value.ToInt
-                        p.CropRight = match.Groups(3).Value.ToInt
-                        p.CropBottom = match.Groups(4).Value.ToInt
-                        g.CorrectCropMod()
-                        DisableCropFilter()
-                    End If
-                End Using
-            End If
-
+            AutoCrop()
             AutoResize()
 
-            If isCropActive Then
+            If p.Script.IsFilterActive("Crop") AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
                 g.OvercropWidth()
 
                 If p.AutoSmartCrop Then
@@ -2653,6 +2627,42 @@ Public Class MainForm
                     End If
                 Next
             Next
+        End If
+    End Sub
+
+    Sub AutoCrop()
+        If p.AutoCropMode = AutoCropMode.DolbyVisionOnly OrElse p.AutoCropMode = AutoCropMode.Always Then
+            p.SourceScript.Synchronize(True, True, True)
+
+            If p.HdrDolbyVisionMetadataFile?.Crop <> Padding.Empty Then
+                p.CropLeft = p.HdrDolbyVisionMetadataFile.Crop.Left
+                p.CropTop = p.HdrDolbyVisionMetadataFile.Crop.Top
+                p.CropRight = p.HdrDolbyVisionMetadataFile.Crop.Right
+                p.CropBottom = p.HdrDolbyVisionMetadataFile.Crop.Bottom
+                g.CorrectCropMod(False, False)
+            ElseIf p.AutoCropMode = AutoCropMode.Always Then
+
+                Using proc As New Proc
+                    proc.Header = "Auto Crop"
+                    proc.SkipString = "%"
+                    proc.Package = Package.AutoCrop
+                    proc.Arguments = p.SourceScript.Path.Escape + " " & s.CropFrameCount & " " & If(FrameServerHelp.IsVfwUsed, 1, 0)
+                    proc.Start()
+
+                    Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
+
+                    If match.Success Then
+                        p.CropLeft = match.Groups(1).Value.ToInt
+                        p.CropTop = match.Groups(2).Value.ToInt
+                        p.CropRight = match.Groups(3).Value.ToInt
+                        p.CropBottom = match.Groups(4).Value.ToInt
+                        g.CorrectCropMod(False, True)
+                    End If
+                End Using
+            End If
+
+            SetCropFilter()
+            DisableCropFilter()
         End If
     End Sub
 
@@ -4793,57 +4803,57 @@ Public Class MainForm
 
             ui.AddLine(cropPage, "Crop Values")
 
+            Dim autoCrop = ui.AddMenu(Of AutoCropMode)
+
+            Dim l = ui.AddLabel("Custom crop values:")
             Dim eb = ui.AddEmptyBlock(cropPage)
-
             ui.AddLabel(eb, "Left:", 2)
-
-            Dim te = ui.AddEdit(eb)
-            te.Text = p.CropLeft.ToString
-            te.WidthFactor = 3
-            te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value)
-                                If value.IsInt Then
-                                    p.CropLeft = CInt(value)
-                                End If
-                            End Sub
-
-            Dim l = ui.AddLabel(eb, "Right:", 4)
-
-            te = ui.AddEdit(eb)
-            te.Text = p.CropRight.ToString
-            te.WidthFactor = 3
-            te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value)
-                                If value.IsInt Then
-                                    p.CropRight = CInt(value)
-                                End If
-                            End Sub
+            Dim leftCrop = ui.AddEdit(eb)
+            l = ui.AddLabel(eb, "Right:", 4)
+            Dim rightCrop = ui.AddEdit(eb)
 
             eb = ui.AddEmptyBlock(cropPage)
-
             ui.AddLabel(eb, "Top:", 2)
-
-            te = ui.AddEdit(eb)
-            te.Text = p.CropTop.ToString
-            te.WidthFactor = 3
-            te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value)
-                                If value.IsInt Then
-                                    p.CropTop = CInt(value)
-                                End If
-                            End Sub
-
+            Dim topCrop = ui.AddEdit(eb)
             l = ui.AddLabel(eb, "Bottom:", 4)
+            Dim bottomCrop = ui.AddEdit(eb)
 
-            te = ui.AddEdit(eb)
-            te.Text = p.CropBottom.ToString
-            te.WidthFactor = 3
-            te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value)
-                                If value.IsInt Then
-                                    p.CropBottom = CInt(value)
-                                End If
-                            End Sub
+
+            autoCrop.Text = "Auto Crop after opening"
+            autoCrop.Help = "Use Auto Crop when a file is opened to crop it directly."
+            autoCrop.Expanded = True
+            autoCrop.Field = NameOf(p.AutoCropMode)
+            autoCrop.Button.ValueChangedAction = Sub(value)
+                                                     Dim active = value <> AutoCropMode.Disabled
+                                                     leftCrop.Enabled = Not active
+                                                     rightCrop.Enabled = Not active
+                                                     topCrop.Enabled = Not active
+                                                     bottomCrop.Enabled = Not active
+                                                 End Sub
+
+            leftCrop.Text = p.CropLeft.ToString
+            leftCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
+            leftCrop.WidthFactor = 3
+            leftCrop.TextBox.TextAlign = HorizontalAlignment.Center
+            leftCrop.SaveAction = Sub(value) If value.IsInt Then p.CropLeft = CInt(value)
+
+            rightCrop.Text = p.CropRight.ToString
+            rightCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
+            rightCrop.WidthFactor = 3
+            rightCrop.TextBox.TextAlign = HorizontalAlignment.Center
+            rightCrop.SaveAction = Sub(value) If value.IsInt Then p.CropRight = CInt(value)
+
+            topCrop.Text = p.CropTop.ToString
+            topCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
+            topCrop.WidthFactor = 3
+            topCrop.TextBox.TextAlign = HorizontalAlignment.Center
+            topCrop.SaveAction = Sub(value) If value.IsInt Then p.CropTop = CInt(value)
+
+            bottomCrop.Text = p.CropBottom.ToString
+            bottomCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
+            bottomCrop.WidthFactor = 3
+            bottomCrop.TextBox.TextAlign = HorizontalAlignment.Center
+            bottomCrop.SaveAction = Sub(value) If value.IsInt Then p.CropBottom = CInt(value)
 
 
             '   ----------------------------------------------------------------
@@ -4853,7 +4863,6 @@ Public Class MainForm
             Dim demuxVideo = ui.AddBool()
             Dim extractHdrmetadata = ui.AddMenu(Of HdrmetadataMode)
             Dim doviMode = ui.AddMenu(Of DoviMode)
-            Dim doviCropMode = ui.AddMenu(Of DoviCropMode)
 
             videoExist.Text = "Existing Video Output"
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
@@ -4870,18 +4879,12 @@ Public Class MainForm
             extractHdrmetadata.Button.ValueChangedAction = Sub(value)
                                                                Dim visible = value = HdrmetadataMode.All OrElse value = HdrmetadataMode.DolbyVision
                                                                doviMode.Visible = visible
-                                                               doviCropMode.Visible = visible
                                                            End Sub
 
             doviMode.Text = "RPU Conversion Mode"
             doviMode.Help = "Sets the mode for RPU processing."
             doviMode.Expanded = True
             doviMode.Field = NameOf(p.HdrDolbyVisionMode)
-
-            doviCropMode.Text = "RPU Crop Mode"
-            doviCropMode.Help = "If set to 'Crop', StaxRip will read the crop values from the RPU file and apply those values after opening the source file."
-            doviCropMode.Expanded = True
-            doviCropMode.Field = NameOf(p.HdrDolbyVisionCropMode)
 
             b = ui.AddBool
             b.Text = "Import VUI metadata"

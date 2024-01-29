@@ -20,6 +20,7 @@ Public Class Project
     Public AudioTracks As List(Of AudioProfile)
     Public AutoCompCheck As Boolean
     Public AutoCorrectCropValues As Boolean = True
+    Public AutoCropMode As AutoCropMode = AutoCropMode.DolbyVisionOnly
     Public AutoResizeImage As Integer
     Public AutoRotation As Boolean = True
     Public AutoSmartCrop As Boolean
@@ -61,7 +62,6 @@ Public Class Project
     Public HardcodedSubtitle As Boolean
     Public Hdr10PlusMetadataFile As String
     Public HdrDolbyVisionMetadataFile As DolbyVisionMetadataFile
-    Public HdrDolbyVisionCropMode As DoviCropMode = DoviCropMode.Crop
     Public HdrDolbyVisionMode As DoviMode = DoviMode.Mode2
     Public ImportVUIMetadata As Boolean = True
     Public ITU As Boolean

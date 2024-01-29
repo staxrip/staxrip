@@ -1870,9 +1870,10 @@ Public Enum DoviMode
     <DispName("5: Convert to 8.1, preserves mapping")> Mode5 = 5
 End Enum
 
-Public Enum DoviCropMode
-    <DispName("Untouched")> Untouched = -1
-    <DispName("Crop")> Crop = 0
+Public Enum AutoCropMode
+    <DispName("Disabled")> Disabled = 0
+    <DispName("Dolby Vision only")> DolbyVisionOnly = 1
+    <DispName("Always")> Always = 2
 End Enum
 
 <Serializable>

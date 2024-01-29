@@ -5996,15 +5996,7 @@ Public Class MainForm
     <Command("Crops borders automatically.")>
     Sub StartAutoCrop()
         g.RunAutoCrop(Nothing)
-
-        If Not g.EnableFilter("Crop") Then
-            If p.Script.IsAviSynth Then
-                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
-            Else
-                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)"))
-            End If
-        End If
-
+        SetCropFilter()
         DisableCropFilter()
         Assistant()
     End Sub
@@ -6012,15 +6004,7 @@ Public Class MainForm
     <Command("Crops borders automatically until the proper aspect ratio is found.")>
     Sub StartSmartCrop()
         g.SmartCrop()
-
-        If Not g.EnableFilter("Crop") Then
-            If p.Script.IsAviSynth Then
-                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
-            Else
-                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)"))
-            End If
-        End If
-
+        SetCropFilter()
         DisableCropFilter()
         Assistant()
     End Sub

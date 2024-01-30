@@ -18,6 +18,7 @@ v2.35.0 (not published yet)
 ====================
 
 - UI: Set "Output Mod" default value to 4
+- UI: Fix eac3to window title
 - UI: Fix setting Crop from/to Dolby Vision RPU files
 - UI: Add "Auto Crop" to Options
 - Update tools

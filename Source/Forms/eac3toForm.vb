@@ -772,11 +772,12 @@ Public Class eac3toForm
     End Sub
 
     Sub OutputDataReceived(sender As Object, e As DataReceivedEventArgs)
-        If Not e.Data Is Nothing Then
-            BeginInvoke(Sub() Text = e.Data)
-
-            If Not e.Data.StartsWith("analyze: ") Then
+        If e.Data IsNot Nothing Then
+            If e.Data.StartsWith("analyze: ") Then
+                BeginInvoke(Sub() Me.Text = e.Data)
+            Else
                 Output += e.Data + BR
+                BeginInvoke(Sub() Me.Text = $"eac3to Demuxing - {g.DefaultCommands.GetApplicationDetails()}")
             End If
         End If
     End Sub

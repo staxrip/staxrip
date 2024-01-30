@@ -1014,6 +1014,7 @@ Public Class M2TSStream
     Property IsChapters As Boolean
     Property IsSubtitle As Boolean
     Property IsVideo As Boolean
+    Property IsVideoEnhancementLayer As Boolean
     Property Language As New Language
     Property ListViewItem As ListViewItem
     Property Options As String = ""

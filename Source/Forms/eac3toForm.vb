@@ -593,8 +593,7 @@ Public Class eac3toForm
     Property Streams As New BindingList(Of M2TSStream)
 
     Private Output As String
-    Private AudioOutputFormats As String() =
-        {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd", "thd+ac3"}
+    Private ReadOnly AudioOutputFormats As String() = {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd", "thd+ac3"}
 
     Private Project As Project
 
@@ -819,9 +818,7 @@ Public Class eac3toForm
             Dim sid = 1
 
             For Each line In Output.SplitLinesNoEmpty
-                If line.Contains("Subtitle (DVB)") Then
-                    Continue For
-                End If
+                If line.Contains("Subtitle (DVB)") Then Continue For
 
                 Dim match = Regex.Match(line, "^(\d+): (.+)$")
 
@@ -831,6 +828,8 @@ Public Class eac3toForm
                         .ID = match.Groups(1).Value.ToInt,
                         .Codec = match.Groups(2).Value
                     }
+
+                    ms.IsVideoEnhancementLayer = ms.Codec.StartsWith("*") AndAlso ms.Codec.ContainsAll("h265/HEVC", "1080p")
 
                     If ms.Codec.Contains(",") Then ms.Codec = ms.Codec.Left(",")
                     If ms.Codec.StartsWith("*") Then ms.Codec = ms.Codec.Right("*")
@@ -974,10 +973,19 @@ Public Class eac3toForm
 
         Dim videoStream = TryCast(cbVideoStream.SelectedItem, M2TSStream)
 
-        If Not videoStream Is Nothing AndAlso Not cbVideoOutput.Text = "Nothing" Then
+        If videoStream IsNot Nothing AndAlso Not cbVideoOutput.Text = "Nothing" Then
             Dim outFile = OutputFolder + baseName + "." + cbVideoOutput.Text.ToLowerInvariant
             ret += " " & videoStream.ID & ": " + outFile.Escape
             outFiles.Add(outFile)
+        End If
+
+        If p.ExtractHdrmetadata = HdrmetadataMode.DolbyVision OrElse p.ExtractHdrmetadata = HdrmetadataMode.All Then
+            Dim el = Streams?.Where(Function(x) x.IsVideoEnhancementLayer)?.FirstOrDefault()
+            If el IsNot Nothing Then
+                Dim outFile = OutputFolder + baseName + "_EL.h265"
+                ret += " " & el.ID & ": " + outFile.Escape
+                outFiles.Add(outFile)
+            End If
         End If
 
         For Each stream In Streams

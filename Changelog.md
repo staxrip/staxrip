@@ -23,13 +23,9 @@ v2.35.0 (not published yet)
 - UI: Fix setting Crop from/to Dolby Vision RPU files
 - UI: Add "Auto Crop" to Options
 - Update tools
-    - ...
-- Update AviSynth+ plugins
-    - ...
-- Update Dual plugins
-    - ...
-- Update VapourSynth plugins
-    - ...
+    - DeeZy v0.1.7
+    - eac3to v3.48
+    - MediaInfo v24.01
 
 
 v2.34.0 (2024-01-26)

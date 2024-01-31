@@ -975,16 +975,20 @@ Public Class eac3toForm
 
         If videoStream IsNot Nothing AndAlso Not cbVideoOutput.Text = "Nothing" Then
             Dim outFile = OutputFolder + baseName + "." + cbVideoOutput.Text.ToLowerInvariant
-            ret += " " & videoStream.ID & ": " + outFile.Escape
-            outFiles.Add(outFile)
+            If Not outFile.FileExists() Then
+                ret += " " & videoStream.ID & ": " + outFile.Escape
+                outFiles.Add(outFile)
+            End If
         End If
 
         If p.ExtractHdrmetadata = HdrmetadataMode.DolbyVision OrElse p.ExtractHdrmetadata = HdrmetadataMode.All Then
             Dim el = Streams?.Where(Function(x) x.IsVideoEnhancementLayer)?.FirstOrDefault()
             If el IsNot Nothing Then
                 Dim outFile = OutputFolder + baseName + "_EL.h265"
-                ret += " " & el.ID & ": " + outFile.Escape
-                outFiles.Add(outFile)
+                If Not outFile.FileExists() Then
+                    ret += " " & el.ID & ": " + outFile.Escape
+                    outFiles.Add(outFile)
+                End If
             End If
         End If
 

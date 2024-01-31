@@ -17,6 +17,7 @@ v2.3x.0 (not published yet)
 v2.35.0 (not published yet)
 ====================
 
+- eac3to: Let eac3to don't overwrite existing video files
 - UI: Set "Output Mod" default value to 4
 - UI: Fix eac3to window title
 - UI: Fix setting Crop from/to Dolby Vision RPU files

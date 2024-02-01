@@ -14,14 +14,18 @@ v2.3x.0 (not published yet)
 -->
 
 
-v2.35.0 (not published yet)
+v2.35.0 (2024-02-02)
 ====================
 
+- eac3to: Let eac3to extract the Enhancement Layer for metadata extraction
 - eac3to: Let eac3to don't overwrite existing video files
 - UI: Set "Output Mod" default value to 4
 - UI: Fix eac3to window title
 - UI: Fix setting Crop from/to Dolby Vision RPU files
-- UI: Add "Auto Crop" to Options
+- UI: Move "Auto Crop on opening" to Options
+- UI: Extend "Auto Crop on opening" to run only when Dolby Vision metadata exists
+- UI: Let "Auto Crop" use Dolby Vision metadata to set the crop values
+- UI: Some small but cool stuff I have forgotten to write down
 - Update tools
     - DeeZy v0.1.7
     - eac3to v3.48

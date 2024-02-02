@@ -14,6 +14,20 @@ v2.3x.0 (not published yet)
 -->
 
 
+v2.36.0 (not published yet)
+====================
+
+- UI: "Import VUI metadata" doesn't override Dolby Vision profile depending on selected mode ([#1212](/../../issues/1212))
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
 v2.35.0 (2024-02-02)
 ====================
 

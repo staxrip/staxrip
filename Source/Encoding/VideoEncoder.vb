@@ -193,7 +193,9 @@ Public MustInherit Class VideoEncoder
                     cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
 
                     Select Case p.HdrDolbyVisionMode
-                        Case DoviMode.Untouched, DoviMode.Mode4
+                        Case DoviMode.Untouched, DoviMode.Mode0, DoviMode.Mode1
+                            cl += $""
+                        Case DoviMode.Mode4
                             cl += $" --dolby-vision-profile 8.4"
                         Case Else
                             cl += $" --dolby-vision-profile 8.1"

@@ -4,6 +4,7 @@ Imports Microsoft.VisualBasic.Logging
 Imports System.Runtime.InteropServices.ComTypes
 Imports StaxRip.VideoEncoderCommandLine
 Imports StaxRip.UI
+Imports System.Text.RegularExpressions
 
 <Serializable()>
 Public Class QSVEnc
@@ -41,6 +42,18 @@ Public Class QSVEnc
         Set(value As Integer)
             Params.Bitrate.Value = value
         End Set
+    End Property
+
+    Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
+        Get
+            Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
+        End Get
+    End Property
+
+    Overrides ReadOnly Property ResizingStatus As String
+        Get
+            Return If(String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value), "", "Resizing would interfere with the Dolby Vision metadata. Disable the 'Resize' filter or remove the Dolby Vision RPU file.")
+        End Get
     End Property
 
     Public Sub New()
@@ -120,6 +133,151 @@ Public Class QSVEnc
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
             proc.Start()
         End Using
+    End Sub
+
+    Overrides Function BeforeEncoding() As Boolean
+        Dim rpu = Params.GetStringParam("--dolby-vision-rpu")?.Value
+        If p.Script.IsFilterActive("Crop") AndAlso Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
+            If (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
+                p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom), True)
+                Dim newPath = p.HdrDolbyVisionMetadataFile.WriteCroppedRpu(True)
+                If Not String.IsNullOrWhiteSpace(newPath) Then
+                    Params.DolbyVisionRpu.Value = newPath
+                Else
+                    Return False
+                End If
+            End If
+        End If
+        Return True
+    End Function
+
+    Overrides Sub SetMetaData(sourceFile As String)
+        If Not p.ImportVUIMetadata Then Exit Sub
+
+        Dim cl = ""
+        Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
+
+        Select Case colour_primaries
+            Case "BT.2020"
+                If colour_primaries.Contains("BT.2020") Then
+                    cl += " --colorprim bt2020"
+                End If
+            Case "BT.709"
+                If colour_primaries.Contains("BT.709") Then
+                    cl += " --colorprim bt709"
+                End If
+        End Select
+
+        Dim transfer_characteristics = MediaInfo.GetVideo(sourceFile, "transfer_characteristics")
+
+        Select Case transfer_characteristics
+            Case "PQ", "SMPTE ST 2084"
+                If transfer_characteristics.Contains("SMPTE ST 2084") Or transfer_characteristics.Contains("PQ") Then
+                    cl += " --transfer smpte2084"
+                End If
+            Case "BT.709"
+                If transfer_characteristics.Contains("BT.709") Then
+                    cl += " --transfer bt709"
+                End If
+            Case "HLG"
+                cl += " --transfer arib-std-b67"
+        End Select
+
+        Dim matrix_coefficients = MediaInfo.GetVideo(sourceFile, "matrix_coefficients")
+
+        Select Case matrix_coefficients
+            Case "BT.2020 non-constant"
+                If matrix_coefficients.Contains("BT.2020 non-constant") Then
+                    cl += " --colormatrix bt2020nc"
+                End If
+            Case "BT.709"
+                cl += " --colormatrix bt709"
+        End Select
+
+        Dim color_range = MediaInfo.GetVideo(sourceFile, "colour_range")
+
+        Select Case color_range
+            Case "Limited"
+                cl += " --range limited"
+            Case "Full"
+                cl += " --range full"
+        End Select
+
+        Dim ChromaSubsampling_Position = MediaInfo.GetVideo(sourceFile, "ChromaSubsampling_Position")
+        Dim chromaloc = New String(ChromaSubsampling_Position.Where(Function(c) c.IsDigit()).ToArray())
+
+        If Not String.IsNullOrEmpty(chromaloc) AndAlso chromaloc <> "0" Then
+            cl += $" --chromaloc {chromaloc}"
+        End If
+
+        Dim MasteringDisplay_ColorPrimaries = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_ColorPrimaries")
+        Dim MasteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
+
+        If MasteringDisplay_ColorPrimaries <> "" AndAlso MasteringDisplay_Luminance <> "" Then
+            Dim luminanceMatch = Regex.Match(MasteringDisplay_Luminance, "min: ([\d\.]+) cd/m2, max: ([\d\.]+) cd/m2")
+
+            If luminanceMatch.Success Then
+                Dim luminanceMin = luminanceMatch.Groups(1).Value.ToDouble * 10000
+                Dim luminanceMax = luminanceMatch.Groups(2).Value.ToDouble * 10000
+
+                If MasteringDisplay_ColorPrimaries.Contains("Display P3") Then
+                    cl += " --output-depth 10"
+                    cl += $" --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
+                    cl += " --hdr10"
+                    cl += " --repeat-headers"
+                    cl += " --range limited"
+                    cl += " --hrd"
+                    cl += " --aud"
+                End If
+
+                If MasteringDisplay_ColorPrimaries.Contains("DCI P3") Then
+                    cl += " --output-depth 10"
+                    cl += $" --master-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15700,17550)L({luminanceMax},{luminanceMin})"""
+                    cl += " --hdr10"
+                    cl += " --repeat-headers"
+                    cl += " --range limited"
+                    cl += " --hrd"
+                    cl += " --aud"
+                End If
+
+                If MasteringDisplay_ColorPrimaries.Contains("BT.2020") Then
+                    cl += " --output-depth 10"
+                    cl += $" --master-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
+                    cl += " --hdr10"
+                    cl += " --repeat-headers"
+                    cl += " --range limited"
+                    cl += " --hrd"
+                    cl += " --aud"
+                End If
+
+
+                If Not String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) AndAlso p.Hdr10PlusMetadataFile.FileExists() Then
+                    cl += $" --dhdr10-info ""{p.Hdr10PlusMetadataFile}"""
+                End If
+
+                If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+                    cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
+
+                    Select Case p.HdrDolbyVisionMode
+                        Case DoviMode.Untouched, DoviMode.Mode0, DoviMode.Mode1
+                            cl += $""
+                        Case DoviMode.Mode4
+                            cl += $" --dolby-vision-profile 8.4"
+                        Case Else
+                            cl += $" --dolby-vision-profile 8.1"
+                    End Select
+                End If
+            End If
+        End If
+
+        Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
+        Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
+
+        If MaxCLL <> 0 OrElse MaxFALL <> 0 Then
+            cl += $" --max-cll ""{MaxCLL},{MaxFALL}"""
+        End If
+
+        ImportCommandLine(cl)
     End Sub
 
     Overrides Function GetMenu() As MenuList
@@ -282,6 +440,16 @@ Public Class QSVEnc
             .Switch = "--vbv-bufsize",
             .Text = "VBV Bufsize",
             .Config = {0, 1000000, 100}}
+
+        Property DolbyVisionProfile As New OptionParam With {
+            .Switch = "--dolby-vision-profile",
+            .Text = "Dolby Vision Profile",
+            .Options = {"Undefined", "5", "8.1", "8.2", "8.4"}}
+
+        Property DolbyVisionRpu As New StringParam With {
+            .Switch = "--dolby-vision-rpu",
+            .Text = "Dolby Vision RPU",
+            .BrowseFile = True}
 
         Property MaxCLL As New NumParam With {
             .Text = "Maximum CLL",
@@ -507,8 +675,7 @@ Public Class QSVEnc
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
-                        New StringParam With {.Switch = "--dolby-vision-rpu", .Text = "Dolby Vision RPU", .BrowseFile = True},
-                        New OptionParam With {.Switch = "--dolby-vision-profile", .Text = "Dolby Vision Profile", .Options = {"Undefined", "5.0", "8.1", "8.2", "8.4"}},
+                        DolbyVisionProfile, DolbyVisionRpu,
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 BG", "SMPTE 240 M", "YCgCo", "FCC", "GBR", "BT 2020 NC", "BT 2020 C"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}},

@@ -214,7 +214,7 @@ Public Class MacroEditorControl
 
 #End Region
 
-    Private HelpPaths As New List(Of String)
+    Private ReadOnly HelpPaths As New List(Of String)
 
     <Browsable(False),
     DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
@@ -321,7 +321,7 @@ Public Class MacroEditorControl
     End Sub
 
     Sub UpdatePreview()
-        If Not SpecialMacrosFunction Is Nothing Then
+        If SpecialMacrosFunction IsNot Nothing Then
             rtbPreview.Text = SpecialMacrosFunction.Invoke(rtbEdit.Text)
         Else
             rtbPreview.Text = Macro.Expand(rtbEdit.Text)

@@ -2641,7 +2641,6 @@ Public Class MainForm
                 p.CropBottom = p.HdrDolbyVisionMetadataFile.Crop.Bottom
                 g.CorrectCropMod(False, False)
             ElseIf p.AutoCropMode = AutoCropMode.Always Then
-
                 Using proc As New Proc
                     proc.Header = "Auto Crop"
                     proc.SkipString = "%"
@@ -3533,6 +3532,8 @@ Public Class MainForm
                 Catch ex As Exception
                     g.ShowException(ex)
                     Throw New AbortException
+                Finally
+                    Log.Save()
                 End Try
             End If
 
@@ -3599,6 +3600,8 @@ Public Class MainForm
             Catch ex As Exception
                 g.ShowException(ex)
                 Throw New AbortException
+            Finally
+                Log.Save()
             End Try
 
             proj.HdrDolbyVisionMetadataFile = doviFile

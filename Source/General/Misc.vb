@@ -1381,7 +1381,7 @@ Public Class Subtitle
                 End If
 
                 Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-                Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode)
+                Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode) OrElse p.SubtitleMode = SubtitleMode.All
                 Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux AndAlso p.SubtitleMode <> SubtitleMode.Disabled
                 st.Enabled = prefLang AndAlso goodMode
                 st.Path = path
@@ -1943,6 +1943,8 @@ Public Class DolbyVisionMetadataFile
         Catch ex As Exception
             g.ShowException(ex)
             Throw New AbortException
+        Finally
+            Log.Save()
         End Try
     End Sub
 
@@ -1967,6 +1969,8 @@ Public Class DolbyVisionMetadataFile
         Catch ex As Exception
             g.ShowException(ex)
             Throw New AbortException
+        Finally
+            Log.Save()
         End Try
 
         ReadLevel5Export()
@@ -1994,10 +1998,10 @@ Public Class DolbyVisionMetadataFile
                 Dim right = match.Groups("right").Value.ToInt() - offset.Right
                 Dim bottom = match.Groups("bottom").Value.ToInt() - offset.Bottom
 
-                If left < 0 Then Throw New ArgumentOutOfRangeException(NameOf(left), "Negative values are not valid offsets for RPU files")
-                If top < 0 Then Throw New ArgumentOutOfRangeException(NameOf(top), "Negative values are not valid offsets for RPU files")
-                If right < 0 Then Throw New ArgumentOutOfRangeException(NameOf(right), "Negative values are not valid offsets for RPU files")
-                If bottom < 0 Then Throw New ArgumentOutOfRangeException(NameOf(bottom), "Negative values are not valid offsets for RPU files")
+                If left < 0 Then Throw New ArgumentOutOfRangeException(NameOf(left), $"Negative values ({left}) are not valid offsets for RPU files")
+                If top < 0 Then Throw New ArgumentOutOfRangeException(NameOf(top), $"Negative values ({top}) are not valid offsets for RPU files")
+                If right < 0 Then Throw New ArgumentOutOfRangeException(NameOf(right), $"Negative values ({right}) are not valid offsets for RPU files")
+                If bottom < 0 Then Throw New ArgumentOutOfRangeException(NameOf(bottom), $"Negative values ({bottom}) are not valid offsets for RPU files")
 
                 presets += $"{{"
                 presets += $"""id"":{match.Groups("id").Value},"
@@ -2018,6 +2022,8 @@ Public Class DolbyVisionMetadataFile
         Catch ex As Exception
             g.ShowException(ex)
             Throw New AbortException
+        Finally
+            Log.Save()
         End Try
     End Sub
 
@@ -2027,22 +2033,24 @@ Public Class DolbyVisionMetadataFile
         If Not overwrite AndAlso CroppedRpuFilePath.FileExists() Then Return Nothing
 
         Try
-        Dim arguments = $"editor -i ""{Path}"" -j ""{EditorConfigFilePath}"" -o ""{CroppedRpuFilePath}"""
-        Using proc As New Proc
-            proc.Package = Package.DoViTool
-            proc.Project = p
-            proc.Header = "Creating new RPU metadata file"
-            proc.Encoding = Encoding.UTF8
-            proc.Arguments = arguments
-            proc.AllowedExitCodes = {0}
-            proc.OutputFiles = {CroppedRpuFilePath}
-            proc.Start()
-        End Using
+            Dim arguments = $"editor -i ""{Path}"" -j ""{EditorConfigFilePath}"" -o ""{CroppedRpuFilePath}"""
+            Using proc As New Proc
+                proc.Package = Package.DoViTool
+                proc.Project = p
+                proc.Header = "Creating new RPU metadata file"
+                proc.Encoding = Encoding.UTF8
+                proc.Arguments = arguments
+                proc.AllowedExitCodes = {0}
+                proc.OutputFiles = {CroppedRpuFilePath}
+                proc.Start()
+            End Using
         Catch ex As AbortException
             Throw ex
         Catch ex As Exception
             g.ShowException(ex)
             Throw New AbortException
+        Finally
+            Log.Save()
         End Try
 
         Return CroppedRpuFilePath

@@ -627,7 +627,7 @@ Public Class ProcController
     End Sub
 
     Shared Sub Finished()
-        If Not g.ProcForm Is Nothing Then
+        If g.ProcForm IsNot Nothing Then
             If g.ProcForm.tlpMain.InvokeRequired Then
                 g.ProcForm.BeginInvoke(Sub() g.ProcForm.HideForm())
             Else

@@ -904,7 +904,7 @@ Module MiscExtensions
     Function NothingOrEmpty(objects As IEnumerable(Of Object)) As Boolean
         If objects?.Any() Then
             For Each obj In objects
-                If Not obj Is Nothing Then
+                If obj IsNot Nothing Then
                     Return False
                 End If
             Next
@@ -1047,10 +1047,10 @@ End Module
 Module RegistryKeyExtensions
     Function GetValue(Of T)(root As RegistryKey, path As String, name As String) As T
         Using key = root.OpenSubKey(path)
-            If Not key Is Nothing Then
+            If key IsNot Nothing Then
                 Dim value = key.GetValue(name)
 
-                If Not value Is Nothing Then
+                If value IsNot Nothing Then
                     Try
                         Return CType(value, T)
                     Catch
@@ -1078,7 +1078,7 @@ Module RegistryKeyExtensions
     <Extension()>
     Function GetKeyNames(root As RegistryKey, path As String) As String()
         Using subKey = root.OpenSubKey(path)
-            If Not subKey Is Nothing Then
+            If subKey IsNot Nothing Then
                 Return subKey.GetSubKeyNames
             End If
         End Using
@@ -1089,7 +1089,7 @@ Module RegistryKeyExtensions
     <Extension()>
     Function GetValueNames(root As RegistryKey, path As String) As String()
         Using subKey = root.OpenSubKey(path)
-            If Not subKey Is Nothing Then
+            If subKey IsNot Nothing Then
                 Return subKey.GetValueNames
             End If
         End Using
@@ -1099,11 +1099,7 @@ Module RegistryKeyExtensions
 
     <Extension()>
     Sub Write(root As RegistryKey, path As String, name As String, value As Object)
-        Dim subKey = root.OpenSubKey(path, True)
-
-        If subKey Is Nothing Then
-            subKey = root.CreateSubKey(path, RegistryKeyPermissionCheck.ReadWriteSubTree)
-        End If
+        Dim subKey = If(root.OpenSubKey(path, True), root.CreateSubKey(path, RegistryKeyPermissionCheck.ReadWriteSubTree))
 
         subKey.SetValue(name, value)
         subKey.Close()
@@ -1112,9 +1108,7 @@ Module RegistryKeyExtensions
     <Extension()>
     Sub DeleteValue(root As RegistryKey, path As String, name As String)
         Using key = root.OpenSubKey(path, True)
-            If Not key Is Nothing Then
-                key.DeleteValue(name, False)
-            End If
+            key?.DeleteValue(name, False)
         End Using
     End Sub
 End Module
@@ -1164,7 +1158,7 @@ Module ControlExtensions
         Dim fontFilesExist As Boolean = File.Exists(awesomePath) AndAlso File.Exists(segoePath)
         If Not fontFilesExist Then Return Nothing
 
-        Dim fontCollection As PrivateFontCollection = New PrivateFontCollection()
+        Dim fontCollection As New PrivateFontCollection()
         Dim family As FontFamily = Nothing
         Dim legacy = OSVersion.Current < OSVersion.Windows10
 
@@ -1181,7 +1175,7 @@ Module ControlExtensions
             End If
         End If
 
-        If Not family Is Nothing Then
+        If family IsNot Nothing Then
             instance.Font = New Font(family, instance.Font.Size)
             instance.Text = Convert.ToChar(symbol).ToString()
         End If
@@ -1233,7 +1227,7 @@ Module UIExtensions
 
     <Extension()>
     Function ResizeToSmallIconSize(img As Image) As Image
-        If Not img Is Nothing AndAlso img.Size <> SystemInformation.SmallIconSize Then
+        If img IsNot Nothing AndAlso img.Size <> SystemInformation.SmallIconSize Then
             Dim s = SystemInformation.SmallIconSize
             Dim r As New Bitmap(s.Width, s.Height)
 
@@ -1377,7 +1371,7 @@ End Module
 Module FontExtensions
     <Extension()>
     Function IsMonospace(fontFamily As FontFamily) As Boolean
-        Using bmp As Bitmap = New Bitmap(1, 1)
+        Using bmp As New Bitmap(1, 1)
             Using g As Graphics = Graphics.FromImage(bmp)
                 Using f = New Font(fontFamily.Name, 20)
                     Dim w1 = g.MeasureString("ii", f).Width
@@ -1390,7 +1384,7 @@ Module FontExtensions
 
     <Extension()>
     Function IsMonospace(font As Font) As Boolean
-        Using bmp As Bitmap = New Bitmap(1, 1)
+        Using bmp As New Bitmap(1, 1)
             Using g As Graphics = Graphics.FromImage(bmp)
                 Using f = New Font(font.Name, 20)
                     Dim w1 = g.MeasureString("ii", f).Width

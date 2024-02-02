@@ -104,6 +104,7 @@ Public Class LogBuilder
 
         If EnvironmentString = "" Then EnvironmentString =
             "StaxRip:v" + Application.ProductVersion + BR +
+            $"Settings: {s.Version}{BR}" +
             "Windows:" + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName") + " " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion") + " " + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId") + " (" + Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "BuildLabEx") + ")" + BR +
             "Language:" + CultureInfo.CurrentCulture.EnglishName + BR +
             "CPU:" + Registry.LocalMachine.GetString("HARDWARE\DESCRIPTION\System\CentralProcessor\0", "ProcessorNameString") + BR +

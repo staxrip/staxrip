@@ -5,6 +5,7 @@
 /Source/bin-x86
 /Source/Fonts
 /Source/FrameServer/.vs
+/Source/FrameServer/*.aps
 /Source/FrameServer/FrameServer.vcxproj.user
 /Source/FrameServer/Win32
 /Source/FrameServer/x64

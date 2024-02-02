@@ -43,9 +43,10 @@ Namespace UI
         End Sub
 
         Sub AddItem(criteria As Criteria)
-            Dim c As New CriteriaItemControl(AllCriteria)
-            c.Criteria = criteria
-            c.Width = ClientSize.Width
+            Dim c As New CriteriaItemControl(AllCriteria) With {
+                .Criteria = criteria,
+                .Width = ClientSize.Width
+            }
             Controls.Add(c)
         End Sub
 
@@ -56,7 +57,7 @@ Namespace UI
                 Dim ret As New List(Of Criteria)
 
                 For Each i In Controls.OfType(Of CriteriaItemControl)
-                    If Not i.Criteria Is Nothing Then
+                    If i.Criteria IsNot Nothing Then
                         ret.Add(i.Criteria)
                     End If
                 Next
@@ -64,7 +65,7 @@ Namespace UI
                 Return ret
             End Get
             Set(Value As List(Of Criteria))
-                If Not Value Is Nothing Then
+                If Value IsNot Nothing Then
                     For Each i As Criteria In Value
                         AddItem(i)
                     Next

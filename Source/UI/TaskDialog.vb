@@ -42,9 +42,12 @@ Public Class TaskDialog(Of T)
         ShowInTaskbar = False
         Width = FontHeight * 22
 
-        If Content = "" AndAlso Title?.Length > 80 Then
+        Content = If(Content = "", " ", Content)
+        Title = If(Title = "", " ", Title)
+
+        If Content = " " AndAlso Title?.Length > 80 Then
             Content = Title
-            Title = ""
+            Title = " "
         End If
 
         If MenuButton.Items.Count > 0 Then

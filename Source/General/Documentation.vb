@@ -45,7 +45,7 @@ Public Class Documentation
                 For Each param In params
                     Dim descAttrib = param.GetCustomAttribute(Of DescriptionAttribute)
 
-                    If (Not descAttrib Is Nothing AndAlso descAttrib.Description <> "") OrElse
+                    If (descAttrib IsNot Nothing AndAlso descAttrib.Description <> "") OrElse
                         param.ParameterType.IsEnum Then
 
                         needsSecondColumn = True
@@ -65,7 +65,7 @@ Public Class Documentation
                         Dim name = param.Name
                         Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
 
-                        If Not nameAttrib Is Nothing Then
+                        If nameAttrib IsNot Nothing Then
                             name = nameAttrib.DisplayName
                         End If
 
@@ -78,7 +78,7 @@ Public Class Documentation
                         Else
                             Dim descAttrib = param.GetCustomAttribute(Of DescriptionAttribute)
 
-                            If Not descAttrib Is Nothing Then
+                            If descAttrib IsNot Nothing Then
                                 sb.AppendLine($" {descAttrib.Description} |")
                                 descAttrib.Description.ThrowIfContainsNewLine
                             Else
@@ -89,7 +89,7 @@ Public Class Documentation
                         Dim name = param.Name
                         Dim nameAttrib = param.GetCustomAttribute(Of DispNameAttribute)
 
-                        If Not nameAttrib Is Nothing Then
+                        If nameAttrib IsNot Nothing Then
                             name = nameAttrib.DisplayName
                         End If
 

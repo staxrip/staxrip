@@ -395,8 +395,8 @@ Public Class EventCommandEditor
         CriteriaControl.AllCriteria = allCriteria
         CriteriaControl.CriteriaList = EventCommandValue.CriteriaList
 
-        If Not EventCommandValue.CommandParameters Is Nothing Then
-            CommandParameters = DirectCast(ObjectHelp.GetCopy(EventCommandValue.CommandParameters), CommandParameters)
+        If EventCommandValue.CommandParameters IsNot Nothing Then
+            CommandParameters = ObjectHelp.GetCopy(EventCommandValue.CommandParameters)
         End If
 
         SetCommandParameters(CommandParameters)
@@ -480,8 +480,9 @@ Public Class EventCommandEditor
         Dim params = mi.GetParameters
 
         For i = 0 To params.Length - 1
-            Dim gp As New GridProperty
-            gp.Name = DispNameAttribute.GetValue(params(i).GetCustomAttributes(False))
+            Dim gp As New GridProperty With {
+                .Name = DispNameAttribute.GetValue(params(i).GetCustomAttributes(False))
+            }
 
             If gp.Name Is Nothing Then
                 gp.Name = params(i).Name.ToTitleCase

@@ -374,7 +374,6 @@ Public Class GlobalClass
                     actions.Add(Sub()
                                     If p.VideoEncoder.BeforeEncoding() Then
                                         p.VideoEncoder.Encode()
-                                        p.VideoEncoder.AfterEncoding()
                                     End If
                                 End Sub)
                 End If

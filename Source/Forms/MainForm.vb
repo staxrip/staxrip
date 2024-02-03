@@ -2235,7 +2235,7 @@ Public Class MainForm
             End If
 
             If p.ExtractHdrmetadata <> HdrmetadataMode.None AndAlso
-                Not String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) AndAlso
+                Not p.SourceVideoHdrFormat?.EqualsAny("", "SDR") AndAlso
                 (String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path)) Then
 
                 Select Case p.ExtractHdrmetadata
@@ -2623,7 +2623,7 @@ Public Class MainForm
         If p.AutoCropMode = AutoCropMode.DolbyVisionOnly OrElse p.AutoCropMode = AutoCropMode.Always Then
             p.SourceScript.Synchronize(True, True, True)
 
-            If p.HdrDolbyVisionMetadataFile?.Crop <> Padding.Empty Then
+            If p.HdrDolbyVisionMetadataFile IsNot Nothing Then
                 p.CropLeft = p.HdrDolbyVisionMetadataFile.Crop.Left
                 p.CropTop = p.HdrDolbyVisionMetadataFile.Crop.Top
                 p.CropRight = p.HdrDolbyVisionMetadataFile.Crop.Right
@@ -3538,15 +3538,15 @@ Public Class MainForm
         Dim sourcePath = proj.SourceFile
         Dim isEL = False
 
-        Dim files = Directory.GetFiles(sourcePath.Dir, sourcePath.Base + "*EL*.*", SearchOption.TopDirectoryOnly).AsEnumerable()
-        If files?.Count() > 1 Then files = files?.Where(Function(x) x.Ext = "h265")
+        Dim files = Directory.GetFiles(sourcePath.Dir, sourcePath.Base + "*_EL*.*", SearchOption.TopDirectoryOnly).AsEnumerable()
+        files = files?.Where(Function(x) {"h265", "hevc"}.Contains(x.Ext))
         If files?.Any() Then
             sourcePath = files.First()
             isEL = True
         End If
 
         Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format/String")
-        If isEL OrElse (fileHdrFormat?.ContainsAny("Dolby Vision")) Then
+        If isEL OrElse (fileHdrFormat?.ContainsAny("Dolby Vision", "HDR10+ Profile B")) Then
             Dim mode = If(proj.HdrDolbyVisionMode < 0, "", " -m " + (proj.HdrDolbyVisionMode + 0).ToString())
             Dim rpuPath = sourcePath.ChangeExt("rpu")
             Dim doviFile As DolbyVisionMetadataFile
@@ -3609,13 +3609,13 @@ Public Class MainForm
         Dim searchTask = Task.Run(Sub()
                                       Try
                                           files = Directory.GetFiles(proj.SourceFile.Dir(), $"{proj.SourceFile.Base}*.*", SearchOption.TopDirectoryOnly)
-                                          jsonFile = files.Where(Function(x) {"json"}.Contains(x.Ext))?.FirstOrDefault()
-                                          rpuFile = files.Where(Function(x) {"bin", "rpu"}.Contains(x.Ext))?.FirstOrDefault()
+                                          jsonFile = files.Where(Function(x) {"json"}.Contains(x.Ext) AndAlso Not x.Base.EndsWith("_Config"))?.FirstOrDefault()
+                                          rpuFile = files.Where(Function(x) {"bin", "rpu"}.Contains(x.Ext) AndAlso Not x.Base.EndsWith("_Cropped"))?.FirstOrDefault()
 
-                                          If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
+                                          If Not String.IsNullOrWhiteSpace(proj.TempDir) AndAlso String.IsNullOrWhiteSpace(jsonFile) AndAlso String.IsNullOrWhiteSpace(rpuFile) Then
                                               files = Directory.GetFiles(proj.TempDir, "*.*", SearchOption.TopDirectoryOnly)
-                                              jsonFile = If(String.IsNullOrWhiteSpace(jsonFile), files?.Where(Function(x) {"json"}.Contains(x.Ext))?.FirstOrDefault(), "")
-                                              rpuFile = If(String.IsNullOrWhiteSpace(rpuFile), files?.Where(Function(x) {"bin", "rpu"}.Contains(x.Ext))?.FirstOrDefault(), "")
+                                              jsonFile = If(String.IsNullOrWhiteSpace(jsonFile), files?.Where(Function(x) {"json"}.Contains(x.Ext) AndAlso Not x.Base.EndsWith("_Config"))?.FirstOrDefault(), jsonFile)
+                                              rpuFile = If(String.IsNullOrWhiteSpace(rpuFile), files?.Where(Function(x) {"bin", "rpu"}.Contains(x.Ext) AndAlso Not x.Base.EndsWith("_Cropped"))?.FirstOrDefault(), rpuFile)
                                           End If
                                       Catch ex As Exception
                                           Log.WriteLine(ex.Message)

@@ -20,6 +20,7 @@ v2.36.0 (not published yet)
 - UI: "Import VUI metadata" doesn't override Dolby Vision profile depending on selected mode ([#1212](/../../issues/1212))
 - UI: Fix Crop bug that caused unnecessary and sometimes wrong cropping
 - UI: Set "Output Mod" default value to 2 (inspired by the poll on Discord)
+- UI: Improve handling/finding with metadata files
 - NVEncC: Add support for Dolby Vision metadata handling
 - QSVEncC: Add support for Dolby Vision metadata handling
 - VCEEncC: Add support for Dolby Vision metadata handling

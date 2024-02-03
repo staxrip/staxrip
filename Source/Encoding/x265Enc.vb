@@ -243,7 +243,8 @@ Public Class x265Enc
     End Property
 
     Overrides Function CanChunkEncode() As Boolean
-        Return CInt(Params.Chunks.Value) > 1
+        Dim rpu = Params.GetStringParam("--dolby-vision-rpu")?.Value
+        Return CInt(Params.Chunks.Value) > 1 AndAlso String.IsNullOrWhiteSpace(rpu)
     End Function
 
     Overrides Function GetChunks() As Integer

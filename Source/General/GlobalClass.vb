@@ -1307,7 +1307,7 @@ Public Class GlobalClass
     Sub RunAutoCrop(progressAction As Action(Of Double))
         p.SourceScript.Synchronize(True, True, True)
 
-        If p.HdrDolbyVisionMetadataFile?.Crop <> Padding.Empty Then
+        If p.HdrDolbyVisionMetadataFile IsNot Nothing Then
             p.CropLeft = p.HdrDolbyVisionMetadataFile.Crop.Left
             p.CropTop = p.HdrDolbyVisionMetadataFile.Crop.Top
             p.CropRight = p.HdrDolbyVisionMetadataFile.Crop.Right

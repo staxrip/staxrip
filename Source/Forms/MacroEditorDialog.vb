@@ -163,7 +163,7 @@ Public Class MacroEditorDialog
         form.Doc.WriteStart(Text)
         form.Doc.WriteParagraph(HelpText)
         form.Doc.WriteTips(MacroEditorControl.TipProvider.GetTips)
-        form.Doc.WriteTable("Macros", Macro.GetTips(False, True))
+        form.Doc.WriteTable("Macros", Macro.GetTips(False, True, True))
         form.Show()
     End Sub
 

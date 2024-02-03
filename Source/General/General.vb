@@ -1083,26 +1083,30 @@ Public Class CommandManager
 
     Sub Process(name As String, params As List(Of Object))
         If HasCommand(name) Then
-            Process(GetCommand(name), params)
+            ProcessPlusFixParams(GetCommand(name), params)
         End If
     End Sub
 
     Sub Process(name As String, ParamArray params As Object())
         If HasCommand(name) Then
-            Process(GetCommand(name), params.ToList)
+            ProcessPlusFixParams(GetCommand(name), params.ToList)
         End If
     End Sub
 
     Sub Process(command As Command, params As List(Of Object))
         Try
-            command.MethodInfo.Invoke(command.Object, command.FixParameters(params).ToArray)
+            command.MethodInfo.Invoke(command.Object, params.ToArray)
         Catch ex As TargetParameterCountException
             MsgError("Parameter mismatch, for the command :" + command.MethodInfo.Name)
         Catch ex As Exception
-            If Not TypeOf ex.InnerException Is AbortException Then
+            If TypeOf ex.InnerException IsNot AbortException Then
                 g.ShowException(ex)
             End If
         End Try
+    End Sub
+
+    Sub ProcessPlusFixParams(command As Command, params As List(Of Object))
+        Process(command, command.FixParameters(params))
     End Sub
 
     Function ProcessCommandLineArgument(value As String) As Boolean

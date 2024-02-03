@@ -21,6 +21,9 @@ v2.36.0 (not published yet)
 - UI: Fix Crop bug that caused unnecessary and sometimes wrong cropping
 - UI: Set "Output Mod" default value to 2 (inspired by the poll on Discord)
 - UI: Improve handling/finding with metadata files
+- UI: Add new event "While Processing" which is called once every percent of progress on video encoders ([#1197](/../../issues/1197))
+- UI: Add new macros that are currently only supported by the new "While Processing" event 
+    - %commandline%, %progress%, %progressline%
 - NVEncC: Add support for Dolby Vision metadata handling
 - QSVEncC: Add support for Dolby Vision metadata handling
 - VCEEncC: Add support for Dolby Vision metadata handling

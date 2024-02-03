@@ -803,6 +803,11 @@ Module MiscExtensions
     End Function
 
     <Extension()>
+    Function ToInvariantString(value As Single, format As String) As String
+        Return value.ToString(format, CultureInfo.InvariantCulture)
+    End Function
+
+    <Extension()>
     Function ToInvariantString(instance As IConvertible) As String
         Return If(instance Is Nothing, "", instance.ToString(CultureInfo.InvariantCulture))
     End Function

@@ -109,7 +109,7 @@ Public Class Documentation
     Shared Function GetMacros() As String
         Dim sb As New StringBuilder("| Name | Description |" + BR + "|---|---|" + BR)
 
-        For Each tip In Macro.GetTips(False, True)
+        For Each tip In Macro.GetTips(False, True, True)
             sb.AppendLine("| " + tip.Name + " | " + tip.Value + " |")
         Next
 

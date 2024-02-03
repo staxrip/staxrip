@@ -4232,6 +4232,7 @@ Public Enum ApplicationEvent
     <DispName("Application Exit")> ApplicationExit
     <DispName("Before Job Processed")> BeforeJobProcessed
     <DispName("Before Processing")> BeforeProcessing
+    <DispName("While Processing")> WhileProcessing
 End Enum
 
 Public Enum CommandLinePreview

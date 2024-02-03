@@ -40,6 +40,7 @@ Public Class GlobalClass
     Event ApplicationExit()
     Event BeforeJobProcessed()
     Event BeforeProcessing()
+    Event WhileProcessing(commandLine As String, percentage As Single, lastProgress As String)
 
     Sub WriteDebugLog(value As String)
         If s?.WriteDebugLog Then
@@ -847,7 +848,7 @@ Public Class GlobalClass
         g.MainForm.Assistant()
     End Sub
 
-    Sub RaiseAppEvent(ae As ApplicationEvent)
+    Sub RaiseAppEvent(ae As ApplicationEvent, Optional commandline As String = Nothing, Optional progress As Single = -1.0F, Optional progressline As String = Nothing)
         Select Case ae
             Case ApplicationEvent.AfterJobFailed
                 RaiseEvent AfterJobFailed()
@@ -871,6 +872,8 @@ Public Class GlobalClass
                 RaiseEvent BeforeJobProcessed()
             Case ApplicationEvent.BeforeProcessing
                 RaiseEvent BeforeProcessing()
+            Case ApplicationEvent.WhileProcessing
+                RaiseEvent WhileProcessing(commandline, progress, progressline)
         End Select
 
         Dim scriptPath = Folder.Scripts + ae.ToString + ".ps1"
@@ -884,7 +887,7 @@ Public Class GlobalClass
                 Dim matches = 0
 
                 For Each criteria In ec.CriteriaList
-                    criteria.PropertyString = Macro.Expand(criteria.Macro)
+                    criteria.PropertyString = Macro.ExpandWhileProcessing(criteria.Macro, p, commandline, progress, progressline)
 
                     If criteria.Eval Then
                         matches += 1
@@ -896,6 +899,7 @@ Public Class GlobalClass
                     ec.CommandParameters IsNot Nothing Then
 
                     Dim command = g.MainForm.CustomMainMenu.CommandManager.GetCommand(ec.CommandParameters.MethodName)
+                    Dim params = command.FixParameters(ec.CommandParameters.Parameters)
 
                     If s.LogEventCommand AndAlso p.SourceFile <> "" Then
                         Log.WriteHeader("Event Command: " + ec.Name)
@@ -904,7 +908,13 @@ Public Class GlobalClass
                         Log.WriteLine(command.GetParameterHelp(ec.CommandParameters.Parameters))
                     End If
 
-                    g.MainForm.CustomMainMenu.CommandManager.Process(ec.CommandParameters)
+                    For i = 0 To params.Count - 1
+                        If TypeOf params(i) Is String Then
+                            params(i) = Macro.ExpandWhileProcessing(DirectCast(params(i), String), p, commandline, progress, progressline)
+                        End If
+                    Next
+
+                    g.MainForm.CustomMainMenu.CommandManager.ProcessPlusFixParams(command, params)
                 End If
             End If
         Next
@@ -1343,7 +1353,7 @@ Public Class GlobalClass
             End Using
 
             CorrectCropMod()
-        End If                
+        End If
     End Sub
 
     Sub SmartCrop()

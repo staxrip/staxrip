@@ -1,6 +1,7 @@
 ﻿
 Imports System.Globalization
 Imports System.Text.RegularExpressions
+Imports Microsoft.VisualBasic
 Imports StaxRip.UI
 
 <Serializable()>
@@ -87,10 +88,10 @@ Public Class Macro
         End Set
     End Property
 
-    Shared Function GetTips(includeInteractive As Boolean, includeParam As Boolean) As StringPairList
+    Shared Function GetTips(includeInteractive As Boolean, includeParam As Boolean, includeWhileProcessing As Boolean) As StringPairList
         Dim ret As New StringPairList
 
-        For Each macro In GetMacros(includeInteractive, includeParam)
+        For Each macro In GetMacros(includeInteractive, includeParam, includeWhileProcessing)
             ret.Add(macro.Name, macro.Description)
         Next
 
@@ -100,7 +101,7 @@ Public Class Macro
     Shared Function GetTipsFriendly(convertHTMLChars As Boolean) As StringPairList
         Dim ret As New StringPairList
 
-        For Each mac As Macro In GetMacros(False, False)
+        For Each mac As Macro In GetMacros(False, False, True)
             If convertHTMLChars Then
                 ret.Add(HelpDocument.ConvertChars(mac.FriendlyName), mac.Description)
             Else
@@ -119,7 +120,7 @@ Public Class Macro
         Return Name.CompareTo(other.Name)
     End Function
 
-    Shared Function GetMacros(includeInteractive As Boolean, includeParam As Boolean) As List(Of Macro)
+    Shared Function GetMacros(includeInteractive As Boolean, includeParam As Boolean, includeWhileProcessing As Boolean) As List(Of Macro)
         Dim ret As New List(Of Macro)
 
         If includeInteractive Then
@@ -139,6 +140,12 @@ Public Class Macro
             ret.Add(New Macro("media_info_audio:property", "MediaInfo Audio Property", GetType(String), "Returns a MediaInfo audio property for the video source file."))
             ret.Add(New Macro("media_info_video:property", "MediaInfo Video Property", GetType(String), "Returns a MediaInfo video property for the source file."))
             ret.Add(New Macro("random:digits", "Random Number", GetType(Integer), "Returns a 'digits' long random number, whereas 'digits' is clamped between 1 and 10."))
+        End If
+
+        If includeWhileProcessing Then
+            ret.Add(New Macro("commandline", "Command Line", GetType(String), "Returns the command line used for the running app."))
+            ret.Add(New Macro("progress", "Progress", GetType(Integer), "Returns the current progress as Integer value."))
+            ret.Add(New Macro("progressline", "Progress Line", GetType(String), "Returns the progress line received from the running app."))
         End If
 
         ret.Add(New Macro("audio_bitrate", "Audio Bitrate", GetType(Integer), "Overall audio bitrate."))
@@ -716,7 +723,7 @@ Public Class Macro
                 End If
                 Dim random = New Random()
                 Dim randomInt = random.Next(0, Enumerable.Repeat(10, digits).Aggregate(1, Function(a, b) a * b))
-                value = value.Replace(i.Value, randomInt.ToString().PadLeft(digits, "0"C))
+                value = value.Replace(i.Value, randomInt.ToString().PadLeft(digits, "0"c))
 
                 If Not value.Contains("%") Then
                     Return value
@@ -800,6 +807,24 @@ Public Class Macro
                 Exit For
             End If
         Next
+
+        Return value
+    End Function
+
+    Shared Function ExpandWhileProcessing(value As String, proj As Project, commandline As String, progress As Single, progressline As String) As String
+        If value = "" Then Return ""
+        If proj Is Nothing Then Return ""
+
+        value = Expand(value, proj)
+
+        If Not value.Contains("%") Then Return value
+        If value.Contains("%commandline%") Then value = value.Replace("%commandline%", commandline.Trim().Escape())
+
+        If Not value.Contains("%") Then Return value
+        If value.Contains("%progress%") Then value = value.Replace("%progress%", Fix(progress).ToInvariantString("0"))
+
+        If Not value.Contains("%") Then Return value
+        If value.Contains("%progressline%") Then value = value.Replace("%progressline%", progressline.Trim())
 
         Return value
     End Function

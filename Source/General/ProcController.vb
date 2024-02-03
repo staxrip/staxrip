@@ -4,6 +4,7 @@ Imports System.Runtime.InteropServices
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
+Imports Microsoft.VisualBasic
 
 Imports Microsoft.Win32
 
@@ -17,12 +18,15 @@ Public Class ProcController
     Private FailCounter As Integer = 0
     Private _projectScriptFrameRate As Double = -1.0
     Private _lastHighlightedText As String = ""
+    Private _triggerWhileProcessing As Boolean = False
 
     Property Proc As Proc
     Property LogTextBox As New RichTextBoxEx
     Property ProgressBar As New LabelProgressBar
     Property ProcForm As ProcessingForm
     Property Button As New ButtonEx
+    Property LastProgress As Double
+
     ReadOnly Property ProjectScriptFrameRate As Double
         Get
             If _projectScriptFrameRate < 0 Then
@@ -47,6 +51,11 @@ Public Class ProcController
     Sub New(proc As Proc)
         Me.Proc = proc
         ProcForm = g.ProcForm
+
+        _triggerWhileProcessing = Not p.SkipVideoEncoding AndAlso 
+                                TypeOf p.VideoEncoder IsNot NullEncoder AndAlso 
+                                proc.Package IsNot Nothing AndAlso 
+                                proc.Package Is TryCast(p.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage()
 
         Dim pad = g.ProcForm.FontHeight \ 6
         Button.Margin = New Padding(pad, pad, 0, pad)
@@ -296,8 +305,6 @@ Public Class ProcController
         SetProgress(value)
     End Sub
 
-    Shared LastProgress As Double
-
     Sub SetProgressText(value As String)
         If Proc.IsSilent Then Exit Sub
 
@@ -426,13 +433,12 @@ Public Class ProcController
         Else
             FailCounter = 0
         End If
+
         ProgressBar.Text = value
     End Sub
 
     Sub SetProgress(value As String)
-        If Proc.IsSilent Then
-            Exit Sub
-        End If
+        If Proc.IsSilent Then Return
 
         Dim match As Match
         Dim frame As Integer = 0
@@ -471,6 +477,14 @@ Public Class ProcController
             ProcForm.Taskbar?.SetValue(Math.Max(progress, 1), 100)
             ProcForm.NotifyIcon.Text = progress & "%"
             ProgressBar.Value = progress
+
+            If _triggerWhileProcessing Then
+                Dim eventProgress = Fix(progress)
+                If eventProgress > Fix(LastProgress) AndAlso eventProgress < 100.0F Then
+                    Task.Run(Sub() g.RaiseAppEvent(ApplicationEvent.WhileProcessing, Proc.CommandLine, eventProgress, value))
+                End If
+            End If
+
             LastProgress = progress
         End If
 

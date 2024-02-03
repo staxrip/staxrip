@@ -2568,17 +2568,6 @@ Public Class MainForm
                 End If
             End If
         End If
-
-        If Not sourceFilter.Script.Contains("Crop(") Then
-            Dim sourceWidth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Width").ToInt
-            Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
-
-            If sourceWidth Mod 4 <> 0 OrElse sourceHeight Mod 4 <> 0 Then
-                p.CropRight = sourceWidth Mod 4
-                p.CropBottom = sourceHeight Mod 4
-                p.Script.ActivateFilter("Crop")
-            End If
-        End If
     End Sub
 
     Function FixFrameRate(num As Integer, den As Integer) As (num As Integer, den As Integer)

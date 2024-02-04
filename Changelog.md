@@ -26,13 +26,16 @@ v2.36.0 (not published yet)
 - VCEEncC: Add support for Dolby Vision metadata handling
 - VCEEncC: Add Dolby Vision parameters to encoder options
 - Update tools
-    - ...
+    - mpv.net v7.1.1.0
+    - Python v3.11.7
+    - QSVEncC v7.61
+    - vvencFFapp v1.11.0
 - Update AviSynth+ plugins
     - ...
 - Update Dual plugins
-    - ...
+    - ffms2 v3.0.1.0 1357+34 r1391 4fbfa13ea1 StvG
 - Update VapourSynth plugins
-    - ...
+    - libhistogram v2.0 2021-11-13
 
 
 v2.35.0 (2024-02-02)
@@ -156,6 +159,7 @@ v2.31.0 (2024-01-01)
     - AOMEnc v3.8.0-178-ge065e0fead-x64-msvc1938
     - FFmpeg N-113112-gf5f414d9c4-x64-gcc13.2.0
     - MP4Box v2.3-DEV-rev724-g8684dfbcc-x64-msvc1938
+    - Python v3.11.4
     - rav1e v0.6.1 (p20231226)-x64-gcc13.2.0
     - SvtAv1EncApp v1.8.0-1+3-43997134-[Mod-by-Patman]-x64-msvc1938
     - VapourSynth R65

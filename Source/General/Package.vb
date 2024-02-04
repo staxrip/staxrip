@@ -1178,6 +1178,7 @@ Public Class Package
         .Location = "Plugins\VS\Scripts",
         .Description = "Muonium's VapourSynth functions.",
         .WebURL = "https://github.com/WolframRhodium/muvsfunc",
+        .Dependencies = {"libhistogram.dll"},
         .VsFilterNames = {
             "muvsfunc.LDMerge", "muvsfunc.Compare", "muvsfunc.ExInpand", "muvsfunc.InDeflate", "muvsfunc.MultiRemoveGrain", "muvsfunc.GradFun3", "muvsfunc.AnimeMask",
             "muvsfunc.PolygonExInpand", "muvsfunc.Luma", "muvsfunc.ediaa", "muvsfunc.nnedi3aa", "muvsfunc.maa", "muvsfunc.SharpAAMcmod", "muvsfunc.TEdge",
@@ -1239,6 +1240,15 @@ Public Class Package
         .WebURL = "https://github.com/Lypheo/vs-placebo",
         .HelpURL = "https://github.com/Lypheo/vs-placebo/blob/master/README.md",
         .VsFilterNames = {"placebo.Deband", "placebo.Resample", "placebo.Shader", "placebo.Tonemap"}})
+
+    Shared Property LibHistogram As Package = Add(New PluginPackage With {
+        .Name = "libhistogram",
+        .Filename = "libhistogram.dll",
+        .Description = "Histogram plugin for VapourSynth. Port of the Histogram() function from Avisynth.",
+        .DownloadURL = "https://github.com/gundamftw/vapoursynth-histogram/releases",
+        .WebURL = "https://github.com/dubhater/vapoursynth-histogram",
+        .HelpURL = "https://github.com/dubhater/vapoursynth-histogram/blob/master/README.md",
+        .VsFilterNames = {"hist.Classic", "hist.Levels", "hist.Color", "hist.Color2", "hist.Luma"}})
 
 
     Shared Sub New()

@@ -27,6 +27,7 @@ v2.36.0 (not published yet)
 - UI: Add new macros 
     - %jobs%, %jobs_active%
 - NVEncC: Add support for Dolby Vision metadata handling
+- NVEncC: Fix wrong "--vpp-resize" parameter options visibility
 - QSVEncC: Add support for Dolby Vision metadata handling
 - VCEEncC: Add support for Dolby Vision metadata handling
 - VCEEncC: Add Dolby Vision parameters to encoder options

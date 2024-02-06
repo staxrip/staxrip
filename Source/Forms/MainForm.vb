@@ -3166,15 +3166,18 @@ Public Class MainForm
 
             If TypeOf p.VideoEncoder Is x265Enc Then
                 Dim x265 = DirectCast(p.VideoEncoder, x265Enc)
-                Dim param = x265.CommandLineParams.GetStringParam("--dolby-vision-rpu")
+                Dim rpuParam = x265.CommandLineParams.GetStringParam(x265.Params.DolbyVisionRpu.Switch)
+                Dim bufsizeParam = x265.CommandLineParams.GetNumParam(x265.Params.VbvBufSize.Switch)
+                Dim maxrateParam = x265.CommandLineParams.GetNumParam(x265.Params.VbvMaxRate.Switch)
+
                 Dim optionsLabel = DirectCast(pnEncoder.Controls(0), x265Control).blConfigCodec
-                If param IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(param.Value) Then
-                    If x265.Params.VbvBufSize.Value = 0 Then
+                If Not String.IsNullOrWhiteSpace(rpuParam?.Value) Then
+                    If bufsizeParam?.Value < 1 Then
                         If ProcessTip("Dolby Vision requires VBV settings to enable HRD.") Then
                             CanIgnoreTip = False
                             Return Warn("Missing VBV settings", Sub() p.VideoEncoder.ShowConfigDialog(x265.Params.VbvBufSize.Path), optionsLabel)
                         End If
-                    ElseIf x265.Params.VbvMaxRate.Value = 0 Then
+                    ElseIf maxrateParam?.Value < 1 Then
                         If ProcessTip("Dolby Vision requires VBV settings to enable HRD.") Then
                             CanIgnoreTip = False
                             Return Warn("Missing VBV settings", Sub() p.VideoEncoder.ShowConfigDialog(x265.Params.VbvMaxRate.Path), optionsLabel)

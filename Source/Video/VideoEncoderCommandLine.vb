@@ -55,6 +55,10 @@ Namespace VideoEncoderCommandLine
             Return Items.OfType(Of OptionParam).Where(Function(item) item.Switch = switch).FirstOrDefault
         End Function
 
+        Function GetNumParam(switch As String) As NumParam
+            Return Items.OfType(Of NumParam).Where(Function(item) item.Switch = switch).FirstOrDefault
+        End Function
+
         Function GetNumParamByName(name As String) As NumParam
             Return Items.OfType(Of NumParam).Where(Function(item) item.Name = name).FirstOrDefault
         End Function

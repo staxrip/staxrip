@@ -1010,20 +1010,6 @@ Public Class VCEEnc
             End Select
         End Function
 
-        'Function GetModeArgs() As String
-        '    Dim rate = If(ConstantQualityMode.Value, 0, Bitrate.Value)
-
-        '    Select Case Mode.Value
-        '        Case 0
-        '            Return If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
-        '        Case 1
-        '            Return "--cbr " & rate
-        '        Case 2
-        '            Return "--vbr " & rate
-        '    End Select
-        'End Function
-
-
 
         Overrides Function GetCommandLine(
             includePaths As Boolean,
@@ -1072,38 +1058,33 @@ Public Class VCEEnc
                     ret += " --avhw"
             End Select
 
-            Dim q = From i In Items Where i.GetArgs <> ""
-
-            If q.Count > 0 Then
-                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
-            End If
-
+            Dim rate = If(pass = 1, CInt(Bitrate.Value), p.VideoBitrate)
             Select Case Codec.ValueText
                 Case "h264"
                     Select Case Mode.Value
                         Case 0
                             ret += If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
                         Case 1
-                            ret += " --cbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --cbr " & rate
                         Case 2
-                            ret += " --cbrhq " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --cbrhq " & rate
                         Case 3
-                            ret += " --vbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --vbr " & rate
                         Case 4
-                            ret += " --vbrhq " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --vbrhq " & rate
                         Case 5
-                            ret += " --qvbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --qvbr " & rate
                         Case Else
                             Throw New NotImplementedException("Mode not supported")
                     End Select
                 Case "hevc"
                     Select Case Mode.Value
                         Case 0
-                            ret += " --cqp " & QPI.Value & ":" & QPP.Value & ":" & QPB.Value
+                            ret += If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
                         Case 1
-                            ret += " --cbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --cbr " & rate
                         Case 2
-                            ret += " --vbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --vbr " & rate
                         Case Else
                             Throw New NotImplementedException("Mode not supported")
                     End Select
@@ -1112,21 +1093,27 @@ Public Class VCEEnc
                         Case 0
                             ret += If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
                         Case 1
-                            ret += " --cbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --cbr " & rate
                         Case 2
-                            ret += " --cbrhq " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --cbrhq " & rate
                         Case 3
-                            ret += " --vbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --vbr " & rate
                         Case 4
-                            ret += " --vbrhq " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --vbrhq " & rate
                         Case 5
-                            ret += " --qvbr " & If(pass = 1, Bitrate.Value, p.VideoBitrate)
+                            ret += " --qvbr " & rate
                         Case Else
                             Throw New NotImplementedException("Mode not supported")
                     End Select
                 Case Else
                     Throw New NotImplementedException("Codec not supported")
             End Select
+
+            Dim q = From i In Items Where i.GetArgs <> ""
+
+            If q.Count > 0 Then
+                ret += " " + q.Select(Function(item) item.GetArgs).Join(" ")
+            End If
 
 
             If CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 AndAlso

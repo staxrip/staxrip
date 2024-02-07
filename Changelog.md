@@ -32,6 +32,7 @@ v2.36.0 (not published yet)
 - QSVEncC: Add support for Dolby Vision metadata handling
 - VCEEncC: Add support for Dolby Vision metadata handling
 - VCEEncC: Add Dolby Vision parameters to encoder options
+- VCEEncC: Fix "--cqp" parameter value for HEVC codec ([#1222](/../../issues/1222))
 - Update tools
     - mpv.net v7.1.1.0
     - Python v3.11.7

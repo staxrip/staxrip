@@ -383,43 +383,54 @@ Public Class QSVEnc
             .Values = {"8", "10"},
             .Init = 0}
 
+        Property QPAdvanced As New BoolParam With {
+            .Text = "Show advanced QP settings",
+            .VisibleFunc = Function() Mode.Value = 2}
+
+        Property QP As New NumParam With {
+            .HelpSwitch = "--cqp",
+            .Text = "QP",
+            .Init = 18,
+            .VisibleFunc = Function() Mode.Value = 2 AndAlso Not QPAdvanced.Value,
+            .Config = {0, 63}}
+
         Property QPI As New NumParam With {
             .HelpSwitch = "--cqp",
             .Text = "QP I",
             .Init = 18,
-            .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
+            .VisibleFunc = Function() Mode.Value = 2 AndAlso QPAdvanced.Value,
             .Config = {0, 63}}
 
         Property QPP As New NumParam With {
             .HelpSwitch = "--cqp",
             .Text = "QP P",
             .Init = 20,
-            .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
+            .VisibleFunc = Function() Mode.Value = 2 AndAlso QPAdvanced.Value,
             .Config = {0, 63}}
 
         Property QPB As New NumParam With {
             .HelpSwitch = "--cqp",
             .Text = "QP B",
             .Init = 24,
-            .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
+            .VisibleFunc = Function() Mode.Value = 2 AndAlso QPAdvanced.Value,
             .Config = {0, 63}}
 
         Property QPOffsetI As New NumParam With {
             .HelpSwitch = "--qp-offset",
             .Text = "QP Offset I",
-            .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
+            .VisibleFunc = Function() Mode.Value = 2,
             .Config = {0, Integer.MaxValue, 1}}
 
         Property QPOffsetP As New NumParam With {
             .HelpSwitch = "--qp-offset",
             .Text = "QP Offset P",
-            .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
+            .VisibleFunc = Function() Mode.Value = 2,
             .Config = {0, Integer.MaxValue, 1}}
 
         Property QPOffsetB As New NumParam With {
             .HelpSwitch = "--qp-offset",
             .Text = "QP Offset B",
-            .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
+            .VisibleFunc = Function() Mode.Value = 2,
             .Config = {0, Integer.MaxValue, 1}}
 
         Property mctf As New BoolParam With {
@@ -588,7 +599,7 @@ Public Class QSVEnc
                         New OptionParam With {.Name = "LevelMpeg2", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "mpeg2", .Options = {"Automatic", "low", "main", "high", "high1440"}},
                         New OptionParam With {.Name = "LevelVp9", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "vp9", .Options = {"0", "1", "2", "3"}},
                         New OptionParam With {.Name = "LevelAV1", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "av1", .Options = {"Automatic", "2", "2.1", "2.2", "2.3", "3", "3.1", "3.2", "3.3", "4", "4.1", "4.2", "4.3", "5", "5.1", "5.2", "5.3", "6", "6.1", "6.2", "6.3", "7", "7.1", "7.2", "7.3"}},
-                        Tune, OutputDepth, QPI, QPP, QPB, Bitrate, QvbrQuality, Quality)
+                        Tune, OutputDepth, QPAdvanced, QP, QPI, QPP, QPB, Bitrate, QvbrQuality, Quality)
                     Add("Analysis",
                         New OptionParam With {.Switch = "--trellis", .Text = "Trellis", .Options = {"Automatic", "Off", "I", "IP", "All"}},
                         New OptionParam With {.Switch = "--ctu", .Text = "CTU", .Options = {"16", "32", "64"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
@@ -845,7 +856,7 @@ Public Class QSVEnc
                 Case "icq", "la-icq"
                     ret += " --" + Mode.ValueText + " " & CInt(Quality.Value)
                 Case "cqp"
-                    ret += " --cqp " & CInt(QPI.Value) & ":" & CInt(QPP.Value) & ":" & CInt(QPB.Value)
+                    ret += If(QPAdvanced.Value, $" --cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
 
                     If QPOffsetI.Value <> QPOffsetI.DefaultValue OrElse
                         QPOffsetP.Value <> QPOffsetP.DefaultValue OrElse

@@ -656,7 +656,70 @@ Public Class GlobalClass
     End Function
 
     Function ExtractTrackNameFromFilename(filename As String) As String
-        Return If(filename.Base().Contains(" {"), filename.Base().Right(" {").Left("}").UnescapeIllegalFileSysChars, Nothing)
+        Return If(filename.Base().Contains("{"), filename.Base().Right("{").LeftLast("}").UnescapeIllegalFileSysChars, Nothing)
+    End Function
+
+    Function ExtractLanguageFromPath(path As String) As Language
+        If String.IsNullOrWhiteSpace(path) Then Return Nothing
+
+        Dim ret As New Language(CultureInfo.InvariantCulture)
+        Dim filename = path.FileName.LeftLast(".")
+
+        For Each extracted In {filename.Right("_[").Left("]").Trim(), filename.Right("[").Left("]").Trim(), filename.Left(".").Trim(), filename.Right(".").Left(".").Trim(), Regex.Replace(filename, "{.*?}", "").Trim()}
+            If String.IsNullOrWhiteSpace(extracted) Then Continue For
+
+            For Each lng In Language.Languages.OrderBy(Function(x) x.Name.Length)
+                If extracted = lng.Name Then
+                    ret = lng
+                    Exit For
+                ElseIf extracted = lng.EnglishName Then
+                    ret = lng
+                    Exit For
+                ElseIf extracted = lng.ThreeLetterCode Then
+                    ret = lng
+                    Exit For
+                ElseIf extracted = lng.TwoLetterCode Then
+                    ret = lng
+                    Exit For
+                End If
+            Next
+        Next
+
+        If ret Is Nothing OrElse Not ret.IsDetermined Then
+            For Each lng In Language.Languages.OrderByDescending(Function(x) x.Name.Length)
+                If filename.Contains(lng.TwoLetterCode) Then
+                    ret = lng
+                End If
+
+                If filename.Contains(lng.ThreeLetterCode) Then
+                    ret = lng
+                End If
+
+                If path.Contains(lng.EnglishName.Left(" (")) Then
+                    ret = lng
+                End If
+
+                If path.Contains(lng.EnglishName) Then
+                    ret = lng
+
+                    If filename.Contains(lng.EnglishName) Then
+                        ret = lng
+                        Exit For
+                    End If
+                End If
+
+                If path.Contains(lng.Name) Then
+                    ret = lng
+
+                    If filename.Contains(lng.Name) Then
+                        ret = lng
+                        Exit For
+                    End If
+                End If
+            Next
+        End If
+
+        Return ret
     End Function
 
     Function GetSourceBase() As String

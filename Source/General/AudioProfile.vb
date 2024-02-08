@@ -253,12 +253,7 @@ Public MustInherit Class AudioProfile
         If File = "" Then Exit Sub
 
         If File <> p.LastOriginalSourceFile Then
-            For Each i In Language.Languages
-                If File.Contains(i.CultureInfo.EnglishName) Then
-                    Language = i
-                    Exit Sub
-                End If
-            Next
+            Language = g.ExtractLanguageFromPath(File)
         Else
             For Each i In Streams
                 If FileTypes.AudioHQ.Contains(i.Ext) AndAlso i.Language.Equals(Language) Then

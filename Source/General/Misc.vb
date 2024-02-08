@@ -1398,72 +1398,17 @@ Public Class Subtitle
                 st.StreamOrder = idMatch.Groups(1).Value.ToInt - 1
             End If
 
-            Dim filename = path.FileName.LeftLast(".")
-            Dim extracted = filename.Right("_[").Left("]")
-
-            If Not String.IsNullOrWhiteSpace(extracted) Then
-                For Each lng In Language.Languages.OrderBy(Function(x) x.Name.Length)
-                    If extracted = lng.Name Then
-                        st.Language = lng
-                        Exit For
-                    ElseIf extracted = lng.EnglishName Then
-                        st.Language = lng
-                        Exit For
-                    ElseIf extracted = lng.ThreeLetterCode Then
-                        st.Language = lng
-                        Exit For
-                    ElseIf extracted = lng.TwoLetterCode Then
-                        st.Language = lng
-                        Exit For
-                    End If
-                Next
-            End If
-
-            If st.Language Is Nothing OrElse Not st.Language.IsDetermined Then
-                For Each lng In Language.Languages.OrderByDescending(Function(x) x.Name.Length)
-                    If filename.Contains(lng.TwoLetterCode) Then
-                        st.Language = lng
-                    End If
-
-                    If filename.Contains(lng.ThreeLetterCode) Then
-                        st.Language = lng
-                    End If
-
-                    If path.Contains(lng.EnglishName.Left(" (")) Then
-                        st.Language = lng
-                    End If
-
-                    If path.Contains(lng.EnglishName) Then
-                        st.Language = lng
-
-                        If filename.Contains(lng.EnglishName) Then
-                            st.Language = lng
-                            Exit For
-                        End If
-                    End If
-
-                    If path.Contains(lng.Name) Then
-                        st.Language = lng
-
-                        If filename.Contains(lng.Name) Then
-                            st.Language = lng
-                            Exit For
-                        End If
-                    End If
-                Next
-            End If
-
             Dim trackname = g.ExtractTrackNameFromFilename(path)
             st.Title = If(trackname, st.Title)
-
+            st.Language = g.ExtractLanguageFromPath(path)
             Dim autoCode = p.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
             Dim prefLang = autoCode.ContainsAny("all", st.Language.TwoLetterCode, st.Language.ThreeLetterCode) OrElse p.SubtitleMode = SubtitleMode.All
             Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux AndAlso p.SubtitleMode <> SubtitleMode.Disabled
             st.Enabled = prefLang AndAlso goodMode
             st.Path = path
-            st.Forced = path.ToLowerEx().Contains("forced")
-            st.Commentary = path.ToLowerEx().Contains("commentary")
-            st.Hearingimpaired = path.ToLowerEx().Contains("hearingimpaired")
+            st.Forced = path.Base.ToLowerEx().Contains("forced")
+            st.Commentary = path.Base.ToLowerEx().Contains("commentary")
+            st.Hearingimpaired = path.Base.ToLowerEx().ContainsAny("hearingimpaired", "sdh")
 
             For Each i In autoCode
                 If i.IsInt AndAlso st.Path.Contains("ID" & i.ToInt & " ") Then

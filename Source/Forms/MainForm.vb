@@ -5607,7 +5607,7 @@ Public Class MainForm
         ret.Add("Tools|Scripts", NameOf(g.DefaultCommands.DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
 
         ret.Add("Tools|Advanced", Symbol.More)
-        ret.Add("Tools|Advanced|Add Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
+        ret.Add("Tools|Advanced|Add Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialogFromTempDir), Keys.Control Or Keys.H)
         ret.Add("Tools|Advanced|Script Info...", NameOf(ShowScriptInfo), Keys.F2)
         ret.Add("Tools|Advanced|Advanced Script Info...", NameOf(ShowAdvancedScriptInfo), Keys.Control Or Keys.F2)
         ret.Add("Tools|Advanced|-")
@@ -5662,11 +5662,20 @@ Public Class MainForm
         Return ret
     End Function
 
-    <Command("Shows a dialog to add a hardcoded subtitle.")>
-    Sub ShowHardcodedSubtitleDialog()
+    <Command("Shows a dialog, opening from the last source directory, to add a hardcoded subtitle.")>
+    Sub ShowHardcodedSubtitleDialogFromLastSourceDir()
+        ShowHardcodedSubtitleDialog(s.LastSourceDir)
+    End Sub
+
+    <Command("Shows a dialog, opening from the temp folder, to add a hardcoded subtitle.")>
+    Sub ShowHardcodedSubtitleDialogFromTempDir()
+        ShowHardcodedSubtitleDialog(p.TempDir)
+    End Sub
+
+    Sub ShowHardcodedSubtitleDialog(initDir As String)
         Using dialog As New OpenFileDialog
             dialog.SetFilter(FileTypes.SubtitleExludingContainers)
-            dialog.SetInitDir(p.TempDir)
+            dialog.SetInitDir(initDir)
 
             If dialog.ShowDialog = DialogResult.OK Then
                 If dialog.FileName.Ext = "idx" Then

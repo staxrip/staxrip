@@ -23,6 +23,7 @@ v2.36.0 (not published yet)
 - UI: Set "Output Mod" default value to 2 (inspired by the poll on Discord)
 - UI: Improve handling/finding with metadata files
 - UI: Add new event "While Processing" which is called once every percent of progress on video encoders ([#1197](/../../issues/1197))
+- UI: Split command "ShowHardcodedSubtitleDialog" into "[..]DialogFromLastSourceDir" and "[..]DialogFromTempDir" ([#1199](/../../issues/1199))
 - UI: Add new macros that are currently only supported by the new "While Processing" event 
     - %commandline%, %progress%, %progressline%
 - UI: Add new macros 

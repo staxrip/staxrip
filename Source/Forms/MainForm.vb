@@ -4800,55 +4800,52 @@ Public Class MainForm
 
             Dim autoCrop = ui.AddMenu(Of AutoCropMode)
 
-            Dim l = ui.AddLabel("Custom crop values:")
+            Dim l = ui.AddLabel("Dolby Vision AutoCrop Threshold at:")
             Dim eb = ui.AddEmptyBlock(cropPage)
+            ui.AddLabel(eb, "Beginning:", 2)
+            Dim doviThresholdBegin = ui.AddNumeric(eb)
+            ui.AddLabel(eb, " ", 2)
+            ui.AddLabel(eb, "Ending:", 2)
+            Dim doviThresholdEnd = ui.AddNumeric(eb)
+
+            l = ui.AddLabel("Custom crop values:")
+            eb = ui.AddEmptyBlock(cropPage)
             ui.AddLabel(eb, "Left:", 2)
-            Dim leftCrop = ui.AddEdit(eb)
+            Dim leftCrop = ui.AddNumeric(eb)
             l = ui.AddLabel(eb, "Right:", 4)
-            Dim rightCrop = ui.AddEdit(eb)
+            Dim rightCrop = ui.AddNumeric(eb)
 
             eb = ui.AddEmptyBlock(cropPage)
             ui.AddLabel(eb, "Top:", 2)
-            Dim topCrop = ui.AddEdit(eb)
+            Dim topCrop = ui.AddNumeric(eb)
             l = ui.AddLabel(eb, "Bottom:", 4)
-            Dim bottomCrop = ui.AddEdit(eb)
+            Dim bottomCrop = ui.AddNumeric(eb)
 
 
             autoCrop.Text = "Auto Crop after opening"
             autoCrop.Help = "Use Auto Crop when a file is opened to crop it directly."
             autoCrop.Expanded = True
             autoCrop.Field = NameOf(p.AutoCropMode)
-            autoCrop.Button.ValueChangedAction = Sub(value)
-                                                     Dim active = value <> AutoCropMode.Disabled
-                                                     leftCrop.Enabled = Not active
-                                                     rightCrop.Enabled = Not active
-                                                     topCrop.Enabled = Not active
-                                                     bottomCrop.Enabled = Not active
-                                                 End Sub
 
-            leftCrop.Text = p.CropLeft.ToString
-            leftCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
-            leftCrop.WidthFactor = 3
-            leftCrop.TextBox.TextAlign = HorizontalAlignment.Center
-            leftCrop.SaveAction = Sub(value) If value.IsInt Then p.CropLeft = CInt(value)
+            doviThresholdBegin.Help = "Number of frames at the beginning of the video, that are ignored when setting the crop values."
+            doviThresholdBegin.Config = {0, 999999, 25, 0}
+            doviThresholdBegin.Field = NameOf(p.AutoCropDolbyVisionThresholdBegin)
 
-            rightCrop.Text = p.CropRight.ToString
-            rightCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
-            rightCrop.WidthFactor = 3
-            rightCrop.TextBox.TextAlign = HorizontalAlignment.Center
-            rightCrop.SaveAction = Sub(value) If value.IsInt Then p.CropRight = CInt(value)
+            doviThresholdEnd.Help = "Number of frames at the ending of the video, that are ignored when setting the crop values."
+            doviThresholdEnd.Config = doviThresholdBegin.Config
+            doviThresholdEnd.Field = NameOf(p.AutoCropDolbyVisionThresholdEnd)
 
-            topCrop.Text = p.CropTop.ToString
-            topCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
-            topCrop.WidthFactor = 3
-            topCrop.TextBox.TextAlign = HorizontalAlignment.Center
-            topCrop.SaveAction = Sub(value) If value.IsInt Then p.CropTop = CInt(value)
+            leftCrop.Value = p.CropLeft
+            leftCrop.Config = {0, 9999, 2, 0}
 
-            bottomCrop.Text = p.CropBottom.ToString
-            bottomCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
-            bottomCrop.WidthFactor = 3
-            bottomCrop.TextBox.TextAlign = HorizontalAlignment.Center
-            bottomCrop.SaveAction = Sub(value) If value.IsInt Then p.CropBottom = CInt(value)
+            rightCrop.Value = p.CropRight
+            rightCrop.Config = leftCrop.Config
+
+            topCrop.Value = p.CropTop
+            topCrop.Config = {0, 9999, 2, 0}
+
+            bottomCrop.Value = p.CropBottom
+            bottomCrop.Config = topCrop.Config
 
 
             '   ----------------------------------------------------------------
@@ -5442,15 +5439,10 @@ Public Class MainForm
             End If
 
             If form.ShowDialog() = DialogResult.OK Then
+                Dim dvThresholdChanged = doviThresholdBegin.Value <> p.AutoCropDolbyVisionThresholdBegin OrElse doviThresholdEnd.Value <> p.AutoCropDolbyVisionThresholdEnd
+                Dim cropChanged = leftCrop.Value <> p.CropLeft OrElse topCrop.Value <> p.CropTop OrElse rightCrop.Value <> p.CropRight OrElse bottomCrop.Value <> p.CropBottom
+
                 ui.Save()
-
-                If p.CompCheckPercentage < 1 OrElse p.CompCheckPercentage > 25 Then
-                    p.CompCheckPercentage = 5
-                End If
-
-                If p.CompCheckTestblockSeconds < 0.5 OrElse p.CompCheckTestblockSeconds > 10.0 Then
-                    p.CompCheckTestblockSeconds = 2.0
-                End If
 
                 If p.TempDir <> "" Then
                     p.TempDir = p.TempDir.FixDir
@@ -5461,6 +5453,10 @@ Public Class MainForm
                     '            "This is a safety feature to prevent you from unintentionally data loss. ")
                     'End If
                 End If
+
+                If p.CompCheckPercentage < 1 OrElse p.CompCheckPercentage > 25 Then p.CompCheckPercentage = 5
+                If p.CompCheckTestblockSeconds < 0.5 OrElse p.CompCheckTestblockSeconds > 10.0 Then p.CompCheckTestblockSeconds = 2.0
+                If dvThresholdChanged AndAlso Not cropChanged AndAlso p.Script.IsFilterActive("Crop") Then StartAutoCrop()
 
                 UpdateSizeOrBitrate()
                 tbBitrate_TextChanged()

@@ -209,6 +209,7 @@ Public Class SimpleUI
 
     Function AddNumeric(parent As FlowLayoutPanelEx) As SimpleUINumEdit
         Dim ret As New SimpleUINumEdit(Me)
+        AddHandler SaveValues, AddressOf ret.Save
         parent.Controls.Add(ret)
         Return ret
     End Function

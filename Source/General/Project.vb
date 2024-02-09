@@ -20,6 +20,8 @@ Public Class Project
     Public AudioTracks As List(Of AudioProfile)
     Public AutoCompCheck As Boolean
     Public AutoCorrectCropValues As Boolean = True
+    Public AutoCropDolbyVisionThresholdBegin As Integer = 0
+    Public AutoCropDolbyVisionThresholdEnd As Integer = 0
     Public AutoCropMode As AutoCropMode = AutoCropMode.DolbyVisionOnly
     Public AutoResizeImage As Integer
     Public AutoRotation As Boolean = True

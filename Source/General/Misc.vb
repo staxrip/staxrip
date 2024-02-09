@@ -1824,8 +1824,10 @@ End Enum
 
 <Serializable>
 Public Class DolbyVisionMetadataFile
-    Public Property Crop As Padding = New Padding(0)
     Public ReadOnly Property Path As String = Nothing
+    Public ReadOnly Property Edits As New List(Of RpuEdit)
+    Public ReadOnly Property Presets As New List(Of RpuPreset)
+
 
     Public ReadOnly Property Level5JsonFilePath As String
         Get
@@ -1845,6 +1847,12 @@ Public Class DolbyVisionMetadataFile
         End Get
     End Property
 
+    Public ReadOnly Property Crop As Padding
+        Get
+            Return GetCrop(p.AutoCropDolbyVisionThresholdBegin, p.AutoCropDolbyVisionThresholdEnd)
+        End Get
+    End Property
+
 
     Private Sub New()
     End Sub
@@ -1856,14 +1864,35 @@ Public Class DolbyVisionMetadataFile
         ReadLevel5Export()
     End Sub
 
-    Public Sub New(filePath As String, crop As Padding)
-        Me.Path = filePath
-        Me.Crop = crop
-    End Sub
+    Public Function GetCrop(thresholdBegin As Integer, thresholdEnd As Integer) As Padding
+        thresholdBegin = Math.Max(0, thresholdBegin)
+        thresholdEnd = Math.Max(0, thresholdEnd)
+
+        If Not Edits?.Any() Then Return New Padding(0)
+        If Not Presets?.Any() Then Return New Padding(0)
+
+        Dim newCrop As New Padding(Integer.MaxValue)
+        Dim frames = Edits.OrderByDescending(Function(x) x.EndFrame).First().EndFrame
+        Dim entries = Edits.Join(Presets, Function(edit) edit.Id, Function(preset) preset.Id, Function(edit, preset) New With {edit.StartFrame, edit.EndFrame, preset.Offset})
+
+        For Each entry In entries
+            If entry.EndFrame > thresholdBegin AndAlso entry.StartFrame <= (frames - thresholdEnd) Then
+                newCrop.Left = Math.Min(newCrop.Left, entry.Offset.Left)
+                newCrop.Top = Math.Min(newCrop.Top, entry.Offset.Top)
+                newCrop.Right = Math.Min(newCrop.Right, entry.Offset.Right)
+                newCrop.Bottom = Math.Min(newCrop.Bottom, entry.Offset.Bottom)
+            End If
+        Next
+
+        Return newCrop
+    End Function
 
     Public Sub ReadLevel5Export()
         If Not Path?.FileExists() Then Return
         If Not Level5JsonFilePath.FileExists() Then Return
+
+        Edits.Clear()
+        Presets.Clear()
 
         Try
             Dim jsonContent = Level5JsonFilePath.ReadAllText()
@@ -1873,16 +1902,18 @@ Public Class DolbyVisionMetadataFile
 
             If presetMatches.Count = 0 Then Return
 
-            Dim newCrop As New Padding(Integer.MaxValue)
-
             For Each match As Match In presetMatches
-                newCrop.Left = Math.Min(newCrop.Left, match.Groups("left").Value.ToInt())
-                newCrop.Top = Math.Min(newCrop.Top, match.Groups("top").Value.ToInt())
-                newCrop.Right = Math.Min(newCrop.Right, match.Groups("right").Value.ToInt())
-                newCrop.Bottom = Math.Min(newCrop.Bottom, match.Groups("bottom").Value.ToInt())
+                Dim offset = New Padding(match.Groups("left").Value.ToInt(), match.Groups("top").Value.ToInt(), match.Groups("right").Value.ToInt(), match.Groups("bottom").Value.ToInt())
+                Presets.Add(New RpuPreset(match.Groups("id").Value.ToInt(), offset))
             Next
 
-            Me.Crop = newCrop
+            strippedJsonContent = jsonContent.Right("edits")
+            strippedJsonContent = Regex.Replace(strippedJsonContent, "\s", "")
+            Dim editMatches = Regex.Matches(strippedJsonContent, """(?<start>\d+)-(?<end>\d+)"":(?<id>\d+),?")
+
+            For Each match As Match In editMatches
+                Edits.Add(New RpuEdit(match.Groups("id").Value.ToInt(), match.Groups("start").Value.ToInt(), match.Groups("end").Value.ToInt()))
+            Next
         Catch ex As AbortException
             Throw ex
         Catch ex As Exception
@@ -1928,39 +1959,32 @@ Public Class DolbyVisionMetadataFile
         If offset.Left < 0 OrElse offset.Top < 0 OrElse offset.Right < 0 OrElse offset.Bottom < 0 Then Throw New ArgumentOutOfRangeException(NameOf(offset))
 
         Try
-            Dim jsonContent = Level5JsonFilePath.ReadAllText()
-            jsonContent = Regex.Replace(jsonContent, "\s", "")
-            Dim presetMatches = Regex.Matches(jsonContent.Left("""edits"":{"), "\{.+?:(?<id>\d+),.+?:(?<left>\d+),.+?:(?<right>\d+),.+?:(?<top>\d+),.+?:(?<bottom>\d+)\}")
-            Dim edits = jsonContent.Right("""edits"":{").Left("}")
+            Dim p = ""
+            For Each entry In Presets.OrderBy(Function(x) x.Id)
+                Dim left = Math.Max(0, entry.Offset.Left - offset.Left)
+                Dim top = Math.Max(0, entry.Offset.Top - offset.Top)
+                Dim right = Math.Max(0, entry.Offset.Right - offset.Right)
+                Dim bottom = Math.Max(0, entry.Offset.Bottom - offset.Bottom)
 
-            If presetMatches.Count = 0 Then Return
-            If String.IsNullOrWhiteSpace(edits) Then Return
-
-            Dim presets = ""
-            For Each match As Match In presetMatches
-                Dim left = match.Groups("left").Value.ToInt() - offset.Left
-                Dim top = match.Groups("top").Value.ToInt() - offset.Top
-                Dim right = match.Groups("right").Value.ToInt() - offset.Right
-                Dim bottom = match.Groups("bottom").Value.ToInt() - offset.Bottom
-
-                If left < 0 Then Throw New ArgumentOutOfRangeException(NameOf(left), $"Negative values ({left}) are not valid offsets for RPU files")
-                If top < 0 Then Throw New ArgumentOutOfRangeException(NameOf(top), $"Negative values ({top}) are not valid offsets for RPU files")
-                If right < 0 Then Throw New ArgumentOutOfRangeException(NameOf(right), $"Negative values ({right}) are not valid offsets for RPU files")
-                If bottom < 0 Then Throw New ArgumentOutOfRangeException(NameOf(bottom), $"Negative values ({bottom}) are not valid offsets for RPU files")
-
-                presets += $"{{"
-                presets += $"""id"":{match.Groups("id").Value},"
-                presets += $"""left"":{left},"
-                presets += $"""right"":{right},"
-                presets += $"""top"":{top},"
-                presets += $"""bottom"":{bottom}"
-                presets += $"}},"
+                p += $"{{"
+                p += $"""id"":{entry.Id},"
+                p += $"""left"":{left},"
+                p += $"""right"":{right},"
+                p += $"""top"":{top},"
+                p += $"""bottom"":{bottom}"
+                p += $"}},"
             Next
-            presets = presets.TrimEnd(","c)
-            presets = $"""presets"":[{presets}]"
-            edits = $"""edits"":{{{edits}}}"
-            Dim result = $"{{""active_area"":{{{presets},{edits}}}}}"
+            p = p.TrimEnd(","c)
+            p = $"""presets"":[{p}]"
 
+            Dim e = ""
+            For Each entry In Edits.OrderBy(Function(x) x.StartFrame)
+                e += $"""{entry.StartFrame}-{entry.EndFrame}"":{entry.Id},"
+            Next
+            e = e.TrimEnd(","c)
+            e = $"""edits"":{{{e}}}"
+
+            Dim result = $"{{""active_area"":{{""crop"":false,{p},{e}}}}}"
             result.WriteFileUTF8(EditorConfigFilePath)
         Catch ex As AbortException
             Throw ex
@@ -2000,6 +2024,30 @@ Public Class DolbyVisionMetadataFile
 
         Return CroppedRpuFilePath
     End Function
+End Class
+
+<Serializable>
+Public Class RpuPreset
+    Public ReadOnly Property Id As Integer = 0
+    Public ReadOnly Property Offset As New Padding(0)
+
+    Public Sub New(id As Integer, offset As Padding)
+        Me.Id = id
+        Me.Offset = offset
+    End Sub
+End Class
+
+<Serializable>
+Public Class RpuEdit
+    Public ReadOnly Property Id As Integer = 0
+    Public ReadOnly Property StartFrame As Integer
+    Public ReadOnly Property EndFrame As Integer
+
+    Public Sub New(id As Integer, startFrame As Integer, endFrame As Integer)
+        Me.Id = id
+        Me.StartFrame = startFrame
+        Me.EndFrame = endFrame
+    End Sub
 End Class
 
 Public Enum TimestampsMode

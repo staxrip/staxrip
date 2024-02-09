@@ -3157,10 +3157,10 @@ Public Class MainForm
                 End If
             End If
 
-            If p.Script.IsFilterActive("Resize") AndAlso Not String.IsNullOrWhiteSpace(p.VideoEncoder?.ResizingStatus) Then
-                If ProcessTip(p.VideoEncoder?.ResizingStatus) Then
+            If p.Script.IsFilterActive("Resize") AndAlso widthZoom <> heightZoom AndAlso p.VideoEncoder?.IsResizingAllowed AndAlso Not p.VideoEncoder?.IsUnequalResizingAllowed Then
+                If ProcessTip("Resizing of that kind will interfere with the Dolby Vision metadata. Keep the original aspect ratio, disable the 'Resize' filter or remove the Dolby Vision RPU file.") Then
                     CanIgnoreTip = False
-                    Return Warn("Resizing not allowed")
+                    Return Warn("Wrong resizing", tbTargetWidth, tbTargetHeight, lSAR, lDAR, lZoom, lAspectRatioError)
                 End If
             End If
 

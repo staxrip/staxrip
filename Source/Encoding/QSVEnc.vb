@@ -50,9 +50,9 @@ Public Class QSVEnc
         End Get
     End Property
 
-    Overrides ReadOnly Property ResizingStatus As String
+    Overrides ReadOnly Property IsUnequalResizingAllowed As Boolean
         Get
-            Return If(String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value), "", "Resizing would interfere with the Dolby Vision metadata. Disable the 'Resize' filter or remove the Dolby Vision RPU file.")
+            Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
         End Get
     End Property
 

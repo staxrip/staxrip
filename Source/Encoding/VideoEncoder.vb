@@ -32,9 +32,15 @@ Public MustInherit Class VideoEncoder
         End Get
     End Property
 
-    Public Overridable ReadOnly Property ResizingStatus As String
+    Public Overridable ReadOnly Property IsUnequalResizingAllowed As Boolean
         Get
-            Return ""
+            Return True
+        End Get
+    End Property
+
+    Public Overridable ReadOnly Property IsResizingAllowed As Boolean
+        Get
+            Return True
         End Get
     End Property
 

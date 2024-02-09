@@ -31,6 +31,7 @@ v2.36.0 (not published yet)
     - %jobs%, %jobs_active%
 - UI: Improve filename parsing for subtitles ([#1200](/../../issues/1200)), ([#1220](/../../issues/1220))
 - UI: Improve track name parsing from filenames ([#1220](/../../issues/1220))
+- UI: Improve Resize filter Assistant check for Dolby Vision
 - NVEncC: Add support for Dolby Vision metadata handling
 - NVEncC: Fix wrong "--vpp-resize" parameter options visibility
 - QSVEncC: Add support for Dolby Vision metadata handling

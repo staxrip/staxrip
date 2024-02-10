@@ -4110,8 +4110,8 @@ Public Class MainForm
             b.Field = NameOf(s.LoadVapourSynthPlugins)
 
             '############# Preprocessing
-            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(40, 22)
-            ui.FormSizeScaleFactor = New Size(33, 22)
+            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(40, 24)
+            ui.FormSizeScaleFactor = New Size(33, 24)
 
             '############# Source Filters
             Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth",

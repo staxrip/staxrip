@@ -34,6 +34,7 @@ v2.36.0 (not published yet)
 - UI: Improve Resize filter Assistant check for Dolby Vision
 - UI: Add ".mks" to valid subtitle file types ([#1227](/../../issues/1227))
 - UI: Adjust resize slider on main window
+- UI: Make Settings window a bit higher ([#1211](/../../issues/1211))
 - NVEncC: Add support for Dolby Vision metadata handling
 - NVEncC: Fix wrong "--vpp-resize" parameter options visibility
 - QSVEncC: Add support for Dolby Vision metadata handling

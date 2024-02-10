@@ -81,7 +81,6 @@ Public Class Project
     Public RemindToCut As Boolean = False
     Public RemindToDoCompCheck As Boolean = False
     Public RemindToSetFilters As Boolean = False
-    Public ResizeSliderMaxWidth As Integer
     Public Script As TargetVideoScript
     Public SkipAudioEncoding As Boolean
     Public SkippedAssistantTips As List(Of String)

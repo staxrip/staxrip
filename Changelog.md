@@ -33,6 +33,7 @@ v2.36.0 (not published yet)
 - UI: Improve track name parsing from filenames ([#1220](/../../issues/1220))
 - UI: Improve Resize filter Assistant check for Dolby Vision
 - UI: Add ".mks" to valid subtitle file types ([#1227](/../../issues/1227))
+- UI: Adjust resize slider on main window
 - NVEncC: Add support for Dolby Vision metadata handling
 - NVEncC: Fix wrong "--vpp-resize" parameter options visibility
 - QSVEncC: Add support for Dolby Vision metadata handling

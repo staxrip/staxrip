@@ -832,6 +832,7 @@ Public Class MainForm
         Me.tlpResize.SetColumnSpan(Me.tbResize, 4)
         Me.tbResize.Location = New System.Drawing.Point(0, 81)
         Me.tbResize.Margin = New System.Windows.Forms.Padding(0)
+        Me.tbResize.TickFrequency = TrackBarTicks
         Me.tbResize.Name = "tbResize"
         Me.tbResize.Size = New System.Drawing.Size(658, 81)
         Me.tbResize.TabIndex = 46
@@ -1048,6 +1049,8 @@ Public Class MainForm
     Private BlockSourceTextBoxTextChanged As Boolean
     Private AssistantClickAction As Action
     Private ThemeRefresh As Boolean
+    Private Const TrackBarInterval As Integer = 16
+    Private Const TrackBarTicks As Integer = 4
 
     Sub New()
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
@@ -1843,8 +1846,9 @@ Public Class MainForm
     End Function
 
     Sub SetSlider()
-        Dim w = If(p.ResizeSliderMaxWidth = 0, p.SourceWidth * 2, p.ResizeSliderMaxWidth)
-        tbResize.Maximum = CInt((Calc.FixMod16(w) - 720) / p.ForcedOutputMod)
+        tbResize.Maximum = ((Calc.FixMod(p.SourceWidth, TrackBarInterval) \ 2) * 3) \ Math.Max(TrackBarInterval, p.ForcedOutputMod)
+        tbResize.Maximum += If(tbResize.Maximum Mod 3 = 0, 0, 1)
+        tbResize.Maximum += If(tbResize.Maximum Mod 3 = 0, 0, 1)
     End Sub
 
     Sub SetSavedProject()
@@ -2845,17 +2849,12 @@ Public Class MainForm
         lZoom.Text = widthZoom.ToString("f1") + "/" + heightZoom.ToString("f1")
         lPixel.Text = CInt(p.TargetWidth * p.TargetHeight).ToString
 
-        Dim trackBarValue = CInt((p.TargetWidth - 720) / p.ForcedOutputMod)
-
-        If trackBarValue < tbResize.Minimum Then
-            trackBarValue = tbResize.Minimum
-        End If
-
-        If trackBarValue > tbResize.Maximum Then
-            trackBarValue = tbResize.Maximum
-        End If
-
+        SetSlider()
+        Dim trackBarValue = CInt(p.TargetWidth \ Math.Max(TrackBarInterval, p.ForcedOutputMod) - (tbResize.Maximum \ 3))
+        trackBarValue = Math.Min(trackBarValue, tbResize.Maximum)
+        trackBarValue = Math.Max(trackBarValue, tbResize.Minimum)
         tbResize.Value = trackBarValue
+
 
         Dim par = Calc.GetTargetPAR
 
@@ -4708,13 +4707,6 @@ Public Class MainForm
 
             ui.AddLabel(n, "(0 = disabled)")
 
-            n = ui.AddNum()
-            n.Text = "Resize slider width"
-            n.Config = {0, Integer.MaxValue, 64}
-            n.Field = NameOf(p.ResizeSliderMaxWidth)
-
-            ui.AddLabel(n, "(0 = auto)")
-
             Dim m = ui.AddMenu(Of Integer)()
             m.Text = "Output Mod"
             m.Add(2, 4, 8, 16)
@@ -5719,7 +5711,7 @@ Public Class MainForm
             End If
         End If
 
-        tbTargetWidth.Text = CInt(720 + tbResize.Value * p.ForcedOutputMod).ToString
+        tbTargetWidth.Text = CInt(p.SourceWidth \ 2 + tbResize.Value * Math.Max(TrackBarInterval, p.ForcedOutputMod)).ToString
         SetImageHeight()
         SkipAssistant = False
         Assistant(False)

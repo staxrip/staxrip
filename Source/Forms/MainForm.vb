@@ -3652,7 +3652,8 @@ Public Class MainForm
         Dim srcScript = p.Script.GetFilter("Source").Script.ToLowerInvariant
 
         For Each i In s.Demuxers
-            PreviewScript.Path = Path.Combine(p.TempDir, p.TargetFile.Base + "_view." + PreviewScript.FileType)
+            If Not i.Active AndAlso (i.SourceFilters.NothingOrEmpty OrElse Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLowerInvariant + "(").ToArray)) Then
+                Continue For
             End If
 
             If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(p.SourceFile.Ext) Then
@@ -4461,7 +4462,7 @@ Public Class MainForm
                 If PreviewScript Is Nothing Then
                     Exit Sub
                 End If
-                PreviewScript.Path = p.TempDir + p.TargetFile.Base + "_view." + PreviewScript.FileType
+                PreviewScript.Path = Path.Combine(p.TempDir, p.TargetFile.Base + "_view." + PreviewScript.FileType)
                 PreviewScript.RemoveFilter("Cutting")
             Else
                 ApplyFilters()

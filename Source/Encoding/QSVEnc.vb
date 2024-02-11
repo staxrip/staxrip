@@ -540,6 +540,11 @@ Public Class QSVEnc
         Property TransformFlipY As New BoolParam With {.Text = "Flip Y", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
         Property TransformTranspose As New BoolParam With {.Text = "Transpose", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
 
+        Property DenoiseDct As New BoolParam With {.Text = "Denoise DCT", .Switch = "--vpp-denoise-dct", .ArgsFunc = AddressOf GetDenoiseDctArgs}
+        Property DenoiseDctStep As New OptionParam With {.Text = "      Step", .HelpSwitch = "--vpp-denoise-dct", .Init = 1, .Options = {"1 (high quality, slow)", "2 (default)", "4", "8 (fast)"}, .Values = {"1", "2", "4", "8"}}
+        Property DenoiseDctSigma As New NumParam With {.Text = "      Sigma", .HelpSwitch = "--vpp-denoise-dct", .Config = {0, 100, 0.1, 1}}
+        Property DenoiseDctBlockSize As New OptionParam With {.Text = "      Block Size", .HelpSwitch = "--vpp-denoise-dct", .Options = {"8 (default)", "16 (slow)"}, .Values = {"8", "16"}}
+
         Property Colorspace As New BoolParam With {.Text = "Colorspace", .Switch = "--vpp-colorspace", .ArgsFunc = AddressOf GetColorspaceArgs}
         Property ColorspaceMatrixFrom As New OptionParam With {.Text = New String(" "c, 6) + "Matrix From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR", "bt2020nc", "bt2020c"}}
         Property ColorspaceMatrixTo As New OptionParam With {.Text = New String(" "c, 12) + "Matrix To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR", "bt2020nc", "bt2020c"}, .VisibleFunc = Function() ColorspaceMatrixFrom.Value > 0}
@@ -658,6 +663,7 @@ Public Class QSVEnc
                         Pad, PadLeft, PadTop, PadRight, PadBottom,
                         Smooth, SmoothQuality, SmoothQP, SmoothPrec)
                     Add("VPP | Misc 3",
+                        DenoiseDct, DenoiseDctStep, DenoiseDctSigma, DenoiseDctBlockSize,
                         TransformFlipX, TransformFlipY, TransformTranspose,
                         New StringParam With {.Switch = "--vpp-decimate", .Text = "Decimate"},
                         New StringParam With {.Switch = "--vpp-mpdecimate", .Text = "MP Decimate"})
@@ -787,6 +793,10 @@ Public Class QSVEnc
                 SmoothQuality.NumEdit.Enabled = Smooth.Value
                 SmoothQP.NumEdit.Enabled = Smooth.Value
                 SmoothPrec.MenuButton.Enabled = Smooth.Value
+
+                DenoiseDctStep.MenuButton.Enabled = DenoiseDct.Value
+                DenoiseDctSigma.NumEdit.Enabled = DenoiseDct.Value
+                DenoiseDctBlockSize.MenuButton.Enabled = DenoiseDct.Value
 
                 TweakContrast.NumEdit.Enabled = Tweak.Value
                 TweakGamma.NumEdit.Enabled = Tweak.Value
@@ -932,6 +942,17 @@ Public Class QSVEnc
                 If SmoothQP.Value <> SmoothQP.DefaultValue Then ret += ",qp=" & SmoothQP.Value.ToInvariantString
                 If SmoothPrec.Value <> SmoothPrec.DefaultValue Then ret += ",prec=" & SmoothPrec.ValueText
                 Return "--vpp-smooth " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetDenoiseDctArgs() As String
+            If DenoiseDct.Value Then
+                Dim ret = ""
+                If DenoiseDctStep.Value <> DenoiseDctStep.DefaultValue Then ret += ",step=" & DenoiseDctStep.ValueText
+                If DenoiseDctSigma.Value <> DenoiseDctSigma.DefaultValue Then ret += ",sigma=" & DenoiseDctSigma.Value.ToInvariantString
+                If DenoiseDctBlockSize.Value <> DenoiseDctBlockSize.DefaultValue Then ret += ",block_size=" & DenoiseDctBlockSize.ValueText
+                Return "--vpp-denoise-dct " + ret.TrimStart(","c)
             End If
             Return ""
         End Function

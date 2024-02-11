@@ -39,6 +39,7 @@ v2.36.0 (not published yet)
 - NVEncC: Fix wrong "--vpp-resize" parameter options visibility
 - QSVEncC: Add support for Dolby Vision metadata handling
 - QSVEncC: Add "Show advanced QP settings"
+- QSVEncC: Add "--vpp-denoise-dct" parameter
 - VCEEncC: Add support for Dolby Vision metadata handling
 - VCEEncC: Add Dolby Vision parameters to encoder options
 - VCEEncC: Fix "--cqp" parameter value for HEVC codec ([#1222](/../../issues/1222))

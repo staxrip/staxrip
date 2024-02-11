@@ -738,7 +738,7 @@ Public Class Package
         .Name = "VCEEncC",
         .Filename = "VCEEncC64.exe",
         .Filename32 = "VCEEncC.exe",
-        .Location = IO.Path.Combine("Encoders", "VCEEnc"),
+        .Location = IO.Path.Combine("Encoders", "VCEEncC"),
         .Description = "AMD hardware video encoder.",
         .HelpSwitch = "-h",
         .WebURL = "http://github.com/rigaya/VCEEnc",

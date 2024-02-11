@@ -2,6 +2,7 @@
 Imports System.ComponentModel
 Imports System.Net
 Imports System.Net.Http
+Imports System.Reflection
 Imports System.Text.RegularExpressions
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 
@@ -29,17 +30,15 @@ Public Class StaxRipUpdate
         End If
     End Sub
 
-    Shared Async Sub CheckForUpdate(Optional force As Boolean = False, Optional includeDevBuilds As Boolean = False, Optional x64 As Boolean = True)
-        Try
-            If Not s.CheckForUpdates AndAlso Not force Then
-                Exit Sub
-            End If
+    Shared Async Sub CheckForUpdateAsync(Optional force As Boolean = False, Optional x64 As Boolean = True)
+        If Not s.CheckForUpdates AndAlso Not force Then Exit Sub
 
+        Try
             If (Date.Now - s.CheckForUpdatesLastRequest).TotalHours >= 24 OrElse force Then
                 Dim changelogUrl = "https://raw.githubusercontent.com/staxrip/staxrip/master/Changelog.md"
                 Dim releaseUrl = "https://github.com/staxrip/staxrip/releases"
 
-                Dim currentVersion = Reflection.Assembly.GetEntryAssembly.GetName.Version
+                Dim currentVersion = Assembly.GetEntryAssembly.GetName.Version
                 Dim latestVersions = New List(Of (Version As Version, ReleaseType As String, SourceSite As String, DownloadUri As String, FileName As String))
                 Dim response = Await HttpClient.GetAsync(releaseUrl)
                 response.EnsureSuccessStatusCode()
@@ -54,17 +53,10 @@ Public Class StaxRipUpdate
                         Exit For
                     End If
 
-                    'https://github.com/staxrip/staxrip/releases/download/v2.19.0/StaxRip-v2.19.0-x64.7z
                     Dim filename = $"StaxRip-v{onlineVersionString}-x64.7z"
                     Dim downloadUri = $"https://github.com/staxrip/staxrip/releases/download/v{onlineVersionString}/{filename}"
 
-                    If onlineVersion.Build > 0 Then
-                        If includeDevBuilds Then
-                            latestVersions.Add((onlineVersion, "DEV version", releaseUrl, downloadUri, filename))
-                        End If
-                    Else
-                        latestVersions.Add((onlineVersion, "release", releaseUrl, downloadUri, filename))
-                    End If
+                    latestVersions.Add((onlineVersion, "release", releaseUrl, downloadUri, filename))
                 Next
 
                 If latestVersions.Count > 0 Then

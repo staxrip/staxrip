@@ -129,7 +129,10 @@ Public Class LogBuilder
             $"Template: {p.TemplateName}{BR}" +
             $"Video Encoder: {p.VideoEncoder.GetType().Name}{BR}" +
             $"Video Encoder Profile: {p.VideoEncoder.Name}{BR}" +
-            $"Container/Muxer Profile: {p.VideoEncoder.Muxer.Name}{BR}"
+            $"Container/Muxer Profile: {p.VideoEncoder.Muxer.Name}{BR}" +
+            $"+++++{BR}" +
+            $"Process Priority: {s.ProcessPriority}{BR}" +
+            $"Delete Temp Files: {s.DeleteTempFilesMode}{BR}"
 
         WriteLine(ConfigurationString.FormatColumn(":"))
     End Sub

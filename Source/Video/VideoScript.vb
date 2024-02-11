@@ -143,19 +143,19 @@ Public Class VideoScript
     Sub ActivateFilter(category As String)
         Dim filter = GetFilter(category)
 
-        If Not filter Is Nothing Then
+        If filter IsNot Nothing Then
             filter.Active = True
         End If
     End Sub
 
     Function IsFilterActive(category As String) As Boolean
         Dim filter = GetFilter(category)
-        Return Not filter Is Nothing AndAlso filter.Active
+        Return filter IsNot Nothing AndAlso filter.Active
     End Function
 
     Function IsFilterActive(category As String, name As String) As Boolean
         Dim filter = GetFilter(category)
-        Return Not filter Is Nothing AndAlso filter.Active AndAlso filter.Name = name
+        Return filter IsNot Nothing AndAlso filter.Active AndAlso filter.Name = name
     End Function
 
     Function GetFiltersCopy() As List(Of VideoFilter)
@@ -501,16 +501,14 @@ clipname.set_output()" + BR
             If fp <> "" Then
                 If plugin.AvsFilterNames IsNot Nothing Then
                     For Each filterName In plugin.AvsFilterNames
-                        If s.LoadAviSynthPlugins AndAlso
-                            Not IsAvsPluginInAutoLoadFolder(plugin.Filename) AndAlso
-                            ContainsFunction(scriptLower, filterName.ToLowerInvariant, 0) Then
-
+                        If s.LoadAviSynthPlugins AndAlso ContainsFunction(scriptLower, filterName.ToLowerInvariant, 0) Then
                             If plugin.Filename.Ext = "dll" Then
                                 Dim load = "LoadPlugin(""" + fp + """)" + BR
 
                                 If Not scriptLower.Contains(load.ToLowerInvariant) AndAlso
                                     Not loadCode.ToLowerInvariant.Contains(load.ToLowerInvariant) AndAlso
-                                    Not scriptAlreadyLower.Contains(load.ToLowerInvariant) Then
+                                    Not scriptAlreadyLower.Contains(load.ToLowerInvariant) AndAlso
+                                    Not IsAvsPluginInAutoLoadFolder(plugin.Filename) Then
 
                                     loadCode += load
                                 End If
@@ -545,7 +543,8 @@ clipname.set_output()" + BR
 
                                 If Not scriptLower.Contains(avsiImport.ToLowerInvariant) AndAlso
                                     Not loadCode.ToLowerInvariant.Contains(avsiImport.ToLowerInvariant) AndAlso
-                                    Not scriptAlreadyLower.Contains(avsiImport.ToLowerInvariant) Then
+                                    Not scriptAlreadyLower.Contains(avsiImport.ToLowerInvariant) AndAlso
+                                    Not IsAvsPluginInAutoLoadFolder(plugin.Filename) Then
 
                                     loadCode += avsiImport
                                 End If

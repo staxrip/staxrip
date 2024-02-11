@@ -28,6 +28,7 @@ Public Class Package
     Property Locations As String()
     Property Name As String
     Property RequiredFunc As Func(Of Boolean)
+    Property RequirementsFunc As Func(Of Boolean)
     Property SetupAction As Action
     Property Siblings As String()
     Property StatusFunc As Func(Of String)
@@ -339,6 +340,14 @@ Public Class Package
         .RequiredFunc = Function() TypeOf p.VideoEncoder Is BatchEncoder AndAlso DirectCast(p.VideoEncoder, BatchEncoder).CommandLines.Contains("xvid_encraw"),
         .IsIncluded = False,
         .HelpSwitch = "-h"})
+
+    Shared Property Vulkan As Package = Add(New Package With {
+        .Name = "Vulkan Runtime Library",
+        .Filename = "vulkan-1.dll",
+        .Location = "Support\Vulkan",
+        .Description = "Vulkan Runtime Library.",
+        .VersionAllowAny = True,
+        .TreePath = "Runtimes"})
 
     Shared Property VisualCpp2010 As Package = Add(New Package With {
         .Name = "Visual C++ 2010",
@@ -662,6 +671,24 @@ Public Class Package
         .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
         .Description = "MKV muxing/demuxing GUI app."})
 
+    Shared Property HDR10PlusTool As Package = Add(New Package With {
+        .Name = "HDR10Plus_Tool",
+        .Filename = "hdr10plus_tool.exe",
+        .Location = "Support\HDR10Plus_Tool",
+        .WebURL = "https://github.com/quietvoid/hdr10plus_tool",
+        .HelpURL = "https://github.com/quietvoid/hdr10plus_tool/blob/main/README.md",
+        .DownloadURL = "https://github.com/quietvoid/hdr10plus_tool/releases",
+        .Description = "CLI utility to work with HDR10+ in HEVC files."})
+
+    Shared Property DoViTool As Package = Add(New Package With {
+        .Name = "DoVi_Tool",
+        .Filename = "dovi_tool.exe",
+        .Location = "Support\DoVi_Tool",
+        .WebURL = "https://github.com/quietvoid/dovi_tool",
+        .HelpURL = "https://github.com/quietvoid/dovi_tool/blob/main/README.md",
+        .DownloadURL = "https://github.com/quietvoid/dovi_tool/releases",
+        .Description = "CLI tool combining multiple utilities for working with Dolby Vision."})
+
     Shared Property AutoCrop As Package = Add(New Package With {
         .Name = "AutoCrop",
         .Filename = "AutoCrop.exe",
@@ -728,8 +755,8 @@ Public Class Package
     Shared Property ffms2 As Package = Add(New PluginPackage With {
         .Name = "ffms2",
         .Filename = "ffms2.dll",
-        .WebURL = "http://github.com/FFMS/ffms2",
-        .HelpURL = "http://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md",
+        .WebURL = "https://codeberg.org/StvG/ffms2",
+        .HelpURL = "https://codeberg.org/StvG/ffms2/src/branch/main/README.md",
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource", "FFMS2"},
         .VsFilterNames = {"ffms2"}})
@@ -803,6 +830,15 @@ Public Class Package
         .Description = "Vapoursynth plugin for packing/unpacking of RGB clips.",
         .WebURL = "https://github.com/DJATOM/LibP2P-Vapoursynth",
         .VsFilterNames = {"libp2p.pack", "libp2p.unpack"}})
+
+    Shared Property VIVTC As Package = Add(New PluginPackage With {
+        .Name = "VIVTC",
+        .Filename = "VIVTC.dll",
+        .Location = "Plugins\VS\VIVTC",
+        .Description = "Field matcher and decimation filter for VapourSynth similar to TIVTC.",
+        .WebURL = "https://github.com/vapoursynth/vivtc",
+        .DownloadURL = "https://github.com/vapoursynth/vivtc/releases",
+        .VsFilterNames = {"vivtc.VFM", "vivtc.VDecimate"}})
 
     Shared Property FFTW As Package = Add(New Package With {
         .Name = "FFTW",
@@ -1185,6 +1221,27 @@ Public Class Package
         .WebURL = "http://github.com/dwbuiten/d2vsource",
         .VsFilterNames = {"d2v.Source"}})
 
+    Shared Property AVSLibPlacebo As Package = Add(New PluginPackage With {
+        .Name = "AVS_LibPlacebo",
+        .Filename = "avs_libplacebo.dll",
+        .RequirementsFunc = Function() StaxRip.Vulkan.IsSupported,
+        .Description = "An AviSynth+ plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders." + BR2 + "This is a port of the VapourSynth plugin vs-placebo.",
+        .HelpFilename = "README.md",
+        .DownloadURL = "https://github.com/Asd-g/avslibplacebo/releases/",
+        .WebURL = "https://github.com/Asd-g/avslibplacebo",
+        .AvsFilterNames = {"libplacebo_Deband", "libplacebo_Resample", "libplacebo_Shader", "libplacebo_Tonemap"}})
+
+    Shared Property VSLibPlacebo As Package = Add(New PluginPackage With {
+        .Name = "libvs_placebo",
+        .Filename = "libvs_placebo.dll",
+        .RequirementsFunc = Function() StaxRip.Vulkan.IsSupported,
+        .Description = "A VapourSynth plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders.",
+        .DownloadURL = "https://github.com/Lypheo/vs-placebo/releases",
+        .WebURL = "https://github.com/Lypheo/vs-placebo",
+        .HelpURL = "https://github.com/Lypheo/vs-placebo/blob/master/README.md",
+        .VsFilterNames = {"placebo.Deband", "placebo.Resample", "placebo.Shader", "placebo.Tonemap"}})
+
+
     Shared Sub New()
         Add(New PluginPackage With {
             .Name = "KNLMeansCL",
@@ -1259,6 +1316,15 @@ Public Class Package
             .WebURL = "https://github.com/pinterf/mvtools",
             .DownloadURL = "https://github.com/pinterf/mvtools/releases",
             .AvsFilterNames = {"DePan", "DePanInterleave", "DePanStabilize", "DePanScenes"}})
+
+        Add(New PluginPackage With {
+            .Name = "RemoveDirt",
+            .Filename = "RemoveDirt.dll",
+            .Location = "Plugins\AVS\RemoveDirt",
+            .HelpURL = "http://avisynth.nl/index.php/RemoveDirt",
+            .WebURL = "https://github.com/pinterf/RemoveDirt",
+            .DownloadURL = "https://github.com/pinterf/RemoveDirt/releases",
+            .AvsFilterNames = {"RestoreMotionBlocks", "SCSelect"}})
 
         Add(New PluginPackage With {
             .Name = "DePanEstimate",
@@ -1393,24 +1459,6 @@ Public Class Package
             .WebURL = "https://github.com/Asd-g/AviSynth-DPID",
             .Dependencies = {"avsresize.dll"},
             .AvsFilterNames = {"DPID", "DPIDraw"}})
-
-        Add(New PluginPackage With {
-            .Name = "AVS_LibPlacebo",
-            .Filename = "avs_libplacebo.dll",
-            .Description = "An AviSynth+ plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders." + BR2 + "This is a port of the VapourSynth plugin vs-placebo.",
-            .HelpFilename = "README.md",
-            .DownloadURL = "https://github.com/Asd-g/avslibplacebo/releases/",
-            .WebURL = "https://github.com/Asd-g/avslibplacebo",
-            .AvsFilterNames = {"libplacebo_Deband", "libplacebo_Resample", "libplacebo_Shader", "libplacebo_Tonemap"}})
-
-        Add(New PluginPackage With {
-            .Name = "libvs_placebo",
-            .Filename = "libvs_placebo.dll",
-            .Description = "A VapourSynth plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders.",
-            .DownloadURL = "https://github.com/Lypheo/vs-placebo/releases",
-            .WebURL = "https://github.com/Lypheo/vs-placebo",
-            .HelpURL = "https://github.com/Lypheo/vs-placebo/blob/master/README.md",
-            .VsFilterNames = {"placebo.Deband", "placebo.Resample", "placebo.Shader", "placebo.Tonemap"}})
 
         Add(New PluginPackage With {
             .Name = "ResizeX",
@@ -2504,11 +2552,7 @@ Public Class Package
 
     Property Filename As String
         Get
-            If Not Environment.Is64BitProcess AndAlso Filename32 <> "" Then
-                Return Filename32
-            End If
-
-            Return FilenameValue
+            Return If(Not Environment.Is64BitProcess AndAlso Filename32 <> "", Filename32, FilenameValue)
         End Get
         Set(value As String)
             FilenameValue = value
@@ -2522,7 +2566,7 @@ Public Class Package
             If LaunchActionValue Is Nothing Then
                 If Description.ContainsEx("GUI app") Then
                     LaunchActionValue = Sub() g.ShellExecute(Path)
-                ElseIf Not HelpSwitch Is Nothing Then
+                ElseIf HelpSwitch IsNot Nothing Then
                     LaunchActionValue = Sub() g.DefaultCommands.ExecutePowerShellCode(
                         $"& '{Path}' {If(HelpSwitch.Contains("stderr"), HelpSwitch.Replace("stderr", ""), HelpSwitch)}", True)
                 ElseIf Filename.Ext.EqualsAny("avsi", "py") Then
@@ -2539,21 +2583,23 @@ Public Class Package
 
     Private RequiredValue As Boolean = True
 
-    Overridable Property Required() As Boolean
+    Overridable Property Required As Boolean
         Get
-            If Not RequiredFunc Is Nothing Then
-                Return RequiredFunc.Invoke
-            End If
-
-            Return RequiredValue
+            Return If(RequiredFunc IsNot Nothing, RequiredFunc.Invoke, RequiredValue)
         End Get
         Set(value As Boolean)
             RequiredValue = value
         End Set
     End Property
 
+    Overridable ReadOnly Property RequirementsFulfilled As Boolean
+        Get
+            Return RequirementsFunc Is Nothing OrElse RequirementsFunc.Invoke
+        End Get
+    End Property
+
     Function GetTypeName() As String
-        If Not HelpSwitch Is Nothing Then
+        If HelpSwitch IsNot Nothing Then
             Return "Console App"
         ElseIf Description.ContainsEx("GUI app") Then
             Return "GUI App"
@@ -2599,7 +2645,7 @@ Public Class Package
     Sub ShowHelp()
         Dim dic As New SortedDictionary(Of String, String)
 
-        If HelpFilename = "" AndAlso Not HelpSwitch Is Nothing Then
+        If HelpFilename = "" AndAlso HelpSwitch IsNot Nothing Then
             HelpFilename = Name + " Help.txt"
 
             If CreateHelpfile() = "" Then
@@ -2608,7 +2654,7 @@ Public Class Package
         End If
 
         If HelpFilename <> "" Then
-            If Not HelpSwitch Is Nothing AndAlso HelpFilename = Name + " Help.txt" Then
+            If HelpSwitch IsNot Nothing AndAlso HelpFilename = Name + " Help.txt" Then
                 dic("Console Help") = Directory + HelpFilename
             Else
                 dic("Local Help") = Directory + HelpFilename
@@ -2644,7 +2690,7 @@ Public Class Package
 
     ReadOnly Property HelpFile As String
         Get
-            If HelpFilename = "" AndAlso Not HelpSwitch Is Nothing Then
+            If HelpFilename = "" AndAlso HelpSwitch IsNot Nothing Then
                 HelpFilename = Name + " Help.txt"
             End If
 
@@ -2692,7 +2738,7 @@ Public Class Package
         End If
 
         Try
-            If Not HelpSwitch Is Nothing Then
+            If HelpSwitch IsNot Nothing Then
                 Dim stderr = HelpSwitch.Contains("stderr")
                 Dim switch = If(stderr, HelpSwitch.Replace("stderr", ""), HelpSwitch)
 
@@ -2708,7 +2754,7 @@ Public Class Package
     End Function
 
     Function VerifyOK(Optional showEvenIfNotRequired As Boolean = False) As Boolean
-        If (Required() OrElse showEvenIfNotRequired) AndAlso (Required AndAlso GetStatus() <> "") Then
+        If (Required OrElse showEvenIfNotRequired) AndAlso (Required AndAlso GetStatus() <> "") Then
             Using form As New AppsForm
                 form.ShowPackage(Me)
                 form.ShowDialog()
@@ -2737,7 +2783,7 @@ Public Class Package
             End If
         End If
 
-        If Not StatusFunc Is Nothing Then
+        If StatusFunc IsNot Nothing Then
             Return StatusFunc.Invoke
         End If
     End Function
@@ -2747,11 +2793,9 @@ Public Class Package
 
         If Not IsVersionValid() Then
             If IsVersionOld() Then
-                If Not VersionAllowOld Then
-                    ret = $"The currently used version of {Name} is not compatible (too old)."
-                Else
-                    ret = $"An old {Name} version was found, click on Version (F12) and enter the name of this version or install a newer version."
-                End If
+                ret = If(Not VersionAllowOld,
+                    $"The currently used version of {Name} is not compatible (too old).",
+                    $"An old {Name} version was found, click on Version (F12) and enter the name of this version or install a newer version.")
             End If
 
             If IsVersionNew() Then
@@ -2763,11 +2807,7 @@ Public Class Package
     End Function
 
     Function GetStatusDisplay() As String
-        If GetStatus() <> "" Then
-            Return GetStatus()
-        End If
-
-        Return "OK"
+        Return If(GetStatus() <> "", GetStatus(), "OK")
     End Function
 
     Function GetStatusLocation() As String
@@ -2780,7 +2820,7 @@ Public Class Package
         Dim filepath = Path
 
         If filepath <> "" Then
-            If (VersionDate - File.GetLastWriteTimeUtc(filepath)).TotalDays > 3 Then
+            If (VersionDate - File.GetLastWriteTimeUtc(filepath)).TotalDays > 2 Then
                 Return True
             End If
         End If
@@ -2790,7 +2830,7 @@ Public Class Package
         Dim filepath = Path
 
         If filepath <> "" Then
-            If (VersionDate - File.GetLastWriteTimeUtc(filepath)).TotalDays < -3 Then
+            If (VersionDate - File.GetLastWriteTimeUtc(filepath)).TotalDays < -2 Then
                 Return True
             End If
         End If
@@ -2801,20 +2841,10 @@ Public Class Package
     End Function
 
     Overridable Function IsVersionValid() As Boolean
-        If VersionAllowAny Then
-            Return True
-        End If
+        If VersionAllowAny Then Return True
+        If IsVersionNew() AndAlso VersionAllowNew Then Return True
 
-        If IsVersionNew() AndAlso VersionAllowNew Then
-            Return True
-        End If
-
-        Dim filepath = Path
-
-        If filepath <> "" Then
-            Dim dt = File.GetLastWriteTimeUtc(filepath)
-            Return dt.AddDays(-2) < VersionDate AndAlso dt.AddDays(2) > VersionDate
-        End If
+        Return IsVersionCorrect()
     End Function
 
     Function IsCustomPathAllowed() As Boolean
@@ -2892,7 +2922,7 @@ Public Class Package
     Function GetStoredPath() As String
         Dim ret = ""
 
-        If Not s Is Nothing AndAlso Not s.Storage Is Nothing Then
+        If s IsNot Nothing AndAlso s.Storage IsNot Nothing Then
             ret = s.Storage.GetString(Name + "custom path")
 
             If ret <> "" Then
@@ -2979,7 +3009,7 @@ Public Class Package
                 End If
             End If
 
-            If Not HintDirFunc Is Nothing Then
+            If HintDirFunc IsNot Nothing Then
                 ret = IO.Path.Combine(HintDirFunc.Invoke, Filename)
 
                 If File.Exists(ret) Then
@@ -2989,8 +3019,8 @@ Public Class Package
 
             Dim plugin = TryCast(Me, PluginPackage)
 
-            If Not plugin Is Nothing Then
-                If Not plugin.VsFilterNames Is Nothing AndAlso Not plugin.AvsFilterNames Is Nothing Then
+            If plugin IsNot Nothing Then
+                If plugin.VsFilterNames IsNot Nothing AndAlso plugin.AvsFilterNames IsNot Nothing Then
                     ret = IO.Path.Combine(Folder.Apps, "Plugins", "Dual", Name, Filename)
 
                     If File.Exists(ret) Then
@@ -3014,11 +3044,7 @@ Public Class Package
             End If
 
             If Find Then
-                If Exclude.NothingOrEmpty Then
-                    ret = FindEverywhere(Filename)
-                Else
-                    ret = FindEverywhere(Filename, Exclude(0))
-                End If
+                ret = FindEverywhere(Filename, If(Exclude.NothingOrEmpty, Nothing, Exclude(0)))
 
                 If ret <> "" Then
                     Return ret
@@ -3093,7 +3119,7 @@ Public Class Package
     Shared Function FindInMuiCacheKey(ParamArray fileNames As String()) As String
         For Each exeName In fileNames
             Using key = Registry.ClassesRoot.OpenSubKey("Local Settings\Software\Microsoft\Windows\Shell\MuiCache")
-                If Not key Is Nothing Then
+                If key IsNot Nothing Then
                     For Each valueName In key.GetValueNames
                         If valueName.Contains(exeName) Then
                             Dim ret = valueName.Left(exeName) + exeName
@@ -3107,7 +3133,7 @@ Public Class Package
             End Using
 
             Using key = Registry.CurrentUser.OpenSubKey("Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\MuiCache")
-                If Not key Is Nothing Then
+                If key IsNot Nothing Then
                     For Each valueName In key.GetValueNames
                         If valueName.Contains(exeName) Then
                             Dim ret = valueName.Left(exeName) + exeName

@@ -11,11 +11,8 @@ Public Class PreviewForm
 
 #Region " Designer "
     Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
+        If disposing Then components?.Dispose()
+
         MyBase.Dispose(disposing)
     End Sub
 
@@ -228,12 +225,12 @@ Public Class PreviewForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.Black
-        Me.ClientSize = New System.Drawing.Size(837, 714)
+        'Me.ClientSize = New System.Drawing.Size(837, 1714)
         Me.Controls.Add(Me.pnVideo)
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.Name = "PreviewForm"
         Me.ShowInTaskbar = True
-        Me.Text = $"Preview - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"Preview - {g.DefaultCommands.GetApplicationDetails()}"
         Me.pnVideo.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -261,6 +258,7 @@ Public Class PreviewForm
 
     Sub New(ByRef script As VideoScript)
         InitializeComponent()
+        RestoreClientSize(64, 36)
         GetType(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty Or BindingFlags.Instance Or BindingFlags.NonPublic, Nothing, pnTrack, New Object() {True})
 
         Icon = g.Icon
@@ -328,7 +326,9 @@ Public Class PreviewForm
         Dim workingArea = Screen.FromControl(Me).WorkingArea
         Dim initHeight = CInt((workingArea.Height / 100) * s.PreviewSize)
 
-        If initSize Then
+        If Not s.ExpandPreviewWindow Then
+            SetSize(s.Storage.GetInt(Me.GetType().Name + "height"))
+        ElseIf initSize Then
             SetSize(initHeight)
         End If
 
@@ -573,7 +573,7 @@ Public Class PreviewForm
             time = time.Substring(3)
         End If
 
-        Text = $"Preview  Frame {s.LastPosition} @ {time} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Text = $"Preview  Frame {s.LastPosition} @ {time} - {g.DefaultCommands.GetApplicationDetails()}"
     End Sub
 
     <Command("Jumps to a given frame.")>

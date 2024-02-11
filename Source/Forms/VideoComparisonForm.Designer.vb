@@ -42,6 +42,7 @@ Partial Class VideoComparisonForm
         Me.tlpMain.SetColumnSpan(Me.TabControl, 2)
         Me.TabControl.Location = New System.Drawing.Point(10, 5)
         Me.TabControl.Margin = New System.Windows.Forms.Padding(10, 5, 10, 6)
+        Me.TabControl.Multiline = True
         Me.TabControl.Name = "TabControl"
         Me.TabControl.SelectedIndex = 0
         Me.TabControl.Size = New System.Drawing.Size(1436, 819)
@@ -106,7 +107,7 @@ Partial Class VideoComparisonForm
         Me.Name = "VideoComparisonForm"
         Me.ShowIcon = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = $"Video Comparison - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"Video Comparison - {g.DefaultCommands.GetApplicationDetails()}"
         CType(Me.TrackBar, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tlpMain.ResumeLayout(False)
         Me.ResumeLayout(False)

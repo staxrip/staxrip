@@ -406,7 +406,7 @@ Public Interface ISafeSerialization
 End Interface
 
 Public Class HelpDocument
-    Private Path As String
+    Private ReadOnly Path As String
     Private IsClosed As Boolean
 
     Property Writer As XmlTextWriter
@@ -461,8 +461,9 @@ table {
 }
 </style>"
 
-        Writer = New XmlTextWriter(Path, Encoding.UTF8)
-        Writer.Formatting = Formatting.Indented
+        Writer = New XmlTextWriter(Path, Encoding.UTF8) With {
+            .Formatting = Formatting.Indented
+        }
         Writer.WriteRaw("<!doctype html>")
         Writer.WriteStartElement("html")
         Writer.WriteStartElement("head")
@@ -720,8 +721,8 @@ End Class
 Public Class FieldSettingBag(Of T)
     Inherits SettingBag(Of T)
 
-    Private Obj As Object
-    Private Name As String
+    Private ReadOnly Obj As Object
+    Private ReadOnly Name As String
 
     Sub New(obj As Object, fieldName As String)
         Me.Obj = obj
@@ -741,8 +742,8 @@ End Class
 Public Class ReflectionSettingBag(Of T)
     Inherits SettingBag(Of T)
 
-    Private Obj As Object
-    Private Name As String
+    Private ReadOnly Obj As Object
+    Private ReadOnly Name As String
 
     Sub New(obj As Object, name As String)
         Me.Obj = obj
@@ -1218,11 +1219,7 @@ Public Module MainModule
         Return Msg(title, content, TaskIcon.Question, buttons)
     End Function
 
-    Function Msg(title As String,
-                 content As String,
-                 icon As TaskIcon,
-                 buttons As TaskButton) As DialogResult
-
+    Function Msg(title As String, content As String, icon As TaskIcon, buttons As TaskButton) As DialogResult
         Using td As New TaskDialog(Of DialogResult)
             td.Icon = icon
             td.Title = title
@@ -1235,7 +1232,7 @@ End Module
 
 Public Class Reflector
     Public Type As Type
-    Private BasicFlags As BindingFlags = BindingFlags.Static Or BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.NonPublic
+    Private ReadOnly BasicFlags As BindingFlags = BindingFlags.Static Or BindingFlags.Instance Or BindingFlags.Public Or BindingFlags.NonPublic
 
     Sub New(obj As Object)
         Me.Value = obj
@@ -1396,7 +1393,7 @@ Public Class PowerRequest
 End Class
 
 Public Class CRC32
-    Shared Table As UInteger() = New UInteger(255) {}
+    Shared ReadOnly Table As UInteger() = New UInteger(255) {}
 
     Shared Sub New()
         Dim poly = &HEDB88320UI
@@ -1433,4 +1430,32 @@ Public Class CRC32
             Return GetChecksum(Encoding.Unicode.GetBytes(str))
         End If
     End Function
+End Class
+
+Public Class Vulkan
+    Private Shared _pApiVersion As UInteger
+    Private Shared _result As VkResult = Nothing
+
+    <DllImport("vulkan-1.dll")>
+    Public Shared Function vkEnumerateInstanceVersion(ByRef pApiVersion As UInteger) As VkResult
+    End Function
+
+    Public Shared ReadOnly Property IsSupported As Boolean
+        Get
+            Try
+                If _result = Nothing Then
+                    _result = vkEnumerateInstanceVersion(_pApiVersion)
+                End If
+            Catch ex As Exception
+                _result = VkResult.ErrorInitializationFailed
+            End Try
+            Return _result = VkResult.Success
+        End Get
+    End Property
+
+    Public Shared ReadOnly Property Version As String
+        Get
+            Return If(IsSupported, $"{_pApiVersion >> 22}.{(_pApiVersion >> 12) And &H3FF}.{_pApiVersion And &HFFF}", "")
+        End Get
+    End Property
 End Class

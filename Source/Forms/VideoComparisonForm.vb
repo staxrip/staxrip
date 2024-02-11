@@ -111,12 +111,13 @@ Public Class VideoComparisonForm
     End Sub
 
     Sub Add()
-        If Not Package.AviSynth.VerifyOK(True) Then
-            Exit Sub
-        End If
+        If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
 
-        If File.Exists(p.SourceFile) Then
-            Add(p.SourceFile)
+        Dim sourcePath = p.SourceFile
+        Dim sourceAlreadyOpen = If(TabControl.TabPages.Cast(Of VideoTab)?.Where(Function(x) x.SourceFilePath.Equals(sourcePath, StringComparison.InvariantCultureIgnoreCase))?.Any(), False)
+
+        If Not sourceAlreadyOpen AndAlso File.Exists(sourcePath) Then
+            Add(sourcePath)
             If File.Exists(p.TargetFile) Then Add(p.TargetFile)
         Else
             Using dialog As New OpenFileDialog
@@ -317,7 +318,7 @@ Public Class VideoComparisonForm
         Dim time As TimeSpan
 
         If value <> "" AndAlso TimeSpan.TryParse(value, time) Then
-            TrackBar.Value = CInt((time.TotalMilliseconds / 1000) * tab.Server.FrameRate)
+            TrackBar.Value = CInt(time.TotalMilliseconds / 1000 * tab.Server.FrameRate)
         End If
     End Sub
 
@@ -340,6 +341,20 @@ Public Class VideoComparisonForm
             Controls.Add(VideoPanel)
         End Sub
 
+        Private Function AdjustName(name As String, Optional lengthLimit As Integer = 50) As String
+            If String.IsNullOrWhiteSpace(name) Then Return "<empty>"
+
+            Const replacement = "....."
+
+            If name.Length > lengthLimit Then
+                Dim firstHalfLength = lengthLimit \ 2
+                Dim secondHalfLength = lengthLimit - firstHalfLength
+                Return $"{name.Substring(0, firstHalfLength)}{replacement}{name.Substring(name.Length - secondHalfLength)}"
+            End If
+
+            Return name
+        End Function
+
         Sub Reload()
             Renderer.Dispose()
             Server.Dispose()
@@ -347,7 +362,7 @@ Public Class VideoComparisonForm
         End Sub
 
         Function Open(sourcePath As String) As Boolean
-            Text = sourcePath.Base
+            Text = AdjustName(sourcePath.Base)
             SourceFilePath = sourcePath
 
             Select Case sourcePath.Ext()
@@ -373,78 +388,74 @@ Public Class VideoComparisonForm
             AddHandler Disposed, Sub() FileHelp.Delete(script.Path, RecycleOption.DeletePermanently)
 
             Select Case FileType
-                    Case VideoComparisonFileType.AviSynthScript
-                        script.Filters.Add(New VideoFilter("Source", "Source", File.ReadAllText(sourcePath)))
-                    Case VideoComparisonFileType.VapourSynthScript
-                        script.Filters.Add(New VideoFilter("Source", "Source", File.ReadAllText(sourcePath)))
-                    Case VideoComparisonFileType.Video
-                        If sourcePath.EndsWith("mp4") Then
-                            script.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourcePath + "" + """, format = ""YV12"")"))
-                        Else
-                            script.Filters.Add(New VideoFilter("FFVideoSource(""" + sourcePath + "" + """, colorspace = ""YV12"")"))
-                        End If
-                        script.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
-                    Case VideoComparisonFileType.Picture
-                        script.Filters.Add(New VideoFilter("ImageSource(""" + sourcePath + """, end = 0)"))
-                        script.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
-                    Case Else
-                        Throw New NotSupportedException("VideoComparisonFileType unhandled!")
-                End Select
-
-                Select Case FileType
-                    Case VideoComparisonFileType.Picture
-                        If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
-                            script.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
-                        End If
-                    Case VideoComparisonFileType.Video
-                        If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
-                            script.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
-                        End If
-                    Case VideoComparisonFileType.AviSynthScript
-                    Case VideoComparisonFileType.VapourSynthScript
-                    Case Else
-                        Throw New NotSupportedException("VideoComparisonFileType unhandled!")
-                End Select
-
-                script.Synchronize(True, True, True)
-
-                Server = FrameServerFactory.Create(script.Path)
-                Renderer = New VideoRenderer(VideoPanel, Server)
-
-                If Form.TrackBar.Maximum < Server.Info.FrameCount - 1 Then
-                    Form.TrackBar.Maximum = Server.Info.FrameCount - 1
-                End If
-
-                If Server.Error <> "" Then
-                    MsgError(Server.Error)
-                End If
-
-                Dim csvFile = sourcePath.DirAndBase + ".csv"
-
-                If File.Exists(csvFile) Then
-                    Dim len = Form.TrackBar.Maximum
-                    Dim lines = File.ReadAllLines(csvFile)
-
-                    If lines.Length > len Then
-                        FrameInfo = New String(len) {}
-                        Dim headers = lines(0).Split({","c})
-
-                        For x = 1 To len + 1
-                            Dim values = lines(x).Split({","c})
-
-                            For x2 = 0 To headers.Length - 1
-                                Dim value = values(x2).Trim
-
-                                If value <> "" AndAlso value <> "-" Then
-                                    FrameInfo(x - 1) += headers(x2).Trim + ": " + value + ", "
-                                End If
-                            Next
-
-                            FrameInfo(x - 1) = FrameInfo(x - 1).TrimEnd(" ,".ToCharArray)
-                        Next
+                Case VideoComparisonFileType.AviSynthScript
+                    script.Filters.Add(New VideoFilter("Source", "Source", File.ReadAllText(sourcePath)))
+                Case VideoComparisonFileType.VapourSynthScript
+                    script.Filters.Add(New VideoFilter("Source", "Source", File.ReadAllText(sourcePath)))
+                Case VideoComparisonFileType.Video
+                    If sourcePath.EndsWith("mp4") Then
+                        script.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourcePath + "" + """, format = ""YV12"")"))
+                    Else
+                        script.Filters.Add(New VideoFilter("FFVideoSource(""" + sourcePath + "" + """, colorspace = ""YV12"")"))
                     End If
+                    script.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
+                Case VideoComparisonFileType.Picture
+                    script.Filters.Add(New VideoFilter("ImageSource(""" + sourcePath + """, end = 0)"))
+                    script.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
+                Case Else
+                    Throw New NotSupportedException("VideoComparisonFileType unhandled!")
+            End Select
+
+            Select Case FileType
+                Case VideoComparisonFileType.Picture
+                    If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
+                        script.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
+                    End If
+                Case VideoComparisonFileType.Video
+                    If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
+                        script.Filters.Add(New VideoFilter("Crop(" & Form.CropLeft & ", " & Form.CropTop & ", -" & Form.CropRight & ", -" & Form.CropBottom & ")"))
+                    End If
+                Case VideoComparisonFileType.AviSynthScript
+                Case VideoComparisonFileType.VapourSynthScript
+                Case Else
+                    Throw New NotSupportedException("VideoComparisonFileType unhandled!")
+            End Select
+
+            script.Synchronize(True, True, True)
+
+            Server = FrameServerFactory.Create(script.Path)
+            Renderer = New VideoRenderer(VideoPanel, Server)
+            Dim maximum = Server.Info.FrameCount - 1
+            Form.TrackBar.Maximum = If(Form.TrackBar.Maximum < maximum, maximum, Form.TrackBar.Maximum)
+
+            If Server.Error <> "" Then MsgError(Server.Error)
+
+            Dim csvFile = sourcePath.DirAndBase + ".csv"
+
+            If File.Exists(csvFile) Then
+                Dim len = Form.TrackBar.Maximum
+                Dim lines = File.ReadAllLines(csvFile)
+
+                If lines.Length > len Then
+                    FrameInfo = New String(len) {}
+                    Dim headers = lines(0).Split({","c})
+
+                    For x = 1 To len + 1
+                        Dim values = lines(x).Split({","c})
+
+                        For x2 = 0 To headers.Length - 1
+                            Dim value = values(x2).Trim
+
+                            If value <> "" AndAlso value <> "-" Then
+                                FrameInfo(x - 1) += headers(x2).Trim + ": " + value + ", "
+                            End If
+                        Next
+
+                        FrameInfo(x - 1) = FrameInfo(x - 1).TrimEnd(" ,".ToCharArray)
+                    Next
                 End If
-                Return True
+            End If
+            Return True
         End Function
 
         Sub Draw()

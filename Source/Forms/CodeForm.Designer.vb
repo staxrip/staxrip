@@ -44,7 +44,7 @@ Partial Class CodeForm
         Me.ClientSize = New System.Drawing.Size(1281, 1106)
         Me.Controls.Add(Me.rtb)
         Me.Name = "CodeForm"
-        Me.Text = $"Code - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"Code - {g.DefaultCommands.GetApplicationDetails()}"
         Me.ShowIcon = False
         Me.ResumeLayout(False)
 

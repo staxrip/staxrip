@@ -448,9 +448,9 @@ Public Class SimpleUI
 
     Public Class SimpleUILineControl
         Inherits LineControl
-        Implements SimpleUIControl
+        Implements ISimpleUIControl
 
-        Property Expand As Boolean Implements SimpleUIControl.Expand
+        Property Expand As Boolean Implements ISimpleUIControl.Expand
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
             Height = FontHeight * 2
@@ -648,16 +648,16 @@ Public Class SimpleUI
 
     Public Class SimpleUIButton
         Inherits ButtonEx
-        Implements SimpleUIControl
+        Implements ISimpleUIControl
 
-        Property Expand As Boolean Implements SimpleUIControl.Expand
+        Property Expand As Boolean Implements ISimpleUIControl.Expand
     End Class
 
     Public Class SimpleUITextEdit
         Inherits TextEdit
-        Implements SimpleUIControl
+        Implements ISimpleUIControl
 
-        Property Expand As Boolean Implements SimpleUIControl.Expand
+        Property Expand As Boolean Implements ISimpleUIControl.Expand
         Property SaveAction As Action(Of String)
         Property WidthFactor As Integer = 10
         Property SimpleUI As SimpleUI
@@ -769,9 +769,9 @@ Public Class SimpleUI
 
     Public Class SimpleUIMenuButton(Of T)
         Inherits MenuButton
-        Implements SimpleUIControl
+        Implements ISimpleUIControl
 
-        Property Expand As Boolean Implements SimpleUIControl.Expand
+        Property Expand As Boolean Implements ISimpleUIControl.Expand
         Property ValueChangedAction As Action(Of T)
         Property SaveAction As Action(Of T)
         Property HelpAction As Action
@@ -1268,7 +1268,7 @@ Public Class SimpleUI
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
-            If Not Button Is Nothing Then
+            If Button IsNot Nothing Then
                 Button.Height = CInt(FontHeight * 1.5)
                 Button.Width = FontHeight * 10
             End If
@@ -1292,7 +1292,7 @@ Public Class SimpleUI
             Set(value As String)
                 Dim parent = Me.Parent
 
-                While Not TypeOf parent Is IPage
+                While TypeOf parent IsNot IPage
                     parent = parent.Parent
                 End While
 
@@ -1335,7 +1335,7 @@ Public Class SimpleUI
         End Property
     End Class
 
-    Interface SimpleUIControl
+    Interface ISimpleUIControl
         Property Expand As Boolean
     End Interface
 End Class

@@ -3,6 +3,7 @@ Imports Microsoft
 Imports Microsoft.VisualBasic.Logging
 Imports System.Runtime.InteropServices.ComTypes
 Imports StaxRip.VideoEncoderCommandLine
+Imports StaxRip.UI
 
 <Serializable()>
 Public Class QSVEnc
@@ -51,7 +52,7 @@ Public Class QSVEnc
         Params.Codec.Value = If(codecIndex > 0 AndAlso codecIndex < Params.Codec.Values.Length, codecIndex, 0)
     End Sub
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Dim params1 As New EncoderParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         params1.Init(store)
@@ -76,6 +77,10 @@ Public Class QSVEnc
             form.cms.Add("Check Environment", Sub() g.ShowCode("Check Environment", ProcessHelp.GetConsoleOutput(Package.QSVEncC.Path, "--check-environment")))
             form.cms.Add("-")
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
+
+            If Not String.IsNullOrWhiteSpace(path) Then
+                form.SimpleUI.ShowPage(path)
+            End If
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = params1
@@ -115,8 +120,6 @@ Public Class QSVEnc
             proc.Arguments = "/S /C """ + Params.GetCommandLine(True, True) + """"
             proc.Start()
         End Using
-
-        AfterEncoding()
     End Sub
 
     Overrides Function GetMenu() As MenuList
@@ -146,7 +149,7 @@ Public Class QSVEnc
         tester.IgnoredSwitches = "version check-lib check-device video-streamid video-track input-analyze
             check-avversion check-codecs check-encoders check-decoders check-formats vpp-delogo-add
             check-protocols chapter-no-trim check-filters device output vpp-half-turn input-format
-            raw avs vpy-mt audio-source audio-file seek format caption2ass output-format audio-profile
+            raw avs vpy-mt audio-source audio-file seek format output-format audio-profile
             audio-copy audio-copy audio-codec audio-bitrate audio-ignore check-profiles vpp-delogo-pos
             audio-ignore audio-samplerate audio-resampler audio-stream audio-stream vpp-delogo-y vpy
             audio-stream audio-stream audio-filter chapter-copy chapter sub-copy vpp-delogo-depth input
@@ -193,7 +196,7 @@ Public Class QSVEnc
             .Text = "Mode",
             .Options = {"AVBR - Average Variable Bitrate", "CBR - Constant Bitrate", "CQP - Constant QP", "ICQ - Intelligent Constant Quality", "LA - VBR Lookahead", "LA-HRD - VBR HRD Lookahead", "LA-ICQ - Intelligent Constant Quality Lookahead", "QVBR - Quality-Defined Variable Bitrate", "VBR - Variable Bitrate", "VCM - Video Conferencing Mode"},
             .Values = {"avbr", "cbr", "cqp", "icq", "la", "la-hrd", "la-icq", "qvbr", "vbr", "vcm"},
-            .Init = 2}
+            .Init = 3}
 
         Property Bitrate As New NumParam With {
             .HelpSwitch = "--bitrate",
@@ -205,41 +208,41 @@ Public Class QSVEnc
         Property QvbrQuality As New NumParam With {
             .Switch = "--qvbr-quality",
             .Text = "QVBR Quality",
-            .Init = 23,
+            .Init = 18,
             .VisibleFunc = Function() Mode.Value = 7,
             .Config = {0, 51, 1}}
 
         Property Quality As New NumParam With {
             .Text = "Quality",
-            .Init = 23,
+            .Init = 18,
             .VisibleFunc = Function() {"icq", "la-icq"}.Contains(Mode.ValueText),
             .Config = {0, 63}}
 
         Property OutputDepth As New OptionParam With {
             .Switch = "--output-depth",
             .Text = "Output Depth",
-            .Options = {"8bit", "10bit"},
+            .Options = {"8-Bit", "10-Bit"},
             .Values = {"8", "10"},
             .Init = 0}
 
         Property QPI As New NumParam With {
             .HelpSwitch = "--cqp",
             .Text = "QP I",
-            .Init = 24,
+            .Init = 18,
             .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
             .Config = {0, 63}}
 
         Property QPP As New NumParam With {
             .HelpSwitch = "--cqp",
             .Text = "QP P",
-            .Init = 26,
+            .Init = 20,
             .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
             .Config = {0, 63}}
 
         Property QPB As New NumParam With {
             .HelpSwitch = "--cqp",
             .Text = "QP B",
-            .Init = 27,
+            .Init = 24,
             .VisibleFunc = Function() {"cqp"}.Contains(Mode.ValueText),
             .Config = {0, 63}}
 
@@ -467,6 +470,7 @@ Public Class QSVEnc
                         New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image", .Options = {"Disabled", "H", "V"}},
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}},
                         New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhance", .Config = {0, 100}},
+                        New BoolParam With {.Switch = "--vpp-rff", .Text = "RFF", .Init = True},
                         New BoolParam With {.Switch = "--vpp-perc-pre-enc", .Text = "Perceptual Pre Encode"},
                         mctf,
                         mctfval)
@@ -525,7 +529,7 @@ Public Class QSVEnc
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New StringParam With {.Switch = "--thread-affinity", .Text = "Thread Affinity"},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Init = 3},
-                        New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
+                        New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error", "Quiet"}},
                         New OptionParam With {.Switch = "--sao", .Text = "SAO", .Options = {"Auto", "None", "Luma", "Chroma", "All"}, .VisibleFunc = Function() Codec.ValueText = "hevc"})
                     Add("Other 2",
                         New NumParam With {.Switch = "--max-framesize", .Text = "Max frame size in bytes", .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Bitrate.Visible},
@@ -534,7 +538,7 @@ Public Class QSVEnc
                         New NumParam With {.Switch = "--tile-row", .Text = "Number of tile rows", .Init = 2, .DefaultValue = 1, .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Codec.ValueText = "av1"},
                         New NumParam With {.Switch = "--tile-col", .Text = "Number of tile columns", .Init = 1, .Config = {0, 100}, .VisibleFunc = Function() Codec.ValueText = "av1"},
                         New BoolParam With {.Switch = "--no-deblock", .Text = "No Deblock", .VisibleFunc = Function() Codec.ValueText = "h264"},
-                        New BoolParam With {.Switch = "--fallback-rc", .Text = "Enable fallback for unsupported modes", .Value = True},
+                        New BoolParam With {.Switch = "--fallback-rc", .Text = "Enable fallback for unsupported modes", .Init = True},
                         New BoolParam With {.Switch = "--timer-period-tuning", .NoSwitch = "--no-timer-period-tuning", .Text = "Timer Period Tuning", .Init = True},
                         New BoolParam With {.Switch = "--fixed-func", .Text = "Use fixed func instead of GPU EU"},
                         New BoolParam With {.Switch = "--hevc-gpb", .Text = "Use GPB for P-frames", .VisibleFunc = Function() Codec.ValueText = "hevc"},

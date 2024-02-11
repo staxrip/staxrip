@@ -4,6 +4,7 @@ Imports System.Drawing.Design
 Imports System.Drawing.Drawing2D
 Imports System.Globalization
 Imports System.Reflection
+Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
@@ -276,12 +277,12 @@ Public Class MainForm
         Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpAudio.Controls.Add(Me.llEditAudio1, 2, 1)
         Me.tlpAudio.Controls.Add(Me.tbAudioFile0, 0, 0)
+        Me.tlpAudio.Controls.Add(Me.llAudioProfile0, 1, 0)
         Me.tlpAudio.Controls.Add(Me.llEditAudio0, 2, 0)
         Me.tlpAudio.Controls.Add(Me.tbAudioFile1, 0, 1)
         Me.tlpAudio.Controls.Add(Me.llAudioProfile1, 1, 1)
-        Me.tlpAudio.Controls.Add(Me.llAudioProfile0, 1, 0)
+        Me.tlpAudio.Controls.Add(Me.llEditAudio1, 2, 1)
         Me.tlpAudio.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpAudio.Location = New System.Drawing.Point(6, 48)
         Me.tlpAudio.Margin = New System.Windows.Forms.Padding(0)
@@ -1328,7 +1329,7 @@ Public Class MainForm
                                 End If
 
                                 If stream.Language.TwoLetterCode <> "iv" Then
-                                    base += " " + stream.Language.Name
+                                    base += " " + stream.Language.EnglishName
                                 End If
 
                                 If stream.Title <> "" Then
@@ -1391,7 +1392,7 @@ Public Class MainForm
                         lng = If(track = 0, New Language(), New Language("en"))
                     End If
 
-                    If Not iPath.Contains(lng.Name) Then
+                    If Not iPath.Contains(lng.EnglishName) Then
                         Continue For
                     End If
                 End If
@@ -1409,10 +1410,31 @@ Public Class MainForm
     End Sub
 
     Function IsSaveCanceled() As Boolean
-        'ObjectHelp.GetCompareString(g.SavedProject).WriteFile(Folder.Desktop + "\test1.txt", Encoding.ASCII)
-        'ObjectHelp.GetCompareString(p).WriteFile(Folder.Desktop + "\test2.txt", Encoding.ASCII)
+        If s.ApplicationExitMode <> ApplicationExitMode.Regular Then
+            Select Case s.ApplicationExitMode
+                Case ApplicationExitMode.BypassProjectSaving
+                    Return False
+                Case ApplicationExitMode.ForceProjectSaving
+                    If g.ProjectPath IsNot Nothing Then
+                        SaveProjectPath(g.ProjectPath)
+                    End If
+                    Return False
+                Case Else
+                    Throw New NotImplementedException()
+            End Select
+
+            If g.ProjectPath Is Nothing Then
+                If Not OpenSaveProjectDialog() Then
+                    Return True
+                End If
+            Else
+                SaveProjectPath(g.ProjectPath)
+            End If
+        End If
 
         If ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p) Then
+            'If String.IsNullOrWhiteSpace(p.SourceFile) AndAlso Log.Length > 0 Then Return False
+
             If s.AutoSaveProject AndAlso p.SourceFile <> "" Then
                 If g.ProjectPath Is Nothing Then
                     g.ProjectPath = Path.Combine(p.TempDir, p.TargetFile.Base + ".srip")
@@ -1440,15 +1462,15 @@ Public Class MainForm
                     End If
                 ElseIf td.SelectedValue = DialogResult.Cancel Then
                     Return True
+                Else
+                    Return False
                 End If
             End Using
         End If
     End Function
 
     Sub UpdateRecentProjectsMenu()
-        If Disposing OrElse IsDisposed Then
-            Exit Sub
-        End If
+        If Disposing OrElse IsDisposed Then Exit Sub
 
         For Each mi In CustomMainMenu.MenuItems
             If mi.CustomMenuItem?.MethodName = "DynamicMenuItem" AndAlso
@@ -1701,13 +1723,8 @@ Public Class MainForm
 
     Function OpenProject(path As String, saveCurrent As Boolean) As Boolean
         Try
-            If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then
-                Return False
-            End If
-
-            If path = "" OrElse Not File.Exists(path) Then
-                path = g.StartupTemplatePath
-            End If
+            If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then Return False
+            If String.IsNullOrWhiteSpace(path) OrElse Not File.Exists(path) Then path = g.StartupTemplatePath
 
             Try
                 p = SafeSerialization.Deserialize(New Project, path)
@@ -1738,7 +1755,7 @@ Public Class MainForm
 
             SetBindings(p, True)
 
-            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails(True, True, True)}"
+            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails()}"
 
             If Not Environment.Is64BitProcess Then
                 Text += " (32 bit)"
@@ -2053,8 +2070,7 @@ Public Class MainForm
             End If
 
             If preferredSourceFilter IsNot Nothing Then
-                Dim isVapourSynth = preferredSourceFilter.Script.Replace(" ", "").Contains("clip=core.") OrElse
-                    preferredSourceFilter.Script = "#vs"
+                Dim isVapourSynth = preferredSourceFilter.Script.Replace(" ", "").Contains("clip=core.") OrElse preferredSourceFilter.Script = "#vs"
 
                 If isVapourSynth Then
                     If Not Package.Python.VerifyOK(True) OrElse
@@ -2068,18 +2084,14 @@ Public Class MainForm
                         p.Script = VideoScript.GetDefaults()(1)
                     End If
                 Else
-                    If Not Package.AviSynth.VerifyOK(True) Then
-                        Throw New AbortException
-                    End If
+                    If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
 
                     If p.Script.Engine = ScriptEngine.VapourSynth Then
                         p.Script = VideoScript.GetDefaults()(0)
                     End If
                 End If
 
-                p.Script.SetFilter(preferredSourceFilter.Category,
-                                   preferredSourceFilter.Name,
-                                   preferredSourceFilter.Script)
+                p.Script.SetFilter(preferredSourceFilter.Category, preferredSourceFilter.Name, preferredSourceFilter.Script)
             End If
 
             If Not g.VerifyRequirements() Then
@@ -2134,7 +2146,7 @@ Public Class MainForm
 
             p.SourceVideoHdrFormat = MediaInfo.GetVideo(p.LastOriginalSourceFile, "HDR_Format_Commercial")
 
-            If p.SourceVideoHdrFormat = "" Then
+            If String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) Then
                 p.SourceVideoHdrFormat = "SDR"
             ElseIf p.SourceVideoHdrFormat.Contains("Blu-ray / HDR10") OrElse p.SourceVideoHdrFormat.Contains("Dolby") Then
                 p.SourceVideoHdrFormat = "DV"
@@ -2148,10 +2160,9 @@ Public Class MainForm
             p.SourceSize = New FileInfo(p.LastOriginalSourceFile).Length
             p.SourceVideoSize = MediaInfo.GetVideo(p.LastOriginalSourceFile, "StreamSize").ToLong()
             p.SourceBitrate = CInt(MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitRate").ToInt / 1000)
+            p.SourceFrameRateMode = MediaInfo.GetVideo(p.LastOriginalSourceFile, "FrameRate_Mode")
             p.SourceScanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
             p.SourceScanOrder = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanOrder")
-
-            p.VideoEncoder.SetMetaData(p.LastOriginalSourceFile)
 
             Dim mkvMuxer = TryCast(p.VideoEncoder.Muxer, MkvMuxer)
 
@@ -2217,9 +2228,29 @@ Public Class MainForm
 
             Demux()
 
-            If p.LastOriginalSourceFile <> p.SourceFile AndAlso
-                Not FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
+            If String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+                Dim metadatas = Task.Run(Async Function() Await FindHdrMetadataAsync(p)).Result
+                p.Hdr10PlusMetadataFile = If(String.IsNullOrWhiteSpace(metadatas.jsonFile), Nothing, metadatas.jsonFile)
+                p.HdrDolbyVisionMetadataFile = If(String.IsNullOrWhiteSpace(metadatas.rpuFile), Nothing, New DolbyVisionMetadataFile(metadatas.rpuFile))
+            End If
 
+            If p.ExtractHdrmetadata <> HdrmetadataMode.None AndAlso
+                Not String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) AndAlso
+                (String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path)) Then
+
+                Select Case p.ExtractHdrmetadata
+                    Case HdrmetadataMode.DolbyVision
+                        ExtractDolbyVisionMetadata(p)
+                    Case HdrmetadataMode.HDR10Plus
+                        ExtractHdr10PlusMetadata(p)
+                    Case Else
+                        ExtractHdrMetadata(p)
+                End Select
+            End If
+
+            p.VideoEncoder.SetMetaData(p.LastOriginalSourceFile)
+
+            If p.LastOriginalSourceFile <> p.SourceFile AndAlso Not FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
                 p.LastOriginalSourceFile = p.SourceFile
             End If
 
@@ -2336,7 +2367,7 @@ Public Class MainForm
 
             s.LastPosition = 0
 
-            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFrameCount, p.Script.GetFramerate)
+            UpdateTargetParameters(p)
             DemuxVobSubSubtitles()
             ConvertBluRaySubtitles()
             ExtractForcedVobSubSubtitles()
@@ -2346,36 +2377,10 @@ Public Class MainForm
                 g.AddHardcodedSubtitle()
             End If
 
-            Dim isCropActive = p.Script.IsFilterActive("Crop")
-
-            If isCropActive AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
-                p.SourceScript.Synchronize(True, True, True)
-
-                Using proc As New Proc
-                    proc.Header = "Auto Crop"
-                    proc.SkipString = "%"
-                    proc.Package = Package.AutoCrop
-                    proc.Arguments = p.SourceScript.Path.Escape + " " & s.CropFrameCount & " " &
-                        If(FrameServerHelp.IsVfwUsed, 1, 0)
-                    proc.Start()
-
-                    Dim output = proc.Log.ToString
-                    Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
-
-                    If match.Success Then
-                        p.CropLeft = match.Groups(1).Value.ToInt
-                        p.CropTop = match.Groups(2).Value.ToInt
-                        p.CropRight = match.Groups(3).Value.ToInt
-                        p.CropBottom = match.Groups(4).Value.ToInt
-                        g.CorrectCropMod()
-                        DisableCropFilter()
-                    End If
-                End Using
-            End If
-
+            AutoCrop()
             AutoResize()
 
-            If isCropActive Then
+            If p.Script.IsFilterActive("Crop") AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
                 g.OvercropWidth()
 
                 If p.AutoSmartCrop Then
@@ -2625,6 +2630,42 @@ Public Class MainForm
         End If
     End Sub
 
+    Sub AutoCrop()
+        If p.AutoCropMode = AutoCropMode.DolbyVisionOnly OrElse p.AutoCropMode = AutoCropMode.Always Then
+            p.SourceScript.Synchronize(True, True, True)
+
+            If p.HdrDolbyVisionMetadataFile?.Crop <> Padding.Empty Then
+                p.CropLeft = p.HdrDolbyVisionMetadataFile.Crop.Left
+                p.CropTop = p.HdrDolbyVisionMetadataFile.Crop.Top
+                p.CropRight = p.HdrDolbyVisionMetadataFile.Crop.Right
+                p.CropBottom = p.HdrDolbyVisionMetadataFile.Crop.Bottom
+                g.CorrectCropMod(False, False)
+            ElseIf p.AutoCropMode = AutoCropMode.Always Then
+
+                Using proc As New Proc
+                    proc.Header = "Auto Crop"
+                    proc.SkipString = "%"
+                    proc.Package = Package.AutoCrop
+                    proc.Arguments = p.SourceScript.Path.Escape + " " & s.CropFrameCount & " " & If(FrameServerHelp.IsVfwUsed, 1, 0)
+                    proc.Start()
+
+                    Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
+
+                    If match.Success Then
+                        p.CropLeft = match.Groups(1).Value.ToInt
+                        p.CropTop = match.Groups(2).Value.ToInt
+                        p.CropRight = match.Groups(3).Value.ToInt
+                        p.CropBottom = match.Groups(4).Value.ToInt
+                        g.CorrectCropMod(False, True)
+                    End If
+                End Using
+            End If
+
+            SetCropFilter()
+            DisableCropFilter()
+        End If
+    End Sub
+
     Sub AutoResize()
         If p.Script.IsFilterActive("Resize") Then
             If p.AutoResizeImage <> 0 Then
@@ -2643,9 +2684,7 @@ Public Class MainForm
     End Sub
 
     Sub ConvertBluRaySubtitles()
-        If Not p.ConvertSup2Sub Then
-            Exit Sub
-        End If
+        If Not p.ConvertSup2Sub Then Exit Sub
 
         For Each i In g.GetFilesInTempDirAndParent
             If i.Ext = "sup" AndAlso g.IsSourceSameOrSimilar(i) AndAlso Not File.Exists(i.DirAndBase + ".idx") Then
@@ -2661,9 +2700,7 @@ Public Class MainForm
     End Sub
 
     Sub ExtractForcedVobSubSubtitles()
-        If Not p.ExtractForcedSubSubtitles Then
-            Exit Sub
-        End If
+        If Not p.ExtractForcedSubSubtitles Then Exit Sub
 
         For Each path In g.GetFilesInTempDirAndParent
             If path.ExtFull = ".idx" AndAlso g.IsSourceSameOrSimilar(path) AndAlso
@@ -2692,19 +2729,13 @@ Public Class MainForm
     End Sub
 
     Sub DemuxVobSubSubtitles()
-        If Not {"vob", "m2v"}.Contains(p.LastOriginalSourceFile.Ext) Then
-            Exit Sub
-        End If
+        If p.SubtitleMode = SubtitleMode.Disabled Then Exit Sub
+        If Not {"vob", "m2v"}.Contains(p.LastOriginalSourceFile.Ext) Then Exit Sub
 
         Dim ifoPath = GetIfoFile()
 
-        If ifoPath = "" Then
-            Exit Sub
-        End If
-
-        If File.Exists(Path.Combine(p.TempDir, p.SourceFile.Base + ".idx")) Then
-            Exit Sub
-        End If
+        If ifoPath = "" Then Exit Sub
+        If File.Exists(Path.Combine(p.TempDir, p.SourceFile.Base + ".idx")) Then Exit Sub
 
         Dim subtitleCount = MediaInfo.GetSubtitleCount(ifoPath)
 
@@ -2779,9 +2810,7 @@ Public Class MainForm
     End Function
 
     Function Assistant(Optional refreshScript As Boolean = True) As Boolean
-        If SkipAssistant Then
-            Return False
-        End If
+        If SkipAssistant Then Return False
 
         If ThemeRefresh Then
             ApplyTheme()
@@ -2862,13 +2891,14 @@ Public Class MainForm
                 sizeText,
                 If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToString("f1") + "Mb/s", ""),
                 p.SourceFrameRate.ToString.Shorten(9) + "fps",
-                p.SourceVideoFormat, p.SourceVideoFormatProfile)
+                p.SourceFrameRateMode)
 
             lSource2.Text = lSource1.GetMaxTextSpace(
                 p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.SourceColorSpace,
                 p.SourceChromaSubsampling, If(p.SourceVideoBitDepth <> 0, p.SourceVideoBitDepth & "Bits", ""),
                 p.SourceVideoHdrFormat,
-                p.SourceScanType, If(p.SourceScanType.EqualsAny("Interlaced", "MBAFF"), p.SourceScanOrder, ""))
+                p.SourceScanType, If(p.SourceScanType.EqualsAny("Interlaced", "MBAFF"), p.SourceScanOrder, ""),
+                p.SourceVideoFormat, p.SourceVideoFormatProfile)
 
             lTarget1.Text = lSource1.GetMaxTextSpace(g.GetTimeString(p.TargetSeconds),
                 p.TargetFrameRate.ToString.Shorten(9) + "fps", p.Script.Info.Width & "x" & p.Script.Info.Height,
@@ -3024,7 +3054,7 @@ Public Class MainForm
                 End If
             End If
 
-            If Not p.VideoEncoder.GetError Is Nothing Then
+            If p.VideoEncoder.GetError IsNot Nothing Then
                 If ProcessTip(p.VideoEncoder.GetError) Then
                     Return Block("Encoder Error")
                 End If
@@ -3102,6 +3132,69 @@ Public Class MainForm
 
             End If
 
+            If p.Script.IsFilterActive("Crop") AndAlso Not p.VideoEncoder?.IsOvercroppingAllowed AndAlso p.HdrDolbyVisionMetadataFile IsNot Nothing Then
+                Dim side = ""
+                Dim by = 0
+                Dim leftOvercropping = p.CropLeft - p.HdrDolbyVisionMetadataFile.Crop.Left
+                Dim topOvercropping = p.CropTop - p.HdrDolbyVisionMetadataFile.Crop.Top
+                Dim rightOvercropping = p.CropRight - p.HdrDolbyVisionMetadataFile.Crop.Right
+                Dim bottomOvercropping = p.CropBottom - p.HdrDolbyVisionMetadataFile.Crop.Bottom
+
+                If leftOvercropping > 0 Then
+                    side = "left"
+                    by = leftOvercropping
+                ElseIf p.CropTop > p.HdrDolbyVisionMetadataFile.Crop.Top Then
+                    side = "top"
+                    by = topOvercropping
+                ElseIf p.CropRight > p.HdrDolbyVisionMetadataFile.Crop.Right Then
+                    side = "right"
+                    by = rightOvercropping
+                ElseIf p.CropBottom > p.HdrDolbyVisionMetadataFile.Crop.Bottom Then
+                    side = "bottom"
+                    by = bottomOvercropping
+                End If
+
+                If by > 0 Then
+                    If ProcessTip($"You have cropped the {side} side by {by}px too much.{BR}Decrease the crop to continue and ensure a valid result.") Then
+                        CanIgnoreTip = False
+                        Return Warn("Overcropping", AddressOf ShowCropDialog)
+                    End If
+                End If
+            End If
+
+            If p.Script.IsFilterActive("Cutting") AndAlso p.Ranges?.Any() AndAlso p.HdrDolbyVisionMetadataFile IsNot Nothing Then
+                If ProcessTip($"Cutting is currently not supported for Dolby Vision encodes.{BR}Please turn the 'Cutting' filter off to get a valid Dolby Vision result.") Then
+                    CanIgnoreTip = False
+                    Return Warn("Cutting not allowed")
+                End If
+            End If
+
+            If p.Script.IsFilterActive("Resize") AndAlso Not String.IsNullOrWhiteSpace(p.VideoEncoder?.ResizingStatus) Then
+                If ProcessTip(p.VideoEncoder?.ResizingStatus) Then
+                    CanIgnoreTip = False
+                    Return Warn("Resizing not allowed")
+                End If
+            End If
+
+            If TypeOf p.VideoEncoder Is x265Enc Then
+                Dim x265 = DirectCast(p.VideoEncoder, x265Enc)
+                Dim param = x265.CommandLineParams.GetStringParam("--dolby-vision-rpu")
+                Dim optionsLabel = DirectCast(pnEncoder.Controls(0), x265Control).blConfigCodec
+                If param IsNot Nothing AndAlso Not String.IsNullOrWhiteSpace(param.Value) Then
+                    If x265.Params.VbvBufSize.Value = 0 Then
+                        If ProcessTip("Dolby Vision requires VBV settings to enable HRD.") Then
+                            CanIgnoreTip = False
+                            Return Warn("Missing VBV settings", Sub() p.VideoEncoder.ShowConfigDialog(x265.Params.VbvBufSize.Path), optionsLabel)
+                        End If
+                    ElseIf x265.Params.VbvMaxRate.Value = 0 Then
+                        If ProcessTip("Dolby Vision requires VBV settings to enable HRD.") Then
+                            CanIgnoreTip = False
+                            Return Warn("Missing VBV settings", Sub() p.VideoEncoder.ShowConfigDialog(x265.Params.VbvMaxRate.Path), optionsLabel)
+                        End If
+                    End If
+                End If
+            End If
+
             If p.Script.IsAviSynth AndAlso TypeOf p.VideoEncoder Is x264Enc AndAlso
                 Not Package.x264.Version.ToLowerInvariant.ContainsAny("amod", "djatom", "patman") AndAlso
                 p.Script.Info.ColorSpace <> ColorSpace.YUV420P8 AndAlso
@@ -3148,8 +3241,8 @@ Public Class MainForm
 
             If TypeOf p.VideoEncoder.Muxer Is MP4Muxer Then
                 For Each i In p.VideoEncoder.Muxer.Subtitles
-                    If Not i.Path.Ext.EqualsAny("idx", "srt") Then
-                        If ProcessTip("MP4 supports only SRT and IDX subtitles.") Then
+                    If Not i.Path.Ext.EqualsAny("idx", "srt", "sub") Then
+                        If ProcessTip("MP4 supports only SUB, SRT and IDX subtitles.") Then
                             Return Block("Invalid subtitle format")
                         End If
                     End If
@@ -3201,7 +3294,7 @@ Public Class MainForm
             gbAssistant.Text = msg
         End If
 
-        Highlight(controls)
+        Highlight(True, controls)
         UpdateNextButton()
     End Function
 
@@ -3224,14 +3317,6 @@ Public Class MainForm
     End Sub
 
     Sub Highlight(highlight As Boolean, ParamArray controls As Control())
-        If controls Is Nothing Then
-            Return
-        End If
-
-        If Not controls.NothingOrEmpty Then
-            ThemeRefresh = True
-        End If
-
         Dim theme = ThemeManager.CurrentTheme
 
         If highlight Then
@@ -3241,6 +3326,9 @@ Public Class MainForm
             laTip.BackColor = theme.MainForm.laTipBackColor
             laTip.ForeColor = theme.MainForm.laTipForeColor
         End If
+
+        If controls Is Nothing Then Return
+        If Not controls.NothingOrEmpty Then ThemeRefresh = True
 
         For Each control In controls.OfType(Of Label)
             control.BackColor = theme.General.Controls.Label.BackHighlightColor
@@ -3307,9 +3395,7 @@ Public Class MainForm
     Dim BlockAudioTextChanged As Boolean
 
     Sub AudioTextChanged(tb As TextEdit, ap As AudioProfile)
-        If BlockAudioTextChanged Then
-            Exit Sub
-        End If
+        If BlockAudioTextChanged Then Exit Sub
 
         If tb.Text.Contains(":\") OrElse tb.Text.StartsWith("\\") Then
             If tb.Text <> ap.File Then
@@ -3387,6 +3473,168 @@ Public Class MainForm
         g.ProcessJobs()
     End Sub
 
+    <Command("Extract dynamic HDR metadata from a source file.")>
+    Sub ExtractHdrMetadata(sourcePath As String)
+        Dim proj = New Project() With {
+            .SourceFile = sourcePath,
+            .FirstOriginalSourceFile = sourcePath
+        }
+        ExtractHdrMetadata(proj)
+    End Sub
+
+    Sub ExtractHdrMetadata(proj As Project)
+        ExtractHdr10PlusMetadata(proj)
+        ExtractDolbyVisionMetadata(proj)
+    End Sub
+
+    Sub ExtractHdr10PlusMetadata(proj As Project)
+        If proj Is Nothing Then Return
+        If String.IsNullOrWhiteSpace(proj.SourceFile) Then Return
+        If Not File.Exists(proj.SourceFile) Then Return
+
+        Dim sourcePath = proj.SourceFile
+
+        Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format_Commercial")
+        If fileHdrFormat?.ContainsAny("HDR10+") Then
+            Dim jsonPath = sourcePath.ChangeExt("json")
+            If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
+                jsonPath = If(sourcePath.Contains(proj.TempDir), jsonPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDR10PlusMetadata.json"})}", jsonPath))
+            End If
+
+            If Not jsonPath.FileExists() Then
+                Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.HDR10PlusTool.Path.Escape} extract -o ""{jsonPath}"" -"
+
+                Try
+                    Using proc As New Proc
+                        proc.Package = Package.HDR10PlusTool
+                        proc.Project = If(proj, p)
+                        proc.Header = "Extract HDR10+ metadata"
+                        proc.Encoding = Encoding.UTF8
+                        proc.File = "cmd.exe"
+                        proc.Arguments = "/S /C """ + commandLine + """"
+                        proc.SkipStrings = Proc.GetSkipStrings(commandLine)
+                        proc.AllowedExitCodes = {0}
+                        proc.OutputFiles = {jsonPath}
+                        proc.Start()
+                    End Using
+
+                    If jsonPath?.FileExists() Then
+                        Try
+                            Dim fi = New FileInfo(jsonPath)
+                            If fi.Length < 100 Then
+                                File.Delete(jsonPath)
+                            End If
+                        Catch ex As Exception
+                            jsonPath = ""
+                        End Try
+                    End If
+                Catch ex As AbortException
+                    Throw ex
+                Catch ex As Exception
+                    g.ShowException(ex)
+                    Throw New AbortException
+                End Try
+            End If
+
+            proj.Hdr10PlusMetadataFile = jsonPath
+        End If
+    End Sub
+
+    Sub ExtractDolbyVisionMetadata(proj As Project)
+        If proj Is Nothing Then Return
+        If String.IsNullOrWhiteSpace(proj.SourceFile) Then Return
+        If Not File.Exists(proj.SourceFile) Then Return
+
+        Dim sourcePath = proj.SourceFile
+        Dim isEL = False
+
+        Dim files = Directory.GetFiles(sourcePath.Dir, sourcePath.Base + "*EL*.*", SearchOption.TopDirectoryOnly).AsEnumerable()
+        If files?.Count() > 1 Then files = files?.Where(Function(x) x.Ext = "h265")
+        If files?.Any() Then
+            sourcePath = files.First()
+            isEL = True
+        End If
+
+        Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format/String")
+        If isEL OrElse (fileHdrFormat?.ContainsAny("Dolby Vision")) Then
+            Dim mode = If(proj.HdrDolbyVisionMode < 0, "", " -m " + (proj.HdrDolbyVisionMode + 0).ToString())
+            Dim rpuPath = sourcePath.ChangeExt("rpu")
+            Dim doviFile As DolbyVisionMetadataFile
+
+            If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
+                rpuPath = If(sourcePath.Contains(proj.TempDir), rpuPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDRDVmetadata.rpu"})}", rpuPath))
+            End If
+
+            Try
+                If Not rpuPath.FileExists() Then
+                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 20M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode} extract-rpu - -o ""{rpuPath}"""
+                    Using proc As New Proc
+                        proc.Package = Package.DoViTool
+                        proc.Project = If(proj, p)
+                        proc.Header = "Extract Dolby Vision metadata"
+                        proc.Encoding = Encoding.UTF8
+                        proc.File = "cmd.exe"
+                        proc.Arguments = "/S /C """ + commandLine + """"
+                        proc.SkipStrings = Proc.GetSkipStrings(commandLine)
+                        proc.AllowedExitCodes = {0}
+                        proc.OutputFiles = {rpuPath}
+                        proc.Start()
+                    End Using
+
+                    If rpuPath?.FileExists() Then
+                        Try
+                            Dim fi = New FileInfo(rpuPath)
+                            If fi.Length > 100 Then
+                                doviFile = New DolbyVisionMetadataFile(rpuPath)
+                            Else
+                                File.Delete(rpuPath)
+                            End If
+                        Catch ex As Exception
+                            doviFile = New DolbyVisionMetadataFile(rpuPath)
+                        End Try
+                    End If
+                End If
+            Catch ex As AbortException
+                Throw ex
+            Catch ex As Exception
+                g.ShowException(ex)
+                Throw New AbortException
+            End Try
+
+            proj.HdrDolbyVisionMetadataFile = doviFile
+        End If
+    End Sub
+
+    Async Function FindHdrMetadataAsync(proj As Project) As Task(Of (jsonFile As String, rpuFile As String))
+        If proj Is Nothing Then Return Nothing
+        If String.IsNullOrWhiteSpace(proj.SourceFile) Then Return Nothing
+
+        Dim sourcePath = proj.SourceFile
+        Dim jsonFile As String = ""
+        Dim rpuFile As String = ""
+        Dim files As IEnumerable(Of String)
+
+        Dim searchTask = Task.Run(Sub()
+                                      Try
+                                          files = Directory.GetFiles(proj.SourceFile.Dir(), $"{proj.SourceFile.Base}*.*", SearchOption.TopDirectoryOnly)
+                                          jsonFile = files.Where(Function(x) {"json"}.Contains(x.Ext))?.FirstOrDefault()
+                                          rpuFile = files.Where(Function(x) {"bin", "rpu"}.Contains(x.Ext))?.FirstOrDefault()
+
+                                          If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
+                                              files = Directory.GetFiles(proj.TempDir, "*.*", SearchOption.TopDirectoryOnly)
+                                              jsonFile = If(String.IsNullOrWhiteSpace(jsonFile), files?.Where(Function(x) {"json"}.Contains(x.Ext))?.FirstOrDefault(), "")
+                                              rpuFile = If(String.IsNullOrWhiteSpace(rpuFile), files?.Where(Function(x) {"bin", "rpu"}.Contains(x.Ext))?.FirstOrDefault(), "")
+                                          End If
+                                      Catch ex As Exception
+                                          Log.WriteLine(ex.Message)
+                                          Log.Save()
+                                      End Try
+                                  End Sub)
+
+        Await searchTask
+        Return (jsonFile, rpuFile)
+    End Function
+
     Sub Demux()
         Dim getFormat = Function() As String
                             Dim ret = MediaInfo.GetVideo(p.SourceFile, "Format")
@@ -3404,10 +3652,7 @@ Public Class MainForm
         Dim srcScript = p.Script.GetFilter("Source").Script.ToLowerInvariant
 
         For Each i In s.Demuxers
-            If Not i.Active AndAlso (i.SourceFilters.NothingOrEmpty OrElse
-                Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLowerInvariant + "(").ToArray)) Then
-
-                Continue For
+            PreviewScript.Path = Path.Combine(p.TempDir, p.TargetFile.Base + "_view." + PreviewScript.FileType)
             End If
 
             If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(p.SourceFile.Ext) Then
@@ -3455,7 +3700,6 @@ Public Class MainForm
         p.Script.Synchronize()
     End Sub
 
-    Private BlockIndexingRecursion As Boolean = False
 
     Sub Indexing()
         If p.SourceFile.Ext.EqualsAny("avs", "vpy") Then
@@ -3581,10 +3825,6 @@ Public Class MainForm
             b.Field = NameOf(s.CheckForUpdates)
 
             b = ui.AddBool
-            b.Text = "Include Dev builds for update check"
-            b.Field = NameOf(s.CheckForUpdatesDev)
-
-            b = ui.AddBool
             b.Text = "Save projects automatically"
             b.Field = NameOf(s.AutoSaveProject)
 
@@ -3610,6 +3850,7 @@ Public Class MainForm
             mb.Field = NameOf(s.StartupTemplate)
             mb.Expanded = True
             mb.Add(From i In Directory.GetFiles(Folder.Template) Select i.Base)
+            mb.Button.SaveAction = Sub(value) UpdateTemplatesMenuAsync()
 
             Dim n = ui.AddNum()
             n.Text = "Number of log files to keep"
@@ -3816,6 +4057,11 @@ Public Class MainForm
             t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
 
             b = ui.AddBool()
+            b.Text = "Expand Preview window automatically depending on its size"
+            b.Help = ""
+            b.Field = NameOf(s.ExpandPreviewWindow)
+
+            b = ui.AddBool()
             b.Text = "Use binary prefix (MiB) instead of decimal prefix (MB) for sizes"
             b.Help = "Binary: 1 MiB = 1024 KiB" + BR + "Decimal: 1 MB = 1000 KB" + BR2 +
                             "When selected, Staxrip will use binary prefix instead of decimal in the display and calculation of sizes." + BR +
@@ -4007,15 +4253,15 @@ Public Class MainForm
                 MsgWarn("A template cannot be created after a source file was opened.")
                 Exit Sub
             End If
+            p.Log.Clear()
         Else
             g.ProjectPath = path
         End If
 
         Try
-            p.Log.Clear()
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
-            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails(True, True, True)}"
+            Text = $"{path.Base} - {g.DefaultCommands.GetApplicationDetails()}"
             s.UpdateRecentProjects(path)
             UpdateRecentProjectsMenu()
         Catch ex As Exception
@@ -4053,6 +4299,11 @@ Public Class MainForm
         End If
     End Sub
 
+    <Command("Closes the current project.")>
+    Sub CloseProject()
+        OpenProject(g.StartupTemplatePath)
+    End Sub
+
     <Command("Starts the compressibility check.")>
     Sub StartCompCheck()
         p.VideoEncoder.RunCompCheck()
@@ -4060,6 +4311,12 @@ Public Class MainForm
 
     <Command("Exits StaxRip")>
     Sub [Exit]()
+        Close()
+    End Sub
+
+    <Command("Exits StaxRip without saving an unsaved project.")>
+    Sub ExitWithoutSaving()
+        s.ApplicationExitMode = ApplicationExitMode.BypassProjectSaving
         Close()
     End Sub
 
@@ -4179,7 +4436,6 @@ Public Class MainForm
         If PreviewScript Is Nothing Then Exit Sub
 
         PreviewScript.Filters = If(filters, p.Script.Filters)
-        PreviewScript.RemoveFilter("Cutting")
     End Sub
 
     <Command("Dialog to preview or cut the video.")>
@@ -4205,11 +4461,13 @@ Public Class MainForm
                 If PreviewScript Is Nothing Then
                     Exit Sub
                 End If
-                PreviewScript.Path = Path.Combine(p.TempDir, p.TargetFile.Base + "_view." + PreviewScript.FileType)
+                PreviewScript.Path = p.TempDir + p.TargetFile.Base + "_view." + PreviewScript.FileType
                 PreviewScript.RemoveFilter("Cutting")
             Else
                 ApplyFilters()
             End If
+
+            PreviewScript.RemoveFilter("Cutting")
 
             If PreviewScript.GetError <> "" Then
                 MsgError("Script Error", PreviewScript.GetError)
@@ -4534,7 +4792,9 @@ Public Class MainForm
             b = ui.AddBool()
             b.Text = "Tonemapping for HDR videos"
             b.Help = "Tonemap sources with a higher Bit Depth than 8bit."
+            b.Enabled = Vulkan.IsSupported
             b.Field = NameOf(p.CropWithTonemapping)
+            b.Checked = b.Checked AndAlso Vulkan.IsSupported
 
             b = ui.AddBool()
             b.Text = "High contrast for easier cropping"
@@ -4543,57 +4803,57 @@ Public Class MainForm
 
             ui.AddLine(cropPage, "Crop Values")
 
+            Dim autoCrop = ui.AddMenu(Of AutoCropMode)
+
+            Dim l = ui.AddLabel("Custom crop values:")
             Dim eb = ui.AddEmptyBlock(cropPage)
-
             ui.AddLabel(eb, "Left:", 2)
-
-            Dim te = ui.AddEdit(eb)
-            te.Text = p.CropLeft.ToString
-            te.WidthFactor = 3
-            te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value)
-                                If value.IsInt Then
-                                    p.CropLeft = CInt(value)
-                                End If
-                            End Sub
-
-            Dim l = ui.AddLabel(eb, "Right:", 4)
-
-            te = ui.AddEdit(eb)
-            te.Text = p.CropRight.ToString
-            te.WidthFactor = 3
-            te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value)
-                                If value.IsInt Then
-                                    p.CropRight = CInt(value)
-                                End If
-                            End Sub
+            Dim leftCrop = ui.AddEdit(eb)
+            l = ui.AddLabel(eb, "Right:", 4)
+            Dim rightCrop = ui.AddEdit(eb)
 
             eb = ui.AddEmptyBlock(cropPage)
-
             ui.AddLabel(eb, "Top:", 2)
-
-            te = ui.AddEdit(eb)
-            te.Text = p.CropTop.ToString
-            te.WidthFactor = 3
-            te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value)
-                                If value.IsInt Then
-                                    p.CropTop = CInt(value)
-                                End If
-                            End Sub
-
+            Dim topCrop = ui.AddEdit(eb)
             l = ui.AddLabel(eb, "Bottom:", 4)
+            Dim bottomCrop = ui.AddEdit(eb)
 
-            te = ui.AddEdit(eb)
-            te.Text = p.CropBottom.ToString
-            te.WidthFactor = 3
-            te.TextBox.TextAlign = HorizontalAlignment.Center
-            te.SaveAction = Sub(value)
-                                If value.IsInt Then
-                                    p.CropBottom = CInt(value)
-                                End If
-                            End Sub
+
+            autoCrop.Text = "Auto Crop after opening"
+            autoCrop.Help = "Use Auto Crop when a file is opened to crop it directly."
+            autoCrop.Expanded = True
+            autoCrop.Field = NameOf(p.AutoCropMode)
+            autoCrop.Button.ValueChangedAction = Sub(value)
+                                                     Dim active = value <> AutoCropMode.Disabled
+                                                     leftCrop.Enabled = Not active
+                                                     rightCrop.Enabled = Not active
+                                                     topCrop.Enabled = Not active
+                                                     bottomCrop.Enabled = Not active
+                                                 End Sub
+
+            leftCrop.Text = p.CropLeft.ToString
+            leftCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
+            leftCrop.WidthFactor = 3
+            leftCrop.TextBox.TextAlign = HorizontalAlignment.Center
+            leftCrop.SaveAction = Sub(value) If value.IsInt Then p.CropLeft = CInt(value)
+
+            rightCrop.Text = p.CropRight.ToString
+            rightCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
+            rightCrop.WidthFactor = 3
+            rightCrop.TextBox.TextAlign = HorizontalAlignment.Center
+            rightCrop.SaveAction = Sub(value) If value.IsInt Then p.CropRight = CInt(value)
+
+            topCrop.Text = p.CropTop.ToString
+            topCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
+            topCrop.WidthFactor = 3
+            topCrop.TextBox.TextAlign = HorizontalAlignment.Center
+            topCrop.SaveAction = Sub(value) If value.IsInt Then p.CropTop = CInt(value)
+
+            bottomCrop.Text = p.CropBottom.ToString
+            bottomCrop.Enabled = autoCrop.Button.Value = AutoCropMode.Disabled
+            bottomCrop.WidthFactor = 3
+            bottomCrop.TextBox.TextAlign = HorizontalAlignment.Center
+            bottomCrop.SaveAction = Sub(value) If value.IsInt Then p.CropBottom = CInt(value)
 
 
             '   ----------------------------------------------------------------
@@ -4601,6 +4861,8 @@ Public Class MainForm
 
             Dim videoExist = ui.AddMenu(Of FileExistMode)
             Dim demuxVideo = ui.AddBool()
+            Dim extractHdrmetadata = ui.AddMenu(Of HdrmetadataMode)
+            Dim doviMode = ui.AddMenu(Of DoviMode)
 
             videoExist.Text = "Existing Video Output"
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
@@ -4608,7 +4870,21 @@ Public Class MainForm
 
             demuxVideo.Text = "Demux Video"
             demuxVideo.Checked = p.DemuxVideo
-            demuxVideo.SaveAction = Sub(val) p.DemuxVideo = val
+            demuxVideo.SaveAction = Sub(value) p.DemuxVideo = value
+
+            extractHdrmetadata.Text = "Extract HDR metadata"
+            extractHdrmetadata.Help = "Extract dynamic HDR10+ and DolbyVision metadata if available"
+            extractHdrmetadata.Expanded = True
+            extractHdrmetadata.Field = NameOf(p.ExtractHdrmetadata)
+            extractHdrmetadata.Button.ValueChangedAction = Sub(value)
+                                                               Dim visible = value = HdrmetadataMode.All OrElse value = HdrmetadataMode.DolbyVision
+                                                               doviMode.Visible = visible
+                                                           End Sub
+
+            doviMode.Text = "RPU Conversion Mode"
+            doviMode.Help = "Sets the mode for RPU processing."
+            doviMode.Expanded = True
+            doviMode.Field = NameOf(p.HdrDolbyVisionMode)
 
             b = ui.AddBool
             b.Text = "Import VUI metadata"
@@ -5133,6 +5409,10 @@ Public Class MainForm
             b.Checked = p.NoTempDir
             b.SaveAction = Sub(value) p.NoTempDir = value
 
+            b = ui.AddBool(miscPage)
+            b.Text = "Abort on Frame Mismatch"
+            b.Field = NameOf(p.AbortOnFrameMismatch)
+
             ui.AddLine(miscPage, "Compressibility Check")
 
             b = ui.AddBool(miscPage)
@@ -5245,7 +5525,7 @@ Public Class MainForm
 
         Using dialog As New MacroEditorDialog
             dialog.SetScriptDefaults()
-            dialog.Text = $"Filter Profiles - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            dialog.Text = $"Filter Profiles - {g.DefaultCommands.GetApplicationDetails()}"
             dialog.MacroEditorControl.Value = g.GetFilterProfilesText(filterProfiles)
             dialog.bnContext.Text = " Restore Defaults... "
             dialog.bnContext.Visible = True
@@ -5303,6 +5583,7 @@ Public Class MainForm
         ret.Add("File|Save Project", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)
         ret.Add("File|Save Project As...", NameOf(SaveProjectAs), Keys.S Or Keys.Control Or Keys.Shift, Symbol.SaveAs)
         ret.Add("File|Save Project As Template...", NameOf(SaveProjectAsTemplate))
+        ret.Add("File|Close Project", NameOf(CloseProject), Keys.W Or Keys.Control)
         ret.Add("File|-")
         ret.Add("File|Project Templates", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
         ret.Add("File|Recent Projects", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.RecentProjects})
@@ -5407,7 +5688,7 @@ Public Class MainForm
                     }
 
                     For Each i In subs
-                        sb.AddItem(i.Language.Name, i)
+                        sb.AddItem(i.Language.EnglishName, i)
                     Next
 
                     If sb.Show = DialogResult.Cancel Then
@@ -5718,15 +5999,7 @@ Public Class MainForm
     <Command("Crops borders automatically.")>
     Sub StartAutoCrop()
         g.RunAutoCrop(Nothing)
-
-        If Not g.EnableFilter("Crop") Then
-            If p.Script.IsAviSynth Then
-                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
-            Else
-                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)"))
-            End If
-        End If
-
+        SetCropFilter()
         DisableCropFilter()
         Assistant()
     End Sub
@@ -5734,15 +6007,7 @@ Public Class MainForm
     <Command("Crops borders automatically until the proper aspect ratio is found.")>
     Sub StartSmartCrop()
         g.SmartCrop()
-
-        If Not g.EnableFilter("Crop") Then
-            If p.Script.IsAviSynth Then
-                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
-            Else
-                p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)"))
-            End If
-        End If
-
+        SetCropFilter()
         DisableCropFilter()
         Assistant()
     End Sub
@@ -5816,7 +6081,9 @@ Public Class MainForm
                 If insideQuote Then
                     sb.Append(commandLine.Chars(i))
                 Else
-                    args.Add(sb.ToString())
+                    If Not String.IsNullOrWhiteSpace(sb.ToString()) Then
+                        args.Add(sb.ToString())
+                    End If
                     sb = New StringBuilder()
                 End If
             Else
@@ -5833,7 +6100,7 @@ Public Class MainForm
         If String.IsNullOrWhiteSpace(commandLine) Then Exit Sub
 
         Dim args = ParseCommandLine(commandLine)
-        If args.Length > 1 Then
+        If args.Any() Then
             Package.LoadConfAll()
         Else
             Exit Sub
@@ -5990,7 +6257,7 @@ Public Class MainForm
     <Command("Dialog to open a merged files source.")>
     Sub ShowOpenSourceMergeFilesDialog()
         Using form As New SourceFilesForm()
-            form.Text = $"Merge - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            form.Text = $"Merge - {g.DefaultCommands.GetApplicationDetails()}"
             form.IsMerge = True
 
             If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
@@ -6039,7 +6306,7 @@ Public Class MainForm
         End If
 
         Using form As New SourceFilesForm()
-            form.Text = $"File Batch - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            form.Text = $"File Batch - {g.DefaultCommands.GetApplicationDetails()}"
 
             If p.DefaultTargetName = "%source_dir_name%" Then
                 p.DefaultTargetName = "%source_name%"
@@ -6147,8 +6414,7 @@ Public Class MainForm
                         pr.SkipStrings = {"analyze: ", "process: "}
                         pr.Package = Package.eac3to
                         Dim outFiles As New List(Of String)
-                        pr.Process.StartInfo.Arguments = form.GetArgs(
-                            playlistFolder.Escape + " " & playlistID & ")", title, outFiles)
+                        pr.Process.StartInfo.Arguments = form.GetArgs(playlistFolder.Escape + " " & playlistID & ")", title, outFiles)
                         pr.OutputFiles = outFiles
 
                         Try
@@ -6259,16 +6525,24 @@ Public Class MainForm
     End Sub
 
     Sub lTip_Click() Handles laTip.Click
-        If Not AssistantClickAction Is Nothing Then
+        If AssistantClickAction IsNot Nothing Then
             AssistantClickAction.Invoke()
             Assistant()
         End If
+    End Sub
+
+    Sub UpdateTargetParameters(proj As Project)
+        If proj Is Nothing Then Exit Sub
+        If proj.Script Is Nothing Then Exit Sub
+
+        UpdateTargetParameters(proj.Script.GetSeconds, proj.Script.GetFrameCount, proj.Script.GetFramerate)
     End Sub
 
     Sub UpdateTargetParameters(seconds As Integer, frames As Integer, frameRate As Double)
         p.TargetSeconds = seconds
         p.TargetFrames = frames
         p.TargetFrameRate = frameRate
+
         UpdateSizeOrBitrate()
     End Sub
 
@@ -6338,7 +6612,7 @@ Public Class MainForm
         If Not IsLoading AndAlso Not FiltersListView.IsLoading Then
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
-                UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFrameCount, p.Script.GetFramerate)
+                UpdateTargetParameters(p)
             End If
 
             Assistant()
@@ -6349,7 +6623,7 @@ Public Class MainForm
         FiltersListView.Load()
 
         If g.IsValidSource(False) Then
-            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFrameCount, p.Script.GetFramerate)
+            UpdateTargetParameters(p)
         End If
     End Sub
 
@@ -6563,20 +6837,20 @@ Public Class MainForm
     End Sub
 
     Sub UpdateSourceParameters()
-        If p.SourceScript IsNot Nothing Then
-            Try
-                Dim info = p.SourceScript.GetInfo
+        If p.SourceScript Is Nothing Then Exit Sub
 
-                p.SourceWidth = info.Width
-                p.SourceHeight = info.Height
-                p.SourceSeconds = CInt(info.FrameCount / info.FrameRate)
-                p.SourceFrameRate = info.FrameRate
-                p.SourceFrames = info.FrameCount
-            Catch ex As Exception
-                MsgError("Source filter returned invalid parameters", p.SourceScript.GetFullScript)
-                Throw New AbortException()
-            End Try
-        End If
+        Try
+            Dim info = p.SourceScript.GetInfo
+
+            p.SourceWidth = info.Width
+            p.SourceHeight = info.Height
+            p.SourceSeconds = CInt(info.FrameCount / info.FrameRate)
+            p.SourceFrameRate = info.FrameRate
+            p.SourceFrames = info.FrameCount
+        Catch ex As Exception
+            MsgError("Source filter returned invalid parameters", p.SourceScript.GetFullScript)
+            Throw New AbortException()
+        End Try
     End Sub
 
     Sub tbSource_TextChanged(sender As Object, e As EventArgs) Handles tbSourceFile.TextChanged
@@ -6812,7 +7086,7 @@ Public Class MainForm
         ShowChangelog()
         ProcessCommandLine(Environment.CommandLine)
         StaxRipUpdate.ShowUpdateQuestion()
-        StaxRipUpdate.CheckForUpdate(False, s.CheckForUpdatesDev, Environment.Is64BitProcess)
+        StaxRipUpdate.CheckForUpdateAsync(False, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
 
         If TypeOf p.VideoEncoder Is x265Enc Then
@@ -6913,7 +7187,7 @@ Public Class MainForm
     Sub ShowChangelog()
         If Assembly.GetExecutingAssembly.GetName.Version.Build <> 0 Then Exit Sub
 
-        Dim appDetails = g.DefaultCommands.GetApplicationDetails(True, True, False)
+        Dim appDetails = g.DefaultCommands.GetApplicationDetails()
         If s.ShowChangelog = appDetails Then Exit Sub
 
         Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StaxRip.Changelog.md")
@@ -6942,7 +7216,7 @@ Public Class MainForm
 
                 If Not String.IsNullOrWhiteSpace(sb.ToString()) Then
                     Using td As New TaskDialog(Of String)()
-                        td.Title = $"What's new in {g.DefaultCommands.GetApplicationDetails(True, True, True)}:"
+                        td.Title = $"What's new in {g.DefaultCommands.GetApplicationDetails()}:"
                         td.Icon = TaskIcon.Shield
                         td.Content = sb.ToString() + BR
 

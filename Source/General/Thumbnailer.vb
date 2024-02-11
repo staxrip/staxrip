@@ -16,7 +16,7 @@ End Enum
 Public Class Thumbnailer
     Public Shared Function Run(pProject As Project, ParamArray pSourcePaths As String()) As ConcurrentDictionary(Of String, Boolean)
         Dim cts = New CancellationTokenSource()
-        Return Task.Run(Async Function() await RunAsync(cts.Token, pProject, pSourcePaths)).Result
+        Return Task.Run(Async Function() Await RunAsync(cts.Token, pProject, pSourcePaths)).Result
     End Function
 
     Public Shared Async Function RunAsync(pToken As CancellationToken, pProject As Project, ParamArray pSourcePaths As String()) As Task(Of ConcurrentDictionary(Of String, Boolean))
@@ -294,6 +294,15 @@ Public Class Thumbnailer
 
                 If size <> Size.Empty Then
                     script.Filters.Add(New VideoFilter($"clip = core.resize.Spline64(clip, {size.Width},{size.Height})"))
+                End If
+
+                Dim fileBitDepth = MediaInfo.GetVideo(filePath, "BitDepth").ToInt
+                Dim fileHdrFormat = MediaInfo.GetVideo(filePath, "HDR_Format_Commercial")
+
+                If fileBitDepth > 8 AndAlso Not String.IsNullOrWhiteSpace(fileHdrFormat) AndAlso Not fileHdrFormat.ContainsAny("", "SDR") Then
+                    If Package.VSLibPlacebo.RequirementsFulfilled Then
+                        script.Filters.Add(New VideoFilter("clip = core.fmtc.bitdepth(clip, bits=16)" + BR + "clip = core.placebo.Tonemap(clip, src_csp=1, dst_csp=0, dynamic_peak_detection=0, tone_mapping_function=7)" + BR + $"clip = clip.resize.Bicubic(format = vs.YUV420P8)"))
+                    End If
                 End If
 
                 pToken.ThrowIfCancellationRequested()

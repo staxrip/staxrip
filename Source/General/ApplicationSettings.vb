@@ -14,7 +14,6 @@ Public Class ApplicationSettings
     Public AviSynthProfiles As List(Of FilterCategory)
     Public BinaryPrefix As Boolean = False
     Public CheckForUpdates As Boolean
-    Public CheckForUpdatesDev As Boolean
     Public CheckForUpdatesDismissed As String
     Public CheckForUpdatesLastRequest As DateTime
     Public CheckForUpdatesQuestion As Boolean
@@ -42,6 +41,8 @@ Public Class ApplicationSettings
     Public EnableTooltips As Boolean
     Public ErrorMessageExtendedByErr As Boolean = False
     Public EventCommands As List(Of EventCommand)
+    Public ExpandPreviewWindow As Boolean = True
+    Public ApplicationExitMode As ApplicationExitMode = ApplicationExitMode.Regular
     Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public FixFrameRate As Boolean = True
     Public HidePreviewButtons As Boolean
@@ -407,10 +408,12 @@ Custom... = $enter_text:Enter a custom Pixel Aspect Ratio.$"
 
 3840 x auto = 3840 x 0
 3200 x auto = 3200 x 0
+2880 x auto = 2880 x 0
 2560 x auto = 2560 x 0
 
 1920 x auto = 1920 x 0
-1680 x auto = 1680 x 0
+1600 x auto = 1600 x 0
+1440 x auto = 1440 x 0
 1280 x auto = 1280 x 0
 960 x auto = 960 x 0
 

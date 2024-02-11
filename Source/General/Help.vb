@@ -169,11 +169,7 @@ Public Class FileHelp
 End Class
 
 Public Class ProcessHelp
-    Shared Function GetConsoleOutput(
-        file As String,
-        arguments As String,
-        Optional stderr As Boolean = False) As String
-
+    Shared Function GetConsoleOutput(file As String, arguments As String, Optional stderr As Boolean = False) As String
         Dim ret As String
 
         Using proc As New Process
@@ -196,11 +192,7 @@ Public Class ProcessHelp
             proc.WaitForExit()
         End Using
 
-        If ret Is Nothing Then
-            Return ""
-        End If
-
-        Return ret
+        Return If(ret, "")
     End Function
 
     Sub KillProcessAndChildren(pid As Integer)

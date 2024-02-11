@@ -1,5 +1,6 @@
 ﻿
 Imports System.Text
+Imports StaxRip.UI
 
 Imports StaxRip.VideoEncoderCommandLine
 
@@ -39,7 +40,6 @@ Public Class Rav1e
     Overrides Sub Encode()
         p.Script.Synchronize()
         Encode("Video encoding", GetArgs(1, p.Script), s.ProcessPriority)
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
@@ -69,7 +69,7 @@ Public Class Rav1e
         Return ret
     End Function
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Dim newParams As New Rav1eParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
@@ -86,6 +86,10 @@ Public Class Rav1e
                     End Sub
 
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
+
+            If Not String.IsNullOrWhiteSpace(path) Then
+                form.SimpleUI.ShowPage(path)
+            End If
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams
@@ -262,9 +266,9 @@ Public Class Rav1eParams
 
                 Add("Main",
                     Tune, Passes, Mode, Speed, Bitrate, Quantizer,
-                    New StringParam With {.Switch = "--mastering_display", .Path = "VUI", .Text = "Master Display"},
+                    New StringParam With {.Switch = "--mastering-display", .Path = "VUI", .Text = "Master Display"},
                     Keyint, MinKeyint, Threads, Limit, Light, MaxFALL, Prime, Matrix, Transfer, Range,
-                    New BoolParam With {.Switch = "--low_latency", .Text = "Low Latency", .Path = "Basic"},
+                    New BoolParam With {.Switch = "--low-latency", .Text = "Low Latency", .Path = "Basic"},
                     Custom)
             End If
 

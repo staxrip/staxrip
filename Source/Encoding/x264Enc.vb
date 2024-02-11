@@ -62,8 +62,6 @@ Public Class x264Enc
             Encode("Video encoding Nth pass", GetArgs(3, p.Script), s.ProcessPriority)
             Encode("Video encoding last pass", GetArgs(2, p.Script), s.ProcessPriority)
         End If
-
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
@@ -150,7 +148,7 @@ Public Class x264Enc
         Return Params.GetArgs(pass, script, OutputPath.DirAndBase + OutputExtFull, includePaths, True)
     End Function
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Dim newParams As New x264Params
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
@@ -171,6 +169,10 @@ Public Class x264Enc
                     End Sub
 
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
+
+            If Not String.IsNullOrWhiteSpace(path) Then
+                form.SimpleUI.ShowPage(path)
+            End If
 
             If form.ShowDialog() = DialogResult.OK Then
                 AutoCompCheckValue = CInt(newParams.CompCheckAimedQuality.Value)

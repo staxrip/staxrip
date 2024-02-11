@@ -250,9 +250,7 @@ Public MustInherit Class AudioProfile
     End Function
 
     Sub SetStreamOrLanguage()
-        If File = "" Then
-            Exit Sub
-        End If
+        If File = "" Then Exit Sub
 
         If File <> p.LastOriginalSourceFile Then
             For Each i In Language.Languages
@@ -382,9 +380,10 @@ Public MustInherit Class AudioProfile
         If value.Contains("%output%") Then value = value.Replace("%output%", GetOutputFile.Escape)
         If value.Contains("%bitrate%") Then value = value.Replace("%bitrate%", Bitrate.ToString)
         If value.Contains("%channels%") Then value = value.Replace("%channels%", Channels.ToString)
-        If value.Contains("%language_native%") Then value = value.Replace("%language_native%", Language.CultureInfo.NativeName)
-        If value.Contains("%language_english%") Then value = value.Replace("%language_english%", Language.Name)
         If value.Contains("%delay%") Then value = value.Replace("%delay%", Delay.ToString)
+        If value.Contains("%language%") Then value = value.Replace("%language%", Language.Name)
+        If value.Contains("%language_english%") Then value = value.Replace("%language_english%", Language.EnglishName)
+        If value.Contains("%language_native%") Then value = value.Replace("%language_native%", Language.CultureInfo.NativeName)
         If value.Contains("%streamid0%") AndAlso Stream IsNot Nothing Then value = value.Replace("%streamid0%", (Stream?.ID - 1)?.ToString)
         If value.Contains("%streamid1%") Then value = value.Replace("%streamid1%", Stream?.ID.ToString)
 
@@ -851,6 +850,9 @@ Public Class GUIAudioProfile
                     proc.SkipStrings = {"frame=", "size="}
                     proc.Encoding = Encoding.UTF8
                     proc.Duration = GetDuration()
+                ElseIf cl.Contains("opusenc") Then
+                    proc.Package = Package.OpusEnc
+                    proc.SkipStrings = {"%"}
                 ElseIf cl.Contains("deezy") Then
                     proc.Package = Package.DeeZy
                     proc.SkipStrings = {"%"}
@@ -1320,7 +1322,7 @@ Public Class GUIAudioProfile
         Dim input = If(usePipe, "-", File.Escape)
 
         If includePaths Then
-            sb.Append(" " + input + " -o " + GetOutputFile.LongPathPrefix.Escape)
+            sb.Append(" " + input + " -o " + GetOutputFile.Escape)
         End If
 
         Return sb.ToString
@@ -1586,7 +1588,7 @@ Public Class GUIAudioProfile
     End Property
 
     Overrides Function HandlesDelay() As Boolean
-        If {GuiAudioEncoder.eac3to, GuiAudioEncoder.qaac}.Contains(GetEncoder()) Then
+        If {GuiAudioEncoder.deezy, GuiAudioEncoder.eac3to, GuiAudioEncoder.qaac}.Contains(GetEncoder()) Then
             Return True
         End If
     End Function

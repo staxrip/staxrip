@@ -1,3 +1,14 @@
+[![GitHub Release](https://img.shields.io/github/v/release/staxrip/staxrip?style=plastic&logo=Github&logoColor=white&label=Release&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
+[![GitHub License](https://img.shields.io/github/license/staxrip/staxrip?style=plastic&logo=GitHub&logoColor=white&label=License&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/blob/master/License.txt)
+[![GitHub all releases](https://img.shields.io/github/downloads/staxrip/staxrip/total?style=plastic&logo=GitHub&logoColor=white&label=Total%20Downloads&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
+[![GitHub Repo stars](https://img.shields.io/github/stars/staxrip/staxrip?style=plastic&logo=GitHub&logoColor=white&label=Stars&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip)
+[![Discord](https://img.shields.io/discord/850510460256387076?style=plastic&logo=discord&logoColor=white&label=Discord&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://discord.gg/uz8pVR79Bd)  
+[![Static Badge](https://img.shields.io/badge/PayPal-00457C?style=plastic&logo=PayPal&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://paypal.me/DendraspisViridis)
+[![Static Badge](https://img.shields.io/badge/Ko--fi-F16061?style=plastic&logo=Ko-Fi&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://ko-fi.com/dendraspis)
+[![Static Badge](https://img.shields.io/badge/BuyMeACoffee-BuyMeACoffee?style=plastic&logo=BuyMeACoffee&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://www.buymeacoffee.com/dendraspis)
+
+-------------
+
 # About
 
 StaxRip is a powerful video/audio encoding GUI for Windows.  
@@ -12,20 +23,30 @@ There are a lot of resources in StaxRip-related communities. Users are strongly 
 
 # Documentation & useful links
 
+[![GitHub Release](https://img.shields.io/github/v/release/staxrip/staxrip?style=plastic&logo=Github&logoColor=white&label=Release&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
+[![GitHub License](https://img.shields.io/github/license/staxrip/staxrip?style=plastic&logo=GitHub&logoColor=white&label=License&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/blob/master/License.txt)
+[![GitHub all releases](https://img.shields.io/github/downloads/staxrip/staxrip/total?style=plastic&logo=GitHub&logoColor=white&label=Total%20Downloads&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
+
 - You can find plenty of information and instructions on [Wiki](https://github.com/staxrip/staxrip/wiki).
 - For the current changelog click here: [Changelog](https://github.com/staxrip/staxrip/blob/master/Changelog.md) - it's worth taking a look at it.
-- To download StaxRip browse through all [Releases](https://github.com/staxrip/staxrip/releases) or jump directly to the [Latest Release](https://github.com/staxrip/staxrip/releases/latest).
+- To download StaxRip browse through all [Releases](https://github.com/staxrip/staxrip/releases) or jump directly to the [Latest Release](https://github.com/staxrip/staxrip/releases/latest). 
 
 # Contribution / Support
+
+[![GitHub License](https://img.shields.io/github/license/staxrip/staxrip?style=plastic&logo=GitHub&logoColor=white&label=License&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/blob/master/License.txt)
+[![Discord](https://img.shields.io/discord/850510460256387076?style=plastic&logo=discord&logoColor=white&label=Discord&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://discord.gg/uz8pVR79Bd)
+[![Static Badge](https://img.shields.io/badge/PayPal-00457C?style=plastic&logo=PayPal&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://paypal.me/DendraspisViridis)
+[![Static Badge](https://img.shields.io/badge/Ko--fi-F16061?style=plastic&logo=Ko-Fi&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://ko-fi.com/dendraspis)
+[![Static Badge](https://img.shields.io/badge/BuyMeACoffee-BuyMeACoffee?style=plastic&logo=BuyMeACoffee&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://www.buymeacoffee.com/dendraspis)
 
 StaxRip is free to use under MIT license. If you want to contribute, you can report issues, open pull requests for bug fixes and extentions or you can donate.
 
 ### **Donation**
-If you want to donate for the huge amount of time and effort, you can do it by using those links:
+If you want to donate to support StaxRip and keep it alive, you can do it by using those links:
 
-- https://paypal.me/DendraspisViridis
-- https://ko-fi.com/dendraspis
-- https://www.buymeacoffee.com/dendraspis
+- [![Static Badge](https://img.shields.io/badge/PayPal-00457C?style=plastic&logo=PayPal&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://paypal.me/DendraspisViridis) https://paypal.me/DendraspisViridis
+- [![Static Badge](https://img.shields.io/badge/Ko--fi-F16061?style=plastic&logo=Ko-Fi&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://ko-fi.com/dendraspis) https://ko-fi.com/dendraspis
+- [![Static Badge](https://img.shields.io/badge/BuyMeACoffee-BuyMeACoffee?style=plastic&logo=BuyMeACoffee&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://www.buymeacoffee.com/dendraspis) https://www.buymeacoffee.com/dendraspis
 
 Any contribution is highly appreciated! 
 
@@ -35,7 +56,7 @@ Any contribution is highly appreciated!
 - If the [Latest Release](https://github.com/staxrip/staxrip/releases/latest) does not solve your problem, please use the [Issue Tracker](https://github.com/staxrip/staxrip/issues). You need to be as precise as possible using the Issue Tracker template when opening a thread in it.
 
 ### Community
-- Feel free to join in the [StaxRip Community on Discord](https://discord.gg/uz8pVR79Bd), where you can chat and share knowledge with us and other StaxRip users. 
+- Feel free to join in the [StaxRip Community on Discord](https://discord.gg/uz8pVR79Bd) , where you can chat and share knowledge with us and other StaxRip users. 
 This is the way to go if you have questions regarding settings, usage, etc.
 - Usage questions can also be asked on the *StaxRip threads* on
   - [Doom9](https://forum.doom9.org/showthread.php?t=172068)

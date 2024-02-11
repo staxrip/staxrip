@@ -20,11 +20,23 @@ Public MustInherit Class VideoEncoder
     Property AutoCompCheckValue As Integer = 50
     Property Muxer As Muxer = New MkvMuxer
 
-    Public MustOverride Sub ShowConfigDialog()
+    Public MustOverride Sub ShowConfigDialog(Optional path As String = Nothing)
 
     Sub New()
         CanEditValue = True
     End Sub
+
+    Public Overridable ReadOnly Property IsOvercroppingAllowed As Boolean
+        Get
+            Return True
+        End Get
+    End Property
+
+    Public Overridable ReadOnly Property ResizingStatus As String
+        Get
+            Return ""
+        End Get
+    End Property
 
     ReadOnly Property OutputExtFull As String
         Get
@@ -60,10 +72,21 @@ Public MustInherit Class VideoEncoder
     Overridable Sub ImportCommandLine(commandLine As String)
     End Sub
 
+    Overridable Function BeforeEncoding() As Boolean
+        Return True
+    End Function
+
+    Overridable Function AfterEncoding() As Boolean
+        If Not g.FileExists(OutputPath) Then Throw New ErrorAbortException("Encoder output file is missing", OutputPath)
+
+        Log.WriteLine(MediaInfo.GetSummary(OutputPath))
+        Log.Save()
+
+        Return True
+    End Function
+
     Sub SetMetaData(sourceFile As String)
-        If Not p.ImportVUIMetadata Then
-            Exit Sub
-        End If
+        If Not p.ImportVUIMetadata Then Exit Sub
 
         Dim cl = ""
         Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
@@ -160,6 +183,22 @@ Public MustInherit Class VideoEncoder
                     cl += " --hrd"
                     cl += " --aud"
                 End If
+
+
+                If Not String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) AndAlso p.Hdr10PlusMetadataFile.FileExists() Then
+                    cl += $" --dhdr10-info ""{p.Hdr10PlusMetadataFile}"""
+                End If
+
+                If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+                    cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
+
+                    Select Case p.HdrDolbyVisionMode
+                        Case DoviMode.Untouched, DoviMode.Mode4
+                            cl += $" --dolby-vision-profile 8.4"
+                        Case Else
+                            cl += $" --dolby-vision-profile 8.1"
+                    End Select
+                End If
             End If
         End If
 
@@ -173,24 +212,16 @@ Public MustInherit Class VideoEncoder
         ImportCommandLine(cl)
     End Sub
 
-    Sub AfterEncoding()
-        If Not g.FileExists(OutputPath) Then
-            Throw New ErrorAbortException("Encoder output file is missing", OutputPath)
-        Else
-            Log.WriteLine(MediaInfo.GetSummary(OutputPath))
-        End If
-    End Sub
-
     Overrides Function CreateEditControl() As Control
-        Dim ret As New ToolStripEx
-
-        ret.Renderer = New ToolStripRendererEx()
-        ret.ShowItemToolTips = False
-        ret.GripStyle = ToolStripGripStyle.Hidden
-        ret.Dock = DockStyle.Fill
-        ret.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow
-        ret.ShowControlBorder = True
-        ret.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        Dim ret As New ToolStripEx With {
+            .Renderer = New ToolStripRendererEx(),
+            .ShowItemToolTips = False,
+            .GripStyle = ToolStripGripStyle.Hidden,
+            .Dock = DockStyle.Fill,
+            .LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow,
+            .ShowControlBorder = True,
+            .Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        }
 
         Dim pad = ret.Font.Height \ 9
 
@@ -443,9 +474,7 @@ Public MustInherit Class BasicVideoEncoder
 
     Overloads Shared Sub ImportCommandLine(commandLine As String, params As CommandLineParams)
         Try
-            If commandLine = "" Then
-                Exit Sub
-            End If
+            If commandLine = "" Then Exit Sub
 
             For Each i In {"tune", "preset", "profile"}
                 Dim match = Regex.Match(commandLine, "(.*)(--" + i + "\s\w+)(.*)")
@@ -455,11 +484,11 @@ Public MustInherit Class BasicVideoEncoder
                 End If
             Next
 
-            Dim a = commandLine.SplitNoEmptyAndWhiteSpace(" ")
+            Dim a = g.MainForm.ParseCommandLine(commandLine)
 
             For x = 0 To a.Length - 1
                 For Each param In params.Items
-                    If Not param.ImportAction Is Nothing AndAlso
+                    If param.ImportAction IsNot Nothing AndAlso
                         param.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
 
                         param.ImportAction.Invoke(a(x), a(x + 1))
@@ -519,7 +548,7 @@ Public MustInherit Class BasicVideoEncoder
                                     Exit For
                                 End If
                             ElseIf a.Length - 1 = x Then
-                                If Not optionParam.Values Is Nothing Then
+                                If optionParam.Values IsNot Nothing Then
                                     For xOpt = 0 To optionParam.Values.Length - 1
                                         If a(x) = optionParam.Values(xOpt) AndAlso optionParam.Values(xOpt).StartsWith("--") Then
                                             optionParam.Value = xOpt
@@ -568,7 +597,7 @@ Public Class BatchEncoder
         End Get
     End Property
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Using form As New CommandLineVideoEncoderForm(Me)
             If form.ShowDialog() = DialogResult.OK Then
                 OnStateChange()
@@ -749,6 +778,6 @@ Public Class NullEncoder
         Return ret
     End Function
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
     End Sub
 End Class

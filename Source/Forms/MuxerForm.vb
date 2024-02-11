@@ -2,6 +2,7 @@
 Imports System.ComponentModel
 Imports System.Globalization
 Imports System.Text.RegularExpressions
+Imports System.Threading.Tasks
 
 Imports StaxRip.UI
 
@@ -652,7 +653,7 @@ Public Class MuxerForm
         InitializeComponent()
         SetMinimumSize(30, 21)
         RestoreClientSize(45, 22)
-        Text += $" - {muxer.Name} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Text += $" - {muxer.Name} - {g.DefaultCommands.GetApplicationDetails()}"
         Me.Muxer = muxer
         AddSubtitles(muxer.Subtitles)
         CommandLineControl.tb.Text = muxer.AdditionalSwitches
@@ -874,8 +875,6 @@ Public Class MuxerForm
     Protected Overrides Sub OnShown(e As EventArgs)
         MyBase.OnShown(e)
 
-        Dim lastAction As Action = Nothing
-
         Dim UI = SimpleUI
         UI.Store = Muxer
         UI.BackColor = Color.Transparent
@@ -939,22 +938,11 @@ Public Class MuxerForm
             ml.Help = "Optional language of the video stream."
             ml.Property = NameOf(MkvMuxer.VideoTrackLanguage)
 
+            PopulateLanguagesAsync(ml.Button)
+
             Dim compression = UI.AddMenu(Of CompressionMode)()
             compression.Text = "Subtitle Compression"
             compression.Property = NameOf(MkvMuxer.Compression)
-
-            lastAction = Sub()
-                             For Each i In Language.Languages
-                                 If i.IsCommon Then
-                                     ml.Button.Add(i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
-                                 Else
-                                     ml.Button.Add("More | " + i.ToString.Substring(0, 1).ToUpperInvariant + " | " + i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
-                                 End If
-
-                                 Application.DoEvents()
-                             Next
-                         End Sub
-
         ElseIf TypeOf Muxer Is MP4Muxer Then
             tpAttachments.Enabled = False
 
@@ -975,7 +963,6 @@ Public Class MuxerForm
 
         page.ResumeLayout()
         ApplyTheme()
-        lastAction?.Invoke
         UpdateControls()
     End Sub
 
@@ -996,6 +983,58 @@ Public Class MuxerForm
             Muxer.Attachments.Clear()
             Muxer.Attachments.AddRange(lbAttachments.Items.OfType(Of AttachmentContainer).Select(Function(val) val.Filepath))
         End If
+    End Sub
+
+    Sub PopulateLanguage(menuButton As MenuButton, path As String, obj As Object)
+        If IsDisposingOrDisposed Then Return
+        If menuButton Is Nothing Then Return
+
+        If InvokeRequired Then
+            Try
+                Invoke(New MethodInvoker(Sub() PopulateLanguage(menuButton, path, obj)))
+            Catch ex As Exception
+            End Try
+        Else
+            Try
+                menuButton.Add(path, obj)
+            Catch ex As Exception
+            End Try
+        End If
+    End Sub
+
+    Sub PopulateLanguages(menuButton As MenuButton)
+        Try
+            menuButton.Menu.Enabled = False
+            menuButton.Enabled = False
+
+            For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
+                If IsDisposingOrDisposed Then Return
+
+                If lng.IsCommon Then
+                    PopulateLanguage(menuButton, lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
+                Else
+                    PopulateLanguage(menuButton, "More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
+                End If
+            Next
+        Catch ex As Exception
+        Finally
+            menuButton.Enabled = True
+            menuButton.Menu.Enabled = True
+        End Try
+    End Sub
+
+    Async Sub PopulateLanguagesAsync(menuButton As MenuButton)
+        Dim task As Task
+
+        Try
+            SyncLock menuButton
+                task = Task.Run(Sub() PopulateLanguages(menuButton))
+            End SyncLock
+        Catch ex As Exception
+        Finally
+        End Try
+
+        Await task
     End Sub
 
     Sub SetValues()
@@ -1060,6 +1099,8 @@ Public Class MuxerForm
             profileSelection.AddItem(audioProfile)
         Next
 
+        profileSelection.SelectedText = "Copy/Mux"
+
         If profileSelection.Show <> DialogResult.OK Then
             Exit Sub
         End If
@@ -1070,6 +1111,9 @@ Public Class MuxerForm
         If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
             ap.Delay = g.ExtractDelay(ap.File)
         End If
+
+        Dim trackname = g.ExtractTrackNameFromFilename(path)
+        ap.StreamName = If(trackname, ap.StreamName)
 
         If FileTypes.VideoAudio.Contains(ap.File.Ext) Then
             ap.Streams = MediaInfo.GetAudioStreams(ap.File)

@@ -561,7 +561,7 @@ Public Class eac3toForm
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(10)
         Me.Name = "eac3toForm"
-        Me.Text = $"eac3to Demuxing - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"eac3to Demuxing - {g.DefaultCommands.GetApplicationDetails()}"
         Me.flpSubtitleLinks.ResumeLayout(False)
         Me.flpAudioLinks.ResumeLayout(False)
         Me.tlpTarget.ResumeLayout(False)
@@ -593,8 +593,7 @@ Public Class eac3toForm
     Property Streams As New BindingList(Of M2TSStream)
 
     Private Output As String
-    Private AudioOutputFormats As String() =
-        {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd", "thd+ac3"}
+    Private ReadOnly AudioOutputFormats As String() = {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd", "thd+ac3"}
 
     Private Project As Project
 
@@ -691,7 +690,7 @@ Public Class eac3toForm
 
     Sub ShowAudioStreamProfiles()
         Using form As New DataForm
-            form.Text = $"Audio Stream Profiles - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            form.Text = $"Audio Stream Profiles - {g.DefaultCommands.GetApplicationDetails()}"
             form.FormBorderStyle = FormBorderStyle.Sizable
             form.dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
             form.dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
@@ -772,11 +771,12 @@ Public Class eac3toForm
     End Sub
 
     Sub OutputDataReceived(sender As Object, e As DataReceivedEventArgs)
-        If Not e.Data Is Nothing Then
-            BeginInvoke(Sub() Text = e.Data)
-
-            If Not e.Data.StartsWith("analyze: ") Then
+        If e.Data IsNot Nothing Then
+            If e.Data.StartsWith("analyze: ") Then
+                BeginInvoke(Sub() Me.Text = e.Data)
+            Else
                 Output += e.Data + BR
+                BeginInvoke(Sub() Me.Text = $"eac3to Demuxing - {g.DefaultCommands.GetApplicationDetails()}")
             End If
         End If
     End Sub
@@ -818,21 +818,21 @@ Public Class eac3toForm
             Dim sid = 1
 
             For Each line In Output.SplitLinesNoEmpty
-                If line.Contains("Subtitle (DVB)") Then
-                    Continue For
-                End If
+                If line.Contains("Subtitle (DVB)") Then Continue For
 
                 Dim match = Regex.Match(line, "^(\d+): (.+)$")
 
                 If match.Success Then
-                    Dim ms As New M2TSStream
-                    ms.Text = line.Trim
-                    ms.ID = match.Groups(1).Value.ToInt
-                    ms.Codec = match.Groups(2).Value
+                    Dim ms As New M2TSStream With {
+                        .Text = line.Trim,
+                        .ID = match.Groups(1).Value.ToInt,
+                        .Codec = match.Groups(2).Value
+                    }
 
-                    If ms.Codec.Contains(",") Then
-                        ms.Codec = ms.Codec.Left(",")
-                    End If
+                    ms.IsVideoEnhancementLayer = ms.Codec.StartsWith("*") AndAlso ms.Codec.ContainsAll("h265/HEVC", "1080p")
+
+                    If ms.Codec.Contains(",") Then ms.Codec = ms.Codec.Left(",")
+                    If ms.Codec.StartsWith("*") Then ms.Codec = ms.Codec.Right("*")
 
                     ms.IsVideo = ms.Codec.EqualsAny("h264/AVC", "h265/HEVC", "VC-1", "MPEG2")
 
@@ -973,10 +973,23 @@ Public Class eac3toForm
 
         Dim videoStream = TryCast(cbVideoStream.SelectedItem, M2TSStream)
 
-        If Not videoStream Is Nothing AndAlso Not cbVideoOutput.Text = "Nothing" Then
+        If videoStream IsNot Nothing AndAlso Not cbVideoOutput.Text = "Nothing" Then
             Dim outFile = Path.Combine(OutputFolder, baseName + "." + cbVideoOutput.Text.ToLowerInvariant)
-            ret += " " & videoStream.ID & ": " + outFile.Escape
-            outFiles.Add(outFile)
+            If Not outFile.FileExists() Then
+                ret += " " & videoStream.ID & ": " + outFile.Escape
+                outFiles.Add(outFile)
+            End If
+        End If
+
+        If p.ExtractHdrmetadata = HdrmetadataMode.DolbyVision OrElse p.ExtractHdrmetadata = HdrmetadataMode.All Then
+            Dim el = Streams?.Where(Function(x) x.IsVideoEnhancementLayer)?.FirstOrDefault()
+            If el IsNot Nothing Then
+                Dim outFile = Path.Combine(OutputFolder, baseName + "_EL.h265")
+                If Not outFile.FileExists() Then
+                    ret += " " & el.ID & ": " + outFile.Escape
+                    outFiles.Add(outFile)
+                End If
+            End If
         End If
 
         For Each stream In Streams

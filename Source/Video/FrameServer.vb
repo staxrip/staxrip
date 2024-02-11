@@ -32,9 +32,9 @@ Public Class DirectFrameServer
         End Get
     End Property
 
-    ReadOnly Property FrameRate As Double Implements IFrameServer.FrameRate
+    ReadOnly Property FrameRate As Decimal Implements IFrameServer.FrameRate
         Get
-            Return Info.FrameRateNum / Info.FrameRateDen
+            Return Decimal.Divide(Info.FrameRateNum, Info.FrameRateDen)
         End Get
     End Property
 
@@ -63,7 +63,7 @@ Public Interface IFrameServer
 
     Property Info As ServerInfo
     ReadOnly Property [Error] As String
-    ReadOnly Property FrameRate As Double
+    ReadOnly Property FrameRate As Decimal
     Function GetFrame(position As Integer, ByRef data As IntPtr, ByRef pitch As Integer) As Integer
 End Interface
 
@@ -85,18 +85,14 @@ Public Structure ServerInfo
     Public ColorSpace As ColorSpace
     Public BitsPerPixel As Integer
 
-    ReadOnly Property FrameRate As Double
+    ReadOnly Property FrameRate As Decimal
         Get
-            If FrameRateDen <> 0 Then
-                Return FrameRateNum / FrameRateDen
-            End If
+            Return If(FrameRateDen <> 0, Decimal.Divide(FrameRateNum, FrameRateDen), 0)
         End Get
     End Property
 
     Function GetInfoText(position As Integer) As String
-        If FrameRateDen = 0 Then
-            Return ""
-        End If
+        If FrameRateDen = 0 Then Return ""
 
         Dim lengthtDate = Date.Today.AddSeconds(FrameCount / FrameRate)
         Dim dateFormat = If(lengthtDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff")
@@ -240,9 +236,9 @@ Public Class VfwFrameServer
 
     ReadOnly Property [Error] As String Implements IFrameServer.Error
 
-    ReadOnly Property FrameRate As Double Implements IFrameServer.FrameRate
+    ReadOnly Property FrameRate As Decimal Implements IFrameServer.FrameRate
         Get
-            Return Info.FrameRateNum / Info.FrameRateDen
+            Return Decimal.Divide(Info.FrameRateNum, Info.FrameRateDen)
         End Get
     End Property
 

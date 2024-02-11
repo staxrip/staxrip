@@ -220,7 +220,7 @@ Partial Class TaskDialogBaseForm
         Me.MinimizeBox = False
         Me.Name = "TaskDialogBaseForm"
         Me.ShowIcon = False
-        Me.Text = $"{g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"{g.DefaultCommands.GetApplicationDetails()}"
         Me.tlpMain.ResumeLayout(False)
         Me.tlpMain.PerformLayout()
         Me.tlpTop.ResumeLayout(False)

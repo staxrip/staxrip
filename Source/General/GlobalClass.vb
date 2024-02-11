@@ -21,7 +21,7 @@ Public Class GlobalClass
     Property IsAdmin As Boolean = New WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator)
     Property IsJobProcessing As Boolean
     Property MainForm As MainForm
-    Property MAX_PATH As Integer = 260
+    Shared Property MAX_PATH As Integer = 260
     Property MinimizedWindows As Boolean
     Property ProcForm As ProcessingForm
     Property ProjectPath As String
@@ -292,6 +292,12 @@ Public Class GlobalClass
             Log.WriteEnvironment()
             Log.WriteConfiguration()
 
+            Log.WriteHeader("Media Info Source File")
+            For Each i In p.SourceFiles
+                Log.WriteLine(i)
+            Next
+            Log.WriteLine(BR + MediaInfo.GetSummary(p.SourceFile))
+
             Log.WriteHeader($"{p.Script.Engine} Script")
             Log.WriteLine(p.Script.GetFullScript)
 
@@ -347,11 +353,18 @@ Public Class GlobalClass
                 If p.VideoEncoder.CanChunkEncode Then
                     p.Script.Synchronize()
 
-                    For Each i In p.VideoEncoder.GetChunkEncodeActions
-                        actions.Add(i)
-                    Next
+                    If p.VideoEncoder.BeforeEncoding() Then
+                        For Each i In p.VideoEncoder.GetChunkEncodeActions()
+                            actions.Add(i)
+                        Next
+                    End If
                 Else
-                    actions.Add(AddressOf p.VideoEncoder.Encode)
+                    actions.Add(Sub()
+                                    If p.VideoEncoder.BeforeEncoding() Then
+                                        p.VideoEncoder.Encode()
+                                        p.VideoEncoder.AfterEncoding()
+                                    End If
+                                End Sub)
                 End If
             End If
 
@@ -362,16 +375,17 @@ Public Class GlobalClass
             End Try
 
             Log.Save()
+            p.VideoEncoder.AfterEncoding()
 
             g.RaiseAppEvent(ApplicationEvent.AfterVideoEncoded)
 
             p.VideoEncoder.Muxer.Mux()
 
-            Dim cts = New CancellationTokenSource()
-            Dim closingTD As TaskDialog(Of DialogResult) = Nothing
-            Dim mainFormClosingHandler As FormClosingEventHandler = Nothing
-
             If p.Thumbnailer Then
+                Dim cts = New CancellationTokenSource()
+                Dim closingTD As TaskDialog(Of DialogResult) = Nothing
+                Dim mainFormClosingHandler As FormClosingEventHandler = Nothing
+
                 mainFormClosingHandler = Sub(sender As Object, e As FormClosingEventArgs)
                                              If Not e.Cancel Then
                                                  Using closingTD
@@ -400,7 +414,7 @@ Public Class GlobalClass
 
                         Dim proceededSources = Await Thumbnailer.RunAsync(cts.Token, p, p.TargetFile)
 
-                        If closingTD IsNot Nothing AndAlso Not closingTD.IsDisposingOrDisposed Then
+                        If closingTD?.IsDisposingOrDisposed Then
                             closingTD.Close()
                         End If
 
@@ -415,17 +429,20 @@ Public Class GlobalClass
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
 
-            If Not WasEncodeSuccessful(p.TargetFile) Then
-                Log.WriteHeader("Frame Mismatch")
-                Dim has = MediaInfo.GetVideo(p.TargetFile, "FrameCount").ToInt()
-                Dim should = p.TargetFrames
-                Log.WriteLine($"WARNING: Target file has {has} frames, but should have {should} frames!")
-                Log.WriteLine($"Encoding was terminated at {has / should * 100:0.0}%!")
+            If FileTypes.Video.Contains(p.TargetFile.Ext()) Then
+                Dim hasFrames = MediaInfo.GetVideo(p.TargetFile, "FrameCount").ToInt(-1)
+                Dim shouldFrames = p.TargetFrames
+                If hasFrames <> shouldFrames Then
+                    Log.WriteHeader("Frame Mismatch")
+                    Log.WriteLine($"WARNING: Target file has {hasFrames} frames, but should have {shouldFrames} frames!")
+                    Log.WriteLine($"Encoding was probably terminated at {hasFrames / shouldFrames * 100:0.0}%!")
+                    If hasFrames > -1 AndAlso p.AbortOnFrameMismatch Then Throw New ErrorAbortException("Frame Mismatch", $"Target file has {hasFrames} frames, but should have {shouldFrames} frames!", p)
+                End If
             End If
 
             Log.Save()
 
-            g.ArchiveLogFile(Log.GetPath)
+            g.ArchiveLogFile(Log.GetPath())
             g.DeleteTempFiles()
             g.RaiseAppEvent(ApplicationEvent.AfterJobProcessed)
             JobManager.RemoveJob(jobPath)
@@ -440,20 +457,13 @@ Public Class GlobalClass
             Log.Save()
             g.RaiseAppEvent(ApplicationEvent.AfterJobFailed)
             g.ShowException(ex, Nothing, Nothing, 50)
-            g.ShellExecute(g.GetTextEditorPath(), """" + Path.Combine(p.TempDir, p.TargetFile.Base, "_staxrip.log") + """")
+            g.ShellExecute(g.GetTextEditorPath(), """" + p.Log.GetPath() + """")
             ProcController.Aborted = False
         End Try
     End Sub
 
     Function CanEncodeVideo() As Boolean
         Return Not (p.SkipVideoEncoding AndAlso TypeOf p.VideoEncoder IsNot NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath))
-    End Function
-
-    Function WasEncodeSuccessful(targetPath As String) As Boolean
-        If String.IsNullOrEmpty(targetPath) Then Return False
-        If Not targetPath.FileExists() Then Return False
-
-        Return p.TargetFrames = MediaInfo.GetVideo(targetPath, "FrameCount").ToInt()
     End Function
 
     Sub DeleteTempFiles()
@@ -473,7 +483,7 @@ Public Class GlobalClass
         End If
     End Sub
 
-    ReadOnly Property StartupTemplatePath() As String
+    ReadOnly Property StartupTemplatePath As String
         Get
             Dim ret = Path.Combine(Folder.Template, s.StartupTemplate + ".srip")
 
@@ -486,7 +496,7 @@ Public Class GlobalClass
         End Get
     End Property
 
-    ReadOnly Property SettingsFile() As String
+    ReadOnly Property SettingsFile As String
         Get
             Return Path.Combine(Folder.Settings, "Settings.dat")
         End Get
@@ -633,13 +643,17 @@ Public Class GlobalClass
         End If
     End Function
 
+    Function ExtractTrackNameFromFilename(filename As String) As String
+        Return If(filename.Base().Contains(" {"), filename.Base().Right(" {").Left("}").UnescapeIllegalFileSysChars, Nothing)
+    End Function
+
     Function GetSourceBase() As String
         Return If(New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp"), "temp", p.SourceFile.Base)
     End Function
 
     Sub ShowCode(title As String, content As String, Optional find As String = Nothing, Optional wordwrap As Boolean = False)
         Dim form As New CodeForm(content, find, wordwrap) With {
-            .Text = $"{title} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            .Text = $"{title} - {g.DefaultCommands.GetApplicationDetails()}"
         }
         form.Show()
     End Sub
@@ -1261,7 +1275,7 @@ Public Class GlobalClass
             form.cbWrap.Checked = False
             form.cbWrap.Visible = False
             form.rtb.Text = text
-            form.Text = $"{script.Path} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+            form.Text = $"{script.Path} - {g.DefaultCommands.GetApplicationDetails()}"
             form.bnOK.Visible = False
             form.bnCancel.Text = "Close"
             form.ShowDialog()
@@ -1282,34 +1296,43 @@ Public Class GlobalClass
     Sub RunAutoCrop(progressAction As Action(Of Double))
         p.SourceScript.Synchronize(True, True, True)
 
-        Using server = FrameServerFactory.Create(p.SourceScript.Path)
-            Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)
-            Dim crops(s.CropFrameCount - 1) As AutoCrop
-            Dim pos As Integer
+        If p.HdrDolbyVisionMetadataFile?.Crop <> Padding.Empty Then
+            p.CropLeft = p.HdrDolbyVisionMetadataFile.Crop.Left
+            p.CropTop = p.HdrDolbyVisionMetadataFile.Crop.Top
+            p.CropRight = p.HdrDolbyVisionMetadataFile.Crop.Right
+            p.CropBottom = p.HdrDolbyVisionMetadataFile.Crop.Bottom
 
-            For x = 1 To s.CropFrameCount
-                progressAction?.Invoke((x - 1) / s.CropFrameCount * 100)
-                pos = len * x
+            CorrectCropMod(False, False)
+        Else
+            Using server = FrameServerFactory.Create(p.SourceScript.Path)
+                Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)
+                Dim crops(s.CropFrameCount - 1) As AutoCrop
+                Dim pos As Integer
 
-                Using bmp = BitmapUtil.CreateBitmap(server, pos)
-                    crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), pos)
-                End Using
-            Next
+                For x = 1 To s.CropFrameCount
+                    progressAction?.Invoke((x - 1) / s.CropFrameCount * 100)
+                    pos = len * x
 
-            Dim leftCrops = crops.SelectMany(Function(arg) arg.Left).OrderBy(Function(arg) arg)
-            p.CropLeft = leftCrops(leftCrops.Count \ 10)
+                    Using bmp = BitmapUtil.CreateBitmap(server, pos)
+                        crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), pos)
+                    End Using
+                Next
 
-            Dim topCrops = crops.SelectMany(Function(arg) arg.Top).OrderBy(Function(arg) arg)
-            p.CropTop = topCrops(topCrops.Count \ 10)
+                Dim leftCrops = crops.SelectMany(Function(arg) arg.Left).OrderBy(Function(arg) arg)
+                p.CropLeft = leftCrops(leftCrops.Count \ 10)
 
-            Dim rightCrops = crops.SelectMany(Function(arg) arg.Right).OrderBy(Function(arg) arg)
-            p.CropRight = rightCrops(rightCrops.Count \ 10)
+                Dim topCrops = crops.SelectMany(Function(arg) arg.Top).OrderBy(Function(arg) arg)
+                p.CropTop = topCrops(topCrops.Count \ 10)
 
-            Dim bottomCrops = crops.SelectMany(Function(arg) arg.Bottom).OrderBy(Function(arg) arg)
-            p.CropBottom = bottomCrops(bottomCrops.Count \ 10)
+                Dim rightCrops = crops.SelectMany(Function(arg) arg.Right).OrderBy(Function(arg) arg)
+                p.CropRight = rightCrops(rightCrops.Count \ 10)
+
+                Dim bottomCrops = crops.SelectMany(Function(arg) arg.Bottom).OrderBy(Function(arg) arg)
+                p.CropBottom = bottomCrops(bottomCrops.Count \ 10)
+            End Using
 
             CorrectCropMod()
-        End Using
+        End If
     End Sub
 
     Sub SmartCrop()
@@ -1411,12 +1434,19 @@ Public Class GlobalClass
         CorrectCropMod(True)
     End Sub
 
-    Sub CorrectCropMod(force As Boolean)
+    Sub CorrectCropMod(force As Boolean, Optional increase As Boolean = True)
         If p.AutoCorrectCropValues OrElse force Then
-            p.CropLeft += p.CropLeft Mod 2
-            p.CropRight += p.CropRight Mod 2
-            p.CropTop += p.CropTop Mod 2
-            p.CropBottom += p.CropBottom Mod 2
+            If increase Then
+                p.CropLeft += p.CropLeft Mod 2
+                p.CropRight += p.CropRight Mod 2
+                p.CropTop += p.CropTop Mod 2
+                p.CropBottom += p.CropBottom Mod 2
+            Else
+                p.CropLeft -= p.CropLeft Mod 2
+                p.CropRight -= p.CropRight Mod 2
+                p.CropTop -= p.CropTop Mod 2
+                p.CropBottom -= p.CropBottom Mod 2
+            End If
 
             Dim modValue = 4
 
@@ -1425,23 +1455,40 @@ Public Class GlobalClass
             End If
 
             Dim whalf = ((p.SourceWidth - p.CropLeft - p.CropRight) Mod modValue) \ 2
-
-            If p.CropLeft > p.CropRight Then
-                p.CropLeft += whalf - whalf Mod 2
-                p.CropRight += whalf + whalf Mod 2
-            Else
-                p.CropRight += whalf - whalf Mod 2
-                p.CropLeft += whalf + whalf Mod 2
-            End If
-
             Dim hhalf = ((p.SourceHeight - p.CropTop - p.CropBottom) Mod modValue) \ 2
 
-            If p.CropTop > p.CropBottom Then
-                p.CropTop += hhalf - hhalf Mod 2
-                p.CropBottom += hhalf + hhalf Mod 2
+            If increase Then
+                If p.CropLeft > p.CropRight Then
+                    p.CropLeft += whalf - whalf Mod 2
+                    p.CropRight += whalf + whalf Mod 2
+                Else
+                    p.CropRight += whalf - whalf Mod 2
+                    p.CropLeft += whalf + whalf Mod 2
+                End If
+
+                If p.CropTop > p.CropBottom Then
+                    p.CropTop += hhalf - hhalf Mod 2
+                    p.CropBottom += hhalf + hhalf Mod 2
+                Else
+                    p.CropBottom += hhalf - hhalf Mod 2
+                    p.CropTop += hhalf + hhalf Mod 2
+                End If
             Else
-                p.CropBottom += hhalf - hhalf Mod 2
-                p.CropTop += hhalf + hhalf Mod 2
+                If p.CropLeft > p.CropRight Then
+                    p.CropLeft -= whalf - whalf Mod 2
+                    p.CropRight -= whalf + whalf Mod 2
+                Else
+                    p.CropRight -= whalf - whalf Mod 2
+                    p.CropLeft -= whalf + whalf Mod 2
+                End If
+
+                If p.CropTop > p.CropBottom Then
+                    p.CropTop -= hhalf - hhalf Mod 2
+                    p.CropBottom -= hhalf + hhalf Mod 2
+                Else
+                    p.CropBottom -= hhalf - hhalf Mod 2
+                    p.CropTop -= hhalf + hhalf Mod 2
+                End If
             End If
 
             g.MainForm.FiltersListView.Load()

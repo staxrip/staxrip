@@ -206,7 +206,7 @@ Public Class EventCommandsEditor
         Me.Margin = New System.Windows.Forms.Padding(7)
         Me.MinimumSize = New System.Drawing.Size(405, 302)
         Me.Name = "EventCommandsEditor"
-        Me.Text = $"Event Command - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Me.Text = $"Event Command - {g.DefaultCommands.GetApplicationDetails()}"
         Me.flpButtons.ResumeLayout(False)
         Me.tlpTop.ResumeLayout(False)
         Me.tlpTop.PerformLayout()

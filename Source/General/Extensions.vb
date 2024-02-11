@@ -265,10 +265,9 @@ Module StringExtensions
     Function LongPathPrefix(instance As String) As String
         If instance = "" Then Return ""
 
-        Dim MAX_PATH = 260
         Dim prefix = "\\?\"
 
-        Return If(instance.Length > MAX_PATH AndAlso Not instance.StartsWith(prefix), prefix + instance, instance)
+        Return If(instance.Length > GlobalClass.MAX_PATH AndAlso Not instance.StartsWith(prefix), prefix + instance, instance)
     End Function
 
     <Extension()>
@@ -281,17 +280,15 @@ Module StringExtensions
             instance = instance.Substring(4)
         End If
 
-        Dim MAX_PATH = 260
-
-        If instance.Length <= MAX_PATH Then
+        If instance.Length <= GlobalClass.MAX_PATH Then
             Return instance
         End If
 
-        Dim sb As New StringBuilder(MAX_PATH)
+        Dim sb As New StringBuilder(GlobalClass.MAX_PATH)
         Native.GetShortPathName(instance.Dir, sb, sb.Capacity)
         Dim ret = Path.Combine(sb.ToString, instance.FileName)
 
-        If ret.Length <= MAX_PATH Then
+        If ret.Length <= GlobalClass.MAX_PATH Then
             Return ret
         End If
 
@@ -309,13 +306,11 @@ Module StringExtensions
             instance = instance.Substring(4)
         End If
 
-        Dim MAX_PATH = 260
-
-        If instance.Length <= MAX_PATH Then
+        If instance.Length <= GlobalClass.MAX_PATH Then
             Return instance
         End If
 
-        Dim sb As New StringBuilder(MAX_PATH)
+        Dim sb As New StringBuilder(GlobalClass.MAX_PATH)
         Native.GetShortPathName(instance, sb, sb.Capacity)
         Return sb.ToString
     End Function
@@ -612,7 +607,7 @@ Module StringExtensions
 
     <Extension()>
     Function Shorten(value As String, maxLength As Integer) As String
-        Return If(value = "" OrElse value.Length <= maxLength, value, value.Substring(0, maxLength))
+        Return If(value = "" OrElse maxLength < 1 OrElse value.Length <= maxLength, value, value.Substring(0, maxLength))
     End Function
 
     <Extension()>

@@ -1,4 +1,5 @@
 ﻿Imports System.Text
+Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
@@ -46,8 +47,6 @@ Public Class SvtAv1Enc
         If Params.Passes.Value > 0 Then
             Encode("Video encoding third pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
-
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
@@ -112,20 +111,16 @@ Public Class SvtAv1Enc
 
             If Params.Passes.Visible Then
                 ret.Add(Sub()
-                            Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                            Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "), GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                             If Params.Passes.Value > 0 Then
-                                Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "),
-                                       GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                                Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "), GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                             End If
                             If Params.Passes.Value > 1 Then
-                                Encode("Video encoding pass 3" + name.Replace("_chunk", " chunk "),
-                                       GetArgs(3, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                                Encode("Video encoding pass 3" + name.Replace("_chunk", " chunk "), GetArgs(3, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                             End If
                         End Sub)
             Else
-                ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "),
-                    GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority))
+                ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "), GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority))
             End If
         Next
 
@@ -211,7 +206,7 @@ Public Class SvtAv1Enc
         }
     End Function
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Dim newParams As New SvtAv1EncParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
@@ -232,6 +227,10 @@ Public Class SvtAv1Enc
                     End Sub
 
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
+
+            If Not String.IsNullOrWhiteSpace(path) Then
+                form.SimpleUI.ShowPage(path)
+            End If
 
             If form.ShowDialog() = DialogResult.OK Then
                 AutoCompCheckValue = CInt(newParams.CompCheckAimedQuality.Value)
@@ -413,6 +412,7 @@ Public Class SvtAv1EncParams
     Property EnableQm As New BoolParam With {
         .Switch = "--enable-qm",
         .Text = "Enable quantisation matrices",
+        .IntegerValue = True,
         .Init = False
     }
 
@@ -445,8 +445,8 @@ Public Class SvtAv1EncParams
     Property KeyInt As New OptionParam With {
         .Switch = "--keyint",
         .Text = "GOP size",
-        .Options = {"-2: ~5 seconds", "0: ""infinite"""},
-        .Values = {"-2", "0"},
+        .Options = {"-2: ~5 seconds", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+        .Values = {"-2", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
         .VisibleFunc = Function() Not ConstantRateFactor.Visible,
         .ValueChangedAction = Sub(x) KeyIntCrf.Value = x
     }
@@ -454,8 +454,8 @@ Public Class SvtAv1EncParams
     Property KeyIntCrf As New OptionParam With {
         .Switch = "--keyint",
         .Text = "GOP size",
-        .Options = {"-2: ~5 seconds", "-1: ""infinite"""},
-        .Values = {"-2", "-1"},
+        .Options = {"-2: ~5 seconds", "-1: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+        .Values = {"-2", "-1", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
         .VisibleFunc = Function() ConstantRateFactor.Visible,
         .ValueChangedAction = Sub(x) KeyInt.Value = x
     }
@@ -559,7 +559,7 @@ Public Class SvtAv1EncParams
                     New BoolParam With {.Switch = "--fast-decode", .Text = "Fast Decoder Levels", .Init = False, .IntegerValue = True},
                     New BoolParam With {.Switch = "--enable-tf", .Text = "ALT-REF Frames", .Init = True, .IntegerValue = True},
                     New BoolParam With {.Switch = "--enable-overlays", .Text = "Insertion of Overlayer Pictures", .Init = False, .IntegerValue = True},
-                    New OptionParam With {.Switch = "--tune", .Text = "Tune", .Init = 1, .IntegerValue = True, .Options = {"0: VQ", "1: PSNR"}},
+                    New OptionParam With {.Switch = "--tune", .Text = "Tune", .Init = 1, .IntegerValue = True, .Options = {"0: VQ", "1: PSNR", "2: SSIM"}},
                     New OptionParam With {.Switch = "--scm", .Text = "Screen Content Detection Level", .Init = 2, .IntegerValue = True, .Options = {"0: Off", "1: On", "2: Content Adaptive"}},
                     New BoolParam With {.Switch = "--rmv", .Text = "Restrict Motion Vectors", .Init = False, .IntegerValue = True}
                 )
@@ -693,7 +693,7 @@ Public Class SvtAv1EncParams
 
             sb.Append($" --input {input}")
             sb.Append($" --width {p.TargetWidth} --height {p.TargetHeight}")
-            sb.Append($" --output {targetPath.Escape}")
+            sb.Append($" --output {(targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape}")
         End If
 
         If isSingleChunk Then

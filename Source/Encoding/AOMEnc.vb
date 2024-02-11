@@ -1,5 +1,6 @@
 ﻿
 Imports System.Text
+Imports StaxRip.UI
 
 Imports StaxRip.VideoEncoderCommandLine
 
@@ -54,8 +55,6 @@ Public Class AOMEnc
         If Params.Passes.Value = 1 Then
             Encode("Video encoding pass 2", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
-
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
@@ -136,7 +135,7 @@ Public Class AOMEnc
         }
     End Function
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Dim newParams As New AV1Params
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
@@ -153,6 +152,10 @@ Public Class AOMEnc
                     End Sub
 
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
+
+            If Not String.IsNullOrWhiteSpace(path) Then
+                form.SimpleUI.ShowPage(path)
+            End If
 
             If form.ShowDialog() = DialogResult.OK Then
                 Params = newParams

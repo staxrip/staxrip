@@ -1,4 +1,5 @@
 ﻿Imports System.Text
+Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
@@ -42,8 +43,6 @@ Public Class VvencffappEnc
         If Params.Mode.Value = VvencffappRateMode.TwoPass Then
             Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
-
-        AfterEncoding()
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
@@ -192,7 +191,7 @@ Public Class VvencffappEnc
         Return Params.GetArgs(pass, startFrame, endFrame, chunkName, script, OutputPath.DirAndBase + OutputExtFull, includePaths, True)
     End Function
 
-    Overrides Sub ShowConfigDialog()
+    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
         Dim newParams As New VvencffappParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
@@ -213,6 +212,10 @@ Public Class VvencffappEnc
                     End Sub
 
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
+
+            If Not String.IsNullOrWhiteSpace(path) Then
+                form.SimpleUI.ShowPage(path)
+            End If
 
             If form.ShowDialog() = DialogResult.OK Then
                 AutoCompCheckValue = CInt(newParams.CompCheckAimedQuality.Value)
@@ -328,8 +331,8 @@ Public Class VvencffappParams
     Property Preset As New OptionParam With {
         .Switch = "--preset",
         .Text = "Preset",
-        .Options = {"Faster", "Fast", "Medium", "Slow", "Slower"},
-        .Init = 2}
+        .Options = {"None", "Faster", "Fast", "Medium", "Slow", "Slower", "Medium_LowDecEnergy", "Firstpass", "ToolTest"},
+        .Init = 3}
 
     Property FrameSkip As New NumParam With {
         .HelpSwitch = "--FrameSkip",
@@ -553,7 +556,9 @@ Public Class VvencffappParams
             End If
 
             If FramesToBeEncoded.Value > 0 AndAlso Not IsCustom(pass, "--FramesToBeEncoded") Then
-                sb.Append($" --FramesToBeEncoded {Math.Min(script.GetFrameCount - FrameSkip.Value, FramesToBeEncoded.Value)}")
+                Dim maxFrames = If(script.GetFrameCount > 0, script.GetFrameCount - FrameSkip.Value, FramesToBeEncoded.Value)
+                maxFrames = If(maxFrames < 0, 0, maxFrames)
+                sb.Append($" --FramesToBeEncoded {Math.Min(maxFrames, FramesToBeEncoded.Value)}")
             End If
             'Else
             '    If includePaths Then

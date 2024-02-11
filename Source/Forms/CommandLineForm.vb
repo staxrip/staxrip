@@ -33,7 +33,7 @@ Public Class CommandLineForm
         Next
 
         Me.Params = params
-        Text = $"{params.Title} ({params.Items.Count} options) - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        Text = $"{params.Title} ({params.Items.Count} options) - {g.DefaultCommands.GetApplicationDetails()}"
 
         InitUI()
         SelectLastPage()

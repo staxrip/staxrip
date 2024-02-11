@@ -86,10 +86,11 @@ Public Class Audio
         End If
 
         If stream.Title <> "" Then
-            Dim MAX_PATH = 260
             Dim pathLength = (p.TempDir + ret).Length
-            Dim leftLength = MAX_PATH - pathLength - 15
-            ret += " {" + stream.Title.Shorten(leftLength).EscapeIllegalFileSysChars + "}"
+            Dim leftLength = GlobalClass.MAX_PATH - 10 - pathLength
+            If leftLength > 3 Then
+                ret += " {" + stream.Title.Shorten(leftLength).EscapeIllegalFileSysChars + "}"
+            End If
         End If
 
         Return ret.Trim

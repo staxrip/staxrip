@@ -39,9 +39,7 @@ Module StringExtensions
 
     <Extension>
     Function IndentLines(instance As String, value As String) As String
-        If instance = "" Then
-            Return ""
-        End If
+        If instance = "" Then Return ""
 
         instance = value + instance
         instance = instance.Replace(BR, BR + value)
@@ -50,41 +48,27 @@ Module StringExtensions
 
     <Extension>
     Function StartsWithEx(instance As String, value As String) As Boolean
-        If instance <> "" AndAlso value <> "" Then
-            Return instance.StartsWith(value)
-        End If
+        Return instance <> "" AndAlso value <> "" AndAlso instance.StartsWith(value)
     End Function
 
     <Extension>
     Function EndsWithEx(instance As String, value As String) As Boolean
-        If instance <> "" AndAlso value <> "" Then
-            Return instance.EndsWith(value)
-        End If
+        Return instance <> "" AndAlso value <> "" AndAlso instance.EndsWith(value)
     End Function
 
     <Extension>
     Function ContainsEx(instance As String, value As String) As Boolean
-        If instance <> "" AndAlso value <> "" Then
-            Return instance.Contains(value)
-        End If
+        Return instance <> "" AndAlso value <> "" AndAlso instance.Contains(value)
     End Function
 
     <Extension>
     Function ToLowerEx(instance As String) As String
-        If instance = "" Then
-            Return ""
-        End If
-
-        Return instance.ToLowerInvariant
+        Return If(instance = "", "", instance.ToLowerInvariant)
     End Function
 
     <Extension>
     Function TrimEx(instance As String) As String
-        If instance = "" Then
-            Return ""
-        End If
-
-        Return instance.Trim
+        Return If(instance = "", "", instance.Trim)
     End Function
 
     <Extension>
@@ -175,9 +159,7 @@ Module StringExtensions
 
     <Extension()>
     Function FileName(instance As String) As String
-        If instance = "" Then
-            Return ""
-        End If
+        If instance = "" Then Return ""
 
         Return Path.GetFileName(instance)
     End Function
@@ -274,27 +256,19 @@ Module StringExtensions
 
     <Extension()>
     Function Dir(instance As String) As String
-        If instance = "" Then
-            Return ""
-        End If
+        If instance = "" Then Return ""
 
         Return Path.GetDirectoryName(instance)
     End Function
 
     <Extension()>
     Function LongPathPrefix(instance As String) As String
-        If instance = "" Then
-            Return ""
-        End If
+        If instance = "" Then Return ""
 
         Dim MAX_PATH = 260
         Dim prefix = "\\?\"
 
-        If instance.Length > MAX_PATH AndAlso Not instance.StartsWith(prefix) Then
-            Return prefix + instance
-        End If
-
-        Return instance
+        Return If(instance.Length > MAX_PATH AndAlso Not instance.StartsWith(prefix), prefix + instance, instance)
     End Function
 
     <Extension()>
@@ -412,11 +386,7 @@ Module StringExtensions
 
     <Extension()>
     Function ToInt(value As String, Optional defaultValue As Integer = 0) As Integer
-        If Not Integer.TryParse(value, Nothing) Then
-            Return defaultValue
-        End If
-
-        Return CInt(value)
+        Return If(Not Integer.TryParse(value, Nothing), defaultValue, CInt(value))
     End Function
 
     <Extension()>
@@ -642,11 +612,7 @@ Module StringExtensions
 
     <Extension()>
     Function Shorten(value As String, maxLength As Integer) As String
-        If value = "" OrElse value.Length <= maxLength Then
-            Return value
-        End If
-
-        Return value.Substring(0, maxLength)
+        Return If(value = "" OrElse value.Length <= maxLength, value, value.Substring(0, maxLength))
     End Function
 
     <Extension()>
@@ -797,7 +763,7 @@ End Module
 Module MiscExtensions
     <Extension()>
     Sub CenterScreen(instance As Form)
-        If Not instance Is Nothing Then
+        If instance IsNot Nothing Then
             instance.StartPosition = FormStartPosition.Manual
             Dim wa = Screen.FromControl(instance).WorkingArea
             instance.Left = (wa.Width - instance.Width) \ 2
@@ -812,11 +778,7 @@ Module MiscExtensions
 
     <Extension()>
     Function ToInvariantString(instance As IConvertible) As String
-        If instance Is Nothing Then
-            Return ""
-        End If
-
-        Return instance.ToString(CultureInfo.InvariantCulture)
+        Return If(instance Is Nothing, "", instance.ToString(CultureInfo.InvariantCulture))
     End Function
 
     <Extension()>
@@ -826,7 +788,7 @@ Module MiscExtensions
 
     <Extension()>
     Function ContainsEx(Of T)(instance As IEnumerable(Of T), value As T) As Boolean
-        If Not instance Is Nothing Then
+        If instance IsNot Nothing Then
             Return instance.Contains(value)
         End If
     End Function
@@ -899,11 +861,7 @@ Module MiscExtensions
 
     <Extension()>
     Function NeutralCulture(ci As CultureInfo) As CultureInfo
-        If ci.IsNeutralCulture Then
-            Return ci
-        Else
-            Return ci.Parent
-        End If
+        Return If(ci.IsNeutralCulture, ci, ci.Parent)
     End Function
 
     <Extension()>
@@ -930,37 +888,41 @@ Module MiscExtensions
     End Function
 
     <Extension()>
+    Function ToColorHSL(color As Color) As ColorHSL
+        Return color
+    End Function
+
+    <Extension()>
     Function ToSeparatedString(list As IEnumerable(Of x264Control.QualityItem)) As String
-        If list Is Nothing OrElse Not list.Any() Then
-            Return ""
-        End If
+        If list Is Nothing OrElse Not list.Any() Then Return ""
 
         Return String.Join("_", s.X264QualityDefinitions.OrderBy(Function(x) x.Value).Select(Function(x) $"{x.Value:0.#}{If(String.IsNullOrWhiteSpace(x.Text), "", $"""{x.Text.Trim()}""")}"))
     End Function
 
     <Extension()>
     Function ToSeparatedString(list As IEnumerable(Of x265Control.QualityItem)) As String
-        If list Is Nothing OrElse Not list.Any() Then
-            Return ""
-        End If
+        If list Is Nothing OrElse Not list.Any() Then Return ""
 
         Return String.Join("_", s.X265QualityDefinitions.OrderBy(Function(x) x.Value).Select(Function(x) $"{x.Value:0.#}{If(String.IsNullOrWhiteSpace(x.Text), "", $"""{x.Text.Trim()}""")}"))
+    End Function
+
+    <Extension()>
+    Function ToSeparatedString(list As IEnumerable(Of VvencffappControl.QualityItem)) As String
+        If list Is Nothing OrElse Not list.Any() Then Return ""
+
+        Return String.Join("_", s.VvencffappQualityDefinitions.OrderBy(Function(x) x.Value).Select(Function(x) $"{x.Value:0.#}{If(String.IsNullOrWhiteSpace(x.Text), "", $"""{x.Text.Trim()}""")}"))
     End Function
 
     <Extension()>
     Function ToX264QualityItems(input As String) As IEnumerable(Of x264Control.QualityItem)
         Dim result = New List(Of x264Control.QualityItem)
 
-        If String.IsNullOrWhiteSpace(input) Then
-            Return result
-        End If
+        If String.IsNullOrWhiteSpace(input) Then Return result
 
         Dim pattern = "(\d{1,2}([\.,]\d{1,3})?)(""([^""]*)"")?"
         Dim matches = Regex.Matches(input, pattern, RegexOptions.IgnoreCase)
 
-        If matches.Count = 0 Then
-            Return result
-        End If
+        If matches.Count = 0 Then Return result
 
         Dim qualityConfig = If(TypeOf p.VideoEncoder Is x264Enc, DirectCast(p.VideoEncoder, x264Enc).Params.Quant.Config, {0, 69, 0, 1})
 
@@ -986,24 +948,15 @@ Module MiscExtensions
     End Function
 
     <Extension()>
-    Function ToColorHSL(color As Color) As ColorHSL
-        Return color
-    End Function
-
-    <Extension()>
     Function ToX265QualityItems(input As String) As IEnumerable(Of x265Control.QualityItem)
         Dim result = New List(Of x265Control.QualityItem)
 
-        If String.IsNullOrWhiteSpace(input) Then
-            Return result
-        End If
+        If String.IsNullOrWhiteSpace(input) Then Return result
 
         Dim pattern = "(\d{1,2}([\.,]\d{1,3})?)(""([^""]*)"")?"
         Dim matches = Regex.Matches(input, pattern, RegexOptions.IgnoreCase)
 
-        If matches.Count = 0 Then
-            Return result
-        End If
+        If matches.Count = 0 Then Return result
 
         Dim qualityConfig = If(TypeOf p.VideoEncoder Is x265Enc, DirectCast(p.VideoEncoder, x265Enc).Params.Quant.Config, {0, 51, 0, 1})
 
@@ -1022,6 +975,41 @@ Module MiscExtensions
                 If value >= qualityConfig(0) AndAlso value <= qualityConfig(1) AndAlso Not result.Where(Function(x) x.Value = value).Any() Then
                     text = If(match.Groups.Count > 4, match.Groups(4).Value.Trim(), text)
                     result.Add(New x265Control.QualityItem(value, text, ""))
+                End If
+            End If
+        Next
+
+        Return result
+    End Function
+
+    <Extension()>
+    Function ToVvencffappQualityItems(input As String) As IEnumerable(Of VvencffappControl.QualityItem)
+        Dim result = New List(Of VvencffappControl.QualityItem)
+
+        If String.IsNullOrWhiteSpace(input) Then Return result
+
+        Dim pattern = "(\d{1,2}([\.,]\d{1,3})?)(""([^""]*)"")?"
+        Dim matches = Regex.Matches(input, pattern, RegexOptions.IgnoreCase)
+
+        If matches.Count = 0 Then Return result
+
+        Dim qualityConfig = If(TypeOf p.VideoEncoder Is VvencffappEnc, DirectCast(p.VideoEncoder, VvencffappEnc).Params.Quant.Config, {0, 63, 0, 1})
+
+        For Each match As Match In matches
+            If Not match.Success Then
+                Continue For
+            End If
+
+            Dim value = 0.0
+            Dim text = ""
+
+            If Double.TryParse(Regex.Replace(match.Groups(1).Value, "\.|,", NumberFormatInfo.CurrentInfo.NumberDecimalSeparator), value) Then
+                Dim powed = Math.Pow(10, qualityConfig(3))
+                value = CInt(Math.Floor(value * powed)) / powed
+
+                If value >= qualityConfig(0) AndAlso value <= qualityConfig(1) AndAlso Not result.Where(Function(x) x.Value = value).Any() Then
+                    text = If(match.Groups.Count > 4, match.Groups(4).Value.Trim(), text)
+                    result.Add(New VvencffappControl.QualityItem(value, text, ""))
                 End If
             End If
         Next

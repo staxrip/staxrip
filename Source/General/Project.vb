@@ -30,7 +30,10 @@ Public Class Project
     Public CompCheckPercentage As Double = 5.0
     Public CompCheckTestblockSeconds As Double = 2.0
     Public Compressibility As Double
+    Public ConvertChromaSubsampling As Boolean = True
     Public ConvertSup2Sub As Boolean
+    Public CropWithTonemapping As Boolean = True
+    Public CropWithHighContrast As Boolean = True
     Public CustomSourceDAR As String = ""
     Public CustomSourcePAR As String = ""
     Public CustomTargetDAR As String = ""
@@ -46,8 +49,7 @@ Public Class Project
     Public DemuxAudio As DemuxMode = DemuxMode.All
     Public DemuxChapters As Boolean = True
     Public DemuxVideo As Boolean = False
-    Public ExtractTimestamps As Boolean = True
-    Public ExtractTimestampsVfrOnly As Boolean = False
+    Public ExtractTimestamps As TimestampsMode = TimestampsMode.VfrOnly
     Public ExtractForcedSubSubtitles As Boolean = True
     Public FileExistAudio As FileExistMode
     Public FileExistVideo As FileExistMode
@@ -99,6 +101,7 @@ Public Class Project
     Public SourceWidth As Integer = 1920
     Public SubtitleMode As SubtitleMode
     Public SubtitleName As String = ""
+    Public TargetFrames As Integer
     Public TargetFrameRate As Double
     Public TargetHeight As Integer = 1080
     Public TargetSeconds As Integer = 5400
@@ -175,7 +178,7 @@ Public Class Project
             }
         End If
 
-        If Check(Script, "Filter Setup", 50) Then Script = StaxRip.VideoScript.GetDefaults()(0)
+        If Check(Script, "Filter Setup", 50) Then Script = VideoScript.GetDefaults()(0)
 
         Migrate()
     End Sub

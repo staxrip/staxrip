@@ -50,6 +50,12 @@ HDR to SDR | HDRTools | PQ =
     ConvertXYZtoYUV(Color=2, pColor=0, OOTF=false, OutputMode=2)
     ConvertBits(8)
 
+Tonemap | Placebo =
+    ConvertBits(16)
+    libplacebo_Tonemap(src_csp=$select:msg:Select Source Color Space;SDR|0;HDR10|1;HLG|2;Dolby Vision|3$, dst_csp=$select:msg:Select Target Color Space;SDR|0;HDR10|1;HLG|2;Dolby Vision|3$, dynamic_peak_detection=$select:msg:Dynamic Peak Detection?;Yes (default)|True;No|False$, tone_mapping_function=$select:msg:Tonemapping Function;Auto (default)|0;Clip|1;ST2094_40|2;ST2094_10|3;BT2390|4;BT2446a|5;Spline|6;Reinhard|7;Mobius|8;Hable|9;Gamma|10;Linear|11$, tone_mapping_mode=$select:msg:Tonemapping Mode;Auto (default)|0;RGB|1;MAX|2;HYBRID|3;LUMA|4$)
+    # ConvertBits(8)
+    # ConvertToYUV420()
+
 [Crop]
 Crop = $select:msg:Select Version;Crop;Dither_Crop16$(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)
 Hardware Encoder = # hardware encoder crops
@@ -126,6 +132,7 @@ Sharpen | MSharpen = MSharpen(threshold=10, strength=100, highq=true, mask=false
 Sharpen | MultiSharpen = MultiSharpen(1)
 Sharpen | pSharpen = pSharpen(strength=25, threshold=75, ss_x=1.0, ss_y=1.0)
 Sharpen | Sharpen = Sharpen($enter_text:Enter the Amount of Sharpness in decimal (from -1.58 to 1.0)$)
+Sharpen | vsMSharpen = vsMSharpen(threshold=6.0, strength=39.0, mask=false, luma=true, chroma=false)
 
 [Misc]
 Borders | AddBorders = AddBorders(0, 0, 0, 0) #left, top, right, bottom
@@ -205,8 +212,9 @@ RemoveGrain | RemoveGrain With Repair =
     Processed = RemoveGrain(mode=2, modeU=2, modeV=2, planar=false)
     Repair(Processed, mode=2, modeU=2, modeV=2, planar=false)
 
-SMDegrain | SMDegrain Hard Grain = SMDegrain(tr=6, thSAD=600, contrasharp=true, refinemotion=true)
-SMDegrain | SMDegrain Light Grain = SMDegrain(tr=1, thSAD=300, contrasharp=true)
+SMDegrain | SMDegrain Hard Grain = SMDegrain(tr=4, thSAD=600, prefilter=-1, contrasharp=true, refinemotion=true)
+SMDegrain | SMDegrain Normal Grain = SMDegrain(tr=2, thSAD=300, prefilter=-1, contrasharp=true, refinemotion=true)
+SMDegrain | SMDegrain Light Grain = SMDegrain(tr=1, thSAD=300, prefilter=-1, contrasharp=true, refinemotion=true)
 TemporalDegrain2 = TemporalDegrain2(degrainTR=2, postFFT=3, postSigma=3)
 VagueDenoiser = VagueDenoiser(threshold=0.8, method=1, nsteps=6, chromaT=0.8)
 
@@ -233,7 +241,7 @@ Advanced | Hardware Encoder = # hardware encoder resizes
 Advanced | NNEDI3_rpow2 = nnedi3_rpow2(rfactor=$select:msg:Enlargement Factor?;2;4;8;16$, cshift="$select:msg:Center Shift Correction Algorithm?;BicubicResize;BilinearResize;BlackmanResize;GaussResize;LanczosResize;Lanczos4Resize;PointResize;SincResize;Spline16Resize;Spline36Resize;Spline64Resize$", fwidth=%target_width%, fheight=%target_height%)
 Advanced | ResizeMT = $select:BicubicResizeMT;BilinearResizeMT;BlackmanResizeMT;GaussResizeMT;LanczosResizeMT;Lanczos4ResizeMT;PointResizeMT;SincResizeMT;Spline16ResizeMT;Spline36ResizeMT;Spline64ResizeMT$(%target_width%, %target_height%, prefetch=4)
 Advanced | SuperRes = $select:msg:Select Version;SuperResXBR|SuperResXBR;SuperRes|SuperRes;SuperXBR|SuperXBR$(passes=$select:msg:How many Passes do you wish to perform?;2;3;4;5$, factor=$select:msg:Factor Increase by?;2;4$)
-Resize... = $select:BicubicResize;BilinearResize;BlackmanResize;GaussResize;LanczosResize;Lanczos4Resize;PointResize;SincResize;Jinc36Resize;Jinc64Resize;Jinc144Resize;Jinc256Resize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)
+Resize... = $select:BicubicResize;BilinearResize;BlackmanResize;DPID;GaussResize;LanczosResize;Lanczos4Resize;PointResize;SincResize;Jinc36Resize;Jinc64Resize;Jinc144Resize;Jinc256Resize;Spline16Resize;Spline36Resize;Spline64Resize$(%target_width%, %target_height%)
 
 [Restoration]
 Chroma Fix | Bifrost = Bifrost(luma_thresh=10.0, variation=5, interlaced=$select:msg:Is the input video Interlaced?;Yes (Default)|true;No|false$, blockx=4, blocky=4)
@@ -271,7 +279,7 @@ DeBand | Gradfun3_16bit =
     ConvertFromStacked()
 
 DeBlock | DeBlock_QED = Deblock_QED(quant1=24, quant2=26, aOff1=1, aOff2=1, bOff1=2, bOff2=2, uv=3)
-DeBlock | DeBock = Deblock(quant=25, aOffset=0, bOffset=0)
+DeBlock | DeBlock = Deblock(quant=25, aOffset=0, bOffset=0)
 DeBlock | MipSmooth = MipSmooth(downsizer="lanczos", upsizer="bilinear", scalefactor=1.5, method="strong")
 DeBlock | SmoothD2 = SmoothD2(quant=3, num_shift=3, Matrix=3, Qtype=1, ZW=1, ZWce=1, ZWlmDark=0, ZWlmBright=255, ncpu=4)
 DeComb | Vinverse = $select:Vinverse|vinverse(sstr=2.7, amnt=255, uv=3, scl=0.25);Vinverse2|vinverse2(sstr=2.7, amnt=255, uv=3, scl=0.25)$

@@ -28,18 +28,14 @@ Public Class FiltersListView
         ContextMenuStrip = Menu
         HideFocusRectange()
         AddHandler VideoScript.Changed, Sub(script As VideoScript)
-                                            If Not p.Script Is Nothing AndAlso script Is p.Script Then
+                                            If p.Script IsNot Nothing AndAlso script Is p.Script Then
                                                 OnChanged()
                                             End If
                                         End Sub
     End Sub
 
     Sub Load()
-        If p.Script.IsAviSynth Then
-            g.MainForm.lgbFilters.Text = "AVS Filters"
-        Else
-            g.MainForm.lgbFilters.Text = "VS Filters"
-        End If
+        g.MainForm.lgbFilters.Text = If(p.Script.IsAviSynth, "AVS Filters", "VS Filters")
 
         BlockItemCheck = True
         Items.Clear()
@@ -109,7 +105,7 @@ Public Class FiltersListView
         remove.EnabledFunc = selectedFunc
 
         Menu.Add("Edit Code...", AddressOf ShowCodeEditor, "Dialog to edit filters.").SetImage(Symbol.Code)
-        Menu.Add("Preview Code...", Sub() g.ShowCodePreview(p.Script.GetFullScript), "Script code preview.")
+        Menu.Add("Preview Code...", Sub() g.ShowCommandLinePreview("Script Code Preview", p.Script.GetFullScript, s.CommandLinePreviewWithLineNumbers), "Script code preview.")
         Menu.Add("Info...", Sub() g.ShowScriptInfo(p.Script), Function() p.SourceFile <> "", "Shows script parameters.").SetImage(Symbol.Info)
         Menu.Add("Play", Sub() g.PlayScript(p.Script), Function() p.SourceFile <> "", "Plays the script with the AVI player.").SetImage(Symbol.Play)
         Menu.Add("Profiles...", AddressOf g.MainForm.ShowFilterProfilesDialog, "Dialog to edit profiles.").SetImage(Symbol.FavoriteStar)
@@ -205,12 +201,7 @@ Public Class FiltersListView
 
         If val.Value <> filter.Script AndAlso val.Caption <> "" Then
             Dim path = filter.Path.Replace("...", "")
-
-            If val.Caption.EndsWith(path) Then
-                filter.Path = val.Caption
-            Else
-                filter.Path = path + " " + val.Caption
-            End If
+            filter.Path = If(val.Caption.EndsWith(path), val.Caption, path + " " + val.Caption)
         End If
 
         filter.Script = val.Value
@@ -229,12 +220,7 @@ Public Class FiltersListView
 
         If val.Value <> filter.Script AndAlso val.Caption <> "" Then
             Dim path = filter.Path.Replace("...", "")
-
-            If val.Caption.EndsWith(path) Then
-                filter.Path = val.Caption
-            Else
-                filter.Path = path + " " + val.Caption
-            End If
+            filter.Path = If(val.Caption.EndsWith(path), val.Caption, path + " " + val.Caption)
         End If
 
         filter.Script = val.Value
@@ -253,12 +239,7 @@ Public Class FiltersListView
 
         If val.Value <> filter.Script AndAlso val.Caption <> "" Then
             Dim path = filter.Path.Replace("...", "")
-
-            If val.Caption.EndsWith(path) Then
-                filter.Path = val.Caption
-            Else
-                filter.Path = path + " " + val.Caption
-            End If
+            filter.Path = If(val.Caption.EndsWith(path), val.Caption, path + " " + val.Caption)
         End If
 
         filter.Script = val.Value
@@ -276,7 +257,7 @@ Public Class FiltersListView
     End Sub
 
     Sub RemoveClick()
-        If SelectedItems.Count > 0 AndAlso MsgQuestion($"Remove {SelectedItems(0).Tag.ToString}?") = DialogResult.OK Then
+        If SelectedItems.Count > 0 AndAlso MsgQuestion($"Remove {SelectedItems(0).Tag}?") = DialogResult.OK Then
             p.Script.RemoveFilterAt(SelectedItems(0).Index)
         End If
     End Sub
@@ -325,7 +306,7 @@ Public Class FiltersListView
             If e.NewValue = CheckState.Checked AndAlso filter.Category = "Resize" Then
                 Dim form = FindForm()
 
-                If Not form Is Nothing AndAlso TypeOf form Is MainForm Then
+                If form IsNot Nothing AndAlso TypeOf form Is MainForm Then
                     g.MainForm.SetTargetImageSize(p.TargetWidth, 0)
                 End If
             End If

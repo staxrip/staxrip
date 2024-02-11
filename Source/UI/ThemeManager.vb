@@ -77,6 +77,7 @@
     End Property
 
 
+    <CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification:="<Pending>")>
     Private Sub ThemeManager()
     End Sub
 
@@ -446,6 +447,14 @@
                 .ProcessButtonForeColor = _foreColor,
                 .ProcessButtonForeSelectedColor = _foreColor.AddLuminance(0.25),
                 .OutputHighlighting = New ProcessingFormThemeColors.OutputHighlightingThemeColors() With {
+                    .HeaderBackColor = General.Controls.RichTextBox.BackColor,
+                    .HeaderForeColor = General.Controls.RichTextBox.ForeColor.AddLuminance(0.05),
+                    .HeaderFontStyles = {FontStyle.Bold},
+ _
+                    .EncoderTitleBackColor = General.Controls.RichTextBox.BackColor,
+                    .EncoderTitleForeColor = _accentColor.AddLuminance(0.1),
+                    .EncoderTitleFontStyles = {},
+ _
                     .ParameterBackColor = General.Controls.RichTextBox.BackColor,
                     .ParameterForeColor = _outputHighlightingForeColor.SetHue(85).AddSaturation(-0.15D + _backLuma / 4).AddLuminance(-0.1D - _backLuma / 12),
                     .ParameterFontStyles = {FontStyle.Bold},
@@ -516,6 +525,11 @@
                     .BorderColor = .BackColor.AddLuminance(0.05),
                     .ForeColor = _foreColor.AddLuminance(0.1)
                 }
+            }
+
+            VideoComparisonForm = New VideoComparisonFormThemeColors() With {
+                .BackColor = _backColor,
+                .TabBackColor = .BackColor.AddLuminance(-0.05)
             }
 
         End Sub

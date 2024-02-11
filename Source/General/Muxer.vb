@@ -64,11 +64,7 @@ Public MustInherit Class Muxer
             Return AdditionalSwitchesValue
         End Get
         Set(Value As String)
-            If Value = "" Then
-                AdditionalSwitchesValue = Nothing
-            Else
-                AdditionalSwitchesValue = Value
-            End If
+            AdditionalSwitchesValue = If(Value = "", Nothing, Value)
         End Set
     End Property
 
@@ -194,6 +190,12 @@ Public MustInherit Class Muxer
                         If fp.ToLowerEx.ContainsAny("_forced", ".forced.") Then
                             iSubtitle.Forced = True
                         End If
+                        If fp.ToLowerEx.ContainsAny("_commentary", ".commentary.") Then
+                            iSubtitle.Commentary = True
+                        End If
+                        If fp.ToLowerEx.ContainsAny("_hearingimpaired", ".hearingimpaired.") Then
+                            iSubtitle.Hearingimpaired = True
+                        End If
 
                         Subtitles.Add(iSubtitle)
                     End If
@@ -211,7 +213,7 @@ Public MustInherit Class Muxer
 
         For Each i In files
             If g.IsSourceSameOrSimilar(i) Then
-                If Not TypeOf Me Is WebMMuxer Then
+                If TypeOf Me IsNot WebMMuxer Then
                     Dim lower = i.ToLowerInvariant
 
                     If lower.Contains("chapters") Then
@@ -439,6 +441,7 @@ Public Class MP4Muxer
             Throw New ErrorAbortException("MP4 output file is missing.", GetArgs())
         End If
 
+        Log.WriteHeader("Media Info Target File")
         Log.WriteLine(MediaInfo.GetSummary(p.TargetFile))
     End Sub
 
@@ -450,11 +453,12 @@ Public Class MP4Muxer
         Get
             Return {"ts", "m2ts", "ivf", "obu",
                     "mpg", "m2v",
-                    "avi", "opus", 
+                    "avi", "opus",
                     "ac3", "ec3", "eac3", "thd",
                     "mp4", "m4a", "aac", "mov",
                     "264", "h264", "avc",
                     "265", "h265", "hevc", "hvc",
+                    "266", "h266", "vvc",
                     "mp2", "mpa", "mp3"}
         End Get
     End Property
@@ -634,6 +638,7 @@ Public Class MkvMuxer
             Log.Write("Error MKV output file is missing", p.TargetFile)
         End If
 
+        Log.WriteHeader("Media Info Target File")
         Log.WriteLine(MediaInfo.GetSummary(p.TargetFile))
     End Sub
 
@@ -702,7 +707,7 @@ Public Class MkvMuxer
             (TypeOf p.VideoEncoder Is AOMEnc AndAlso
             Not p.VideoEncoder.GetCommandLine(True, True).Contains(" --ivf")) Then
 
-            args += " --default-duration 0:" + p.Script.GetCachedFramerate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
+            args += " --default-duration 0:" + p.Script.GetCachedFrameRate.ToString("f6", CultureInfo.InvariantCulture) + "fps"
         End If
 
         If TimestampsFile <> "" Then
@@ -750,9 +755,11 @@ Public Class MkvMuxer
 
                 Dim isContainer = FileTypes.VideoAudio.Contains(subtitle.Path.Ext)
 
-                args += " --forced-track " & id & ":" & If(subtitle.Forced, 1, 0)
-                args += " --default-track " & id & ":" & If(subtitle.Default, 1, 0)
                 args += " --language " & id & ":" + subtitle.Language.ThreeLetterCode
+                args += " --default-track-flag " & id & ":" & If(subtitle.Default, 1, 0)
+                args += " --forced-display-flag " & id & ":" & If(subtitle.Forced, 1, 0)
+                args += " --commentary-flag " & id & ":" & If(subtitle.Commentary, 1, 0)
+                args += " --hearing-impaired-flag " & id & ":" & If(subtitle.Hearingimpaired, 1, 0)
 
                 If Compression <> CompressionMode.zlib Then
                     args += " --compression " & id & ":" + Compression.ToString
@@ -766,7 +773,7 @@ Public Class MkvMuxer
             End If
         Next
 
-        If Not TypeOf Me Is WebMMuxer AndAlso File.Exists(ChapterFile) Then
+        If TypeOf Me IsNot WebMMuxer AndAlso File.Exists(ChapterFile) Then
             If p.Ranges.Count > 0 AndAlso ChapterFile.Ext = "xml" Then
                 Dim xDoc = XDocument.Load(ChapterFile)
                 Dim lstTimeRanges As New List(Of (StartTime As TimeSpan, EndTime As TimeSpan, Offset As TimeSpan))
@@ -848,7 +855,7 @@ Public Class MkvMuxer
             Dim tid = 0
             Dim isCombo As Boolean
 
-            If Not ap.Stream Is Nothing Then
+            If ap.Stream IsNot Nothing Then
                 tid = ap.Stream.StreamOrder
                 isCombo = ap.Stream.Name.Contains("THD+AC3")
 
@@ -906,8 +913,9 @@ Public Class MkvMuxer
                 End If
             End If
 
-            args += " --default-track " & tid & ":" & If(ap.Default, 1, 0)
-            args += " --forced-track " & tid & ":" & If(ap.Forced, 1, 0)
+            args += " --default-track-flag " & tid & ":" & If(ap.Default, 1, 0)
+            args += " --forced-display-flag " & tid & ":" & If(ap.Forced, 1, 0)
+            args += " --commentary-flag " & tid & ":" & If(ap.Commentary, 1, 0)
             args += " " + ap.File.LongPathPrefix.Escape
         End If
     End Sub
@@ -984,18 +992,14 @@ Public Class ffmpegMuxer
 
     Public Overrides ReadOnly Property SupportedInputTypes As String()
         Get
-            If OutputExt = "avi" Then
-                Return AVITypes
-            End If
+            If OutputExt = "avi" Then Return AVITypes
 
             Return MyBase.SupportedInputTypes
         End Get
     End Property
 
     Overrides Function IsSupported(type As String) As Boolean
-        If OutputExt = "avi" Then
-            Return AVITypes.Contains(type)
-        End If
+        If OutputExt = "avi" Then Return AVITypes.Contains(type)
 
         Return True
     End Function

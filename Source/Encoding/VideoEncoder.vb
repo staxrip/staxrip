@@ -225,9 +225,7 @@ Public MustInherit Class VideoEncoder
     End Sub
 
     Sub AutoSetImageSize()
-        If p.VideoEncoder.AutoCompCheckValue > 0 AndAlso Calc.GetPercent <> 0 AndAlso
-            p.Script.IsFilterActive("Resize") Then
-
+        If p.VideoEncoder.AutoCompCheckValue > 0 AndAlso Calc.GetPercent <> 0 AndAlso p.Script.IsFilterActive("Resize") Then
             Dim oldWidth = p.TargetWidth
             Dim oldHeight = p.TargetHeight
 
@@ -242,7 +240,7 @@ Public MustInherit Class VideoEncoder
             p.TargetHeight = Calc.FixMod16(CInt(p.TargetWidth / Calc.GetTargetDAR()))
 
             While Calc.GetPercent < p.VideoEncoder.AutoCompCheckValue
-                If p.TargetWidth - 16 >= 320 Then
+                If p.TargetWidth - 16 >= 720 Then
                     p.TargetWidth -= 16
                     p.TargetHeight = Calc.FixMod16(CInt(p.TargetWidth / Calc.GetTargetDAR()))
                 Else
@@ -348,8 +346,9 @@ Public MustInherit Class VideoEncoder
     Shared Function GetDefaults() As List(Of VideoEncoder)
         Dim ret As New List(Of VideoEncoder)
 
-        ret.Add(New x264Enc)
+        ret.Add(New VvencffappEnc)
         ret.Add(New x265Enc)
+        ret.Add(New x264Enc)
 
         Dim nvEnc = New NVEnc()
         For x = 0 To nvEnc.Params.Codec.Options.Length - 1
@@ -368,7 +367,7 @@ Public MustInherit Class VideoEncoder
 
         ret.Add(New AOMEnc)
         ret.Add(New Rav1e)
-        ret.Add(New SVTAV1)
+        ret.Add(New SvtAv1Enc)
 
         Dim ffmpeg = New ffmpegEnc()
         For x = 0 To ffmpeg.Params.Codec.Options.Length - 1

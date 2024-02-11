@@ -77,7 +77,7 @@ Partial Class DownloadForm
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Download"
+        Me.Text = $"Download - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.tlpMain.ResumeLayout(False)
         Me.ResumeLayout(False)
 

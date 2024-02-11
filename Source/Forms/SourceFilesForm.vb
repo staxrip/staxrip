@@ -161,7 +161,7 @@ Public Class SourceFilesForm
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(13, 14, 13, 14)
         Me.Name = "SourceFilesForm"
-        Me.Text = "Source Files"
+        Me.Text = $"Source Files - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.tlpMain.ResumeLayout(False)
         Me.pnLB.ResumeLayout(False)
         Me.ResumeLayout(False)

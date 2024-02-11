@@ -83,7 +83,7 @@ Namespace UI
             Me.KeyPreview = True
             Me.Margin = New System.Windows.Forms.Padding(6)
             Me.Name = "MenuTemplateForm"
-            Me.Text = "Default Menu"
+            Me.Text = $"Default Menu - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
             Me.tlpMain.ResumeLayout(False)
             Me.pnTreeView.ResumeLayout(False)
             Me.ResumeLayout(False)

@@ -172,7 +172,7 @@ Friend Class JobsForm
         Me.Margin = New System.Windows.Forms.Padding(0, 2, 0, 2)
         Me.MinimumSize = New System.Drawing.Size(323, 204)
         Me.Name = "JobsForm"
-        Me.Text = "Jobs"
+        Me.Text = $"Jobs - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.tlpMain.ResumeLayout(False)
         Me.tlpMain.PerformLayout()
         Me.tlpButtonsRight.ResumeLayout(False)

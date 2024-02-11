@@ -13,7 +13,7 @@ Public Class HelpForm
         MyBase.Dispose(disposing)
     End Sub
 
-    Private components As System.ComponentModel.IContainer
+    Private ReadOnly components As System.ComponentModel.IContainer
 
     Friend WithEvents Browser As System.Windows.Forms.WebBrowser
     <System.Diagnostics.DebuggerStepThrough()>
@@ -37,7 +37,7 @@ Public Class HelpForm
         Me.Controls.Add(Me.Browser)
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
-        Me.Name = "HelpForm"
+        Me.Name = $"{g.DefaultCommands.GetApplicationDetails()} - HelpForm"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.ResumeLayout(False)
 
@@ -75,7 +75,7 @@ Public Class HelpForm
         Dim form As New HelpForm()
         form.Doc.WriteStart(heading)
 
-        If Not summary Is Nothing Then
+        If summary IsNot Nothing Then
             form.Doc.WriteParagraph(summary)
         End If
 
@@ -102,9 +102,7 @@ Public Class HelpForm
     Shadows Sub Show()
         MyBase.Show()
 
-        If Not DocumentValue Is Nothing Then
-            DocumentValue.WriteDocument(Browser)
-        End If
+        DocumentValue?.WriteDocument(Browser)
     End Sub
 
     Sub Browser_Navigating(sender As Object, e As WebBrowserNavigatingEventArgs) Handles Browser.Navigating

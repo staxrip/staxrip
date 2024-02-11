@@ -88,7 +88,7 @@ Public MustInherit Class Demuxer
 
         Dim dgIndex As New CommandLineDemuxer With {
             .Name = "DGIndex: Demux & Index MPEG-2",
-            .InputExtensions = {"mpg", "vob", "m2ts", "m2v", "mts", "m2t"},
+            .InputExtensions = {"mpg", "mpeg", "vob", "m2ts", "m2v", "mts", "m2t"},
             .OutputExtensions = {"d2v"},
             .InputFormats = {"mpeg2"},
             .Command = "%app:DGIndex%",
@@ -99,7 +99,7 @@ Public MustInherit Class Demuxer
 
         Dim d2vWitch As New CommandLineDemuxer With {
             .Name = "D2V Witch: Demux & Index MPEG-2",
-            .InputExtensions = {"mpg", "vob", "m2ts", "m2v", "mts", "m2t"},
+            .InputExtensions = {"mpg", "mpeg", "vob", "m2ts", "m2v", "mts", "m2t"},
             .OutputExtensions = {"d2v"},
             .InputFormats = {"mpeg2"},
             .Command = "cmd.exe",
@@ -157,8 +157,8 @@ Public Class CommandLineDemuxer
             End If
         End Using
 
-        If p.ExtractTimestamps AndAlso proj.SourceFile.ToLowerEx().EndsWithEx(".mkv") Then
-            If Not p.ExtractTimestampsVfrOnly OrElse MediaInfo.GetVideo(proj.SourceFile, "FrameRate_Mode") = "VFR" Then
+        If p.ExtractTimestamps <> TimestampsMode.Never AndAlso proj.SourceFile.ToLowerEx().EndsWithEx(".mkv") Then
+            If p.ExtractTimestamps = TimestampsMode.Always OrElse MediaInfo.GetVideo(proj.SourceFile, "FrameRate_Mode") = "VFR" Then
                 Dim streamOrder = MediaInfo.GetVideo(proj.SourceFile, "StreamOrder").ToInt
 
                 Using proc As New Proc
@@ -790,8 +790,8 @@ Public Class mkvDemuxer
             End Using
         End If
 
-        If p.ExtractTimestamps Then
-            If Not p.ExtractTimestampsVfrOnly OrElse MediaInfo.GetVideo(proj.SourceFile, "FrameRate_Mode") = "VFR" Then
+        If p.ExtractTimestamps <> TimestampsMode.Never AndAlso proj.SourceFile.ToLowerEx().EndsWithEx(".mkv") Then
+            If p.ExtractTimestamps = TimestampsMode.Always OrElse MediaInfo.GetVideo(proj.SourceFile, "FrameRate_Mode") = "VFR" Then
                 Dim streamOrder = MediaInfo.GetVideo(proj.SourceFile, "StreamOrder").ToInt
 
                 Using proc As New Proc
@@ -907,9 +907,11 @@ Public Class mkvDemuxer
                     Continue For
                 End If
 
-                Dim forced = If(subtitle.Forced, "_forced", "")
                 Dim _default = If(subtitle.Default, "_default", "")
-                Dim outPath = Path.Combine(proj.TempDir, subtitle.Filename + _default + forced + subtitle.ExtFull)
+                Dim forced = If(subtitle.Forced, "_forced", "")
+                Dim commentary = If(subtitle.Commentary, "_commentary", "")
+                Dim hearingimpaired = If(subtitle.Hearingimpaired, "_hearingimpaired", "")
+                Dim outPath = Path.Combine(proj.TempDir, subtitle.Filename + _default + forced + commentary + hearingimpaired + subtitle.ExtFull)
 
                 If subtitle.Ext = "mks" Then
                     Dim arguments = "--ui-language en --no-audio --no-video --no-global-tags --no-attachments --no-buttons -o " + outPath.Escape + " " + sourcefile.Escape
@@ -944,14 +946,7 @@ Public Class mkvDemuxer
                 ext = "aac"
             End If
 
-            Dim base As String
-
-            If useStreamName Then
-                base = Audio.GetBaseNameForStream(sourcefile, stream)
-            Else
-                base = sourcefile.Base
-            End If
-
+            Dim base = If(useStreamName, Audio.GetBaseNameForStream(sourcefile, stream), sourcefile.Base)
             Dim outPath = Path.Combine(proj.TempDir, base + "." + ext)
             audioOutPaths.Add(outPath, stream)
             outPaths.Add(outPath)

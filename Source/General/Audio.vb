@@ -50,9 +50,7 @@ Public Class Audio
                     Case ".mp4"
                         MP4BoxDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p, True)
                     Case Else
-                        If p.Script.GetFilter("Source").Script.ToLowerInvariant.Contains("directshowsource") AndAlso
-                            Not TypeOf ap Is MuxAudioProfile Then
-
+                        If p.Script.GetFilter("Source").Script.ToLowerInvariant.Contains("directshowsource") AndAlso TypeOf ap IsNot MuxAudioProfile Then
                             ConvertDirectShowSource(ap)
                         ElseIf Not ap.File.Ext = "m2ts" Then
                             ffmpegDemuxer.DemuxAudio(ap.File, ap.Stream, ap, p, True)
@@ -63,19 +61,15 @@ Public Class Audio
 
         Cut(ap)
 
-        If Not TypeOf ap Is MuxAudioProfile AndAlso Not ap.IsInputSupported Then
+        If TypeOf ap IsNot MuxAudioProfile AndAlso Not ap.IsInputSupported Then
             Convert(ap)
         End If
     End Sub
 
-    Shared Function GetBaseNameForStream(path As String, stream As AudioStream) As String
-        Dim base As String
-
-	If Not String.IsNullOrWhiteSpace(p.TempDir) AndAlso New DirectoryInfo(p.TempDir).Name.EndsWith("_temp") AndAlso path.Base.StartsWithEx(p.SourceFile.Base) Then
-            base = path.Base.Substring(p.SourceFile.Base.Length)
-        Else
-            base = path.Base
-        End If
+    Shared Function GetBaseNameForStream(filePath As String, stream As AudioStream) As String
+        Dim base = If(New DirectoryInfo(p.TempDir).Name.EndsWith("_temp") AndAlso filePath.Base.StartsWithEx(p.SourceFile.Base),
+            filePath.Base.Substring(p.SourceFile.Base.Length),
+            filePath.Base)
 
         Dim ret = base + " ID" & (stream.Index + 1)
 
@@ -92,7 +86,10 @@ Public Class Audio
         End If
 
         If stream.Title <> "" Then
-            ret += " {" + stream.Title.Shorten(50).EscapeIllegalFileSysChars + "}"
+            Dim MAX_PATH = 260
+            Dim pathLength = (p.TempDir + ret).Length
+            Dim leftLength = MAX_PATH - pathLength - 15
+            ret += " {" + stream.Title.Shorten(leftLength).EscapeIllegalFileSysChars + "}"
         End If
 
         Return ret.Trim
@@ -250,15 +247,13 @@ Public Class Audio
             Case CuttingMode.mkvmerge
                 CutMkvmerge(ap)
             Case CuttingMode.NicAudio
-                If FileTypes.NicAudioInput.Contains(ap.File.Ext) AndAlso
-                    Not TypeOf ap Is MuxAudioProfile Then
-
+                If FileTypes.NicAudioInput.Contains(ap.File.Ext) AndAlso TypeOf ap IsNot MuxAudioProfile Then
                     CutNicAudio(ap)
                 Else
                     CutMkvmerge(ap)
                 End If
             Case CuttingMode.DirectShow
-                If Not TypeOf ap Is MuxAudioProfile Then
+                If TypeOf ap IsNot MuxAudioProfile Then
                     CutDirectShowSource(ap)
                 Else
                     CutMkvmerge(ap)
@@ -331,7 +326,7 @@ Public Class Audio
 
         Dim gap = TryCast(ap, GUIAudioProfile)
 
-        If Not gap Is Nothing Then
+        If gap IsNot Nothing Then
             gap.NormalizeFF()
             gap.Params.Normalize = False
         End If
@@ -350,7 +345,7 @@ Public Class Audio
 
         Dim args = "-i " + ap.File.Escape
 
-        If Not ap.Stream Is Nothing Then
+        If ap.Stream IsNot Nothing Then
             args += " -map 0:" & ap.Stream.StreamOrder
         End If
 
@@ -729,6 +724,8 @@ function Down2(clip a)
             End If
         End If
     End Function
+
+
 
     Shared Function CommandContains(find As String) As Boolean
         If p.Audio0.IsUsedAndContainsCommand(find) OrElse p.Audio1.IsUsedAndContainsCommand(find) Then

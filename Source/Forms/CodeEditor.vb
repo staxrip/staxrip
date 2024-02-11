@@ -7,6 +7,7 @@ Imports StaxRip.UI
 Public Class CodeEditor
     Property ActiveTable As FilterTable
     Property Engine As ScriptEngine
+    Property PreviewScript As VideoScript
 
     Private CustomMenu As CustomMenu
     Private CommandManager As New CommandManager
@@ -25,9 +26,7 @@ Public Class CodeEditor
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)
 
-        CustomMenu = New CustomMenu(AddressOf GetDefaultMenu,
-            s.CustomMenuCodeEditor, CommandManager, cmsMain)
-
+        CustomMenu = New CustomMenu(AddressOf GetDefaultMenu, s.CustomMenuCodeEditor, CommandManager, cmsMain)
         CustomMenu.AddKeyDownHandler(Me)
         CustomMenu.BuildMenu()
 
@@ -99,6 +98,14 @@ Public Class CodeEditor
         g.SaveSettings()
     End Sub
 
+    <Command("Applies the current filter state.")>
+    Sub ApplyFilters()
+        If PreviewScript Is Nothing Then Exit Sub
+
+        PreviewScript.Filters = GetFilters()
+        PreviewScript.RemoveFilter("Cutting")
+    End Sub
+
     <Command("Removes a filter.")>
     Sub RemoveFilter()
         If Not ActiveTable Is Nothing Then
@@ -139,17 +146,18 @@ Public Class CodeEditor
 
     <Command("Shows a code preview with solved macros.")>
     Sub ShowCodePreview()
-        Dim script As New VideoScript
-        script.Engine = Engine
-        script.Filters = GetFilters()
-        g.ShowCodePreview(script.GetFullScript)
+        Dim script As New VideoScript With {
+            .Engine = Engine,
+            .Filters = GetFilters()
+        }
+        g.ShowCommandLinePreview("", script.GetFullScript(), True)
     End Sub
 
     <Command("Shows script parameters like framecount and colorspace.")>
     Sub ShowInfo()
         Dim script = CreateTempScript()
 
-        If Not script Is Nothing Then
+        If script IsNot Nothing Then
             g.ShowScriptInfo(script)
         End If
     End Sub
@@ -167,7 +175,7 @@ Public Class CodeEditor
 
     <Command("Cuts selected text.")>
     Sub Cut()
-        If Not ActiveTable Is Nothing Then
+        If ActiveTable IsNot Nothing Then
             Clipboard.SetText(ActiveTable.rtbScript.SelectedText)
             ActiveTable.rtbScript.SelectedText = ""
         End If
@@ -175,7 +183,7 @@ Public Class CodeEditor
 
     <Command("Copies selected text.")>
     Sub Copy()
-        If Not ActiveTable Is Nothing Then
+        If ActiveTable IsNot Nothing Then
             Clipboard.SetText(ActiveTable.rtbScript.SelectedText)
         End If
     End Sub
@@ -212,15 +220,17 @@ Public Class CodeEditor
             Exit Sub
         End If
 
-        Dim script = CreateTempScript()
-
-        If script Is Nothing Then
-            Exit Sub
+        If PreviewScript Is Nothing Then
+            PreviewScript = CreateTempScript()
+            If PreviewScript Is Nothing Then
+                Exit Sub
+            End If
+            PreviewScript.RemoveFilter("Cutting")
+        Else
+            ApplyFilters()
         End If
 
-        script.RemoveFilter("Cutting")
-
-        Dim form As New PreviewForm(script)
+        Dim form As New PreviewForm(PreviewScript)
         form.Show()
     End Sub
 
@@ -361,8 +371,8 @@ Public Class CodeEditor
         ret.Add("Insert", NameOf(g.DefaultCommands.DynamicMenuItem), Symbol.LeftArrowKeyTime0, {DynamicMenuItemID.InsertFilters})
         ret.Add("Add", NameOf(g.DefaultCommands.DynamicMenuItem), Symbol.Add, {DynamicMenuItemID.AddFilters})
         ret.Add("-")
-        ret.Add("Remove", NameOf(RemoveFilter), Keys.Control Or Keys.Delete, Symbol.Remove)
-        ret.Add("Preview Video...", NameOf(ShowVideoPreview), Keys.F5, Symbol.Photo)
+        ret.Add("Apply all Filters", NameOf(ApplyFilters), Keys.Control Or Keys.S, Symbol.Save)
+        ret.Add("Preview Video...", NameOf(ShowVideoPreview), Keys.F4, Symbol.fa_eye)
         ret.Add("Preview Code...", NameOf(ShowCodePreview), Symbol.Code)
         ret.Add("Play", NameOf(PlayWithMpvnet), Keys.F9, Symbol.Play)
         ret.Add("Info...", NameOf(ShowInfo), Keys.F2, Symbol.Info)
@@ -376,6 +386,7 @@ Public Class CodeEditor
         ret.Add("Move Up", NameOf(MoveFilterUp), Keys.Control Or Keys.Up, Symbol.Up)
         ret.Add("Move Down", NameOf(MoveFilterDown), Keys.Control Or Keys.Down, Symbol.Down)
         ret.Add("-")
+        ret.Add("Remove", NameOf(RemoveFilter), Keys.Control Or Keys.Delete, Symbol.Remove)
         ret.Add("Cut", NameOf(Cut), Symbol.Cut)
         ret.Add("Copy", NameOf(Copy), Symbol.Copy)
         ret.Add("Paste", NameOf(Paste), Symbol.Paste)
@@ -430,10 +441,7 @@ Public Class CodeEditor
 
     Sub MainFlowLayoutPanelLayout(sender As Object, e As LayoutEventArgs)
         Dim filterTables = MainFlowLayoutPanel.Controls.OfType(Of FilterTable)
-
-        If filterTables.Count = 0 Then
-            Exit Sub
-        End If
+        If filterTables.Count = 0 Then Exit Sub
 
         Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TrimmedTextSize.Width)
 
@@ -494,10 +502,16 @@ Public Class CodeEditor
         CustomMenu.EnableMenuItemByActionName(NameOf(PlayWithMpvnet), p.SourceFile <> "")
         CustomMenu.EnableMenuItemByActionName(NameOf(ShowInfo), p.SourceFile <> "")
         CustomMenu.EnableMenuItemByActionName(NameOf(ShowAdvancedInfo), p.SourceFile <> "")
-        CustomMenu.EnableMenuItemByActionName(NameOf(JoinAllFilters), MainFlowLayoutPanel.Controls.Count > 1)
+        CustomMenu.EnableMenuItemByActionName(NameOf(JoinAllFilters), MainFlowLayoutPanel.Controls.OfType(Of FilterTable).Where(Function(i) Not {"source", "crop", "cutting", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant())).Count > 1)
+        CustomMenu.EnableMenuItemByActionName(NameOf(JoinActiveFilters), MainFlowLayoutPanel.Controls.OfType(Of FilterTable).Where(Function(i) i.cbActive.Checked AndAlso Not {"source", "crop", "cutting", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant())).Count() > 1)
+        CustomMenu.EnableMenuItemByActionName(NameOf(JoinInactiveFilters), MainFlowLayoutPanel.Controls.OfType(Of FilterTable).Where(Function(i) Not i.cbActive.Checked AndAlso Not {"source", "crop", "cutting", "resize", "rotation"}.Contains(i.cbActive.Text.ToLowerInvariant())).Count() > 1)
         CustomMenu.EnableMenuItemByActionName(NameOf(Cut), ActiveTable.rtbScript.SelectionLength > 0 AndAlso Not ActiveTable.rtbScript.ReadOnly)
         CustomMenu.EnableMenuItemByActionName(NameOf(Copy), ActiveTable.rtbScript.SelectionLength > 0)
         CustomMenu.EnableMenuItemByActionName(NameOf(Paste), Clipboard.GetText <> "" AndAlso Not ActiveTable.rtbScript.ReadOnly)
+    End Sub
+
+    Protected Overrides Sub Finalize()
+        MyBase.Finalize()
     End Sub
 
     Public Class FilterTable
@@ -575,12 +589,17 @@ Public Class CodeEditor
             rtbScript.Margin = New Padding(0)
             rtbScript.Font = g.GetCodeFont
 
-            AddHandler cbActive.CheckedChanged, Sub() SetColor()
+            AddHandler cbActive.CheckedChanged, Sub()
+                                                    SetColor()
+                                                    Editor?.ApplyFilters()
+                                                End Sub
 
             AddHandler rtbScript.MouseDown, Sub() rtbScript.Focus()
+
             AddHandler rtbScript.Enter, Sub()
                                             Editor.ActiveTable = Me
                                             Editor.EnableMenuItems()
+                                            Editor.ApplyFilters()
                                         End Sub
 
             AddHandler rtbScript.TextChanged, Sub(sender As Object, e As EventArgs)

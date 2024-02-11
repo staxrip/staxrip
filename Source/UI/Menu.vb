@@ -682,7 +682,7 @@ Namespace UI
                 dialog.SetMacroDefaults()
                 dialog.MacroEditorControl.Value = value
                 dialog.MacroEditorControl.rtbDefaults.Text = defaults
-                dialog.Text = "Menu Editor"
+                dialog.Text = $"Menu Editor -  - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
 
                 If defaults <> "" Then
                     dialog.bnContext.Text = " Restore Defaults... "

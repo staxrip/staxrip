@@ -206,7 +206,7 @@ Public Class CommandLineVideoEncoderForm
         Me.KeyPreview = True
         Me.Margin = New Padding(6)
         Me.Name = "CommandLineVideoEncoderForm"
-        Me.Text = "Command Line Video Encoder"
+        Me.Text = $"Command Line Video Encoder - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.tlpMain.ResumeLayout(False)
         Me.tlpMain.PerformLayout()
         Me.flpBottom.ResumeLayout(False)

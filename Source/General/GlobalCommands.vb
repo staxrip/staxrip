@@ -86,7 +86,7 @@ Public Class GlobalCommands
                     proj.TargetFile = sourceFile.Edit.Text
                     proj.TempDir = outputFolder.Edit.Text.FixDir
 
-                    If Not td.Show Is Nothing Then
+                    If td.Show IsNot Nothing Then
                         td.SelectedValue.Run(proj)
                         s.LastSourceDir = proj.SourceFile.Dir
                         proj.Log.Save(proj)
@@ -273,7 +273,7 @@ Public Class GlobalCommands
         Dim sb = New StringBuilder()
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
 
-        If includeName Then sb.Append(" StaxRip")
+        If includeName Then sb.Append(Application.ProductName)
         If includeVersion Then
             sb.Append($" v{version.Major}.{version.Minor}")
 
@@ -300,8 +300,14 @@ Public Class GlobalCommands
         Select Case topic
             Case "info"
                 form.Doc.WriteStart(GetApplicationDetails())
-                form.Doc.Write("Active Authors", "Dendraspis, Patman, DJATOM")
-                form.Doc.Write("Retired Authors", "stax76, JKyle, 44vince44, Revan654, NikosD, jernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+                form.Doc.Write("Active Authors", "Dendraspis")
+                form.Doc.Write("Active Contributors", "Patman86")
+                form.Doc.Write("Retired Authors", "stax76, JKyle, 44vince44, DJATOM, Revan654, NikosD, jernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
+                form.Doc.Writer.WriteRaw("<hr>")
+                form.Doc.Write("Links", "<a href=""https://github.com/staxrip/staxrip"">Source on GitHub</a>" &
+                                         "<br><a href=""https://github.com/staxrip/staxrip/blob/master/Changelog.md"">Changelog on GitHub</a>" &
+                                         "<br><a href=""https://github.com/staxrip/staxrip/wiki"">Wiki on GitHub</a>" &
+                                         "<br><a href=""https://discord.gg/uz8pVR79Bd"">StaxRip Community on Discord</a>")
                 form.Doc.Writer.WriteRaw("<hr>")
 
                 Dim licensePath = Path.Combine(Folder.Startup, "License.txt")
@@ -469,6 +475,11 @@ Public Class GlobalCommands
     <Command("Loads a source file.")>
     Sub LoadSourceFile(<DispName("Source File Path")> path As String)
         g.MainForm.OpenVideoSourceFile(path)
+    End Sub
+
+    <Command("Loads multiple source files.")>
+    Sub LoadSourceFiles(<DispName("Source File Paths")> paths As String)
+        g.MainForm.OpenVideoSourceFiles(paths.Split({";"}, StringSplitOptions.RemoveEmptyEntries))
     End Sub
 
     <Command("Shows an Open File dialog to open a file to be shown by the console tool mkvinfo.")>

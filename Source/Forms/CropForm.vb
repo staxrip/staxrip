@@ -9,9 +9,7 @@ Public Class CropForm
 #Region " Designer "
     Protected Overloads Overrides Sub Dispose(disposing As Boolean)
         If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
+            components?.Dispose()
         End If
         MyBase.Dispose(disposing)
     End Sub
@@ -137,7 +135,7 @@ Public Class CropForm
         Me.MinimumSize = New System.Drawing.Size(200, 200)
         Me.Name = "CropForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
-        Me.Text = "Crop"
+        Me.Text = $"Crop - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         CType(Me.tbPosition, System.ComponentModel.ISupportInitialize).EndInit()
         Me.StatusStrip.ResumeLayout(False)
         Me.StatusStrip.PerformLayout()
@@ -150,43 +148,14 @@ Public Class CropForm
 
     Private FrameServer As IFrameServer
     Private Renderer As VideoRenderer
-    'Private SelectedBorderColor As Color = ToolStripRendererEx.BorderColor
     Private Side As AnchorStyles
     Private ActiveCropSide As AnchorStyles
     Private CommandManager As New CommandManager
     Private WithEvents CustomMenu As CustomMenu
 
-
-    Private _borderColor As ColorHSL = Color.Empty
-    Private _borderSelectedColor As ColorHSL = Color.Empty
-    Private _rendererBackColor As ColorHSL = Color.Empty
-
-    Public Property BorderColor As ColorHSL
-        Get
-            Return _borderColor
-        End Get
-        Set(value As ColorHSL)
-            _borderColor = value
-        End Set
-    End Property
-
-    Public Property BorderSelectedColor As ColorHSL
-        Get
-            Return _borderSelectedColor
-        End Get
-        Set(value As ColorHSL)
-            _borderSelectedColor = value
-        End Set
-    End Property
-
-    Public Property RendererBackColor As ColorHSL
-        Get
-            Return _rendererBackColor
-        End Get
-        Set(value As ColorHSL)
-            _rendererBackColor = value
-        End Set
-    End Property
+    Public Property BorderColor As ColorHSL = Color.Empty
+    Public Property BorderSelectedColor As ColorHSL = Color.Empty
+    Public Property RendererBackColor As ColorHSL = Color.Empty
 
     Sub New()
         InitializeComponent()
@@ -289,8 +258,26 @@ Public Class CropForm
         script.Path = Path.Combine(p.TempDir, p.TargetFile.Base + "_crop." + script.FileType)
         script.Filters.Add(p.Script.GetFilter("Source").GetCopy())
 
-        If Not p.Script.GetFilter("Rotation") Is Nothing Then
+        If p.Script.GetFilter("Rotation") IsNot Nothing Then
             script.Filters.Add(p.Script.GetFilter("Rotation").GetCopy())
+        End If
+
+        If p.CropWithTonemapping Then
+            If p.SourceVideoBitDepth > 8 AndAlso Not p.SourceVideoHdrFormat.ContainsAny("", "SDR") Then
+                If p.Script.Engine = ScriptEngine.AviSynth Then
+                    script.Filters.Add(New VideoFilter("Color", "Tonemap", "ConvertBits(16)" + BR + "libplacebo_Tonemap()" + BR + "ConvertToYUV420()" + BR + "ConvertBits(8)"))
+                Else
+                    script.Filters.Add(New VideoFilter("Color", "Tonemap", "clip = core.fmtc.bitdepth(clip, bits=16)" + BR + "clip = core.placebo.Tonemap(clip, src_csp=1, dst_csp=0, dynamic_peak_detection=0, tone_mapping_function=7)" + BR + $"clip = clip.resize.Bicubic(format = vs.YUV420P8)"))
+                End If
+            End If
+        End If
+
+        If p.CropWithHighContrast Then
+            If p.Script.Engine = ScriptEngine.AviSynth Then
+                script.Filters.Add(New VideoFilter("Levels", "Levels", "Levels(0, 2.5, 255, 0, 255, coring=true)"))
+            Else
+                script.Filters.Add(New VideoFilter("Levels", "Levels", "clip = core.std.Levels(clip, gamma=2.5, planes=0)"))
+            End If
         End If
 
         script.Synchronize(True, True, True)
@@ -305,6 +292,10 @@ Public Class CropForm
         tbPosition.Value = Renderer.Position
         SelectBorder(AnchorStyles.Top)
         UpdateAll()
+
+        If FrameServer.Error <> "" Then
+            MsgError("CROP", FrameServer.Error)
+        End If
     End Sub
 
 

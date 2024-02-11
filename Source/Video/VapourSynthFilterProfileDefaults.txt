@@ -28,7 +28,7 @@ ColorSpace | Transfer = clip = core.fmtc.transfer(clip, transs='$select:msg:Sele
 ColorYUV | Grayscale = clip = mvsfunc.GrayScale(clip)
 ColorYUV | Tweak = clip = adjust.Tweak(clip, $select:Neutral|hue=0, sat=1, bright=0, cont=1;Brighter|hue=0, sat=1, bright=20, cont=1.04;Less Contrast|hue=0, sat=0.95, bright=8, cont=0.9;Vivid|hue=0, sat=1.15, bright=2, cont=1.08;Desaturate|hue=0, sat=0, bright=0, cont=1$)
 Convert | BitDepth (fmtc) = clip = core.fmtc.bitdepth(clip, bits=$select:msg:Select BitDepth;8;10;12;16;32$)
-Convert | Convert To = clip = core.resize.Bicubic(clip, format=vs.$select:COMPATBGR32;COMPATYUY2;GRAY16;GRAY8;GRAYH;GRAYS;RGB24;RGB27;RGB30;RGB48;RGBH;RGBS;YUV410P8;YUV411P8;YUV420P8;YUV420P9;YUV420P10;YUV420P12;YUV420P14;YUV420P16;YUV422P8;YUV422P9;YUV422P10;YUV422P12;YUV422P14;YUV422P16;YUV440P8;YUV444P8;YUV444P9;YUV444P10;YUV444P12;YUV444P14;YUV444P16;YUV444PH;YUV444PS$)
+Convert | Convert To = clip = core.resize.Bicubic(clip, format=vs.$select:GRAY16;GRAY8;GRAYH;GRAYS;RGB24;RGB27;RGB30;RGB48;RGBH;RGBS;YUV410P8;YUV411P8;YUV420P8;YUV420P9;YUV420P10;YUV420P12;YUV420P14;YUV420P16;YUV422P8;YUV422P9;YUV422P10;YUV422P12;YUV422P14;YUV422P16;YUV440P8;YUV444P8;YUV444P9;YUV444P10;YUV444P12;YUV444P14;YUV444P16;YUV444PH;YUV444PS$)
 Convert | Format = clip = core.avs.z_ConvertFormat(clip, pixel_type='$enter_text:Enter the Format You Wish to Convert to$', colorspace_op='$select:msg:Select Input Color Matrix;rgb;709;unspec;fcc;470bg;170m;240;ycgco;2020ncl;2020cl;chromancl;chromacl;ictcp$:$select:msg:Select Input Color Transfer;709;unspec;470m;470bg;601;240m;linear;log100;log316;xvycc;srgb;2020_10;2020_12;st2084;std-b67$:$select:msg:Select Input Color Primaries;709;unspec;470m;470bg;170m;240m;film;2020;st428;st431-2;st432-1;jedec-p22$:$select:msg:Select Pixel Range;limited;l;full;f$=>$select:msg:Select Output Color Matrix;rgb;709;unspec;fcc;470bg;170m;240;ycgco;2020ncl;2020cl;chromancl;chromacl;ictcp$:$select:msg:Select Output Color Transfer;709;unspec;470m;470bg;601;240m;linear;log100;log316;xvycc;srgb;2020_10;2020_12;st2084;std-b67$:$select:msg:Select Output Color Primaries;709;unspec;470m;470bg;170m;240m;film;2020;st428;st431-2;st432-1;jedec-p22$:$select:msg:Select Pixel Range;limited;l;full;f$', dither_type='$select:msg:Select Dither Type;none;ordered;random;error_diffusion$')
 Convert | To 444 = clip = core.fmtc.resample(clip, css='444')
 Dither | Gamma / Linear = clip = $select:Gamma To Linear|Dither.gamma_to_linear;Linear To Gamma|Dither.linear_to_gamma$(clip, curve='$select:msg:Select the Color Curve;601;709;2020$')
@@ -36,6 +36,11 @@ Dither | Sigmoid = $select:Sigmoid Inverse|clip = havsfunc.SigmoidInverse(clip);
 Dither | SmoothGrad = clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1)
 Dither | Stack = $select:Native to Stack16|clip = core.fmtc.nativetostack16(clip);Stack16 to Native|clip = fmtc.stack16tonative(clip)$
 Dither | To RGB / YUV = clip = $select:To RGB|mvsfunc.ToRGB;To YUV|mvsfunc.ToYUV$(clip,matrix='$select:msg:Select Matrix;470bg;240;709;2020;2020cl;bt2020c$')
+
+Tonemap | Placebo =
+    clip = core.fmtc.bitdepth(clip, bits=16)
+    clip = core.placebo.Tonemap(clip, src_csp=$select:msg:Select Source Color Space;SDR|0;HDR10|1;HLG|2;Dolby Vision|3$, dst_csp=$select:msg:Select Target Color Space;SDR|0;HDR10|1;HLG|2;Dolby Vision|3$, dynamic_peak_detection=$select:msg:Dynamic Peak Detection?;Yes (default)|1;No|0$, tone_mapping_function=$select:msg:Tonemapping Function;Auto (default)|0;Clip|1;ST2094_40|2;ST2094_10|3;BT2390|4;BT2446a|5;Spline|6;Reinhard|7;Mobius|8;Hable|9;Gamma|10;Linear|11$, tone_mapping_mode=$select:msg:Tonemapping Mode;Auto (default)|0;RGB|1;MAX|2;HYBRID|3;LUMA|4$)
+    # clip = clip.resize.Bicubic(format = vs.YUV420P8)
 
 [Crop]
 Crop = clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)
@@ -109,6 +114,7 @@ VFR to CFR | VFRToCFR =
 
 Anti-Aliasing | DAA = clip = havsfunc.daa(clip)
 Anti-Aliasing | ediAA = clip = muvsfunc.ediaa(clip)
+Anti-Aliasing | insaneAA = clip = insaneAA.insaneAA(clip, external_aa=None, external_mask=None, faster_aa=False, eedi3_mode=insaneAA.EEDI3Mode.CPU, eedi3_device=-1, eedi3_opt=0, nnedi3_mode=insaneAA.NNEDI3Mode.NNEDI3, nnedi3_device=-1, nnedi3_opt=0, descale_strength=0.3, kernel='bilinear', bicubic_b=1/3, bicubic_c=1/3, lanczos_taps=3, descale_width=None, descale_height=720, pscrn=1, alpha=0.2, beta=0.25, gamma=1000.0, nrad=2, mdis=20, nsize=0, nns=4, output_mode=insaneAA.ClipMode.FULL, input_mode=insaneAA.ClipMode.FULL)
 Anti-Aliasing | MAA = clip = muvsfunc.maa(clip)
 Anti-Aliasing | nnedi3AA = clip = muvsfunc.nnedi3aa(clip)
 Anti-Aliasing | Sangnom = clip = core.sangnom.SangNom(clip)
@@ -161,6 +167,7 @@ AddGrain = clip = core.grain.Add(clip, var=1.0, uvar=0.0, hcorr=0.0, vcorr=0.0, 
 BM3D = clip = mvsfunc.BM3D(clip, sigma=[3,3,3], radius1=0)
 DegrainMedian = clip = core.dgm.DegrainMedian(clip=clip, interlaced=False)
 DFTTest | DFTTest = clip = core.dfttest.DFTTest(clip, $select:msg:Select Strength;Light|sigma=6, tbsize=3, opt=3;Moderate|sigma=16, tbsize=5, opt=3;Strong|sigma=64, tbsize=1, opt=3$)
+DFTTest | DFTTest2 = clip = dfttest2.DFTTest(clip, $select:msg:Select Strength;Light|sigma=6, tbsize=3;Moderate|sigma=16, tbsize=5;Strong|sigma=64, tbsize=1$, backend=dfttest2.Backend.$select:msg:Select the Backend;NVRTC|NVRTC;cuFFT|cuFFT;CPU|CPU;GCC|GCC$)
 DFTTest | DFTTest Neo = clip = core.neo_dfttest.DFTTest(clip, ftype=0, sigma=2.0, planes=[0,1,2])
 FFT3D Neo = clip = core.neo_fft3d.FFT3D(clip, sigma=2.0, bt=3, planes=[0,1,2])
 HQDN3D = clip = core.hqdn3d.Hqdn3d(clip=clip)
@@ -174,14 +181,16 @@ RemoveGrain | RemoveGrain with Repair =
     Processed = core.rgvs.RemoveGrain(clip, 1)
     clip = core.rgvs.Repair(clip,Processed, mode=2)
 
-SMDegrain = clip = havsfunc.SMDegrain(clip, tr=2, thSAD=300, thSADC=150, contrasharp=True, RefineMotion=True)
+SMDegrain | SMDegrain Hard Grain = clip = havsfunc.SMDegrain(clip, tr=4, thSAD=600, thSADC=300, prefilter=-1, contrasharp=True, RefineMotion=True)
+SMDegrain | SMDegrain Normal Grain = clip = havsfunc.SMDegrain(clip, tr=2, thSAD=300, thSADC=150, prefilter=-1, contrasharp=True, RefineMotion=True)
+SMDegrain | SMDegrain Light Grain = clip = havsfunc.SMDegrain(clip, tr=1, thSAD=300, thSADC=150, prefilter=-1, contrasharp=True, RefineMotion=True)
 TemporalDegrain2 = clip = G41Fun.TemporalDegrain2(clip, degrainTR=2, postFFT=3, postSigma=3)
 TTempSmooth = clip =  core.ttmpsm.TTempSmooth(clip)
 VagueDenoiser = clip = core.vd.VagueDenoiser(clip=clip, method=$select:msg:Select Strength;Soft|1;Hard|0$)
 
 [Resize]
 Advanced | NNEDI3_rpow2 = clip = nnedi3_rpow2.nnedi3_rpow2(clip, rfactor=$select:msg:Enlargement Factor?;2;4;8;16$, kernel="$select:msg:Center Shift Correction Algorithm?;bicubic;bilinear;blackman;box;gauss;lanczos;point;sinc;spline;spline16;spline36;spline64$", width=%target_width%, height=%target_height%)
-Advanced | ReSampleHQ = clip = resamplehq.resamplehq(clip, %target_width%, %target_height%, kernel='$select:Point;Rect;Linear;Cubic;Lanczos;Blackman;Blackmanminlobe;Spline16;Spline36;Spline64;Gauss;Sinc$')
+Advanced | ReSampleHQ = clip = resamplehq.resample_hq(clip, %target_width%, %target_height%, kernel='$select:Point;Rect;Linear;Cubic;Lanczos;Blackman;Blackmanminlobe;Spline16;Spline36;Spline64;Gauss;Sinc$')
 Resize... = clip = $select:Bilinear|core.resize.Bilinear;Bicubic|core.resize.Bicubic;Point|core.resize.Point;Lanczos|core.resize.Lanczos;Spline16|core.resize.Spline16;Spline36|core.resize.Spline36;Spline64|core.resize.Spline64;Dither_Resize16|Dither.Resize16nr;Resample|core.fmtc.resample$(clip, %target_width%, %target_height%)
 
 [Restoration]

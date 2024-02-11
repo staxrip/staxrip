@@ -1,6 +1,7 @@
 
 Imports System.ComponentModel
 Imports System.Drawing.Design
+Imports System.Windows.Input
 
 Namespace UI
     Public Class FormBase
@@ -129,7 +130,9 @@ Namespace UI
             End If
 
             If Not DesignHelp.IsDesignMode Then
-                s.WindowPositions?.RestorePosition(Me)
+                If Not (ModifierKeys.HasFlag(Keys.Control Or Keys.Shift)) Then
+                    s.WindowPositions?.RestorePosition(Me)
+                End If
             End If
 
             MyBase.OnLoad(args)

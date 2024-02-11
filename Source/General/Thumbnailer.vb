@@ -67,7 +67,7 @@ Public Class Thumbnailer
         Dim defaultImageBackColor = New ColorHSL(0, 0, 0.05, 1)
         Dim dar = MediaInfo.GetVideo(pSourcePath, "DisplayAspectRatio").ToSingle()
 
-        Dim HeaderInfoTask = GetHeaderInfosAsync(pSourcePath)
+        Dim headerInfoTask = GetHeaderInfosAsync(pSourcePath)
 
         Dim settings As ObjectStorage = proj.ThumbnailerSettings
 
@@ -148,7 +148,7 @@ Public Class Thumbnailer
                                     If(String.IsNullOrWhiteSpace(proj?.SourceFile) OrElse String.IsNullOrWhiteSpace(proj.TargetFile), New Project() With {.SourceFile = pSourcePath, .TargetFile = pSourcePath}, proj)
                             ) + "." + imageFileFormat
 
-        Dim headerInfo = Await HeaderInfoTask
+        Dim headerInfo = Await headerInfoTask
         Dim headerNearText = headerInfo.NearSide
         Dim headerFarText = headerInfo.FarSide
 

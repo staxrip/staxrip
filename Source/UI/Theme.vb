@@ -2,11 +2,12 @@
 Imports System.Runtime.Serialization
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports Microsoft.VisualBasic
+Imports StaxRip.Theme
 
 Public Class Theme
-    Private Shared _baseHue As Integer = 210
-    Private Shared _highlightHue As Integer = 0
-    Private Shared _defaultBackHighlightColor As ColorHSL = New ColorHSL(_highlightHue, 0.75, 0.75, 1)
+    Private Shared ReadOnly _baseHue As Integer = 210
+    Private Shared ReadOnly _highlightHue As Integer = 0
+    Private Shared ReadOnly _defaultBackHighlightColor As New ColorHSL(_highlightHue, 0.75, 0.75, 1)
 
     Protected _usesSystemColors As Boolean = True
 
@@ -26,6 +27,7 @@ Public Class Theme
     Private _mainFormThemeColors As MainFormThemeColors
     Private _processingFormThemeColors As ProcessingFormThemeColors
     Private _taskDialogThemeColors As TaskDialogThemeColors
+    Private _videoComparisonFormThemeColors As VideoComparisonFormThemeColors
 
     Public Property General As GeneralThemeColors
         Get
@@ -94,6 +96,16 @@ Public Class Theme
         End Get
         Set(value As TaskDialogThemeColors)
             _taskDialogThemeColors = value
+        End Set
+    End Property
+
+    Public Property VideoComparisonForm As VideoComparisonFormThemeColors
+        Get
+            _videoComparisonFormThemeColors = If(_videoComparisonFormThemeColors, New VideoComparisonFormThemeColors())
+            Return _videoComparisonFormThemeColors
+        End Get
+        Set(value As VideoComparisonFormThemeColors)
+            _videoComparisonFormThemeColors = value
         End Set
     End Property
 
@@ -830,6 +842,14 @@ Public Class Theme
 
         <Serializable>
         Public Class OutputHighlightingThemeColors
+            Public Property HeaderBackColor As ColorHSL = Color.Transparent
+            Public Property HeaderForeColor As ColorHSL = New ColorHSL(333, 0.99, 0.5, 1)
+            Public Property HeaderFontStyles As FontStyle() = {}
+
+            Public Property EncoderTitleBackColor As ColorHSL = Color.Transparent
+            Public Property EncoderTitleForeColor As ColorHSL = New ColorHSL(12, 0.99, 0.5, 1)
+            Public Property EncoderTitleFontStyles As FontStyle() = {}
+
             Public Property ParameterBackColor As ColorHSL = Color.Transparent
             Public Property ParameterForeColor As ColorHSL = New ColorHSL(320, 0.99, 0.5, 1)
             Public Property ParameterFontStyles As FontStyle() = {}
@@ -917,6 +937,13 @@ Public Class Theme
             Public Property ForeColor As ColorHSL = SystemColors.ControlText
         End Class
     End Class
+
+    <Serializable>
+    Public Class VideoComparisonFormThemeColors
+        Public Property BackColor As ColorHSL = SystemColors.Window
+        Public Property TabBackColor As ColorHSL = Color.Black
+    End Class
+
 End Class
 
 

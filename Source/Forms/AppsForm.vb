@@ -1,6 +1,7 @@
 
 Imports System.Runtime.InteropServices
 Imports System.Text
+Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
 
 Imports StaxRip.UI
@@ -393,7 +394,7 @@ Public Class AppsForm
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(10)
         Me.Name = "AppsForm"
-        Me.Text = "Apps"
+        Me.Text = $"Apps - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.ToolStrip.ResumeLayout(False)
         Me.ToolStrip.PerformLayout()
         Me.tlpMain.ResumeLayout(False)
@@ -694,11 +695,14 @@ Public Class AppsForm
 
         For Each pack In Package.Items.Values
             Dim plugin = TryCast(pack, PluginPackage)
+            Dim searchString = pack.Name + pack.Description + pack.Version + pack.WebURL + plugin?.VsFilterNames.Join(" ") + pack.Path + plugin?.AvsFilterNames.Join(" ")
+            Dim status = pack.GetStatus()
+            Dim newVersion = Not String.IsNullOrEmpty(status) AndAlso Regex.IsMatch(status, "new \w+ version was found", RegexOptions.IgnoreCase)
+            Dim notFound = Not String.IsNullOrEmpty(status) AndAlso Regex.IsMatch(status, "App not found", RegexOptions.IgnoreCase)
 
-            Dim searchString = pack.Name + pack.Description + pack.Version + pack.WebURL +
-                plugin?.VsFilterNames.Join(" ") + pack.Path + plugin?.AvsFilterNames.Join(" ")
-
-            If searchString?.ToLowerInvariant.Contains(SearchTextBox.Text?.ToLowerInvariant) Then
+            If searchString?.ToLowerInvariant.Contains(SearchTextBox.Text?.ToLowerInvariant) OrElse
+            (newVersion AndAlso SearchTextBox.Text?.ToLowerInvariant.Contains("<newversion>")) OrElse
+            (notFound AndAlso SearchTextBox.Text?.ToLowerInvariant.Contains("<notfound>")) Then
                 If plugin Is Nothing Then
                     If pack.TreePath <> "" Then
                         Dim n = tv.AddNode(pack.TreePath + "|" + pack.Name)
@@ -710,13 +714,13 @@ Public Class AppsForm
                         n.Tag = pack
                     End If
                 Else
-                    If plugin.AvsFilterNames?.Length > 0 Then
+                    If plugin.AvsFilterNames?.Length >= 0 Then
                         Dim n = tv.AddNode("AviSynth|" + pack.Name)
                         Nodes.Add(n)
                         n.Tag = pack
                     End If
 
-                    If plugin.VsFilterNames?.Length > 0 Then
+                    If plugin.VsFilterNames?.Length >= 0 Then
                         Dim n = tv.AddNode("VapourSynth|" + pack.Name)
                         Nodes.Add(n)
                         n.Tag = pack
@@ -861,7 +865,7 @@ Public Class AppsForm
         For Each pair In Package.Items
             Dim pack = pair.Value
 
-            If pack.Required AndAlso pack.GetStatus <> "" Then
+            If pack.GetStatus <> "" AndAlso pack.Required Then
                 txt += pack.Name + ": " + pack.GetStatus + BR2
                 counter += 1
             End If

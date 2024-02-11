@@ -1,4 +1,6 @@
 ﻿
+Imports System.Text
+Imports System.Text.RegularExpressions
 Imports StaxRip.UI
 
 Public Class CodeForm

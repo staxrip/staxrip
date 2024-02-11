@@ -197,7 +197,7 @@ Public Class VideoScript
 
         Dim srcFilter = GetFilter("Source")
 
-        If Not srcFilter Is Nothing AndAlso Not srcFilter.Script.Contains("(") Then
+        If srcFilter IsNot Nothing AndAlso Not srcFilter.Script.Contains("(") Then
             Exit Sub
         End If
 
@@ -225,10 +225,6 @@ Public Class VideoScript
                 Dim clipname = match.Groups(1).Value
 
                 Dim vsCode = ""
-
-                If flipVertical Then
-                    vsCode += BR + "clipname = core.std.FlipVertical(clipname)" + BR
-                End If
 
                 vsCode += "
 m_rgb = 0
@@ -278,9 +274,11 @@ else:
     else:
         primaries = p_709
 
-clipname = clipname.resize.Bicubic(matrix_in = matrix, transfer_in = transfer, primaries_in = primaries, format = vs.COMPATBGR32)
-clipname.set_output()
-"
+clipname = clipname.resize.Bicubic(matrix_in = matrix, transfer_in = transfer, primaries_in = primaries, format = vs.RGB24)"
+                If Not vsCode.ContainsEx(Package.LibP2P.Filename) Then vsCode += BR + "core.std.LoadPlugin(r""" + Package.LibP2P.Path + """, altsearchpath=True)"
+                vsCode += "
+clipname = clipname.libp2p.Pack()
+clipname.set_output()" + BR
                 vsCode = vsCode.Replace("clipname", clipname)
                 code = code.Replace(match.Value, vsCode).Trim
             End If
@@ -368,7 +366,7 @@ clipname.set_output()
             code =
                 "import os, sys" + BR +
                 "import vapoursynth as vs" + BR +
-                "core = vs.get_core()" + BR +
+                "core = vs.core" + BR +
                 GetVsPortableAutoLoadPluginCode() + BR +
                 "sys.path.append(r""" + IO.Path.Combine(Folder.Startup, "Apps", "Plugins", "VS", "Scripts") + """)" + BR + code
         End If
@@ -516,6 +514,32 @@ clipname.set_output()
 
                                     loadCode += load
                                 End If
+
+                                If Not plugin.Dependencies.NothingOrEmpty Then
+                                    For Each iDependency In plugin.Dependencies
+                                        Dim fp2 = Package.Items.Values.OfType(Of PluginPackage).Where(Function(pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx()).FirstOrDefault()?.Path
+
+                                        If fp2.Ext = "dll" Then
+                                            load = "LoadPlugin(""" + fp2 + """)" + BR
+
+                                            If Not scriptLower.Contains(load.ToLowerInvariant) AndAlso
+                                                Not loadCode.ToLowerInvariant.Contains(load.ToLowerInvariant) AndAlso
+                                                Not scriptAlreadyLower.Contains(load.ToLowerInvariant) Then
+
+                                                loadCode += load
+                                            End If
+                                        ElseIf fp2.Ext = "avsi" Then
+                                            Dim avsiImport = "Import(""" + fp2 + """)" + BR
+
+                                            If Not scriptLower.Contains(avsiImport.ToLowerInvariant) AndAlso
+                                                Not loadCode.ToLowerInvariant.Contains(avsiImport.ToLowerInvariant) AndAlso
+                                                Not scriptAlreadyLower.Contains(avsiImport.ToLowerInvariant) Then
+
+                                                loadCode += avsiImport
+                                            End If
+                                        End If
+                                    Next
+                                End If
                             ElseIf plugin.Filename.Ext = "avsi" Then
                                 Dim avsiImport = "Import(""" + fp + """)" + BR
 
@@ -528,7 +552,7 @@ clipname.set_output()
 
                                 If Not plugin.Dependencies.NothingOrEmpty Then
                                     For Each iDependency In plugin.Dependencies
-                                        Dim fp2 = Package.Items.Values.OfType(Of PluginPackage).Where(Function(pack) pack.Filename = iDependency).First.Path
+                                        Dim fp2 = Package.Items.Values.OfType(Of PluginPackage).Where(Function(pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx()).FirstOrDefault()?.Path
 
                                         If fp2.Ext = "dll" Then
                                             Dim load = "LoadPlugin(""" + fp2 + """)" + BR
@@ -609,11 +633,29 @@ clipname.set_output()
     End Function
 
     Shared Function ModifyAVSScript(script As String) As String
+        Dim sb = New StringBuilder()
         Dim newScript As String
         Dim loadCode = GetAvsLoadCode(script, "")
         newScript = loadCode + script
-        newScript = GetAVSLoadCodeFromImports(newScript) + newScript
+        newScript = GetAVSLoadCodeFromImports(newScript) + BR + newScript
 
+        Using sr As New StringReader(newScript)
+            Dim line As String
+            Do
+                line = sr.ReadLine()
+                If line IsNot Nothing Then
+                    If line.StartsWithEx("AddAutoloadDir(") Then
+                        sb.Insert(0, line)
+                    Else
+                        sb.AppendLine(line)
+                    End If
+                Else
+                    Exit Do
+                End If
+            Loop
+        End Using
+
+        newScript = sb.ToString()
         Dim initCode = ""
 
         If FrameServerHelp.IsPortable Then
@@ -680,10 +722,8 @@ clipname.set_output()
         script.Engine = ScriptEngine.VapourSynth
         script.Filters.Add(New VideoFilter("Source", "Automatic", "# can be configured at: Tools > Settings > Source Filters"))
         script.Filters.Add(New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)", False))
-        script.Filters.Add(New VideoFilter("Noise", "DFTTest", "clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3, opt=3)", False))
         script.Filters.Add(New VideoFilter("Field", "QTGMC Medium", $"clip = core.std.SetFieldBased(clip, 2) # 1=BFF, 2=TFF{BR}clip = havsfunc.QTGMC(clip, TFF=True, Preset='Medium')", False))
-        'script.Filters.Add(New VideoFilter("Frame Rate", "SVPFlow", "crop_string = """"" + BR + "resize_string = """"" + BR + "super_params = ""{pel:1,scale:{up:0},gpu:1,full:false,rc:true}""" + BR + "analyse_params = ""{block:{w:16},main:{search:{coarse:{type:4,distance:-6,bad:{sad:2000,range:24}},type:4}},refine:[{thsad:250}]}""" + BR + "smoothfps_params = ""{gpuid:11,linear:true,rate:{num:60000,den:1001,abs:true},algo:23,mask:{area:200},scene:{}}""" + BR + "def interpolate(clip):" + BR + "    input = clip" + BR + "    if crop_string!='':" + BR + "        input = eval(crop_string)" + BR + "    if resize_string!='':" + BR + "        input = eval(resize_string)" + BR + "    super   = core.svp1.Super(input,super_params)" + BR + "    vectors = core.svp1.Analyse(super[""clip""],super[""data""],input,analyse_params)" + BR + "    smooth  = core.svp2.SmoothFps(input,super[""clip""],super[""data""],vectors[""clip""],vectors[""data""],smoothfps_params,src=clip)" + BR + "    smooth  = core.std.AssumeFPS(smooth,fpsnum=smooth.fps_num,fpsden=smooth.fps_den)" + BR + "    return smooth" + BR + "clip =  interpolate(clip)", False))
-        'script.Filters.Add(New VideoFilter("Color", "Respec", "clip = core.fmtc.resample(clip, css='444')" + BR + "clip = core.fmtc.matrix(clip, mats='709', matd='709')" + BR + "clip = core.fmtc.resample(clip, css='420')" + BR + "clip = core.fmtc.bitdepth(clip, bits=10, fulls=False, fulld=False)", False))
+        script.Filters.Add(New VideoFilter("Noise", "DFTTest", "clip = core.dfttest.DFTTest(clip, sigma=6, tbsize=3, opt=3)", False))
         script.Filters.Add(New VideoFilter("Resize", "BicubicResize", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)", False))
         ret.Add(script)
 
@@ -781,11 +821,7 @@ Public Class VideoFilter
         Me.New("???", "???", code, True)
     End Sub
 
-    Sub New(category As String,
-            name As String,
-            script As String,
-            Optional active As Boolean = True)
-
+    Sub New(category As String, name As String, script As String, Optional active As Boolean = True)
         Me.Path = name
         Me.Script = script
         Me.Category = category
@@ -794,11 +830,7 @@ Public Class VideoFilter
 
     ReadOnly Property Name As String
         Get
-            If Path.Contains("|") Then
-                Return Path.RightLast("|").Trim
-            End If
-
-            Return Path
+            Return If(Path.Contains("|"), Path.RightLast("|").Trim, Path)
         End Get
     End Property
 
@@ -814,12 +846,9 @@ Public Class VideoFilter
         Return Path.CompareTo(other.Path)
     End Function
 
-    Shared Function GetDefault(
-        category As String, name As String,
-        Optional scriptEngine As ScriptEngine = ScriptEngine.AviSynth) As VideoFilter
+    Shared Function GetDefault(category As String, name As String, Optional scriptEngine As ScriptEngine = ScriptEngine.AviSynth) As VideoFilter
+        Dim defaults = If(scriptEngine = ScriptEngine.AviSynth, FilterCategory.GetAviSynthDefaults(), FilterCategory.GetVapourSynthDefaults())
 
-        Dim defaults = If(scriptEngine = ScriptEngine.AviSynth,
-            FilterCategory.GetAviSynthDefaults(), FilterCategory.GetVapourSynthDefaults())
         Return defaults.Where(Function(i) i.Name = category).FirstOrDefault()?.Filters.Where(Function(i) i.Name = name).FirstOrDefault()
     End Function
 End Class
@@ -943,28 +972,23 @@ Public Class FilterParameters
             If DefinitionsValue Is Nothing Then
                 DefinitionsValue = New List(Of FilterParameters)
 
-                Dim add = Sub(func As String(),
-                              path As String,
-                              params As FilterParameter())
-
+                Dim add = Sub(func As String(), path As String, params As FilterParameter())
                               For Each i In func
-                                  Dim ret As New FilterParameters
-                                  ret.FunctionName = i
-                                  ret.Text = path
+                                  Dim ret As New FilterParameters With {
+                                      .FunctionName = i,
+                                      .Text = path
+                                  }
                                   DefinitionsValue.Add(ret)
                                   ret.Parameters.AddRange(params)
                               Next
                           End Sub
 
-                Dim add2 = Sub(func As String(),
-                               param As String,
-                               value As String,
-                               path As String)
-
+                Dim add2 = Sub(func As String(), param As String, value As String, path As String)
                                For Each i In func
-                                   Dim ret As New FilterParameters
-                                   ret.FunctionName = i
-                                   ret.Text = path
+                                   Dim ret As New FilterParameters With {
+                                       .FunctionName = i,
+                                       .Text = path
+                                   }
                                    DefinitionsValue.Add(ret)
                                    ret.Parameters.Add(New FilterParameter(param, value))
                                Next

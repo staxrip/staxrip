@@ -164,7 +164,7 @@ Public Class AOMEnc
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.RateMode.ValueText.EqualsAny("cq", "q")
+            Return Params.RateMode.Value = 3
         End Get
         Set(Value As Boolean)
         End Set
@@ -190,14 +190,6 @@ Public Class AV1Params
         .Text = "Chunks",
         .Init = 1,
         .Config = {1, 128}}
-
-    Property CqLevel As New NumParam With {
-        .Path = "Rate Control 1",  '.Path = "AV1 Specific 2",    moved to "Rate Control 1" for better usage
-        .HelpSwitch = "--cq-level",
-        .Text = "CQ Level",
-        .AlwaysOn = True,
-        .Init = 24,
-        .VisibleFunc = Function() RateMode.Value = 2 OrElse RateMode.Value = 3}
 
     Property DeltaqMode As New OptionParam With {
         .Switch = "--deltaq-mode",
@@ -248,6 +240,21 @@ Public Class AV1Params
         .AlwaysOn = True,
         .Init = 3}
 
+    Property CqLevel As New NumParam With {
+        .Path = "Rate Control 1",  '.Path = "AV1 Specific 2",    moved to "Rate Control 1" for better usage
+        .HelpSwitch = "--cq-level",
+        .Text = "CQ Level",
+        .AlwaysOn = True,
+        .Init = 24,
+        .VisibleFunc = Function() RateMode.Value = 2 OrElse RateMode.Value = 3}
+
+    Property TargetBitrate As New NumParam With {
+        .HelpSwitch = "--target-bitrate",
+        .Text = "Target Bitrate",
+        .Init = 5000,
+        .VisibleFunc = Function() RateMode.Value <> 3,
+        .Config = {0, 1000000, 100}}
+
     Property Skip As New NumParam With {
         .Switch = "--skip",
         .Text = "Skip first n frames"}
@@ -255,13 +262,6 @@ Public Class AV1Params
     Property Limit As New NumParam With {
         .Switch = "--limit",
         .Text = "Stop after n frames"}
-
-    Property TargetBitrate As New NumParam With {
-        .HelpSwitch = "--target-bitrate",
-        .Text = "Target Bitrate",
-        .Init = 5000,
-        .VisibleFunc = Function() RateMode.Value <> 2 AndAlso RateMode.Value <> 3,
-        .Config = {0, 1000000, 100}}
 
     Property CustomFirstPass As New StringParam With {
         .Text = "Custom 1st pass",
@@ -356,7 +356,7 @@ Public Class AV1Params
                     New StringParam With {.Switch = "--timebase", .Text = "Timebase precision"},
                     New StringParam With {.Switch = "--fps", .Text = "Frame Rate"},
                     New StringParam With {.Switch = "--global-error-resilient", .Text = "Global Error Resilient"},
-                    New NumParam With {.Switch = "--lag-in-frames", .Text = "Lag In Frames", .Init = 25},
+                    New NumParam With {.Switch = "--lag-in-frames", .Text = "Lag In Frames", .Init = 35, .Config = {0, 999}},
                     New OptionParam With {.Switch = "--large-scale-tile", .Text = "Large Scale Tile Coding", .IntegerValue = True, .Options = {"Off", "On"}},
                     New BoolParam With {.Switch = "--monochrome", .Text = "Monochrome"},
                     New BoolParam With {.Switch = "--full-still-picture-hdr", .Text = "Full header for still picture"},
@@ -388,8 +388,8 @@ Public Class AV1Params
 
                 Add("Keyframe Placement",
                     New NumParam With {.Switch = "--enable-fwd-kf", .Text = "Enable forward reference keyframes"},
-                    New NumParam With {.Switch = "--kf-min-dist", .Text = "Min keyframe interval", .Init = 0, .Value = 12, .Config = {0, 9999}},
-                    New NumParam With {.Switch = "--kf-max-dist", .Text = "Max keyframe interval", .Init = 9999, .Value = 120, .Config = {1, 9999}},
+                    New NumParam With {.Switch = "--kf-min-dist", .Text = "Min keyframe interval", .DefaultValue = 0, .Value = 12, .Config = {0, 9999}},
+                    New NumParam With {.Switch = "--kf-max-dist", .Text = "Max keyframe interval", .DefaultValue = 9999, .Value = 300, .Config = {1, 9999}},
                     New BoolParam With {.Switch = "--disable-kf", .Text = "Disable keyframe placement"})
 
                 'New OptionParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .IntegerValue = True, .Options = {"On", "Off"}},
@@ -398,14 +398,14 @@ Public Class AV1Params
                     New OptionParam With {.Switch = "--cpu-used", .Text = "CPU Used", .Value = 4, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Slowest", "1 - Very Slow", "2 - Slower", "3 - Slow", "4 - Medium", "5 - Fast", "6 - Faster", "7 - Very Fast", "8 - Ultra Fast", "9 - Fastest"}},
                     New NumParam With {.Switch = "--auto-alt-ref", .Text = "Auto Alt Ref", .Init = 1, .AlwaysOn = True},
                     New NumParam With {.Switch = "--sharpness", .Text = "Sharpness", .Init = 0, .Config = {0, 7}},
-                    New NumParam With {.Switch = "--static-thresh", .Text = "Static Thresh", .AlwaysOn = True},
+                    New NumParam With {.Switch = "--static-thresh", .Text = "Static Threshold", .Init = 0, .AlwaysOn = True, .Config = {0, 9999}},
                     New BoolParam With {.Switch = "--row-mt", .Text = "Multi-Threading", .Init = True, .IntegerValue = True},
-                    New NumParam With {.Switch = "--tile-columns", .Text = "Tile Columns", .Init = 2, .AlwaysOn = True},
-                    New NumParam With {.Switch = "--tile-rows", .Text = "Tile Rows", .Init = 1, .AlwaysOn = True},
+                    New NumParam With {.Switch = "--tile-columns", .Text = "Tile Columns", .DefaultValue = 0, .Value = 2},
+                    New NumParam With {.Switch = "--tile-rows", .Text = "Tile Rows", .DefaultValue = 0, .Value = 1},
                     New OptionParam With {.Switch = "--enable-tpl-model", .Text = "TPL model", .Value = 1, .AlwaysOn = True, .IntegerValue = True, .Options = {"0 - Off", "1 - Backward source based"}},
                     New OptionParam With {.Switch = "--enable-keyframe-filtering", .Text = "Keyframe Filtering", .Init = 1, .IntegerValue = True, .Options = {"0 - No filter", "1 - Filter without overlay (default)", "2 - Filter with overlay (Experimental)"}},
-                    New NumParam With {.Switch = "--arnr-maxframes", .Text = "ARNR Max Frames", .Config = {0, 15}},
-                    New NumParam With {.Switch = "--arnr-strength", .Text = "ARNR Filter Strength", .Config = {0, 6}})
+                    New NumParam With {.Switch = "--arnr-maxframes", .Text = "ARNR Max Frames", .Init = 7, .Config = {0, 15}},
+                    New NumParam With {.Switch = "--arnr-strength", .Text = "ARNR Filter Strength", .Init = 5, .Config = {0, 6}})
 
                 'CqLevel) moved to "Rate Control 1" for better usage
                 'New OptionParam With {.Switch = "--enable-cdef", .Text = "Enable CDEF", .Init = 1, .IntegerValue = True, .Options = {"Off", "On"}})
@@ -464,9 +464,9 @@ Public Class AV1Params
                     New BoolParam With {.Switch = "--use-inter-dct-only", .Text = "DCT only for INTER modes"},
                     New BoolParam With {.Switch = "--use-intra-default-tx-only", .Text = "Default-transform only for INTRA modes"},
                     New OptionParam With {.Switch = "--quant-b-adapt", .Text = "Adaptive quantize_b", .IntegerValue = True, .Init = 0, .Options = {"Off", "On"}},
-                    New OptionParam With {.Switch = "--coeff-cost-upd-freq", .Text = "Update freq for coeff costs", .IntegerValue = True, .Init = 0, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
-                    New OptionParam With {.Switch = "--mode-cost-upd-freq", .Text = "Update freq for mode costs", .IntegerValue = True, .Init = 0, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
-                    New OptionParam With {.Switch = "--mv-cost-upd-freq", .Text = "Update freq for mv costs", .IntegerValue = True, .Init = 0, .AlwaysOn = True, .Options = {"0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}},
+                    New OptionParam With {.Switch = "--coeff-cost-upd-freq", .Text = "Update freq for coeff costs", .Init = 0, .Options = {"Undefined", "0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}, .Values = {"undefined", "0", "1", "2", "3"}},
+                    New OptionParam With {.Switch = "--mode-cost-upd-freq", .Text = "Update freq for mode costs", .Init = 0, .Options = {"Undefined", "0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}, .Values = {"undefined", "0", "1", "2", "3"}},
+                    New OptionParam With {.Switch = "--mv-cost-upd-freq", .Text = "Update freq for mv costs", .Init = 0, .Options = {"Undefined", "0 - SB", "1 - SB Row per Tile", "2 - Tile", "3 - Off"}, .Values = {"undefined", "0", "1", "2", "3"}},
                     New BoolParam With {.Switch = "--frame-parallel", .Text = "Frame Parallel", .Init = False, .IntegerValue = True},
                     New BoolParam With {.Switch = "--error-resilient", .Text = "Error Resilient", .Init = False, .IntegerValue = True},
                     New OptionParam With {.Switch = "--aq-mode", .Text = "AQ Mode", .IntegerValue = True, .Options = {"Disabled", "Variance", "Complexity", "Cyclic Refresh"}},
@@ -481,7 +481,7 @@ Public Class AV1Params
                     New OptionParam With {.Switch = "--cdf-update-mode", .Text = "CDF Update", .IntegerValue = True, .Options = {"No Update", "Update CDF on all frames(default)", "Selectively Update CDF on some frames"}, .Init = 1},
                     New OptionParam With {.Switch = "--color-primaries", .Text = "Color Primaries", .Options = {"unspecified", "BT2020", "BT601", "BT709", "BT470M", "BT470BG", "SMPTE170", "XYZ", "SMPTE240", "SMPTE431", "SMPTE432", "FILM", "EBU3213"}},
                     New OptionParam With {.Switch = "--transfer-characteristics", .Text = "Transfer Characteristics", .Options = {"unspecified", "BT709", "BT470M", "BT470BG", "BT601", "SMPTE240", "LIN", "LOG100", "LOG100SQ 10", "IEC 61966", "BT 1361", "SRGB", "BT2020-10bit", "BT2020-12bit", "SMPTE2084", "HLG", "SMPTE428"}},
-                    New OptionParam With {.Switch = "--matrix-coefficients", .Text = "Matrix Coefficients", .Options = {" unspecified", "identity", "BT2020NC", "BT2020CL", "BT601", "FCC73", "BT709", "BT470BG", "SMPTE2085", "YCGCO", "SMPTE240", "ICTCP", "CHROMNCL", "CHROMCL"}},
+                    New OptionParam With {.Switch = "--matrix-coefficients", .Text = "Matrix Coefficients", .Options = {" unspecified", "identity", "BT470BG", "BT601", "BT709", "BT2020NCL", "BT2020CL", "CHROMNCL", "CHROMCL", "FCC73", "ICTCP", "SMPTE2085", "SMPTE240", "YCGCO"}},
                     New OptionParam With {.Switch = "--chroma-sample-position", .Text = "Chroma Sample Position", .Options = {"Unknown", "Vertical", "Colocated"}},
                     New NumParam With {.Switch = "--min-gf-interval", .Text = "Min GF Interval"},
                     New NumParam With {.Switch = "--max-gf-interval", .Text = "Max GF Interval"},
@@ -595,7 +595,7 @@ Public Class AV1Params
                             End If
                         Case "vspipe"
                             Dim chunk = If(isSingleChunk, "", $" --start {startFrame} --end {endFrame}")
-                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --y4m" + chunk + " | "
+                            pipeString = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --container y4m" + chunk + " | "
 
                             sb.Append(pipeString + Package.AOMEnc.Path.Escape)
                             If isSingleChunk Then
@@ -702,11 +702,12 @@ Public Class AV1Params
                 End If
         End Select
 
-        If RateMode.ValueText.EqualsAny("cq", "q") Then
+        If RateMode.Value = 2 OrElse RateMode.Value = 3 Then
             If Not IsCustom(pass, "--cq-level") Then
                 sb.Append(" --cq-level=" & CqLevel.Value)
             End If
-        Else
+        End If
+        If RateMode.Value <> 3 Then
             If Not IsCustom(pass, "--target-bitrate") Then
                 sb.Append(" --target-bitrate=" & If(pass = 1, TargetBitrate.Value, p.VideoBitrate))
             End If
@@ -722,7 +723,7 @@ Public Class AV1Params
 
         If includePaths Then
             If Passes.Value = 1 Then
-                sb.Append(" --fpf=" + (Path.Combine(p.TempDir, p.TargetFile.Base + chunkName + ".fpf")).Escape)
+                sb.Append(" --fpf=" + Path.Combine(p.TempDir, p.TargetFile.Base + chunkName + ".fpf").Escape)
             End If
 
             sb.Append(" -o " + (targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape)

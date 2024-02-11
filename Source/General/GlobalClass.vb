@@ -116,9 +116,10 @@ Public Class GlobalClass
     End Sub
 
     Sub Execute(fileName As String, Optional arguments As String = Nothing)
-        Dim info As New ProcessStartInfo
-        info.UseShellExecute = False
-        info.FileName = fileName
+        Dim info As New ProcessStartInfo With {
+            .UseShellExecute = False,
+            .fileName = fileName
+        }
 
         If arguments <> "" Then
             info.Arguments = arguments
@@ -135,7 +136,7 @@ Public Class GlobalClass
         Try
             Dim psi = New ProcessStartInfo(fileName.Escape) With {
                 .UseShellExecute = True,
-                .Arguments = arguments
+                .arguments = arguments
             }
 
             Process.Start(psi)?.Dispose()
@@ -288,6 +289,7 @@ Public Class GlobalClass
 
             g.RaiseAppEvent(ApplicationEvent.BeforeProcessing)
 
+            Log.WriteEnvironment()
             Log.WriteConfiguration()
 
             Log.WriteHeader($"{p.Script.Engine} Script")
@@ -412,6 +414,15 @@ Public Class GlobalClass
 
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
+
+            If Not WasEncodeSuccessful(p.TargetFile) Then
+                Log.WriteHeader("Frame Mismatch")
+                Dim has = MediaInfo.GetVideo(p.TargetFile, "FrameCount").ToInt()
+                Dim should = p.TargetFrames
+                Log.WriteLine($"WARNING: Target file has {has} frames, but should have {should} frames!")
+                Log.WriteLine($"Encoding was terminated at {has / should * 100:0.0}%!")
+            End If
+
             Log.Save()
 
             g.ArchiveLogFile(Log.GetPath)
@@ -435,8 +446,14 @@ Public Class GlobalClass
     End Sub
 
     Function CanEncodeVideo() As Boolean
-        Return Not (p.SkipVideoEncoding AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
-            File.Exists(p.VideoEncoder.OutputPath))
+        Return Not (p.SkipVideoEncoding AndAlso TypeOf p.VideoEncoder IsNot NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath))
+    End Function
+
+    Function WasEncodeSuccessful(targetPath As String) As Boolean
+        If String.IsNullOrEmpty(targetPath) Then Return False
+        If Not targetPath.FileExists() Then Return False
+
+        Return p.TargetFrames = MediaInfo.GetVideo(targetPath, "FrameCount").ToInt()
     End Function
 
     Sub DeleteTempFiles()
@@ -568,7 +585,7 @@ Public Class GlobalClass
 
         Dim ap = GetAudioProfileForScriptPlayback()
 
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso
+        If ap IsNot Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso
             p.Ranges.Count = 0 Then
 
             args += " /dub " + ap.File.Escape
@@ -600,7 +617,7 @@ Public Class GlobalClass
 
         Dim ap = GetAudioProfileForScriptPlayback()
 
-        If Not ap Is Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso p.Ranges.Count = 0 Then
+        If ap IsNot Nothing AndAlso FileTypes.Audio.Contains(ap.File.Ext) AndAlso p.Ranges.Count = 0 Then
             args += " --audio-files=" + ap.File.Escape
         End If
 
@@ -617,15 +634,13 @@ Public Class GlobalClass
     End Function
 
     Function GetSourceBase() As String
-        If Not String.IsNullOrWhiteSpace(p.TempDir) AndAlso New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp") Then
-            Return "temp"
-        End If
-        Return p.SourceFile.Base
+        Return If(New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp"), "temp", p.SourceFile.Base)
     End Function
 
     Sub ShowCode(title As String, content As String, Optional find As String = Nothing, Optional wordwrap As Boolean = False)
-        Dim form As New CodeForm(content, find, wordwrap)
-        form.Text = title
+        Dim form As New CodeForm(content, find, wordwrap) With {
+            .Text = $"{title} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
+        }
         form.Show()
     End Sub
 
@@ -673,7 +688,7 @@ Public Class GlobalClass
             Next
         Next
 
-        If Not dialogAction Is Nothing Then
+        If dialogAction IsNot Nothing Then
             ic.Add(New ToolStripSeparator)
             ic.Add(New MenuItemEx("Edit Profiles...", dialogAction, "Opens the profiles editor"))
         End If
@@ -709,11 +724,7 @@ Public Class GlobalClass
     Function GetTextEditorPath() As String
         Dim ret = GetAppPathForExtension("txt")
 
-        If ret <> "" Then
-            Return ret
-        End If
-
-        Return "notepad.exe"
+        Return If(ret <> "", ret, "notepad.exe")
     End Function
 
     Function GetAppPathForExtension(ParamArray extensions As String()) As String
@@ -857,7 +868,7 @@ Public Class GlobalClass
 
                 If (ec.CriteriaList.Count = 0 OrElse (ec.OrOnly AndAlso matches > 0) OrElse
                     (Not ec.OrOnly AndAlso matches = ec.CriteriaList.Count)) AndAlso
-                    Not ec.CommandParameters Is Nothing Then
+                    ec.CommandParameters IsNot Nothing Then
 
                     Dim command = g.MainForm.CustomMainMenu.CommandManager.GetCommand(ec.CommandParameters.MethodName)
 
@@ -882,11 +893,7 @@ Public Class GlobalClass
                 p.TempDir = Macro.Expand(p.TempDir)
 
                 If p.TempDir = "" Then
-                    If New DirectoryInfo(p.SourceFile.Dir).Name.EndsWithEx("_temp") Then
-                        p.TempDir = p.SourceFile.Dir
-                    Else
-                        p.TempDir = Path.Combine(p.SourceFile.Dir, p.SourceFile.Base + "_temp")
-                    End If
+                    p.TempDir = If(New DirectoryInfo(p.SourceFile.Dir).Name.EndsWithEx("_temp"), p.SourceFile.Dir, Path.Combine(p.SourceFile.Dir, p.SourceFile.Base + "_temp"))
                 End If
 
                 p.TempDir = p.TempDir.FixDir
@@ -915,7 +922,18 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub ShowCommandLinePreview(title As String, value As String)
+    Sub ShowCommandLinePreview(title As String, value As String, lineNumbers As Boolean)
+        If lineNumbers Then
+            Dim sb = New StringBuilder()
+            Dim lines = Regex.Split(value, "\r\n|\r|\n")
+
+            For i = 0 To lines.Length - 1
+                sb.AppendLine($"{i + 1,3}: {lines(i)}")
+            Next
+
+            value = sb.ToString()
+        End If
+
         Select Case s.CommandLinePreview
             Case CommandLinePreview.CodePreview
                 ShowCodePreview(value, Nothing, True)
@@ -938,23 +956,15 @@ Public Class GlobalClass
         ShowCode("Code Preview", code, find, wordwrap)
     End Sub
 
-    Sub ffmsindex(
-        sourcePath As String,
-        cachePath As String,
-        Optional indexAudio As Boolean = False,
-        Optional proj As Project = Nothing)
-
-        If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso
-            Not FileTypes.VideoText.Contains(sourcePath.Ext) Then
-
+    Sub ffmsindex(sourcePath As String, cachePath As String, Optional indexAudio As Boolean = False, Optional proj As Project = Nothing)
+        If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso Not FileTypes.VideoText.Contains(sourcePath.Ext) Then
             Using proc As New Proc
                 proc.Header = "Indexing using ffmsindex"
                 proc.SkipString = "Indexing, please wait..."
                 proc.Project = proj
                 proc.Priority = ProcessPriorityClass.Normal
                 proc.File = Path.Combine(Package.ffms2.Directory, "ffmsindex.exe")
-                proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.LongPathPrefix.Escape +
-                    " " + cachePath.LongPathPrefix.Escape
+                proc.Arguments = If(indexAudio, "-t -1 ", "") + sourcePath.LongPathPrefix.Escape + " " + cachePath.LongPathPrefix.Escape
                 proc.Start()
             End Using
         End If
@@ -1037,7 +1047,7 @@ Public Class GlobalClass
             ExceptionHandled = True
         End If
 
-        If Not TypeOf ex Is AbortException Then
+        If TypeOf ex IsNot AbortException Then
             Try
                 If File.Exists(p.SourceFile) Then
                     Dim name = p.TargetFile.Base
@@ -1071,15 +1081,11 @@ Public Class GlobalClass
 
         Try
             Using td As New TaskDialog(Of String)
-                If title = "" Then
-                    If TypeOf ex Is ErrorAbortException Then
-                        td.Title = DirectCast(ex, ErrorAbortException).Title + $" (v{Application.ProductVersion})"
-                    Else
-                        td.Title = ex.GetType.Name + $" (v{Application.ProductVersion})"
-                    End If
-                Else
-                    td.Title = title
-                End If
+                td.Title = If(title = "",
+                    If(TypeOf ex Is ErrorAbortException,
+                        DirectCast(ex, ErrorAbortException).Title + $" (v{Application.ProductVersion})",
+                        ex.GetType.Name + $" (v{Application.ProductVersion})"),
+                    title)
 
                 td.Timeout = timeout
                 td.Content = (ex.Message + BR2 + content).Trim
@@ -1090,13 +1096,7 @@ Public Class GlobalClass
                 td.Show()
             End Using
         Catch
-            Dim msg As String
-
-            If TypeOf ex Is ErrorAbortException Then
-                msg = DirectCast(ex, ErrorAbortException).Title
-            Else
-                msg = ex.GetType.Name
-            End If
+            Dim msg = If(TypeOf ex Is ErrorAbortException, DirectCast(ex, ErrorAbortException).Title, ex.GetType.Name)
 
             VB6.MsgBox(msg + BR2 + ex.Message + BR2 + ex.ToString, VB6.MsgBoxStyle.Critical)
         End Try
@@ -1122,11 +1122,7 @@ Public Class GlobalClass
     End Sub
 
     Sub SetRenderer(ms As ToolStrip)
-        If VisualStyleInformation.IsEnabledByUser Then
-            ms.Renderer = New ToolStripRendererEx()
-        Else
-            ms.Renderer = New ToolStripSystemRenderer()
-        End If
+        ms.Renderer = If(VisualStyleInformation.IsEnabledByUser, New ToolStripRendererEx(), DirectCast(New ToolStripSystemRenderer(), ToolStripRenderer))
     End Sub
 
     Sub Play(file As String)
@@ -1171,7 +1167,7 @@ Public Class GlobalClass
             Exit Sub
         End If
 
-        If Not e Is Nothing Then
+        If e IsNot Nothing Then
             If Log.IsEmpty Then Log.WriteEnvironment()
             Log.WriteHeader("Exception")
             Log.WriteLine(e.ToString)
@@ -1265,7 +1261,7 @@ Public Class GlobalClass
             form.cbWrap.Checked = False
             form.cbWrap.Visible = False
             form.rtb.Text = text
-            form.Text = script.Path
+            form.Text = $"{script.Path} - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
             form.bnOK.Visible = False
             form.bnCancel.Text = "Close"
             form.ShowDialog()
@@ -1589,11 +1585,7 @@ Public Class GlobalClass
             End If
         Next
 
-        If script.Engine = ScriptEngine.AviSynth Then
-            Return ret
-        Else
-            Return "clip = " + ret
-        End If
+        Return If(script.Engine = ScriptEngine.AviSynth, ret, "clip = " + ret)
     End Function
 
     Function ContainsPipeTool(value As String) As Boolean

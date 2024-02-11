@@ -90,6 +90,7 @@ HRESULT __stdcall AviSynthServer::OpenFile(WCHAR* file)
         m_Info.FrameRateNum = vi.fps_numerator;
         m_Info.FrameRateDen = vi.fps_denominator;
         m_Info.ColorSpace = vi.pixel_type;
+        m_Info.BitsPerPixel = vi.BitsPerPixel();
         
         return S_OK;
     }

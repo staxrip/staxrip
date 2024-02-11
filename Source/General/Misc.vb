@@ -540,12 +540,16 @@ Public Class Language
         Me.New("")
     End Sub
 
-    Sub New(ci As CultureInfo, Optional isCommon As Boolean = False)
+    Sub New(ci As CultureInfo, Optional isCommon As Boolean = False, Optional isInitial As Boolean = False)
         Me.IsCommon = isCommon
-        CultureInfoValue = ci
+        If isInitial OrElse ci IsNot Nothing OrElse Languages.Select(Function(x) x.TwoLetterCode).ContainsEx(twoLetterCode) Then
+            CultureInfoValue = ci
+        Else
+            CultureInfoValue = CultureInfo.InvariantCulture
+        End If
     End Sub
 
-    Sub New(twoLetterCode As String, Optional isCommon As Boolean = False)
+    Sub New(twoLetterCode As String, Optional isCommon As Boolean = False, Optional isInitial As Boolean = False)
         Try
             Me.IsCommon = isCommon
 
@@ -556,7 +560,11 @@ Public Class Language
                     twoLetterCode = "ja"
             End Select
 
-            CultureInfoValue = New CultureInfo(twoLetterCode)
+            If isInitial OrElse Languages.Select(Function(x) x.TwoLetterCode).ContainsEx(twoLetterCode) Then
+                CultureInfoValue = New CultureInfo(twoLetterCode)
+            Else
+                CultureInfoValue = CultureInfo.InvariantCulture
+            End If
         Catch ex As Exception
             CultureInfoValue = CultureInfo.InvariantCulture
         End Try
@@ -636,25 +644,24 @@ Public Class Language
     Shared ReadOnly Property Languages() As List(Of Language)
         Get
             If LanguagesValue Is Nothing Then
-                Dim l As New List(Of Language)
-
-                l.Add(New Language("en", True))
-                l.Add(New Language("es", True))
-                l.Add(New Language("de", True))
-                l.Add(New Language("fr", True))
-                l.Add(New Language("it", True))
-                l.Add(New Language("ru", True))
-                l.Add(New Language("zh", True))
-                l.Add(New Language("hi", True))
-                l.Add(New Language("ja", True))
-                l.Add(New Language("pt", True))
-                l.Add(New Language("ar", True))
-                l.Add(New Language("bn", True))
-                l.Add(New Language("pa", True))
-                l.Add(New Language("ms", True))
-                l.Add(New Language("ko", True))
-
-                l.Add(New Language(CultureInfo.InvariantCulture, True))
+                Dim l As New List(Of Language) From {
+                    New Language("en", True, True),
+                    New Language("es", True, True),
+                    New Language("de", True, True),
+                    New Language("fr", True, True),
+                    New Language("it", True, True),
+                    New Language("ru", True, True),
+                    New Language("zh", True, True),
+                    New Language("hi", True, True),
+                    New Language("ja", True, True),
+                    New Language("pt", True, True),
+                    New Language("ar", True, True),
+                    New Language("bn", True, True),
+                    New Language("pa", True, True),
+                    New Language("ms", True, True),
+                    New Language("ko", True, True),
+                    New Language(CultureInfo.InvariantCulture, True, True)
+                }
 
                 Dim current = l.Where(Function(a) a.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).FirstOrDefault
 
@@ -667,7 +674,7 @@ Public Class Language
                 Dim l2 As New List(Of Language)
 
                 For Each i In CultureInfo.GetCultures(CultureTypes.NeutralCultures)
-                    l2.Add(New Language(i))
+                    l2.Add(New Language(i, False, True))
                 Next
 
                 l2.Sort()
@@ -1034,6 +1041,7 @@ Public Class AudioStream
     Property Bitrate2 As Integer
     Property Channels As Integer
     Property Channels2 As Integer
+    Property Commentary As Boolean
     Property Delay As Integer
     Property Enabled As Boolean = True
     Property Forced As Boolean
@@ -1229,6 +1237,8 @@ Public Class Subtitle
     Property Language As Language
     Property [Default] As Boolean
     Property Forced As Boolean
+    Property Commentary As Boolean
+    Property Hearingimpaired As Boolean
     Property Enabled As Boolean = True
     Property Size As Long
 
@@ -1316,11 +1326,13 @@ Public Class Subtitle
                     Dim goodMode = p.SubtitleMode <> SubtitleMode.PreferredNoMux AndAlso p.SubtitleMode <> SubtitleMode.Disabled
                     st.Enabled = prefLang AndAlso goodMode
                     st.Forced = path.ToLowerEx().Contains("forced")
+                    st.Commentary = path.ToLowerEx().Contains("commentary")
+                    st.Hearingimpaired = path.ToLowerEx().Contains("hearingimpaired")
 
                     st.IndexIDX = CInt(Regex.Match(line, ", index: (\d+)").Groups(1).Value)
                 End If
 
-                If Not st Is Nothing AndAlso line.StartsWith("timestamp: ") Then
+                If st IsNot Nothing AndAlso line.StartsWith("timestamp: ") Then
                     st.StreamOrder = indexData
                     st.Path = path
                     indexData += 1
@@ -1383,6 +1395,8 @@ Public Class Subtitle
             st.Enabled = prefLang AndAlso goodMode
             st.Path = path
             st.Forced = path.ToLowerEx().Contains("forced")
+            st.Commentary = path.ToLowerEx().Contains("commentary")
+            st.Hearingimpaired = path.ToLowerEx().Contains("hearingimpaired")
 
             For Each i In autoCode
                 If i.IsInt AndAlso st.Path.Contains("ID" & i.ToInt & " ") Then
@@ -1528,10 +1542,12 @@ Public Class Subtitle
             If Not subs.NothingOrEmpty Then
                 Dim outSub = Subtitle.Create(subPath)(0)
                 outSub.Language = inSub.Language
-                outSub.Forced = inSub.Forced
-                outSub.Default = inSub.Default
                 outSub.Title = inSub.Title
                 outSub.Enabled = True
+                outSub.Default = inSub.Default
+                outSub.Forced = inSub.Forced
+                outSub.Commentary = inSub.Commentary
+                outSub.Hearingimpaired = inSub.Hearingimpaired
                 subtitles(x) = outSub
             Else
                 emptySubs.Add(subtitles(x))
@@ -1561,6 +1577,13 @@ Public Enum ContainerStreamType
     Chapters
 End Enum
 
+Public Enum VideoComparisonFileType
+    AviSynthScript
+    Picture
+    VapourSynthScript
+    Video
+End Enum
+
 Public Class FileTypes
     Shared Property AudioRaw As String() = {"aac", "eac3", "ec3", "thd"}
     Shared Property Audio As String() = {"flac", "dtshd", "dtsma", "dtshr", "thd", "thd+ac3", "truehd", "aac", "ac3", "dts", "ec3", "eac3", "m4a", "mka", "mp2", "mp3", "mpa", "opus", "wav", "w64"}
@@ -1568,11 +1591,13 @@ Public Class FileTypes
     Shared Property VideoAudio As String() = {"avi", "mp4", "mkv", "divx", "flv", "mov", "mpeg", "mpg", "ts", "m2t", "m2ts", "vob", "webm", "wmv", "pva", "ogg", "ogm", "m4v", "3gp"}
     Shared Property DGDecNVInput As String() = {"264", "h264", "265", "h265", "avc", "hevc", "hvc", "mkv", "mp4", "m4v", "mpg", "vob", "ts", "m2ts", "mts", "m2t", "mpv", "m2v"}
     Shared Property eac3toInput As String() = {"dts", "dtshd", "dtshr", "dtsma", "evo", "vob", "ts", "m2ts", "wav", "w64", "pcm", "raw", "flac", "ac3", "ec3", "eac3", "thd", "thd+ac3", "mlp", "mp2", "mp3", "mpa"}
+    Shared Property OpusencInput As String() = {"aif", "aiff", "flac", "ogg", "pcm", "wav", "w64"}
     Shared Property NicAudioInput As String() = {"wav", "mp2", "mpa", "mp3", "ac3", "dts"}
     Shared Property SubtitleExludingContainers As String() = {"srt", "ass", "idx", "sup", "ttxt", "ssa", "smi"}
     Shared Property SubtitleSingle As String() = {"srt", "ass", "sup", "ttxt", "ssa", "smi"}
     Shared Property SubtitleIncludingContainers As String() = {"m2ts", "mkv", "mp4", "m4v", "ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
+    Shared Property VideoComparisonInput As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
     Shared Property Video As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
     Shared Property VideoOnly As String() = {"264", "265", "avc", "gif", "h264", "h265", "hevc", "hvc", "ivf", "m2v", "mpv", "apng", "png", "y4m"}
@@ -1580,6 +1605,7 @@ Public Class FileTypes
     Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs", "vpy"}
     Shared Property VideoDemuxOutput As String() = {"avi", "mpg", "h264", "h265"}
     Shared Property Image As String() = {"bmp", "jpg", "png", "gif", "tif", "jpe", "jpeg", "psd"}
+    Shared Property DeezyInput As String() = VideoAudio.Concat(Audio).ToArray()
 
     Shared Function GetFilter(values As IEnumerable(Of String)) As String
         Return "*." + values.Join(";*.") + "|*." + values.Join(";*.") + "|All Files|*.*"
@@ -1761,6 +1787,12 @@ Public Enum MsgIcon
     [Error] = MessageBoxIcon.Error
     Warning = MessageBoxIcon.Warning
     Question = MessageBoxIcon.Question
+End Enum
+
+Public Enum TimestampsMode
+    Never
+    <DispName("VFR only")> VfrOnly
+    Always
 End Enum
 
 Public Enum DemuxMode

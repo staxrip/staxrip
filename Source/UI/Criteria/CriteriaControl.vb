@@ -6,10 +6,20 @@ Namespace UI
 
         <Browsable(False),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Property AllCrieria As List(Of Criteria)
+        Property AllCriteria As List(Of Criteria)
 
         Sub New()
             FlowDirection = FlowDirection.TopDown
+            Dock = DockStyle.Fill
+            AutoSize = False
+            AutoScroll = False
+            AutoScrollMinSize = New Size(0, 800)
+            AutoSizeMode = AutoSizeMode.GrowAndShrink
+            HorizontalScroll.Enabled = False
+            HorizontalScroll.Visible = False
+            HorizontalScroll.Maximum = 0
+            VerticalScroll.Visible = True
+            AutoScroll = True
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
@@ -33,7 +43,7 @@ Namespace UI
         End Sub
 
         Sub AddItem(criteria As Criteria)
-            Dim c As New CriteriaItemControl(AllCrieria)
+            Dim c As New CriteriaItemControl(AllCriteria)
             c.Criteria = criteria
             c.Width = ClientSize.Width
             Controls.Add(c)

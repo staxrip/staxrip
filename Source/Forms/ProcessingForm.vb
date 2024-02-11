@@ -185,7 +185,7 @@ Public Class ProcessingForm
         Me.Margin = New System.Windows.Forms.Padding(9)
         Me.Name = "ProcessingForm"
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
-        Me.Text = "StaxRip - Processing..."
+        Me.Text = $"Processing... - {g.DefaultCommands.GetApplicationDetails(True, True, False)}"
         Me.flpButtons.ResumeLayout(False)
         Me.flpButtons.PerformLayout()
         Me.tlpMain.ResumeLayout(False)
@@ -247,7 +247,7 @@ Public Class ProcessingForm
 
         CMS.Add("-")
         CMS.Add("Jobs", AddressOf JobsForm.ShowForm, Keys.F6, "Shows the Jobs dialog.")
-        CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, Keys.F7, "Shows the log file.")
+        CMS.Add("Log", AddressOf g.DefaultCommands.ShowLogFile, Keys.F8, "Shows the log file.")
         CMS.Add("-")
         CMS.Add("Help", AddressOf ShowHelp).ShortcutKeyDisplayString = "F1"
 
@@ -304,8 +304,32 @@ Public Class ProcessingForm
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
         UpdateControls()
-        ProcController.LastActivation = Environment.TickCount
+        If Not ProcController.BlockActivation Then
+            ProcController.LastActivation = Environment.TickCount
+            ProcController.BlockActivation = False
+        End If
     End Sub
+
+    Protected Overrides Sub OnShown(e As EventArgs)
+        MyBase.OnShown(e)
+    End Sub
+
+    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
+        Get
+            If ProcController.BlockActivation Then
+                'ProcController.BlockActivation = False
+
+                If s.PreventFocusStealUntil >= 0 AndAlso ProcController.SecondsSinceLastActivation <= s.PreventFocusStealUntil Then
+                    Return True
+                ElseIf s.PreventFocusStealAfter >= 0 AndAlso ProcController.SecondsSinceLastActivation >= s.PreventFocusStealAfter Then
+                    Return True
+                End If
+            End If
+
+            Return MyBase.ShowWithoutActivation
+        End Get
+    End Property
+
 
     Shared Property WasHandleCreated As Boolean
 

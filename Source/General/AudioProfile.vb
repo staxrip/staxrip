@@ -16,6 +16,7 @@ Public MustInherit Class AudioProfile
     Property Streams As List(Of AudioStream) = New List(Of AudioStream)
     Property [Default] As Boolean
     Property Forced As Boolean
+    Property Commentary As Boolean
     Property ExtractDTSCore As Boolean
     Property Decoder As AudioDecoderMode
     Property DecodingMode As AudioDecodingMode
@@ -94,6 +95,7 @@ Public MustInherit Class AudioProfile
                     Language = Stream.Language
                     Forced = Stream.Forced
                     Me.Default = Stream.Default
+                    Commentary = Stream.Commentary
 
                     If StreamName = "" AndAlso Stream.Title <> "" Then
                         StreamName = Stream.Title
@@ -393,12 +395,12 @@ Public MustInherit Class AudioProfile
         Dim ret As New List(Of AudioProfile)
 
         ret.Add(New GUIAudioProfile(AudioCodec.AAC, 50))
-        ret.Add(New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 250})
-        ret.Add(New GUIAudioProfile(AudioCodec.FLAC, 0.3))
-        ret.Add(New GUIAudioProfile(AudioCodec.Vorbis, 1))
-        ret.Add(New GUIAudioProfile(AudioCodec.MP3, 4))
         ret.Add(New GUIAudioProfile(AudioCodec.AC3, 1.0) With {.Channels = 6, .Bitrate = 640})
         ret.Add(New GUIAudioProfile(AudioCodec.EAC3, 1.0) With {.Channels = 6, .Bitrate = 640})
+        ret.Add(New GUIAudioProfile(AudioCodec.FLAC, 0.3))
+        ret.Add(New GUIAudioProfile(AudioCodec.MP3, 4))
+        ret.Add(New GUIAudioProfile(AudioCodec.Opus, 1) With {.Bitrate = 250})
+        ret.Add(New GUIAudioProfile(AudioCodec.Vorbis, 1))
         ret.Add(New BatchAudioProfile(640, {}, "ac3", 6, """%app:ffmpeg%"" -i %input% -b:a %bitrate%k -y -hide_banner %output%"))
         ret.Add(New MuxAudioProfile())
         ret.Add(New NullAudioProfile())
@@ -546,6 +548,31 @@ Public Class MuxAudioProfile
         CanEditValue = True
     End Sub
 
+    Private ChannelsValue As Integer = 0
+
+    Public Overrides Property Channels As Integer
+        Get
+            If Not Stream Is Nothing Then
+                If Stream.Channels > Stream.Channels2 Then
+                    Return Stream.Channels
+                Else
+                    Return Stream.Channels2
+                End If
+            ElseIf IO.File.Exists(File) Then
+
+                If ChannelsValue = 0 Then
+                    ChannelsValue = MediaInfo.GetChannels(File)
+                End If
+
+                Return ChannelsValue
+            Else
+                Return 6
+            End If
+        End Get
+        Set(value As Integer)
+        End Set
+    End Property
+
     Public Overrides Property OutputFileType As String
         Get
             If Stream Is Nothing Then
@@ -653,6 +680,12 @@ Public Class MuxAudioProfile
                 cb.Help = "Flaged as forced in MKV."
                 cb.Checked = Forced
                 cb.SaveAction = Sub(value) Forced = value
+
+                cb = ui.AddBool(page)
+                cb.Text = "Commentary"
+                cb.Help = "Flaged as commentary in MKV."
+                cb.Checked = Commentary
+                cb.SaveAction = Sub(value) Commentary = value
             End If
 
             cb = ui.AddBool(page)
@@ -814,15 +847,13 @@ Public Class GUIAudioProfile
                     proc.TrimChars = {"-"c, " "c}
                     proc.AddToPath(Package.NeroAAC.Directory)
                 ElseIf cl.Contains("ffmpeg") Then
-                    If cl.Contains("libfdk_aac") Then
-                        proc.Package = Package.ffmpeg_non_free
-                    Else
-                        proc.Package = Package.ffmpeg
-                    End If
-
+                    proc.Package = If(cl.Contains("libfdk_aac"), Package.ffmpeg_non_free, Package.ffmpeg)
                     proc.SkipStrings = {"frame=", "size="}
                     proc.Encoding = Encoding.UTF8
                     proc.Duration = GetDuration()
+                ElseIf cl.Contains("deezy") Then
+                    proc.Package = Package.DeeZy
+                    proc.SkipStrings = {"%"}
                 End If
 
                 proc.Start()
@@ -929,11 +960,100 @@ Public Class GUIAudioProfile
         End Set
     End Property
 
+    Function GetEncoder() As GuiAudioEncoder
+        Return GetEncoder(Params.Encoder)
+    End Function
+
+    Function GetEncoder(gae As GuiAudioEncoder) As GuiAudioEncoder
+        Select Case gae
+            Case GuiAudioEncoder.deezy
+                If {AudioCodec.AC3, AudioCodec.EAC3}.Contains(Params.Codec) Then
+                    Return GuiAudioEncoder.deezy
+                End If
+            Case GuiAudioEncoder.eac3to
+                If {AudioCodec.AAC, AudioCodec.AC3, AudioCodec.DTS, AudioCodec.FLAC, AudioCodec.W64, AudioCodec.WAV}.Contains(Params.Codec) Then
+                    Return GuiAudioEncoder.eac3to
+                End If
+            Case GuiAudioEncoder.fdkaac
+                If Params.Codec = AudioCodec.AAC Then
+                    Return GuiAudioEncoder.fdkaac
+                End If
+            Case GuiAudioEncoder.opusenc
+                If Params.Codec = AudioCodec.Opus Then
+                    Return GuiAudioEncoder.opusenc
+                End If
+            Case GuiAudioEncoder.qaac
+                If Params.Codec = AudioCodec.AAC Then
+                    Return GuiAudioEncoder.qaac
+                End If
+            Case GuiAudioEncoder.Automatic
+                If Params.Codec = AudioCodec.AAC Then
+                    Return GuiAudioEncoder.qaac
+                ElseIf Params.Codec = AudioCodec.Opus Then
+                    Return GuiAudioEncoder.opusenc
+                End If
+        End Select
+
+        Return GuiAudioEncoder.ffmpeg
+    End Function
+
+    Function GetCommandLine(includePaths As Boolean, Optional useCrcSuffix As Boolean = False) As String
+        Select Case GetEncoder()
+            Case GuiAudioEncoder.deezy
+                Return GetDeezyCommandLine(includePaths)
+            Case GuiAudioEncoder.eac3to
+                Return GetEac3toCommandLine(includePaths)
+            Case GuiAudioEncoder.fdkaac
+                Return GetfdkaacCommandLine(includePaths)
+            Case GuiAudioEncoder.opusenc
+                Return GetOpusencCommandLine(includePaths)
+            Case GuiAudioEncoder.qaac
+                Return GetQaacCommandLine(includePaths)
+            Case Else
+                Return GetffmpegCommandLine(includePaths)
+        End Select
+    End Function
+
+    Function GetDeezyCommandLine(includePaths As Boolean) As String
+        Dim sb As New StringBuilder
+        'includePaths = includePaths And File <> ""
+
+        If includePaths Then
+            sb.Append(Package.DeeZy.Path.Escape)
+        Else
+            sb.Clear()
+            sb.Append(Package.DeeZy.Filename.Base)
+        End If
+
+        Select Case Params.Codec
+            Case AudioCodec.AC3
+                sb.Append(" encode dd")
+            Case AudioCodec.EAC3
+                sb.Append(" encode ddp")
+            Case Else
+                Throw New NotImplementedException("GetDeezyCommandLine")
+        End Select
+
+        If Stream IsNot Nothing Then sb.Append($" --track-index={Stream.Index}")
+        sb.Append($" --bitrate={CInt(Bitrate)}")
+        If Delay <> 0 Then sb.Append($" --delay={Delay}ms")
+        If Params.DeezyKeeptemp Then sb.Append(" --keep-temp")
+        If Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd <> DeezyChannelsDd.Original Then sb.Append($" --channels={Params.DeezyChannelsDd.ToString().TrimStart("_"c)}")
+        If Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyChannelsDdp <> DeezyChannelsDdp.Original Then sb.Append($" --channels={Params.DeezyChannelsDdp.ToString().TrimStart("_"c)}")
+        If ((Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd = DeezyChannelsDd._2) OrElse (Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyChannelsDdp = DeezyChannelsDdp._2)) AndAlso Params.DeezyStereodownmix <> DeezyStereodownmix.Standard Then sb.Append($" --stereo-down-mix={CInt(Params.DeezyStereodownmix)}")
+        If Params.DeezyDynamicrangecompression <> DeezyDynamicrangecompression.Music_Light Then sb.Append($" --dynamic-range-compression={CInt(Params.DeezyDynamicrangecompression)}")
+        If Params.Normalize AndAlso Params.Codec = AudioCodec.EAC3 Then sb.Append(" --normalize")
+        If Params.CustomSwitches <> "" Then sb.Append(" " + Params.CustomSwitches)
+        If includePaths Then sb.Append($" --output={GetOutputFile.LongPathPrefix.Escape} {File.Escape}")
+
+        Return sb.ToString()
+    End Function
+
     Function GetEac3toCommandLine(includePaths As Boolean) As String
         Dim id = ""
         Dim sb As New StringBuilder()
 
-        If File.Ext.EqualsAny("ts", "m2ts", "mkv") AndAlso Not Stream Is Nothing Then
+        If File.Ext.EqualsAny("ts", "m2ts", "mkv") AndAlso Stream IsNot Nothing Then
             id = (Stream.StreamOrder + 1) & ": "
         End If
 
@@ -941,7 +1061,7 @@ Public Class GUIAudioProfile
             sb.Append(Package.eac3to.Path.Escape + " " + id + File.LongPathPrefix.Escape +
                 " " + GetOutputFile.LongPathPrefix.Escape)
         Else
-            sb.Append("eac3to")
+            sb.Append(Package.eac3to.Filename.Base)
         End If
 
         If Not (Params.Codec = AudioCodec.DTS AndAlso ExtractDTSCore) Then
@@ -1027,7 +1147,7 @@ Public Class GUIAudioProfile
             sb.Append(Package.fdkaac.Path.Escape)
         Else
             sb.Clear()
-            sb.Append("fdkaac")
+            sb.Append(Package.fdkaac.Filename.Base)
         End If
 
         If Params.fdkaacProfile <> 2 Then
@@ -1061,8 +1181,81 @@ Public Class GUIAudioProfile
         Return sb.ToString
     End Function
 
+    Function GetOpusencCommandLine(includePaths As Boolean) As String
+        Dim usePipe = DecodingMode = AudioDecodingMode.Pipe OrElse (Params.ChannelsMode <> ChannelsMode.Original AndAlso SupportedInput.Contains(File.Ext))
+        Dim sb As New StringBuilder
+
+        If usePipe Then
+            sb.Append(GetPipeCommandLine(includePaths))
+        End If
+
+        If includePaths Then
+            sb.Append(Package.OpusEnc.Path.Escape)
+        Else
+            sb.Clear()
+            sb.Append(Package.OpusEnc.Filename.Base)
+        End If
+
+        Select Case Params.OpusencOpusRateMode
+            Case OpusRateMode.VBR
+                sb.Append(" --vbr")
+            Case OpusRateMode.CVBR
+                sb.Append(" --cvbr")
+            Case OpusRateMode.CBR
+                sb.Append(" --hard-cbr")
+        End Select
+
+        sb.Append(" --bitrate " & CInt(Bitrate))
+
+        Select Case Params.OpusencTune
+            Case OpusTune.Music
+                sb.Append(" --music")
+            Case OpusTune.Speech
+                sb.Append(" --speech")
+        End Select
+
+        If Params.OpusencComp >= 0 AndAlso Params.OpusencComp < 10 Then
+            sb.Append(" --comp " & Params.OpusencComp)
+        End If
+
+        If Params.OpusencFramesize <> OpusFramesize._20 Then
+            sb.Append(" --framesize " & Params.OpusencFramesize.ToString().TrimStart("_"c).Replace("_", "."))
+        End If
+
+        If Params.OpusencExpectloss > 0 AndAlso Params.OpusencExpectloss <= 100 Then
+            sb.Append(" --expect-loss " & Params.OpusencExpectloss)
+        End If
+
+        Select Case Params.OpusencDownmix
+            Case OpusDownmix.Mono
+                sb.Append(" --downmix-mono")
+            Case OpusDownmix.Stereo
+                sb.Append(" --downmix-stereo")
+        End Select
+
+        If Not Params.OpusencPhaseinversion Then
+            sb.Append(" --no-phase-inv")
+        End If
+
+        If Params.OpusencMaxdelay >= 0 AndAlso Params.OpusencMaxdelay < 1000 Then
+            sb.Append(" --max-delay " & Params.OpusencMaxdelay)
+        End If
+
+        If Params.CustomSwitches <> "" Then
+            sb.Append(" " + Params.CustomSwitches)
+        End If
+
+        Dim input = If(usePipe, "-", File.Escape)
+
+        If includePaths Then
+            sb.Append(" " + input + " " + GetOutputFile.LongPathPrefix.Escape)
+        End If
+
+        Return sb.ToString()
+    End Function
+
     Function GetQaacCommandLine(includePaths As Boolean) As String
-        Dim usePipe = DecodingMode = AudioDecodingMode.Pipe OrElse ( Params.ChannelsMode <> ChannelsMode.Original AndAlso SupportedInput.Contains(File.Ext) )
+        Dim usePipe = DecodingMode = AudioDecodingMode.Pipe OrElse (Params.ChannelsMode <> ChannelsMode.Original AndAlso SupportedInput.Contains(File.Ext))
         Dim sb As New StringBuilder
         includePaths = includePaths And File <> ""
 
@@ -1074,7 +1267,7 @@ Public Class GUIAudioProfile
             sb.Append(Package.qaac.Path.Escape)
         Else
             sb.Clear()
-            sb.Append("qaac")
+            sb.Append(Package.qaac.Filename.Base)
         End If
 
         Select Case Params.qaacRateMode
@@ -1127,7 +1320,7 @@ Public Class GUIAudioProfile
         Dim input = If(usePipe, "-", File.Escape)
 
         If includePaths Then
-            sb.Append(" " + input + " -o " + GetOutputFile.Escape)
+            sb.Append(" " + input + " -o " + GetOutputFile.LongPathPrefix.Escape)
         End If
 
         Return sb.ToString
@@ -1139,7 +1332,7 @@ Public Class GUIAudioProfile
         If includePaths AndAlso File <> "" Then
             sb.Append(Package.ffmpeg.Path.Escape + " -i " + File.Escape)
         Else
-            sb.Append("ffmpeg")
+            sb.Append(Package.ffmpeg.Filename.Base)
         End If
 
         If Not Stream Is Nothing AndAlso Streams.Count > 1 Then
@@ -1187,7 +1380,7 @@ Public Class GUIAudioProfile
 
             sb.Append(" -i " + File.Escape)
         Else
-            sb.Append("ffmpeg")
+            sb.Append(pack.Filename.Base)
         End If
 
         If Not Stream Is Nothing Then
@@ -1331,7 +1524,7 @@ Public Class GUIAudioProfile
     End Function
 
     Function SupportsNormalize() As Boolean
-        Return GetEncoder() = GuiAudioEncoder.eac3to OrElse GetEncoder() = GuiAudioEncoder.qaac
+        Return (GetEncoder() = GuiAudioEncoder.deezy AndAlso Params.Codec = AudioCodec.EAC3) OrElse GetEncoder() = GuiAudioEncoder.eac3to OrElse GetEncoder() = GuiAudioEncoder.qaac
     End Function
 
     Public Overrides ReadOnly Property DefaultName As String
@@ -1398,64 +1591,30 @@ Public Class GUIAudioProfile
         End If
     End Function
 
-    Function GetEncoder() As GuiAudioEncoder
-        Select Case Params.Encoder
+    Function GetSupportedInput(gap As GuiAudioEncoder) As String()
+        Select Case gap
+            Case GuiAudioEncoder.deezy
+                Return FileTypes.DeezyInput
             Case GuiAudioEncoder.eac3to
-                If {AudioCodec.AAC, AudioCodec.AC3, AudioCodec.FLAC, AudioCodec.DTS,
-                    AudioCodec.W64, AudioCodec.WAV}.Contains(Params.Codec) Then
-
-                    Return GuiAudioEncoder.eac3to
-                End If
+                Return FileTypes.eac3toInput
+            Case GuiAudioEncoder.opusenc
+                Return FileTypes.OpusencInput
             Case GuiAudioEncoder.qaac
-                If Params.Codec = AudioCodec.AAC Then
-                    Return GuiAudioEncoder.qaac
+                If DecodingMode <> AudioDecodingMode.Pipe Then
+                    Return If(p.Ranges.Count > 0, {"wav", "w64"}, {"wav", "flac", "w64"})
                 End If
             Case GuiAudioEncoder.fdkaac
-                If Params.Codec = AudioCodec.AAC Then
-                    Return GuiAudioEncoder.fdkaac
-                End If
-            Case GuiAudioEncoder.Automatic
-                If Params.Codec = AudioCodec.AAC Then
-                    Return GuiAudioEncoder.qaac
+                If DecodingMode <> AudioDecodingMode.Pipe Then
+                    Return {"wav"}
                 End If
         End Select
 
-        Return GuiAudioEncoder.ffmpeg
-    End Function
-
-    Function GetCommandLine(includePaths As Boolean, Optional useCrcSuffix As Boolean = False) As String
-        Select Case GetEncoder()
-            Case GuiAudioEncoder.eac3to
-                Return GetEac3toCommandLine(includePaths)
-            Case GuiAudioEncoder.qaac
-                Return GetQaacCommandLine(includePaths)
-            Case GuiAudioEncoder.fdkaac
-                Return GetfdkaacCommandLine(includePaths)
-            Case Else
-                Return GetffmpegCommandLine(includePaths)
-        End Select
+        Return {}
     End Function
 
     Overrides Property SupportedInput As String()
         Get
-            Select Case GetEncoder()
-                Case GuiAudioEncoder.eac3to
-                    Return FileTypes.eac3toInput
-                Case GuiAudioEncoder.qaac
-                    If DecodingMode <> AudioDecodingMode.Pipe Then
-                        If p.Ranges.Count > 0 Then
-                            Return {"wav", "w64"}
-                        Else
-                            Return {"wav", "flac", "w64"}
-                        End If
-                    End If
-                Case GuiAudioEncoder.fdkaac
-                    If DecodingMode <> AudioDecodingMode.Pipe Then
-                        Return {"wav"}
-                    End If
-            End Select
-
-            Return {}
+            Return GetSupportedInput(GetEncoder())
         End Get
         Set(value As String())
         End Set
@@ -1478,6 +1637,21 @@ Public Class GUIAudioProfile
 
         Property Migrate1 As Boolean = True
         Property MigrateffNormalizeMode As Boolean = True
+
+        Property DeezyKeeptemp As Boolean = False
+        Property DeezyChannelsDd As DeezyChannelsDd = DeezyChannelsDd.Original
+        Property DeezyChannelsDdp As DeezyChannelsDdp = DeezyChannelsDdp.Original
+        Property DeezyStereodownmix As DeezyStereodownmix = DeezyStereodownmix.Standard
+        Property DeezyDynamicrangecompression As DeezyDynamicrangecompression = DeezyDynamicrangecompression.Music_Light
+
+        Property OpusencOpusRateMode As OpusRateMode = OpusRateMode.VBR
+        Property OpusencTune As OpusTune = OpusTune.Auto
+        Property OpusencComp As Integer = 10
+        Property OpusencFramesize As OpusFramesize = OpusencFramesize._20
+        Property OpusencExpectloss As Integer = 0
+        Property OpusencDownmix As OpusDownmix = OpusDownmix.Original
+        Property OpusencPhaseinversion As Boolean = True
+        Property OpusencMaxdelay As Integer = 1000
 
         Property qaacHE As Boolean
         Property qaacLowpass As Integer
@@ -1599,6 +1773,7 @@ End Class
 Public Enum AudioCodec
     AAC
     AC3
+    EAC3
     DTS
     FLAC
     MP3
@@ -1606,7 +1781,6 @@ Public Enum AudioCodec
     Vorbis
     W64
     WAV
-    EAC3
     None
 End Enum
 
@@ -1616,10 +1790,59 @@ Public Enum AudioRateMode
     VBR
 End Enum
 
+Public Enum DeezyChannelsDd
+    <DispName("Original (default)")> Original
+    <DispName("Mono")> _1
+    <DispName("Stereo")> _2
+    <DispName("Surround (5.1)")> _6
+End Enum
+
+Public Enum DeezyChannelsDdp
+    <DispName("Original (default)")> Original
+    <DispName("Mono")> _1
+    <DispName("Stereo")> _2
+    <DispName("Surround (5.1)")> _6
+    <DispName("SurroundEX (7.1)")> _8
+End Enum
+
+Public Enum DeezyStereodownmix
+    <DispName("Standard (default)")> Standard
+    <DispName("DPLII")> DPLII
+End Enum
+
+Public Enum DeezyDynamicrangecompression
+    <DispName("Film Standard")> Film_Standard
+    <DispName("Film Light")> Film_Light
+    <DispName("Music Standard")> Music_Standard
+    <DispName("Music Light (default)")> Music_Light
+    <DispName("Speech")> Speech
+End Enum
+
+Public Enum OpusDownmix
+    <DispName("Original (default)")> Original
+    <DispName("Mono")> Mono
+    <DispName("Stereo")> Stereo
+End Enum
+
+Public Enum OpusFramesize
+    <DispName("2.5")> _2_5
+    <DispName("5")> _5
+    <DispName("10")> _10
+    <DispName("20 (default)")> _20
+    <DispName("40")> _40
+    <DispName("60")> _60
+End Enum
+
 Public Enum OpusRateMode
-    CBR
-    VBR
-    CVBR
+    <DispName("VBR (default)")> VBR
+    <DispName("CVBR")> CVBR
+    <DispName("CBR")> CBR
+End Enum
+
+Public Enum OpusTune
+    <DispName("Automatic (default)")> Auto
+    <DispName("Music")> Music
+    <DispName("Speech")> Speech
 End Enum
 
 Public Enum OpusApp
@@ -1642,10 +1865,12 @@ End Enum
 
 Public Enum GuiAudioEncoder
     Automatic
+    deezy
     eac3to
-    ffmpeg
-    qaac
     fdkaac
+    ffmpeg
+    opusenc
+    qaac
 End Enum
 
 Public Enum AudioFrameRateMode

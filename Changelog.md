@@ -24,6 +24,8 @@ v2.36.0 (not published yet)
 - UI: Add new event "While Processing" which is called once every percent of progress on video encoders ([#1197](/../../issues/1197))
 - UI: Add new macros that are currently only supported by the new "While Processing" event 
     - %commandline%, %progress%, %progressline%
+- UI: Add new macros 
+    - %jobs%, %jobs_active%
 - NVEncC: Add support for Dolby Vision metadata handling
 - QSVEncC: Add support for Dolby Vision metadata handling
 - VCEEncC: Add support for Dolby Vision metadata handling

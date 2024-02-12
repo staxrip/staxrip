@@ -176,6 +176,8 @@ Public Class Macro
         ret.Add(New Macro("encoder_profile", "Encoder Profile", GetType(String), "Name of the selected video encoder profile name."))
         ret.Add(New Macro("encoder_settings", "Encoder Settings", GetType(String), "Settings of the active video encoder."))
         ret.Add(New Macro("muxer_ext", "Muxer Extension", GetType(String), "Output extension of the active muxer."))
+        ret.Add(New Macro("jobs", "Jobs", GetType(String), "Number of all jobs in Jobs List."))
+        ret.Add(New Macro("jobs_active", "Active Jobs", GetType(String), "Number of active jobs in Jobs List."))
         ret.Add(New Macro("player", "Player", GetType(Integer), "Path of the media player."))
         ret.Add(New Macro("plugin_dir", "Plugin Directory", GetType(String), "AviSynth/VapourSynth plugin auto load directory."))
         ret.Add(New Macro("pos_frame", "Position In Frames", GetType(Integer), "Current preview position in frames."))
@@ -562,8 +564,15 @@ Public Class Macro
             Dim par = Calc.GetSourcePAR
             value = value.Replace("%source_par_x%", par.X.ToString)
         End If
-
         If Not value.Contains("%") Then Return value
+
+        Dim jobs = JobManager.GetJobs()
+        If value.Contains("%jobs%") Then value = value.Replace("%jobs%", jobs?.Count.ToString())
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%jobs_active%") Then value = value.Replace("%jobs_active%", jobs?.Where(Function(x) x.Active).Count().ToString())
+        If Not value.Contains("%") Then Return value
+
 
         If value.Contains("%source_par_y%") Then
             Dim par = Calc.GetSourcePAR

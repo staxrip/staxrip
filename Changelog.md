@@ -14,7 +14,20 @@ v2.3x.0 (not published yet)
 -->
 
 
-v2.36.0 (not published yet)
+v2.37.0 (not published yet)
+====================
+
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
+v2.36.0 (2024-02-23)
 ====================
 
 - UI: "Import VUI metadata" doesn't override Dolby Vision profile depending on selected mode ([#1212](/../../issues/1212))
@@ -49,8 +62,6 @@ v2.36.0 (not published yet)
     - Python v3.11.7
     - QSVEncC v7.61
     - vvencFFapp v1.11.0
-- Update AviSynth+ plugins
-    - ...
 - Update Dual plugins
     - ffms2 v3.0.1.0 1357+34 r1391 4fbfa13ea1 StvG
 - Update VapourSynth plugins

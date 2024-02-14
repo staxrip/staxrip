@@ -48,6 +48,7 @@ v2.37.0 (not published yet)
 - UI: Enhance Auto Crop for Dolby Vision sources
 - UI: Improve handling with Dolby Vision videos and manual cropping
 - UI: Improve Dolby Vision metadata handling
+- UI: Enhance "Frame Mismatch" error message
 - Update tools
     - ...
 - Update AviSynth+ plugins

@@ -447,7 +447,7 @@ Public Class GlobalClass
                 If hasFrames <> shouldFrames Then
                     Log.WriteHeader("Frame Mismatch")
                     Log.WriteLine($"WARNING: Target file has {hasFrames} frames, but should have {shouldFrames} frames!")
-                    Log.WriteLine($"Encoding was probably terminated at {hasFrames / shouldFrames * 100:0.0}%!")
+                    Log.WriteLine($"Encoding was probably terminated at {hasFrames / shouldFrames * 100:0.0}% with a mismatch of {shouldFrames - hasFrames} frames!")
                     If hasFrames > -1 AndAlso p.AbortOnFrameMismatch Then Throw New ErrorAbortException("Frame Mismatch", $"Target file has {hasFrames} frames, but should have {shouldFrames} frames!", p)
                 End If
             End If

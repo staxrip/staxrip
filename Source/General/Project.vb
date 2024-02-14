@@ -22,6 +22,7 @@ Public Class Project
     Public AutoCorrectCropValues As Boolean = True
     Public AutoCropDolbyVisionThresholdBegin As Integer = 0
     Public AutoCropDolbyVisionThresholdEnd As Integer = 0
+    Public AutoCropDolbyVisionMode As AutoCropDolbyVisionMode = AutoCropDolbyVisionMode.Automatic
     Public AutoCropMode As AutoCropMode = AutoCropMode.DolbyVisionOnly
     Public AutoResizeImage As Integer
     Public AutoRotation As Boolean = True

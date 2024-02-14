@@ -1822,6 +1822,11 @@ Public Enum AutoCropMode
     <DispName("Always")> Always = 2
 End Enum
 
+Public Enum AutoCropDolbyVisionMode
+    <DispName("Automatic")> Automatic = 0
+    <DispName("Manual Threshold")> ManualThreshold = 1
+End Enum
+
 <Serializable>
 Public Class DolbyVisionMetadataFile
     Public ReadOnly Property Path As String = Nothing
@@ -1849,7 +1854,14 @@ Public Class DolbyVisionMetadataFile
 
     Public ReadOnly Property Crop As Padding
         Get
-            Return GetCrop(p.AutoCropDolbyVisionThresholdBegin, p.AutoCropDolbyVisionThresholdEnd)
+            Select Case p.AutoCropDolbyVisionMode
+                Case AutoCropDolbyVisionMode.Automatic
+                    Return GetAutoCrop(750, 750)
+                Case AutoCropDolbyVisionMode.ManualThreshold
+                    Return GetCrop(p.AutoCropDolbyVisionThresholdBegin, p.AutoCropDolbyVisionThresholdEnd)
+                Case Else
+                    Throw New NotImplementedException(NameOf(AutoCropDolbyVisionMode))
+            End Select
         End Get
     End Property
 
@@ -1863,6 +1875,43 @@ Public Class DolbyVisionMetadataFile
         WriteLevel5Export(False)
         ReadLevel5Export()
     End Sub
+
+    Public Function GetAutoCrop() As Padding
+        Return GetAutoCrop()
+    End Function
+
+    Public Function GetAutoCrop(thresholdBegin As Integer, thresholdEnd As Integer) As Padding
+        thresholdBegin = Math.Max(0, thresholdBegin)
+        thresholdEnd = Math.Max(0, thresholdEnd)
+
+        If Not Edits?.Any() Then Return New Padding(0)
+        If Not Presets?.Any() Then Return New Padding(0)
+
+        Dim newCrop As New Padding(Integer.MaxValue)
+        Dim entries = Edits.Join(Presets, Function(edit) edit.Id, Function(preset) preset.Id, Function(edit, preset) New With {edit.StartFrame, edit.EndFrame, edit.Id, preset.Offset}).OrderBy(Function(x) x.StartFrame)
+
+        For i = 0 To entries.Count() - 1
+            Dim entry = entries.ElementAt(i)
+            Dim same = entries.Where(Function(x) x.Id = entry.Id).Count()
+            Dim take = True
+
+            take = If(take AndAlso i = 0 AndAlso same = 1 AndAlso entry.Offset = Padding.Empty AndAlso entry.EndFrame < thresholdBegin, False, take)
+            take = If(take AndAlso i = entries.Count() - 1 AndAlso same = 1 AndAlso entry.Offset = Padding.Empty AndAlso entry.StartFrame > entry.EndFrame - thresholdEnd, False, take)
+
+            If take Then
+                newCrop.Left = Math.Min(newCrop.Left, entry.Offset.Left)
+                newCrop.Top = Math.Min(newCrop.Top, entry.Offset.Top)
+                newCrop.Right = Math.Min(newCrop.Right, entry.Offset.Right)
+                newCrop.Bottom = Math.Min(newCrop.Bottom, entry.Offset.Bottom)
+            End If
+        Next
+
+        Return newCrop
+    End Function
+
+    Public Function GetCrop() As Padding
+        Return GetCrop(0, 0)
+    End Function
 
     Public Function GetCrop(thresholdBegin As Integer, thresholdEnd As Integer) As Padding
         thresholdBegin = Math.Max(0, thresholdBegin)

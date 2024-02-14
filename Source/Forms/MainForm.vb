@@ -4790,7 +4790,8 @@ Public Class MainForm
 
             ui.AddLine(cropPage, "Crop Values")
 
-            Dim autoCrop = ui.AddMenu(Of AutoCropMode)
+            Dim autoCropMode = ui.AddMenu(Of AutoCropMode)
+            Dim autoCropDVMode = ui.AddMenu(Of AutoCropDolbyVisionMode)
 
             Dim l = ui.AddLabel("Dolby Vision AutoCrop Threshold at:")
             Dim eb = ui.AddEmptyBlock(cropPage)
@@ -4814,10 +4815,32 @@ Public Class MainForm
             Dim bottomCrop = ui.AddNumeric(eb)
 
 
-            autoCrop.Text = "Auto Crop after opening"
-            autoCrop.Help = "Use Auto Crop when a file is opened to crop it directly."
-            autoCrop.Expanded = True
-            autoCrop.Field = NameOf(p.AutoCropMode)
+            autoCropMode.Text = "Auto Crop after opening"
+            autoCropMode.Help = "Use Auto Crop when a file is opened to crop it directly."
+            autoCropMode.Expanded = True
+            autoCropMode.Field = NameOf(p.AutoCropMode)
+            autoCropMode.Button.ValueChangedAction = Sub(value)
+                                                         Dim active = value = StaxRip.AutoCropMode.DolbyVisionOnly OrElse value = StaxRip.AutoCropMode.Always
+                                                         autoCropDVMode.Enabled = active
+                                                         doviThresholdBegin.Enabled = active AndAlso autoCropDVMode.Button.Value = AutoCropDolbyVisionMode.ManualThreshold
+                                                         doviThresholdEnd.Enabled = doviThresholdBegin.Enabled
+                                                         leftCrop.Enabled = Not active
+                                                         topCrop.Enabled = Not active
+                                                         rightCrop.Enabled = Not active
+                                                         bottomCrop.Enabled = Not active
+                                                     End Sub
+            autoCropMode.Button.ValueChangedAction.Invoke(p.AutoCropMode)
+
+            autoCropDVMode.Text = "Dolby Vision Auto Crop Mode"
+            autoCropDVMode.Help = "Decide between an automatic mode and a manual threshold."
+            autoCropDVMode.Expanded = True
+            autoCropDVMode.Field = NameOf(p.AutoCropDolbyVisionMode)
+            autoCropDVMode.Button.ValueChangedAction = Sub(value)
+                                                           Dim active = value = AutoCropDolbyVisionMode.ManualThreshold
+                                                           doviThresholdBegin.Enabled = active
+                                                           doviThresholdEnd.Enabled = active
+                                                       End Sub
+            autoCropDVMode.Button.ValueChangedAction.Invoke(p.AutoCropDolbyVisionMode)
 
             doviThresholdBegin.Help = "Number of frames at the beginning of the video, that are ignored when setting the crop values."
             doviThresholdBegin.Config = {0, 999999, 25, 0}

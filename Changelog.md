@@ -1,5 +1,5 @@
 <!--
-v2.3x.0 (not published yet)
+v2.4x.0 (not published yet)
 ====================
 
 - ...
@@ -14,9 +14,39 @@ v2.3x.0 (not published yet)
 -->
 
 
+v2.39.0 (not published yet)
+====================
+
+- ...
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
+v2.38.0 (not published yet)
+====================
+
+- ...
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
 v2.37.0 (not published yet)
 ====================
 
+- UI: Enhance Auto Crop for Dolby Vision sources
+- UI: Improve handling with Dolby Vision videos and manual cropping
 - Update tools
     - ...
 - Update AviSynth+ plugins

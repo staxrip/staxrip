@@ -442,13 +442,21 @@ Public Class GlobalClass
             Log.WriteStats(startTime)
 
             If FileTypes.Video.Contains(p.TargetFile.Ext()) Then
+                Dim isCuttedRemux = TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges?.Any()
                 Dim hasFrames = MediaInfo.GetVideo(p.TargetFile, "FrameCount").ToInt(-1)
                 Dim shouldFrames = p.TargetFrames
                 If hasFrames <> shouldFrames Then
                     Log.WriteHeader("Frame Mismatch")
                     Log.WriteLine($"WARNING: Target file has {hasFrames} frames, but should have {shouldFrames} frames!")
-                    Log.WriteLine($"Encoding was probably terminated at {hasFrames / shouldFrames * 100:0.0}% with a mismatch of {shouldFrames - hasFrames} frames!")
-                    If hasFrames > -1 AndAlso p.AbortOnFrameMismatch Then Throw New ErrorAbortException("Frame Mismatch", $"Target file has {hasFrames} frames, but should have {shouldFrames} frames!", p)
+                    If isCuttedRemux Then
+                        Log.WriteLine($"There is a mismatch of {shouldFrames - hasFrames} frames!")
+                    Else
+                        Log.WriteLine($"Encoding was probably terminated at {hasFrames / shouldFrames * 100:0.0}% with a mismatch of {shouldFrames - hasFrames} frames!")
+                    End If
+
+                    If hasFrames > -1 AndAlso p.AbortOnFrameMismatch AndAlso Not isCuttedRemux Then
+                        Throw New ErrorAbortException("Frame Mismatch", $"Target file has {hasFrames} frames, but should have {shouldFrames} frames!", p)
+                    End If
                 End If
             End If
 

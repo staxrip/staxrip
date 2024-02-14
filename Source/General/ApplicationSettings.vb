@@ -41,6 +41,7 @@ Public Class ApplicationSettings
     Public EnableTooltips As Boolean
     Public ErrorMessageExtendedByErr As Boolean = False
     Public EventCommands As List(Of EventCommand)
+    Public EventWhileProcessingCooldown As Integer = 60
     Public ExpandPreviewWindow As Boolean = True
     Public ApplicationExitMode As ApplicationExitMode = ApplicationExitMode.Regular
     Public FilterSetupProfiles As List(Of TargetVideoScript)

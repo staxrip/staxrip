@@ -830,7 +830,7 @@ Public Class Macro
         If value.Contains("%commandline%") Then value = value.Replace("%commandline%", commandline.Trim().Escape())
 
         If Not value.Contains("%") Then Return value
-        If value.Contains("%progress%") Then value = value.Replace("%progress%", Fix(progress).ToInvariantString("0"))
+        If value.Contains("%progress%") Then value = value.Replace("%progress%", progress.ToInvariantString("0.0"))
 
         If Not value.Contains("%") Then Return value
         If value.Contains("%progressline%") Then value = value.Replace("%progressline%", progressline.Trim())

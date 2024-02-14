@@ -19,6 +19,7 @@ Public Class ProcController
     Private _projectScriptFrameRate As Double = -1.0
     Private _lastHighlightedText As String = ""
     Private _triggerWhileProcessing As Boolean = False
+    Private _lastTriggerWhileProcessing As Date = Date.Now
 
     Property Proc As Proc
     Property LogTextBox As New RichTextBoxEx
@@ -479,8 +480,11 @@ Public Class ProcController
             ProgressBar.Value = progress
 
             If _triggerWhileProcessing Then
-                Dim eventProgress = Fix(progress)
-                If eventProgress > Fix(LastProgress) AndAlso eventProgress < 100.0F Then
+                Dim eventProgress = Fix(progress * 10) / 10
+                Dim eventLastProgress = Fix(LastProgress * 10) / 10
+                Dim now = Date.Now
+                If eventProgress > eventLastProgress AndAlso eventProgress < 100.0F AndAlso _lastTriggerWhileProcessing < now.AddSeconds(-s.EventWhileProcessingCooldown) Then
+                    _lastTriggerWhileProcessing = Date.Now
                     Task.Run(Sub() g.RaiseAppEvent(ApplicationEvent.WhileProcessing, Proc.CommandLine, eventProgress, value))
                 End If
             End If

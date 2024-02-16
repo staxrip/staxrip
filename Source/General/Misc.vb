@@ -1929,13 +1929,16 @@ Public Class DolbyVisionMetadataFile
         If Not overwrite AndAlso Level5JsonFilePath.FileExists() Then Return
 
         Try
-            Dim arguments = $"export --data ""level5={Level5JsonFilePath}"" -i ""{Path}"""
+            Dim pd = Path.Dir
+            Dim l5 = Level5JsonFilePath.Replace(pd, "." & IO.Path.DirectorySeparatorChar)
+            Dim arguments = $"export --data ""level5={l5}"" -i ""{Path}"""
             Using proc As New Proc
                 proc.Package = Package.DoViTool
                 proc.Project = p
                 proc.Header = "Extract Level5 data from RPU metadata file"
                 proc.Encoding = Encoding.UTF8
                 proc.Arguments = arguments
+                proc.WorkingDirectory = pd
                 proc.AllowedExitCodes = {0}
                 proc.OutputFiles = {Level5JsonFilePath}
                 proc.Start()

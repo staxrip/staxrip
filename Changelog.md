@@ -22,6 +22,7 @@ v2.36.0 (not published yet)
 - UI: Fix Crop bug that caused unnecessary and sometimes wrong cropping
 - UI: Set "Output Mod" default value to 2 (inspired by the poll on Discord)
 - UI: Improve handling/finding with metadata files
+- UI: Fix issue with dovi_tool not being able to handle paths with comma ([#1238](/../../issues/1238))
 - UI: Add threshold for cropping Dolby Vision videos based on metadata
 - UI: Split command "ShowHardcodedSubtitleDialog" into "[..]DialogFromLastSourceDir" and "[..]DialogFromTempDir" ([#1199](/../../issues/1199))
 - UI: Add new event "While Processing" which is called once every percent of progress on video encoders ([#1197](/../../issues/1197))

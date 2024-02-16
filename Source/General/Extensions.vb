@@ -280,8 +280,8 @@ Module StringExtensions
     Function Dir(instance As String) As String
         If instance = "" Then Return ""
 
-        If instance.Contains("\") Then
-            instance = instance.LeftLast("\") + "\"
+        If instance.Contains(Path.DirectorySeparatorChar) Then
+            instance = instance.LeftLast(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar
         End If
 
         Return instance

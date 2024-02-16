@@ -4332,6 +4332,14 @@ Public Class MainForm
         p.VideoEncoder.RunCompCheck()
     End Sub
 
+    <Command("Launches a new instance of StaxRip")>
+    Sub StartNewInstance()
+        Using p As New Process()
+            p.StartInfo.FileName = Application.ExecutablePath
+            p.Start()
+        End Using
+    End Sub
+
     <Command("Exits StaxRip")>
     Sub [Exit]()
         Close()
@@ -5633,6 +5641,10 @@ Public Class MainForm
         ret.Add("File|-")
         ret.Add("File|Project Templates", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
         ret.Add("File|Recent Projects", NameOf(g.DefaultCommands.DynamicMenuItem), {DynamicMenuItemID.RecentProjects})
+        ret.Add("File|-")
+        ret.Add("File|Launch New Instance", NameOf(StartNewInstance), Keys.N Or Keys.Control)
+        ret.Add("File|-")
+        ret.Add("File|Exit", NameOf([Exit]), Keys.X Or Keys.Alt)
 
         ret.Add("Crop", NameOf(ShowCropDialog), Keys.F3, Symbol.fa_scissors)
         ret.Add("Preview", NameOf(ShowPreview), Keys.F4, Symbol.fa_eye)
@@ -5706,8 +5718,16 @@ Public Class MainForm
         ret.Add("Help|-")
         ret.Add("Help|Website", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Globe, {"https://github.com/staxrip/staxrip"})
         ret.Add("Help|Documentation", NameOf(g.DefaultCommands.ExecuteCommandLine), Keys.F1, Symbol.Help, {"https://github.com/staxrip/staxrip/wiki"})
-        ret.Add("Help|Check for Updates", NameOf(g.DefaultCommands.CheckForUpdate))
+        ret.Add("Help|Changelog", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Bookmarks, {"https://github.com/staxrip/staxrip/blob/master/Changelog.md"})
+        ret.Add("Help|Support", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Heart, {"https://github.com/staxrip/staxrip?tab=readme-ov-file#contribution--support"})
         ret.Add("Help|-")
+        ret.Add("Help|Report an issue", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.fa_bug, {"https://github.com/staxrip/staxrip/issues/new/choose"})
+        ret.Add("Help|-")
+        ret.Add("Help|Discord Server", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.People, {"https://discord.gg/uz8pVR79Bd"})
+        ret.Add("Help|-")
+        ret.Add("Help|Check for Updates", NameOf(g.DefaultCommands.CheckForUpdate), Symbol.fa_recycle)
+        ret.Add("Help|-")
+        ret.Add("Help|What's new...", NameOf(ShowChangelog), Symbol.Shield, {True})
         ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})
 
         Return ret

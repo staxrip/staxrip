@@ -14,6 +14,26 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.38.0 (not published yet)
+====================
+
+- UI: Add "Changelog" to Main Menu
+- UI: Add "Discord Server" to Main Menu
+- UI: Add "Exit" to Main Menu
+- UI: Add "Launch new instance" to Main Menu
+- UI: Add "Report an issue" to Main Menu
+- UI: Add "Support" to Main Menu
+- UI: Add "What's new" to Main Menu
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
 v2.37.6 (2024-04-12)
 ====================
 

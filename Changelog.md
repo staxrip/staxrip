@@ -18,6 +18,7 @@ v2.37.2 (not published yet)
 ====================
 
 - UI: Extend Crop window with Time information ([#1274](/../../issues/1274))
+- UI: Update and extend Show Changelog
 
 
 v2.37.1 (2024-03-18)

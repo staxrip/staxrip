@@ -7104,7 +7104,7 @@ Public Class MainForm
         IsLoading = False
         Refresh()
         CheckForWindows7()
-        ShowChangelog()
+        ShowChangelog(False)
         ProcessCommandLine(Environment.CommandLine)
         StaxRipUpdate.ShowUpdateQuestion()
         StaxRipUpdate.CheckForUpdateAsync(False, Environment.Is64BitProcess)
@@ -7205,23 +7205,38 @@ Public Class MainForm
         s.ShowWindows7Warning = False
     End Sub
 
-    Sub ShowChangelog()
-        If Assembly.GetExecutingAssembly.GetName.Version.Build <> 0 Then Exit Sub
-
+    <Command("Shows the latest changes.")>
+    Sub ShowChangelog(force As Boolean)
         Dim appDetails = g.DefaultCommands.GetApplicationDetails()
-        If s.ShowChangelog = appDetails Then Exit Sub
+        Dim version = Assembly.GetExecutingAssembly.GetName.Version
+        If Not force AndAlso s.ShowChangelog = appDetails Then Exit Sub
 
         Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StaxRip.Changelog.md")
             Using reader As New StreamReader(stream)
                 Dim sb As New StringBuilder()
                 Dim relevant = False
+                Dim isUpdate = False
+                Dim skipUpdates = False
 
                 Do While Not reader.EndOfStream
                     Dim line = reader.ReadLine()
-
                     If line Like "========*" Then Continue Do
-                    If Regex.IsMatch(line, "v\d\.\d\d\.?\d*\W+\(20\d\d-\d\d-\d\d\).*") Then
-                        If relevant Then Exit Do
+
+                    Dim match = Regex.Match(line, "(v\d\.(\d+)\.?\d*)\W+\(20\d\d-\d\d-\d\d\).*")
+                    If match.Success Then
+                        If relevant Then
+                            If match.Groups(2).Value.ToInt() = version.Minor Then
+                                skipUpdates = True
+                                sb.AppendLine()
+                                sb.AppendLine(line)
+                                sb.AppendLine("-------------------------")
+                                Continue Do
+                            Else
+                                Exit Do
+                            End If
+                        End If
+
+                        If Not match.Groups(1).Value.StartsWithEx(g.DefaultCommands.GetApplicationDetails(False, True, False)) Then Continue Do
 
                         relevant = True
                         Continue Do
@@ -7229,15 +7244,20 @@ Public Class MainForm
 
                     If Not relevant Then Continue Do
                     If String.IsNullOrWhiteSpace(line) Then Continue Do
+                    If Not isUpdate AndAlso line.StartsWithEx("- Update ") Then
+                        sb.AppendLine("---- Tool and Plugin updates are not shown! ----")
+                        isUpdate = True
+                    End If
+                    If isUpdate AndAlso skipUpdates Then Continue Do
 
-                    line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)$)", "", RegexOptions.CultureInvariant)
+                    line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)(?>,|$))", "", RegexOptions.CultureInvariant)
                     line = Regex.Replace(line, "(?<=^| ) (?= |-)", "  ", RegexOptions.CultureInvariant)
                     sb.AppendLine(line)
                 Loop
 
                 If Not String.IsNullOrWhiteSpace(sb.ToString()) Then
                     Using td As New TaskDialog(Of String)()
-                        td.Title = $"What's new in {g.DefaultCommands.GetApplicationDetails()}:"
+                        td.Title = $"What's new in {appDetails}:"
                         td.Icon = TaskIcon.Shield
                         td.Content = sb.ToString() + BR
 

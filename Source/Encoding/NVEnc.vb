@@ -760,10 +760,6 @@ Public Class NVEnc
                         SmoothQP,
                         SmoothPrec)
                     Add("VPP | Misc 3",
-                        DenoiseDct,
-                        DenoiseDctStep,
-                        DenoiseDctSigma,
-                        DenoiseDctBlockSize,
                         TransformFlipX,
                         TransformFlipY,
                         TransformTranspose,
@@ -824,8 +820,10 @@ Public Class NVEnc
                         Knn, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
                         Convolution, ConvolutionMatrix, ConvolutionFast, ConvolutionYthresh, ConvolutionCthresh, ConvolutionTYthresh, ConvolutionTCthresh,
                         Pmd, PmdApplyCount, PmdStrength, PmdThreshold)
-                    Add("VPP | Sharpness",
+                    Add("VPP | Denoise 2",
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
+                        DenoiseDct, DenoiseDctStep, DenoiseDctSigma, DenoiseDctBlockSize)
+                    Add("VPP | Sharpness",
                         Edgelevel, EdgelevelStrength, EdgelevelThreshold, EdgelevelBlack, EdgelevelWhite,
                         Unsharp, UnsharpRadius, UnsharpWeight, UnsharpThreshold,
                         Warpsharp, WarpsharpThreshold, WarpsharpBlur, WarpsharpType, WarpsharpDepth, WarpsharpChroma)

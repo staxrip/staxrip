@@ -1215,8 +1215,8 @@ Public Class NVEnc
             If Resize.Value Then
                 Dim ret = ""
                 If ResizeAlgo.Value <> ResizeAlgo.DefaultValue Then ret += ",algo=" & ResizeAlgo.ValueText.ToInvariantString
-                If ResizeSuperresMode.Value <> ResizeSuperresMode.DefaultValue AndAlso ResizeAlgo.Value = 13 Then ret += ",superres-mode=" & ResizeSuperresMode.Value.ToInvariantString
-                If ResizeSuperresStrength.Value <> ResizeSuperresStrength.DefaultValue AndAlso ResizeAlgo.Value = 13 Then ret += ",superres-strength=" & ResizeSuperresStrength.Value.ToInvariantString
+                If ResizeSuperresMode.Value <> ResizeSuperresMode.DefaultValue AndAlso ResizeSuperresMode.Visible Then ret += ",superres-mode=" & ResizeSuperresMode.Value.ToInvariantString
+                If ResizeSuperresStrength.Value <> ResizeSuperresStrength.DefaultValue AndAlso ResizeSuperresStrength.Visible Then ret += ",superres-strength=" & ResizeSuperresStrength.Value.ToInvariantString
                 Return "--vpp-resize " + ret.TrimStart(","c)
             End If
             Return ""

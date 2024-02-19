@@ -631,9 +631,15 @@ Public Class NVEnc
         Property SelectEveryOffsets As New StringParam With {.Text = "      Offsets", .HelpSwitch = "--vpp-select-every", .Expand = False}
 
         Property Resize As New BoolParam With {.Text = "Resize", .Switches = {"--vpp-resize"}, .ArgsFunc = AddressOf GetResizeArgs}
-        Property ResizeAlgo As New OptionParam With {.Text = "      Algo", .HelpSwitch = "--vpp-resize", .Init = 0, .IntegerValue = False, .Options = {"Auto", "bilinear	 - linear interpolation", "bicubic - bicubic interpolation", "spline16 - 4x4 spline curve interpolation", "spline36 - 6x6 spline curve interpolation", "spline64 - 8x8 spline curve interpolation", "lanczos2 - 4x4 Lanczos resampling", "lanczos3 - 6x6 Lanczos resampling", "lanczos4 - 8x8 Lanczos resampling", "nn - nearest neighbor", "npp_linear - linear interpolation by NPP library", "cubic - 4x4 cubic interpolation", "super - So called 'super sampling' by NPP library (downscale only)", "lanczos - Lanczos interpolation", "nvvfx-superres - Super Resolution based on nvvfx library (upscale only)"}, .Values = {"auto", "bilinear", "bicubic", "spline16", "spline36", "spline64", "lanczos2", "lanczos3", "lanczos4", "nn", "npp_linear", "cubic", "super", "lanczos", "nvvfx-superres"}}
+        Property ResizeAlgo As New OptionParam With {.Text = "      Algo", .HelpSwitch = "--vpp-resize", .Init = 0, .IntegerValue = False, .Options = {"Auto", "bilinear - linear interpolation", "bicubic - bicubic interpolation", "spline16 - 4x4 spline curve interpolation", "spline36 - 6x6 spline curve interpolation", "spline64 - 8x8 spline curve interpolation", "lanczos2 - 4x4 Lanczos resampling", "lanczos3 - 6x6 Lanczos resampling", "lanczos4 - 8x8 Lanczos resampling", "nn - nearest neighbor", "npp_linear - linear interpolation by NPP library", "cubic - 4x4 cubic interpolation", "super - So called 'super sampling' by NPP library (downscale only)", "lanczos - Lanczos interpolation", "nvvfx-superres - Super Resolution based on nvvfx library (upscale only)"}, .Values = {"auto", "bilinear", "bicubic", "spline16", "spline36", "spline64", "lanczos2", "lanczos3", "lanczos4", "nn", "npp_linear", "cubic", "super", "lanczos", "nvvfx-superres"}}
         Property ResizeSuperresMode As New OptionParam With {.Text = "      Superres-Mode", .HelpSwitch = "--vpp-resize", .Init = 0, .IntegerValue = True, .Options = {"0 - conservative (default)", "1 - aggressive"}, .VisibleFunc = Function() ResizeAlgo.Value = 14}
         Property ResizeSuperresStrength As New NumParam With {.Text = "      Superres-Strength", .HelpSwitch = "--vpp-resize", .Init = 1, .Config = {0, 1, 0.05, 2}, .VisibleFunc = Function() ResizeAlgo.Value = 14}
+
+        Property NvvfxDenoise As New BoolParam With {.Text = "Webcam denoise filter", .Switches = {"--vpp-nvvfx-denoise"}, .ArgsFunc = AddressOf GetNvvfxDenoiseArgs}
+        Property NvvfxDenoiseStrength As New OptionParam With {.Text = "      Strength", .HelpSwitch = "--vpp-nvvfx-denoise", .Options = {"0 - Weaker effect, higher emphasis on texture preservation", "1 - Stronger effect, higher emphasis on noise removal"}}
+
+        Property NvvfxArtifactReduction As New BoolParam With {.Text = "Artifact reduction filter", .Switches = {"--vpp-nvvfx-artifact-reduction"}, .ArgsFunc = AddressOf GetNvvfxArtifactReductionArgs}
+        Property NvvfxArtifactReductionMode As New OptionParam With {.Text = "      Mode", .HelpSwitch = "--vpp-nvvfx-artifact-reduction", .Options = {"0 - Removes lesser artifacts, preserves low gradient information better, suited for higher bitrate videos (default)", "1 - Results stronger effect, suitable for lower bitrate videos"}}
 
         Property TransformFlipX As New BoolParam With {.Switch = "--vpp-transform", .Text = "Flip X", .Label = "Transform", .LeftMargin = g.MainForm.FontHeight * 1.5, .ArgsFunc = AddressOf GetTransform}
         Property TransformFlipY As New BoolParam With {.Text = "Flip Y", .LeftMargin = g.MainForm.FontHeight * 1.5, .HelpSwitch = "--vpp-transform"}
@@ -822,7 +828,9 @@ Public Class NVEnc
                         Pmd, PmdApplyCount, PmdStrength, PmdThreshold)
                     Add("VPP | Denoise 2",
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
-                        DenoiseDct, DenoiseDctStep, DenoiseDctSigma, DenoiseDctBlockSize)
+                        DenoiseDct, DenoiseDctStep, DenoiseDctSigma, DenoiseDctBlockSize,
+                        NvvfxDenoise, NvvfxDenoiseStrength,
+                        NvvfxArtifactReduction, NvvfxArtifactReductionMode)
                     Add("VPP | Sharpness",
                         Edgelevel, EdgelevelStrength, EdgelevelThreshold, EdgelevelBlack, EdgelevelWhite,
                         Unsharp, UnsharpRadius, UnsharpWeight, UnsharpThreshold,
@@ -1210,6 +1218,24 @@ Public Class NVEnc
                 If ResizeSuperresMode.Value <> ResizeSuperresMode.DefaultValue AndAlso ResizeAlgo.Value = 13 Then ret += ",superres-mode=" & ResizeSuperresMode.Value.ToInvariantString
                 If ResizeSuperresStrength.Value <> ResizeSuperresStrength.DefaultValue AndAlso ResizeAlgo.Value = 13 Then ret += ",superres-strength=" & ResizeSuperresStrength.Value.ToInvariantString
                 Return "--vpp-resize " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetNvvfxDenoiseArgs() As String
+            If NvvfxDenoise.Value Then
+                Dim ret = ""
+                ret += ",strength=" & NvvfxDenoiseStrength.Value.ToInvariantString
+                Return NvvfxDenoise.Switch + " " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetNvvfxArtifactReductionArgs() As String
+            If NvvfxArtifactReduction.Value Then
+                Dim ret = ""
+                ret += ",mode=" & NvvfxArtifactReductionMode.Value.ToInvariantString
+                Return NvvfxArtifactReduction.Switch + " " + ret.TrimStart(","c)
             End If
             Return ""
         End Function

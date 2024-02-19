@@ -3864,6 +3864,12 @@ Public Class MainForm
             n.Field = NameOf(s.ParallelProcsNum)
 
             n = ui.AddNum()
+            n.Text = "Timeout error messages on job processing"
+            n.Help = "Duration of error messages being shown if an error occures and before the next job shall start."
+            n.Config = {-1, 3600, 5, 0}
+            n.Field = NameOf(s.ErrorMessageTimeout)
+
+            n = ui.AddNum()
             n.Text = "Preview size compared to screen size (percent)"
             n.Config = {10, 90, 5}
             n.Field = NameOf(s.PreviewSize)

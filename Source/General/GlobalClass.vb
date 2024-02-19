@@ -479,7 +479,7 @@ Public Class GlobalClass
         Catch ex As ErrorAbortException
             Log.Save()
             g.RaiseAppEvent(ApplicationEvent.AfterJobFailed)
-            g.ShowException(ex, Nothing, Nothing, 50)
+            g.ShowException(ex, Nothing, Nothing, s.ErrorMessageTimeout)
             g.ShellExecute(g.GetTextEditorPath(), """" + p.Log.GetPath() + """")
             ProcController.Aborted = False
         End Try
@@ -1182,11 +1182,8 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub ShowException(
-        ex As Exception,
-        Optional title As String = Nothing,
-        Optional content As String = Nothing,
-        Optional timeout As Integer = 0)
+    Sub ShowException(ex As Exception, Optional title As String = Nothing, Optional content As String = Nothing, Optional timeout As Integer = 0)
+        If timeout < 0 Then Exit Sub
 
         Try
             Using td As New TaskDialog(Of String)

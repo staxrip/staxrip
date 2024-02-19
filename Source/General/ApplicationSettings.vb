@@ -40,6 +40,7 @@ Public Class ApplicationSettings
     Public eac3toProfiles As List(Of eac3toProfile)
     Public EnableTooltips As Boolean
     Public ErrorMessageExtendedByErr As Boolean = False
+    Public ErrorMessageTimeout As Integer = 60
     Public EventCommands As List(Of EventCommand)
     Public EventWhileProcessingCooldown As Integer = 60
     Public ExpandPreviewWindow As Boolean = True

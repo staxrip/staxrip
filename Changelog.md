@@ -50,6 +50,7 @@ v2.37.0 (not published yet)
 - UI: Improve Dolby Vision metadata handling
 - UI: Enhance "Frame Mismatch" error message
 - UI: Let "Frame Mismatch" ignore cutted "Copy/Mux" runs ([#1234](/../../issues/1234))
+- UI: Write "Media Info Source File" only if it has changed ([#1221](/../../issues/1221))
 - NVEncC: Rearrange some parameters ([#1240](/../../issues/1240))
 - NVEncC: Add "--vpp-nvvfx-artifact-reduction" parameter ([#1240](/../../issues/1240))
 - NVEncC: Add "--vpp-nvvfx-denoise" parameter ([#1240](/../../issues/1240))

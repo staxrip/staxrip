@@ -305,11 +305,14 @@ Public Class GlobalClass
             Log.WriteEnvironment()
             Log.WriteConfiguration()
 
-            Log.WriteHeader("Media Info Source File")
-            For Each i In p.SourceFiles
-                Log.WriteLine(i)
-            Next
-            Log.WriteLine(BR + MediaInfo.GetSummary(p.SourceFile))
+            Dim summary = MediaInfo.GetSummary(p.SourceFile)
+            If Not Log.ToString().Contains(summary) Then
+                Log.WriteHeader("Media Info Source File")
+                For Each i In p.SourceFiles
+                    Log.WriteLine(i)
+                Next
+                Log.WriteLine(BR + MediaInfo.GetSummary(p.SourceFile))
+            End If
 
             Log.WriteHeader($"{p.Script.Engine} Script")
             Log.WriteLine(p.Script.GetFullScript)

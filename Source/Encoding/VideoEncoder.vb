@@ -91,7 +91,7 @@ Public MustInherit Class VideoEncoder
         Return True
     End Function
 
-    OverRidable Sub SetMetaData(sourceFile As String)
+    Overridable Sub SetMetaData(sourceFile As String)
     End Sub
 
     Overrides Function CreateEditControl() As Control
@@ -136,6 +136,41 @@ Public MustInherit Class VideoEncoder
             AutoSetImageSize()
         End If
     End Sub
+
+    Protected Function GetH265MaxBitrate(level As Single, highTier As Boolean) As Integer
+        If level < 1 Then Return 0
+
+        Select Case level
+            Case 1
+                Return If(highTier, 0, 128)
+            Case 2
+                Return If(highTier, 0, 1500)
+            Case 2.1
+                Return If(highTier, 0, 3000)
+            Case 3
+                Return If(highTier, 0, 6000)
+            Case 3.1
+                Return If(highTier, 0, 10000)
+            Case 4
+                Return If(highTier, 30000, 12000)
+            Case 4.1
+                Return If(highTier, 50000, 20000)
+            Case 5
+                Return If(highTier, 100000, 25000)
+            Case 5.1
+                Return If(highTier, 160000, 40000)
+            Case 5.2
+                Return If(highTier, 240000, 60000)
+            Case 6
+                Return If(highTier, 240000, 60000)
+            Case 6.1
+                Return If(highTier, 480000, 120000)
+            Case 6.2
+                Return If(highTier, 800000, 240000)
+            Case Else
+                Return 0
+        End Select
+    End Function
 
     Sub AutoSetImageSize()
         If p.VideoEncoder.AutoCompCheckValue > 0 AndAlso Calc.GetPercent <> 0 AndAlso p.Script.IsFilterActive("Resize") Then

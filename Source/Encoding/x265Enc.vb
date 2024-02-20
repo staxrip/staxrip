@@ -203,6 +203,11 @@ Public Class x265Enc
                     cl += " --aud"
                 End If
 
+                If Params.Level.Value > 0 AndAlso Params.HighTier.Value > 0 Then
+                    Dim m = GetH265MaxBitrate(Params.Level.ValueText.ToSingle(), Params.HighTier.Value = 1)
+                    cl += $" {Params.VbvMaxRate.Switch} {m}"
+                    cl += $" {Params.VbvBufSize.Switch} {m}"
+                End If
 
                 If Not String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) AndAlso p.Hdr10PlusMetadataFile.FileExists() Then
                     cl += $" --dhdr10-info ""{p.Hdr10PlusMetadataFile}"""
@@ -493,6 +498,19 @@ Public Class x265Params
         .Switches = {"-t"},
         .Text = "Tune",
         .Options = {"None", "PSNR", "SSIM", "Grain", "Fast Decode", "Zero Latency", "Animation"}}
+
+    Property Level As New OptionParam With {
+        .Switch = "--level-idc",
+        .Switches = {"--level"},
+        .Text = "Level",
+        .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}}
+
+    Property HighTier As New OptionParam With {
+        .Switch = "--high-tier",
+        .NoSwitch = "--no-high-tier",
+        .Text = "High Tier",
+        .Options = {"Undefined", "Yes", "No"},
+        .Values = {"", "--high-tier", "--no-high-tier"}}
 
     Property PipingToolAVS As New OptionParam With {
         .Text = "Pipe",
@@ -1156,9 +1174,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain8", .VisibleFunc = Function() OutputDepth.Value = 0, .Options = {"Automatic", "Main", "Main - Intra", "Main Still Picture", "Main 444 - 8", "Main 444 - Intra", "Main 444 - Still Picture"}},
                     New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain10", .VisibleFunc = Function() OutputDepth.Value = 1, .Options = {"Automatic", "Main 10", "Main 10 - Intra", "Main 422 - 10", "Main 422 - 10 - Intra", "Main 444 - 10", "Main 444 - 10 - Intra"}},
                     New OptionParam With {.Switch = "--profile", .Switches = {"-P"}, .Text = "Profile", .Name = "ProfileMain12", .VisibleFunc = Function() OutputDepth.Value = 2, .Options = {"Automatic", "Main 12", "Main 12 - Intra", "Main 422 - 12", "Main 422 - 12 - Intra", "Main 444 - 12", "Main 444 - 12 - Intra"}},
-                    New OptionParam With {.Switch = "--level-idc", .Switches = {"--level"}, .Text = "Level", .Options = {"Automatic", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2", "8.5"}},
-                    New OptionParam With {.Switch = "--high-tier", .NoSwitch = "--no-high-tier", .Text = "High Tier", .Options = {"Undefined", "Yes", "No"}, .Values = {"", "--high-tier", "--no-high-tier"}},
-                    Quant, Bitrate)
+                    Level, HighTier, Quant, Bitrate)
                 Add("Analysis", RD, PsyRD,
                     New NumParam With {.Switch = "--dynamic-rd", .Text = "Dynamic RD", .Config = {0, 4}},
                     RdRefine,

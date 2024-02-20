@@ -479,6 +479,16 @@ Public Class NVEnc
                                 "")
                         End Function}
 
+        Property VbvBufSize As New NumParam With {
+            .Switch = "--vbv-bufsize",
+            .Text = "VBV Bufsize",
+            .Config = {0, 1000000, 100}}
+
+        Property MaxBitrate As New NumParam With {
+            .Switch = "--max-bitrate",
+            .Text = "Max Bitrate",
+            .Config = {0, 1000000, 100}}
+
         Property AQ As New BoolParam With {
             .Switch = "--aq",
             .Text = "Adaptive Quantization (Spatial)"}
@@ -709,8 +719,7 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--chroma-qp-offset", .Text = "QP offset for chroma", .Config = {0, Integer.MaxValue, 1}, .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"},
-                        New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Init = 17500, .Config = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Config = {0, Integer.MaxValue, 1}},
+                        VbvBufSize, MaxBitrate,
                         AQ,
                         New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() AQ.Value},
                         New BoolParam With {.Switch = "--aq-temporal", .Text = "Adaptive Quantization (Temporal)"},

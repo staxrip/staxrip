@@ -69,7 +69,7 @@ v2.36.0 (2024-02-23)
 ====================
 
 - UI: "Import VUI metadata" doesn't override Dolby Vision profile depending on selected mode ([#1212](/../../issues/1212))
-- UI: Extend Assistant check for VBV settings when using DolbyVision to custom parameters ([#1213](/../../issues/1213))
+- UI: Extend Assistant check for VBV settings when using Dolby Vision to custom parameters ([#1213](/../../issues/1213))
 - UI: Fix Crop bug that caused unnecessary and sometimes wrong cropping
 - UI: Set "Output Mod" default value to 2 (inspired by the poll on Discord)
 - UI: Improve handling/finding with metadata files
@@ -79,7 +79,7 @@ v2.36.0 (2024-02-23)
 - UI: Add new event "While Processing" which is called once every percent of progress on video encoders ([#1197](/../../issues/1197))
 - UI: Add new macros that are currently only supported by the new "While Processing" event 
     - %commandline%, %progress%, %progressline%
-- UI: Add new macros 
+- UI: Add new macros
     - %jobs%, %jobs_active%
 - UI: Improve filename parsing for subtitles ([#1200](/../../issues/1200)), ([#1220](/../../issues/1220))
 - UI: Improve track name parsing from filenames ([#1220](/../../issues/1220))

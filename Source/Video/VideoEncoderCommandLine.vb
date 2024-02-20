@@ -536,6 +536,8 @@ Namespace VideoEncoderCommandLine
             Me.Params = params
         End Sub
 
+        Property Expanded As Boolean
+
         ReadOnly Property OptionText As String
             Get
                 Return Options(Value)
@@ -614,13 +616,15 @@ Namespace VideoEncoderCommandLine
                         If Values(Value).StartsWith("--") Then
                             Return Values(Value)
                         ElseIf Switch <> "" Then
-                            Return Switch + Params.Separator & Values(Value)
+                            Dim v = Values(Value)
+                            Return Switch + If(String.IsNullOrWhiteSpace(v), "", Params.Separator & v)
                         End If
                     ElseIf Switch <> "" Then
                         If IntegerValue Then
                             Return Switch + Params.Separator & Value
                         Else
-                            Return Switch + Params.Separator & Options(Value).ToLowerInvariant.Replace(" ", "")
+                            Dim v = Options(Value).ToLowerInvariant.Replace(" ", "")
+                            Return Switch + If(String.IsNullOrWhiteSpace(v), "", Params.Separator & v)
                         End If
                     End If
                 End If

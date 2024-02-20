@@ -294,9 +294,8 @@ Public Class NVEnc
     End Property
 
     Shared Function Test() As String
-        Dim tester As New ConsolAppTester
-
-        tester.IgnoredSwitches = "help version check-device input-analyze input-format output-format
+        Dim tester As New ConsolAppTester With {
+            .IgnoredSwitches = "help version check-device input-analyze input-format output-format
             video-streamid video-track vpp-delogo vpp-delogo-cb vpp-delogo-cr vpp-delogo-depth output
             vpp-delogo-pos vpp-delogo-select vpp-delogo-y check-avversion check-codecs log
             check-encoders check-decoders check-formats check-protocols log-framelist fps audio-delay
@@ -306,11 +305,11 @@ Public Class NVEnc
             audio-bitrate audio-ignore audio-ignore audio-samplerate audio-resampler audio-stream dar
             audio-stream audio-stream audio-stream audio-filter chapter-copy chapter sub-copy input-res
             audio-disposition audio-metadata option-list sub-disposition sub-metadata process-codepage
-            metadata attachment-copy chapter-no-trim video-metadata input-csp sub-source"
-
-        tester.UndocumentedSwitches = ""
-        tester.Package = Package.NVEncC
-        tester.CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "nvenc.vb")
+            metadata attachment-copy chapter-no-trim video-metadata input-csp sub-source",
+            .UndocumentedSwitches = "",
+            .Package = Package.NVEncC,
+            .CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "nvenc.vb")
+        }
 
         Return tester.Test
     End Function
@@ -662,7 +661,7 @@ Public Class NVEnc
 
         Property DenoiseDct As New BoolParam With {.Text = "Denoise DCT", .Switch = "--vpp-denoise-dct", .ArgsFunc = AddressOf GetDenoiseDctArgs}
         Property DenoiseDctStep As New OptionParam With {.Text = "      Step", .HelpSwitch = "--vpp-denoise-dct", .Init = 1, .Options = {"1 (high quality, slow)", "2 (default)", "4", "8 (fast)"}, .Values = {"1", "2", "4", "8"}}
-        Property DenoiseDctSigma As New NumParam With {.Text = "      Sigma", .HelpSwitch = "--vpp-denoise-dct", .Config = {0, 100, 0.1, 1}}
+        Property DenoiseDctSigma As New NumParam With {.Text = "      Sigma", .HelpSwitch = "--vpp-denoise-dct", .Init = 4, .Config = {0, 100, 0.1, 1}}
         Property DenoiseDctBlockSize As New OptionParam With {.Text = "      Block Size", .HelpSwitch = "--vpp-denoise-dct", .Options = {"8 (default)", "16 (slow)"}, .Values = {"8", "16"}}
 
         Property Colorspace As New BoolParam With {.Text = "Colorspace", .Switch = "--vpp-colorspace", .ArgsFunc = AddressOf GetColorspaceArgs}

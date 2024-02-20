@@ -253,7 +253,7 @@ Public Class CommandLineForm
 
                 Dim max = oParam.Options.Select(Function(txt) txt.Length).Max
 
-                If max > 24 Then
+                If tempOptionParam.Expanded OrElse max > 24 Then
                     menuBlock.Button.Expand = True
                 End If
 

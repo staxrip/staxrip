@@ -114,7 +114,7 @@ Public Class ProcessingForm
         Me.bnLog.Name = "bnLog"
         Me.bnLog.Size = New System.Drawing.Size(260, 70)
         Me.bnLog.TabIndex = 13
-        Me.bnLog.Text = "Log (F7)"
+        Me.bnLog.Text = "Log (F8)"
         '
         'bnMenu
         '
@@ -408,9 +408,7 @@ Public Class ProcessingForm
         StopAfterCurrentJobMenuItem.Enabled = g.IsJobProcessing
         StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
 
-        OutputHighlightingMenuItem.Enabled = g.IsJobProcessing
-
-        ProgressReformattingMenuItem.Enabled = g.IsJobProcessing
+        OutputHighlightingMenuItem.Checked = s.OutputHighlighting
         ProgressReformattingMenuItem.Checked = s.ProgressReformatting
 
         Dim priority = ProcController.GetProcessPriority()

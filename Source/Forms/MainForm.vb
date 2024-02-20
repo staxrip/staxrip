@@ -1050,7 +1050,7 @@ Public Class MainForm
     Private AssistantClickAction As Action
     Private ThemeRefresh As Boolean
     Private Const TrackBarInterval As Integer = 16
-    Private Const TrackBarTicks As Integer = 4
+    Private Const TrackBarTicks As Integer = 16
 
     Sub New()
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
@@ -4690,7 +4690,7 @@ Public Class MainForm
             "In order to select a template to be loaded on program startup go to:",
             "Tools > Settings > General > Templates > Default Template")
 
-            form.ScaleClientSize(33, 22)
+            form.ScaleClientSize(33, 24)
 
             Dim ui = form.SimpleUI
             ui.Store = p

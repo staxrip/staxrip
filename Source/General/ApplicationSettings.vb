@@ -87,7 +87,7 @@ Public Class ApplicationSettings
     Public StringDictionary As Dictionary(Of String, String)
     Public StringList As List(Of String)
     Public TargetImageSizeMenu As String
-    Public ThemeName As String
+    Public ThemeName As String = ThemeManager.DefaultThemeName
     Public ThumbnailBackgroundColor As Color = Color.AliceBlue
     Public UIFallback As Boolean = False
     Public UIScaleFactor As Single = 1.0F

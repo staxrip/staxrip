@@ -2899,12 +2899,12 @@ Public Class Package
                     Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", True)
                     Dim value As Integer
 
-                    If output.Contains("Patman") Then
-                        value = x265Type.Patman
-                    ElseIf output.Contains("DJATOM") Then
+                    If output.Contains("DJATOM") Then
                         value = x265Type.DJATOM
                     ElseIf output.Contains("JPSDR") Then
                         value = x265Type.JPSDR
+                    ElseIf output.Contains("Patman") Then
+                        value = x265Type.Patman
                     Else
                         value = x265Type.Vanilla
                     End If

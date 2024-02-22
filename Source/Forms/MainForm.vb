@@ -2624,15 +2624,14 @@ Public Class MainForm
     End Sub
 
     Sub AutoCrop()
+        g.CheckForModifiedDolbyVisionLevel5Data()
+
         If p.AutoCropMode = AutoCropMode.DolbyVisionOnly OrElse p.AutoCropMode = AutoCropMode.Always Then
             p.SourceScript.Synchronize(True, True, True)
 
             If p.HdrDolbyVisionMetadataFile IsNot Nothing Then
-                p.CropLeft = p.HdrDolbyVisionMetadataFile.Crop.Left
-                p.CropTop = p.HdrDolbyVisionMetadataFile.Crop.Top
-                p.CropRight = p.HdrDolbyVisionMetadataFile.Crop.Right
-                p.CropBottom = p.HdrDolbyVisionMetadataFile.Crop.Bottom
-                g.CorrectCropMod(False, False)
+                Dim c = p.HdrDolbyVisionMetadataFile.Crop
+                g.SetCrop(c.Left, c.Top, c.Right, c.Bottom, False, False)
             ElseIf p.AutoCropMode = AutoCropMode.Always Then
                 Using proc As New Proc
                     proc.Header = "Auto Crop"
@@ -2644,11 +2643,7 @@ Public Class MainForm
                     Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
 
                     If match.Success Then
-                        p.CropLeft = match.Groups(1).Value.ToInt
-                        p.CropTop = match.Groups(2).Value.ToInt
-                        p.CropRight = match.Groups(3).Value.ToInt
-                        p.CropBottom = match.Groups(4).Value.ToInt
-                        g.CorrectCropMod(False, True)
+                        g.SetCrop(match.Groups(1).Value.ToInt, match.Groups(2).Value.ToInt, match.Groups(3).Value.ToInt, match.Groups(4).Value.ToInt, False, True)
                     End If
                 End Using
             End If
@@ -2812,6 +2807,8 @@ Public Class MainForm
         If refreshScript Then
             p.Script.Synchronize(False, False)
         End If
+
+        g.CheckForModifiedDolbyVisionLevel5Data()
 
         Dim isCropped = p.Script.IsFilterActive("Crop")
         Dim isResized = p.Script.IsFilterActive("Resize")
@@ -3122,21 +3119,22 @@ Public Class MainForm
             If p.Script.IsFilterActive("Crop") AndAlso Not p.VideoEncoder?.IsOvercroppingAllowed AndAlso p.HdrDolbyVisionMetadataFile IsNot Nothing Then
                 Dim side = ""
                 Dim by = 0
-                Dim leftOvercropping = p.CropLeft - p.HdrDolbyVisionMetadataFile.Crop.Left
-                Dim topOvercropping = p.CropTop - p.HdrDolbyVisionMetadataFile.Crop.Top
-                Dim rightOvercropping = p.CropRight - p.HdrDolbyVisionMetadataFile.Crop.Right
-                Dim bottomOvercropping = p.CropBottom - p.HdrDolbyVisionMetadataFile.Crop.Bottom
+                Dim c = p.HdrDolbyVisionMetadataFile.Crop
+                Dim leftOvercropping = p.CropLeft - c.Left
+                Dim topOvercropping = p.CropTop - c.Top
+                Dim rightOvercropping = p.CropRight - c.Right
+                Dim bottomOvercropping = p.CropBottom - c.Bottom
 
                 If leftOvercropping > 0 Then
                     side = "left"
                     by = leftOvercropping
-                ElseIf p.CropTop > p.HdrDolbyVisionMetadataFile.Crop.Top Then
+                ElseIf p.CropTop > c.Top Then
                     side = "top"
                     by = topOvercropping
-                ElseIf p.CropRight > p.HdrDolbyVisionMetadataFile.Crop.Right Then
+                ElseIf p.CropRight > c.Right Then
                     side = "right"
                     by = rightOvercropping
-                ElseIf p.CropBottom > p.HdrDolbyVisionMetadataFile.Crop.Bottom Then
+                ElseIf p.CropBottom > c.Bottom Then
                     side = "bottom"
                     by = bottomOvercropping
                 End If
@@ -5454,6 +5452,7 @@ Public Class MainForm
             End If
 
             If form.ShowDialog() = DialogResult.OK Then
+                Dim autoCropModeChanged = autoCropMode.Button.Value <> p.AutoCropMode
                 Dim dvThresholdChanged = doviThresholdBegin.Value <> p.AutoCropDolbyVisionThresholdBegin OrElse doviThresholdEnd.Value <> p.AutoCropDolbyVisionThresholdEnd
                 Dim cropChanged = leftCrop.Value <> p.CropLeft OrElse topCrop.Value <> p.CropTop OrElse rightCrop.Value <> p.CropRight OrElse bottomCrop.Value <> p.CropBottom
 
@@ -5471,7 +5470,14 @@ Public Class MainForm
 
                 If p.CompCheckPercentage < 1 OrElse p.CompCheckPercentage > 25 Then p.CompCheckPercentage = 5
                 If p.CompCheckTestblockSeconds < 0.5 OrElse p.CompCheckTestblockSeconds > 10.0 Then p.CompCheckTestblockSeconds = 2.0
-                If dvThresholdChanged AndAlso Not cropChanged AndAlso p.Script.IsFilterActive("Crop") Then StartAutoCrop()
+                If autoCropMode.Button.Value <> StaxRip.AutoCropMode.Disabled AndAlso autoCropModeChanged Then StartAutoCrop()
+
+                If autoCropMode.Button.Value = StaxRip.AutoCropMode.Disabled AndAlso cropChanged Then
+                    p.CropLeft = CInt(leftCrop.Value)
+                    p.CropTop = CInt(topCrop.Value)
+                    p.CropRight = CInt(rightCrop.Value)
+                    p.CropBottom = CInt(bottomCrop.Value)
+                End If
 
                 UpdateSizeOrBitrate()
                 tbBitrate_TextChanged()

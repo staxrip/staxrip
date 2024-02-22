@@ -1829,9 +1829,26 @@ End Enum
 
 <Serializable>
 Public Class DolbyVisionMetadataFile
+    Private _autoCropThresholdBegin As Integer = 1000
+    Private _autoCropThresholdEnd As Integer = 1000
+    Private _lastWriteTime As DateTime = Nothing
+    Private _lastWriteTimeL5 As DateTime = Nothing
+
     Public ReadOnly Property Path As String = Nothing
     Public ReadOnly Property Edits As New List(Of RpuEdit)
     Public ReadOnly Property Presets As New List(Of RpuPreset)
+
+    Public ReadOnly Property LastWriteTime As DateTime
+        Get
+            Return _lastWriteTime
+        End Get
+    End Property
+
+    Public ReadOnly Property LastWriteTimeL5 As DateTime
+        Get
+            Return _lastWriteTimeL5
+        End Get
+    End Property
 
 
     Public ReadOnly Property Level5JsonFilePath As String
@@ -1852,11 +1869,17 @@ Public Class DolbyVisionMetadataFile
         End Get
     End Property
 
+    Public ReadOnly Property HasLevel5Changed As Boolean
+        Get
+            Return Level5JsonFilePath.FileExists() AndAlso _lastWriteTimeL5 <> File.GetLastWriteTimeUtc(Level5JsonFilePath)
+        End Get
+    End Property
+
     Public ReadOnly Property Crop As Padding
         Get
             Select Case p.AutoCropDolbyVisionMode
                 Case AutoCropDolbyVisionMode.Automatic
-                    Return GetAutoCrop(750, 750)
+                    Return GetAutoCrop(_autoCropThresholdBegin, _autoCropThresholdEnd)
                 Case AutoCropDolbyVisionMode.ManualThreshold
                     Return GetCrop(p.AutoCropDolbyVisionThresholdBegin, p.AutoCropDolbyVisionThresholdEnd)
                 Case Else
@@ -1871,13 +1894,14 @@ Public Class DolbyVisionMetadataFile
 
     Public Sub New(filePath As String)
         Me.Path = filePath
+        Me._lastWriteTime = File.GetLastWriteTimeUtc(filePath)
 
         WriteLevel5Export(False)
         ReadLevel5Export()
     End Sub
 
     Public Function GetAutoCrop() As Padding
-        Return GetAutoCrop()
+        Return GetAutoCrop(_autoCropThresholdBegin, _autoCropThresholdEnd)
     End Function
 
     Public Function GetAutoCrop(thresholdBegin As Integer, thresholdEnd As Integer) As Padding
@@ -1936,6 +1960,13 @@ Public Class DolbyVisionMetadataFile
         Return newCrop
     End Function
 
+    Public Sub RefreshLevel5Data()
+        If Not HasLevel5Changed Then Exit Sub
+        If Not (p.AutoCropMode = AutoCropMode.DolbyVisionOnly OrElse p.AutoCropMode = AutoCropMode.Always) Then Exit Sub
+
+        ReadLevel5Export()
+    End Sub
+
     Public Sub ReadLevel5Export()
         If Not Path?.FileExists() Then Return
         If Not Level5JsonFilePath.FileExists() Then Return
@@ -1963,6 +1994,8 @@ Public Class DolbyVisionMetadataFile
             For Each match As Match In editMatches
                 Edits.Add(New RpuEdit(match.Groups("id").Value.ToInt(), match.Groups("start").Value.ToInt(), match.Groups("end").Value.ToInt()))
             Next
+
+            _lastWriteTimeL5 = File.GetLastWriteTimeUtc(Level5JsonFilePath)
         Catch ex As AbortException
             Throw ex
         Catch ex As Exception
@@ -2000,8 +2033,6 @@ Public Class DolbyVisionMetadataFile
         Finally
             Log.Save()
         End Try
-
-        ReadLevel5Export()
     End Sub
 
     Public Sub WriteEditorConfigFile(offset As Padding, Optional overwrite As Boolean = True)

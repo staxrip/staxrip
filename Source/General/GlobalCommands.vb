@@ -218,13 +218,9 @@ Public Class GlobalCommands
         <DefaultValue(0)>
         bottom As Integer)
 
-        p.CropLeft = Math.Max(left, 0)
-        p.CropTop = Math.Max(top, 0)
-        p.CropRight = Math.Max(right, 0)
-        p.CropBottom = Math.Max(bottom, 0)
-
-        g.MainForm.SetCropFilter()
+        g.SetCrop(left, top, right, bottom)
         g.CorrectCropMod()
+        g.MainForm.SetCropFilter()
     End Sub
 
     <Command("Generates various wiki content.")>

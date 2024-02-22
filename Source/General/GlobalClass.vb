@@ -1388,16 +1388,35 @@ Public Class GlobalClass
         End If
     End Sub
 
+    Sub CheckForModifiedDolbyVisionLevel5Data()
+        If p.HdrDolbyVisionMetadataFile IsNot Nothing Then
+            If p.HdrDolbyVisionMetadataFile.HasLevel5Changed Then
+                p.HdrDolbyVisionMetadataFile.RefreshLevel5Data()
+                'MainForm.AutoCrop()
+                'Dim newCrop = p.HdrDolbyVisionMetadataFile.Crop
+                'g.SetCrop(newCrop.Left, newCrop.Top, newCrop.Right, newCrop.Bottom, True, False)
+            End If
+        End If
+    End Sub
+
+    Sub SetCrop(left As Integer, top As Integer, right As Integer, bottom As Integer, Optional force As Boolean = False, Optional increase As Boolean = True)
+        p.CropLeft = Math.Max(0, left)
+        p.CropTop = Math.Max(0, top)
+        p.CropRight = Math.Max(0, right)
+        p.CropBottom = Math.Max(0, bottom)
+
+        g.CorrectCropMod(force, increase)
+        MainForm.SetCropFilter()
+        MainForm.DisableCropFilter()
+        MainForm.Assistant()
+    End Sub
+
     Sub RunAutoCrop(progressAction As Action(Of Double))
         p.SourceScript.Synchronize(True, True, True)
 
         If p.HdrDolbyVisionMetadataFile IsNot Nothing Then
-            p.CropLeft = p.HdrDolbyVisionMetadataFile.Crop.Left
-            p.CropTop = p.HdrDolbyVisionMetadataFile.Crop.Top
-            p.CropRight = p.HdrDolbyVisionMetadataFile.Crop.Right
-            p.CropBottom = p.HdrDolbyVisionMetadataFile.Crop.Bottom
-
-            CorrectCropMod(False, False)
+            Dim c = p.HdrDolbyVisionMetadataFile.Crop
+            g.SetCrop(c.Left, c.Top, c.Right, c.Bottom, False, False)
         Else
             Using server = FrameServerFactory.Create(p.SourceScript.Path)
                 Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)
@@ -1414,19 +1433,19 @@ Public Class GlobalClass
                 Next
 
                 Dim leftCrops = crops.SelectMany(Function(arg) arg.Left).OrderBy(Function(arg) arg)
-                p.CropLeft = leftCrops(leftCrops.Count \ 10)
+                Dim left = leftCrops(leftCrops.Count \ 10)
 
                 Dim topCrops = crops.SelectMany(Function(arg) arg.Top).OrderBy(Function(arg) arg)
-                p.CropTop = topCrops(topCrops.Count \ 10)
+                Dim top = topCrops(topCrops.Count \ 10)
 
                 Dim rightCrops = crops.SelectMany(Function(arg) arg.Right).OrderBy(Function(arg) arg)
-                p.CropRight = rightCrops(rightCrops.Count \ 10)
+                Dim right = rightCrops(rightCrops.Count \ 10)
 
                 Dim bottomCrops = crops.SelectMany(Function(arg) arg.Bottom).OrderBy(Function(arg) arg)
-                p.CropBottom = bottomCrops(bottomCrops.Count \ 10)
-            End Using
+                Dim bottom = bottomCrops(bottomCrops.Count \ 10)
 
-            CorrectCropMod()
+                SetCrop(left, top, right, bottom)
+            End Using
         End If
     End Sub
 

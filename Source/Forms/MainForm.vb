@@ -1063,7 +1063,7 @@ Public Class MainForm
             "[Reflection.Assembly]::LoadWithPartialName(""StaxRip"")"
 
         If s.WriteDebugLog Then
-            Dim filePath = Folder.Startup + "Debug.log"
+            Dim filePath = Path.Combine(Folder.Startup, "Debug.log")
 
             If File.Exists(filePath) Then
                 File.Delete(filePath)
@@ -1282,11 +1282,11 @@ Public Class MainForm
     Function GetIfoFile() As String
         Dim ret = p.SourceFile.Dir
 
-        If ret.EndsWith("_temp\") Then
+        If New DirectoryInfo(ret).Name.EndsWithEx("_temp") Then
             ret = ret.Parent
         End If
 
-        ret = ret + p.SourceFile.FileName.DeleteRight(5) + "0.ifo"
+        ret = Path.Combine(ret, p.SourceFile.FileName.DeleteRight(5) + "0.ifo")
 
         If File.Exists(ret) Then
             Return ret
@@ -1339,7 +1339,7 @@ Public Class MainForm
                                     base += " " + stream.Title
                                 End If
 
-                                FileHelp.Move(i, i.Dir + base + i.ExtFull)
+                                FileHelp.Move(i, Path.Combine(i.Dir, base + i.ExtFull))
                             End If
                         Next
                     End Using
@@ -1440,7 +1440,7 @@ Public Class MainForm
 
             If s.AutoSaveProject AndAlso p.SourceFile <> "" Then
                 If g.ProjectPath Is Nothing Then
-                    g.ProjectPath = p.TempDir + p.TargetFile.Base + ".srip"
+                    g.ProjectPath = Path.Combine(p.TempDir, p.TargetFile.Base + ".srip")
                 End If
 
                 SaveProjectPath(g.ProjectPath)
@@ -1574,7 +1574,7 @@ Public Class MainForm
                            Thread.Sleep(500)
 
                            For Each iFile In Directory.GetFiles(Folder.Template, "*.srip.backup")
-                               FileHelp.Move(iFile, iFile.Dir + "Backup\" + iFile.Base)
+                               FileHelp.Move(iFile, Path.Combine(iFile.Dir, "Backup", iFile.Base))
                            Next
 
                            files = Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories)
@@ -1598,7 +1598,7 @@ Public Class MainForm
                         base += " (Startup)"
                     End If
 
-                    If i2.Contains("Backup\") Then
+                    If i2.Contains("Backup" + Path.DirectorySeparatorChar) Then
                         base = "Backup | " + base
                     End If
 
@@ -1630,7 +1630,7 @@ Public Class MainForm
 
     <Command("Loads a template.")>
     Sub LoadTemplate(name As String)
-        LoadProject(Folder.Template + name + ".srip")
+        LoadProject(Path.Combine(Folder.Template, name + ".srip"))
     End Sub
 
     <Command("Adds batch jobs for multiple files.")>
@@ -1644,7 +1644,7 @@ Public Class MainForm
 
     <Command("Adds a batch job for a single file.")>
     Sub AddBatchJob(sourcefile As String)
-        Dim batchFolder = Folder.Settings + "Batch Projects\"
+        Dim batchFolder = Path.Combine(Folder.Settings, "Batch Projects")
 
         If Not Directory.Exists(batchFolder) Then
             Directory.CreateDirectory(batchFolder)
@@ -1653,7 +1653,7 @@ Public Class MainForm
         Dim batchProject = ObjectHelp.GetCopy(Of Project)(p)
         batchProject.BatchMode = True
         batchProject.SourceFiles = {sourcefile}.ToList
-        Dim jobPath = batchFolder + sourcefile.Dir.Replace("\", "-").Replace(":", "-") + " " + p.TemplateName + " - " + sourcefile.FileName + ".srip"
+        Dim jobPath = Path.Combine(batchFolder, sourcefile.Dir.Replace(Path.DirectorySeparatorChar, "-").Replace(":", "-") + " " + p.TemplateName + " - " + sourcefile.FileName + ".srip")
         SafeSerialization.Serialize(batchProject, jobPath)
         JobManager.AddJob(sourcefile.Base, jobPath)
     End Sub
@@ -1752,8 +1752,8 @@ Public Class MainForm
             p = If(proj, SafeSerialization.Deserialize(New Project(), path))
             Log = p.Log
 
-            If File.Exists(Folder.Temp + "staxrip.log") Then
-                FileHelp.Delete(Folder.Temp + "staxrip.log")
+            If File.Exists(IO.Path.Combine(Folder.Temp, "staxrip.log")) Then
+                FileHelp.Delete(IO.Path.Combine(Folder.Temp, "staxrip.log"))
             End If
 
             SetBindings(p, True)
@@ -1963,7 +1963,7 @@ Public Class MainForm
 
     Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isEncoding As Boolean)
         Dim recoverPath = g.ProjectPath
-        Dim recoverProjectPath = Folder.Temp + Guid.NewGuid.ToString + ".bin"
+        Dim recoverProjectPath = Path.Combine(Folder.Temp, Guid.NewGuid.ToString + ".bin")
         Dim recoverText = Text
 
         SafeSerialization.Serialize(p, recoverProjectPath)
@@ -2048,8 +2048,8 @@ Public Class MainForm
 
                         Dim filter = p.Script.GetFilter("Source")
                         filter.Path = "Image"
-                        filter.Script = "ImageSource(""" + images(0).Dir + p.SourceFile.Base.Substring(0,
-                            p.SourceFile.Base.Length - digitCount) + "%0" & digitCount & "d." + p.SourceFile.Ext +
+                        filter.Script = "ImageSource(""" + Path.Combine(images(0).Dir, p.SourceFile.Base.Substring(0,
+                            p.SourceFile.Base.Length - digitCount) + "%0" & digitCount & "d." + p.SourceFile.Ext) +
                             """, " & images(0).Base.Substring(p.SourceFile.Base.Length - digitCount).ToInt &
                             ", " & images(images.Count - 1).Base.Substring(p.SourceFile.Base.Length - digitCount).ToInt & ", 25)"
                     End If
@@ -2204,7 +2204,7 @@ Public Class MainForm
                 targetName = p.SourceFile.Base
             End If
 
-            tbTargetFile.Text = targetDir + targetName + p.VideoEncoder.Muxer.OutputExtFull
+            tbTargetFile.Text = Path.Combine(targetDir, targetName + p.VideoEncoder.Muxer.OutputExtFull)
 
             If p.SourceFile = p.TargetFile OrElse
                 (FileTypes.VideoIndex.Contains(p.SourceFile.Ext) AndAlso
@@ -2727,7 +2727,7 @@ Public Class MainForm
         Dim ifoPath = GetIfoFile()
 
         If ifoPath = "" Then Exit Sub
-        If File.Exists(p.TempDir + p.SourceFile.Base + ".idx") Then Exit Sub
+        If File.Exists(Path.Combine(p.TempDir, p.SourceFile.Base + ".idx")) Then Exit Sub
 
         Dim subtitleCount = MediaInfo.GetSubtitleCount(ifoPath)
 
@@ -2751,13 +2751,13 @@ Public Class MainForm
                     If Math.Abs(p.SourceSeconds - ((hour * 60 ^ 2) + (min * 60) + sec)) < 30 Then
                         Dim args =
                             ifoPath + BR +
-                            p.TempDir + p.SourceFile.Base + BR &
+                            Path.Combine(p.TempDir, p.SourceFile.Base) + BR &
                             (i + 1) & BR +
                             "1" + BR +
                             "ALL" + BR +
                             "CLOSE"
 
-                        Dim fileContent = p.TempDir + p.TargetFile.Base + "_vsrip.txt"
+                        Dim fileContent = Path.Combine(p.TempDir, p.TargetFile.Base + "_vsrip.txt")
                         args.WriteFileSystemEncoding(fileContent)
 
                         Using proc As New Proc
@@ -3711,8 +3711,8 @@ Public Class MainForm
                 BlockSourceTextBoxTextChanged = False
             End If
 
-            If codeLower.Contains("cachefile") AndAlso p.TempDir.EndsWithEx("_temp\") Then
-                g.ffmsindex(p.SourceFile, p.TempDir + g.GetSourceBase + ".ffindex")
+            If codeLower.Contains("cachefile") AndAlso New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp") Then
+                g.ffmsindex(p.SourceFile, Path.Combine(p.TempDir, g.GetSourceBase + ".ffindex"))
             Else
                 g.ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
             End If
@@ -3725,7 +3725,7 @@ Public Class MainForm
             End If
 
             If Not File.Exists(p.SourceFile + ".lwi") AndAlso
-                Not File.Exists(p.TempDir + g.GetSourceBase + ".lwi") AndAlso
+                Not File.Exists(Path.Combine(p.TempDir, g.GetSourceBase + ".lwi")) AndAlso
                 File.Exists(p.Script.Path) AndAlso Not FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
 
                 Using proc As New Proc
@@ -4036,7 +4036,7 @@ Public Class MainForm
 
             Dim tb = ui.AddTextButton
             tb.Label.Visible = False
-            tb.BrowseFile("ico|*.ico", Folder.Startup + "Apps\Icons")
+            tb.BrowseFile("ico|*.ico", Path.Combine(Folder.Startup, "Apps", "Icons"))
             tb.Edit.Expand = True
             tb.Edit.Text = s.IconFile
             tb.Edit.SaveAction = Sub(value) s.IconFile = value
@@ -4281,7 +4281,7 @@ Public Class MainForm
 
             If box.Show = DialogResult.OK Then
                 p.TemplateName = box.Value.RemoveChars(Path.GetInvalidFileNameChars)
-                SaveProjectPath(Folder.Template + p.TemplateName + ".srip")
+                SaveProjectPath(Path.Combine(Folder.Template, p.TemplateName + ".srip"))
                 UpdateTemplatesMenuAsync()
 
                 If box.Checked Then
@@ -4456,7 +4456,8 @@ Public Class MainForm
                 If PreviewScript Is Nothing Then
                     Exit Sub
                 End If
-                PreviewScript.Path = p.TempDir + p.TargetFile.Base + "_view." + PreviewScript.FileType
+                PreviewScript.Path = Path.Combine(p.TempDir, p.TargetFile.Base + "_view." + PreviewScript.FileType)
+                PreviewScript.RemoveFilter("Cutting")
             Else
                 ApplyFilters()
             End If
@@ -4498,7 +4499,7 @@ Public Class MainForm
 
     <Command("Clears the job list.")>
     Sub ClearJobs()
-        FileHelp.Delete(Folder.Settings + "Jobs.dat")
+        FileHelp.Delete(Path.Combine(Folder.Settings, "Jobs.dat"))
     End Sub
 
     <Command("Loads an audio or video profile.")>
@@ -4657,7 +4658,7 @@ Public Class MainForm
         End If
 
         If templateName <> "" Then
-            LoadProject(Folder.Template + templateName + ".srip")
+            LoadProject(Path.Combine(Folder.Template, templateName + ".srip"))
         End If
     End Sub
 
@@ -5287,7 +5288,7 @@ Public Class MainForm
             tm.AddMenu("Name of source file directory", "%source_dir_name%")
             tm.AddMenu("Macros...", macroAction)
 
-            l = ui.AddLabel(pathPage, If(s.DeleteTempFilesMode = DeleteMode.Disabled, "Temp Files Folder:", "Temp Files Folder: (MUST end with '_temp\' for Auto-Deletion!)"))
+            l = ui.AddLabel(pathPage, If(s.DeleteTempFilesMode = DeleteMode.Disabled, "Temp Files Folder:", $"Temp Files Folder: (MUST end with '_temp{Path.DirectorySeparatorChar}' for Auto-Deletion!)"))
             l.Help = "Leave empty to use the source file folder."
             l.MarginTop = Font.Height
 
@@ -5295,7 +5296,7 @@ Public Class MainForm
                                   Dim tempDir = g.BrowseFolder(p.TempDir)
 
                                   If tempDir <> "" Then
-                                      Return tempDir.FixDir + "%source_name%_temp"
+                                      Return Path.Combine(tempDir.FixDir, "%source_name%_temp")
                                   End If
                               End Function
 
@@ -6202,14 +6203,14 @@ Public Class MainForm
                 Dim srcPath = dialog.SelectedPath.FixDir
 
                 If Directory.Exists(srcPath + "BDMV") Then
-                    srcPath += "BDMV\"
+                    srcPath = Path.Combine(srcPath, "BDMV")
                 End If
 
                 If Directory.Exists(srcPath + "PLAYLIST") Then
-                    srcPath += "PLAYLIST\"
+                    srcPath = Path.Combine(srcPath, "PLAYLIST")
                 End If
 
-                If Not srcPath.ToUpperInvariant.EndsWith("PLAYLIST\") Then
+                If New DirectoryInfo(srcPath).Name IsNot "PLAYLIST" Then
                     MsgWarn("No playlist directory found.")
                     Exit Sub
                 End If
@@ -6420,7 +6421,7 @@ Public Class MainForm
                     End Using
 
                     s.Storage.SetString("last blu-ray target folder", form.OutputFolder)
-                    Dim fs = form.OutputFolder + title + "." + form.cbVideoOutput.Text.ToLowerInvariant
+                    Dim fs = Path.Combine(form.OutputFolder, title + "." + form.cbVideoOutput.Text.ToLowerInvariant)
 
                     If File.Exists(fs) Then
                         p.TempDir = form.OutputFolder

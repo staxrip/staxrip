@@ -24,7 +24,7 @@ Public Class GlobalCommands
                 form.ShowDialog()
             End Using
         Else
-            g.ShellExecute(Folder.Settings + "Log Files")
+            g.ShellExecute(Path.Combine(Folder.Settings, "Log Files"))
         End If
     End Sub
 
@@ -261,7 +261,7 @@ Public Class GlobalCommands
 
                 'does help file exist?
                 If pack.Path <> "" AndAlso pack.HelpFilename <> "" Then
-                    If Not File.Exists(pack.Directory + pack.HelpFilename) Then
+                    If Not File.Exists(Path.Combine(pack.Directory, pack.HelpFilename)) Then
                         msg += BR2 + $"# Help file of {pack.Name} don't exist!"
                     End If
                 End If
@@ -269,7 +269,7 @@ Public Class GlobalCommands
         Next
 
         If msg <> "" Then
-            Dim fs = Folder.Temp + "staxrip test.txt"
+            Dim fs = Path.Combine(Folder.Temp, "staxrip test.txt")
             File.WriteAllText(fs, BR + msg.Trim + BR)
             g.ShellExecute(fs)
         Else
@@ -339,7 +339,7 @@ Public Class GlobalCommands
                                          "<br><a href=""https://discord.gg/uz8pVR79Bd"">StaxRip Community on Discord</a>")
                 form.Doc.Writer.WriteRaw("<hr>")
 
-                Dim licensePath = Folder.Startup + "License.txt"
+                Dim licensePath = Path.Combine(Folder.Startup, "License.txt")
 
                 If licensePath.FileExists Then
                     form.Doc.WriteParagraph(licensePath.ReadAllText.Trim, True)
@@ -492,9 +492,9 @@ Public Class GlobalCommands
                       <Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
                       path As String)
 
-        Dim oldEncodeFile = p.TempDir + p.TargetFile.Base + "_out." + p.VideoEncoder.OutputExt
+        Dim oldEncodeFile = IO.Path.Combine(p.TempDir, p.TargetFile.Base + "_out." + p.VideoEncoder.OutputExt)
         p.TargetFile = Macro.Expand(path)
-        Dim newEncodeFile = p.TempDir + p.TargetFile.Base + "_out." + p.VideoEncoder.OutputExt
+        Dim newEncodeFile = IO.Path.Combine(p.TempDir, p.TargetFile.Base + "_out." + p.VideoEncoder.OutputExt)
 
         If File.Exists(oldEncodeFile) Then
             File.Move(oldEncodeFile, newEncodeFile)

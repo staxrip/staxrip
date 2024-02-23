@@ -7,12 +7,12 @@ Imports StaxRip.UI
 
 Public Class Documentation
     Shared Sub GenerateWikiContent()
-        Dim outDir = Folder.Settings + "Wiki Pages\"
+        Dim outDir = Path.Combine(Folder.Settings, "Wiki Pages")
         FolderHelp.Create(outDir)
-        GetCommands(True).WriteFileUTF8(outDir + "CLI.md")
-        GetCommands(False).WriteFileUTF8(outDir + "Commands.md")
-        GetMacros.WriteFileUTF8(outDir + "Macros.md")
-        GetTools.WriteFileUTF8(outDir + "Tools.md")
+        GetCommands(True).WriteFileUTF8(Path.Combine(outDir, "CLI.md"))
+        GetCommands(False).WriteFileUTF8(Path.Combine(outDir, "Commands.md"))
+        GetMacros.WriteFileUTF8(Path.Combine(outDir, "Macros.md"))
+        GetTools.WriteFileUTF8(Path.Combine(outDir, "Tools.md"))
         g.ShellExecute(outDir)
     End Sub
 

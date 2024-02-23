@@ -7,8 +7,8 @@ Imports System.Threading.Tasks
 
 Public Class ImageHelp
     Private Shared Coll As PrivateFontCollection
-    Private Shared ReadOnly AwesomePath As String = Folder.Apps + "\Fonts\FontAwesome.ttf"
-    Private Shared ReadOnly SegoePath As String = Folder.Apps + "\Fonts\Segoe-MDL2-Assets.ttf"
+    Private Shared ReadOnly AwesomePath As String = Path.Combine(Folder.Apps, "Fonts", "FontAwesome.ttf")
+    Private Shared ReadOnly SegoePath As String = Path.Combine(Folder.Apps, "Fonts", "Segoe-MDL2-Assets.ttf")
     Private Shared ReadOnly FontFilesExist As Boolean = File.Exists(AwesomePath) AndAlso File.Exists(SegoePath)
 
     Shared Async Function GetSymbolImageAsync(symbol As Symbol, Optional color As Color = Nothing) As Task(Of Image)
@@ -24,35 +24,23 @@ Public Class ImageHelp
             Return Nothing
         End If
 
-        Dim legacy = OSVersion.Current < OSVersion.Windows10
-
         If Coll Is Nothing Then
             Coll = New PrivateFontCollection
             Coll.AddFontFile(AwesomePath)
-
-            If legacy Then
-                Coll.AddFontFile(SegoePath)
-            End If
+            Coll.AddFontFile(SegoePath)
         End If
 
         Dim family As FontFamily = Nothing
 
         If symbol > 61400 Then
-            If Coll.Families.Count > 0 Then
-                family = Coll.Families(0)
-            End If
+            family = Coll.Families.FirstOrDefault(Function(f) f.Name = "FontAwesome")
         Else
-            If legacy Then
-                If Coll.Families.Count > 1 Then
-                    family = Coll.Families(1)
-                End If
-            Else
-                family = New FontFamily("Segoe MDL2 Assets")
-            End If
+            family = Coll.Families.FirstOrDefault(Function(f) f.Name = "Segoe MDL2 Assets")
         End If
 
         If family Is Nothing Then
-            Return Nothing
+            MsgWarn("correct font was not found, using default instead")
+            family = FontFamily.GenericSerif
         End If
 
         color = If(color = Nothing, ThemeManager.CurrentTheme.General.Controls.ToolStrip.SymbolImageColor.ToColor(), color)

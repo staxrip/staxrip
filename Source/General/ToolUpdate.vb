@@ -43,7 +43,7 @@ Public Class ToolUpdate
                 url = match2.Value + url
             End If
 
-            DownloadFile = Folder.Desktop + IO.Path.GetFileName(url)
+            DownloadFile = IO.Path.Combine(Folder.Desktop, IO.Path.GetFileName(url))
             Download(url)
             Exit For
         Next
@@ -75,7 +75,7 @@ Public Class ToolUpdate
             Exit Sub
         End If
 
-        ExtractDir = DownloadFile.Dir + DownloadFile.Base.FixDir
+        ExtractDir = Path.Combine(DownloadFile.Dir, DownloadFile.Base.FixDir)
 
         Using pr As New Process
             pr.StartInfo.FileName = Package.SevenZip.Path
@@ -91,13 +91,13 @@ Public Class ToolUpdate
             End If
         End Using
 
-        If Not File.Exists(ExtractDir + Package.Filename) Then
+        If Not File.Exists(Path.Combine(ExtractDir, Package.Filename)) Then
             Dim subDirs As New List(Of String)
 
             For Each subDir In Directory.GetDirectories(ExtractDir, "*", SearchOption.AllDirectories)
                 subDir = subDir.FixDir
 
-                If (subDir + Package.Filename).FileExists AndAlso Not Ignore(subDir) Then
+                If (Path.Combine(subDir, Package.Filename)).FileExists AndAlso Not Ignore(subDir) Then
                     subDirs.Add(subDir)
                 End If
             Next
@@ -109,7 +109,7 @@ Public Class ToolUpdate
                     td.Title = "Choose subfolder to extract."
 
                     For Each subDir In subDirs
-                        Dim name = subDir.Replace(ExtractDir, "").TrimEnd("\"c)
+                        Dim name = subDir.Replace(ExtractDir, "").TrimEnd(Path.DirectorySeparatorChar)
                         td.AddCommand(name, subDir)
                     Next
 
@@ -122,7 +122,7 @@ Public Class ToolUpdate
             End If
         End If
 
-        If Not (ExtractDir + Package.Filename).FileExists Then
+        If Not (Path.Combine(ExtractDir, Package.Filename)).FileExists Then
             UpdatePackageDialog()
             MsgError("File missing after extraction.")
             Exit Sub
@@ -176,11 +176,11 @@ Public Class ToolUpdate
             TargetDir + BR2 + list) = DialogResult.OK Then
 
             For Each file In Directory.GetFiles(ExtractDir)
-                FileHelp.Copy(file, TargetDir + file.FileName)
+                FileHelp.Copy(file, Path.Combine(TargetDir, file.FileName))
             Next
 
             For Each folder In Directory.GetDirectories(ExtractDir)
-                FolderHelp.Copy(folder, TargetDir + folder.FileName)
+                FolderHelp.Copy(folder, Path.Combine(TargetDir, folder.FileName))
             Next
         Else
             UpdatePackageDialog()

@@ -145,8 +145,8 @@ Public Class CommandLineDemuxer
             proc.Start()
 
             If Command?.Contains("DGIndex") Then
-                FileHelp.Move(p.SourceFile.DirAndBase + ".log", p.TempDir + p.SourceFile.Base + "_dg.log")
-                FileHelp.Move(p.TempDir + p.SourceFile.Base + ".demuxed.m2v", p.TempDir + p.SourceFile.Base + ".m2v")
+                FileHelp.Move(p.SourceFile.DirAndBase + ".log", Path.Combine(p.TempDir, p.SourceFile.Base + "_dg.log"))
+                FileHelp.Move(Path.Combine(p.TempDir, p.SourceFile.Base + ".demuxed.m2v"), Path.Combine(p.TempDir, p.SourceFile.Base + ".m2v"))
             End If
         End Using
 
@@ -160,7 +160,7 @@ Public Class CommandLineDemuxer
                     proc.SkipString = "Progress: "
                     proc.Encoding = Encoding.UTF8
                     proc.Package = Package.mkvextract
-                    proc.Arguments = "--ui-language en timestamps_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + (proj.TempDir + proj.SourceFile.Base + "_timestamps.txt").Escape
+                    proc.Arguments = "--ui-language en timestamps_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + Path.Combine(proj.TempDir, proj.SourceFile.Base + "_timestamps.txt").Escape
                     proc.AllowedExitCodes = {0, 1, 2}
                     proc.Start()
                 End Using
@@ -219,7 +219,7 @@ Public Class eac3toDemuxer
                     End If
 
                     If Not form.cbVideoOutput.Text = "Nothing" Then
-                        proj.SourceFile = form.OutputFolder + proj.SourceFile.Base + "." + form.cbVideoOutput.Text.ToLowerInvariant
+                        proj.SourceFile = Path.Combine(form.OutputFolder, proj.SourceFile.Base + "." + form.cbVideoOutput.Text.ToLowerInvariant)
                         proj.SourceFiles.Clear()
                         proj.SourceFiles.Add(proj.SourceFile)
                         proj.TempDir = form.OutputFolder
@@ -313,7 +313,7 @@ Public Class ffmpegDemuxer
             Exit Sub
         End If
 
-        Dim outPath = proj.TempDir + proj.SourceFile.Base + streams(0).ExtFull
+        Dim outPath = Path.Combine(proj.TempDir, proj.SourceFile.Base + streams(0).ExtFull)
 
         If outPath = proj.SourceFile OrElse (Not overrideExisting AndAlso outPath.FileExists) Then
             Exit Sub
@@ -348,7 +348,7 @@ Public Class ffmpegDemuxer
         proj As Project,
         overrideExisting As Boolean)
 
-        Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.ExtFull
+        Dim outPath = Path.Combine(proj.TempDir, Audio.GetBaseNameForStream(sourcefile, stream) + stream.ExtFull)
 
         If Not overrideExisting AndAlso outPath.FileExists Then
             Exit Sub
@@ -402,7 +402,7 @@ Public Class ffmpegDemuxer
         If proj Is Nothing Then Exit Sub
 
         For Each subtitle In subtitles.Where(Function(x) x.Enabled)
-            Dim outpath = proj.TempDir + subtitle.Filename + subtitle.ExtFull
+            Dim outpath = Path.Combine(proj.TempDir, subtitle.Filename + subtitle.ExtFull)
             Dim args = "-y -hide_banner -probesize 10M -i " + proj.SourceFile.Escape
             Dim codec = If(subtitle.Ext = "srt", "srt", "copy")
 
@@ -522,7 +522,7 @@ Public Class MP4BoxDemuxer
                     Continue For
                 End If
 
-                Dim outpath = proj.TempDir + subtitle.Filename + subtitle.ExtFull
+                Dim outpath = Path.Combine(proj.TempDir, subtitle.Filename + subtitle.ExtFull)
 
                 If Not OverrideExisting AndAlso outpath.FileExists Then
                     Continue For
@@ -560,7 +560,7 @@ Public Class MP4BoxDemuxer
                 proc.SkipString = "|"
                 proc.Header = "Extract cover"
                 proc.Package = Package.MP4Box
-                proc.Arguments = "-dump-cover " + proj.SourceFile.Escape + " -out " + (proj.TempDir + "cover.jpg").Escape
+                proc.Arguments = "-dump-cover " + proj.SourceFile.Escape + " -out " + Path.Combine(proj.TempDir, "cover.jpg").Escape
                 proc.Start()
             End Using
         End If
@@ -574,7 +574,7 @@ Public Class MP4BoxDemuxer
                 proc.SkipString = "|"
                 proc.Package = Package.MP4Box
                 proc.Arguments = "-dump-chap-ogg " + proj.SourceFile.Escape +
-                    " -out " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape
+                    " -out " + Path.Combine(proj.TempDir, proj.SourceFile.Base + "_chapters.txt").Escape
                 proc.Start()
             End Using
         End If
@@ -601,7 +601,7 @@ Public Class MP4BoxDemuxer
             Exit Sub
         End If
 
-        Dim outpath = proj.TempDir + proj.SourceFile.Base + streams(0).ExtFull
+        Dim outpath = Path.Combine(proj.TempDir, proj.SourceFile.Base + streams(0).ExtFull)
 
         If outpath = proj.SourceFile OrElse (Not overrideExisting AndAlso outpath.FileExists) Then
             Exit Sub
@@ -642,7 +642,7 @@ Public Class MP4BoxDemuxer
             Exit Sub
         End If
 
-        Dim outPath = proj.TempDir + Audio.GetBaseNameForStream(sourcefile, stream) + stream.ExtFull
+        Dim outPath = Path.Combine(proj.TempDir, Audio.GetBaseNameForStream(sourcefile, stream) + stream.ExtFull)
 
         If Not overrideExisting AndAlso outPath.FileExists Then
             Exit Sub
@@ -759,7 +759,7 @@ Public Class mkvDemuxer
                 proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = proj.SourceFile.Escape + " --ui-language en chapters " + (proj.TempDir + proj.SourceFile.Base + "_chapters.xml").Escape
+                proc.Arguments = proj.SourceFile.Escape + " --ui-language en chapters " + Path.Combine(proj.TempDir, proj.SourceFile.Base + "_chapters.xml").Escape
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
             End Using
@@ -771,7 +771,7 @@ Public Class mkvDemuxer
                 proc.WriteLog(stdout + BR)
                 proc.Encoding = Encoding.UTF8
                 proc.Package = Package.mkvextract
-                proc.Arguments = proj.SourceFile.Escape + " --ui-language en chapters " + (proj.TempDir + proj.SourceFile.Base + "_chapters.txt").Escape + " --simple"
+                proc.Arguments = proj.SourceFile.Escape + " --ui-language en chapters " + Path.Combine(proj.TempDir, proj.SourceFile.Base + "_chapters.txt").Escape + " --simple"
                 proc.AllowedExitCodes = {0, 1, 2}
                 proc.Start()
             End Using
@@ -787,7 +787,7 @@ Public Class mkvDemuxer
                     proc.SkipString = "Progress: "
                     proc.Encoding = Encoding.UTF8
                     proc.Package = Package.mkvextract
-                    proc.Arguments = "--ui-language en timestamps_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + (proj.TempDir + proj.SourceFile.Base + "_timestamps.txt").Escape
+                    proc.Arguments = "--ui-language en timestamps_v2 " + proj.SourceFile.Escape + " " & streamOrder & ":" + Path.Combine(proj.TempDir, proj.SourceFile.Base + "_timestamps.txt").Escape
                     proc.AllowedExitCodes = {0, 1, 2}
                     proc.Start()
                 End Using
@@ -858,7 +858,7 @@ Public Class mkvDemuxer
             Dim videoStreams = MediaInfo.GetVideoStreams(sourcefile)
 
             If videoStreams.Count > 0 Then
-                Dim outPath = proj.TempDir + sourcefile.Base + videoStreams(0).ExtFull
+                Dim outPath = Path.Combine(proj.TempDir, sourcefile.Base + videoStreams(0).ExtFull)
 
                 If outPath <> sourcefile Then
                     args += " " & id & ":" + outPath.Escape
@@ -897,7 +897,7 @@ Public Class mkvDemuxer
                 Dim forced = If(subtitle.Forced, "_forced", "")
                 Dim commentary = If(subtitle.Commentary, "_commentary", "")
                 Dim hearingimpaired = If(subtitle.Hearingimpaired, "_hearingimpaired", "")
-                Dim outPath = proj.TempDir + subtitle.Filename + _default + forced + commentary + hearingimpaired + subtitle.ExtFull
+                Dim outPath = Path.Combine(proj.TempDir, subtitle.Filename + _default + forced + commentary + hearingimpaired + subtitle.ExtFull)
 
                 If subtitle.Ext = "mks" Then
                     Dim arguments = "--ui-language en --no-audio --no-video --no-global-tags --no-attachments --no-buttons -o " + outPath.Escape + " " + sourcefile.Escape
@@ -933,7 +933,7 @@ Public Class mkvDemuxer
             End If
 
             Dim base = If(useStreamName, Audio.GetBaseNameForStream(sourcefile, stream), sourcefile.Base)
-            Dim outPath = proj.TempDir + base + "." + ext
+            Dim outPath = Path.Combine(proj.TempDir, base + "." + ext)
             audioOutPaths.Add(outPath, stream)
             outPaths.Add(outPath)
             args += " " & stream.StreamOrder & ":" + outPath.Escape
@@ -977,7 +977,7 @@ Public Class mkvDemuxer
 
     Shared Function GetAttachmentPath(proj As Project, name As String) As String
         Dim prefix = If(name.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land"), "", proj.SourceFile.Base + "_attachment_")
-        Dim ret = proj.TempDir + prefix + name.Base + name.ExtFull
+        Dim ret = Path.Combine(proj.TempDir, prefix + name.Base + name.ExtFull)
         Return ret
     End Function
 

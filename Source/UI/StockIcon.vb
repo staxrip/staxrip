@@ -122,17 +122,31 @@ Namespace UI
         End Function
 
         Shared Function GetSmallImage(identifier As StockIconIdentifier) As Bitmap
-            Dim ptr = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.Small)
-            Dim bmp = Icon.FromHandle(ptr).ToBitmap
-            DestroyIcon(ptr)
-            Return bmp
+            Try
+                Dim ptr = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.Small)
+                If ptr = IntPtr.Zero Then
+                    Return New Bitmap(1, 1)
+                End If
+                Dim bmp = Icon.FromHandle(ptr).ToBitmap
+                DestroyIcon(ptr)
+                Return bmp
+            Catch ex As Exception
+            End Try
+            Return New Bitmap(1, 1)
         End Function
 
         Shared Function GetImage(identifier As StockIconIdentifier) As Image
-            Dim ptr = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.ShellSize)
-            Dim bmp = Icon.FromHandle(ptr).ToBitmap
-            DestroyIcon(ptr)
-            Return bmp
+            Try
+                Dim ptr As IntPtr = GetIcon(identifier, StockIconOptions.Handle Or StockIconOptions.ShellSize)
+                If ptr = IntPtr.Zero Then
+                    Return New Bitmap(1, 1)
+                End If
+                Dim bmp = Icon.FromHandle(ptr).ToBitmap
+                DestroyIcon(ptr)
+                Return bmp
+            Catch ex As Exception
+            End Try
+            Return New Bitmap(1, 1)
         End Function
 
         Shared Function GetIcon(identifier As StockIconIdentifier, flags As StockIconOptions) As IntPtr

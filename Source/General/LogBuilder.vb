@@ -184,11 +184,11 @@ Public Class LogBuilder
         End If
 
         If proj.SourceFile = "" Then
-            Return Folder.Temp + "staxrip.log"
+            Return Path.Combine(Folder.Temp, "staxrip.log")
         ElseIf proj.TempDir = "" Then
-            Return proj.SourceFile.Dir + proj.SourceFile.Base + "_staxrip.log"
+            Return Path.Combine(proj.SourceFile.Dir, proj.SourceFile.Base + "_staxrip.log")
         Else
-            Return proj.TempDir + proj.TargetFile.Base + "_staxrip.log"
+            Return Path.Combine(proj.TempDir, proj.TargetFile.Base + "_staxrip.log")
         End If
     End Function
 End Class

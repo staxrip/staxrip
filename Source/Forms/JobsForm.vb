@@ -217,7 +217,7 @@ Friend Class JobsForm
         AddHandler lv.ItemRemoved, Sub(item)
                                        Dim fp = DirectCast(item.Tag, Job).Path
 
-                                       If fp.StartsWith(Folder.Settings + "Batch Projects\") Then
+                                       If fp.StartsWith(Path.Combine(Folder.Settings, "Batch Projects") + Path.DirectorySeparatorChar) Then
                                            FileHelp.Delete(fp)
                                        End If
                                    End Sub

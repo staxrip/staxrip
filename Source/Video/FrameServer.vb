@@ -160,7 +160,7 @@ Public Class FrameServerFactory
             Package.VapourSynth.Directory,
             Package.AviSynth.Directory,
             Package.FFTW.Directory,
-            Folder.Startup + "Apps\Support\VC")
+            IO.Path.Combine(Folder.Startup, "Apps", "Support", "VC"))
 
         If (path.Ext = "avs" AndAlso s.AviSynthMode = FrameServerMode.VFW) OrElse
            (path.Ext = "vpy" AndAlso s.VapourSynthMode = FrameServerMode.VFW) Then
@@ -427,14 +427,14 @@ End Class
 
 Public Class FrameServerHelp
     Shared Function GetSynthPath() As String
-        Return If(IsAviSynth(), Package.AviSynth.Path, Package.VapourSynth.Directory + "VSScript.dll")
+        Return If(IsAviSynth(), Package.AviSynth.Path, Path.Combine(Package.VapourSynth.Directory, "VSScript.dll"))
     End Function
 
     Shared Function GetAviSynthInstallPath() As String
         Dim dll = Registry.ClassesRoot.GetString("CLSID\{E6D6B700-124D-11D4-86F3-DB80AFD98778}\InProcServer32", Nothing)
 
         If dll = "AviSynth.dll" Then
-            dll = Folder.System + "AviSynth.dll"
+            dll = Path.Combine(Folder.System, "AviSynth.dll")
         End If
 
         If dll.FileExists Then
@@ -469,7 +469,7 @@ Public Class FrameServerHelp
     End Function
 
     Shared Function IsAviSynthSystemInstalled() As Boolean
-        Return File.Exists(Folder.System + "AviSynth.dll")
+        Return File.Exists(Path.Combine(Folder.System, "AviSynth.dll"))
     End Function
 
     Shared Function IsAviSynth() As Boolean
@@ -497,11 +497,13 @@ Public Class FrameServerHelp
 
     Shared Sub MoveFiles(srcDir As String, targetDir As String, fileNames As String())
         For Each name In fileNames
+            Dim src = Path.Combine(srcDir, name)
+            Dim dest = Path.Combine(targetDir, name)
             Try
-                FileHelp.Move(srcDir + name, targetDir + name)
+                FileHelp.Move(src, dest)
             Catch ex As Exception
-                MsgError("Could not move file from:" + BR2 + srcDir + name + BR2 +
-                         "to:" + BR2 + targetDir + name + BR2 + ex.Message)
+                MsgError("Could not move file from:" + BR2 + src + BR2 +
+                         "to:" + BR2 + dest + BR2 + ex.Message)
             End Try
         Next
     End Sub
@@ -513,7 +515,7 @@ Public Class FrameServerHelp
 
         If IsffmpegUsed() Then
             If IsAviSynthSystemInstalled() AndAlso Not IsAviSynthPortable() Then
-                Dim targetFolder = Folder.Startup + "Apps\Encoders\ffmpeg\"
+                Dim targetFolder = Path.Combine(Folder.Startup, "Apps", "Encoders", "ffmpeg")
                 FolderHelp.Create(targetFolder)
                 MoveFiles(Package.ffmpeg.Directory, targetFolder, {Package.ffmpeg.Filename, "ffmpeg Help.txt"})
             Else
@@ -530,7 +532,7 @@ Public Class FrameServerHelp
                 End If
             Else
                 If Package.x264.Directory.PathEquals(Package.AviSynth.Directory) Then
-                    Dim targetFolder = Folder.Startup + "Apps\Encoders\x264\"
+                    Dim targetFolder = Path.Combine(Folder.Startup, "Apps", "Encoders", "x264")
                     FolderHelp.Create(targetFolder)
                     MoveFiles(Package.x264.Directory, targetFolder, {Package.x264.Filename, "x264 Help.txt"})
                 End If
@@ -546,7 +548,7 @@ Public Class FrameServerHelp
                 End If
             Else
                 If Package.x265.Directory.PathEquals(Package.AviSynth.Directory) Then
-                    Dim targetFolder = Folder.Startup + "Apps\Encoders\x265\"
+                    Dim targetFolder = Path.Combine(Folder.Startup, "Apps", "Encoders", "x265")
                     FolderHelp.Create(targetFolder)
                     MoveFiles(Package.x265.Directory, targetFolder, {Package.x265.Filename, "x265 Help.txt"})
                 End If

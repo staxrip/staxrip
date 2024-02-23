@@ -380,10 +380,10 @@ Public Class VideoComparisonForm
                     TempFilePath = sourcePath.DirAndBase + "_compare" + sourcePath.ExtFull
                 Case "png"
                     FileType = VideoComparisonFileType.Picture
-                    TempFilePath = Folder.Temp + Guid.NewGuid.ToString + ".avs"
+                    TempFilePath = Path.Combine(Folder.Temp, Guid.NewGuid.ToString + ".avs")
                 Case Else
                     FileType = VideoComparisonFileType.Video
-                    TempFilePath = Folder.Temp + Guid.NewGuid.ToString + ".avs"
+                    TempFilePath = Path.Combine(Folder.Temp, Guid.NewGuid.ToString + ".avs")
             End Select
 
             Dim script As New VideoScript With {

@@ -67,7 +67,7 @@ Public MustInherit Class VideoEncoder
             If TypeOf Muxer Is NullMuxer Then
                 Return p.TargetFile
             Else
-                Return p.TempDir + p.TargetFile.Base + "_out." + OutputExt
+                Return Path.Combine(p.TempDir, p.TargetFile.Base + "_out." + OutputExt)
             End If
         End Get
     End Property
@@ -276,7 +276,7 @@ Public MustInherit Class VideoEncoder
         Dim newPath = p.TargetFile.ChangeExt(Muxer.OutputExt)
 
         If p.SourceFile <> "" AndAlso newPath.ToLowerInvariant = p.SourceFile.ToLowerInvariant Then
-            newPath = newPath.Dir + newPath.Base + "_new" + newPath.ExtFull
+            newPath = Path.Combine(newPath.Dir, newPath.Base + "_new" + newPath.ExtFull)
         End If
 
         g.MainForm.tbTargetFile.Text = newPath
@@ -609,7 +609,7 @@ Public Class BatchEncoder
         End If
 
         script.Filters.Add(New VideoFilter("aaa", "aaa", code))
-        script.Path = (p.TempDir + p.TargetFile.Base + "_CompCheck." + script.FileType).ToShortFilePath
+        script.Path = Path.Combine(p.TempDir, p.TargetFile.Base + "_CompCheck." + script.FileType).ToShortFilePath
         script.Synchronize()
 
         Dim line = Macro.Expand(CompCheckCommandLines)
@@ -631,7 +631,7 @@ Public Class BatchEncoder
             End Try
         End Using
 
-        Dim bits = (New FileInfo(p.TempDir + p.TargetFile.Base + "_CompCheck." + OutputExt).Length) * 8
+        Dim bits = (New FileInfo(Path.Combine(p.TempDir, p.TargetFile.Base + "_CompCheck." + OutputExt)).Length) * 8
         p.Compressibility = (bits / script.GetFrameCount) / (p.TargetWidth * p.TargetHeight)
 
         OnAfterCompCheck()
@@ -657,8 +657,8 @@ Public Class NullEncoder
         For Each i In {".h264", ".avc", ".h265", ".hevc", ".mpg", ".avi"}
             If File.Exists(p.SourceFile.DirAndBase + "_out" + i) Then
                 Return p.SourceFile.DirAndBase + "_out" + i
-            ElseIf File.Exists(p.TempDir + p.TargetFile.Base + "_out" + i) Then
-                Return p.TempDir + p.TargetFile.Base + "_out" + i
+            ElseIf File.Exists(Path.Combine(p.TempDir, p.TargetFile.Base + "_out" + i)) Then
+                Return Path.Combine(p.TempDir, p.TargetFile.Base + "_out" + i)
             End If
         Next
 
@@ -682,7 +682,7 @@ Public Class NullEncoder
                             Return sourceFile
                         End If
 
-                        Return p.TempDir + sourceFile.Base + streams(0).ExtFull
+                        Return Path.Combine(p.TempDir, sourceFile.Base + streams(0).ExtFull)
                 End Select
             End If
 

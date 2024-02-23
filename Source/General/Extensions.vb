@@ -34,13 +34,7 @@ Module StringExtensions
             Return ""
         End If
 
-        Dim temp = TrimTrailingSeparator(path)
-
-        If temp.Contains(Separator) Then
-            path = temp.LeftLast(Separator) + Separator
-        End If
-
-        Return path
+        Return IO.Path.GetDirectoryName(path)
     End Function
 
     <Extension>
@@ -167,9 +161,7 @@ Module StringExtensions
     Function FileName(instance As String) As String
         If instance = "" Then Return ""
 
-        Dim index = instance.LastIndexOf(Path.DirectorySeparatorChar)
-
-        Return If(index > -1, instance.Substring(index + 1), instance)
+        Return Path.GetFileName(instance)
     End Function
 
     <Extension()>
@@ -207,6 +199,8 @@ Module StringExtensions
     <Extension()>
     Function ExistingParent(instance As String) As String
         Dim ret = instance.Parent
+
+        ' what sp
         If Not Directory.Exists(ret) Then ret = ret.Parent Else Return ret
         If Not Directory.Exists(ret) Then ret = ret.Parent Else Return ret
         If Not Directory.Exists(ret) Then ret = ret.Parent Else Return ret
@@ -250,19 +244,11 @@ Module StringExtensions
             Return ""
         End If
 
-        Dim chars = filepath.ToCharArray()
-
-        For x = filepath.Length - 1 To 0 Step -1
-            If chars(x) = Separator Then
-                Return ""
-            End If
-
-            If chars(x) = "."c Then
-                Return filepath.Substring(x + If(includeDot, 0, 1)).ToLowerInvariant()
-            End If
-        Next
-
-        Return ""
+        Dim ext = Path.GetExtension(filepath).ToLowerInvariant()
+        If Not includeDot Then
+            ext = ext.TrimStart("."c)
+        End If
+        Return ext
     End Function
 
     <Extension()>
@@ -273,26 +259,14 @@ Module StringExtensions
 
         Dim ret = instance
 
-        If ret.Contains(Separator) Then
-            ret = ret.RightLast(Separator)
-        End If
-
-        If ret.Contains(".") Then
-            ret = ret.LeftLast(".")
-        End If
-
-        Return ret
+        Return Path.GetFileNameWithoutExtension(ret)
     End Function
 
     <Extension()>
     Function Dir(instance As String) As String
         If instance = "" Then Return ""
 
-        If instance.Contains(Path.DirectorySeparatorChar) Then
-            instance = instance.LeftLast(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar
-        End If
-
-        Return instance
+        Return Path.GetDirectoryName(instance)
     End Function
 
     <Extension()>
@@ -320,7 +294,7 @@ Module StringExtensions
 
         Dim sb As New StringBuilder(GlobalClass.MAX_PATH)
         Native.GetShortPathName(instance.Dir, sb, sb.Capacity)
-        Dim ret = sb.ToString + instance.FileName
+        Dim ret = Path.Combine(sb.ToString, instance.FileName)
 
         If ret.Length <= GlobalClass.MAX_PATH Then
             Return ret
@@ -355,13 +329,12 @@ Module StringExtensions
             Return ""
         End If
 
-        instance = TrimTrailingSeparator(instance)
-        Return instance.RightLast(Separator)
+        Return Path.GetDirectoryName(instance)
     End Function
 
     <Extension()>
-    Function DirAndBase(path As String) As String
-        Return path.Dir + path.Base
+    Function DirAndBase(p As String) As String
+        Return Path.Combine(p.Dir, p.Base)
     End Function
 
     <Extension()>
@@ -407,11 +380,7 @@ Module StringExtensions
             Return ""
         End If
 
-        While instance.EndsWith(Separator + Separator)
-            instance = instance.Substring(0, instance.Length - 1)
-        End While
-
-        Return If(instance.EndsWith(Separator), instance, instance + Separator)
+        Return New DirectoryInfo(instance).FullName
     End Function
 
     <Extension()>
@@ -1198,8 +1167,8 @@ Module ControlExtensions
 
     <Extension()>
     Function SetSymbolAsText(instance As ButtonEx, symbol As Symbol) As ButtonEx
-        Dim awesomePath As String = Folder.Apps + "\Fonts\FontAwesome.ttf"
-        Dim segoePath As String = Folder.Apps + "\Fonts\Segoe-MDL2-Assets.ttf"
+        Dim awesomePath As String = Path.Combine(Folder.Apps, "Fonts", "FontAwesome.ttf")
+        Dim segoePath As String = Path.Combine(Folder.Apps, "Fonts", "Segoe-MDL2-Assets.ttf")
 
         Dim fontFilesExist As Boolean = File.Exists(awesomePath) AndAlso File.Exists(segoePath)
         If Not fontFilesExist Then Return Nothing

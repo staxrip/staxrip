@@ -419,7 +419,7 @@ Public Class Proc
             End If
         Next
 
-        Dim path = dic("Path")
+        Dim path = dic("path")
 
         For Each pack In Package.Items.Values
             If pack.Path.Ext = "exe" AndAlso pack.HelpSwitch IsNot Nothing AndAlso
@@ -429,7 +429,7 @@ Public Class Proc
             End If
         Next
 
-        Dim cppDir = Folder.Startup + "Apps\Support\VC"
+        Dim cppDir = IO.Path.Combine(Folder.Startup, "Apps", "Support", "VC")
 
         If Not path.Contains(cppDir + ";") Then
             path = cppDir + ";" + path

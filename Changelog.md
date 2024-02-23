@@ -14,6 +14,12 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.38.1 (not published yet)
+====================
+
+- Internal: Bring "Improve Linux compatibility" into master (thanks to @Valdiralita ([#852](/../../pull/852)))
+
+
 v2.38.0 (2024-04-16)
 ====================
 

@@ -314,7 +314,7 @@ Public MustInherit Class AudioProfile
 
         If HasStream Then
             base = Audio.GetBaseNameForStream(File, Stream)
-        ElseIf p.TempDir.EndsWithEx("_temp\") AndAlso File.Base.StartsWithEx(p.SourceFile.Base) Then
+        ElseIf Not String.IsNullOrWhiteSpace(p.TempDir) AndAlso New DirectoryInfo(p.TempDir).Name.EndsWith("_temp") AndAlso File.Base.StartsWithEx(p.SourceFile.Base) Then
             base = File.Base.Substring(p.SourceFile.Base.Length).Trim
         Else
             base = File.Base
@@ -344,7 +344,7 @@ Public MustInherit Class AudioProfile
             End If
         End If
 
-        Dim outfile = p.TempDir + base + "." + OutputFileType.ToLowerInvariant
+        Dim outfile = Path.Combine(p.TempDir, base + "." + OutputFileType.ToLowerInvariant)
 
         If File = outfile Then
             outfile = outfile.Base + "_new." + OutputFileType.ToLowerInvariant

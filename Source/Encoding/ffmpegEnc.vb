@@ -306,7 +306,7 @@ Public Class ffmpegEnc
                     End If
 
                     If includePaths Then
-                        sb.Append(" -passlogfile " + (p.TempDir + p.TargetFile.Base + "_2pass").Escape)
+                        sb.Append(" -passlogfile " + (Path.Combine(p.TempDir, p.TargetFile.Base + "_2pass")).Escape)
                     End If
                 Case EncodingMode.OnePass
                     sb.Append($" -b:v {p.VideoBitrate}k")

@@ -792,7 +792,7 @@ Public Class PreviewForm
     <Command("Plays the script with a player.")>
     Sub ShowExternalPlayer()
         Dim script = PreviewScript.GetNewScript()
-        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        script.Path = Path.Combine(p.TempDir, p.TargetFile.Base + "_play." + script.FileType)
         g.UpdateTrim(script)
         g.PlayScript(script)
     End Sub
@@ -800,7 +800,7 @@ Public Class PreviewForm
     <Command("Plays the script with mpv.net.")>
     Sub PlayWithMpvnet()
         Dim script = PreviewScript.GetNewScript()
-        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        script.Path = Path.Combine(p.TempDir, p.TargetFile.Base + "_play." + script.FileType)
         g.UpdateTrim(script)
         g.PlayScriptWithMPV(script, "--start=" + GetPlayPosition.ToString)
     End Sub
@@ -808,7 +808,7 @@ Public Class PreviewForm
     <Command("Plays the script with MPC.")>
     Sub PlayWithMPC()
         Dim script = PreviewScript.GetNewScript()
-        script.Path = p.TempDir + p.TargetFile.Base + "_play." + script.FileType
+        script.Path = Path.Combine(p.TempDir, p.TargetFile.Base + "_play." + script.FileType)
         g.UpdateTrim(script)
         g.PlayScriptWithMPC(script, "/start " & GetPlayPosition.TotalMilliseconds)
     End Sub
@@ -919,7 +919,7 @@ Public Class PreviewForm
 
     <Command("Shows a dialog to navigate to a chapter.")>
     Sub GoToChapter()
-        Dim fp = p.TempDir + p.SourceFile.Base + "_chapters.txt"
+        Dim fp = Path.Combine(p.TempDir, p.SourceFile.Base + "_chapters.txt")
 
         If Not File.Exists(fp) Then
             MsgError("No chapter file found.")

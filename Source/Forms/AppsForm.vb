@@ -654,11 +654,11 @@ Public Class AppsForm
                                 ToolUpdate.Extract()
                             Else
                                 ToolUpdate = New ToolUpdate(CurrentPackage, Me)
-                                ToolUpdate.ExtractDir = Folder.Temp + Guid.NewGuid.ToString + "\"
+                                ToolUpdate.ExtractDir = Path.Combine(Folder.Temp, Guid.NewGuid.ToString())
                                 Directory.CreateDirectory(ToolUpdate.ExtractDir)
 
                                 For Each i In files
-                                    FileHelp.Copy(i, ToolUpdate.ExtractDir + i.FileName)
+                                    FileHelp.Copy(i, Path.Combine(ToolUpdate.ExtractDir, i.FileName))
                                 Next
 
                                 ToolUpdate.DeleteOldFiles()
@@ -819,7 +819,7 @@ Public Class AppsForm
 
             Select Case td.Show
                 Case "csv"
-                    Dim csvFile = Folder.Temp + "staxrip tools.csv"
+                    Dim csvFile = Path.Combine(Folder.Temp, "staxrip tools.csv")
                     g.ConvertToCSV(";", rows).WriteFileUTF8(csvFile)
                     g.ShellExecute(g.GetAppPathForExtension("csv", "txt"), csvFile.Escape)
                 Case "ogv"
@@ -1045,7 +1045,7 @@ Public Class AppsForm
     End Sub
 
     Sub miEditChangelog_Click(sender As Object, e As EventArgs) Handles miEditChangelog.Click
-        Dim path = Folder.Startup + "..\Changelog.md"
+        Dim path = IO.Path.Combine(Folder.Startup, "..", "Changelog.md")
 
         If File.Exists(path) Then
             g.ShellExecute(path)
@@ -1086,31 +1086,31 @@ Public Class AppsForm
     Sub miPATHEnvVar_Click(sender As Object, e As EventArgs) Handles miPATHEnvVar.Click
         'crash report by user
         Try
-            Dim dir = CurrentPackage.Directory.TrimTrailingSeparator
-            Dim path = Environment.GetEnvironmentVariable("path", EnvironmentVariableTarget.User)
-            path = path.Replace(";;", ";").TrimEnd(";"c)
+            'no EnvironmentVariableTarget.User on unix systems, Machine would require admin permissions. process is not persistet -> conditional check to not break windows behaviour.
+            Dim pathTarget = If(RuntimeInformation.IsOSPlatform(OSPlatform.Windows), EnvironmentVariableTarget.User, EnvironmentVariableTarget.Process)
+            Dim dir = CurrentPackage.Directory.FixDir
+            Dim pathVar = If(Environment.GetEnvironmentVariable("path", pathTarget), "")
+            Dim pathItems = pathVar.Split(New String() {Path.PathSeparator}, StringSplitOptions.RemoveEmptyEntries).ToList()
 
             Using td As New TaskDialog(Of String)
-                td.Title = "Modify the user PATH environment variable"
-                td.AddCommand("Add", $"Add {CurrentPackage.Name} to user PATH environment variable", "add")
-                td.AddCommand("Remove", $"Remove {CurrentPackage.Name} from user PATH environment variable", "remove")
+                td.Title = "Modify the process PATH environment variable"
+                td.AddCommand("Add", $"Add {CurrentPackage.Name} to process PATH environment variable", "add")
+                td.AddCommand("Remove", $"Remove {CurrentPackage.Name} from process PATH environment variable", "remove")
                 td.AddCommand("Editor", "Show environment variable editor", "edit")
 
                 Select Case td.Show
                     Case "add"
-                        If path.Contains(dir + ";") OrElse path.EndsWith(";" + dir) Then
+                        If pathItems.Contains(dir) Then
                             MsgError("Folder is already in PATH")
                         Else
-                            Environment.SetEnvironmentVariable("path", path + ";" + dir, EnvironmentVariableTarget.User)
+                            pathItems.Add(dir)
+                            Environment.SetEnvironmentVariable("path", String.Join(Path.PathSeparator, pathItems), pathTarget)
                             MsgInfo("Folder was added to PATH")
                         End If
                     Case "remove"
-                        If path.Contains(dir + ";") Then
-                            Environment.SetEnvironmentVariable("path", path.Replace(dir + ";", ""), EnvironmentVariableTarget.User)
-                            MsgInfo("Folder was removed from PATH")
-                        ElseIf path.EndsWith(";" + dir) Then
-                            path = path.Substring(0, path.Length - (";" + dir).Length)
-                            Environment.SetEnvironmentVariable("path", path, EnvironmentVariableTarget.User)
+                        If pathItems.Contains(dir) Then
+                            pathItems.Remove(dir)
+                            Environment.SetEnvironmentVariable("path", String.Join(Path.PathSeparator, pathItems), pathTarget)
                             MsgInfo("Folder was removed from PATH")
                         Else
                             MsgError("Folder is not in PATH")

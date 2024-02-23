@@ -362,13 +362,13 @@ Public Class Macro
         If value.Contains("%temp_dir%") Then value = value.Replace("%temp_dir%", proj.TempDir)
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%temp_file%") Then value = value.Replace("%temp_file%", proj.TempDir + proj.SourceFile.Base)
+        If value.Contains("%temp_file%") Then value = value.Replace("%temp_file%", Path.Combine(proj.TempDir, proj.SourceFile.Base))
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%source_temp_file%") Then value = value.Replace("%source_temp_file%", proj.TempDir + g.GetSourceBase)
+        If value.Contains("%source_temp_file%") Then value = value.Replace("%source_temp_file%", Path.Combine(proj.TempDir, g.GetSourceBase))
         If Not value.Contains("%") Then Return value
 
-        If value.Contains("%target_temp_file%") Then value = value.Replace("%target_temp_file%", proj.TempDir + proj.TargetFile.Base)
+        If value.Contains("%target_temp_file%") Then value = value.Replace("%target_temp_file%", Path.Combine(proj.TempDir, proj.TargetFile.Base))
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%source_name%") Then value = value.Replace("%source_name%", proj.SourceFile.Base)

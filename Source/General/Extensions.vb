@@ -783,6 +783,25 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function ReplaceTabsWithSpaces(value As String, Optional tabLength As Integer = 8) As String
+        If String.IsNullOrWhiteSpace(value) Then Return ""
+        If Not value.Contains(VB6.vbTab) Then Return value
+
+        Dim splitted = value.Split({VB6.vbTab}, StringSplitOptions.None)
+        Dim ret = New StringBuilder()
+
+        For Each split As String In splitted
+            If String.IsNullOrEmpty(split) Then
+                ret.Append(New String(" "c, tabLength))
+            Else
+                ret.Append(split & New String(" "c, tabLength - (split.RightLast(VB6.vbCrLf).Length Mod tabLength)))
+            End If
+        Next
+
+        Return ret.ToString()
+    End Function
+
+    <Extension()>
     Function Reverse(value As String) As String
         Dim chars = value.ToCharArray
         Array.Reverse(chars)

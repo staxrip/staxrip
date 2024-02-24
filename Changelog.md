@@ -19,6 +19,7 @@ v2.37.4 (not published yet)
 
 - UI: Trigger event "While Processing" more often, but also time limited
 - UI: Make timeout for error messages on job processing optional
+- UI: Convert tabs to spaces on Processing window for better looking output ([#1243](/../../issues/1243))
 
 
 v2.37.3 (2024-03-23)

@@ -148,7 +148,7 @@ Public Class ProcController
         If theme Is Nothing Then theme = ThemeManager.CurrentTheme
 
         If text = "" OrElse Not s.OutputHighlighting Then
-            LogTextBox.Text = text
+            LogTextBox.Text = text?.ReplaceTabsWithSpaces()
             LogTextBox.BlockPaint = False
             _lastHighlightedText = ""
             Exit Sub
@@ -182,7 +182,7 @@ Public Class ProcController
             Dim isX265 = Proc.Package Is Package.x265
             Dim isSvtAv1 = Proc.Package Is Package.SvtAv1EncApp
 
-            LogTextBox.Text = text
+            LogTextBox.Text = text?.ReplaceTabsWithSpaces()
 
             matches = Regex.Matches(LogTextBox.Text, "(?<=\n)----------.*----------(?=\n)", RegexOptions.IgnoreCase)
             For Each m As Match In matches

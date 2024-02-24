@@ -1063,7 +1063,7 @@ Public Class VCEEnc
                 Case "h264"
                     Select Case Mode.Value
                         Case 0
-                            ret += If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
+                            ret += If(QPAdvanced.Value, $" --cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
                         Case 1
                             ret += " --cbr " & rate
                         Case 2
@@ -1080,7 +1080,7 @@ Public Class VCEEnc
                 Case "hevc"
                     Select Case Mode.Value
                         Case 0
-                            ret += If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
+                            ret += If(QPAdvanced.Value, $" --cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
                         Case 1
                             ret += " --cbr " & rate
                         Case 2
@@ -1091,7 +1091,7 @@ Public Class VCEEnc
                 Case "av1"
                     Select Case Mode.Value
                         Case 0
-                            ret += If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
+                            ret += If(QPAdvanced.Value, $" --cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
                         Case 1
                             ret += " --cbr " & rate
                         Case 2

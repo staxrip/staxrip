@@ -56,6 +56,7 @@ v2.37.0 (not published yet)
 - NVEncC: Add "--vpp-nvvfx-artifact-reduction" parameter ([#1240](/../../issues/1240))
 - NVEncC: Add "--vpp-nvvfx-denoise" parameter ([#1240](/../../issues/1240))
 - NVEncC: Fix "--vpp-resize" parameter setting for "nvvfx-superres"
+- VCEEncC: Fix problem with missing space before parameter call
 - Update tools
     - ...
 - Update AviSynth+ plugins

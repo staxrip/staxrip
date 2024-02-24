@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.38.0 (not published yet)
+v2.38.0 (2024-04-16)
 ====================
 
 - UI: Add "Changelog" to Main Menu
@@ -60,8 +60,6 @@ v2.38.0 (not published yet)
     - SvtAv1EncApp v2.0.0-7+6-62325458-.Mod-by-Patman.-x64-msvc1937
     - x264 v0.164.3190+7-f54976d-.Mod-by-Patman.-x64-gcc13.2.0
     - x265 v3.6+2+13-9a3dac6e5-.Mod-by-Patman.-x64-avx2-msvc1937
-- Update AviSynth+ plugins
-    - ...
 - Update Dual plugins
     - BestSource R2-RC4
     - L-SMASH-Works v1194

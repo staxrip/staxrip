@@ -3611,12 +3611,12 @@ Public Class MainForm
         Dim searchTask = Task.Run(Sub()
                                       Try
                                           files = Directory.GetFiles(proj.SourceFile.Dir(), $"{proj.SourceFile.Base}*.*", SearchOption.TopDirectoryOnly)
-                                          jsonFile = files.Where(Function(x) {"json"}.Contains(x.Ext) AndAlso Not x.Base.EndsWith("_Config"))?.FirstOrDefault()
+                                          jsonFile = files.Where(Function(x) {"json"}.Contains(x.Ext) AndAlso Not x.Base.EndsWithAny("_L5", "_Config"))?.FirstOrDefault()
                                           rpuFile = files.Where(Function(x) {"bin", "rpu"}.Contains(x.Ext) AndAlso Not x.Base.EndsWith("_Cropped"))?.FirstOrDefault()
 
                                           If Not String.IsNullOrWhiteSpace(proj.TempDir) AndAlso String.IsNullOrWhiteSpace(jsonFile) AndAlso String.IsNullOrWhiteSpace(rpuFile) Then
                                               files = Directory.GetFiles(proj.TempDir, "*.*", SearchOption.TopDirectoryOnly)
-                                              jsonFile = If(String.IsNullOrWhiteSpace(jsonFile), files?.Where(Function(x) {"json"}.Contains(x.Ext) AndAlso Not x.Base.EndsWith("_Config"))?.FirstOrDefault(), jsonFile)
+                                              jsonFile = If(String.IsNullOrWhiteSpace(jsonFile), files?.Where(Function(x) {"json"}.Contains(x.Ext) AndAlso Not x.Base.EndsWithAny("_L5", "_Config"))?.FirstOrDefault(), jsonFile)
                                               rpuFile = If(String.IsNullOrWhiteSpace(rpuFile), files?.Where(Function(x) {"bin", "rpu"}.Contains(x.Ext) AndAlso Not x.Base.EndsWith("_Cropped"))?.FirstOrDefault(), rpuFile)
                                           End If
                                       Catch ex As Exception

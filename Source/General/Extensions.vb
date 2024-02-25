@@ -371,6 +371,20 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function EndsWithAny(instance As String, ParamArray any As String()) As Boolean
+        If instance <> "" AndAlso Not any.NothingOrEmpty Then
+            Return any.Any(Function(arg) instance.EndsWith(arg))
+        End If
+    End Function
+
+    <Extension()>
+    Function StartsWithAny(instance As String, ParamArray any As String()) As Boolean
+        If instance <> "" AndAlso Not any.NothingOrEmpty Then
+            Return any.Any(Function(arg) instance.StartsWith(arg))
+        End If
+    End Function
+
+    <Extension()>
     Function EqualsAny(instance As String, ParamArray values As String()) As Boolean
         If instance = "" OrElse values.NothingOrEmpty Then
             Return False

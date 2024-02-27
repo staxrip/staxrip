@@ -754,8 +754,8 @@ Public Class Package
     Shared Property ffms2 As Package = Add(New PluginPackage With {
         .Name = "ffms2",
         .Filename = "ffms2.dll",
-        .WebURL = "https://codeberg.org/StvG/ffms2",
-        .HelpURL = "https://codeberg.org/StvG/ffms2/src/branch/main/README.md",
+        .WebURL = "https://github.com/FFMS/ffms2",
+        .HelpURL = "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md",
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource", "FFMS2"},
         .VsFilterNames = {"ffms2"}})
@@ -1570,7 +1570,18 @@ Public Class Package
             .Description = "eedi3 based resizing script that allows to resize to arbitrary resolutions while maintaining the correct image center and chroma location.",
             .HelpFilename = "EEDI3 - Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/eedi3",
+            .Dependencies = {"masktools2.dll", "dither.avsi", "eedi3.dll", "nnedi3cl.dll", "SmoothAdjust.dll"},
             .AvsFilterNames = {"eedi3_resize"}})
+
+        Add(New PluginPackage With {
+            .Name = "eedi3_resize16",
+            .Filename = "eedi3_resize16.avsi",
+            .Location = "Plugins\AVS\EEDI3",
+            .Description = "eedi3 based resizing script that allows to resize to arbitrary resolutions while maintaining the correct image center and chroma location.",
+            .HelpFilename = "EEDI3 - Readme.txt",
+            .WebURL = "http://avisynth.nl/index.php/eedi3",
+            .Dependencies = {"masktools2.dll", "dither.avsi", "eedi3.dll", "nnedi3cl.dll", "SmoothAdjust.dll"},
+            .AvsFilterNames = {"eedi3_resize16"}})
 
         Add(New PluginPackage With {
             .Name = "DeNoise Histogram",
@@ -2182,7 +2193,7 @@ Public Class Package
             .Name = "HQDN3D",
             .Filename = "libhqdn3d.dll",
             .Description = "Avisynth port of hqdn3d from avisynth/mplayer.",
-            .WebURL = "https://github.com/Hinterwaeldlers/vapoursynth-hqdn3d",
+            .WebURL = "https://github.com/myrsloik/vapoursynth-hqdn3d",
             .VsFilterNames = {"hqdn3d.Hqdn3d"}})
 
         Add(New PluginPackage With {

@@ -68,13 +68,30 @@ v2.37.0 (not published yet)
 - VCEEncC: Remove Dolby Vision support
 - x265: Add "--auto-aq" parameter ([#1241](/../../issues/1241))
 - Update tools
-    - ...
+    - DeeZy v0.1.8
+    - eac3to v3.50
+    - MKVToolNix v83.0
+    - MP4Box v2.3-DEV-rev975-ge50da0656-x64-msvc1937
+    - NVEncC v7.46
+    - Python v3.12.2
+    - QSVEncC v7.62
+    - rav1e v0.7.0-(p20240312)-x64-gcc13.2.0
+    - Subtitle Edit v4.0.4
+    - SvtAv1EncApp v2.0.0-1+3-58b1b010-.Mod-by-Patman.-x64-msvc1937
+    - VapourSynth R66
+    - VCEEncC v8.22
+    - vvencFFapp v1.11.1
+    - x264 v0.164.3186+8-53164ba-.Mod-by-Patman.-x64-gcc13.2.0
+    - x265 v3.5+156+14-df2e4c31e-.Mod-by-Patman.-x64-avx2-msvc1937
 - Update AviSynth+ plugins
-    - ...
+    - eedi3_resize16 v3.3.16
+    - JPSDR v3.3.5 (W7 AVX2)
+    - TIVTC v1.0.29
 - Update Dual plugins
-    - ...
+    - ffms2 v5.0 RC3
+    - L-SMASH-Works v1183 [20240317]
 - Update VapourSynth plugins
-    - ...
+    - HQDN3D v1.00 mod
 
 
 v2.36.0 (2024-02-23)

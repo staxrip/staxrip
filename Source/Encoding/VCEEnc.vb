@@ -42,17 +42,17 @@ Public Class VCEEnc
         End Set
     End Property
 
-    Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
-        Get
-            Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
-        End Get
-    End Property
+    'Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
+    '    Get
+    '        Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
+    '    End Get
+    'End Property
 
-    Overrides ReadOnly Property IsUnequalResizingAllowed As Boolean
-        Get
-            Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
-        End Get
-    End Property
+    'Overrides ReadOnly Property IsUnequalResizingAllowed As Boolean
+    '    Get
+    '        Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
+    '    End Get
+    'End Property
 
     Public Sub New()
         MyBase.New()
@@ -115,21 +115,21 @@ Public Class VCEEnc
         End Using
     End Sub
 
-    Overrides Function BeforeEncoding() As Boolean
-        Dim rpu = Params.GetStringParam("--dolby-vision-rpu")?.Value
-        If p.Script.IsFilterActive("Crop") AndAlso Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
-            If (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
-                p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom), True)
-                Dim newPath = p.HdrDolbyVisionMetadataFile.WriteCroppedRpu(True)
-                If Not String.IsNullOrWhiteSpace(newPath) Then
-                    Params.DolbyVisionRpu.Value = newPath
-                Else
-                    Return False
-                End If
-            End If
-        End If
-        Return True
-    End Function
+    'Overrides Function BeforeEncoding() As Boolean
+    '    Dim rpu = Params.GetStringParam("--dolby-vision-rpu")?.Value
+    '    If p.Script.IsFilterActive("Crop") AndAlso Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
+    '        If (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
+    '            p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom), True)
+    '            Dim newPath = p.HdrDolbyVisionMetadataFile.WriteCroppedRpu(True)
+    '            If Not String.IsNullOrWhiteSpace(newPath) Then
+    '                Params.DolbyVisionRpu.Value = newPath
+    '            Else
+    '                Return False
+    '            End If
+    '        End If
+    '    End If
+    '    Return True
+    'End Function
 
     Overrides Sub SetMetaData(sourceFile As String)
         If Not p.ImportVUIMetadata Then Exit Sub
@@ -632,8 +632,7 @@ Public Class VCEEnc
                         Unsharp, UnsharpRadius, UnsharpWeight, UnsharpThreshold,
                         Warpsharp, WarpsharpThreshold, WarpsharpBlur, WarpsharpType, WarpsharpDepth, WarpsharpChroma)
                     Add("VUI",
-                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True, .VisibleFunc = Function() Codec.Value = 1 OrElse Codec.Value = 2},
-                        DolbyVisionProfile, DolbyVisionRpu,
+                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True, .VisibleFunc = Function() Codec.Value = 1 OrElse Codec.Value = 2},   'DolbyVisionProfile, DolbyVisionRpu,
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},

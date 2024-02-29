@@ -37,13 +37,29 @@ Public Class x265Enc
 
     Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
         Get
+            If Not Params.DolbyVisionRpu.Visible Then Return True
             Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
         End Get
     End Property
 
     Overrides ReadOnly Property IsUnequalResizingAllowed As Boolean
         Get
+            If Not Params.DolbyVisionRpu.Visible Then Return True
             Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
+        End Get
+    End Property
+
+    Overrides ReadOnly Property DolbyVisionMetadataPath As String
+        Get
+            If Not Params.DolbyVisionRpu.Visible Then Return Nothing
+            Return Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value
+        End Get
+    End Property
+
+    Overrides ReadOnly Property Hdr10PlusMetadataPath As String
+        Get
+            If Not Params.DhdrInfo.Visible Then Return Nothing
+            Return Params.GetStringParam(Params.DhdrInfo.Switch)?.Value
         End Get
     End Property
 

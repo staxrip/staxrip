@@ -44,6 +44,18 @@ Public MustInherit Class VideoEncoder
         End Get
     End Property
 
+    Public Overridable ReadOnly Property DolbyVisionMetadataPath As String
+        Get
+            Return Nothing
+        End Get
+    End Property
+
+    Public Overridable ReadOnly Property Hdr10PlusMetadataPath As String
+        Get
+            Return Nothing
+        End Get
+    End Property
+
     ReadOnly Property OutputExtFull As String
         Get
             Return "." + OutputExt

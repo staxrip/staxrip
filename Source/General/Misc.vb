@@ -112,30 +112,33 @@ Public Class Calc
     End Function
 
     Shared Function GetSizeInBytes() As Long
-        Dim ret = (GetVideoBytes() + GetAudioBytes() + GetSubtitleBytes() + GetOverheadBytes())
+        Dim ret = (GetVideoBytes() + GetVideoMetadataBytes() + GetAudioBytes() + GetSubtitleBytes() + GetOverheadBytes())
 
-        If ret < 1 Then ret = 1
-
-        Return ret
+        Return Math.Max(1, ret)
     End Function
 
     Shared Function GetVideoBitrate() As Double
-        If p.TargetSeconds = 0 Then
-            Return 0
-        End If
+        If p.TargetSeconds = 0 Then Return 0
 
-        Dim bytes = p.TargetSize * PrefixedSize(2).Factor - GetAudioBytes() - GetSubtitleBytes() - GetOverheadBytes()
+        Dim bytes = p.TargetSize * PrefixedSize(2).Factor - GetVideoMetadataBytes() - GetAudioBytes() - GetSubtitleBytes() - GetOverheadBytes()
         Dim ret = bytes * 8 / 1000 / p.TargetSeconds
 
-        If ret < 1 Then
-            ret = 1
-        End If
-
-        Return ret
+        Return Math.Max(1, ret)
     End Function
 
     Shared Function GetVideoBytes() As Long
         Return (p.VideoBitrate \ 8) * 1000L * p.TargetSeconds
+    End Function
+
+    Shared Function GetVideoMetadataBytes() As Long
+        Dim hdr10Plus = p.VideoEncoder?.Hdr10PlusMetadataPath
+        Dim dv = p.VideoEncoder?.DolbyVisionMetadataPath
+        Dim ret = 0L
+
+        ret += hdr10Plus.FileSize()
+        ret += dv.FileSize()
+
+        Return Math.Max(0, ret)
     End Function
 
     Shared Function GetSubtitleBytes() As Long

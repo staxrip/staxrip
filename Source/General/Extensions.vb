@@ -221,6 +221,14 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function FileSize(instance As String) As Long
+        If String.IsNullOrWhiteSpace(instance) Then Return -1L
+        If Not instance.FileExists() Then Return -1L
+
+        Return New FileInfo(instance).Length
+    End Function
+
+    <Extension()>
     Function DirExists(instance As String) As Boolean
         If instance <> "" Then
             Return Directory.Exists(instance)

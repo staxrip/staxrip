@@ -34,13 +34,29 @@ Public Class NVEnc
 
     Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
         Get
+            If Not Params.DolbyVisionRpu.Visible Then Return True
             Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
         End Get
     End Property
 
     Overrides ReadOnly Property IsUnequalResizingAllowed As Boolean
         Get
+            If Not Params.DolbyVisionRpu.Visible Then Return True
             Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
+        End Get
+    End Property
+
+    Overrides ReadOnly Property DolbyVisionMetadataPath As String
+        Get
+            If Not Params.DolbyVisionRpu.Visible Then Return Nothing
+            Return Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value
+        End Get
+    End Property
+
+    Overrides ReadOnly Property Hdr10PlusMetadataPath As String
+        Get
+            If Not Params.DhdrInfo.Visible Then Return Nothing
+            Return Params.GetStringParam(Params.DhdrInfo.Switch)?.Value
         End Get
     End Property
 
@@ -497,6 +513,12 @@ Public Class NVEnc
             .Text = "Lossless",
             .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"}
 
+        Property DhdrInfo As New StringParam With {
+            .Switch = "--dhdr10-info",
+            .Text = "HDR10 Info File",
+            .BrowseFile = True,
+            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
+
         Property DolbyVisionProfile As New OptionParam With {
             .Switch = "--dolby-vision-profile",
             .Text = "Dolby Vision Profile",
@@ -846,8 +868,7 @@ Public Class NVEnc
                     Add("VUI",
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
-                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True, .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"},
-                        DolbyVisionProfile, DolbyVisionRpu,
+                        DhdrInfo, DolbyVisionProfile, DolbyVisionRpu,
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},

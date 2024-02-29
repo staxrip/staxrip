@@ -46,13 +46,29 @@ Public Class QSVEnc
 
     Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
         Get
+            If Not Params.DolbyVisionRpu.Visible Then Return True
             Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
         End Get
     End Property
 
     Overrides ReadOnly Property IsUnequalResizingAllowed As Boolean
         Get
+            If Not Params.DolbyVisionRpu.Visible Then Return True
             Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
+        End Get
+    End Property
+
+    Overrides ReadOnly Property DolbyVisionMetadataPath As String
+        Get
+            If Not Params.DolbyVisionRpu.Visible Then Return Nothing
+            Return Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value
+        End Get
+    End Property
+
+    Overrides ReadOnly Property Hdr10PlusMetadataPath As String
+        Get
+            If Not Params.DhdrInfo.Visible Then Return Nothing
+            Return Params.GetStringParam(Params.DhdrInfo.Switch)?.Value
         End Get
     End Property
 
@@ -452,6 +468,11 @@ Public Class QSVEnc
             .Text = "VBV Bufsize",
             .Config = {0, 1000000, 100}}
 
+        Property DhdrInfo As New StringParam With {
+            .Switch = "--dhdr10-info",
+            .Text = "HDR10 Info File",
+            .BrowseFile = True}
+
         Property DolbyVisionProfile As New OptionParam With {
             .Switch = "--dolby-vision-profile",
             .Text = "Dolby Vision Profile",
@@ -691,8 +712,7 @@ Public Class QSVEnc
                     Add("VUI",
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
-                        New StringParam With {.Switch = "--dhdr10-info", .Text = "HDR10 Info File", .BrowseFile = True},
-                        DolbyVisionProfile, DolbyVisionRpu,
+                        DhdrInfo, DolbyVisionProfile, DolbyVisionRpu,
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
                         New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 BG", "SMPTE 240 M", "YCgCo", "FCC", "GBR", "BT 2020 NC", "BT 2020 C"}},
                         New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}},

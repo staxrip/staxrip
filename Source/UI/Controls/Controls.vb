@@ -2709,9 +2709,9 @@ Namespace UI
 
         Sub Wheel(sender As Object, e As MouseEventArgs)
             If e.Delta > 0 Then
-                Value += Increment
+                UpControl.ClickAction?.Invoke()
             Else
-                Value -= Increment
+                DownControl.ClickAction?.Invoke()
             End If
         End Sub
 

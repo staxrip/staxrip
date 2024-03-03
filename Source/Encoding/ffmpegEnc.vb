@@ -275,7 +275,7 @@ Public Class ffmpegEnc
                     sb.Append(" -hwaccel dxva2")
                 Case "cuda"
                     sourcePath = p.LastOriginalSourceFile
-                    sb.Append(" -hwaccel_output_format cuda")
+                    sb.Append(" -hwaccel cuda -hwaccel_output_format cuda")
             End Select
 
             If sourcePath.Ext = "vpy" Then

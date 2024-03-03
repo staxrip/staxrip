@@ -52,6 +52,7 @@ v2.37.0 (not published yet)
 - UI: Enhance "Frame Mismatch" error message
 - UI: Let "Frame Mismatch" ignore cutted "Copy/Mux" runs ([#1234](/../../issues/1234))
 - UI: Write "Media Info Source File" only if it has changed ([#1221](/../../issues/1221))
+- FFmpeg: Add "-hwaccel cuda" to command line when NVIDIA decoder is selected ([#1260](/../../issues/1260))
 - NVEncC: Rearrange some parameters ([#1240](/../../issues/1240))
 - NVEncC: Add "--vpp-nvvfx-artifact-reduction" parameter ([#1240](/../../issues/1240))
 - NVEncC: Add "--vpp-nvvfx-denoise" parameter ([#1240](/../../issues/1240))

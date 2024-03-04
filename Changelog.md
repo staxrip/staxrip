@@ -56,6 +56,7 @@ v2.37.0 (not published yet)
 - UI: Fix rounding issue with number edits when using mouse wheel ([#1253](/../../issues/1253))
 - FFmpeg: Add "-hwaccel cuda" to command line when NVIDIA decoder is selected ([#1260](/../../issues/1260))
 - NVEncC: Rearrange some parameters ([#1240](/../../issues/1240))
+- NVEncC: Enable Dolby Vision only when H265 is selected ([#1261](/../../issues/1261))
 - NVEncC: Add "--vpp-nvvfx-artifact-reduction" parameter ([#1240](/../../issues/1240))
 - NVEncC: Add "--vpp-nvvfx-denoise" parameter ([#1240](/../../issues/1240))
 - NVEncC: Fix "--vpp-resize" parameter setting for "nvvfx-superres"

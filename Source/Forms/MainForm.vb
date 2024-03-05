@@ -3907,11 +3907,6 @@ Public Class MainForm
             procPriority.Expanded = True
             procPriority.Field = NameOf(s.ProcessPriority)
 
-            Dim tempDelete = ui.AddMenu(Of DeleteMode)
-            tempDelete.Text = "Delete temp files"
-            tempDelete.Expanded = True
-            tempDelete.Field = NameOf(s.DeleteTempFilesMode)
-
             Dim cmdline = ui.AddMenu(Of CommandLinePreview)
             cmdline.Text = "Command Line Preview"
             cmdline.Expanded = True
@@ -5349,7 +5344,7 @@ Public Class MainForm
             tm.AddMenu("Name of source file directory", "%source_dir_name%")
             tm.AddMenu("Macros...", macroAction)
 
-            l = ui.AddLabel(pathPage, If(s.DeleteTempFilesMode = DeleteMode.Disabled, "Temp Files Folder:", "Temp Files Folder: (MUST end with '_temp\' for Auto-Deletion!)"))
+            l = ui.AddLabel(pathPage, If(p.DeleteTempFilesMode = DeleteMode.Disabled, "Temp Files Folder:", "Temp Files Folder: (MUST end with '_temp\' for Auto-Deletion!)"))
             l.Help = "Leave empty to use the source file folder."
             l.MarginTop = Font.Height
 
@@ -5383,6 +5378,128 @@ Public Class MainForm
             tm.AddMenu("Path of target file without extension", "%target_dir%%target_name%")
             tm.AddMenu("Macros...", macroAction)
 
+
+
+            '   ----------------------------------------------------------------
+            Dim systemTempFilesPage = ui.CreateFlowPage("Paths | Temp Files", True)
+
+            Dim deleteModeMenu = ui.AddMenu(Of DeleteMode)
+            Dim deleteSelectionMenu = ui.AddMenu(Of DeleteSelection)
+            Dim deleteSelectionModeMenu = ui.AddMenu(Of SelectionMode)
+            Dim deleteCustomLabel = ui.AddLabel("Custom file extensions (space separated):")
+            Dim deleteCustom = ui.AddTextMenu()
+            Dim deleteSelectiveLabelExcludeText = "Select what shall be excluded:"
+            Dim deleteSelectiveLabelIncludeText = "Select what shall be included:"
+            Dim deleteSelectiveLabel = ui.AddLabel(If(p.DeleteTempFilesSelectionMode = SelectionMode.Exclude, deleteSelectiveLabelExcludeText, deleteSelectiveLabelIncludeText))
+            Dim deleteSelectiveProjects = ui.AddBool
+            Dim deleteSelectiveLogs = ui.AddBool
+            Dim deleteSelectiveScripts = ui.AddBool
+            Dim deleteSelectiveIndexes = ui.AddBool
+            Dim deleteSelectiveVideos = ui.AddBool
+            Dim deleteSelectiveAudios = ui.AddBool
+            Dim deleteSelectiveSubtitles = ui.AddBool
+
+
+            deleteModeMenu.Text = "Deletion after successful processing:"
+            deleteModeMenu.Expanded = True
+            deleteModeMenu.Field = NameOf(p.DeleteTempFilesMode)
+            deleteModeMenu.Button.ValueChangedAction = Sub(value)
+                                                           deleteSelectionMenu.Visible = value <> DeleteMode.Disabled
+                                                       End Sub
+
+            deleteSelectionMenu.Text = "Selection:"
+            deleteSelectionMenu.Expanded = True
+            deleteSelectionMenu.Field = NameOf(p.DeleteTempFilesSelection)
+            deleteSelectionMenu.Visible = p.DeleteTempFilesMode <> DeleteMode.Disabled
+            deleteSelectionMenu.Button.ValueChangedAction = Sub(value)
+                                                                Dim activeCustom = deleteSelectionMenu.Visible AndAlso value = DeleteSelection.Custom
+                                                                Dim activeSelective = deleteSelectionMenu.Visible AndAlso value = DeleteSelection.Selective
+                                                                deleteSelectionModeMenu.Visible = activeCustom OrElse activeSelective
+                                                                deleteCustomLabel.Visible = activeCustom
+                                                                deleteCustom.Visible = activeCustom
+                                                                deleteSelectiveLabel.Visible = activeSelective
+                                                                deleteSelectiveProjects.Visible = activeSelective
+                                                                deleteSelectiveLogs.Visible = activeSelective
+                                                                deleteSelectiveScripts.Visible = activeSelective
+                                                                deleteSelectiveIndexes.Visible = activeSelective
+                                                                deleteSelectiveVideos.Visible = activeSelective
+                                                                deleteSelectiveAudios.Visible = activeSelective
+                                                                deleteSelectiveSubtitles.Visible = activeSelective
+                                                            End Sub
+
+            deleteSelectionModeMenu.Text = "Selection Mode:"
+            deleteSelectionModeMenu.Expanded = True
+            deleteSelectionModeMenu.Visible = p.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.DeleteTempFilesSelection <> DeleteSelection.Everything
+            deleteSelectionModeMenu.Field = NameOf(p.DeleteTempFilesSelectionMode)
+            deleteSelectionModeMenu.Button.ValueChangedAction = Sub(value)
+                                                                    deleteSelectiveLabel.Text = If(value = SelectionMode.Exclude, deleteSelectiveLabelExcludeText, deleteSelectiveLabelIncludeText)
+                                                                    If value = SelectionMode.Exclude Then
+                                                                        MsgWarn("Be aware!", "Every not selected, listed or identified file type will be deleted!")
+                                                                    End If
+                                                                End Sub
+
+            deleteCustomLabel.MarginTop = Font.Height \ 2
+            deleteCustomLabel.Visible = p.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.DeleteTempFilesSelection = DeleteSelection.Custom
+
+            Dim customAddFunc = Function(extensions As String()) As String
+                                    Dim exts = deleteCustom.Edit.Text.ToLower().SplitNoEmpty(BR, " ")
+                                    Dim allExts = exts.Union(extensions)
+                                    Return allExts.Distinct().Sort().Join(" ")
+                                End Function
+
+            deleteCustom.Visible = p.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.DeleteTempFilesSelection = DeleteSelection.Custom
+            deleteCustom.Label.Visible = False
+            deleteCustom.Edit.MultilineHeightFactor = 8
+            deleteCustom.Edit.Expand = True
+            deleteCustom.Edit.Text = p.DeleteTempFilesCustomSelection.Join(" ")
+            deleteCustom.Edit.SaveAction = Sub(value) p.DeleteTempFilesCustomSelection = value.ToLower().SplitNoEmpty(BR, " ")
+            deleteCustom.AddMenu("Add project file types", Function() customAddFunc(FileTypes.Projects))
+            deleteCustom.AddMenu("Add log file types", Function() customAddFunc(FileTypes.Logs))
+            deleteCustom.AddMenu("Add script file types", Function() customAddFunc(FileTypes.Scripts))
+            deleteCustom.AddMenu("Add index file types", Function() customAddFunc(FileTypes.Indexes))
+            deleteCustom.AddMenu("Add video file types", Function() customAddFunc(FileTypes.Video))
+            deleteCustom.AddMenu("Add audio file types", Function() customAddFunc(FileTypes.Audio))
+            deleteCustom.AddMenu("Add subtitle file types", Function() customAddFunc(FileTypes.SubtitleExludingContainers))
+
+            Dim selectiveVisible = p.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.DeleteTempFilesSelection = DeleteSelection.Selective
+
+            deleteSelectiveLabel.MarginTop = Font.Height \ 2
+            deleteSelectiveLabel.Visible = selectiveVisible
+
+            deleteSelectiveProjects.Text = "Project files"
+            deleteSelectiveProjects.Checked = p.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Projects)
+            deleteSelectiveProjects.Visible = selectiveVisible
+            deleteSelectiveProjects.SaveAction = Sub(value) p.DeleteTempFilesSelectiveSelection = If(value, p.DeleteTempFilesSelectiveSelection Or DeleteSelectiveSelection.Projects, p.DeleteTempFilesSelectiveSelection And Not DeleteSelectiveSelection.Projects)
+
+            deleteSelectiveLogs.Text = "Log files"
+            deleteSelectiveLogs.Checked = p.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Logs)
+            deleteSelectiveLogs.Visible = selectiveVisible
+            deleteSelectiveLogs.SaveAction = Sub(value) p.DeleteTempFilesSelectiveSelection = If(value, p.DeleteTempFilesSelectiveSelection Or DeleteSelectiveSelection.Logs, p.DeleteTempFilesSelectiveSelection And Not DeleteSelectiveSelection.Logs)
+
+            deleteSelectiveScripts.Text = "Script files"
+            deleteSelectiveScripts.Checked = p.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Scripts)
+            deleteSelectiveScripts.Visible = selectiveVisible
+            deleteSelectiveScripts.SaveAction = Sub(value) p.DeleteTempFilesSelectiveSelection = If(value, p.DeleteTempFilesSelectiveSelection Or DeleteSelectiveSelection.Scripts, p.DeleteTempFilesSelectiveSelection And Not DeleteSelectiveSelection.Scripts)
+
+            deleteSelectiveIndexes.Text = "Index files"
+            deleteSelectiveIndexes.Checked = p.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Indexes)
+            deleteSelectiveIndexes.Visible = selectiveVisible
+            deleteSelectiveIndexes.SaveAction = Sub(value) p.DeleteTempFilesSelectiveSelection = If(value, p.DeleteTempFilesSelectiveSelection Or DeleteSelectiveSelection.Indexes, p.DeleteTempFilesSelectiveSelection And Not DeleteSelectiveSelection.Indexes)
+
+            deleteSelectiveVideos.Text = "Video files"
+            deleteSelectiveVideos.Checked = p.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Videos)
+            deleteSelectiveVideos.Visible = selectiveVisible
+            deleteSelectiveVideos.SaveAction = Sub(value) p.DeleteTempFilesSelectiveSelection = If(value, p.DeleteTempFilesSelectiveSelection Or DeleteSelectiveSelection.Videos, p.DeleteTempFilesSelectiveSelection And Not DeleteSelectiveSelection.Videos)
+
+            deleteSelectiveAudios.Text = "Audio files"
+            deleteSelectiveAudios.Checked = p.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Audios)
+            deleteSelectiveAudios.Visible = selectiveVisible
+            deleteSelectiveAudios.SaveAction = Sub(value) p.DeleteTempFilesSelectiveSelection = If(value, p.DeleteTempFilesSelectiveSelection Or DeleteSelectiveSelection.Audios, p.DeleteTempFilesSelectiveSelection And Not DeleteSelectiveSelection.Audios)
+
+            deleteSelectiveSubtitles.Text = "Subtitles"
+            deleteSelectiveSubtitles.Checked = p.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Subtitles)
+            deleteSelectiveSubtitles.Visible = selectiveVisible
+            deleteSelectiveSubtitles.SaveAction = Sub(value) p.DeleteTempFilesSelectiveSelection = If(value, p.DeleteTempFilesSelectiveSelection Or DeleteSelectiveSelection.Subtitles, p.DeleteTempFilesSelectiveSelection And Not DeleteSelectiveSelection.Subtitles)
 
 
             '   ----------------------------------------------------------------
@@ -5485,6 +5602,9 @@ Public Class MainForm
             compCheckButton.Button.SaveAction = Sub(value) p.CompCheckAction = value
 
             miscPage.ResumeLayout()
+
+            '   ----------------------------------------------------------------
+
 
             If pagePath <> "" Then
                 ui.ShowPage(pagePath)
@@ -6614,7 +6734,7 @@ Public Class MainForm
         Dim frameRate = 0D
         Dim seconds = 0
 
-        If info.frameRate > 0 Then
+        If info.FrameRate > 0 Then
             frameCount = info.FrameCount
             frameRate = info.FrameRate
             seconds = CInt(frameCount / frameRate)

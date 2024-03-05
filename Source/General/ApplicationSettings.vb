@@ -35,7 +35,6 @@ Public Class ApplicationSettings
     Public CustomMenuPreview As CustomMenuItem
     Public CustomMenuSize As CustomMenuItem
     Public DarMenu As String
-    Public DeleteTempFilesMode As DeleteMode
     Public Demuxers As List(Of Demuxer)
     Public eac3toProfiles As List(Of eac3toProfile)
     Public EnableTooltips As Boolean

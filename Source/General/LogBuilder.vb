@@ -133,7 +133,7 @@ Public Class LogBuilder
             $"Container/Muxer Profile: {p.VideoEncoder.Muxer.Name}{BR}" +
             $"+++++{BR}" +
             $"Process Priority: {s.ProcessPriority}{BR}" +
-            $"Delete Temp Files: {s.DeleteTempFilesMode}{BR}"
+            $"Delete Temp Files: {p.DeleteTempFilesMode}{BR}"
 
         WriteLine(ConfigurationString.FormatColumn(":"))
     End Sub

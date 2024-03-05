@@ -1610,6 +1610,10 @@ Public Class FileTypes
     Shared Property SubtitleSingle As String() = {"srt", "ass", "sup", "ttxt", "ssa", "smi"}
     Shared Property SubtitleIncludingContainers As String() = {"m2ts", "mkv", "mks", "mp4", "m4v", "ass", "idx", "smi", "srt", "ssa", "sup", "ttxt"}
     Shared Property TextSub As String() = {"ass", "idx", "smi", "srt", "ssa", "ttxt", "usf", "ssf", "psb", "sub"}
+    Shared Property Projects As String() = {"srip"}
+    Shared Property Logs As String() = {"log"}
+    Shared Property Scripts As String() = {"avs", "vpy", "vs"}
+    Shared Property Indexes As String() = {"ffindex", "lwi"}
     Shared Property VideoComparisonInput As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
     Shared Property Video As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
@@ -4279,6 +4283,30 @@ Public Enum FileExistMode
     Ask
     Overwrite
     Skip
+End Enum
+
+Public Enum SelectionMode
+    Include
+    Exclude
+End Enum
+
+<Flags>
+Public Enum DeleteSelection
+    Everything = 1
+    Selective = 2
+    Custom = 4
+End Enum
+
+<Flags>
+Public Enum DeleteSelectiveSelection
+    None = 0
+    Projects = 1
+    Logs = 1 << 1
+    Scripts = 1 << 2
+    Indexes = 1 << 3
+    Videos = 1 << 4
+    Audios = 1 << 5
+    Subtitles = 1 << 6
 End Enum
 
 Public Enum DeleteMode

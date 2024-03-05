@@ -50,6 +50,12 @@ Public Class Project
     Public DefaultSubtitle As DefaultSubtitleMode = DefaultSubtitleMode.Default
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
+    Public DeleteTempFilesMode As DeleteMode = DeleteMode.Disabled
+    Public DeleteTempFilesSelection As DeleteSelection = DeleteSelection.Everything
+    Public DeleteTempFilesSelectionMode As SelectionMode = SelectionMode.Include
+    Public DeleteTempFilesCustomSelection As String() = FileTypes.Video.Distinct().Sort().ToArray()
+    Public DeleteTempFilesSelectiveSelection As DeleteSelectiveSelection = DeleteSelectiveSelection.Videos
+    Public DeleteTempFilesOnFrameMismatch As Boolean = False
     Public DemuxAttachments As Boolean = True
     Public DemuxAudio As DemuxMode = DemuxMode.All
     Public DemuxChapters As Boolean = True

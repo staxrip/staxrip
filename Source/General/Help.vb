@@ -148,15 +148,36 @@ Public Class FileHelp
         End If
     End Sub
 
-    Shared Sub Delete(
-        path As String,
-        Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
-
+    Shared Sub Delete(path As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
         Try
             If File.Exists(path) Then
-                FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs,
-                    recycleOption, UICancelOption.DoNothing)
+                FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
             End If
+        Catch
+        End Try
+    End Sub
+
+    Shared Sub Delete(paths As String(), Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
+        If Not paths?.Any() Then Return
+        Try
+            For Each path In paths
+                If File.Exists(path) Then
+                    FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
+                End If
+            Next
+        Catch
+        End Try
+    End Sub
+
+    Shared Sub Delete(paths As IEnumerable(Of String), Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
+        If Not paths?.Any() Then Return
+
+        Try
+            For Each path In paths
+                If File.Exists(path) Then
+                    FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
+                End If
+            Next
         Catch
         End Try
     End Sub

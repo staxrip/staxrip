@@ -443,11 +443,14 @@ Public Class GlobalClass
             Log.WriteHeader("Job Complete")
             Log.WriteStats(startTime)
 
+            Dim deleteTempFiles = True
+
             If FileTypes.Video.Contains(p.TargetFile.Ext()) Then
                 Dim isCuttedRemux = TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges?.Any()
                 Dim hasFrames = MediaInfo.GetVideo(p.TargetFile, "FrameCount").ToInt(-1)
                 Dim shouldFrames = p.TargetFrames
                 If hasFrames <> shouldFrames Then
+                    deleteTempFiles = p.DeleteTempFilesOnFrameMismatch
                     Log.WriteHeader("Frame Mismatch")
                     Log.WriteLine($"WARNING: Target file has {hasFrames} frames, but should have {shouldFrames} frames!")
                     If isCuttedRemux Then
@@ -488,21 +491,47 @@ Public Class GlobalClass
         Return Not (p.SkipVideoEncoding AndAlso TypeOf p.VideoEncoder IsNot NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath))
     End Function
 
-    Sub DeleteTempFiles()
-        If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then
-            Try
-                Dim moreJobsToProcessInTempDir = JobManager.GetJobs.Where(Function(a) a.Active AndAlso a.Path.Contains(p.TempDir))
+    Sub DeleteTempFiles(Optional proj As Project = Nothing)
+        If proj Is Nothing Then proj = p
 
-                If moreJobsToProcessInTempDir.Count = 0 Then
-                    If s.DeleteTempFilesMode = DeleteMode.RecycleBin Then
-                        FolderHelp.Delete(p.TempDir, RecycleOption.SendToRecycleBin)
-                    Else
-                        FolderHelp.Delete(p.TempDir)
-                    End If
-                End If
-            Catch
-            End Try
-        End If
+        If proj.DeleteTempFilesMode = DeleteMode.Disabled Then Return
+        If String.IsNullOrWhiteSpace(proj.TempDir) OrElse Not proj.TempDir.DirExists() OrElse Not New DirectoryInfo(proj.TempDir).Name.EndsWith("_temp") Then Return
+        If JobManager.GetJobs()?.Where(Function(a) a.Active AndAlso a.Path.Contains(proj.TempDir))?.Any() Then Return
+
+        Dim excludeSourcefile = True
+        Dim extensions As IEnumerable(Of String) = {}
+        Dim howToDelete = If(proj.DeleteTempFilesMode = DeleteMode.RecycleBin, RecycleOption.SendToRecycleBin, RecycleOption.DeletePermanently)
+
+        Select Case proj.DeleteTempFilesSelection
+            Case DeleteSelection.Everything
+                FolderHelp.Delete(proj.TempDir, howToDelete)
+                Exit Sub
+            Case DeleteSelection.Custom
+                excludeSourcefile = False
+                extensions = proj.DeleteTempFilesCustomSelection
+            Case DeleteSelection.Selective
+                If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Projects) Then extensions = extensions.Union(FileTypes.Projects)
+                If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Logs) Then extensions = extensions.Union(FileTypes.Logs)
+                If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Scripts) Then extensions = extensions.Union(FileTypes.Scripts)
+                If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Indexes) Then extensions = extensions.Union(FileTypes.Indexes)
+                If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Videos) Then extensions = extensions.Union(FileTypes.Video)
+                If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Audios) Then extensions = extensions.Union(FileTypes.Audio)
+                If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Subtitles) Then extensions = extensions.Union(FileTypes.SubtitleExludingContainers)
+        End Select
+
+        Dim filesInTemp = Directory.GetFiles(proj.TempDir).AsEnumerable()
+        If excludeSourcefile Then filesInTemp = filesInTemp.Where(Function(x) x <> proj.SourceFile)
+        Dim filesToDelete As IEnumerable(Of String)
+
+        Select Case proj.DeleteTempFilesSelectionMode
+            Case SelectionMode.Exclude
+                filesToDelete = filesInTemp.Where(Function(x) Not extensions.Contains(x.Ext(), StringComparer.InvariantCultureIgnoreCase))
+            Case SelectionMode.Include
+                filesToDelete = filesInTemp.Where(Function(x) extensions.Contains(x.Ext(), StringComparer.InvariantCultureIgnoreCase))
+            Case Else
+        End Select
+
+        FileHelp.Delete(filesToDelete, howToDelete)
     End Sub
 
     ReadOnly Property StartupTemplatePath As String

@@ -390,13 +390,14 @@ clipname.set_output()" + BR
     End Function
 
     Shared Function ModifyVSScript(ByRef script As String, ByRef code As String) As String
+        Dim functions = FindFunctionsVS(script)
         For Each plugin In Package.Items.Values.OfType(Of PluginPackage)()
             Dim fp = plugin.Path
-
             If fp <> "" Then
+
                 If Not plugin.VsFilterNames Is Nothing Then
                     For Each filterName In plugin.VsFilterNames
-                        If ContainsFunction(script, filterName, 0) Then
+                        If functions.Contains(filterName) Then
                             WriteVSCode(script, code, filterName, plugin)
                         End If
                     Next
@@ -493,6 +494,7 @@ clipname.set_output()" + BR
         Dim scriptAlreadyLower = scriptAlready.ToLowerInvariant
         Dim loadCode = ""
         Dim plugins = Package.Items.Values.OfType(Of PluginPackage)()
+        Dim functions = FindFunctionsAVS(scriptLower)
 
         For Each plugin In plugins
             Dim fp = plugin.Path
@@ -500,7 +502,7 @@ clipname.set_output()" + BR
             If fp <> "" Then
                 If plugin.AvsFilterNames IsNot Nothing Then
                     For Each filterName In plugin.AvsFilterNames
-                        If s.LoadAviSynthPlugins AndAlso ContainsFunction(scriptLower, filterName.ToLowerInvariant, 0) Then
+                        If s.LoadAviSynthPlugins AndAlso functions.Contains(filterName.ToLowerInvariant) Then
                             If plugin.Filename.Ext = "dll" Then
                                 Dim load = "LoadPlugin(""" + fp + """)" + BR
 
@@ -583,35 +585,66 @@ clipname.set_output()" + BR
         Return loadCode
     End Function
 
-    Shared Function ContainsFunction(script As String, funcName As String, startPos As Integer) As Boolean
-        Dim index = script.IndexOf(funcName, startPos)
+    Shared AllowedFunctionChars As HashSet(Of Char) = Enumerable.Range(48, 10).Concat(Enumerable.Range(65, 26).Concat(Enumerable.Range(97, 26))).Select(Function(i) Convert.ToChar(i)).Concat({"_"c}).ToHashSet()
 
-        If index = -1 Then
-            Return False
-        End If
+    ' this functions finds too many function because all text is treated as script
+    ' so functions in comments or strings that match the syntax will be interpreted as functions
+    Shared Function FindFunctionsVS(script As String) As HashSet(Of String)
+        Dim functionTokens = New HashSet(Of String)
 
-        Dim charIndexBefore = index - 1
-        Dim charIndexAfter = index + funcName.Length
-        Dim charBeforeIsWord = charIndexBefore >= 0 AndAlso IsWordChar(script(charIndexBefore))
-        Dim charAfterIsWord = charIndexAfter < script.Length AndAlso IsWordChar(script(charIndexAfter))
+        Dim scriptIndex = script.LastIndexOf("."c, script.Length - 1)
 
-        If Not charBeforeIsWord AndAlso Not charAfterIsWord Then
-            Return True
-        Else
-            Dim newStart = index + 1
+        While scriptIndex > 0
+            Dim wordStart = scriptIndex - 1
+            Dim wordEnd = scriptIndex + 1
 
-            If newStart + funcName.Length < script.Length Then
-                Return ContainsFunction(script, funcName, newStart)
+            If script.Chars(wordEnd).IsDigit() Or Not AllowedFunctionChars.Contains(script.Chars(wordEnd)) Then
+                scriptIndex = script.LastIndexOf("."c, scriptIndex - 1)
+                Continue While
             End If
-        End If
+
+            While AllowedFunctionChars.Contains(script.Chars(wordEnd))
+                wordEnd += 1
+            End While
+            While AllowedFunctionChars.Contains(script.Chars(wordStart))
+                wordStart -= 1
+            End While
+
+            Dim func = script.Substring(wordStart + 1, wordEnd - 1 - wordStart).Trim()
+
+            functionTokens.Add(func)
+            scriptIndex = script.LastIndexOf("."c, scriptIndex - 1)
+        End While
+
+        Return functionTokens
     End Function
 
-    Shared Function IsWordChar(ch As Char) As Boolean
-        Dim val = Convert.ToInt32(ch)
-        Return (val >= 48 AndAlso val <= 57) OrElse
-               (val >= 65 AndAlso val <= 90) OrElse
-               (val >= 97 AndAlso val <= 122) OrElse val = 95
+    ' this functions finds too many function because all text is treated as script
+    ' so functions in comments or strings that match the syntax will be interpreted as functions
+    Shared Function FindFunctionsAVS(script As String) As HashSet(Of String)
+        Dim functionTokens = New HashSet(Of String)
+        Dim scriptIndex = script.LastIndexOf("("c, script.Length - 1)
+
+        While scriptIndex > 0
+            scriptIndex -= 1
+            Dim wordEnd = scriptIndex
+            Dim wordStart = scriptIndex
+
+            While script.Chars(wordStart) = " "c
+                wordStart -= 1
+            End While
+
+            While AllowedFunctionChars.Contains(script.Chars(wordStart))
+                wordStart -= 1
+            End While
+
+            Dim func = script.Substring(wordStart + 1, wordEnd - wordStart).Trim()
+            functionTokens.Add(func)
+            scriptIndex = script.LastIndexOf("("c, scriptIndex - 1)
+        End While
+        Return functionTokens
     End Function
+
 
     Shared Function GetAVSLoadCodeFromImports(code As String) As String
         code = code.ToLowerInvariant

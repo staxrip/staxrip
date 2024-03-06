@@ -25,6 +25,7 @@ v2.38.0 (not published yet)
 - UI: Add "Support" to Main Menu
 - UI: Add "What's new" to Main Menu
 - UI: Improve performance with script handling, Assistant, Preview, Code Editor and interface
+- UI: Improve script update performance (thanks to @Valdiralita ([#1262](/../../pull/1262)))
 - Update tools
     - ...
 - Update AviSynth+ plugins

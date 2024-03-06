@@ -49,7 +49,7 @@ Public Class SimpleSettingsForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.SimpleUI.Location = New System.Drawing.Point(15, 15)
-        Me.SimpleUI.Margin = New System.Windows.Forms.Padding(15, 15, 15, 0)
+        Me.SimpleUI.Margin = New System.Windows.Forms.Padding(15, 5, 15, 0)
         Me.SimpleUI.Name = "SimpleUI"
         Me.SimpleUI.Size = New System.Drawing.Size(1161, 667)
         Me.SimpleUI.TabIndex = 2

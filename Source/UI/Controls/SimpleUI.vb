@@ -68,8 +68,8 @@ Public Class SimpleUI
                         Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 2
                     End If
 
-                    If Tree.ItemHeight > CInt(Tree.Font.Height * 1.5) Then
-                        Tree.ItemHeight = CInt(Tree.Font.Height * 1.5)
+                    If Tree.ItemHeight > CInt(Tree.Font.Height * 1.4) Then
+                        Tree.ItemHeight = CInt(Tree.Font.Height * 1.4)
                     End If
                 End Sub
         End If
@@ -463,6 +463,7 @@ Public Class SimpleUI
         Inherits CheckBoxEx
 
         Property MarginLeft As Double
+        Property ValueChangedAction As Action(Of Boolean)
         Property SaveAction As Action(Of Boolean)
         Property HelpAction As Action
 
@@ -489,6 +490,7 @@ Public Class SimpleUI
         Protected Overrides Sub OnCheckedChanged(e As EventArgs)
             MyBase.OnCheckedChanged(e)
             SimpleUI.RaiseChangeEvent()
+            ValueChangedAction?.Invoke(Checked)
         End Sub
 
         Sub Save()

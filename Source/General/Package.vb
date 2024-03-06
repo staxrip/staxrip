@@ -758,7 +758,7 @@ Public Class Package
         .HelpURL = "https://codeberg.org/StvG/ffms2/src/branch/main/README.md",
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource", "FFMS2"},
-        .VsFilterNames = {"ffms2"}})
+        .VsFilterNames = {"ffms2.Source"}})
 
     Shared Property AviSynthShader As Package = Add(New PluginPackage With {
         .Name = "AviSynthShader DLL",

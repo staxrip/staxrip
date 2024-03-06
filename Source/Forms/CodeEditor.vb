@@ -430,9 +430,10 @@ Public Class CodeEditor
         script.Engine = Engine
         script.Path = p.TempDir + p.TargetFile.Base + $"_temp." + script.FileType
         script.Filters = GetFilters()
+        Dim err = script.GetError()
 
-        If script.GetError <> "" Then
-            MsgError("Script Error", script.GetError)
+        If err <> "" Then
+            MsgError("Script Error", err)
             Exit Function
         End If
 

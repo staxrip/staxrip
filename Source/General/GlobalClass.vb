@@ -1080,7 +1080,9 @@ Public Class GlobalClass
     End Sub
 
     Function IsValidSource(Optional warn As Boolean = True) As Boolean
-        If p.SourceScript.GetFrameCount = 0 Then
+        p.SourceScript.Synchronize(False, False)
+
+        If p.SourceScript.Info.FrameCount = 0 Then
             If warn Then
                 MsgWarn("Failed to load source.")
             End If
@@ -1088,8 +1090,8 @@ Public Class GlobalClass
             Return False
         End If
 
-        If p.SourceScript.GetError <> "" Then
-            MsgError("Script Error", p.SourceScript.GetError)
+        If p.SourceScript.Error <> "" Then
+            MsgError("Script Error", p.SourceScript.Error)
             Return False
         End If
 
@@ -1646,8 +1648,9 @@ Public Class GlobalClass
                         infoScript.AddFilter(New VideoFilter(infoCode))
                         infoScript.Path = p.TempDir + p.TargetFile.Base + $"_info." + script.FileType
 
-                        If infoScript.GetError() <> "" Then
-                            MsgError("Script Error", infoScript.GetError())
+                        Dim errorMsg = infoScript.GetError()
+                        If errorMsg <> "" Then
+                            MsgError("Script Error", errorMsg)
                             Exit Sub
                         End If
 
@@ -1669,8 +1672,9 @@ Public Class GlobalClass
                         infoScript.AddFilter(New VideoFilter("clip = clip.resize.Bicubic(720, (720 / clip.width * clip.height) // 8 * 8)"))
                         infoScript.AddFilter(New VideoFilter("clip = core.text.ClipInfo(clip)"))
 
-                        If infoScript.GetError() <> "" Then
-                            MsgError("Script Error", infoScript.GetError())
+                        Dim errorMsg = infoScript.GetError()
+                        If errorMsg <> "" Then
+                            MsgError("Script Error", errorMsg)
                             Exit Sub
                         End If
 

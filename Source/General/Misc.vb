@@ -147,7 +147,7 @@ Public Class Calc
 
     Shared Function GetOverheadBytes() As Long
         Dim ret As Double
-        Dim frames = p.Script.GetFrameCount
+        Dim frames = p.Script.Info.FrameCount
 
         If {"avi", "divx"}.Contains(p.VideoEncoder.Muxer.OutputExt) Then
             ret += frames * 0.024

@@ -4483,9 +4483,7 @@ Public Class MainForm
         If p.SourceFile = "" Then
             ShowOpenSourceDialog()
         Else
-            If Not g.VerifyRequirements OrElse Not g.IsValidSource Then
-                Exit Sub
-            End If
+            If Not g.VerifyRequirements OrElse Not g.IsValidSource Then Exit Sub
 
             If PreviewScript Is Nothing Then
                 PreviewScript = p.Script.GetNewScript()
@@ -4499,8 +4497,9 @@ Public Class MainForm
 
             PreviewScript.RemoveFilter("Cutting")
 
-            If PreviewScript.GetError <> "" Then
-                MsgError("Script Error", PreviewScript.GetError)
+            Dim err = PreviewScript.GetError()
+            If err <> "" Then
+                MsgError("Script Error", err)
                 Exit Sub
             End If
 
@@ -6610,7 +6609,19 @@ Public Class MainForm
         If proj Is Nothing Then Exit Sub
         If proj.Script Is Nothing Then Exit Sub
 
-        UpdateTargetParameters(proj.Script.GetSeconds, proj.Script.GetFrameCount, proj.Script.GetFramerate)
+        Dim info = If(proj.Script.Info.FrameRate > 0, proj.Script.Info, proj.Script.GetInfo())
+        Dim frameCount = 0
+        Dim frameRate = 0D
+        Dim seconds = 0
+
+        If info.frameRate > 0 Then
+            frameCount = info.FrameCount
+            frameRate = info.FrameRate
+            seconds = CInt(frameCount / frameRate)
+        Else
+        End If
+
+        UpdateTargetParameters(seconds, frameCount, frameRate)
     End Sub
 
     Sub UpdateTargetParameters(seconds As Integer, frames As Integer, frameRate As Double)
@@ -6688,9 +6699,9 @@ Public Class MainForm
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
                 UpdateTargetParameters(p)
+            Else
+                Assistant()
             End If
-
-            Assistant()
         End If
     End Sub
 

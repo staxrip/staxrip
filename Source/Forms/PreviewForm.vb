@@ -346,8 +346,10 @@ Public Class PreviewForm
         Renderer.Dispose()
         FrameServer.Dispose()
 
-        If PreviewScript.GetError <> "" Then
-            MsgError("Script Error", PreviewScript.GetError)
+        Dim err = PreviewScript.GetError
+
+        If err <> "" Then
+            MsgError("Script Error", err)
             Exit Sub
         End If
 

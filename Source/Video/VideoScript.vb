@@ -697,11 +697,12 @@ clipname.set_output()" + BR
     End Function
 
     Function GetSeconds() As Integer
-        Return CInt(GetFrameCount() / GetFramerate())
+        Dim info = GetInfo()
+        Return CInt(info.FrameCount / info.FrameRate)
     End Function
 
     Function GetFrameCount() As Integer
-        Return GetInfo.FrameCount
+        Return GetInfo().FrameCount
     End Function
 
     Shared Function GetDefaults() As List(Of TargetVideoScript)

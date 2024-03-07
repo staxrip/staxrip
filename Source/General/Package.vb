@@ -758,7 +758,7 @@ Public Class Package
         .HelpURL = "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md",
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource", "FFMS2"},
-        .VsFilterNames = {"ffms2"}})
+        .VsFilterNames = {"ffms2.Source"}})
 
     Shared Property AviSynthShader As Package = Add(New PluginPackage With {
         .Name = "AviSynthShader DLL",
@@ -839,7 +839,7 @@ Public Class Package
         .DownloadURL = "https://github.com/vapoursynth/vivtc/releases",
         .VsFilterNames = {"vivtc.VFM", "vivtc.VDecimate"}})
 
-    Shared Property FFTW As Package = Add(New Package With {
+    Shared Property FFTW As Package = Add(New PluginPackage With {
         .Name = "FFTW",
         .Location = "Support\FFTW",
         .Filename = "libfftw3-3.dll",
@@ -854,7 +854,7 @@ Public Class Package
         .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/havsfunc/releases",
         .HelpURL = "http://forum.doom9.org/showthread.php?t=166582",
         .Description = "Various popular AviSynth scripts ported To VapourSynth.",
-        .Dependencies = {"DCTFilter.dll", "libfftw3f-3.dll", "RemoveGrainVS.dll"},
+        .Dependencies = {"DCTFilter.dll", "DFTTest.dll", "fmtconv.dll", "libfftw3f-3.dll", "libmvtools.dll", "libnnedi3.dll", "NNEDI3CL.dll", "RemoveGrainVS.dll", "vsznedi3.dll"},
         .VsFilterNames = {"havsfunc.aaf", "havsfunc.AverageFrames", "havsfunc.Bob", "havsfunc.ChangeFPS", "havsfunc.Clamp", "havsfunc.ContraSharpening", "havsfunc.daa", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha", "havsfunc.DitherLumaRebuild", "havsfunc.EdgeCleaner", "havsfunc.FastLineDarkenMOD", "havsfunc.FineDehalo", "havsfunc.FixChromaBleedingMod", "havsfunc.GrainFactory3", "havsfunc.GrainStabilizeMC", "havsfunc.HQDeringmod", "havsfunc.InterFrame", "havsfunc.ivtc_txt60mc", "havsfunc.KNLMeansCL", "havsfunc.logoNR", "havsfunc.LSFmod", "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.MCTemporalDenoise", "havsfunc.MinBlur", "havsfunc.mt_deflate_multi", "havsfunc.mt_expand_multi", "havsfunc.mt_inflate_multi", "havsfunc.mt_inpand_multi", "havsfunc.Overlay", "havsfunc.Padding", "havsfunc.QTGMC", "havsfunc.Resize", "havsfunc.santiag", "havsfunc.sbr", "havsfunc.SCDetect", "havsfunc.SigmoidDirect", "havsfunc.SigmoidInverse", "havsfunc.smartfademod", "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.srestore", "havsfunc.Stab", "havsfunc.STPresso", "havsfunc.TemporalDegrain", "havsfunc.Toon", "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.Weave", "havsfunc.YAHR"}})
 
     Shared Property DescaleAVS As Package = Add(New PluginPackage With {
@@ -2237,7 +2237,7 @@ Public Class Package
             .WebURL = "http://github.com/EleonoreMizo/fmtconv",
             .HelpFilename = "doc\fmtconv.html",
             .Description = "Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion.",
-            .VsFilterNames = {"fmtc.bitdepth", "fmtc.convert", " core.fmtc.matrix", "fmtc.resample", "fmtc.transfer", "fmtc.primaries", " core.fmtc.matrix2020cl", "fmtc.stack16tonative", "nativetostack16"}})
+            .VsFilterNames = {"fmtc.bitdepth", "fmtc.convert", "fmtc.matrix", "fmtc.resample", "fmtc.transfer", "fmtc.primaries", "fmtc.matrix2020cl", "fmtc.nativetostack16", "fmtc.stack16tonative"}})
 
         Add(New PluginPackage With {
             .Name = "finesharp",

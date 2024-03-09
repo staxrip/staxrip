@@ -317,16 +317,15 @@ Public Class GlobalClass
             Log.WriteHeader($"{p.Script.Engine} Script")
             Log.WriteLine(p.Script.GetFullScript)
 
-            Dim err = p.Script.GetError
-
-            If err <> "" Then
-                Throw New ErrorAbortException($"{p.Script.Engine} Script Error", err)
+            p.Script.Synchronize(False, False)
+            If p.Script.Error <> "" Then
+                Throw New ErrorAbortException($"{p.Script.Engine} Script Error", p.Script.Error)
             End If
 
             Log.WriteHeader("Source Script Info")
             Log.WriteLine(p.SourceScript.GetInfo().GetInfoText(-1))
             Log.WriteHeader("Target Script Info")
-            Log.WriteLine(p.Script.GetInfo().GetInfoText(-1))
+            Log.WriteLine(p.Script.Info.GetInfoText(-1))
 
             g.MainForm.Hide()
 

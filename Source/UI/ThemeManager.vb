@@ -1,5 +1,5 @@
 ﻿Public NotInheritable Class ThemeManager
-    Private Const _defaultThemeName = "Dark | Turquoise"
+    Private Const _defaultThemeName = "Dark | TealBlue"
 
     Private Shared _current As Theme
     Private Shared _themes As List(Of Theme)

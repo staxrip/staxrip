@@ -285,9 +285,11 @@ Public Class PreviewForm
     End Sub
 
     Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        components?.Dispose()
+        Instances?.Remove(Me)
+        GenericMenu?.RemoveKeyDownHandler(Me)
         Renderer?.Dispose()
         FrameServer?.Dispose()
+        components?.Dispose()
 
         MyBase.Dispose(disposing)
     End Sub
@@ -1147,7 +1149,6 @@ Public Class PreviewForm
     End Sub
 
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
-        MyBase.OnFormClosing(args)
         Instances.Remove(Me)
         GenericMenu.RemoveKeyDownHandler(Me)
         g.UpdateTrim(p.Script)
@@ -1155,8 +1156,9 @@ Public Class PreviewForm
         s.HidePreviewButtons = HidePreviewButtons
         s.LastPosition = Renderer.Position
         g.MainForm.UpdateFilters()
-        Renderer.Dispose()
-        FrameServer.Dispose()
+        Renderer?.Dispose()
+        FrameServer?.Dispose()
+        MyBase.OnFormClosing(args)
     End Sub
 
     Protected Overrides Sub WndProc(ByRef m As Message)

@@ -49,9 +49,7 @@ Public Class StaxRipUpdate
                     Dim onlineVersionString = linkMatch.Groups(1).Value
                     Dim onlineVersion = Version.Parse(linkMatch.Groups(1).Value)
 
-                    If onlineVersion <= currentVersion Then
-                        Exit For
-                    End If
+                    If onlineVersion <= currentVersion Then Exit For
 
                     Dim filename = $"StaxRip-v{onlineVersionString}-x64.7z"
                     Dim downloadUri = $"https://github.com/staxrip/staxrip/releases/download/v{onlineVersionString}/{filename}"

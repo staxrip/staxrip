@@ -4909,6 +4909,7 @@ Public Class MainForm
             videoExist.Text = "Existing Video Output"
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
             videoExist.Field = NameOf(p.FileExistVideo)
+            videoExist.Expanded = True
 
             demuxVideo.Text = "Demux Video"
             demuxVideo.Checked = p.DemuxVideo
@@ -7297,10 +7298,6 @@ Public Class MainForm
         StaxRipUpdate.ShowUpdateQuestion()
         StaxRipUpdate.CheckForUpdateAsync(False, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)
-
-        If TypeOf p.VideoEncoder Is x265Enc Then
-            g.RunTask(Sub() Equals(Package.x265Type))
-        End If
     End Sub
 
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)

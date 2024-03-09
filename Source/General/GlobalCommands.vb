@@ -325,7 +325,7 @@ Public Class GlobalCommands
             Case "info"
                 form.Doc.WriteStart(GetApplicationDetails())
                 form.Doc.Write("Active Authors", "Dendraspis")
-                form.Doc.Write("Active Contributors", "Patman86")
+                form.Doc.Write("Active Contributors", "Patman86, Valdiralita")
                 form.Doc.Write("Retired Authors", "stax76, JKyle, 44vince44, DJATOM, Revan654, NikosD, jernst, Brother John, Freepik, ilko-k, nulledone, vanontom")
                 form.Doc.Writer.WriteRaw("<hr>")
                 form.Doc.Write("Links", "<a href=""https://github.com/staxrip/staxrip"">Source on GitHub</a>" &

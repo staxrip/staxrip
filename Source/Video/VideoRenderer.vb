@@ -301,10 +301,10 @@ Public Class VideoRenderer
     End Sub
 
     Sub Dispose() Implements IDisposable.Dispose
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        RemoveHandler Control.ClientSizeChanged, AddressOf Resize
         ReleaseGraphicsResources()
         Direct2dFactory.Dispose()
         DirectWriteFactory.Dispose()
-        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
-        RemoveHandler Control.ClientSizeChanged, AddressOf Resize
     End Sub
 End Class

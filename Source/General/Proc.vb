@@ -120,7 +120,7 @@ Public Class Proc
         If commands.Contains("xvid_encraw") Then
             Return {"key=", "frames("}
         ElseIf commands.Contains("ffmpeg") Then
-            Return {"frame=", "size="}
+            Return {"frame=", "size=", "Press [q] to stop"}
         ElseIf commands.Contains("eac3to") Then
             Return {"process: ", "analyze: "}
         ElseIf commands.Contains("qaac") Then
@@ -442,6 +442,8 @@ Public Class Proc
         If value = "" Then
             Return ("", False)
         End If
+
+        value = Regex.Replace(value, "\x1B\[[0-9;]*[mK]", "")
 
         If TrimChars IsNot Nothing Then
             value = value.Trim(TrimChars)

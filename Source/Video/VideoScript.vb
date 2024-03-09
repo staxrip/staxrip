@@ -14,6 +14,9 @@ Public Class VideoScript
     <NonSerialized()> Public [Error] As String
     <NonSerialized()> Public Info As ServerInfo
     <NonSerialized()> Public OriginalInfo As ServerInfo
+    <NonSerialized()> Public LastCode As String
+    <NonSerialized()> Public LastPath As String
+
 
     Property Filters As New List(Of VideoFilter)
 
@@ -182,9 +185,6 @@ Public Class VideoScript
             End If
         Next
     End Function
-
-    <NonSerialized()> Public LastCode As String
-    <NonSerialized()> Public LastPath As String
 
     Sub Synchronize(
         Optional convertToRGB As Boolean = False,

@@ -328,7 +328,7 @@ Public Class ProcController
         value = value.Trim()
 
         If s.ProgressReformatting Then
-            If FailCounter < 32 Then
+            If FailCounter < 64 Then
                 Dim pattern As String
                 Dim match As Match
 

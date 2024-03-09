@@ -197,7 +197,6 @@ Resize... = clip = $select:Bilinear|core.resize.Bilinear;Bicubic|core.resize.Bic
 [Restoration]
 Chroma Fix | Bifrost = clip = core.bifrost.Bifrost(clip, luma_thresh=10.0, variation=5, interlaced=$select:msg:Is the input video Interlaced?;Yes (Default)|True;No|False$, blockx=4, blocky=4)
 Chroma Fix | CNR2 = clip = core.cnr2.Cnr2(clip, mode="oxx", scdthr=10.0, ln=35, lm=192, un=47, um=255, vn=47, vm=255, scenechroma=False)
-Chroma Fix | DeRainbow = clip = havsfunc.LUTDeRainbow(clip, cthresh=10, ythresh=10, y=True, linkUV=True, mask=False)
 Chroma Fix | DotKill | DotKillS = clip = core.dotkill.DotKillS(clip, iterations=1)
 
 Chroma Fix | DotKill | DotKillZ =
@@ -208,6 +207,7 @@ Chroma Fix | DotKill | DotKillT =
     # 3:2 pulldown NTSC source, spatio-temporal
     clip = core.dotkill.DotKillT(clip, order=0, offset=0, dupthresh=64, tratio=3)
 
+Chroma Fix | LUTDeRainbow = clip = havsfunc.LUTDeRainbow(clip, cthresh=10, ythresh=10, y=True, linkUV=True, mask=False)
 DeBand | Legacy = $select:GradFun3|clip = muvsfunc.GradFun3(src=clip, mode=6, smode=1);f3kdb|clip = core.f3kdb.Deband(clip)$
 DeBand | f3kdb Neo = clip = core.neo_f3kdb.Deband(clip, y=64, cb=64, cr=64, grainy=0, grainc=0)
 DeBlock | Auto-Deblock = clip = fvsfunc.AutoDeblock(clip)

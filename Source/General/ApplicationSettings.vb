@@ -68,7 +68,7 @@ Public Class ApplicationSettings
     Public PreventStandby As Boolean = True
     Public PreviewFormBorderStyle As FormBorderStyle
     Public PreviewSize As Integer = 70
-    Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.Idle
+    Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.BelowNormal
     Public ProgressReformatting As Boolean = True
     Public ProjectsMruNum As Integer = 10
     Public RecentFramePositions As List(Of String)

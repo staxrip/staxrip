@@ -18,6 +18,7 @@ v2.37.3 (not published yet)
 ====================
 
 - UI: Fix tonemapping for HDR videos for Crop window not working under some circumstances
+- UI: Set Process Priority from "Idle" to "Below Normal"
 
 
 v2.37.2 (2024-03-22)

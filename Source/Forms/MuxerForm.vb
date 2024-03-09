@@ -1003,9 +1003,13 @@ Public Class MuxerForm
     End Sub
 
     Sub PopulateLanguages(menuButton As MenuButton)
+        If IsDisposingOrDisposed Then Return
+
         Try
-            menuButton.Menu.Enabled = False
-            menuButton.Enabled = False
+            menuButton.Invoke(Sub()
+                                  menuButton.Menu.Enabled = False
+                                  menuButton.Enabled = False
+                              End Sub)
 
             For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
                 If IsDisposingOrDisposed Then Return
@@ -1018,12 +1022,18 @@ Public Class MuxerForm
             Next
         Catch ex As Exception
         Finally
-            menuButton.Enabled = True
-            menuButton.Menu.Enabled = True
+            If Not IsDisposingOrDisposed Then
+                menuButton.Invoke(Sub()
+                                      menuButton.Menu.Enabled = True
+                                      menuButton.Enabled = True
+                                  End Sub)
+            End If
         End Try
     End Sub
 
     Async Sub PopulateLanguagesAsync(menuButton As MenuButton)
+        If IsDisposingOrDisposed Then Return
+
         Dim task As Task
 
         Try
@@ -1033,6 +1043,8 @@ Public Class MuxerForm
         Catch ex As Exception
         Finally
         End Try
+
+        If IsDisposingOrDisposed Then Return
 
         Await task
     End Sub

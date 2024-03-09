@@ -54,6 +54,7 @@ v2.37.0 (not published yet)
 - UI: Write "Media Info Source File" only if it has changed ([#1221](/../../issues/1221))
 - UI: Take given HDR10+/DolbyVision metadata into account when calculate target size/bitrate ([#1254](/../../issues/1254))
 - UI: Fix rounding issue with number edits when using mouse wheel ([#1253](/../../issues/1253))
+- UI: Fix rare crash on Audio and Muxer window opening
 - FFmpeg: Add "-hwaccel cuda" to command line when NVIDIA decoder is selected ([#1260](/../../issues/1260))
 - NVEncC: Rearrange some parameters ([#1240](/../../issues/1240))
 - NVEncC: Enable Dolby Vision only when H265 is selected ([#1261](/../../issues/1261))

@@ -4,6 +4,7 @@ Imports StaxRip.UI
 Imports DirectN
 Imports System.Text
 Imports System.Threading.Tasks
+Imports System.Threading
 
 Public Class AudioForm
     Inherits DialogBase
@@ -805,9 +806,13 @@ Public Class AudioForm
     End Sub
 
     Sub PopulateLanguages()
+        If IsDisposingOrDisposed Then Return
+
         Try
-            mbLanguage.Menu.Enabled = False
-            mbLanguage.Enabled = False
+            mbLanguage.Invoke(Sub()
+                                  mbLanguage.Menu.Enabled = False
+                                  mbLanguage.Enabled = False
+                              End Sub)
 
             For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
                 If IsDisposingOrDisposed Then Return
@@ -820,12 +825,18 @@ Public Class AudioForm
             Next
         Catch ex As Exception
         Finally
-            mbLanguage.Menu.Enabled = True
-            mbLanguage.Enabled = True
+            If Not IsDisposingOrDisposed Then
+                mbLanguage.Invoke(Sub()
+                                      mbLanguage.Menu.Enabled = True
+                                      mbLanguage.Enabled = True
+                                  End Sub)
+            End If
         End Try
     End Sub
 
     Async Sub PopulateLanguagesAsync()
+        If IsDisposingOrDisposed Then Return
+
         Dim task As Task
 
         Try
@@ -835,6 +846,8 @@ Public Class AudioForm
         Catch ex As Exception
         Finally
         End Try
+
+        If IsDisposingOrDisposed Then Return
 
         Await task
     End Sub

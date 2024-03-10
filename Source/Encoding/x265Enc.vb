@@ -490,6 +490,18 @@ Public Class x265Params
         .VisibleFunc = Function() Mode.Value = 1 OrElse Mode.Value = 2,
         .Config = {0, 51, 0.5, 1}}
 
+    Property CRFmax As New NumParam With {
+        .Switch = "--crf-max",
+        .Text = "Maximum CRF",
+        .Init = 51,
+        .Config = Quant.Config}
+
+    Property CRFmin As New NumParam With {
+        .Switch = "--crf-min",
+        .Text = "Minimum CRF",
+        .Init = 0,
+        .Config = Quant.Config}
+
     Property Bitrate As New NumParam With {
         .HelpSwitch = "--bitrate",
         .Text = "Bitrate",
@@ -679,21 +691,28 @@ Public Class x265Params
     Property AQmode As New OptionParam With {
         .Switch = "--aq-mode",
         .Text = "AQ Mode",
+        .Expanded = True,
         .IntegerValue = True,
         .DefaultValue = 2,
-        .AlwaysOn = True,
+        .AlwaysOn = False,
         .Options = {"0: Disabled", "1: AQ enabled", "2: AQ enabled with auto-variance", "3: AQ enabled with auto-variance with bias to dark scenes", "4: AQ enabled with auto-variance and edge information"},
         .ValueChangedAction = Sub(x) AQmodeExtended.Value = x,
-        .VisibleFunc = Function() Package.x265Type = x265Type.Vanilla}
+        .VisibleFunc = Function() Package.x265Type <> x265Type.Patman}
 
     Property AQmodeExtended As New OptionParam With {
         .Switch = "--aq-mode",
         .Text = "AQ Mode",
+        .Expanded = True,
         .IntegerValue = True,
         .DefaultValue = 2,
-        .AlwaysOn = True,
-        .Options = {"0: Disabled", "1: AQ enabled", "2: AQ enabled with auto-variance", "3: AQ enabled with auto-variance with bias to dark scenes", "4: AQ enabled with auto-variance and edge information", "5: AQ enabled with auto-variance, edge information and bias to dark scenes."},
-        .VisibleFunc = Function() Package.x265Type = x265Type.Patman OrElse Package.x265Type = x265Type.DJATOM OrElse Package.x265Type = x265Type.JPSDR}
+        .AlwaysOn = False,
+        .Options = {"0: Disabled", "1: Uniform AQ", "2: AQ enabled with auto-variance", "3: AQ enabled with auto-variance with bias to dark scenes", "4: AQ enabled with auto-variance and edge information", "5: AQ enabled with auto-variance, edge information and bias to dark scenes", "Auto: Automatic decision for each frame using its scene statistics"},
+        .ArgsFunc = Function()
+                        Return If(AQmodeExtended.AlwaysOn OrElse AQmodeExtended.Value <> AQmodeExtended.DefaultValue,
+                            If(AQmodeExtended.Value < 6, $"--aq-mode {AQmodeExtended.Value}", "--auto-aq"),
+                            "")
+                    End Function,
+        .VisibleFunc = Function() Package.x265Type = x265Type.Patman}
 
     Property AQStrength As New NumParam With {
         .Switch = "--aq-strength",
@@ -833,17 +852,6 @@ Public Class x265Params
         .Text = "QP Adaptation Range",
         .Init = 1.0,
         .Config = {1, 6, 0.05, 2}}
-
-    Property CRFmax As New NumParam With {
-        .Switch = "--crf-max",
-        .Text = "Maximum CRF",
-        .Config = {0, 51, 1, 1},
-        .Init = 51}
-
-    Property CRFmin As New NumParam With {
-        .Switch = "--crf-min",
-        .Text = "Minimum CRF",
-        .Config = {0, 51, 1, 1}}
 
     Property PBRatio As New NumParam With {
         .Switch = "--pbratio",
@@ -1218,12 +1226,13 @@ Public Class x265Params
                 Add("Rate Control",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .BrowseFile = True},
-                    AQmode, AQmodeExtended, qgSize, AQStrength, AQBiasStrength, QComp, qpmin, qpmax, qpstep,
+                    AQmode, AQmodeExtended, qgSize,
+                    AQStrength, AQBiasStrength, QComp, qpmin, qpmax, qpstep,
                     New NumParam With {.Switch = "--qp-delta-ref", .Text = "QP Delta Ref", .Init = 5, .Config = {0, 10, 0.5, 1}},
                     New NumParam With {.Switch = "--qp-delta-nonref", .Text = "QP Delta NonRef", .Init = 5, .Config = {0, 10, 0.5, 1}},
                     New NumParam With {.Switch = "--cbqpoffs", .Text = "CB QP Offset", .Config = {-12, 12}},
                     New NumParam With {.Switch = "--crqpoffs", .Text = "CR QP Offset", .Config = {-12, 12}},
-                    NRintra, NRinter, CRFmin, CRFmax)
+                    NRintra, NRinter)
                 Add("Rate Control 2",
                     VbvBufSize, VbvMaxRate,
                     New NumParam With {.Switch = "--vbv-init", .Text = "VBV Init", .Config = {0.5, 1.0, 0.1, 1}, .Init = 0.9},
@@ -1234,7 +1243,8 @@ Public Class x265Params
                     IPRatio, PBRatio,
                     New NumParam With {.Switch = "--cplxblur", .Text = "Blur Complexity", .Config = {0, 0, 0.05, 2}, .Init = 20},
                     New NumParam With {.Switch = "--qblur", .Text = "Q Blur", .Config = {0, 0, 0.05, 2}, .Init = 0.5},
-                    New NumParam With {.Switch = "--scenecut-window", .Text = "Scenecut Window", .Init = 500, .Config = {0, 1000}})
+                    New NumParam With {.Switch = "--scenecut-window", .Text = "Scenecut Window", .Init = 500, .Config = {0, 1000}},
+                    CRFmin, CRFmax)
                 Add("Rate Control 3",
                     CUtree,
                     New BoolParam With {.Switch = "--lossless", .Text = "Lossless"},
@@ -1532,7 +1542,7 @@ Public Class x265Params
                             sb.Append(pipeString + Package.x265.Path.Escape)
                             Dim type = Package.x265Type
 
-                            If FrameServerHelp.IsPortable AndAlso (type = x265Type.Patman OrElse type = x265Type.DJATOM OrElse type = x265Type.JPSDR) Then
+                            If FrameServerHelp.IsPortable AndAlso type <> x265Type.Vanilla Then
                                 sb.Append(" --reader-options library=" + FrameServerHelp.GetSynthPath.Escape)
                             End If
 

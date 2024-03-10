@@ -66,6 +66,7 @@ v2.37.0 (not published yet)
 - VCEEncC: Add "--vpp-denoise-dct" parameter
 - VCEEncC: Fix problem with missing space before parameter call
 - VCEEncC: Remove Dolby Vision support
+- x265: Add "--auto-aq" parameter ([#1241](/../../issues/1241))
 - Update tools
     - ...
 - Update AviSynth+ plugins

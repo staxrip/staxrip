@@ -40,12 +40,14 @@ Public Class SvtAv1Enc
     Overrides Sub Encode()
         Encode("Video encoding", GetArgs(1, 0, 0, Nothing, p.Script), s.ProcessPriority)
 
-        If Params.Passes.Value > 0 Then
-            Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
-        End If
+        If Params.Passes.Visible Then
+            If Params.Passes.Value > 0 Then
+                Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            End If
 
-        If Params.Passes.Value > 0 Then
-            Encode("Video encoding third pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            If Params.Passes.Value > 1 Then
+                Encode("Video encoding third pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            End If
         End If
     End Sub
 
@@ -585,12 +587,14 @@ Public Class SvtAv1EncParams
     Overrides Function GetCommandLinePreview() As String
         Dim ret = GetCommandLine(True, True, 1)
 
-        If Passes.Value > 0 Then
-            ret += BR2 + GetCommandLine(True, True, 2)
-        End If
+        If Passes.Visible Then
+            If Passes.Value > 0 Then
+                ret += BR2 + GetCommandLine(True, True, 2)
+            End If
 
-        If Passes.Value > 1 Then
-            ret += BR2 + GetCommandLine(True, True, 3)
+            If Passes.Value > 1 Then
+                ret += BR2 + GetCommandLine(True, True, 3)
+            End If
         End If
 
         Return ret
@@ -765,7 +769,7 @@ Public Class SvtAv1EncParams
             Return False
         End If
 
-        If Passes.Value > 0 Then
+        If Passes.Visible AndAlso Passes.Value > 0 Then
             If pass = 1 Then
                 If CustomFirstPass.Value?.Contains(switch + " ") OrElse CustomFirstPass.Value?.EndsWith(switch) Then
                     Return True

@@ -63,6 +63,7 @@ v2.37.0 (not published yet)
 - NVEncC: Fix "--vpp-resize" parameter setting for "nvvfx-superres"
 - QSVEncC: Enable Dolby Vision only when H265 is selected
 - SvtAv1EncApp: Fix Passes could also affect Quality mode ([#1267](/../../issues/1267))
+- VCEEncC: Add "--vpp-denoise-dct" parameter
 - VCEEncC: Fix problem with missing space before parameter call
 - VCEEncC: Remove Dolby Vision support
 - Update tools

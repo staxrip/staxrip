@@ -14,6 +14,20 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.39.0 (not published yet)
+====================
+
+- ...
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
 v2.38.7 (2024-05-02)
 ====================
 

@@ -40,14 +40,11 @@ Public Class SvtAv1Enc
     Overrides Sub Encode()
         Encode("Video encoding", GetArgs(1, 0, 0, Nothing, p.Script), s.ProcessPriority)
 
-        If Params.Passes.Visible Then
-            If Params.Passes.Value > 0 Then
-                Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
-            End If
-
-            If Params.Passes.Value > 1 Then
-                Encode("Video encoding third pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
-            End If
+        If Params.Passes > 1 Then
+            Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
+        End If
+        If Params.Passes > 2 Then
+            Encode("Video encoding second pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
     End Sub
 
@@ -96,7 +93,7 @@ Public Class SvtAv1Enc
     Overrides Function GetChunkEncodeActions() As List(Of Action)
         Dim maxFrame = If(Params.Decoder.Value = 0, p.Script.GetFrameCount(), p.SourceFrames)
         Dim chunkCount = CInt(Params.Chunks.Value)
-        Dim startFrame = CInt(Params.FrameSkip.Value)
+        Dim startFrame = CInt(Params.FramesToBeSkipped.Value)
         Dim length = If(CInt(Params.FramesToBeEncoded.Value) > 0, CInt(Params.FramesToBeEncoded.Value), maxFrame - startFrame)
         Dim endFrame = Math.Min(startFrame + length - 1, maxFrame)
         Dim chunkLength = length \ chunkCount
@@ -111,13 +108,13 @@ Public Class SvtAv1Enc
                 name = "_chunk" & (chunk + 1)
             End If
 
-            If Params.Passes.Visible Then
+            If Params.Passes > 1 Then
                 ret.Add(Sub()
                             Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "), GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
-                            If Params.Passes.Value > 0 Then
+                            If Params.Passes > 1 Then
                                 Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "), GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                             End If
-                            If Params.Passes.Value > 1 Then
+                            If Params.Passes > 2 Then
                                 Encode("Video encoding pass 3" + name.Replace("_chunk", " chunk "), GetArgs(3, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
                             End If
                         End Sub)
@@ -312,17 +309,48 @@ Public Class SvtAv1EncParams
 
     Property Chunks As New NumParam With {
         .Text = "Chunks",
-        .Init = 1,
-        .Config = {1, 32}}
+        .Config = {1, 32},
+        .Init = 1}
 
+    '   --------------------------------------------------------
+    '   --------------------------------------------------------
 
+    Property Progress As New OptionParam With {
+        .Switch = "--progress",
+        .Text = "Progress",
+        .DefaultValue = 1,
+        .Value = 2,
+        .Options = {"0: No Output", "1: Normal (Default)", "2: AOMEnc Style Output"},
+        .Values = {"0", "1", "2"}}
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
         .Text = "Preset",
-        .Options = {"-2: Debug Option 2", "-1: Debug Option 1", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower", "5: Slow", "6: Medium", "7: Fast", "8: Faster", "9: Very Fast", "10: Mega Fast", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
-        .Values = {"-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
-        .Init = 12}
+        .Options = {"-1: Debug Option", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower", "5: Slow", "6: Medium", "7: Fast", "8: Faster", "9: Very Fast", "10: Mega Fast", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
+        .Values = {"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
+        .Init = 11}
+
+    '   --------------------------------------------------------
+    '   --------------------------------------------------------
+
+    Property FramesToBeEncoded As New NumParam With {
+        .HelpSwitch = "--frames",
+        .Text = "Frames To Be Encoded",
+        .Config = {0, Integer.MaxValue, 100},
+        .Init = 0}
+
+    Property FramesToBeSkipped As New NumParam With {
+        .HelpSwitch = "--skip",
+        .Text = "Frames To Be Skipped",
+        .Config = {0, Integer.MaxValue, 100},
+        .Init = 0}
+
+    Property EncoderColorFormat As New OptionParam With {
+        .Switch = "--color-format",
+        .Text = "Encoder Color Format",
+        .Options = {"0: YUV400", "1: YUV420", "2: YUV422", "3: YUV444"},
+        .IntegerValue = True,
+        .Init = 1}
 
     Property Profile As New OptionParam With {
         .Switch = "--profile",
@@ -338,14 +366,64 @@ Public Class SvtAv1EncParams
         .Values = {"0", "2.0", "2.1", "2.2", "2.3", "3.0", "3.1", "3.2", "3.3", "4.0", "4.1", "4.2", "4.3", "5.0", "5.1", "5.2", "5.3", "6.0", "6.1", "6.2", "6.3", "7.0", "7.1", "7.2", "7.3"},
         .Init = 0}
 
-    Property EnableHdr As New BoolParam With {
+    Property HighDynamicRangeInput As New OptionParam With {
         .Switch = "--enable-hdr",
         .Text = "Enable HDR",
-        .Init = False,
-        .IntegerValue = True
-    }
+        .Options = {"0: Off", "1: On"},
+        .IntegerValue = True,
+        .Init = 0}
 
+    Property EncoderBitDepth As New OptionParam With {
+        .Switch = "--input-depth",
+        .Text = "Encoder Bit Depth",
+        .Options = {"8-Bit", "10-Bit"},
+        .Values = {"8", "10"},
+        .DefaultValue = 0,
+        .Value = 1}
 
+    Property StatReport As New OptionParam With {
+        .Switch = "--enable-stat-report",
+        .Text = "Stat Report",
+        .Options = {"0: Off", "1: Calculates and outputs PSNR SSIM metrics at the end of encoding"},
+        .IntegerValue = True,
+        .Init = 0}
+
+    Property Asm As New OptionParam With {
+        .Switch = "--asm",
+        .Text = "Limit Assembly Instruction Set",
+        .Options = {"C", "MMX", "SSE", "SSE2", "SSE3", "SSSE3", "SSE4.1", "SSE4.2", "AVX", "AVX2", "AVX512", "MAX"},
+        .Values = {"c", "mmx", "sse", "sse2", "sse3", "ssse3", "sse4_1", "sse4_2", "avx", "avx2", "avx512", "max"},
+        .Init = 11}
+
+    Property LogicalProcessors As New NumParam With {
+        .HelpSwitch = "--lp",
+        .Text = "Logical Cores",
+        .Config = {0, Environment.ProcessorCount, 1},
+        .Init = 0}
+
+    Property PinnedExecution As New OptionParam With {
+        .Switch = "--pin",
+        .Text = "Pinned Execution",
+        .Options = {"0: Off", "1: On"},
+        .IntegerValue = True,
+        .Init = 0}
+
+    Property FastDecode As New OptionParam With {
+        .Switch = "--fast-decode",
+        .Text = "Fast Decode",
+        .Options = {"0: Off", "1: On"},
+        .IntegerValue = True,
+        .Init = 0}
+
+    Property Tune As New OptionParam With {
+        .Switch = "--tune",
+        .Text = "Tune",
+        .IntegerValue = True,
+        .Options = {"0: VQ", "1: PSNR", "2: SSIM"},
+        .Init = 1}
+
+    '   --------------------------------------------------------
+    '   --------------------------------------------------------
 
     Property RateControlMode As New OptionParam With {
         .HelpSwitch = "--rc",
@@ -356,93 +434,117 @@ Public Class SvtAv1EncParams
         .AlwaysOn = True,
         .Value = 0}
 
-    Property ConstantRateFactor As New NumParam With {
-        .HelpSwitch = "--crf",
-        .Name = "ConstantRateFactor",
-        .Text = "Constant Rate Factor",
-        .DefaultValue = 35,
-        .Value = 35,
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality AndAlso AqMode.Value <> 0,
-        .ValueChangedAction = Sub(x) QuantizationParameter.Value = CInt(x),
-        .Config = {1, 63, 1}}
-
     Property QuantizationParameter As New NumParam With {
         .HelpSwitch = "--qp",
         .Name = "QuantizationParameter",
         .Text = "Quantization Parameter",
-        .DefaultValue = 35,
-        .Value = 35,
         .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality AndAlso AqMode.Value = 0,
         .ValueChangedAction = Sub(x) ConstantRateFactor.Value = CInt(x),
-        .Config = {1, 63, 1}}
+        .Config = {1, 63, 1},
+        .Init = 35}
 
-    Property MaximumBitrate As New NumParam With {
-        .Switch = "--mbr",
-        .Text = "Maximum Bitrate",
-        .Init = 0,
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality,
-        .Config = {0, 100000, 100}}
+    Property ConstantRateFactor As New NumParam With {
+        .HelpSwitch = "--crf",
+        .Name = "ConstantRateFactor",
+        .Text = "Constant Rate Factor",
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality AndAlso AqMode.Value <> 0,
+        .ValueChangedAction = Sub(x) QuantizationParameter.Value = CInt(x),
+        .Config = {1, 63, 1},
+        .Init = 35}
 
     Property TargetBitrate As New NumParam With {
         .HelpSwitch = "--tbr",
         .Text = "Target Bitrate",
-        .Init = 7000,
         .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncRateMode.Quality,
-        .Config = {100, 100000, 100}}
+        .Config = {100, 100000, 100},
+        .Init = 2000}
+
+    Property MaximumBitrate As New NumParam With {
+        .Switch = "--mbr",
+        .Text = "Maximum Bitrate",
+        .VisibleFunc = Function() ConstantRateFactor.Visible,
+        .Config = {0, 100000, 100},
+        .Init = 0}
 
     Property MaxQp As New NumParam With {
         .Switch = "--max-qp",
         .Text = "Maximum Quantizer",
-        .Init = 63,
         .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncRateMode.Quality,
-        .Config = {1, 63, 1}}
+        .Config = {1, 63, 1},
+        .Init = 63}
 
     Property MinQp As New NumParam With {
         .Switch = "--min-qp",
         .Text = "Minimum Quantizer",
-        .Init = 1,
         .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncRateMode.Quality,
-        .Config = {1, 63, 1}}
+        .Config = {1, 62, 1},
+        .Init = 1}
 
     Property AqMode As New OptionParam With {
         .Switch = "--aq-mode",
         .Text = "Adaptive Quantization",
         .IntegerValue = True,
-        .Init = 2,
-        .Options = {"0: Off", "1: Variance base using AV1 segments", "2: Deltaq pred efficiency"}}
+        .Options = {"0: Off", "1: Variance base using AV1 segments", "2: Deltaq pred efficiency"},
+        .Init = 2}
+
+    Property RecodeLoop As New OptionParam With {
+        .Switch = "--recode-loop",
+        .Text = "Recode Loop",
+        .IntegerValue = True,
+        .Options = {"0: Off", "1: Allow recode for KF and exceeding maximum frame bandwidth", "2: Allow recode only for key frames, alternate reference frames, and Golden frames", "3: Allow recode for all frame types based on bitrate constraints", "4: Preset based decision"},
+        .Init = 4}
 
     Property EnableQm As New BoolParam With {
         .Switch = "--enable-qm",
         .Text = "Enable quantisation matrices",
         .IntegerValue = True,
-        .Init = False
-    }
-
-    Property QmMax As New NumParam With {
-        .Switch = "--qm-max",
-        .Text = "Max quant matrix flatness",
-        .Init = 15,
-        .VisibleFunc = Function() EnableQm.Value,
-        .Config = {0, 15, 1}}
+        .Init = False}
 
     Property QmMin As New NumParam With {
         .Switch = "--qm-min",
         .Text = "Min quant matrix flatness",
-        .Init = 8,
         .VisibleFunc = Function() EnableQm.Value,
-        .Config = {0, 15, 1}}
+        .Config = {0, 15, 1},
+        .Init = 8}
 
+    Property QmMax As New NumParam With {
+        .Switch = "--qm-max",
+        .Text = "Max quant matrix flatness",
+        .VisibleFunc = Function() EnableQm.Value,
+        .Config = {0, 15, 1},
+        .Init = 15}
 
+    '   --------------------------------------------------------
+    '   --------------------------------------------------------
 
+    ReadOnly Property Passes As Integer
+        Get
+            If PassesCBR.Visible Then
+                Return PassesCBR.Value + 1
+            ElseIf PassesVBR.Visible Then
+                Return PassesVBR.Value + 1
+            End If
+        End Get
+    End Property
 
-    Property Passes As New OptionParam With {
+    Property PassesCBR As New OptionParam With {
         .Switches = {"--pass", "--passes", "--stats"},
         .Text = "Passes",
-        .Init = 0,
         .Options = {"1-pass encode", "2-pass encode", "3-pass encode"},
         .Values = {"1", "2", "3"},
-        .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncRateMode.Quality}
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.CBR,
+        .Init = 0}
 
+    Property PassesVBR As New OptionParam With {
+        .Switches = {"--pass", "--passes", "--stats"},
+        .Text = "Passes",
+        .Options = {"1-pass encode", "2-pass encode"},
+        .Values = {"1", "2"},
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.VBR,
+        .Init = 0}
+
+    '   --------------------------------------------------------
+    '   --------------------------------------------------------
 
     Property KeyInt As New OptionParam With {
         .Switch = "--keyint",
@@ -450,8 +552,8 @@ Public Class SvtAv1EncParams
         .Options = {"-2: ~5 seconds", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
         .Values = {"-2", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
         .VisibleFunc = Function() Not ConstantRateFactor.Visible,
-        .ValueChangedAction = Sub(x) KeyIntCrf.Value = x
-    }
+        .ValueChangedAction = Sub(x) KeyIntCrf.Value = x,
+        .Init = 0}
 
     Property KeyIntCrf As New OptionParam With {
         .Switch = "--keyint",
@@ -459,43 +561,326 @@ Public Class SvtAv1EncParams
         .Options = {"-2: ~5 seconds", "-1: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
         .Values = {"-2", "-1", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
         .VisibleFunc = Function() ConstantRateFactor.Visible,
-        .ValueChangedAction = Sub(x) KeyInt.Value = x
-    }
+        .ValueChangedAction = Sub(x) KeyInt.Value = x,
+        .Init = 0}
 
+    Property IntraRefreshRate As New OptionParam With {
+        .Switch = "--irefresh-type",
+        .Text = "Intra Refresh Type",
+        .Options = {"1: FWD Frame (Open GOP)", "2: Key Frame (Closed GOP)"},
+        .Values = {"1", "2"},
+        .Init = 1}
 
-    Property FrameSkip As New NumParam With {
-        .HelpSwitch = "--skip",
-        .Text = "Frames To Be Skipped"}
+    Property SceneChangeDetection As New OptionParam With {
+        .Switch = "--scd",
+        .Text = "Scene Change Detection Control",
+        .Options = {"0: Off", "1: On"},
+        .IntegerValue = True,
+        .Init = 0}
 
-    Property FramesToBeEncoded As New NumParam With {
-        .HelpSwitch = "--frames",
-        .Text = "Frames To Be Encoded"}
+    Property Lookahead As New NumParam With {
+        .Switch = "--lookahead",
+        .Text = "Lookahead",
+        .Config = {-1, 120, 1},
+        .Init = -1}
 
+    Property HierarchicalLevels As New OptionParam With {
+        .Switch = "--hierarchical-levels",
+        .Text = "Hierarchical Levels",
+        .Options = {"2: 3 temporal layers", "3: 4 temporal layers", "4: 5 temporal layers", "5: 6 temporal layers"},
+        .Values = {"2", "3", "4", "5"},
+        .Init = 2}
+
+    Property PredStructure As New OptionParam With {
+        .Switch = "--pred-struct",
+        .Text = "Prediction Structure",
+        .Options = {"1: Low Delay", "2: Random Access"},
+        .Values = {"1", "2"},
+        .Init = 1}
+    Property EnableDg As New OptionParam With {
+        .Switch = "--enable-dg",
+        .Text = "Dynamic GoP",
+        .Options = {"0: Off", "1: On"},
+        .IntegerValue = True,
+        .Init = 1}
+
+    Property StartupMgSize As New OptionParam With {
+        .Switch = "--startup-mg-size",
+        .Text = "Startup Mini-GoP Size",
+        .Options = {"0: Off", "2: 3 temporal layers", "3: 4 temporal layers", "4: 5 temporal layers"},
+        .Values = {"0", "2", "3", "4"},
+        .Init = 0}
+
+    '   --------------------------------------------------------
+    '   --------------------------------------------------------
+
+    Property TileRow As New NumParam With {
+        .Switch = "--tile-rows",
+        .Text = "Tile Rows",
+        .Config = {0, 6, 1},
+        .Init = 0}
+
+    Property TileCol As New NumParam With {
+        .Switch = "--tile-columns",
+        .Text = "Tile Columns",
+        .Config = {0, 4, 1},
+        .Init = 0}
+
+    Property LoopFilterEnable As New BoolParam With {
+        .Switch = "--enable-dlf",
+        .Text = "Deblocking Loop Filter",
+        .IntegerValue = True,
+        .Init = True}
+
+    Property CDEFLevel As New BoolParam With {
+        .Switch = "--enable-cdef",
+        .Text = "Constrained Directional Enhancement Filter",
+        .IntegerValue = True,
+        .Init = True}
+
+    Property EnableRestoration As New BoolParam With {
+        .Switch = "--enable-restoration",
+        .Text = "Loop Restoration Filter",
+        .IntegerValue = True,
+        .Init = True}
+
+    Property EnableTPLModel As New BoolParam With {
+        .Switch = "--enable-tpl-la",
+        .Text = "Temporal Dependency Model",
+        .IntegerValue = True,
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality,
+        .Init = True}
+
+    Property Mfmv As New NumParam With {
+        .Switch = "--enable-mfmv",
+        .Text = "Motion Field Motion Vector",
+        .Config = {-1, 1, 1},
+        .Init = -1}
+
+    Property EnableTF As New BoolParam With {
+        .Switch = "--enable-tf",
+        .Text = "ALT-REF Frames",
+        .IntegerValue = True,
+        .Init = True}
+
+    Property EnableOverlays As New BoolParam With {
+        .Switch = "--enable-overlays",
+        .Text = "Insertion of Overlayer Pictures",
+        .IntegerValue = True,
+        .Init = False}
+
+    Property ScreenContentMode As New OptionParam With {
+        .Switch = "--scm",
+        .Text = "Screen Content Detection Level",
+        .IntegerValue = True,
+        .Options = {"0: Off", "1: On", "2: Content Adaptive"},
+        .Init = 2}
+
+    Property RestrictedMotionVector As New BoolParam With {
+        .Switch = "--rmv",
+        .Text = "Restrict Motion Vectors",
+        .IntegerValue = True,
+        .Init = False}
 
     Property FilmGrain As New NumParam With {
         .Switch = "--film-grain",
-        .Text = "Film Grain Denoising Level",
-        .Init = 0,
-        .Config = {0, 50, 1}
-    }
+        .Text = "Film Grain Level",
+        .Config = {0, 50, 1},
+        .Init = 0}
 
     Property FilmGrainDenoise As New OptionParam With {
         .Switch = "--film-grain-denoise",
         .Text = "Film Grain Denoise",
-        .Init = 1,
         .IntegerValue = True,
-        .Options = {"0: no denoising, film grain data is still in frame header", "1: level of denoising is set by the film-grain parameter"},
-        .VisibleFunc = Function() FilmGrain.Value > 0
-    }
+        .Options = {"0: No denoising, film grain data is still in frame header", "1: Level of denoising is set by the film-grain parameter"},
+        .VisibleFunc = Function() FilmGrain.Value > 0,
+        .Init = 0}
 
-    Property Progress As New OptionParam With {
-        .Switch = "--progress",
-        .Text = "Progress",
-        .DefaultValue = 1,
-        .Value = 2,
-        .Options = {"0: No Output", "1: Normal (Default)", "2: AOMEnc Style Output"},
-        .Values = {"0", "1", "2"}
-    }
+    Property FGSTable As New StringParam With {
+        .Switch = "--fgs-table",
+        .Text = "FGS Table",
+        .BrowseFile = True}
+
+    Property SuperresMode As New OptionParam With {
+        .Switch = "--superres-mode",
+        .Text = "Super-Resolution Mode",
+        .Options = {"0: None, no frame super-resolution allowed", "1: All frames are encoded at the specified scale", "2: All frames are coded at a random scale", "3: Super-resolution scale for a frame is determined based on the q_index", "4: Automatically select the mode for appropriate frames"},
+        .Values = {"0", "1", "2", "3", "4"},
+        .Init = 0}
+
+    Property SuperresDenom As New OptionParam With {
+        .Switch = "--superres-denom",
+        .Text = "SuperRes Denominator",
+        .Options = {"8: No scaling", "9: 8/9-scaling", "10: 8/10-scaling", "11: 8/11-scaling", "12: 8/12-scaling", "13: 8/13-scaling", "14: 8/14-scaling", "15: 8/15-scaling", "16: Half-scaling"},
+        .Values = {"8", "9", "10", "11", "12", "13", "14", "15", "16"},
+        .VisibleFunc = Function() SuperresMode.Value = 1,
+        .Init = 0}
+
+    Property SuperresKfDenom As New OptionParam With {
+        .Switch = "--superres-kf-denom",
+        .Text = "SuperRes Denominator for KeyFrames",
+        .Options = {"8: No scaling", "9: 8/9-scaling", "10: 8/10-scaling", "11: 8/11-scaling", "12: 8/12-scaling", "13: 8/13-scaling", "14: 8/14-scaling", "15: 8/15-scaling", "16: Half-scaling"},
+        .Values = {"8", "9", "10", "11", "12", "13", "14", "15", "16"},
+        .VisibleFunc = Function() SuperresMode.Value = 1,
+        .Init = 0}
+
+    Property SuperresQthres As New NumParam With {
+        .Switch = "--superres-qthres",
+        .Text = "SuperRes q-threshold",
+        .Config = {0, 63, 1},
+        .VisibleFunc = Function() SuperresMode.Value = 3,
+        .Init = 43}
+
+    Property SuperresKfQthres As New NumParam With {
+        .Switch = "--superres-kf-qthres",
+        .Text = "SuperRes q-threshold for KeyFrames",
+        .Config = {0, 63, 1},
+        .VisibleFunc = Function() SuperresMode.Value = 3,
+        .Init = 43}
+
+
+    Property SframeInterval As New NumParam With {
+        .Switch = "--sframe-dist",
+        .Text = "S-Frame Interval",
+        .Config = {0, Integer.MaxValue, 1},
+        .Init = 0}
+
+    Property SframeMode As New OptionParam With {
+        .Switch = "--sframe-mode",
+        .Text = "S-Frame Insertion Mode",
+        .Options = {"1: Considered frame will be made into an S-Frame only if it is an altref frame", "2: Next altref frame will be made into an S-Frame (default)"},
+        .Values = {"1", "2"},
+        .Init = 1}
+
+
+    Property ResizeMode As New OptionParam With {
+        .Switch = "--resize-mode",
+        .Text = "Resize Mode",
+        .Options = {"0: None, no frame resize allowed (default)", "1: Fixed mode, all frames are encoded at the specified scale of 8/denom", "2: Random mode, all frames are coded at a random scale", "3: Dynamic mode, scale for a frame is determined based on buffer level and average qp in rate control", "4: Random access mode, scaling is controlled by scale events"},
+        .Values = {"0", "1", "2", "3", "4"},
+        .Init = 0}
+
+    Property ResizeDenom As New OptionParam With {
+        .Switch = "--resize-denom",
+        .Text = "Resize Denominator",
+        .Expanded = True,
+        .Options = {"8: No scaling (default)", "9: 8/9-scaling", "10: 8/10-scaling", "11: 8/11-scaling", "12: 8/12-scaling", "13: 8/13-scaling", "14: 8/14-scaling", "15: 8/15-scaling", "16: Half-scaling"},
+        .Values = {"8", "9", "10", "11", "12", "13", "14", "15", "16"},
+        .VisibleFunc = Function() ResizeMode.Value = 1,
+        .Init = 0}
+
+    Property ResizeKfDenom As New OptionParam With {
+        .Switch = "--resize-kf-denom",
+        .Text = "Resize Denominator for KeyFrames",
+        .Expanded = True,
+        .Options = {"8: No scaling (default)", "9: 8/9-scaling", "10: 8/10-scaling", "11: 8/11-scaling", "12: 8/12-scaling", "13: 8/13-scaling", "14: 8/14-scaling", "15: 8/15-scaling", "16: Half-scaling"},
+        .Values = {"8", "9", "10", "11", "12", "13", "14", "15", "16"},
+        .VisibleFunc = Function() ResizeMode.Value = 1,
+        .Init = 0}
+
+    Property ResizeFrameEvents As New StringParam With {
+        .Switch = "--frame-resz-events",
+        .Text = "Resize Events",
+        .VisibleFunc = Function() ResizeMode.Value = 4,
+        .Init = ""}
+
+    Property ResizeFrameDenoms As New StringParam With {
+        .Switch = "--frame-resz-denoms",
+        .Text = "Resize Denominator In Event",
+        .VisibleFunc = Function() ResizeMode.Value = 4,
+        .Init = ""}
+
+    Property ResizeFrameKfDenoms As New StringParam With {
+        .Switch = "--frame-resz-kf-denoms",
+        .Text = "Resize Denominator for KeyFrames In Event",
+        .VisibleFunc = Function() ResizeMode.Value = 4,
+        .Init = ""}
+
+    '   --------------------------------------------------------
+    '   --------------------------------------------------------
+
+    Property ColorPrimaries As New OptionParam With {
+        .Switch = "--color-primaries",
+        .Text = "Color Primaries",
+        .Expanded = True,
+        .Options = {"Unspecified", "BT.709", "BT.470 System M (historical)", "BT.470 System B, G (historical)", "BT.601", "SMPTE 240", "Generic film (color filters using illuminant C)", "BT.2020, BT.2100", "SMPTE 428 (CIE 1921 XYZ)", "SMPTE RP 431-2", "SMPTE EG 432-1", "EBU Tech. 3213-E"},
+        .Values = {"2", "1", "4", "5", "6", "7", "8", "9", "10", "11", "12", "22"},
+        .Init = 0}
+
+    Property TransferCharacteristics As New OptionParam With {
+        .Switch = "--transfer-characteristics",
+        .Text = "Transfer Characteristics",
+        .Expanded = True,
+        .Options = {"Unspecified", "BT.709", "BT.470 System M (historical)", "BT.470 System B, G (historical)", "BT.601", "SMPTE 240 M", "Linear", "Logarithmic (100 : 1 range)", "Logarithmic (100 * Sqrt(10) : 1 range)", "IEC 61966-2-4", "BT.1361", "sRGB or sYCC", "BT.2020 10-bit systems", "BT.2020 12-bit systems", "SMPTE ST 2084, ITU BT.2100 PQ", "SMPTE ST 428", "BT.2100 HLG, ARIB STD-B67"},
+        .Values = {"2", "1", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18"},
+        .Init = 0}
+
+    Property MatrixCoefficients As New OptionParam With {
+        .Switch = "--matrix-coefficients",
+        .Text = "Matrix Coefficients",
+        .Expanded = True,
+        .Options = {"Unspecified", "Identity matrix", "BT.709", "US FCC 73.628", "BT.470 System B, G (historical)", "BT.601", "SMPTE 240 M", "YCgCo", "BT.2020 non-constant luminance, BT.2100 YCbCr", "BT.2020 constant luminance", "SMPTE ST 2085 YDzDx", "Chromaticity-derived non-constant luminance", "Chromaticity-derived constant luminance", "BT.2100 ICtCp"},
+        .Values = {"2", "0", "1", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"},
+        .Init = 0}
+
+    Property ColorRange As New OptionParam With {
+        .Switch = "--color-range",
+        .Text = "Color Range",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Studio (default)", "1: Full"},
+        .Init = 0}
+
+    Property ChromaSamplePosition As New OptionParam With {
+        .Switch = "--chroma-sample-position",
+        .Text = "Chroma Sample Position",
+        .IntegerValue = True,
+        .Options = {"0: Unknown (default)", "1: Vertical/Left - horizontally co-located with luma samples, vertical position in the middle between two luma samples", "2: Colocated/Topleft - co-located with luma samples"},
+        .Init = 0}
+
+    Property MasteringDisplay As New StringParam With {
+        .Switch = "--mastering-display",
+        .Text = "Master Display",
+        .InitAction = Sub(tb)
+                          tb.Edit.TextBox.Multiline = True
+                          tb.Edit.MultilineHeightFactor = 2.3
+                      End Sub}
+
+    Property ContentLightLevel As New StringParam With {
+        .Switch = "--content-light",
+        .Text = "Content Light Level",
+        .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, """" & MaxCLL.Value & "," & MaxFALL.Value & """", ""),
+        .ImportAction = Sub(param, arg)
+                            If arg = "" Then Exit Sub
+
+                            Dim a = arg.Trim(""""c).Split(","c)
+                            MaxCLL.Value = a(0).ToInt
+                            MaxFALL.Value = a(1).ToInt
+                        End Sub,
+        .Init = ""}
+
+    Property MaxCLL As New NumParam With {
+        .Text = "Maximum CLL",
+        .Switch = "--content-light",
+        .Config = {0, 65535, 50},
+        .ArgsFunc = Function() If(MaxCLL.Value <> 0 OrElse MaxFALL.Value <> 0, "--content-light """ & MaxCLL.Value & "," & MaxFALL.Value & """", ""),
+        .ImportAction = Sub(param, arg)
+                            If arg = "" Then Exit Sub
+
+                            Dim a = arg.Trim(""""c).Split(","c)
+                            MaxCLL.Value = a(0).ToInt
+                            MaxFALL.Value = a(1).ToInt
+                        End Sub,
+        .Init = 0}
+
+    Property MaxFALL As New NumParam With {
+        .Switches = {"--content-light"},
+        .Text = "Maximum FALL",
+        .Config = {0, 65535, 50},
+        .Init = 0}
+
+    '   --------------------------------------------------------
+    '   --------------------------------------------------------
 
     Property Custom As New StringParam With {
         .Text = "Custom",
@@ -509,7 +894,7 @@ Public Class SvtAv1EncParams
     Property CustomFirstPass As New StringParam With {
         .Text = "Custom" + BR + "First Pass",
         .Quotes = QuotesMode.Never,
-        .VisibleFunc = Function() Passes.Value > 0,
+        .VisibleFunc = Function() Passes > 1,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = g.GetCodeFont
@@ -518,12 +903,20 @@ Public Class SvtAv1EncParams
     Property CustomSecondPass As New StringParam With {
         .Text = "Custom" + BR + "Second Pass",
         .Quotes = QuotesMode.Never,
-        .VisibleFunc = Function() Passes.Value > 0,
+        .VisibleFunc = Function() Passes > 1,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
                           tb.Edit.TextBox.Font = g.GetCodeFont
                       End Sub}
 
+    Property CustomThirdPass As New StringParam With {
+        .Text = "Custom" + BR + "Third Pass",
+        .Quotes = QuotesMode.Never,
+        .VisibleFunc = Function() Passes > 2,
+        .InitAction = Sub(tb)
+                          tb.Edit.MultilineHeightFactor = 6
+                          tb.Edit.TextBox.Font = g.GetCodeFont
+                      End Sub}
 
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -531,51 +924,43 @@ Public Class SvtAv1EncParams
             If ItemsValue Is Nothing Then
                 ItemsValue = New List(Of CommandLineParam)
 
-                Add("Basic", Decoder, PipingToolAVS, PipingToolVS,
-                    Progress,
-                    Preset, Profile, Level,
-                    EnableHdr,
-                    FrameSkip, FramesToBeEncoded,
+                Add("Input/Output",
+                    Decoder, PipingToolAVS, PipingToolVS,
                     CompCheck, CompCheckAimedQuality,
-                    Chunks
+                    Chunks,
+                    Progress,
+                    FramesToBeEncoded, FramesToBeSkipped,
+                    EncoderColorFormat, EncoderBitDepth,
+                    HighDynamicRangeInput, StatReport,
+                    Asm, LogicalProcessors, PinnedExecution
+                )
+                Add("Basic",
+                    Preset, Profile, Level, Tune, FastDecode
                 )
                 Add("Rate Control",
-                    RateControlMode, ConstantRateFactor, QuantizationParameter, Passes, TargetBitrate, MaximumBitrate, MaxQp, MinQp, AqMode,
+                    RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
+                    PassesVBR, PassesCBR,
+                    AqMode, RecodeLoop,
                     EnableQm, QmMax, QmMin
                 )
                 Add("GOP size/type",
                     KeyInt, KeyIntCrf,
-                    New OptionParam With {.Switch = "--irefresh-type", .Text = "Intra Refresh Type", .Options = {"1: FWD Frame (Open GOP)", "2: Key Frame (Closed GOP)"}, .Values = {"1", "2"}},
-                    New BoolParam With {.Switch = "--scd", .Text = "Scene Change Detection Control", .Init = False, .IntegerValue = True},
-                    New NumParam With {.Switch = "--lookahead", .Text = "Lookahead", .Init = -1, .Config = {-1, 120, 1}}
+                    IntraRefreshRate, SceneChangeDetection, Lookahead, HierarchicalLevels, PredStructure, EnableDg, StartupMgSize
                 )
                 Add("AV1 Specific 1",
-                    New NumParam With {.Switch = "--tile-rows", .Text = "Tile Rows", .Init = 1, .Config = {0, 6, 1}},
-                    New NumParam With {.Switch = "--tile-columns", .Text = "Tile Columns", .Init = 1, .Config = {0, 4, 1}},
-                    New BoolParam With {.Switch = "--enable-dlf", .Text = "Deblocking Loop Filter", .Init = True, .IntegerValue = True},
-                    New BoolParam With {.Switch = "--enable-cdef", .Text = "Constrained Directional Enhancement Filter", .Init = True, .IntegerValue = True},
-                    New BoolParam With {.Switch = "--enable-restoration", .Text = "Loop Restoration Filter", .Init = True, .IntegerValue = True},
-                    New BoolParam With {.Switch = "--enable-tpl-la", .Text = "Temporal Dependency Model", .Init = True, .IntegerValue = True, .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality},
-                    New NumParam With {.Switch = "--enable-mfmv", .Text = "Motion Field Motion Vector", .Init = -1, .Config = {-1, 1, 1}},
-                    New BoolParam With {.Switch = "--enable-dg", .Text = "Dynamic GoP", .Init = True, .IntegerValue = True},
-                    New BoolParam With {.Switch = "--fast-decode", .Text = "Fast Decoder Levels", .Init = False, .IntegerValue = True},
-                    New BoolParam With {.Switch = "--enable-tf", .Text = "ALT-REF Frames", .Init = True, .IntegerValue = True},
-                    New BoolParam With {.Switch = "--enable-overlays", .Text = "Insertion of Overlayer Pictures", .Init = False, .IntegerValue = True},
-                    New OptionParam With {.Switch = "--tune", .Text = "Tune", .Init = 1, .IntegerValue = True, .Options = {"0: VQ", "1: PSNR", "2: SSIM"}},
-                    New OptionParam With {.Switch = "--scm", .Text = "Screen Content Detection Level", .Init = 2, .IntegerValue = True, .Options = {"0: Off", "1: On", "2: Content Adaptive"}},
-                    New BoolParam With {.Switch = "--rmv", .Text = "Restrict Motion Vectors", .Init = False, .IntegerValue = True}
+                    TileRow, TileCol,
+                    LoopFilterEnable, CDEFLevel, EnableRestoration, EnableTPLModel, Mfmv, EnableTF, EnableOverlays, ScreenContentMode, RestrictedMotionVector,
+                    FilmGrain, FilmGrainDenoise, FGSTable
                 )
                 Add("AV1 Specific 2",
-                    FilmGrain, FilmGrainDenoise,
-                    New OptionParam With {.Switch = "--superres-mode", .Text = "Superres Mode", .Init = 1, .IntegerValue = True, .Options = {"0: Off", "1", "2", "3", "4: Auto-Select"}}
+                    SuperresMode, SuperresDenom, SuperresKfDenom, SuperresQthres, SuperresKfQthres,
+                    SframeInterval, SframeMode,
+                    ResizeMode, ResizeDenom, ResizeKfDenom, ResizeFrameEvents, ResizeFrameDenoms, ResizeFrameKfDenoms
                 )
                 Add("Color Description",
-                    New OptionParam With {.Switch = "--color-primaries", .Text = "Color Primaries", .Options = {"Unspecified", "BT.709", "BT.470 System M (historical)", "BT.470 System B, G (historical)", "BT.601", "SMPTE 240", "Generic film (color filters using illuminant C)", "BT.2020, BT.2100", "SMPTE 428 (CIE 1921 XYZ)", "SMPTE RP 431-2", "SMPTE EG 432-1", "EBU Tech. 3213-E"}, .Values = {"2", "1", "4", "5", "6", "7", "8", "9", "10", "11", "12", "22"}},
-                    New OptionParam With {.Switch = "--transfer-characteristics", .Text = "Transfer Characteristics", .Options = {"Unspecified", "BT.709", "BT.470 System M (historical)", "BT.470 System B, G (historical)", "BT.601", "SMPTE 240 M", "Linear", "Logarithmic (100 : 1 range)", "Logarithmic (100 * Sqrt(10) : 1 range)", "IEC 61966-2-4", "BT.1361", "sRGB or sYCC", "BT.2020 10-bit systems", "BT.2020 12-bit systems", "SMPTE ST 2084, ITU BT.2100 PQ", "SMPTE ST 428", "BT.2100 HLG, ARIB STD-B67"}, .Values = {"2", "1", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18"}},
-                    New OptionParam With {.Switch = "--matrix-coefficients", .Text = "Matrix Coefficients", .Options = {"Unspecified", "Identity matrix", "BT.709", "US FCC 73.628", "BT.470 System B, G (historical)", "BT.601", "SMPTE 240 M", "YCgCo", "BT.2020 non-constant luminance, BT.2100 YCbCr", "BT.2020 constant luminance", "SMPTE ST 2085 YDzDx", "Chromaticity-derived non-constant luminance", "Chromaticity-derived constant luminance", "BT.2100 ICtCp"}, .Values = {"2", "0", "1", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"}},
-                    New OptionParam With {.Switch = "--color-range", .Text = "Color Range", .IntegerValue = True, .Options = {"0: Studio", "1: Full"}}
+                    ColorPrimaries, TransferCharacteristics, MatrixCoefficients, ColorRange, ChromaSamplePosition, MasteringDisplay, MaxCLL, MaxFALL
                 )
-                Add("Custom", Custom, CustomFirstPass, CustomSecondPass)
+                Add("Custom", Custom, CustomFirstPass, CustomSecondPass, CustomThirdPass)
 
                 'ItemsValue = ItemsValue.OrderBy(Function(i) i.Weight).ToList
             End If
@@ -587,14 +972,11 @@ Public Class SvtAv1EncParams
     Overrides Function GetCommandLinePreview() As String
         Dim ret = GetCommandLine(True, True, 1)
 
-        If Passes.Visible Then
-            If Passes.Value > 0 Then
-                ret += BR2 + GetCommandLine(True, True, 2)
-            End If
-
-            If Passes.Value > 1 Then
-                ret += BR2 + GetCommandLine(True, True, 3)
-            End If
+        If Passes > 1 Then
+            ret += BR2 + GetCommandLine(True, True, 2)
+        End If
+        If Passes > 2 Then
+            ret += BR2 + GetCommandLine(True, True, 3)
         End If
 
         Return ret
@@ -701,20 +1083,22 @@ Public Class SvtAv1EncParams
         End If
 
         If isSingleChunk Then
-            If FrameSkip.Value > 0 AndAlso Not IsCustom(pass, "--skip") Then
-                sb.Append($" --skip {FrameSkip.Value}")
+            If FramesToBeSkipped.Value > 0 AndAlso Not IsCustom(pass, "--skip") Then
+                sb.Append($" --skip {FramesToBeSkipped.Value}")
             End If
 
-            If FramesToBeEncoded.Value > 0 AndAlso Not IsCustom(pass, "--frames") Then
-                sb.Append($" --frames {Math.Min(p.TargetFrames - FrameSkip.Value, FramesToBeEncoded.Value)}")
-            Else
-                sb.Append($" --frames {p.TargetFrames - FrameSkip.Value}")
+            If includePaths AndAlso Not IsCustom(pass, "--frames") Then
+                Dim n = If(FramesToBeEncoded.Value > 0,
+                    Math.Min(p.TargetFrames - FramesToBeSkipped.Value, FramesToBeEncoded.Value),
+                    p.TargetFrames - FramesToBeSkipped.Value)
+
+                sb.Append($" --frames {n}")
             End If
         Else
             sb.Append($" --frames {endFrame - startFrame + 1}")
         End If
 
-        If Passes.Visible Then
+        If Passes > 1 Then
             sb.Append(" --pass " & pass)
             If includePaths Then
                 sb.Append(" --stats " + statsPath)
@@ -724,9 +1108,14 @@ Public Class SvtAv1EncParams
                 If CustomFirstPass.Value <> "" Then
                     sb.Append(" " + CustomFirstPass.Value)
                 End If
-            Else
+            ElseIf pass = 2 Then
+
                 If CustomSecondPass.Value <> "" Then
                     sb.Append(" " + CustomSecondPass.Value)
+                End If
+            Else
+                If CustomThirdPass.Value <> "" Then
+                    sb.Append(" " + CustomThirdPass.Value)
                 End If
             End If
         End If
@@ -765,17 +1154,19 @@ Public Class SvtAv1EncParams
     End Function
 
     Function IsCustom(pass As Integer, switch As String) As Boolean
-        If switch = "" Then
-            Return False
-        End If
+        If switch = "" Then Return False
 
-        If Passes.Visible AndAlso Passes.Value > 0 Then
+        If Passes > 1 Then
             If pass = 1 Then
                 If CustomFirstPass.Value?.Contains(switch + " ") OrElse CustomFirstPass.Value?.EndsWith(switch) Then
                     Return True
                 End If
-            Else
+            ElseIf pass = 2 Then
                 If CustomSecondPass.Value?.Contains(switch + " ") OrElse CustomSecondPass.Value?.EndsWith(switch) Then
+                    Return True
+                End If
+            Else
+                If CustomThirdPass.Value?.Contains(switch + " ") OrElse CustomThirdPass.Value?.EndsWith(switch) Then
                     Return True
                 End If
             End If

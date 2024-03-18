@@ -1412,6 +1412,10 @@ Public Class GlobalClass
     End Sub
 
     Sub RunAutoCrop(progressAction As Action(Of Double))
+        If p.SourceScript Is Nothing Then Return
+        If String.IsNullOrWhiteSpace(p.SourceScript.Path) Then Return
+        If Not p.SourceScript.Path.FileExists() Then Return
+
         p.SourceScript.Synchronize(True, True, True)
 
         If p.HdrDolbyVisionMetadataFile IsNot Nothing Then

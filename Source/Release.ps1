@@ -1,12 +1,11 @@
 $solution               = $PSScriptRoot + '\StaxRip.sln'
 $binDirectory           = $PSScriptRoot + '\bin'
 $appExe                 = $binDirectory + '\StaxRip.exe'
-$7zExe                  = 'C:\Program Files\7-Zip\7z.exe'
-$msBuildDirectory       = 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\'  # stax76
-$msBuildDirectory       = ''                                                                                    # Dendraspis
+$7zDirectory            = ''
+$7zExe                  = $7zDirectory + '7z.exe'
+$msBuildDirectory       = ''
 $msBuildExe             = $msBuildDirectory + 'MSBuild.exe'
-$destinationDirectory   = 'D:\Work'                 # stax76
-$destinationDirectory   = 'A:\StaxRip-Releases'     # Dendraspis
+$destinationDirectory   = 'A:\StaxRip-Releases'
 $targetDirectory         = $destinationDirectory + '\StaxRip'   # is extended after solution is build
 $includeProjectFiles    = @('*.config', '*.cpp', '*.h', '*.md', '*.ps1', '*.rc', '*.resx', '*.sln', '*.vb', '*.vbproj')
 $excludeBinPatterns = @(
@@ -21,6 +20,8 @@ $excludeBinPatterns = @(
     '.*\\FrameServer\.ilk$',
     '.*\\FrameServer\.lib$',
     '.*\\FrameServer\.pdb$',
+    '.*\\ManagedCuda\.pdb$',
+    '.*\\ManagedCuda\.xml$',
     '.*\\StaxRip\.vshost.*',
     '.*\\System\.Management\.Automation\.xml$',
     '.*_pycache_.*'
@@ -56,7 +57,7 @@ if( $LastExitCode ) { throw $LastExitCode }
 
 $versionInfo = [Diagnostics.FileVersionInfo]::GetVersionInfo($appExe)
 if( $versionInfo.FileBuildPart -ne 0 ) {
-    $targetDirectory += "-v$($versionInfo.FileVersion)-DEV-x64"
+    $targetDirectory += "-v$($versionInfo.FileVersion)-x64"
 }
 else {
     $targetDirectory += "-v$($versionInfo.FileVersion)-x64"
@@ -86,7 +87,7 @@ $targetFile = "$targetDirectory.7z"
 
 if( Test-Path $targetFile ) { Remove-Item $targetFile -Recurse }
 
-& $7zExe a -t7z -mx9 "$targetFile" -r "$targetDirectory"
+& $7zExe a -t7z -mx9 -m0=LZMA -md128m -mfb128 "$targetFile" -r "$targetDirectory"
 if( $LastExitCode ) { throw $LastExitCode }
 
 #   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

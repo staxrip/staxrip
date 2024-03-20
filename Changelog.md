@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.37.3 (not published yet)
+v2.37.3 (2024-03-23)
 ====================
 
 - UI: Fix tonemapping for HDR videos for Crop window not working under some circumstances

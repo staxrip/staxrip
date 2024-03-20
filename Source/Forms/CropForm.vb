@@ -484,12 +484,16 @@ Public Class CropForm
         Dim cropw = p.SourceWidth - p.CropLeft - p.CropRight
         Dim croph = p.SourceHeight - p.CropTop - p.CropBottom
 
+        Dim lengthDate = Date.Today.AddSeconds(Renderer.Position / Renderer.Info.FrameRate)
+        Dim time = lengthDate.ToString(If(lengthDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff"))
+
         Dim isResized = p.Script.IsFilterActive("Resize")
         Dim isValidAnamorphicSize = (p.TargetWidth = 1440 AndAlso p.TargetHeight = 1080) OrElse (p.TargetWidth = 960 AndAlso p.TargetHeight = 720)
         Dim err = If(isResized AndAlso Not isValidAnamorphicSize, Calc.GetAspectRatioError.ToString("f2") + "%", "n/a")
 
         laStatus.Text =
-            "  Frame: " & Renderer.Position.ToString().PadLeft(5) &
+            "  Frame: " & Renderer.Position.ToString().PadLeft(6) &
+            "  |  Time: " & time &
             "  |  Size: " & cropw & "/" & croph &
             "  |  X: " & p.CropLeft & "/" & p.CropRight &
             "  |  Y: " & p.CropTop & "/" & p.CropBottom &

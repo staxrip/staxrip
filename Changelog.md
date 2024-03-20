@@ -14,10 +14,16 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.37.2 (not published yet)
+====================
+
+- UI: Extend Crop window with Time information ([#1274](/../../issues/1274))
+
+
 v2.37.1 (2024-03-18)
 ====================
 
-- Fix crash on AutoCrop selection in Options on Templates ([#1276](/../../issues/1276))
+- UI: Fix crash on AutoCrop selection in Options on Templates ([#1276](/../../issues/1276))
 
 
 v2.37.0 (2024-03-17)

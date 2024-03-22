@@ -34,7 +34,7 @@ Public Class StaxRipUpdate
         If Not s.CheckForUpdates AndAlso Not force Then Exit Sub
 
         Try
-            If (Date.Now - s.CheckForUpdatesLastRequest).TotalHours >= 24 OrElse force Then
+            If (Date.Now - s.CheckForUpdatesLastRequest).TotalHours >= 12 OrElse force Then
                 Dim changelogUrl = "https://raw.githubusercontent.com/staxrip/staxrip/master/Changelog.md"
                 Dim releaseUrl = "https://github.com/staxrip/staxrip/releases"
 
@@ -55,8 +55,9 @@ Public Class StaxRipUpdate
 
                     Dim filename = $"StaxRip-v{onlineVersionString}-x64.7z"
                     Dim downloadUri = $"https://github.com/staxrip/staxrip/releases/download/v{onlineVersionString}/{filename}"
-
-                    latestVersions.Add((onlineVersion, "release", releaseUrl, downloadUri, filename))
+                    Dim releaseUri = $"https://github.com/staxrip/staxrip/releases/tag/v{onlineVersionString}"
+                    
+                    latestVersions.Add((onlineVersion, "release", releaseUri, downloadUri, filename))
                 Next
 
                 If latestVersions.Count > 0 Then
@@ -98,10 +99,11 @@ Public Class StaxRipUpdate
                                 End If
                             End If
 
-                            td.AddCommand("Download and save as...", "dl-save-as")
-                            td.AddCommand("Download via browser", "dl-browser")
-                            td.AddCommand("Open source website", "open")
-                            td.AddCommand("Dismiss version " + latestVersion.Version.ToString(), "dismiss")
+                            'td.AddCommand("Download and save as...", "dl-save-as")
+                            'td.AddCommand("Download via browser", "dl-browser")
+                            td.AddCommand("Open release page", "open")
+                            td.AddCommand("Dismiss v" & latestVersion.Version.ToString(), "dismiss")
+                            td.AddCommand("Cancel", "cancel")
 
                             Select Case td.Show
                                 Case "dl-save-as"

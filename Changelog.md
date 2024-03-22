@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.37.4 (not published yet)
+v2.37.4 (2024-03-28)
 ====================
 
 - UI: Trigger event "While Processing" more often, but also time limited

@@ -19,6 +19,7 @@ v2.37.3 (not published yet)
 
 - UI: Fix tonemapping for HDR videos for Crop window not working under some circumstances
 - UI: Set Process Priority from "Idle" to "Below Normal"
+- NVEncC: Fix wrong parameter settings for "--vpp-nvvfx-denoise" and "--vpp-nvvfx-artifact-reduction" ([#1283](/../../issues/1283))
 
 
 v2.37.2 (2024-03-22)

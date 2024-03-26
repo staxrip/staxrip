@@ -1257,8 +1257,11 @@ Public Class PreviewForm
 
     Sub pnVideo_Paint(sender As Object, e As PaintEventArgs) Handles pnVideo.Paint
         If Not BlockVideoPaint Then
-            RefreshControls()
-            Renderer.Draw()
+            Try
+                RefreshControls()
+                Renderer?.Draw()
+            Catch ex As Exception
+            End Try
         End If
     End Sub
 End Class

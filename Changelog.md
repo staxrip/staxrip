@@ -29,6 +29,7 @@ v2.38.0 (not published yet)
 - UI: Improve performance with script handling, Assistant, Preview, Code Editor and interface
 - UI: Improve script update performance (thanks to @Valdiralita ([#1262](/../../pull/1262)))
 - UI: Show Preview Info by default
+- UI: Make Preview a normal window by default
 - Update tools
     - ...
 - Update AviSynth+ plugins

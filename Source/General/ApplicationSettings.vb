@@ -67,7 +67,7 @@ Public Class ApplicationSettings
     Public PreventFocusStealAfter As Integer = 45
     Public PreventFocusStealUntil As Integer = -1
     Public PreventStandby As Boolean = True
-    Public PreviewFormBorderStyle As FormBorderStyle
+    Public PreviewFormBorderStyle As FormBorderStyle = FormBorderStyle.Sizable
     Public PreviewSize As Integer = 70
     Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.BelowNormal
     Public ProgressReformatting As Boolean = True

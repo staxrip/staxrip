@@ -1963,8 +1963,17 @@ Public Class MainForm
 
     Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isEncoding As Boolean)
         Dim recoverPath = g.ProjectPath
-        Dim recoverProjectPath = Folder.Temp + Guid.NewGuid.ToString + ".bin"
+        Dim recoverProjectPath = Folder.Temp & Guid.NewGuid.ToString & ".bin"
         Dim recoverText = Text
+        Dim saveCurrent = True
+
+        If Not IsLoading Then
+            If IsSaveCanceled() Then
+                Return
+            Else
+                saveCurrent = False
+            End If
+        End If
 
         SafeSerialization.Serialize(p, recoverProjectPath)
         AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
@@ -2002,7 +2011,7 @@ Public Class MainForm
                 Debug.WriteLine(templates.Length)
 
                 If templates.Length = 1 Then
-                    If Not OpenProject(templates(0), True) Then
+                    If Not OpenProject(templates(0), saveCurrent) Then
                         Throw New AbortException
                     End If
                 Else
@@ -2011,7 +2020,7 @@ Public Class MainForm
                             Throw New AbortException
                         End If
                     Else
-                        If Not OpenProject() Then
+                        If Not OpenProject(Nothing, saveCurrent) Then
                             Throw New AbortException
                         End If
                     End If

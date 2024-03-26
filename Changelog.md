@@ -28,6 +28,7 @@ v2.38.0 (not published yet)
 - UI: Add options to separate temp file deletion based on file types ([#1236](/../../issues/1236))
 - UI: Improve performance with script handling, Assistant, Preview, Code Editor and interface
 - UI: Improve script update performance (thanks to @Valdiralita ([#1262](/../../pull/1262)))
+- UI: Show Preview Info by default
 - Update tools
     - ...
 - Update AviSynth+ plugins

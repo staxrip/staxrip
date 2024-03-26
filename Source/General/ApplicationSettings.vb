@@ -78,7 +78,7 @@ Public Class ApplicationSettings
     Public ReverseVideoScrollDirection As Boolean
     Public ShowChangelog As String
     Public ShowPathsInCommandLine As Boolean
-    Public ShowPreviewInfo As Boolean
+    Public ShowPreviewInfo As Boolean = True
     Public ShowTemplateSelection As Boolean
     Public ShowWindows7Warning As Boolean = True
     Public ShutdownForce As Boolean

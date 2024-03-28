@@ -4676,7 +4676,7 @@ Public Class MainForm
             Exit Sub
         End If
 
-        Dim jobPath = JobManager.GetJobPath()
+        Dim jobPath = JobManager.JobPath
         SaveProjectPath(jobPath)
         JobManager.AddJob(jobPath, jobPath, position)
 

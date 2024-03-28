@@ -3211,7 +3211,7 @@ Public Class MainForm
             If p.Script.Info.Width Mod p.ForcedOutputMod <> 0 AndAlso (Not p.ForcedOutputModOnlyIfCropped OrElse p.Script.Info.Width <> p.SourceScript.Info.Width) Then
                 If ProcessTip("Change output width to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
-                    CanIgnoreTip = Not p.AutoCorrectCropValues
+                    CanIgnoreTip = p.ForcedOutputModIgnorable
                     Return Warn("Invalid Target Width", tbTargetWidth, lSAR)
                 End If
             End If
@@ -3219,7 +3219,7 @@ Public Class MainForm
             If p.Script.Info.Height Mod p.ForcedOutputMod <> 0 AndAlso (Not p.ForcedOutputModOnlyIfCropped OrElse p.Script.Info.Height <> p.SourceScript.Info.Height) Then
                 If ProcessTip("Change output height to be divisible by " & p.ForcedOutputMod &
                               " or customize:" + BR + "Options > Image > Output Mod") Then
-                    CanIgnoreTip = Not p.AutoCorrectCropValues
+                    CanIgnoreTip = p.ForcedOutputModIgnorable
                     Return Warn("Invalid Target Height", tbTargetHeight, lSAR)
                 End If
             End If
@@ -4726,7 +4726,11 @@ Public Class MainForm
             m.Field = NameOf(p.ForcedOutputMod)
 
             Dim b = ui.AddBool()
-            b.Text = "Warn for invalid Output Mod only if video is cropped"
+            b.Text = "Make Output Mod warning ignorable"
+            b.Field = NameOf(p.ForcedOutputModIgnorable)
+
+            b = ui.AddBool()
+            b.Text = "Warn on invalid Output Mod only if video is cropped"
             b.Field = NameOf(p.ForcedOutputModOnlyIfCropped)
 
 

@@ -21,6 +21,7 @@ v2.37.4 (not published yet)
 - UI: Make timeout for error messages on job processing optional
 - UI: Convert tabs to spaces on Processing window for better looking output ([#1243](/../../issues/1243))
 - UI: Fix not asking for Project saving when dropping file under some circumstances
+- UI: Make Output Mod warning ignorable ([#1285](/../../issues/1285))
 
 
 v2.37.3 (2024-03-23)

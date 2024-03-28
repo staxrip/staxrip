@@ -61,6 +61,7 @@ Public Class Project
     Public FileExistVideo As FileExistMode
     Public FirstOriginalSourceFile As String
     Public ForcedOutputMod As Integer = 2
+    Public ForcedOutputModIgnorable As Boolean = False
     Public ForcedOutputModOnlyIfCropped As Boolean = False
     Public HardcodedSubtitle As Boolean
     Public Hdr10PlusMetadataFile As String

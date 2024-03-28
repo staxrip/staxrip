@@ -21,14 +21,6 @@ Public Class ProcessingForm
     Friend WithEvents bnMenu As ButtonEx
     Friend WithEvents tlpMain As TableLayoutPanel
 
-    <System.Diagnostics.DebuggerNonUserCode()>
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing AndAlso components IsNot Nothing Then
-            components.Dispose()
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
-
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
@@ -258,6 +250,12 @@ Public Class ProcessingForm
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
     End Sub
 
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        components?.Dispose()
+        MyBase.Dispose(disposing)
+    End Sub
+
     Sub OnThemeChanged(theme As Theme)
         ApplyTheme(theme)
     End Sub
@@ -267,9 +265,7 @@ Public Class ProcessingForm
     End Sub
 
     Sub ApplyTheme(theme As Theme)
-        If DesignHelp.IsDesignMode Then
-            Exit Sub
-        End If
+        If DesignHelp.IsDesignMode Then Exit Sub
 
         BackColor = theme.ProcessingForm.BackColor
     End Sub

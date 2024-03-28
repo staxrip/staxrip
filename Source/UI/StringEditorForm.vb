@@ -4,16 +4,6 @@ Namespace UI
         Inherits FormBase
 
 #Region " Designer "
-
-        Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-            If disposing Then
-                If Not (components Is Nothing) Then
-                    components.Dispose()
-                End If
-            End If
-            MyBase.Dispose(disposing)
-        End Sub
-
         Private components As System.ComponentModel.IContainer
 
         Public WithEvents rtb As RichTextBoxEx
@@ -122,6 +112,12 @@ Namespace UI
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            components?.Dispose()
+            MyBase.Dispose(disposing)
         End Sub
 
         Sub OnThemeChanged(theme As Theme)

@@ -7,16 +7,6 @@ Public Class MacrosForm
     Inherits DialogBase
 
 #Region " Designer "
-
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
-
     Friend WithEvents lv As ListViewEx
     Friend WithEvents stb As StaxRip.SearchTextBox
     Friend WithEvents lName As LabelEx
@@ -247,6 +237,12 @@ Public Class MacrosForm
         ApplyTheme()
 
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        components?.Dispose()
+        MyBase.Dispose(disposing)
     End Sub
 
     Sub OnThemeChanged(theme As Theme)

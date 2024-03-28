@@ -19,15 +19,6 @@ Public Class MainForm
     Inherits FormBase
 
 #Region " Designer "
-
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            components?.Dispose()
-        End If
-
-        MyBase.Dispose(disposing)
-    End Sub
-
     Private components As System.ComponentModel.IContainer
 
     Public WithEvents tbAudioFile0 As TextEdit
@@ -1154,6 +1145,12 @@ Public Class MainForm
 
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         AddHandler FiltersListView.Changed, AddressOf ApplyFilters
+    End Sub
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        components?.Dispose()
+        MyBase.Dispose(disposing)
     End Sub
 
     Sub OnThemeChanged(theme As Theme)

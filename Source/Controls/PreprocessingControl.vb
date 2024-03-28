@@ -6,15 +6,6 @@ Public Class PreprocessingControl
     Implements IPage
 
 #Region " Designer "
-    <DebuggerNonUserCode()>
-    Protected Overrides Sub Dispose(disposing As Boolean)
-        If disposing AndAlso components IsNot Nothing Then
-            components.Dispose()
-        End If
-
-        MyBase.Dispose(disposing)
-    End Sub
-
     Friend WithEvents lv As StaxRip.UI.ListViewEx
     Friend WithEvents bnDown As ButtonEx
     Friend WithEvents bnEdit As ButtonEx
@@ -202,6 +193,11 @@ Public Class PreprocessingControl
         ApplyTheme()
 
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        MyBase.Dispose(disposing)
     End Sub
 
     Sub OnThemeChanged(theme As Theme)

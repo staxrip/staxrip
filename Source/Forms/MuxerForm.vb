@@ -10,14 +10,6 @@ Public Class MuxerForm
     Inherits DialogBase
 
 #Region " Designer "
-
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            components?.Dispose()
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
-
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
     Friend WithEvents bnCommandLinePreview As ButtonEx
     Friend WithEvents CommandLineControl As StaxRip.CommandLineControl
@@ -803,6 +795,12 @@ Public Class MuxerForm
         ApplyTheme()
 
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        components?.Dispose()
+        MyBase.Dispose(disposing)
     End Sub
 
     Sub OnThemeChanged(theme As Theme)

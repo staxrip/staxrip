@@ -80,6 +80,12 @@ Public Class StreamDemuxForm
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
     End Sub
 
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        components?.Dispose()
+        MyBase.Dispose(disposing)
+    End Sub
+
     Sub OnThemeChanged(theme As Theme)
         ApplyTheme(theme)
     End Sub

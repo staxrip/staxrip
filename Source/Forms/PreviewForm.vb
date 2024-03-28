@@ -10,12 +10,6 @@ Public Class PreviewForm
     Inherits DialogBase
 
 #Region " Designer "
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then components?.Dispose()
-
-        MyBase.Dispose(disposing)
-    End Sub
-
     Private components As System.ComponentModel.IContainer
 
     Friend WithEvents pnVideo As System.Windows.Forms.Panel
@@ -288,6 +282,14 @@ Public Class PreviewForm
         bnRight3.ForeColor = SystemColors.ControlText
         bnLeft3.ForeColor = SystemColors.ControlText
         bnMenu.ForeColor = SystemColors.ControlText
+    End Sub
+
+    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
+        components?.Dispose()
+        Renderer?.Dispose()
+        FrameServer?.Dispose()
+
+        MyBase.Dispose(disposing)
     End Sub
 
     Protected Overrides Sub OnLoad(args As EventArgs)

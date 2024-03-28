@@ -20,9 +20,15 @@ Namespace UI
             HorizontalScroll.Maximum = 0
             VerticalScroll.Visible = True
             AutoScroll = True
+
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
         End Sub
 
         Sub OnThemeChanged(theme As Theme)

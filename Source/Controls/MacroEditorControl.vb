@@ -7,15 +7,6 @@ Public Class MacroEditorControl
     Inherits UserControl
 
 #Region " Designer "
-    <System.Diagnostics.DebuggerNonUserCode()>
-    Protected Overrides Sub Dispose(disposing As Boolean)
-        If disposing AndAlso components IsNot Nothing Then
-            components.Dispose()
-        End If
-
-        MyBase.Dispose(disposing)
-    End Sub
-
     Private WithEvents TabControl As TabControl
     Public WithEvents tpEdit As TabPage
     Friend WithEvents tpPreview As TabPage
@@ -238,6 +229,11 @@ Public Class MacroEditorControl
         ApplyTheme()
 
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        MyBase.Dispose(disposing)
     End Sub
 
     Sub OnThemeChanged(theme As Theme)

@@ -5,15 +5,6 @@ Public Class x265Control
     Inherits UserControl
 
 #Region " Designer "
-    <DebuggerNonUserCode()>
-    Protected Overrides Sub Dispose(disposing As Boolean)
-        If disposing AndAlso components IsNot Nothing Then
-            components.Dispose()
-        End If
-
-        MyBase.Dispose(disposing)
-    End Sub
-
     Friend WithEvents lv As StaxRip.UI.ListViewEx
     Friend WithEvents blConfigCodec As ButtonLabel
     Friend WithEvents blConfigContainer As ButtonLabel
@@ -137,6 +128,12 @@ Public Class x265Control
         ApplyTheme()
 
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        components?.Dispose()
+        MyBase.Dispose(disposing)
     End Sub
 
     Sub OnThemeChanged(theme As Theme)

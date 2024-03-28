@@ -629,6 +629,7 @@ Public Class ProcController
         SyncLock Procs
             Procs.Remove(Me)
 
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
             RemoveHandler Proc.ProcDisposed, AddressOf ProcDisposed
             RemoveHandler Proc.OutputDataReceived, AddressOf DataReceived
             RemoveHandler Proc.ErrorDataReceived, AddressOf DataReceived

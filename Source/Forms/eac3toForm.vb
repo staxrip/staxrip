@@ -10,15 +10,6 @@ Public Class eac3toForm
     Inherits DialogBase
 
 #Region " Designer "
-
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
     Friend WithEvents CommandLink1 As StaxRip.UI.CommandLink
     Friend WithEvents cbVideoOutput As ComboBoxEx
     Friend WithEvents laVideo As LabelEx
@@ -660,6 +651,12 @@ Public Class eac3toForm
         ApplyTheme()
 
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        components?.Dispose()
+        MyBase.Dispose(disposing)
     End Sub
 
     Sub OnThemeChanged(theme As Theme)

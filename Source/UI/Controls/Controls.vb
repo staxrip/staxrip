@@ -127,9 +127,15 @@ Namespace UI
         Sub New()
             MyBase.New()
             DrawMode = TreeViewDrawMode.OwnerDrawAll
+
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
         End Sub
 
         Sub OnThemeChanged(theme As Theme)
@@ -455,6 +461,11 @@ Namespace UI
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
+        End Sub
+
         Sub OnThemeChanged(theme As Theme)
             ApplyTheme(theme)
         End Sub
@@ -617,6 +628,11 @@ Namespace UI
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
+        End Sub
+
         Sub OnThemeChanged(theme As Theme)
             ApplyTheme(theme)
         End Sub
@@ -754,6 +770,11 @@ Namespace UI
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
+        End Sub
+
         Sub OnThemeChanged(theme As Theme)
             ApplyTheme(theme)
         End Sub
@@ -835,6 +856,11 @@ Namespace UI
         Sub New()
             ApplyTheme()
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
         End Sub
 
         Sub OnThemeChanged(theme As Theme)
@@ -966,6 +992,12 @@ Namespace UI
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
+            ContextMenuStrip?.Dispose()
+        End Sub
+
         Sub OnThemeChanged(theme As Theme)
             ApplyTheme(theme)
         End Sub
@@ -1027,12 +1059,6 @@ Namespace UI
                                     End Sub
 
             ContextMenuStrip = cms
-        End Sub
-
-        Protected Overrides Sub Dispose(disposing As Boolean)
-            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
-            MyBase.Dispose(disposing)
-            ContextMenuStrip?.Dispose()
         End Sub
 
         Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
@@ -1171,6 +1197,11 @@ Namespace UI
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
+        End Sub
+
         Sub OnThemeChanged(theme As Theme)
             ApplyTheme(theme)
         End Sub
@@ -1223,6 +1254,11 @@ Namespace UI
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
         End Sub
 
         Sub OnThemeChanged(theme As Theme)
@@ -1308,6 +1344,11 @@ Namespace UI
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
         End Sub
 
         Private Function ShouldSerializeLinkColor() As Boolean
@@ -1400,6 +1441,11 @@ Namespace UI
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
         End Sub
 
         Sub OnThemeChanged(theme As Theme)
@@ -1915,6 +1961,11 @@ Namespace UI
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
+        End Sub
+
         Sub OnThemeChanged(theme As Theme)
             ApplyTheme(theme)
         End Sub
@@ -2338,6 +2389,11 @@ Namespace UI
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
+        End Sub
+
         Sub OnThemeChanged(theme As Theme)
             ApplyTheme(theme)
         End Sub
@@ -2621,12 +2677,24 @@ Namespace UI
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
-            AddHandler UpControl.MouseDown, Sub() Focus()
-            AddHandler DownControl.MouseDown, Sub() Focus()
-            AddHandler TextEdit.LostFocus, Sub() UpdateText()
+            AddHandler UpControl.MouseDown, AddressOf Focus
+            AddHandler DownControl.MouseDown, AddressOf Focus
+            AddHandler TextEdit.LostFocus, AddressOf UpdateText
             AddHandler TextEdit.GotFocus, AddressOf SetActive
             AddHandler TextEdit.LostFocus, AddressOf SetNormal
             AddHandler TextEdit.MouseWheel, AddressOf Wheel
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            TipProvider?.Dispose()
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            RemoveHandler UpControl.MouseDown, AddressOf Focus
+            RemoveHandler DownControl.MouseDown, AddressOf Focus
+            RemoveHandler TextEdit.LostFocus, AddressOf UpdateText
+            RemoveHandler TextEdit.GotFocus, AddressOf SetActive
+            RemoveHandler TextEdit.LostFocus, AddressOf SetNormal
+            RemoveHandler TextEdit.MouseWheel, AddressOf Wheel
+            MyBase.Dispose(disposing)
         End Sub
 
         Sub OnThemeChanged(theme As Theme)
@@ -2651,6 +2719,10 @@ Namespace UI
             'BorderNormalColor = theme.General.Controls.NumEdit.BorderColor
             'BorderSelectedColor = theme.General.Controls.NumEdit.BorderSelectedColor
             ResumeLayout()
+        End Sub
+
+        Overloads Sub Focus(sender As Object, e As MouseEventArgs)
+            Focus()
         End Sub
 
         WriteOnly Property Help As String
@@ -2701,11 +2773,6 @@ Namespace UI
                 UpdateText()
             End Set
         End Property
-
-        Protected Overrides Sub Dispose(disposing As Boolean)
-            TipProvider?.Dispose()
-            MyBase.Dispose(disposing)
-        End Sub
 
         Sub Wheel(sender As Object, e As MouseEventArgs)
             If e.Delta > 0 Then
@@ -2785,6 +2852,10 @@ Namespace UI
 
         Sub UpdateText()
             TextEdit.TextBox.SetTextWithoutTextChangedEvent(ValueValue.ToString("F" & DecimalPlaces))
+        End Sub
+
+        Sub UpdateText(sender As Object, e As EventArgs)
+            UpdateText()
         End Sub
 
         Sub TextBox_KeyDown(sender As Object, e As KeyEventArgs) Handles TextEdit.KeyDown
@@ -3068,6 +3139,11 @@ Namespace UI
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
+        End Sub
+
         Sub OnThemeChanged(theme As Theme)
             ApplyTheme(theme)
         End Sub
@@ -3149,6 +3225,11 @@ Namespace UI
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
+        End Sub
+
         Sub OnThemeChanged(theme As Theme)
             ApplyTheme(theme)
         End Sub
@@ -3198,6 +3279,11 @@ Namespace UI
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
 
             'AddHandler DrawItem, AddressOf DrawItemHandler
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
         End Sub
 
         Sub OnThemeChanged(theme As Theme)
@@ -3345,6 +3431,11 @@ Namespace UI
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
         End Sub
 
         Sub OnThemeChanged(theme As Theme)

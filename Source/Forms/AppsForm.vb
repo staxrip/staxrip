@@ -11,13 +11,6 @@ Public Class AppsForm
     Implements IUpdateUI
 
 #Region " Designer "
-    Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            components?.Dispose()
-        End If
-        MyBase.Dispose(disposing)
-    End Sub
-
     Private components As System.ComponentModel.IContainer
 
     Friend WithEvents tv As TreeViewEx
@@ -458,6 +451,12 @@ Public Class AppsForm
 
         ApplyTheme()
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+    End Sub
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        components?.Dispose()
+        MyBase.Dispose(disposing)
     End Sub
 
     Sub OnThemeChanged(theme As Theme)

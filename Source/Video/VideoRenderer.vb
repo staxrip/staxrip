@@ -304,6 +304,7 @@ Public Class VideoRenderer
         ReleaseGraphicsResources()
         Direct2dFactory.Dispose()
         DirectWriteFactory.Dispose()
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         RemoveHandler Control.ClientSizeChanged, AddressOf Resize
     End Sub
 End Class

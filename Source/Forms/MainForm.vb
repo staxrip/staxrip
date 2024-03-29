@@ -9,6 +9,7 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
+Imports MS.Internal.IO
 
 Imports StaxRip.UI
 
@@ -2805,6 +2806,18 @@ Public Class MainForm
         End If
     End Function
 
+    Function RemoveTip(message As String) As Boolean
+        If message.Contains(BR2) Then
+            message = message.Replace(BR2, BR)
+        End If
+
+        If message.Contains(VB6.vbLf + VB6.vbLf) Then
+            message = message.FixBreak.Replace(BR2, BR)
+        End If
+
+        Return p.SkippedAssistantTips.Remove(message.MD5Hash)
+    End Function
+
     Function Assistant(Optional refreshScript As Boolean = True) As Boolean
         If SkipAssistant Then Return False
 
@@ -3209,16 +3222,18 @@ Public Class MainForm
             End If
 
             If p.Script.Info.Width Mod p.ForcedOutputMod <> 0 AndAlso (Not p.ForcedOutputModOnlyIfCropped OrElse p.Script.Info.Width <> p.SourceScript.Info.Width) Then
-                If ProcessTip("Change output width to be divisible by " & p.ForcedOutputMod &
-                              " or customize:" + BR + "Options > Image > Output Mod") Then
+                Dim tip = "Change output width to be divisible by " & p.ForcedOutputMod & " or customize:" + BR + "Options > Image > Output Mod"
+                If Not p.ForcedOutputModIgnorable Then RemoveTip(tip)
+                If ProcessTip(tip) Then
                     CanIgnoreTip = p.ForcedOutputModIgnorable
                     Return Warn("Invalid Target Width", tbTargetWidth, lSAR)
                 End If
             End If
 
             If p.Script.Info.Height Mod p.ForcedOutputMod <> 0 AndAlso (Not p.ForcedOutputModOnlyIfCropped OrElse p.Script.Info.Height <> p.SourceScript.Info.Height) Then
-                If ProcessTip("Change output height to be divisible by " & p.ForcedOutputMod &
-                              " or customize:" + BR + "Options > Image > Output Mod") Then
+                Dim tip = "Change output height to be divisible by " & p.ForcedOutputMod & " or customize:" + BR + "Options > Image > Output Mod"
+                If Not p.ForcedOutputModIgnorable Then RemoveTip(tip)
+                If ProcessTip(tip) Then
                     CanIgnoreTip = p.ForcedOutputModIgnorable
                     Return Warn("Invalid Target Height", tbTargetHeight, lSAR)
                 End If

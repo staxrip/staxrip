@@ -18,6 +18,7 @@ v2.37.5 (not published yet)
 ====================
 
 - UI: Fix asking for Project saving on Templates
+- UI: Optimize ignorable Output Mod warning ([#1285](/../../issues/1285))
 
 
 v2.37.4 (2024-03-28)

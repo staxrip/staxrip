@@ -218,8 +218,7 @@ Public Class GlobalCommands
         <DefaultValue(0)>
         bottom As Integer)
 
-        g.SetCrop(left, top, right, bottom)
-        g.CorrectCropMod()
+        g.SetCrop(left, top, right, bottom, p.ForcedOutputModDirection, False)
         g.MainForm.SetCropFilter()
     End Sub
 

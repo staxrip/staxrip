@@ -1426,13 +1426,13 @@ Public Class GlobalClass
         End If
     End Sub
 
-    Sub SetCrop(left As Integer, top As Integer, right As Integer, bottom As Integer, Optional force As Boolean = False, Optional increase As Boolean = True)
+    Sub SetCrop(left As Integer, top As Integer, right As Integer, bottom As Integer, direction As ForceOutputModDirection, Optional force As Boolean = False)
         p.CropLeft = Math.Max(0, left)
         p.CropTop = Math.Max(0, top)
         p.CropRight = Math.Max(0, right)
         p.CropBottom = Math.Max(0, bottom)
 
-        g.CorrectCropMod(force, increase)
+        CorrectCropMod(direction, force)
         MainForm.SetCropFilter()
         MainForm.DisableCropFilter()
         MainForm.Assistant()
@@ -1447,7 +1447,7 @@ Public Class GlobalClass
 
         If p.HdrDolbyVisionMetadataFile IsNot Nothing Then
             Dim c = p.HdrDolbyVisionMetadataFile.Crop
-            g.SetCrop(c.Left, c.Top, c.Right, c.Bottom, False, False)
+            SetCrop(c.Left, c.Top, c.Right, c.Bottom, ForceOutputModDirection.Decrease, True)
         Else
             Using server = FrameServerFactory.Create(p.SourceScript.Path)
                 Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)
@@ -1475,7 +1475,7 @@ Public Class GlobalClass
                 Dim bottomCrops = crops.SelectMany(Function(arg) arg.Bottom).OrderBy(Function(arg) arg)
                 Dim bottom = bottomCrops(bottomCrops.Count \ 10)
 
-                SetCrop(left, top, right, bottom)
+                SetCrop(left, top, right, bottom, p.ForcedOutputModDirection, False)
             End Using
         End If
     End Sub
@@ -1539,7 +1539,7 @@ Public Class GlobalClass
                 p.CropRight = 0
             End If
 
-            CorrectCropMod()
+            CorrectCropMod(p.ForcedOutputModDirection, False)
         End If
     End Sub
 
@@ -1567,21 +1567,17 @@ Public Class GlobalClass
         Return value.Trim
     End Function
 
-    Sub CorrectCropMod()
-        CorrectCropMod(False)
-    End Sub
-
     Sub ForceCropMod()
         If Not g.EnableFilter("Crop") Then
             p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
         End If
 
-        CorrectCropMod(True)
+        CorrectCropMod(p.ForcedOutputModDirection, True)
     End Sub
 
-    Sub CorrectCropMod(force As Boolean, Optional increase As Boolean = True)
+    Sub CorrectCropMod(direction As ForceOutputModDirection, force As Boolean)
         If p.AutoCorrectCropValues OrElse force Then
-            If increase Then
+            If direction = ForceOutputModDirection.Increase Then
                 p.CropLeft += p.CropLeft Mod 2
                 p.CropRight += p.CropRight Mod 2
                 p.CropTop += p.CropTop Mod 2
@@ -1602,7 +1598,7 @@ Public Class GlobalClass
             Dim whalf = ((p.SourceWidth - p.CropLeft - p.CropRight) Mod modValue) \ 2
             Dim hhalf = ((p.SourceHeight - p.CropTop - p.CropBottom) Mod modValue) \ 2
 
-            If increase Then
+            If direction = ForceOutputModDirection.Increase Then
                 If p.CropLeft > p.CropRight Then
                     p.CropLeft += whalf - whalf Mod 2
                     p.CropRight += whalf + whalf Mod 2

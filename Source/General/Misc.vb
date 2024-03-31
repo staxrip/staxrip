@@ -1806,6 +1806,11 @@ Public Enum MsgIcon
     Question = MessageBoxIcon.Question
 End Enum
 
+Public Enum ForceOutputModDirection
+    Decrease
+    Increase
+End Enum
+
 Public Enum HdrmetadataMode
     None
     <DispName("HDR10+ only")> HDR10Plus

@@ -2638,7 +2638,7 @@ Public Class MainForm
 
             If p.HdrDolbyVisionMetadataFile IsNot Nothing Then
                 Dim c = p.HdrDolbyVisionMetadataFile.Crop
-                g.SetCrop(c.Left, c.Top, c.Right, c.Bottom, False, False)
+                g.SetCrop(c.Left, c.Top, c.Right, c.Bottom, ForceOutputModDirection.Decrease, True)
             ElseIf p.AutoCropMode = AutoCropMode.Always Then
                 Using proc As New Proc
                     proc.Header = "Auto Crop"
@@ -2650,7 +2650,7 @@ Public Class MainForm
                     Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
 
                     If match.Success Then
-                        g.SetCrop(match.Groups(1).Value.ToInt, match.Groups(2).Value.ToInt, match.Groups(3).Value.ToInt, match.Groups(4).Value.ToInt, False, True)
+                        g.SetCrop(match.Groups(1).Value.ToInt, match.Groups(2).Value.ToInt, match.Groups(3).Value.ToInt, match.Groups(4).Value.ToInt, p.ForcedOutputModDirection, False)
                     End If
                 End Using
             End If
@@ -4738,6 +4738,10 @@ Public Class MainForm
             m.Text = "Output Mod"
             m.Add(2, 4, 8, 16)
             m.Field = NameOf(p.ForcedOutputMod)
+
+            Dim dirMenu = ui.AddMenu(Of ForceOutputModDirection)()
+            dirMenu.Text = "Output Mod Direction"
+            dirMenu.Field = NameOf(p.ForcedOutputModDirection)
 
             Dim b = ui.AddBool()
             b.Text = "Make Output Mod warning ignorable"

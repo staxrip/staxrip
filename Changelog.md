@@ -31,6 +31,7 @@ v2.38.0 (not published yet)
 - UI: Improve script update performance (thanks to @Valdiralita ([#1262](/../../pull/1262)))
 - UI: Show Preview Info by default
 - UI: Make Preview a normal window by default
+- UI: Add "Output Mod Direction" to allow decreasing when auto cropping or correcting is applied ([#1285](/../../issues/1285))
 - Update tools
     - ...
 - Update AviSynth+ plugins

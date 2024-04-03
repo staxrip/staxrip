@@ -14,6 +14,12 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.37.5 (not published yet)
+====================
+
+- UI: Fix asking for Project saving on Templates
+
+
 v2.37.4 (2024-03-28)
 ====================
 

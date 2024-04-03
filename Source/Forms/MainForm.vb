@@ -1965,9 +1965,9 @@ Public Class MainForm
         Dim recoverPath = g.ProjectPath
         Dim recoverProjectPath = Folder.Temp & Guid.NewGuid.ToString & ".bin"
         Dim recoverText = Text
-        Dim saveCurrent = True
+        Dim saveCurrent = p.SourceFile <> ""
 
-        If Not IsLoading Then
+        If saveCurrent AndAlso Not IsLoading Then
             If IsSaveCanceled() Then
                 Return
             Else

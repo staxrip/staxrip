@@ -413,7 +413,7 @@ Public Class ProcController
                     End If
                 ElseIf Proc.Package Is Package.SvtAv1EncApp Then
                     'Mod by Patman
-                    pattern = "^Encoding:\s+(\d+)/(\s*\d+)\sFrames\s@\s(\d+\.\d+)\sfps\s\|\s(\d+)\.\d+\skbps\s\|\sTime:\s(\d\d:\d\d:\d\d)\s\[(-?\d\d:\d\d:\d\d)\]\s\|\sSize:\s(-?\d+\.\d+)\s(.B)\s\[(-?\d+)\.\d+\s(.B)\]"
+                    pattern = "^Encoding:\s+(\d+)/(\s*\d+)\sFrames\s@\s(\d+\.\d+)\sfps\s\|\s(\d+)\.\d+\skbps\s\|\sTime:\s(\d+:\d\d:\d\d)\s\[(-?\d+:\d\d:\d\d)\]\s\|\sSize:\s(-?\d+\.\d+)\s(.B)\s\[(-?\d+)\.\d+\s(.B)\]"
                     match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                     If match.Success Then

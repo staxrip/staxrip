@@ -18,6 +18,7 @@ v2.37.6 (2024-04-12)
 ====================
 
 - UI: Add Progress for dovi_tool and hdr10plus_tool
+- UI: Adjust Progress Reformatting for SvtAv1EncApp
 - VapourSynth: Fix missing loading of SubText for hardcoded subtitles ([#1307](/../../issues/1307))
 
 

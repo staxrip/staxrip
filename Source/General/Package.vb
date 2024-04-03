@@ -751,12 +751,22 @@ Public Class Package
         .Description = "FFT3DFilter uses Fast Fourier Transform method for image processing in frequency domain.",
         .AvsFilterNames = {"FFT3DFilter"}})
 
+    Shared Property BestSource As Package = Add(New PluginPackage With {
+        .Name = "BestSource",
+        .Filename = "BestSource.dll",
+        .Description = "A super great audio/video source and FFmpeg wrapper.",
+        .WebURL = "https://github.com/vapoursynth/bestsource",
+        .HelpURL = "https://github.com/vapoursynth/bestsource",
+        .Dependencies = {"LibP2P.dll"},
+        .AvsFilterNames = {"BSAudioSource", "BSVideoSource", "BSSetDebugOutput", "BSSetFFmpegLogLevel"},
+        .VsFilterNames = {"bs.AudioSource", "bs.VideoSource", "bs.TrackInfo", "bs.SetDebugOutput", "bs.SetFFmpegLogLevel"}})
+
     Shared Property ffms2 As Package = Add(New PluginPackage With {
         .Name = "ffms2",
         .Filename = "ffms2.dll",
+        .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .WebURL = "https://github.com/FFMS/ffms2",
         .HelpURL = "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md",
-        .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource", "FFMS2"},
         .VsFilterNames = {"ffms2.Source"}})
 
@@ -2101,10 +2111,11 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "mvsfunc",
             .Filename = "mvsfunc.py",
-            .Location = "Plugins\VS\Scripts",
+            .Location = "Plugins\VS\mvsfunc",
             .Description = "mawen1250's VapourSynth functions.",
             .WebURL = "http://github.com/HomeOfVapourSynthEvolution/mvsfunc",
             .HelpURL = "http://forum.doom9.org/showthread.php?t=172564",
+            .Dependencies = {"BM3D.dll", "fmtconv.dll"},
             .VsFilterNames = {
                 "mvsfunc.Depth", "mvsfunc.ToRGB", "mvsfunc.ToYUV", "mvsfunc.BM3D", "mvsfunc.VFRSplice",
                 "mvsfunc.PlaneStatistics", "mvsfunc.PlaneCompare", "mvsfunc.ShowAverage", "mvsfunc.FilterIf",

@@ -2,6 +2,7 @@
 [Source]
 Automatic = # can be configured at: Tools > Settings > Source Filters
 AviSource = AviSource("%source_file%", audio=false)
+BestSource = BSVideoSource(r"%source_file%", cachemode=0)
 D2VSource = D2VSource("%source_file%")
 DirectShowSource = DirectShowSource("%source_file%", audio=false) # specify the frame rate with fps=... for wmv or mov files
 DSS2 = DSS2("%source_file%") # specify the frame rate with fps=... for wmv or mov files

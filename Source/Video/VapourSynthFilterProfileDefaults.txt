@@ -2,6 +2,7 @@
 [Source]
 Automatic = # can be configured at: Tools > Settings > Source Filters
 AVISource = clip = core.avisource.AVISource(r"%source_file%")
+BestSource = clip = core.bs.VideoSource(r"%source_file%", cachemode=0)
 d2vsource = clip = core.d2v.Source(r"%source_file%")
 
 ffms2 =

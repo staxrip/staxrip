@@ -48,13 +48,26 @@ v2.38.0 (not published yet)
 - NVEncC: Add new --tune parameter
 - SvtAv1EncApp: Add SVT-AV1-PSY Support
 - Update tools
-    - ...
+    - AOMEnc v3.8.2-397-ga4420e55a8-x64-msvc1937
+    - DoVi_Tool v2.1.1
+    - eac3to v3.51
+    - MediaInfo v24.03
+    - Mp4Box v2.3-DEV-rev1042-g7a3eca90b-x64-msvc1937
+    - NVEncC v7.50
+    - qaac v2.82
+    - rav1e v0.7.0-(p20240409)-x64-gcc13.2.0
+    - Subtitle Edit v4.0.5
+    - SvtAv1EncApp v2.0.0-7+6-62325458-.Mod-by-Patman.-x64-msvc1937
+    - x264 v0.164.3190+7-f54976d-.Mod-by-Patman.-x64-gcc13.2.0
+    - x265 v3.6+2+13-9a3dac6e5-.Mod-by-Patman.-x64-avx2-msvc1937
 - Update AviSynth+ plugins
     - ...
 - Update Dual plugins
-    - ...
+    - BestSource R2-RC4
+    - L-SMASH-Works v1194
 - Update VapourSynth plugins
-    - ...
+    - mvsfunc v11 [865c748 / 2023]
+    - SubText R5
 
 
 v2.37.6 (2024-04-12)

@@ -5,15 +5,6 @@ Public Class VvencffappControl
     Inherits UserControl
 
 #Region " Designer "
-    <DebuggerNonUserCode()>
-    Protected Overrides Sub Dispose(disposing As Boolean)
-        If disposing AndAlso components IsNot Nothing Then
-            components.Dispose()
-        End If
-
-        MyBase.Dispose(disposing)
-    End Sub
-
     Friend WithEvents lv As StaxRip.UI.ListViewEx
     Friend WithEvents blConfigCodec As ButtonLabel
     Friend WithEvents blConfigContainer As ButtonLabel
@@ -139,6 +130,12 @@ Public Class VvencffappControl
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
     End Sub
 
+    Protected Overrides Sub Dispose(disposing As Boolean)
+        RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        components?.Dispose()
+        MyBase.Dispose(disposing)
+    End Sub
+
     Sub OnThemeChanged(theme As Theme)
         ApplyTheme(theme)
     End Sub
@@ -198,7 +195,7 @@ Public Class VvencffappControl
                 Case 1 - offset
                     For x = 0 To Params.Preset.Options.Length - 1
                         Dim temp = x
-                        Dim presetMenuItem = New MenuItemEx(Params.Preset.Options(x) + "      ", Sub() SetPreset(temp), "x264 slower compares to x265 medium") With {.Font = If(Params.Preset.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))}
+                        Dim presetMenuItem = New MenuItemEx(Params.Preset.Options(x) + "      ", Sub() SetPreset(temp), "") With {.Font = If(Params.Preset.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))}
                         cms.Items.Add(presetMenuItem)
                     Next
                     'Case 2 - offset
@@ -241,11 +238,11 @@ Public Class VvencffappControl
     End Function
 
     Sub UpdateControls()
-        If Params.Mode.Value = VvencffappRateMode.SingleQuant AndAlso lv.Items.Count < 4 Then
+        If Params.Mode.Value = VvencffappRateMode.SingleQuant AndAlso lv.Items.Count < 2 Then
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
-        ElseIf Params.Mode.Value <> 2 AndAlso lv.Items.Count <> 3 Then
+        ElseIf Params.Mode.Value <> VvencffappRateMode.TwoPass AndAlso lv.Items.Count <> 1 Then
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
         End If

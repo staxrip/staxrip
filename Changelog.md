@@ -20,6 +20,7 @@ v2.37.5 (not published yet)
 - UI: Fix asking for Project saving on Templates
 - UI: Optimize ignorable Output Mod warning ([#1285](/../../issues/1285))
 - SvtAv1EncApp: Update settings and parameters to v2.0.0 ([#1273](/../../issues/1273))
+- vvencFFapp: Fix display for Compression Check Run ([#1284](/../../issues/1284))
 
 
 v2.37.4 (2024-03-28)

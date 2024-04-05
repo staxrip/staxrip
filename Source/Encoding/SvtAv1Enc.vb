@@ -9,7 +9,7 @@ Public Class SvtAv1Enc
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "AV1 | SvtAv1EncApp"
+        Name = "SvtAv1EncApp"
         Params.ApplyPresetDefaultValues()
         Params.ApplyPresetValues()
     End Sub

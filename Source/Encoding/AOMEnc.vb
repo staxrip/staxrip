@@ -11,7 +11,7 @@ Public Class AOMEnc
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "AV1 | AOMEnc"
+        Name = "AOMEnc"
     End Sub
 
     <NonSerialized>

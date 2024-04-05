@@ -304,11 +304,14 @@ Public MustInherit Class VideoEncoder
     End Function
 
     Shared Function GetDefaults() As List(Of VideoEncoder)
-        Dim ret As New List(Of VideoEncoder)
-
-        ret.Add(New VvencffappEnc)
-        ret.Add(New x265Enc)
-        ret.Add(New x264Enc)
+        Dim ret As New List(Of VideoEncoder) From {
+            New VvencffappEnc(),
+            New x265Enc(),
+            New x264Enc(),
+            New SvtAv1Enc(),
+            New AOMEnc(),
+            New Rav1e()
+        }
 
         Dim nvEnc = New NVEnc()
         For x = 0 To nvEnc.Params.Codec.Options.Length - 1
@@ -324,10 +327,6 @@ Public MustInherit Class VideoEncoder
         For x = 0 To qsvEnc.Params.Codec.Options.Length - 1
             ret.Add(New QSVEnc(x))
         Next
-
-        ret.Add(New AOMEnc)
-        ret.Add(New Rav1e)
-        ret.Add(New SvtAv1Enc)
 
         Dim ffmpeg = New ffmpegEnc()
         For x = 0 To ffmpeg.Params.Codec.Options.Length - 1

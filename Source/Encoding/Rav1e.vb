@@ -11,7 +11,7 @@ Public Class Rav1e
     Property ParamsStore As New PrimitiveStore
 
     Sub New()
-        Name = "AV1 | Rav1e"
+        Name = "Rav1e"
     End Sub
 
     <NonSerialized>

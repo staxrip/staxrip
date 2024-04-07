@@ -428,16 +428,23 @@ Public MustInherit Class BasicVideoEncoder
                         Dim boolParam = DirectCast(param, BoolParam)
 
                         If boolParam.GetSwitches.Contains(a(x)) Then
-                            boolParam.Value = True
+                            Dim b = boolParam.DefaultValue
+                            Dim i = 0
+
+                            If boolParam.NoSwitch = a(x) Then
+                                b = False
+                            ElseIf boolParam.IntegerValue AndAlso x < a.Length - 1 AndAlso Integer.TryParse(a(x + 1), i) Then
+                                b = CBool(i)
+                            End If
+
+                            boolParam.Value = b
                             params.RaiseValueChanged(param)
                             Exit For
                         End If
                     ElseIf TypeOf param Is NumParam Then
                         Dim numParam = DirectCast(param, NumParam)
 
-                        If numParam.GetSwitches.Contains(a(x)) AndAlso
-                            a.Length - 1 > x AndAlso a(x + 1).IsDouble Then
-
+                        If numParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x AndAlso a(x + 1).IsDouble Then
                             numParam.Value = a(x + 1).ToDouble
                             params.RaiseValueChanged(param)
                             Exit For

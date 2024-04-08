@@ -112,6 +112,9 @@
     <Reference Include="DirectN, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\DirectN.1.5.0\lib\net451\DirectN.dll</HintPath>
     </Reference>
+    <Reference Include="ManagedCuda, Version=10.0.31.0, Culture=neutral, PublicKeyToken=242d898828717aa0, processorArchitecture=MSIL">
+      <HintPath>packages\ManagedCuda-100.10.0.31\lib\net46\ManagedCuda.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic">
       <Name>Microsoft.VisualBasic</Name>
     </Reference>
@@ -436,6 +439,8 @@
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
+    <Content Include="DirectN.ico" />
+    <Content Include="DirectN.png" />
     <EmbeddedResource Include="Controls\VvencffappControl.resx">
       <DependentUpon>VvencffappControl.vb</DependentUpon>
     </EmbeddedResource>

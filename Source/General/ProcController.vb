@@ -20,6 +20,7 @@ Public Class ProcController
     Private _lastHighlightedText As String = ""
     Private _triggerWhileProcessing As Boolean = False
     Private _lastTriggerWhileProcessing As Date = Date.Now
+    Private _ffmpegDuration As TimeSpan = TimeSpan.Zero
 
     Property Proc As Proc
     Property LogTextBox As New RichTextBoxEx
@@ -131,6 +132,16 @@ Public Class ProcController
         Else
             If ret.Data.Trim <> "" Then
                 Proc.Log.WriteLine(ret.Data)
+            End If
+
+            If _ffmpegDuration = TimeSpan.Zero AndAlso (Proc.Package Is Package.ffmpeg OrElse Proc.Package Is Package.DoViTool OrElse Proc.Package Is Package.HDR10PlusTool) Then
+                Dim match = Regex.Match(value, "DURATION\s+:\s+((\d+):(\d+):(\d+))", RegexOptions.IgnoreCase)
+                If match.Success Then
+                    Dim t As TimeSpan
+                    If TimeSpan.TryParse(match.Groups(1).Value, t) Then
+                        _ffmpegDuration = t
+                    End If
+                End If
             End If
 
             ProcForm.BeginInvoke(LogAction, Nothing)
@@ -463,7 +474,17 @@ Public Class ProcController
                         frame = match.Groups(1).Value.ToInt()
                         frames = match.Groups(2).Value.ToInt()
                     Else
+                        match = Regex.Match(value, "time=((\d+):(\d+):(\d+))", RegexOptions.IgnoreCase)
+                        If match.Success Then
+                            Dim t As TimeSpan
+                            If TimeSpan.TryParse(match.Groups(1).Value, t) Then
+                                If _ffmpegDuration <> TimeSpan.Zero Then
+                                    progress = CSng(t.Ticks / _ffmpegDuration.Ticks * 100)
+                                End If
+                            End If
+                        Else
 
+                        End If
                     End If
                 End If
             End If

@@ -34,6 +34,9 @@ v2.38.0 (not published yet)
 - UI: Make Preview a normal window by default
 - UI: Add "Output Mod Direction" to allow decreasing when auto cropping or correcting is applied ([#1285](/../../issues/1285))
 - UI: Fix Import Command Line for checkboxed parameters
+- NVEncC: Add new --lookahead-level parameter
+- NVEncC: Add new --tf-level parameter
+- NVEncC: Add new --tune parameter
 - SvtAv1EncApp: Add SVT-AV1-PSY Support
 - Update tools
     - ...

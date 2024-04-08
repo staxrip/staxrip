@@ -321,7 +321,7 @@ Public Class NVEnc
             audio-bitrate audio-ignore audio-ignore audio-samplerate audio-resampler audio-stream dar
             audio-stream audio-stream audio-stream audio-filter chapter-copy chapter sub-copy input-res
             audio-disposition audio-metadata option-list sub-disposition sub-metadata process-codepage
-            metadata attachment-copy chapter-no-trim video-metadata input-csp sub-source",
+            metadata attachment-copy chapter-no-trim video-metadata input-csp sub-source lossless lowlatency",
             .UndocumentedSwitches = "",
             .Package = Package.NVEncC,
             .CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "nvenc.vb")
@@ -354,7 +354,7 @@ Public Class NVEnc
                          "CQP: Constant QP",
                          "CBR: Constant Bitrate",
                          "VBR: Variable Bitrate"},
-            .VisibleFunc = Function() Not Lossless.Value,
+            .VisibleFunc = Function() Tune.ValueText <> "lossless",
             .ArgsFunc = AddressOf GetModeArgs,
             .ImportAction = Sub(param, arg)
                                 If Mode.Switches.Contains(param) Then
@@ -402,6 +402,11 @@ Public Class NVEnc
             .Options = {"8-Bit", "10-Bit"},
             .Values = {"8", "10"},
             .Init = 0}
+
+        Property Tune As New OptionParam With {
+            .Switch = "--tune",
+            .Text = "Tune",
+            .Options = {"HQ", "UHQ", "LowLatency", "UltraLowLatency", "Lossless"}}
 
         Property ConstantQualityMode As New BoolParam With {
             .Switches = {"--vbr-quality"},
@@ -508,10 +513,12 @@ Public Class NVEnc
             .Switch = "--aq",
             .Text = "Adaptive Quantization (Spatial)"}
 
-        Property Lossless As New BoolParam With {
-            .Switch = "--lossless",
-            .Text = "Lossless",
-            .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"}
+        Property BFrames As New NumParam With {
+            .Switch = "--bframes",
+            .HelpSwitch = "-b",
+            .Text = "B-Frames",
+            .Config = {0, 16},
+            .Init = 3}
 
         Property DhdrInfo As New StringParam With {
             .Switch = "--dhdr10-info",
@@ -734,7 +741,7 @@ Public Class NVEnc
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Auto", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Auto", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
                         New OptionParam With {.Name = "LevelAV1", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "av1", .Options = {"Auto", "2", "2.1", "2.2", "2.3", "3", "3.1", "3.2", "3.3", "4", "4.1", "4.2", "4.3", "5", "5.1", "5.2", "5.3", "6", "6.1", "6.2", "6.3", "7", "7.1", "7.2", "7.3"}},
-                        ConstantQualityMode, Bitrate, VbrQuality, QVBR, QPAdvanced, QP, QPAV1, QPI, QPIAV1, QPP, QPPAV1, QPB, QPBAV1)
+                        Tune, ConstantQualityMode, Bitrate, VbrQuality, QVBR, QPAdvanced, QP, QPAV1, QPI, QPIAV1, QPP, QPPAV1, QPB, QPBAV1)
                     Add("Rate Control",
                         New StringParam With {.Switch = "--dynamic-rc", .Text = "Dynamic RC"},
                         New OptionParam With {.Switch = "--multipass", .Text = "Multipass", .Options = {"None", "2Pass-Quarter", "2Pass-Full"}, .VisibleFunc = Function() Mode.Value = 0 OrElse Mode.Value > 1},
@@ -745,16 +752,16 @@ Public Class NVEnc
                         VbvBufSize, MaxBitrate,
                         AQ,
                         New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() AQ.Value},
-                        New BoolParam With {.Switch = "--aq-temporal", .Text = "Adaptive Quantization (Temporal)"},
-                        Lossless)
+                        New BoolParam With {.Switch = "--aq-temporal", .Text = "Adaptive Quantization (Temporal)"})
                     Add("Slice Decision",
                         New OptionParam With {.Switch = "--direct", .Text = "B-Direct Mode", .Options = {"Automatic", "None", "Spatial", "Temporal"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New OptionParam With {.Switch = "--bref-mode", .Text = "B-Frame Ref. Mode", .Options = {"Auto", "Disabled", "Each", "Middle"}},
-                        New NumParam With {.Switch = "--bframes", .HelpSwitch = "-b", .Text = "B-Frames", .Init = 3, .Config = {0, 16}},
+                        BFrames,
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Init = 3, .Config = {0, 16}},
                         New OptionParam With {.Switch = "--refs-forward", .Text = "Refs Forward", .Options = {"0 - Auto", "1 - Last", "2 - Last2", "3 - Last3", "4 - Golden"}, .Values = {"0", "1", "2", "3", "4"}, .VisibleFunc = Function() Codec.ValueText = "av1"},
                         New OptionParam With {.Switch = "--refs-backward", .Text = "Refs Backward", .Options = {"0 - Auto", "1 - Backward", "2 - Altref2", "3 - Altref"}, .Values = {"0", "1", "2", "3"}, .VisibleFunc = Function() Codec.ValueText = "av1"},
                         New NumParam With {.Switch = "--lookahead", .Text = "Lookahead", .Config = {0, 32}},
+                        New NumParam With {.Switch = "--lookahead-level", .Text = "Lookahead Level", .Config = {0, 3}, .Init = 0, .VisibleFunc = Function() Codec.ValueText = "h265"},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--slices", .Text = "Slices", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--multiref-l0", .Text = "Multi Ref L0", .Config = {0, 7}, .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"},
@@ -767,6 +774,7 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--adapt-transform", .Text = "Adaptive Transform", .Options = {"Automatic", "Enabled", "Disabled"}, .Values = {"", "--adapt-transform", "--no-adapt-transform"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New NumParam With {.Switch = "--cu-min", .Text = "Minimum CU Size", .Config = {0, 32, 16}, .VisibleFunc = Function() Codec.ValueText = "h265"},
                         New NumParam With {.Switch = "--cu-max", .Text = "Maximum CU Size", .Config = {0, 64, 16}, .VisibleFunc = Function() Codec.ValueText = "h265"},
+                        New OptionParam With {.Switch = "--tf-level", .Text = "Temporal Filtering", .Options = {"0 (auto)", "4"}, .Values = {"0", "4"}, .VisibleFunc = Function() Codec.ValueText = "h265" AndAlso BFrames.Value >= 4},
                         New OptionParam With {.Switch = "--part-size-min", .Text = "Part Size Min", .Options = {"0 (auto)", "4", "8", "16", "32", "64"}, .Values = {"0", "4", "8", "16", "32", "64"}, .VisibleFunc = Function() Codec.ValueText = "av1"},
                         New OptionParam With {.Switch = "--part-size-max", .Text = "Part Size Max", .Options = {"0 (auto)", "4", "8", "16", "32", "64"}, .Values = {"0", "4", "8", "16", "32", "64"}, .VisibleFunc = Function() Codec.ValueText = "av1"},
                         New OptionParam With {.Switch = "--tile-columns", .Text = "Tile Columns", .Options = {"0 (auto)", "1", "2", "4", "8", "16", "32", "64"}, .Values = {"0", "1", "2", "4", "8", "16", "32", "64"}, .VisibleFunc = Function() Codec.ValueText = "av1"},
@@ -891,8 +899,7 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer", .Options = {"8", "16", "32", "64", "128"}},
                         New OptionParam With {.Switch = "--output-thread", .Text = "Output Thread", .Options = {"Automatic", "Disabled", "One Thread"}, .Values = {"-1", "0", "1"}},
                         New NumParam With {.Switch = "--perf-monitor-interval", .Init = 500, .Config = {50, Integer.MaxValue}, .Text = "Perf. Mon. Interval"},
-                        New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"},
-                        New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"})
+                        New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
                     Add("Statistic",
                         New StringParam With {.Switch = "--vmaf", .Text = "VMAF"},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error", "Quiet"}},

@@ -2877,24 +2877,26 @@ Public Class Package
 
             If filePath <> "" Then
                 Dim size = New FileInfo(filePath).Length
+                Dim type As x264Type
 
-                If size <> s.Storage.GetInt("x264 size") Then
+                If s.Storage Is Nothing OrElse size <> s.Storage.GetInt("x264 size") Then
                     Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", False)
-                    Dim value As Integer
 
                     If output.Contains("Patman") Then
-                        value = x264Type.Patman
+                        type = x264Type.Patman
                     ElseIf output.Contains("DJATOM") Then
-                        value = x264Type.DJATOM
+                        type = x264Type.DJATOM
                     Else
-                        value = x264Type.Vanilla
+                        type = x264Type.Vanilla
                     End If
 
-                    s.Storage.SetInt("x264 size", CInt(size))
-                    s.Storage.SetInt("x264 type", value)
+                    s.Storage?.SetInt("x264 size", CInt(size))
+                    s.Storage?.SetInt("x264 type", type)
+                Else
+                    type = CType(s.Storage.GetInt("x264 type", x264Type.Vanilla), x264Type)
                 End If
 
-                Return CType(s.Storage.GetInt("x264 type"), x264Type)
+                Return type
             End If
         End Get
     End Property
@@ -2905,26 +2907,56 @@ Public Class Package
 
             If filePath <> "" Then
                 Dim size = New FileInfo(filePath).Length
+                Dim type As x265Type
 
-                If size <> s.Storage.GetInt("x265 size") Then
+                If s.Storage Is Nothing OrElse size <> s.Storage.GetInt("x265 size") Then
                     Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", True)
-                    Dim value As Integer
 
                     If output.Contains("DJATOM") Then
-                        value = x265Type.DJATOM
+                        type = x265Type.DJATOM
                     ElseIf output.Contains("JPSDR") Then
-                        value = x265Type.JPSDR
+                        type = x265Type.JPSDR
                     ElseIf output.Contains("Patman") Then
-                        value = x265Type.Patman
+                        type = x265Type.Patman
                     Else
-                        value = x265Type.Vanilla
+                        type = x265Type.Vanilla
                     End If
 
-                    s.Storage.SetInt("x265 size", CInt(size))
-                    s.Storage.SetInt("x265 type", value)
+                    s.Storage?.SetInt("x265 size", CInt(size))
+                    s.Storage?.SetInt("x265 type", type)
+                Else
+                    type = CType(s.Storage.GetInt("x265 type", x265Type.Vanilla), x265Type)
                 End If
 
-                Return CType(s.Storage.GetInt("x265 type"), x265Type)
+                Return type
+            End If
+        End Get
+    End Property
+
+    Shared ReadOnly Property SvtAv1EncAppType As SvtAv1EncAppType
+        Get
+            Dim filePath = SvtAv1EncApp.Path
+
+            If filePath <> "" Then
+                Dim size = New FileInfo(filePath).Length
+                Dim type As SvtAv1EncAppType
+
+                If s.Storage Is Nothing OrElse size <> s.Storage.GetInt("SvtAv1EncApp size") Then
+                    Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", False)
+
+                    If output.Contains("SVT-AV1-PSY") Then
+                        type = SvtAv1EncAppType.Psy
+                    Else
+                        type = SvtAv1EncAppType.Vanilla
+                    End If
+
+                    s.Storage?.SetInt("SvtAv1EncApp size", CInt(size))
+                    s.Storage?.SetInt("SvtAv1EncApp type", type)
+                Else
+                    type = CType(s.Storage.GetInt("SvtAv1EncApp type", SvtAv1EncAppType.Vanilla), SvtAv1EncAppType)
+                End If
+
+                Return type
             End If
         End Get
     End Property

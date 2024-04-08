@@ -1,4 +1,5 @@
-﻿Imports System.Text
+﻿Imports System.Globalization
+Imports System.Text
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
@@ -60,7 +61,7 @@ Public Class SvtAv1Enc
             proc.Priority = priority
             proc.FrameCount = p.Script.GetFrameCount
             proc.IntegerFrameOutput = Params.Progress.Value < 2
-            proc.SkipStrings = {"Encoding frame", " Frames @ "}
+            proc.SkipStrings = {"Encoding:", "Encoding frame", " Frames @ "}
 
             If commandLine.Contains("|") Then
                 proc.File = "cmd.exe"
@@ -318,10 +319,20 @@ Public Class SvtAv1EncParams
     Property Progress As New OptionParam With {
         .Switch = "--progress",
         .Text = "Progress",
-        .DefaultValue = 1,
-        .Value = 2,
         .Options = {"0: No Output", "1: Normal (Default)", "2: AOMEnc Style Output"},
-        .Values = {"0", "1", "2"}}
+        .Values = {"0", "1", "2"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla,
+        .DefaultValue = 1,
+        .Value = 2}
+
+    Property ProgressPsy As New OptionParam With {
+        .Switch = "--progress",
+        .Text = "Progress",
+        .Options = {"0: No Output", "1: Normal (Default)", "2: AOMEnc Style Output", "3: PSY Style Output"},
+        .Values = {"0", "1", "2", "3"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .DefaultValue = 1,
+        .Value = 3}
 
     Property Preset As New OptionParam With {
         .Switch = "--preset",
@@ -373,13 +384,23 @@ Public Class SvtAv1EncParams
         .IntegerValue = True,
         .Init = 0}
 
-    Property EncoderBitDepth As New OptionParam With {
-        .Switch = "--input-depth",
-        .Text = "Encoder Bit Depth",
-        .Options = {"8-Bit", "10-Bit"},
-        .Values = {"8", "10"},
-        .DefaultValue = 0,
-        .Value = 1}
+    'Property EncoderBitDepth As New OptionParam With {
+    '    .Switch = "--input-depth",
+    '    .Text = "Encoder Bit Depth",
+    '    .Options = {"8-Bit", "10-Bit"},
+    '    .Values = {"8", "10"},
+    '    .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla,
+    '    .DefaultValue = 0,
+    '    .Value = 1}
+
+    'Property PsyEncoderBitDepth As New OptionParam With {
+    '    .Switch = "--input-depth",
+    '    .Text = "Encoder Bit Depth",
+    '    .Options = {"8-Bit", "10-Bit"},
+    '    .Values = {"8", "10"},
+    '    .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+    '    .DefaultValue = 1,
+    '    .Value = 1}
 
     Property StatReport As New OptionParam With {
         .Switch = "--enable-stat-report",
@@ -419,37 +440,83 @@ Public Class SvtAv1EncParams
         .Switch = "--tune",
         .Text = "Tune",
         .IntegerValue = True,
-        .Options = {"0: VQ", "1: PSNR", "2: SSIM"},
+        .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla,
         .Init = 1}
+
+    Property TunePsy As New OptionParam With {
+        .Switch = "--tune",
+        .Text = "Tune",
+        .IntegerValue = True,
+        .Options = {"0: VQ", "1: PSNR", "2: SSIM (default)", "3: Subjective SSIM"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 2}
 
     '   --------------------------------------------------------
     '   --------------------------------------------------------
 
     Property RateControlMode As New OptionParam With {
         .HelpSwitch = "--rc",
-        .Name = "RateControlMode",
         .Text = "Rate Control Mode",
         .Options = {"Quality", "Variable Bitrate", "Constant Bitrate"},
         .IntegerValue = True,
         .AlwaysOn = True,
         .Value = 0}
 
-    Property QuantizationParameter As New NumParam With {
+    ReadOnly Property QuantizationParameter As NumParam
+        Get
+            Select Case Package.SvtAv1EncAppType
+                Case SvtAv1EncAppType.Psy
+                    Return QuantizationParameterPsy
+                Case Else
+                    Return QuantizationParameterPsy
+                    Return QuantizationParameterVanilla
+            End Select
+        End Get
+    End Property
+
+    Property QuantizationParameterVanilla As New NumParam With {
         .HelpSwitch = "--qp",
-        .Name = "QuantizationParameter",
         .Text = "Quantization Parameter",
         .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality AndAlso AqMode.Value = 0,
         .ValueChangedAction = Sub(x) ConstantRateFactor.Value = CInt(x),
         .Config = {1, 63, 1},
         .Init = 35}
 
-    Property ConstantRateFactor As New NumParam With {
+    Property QuantizationParameterPsy As New NumParam With {
+        .HelpSwitch = "--qp",
+        .Text = "Quantization Parameter",
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality AndAlso AqMode.Value = 0,
+        .ValueChangedAction = Sub(x) ConstantRateFactor.Value = x,
+        .Config = {1, 70, 0.25, 2},
+        .Init = 35}
+
+    ReadOnly Property ConstantRateFactor As NumParam
+        Get
+            Select Case Package.SvtAv1EncAppType
+                Case SvtAv1EncAppType.Psy
+                    Return ConstantRateFactorPsy
+                Case Else
+                    Return ConstantRateFactorPsy
+                    Return ConstantRateFactorVanilla
+            End Select
+        End Get
+    End Property
+
+    Property ConstantRateFactorVanilla As New NumParam With {
         .HelpSwitch = "--crf",
-        .Name = "ConstantRateFactor",
         .Text = "Constant Rate Factor",
         .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality AndAlso AqMode.Value <> 0,
         .ValueChangedAction = Sub(x) QuantizationParameter.Value = CInt(x),
-        .Config = {1, 63, 1},
+        .Config = {1, 63, 1, 0},
+        .Init = 35}
+
+    Property ConstantRateFactorPsy As New NumParam With {
+        .HelpSwitch = "--crf",
+        .Text = "Constant Rate Factor",
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality AndAlso AqMode.Value <> 0,
+        .ValueChangedAction = Sub(x) QuantizationParameter.Value = x,
+        .Config = {1, 70, 0.25, 2},
         .Init = 35}
 
     Property TargetBitrate As New NumParam With {
@@ -497,15 +564,30 @@ Public Class SvtAv1EncParams
     Property EnableQm As New BoolParam With {
         .Switch = "--enable-qm",
         .Text = "Enable quantisation matrices",
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla,
         .IntegerValue = True,
         .Init = False}
+
+    Property EnableQmPsy As New BoolParam With {
+        .Switch = "--enable-qm",
+        .Text = "Enable quantisation matrices",
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .IntegerValue = True,
+        .Init = True}
 
     Property QmMin As New NumParam With {
         .Switch = "--qm-min",
         .Text = "Min quant matrix flatness",
-        .VisibleFunc = Function() EnableQm.Value,
         .Config = {0, 15, 1},
+        .VisibleFunc = Function() EnableQm.Visible AndAlso EnableQm.Value,
         .Init = 8}
+
+    Property QmMinPsy As New NumParam With {
+        .Switch = "--qm-min",
+        .Text = "Min quant matrix flatness",
+        .Config = {0, 15, 1},
+        .VisibleFunc = Function() EnableQmPsy.Visible AndAlso EnableQmPsy.Value,
+        .Init = 0}
 
     Property QmMax As New NumParam With {
         .Switch = "--qm-max",
@@ -626,11 +708,19 @@ Public Class SvtAv1EncParams
         .Config = {0, 4, 1},
         .Init = 0}
 
-    Property LoopFilterEnable As New BoolParam With {
+    Property LoopFilterEnable As New NumParam With {
         .Switch = "--enable-dlf",
         .Text = "Deblocking Loop Filter",
-        .IntegerValue = True,
-        .Init = True}
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla,
+        .Config = {0, 1, 1},
+        .Init = 1}
+
+    Property LoopFilterEnablePsy As New NumParam With {
+        .Switch = "--enable-dlf",
+        .Text = "Deblocking Loop Filter",
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Config = {0, 2, 1},
+        .Init = 1}
 
     Property CDEFLevel As New BoolParam With {
         .Switch = "--enable-cdef",
@@ -647,8 +737,8 @@ Public Class SvtAv1EncParams
     Property EnableTPLModel As New BoolParam With {
         .Switch = "--enable-tpl-la",
         .Text = "Temporal Dependency Model",
-        .IntegerValue = True,
         .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality,
+        .IntegerValue = True,
         .Init = True}
 
     Property Mfmv As New NumParam With {
@@ -918,6 +1008,67 @@ Public Class SvtAv1EncParams
                           tb.Edit.TextBox.Font = g.GetCodeFont
                       End Sub}
 
+    '   --------------------------------------------------------
+    '   --------------------------------------------------------
+
+    Property PsyDolbyVisionRpu As New StringParam With {
+        .Switch = "--dolby-vision-rpu",
+        .Text = "Dolby Vision RPU",
+        .BrowseFile = True,
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy}
+
+    Property PsyVarianceBoostStrength As New OptionParam With {
+        .Switch = "--variance-boost-strength",
+        .Text = "Variance Boost Strength",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: None", "1: Mild", "2: Gentle (default)", "3: Medium", "4: Aggressive"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 2}
+
+    Property PsyVarianceOctile As New OptionParam With {
+        .Switch = "--variance-octile",
+        .Text = "Variance Octile",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0", "1: 1/8th", "2: 2/8th", "3: 3/8th", "4: 4/8th", "5: 5/8th", "6: 6/8th (default)", "7: 7/8th", "8: 8/8th"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 6}
+
+    Property PsyEnableAltCurve As New OptionParam With {
+        .Switch = "--enable-alt-curve",
+        .Text = "Enable Alt Curve",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: On"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 0}
+
+    Property PsySharpness As New OptionParam With {
+        .Switch = "--sharpness",
+        .Text = "Sharpness",
+        .Expanded = True,
+        .Options = {"-7", "-6", "-5", "-4", "-3", "-2", "-1", "0 (default)", "1", "2", "3", "4", "5", "6", "7"},
+        .Values = {"-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 7}
+
+    Property PsyQpScaleCompressStrength As New OptionParam With {
+        .Switch = "--qp-scale-compress-strength",
+        .Text = "QP Scale Compress Strength",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0", "1 (default)", "2", "3"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 1}
+
+    '   --------------------------------------------------------
+    '   --------------------------------------------------------
+
+
+
+
+
 
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
@@ -928,28 +1079,28 @@ Public Class SvtAv1EncParams
                     Decoder, PipingToolAVS, PipingToolVS,
                     CompCheck, CompCheckAimedQuality,
                     Chunks,
-                    Progress,
+                    Progress, ProgressPsy,
                     FramesToBeEncoded, FramesToBeSkipped,
-                    EncoderColorFormat, EncoderBitDepth,
+                    EncoderColorFormat,
                     HighDynamicRangeInput, StatReport,
                     Asm, LogicalProcessors, PinnedExecution
                 )
                 Add("Basic",
-                    Preset, Profile, Level, Tune, FastDecode
+                    Preset, Profile, Level, Tune, TunePsy, FastDecode
                 )
                 Add("Rate Control",
                     RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
                     PassesVBR, PassesCBR,
                     AqMode, RecodeLoop,
-                    EnableQm, QmMax, QmMin
+                    EnableQm, EnableQmPsy, QmMax, QmMin, QmMinPsy
                 )
                 Add("GOP size/type",
                     KeyInt, KeyIntCrf,
                     IntraRefreshRate, SceneChangeDetection, Lookahead, HierarchicalLevels, PredStructure, EnableDg, StartupMgSize
                 )
                 Add("AV1 Specific 1",
-                    TileRow, TileCol,
-                    LoopFilterEnable, CDEFLevel, EnableRestoration, EnableTPLModel, Mfmv, EnableTF, EnableOverlays, ScreenContentMode, RestrictedMotionVector,
+                    TileRow, TileCol, LoopFilterEnable, LoopFilterEnablePsy,
+                    CDEFLevel, EnableRestoration, EnableTPLModel, Mfmv, EnableTF, EnableOverlays, ScreenContentMode, RestrictedMotionVector,
                     FilmGrain, FilmGrainDenoise, FGSTable
                 )
                 Add("AV1 Specific 2",
@@ -960,6 +1111,12 @@ Public Class SvtAv1EncParams
                 Add("Color Description",
                     ColorPrimaries, TransferCharacteristics, MatrixCoefficients, ColorRange, ChromaSamplePosition, MasteringDisplay, MaxCLL, MaxFALL
                 )
+                If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then
+                    Add("PSY",
+                        PsyDolbyVisionRpu, PsyVarianceBoostStrength, PsyVarianceOctile, PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength
+                    )
+                End If
+
                 Add("Custom", Custom, CustomFirstPass, CustomSecondPass, CustomThirdPass)
 
                 'ItemsValue = ItemsValue.OrderBy(Function(i) i.Weight).ToList
@@ -1131,11 +1288,11 @@ Public Class SvtAv1EncParams
         If RateControlMode.Value = SvtAv1EncRateMode.Quality Then
             If ConstantRateFactor.Visible Then
                 If Not IsCustom(pass, "--crf") AndAlso ConstantRateFactor.Value <> ConstantRateFactor.DefaultValue Then
-                    sb.Append(" --crf " + CInt(ConstantRateFactor.Value).ToString)
+                    sb.Append(" --crf " + ConstantRateFactor.Value.ToString("0.##", CultureInfo.InvariantCulture))
                 End If
             ElseIf QuantizationParameter.Visible Then
                 If Not IsCustom(pass, "--qp") AndAlso QuantizationParameter.Value <> QuantizationParameter.DefaultValue Then
-                    sb.Append(" --qp " + CInt(QuantizationParameter.Value).ToString)
+                    sb.Append(" --qp " + QuantizationParameter.Value.ToString("0.##", CultureInfo.InvariantCulture))
                 End If
             End If
         Else
@@ -1190,4 +1347,9 @@ Public Enum SvtAv1EncRateMode
     Quality
     VBR
     CBR
+End Enum
+
+Public Enum SvtAv1EncAppType
+    Vanilla
+    Psy
 End Enum

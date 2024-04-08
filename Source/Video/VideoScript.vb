@@ -409,6 +409,10 @@ clipname.set_output()" + BR
                     "core.avs.LoadPlugin(r""" + plugin.Path + """)" + BR,
                     "core.std.LoadPlugin(r""" + plugin.Path + """, altsearchpath=True)" + BR)
 
+                If Not plugin.RequirementsFulfilled Then
+                    code += "# !! The following line is commented out by StaxRip, because the system does not fulfill all requirements to execute it !!" & BR & "#"
+                End If
+
                 code += line
             End If
         End If

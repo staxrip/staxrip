@@ -1143,6 +1143,7 @@ Public Class Package
         .Description = "",
         .WebURL = "https://github.com/AmusementClub/vs-dfttest2",
         .DownloadURL = "https://github.com/AmusementClub/vs-dfttest2/releases",
+        .RequirementsFunc = Function() Cuda.IsSupported,
         .VsFilterNames = {"dfttest2_cuda.RDFT", "dfttest2_cuda.DFTTest"}})
 
     Shared Property DFTTest2NVRTC As Package = Add(New PluginPackage With {
@@ -1153,6 +1154,7 @@ Public Class Package
         .Description = "",
         .WebURL = "https://github.com/AmusementClub/vs-dfttest2",
         .DownloadURL = "https://github.com/AmusementClub/vs-dfttest2/releases",
+        .RequirementsFunc = Function() Cuda.IsSupported,
         .VsFilterNames = {"dfttest2_nvrtc.RDFT", "dfttest2_nvrtc.DFTTest"}})
 
     Shared Property DFTTestVS As Package = Add(New PluginPackage With {

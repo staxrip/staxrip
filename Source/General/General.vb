@@ -12,6 +12,7 @@ Imports System.Security.Permissions
 Imports StaxRip.UI
 Imports VB6 = Microsoft.VisualBasic
 Imports Microsoft.Win32
+Imports ManagedCuda
 
 Public Class Folder
     Shared ReadOnly Property Desktop As String
@@ -1473,6 +1474,29 @@ Public Class CRC32
             Return GetChecksum(Encoding.Unicode.GetBytes(str))
         End If
     End Function
+End Class
+
+Public Class Cuda
+    Private Shared _result As Integer = -1
+
+    Public Shared ReadOnly Property Count As Integer
+        Get
+            Try
+                If _result < 0 Then
+                    _result = CudaContext.GetDeviceCount()
+                End If
+            Catch ex As Exception
+                _result = 0
+            End Try
+            Return _result
+        End Get
+    End Property
+
+    Public Shared ReadOnly Property IsSupported As Boolean
+        Get
+            Return Count > 0
+        End Get
+    End Property
 End Class
 
 Public Class Vulkan

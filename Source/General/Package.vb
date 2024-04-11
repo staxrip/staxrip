@@ -2119,7 +2119,7 @@ Public Class Package
             .Description = "Subtitle plugin for VapourSynth based on libass.",
             .WebURL = "https://github.com/vapoursynth/subtext",
             .DownloadURL = "https://github.com/vapoursynth/subtext/releases",
-            .VsFilterNames = {"sub.TextFile"}})
+            .VsFilterNames = {"sub.ImageFile", "sub.Subtitle", "sub.TextFile"}})
 
         Add(New PluginPackage With {
             .Name = "Bwdif",

@@ -14,6 +14,12 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.37.6 (2024-04-12)
+====================
+
+- VapourSynth: Fix missing loading of SubText for hardcoded subtitles ([#1307](/../../issues/1307))
+
+
 v2.37.5 (2024-04-06)
 ====================
 

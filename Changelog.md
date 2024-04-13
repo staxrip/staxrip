@@ -24,6 +24,7 @@ v2.38.0 (not published yet)
 - UI: Add "Report an issue" to Main Menu
 - UI: Add "Support" to Main Menu
 - UI: Add "What's new" to Main Menu
+- UI: Rearrange Project in Main Menu
 - UI: Rearrange Encoder Profiles
 - UI: Move temp file deletion from Settings to Options
 - UI: Add options to separate temp file deletion based on file types ([#1236](/../../issues/1236))

@@ -466,6 +466,10 @@
                     .ExeFileForeColor = _outputHighlightingForeColor.SetHue(20),
                     .ExeFileFontStyles = {},
  _
+                    .PipeBackColor = General.Controls.RichTextBox.BackColor,
+                    .PipeForeColor = _outputHighlightingForeColor.SetHue(0).AddLuminance(-0.2),
+                    .PipeFontStyles = {FontStyle.Bold},
+ _
                     .MediaFileBackColor = General.Controls.RichTextBox.BackColor,
                     .MediaFileForeColor = _outputHighlightingForeColor.SetHue(160).AddLuminance(-0.15),
                     .MediaFileFontStyles = {},

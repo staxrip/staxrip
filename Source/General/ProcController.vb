@@ -250,6 +250,11 @@ Public Class ProcController
                 End If
             Next
 
+            matches = Regex.Matches(LogTextBox.Text, "(?<=\.exe[\S ]*) \| (?=[\S ]*\.exe)", RegexOptions.IgnoreCase)
+            For Each m As Match In matches
+                format(m.Index, m.Length, oh.PipeBackColor, oh.PipeForeColor, oh.PipeFontStyles)
+            Next
+
             matches = Regex.Matches(LogTextBox.Text, "([A-Z]:\\[\w\\]+\.[eE][xX][eE])|(""[A-Z]:\\[\w\s\\]+\.[eE][xX][eE]"")")
             For Each m As Match In matches
                 format(m.Index, m.Length, oh.ExeFileBackColor, oh.ExeFileForeColor, oh.ExeFileFontStyles)

@@ -34,6 +34,7 @@ v2.38.0 (not published yet)
 - UI: Show Preview Info by default
 - UI: Make Preview a normal window by default
 - UI: Add "Output Mod Direction" to allow decreasing when auto cropping or correcting is applied ([#1285](/../../issues/1285))
+- UI: Fix Saving of jobs on network shares ([#1308](/../../issues/1308))
 - UI: Fix Import Command Line for checkboxed parameters
 - UI: Output Highlighting for Pipe symbol
 - UI: Add Plugin fulfillment requirements

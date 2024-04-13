@@ -7402,6 +7402,7 @@ Public Class MainForm
         Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StaxRip.Changelog.md")
             Using reader As New StreamReader(stream)
                 Dim sb As New StringBuilder()
+                Dim sbNotEmpty = False
                 Dim relevant = False
                 Dim isUpdate = False
                 Dim skipUpdates = False
@@ -7410,7 +7411,7 @@ Public Class MainForm
                     Dim line = reader.ReadLine()
                     If line Like "========*" Then Continue Do
 
-                    Dim match = Regex.Match(line, "(v\d\.(\d+)\.?\d*)\W+\(20\d\d-\d\d-\d\d\).*")
+                    Dim match = Regex.Match(line, "(v\d\.(\d+)\.?(\d*))\W+\(20\d\d-\d\d-\d\d\).*")
                     If match.Success Then
                         If relevant Then
                             If match.Groups(2).Value.ToInt() = version.Minor Then
@@ -7418,6 +7419,12 @@ Public Class MainForm
                                 sb.AppendLine()
                                 sb.AppendLine(line)
                                 sb.AppendLine("-------------------------")
+
+                                If match.Groups(3).Value.ToInt() = 0 AndAlso Regex.Matches(sb.ToString(), Environment.NewLine).Count > 30 Then
+                                    sb.AppendLine("---- Hidden because of the length of this report ----")
+                                    relevant = False
+                                End If
+
                                 Continue Do
                             Else
                                 Exit Do
@@ -7441,13 +7448,16 @@ Public Class MainForm
                     line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)(?>,|$))", "", RegexOptions.CultureInvariant)
                     line = Regex.Replace(line, "(?<=^| ) (?= |-)", "  ", RegexOptions.CultureInvariant)
                     sb.AppendLine(line)
+                    sbNotEmpty = True
                 Loop
 
-                If Not String.IsNullOrWhiteSpace(sb.ToString()) Then
+                If sbNotEmpty Then
+                    sb.AppendLine(BR)
+
                     Using td As New TaskDialog(Of String)()
                         td.Title = $"What's new in {appDetails}:"
                         td.Icon = TaskIcon.Shield
-                        td.Content = sb.ToString() + BR
+                        td.Content = sb.ToString()
 
                         td.AddCommand("OK")
 

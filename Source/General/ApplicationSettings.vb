@@ -13,10 +13,10 @@ Public Class ApplicationSettings
     Public AviSynthMode As FrameServerMode
     Public AviSynthProfiles As List(Of FilterCategory)
     Public BinaryPrefix As Boolean = False
-    Public CheckForUpdates As Boolean
+    Public CheckForUpdates As Boolean = True
     Public CheckForUpdatesDismissed As String
-    Public CheckForUpdatesLastRequest As DateTime
-    Public CheckForUpdatesQuestion As Boolean
+    Public CheckForUpdatesLastRequest As DateTime = DateTime.Now
+    Public CheckForUpdatesQuestion As Boolean = False
     Public CmdlPresetsEac3to As String
     Public CmdlPresetsMKV As String
     Public CmdlPresetsMP4 As String

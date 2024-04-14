@@ -38,6 +38,9 @@ v2.38.0 (not published yet)
 - UI: Output Highlighting for Pipe symbol
 - UI: Add Plugin fulfillment requirements
     - If a requirement is not fulfilled, the import will be commented out
+- UI: Remove Update question at first start
+    - Update Check is enabled by default and can be disabled in the Settings
+    - According to the poll on Discord
 - NVEncC: Add new --lookahead-level parameter
 - NVEncC: Add new --tf-level parameter
 - NVEncC: Add new --tune parameter

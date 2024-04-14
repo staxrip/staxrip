@@ -10,7 +10,7 @@ Public Class StaxRipUpdate
     Shared HttpClient As New HttpClient
 
     Shared Sub ShowUpdateQuestion()
-        If Not g.IsDevelopmentPC AndAlso Not s.CheckForUpdatesQuestion Then
+        If Not g.IsDevelopmentPC AndAlso s.CheckForUpdatesQuestion Then
             Using td As New TaskDialog(Of String)()
                 td.Title = "Check for updates"
                 td.Icon = TaskIcon.Question
@@ -24,7 +24,7 @@ Public Class StaxRipUpdate
                 td.AddCommand("Ask me later")
 
                 Dim answer = td.Show
-                s.CheckForUpdatesQuestion = answer.EqualsAny("Yes", "No")
+                s.CheckForUpdatesQuestion = Not answer.EqualsAny("Yes", "No")
                 s.CheckForUpdates = answer = "Yes"
             End Using
         End If
@@ -56,7 +56,7 @@ Public Class StaxRipUpdate
                     Dim filename = $"StaxRip-v{onlineVersionString}-x64.7z"
                     Dim downloadUri = $"https://github.com/staxrip/staxrip/releases/download/v{onlineVersionString}/{filename}"
                     Dim releaseUri = $"https://github.com/staxrip/staxrip/releases/tag/v{onlineVersionString}"
-                    
+
                     latestVersions.Add((onlineVersion, "release", releaseUri, downloadUri, filename))
                 Next
 

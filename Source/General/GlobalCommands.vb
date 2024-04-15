@@ -732,7 +732,7 @@ Public Class GlobalCommands
     <Command("Shows a dialog to select files, for those thumbnail sheets are created.")>
     Async Sub ShowThumbnailerDialogAsync()
         Using dialog As New OpenFileDialog()
-            dialog.Title = "Select the video files - for Thumbnailer settings go to Options!"
+            dialog.Title = "Select the video files - for Thumbnailer settings go to Project Options!"
             dialog.SetFilter(FileTypes.Video)
             dialog.Multiselect = True
 

@@ -3418,16 +3418,6 @@ Namespace UI
             SetStyle(ControlStyles.Selectable, False)
             SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
 
-            'If BackColor.GetBrightness > 0.5 Then
-            '    ForeColor = Color.FromArgb(10, 10, 10)
-            '    BackColor = Color.FromArgb(240, 240, 240)
-            '    ProgressColor = Color.FromArgb(180, 180, 180)
-            'Else
-            '    ForeColor = Color.FromArgb(240, 240, 240)
-            '    BackColor = Color.FromArgb(10, 10, 10)
-            '    ProgressColor = Color.FromArgb(100, 100, 100)
-            'End If
-
             ApplyTheme()
 
             AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
@@ -3464,7 +3454,7 @@ Namespace UI
 
         Private _Minimum As Double
 
-        Public Property Minimum() As Double
+        Public Property Minimum As Double
             Get
                 Return _Minimum
             End Get
@@ -3478,7 +3468,7 @@ Namespace UI
 
         Private _Maximum As Double = 100
 
-        Public Property Maximum() As Double
+        Public Property Maximum As Double
             Get
                 Return _Maximum
             End Get
@@ -3492,7 +3482,7 @@ Namespace UI
 
         Private _Value As Double
 
-        Public Property Value() As Double
+        Public Property Value As Double
             Get
                 Return _Value
             End Get
@@ -3537,9 +3527,7 @@ Namespace UI
 
             If Not WrapContents AndAlso (FlowDirection = FlowDirection.TopDown OrElse FlowDirection = FlowDirection.BottomUp) Then
                 For Each i As Control In Controls
-                    If (i.Anchor And AnchorStyles.Right) = AnchorStyles.Right AndAlso
-                        (i.Anchor And AnchorStyles.Left) = AnchorStyles.Left Then
-
+                    If (i.Anchor And AnchorStyles.Right) = AnchorStyles.Right AndAlso (i.Anchor And AnchorStyles.Left) = AnchorStyles.Left Then
                         i.Left = i.Margin.Left
                         i.Width = ClientSize.Width - i.Margin.Horizontal
                     ElseIf (i.Anchor And AnchorStyles.Right) = AnchorStyles.Right Then

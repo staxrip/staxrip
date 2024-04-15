@@ -138,7 +138,7 @@ Public Class Calc
         ret += hdr10Plus.FileSize()
         ret += dv.FileSize()
 
-        Return Math.Max(0, ret)
+        Return ret
     End Function
 
     Shared Function GetSubtitleBytes() As Long

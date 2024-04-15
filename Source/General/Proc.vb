@@ -332,22 +332,29 @@ Public Class Proc
                 End If
 
                 If ExitCode <> 0 AndAlso Not AllowedExitCodes.ContainsEx(ExitCode) Then
-                    Dim sb = New StringBuilder()
                     Dim l = Log.ToString().Replace(Header, "")
                     l = Regex.Replace(l, "^-+\s+-+\s*$", "", RegexOptions.Multiline)
                     l = Regex.Replace(l, "^\s*", "", RegexOptions.Singleline)
                     l = Regex.Replace(l, "\s*$", "", RegexOptions.Singleline)
                     l.Trim()
-
                     Log.Clear()
-                    sb.Append($"{l}{BR2}")
-                    sb.Append($"{Header} returned exit code: {ExitCode} (0x{ExitCode:X})")
+
+                    Dim ec = $"{Header} returned exit code: {ExitCode} (0x{ExitCode:X})"
+                    Dim sb = New StringBuilder()
+                    sb.AppendLine(l)
+                    sb.AppendLine()
+                    sb.AppendLine()
+                    sb.AppendLine(ec)
+                    sb.AppendLine(New String("~"c, ec.Length))
+                    sb.AppendLine()
 
                     If s.ErrorMessageExtendedByErr Then
                         Dim errOutput = ProcessHelp.GetConsoleOutput(Package.Err.Path, "/ntstatus.h /winerror.h " & ExitCode)
-                        sb.Append($"{BR2}It's unclear what this exit code means, in case it's")
-                        sb.Append($"{BR}a Windows system error then it possibly means:")
-                        sb.Append($"{BR2}{errOutput}")
+                        sb.AppendLine("It's unclear what this exit code means, in case it's")
+                        sb.AppendLine("a Windows system error then it possibly means:")
+                        sb.AppendLine()
+                        sb.AppendLine(errOutput)
+                        sb.AppendLine()
                     End If
 
                     Throw New ErrorAbortException("Error " + Header, sb.ToString(), Project)

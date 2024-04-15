@@ -216,8 +216,8 @@ Module StringExtensions
 
     <Extension()>
     Function FileSize(instance As String) As Long
-        If String.IsNullOrWhiteSpace(instance) Then Return -1L
-        If Not instance.FileExists() Then Return -1L
+        If String.IsNullOrWhiteSpace(instance) Then Return 0L
+        If Not instance.FileExists() Then Return 0L
 
         Return New FileInfo(instance).Length
     End Function
@@ -1220,7 +1220,7 @@ Module ControlExtensions
 
         instance.SuspendLayout()
         instance.Select(index, length)
-        instance.SelectionBackColor = backColor
+        instance.SelectionBackColor = If(backColor.A = 0, instance.SelectionBackColor, backColor.ToColor())
         instance.SelectionColor = foreColor
 
         If fontStyles IsNot Nothing AndAlso fontStyles.Length > 0 Then

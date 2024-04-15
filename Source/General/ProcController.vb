@@ -54,9 +54,9 @@ Public Class ProcController
         Me.Proc = proc
         ProcForm = g.ProcForm
 
-        _triggerWhileProcessing = Not p.SkipVideoEncoding AndAlso 
-                                TypeOf p.VideoEncoder IsNot NullEncoder AndAlso 
-                                proc.Package IsNot Nothing AndAlso 
+        _triggerWhileProcessing = Not p.SkipVideoEncoding AndAlso
+                                TypeOf p.VideoEncoder IsNot NullEncoder AndAlso
+                                proc.Package IsNot Nothing AndAlso
                                 proc.Package Is TryCast(p.VideoEncoder, BasicVideoEncoder)?.CommandLineParams.GetPackage()
 
         Dim pad = g.ProcForm.FontHeight \ 6
@@ -111,6 +111,10 @@ Public Class ProcController
             Button.BackColor = theme.ProcessingForm.ProcessButtonBackSelectedColor
             Button.ForeColor = theme.ProcessingForm.ProcessButtonForeSelectedColor
         End If
+
+        For Each pc In Procs
+            pc.SetAndHighlightLog(pc.Proc.Log.ToString(), theme)
+        Next
     End Sub
 
     Sub DataReceived(value As String)
@@ -327,7 +331,7 @@ Public Class ProcController
 
         value = value.Trim()
 
-        If s.ProgressReformatting Then
+        If s.ProgressReformatting AndAlso value <> "" Then
             If FailCounter < 64 Then
                 Dim pattern As String
                 Dim match As Match

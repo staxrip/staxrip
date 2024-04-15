@@ -1218,9 +1218,9 @@ Public Class GlobalClass
                     title)
 
                 td.Timeout = timeout
-                td.Content = (ex.Message + BR2 + content).Trim
+                td.Content = (ex.Message + BR2 + content).Trim()
                 td.Icon = TaskIcon.Error
-                td.ExpandedContent = ex.ToString
+                td.ExpandedContent = ex.ToString().Trim()
                 td.ShowCopyButton = True
                 td.AddButton("OK")
                 td.Show()

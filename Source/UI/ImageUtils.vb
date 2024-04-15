@@ -30,16 +30,12 @@ Public Class ImageHelp
             Coll.AddFontFile(SegoePath)
         End If
 
-        Dim family As FontFamily = Nothing
-
-        If symbol > 61400 Then
-            family = Coll.Families.FirstOrDefault(Function(f) f.Name = "FontAwesome")
-        Else
-            family = Coll.Families.FirstOrDefault(Function(f) f.Name = "Segoe MDL2 Assets")
-        End If
+        Dim family = If(symbol > 61400,
+            Coll.Families.FirstOrDefault(Function(f) f.Name = "FontAwesome"),
+            Coll.Families.FirstOrDefault(Function(f) f.Name = "Segoe MDL2 Assets"))
 
         If family Is Nothing Then
-            MsgWarn("correct font was not found, using default instead")
+            MsgWarn("Correct font was not found, using default instead!")
             family = FontFamily.GenericSerif
         End If
 

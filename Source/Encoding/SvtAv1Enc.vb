@@ -346,7 +346,7 @@ Public Class SvtAv1EncParams
     Property Progress As New OptionParam With {
         .Switch = "--progress",
         .Text = "Progress",
-        .Options = {"0: No Output", "1: Normal (Default)", "2: AOMEnc Style Output"},
+        .Options = {"0: No Output", "1: Normal (Default)", "2: Patman86/AOMEnc Style Output"},
         .Values = {"0", "1", "2"},
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla,
         .DefaultValue = 1,
@@ -355,7 +355,7 @@ Public Class SvtAv1EncParams
     Property ProgressPsy As New OptionParam With {
         .Switch = "--progress",
         .Text = "Progress",
-        .Options = {"0: No Output", "1: Normal (Default)", "2: AOMEnc Style Output", "3: PSY Style Output"},
+        .Options = {"0: No Output", "1: Normal (Default)", "2: AOMEnc Style Output", "3: Patman86 Style Output"},
         .Values = {"0", "1", "2", "3"},
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
         .DefaultValue = 1,

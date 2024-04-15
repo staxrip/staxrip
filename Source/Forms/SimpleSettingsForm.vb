@@ -142,9 +142,7 @@ Public Class SimpleSettingsForm
     End Sub
 
     Sub ApplyTheme(theme As Theme)
-        If DesignHelp.IsDesignMode Then
-            Exit Sub
-        End If
+        If DesignHelp.IsDesignMode Then Exit Sub
 
         BackColor = theme.General.BackColor
     End Sub

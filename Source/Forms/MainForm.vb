@@ -824,6 +824,7 @@ Public Class MainForm
         Me.tlpResize.SetColumnSpan(Me.tbResize, 4)
         Me.tbResize.Location = New System.Drawing.Point(0, 81)
         Me.tbResize.Margin = New System.Windows.Forms.Padding(0)
+        Me.tbResize.Minimum = 0
         Me.tbResize.TickFrequency = TrackBarTicks
         Me.tbResize.Name = "tbResize"
         Me.tbResize.Size = New System.Drawing.Size(658, 81)
@@ -1875,7 +1876,7 @@ Public Class MainForm
         End If
 
         If FileTypes.Video.Contains(inputFile.Ext) AndAlso Not FileTypes.VideoText.Contains(inputFile.Ext) Then
-            AddSourceFilters({"FFVideoSource", "LWLibavVideoSource", "ffms2", "LWLibavSource"}, filters)
+            AddSourceFilters({"BestSource", "FFVideoSource", "LWLibavVideoSource", "ffms2", "LWLibavSource"}, filters)
         End If
 
         If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
@@ -5399,13 +5400,13 @@ Public Class MainForm
             Dim deleteSelectiveLabelExcludeText = "Select what shall be excluded:"
             Dim deleteSelectiveLabelIncludeText = "Select what shall be included:"
             Dim deleteSelectiveLabel = ui.AddLabel(If(p.DeleteTempFilesSelectionMode = SelectionMode.Exclude, deleteSelectiveLabelExcludeText, deleteSelectiveLabelIncludeText))
-            Dim deleteSelectiveProjects = ui.AddBool
-            Dim deleteSelectiveLogs = ui.AddBool
-            Dim deleteSelectiveScripts = ui.AddBool
-            Dim deleteSelectiveIndexes = ui.AddBool
-            Dim deleteSelectiveVideos = ui.AddBool
-            Dim deleteSelectiveAudios = ui.AddBool
-            Dim deleteSelectiveSubtitles = ui.AddBool
+            Dim deleteSelectiveProjects = ui.AddBool()
+            Dim deleteSelectiveLogs = ui.AddBool()
+            Dim deleteSelectiveScripts = ui.AddBool()
+            Dim deleteSelectiveIndexes = ui.AddBool()
+            Dim deleteSelectiveVideos = ui.AddBool()
+            Dim deleteSelectiveAudios = ui.AddBool()
+            Dim deleteSelectiveSubtitles = ui.AddBool()
 
 
             deleteModeMenu.Text = "Deletion after successful processing:"
@@ -7448,7 +7449,7 @@ Public Class MainForm
                     End If
                     If isUpdate AndAlso skipUpdates Then Continue Do
 
-                    line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)(?>,|$))", "", RegexOptions.CultureInvariant)
+                    line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)(?>,|\)|$))", "", RegexOptions.CultureInvariant)
                     line = Regex.Replace(line, "(?<=^| ) (?= |-)", "  ", RegexOptions.CultureInvariant)
                     sb.AppendLine(line)
                     sbNotEmpty = True

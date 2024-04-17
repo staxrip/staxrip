@@ -1264,6 +1264,16 @@ Public Class Package
         .HelpURL = "https://github.com/dubhater/vapoursynth-histogram/blob/master/README.md",
         .VsFilterNames = {"hist.Classic", "hist.Levels", "hist.Color", "hist.Color2", "hist.Luma"}})
 
+    Shared Property LibImwri As Package = Add(New PluginPackage With {
+        .Name = "libimwri",
+        .Filename = "libimwri.dll",
+        .Description = "Image reader and writer for VapourSynth using the ImageMagick library.",
+        .DownloadURL = "https://github.com/vapoursynth/vs-imwri/releases",
+        .WebURL = "https://github.com/vapoursynth/vs-imwri",
+        .HelpURL = "https://github.com/vapoursynth/vs-imwri/blob/master/docs/imwri.rst",
+        .HelpFilename = "imwri.rst",
+        .VsFilterNames = {"imwri.Read", "imwri.Write"}})
+
 
     Shared Sub New()
         Add(New PluginPackage With {

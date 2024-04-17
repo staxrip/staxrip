@@ -33,13 +33,17 @@ v2.39.0 (not published yet)
 - VapourSynth: Fix wrong loading order of Python scripts on multiple calls ([#1340](/../../issues/1340))
 - Internal: Fix Linux compatibility a bit more ([#1337](/../../issues/1337), [#1348](/../../issues/1348))
 - Update tools
-    - ...
-- Update AviSynth+ plugins
-    - ...
+    - AutoCrop v2.3
+    - DeeZy v0.1.9
+    - MediaInfo v24.04
+    - NVEncC v7.53
+    - QSVEncC v7.64
+    - SvtAv1EncApp v2.0.0-A-0+4-e8223021_Mod_by_Patman_x64_msvc1939 [SVT-AV1-PSY]
 - Update Dual plugins
-    - ...
+    - BestSource R4
 - Update VapourSynth plugins
-    - ...
+    - vs-imwri r2
+    - mvsfunc r10
 
 
 v2.38.7 (2024-05-02)

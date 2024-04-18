@@ -576,13 +576,27 @@ clipname.set_output()" + BR
                 wordStart -= 1
             End While
 
-            Dim func = script.Substring(wordStart + 1, wordEnd - 1 - wordStart).Trim()
-
-            functionTokens.Add(func)
             scriptIndex = script.LastIndexOf("."c, scriptIndex - 1)
+
+            If IsFunctionCommented(script, wordStart) Then
+                Continue While
+            End If
+
+            Dim func = script.Substring(wordStart + 1, wordEnd - 1 - wordStart).Trim()
+            functionTokens.Add(func)
         End While
 
         Return functionTokens
+    End Function
+
+    Shared Function IsFunctionCommented(script As String, index As Integer) As Boolean
+        While index >= 0 AndAlso Not Environment.NewLine.Contains(script.Chars(index))
+            If script.Chars(index) = "#"c Then
+                Return True
+            End If
+            index -= 1
+        End While
+        Return False
     End Function
 
     ' this functions finds too many function because all text is treated as script
@@ -604,9 +618,14 @@ clipname.set_output()" + BR
                 wordStart -= 1
             End While
 
+            scriptIndex = script.LastIndexOf("("c, scriptIndex - 1)
+
+            If IsFunctionCommented(script, wordStart) Then
+                Continue While
+            End If
+
             Dim func = script.Substring(wordStart + 1, wordEnd - wordStart).Trim()
             functionTokens.Add(func)
-            scriptIndex = script.LastIndexOf("("c, scriptIndex - 1)
         End While
 
         Return functionTokens

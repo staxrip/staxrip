@@ -28,6 +28,7 @@ v2.40.0 (not published yet)
 - Crop: Add new "Time Interval" mode for AutoCrop
     - Analyzes a frame every x seconds, which makes it more useful throughout short and long videos
 - VideoComparison: Run indexing of source files as (visible) task/job ([#1226](/../../issues/1226))
+- Internal: Skip importing of scripts that are used by commented out functions (thanks to @Valdiralita ([#1318](/../../pull/1318)))
 - NVEncC: Add new "--vpp-decomb" parameter
 - QSVEncC: Add new "--vpp-decomb" parameter
 - SvtAv1EncApp: Add long path support ([#1374](/../../issues/1374))

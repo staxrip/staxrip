@@ -7414,7 +7414,7 @@ Public Class MainForm
                     Dim line = reader.ReadLine()
                     If line Like "========*" Then Continue Do
 
-                    Dim match = Regex.Match(line, "(v\d\.(\d+)\.?(\d*))\W+\(20\d\d-\d\d-\d\d\).*")
+                    Dim match = Regex.Match(line, "(v\d\.(\d+)\.?(\d*))\W+\(.*\)")
                     If match.Success Then
                         If relevant Then
                             If match.Groups(2).Value.ToInt() = version.Minor Then

@@ -152,8 +152,22 @@ Public Class TaskDialog(Of T)
         Next
 
         If Timeout > 0 Then
+            Dim originalWindowTitle = Text
+            Dim button = TryCast(AcceptButton, ButtonEx)
+            Dim originalButtonText = button?.Text
+
             g.RunTask(Sub()
-                          Thread.Sleep(Timeout * 1000)
+                          Dim counter = Timeout
+
+                          While counter > 0 AndAlso Not IsDisposingOrDisposed
+                              If button IsNot Nothing Then
+                                  button.Text = $"{originalButtonText} ({counter})"
+                              Else
+                                  Text = $"{originalWindowTitle} ({counter})"
+                              End If
+                              counter -= 1
+                              Thread.Sleep(1000)
+                          End While
 
                           If Not IsDisposingOrDisposed Then
                               Invoke(Sub() Close())

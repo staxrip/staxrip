@@ -14,6 +14,12 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.38.6 (not published yet)
+====================
+
+- UI: Show TaskDialog timeout when set
+
+
 v2.38.5 (2024-04-25)
 ====================
 

@@ -3864,7 +3864,12 @@ Public Class MainForm
             mb.Field = NameOf(s.StartupTemplate)
             mb.Expanded = True
             mb.Add(From i In Directory.GetFiles(Folder.Template) Select i.Base)
-            mb.Button.SaveAction = Sub(value) UpdateTemplatesMenuAsync()
+            mb.Button.SaveAction = Sub(value)
+                                       If value <> s.StartupTemplate AndAlso p.SourceFile = ""
+                                           LoadProject(Path.Combine(Folder.Template, value + ".srip"))
+                                       End If
+                                       UpdateTemplatesMenuAsync()
+                                   End Sub
 
             Dim n = ui.AddNum()
             n.Text = "Number of log files to keep"

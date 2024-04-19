@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.38.2 (not published yet)
+v2.38.2 (2024-04-24)
 ====================
 
 - UI: Load new Startup Template when changed in Settings ([#1229](/../../issues/1229))

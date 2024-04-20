@@ -571,6 +571,11 @@ Public Class NVEnc
             .Quotes = QuotesMode.Never,
             .AlwaysOn = True}
 
+
+        Property Vmaf As New BoolParam With {.Switch = "--vmaf", .Text = "VMAF", .ArgsFunc = Function() If(Vmaf.Value AndAlso VmafString.Value = "", "--vmaf", "")}
+        Property VmafString As New StringParam With {.Switch = "--vmaf", .Text = "VMAF-Parameters", .VisibleFunc = Function() Vmaf.Value}
+
+
         Property Tweak As New BoolParam With {.Switch = "--vpp-tweak", .Text = "Tweaking", .ArgsFunc = AddressOf GetTweakArgs}
         Property TweakContrast As New NumParam With {.Text = "      Contrast", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {-2.0, 2.0, 0.1, 1}}
         Property TweakGamma As New NumParam With {.Text = "      Gamma", .HelpSwitch = "--vpp-tweak", .Init = 1.0, .Config = {0.1, 10.0, 0.1, 1}}
@@ -901,11 +906,11 @@ Public Class NVEnc
                         New NumParam With {.Switch = "--perf-monitor-interval", .Init = 500, .Config = {50, Integer.MaxValue}, .Text = "Perf. Mon. Interval"},
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
                     Add("Statistic",
-                        New StringParam With {.Switch = "--vmaf", .Text = "VMAF"},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error", "Quiet"}},
                         New OptionParam With {.Switch = "--disable-nvml", .Text = "NVML GPU Monitoring", .Options = {"Enabled NVML (default)", "Disable NVML when system has one CUDA devices", "Always disable NVML"}, .IntegerValue = True},
                         New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
-                        New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
+                        New BoolParam With {.Switch = "--psnr", .Text = "PSNR"},
+                        Vmaf, VmafString)
                     Add("Input/Output",
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw")},
                         Decoder, Interlace,

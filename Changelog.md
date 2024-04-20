@@ -18,6 +18,7 @@ v2.38.2 (not published yet)
 ====================
 
 - UI: Load new Startup Template when changed in Settings ([#1229](/../../issues/1229))
+- NVEncC: Fix "--vmaf" parameter usage
 
 
 v2.38.1 (not published)

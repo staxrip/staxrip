@@ -406,7 +406,8 @@ Public Class NVEnc
         Property Tune As New OptionParam With {
             .Switch = "--tune",
             .Text = "Tune",
-            .Options = {"HQ", "UHQ", "LowLatency", "UltraLowLatency", "Lossless"}}
+            .Options = {"None", "HQ", "UHQ", "LowLatency", "UltraLowLatency", "Lossless"},
+            .Init = 0}
 
         Property ConstantQualityMode As New BoolParam With {
             .Switches = {"--vbr-quality"},

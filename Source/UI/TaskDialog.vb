@@ -98,6 +98,7 @@ Public Class TaskDialog(Of T)
             ContentLabel.Margin = New Padding(0)
             ContentLabel.BorderStyle = BorderStyle.None
             ContentLabel.Text = Content
+            ContentLabel.Name = "Information"
             paMain.Controls.Add(ContentLabel)
         End If
 

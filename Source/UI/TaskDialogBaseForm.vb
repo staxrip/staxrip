@@ -14,7 +14,7 @@ Public Class TaskDialogBaseForm
         AddHandler InputTextEdit.TextBox.KeyDown, AddressOf InputTextEditTextBoxKeyDown
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
     End Sub
-        
+
     Protected Overrides Sub Dispose(disposing As Boolean)
         RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         components?.Dispose()
@@ -93,7 +93,9 @@ Public Class TaskDialogBaseForm
                     c.Width = ClientSize.Width - CInt(fh * 0.7 * 2)
 
                     If TypeOf c Is LabelEx Then
-                        If c.Name = "ExpandedInformation" AndAlso Form.blDetails.Text = "Show Details" Then
+                        Dim isExtended = Form.blDetails.Text = "Hide Details"
+
+                        If c.Name = "Information" AndAlso isExtended OrElse c.Name = "ExpandedInformation" AndAlso Not isExtended Then
                             c.Visible = False
                             c.Height = 0
                         Else

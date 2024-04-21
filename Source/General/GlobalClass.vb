@@ -437,6 +437,12 @@ Public Class GlobalClass
                 Dim isCuttedRemux = TypeOf p.VideoEncoder Is NullEncoder AndAlso p.Ranges?.Any()
                 Dim hasFrames = MediaInfo.GetVideo(p.TargetFile, "FrameCount").ToInt(-1)
                 Dim shouldFrames = p.TargetFrames
+
+                If hasFrames <> shouldFrames Then
+                    g.MainForm.UpdateTargetParameters(p)
+                    shouldFrames = p.TargetFrames
+                End If
+
                 If hasFrames <> shouldFrames Then
                     deleteTempFiles = p.DeleteTempFilesOnFrameMismatch
                     Log.WriteHeader("Frame Mismatch")

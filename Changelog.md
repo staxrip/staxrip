@@ -21,6 +21,7 @@ v2.38.2 (not published yet)
 - UI: Improve Error Messages
 - UI: Make Frame Mismatch more robust towards wrong script information ([#1315](/../../issues/1315), [#1322](/../../issues/1322))
 - UI: Fix not or delayed updating target parameters ([#1315](/../../issues/1315), [#1322](/../../issues/1322), [#1323](/../../issues/1323))
+- FFmpeg: Fix output file extensions when using some codecs
 - NVEncC: Fix "--vmaf" parameter usage
 - NVEncC: Fix "--tune" parameter
 - NVEncC: Bring back "--lossless" and "--lowlatency" parameters as they are not covered by new "--tune" modes

@@ -108,12 +108,16 @@ Public Class ffmpegEnc
                     Return "avi"
                 Case "ProRes", "R210", "V210"
                     Return "mov"
-                Case "VP8", "VP9"
+                Case "Theora"
+                    Return "ogg"
+                Case "VP | VP8", "VP | VP9"
                     Return "webm"
-                Case "x264"
+                Case "x264", "AMD | AMD AMF H.264", "Intel | Intel H.264", "Nvidia | Nvidia H.264"
                     Return "h264"
-                Case "x265"
+                Case "x265", "AMD | AMD AMF H.265", "Intel | Intel H.265", "Nvidia | Nvidia H.265"
                     Return "h265"
+                Case "AOM-AV1", "AMD | AMD AMF AV1", "Intel | Intel AV1", "Nvidia | Nvidia AV1"
+                    Return "ivf"
                 Case Else
                     Return "mkv"
             End Select
@@ -184,7 +188,7 @@ Public Class ffmpegEnc
             .AlwaysOn = True,
             .Options = {"x264", "x265", "AOM-AV1", "XviD", "MPEG-4", "Theora", "ProRes",
                         "R210", "V210", "UT Video", "FFV1", 
-                        "AMD | AMD AMF H264", "AMD | AMD AMF HEVC", "AMD | AMD AMF AV1",
+                        "AMD | AMD AMF H.264", "AMD | AMD AMF H.265", "AMD | AMD AMF AV1",
                         "Intel | Intel H.264", "Intel | Intel H.265", "Intel | Intel AV1",
                         "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265", "Nvidia | Nvidia AV1",
                         "VP | VP8", "VP | VP9"},

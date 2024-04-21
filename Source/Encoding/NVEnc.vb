@@ -321,7 +321,7 @@ Public Class NVEnc
             audio-bitrate audio-ignore audio-ignore audio-samplerate audio-resampler audio-stream dar
             audio-stream audio-stream audio-stream audio-filter chapter-copy chapter sub-copy input-res
             audio-disposition audio-metadata option-list sub-disposition sub-metadata process-codepage
-            metadata attachment-copy chapter-no-trim video-metadata input-csp sub-source lossless lowlatency",
+            metadata attachment-copy chapter-no-trim video-metadata input-csp sub-source",
             .UndocumentedSwitches = "",
             .Package = Package.NVEncC,
             .CodeFile = Path.Combine(Folder.Startup.Parent, "Encoding", "nvenc.vb")
@@ -354,7 +354,7 @@ Public Class NVEnc
                          "CQP: Constant QP",
                          "CBR: Constant Bitrate",
                          "VBR: Variable Bitrate"},
-            .VisibleFunc = Function() Tune.ValueText <> "lossless",
+            .VisibleFunc = Function() Not Lossless.Value,
             .ArgsFunc = AddressOf GetModeArgs,
             .ImportAction = Sub(param, arg)
                                 If Mode.Switches.Contains(param) Then
@@ -513,6 +513,11 @@ Public Class NVEnc
         Property AQ As New BoolParam With {
             .Switch = "--aq",
             .Text = "Adaptive Quantization (Spatial)"}
+
+        Property Lossless As New BoolParam With {
+            .Switch = "--lossless",
+            .Text = "Lossless",
+            .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"}
 
         Property BFrames As New NumParam With {
             .Switch = "--bframes",
@@ -758,7 +763,8 @@ Public Class NVEnc
                         VbvBufSize, MaxBitrate,
                         AQ,
                         New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() AQ.Value},
-                        New BoolParam With {.Switch = "--aq-temporal", .Text = "Adaptive Quantization (Temporal)"})
+                        New BoolParam With {.Switch = "--aq-temporal", .Text = "Adaptive Quantization (Temporal)"},
+                        Lossless)
                     Add("Slice Decision",
                         New OptionParam With {.Switch = "--direct", .Text = "B-Direct Mode", .Options = {"Automatic", "None", "Spatial", "Temporal"}, .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New OptionParam With {.Switch = "--bref-mode", .Text = "B-Frame Ref. Mode", .Options = {"Auto", "Disabled", "Each", "Middle"}},
@@ -905,7 +911,8 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--output-buf", .Text = "Output Buffer", .Options = {"8", "16", "32", "64", "128"}},
                         New OptionParam With {.Switch = "--output-thread", .Text = "Output Thread", .Options = {"Automatic", "Disabled", "One Thread"}, .Values = {"-1", "0", "1"}},
                         New NumParam With {.Switch = "--perf-monitor-interval", .Init = 500, .Config = {50, Integer.MaxValue}, .Text = "Perf. Mon. Interval"},
-                        New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"})
+                        New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"},
+                        New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"})
                     Add("Statistic",
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error", "Quiet"}},
                         New OptionParam With {.Switch = "--disable-nvml", .Text = "NVML GPU Monitoring", .Options = {"Enabled NVML (default)", "Disable NVML when system has one CUDA devices", "Always disable NVML"}, .IntegerValue = True},

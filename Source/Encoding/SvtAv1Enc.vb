@@ -32,6 +32,33 @@ Public Class SvtAv1Enc
         End Set
     End Property
 
+    Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
+        Get
+            If Not Params.PsyDolbyVisionRpu.Visible Then Return True
+            Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.PsyDolbyVisionRpu.Switch)?.Value)
+        End Get
+    End Property
+
+    Overrides ReadOnly Property IsUnequalResizingAllowed As Boolean
+        Get
+            If Not Params.PsyDolbyVisionRpu.Visible Then Return True
+            Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.PsyDolbyVisionRpu.Switch)?.Value)
+        End Get
+    End Property
+
+    Overrides ReadOnly Property DolbyVisionMetadataPath As String
+        Get
+            If Not Params.PsyDolbyVisionRpu.Visible Then Return Nothing
+            Return Params.GetStringParam(Params.PsyDolbyVisionRpu.Switch)?.Value
+        End Get
+    End Property
+
+    Overrides ReadOnly Property Hdr10PlusMetadataPath As String
+        Get
+            Return Nothing
+        End Get
+    End Property
+
     Overrides ReadOnly Property OutputExt As String
         Get
             Return "ivf"

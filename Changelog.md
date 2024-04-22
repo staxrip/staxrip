@@ -21,6 +21,7 @@ v2.38.2 (not published yet)
 - NVEncC: Fix "--vmaf" parameter usage
 - NVEncC: Fix "--tune" parameter
 - NVEncC: Bring back "--lossless" and "--lowlatency" parameters as they are not covered by new "--tune" modes
+- SvtAv1EncApp: Extend SVT-AV1-PSY-Support
 
 
 v2.38.1 (not published)

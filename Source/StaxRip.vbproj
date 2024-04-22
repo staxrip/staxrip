@@ -212,6 +212,7 @@
     </Compile>
     <Compile Include="General\AsyncStreamReader.vb" />
     <Compile Include="General\Documentation.vb" />
+    <Compile Include="General\DolbyVisionMetadataFile.vb" />
     <Compile Include="General\Extras.vb" />
     <Compile Include="General\Thumbnailer.vb" />
     <Compile Include="Video\FrameServer.vb" />

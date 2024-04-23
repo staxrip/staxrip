@@ -71,6 +71,7 @@ Public Class ApplicationSettings
     Public PreviewFormBorderStyle As FormBorderStyle = FormBorderStyle.Sizable
     Public PreviewSize As Integer = 70
     Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.BelowNormal
+    Public ProgressHighlighting As Boolean = True
     Public ProgressReformatting As Boolean = True
     Public ProjectsMruNum As Integer = 10
     Public RecentFramePositions As List(Of String)

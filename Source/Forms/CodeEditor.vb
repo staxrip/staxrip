@@ -587,7 +587,7 @@ Public Class CodeEditor
             tbName.Dock = DockStyle.Top
             tbName.Margin = New Padding(0, 0, 0, 0)
 
-            rtbScript = New RichTextBoxEx(False)
+            rtbScript = New RichTextBoxEx(False, False)
             rtbScript.EnableAutoDragDrop = False
             rtbScript.Dock = DockStyle.Fill
             rtbScript.WordWrap = False

@@ -917,6 +917,7 @@ Namespace UI
         <Browsable(False)>
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property BlockPaint As Boolean
+        ReadOnly Property Transparent As Boolean
 
         Public Property BackReadonlyColor As Color
             Get
@@ -976,16 +977,22 @@ Namespace UI
         Public Event AfterThemeApplied(text As String, theme As Theme)
 
         Sub New()
-            MyClass.New(True)
+            MyClass.New(True, False)
         End Sub
 
-        Sub New(createMenu As Boolean)
+        Sub New(createMenu As Boolean, transparent As Boolean)
             If createMenu Then
                 InitMenu()
             End If
 
             If VisualStyleInformation.IsEnabledByUser Then
                 BorderStyle = BorderStyle.None
+            End If
+
+            If transparent Then
+                SetStyle(ControlStyles.Opaque, True)
+                SetStyle(ControlStyles.OptimizedDoubleBuffer, False)
+                Me.Transparent = transparent
             End If
 
             ApplyTheme()
@@ -1021,6 +1028,17 @@ Namespace UI
             RaiseEvent AfterThemeApplied(Nothing, theme)
         End Sub
 
+        Protected Overrides ReadOnly Property CreateParams As CreateParams
+            Get
+                Dim parms = MyBase.CreateParams
+
+                If Transparent Then
+                    parms.ExStyle = parms.ExStyle Or &H20  'Turn on WS_EX_TRANSPARENT
+                End If
+
+                Return parms
+            End Get
+        End Property
         Sub InitMenu()
             If DesignHelp.IsDesignMode Then
                 Exit Sub
@@ -3412,11 +3430,21 @@ Namespace UI
         Inherits Control
 
         Property ProgressColor As Color
+        Property Rtb As RichTextBoxEx
 
         Sub New()
             SetStyle(ControlStyles.ResizeRedraw, True)
             SetStyle(ControlStyles.Selectable, False)
             SetStyle(ControlStyles.OptimizedDoubleBuffer, True)
+
+            Rtb = New RichTextBoxEx(False, True) With {
+                .BorderStyle = BorderStyle.None,
+                .Dock = DockStyle.Fill,
+                .Font = g.GetCodeFont(9),
+                .Padding = New Padding(5, 5, 5, 0)
+            }
+
+            Controls.Add(Rtb)
 
             ApplyTheme()
 
@@ -3437,14 +3465,14 @@ Namespace UI
         End Sub
 
         Sub ApplyTheme(theme As Theme)
-            If DesignHelp.IsDesignMode Then
-                Exit Sub
-            End If
+            If DesignHelp.IsDesignMode Then Exit Sub
 
             SuspendLayout()
             BackColor = theme.General.Controls.LabelProgressBar.BackColor
             ForeColor = theme.General.Controls.LabelProgressBar.ForeColor
             ProgressColor = theme.General.Controls.LabelProgressBar.ProgressColor
+
+            Rtb.ForeColor = theme.General.Controls.LabelProgressBar.ForeColor
             ResumeLayout()
         End Sub
 

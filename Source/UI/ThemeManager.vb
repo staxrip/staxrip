@@ -262,7 +262,7 @@
                     .LabelProgressBar = New ControlsThemeColors.LabelProgressBarThemeColors() With {
                         .BackColor = _controlBackColor,
                         .ForeColor = _foreColor.AddLuminance(0.1),
-                        .ProgressColor = _backSelectedColor.AddSaturation(0.25).AddLuminance(-0.065)
+                        .ProgressColor = _backSelectedColor.AddSaturation(0.25).AddLuminance(-0.125)
                     },
                     .ListBox = New ControlsThemeColors.ListBoxThemeColors() With {
                         .BackColor = _controlBackColor,
@@ -518,6 +518,14 @@
                     .EncoderBackColor = General.Controls.RichTextBox.BackColor,
                     .EncoderForeColor = _outputHighlightingStrongForeColor.SetHue(205).AddLuminance(0.05),
                     .EncoderFontStyles = {FontStyle.Italic, FontStyle.Bold}
+                },
+                .ProgressHighlighting = New ProcessingFormThemeColors.ProgressHighlightingThemeColors() With {
+                        .PercentForeColor = General.Controls.LabelProgressBar.ForeColor.SetHue(_backSelectedColor.H + 180).AddSaturation(0.5).AddLuminance(-0.1),
+                        .FramesForeColor = .PercentForeColor.AddHue(15),
+                        .FpsForeColor = .PercentForeColor.AddHue(45),
+                        .BitrateForeColor = .PercentForeColor.AddHue(30),
+                        .SizeForeColor = .PercentForeColor.AddHue(0),
+                        .TimeForeColor = .PercentForeColor.AddHue(15)
                 }
             }
 

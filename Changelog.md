@@ -17,7 +17,7 @@ v2.4x.0 (not published yet)
 v2.39.0 (not published yet)
 ====================
 
-- ...
+- UI: Introduce Progress Highlighting
 - Update tools
     - ...
 - Update AviSynth+ plugins

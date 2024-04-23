@@ -15,7 +15,8 @@ Public Class ProcController
     Private StatusAction As Action(Of String) = New Action(Of String)(AddressOf ProgressHandler)
     Private ReadOnly CustomProgressInfoSeparator As String = ", "
     Private UseFirstExpression As Boolean = True
-    Private FailCounter As Integer = 0
+    Private _progressHighlightingFailCounter As Integer = 0
+    Private _progressReformattingFailCounter As Integer = 0
     Private _projectScriptFrameRate As Double = -1.0
     Private _lastHighlightedText As String = ""
     Private _triggerWhileProcessing As Boolean = False
@@ -322,17 +323,18 @@ Public Class ProcController
     End Sub
 
     Sub ProgressHandler(value As String)
-        SetProgressText(value)
+        SetProgressText(value, ThemeManager.CurrentTheme)
         SetProgress(value)
     End Sub
 
-    Sub SetProgressText(value As String)
+    Sub SetProgressText(value As String, theme As Theme)
         If Proc.IsSilent Then Exit Sub
 
+        If theme Is Nothing Then theme = ThemeManager.CurrentTheme
         value = value.Trim()
 
         If s.ProgressReformatting AndAlso value <> "" Then
-            If FailCounter < 64 Then
+            If _progressReformattingFailCounter < 64 Then
                 Dim pattern As String
                 Dim match As Match
 
@@ -355,7 +357,7 @@ Public Class ProcController
                             value = $"[{match.Groups(1).Value,2}{match.Groups(2).Value}%] {match.Groups(3).Value.PadLeft(match.Groups(4).Value.Length)}/{match.Groups(4).Value} frames @ {match.Groups(5).Value}{match.Groups(6).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(7).Value,4} {match.Groups(9).Value}{CustomProgressInfoSeparator}{match.Groups(12).Value}{match.Groups(13).Value} {match.Groups(14).Value} ({match.Groups(15).Value} {match.Groups(17).Value}){CustomProgressInfoSeparator}{match.Groups(10).Value} (-{match.Groups(11).Value})"
                         Else
                             UseFirstExpression = Not UseFirstExpression
-                            FailCounter += 1
+                            _progressReformattingFailCounter += 1
                         End If
                     Else
                         'Mod by DJATOM since x264 161, using header
@@ -375,7 +377,7 @@ Public Class ProcController
                             value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(8).Value}.{match.Groups(9).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(11).Value,4} kb/s{CustomProgressInfoSeparator}{match.Groups(16).Value} {match.Groups(18).Value} ({match.Groups(20).Value}.{match.Groups(21).Value} {match.Groups(22).Value}){CustomProgressInfoSeparator}{match.Groups(13).Value} (-{match.Groups(14).Value})"
                         Else
                             UseFirstExpression = Not UseFirstExpression
-                            FailCounter += 1
+                            _progressReformattingFailCounter += 1
                         End If
                     End If
                 ElseIf Proc.Package Is Package.x265 Then
@@ -397,7 +399,7 @@ Public Class ProcController
                             value = $"[{match.Groups(1).Value,2}{match.Groups(2).Value}%] {match.Groups(3).Value.PadLeft(match.Groups(4).Value.Length)}/{match.Groups(4).Value} frames @ {match.Groups(5).Value}{match.Groups(6).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(7).Value,4} {match.Groups(9).Value}{CustomProgressInfoSeparator}{match.Groups(12).Value}{match.Groups(13).Value} {match.Groups(14).Value} ({match.Groups(15).Value} {match.Groups(17).Value}){CustomProgressInfoSeparator}{match.Groups(10).Value} (-{match.Groups(11).Value})"
                         Else
                             UseFirstExpression = Not UseFirstExpression
-                            FailCounter += 1
+                            _progressReformattingFailCounter += 1
                         End If
                     Else
                         'Mod by DJATOM since x265 3.4+65, including progress-frames
@@ -417,7 +419,7 @@ Public Class ProcController
                             value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(7).Value.Length)}{match.Groups(6).Value}/{match.Groups(7).Value} frames @ {match.Groups(10).Value}.{match.Groups(11).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(14).Value,4} {match.Groups(16).Value}{CustomProgressInfoSeparator}{match.Groups(19).Value} {match.Groups(21).Value} ({match.Groups(22).Value} {match.Groups(24).Value}){CustomProgressInfoSeparator}{match.Groups(17).Value} (-{match.Groups(18).Value})"
                         Else
                             UseFirstExpression = Not UseFirstExpression
-                            FailCounter += 1
+                            _progressReformattingFailCounter += 1
                         End If
                     End If
                 ElseIf Proc.Package Is Package.SvtAv1EncApp Then
@@ -447,15 +449,90 @@ Public Class ProcController
 
                         value = $"{percentString} {match.Groups(1).Value.PadLeft(match.Groups(2).Value.Length)}/{match.Groups(2).Value.Trim()} frames @ {match.Groups(3).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(4).Value,4} kb/s{CustomProgressInfoSeparator}{match.Groups(7).Value,5} {match.Groups(8).Value} ({match.Groups(9).Value} {match.Groups(10).Value}){CustomProgressInfoSeparator}{match.Groups(5).Value} ({match.Groups(6).Value})"
                     Else
-                        FailCounter += 1
+                        _progressReformattingFailCounter += 1
                     End If
                 End If
             End If
         Else
-            FailCounter = 0
+            _progressReformattingFailCounter = 0
         End If
 
-        ProgressBar.Text = value
+
+        If s.ProgressHighlighting Then
+            ProgressBar.Text = ""
+            ProgressBar.Rtb.Text = value
+
+            If _progressHighlightingFailCounter < 64 Then
+                Dim format = Sub(index As Integer, length As Integer, foreColor As ColorHSL, fontStyles() As FontStyle)
+                                 ProgressBar.Rtb.Select(index, length)
+                                 ProgressBar.Rtb.SelectionColor = foreColor
+
+                                 If fontStyles?.Length > 0 Then
+                                     ProgressBar.Rtb.SelectionFont = New Font(ProgressBar.Rtb.Font, fontStyles.Aggregate(ProgressBar.Rtb.Font.Style, Function(a, n) a Or n))
+                                 End If
+                             End Sub
+                Dim gr As Capture
+                Dim match As Match
+                Dim matches As MatchCollection
+                Dim noMatch As Boolean = True
+                Dim ph = theme.ProcessingForm.ProgressHighlighting
+
+                ProgressBar.Rtb.SuspendLayout()
+
+                match = Regex.Match(value, "(\d+(?:\.\d+)?%)", RegexOptions.IgnoreCase)
+                If match.Success Then
+                    noMatch = False
+                    gr = match.Groups(1)
+                    format(gr.Index, gr.Length, ph.PercentForeColor, Nothing)
+                End If
+
+                match = Regex.Match(value, "(\d+/\d+\s*frames)", RegexOptions.IgnoreCase)
+                If match.Success Then
+                    noMatch = False
+                    gr = match.Groups(1)
+                    format(gr.Index, gr.Length, ph.FramesForeColor, Nothing)
+                End If
+
+                match = Regex.Match(value, "@\s*(\d+(?:\.\d+)?\s*fps)", RegexOptions.IgnoreCase)
+                If match.Success Then
+                    noMatch = False
+                    gr = match.Groups(1)
+                    format(gr.Index, gr.Length, ph.FpsForeColor, Nothing)
+                End If
+
+                match = Regex.Match(value, "(\d+(?:\.\d+)?\s*(kb/s|kbits/s|kbps|mb/s|mbits/s|mbps))", RegexOptions.IgnoreCase)
+                If match.Success Then
+                    noMatch = False
+                    gr = match.Groups(1)
+                    format(gr.Index, gr.Length, ph.BitrateForeColor, Nothing)
+                End If
+
+                matches = Regex.Matches(value, "(\d+(?:\.\d+)?\s*(kb|mb))(?:[^a-z/0-9]|$)", RegexOptions.IgnoreCase)
+                If matches.Count > 0 Then
+                    noMatch = False
+                    Dim m = matches(matches.Count - 1)
+                    gr = m.Groups(1)
+                    format(gr.Index, gr.Length, ph.SizeForeColor, Nothing)
+                End If
+
+                'match = Regex.Match(value, "[^-](\d+:\d+:\d+)", RegexOptions.IgnoreCase)
+                matches = Regex.Matches(value, "(-?\d+:\d+:\d+)", RegexOptions.IgnoreCase)
+                If matches.Count > 0 Then
+                    noMatch = False
+                    Dim m = matches(matches.Count - 1)
+                    gr = m.Groups(1)
+                    format(gr.Index, gr.Length, ph.TimeForeColor, Nothing)
+                End If
+
+                ProgressBar.Rtb.ResumeLayout()
+
+                If noMatch Then _progressHighlightingFailCounter += 1
+            End If
+        Else
+            _progressHighlightingFailCounter = 0
+            ProgressBar.Rtb.Text = ""
+            ProgressBar.Text = value
+        End If
     End Sub
 
     Sub SetProgress(value As String)

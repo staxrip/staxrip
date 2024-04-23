@@ -6739,7 +6739,7 @@ Public Class MainForm
         If proj Is Nothing Then Exit Sub
         If proj.Script Is Nothing Then Exit Sub
 
-        Dim info = If(proj.Script.Info.FrameRate > 0, proj.Script.Info, proj.Script.GetInfo())
+        Dim info = proj.Script.GetInfo()
         Dim frameCount = 0
         Dim frameRate = 0D
         Dim seconds = 0

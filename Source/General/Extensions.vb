@@ -17,9 +17,7 @@ Module StringExtensions
 
     <Extension>
     Function TrimTrailingSeparator(instance As String) As String
-        If instance = "" Then
-            Return ""
-        End If
+        If instance = "" Then Return ""
 
         If instance.EndsWith(Separator) AndAlso Not instance.Length <= 3 Then
             Return instance.TrimEnd(Separator)
@@ -30,9 +28,7 @@ Module StringExtensions
 
     <Extension()>
     Function Parent(path As String) As String
-        If path = "" Then
-            Return ""
-        End If
+        If path = "" Then Return ""
 
         Return IO.Path.GetDirectoryName(path)
     End Function
@@ -240,9 +236,7 @@ Module StringExtensions
     End Function
 
     Function GetExt(filepath As String, includeDot As Boolean) As String
-        If filepath = "" Then
-            Return ""
-        End If
+        If filepath = "" Then Return ""
 
         Dim ext = Path.GetExtension(filepath).ToLowerInvariant()
         If Not includeDot Then
@@ -253,13 +247,10 @@ Module StringExtensions
 
     <Extension()>
     Function Base(instance As String) As String
-        If instance = "" Then
-            Return ""
-        End If
+        If instance = "" Then Return ""
+        If Not instance.Contains(".") Then Return ""
 
-        Dim ret = instance
-
-        Return Path.GetFileNameWithoutExtension(ret)
+        Return Path.GetFileNameWithoutExtension(instance)
     End Function
 
     <Extension()>
@@ -325,11 +316,9 @@ Module StringExtensions
 
     <Extension()>
     Function DirName(instance As String) As String
-        If instance = "" Then
-            Return ""
-        End If
+        If instance = "" Then Return ""
 
-        Return Path.GetDirectoryName(instance)
+        Return Path.GetFileName(Path.GetDirectoryName(instance))
     End Function
 
     <Extension()>

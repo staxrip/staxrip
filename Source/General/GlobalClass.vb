@@ -756,7 +756,7 @@ Public Class GlobalClass
     End Function
 
     Function GetSourceBase() As String
-        Return If(New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp"), "temp", p.SourceFile.Base)
+        Return If(p.TempDir <> "" AndAlso New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp"), "temp", p.SourceFile.Base)
     End Function
 
     Sub ShowCode(title As String, content As String, Optional find As String = Nothing, Optional wordwrap As Boolean = False)

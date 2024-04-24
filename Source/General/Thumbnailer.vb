@@ -144,7 +144,7 @@ Public Class Thumbnailer
 
         Dim imageFilePathWithoutExtension = settings.GetString("ImageFilePathWithoutExtension", "")
         Dim imageFilePath = Macro.Expand(
-                                    If(String.IsNullOrWhiteSpace(imageFilePathWithoutExtension), "%target_dir%%target_name%_Thumbnail", imageFilePathWithoutExtension),
+                                    If(String.IsNullOrWhiteSpace(imageFilePathWithoutExtension), $"%target_dir%{Path.DirectorySeparatorChar}%target_name%_Thumbnail", imageFilePathWithoutExtension),
                                     If(String.IsNullOrWhiteSpace(proj?.SourceFile) OrElse String.IsNullOrWhiteSpace(proj.TargetFile), New Project() With {.SourceFile = pSourcePath, .TargetFile = pSourcePath}, proj)
                             ) + "." + imageFileFormat
 

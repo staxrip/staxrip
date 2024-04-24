@@ -5371,7 +5371,7 @@ Public Class MainForm
             tm.Edit.Text = p.TempDir
             tm.Edit.SaveAction = Sub(value) p.TempDir = value
             tm.AddMenu("Browse Folder...", tempDirFunc)
-            tm.AddMenu("Source File Directory", "%source_dir%%source_name%_temp")
+            tm.AddMenu("Source File Directory", $"%source_dir%{Path.DirectorySeparatorChar}%source_name%_temp")
             tm.AddMenu("Macros...", macroAction)
 
             l = ui.AddLabel(pathPage, "Default Thumbnails Path without extension:")
@@ -5383,8 +5383,8 @@ Public Class MainForm
             tm.Edit.Expand = True
             tm.Edit.Text = p.ThumbnailerSettings.GetString("ImageFilePathWithoutExtension", "")
             tm.Edit.SaveAction = Sub(value) p.ThumbnailerSettings.SetString("ImageFilePathWithoutExtension", value)
-            tm.AddMenu("Path of target file without extension + Postfix", "%target_dir%%target_name%_Thumbnail")
-            tm.AddMenu("Path of target file without extension", "%target_dir%%target_name%")
+            tm.AddMenu("Path of target file without extension + Postfix", $"%target_dir%{Path.DirectorySeparatorChar}%target_name%_Thumbnail")
+            tm.AddMenu("Path of target file without extension", $"%target_dir%{Path.DirectorySeparatorChar}%target_name%")
             tm.AddMenu("Macros...", macroAction)
 
 
@@ -6562,17 +6562,13 @@ Public Class MainForm
             form.PlaylistID = playlistID
 
             Dim workDir = playlistFolder.Parent.Parent
-
-            Dim title = InputBox.Show("Enter a short title used as filename",
-                                      playlistFolder.Parent.Parent.DirName)
-            If title = "" Then
-                Exit Sub
-            End If
+            Dim title = InputBox.Show("Enter a short title used as filename", playlistFolder.Parent.Parent.DirName)
+            If title = "" Then Exit Sub
 
             If p.TempDir <> "" Then
                 workDir = p.TempDir.Replace("%source_name%", title)
             Else
-                workDir += title
+                workDir = Path.Combine(workDir, title)
             End If
 
             If Not g.IsFixedDrive(workDir) Then

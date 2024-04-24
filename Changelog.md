@@ -17,6 +17,7 @@ v2.4x.0 (not published yet)
 v2.38.4 (2024-04-25)
 ====================
 
+- UI: Extend max number of frames used for auto-crop ([#1324](/../../issues/1324))
 - Internal: Fix Linux compatibility that caused issues with macros
 
 

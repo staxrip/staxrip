@@ -45,6 +45,7 @@ Public Class ApplicationSettings
     Public ExpandPreviewWindow As Boolean = True
     Public ApplicationExitMode As ApplicationExitMode = ApplicationExitMode.Regular
     Public FilterSetupProfiles As List(Of TargetVideoScript)
+    Public FirstRunOnVersion As KeyValuePair(Of String, DateTime) = New KeyValuePair(Of String, Date)(g.DefaultCommands.GetApplicationDetails(), DateTime.Now)
     Public FixFrameRate As Boolean = True
     Public HidePreviewButtons As Boolean
     Public IconFile As String

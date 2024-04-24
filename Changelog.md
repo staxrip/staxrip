@@ -17,6 +17,8 @@ v2.4x.0 (not published yet)
 v2.38.5 (2024-04-25)
 ====================
 
+- UI: Adjust StaxRip Update Check to perform cascade-like
+    - More frequent checks on new versions, less frequent checks the older the version gets
 - Internal: Fix Linux compatibility with macros and path handling
 
 

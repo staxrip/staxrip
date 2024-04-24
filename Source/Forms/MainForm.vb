@@ -7298,6 +7298,7 @@ Public Class MainForm
         CheckForWindows7()
         ShowChangelog(False)
         ProcessCommandLine(Environment.CommandLine)
+        StaxRipUpdate.SetFirstRunOnCurrentVersion()
         StaxRipUpdate.ShowUpdateQuestion()
         StaxRipUpdate.CheckForUpdateAsync(False, Environment.Is64BitProcess)
         g.RunTask(AddressOf g.LoadPowerShellScripts)

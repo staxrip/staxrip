@@ -14,6 +14,12 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.38.3 (2024-04-24)
+====================
+
+- Internal: Fix Linux compatibility that caused Blu-ray folders not being found anymore
+
+
 v2.38.2 (2024-04-24)
 ====================
 

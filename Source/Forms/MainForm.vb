@@ -6414,15 +6414,15 @@ Public Class MainForm
                 s.Storage.SetString("last blu-ray source folder", dialog.SelectedPath.FixDir)
                 Dim srcPath = dialog.SelectedPath.FixDir
 
-                If Directory.Exists(srcPath + "BDMV") Then
+                If Directory.Exists(Path.Combine(srcPath, "BDMV")) Then
                     srcPath = Path.Combine(srcPath, "BDMV")
                 End If
 
-                If Directory.Exists(srcPath + "PLAYLIST") Then
+                If Directory.Exists(Path.Combine(srcPath, "PLAYLIST")) Then
                     srcPath = Path.Combine(srcPath, "PLAYLIST")
                 End If
 
-                If New DirectoryInfo(srcPath).Name IsNot "PLAYLIST" Then
+                If New DirectoryInfo(srcPath).Name <> "PLAYLIST" Then
                     MsgWarn("No playlist directory found.")
                     Exit Sub
                 End If

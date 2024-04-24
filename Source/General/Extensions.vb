@@ -376,11 +376,10 @@ Module StringExtensions
 
     <Extension()>
     Function FixDir(instance As String) As String
-        If instance = "" Then
-            Return ""
-        End If
+        If instance = "" Then Return ""
+        If instance = Macro.Expand(instance) Then Return New DirectoryInfo(instance).FullName
 
-        Return New DirectoryInfo(instance).FullName
+        Return instance
     End Function
 
     <Extension()>

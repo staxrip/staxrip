@@ -14,6 +14,12 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.38.4 (2024-04-25)
+====================
+
+- Internal: Fix Linux compatibility that caused issues with macros
+
+
 v2.38.3 (2024-04-24)
 ====================
 

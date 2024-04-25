@@ -32,17 +32,10 @@ Module Module1
                     End Using
                 Next
 
-                Dim leftCrops = crops.SelectMany(Function(arg) arg.Left).OrderBy(Function(arg) arg)
-                Dim left = leftCrops(leftCrops.Count \ 10)
-
-                Dim topCrops = crops.SelectMany(Function(arg) arg.Top).OrderBy(Function(arg) arg)
-                Dim top = topCrops(topCrops.Count \ 10)
-
-                Dim rightCrops = crops.SelectMany(Function(arg) arg.Right).OrderBy(Function(arg) arg)
-                Dim right = rightCrops(rightCrops.Count \ 10)
-
-                Dim bottomCrops = crops.SelectMany(Function(arg) arg.Bottom).OrderBy(Function(arg) arg)
-                Dim bottom = bottomCrops(bottomCrops.Count \ 10)
+                Dim left = crops.SelectMany(Function(arg) arg.Left).Min()
+                Dim top = crops.SelectMany(Function(arg) arg.Top).Min()
+                Dim right = crops.SelectMany(Function(arg) arg.right).Min()
+                Dim bottom = crops.SelectMany(Function(arg) arg.Bottom).Min()
 
                 Console.WriteLine($"{left},{top},{right},{bottom}")
             End Using

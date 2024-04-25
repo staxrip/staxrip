@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.38.7 (not published yet)
+v2.38.7 (2024-05-02)
 ====================
 
 - UI: Fix import and setting of encoder parameters

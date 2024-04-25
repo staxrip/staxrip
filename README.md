@@ -59,7 +59,6 @@ Any contribution is highly appreciated!
 - Feel free to join in the [StaxRip Community on Discord](https://discord.gg/uz8pVR79Bd) , where you can chat and share knowledge with us and other StaxRip users. 
 This is the way to go if you have questions regarding settings, usage, etc.
 - Usage questions can also be asked on the *StaxRip threads* on
-  - [Doom9](https://forum.doom9.org/showthread.php?t=172068)
   - [VideoHelp](https://forum.videohelp.com/threads/369913-StaxRip-support-thread)
 
   although no developer or contributor is active there anymore.

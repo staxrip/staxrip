@@ -1589,7 +1589,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "eedi3_resize16",
             .Filename = "eedi3_resize16.avsi",
-            .Location = "Plugins\AVS\EEDI3",
+            .Location = IO.Path.Combine("Plugins", "AVS", "EEDI3"),
             .Description = "eedi3 based resizing script that allows to resize to arbitrary resolutions while maintaining the correct image center and chroma location.",
             .HelpFilename = "EEDI3 - Readme.txt",
             .WebURL = "http://avisynth.nl/index.php/eedi3",
@@ -3120,17 +3120,16 @@ Public Class Package
     End Property
 
     Function GetPathFromLocation(dir As String) As String
-        If dir = "" Then
-            Return Nothing
-        End If
+        If dir = "" Then Return Nothing
+
         If Not IO.Path.IsPathRooted(dir) Then
             dir = IO.Path.Combine(Folder.Apps, dir)
         End If
 
         dir = New DirectoryInfo(dir).FullName
 
-        If File.Exists(IO.Path.Combine(dir.FixDir, Filename)) Then
-            Return IO.Path.Combine(dir.FixDir, Filename)
+        If File.Exists(IO.Path.Combine(dir, Filename)) Then
+            Return IO.Path.Combine(dir, Filename)
         End If
     End Function
 
@@ -3215,10 +3214,10 @@ Public Class Package
     End Function
 
     Shared Function FindInPathEnvVar(filename As String) As String
-        Dim paths = Environment.GetEnvironmentVariable("path").SplitNoEmpty(IO.Path.PathSeparator)
+        Dim paths = Environment.GetEnvironmentVariable("path").SplitNoEmpty(";")
 
         For Each folder In paths
-            Dim filepath = IO.Path.Combine(folder.FixDir, filename)
+            Dim filepath = IO.Path.Combine(folder, filename)
 
             If File.Exists(filepath) AndAlso Not New FileInfo(filepath).Length = 0 Then
                 Return filepath

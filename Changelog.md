@@ -20,6 +20,7 @@ v2.38.6 (not published yet)
 - Log: Extend logging for Dolby Vision metadata files
 - UI: Show TaskDialog timeout when set
 - UI: Fix AutoCrop not working properly on videos with multiple aspect ratios ([#1324](/../../issues/1324))
+- Internal: Fix Linux compatibility a bit more
 
 
 v2.38.5 (2024-04-25)

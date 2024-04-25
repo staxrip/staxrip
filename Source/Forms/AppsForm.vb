@@ -1088,7 +1088,7 @@ Public Class AppsForm
         Try
             'no EnvironmentVariableTarget.User on unix systems, Machine would require admin permissions. process is not persistet -> conditional check to not break windows behaviour.
             Dim pathTarget = If(RuntimeInformation.IsOSPlatform(OSPlatform.Windows), EnvironmentVariableTarget.User, EnvironmentVariableTarget.Process)
-            Dim dir = CurrentPackage.Directory.FixDir
+            Dim dir = CurrentPackage.Directory
             Dim pathVar = If(Environment.GetEnvironmentVariable("path", pathTarget), "")
             Dim pathItems = pathVar.Split(New String() {Path.PathSeparator}, StringSplitOptions.RemoveEmptyEntries).ToList()
 

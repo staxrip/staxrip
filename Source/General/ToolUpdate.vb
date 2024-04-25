@@ -75,7 +75,7 @@ Public Class ToolUpdate
             Exit Sub
         End If
 
-        ExtractDir = Path.Combine(DownloadFile.Dir, DownloadFile.Base.FixDir)
+        ExtractDir = Path.Combine(DownloadFile.Dir, DownloadFile.Base)
 
         Using pr As New Process
             pr.StartInfo.FileName = Package.SevenZip.Path
@@ -95,8 +95,6 @@ Public Class ToolUpdate
             Dim subDirs As New List(Of String)
 
             For Each subDir In Directory.GetDirectories(ExtractDir, "*", SearchOption.AllDirectories)
-                subDir = subDir.FixDir
-
                 If (Path.Combine(subDir, Package.Filename)).FileExists AndAlso Not Ignore(subDir) Then
                     subDirs.Add(subDir)
                 End If

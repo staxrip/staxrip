@@ -17,13 +17,13 @@ Imports ManagedCuda
 Public Class Folder
     Shared ReadOnly Property Desktop As String
         Get
-            Return Environment.GetFolderPath(Environment.SpecialFolder.Desktop).FixDir
+            Return Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
         End Get
     End Property
 
     Shared ReadOnly Property Fonts As String
         Get
-            Return Environment.GetFolderPath(Environment.SpecialFolder.Fonts).FixDir
+            Return Environment.GetFolderPath(Environment.SpecialFolder.Fonts)
         End Get
     End Property
 
@@ -32,7 +32,7 @@ Public Class Folder
     Shared ReadOnly Property Startup As String
         Get
             If StartupValue Is Nothing Then
-                StartupValue = Application.StartupPath.FixDir
+                StartupValue = Application.StartupPath
             End If
 
             Return StartupValue
@@ -41,49 +41,49 @@ Public Class Folder
 
     Shared ReadOnly Property Temp As String
         Get
-            Return Path.GetTempPath.FixDir
+            Return Path.GetTempPath
         End Get
     End Property
 
     Shared ReadOnly Property System As String
         Get
-            Return Environment.SystemDirectory.FixDir
+            Return Environment.SystemDirectory
         End Get
     End Property
 
     Shared ReadOnly Property Programs As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.ProgramFiles).FixDir
+            Return GetFolderPath(Environment.SpecialFolder.ProgramFiles)
         End Get
     End Property
 
     Shared ReadOnly Property Home As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.UserProfile).FixDir
+            Return GetFolderPath(Environment.SpecialFolder.UserProfile)
         End Get
     End Property
 
     Shared ReadOnly Property AppDataCommon As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.CommonApplicationData).FixDir
+            Return GetFolderPath(Environment.SpecialFolder.CommonApplicationData)
         End Get
     End Property
 
     Shared ReadOnly Property AppDataLocal As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.LocalApplicationData).FixDir
+            Return GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
         End Get
     End Property
 
     Shared ReadOnly Property AppDataRoaming As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.ApplicationData).FixDir
+            Return GetFolderPath(Environment.SpecialFolder.ApplicationData)
         End Get
     End Property
 
     Shared ReadOnly Property Windows As String
         Get
-            Return GetFolderPath(Environment.SpecialFolder.Windows).FixDir
+            Return GetFolderPath(Environment.SpecialFolder.Windows)
         End Get
     End Property
 
@@ -103,7 +103,7 @@ Public Class Folder
                 End If
             Else
                 If p.Script.IsAviSynth Then
-                    Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+").FixDir
+                    Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+")
                 Else
                     Return Path.Combine(Folder.AppDataRoaming, "VapourSynth", "plugins64")
                 End If
@@ -164,8 +164,6 @@ Public Class Folder
                             End If
                         End Try
                     End If
-
-                    dir = dir.FixDir
 
                     Dim scriptDir = Path.Combine(dir, "Scripts")
 

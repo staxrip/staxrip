@@ -5361,7 +5361,7 @@ Public Class MainForm
                                   Dim tempDir = g.BrowseFolder(p.TempDir)
 
                                   If tempDir <> "" Then
-                                      Return Path.Combine(tempDir.FixDir, "%source_name%_temp")
+                                      Return Path.Combine(tempDir, "%source_name%_temp")
                                   End If
                               End Function
 
@@ -5629,8 +5629,6 @@ Public Class MainForm
                 ui.Save()
 
                 If p.TempDir <> "" Then
-                    p.TempDir = p.TempDir.FixDir
-
                     'If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then
                     '    MsgWarn("Temp Files Folder", "The folder description, you have chosen, does not end with '_temp\'! " + BR2 +
                     '            "The folder description must end with '_temp\' in order to automatically delete the folder, otherwise no files are going to be deleted. " +
@@ -6411,7 +6409,7 @@ Public Class MainForm
             dialog.ShowNewFolderButton = False
 
             If dialog.ShowDialog = DialogResult.OK Then
-                s.Storage.SetString("last blu-ray source folder", dialog.SelectedPath.FixDir)
+                s.Storage.SetString("last blu-ray source folder", dialog.SelectedPath)
                 Dim srcPath = dialog.SelectedPath.FixDir
 
                 If Directory.Exists(Path.Combine(srcPath, "BDMV")) Then
@@ -6566,7 +6564,7 @@ Public Class MainForm
             If title = "" Then Exit Sub
 
             If p.TempDir <> "" Then
-                workDir = p.TempDir.Replace("%source_name%", title)
+                workDir = p.TempDir.Replace("%source_name%", title).FixDir
             Else
                 workDir = Path.Combine(workDir, title)
             End If
@@ -6577,7 +6575,7 @@ Public Class MainForm
                     dialog.SetSelectedPath(s.Storage.GetString("last blu-ray target folder").Parent)
 
                     If dialog.ShowDialog = DialogResult.OK Then
-                        workDir = dialog.SelectedPath.FixDir
+                        workDir = dialog.SelectedPath
                     Else
                         Exit Sub
                     End If

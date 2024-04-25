@@ -366,7 +366,7 @@ Module StringExtensions
     <Extension()>
     Function FixDir(instance As String) As String
         If instance = "" Then Return ""
-        If instance = Macro.Expand(instance) Then Return New DirectoryInfo(instance).FullName
+        If instance.Last() = Path.DirectorySeparatorChar Then Return instance.Substring(0, instance.Length - 1)
 
         Return instance
     End Function

@@ -72,7 +72,7 @@ Public Class DolbyVisionMetadataFile
         Me.Path = filePath
         Me._lastWriteTime = File.GetLastWriteTimeUtc(filePath)
 
-        WriteLevel5Export(False)
+        WriteLevel5Export(True, False)
         ReadLevel5Export()
     End Sub
 
@@ -182,7 +182,7 @@ Public Class DolbyVisionMetadataFile
         End Try
     End Sub
 
-    Public Sub WriteLevel5Export(Optional overwrite As Boolean = False)
+    Public Sub WriteLevel5Export(Optional logContent As Boolean = True, Optional overwrite As Boolean = False)
         If Not Path?.FileExists() Then Return
         If Not overwrite AndAlso Level5JsonFilePath.FileExists() Then Return
 
@@ -207,11 +207,19 @@ Public Class DolbyVisionMetadataFile
             g.ShowException(ex)
             Throw New AbortException
         Finally
+            If logContent Then
+                Dim exists = File.Exists(Level5JsonFilePath)
+                Dim content = If(exists, File.ReadAllText(Level5JsonFilePath), "No file created!")
+                
+                Log.WriteHeader($"Content of {IO.Path.GetFileName(Level5JsonFilePath)}")
+                Log.WriteLine(content)
+            End If
+
             Log.Save()
         End Try
     End Sub
 
-    Public Sub WriteEditorConfigFile(offset As Padding, Optional overwrite As Boolean = True)
+    Public Sub WriteEditorConfigFile(offset As Padding, Optional logContent As Boolean = True, Optional overwrite As Boolean = True)
         If Not Level5JsonFilePath?.FileExists() Then Return
         If Not overwrite AndAlso EditorConfigFilePath.FileExists() Then Return
         If offset = Padding.Empty Then Return
@@ -251,6 +259,14 @@ Public Class DolbyVisionMetadataFile
             g.ShowException(ex)
             Throw New AbortException
         Finally
+            If logContent Then
+                Dim exists = File.Exists(EditorConfigFilePath)
+                Dim content = If(exists, File.ReadAllText(EditorConfigFilePath), "No file created!")
+                
+                Log.WriteHeader($"Content of {IO.Path.GetFileName(EditorConfigFilePath)}")
+                Log.WriteLine(content)
+            End If
+
             Log.Save()
         End Try
     End Sub

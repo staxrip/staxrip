@@ -628,7 +628,7 @@ Public Class CropForm
                       End Sub)
 
         tbPosition.Value = 0
-        UpdateAll()
+        TrackLength_Scroll()
     End Sub
 
     <Command("Crops until the proper aspect ratio is found.")>

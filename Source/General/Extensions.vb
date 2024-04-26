@@ -317,6 +317,14 @@ Module StringExtensions
     Function DirName(instance As String) As String
         If instance = "" Then Return ""
 
+        If File.Exists(instance) Then
+            Return Path.GetFileName(Path.GetDirectoryName(instance))
+        ElseIf Directory.Exists(instance) Then 
+            Return Path.GetFileName(instance)
+        ElseIf Path.GetFileName(instance).Contains(".") Then
+            Return Path.GetFileName(Path.GetDirectoryName(instance))
+        End If
+        
         Return Path.GetFileName(Path.GetDirectoryName(instance))
     End Function
 

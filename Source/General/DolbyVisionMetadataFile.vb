@@ -4,6 +4,30 @@ Imports System.Text.RegularExpressions
 
 
 <Serializable>
+Public Class RpuPreset
+    Public ReadOnly Property Id As Integer = 0
+    Public ReadOnly Property Offset As New Padding(0)
+
+    Public Sub New(id As Integer, offset As Padding)
+        Me.Id = id
+        Me.Offset = offset
+    End Sub
+End Class
+
+<Serializable>
+Public Class RpuEdit
+    Public ReadOnly Property Id As Integer = 0
+    Public ReadOnly Property StartFrame As Integer
+    Public ReadOnly Property EndFrame As Integer
+
+    Public Sub New(id As Integer, startFrame As Integer, endFrame As Integer)
+        Me.Id = id
+        Me.StartFrame = startFrame
+        Me.EndFrame = endFrame
+    End Sub
+End Class
+
+<Serializable>
 Public Class DolbyVisionMetadataFile
     Private _autoCropThresholdBegin As Integer = 1000
     Private _autoCropThresholdEnd As Integer = 1000

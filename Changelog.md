@@ -19,6 +19,7 @@ v2.38.7 (not published yet)
 
 - UI: Fix import and setting of encoder parameters
 - VapourSynth: Fix potential wrong loading order of Python scripts
+- Internal: Small fixes, improvements, changes
 - Internal: Fix crash using Auto Crop on extremely short videos with Dolby Vision ([#1327](/../../issues/1327))
 - Internal: Fix ignoring of existing Dolby Vision metadata in temp folder
 - Internal: Fix Linux compatibility a bit more ([#1331](/../../issues/1331))
@@ -29,7 +30,7 @@ v2.38.6 (2024-04-26)
 
 - Log: Extend logging for Dolby Vision metadata files
 - UI: Show TaskDialog timeout when set
-- UI: Fix AutoCrop not working properly on videos with multiple aspect ratios ([#1324](/../../issues/1324))
+- UI: Fix Auto Crop not working properly on videos with multiple aspect ratios ([#1324](/../../issues/1324))
 - Internal: Fix Linux compatibility a bit more ([#1326](/../../issues/1326), [#1329](/../../issues/1329))
 
 
@@ -44,7 +45,7 @@ v2.38.5 (2024-04-25)
 v2.38.4 (2024-04-25)
 ====================
 
-- UI: Extend max number of frames used for auto-crop ([#1324](/../../issues/1324))
+- UI: Extend max number of frames used for Auto Crop ([#1324](/../../issues/1324))
 - Internal: Fix Linux compatibility that caused issues with macros
 
 

@@ -167,6 +167,7 @@ Namespace UI
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
             Me.tv.HideSelection = False
+            Me.tv.SelectOnMouseDown = True
             Me.tv.Location = New System.Drawing.Point(15, 101)
             Me.tv.Margin = New System.Windows.Forms.Padding(0, 0, 15, 0)
             Me.tv.Name = "tv"
@@ -644,7 +645,7 @@ Namespace UI
         End Sub
 
         Sub HandleSymbol(symbol As Symbol)
-            If Not Block AndAlso Not tv.SelectedNode Is Nothing Then
+            If Not Block AndAlso tv.SelectedNode IsNot Nothing Then
                 Dim item = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
                 item.Symbol = symbol
                 UpdateControls()
@@ -679,7 +680,7 @@ Namespace UI
                 Dim nodes As New ArrayList
                 AddNodes(node, nodes)
 
-                If Not destNode Is node AndAlso Not destNode Is Nothing AndAlso
+                If destNode IsNot node AndAlso destNode IsNot Nothing AndAlso
                     Not nodes.Contains(destNode) Then
 
                     If Control.ModifierKeys = Keys.Control Then
@@ -692,7 +693,7 @@ Namespace UI
                             tv.SelectedNode = node
                         End If
                     Else
-                        If Not destNode.Parent Is Nothing Then
+                        If destNode.Parent IsNot Nothing Then
                             If destNode.Bounds.Top < node.Bounds.Top Then
                                 node.Remove()
 
@@ -750,7 +751,7 @@ Namespace UI
                     tbCommand.Text = ""
                 End If
 
-                Dim notRoot = Not n.Parent Is Nothing
+                Dim notRoot = n.Parent IsNot Nothing
 
                 bnSymbol.Enabled = notRoot
                 bnCommand.Enabled = notRoot
@@ -762,7 +763,7 @@ Namespace UI
                 tsbMoveLeft.Enabled = notRoot
                 tsbMoveRight.Enabled = notRoot
                 tsbMoveUp.Enabled = notRoot
-                tsbPaste.Enabled = Not ClipboardNode Is Nothing
+                tsbPaste.Enabled = ClipboardNode IsNot Nothing
                 tsbRemove.Enabled = notRoot
                 tbText.Enabled = notRoot
 
@@ -771,7 +772,7 @@ Namespace UI
         End Sub
 
         Sub tbText_TextChanged() Handles tbText.TextChanged
-            If Not Block AndAlso Not tv.SelectedNode Is Nothing Then
+            If Not Block AndAlso tv.SelectedNode IsNot Nothing Then
                 Dim item = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
 
                 tbCommand.Enabled = tbText.Text <> "-"
@@ -794,7 +795,7 @@ Namespace UI
             If GenericMenu.CommandManager.HasCommand(item.MethodName) Then
                 Dim c = GenericMenu.CommandManager.GetCommand(item.MethodName)
 
-                If Not c.MethodInfo Is Nothing Then
+                If c.MethodInfo IsNot Nothing Then
                     Dim params = c.MethodInfo.GetParameters
 
                     For i = 0 To params.Length - 1
@@ -814,7 +815,7 @@ Namespace UI
         End Sub
 
         Sub pg_PropertyValueChanged() Handles pg.PropertyValueChanged
-            If Not tv.SelectedNode Is Nothing Then
+            If tv.SelectedNode IsNot Nothing Then
                 Dim item = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
                 item.Parameters.Clear()
 
@@ -832,8 +833,9 @@ Namespace UI
         End Sub
 
         Sub PopulateTreeView(item As CustomMenuItem, node As TreeNode)
-            Dim newNode As New TreeNode(item.Text)
-            newNode.Tag = item
+            Dim newNode As New TreeNode(item.Text) With {
+                .Tag = item
+            }
 
             If node Is Nothing Then
                 tv.Nodes.Add(newNode)
@@ -867,7 +869,7 @@ Namespace UI
         End Function
 
         Sub NewFromDefaultsToolStripMenuItem_Click() Handles NewFromDefaultsToolStripMenuItem.Click
-            If Not tv.SelectedNode Is Nothing Then
+            If tv.SelectedNode IsNot Nothing Then
                 Dim f = GetTemplateForm(GenericMenu.DefaultMenu.Invoke)
 
                 If f.ShowDialog = DialogResult.OK Then
@@ -880,8 +882,8 @@ Namespace UI
         End Sub
 
         Sub RemoveSelectedItem()
-            If Not tv.SelectedNode Is Nothing AndAlso
-                Not tv.SelectedNode.Parent Is Nothing Then
+            If tv.SelectedNode IsNot Nothing AndAlso
+                tv.SelectedNode.Parent IsNot Nothing Then
 
                 tv.SelectedNode.Remove()
             End If
@@ -892,7 +894,7 @@ Namespace UI
         End Sub
 
         Sub tbHotkey_KeyDown(sender As Object, e As KeyEventArgs) Handles tbHotkey.KeyDown
-            If Not Block AndAlso Not tv.SelectedNode Is Nothing AndAlso
+            If Not Block AndAlso tv.SelectedNode IsNot Nothing AndAlso
                 Not e.KeyCode = Keys.ControlKey AndAlso
                 Not e.KeyCode = Keys.Menu AndAlso
                 Not e.KeyCode = Keys.ShiftKey Then
@@ -910,7 +912,7 @@ Namespace UI
                         If TypeOf i.Tag Is CustomMenuItem Then
                             Dim current = DirectCast(i.Tag, CustomMenuItem)
 
-                            If current.KeyData = item.KeyData AndAlso Not item Is current Then
+                            If current.KeyData = item.KeyData AndAlso item IsNot current Then
                                 current.KeyData = Keys.None
                                 MsgInfo(KeysHelp.GetKeyString(item.KeyData) + " detached from " + current.Text.TrimEnd("."c) + " and assigned to " + item.Text.TrimEnd("."c) + " instead.")
                             End If
@@ -931,21 +933,21 @@ Namespace UI
         End Sub
 
         Sub tsbCut_Click() Handles tsbCut.Click
-            If Not tv.SelectedNode Is Nothing Then
+            If tv.SelectedNode IsNot Nothing Then
                 tsbCopy.PerformClick()
                 RemoveSelectedItem()
             End If
         End Sub
 
         Sub tsbCopy_Click() Handles tsbCopy.Click
-            If Not tv.SelectedNode Is Nothing Then
+            If tv.SelectedNode IsNot Nothing Then
                 ClipboardNode = DirectCast(ObjectHelp.GetCopy(tv.SelectedNode), TreeNode)
                 UpdateControls()
             End If
         End Sub
 
         Sub tsbPaste_Click() Handles tsbPaste.Click
-            If Not tv.SelectedNode Is Nothing Then
+            If tv.SelectedNode IsNot Nothing Then
                 tv.SelectedNode.Nodes.Add(CType(ObjectHelp.GetCopy(ClipboardNode), TreeNode))
                 tv.SelectedNode.ExpandAll()
             End If
@@ -969,7 +971,7 @@ Namespace UI
         Sub tsbMoveLeft_Click() Handles tsbMoveLeft.Click
             Dim n = tv.SelectedNode
 
-            If Not n Is Nothing AndAlso n.Parent.Parent Is Nothing Then
+            If n IsNot Nothing AndAlso n.Parent.Parent Is Nothing Then
                 Exit Sub
             End If
 
@@ -987,8 +989,8 @@ Namespace UI
         Sub tsbMoveUp_Click() Handles tsbMoveUp.Click
             Dim n = tv.SelectedNode
 
-            If Not n Is Nothing AndAlso
-                Not n.Parent Is Nothing AndAlso
+            If n IsNot Nothing AndAlso
+                n.Parent IsNot Nothing AndAlso
                 n.Parent.Parent Is Nothing AndAlso
                 n.Index = 0 Then
 
@@ -1003,7 +1005,7 @@ Namespace UI
         Sub tsbMoveDown_Click() Handles tsbMoveDown.Click
             Dim n = tv.SelectedNode
 
-            If Not n Is Nothing AndAlso
+            If n IsNot Nothing AndAlso
                 n.Parent.Parent Is Nothing AndAlso
                 n.NextNode Is Nothing Then
 
@@ -1020,7 +1022,7 @@ Namespace UI
         End Sub
 
         Sub tbCommand_TextChanged() Handles tbCommand.TextChanged
-            If Not tv.SelectedNode Is Nothing Then
+            If tv.SelectedNode IsNot Nothing Then
                 Dim item = DirectCast(tv.SelectedNode.Tag, CustomMenuItem)
 
                 If Not Block Then
@@ -1047,17 +1049,18 @@ Namespace UI
                     mi = GenericMenu.CommandManager.GetCommand(item.MethodName).MethodInfo
                 End If
 
-                pg.Visible = Not mi Is Nothing AndAlso mi.GetParameters.Length > 0
+                pg.Visible = mi IsNot Nothing AndAlso mi.GetParameters.Length > 0
                 lParameters.Visible = pg.Visible
                 PopulateGrid(item)
             End If
         End Sub
 
         Sub tsbNew_Click(sender As Object, e As EventArgs) Handles tsbNew.Click
-            If Not tv.SelectedNode Is Nothing Then
-                Dim newNode As New TreeNode
-                newNode.Text = "???"
-                newNode.Tag = New CustomMenuItem("???")
+            If tv.SelectedNode IsNot Nothing Then
+                Dim newNode As New TreeNode With {
+                    .Text = "???",
+                    .Tag = New CustomMenuItem("???")
+                }
                 tv.SelectedNode.Nodes.Add(newNode)
                 tv.SelectedNode = newNode
             End If

@@ -7404,7 +7404,7 @@ Public Class MainForm
                 Dim sbNotEmpty = False
                 Dim relevant = False
                 Dim isUpdate = False
-                Dim skipUpdates = False
+                Dim versions = 0
 
                 Do While Not reader.EndOfStream
                     Dim line = reader.ReadLine()
@@ -7414,7 +7414,8 @@ Public Class MainForm
                     If match.Success Then
                         If relevant Then
                             If match.Groups(2).Value.ToInt() = version.Minor Then
-                                skipUpdates = True
+                                versions += 1
+
                                 sb.AppendLine()
                                 sb.AppendLine(line)
                                 sb.AppendLine("-------------------------")
@@ -7438,11 +7439,13 @@ Public Class MainForm
 
                     If Not relevant Then Continue Do
                     If String.IsNullOrWhiteSpace(line) Then Continue Do
-                    If Not isUpdate AndAlso line.StartsWithEx("- Update ") Then
+                    If Not isUpdate AndAlso versions > 1 AndAlso line.StartsWithEx("- Update ") Then
                         sb.AppendLine("---- Tool and Plugin updates are not shown! ----")
                         isUpdate = True
+                    ElseIf isUpdate AndAlso String.IsNullOrWhiteSpace(line)
+                        isUpdate = False
                     End If
-                    If isUpdate AndAlso skipUpdates Then Continue Do
+                    If isUpdate AndAlso versions > 1 Then Continue Do
 
                     line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)(?>,|\)|$))", "", RegexOptions.CultureInvariant)
                     line = Regex.Replace(line, "(?<=^| ) (?= |-)", "  ", RegexOptions.CultureInvariant)

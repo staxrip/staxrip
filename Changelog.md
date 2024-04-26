@@ -14,6 +14,12 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.38.7 (not published yet)
+====================
+
+- VapourSynth: Fix potential wrong loading order of Python scripts
+
+
 v2.38.6 (2024-04-26)
 ====================
 

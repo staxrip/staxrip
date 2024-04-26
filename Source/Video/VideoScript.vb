@@ -346,16 +346,16 @@ clipname.set_output()" + BR
 
         ModifyVSScript(script, code)
 
-        If Not script.Contains("import importlib.machinery") AndAlso code.Contains("SourceFileLoader") Then
-            clip.AppendLine("import importlib.machinery")
+        If Not script.Contains("import vapoursynth") Then
+            clip.AppendLine("import os, sys")
+            clip.AppendLine("import vapoursynth as vs")
+            clip.AppendLine("core = vs.core")
+            clip.AppendLine(GetVsPortableAutoLoadPluginCode())
+            clip.AppendLine("sys.path.append(r""" + IO.Path.Combine(Folder.Startup, "Apps", "Plugins", "VS", "Scripts") + """)")
         End If
 
-        If Not script.Contains("import vapoursynth") Then
-            clip.AppendLine("import os, sys" + BR +
-                "import vapoursynth as vs" + BR +
-                "core = vs.core" + BR +
-                GetVsPortableAutoLoadPluginCode() + BR +
-                "sys.path.append(r""" + IO.Path.Combine(Folder.Startup, "Apps", "Plugins", "VS", "Scripts") + """)")
+        If Not script.Contains("import importlib.machinery") AndAlso code.Contains("SourceFileLoader") Then
+            clip.AppendLine("import importlib.machinery")
         End If
 
         clip.AppendLine(code)
@@ -400,10 +400,15 @@ clipname.set_output()" + BR
         If plugin.Filename.Ext = "py" Then
             Dim line = plugin.Name + " = importlib.machinery.SourceFileLoader('" + plugin.Name + "', r""" + plugin.Path + """).load_module()"
 
-            If Not script.Contains(line) AndAlso Not code.Contains(line) Then
+            If code.Contains(line) Then
+                code = code.Replace(line + BR, "")
                 code = line + BR + code
-                Dim scriptCode = plugin.Path.ReadAllText
-                ModifyVSScript(scriptCode, code)
+            Else
+                If Not script.Contains(line) Then
+                    code = line + BR + code
+                    Dim scriptCode = plugin.Path.ReadAllText
+                    ModifyVSScript(scriptCode, code)
+                End If
             End If
         Else
             If s.LoadVapourSynthPlugins AndAlso Not IsVsPluginInAutoLoadFolder(plugin.Filename) AndAlso Not script.Contains(plugin.Filename) AndAlso Not code.Contains(plugin.Filename) Then

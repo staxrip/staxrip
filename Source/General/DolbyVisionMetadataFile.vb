@@ -81,11 +81,13 @@ Public Class DolbyVisionMetadataFile
     End Function
 
     Public Function GetAutoCrop(thresholdBegin As Integer, thresholdEnd As Integer) As Padding
-        thresholdBegin = Math.Max(0, thresholdBegin)
-        thresholdEnd = Math.Max(0, thresholdEnd)
-
         If Not Edits?.Any() Then Return New Padding(0)
         If Not Presets?.Any() Then Return New Padding(0)
+
+        thresholdBegin = Math.Min(Edits.Max(Function(x) x.EndFrame), thresholdBegin)
+        thresholdBegin = Math.Max(0, thresholdBegin)
+        thresholdEnd = Math.Min(Edits.Max(Function(x) x.EndFrame), thresholdEnd)
+        thresholdEnd = Math.Max(0, thresholdEnd)
 
         Dim newCrop As New Padding(Integer.MaxValue)
         Dim entries = Edits.Join(Presets, Function(edit) edit.Id, Function(preset) preset.Id, Function(edit, preset) New With {edit.StartFrame, edit.EndFrame, edit.Id, preset.Offset}).OrderBy(Function(x) x.StartFrame)
@@ -114,18 +116,20 @@ Public Class DolbyVisionMetadataFile
     End Function
 
     Public Function GetCrop(thresholdBegin As Integer, thresholdEnd As Integer) As Padding
-        thresholdBegin = Math.Max(0, thresholdBegin)
-        thresholdEnd = Math.Max(0, thresholdEnd)
-
         If Not Edits?.Any() Then Return New Padding(0)
         If Not Presets?.Any() Then Return New Padding(0)
+
+        thresholdBegin = Math.Min(Edits.Max(Function(x) x.EndFrame), thresholdBegin)
+        thresholdBegin = Math.Max(0, thresholdBegin)
+        thresholdEnd = Math.Min(Edits.Max(Function(x) x.EndFrame), thresholdEnd)
+        thresholdEnd = Math.Max(0, thresholdEnd)
 
         Dim newCrop As New Padding(Integer.MaxValue)
         Dim frames = Edits.OrderByDescending(Function(x) x.EndFrame).First().EndFrame
         Dim entries = Edits.Join(Presets, Function(edit) edit.Id, Function(preset) preset.Id, Function(edit, preset) New With {edit.StartFrame, edit.EndFrame, preset.Offset})
 
         For Each entry In entries
-            If entry.EndFrame > thresholdBegin AndAlso entry.StartFrame <= (frames - thresholdEnd) Then
+            If entry.EndFrame >= thresholdBegin AndAlso entry.StartFrame <= (frames - thresholdEnd) Then
                 newCrop.Left = Math.Min(newCrop.Left, entry.Offset.Left)
                 newCrop.Top = Math.Min(newCrop.Top, entry.Offset.Top)
                 newCrop.Right = Math.Min(newCrop.Right, entry.Offset.Right)

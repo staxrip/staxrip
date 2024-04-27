@@ -18,6 +18,7 @@ v2.38.7 (not published yet)
 ====================
 
 - VapourSynth: Fix potential wrong loading order of Python scripts
+- Internal: Fix crash using Auto Crop on extremely short videos with Dolby Vision ([#1327](/../../issues/1327))
 - Internal: Fix Linux compatibility a bit more ([#1331](/../../issues/1331))
 
 

@@ -222,7 +222,7 @@ Public Class eac3toDemuxer
                         proj.SourceFile = Path.Combine(form.OutputFolder, proj.SourceFile.Base + "." + form.cbVideoOutput.Text.ToLowerInvariant)
                         proj.SourceFiles.Clear()
                         proj.SourceFiles.Add(proj.SourceFile)
-                        proj.TempDir = form.OutputFolder
+                        proj.TempDir = form.OutputFolder.FixDir
                     End If
                 End Using
             Else

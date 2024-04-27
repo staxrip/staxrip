@@ -179,9 +179,8 @@ Module StringExtensions
 
     <Extension()>
     Function Escape(instance As String) As String
-        If instance = "" Then
-            Return ""
-        End If
+        If instance = "" Then Return ""
+        If instance(0) = """" AndAlso instance(instance.Length - 1) = """" Then Return instance
 
         For Each i In " ;=~*$%()&"
             If instance.Contains(i) Then

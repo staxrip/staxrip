@@ -18,6 +18,7 @@ v2.38.7 (not published yet)
 ====================
 
 - VapourSynth: Fix potential wrong loading order of Python scripts
+- Internal: Fix Linux compatibility a bit more ([#1331](/../../issues/1331))
 
 
 v2.38.6 (2024-04-26)

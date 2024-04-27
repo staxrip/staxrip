@@ -18,6 +18,7 @@ v2.39.0 (not published yet)
 ====================
 
 - UI: Introduce Progress Highlighting
+- UI: In Main Menu move project based Folders from Tools to Project
 - Update tools
     - ...
 - Update AviSynth+ plugins

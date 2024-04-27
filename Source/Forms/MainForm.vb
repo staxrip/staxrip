@@ -3571,7 +3571,7 @@ Public Class MainForm
         If isEL OrElse (fileHdrFormat?.ContainsAny("Dolby Vision", "HDR10+ Profile B")) Then
             Dim mode = If(proj.HdrDolbyVisionMode < 0, "", " -m " + (proj.HdrDolbyVisionMode + 0).ToString())
             Dim rpuPath = sourcePath.ChangeExt("rpu")
-            Dim doviFile As DolbyVisionMetadataFile
+            Dim doviFile = proj.HdrDolbyVisionMetadataFile
 
             If Not String.IsNullOrWhiteSpace(proj.TempDir) Then
                 rpuPath = If(sourcePath.Contains(proj.TempDir), rpuPath, If(proj.TempDir.DirExists(), $"{Path.Combine({proj.TempDir, "HDRDVmetadata.rpu"})}", rpuPath))

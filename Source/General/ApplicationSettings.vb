@@ -28,7 +28,6 @@ Public Class ApplicationSettings
     Public CommandLinePreview As CommandLinePreview = CommandLinePreview.CodePreview
     Public CommandLinePreviewWithLineNumbers As Boolean = True
     Public CropColor As Color
-    Public CropFrameCount As Integer
     Public CustomMenuCodeEditor As CustomMenuItem
     Public CustomMenuCrop As CustomMenuItem
     Public CustomMenuMainForm As CustomMenuItem
@@ -279,10 +278,6 @@ Public Class ApplicationSettings
 
         If RecentFramePositions Is Nothing Then
             RecentFramePositions = New List(Of String)
-        End If
-
-        If CropFrameCount = 0 Then
-            CropFrameCount = 15
         End If
 
         If Check(CustomMenuCrop, "Menu in crop dialog", 18) Then

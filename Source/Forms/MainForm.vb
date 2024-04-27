@@ -2638,11 +2638,20 @@ Public Class MainForm
                 Dim c = p.HdrDolbyVisionMetadataFile.Crop
                 g.SetCrop(c.Left, c.Top, c.Right, c.Bottom, ForceOutputModDirection.Decrease, True)
             ElseIf p.AutoCropMode = AutoCropMode.Always Then
+                Dim mode = 0
+                Dim value = p.AutoCropFixedNumberFrameSelection
+                Dim vfw = If(FrameServerHelp.IsVfwUsed, 1, 0)
+
+                If p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.TimeInterval Then
+                    mode = 1
+                    value = p.AutoCropTimeIntervalFrameSelection
+                End If
+
                 Using proc As New Proc
                     proc.Header = "Auto Crop"
                     proc.SkipString = "%"
                     proc.Package = Package.AutoCrop
-                    proc.Arguments = p.SourceScript.Path.Escape + " " & s.CropFrameCount & " " & If(FrameServerHelp.IsVfwUsed, 1, 0)
+                    proc.Arguments = $"{p.SourceScript.Path.Escape} {mode} {value} {vfw}"
                     proc.Start()
 
                     Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
@@ -3964,11 +3973,6 @@ Public Class MainForm
             b.Text = "Add filter to automatically correct the frame rate."
             b.Field = NameOf(s.FixFrameRate)
 
-            n = ui.AddNum
-            n.Text = "Number of frames used for auto-crop"
-            n.Config = {5, 9999}
-            n.Field = NameOf(s.CropFrameCount)
-
             Dim t = ui.AddText()
             t.Text = "x264 quality definitions"
             t.Help = "Create custom quality definitions for x264." + BR2 +
@@ -4730,7 +4734,7 @@ Public Class MainForm
             "In order to select a template to be loaded on program startup go to:",
             "Tools > Settings > General > Templates > Default Template")
 
-            form.ScaleClientSize(33, 24)
+            form.ScaleClientSize(36, 28)
 
             Dim ui = form.SimpleUI
             ui.Store = p
@@ -4836,50 +4840,61 @@ Public Class MainForm
             b.Help = ""
             b.Field = NameOf(p.CropWithHighContrast)
 
-            ui.AddLine(cropPage, "Crop Values")
+            ui.AddLine(cropPage, "Custom crop values")
 
-            Dim autoCropMode = ui.AddMenu(Of AutoCropMode)
-            Dim autoCropDVMode = ui.AddMenu(Of AutoCropDolbyVisionMode)
-
-            Dim l = ui.AddLabel("Dolby Vision AutoCrop Threshold at:")
             Dim eb = ui.AddEmptyBlock(cropPage)
-            ui.AddLabel(eb, "Beginning:", 2)
-            Dim doviThresholdBegin = ui.AddNumeric(eb)
-            ui.AddLabel(eb, " ", 2)
-            ui.AddLabel(eb, "Ending:", 2)
-            Dim doviThresholdEnd = ui.AddNumeric(eb)
-
-            l = ui.AddLabel("Custom crop values:")
-            eb = ui.AddEmptyBlock(cropPage)
             ui.AddLabel(eb, "Left:", 2)
             Dim leftCrop = ui.AddNumeric(eb)
-            l = ui.AddLabel(eb, "Right:", 4)
+            ui.AddLabel(eb, "Right:", 4)
             Dim rightCrop = ui.AddNumeric(eb)
 
             eb = ui.AddEmptyBlock(cropPage)
             ui.AddLabel(eb, "Top:", 2)
             Dim topCrop = ui.AddNumeric(eb)
-            l = ui.AddLabel(eb, "Bottom:", 4)
+            ui.AddLabel(eb, "Bottom:", 4)
             Dim bottomCrop = ui.AddNumeric(eb)
 
 
-            autoCropMode.Text = "Auto Crop after opening"
-            autoCropMode.Help = "Use Auto Crop when a file is opened to crop it directly."
-            autoCropMode.Expanded = True
-            autoCropMode.Field = NameOf(p.AutoCropMode)
-            autoCropMode.Button.ValueChangedAction = Sub(value)
-                                                         Dim active = value = StaxRip.AutoCropMode.DolbyVisionOnly OrElse value = StaxRip.AutoCropMode.Always
-                                                         autoCropDVMode.Enabled = active
-                                                         doviThresholdBegin.Enabled = active AndAlso autoCropDVMode.Button.Value = AutoCropDolbyVisionMode.ManualThreshold
-                                                         doviThresholdEnd.Enabled = doviThresholdBegin.Enabled
-                                                         leftCrop.Enabled = Not active
-                                                         topCrop.Enabled = Not active
-                                                         rightCrop.Enabled = Not active
-                                                         bottomCrop.Enabled = Not active
-                                                     End Sub
-            autoCropMode.Button.ValueChangedAction.Invoke(p.AutoCropMode)
 
-            autoCropDVMode.Text = "Dolby Vision Auto Crop Mode"
+            '   ----------------------------------------------------------------
+            Dim autoCropPage = ui.CreateFlowPage("Image | Crop | Auto Crop")
+
+            Dim autoCropMode = ui.AddMenu(Of AutoCropMode)
+
+            ui.AddLine(autoCropPage, "General")
+            'dim l = ui.AddLabel("Regular AutoCrop settings:", 0, FontStyle.Bold)
+            'l.Margin = New Padding(0, 10, 0, 0)
+            Dim autoCropFrameSelectionMode = ui.AddMenu(Of AutoCropFrameSelectionMode)
+
+            Dim fsFixedNumber = ui.AddNum()
+            fsFixedNumber.Text = "Number of frames:"
+            fsFixedNumber.Help = "Fixed number of frames being analyzed over the whole video."
+            fsFixedNumber.Config = {1, 7200, 5, 0}
+            fsFixedNumber.Field = NameOf(p.AutoCropFixedNumberFrameSelection)
+            fsFixedNumber.Margin = New Padding(0,6,0,3)
+
+            Dim fsTimeInterval = ui.AddNum()
+            fsTimeInterval.Text = "Time interval in seconds:"
+            fsTimeInterval.Help = "Time interval in seconds betwen analyzed frames."
+            fsTimeInterval.Config = {1, 3600, 5, 0}
+            fsTimeInterval.Field = NameOf(p.AutoCropTimeIntervalFrameSelection)
+            fsTimeInterval.Margin = New Padding(0,6,0,3)
+
+            ui.AddLine(autoCropPage, "Dolby Vision")
+
+            Dim autoCropDVMode = ui.AddMenu(Of AutoCropDolbyVisionMode)()
+
+            eb = ui.AddEmptyBlock(autoCropPage)
+            eb.Margin = New Padding(0,6,0,3)
+            Dim l = ui.AddLabel(eb, "Threshold at:", 7)
+            ui.AddLabel(eb, "Beginning:", 2)
+            Dim doviThresholdBegin = ui.AddNumeric(eb)
+            ui.AddLabel(eb, " ", 1)
+            ui.AddLabel(eb, "Ending:", 2)
+            Dim doviThresholdEnd = ui.AddNumeric(eb)
+
+
+            autoCropDVMode.Text = "Mode"
             autoCropDVMode.Help = "Decide between an automatic mode and a manual threshold."
             autoCropDVMode.Expanded = True
             autoCropDVMode.Field = NameOf(p.AutoCropDolbyVisionMode)
@@ -4889,6 +4904,29 @@ Public Class MainForm
                                                            doviThresholdEnd.Enabled = active
                                                        End Sub
             autoCropDVMode.Button.ValueChangedAction.Invoke(p.AutoCropDolbyVisionMode)
+
+            autoCropFrameSelectionMode.Text = "Frame Selection Mode"
+            autoCropFrameSelectionMode.Help = ""
+            autoCropFrameSelectionMode.Expanded = True
+            autoCropFrameSelectionMode.Field = NameOf(p.AutoCropFrameSelectionMode)
+            autoCropFrameSelectionMode.Button.ValueChangedAction = Sub(value)
+                                                                       Dim active = autoCropFrameSelectionMode.Enabled
+                                                                       Dim activeFixedNumber = active AndAlso value = StaxRip.AutoCropFrameSelectionMode.FixedNumber
+                                                                       Dim activeTimeInterval = active AndAlso value = StaxRip.AutoCropFrameSelectionMode.TimeInterval
+                                                                       fsFixedNumber.Visible = activeFixedNumber
+                                                                       fsTimeInterval.Visible = activeTimeInterval
+                                                                   End Sub
+            autoCropFrameSelectionMode.Button.ValueChangedAction.Invoke(p.AutoCropFrameSelectionMode)
+
+            autoCropMode.Text = "Auto Crop after opening"
+            autoCropMode.Help = "Use Auto Crop when a file is opened to crop it directly."
+            autoCropMode.Expanded = True
+            autoCropMode.Field = NameOf(p.AutoCropMode)
+            autoCropMode.Button.ValueChangedAction = Sub(value)
+                                                         autoCropDVMode.Button.ValueChangedAction.Invoke(autoCropDVMode.Button.Value)
+                                                         autoCropFrameSelectionMode.Button.ValueChangedAction.Invoke(autoCropFrameSelectionMode.Button.Value)
+                                                     End Sub
+            autoCropMode.Button.ValueChangedAction.Invoke(p.AutoCropMode)
 
             doviThresholdBegin.Help = "Number of frames at the beginning of the video, that are ignored when setting the crop values."
             doviThresholdBegin.Config = {0, 999999, 25, 0}
@@ -5628,25 +5666,20 @@ Public Class MainForm
             End If
 
             If form.ShowDialog() = DialogResult.OK Then
+                Dim autoCropModeOn = autoCropMode.Button.Value <> StaxRip.AutoCropMode.Disabled
                 Dim autoCropModeChanged = autoCropMode.Button.Value <> p.AutoCropMode
-                Dim dvThresholdChanged = doviThresholdBegin.Value <> p.AutoCropDolbyVisionThresholdBegin OrElse doviThresholdEnd.Value <> p.AutoCropDolbyVisionThresholdEnd
+                Dim dvDataAvailable = p.HdrDolbyVisionMetadataFile IsNot Nothing
+                Dim cropFilterActive = p.Script.GetFilter("Crop")?.Active
                 Dim cropChanged = leftCrop.Value <> p.CropLeft OrElse topCrop.Value <> p.CropTop OrElse rightCrop.Value <> p.CropRight OrElse bottomCrop.Value <> p.CropBottom
+                Dim dvThresholdChanged = doviThresholdBegin.Value <> p.AutoCropDolbyVisionThresholdBegin OrElse doviThresholdEnd.Value <> p.AutoCropDolbyVisionThresholdEnd
 
                 ui.Save()
 
-                If p.TempDir <> "" Then
-                    'If s.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.TempDir.EndsWith("_temp\") Then
-                    '    MsgWarn("Temp Files Folder", "The folder description, you have chosen, does not end with '_temp\'! " + BR2 +
-                    '            "The folder description must end with '_temp\' in order to automatically delete the folder, otherwise no files are going to be deleted. " +
-                    '            "This is a safety feature to prevent you from unintentionally data loss. ")
-                    'End If
-                End If
-
                 If p.CompCheckPercentage < 1 OrElse p.CompCheckPercentage > 25 Then p.CompCheckPercentage = 5
                 If p.CompCheckTestblockSeconds < 0.5 OrElse p.CompCheckTestblockSeconds > 10.0 Then p.CompCheckTestblockSeconds = 2.0
-                If autoCropMode.Button.Value <> StaxRip.AutoCropMode.Disabled AndAlso autoCropModeChanged Then StartAutoCrop()
+                If autoCropModeOn AndAlso autoCropModeChanged AndAlso dvDataAvailable AndAlso cropFilterActive Then StartAutoCrop()
 
-                If autoCropMode.Button.Value = StaxRip.AutoCropMode.Disabled AndAlso cropChanged Then
+                If cropChanged Then
                     p.CropLeft = CInt(leftCrop.Value)
                     p.CropTop = CInt(topCrop.Value)
                     p.CropRight = CInt(rightCrop.Value)
@@ -7450,7 +7483,7 @@ Public Class MainForm
                     If Not isUpdate AndAlso versions > 1 AndAlso line.StartsWithEx("- Update ") Then
                         sb.AppendLine("---- Tool and Plugin updates are not shown! ----")
                         isUpdate = True
-                    ElseIf isUpdate AndAlso String.IsNullOrWhiteSpace(line)
+                    ElseIf isUpdate AndAlso String.IsNullOrWhiteSpace(line) Then
                         isUpdate = False
                     End If
                     If isUpdate AndAlso versions > 1 Then Continue Do

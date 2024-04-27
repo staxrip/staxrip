@@ -3,6 +3,7 @@ Imports System.Collections.ObjectModel
 Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Management.Automation
+Imports System.Management.Automation.Language
 Imports System.Runtime.ExceptionServices
 Imports System.Security.Principal
 Imports System.Text
@@ -119,7 +120,7 @@ Public Class GlobalClass
     Sub Execute(fileName As String, Optional arguments As String = Nothing)
         Dim info As New ProcessStartInfo With {
             .UseShellExecute = False,
-            .fileName = fileName
+            .FileName = fileName
         }
 
         If arguments <> "" Then
@@ -137,7 +138,7 @@ Public Class GlobalClass
         Try
             Dim psi = New ProcessStartInfo(fileName.Escape) With {
                 .UseShellExecute = True,
-                .arguments = arguments
+                .Arguments = arguments
             }
 
             Process.Start(psi)?.Dispose()
@@ -1349,10 +1350,10 @@ Public Class GlobalClass
     End Sub
 
     Function EnableFilter(search As String) As Boolean
-        For Each filter In p.Script.Filters
-            If filter.Category = search Then
-                If Not filter.Active Then
-                    filter.Active = True
+        For Each Filter In p.Script.Filters
+            If Filter.Category = search Then
+                If Not Filter.Active Then
+                    Filter.Active = True
                     g.MainForm.FiltersListView.Load()
                 End If
 
@@ -1442,34 +1443,51 @@ Public Class GlobalClass
             SetCrop(c.Left, c.Top, c.Right, c.Bottom, ForceOutputModDirection.Decrease, True)
         Else
             Using server = FrameServerFactory.Create(p.SourceScript.Path)
-                Dim len = server.Info.FrameCount \ (s.CropFrameCount + 1)
-                Dim crops(s.CropFrameCount - 1) As AutoCrop
-                Dim pos As Integer
+                Dim info = server.Info
+                Dim frameCount = info.FrameCount
+                Dim frameRate = info.FrameRate
+                Dim startFrame = 0
+                Dim endFrame = frameCount
+                Dim consideredFrames = endFrame - startFrame
+                Dim minFrames = 5
+                Dim interval = CInt(VB6.Conversion.Fix(frameRate * 60))
+                If p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.FixedNumber Then
+                    interval = consideredFrames \ (p.AutoCropFixedNumberFrameSelection - 1)
+                ElseIf p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.TimeInterval Then
+                    interval = CInt(VB6.Conversion.Fix(frameRate * p.AutoCropTimeIntervalFrameSelection))
+                    If interval * minFrames > consideredFrames Then
+                        interval = CInt(VB6.Conversion.Fix(consideredFrames / minFrames))
+                    End If
+                End If
+                Dim analyzeCount = (consideredFrames \ interval) + 1
+                Dim analyzeFrames(analyzeCount - 1) As Integer
+                Dim crops(analyzeCount - 1) As AutoCrop
 
-                For x = 1 To s.CropFrameCount
-                    progressAction?.Invoke((x - 1) / s.CropFrameCount * 100)
-                    pos = len * x
+                For i = 0 To analyzeCount - 1
+                    analyzeFrames(i) = Math.Min(startFrame + i * interval, endFrame)
+                Next
 
-                    Using bmp = BitmapUtil.CreateBitmap(server, pos)
-                        crops(x - 1) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), pos)
+                For i = 0 To analyzeCount - 1
+                    progressAction?.Invoke(i / analyzeCount * 100)
+
+                    Dim frame = analyzeFrames(i)
+                    Using bmp = BitmapUtil.CreateBitmap(server, frame)
+                        crops(i) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), frame)
                     End Using
                 Next
 
                 Dim left = crops.SelectMany(Function(arg) arg.Left).Min()
                 Dim top = crops.SelectMany(Function(arg) arg.Top).Min()
-                Dim right = crops.SelectMany(Function(arg) arg.right).Min()
+                Dim right = crops.SelectMany(Function(arg) arg.Right).Min()
                 Dim bottom = crops.SelectMany(Function(arg) arg.Bottom).Min()
-
                 SetCrop(left, top, right, bottom, p.ForcedOutputModDirection, False)
             End Using
         End If
     End Sub
-
     Sub SmartCrop()
         If Not p.Script.IsFilterActive("Resize") Then
             Exit Sub
         End If
-
         Dim tempLeft = p.CropLeft
         Dim tempRight = p.CropRight
 

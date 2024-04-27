@@ -490,6 +490,7 @@ Namespace UI
 
         Sub New()
             Margin = New Padding(4, 2, 5, 2)
+            Padding = New Padding(5, 2, 5, 2)
             Anchor = AnchorStyles.Left Or AnchorStyles.Bottom Or AnchorStyles.Right
             SetStyle(ControlStyles.SupportsTransparentBackColor, True)
         End Sub
@@ -504,10 +505,10 @@ Namespace UI
 
             If Text <> "" Then
                 Dim textSize = e.Graphics.MeasureString(Text, Font)
-                textOffset = CInt(textSize.Width)
+                textOffset = CInt(textSize.Width + textSize.Height)
 
                 Using brush = New SolidBrush(If(Enabled, ForeColor, SystemColors.GrayText))
-                    e.Graphics.DrawString(Text, Font, brush, 0, CInt((Height - textSize.Height) / 2) - 1)
+                    e.Graphics.DrawString(Text, Font, brush, Padding.Left, CInt((Height - textSize.Height) / 2) - 1)
                 End Using
             End If
 

@@ -147,6 +147,11 @@ Public Class SimpleSettingsForm
         BackColor = theme.General.BackColor
     End Sub
 
+    Protected Overrides Sub OnResize(e As EventArgs)
+        MyBase.OnResize(e)
+        'Text = $"{Size.Width}x{Size.Height}"
+    End Sub
+
     Sub SimpleSettingsForm_HelpRequested(sender As Object, e As HelpEventArgs) Handles Me.HelpRequested
         Dim form As New HelpForm()
         form.Doc.WriteStart(Text)
@@ -163,4 +168,5 @@ Public Class SimpleSettingsForm
 
         form.Show()
     End Sub
+
 End Class

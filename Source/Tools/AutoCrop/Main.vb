@@ -3,6 +3,7 @@ Imports System.Drawing
 Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.Runtime.InteropServices
+Imports Microsoft.VisualBasic
 
 Module Module1
     Sub Main()
@@ -10,33 +11,53 @@ Module Module1
             Dim args = Environment.GetCommandLineArgs()
 
             If args.Length = 1 Then
-                Console.WriteLine("AutoCrop <avs/vpy path> <frame count> <VFW>")
+                Console.WriteLine("AutoCrop <avs/vpy path> <number|interval> <frame count|seconds> <VFW>")
                 Exit Sub
             End If
 
             Dim scriptPath = args(1)
-            Dim count = CInt(args(2))
-            Dim vfw = args(3) = "1"
+            Dim mode = CInt(args(2))
+            Dim value = CInt(args(3))
+            Dim vfw = args(4) = "1"
 
             Using server = FrameServerFactory.Create(scriptPath, vfw)
-                Dim len = server.Info.FrameCount \ (count + 1)
-                Dim crops(count - 1) As AutoCrop
-                Dim pos = 0
+                Dim info = server.Info
+                Dim frameCount = info.FrameCount
+                Dim frameRate = info.FrameRate
+                Dim startFrame = 0
+                Dim endFrame = frameCount
+                Dim consideredFrames = endFrame - startFrame
+                Dim minFrames = 5
+                Dim interval = CInt(Conversion.Fix(frameRate * 60))
+                If mode = 1 Then
+                    interval = CInt(Conversion.Fix(frameRate * value))
+                Else
+                    interval = consideredFrames \ (value - 1)
+                    If interval * minFrames > consideredFrames Then
+                        interval = CInt(Conversion.Fix(consideredFrames / minFrames))
+                    End If
+                End If
+                Dim analyzeCount = (consideredFrames \ interval) + 1
+                Dim analyzeFrames(analyzeCount - 1) As Integer
+                Dim crops(analyzeCount - 1) As AutoCrop
 
-                For i = 0 To count - 1
-                    Console.WriteLine($"Progress: {(i / count * 100):f0}%")
-                    pos += len
+                For i = 0 To analyzeCount - 1
+                    analyzeFrames(i) = Math.Min(startFrame + i * interval, endFrame)
+                Next
 
-                    Using bmp = BitmapUtil.CreateBitmap(server, pos)
-                        crops(i) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), pos)
+                For i = 0 To analyzeCount - 1
+                    Console.WriteLine($"Progress: {(i / analyzeCount * 100):f0}%")
+
+                    Dim frame = analyzeFrames(i)
+                    Using bmp = BitmapUtil.CreateBitmap(server, frame)
+                        crops(i) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), frame)
                     End Using
                 Next
 
                 Dim left = crops.SelectMany(Function(arg) arg.Left).Min()
                 Dim top = crops.SelectMany(Function(arg) arg.Top).Min()
-                Dim right = crops.SelectMany(Function(arg) arg.right).Min()
+                Dim right = crops.SelectMany(Function(arg) arg.Right).Min()
                 Dim bottom = crops.SelectMany(Function(arg) arg.Bottom).Min()
-
                 Console.WriteLine($"{left},{top},{right},{bottom}")
             End Using
         Catch ex As Exception
@@ -238,6 +259,12 @@ Public Structure ServerInfo
     Public FrameRateDen As Integer
     Public FrameCount As Integer
     Public ColorSpace As Integer
+
+    ReadOnly Property FrameRate As Decimal
+        Get
+            Return If(FrameRateDen <> 0, Decimal.Divide(FrameRateNum, FrameRateDen), 0)
+        End Get
+    End Property
 End Structure
 
 Public Class FrameServerFactory

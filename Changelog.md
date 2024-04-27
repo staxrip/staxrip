@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.39.0 (not published yet)
+v2.39.0 (2024-05-12)
 ====================
 
 - UI: Introduce Progress Highlighting

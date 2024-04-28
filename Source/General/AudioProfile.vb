@@ -850,7 +850,7 @@ Public Class GUIAudioProfile
                     proc.SkipStrings = {"%"}
                 ElseIf cl.Contains("deezy") Then
                     proc.Package = Package.DeeZy
-                    proc.SkipStrings = {"%"}
+                    proc.SkipStrings = {"%", "frame=", "size="}
                 End If
 
                 proc.Start()

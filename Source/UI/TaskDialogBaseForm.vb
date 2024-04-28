@@ -252,14 +252,14 @@ Public Class TaskDialogBaseForm
             Dim r = New Rectangle(x, y, w, h)
 
             If Title <> "" AndAlso Description <> "" Then
-                TextRenderer.DrawText(g, Title, TitleFont, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak)
-                y = CInt(titleFontHeight * 0.2) + GetTitleSize().Height
+                TextRenderer.DrawText(g, Title, TitleFont, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak Or TextFormatFlags.TextBoxControl)
+                y = CInt(titleFontHeight * 0.2) + GetTitleSize().Height - 2
                 r = New Rectangle(x, y, w, h)
-                TextRenderer.DrawText(g, Description, Font, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak)
+                TextRenderer.DrawText(g, Description, Font, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak Or TextFormatFlags.TextBoxControl)
             ElseIf Title <> "" Then
-                TextRenderer.DrawText(g, Title, TitleFont, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak)
+                TextRenderer.DrawText(g, Title, TitleFont, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak Or TextFormatFlags.TextBoxControl)
             ElseIf Description <> "" Then
-                TextRenderer.DrawText(g, Description, Font, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak)
+                TextRenderer.DrawText(g, Description, Font, r, ForeColor, TextFormatFlags.Left Or TextFormatFlags.WordBreak Or TextFormatFlags.TextBoxControl)
             End If
         End Sub
 

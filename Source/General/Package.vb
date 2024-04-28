@@ -1239,7 +1239,7 @@ Public Class Package
         .Name = "AVS_LibPlacebo",
         .Filename = "avs_libplacebo.dll",
         .RequirementsFunc = Function() StaxRip.Vulkan.IsSupported,
-        .Description = "An AviSynth+ plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders." + BR2 + "This is a port of the VapourSynth plugin vs-placebo.",
+        .Description = "An AviSynth+ plugin interface to libplacebo - a reusable library for Vulkan GPU-accelerated image/video processing primitives and shaders." + BR2 + "This is a port of the VapourSynth plugin vs-placebo.",
         .HelpFilename = "README.md",
         .DownloadURL = "https://github.com/Asd-g/avslibplacebo/releases/",
         .WebURL = "https://github.com/Asd-g/avslibplacebo",
@@ -1249,7 +1249,7 @@ Public Class Package
         .Name = "libvs_placebo",
         .Filename = "libvs_placebo.dll",
         .RequirementsFunc = Function() StaxRip.Vulkan.IsSupported,
-        .Description = "A VapourSynth plugin interface to libplacebo - a reusable library for Vulcan GPU-accelerated image/video processing primitives and shaders.",
+        .Description = "A VapourSynth plugin interface to libplacebo - a reusable library for Vulkan GPU-accelerated image/video processing primitives and shaders.",
         .DownloadURL = "https://github.com/Lypheo/vs-placebo/releases",
         .WebURL = "https://github.com/Lypheo/vs-placebo",
         .HelpURL = "https://github.com/Lypheo/vs-placebo/blob/master/README.md",
@@ -3123,15 +3123,19 @@ Public Class Package
     Function GetPathFromLocation(dir As String) As String
         If dir = "" Then Return Nothing
 
-        If Not IO.Path.IsPathRooted(dir) Then
-            dir = IO.Path.Combine(Folder.Apps, dir)
-        End If
+        Try
+            If Not IO.Path.IsPathRooted(dir) Then
+                dir = IO.Path.Combine(Folder.Apps, dir)
+            End If
 
-        dir = New DirectoryInfo(dir).FullName
+            dir = New DirectoryInfo(dir).FullName
 
-        If File.Exists(IO.Path.Combine(dir, Filename)) Then
-            Return IO.Path.Combine(dir, Filename)
-        End If
+            If File.Exists(IO.Path.Combine(dir, Filename)) Then
+                Return IO.Path.Combine(dir, Filename)
+            End If
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Function GetPathFromLocation(dirs As String()) As String
@@ -3215,9 +3219,11 @@ Public Class Package
     End Function
 
     Shared Function FindInPathEnvVar(filename As String) As String
-        Dim paths = Environment.GetEnvironmentVariable("path").SplitNoEmpty(";")
+        Dim paths = Environment.GetEnvironmentVariable("path").SplitNoEmpty(IO.Path.PathSeparator)
 
         For Each folder In paths
+            If folder.ContainsAny(IO.Path.GetInvalidPathChars) Then Continue For
+
             Dim filepath = IO.Path.Combine(folder, filename)
 
             If File.Exists(filepath) AndAlso Not New FileInfo(filepath).Length = 0 Then

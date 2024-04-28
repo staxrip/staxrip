@@ -1806,7 +1806,7 @@ Public Class GlobalClass
         Return ret
     End Function
 
-    Function GetCodeFont(Optional size As Integer = 10) As Font
+    Function GetCodeFont(Optional size As Single = 10.0) As Font
         Return New Font(If(s.CodeFont = "", "Consolas", s.CodeFont), size * s.UIScaleFactor)
     End Function
 End Class

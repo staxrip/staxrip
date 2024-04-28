@@ -39,7 +39,7 @@ Public Class ApplicationSettings
     Public eac3toProfiles As List(Of eac3toProfile)
     Public EnableTooltips As Boolean
     Public ErrorMessageExtendedByErr As Boolean = False
-    Public ErrorMessageTimeout As Integer = 60
+    Public ErrorMessageTimeout As Integer = 120
     Public EventCommands As List(Of EventCommand)
     Public EventWhileProcessingCooldown As Integer = 60
     Public ExpandPreviewWindow As Boolean = True
@@ -56,7 +56,7 @@ Public Class ApplicationSettings
     Public LoadAviSynthPlugins As Boolean = True
     Public LoadVapourSynthPlugins As Boolean = True
     Public LogEventCommand As Boolean
-    Public LogFileNum As Integer = 50
+    Public LogFileNum As Integer = 200
     Public MinimizeToTray As Boolean
     Public MinimumDiskSpace As Integer = 20
     Public MuxerProfiles As List(Of Muxer)
@@ -73,7 +73,7 @@ Public Class ApplicationSettings
     Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.BelowNormal
     Public ProgressHighlighting As Boolean = True
     Public ProgressReformatting As Boolean = True
-    Public ProjectsMruNum As Integer = 10
+    Public ProjectsMruNum As Integer = 15
     Public RecentFramePositions As List(Of String)
     Public RecentOptionsPage As String
     Public RecentProjects As List(Of String)

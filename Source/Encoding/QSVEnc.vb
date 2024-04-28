@@ -550,6 +550,13 @@ Public Class QSVEnc
         Property SmoothQP As New NumParam With {.Text = "      QP", .HelpSwitch = "--vpp-smooth", .Config = {0, 100, 10, 1}}
         Property SmoothPrec As New OptionParam With {.Text = "      Precision", .HelpSwitch = "--vpp-smooth", .Options = {"Auto", "FP16", "FP32"}}
 
+        Property Nlmeans As New BoolParam With {.Text = "Nlmeans", .Switch = "--vpp-nlmeans", .ArgsFunc = AddressOf GetNlmeansArgs}
+        Property NlmeansSigma As New NumParam With {.Text = "     Sigma", .HelpSwitch = "--vpp-nlmeans", .Init = 0.005, .Config = {0, 10, 0.001, 3}}
+        Property NlmeansH As New NumParam With {.Text = "     H", .HelpSwitch = "--vpp-nlmeans", .Init = 0.05, .Config = {0, 10, 0.01, 2}}
+        Property NlmeansPatch As New NumParam With {.Text = "     Patch", .HelpSwitch = "--vpp-nlmeans", .Init = 5, .Config = {3, 200, 1, 0}}
+        Property NlmeansSearch As New NumParam With {.Text = "     Search", .HelpSwitch = "--vpp-nlmeans", .Init = 11, .Config = {3, 200, 1, 0}}
+        Property NlmeansFp16 As New OptionParam With {.Text = "     Fp16", .HelpSwitch = "--vpp-nlmeans", .Init = 1, .Options = {"None: Do not use fp16 and use fp32. High precision but slow.", "Blockdiff: Use fp16 in block diff calculation. Balanced. (Default)", "All: Additionally use fp16 in weight calculation. Fast but low precision."}, .Values = {"none", "blockdiff", "all"}}
+
         Property Pmd As New BoolParam With {.Text = "Pmd", .Switch = "--vpp-pmd", .ArgsFunc = AddressOf GetPmdArgs}
         Property PmdApplyCount As New NumParam With {.Text = "      Apply Count", .HelpSwitch = "--vpp-pmd", .Init = 2, .Config = {1, Integer.MaxValue, 1}}
         Property PmdStrength As New NumParam With {.Text = "      Strength", .HelpSwitch = "--vpp-pmd", .Init = 100, .Config = {0, 100, 1, 1}}
@@ -705,6 +712,7 @@ Public Class QSVEnc
                         Deband, DebandRange, DebandSample, DebandThre, DebandThreY, DebandThreCB, DebandThreCR,
                         DebandDither, DebandDitherY, DebandDitherC, DebandSeed, DebandBlurfirst, DebandRandEachFrame)
                     Add("VPP | Denoise",
+                        Nlmeans, NlmeansSigma, NlmeansH, NlmeansPatch, NlmeansSearch, NlmeansFp16,
                         Pmd, PmdApplyCount, PmdStrength, PmdThreshold,
                         Denoise, DenoiseMode, DenoiseStrength)
                     Add("VPP | Sharpness",
@@ -960,7 +968,7 @@ Public Class QSVEnc
         Function GetSmoothArgs() As String
             If Smooth.Value Then
                 Dim ret = ""
-                If SmoothQuality.Value <> SmoothQuality.DefaultValue Then ret += ",quality=" & SmoothQuality.Value
+                If SmoothQuality.Value <> SmoothQuality.DefaultValue Then ret += ",quality=" & SmoothQuality.Value.ToInvariantString
                 If SmoothQP.Value <> SmoothQP.DefaultValue Then ret += ",qp=" & SmoothQP.Value.ToInvariantString
                 If SmoothPrec.Value <> SmoothPrec.DefaultValue Then ret += ",prec=" & SmoothPrec.ValueText
                 Return "--vpp-smooth " + ret.TrimStart(","c)
@@ -979,12 +987,25 @@ Public Class QSVEnc
             Return ""
         End Function
 
+        Function GetNlmeansArgs() As String
+            If Nlmeans.Value Then
+                Dim ret = ""
+                If NlmeansSigma.Value <> NlmeansSigma.DefaultValue Then ret += ",sigma=" & NlmeansSigma.Value.ToInvariantString
+                If NlmeansH.Value <> NlmeansH.DefaultValue Then ret += ",h=" & NlmeansH.Value.ToInvariantString
+                If NlmeansPatch.Value <> NlmeansPatch.DefaultValue Then ret += ",patch=" & NlmeansPatch.Value.ToInvariantString
+                If NlmeansSearch.Value <> NlmeansSearch.DefaultValue Then ret += ",search=" & NlmeansSearch.Value.ToInvariantString
+                If NlmeansFp16.Value <> NlmeansFp16.DefaultValue Then ret += ",fp16=" & NlmeansFp16.ValueText
+                Return "--vpp-nlmeans " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
         Function GetPmdArgs() As String
             If Pmd.Value Then
                 Dim ret = ""
-                If PmdApplyCount.Value <> PmdApplyCount.DefaultValue Then ret += ",apply_count=" & PmdApplyCount.Value
+                If PmdApplyCount.Value <> PmdApplyCount.DefaultValue Then ret += ",apply_count=" & PmdApplyCount.Value.ToInvariantString
                 If PmdStrength.Value <> PmdStrength.DefaultValue Then ret += ",strength=" & PmdStrength.Value.ToInvariantString
-                If PmdThreshold.Value <> PmdThreshold.DefaultValue Then ret += ",threshold=" & PmdThreshold.Value
+                If PmdThreshold.Value <> PmdThreshold.DefaultValue Then ret += ",threshold=" & PmdThreshold.Value.ToInvariantString
                 Return "--vpp-pmd " + ret.TrimStart(","c)
             End If
             Return ""

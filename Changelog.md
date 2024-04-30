@@ -17,6 +17,7 @@ v2.4x.0 (not published yet)
 v2.38.7 (not published yet)
 ====================
 
+- UI: Fix import and setting of encoder parameters
 - VapourSynth: Fix potential wrong loading order of Python scripts
 - Internal: Fix crash using Auto Crop on extremely short videos with Dolby Vision ([#1327](/../../issues/1327))
 - Internal: Fix ignoring of existing Dolby Vision metadata in temp folder

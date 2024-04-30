@@ -431,7 +431,9 @@ Public MustInherit Class BasicVideoEncoder
                             Dim b = boolParam.DefaultValue
                             Dim i = 0
 
-                            If boolParam.NoSwitch = a(x) Then
+                            If boolParam.Switch = a(x) Then
+                                b = True
+                            ElseIf boolParam.NoSwitch = a(x) Then
                                 b = False
                             ElseIf boolParam.IntegerValue AndAlso x < a.Length - 1 AndAlso Integer.TryParse(a(x + 1), i) Then
                                 b = CBool(i)

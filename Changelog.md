@@ -19,6 +19,7 @@ v2.39.0 (not published yet)
 
 - UI: Introduce Progress Highlighting
 - UI: In Main Menu move project based Folders from Tools to Project
+- NVEncC: Remove "--tune" parameter
 - QSVEncC: Add new "--vpp-nlmeans" parameter
 - Update tools
     - ...

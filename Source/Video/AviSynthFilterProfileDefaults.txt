@@ -43,18 +43,18 @@ HDR to SDR | HDRTools | HLG =
     ConvertYUVtoXYZ(Color=0, HDRMode=2, OOTF=false, OutputMode=2)
     ConverXYZ_BT2446_C_HDRtoSDR(PQMode=false, Lhdr=$enter_text:HDR max mastering luminance level (in cd/m2)? (Default: 1000.0)$, Lsdr=100.0, pColor=0)
     ConvertXYZtoYUV(Color=2, pColor=0, OOTF=false, OutputMode=2)
-    ConvertBits(8)
+    ConvertBits(10)
 
 HDR to SDR | HDRTools | PQ =
     ConvertYUVtoXYZ(Color=0, HDRMode=0, OOTF=false, OutputMode=2)
     ConverXYZ_BT2446_C_HDRtoSDR(PQMode=true, Lhdr=$enter_text:HDR max mastering luminance level (in cd/m2)? (Default: 10000.0)$, Lsdr=100.0, pColor=0)
     ConvertXYZtoYUV(Color=2, pColor=0, OOTF=false, OutputMode=2)
-    ConvertBits(8)
+    ConvertBits(10)
 
 Tonemap | Placebo =
     ConvertBits(16)
-    libplacebo_Tonemap(src_csp=$select:msg:Select Source Color Space;SDR|0;HDR10|1;HLG|2;Dolby Vision|3$, dst_csp=$select:msg:Select Target Color Space;SDR|0;HDR10|1;HLG|2;Dolby Vision|3$, dynamic_peak_detection=$select:msg:Dynamic Peak Detection?;Yes (default)|True;No|False$, tone_mapping_function=$select:msg:Tonemapping Function;Auto (default)|0;Clip|1;ST2094_40|2;ST2094_10|3;BT2390|4;BT2446a|5;Spline|6;Reinhard|7;Mobius|8;Hable|9;Gamma|10;Linear|11$, tone_mapping_mode=$select:msg:Tonemapping Mode;Auto (default)|0;RGB|1;MAX|2;HYBRID|3;LUMA|4$)
-    # ConvertBits(8)
+    libplacebo_Tonemap(src_csp=$select:msg:Select Source Color Space;SDR|0;HDR10 (default)|1;HLG|2;Dolby Vision|3$, dst_csp=$select:msg:Select Target Color Space;SDR (default)|0;HDR10|1;HLG|2;Dolby Vision|3$, dynamic_peak_detection=$select:msg:Dynamic Peak Detection?;Yes (default)|True;No|False$, tone_mapping_function=$select:msg:Tonemapping Function;Clip|"clip";ST2094_40|"st2094_40";ST2094_10|"st2094_10";BT2390 (default)|"bt2390";BT2446a|"bt2446a";Spline|"spline";Reinhard|"reinhard";Mobius|"mobius";Hable|"hable";Gamma|"gamma";Linear|"linear";LinearLight|"linearlight"$, contrast_recovery=0.3, contrast_smoothness=3.5)
+    # ConvertBits(10)
     # ConvertToYUV420()
 
 [Crop]

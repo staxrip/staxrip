@@ -23,6 +23,7 @@ v2.39.0 (not published yet)
 - NVEncC: Remove "--tune" parameter
 - NVEncC: Add new "--vpp-nlmeans" parameter
 - QSVEncC: Add new "--vpp-nlmeans" parameter
+- AviSynth: Fix Placebo preset ([#1335](/../../issues/1335))
 - Update tools
     - ...
 - Update AviSynth+ plugins

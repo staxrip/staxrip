@@ -583,6 +583,13 @@ Public Class NVEnc
         Property TweakHue As New NumParam With {.Text = "      Hue", .HelpSwitch = "--vpp-tweak", .Config = {-180.0, 180.0, 0.1, 1}}
         Property TweakBrightness As New NumParam With {.Text = "      Brightness", .HelpSwitch = "--vpp-tweak", .Config = {-1.0, 1.0, 0.1, 1}}
 
+        Property Nlmeans As New BoolParam With {.Text = "Nlmeans", .Switch = "--vpp-nlmeans", .ArgsFunc = AddressOf GetNlmeansArgs}
+        Property NlmeansSigma As New NumParam With {.Text = "     Sigma", .HelpSwitch = "--vpp-nlmeans", .Init = 0.005, .Config = {0, 10, 0.001, 3}}
+        Property NlmeansH As New NumParam With {.Text = "     H", .HelpSwitch = "--vpp-nlmeans", .Init = 0.05, .Config = {0, 10, 0.01, 2}}
+        Property NlmeansPatch As New NumParam With {.Text = "     Patch", .HelpSwitch = "--vpp-nlmeans", .Init = 5, .Config = {3, 200, 1, 0}}
+        Property NlmeansSearch As New NumParam With {.Text = "     Search", .HelpSwitch = "--vpp-nlmeans", .Init = 11, .Config = {3, 200, 1, 0}}
+        Property NlmeansFp16 As New OptionParam With {.Text = "     Fp16", .HelpSwitch = "--vpp-nlmeans", .Init = 1, .Options = {"None: Do not use fp16 and use fp32. High precision but slow.", "Blockdiff: Use fp16 in block diff calculation. Balanced. (Default)", "All: Additionally use fp16 in weight calculation. Fast but low precision."}, .Values = {"none", "blockdiff", "all"}}
+
         Property Pmd As New BoolParam With {.Switch = "--vpp-pmd", .Text = "Denoise using PMD", .ArgsFunc = AddressOf GetPmdArgs}
         Property PmdApplyCount As New NumParam With {.Text = "      Apply Count", .Init = 2}
         Property PmdStrength As New NumParam With {.Text = "      Strength", .Name = "PmdStrength", .Init = 100.0, .Config = {0, 100, 1, 1}}
@@ -876,7 +883,8 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
                         DenoiseDct, DenoiseDctStep, DenoiseDctSigma, DenoiseDctBlockSize,
                         NvvfxDenoise, NvvfxDenoiseStrength,
-                        NvvfxArtifactReduction, NvvfxArtifactReductionMode)
+                        NvvfxArtifactReduction, NvvfxArtifactReductionMode,
+                        Nlmeans, NlmeansSigma, NlmeansH, NlmeansPatch, NlmeansSearch, NlmeansFp16)
                     Add("VPP | Sharpness",
                         Edgelevel, EdgelevelStrength, EdgelevelThreshold, EdgelevelBlack, EdgelevelWhite,
                         Unsharp, UnsharpRadius, UnsharpWeight, UnsharpThreshold,
@@ -1038,6 +1046,12 @@ Public Class NVEnc
                 TweakHue.NumEdit.Enabled = Tweak.Value
                 TweakBrightness.NumEdit.Enabled = Tweak.Value
 
+                NlmeansSigma.NumEdit.Enabled = Nlmeans.Value
+                NlmeansH.NumEdit.Enabled = Nlmeans.Value
+                NlmeansPatch.NumEdit.Enabled = Nlmeans.Value
+                NlmeansSearch.NumEdit.Enabled = Nlmeans.Value
+                NlmeansFp16.MenuButton.Enabled = Nlmeans.Value
+
                 PmdApplyCount.NumEdit.Enabled = Pmd.Value
                 PmdStrength.NumEdit.Enabled = Pmd.Value
                 PmdThreshold.NumEdit.Enabled = Pmd.Value
@@ -1086,6 +1100,19 @@ Public Class NVEnc
                 If DenoiseDctSigma.Value <> DenoiseDctSigma.DefaultValue Then ret += ",sigma=" & DenoiseDctSigma.Value.ToInvariantString
                 If DenoiseDctBlockSize.Value <> DenoiseDctBlockSize.DefaultValue Then ret += ",block_size=" & DenoiseDctBlockSize.ValueText
                 Return "--vpp-denoise-dct " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetNlmeansArgs() As String
+            If Nlmeans.Value Then
+                Dim ret = ""
+                If NlmeansSigma.Value <> NlmeansSigma.DefaultValue Then ret += ",sigma=" & NlmeansSigma.Value.ToInvariantString
+                If NlmeansH.Value <> NlmeansH.DefaultValue Then ret += ",h=" & NlmeansH.Value.ToInvariantString
+                If NlmeansPatch.Value <> NlmeansPatch.DefaultValue Then ret += ",patch=" & NlmeansPatch.Value.ToInvariantString
+                If NlmeansSearch.Value <> NlmeansSearch.DefaultValue Then ret += ",search=" & NlmeansSearch.Value.ToInvariantString
+                If NlmeansFp16.Value <> NlmeansFp16.DefaultValue Then ret += ",fp16=" & NlmeansFp16.ValueText
+                Return "--vpp-nlmeans " + ret.TrimStart(","c)
             End If
             Return ""
         End Function

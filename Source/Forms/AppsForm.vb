@@ -880,8 +880,8 @@ Public Class AppsForm
 
             If dialog.ShowDialog = DialogResult.OK Then
                 If Not s.AllowCustomPathsInStartupFolder AndAlso
-                    dialog.FileName.ToLowerEx.StartsWithEx(Folder.Startup.ToLowerEx) AndAlso
-                    Not dialog.FileName.ToLowerEx.StartsWithEx(Folder.Settings.ToLowerEx) Then
+                    dialog.FileName.ToLowerEx.StartsWithEx(Folder.Startup.ToLowerEx + Path.DirectorySeparatorChar) AndAlso
+                    Not dialog.FileName.ToLowerEx.StartsWithEx(Folder.Settings.ToLowerEx + Path.DirectorySeparatorChar) Then
 
                     MsgError("Custom paths within the startup folder are not permitted " +
                              "because it would prevent a simple update process." + BR2 +
@@ -973,8 +973,8 @@ Public Class AppsForm
 
                 If td.Show.FileExists Then
                     If Not s.AllowCustomPathsInStartupFolder AndAlso
-                        td.SelectedValue.ToLowerEx.StartsWithEx(Folder.Startup.ToLowerEx) AndAlso
-                        Not td.SelectedValue.ToLowerEx.StartsWithEx(Folder.Settings.ToLowerEx) Then
+                        td.SelectedValue.ToLowerEx.StartsWithEx(Folder.Startup.ToLowerEx + Path.DirectorySeparatorChar) AndAlso
+                        Not td.SelectedValue.ToLowerEx.StartsWithEx(Folder.Settings.ToLowerEx + Path.DirectorySeparatorChar) Then
 
                         MsgError("Custom paths within the startup folder are not permitted.")
                         Exit Sub

@@ -180,7 +180,7 @@ Public Class VideoComparisonForm
 
     Sub Save()
         For Each tab As VideoTab In TabControl.TabPages
-            Dim outputPath = tab.SourceFilePath.Dir & Pos & " " + tab.SourceFilePath.Base + ".png"
+            Dim outputPath = Path.Combine(tab.SourceFilePath.Dir, Pos & " " & tab.SourceFilePath.Base & ".png")
 
             Using bmp = tab.GetBitmap
                 bmp.Save(outputPath, ImageFormat.Png)

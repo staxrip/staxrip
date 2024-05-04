@@ -401,8 +401,10 @@ clipname.set_output()" + BR
             Dim line = plugin.Name + " = importlib.machinery.SourceFileLoader('" + plugin.Name + "', r""" + plugin.Path + """).load_module()"
 
             If code.Contains(line) Then
-                code = code.Replace(line + BR, "")
-                code = line + BR + code
+                If Not script.ContainsEx(filterName) Then
+                    code = code.Replace(line + BR, "")
+                    code = line + BR + code
+                End If
             Else
                 If Not script.Contains(line) Then
                     code = line + BR + code

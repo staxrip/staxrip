@@ -24,6 +24,7 @@ v2.39.0 (not published yet)
 - NVEncC: Add new "--vpp-nlmeans" parameter
 - QSVEncC: Add new "--vpp-nlmeans" parameter
 - AviSynth: Fix Placebo preset ([#1335](/../../issues/1335))
+- VapourSynth: Fix wrong loading order of Python scripts on multiple calls ([#1340](/../../issues/1340))
 - Internal: Fix Linux compatibility a bit more ([#1337](/../../issues/1337), [#1348](/../../issues/1348))
 - Update tools
     - ...

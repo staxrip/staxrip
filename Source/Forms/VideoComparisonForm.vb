@@ -16,20 +16,20 @@ Public Class VideoComparisonForm
         InitializeComponent()
         RestoreClientSize(53, 36)
 
-        AllowDrop = True
-        KeyPreview = True
-        bnMenu.TabStop = False
-        TabControl.AllowDrop = True
-        TrackBar.NoMouseWheelEvent = True
-        tlpMain.AllowDrop = True
-
         Dim enabledFunc = Function() TabControl.SelectedTab IsNot Nothing
         Menu = New ContextMenuStripEx With {
             .Form = Me
         }
 
+        AllowDrop = True
+        KeyPreview = True
         bnMenu.ContextMenuStrip = Menu
+        bnMenu.TabStop = False
+        TabControl.AllowDrop = True
         TabControl.ContextMenuStrip = Menu
+        TabControl.ShowToolTips = True
+        TrackBar.NoMouseWheelEvent = True
+        tlpMain.AllowDrop = True
 
         Menu.Add("Add files to compare...", AddressOf Add, Keys.O, "Video files to compare, the file browser has multiselect enabled.")
         Menu.Add("Close selected tab", AddressOf Remove, Keys.Delete, enabledFunc)
@@ -140,15 +140,16 @@ Public Class VideoComparisonForm
 
     End Sub
 
-    Sub Add(sourePath As String)
+    Sub Add(sourcePath As String)
         Dim tab = New VideoTab With {
             .AllowDrop = True,
             .Form = Me,
-            .BackColor = TabBackColor
+            .BackColor = TabBackColor,
+            .ToolTipText = sourcePath
         }
         tab.VideoPanel.ContextMenuStrip = TabControl.ContextMenuStrip
 
-        If tab.Open(sourePath) Then
+        If tab.Open(sourcePath) Then
             TabControl.TabPages.Add(tab)
 
             AddHandler tab.DragOver, AddressOf TabControlOnDragOver
@@ -162,8 +163,8 @@ Public Class VideoComparisonForm
         End If
     End Sub
 
-    Sub Add(sourePaths As String())
-        For Each path In sourePaths
+    Sub Add(sourcePaths As String())
+        For Each path In sourcePaths
             If File.Exists(path) Then
                 Add(path)
             End If
@@ -369,6 +370,7 @@ Public Class VideoComparisonForm
 
         Function Open(sourcePath As String) As Boolean
             Text = AdjustName(sourcePath.Base)
+            ToolTipText = sourcePath
             SourceFilePath = sourcePath
 
             Select Case sourcePath.Ext()

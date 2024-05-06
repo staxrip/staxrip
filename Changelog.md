@@ -20,6 +20,7 @@ v2.39.0 (not published yet)
 - UI: Introduce Progress Highlighting
 - UI: In Main Menu move project based Folders from Tools to Project
 - UI: Adjust some default settings
+- UI: Show full path on tab hover on Video Comparison ([#1336](/../../issues/1336))
 - NVEncC: Remove "--tune" parameter
 - NVEncC: Add new "--vpp-nlmeans" parameter
 - QSVEncC: Add new "--vpp-nlmeans" parameter

@@ -831,10 +831,12 @@ Public Class x265Params
 
     Property TSkip As New BoolParam With {
         .Switch = "--tskip",
+        .NoSwitch = "--no-tskip",
         .Text = "Enable evaluation of transform skip coding for 4x4 TU coded blocks"}
 
     Property TSkipFast As New BoolParam With {
         .Switch = "--tskip-fast",
+        .NoSwitch = "--no-tskip-fast",
         .Text = "Only evaluate transform skip for NxN intra predictions (4x4 blocks)"}
 
     Property PsyRD As New NumParam With {

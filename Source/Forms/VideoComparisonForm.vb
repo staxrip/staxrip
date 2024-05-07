@@ -412,7 +412,7 @@ Public Class VideoComparisonForm
                     script.Filters.Add(New VideoFilter("Source", "Source", File.ReadAllText(sourcePath)))
                 Case VideoComparisonFileType.Video
                     If sourcePath.EndsWith("mp4") Then
-                        script.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourcePath + "" + """, format = ""YV12"")"))
+                        script.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourcePath + "" + """, format = ""YUV420P12"")"))
                     Else
                         script.Filters.Add(New VideoFilter("FFVideoSource(""" + sourcePath + "" + """, colorspace = ""YV12"")"))
                     End If

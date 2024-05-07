@@ -22,6 +22,7 @@ v2.39.0 (not published yet)
 - UI: Adjust some default settings
 - UI: Show full path on tab hover on Video Comparison ([#1336](/../../issues/1336))
 - UI: Show full path on Video Comparison ([#1336](/../../issues/1336))
+- UI: Fix crash with some mp4 files on Video Comparison ([#1258](/../../issues/1258))
 - NVEncC: Remove "--tune" parameter
 - NVEncC: Add new "--vpp-nlmeans" parameter
 - QSVEncC: Add new "--vpp-nlmeans" parameter

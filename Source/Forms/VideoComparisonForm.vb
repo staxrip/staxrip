@@ -51,6 +51,7 @@ Public Class VideoComparisonForm
         AddHandler tlpMain.DragDrop, AddressOf TabControlOnDragDrop
         AddHandler TabControl.DragOver, AddressOf TabControlOnDragOver
         AddHandler TabControl.DragDrop, AddressOf TabControlOnDragDrop
+        AddHandler TabControl.Selected, AddressOf TabControlOnSelected
 
         ApplyTheme()
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
@@ -116,6 +117,12 @@ Public Class VideoComparisonForm
         End If
     End Sub
 
+    Sub TabControlOnSelected(sender As Object, e As TabControlEventArgs)
+        Dim tab = DirectCast(e.TabPage, VideoTab)
+        
+        laFilePath.Text = tab.SourceFilePath
+    End Sub
+
     Sub Add()
         If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
 
@@ -161,6 +168,9 @@ Public Class VideoComparisonForm
         Else
             tab.Dispose()
         End If
+
+        Dim vt = DirectCast(TabControl.SelectedTab, VideoTab)
+        laFilePath.Text = vt?.SourceFilePath
     End Sub
 
     Sub Add(sourcePaths As String())
@@ -485,7 +495,7 @@ Public Class VideoComparisonForm
                 Else
                     Dim frameRate = If(Calc.IsValidFrameRate(Server.FrameRate), Server.FrameRate, 25)
                     Dim dt = DateTime.Today.AddSeconds(Pos / frameRate)
-                    Form.laInfo.Text = "Position: " & Pos & ", Time: " + dt.ToString("HH:mm:ss.fff") + ", Size: " & Server.Info.Width & " x " & Server.Info.Height
+                    Form.laInfo.Text = $"Position: {Pos,5}, Time: {dt:HH:mm:ss.fff}, Size: {Server.Info.Width} x {Server.Info.Height}"
                 End If
 
                 Form.laInfo.Refresh()

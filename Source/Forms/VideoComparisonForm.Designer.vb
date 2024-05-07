@@ -16,6 +16,7 @@ Partial Class VideoComparisonForm
         Me.TabControl = New StaxRip.UI.TabControlEx()
         Me.TrackBar = New StaxRip.UI.TrackBarEx()
         Me.laInfo = New LabelEx()
+        Me.laFilePath = New LabelEx()
         Me.bnMenu = New ButtonEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         CType(Me.TrackBar, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -49,9 +50,20 @@ Partial Class VideoComparisonForm
         Me.TrackBar.TabStop = False
         Me.TrackBar.TickStyle = System.Windows.Forms.TickStyle.None
         '
+        'laFilePath
+        '
+        Me.laFilePath.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.laFilePath.Font = New Font(g.GetCodeFont(10), FontStyle.Regular)
+        Me.laFilePath.Location = New System.Drawing.Point(123, 964)
+        Me.laFilePath.Name = "laFilePath"
+        Me.laFilePath.Size = New System.Drawing.Size(1330, 48)
+        Me.laFilePath.TabIndex = 5
+        Me.laFilePath.TextAlign = System.Drawing.ContentAlignment.TopLeft
+        '
         'laInfo
         '
         Me.laInfo.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.laInfo.Font = New Font(g.GetCodeFont(10), FontStyle.Bold)
         Me.laInfo.Location = New System.Drawing.Point(123, 924)
         Me.laInfo.Name = "laInfo"
         Me.laInfo.Size = New System.Drawing.Size(1330, 48)
@@ -72,17 +84,19 @@ Partial Class VideoComparisonForm
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.Controls.Add(Me.bnMenu, 0, 2)
         Me.tlpMain.Controls.Add(Me.laInfo, 1, 2)
+        Me.tlpMain.Controls.Add(Me.laFilePath, 1, 3)
         Me.tlpMain.Controls.Add(Me.TabControl, 0, 0)
         Me.tlpMain.Controls.Add(Me.TrackBar, 0, 1)
         Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
         Me.tlpMain.Name = "tlpMain"
-        Me.tlpMain.RowCount = 3
+        Me.tlpMain.RowCount = 4
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpMain.Size = New System.Drawing.Size(1456, 986)
-        Me.tlpMain.TabIndex = 5
+        Me.tlpMain.TabIndex = 6
         '
         'VideoComparisonForm
         '
@@ -103,6 +117,7 @@ Partial Class VideoComparisonForm
     End Sub
     Friend WithEvents TabControl As TabControlEx
     Friend WithEvents TrackBar As TrackBarEx
+    Friend WithEvents laFilePath As LabelEx
     Friend WithEvents laInfo As LabelEx
     Friend WithEvents bnMenu As ButtonEx
     Friend WithEvents tlpMain As TableLayoutPanel

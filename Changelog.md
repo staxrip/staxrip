@@ -23,6 +23,7 @@ v2.39.0 (not published yet)
 - NVEncC: Remove "--tune" parameter
 - NVEncC: Add new "--vpp-nlmeans" parameter
 - QSVEncC: Add new "--vpp-nlmeans" parameter
+- SvtAv1EncApp: Add new "--frame-luma-bias" parameter
 - x265: Fix few missing NO parameters ([#1344](/../../issues/1344))
 - AviSynth: Fix Placebo preset ([#1335](/../../issues/1335))
 - VapourSynth: Fix wrong loading order of Python scripts on multiple calls ([#1340](/../../issues/1340))

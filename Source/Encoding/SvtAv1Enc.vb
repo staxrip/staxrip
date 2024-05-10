@@ -1089,6 +1089,13 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
         .Init = 1}
 
+    Property PsyFrameLumaBias As New NumParam With {
+        .Switch = "--frame-luma-bias",
+        .Text = "Frame Luma Bias",
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Config = {0, 100, 1},
+        .Init = 0}
+
     '   --------------------------------------------------------
     '   --------------------------------------------------------
 

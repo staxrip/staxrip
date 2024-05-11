@@ -119,11 +119,13 @@ Public Class DolbyVisionMetadataFile
 
         For i = 0 To entries.Count() - 1
             Dim entry = entries.ElementAt(i)
-            Dim same = entries.Where(Function(x) x.Id = entry.Id).Count()
+            Dim same = entries.Where(Function(x) x.Id = entry.Id)
+            Dim sameCount = same.Count()
             Dim take = True
 
-            take = If(take AndAlso i = 0 AndAlso same = 1 AndAlso entry.Offset = Padding.Empty AndAlso entry.EndFrame < thresholdBegin, False, take)
-            take = If(take AndAlso i = entries.Count() - 1 AndAlso same = 1 AndAlso entry.Offset = Padding.Empty AndAlso entry.StartFrame > entry.EndFrame - thresholdEnd, False, take)
+            take = If(take AndAlso i = 0 AndAlso sameCount = 1 AndAlso entry.Offset = Padding.Empty AndAlso entry.EndFrame < thresholdBegin, False, take)
+            take = If(take AndAlso i = entries.Count() - 1 AndAlso sameCount = 1 AndAlso entry.Offset = Padding.Empty AndAlso entry.StartFrame > entry.EndFrame - thresholdEnd, False, take)
+            take = If(take AndAlso Not same.Where(Function(x) (x.EndFrame - x.StartFrame) > 8).Any() AndAlso entry.Offset = Padding.Empty, False, take)
 
             If take Then
                 newCrop.Left = Math.Min(newCrop.Left, entry.Offset.Left)

@@ -17,6 +17,7 @@ v2.4x.0 (not published yet)
 v2.41.0 (not published yet)
 ====================
 
+- Crop: Improve Automatic Dolby Vision Auto Crop mode
 - VapourSynth: Fix wrong loading order of dependencies under some circumstances
 - Update tools
     - ...

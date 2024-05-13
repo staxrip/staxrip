@@ -18,6 +18,8 @@ v2.39.1 (2024-05-13)
 ====================
 
 - SvtAv1EncApp: Fix not showing "--frame-luma-bias" parameter ([#1356](/../../issues/1356))
+- Update tools
+    - AutoCrop v2.3
 
 
 v2.39.0 (2024-05-12)
@@ -39,7 +41,7 @@ v2.39.0 (2024-05-12)
 - VapourSynth: Fix wrong loading order of Python scripts on multiple calls ([#1340](/../../issues/1340))
 - Internal: Fix Linux compatibility a bit more ([#1337](/../../issues/1337), [#1348](/../../issues/1348))
 - Update tools
-    - AutoCrop v2.3
+    - ~~AutoCrop v2.3~~
     - DeeZy v0.1.9
     - MediaInfo v24.04
     - NVEncC v7.53

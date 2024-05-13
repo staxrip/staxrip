@@ -14,6 +14,12 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.39.1 (2024-05-13)
+====================
+
+- SvtAv1EncApp: Fix not showing "--frame-luma-bias" parameter ([#1356](/../../issues/1356))
+
+
 v2.39.0 (2024-05-12)
 ====================
 

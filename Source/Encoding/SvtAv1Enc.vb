@@ -1147,7 +1147,7 @@ Public Class SvtAv1EncParams
                 )
                 If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then
                     Add("PSY",
-                        PsyDolbyVisionRpu, PsyVarianceBoostStrength, PsyVarianceOctile, PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength
+                        PsyDolbyVisionRpu, PsyVarianceBoostStrength, PsyVarianceOctile, PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyFrameLumaBias
                     )
                 End If
 

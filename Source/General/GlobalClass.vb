@@ -1174,11 +1174,9 @@ Public Class GlobalClass
     Private ExceptionHandled As Boolean
 
     Sub OnException(ex As Exception)
-        If ExceptionHandled Then
-            Exit Sub
-        Else
-            ExceptionHandled = True
-        End If
+        If ExceptionHandled Then Exit Sub
+
+        ExceptionHandled = True
 
         If TypeOf ex IsNot AbortException Then
             Try

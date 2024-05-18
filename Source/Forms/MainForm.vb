@@ -1043,7 +1043,7 @@ Public Class MainForm
     Private AssistantClickAction As Action
     Private ThemeRefresh As Boolean
     Private Const TrackBarInterval As Integer = 16
-    Private Const TrackBarTicks As Integer = 16
+    Private Const TrackBarTicks As Integer = 8
 
     Sub New()
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException

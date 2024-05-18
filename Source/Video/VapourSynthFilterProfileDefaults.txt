@@ -191,7 +191,7 @@ VagueDenoiser = clip = core.vd.VagueDenoiser(clip=clip, method=$select:msg:Selec
 
 [Resize]
 Advanced | NNEDI3_rpow2 = clip = nnedi3_rpow2.nnedi3_rpow2(clip, rfactor=$select:msg:Enlargement Factor?;2;4;8;16$, kernel="$select:msg:Center Shift Correction Algorithm?;bicubic;bilinear;blackman;box;gauss;lanczos;point;sinc;spline;spline16;spline36;spline64$", width=%target_width%, height=%target_height%)
-Advanced | ReSampleHQ = clip = resamplehq.resample_hq(clip, %target_width%, %target_height%, kernel='$select:Point;Rect;Linear;Cubic;Lanczos;Blackman;Blackmanminlobe;Spline16;Spline36;Spline64;Gauss;Sinc$')
+Advanced | ReSampleHQ = clip = resamplehq.resample_hq(clip, %target_width%, %target_height%, kernel='$select:Point;Linear;Cubic;Lanczos;Spline16;Spline36$')
 Resize... = clip = $select:Bilinear|core.resize.Bilinear;Bicubic|core.resize.Bicubic;Point|core.resize.Point;Lanczos|core.resize.Lanczos;Spline16|core.resize.Spline16;Spline36|core.resize.Spline36;Spline64|core.resize.Spline64;Dither_Resize16|Dither.Resize16nr;Resample|core.fmtc.resample$(clip, %target_width%, %target_height%)
 
 [Restoration]

@@ -402,7 +402,9 @@ Friend Class JobsForm
     End Sub
 
     Sub bnLoad_Click(sender As Object, e As EventArgs) Handles bnLoad.Click
-        If g.MainForm.LoadProject(lv.SelectedItem.ToString) Then
+        Dim job = DirectCast(lv.SelectedItem, Job)
+
+        If g.MainForm.LoadProject(job.Path) Then
             Close()
         End If
     End Sub

@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.39.2 (not published yet)
+v2.39.2 (2024-05-27)
 ====================
 
 - UI: Fix DVB subtitle extraction from TS containers throwing errors ([#1361](/../../issues/1361))

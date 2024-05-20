@@ -405,6 +405,12 @@ Public Class ffmpegDemuxer
             Dim outpath = Path.Combine(proj.TempDir, subtitle.Filename + subtitle.ExtFull)
             Dim args = "-y -hide_banner -probesize 10M -i " + proj.SourceFile.Escape
             Dim codec = If(subtitle.Ext = "srt", "srt", "copy")
+            Dim format = ""
+
+            If subtitle.Ext = "mks" Then
+                codec = If(subtitle.Ext = "mks", "dvbsub", codec)
+                format = " -f matroska"
+            End If
 
             If Not overrideExisting AndAlso outpath.FileExists Then Exit Sub
 
@@ -412,7 +418,7 @@ Public Class ffmpegDemuxer
                 args += " -map 0:s:" & subtitle.Index
             End If
 
-            args += $" -c:s {codec} -vn -an {outpath.Escape}"
+            args += $" -c:s {codec}{format} -vn -an {outpath.Escape}"
 
             Using proc As New Proc
                 proc.Project = proj

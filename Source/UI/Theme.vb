@@ -840,17 +840,6 @@ Public Class Theme
             End Set
         End Property
 
-        Private _progressHighlighting As ProgressHighlightingThemeColors
-        Public Property ProgressHighlighting As ProgressHighlightingThemeColors
-            Get
-                _progressHighlighting = If(_progressHighlighting, New ProgressHighlightingThemeColors())
-                Return _progressHighlighting
-            End Get
-            Set
-                _progressHighlighting = Value
-            End Set
-        End Property
-
         <Serializable>
         Public Class OutputHighlightingThemeColors
             Public Property HeaderBackColor As ColorHSL = Color.Transparent
@@ -924,16 +913,6 @@ Public Class Theme
             Public Property EncoderBackColor As ColorHSL = Color.Transparent
             Public Property EncoderForeColor As ColorHSL = New ColorHSL(220, 0.99, 0.33, 1)
             Public Property EncoderFontStyles As FontStyle() = {}
-        End Class
-
-        <Serializable>
-        Public Class ProgressHighlightingThemeColors
-            Public Property BitrateForeColor As ColorHSL = Color.Red
-            Public Property FpsForeColor As ColorHSL = Color.Red
-            Public Property FramesForeColor As ColorHSL = Color.Red
-            Public Property PercentForeColor As ColorHSL = Color.Red
-            Public Property SizeForeColor As ColorHSL = Color.Red
-            Public Property TimeForeColor As ColorHSL = Color.Red
         End Class
     End Class
 

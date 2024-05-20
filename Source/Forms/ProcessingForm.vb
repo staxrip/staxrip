@@ -197,13 +197,13 @@ Public Class ProcessingForm
 
     Private CMS As ContextMenuStripEx
     Private OutputHighlightingMenuItem As MenuItemEx
-    Private ProgressHighlightingMenuItem As MenuItemEx
     Private ProgressReformattingMenuItem As MenuItemEx
     Private StopAfterCurrentJobMenuItem As MenuItemEx
     Private TaskbarButtonCreatedMessage As Integer
 
     Private Const _priorityMenuName As String = "Priority"
     Private Const _themeMenuName As String = "Temporary Theme"
+    Private Const _progressMenuName As String = "Progress Highlighting"
 
     Property Taskbar As Taskbar
 
@@ -232,8 +232,12 @@ Public Class ProcessingForm
         StopAfterCurrentJobMenuItem = CMS.Add("Stop After Current Job", AddressOf StopAfterCurrentJob, "Stops all job processing after the current job.")
         CMS.Add("-")
         OutputHighlightingMenuItem = CMS.Add("Output Highlighting", AddressOf SetOutputHighlighting, Keys.Control Or Keys.O)
-        ProgressHighlightingMenuItem = CMS.Add("Progress Highlighting", AddressOf SetProgressHighlighting, Keys.Control Or Keys.P)
         ProgressReformattingMenuItem = CMS.Add("Progress Reformatting", AddressOf SetProgressReformatting, Keys.Control Or Keys.I)
+
+        CMS.Add($"{_progressMenuName} | None", Sub() SetProgressHighlighting("None"))
+        For Each category In ThemeManager.ColorCategories
+            CMS.Add($"{_progressMenuName} | {category.Item1}", Sub() SetProgressHighlighting(category.Item1))
+        Next
 
         For Each theme In ThemeManager.Themes
             CMS.Add($"{_themeMenuName} | {theme.Name}", Sub() ThemeManager.SetCurrentTheme(theme.Name))
@@ -345,8 +349,16 @@ Public Class ProcessingForm
         ProcController.SetOutputHighlighting(OutputHighlightingMenuItem.Checked, ThemeManager.CurrentTheme)
     End Sub
 
-    Sub SetProgressHighlighting()
-        s.ProgressHighlighting = Not s.ProgressHighlighting
+    Sub SetProgressHighlighting(colorName As String)
+        If String.IsNullOrWhiteSpace(colorName) Then
+            s.ProgressHighlighting = False
+        ElseIf colorName = "None" Then
+            s.ProgressHighlighting = False
+            s.ProgressHighlightingColorName = colorName
+        Else
+            s.ProgressHighlighting = True
+            s.ProgressHighlightingColorName = colorName
+        End If
     End Sub
 
     Sub SetProgressReformatting()
@@ -411,7 +423,6 @@ Public Class ProcessingForm
         StopAfterCurrentJobMenuItem.Checked = g.StopAfterCurrentJob
 
         OutputHighlightingMenuItem.Checked = s.OutputHighlighting
-        ProgressHighlightingMenuItem.Checked = s.ProgressHighlighting
         ProgressReformattingMenuItem.Checked = s.ProgressReformatting
 
         Dim priority = ProcController.GetProcessPriority()
@@ -419,6 +430,10 @@ Public Class ProcessingForm
         For Each item In CMS.GetItems().OfType(Of MenuItemEx).Where(Function(i) i.Path.StartsWith(_priorityMenuName + " | "))
             item.Enabled = priority.HasValue
             item.Checked = item.Path.EndsWith($" | {priorityText}")
+        Next
+
+        For Each item In CMS.GetItems().OfType(Of MenuItemEx).Where(Function(i) i.Path.StartsWith(_progressMenuName + " | "))
+            item.Checked = item.Path.EndsWith($" | {s.ProgressHighlightingColorName}")
         Next
 
         For Each item In CMS.GetItems().OfType(Of MenuItemEx).Where(Function(i) i.Path.StartsWith(_themeMenuName + " | "))

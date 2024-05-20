@@ -23,6 +23,7 @@ v2.40.0 (not published yet)
 - UI: Add new event "Before Job Adding" ([#1346](/../../issues/1346))
 - UI: Add new event "After Job Added"
 - UI: Add setting for frame number position on file names when saving images ([#1373](/../../issues/1373))
+- UI: Improve Progress Highlighting
 - Crop: Move AutoCrop settings from Settings to Project Options
 - Crop: Add new "Time Interval" mode for AutoCrop
     - Analyzes a frame every x seconds, which makes it more useful throughout short and long videos

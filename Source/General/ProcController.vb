@@ -463,9 +463,10 @@ Public Class ProcController
             ProgressBar.Rtb.Text = value
 
             If _progressHighlightingFailCounter < 64 Then
-                Dim format = Sub(index As Integer, length As Integer, foreColor As ColorHSL, fontStyles() As FontStyle)
+                Dim baseHue = ThemeManager.ColorCategories.FirstOrDefault(Function(x) x.Item1 = s.ProgressHighlightingColorName).Item2
+                Dim format = Sub(index As Integer, length As Integer, hue As Integer, fontStyles() As FontStyle)
                                  ProgressBar.Rtb.Select(index, length)
-                                 ProgressBar.Rtb.SelectionColor = foreColor
+                                 ProgressBar.Rtb.SelectionColor = New ColorHSL(hue, 0.55, 0.60)
 
                                  If fontStyles?.Length > 0 Then
                                      ProgressBar.Rtb.SelectionFont = New Font(ProgressBar.Rtb.Font, fontStyles.Aggregate(ProgressBar.Rtb.Font.Style, Function(a, n) a Or n))
@@ -475,7 +476,6 @@ Public Class ProcController
                 Dim match As Match
                 Dim matches As MatchCollection
                 Dim noMatch As Boolean = True
-                Dim ph = theme.ProcessingForm.ProgressHighlighting
 
                 ProgressBar.Rtb.SuspendLayout()
 
@@ -483,28 +483,28 @@ Public Class ProcController
                 If match.Success Then
                     noMatch = False
                     gr = match.Groups(1)
-                    format(gr.Index, gr.Length, ph.PercentForeColor, Nothing)
+                    format(gr.Index, gr.Length, baseHue + 30, Nothing)
                 End If
 
                 match = Regex.Match(value, "(\d+/\d+\s*frames)", RegexOptions.IgnoreCase)
                 If match.Success Then
                     noMatch = False
                     gr = match.Groups(1)
-                    format(gr.Index, gr.Length, ph.FramesForeColor, Nothing)
+                    format(gr.Index, gr.Length, baseHue + 15, Nothing)
                 End If
 
                 match = Regex.Match(value, "@\s*(\d+(?:\.\d+)?\s*fps)", RegexOptions.IgnoreCase)
                 If match.Success Then
                     noMatch = False
                     gr = match.Groups(1)
-                    format(gr.Index, gr.Length, ph.FpsForeColor, Nothing)
+                    format(gr.Index, gr.Length, baseHue - 5, Nothing)
                 End If
 
                 match = Regex.Match(value, "(\d+(?:\.\d+)?\s*(kb/s|kbits/s|kbps|mb/s|mbits/s|mbps))", RegexOptions.IgnoreCase)
                 If match.Success Then
                     noMatch = False
                     gr = match.Groups(1)
-                    format(gr.Index, gr.Length, ph.BitrateForeColor, Nothing)
+                    format(gr.Index, gr.Length, baseHue - 15, Nothing)
                 End If
 
                 matches = Regex.Matches(value, "(\d+(?:\.\d+)?\s*(kb|mb))(?:[^a-z/0-9]|$)", RegexOptions.IgnoreCase)
@@ -512,7 +512,7 @@ Public Class ProcController
                     noMatch = False
                     Dim m = matches(matches.Count - 1)
                     gr = m.Groups(1)
-                    format(gr.Index, gr.Length, ph.SizeForeColor, Nothing)
+                    format(gr.Index, gr.Length, baseHue + 15, Nothing)
                 End If
 
                 'match = Regex.Match(value, "[^-](\d+:\d+:\d+)", RegexOptions.IgnoreCase)
@@ -521,7 +521,7 @@ Public Class ProcController
                     noMatch = False
                     Dim m = matches(matches.Count - 1)
                     gr = m.Groups(1)
-                    format(gr.Index, gr.Length, ph.TimeForeColor, Nothing)
+                    format(gr.Index, gr.Length, baseHue + 0, Nothing)
                 End If
 
                 ProgressBar.Rtb.ResumeLayout()

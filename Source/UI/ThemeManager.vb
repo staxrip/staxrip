@@ -518,14 +518,6 @@
                     .EncoderBackColor = General.Controls.RichTextBox.BackColor,
                     .EncoderForeColor = _outputHighlightingStrongForeColor.SetHue(205).AddLuminance(0.05),
                     .EncoderFontStyles = {FontStyle.Italic, FontStyle.Bold}
-                },
-                .ProgressHighlighting = New ProcessingFormThemeColors.ProgressHighlightingThemeColors() With {
-                        .PercentForeColor = General.Controls.LabelProgressBar.ForeColor.SetHue(_backSelectedColor.H + 180).AddSaturation(0.5).AddLuminance(-0.1),
-                        .FramesForeColor = .PercentForeColor.AddHue(15),
-                        .FpsForeColor = .PercentForeColor.AddHue(45),
-                        .BitrateForeColor = .PercentForeColor.AddHue(30),
-                        .SizeForeColor = .PercentForeColor.AddHue(0),
-                        .TimeForeColor = .PercentForeColor.AddHue(15)
                 }
             }
 

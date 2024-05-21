@@ -20,6 +20,7 @@ v2.39.2 (not published yet)
 - UI: Fix DVB subtitle extraction from TS containers throwing errors ([#1361](/../../issues/1361))
 - UI: Fix long path issues on Batch file jobs ([#1051](/../../issues/1051))
 - UI: Fix not able to open Batch file jobs ([#1051](/../../issues/1051))
+- SvtAv1EncApp: Add VUI metadata import ([#1362](/../../issues/1362))
 
 
 v2.39.1 (2024-05-13)

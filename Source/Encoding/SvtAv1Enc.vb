@@ -1,5 +1,6 @@
 ﻿Imports System.Globalization
 Imports System.Text
+Imports System.Text.RegularExpressions
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
@@ -65,6 +66,22 @@ Public Class SvtAv1Enc
         End Get
     End Property
 
+    Overrides Function BeforeEncoding() As Boolean
+        Dim rpu = Params.GetStringParam(Params.PsyDolbyVisionRpu.Switch)?.Value
+        If p.Script.IsFilterActive("Crop") AndAlso Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
+            If (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
+                p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom), True)
+                Dim newPath = p.HdrDolbyVisionMetadataFile.WriteCroppedRpu(True)
+                If Not String.IsNullOrWhiteSpace(newPath) Then
+                    Params.PsyDolbyVisionRpu.Value = newPath
+                Else
+                    Return False
+                End If
+            End If
+        End If
+        Return True
+    End Function
+
     Overrides Sub Encode()
         Encode("Video encoding", GetArgs(1, 0, 0, Nothing, p.Script), s.ProcessPriority)
 
@@ -99,6 +116,99 @@ Public Class SvtAv1Enc
 
             proc.Start()
         End Using
+    End Sub
+
+    Overrides Sub SetMetaData(sourceFile As String)
+        If Not p.ImportVUIMetadata Then Exit Sub
+
+        Dim cl = ""
+        Dim colour_primaries = MediaInfo.GetVideo(sourceFile, "colour_primaries")
+
+        Select Case colour_primaries
+            Case "BT.2020"
+                cl += " --color-primaries 9"
+            Case "BT.709"
+                cl += " --color-primaries 1"
+        End Select
+
+        Dim transfer_characteristics = MediaInfo.GetVideo(sourceFile, "transfer_characteristics")
+
+        Select Case transfer_characteristics
+            Case "PQ", "SMPTE ST 2084"
+                cl += " --transfer-characteristics 17"
+            Case "BT.709"
+                cl += " --transfer-characteristics 1"
+            Case "HLG"
+                cl += " --transfer-characteristics 18"
+        End Select
+
+        Dim matrix_coefficients = MediaInfo.GetVideo(sourceFile, "matrix_coefficients")
+
+        Select Case matrix_coefficients
+            Case "BT.2020 non-constant"
+                cl += " --matrix-coefficients 9"
+            Case "BT.709"
+                cl += " --matrix-coefficients 1"
+        End Select
+
+        Dim color_range = MediaInfo.GetVideo(sourceFile, "colour_range")
+
+        Select Case color_range
+            Case "Limited"
+                cl += " --color-range 0"
+            Case "Full"
+                cl += " --color-range 1"
+        End Select
+
+        Dim chromaSubsampling_Position = MediaInfo.GetVideo(sourceFile, "ChromaSubsampling_Position")
+        Dim chromaloc = New String(chromaSubsampling_Position.Where(Function(c) c.IsDigit()).ToArray())
+
+        If Not String.IsNullOrEmpty(chromaloc) AndAlso chromaloc <> "0" Then
+            cl += $" --chroma-sample-position {chromaloc}"
+        End If
+
+        Dim masteringDisplay_ColorPrimaries = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_ColorPrimaries")
+        Dim masteringDisplay_Luminance = MediaInfo.GetVideo(sourceFile, "MasteringDisplay_Luminance")
+
+        If masteringDisplay_ColorPrimaries <> "" AndAlso masteringDisplay_Luminance <> "" Then
+            Dim luminanceMatch = Regex.Match(masteringDisplay_Luminance, "min: ([\d\.]+) cd/m2, max: ([\d\.]+) cd/m2")
+
+            If luminanceMatch.Success Then
+                Dim luminanceMin = luminanceMatch.Groups(1).Value.ToDouble
+                Dim luminanceMax = luminanceMatch.Groups(2).Value.ToDouble
+
+                If masteringDisplay_ColorPrimaries.Contains("Display P3") Then
+                    cl += $" --mastering-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
+                    cl += " --enable-hdr 1"
+                    cl += " --color-range 0"
+                End If
+
+                If masteringDisplay_ColorPrimaries.Contains("DCI P3") Then
+                    cl += $" --mastering-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15700,17550)L({luminanceMax},{luminanceMin})"""
+                    cl += " --enable-hdr 1"
+                    cl += " --color-range 0"
+                End If
+
+                If masteringDisplay_ColorPrimaries.Contains("BT.2020") Then
+                    cl += $" --mastering-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
+                    cl += " --enable-hdr 1"
+                    cl += " --color-range 0"
+                End If
+
+                If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+                    cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
+                End If
+            End If
+        End If
+
+        Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
+        Dim MaxFALL = MediaInfo.GetVideo(sourceFile, "MaxFALL").Trim.Left(" ").ToInt
+
+        If MaxCLL <> 0 OrElse MaxFALL <> 0 Then
+            cl += $" --content-light {MaxCLL},{MaxFALL}"
+        End If
+
+        ImportCommandLine(cl)
     End Sub
 
     Overrides Property Bitrate As Integer

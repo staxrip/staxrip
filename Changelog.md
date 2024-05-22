@@ -34,10 +34,20 @@ v2.40.0 (not published yet)
 - SvtAv1EncApp: Add long path support ([#1374](/../../issues/1374))
 - Update tools
     - AutoCrop v2.4
+    - MediaInfo v24.05
+    - MKVToolNix v84.0
+    - NVEncC v7.54
+    - QSVEncC v7.65
+    - Subtitle Edit v4.0.6
+    - SvtAv1EncApp v2.1.0-1+1-8ba1c70f-.Mod-by-Patman.-x64-msvc1939 [SVT-AV1-PSY]
+    - vvencFFapp v1.11.1 r227-77574c
+    - x264 v0.164.3191+1-e3de8e8-.Mod-by-Patman.-x64-gcc14.1.0
+    - x265 v3.6+13+1-726aec126-.Mod-by-Patman.-x64-avx2-msvc1939
 - Update AviSynth+ plugins
     - ...
 - Update Dual plugins
-    - ...
+    - BestSource R5
+    - ffms2 v5.0
 - Update VapourSynth plugins
     - ...
 

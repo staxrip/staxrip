@@ -543,7 +543,7 @@ Public Class Language
 
     Public ReadOnly Property IsDetermined As Boolean
         Get
-            If CultureInfo IsNot Nothing Then Return CultureInfo.TwoLetterISOLanguageName <> "iv"
+            If CultureInfo IsNot Nothing Then Return Not CultureInfo.TwoLetterISOLanguageName.ContainsAny("iv", "und")
             Return ThreeLetterCodeValue <> "und"
         End Get
     End Property
@@ -573,19 +573,19 @@ Public Class Language
                 Return
             End If
 
-            Dim selectedLanguages As IEnumerable(Of String)
+            Dim selectedLanguages As IEnumerable(Of Language)
 
             Select Case lang.Length
                 Case 2
-                    selectedLanguages = Languages.Select(Function(x) x.TwoLetterCode).Union(Languages.Select(Function(x) x.CultureInfo.IetfLanguageTag))
+                    selectedLanguages = Languages.Where(Function(x) x.TwoLetterCode = lang OrElse x.CultureInfo.IetfLanguageTag = lang)
                 Case 3
-                    selectedLanguages = Languages.Select(Function(x) x.ThreeLetterCode)
+                    selectedLanguages = Languages.Where(Function(x) x.ThreeLetterCode = lang)
                 Case Else
-                    selectedLanguages = Languages.Select(Function(x) x.Name)
+                    selectedLanguages = Languages.Where(Function(x) x.Name = lang)
             End Select
 
-            If selectedLanguages.ContainsEx(lang) Then
-                CultureInfoValue = New CultureInfo(lang)
+            If selectedLanguages.Any() Then
+                CultureInfoValue = selectedLanguages.First().CultureInfo
             Else
                 CultureInfoValue = CultureInfo.InvariantCulture
             End If

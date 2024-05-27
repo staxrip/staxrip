@@ -24,6 +24,7 @@ v2.40.0 (not published yet)
 - Crop: Add new "Time Interval" mode for AutoCrop
     - Analyzes a frame every x seconds, which makes it more useful throughout short and long videos
 - NVEncC: Add new "--vpp-decomb" parameter
+- QSVEncC: Add new "--vpp-decomb" parameter
 - SvtAv1EncApp: Add long path support ([#1374](/../../issues/1374))
 - Update tools
     - AutoCrop v2.4

@@ -562,6 +562,12 @@ Public Class QSVEnc
         Property PmdStrength As New NumParam With {.Text = "      Strength", .HelpSwitch = "--vpp-pmd", .Init = 100, .Config = {0, 100, 1, 1}}
         Property PmdThreshold As New NumParam With {.Text = "      Threshold", .HelpSwitch = "--vpp-pmd", .Init = 100, .Config = {0, 255, 1}}
 
+        Property Decomb As New BoolParam With {.Text = "Decomb", .Switch = "--vpp-decomb", .ArgsFunc = AddressOf GetDecombArgs}
+        Property DecombFull As New OptionParam With {.Text = "      Full", .HelpSwitch = "--vpp-decomb", .Init = 1, .Options = {"Off", "On (Default)"}, .Values = {"off", "on"}}
+        Property DecombThreshold As New NumParam With {.Text = "      Threshold", .HelpSwitch = "--vpp-decomb", .Init = 20, .Config = {0, 255, 1, 0}}
+        Property DecombDThreshold As New NumParam With {.Text = "      DThreshold", .HelpSwitch = "--vpp-decomb", .Init = 7, .Config = {0, 255, 1, 0}}
+        Property DecombBlend As New OptionParam With {.Text = "      Blend", .HelpSwitch = "--vpp-decomb", .Init = 0, .Options = {"Off (Default)", "On"}, .Values = {"off", "on"}}
+
         Property Denoise As New BoolParam With {.Text = "Denoise", .Switch = "--vpp-denoise", .ArgsFunc = AddressOf GetDenoiseArgs}
         Property DenoiseMode As New OptionParam With {.Text = "      Mode", .HelpSwitch = "--vpp-denoise", .Init = 0, .Options = {"Auto (Default)", "Auto BD Rate", "Auto Subjective", "Auto Adjust", "Pre-Processing", "Post-Processing"}, .Values = {"auto", "auto_bdrate", "auto_subjective", "auto_adjust", "pre", "post"}}
         Property DenoiseStrength As New NumParam With {.Text = "      Strength", .HelpSwitch = "--vpp-denoise", .Init = 100, .Config = {0, 100, 1, 0}}
@@ -682,7 +688,6 @@ Public Class QSVEnc
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}},
                         New OptionParam With {.Switch = "--vpp-image-stab", .Text = "Image Stabilizer", .Options = {"Disabled", "Upscale", "Box"}},
                         New OptionParam With {.Switch = "--vpp-mirror", .Text = "Mirror Image", .Options = {"Disabled", "H", "V"}},
-                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}},
                         New NumParam With {.Switch = "--vpp-detail-enhance", .Text = "Detail Enhance", .Config = {0, 100}},
                         New BoolParam With {.Switch = "--vpp-rff", .Text = "RFF", .Init = True},
                         New BoolParam With {.Switch = "--vpp-perc-pre-enc", .Text = "Perceptual Pre Encode"},
@@ -711,6 +716,9 @@ Public Class QSVEnc
                     Add("VPP | Deband",
                         Deband, DebandRange, DebandSample, DebandThre, DebandThreY, DebandThreCB, DebandThreCR,
                         DebandDither, DebandDitherY, DebandDitherC, DebandSeed, DebandBlurfirst, DebandRandEachFrame)
+                    Add("VPP | Deinterlace",
+                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace", .Options = {"None", "Normal", "Inverse Telecine", "Double Framerate"}, .Values = {"none", "normal", "it", "bob"}},
+                        Decomb, DecombFull, DecombThreshold, DecombDThreshold, DecombBlend)
                     Add("VPP | Denoise",
                         Nlmeans, NlmeansSigma, NlmeansH, NlmeansPatch, NlmeansSearch, NlmeansFp16,
                         Pmd, PmdApplyCount, PmdStrength, PmdThreshold,
@@ -827,6 +835,11 @@ Public Class QSVEnc
                 DenoiseDctStep.MenuButton.Enabled = DenoiseDct.Value
                 DenoiseDctSigma.NumEdit.Enabled = DenoiseDct.Value
                 DenoiseDctBlockSize.MenuButton.Enabled = DenoiseDct.Value
+
+                DecombFull.MenuButton.Enabled = Decomb.Value
+                DecombThreshold.NumEdit.Enabled = Decomb.Value
+                DecombDThreshold.NumEdit.Enabled = Decomb.Value
+                DecombBlend.MenuButton.Enabled = Decomb.Value
 
                 TweakContrast.NumEdit.Enabled = Tweak.Value
                 TweakGamma.NumEdit.Enabled = Tweak.Value
@@ -1007,6 +1020,18 @@ Public Class QSVEnc
                 If PmdStrength.Value <> PmdStrength.DefaultValue Then ret += ",strength=" & PmdStrength.Value.ToInvariantString
                 If PmdThreshold.Value <> PmdThreshold.DefaultValue Then ret += ",threshold=" & PmdThreshold.Value.ToInvariantString
                 Return "--vpp-pmd " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetDecombArgs() As String
+            If Decomb.Value Then
+                Dim ret = ""
+                If DecombFull.Value <> DecombFull.DefaultValue Then ret += ",full=" & DecombFull.Value.ToInvariantString
+                If DecombThreshold.Value <> DecombThreshold.DefaultValue Then ret += ",threshold=" & DecombThreshold.Value.ToInvariantString
+                If DecombDThreshold.Value <> DecombDThreshold.DefaultValue Then ret += ",dthreshold=" & DecombDThreshold.Value.ToInvariantString
+                If DecombBlend.Value <> DecombBlend.DefaultValue Then ret += ",blend=" & DecombBlend.Value.ToInvariantString
+                Return "--vpp-decomb " + ret.TrimStart(","c)
             End If
             Return ""
         End Function

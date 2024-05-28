@@ -669,14 +669,19 @@ Public Class NVEnc
         Property WarpsharpDepth As New NumParam With {.Text = "     Depth", .HelpSwitch = "--vpp-warpsharp", .Init = 16, .Config = {-128, 128, 1, 1}}
         Property WarpsharpChroma As New NumParam With {.Text = "     Chroma", .HelpSwitch = "--vpp-warpsharp", .Init = 0, .Config = {0, 1, 1, 0}}
 
-        Property NnediField As New OptionParam With {.Text = "Field", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "top", "bottom", "bob", "bob_tff", "bob_bff"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
-        Property NnediNns As New OptionParam With {.Text = "NNS", .HelpSwitch = "--vpp-nnedi", .Init = 1, .Options = {"16", "32", "64", "128", "256"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
-        Property NnediNsize As New OptionParam With {.Text = "N Size", .HelpSwitch = "--vpp-nnedi", .Init = 6, .Options = {"8x6", "16x6", "32x6", "48x6", "8x4", "16x4", "32x4"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
-        Property NnediQuality As New OptionParam With {.Text = "Quality", .HelpSwitch = "--vpp-nnedi", .Options = {"fast", "slow"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
-        Property NnediPrescreen As New OptionParam With {.Text = "Pre Screen", .HelpSwitch = "--vpp-nnedi", .Init = 4, .Options = {"none", "original", "new", "original_block", "new_block"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
-        Property NnediErrortype As New OptionParam With {.Text = "Error Type", .HelpSwitch = "--vpp-nnedi", .Options = {"abs", "square"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
-        Property NnediPrec As New OptionParam With {.Text = "Prec", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "fp16", "fp32"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
-        Property NnediWeightfile As New StringParam With {.Text = "Weight File", .HelpSwitch = "--vpp-nnedi", .BrowseFile = True, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property DecombFull As New OptionParam With {.Text = "Full", .HelpSwitch = "--vpp-decomb", .Init = 1, .Options = {"Off", "On (Default)"}, .Values = {"off", "on"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property DecombThreshold As New NumParam With {.Text = "Threshold", .HelpSwitch = "--vpp-decomb", .Init = 20, .Config = {0, 255, 1, 0}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property DecombDThreshold As New NumParam With {.Text = "DThreshold", .HelpSwitch = "--vpp-decomb", .Init = 7, .Config = {0, 255, 1, 0}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+        Property DecombBlend As New OptionParam With {.Text = "Blend", .HelpSwitch = "--vpp-decomb", .Init = 0, .Options = {"Off (Default)", "On"}, .Values = {"off", "on"}, .VisibleFunc = Function() Deinterlacer.Value = 3}
+
+        Property NnediField As New OptionParam With {.Text = "Field", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "top", "bottom", "bob", "bob_tff", "bob_bff"}, .VisibleFunc = Function() Deinterlacer.Value = 4}
+        Property NnediNns As New OptionParam With {.Text = "NNS", .HelpSwitch = "--vpp-nnedi", .Init = 1, .Options = {"16", "32", "64", "128", "256"}, .VisibleFunc = Function() Deinterlacer.Value = 4}
+        Property NnediNsize As New OptionParam With {.Text = "N Size", .HelpSwitch = "--vpp-nnedi", .Init = 6, .Options = {"8x6", "16x6", "32x6", "48x6", "8x4", "16x4", "32x4"}, .VisibleFunc = Function() Deinterlacer.Value = 4}
+        Property NnediQuality As New OptionParam With {.Text = "Quality", .HelpSwitch = "--vpp-nnedi", .Options = {"fast", "slow"}, .VisibleFunc = Function() Deinterlacer.Value = 4}
+        Property NnediPrescreen As New OptionParam With {.Text = "Pre Screen", .HelpSwitch = "--vpp-nnedi", .Init = 4, .Options = {"none", "original", "new", "original_block", "new_block"}, .VisibleFunc = Function() Deinterlacer.Value = 4}
+        Property NnediErrortype As New OptionParam With {.Text = "Error Type", .HelpSwitch = "--vpp-nnedi", .Options = {"abs", "square"}, .VisibleFunc = Function() Deinterlacer.Value = 4}
+        Property NnediPrec As New OptionParam With {.Text = "Prec", .HelpSwitch = "--vpp-nnedi", .Options = {"auto", "fp16", "fp32"}, .VisibleFunc = Function() Deinterlacer.Value = 4}
+        Property NnediWeightfile As New StringParam With {.Text = "Weight File", .HelpSwitch = "--vpp-nnedi", .BrowseFile = True, .VisibleFunc = Function() Deinterlacer.Value = 4}
 
         Property SelectEvery As New BoolParam With {.Text = "Select Every", .Switches = {"--vpp-select-every"}, .ArgsFunc = AddressOf GetSelectEvery}
         Property SelectEveryValue As New NumParam With {.Text = "      Value", .HelpSwitch = "--vpp-select-every", .Init = 2}
@@ -735,7 +740,7 @@ Public Class NVEnc
         Property ColorspaceHdr2sdrReinhardContrast As New NumParam With {.Text = New String(" "c, 6) + "Contrast", .HelpSwitch = "--vpp-colorspace", .Init = 0.5, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3}
         Property ColorspaceHdr2sdrReinhardPeak As New NumParam With {.Text = New String(" "c, 6) + "Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1.0, .Config = {0, 100, 0.05, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3, .Name = "ReinhardPeak"}
 
-        Property Deinterlacer As New OptionParam With {.Text = "Deinterlacing Method", .HelpSwitch = "", .Init = 0, .Options = {"None", "Hardware (HW Decoder must be set to work!)", "AFS (Activate Auto Field Shift)", "Nnedi", "Yadif"}, .ArgsFunc = AddressOf GetDeinterlacerArgs}
+        Property Deinterlacer As New OptionParam With {.Text = "Deinterlacing Method", .HelpSwitch = "", .Init = 0, .Options = {"None", "Hardware (HW Decoder must be set to work!)", "AFS (Activate Auto Field Shift)", "Decomb", "Nnedi", "Yadif"}, .ArgsFunc = AddressOf GetDeinterlacerArgs}
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
             Get
@@ -870,9 +875,10 @@ Public Class NVEnc
                     Add("VPP | Deinterlace",
                         Deinterlacer,
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace Mode", .VisibleFunc = Function() Deinterlacer.Value = 1 AndAlso Decoder.ValueText.EqualsAny("nvhw"), .AlwaysOn = True, .Options = {"Normal", "Adaptive", "Bob"}},
-                        New OptionParam With {.Switch = "--vpp-yadif", .Text = "Yadif Mode", .VisibleFunc = Function() Deinterlacer.Value = 4, .AlwaysOn = True, .Options = {"Auto", "TFF", "BFF", "Bob", "Bob TFF", "Bob BFF"}, .Values = {"", "mode=tff", "mode=bff", "mode=bob", "mode=bob_tff", "mode=bob_bff"}},
-                        NnediField, NnediNns, NnediNsize, NnediQuality, NnediPrescreen, NnediErrortype, NnediPrec, NnediWeightfile,
-                        AfsINI, AfsPreset, AfsLeft, AfsRight, AfsTop, AfsBottom, AfsMethodSwitch, AfsCoeffShift, AfsThreShift, AfsThreDeint, AfsThreMotionY, AfsThreMotionC, AfsLevel)
+                        New OptionParam With {.Switch = "--vpp-yadif", .Text = "Yadif Mode", .VisibleFunc = Function() Deinterlacer.Value = 5, .AlwaysOn = True, .Options = {"Auto", "TFF", "BFF", "Bob", "Bob TFF", "Bob BFF"}, .Values = {"", "mode=tff", "mode=bff", "mode=bob", "mode=bob_tff", "mode=bob_bff"}},
+                        AfsINI, AfsPreset, AfsLeft, AfsRight, AfsTop, AfsBottom, AfsMethodSwitch, AfsCoeffShift, AfsThreShift, AfsThreDeint, AfsThreMotionY, AfsThreMotionC, AfsLevel,
+                        DecombFull, DecombThreshold, DecombDThreshold, DecombBlend,
+                        NnediField, NnediNns, NnediNsize, NnediQuality, NnediPrescreen, NnediErrortype, NnediPrec, NnediWeightfile)
                     Add("VPP | Deinterlace | AFS 2",
                         AfsShift, AfsDrop, AfsSmooth, Afs24fps, AfsTune, AfsRFF, AfsTimecode, AfsLog)
                     Add("VPP | Denoise",
@@ -957,14 +963,32 @@ Public Class NVEnc
             End If
 
             If QPI.NumEdit IsNot Nothing Then
-                NnediField.MenuButton.Enabled = Deinterlacer.Value = 3
-                NnediNns.MenuButton.Enabled = Deinterlacer.Value = 3
-                NnediNsize.MenuButton.Enabled = Deinterlacer.Value = 3
-                NnediQuality.MenuButton.Enabled = Deinterlacer.Value = 3
-                NnediPrescreen.MenuButton.Enabled = Deinterlacer.Value = 3
-                NnediErrortype.MenuButton.Enabled = Deinterlacer.Value = 3
-                NnediPrec.MenuButton.Enabled = Deinterlacer.Value = 3
-                NnediWeightfile.TextEdit.Enabled = Deinterlacer.Value = 3
+                AfsPreset.MenuButton.Enabled = Deinterlacer.Value = 2
+                AfsINI.TextEdit.Enabled = Deinterlacer.Value = 2
+
+                For Each i In {AfsLeft, AfsRight, AfsTop, AfsBottom, AfsMethodSwitch, AfsCoeffShift,
+                               AfsThreShift, AfsThreDeint, AfsThreMotionY, AfsThreMotionC, AfsLevel}
+
+                    i.NumEdit.Enabled = Deinterlacer.Value = 2
+                Next
+
+                For Each i In {AfsShift, AfsDrop, AfsSmooth, Afs24fps, AfsTune, AfsRFF, AfsTimecode, AfsLog}
+                    i.CheckBox.Enabled = Deinterlacer.Value = 2
+                Next
+
+                DecombFull.MenuButton.Enabled = Deinterlacer.Value = 3
+                DecombThreshold.NumEdit.Enabled = Deinterlacer.Value = 3
+                DecombDThreshold.NumEdit.Enabled = Deinterlacer.Value = 3
+                DecombBlend.MenuButton.Enabled = Deinterlacer.Value = 3
+
+                NnediField.MenuButton.Enabled = Deinterlacer.Value = 4
+                NnediNns.MenuButton.Enabled = Deinterlacer.Value = 4
+                NnediNsize.MenuButton.Enabled = Deinterlacer.Value = 4
+                NnediQuality.MenuButton.Enabled = Deinterlacer.Value = 4
+                NnediPrescreen.MenuButton.Enabled = Deinterlacer.Value = 4
+                NnediErrortype.MenuButton.Enabled = Deinterlacer.Value = 4
+                NnediPrec.MenuButton.Enabled = Deinterlacer.Value = 4
+                NnediWeightfile.TextEdit.Enabled = Deinterlacer.Value = 4
 
                 ColorspaceMatrixFrom.MenuButton.Enabled = Colorspace.Value
                 ColorspaceMatrixTo.MenuButton.Enabled = Colorspace.Value
@@ -1064,19 +1088,6 @@ Public Class NVEnc
 
                 DebandRandEachFrame.CheckBox.Enabled = Deband.Value
                 DebandBlurfirst.CheckBox.Enabled = Deband.Value
-
-                AfsPreset.MenuButton.Enabled = Deinterlacer.Value = 2
-                AfsINI.TextEdit.Enabled = Deinterlacer.Value = 2
-
-                For Each i In {AfsLeft, AfsRight, AfsTop, AfsBottom, AfsMethodSwitch, AfsCoeffShift,
-                               AfsThreShift, AfsThreDeint, AfsThreMotionY, AfsThreMotionC, AfsLevel}
-
-                    i.NumEdit.Enabled = Deinterlacer.Value = 2
-                Next
-
-                For Each i In {AfsShift, AfsDrop, AfsSmooth, Afs24fps, AfsTune, AfsRFF, AfsTimecode, AfsLog}
-                    i.CheckBox.Enabled = Deinterlacer.Value = 2
-                Next
             End If
 
             MyBase.OnValueChanged(item)
@@ -1340,6 +1351,12 @@ Public Class NVEnc
                     If AfsLog.Value <> AfsLog.DefaultValue Then ret += ",log=" + If(AfsLog.Value, "on", "off")
                     Return "--vpp-afs " + ret.TrimStart(","c)
                 Case 3
+                    If DecombFull.Value <> DecombFull.DefaultValue Then ret += ",full=" & DecombFull.Value.ToInvariantString
+                    If DecombThreshold.Value <> DecombThreshold.DefaultValue Then ret += ",threshold=" & DecombThreshold.Value.ToInvariantString
+                    If DecombDThreshold.Value <> DecombDThreshold.DefaultValue Then ret += ",dthreshold=" & DecombDThreshold.Value.ToInvariantString
+                    If DecombBlend.Value <> DecombBlend.DefaultValue Then ret += ",blend=" & DecombBlend.Value.ToInvariantString
+                    Return "--vpp-decomb " + ret.TrimStart(","c)
+                Case 4
                     If NnediField.Value <> NnediField.DefaultValue Then ret += ",field=" + NnediField.ValueText
                     If NnediNns.Value <> NnediNns.DefaultValue Then ret += ",nns=" + NnediNns.ValueText
                     If NnediNsize.Value <> NnediNsize.DefaultValue Then ret += ",nsize=" + NnediNsize.ValueText

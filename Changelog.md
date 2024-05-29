@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.40.0 (not published yet)
+v2.40.0 (2024-06-08)
 ====================
 
 - UI: Fix path handling when passed to StaxRip via command line ([#1375](/../../issues/1375), [#1377](/../../issues/1377), [#1378](/../../issues/1378))
@@ -43,13 +43,9 @@ v2.40.0 (not published yet)
     - vvencFFapp v1.11.1 r227-77574c
     - x264 v0.164.3191+1-e3de8e8-.Mod-by-Patman.-x64-gcc14.1.0
     - x265 v3.6+13+1-726aec126-.Mod-by-Patman.-x64-avx2-msvc1939
-- Update AviSynth+ plugins
-    - ...
 - Update Dual plugins
     - BestSource R5
     - ffms2 v5.0
-- Update VapourSynth plugins
-    - ...
 
 
 v2.39.3 (2024-05-30)

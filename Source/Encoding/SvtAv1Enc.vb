@@ -135,7 +135,7 @@ Public Class SvtAv1Enc
 
         Select Case transfer_characteristics
             Case "PQ", "SMPTE ST 2084"
-                cl += " --transfer-characteristics 17"
+                cl += " --transfer-characteristics 16"
             Case "BT.709"
                 cl += " --transfer-characteristics 1"
             Case "HLG"

@@ -18,6 +18,8 @@ v2.39.3 (2024-05-30)
 ====================
 
 - UI: Fix multiple files opening when a comma was included ([#1372](/../../issues/1372))
+- FFmpeg: Concat "-af" parameters on audio conversion ([#1370](/../../issues/1370))
+    - Makes it possible to add custom params when using "Normalize"
 - SvtAv1EncApp: Fix VUI metadata import ([#1371](/../../issues/1371))
 
 

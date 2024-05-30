@@ -1517,7 +1517,20 @@ Public Class GUIAudioProfile
             sb.Append(" " + GetOutputFile.Escape)
         End If
 
-        Return sb.ToString
+        Dim ret = sb.ToString
+        Dim matches = Regex.Matches(ret, " -af ([^ ]+)")
+        If matches.Count > 1 Then
+            Dim concated = ""
+            For i = matches.Count - 1 To 0 Step -1
+                Dim match = matches(i)
+                concated = $"{match.Groups(1)},{concated}"
+                ret = ret.Remove(match.Index, match.Length)
+            Next
+            concated = " -af " + concated.Trim(","c)
+            ret = ret.Insert(matches(0).Index, concated)
+        End If
+
+        Return ret
     End Function
 
     Function SupportsNormalize() As Boolean

@@ -1121,13 +1121,7 @@ Public Class CommandManager
                 Return True
             Else
                 If test.StartsWith("-" + switch + ":") Then
-                    Dim mc = Regex.Matches(value.Right(":"), """(?<a>.+?)""|(?<a>[^,]+)")
-                    Dim args As New List(Of Object)
-
-                    For Each match As Match In mc
-                        args.Add(match.Groups("a").Value)
-                    Next
-
+                    Dim args As New List(Of Object)(g.MainForm.ParseCommandLine(value.Right(":"), ","c))
                     Dim params = i.MethodInfo.GetParameters
 
                     For x = 0 To params.Length - 1

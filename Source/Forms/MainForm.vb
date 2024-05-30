@@ -1980,7 +1980,7 @@ Public Class MainForm
         AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
 
         Try
-            files = files.Select(Function(filePath) New FileInfo(filePath).FullName).OrderBy(Function(filePath) filePath, StringComparer.InvariantCultureIgnoreCase)
+            files = files.Select(Function(filePath) New FileInfo(filePath.Replace("""", "")).FullName).OrderBy(Function(filePath) filePath, StringComparer.InvariantCultureIgnoreCase)
 
             If Not g.VerifySource(files) Then
                 Throw New AbortException
@@ -6273,7 +6273,7 @@ Public Class MainForm
         FiltersListView.RebuildMenu()
     End Sub
 
-    Function ParseCommandLine(commandLine As String) As String()
+    Function ParseCommandLine(commandLine As String, Optional delimiter As Char = " "c) As String()
         If String.IsNullOrWhiteSpace(commandLine) Then Return New List(Of String)().ToArray()
 
         Dim args = New List(Of String)
@@ -6282,8 +6282,9 @@ Public Class MainForm
 
         For i = 0 To commandLine.Length - 1
             If commandLine.Chars(i) = """" Then
+                sb.Append(commandLine.Chars(i))
                 insideQuote = Not insideQuote
-            ElseIf commandLine.Chars(i) = " " Then
+            ElseIf commandLine.Chars(i) = delimiter Then
                 If insideQuote Then
                     sb.Append(commandLine.Chars(i))
                 Else

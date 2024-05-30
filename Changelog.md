@@ -17,6 +17,7 @@ v2.4x.0 (not published yet)
 v2.39.3 (2024-05-30)
 ====================
 
+- UI: Fix multiple files opening when a comma was included ([#1372](/../../issues/1372))
 - SvtAv1EncApp: Fix VUI metadata import ([#1371](/../../issues/1371))
 
 

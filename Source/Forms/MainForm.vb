@@ -1938,31 +1938,31 @@ Public Class MainForm
         Next
     End Sub
 
-    Sub OpenAnyFile(files As IEnumerable(Of String))
+    Sub OpenAnyFile(files As IEnumerable(Of String), Optional timeout As Integer = 0)
         files = files.Select(Function(filePath) New FileInfo(filePath.Trim().Trim(""""c)).FullName)
 
         If files(0).Ext = "srip" Then
             OpenProject(files(0))
         ElseIf FileTypes.Video.Contains(files(0).Ext.ToLowerInvariant) Then
             files.Sort()
-            OpenVideoSourceFiles(files)
+            OpenVideoSourceFiles(files, timeout)
         ElseIf FileTypes.Audio.Contains(files(0).Ext.ToLowerInvariant) Then
             tbAudioFile0.Text = files(0)
         Else
             files.Sort()
-            OpenVideoSourceFiles(files)
+            OpenVideoSourceFiles(files, timeout)
         End If
     End Sub
 
-    Sub OpenVideoSourceFile(fp As String)
-        OpenVideoSourceFiles({fp})
+    Sub OpenVideoSourceFile(fp As String, Optional timeout As Integer = 0)
+        OpenVideoSourceFiles({fp}, timeout)
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String))
-        OpenVideoSourceFiles(files, False)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), Optional timeout As Integer = 0)
+        OpenVideoSourceFiles(files, False, timeout)
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isEncoding As Boolean)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isEncoding As Boolean, Optional timeout As Integer = 0)
         Dim recoverPath = g.ProjectPath
         Dim recoverProjectPath = Path.Combine(Folder.Temp, Guid.NewGuid.ToString + ".bin")
         Dim recoverText = Text
@@ -2284,7 +2284,7 @@ Public Class MainForm
                 p.Script.Filters.Add(New VideoFilter("Source", "VS Script Import", code))
             End If
 
-            ModifyFilters()
+            ModifyFilters(timeout)
             FiltersListView.IsLoading = False
             FiltersListView.Load()
 
@@ -2441,16 +2441,11 @@ Public Class MainForm
         End Try
     End Sub
 
-    Sub ModifyFilters()
-        If p.SourceFile = "" Then
-            Exit Sub
-        End If
+    Sub ModifyFilters(Optional timeout As Integer = 0)
+        If p.SourceFile = "" Then Exit Sub
 
         Dim profiles = If(p.Script.IsAviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
-
-        Dim preferences = If(p.Script.IsAviSynth,
-            s.AviSynthFilterPreferences, s.VapourSynthFilterPreferences)
-
+        Dim preferences = If(p.Script.IsAviSynth, s.AviSynthFilterPreferences, s.VapourSynthFilterPreferences)
         Dim editAVS = p.Script.IsAviSynth AndAlso p.SourceFile.Ext <> "avs"
         Dim editVS = p.Script.IsVapourSynth AndAlso p.SourceFile.Ext <> "vpy"
 
@@ -2519,7 +2514,7 @@ Public Class MainForm
             Log.WriteLine(p.SourceScript.GetFullScript)
             Log.Save()
 
-            MsgError("Script Error", errorMsg, Handle)
+            MsgError("Script Error", errorMsg, Handle, timeout)
             p.Script.Synchronize()
             Throw New AbortException
         End If

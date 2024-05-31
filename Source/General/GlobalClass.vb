@@ -277,7 +277,7 @@ Public Class GlobalClass
                     Exit Sub
                 End If
 
-                g.MainForm.OpenVideoSourceFiles(p.SourceFiles, True)
+                g.MainForm.OpenVideoSourceFiles(p.SourceFiles, True, s.ErrorMessageTimeout)
                 g.ProjectPath = Path.Combine(p.TempDir, p.TargetFile.Base + ".srip")
                 p.BatchMode = False
                 g.MainForm.SaveProjectPath(g.ProjectPath)

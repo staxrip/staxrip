@@ -1163,18 +1163,13 @@ Public Module MainModule
         Msg(title1, content1, TaskIcon.Info, TaskButton.OK)
     End Sub
 
-    Sub MsgError(title As String, Optional content As String = Nothing)
-        MsgError(title, content, IntPtr.Zero)
+    Sub MsgError(title As String, Optional content As String = Nothing, Optional timeout As Integer = 0)
+        MsgError(title, content, IntPtr.Zero, timeout)
     End Sub
 
-    Sub MsgError(title As String, content As String, handle As IntPtr)
-        If title = "" Then
-            title = content
-        End If
-
-        If title = "" Then
-            Exit Sub
-        End If
+    Sub MsgError(title As String, content As String, handle As IntPtr, Optional timeout As Integer = 0)
+        If title = "" Then title = content
+        If title = "" Then Exit Sub
 
         Using td As New TaskDialog(Of String)
             td.Title = title
@@ -1182,6 +1177,7 @@ Public Module MainModule
             td.Owner = handle
             td.Icon = TaskIcon.Error
             td.ShowCopyButton = True
+            td.Timeout = timeout
             td.AddButton("OK")
             td.Show()
         End Using

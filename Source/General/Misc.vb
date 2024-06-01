@@ -4032,6 +4032,7 @@ Public Enum CompressionMode
 End Enum
 
 Public Enum ApplicationEvent
+    <DispName("After Job Added")> AfterJobAdded
     <DispName("After Job Failed")> AfterJobFailed
     <DispName("After Job Muxed")> AfterJobMuxed
     <DispName("After Job Processed")> AfterJobProcessed
@@ -4041,6 +4042,7 @@ Public Enum ApplicationEvent
     <DispName("After Source Loaded")> AfterSourceLoaded
     <DispName("After Video Encoded")> AfterVideoEncoded
     <DispName("Application Exit")> ApplicationExit
+    <DispName("Before Job Adding")> BeforeJobAdding
     <DispName("Before Job Processed")> BeforeJobProcessed
     <DispName("Before Processing")> BeforeProcessing
     <DispName("While Processing")> WhileProcessing

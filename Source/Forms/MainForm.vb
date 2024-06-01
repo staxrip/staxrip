@@ -4585,6 +4585,8 @@ Public Class MainForm
         Next
 
         If AssistantPassed Then
+            g.RaiseAppEvent(ApplicationEvent.BeforeJobAdding)
+
             If AbortDueToLowDiskSpace() Then
                 Exit Sub
             End If

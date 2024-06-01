@@ -91,6 +91,7 @@ Public Class JobManager
         End If
 
         SaveJobs(jobs)
+        g.RaiseAppEvent(ApplicationEvent.AfterJobAdded)
     End Sub
 
     Shared Function GetJobs() As List(Of Job)

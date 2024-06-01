@@ -30,6 +30,7 @@ Public Class GlobalClass
     Property StopAfterCurrentJob As Boolean
     Property ActiveForm As Form
 
+    Event AfterJobAdded()
     Event AfterJobFailed()
     Event AfterJobMuxed()
     Event AfterJobProcessed()
@@ -39,6 +40,7 @@ Public Class GlobalClass
     Event AfterSourceLoaded()
     Event AfterVideoEncoded()
     Event ApplicationExit()
+    Event BeforeJobAdding()
     Event BeforeJobProcessed()
     Event BeforeProcessing()
     Event WhileProcessing(commandLine As String, percentage As Single, lastProgress As String)
@@ -947,6 +949,8 @@ Public Class GlobalClass
 
     Sub RaiseAppEvent(ae As ApplicationEvent, Optional commandline As String = Nothing, Optional progress As Single = -1.0F, Optional progressline As String = Nothing)
         Select Case ae
+            Case ApplicationEvent.AfterJobAdded
+                RaiseEvent AfterJobAdded()
             Case ApplicationEvent.AfterJobFailed
                 RaiseEvent AfterJobFailed()
             Case ApplicationEvent.AfterJobMuxed
@@ -965,6 +969,8 @@ Public Class GlobalClass
                 RaiseEvent AfterVideoEncoded()
             Case ApplicationEvent.ApplicationExit
                 RaiseEvent ApplicationExit()
+            Case ApplicationEvent.BeforeJobAdding
+                RaiseEvent BeforeJobAdding()
             Case ApplicationEvent.BeforeJobProcessed
                 RaiseEvent BeforeJobProcessed()
             Case ApplicationEvent.BeforeProcessing

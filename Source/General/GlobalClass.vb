@@ -972,7 +972,7 @@ Public Class GlobalClass
                 RaiseEvent WhileProcessing(commandline, progress, progressline)
         End Select
 
-        Dim scriptPath = Path.Combine(Folder.Scripts, ae.ToString, ".ps1")
+        Dim scriptPath = Path.Combine(Folder.Scripts, ae.ToString + ".ps1")
 
         If File.Exists(scriptPath) Then
             g.DefaultCommands.ExecutePowerShellFile(scriptPath)

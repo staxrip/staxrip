@@ -4590,6 +4590,15 @@ Public Class MainForm
                 Exit Sub
             End If
 
+            Dim jobPath = JobManager.JobPath
+            Dim jobs = JobManager.GetJobs()?.Where(Function(x) x.Active AndAlso x.Path = jobPath)
+
+            If jobs.Any() Then
+                If MsgQuestion($"An active job for this project already exists.{BR}If you continue, it will be overwritten.", TaskButton.OkCancel) = DialogResult.Cancel Then
+                    Exit Sub
+                End If
+            End If
+
             If TypeOf p.VideoEncoder IsNot NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath) Then
                 Select Case p.FileExistVideo
                     Case FileExistMode.Ask

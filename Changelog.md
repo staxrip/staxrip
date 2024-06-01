@@ -18,6 +18,7 @@ v2.40.0 (not published yet)
 ====================
 
 - UI: Fix path handling when passed to StaxRip via command line ([#1375](/../../issues/1375), [#1377](/../../issues/1377), [#1378](/../../issues/1378))
+- UI: Add question when adding an existing and active job with similar project file path
 - Update tools
     - ...
 - Update AviSynth+ plugins

@@ -1939,7 +1939,7 @@ Public Class MainForm
     End Sub
 
     Sub OpenAnyFile(files As IEnumerable(Of String))
-        files = files.Select(Function(filePath) New FileInfo(filePath).FullName)
+        files = files.Select(Function(filePath) New FileInfo(filePath.Trim().Trim(""""c)).FullName)
 
         If files(0).Ext = "srip" Then
             OpenProject(files(0))
@@ -1980,7 +1980,7 @@ Public Class MainForm
         AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
 
         Try
-            files = files.Select(Function(filePath) New FileInfo(filePath.Replace("""", "")).FullName).OrderBy(Function(filePath) filePath, StringComparer.InvariantCultureIgnoreCase)
+            files = files.Select(Function(filePath) New FileInfo(filePath.Trim().Trim(""""c)).FullName).OrderBy(Function(filePath) filePath, StringComparer.InvariantCultureIgnoreCase)
 
             If Not g.VerifySource(files) Then
                 Throw New AbortException

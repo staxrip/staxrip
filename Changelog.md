@@ -14,6 +14,20 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.40.0 (not published yet)
+====================
+
+- UI: Fix path handling when passed to StaxRip via command line ([#1375](/../../issues/1375), [#1377](/../../issues/1377), [#1378](/../../issues/1378))
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
 v2.39.3 (2024-05-30)
 ====================
 

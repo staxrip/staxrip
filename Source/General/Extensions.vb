@@ -206,7 +206,8 @@ Module StringExtensions
 
     <Extension()>
     Function FileExists(instance As String) As Boolean
-        Return File.Exists(instance)
+        If String.IsNullOrWhiteSpace(instance) Then Return False
+        Return File.Exists(instance.Trim().Trim(""""c))
     End Function
 
     <Extension()>

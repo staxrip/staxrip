@@ -4031,6 +4031,11 @@ Public Enum CompressionMode
     none
 End Enum
 
+Public Enum ImageFrameNumberPosition
+    Prefix
+    Suffix
+End Enum
+
 Public Enum ApplicationEvent
     <DispName("After Job Added")> AfterJobAdded
     <DispName("After Job Failed")> AfterJobFailed

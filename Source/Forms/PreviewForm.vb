@@ -828,7 +828,6 @@ Public Class PreviewForm
         Next
 
         list.Add(Renderer.Position - 1)
-
         list.Sort()
 
         Dim index = list.IndexOf(Renderer.Position - 1) - 1
@@ -864,9 +863,20 @@ Public Class PreviewForm
 
     <Command("Saves the current frame as bitmap.")>
     Sub SaveBitmap()
+        Dim filename = ""
+
+        Select Case s.SaveImagePreviewFrameNumberPosition
+            Case ImageFrameNumberPosition.Prefix
+                filename = $"{Renderer.Position:00000}_{p.TargetFile.Base}"
+            Case ImageFrameNumberPosition.Suffix
+                filename = $"{p.TargetFile.Base}_{Renderer.Position:00000}"
+            Case Else
+                Throw New NotSupportedException("PreviewForm.SaveBitmap()")
+        End Select
+
         Using dialog As New SaveFileDialog
             dialog.SetFilter({"bmp"})
-            dialog.FileName = p.TargetFile.Base + " - " & Renderer.Position
+            dialog.FileName = filename
 
             If dialog.ShowDialog = DialogResult.OK Then
                 BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(dialog.FileName, ImageFormat.Bmp)
@@ -876,12 +886,46 @@ Public Class PreviewForm
 
     <Command("Saves the current frame as bitmap.")>
     Sub SavePng()
+        Dim filename = ""
+
+        Select Case s.SaveImagePreviewFrameNumberPosition
+            Case ImageFrameNumberPosition.Prefix
+                filename = $"{Renderer.Position:00000}_{p.TargetFile.Base}"
+            Case ImageFrameNumberPosition.Suffix
+                filename = $"{p.TargetFile.Base}_{Renderer.Position:00000}"
+            Case Else
+                Throw New NotSupportedException("PreviewForm.SavePNG()")
+        End Select
+
         Using dialog As New SaveFileDialog
             dialog.SetFilter({"png"})
-            dialog.FileName = p.TargetFile.Base + " - " & Renderer.Position
+            dialog.FileName = filename
 
             If dialog.ShowDialog = DialogResult.OK Then
                 BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(dialog.FileName, ImageFormat.Png)
+            End If
+        End Using
+    End Sub
+
+    <Command("Saves the current frame as JPG.")>
+    Sub SaveJPG()
+        Dim filename = ""
+
+        Select Case s.SaveImagePreviewFrameNumberPosition
+            Case ImageFrameNumberPosition.Prefix
+                filename = $"{Renderer.Position:00000}_{p.TargetFile.Base}"
+            Case ImageFrameNumberPosition.Suffix
+                filename = $"{p.TargetFile.Base}_{Renderer.Position:00000}"
+            Case Else
+                Throw New NotSupportedException("PreviewForm.SaveJPG()")
+        End Select
+
+        Using dialog As New SaveFileDialog
+            dialog.DefaultExt = "jpg"
+            dialog.FileName = filename
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                SaveJpgByPath(dialog.FileName)
             End If
         End Using
     End Sub
@@ -903,18 +947,6 @@ Public Class PreviewForm
             Dim info = ImageCodecInfo.GetImageEncoders.Where(Function(arg) arg.FormatID = ImageFormat.Jpeg.Guid).First
             BitmapUtil.CreateBitmap(FrameServer, Renderer.Position).Save(path, info, params)
         End If
-    End Sub
-
-    <Command("Saves the current frame as JPG.")>
-    Sub SaveJPG()
-        Using dialog As New SaveFileDialog
-            dialog.DefaultExt = "jpg"
-            dialog.FileName = p.TargetFile.Base + " - " & Renderer.Position
-
-            If dialog.ShowDialog = DialogResult.OK Then
-                SaveJpgByPath(dialog.FileName)
-            End If
-        End Using
     End Sub
 
     <Command("Shows a dialog to navigate to a chapter.")>

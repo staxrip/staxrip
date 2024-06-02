@@ -4148,6 +4148,19 @@ Public Class MainForm
                     s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
 
             '############### Danger Zone
+            Dim miscPage = ui.CreateFlowPage("Misc", True)
+
+            ui.AddLabel("Position of frame number in file name:")
+
+            Dim previewFrameNumberPosition = ui.AddMenu(Of ImageFrameNumberPosition)()
+            previewFrameNumberPosition.Text = "Preview:"
+            previewFrameNumberPosition.Field = NameOf(s.SaveImagePreviewFrameNumberPosition)
+
+            Dim videoComparisonFrameNumberPosition = ui.AddMenu(Of ImageFrameNumberPosition)()
+            videoComparisonFrameNumberPosition.Text = "Video Comparison:"
+            videoComparisonFrameNumberPosition.Field = NameOf(s.SaveImageVideoComparisonFrameNumberPosition)
+
+            '############### Danger Zone
             Dim dangerZonePage = ui.CreateFlowPage("Danger Zone", True)
 
             l = ui.AddLabel("")

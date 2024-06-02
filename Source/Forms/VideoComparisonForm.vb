@@ -192,7 +192,16 @@ Public Class VideoComparisonForm
 
     Sub Save()
         For Each tab As VideoTab In TabControl.TabPages
-            Dim outputPath = Path.Combine(tab.SourceFilePath.Dir, Pos & " " & tab.SourceFilePath.Base & ".png")
+            Dim outputPath = ""
+
+            Select Case s.SaveImageVideoComparisonFrameNumberPosition
+                Case ImageFrameNumberPosition.Prefix
+                    outputPath = Path.Combine(tab.SourceFilePath.Dir, $"{Pos:00000}_{tab.SourceFilePath.Base}.png")
+                Case ImageFrameNumberPosition.Suffix
+                    outputPath = Path.Combine(tab.SourceFilePath.Dir, $"{tab.SourceFilePath.Base}_{Pos:00000}.png")
+                Case Else
+                    Throw New NotSupportedException("VideoComparisonForm.Save()")
+            End Select
 
             Using bmp = tab.GetBitmap
                 bmp.Save(outputPath, ImageFormat.Png)

@@ -14,6 +14,26 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.41.0 (not published yet)
+====================
+
+- ...
+- Update tools
+    - ...
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
+v2.40.1 (not published yet)
+====================
+
+- ...
+
+
 v2.40.0 (2024-06-08)
 ====================
 
@@ -24,6 +44,8 @@ v2.40.0 (2024-06-08)
 - UI: Add new event "After Job Added"
 - UI: Add setting for frame number position on file names when saving images ([#1373](/../../issues/1373))
 - UI: Improve Progress Highlighting
+- Crop: Activate AutoCrop by default
+    - Due to a poll on Discord where most participants crop all their videos
 - Crop: Move AutoCrop settings from Settings to Project Options
 - Crop: Add new "Time Interval" mode for AutoCrop
     - Analyzes a frame every x seconds, which makes it more useful throughout short and long videos

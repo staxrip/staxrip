@@ -465,13 +465,10 @@ Public Class GlobalClass
             Log.Save()
 
             g.ArchiveLogFile(Log.GetPath())
-            g.DeleteTempFiles()
             g.RaiseAppEvent(ApplicationEvent.AfterJobProcessed)
             JobManager.RemoveJob(jobPath)
-
-            If jobPath.StartsWith(Path.Combine(Folder.Settings, "Batch Projects")) Then
-                File.Delete(jobPath)
-            End If
+            If deleteTempFiles Then g.DeleteTempFiles()
+            If jobPath.StartsWith(Path.Combine(Folder.Settings, "Batch Projects")) Then File.Delete(jobPath)
         Catch ex As SkipException
             Log.Save()
             ProcController.Aborted = False

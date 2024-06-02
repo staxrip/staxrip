@@ -758,7 +758,6 @@ Public Class Package
         .Description = "A super great audio/video source and FFmpeg wrapper.",
         .WebURL = "https://github.com/vapoursynth/bestsource",
         .HelpURL = "https://github.com/vapoursynth/bestsource",
-        .Dependencies = {"LibP2P.dll"},
         .AvsFilterNames = {"BSAudioSource", "BSVideoSource", "BSSetDebugOutput", "BSSetFFmpegLogLevel"},
         .VsFilterNames = {"bs.AudioSource", "bs.VideoSource", "bs.TrackInfo", "bs.SetDebugOutput", "bs.SetFFmpegLogLevel"}})
 

@@ -19,6 +19,8 @@ Public Class ProcController
     Private _progressReformattingFailCounter As Integer = 0
     Private _projectScriptFrameRate As Double = -1.0
     Private _lastHighlightedText As String = ""
+    Private _lastProgressText As String = ""
+    Private _lastProgressSet As Date = Date.Now
     Private _triggerWhileProcessing As Boolean = False
     Private _lastTriggerWhileProcessing As Date = Date.Now
     Private _ffmpegDuration As TimeSpan = TimeSpan.Zero
@@ -78,6 +80,7 @@ Public Class ProcController
         LogTextBox.Dock = DockStyle.Fill
         LogTextBox.ReadOnly = True
         LogTextBox.WordWrap = True
+        LogTextBox.DetectUrls = False
         LogTextBox.Font = g.GetCodeFont(9)
         AddHandler LogTextBox.AfterThemeApplied, AddressOf SetAndHighlightLog
 
@@ -194,6 +197,7 @@ Public Class ProcController
             Dim matches As MatchCollection
             Dim help As Integer
             Dim duplicate As String
+            Dim pathsFormat = "(""(\\\\\?\\)?[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.({0})"")|((?<!"")(\\\\\?\\)?[A-Z]:\\[\S\\]+\.({0})(?!""))"
             Dim isX264 = Proc.Package Is Package.x264
             Dim isX265 = Proc.Package Is Package.x265
             Dim isSvtAv1 = Proc.Package Is Package.SvtAv1EncApp
@@ -260,23 +264,26 @@ Public Class ProcController
                 format(m.Index, m.Length, oh.PipeBackColor, oh.PipeForeColor, oh.PipeFontStyles)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "([A-Z]:\\[\w\\]+\.[eE][xX][eE])|(""[A-Z]:\\[\w\s\\]+\.[eE][xX][eE]"")")
+            duplicate = "exe"
+            matches = Regex.Matches(LogTextBox.Text, String.Format(pathsFormat, duplicate), RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 format(m.Index, m.Length, oh.ExeFileBackColor, oh.ExeFileForeColor, oh.ExeFileFontStyles)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(""[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.(json)"")|((?<!"")[A-Z]:\\[\S\\]+\.(json)(?!""))", RegexOptions.IgnoreCase)
+            duplicate = "json"
+            matches = Regex.Matches(LogTextBox.Text, String.Format(pathsFormat, duplicate), RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 format(m.Index, m.Length, oh.MetadataFileBackColor, oh.MetadataFileForeColor, oh.MetadataFileFontStyles)
             Next
 
             duplicate = FileTypes.Video.Union(FileTypes.Audio).Union(FileTypes.SubtitleExludingContainers).Select(Function(x) Regex.Escape(x)).Join("|")
-            matches = Regex.Matches(LogTextBox.Text, $"(""[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.({duplicate})"")|((?<!"")[A-Z]:\\[\S\\]+\.({duplicate})(?!""))", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, String.Format(pathsFormat, duplicate), RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 format(m.Index, m.Length, oh.MediaFileBackColor, oh.MediaFileForeColor, oh.MediaFileFontStyles)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(""[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.(avs|dll|vpy)"")|((?<!"")[A-Z]:\\[\S\\]+\.(avs|dll|vpy)(?!""))", RegexOptions.IgnoreCase)
+            duplicate = "avs|dll|vpy"
+            matches = Regex.Matches(LogTextBox.Text, String.Format(pathsFormat, duplicate), RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 format(m.Index, m.Length, oh.ScriptFileBackColor, oh.ScriptFileForeColor, oh.ScriptFileFontStyles)
             Next
@@ -323,13 +330,21 @@ Public Class ProcController
     End Sub
 
     Sub ProgressHandler(value As String)
+        value = value.Trim()
+
+        If _lastProgressText = value Then Exit Sub
+        If _lastProgressSet >= Date.Now.AddMilliseconds(-200) Then Exit Sub
+
+        _lastHighlightedText = value
+        _lastProgressSet = Date.Now
+
         SetProgressText(value, ThemeManager.CurrentTheme)
         SetProgress(value)
     End Sub
 
     Sub SetProgressText(value As String, theme As Theme)
         If Proc.IsSilent Then Exit Sub
-
+        
         If theme Is Nothing Then theme = ThemeManager.CurrentTheme
         value = value.Trim()
 
@@ -460,6 +475,7 @@ Public Class ProcController
 
         If s.ProgressHighlighting Then
             ProgressBar.Text = ""
+            ProgressBar.Rtb.SuspendLayout()
             ProgressBar.Rtb.Text = value
 
             If _progressHighlightingFailCounter < 64 Then
@@ -476,8 +492,6 @@ Public Class ProcController
                 Dim match As Match
                 Dim matches As MatchCollection
                 Dim noMatch As Boolean = True
-
-                ProgressBar.Rtb.SuspendLayout()
 
                 match = Regex.Match(value, "(\d+(?:\.\d+)?%)", RegexOptions.IgnoreCase)
                 If match.Success Then
@@ -524,10 +538,10 @@ Public Class ProcController
                     format(gr.Index, gr.Length, baseHue + 0, Nothing)
                 End If
 
-                ProgressBar.Rtb.ResumeLayout()
-
                 If noMatch Then _progressHighlightingFailCounter += 1
             End If
+
+            ProgressBar.Rtb.ResumeLayout()
         Else
             _progressHighlightingFailCounter = 0
             ProgressBar.Rtb.Text = ""

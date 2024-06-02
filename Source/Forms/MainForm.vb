@@ -2468,7 +2468,7 @@ Public Class MainForm
                 If name <> "" Then
                     Dim filter = VideoFilter.GetDefault("Rotation", name, p.Script.Engine)
 
-                    If Not filter Is Nothing Then
+                    If filter IsNot Nothing Then
                         p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
                     End If
                 End If
@@ -3585,7 +3585,7 @@ Public Class MainForm
 
             Try
                 If Not rpuPath.FileExists() Then
-                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 20M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode} extract-rpu - -o ""{rpuPath}"""
+                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode} extract-rpu - -o ""{rpuPath}"""
                     Using proc As New Proc
                         proc.Package = Package.DoViTool
                         proc.Project = If(proj, p)
@@ -3737,7 +3737,7 @@ Public Class MainForm
                 BlockSourceTextBoxTextChanged = False
             End If
 
-            If codeLower.Contains("cachefile") AndAlso New DirectoryInfo(p.TempDir).Name.EndsWithEx("_temp") Then
+            If codeLower.Contains("cachefile") AndAlso p.TempDir <> "" AndAlso New DirectoryInfo(p.TempDir)?.Name?.EndsWithEx("_temp") Then
                 g.ffmsindex(p.SourceFile, Path.Combine(p.TempDir, g.GetSourceBase + ".ffindex"))
             Else
                 g.ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")

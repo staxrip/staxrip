@@ -664,28 +664,31 @@ Public Class MainForm
         Me.tlpResizeValues.ColumnCount = 4
         Me.tlpResize.SetColumnSpan(Me.tlpResizeValues, 4)
         Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(SizeType.Percent, 33!))
         Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.tlpResizeValues.Controls.Add(Me.blTargetDarText, 0, 0)
-        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioError, 3, 2)
-        Me.tlpResizeValues.Controls.Add(Me.lPAR, 1, 2)
-        Me.tlpResizeValues.Controls.Add(Me.lZoom, 3, 1)
-        Me.tlpResizeValues.Controls.Add(Me.lSarText, 0, 1)
-        Me.tlpResizeValues.Controls.Add(Me.lPixel, 3, 0)
-        Me.tlpResizeValues.Controls.Add(Me.blTargetParText, 0, 2)
-        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioErrorText, 2, 2)
-        Me.tlpResizeValues.Controls.Add(Me.lDAR, 1, 0)
-        Me.tlpResizeValues.Controls.Add(Me.lZoomText, 2, 1)
-        Me.tlpResizeValues.Controls.Add(Me.lPixelText, 2, 0)
-        Me.tlpResizeValues.Controls.Add(Me.lSAR, 1, 1)
+        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(SizeType.Percent, 40!))
+        Me.tlpResizeValues.Controls.Add(Me.blTargetDarText, 0, 1)
+        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioError, 3, 3)
+        Me.tlpResizeValues.Controls.Add(Me.lPAR, 1, 3)
+        Me.tlpResizeValues.Controls.Add(Me.lZoom, 3, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lSarText, 0, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lPixel, 3, 1)
+        Me.tlpResizeValues.Controls.Add(Me.blTargetParText, 0, 3)
+        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioErrorText, 2, 3)
+        Me.tlpResizeValues.Controls.Add(Me.lDAR, 1, 1)
+        Me.tlpResizeValues.Controls.Add(Me.lZoomText, 2, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lPixelText, 2, 1)
+        Me.tlpResizeValues.Controls.Add(Me.lSAR, 1, 2)
         Me.tlpResizeValues.Location = New System.Drawing.Point(0, 162)
         Me.tlpResizeValues.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpResizeValues.Name = "tlpResizeValues"
-        Me.tlpResizeValues.RowCount = 3
-        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
-        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
-        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.tlpResizeValues.RowCount = 6
+        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
+        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
+        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
+        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
+        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
+        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.0!))
         Me.tlpResizeValues.Size = New System.Drawing.Size(658, 70)
         Me.tlpResizeValues.TabIndex = 62
         '
@@ -916,13 +919,15 @@ Public Class MainForm
         '
         'llMuxer
         '
+        Me.llMuxer.Anchor = AnchorStyles.Top Or AnchorStyles.Right
         Me.llMuxer.AutoSize = True
-        Me.llMuxer.Location = New System.Drawing.Point(516, 0)
+        Me.llMuxer.Location = New System.Drawing.Point(536, 0)
         Me.llMuxer.Name = "llMuxer"
-        Me.llMuxer.Size = New System.Drawing.Size(121, 48)
+        Me.llMuxer.Size = New System.Drawing.Size(201, 48)
         Me.llMuxer.TabIndex = 1
         Me.llMuxer.TabStop = True
         Me.llMuxer.Text = "Muxer"
+        Me.llMuxer.TextAlign = ContentAlignment.MiddleRight
         '
         'pnEncoder
         '
@@ -937,8 +942,8 @@ Public Class MainForm
         Me.tlpMain.AutoSize = False
         Me.tlpMain.ColumnCount = 4
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33!))
-        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67!))
-        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 350!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 350!))
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33!))
         Me.tlpMain.Controls.Add(Me.MenuStrip, 0, 0)
         Me.tlpMain.Controls.Add(Me.lgbSource, 0, 1)
@@ -1046,7 +1051,7 @@ Public Class MainForm
     Private AssistantClickAction As Action
     Private ThemeRefresh As Boolean
     Private Const TrackBarInterval As Integer = 16
-    Private Const TrackBarTicks As Integer = 8
+    Private Const TrackBarTicks As Integer = 4
 
     Sub New()
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException

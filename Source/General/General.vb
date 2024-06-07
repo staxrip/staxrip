@@ -220,7 +220,7 @@ Public Class Folder
                 auto.Script.Filters(0) = VideoFilter.GetDefault("Source", "Automatic", ScriptEngine.AviSynth)
                 auto.DemuxAudio = DemuxMode.All
                 auto.SubtitleMode = SubtitleMode.Preferred
-                SafeSerialization.Serialize(auto, ret + "Automatic Workflow.srip")
+                SafeSerialization.Serialize(auto, Path.Combine(ret, "Automatic Workflow.srip"))
 
                 Dim manual As New Project
                 manual.Init()

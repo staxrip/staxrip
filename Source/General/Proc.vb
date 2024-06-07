@@ -419,8 +419,7 @@ Public Class Proc
             End If
         Next
 
-        Dim path = Environment.GetEnvironmentVariable("Path")
-
+        Dim path = dic("path")
 
         For Each pack In Package.Items.Values
             If pack.Path.Ext = "exe" AndAlso pack.HelpSwitch IsNot Nothing AndAlso

@@ -581,6 +581,15 @@ Public Class QSVEnc
         Property DenoiseDctSigma As New NumParam With {.Text = "      Sigma", .HelpSwitch = "--vpp-denoise-dct", .Init = 4, .Config = {0, 100, 0.1, 1}}
         Property DenoiseDctBlockSize As New OptionParam With {.Text = "      Block Size", .HelpSwitch = "--vpp-denoise-dct", .Options = {"8 (default)", "16 (slow)"}, .Values = {"8", "16"}}
 
+        Property Fft3d As New BoolParam With {.Text = "FFT3D", .Switch = "--vpp-fft3d", .ArgsFunc = AddressOf GetFft3dArgs}
+        Property Fft3dSigma As New NumParam With {.Text = "      Sigma", .HelpSwitch = "--vpp-fft3d", .Init = 1, .Config = {0, 100, 0.5, 1}}
+        Property Fft3dAmount As New NumParam With {.Text = "      Amount", .HelpSwitch = "--vpp-fft3d", .Init = 1, .Config = {0, 1, 0.01, 2}}
+        Property Fft3dBlockSize As New OptionParam With {.Text = "      Block Size", .HelpSwitch = "--vpp-fft3d", .Expanded = True, .Init = 2, .Options = {"8", "16", "32 (default)", "64"}, .Values = {"8", "16", "32", "64"}}
+        Property Fft3dOverlap As New NumParam With {.Text = "      Overlap", .HelpSwitch = "--vpp-fft3d", .Init = 0.5, .Config = {0.2, 0.8, 0.01, 2}}
+        Property Fft3dMethod As New OptionParam With {.Text = "      Method", .HelpSwitch = "--vpp-fft3d", .Expanded = True,.Init = 0, .Options = {"Wiener Method (default)", "Hard Thresholding"}, .Values = {"0", "1"}}
+        Property Fft3dTemporal As New OptionParam With {.Text = "      Temporal", .HelpSwitch = "--vpp-fft3d", .Init = 1, .Options = {"Spatial Filtering Only", "Temporal Filtering (default)"}, .Values = {"0", "1"}}
+        Property Fft3dPrec As New OptionParam With {.Text = "      Prec", .HelpSwitch = "--vpp-fft3d", .Init = 0, .Options = {"Use fp16 if possible (faster, default)", "Always use fp32"}, .Values = {"auto", "fp32"}}
+
         Property Colorspace As New BoolParam With {.Text = "Colorspace", .Switch = "--vpp-colorspace", .ArgsFunc = AddressOf GetColorspaceArgs}
         Property ColorspaceMatrixFrom As New OptionParam With {.Text = New String(" "c, 6) + "Matrix From", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"Undefined", "auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR", "bt2020nc", "bt2020c"}}
         Property ColorspaceMatrixTo As New OptionParam With {.Text = New String(" "c, 12) + "Matrix To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "bt709", "smpte170m", "bt470bg", "smpte240m", "YCgCo", "fcc", "GBR", "bt2020nc", "bt2020c"}, .VisibleFunc = Function() ColorspaceMatrixFrom.Value > 0}
@@ -699,6 +708,8 @@ Public Class QSVEnc
                         Smooth, SmoothQuality, SmoothQP, SmoothPrec)
                     Add("VPP | Misc 3",
                         DenoiseDct, DenoiseDctStep, DenoiseDctSigma, DenoiseDctBlockSize,
+                        Fft3d, Fft3dSigma, Fft3dAmount, Fft3dBlockSize, Fft3dOverlap, Fft3dMethod, Fft3dTemporal, Fft3dPrec)
+                    Add("VPP | Misc 4",
                         TransformFlipX, TransformFlipY, TransformTranspose,
                         New StringParam With {.Switch = "--vpp-decimate", .Text = "Decimate"},
                         New StringParam With {.Switch = "--vpp-mpdecimate", .Text = "MP Decimate"})
@@ -835,6 +846,14 @@ Public Class QSVEnc
                 DenoiseDctStep.MenuButton.Enabled = DenoiseDct.Value
                 DenoiseDctSigma.NumEdit.Enabled = DenoiseDct.Value
                 DenoiseDctBlockSize.MenuButton.Enabled = DenoiseDct.Value
+
+                Fft3dSigma.NumEdit.Enabled = Fft3d.Value
+                Fft3dAmount.NumEdit.Enabled = Fft3d.Value
+                Fft3dBlockSize.MenuButton.Enabled = Fft3d.Value
+                Fft3dOverlap.NumEdit.Enabled = Fft3d.Value
+                Fft3dMethod.MenuButton.Enabled = Fft3d.Value
+                Fft3dTemporal.MenuButton.Enabled = Fft3d.Value
+                Fft3dPrec.MenuButton.Enabled = Fft3d.Value
 
                 DecombFull.MenuButton.Enabled = Decomb.Value
                 DecombThreshold.NumEdit.Enabled = Decomb.Value
@@ -996,6 +1015,21 @@ Public Class QSVEnc
                 If DenoiseDctSigma.Value <> DenoiseDctSigma.DefaultValue Then ret += ",sigma=" & DenoiseDctSigma.Value.ToInvariantString
                 If DenoiseDctBlockSize.Value <> DenoiseDctBlockSize.DefaultValue Then ret += ",block_size=" & DenoiseDctBlockSize.ValueText
                 Return "--vpp-denoise-dct " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetFft3dArgs() As String
+            If Fft3d.Value Then
+                Dim ret = ""
+                If Fft3dSigma.Value <> Fft3dSigma.DefaultValue Then ret += ",sigma=" & Fft3dSigma.Value.ToInvariantString
+                If Fft3dAmount.Value <> Fft3dAmount.DefaultValue Then ret += ",amount=" & Fft3dAmount.Value.ToInvariantString
+                If Fft3dBlockSize.Value <> Fft3dBlockSize.DefaultValue Then ret += ",block_size=" & Fft3dBlockSize.ValueText
+                If Fft3dOverlap.Value <> Fft3dOverlap.DefaultValue Then ret += ",overlap=" & Fft3dOverlap.Value.ToInvariantString
+                If Fft3dMethod.Value <> Fft3dMethod.DefaultValue Then ret += ",method=" & Fft3dMethod.ValueText
+                If Fft3dTemporal.Value <> Fft3dTemporal.DefaultValue Then ret += ",temporal=" & Fft3dTemporal.ValueText
+                If Fft3dPrec.Value <> Fft3dPrec.DefaultValue Then ret += ",prec=" & Fft3dPrec.ValueText
+                Return "--vpp-fft3d " + ret.TrimStart(","c)
             End If
             Return ""
         End Function

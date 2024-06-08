@@ -18,6 +18,7 @@ v2.41.0 (not published yet)
 ====================
 
 - Crop: Improve Automatic Dolby Vision Auto Crop mode
+- QSVEncC: Add new "--vpp-fft3d" parameter
 - VapourSynth: Fix wrong loading order of dependencies under some circumstances
 - Update tools
     - ...

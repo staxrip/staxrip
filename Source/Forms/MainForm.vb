@@ -3109,6 +3109,12 @@ Public Class MainForm
                 End If
             End If
 
+            If Not p.TargetFile.IsValidPath() Then
+                If ProcessTip("The target file path is invalid." + BR + p.TargetFile) Then
+                    Return Warn("Invalid Target File", tbTargetFile)
+                End If
+            End If
+
             If File.Exists(p.TargetFile) Then
                 If FileTypes.VideoText.Contains(p.SourceFile.Ext) AndAlso p.SourceFile.ReadAllText.Contains(p.TargetFile) Then
                     If ProcessTip("Source and target name are identical, please select another target name.") Then

@@ -113,11 +113,28 @@ Module StringExtensions
 
     <Extension>
     Function IsValidFileName(instance As String) As Boolean
-        If instance = "" Then
-            Return False
-        End If
+        If instance = "" Then Return False
 
-        Dim chars = """*/:<>?\|"
+        Dim chars = Path.GetInvalidFileNameChars()
+
+        For Each i In instance
+            If chars.Contains(i) Then
+                Return False
+            End If
+
+            If Convert.ToInt32(i) < 32 Then
+                Return False
+            End If
+        Next
+
+        Return True
+    End Function
+
+    <Extension>
+    Function IsValidPath(instance As String) As Boolean
+        If instance = "" Then Return False
+
+        Dim chars = Path.GetInvalidPathChars()
 
         For Each i In instance
             If chars.Contains(i) Then
@@ -332,12 +349,12 @@ Module StringExtensions
 
         If File.Exists(instance) Then
             Return Path.GetFileName(Path.GetDirectoryName(instance))
-        ElseIf Directory.Exists(instance) Then 
+        ElseIf Directory.Exists(instance) Then
             Return Path.GetFileName(instance)
         ElseIf Path.GetFileName(instance).Contains(".") Then
             Return Path.GetFileName(Path.GetDirectoryName(instance))
         End If
-        
+
         Return Path.GetFileName(Path.GetDirectoryName(instance))
     End Function
 

@@ -2968,11 +2968,7 @@ Public Class Package
                 If s.Storage Is Nothing OrElse size <> s.Storage.GetInt("SvtAv1EncApp size") Then
                     Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", False)
 
-                    If output.Contains("SVT-AV1-PSY") Then
-                        type = SvtAv1EncAppType.Psy
-                    Else
-                        type = SvtAv1EncAppType.Vanilla
-                    End If
+                    type = If(output.Contains("SVT-AV1-PSY"), SvtAv1EncAppType.Psy, SvtAv1EncAppType.Vanilla)
 
                     s.Storage?.SetInt("SvtAv1EncApp size", CInt(size))
                     s.Storage?.SetInt("SvtAv1EncApp type", type)

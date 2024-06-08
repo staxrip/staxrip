@@ -232,7 +232,7 @@ Public Class ProcessingForm
         StopAfterCurrentJobMenuItem = CMS.Add("Stop After Current Job", AddressOf StopAfterCurrentJob, "Stops all job processing after the current job.")
         CMS.Add("-")
         OutputHighlightingMenuItem = CMS.Add("Output Highlighting", AddressOf SetOutputHighlighting, Keys.Control Or Keys.O)
-        ProgressReformattingMenuItem = CMS.Add("Progress Reformatting", AddressOf SetProgressReformatting, Keys.Control Or Keys.I)
+        ProgressReformattingMenuItem = CMS.Add("Progress Reformatting", AddressOf SetProgressReformatting, Keys.Control Or Keys.P)
 
         CMS.Add($"{_progressMenuName} | None", Sub() SetProgressHighlighting("None"))
         For Each category In ThemeManager.ColorCategories

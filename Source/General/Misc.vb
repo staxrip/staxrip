@@ -365,6 +365,10 @@ Public Class Calc
         End Try
     End Function
 
+    Shared Function GetTargetSAR() As Double
+        Return p.TargetWidth / p.TargetHeight
+    End Function
+
     Shared Function GetTargetDAR() As Double
         If p.CustomTargetDAR <> "" Then
             Dim val = ParseCustomAR(p.CustomTargetDAR, 0, 0)

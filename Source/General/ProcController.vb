@@ -42,9 +42,9 @@ Public Class ProcController
     End Property
 
     Shared Property Procs As New List(Of ProcController)
-    Shared Property Aborted As Boolean
-    Shared Property LastActivation As Integer
-    Shared Property BlockActivation As Boolean
+    Shared Property Aborted As Boolean = False
+    Shared Property LastActivation As Integer = 0
+    Shared Property BlockActivation As Boolean = False
     Shared ReadOnly Property SecondsSinceLastActivation As Integer
         Get
             Return (Environment.TickCount - LastActivation) \ 1000
@@ -439,7 +439,7 @@ Public Class ProcController
                     End If
                 ElseIf Proc.Package Is Package.SvtAv1EncApp Then
                     'Mod by Patman
-                    pattern = "^Encoding:\s+(\d+)/(\s*\d+)\sFrames\s@\s(\d+\.\d+)\sfps\s\|\s(\d+)\.\d+\skbps\s\|\sTime:\s(\d+:\d\d:\d\d)\s\[(-?\d+:\d\d:\d\d)\]\s\|\sSize:\s(-?\d+\.\d+)\s(.B)\s\[(-?\d+)\.\d+\s(.B)\]"
+                    pattern = "^Encoding:\s+(\d+)/(\s*\d+)\sFrames\s@\s(\d+\.\d+)\sfps\s\|\s(\d+)\.\d+\skb[p/]s\s\|\sTime:\s(\d+:\d\d:\d\d)\s\[(-?\d+:\d\d:\d\d)\]\s\|\sSize:\s(-?\d+\.\d+)\s(.B)\s\[(-?\d+)\.\d+\s(.B)\]"
                     match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                     If match.Success Then

@@ -1148,6 +1148,12 @@ Public Class SvtAv1EncParams
     '   --------------------------------------------------------
     '   --------------------------------------------------------
 
+    Property PsyHdr10PlusJson As New StringParam With {
+        .Switch = "--hdr10plus-json",
+        .Text = "HDR10+ JSON",
+        .BrowseFile = True,
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy}
+
     Property PsyDolbyVisionRpu As New StringParam With {
         .Switch = "--dolby-vision-rpu",
         .Text = "Dolby Vision RPU",
@@ -1198,6 +1204,24 @@ Public Class SvtAv1EncParams
         .Options = {"0", "1 (default)", "2", "3"},
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
         .Init = 1}
+
+    Property PsyMax32TxSize As New OptionParam With {
+        .Switch = "--max-32-tx-size",
+        .Text = "Max 32x32px Tx Size",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: On"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 0}
+
+    Property PsyAdaptiveFilmGrain As New OptionParam With {
+        .Switch = "--adaptive-film-grain",
+        .Text = "Adaptive Film Grain",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: On"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 0}
 
     Property PsyFrameLumaBias As New NumParam With {
         .Switch = "--frame-luma-bias",
@@ -1257,7 +1281,9 @@ Public Class SvtAv1EncParams
                 )
                 If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then
                     Add("PSY",
-                        PsyDolbyVisionRpu, PsyVarianceBoostStrength, PsyVarianceOctile, PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyFrameLumaBias
+                        PsyHdr10PlusJson, PsyDolbyVisionRpu, 
+                        PsyVarianceBoostStrength, PsyVarianceOctile, PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain,
+                        PsyFrameLumaBias
                     )
                 End If
 

@@ -19,6 +19,9 @@ v2.41.0 (not published yet)
 
 - Crop: Improve Automatic Dolby Vision Auto Crop mode
 - QSVEncC: Add new "--vpp-fft3d" parameter
+- SvtAv1EncApp: Add new "--adaptive-film-grain" parameter [PSY]
+- SvtAv1EncApp: Add new "--hdr10plus-json" parameter [PSY]
+- SvtAv1EncApp: Add new "--max-32-tx-size" parameter [PSY]
 - VapourSynth: Fix wrong loading order of dependencies under some circumstances
 - Update tools
     - ...

@@ -26,7 +26,13 @@ v2.41.0 (not published yet)
 - SvtAv1EncApp: Fix VUI metadata import
 - VapourSynth: Fix wrong loading order of dependencies under some circumstances
 - Update tools
-    - ...
+    - AOMEnc v3.9.1-227-g49c02efb61-x64-msvc1940
+    - DGMPGDec v3.0.0.0
+    - ffmpeg N-115847-g7c95c7de4a-x64-gcc14.1.0
+    - Mp4Box v2.5-DEV-rev273-gf2ce8bf1d-x64-msvc1940
+    - QSVEncC v7.66
+    - rav1e v0.7.0 (p20240612)-x64-gcc14.1.0
+    - SvtAv1EncApp v2.1.0-A-1+4-52522a1a-.Mod-by-Patman.-x64-msvc1940 [SVT-AV1-PSY]
 - Update AviSynth+ plugins
     - ...
 - Update Dual plugins

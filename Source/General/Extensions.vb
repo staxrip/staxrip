@@ -26,11 +26,19 @@ Module StringExtensions
         Return instance
     End Function
 
+    <Extension>
+    Function TrimQuotes(instance As String) As String
+        If instance = "" Then Return ""
+        If Not instance.StartsWith("""") OrElse Not instance.EndsWith("""") Then Return instance
+
+        Return instance.Trim(""""c)
+    End Function
+
     <Extension()>
     Function Parent(path As String) As String
         If path = "" Then Return ""
 
-        Return IO.Path.GetDirectoryName(path)
+        Return IO.Path.GetDirectoryName(path.TrimQuotes())
     End Function
 
     <Extension>
@@ -157,7 +165,7 @@ Module StringExtensions
     Function FileName(instance As String) As String
         If instance = "" Then Return ""
 
-        Return Path.GetFileName(instance)
+        Return Path.GetFileName(instance.TrimQuotes())
     End Function
 
     <Extension()>
@@ -207,7 +215,7 @@ Module StringExtensions
     <Extension()>
     Function FileExists(instance As String) As Boolean
         If String.IsNullOrWhiteSpace(instance) Then Return False
-        Return File.Exists(instance.Trim().Trim(""""c))
+        Return File.Exists(instance.TrimQuotes())
     End Function
 
     <Extension()>
@@ -215,13 +223,13 @@ Module StringExtensions
         If String.IsNullOrWhiteSpace(instance) Then Return 0L
         If Not instance.FileExists() Then Return 0L
 
-        Return New FileInfo(instance).Length
+        Return New FileInfo(instance.TrimQuotes()).Length
     End Function
 
     <Extension()>
     Function DirExists(instance As String) As Boolean
         If instance <> "" Then
-            Return Directory.Exists(instance)
+            Return Directory.Exists(instance.TrimQuotes())
         End If
     End Function
 
@@ -238,7 +246,7 @@ Module StringExtensions
     Function GetExt(filepath As String, includeDot As Boolean) As String
         If filepath = "" Then Return ""
 
-        Dim ext = Path.GetExtension(filepath).ToLowerInvariant()
+        Dim ext = Path.GetExtension(filepath.TrimQuotes()).ToLowerInvariant()
         If Not includeDot Then
             ext = ext.TrimStart("."c)
         End If
@@ -248,9 +256,13 @@ Module StringExtensions
     <Extension()>
     Function Base(instance As String) As String
         If instance = "" Then Return ""
-        If Not instance.Contains(".") Then Return ""
 
-        Return Path.GetFileNameWithoutExtension(instance)
+        Dim ret = instance.TrimQuotes()
+        Dim index = ret.LastIndexOf(Path.DirectorySeparatorChar)
+
+        If Not ret.Contains(".") Then Return If(index < 0, ret, ret.Substring(index + 1))
+
+        Return Path.GetFileNameWithoutExtension(ret)
     End Function
 
     <Extension()>

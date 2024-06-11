@@ -287,7 +287,7 @@ Public Class SafeSerialization
         Dim bf As New BinaryFormatter
 
         Try
-            path = path.LongPathPrefix
+            path = path.TrimQuotes().LongPathPrefix()
             Using fs As New FileStream(path, FileMode.Create)
                 bf.Serialize(fs, list)
             End Using

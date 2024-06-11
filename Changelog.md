@@ -31,7 +31,7 @@ v2.41.0 (not published yet)
 v2.40.1 (not published yet)
 ====================
 
-- ...
+- Internal: Fix path handling when passed to StaxRip as parameter value via command line ([#1390](/../../issues/1390))
 
 
 v2.40.0 (2024-06-08)

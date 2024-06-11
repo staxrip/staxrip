@@ -1939,7 +1939,7 @@ Public Class MainForm
     End Sub
 
     Sub OpenAnyFile(files As IEnumerable(Of String), Optional timeout As Integer = 0)
-        files = files.Select(Function(filePath) New FileInfo(filePath.Trim().Trim(""""c)).FullName)
+        files = files.Select(Function(filePath) New FileInfo(filePath.TrimQuotes()).FullName)
 
         If files(0).Ext = "srip" Then
             OpenProject(files(0))
@@ -1980,7 +1980,7 @@ Public Class MainForm
         AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
 
         Try
-            files = files.Select(Function(filePath) New FileInfo(filePath.Trim().Trim(""""c)).FullName).OrderBy(Function(filePath) filePath, StringComparer.InvariantCultureIgnoreCase)
+            files = files.Select(Function(filePath) New FileInfo(filePath.TrimQuotes()).FullName).OrderBy(Function(filePath) filePath, StringComparer.InvariantCultureIgnoreCase)
 
             If Not g.VerifySource(files) Then
                 Throw New AbortException
@@ -1990,9 +1990,7 @@ Public Class MainForm
                 Dim name = i.FileName
 
                 If name.ToUpperInvariant Like "VTS_0#_0.VOB" Then
-                    If MsgQuestion("Are you sure you want to open the file " + name + "," + BR +
-                           "the first VOB file usually contains a menu.") = DialogResult.Cancel Then
-
+                    If MsgQuestion("Are you sure you want to open the file " + name + "," + BR + "the first VOB file usually contains a menu.") = DialogResult.Cancel Then
                         Throw New AbortException
                     End If
                 End If

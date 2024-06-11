@@ -488,7 +488,7 @@ Public Class GlobalCommands
                       path As String)
 
         Dim oldEncodeFile = IO.Path.Combine(p.TempDir, p.TargetFile.Base + "_out." + p.VideoEncoder.OutputExt)
-        p.TargetFile = Macro.Expand(path)
+        p.TargetFile = Macro.Expand(path.TrimQuotes())
         Dim newEncodeFile = IO.Path.Combine(p.TempDir, p.TargetFile.Base + "_out." + p.VideoEncoder.OutputExt)
 
         If File.Exists(oldEncodeFile) Then

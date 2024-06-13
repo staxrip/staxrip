@@ -75,6 +75,23 @@ This is the way to go if you have questions regarding settings, usage, etc.
 
 - Some tools and filters might need a specific version of Microsoft Visual C++ Redistributable Runtimes. Due to the frequent changing and replacing of tools and filters, it is impossible to provide precise details about the right dependency. So if you get error messages to due to missing runtime files, we recommend to download and install the [Microsoft Visual C++ Redistributable Runtimes All-in-One](https://www.techpowerup.com/download/visual-c-redistributable-runtime-package-all-in-one/).
 
+# Extraction / Usage
+
+StaxRip is a portable application, so almost everything it needs is already included. 
+This also means, that StaxRip does not have to (and cannot) be installed. 
+You simply extract the [given archive](https://github.com/staxrip/staxrip/releases/latest) and when you start, StaxRip asks you where to store the settings.
+
+It is recommended to choose the first option, which creates a subfolder in the existing startup folder where `StaxRip.exe` is in that you start.
+This ensures, that you start with fresh/new settings as the settings of different versions could be imcompatible with each other,
+which can lead to unwanted side effects like missing functionality or changing encoder parameters. 
+It is also **very important** to **not** run existing jobs on a different StaxRip version as some encoder parameters could have been changed
+and mess up the values. This is pretty rare, but it can happen.
+
+Since `v2.37.0` the versioning has changed a little bit.  
+Releases with the same second number (for example `v2.39.0`, `v2.39.2` and `v2.39.3`) are basically compatible with each other,
+means that you can overwrite the existing files of your old instance and use the same/old settings.
+Whenever this is possible an `EXE-ONLY` archive is also released so you can just download the files that are needed to overwrite.
+
 
 # Screenshots
 

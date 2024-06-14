@@ -415,14 +415,14 @@ clipname.set_output()" + BR
         Else
             If s.LoadVapourSynthPlugins AndAlso Not IsVsPluginInAutoLoadFolder(plugin.Filename) AndAlso Not script.Contains(plugin.Filename) AndAlso Not code.Contains(plugin.Filename) Then
                 Dim line = If(script.Contains(".avs." + filterName) OrElse code.Contains(".avs." + filterName),
-                    "core.avs.LoadPlugin(r""" + plugin.Path + """)" + BR,
-                    "core.std.LoadPlugin(r""" + plugin.Path + """, altsearchpath=True)" + BR)
+                    "core.avs.LoadPlugin(r""" + plugin.Path + """)",
+                    "core.std.LoadPlugin(r""" + plugin.Path + """, altsearchpath=True)")
 
                 If Not plugin.RequirementsFulfilled Then
                     code += "# !! The following line is commented out by StaxRip, because the system does not fulfill all requirements to execute it !!" & BR & "#"
                 End If
 
-                code += line
+                code = line + BR + code
             End If
         End If
     End Sub

@@ -17,7 +17,7 @@ v2.4x.0 (not published yet)
 v2.41.0 (not published yet)
 ====================
 
-- ...
+- VapourSynth: Fix wrong loading order of dependencies under some circumstances
 - Update tools
     - ...
 - Update AviSynth+ plugins
@@ -28,7 +28,7 @@ v2.41.0 (not published yet)
     - ...
 
 
-v2.40.1 (not published yet)
+v2.40.1 (not published)
 ====================
 
 - Internal: Fix path handling when passed to StaxRip as parameter value via command line ([#1390](/../../issues/1390))

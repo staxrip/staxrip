@@ -56,9 +56,11 @@ Public Class SvtAv1Enc
 
     Overrides ReadOnly Property Hdr10PlusMetadataPath As String
         Get
-            Return Nothing
+            If Not Params.PsyHdr10PlusJson.Visible Then Return Nothing
+            Return Params.GetStringParam(Params.PsyHdr10PlusJson.Switch)?.Value
         End Get
     End Property
+
 
     Overrides ReadOnly Property OutputExt As String
         Get
@@ -195,8 +197,12 @@ Public Class SvtAv1Enc
                     cl += " --color-range 0"
                 End If
 
+                If Not String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) AndAlso p.Hdr10PlusMetadataFile.FileExists() Then
+                    cl += $" {Params.PsyHdr10PlusJson.Switch} ""{p.Hdr10PlusMetadataFile}"""
+                End If
+
                 If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
-                    cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
+                    cl += $" {Params.PsyDolbyVisionRpu.Switch} ""{p.HdrDolbyVisionMetadataFile.Path}"""
                 End If
             End If
         End If

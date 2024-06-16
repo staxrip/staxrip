@@ -176,23 +176,23 @@ Public Class SvtAv1Enc
             Dim luminanceMatch = Regex.Match(masteringDisplay_Luminance, "min: ([\d\.]+) cd/m2, max: ([\d\.]+) cd/m2")
 
             If luminanceMatch.Success Then
-                Dim luminanceMin = luminanceMatch.Groups(1).Value.ToDouble
-                Dim luminanceMax = luminanceMatch.Groups(2).Value.ToDouble
+                Dim luminanceMin = luminanceMatch.Groups(1).Value.ToDouble().ToInvariantString()
+                Dim luminanceMax = luminanceMatch.Groups(2).Value.ToDouble().ToInvariantString()
 
                 If masteringDisplay_ColorPrimaries.Contains("Display P3") Then
-                    cl += $" --mastering-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
+                    cl += $" --mastering-display ""G(0.265,0.690)B(0.15,0.06)R(0.68,0.32)WP(0.3127,0.329)L({luminanceMax},{luminanceMin})"""
                     cl += " --enable-hdr 1"
                     cl += " --color-range 0"
                 End If
 
                 If masteringDisplay_ColorPrimaries.Contains("DCI P3") Then
-                    cl += $" --mastering-display ""G(13250,34500)B(7500,3000)R(34000,16000)WP(15700,17550)L({luminanceMax},{luminanceMin})"""
+                    cl += $" --mastering-display ""G(0.265,0.690)B(0.15,0.06)R(0.68,0.32)WP(0.314,0.351)L({luminanceMax},{luminanceMin})"""
                     cl += " --enable-hdr 1"
                     cl += " --color-range 0"
                 End If
 
                 If masteringDisplay_ColorPrimaries.Contains("BT.2020") Then
-                    cl += $" --mastering-display ""G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L({luminanceMax},{luminanceMin})"""
+                    cl += $" --mastering-display ""G(0.17,0.797)B(0.131,0.046)R(0.708,0.292)WP(0.3127,0.329)L({luminanceMax},{luminanceMin})"""
                     cl += " --enable-hdr 1"
                     cl += " --color-range 0"
                 End If

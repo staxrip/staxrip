@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.41.0 (not published yet)
+v2.41.0 (2024-06-16)
 ====================
 
 - Crop: Improve Automatic Dolby Vision Auto Crop mode
@@ -33,12 +33,6 @@ v2.41.0 (not published yet)
     - QSVEncC v7.66
     - rav1e v0.7.0 (p20240612)-x64-gcc14.1.0
     - SvtAv1EncApp v2.1.0-A-1+4-52522a1a-.Mod-by-Patman.-x64-msvc1940 [SVT-AV1-PSY]
-- Update AviSynth+ plugins
-    - ...
-- Update Dual plugins
-    - ...
-- Update VapourSynth plugins
-    - ...
 
 
 v2.40.1 (not published)

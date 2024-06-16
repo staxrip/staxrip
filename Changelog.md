@@ -22,7 +22,7 @@ v2.41.0 (2024-06-16)
 - SvtAv1EncApp: Add new "--adaptive-film-grain" parameter [PSY]
 - SvtAv1EncApp: Add new "--hdr10plus-json" parameter [PSY]
 - SvtAv1EncApp: Add new "--max-32-tx-size" parameter [PSY]
-- SvtAv1EncApp: Add HDR10+ JSON file importantion to VUI metadata import
+- SvtAv1EncApp: Add HDR10+ JSON file importation to VUI metadata import
 - SvtAv1EncApp: Fix VUI metadata import
 - VapourSynth: Fix wrong loading order of dependencies under some circumstances
 - Update tools

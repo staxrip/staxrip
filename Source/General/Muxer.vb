@@ -333,17 +333,16 @@ Public Class MP4Muxer
             videoParams += Macro.Expand(VideoTrackName)
         End If
 
-        args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + videoParams).Escape)
+        If p.VideoEncoder.GetChunks() = 1 Then
+            args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + videoParams).Escape)
+        Else
+            args.Append(" -add " + (p.VideoEncoder.OutputPath.DirAndBase + "_chunk1" + p.VideoEncoder.OutputExtFull + "#video" + videoParams).Escape)
 
-        For x = 2 To 99
-            Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
-
-            If fp.FileExists Then
+            For x = 2 To p.VideoEncoder.GetChunks()
+                Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
                 args.Append(" -cat " + fp.Escape)
-            Else
-                Exit For
-            End If
-        Next
+            Next
+        End If
 
         AddAudio(p.Audio0, args)
         AddAudio(p.Audio1, args)
@@ -713,17 +712,15 @@ Public Class MkvMuxer
             End If
         End If
 
-        args += " " + p.VideoEncoder.OutputPath.LongPathPrefix.Escape
+        args += " "
+        If p.VideoEncoder.GetChunks() = 1 Then
+            args += p.VideoEncoder.OutputPath.LongPathPrefix.Escape
+        Else
+            For x = 1 To p.VideoEncoder.GetChunks()
+                If x > 1 Then args += " + "
 
-        If p.VideoEncoder.GetChunks() > 1 Then
-            For x = 2 To p.VideoEncoder.GetChunks()
                 Dim fp = p.VideoEncoder.OutputPath.DirAndBase + "_chunk" & x & p.VideoEncoder.OutputExtFull
-
-                If fp.FileExists Then
-                    args += " + " + fp.LongPathPrefix.Escape
-                Else
-                    Exit For
-                End If
+                args += fp.LongPathPrefix.Escape
             Next
         End If
 

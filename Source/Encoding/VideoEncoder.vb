@@ -79,9 +79,11 @@ Public MustInherit Class VideoEncoder
     End Function
 
     Overridable Function CanChunkEncode() As Boolean
+        Return False
     End Function
 
     Overridable Function GetChunks() As Integer
+        Return 1
     End Function
 
     Overridable Function GetChunkEncodeActions() As List(Of Action)
@@ -95,9 +97,11 @@ Public MustInherit Class VideoEncoder
     End Function
 
     Overridable Function AfterEncoding() As Boolean
-        If Not g.FileExists(OutputPath) Then Throw New ErrorAbortException("Encoder output file is missing", OutputPath)
+        Dim op = If(GetChunks() = 1,OutputPath, OutputPath.DirAndBase() + "_chunk1" + OutputPath.ExtFull)
 
-        Log.WriteLine(MediaInfo.GetSummary(OutputPath))
+        If Not g.FileExists(op) Then Throw New ErrorAbortException("Encoder output file is missing", op)
+
+        Log.WriteLine(MediaInfo.GetSummary(op))
         Log.Save()
 
         Return True

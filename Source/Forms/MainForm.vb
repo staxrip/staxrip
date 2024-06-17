@@ -4619,29 +4619,33 @@ Public Class MainForm
                 End If
             End If
 
-            If TypeOf p.VideoEncoder IsNot NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath) Then
-                Select Case p.FileExistVideo
-                    Case FileExistMode.Ask
-                        Using td As New TaskDialog(Of String)
-                            td.Title = "A video encoding output file already exists"
-                            td.Content = "Would you like to skip video encoding and reuse the existing video encoder output file or would you like to re-encode and overwrite it?"
-                            td.AddCommand("Reuse")
-                            td.AddCommand("Re-encode")
+            If TypeOf p.VideoEncoder IsNot NullEncoder Then
+                Dim op = If(p.VideoEncoder.GetChunks() = 1, p.VideoEncoder.OutputPath, p.VideoEncoder.OutputPath.DirAndBase() + "_chunk1" + p.VideoEncoder.OutputPath.ExtFull)
 
-                            Select Case td.Show
-                                Case "Reuse"
-                                    p.SkipVideoEncoding = True
-                                Case "Re-encode"
-                                    p.SkipVideoEncoding = False
-                                Case Else
-                                    Exit Sub
-                            End Select
-                        End Using
-                    Case FileExistMode.Overwrite
-                        p.SkipVideoEncoding = False
-                    Case FileExistMode.Skip
-                        p.SkipVideoEncoding = True
-                End Select
+                If op.FileExists() Then
+                    Select Case p.FileExistVideo
+                        Case FileExistMode.Ask
+                            Using td As New TaskDialog(Of String)
+                                td.Title = "A video encoding output file already exists"
+                                td.Content = "Would you like to skip video encoding and reuse the existing video encoder output file or would you like to re-encode and overwrite it?"
+                                td.AddCommand("Reuse")
+                                td.AddCommand("Re-encode")
+
+                                Select Case td.Show
+                                    Case "Reuse"
+                                        p.SkipVideoEncoding = True
+                                    Case "Re-encode"
+                                        p.SkipVideoEncoding = False
+                                    Case Else
+                                        Exit Sub
+                                End Select
+                            End Using
+                        Case FileExistMode.Overwrite
+                            p.SkipVideoEncoding = False
+                        Case FileExistMode.Skip
+                            p.SkipVideoEncoding = True
+                    End Select
+                End If
             End If
 
             If (p.Audio0.File <> "" AndAlso (TypeOf p.Audio0 Is GUIAudioProfile OrElse

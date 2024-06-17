@@ -244,26 +244,28 @@ Public Class SvtAv1Enc
         Dim ret As New List(Of Action)
 
         For chunk = 0 To chunkCount - 1
-            Dim name = ""
             Dim chunkStart = startFrame + (chunk * chunkLength)
             Dim chunkEnd = If(chunk <> chunkCount - 1, chunkStart + (chunkLength - 1), endFrame)
+            Dim chunkName = ""
+            Dim passName = ""
 
-            If chunk > 0 Then
-                name = "_chunk" & (chunk + 1)
+            If chunkCount > 1 Then
+                chunkName = "_chunk" & (chunk + 1)
+                passName = " chunk " & (chunk + 1)
             End If
 
             If Params.Passes > 1 Then
                 ret.Add(Sub()
-                            Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "), GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                            Encode("Video encoding pass 1" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
                             If Params.Passes > 1 Then
-                                Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "), GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                                Encode("Video encoding pass 2" + passName, GetArgs(2, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
                             End If
                             If Params.Passes > 2 Then
-                                Encode("Video encoding pass 3" + name.Replace("_chunk", " chunk "), GetArgs(3, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                                Encode("Video encoding pass 3" + passName, GetArgs(3, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
                             End If
                         End Sub)
             Else
-                ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "), GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority))
+                ret.Add(Sub() Encode("Video encoding" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority))
             End If
         Next
 
@@ -456,7 +458,7 @@ Public Class SvtAv1EncParams
 
     Property Chunks As New NumParam With {
         .Text = "Chunks",
-        .Config = {1, 32},
+        .Config = {1, 128},
         .Init = 1}
 
     '   --------------------------------------------------------

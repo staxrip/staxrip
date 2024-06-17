@@ -282,34 +282,30 @@ Public Class x265Enc
         Dim ret As New List(Of Action)
 
         For chunk = 0 To chunkCount - 1
-            Dim name = ""
             Dim chunkStart = startFrame + (chunk * chunkLength)
             Dim chunkEnd = If(chunk <> chunkCount - 1, chunkStart + (chunkLength - 1), endFrame)
+            Dim chunkName = ""
+            Dim passName = ""
 
-            If chunk > 0 Then
-                name = "_chunk" & (chunk + 1)
+            If chunkCount > 1 Then
+                chunkName = "_chunk" & (chunk + 1)
+                passName = " chunk " & (chunk + 1)
             End If
 
             If Params.Mode.Value = x265RateMode.TwoPass Then
                 ret.Add(Sub()
-                            Encode("Video encoding pass 1" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
-                            Encode("Video encoding pass 2" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                            Encode("Video encoding pass 1" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                            Encode("Video encoding pass 2" + passName, GetArgs(2, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
                         End Sub)
             ElseIf Params.Mode.Value = x265RateMode.ThreePass Then
                 ret.Add(Sub()
                             'Specific order 1 > 3 > 2 is correct!
-                            Encode("Video encoding first pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
-                            Encode("Video encoding Nth pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(3, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
-                            Encode("Video encoding last pass" + name.Replace("_chunk", " chunk "),
-                                   GetArgs(2, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority)
+                            Encode("Video encoding first pass" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                            Encode("Video encoding Nth pass" + passName, GetArgs(3, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                            Encode("Video encoding last pass" + passName, GetArgs(2, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
                         End Sub)
             Else
-                ret.Add(Sub() Encode("Video encoding" + name.Replace("_chunk", " chunk "),
-                    GetArgs(1, chunkStart, chunkEnd, name, p.Script), s.ProcessPriority))
+                ret.Add(Sub() Encode("Video encoding" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority))
             End If
         Next
 
@@ -675,7 +671,7 @@ Public Class x265Params
     Property Chunks As New NumParam With {
         .Text = "Chunks",
         .Init = 1,
-        .Config = {1, 16}}
+        .Config = {1, 128}}
 
     Property Weightp As New BoolParam With {
         .Switch = "--weightp",

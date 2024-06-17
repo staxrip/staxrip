@@ -690,18 +690,46 @@ Public Class SvtAv1EncParams
         .Config = {1, 62, 1},
         .Init = 1}
 
+    Property EnableVarianceBoost As New OptionParam With {
+        .Switch = "--enable-variance-boost",
+        .Text = "Enable Variance Boost",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: On"},
+        .Init = 0}
+
+    Property VarianceBoostStrength As New OptionParam With {
+        .Switch = "--variance-boost-strength",
+        .Text = "Variance Boost Strength",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"1: Mild", "2: Gentle (default)", "3: Medium", "4: Aggressive"},
+        .Values = {"1", "2", "3", "4"},
+        .VisibleFunc = Function() EnableVarianceBoost.Value = 1,
+        .Init = 1}
+
+    Property VarianceOctile As New OptionParam With {
+        .Switch = "--variance-octile",
+        .Text = "Variance Octile",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"1: 1/8th", "2: 2/8th", "3: 3/8th", "4: 4/8th", "5: 5/8th", "6: 6/8th (default)", "7: 7/8th", "8: 8/8th"},
+        .Values = {"1", "2", "3", "4", "5", "6", "7", "8"},
+        .VisibleFunc = Function() EnableVarianceBoost.Value = 1,
+        .Init = 5}
+
     Property AqMode As New OptionParam With {
         .Switch = "--aq-mode",
         .Text = "Adaptive Quantization",
         .IntegerValue = True,
-        .Options = {"0: Off", "1: Variance base using AV1 segments", "2: Deltaq pred efficiency"},
+        .Options = {"0: Off", "1: Variance base using AV1 segments", "2: Deltaq pred efficiency (default)"},
         .Init = 2}
 
     Property RecodeLoop As New OptionParam With {
         .Switch = "--recode-loop",
         .Text = "Recode Loop",
         .IntegerValue = True,
-        .Options = {"0: Off", "1: Allow recode for KF and exceeding maximum frame bandwidth", "2: Allow recode only for key frames, alternate reference frames, and Golden frames", "3: Allow recode for all frame types based on bitrate constraints", "4: Preset based decision"},
+        .Options = {"0: Off", "1: Allow recode for KF and exceeding maximum frame bandwidth", "2: Allow recode only for key frames, alternate reference frames, and Golden frames", "3: Allow recode for all frame types based on bitrate constraints", "4: Preset based decision (default)"},
         .Init = 4}
 
     Property EnableQm As New BoolParam With {
@@ -1166,24 +1194,6 @@ Public Class SvtAv1EncParams
         .BrowseFile = True,
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy}
 
-    Property PsyVarianceBoostStrength As New OptionParam With {
-        .Switch = "--variance-boost-strength",
-        .Text = "Variance Boost Strength",
-        .Expanded = True,
-        .IntegerValue = True,
-        .Options = {"0: None", "1: Mild", "2: Gentle (default)", "3: Medium", "4: Aggressive"},
-        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
-        .Init = 2}
-
-    Property PsyVarianceOctile As New OptionParam With {
-        .Switch = "--variance-octile",
-        .Text = "Variance Octile",
-        .Expanded = True,
-        .IntegerValue = True,
-        .Options = {"0", "1: 1/8th", "2: 2/8th", "3: 3/8th", "4: 4/8th", "5: 5/8th", "6: 6/8th (default)", "7: 7/8th", "8: 8/8th"},
-        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
-        .Init = 6}
-
     Property PsyEnableAltCurve As New OptionParam With {
         .Switch = "--enable-alt-curve",
         .Text = "Enable Alt Curve",
@@ -1225,9 +1235,9 @@ Public Class SvtAv1EncParams
         .Text = "Adaptive Film Grain",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: Off (default)", "1: On"},
+        .Options = {"0: Off", "1: On (default)"},
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
-        .Init = 0}
+        .Init = 1}
 
     Property PsyFrameLumaBias As New NumParam With {
         .Switch = "--frame-luma-bias",
@@ -1264,6 +1274,7 @@ Public Class SvtAv1EncParams
                 )
                 Add("Rate Control",
                     RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
+                    EnableVarianceBoost, VarianceBoostStrength, VarianceOctile,
                     PassesVBR, PassesCBR,
                     AqMode, RecodeLoop,
                     EnableQm, EnableQmPsy, QmMax, QmMin, QmMinPsy
@@ -1287,8 +1298,8 @@ Public Class SvtAv1EncParams
                 )
                 If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then
                     Add("PSY",
-                        PsyHdr10PlusJson, PsyDolbyVisionRpu, 
-                        PsyVarianceBoostStrength, PsyVarianceOctile, PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain,
+                        PsyHdr10PlusJson, PsyDolbyVisionRpu,
+                        PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain,
                         PsyFrameLumaBias
                     )
                 End If

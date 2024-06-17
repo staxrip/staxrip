@@ -14,6 +14,13 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.41.1 (not published yet)
+====================
+
+- SvtAv1EncApp: Fix Variance Boost parameters ([#1398](/../../issues/1398))
+- SvtAv1EncApp: Fix "--adaptive-film-grain" parameters default value ([#1398](/../../issues/1398))
+
+
 v2.41.0 (2024-06-16)
 ====================
 

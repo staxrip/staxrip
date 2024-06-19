@@ -923,6 +923,7 @@ Public Class MkvMuxer
                     "264", "h264", "avc",
                     "265", "h265", "hevc", "hvc",
                     "av1",
+                    "vp9",
                     "ac3", "ec3", "eac3", "thd+ac3", "thd",
                     "mkv", "mka", "webm",
                     "mp2", "mpa", "mp3",
@@ -945,7 +946,7 @@ Public Class WebMMuxer
 
     Overrides ReadOnly Property SupportedInputTypes() As String()
         Get
-            Return {"mkv", "webm", "mka", "ogg", "opus", "ivf"}
+            Return {"mkv", "webm", "mka", "ogg", "opus", "ivf", "vp9"}
         End Get
     End Property
 

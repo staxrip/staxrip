@@ -17,6 +17,7 @@ v2.4x.0 (not published yet)
 v2.41.2 (not published yet)
 ====================
 
+- UI: Add VP9 as supported extension for mkvmerge (mkv and webm)
 - Internal: Fix package dependencies ([#1401](/../../issues/1401))
 
 

@@ -14,7 +14,17 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.41.4 (not published yet)
+v2.41.5 (not published yet)
+====================
+
+- UI: Fix tolerances to Frame Mismatch for temp files deletion ([#1400](/../../issues/1400))
+- Update tools
+    - MKVToolNix v85.0
+    - OpusEnc v0.2-34-g98f3ddc (using libopus 1.5.2-11-g2554a89)
+    - SvtAv1EncApp v2.1.0-A-1+6-adc3da7b-.Mod-by-Patman.-x64-msvc1940 [SVT-AV1-PSY]
+
+
+v2.41.4 (not published)
 ====================
 
 - UI: Add tolerances to Frame Mismatch when it comes to delete temp files ([#1400](/../../issues/1400))

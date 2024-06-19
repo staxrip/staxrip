@@ -1713,6 +1713,7 @@ Public Class Package
             .WebURL = "http://avisynth.nl/index.php/GradFun2DBmod",
             .DownloadURL = "https://github.com/realfinder/AVS-Stuff/blob/Community/avs%202.5%20and%20up/GradFun2DBmod.avsi",
             .Description = "An advanced debanding script based on GradFun2DB.",
+            .Dependencies = {"AddGrainC.dll", "gradfun2db.dll", "masktools2.dll"},
             .AvsFilterNames = {"GradFun2DBmod"}})
 
         Add(New PluginPackage With {

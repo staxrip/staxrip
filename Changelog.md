@@ -14,7 +14,13 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.41.1 (not published yet)
+v2.41.2 (not published yet)
+====================
+
+- Internal: Fix package dependencies ([#1401](/../../issues/1401))
+
+
+v2.41.1 (not published)
 ====================
 
 - SvtAv1EncApp: Fix Variance Boost parameters ([#1398](/../../issues/1398))

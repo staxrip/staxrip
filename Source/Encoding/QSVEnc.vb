@@ -123,6 +123,8 @@ Public Class QSVEnc
         Get
             If Params.Codec.ValueText = "mpeg2" Then
                 Return "m2v"
+            ElseIf Params.Codec.ValueText = "vp9" Then
+                Return "ivf"
             End If
 
             Return Params.Codec.ValueText

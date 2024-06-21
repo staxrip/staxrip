@@ -18,6 +18,7 @@ v2.41.3 (not published yet)
 ====================
 
 - UI: Remove VP9 as supported extension for mkvmerge (mkv and webm)
+- QSVEncC: Fix VP9 encoding
 
 
 v2.41.2 (2024-06-21)

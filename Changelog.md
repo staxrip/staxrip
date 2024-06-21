@@ -19,6 +19,7 @@ v2.41.4 (not published yet)
 
 - UI: Add tolerances to Frame Mismatch when it comes to delete temp files ([#1400](/../../issues/1400))
     - There are rare cases where an encoder or muxer might add a few frames to the final file
+- SvtAv1EncApp: Fix default value for "--enable-variance-boost" ([#1405](/../../issues/1405))
 
 
 v2.41.3 (not published)

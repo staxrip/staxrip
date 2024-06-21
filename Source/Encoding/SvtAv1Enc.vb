@@ -422,18 +422,21 @@ Public Class SvtAv1EncParams
 
     Property Decoder As New OptionParam With {
         .Text = "Decoder",
+        .Expanded = True,
         .Options = {"AviSynth/VapourSynth", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
         .Values = {"script", "qs", "ffqsv", "ffdxva"}}
 
     Property PipingToolAVS As New OptionParam With {
         .Name = "PipingToolAVS",
         .Text = "Pipe",
+        .Expanded = True,
         .VisibleFunc = Function() p.Script.IsAviSynth AndAlso Decoder.Value = 0,
         .Options = {"Automatic", "avs2pipemod", "ffmpeg"}}
 
     Property PipingToolVS As New OptionParam With {
         .Name = "PipingToolVS",
         .Text = "Pipe",
+        .Expanded = True,
         .VisibleFunc = Function() p.Script.IsVapourSynth AndAlso Decoder.Value = 0,
         .Options = {"Automatic", "vspipe", "ffmpeg"}}
 
@@ -462,7 +465,8 @@ Public Class SvtAv1EncParams
     Property Progress As New OptionParam With {
         .Switch = "--progress",
         .Text = "Progress",
-        .Options = {"0: No Output", "1: Normal (Default)", "2: Patman86/AOMEnc Style Output"},
+        .Expanded = True,
+        .Options = {"0: No Output", "1: Normal (default)", "2: Patman86/AOMEnc Style Output"},
         .Values = {"0", "1", "2"},
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla,
         .DefaultValue = 1,
@@ -471,7 +475,8 @@ Public Class SvtAv1EncParams
     Property ProgressPsy As New OptionParam With {
         .Switch = "--progress",
         .Text = "Progress",
-        .Options = {"0: No Output", "1: Normal (Default)", "2: AOMEnc Style Output", "3: Patman86 Style Output"},
+        .Expanded = True,
+        .Options = {"0: No Output", "1: Normal (default)", "2: AOMEnc Style Output", "3: Patman86 Style Output"},
         .Values = {"0", "1", "2", "3"},
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
         .DefaultValue = 1,
@@ -480,7 +485,8 @@ Public Class SvtAv1EncParams
     Property Preset As New OptionParam With {
         .Switch = "--preset",
         .Text = "Preset",
-        .Options = {"-1: Debug Option", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower", "5: Slow", "6: Medium", "7: Fast", "8: Faster", "9: Very Fast", "10: Mega Fast", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
+        .Expanded = True,
+        .Options = {"-1: Debug Option", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower", "5: Slow", "6: Medium", "7: Fast", "8: Faster", "9: Very Fast", "10: Mega Fast (default)", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
         .Values = {"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
         .Init = 11}
 
@@ -502,20 +508,23 @@ Public Class SvtAv1EncParams
     Property EncoderColorFormat As New OptionParam With {
         .Switch = "--color-format",
         .Text = "Encoder Color Format",
-        .Options = {"0: YUV400", "1: YUV420", "2: YUV422", "3: YUV444"},
+        .Expanded = True,
+        .Options = {"0: YUV400", "1: YUV420 (default)", "2: YUV422", "3: YUV444"},
         .IntegerValue = True,
         .Init = 1}
 
     Property Profile As New OptionParam With {
         .Switch = "--profile",
         .Text = "Profile",
-        .Options = {"0: Main", "1: High", "2: Professional"},
+        .Expanded = True,
+        .Options = {"0: Main (default)", "1: High", "2: Professional"},
         .IntegerValue = True,
         .Init = 0}
 
     Property Level As New OptionParam With {
         .Switch = "--level",
         .Text = "Level",
+        .Expanded = True,
         .Options = {"Autodetect from input", "2.0", "2.1", "2.2", "2.3", "3.0", "3.1", "3.2", "3.3", "4.0", "4.1", "4.2", "4.3", "5.0", "5.1", "5.2", "5.3", "6.0", "6.1", "6.2", "6.3", "7.0", "7.1", "7.2", "7.3"},
         .Values = {"0", "2.0", "2.1", "2.2", "2.3", "3.0", "3.1", "3.2", "3.3", "4.0", "4.1", "4.2", "4.3", "5.0", "5.1", "5.2", "5.3", "6.0", "6.1", "6.2", "6.3", "7.0", "7.1", "7.2", "7.3"},
         .Init = 0}
@@ -523,7 +532,8 @@ Public Class SvtAv1EncParams
     Property HighDynamicRangeInput As New OptionParam With {
         .Switch = "--enable-hdr",
         .Text = "Enable HDR",
-        .Options = {"0: Off", "1: On"},
+        .Expanded = True,
+        .Options = {"0: Off (default)", "1: On"},
         .IntegerValue = True,
         .Init = 0}
 
@@ -536,7 +546,7 @@ Public Class SvtAv1EncParams
     '    .DefaultValue = 0,
     '    .Value = 1}
 
-    'Property PsyEncoderBitDepth As New OptionParam With {
+    'Property EncoderBitDepthPsy As New OptionParam With {
     '    .Switch = "--input-depth",
     '    .Text = "Encoder Bit Depth",
     '    .Options = {"8-Bit", "10-Bit"},
@@ -548,13 +558,15 @@ Public Class SvtAv1EncParams
     Property StatReport As New OptionParam With {
         .Switch = "--enable-stat-report",
         .Text = "Stat Report",
-        .Options = {"0: Off", "1: Calculates and outputs PSNR SSIM metrics at the end of encoding"},
+        .Expanded = True,
+        .Options = {"0: Off (default)", "1: Calculates and outputs PSNR SSIM metrics at the end of encoding"},
         .IntegerValue = True,
         .Init = 0}
 
     Property Asm As New OptionParam With {
         .Switch = "--asm",
         .Text = "Limit Assembly Instruction Set",
+        .Expanded = True,
         .Options = {"C", "MMX", "SSE", "SSE2", "SSE3", "SSSE3", "SSE4.1", "SSE4.2", "AVX", "AVX2", "AVX512", "MAX"},
         .Values = {"c", "mmx", "sse", "sse2", "sse3", "ssse3", "sse4_1", "sse4_2", "avx", "avx2", "avx512", "max"},
         .Init = 11}
@@ -568,20 +580,23 @@ Public Class SvtAv1EncParams
     Property PinnedExecution As New OptionParam With {
         .Switch = "--pin",
         .Text = "Pinned Execution",
-        .Options = {"0: Off", "1: On"},
+        .Expanded = True,
+        .Options = {"0: Off (default)", "1: On"},
         .IntegerValue = True,
         .Init = 0}
 
     Property FastDecode As New OptionParam With {
         .Switch = "--fast-decode",
         .Text = "Fast Decode",
-        .Options = {"0: Off", "1: On"},
+        .Expanded = True,
+        .Options = {"0: Off (default)", "1: On"},
         .IntegerValue = True,
         .Init = 0}
 
     Property Tune As New OptionParam With {
         .Switch = "--tune",
         .Text = "Tune",
+        .Expanded = True,
         .IntegerValue = True,
         .Options = {"0: VQ", "1: PSNR (default)", "2: SSIM"},
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla,
@@ -590,6 +605,7 @@ Public Class SvtAv1EncParams
     Property TunePsy As New OptionParam With {
         .Switch = "--tune",
         .Text = "Tune",
+        .Expanded = True,
         .IntegerValue = True,
         .Options = {"0: VQ", "1: PSNR", "2: SSIM (default)", "3: Subjective SSIM"},
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
@@ -602,6 +618,7 @@ Public Class SvtAv1EncParams
         .HelpSwitch = "--rc",
         .Text = "Rate Control Mode",
         .Options = {"Quality", "Variable Bitrate", "Constant Bitrate"},
+        .Expanded = True,
         .IntegerValue = True,
         .AlwaysOn = True,
         .Value = 0}
@@ -696,7 +713,17 @@ Public Class SvtAv1EncParams
         .Expanded = True,
         .IntegerValue = True,
         .Options = {"0: Off (default)", "1: On"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla,
         .Init = 0}
+
+    Property EnableVarianceBoostPsy As New OptionParam With {
+        .Switch = "--enable-variance-boost",
+        .Text = "Enable Variance Boost",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off", "1: On (default)"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 1}
 
     Property VarianceBoostStrength As New OptionParam With {
         .Switch = "--variance-boost-strength",
@@ -705,7 +732,7 @@ Public Class SvtAv1EncParams
         .IntegerValue = True,
         .Options = {"1: Mild", "2: Gentle (default)", "3: Medium", "4: Aggressive"},
         .Values = {"1", "2", "3", "4"},
-        .VisibleFunc = Function() EnableVarianceBoost.Value = 1,
+        .VisibleFunc = Function() (EnableVarianceBoost.Visible AndAlso EnableVarianceBoost.Value = 1) OrElse (EnableVarianceBoostPsy.Visible AndAlso EnableVarianceBoostPsy.Value = 1),
         .Init = 1}
 
     Property VarianceOctile As New OptionParam With {
@@ -715,12 +742,13 @@ Public Class SvtAv1EncParams
         .IntegerValue = True,
         .Options = {"1: 1/8th", "2: 2/8th", "3: 3/8th", "4: 4/8th", "5: 5/8th", "6: 6/8th (default)", "7: 7/8th", "8: 8/8th"},
         .Values = {"1", "2", "3", "4", "5", "6", "7", "8"},
-        .VisibleFunc = Function() EnableVarianceBoost.Value = 1,
+        .VisibleFunc = Function() (EnableVarianceBoost.Visible AndAlso EnableVarianceBoost.Value = 1) OrElse (EnableVarianceBoostPsy.Visible AndAlso EnableVarianceBoostPsy.Value = 1),
         .Init = 5}
 
     Property AqMode As New OptionParam With {
         .Switch = "--aq-mode",
         .Text = "Adaptive Quantization",
+        .Expanded = True,
         .IntegerValue = True,
         .Options = {"0: Off", "1: Variance base using AV1 segments", "2: Deltaq pred efficiency (default)"},
         .Init = 2}
@@ -728,6 +756,7 @@ Public Class SvtAv1EncParams
     Property RecodeLoop As New OptionParam With {
         .Switch = "--recode-loop",
         .Text = "Recode Loop",
+        .Expanded = True,
         .IntegerValue = True,
         .Options = {"0: Off", "1: Allow recode for KF and exceeding maximum frame bandwidth", "2: Allow recode only for key frames, alternate reference frames, and Golden frames", "3: Allow recode for all frame types based on bitrate constraints", "4: Preset based decision (default)"},
         .Init = 4}
@@ -783,6 +812,7 @@ Public Class SvtAv1EncParams
     Property PassesCBR As New OptionParam With {
         .Switches = {"--pass", "--passes", "--stats"},
         .Text = "Passes",
+        .Expanded = True,
         .Options = {"1-pass encode", "2-pass encode", "3-pass encode"},
         .Values = {"1", "2", "3"},
         .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.CBR,
@@ -791,6 +821,7 @@ Public Class SvtAv1EncParams
     Property PassesVBR As New OptionParam With {
         .Switches = {"--pass", "--passes", "--stats"},
         .Text = "Passes",
+        .Expanded = True,
         .Options = {"1-pass encode", "2-pass encode"},
         .Values = {"1", "2"},
         .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.VBR,
@@ -802,6 +833,7 @@ Public Class SvtAv1EncParams
     Property KeyInt As New OptionParam With {
         .Switch = "--keyint",
         .Text = "Keyint / GOP Size",
+        .Expanded = True,
         .Options = {"-2: ~5 seconds", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
         .Values = {"-2", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
         .VisibleFunc = Function() Not ConstantRateFactor.Visible,
@@ -811,6 +843,7 @@ Public Class SvtAv1EncParams
     Property KeyIntCrf As New OptionParam With {
         .Switch = "--keyint",
         .Text = "Keyint / GOP Size",
+        .Expanded = True,
         .Options = {"-2: ~5 seconds", "-1: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
         .Values = {"-2", "-1", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
         .VisibleFunc = Function() ConstantRateFactor.Visible,
@@ -820,6 +853,7 @@ Public Class SvtAv1EncParams
     Property IntraRefreshRate As New OptionParam With {
         .Switch = "--irefresh-type",
         .Text = "Intra Refresh Type",
+        .Expanded = True,
         .Options = {"1: FWD Frame (Open GOP)", "2: Key Frame (Closed GOP)"},
         .Values = {"1", "2"},
         .Init = 1}
@@ -827,7 +861,8 @@ Public Class SvtAv1EncParams
     Property SceneChangeDetection As New OptionParam With {
         .Switch = "--scd",
         .Text = "Scene Change Detection Control",
-        .Options = {"0: Off", "1: On"},
+        .Expanded = True,
+        .Options = {"0: Off (default)", "1: On"},
         .IntegerValue = True,
         .Init = 0}
 
@@ -840,27 +875,31 @@ Public Class SvtAv1EncParams
     Property HierarchicalLevels As New OptionParam With {
         .Switch = "--hierarchical-levels",
         .Text = "Hierarchical Levels",
-        .Options = {"2: 3 temporal layers", "3: 4 temporal layers", "4: 5 temporal layers", "5: 6 temporal layers"},
+        .Expanded = True,
+        .Options = {"2: 3 temporal layers", "3: 4 temporal layers", "4: 5 temporal layers (default)", "5: 6 temporal layers"},
         .Values = {"2", "3", "4", "5"},
         .Init = 2}
 
     Property PredStructure As New OptionParam With {
         .Switch = "--pred-struct",
         .Text = "Prediction Structure",
-        .Options = {"1: Low Delay", "2: Random Access"},
+        .Expanded = True,
+        .Options = {"1: Low Delay", "2: Random Access (default)"},
         .Values = {"1", "2"},
         .Init = 1}
     Property EnableDg As New OptionParam With {
         .Switch = "--enable-dg",
         .Text = "Dynamic GoP",
-        .Options = {"0: Off", "1: On"},
+        .Expanded = True,
+        .Options = {"0: Off", "1: On (default)"},
         .IntegerValue = True,
         .Init = 1}
 
     Property StartupMgSize As New OptionParam With {
         .Switch = "--startup-mg-size",
         .Text = "Startup Mini-GoP Size",
-        .Options = {"0: Off", "2: 3 temporal layers", "3: 4 temporal layers", "4: 5 temporal layers"},
+        .Expanded = True,
+        .Options = {"0: Off (default)", "2: 3 temporal layers", "3: 4 temporal layers", "4: 5 temporal layers"},
         .Values = {"0", "2", "3", "4"},
         .Init = 0}
 
@@ -933,8 +972,9 @@ Public Class SvtAv1EncParams
     Property ScreenContentMode As New OptionParam With {
         .Switch = "--scm",
         .Text = "Screen Content Detection Level",
+        .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: Off", "1: On", "2: Content Adaptive"},
+        .Options = {"0: Off", "1: On", "2: Content Adaptive (default)"},
         .Init = 2}
 
     Property RestrictedMotionVector As New BoolParam With {
@@ -1274,7 +1314,7 @@ Public Class SvtAv1EncParams
                 )
                 Add("Rate Control",
                     RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
-                    EnableVarianceBoost, VarianceBoostStrength, VarianceOctile,
+                    EnableVarianceBoost, EnableVarianceBoostPsy, VarianceBoostStrength, VarianceOctile,
                     PassesVBR, PassesCBR,
                     AqMode, RecodeLoop,
                     EnableQm, EnableQmPsy, QmMax, QmMin, QmMinPsy

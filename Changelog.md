@@ -14,6 +14,12 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.41.3 (not published yet)
+====================
+
+- UI: Remove VP9 as supported extension for mkvmerge (mkv and webm)
+
+
 v2.41.2 (2024-06-21)
 ====================
 

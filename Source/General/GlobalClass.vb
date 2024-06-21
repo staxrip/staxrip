@@ -447,13 +447,16 @@ Public Class GlobalClass
                 End If
 
                 If hasFrames <> shouldFrames Then
-                    deleteTempFiles = p.DeleteTempFilesOnFrameMismatch
+                    Dim difference = shouldFrames - hasFrames
+                    If deleteTempFiles AndAlso p.DeleteTempFilesOnFrameMismatchNegative >= 0 AndAlso difference > 0 Then deleteTempFiles = difference <= p.DeleteTempFilesOnFrameMismatchNegative
+                    If deleteTempFiles AndAlso p.DeleteTempFilesOnFrameMismatchPositive >= 0 AndAlso difference < 0 Then deleteTempFiles = -difference <= p.DeleteTempFilesOnFrameMismatchPositive
+
                     Log.WriteHeader("Frame Mismatch")
                     Log.WriteLine($"WARNING: Target file has {hasFrames} frames, but should have {shouldFrames} frames!")
                     If isCuttedRemux Then
-                        Log.WriteLine($"There is a mismatch of {shouldFrames - hasFrames} frames!")
+                        Log.WriteLine($"There is a mismatch of {difference} frames!")
                     Else
-                        Log.WriteLine($"Encoding was probably terminated at {hasFrames / shouldFrames * 100:0.0}% with a mismatch of {shouldFrames - hasFrames} frames!")
+                        Log.WriteLine($"Encoding was probably terminated at {hasFrames / shouldFrames * 100:0.0}% with a mismatch of {difference} frames!")
                     End If
 
                     If hasFrames > -1 AndAlso p.AbortOnFrameMismatch AndAlso Not isCuttedRemux Then

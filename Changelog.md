@@ -14,6 +14,13 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.41.4 (not published yet)
+====================
+
+- UI: Add tolerances to Frame Mismatch when it comes to delete temp files ([#1400](/../../issues/1400))
+    - There are rare cases where an encoder or muxer might add a few frames to the final file
+
+
 v2.41.3 (not published)
 ====================
 

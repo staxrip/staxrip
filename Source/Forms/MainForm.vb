@@ -5458,6 +5458,17 @@ Public Class MainForm
             Dim deleteModeMenu = ui.AddMenu(Of DeleteMode)
             Dim deleteSelectionMenu = ui.AddMenu(Of DeleteSelection)
             Dim deleteSelectionModeMenu = ui.AddMenu(Of SelectionMode)
+
+            eb = ui.AddEmptyBlock(systemTempFilesPage)
+            eb.Margin = New Padding(0, 6, 0, 3)
+            eb.Visible = p.DeleteTempFilesMode <> DeleteMode.Disabled
+            ui.AddLabel(eb, "Allowed on Frame Mismatch:", 7)
+            ui.AddLabel(eb, "Too less:", 2)
+            Dim deleteOnFrameMismatchNegative = ui.AddNumeric(eb)
+            ui.AddLabel(eb, " ", 1)
+            ui.AddLabel(eb, "Too much:", 2)
+            Dim deleteOnFrameMismatchPositive = ui.AddNumeric(eb)
+
             Dim deleteCustomLabel = ui.AddLabel("Custom file extensions (space separated):")
             Dim deleteCustom = ui.AddTextMenu()
             Dim deleteSelectiveLabelExcludeText = "Select what shall be excluded:"
@@ -5476,7 +5487,10 @@ Public Class MainForm
             deleteModeMenu.Expanded = True
             deleteModeMenu.Field = NameOf(p.DeleteTempFilesMode)
             deleteModeMenu.Button.ValueChangedAction = Sub(value)
-                                                           deleteSelectionMenu.Visible = value <> DeleteMode.Disabled
+                                                           Dim deleteModeActive = value <> DeleteMode.Disabled
+                                                           deleteSelectionMenu.Visible = deleteModeActive
+                                                           deleteSelectionMenu.Button.ValueChangedAction.Invoke(deleteSelectionMenu.Button.Value)
+                                                           eb.Visible = deleteModeActive
                                                        End Sub
 
             deleteSelectionMenu.Text = "Selection:"
@@ -5509,6 +5523,14 @@ Public Class MainForm
                                                                         MsgWarn("Be aware!", "Every not selected, listed or identified file type will be deleted!")
                                                                     End If
                                                                 End Sub
+
+            deleteOnFrameMismatchNegative.Help = "Number of frames that the target file may have too less in order to delete the temp files. (-1 disables the check)"
+            deleteOnFrameMismatchNegative.Config = {-1, 999, 1, 0}
+            deleteOnFrameMismatchNegative.Field = NameOf(p.DeleteTempFilesOnFrameMismatchNegative)
+
+            deleteOnFrameMismatchPositive.Help = "Number of frames that the target file may have too much in order to delete the temp files. (-1 disables the check)"
+            deleteOnFrameMismatchPositive.Config = {-1, 999, 1, 0}
+            deleteOnFrameMismatchPositive.Field = NameOf(p.DeleteTempFilesOnFrameMismatchPositive)
 
             deleteCustomLabel.MarginTop = Font.Height \ 2
             deleteCustomLabel.Visible = p.DeleteTempFilesMode <> DeleteMode.Disabled AndAlso p.DeleteTempFilesSelection = DeleteSelection.Custom

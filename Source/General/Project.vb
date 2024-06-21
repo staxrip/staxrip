@@ -58,7 +58,8 @@ Public Class Project
     Public DeleteTempFilesSelectionMode As SelectionMode = SelectionMode.Include
     Public DeleteTempFilesCustomSelection As String() = FileTypes.Video.Distinct().Sort().ToArray()
     Public DeleteTempFilesSelectiveSelection As DeleteSelectiveSelection = DeleteSelectiveSelection.Videos
-    Public DeleteTempFilesOnFrameMismatch As Boolean = False
+    Public DeleteTempFilesOnFrameMismatchNegative As Integer = 0
+    Public DeleteTempFilesOnFrameMismatchPositive As Integer = 1
     Public DemuxAttachments As Boolean = True
     Public DemuxAudio As DemuxMode = DemuxMode.All
     Public DemuxChapters As Boolean = True

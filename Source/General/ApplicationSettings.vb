@@ -100,7 +100,7 @@ Public Class ApplicationSettings
     Public VapourSynthMode As FrameServerMode
     Public VapourSynthProfiles As List(Of FilterCategory)
     Public VerifyToolStatus As Boolean = True
-    Public Version As String = g.DefaultCommands.GetApplicationDetails(False, True, False)
+    Public Version As String = g.DefaultCommands.GetApplicationDetails(False, True)
     Public Versions As Dictionary(Of String, Integer)
     Public VideoEncoderProfiles As List(Of VideoEncoder)
     Public WindowPositions As WindowPositions

@@ -82,7 +82,7 @@ Public Class Audio
         End If
 
         If stream.Language.TwoLetterCode <> "iv" Then
-            ret += " " + stream.Language.ToString
+            ret += $" [{stream.Name}] {stream.Language}"
         End If
 
         If stream.Title <> "" Then

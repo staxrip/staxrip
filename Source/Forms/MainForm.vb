@@ -577,9 +577,9 @@ Public Class MainForm
         Me.tlpResizeValues.ColumnCount = 4
         Me.tlpResize.SetColumnSpan(Me.tlpResizeValues, 4)
         Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(SizeType.Percent, 33!))
+        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(SizeType.Percent, 33.0!))
         Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(SizeType.Percent, 40!))
+        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(SizeType.Percent, 40.0!))
         Me.tlpResizeValues.Controls.Add(Me.blTargetDarText, 0, 1)
         Me.tlpResizeValues.Controls.Add(Me.lAspectRatioError, 3, 3)
         Me.tlpResizeValues.Controls.Add(Me.lPAR, 1, 3)
@@ -855,8 +855,8 @@ Public Class MainForm
         Me.tlpMain.AutoSize = False
         Me.tlpMain.ColumnCount = 4
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33!))
-        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 350!))
-        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 350!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 350.0!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 350.0!))
         Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33!))
         Me.tlpMain.Controls.Add(Me.MenuStrip, 0, 0)
         Me.tlpMain.Controls.Add(Me.lgbSource, 0, 1)
@@ -7293,7 +7293,7 @@ Public Class MainForm
         cms.Add("Media Info...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), exist, "Show MediaInfo for the audio source file.").SetImage(Symbol.Info)
         cms.Add("Explore", Sub() g.SelectFileWithExplorer(ap.File), exist, "Open the audio source file directory with File Explorer.").SetImage(Symbol.FileExplorer)
         cms.Add("-")
-        cms.Add("Execute", Sub() ExecuteAudio(ap), exist, "Processes the audio profile.")
+        cms.Add("Execute", Sub() ExecuteAudio(ap), exist, "Processes the audio profile.").SetImage(Symbol.LightningBolt)
         cms.Add("-")
         cms.Add("Copy Path", Sub() Clipboard.SetText(ap.File), te.Text <> "")
         cms.Add("Copy Selection", Sub() Clipboard.SetText(te.TextBox.SelectedText), te.Text <> "").SetImage(Symbol.Copy)
@@ -7521,16 +7521,17 @@ Public Class MainForm
                     If line Like "========*" Then Continue Do
 
                     Dim match = Regex.Match(line, "(v\d\.(\d+)\.?(\d*))\W+\(.*\)")
+                    Dim lines = Regex.Matches(sb.ToString(), Environment.NewLine).Count
                     If match.Success Then
                         If relevant Then
                             If match.Groups(2).Value.ToInt() = version.Minor Then
                                 versions += 1
 
-                                sb.AppendLine()
+                                If lines < 34 Then sb.AppendLine()
                                 sb.AppendLine(line)
                                 sb.AppendLine("-------------------------")
 
-                                If match.Groups(3).Value.ToInt() = 0 AndAlso Regex.Matches(sb.ToString(), Environment.NewLine).Count > 30 Then
+                                If match.Groups(3).Value.ToInt() = 0 AndAlso lines > 35 Then
                                     sb.AppendLine("---- Hidden because of the length of this report ----")
                                     relevant = False
                                 End If
@@ -7541,7 +7542,7 @@ Public Class MainForm
                             End If
                         End If
 
-                        If Not match.Groups(1).Value.StartsWithEx(g.DefaultCommands.GetApplicationDetails(False, True, False)) Then Continue Do
+                        If Not match.Groups(1).Value.StartsWithEx(g.DefaultCommands.GetApplicationDetails(False, True)) Then Continue Do
 
                         relevant = True
                         Continue Do

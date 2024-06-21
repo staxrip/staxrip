@@ -1184,7 +1184,7 @@ Module ControlExtensions
         Dim ret = ""
 
         For x = 4 To 2 Step -1
-            ret = values.Join("".PadRight(x))
+            ret = values.Where(Function(val) val <> "").Join("".PadRight(x))
             Dim testWidth = TextRenderer.MeasureText(ret, instance.Font).Width
 
             If testWidth < instance.Width Then

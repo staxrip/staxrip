@@ -690,22 +690,37 @@ Public Class GlobalClass
         If String.IsNullOrWhiteSpace(path) Then Return Nothing
 
         Dim ret As New Language(CultureInfo.InvariantCulture)
-        Dim filename = path.FileName.LeftLast(".")
+        Dim filename = path.Base
 
-        For Each extracted In {Regex.Replace(filename, "{.*?}", "").Trim(), filename.Right(".").Left(".").Trim(), filename.Left(".").Trim(), filename.Right("[").Left("]").Trim(), filename.Right(".[").Left("]").Trim(), filename.Right("_[").Left("]").Trim()}
+        Dim segments = {Regex.Replace(filename, "{.*}", ""),
+                        filename.RightLast("{").LeftLast("}")} _
+                        .Concat(filename.SplitNoEmpty(" ")) _
+                        .Concat(filename.SplitNoEmpty(".")) _
+                        .Concat(filename.SplitNoEmpty(",")) _
+                        .Concat(filename.SplitNoEmpty("_")) _
+                        .Concat(Regex.Matches(filename, "(?<=\().+?(?=\))", RegexOptions.IgnoreCase).Cast(Of Match).Select(Function(x) x.Value)) _
+                        .Concat(Regex.Matches(filename, "(?<=\[).+?(?=\])", RegexOptions.IgnoreCase).Cast(Of Match).Select(Function(x) x.Value)) _
+                        .Concat(Regex.Matches(filename, "(?<=[,\._]\().+?(?=\))", RegexOptions.IgnoreCase).Cast(Of Match).Select(Function(x) x.Value)) _
+                        .Concat(Regex.Matches(filename, "(?<=[,\._]\[).+?(?=\])", RegexOptions.IgnoreCase).Cast(Of Match).Select(Function(x) x.Value)) _
+                        .Concat({
+                            filename.RightLast("_")
+                        }).Reverse().Distinct().Reverse()
+
+        For Each extracted In segments
             If String.IsNullOrWhiteSpace(extracted) Then Continue For
+            extracted = extracted.Trim()
 
             For Each lng In Language.Languages.OrderBy(Function(x) x.Name.Length)
-                If extracted = lng.Name Then
+                If lng.Name.Equals(extracted, StringComparison.InvariantCultureIgnoreCase) Then
                     ret = lng
                     Exit For
-                ElseIf extracted = lng.EnglishName Then
+                ElseIf lng.EnglishName.Equals(extracted, StringComparison.InvariantCultureIgnoreCase) Then
                     ret = lng
                     Exit For
-                ElseIf extracted = lng.ThreeLetterCode Then
+                ElseIf lng.ThreeLetterCode.Equals(extracted, StringComparison.InvariantCultureIgnoreCase) Then
                     ret = lng
                     Exit For
-                ElseIf extracted = lng.TwoLetterCode Then
+                ElseIf lng.TwoLetterCode.Equals(extracted, StringComparison.InvariantCultureIgnoreCase) Then
                     ret = lng
                     Exit For
                 End If
@@ -714,31 +729,14 @@ Public Class GlobalClass
 
         If ret Is Nothing OrElse Not ret.IsDetermined Then
             For Each lng In Language.Languages.OrderByDescending(Function(x) x.Name.Length)
-                If filename.Contains(lng.TwoLetterCode) Then
+                If lng.EnglishName.Contains(" (") AndAlso path.ToUpperInvariant().Contains(lng.EnglishName.Left(" (").ToUpperInvariant()) Then
                     ret = lng
                 End If
 
-                If filename.Contains(lng.ThreeLetterCode) Then
-                    ret = lng
-                End If
-
-                If path.Contains(lng.EnglishName.Left(" (")) Then
-                    ret = lng
-                End If
-
-                If path.Contains(lng.EnglishName) Then
+                If path.ToUpperInvariant().Contains(lng.EnglishName.ToUpperInvariant()) Then
                     ret = lng
 
-                    If filename.Contains(lng.EnglishName) Then
-                        ret = lng
-                        Exit For
-                    End If
-                End If
-
-                If path.Contains(lng.Name) Then
-                    ret = lng
-
-                    If filename.Contains(lng.Name) Then
+                    If filename.ToUpperInvariant().Contains(lng.EnglishName.ToUpperInvariant()) Then
                         ret = lng
                         Exit For
                     End If

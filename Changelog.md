@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.41.5 (not published yet)
+v2.41.5 (2024-06-23)
 ====================
 
 - UI: Fix tolerances to Frame Mismatch for temp files deletion ([#1400](/../../issues/1400))

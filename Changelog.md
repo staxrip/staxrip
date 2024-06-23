@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.42.0 (not published yet)
+v2.42.0 (2024-09-05)
 ====================
 
 - UI: Add support for Dark Mode Window Mode ([#1448](/../../issues/1448))

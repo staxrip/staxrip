@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.41.6 (not published yet)
+v2.41.6 (2024-07-03)
 ====================
 
 - UI: Fix "--normalize" and "--gain" are used for qaac at the same time when Pipe is used ([#1410](/../../issues/1410))

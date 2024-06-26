@@ -14,6 +14,12 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.41.6 (not published yet)
+====================
+
+- Internal: Fix crash on demuxing command without loaded project
+
+
 v2.41.5 (2024-06-23)
 ====================
 

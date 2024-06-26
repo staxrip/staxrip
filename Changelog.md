@@ -18,6 +18,7 @@ v2.41.6 (not published yet)
 ====================
 
 - Internal: Fix crash on demuxing command without loaded project
+- NVEncC: Add new "--vpp-fft3d" parameter
 
 
 v2.41.5 (2024-06-23)

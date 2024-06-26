@@ -595,6 +595,15 @@ Public Class NVEnc
         Property PmdStrength As New NumParam With {.Text = "      Strength", .Name = "PmdStrength", .Init = 100.0, .Config = {0, 100, 1, 1}}
         Property PmdThreshold As New NumParam With {.Text = "      Threshold", .Init = 100.0, .Config = {0, 255, 1, 1}}
 
+        Property Fft3d As New BoolParam With {.Text = "FFT3D", .Switch = "--vpp-fft3d", .ArgsFunc = AddressOf GetFft3dArgs}
+        Property Fft3dSigma As New NumParam With {.Text = "      Sigma", .HelpSwitch = "--vpp-fft3d", .Init = 1, .Config = {0, 100, 0.5, 1}}
+        Property Fft3dAmount As New NumParam With {.Text = "      Amount", .HelpSwitch = "--vpp-fft3d", .Init = 1, .Config = {0, 1, 0.01, 2}}
+        Property Fft3dBlockSize As New OptionParam With {.Text = "      Block Size", .HelpSwitch = "--vpp-fft3d", .Expanded = True, .Init = 2, .Options = {"8", "16", "32 (default)", "64"}, .Values = {"8", "16", "32", "64"}}
+        Property Fft3dOverlap As New NumParam With {.Text = "      Overlap", .HelpSwitch = "--vpp-fft3d", .Init = 0.5, .Config = {0.2, 0.8, 0.01, 2}}
+        Property Fft3dMethod As New OptionParam With {.Text = "      Method", .HelpSwitch = "--vpp-fft3d", .Expanded = True,.Init = 0, .Options = {"Wiener Method (default)", "Hard Thresholding"}, .Values = {"0", "1"}}
+        Property Fft3dTemporal As New OptionParam With {.Text = "      Temporal", .HelpSwitch = "--vpp-fft3d", .Init = 1, .Options = {"Spatial Filtering Only", "Temporal Filtering (default)"}, .Values = {"0", "1"}}
+        Property Fft3dPrec As New OptionParam With {.Text = "      Prec", .HelpSwitch = "--vpp-fft3d", .Init = 0, .Options = {"Use fp16 if possible (faster, default)", "Always use fp32"}, .Values = {"auto", "fp32"}}
+
         Property Knn As New BoolParam With {.Switch = "--vpp-knn", .Text = "Denoise using K-nearest neighbor", .ArgsFunc = AddressOf GetKnnArgs}
         Property KnnRadius As New NumParam With {.Text = "      Radius", .Init = 3}
         Property KnnStrength As New NumParam With {.Text = "      Strength", .Init = 0.08, .Config = {0, 1, 0.02, 2}}
@@ -882,10 +891,12 @@ Public Class NVEnc
                     Add("VPP | Deinterlace | AFS 2",
                         AfsShift, AfsDrop, AfsSmooth, Afs24fps, AfsTune, AfsRFF, AfsTimecode, AfsLog)
                     Add("VPP | Denoise",
-                        Knn, KnnRadius, KnnStrength, KnnLerp, KnnThLerp,
+                        Fft3d, Fft3dSigma, Fft3dAmount, Fft3dBlockSize, Fft3dOverlap, Fft3dMethod, Fft3dTemporal, Fft3dPrec,
+                        Knn, KnnRadius, KnnStrength, KnnLerp, KnnThLerp)
+                    Add("VPP | Denoise 2",
                         Convolution, ConvolutionMatrix, ConvolutionFast, ConvolutionYthresh, ConvolutionCthresh, ConvolutionTYthresh, ConvolutionTCthresh,
                         Pmd, PmdApplyCount, PmdStrength, PmdThreshold)
-                    Add("VPP | Denoise 2",
+                    Add("VPP | Denoise 3",
                         New OptionParam With {.Switch = "--vpp-gauss", .Text = "Gauss", .Options = {"Disabled", "3", "5", "7"}},
                         DenoiseDct, DenoiseDctStep, DenoiseDctSigma, DenoiseDctBlockSize,
                         NvvfxDenoise, NvvfxDenoiseStrength,
@@ -1039,6 +1050,14 @@ Public Class NVEnc
                 ResizeSuperresMode.MenuButton.Enabled = Resize.Value
                 ResizeSuperresStrength.NumEdit.Enabled = Resize.Value
 
+                Fft3dSigma.NumEdit.Enabled = Fft3d.Value
+                Fft3dAmount.NumEdit.Enabled = Fft3d.Value
+                Fft3dBlockSize.MenuButton.Enabled = Fft3d.Value
+                Fft3dOverlap.NumEdit.Enabled = Fft3d.Value
+                Fft3dMethod.MenuButton.Enabled = Fft3d.Value
+                Fft3dTemporal.MenuButton.Enabled = Fft3d.Value
+                Fft3dPrec.MenuButton.Enabled = Fft3d.Value
+
                 KnnRadius.NumEdit.Enabled = Knn.Value
                 KnnStrength.NumEdit.Enabled = Knn.Value
                 KnnLerp.NumEdit.Enabled = Knn.Value
@@ -1191,6 +1210,21 @@ Public Class NVEnc
 
         Function GetPaddingArgs() As String
             Return If(Pad.Value, $"--vpp-pad {PadLeft.Value},{PadTop.Value},{PadRight.Value},{PadBottom.Value}", "")
+        End Function
+
+        Function GetFft3dArgs() As String
+            If Fft3d.Value Then
+                Dim ret = ""
+                If Fft3dSigma.Value <> Fft3dSigma.DefaultValue Then ret += ",sigma=" & Fft3dSigma.Value.ToInvariantString
+                If Fft3dAmount.Value <> Fft3dAmount.DefaultValue Then ret += ",amount=" & Fft3dAmount.Value.ToInvariantString
+                If Fft3dBlockSize.Value <> Fft3dBlockSize.DefaultValue Then ret += ",block_size=" & Fft3dBlockSize.ValueText
+                If Fft3dOverlap.Value <> Fft3dOverlap.DefaultValue Then ret += ",overlap=" & Fft3dOverlap.Value.ToInvariantString
+                If Fft3dMethod.Value <> Fft3dMethod.DefaultValue Then ret += ",method=" & Fft3dMethod.ValueText
+                If Fft3dTemporal.Value <> Fft3dTemporal.DefaultValue Then ret += ",temporal=" & Fft3dTemporal.ValueText
+                If Fft3dPrec.Value <> Fft3dPrec.DefaultValue Then ret += ",prec=" & Fft3dPrec.ValueText
+                Return "--vpp-fft3d " + ret.TrimStart(","c)
+            End If
+            Return ""
         End Function
 
         Function GetKnnArgs() As String

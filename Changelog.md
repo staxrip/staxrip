@@ -26,7 +26,10 @@ v2.41.6 (not published yet)
 - NVEncC: Add new value "ngx-vsr" for "--vpp-resize" parameter
 - x264: Add "--aq-bias-strength" parameter ([#1412](/../../issues/1412))
 - Update tools
-    - ...
+    - MediaInfo v24.06
+    - NVEncC v7.57
+    - QSVEncC v7.67
+    - vvencFFapp v1.12.0 r236-d57c73d
 
 
 v2.41.5 (2024-06-23)

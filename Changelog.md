@@ -20,6 +20,9 @@ v2.41.6 (not published yet)
 - Internal: Fix crash on demuxing command without loaded project
 - Internal: Improve valid Dolby Vision metadata recognition for extraction ([#1409](/../../issues/1409))
 - NVEncC: Add new "--vpp-fft3d" parameter
+- x264: Add "--aq-bias-strength" parameter ([#1412](/../../issues/1412))
+- Update tools
+    - ...
 
 
 v2.41.5 (2024-06-23)

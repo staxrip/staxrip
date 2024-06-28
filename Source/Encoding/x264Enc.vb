@@ -455,6 +455,18 @@ Public Class x264Params
         .IntegerValue = True,
         .Options = {"Disabled", "Variance AQ", "Auto-variance AQ", "Auto-variance AQ with bias to dark scenes"}}
 
+    Property AqStrength As New NumParam With {
+        .Switch = "--aq-strength",
+        .Text = "AQ Strength",
+        .Config = {0, 0, 0.1, 1}}
+
+    Property AqBiasStrength As New NumParam With {
+        .Switch = "--aq-bias-strength",
+        .Text = "AQ Bias Strength",
+        .Init = 1,
+        .Config = {0, 3, 0.05, 2},
+        .VisibleFunc = Function() Aqmode.Value = 3}
+
     Property BAdapt As New OptionParam With {
         .Switch = "--b-adapt",
         .Text = "B-Adapt",
@@ -596,11 +608,6 @@ Public Class x264Params
         .Config = {0, 0, 0.05, 2},
         .Text = "     Trellis"}
 
-    Property AqStrength As New NumParam With {
-        .Switch = "--aq-strength",
-        .Text = "AQ Strength",
-        .Config = {0, 0, 0.1, 1}}
-
     Property DctDecimate As New BoolParam With {
         .NoSwitch = "--no-dct-decimate",
         .Text = "DCT Decimate"}
@@ -717,6 +724,7 @@ Public Class x264Params
         setVal(PsyRD, 1)
         setVal(PsyTrellis, 0)
         setVal(AqStrength, 1)
+        setVal(AqBiasStrength, 1)
         setVal(DctDecimate, True)
         setVal(DeadzoneInter, 21)
         setVal(DeadzoneIntra, 11)
@@ -915,6 +923,7 @@ Public Class x264Params
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     AqMode,
                     AqStrength,
+                    AqBiasStrength,
                     Ipratio,
                     Pbratio,
                     Qcomp,

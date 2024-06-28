@@ -2758,19 +2758,35 @@ Public Class MainForm
                     value = p.AutoCropTimeIntervalFrameSelection
                 End If
 
-                Using proc As New Proc
-                    proc.Header = "Auto Crop"
-                    proc.SkipString = "%"
-                    proc.Package = Package.AutoCrop
-                    proc.Arguments = $"{p.SourceScript.Path.Escape} {mode} {value} {vfw}"
-                    proc.Start()
+                Try
+                    Using proc As New Proc
+                        proc.Header = "Auto Crop"
+                        proc.SkipString = "%"
+                        proc.Package = Package.AutoCrop
+                        proc.Arguments = $"{p.SourceScript.Path.Escape} {mode} {value} {vfw}"
+                        proc.Start()
 
-                    Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
+                        Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
 
-                    If match.Success Then
-                        g.SetCrop(match.Groups(1).Value.ToInt, match.Groups(2).Value.ToInt, match.Groups(3).Value.ToInt, match.Groups(4).Value.ToInt, p.ForcedOutputModDirection, False)
-                    End If
-                End Using
+                        If match.Success Then
+                            g.SetCrop(match.Groups(1).Value.ToInt, match.Groups(2).Value.ToInt, match.Groups(3).Value.ToInt, match.Groups(4).Value.ToInt, p.ForcedOutputModDirection, False)
+                        End If
+                    End Using
+                Catch ex As SkipException
+                    Log.WriteLine("AutoCrop skipped...")
+                    Log.Save()
+                    ProcController.Aborted = False
+                Catch ex As AbortException
+                    Log.WriteLine("AutoCrop aborted...")
+                    Log.Save()
+                    ProcController.Aborted = False
+                Catch ex As ErrorAbortException
+                    Log.WriteLine("AutoCrop aborted...")
+                    Log.Save()
+                    ProcController.Aborted = False
+                Catch ex As Exception
+                    Throw ex
+                End Try
             End If
 
             SetCropFilter()

@@ -3578,7 +3578,7 @@ Public Class MainForm
         End If
 
         Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format/String")
-        If isEL OrElse (fileHdrFormat?.ContainsAny("Dolby Vision", "HDR10+ Profile B")) Then
+        If isEL OrElse (Regex.IsMatch(fileHdrFormat, "Dolby Vision.*Profile|HDR10+ Profile B")) Then
             Dim mode = If(proj.HdrDolbyVisionMode < 0, "", " -m " + (proj.HdrDolbyVisionMode + 0).ToString())
             Dim rpuPath = sourcePath.ChangeExt("rpu")
             Dim doviFile = proj.HdrDolbyVisionMetadataFile

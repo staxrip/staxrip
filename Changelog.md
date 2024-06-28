@@ -18,6 +18,7 @@ v2.41.6 (not published yet)
 ====================
 
 - Internal: Fix crash on demuxing command without loaded project
+- Internal: Improve valid Dolby Vision metadata recognition for extraction ([#1409](/../../issues/1409))
 - NVEncC: Add new "--vpp-fft3d" parameter
 
 

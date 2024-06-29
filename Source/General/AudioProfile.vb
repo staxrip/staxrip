@@ -1286,7 +1286,11 @@ Public Class GUIAudioProfile
             sb.Append(" --delay " + (Delay / 1000).ToInvariantString)
         End If
 
-        If Params.Normalize Then
+        If Gain <> 0 Then
+            sb.Append(" --gain " & Gain.ToInvariantString)
+        End If
+
+        If Params.Normalize AndAlso Gain = 0 Then
             sb.Append(" --normalize")
         End If
 
@@ -1304,10 +1308,6 @@ Public Class GUIAudioProfile
 
         If Params.qaacNoDither Then
             sb.Append(" --no-dither")
-        End If
-
-        If Gain <> 0 Then
-            sb.Append(" --gain " & Gain.ToInvariantString)
         End If
 
         If Params.CustomSwitches <> "" Then

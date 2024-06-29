@@ -18,6 +18,7 @@ v2.41.7 (not published yet)
 ====================
 
 - UI: Fix applying of wrong/default theme when selecting existing folder on first start ([#1418](/../../issues/1418))
+- NVEncC: Add new "--vpp-ngx-truehdr" parameter
 
 
 v2.41.6 (2024-07-03)

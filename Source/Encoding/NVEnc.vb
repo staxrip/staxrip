@@ -733,6 +733,7 @@ Public Class NVEnc
         Property ColorspaceRangeTo As New OptionParam With {.Text = New String(" "c, 12) + "Range To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "limited", "full"}, .VisibleFunc = Function() ColorspaceRangeFrom.Value > 0}
         Property ColorspaceLut3d As New StringParam With {.Text = New String(" "c, 6) + "Lut3D", .HelpSwitch = "--vpp-colorspace", .Init = "", .BrowseFile = True}
         Property ColorspaceLut3dinterp As New OptionParam With {.Text = New String(" "c, 12) + "Interpolation", .HelpSwitch = "--vpp-colorspace", .Init = 1, .Options = {"nearest", "trilinear", "tetrahedral", "pyramid", "prism"}, .VisibleFunc = Function() ColorspaceLut3d.Value.Trim().Length > 0}
+        
         Property ColorspaceHdr2sdr As New OptionParam With {.Text = New String(" "c, 0) + "HDR10 to SDR using this tonemapping:", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"none", "hable", "mobius", "reinhard", "bt2390"}}
         Property ColorspaceHdr2sdrSourcepeak As New NumParam With {.Text = New String(" "c, 6) + "Source Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1000, .Config = {0, 10000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
         Property ColorspaceHdr2sdrLdrnits As New NumParam With {.Text = New String(" "c, 6) + "Target brightness", .HelpSwitch = "--vpp-colorspace", .Init = 100.0, .Config = {0, 1000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
@@ -749,6 +750,12 @@ Public Class NVEnc
         Property ColorspaceHdr2sdrMobiusPeak As New NumParam With {.Text = New String(" "c, 6) + "Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1.0, .Config = {0, 100, 0.05, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 2, .Name = "MobiusPeak"}
         Property ColorspaceHdr2sdrReinhardContrast As New NumParam With {.Text = New String(" "c, 6) + "Contrast", .HelpSwitch = "--vpp-colorspace", .Init = 0.5, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3}
         Property ColorspaceHdr2sdrReinhardPeak As New NumParam With {.Text = New String(" "c, 6) + "Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1.0, .Config = {0, 100, 0.05, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3, .Name = "ReinhardPeak"}
+
+        Property NgxTruehdr As New BoolParam With {.Text = New String(" "c, 0) + "AI enhanced SDR to HDR conversion using RTX Video SDK:", .Switch = "--vpp-ngx-truehdr", .ArgsFunc = AddressOf GetNgxTruehdrArgs}
+        Property NgxTruehdrContrast As New NumParam With {.Text = New String(" "c, 6) + "Contrast", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 100.0, .Config = {0, 200, 1, 0}}
+        Property NgxTruehdrSaturation As New NumParam With {.Text = New String(" "c, 6) + "Saturation", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 100.0, .Config = {0, 200, 1, 0}}
+        Property NgxTruehdrMiddleGray As New NumParam With {.Text = New String(" "c, 6) + "MiddleGray", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 50.0, .Config = {10, 100, 1, 0}}
+        Property NgxTruehdrMaxLuminance As New NumParam With {.Text = New String(" "c, 6) + "Max Luminance", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 1000.0, .Config = {400, 2000, 1, 0}}
 
         Property Deinterlacer As New OptionParam With {.Text = "Deinterlacing Method", .HelpSwitch = "", .Init = 0, .Options = {"None", "Hardware (HW Decoder must be set to work!)", "AFS (Activate Auto Field Shift)", "Decomb", "Nnedi", "Yadif"}, .ArgsFunc = AddressOf GetDeinterlacerArgs}
 
@@ -868,6 +875,9 @@ Public Class NVEnc
                         ColorspaceHdr2sdrMobiusPeak,
                         ColorspaceHdr2sdrReinhardContrast,
                         ColorspaceHdr2sdrReinhardPeak)
+                    Add("VPP | Ngx-TrueHDR",
+                        NgxTruehdr, NgxTruehdrContrast, NgxTruehdrSaturation, NgxTruehdrMiddleGray, NgxTruehdrMaxLuminance
+                        )
                     Add("VPP | Deband",
                         Deband,
                         DebandRange,
@@ -1029,6 +1039,11 @@ Public Class NVEnc
                 ColorspaceHdr2sdrReinhardContrast.NumEdit.Enabled = Colorspace.Value
                 ColorspaceHdr2sdrReinhardPeak.NumEdit.Enabled = Colorspace.Value
 
+                NgxTruehdrContrast.NumEdit.Enabled = NgxTruehdr.Value
+                NgxTruehdrSaturation.NumEdit.Enabled = NgxTruehdr.Value
+                NgxTruehdrMiddleGray.NumEdit.Enabled = NgxTruehdr.Value
+                NgxTruehdrMaxLuminance.NumEdit.Enabled = NgxTruehdr.Value
+
                 EdgelevelStrength.NumEdit.Enabled = Edgelevel.Value
                 EdgelevelThreshold.NumEdit.Enabled = Edgelevel.Value
                 EdgelevelBlack.NumEdit.Enabled = Edgelevel.Value
@@ -1181,6 +1196,18 @@ Public Class NVEnc
                     End If
                 End If
                 If ret <> "" Then Return "--vpp-colorspace " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetNgxTruehdrArgs() As String
+            If NgxTruehdr.Value Then
+                Dim ret = ""
+                If NgxTruehdrContrast.Value <> NgxTruehdrContrast.DefaultValue Then ret += ",contrast=" & NgxTruehdrContrast.Value.ToInvariantString()
+                If NgxTruehdrsaturation.Value <> NgxTruehdrsaturation.DefaultValue Then ret += ",saturation=" & NgxTruehdrsaturation.Value.ToInvariantString()
+                If NgxTruehdrMiddleGray.Value <> NgxTruehdrMiddleGray.DefaultValue Then ret += ",middlegray=" & NgxTruehdrMiddleGray.Value.ToInvariantString()
+                If NgxTruehdrMaxLuminance.Value <> NgxTruehdrMaxLuminance.DefaultValue Then ret += ",maxluminance=" & NgxTruehdrMaxLuminance.Value.ToInvariantString()
+                Return "--vpp-ngx-truehdr " + ret.TrimStart(","c)
             End If
             Return ""
         End Function

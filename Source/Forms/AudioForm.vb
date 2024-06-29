@@ -1446,6 +1446,11 @@ Public Class AudioForm
                 AddHandler mbMode.Button.ValueChangedUser, Sub() If mbMode.Button.Value = 0 Then he.Checked = False
 
                 cb = ui.AddBool(page)
+                cb.Text = "No delay"
+                cb.Checked = TempProfile.Params.qaacNoDelay
+                cb.SaveAction = Sub(value) TempProfile.Params.qaacNoDelay = value
+
+                cb = ui.AddBool(page)
                 cb.Text = "No dither when quantizing to lower bit depth"
                 cb.Checked = TempProfile.Params.qaacNoDither
                 cb.SaveAction = Sub(value) TempProfile.Params.qaacNoDither = value

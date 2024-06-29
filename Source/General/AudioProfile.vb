@@ -1320,6 +1320,10 @@ Public Class GUIAudioProfile
             sb.Append(" --no-dither")
         End If
 
+        If Params.qaacNoDelay Then
+            sb.Append(" --no-delay")
+        End If
+
         If Params.CustomSwitches <> "" Then
             sb.Append(" " + Params.CustomSwitches)
         End If
@@ -1675,6 +1679,7 @@ Public Class GUIAudioProfile
 
         Property qaacHE As Boolean
         Property qaacLowpass As Integer
+        Property qaacNoDelay As Boolean
         Property qaacNoDither As Boolean
         Property qaacQuality As Integer = 2
         Property qaacRateMode As Integer

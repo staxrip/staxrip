@@ -25,6 +25,9 @@ Public Class Project
     Public AutoCropDolbyVisionThresholdEnd As Integer = 0
     Public AutoCropDolbyVisionMode As AutoCropDolbyVisionMode = AutoCropDolbyVisionMode.Automatic
     Public AutoCropMode As AutoCropMode = AutoCropMode.Always
+    Public AutoCropFrameRangeMode As AutoCropFrameRangeMode = AutoCropFrameRangeMode.Automatic
+    Public AutoCropFrameRangeThresholdBegin As Integer = 0
+    Public AutoCropFrameRangeThresholdEnd As Integer = 0
     Public AutoCropFrameSelectionMode As AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.TimeInterval
     Public AutoCropFixedNumberFrameSelection As Integer = 200
     Public AutoCropTimeIntervalFrameSelection As Integer = 15

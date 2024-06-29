@@ -1926,6 +1926,12 @@ Public Enum AutoCropMode
     <DispName("Always")> Always = 2
 End Enum
 
+Public Enum AutoCropFrameRangeMode
+    <DispName("Automatic")> Automatic = 0
+    <DispName("Complete")> Complete = 1
+    <DispName("Manual Threshold")> ManualThreshold = 2
+End Enum
+
 Public Enum AutoCropFrameSelectionMode
     <DispName("Fixed number")> FixedNumber = 1
     <DispName("Time Interval")> TimeInterval = 2

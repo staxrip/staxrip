@@ -23,9 +23,11 @@ v2.42.0 (not published yet)
 - UI: Make number of audio tracks on main window optional
 - UI: Re-implement audio track detection and reordering
 - Crop: Make AutoCrop process skippable ([#1411](/../../issues/1411))
+- Crop: Add Frame Consideration Mode to Options ([#1386](/../../issues/1386))
+    - Makes it able to handle intros and outros that are not cropped
 - Qaac: Add "--no-delay" parameter ([#1410](/../../issues/1410))
 - Update tools
-    - ...
+    - AutoCrop v2.5
 - Update AviSynth+ plugins
     - ...
 - Update Dual plugins

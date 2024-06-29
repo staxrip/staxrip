@@ -12,6 +12,7 @@ Imports System.Threading
 Imports System.Threading.Tasks
 Imports System.Xml
 Imports ManagedCuda.DriverAPINativeMethods
+Imports Microsoft.VisualBasic
 Imports MS.Internal.IO
 
 Imports StaxRip.UI
@@ -2045,8 +2046,8 @@ Public Class MainForm
             .Title = If(p.Script.IsAviSynth, "Select an AviSynth source filter:", "Select a VapourSynth source filter:")
         }
 
-        For Each filter In filters
-            td.AddCommand(filter.Name, filter)
+        For Each f In filters
+            td.AddCommand(f.Name, f)
         Next
 
         Dim ret = td.Show
@@ -2065,13 +2066,13 @@ Public Class MainForm
         Dim vsProfiles = s.VapourSynthProfiles.Where(Function(cat) cat.Name = "Source").First.Filters
         Dim allFilters = avsProfiles.Concat(vsProfiles)
 
-        For Each filter In allFilters
+        For Each f In allFilters
             For Each filterName In filterNames
-                If filter.Script.ToLowerInvariant.Contains(filterName.ToLowerInvariant + "(") OrElse
-                    filter.Script.ToLowerInvariant.Contains(filterName.ToLowerInvariant + ".") Then
+                If f.Script.ToLowerInvariant.Contains(filterName.ToLowerInvariant + "(") OrElse
+                    f.Script.ToLowerInvariant.Contains(filterName.ToLowerInvariant + ".") Then
 
-                    If filters.Where(Function(val) val.Name = filter.Name).Count = 0 Then
-                        filters.Add(filter.GetCopy)
+                    If filters.Where(Function(val) val.Name = f.Name).Count = 0 Then
+                        filters.Add(f.GetCopy)
                     End If
                 End If
             Next
@@ -2749,13 +2750,24 @@ Public Class MainForm
                 Dim c = p.HdrDolbyVisionMetadataFile.Crop
                 g.SetCrop(c.Left, c.Top, c.Right, c.Bottom, ForceOutputModDirection.Decrease, True)
             ElseIf p.AutoCropMode = AutoCropMode.Always Then
-                Dim mode = 0
-                Dim value = p.AutoCropFixedNumberFrameSelection
+                Dim info = p.SourceScript.Info
+                Dim selectionMode = Convert.ToInt32(p.AutoCropFrameSelectionMode)
+                Dim selectionValue = If(p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.TimeInterval, p.AutoCropTimeIntervalFrameSelection, p.AutoCropFixedNumberFrameSelection)
+                Dim considerationMode = Convert.ToInt32(p.AutoCropFrameRangeMode)
+                Dim considerationThresholdBegin = 0
+                Dim considerationThresholdEnd = 0
                 Dim vfw = If(FrameServerHelp.IsVfwUsed, 1, 0)
 
-                If p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.TimeInterval Then
-                    mode = 1
-                    value = p.AutoCropTimeIntervalFrameSelection
+                If p.AutoCropFrameRangeMode = AutoCropFrameRangeMode.Automatic Then
+                    Dim duration = info.FrameCount / info.FrameRate
+                    Dim divisor =  CInt(VB6.Conversion.Fix(info.FrameRate * 60 * 15))
+                    Dim threshold = CInt(VB6.Conversion.Fix(info.FrameRate * 15))
+
+                    considerationThresholdBegin = CInt(VB6.Conversion.Fix(threshold * duration / divisor))
+                    considerationThresholdEnd = CInt(VB6.Conversion.Fix(threshold * duration / divisor))
+                ElseIf p.AutoCropFrameRangeMode = AutoCropFrameRangeMode.ManualThreshold Then
+                    considerationThresholdBegin = p.AutoCropFrameRangeThresholdBegin
+                    considerationThresholdEnd = p.AutoCropFrameRangeThresholdEnd
                 End If
 
                 Try
@@ -2763,7 +2775,7 @@ Public Class MainForm
                         proc.Header = "Auto Crop"
                         proc.SkipString = "%"
                         proc.Package = Package.AutoCrop
-                        proc.Arguments = $"{p.SourceScript.Path.Escape} {mode} {value} {vfw}"
+                        proc.Arguments = $"{p.SourceScript.Path.Escape} {selectionMode} {selectionValue} {considerationThresholdBegin} {considerationThresholdEnd} {vfw}"
                         proc.Start()
 
                         Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
@@ -4953,6 +4965,18 @@ Public Class MainForm
             ui.AddLabel(eb, "Bottom:", 4)
             Dim bottomCrop = ui.AddNumeric(eb)
 
+            leftCrop.Value = p.CropLeft
+            leftCrop.Config = {0, 9999, 2, 0}
+
+            rightCrop.Value = p.CropRight
+            rightCrop.Config = leftCrop.Config
+
+            topCrop.Value = p.CropTop
+            topCrop.Config = {0, 9999, 2, 0}
+
+            bottomCrop.Value = p.CropBottom
+            bottomCrop.Config = topCrop.Config
+
 
 
             '   ----------------------------------------------------------------
@@ -4963,6 +4987,43 @@ Public Class MainForm
             ui.AddLine(autoCropPage, "General")
             'dim l = ui.AddLabel("Regular AutoCrop settings:", 0, FontStyle.Bold)
             'l.Margin = New Padding(0, 10, 0, 0)
+            Dim autoCropFrameRangeMode = ui.AddMenu(Of AutoCropFrameRangeMode)
+
+            Dim thresholdEb = ui.AddEmptyBlock(autoCropPage)
+            thresholdEb.Margin = New Padding(0, 6, 0, 3)
+            Dim l = ui.AddLabel(thresholdEb, "Threshold at:", 7)
+            ui.AddLabel(thresholdEb, "Beginning:", 2)
+            Dim thresholdBegin = ui.AddNumeric(thresholdEb)
+            ui.AddLabel(thresholdEb, " ", 1)
+            ui.AddLabel(thresholdEb, "Ending:", 2)
+            Dim thresholdEnd = ui.AddNumeric(thresholdEb)
+
+            thresholdBegin.Help = "Number of frames at the beginning of the video, that are ignored when setting the crop values."
+            thresholdBegin.Config = {0, 999999, 25, 0}
+            thresholdBegin.Field = NameOf(p.AutoCropFrameRangeThresholdBegin)
+
+            thresholdEnd.Help = "Number of frames at the ending of the video, that are ignored when setting the crop values."
+            thresholdEnd.Config = thresholdBegin.Config
+            thresholdEnd.Field = NameOf(p.AutoCropFrameRangeThresholdEnd)
+
+            autoCropFrameRangeMode.Text = "Frame Range Mode"
+            autoCropFrameRangeMode.Help = "Defines the range frames are considered to be taken into account for processing:" + BR2 + 
+                                                        "Automatic: Depending on video length a small portion of the beginning and end will be ignored." + BR + 
+                                                        "Complete: The whole video length will be used." + BR + 
+                                                        "Manual Threshold: Define your own number of frames at beginning and end that will be ignored."
+            autoCropFrameRangeMode.Expanded = True
+            autoCropFrameRangeMode.Field = NameOf(p.AutoCropFrameRangeMode)
+            autoCropFrameRangeMode.Button.ValueChangedAction = Sub(value)
+                                                                           Dim active = autoCropFrameRangeMode.Enabled
+                                                                           Dim activeAutomaticRange = active AndAlso value = StaxRip.AutoCropFrameRangeMode.Automatic
+                                                                           Dim activeCompleteRange = active AndAlso value = StaxRip.AutoCropFrameRangeMode.Complete
+                                                                           Dim activeManualThresholdRange = active AndAlso value = StaxRip.AutoCropFrameRangeMode.ManualThreshold
+                                                                           thresholdEb.Visible = activeManualThresholdRange
+                                                                       End Sub
+            autoCropFrameRangeMode.Button.ValueChangedAction.Invoke(p.AutoCropFrameRangeMode)
+
+
+
             Dim autoCropFrameSelectionMode = ui.AddMenu(Of AutoCropFrameSelectionMode)
 
             Dim fsFixedNumber = ui.AddNum()
@@ -4979,18 +5040,20 @@ Public Class MainForm
             fsTimeInterval.Field = NameOf(p.AutoCropTimeIntervalFrameSelection)
             fsTimeInterval.Margin = New Padding(0, 6, 0, 3)
 
+
+
             ui.AddLine(autoCropPage, "Dolby Vision")
 
             Dim autoCropDVMode = ui.AddMenu(Of AutoCropDolbyVisionMode)()
 
-            eb = ui.AddEmptyBlock(autoCropPage)
-            eb.Margin = New Padding(0, 6, 0, 3)
-            Dim l = ui.AddLabel(eb, "Threshold at:", 7)
-            ui.AddLabel(eb, "Beginning:", 2)
-            Dim doviThresholdBegin = ui.AddNumeric(eb)
-            ui.AddLabel(eb, " ", 1)
-            ui.AddLabel(eb, "Ending:", 2)
-            Dim doviThresholdEnd = ui.AddNumeric(eb)
+            Dim doviThresholdEb = ui.AddEmptyBlock(autoCropPage)
+            doviThresholdEb.Margin = New Padding(0, 6, 0, 3)
+            l = ui.AddLabel(doviThresholdEb, "Threshold at:", 7)
+            ui.AddLabel(doviThresholdEb, "Beginning:", 2)
+            Dim doviThresholdBegin = ui.AddNumeric(doviThresholdEb)
+            ui.AddLabel(doviThresholdEb, " ", 1)
+            ui.AddLabel(doviThresholdEb, "Ending:", 2)
+            Dim doviThresholdEnd = ui.AddNumeric(doviThresholdEb)
 
 
             autoCropDVMode.Text = "Mode"
@@ -4999,8 +5062,7 @@ Public Class MainForm
             autoCropDVMode.Field = NameOf(p.AutoCropDolbyVisionMode)
             autoCropDVMode.Button.ValueChangedAction = Sub(value)
                                                            Dim active = value = AutoCropDolbyVisionMode.ManualThreshold
-                                                           doviThresholdBegin.Enabled = active
-                                                           doviThresholdEnd.Enabled = active
+                                                           doviThresholdEb.Visible = active
                                                        End Sub
             autoCropDVMode.Button.ValueChangedAction.Invoke(p.AutoCropDolbyVisionMode)
 
@@ -5034,18 +5096,6 @@ Public Class MainForm
             doviThresholdEnd.Help = "Number of frames at the ending of the video, that are ignored when setting the crop values."
             doviThresholdEnd.Config = doviThresholdBegin.Config
             doviThresholdEnd.Field = NameOf(p.AutoCropDolbyVisionThresholdEnd)
-
-            leftCrop.Value = p.CropLeft
-            leftCrop.Config = {0, 9999, 2, 0}
-
-            rightCrop.Value = p.CropRight
-            rightCrop.Config = leftCrop.Config
-
-            topCrop.Value = p.CropTop
-            topCrop.Config = {0, 9999, 2, 0}
-
-            bottomCrop.Value = p.CropBottom
-            bottomCrop.Config = topCrop.Config
 
 
             '   ----------------------------------------------------------------

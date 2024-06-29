@@ -1443,7 +1443,18 @@ Public Class GlobalClass
                 Dim frameCount = info.FrameCount
                 Dim frameRate = info.FrameRate
                 Dim startFrame = 0
-                Dim endFrame = frameCount
+                Dim endFrame = frameCount - 1
+                If p.AutoCropFrameRangeMode = AutoCropFrameRangeMode.Automatic Then
+                    Dim duration = info.FrameCount / info.FrameRate
+                    Dim divisor =  CInt(VB6.Conversion.Fix(info.FrameRate * 60 * 15))
+                    Dim threshold = CInt(VB6.Conversion.Fix(info.FrameRate * 15))
+
+                    startFrame = CInt(VB6.Conversion.Fix(threshold * duration / divisor))
+                    endFrame = CInt(VB6.Conversion.Fix(threshold * duration / divisor))
+                ElseIf p.AutoCropFrameRangeMode = AutoCropFrameRangeMode.ManualThreshold Then
+                    startFrame = p.AutoCropFrameRangeThresholdBegin
+                    endFrame -= p.AutoCropFrameRangeThresholdEnd
+                End If
                 Dim consideredFrames = endFrame - startFrame
                 Dim minFrames = 5
                 Dim interval = CInt(VB6.Conversion.Fix(frameRate * 60))
@@ -1476,6 +1487,7 @@ Public Class GlobalClass
                 Dim top = crops.SelectMany(Function(arg) arg.Top).Min()
                 Dim right = crops.SelectMany(Function(arg) arg.Right).Min()
                 Dim bottom = crops.SelectMany(Function(arg) arg.Bottom).Min()
+
                 SetCrop(left, top, right, bottom, p.ForcedOutputModDirection, False)
             End Using
         End If

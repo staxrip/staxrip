@@ -11,28 +11,30 @@ Module Module1
             Dim args = Environment.GetCommandLineArgs()
 
             If args.Length = 1 Then
-                Console.WriteLine("AutoCrop <avs/vpy path> <number|interval> <frame count|seconds> <VFW>")
+                Console.WriteLine("AutoCrop <avs/vpy path> <number|interval> <frame count|seconds> <thresholdbegin> <thresholdend> <VFW>")
                 Exit Sub
             End If
 
             Dim scriptPath = args(1)
-            Dim mode = CInt(args(2))
-            Dim value = CInt(args(3))
-            Dim vfw = args(4) = "1"
+            Dim selectionMode = CInt(args(2))
+            Dim selectionValue = CInt(args(3))
+            Dim thresholdBegin = CInt(args(4))
+            Dim thresholdEnd = CInt(args(5))
+            Dim vfw = args(6) = "1"
 
             Using server = FrameServerFactory.Create(scriptPath, vfw)
                 Dim info = server.Info
                 Dim frameCount = info.FrameCount
                 Dim frameRate = info.FrameRate
-                Dim startFrame = 0
-                Dim endFrame = frameCount
+                Dim startFrame = thresholdBegin
+                Dim endFrame = frameCount - 1 - thresholdEnd
                 Dim consideredFrames = endFrame - startFrame
                 Dim minFrames = 5
-                Dim interval = CInt(Conversion.Fix(frameRate * 60))
-                If mode = 1 Then
-                    interval = CInt(Conversion.Fix(frameRate * value))
+                Dim interval = CInt(Conversion.Fix(frameRate * 30))
+                If selectionMode = 1 Then               ' Fixed Number
+                    interval = CInt(Conversion.Fix(frameRate * selectionValue))
                 Else
-                    interval = consideredFrames \ (value - 1)
+                    interval = consideredFrames \ (selectionValue - 1)
                     If interval * minFrames > consideredFrames Then
                         interval = CInt(Conversion.Fix(consideredFrames / minFrames))
                     End If
@@ -58,6 +60,7 @@ Module Module1
                 Dim top = crops.SelectMany(Function(arg) arg.Top).Min()
                 Dim right = crops.SelectMany(Function(arg) arg.Right).Min()
                 Dim bottom = crops.SelectMany(Function(arg) arg.Bottom).Min()
+
                 Console.WriteLine($"{left},{top},{right},{bottom}")
             End Using
         Catch ex As Exception

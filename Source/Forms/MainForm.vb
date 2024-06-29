@@ -1649,6 +1649,8 @@ Public Class MainForm
             Directory.CreateDirectory(batchFolder)
         End If
 
+        g.RaiseAppEvent(ApplicationEvent.BeforeJobAdding)
+
         Dim batchProject = ObjectHelp.GetCopy(Of Project)(p)
         batchProject.BatchMode = True
         batchProject.SourceFiles = {sourcefile}.ToList
@@ -4602,11 +4604,9 @@ Public Class MainForm
         Next
 
         If AssistantPassed Then
-            g.RaiseAppEvent(ApplicationEvent.BeforeJobAdding)
+            If AbortDueToLowDiskSpace() Then Exit Sub
 
-            If AbortDueToLowDiskSpace() Then
-                Exit Sub
-            End If
+            g.RaiseAppEvent(ApplicationEvent.BeforeJobAdding)
 
             Dim jobPath = JobManager.JobPath
             Dim jobs = JobManager.GetJobs()?.Where(Function(x) x.Active AndAlso x.Path = jobPath)

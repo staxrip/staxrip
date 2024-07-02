@@ -19,6 +19,7 @@ v2.41.6 (not published yet)
 
 - UI: Fix "--normalize" and "--gain" are used for qaac at the same time when Pipe is used ([#1410](/../../issues/1410))
 - Internal: Fix crash on demuxing command without loaded project
+- Internal: Fix rare crash when closing Processing window right before closing StaxRip ([#1414](/../../issues/1414))
 - Internal: Raise event "Before Job Adding" also when adding a batch job ([#1407](/../../issues/1407))
 - Internal: Improve valid Dolby Vision metadata recognition for extraction ([#1409](/../../issues/1409))
 - NVEncC: Add new "--vpp-fft3d" parameter

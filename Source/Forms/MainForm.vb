@@ -7395,7 +7395,13 @@ Public Class MainForm
     Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
         MyBase.OnFormClosed(e)
 
-        g.ProcForm?.Invoke(Sub() g.ProcForm.Close())
+        If g.ProcForm IsNot Nothing Then
+            If g.ProcForm.InvokeRequired Then
+                g.ProcForm.Invoke(Sub() g.ProcForm.Close())
+            Else
+                g.ProcForm.Close()
+            End If
+        End If
         g.SaveSettings()
         g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
     End Sub

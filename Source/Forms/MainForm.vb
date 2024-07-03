@@ -1142,6 +1142,8 @@ Public Class MainForm
         NextContextMenuStrip.Add("Add to bottom w/o opening Jobs", Sub() AddJob(False, -1))
 
         g.SetRenderer(MenuStrip)
+
+        ThemeManager.SetCurrentTheme(s.ThemeName)
         ApplyTheme()
 
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged

@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.41.7 (not published yet)
+v2.41.7 (2024-07-09)
 ====================
 
 - UI: Fix applying of wrong/default theme when selecting existing folder on first start ([#1418](/../../issues/1418))

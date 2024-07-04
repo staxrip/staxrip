@@ -263,7 +263,7 @@ Public Class Project
         End Get
         Set(value As String)
             If value <> TargetFileValue Then
-                If value <> "" AndAlso Not value.FileName.IsValidFileName Then
+                If value <> "" AndAlso (value.ContainsAny(Path.GetInvalidPathChars()) OrElse Not value.FileName.IsValidFileName()) Then
                     MsgWarn("Filename contains invalid characters.")
                     Exit Property
                 End If

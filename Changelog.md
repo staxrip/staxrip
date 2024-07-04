@@ -22,6 +22,7 @@ v2.42.0 (not published yet)
 - UI: Extend main window and make it resizeable
 - UI: Make number of audio tracks on main window optional
 - UI: Re-implement audio track detection and reordering
+- UI: Add menu items to Crop window to jump to a specific time and frame ([#1421](/../../issues/1421))
 - Crop: Make AutoCrop process skippable ([#1411](/../../issues/1411))
 - Crop: Add Frame Consideration Mode to Options ([#1386](/../../issues/1386))
     - Makes it able to handle intros and outros that are not cropped

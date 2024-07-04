@@ -326,9 +326,17 @@ Public Class CropForm
     End Sub
 
     Sub TrackLength_Scroll() Handles tbPosition.Scroll
-        Renderer.Position = tbPosition.Value
-        Renderer.Draw()
-        UpdateAll()
+        SetPos(tbPosition.Value)
+    End Sub
+
+    Sub SetPos(pos As Integer)
+        Try
+            Renderer.Position = pos
+            tbPosition.Value = Renderer.Position
+            Renderer.Draw()
+            UpdateAll()
+        Catch
+        End Try
     End Sub
 
     Protected Overrides Sub OnSizeChanged(args As EventArgs)
@@ -557,10 +565,16 @@ Public Class CropForm
         ret.Add("Increase Active And Opposite Side Large", NameOf(CropActiveAndOppositeSide), Keys.Add Or Keys.Control Or Keys.Shift, {8, 8})
         ret.Add("Decrease Active And Opposite Side Large", NameOf(CropActiveAndOppositeSide), Keys.Subtract Or Keys.Control Or Keys.Shift, {-8, -8})
         ret.Add("-")
-        ret.Add("Navigate 100 Frames Backward", NameOf(SetRelativePosition), Keys.PageUp, {-100})
-        ret.Add("Navigate 1000 Frames Backward", NameOf(SetRelativePosition), Keys.PageUp Or Keys.Control, {-1000})
-        ret.Add("Navigate 1000 Frames Forward", NameOf(SetRelativePosition), Keys.PageDown Or Keys.Control, {1000})
-        ret.Add("Navigate 100 Frames Forward", NameOf(SetRelativePosition), Keys.PageDown, {100})
+        ret.Add("Navigation|Go To Frame...", NameOf(GoToFrame), Keys.F)
+        ret.Add("Navigation|Go To Time...", NameOf(GoToTime), Keys.T)
+        ret.Add("Navigation|-")
+        ret.Add("Navigation|Go To Start", NameOf(SetAbsolutePosition), Keys.Control Or Keys.Left, {0})
+        ret.Add("Navigation|100 Frames Backward", NameOf(SetRelativePosition), Keys.PageUp, {-100})
+        ret.Add("Navigation|1000 Frames Backward", NameOf(SetRelativePosition), Keys.PageUp Or Keys.Control, {-1000})
+        ret.Add("Navigation|-")
+        ret.Add("Navigation|100 Frames Forward", NameOf(SetRelativePosition), Keys.PageDown, {100})
+        ret.Add("Navigation|1000 Frames Forward", NameOf(SetRelativePosition), Keys.PageDown Or Keys.Control, {1000})
+        ret.Add("Navigation|Go To End", NameOf(SetAbsolutePosition), Keys.Control Or Keys.Right, {1000000000})
         ret.Add("-")
         ret.Add("Crop Color | Theme", NameOf(SetCropColor), {Color.Empty})
         ret.Add("Crop Color | White", NameOf(SetCropColor), {Color.White})
@@ -661,11 +675,34 @@ Public Class CropForm
         Renderer.Draw()
     End Sub
 
-    <Command("Jumps a given frame count.")>
-    Sub SetRelativePosition(
-        <DispName("Offset"), Description("Frames to jump, negative values jump backward.")>
-        offset As Integer)
+    <Command("Dialog to jump to a specific time.")>
+    Sub GoToTime()
+        Dim d As Date
+        d = d.AddSeconds(Renderer.Position / FrameServer.FrameRate)
+        Dim value = InputBox.Show("Go To Time", d.ToString("HH:mm:ss.fff"))
 
+        If value <> "" Then
+            SetPos(CInt((TimeSpan.Parse(value).TotalMilliseconds / 1000) * FrameServer.FrameRate))
+        End If
+    End Sub
+
+    <Command("Dialog to jump to a specific frame.")>
+    Sub GoToFrame()
+        Dim value = InputBox.Show("Go To Frame", Renderer.Position.ToString)
+        Dim pos As Integer
+
+        If Integer.TryParse(value, pos) Then
+            SetPos(pos)
+        End If
+    End Sub
+
+    <Command("Jumps to a given frame.")>
+    Sub SetAbsolutePosition(<DispName("Position")> pos As Integer)
+        SetPos(pos)
+    End Sub
+
+    <Command("Jumps a given frame count.")>
+    Sub SetRelativePosition(<DispName("Offset"), Description("Frames to jump, negative values jump backward.")> offset As Integer)
         Renderer.Position += offset
         tbPosition.Value = Renderer.Position
         Renderer.Draw()

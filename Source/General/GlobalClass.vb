@@ -511,7 +511,7 @@ Public Class GlobalClass
                 If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Logs) Then extensions = extensions.Union(FileTypes.Logs)
                 If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Scripts) Then extensions = extensions.Union(FileTypes.Scripts)
                 If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Indexes) Then extensions = extensions.Union(FileTypes.Indexes)
-                If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Videos) Then extensions = extensions.Union(FileTypes.Video)
+                If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Videos) Then extensions = extensions.Union(FileTypes.Video.Except(FileTypes.Scripts))
                 If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Audios) Then extensions = extensions.Union(FileTypes.Audio)
                 If proj.DeleteTempFilesSelectiveSelection.HasFlag(DeleteSelectiveSelection.Subtitles) Then extensions = extensions.Union(FileTypes.SubtitleExludingContainers)
         End Select

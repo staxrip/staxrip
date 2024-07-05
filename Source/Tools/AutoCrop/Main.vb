@@ -30,18 +30,20 @@ Module Module1
                 Dim endFrame = frameCount - 1 - thresholdEnd
                 Dim consideredFrames = endFrame - startFrame
                 Dim minFrames = 5
-                Dim interval = CInt(Conversion.Fix(frameRate * 30))
-                If selectionMode = 1 Then               ' Fixed Number
-                    interval = CInt(Conversion.Fix(frameRate * selectionValue))
-                Else
-                    interval = consideredFrames \ (selectionValue - 1)
-                    If interval * minFrames > consideredFrames Then
-                        interval = CInt(Conversion.Fix(consideredFrames / minFrames))
-                    End If
+                Dim interval = 0
+                If selectionMode = 1 Then
+                    interval = consideredFrames \ selectionValue
+                ElseIf selectionMode = 2 Then
+                    interval = selectionValue
+                ElseIf selectionMode = 3 Then
+                    interval = CInt(Conversion.Fix(selectionValue * frameRate))
                 End If
+                interval = Math.Min(interval, consideredFrames \ minFrames)
                 Dim analyzeCount = (consideredFrames \ interval) + 1
                 Dim analyzeFrames(analyzeCount - 1) As Integer
                 Dim crops(analyzeCount - 1) As AutoCrop
+                Dim offset = (consideredFrames - ((analyzeCount - 1) * interval)) \ 2
+                startFrame += offset
 
                 For i = 0 To analyzeCount - 1
                     analyzeFrames(i) = Math.Min(startFrame + i * interval, endFrame)

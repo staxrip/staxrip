@@ -29,7 +29,8 @@ Public Class Project
     Public AutoCropFrameRangeThresholdBegin As Integer = 0
     Public AutoCropFrameRangeThresholdEnd As Integer = 0
     Public AutoCropFrameSelectionMode As AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.TimeInterval
-    Public AutoCropFixedNumberFrameSelection As Integer = 200
+    Public AutoCropFixedFramesFrameSelection As Integer = 200
+    Public AutoCropFrameIntervalFrameSelection As Integer = 400
     Public AutoCropTimeIntervalFrameSelection As Integer = 15
     Public AutoResizeImage As Integer
     Public AutoRotation As Boolean = True

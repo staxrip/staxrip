@@ -2752,7 +2752,8 @@ Public Class MainForm
             ElseIf p.AutoCropMode = AutoCropMode.Always Then
                 Dim info = p.SourceScript.Info
                 Dim selectionMode = Convert.ToInt32(p.AutoCropFrameSelectionMode)
-                Dim selectionValue = If(p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.TimeInterval, p.AutoCropTimeIntervalFrameSelection, p.AutoCropFixedNumberFrameSelection)
+                Dim selectionValue = If(p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.FrameInterval, p.AutoCropFrameIntervalFrameSelection, p.AutoCropFixedFramesFrameSelection)
+                selectionValue = If(p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.TimeInterval, p.AutoCropTimeIntervalFrameSelection, selectionValue)
                 Dim considerationMode = Convert.ToInt32(p.AutoCropFrameRangeMode)
                 Dim considerationThresholdBegin = 0
                 Dim considerationThresholdEnd = 0
@@ -5026,12 +5027,19 @@ Public Class MainForm
 
             Dim autoCropFrameSelectionMode = ui.AddMenu(Of AutoCropFrameSelectionMode)
 
-            Dim fsFixedNumber = ui.AddNum()
-            fsFixedNumber.Text = "Number of frames:"
-            fsFixedNumber.Help = "Fixed number of frames being analyzed over the whole video."
-            fsFixedNumber.Config = {1, 7200, 5, 0}
-            fsFixedNumber.Field = NameOf(p.AutoCropFixedNumberFrameSelection)
-            fsFixedNumber.Margin = New Padding(0, 6, 0, 3)
+            Dim fsFixedFrames = ui.AddNum()
+            fsFixedFrames.Text = "Number of frames:"
+            fsFixedFrames.Help = "Fixed number of frames being analyzed over the whole video."
+            fsFixedFrames.Config = {1, 7200, 5, 0}
+            fsFixedFrames.Field = NameOf(p.AutoCropFixedFramesFrameSelection)
+            fsFixedFrames.Margin = New Padding(0, 6, 0, 3)
+
+            Dim fsFrameInterval = ui.AddNum()
+            fsFrameInterval.Text = "Frame interval:"
+            fsFrameInterval.Help = "Frame interval betwen analyzed frames."
+            fsFrameInterval.Config = {1, 3600, 5, 0}
+            fsFrameInterval.Field = NameOf(p.AutoCropFrameIntervalFrameSelection)
+            fsFrameInterval.Margin = New Padding(0, 6, 0, 3)
 
             Dim fsTimeInterval = ui.AddNum()
             fsTimeInterval.Text = "Time interval in seconds:"
@@ -5072,9 +5080,11 @@ Public Class MainForm
             autoCropFrameSelectionMode.Field = NameOf(p.AutoCropFrameSelectionMode)
             autoCropFrameSelectionMode.Button.ValueChangedAction = Sub(value)
                                                                        Dim active = autoCropFrameSelectionMode.Enabled
-                                                                       Dim activeFixedNumber = active AndAlso value = StaxRip.AutoCropFrameSelectionMode.FixedNumber
+                                                                       Dim activeFixedFrames = active AndAlso value = StaxRip.AutoCropFrameSelectionMode.FixedFrames
+                                                                       Dim activeFrameInterval = active AndAlso value = StaxRip.AutoCropFrameSelectionMode.FrameInterval
                                                                        Dim activeTimeInterval = active AndAlso value = StaxRip.AutoCropFrameSelectionMode.TimeInterval
-                                                                       fsFixedNumber.Visible = activeFixedNumber
+                                                                       fsFixedFrames.Visible = activeFixedFrames
+                                                                       fsFrameInterval.Visible = activeFrameInterval
                                                                        fsTimeInterval.Visible = activeTimeInterval
                                                                    End Sub
             autoCropFrameSelectionMode.Button.ValueChangedAction.Invoke(p.AutoCropFrameSelectionMode)

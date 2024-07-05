@@ -24,6 +24,7 @@ v2.42.0 (not published yet)
 - UI: Re-implement audio track detection and reordering
 - UI: Add menu items to Crop window to jump to a specific time and frame ([#1421](/../../issues/1421))
 - Crop: Make AutoCrop process skippable ([#1411](/../../issues/1411))
+- Crop: Add Frame Interval Selection Mode
 - Crop: Add Frame Consideration Mode to Options ([#1386](/../../issues/1386))
     - Makes it able to handle intros and outros that are not cropped
 - Qaac: Add "--no-delay" parameter ([#1410](/../../issues/1410))

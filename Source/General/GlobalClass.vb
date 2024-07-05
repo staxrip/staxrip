@@ -1458,8 +1458,13 @@ Public Class GlobalClass
                 Dim consideredFrames = endFrame - startFrame
                 Dim minFrames = 5
                 Dim interval = CInt(VB6.Conversion.Fix(frameRate * 60))
-                If p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.FixedNumber Then
-                    interval = consideredFrames \ (p.AutoCropFixedNumberFrameSelection - 1)
+                If p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.FixedFrames Then
+                    interval = consideredFrames \ (p.AutoCropFixedFramesFrameSelection - 1)
+                ElseIf p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.FrameInterval Then
+                    interval = p.AutoCropFrameIntervalFrameSelection
+                    If interval * minFrames > consideredFrames Then
+                        interval = CInt(VB6.Conversion.Fix(consideredFrames / minFrames))
+                    End If
                 ElseIf p.AutoCropFrameSelectionMode = AutoCropFrameSelectionMode.TimeInterval Then
                     interval = CInt(VB6.Conversion.Fix(frameRate * p.AutoCropTimeIntervalFrameSelection))
                     If interval * minFrames > consideredFrames Then
@@ -1469,6 +1474,8 @@ Public Class GlobalClass
                 Dim analyzeCount = (consideredFrames \ interval) + 1
                 Dim analyzeFrames(analyzeCount - 1) As Integer
                 Dim crops(analyzeCount - 1) As AutoCrop
+                Dim offset = (consideredFrames - ((analyzeCount - 1) * interval)) \ 2
+                startFrame += offset
 
                 For i = 0 To analyzeCount - 1
                     analyzeFrames(i) = Math.Min(startFrame + i * interval, endFrame)

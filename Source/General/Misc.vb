@@ -1933,8 +1933,9 @@ Public Enum AutoCropFrameRangeMode
 End Enum
 
 Public Enum AutoCropFrameSelectionMode
-    <DispName("Fixed number")> FixedNumber = 1
-    <DispName("Time Interval")> TimeInterval = 2
+    <DispName("Fixed Frame Number")> FixedFrames = 1
+    <DispName("Frame Interval")> FrameInterval = 2
+    <DispName("Time Interval")> TimeInterval = 3
 End Enum
 
 Public Enum AutoCropDolbyVisionMode

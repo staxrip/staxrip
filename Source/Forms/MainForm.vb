@@ -2760,12 +2760,9 @@ Public Class MainForm
                 Dim vfw = If(FrameServerHelp.IsVfwUsed, 1, 0)
 
                 If p.AutoCropFrameRangeMode = AutoCropFrameRangeMode.Automatic Then
-                    Dim duration = info.FrameCount / info.FrameRate
-                    Dim divisor =  CInt(VB6.Conversion.Fix(info.FrameRate * 60 * 15))
-                    Dim threshold = CInt(VB6.Conversion.Fix(info.FrameRate * 15))
-
-                    considerationThresholdBegin = CInt(VB6.Conversion.Fix(threshold * duration / divisor))
-                    considerationThresholdEnd = CInt(VB6.Conversion.Fix(threshold * duration / divisor))
+                    Dim threshold = CInt(VB6.Conversion.Fix(info.FrameCount * 0.05))
+                    considerationThresholdBegin = threshold
+                    considerationThresholdEnd = threshold
                 ElseIf p.AutoCropFrameRangeMode = AutoCropFrameRangeMode.ManualThreshold Then
                     considerationThresholdBegin = p.AutoCropFrameRangeThresholdBegin
                     considerationThresholdEnd = p.AutoCropFrameRangeThresholdEnd

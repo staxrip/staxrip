@@ -56,12 +56,17 @@ Module Module1
                     Using bmp = BitmapUtil.CreateBitmap(server, frame)
                         crops(i) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), frame)
                     End Using
+
+                    If crops(i).Left.Min = 0 AndAlso crops(i).Top.Min = 0 AndAlso crops(i).Right.Min = 0 AndAlso crops(i).Bottom.Min = 0 Then
+                        Console.WriteLine($"Progress: 100%")
+                        Exit For
+                    End If
                 Next
 
-                Dim left = crops.SelectMany(Function(arg) arg.Left).Min()
-                Dim top = crops.SelectMany(Function(arg) arg.Top).Min()
-                Dim right = crops.SelectMany(Function(arg) arg.Right).Min()
-                Dim bottom = crops.SelectMany(Function(arg) arg.Bottom).Min()
+                Dim left = crops.Where(Function(x) x IsNot Nothing).SelectMany(Function(arg) arg.Left).Min()
+                Dim top = crops.Where(Function(x) x IsNot Nothing).SelectMany(Function(arg) arg.Top).Min()
+                Dim right = crops.Where(Function(x) x IsNot Nothing).SelectMany(Function(arg) arg.Right).Min()
+                Dim bottom = crops.Where(Function(x) x IsNot Nothing).SelectMany(Function(arg) arg.Bottom).Min()
 
                 Console.WriteLine($"{left},{top},{right},{bottom}")
             End Using

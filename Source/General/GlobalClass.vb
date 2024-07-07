@@ -1445,14 +1445,11 @@ Public Class GlobalClass
                 Dim startFrame = 0
                 Dim endFrame = frameCount - 1
                 If p.AutoCropFrameRangeMode = AutoCropFrameRangeMode.Automatic Then
-                    Dim duration = info.FrameCount / info.FrameRate
-                    Dim divisor =  CInt(VB6.Conversion.Fix(info.FrameRate * 60 * 15))
-                    Dim threshold = CInt(VB6.Conversion.Fix(info.FrameRate * 15))
-
-                    startFrame = CInt(VB6.Conversion.Fix(threshold * duration / divisor))
-                    endFrame = CInt(VB6.Conversion.Fix(threshold * duration / divisor))
+                    Dim threshold = CInt(VB6.Conversion.Fix(frameCount * 0.05))
+                    startFrame += threshold
+                    endFrame -= threshold
                 ElseIf p.AutoCropFrameRangeMode = AutoCropFrameRangeMode.ManualThreshold Then
-                    startFrame = p.AutoCropFrameRangeThresholdBegin
+                    startFrame += p.AutoCropFrameRangeThresholdBegin
                     endFrame -= p.AutoCropFrameRangeThresholdEnd
                 End If
                 Dim consideredFrames = endFrame - startFrame
@@ -1488,17 +1485,23 @@ Public Class GlobalClass
                     Using bmp = BitmapUtil.CreateBitmap(server, frame)
                         crops(i) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), frame)
                     End Using
+
+                    If crops(i).Left.Min = 0 AndAlso crops(i).Top.Min = 0 AndAlso crops(i).Right.Min = 0 AndAlso crops(i).Bottom.Min = 0 Then
+                        progressAction?.Invoke(100.0)
+                        Exit For
+                    End If
                 Next
 
-                Dim left = crops.SelectMany(Function(arg) arg.Left).Min()
-                Dim top = crops.SelectMany(Function(arg) arg.Top).Min()
-                Dim right = crops.SelectMany(Function(arg) arg.Right).Min()
-                Dim bottom = crops.SelectMany(Function(arg) arg.Bottom).Min()
+                Dim left = crops.Where(Function(x) x IsNot Nothing).SelectMany(Function(arg) arg.Left).Min()
+                Dim top = crops.Where(Function(x) x IsNot Nothing).SelectMany(Function(arg) arg.Top).Min()
+                Dim right = crops.Where(Function(x) x IsNot Nothing).SelectMany(Function(arg) arg.Right).Min()
+                Dim bottom = crops.Where(Function(x) x IsNot Nothing).SelectMany(Function(arg) arg.Bottom).Min()
 
                 SetCrop(left, top, right, bottom, p.ForcedOutputModDirection, False)
             End Using
         End If
     End Sub
+
     Sub SmartCrop()
         If Not p.Script.IsFilterActive("Resize") Then
             Exit Sub

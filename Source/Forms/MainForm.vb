@@ -2390,11 +2390,26 @@ Public Class MainForm
             End If
 
             p.SourceVideoHdrFormat = MediaInfo.GetVideo(p.LastOriginalSourceFile, "HDR_Format_Commercial")
+            p.SourceVideoHdrFormat = If(String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat), "SDR", p.SourceVideoHdrFormat)
+            p.SourceVideoHdrFormat = If(p.SourceVideoHdrFormat = "Dolby Vision", "DV", p.SourceVideoHdrFormat)
 
-            If String.IsNullOrWhiteSpace(p.SourceVideoHdrFormat) Then
-                p.SourceVideoHdrFormat = "SDR"
-            ElseIf p.SourceVideoHdrFormat.Contains("Blu-ray / HDR10") OrElse p.SourceVideoHdrFormat.Contains("Dolby") Then
-                p.SourceVideoHdrFormat = "DV"
+            If p.SourceVideoHdrFormat.ContainsAny("SDR", "HDR10", "HDR10+", "Dolby Vision") Then
+                Dim hdrFormat = MediaInfo.GetVideo(p.LastOriginalSourceFile, "HDR_Format/String")
+
+                If hdrFormat.ContainsEx("Dolby Vision") Then
+                    p.SourceVideoHdrFormat = "DV"
+
+                    Dim profileMatch = Regex.Match(hdrFormat, "Profile (\d\.\d),")
+                    If profileMatch.Success Then
+                        p.SourceVideoHdrFormat += " " + profileMatch.Groups(1).Value
+                    End If
+
+                    If Regex.IsMatch(hdrFormat, "HDR10 compatible") Then
+                        p.SourceVideoHdrFormat += " / HDR10"
+                    ElseIf Regex.IsMatch(hdrFormat, "HDR10\+ Profile [AB] compatible") Then
+                        p.SourceVideoHdrFormat += " / HDR10+"
+                    End If
+                End If
             End If
 
             p.SourceVideoFormat = MediaInfo.GetVideoFormat(p.LastOriginalSourceFile)
@@ -5129,19 +5144,19 @@ Public Class MainForm
             thresholdEnd.Field = NameOf(p.AutoCropFrameRangeThresholdEnd)
 
             autoCropFrameRangeMode.Text = "Frame Range Mode"
-            autoCropFrameRangeMode.Help = "Defines the range frames are considered to be taken into account for processing:" + BR2 + 
-                                                        "Automatic: Depending on video length a small portion of the beginning and end will be ignored." + BR + 
-                                                        "Complete: The whole video length will be used." + BR + 
+            autoCropFrameRangeMode.Help = "Defines the range frames are considered to be taken into account for processing:" + BR2 +
+                                                        "Automatic: Depending on video length a small portion of the beginning and end will be ignored." + BR +
+                                                        "Complete: The whole video length will be used." + BR +
                                                         "Manual Threshold: Define your own number of frames at beginning and end that will be ignored."
             autoCropFrameRangeMode.Expanded = True
             autoCropFrameRangeMode.Field = NameOf(p.AutoCropFrameRangeMode)
             autoCropFrameRangeMode.Button.ValueChangedAction = Sub(value)
-                                                                           Dim active = autoCropFrameRangeMode.Enabled
-                                                                           Dim activeAutomaticRange = active AndAlso value = StaxRip.AutoCropFrameRangeMode.Automatic
-                                                                           Dim activeCompleteRange = active AndAlso value = StaxRip.AutoCropFrameRangeMode.Complete
-                                                                           Dim activeManualThresholdRange = active AndAlso value = StaxRip.AutoCropFrameRangeMode.ManualThreshold
-                                                                           thresholdEb.Visible = activeManualThresholdRange
-                                                                       End Sub
+                                                                   Dim active = autoCropFrameRangeMode.Enabled
+                                                                   Dim activeAutomaticRange = active AndAlso value = StaxRip.AutoCropFrameRangeMode.Automatic
+                                                                   Dim activeCompleteRange = active AndAlso value = StaxRip.AutoCropFrameRangeMode.Complete
+                                                                   Dim activeManualThresholdRange = active AndAlso value = StaxRip.AutoCropFrameRangeMode.ManualThreshold
+                                                                   thresholdEb.Visible = activeManualThresholdRange
+                                                               End Sub
             autoCropFrameRangeMode.Button.ValueChangedAction.Invoke(p.AutoCropFrameRangeMode)
 
 

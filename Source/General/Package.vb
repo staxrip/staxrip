@@ -1046,6 +1046,15 @@ Public Class Package
         .AvsFilterNames = {"LSMASHVideoSource", "LSMASHAudioSource", "LWLibavVideoSource", "LWLibavAudioSource"},
         .VsFilterNames = {"lsmas.LibavSMASHSource", "lsmas.LWLibavSource"}})
 
+    Shared Property Curve As Package = Add(New PluginPackage With {
+        .Name = "Curve",
+        .Filename = "Curve.dll",
+        .Description = "Curve filter for VapourSynth.",
+        .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Curve",
+        .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Curve/releases",
+        .HelpUrlVapourSynth = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Curve/blob/master/README.md",
+        .VsFilterNames = {"curve.Curve"}})
+
     Shared Property BM3D As Package = Add(New PluginPackage With {
         .Name = "BM3D",
         .Filename = "BM3D.dll",

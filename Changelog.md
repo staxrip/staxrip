@@ -81,13 +81,28 @@ v2.42.0 (not published yet)
 - x265: Add "--format" parameter
 - x265: Add "--scc" parameter
 - Update tools
+    - aomenc v3.9.1-419-g9ed60cc5ff-x64-msvc1940
     - AutoCrop v2.5
+    - DoVi_Tool v2.1.2
+    - eac3to v3.52
+    - ffmpeg N-116758-x64-gcc14.2.0
+    - MediaInfo v24.04
+    - MKVToolNix v86.0
+    - Mp4Box v2.5-DEV-rev479-gd7e1a5c15-x64-msvc1940
+    - NVEncC v7.66
+    - QSVEncC v7.69
+    - rav1e v0.7.0 (p20240612-5-g7ab0de1)-x64-msvc1940
+    - Subtitle Edit v4.0.7
+    - SvtAv1EncApp v2.2.1-0+1-e6255481-.Mod-by-Patman.-x64-msvc1940 [SVT-AV1-PSY]
+    - VCEEncC v8.23
+    - vvencFFapp v1.12.0 r245-efb49f4
+    - x265 v3.6+85+1-b5cacb584-.Mod-by-Patman.-x64-avx2-msvc1940
 - Update AviSynth+ plugins
-    - ...
+    - AvsResize R25
 - Update Dual plugins
-    - ...
+    - BestSource R6
 - Update VapourSynth plugins
-    - ...
+    - Curve r3
 
 
 v2.41.7 (2024-07-09)

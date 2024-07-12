@@ -14,6 +14,56 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.46.0 (2025-03-22)
+====================
+
+- General: Change way to fetch Windows Version data ([#1515](/../../issues/1515))
+- General: Fix crash between job processing under rare circumstances
+- General: Implement Import Command Line functions for some special parameters
+- General: Add option to take over language from video source file
+- General: Add option to take over title from source file
+    - Before it was always taken over when title in template was empty
+- General: Add "Code at bottom" option box additional to existing "Code at top" option ([#1468](/../../issues/1468))
+- Audio: Preserve delay from template when opening source files ([#1614](/../../issues/1614))
+- Audio: Preserve delay when changine profiles ([#1614](/../../issues/1614))
+- Command: Add new "LoadTemplateWithSelectionDialog" command
+- CommandLine: Add new "-LoadSourceFilesWithTemplateSelection" parameter
+- CommandLine: Fix mishandling parameters in quotes
+- FrameServer: Fix FFVideoSource and FFMS2 indexing for non regular temp folders ([#1610](/../../issues/1610))
+- UI: Improve Command Line Highlighting ([#1598](/../../issues/1598))
+- UI: Lower default number of audio tracks on main window to 4
+- UI: Height adjustment for filters and encoder controls
+- UI: Make some windows bigger
+- UI: Increase max width of Code Editor
+- UI: Add support for template subfolders ([#1449](/../../issues/1449))
+    - Saving into a subfolder is currently not implemented, so you have to move/re-place them by hand
+- UI: Reinvent "Show Template Selection when loading files"
+    - A template selection can be shown when opening a source
+    - Template selection can be restricted to 
+        - Command Line parameters and/or...
+        - Drag&Drop operations on main window and/or...
+        - Opening Menu on main window
+    - Template Subfolders are supported
+    - The current (or last) template can alo be selected from the list
+- UI: Add "Warn on identical audio" to switchable Assistant options
+- UI: Add ffmpeg Progress Highlighting
+- UI: Improve error message if invalid commands shall be executed ([#1595](/../../issues/1595))
+- QSVEncC: Add "--vpp-libplacebo-deband" parameter
+- QSVEncC: Add "--vpp-libplacebo-shader" parameter
+- QSVEncC: Add "--vpp-libplacebo-tonemapping" parameter
+- SvtAv1EncApp: Add "--variance-boost-curve" parameter
+- VCEEncC: Add "--screen-content-tools" parameter ([#1568](/../../issues/1568))
+- VCEEncC: Add "--vpp-libplacebo-deband" parameter
+- VCEEncC: Add "--vpp-libplacebo-shader" parameter
+- VCEEncC: Add "--vpp-libplacebo-tonemapping" parameter
+- VCEEncC: Add new value "libplacebo" for "--vpp-resize" parameter
+- Update tools
+    - NVEncC v8.00 beta6
+    - Python v3.12.9
+    - QSVEncC v7.83
+    - VCEEncC v8.32
+
+
 v2.44.5 (2025-03-07)
 ====================
 

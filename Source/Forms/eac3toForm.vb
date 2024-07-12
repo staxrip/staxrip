@@ -584,7 +584,7 @@ Public Class eac3toForm
     Property Streams As New BindingList(Of M2TSStream)
 
     Private Output As String
-    Private ReadOnly AudioOutputFormats As String() = {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd", "thd+ac3"}
+    Private ReadOnly AudioOutputFormats As String() = {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd"}
 
     Private Project As Project
 
@@ -873,7 +873,7 @@ Public Class eac3toForm
                             Case "E-AC3", "E-AC3 EX"
                                 ms.OutputType = "eac3"
                             Case "TrueHD/AC3 (Atmos)", "TrueHD/AC3"
-                                ms.OutputType = "thd+ac3"
+                                ms.OutputType = "thd"
                             Case "TrueHD (Atmos)"
                                 ms.OutputType = "thd"
                             Case "DTS-ES", "DTS Express"

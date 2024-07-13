@@ -406,7 +406,7 @@ Public Class ffmpegDemuxer
             Dim format = ""
 
             If subtitle.Ext = "mks" Then
-                codec = If(subtitle.Ext = "mks", "dvbsub", codec)
+                codec = "dvbsub"
                 format = " -f matroska"
             End If
 

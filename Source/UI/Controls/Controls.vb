@@ -2871,7 +2871,7 @@ Namespace UI
         End Sub
 
         Sub UpdateText()
-            TextEdit.TextBox.SetTextWithoutTextChangedEvent(ValueValue.ToString("F" & DecimalPlaces))
+            TextEdit.TextBox.SetTextWithoutTextChangedEvent(ValueValue.ToInvariantString("F" & DecimalPlaces))
         End Sub
 
         Sub UpdateText(sender As Object, e As EventArgs)

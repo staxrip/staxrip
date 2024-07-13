@@ -1007,6 +1007,8 @@ Public Class MuxerForm
             menuButton.Invoke(Sub()
                                   menuButton.Menu.Enabled = False
                                   menuButton.Enabled = False
+                                  menuButton.Menu.SuspendLayout()
+                                  menuButton.SuspendLayout()
                               End Sub)
 
             For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
@@ -1022,6 +1024,8 @@ Public Class MuxerForm
         Finally
             If Not IsDisposingOrDisposed Then
                 menuButton.Invoke(Sub()
+                                      menuButton.Menu.ResumeLayout()
+                                      menuButton.ResumeLayout()
                                       menuButton.Menu.Enabled = True
                                       menuButton.Enabled = True
                                   End Sub)

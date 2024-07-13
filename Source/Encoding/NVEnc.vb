@@ -719,7 +719,7 @@ Public Class NVEnc
 
         Property Smooth As New BoolParam With {.Text = "Smooth", .Switch = "--vpp-smooth", .ArgsFunc = AddressOf GetSmoothArgs}
         Property SmoothQuality As New NumParam With {.Text = "      Quality", .HelpSwitch = "--vpp-smooth", .Init = 3, .Config = {1, 6}}
-        Property SmoothQP As New NumParam With {.Text = "      QP", .HelpSwitch = "--vpp-smooth", .Config = {0, 100, 5, 1}}
+        Property SmoothQP As New NumParam With {.Text = "      QP", .HelpSwitch = "--vpp-smooth", .Config = {0, 63, 1, 1}}
         Property SmoothPrec As New OptionParam With {.Text = "      Precision", .HelpSwitch = "--vpp-smooth", .Options = {"Auto", "FP16", "FP32"}}
 
         Property DenoiseDct As New BoolParam With {.Text = "Denoise DCT", .Switch = "--vpp-denoise-dct", .ArgsFunc = AddressOf GetDenoiseDctArgs}

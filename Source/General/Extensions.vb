@@ -244,6 +244,26 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function DirSize(instance As String) As Long
+        If String.IsNullOrWhiteSpace(instance) Then Return 0L
+        If Not instance.DirExists() Then Return 0L
+
+        Dim ret = 0L
+        Dim di = New DirectoryInfo(instance.TrimQuotes())
+        Dim files = di.GetFiles()
+
+        For Each f In files
+            ret += f.Length
+        Next
+
+        For Each d In di.GetDirectories()
+            ret += d.FullName.DirSize()
+        Next
+
+        Return ret
+    End Function
+
+    <Extension()>
     Function DirExists(instance As String) As Boolean
         If instance <> "" Then
             Return Directory.Exists(instance.TrimQuotes())

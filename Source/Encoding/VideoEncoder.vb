@@ -652,14 +652,6 @@ Public Class NullEncoder
     End Sub
 
     Function GetSourceFile() As String
-        For Each i In {".h264", ".avc", ".h265", ".hevc", ".mpg", ".avi"}
-            If File.Exists(p.SourceFile.DirAndBase + "_out" + i) Then
-                Return p.SourceFile.DirAndBase + "_out" + i
-            ElseIf File.Exists(Path.Combine(p.TempDir, p.TargetFile.Base + "_out" + i)) Then
-                Return Path.Combine(p.TempDir, p.TargetFile.Base + "_out" + i)
-            End If
-        Next
-
         If FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
             Return p.LastOriginalSourceFile
         Else

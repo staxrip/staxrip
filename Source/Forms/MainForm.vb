@@ -1673,6 +1673,8 @@ Public Class MainForm
             Return True
         Catch ex As Exception
             OpenProject(g.StartupTemplatePath)
+        Finally
+            SkipAssistant = False
         End Try
     End Function
 
@@ -1684,6 +1686,7 @@ Public Class MainForm
 
     Sub SetSavedProject()
         g.SavedProject = ObjectHelp.GetCopy(Of Project)(p)
+        p.Log.Save()
     End Sub
 
     Sub SetAudioTracks(Optional proj As Project = Nothing)
@@ -1899,7 +1902,7 @@ Public Class MainForm
         Dim addTrack = Sub(source As (FilePath As String, Language As Language, Title As String, Stream As AudioStream), dest As AudioTrack)
                            If source.FilePath = "" Then Return
                            If dest Is Nothing Then Return
-                           
+
                            dest.AudioProfile.Reset()
 
                            If source.Stream Is Nothing Then
@@ -2086,7 +2089,7 @@ Public Class MainForm
         If files(0).Ext = "srip" Then
             OpenProject(files(0))
         ElseIf FileTypes.Video.Contains(files(0).Ext.ToLowerInvariant) Then
-            files.Sort()
+            files = files.OrderBy(Function(x) FileTypes.Video.Contains(x.Ext)).ThenBy(Function(x) FileTypes.Audio.Contains(x.Ext))
             OpenVideoSourceFiles(files, timeout)
         ElseIf FileTypes.Audio.ContainsAny(files.Select(Function(s) s.Ext.ToLowerInvariant)) Then
             Dim audioFiles = files.Where(Function(x) FileTypes.Audio.Contains(x.Ext().ToLowerInvariant())).OrderBy(Function(x) x, New StringLogicalComparer())
@@ -2102,7 +2105,7 @@ Public Class MainForm
                 Next
             End If
         Else
-            files.Sort()
+            files = files.OrderBy(Function(x) FileTypes.Video.Contains(x.Ext)).ThenBy(Function(x) FileTypes.Audio.Contains(x.Ext))
 
             If files(0).DirExists() Then
                 OpenBlurayFolder(files(0))
@@ -2178,6 +2181,8 @@ Public Class MainForm
 
         SafeSerialization.Serialize(p, recoverProjectPath)
         AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
+
+        SkipAssistant = True
 
         Try
             files = files.Select(Function(filePath) New FileInfo(filePath.TrimQuotes()).FullName).OrderBy(Function(filePath) filePath, StringComparer.InvariantCultureIgnoreCase)
@@ -2369,7 +2374,7 @@ Public Class MainForm
             p.SourceVideoBitDepth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitDepth").ToInt
             p.SourceColorSpace = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ColorSpace")
             p.SourceChromaSubsampling = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ChromaSubsampling")
-            p.SourceSize = New FileInfo(p.LastOriginalSourceFile).Length
+            p.SourceSize = If(p.LastOriginalSourceFile.FileExists(), p.LastOriginalSourceFile.FileSize, If(p.LastOriginalSourceFile.DirExists(), p.LastOriginalSourceFile.DirSize(), 0L))
             p.SourceVideoSize = MediaInfo.GetVideo(p.LastOriginalSourceFile, "StreamSize").ToLong()
             p.SourceBitrate = CInt(MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitRate").ToInt / 1000)
             p.SourceFrameRateMode = MediaInfo.GetVideo(p.LastOriginalSourceFile, "FrameRate_Mode")
@@ -2578,6 +2583,7 @@ Public Class MainForm
             End If
 
             g.RaiseAppEvent(ApplicationEvent.AfterSourceOpened)
+            SkipAssistant = False
             Assistant()
             g.RaiseAppEvent(ApplicationEvent.AfterSourceLoaded)
             g.RaiseAppEvent(ApplicationEvent.AfterProjectOrSourceLoaded)
@@ -2596,6 +2602,7 @@ Public Class MainForm
             g.OnException(ex)
             OpenProject("", False)
         Finally
+            SkipAssistant = False
             If Not isEncoding Then
                 ProcController.Finished()
             End If
@@ -3665,6 +3672,7 @@ Public Class MainForm
 
                 Try
                     Using proc As New Proc
+                        proc.Priority = ProcessPriorityClass.Normal
                         proc.Package = Package.HDR10PlusTool
                         proc.Project = If(proj, p)
                         proc.Header = "Extract HDR10+ metadata"
@@ -3730,6 +3738,7 @@ Public Class MainForm
                 If Not rpuPath.FileExists() Then
                     Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode} extract-rpu - -o ""{rpuPath}"""
                     Using proc As New Proc
+                        proc.Priority = ProcessPriorityClass.Normal
                         proc.Package = Package.DoViTool
                         proc.Project = If(proj, p)
                         proc.Header = "Extract Dolby Vision metadata"
@@ -4048,7 +4057,7 @@ Public Class MainForm
 
             n = ui.AddNum()
             n.Text = "Maximum number of parallel processes"
-            n.Help = "Maximum number of parallel processes used for audio and video processing. Chunk encoding can be enabled in the x265 dialog."
+            n.Help = "Maximum number of parallel processes used for audio and video processing. Chunk encoding can be enabled in the encoder options."
             n.Config = {1, 16}
             n.Field = NameOf(s.ParallelProcsNum)
 
@@ -5131,7 +5140,7 @@ Public Class MainForm
 
 
             autoCropDVMode.Text = "Mode"
-            autoCropDVMode.Help = "Decide between an automatic mode and a manual threshold."
+            autoCropDVMode.Help = "Decide between an automatic mode and a manual threshold to ignore a number of frames at the beginning and/or end."
             autoCropDVMode.Expanded = True
             autoCropDVMode.Field = NameOf(p.AutoCropDolbyVisionMode)
             autoCropDVMode.Button.ValueChangedAction = Sub(value)
@@ -7616,7 +7625,6 @@ Public Class MainForm
                 Dim sb As New StringBuilder()
                 Dim sbNotEmpty = False
                 Dim relevant = False
-                Dim isUpdate = False
                 Dim versions = 0
 
                 Do While Not reader.EndOfStream
@@ -7653,13 +7661,14 @@ Public Class MainForm
 
                     If Not relevant Then Continue Do
                     If String.IsNullOrWhiteSpace(line) Then Continue Do
-                    If Not isUpdate AndAlso versions > 1 AndAlso line.StartsWithEx("- Update ") Then
+                    If versions > 1 AndAlso line.StartsWithEx("- Update ") Then
                         sb.AppendLine("---- Tool and Plugin updates are not shown! ----")
-                        isUpdate = True
-                    ElseIf isUpdate AndAlso String.IsNullOrWhiteSpace(line) Then
-                        isUpdate = False
+                        relevant = False
+                    ElseIf lines > 35 AndAlso line.StartsWithEx("- Update ") Then
+                        sb.AppendLine("---- Tool and Plugin updates are not shown! ----")
+                        relevant = False
                     End If
-                    If isUpdate AndAlso versions > 1 Then Continue Do
+                    If Not relevant Then Continue Do
 
                     line = Regex.Replace(line, "(?<=\W\(\[#\d+\])(\(/\.\./\.\./\w+/\d+\))(?=\)(?>,|\)|$))", "", RegexOptions.CultureInvariant)
                     line = Regex.Replace(line, "(?<=^| ) (?= |-)", "  ", RegexOptions.CultureInvariant)

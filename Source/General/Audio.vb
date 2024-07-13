@@ -73,16 +73,16 @@ Public Class Audio
 
         Dim ret = base + " ID" & (stream.Index + 1)
 
+        If stream.Language.TwoLetterCode <> "iv" Then
+            ret += $"_[{stream.Language.Name}] ({stream.Language.EnglishName})"
+        End If
+
         If stream.SBR Then
             ret += " SBR"
         End If
 
         If stream.Delay <> 0 Then
             ret += " " & stream.Delay & "ms"
-        End If
-
-        If stream.Language.TwoLetterCode <> "iv" Then
-            ret += $" [{stream.Name}] {stream.Language}"
         End If
 
         If stream.Title <> "" Then

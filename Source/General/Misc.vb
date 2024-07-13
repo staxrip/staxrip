@@ -1706,11 +1706,11 @@ Public Class FileTypes
     Shared Property Logs As String() = {"log"}
     Shared Property Scripts As String() = {"avs", "vpy", "vs"}
     Shared Property Indexes As String() = {"ffindex", "lwi"}
-    Shared Property VideoComparisonInput As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
-    Shared Property Video As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2t", "m2ts", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
+    Shared Property VideoComparisonInput As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2ts", "m2t", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
+    Shared Property Video As String() = {"264", "265", "3gp", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2ts", "m2t", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vc1", "vdr", "vob", "vpy", "webm", "wmv", "y4m"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}
-    Shared Property VideoOnly As String() = {"264", "265", "avc", "gif", "h264", "h265", "hevc", "hvc", "ivf", "m2v", "mpv", "apng", "png", "y4m"}
-    Shared Property VideoRaw As String() = {"264", "265", "h264", "h265", "avc", "hevc", "hvc", "ivf"}
+    Shared Property VideoOnly As String() = {"264", "265", "avc", "gif", "h264", "h265", "hevc", "hvc", "ivf", "m2v", "mpv", "apng", "png", "vc1", "y4m"}
+    Shared Property VideoRaw As String() = {"264", "265", "h264", "h265", "avc", "hevc", "hvc", "ivf", "vc1"}
     Shared Property VideoText As String() = {"d2v", "dgi", "dga", "dgim", "avs", "vpy"}
     Shared Property VideoDemuxOutput As String() = {"avi", "mpg", "h264", "h265", "hevc"}
     Shared Property Image As String() = {"bmp", "jpg", "png", "gif", "tif", "jpe", "jpeg", "psd"}

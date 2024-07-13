@@ -7,7 +7,7 @@ Public Class ApplicationSettings
 
     Public AllowCustomPathsInStartupFolder As Boolean
     Public AllowToolsWithWrongVersion As Boolean
-    Public ApplicationExitMode As ApplicationExitMode = ApplicationExitMode.Regular
+    <NonSerialized> Public ApplicationExitMode As ApplicationExitMode = ApplicationExitMode.Regular
     Public AudioProfiles As List(Of AudioProfile)
     Public AutoSaveProject As Boolean
     Public AviSynthFilterPreferences As StringPairList

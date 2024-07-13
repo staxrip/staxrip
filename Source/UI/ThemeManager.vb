@@ -1,5 +1,5 @@
 ﻿Public NotInheritable Class ThemeManager
-    Private Const _defaultThemeName = "Dark | TealBlue"
+    Private Const _defaultThemeName = "Darker | Blue"
 
     Private Shared _current As Theme
     Private Shared _themes As List(Of Theme)
@@ -32,7 +32,7 @@
         New Tuple(Of String, Integer, Integer)("Purple", 281, 355),
         New Tuple(Of String, Integer, Integer)("Magenta", 292, 355),
         New Tuple(Of String, Integer, Integer)("Pink", 313, 10),
-        New Tuple(Of String, Integer, Integer)("Rose", 335, -1)
+        New Tuple(Of String, Integer, Integer)("Rose", 340, -1)
     }
 
 

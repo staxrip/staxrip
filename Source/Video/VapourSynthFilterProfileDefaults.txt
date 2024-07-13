@@ -31,6 +31,7 @@ ColorSpace | Respec =
     clip = core.fmtc.bitdepth (clip, bits=10, fulls=$select:msg:Select Input Range;Limited|False;Full|True$, fulld=$select:msg:Select Output Range;Limited|False;Full|True$)
 
 ColorSpace | Transfer = clip = core.fmtc.transfer(clip, transs='$select:msg:Select Input;Linear;470m;470bg;240m;SRGB;709;2020;2084$', transd='$select:msg:Select Output;Linear;470m;470bg;240m;SRGB;709;2020;2084$')
+ColorYUV | Curve = clip = core.curve.Curve(clip, preset=$select:None|0, r=[0,0, 0.5,0.5, 1,1], g=[0,0, 0.5,0.5, 1,1], b=[0,0, 0.5,0.5, 1,1], master=[0,0, 0.5,0.5, 1,1];Color Negative (RGB)|1;Cross Process (RGB)|2;Darker|3;Increase Contrast|4;Lighter|5;Linear Contrast|6;Medium Contrast|7;Negative|8;Strong Contrast|9;Vintage (RGB)|10$, acv=None, planes=[0, 1, 2])
 ColorYUV | Grayscale = clip = mvsfunc.GrayScale(clip)
 ColorYUV | Tweak = clip = adjust.Tweak(clip, $select:Neutral|hue=0, sat=1, bright=0, cont=1;Brighter|hue=0, sat=1, bright=20, cont=1.04;Less Contrast|hue=0, sat=0.95, bright=8, cont=0.9;Vivid|hue=0, sat=1.15, bright=2, cont=1.08;Desaturate|hue=0, sat=0, bright=0, cont=1$)
 Convert | BitDepth (fmtc) = clip = core.fmtc.bitdepth(clip, bits=$select:msg:Select BitDepth;8;10;12;16;32$)
@@ -50,6 +51,7 @@ Tonemap | Placebo =
 
 [Crop]
 Crop = clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)
+Hardware Encoder = # hardware encoder crops
 
 [Field]
 Deinterlace | Bwdif = clip = core.bwdif.Bwdif(clip, field=$select:msg:Select Mode;Same rate, keep Bottom field|0;Same rate, keep Top field|1;Double rate, starts with Bottom|2;Double rate, starts with Top|3$)
@@ -195,6 +197,7 @@ TTempSmooth = clip =  core.ttmpsm.TTempSmooth(clip)
 VagueDenoiser = clip = core.vd.VagueDenoiser(clip=clip, method=$select:msg:Select Strength;Soft|1;Hard|0$)
 
 [Resize]
+Advanced | Hardware Encoder = # hardware encoder resizes
 Advanced | NNEDI3_rpow2 = clip = nnedi3_rpow2.nnedi3_rpow2(clip, rfactor=$select:msg:Enlargement Factor?;2;4;8;16$, kernel="$select:msg:Center Shift Correction Algorithm?;bicubic;bilinear;blackman;box;gauss;lanczos;point;sinc;spline;spline16;spline36;spline64$", width=%target_width%, height=%target_height%)
 Advanced | ReSampleHQ = clip = resamplehq.resample_hq(clip, %target_width%, %target_height%, kernel='$select:Point;Linear;Cubic;Lanczos;Spline16;Spline36$')
 Resize... = clip = $select:Bilinear|core.resize.Bilinear;Bicubic|core.resize.Bicubic;Point|core.resize.Point;Lanczos|core.resize.Lanczos;Spline16|core.resize.Spline16;Spline36|core.resize.Spline36;Spline64|core.resize.Spline64;Dither_Resize16|Dither.Resize16nr;Resample|core.fmtc.resample$(clip, %target_width%, %target_height%)

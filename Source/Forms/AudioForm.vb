@@ -5,6 +5,7 @@ Imports DirectN
 Imports System.Text
 Imports System.Threading.Tasks
 Imports System.Threading
+Imports MS.Internal.IO
 
 Public Class AudioForm
     Inherits DialogBase
@@ -360,7 +361,7 @@ Public Class AudioForm
         Me.laCustom.Name = "laCustom"
         Me.laCustom.Size = New System.Drawing.Size(141, 48)
         Me.laCustom.TabIndex = 46
-        Me.laCustom.Text = "Custom"
+        Me.laCustom.Text = "Custom:"
         '
         'tbCustom
         '
@@ -767,9 +768,7 @@ Public Class AudioForm
     End Sub
 
     Sub ApplyTheme(theme As Theme)
-        If DesignHelp.IsDesignMode Then
-            Exit Sub
-        End If
+        If DesignHelp.IsDesignMode Then Exit Sub
 
         BackColor = theme.General.BackColor
     End Sub
@@ -810,6 +809,8 @@ Public Class AudioForm
             mbLanguage.Invoke(Sub()
                                   mbLanguage.Menu.Enabled = False
                                   mbLanguage.Enabled = False
+                                  mbLanguage.Menu.SuspendLayout()
+                                  mbLanguage.SuspendLayout()
                               End Sub)
 
             For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
@@ -825,6 +826,8 @@ Public Class AudioForm
         Finally
             If Not IsDisposingOrDisposed Then
                 mbLanguage.Invoke(Sub()
+                                      mbLanguage.Menu.ResumeLayout()
+                                      mbLanguage.ResumeLayout()
                                       mbLanguage.Menu.Enabled = True
                                       mbLanguage.Enabled = True
                                   End Sub)
@@ -964,9 +967,11 @@ Public Class AudioForm
 
         UpdateEncoderMenu()
 
+        Dim enc = TempProfile.GetEncoder()
+
         mbDecoder.Enabled = Not TempProfile.ExtractCore
-        mbChannels.Enabled = Not TempProfile.ExtractCore AndAlso TempProfile.GetEncoder() <> GuiAudioEncoder.opusenc AndAlso TempProfile.GetEncoder() <> GuiAudioEncoder.deezy
-        mbSamplingRate.Enabled = Not TempProfile.ExtractCore AndAlso TempProfile.GetEncoder() <> GuiAudioEncoder.opusenc
+        mbChannels.Enabled = Not TempProfile.ExtractCore AndAlso enc <> GuiAudioEncoder.opusenc AndAlso enc <> GuiAudioEncoder.deezy
+        mbSamplingRate.Enabled = Not TempProfile.ExtractCore AndAlso enc <> GuiAudioEncoder.opusenc
         cbNormalize.Enabled = Not TempProfile.ExtractCore
         numGain.Enabled = Not TempProfile.ExtractCore
         numBitrate.Increment = If({AudioCodec.AC3, AudioCodec.EAC3}.Contains(TempProfile.Params.Codec), If(CInt(numBitrate.Value) >= 320, 64, 32), 1D)

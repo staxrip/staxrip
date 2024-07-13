@@ -669,9 +669,7 @@ Public Class MkvMuxer
     Function GetArgs() As String
         Dim args = "-o " + p.TargetFile.LongPathPrefix.Escape
 
-        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " +
-            p.VideoEncoder.OutputPath.LongPathPrefix.Escape)
-
+        Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify " + p.VideoEncoder.OutputPath.LongPathPrefix.Escape)
         Dim id = Regex.Match(stdout, "Track ID (\d+): video").Groups(1).Value.ToInt
 
         If Not FileTypes.VideoOnly.Contains(p.VideoEncoder.OutputPath.Ext) Then

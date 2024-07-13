@@ -13,8 +13,9 @@ Imports StaxRip.UI
 Public Class ProcController
     Private LogAction As Action = New Action(AddressOf LogHandler)
     Private StatusAction As Action(Of String) = New Action(Of String)(AddressOf ProgressHandler)
-    Private ReadOnly CustomProgressInfoSeparator As String = ", "
     Private UseFirstExpression As Boolean = True
+    Private ReadOnly _progressSeparator As String = " | "
+    Private ReadOnly _progressSeparatorPattern As String = Regex.Escape(_progressSeparator)
     Private _progressHighlightingFailCounter As Integer = 0
     Private _progressReformattingFailCounter As Integer = 0
     Private _projectScriptFrameRate As Double = -1.0
@@ -143,7 +144,7 @@ Public Class ProcController
             End If
 
             If _ffmpegDuration = TimeSpan.Zero AndAlso (Proc.Package Is Package.ffmpeg OrElse Proc.Package Is Package.DoViTool OrElse Proc.Package Is Package.HDR10PlusTool) Then
-                Dim match = Regex.Match(value, "DURATION\s+:\s+((\d+):(\d+):(\d+))", RegexOptions.IgnoreCase)
+                Dim match = Regex.Match(value, "DURATION\s*:\s+((\d+):(\d+):(\d+))", RegexOptions.IgnoreCase)
                 If match.Success Then
                     Dim t As TimeSpan
                     If TimeSpan.TryParse(match.Groups(1).Value, t) Then
@@ -197,7 +198,7 @@ Public Class ProcController
             Dim matches As MatchCollection
             Dim help As Integer
             Dim duplicate As String
-            Dim pathsFormat = "(""(\\\\\?\\)?[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.({0})"")|((?<!"")(\\\\\?\\)?[A-Z]:\\[\S\\]+\.({0})(?!""))"
+            Dim pathsFormat = "(""(\\\\\?\\)?[A-Z]:\\[^\a\b\e\f\n\r\t\v""]+\.({0})"")|((?<!"")(\\\\\?\\)?[A-Z]:\\[\S\\]+\.({0})(?![""\.]))"
             Dim isX264 = Proc.Package Is Package.x264
             Dim isX265 = Proc.Package Is Package.x265
             Dim isSvtAv1 = Proc.Package Is Package.SvtAv1EncApp
@@ -209,7 +210,7 @@ Public Class ProcController
                 format(m.Index, m.Length, oh.HeaderBackColor, oh.HeaderForeColor, oh.HeaderFontStyles)
             Next
 
-            matches = Regex.Matches(LogTextBox.Text, "(?<=----------\n\n).*(?=\n\n)", RegexOptions.IgnoreCase)
+            matches = Regex.Matches(LogTextBox.Text, "(?<=----------\n\n).*(?=\n\n.+)", RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 format(m.Index, m.Length, oh.EncoderTitleBackColor, oh.EncoderTitleForeColor, oh.EncoderTitleFontStyles)
             Next
@@ -270,19 +271,19 @@ Public Class ProcController
                 format(m.Index, m.Length, oh.ExeFileBackColor, oh.ExeFileForeColor, oh.ExeFileFontStyles)
             Next
 
-            duplicate = "json"
+            duplicate = "json|bin|rpu"
             matches = Regex.Matches(LogTextBox.Text, String.Format(pathsFormat, duplicate), RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 format(m.Index, m.Length, oh.MetadataFileBackColor, oh.MetadataFileForeColor, oh.MetadataFileFontStyles)
             Next
 
-            duplicate = FileTypes.Video.Union(FileTypes.Audio).Union(FileTypes.SubtitleExludingContainers).Select(Function(x) Regex.Escape(x)).Join("|")
+            duplicate = FileTypes.Video.Union(FileTypes.Audio).Union(FileTypes.SubtitleExludingContainers).Distinct().OrderByDescending(Function(x) x.Length).Select(Function(x) Regex.Escape(x)).Join("|")
             matches = Regex.Matches(LogTextBox.Text, String.Format(pathsFormat, duplicate), RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 format(m.Index, m.Length, oh.MediaFileBackColor, oh.MediaFileForeColor, oh.MediaFileFontStyles)
             Next
 
-            duplicate = "avs|dll|vpy"
+            duplicate = FileTypes.Scripts.Union(FileTypes.Indexes).Union({"dll"}).Distinct().OrderByDescending(Function(x) x.Length).Select(Function(x) Regex.Escape(x)).Join("|")
             matches = Regex.Matches(LogTextBox.Text, String.Format(pathsFormat, duplicate), RegexOptions.IgnoreCase)
             For Each m As Match In matches
                 format(m.Index, m.Length, oh.ScriptFileBackColor, oh.ScriptFileForeColor, oh.ScriptFileFontStyles)
@@ -344,7 +345,7 @@ Public Class ProcController
 
     Sub SetProgressText(value As String, theme As Theme)
         If Proc.IsSilent Then Exit Sub
-        
+
         If theme Is Nothing Then theme = ThemeManager.CurrentTheme
         value = value.Trim()
 
@@ -369,7 +370,7 @@ Public Class ProcController
                                 speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                             End If
 
-                            value = $"[{match.Groups(1).Value,2}{match.Groups(2).Value}%] {match.Groups(3).Value.PadLeft(match.Groups(4).Value.Length)}/{match.Groups(4).Value} frames @ {match.Groups(5).Value}{match.Groups(6).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(7).Value,4} {match.Groups(9).Value}{CustomProgressInfoSeparator}{match.Groups(12).Value}{match.Groups(13).Value} {match.Groups(14).Value} ({match.Groups(15).Value} {match.Groups(17).Value}){CustomProgressInfoSeparator}{match.Groups(10).Value} (-{match.Groups(11).Value})"
+                            value = $"[{match.Groups(1).Value,2}{match.Groups(2).Value}%] {match.Groups(3).Value.PadLeft(match.Groups(4).Value.Length)}/{match.Groups(4).Value} frames @ {match.Groups(5).Value}{match.Groups(6).Value} fps{speedString}{_progressSeparator}{match.Groups(7).Value,4} {match.Groups(9).Value}{_progressSeparator}{match.Groups(12).Value}{match.Groups(13).Value} {match.Groups(14).Value} ({match.Groups(15).Value} {match.Groups(17).Value}){_progressSeparator}{match.Groups(10).Value} (-{match.Groups(11).Value})"
                         Else
                             UseFirstExpression = Not UseFirstExpression
                             _progressReformattingFailCounter += 1
@@ -389,7 +390,7 @@ Public Class ProcController
                                 speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                             End If
 
-                            value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(8).Value}.{match.Groups(9).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(11).Value,4} kb/s{CustomProgressInfoSeparator}{match.Groups(16).Value} {match.Groups(18).Value} ({match.Groups(20).Value}.{match.Groups(21).Value} {match.Groups(22).Value}){CustomProgressInfoSeparator}{match.Groups(13).Value} (-{match.Groups(14).Value})"
+                            value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(6).Value.Length)}/{match.Groups(6).Value} frames @ {match.Groups(8).Value}.{match.Groups(9).Value} fps{speedString}{_progressSeparator}{match.Groups(11).Value,4} kb/s{_progressSeparator}{match.Groups(16).Value} {match.Groups(18).Value} ({match.Groups(20).Value}.{match.Groups(21).Value} {match.Groups(22).Value}){_progressSeparator}{match.Groups(13).Value} (-{match.Groups(14).Value})"
                         Else
                             UseFirstExpression = Not UseFirstExpression
                             _progressReformattingFailCounter += 1
@@ -411,7 +412,7 @@ Public Class ProcController
                                 speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                             End If
 
-                            value = $"[{match.Groups(1).Value,2}{match.Groups(2).Value}%] {match.Groups(3).Value.PadLeft(match.Groups(4).Value.Length)}/{match.Groups(4).Value} frames @ {match.Groups(5).Value}{match.Groups(6).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(7).Value,4} {match.Groups(9).Value}{CustomProgressInfoSeparator}{match.Groups(12).Value}{match.Groups(13).Value} {match.Groups(14).Value} ({match.Groups(15).Value} {match.Groups(17).Value}){CustomProgressInfoSeparator}{match.Groups(10).Value} (-{match.Groups(11).Value})"
+                            value = $"[{match.Groups(1).Value,2}{match.Groups(2).Value}%] {match.Groups(3).Value.PadLeft(match.Groups(4).Value.Length)}/{match.Groups(4).Value} frames @ {match.Groups(5).Value}{match.Groups(6).Value} fps{speedString}{_progressSeparator}{match.Groups(7).Value,4} {match.Groups(9).Value}{_progressSeparator}{match.Groups(12).Value}{match.Groups(13).Value} {match.Groups(14).Value} ({match.Groups(15).Value} {match.Groups(17).Value}){_progressSeparator}{match.Groups(10).Value} (-{match.Groups(11).Value})"
                         Else
                             UseFirstExpression = Not UseFirstExpression
                             _progressReformattingFailCounter += 1
@@ -431,7 +432,7 @@ Public Class ProcController
                                 speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                             End If
 
-                            value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(7).Value.Length)}{match.Groups(6).Value}/{match.Groups(7).Value} frames @ {match.Groups(10).Value}.{match.Groups(11).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(14).Value,4} {match.Groups(16).Value}{CustomProgressInfoSeparator}{match.Groups(19).Value} {match.Groups(21).Value} ({match.Groups(22).Value} {match.Groups(24).Value}){CustomProgressInfoSeparator}{match.Groups(17).Value} (-{match.Groups(18).Value})"
+                            value = $"[{match.Groups(2).Value,2}.{match.Groups(3).Value}%] {match.Groups(5).Value.PadLeft(match.Groups(7).Value.Length)}{match.Groups(6).Value}/{match.Groups(7).Value} frames @ {match.Groups(10).Value}.{match.Groups(11).Value} fps{speedString}{_progressSeparator}{match.Groups(14).Value,4} {match.Groups(16).Value}{_progressSeparator}{match.Groups(19).Value} {match.Groups(21).Value} ({match.Groups(22).Value} {match.Groups(24).Value}){_progressSeparator}{match.Groups(17).Value} (-{match.Groups(18).Value})"
                         Else
                             UseFirstExpression = Not UseFirstExpression
                             _progressReformattingFailCounter += 1
@@ -462,7 +463,7 @@ Public Class ProcController
                             speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                         End If
 
-                        value = $"{percentString} {match.Groups(1).Value.PadLeft(match.Groups(2).Value.Length)}/{match.Groups(2).Value.Trim()} frames @ {match.Groups(3).Value} fps{speedString}{CustomProgressInfoSeparator}{match.Groups(4).Value,4} kb/s{CustomProgressInfoSeparator}{match.Groups(7).Value,5} {match.Groups(8).Value} ({match.Groups(9).Value} {match.Groups(10).Value}){CustomProgressInfoSeparator}{match.Groups(5).Value} ({match.Groups(6).Value})"
+                        value = $"{percentString} {match.Groups(1).Value.PadLeft(match.Groups(2).Value.Length)}/{match.Groups(2).Value.Trim()} frames @ {match.Groups(3).Value} fps{speedString}{_progressSeparator}{match.Groups(4).Value,4} kb/s{_progressSeparator}{match.Groups(7).Value,5} {match.Groups(8).Value} ({match.Groups(9).Value} {match.Groups(10).Value}){_progressSeparator}{match.Groups(5).Value} ({match.Groups(6).Value})"
                     Else
                         _progressReformattingFailCounter += 1
                     End If
@@ -482,7 +483,7 @@ Public Class ProcController
                 Dim baseHue = ThemeManager.ColorCategories.FirstOrDefault(Function(x) x.Item1 = s.ProgressHighlightingColorName).Item2
                 Dim format = Sub(index As Integer, length As Integer, hue As Integer, fontStyles() As FontStyle)
                                  ProgressBar.Rtb.Select(index, length)
-                                 ProgressBar.Rtb.SelectionColor = New ColorHSL(hue, 0.55, 0.60)
+                                 ProgressBar.Rtb.SelectionColor = New ColorHSL(hue, 0.55, 0.6)
 
                                  If fontStyles?.Length > 0 Then
                                      ProgressBar.Rtb.SelectionFont = New Font(ProgressBar.Rtb.Font, fontStyles.Aggregate(ProgressBar.Rtb.Font.Style, Function(a, n) a Or n))
@@ -536,6 +537,15 @@ Public Class ProcController
                     Dim m = matches(matches.Count - 1)
                     gr = m.Groups(1)
                     format(gr.Index, gr.Length, baseHue + 0, Nothing)
+                End If
+
+                matches = Regex.Matches(value, _progressSeparatorPattern, RegexOptions.IgnoreCase)
+                If matches.Count > 0 Then
+                    noMatch = False
+                    For Each mat As Match In matches
+                        gr = mat.Groups(0)
+                        format(gr.Index, gr.Length, baseHue + 45, {FontStyle.Bold})
+                    Next
                 End If
 
                 If noMatch Then _progressHighlightingFailCounter += 1

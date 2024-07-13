@@ -483,7 +483,7 @@ Public Class x265Params
         .Name = "Quant",
         .Text = "Quality",
         .DefaultValue = 28,
-        .Value = 18,
+        .Value = 20,
         .VisibleFunc = Function() Mode.Value = 1 OrElse Mode.Value = 2,
         .Config = {0, 51, 0.5, 1}}
 
@@ -1106,6 +1106,7 @@ Public Class x265Params
 
     Property Deblock As New BoolParam With {
         .Switch = "--deblock",
+        .NoSwitch = "--no-deblock",
         .Text = "Deblocking",
         .ArgsFunc = Function() As String
                         If Deblock.Value Then

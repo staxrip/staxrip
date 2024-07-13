@@ -1479,6 +1479,7 @@ Public Class Package
             .Filename = "avsresize.dll",
             .Description = "z.lib resizers for AviSynth+.",
             .HelpFilename = "README.md",
+            .DownloadURL = "https://codeberg.org/StvG/avsresize/releases",
             .WebURL = "http://avisynth.nl/index.php/Avsresize",
             .AvsFilterNames = {"z_ConvertFormat", "z_PointResize", "z_BilinearResize", "z_BicubicResize", "z_LanczosResize", "z_Lanczos4Resize", "z_Spline16Resize", "z_Spline36Resize", "z_Spline64Resize"}})
 
@@ -1924,6 +1925,7 @@ Public Class Package
             .Filename = "libmvtools_sf_em64t.dll",
             .WebURL = "https://github.com/IFeelBloated/vapoursynth-mvtools-sf",
             .Description = "MVTools is a set of filters for motion estimation and compensation.",
+            .Dependencies = {"libfftw3-3.dll"},
             .VsFilterNames = {"mvsf.Super", "mvsf.Analyse", "mvsf.Recalculate", "mvsf.Compensate", "mvsf.Degrain1", "mvsf.Degrain2",
                 "mvsf.Degrain3", "mvsf.Mask", "mvsf.Finest", "mvsf.Flow", "mvsf.FlowBlur", "mvsf.FlowInter", "mvsf.FlowFPS", "mvsf.BlockFPS", "mvsf.SCDetection",
                 "mvsf.DepanAnalyse", "mvsf.DepanEstimate", "mvsf.DepanCompensate", "mvsf.DepanStabilise"}})

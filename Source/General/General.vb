@@ -150,7 +150,7 @@ Public Class Folder
                             dir = If(dialog.ShowDialog = DialogResult.OK, dialog.SelectedPath, Path.Combine(AppDataCommon, "StaxRip"))
                         End Using
                     ElseIf dir = "" Then
-                        dir = Path.Combine(AppDataCommon, "StaxRip")
+                        Process.GetCurrentProcess().Kill()
                     End If
 
                     If Not dir.DirExists Then

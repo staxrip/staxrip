@@ -2,7 +2,12 @@
 [Source]
 Automatic = # can be configured at: Tools > Settings > Source Filters
 AVISource = clip = core.avisource.AVISource(r"%source_file%")
+
 BestSource = clip = core.bs.VideoSource(r"%source_file%", cachemode=0)
+    tcFile = r"%temp_file%_timestamps.txt" # timestamps file path
+    # hwdevice: The interface to use for hardware decoding. Depends on OS and hardware. On windows d3d11va, cuda and vulkan (H264, HEVC and AV1) are probably the ones most likely to work. Defaults to CPU decoding. Will throw errors for formats where hardware decoding isn't possible.
+    clip = core.bs.VideoSource(r"%source_file%", track=-1, fpsnum=-1, fpsden=1, rff=False, threads=0, seekpreroll=20, enable_drefs=False, use_absolute_path=False, cachemode=1, cachepath=r"%source_temp_file%.ffindex", cachesize=1000, hwdevice="", extrahwframes=9, timecodes=tcFile) if os.path.exists(tcFile) else core.bs.VideoSource(r"%source_file%", track=-1, fpsnum=-1, fpsden=1, rff=False, threads=0, seekpreroll=20, enable_drefs=False, use_absolute_path=False, cachemode=1, cachepath="", cachesize=1000, hwdevice="", extrahwframes=9)
+
 d2vsource = clip = core.d2v.Source(r"%source_file%")
 
 ffms2 =

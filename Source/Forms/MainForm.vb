@@ -3822,7 +3822,20 @@ Public Class MainForm
 
         Dim codeLower = p.Script.GetFilter("Source").Script.ToLowerInvariant
 
-        If codeLower.Contains("ffvideosource(") OrElse codeLower.Contains("ffms2.source") Then
+        If codeLower.Contains("BSVideoSource(") OrElse codeLower.Contains("bs.VideoSource") Then
+            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
+                p.SourceFile = p.LastOriginalSourceFile
+                BlockSourceTextBoxTextChanged = True
+                tbSourceFile.Text = p.SourceFile
+                BlockSourceTextBoxTextChanged = False
+            End If
+
+            If codeLower.Contains("cachepath") AndAlso p.TempDir <> "" AndAlso New DirectoryInfo(p.TempDir)?.Name?.EndsWithEx("_temp") Then
+                g.ffmsindex(p.SourceFile, Path.Combine(p.TempDir, g.GetSourceBase + ".ffindex"))
+            Else
+                g.ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
+            End If
+        ElseIf codeLower.Contains("ffvideosource(") OrElse codeLower.Contains("ffms2.source") Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
                 p.SourceFile = p.LastOriginalSourceFile
                 BlockSourceTextBoxTextChanged = True

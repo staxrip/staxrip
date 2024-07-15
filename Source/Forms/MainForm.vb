@@ -7364,6 +7364,7 @@ Public Class MainForm
         cms.Add("Explore", Sub() g.SelectFileWithExplorer(ap.File), exist, "Open the audio source file directory with File Explorer.").SetImage(Symbol.FileExplorer)
         cms.Add("-")
         cms.Add("Execute", Sub() ExecuteAudio(ap), exist, "Processes the audio profile.").SetImage(Symbol.LightningBolt)
+        cms.Add("Execute All", Sub() ExecuteAllAudio(), Function() If(p.AudioTracks?.Where(Function(x) x.TextEdit.Text <> "" AndAlso TypeOf x.AudioProfile IsNot NullAudioProfile)?.Any(), True, False), "Processes all audio profiles.")
         cms.Add("-")
         cms.Add("Copy Path", Sub() Clipboard.SetText(ap.File), te.Text <> "")
         cms.Add("Copy Selection", Sub() Clipboard.SetText(te.TextBox.SelectedText), te.Text <> "").SetImage(Symbol.Copy)
@@ -7384,6 +7385,23 @@ Public Class MainForm
                 ap.Encode()
             Catch
             End Try
+        End If
+    End Sub
+
+    Sub ExecuteAllAudio()
+        If MsgQuestion("Confirm to process ALL audio tracks.") = DialogResult.OK Then
+            For Each track In p.AudioTracks
+                Try
+                    If track.TextEdit.Text = "" Then Continue For
+                    If TypeOf track.AudioProfile Is NullAudioProfile Then Continue For
+                    If p.TempDir = "" Then p.TempDir = track.AudioProfile.File.Dir()
+
+                    Dim ap = ObjectHelp.GetCopy(Of AudioProfile)(track.AudioProfile)
+                    Audio.Process(ap)
+                    ap.Encode()
+                Catch
+                End Try
+            Next
         End If
     End Sub
 

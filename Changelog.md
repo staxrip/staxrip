@@ -24,6 +24,7 @@ v2.42.0 (not published yet)
 - UI: Re-implement audio track detection and reordering
 - UI: Add menu items to Crop window to jump to a specific time and frame ([#1421](/../../issues/1421))
 - UI: Fix THD+AC3 Output selection on eac3to window
+- UI: Add "Execute All" to Audio Tracks ([#1123](/../../issues/1123))
 - Crop: Make AutoCrop process skippable ([#1411](/../../issues/1411))
 - Crop: Add Frame Interval Selection Mode
 - Crop: Add Frame Consideration Mode to Options ([#1386](/../../issues/1386))

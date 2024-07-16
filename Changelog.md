@@ -26,6 +26,7 @@ v2.42.0 (not published yet)
 - UI: Fix THD+AC3 Output selection on eac3to window
 - UI: Add "Execute All" to Audio Tracks ([#1123](/../../issues/1123))
 - UI: Improve Dolby Vision Profile 5 metadata import when no VUI metadata available
+- UI: Fix Demux for user selected subtitles
 - Crop: Make AutoCrop process skippable ([#1411](/../../issues/1411))
 - Crop: Add Frame Interval Selection Mode
 - Crop: Add Frame Consideration Mode to Options ([#1386](/../../issues/1386))

@@ -879,23 +879,7 @@ Public Class mkvDemuxer
             Dim autoCode = proj.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
 
             For Each subtitle In subtitles
-                Dim prefLang As Boolean = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode, subtitle.Language.Name)
-                Dim skip As Boolean = False
-
-                Select Case proj.SubtitleMode
-                    Case SubtitleMode.All
-                        skip = False
-                    Case SubtitleMode.PreferredNoMux
-                        If Not prefLang Then
-                            skip = True
-                        End If
-                    Case Else
-                        skip = Not subtitle.Enabled
-                End Select
-
-                If skip Then
-                    Continue For
-                End If
+                If Not subtitle.Enabled Then Continue For
 
                 Dim _default = If(subtitle.Default, "_default", "")
                 Dim forced = If(subtitle.Forced, "_forced", "")

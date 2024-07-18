@@ -228,20 +228,21 @@ Public Class x265Enc
                 If Not String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) AndAlso p.Hdr10PlusMetadataFile.FileExists() Then
                     cl += $" --dhdr10-info ""{p.Hdr10PlusMetadataFile}"""
                 End If
-
-                If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
-                    cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
-
-                    Select Case p.HdrDolbyVisionMode
-                        Case DoviMode.Untouched, DoviMode.Mode0, DoviMode.Mode1
-                            cl += $""
-                        Case DoviMode.Mode4
-                            cl += $" --dolby-vision-profile 8.4"
-                        Case Else
-                            cl += $" --dolby-vision-profile 8.1"
-                    End Select
-                End If
             End If
+        End If
+
+        If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+            cl += " --output-depth 10"
+            cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
+
+            Select Case p.HdrDolbyVisionMode
+                Case DoviMode.Untouched, DoviMode.Mode0, DoviMode.Mode1
+                    cl += $""
+                Case DoviMode.Mode4
+                    cl += $" --dolby-vision-profile 8.4"
+                Case Else
+                    cl += $" --dolby-vision-profile 8.1"
+            End Select
         End If
 
         Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt

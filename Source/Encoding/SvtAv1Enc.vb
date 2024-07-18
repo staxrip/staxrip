@@ -200,11 +200,12 @@ Public Class SvtAv1Enc
                 If Not String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) AndAlso p.Hdr10PlusMetadataFile.FileExists() Then
                     cl += $" {Params.PsyHdr10PlusJson.Switch} ""{p.Hdr10PlusMetadataFile}"""
                 End If
-
-                If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
-                    cl += $" {Params.PsyDolbyVisionRpu.Switch} ""{p.HdrDolbyVisionMetadataFile.Path}"""
-                End If
             End If
+        End If
+
+        If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+            cl += " --output-depth 10"
+            cl += $" {Params.PsyDolbyVisionRpu.Switch} ""{p.HdrDolbyVisionMetadataFile.Path}"""
         End If
 
         Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt

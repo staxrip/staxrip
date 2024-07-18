@@ -261,20 +261,21 @@ Public Class NVEnc
                 If Not String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) AndAlso p.Hdr10PlusMetadataFile.FileExists() Then
                     cl += $" --dhdr10-info ""{p.Hdr10PlusMetadataFile}"""
                 End If
-
-                If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
-                    cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
-
-                    Select Case p.HdrDolbyVisionMode
-                        Case DoviMode.Untouched, DoviMode.Mode0, DoviMode.Mode1
-                            cl += $""
-                        Case DoviMode.Mode4
-                            cl += $" --dolby-vision-profile 8.4"
-                        Case Else
-                            cl += $" --dolby-vision-profile 8.1"
-                    End Select
-                End If
             End If
+        End If
+
+        If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+            cl += " --output-depth 10"
+            cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
+
+            Select Case p.HdrDolbyVisionMode
+                Case DoviMode.Untouched, DoviMode.Mode0, DoviMode.Mode1
+                    cl += $""
+                Case DoviMode.Mode4
+                    cl += $" --dolby-vision-profile 8.4"
+                Case Else
+                    cl += $" --dolby-vision-profile 8.1"
+            End Select
         End If
 
         Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt
@@ -600,7 +601,7 @@ Public Class NVEnc
         Property Fft3dAmount As New NumParam With {.Text = "      Amount", .HelpSwitch = "--vpp-fft3d", .Init = 1, .Config = {0, 1, 0.01, 2}}
         Property Fft3dBlockSize As New OptionParam With {.Text = "      Block Size", .HelpSwitch = "--vpp-fft3d", .Expanded = True, .Init = 2, .Options = {"8", "16", "32 (default)", "64"}, .Values = {"8", "16", "32", "64"}}
         Property Fft3dOverlap As New NumParam With {.Text = "      Overlap", .HelpSwitch = "--vpp-fft3d", .Init = 0.5, .Config = {0.2, 0.8, 0.01, 2}}
-        Property Fft3dMethod As New OptionParam With {.Text = "      Method", .HelpSwitch = "--vpp-fft3d", .Expanded = True,.Init = 0, .Options = {"Wiener Method (default)", "Hard Thresholding"}, .Values = {"0", "1"}}
+        Property Fft3dMethod As New OptionParam With {.Text = "      Method", .HelpSwitch = "--vpp-fft3d", .Expanded = True, .Init = 0, .Options = {"Wiener Method (default)", "Hard Thresholding"}, .Values = {"0", "1"}}
         Property Fft3dTemporal As New OptionParam With {.Text = "      Temporal", .HelpSwitch = "--vpp-fft3d", .Init = 1, .Options = {"Spatial Filtering Only", "Temporal Filtering (default)"}, .Values = {"0", "1"}}
         Property Fft3dPrec As New OptionParam With {.Text = "      Prec", .HelpSwitch = "--vpp-fft3d", .Init = 0, .Options = {"Use fp16 if possible (faster, default)", "Always use fp32"}, .Values = {"auto", "fp32"}}
 
@@ -733,7 +734,7 @@ Public Class NVEnc
         Property ColorspaceRangeTo As New OptionParam With {.Text = New String(" "c, 12) + "Range To", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"auto", "limited", "full"}, .VisibleFunc = Function() ColorspaceRangeFrom.Value > 0}
         Property ColorspaceLut3d As New StringParam With {.Text = New String(" "c, 6) + "Lut3D", .HelpSwitch = "--vpp-colorspace", .Init = "", .BrowseFile = True}
         Property ColorspaceLut3dinterp As New OptionParam With {.Text = New String(" "c, 12) + "Interpolation", .HelpSwitch = "--vpp-colorspace", .Init = 1, .Options = {"nearest", "trilinear", "tetrahedral", "pyramid", "prism"}, .VisibleFunc = Function() ColorspaceLut3d.Value.Trim().Length > 0}
-        
+
         Property ColorspaceHdr2sdr As New OptionParam With {.Text = New String(" "c, 0) + "HDR10 to SDR using this tonemapping:", .HelpSwitch = "--vpp-colorspace", .Init = 0, .Options = {"none", "hable", "mobius", "reinhard", "bt2390"}}
         Property ColorspaceHdr2sdrSourcepeak As New NumParam With {.Text = New String(" "c, 6) + "Source Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1000, .Config = {0, 10000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
         Property ColorspaceHdr2sdrLdrnits As New NumParam With {.Text = New String(" "c, 6) + "Target brightness", .HelpSwitch = "--vpp-colorspace", .Init = 100.0, .Config = {0, 1000, 1, 1}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value > 0}
@@ -1204,7 +1205,7 @@ Public Class NVEnc
             If NgxTruehdr.Value Then
                 Dim ret = ""
                 If NgxTruehdrContrast.Value <> NgxTruehdrContrast.DefaultValue Then ret += ",contrast=" & NgxTruehdrContrast.Value.ToInvariantString()
-                If NgxTruehdrsaturation.Value <> NgxTruehdrsaturation.DefaultValue Then ret += ",saturation=" & NgxTruehdrsaturation.Value.ToInvariantString()
+                If NgxTruehdrSaturation.Value <> NgxTruehdrSaturation.DefaultValue Then ret += ",saturation=" & NgxTruehdrSaturation.Value.ToInvariantString()
                 If NgxTruehdrMiddleGray.Value <> NgxTruehdrMiddleGray.DefaultValue Then ret += ",middlegray=" & NgxTruehdrMiddleGray.Value.ToInvariantString()
                 If NgxTruehdrMaxLuminance.Value <> NgxTruehdrMaxLuminance.DefaultValue Then ret += ",maxluminance=" & NgxTruehdrMaxLuminance.Value.ToInvariantString()
                 Return "--vpp-ngx-truehdr " + ret.TrimStart(","c)

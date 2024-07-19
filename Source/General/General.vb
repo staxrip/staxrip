@@ -1174,6 +1174,7 @@ Public Module MainModule
     End Sub
 
     Sub MsgError(title As String, content As String, handle As IntPtr, Optional timeout As Integer = 0)
+        If timeout < 0 Then Exit Sub
         If title = "" Then title = content
         If title = "" Then Exit Sub
 

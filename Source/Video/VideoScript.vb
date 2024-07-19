@@ -283,7 +283,6 @@ clipname.set_output()" + BR
         code = Macro.Expand(code)
 
         If Me.Error <> "" OrElse code <> LastCode OrElse (comparePath AndAlso Path <> LastPath) Then
-
             If Path.Dir.DirExists Then
                 If Engine = ScriptEngine.VapourSynth Then
                     ModifyScript(code, Engine).WriteFileUTF8(Path)

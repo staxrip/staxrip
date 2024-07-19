@@ -2482,7 +2482,7 @@ Public Class MainForm
                 p.Script.Filters.Add(New VideoFilter("Source", "VS Script Import", code))
             End If
 
-            ModifyFilters(timeout)
+            ModifyFilters(-1)
             FiltersListView.IsLoading = False
             FiltersListView.Load()
 
@@ -2676,7 +2676,7 @@ Public Class MainForm
             Log.Save()
 
             MsgError("Script Error", errorMsg, Handle, timeout)
-            p.Script.Synchronize()
+            'p.Script.Synchronize()
             Throw New AbortException
         End If
 
@@ -3865,11 +3865,8 @@ Public Class MainForm
         p.Script.Synchronize()
     End Sub
 
-
     Sub Indexing()
-        If p.SourceFile.Ext.EqualsAny("avs", "vpy") Then
-            Exit Sub
-        End If
+        If p.SourceFile.Ext.EqualsAny("avs", "vpy") Then Exit Sub
 
         Dim codeLower = p.Script.GetFilter("Source").Script.ToLowerInvariant
 

@@ -10,6 +10,7 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Window
 Imports System.Xml
 Imports ManagedCuda.DriverAPINativeMethods
 Imports Microsoft.VisualBasic
@@ -2102,9 +2103,56 @@ Public Class MainForm
             End If
         Else
             files.Sort()
-            OpenVideoSourceFiles(files, timeout)
+
+            If files(0).DirExists() Then
+                OpenBlurayFolder(files(0))
+            Else
+                OpenVideoSourceFiles(files, timeout)
+            End If
         End If
     End Sub
+
+    Function OpenBlurayFolder(srcPath As String) As Boolean
+        If String.IsNullOrWhiteSpace(srcPath) Then Return False
+        If Not srcPath.DirExists() Then Return False
+
+        If Directory.Exists(Path.Combine(srcPath, "BDMV")) Then
+            srcPath = Path.Combine(srcPath, "BDMV")
+        End If
+        If Directory.Exists(Path.Combine(srcPath, "PLAYLIST")) Then
+            srcPath = Path.Combine(srcPath, "PLAYLIST")
+        End If
+        If New DirectoryInfo(srcPath).Name <> "PLAYLIST" Then
+            MsgWarn("No playlist directory found.")
+            Return False
+        End If
+
+        Log.WriteEnvironment()
+        Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + BR2)
+        Log.WriteLine("Source Drive Type: " + New DriveInfo(srcPath).DriveType.ToString + BR)
+
+        Dim output = ProcessHelp.GetConsoleOutput(Package.eac3to.Path, srcPath.Escape).Replace(VB6.vbBack, "")
+        Log.WriteLine(output)
+
+        Dim a = Regex.Split(output, "^\d+\)", RegexOptions.Multiline).ToList
+        If a(0) = "" Then
+            a.RemoveAt(0)
+        End If
+
+        Using td As New TaskDialog(Of Integer)
+            td.Title = "Please select a playlist."
+            For Each i In a
+                If i.Contains(BR) Then
+                    td.AddCommand(i.Left(BR).Trim, i.Right(BR).TrimEnd, a.IndexOf(i) + 1)
+                End If
+            Next
+            If td.Show() <> 0 Then
+                OpenEac3toDemuxForm(srcPath, td.SelectedValue)
+            End If
+        End Using
+
+        Return True
+    End Function
 
     Sub OpenVideoSourceFile(fp As String, Optional timeout As Integer = 0)
         OpenVideoSourceFiles({fp}, timeout)
@@ -6651,48 +6699,7 @@ Public Class MainForm
             If dialog.ShowDialog = DialogResult.OK Then
                 s.Storage.SetString("last blu-ray source folder", dialog.SelectedPath)
                 Dim srcPath = dialog.SelectedPath.FixDir
-
-                If Directory.Exists(Path.Combine(srcPath, "BDMV")) Then
-                    srcPath = Path.Combine(srcPath, "BDMV")
-                End If
-
-                If Directory.Exists(Path.Combine(srcPath, "PLAYLIST")) Then
-                    srcPath = Path.Combine(srcPath, "PLAYLIST")
-                End If
-
-                If New DirectoryInfo(srcPath).Name <> "PLAYLIST" Then
-                    MsgWarn("No playlist directory found.")
-                    Exit Sub
-                End If
-
-                Log.WriteEnvironment()
-                Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + BR2)
-                Log.WriteLine("Source Drive Type: " + New DriveInfo(dialog.SelectedPath).DriveType.ToString + BR)
-
-                Dim output = ProcessHelp.GetConsoleOutput(Package.eac3to.Path, srcPath.Escape).Replace(VB6.vbBack, "")
-                Log.WriteLine(output)
-
-                Dim a = Regex.Split(output, "^\d+\)", RegexOptions.Multiline).ToList
-
-                If a(0) = "" Then
-                    a.RemoveAt(0)
-                End If
-
-                Using td As New TaskDialog(Of Integer)
-                    td.Title = "Please select a playlist."
-
-                    For Each i In a
-                        If i.Contains(BR) Then
-                            td.AddCommand(i.Left(BR).Trim, i.Right(BR).TrimEnd, a.IndexOf(i) + 1)
-                        End If
-                    Next
-
-                    If td.Show() = 0 Then
-                        Exit Sub
-                    End If
-
-                    OpenEac3toDemuxForm(srcPath, td.SelectedValue)
-                End Using
+                OpenBlurayFolder(srcPath)
             End If
         End Using
     End Sub

@@ -2805,6 +2805,7 @@ Public Class MainForm
                 Dim considerationMode = Convert.ToInt32(p.AutoCropFrameRangeMode)
                 Dim considerationThresholdBegin = 0
                 Dim considerationThresholdEnd = 0
+                Dim luminanceThreshold = CInt(p.AutoCropLuminanceThreshold * 100)
                 Dim vfw = If(FrameServerHelp.IsVfwUsed, 1, 0)
 
                 If p.AutoCropFrameRangeMode = AutoCropFrameRangeMode.Automatic Then
@@ -2821,7 +2822,7 @@ Public Class MainForm
                         proc.Header = "Auto Crop"
                         proc.SkipString = "%"
                         proc.Package = Package.AutoCrop
-                        proc.Arguments = $"{p.SourceScript.Path.Escape} {selectionMode} {selectionValue} {considerationThresholdBegin} {considerationThresholdEnd} {vfw}"
+                        proc.Arguments = $"{p.SourceScript.Path.Escape} {selectionMode} {selectionValue} {considerationThresholdBegin} {considerationThresholdEnd} {luminanceThreshold.ToInvariantString()} {vfw}"
                         proc.Start()
 
                         Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
@@ -5105,6 +5106,14 @@ Public Class MainForm
             fsTimeInterval.Config = {1, 3600, 5, 0}
             fsTimeInterval.Field = NameOf(p.AutoCropTimeIntervalFrameSelection)
             fsTimeInterval.Margin = New Padding(0, 6, 0, 3)
+
+
+            Dim luminanceThreshold = ui.AddNum()
+            luminanceThreshold.Text = "Luminance Threshold in percent:"
+            luminanceThreshold.Help = "Max brightness in peercent of those lines, that are considered to be cropped."
+            luminanceThreshold.Config = {0, 99, 0.1, 1}
+            luminanceThreshold.Field = NameOf(p.AutoCropLuminanceThreshold)
+            luminanceThreshold.Margin = New Padding(0, 6, 0, 3)
 
 
 

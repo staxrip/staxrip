@@ -32,6 +32,7 @@ Public Class Project
     Public AutoCropFixedFramesFrameSelection As Integer = 200
     Public AutoCropFrameIntervalFrameSelection As Integer = 400
     Public AutoCropTimeIntervalFrameSelection As Integer = 15
+    Public AutoCropLuminanceThreshold As Single = 10.0
     Public AutoResizeImage As Integer
     Public AutoRotation As Boolean = True
     Public AutoSmartCrop As Boolean

@@ -31,6 +31,8 @@ v2.42.0 (not published yet)
 - Crop: Add Frame Interval Selection Mode
 - Crop: Add Frame Consideration Mode to Options ([#1386](/../../issues/1386))
     - Makes it able to handle intros and outros that are not cropped
+- Crop: Add Luminance Threshold
+    - Lets the user set the max brightness of a line, that is considered to be cropped
 - Qaac: Add "--no-delay" parameter ([#1410](/../../issues/1410))
 - Update tools
     - AutoCrop v2.5

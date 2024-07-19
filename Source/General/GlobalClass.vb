@@ -1473,6 +1473,7 @@ Public Class GlobalClass
                 Dim crops(analyzeCount - 1) As AutoCrop
                 Dim offset = (consideredFrames - ((analyzeCount - 1) * interval)) \ 2
                 startFrame += offset
+                Dim luminanceThreshold = p.AutoCropLuminanceThreshold / 100
 
                 For i = 0 To analyzeCount - 1
                     analyzeFrames(i) = Math.Min(startFrame + i * interval, endFrame)
@@ -1483,7 +1484,7 @@ Public Class GlobalClass
 
                     Dim frame = analyzeFrames(i)
                     Using bmp = BitmapUtil.CreateBitmap(server, frame)
-                        crops(i) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), frame)
+                        crops(i) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), frame, luminanceThreshold)
                     End Using
 
                     If crops(i).Left.Min = 0 AndAlso crops(i).Top.Min = 0 AndAlso crops(i).Right.Min = 0 AndAlso crops(i).Bottom.Min = 0 Then

@@ -1790,10 +1790,8 @@ Public Class BitmapUtil
         Return Color.FromArgb(Data(pos), Data(pos + 1), Data(pos + 2))
     End Function
 
-    Function GetMax(x As Integer, y As Integer) As Integer
-        Dim col = GetPixel(x, y)
-        Dim max = Math.Max(col.R, col.G)
-        Return Math.Max(max, col.B)
+    Function GetMaxLuminance(x As Integer, y As Integer) As Single
+        Return GetPixel(x, y).ToColorHSL().L
     End Function
 
     Shared Function Create(bmp As Bitmap) As BitmapUtil
@@ -1825,10 +1823,9 @@ Public Class AutoCrop
     Public Left As Integer()
     Public Right As Integer()
 
-    Shared Function Start(bmp As Bitmap, position As Integer) As AutoCrop
+    Shared Function Start(bmp As Bitmap, position As Integer, threshold As Single) As AutoCrop
         Dim ret As New AutoCrop
         Dim u = BitmapUtil.Create(bmp)
-        Dim max = 20
         Dim xCount = 20
         Dim yCount = 20
 
@@ -1843,7 +1840,7 @@ Public Class AutoCrop
 
         For xValue = 0 To xValues.Length - 1
             For y = 0 To u.BitmapData.Height \ 4
-                If u.GetMax(xValues(xValue), y) < max Then
+                If u.GetMaxLuminance(xValues(xValue), y) < threshold Then
                     ret.Top(xValue) = y + 1
                 Else
                     Exit For
@@ -1851,7 +1848,7 @@ Public Class AutoCrop
             Next
 
             For y = u.BitmapData.Height - 1 To u.BitmapData.Height - u.BitmapData.Height \ 4 Step -1
-                If u.GetMax(xValues(xValue), y) < max Then
+                If u.GetMaxLuminance(xValues(xValue), y) < threshold Then
                     ret.Bottom(xValue) = u.BitmapData.Height - y
                 Else
                     Exit For
@@ -1870,7 +1867,7 @@ Public Class AutoCrop
 
         For yValue = 0 To yValues.Length - 1
             For x = 0 To u.BitmapData.Width \ 4
-                If u.GetMax(x, yValues(yValue)) < max Then
+                If u.GetMaxLuminance(x, yValues(yValue)) < threshold Then
                     ret.Left(yValue) = x + 1
                 Else
                     Exit For
@@ -1878,7 +1875,7 @@ Public Class AutoCrop
             Next
 
             For x = u.BitmapData.Width - 1 To u.BitmapData.Width - u.BitmapData.Width \ 4 Step -1
-                If u.GetMax(x, yValues(yValue)) < max Then
+                If u.GetMaxLuminance(x, yValues(yValue)) < threshold Then
                     ret.Right(yValue) = u.BitmapData.Width - x
                 Else
                     Exit For

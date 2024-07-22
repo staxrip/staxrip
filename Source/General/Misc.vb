@@ -4140,6 +4140,7 @@ Public Enum ApplicationEvent
     <DispName("After Jobs Processed")> AfterJobsProcessed
     <DispName("After Project Loaded")> AfterProjectLoaded
     <DispName("After Project Or Source Loaded")> AfterProjectOrSourceLoaded
+    <DispName("After Source Opened")> AfterSourceOpened
     <DispName("After Source Loaded")> AfterSourceLoaded
     <DispName("After Video Encoded")> AfterVideoEncoded
     <DispName("Application Exit")> ApplicationExit

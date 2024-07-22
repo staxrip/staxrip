@@ -2577,6 +2577,7 @@ Public Class MainForm
                 p.VideoEncoder.RunCompCheck()
             End If
 
+            g.RaiseAppEvent(ApplicationEvent.AfterSourceOpened)
             Assistant()
             g.RaiseAppEvent(ApplicationEvent.AfterSourceLoaded)
             g.RaiseAppEvent(ApplicationEvent.AfterProjectOrSourceLoaded)

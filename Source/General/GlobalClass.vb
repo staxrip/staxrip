@@ -37,6 +37,7 @@ Public Class GlobalClass
     Event AfterJobsProcessed()
     Event AfterProjectLoaded()
     Event AfterProjectOrSourceLoaded()
+    Event AfterSourceOpened()
     Event AfterSourceLoaded()
     Event AfterVideoEncoded()
     Event ApplicationExit()
@@ -953,6 +954,8 @@ Public Class GlobalClass
                 RaiseEvent AfterProjectLoaded()
             Case ApplicationEvent.AfterProjectOrSourceLoaded
                 RaiseEvent AfterProjectOrSourceLoaded()
+            Case ApplicationEvent.AfterSourceOpened
+                RaiseEvent AfterSourceOpened()
             Case ApplicationEvent.AfterSourceLoaded
                 RaiseEvent AfterSourceLoaded()
             Case ApplicationEvent.AfterVideoEncoded

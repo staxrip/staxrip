@@ -3835,6 +3835,7 @@ Public Class MainForm
                             For Each iFile In Directory.GetFiles(p.TempDir, "*." + outExt)
                                 If g.IsSourceSame(iFile) AndAlso
                                     p.SourceFile <> iFile AndAlso
+                                    Not iFile.Base.EndsWith("_CompCheck") AndAlso
                                     Not iFile.Base.EndsWith("_out") AndAlso
                                     Not iFile.Base.Contains("_cut_") Then
 

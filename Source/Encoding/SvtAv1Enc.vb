@@ -632,7 +632,6 @@ Public Class SvtAv1EncParams
                 Case SvtAv1EncAppType.Psy
                     Return QuantizationParameterPsy
                 Case Else
-                    Return QuantizationParameterPsy
                     Return QuantizationParameterVanilla
             End Select
         End Get

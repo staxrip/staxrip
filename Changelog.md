@@ -36,6 +36,7 @@ v2.42.0 (not published yet)
 - Qaac: Add "--no-delay" parameter ([#1410](/../../issues/1410))
 - SvtAv1EncApp: Fix "--qp" parameter for non Psy versions
 - SvtAv1EncApp: Fix "--qp-max" parameter
+- x265: Fix "--aq-mode" default value across different presets
 - Update tools
     - AutoCrop v2.5
 - Update AviSynth+ plugins

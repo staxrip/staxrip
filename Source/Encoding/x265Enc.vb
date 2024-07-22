@@ -685,7 +685,18 @@ Public Class x265Params
         .NoSwitch = "--no-weightb",
         .Text = "Enable weighted prediction in B slices"}
 
-    Property AQmode As New OptionParam With {
+    ReadOnly Property AQmode As OptionParam
+        Get
+            Select Case Package.x265Type
+                Case x265Type.Patman
+                    Return AQmodeExtended
+                Case Else
+                    Return AQmodeNormal
+            End Select
+        End Get
+    End Property
+
+    Property AQmodeNormal As New OptionParam With {
         .Switch = "--aq-mode",
         .Text = "AQ Mode",
         .Expanded = True,
@@ -693,8 +704,7 @@ Public Class x265Params
         .DefaultValue = 2,
         .AlwaysOn = False,
         .Options = {"0: Disabled", "1: AQ enabled", "2: AQ enabled with auto-variance", "3: AQ enabled with auto-variance with bias to dark scenes", "4: AQ enabled with auto-variance and edge information"},
-        .ValueChangedAction = Sub(x) AQmodeExtended.Value = x,
-        .VisibleFunc = Function() Package.x265Type <> x265Type.Patman}
+        .ValueChangedAction = Sub(x) AQmodeExtended.Value = x}
 
     Property AQmodeExtended As New OptionParam With {
         .Switch = "--aq-mode",
@@ -708,8 +718,7 @@ Public Class x265Params
                         Return If(AQmodeExtended.AlwaysOn OrElse AQmodeExtended.Value <> AQmodeExtended.DefaultValue,
                             If(AQmodeExtended.Value < 6, $"--aq-mode {AQmodeExtended.Value}", "--auto-aq"),
                             "")
-                    End Function,
-        .VisibleFunc = Function() Package.x265Type = x265Type.Patman}
+                    End Function}
 
     Property AQStrength As New NumParam With {
         .Switch = "--aq-strength",
@@ -721,7 +730,7 @@ Public Class x265Params
         .Text = "AQ Bias Strength",
         .Init = 1,
         .Config = {0, 3, 0.05, 2},
-        .VisibleFunc = Function() AQmodeExtended.Visible AndAlso (AQmodeExtended.Value = 3 OrElse AQmodeExtended.Value = 5)}
+        .VisibleFunc = Function() AQmode Is AQmodeExtended AndAlso (AQmode.Value = 3 OrElse AQmode.Value = 5)}
 
     Property CUtree As New BoolParam With {
         .Switch = "--cutree",
@@ -1225,7 +1234,7 @@ Public Class x265Params
                 Add("Rate Control",
                     New StringParam With {.Switch = "--zones", .Text = "Zones"},
                     New StringParam With {.Switch = "--zonefile", .Text = "Zone File", .BrowseFile = True},
-                    AQmode, AQmodeExtended, qgSize,
+                    AQmode, qgSize,
                     AQStrength, AQBiasStrength, QComp, qpmin, qpmax, qpstep,
                     New NumParam With {.Switch = "--qp-delta-ref", .Text = "QP Delta Ref", .Init = 5, .Config = {0, 10, 0.5, 1}},
                     New NumParam With {.Switch = "--qp-delta-nonref", .Text = "QP Delta NonRef", .Init = 5, .Config = {0, 10, 0.5, 1}},

@@ -30,6 +30,7 @@ v2.42.0 (not published yet)
 - UI: Ignore existing video files in temp directory created by Compressibility Check when opening source file again
 - UI: Add new event "After Source Opened"
     - Which is triggered at the end before validation of the scripts. After the validation the existing "After Source Loaded" triggers
+- UI: Fix Indexing for LWLibav
 - Crop: Make AutoCrop process skippable ([#1411](/../../issues/1411))
 - Crop: Add Frame Interval Selection Mode
 - Crop: Add Frame Consideration Mode to Options ([#1386](/../../issues/1386))

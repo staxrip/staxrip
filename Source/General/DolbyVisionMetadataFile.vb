@@ -123,8 +123,8 @@ Public Class DolbyVisionMetadataFile
             Dim sameCount = same.Count()
             Dim take = True
 
-            take = If(take AndAlso i = 0 AndAlso sameCount = 1 AndAlso entry.Offset = Padding.Empty AndAlso entry.EndFrame < thresholdBegin, False, take)
-            take = If(take AndAlso i = entries.Count() - 1 AndAlso sameCount = 1 AndAlso entry.Offset = Padding.Empty AndAlso entry.StartFrame > entry.EndFrame - thresholdEnd, False, take)
+            take = If(take AndAlso i = 0 AndAlso (sameCount = 1 OrElse (sameCount = 2 AndAlso same(1).EndFrame = Edits.Last().EndFrame)) AndAlso entry.Offset = Padding.Empty AndAlso entry.EndFrame < thresholdBegin, False, take)
+            take = If(take AndAlso i = entries.Count() - 1 AndAlso (sameCount = 1 OrElse (sameCount = 2 AndAlso same(0).StartFrame = Edits.First().StartFrame)) AndAlso entry.Offset = Padding.Empty AndAlso entry.StartFrame > entry.EndFrame - thresholdEnd, False, take)
             take = If(take AndAlso Not same.Where(Function(x) (x.EndFrame - x.StartFrame) > 8).Any() AndAlso entry.Offset = Padding.Empty, False, take)
 
             If take Then

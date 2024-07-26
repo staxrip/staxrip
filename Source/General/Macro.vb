@@ -584,6 +584,12 @@ Public Class Macro
         If value.Contains("%pos_ms%") Then value = value.Replace("%pos_ms%", g.GetPreviewPosMS.ToString)
         If Not value.Contains("%") Then Return value
 
+        If value.Contains("%hdr10plus_path%") Then value = value.Replace("%hdr10plus_path%", p.Hdr10PlusMetadataFile)
+        If Not value.Contains("%") Then Return value
+
+        If value.Contains("%hdrdv_path%") Then value = value.Replace("%hdrdv_path%", p.HdrDolbyVisionMetadataFile?.Path)
+        If Not value.Contains("%") Then Return value
+
         If value.Contains("%source_par_x%") Then
             Dim par = Calc.GetSourcePAR
             value = value.Replace("%source_par_x%", par.X.ToString)
@@ -596,7 +602,6 @@ Public Class Macro
 
         If value.Contains("%jobs_active%") Then value = value.Replace("%jobs_active%", jobs?.Where(Function(x) x.Active).Count().ToString())
         If Not value.Contains("%") Then Return value
-
 
         If value.Contains("%source_par_y%") Then
             Dim par = Calc.GetSourcePAR

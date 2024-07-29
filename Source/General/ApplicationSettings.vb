@@ -250,8 +250,9 @@ Public Class ApplicationSettings
             CmdlPresetsEac3to = GetDefaultEac3toMenu()
         End If
 
-        If Check(CmdlPresetsMP4, "MP4 custom command line menu presets", 8) Then
-            CmdlPresetsMP4 = "iPod = -ipod"
+        If Check(CmdlPresetsMP4, "MP4 custom command line menu presets", 2) Then
+            CmdlPresetsMP4 = "iPod = -ipod" + BR + 
+                             "Streaming = -inter 500"
         End If
 
         If Check(CmdlPresetsX264, "x264 custom command line menu presets", 8) OrElse CmdlPresetsX264 = "" Then

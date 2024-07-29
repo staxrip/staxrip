@@ -41,6 +41,8 @@ v2.42.0 (not published yet)
 - Crop: Add Luminance Threshold
     - Lets the user set the max brightness of a line, that is considered to be cropped
 - Crop: Improve Automatic Mode for Dolby Vision sources
+- FFmpeg: Add "-movflags +faststart" to muxer command where possible ([#1408](/../../issues/1408))
+- MP4Box: Add "Streaming" command line menu preset ([#1408](/../../issues/1408))
 - Qaac: Add "--no-delay" parameter ([#1410](/../../issues/1410))
 - SvtAv1EncApp: Fix "--qp" parameter for non Psy versions
 - SvtAv1EncApp: Fix "--qp-max" parameter

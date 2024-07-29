@@ -1022,7 +1022,9 @@ Public Class ffmpegMuxer
             End If
         Next
 
-        args += mapping + " -c:v copy -c:a copy -strict -2 " + p.TargetFile.Escape
+        args += mapping + " -c:v copy -c:a copy -strict -2 "
+        args += If(OutputFormat.EqualsAny("MOV", "MP4", "ISMV"), "-movflags +faststart ", "")
+        args += p.TargetFile.Escape
 
         Using proc As New Proc
             proc.Header = "Muxing to " + OutputFormat

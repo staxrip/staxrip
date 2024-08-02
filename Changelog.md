@@ -43,12 +43,15 @@ v2.42.0 (not published yet)
 - Crop: Improve Automatic Mode for Dolby Vision sources
 - FFmpeg: Add "-movflags +faststart" to muxer command where possible ([#1408](/../../issues/1408))
 - MP4Box: Add "Streaming" command line menu preset ([#1408](/../../issues/1408))
+- NVEncC: Fix incompatible output file type for AV1 encodes
 - Qaac: Add "--no-delay" parameter ([#1410](/../../issues/1410))
+- QSVEncC: Fix incompatible output file type for AV1 encodes
 - SvtAv1EncApp: Fix "--qp" parameter for non Psy versions
 - SvtAv1EncApp: Fix "--qp-max" parameter
 - VCEEncC: Add "--vpp-decomb" parameter
 - VCEEncC: Add "--vpp-fft3d" parameter
 - VCEEncC: Add "--vpp-nlmeans" parameter
+- VCEEncC: Fix incompatible output file type for AV1 encodes
 - x265: Fix "--aq-mode" default value across different presets
 - Update tools
     - AutoCrop v2.5

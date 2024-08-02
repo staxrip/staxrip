@@ -106,8 +106,12 @@ Public Class NVEnc
         End Using
     End Sub
 
-    Overrides ReadOnly Property OutputExt() As String
+    Overrides ReadOnly Property OutputExt As String
         Get
+            If Params.Codec.ValueText = "av1" Then
+                Return "mkv"
+            End If
+
             Return Params.Codec.ValueText
         End Get
     End Property

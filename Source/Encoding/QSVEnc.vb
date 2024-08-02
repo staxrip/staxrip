@@ -121,9 +121,11 @@ Public Class QSVEnc
 
     Overrides ReadOnly Property OutputExt() As String
         Get
-            If Params.Codec.ValueText = "mpeg2" Then
+            If Params.Codec.ValueText ="av1" Then
+                Return "mkv"
+            ElseIf Params.Codec.ValueText = "mpeg2" Then
                 Return "m2v"
-            ElseIf Params.Codec.ValueText = "vp9" Then
+            ElseIf Params.Codec.ValueText ="vp9" Then
                 Return "ivf"
             End If
 

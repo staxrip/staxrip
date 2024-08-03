@@ -48,9 +48,17 @@ v2.42.0 (not published yet)
 - QSVEncC: Fix incompatible output file type for AV1 encodes
 - SvtAv1EncApp: Fix "--qp" parameter for non Psy versions
 - SvtAv1EncApp: Fix "--qp-max" parameter
-- VCEEncC: Add "--vpp-decomb" parameter
-- VCEEncC: Add "--vpp-fft3d" parameter
-- VCEEncC: Add "--vpp-nlmeans" parameter
+- VCEEncC: Add "--vpp-decomb" parameter ([#1444](/../../issues/1444))
+- VCEEncC: Add "--vpp-fft3d" parameter ([#1444](/../../issues/1444))
+- VCEEncC: Add "--vpp-nlmeans" parameter ([#1444](/../../issues/1444))
+- VCEEncC: Add "--atc-sei" parameter ([#1444](/../../issues/1444))
+- VCEEncC: Add "--chromaloc" parameter ([#1444](/../../issues/1444))
+- VCEEncC: Add "--colorrange" parameter ([#1444](/../../issues/1444))
+- VCEEncC: Add "--master-display" parameter ([#1444](/../../issues/1444))
+- VCEEncC: Add "--max-cll" parameter ([#1444](/../../issues/1444))
+- VCEEncC: Fix "--pa" parameter ([#1444](/../../issues/1444))
+- VCEEncC: Fix "--preset" parameter ([#1444](/../../issues/1444))
+- VCEEncC: Fix mode options across all codecs ([#1444](/../../issues/1444))
 - VCEEncC: Fix incompatible output file type for AV1 encodes
 - x265: Fix "--aq-mode" default value across different presets
 - Update tools

@@ -2160,17 +2160,23 @@ Public Class MainForm
         Log.WriteLine(output)
 
         Dim a = Regex.Split(output, "^\d+\)", RegexOptions.Multiline).ToList
-        If a(0) = "" Then
-            a.RemoveAt(0)
-        End If
+        If a(0) = "" Then a.RemoveAt(0)
 
         Using td As New TaskDialog(Of Integer)
             td.Title = "Please select a playlist."
+
             For Each i In a
-                If i.Contains(BR) Then
-                    td.AddCommand(i.Left(BR).Trim, i.Right(BR).TrimEnd, a.IndexOf(i) + 1)
-                End If
+                If Not i.Contains(BR) Then Continue For
+                Dim match = Regex.Match(i, "(\+\d+)\1{8,}", RegexOptions.Multiline)
+                If match.Success AndAlso match.Groups.Count > 1 Then Continue For
+
+                Dim value = a.IndexOf(i) + 1
+                Dim text = value & ")  " & i.Left(BR).Trim()
+                Dim description = i.Right(BR).TrimEnd()
+
+                td.AddCommand(text, description, value)
             Next
+
             If td.Show() <> 0 Then
                 OpenEac3toDemuxForm(srcPath, td.SelectedValue)
             End If

@@ -773,7 +773,7 @@ Public Class NVEnc
                         Mode, Codec,
                         New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Init = 6, .Options = {"Default", "Quality", "Performance", "P1 (Performance)", "P2", "P3", "P4 (Default)", "P5", "P6", "P7 (Quality)"}, .Values = {"default", "quality", "performance", "P1", "P2", "P3", "P4", "P5", "P6", "P7"}},
                         OutputDepth,
-                        New OptionParam With {.Switch = "--output-csp", .Text = "Colorspace", .Options = {"yuv420 (default)", "yuv444"}, .Values = {"yuv420", "yuv444"}},
+                        New OptionParam With {.Switch = "--output-csp", .Text = "Colorspace", .Options = {"YUV420 (Default)", "YUV444", "RGB", "YUVA420"}, .Values = {"yuv420", "yuv444", "rgb", "yuva420"}},
                         ProfileH264, ProfileH265, ProfileAV1,
                         New OptionParam With {.Name = "TierH265", .Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}},
                         New OptionParam With {.Name = "TierAV1", .Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "av1", .Options = {"0", "1"}},

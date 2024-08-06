@@ -1664,8 +1664,9 @@ Public Class GlobalClass
     Function GetTimeString(sec As Double) As String
         Dim ts = TimeSpan.FromSeconds(sec)
 
-        Return CInt(Math.Floor(ts.TotalMinutes)).ToString("00") + ":" +
-            CInt(Math.Floor(ts.Seconds)).ToString("00")
+        Return If(ts.TotalHours > 0,
+            $"{Math.Floor(ts.TotalHours):0}:{Math.Floor(ts.Minutes):00}:{Math.Floor(ts.Seconds):00}",
+            $"{Math.Floor(ts.TotalMinutes):00}:{Math.Floor(ts.Seconds):00}")
     End Function
 
     Sub ShowAdvancedScriptInfo(script As VideoScript)

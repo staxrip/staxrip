@@ -1284,7 +1284,9 @@ Public Class MainForm
         Next
     End Sub
 
-    Function IsSaveCanceled() As Boolean
+    Function IsSaveCanceled(Optional saveProject As Boolean = True) As Boolean
+        SetLastModifiedTemplate()
+
         If s.ApplicationExitMode <> ApplicationExitMode.Regular Then
             Select Case s.ApplicationExitMode
                 Case ApplicationExitMode.BypassProjectSaving
@@ -1439,7 +1441,9 @@ Public Class MainForm
     End Sub
 
     Async Sub UpdateTemplatesMenuAsync()
-        Dim files As String() = Nothing
+        If IsDisposed Then Exit Sub
+
+        Dim templates As IEnumerable(Of String) = Nothing
 
         Await Task.Run(Sub()
                            Thread.Sleep(500)
@@ -1448,41 +1452,35 @@ Public Class MainForm
                                FileHelp.Move(iFile, Path.Combine(iFile.Dir, "Backup", iFile.Base))
                            Next
 
-                           files = Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories)
+                           templates = Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories).OrderBy(Function(x) x.Count(Function(c) c = Path.DirectorySeparatorChar)).ThenBy(Function(x) x)
                        End Sub)
 
-        If IsDisposed Then
-            Exit Sub
-        End If
 
-        For Each i In CustomMainMenu.MenuItems
-            If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
-                i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.TemplateProjects) Then
+        For i = 0 To CustomMainMenu.MenuItems.Count - 1
+            Dim menuItem = CustomMainMenu.MenuItems(i)
 
-                i.DropDownItems.ClearAndDisplose
-                Dim items As New List(Of MenuItemEx)
+            If IsDisposed Then Exit Sub
+            If menuItem.CustomMenuItem.MethodName <> "DynamicMenuItem" OrElse Not menuItem.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.TemplateProjects) Then Continue For
 
-                For Each i2 In files
-                    Dim base = i2.Base
+            menuItem.DropDownItems.ClearAndDisplose()
+            Dim items As New List(Of MenuItemEx)
 
-                    If i2 = g.StartupTemplatePath Then
-                        base += " (Startup)"
-                    End If
+            For Each template In templates
+                Dim text = template.Replace(Folder.Template, "").Trim(Path.DirectorySeparatorChar).Replace(Path.DirectorySeparatorChar, " | ")
+                text = text.Substring(0, text.LastIndexOf(".srip"))
+                text += If(template = g.StartupTemplatePath, " (Startup)", "")
 
-                    If i2.Contains("Backup" + Path.DirectorySeparatorChar) Then
-                        base = "Backup | " + base
-                    End If
+                MenuItemEx.Add(menuItem.DropDownItems, text, AddressOf LoadProject, template, Nothing)
+            Next
 
-                    MenuItemEx.Add(i.DropDownItems, base, AddressOf LoadProject, i2, Nothing)
-                Next
+            menuItem.DropDownItems.Add("-")
+            MenuItemEx.Add(menuItem.DropDownItems, "Explore", Sub() g.ShellExecute(Folder.Template), "Opens the directory containing the templates.")
+            MenuItemEx.Add(menuItem.DropDownItems, "Restore", AddressOf ResetTemplates, "Restores the default templates.")
 
-                i.DropDownItems.Add("-")
-                MenuItemEx.Add(i.DropDownItems, "Explore", Sub() g.ShellExecute(Folder.Template), "Opens the directory containing the templates.")
-                MenuItemEx.Add(i.DropDownItems, "Restore", AddressOf ResetTemplates, "Restores the default templates.")
-
-                Exit For
-            End If
+            Exit For
         Next
+
+        If IsDisposed Then Exit Sub
 
         Application.DoEvents()
     End Sub
@@ -1501,8 +1499,77 @@ Public Class MainForm
 
     <Command("Loads a template.")>
     Sub LoadTemplate(name As String)
-        LoadProject(Path.Combine(Folder.Template, name + ".srip"))
+        Dim templates = Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories)
+
+        For Each template In templates
+            Dim temp = template.Replace(Folder.Template, "").Trim(Path.DirectorySeparatorChar)
+            Dim text1 = temp.Substring(0, temp.LastIndexOf(".srip"))
+            Dim text2 = text1.Replace(Path.DirectorySeparatorChar, " | ")
+
+            If {text1.ToLowerEx(), text2.ToLowerEx()}.Contains(name.ToLowerEx()) Then
+                LoadProject(template)
+                Exit Sub
+            End If
+        Next
     End Sub
+
+    <Command("Loads a template that you can choose from via dialog.")>
+    Function LoadTemplateWithSelectionDialog(Optional source As String = "", Optional templateFolder As String = "") As Boolean
+        If Not templateFolder.DirExists Then templateFolder = Folder.Template
+        If Not templateFolder.DirExists Then Return False
+        Dim directories = Directory.GetDirectories(templateFolder, "*", SearchOption.TopDirectoryOnly)
+        Dim templates = Directory.GetFiles(templateFolder, "*.srip", SearchOption.TopDirectoryOnly)?.Where(Function(x) x <> g.StartupTemplatePath)?.OrderBy(Function(x) x)
+        If Not templates?.Any() Then Return True
+
+        Using td As New TaskDialog(Of String)
+            td.Title = "Select a template"
+            td.Content = If(String.IsNullOrWhiteSpace(source),
+                "Please select a template you want to use:",
+                $"Please select a template you want to use for:{BR}{source}")
+            td.Icon = TaskIcon.Question
+
+            If p.SourceFile = "" Then
+                td.AddCommand("Current Template", "CURRENT")
+            Else
+                td.AddCommand("Last set Template", "LAST")
+            End If
+            td.AddCommand(g.StartupTemplatePath.Base() + " (Startup)", g.StartupTemplatePath)
+
+            If templateFolder.Contains(Folder.Template + Path.DirectorySeparatorChar) Then
+                td.AddCommand($". . {Path.DirectorySeparatorChar}", "UP")
+            End If
+
+            For i = 0 To templates.Count() - 1
+                Dim text = templates(i).Replace(Folder.Template, "").Trim(Path.DirectorySeparatorChar).Replace(Path.DirectorySeparatorChar, $" {Path.DirectorySeparatorChar} ")
+                text = text.Substring(0, text.LastIndexOf(".srip"))
+                td.AddCommand(text, templates(i))
+            Next
+
+            For i = 0 To directories.Count() - 1
+                Dim text = directories(i).Replace(Folder.Template, "").Trim(Path.DirectorySeparatorChar).Replace(Path.DirectorySeparatorChar, $" {Path.DirectorySeparatorChar} ")
+                text += $" {Path.DirectorySeparatorChar} . ."
+                td.AddCommand(text, directories(i))
+            Next
+
+            td.AddButton("Abort", "")
+
+            Dim selection = td.Show()
+
+            If selection = "" Then
+                Return False
+            ElseIf selection = "CURRENT" Then
+                Return True
+            ElseIf selection = "LAST" Then
+                Return OpenProject(g.LastModifiedTemplate)
+            ElseIf selection = "UP" Then
+                Return LoadTemplateWithSelectionDialog(source, templateFolder.Dir())
+            ElseIf selection.DirExists() Then
+                Return LoadTemplateWithSelectionDialog(source, selection)
+            Else
+                Return OpenProject(td.SelectedValue, True)
+            End If
+        End Using
+    End Function
 
     <Command("Adds batch jobs for multiple files.")>
     Sub AddBatchJobs(sourcefiles As String())
@@ -1534,6 +1601,7 @@ Public Class MainForm
     End Sub
 
     Function LoadProject(path As String) As Boolean
+        SetLastModifiedTemplate()
         Refresh()
 
         If Not File.Exists(path) Then
@@ -1601,6 +1669,8 @@ Public Class MainForm
 
     Function OpenProject(path As String, saveCurrent As Boolean) As Boolean
         Try
+            SetLastModifiedTemplate()
+
             If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then Return False
             If String.IsNullOrWhiteSpace(path) OrElse Not File.Exists(path) Then path = g.StartupTemplatePath
 
@@ -1620,6 +1690,8 @@ Public Class MainForm
 
     Function OpenProject(proj As Project, Optional path As String = "") As Boolean
         Try
+            SetLastModifiedTemplate()
+
             If String.IsNullOrWhiteSpace(path) OrElse Not File.Exists(path) Then
                 path = g.StartupTemplatePath
             End If
@@ -1714,6 +1786,12 @@ Public Class MainForm
 
     Sub SetSavedProject()
         g.SavedProject = ObjectHelp.GetCopy(Of Project)(p)
+    End Sub
+
+    Sub SetLastModifiedTemplate()
+        If p.SourceFile <> "" Then Exit Sub
+
+        g.LastModifiedTemplate = ObjectHelp.GetCopy(Of Project)(p)
     End Sub
 
     Sub SetAudioTracks(Optional proj As Project = Nothing)
@@ -2106,14 +2184,27 @@ Public Class MainForm
         Next
     End Sub
 
-    Sub OpenAnyFile(files As IEnumerable(Of String), Optional timeout As Integer = 0)
+    Sub OpenAnyFile(files As IEnumerable(Of String), showTemplateSelection As Boolean, Optional timeout As Integer = 0)
+        If files Is Nothing Then Exit Sub
+        If Not files.Any() Then Exit Sub
+
+        SetLastModifiedTemplate()
+
         files = files.Select(Function(filePath) New FileInfo(filePath.TrimQuotes()).FullName)
 
         If files(0).Ext = "srip" Then
             OpenProject(files(0))
         ElseIf FileTypes.Video.Contains(files(0).Ext.ToLowerInvariant) Then
             files = files.OrderBy(Function(x) FileTypes.Video.Contains(x.Ext)).ThenBy(Function(x) FileTypes.Audio.Contains(x.Ext))
-            OpenVideoSourceFiles(files, timeout)
+            If showTemplateSelection Then
+                If LoadTemplateWithSelectionDialog(files.Join("; ")) Then
+                    OpenVideoSourceFiles(files, timeout)
+                Else
+                    Exit Sub
+                End If
+            Else
+                OpenVideoSourceFiles(files, timeout)
+            End If
         ElseIf FileTypes.Audio.ContainsAny(files.Select(Function(s) s.Ext.ToLowerInvariant)) Then
             Dim audioFiles = files.Where(Function(x) FileTypes.Audio.Contains(x.Ext().ToLowerInvariant())).OrderBy(Function(x) x, New StringLogicalComparer())
             Dim fileIndex = 0
@@ -2130,10 +2221,22 @@ Public Class MainForm
         Else
             files = files.OrderBy(Function(x) FileTypes.Video.Contains(x.Ext)).ThenBy(Function(x) FileTypes.Audio.Contains(x.Ext))
 
-            If files(0).DirExists() Then
-                OpenBlurayFolder(files(0))
+            Dim action = Sub()
+                             If files(0).DirExists() Then
+                                 OpenBlurayFolder(files(0))
+                             Else
+                                 OpenVideoSourceFiles(files, timeout)
+                             End If
+                         End Sub
+
+            If showTemplateSelection Then
+                If LoadTemplateWithSelectionDialog(files.Join("; ")) Then
+                    action()
+                Else
+                    Exit Sub
+                End If
             Else
-                OpenVideoSourceFiles(files, timeout)
+                action()
             End If
         End If
     End Sub
@@ -2195,6 +2298,8 @@ Public Class MainForm
     End Sub
 
     Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isEncoding As Boolean, Optional timeout As Integer = 0)
+        If p.SourceFile = "" Then SetLastModifiedTemplate()
+
         Dim recoverPath = g.ProjectPath
         Dim recoverProjectPath = Path.Combine(Folder.Temp, Guid.NewGuid.ToString + ".bin")
         Dim recoverText = Text
@@ -2237,28 +2342,6 @@ Public Class MainForm
 
             Debug.WriteLine(isEncoding)
             Debug.WriteLine(p.SourceFile)
-
-            If p.SourceFile <> "" AndAlso Not isEncoding Then
-                Dim templates = Directory.GetFiles(Folder.Template, "*.srip")
-
-                Debug.WriteLine(templates.Length)
-
-                If templates.Length = 1 Then
-                    If Not OpenProject(templates(0), saveCurrent) Then
-                        Throw New AbortException
-                    End If
-                Else
-                    If s.ShowTemplateSelection Then
-                        If Not LoadTemplateWithSelectionDialog() Then
-                            Throw New AbortException
-                        End If
-                    Else
-                        If Not OpenProject(Nothing, saveCurrent) Then
-                            Throw New AbortException
-                        End If
-                    End If
-                End If
-            End If
 
             p.SourceFiles = files.ToList()
             p.SourceFile = files(0)
@@ -4021,20 +4104,6 @@ Public Class MainForm
         End Using
     End Sub
 
-    Function LoadTemplateWithSelectionDialog() As Boolean
-        Using td As New TaskDialog(Of String)
-            td.Title = "Please select a template"
-
-            For Each fp In Directory.GetFiles(Folder.Template, "*.srip")
-                td.AddCommand(fp.Base, fp)
-            Next
-
-            If td.Show <> "" Then
-                Return OpenProject(td.SelectedValue, True)
-            End If
-        End Using
-    End Function
-
     <Command("Shows the Event Command dialog.")>
     Sub ShowEventCommandsDialog()
         Using form As New EventCommandsEditor(s.EventCommands)
@@ -4076,10 +4145,6 @@ Public Class MainForm
             b.Field = NameOf(s.AutoSaveProject)
 
             b = ui.AddBool()
-            b.Text = "Show template selection when loading new files"
-            b.Field = NameOf(s.ShowTemplateSelection)
-
-            b = ui.AddBool()
             b.Text = "Reverse mouse wheel video seek direction"
             b.Field = NameOf(s.ReverseVideoScrollDirection)
 
@@ -4092,17 +4157,29 @@ Public Class MainForm
             b.Field = NameOf(s.WriteDebugLog)
 
             Dim mb = ui.AddMenu(Of String)()
-            mb.Text = "Startup Template"
+            mb.Text = "Startup Template:"
             mb.Help = "Template loaded when StaxRip starts."
             mb.Field = NameOf(s.StartupTemplate)
             mb.Expanded = True
-            mb.Add(From i In Directory.GetFiles(Folder.Template) Select i.Base)
+            Dim templates = Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories).OrderBy(Function(x) x.Count(Function(c) c = Path.DirectorySeparatorChar)).ThenBy(Function(x) x)
+            For Each template In templates
+                Dim text = template.Replace(Folder.Template, "").Trim(Path.DirectorySeparatorChar).Replace(Path.DirectorySeparatorChar, " | ")
+                text = text.Substring(0, text.LastIndexOf(".srip"))
+                mb.Add(text)
+            Next
             mb.Button.SaveAction = Sub(value)
                                        If value <> s.StartupTemplate AndAlso p.SourceFile = "" Then
-                                           LoadProject(Path.Combine(Folder.Template, value + ".srip"))
+                                           Dim templatePath = Path.Combine(Folder.Template, value.Replace(" | ", Path.DirectorySeparatorChar) + ".srip")
+                                           If templatePath.FileExists() Then LoadProject(templatePath)
                                        End If
                                        UpdateTemplatesMenuAsync()
                                    End Sub
+            mb.Button.ShowPath = True
+
+            Dim stsm = ui.AddMenu(Of ShowTemplateSelectionMode)()
+            stsm.Text = "Show template selection when loading files"
+            stsm.Field = NameOf(s.ShowTemplateSelection)
+            stsm.Expanded = True
 
             Dim n = ui.AddNum()
             n.Text = "Number of log files to keep"
@@ -6661,8 +6738,10 @@ Public Class MainForm
                 If insideQuote Then
                     sb.Append(commandLine.Chars(i))
                 Else
-                    If Not String.IsNullOrWhiteSpace(sb.ToString()) Then
-                        args.Add(sb.ToString())
+                    Dim str = sb.ToString()
+                    If Not String.IsNullOrWhiteSpace(str) Then
+                        If str.First() = """"c AndAlso str.Last() = """"c Then str = str.Trim(""""c)
+                        args.Add(str)
                     End If
                     sb = New StringBuilder()
                 End If
@@ -6687,13 +6766,16 @@ Public Class MainForm
         End If
 
         Dim files As New List(Of String)
+        Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.CommandLine)) <> 0
+        Dim forcedTemplateLoading = args.Where(Function(s) s.ToLowerInvariant().StartsWith("-" & NameOf(LoadTemplate).ToLowerInvariant())).Any()
 
         For Each arg In args.Skip(1)
             Try
                 If Not arg.FileExists() AndAlso files.Count > 0 Then
                     Dim files2 As New List(Of String)(files)
                     Refresh()
-                    OpenAnyFile(files2)
+                    If Not showTemplateSelection AndAlso Not forcedTemplateLoading Then OpenProject(g.LastModifiedTemplate)
+                    OpenAnyFile(files2, showTemplateSelection AndAlso Not forcedTemplateLoading)
                     files.Clear()
                 End If
 
@@ -6711,7 +6793,8 @@ Public Class MainForm
 
         If files.Count > 0 Then
             Refresh()
-            OpenAnyFile(files)
+            If Not showTemplateSelection AndAlso Not forcedTemplateLoading Then OpenProject(g.LastModifiedTemplate)
+            OpenAnyFile(files, showTemplateSelection AndAlso Not forcedTemplateLoading)
         End If
     End Sub
 
@@ -6749,36 +6832,61 @@ Public Class MainForm
 
     <Command("Dialog to open a single file source.")>
     Sub ShowOpenSourceSingleFileDialog()
+        SetLastModifiedTemplate()
+        If p.SourceFile <> "" AndAlso IsSaveCanceled() Then Exit Sub
+
         Using dialog As New OpenFileDialog
             dialog.SetFilter(FileTypes.Video.Concat(FileTypes.Image))
             dialog.SetInitDir(s.LastSourceDir)
 
             If dialog.ShowDialog() = DialogResult.OK Then
-                OpenVideoSourceFiles(dialog.FileNames)
+                Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
+
+                If showTemplateSelection Then
+                    If LoadTemplateWithSelectionDialog(dialog.FileNames.Join("; ")) Then
+                        OpenVideoSourceFiles(dialog.FileNames)
+                    Else
+                        Exit Sub
+                    End If
+                Else
+                    OpenProject(g.LastModifiedTemplate)
+                    OpenVideoSourceFiles(dialog.FileNames)
+                End If
             End If
         End Using
     End Sub
 
     <Command("Dialog to open multiple file sources.")>
     Sub ShowOpenSourceMultipleFilesDialog()
+        SetLastModifiedTemplate()
+        If p.SourceFile <> "" AndAlso IsSaveCanceled() Then Exit Sub
+
         Using dialog As New OpenFileDialog
             dialog.SetFilter(FileTypes.Video)
             dialog.SetInitDir(s.LastSourceDir)
             dialog.Multiselect = True
 
             If dialog.ShowDialog() = DialogResult.OK Then
-                OpenVideoSourceFiles(dialog.FileNames)
+                Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
+
+                If showTemplateSelection Then
+                    If LoadTemplateWithSelectionDialog(dialog.FileNames.Join("; ")) Then
+                        OpenVideoSourceFiles(dialog.FileNames)
+                    Else
+                        Exit Sub
+                    End If
+                Else
+                    OpenProject(g.LastModifiedTemplate)
+                    OpenVideoSourceFiles(dialog.FileNames)
+                End If
             End If
         End Using
     End Sub
 
     <Command("Dialog to open a Blu-ray folder source.")>
     Sub ShowOpenSourceBlurayFolderDialog()
-        If p.SourceFile <> "" Then
-            If Not OpenProject() Then
-                Exit Sub
-            End If
-        End If
+        SetLastModifiedTemplate()
+        If p.SourceFile <> "" AndAlso IsSaveCanceled() Then Exit Sub
 
         Using dialog As New FolderBrowserDialog
             dialog.Description = "Please select a Blu-ray source folder."
@@ -6787,14 +6895,29 @@ Public Class MainForm
 
             If dialog.ShowDialog = DialogResult.OK Then
                 s.Storage.SetString("last blu-ray source folder", dialog.SelectedPath)
+
                 Dim srcPath = dialog.SelectedPath.FixDir
-                OpenBlurayFolder(srcPath)
+                Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
+
+                If showTemplateSelection Then
+                    If LoadTemplateWithSelectionDialog(srcPath) Then
+                        OpenBlurayFolder(srcPath)
+                    Else
+                        Exit Sub
+                    End If
+                Else
+                    OpenProject(g.LastModifiedTemplate)
+                    OpenBlurayFolder(srcPath)
+                End If
             End If
         End Using
     End Sub
 
     <Command("Dialog to open a merged files source.")>
     Sub ShowOpenSourceMergeFilesDialog()
+        SetLastModifiedTemplate()
+        If p.SourceFile <> "" AndAlso IsSaveCanceled() Then Exit Sub
+
         Using form As New SourceFilesForm()
             form.Text = $"Merge - {g.DefaultCommands.GetApplicationDetails()}"
             form.IsMerge = True
@@ -6830,7 +6953,18 @@ Public Class MainForm
                                 Log.Write("Error merged output file is missing", outFile)
                                 Exit Sub
                             Else
-                                OpenVideoSourceFile(outFile)
+                                Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
+
+                                If showTemplateSelection Then
+                                    If LoadTemplateWithSelectionDialog(outFile) Then
+                                        OpenVideoSourceFile(outFile)
+                                    Else
+                                        Exit Sub
+                                    End If
+                                Else
+                                    OpenProject(g.LastModifiedTemplate)
+                                    OpenVideoSourceFile(outFile)
+                                End If
                             End If
                         End Using
                 End Select
@@ -6840,9 +6974,9 @@ Public Class MainForm
 
     <Command("Dialog to open a file batch source.")>
     Sub ShowOpenSourceBatchFilesDialog()
-        If AbortDueToLowDiskSpace() Then
-            Exit Sub
-        End If
+        SetLastModifiedTemplate()
+        If p.SourceFile <> "" AndAlso IsSaveCanceled() Then Exit Sub
+        If AbortDueToLowDiskSpace() Then Exit Sub
 
         Using form As New SourceFilesForm()
             form.Text = $"File Batch - {g.DefaultCommands.GetApplicationDetails()}"
@@ -6852,13 +6986,23 @@ Public Class MainForm
             End If
 
             If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
-                If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then
-                    Exit Sub
-                End If
+                Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
 
-                For Each filepath In form.GetFiles
-                    AddBatchJob(filepath)
-                Next
+                If showTemplateSelection Then
+                    If LoadTemplateWithSelectionDialog(form.GetFiles().Join("; ")) Then
+                        For Each filepath In form.GetFiles()
+                            AddBatchJob(filepath)
+                        Next
+                    Else
+                        Exit Sub
+                    End If
+                Else
+                    OpenProject(g.LastModifiedTemplate)
+
+                    For Each filepath In form.GetFiles
+                        AddBatchJob(filepath)
+                    Next
+                End If
 
                 ShowJobsDialog()
             End If
@@ -6991,6 +7135,8 @@ Public Class MainForm
     End Sub
 
     Sub tbSource_DoubleClick() Handles tbSourceFile.DoubleClick
+        SetLastModifiedTemplate()
+
         Using dialog As New OpenFileDialog
             dialog.SetFilter(FileTypes.Video)
             dialog.Multiselect = True
@@ -6999,9 +7145,16 @@ Public Class MainForm
             If dialog.ShowDialog() = DialogResult.OK Then
                 Refresh()
 
-                Dim l As New List(Of String)(dialog.FileNames)
-                l.Sort()
-                OpenVideoSourceFiles(l)
+                Dim files = dialog.FileNames
+                files.Sort()
+
+                If Not files.NothingOrEmpty Then
+                    Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
+
+                    If p.SourceFile <> "" AndAlso IsSaveCanceled() Then Exit Sub
+                    If Not showTemplateSelection Then OpenProject(g.LastModifiedTemplate)
+                    BeginInvoke(Sub() OpenAnyFile(files.ToList, showTemplateSelection))
+                End If
             End If
         End Using
     End Sub
@@ -7538,11 +7691,16 @@ Public Class MainForm
 
     Protected Overrides Sub OnDragDrop(e As DragEventArgs)
         MyBase.OnDragDrop(e)
+        SetLastModifiedTemplate()
 
         Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
 
         If Not files.NothingOrEmpty Then
-            BeginInvoke(Sub() OpenAnyFile(files.ToList))
+            Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.DragDrop)) <> 0
+
+            If p.SourceFile <> "" AndAlso IsSaveCanceled() Then Exit Sub
+            If Not showTemplateSelection Then OpenProject(g.LastModifiedTemplate)
+            BeginInvoke(Sub() OpenAnyFile(files.ToList, showTemplateSelection))
         End If
     End Sub
 

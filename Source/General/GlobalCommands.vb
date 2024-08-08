@@ -510,9 +510,23 @@ Public Class GlobalCommands
         g.MainForm.OpenVideoSourceFile(path)
     End Sub
 
+    <Command("Loads a source file after asking for template that shall be used.")>
+    Sub LoadSourceFileWithTemplateSelection(<DispName("Source File Path")> path As String)
+        If g.MainForm.LoadTemplateWithSelectionDialog(path) Then
+            g.MainForm.OpenVideoSourceFile(path)
+        End If
+    End Sub
+
     <Command("Loads multiple source files.")>
     Sub LoadSourceFiles(<DispName("Source File Paths")> paths As String)
         g.MainForm.OpenVideoSourceFiles(paths.Split({";"}, StringSplitOptions.RemoveEmptyEntries))
+    End Sub
+
+    <Command("Loads multiple source files after asking for template that shall be used.")>
+    Sub LoadSourceFilesWithTemplateSelection(<DispName("Source File Paths")> paths As String)
+        If g.MainForm.LoadTemplateWithSelectionDialog(paths) Then
+            g.MainForm.OpenVideoSourceFiles(paths.Split({";"}, StringSplitOptions.RemoveEmptyEntries))
+        End If
     End Sub
 
     <Command("Shows an Open File dialog to open a file to be shown by the console tool mkvinfo.")>

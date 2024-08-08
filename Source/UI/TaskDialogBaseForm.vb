@@ -126,7 +126,7 @@ Public Class TaskDialogBaseForm
         ReadOnly Property TitleFont As Font
             Get
                 If _TitleFont Is Nothing Then
-                    _TitleFont = New Font(Font.FontFamily, 11)
+                    _TitleFont = New Font(Font.FontFamily, 10, FontStyle.Regular)
                 End If
 
                 Return _TitleFont
@@ -135,7 +135,7 @@ Public Class TaskDialogBaseForm
 
         Sub New()
             If Not DesignHelp.IsDesignMode Then
-                MinimumSize = New Size(20, 20)
+                MinimumSize = New Size(20, 15)
                 UseCompatibleTextRendering = False
                 UseVisualStyleBackColor = False
                 FlatStyle = FlatStyle.Flat

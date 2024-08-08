@@ -1973,6 +1973,17 @@ Public Enum AutoCropDolbyVisionMode
     <DispName("Manual Threshold")> ManualThreshold = 1
 End Enum
 
+Public Enum ShowTemplateSelectionMode
+    <DispName("Never")> Never = 0
+    <DispName("Command Line only")> CommandLine = 1 << 0
+    <DispName("Command Line + Drag&&Drop")> CommandLine_DragDrop = 3
+    <DispName("Command Line + Opening Menu")> CommandLine_OpeningMenu = 5
+    <DispName("Drag&&Drop only")> DragDrop = 1 << 1
+    <DispName("Drag&&Drop + Opening Menu")> DragDrop_OpeningMenu = 6
+    <DispName("Opening Menu only")> OpeningMenu = 1 << 2
+    <DispName("Always")> Always = 1 << 16
+End Enum
+
 Public Enum TimestampsMode
     Never
     <DispName("VFR only")> VfrOnly

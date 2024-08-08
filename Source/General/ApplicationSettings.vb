@@ -85,7 +85,7 @@ Public Class ApplicationSettings
     Public ShowChangelog As String = ""
     Public ShowPathsInCommandLine As Boolean
     Public ShowPreviewInfo As Boolean = True
-    Public ShowTemplateSelection As Boolean
+    Public ShowTemplateSelection As ShowTemplateSelectionMode = ShowTemplateSelectionMode.CommandLine_DragDrop
     Public ShowWindows7Warning As Boolean = True
     Public ShutdownForce As Boolean
     Public ShutdownTimeout As Integer = 90

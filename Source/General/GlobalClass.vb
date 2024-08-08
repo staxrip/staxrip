@@ -26,6 +26,7 @@ Public Class GlobalClass
     Shared Property MAX_PATH As Integer = 260
     Property MinimizedWindows As Boolean
     Property ProcForm As ProcessingForm
+    Property LastModifiedTemplate As New Project
     Property ProjectPath As String
     Property SavedProject As New Project
     Property StopAfterCurrentJob As Boolean
@@ -531,7 +532,7 @@ Public Class GlobalClass
 
     ReadOnly Property StartupTemplatePath As String
         Get
-            Dim ret = Path.Combine(Folder.Template, s.StartupTemplate + ".srip")
+            Dim ret = Path.Combine(Folder.Template, s.StartupTemplate.Replace(" | ", Path.DirectorySeparatorChar) + ".srip")
 
             If Not File.Exists(ret) Then
                 ret = Path.Combine(Folder.Template, "Automatic Workflow.srip")

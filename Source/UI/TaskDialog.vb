@@ -40,7 +40,7 @@ Public Class TaskDialog(Of T)
 
     Sub Init()
         ShowInTaskbar = False
-        Width = FontHeight * 34
+        Width = FontHeight * 35
 
         Content = If(Content = "", " ", Content)
         Title = If(Title = "", " ", Title)
@@ -63,7 +63,7 @@ Public Class TaskDialog(Of T)
         End If
 
         If Content?.Length > 1000 OrElse ExpandedContent?.Length > 1000 Then
-            Width = FontHeight * 45
+            Width = FontHeight * 46
         End If
 
         ShowIcon = False

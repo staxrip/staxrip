@@ -1089,7 +1089,7 @@ Public Class MuxerForm
         Dim selectedSubtitles = dgvSubtitles.SelectedRows.Count > 0
         Dim subtitlePath = If(selectedSubtitles AndAlso dgvSubtitles.CurrentRow.Index < SubtitleItems.Count, SubtitleItems(dgvSubtitles.CurrentRow.Index).Subtitle.Path, "")
         bnSubtitleBDSup2SubPP.Enabled = selectedSubtitles AndAlso {"idx", "sup"}.Contains(subtitlePath.Ext)
-        bnSubtitleEdit.Enabled = bnSubtitleBDSup2SubPP.Enabled
+        bnSubtitleEdit.Enabled = selectedSubtitles
         bnSubtitlePlay.Enabled = p.SourceFile <> "" AndAlso selectedSubtitles
         bnSubtitleUp.Enabled = dgvSubtitles.CanMoveUp
         bnSubtitleDown.Enabled = dgvSubtitles.CanMoveDown

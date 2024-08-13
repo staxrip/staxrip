@@ -300,14 +300,20 @@ Public MustInherit Class AudioProfile
         Return TypeOf Me Is MuxAudioProfile
     End Function
 
+    Overridable Function HandlesDelay() As Boolean
+    End Function
+
+    Overridable ReadOnly Property NeedConvert As Boolean
+        Get
+            Return False
+        End Get
+    End Property
+
     Overridable Sub Encode()
     End Sub
 
     Overridable Sub EditProject()
     End Sub
-
-    Overridable Function HandlesDelay() As Boolean
-    End Function
 
     Function GetTrackIndex() As Integer
         If Not p.AudioTracks.NothingOrEmpty() Then
@@ -1610,10 +1616,18 @@ Public Class GUIAudioProfile
     End Property
 
     Overrides Function HandlesDelay() As Boolean
-        If {GuiAudioEncoder.deezy, GuiAudioEncoder.eac3to, GuiAudioEncoder.qaac}.Contains(GetEncoder()) Then
-            Return True
-        End If
+        Return {GuiAudioEncoder.deezy, GuiAudioEncoder.eac3to, GuiAudioEncoder.qaac}.Contains(GetEncoder())
     End Function
+
+    Public Overrides ReadOnly Property NeedConvert As Boolean
+        Get
+            Dim enc = GetEncoder()
+
+            If Not IsInputSupported() Then Return True
+            If enc = GuiAudioEncoder.opusenc AndAlso (Params.Normalize OrElse Gain <> 0) Then Return True
+            Return False
+        End Get
+    End Property
 
     Function GetSupportedInput(gap As GuiAudioEncoder) As String()
         Select Case gap

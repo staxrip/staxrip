@@ -61,7 +61,7 @@ Public Class Audio
 
         Cut(ap)
 
-        If TypeOf ap IsNot MuxAudioProfile AndAlso Not ap.IsInputSupported Then
+        If TypeOf ap IsNot MuxAudioProfile AndAlso ap.NeedConvert Then
             Convert(ap)
         End If
     End Sub
@@ -97,9 +97,7 @@ Public Class Audio
     End Function
 
     Shared Sub Convert(ap As AudioProfile)
-        If ap.File.Ext = ap.ConvertExt Then
-            Exit Sub
-        End If
+        If ap.File.Ext = ap.ConvertExt Then Exit Sub
 
         If ap.File.Ext = "avs" Then
             Dim outPath = ap.File.DirAndBase + "." + ap.ConvertExt

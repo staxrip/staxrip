@@ -35,6 +35,7 @@ v2.42.0 (not published yet)
 - UI: Add new macros ([#1431](/../../issues/1431))
     - %hdr10plus_path%, %hdrdv_path%
 - UI: Enable the "Subtitle Edit" button on muxer configuration for all subtitles
+- UI: Fix Audio conversion ignoring Normalize and Gain in some cases
 - Crop: Make AutoCrop process skippable ([#1411](/../../issues/1411))
 - Crop: Add Frame Interval Selection Mode
 - Crop: Add Frame Consideration Mode to Options ([#1386](/../../issues/1386))

@@ -1125,12 +1125,14 @@ Public Class GUIAudioProfile
                         sb.Append(" -down6")
                     End If
                 Case 2
-                    If Params.eac3toStereoDownmixMode = 0 Then
-                        If Params.ChannelsMode <> ChannelsMode.Original Then
-                            sb.Append(" -downStereo")
+                    If Not Params.CenterOptimizedStereo AndAlso ((Params.Codec <> AudioCodec.Opus AndAlso Params.ChannelsMode = ChannelsMode._2) OrElse (Params.Codec = AudioCodec.Opus AndAlso Params.OpusencDownmix = OpusDownmix.Stereo)) Then
+                        If Params.eac3toStereoDownmixMode = 0 Then
+                            If Params.ChannelsMode <> ChannelsMode.Original Then
+                                sb.Append(" -downStereo")
+                            End If
+                        Else
+                            sb.Append(" -downDpl")
                         End If
-                    Else
-                        sb.Append(" -downDpl")
                     End If
             End Select
 
@@ -1243,7 +1245,9 @@ Public Class GUIAudioProfile
             Case OpusDownmix.Mono
                 sb.Append(" --downmix-mono")
             Case OpusDownmix.Stereo
-                sb.Append(" --downmix-stereo")
+                If Not Params.CenterOptimizedStereo AndAlso ((Params.Codec <> AudioCodec.Opus AndAlso Params.ChannelsMode = ChannelsMode._2) OrElse (Params.Codec = AudioCodec.Opus AndAlso Params.OpusencDownmix = OpusDownmix.Stereo)) Then
+                    sb.Append(" --downmix-stereo")
+                End If
         End Select
 
         If Not Params.OpusencPhaseinversion Then
@@ -1356,8 +1360,12 @@ Public Class GUIAudioProfile
             sb.Append(" -map 0:a:" & Stream.Index)
         End If
 
-        If Params.ChannelsMode <> ChannelsMode.Original Then
-            sb.Append(" -ac " & Channels)
+        If Params.ChannelsMode <> ChannelsMode.Original OrElse Params.Codec = AudioCodec.Opus Then
+            If Params.CenterOptimizedStereo AndAlso ((Params.Codec <> AudioCodec.Opus AndAlso Params.ChannelsMode = ChannelsMode._2) OrElse (Params.Codec = AudioCodec.Opus AndAlso Params.OpusencDownmix = OpusDownmix.Stereo)) Then
+                sb.Append(" -af pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5")
+            Else
+                sb.Append(" -ac " & Channels)
+            End If
         End If
 
         If Params.Normalize Then
@@ -1521,7 +1529,11 @@ Public Class GUIAudioProfile
         End If
 
         If Params.ChannelsMode <> ChannelsMode.Original OrElse Params.Codec = AudioCodec.Opus Then
-            sb.Append(" -ac " & Channels)
+            If Params.CenterOptimizedStereo AndAlso ((Params.Codec <> AudioCodec.Opus AndAlso Params.ChannelsMode = ChannelsMode._2) OrElse (Params.Codec = AudioCodec.Opus AndAlso Params.OpusencDownmix = OpusDownmix.Stereo)) Then
+                sb.Append(" -af pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5")
+            Else
+                sb.Append(" -ac " & Channels)
+            End If
         End If
 
         If Params.SamplingRate <> 0 Then
@@ -1668,6 +1680,7 @@ Public Class GUIAudioProfile
         Property Encoder As GuiAudioEncoder
         Property FrameRateMode As AudioFrameRateMode
         Property Normalize As Boolean = True
+        Property CenterOptimizedStereo As Boolean = False
         Property ProbeSize As Integer = 5
         Property Quality As Single = 0.3
         Property RateMode As AudioRateMode

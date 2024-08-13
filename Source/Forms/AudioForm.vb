@@ -56,6 +56,7 @@ Public Class AudioForm
     Friend WithEvents tlpAdvanced As TableLayoutPanel
     Friend WithEvents bnAdvanced As ButtonEx
     Friend WithEvents cbNormalize As CheckBoxEx
+    Friend WithEvents cbCenterOptimizedStereo As CheckBoxEx
     Friend WithEvents cbCommentaryTrack As CheckBoxEx
     Private components As System.ComponentModel.IContainer
 
@@ -90,6 +91,7 @@ Public Class AudioForm
         Me.Label4 = New LabelEx()
         Me.numGain = New StaxRip.UI.NumEdit()
         Me.cbNormalize = New StaxRip.UI.CheckBoxEx()
+        Me.cbCenterOptimizedStereo = New StaxRip.UI.CheckBoxEx()
         Me.cbCommentaryTrack = New StaxRip.UI.CheckBoxEx()
         Me.numDelay = New StaxRip.UI.NumEdit()
         Me.lDelay = New LabelEx()
@@ -156,9 +158,10 @@ Public Class AudioForm
         Me.tlpBasic.Controls.Add(Me.laCustom, 0, 9)
         Me.tlpBasic.Controls.Add(Me.tbCustom, 1, 9)
         Me.tlpBasic.Controls.Add(Me.cbNormalize, 0, 10)
-        Me.tlpBasic.Controls.Add(Me.cbDefaultTrack, 0, 11)
-        Me.tlpBasic.Controls.Add(Me.cbForcedTrack, 0, 12)
-        Me.tlpBasic.Controls.Add(Me.cbCommentaryTrack, 0, 13)
+        Me.tlpBasic.Controls.Add(Me.cbCenterOptimizedStereo, 0, 11)
+        Me.tlpBasic.Controls.Add(Me.cbDefaultTrack, 0, 12)
+        Me.tlpBasic.Controls.Add(Me.cbForcedTrack, 0, 13)
+        Me.tlpBasic.Controls.Add(Me.cbCommentaryTrack, 0, 14)
         Me.tlpBasic.Controls.Add(Me.laDecoder, 0, 1)
         Me.tlpBasic.Controls.Add(Me.mbDecoder, 1, 1)
         Me.tlpBasic.Controls.Add(Me.lQualiy, 2, 1)
@@ -171,7 +174,8 @@ Public Class AudioForm
         Me.tlpBasic.Location = New System.Drawing.Point(5, 53)
         Me.tlpBasic.Margin = New System.Windows.Forms.Padding(5)
         Me.tlpBasic.Name = "tlpBasic"
-        Me.tlpBasic.RowCount = 14
+        Me.tlpBasic.RowCount = 15
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
@@ -377,7 +381,7 @@ Public Class AudioForm
         '
         Me.cbDefaultTrack.AutoSize = True
         Me.tlpBasic.SetColumnSpan(Me.cbDefaultTrack, 4)
-        Me.cbDefaultTrack.Location = New System.Drawing.Point(15, 736)
+        Me.cbDefaultTrack.Location = New System.Drawing.Point(15, 796)
         Me.cbDefaultTrack.Margin = New System.Windows.Forms.Padding(15, 1, 3, 1)
         Me.cbDefaultTrack.Size = New System.Drawing.Size(272, 52)
         Me.cbDefaultTrack.Text = "Default Track"
@@ -386,7 +390,7 @@ Public Class AudioForm
         '
         Me.cbForcedTrack.AutoSize = True
         Me.tlpBasic.SetColumnSpan(Me.cbForcedTrack, 4)
-        Me.cbForcedTrack.Location = New System.Drawing.Point(15, 794)
+        Me.cbForcedTrack.Location = New System.Drawing.Point(15, 852)
         Me.cbForcedTrack.Margin = New System.Windows.Forms.Padding(15, 1, 3, 1)
         Me.cbForcedTrack.Size = New System.Drawing.Size(267, 52)
         Me.cbForcedTrack.Text = "Forced Track"
@@ -395,7 +399,7 @@ Public Class AudioForm
         '
         Me.cbCommentaryTrack.AutoSize = True
         Me.tlpBasic.SetColumnSpan(Me.cbCommentaryTrack, 4)
-        Me.cbCommentaryTrack.Location = New System.Drawing.Point(15, 852)
+        Me.cbCommentaryTrack.Location = New System.Drawing.Point(15, 908)
         Me.cbCommentaryTrack.Margin = New System.Windows.Forms.Padding(15, 1, 3, 1)
         Me.cbCommentaryTrack.Size = New System.Drawing.Size(290, 52)
         Me.cbCommentaryTrack.Text = "Commentary Track"
@@ -471,6 +475,15 @@ Public Class AudioForm
         Me.cbNormalize.Margin = New System.Windows.Forms.Padding(15, 3, 3, 1)
         Me.cbNormalize.Size = New System.Drawing.Size(229, 52)
         Me.cbNormalize.Text = "Normalize"
+        '
+        'cbCenterOptimizedStereo
+        '
+        Me.cbCenterOptimizedStereo.AutoSize = True
+        Me.tlpBasic.SetColumnSpan(Me.cbCenterOptimizedStereo, 4)
+        Me.cbCenterOptimizedStereo.Location = New System.Drawing.Point(15, 708)
+        Me.cbCenterOptimizedStereo.Margin = New System.Windows.Forms.Padding(15, 3, 3, 1)
+        Me.cbCenterOptimizedStereo.Size = New System.Drawing.Size(229, 52)
+        Me.cbCenterOptimizedStereo.Text = "Center/Speech optimized Stereo"
         '
         'numDelay
         '
@@ -973,6 +986,7 @@ Public Class AudioForm
         mbChannels.Enabled = Not TempProfile.ExtractCore AndAlso enc <> GuiAudioEncoder.opusenc AndAlso enc <> GuiAudioEncoder.deezy
         mbSamplingRate.Enabled = Not TempProfile.ExtractCore AndAlso enc <> GuiAudioEncoder.opusenc
         cbNormalize.Enabled = Not TempProfile.ExtractCore
+        cbCenterOptimizedStereo.Enabled = Not TempProfile.ExtractCore AndAlso {AudioDecoderMode.ffmpeg, AudioDecoderMode.Automatic}.Contains(TempProfile.Decoder) AndAlso ((Tempprofile.Params.Codec <> AudioCodec.Opus AndAlso Tempprofile.Params.ChannelsMode = ChannelsMode._2) OrElse (Tempprofile.Params.Codec = AudioCodec.Opus AndAlso Tempprofile.Params.OpusencDownmix = OpusDownmix.Stereo)) 
         numGain.Enabled = Not TempProfile.ExtractCore
         numBitrate.Increment = If({AudioCodec.AC3, AudioCodec.EAC3}.Contains(TempProfile.Params.Codec), If(CInt(numBitrate.Value) >= 320, 64, 32), 1D)
         numBitrate.Maximum = If({AudioCodec.AC3, AudioCodec.EAC3}.Contains(TempProfile.Params.Codec), 1664D, 10000D)
@@ -1113,6 +1127,7 @@ Public Class AudioForm
         cbForcedTrack.Checked = TempProfile.Forced
         cbCommentaryTrack.Checked = TempProfile.Commentary
         cbNormalize.Checked = TempProfile.Params.Normalize
+        cbCenterOptimizedStereo.Checked = TempProfile.Params.CenterOptimizedStereo
 
         mbCodec.Value = TempProfile.Params.Codec
         mbChannels.Value = TempProfile.Params.ChannelsMode
@@ -1722,6 +1737,11 @@ Public Class AudioForm
 
     Sub cbNormalize_CheckedChanged(sender As Object, e As EventArgs) Handles cbNormalize.CheckedChanged
         TempProfile.Params.Normalize = cbNormalize.Checked
+        UpdateControls()
+    End Sub
+
+    Sub cbCenterOptimizedStereo_CheckedChanged(sender As Object, e As EventArgs) Handles cbCenterOptimizedStereo.CheckedChanged
+        TempProfile.Params.CenterOptimizedStereo = cbCenterOptimizedStereo.Checked
         UpdateControls()
     End Sub
 

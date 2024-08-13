@@ -1,6 +1,8 @@
 ﻿
 Imports System.Text
 Imports System.Globalization
+Imports System.Text.RegularExpressions
+Imports System.Runtime.Remoting
 
 Public Class Audio
     Shared Sub Process(ap As AudioProfile)
@@ -319,9 +321,7 @@ Public Class Audio
     End Sub
 
     Shared Sub ConvertFF(ap As AudioProfile)
-        If ap.File.Ext = ap.ConvertExt Then
-            Exit Sub
-        End If
+        If ap.File.Ext = ap.ConvertExt Then Exit Sub
 
         Dim gap = TryCast(ap, GUIAudioProfile)
 
@@ -342,7 +342,7 @@ Public Class Audio
             outPath += "." + ap.ConvertExt
         End If
 
-        Dim args = "-i " + ap.File.Escape
+        Dim args = "-y -hide_banner -i " + ap.File.Escape
 
         If ap.Stream IsNot Nothing Then
             args += " -map 0:" & ap.Stream.StreamOrder
@@ -360,10 +360,26 @@ Public Class Audio
             End If
         End If
 
-        args += " -y -hide_banner -ac " & ap.Channels
+        If gap.Params.CenterOptimizedStereo AndAlso ((gap?.Params.Codec <> AudioCodec.Opus AndAlso gap?.Params.ChannelsMode = ChannelsMode._2) OrElse (gap?.Params.Codec = AudioCodec.Opus AndAlso gap?.Params.OpusencDownmix = OpusDownmix.Stereo)) Then
+            args += " -af pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5"
+        Else
+            args += " -ac " & ap.Channels
+        End If
 
         If ap.ConvertExt.EqualsAny("wav", "w64") Then
             args += " -c:a pcm_s24le"
+        End If
+
+        Dim matches = Regex.Matches(args, " -af ([^ ]+)")
+        If matches.Count > 1 Then
+            Dim concated = ""
+            For i = matches.Count - 1 To 0 Step -1
+                Dim match = matches(i)
+                concated = $"{match.Groups(1)},{concated}"
+                args = args.Remove(match.Index, match.Length)
+            Next
+            concated = " -af " + concated.Trim(","c)
+            args = args.Insert(matches(0).Index, concated)
         End If
 
         args += " " + outPath.Escape

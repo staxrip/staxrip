@@ -3369,7 +3369,7 @@ Public Class MainForm
                 End If
             End If
 
-            If p.Script.IsFilterActive("Cutting") AndAlso p.Ranges?.Any() AndAlso p.HdrDolbyVisionMetadataFile IsNot Nothing Then
+            If p.Script.IsFilterActive("Cutting") AndAlso p.Ranges?.Any() AndAlso p.VideoEncoder.DolbyVisionMetadataPath IsNot Nothing Then
                 If ProcessTip($"Cutting is currently not supported for Dolby Vision encodes.{BR}Please turn the 'Cutting' filter off to get a valid Dolby Vision result.") Then
                     CanIgnoreTip = False
                     Return Warn("Cutting not allowed")

@@ -3,17 +3,8 @@
 
     Private Shared _current As Theme
     Private Shared _themes As List(Of Theme)
-    Private Shared ReadOnly _lumaCategories() As KeyValuePair(Of String, Single) = {
-        New KeyValuePair(Of String, Single)("Black", 0.01),
-        New KeyValuePair(Of String, Single)("Darker", 0.06),
-        New KeyValuePair(Of String, Single)("Dark", 0.11),
-        New KeyValuePair(Of String, Single)("Not So Dark", 0.16),
-        New KeyValuePair(Of String, Single)("Almost Dark", 0.21),
-        New KeyValuePair(Of String, Single)("Dark Gray", 0.26),
-        New KeyValuePair(Of String, Single)("Gray", 0.33),
-        New KeyValuePair(Of String, Single)("Light Gray", 0.41)
-    }
-    Private Shared ReadOnly _colorCategories() As Tuple(Of String, Integer, Integer) = {
+
+    Public Shared ReadOnly Property ColorCategories As Tuple(Of String, Integer, Integer)() = {
         New Tuple(Of String, Integer, Integer)("Red", 358, -1),
         New Tuple(Of String, Integer, Integer)("Orange", 25, 355),
         New Tuple(Of String, Integer, Integer)("Yellow", 48, 355),
@@ -35,6 +26,17 @@
         New Tuple(Of String, Integer, Integer)("Rose", 340, -1)
     }
 
+    Public Shared ReadOnly Property LumaCategories As KeyValuePair(Of String, Single)() = {
+        New KeyValuePair(Of String, Single)("Black", 0.01),
+        New KeyValuePair(Of String, Single)("Almost Black", 0.04),
+        New KeyValuePair(Of String, Single)("Darker", 0.065),
+        New KeyValuePair(Of String, Single)("Dark", 0.09),
+        New KeyValuePair(Of String, Single)("Not So Dark", 0.11),
+        New KeyValuePair(Of String, Single)("Almost Dark", 0.16),
+        New KeyValuePair(Of String, Single)("Dark Gray", 0.21),
+        New KeyValuePair(Of String, Single)("Gray", 0.26),
+        New KeyValuePair(Of String, Single)("Light Gray", 0.33)
+    }
 
     Public Shared ReadOnly Property CurrentTheme As Theme
         Get
@@ -64,30 +66,19 @@
         End Get
     End Property
 
-    Public Shared ReadOnly Property ColorCategories As Tuple(Of String, Integer, Integer)()
-        Get
-            Return _colorCategories
-        End Get
-    End Property
-
-    Public Shared ReadOnly Property LumaCategories As KeyValuePair(Of String, Single)()
-        Get
-            Return _lumaCategories
-        End Get
-    End Property
-
 
     <CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification:="<Pending>")>
     Private Sub ThemeManager()
     End Sub
+
 
     Private Shared Function LoadDefaults() As List(Of Theme)
         Dim defaults = New List(Of Theme) From {
             New Theme("System Colors")
         }
 
-        For Each lc In _lumaCategories
-            For Each cc In _colorCategories
+        For Each lc In LumaCategories
+            For Each cc In ColorCategories
                 defaults.Add(New DarkTheme($"{lc.Key} | {cc.Item1}", cc.Item2, cc.Item3, lc.Value))
             Next
         Next
@@ -131,7 +122,7 @@
         Private ReadOnly _backLuma As Single = 0
         Private ReadOnly _backLumaDefault As Single = 0.11
         Private ReadOnly _accentSat As Single = 0
-        Private ReadOnly _accentSatDefault As Single = 0.63
+        Private ReadOnly _accentSatDefault As Single = 0.67
 
         Public Sub New(name As String, Optional hue As Integer = 200, Optional highlightHue As Integer = -1, Optional backLuma As Single = 0.11)
             MyBase.New(name)
@@ -206,6 +197,7 @@
                         .CheckmarkColor = _controlBackColor,
                         .ForeColor = _foreColor,
                         .ForeCheckedColor = .ForeColor.AddLuminance(0.1F),
+                        .ForeDisabledColor = .ForeColor.AddLuminance(-0.2F),
                         .ForeHighlightColor = _controlForeHighlightColor.AddLuminance(0.15)
                     },
                     .ComboBox = New ControlsThemeColors.ComboBoxThemeColors() With {

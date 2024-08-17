@@ -127,7 +127,7 @@ Public Class AudioForm
         Me.gbBasic.Margin = New System.Windows.Forms.Padding(15, 14, 7, 14)
         Me.gbBasic.Name = "gbBasic"
         Me.gbBasic.Padding = New System.Windows.Forms.Padding(5)
-        Me.gbBasic.Size = New System.Drawing.Size(911, 1018)
+        Me.gbBasic.Size = New System.Drawing.Size(1050, 1150)
         Me.gbBasic.TabIndex = 1
         Me.gbBasic.TabStop = False
         Me.gbBasic.Text = "Basic"
@@ -516,7 +516,7 @@ Public Class AudioForm
         Me.gbAdvanced.Margin = New System.Windows.Forms.Padding(7, 14, 15, 14)
         Me.gbAdvanced.Name = "gbAdvanced"
         Me.gbAdvanced.Padding = New System.Windows.Forms.Padding(5)
-        Me.gbAdvanced.Size = New System.Drawing.Size(911, 1018)
+        Me.gbAdvanced.Size = New System.Drawing.Size(1000, 1150)
         Me.gbAdvanced.TabIndex = 3
         Me.gbAdvanced.TabStop = False
         Me.gbAdvanced.Text = "Advanced"

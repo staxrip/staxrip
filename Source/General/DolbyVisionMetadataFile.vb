@@ -227,7 +227,7 @@ Public Class DolbyVisionMetadataFile
 
         Try
             Dim pd = Path.Dir
-            Dim l5 = Level5JsonFilePath.Replace(pd, "." & IO.Path.DirectorySeparatorChar)
+            Dim l5 = Level5JsonFilePath.Replace(pd, ".")
             Dim arguments = $"export --data ""level5={l5}"" -i ""{Path}"""
             Using proc As New Proc
                 proc.Package = Package.DoViTool

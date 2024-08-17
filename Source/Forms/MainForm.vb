@@ -1020,7 +1020,7 @@ Public Class MainForm
         Icon = g.Icon
 
         InitializeComponent()
-        RestoreClientSize(44, 39)
+        RestoreClientSize(50, 39)
         SetStyle(ControlStyles.SupportsTransparentBackColor, True)
         g.DPI = DeviceDpi
 

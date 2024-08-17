@@ -484,6 +484,7 @@ Public Class Theme
             Public Property CheckedBackColor As ColorHSL = SystemColors.Control
             Public Property ForeColor As ColorHSL = SystemColors.ControlText
             Public Property ForeCheckedColor As ColorHSL = ForeColor
+            Public Property ForeDisabledColor As ColorHSL = ForeColor
             Public Property ForeHighlightColor As ColorHSL = ForeColor
         End Class
 

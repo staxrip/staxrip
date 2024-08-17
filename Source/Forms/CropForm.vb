@@ -493,7 +493,7 @@ Public Class CropForm
         Dim cropw = p.SourceWidth - p.CropLeft - p.CropRight
         Dim croph = p.SourceHeight - p.CropTop - p.CropBottom
 
-        Dim time = ""
+        Dim time = "n/a"
         If Renderer.Info.FrameRate > 0 Then
             Dim lengthDate = Date.Today.AddSeconds(Renderer.Position / Renderer.Info.FrameRate)
             time = lengthDate.ToString(If(lengthDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff"))

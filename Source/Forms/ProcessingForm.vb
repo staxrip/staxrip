@@ -367,12 +367,14 @@ Public Class ProcessingForm
 
     Sub Abort()
         If MsgOK("Abort processing?") Then
+            Log.Save()
             ProcController.Abort()
         End If
     End Sub
 
     Sub Skip()
         If MsgOK("Skip current process?") Then
+            Log.Save()
             ProcController.Skip()
         End If
     End Sub

@@ -366,6 +366,7 @@ Public Class GlobalClass
                 Else
                     actions.Add(Sub()
                                     If p.VideoEncoder.BeforeEncoding() Then
+                                        Log.Save()
                                         p.VideoEncoder.Encode()
                                     End If
                                 End Sub)
@@ -1242,17 +1243,15 @@ Public Class GlobalClass
     Sub ArchiveLogFile(path As String)
         Try
             Dim logFolder = IO.Path.Combine(Folder.Settings, "Log Files")
-
-            If Not Directory.Exists(logFolder) Then
-                Directory.CreateDirectory(logFolder)
-            End If
+            Dim di = If(Directory.Exists(logFolder), Nothing, Directory.CreateDirectory(logFolder))
 
             FileHelp.Copy(path, IO.Path.Combine(logFolder, Date.Now.ToString("yyyy-MM-dd - HH.mm.ss") + " - " + path.FileName))
-            Dim di As New DirectoryInfo(logFolder)
 
-            While di.GetFiles("*.log").Length > s.LogFileNum
-                FileHelp.Delete(di.GetFiles("*.log").OrderBy(Function(val) val.LastWriteTime).First.FullName)
-            End While
+            If di Is Nothing Then
+                di = New DirectoryInfo(logFolder)
+                Dim files = di.GetFiles("*.log").OrderByDescending(Function(x) x.LastWriteTime).Skip(s.LogFileNum).Select(Function(x) x.FullName)
+                FileHelp.Delete(files, RecycleOption.DeletePermanently)
+            End If
         Catch ex As Exception
             ShowException(ex, "Failed to archive log file")
         End Try

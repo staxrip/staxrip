@@ -828,6 +828,7 @@ Namespace UI
             Dim textLocation As New Point(hPos + glyphSize.Width + hPos, If(s.UIFallback, CInt(Height / 2.0F - measuredStringHeight / 2.0F), 1 + Height - (Height - CInt(measuredStringHeight)) \ 3))
             Dim textFlags As TextFormatFlags = TextFormatFlags.SingleLine Or TextFormatFlags.VerticalCenter
             Dim fColor As ColorHSL = If(Checked, _theme.General.Controls.CheckBox.ForeCheckedColor, _theme.General.Controls.CheckBox.ForeColor)
+            fColor = If(Enabled, fColor, _theme.General.Controls.CheckBox.ForeDisabledColor)
 
             CheckBoxRendererEx.DrawCheckBox(pevent.Graphics, glyphLocation, state)
 
@@ -2646,28 +2647,6 @@ Namespace UI
         Private UpControl As New UpDownButton(True)
         Private DownControl As New UpDownButton(False)
         Private TipProvider As TipProvider
-
-        'Private _borderNormalColor As ColorHSL = Color.Empty
-        'Private _borderSelectedColor As ColorHSL = Color.Empty
-
-        'Public Property BorderNormalColor As ColorHSL
-        '    Get
-        '        Return _borderNormalColor
-        '    End Get
-        '    Set(value As ColorHSL)
-        '        _borderNormalColor = value
-        '    End Set
-        'End Property
-
-        'Public Property BorderSelectedColor As ColorHSL
-        '    Get
-        '        Return _borderSelectedColor
-        '    End Get
-        '    Set(value As ColorHSL)
-        '        _borderSelectedColor = value
-        '    End Set
-        'End Property
-
 
         Event ValueChanged(numEdit As NumEdit)
 

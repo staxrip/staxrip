@@ -535,13 +535,13 @@ Public Class NVEnc
             .Switch = "--dolby-vision-profile",
             .Text = "Dolby Vision Profile",
             .Options = {"Undefined", "5", "8.1", "8.2", "8.4"},
-            .VisibleFunc = Function() Codec.ValueText = "h265"}
+            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
 
         Property DolbyVisionRpu As New StringParam With {
             .Switch = "--dolby-vision-rpu",
             .Text = "Dolby Vision RPU",
             .BrowseFile = True,
-            .VisibleFunc = Function() Codec.ValueText = "h265"}
+            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
 
         Property MaxCLL As New NumParam With {
             .Switch = "--max-cll",

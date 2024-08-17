@@ -45,6 +45,7 @@ v2.42.0 (not published yet)
 - MP4Box: Add "Streaming" command line menu preset ([#1408](/../../issues/1408))
 - NVEncC: Add options "RGB" and "YUVA420" to parameter "--output-csp"
 - NVEncC: Fix incompatible output file type for AV1 encodes
+- NVEncC: Make Dolby Vision related parameters available for AV1
 - Qaac: Add "--no-delay" parameter ([#1410](/../../issues/1410))
 - QSVEncC: Fix incompatible output file type for AV1 encodes
 - SvtAv1EncApp: Fix "--qp" parameter for non Psy versions

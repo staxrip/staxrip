@@ -4404,6 +4404,19 @@ Public Class MainForm
             t.Edit.SaveAction = Sub(value) s.X265QualityDefinitions = value.ToX265QualityItems()?.ToList()
 
             t = ui.AddText()
+            t.Text = "SvtAv1EncApp quality definitions"
+            t.Help = "Create custom quality definitions for SvtAv1EncApp." + BR2 +
+                         "Use this format to create your custom values with optional description:" + BR +
+                         "number""text""" + BR +
+                         "number: can be used with optional decimal separator (, or .)" + BR +
+                         "text: description, optionally empty" + BR2 +
+                         "Example:" + BR +
+                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
+            t.Edit.Expand = True
+            t.Edit.Text = s.SvtAv1EncAppQualityDefinitions.ToSeparatedString()
+            t.Edit.SaveAction = Sub(value) s.SvtAv1EncAppQualityDefinitions = value.ToSvtAv1EncAppQualityItems()?.ToList()
+
+            t = ui.AddText()
             t.Text = "vccencFFapp quality definitions"
             t.Help = "Create custom quality definitions for vccencFFapp." + BR2 +
                          "Use this format to create your custom values with optional description:" + BR +

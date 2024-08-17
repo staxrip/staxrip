@@ -291,7 +291,7 @@ Public Class SvtAv1Enc
 
         Dim enc As New SvtAv1Enc
         enc.Params = newParams
-        enc.Params.RateControlMode.Value = SvtAv1EncRateMode.Quality
+        enc.Params.RateControlMode.Value = SvtAv1EncAppRateMode.Quality
         enc.Params.ConstantRateFactor.Value = enc.Params.CompCheck.Value
         enc.Params.QuantizationParameter.Value = enc.Params.CompCheck.Value
 
@@ -352,11 +352,8 @@ Public Class SvtAv1Enc
         Return Params.GetArgs(pass, startFrame, endFrame, chunkName, script, OutputPath.DirAndBase + OutputExtFull, includePaths, True)
     End Function
 
-    Overrides Function GetMenu() As MenuList
-        Return New MenuList From {
-            {"Encoder Options", AddressOf ShowConfigDialog},
-            {"Container Configuration", AddressOf OpenMuxerConfigDialog}
-        }
+    Overrides Function CreateEditControl() As Control
+        Return New SvtAv1EncAppControl(Me) With {.Dock = DockStyle.Fill}
     End Function
 
     Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
@@ -396,7 +393,7 @@ Public Class SvtAv1Enc
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.RateControlMode.Value = SvtAv1EncRateMode.Quality
+            Return Params.RateControlMode.Value = SvtAv1EncAppRateMode.Quality
         End Get
         Set(Value As Boolean)
         End Set
@@ -617,7 +614,18 @@ Public Class SvtAv1EncParams
         .IntegerValue = True,
         .Init = 0}
 
-    Property Tune As New OptionParam With {
+    ReadOnly Property Tune As OptionParam
+        Get
+            Select Case Package.SvtAv1EncAppType
+                Case SvtAv1EncAppType.Psy
+                    Return TunePsy
+                Case Else
+                    Return TuneVanilla
+            End Select
+        End Get
+    End Property
+
+    Property TuneVanilla As New OptionParam With {
         .Switch = "--tune",
         .Text = "Tune",
         .Expanded = True,
@@ -661,7 +669,7 @@ Public Class SvtAv1EncParams
     Property QuantizationParameterVanilla As New NumParam With {
         .HelpSwitch = "--qp",
         .Text = "Quantization Parameter",
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality AndAlso AqMode.Value = 0,
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value = 0,
         .ValueChangedAction = Sub(x) ConstantRateFactor.Value = CInt(x),
         .Config = {1, 63, 1},
         .Init = 35}
@@ -669,7 +677,7 @@ Public Class SvtAv1EncParams
     Property QuantizationParameterPsy As New NumParam With {
         .HelpSwitch = "--qp",
         .Text = "Quantization Parameter",
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality AndAlso AqMode.Value = 0,
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value = 0,
         .ValueChangedAction = Sub(x) ConstantRateFactor.Value = x,
         .Config = {1, 70, 0.25, 2},
         .Init = 35}
@@ -689,7 +697,7 @@ Public Class SvtAv1EncParams
     Property ConstantRateFactorVanilla As New NumParam With {
         .HelpSwitch = "--crf",
         .Text = "Constant Rate Factor",
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality AndAlso AqMode.Value <> 0,
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0,
         .ValueChangedAction = Sub(x) QuantizationParameter.Value = CInt(x),
         .Config = {1, 63, 1, 0},
         .Init = 35}
@@ -697,7 +705,7 @@ Public Class SvtAv1EncParams
     Property ConstantRateFactorPsy As New NumParam With {
         .HelpSwitch = "--crf",
         .Text = "Constant Rate Factor",
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality AndAlso AqMode.Value <> 0,
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality AndAlso AqMode.Value <> 0,
         .ValueChangedAction = Sub(x) QuantizationParameter.Value = x,
         .Config = {1, 70, 0.25, 2},
         .Init = 35}
@@ -705,7 +713,7 @@ Public Class SvtAv1EncParams
     Property TargetBitrate As New NumParam With {
         .HelpSwitch = "--tbr",
         .Text = "Target Bitrate",
-        .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncRateMode.Quality,
+        .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncAppRateMode.Quality,
         .Config = {100, 100000, 100},
         .Init = 2000}
 
@@ -719,14 +727,14 @@ Public Class SvtAv1EncParams
     Property MaxQp As New NumParam With {
         .Switch = "--max-qp",
         .Text = "Maximum Quantizer",
-        .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncRateMode.Quality,
+        .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncAppRateMode.Quality,
         .Config = {1, 63, 1},
         .Init = 63}
 
     Property MinQp As New NumParam With {
         .Switch = "--min-qp",
         .Text = "Minimum Quantizer",
-        .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncRateMode.Quality,
+        .VisibleFunc = Function() RateControlMode.Value <> SvtAv1EncAppRateMode.Quality,
         .Config = {1, 62, 1},
         .Init = 1}
 
@@ -845,7 +853,7 @@ Public Class SvtAv1EncParams
         .Expanded = True,
         .Options = {"1-pass encode", "2-pass encode", "3-pass encode"},
         .Values = {"1", "2", "3"},
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.CBR,
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.CBR,
         .Init = 0}
 
     Property PassesVBR As New OptionParam With {
@@ -854,7 +862,7 @@ Public Class SvtAv1EncParams
         .Expanded = True,
         .Options = {"1-pass encode", "2-pass encode"},
         .Values = {"1", "2"},
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.VBR,
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.VBR,
         .Init = 0}
 
     '   --------------------------------------------------------
@@ -997,7 +1005,7 @@ Public Class SvtAv1EncParams
     Property EnableTPLModel As New BoolParam With {
         .Switch = "--enable-tpl-la",
         .Text = "Temporal Dependency Model",
-        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncRateMode.Quality,
+        .VisibleFunc = Function() RateControlMode.Value = SvtAv1EncAppRateMode.Quality,
         .IntegerValue = True,
         .Init = True}
 
@@ -1445,7 +1453,7 @@ Public Class SvtAv1EncParams
                     Asm, LevelOfParallelism, PinnedExecution, TargetSocket
                 )
                 Add("Basic",
-                    Preset, Profile, Level, Tune, TunePsy, FastDecode
+                    Preset, Profile, Level, Tune, FastDecode
                 )
                 Add("Rate Control",
                     RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
@@ -1648,7 +1656,7 @@ Public Class SvtAv1EncParams
             sb.Append($" --rc {RateControlMode.Value}")
         End If
 
-        If RateControlMode.Value = SvtAv1EncRateMode.Quality Then
+        If RateControlMode.Value = SvtAv1EncAppRateMode.Quality Then
             If ConstantRateFactor.Visible Then
                 If Not IsCustom(pass, "--crf") AndAlso ConstantRateFactor.Value <> ConstantRateFactor.DefaultValue Then
                     sb.Append(" --crf " + ConstantRateFactor.Value.ToString("0.##", CultureInfo.InvariantCulture))
@@ -1706,7 +1714,7 @@ Public Class SvtAv1EncParams
     End Function
 End Class
 
-Public Enum SvtAv1EncRateMode
+Public Enum SvtAv1EncAppRateMode
     Quality
     VBR
     CBR

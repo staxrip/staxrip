@@ -174,6 +174,9 @@
     <Compile Include="Controls\PreprocessingControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\SvtAv1EncAppControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\VvencffappControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
@@ -442,6 +445,9 @@
     <Compile Include="UI\UI Help.vb" />
     <Content Include="DirectN.ico" />
     <Content Include="DirectN.png" />
+    <EmbeddedResource Include="Controls\SvtAv1EncAppControl.resx">
+      <DependentUpon>SvtAv1EncAppControl.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\VvencffappControl.resx">
       <DependentUpon>VvencffappControl.vb</DependentUpon>
     </EmbeddedResource>

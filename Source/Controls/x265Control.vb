@@ -253,18 +253,19 @@ Public Class x265Control
     End Function
 
     Sub UpdateControls()
+        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
+
         If Params.Mode.Value = x265RateMode.SingleCRF AndAlso lv.Items.Count < 4 Then
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
             lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
-        ElseIf Params.Mode.Value <> 2 AndAlso lv.Items.Count <> 3 Then
+        ElseIf Params.Mode.Value <> x265RateMode.SingleCRF AndAlso lv.Items.Count <> 3 Then
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
             lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
         End If
 
-        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
         blCompCheck.Visible = Params.Mode.Value = x265RateMode.TwoPass Or Params.Mode.Value = x265RateMode.ThreePass
     End Sub
 

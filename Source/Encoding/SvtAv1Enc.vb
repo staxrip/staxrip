@@ -794,7 +794,7 @@ Public Class SvtAv1EncParams
     Property QmMax As New NumParam With {
         .Switch = "--qm-max",
         .Text = "Max quant matrix flatness",
-        .VisibleFunc = Function() EnableQm.Value,
+        .VisibleFunc = Function() QmMin.Visible OrElse QmMinPsy.Visible,
         .Config = {0, 15, 1},
         .Init = 15}
 

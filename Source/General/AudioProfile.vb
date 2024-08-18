@@ -785,7 +785,7 @@ Public Class GUIAudioProfile
 
     Public Overrides Sub Reset()
         MyBase.Reset()
-        ChannelsValue = 0        
+        ChannelsValue = 0
     End Sub
 
     Public Overrides Sub Migrate()
@@ -892,15 +892,11 @@ Public Class GUIAudioProfile
     End Sub
 
     Sub NormalizeFF()
-        If Not Params.Normalize OrElse ExtractCore OrElse
-            Not {ffmpegNormalizeMode.loudnorm, ffmpegNormalizeMode.volumedetect}.Contains(Params.ffmpegNormalizeMode) Then
-
-            Exit Sub
-        End If
+        If Not Params.Normalize OrElse ExtractCore OrElse Not {ffmpegNormalizeMode.loudnorm, ffmpegNormalizeMode.volumedetect}.Contains(Params.ffmpegNormalizeMode) Then Exit Sub
 
         Dim args = "-i " + File.Escape
 
-        If Not Stream Is Nothing AndAlso Streams.Count > 1 Then
+        If Stream IsNot Nothing AndAlso Streams.Count > 1 Then
             args += " -map 0:a:" & Stream.Index
         End If
 
@@ -925,7 +921,10 @@ Public Class GUIAudioProfile
             proc.Start()
 
             Dim match = Regex.Match(proc.Log.ToString, "max_volume: -(\d+\.\d+) dB")
-            If match.Success Then Gain += match.Groups(1).Value.ToSingle()
+            If match.Success Then
+                Gain += match.Groups(1).Value.ToSingle()
+                Params.Normalize = False
+            End If
 
             match = Regex.Match(proc.Log.ToString, "Input Integrated:\s*([-\.0-9]+)")
             If match.Success Then Params.ffmpegLoudnormIntegratedMeasured = match.Groups(1).Value.ToDouble

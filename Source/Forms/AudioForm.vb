@@ -1682,7 +1682,7 @@ Public Class AudioForm
             n = ui.AddNum()
             n.Text = "Gaus filter win size"
             n.Help = helpUrl
-            n.Config = {3, 301}
+            n.Config = {3, 301, 2, 0}
             n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormG)
 
             n = ui.AddNum()
@@ -1694,7 +1694,7 @@ Public Class AudioForm
             n = ui.AddNum()
             n.Text = "Max gain factor"
             n.Help = helpUrl
-            n.Config = {1, 100, 5, 1}
+            n.Config = {1, 100, 1, 1}
             n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormM)
 
             n = ui.AddNum()

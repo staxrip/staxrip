@@ -18,15 +18,16 @@ Public Class Audio
             Log.Write("Media Info Audio Source " & (ap.GetTrackIndex + 1), MediaInfo.GetSummary(ap.File))
         End If
 
-        If TypeOf ap Is GUIAudioProfile Then
-            Dim gap = DirectCast(ap, GUIAudioProfile)
+        Dim normalized = False
+        Dim isGUIAP = TypeOf ap Is GUIAudioProfile
+        Dim gap = TryCast(ap, GUIAudioProfile)
 
-            If gap.ContainsCommand("ffmpeg") Then
-                gap.NormalizeFF()
-            End If
+        If isGUIAP AndAlso gap.ContainsCommand("ffmpeg") Then
+            gap.NormalizeFF()
+            normalized = True
         End If
 
-        Dim extractCore = TypeOf ap Is GUIAudioProfile AndAlso DirectCast(ap, GUIAudioProfile).ExtractCore
+        Dim extractCore = isGUIAP AndAlso gap.ExtractCore
 
         If ap.Decoder <> AudioDecoderMode.Automatic AndAlso Not extractCore Then
             Convert(ap)
@@ -98,8 +99,8 @@ Public Class Audio
         Return ret.Trim
     End Function
 
-    Shared Sub Convert(ap As AudioProfile)
-        If ap.File.Ext = ap.ConvertExt Then Exit Sub
+    Shared Sub Convert(ap As AudioProfile, Optional force As Boolean = False)
+        If Not force AndAlso ap.File.Ext = ap.ConvertExt Then Exit Sub
 
         If ap.File.Ext = "avs" Then
             Dim outPath = ap.File.DirAndBase + "." + ap.ConvertExt
@@ -120,6 +121,12 @@ Public Class Audio
             End If
         End If
 
+        Dim isGUIAP = TypeOf ap Is GUIAudioProfile
+        Dim gap = TryCast(ap, GUIAudioProfile)
+        Dim renormalize = isGUIAP AndAlso gap.Params.Normalize AndAlso
+                                (gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm OrElse
+                                (gap.Params.ChannelsMode <> ChannelsMode.Original OrElse (gap.Params.Codec = AudioCodec.Opus AndAlso gap.Params.OpusencDownmix <> OpusDownmix.Original)))
+
         Select Case ap.Decoder
             Case AudioDecoderMode.ffmpeg, AudioDecoderMode.Automatic
                 ConvertFF(ap)
@@ -137,7 +144,10 @@ Public Class Audio
             ConvertDirectShowSource(ap)
         End If
 
-        ConvertFF(ap)
+        gap.Params.Normalize = renormalize
+        gap.Params.ffmpegNormalizeMode = If(gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm, ffmpegNormalizeMode.volumedetect, gap.Params.ffmpegNormalizeMode)
+
+        ConvertFF(ap, renormalize)
         ConvertEac3to(ap)
         ConvertDirectShowSource(ap)
     End Sub
@@ -320,15 +330,12 @@ Public Class Audio
         End If
     End Sub
 
-    Shared Sub ConvertFF(ap As AudioProfile)
-        If ap.File.Ext = ap.ConvertExt Then Exit Sub
+    Shared Sub ConvertFF(ap As AudioProfile, Optional force As Boolean = False)
+        If Not force AndAlso ap.File.Ext = ap.ConvertExt Then Exit Sub
 
         Dim gap = TryCast(ap, GUIAudioProfile)
 
-        If gap IsNot Nothing Then
-            gap.NormalizeFF()
-            gap.Params.Normalize = False
-        End If
+        gap?.NormalizeFF()
 
         Dim base = ap.File.Base
 
@@ -342,6 +349,7 @@ Public Class Audio
             outPath += "." + ap.ConvertExt
         End If
 
+        Dim cancel = True
         Dim args = "-y -hide_banner -i " + ap.File.Escape
 
         If ap.Stream IsNot Nothing Then
@@ -350,21 +358,33 @@ Public Class Audio
 
         If ap.Gain <> 0 Then
             args += " -af volume=" + ap.Gain.ToInvariantString + "dB"
+            cancel = False
         End If
 
         If gap?.Params.Normalize Then
             If gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm Then
                 args += " " + Audio.GetDynAudNormArgs(gap.Params)
+                cancel = False
             ElseIf gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.loudnorm Then
                 args += " " + Audio.GetLoudNormArgs(gap.Params)
+                cancel = False
             End If
         End If
 
         If gap.Params.CenterOptimizedStereo AndAlso ((gap?.Params.Codec <> AudioCodec.Opus AndAlso gap?.Params.ChannelsMode = ChannelsMode._2) OrElse (gap?.Params.Codec = AudioCodec.Opus AndAlso gap?.Params.OpusencDownmix = OpusDownmix.Stereo)) Then
             args += " -af pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5"
+            gap.Params.ChannelsMode = ChannelsMode.Original
+            gap.Params.OpusencDownmix = OpusDownmix.Original
+            cancel = False
         Else
-            args += " -ac " & ap.Channels
+            If Not force Then
+                args += " -ac " & ap.Channels
+            End If
+            gap.Params.ChannelsMode = ChannelsMode.Original
+            gap.Params.OpusencDownmix = OpusDownmix.Original
         End If
+
+        If force AndAlso cancel Then Exit Sub
 
         If ap.ConvertExt.EqualsAny("wav", "w64") Then
             args += " -c:a pcm_s24le"
@@ -400,6 +420,7 @@ Public Class Audio
             End If
 
             ap.Gain = 0
+            gap.Params.CenterOptimizedStereo = False
             ap.File = outPath
             Log.WriteLine(MediaInfo.GetSummary(outPath))
         Else
@@ -432,11 +453,7 @@ Public Class Audio
         If params.ffmpegDynaudnormC Then ret += ":c=true"
         If params.ffmpegDynaudnormB Then ret += ":b=true"
 
-        If ret <> "" Then
-            Return "-af dynaudnorm=" + ret.Trim(":"c)
-        Else
-            Return "-af dynaudnorm"
-        End If
+        Return If(ret = "", "-af dynaudnorm", "-af dynaudnorm=" + ret.Trim(":"c))
     End Function
 
     Shared Sub ConvertDirectShowSource(ap As AudioProfile, Optional useFlac As Boolean = False)

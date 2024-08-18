@@ -3936,7 +3936,6 @@ Public Class MainForm
 
         Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format/String")
         If isEL OrElse (Regex.IsMatch(fileHdrFormat, "Dolby Vision.*Profile|HDR10+ Profile B")) Then
-            Dim mode = If(proj.HdrDolbyVisionMode < 0, "", " -m " + (proj.HdrDolbyVisionMode + 0).ToString())
             Dim rpuPath = sourcePath.ChangeExt("rpu")
             Dim doviFile = proj.HdrDolbyVisionMetadataFile
 
@@ -3946,8 +3945,20 @@ Public Class MainForm
 
             Try
                 If Not rpuPath.FileExists() Then
-                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape}{mode} extract-rpu - -o ""{rpuPath}"""
+                    Dim commandLine = $"{Package.ffmpeg.Path.Escape} -hide_banner -probesize 50M -i ""{sourcePath}"" -an -sn -dn -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | {Package.DoViTool.Path.Escape} extract-rpu - -o ""{rpuPath}"""
+                    Dim throwError As (Title As String, Content As String)
+
                     Using proc As New Proc
+                        Dim throwIf = Sub(value As String)
+                                          If value?.Contains("Unexpected RPU NALU") Then
+                                              throwError = ("Unexpected RPU NALU", "Unexpected RPU NALU found, extraction aborts...")
+                                              proc.Kill()
+                                          End If
+                                          If value?.Contains("Discarding") Then
+                                              throwError = ("Discarding", "Dovi_tool is discarding data, extraction aborts...")
+                                              proc.Kill()
+                                          End If
+                                      End Sub
                         proc.Priority = ProcessPriorityClass.Normal
                         proc.Package = Package.DoViTool
                         proc.Project = If(proj, p)
@@ -3958,8 +3969,13 @@ Public Class MainForm
                         proc.SkipStrings = Proc.GetSkipStrings(commandLine)
                         proc.AllowedExitCodes = {0}
                         proc.OutputFiles = {rpuPath}
+                        proc.ReadOutput = True
+                        AddHandler proc.OutputDataReceived, throwIf
+                        AddHandler proc.ErrorDataReceived, throwIf
                         proc.Start()
                     End Using
+
+                    If throwError.Title IsNot Nothing AndAlso throwError.Content IsNot Nothing Then Throw New ErrorAbortException(throwError.Title, throwError.Content)
 
                     If rpuPath?.FileExists() Then
                         Try
@@ -3974,10 +3990,16 @@ Public Class MainForm
                         End Try
                     End If
                 End If
+            Catch ex As ErrorAbortException
+                g.ShowException(ex, Nothing, Nothing, s.ErrorMessageTimeout)
+                doviFile = Nothing
             Catch ex As AbortException
+                g.ShowException(ex)
+                doviFile = Nothing
                 Throw ex
             Catch ex As Exception
                 g.ShowException(ex)
+                doviFile = Nothing
                 Throw New AbortException
             Finally
                 Log.Save()
@@ -5419,7 +5441,6 @@ Public Class MainForm
             Dim demuxVideo = ui.AddBool()
             Dim takeOverVideoLanguage = ui.AddBool()
             Dim extractHdrmetadata = ui.AddMenu(Of HdrmetadataMode)
-            Dim doviMode = ui.AddMenu(Of DoviMode)
 
             videoExist.Text = "Existing Video Output"
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
@@ -5440,13 +5461,7 @@ Public Class MainForm
             extractHdrmetadata.Field = NameOf(p.ExtractHdrmetadata)
             extractHdrmetadata.Button.ValueChangedAction = Sub(value)
                                                                Dim visible = value = HdrmetadataMode.All OrElse value = HdrmetadataMode.DolbyVision
-                                                               doviMode.Visible = visible
                                                            End Sub
-
-            doviMode.Text = "RPU Conversion Mode"
-            doviMode.Help = "Sets the mode for RPU processing."
-            doviMode.Expanded = True
-            doviMode.Field = NameOf(p.HdrDolbyVisionMode)
 
             b = ui.AddBool
             b.Text = "Import VUI metadata"

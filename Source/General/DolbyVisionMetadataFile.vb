@@ -2,6 +2,7 @@
 Imports System.Text.RegularExpressions
 Imports System.Web.UI.WebControls
 
+Imports VB6 = Microsoft.VisualBasic
 
 
 <Serializable>
@@ -64,9 +65,15 @@ Public Class DolbyVisionMetadataFile
         End Get
     End Property
 
-    Public ReadOnly Property CroppedRpuFilePath As String
+    Public ReadOnly Property ModifiedRpuFilePath As String
         Get
-            Return If(String.IsNullOrWhiteSpace(Path), "", $"{Path.DirAndBase()}_Cropped.rpu")
+            Return If(String.IsNullOrWhiteSpace(Path), "", $"{Path.DirAndBase()}_Modified.rpu")
+        End Get
+    End Property
+
+    Public ReadOnly Property HasPathChanged As Boolean
+        Get
+            Return Path.FileExists() AndAlso _lastWriteTime <> File.GetLastWriteTimeUtc(Path)
         End Get
     End Property
 
@@ -212,7 +219,7 @@ Public Class DolbyVisionMetadataFile
             If logContent Then
                 Dim exists = File.Exists(Level5JsonFilePath)
                 Dim content = If(exists, File.ReadAllText(Level5JsonFilePath), "No file found!")
-                
+
                 Log.WriteHeader($"Content of {IO.Path.GetFileName(Level5JsonFilePath)}")
                 Log.WriteLine(content)
             End If
@@ -249,7 +256,7 @@ Public Class DolbyVisionMetadataFile
             If logContent Then
                 Dim exists = File.Exists(Level5JsonFilePath)
                 Dim content = If(exists, File.ReadAllText(Level5JsonFilePath), "No file created!")
-                
+
                 Log.WriteHeader($"Content of {IO.Path.GetFileName(Level5JsonFilePath)}")
                 Log.WriteLine(content)
             End If
@@ -258,11 +265,26 @@ Public Class DolbyVisionMetadataFile
         End Try
     End Sub
 
-    Public Sub WriteEditorConfigFile(offset As Padding, Optional logContent As Boolean = True, Optional overwrite As Boolean = True)
+    Public Function ReadProfileFromRpu() As Integer
+        If Not Path?.FileExists() Then Return -1
+
+        Dim output = ProcessHelp.GetConsoleOutput(Package.DoViTool.Path.Escape, $"info -i {Path.Escape} -s", False).Split(New String() {VB6.vbCrLf, VB6.vbLf, VB6.vbCr}, StringSplitOptions.RemoveEmptyEntries)
+
+        For i = 0 To output.Length - 1
+            Dim line = output(i).Trim()
+            Dim match = Regex.Match(line, "Profile: (\d+)(.*)$")
+            If match.Success Then
+                Dim profile = match.Groups(1).Value
+                Return profile.ToInt()
+            End If
+        Next
+
+        Return -1
+    End Function
+
+    Public Sub WriteEditorConfigFile(offset As Padding, mode As DoviMode, Optional logContent As Boolean = True, Optional overwrite As Boolean = True)
         If Not Level5JsonFilePath?.FileExists() Then Return
-        If Not overwrite AndAlso EditorConfigFilePath.FileExists() Then Return
-        If offset = Padding.Empty Then Return
-        If offset.Left < 0 OrElse offset.Top < 0 OrElse offset.Right < 0 OrElse offset.Bottom < 0 Then Throw New ArgumentOutOfRangeException(NameOf(offset))
+        If Not overwrite AndAlso EditorConfigFilePath?.FileExists() Then Return
 
         Try
             Dim p = ""
@@ -290,7 +312,7 @@ Public Class DolbyVisionMetadataFile
             e = e.TrimEnd(","c)
             e = $"""edits"":{{{e}}}"
 
-            Dim result = $"{{""active_area"":{{""crop"":false,{p},{e}}}}}"
+            Dim result = $"{{""mode"":{mode + 0},""active_area"":{{""crop"":false,{p},{e}}}}}"
             result.WriteFileUTF8(EditorConfigFilePath)
         Catch ex As AbortException
             Throw ex
@@ -301,7 +323,7 @@ Public Class DolbyVisionMetadataFile
             If logContent Then
                 Dim exists = File.Exists(EditorConfigFilePath)
                 Dim content = If(exists, File.ReadAllText(EditorConfigFilePath), "No file created!")
-                
+
                 Log.WriteHeader($"Content of {IO.Path.GetFileName(EditorConfigFilePath)}")
                 Log.WriteLine(content)
             End If
@@ -310,13 +332,13 @@ Public Class DolbyVisionMetadataFile
         End Try
     End Sub
 
-    Public Function WriteCroppedRpu(Optional overwrite As Boolean = True) As String
+    Public Function WriteModifiedRpu(Optional overwrite As Boolean = True) As String
         If Not Path?.FileExists() Then Return Nothing
         If Not EditorConfigFilePath?.FileExists() Then Return Nothing
-        If Not overwrite AndAlso CroppedRpuFilePath.FileExists() Then Return Nothing
+        If Not overwrite AndAlso ModifiedRpuFilePath.FileExists() Then Return Nothing
 
         Try
-            Dim arguments = $"editor -i ""{Path}"" -j ""{EditorConfigFilePath}"" -o ""{CroppedRpuFilePath}"""
+            Dim arguments = $"editor -i ""{Path}"" -j ""{EditorConfigFilePath}"" -o ""{ModifiedRpuFilePath}"""
             Using proc As New Proc
                 proc.Package = Package.DoViTool
                 proc.Project = p
@@ -324,7 +346,7 @@ Public Class DolbyVisionMetadataFile
                 proc.Encoding = Encoding.UTF8
                 proc.Arguments = arguments
                 proc.AllowedExitCodes = {0}
-                proc.OutputFiles = {CroppedRpuFilePath}
+                proc.OutputFiles = {ModifiedRpuFilePath}
                 proc.Start()
             End Using
         Catch ex As AbortException
@@ -336,6 +358,6 @@ Public Class DolbyVisionMetadataFile
             Log.Save()
         End Try
 
-        Return CroppedRpuFilePath
+        Return ModifiedRpuFilePath
     End Function
 End Class

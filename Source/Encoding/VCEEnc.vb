@@ -143,22 +143,6 @@ Public Class VCEEnc
         End Using
     End Sub
 
-    'Overrides Function BeforeEncoding() As Boolean
-    '    Dim rpu = Params.GetStringParam("--dolby-vision-rpu")?.Value
-    '    If p.Script.IsFilterActive("Crop") AndAlso Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
-    '        If (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
-    '            p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom), True)
-    '            Dim newPath = p.HdrDolbyVisionMetadataFile.WriteCroppedRpu(True)
-    '            If Not String.IsNullOrWhiteSpace(newPath) Then
-    '                Params.DolbyVisionRpu.Value = newPath
-    '            Else
-    '                Return False
-    '            End If
-    '        End If
-    '    End If
-    '    Return True
-    'End Function
-
     Overrides Sub SetMetaData(sourceFile As String)
         If Not p.ImportVUIMetadata Then Exit Sub
 
@@ -266,17 +250,20 @@ Public Class VCEEnc
         End If
 
         If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+            Dim rpuProfile = p.HdrDolbyVisionMetadataFile.ReadProfileFromRpu()
+            Dim profile = ""
+            If rpuProfile = 5 Then profile = "5"
+            If rpuProfile = 7 Then profile = "8.1"
+            If rpuProfile = 8 Then profile = "8.1"
+            If profile = "8.1" AndAlso transfer_characteristics = "HLG" Then
+                profile = "8.4"
+            End If
+            If Params.GetStringParam("--dolby-vision-profile")?.Value = "" AndAlso profile <> "" Then
+                cl += $" --dolby-vision-profile {profile}"
+            End If
+
             cl += " --output-depth 10"
             cl += $" --dolby-vision-rpu ""{p.HdrDolbyVisionMetadataFile.Path}"""
-
-            Select Case p.HdrDolbyVisionMode
-                Case DoviMode.Untouched, DoviMode.Mode0, DoviMode.Mode1
-                    cl += $""
-                Case DoviMode.Mode4
-                    cl += $" --dolby-vision-profile 8.4"
-                Case Else
-                    cl += $" --dolby-vision-profile 8.1"
-            End Select
         End If
 
         Dim MaxCLL = MediaInfo.GetVideo(sourceFile, "MaxCLL").Trim.Left(" ").ToInt

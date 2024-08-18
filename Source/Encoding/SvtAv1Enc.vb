@@ -76,15 +76,16 @@ Public Class SvtAv1Enc
 
     Overrides Function BeforeEncoding() As Boolean
         Dim rpu = Params.GetStringParam(Params.PsyDolbyVisionRpu.Switch)?.Value
-        If p.Script.IsFilterActive("Crop") AndAlso Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
-            If (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) <> 0 Then
-                p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom), True)
-                Dim newPath = p.HdrDolbyVisionMetadataFile.WriteCroppedRpu(True)
-                If Not String.IsNullOrWhiteSpace(newPath) Then
-                    Params.PsyDolbyVisionRpu.Value = newPath
-                Else
-                    Return False
-                End If
+        If Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
+            Dim offset = New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom)
+            Dim mode = CType(Params.PsyDolbyVisionRpuMode.Value, DoviMode)
+
+            p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(offset, mode, True)
+            Dim newPath = p.HdrDolbyVisionMetadataFile.WriteModifiedRpu(True)
+            If Not String.IsNullOrWhiteSpace(newPath) Then
+                Params.PsyDolbyVisionRpu.Value = newPath
+            Else
+                Return False
             End If
         End If
         Return True
@@ -1283,6 +1284,21 @@ Public Class SvtAv1EncParams
     '   --------------------------------------------------------
     '   --------------------------------------------------------
 
+    Property PsyDolbyVisionRpuMode As New OptionParam With {
+        .HelpSwitch = "",
+        .Text = "Dolby Vision RPU Mode",
+        .Expanded = True,
+        .Options = {DispNameAttribute.GetValueForEnum(DoviMode.Mode0) + " (default)",
+                     DispNameAttribute.GetValueForEnum(DoviMode.Mode1),
+                     DispNameAttribute.GetValueForEnum(DoviMode.Mode2),
+                     DispNameAttribute.GetValueForEnum(DoviMode.Mode3),
+                     DispNameAttribute.GetValueForEnum(DoviMode.Mode4),
+                     DispNameAttribute.GetValueForEnum(DoviMode.Mode5)},
+        .IntegerValue = True,
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 0}
+
+
     Property PsyHdr10PlusJson As New StringParam With {
         .Switch = "--hdr10plus-json",
         .Text = "HDR10+ JSON",
@@ -1454,7 +1470,7 @@ Public Class SvtAv1EncParams
                 )
                 If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then
                     Add("PSY Specific 1",
-                        PsyHdr10PlusJson, PsyDolbyVisionRpu,
+                        PsyHdr10PlusJson, PsyDolbyVisionRpu, PsyDolbyVisionRpuMode,
                         PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain, PsyTemporalFilteringStrength, PsyKeyframeTemporalFilteringStrength, PsyNoiseNormStrength
                     )
                     Add("PSY Specific 2",

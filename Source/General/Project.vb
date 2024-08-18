@@ -87,7 +87,6 @@ Public Class Project
     Public HardcodedSubtitle As Boolean
     Public Hdr10PlusMetadataFile As String
     Public HdrDolbyVisionMetadataFile As DolbyVisionMetadataFile
-    Public HdrDolbyVisionMode As DoviMode = DoviMode.Mode2
     Public ImportVUIMetadata As Boolean = True
     Public ITU As Boolean
     Public LastOriginalSourceFile As String

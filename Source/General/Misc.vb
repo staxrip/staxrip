@@ -2028,7 +2028,6 @@ Public Enum HdrmetadataMode
 End Enum
 
 Public Enum DoviMode
-    <DispName("Untouched")> Untouched = -1
     <DispName("0: Parses RPU, rewrites it untouched")> Mode0 = 0
     <DispName("1: Convert RPU to be MEL compatible")> Mode1 = 1
     <DispName("2: Convert RPU to be 8.1 compatible")> Mode2 = 2

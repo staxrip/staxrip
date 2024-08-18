@@ -86,6 +86,12 @@ Namespace UI
             End If
         End Sub
 
+        Protected Overrides Sub OnHandleCreated(e As EventArgs)
+            MyBase.OnHandleCreated(e)
+
+            If Native.DwmSetWindowAttribute(Handle, 19, 1, 4) <> 0 Then Native.DwmSetWindowAttribute(Handle, 20, 1, 4)
+        End Sub
+
         Sub SetMaximumSize(w As Single, h As Single)
             MaximumSize = New Size(CInt(Font.Height * w), CInt(Font.Height * h))
         End Sub

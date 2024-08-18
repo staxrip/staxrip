@@ -147,6 +147,7 @@ Public Class Project
     Public VideoBitrate As Integer = 5000
     Public VideoEncoder As VideoEncoder
     Public WarnArError As Boolean = True
+    Public WarnIdenticalAudio As Boolean = True
     Public WarnNoAudio As Boolean = False
 
     Property WasUpdated As Boolean Implements ISafeSerialization.WasUpdated

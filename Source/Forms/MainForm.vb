@@ -3263,17 +3263,19 @@ Public Class MainForm
                 End If
             End If
 
-            Dim fileGroups = p.AudioTracks.Where(Function(x) x.TextEdit.Text <> "" AndAlso x.AudioProfile.Stream Is Nothing).GroupBy(Function(g) g.AudioProfile.File).Where(Function(x) x.Count() > 1)
-            If fileGroups.Any() Then
-                If ProcessTip($"Some audio source files are identical.") Then
-                    Return Warn("Suspicious Audio Settings", fileGroups.SelectMany(Function(x) x.AsEnumerable().Select(Function(s) s.TextEdit)).ToArray())
+            If p.WarnIdenticalAudio Then
+                Dim fileGroups = p.AudioTracks.Where(Function(x) x.TextEdit.Text <> "" AndAlso x.AudioProfile.Stream Is Nothing).GroupBy(Function(g) g.AudioProfile.File).Where(Function(x) x.Count() > 1)
+                If fileGroups.Any() Then
+                    If ProcessTip($"Some audio source files are identical.") Then
+                        Return Warn("Suspicious Audio Settings", fileGroups.SelectMany(Function(x) x.AsEnumerable().Select(Function(s) s.TextEdit)).ToArray())
+                    End If
                 End If
-            End If
 
-            Dim streamGroups = p.AudioTracks.Where(Function(x) x.AudioProfile.Stream IsNot Nothing).GroupBy(Function(g) g.AudioProfile.Stream.Index).Where(Function(x) x.Count() > 1)
-            If streamGroups.Any() Then
-                If ProcessTip($"Some audio source streams are identical.") Then
-                    Return Warn("Suspicious Audio Settings", streamGroups.SelectMany(Function(x) x.AsEnumerable().Select(Function(s) s.TextEdit)).ToArray())
+                Dim streamGroups = p.AudioTracks.Where(Function(x) x.AudioProfile.Stream IsNot Nothing).GroupBy(Function(g) g.AudioProfile.Stream.Index).Where(Function(x) x.Count() > 1)
+                If streamGroups.Any() Then
+                    If ProcessTip($"Some audio source streams are identical.") Then
+                        Return Warn("Suspicious Audio Settings", streamGroups.SelectMany(Function(x) x.AsEnumerable().Select(Function(s) s.TextEdit)).ToArray())
+                    End If
                 End If
             End If
 
@@ -5922,6 +5924,10 @@ Public Class MainForm
             b = ui.AddBool()
             b.Text = "Warn if no audio in output"
             b.Field = NameOf(p.WarnNoAudio)
+
+            b = ui.AddBool()
+            b.Text = "Warn if identical audio is used multiple times"
+            b.Field = NameOf(p.WarnIdenticalAudio)
 
 
             '   ----------------------------------------------------------------

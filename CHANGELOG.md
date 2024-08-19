@@ -14,6 +14,64 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.48.0 (2025-06-08)
+====================
+
+- General: Alter Dolby Vision workflow and usage
+    - Remove extraction related Dolby Vision settings from Project Options
+    - Dolby Vision related encoder options control other settings like Color Range
+    - Let encoder options control how the metadata is prepared before the encoding
+    - Extend extraction with error handling in case ffmpeg or dovi_tool are reporting
+- General: Move "Fix Framerate" option from Settings to Project Options
+- General: Fix default handling issue with d2v files
+- General: Change defaults for Temp Files Deletion
+    - Delete video files permanently
+- General: Fix file sorting for Batch/Merge Files ([#1667](/../../issues/1667))
+- Audio: Fix Normalize handling with DeeZy selected ([#1623](/../../issues/1623))
+- Audio: Improve audio handling slightly
+- Audio: Despite the *Preferred Languages* the set up languages will be added and considered as well
+- FrameServer: Make VapourSynth the default frame server
+- Macro: Rename `%source_framerate%` to `%source_framerate6%` ([#1671](/../../issues/1671))
+    - 6 fixed decimal places
+- Macro: Rename `%target_framerate%` to `%target_framerate6%` ([#1671](/../../issues/1671))
+    - 6 fixed decimal places
+- Macro: Add `%source_framerate%` and `%target_framerate%` ([#1671](/../../issues/1671))
+    - up to 6 decimal places, depending on digits, with no trailing zeros
+- UI: New default font
+- UI: Custom selection of fonts for default/normal text and code
+    - Users can add ttf-fonts via the Settings folder:
+        - `.\Settings\Fonts\Code\`
+        - `.\Settings\Fonts\Default\`
+- UI: Rearrange Settings
+- UI: Add Windows Accent Color to Themes
+- UI: Improve Themes
+- UI: Make encoder options react quicker to inputs
+- UI: Optimize speed of Language menu buttons on Audio and Muxer windows significantly
+- UI: Fix Code Editor sizes when using a higher scale factor ([#1644](/../../issues/1644))
+- UI: Adjust min and max sizes for windows
+- UI: Make main window auto adjust its height depending on the number of audio tracks
+- UI: Reorder tabs in container options ([#1670](/../../issues/1670))
+- MP4Box: Add FLAC to supported input file types ([#1668](/../../issues/1668))
+- NVEncC: Add "--task-perf-monitor" parameter
+- NVEncC: Add "inverse_tone_mapping" option to "--vpp-libplacebo-tonemapping" parameter
+- QSVEncC: Add "inverse_tone_mapping" option to "--vpp-libplacebo-tonemapping" parameter
+- SvtAv1EncApp: Add Editing Control to main window
+- SvtAv1EncApp: Fix "--frames" parameter
+- SvtAv1EncApp: Update parameters to v3.0
+- VCEEncC: Unlock Dolby Vision support
+- x264: Fix piping issues
+- x264: Alter Editing Control on main window
+- x265: Alter Editing Control on main window
+- x265: Reorganize parameters
+- Update tools
+    - DeeZy v0.1.10
+    - MediaInfo v25.04
+    - QSVEncC v7.89
+    - SvtAv1EncApp v3.0.2-2+33-6a3b2d0d-.Mod-by-Patman.-x64-gcc15.1.0 [SVT-AV1-PSY]
+- Update VapourSynth plugins
+    - VS-Placebo v3.2.4
+
+
 v2.46.5 (2025-04-29)
 ====================
 

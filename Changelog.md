@@ -52,6 +52,7 @@ v2.42.0 (not published yet)
 - NVEncC: Make Dolby Vision related parameters available for AV1
 - Qaac: Add "--no-delay" parameter ([#1410](/../../issues/1410))
 - QSVEncC: Fix incompatible output file type for AV1 encodes
+- QSVEncC: Add "--output-csp" parameter
 - SvtAv1EncApp: Fix "--qp" parameter for non Psy versions
 - SvtAv1EncApp: Fix "--qp-max" parameter
 - VCEEncC: Add "--vpp-decomb" parameter ([#1444](/../../issues/1444))

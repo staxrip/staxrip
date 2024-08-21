@@ -610,7 +610,7 @@ Public Class SvtAv1EncParams
         .Text = "Tune",
         .Expanded = True,
         .IntegerValue = True,
-        .Options = {"0: VQ", "1: PSNR", "2: SSIM (default)", "3: Subjective SSIM"},
+        .Options = {"0: VQ", "1: PSNR", "2: SSIM (default)", "3: Subjective SSIM", "4: Still Picture"},
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
         .Init = 2}
 
@@ -1288,6 +1288,30 @@ Public Class SvtAv1EncParams
         .Config = {0, 100, 1},
         .Init = 0}
 
+    Property PsyMinChromaQmLevel As New NumParam With {
+        .Switch = "--chroma-qm-min",
+        .Text = "Min chroma quant matrix flatness",
+        .Config = {0, 15, 1},
+        .VisibleFunc = Function() EnableQmPsy.Visible AndAlso EnableQmPsy.Value,
+        .Init = 0}
+
+    Property PsyMaxChromaQmLevel As New NumParam With {
+        .Switch = "--chroma-qm-max",
+        .Text = "Max chroma quant matrix flatness",
+        .VisibleFunc = Function() EnableQmPsy.Visible AndAlso EnableQmPsy.Value,
+        .Config = {0, 15, 1},
+        .Init = 15}
+
+    Property PsyTemporalFilteringStrength As New OptionParam With {
+        .Switch = "--tf-strength",
+        .Text = "Temporal filtering strength",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0", "1 (default)", "2", "3", "4"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 1}
+
+
     '   --------------------------------------------------------
     '   --------------------------------------------------------
 
@@ -1341,8 +1365,8 @@ Public Class SvtAv1EncParams
                 If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then
                     Add("PSY",
                         PsyHdr10PlusJson, PsyDolbyVisionRpu,
-                        PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain,
-                        PsyFrameLumaBias
+                        PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain, PsyTemporalFilteringStrength,
+                        PsyFrameLumaBias, PsyMinChromaQmLevel, PsyMaxChromaQmLevel
                     )
                 End If
 

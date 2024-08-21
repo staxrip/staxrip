@@ -56,6 +56,10 @@ v2.42.0 (not published yet)
 - QSVEncC: Add "--output-csp" parameter
 - SvtAv1EncApp: Fix "--qp" parameter for non Psy versions
 - SvtAv1EncApp: Fix "--qp-max" parameter
+- SvtAv1EncApp: Add "--tf-strength" parameter
+- SvtAv1EncApp: Add "--chroma-qm-min" parameter
+- SvtAv1EncApp: Add "--chroma-qm-max" parameter
+- SvtAv1EncApp: Add "--tune 4" option
 - VCEEncC: Add "--vpp-decomb" parameter ([#1444](/../../issues/1444))
 - VCEEncC: Add "--vpp-fft3d" parameter ([#1444](/../../issues/1444))
 - VCEEncC: Add "--vpp-nlmeans" parameter ([#1444](/../../issues/1444))

@@ -452,10 +452,13 @@ Public Class GlobalCommands
     End Sub
 
     <Command("Changes video encoder settings.")>
-    Sub ImportVideoEncoderCommandLine(
-        <DispName("Command Line")>
-        commandLine As String)
+    Sub ImportVideoEncoderCommandLine(<DispName("Command Line")> commandLine As String)
+        p.VideoEncoder.ImportCommandLine(commandLine)
+    End Sub
 
+    <Command("Changes video encoder settings from a text file.")>
+    Sub ImportVideoEncoderCommandLineFromTextFile(<DispName("File Path")> filePath As String)
+        Dim commandLine = filePath.ReadAllText()
         p.VideoEncoder.ImportCommandLine(commandLine)
     End Sub
 

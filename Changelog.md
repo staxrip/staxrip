@@ -38,6 +38,7 @@ v2.42.0 (not published yet)
 - UI: Enable the "Subtitle Edit" button on muxer configuration for all subtitles
 - UI: Fix Audio conversion ignoring Normalize and Gain in some cases
 - UI: Fix Assistant blocking message on cutting without a Dolby Vision metadata file path set ([#1454](/../../issues/1454))
+- UI: Add "ImportVideoEncoderCommandLineFromTextFile" command
 - Crop: Make AutoCrop process skippable ([#1411](/../../issues/1411))
 - Crop: Add Frame Interval Selection Mode
 - Crop: Add Frame Consideration Mode to Options ([#1386](/../../issues/1386))

@@ -537,18 +537,14 @@ Module StringExtensions
 
     <Extension()>
     Function ReadAllText(instance As String) As String
-        If Not File.Exists(instance) Then
-            Return ""
-        End If
+        If Not instance.FileExists Then Return ""
 
         Return File.ReadAllText(instance)
     End Function
 
     <Extension()>
     Function ReadAllTextDefault(instance As String) As String
-        If Not File.Exists(instance) Then
-            Return ""
-        End If
+        If Not instance.FileExists Then Return ""
 
         Return File.ReadAllText(instance, Encoding.Default)
     End Function

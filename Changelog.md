@@ -73,6 +73,9 @@ v2.42.0 (not published yet)
 - VCEEncC: Fix mode options across all codecs ([#1444](/../../issues/1444))
 - VCEEncC: Fix incompatible output file type for AV1 encodes
 - x265: Fix "--aq-mode" default value across different presets
+- x265: Add "--alpha" parameter
+- x265: Add "--format" parameter
+- x265: Add "--scc" parameter
 - Update tools
     - AutoCrop v2.5
 - Update AviSynth+ plugins

@@ -913,6 +913,7 @@ Public Class x265Params
     Property Hash As New OptionParam With {
         .Switch = "--hash",
         .Text = "Hash",
+        .Expanded = True,
         .IntegerValue = True,
         .Options = {"None", "MD5", "CRC", "Checksum"}}
 
@@ -1197,6 +1198,22 @@ Public Class x265Params
         .Weight = 9,
         .VisibleFunc = Function() Package.x265Type = x265Type.DJATOM}
 
+    Property ScreenContentCoding As New OptionParam With {
+        .Switch = "--scc",
+        .Text = "Screen Content Coding",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0 - Disabled", "1 - Intrablockcopy fast search with 1x2 CTUs search range", "2 - Intrablockcopy full search"},
+        .Init = 0}
+
+    Property Format As New OptionParam With {
+        .Switch = "--format",
+        .Text = "Format",
+        .IntegerValue = True,
+        .Options = {"Normal", "Side-by-Side", "Over-Under"},
+        .Init = 0}
+
+
     Overrides ReadOnly Property Items As List(Of CommandLineParam)
         Get
             If ItemsValue Is Nothing Then
@@ -1334,14 +1351,17 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--idr-recovery-sei", .Init = False, .Text = "Recovery SEI"},
                     New BoolParam With {.Switch = "--single-sei", .Init = False, .Text = "Single SEI"})
                 Add("Bitstream 2",
+                    ScreenContentCoding,
                     Hash,
                     New BoolParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers"},
                     New BoolParam With {.Switch = "--opt-qp-pps", .Init = False, .Text = "Optimize QP in PPS"},
                     New BoolParam With {.Switch = "--opt-ref-list-length-pps", .Init = False, .Text = "Optimize L0 and L1 Ref List Length in PPS"},
                     New BoolParam With {.Switch = "--multi-pass-opt-rps", .Init = False, .Text = "Enable Storing", .Help = "Enable Storing commonly used RPS in SPS in multi pass mode"},
-                    New BoolParam With {.Switch = "--opt-cu-delta-qp", .Text = "Optimize CU level QPs", .Help = "Optimize CU level QPs pulling up lower QPs close to meanQP", .Init = False})
+                    New BoolParam With {.Switch = "--opt-cu-delta-qp", .Text = "Optimize CU level QPs", .Help = "Optimize CU level QPs pulling up lower QPs close to meanQP", .Init = False},
+                    New BoolParam With {.Switch = "--alpha", .Text = "Alpha channel support", .Help = "Enable alpha channel support", .Init = False, .IntegerValue = True})
                 Add("Input/Output",
                     Decoder, PipingToolAVS, PipingToolVS,
+                    Format,
                     New OptionParam With {.Switch = "--input-depth", .Text = "Input Depth", .Options = {"Automatic", "8", "10", "12", "14", "16"}},
                     New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Options = {"Automatic", "I400", "I420", "I422", "I444", "NV12", "NV16"}},
                     New OptionParam With {.Switch = "--fps", .Text = "Frame Rate", .Options = {"Automatic", "24000/1001", "24", "25", "30000/1001", "30", "50", "60000/1001", "60"}},
@@ -1671,15 +1691,13 @@ Public Class x265Params
                 sb.Append(" --stats " + (targetPath.DirAndBase + chunkName + ".stats").Escape)
             End If
 
-            Dim input = If(Decoder.Value = 0 AndAlso pipeTool = "automatic", script.Path.Escape, "-")
-
-            If (Mode.Value = x265RateMode.ThreePass AndAlso pass <> 2) OrElse
-                (Mode.Value = x265RateMode.TwoPass AndAlso pass = 1) Then
-
-                sb.Append(" --output NUL " + input)
+            If (Mode.Value = x265RateMode.ThreePass AndAlso pass <> 2) OrElse (Mode.Value = x265RateMode.TwoPass AndAlso pass = 1) Then
+                sb.Append(" --output NUL")
             Else
-                sb.Append(" --output " + (targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape + " " + input)
+                sb.Append(" --output " + (targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape)
             End If
+
+            sb.Append(" --input " + If(Decoder.Value = 0 AndAlso pipeTool = "automatic", script.Path.Escape, "-"))
         Else
             If Seek.Value > 0 AndAlso Not IsCustom(pass, "--seek") Then
                 sb.Append(" --seek " & Seek.Value)

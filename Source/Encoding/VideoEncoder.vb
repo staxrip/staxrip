@@ -97,7 +97,7 @@ Public MustInherit Class VideoEncoder
     End Function
 
     Overridable Function AfterEncoding() As Boolean
-        Dim op = If(GetChunks() = 1,OutputPath, OutputPath.DirAndBase() + "_chunk1" + OutputPath.ExtFull)
+        Dim op = If(GetChunks() = 1, OutputPath, OutputPath.DirAndBase() + "_chunk1" + OutputPath.ExtFull)
 
         If Not g.FileExists(op) Then Throw New ErrorAbortException("Encoder output file is missing", op)
 
@@ -419,6 +419,7 @@ Public MustInherit Class BasicVideoEncoder
             Dim a = g.MainForm.ParseCommandLine(commandLine)
 
             For x = 0 To a.Length - 1
+                Application.DoEvents()
                 For Each param In params.Items
                     If param.ImportAction IsNot Nothing AndAlso
                         param.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
@@ -459,15 +460,12 @@ Public MustInherit Class BasicVideoEncoder
                         Dim optionParam = DirectCast(param, OptionParam)
 
                         If optionParam.GetSwitches.Contains(a(x)) Then
-                            Dim exitFor As Boolean
-
                             If a.Length - 1 > x Then
                                 If optionParam.IntegerValue Then
                                     For xOpt = 0 To optionParam.Options.Length - 1
                                         If a(x + 1) = xOpt.ToString Then
                                             optionParam.Value = xOpt
                                             params.RaiseValueChanged(param)
-                                            exitFor = True
                                             Exit For
                                         End If
                                     Next
@@ -479,14 +477,9 @@ Public MustInherit Class BasicVideoEncoder
                                         If value.Trim(""""c).ToLowerInvariant = values(xOpt).ToLowerInvariant.Replace(" ", "") Then
                                             optionParam.Value = xOpt
                                             params.RaiseValueChanged(param)
-                                            exitFor = True
                                             Exit For
                                         End If
                                     Next
-                                End If
-
-                                If exitFor Then
-                                    Exit For
                                 End If
                             ElseIf a.Length - 1 = x Then
                                 If optionParam.Values IsNot Nothing Then
@@ -494,7 +487,6 @@ Public MustInherit Class BasicVideoEncoder
                                         If a(x) = optionParam.Values(xOpt) AndAlso optionParam.Values(xOpt).StartsWith("--") Then
                                             optionParam.Value = xOpt
                                             params.RaiseValueChanged(param)
-                                            exitFor = True
                                             Exit For
                                         End If
                                     Next

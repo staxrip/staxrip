@@ -1123,9 +1123,16 @@ Public Class x265Params
                         End If
                     End Function,
         .ImportAction = Sub(param, arg)
-                            Dim a = arg.Split(":"c)
-                            DeblockA.Value = a(0).ToInt
-                            DeblockB.Value = a(1).ToInt
+                            If param.Equals(Deblock.NoSwitch, StringComparison.OrdinalIgnoreCase) Then
+                                Deblock.Value = False
+                            Else
+                                Deblock.Value = True
+                                Dim a = arg.Split(":"c)
+                                If a.Length = 2 Then
+                                    DeblockA.Value = a(0).ToInt
+                                    DeblockB.Value = a(1).ToInt
+                                End If
+                            End If
                         End Sub}
 
     Property DeblockA As New NumParam With {

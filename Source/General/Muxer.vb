@@ -239,7 +239,7 @@ Public MustInherit Class Muxer
         Next
 
         For Each iDir In {p.TempDir, p.TempDir.Parent}
-            For Each iExt In {"jpg", "png"}
+            For Each iExt In {"jpg", "jpeg", "png"}
                 Dim fp = Path.Combine(iDir, "cover." + iExt)
 
                 If File.Exists(fp) Then

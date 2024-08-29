@@ -232,7 +232,7 @@ Public MustInherit Class Muxer
             End If
 
             If p.AddAttachmentsToMuxer Then
-                If TypeOf Me Is MkvMuxer AndAlso i.Contains("_attachment_") Then
+                If TypeOf Me Is MkvMuxer AndAlso i.Contains("attachment_") Then
                     Attachments.Add(i)
                 End If
             End If
@@ -834,8 +834,8 @@ Public Class MkvMuxer
         For Each i In Attachments
             Dim name = Path.GetFileName(i)
 
-            If i.Contains("_attachment_") Then
-                name = i.Right("_attachment_")
+            If i.Contains("attachment_") Then
+                name = i.Right("attachment_")
             End If
 
             args += $" --attachment-name {name.Escape} --attach-file {i.LongPathPrefix.Escape}"

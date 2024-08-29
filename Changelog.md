@@ -40,6 +40,7 @@ v2.42.0 (not published yet)
 - UI: Fix Assistant blocking message on cutting without a Dolby Vision metadata file path set ([#1454](/../../issues/1454))
 - UI: Add "ImportVideoEncoderCommandLineFromTextFile" command
 - UI: Improve Command Line Import
+- UI: Improve handling/demuxing with attachments
 - Crop: Make AutoCrop process skippable ([#1411](/../../issues/1411))
 - Crop: Add Frame Interval Selection Mode
 - Crop: Add Frame Consideration Mode to Options ([#1386](/../../issues/1386))

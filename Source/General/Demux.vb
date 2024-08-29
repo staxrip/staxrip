@@ -964,7 +964,7 @@ Public Class mkvDemuxer
     End Sub
 
     Shared Function GetAttachmentPath(proj As Project, name As String) As String
-        Dim prefix = If(name.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land"), "", proj.SourceFile.Base + "_attachment_")
+        Dim prefix = If(name.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land"), "", If(proj.SourceFile.StartsWith(proj.TempDir), proj.SourceFile.Base + "_", "") + "attachment_")
         Dim ret = Path.Combine(proj.TempDir, prefix + name.Base + name.ExtFull)
         Return ret
     End Function

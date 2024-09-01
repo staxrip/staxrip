@@ -3,7 +3,6 @@
 [![GitHub all releases](https://img.shields.io/github/downloads/staxrip/staxrip/total?style=plastic&logo=GitHub&logoColor=white&label=Total%20Downloads&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/releases/latest)
 [![GitHub Repo stars](https://img.shields.io/github/stars/staxrip/staxrip?style=plastic&logo=GitHub&logoColor=white&label=Stars&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip)
 [![Discord](https://img.shields.io/badge/Discord-Join%20us?style=plastic&logo=discord&logoColor=white&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://discord.gg/uz8pVR79Bd)  
-[![Static Badge](https://img.shields.io/badge/PayPal-00457C?style=plastic&logo=PayPal&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://paypal.me/DendraspisViridis)
 [![Static Badge](https://img.shields.io/badge/Ko--fi-F16061?style=plastic&logo=Ko-Fi&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://ko-fi.com/dendraspis)
 [![Static Badge](https://img.shields.io/badge/BuyMeACoffee-BuyMeACoffee?style=plastic&logo=BuyMeACoffee&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://www.buymeacoffee.com/dendraspis)
 
@@ -35,7 +34,6 @@ There are a lot of resources in StaxRip-related communities. Users are strongly 
 
 [![GitHub License](https://img.shields.io/github/license/staxrip/staxrip?style=plastic&logo=GitHub&logoColor=white&label=License&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(110%2C%2060%25%2C%2050%25))](https://github.com/staxrip/staxrip/blob/master/License.txt)
 [![Discord](https://img.shields.io/badge/Discord-Join%20us?style=plastic&logo=discord&logoColor=white&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://discord.gg/uz8pVR79Bd)  
-[![Static Badge](https://img.shields.io/badge/PayPal-00457C?style=plastic&logo=PayPal&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://paypal.me/DendraspisViridis)
 [![Static Badge](https://img.shields.io/badge/Ko--fi-F16061?style=plastic&logo=Ko-Fi&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://ko-fi.com/dendraspis)
 [![Static Badge](https://img.shields.io/badge/BuyMeACoffee-BuyMeACoffee?style=plastic&logo=BuyMeACoffee&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://www.buymeacoffee.com/dendraspis)
 
@@ -44,7 +42,6 @@ StaxRip is free to use under MIT license. If you want to contribute, you can rep
 ### **Donation**
 If you want to donate to support StaxRip and keep it alive, you can do it by using those links:
 
-- [![Static Badge](https://img.shields.io/badge/PayPal-00457C?style=plastic&logo=PayPal&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://paypal.me/DendraspisViridis) https://paypal.me/DendraspisViridis
 - [![Static Badge](https://img.shields.io/badge/Ko--fi-F16061?style=plastic&logo=Ko-Fi&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://ko-fi.com/dendraspis) https://ko-fi.com/dendraspis
 - [![Static Badge](https://img.shields.io/badge/BuyMeACoffee-BuyMeACoffee?style=plastic&logo=BuyMeACoffee&labelColor=hsl(210%2C%2060%25%2C%2050%25)&color=hsl(210%2C%2060%25%2C%2050%25))](https://www.buymeacoffee.com/dendraspis) https://www.buymeacoffee.com/dendraspis
 

@@ -42,6 +42,7 @@ v2.42.0 (not published yet)
 - UI: Improve Command Line Import
 - UI: Improve handling/demuxing with attachments
 - UI: Add support for covers with jpeg file extension ([#1233](/../../issues/1233))
+- UI: Fix crash on Crop window opening under some circumstances ([#1462](/../../issues/1462))
 - Crop: Make AutoCrop process skippable ([#1411](/../../issues/1411))
 - Crop: Add Frame Interval Selection Mode
 - Crop: Add Frame Consideration Mode to Options ([#1386](/../../issues/1386))

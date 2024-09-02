@@ -282,7 +282,9 @@ Public Class CropForm
         script.Synchronize(True, True, True)
 
         FrameServer = FrameServerFactory.Create(script.Path)
-        Renderer = New VideoRenderer(pnVideo, FrameServer)
+        Renderer = New VideoRenderer(pnVideo, FrameServer) With {
+            .Info = script.OriginalInfo
+        }
 
         If s.LastPosition < (FrameServer.Info.FrameCount - 1) Then
             Renderer.Position = s.LastPosition
@@ -491,8 +493,11 @@ Public Class CropForm
         Dim cropw = p.SourceWidth - p.CropLeft - p.CropRight
         Dim croph = p.SourceHeight - p.CropTop - p.CropBottom
 
-        Dim lengthDate = Date.Today.AddSeconds(Renderer.Position / Renderer.Info.FrameRate)
-        Dim time = lengthDate.ToString(If(lengthDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff"))
+        Dim time = ""
+        If Renderer.Info.FrameRate > 0 Then
+            Dim lengthDate = Date.Today.AddSeconds(Renderer.Position / Renderer.Info.FrameRate)
+            time = lengthDate.ToString(If(lengthDate.Hour = 0, "mm:ss.fff", "HH:mm:ss.fff"))
+        End If
 
         Dim isResized = p.Script.IsFilterActive("Resize")
         Dim isValidAnamorphicSize = (p.TargetWidth = 1440 AndAlso p.TargetHeight = 1080) OrElse (p.TargetWidth = 960 AndAlso p.TargetHeight = 720)

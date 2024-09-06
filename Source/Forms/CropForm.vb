@@ -283,7 +283,7 @@ Public Class CropForm
 
         FrameServer = FrameServerFactory.Create(script.Path)
         Renderer = New VideoRenderer(pnVideo, FrameServer) With {
-            .Info = script.OriginalInfo
+            .Info = script.Info
         }
 
         If s.LastPosition < (FrameServer.Info.FrameCount - 1) Then

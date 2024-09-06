@@ -294,7 +294,7 @@ Public Class GlobalCommands
     End Sub
 
     <Command("Gets application details.")>
-    Function GetApplicationDetails(Optional includeName As Boolean = True, Optional includeVersion As Boolean = True) As String
+    Function GetApplicationDetails(Optional includeName As Boolean = True, Optional includeVersion As Boolean = True, Optional includeSettingsVersion As Boolean = True) As String
         Dim sb = New StringBuilder()
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
 
@@ -304,6 +304,12 @@ Public Class GlobalCommands
 
             If version.Build > 0 Then
                 sb.Append($".{version.Build}")
+            End If
+
+            If includeSettingsVersion Then
+                If version.Minor <> s?.Version.Minor Then
+                    sb.Append($" [v{s.Version.Major}.{s.Version.Minor}.{s.Version.Build}]")
+                End If
             End If
         End If
 

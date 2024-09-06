@@ -7615,7 +7615,7 @@ Public Class MainForm
 
     <Command("Shows the latest changes.")>
     Sub ShowChangelog(force As Boolean)
-        Dim appDetails = g.DefaultCommands.GetApplicationDetails()
+        Dim appDetails = g.DefaultCommands.GetApplicationDetails(True, True, False)
         Dim version = Assembly.GetExecutingAssembly.GetName.Version
         If Not force AndAlso s.ShowChangelog = appDetails Then Exit Sub
 
@@ -7630,7 +7630,7 @@ Public Class MainForm
                     Dim line = reader.ReadLine()
                     If line Like "========*" Then Continue Do
 
-                    Dim match = Regex.Match(line, "(v\d\.(\d+)\.?(\d*))\W+\(.*\)")
+                    Dim match = Regex.Match(line, "(v\d\.(\d+)\.?(\d*)(?:-(RC\d+))?)\W+\(.*\)")
                     Dim lines = Regex.Matches(sb.ToString(), Environment.NewLine).Count
                     If match.Success Then
                         If relevant Then
@@ -7652,7 +7652,7 @@ Public Class MainForm
                             End If
                         End If
 
-                        If Not match.Groups(1).Value.StartsWithEx(g.DefaultCommands.GetApplicationDetails(False, True)) Then Continue Do
+                        If Not g.DefaultCommands.GetApplicationDetails(False, True).StartsWithEx(match.Groups(1).Value) Then Continue Do
 
                         relevant = True
                         Continue Do

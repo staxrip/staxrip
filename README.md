@@ -87,7 +87,7 @@ and mess up the values. This is pretty rare, but it can happen.
 Since `v2.37.0` the versioning has changed a little bit.  
 Releases with the same second number (for example `v2.39.0`, `v2.39.2` and `v2.39.3`) are basically compatible with each other,
 means that you can overwrite the existing files of your old instance and use the same/old settings.
-Whenever this is possible an `EXE-ONLY` archive is also released so you can just download the files that are needed to overwrite.
+Whenever this is possible an `UPDATE` archive is also released so you can just download the files that are needed to overwrite.
 
 
 # Screenshots

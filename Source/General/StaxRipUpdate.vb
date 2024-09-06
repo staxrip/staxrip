@@ -41,7 +41,7 @@ Public Class StaxRipUpdate
         If Not s.CheckForUpdates AndAlso Not force Then Exit Sub
 
         SetFirstRunOnCurrentVersion()
-        
+
         Dim hours = Conversion.Fix((DateTime.Now - s.FirstRunOnVersion.Value).TotalHours)
         Dim diffHoursToCheck = 12
         diffHoursToCheck = If(hours < 96, 6, diffHoursToCheck)
@@ -63,19 +63,22 @@ Public Class StaxRipUpdate
             Dim response = Await HttpClient.GetAsync(releaseUrl)
             response.EnsureSuccessStatusCode()
             Dim content = Await response.Content.ReadAsStringAsync()
-            Dim linkMatches = Regex.Matches(content, "(?<="")/staxrip/staxrip/releases/tag/v?(\d+\.\d+\.\d+(?:\.\d+)?)(?="")")
+            Dim linkMatches = Regex.Matches(content, "(?<="")/staxrip/staxrip/releases/tag/v?((\d+\.\d+\.\d+(?:\.\d+)?)(?:(-RC\d+))?)(?="")")
 
             For Each linkMatch As Match In linkMatches
-                Dim onlineVersionString = linkMatch.Groups(1).Value
-                Dim onlineVersion = Version.Parse(linkMatch.Groups(1).Value)
+                Dim onlineVersionString = linkMatch.Groups(2).Value
+                Dim onlineVersion = Version.Parse(onlineVersionString)
+                Dim isRC = linkMatch.Groups(3).Success
+                Dim rcString = If(isRC, linkMatch.Groups(3).Value, "")
 
                 If onlineVersion <= currentVersion Then Exit For
 
-                Dim filename = $"StaxRip-v{onlineVersionString}-x64.7z"
+                Dim filename = $"StaxRip-v{onlineVersionString}{rcString}-x64.7z"
                 Dim downloadUri = $"https://github.com/staxrip/staxrip/releases/download/v{onlineVersionString}/{filename}"
                 Dim releaseUri = $"https://github.com/staxrip/staxrip/releases/tag/v{onlineVersionString}"
+                Dim releaseType = If(isRC, "release candidate", "release")
 
-                latestVersions.Add((onlineVersion, "release", releaseUri, downloadUri, filename))
+                latestVersions.Add((onlineVersion, releaseType, releaseUri, downloadUri, filename))
             Next
 
             If latestVersions.Count > 0 Then
@@ -117,35 +120,11 @@ Public Class StaxRipUpdate
                             End If
                         End If
 
-                        'td.AddCommand("Download and save as...", "dl-save-as")
-                        'td.AddCommand("Download via browser", "dl-browser")
                         td.AddCommand("Open release page", "open")
                         td.AddCommand("Dismiss v" & latestVersion.Version.ToString(), "dismiss")
                         td.AddCommand("Cancel", "cancel")
 
                         Select Case td.Show
-                            Case "dl-save-as"
-                                Dim saveFileDialog = New SaveFileDialog With {
-                                    .AddExtension = True,
-                                    .AutoUpgradeEnabled = True,
-                                    .CheckFileExists = False,
-                                    .DefaultExt = "7z",
-                                    .FileName = latestVersion.FileName,
-                                    .Filter = "7-zip archive (*.7z)|*.7z",
-                                    .OverwritePrompt = True,
-                                    .Title = "Save new " + latestVersion.ReleaseType + " as..."
-                                }
-
-                                If saveFileDialog.ShowDialog() = DialogResult.OK Then
-                                    Using client As New WebClient()
-                                        AddHandler client.DownloadFileCompleted, AddressOf OnDownloadComplete
-                                        client.DownloadFileAsync(New Uri(latestVersion.DownloadUri), saveFileDialog.FileName)
-
-                                        MessageBox.Show("This may take a while." + BR + "You'll be informed when the download finished." + BR2 + "Please do not close this instance till the download is finished!", "Downloading...", MessageBoxButtons.OK)
-                                    End Using
-                                End If
-                            Case "dl-browser"
-                                g.ShellExecute(latestVersion.DownloadUri)
                             Case "open"
                                 g.ShellExecute(latestVersion.SourceSite)
                             Case "dismiss"

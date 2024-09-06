@@ -1686,7 +1686,6 @@ Public Class MainForm
 
     Sub SetSavedProject()
         g.SavedProject = ObjectHelp.GetCopy(Of Project)(p)
-        p.Log.Save()
     End Sub
 
     Sub SetAudioTracks(Optional proj As Project = Nothing)

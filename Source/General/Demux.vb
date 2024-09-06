@@ -293,11 +293,8 @@ Public Class ffmpegDemuxer
             Next
         End If
 
-        If subtitlesDemuxing Then
-            If subtitles Is Nothing Then
-                subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
-            End If
-
+        If subtitlesDemuxing AndAlso proj.IsSubtitleDemuxingRequired Then
+            subtitles = If(subtitles, MediaInfo.GetSubtitles(proj.SourceFile))
             DemuxSubtitles(subtitles, proj, OverrideExisting)
         End If
 

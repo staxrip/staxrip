@@ -14,6 +14,19 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.42.1 (2024-09-08)
+====================
+
+- UI: Fix Demuxing Subtitles for ffmpeg ([#1466](/../../issues/1466))
+- UI: Fix not saving log files ([#1467](/../../issues/1467))
+- UI: Fix no time display on Crop window ([#1470](/../../issues/1470))
+- UI: Disable Window Dark Mode when system colors are used ([#1470](/../../issues/1470))
+- UI: Fix Demux handling for subtitles ([#1471](/../../issues/1471))
+- NVEncC: Fix incompatible output file type for AV1 encodes
+- QSVEncC: Fix incompatible output file type for AV1 encodes
+- VCEEncC: Fix incompatible output file type for AV1 encodes
+
+
 v2.42.0 (2024-09-05)
 ====================
 
@@ -58,28 +71,19 @@ v2.42.0 (2024-09-05)
 - Qaac: Add "--no-delay" parameter ([#1410](/../../issues/1410))
 - QSVEncC: Fix incompatible output file type for AV1 encodes
 - QSVEncC: Add "--output-csp" parameter
-- SvtAv1EncApp: Fix "--qp" parameter for non Psy versions
-- SvtAv1EncApp: Fix "--qp-max" parameter
-- SvtAv1EncApp: Add "--tf-strength" parameter
-- SvtAv1EncApp: Add "--chroma-qm-min" parameter
-- SvtAv1EncApp: Add "--chroma-qm-max" parameter
-- SvtAv1EncApp: Add "--tune 4" option
-- VCEEncC: Add "--vpp-decomb" parameter ([#1444](/../../issues/1444))
-- VCEEncC: Add "--vpp-fft3d" parameter ([#1444](/../../issues/1444))
-- VCEEncC: Add "--vpp-nlmeans" parameter ([#1444](/../../issues/1444))
-- VCEEncC: Add "--atc-sei" parameter ([#1444](/../../issues/1444))
-- VCEEncC: Add "--chromaloc" parameter ([#1444](/../../issues/1444))
-- VCEEncC: Add "--colorrange" parameter ([#1444](/../../issues/1444))
-- VCEEncC: Add "--master-display" parameter ([#1444](/../../issues/1444))
-- VCEEncC: Add "--max-cll" parameter ([#1444](/../../issues/1444))
-- VCEEncC: Fix "--pa" parameter ([#1444](/../../issues/1444))
-- VCEEncC: Fix "--preset" parameter ([#1444](/../../issues/1444))
+- SvtAv1EncApp: Fix parameters for non Psy versions
+    - "--qp", "--qp-max"
+- SvtAv1EncApp: Add parameters
+    - "--tf-strength", "--chroma-qm-min", "--chroma-qm-max", "--tune 4"
+- VCEEncC: Add parameters ([#1444](/../../issues/1444))
+    - "--vpp-decomb", "--vpp-fft3d", "--vpp-nlmeans", "--atc-sei", "--chromaloc", "--colorrange", "--master-display", "--max-cll"
+- VCEEncC: Fix parameters ([#1444](/../../issues/1444))
+    - "--pa", "--preset"
 - VCEEncC: Fix mode options across all codecs ([#1444](/../../issues/1444))
 - VCEEncC: Fix incompatible output file type for AV1 encodes
+- x265: Add parameters
+    - "--alpha", "--format", "--scc"
 - x265: Fix "--aq-mode" default value across different presets
-- x265: Add "--alpha" parameter
-- x265: Add "--format" parameter
-- x265: Add "--scc" parameter
 - Update tools
     - aomenc v3.9.1-419-g9ed60cc5ff-x64-msvc1940
     - AutoCrop v2.5

@@ -396,7 +396,21 @@ Public Class ffmpegDemuxer
         If subtitles Is Nothing Then Exit Sub
         If proj Is Nothing Then Exit Sub
 
-        For Each subtitle In subtitles.Where(Function(x) x.Enabled)
+        For Each subtitle In subtitles
+            Dim skip As Boolean = False
+
+            Select Case proj.SubtitleMode
+                Case SubtitleMode.All
+                    skip = False
+                Case SubtitleMode.PreferredNoMux
+                    Dim prefSubtitles = proj.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    skip = Not prefSubtitles.ContainsAny("all", subtitle.Language.TwoLetterCode.ToLowerInvariant(), subtitle.Language.ThreeLetterCode.ToLowerInvariant(), subtitle.Language.Name.ToLowerInvariant())
+                Case Else
+                    skip = Not subtitle.Enabled
+            End Select
+
+            If skip Then Continue For
+
             Dim outpath = Path.Combine(proj.TempDir, subtitle.Filename + subtitle.ExtFull)
             Dim args = "-y -hide_banner -probesize 10M -i " + proj.SourceFile.Escape
             Dim codec = If(subtitle.Ext = "srt", "srt", "copy")
@@ -505,23 +519,20 @@ Public Class MP4BoxDemuxer
                 subtitles = MediaInfo.GetSubtitles(proj.SourceFile)
             End If
 
-            Dim autoCode = proj.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-
             For Each subtitle In subtitles
-                Dim prefLang As Boolean = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) OrElse proj.SubtitleMode = SubtitleMode.All
                 Dim skip As Boolean = False
 
-                If proj.SubtitleMode = SubtitleMode.PreferredNoMux Then
-                    If Not prefLang Then
-                        skip = True
-                    End If
-                Else
-                    skip = Not subtitle.Enabled
-                End If
+                Select Case proj.SubtitleMode
+                    Case SubtitleMode.All
+                        skip = False
+                    Case SubtitleMode.PreferredNoMux
+                        Dim prefSubtitles = proj.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                        skip = Not prefSubtitles.ContainsAny("all", subtitle.Language.TwoLetterCode.ToLowerInvariant(), subtitle.Language.ThreeLetterCode.ToLowerInvariant(), subtitle.Language.Name.ToLowerInvariant())
+                    Case Else
+                        skip = Not subtitle.Enabled
+                End Select
 
-                If skip Then
-                    Continue For
-                End If
+                If skip Then Continue For
 
                 Dim outpath = Path.Combine(proj.TempDir, subtitle.Filename + subtitle.ExtFull)
 
@@ -873,10 +884,20 @@ Public Class mkvDemuxer
         End If
 
         If subtitles IsNot Nothing AndAlso proj.IsSubtitleDemuxingRequired Then
-            Dim autoCode = proj.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
-
             For Each subtitle In subtitles
-                If Not subtitle.Enabled Then Continue For
+                Dim skip As Boolean = False
+
+                Select Case proj.SubtitleMode
+                    Case SubtitleMode.All
+                        skip = False
+                    Case SubtitleMode.PreferredNoMux
+                        Dim prefSubtitles = proj.PreferredSubtitles.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                        skip = Not prefSubtitles.ContainsAny("all", subtitle.Language.TwoLetterCode.ToLowerInvariant(), subtitle.Language.ThreeLetterCode.ToLowerInvariant(), subtitle.Language.Name.ToLowerInvariant())
+                    Case Else
+                        skip = Not subtitle.Enabled
+                End Select
+
+                If skip Then Continue For
 
                 Dim _default = If(subtitle.Default, "_default", "")
                 Dim forced = If(subtitle.Forced, "_forced", "")

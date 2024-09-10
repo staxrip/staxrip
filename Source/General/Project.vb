@@ -15,6 +15,7 @@ Public Class Project
 
     Public AbortOnFrameMismatch As Boolean = True
     Public AddAttachmentsToMuxer As Boolean = True
+    Public AddTagsToMuxer As Boolean = True
     Public AdjustHeight As Boolean = True
     Public AudioFiles As New List(Of AudioProfile)
     Public AudioTracks As New List(Of AudioTrack)
@@ -70,6 +71,7 @@ Public Class Project
     Public DemuxAttachments As Boolean = True
     Public DemuxAudio As DemuxMode = DemuxMode.All
     Public DemuxChapters As Boolean = True
+    Public DemuxTags As Boolean = False
     Public DemuxVideo As Boolean = False
     Public ExtractHdrmetadata As HdrmetadataMode = HdrmetadataMode.All
     Public ExtractTimestamps As TimestampsMode = TimestampsMode.VfrOnly

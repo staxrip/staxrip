@@ -5467,6 +5467,20 @@ Public Class MainForm
 
 
             '   ----------------------------------------------------------------
+            Dim tagsPage = ui.CreateFlowPage("Tags")
+
+            b = ui.AddBool(tagsPage)
+            b.Text = "Demux Tags"
+            b.Checked = p.DemuxTags
+            b.SaveAction = Sub(val) p.DemuxTags = val
+
+            b = ui.AddBool(tagsPage)
+            b.Text = "Add Tags to Muxing"
+            b.Checked = p.AddTagsToMuxer
+            b.SaveAction = Sub(val) p.AddTagsToMuxer = val
+
+
+            '   ----------------------------------------------------------------
             ui.CreateFlowPage("Thumbnails", True)
 
             b = ui.AddBool()

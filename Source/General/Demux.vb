@@ -1,6 +1,7 @@
 
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.Xml
 
 <Serializable()>
 Public MustInherit Class Demuxer
@@ -730,6 +731,7 @@ Public Class mkvDemuxer
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim demuxChapters = proj.DemuxChapters
         Dim demuxAttachments = proj.DemuxAttachments
+        Dim demuxTags = proj.DemuxTags
         Dim _videoDemuxing = proj.DemuxVideo
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse (demuxSubtitles AndAlso proj.SubtitleMode = SubtitleMode.Dialog)) OrElse proj IsNot p Then
@@ -813,11 +815,34 @@ Public Class mkvDemuxer
                     proc.WriteLog(stdout + BR)
                     proc.Encoding = Encoding.UTF8
                     proc.Package = Package.mkvextract
-                    proc.Arguments = proj.SourceFile.Escape + " --ui-language en attachments " + enabledAttachments.Select(
-                        Function(val) val.ID & ":" + GetAttachmentPath(proj, val.Name).Escape).Join(" ")
+                    proc.Arguments = proj.SourceFile.Escape + " --ui-language en attachments " + enabledAttachments.Select(Function(val) val.ID & ":" + GetAttachmentPath(proj, val.Name).Escape).Join(" ")
                     proc.AllowedExitCodes = {0, 1, 2}
                     proc.Start()
                 End Using
+            End If
+        End If
+
+        If demuxTags Then
+            Dim tagsIncluded = Regex.IsMatch(stdout, "^Global tags: \d+", RegexOptions.Multiline Or RegexOptions.IgnoreCase)
+
+            If tagsIncluded Then
+                Dim tagsString = ProcessHelp.GetConsoleOutput(Package.mkvextract.Path, proj.SourceFile.Escape + " tags")
+
+                If Not String.IsNullOrWhiteSpace(tagsString) Then
+                    Try
+                        Dim xmlDoc = New XmlDocument()
+                        xmlDoc.LoadXml(tagsString)
+                        Dim tagsNode = xmlDoc.SelectSingleNode("/Tags")
+                        Dim tagNodes = tagsNode.SelectNodes("Tag[Simple/Name[contains(text(), ""BPS"")]]")
+
+                        For Each node As XmlNode In tagNodes
+                            tagsNode.RemoveChild(node)
+                        Next
+
+                        xmlDoc.Save(Path.Combine(proj.TempDir, proj.SourceFile.Base + "_tags.xml"))
+                    Catch ex As Exception
+                    End Try
+                End If
             End If
         End If
 

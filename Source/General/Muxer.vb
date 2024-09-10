@@ -247,6 +247,12 @@ Public MustInherit Class Muxer
                     Attachments.Add(i)
                 End If
             End If
+
+            If p.AddTagsToMuxer Then
+                If TypeOf Me Is MkvMuxer AndAlso i.ToLowerInvariant().Contains("_tags.xml") Then
+                    TagFile = i
+                End If
+            End If
         Next
 
         For Each iDir In {p.TempDir, p.TempDir.Parent}

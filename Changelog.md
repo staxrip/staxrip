@@ -14,6 +14,23 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.42.2 (2024-11-08)
+====================
+
+- General: Add file extension to temp folder name
+- General: Add file extension to log file when saved next to source file
+- Macro: Add new macro %encoder_codec% ([#1520](/../../issues/1520))
+- UI: Fix removing of last path separator from paths ([#1491](/../../issues/1491))
+- UI: Fix not showing error messages on indexing ([#1514](/../../issues/1514))
+- UI: Show crop values on main window ([#1521](/../../issues/1521))
+- UI: Fix Demux Dialog ignores selection of audio and subtitle streams ([#1502](/../../issues/1502))
+- FFmpeg: Fix ProRes Profile option ([#1523](/../../issues/1523))
+- NVEncC: Fix parameters "--qp-init", "--qp-min" and "--qp-max"
+- QSVEncC: Fix parameters "--qp-min" and "--qp-max"
+- SvtAv1EncApp: Fix passing wrong width and height values to the encoder when filters changed the size
+- VCEEncC: Add, fix and alter various parameters ([#1486](/../../issues/1486))
+
+
 v2.42.1 (2024-09-08)
 ====================
 

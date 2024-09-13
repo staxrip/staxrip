@@ -92,10 +92,9 @@ Public Class x265Control
         InitializeComponent()
         components = New ComponentModel.Container()
 
-        If Not s.X265QualityDefinitions Is Nothing AndAlso s.X265QualityDefinitions.Any() Then
-            QualityDefinitions = s.X265QualityDefinitions
-        Else
-            QualityDefinitions = New List(Of QualityItem) From {
+        QualityDefinitions = If(s.X265QualityDefinitions IsNot Nothing AndAlso s.X265QualityDefinitions.Any(),
+            s.X265QualityDefinitions,
+            New List(Of QualityItem) From {
                 New QualityItem(10, "Super High", "Super high quality and file size"),
                 New QualityItem(12, "Very High", "Very high quality and file size"),
                 New QualityItem(14, "Higher", "Higher quality and file size"),
@@ -106,8 +105,7 @@ Public Class x265Control
                 New QualityItem(24, "Very Low", "Very low quality and file size"),
                 New QualityItem(26, "Super Low", "Super low quality and file size"),
                 New QualityItem(28, "Extreme Low", "Extreme low quality and file size"),
-                New QualityItem(30, "Ultra Low", "Ultra low quality and file size")}
-        End If
+                New QualityItem(30, "Ultra Low", "Ultra low quality and file size")})
 
         Encoder = enc
         Params = Encoder.Params
@@ -184,60 +182,110 @@ Public Class x265Control
 
     Sub UpdateMenu()
         cms.Items.ClearAndDisplose
-        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
+        Dim offset = If(Encoder.QualityMode, 0, 1)
 
         If lv.SelectedItems.Count > 0 Then
-            Select Case lv.SelectedIndices(0)
+            Dim selectedIndex = lv.SelectedIndices(0)            
+            Select Case selectedIndex
                 Case 0 - offset
+                    Dim param = Params.Quant
                     For Each def In QualityDefinitions
-                        cms.Items.Add(New MenuItemEx(def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $" - {def.Text}      ", "      "), Sub() SetQuality(def.Value), def.Tooltip) With {.Font = If(Params.Quant.Value = def.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
+                        Dim item = MenuItemEx.Add(cms.Items, def.Value.ToInvariantString() & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}  ", "  "), Sub() SetQuality(selectedIndex, def.Value), def.Tooltip)
+                        item.Font = If(param.Value = def.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
                     Next
                 Case 1 - offset
-                    For x = 0 To Params.Preset.Options.Length - 1
+                    Dim param = Params.Preset
+                    For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim presetMenuItem = New MenuItemEx(Params.Preset.Options(x) + "      ", Sub() SetPreset(temp), "x264 slower compares to x265 medium") With {.Font = If(Params.Preset.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))}
-                        cms.Items.Add(presetMenuItem)
+                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetPreset(selectedIndex, temp))
+                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
                     Next
                 Case 2 - offset
-                    For x = 0 To Params.Tune.Options.Length - 1
+                    Dim param = Params.Tune
+                    For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        cms.Items.Add(New MenuItemEx(Params.Tune.Options(x) + "      ", Sub() SetTune(temp)) With {.Font = If(Params.Tune.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
+                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetTune(selectedIndex, temp))
+                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                    Next
+                Case 3 - offset
+                    Dim param = Params.AQmode
+                    For x = 0 To param.Options.Length - 1
+                        Dim temp = x
+                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetAqMode(selectedIndex, temp))
+                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                    Next
+                Case 4 - offset
+                    Dim param = Params.DolbyVisionProfile
+                    For x = 0 To param.Options.Length - 1
+                        Dim temp = x
+                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetDolbyVisionProfile(selectedIndex, temp))
+                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                    Next
+                Case 5 - offset
+                    Dim param = Params.Range
+                    For x = 0 To param.Options.Length - 1
+                        Dim temp = x
+                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetRange(selectedIndex, temp))
+                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
                     Next
             End Select
         End If
     End Sub
 
-    Sub SetQuality(v As Double)
+    Sub SetQuality(index As Integer, v As Double)
         Params.Quant.Value = v
-        lv.Items(0).SubItems(1).Text = GetQualityCaption(v)
-        lv.Items(0).Selected = False
+        lv.Items(index).SubItems(1).Text = GetQualityCaption(v)
+        lv.Items(index).Selected = False
         UpdateControls()
     End Sub
 
-    Sub SetPreset(value As Integer)
-        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
-
+    Sub SetPreset(index As Integer, value As Integer)
         Params.Preset.Value = value
 
         Params.ApplyPresetValues()
         Params.ApplyTuneValues()
 
-        lv.Items(1 - offset).SubItems(1).Text = value.ToString
-        lv.Items(1 - offset).Selected = False
+        lv.Items(index).SubItems(1).Text = value.ToString
+        lv.Items(index).Selected = False
 
         UpdateControls()
     End Sub
 
-    Sub SetTune(value As Integer)
-        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
-
+    Sub SetTune(index As Integer, value As Integer)
         Params.Tune.Value = value
 
         Params.ApplyPresetValues()
         Params.ApplyTuneValues()
 
-        lv.Items(2 - offset).SubItems(1).Text = value.ToString
-        lv.Items(2 - offset).Selected = False
+        lv.Items(index).SubItems(1).Text = value.ToString
+        lv.Items(index).Selected = False
+
+        UpdateControls()
+    End Sub
+
+    Sub SetAqMode(index As Integer, value As Integer)
+        Params.AQmode.Value = value
+
+        lv.Items(index).SubItems(1).Text = value.ToString
+        lv.Items(index).Selected = False
+
+        UpdateControls()
+    End Sub
+
+    Sub SetDolbyVisionProfile(index As Integer, value As Integer)
+        Params.DolbyVisionProfile.Value = value
+
+        lv.Items(index).SubItems(1).Text = value.ToString
+        lv.Items(index).Selected = False
+
+        UpdateControls()
+    End Sub
+
+    Sub SetRange(index As Integer, value As Integer)
+        Params.Range.Value = value
+
+        lv.Items(index).SubItems(1).Text = value.ToString
+        lv.Items(index).Selected = False
 
         UpdateControls()
     End Sub
@@ -245,7 +293,7 @@ Public Class x265Control
     Function GetQualityCaption(value As Double) As String
         For Each def In QualityDefinitions
             If def.Value = value Then
-                Return value & If(Not String.IsNullOrWhiteSpace(def.Text), $" - {def.Text}", "")
+                Return value.ToInvariantString() & If(Not String.IsNullOrWhiteSpace(def.Text), $" - {def.Text}", "")
             End If
         Next
 
@@ -253,18 +301,15 @@ Public Class x265Control
     End Function
 
     Sub UpdateControls()
-        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
-
-        If Params.Mode.Value = x265RateMode.SingleCRF AndAlso lv.Items.Count < 4 Then
-            lv.Items.Clear()
+        lv.Items.Clear()
+        If Encoder.QualityMode Then
             lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
-            lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
-            lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
-        ElseIf Params.Mode.Value <> x265RateMode.SingleCRF AndAlso lv.Items.Count <> 3 Then
-            lv.Items.Clear()
-            lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
-            lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
         End If
+        lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
+        lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
+        lv.Items.Add(New ListViewItem({"AQ-Mode", Params.AQmode.OptionText}))
+        lv.Items.Add(New ListViewItem({"DV Profile", Params.DolbyVisionProfile.OptionText}))
+        lv.Items.Add(New ListViewItem({"Range", Params.Range.OptionText}))
 
         blCompCheck.Visible = Params.Mode.Value = x265RateMode.TwoPass Or Params.Mode.Value = x265RateMode.ThreePass
     End Sub

@@ -1,6 +1,7 @@
 ﻿
 Imports System.Text.RegularExpressions
 Imports System.Xml.Serialization
+Imports MS.Internal.Text.TextInterface
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
@@ -307,7 +308,7 @@ Public Class VCEEnc
         Dim tester As New ConsolAppTester
 
         tester.IgnoredSwitches = "audio-bitrate audio-codec video-streamid video-track vpy vpy-mt
-            audio-filter avsw device input-analyze audio-file sub-copy version audio-copy
+            audio-filter device input-analyze audio-file sub-copy version audio-copy
             audio-ignore-decode-error audio-ignore-notrack-error audio-resampler raw help input-file
             audio-samplerate audio-source audio-stream avs avvce-analyze output-file seek skip-frame
             check-avversion check-codecs check-decoders check-encoders check-filters check-protocols
@@ -339,10 +340,22 @@ Public Class VCEEnc
             .Text = "Mode",
             .Options = {"CQP - Constant QP", "CBR - Constant Bitrate", "CBRHQ - High Quality Constant Bitrate", "VBR - Variable Bitrate", "VBRHQ - High Quality Variable Bitrate", "QVBR - Quality-Defined Variable Bitrate"}}
 
+        Property OutputDepth As New OptionParam With {
+            .Switch = "--output-depth",
+            .Text = "Depth",
+            .Options = {"8-Bit", "10-Bit"},
+            .Values = {"8", "10"}}
+
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
-            .Options = {"AviSynth/VapourSynth", "VCEEnc (VCE)", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
-            .Values = {"avs", "vce", "qs", "ffqsv", "ffdxva"}}
+            .Options = {"AviSynth/VapourSynth", "VCEEnc (Hardware)", "VCEEnc (Software)", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
+            .Values = {"avs", "avhw", "avsw", "qs", "ffqsv", "ffdxva"}}
+
+        Property Interlace As New OptionParam With {
+            .Text = "Interlace",
+            .Switch = "--interlace",
+            .Options = {"Disabled", "Top Field First", "Bottom Field First", "Auto"},
+            .Values = {"", "tff", "bff", "auto"}}
 
         Property Bitrate As New NumParam With {
             .HelpSwitch = "--bitrate",
@@ -363,29 +376,61 @@ Public Class VCEEnc
             .VisibleFunc = Function() Mode.Value = 0}
 
         Property QP As New NumParam With {
-            .HelpSwitch = "--cqp",
+            .Switches = {"--cqp"},
             .Text = "QP",
             .Init = 18,
-            .VisibleFunc = Function() Mode.Value = 0 AndAlso Not QPAdvanced.Value,
-            .Config = {0, 51}}
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso Codec.Value <> 2 AndAlso Not (QPAdvanced.Value AndAlso QPAdvanced.Visible),
+            .Config = {0, 63}}
+
+        Property QPAV1 As New NumParam With {
+            .Switches = {"--cqp"},
+            .Text = "QP",
+            .Init = 50,
+            .VisibleFunc = Function() Mode.Value = 0 AndAlso Codec.Value = 2 AndAlso Not (QPAdvanced.Value AndAlso QPAdvanced.Visible),
+            .Config = {0, 255}}
 
         Property QPI As New NumParam With {
+            .Switches = {"--cqp"},
             .Text = "QP I",
-            .Value = 18,
-            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
-            .Config = {0, 51}}
+            .Init = 18,
+            .VisibleFunc = Function() Codec.Value <> 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
+            .Config = {0, 63}}
+
+        Property QPIAV1 As New NumParam With {
+            .Switches = {"--cqp"},
+            .Text = "QP I",
+            .Init = 50,
+            .VisibleFunc = Function() Codec.Value = 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
+            .Config = {0, 255}}
 
         Property QPP As New NumParam With {
+            .Switches = {"--cqp"},
             .Text = "QP P",
-            .Value = 20,
-            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
-            .Config = {0, 51}}
+            .Init = 20,
+            .VisibleFunc = Function() Codec.Value <> 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
+            .Config = {0, 63}}
+
+        Property QPPAV1 As New NumParam With {
+            .Switches = {"--cqp"},
+            .Text = "QP P",
+            .Init = 70,
+            .VisibleFunc = Function() Codec.Value = 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
+            .Config = {0, 255}}
 
         Property QPB As New NumParam With {
+            .Switches = {"--cqp"},
             .Text = "QP B",
-            .Value = 24,
-            .VisibleFunc = Function() Mode.Value = 0 AndAlso QPAdvanced.Value,
-            .Config = {0, 51}}
+            .Init = 24,
+            .VisibleFunc = Function() Codec.Value <> 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
+            .Config = {0, 63}}
+
+        Property QPBAV1 As New NumParam With {
+            .Switches = {"--cqp"},
+            .Text = "QP B",
+            .Init = 100,
+            .VisibleFunc = Function() Codec.Value = 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
+            .Config = {0, 255}}
+
 
         Property DolbyVisionProfile As New OptionParam With {
             .Switch = "--dolby-vision-profile",
@@ -420,25 +465,25 @@ Public Class VCEEnc
             .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
 
 
-        Property Tiles As New NumParam With {.Switch = "--tiles", .Text = "Tiles", .Value = 1, .Config = {0, 64}, .VisibleFunc = Function() Codec.Value = 2}
+        Property Tiles As New NumParam With {.Switch = "--tiles", .Text = "Tiles", .Init = 0, .Config = {0, 64}, .VisibleFunc = Function() Codec.Value = 2}
         Property CdefMode As New OptionParam With {.Switch = "--cdef-mode", .Text = "CDEF Mode", .Init = 0, .Options = {"Off", "On"}, .Values = {"off", "on"}, .VisibleFunc = Function() Codec.Value = 2}
         Property CdfUpdate As New BoolParam With {.Switch = "--cdf-update", .Text = "CDF Update", .Init = False, .VisibleFunc = Function() Codec.Value = 2}
         Property CdfFrameEndUpdate As New BoolParam With {.Switch = "--cdf-frame-end-update", .Text = "CDF Frame End Update", .Init = False, .VisibleFunc = Function() Codec.Value = 2}
         Property TemporalLayers As New NumParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers", .Value = 0, .Config = {0, 1000}, .VisibleFunc = Function() Codec.Value = 2}
         Property AqMode As New OptionParam With {.Switch = "--aq-mode", .Text = "AQ Mode", .Init = 0, .Options = {"None", "CAQ"}, .Values = {"none", "caq"}, .VisibleFunc = Function() Codec.Value = 2}
 
-        Property Pa As New BoolParam With {.Switch = "--pa", .Text = "Pre-Analysis to enhance quality", .ArgsFunc = AddressOf GetPaArgs}
-        Property PaSc As New OptionParam With {.Text = "      Sensitivity of scene change detection", .HelpSwitch = "--pa", .Init = 2, .Options = {"None", "Low", "Medium", "High"}}
-        Property PaSs As New OptionParam With {.Text = "      Sensitivity of static scene detection", .HelpSwitch = "--pa", .Init = 3, .Options = {"None", "Low", "Medium", "High"}}
-        Property PaActivityType As New OptionParam With {.Text = "      Block activity calcualtion mode", .HelpSwitch = "--pa", .Init = 0, .Options = {"Y", "YUV"}}
-        Property PaCaqStrength As New OptionParam With {.Text = "      Content Adaptive Quantization (CAQ) strength", .HelpSwitch = "--pa", .Init = 1, .Options = {"Low", "Medium", "High"}}
-        Property PaInitqpsc As New NumParam With {.Text = "      Initial qp after scene change", .HelpSwitch = "--pa", .Init = -1.0, .Config = {-1.0, 100.0, 1, 0}}
-        Property PaFskipMaxqp As New NumParam With {.Text = "      Threshold to insert skip frame on static scene", .HelpSwitch = "--pa", .Init = 35.0, .Config = {0.0, 100.0, 1, 0}}
-        Property PaLookahead As New NumParam With {.Text = "      Lookahead buffer size", .HelpSwitch = "--pa", .Init = 0, .Config = {0.0, 100.0, 1, 0}}
-        Property PaLtr As New OptionParam With {.Text = "      Enable automatic LTR frame management", .HelpSwitch = "--pa", .IntegerValue = False, .Init = 0, .Options = {"False", "True"}, .Values = {"false", "true"}}
-        Property PaPaq As New OptionParam With {.Text = "      Perceptual AQ mode", .HelpSwitch = "--pa", .IntegerValue = False, .Init = 0, .Options = {"None", "CAQ"}, .Values = {"none", "caq"}}
-        Property PaTaq As New OptionParam With {.Text = "      Temporal AQ mode", .HelpSwitch = "--pa", .IntegerValue = True, .Init = 0, .Options = {"0", "1", "2"}}
-        Property PaMotionQuality As New OptionParam With {.Text = "      High motion quality boost mode", .HelpSwitch = "--pa", .IntegerValue = False, .Init = 0, .Options = {"None", "Auto"}, .Values = {"none", "auto"}}
+        Property Pa As New BoolParam With {.Switch = "--pa", .Text = "Pre-Analysis to enhance quality", .VisibleFunc = Function() Mode.Value > 0 AndAlso OutputDepth.Value = 0, .ArgsFunc = AddressOf GetPaArgs}
+        Property PaSc As New OptionParam With {.Text = "      Sensitivity of scene change detection", .HelpSwitch = "--pa", .Init = 2, .Options = {"None", "Low", "Medium", "High"}, .VisibleFunc = Function() Pa.Visible}
+        Property PaSs As New OptionParam With {.Text = "      Sensitivity of static scene detection", .HelpSwitch = "--pa", .Init = 3, .Options = {"None", "Low", "Medium", "High"}, .VisibleFunc = Function() Pa.Visible}
+        Property PaActivityType As New OptionParam With {.Text = "      Block activity calcualtion mode", .HelpSwitch = "--pa", .Init = 0, .Options = {"Y", "YUV"}, .VisibleFunc = Function() Pa.Visible}
+        Property PaCaqStrength As New OptionParam With {.Text = "      Content Adaptive Quantization (CAQ) strength", .HelpSwitch = "--pa", .Init = 1, .Options = {"Low", "Medium", "High"}, .VisibleFunc = Function() Pa.Visible}
+        Property PaInitqpsc As New NumParam With {.Text = "      Initial qp after scene change", .HelpSwitch = "--pa", .Init = -1.0, .Config = {-1.0, 100.0, 1, 0}, .VisibleFunc = Function() Pa.Visible}
+        Property PaFskipMaxqp As New NumParam With {.Text = "      Threshold to insert skip frame on static scene", .HelpSwitch = "--pa", .Init = 35.0, .Config = {0.0, 100.0, 1, 0}, .VisibleFunc = Function() Pa.Visible}
+        Property PaLookahead As New NumParam With {.Text = "      Lookahead buffer size", .HelpSwitch = "--pa", .Init = 0, .Config = {0.0, 100.0, 1, 0}, .VisibleFunc = Function() Pa.Visible}
+        Property PaLtr As New OptionParam With {.Text = "      Enable automatic LTR frame management", .HelpSwitch = "--pa", .IntegerValue = False, .Init = 0, .Options = {"False", "True"}, .Values = {"false", "true"}, .VisibleFunc = Function() Pa.Visible}
+        Property PaPaq As New OptionParam With {.Text = "      Perceptual AQ mode", .HelpSwitch = "--pa", .IntegerValue = False, .Init = 0, .Options = {"None", "CAQ"}, .Values = {"none", "caq"}, .VisibleFunc = Function() Pa.Visible}
+        Property PaTaq As New OptionParam With {.Text = "      Temporal AQ mode", .HelpSwitch = "--pa", .IntegerValue = True, .Init = 0, .Options = {"0", "1", "2"}, .VisibleFunc = Function() Pa.Visible}
+        Property PaMotionQuality As New OptionParam With {.Text = "      High motion quality boost mode", .HelpSwitch = "--pa", .IntegerValue = False, .Init = 0, .Options = {"None", "Auto"}, .Values = {"none", "auto"}, .VisibleFunc = Function() Pa.Visible}
 
 
         Property Tweak As New BoolParam With {.Switch = "--vpp-tweak", .Text = "Tweaking", .ArgsFunc = AddressOf GetTweakArgs}
@@ -604,28 +649,34 @@ Public Class VCEEnc
                 If ItemsValue Is Nothing Then
                     ItemsValue = New List(Of CommandLineParam)
 
-                    Add("Basic", Decoder, Codec, Mode,
-                        New OptionParam With {.Switch = "--output-depth", .Text = "Depth", .Options = {"8-Bit", "10-Bit"}, .Values = {"8", "10"}},
+                    Add("Basic", Codec, Mode,
+                        OutputDepth,
                         New OptionParam With {.Switch = "--preset", .Text = "Preset", .Options = {"Fast", "Balanced", "Slow"}, .Init = 1, .VisibleFunc = Function() Codec.ValueText <> "av1"},
                         New OptionParam With {.Switch = "--preset", .Text = "Preset", .Options = {"Fast", "Balanced", "Slow", "Slower"}, .Init = 1, .VisibleFunc = Function() Codec.ValueText = "av1"},
-                        New OptionParam With {.Switch = "--profile", .Name = "profile264", .VisibleFunc = Function() Codec.ValueText = "h264", .Text = "Profile", .Options = {"Automatic", "Baseline", "Main", "High"}},
-                        New OptionParam With {.Switch = "--profile", .Name = "profile265", .VisibleFunc = Function() Codec.ValueText = "hevc", .Text = "Profile", .Options = {"Main"}},
+                        New OptionParam With {.Switch = "--profile", .Name = "profile264", .VisibleFunc = Function() Codec.ValueText = "h264", .Text = "Profile", .Options = {"Automatic", "Baseline", "Main", "High", "High444"}},
+                        New OptionParam With {.Switch = "--profile", .Name = "profile265", .VisibleFunc = Function() Codec.ValueText = "hevc", .Text = "Profile", .Options = {"Automatic", "Main", "Main10", "Main444"}},
+                        New OptionParam With {.Switch = "--profile", .Name = "profile265", .VisibleFunc = Function() Codec.ValueText = "av1", .Text = "Profile", .Options = {"Automatic", "Main"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelH264", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Unrestricted", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Switch = "--level", .Name = "LevelH265", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "hevc", .Options = {"Unrestricted", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
+                        New OptionParam With {.Switch = "--level", .Name = "LevelAV1", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "av1", .Options = {"Unrestricted", "2", "2.1", "2.2", "2.3", "3", "3.1", "3.2", "3.3", "4", "4.1", "4.2", "4.3", "5", "5.1", "5.2", "5.3", "6", "6.1", "6.2", "6.3", "7", "7.1", "7.2", "7.3"}},
                         New OptionParam With {.Switch = "--tier", .Text = "Tier", .Options = {"Main", "High"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
-                        QPAdvanced, QP, QPI, QPP, QPB, Bitrate, QvbrQuality)
+                        QPAdvanced, QP, QPAV1, QPI, QPIAV1, QPP, QPPAV1, QPB, QPBAV1, Bitrate, QvbrQuality)
                     Add("Slice Decision",
-                        New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},
+                        New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1, .VisibleFunc = Function() Codec.ValueText <> "av1"},
                         New NumParam With {.Switch = "--bframes", .Text = "B-Frames", .Config = {0, 16}},
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Init = 2, .Config = {0, 16}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--ltr", .Text = "LTR Frames", .Config = {0, Integer.MaxValue, 1}},
                         New BoolParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid"})
                     Add("Rate Control",
-                        New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Init = 20000, .Config = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Config = {0, 1000000}, .Init = 20000},
-                        New NumParam With {.Switch = "--qp-min", .Text = "QP Min", .Config = {0, 100}},
-                        New NumParam With {.Switch = "--qp-max", .Text = "QP Max", .Config = {0, 100}, .Init = 100},
+                        New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Init = 0, .Config = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--vbv-bufsize", .Text = "VBV Bufsize", .Init = 0, .Config = {0, 500000, 1}},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 0},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 51, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 0},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 1},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 63, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 1},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() Codec.Value = 2},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 255, 1}, .VisibleFunc = Function() Codec.Value = 2},
                         New NumParam With {.Switch = "--b-deltaqp", .Text = "Non-ref Bframe QP Offset"},
                         New NumParam With {.Switch = "--bref-deltaqp", .Text = "Ref Bframe QP Offset"})
                     Add("Pre...",
@@ -696,6 +747,10 @@ Public Class VCEEnc
                     Add("Statistic",
                         New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},
                         New BoolParam With {.Switch = "--psnr", .Text = "PSNR"})
+                    Add("Input/Output",
+                        New StringParam With {.Switch = "--input-option", .Text = "Input Option", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("avhw", "avsw")},
+                        Decoder, Interlace,
+                        New NumParam With {.Switch = "--input-analyze", .Text = "Input Analyze", .Init = 5, .Config = {1, 600, 0.1, 1}})
                     Add("Other",
                         New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
                         New StringParam With {.Switch = "--chapter", .Text = "Chapters", .BrowseFile = True},
@@ -703,7 +758,6 @@ Public Class VCEEnc
                         New StringParam With {.Switch = "--timecode", .Text = "Timecode File", .BrowseFile = True},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error"}},
                         New OptionParam With {.Switch = "--motion-est", .Text = "Motion Estimation", .Options = {"Q-pel", "Full-pel", "Half-pel"}},
-                        New NumParam With {.Switch = "--input-analyze", .Text = "Input Analyze", .Init = 5, .Config = {1, 600, 0.1, 1}},
                         New BoolParam With {.Switch = "--chapter-copy", .Text = "Copy Chapters"},
                         New BoolParam With {.Switch = "--vbaq", .Text = "Adaptive quantization in frame"},
                         New BoolParam With {.Switch = "--no-deblock", .Text = "Disable deblock filter"},
@@ -726,6 +780,14 @@ Public Class VCEEnc
                     End If
                 Next
             End If
+
+            For i = 0 To Interlace.Values.Length - 1
+                If Interlace.Values(i).ToLowerInvariant().Contains("auto") Then
+                    Dim enabled = Decoder.ValueText.EqualsAny("avhw", "avsw")
+                    Interlace.ShowOption(i, enabled)
+                    If Not enabled AndAlso Interlace.Value = i Then Interlace.Value = 0
+                End If
+            Next
 
             If QPI.NumEdit IsNot Nothing Then
                 ColorspaceMatrixFrom.MenuButton.Enabled = Colorspace.Value
@@ -967,7 +1029,7 @@ Public Class VCEEnc
                 If PaFskipMaxqp.Value <> PaFskipMaxqp.DefaultValue Then ret += ",fskip-maxqp=" & PaFskipMaxqp.Value.ToInvariantString
                 If PaLookahead.Value <> PaLookahead.DefaultValue Then ret += ",lookahead=" & PaLookahead.Value.ToInvariantString
                 If PaLtr.Value <> PaLtr.DefaultValue Then ret += ",ltr=" & PaLtr.ValueText.ToInvariantString
-                If PaPaq.Value <> PaPaq.DefaultValue Then ret += ",paq=" & PaPaq.Value.ToInvariantString
+                If PaPaq.Value <> PaPaq.DefaultValue Then ret += ",paq=" & PaPaq.ValueText.ToInvariantString
                 If PaTaq.Value <> PaTaq.DefaultValue Then ret += ",taq=" & PaTaq.Value.ToInvariantString
                 If PaMotionQuality.Value <> PaMotionQuality.DefaultValue Then ret += ",motion-quality=" & PaMotionQuality.ValueText.ToInvariantString
                 Return ("--pa " + ret.TrimStart(","c)).Trim()
@@ -1135,6 +1197,12 @@ Public Class VCEEnc
                     If includePaths AndAlso FrameServerHelp.IsPortable Then
                         ret += " --avsdll " + Package.AviSynth.Path.Escape
                     End If
+                Case "avhw"
+                    sourcePath = p.LastOriginalSourceFile
+                    ret += " --avhw"
+                Case "avsw"
+                    sourcePath = p.LastOriginalSourceFile
+                    ret += " --avsw"
                 Case "qs"
                     sourcePath = "-"
 
@@ -1157,9 +1225,6 @@ Public Class VCEEnc
                     If includePaths Then
                         ret = If(includePaths, Package.ffmpeg.Path.Escape, "ffmpeg") + " -threads 1 -hwaccel qsv -i " + If(includePaths, p.SourceFile.Escape, "path") + " -f yuv4mpegpipe -strict -1 -pix_fmt yuv420p -loglevel fatal - | " + If(includePaths, Package.VCEEncC.Path.Escape, "VCEEncC64")
                     End If
-                Case "vce"
-                    sourcePath = p.LastOriginalSourceFile
-                    ret += " --avhw"
             End Select
 
             Dim rate = If(pass = 1, CInt(Bitrate.Value), p.VideoBitrate)

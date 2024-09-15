@@ -307,7 +307,7 @@ Public Class ProcessingForm
         MyBase.OnActivated(e)
         UpdateControls()
         If Not ProcController.BlockActivation Then
-            ProcController.LastActivation = Environment.TickCount
+            ProcController.SetLastActivation()
             ProcController.BlockActivation = False
         End If
     End Sub

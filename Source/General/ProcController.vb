@@ -25,6 +25,7 @@ Public Class ProcController
     Private _triggerWhileProcessing As Boolean = False
     Private _lastTriggerWhileProcessing As Date = Date.Now
     Private _ffmpegDuration As TimeSpan = TimeSpan.Zero
+    Private Shared _lastActivation As Date = Date.UtcNow
 
     Property Proc As Proc
     Property LogTextBox As New RichTextBoxEx
@@ -41,17 +42,22 @@ Public Class ProcController
             Return _projectScriptFrameRate
         End Get
     End Property
-
+    
     Shared Property Procs As New List(Of ProcController)
     Shared Property Aborted As Boolean = False
-    Shared Property LastActivation As Integer = 0
     Shared Property BlockActivation As Boolean = False
-    Shared ReadOnly Property SecondsSinceLastActivation As Integer
+
+    ReadOnly Shared Property LastActivation As Date
         Get
-            Return (Environment.TickCount - LastActivation) \ 1000
+            Return _lastActivation
         End Get
     End Property
 
+    Shared ReadOnly Property SecondsSinceLastActivation As Double
+        Get
+            Return (Date.UtcNow - _lastActivation).TotalSeconds
+        End Get
+    End Property
 
 
     Sub New(proc As Proc)
@@ -120,6 +126,10 @@ Public Class ProcController
         For Each pc In Procs
             pc.SetAndHighlightLog(pc.Proc.Log.ToString(), theme)
         Next
+    End Sub
+
+    Public Shared Sub SetLastActivation()
+        _lastActivation = Date.UtcNow
     End Sub
 
     Sub DataReceived(value As String)

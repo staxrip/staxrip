@@ -7718,7 +7718,7 @@ Public Class MainForm
             s.VapourSynthMode = FrameServerMode.Portable
         End If
 
-        ProcController.LastActivation = Environment.TickCount
+        ProcController.SetLastActivation()
 
         BeginInvoke(New Action(Sub()
                                    Application.DoEvents()

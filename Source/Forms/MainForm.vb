@@ -7641,7 +7641,7 @@ Public Class MainForm
                                 sb.AppendLine(line)
                                 sb.AppendLine("-------------------------")
 
-                                If match.Groups(3).Value.ToInt() = 0 AndAlso lines > 35 Then
+                                If version.Build > 0 AndAlso match.Groups(3).Value.ToInt() = 0 Then
                                     sb.AppendLine("---- Hidden because of the length of this report ----")
                                     relevant = False
                                 End If
@@ -7660,7 +7660,7 @@ Public Class MainForm
 
                     If Not relevant Then Continue Do
                     If String.IsNullOrWhiteSpace(line) Then Continue Do
-                    If versions > 1 AndAlso line.StartsWithEx("- Update ") Then
+                    If versions > 1 AndAlso version.Build > 0 AndAlso line.StartsWithEx("- Update ") Then
                         sb.AppendLine("---- Tool and Plugin updates are not shown! ----")
                         relevant = False
                     ElseIf lines > 35 AndAlso line.StartsWithEx("- Update ") Then

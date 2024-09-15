@@ -597,9 +597,9 @@ Public Class Package
         .Name = "SvtAv1EncApp",
         .Location = IO.Path.Combine("Encoders", "SvtAv1EncApp"),
         .Filename = "SvtAv1EncApp.exe",
-        .WebURL = "https://gitlab.com/AOMediaCodec/SVT-AV1",
-        .HelpURL = "https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/Docs/Parameters.md",
-        .DownloadURL = "https://www.mediafire.com/folder/vkt2ckzjvt0qf/StaxRip_Tools",
+        .WebURL = "https://github.com/gianni-rosato/svt-av1-psy",
+        .HelpURL = "https://github.com/gianni-rosato/svt-av1-psy/blob/master/Docs/Parameters.md",
+        .DownloadURL = "https://github.com/Patman86/SVT-AV1-Mod-by-Patman/releases",
         .RequiredFunc = Function() TypeOf p.VideoEncoder Is SvtAv1Enc,
         .HelpSwitch = "--help",
         .Description = "Intel AV1 encoder."})

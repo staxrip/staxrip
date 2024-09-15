@@ -350,7 +350,7 @@ Public Class NVEnc
                         "QSVEnc (Intel)",
                         "ffmpeg (Intel)",
                         "ffmpeg (DXVA2)"},
-            .Values = {"avs", "nvhw", "nvsw", "qs", "ffqsv", "ffdxva"}}
+            .Values = {"avs", "avhw", "avsw", "qs", "ffqsv", "ffdxva"}}
 
         Property Mode As New OptionParam With {
             .Text = "Mode",
@@ -568,8 +568,8 @@ Public Class NVEnc
         Property Interlace As New OptionParam With {
             .Text = "Interlace",
             .Switch = "--interlace",
-            .Options = {"Disabled", "Top Field First", "Bottom Field First"},
-            .Values = {"", "tff", "bff"}}
+            .Options = {"Disabled", "Top Field First", "Bottom Field First", "Auto"},
+            .Values = {"", "tff", "bff", "auto"}}
 
         Property Custom As New StringParam With {
             .Text = "Custom",
@@ -784,9 +784,15 @@ Public Class NVEnc
                     Add("Rate Control",
                         New StringParam With {.Switch = "--dynamic-rc", .Text = "Dynamic RC"},
                         New OptionParam With {.Switch = "--multipass", .Text = "Multipass", .Options = {"None", "2Pass-Quarter", "2Pass-Full"}, .VisibleFunc = Function() Mode.Value = 0 OrElse Mode.Value > 1},
-                        New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Config = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Config = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Init = 20, .Config = {0, 51, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 0},
+                        New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Init = 20, .Config = {0, 63, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 1},
+                        New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Init = 20, .Config = {0, 255, 1}, .VisibleFunc = Function() Codec.Value = 2},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 0},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 51, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 0},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 1},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 63, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 1},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() Codec.Value = 2},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 255, 1}, .VisibleFunc = Function() Codec.Value = 2},
                         New NumParam With {.Switch = "--chroma-qp-offset", .Text = "QP offset for chroma", .Config = {0, Integer.MaxValue, 1}, .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"},
                         VbvBufSize, MaxBitrate,
                         AQ,
@@ -826,7 +832,7 @@ Public Class NVEnc
                         New StringParam With {.Switch = "--vpp-overlay", .Text = "Overlay"},
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}},
-                        New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw")},
+                        New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("avhw", "avsw")},
                         Resize, ResizeAlgo, ResizeSuperresMode, ResizeSuperresStrength, ResizeVsrQuality,
                         SelectEvery, SelectEveryValue, SelectEveryOffsets)
                     Add("VPP | Misc 2",
@@ -899,7 +905,7 @@ Public Class NVEnc
                         DebandRandEachFrame)
                     Add("VPP | Deinterlace",
                         Deinterlacer,
-                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace Mode", .VisibleFunc = Function() Deinterlacer.Value = 1 AndAlso Decoder.ValueText.EqualsAny("nvhw"), .AlwaysOn = True, .Options = {"Normal", "Adaptive", "Bob"}},
+                        New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace Mode", .VisibleFunc = Function() Deinterlacer.Value = 1 AndAlso Decoder.ValueText.EqualsAny("avhw"), .AlwaysOn = True, .Options = {"Normal", "Adaptive", "Bob"}},
                         New OptionParam With {.Switch = "--vpp-yadif", .Text = "Yadif Mode", .VisibleFunc = Function() Deinterlacer.Value = 5, .AlwaysOn = True, .Options = {"Auto", "TFF", "BFF", "Bob", "Bob TFF", "Bob BFF"}, .Values = {"", "mode=tff", "mode=bff", "mode=bob", "mode=bob_tff", "mode=bob_bff"}},
                         AfsINI, AfsPreset, AfsLeft, AfsRight, AfsTop, AfsBottom, AfsMethodSwitch, AfsCoeffShift, AfsThreShift, AfsThreDeint, AfsThreMotionY, AfsThreMotionC, AfsLevel,
                         DecombFull, DecombThreshold, DecombDThreshold, DecombBlend,
@@ -955,7 +961,7 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--psnr", .Text = "PSNR"},
                         Vmaf, VmafString)
                     Add("Input/Output",
-                        New StringParam With {.Switch = "--input-option", .Text = "Input Option", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("nvhw", "nvsw")},
+                        New StringParam With {.Switch = "--input-option", .Text = "Input Option", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("avhw", "avsw")},
                         Decoder, Interlace,
                         New NumParam With {.Switch = "--input-analyze", .Text = "Input Analyze", .Init = 5, .Config = {1, 600, 0.1, 1}})
                     Add("Other",
@@ -988,6 +994,14 @@ Public Class NVEnc
                     End If
                 Next
             End If
+
+            For i = 0 To Interlace.Values.Length - 1
+                If Interlace.Values(i).ToLowerInvariant().Contains("auto") Then
+                    Dim enabled = Decoder.ValueText.EqualsAny("avhw", "avsw")
+                    Interlace.ShowOption(i, enabled)
+                    If Not enabled AndAlso Interlace.Value = i Then Interlace.Value = 0
+                End If
+            Next
 
             If QPI.NumEdit IsNot Nothing Then
                 AfsPreset.MenuButton.Enabled = Deinterlacer.Value = 2
@@ -1474,10 +1488,10 @@ Public Class NVEnc
                     If includePaths AndAlso FrameServerHelp.IsPortable Then
                         ret += " --avsdll " + Package.AviSynth.Path.Escape
                     End If
-                Case "nvhw"
+                Case "avhw"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " --avhw"
-                Case "nvsw"
+                Case "avsw"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " --avsw"
                 Case "qs"

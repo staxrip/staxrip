@@ -121,11 +121,11 @@ Public Class QSVEnc
 
     Overrides ReadOnly Property OutputExt() As String
         Get
-            If Params.Codec.ValueText ="av1" Then
+            If Params.Codec.ValueText = "av1" Then
                 Return Muxer.OutputExt
             ElseIf Params.Codec.ValueText = "mpeg2" Then
                 Return "m2v"
-            ElseIf Params.Codec.ValueText ="vp9" Then
+            ElseIf Params.Codec.ValueText = "vp9" Then
                 Return "ivf"
             End If
 
@@ -361,7 +361,13 @@ Public Class QSVEnc
         Property Decoder As New OptionParam With {
             .Text = "Decoder",
             .Options = {"AviSynth/VapourSynth", "QSVEnc Hardware", "QSVEnc Software", "ffmpeg Intel", "ffmpeg DXVA2"},
-            .Values = {"avs", "qshw", "qssw", "ffqsv", "ffdxva"}}
+            .Values = {"avs", "avhw", "avsw", "ffqsv", "ffdxva"}}
+
+        Property Interlace As New OptionParam With {
+            .Text = "Interlace",
+            .Switch = "--interlace",
+            .Options = {"Disabled", "Top Field First", "Bottom Field First", "Auto"},
+            .Values = {"", "tff", "bff", "auto"}}
 
         Property Codec As New OptionParam With {
             .Switch = "--codec",
@@ -654,7 +660,7 @@ Public Class QSVEnc
                         New OptionParam With {.Name = "LevelMpeg2", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "mpeg2", .Options = {"Automatic", "low", "main", "high", "high1440"}},
                         New OptionParam With {.Name = "LevelVp9", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "vp9", .Options = {"0", "1", "2", "3"}},
                         New OptionParam With {.Name = "LevelAV1", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "av1", .Options = {"Automatic", "2", "2.1", "2.2", "2.3", "3", "3.1", "3.2", "3.3", "4", "4.1", "4.2", "4.3", "5", "5.1", "5.2", "5.3", "6", "6.1", "6.2", "6.3", "7", "7.1", "7.2", "7.3"}},
-                        Tune, OutputDepth, 
+                        Tune, OutputDepth,
                         New OptionParam With {.Switch = "--output-csp", .Text = "Colorspace", .Options = {"YUV420 (Default)", "YUV444", "RGB", "YUVA420"}, .Values = {"yuv420", "yuv444", "rgb", "yuva420"}},
                         QPAdvanced, QP, QPI, QPP, QPB, Bitrate, QvbrQuality, Quality)
                     Add("Analysis",
@@ -679,8 +685,12 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--open-gop", .Text = "Open Gop"})
                     Add("Rate Control", VBVbufsize,
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Config = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Config = {0, Integer.MaxValue, 1}},
-                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Config = {0, Integer.MaxValue, 1}},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 0},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 51, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 0},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 1},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 63, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 1},
+                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() Codec.Value = 2},
+                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 255, 1}, .VisibleFunc = Function() Codec.Value = 2},
                         QPOffsetI, QPOffsetP, QPOffsetB,
                         New NumParam With {.Switch = "--avbr-unitsize", .Text = "AVBR Unitsize", .Init = 90},
                         New BoolParam With {.Switch = "--mbbrc", .Text = "Per macro block rate control"})
@@ -761,9 +771,8 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--aud", .Text = "AUD"})
                     Add("Input/Output",
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option"},
-                        Decoder,
-                        New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Init = 2, .Options = {"Invalid", "NV12", "YV12", "YUV420P", "YUV422P", "YUV444P", "YUV420P9LE", "YUV420P10LE", "YUV420P12LE", "YUV420P14LE", "YUV420P16LE", "P010", "YUV422P9LE", "YUV422P10LE", "YUV422P12LE", "YUV422P14LE", "YUV422P16LE", "YUV444P9LE", "YUV444P10LE", "YUV444P12LE", "YUV444P14LE", "YUV444P16LE"}},
-                        New OptionParam With {.Switch = "--interlace", .Text = "Interlace", .Options = {"Undefined", "TFF", "BFF"}})
+                        Decoder, Interlace,
+                        New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Init = 2, .Options = {"Invalid", "NV12", "YV12", "YUV420P", "YUV422P", "YUV444P", "YUV420P9LE", "YUV420P10LE", "YUV420P12LE", "YUV420P14LE", "YUV420P16LE", "P010", "YUV422P9LE", "YUV422P10LE", "YUV422P12LE", "YUV422P14LE", "YUV422P16LE", "YUV444P9LE", "YUV444P10LE", "YUV444P12LE", "YUV444P14LE", "YUV444P16LE"}})
                     Add("Other",
                         New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
@@ -798,6 +807,14 @@ Public Class QSVEnc
         End Sub
 
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
+            For i = 0 To Interlace.Values.Length - 1
+                If Interlace.Values(i).ToLowerInvariant().Contains("auto") Then
+                    Dim enabled = Decoder.ValueText.EqualsAny("avhw", "avsw")
+                    Interlace.ShowOption(i, enabled)
+                    If Not enabled AndAlso Interlace.Value = i Then Interlace.Value = 0
+                End If
+            Next
+
             If QPI.NumEdit IsNot Nothing Then
                 mctfval.NumEdit.Enabled = mctf.Value
 
@@ -905,10 +922,10 @@ Public Class QSVEnc
                     If includePaths AndAlso FrameServerHelp.IsPortable Then
                         ret += " --avsdll " + Package.AviSynth.Path.Escape
                     End If
-                Case "qshw"
+                Case "avhw"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " --avhw"
-                Case "qssw"
+                Case "avsw"
                     sourcePath = p.LastOriginalSourceFile
                     ret += " --avsw"
                 Case "ffdxva"

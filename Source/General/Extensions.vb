@@ -413,9 +413,7 @@ Module StringExtensions
 
     <Extension()>
     Function EqualsAny(instance As String, ParamArray values As String()) As Boolean
-        If instance = "" OrElse values.NothingOrEmpty Then
-            Return False
-        End If
+        If instance = "" OrElse values.NothingOrEmpty Then Return False
 
         Return values.Contains(instance)
     End Function
@@ -423,7 +421,7 @@ Module StringExtensions
     <Extension()>
     Function FixDir(instance As String) As String
         If instance = "" Then Return ""
-        If instance.Last() = Path.DirectorySeparatorChar Then Return instance.Substring(0, instance.Length - 1)
+        If instance.Last() = Path.DirectorySeparatorChar AndAlso instance.SplitNoEmpty(Path.DirectorySeparatorChar).Length > 1 Then Return instance.Substring(0, instance.Length - 1)
 
         Return instance
     End Function

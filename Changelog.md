@@ -14,6 +14,22 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.44.3 (2025-01-30)
+====================
+
+- General: Add demuxing of tags from MKV files
+- Subtitle: Add subtitle files independently from the dialog selected languages ([#1562](/../../issues/1562))
+- UI: Improve playlist selection for Blu-Ray folders
+- NVEncC: Add "--vpp-libplacebo-shader" parameter
+- NVEncC: Add "--log" parameter
+- NVEncC: Add advanced settings for "--qp-init", "--qp-max" and "--qp-min" ([#1493](/../../issues/1493))
+- QSVEncC: Add advanced settings for "--qp-max" and "--qp-min" ([#1493](/../../issues/1493))
+- VCEEncC: Add advanced settings for "--qp-max" and "--qp-min" ([#1493](/../../issues/1493))
+- VCEEncC: Add "--adapt-minigop" parameter ([#1568](/../../issues/1568))
+- VCEEncC: Fix "--ref" parameter ([#1568](/../../issues/1568))
+- VCEEncC: Unlock "--temporal-layers" for H265 codec ([#1568](/../../issues/1568))
+
+
 v2.44.2 (2025-01-11)
 ====================
 

@@ -14,6 +14,40 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.44.1 (2025-01-01)
+====================
+
+- General: Fix Haali Splitter package
+- General: Fix Package status check
+- General: Disable Dolby Vision metadata extraction for non-HEVC files ([#1553](/../../issues/1553))
+- General: Add "Convert bit depth to 10-bit" option
+    - Adds a filter to change the bit depth to 10-bit if the source file has a different bit depth
+- Audio: Fix Normalize with Channel change for Opus ([#1569](/../../issues/1569))
+- Audio: Fix hidden errors while cutting audio with mkvmerge ([#1525](/../../issues/1525))
+- Audio: Override Track Name if specified in template ([#1487](/../../issues/1487))
+- UI: Change source and target length format to HH:mm:ss
+- UI: Fix crash and/or missing text when using Thumbnailer
+- UI: Fix missing Assistant warning for no audio
+- UI: Make Audio editing window taller
+- MP4Box: Fix default tag for audio tracks and subtitles ([#1530](/../../issues/1530))
+- NVEncC: Add "--vpp-libplacebo-deband" parameter
+- NVEncC: Add "--vpp-libplacebo-tonemapping" parameter
+- QSVEncC: Add new value "libplacebo" for "--vpp-resize" parameter
+- SvtAv1EncApp: Add "--ss" parameter ([#1556](/../../issues/1556))
+- SvtAv1EncApp: Fix "--lp" parameter ([#1556](/../../issues/1556))
+- SvtAv1EncApp: Fix "--pin" parameter ([#1556](/../../issues/1556))
+- SvtAv1EncApp: Add value "2" to "--enable-tf" parameter
+- SvtAv1EncApp: Add "--psy-rd" parameter
+- SvtAv1EncApp: Apply new default value of "1" to "--sharpness" parameter
+- Update tools
+    - ffmpeg v7.1-dev-N-116758-x64-gcc14.2.0
+    - MKVToolNix v89.0
+    - Python v3.12.8
+    - Subtitle Edit v4.0.10
+    - SvtAv1EncApp v2.3.0-A-0+15-5ea471e2-.Mod-by-Patman.-x64-msvc1942 [SVT-AV1-PSY]
+    - vvencFFapp v1.13.0 r298-81a3b6c
+
+
 v2.44.0 (2024-12-20)
 ====================
 

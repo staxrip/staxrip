@@ -708,10 +708,16 @@ Public Class NVEnc
         Property SelectEveryOffsets As New StringParam With {.Text = "      Offsets", .HelpSwitch = "--vpp-select-every", .Expand = False}
 
         Property Resize As New BoolParam With {.Text = "Resize", .Switch = "--vpp-resize", .ArgsFunc = AddressOf GetResizeArgs}
-        Property ResizeAlgo As New OptionParam With {.Text = "      Algo", .HelpSwitch = "--vpp-resize", .Init = 0, .IntegerValue = False, .Options = {"Auto", "bilinear - linear interpolation", "bicubic - bicubic interpolation", "spline16 - 4x4 spline curve interpolation", "spline36 - 6x6 spline curve interpolation", "spline64 - 8x8 spline curve interpolation", "lanczos2 - 4x4 Lanczos resampling", "lanczos3 - 6x6 Lanczos resampling", "lanczos4 - 8x8 Lanczos resampling", "nn - nearest neighbor", "npp_linear - linear interpolation by NPP library", "cubic - 4x4 cubic interpolation", "super - So called 'super sampling' by NPP library (downscale only)", "lanczos - Lanczos interpolation", "nvvfx-superres - Super Resolution based on nvvfx library (upscale only)", "ngx-vsr	- NVIDIA VSR (Video Super Resolution)"}, .Values = {"auto", "bilinear", "bicubic", "spline16", "spline36", "spline64", "lanczos2", "lanczos3", "lanczos4", "nn", "npp_linear", "cubic", "super", "lanczos", "nvvfx-superres", "ngx-vsr"}}
+        Property ResizeAlgo As New OptionParam With {.Text = "      Algo", .HelpSwitch = "--vpp-resize", .Init = 0, .IntegerValue = False, .Options = {"Auto", "bilinear - linear interpolation", "bicubic - bicubic interpolation", "spline16 - 4x4 spline curve interpolation", "spline36 - 6x6 spline curve interpolation", "spline64 - 8x8 spline curve interpolation", "lanczos2 - 4x4 Lanczos resampling", "lanczos3 - 6x6 Lanczos resampling", "lanczos4 - 8x8 Lanczos resampling", "nn - nearest neighbor", "npp_linear - linear interpolation by NPP library", "cubic - 4x4 cubic interpolation", "super - So called 'super sampling' by NPP library (downscale only)", "lanczos - Lanczos interpolation", "nvvfx-superres - Super Resolution based on nvvfx library (upscale only)", "ngx-vsr	- NVIDIA VSR (Video Super Resolution)", "libplacebo - Libplacebo"}, .Values = {"auto", "bilinear", "bicubic", "spline16", "spline36", "spline64", "lanczos2", "lanczos3", "lanczos4", "nn", "npp_linear", "cubic", "super", "lanczos", "nvvfx-superres", "ngx-vsr", "libplacebo"}}
         Property ResizeSuperresMode As New OptionParam With {.Text = "      Superres-Mode", .HelpSwitch = "--vpp-resize", .Init = 0, .IntegerValue = True, .Options = {"0 - conservative (default)", "1 - aggressive"}, .VisibleFunc = Function() ResizeAlgo.Value = 14}
         Property ResizeSuperresStrength As New NumParam With {.Text = "      Superres-Strength", .HelpSwitch = "--vpp-resize", .Init = 1, .Config = {0, 1, 0.05, 2}, .VisibleFunc = Function() ResizeAlgo.Value = 14}
         Property ResizeVsrQuality As New NumParam With {.Text = "      VSR-Quality", .HelpSwitch = "--vpp-resize", .Init = 1, .Config = {1, 4, 1, 0}, .VisibleFunc = Function() ResizeAlgo.Value = 15}
+        Property ResizeLibplaceboFilter As New OptionParam With {.Text = "      Libplacebo-Filter", .HelpSwitch = "--vpp-resize", .Init = 0, .IntegerValue = True, .Options = {"spline16 - 4x4 spline curve interpolation", "spline36 - 6x6 spline curve interpolation", "spline64 - 8x8 spline curve interpolation", "nearest - nearest neighbor", "bilinear - linear interpolation", "gaussian - Gaussian filter", "sinc - Sinc filter", "lanczos - Lanczos resampling", "ginseng - Ginseng filter", "ewa-jinc - EWA Jinc resampling", "ewa-lanczos - EWA Lanczos resampling", "ewa-lanczossharp - EWA Lanczos sharp resampling", "ewa-lanczos4sharpest - EWA Lanczos 4 sharpest resampling", "ewa-ginseng - EWA Ginseng resampling", "ewa-hann - EWA Hann filter", "ewa-hanning - EWA Hanning filter", "bicubic - Bicubic interpolation", "triangle - Triangle filter", "hermite - Hermite filter", "catmull-rom - Catmull-Rom spline interpolation", "mitchell - Mitchell-Netravali filter", "mitchell-clamp - Mitchell-Netravali filter with clamping", "robidoux - Robidoux filter", "robidouxsharp - Robidoux sharp filter", "ewa-robidoux - EWA Robidoux filter", "ewa-robidouxsharp - EWA Robidoux sharp filter"}, .Values = {"spline16", "spline36", "spline64", "nearest", "bilinear", "gaussian", "sinc", "lanczos", "ginseng", "ewa-jinc", "ewa-lanczos", "ewa-lanczossharp", "ewa-lanczos4sharpest", "ewa-ginseng", "ewa-hann", "ewa-hanning", "bicubic", "triangle", "hermite", "catmull-rom", "mitchell", "mitchell-clamp", "robidoux", "robidouxsharp", "ewa-robidoux", "ewa-robidouxsharp"}, .VisibleFunc = Function() ResizeAlgo.Value = 16}
+        Property ResizeLibplaceboPlRadius As New NumParam With {.Text = "      Libplacebo Pl-Radius", .HelpSwitch = "--vpp-resize", .Init = -0.1, .Config = {-0.1, 16, 0.1, 1}, .VisibleFunc = ResizeLibplaceboFilter.VisibleFunc}
+        Property ResizeLibplaceboPlClamp As New NumParam With {.Text = "      Libplacebo Pl-Clamp", .HelpSwitch = "--vpp-resize", .Init = 0, .Config = {0, 1, 0.05, 2}, .VisibleFunc = ResizeLibplaceboFilter.VisibleFunc}
+        Property ResizeLibplaceboPlTaper As New NumParam With {.Text = "      Libplacebo Pl-Taper", .HelpSwitch = "--vpp-resize", .Init = 0, .Config = {0, 1, 0.05, 2}, .VisibleFunc = ResizeLibplaceboFilter.VisibleFunc}
+        Property ResizeLibplaceboPlBlur As New NumParam With {.Text = "      Libplacebo Pl-Blur", .HelpSwitch = "--vpp-resize", .Init = 0, .Config = {0, 100, 1, 1}, .VisibleFunc = ResizeLibplaceboFilter.VisibleFunc}
+        Property ResizeLibplaceboPlAntiring As New NumParam With {.Text = "      Libplacebo Pl-Antiring", .HelpSwitch = "--vpp-resize", .Init = 0, .Config = {0, 1, 0.05, 2}, .VisibleFunc = ResizeLibplaceboFilter.VisibleFunc}
 
         Property NvvfxDenoise As New BoolParam With {.Text = "Webcam denoise filter", .Switch = "--vpp-nvvfx-denoise", .ArgsFunc = AddressOf GetNvvfxDenoiseArgs}
         Property NvvfxDenoiseStrength As New OptionParam With {.Text = "      Strength", .HelpSwitch = "--vpp-nvvfx-denoise", .Options = {"0 - Weaker effect, higher emphasis on texture preservation", "1 - Stronger effect, higher emphasis on noise removal"}}
@@ -839,7 +845,6 @@ Public Class NVEnc
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}},
                         New BoolParam With {.Switch = "--vpp-rff", .Text = "Enable repeat field flag", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("avhw", "avsw")},
-                        Resize, ResizeAlgo, ResizeSuperresMode, ResizeSuperresStrength, ResizeVsrQuality,
                         SelectEvery, SelectEveryValue, SelectEveryOffsets)
                     Add("VPP | Misc 2",
                         Tweak,
@@ -930,6 +935,9 @@ Public Class NVEnc
                         NvvfxDenoise, NvvfxDenoiseStrength,
                         NvvfxArtifactReduction, NvvfxArtifactReductionMode,
                         Nlmeans, NlmeansSigma, NlmeansH, NlmeansPatch, NlmeansSearch, NlmeansFp16)
+                    Add("VPP | Resize",
+                        Resize, ResizeAlgo, ResizeSuperresMode, ResizeSuperresStrength, ResizeVsrQuality,
+                        ResizeLibplaceboFilter, ResizeLibplaceboPlRadius, ResizeLibplaceboPlClamp, ResizeLibplaceboPlTaper, ResizeLibplaceboPlBlur, ResizeLibplaceboPlAntiring)
                     Add("VPP | Sharpness",
                         Edgelevel, EdgelevelStrength, EdgelevelThreshold, EdgelevelBlack, EdgelevelWhite,
                         Unsharp, UnsharpRadius, UnsharpWeight, UnsharpThreshold,
@@ -1090,6 +1098,13 @@ Public Class NVEnc
                 ResizeAlgo.MenuButton.Enabled = Resize.Value
                 ResizeSuperresMode.MenuButton.Enabled = Resize.Value
                 ResizeSuperresStrength.NumEdit.Enabled = Resize.Value
+                ResizeVsrQuality.NumEdit.Enabled = Resize.Value
+                ResizeLibplaceboFilter.MenuButton.Enabled = Resize.Value
+                ResizeLibplaceboPlRadius.NumEdit.Enabled = Resize.Value
+                ResizeLibplaceboPlClamp.NumEdit.Enabled = Resize.Value
+                ResizeLibplaceboPlTaper.NumEdit.Enabled = Resize.Value
+                ResizeLibplaceboPlBlur.NumEdit.Enabled = Resize.Value
+                ResizeLibplaceboPlAntiring.NumEdit.Enabled = Resize.Value
 
                 Fft3dSigma.NumEdit.Enabled = Fft3d.Value
                 Fft3dAmount.NumEdit.Enabled = Fft3d.Value
@@ -1385,9 +1400,17 @@ Public Class NVEnc
             If Resize.Value Then
                 Dim ret = ""
                 If ResizeAlgo.Value <> ResizeAlgo.DefaultValue Then ret += ",algo=" & ResizeAlgo.ValueText.ToInvariantString
-                If ResizeSuperresMode.Value <> ResizeSuperresMode.DefaultValue AndAlso ResizeSuperresMode.Visible Then ret += ",superres-mode=" & ResizeSuperresMode.Value.ToInvariantString
-                If ResizeSuperresStrength.Value <> ResizeSuperresStrength.DefaultValue AndAlso ResizeSuperresStrength.Visible Then ret += ",superres-strength=" & ResizeSuperresStrength.Value.ToInvariantString
-                If ResizeVsrQuality.Value <> ResizeVsrQuality.DefaultValue AndAlso ResizeVsrQuality.Visible Then ret += ",vsr-quality=" & ResizeVsrQuality.Value.ToInvariantString
+                If ResizeSuperresMode.Visible AndAlso ResizeSuperresMode.Value <> ResizeSuperresMode.DefaultValue Then ret += ",superres-mode=" & ResizeSuperresMode.Value.ToInvariantString
+                If ResizeSuperresStrength.Visible AndAlso ResizeSuperresStrength.Value <> ResizeSuperresStrength.DefaultValue Then ret += ",superres-strength=" & ResizeSuperresStrength.Value.ToInvariantString
+                If ResizeVsrQuality.Visible AndAlso ResizeVsrQuality.Value <> ResizeVsrQuality.DefaultValue Then ret += ",vsr-quality=" & ResizeVsrQuality.Value.ToInvariantString
+                If ResizeLibplaceboFilter.Visible Then
+                    ret += "-" & ResizeLibplaceboFilter.ValueText.ToInvariantString
+                    If ResizeLibplaceboPlRadius.Value >= 0D Then ret += ",pl-radius=" & ResizeLibplaceboPlRadius.Value.ToInvariantString
+                    If ResizeLibplaceboPlClamp.Value <> ResizeLibplaceboPlClamp.DefaultValue Then ret += ",pl-clamp=" & ResizeLibplaceboPlClamp.Value.ToInvariantString
+                    If ResizeLibplaceboPlTaper.Value <> ResizeLibplaceboPlTaper.DefaultValue Then ret += ",pl-taper=" & ResizeLibplaceboPlTaper.Value.ToInvariantString
+                    If ResizeLibplaceboPlBlur.Value <> ResizeLibplaceboPlBlur.DefaultValue Then ret += ",pl-blur=" & ResizeLibplaceboPlBlur.Value.ToInvariantString
+                    If ResizeLibplaceboPlAntiring.Value <> ResizeLibplaceboPlAntiring.DefaultValue Then ret += ",pl-antiring=" & ResizeLibplaceboPlAntiring.Value.ToInvariantString
+                End If
                 Return Resize.Switch & " " & ret.TrimStart(","c)
             End If
             Return ""

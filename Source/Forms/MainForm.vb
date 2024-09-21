@@ -7647,8 +7647,12 @@ Public Class MainForm
     <Command("Shows the latest changes.")>
     Sub ShowChangelog(force As Boolean)
         Dim appDetails = g.DefaultCommands.GetApplicationDetails(True, True, False)
-        Dim version = Assembly.GetExecutingAssembly.GetName.Version
         If Not force AndAlso s.ShowChangelog = appDetails Then Exit Sub
+
+        Dim currentVersion = Assembly.GetExecutingAssembly.GetName.Version
+        Dim lastChangelogVersionMatch = Regex.Match(s.ShowChangelog, "\d+\.\d+(?:\.\d+)*")
+        Dim lastChangelogVersion = If(lastChangelogVersionMatch.Success, New Version(lastChangelogVersionMatch.Value), Nothing)
+        Dim readoutVersion As Version = Nothing
 
         Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StaxRip.Changelog.md")
             Using reader As New StreamReader(stream)
@@ -7661,18 +7665,24 @@ Public Class MainForm
                     Dim line = reader.ReadLine()
                     If line Like "========*" Then Continue Do
 
-                    Dim match = Regex.Match(line, "(v\d\.(\d+)\.?(\d*)(?:-(RC\d+))?)\W+\(.*\)")
                     Dim lines = Regex.Matches(sb.ToString(), Environment.NewLine).Count
-                    If match.Success Then
+                    Dim readoutVersionMatch = Regex.Match(line, "^(v(\d+\.\d+(?:\.\d+)*(?:-(RC\d+))?))\W+\(.*\)")
+                    readoutVersion = If(readoutVersionMatch.Success, New Version(readoutVersionMatch.Groups(2).Value), readoutVersion)
+
+                    If readoutVersionMatch.Success Then
+                        If readoutVersion.Minor < currentVersion.Minor Then Exit Do
+                        If readoutVersion.Minor > currentVersion.Minor Then Continue Do
+                        If readoutVersion.Build > currentVersion.Build Then Continue Do
+
                         If relevant Then
-                            If match.Groups(2).Value.ToInt() = version.Minor Then
+                            If (lastChangelogVersionMatch.Success AndAlso readoutVersion.Build > Math.Max(lastChangelogVersion.Build, 0)) OrElse lines < 40 Then
                                 versions += 1
 
-                                If lines < 34 Then sb.AppendLine()
+                                sb.AppendLine()
                                 sb.AppendLine(line)
                                 sb.AppendLine("-------------------------")
 
-                                If version.Build > 0 AndAlso match.Groups(3).Value.ToInt() = 0 Then
+                                If currentVersion.Build > 0 AndAlso readoutVersion.Build = 0 AndAlso lines > 25 Then
                                     sb.AppendLine("---- Hidden because of the length of this report ----")
                                     relevant = False
                                 End If
@@ -7683,15 +7693,16 @@ Public Class MainForm
                             End If
                         End If
 
-                        If Not g.DefaultCommands.GetApplicationDetails(False, True).StartsWithEx(match.Groups(1).Value) Then Continue Do
-
                         relevant = True
                         Continue Do
                     End If
 
                     If Not relevant Then Continue Do
-                    If String.IsNullOrWhiteSpace(line) Then Continue Do
-                    If versions > 1 AndAlso version.Build > 0 AndAlso line.StartsWithEx("- Update ") Then
+                    If String.IsNullOrWhiteSpace(line) Then
+                        If lines > 0 AndAlso readoutVersion.Build = currentVersion.Build AndAlso NOT sb.ToString().EndsWith(BR2) Then sb.AppendLine()
+                        Continue Do
+                    End If
+                    If versions > 1 AndAlso currentVersion.Build > 0 AndAlso line.StartsWithEx("- Update ") Then
                         sb.AppendLine("---- Tool and Plugin updates are not shown! ----")
                         relevant = False
                     ElseIf lines > 35 AndAlso line.StartsWithEx("- Update ") Then

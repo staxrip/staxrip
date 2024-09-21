@@ -486,6 +486,44 @@ Public Class NVEnc
             .VisibleFunc = Function() Codec.Value = 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
             .Config = {0, 255}}
 
+        Property QPMaxMinAdvanced As New BoolParam With {.Text = "Show advanced QP settings", .Init = False}
+        Property QPInit8 As New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Init = 20, .Config = {0, 51, 1}, .VisibleFunc = Function() Not QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0}
+        Property QPInit8I As New NumParam With {.HelpSwitch = "--qp-init", .Text = "Initial QP I", .DefaultValue = -1, .Value = 20, .Config = {0, 51, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0, .ArgsFunc = AddressOf GetQpInitArgs, .ImportAction = AddressOf ImportQpInitArgs}
+        Property QPInit8P As New NumParam With {.HelpSwitch = "--qp-init", .Text = "Initial QP P", .DefaultValue = -1, .Value = 24, .Config = {0, 51, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0}
+        Property QPInit8B As New NumParam With {.HelpSwitch = "--qp-init", .Text = "Initial QP B", .DefaultValue = -1, .Value = 28, .Config = {0, 51, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0}
+        Property QPInit10 As New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Init = 20, .Config = {0, 63, 1}, .VisibleFunc = Function() Not QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1}
+        Property QPInit10I As New NumParam With {.HelpSwitch = "--qp-init", .Text = "Initial QP I", .DefaultValue = -1, .Value = 20, .Config = {0, 63, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1, .ArgsFunc = AddressOf GetQpInitArgs, .ImportAction = AddressOf ImportQpInitArgs}
+        Property QPInit10P As New NumParam With {.HelpSwitch = "--qp-init", .Text = "Initial QP P", .DefaultValue = -1, .Value = 24, .Config = {0, 63, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1}
+        Property QPInit10B As New NumParam With {.HelpSwitch = "--qp-init", .Text = "Initial QP B", .DefaultValue = -1, .Value = 28, .Config = {0, 63, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1}
+        Property QPInitAV1 As New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Init = 20, .Config = {0, 255, 1}, .VisibleFunc = Function() Not QPMaxMinAdvanced.Value AndAlso Codec.Value = 2}
+        Property QPInitAV1I As New NumParam With {.HelpSwitch = "--qp-init", .Text = "Initial QP I", .DefaultValue = -1, .Value = 20, .Config = {0, 255, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value = 2, .ArgsFunc = AddressOf GetQpInitArgs, .ImportAction = AddressOf ImportQpInitArgs}
+        Property QPInitAV1P As New NumParam With {.HelpSwitch = "--qp-init", .Text = "Initial QP P", .DefaultValue = -1, .Value = 24, .Config = {0, 255, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value = 2}
+        Property QPInitAV1B As New NumParam With {.HelpSwitch = "--qp-init", .Text = "Initial QP B", .DefaultValue = -1, .Value = 28, .Config = {0, 255, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value = 2}
+        Property QPMax8 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() Not QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0}
+        Property QPMax8I As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP I", .DefaultValue = -1, .Value = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0, .ArgsFunc = AddressOf GetQpMaxArgs, .ImportAction = AddressOf ImportQpMaxArgs}
+        Property QPMax8P As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP P", .DefaultValue = -1, .Value = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0}
+        Property QPMax8B As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP B", .DefaultValue = -1, .Value = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0}
+        Property QPMax10 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() Not QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1}
+        Property QPMax10I As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP I", .DefaultValue = -1, .Value = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1, .ArgsFunc = AddressOf GetQpMaxArgs, .ImportAction = AddressOf ImportQpMaxArgs}
+        Property QPMax10P As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP P", .DefaultValue = -1, .Value = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1}
+        Property QPMax10B As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP B", .DefaultValue = -1, .Value = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1}
+        Property QPMaxAV1 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() Not QPMaxMinAdvanced.Value AndAlso Codec.Value = 2}
+        Property QPMaxAV1I As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP I", .DefaultValue = -1, .Value = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value = 2, .ArgsFunc = AddressOf GetQpMaxArgs, .ImportAction = AddressOf ImportQpMaxArgs}
+        Property QPMaxAV1P As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP P", .DefaultValue = -1, .Value = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value = 2}
+        Property QPMaxAV1B As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP B", .DefaultValue = -1, .Value = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value = 2}
+        Property QPMin8 As New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 51, 1}, .VisibleFunc = Function() Not QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0}
+        Property QPMin8I As New NumParam With {.HelpSwitch = "--qp-min", .Text = "Minimum QP I", .DefaultValue = -1, .Value = 0, .Config = {0, 51, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0, .ArgsFunc = AddressOf GetQpMinArgs, .ImportAction = AddressOf ImportQpMinArgs}
+        Property QPMin8P As New NumParam With {.HelpSwitch = "--qp-min", .Text = "Minimum QP P", .DefaultValue = -1, .Value = 0, .Config = {0, 51, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0}
+        Property QPMin8B As New NumParam With {.HelpSwitch = "--qp-min", .Text = "Minimum QP B", .DefaultValue = -1, .Value = 0, .Config = {0, 51, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0}
+        Property QPMin10 As New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 63, 1}, .VisibleFunc = Function() Not QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1}
+        Property QPMin10I As New NumParam With {.HelpSwitch = "--qp-min", .Text = "Minimum QP I", .DefaultValue = -1, .Value = 0, .Config = {0, 63, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1, .ArgsFunc = AddressOf GetQpMinArgs, .ImportAction = AddressOf ImportQpMinArgs}
+        Property QPMin10P As New NumParam With {.HelpSwitch = "--qp-min", .Text = "Minimum QP P", .DefaultValue = -1, .Value = 0, .Config = {0, 63, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1}
+        Property QPMin10B As New NumParam With {.HelpSwitch = "--qp-min", .Text = "Minimum QP B", .DefaultValue = -1, .Value = 0, .Config = {0, 63, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1}
+        Property QPMinAV1 As New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 255, 1}, .VisibleFunc = Function() Not QPMaxMinAdvanced.Value AndAlso Codec.Value = 2}
+        Property QPMinAV1I As New NumParam With {.HelpSwitch = "--qp-min", .Text = "Minimum QP I", .DefaultValue = -1, .Value = 0, .Config = {0, 255, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value = 2, .ArgsFunc = AddressOf GetQpMinArgs, .ImportAction = AddressOf ImportQpMinArgs}
+        Property QPMinAV1P As New NumParam With {.HelpSwitch = "--qp-min", .Text = "Minimum QP P", .DefaultValue = -1, .Value = 0, .Config = {0, 255, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value = 2}
+        Property QPMinAV1B As New NumParam With {.HelpSwitch = "--qp-min", .Text = "Minimum QP B", .DefaultValue = -1, .Value = 0, .Config = {0, 255, 1}, .VisibleFunc = Function() QPMaxMinAdvanced.Value AndAlso Codec.Value = 2}
+
         Property VbvBufSize As New NumParam With {
             .Switch = "--vbv-bufsize",
             .Text = "VBV Bufsize",
@@ -827,16 +865,11 @@ Public Class NVEnc
                     Add("Rate Control",
                         New StringParam With {.Switch = "--dynamic-rc", .Text = "Dynamic RC"},
                         New OptionParam With {.Switch = "--multipass", .Text = "Multipass", .Options = {"None", "2Pass-Quarter", "2Pass-Full"}, .VisibleFunc = Function() Mode.Value = 0 OrElse Mode.Value > 1},
-                        New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Init = 20, .Config = {0, 51, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 0},
-                        New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Init = 20, .Config = {0, 63, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 1},
-                        New NumParam With {.Switch = "--qp-init", .Text = "Initial QP", .Init = 20, .Config = {0, 255, 1}, .VisibleFunc = Function() Codec.Value = 2},
-                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 0},
-                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 51, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 0},
-                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 1},
-                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 63, 1}, .VisibleFunc = Function() Codec.Value <> 2 AndAlso OutputDepth.Value = 1},
-                        New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() Codec.Value = 2},
-                        New NumParam With {.Switch = "--qp-min", .Text = "Minimum QP", .Init = 0, .Config = {0, 255, 1}, .VisibleFunc = Function() Codec.Value = 2},
-                        New NumParam With {.Switch = "--chroma-qp-offset", .Text = "QP offset for chroma", .Config = {0, Integer.MaxValue, 1}, .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"},
+                        QPMaxMinAdvanced,
+                        QPInit8, QPInit8I, QPInit8P, QPInit8B, QPInit10, QPInit10I, QPInit10P, QPInit10B, QPInitAV1, QPInitAV1I, QPInitAV1P, QPInitAV1B,
+                        QPMax8, QPMax8I, QPMax8P, QPMax8B, QPMax10, QPMax10I, QPMax10P, QPMax10B, QPMaxAV1, QPMaxAV1I, QPMaxAV1P, QPMaxAV1B,
+                        QPMin8, QPMin8I, QPMin8P, QPMin8B, QPMin10, QPMin10I, QPMin10P, QPMin10B, QPMinAV1, QPMinAV1I, QPMinAV1P, QPMinAV1B,
+                        New NumParam With {.Switch = "--chroma-qp-offset", .Text = "QP offset for chroma", .Config = {0, Integer.MinValue, 1}, .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "h265"},
                         VbvBufSize, MaxBitrate,
                         AQ,
                         New NumParam With {.Switch = "--aq-strength", .Text = "AQ Strength", .Config = {0, 15}, .VisibleFunc = Function() AQ.Value},
@@ -1632,6 +1665,78 @@ Public Class NVEnc
             End Select
             Return ""
         End Function
+
+        Function GetQpInitArgs() As String
+            If QPInit8I.Visible Then Return $"{QPInit8.HelpSwitch} {QPInit8I.Value}:{QPInit8P.Value}:{QPInit8B.Value}"
+            If QPInit10I.Visible Then Return $"{QPInit10.HelpSwitch} {QPInit10I.Value}:{QPInit10P.Value}:{QPInit10B.Value}"
+            If QPInitAV1I.Visible Then Return $"{QPInitAV1.HelpSwitch} {QPInitAV1I.Value}:{QPInitAV1P.Value}:{QPInitAV1B.Value}"
+        End Function
+
+        Sub ImportQpInitArgs(param As String, arg As String)
+            If param.Equals(QPInit8I.HelpSwitch) Then
+                Dim match = Regex.Match(arg, "(\d+):(\d+):(\d+)")
+                If match.Success Then
+                    QPMaxMinAdvanced.Value = True
+                    QPInit8I.Value = match.Groups(1).Value.ToInt()
+                    QPInit10I.Value = match.Groups(1).Value.ToInt()
+                    QPInitAV1I.Value = match.Groups(1).Value.ToInt()
+                    QPInit8P.Value = match.Groups(2).Value.ToInt()
+                    QPInit10P.Value = match.Groups(2).Value.ToInt()
+                    QPInitAV1P.Value = match.Groups(2).Value.ToInt()
+                    QPInit8B.Value = match.Groups(3).Value.ToInt()
+                    QPInit10B.Value = match.Groups(3).Value.ToInt()
+                    QPInitAV1B.Value = match.Groups(3).Value.ToInt()
+                End If
+            End If
+        End Sub
+
+        Function GetQpMaxArgs() As String
+            If QPMax8I.Visible AndAlso Not {QPMax8I.Value, QPMax8P.Value, QPMax8B.Value}.Min() = QPMax8I.Config(1) Then Return $"{QPMax8.HelpSwitch} {QPMax8I.Value}:{QPMax8P.Value}:{QPMax8B.Value}"
+            If QPMax10I.Visible AndAlso Not {QPMax10I.Value, QPMax10P.Value, QPMax10B.Value}.Min() = QPMax10I.Config(1) Then Return $"{QPMax10.HelpSwitch} {QPMax10I.Value}:{QPMax10P.Value}:{QPMax10B.Value}"
+            If QPMaxAV1I.Visible AndAlso Not {QPMaxAV1I.Value, QPMaxAV1P.Value, QPMaxAV1B.Value}.Min() = QPMaxAV1I.Config(1) Then Return $"{QPMaxAV1.HelpSwitch} {QPMaxAV1I.Value}:{QPMaxAV1P.Value}:{QPMaxAV1B.Value}"
+        End Function
+
+        Sub ImportQpMaxArgs(param As String, arg As String)
+            If param.Equals(QPMax8I.HelpSwitch) Then
+                Dim match = Regex.Match(arg, "(\d+):(\d+):(\d+)")
+                If match.Success Then
+                    QPMaxMinAdvanced.Value = True
+                    QPMax8I.Value = match.Groups(1).Value.ToInt()
+                    QPMax10I.Value = match.Groups(1).Value.ToInt()
+                    QPMaxAV1I.Value = match.Groups(1).Value.ToInt()
+                    QPMax8P.Value = match.Groups(2).Value.ToInt()
+                    QPMax10P.Value = match.Groups(2).Value.ToInt()
+                    QPMaxAV1P.Value = match.Groups(2).Value.ToInt()
+                    QPMax8B.Value = match.Groups(3).Value.ToInt()
+                    QPMax10B.Value = match.Groups(3).Value.ToInt()
+                    QPMaxAV1B.Value = match.Groups(3).Value.ToInt()
+                End If
+            End If
+        End Sub
+
+        Function GetQpMinArgs() As String
+            If QPMin8I.Visible AndAlso Not {QPMin8I.Value, QPMin8P.Value, QPMin8B.Value}.Max() = QPMin8I.Config(0) Then Return $"{QPMin8.HelpSwitch} {QPMin8I.Value}:{QPMin8P.Value}:{QPMin8B.Value}"
+            If QPMin10I.Visible AndAlso Not {QPMin10I.Value, QPMin10P.Value, QPMin10B.Value}.Max() = QPMin10I.Config(0) Then Return $"{QPMin10.HelpSwitch} {QPMin10I.Value}:{QPMin10P.Value}:{QPMin10B.Value}"
+            If QPMinAV1I.Visible AndAlso Not {QPMinAV1I.Value, QPMinAV1P.Value, QPMinAV1B.Value}.Max() = QPMinAV1I.Config(0) Then Return $"{QPMinAV1.HelpSwitch} {QPMinAV1I.Value}:{QPMinAV1P.Value}:{QPMinAV1B.Value}"
+        End Function
+
+        Sub ImportQPMinArgs(param As String, arg As String)
+            If param.Equals(QPMin8I.HelpSwitch) Then
+                Dim match = Regex.Match(arg, "(\d+):(\d+):(\d+)")
+                If match.Success Then
+                    QPMaxMinAdvanced.Value = True
+                    QPMin8I.Value = match.Groups(1).Value.ToInt()
+                    QPMin10I.Value = match.Groups(1).Value.ToInt()
+                    QPMinAV1I.Value = match.Groups(1).Value.ToInt()
+                    QPMin8P.Value = match.Groups(2).Value.ToInt()
+                    QPMin10P.Value = match.Groups(2).Value.ToInt()
+                    QPMinAV1P.Value = match.Groups(2).Value.ToInt()
+                    QPMin8B.Value = match.Groups(3).Value.ToInt()
+                    QPMin10B.Value = match.Groups(3).Value.ToInt()
+                    QPMinAV1B.Value = match.Groups(3).Value.ToInt()
+                End If
+            End If
+        End Sub
 
         Overrides Function GetCommandLine(
             includePaths As Boolean, includeExe As Boolean, Optional pass As Integer = 1) As String

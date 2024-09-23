@@ -95,10 +95,10 @@ Public Class x264Control
 
         components = New System.ComponentModel.Container()
 
-        If Not s.X264QualityDefinitions Is Nothing AndAlso s.X264QualityDefinitions.Any() Then
-            QualityDefinitions = s.X264QualityDefinitions
-        Else
-            QualityDefinitions = New List(Of QualityItem) From {
+        QualityDefinitions = If(s.X264QualityDefinitions IsNot Nothing AndAlso s.X264QualityDefinitions.Any(),
+            s.X264QualityDefinitions,
+            New List(Of QualityItem) From {
+                New QualityItem(0, "Lossless", "Lossless quality but huge file size"),
                 New QualityItem(14, "Super High", "Super high quality and file size"),
                 New QualityItem(16, "Very High", "Very high quality and file size"),
                 New QualityItem(18, "Higher", "Higher quality and file size"),
@@ -107,14 +107,14 @@ Public Class x264Control
                 New QualityItem(24, "Low", "Low quality and file size"),
                 New QualityItem(26, "Lower", "Lower quality and file size"),
                 New QualityItem(28, "Very Low", "Very low quality and file size"),
-                New QualityItem(30, "Super Low", "Super low quality and file size")}
-        End If
+                New QualityItem(30, "Super Low", "Super low quality and file size")})
 
         Encoder = enc
         Params = Encoder.Params
 
-        cms = New ContextMenuStripEx(components)
-        cms.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        cms = New ContextMenuStripEx(components) With {
+            .Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        }
 
         lv.View = View.Details
         lv.HeaderStyle = ColumnHeaderStyle.None
@@ -185,7 +185,7 @@ Public Class x264Control
 
     Sub UpdateMenu()
         cms.Items.ClearAndDisplose
-        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
+        Dim offset = If(Encoder.QualityMode, 0, 1)
 
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
@@ -248,7 +248,7 @@ Public Class x264Control
     End Function
 
     Sub UpdateControls()
-        If Params.Mode.Value = x264RateMode.Quality AndAlso lv.Items.Count < 4 Then
+        If Encoder.QualityMode AndAlso lv.Items.Count < 4 Then
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
@@ -259,7 +259,6 @@ Public Class x264Control
             lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
         End If
 
-        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
         blCompCheck.Visible = Params.Mode.Value = x264RateMode.TwoPass Or Params.Mode.Value = x264RateMode.ThreePass
     End Sub
 

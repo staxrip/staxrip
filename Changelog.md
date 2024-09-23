@@ -14,6 +14,35 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.44.4 (2025-02-16)
+====================
+
+- Audio: Fix broken adding of preferred audio tracks when specifying track numbers
+- Event: Add new event "Before Muxing When Source Opening"
+    - Gives the possibility for example to add/delete/modify files in the temp folder before they are read in
+- UI: Improve HDR type data display for source files
+- UI: Show Website and Download URL on Apps Manager
+- AviSynth: Make indexing for FFMS2 a process
+- AviSynth: Alter BestSource Source Profile
+- VapourSynth: Alter BestSource Source Profile
+- FFmpeg: Add GoPro CineForm HD (cfhd) codec
+- NVEncC: Add "--level" parameter
+- NVEncC: Add individual advanced settings for "--qp-init", "--qp-max" and "--qp-min"
+- QSVEncC: Add individual advanced settings for "--qp-max" and "--qp-min"
+- SvtAv1EncApp: Add "--spy-rd" parameter
+- VCEEncC: Add individual advanced settings for "--qp-max" and "--qp-min"
+- Update tools
+    - MKVToolNix v90.0
+    - NVEncC v7.82
+    - QSVEncC v7.79
+    - Subtitle Edit v4.0.11
+    - SvtAv1EncApp v2.3.0-B-0+17-b834bf13-.Mod-by-Patman.-x64-msvc1942 [SVT-AV1-PSY]
+    - VCEEncC v8.28
+    - x264 v0.164.3204+8-8241910-.Mod-by-Patman.-x64-gcc14.2.0
+- Update VapourSynth plugins
+    - D2VSource v1.3.0
+
+
 v2.44.3 (2025-01-30)
 ====================
 

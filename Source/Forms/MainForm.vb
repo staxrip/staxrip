@@ -1827,6 +1827,7 @@ Public Class MainForm
         files = files.Where(Function(x) x.Ext.ToLowerInvariant() <> "avs")
         files = files.Where(Function(x) Not x.ToLowerInvariant().Contains("_cut_"))
         files = files.Where(Function(x) Not x.ToLowerInvariant().Contains("_out"))
+        files = files.Where(Function(x) Not x.ToLowerInvariant().Matches("_chunk\d+$"))
         files = files.OrderBy(Function(x) x, New StringLogicalComparer())
 
         Dim hqAudioFiles = files.Where(Function(x) FileTypes.AudioHQ.Contains(x.Ext()))
@@ -3917,7 +3918,8 @@ Public Class MainForm
                                     p.SourceFile <> iFile AndAlso
                                     Not iFile.Base.EndsWith("_CompCheck") AndAlso
                                     Not iFile.Base.EndsWith("_out") AndAlso
-                                    Not iFile.Base.Contains("_cut_") Then
+                                    Not iFile.Base.Matches("_chunk\d+$") AndAlso
+                                    Not iFile.Base.ContainsEx("_cut_") Then
 
                                     p.SourceFile = iFile
                                     p.SourceFiles.Clear()

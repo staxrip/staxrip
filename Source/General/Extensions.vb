@@ -66,6 +66,11 @@ Module StringExtensions
     End Function
 
     <Extension>
+    Function Matches(instance As String, pattern As String) As Boolean
+        Return instance <> "" AndAlso pattern <> "" AndAlso Regex.IsMatch(instance, pattern)
+    End Function
+
+    <Extension>
     Function ToLowerEx(instance As String) As String
         Return If(instance = "", "", instance.ToLowerInvariant)
     End Function

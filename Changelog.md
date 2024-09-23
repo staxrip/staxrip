@@ -14,6 +14,23 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.44.5 (2025-03-07)
+====================
+
+- General: Fix abortion issue with suspended AviSynth piped processes ([#1589](/../../issues/1589))
+- General: Recognize localized language names when identifying the language from file names
+- General: Ignore existing video files in temp directory created by Chunks when opening source file again
+- General: Don't delete temp files even when there is a non-active job in the queue
+- General: Add ".vtt" and ".webvtt" as subtitles
+- Macro: Add macro %empty%
+- UI: Assign non-NumPad-Keys to cropping on Crop window at first start when no NumPad is available
+- UI: Disable Download- and Explorer-buttons if app/plugin does not have related data on Apps Manager
+- UI: Print more accurate status messages on Apps Manager in case an app/plugin is not found
+- UI: Fix crash on VideoComparison when closing the last tab
+- UI: Fix ffmpeg progress not shown
+- UI: Fix rounding issue with number edits when using up/down arrow keys
+
+
 v2.44.4 (2025-02-16)
 ====================
 

@@ -53,6 +53,13 @@ Namespace UI
             KeysTexts(Keys.NumPad9) = "9 (Numpad)"
         End Sub
 
+        Shared ReadOnly Property IsNumPadInstalled As Boolean
+            Get
+                Return Native.GetKeyState(Keys.NumLock) <> 0
+            End Get
+        End Property
+
+
         Shared Function GetKeyString(key As Keys) As String
             If key = Keys.None Then
                 Return ""

@@ -58,6 +58,10 @@ Public Class Native
     Shared Function MapVirtualKey(wCode As Integer, wMapType As Integer) As Integer
     End Function
 
+    <DllImport("user32.dll", CharSet:=CharSet.Auto, ExactSpelling:=True, CallingConvention:=CallingConvention.Winapi)>
+    Shared Function GetKeyState(keyCode As Integer) As Short
+    End Function
+
     <DllImport("user32.dll")>
     Shared Function GetForegroundWindow() As IntPtr
     End Function

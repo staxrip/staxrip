@@ -448,6 +448,8 @@ Public Class AppsForm
         AddSection("VapourSynth Filters")
         AddSection("Filters")
         AddSection("Description")
+        AddSection("Website")
+        AddSection("Download")
 
         ApplyTheme()
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
@@ -515,6 +517,14 @@ Public Class AppsForm
 
         Contents("Location").Text = If(path = "", "Not found", path)
         Contents("Description").Text = CurrentPackage.Description
+        
+        Contents("Website").Text = CurrentPackage.WebURL
+        Contents("Website").Visible = Not String.IsNullOrWhiteSpace(CurrentPackage.WebURL)
+        Headers("Website").Visible = Contents("Website").Visible
+
+        Contents("Download").Text = CurrentPackage.DownloadURL
+        Contents("Download").Visible = Not String.IsNullOrWhiteSpace(CurrentPackage.DownloadURL)
+        Headers("Download").Visible = Contents("Download").Visible
 
         If File.Exists(CurrentPackage.Path) Then
             Contents("Version").Text = If(CurrentPackage.IsVersionCorrect, CurrentPackage.Version, "Unknown")

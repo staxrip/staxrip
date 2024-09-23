@@ -60,14 +60,14 @@ Public Class x264Enc
     End Property
 
     Overrides Sub Encode()
-        Encode("Video encoding", GetArgs(1, p.Script), s.ProcessPriority)
+        Encode("Video encoding", GetArgs(1, 0, 0, Nothing, p.Script), s.ProcessPriority)
 
         If Params.Mode.Value = x264RateMode.TwoPass Then
-            Encode("Video encoding second pass", GetArgs(2, p.Script), s.ProcessPriority)
+            Encode("Video encoding second pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         ElseIf Params.Mode.Value = x264RateMode.ThreePass Then
             'Specific order 1 > 3 > 2 is correct!
-            Encode("Video encoding Nth pass", GetArgs(3, p.Script), s.ProcessPriority)
-            Encode("Video encoding last pass", GetArgs(2, p.Script), s.ProcessPriority)
+            Encode("Video encoding Nth pass", GetArgs(3, 0, 0, Nothing, p.Script), s.ProcessPriority)
+            Encode("Video encoding last pass", GetArgs(2, 0, 0, Nothing, p.Script), s.ProcessPriority)
         End If
     End Sub
 
@@ -203,6 +203,54 @@ Public Class x264Enc
         ImportCommandLine(cl)
     End Sub
 
+    Overrides Function CanChunkEncode() As Boolean
+        Return CInt(Params.Chunks.Value) > 1
+    End Function
+
+    Overrides Function GetChunks() As Integer
+        Return CInt(Params.Chunks.Value)
+    End Function
+
+    Overrides Function GetChunkEncodeActions() As List(Of Action)
+        Dim maxFrame = p.Script.GetFrameCount()
+        Dim chunkCount = CInt(Params.Chunks.Value)
+        Dim startFrame = CInt(Params.Seek.Value)
+        Dim length = If(CInt(Params.Frames.Value) > 0, CInt(Params.Frames.Value), maxFrame - startFrame)
+        Dim endFrame = Math.Min(startFrame + length - 1, maxFrame)
+        Dim chunkLength = length \ chunkCount
+        Dim ret As New List(Of Action)
+
+        For chunk = 0 To chunkCount - 1
+            Dim chunkStart = startFrame + (chunk * chunkLength)
+            Dim chunkEnd = If(chunk <> chunkCount - 1, chunkStart + (chunkLength - 1), endFrame)
+            Dim chunkName = ""
+            Dim passName = ""
+
+            If chunkCount > 1 Then
+                chunkName = "_chunk" & (chunk + 1)
+                passName = " chunk " & (chunk + 1)
+            End If
+
+            If Params.Mode.Value = x264RateMode.TwoPass Then
+                ret.Add(Sub()
+                            Encode("Video encoding pass 1" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                            Encode("Video encoding pass 2" + passName, GetArgs(2, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                        End Sub)
+            ElseIf Params.Mode.Value = x264RateMode.ThreePass Then
+                ret.Add(Sub()
+                            'Specific order 1 > 3 > 2 is correct!
+                            Encode("Video encoding first pass" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                            Encode("Video encoding Nth pass" + passName, GetArgs(3, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                            Encode("Video encoding last pass" + passName, GetArgs(2, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority)
+                        End Sub)
+            Else
+                ret.Add(Sub() Encode("Video encoding" + passName, GetArgs(1, chunkStart, chunkEnd, chunkName, p.Script), s.ProcessPriority))
+            End If
+        Next
+
+        Return ret
+    End Function
+
     Overrides Sub RunCompCheck()
         If Not g.VerifyRequirements OrElse Not g.IsValidSource Then
             Exit Sub
@@ -241,7 +289,7 @@ Public Class x264Enc
 
         Log.WriteLine(BR + script.GetFullScript + BR)
 
-        Dim commandLine = enc.Params.GetArgs(0, script, Path.Combine(p.TempDir, p.TargetFile.Base + "_CompCheck." + OutputExt), True, True)
+        Dim commandLine = enc.Params.GetArgs(0, 0, 0, Nothing, script, Path.Combine(p.TempDir, p.TargetFile.Base + "_CompCheck." + OutputExt), True, True)
 
         Try
             Encode("Compressibility Check", commandLine, ProcessPriorityClass.Normal)
@@ -263,8 +311,8 @@ Public Class x264Enc
         Log.Save()
     End Sub
 
-    Overloads Function GetArgs(pass As Integer, script As VideoScript, Optional includePaths As Boolean = True) As String
-        Return Params.GetArgs(pass, script, OutputPath.DirAndBase + OutputExtFull, includePaths, True)
+    Overloads Function GetArgs(pass As Integer, startFrame As Integer, endFrame As Integer, chunkName As String, script As VideoScript, Optional includePaths As Boolean = True) As String
+        Return Params.GetArgs(pass, startFrame, endFrame, chunkName, script, OutputPath.DirAndBase + OutputExtFull, includePaths, True)
     End Function
 
     Overrides Sub ShowConfigDialog(Optional param As CommandLineParam = Nothing)
@@ -392,6 +440,20 @@ Public Class x264Params
         .Help = "Percent value to adjusts the target file size or image size after the compressibility check accordingly.",
         .Config = {1, 100}}
 
+    Property Chunks As New NumParam With {
+        .Text = "Chunks",
+        .Init = 1,
+        .Config = {1, 128}}
+
+    Property Seek As New NumParam With {
+        .HelpSwitch = "--seek",
+        .Text = "Seek"}
+
+    Property Frames As New NumParam With {
+        .HelpSwitch = "--frames",
+        .Switches = {"-f"},
+        .Text = "Frames"}
+
     Property Custom As New StringParam With {
         .Text = "Custom",
         .Quotes = QuotesMode.Never,
@@ -473,7 +535,7 @@ Public Class x264Params
         .Text = "AQ Bias Strength",
         .Init = 1,
         .Config = {0, 3, 0.05, 2},
-        .VisibleFunc = Function() Aqmode.Value = 3}
+        .VisibleFunc = Function() AqMode.Value = 3}
 
     Property BAdapt As New OptionParam With {
         .Switch = "--b-adapt",
@@ -1032,7 +1094,7 @@ Public Class x264Params
                     New OptionParam With {.Switch = "--avcintra-flavor", .Text = "AVC Intra Flavor", .Options = {"Panasonic", "Sony"}},
                     New NumParam With {.Switch = "--threads", .Text = "Threads"},
                     New NumParam With {.Switch = "--lookahead-threads", .Text = "Lookahead Threads"},
-                    New NumParam With {.Switch = "--seek", .Text = "Seek"},
+                    Seek, Frames,
                     New NumParam With {.Switch = "--sync-lookahead", .Text = "Sync Lookahead"},
                     New NumParam With {.Switch = "--asm", .Text = "ASM"},
                     New NumParam With {.Switch = "--opencl-device", .Text = "OpenCl Device"},
@@ -1060,6 +1122,7 @@ Public Class x264Params
                     Deblock,
                     DeblockA,
                     DeblockB,
+                    Chunks,
                     CompCheck,
                     CompCheckAimedQuality,
                     SlowFirstpass,
@@ -1121,8 +1184,7 @@ Public Class x264Params
     Overloads Overrides Function GetCommandLine(
         includePaths As Boolean, includeExecutable As Boolean, Optional pass As Integer = 1) As String
 
-        Return GetArgs(pass, p.Script, p.VideoEncoder.OutputPath.DirAndBase +
-                       p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
+        Return GetArgs(pass, 0, 0, Nothing, p.Script, p.VideoEncoder.OutputPath.DirAndBase + p.VideoEncoder.OutputExtFull, includePaths, includeExecutable)
     End Function
 
     Overrides Function GetCommandLinePreview() As String
@@ -1141,6 +1203,9 @@ Public Class x264Params
 
     Overloads Function GetArgs(
         pass As Integer,
+        startFrame As Integer,
+        endFrame As Integer,
+        chunkName As String,
         script As VideoScript,
         targetPath As String,
         includePaths As Boolean,
@@ -1150,6 +1215,7 @@ Public Class x264Params
 
         Dim sb As New StringBuilder
         Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText
+        Dim isSingleChunk = endFrame = 0
 
         If includePaths AndAlso includeExecutable Then
             Dim pipeCmd = ""
@@ -1233,7 +1299,6 @@ Public Class x264Params
         End If
 
         If includePaths Then
-            Dim input = If(pipeTool = "none", script.Path.Escape, "-")
             Dim dmx = Demuxer.ValueText
 
             If pipeTool = "none" AndAlso FrameServerHelp.IsPortable AndAlso Package.x264Type <> x264Type.Vanilla Then
@@ -1251,10 +1316,24 @@ Public Class x264Params
             End If
 
             If dmx <> "" Then
-                Dim info = script.GetInfo
-                sb.Append($" --demuxer {dmx} --frames " & info.FrameCount)
+                sb.Append($" --demuxer {dmx}")
+
+                If isSingleChunk Then
+                    If Seek.Value > 0 Then
+                        sb.Append($" --seek {Seek.Value}")
+                    End If
+
+                    If Frames.Value = 0 Then
+                        sb.Append($" --frames {script.GetFrameCount - Seek.Value}")
+                    Else
+                        sb.Append($" --frames {Frames.Value}")
+                    End If
+                Else
+                    sb.Append($" --seek {startFrame} --frames {endFrame - startFrame + 1}")
+                End If
 
                 If dmx = "raw" Then
+                    Dim info = script.GetInfo
                     sb.Append($" --input-res {info.Width}x{info.Height}")
 
                     If Not sb.ToString.Contains("--fps ") Then
@@ -1264,16 +1343,16 @@ Public Class x264Params
             End If
 
             If Mode.Value = x264RateMode.TwoPass OrElse Mode.Value = x264RateMode.ThreePass Then
-                sb.Append(" --stats " + (Path.Combine(p.TempDir, p.TargetFile.Base + ".stats")).Escape)
+                sb.Append(" --stats " + (Path.Combine(p.TempDir, p.TargetFile.Base + chunkName + ".stats")).Escape)
             End If
 
-            If (Mode.Value = x264RateMode.ThreePass AndAlso (pass = 1 OrElse pass = 3)) OrElse
-                Mode.Value = x264RateMode.TwoPass AndAlso pass = 1 Then
-
-                sb.Append(" --output NUL " + input)
+            If (Mode.Value = x264RateMode.ThreePass AndAlso pass <> 2) OrElse (Mode.Value = x264RateMode.TwoPass AndAlso pass = 1) Then
+                sb.Append(" --output NUL")
             Else
-                sb.Append(" --output " + targetPath.Escape + " " + input)
+                sb.Append(" --output " + (targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape)
             End If
+
+            sb.Append( " " & If(pipeTool = "none", script.Path.Escape, "-") )
         End If
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))

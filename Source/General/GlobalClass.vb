@@ -11,6 +11,7 @@ Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports System.Windows.Forms.VisualStyles
+Imports System.Xml.Linq
 Imports Microsoft.VisualBasic.FileIO
 Imports Microsoft.Win32
 Imports StaxRip.UI
@@ -929,7 +930,7 @@ Public Class GlobalClass
         audioTrack.AudioProfile.Forced = forced
         audioTrack.AudioProfile.Language = language
         audioTrack.AudioProfile.Stream = stream
-        audioTrack.AudioProfile.StreamName = streamName
+        audioTrack.AudioProfile.StreamName = If(audioTrack.AudioProfile.StreamName = "", streamName, audioTrack.AudioProfile.StreamName)
         audioTrack.AudioProfile.Streams = streams
         audioTrack.AudioProfile.Delay = delay
 

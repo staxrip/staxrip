@@ -992,7 +992,14 @@ Public Class x265Params
         .NoSwitch = "--no-hdr10",
         .Text = "HDR10",
         .Options = {"Undefined", "Yes", "No"},
-        .Values = {"", "--hdr10", "--no-hdr10"}}
+        .Values = {"", "--hdr10", "--no-hdr10"},
+        .ValueChangedAction = Sub(x)
+                                  If x = 1 Then
+                                      Chromaloc.Value = 2
+                                  ElseIf x = 2 Then
+                                      Chromaloc.Value = 0
+                                  End If
+                              End Sub}
 
     Property DhdrInfo As New StringParam With {
         .Switch = "--dhdr10-info",
@@ -1464,16 +1471,6 @@ Public Class x265Params
             BlockValueChanged = True
             ApplyTuneValues()
             BlockValueChanged = False
-        End If
-
-        If item Is Hdr10 Then
-            Select Case Hdr10.OptionText.ToLowerInvariant()
-                Case "yes"
-                    Chromaloc.Value = 2
-                Case "no"
-                    Chromaloc.Value = 0
-                Case Else
-            End Select
         End If
 
         If DeblockA.NumEdit IsNot Nothing Then

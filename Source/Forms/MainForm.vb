@@ -10,11 +10,7 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Window
-Imports System.Xml
-Imports ManagedCuda.DriverAPINativeMethods
 Imports Microsoft.VisualBasic
-Imports MS.Internal.IO
 
 Imports StaxRip.UI
 

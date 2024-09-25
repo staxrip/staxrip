@@ -1844,8 +1844,7 @@ Public Class BitmapUtil
         Dim data As IntPtr
 
         If server.GetFrame(position, data, pitch) = 0 Then
-            Return New Bitmap(server.Info.Width, server.Info.Height,
-                pitch, PixelFormat.Format32bppArgb, data)
+            Return New Bitmap(server.Info.Width, server.Info.Height, pitch, PixelFormat.Format32bppArgb, data)
         End If
     End Function
 End Class
@@ -1856,7 +1855,7 @@ Public Class AutoCrop
     Public Left As Integer()
     Public Right As Integer()
 
-    Shared Function Start(bmp As Bitmap, position As Integer, threshold As Single) As AutoCrop
+    Shared Function Start(bmp As Bitmap, threshold As Single) As AutoCrop
         Dim ret As New AutoCrop
         Dim u = BitmapUtil.Create(bmp)
         Dim xCount = 20

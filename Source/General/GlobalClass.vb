@@ -1512,10 +1512,10 @@ Public Class GlobalClass
 
                     Dim frame = analyzeFrames(i)
                     Using bmp = BitmapUtil.CreateBitmap(server, frame)
-                        crops(i) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), frame, luminanceThreshold)
+                        crops(i) = AutoCrop.Start(bmp.Clone(New Rectangle(0, 0, bmp.Width, bmp.Height), PixelFormat.Format32bppRgb), luminanceThreshold)
                     End Using
 
-                    If crops(i).Left.Min = 0 AndAlso crops(i).Top.Min = 0 AndAlso crops(i).Right.Min = 0 AndAlso crops(i).Bottom.Min = 0 Then
+                    If {crops(i).Left.Min, crops(i).Top.Min, crops(i).Right.Min, crops(i).Bottom.Min}.Max() = 0 Then
                         progressAction?.Invoke(100.0)
                         Exit For
                     End If

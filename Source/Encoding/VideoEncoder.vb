@@ -102,6 +102,7 @@ Public MustInherit Class VideoEncoder
 
         If Not g.FileExists(op) Then Throw New ErrorAbortException("Encoder output file is missing", op)
 
+        Log.WriteLine(BR)
         Log.WriteLine(MediaInfo.GetSummary(op))
         Log.Save()
 

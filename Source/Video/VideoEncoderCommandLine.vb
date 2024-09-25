@@ -346,7 +346,7 @@ Namespace VideoEncoderCommandLine
                     End If
                 End If
             Else
-                Return ArgsFunc.Invoke()
+                Return ArgsFunc.Invoke()?.Trim()
             End If
         End Function
 

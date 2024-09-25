@@ -256,8 +256,9 @@ Public Class Proc
                 End If
             End If
 
-            If Process.StartInfo.FileName = "" Then
+            If Process.StartInfo.FileName = "" AndAlso Package IsNot Nothing Then
                 Process.StartInfo.FileName = Package.Path
+            Else
             End If
 
             If ReadOutput Then

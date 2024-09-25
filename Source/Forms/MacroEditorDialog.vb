@@ -139,14 +139,14 @@ Public Class MacroEditorDialog
         Text = $"Batch Editor - {g.DefaultCommands.GetApplicationDetails()}"
         HelpText = "Editor for batch script editing."
         MacroEditorControl.SetCommandLineDefaults()
-        ScaleClientSize(35, 22)
+        ScaleClientSize(45, 30)
     End Sub
 
     Sub SetMacroDefaults()
         Text = $"Macro Editor - {g.DefaultCommands.GetApplicationDetails()}"
         HelpText = "Editor for strings that may contain macros."
         MacroEditorControl.SetMacroDefaults()
-        ScaleClientSize(35, 25)
+        ScaleClientSize(45, 30)
     End Sub
 
     Sub SetScriptDefaults()
@@ -173,8 +173,8 @@ Public Class MacroEditorDialog
         Dim textSize = TextRenderer.MeasureText(editorControl.rtbEdit.Text, editorControl.rtbEdit.Font)
         Dim workingArea = Screen.FromControl(Me).WorkingArea
 
-        If Width > workingArea.Width * 0.7 Then
-            Width = CInt(workingArea.Width * 0.7)
+        If Width > workingArea.Width * 0.8 Then
+            Width = CInt(workingArea.Width * 0.8)
         End If
 
         If Height > workingArea.Height * 0.9 Then

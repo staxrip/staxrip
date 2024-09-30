@@ -1488,8 +1488,8 @@ Public Class SvtAv1EncParams
             Dim input = If(Decoder.Value = 0 AndAlso pipeTool = "automatic", script.Path.Escape.LongPathPrefix, "-")
 
             sb.Append($" --input {input}")
-            sb.Append($" --width {p.TargetWidth} --height {p.TargetHeight}")
             sb.Append($" --output {(targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape.LongPathPrefix}")
+            If Decoder.Value = 0 Then sb.Append($" --width {p.Script.Info.Width} --height {p.Script.Info.Height}")
         End If
 
         If isSingleChunk Then

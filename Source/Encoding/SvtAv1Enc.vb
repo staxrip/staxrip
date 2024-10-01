@@ -1299,7 +1299,7 @@ Public Class SvtAv1EncParams
         .Text = "Min chroma quant matrix flatness",
         .Config = {0, 15, 1},
         .VisibleFunc = Function() EnableQmPsy.Visible AndAlso EnableQmPsy.Value,
-        .Init = 0}
+        .Init = 8}
 
     Property PsyMaxChromaQmLevel As New NumParam With {
         .Switch = "--chroma-qm-max",

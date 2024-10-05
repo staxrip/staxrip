@@ -422,10 +422,12 @@ Public MustInherit Class BasicVideoEncoder
             For x = 0 To a.Length - 1
                 Application.DoEvents()
                 For Each param In params.Items
-                    If param.ImportAction IsNot Nothing AndAlso
-                        param.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
-
-                        param.ImportAction.Invoke(a(x), a(x + 1))
+                    If param.ImportAction IsNot Nothing AndAlso param.GetSwitches.Contains(a(x)) Then
+                        If a.Length - 1 > x Then
+                            param.ImportAction.Invoke(a(x), a(x + 1))
+                        Else
+                            param.ImportAction.Invoke(a(x), "")
+                        End If
                         params.RaiseValueChanged(param)
                         Exit For
                     End If

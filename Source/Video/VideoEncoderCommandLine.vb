@@ -686,6 +686,16 @@ Namespace VideoEncoderCommandLine
             End Set
         End Property
 
+        ReadOnly Property IsDefaultValue As Boolean
+            Get
+                Return Value = DefaultValue
+            End Get
+        End Property
+
+        Sub SetDefaultValue()
+            Value = DefaultValue
+        End Sub
+
         Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params

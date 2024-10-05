@@ -508,7 +508,7 @@ Module StringExtensions
     End Function
 
     <Extension()>
-    Function ToDouble(value As String, Optional defaultValue As Single = 0) As Double
+    Function ToDouble(value As String, Optional defaultValue As Double = 0) As Double
         If value <> "" Then
             If value.Contains(",") Then
                 value = value.Replace(",", ".")

@@ -1,4 +1,5 @@
 ﻿
+Imports System
 Imports System.Drawing.Imaging
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -790,13 +791,13 @@ Public Class NVEnc
         Property ColorspaceHdr2sdrReinhardContrast As New NumParam With {.Text = New String(" "c, 6) + "Contrast", .HelpSwitch = "--vpp-colorspace", .Init = 0.5, .Config = {0, 1, 0.01, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3}
         Property ColorspaceHdr2sdrReinhardPeak As New NumParam With {.Text = New String(" "c, 6) + "Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1.0, .Config = {0, 100, 0.05, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3, .Name = "ReinhardPeak"}
 
-        Property NgxTruehdr As New BoolParam With {.Text = New String(" "c, 0) + "AI enhanced SDR to HDR conversion using RTX Video SDK:", .Switch = "--vpp-ngx-truehdr", .ArgsFunc = AddressOf GetNgxTruehdrArgs}
+        Property NgxTruehdr As New BoolParam With {.Text = New String(" "c, 0) + "AI enhanced SDR to HDR conversion using RTX Video SDK:", .Switch = "--vpp-ngx-truehdr", .ArgsFunc = AddressOf GetNgxTruehdrArgs, .ImportAction = AddressOf ImportNgxTruehdrArgs}
         Property NgxTruehdrContrast As New NumParam With {.Text = New String(" "c, 6) + "Contrast", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 125.0, .Config = {0, 200, 1, 0}}
         Property NgxTruehdrSaturation As New NumParam With {.Text = New String(" "c, 6) + "Saturation", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 75.0, .Config = {0, 200, 1, 0}}
         Property NgxTruehdrMiddleGray As New NumParam With {.Text = New String(" "c, 6) + "MiddleGray", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 44.0, .Config = {10, 100, 1, 0}}
         Property NgxTruehdrMaxLuminance As New NumParam With {.Text = New String(" "c, 6) + "Max Luminance", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 1000.0, .Config = {400, 2000, 1, 0}}
 
-        Property LibPlaceboDeband As New BoolParam With {.Text = "LibPlacebo-Deband", .Switch = "--vpp-libplacebo-deband", .ArgsFunc = AddressOf GetLibPlaceboDebandArgs}
+        Property LibPlaceboDeband As New BoolParam With {.Text = "LibPlacebo-Deband", .Switch = "--vpp-libplacebo-deband", .ArgsFunc = AddressOf GetLibPlaceboDebandArgs, .ImportAction = AddressOf ImportLibPlaceboDebandArgs}
         Property LibPlaceboDebandIterations As New NumParam With {.Text = "     Iterations", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 1, .Config = {0, 255}}
         Property LibPlaceboDebandThreshold As New NumParam With {.Text = "     Threshold", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 4, .Config = {0, 255, 0.5, 1}}
         Property LibPlaceboDebandRadius As New NumParam With {.Text = "     Radius", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 16, .Config = {0, 255, 0.5, 1}}
@@ -808,7 +809,7 @@ Public Class NVEnc
         Property LibPlaceboDebandDither As New OptionParam With {.Text = "     Dither", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 1, .Options = {"None", "Blue Noise (default)", "Ordered LUT", "Ordered Fixed", "White Noise"}, .Values = {"none", "blue_noise", "ordered_lut", "ordered_fixed", "white_noise"}, .VisibleFunc = Function() OutputDepth.Value = 0}
         Property LibPlaceboDebandLutSize As New OptionParam With {.Text = "     LUT Size", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 5, .Options = {"2", "4", "8", "16", "32", "64 (default)", "128", "256"}, .Values = {"2", "4", "8", "16", "32", "64", "128", "256"}}
 
-        Property LibPlaceboShader As New BoolParam With {.Text = "LibPlacebo-Shader", .Switch = "--vpp-libplacebo-shader", .ArgsFunc = AddressOf GetLibPlaceboShaderArgs}
+        Property LibPlaceboShader As New BoolParam With {.Text = "LibPlacebo-Shader", .Switch = "--vpp-libplacebo-shader", .ArgsFunc = AddressOf GetLibPlaceboShaderArgs, .ImportAction = AddressOf ImportLibPlaceboShaderArgs}
         Property LibPlaceboShaderShader As New StringParam With {.Text = "     Shader", .HelpSwitch = "--vpp-libplacebo-shader", .Init = "", .BrowseFile = True}
         Property LibPlaceboShaderResWidth As New NumParam With {.Text = "     Resolution Width", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Config = {0, 7680, 1, 0}}
         Property LibPlaceboShaderResHeight As New NumParam With {.Text = "     Resolution Height", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Config = {0, 4320, 1, 0}}
@@ -823,7 +824,7 @@ Public Class NVEnc
         Property LibPlaceboShaderAntiring As New NumParam With {.Text = "     Anti Ring", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Config = {0, 1, 0.01, 2}}
         Property LibPlaceboShaderLinear As New OptionParam With {.Text = "     Linear", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Options = {"Undefined (default)", "No", "Yes"}, .Values = {"", "false", "true"}}
 
-        Property LibPlaceboTonemapping As New BoolParam With {.Text = "LibPlacebo-Tonemapping", .Switch = "--vpp-libplacebo-tonemapping", .ValueChangedAction = Sub(x) LibPlaceboTonemapping2.Value = x, .ArgsFunc = AddressOf GetLibPlaceboTonemappingArgs}
+        Property LibPlaceboTonemapping As New BoolParam With {.Text = "LibPlacebo-Tonemapping", .Switch = "--vpp-libplacebo-tonemapping", .ValueChangedAction = Sub(x) LibPlaceboTonemapping2.Value = x, .ArgsFunc = AddressOf GetLibPlaceboTonemappingArgs, .ImportAction = AddressOf ImportLibPlaceboTonemappingArgs}
         Property LibPlaceboTonemapping2 As New BoolParam With {.Text = "LibPlacebo-Tonemapping", .HelpSwitch = "--vpp-libplacebo-tonemapping", .ValueChangedAction = Sub(x) LibPlaceboTonemapping.Value = x}
         Property LibPlaceboTonemappingSrcCsp As New OptionParam With {.Text = "     Source Colorspace", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Auto (default)", "SDR", "HDR10", "HLG", "Dolby Vision", "RGB"}, .Values = {"auto", "sdr", "hdr10", "hlg", "dovi", "rgb"}}
         Property LibPlaceboTonemappingDstCsp As New OptionParam With {.Text = "     Destination Colorspace", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Auto (default)", "SDR", "HDR10", "HLG", "Dolby Vision", "RGB"}, .Values = {"auto", "sdr", "hdr10", "hlg", "dovi", "rgb"}}
@@ -1399,6 +1400,24 @@ Public Class NVEnc
             Return ""
         End Function
 
+        Function ImportNgxTruehdrArgs(param As String, arg As String) As String
+            Dim contrastMatch = Regex.Match(arg, "(?:^|,)contrast=(\d+)?")
+            Dim saturationMatch = Regex.Match(arg, "(?:^|,)saturation=(\d+)?")
+            Dim middlegrayMatch = Regex.Match(arg, "(?:^|,)middlegray=(\d+)?")
+            Dim maxluminanceMatch = Regex.Match(arg, "(?:^|,)maxluminance=(\d+)?")
+
+            NgxTruehdr.Value = True
+            NgxTruehdrContrast.Value = NgxTruehdrContrast.DefaultValue
+            NgxTruehdrSaturation.Value = NgxTruehdrSaturation.DefaultValue
+            NgxTruehdrMiddleGray.Value = NgxTruehdrMiddleGray.DefaultValue
+            NgxTruehdrMaxLuminance.Value = NgxTruehdrMaxLuminance.DefaultValue
+
+            If contrastMatch.Success Then NgxTruehdrContrast.Value = contrastMatch.Groups(1).Value.ToDouble(NgxTruehdrContrast.DefaultValue)
+            If saturationMatch.Success Then NgxTruehdrSaturation.Value = saturationMatch.Groups(1).Value.ToDouble(NgxTruehdrSaturation.DefaultValue)
+            If middlegrayMatch.Success Then NgxTruehdrMiddleGray.Value = middlegrayMatch.Groups(1).Value.ToDouble(NgxTruehdrMiddleGray.DefaultValue)
+            If maxluminanceMatch.Success Then NgxTruehdrMaxLuminance.Value = maxluminanceMatch.Groups(1).Value.ToDouble(NgxTruehdrMaxLuminance.DefaultValue)
+        End Function
+
         Function GetLibPlaceboDebandArgs() As String
             If LibPlaceboDeband.Value Then
                 Dim ret = ""
@@ -1412,6 +1431,33 @@ Public Class NVEnc
                 Return "--vpp-libplacebo-deband " + ret.TrimStart(","c)
             End If
             Return ""
+        End Function
+
+        Function ImportLibPlaceboDebandArgs(param As String, arg As String) As String
+            Dim match1 = Regex.Match(arg, "(?:^|,)iterations=(\d+(\.\d+)?)?")
+            Dim match2 = Regex.Match(arg, "(?:^|,)threshold=(\d+(\.\d+)?)?")
+            Dim match3 = Regex.Match(arg, "(?:^|,)radius=(\d+(\.\d+)?)?")
+            Dim match4 = Regex.Match(arg, "(?:^|,)grain_y=(\d+(\.\d+)?)?")
+            Dim match5 = Regex.Match(arg, "(?:^|,)grain_c=(\d+(\.\d+)?)?")
+            Dim match6 = Regex.Match(arg, "(?:^|,)dither=(\d+(\.\d+)?)?")
+            Dim match7 = Regex.Match(arg, "(?:^|,)lut_size=(\d+(\.\d+)?)?")
+
+            LibPlaceboDeband.Value = True
+            LibPlaceboDebandIterations.Value = LibPlaceboDebandIterations.DefaultValue
+            LibPlaceboDebandThreshold.Value = LibPlaceboDebandThreshold.DefaultValue
+            LibPlaceboDebandRadius.Value = LibPlaceboDebandRadius.DefaultValue
+            LibPlaceboDebandGrainY.Value = LibPlaceboDebandGrainY.DefaultValue
+            LibPlaceboDebandGrainC.Value = LibPlaceboDebandGrainC.DefaultValue
+            LibPlaceboDebandDither.Value = LibPlaceboDebandDither.DefaultValue
+            LibPlaceboDebandLutSize.Value = LibPlaceboDebandLutSize.DefaultValue
+
+            If match1.Success Then LibPlaceboDebandIterations.Value = match1.Groups(1).Value.ToDouble(LibPlaceboDebandIterations.DefaultValue)
+            If match2.Success Then LibPlaceboDebandThreshold.Value = match2.Groups(1).Value.ToDouble(LibPlaceboDebandThreshold.DefaultValue)
+            If match3.Success Then LibPlaceboDebandRadius.Value = match3.Groups(1).Value.ToDouble(LibPlaceboDebandRadius.DefaultValue)
+            If match4.Success Then LibPlaceboDebandGrainY.Value = match4.Groups(1).Value.ToDouble(LibPlaceboDebandGrainY.DefaultValue)
+            If match5.Success Then LibPlaceboDebandGrainC.Value = match5.Groups(1).Value.ToDouble(LibPlaceboDebandGrainC.DefaultValue)
+            If match6.Success AndAlso Array.IndexOf(LibPlaceboDebandDither.Values, match6.Groups(1).Value.ToLowerInvariant()) > -1 Then LibPlaceboDebandDither.Value = Array.IndexOf(LibPlaceboDebandDither.Values, match6.Groups(1).Value.ToLowerInvariant())
+            If match7.Success AndAlso Array.IndexOf(LibPlaceboDebandLutSize.Values, match7.Groups(1).Value.ToLowerInvariant()) > -1 Then LibPlaceboDebandLutSize.Value = Array.IndexOf(LibPlaceboDebandLutSize.Values, match7.Groups(1).Value.ToLowerInvariant())
         End Function
 
         Function GetLibPlaceboShaderArgs() As String
@@ -1431,6 +1477,59 @@ Public Class NVEnc
                 Return $"{LibPlaceboShader.Switch} {sb.ToString().TrimStart(","c)}"
             End If
             Return ""
+        End Function
+
+        Function ImportLibPlaceboShaderArgs(param As String, arg As String) As String
+            LibPlaceboShader.Value = True
+
+            Dim setDouble = Sub(numParam As NumParam, match As Match)
+                                If numParam Is Nothing Then Return
+                                numParam.SetDefaultValue()
+                                If match Is Nothing Then Return
+                                If Not match.Success Then Return
+                                numParam.Value = match.Groups(1).Value.ToDouble(numParam.DefaultValue)
+                            End Sub
+
+            Dim setOption = Sub(optionParam As OptionParam, match As Match)
+                                If optionParam Is Nothing Then Return
+                                optionParam.SetDefaultValue()
+                                If match Is Nothing Then Return
+                                If Not match.Success Then Return
+                                Dim index = Array.IndexOf(optionParam.Values, match.Groups(1).Value.ToLowerInvariant())
+                                If index > -1 Then optionParam.Value = index
+                            End Sub
+
+            Dim setString = Sub(stringParam As StringParam, match As Match)
+                                If stringParam Is Nothing Then Return
+                                stringParam.SetDefaultValue()
+                                If match Is Nothing Then Return
+                                If Not match.Success Then Return
+                                stringParam.Value = match.Groups(1).Value
+                            End Sub
+
+            setString(LibPlaceboShaderShader, Regex.Match(arg, "(?:^|,)shader=([^,]*)"))
+            setOption(LibPlaceboShaderColorsystem, Regex.Match(arg, "(?:^|,)colorsystem=([^,]*)"))
+            setOption(LibPlaceboShaderTransfer, Regex.Match(arg, "(?:^|,)transfer=([^,]*)"))
+            setOption(LibPlaceboShaderResampler, Regex.Match(arg, "(?:^|,)resampler=([^,]*)"))
+            setDouble(LibPlaceboShaderClamp, Regex.Match(arg, "(?:^|,)clamp=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboShaderTaper, Regex.Match(arg, "(?:^|,)taper=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboShaderBlur, Regex.Match(arg, "(?:^|,)blur=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboShaderAntiring, Regex.Match(arg, "(?:^|,)antiring=(\d+(\.\d+)?)?"))
+            setOption(LibPlaceboShaderLinear, Regex.Match(arg, "(?:^|,)linear=([^,]*)"))
+
+            Dim m = Regex.Match(arg, "(?:^|,)res=(\d+)x(\d+)")
+            LibPlaceboShaderResWidth.SetDefaultValue()
+            LibPlaceboShaderResHeight.SetDefaultValue()
+            If m.Success Then
+                LibPlaceboShaderResWidth.Value = m.Groups(1).Value.ToDouble(LibPlaceboShaderResWidth.DefaultValue)
+                LibPlaceboShaderResHeight.Value = m.Groups(2).Value.ToDouble(LibPlaceboShaderResHeight.DefaultValue)
+            End If
+
+            m = Regex.Match(arg, "(?:^|,)radius=([^,]*)")
+            If m.Success Then
+                LibPlaceboShaderRadius.Value = 1
+                setDouble(LibPlaceboShaderRadiusValue, m)
+            End If
         End Function
 
         Function GetLibPlaceboTonemappingArgs() As String
@@ -1473,6 +1572,62 @@ Public Class NVEnc
                 Return $"{LibPlaceboTonemapping.Switch} {sb.ToString().TrimStart(","c)}"
             End If
             Return ""
+        End Function
+
+        Function ImportLibPlaceboTonemappingArgs(param As String, arg As String) As String
+            LibPlaceboTonemapping.Value = True
+
+            Dim setDouble = Sub(numParam As NumParam, match As Match)
+                                If numParam Is Nothing Then Return
+                                If match Is Nothing Then Return
+                                If Not match.Success Then Return
+                                numParam.SetDefaultValue()
+                                numParam.Value = match.Groups(1).Value.ToDouble(numParam.DefaultValue)
+                            End Sub
+
+            Dim setOption = Sub(optionParam As OptionParam, match As Match)
+                                If optionParam Is Nothing Then Return
+                                If match Is Nothing Then Return
+                                If Not match.Success Then Return
+                                optionParam.SetDefaultValue()
+                                Dim index = Array.IndexOf(optionParam.Values, match.Groups(1).Value.ToLowerInvariant())
+                                If index > -1 Then optionParam.Value = index
+                            End Sub
+
+            setOption(LibPlaceboTonemappingSrcCsp, Regex.Match(arg, "(?:^|,)src_csp=([^,]*)"))
+            setOption(LibPlaceboTonemappingDstCsp, Regex.Match(arg, "(?:^|,)dst_csp=([^,]*)"))
+            setOption(LibPlaceboTonemappingDstPlTransfer, Regex.Match(arg, "(?:^|,)dst_pl_transfer=([^,]*)"))
+            setOption(LibPlaceboTonemappingDstPlColorprim, Regex.Match(arg, "(?:^|,)dst_pl_colorprim=([^,]*)"))
+            setDouble(LibPlaceboTonemappingSrcMax, Regex.Match(arg, "(?:^|,)src_max=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingSrcMin, Regex.Match(arg, "(?:^|,)src_min=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingDstMax, Regex.Match(arg, "(?:^|,)dst_max=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingDstMin, Regex.Match(arg, "(?:^|,)dst_min=(\d+(\.\d+)?)?"))
+            setOption(LibPlaceboTonemappingDynPeakDetect, Regex.Match(arg, "(?:^|,)dynamic_peak_detection=([^,]*)"))
+            setDouble(LibPlaceboTonemappingSmoothPeriod, Regex.Match(arg, "(?:^|,)smooth_period=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingSceneThresholdLow, Regex.Match(arg, "(?:^|,)scene_threshold_low=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingSceneThresholdHigh, Regex.Match(arg, "(?:^|,)scene_threshold_high=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingPercentile, Regex.Match(arg, "(?:^|,)percentile=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingBlackCutoff, Regex.Match(arg, "(?:^|,)black_cutoff=(\d+(\.\d+)?)?"))
+            setOption(LibPlaceboTonemappingGamutMapping, Regex.Match(arg, "(?:^|,)gamut_mapping=([^,]*)"))
+            setOption(LibPlaceboTonemappingFunction, Regex.Match(arg, "(?:^|,)tonemapping_function=([^,]*)"))
+            setDouble(LibPlaceboTonemappingFunctionKneeAdaption, Regex.Match(arg, "(?:^|,)knee_adaptation=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingFunctionKneeMax, Regex.Match(arg, "(?:^|,)knee_max=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingFunctionKneeMin, Regex.Match(arg, "(?:^|,)knee_min=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingFunctionKneeDefault, Regex.Match(arg, "(?:^|,)knee_default=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingFunctionKneeOffset, Regex.Match(arg, "(?:^|,)knee_offset=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingFunctionSlopeTuning, Regex.Match(arg, "(?:^|,)slope_tuning=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingFunctionSlopeOffset, Regex.Match(arg, "(?:^|,)slope_offset=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingFunctionSplineContrast, Regex.Match(arg, "(?:^|,)spline_contrast=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingFunctionReinhardContrast, Regex.Match(arg, "(?:^|,)reinhard_contrast=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingFunctionLinearKnee, Regex.Match(arg, "(?:^|,)linear_knee=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingFunctionExposure, Regex.Match(arg, "(?:^|,)exposure=(\d+(\.\d+)?)?"))
+            setOption(LibPlaceboTonemappingFunctionMetadata, Regex.Match(arg, "(?:^|,)metadata=([^,]*)"))
+            setDouble(LibPlaceboTonemappingFunctionContrastRecovery, Regex.Match(arg, "(?:^|,)contrast_recovery=(\d+(\.\d+)?)?"))
+            setDouble(LibPlaceboTonemappingFunctionContrastSmoothness, Regex.Match(arg, "(?:^|,)contrast_smoothness=(\d+(\.\d+)?)?"))
+            setOption(LibPlaceboTonemappingFunctionUseDolbyVision, Regex.Match(arg, "(?:^|,)use_dovi=([^,]*)"))
+            setOption(LibPlaceboTonemappingFunctionShowClipping, Regex.Match(arg, "(?:^|,)show_clipping=([^,]*)"))
+            setOption(LibPlaceboTonemappingFunctionVisualizeLut, Regex.Match(arg, "(?:^|,)visualize_lut=([^,]*)"))
+            setOption(LibPlaceboTonemappingFunctionLutType, Regex.Match(arg, "(?:^|,)lut_type=([^,]*)"))
         End Function
 
         Function GetPmdArgs() As String

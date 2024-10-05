@@ -708,24 +708,34 @@ Public Class x265Params
         .Text = "AQ Mode",
         .Expanded = True,
         .IntegerValue = True,
-        .DefaultValue = 2,
+        .Init = 2,
         .AlwaysOn = False,
         .Options = {"0: Disabled", "1: AQ enabled", "2: AQ enabled with auto-variance", "3: AQ enabled with auto-variance with bias to dark scenes", "4: AQ enabled with auto-variance and edge information"},
         .ValueChangedAction = Sub(x) AQmodeExtended.Value = x}
 
     Property AQmodeExtended As New OptionParam With {
         .Switch = "--aq-mode",
+        .Switches = {"--aq-mode", "--auto-aq"},
         .Text = "AQ Mode",
         .Expanded = True,
         .IntegerValue = True,
-        .DefaultValue = 2,
+        .Init = 2,
         .AlwaysOn = False,
         .Options = {"0: Disabled", "1: Uniform AQ", "2: AQ enabled with auto-variance", "3: AQ enabled with auto-variance with bias to dark scenes", "4: AQ enabled with auto-variance and edge information", "5: AQ enabled with auto-variance, edge information and bias to dark scenes", "Auto: Automatic decision for each frame using its scene statistics"},
         .ArgsFunc = Function()
-                        Return If(AQmodeExtended.AlwaysOn OrElse AQmodeExtended.Value <> AQmodeExtended.DefaultValue,
+                        Return If(AQmodeExtended.AlwaysOn OrElse Not AQmodeExtended.IsDefaultValue,
                             If(AQmodeExtended.Value < 6, $"--aq-mode {AQmodeExtended.Value}", "--auto-aq"),
                             "")
-                    End Function}
+                    End Function,
+        .ImportAction = Sub(param As String, arg As String)
+                            If param = "--auto-aq" Then
+                                AQmodeExtended.Value = 6
+                            Else
+                                If arg.IsInt() Then
+                                    AQmodeExtended.Value = arg.ToInt()
+                                End If
+                            End If
+                        End Sub}
 
     Property AQStrength As New NumParam With {
         .Switch = "--aq-strength",
@@ -1066,7 +1076,7 @@ Public Class x265Params
     Property RefineCtuDistortion As New BoolParam With {
         .Switch = "--refine-ctu-distortion",
         .Text = "Store/normalize ctu distortion in analysis-save/load.",
-        .ArgsFunc = Function() If(RefineCtuDistortion.Value, RefineCtuDistortion.Switch + " 1", Nothing)}
+        .IntegerValue = True}
 
     Property Custom As New StringParam With {
         .Text = "Custom",

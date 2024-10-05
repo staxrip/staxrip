@@ -499,7 +499,7 @@ Public Class SvtAv1EncParams
         .Values = {"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
         .ValueChangedAction = Sub(v)
                                   Dim hlv = If(v <= 13, 3, 2)
-                                  If HierarchicalLevels.Value = HierarchicalLevels.DefaultValue Then
+                                  If HierarchicalLevels.IsDefaultValue Then
                                       HierarchicalLevels.DefaultValue = hlv
                                       HierarchicalLevels.ValueChangedUser(hlv)
                                   Else

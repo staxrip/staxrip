@@ -682,6 +682,12 @@ Public Class Language
         End Get
     End Property
 
+    ReadOnly Property LocalName() As String
+        Get
+            Return If(CultureInfo.TwoLetterISOLanguageName = "iv", "Undetermined", CultureInfo.DisplayName)
+        End Get
+    End Property
+
     Private Shared LanguagesValue As List(Of Language)
 
     Shared ReadOnly Property Languages() As List(Of Language)

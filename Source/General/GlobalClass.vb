@@ -696,7 +696,7 @@ Public Class GlobalClass
         Dim filename = path.Base
 
         Dim segments = {Regex.Replace(filename, "{.*}", ""),
-                        filename.RightLast("{").LeftLast("}")} _
+                        filename.Right("{").LeftLast("}")} _
                         .Concat(filename.SplitNoEmpty(" ")) _
                         .Concat(filename.SplitNoEmpty(".")) _
                         .Concat(filename.SplitNoEmpty(",")) _
@@ -733,6 +733,10 @@ Public Class GlobalClass
         If ret Is Nothing OrElse Not ret.IsDetermined Then
             For Each lng In Language.Languages.OrderByDescending(Function(x) x.Name.Length)
                 If lng.EnglishName.Contains(" (") AndAlso path.ToUpperInvariant().Contains(lng.EnglishName.Left(" (").ToUpperInvariant()) Then
+                    ret = lng
+                End If
+
+                If path.ToUpperInvariant().Contains(lng.LocalName.ToUpperInvariant()) Then
                     ret = lng
                 End If
 

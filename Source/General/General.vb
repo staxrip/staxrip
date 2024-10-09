@@ -431,7 +431,7 @@ Public Class HelpDocument
         Dim script = "<script type=""text/javascript""></script>"
 
         Dim style = "<style type=""text/css"">
-@import url(http://fonts.googleapis.com/css?family=Lato:700,900);
+@import url(https://fonts.googleapis.com/css?family=Lato:700,900);
 
 body {
     font-family: Tahoma, Geneva, sans-serif;

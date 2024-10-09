@@ -47,7 +47,7 @@ Public Class Package
         .Name = "DGIndex",
         .Filename = "DGIndex.exe",
         .Description = "MPEG-2 demuxing and d2v indexing GUI app.",
-        .WebURL = "http://rationalqm.us/dgmpgdec/dgmpgdec.html",
+        .WebURL = "https://rationalqm.us/dgmpgdec/dgmpgdec.html",
         .Location = IO.Path.Combine("Support", "DgMpgDec"),
         .SupportsAutoUpdate = False,
         .RequiredFunc = Function() CommandLineDemuxer.IsActive("%app:DGIndex%")})
@@ -55,7 +55,7 @@ Public Class Package
     Shared Property DGDecode As Package = Add(New PluginPackage With {
         .Name = "DGDecode",
         .Filename = "DGDecode.dll",
-        .WebURL = "http://rationalqm.us/dgmpgdec/dgmpgdec.html",
+        .WebURL = "https://rationalqm.us/dgmpgdec/dgmpgdec.html",
         .Description = "Source filter to open D2V index files created with DGIndex or D2V Witch.",
         .Location = IO.Path.Combine("Support", "DgMpgDec"),
         .SupportsAutoUpdate = False,
@@ -107,8 +107,8 @@ Public Class Package
         .Locations = {IO.Path.Combine("Encoders", "ffmpeg"), IO.Path.Combine("FrameServer", "AviSynth")},
         .SupportsAutoUpdate = False,
         .AllowCustomPath = False,
-        .WebURL = "http://ffmpeg.org",
-        .HelpURL = "http://www.ffmpeg.org/documentation.html",
+        .WebURL = "https://ffmpeg.org",
+        .HelpURL = "https://www.ffmpeg.org/documentation.html",
         .DownloadURL = "https://github.com/staxrip/staxrip/wiki/ffmpeg",
         .HelpSwitch = "-h",
         .Description = "Versatile and free audio video convertor console app."})
@@ -116,8 +116,8 @@ Public Class Package
     Shared Property ffmpeg_non_free As Package = Add(New Package With {
         .Name = "ffmpeg non-free",
         .Filename = "ffmpeg.exe",
-        .WebURL = "http://ffmpeg.org",
-        .HelpURL = "http://www.ffmpeg.org/documentation.html",
+        .WebURL = "https://ffmpeg.org",
+        .HelpURL = "https://www.ffmpeg.org/documentation.html",
         .HelpSwitch = "-h",
         .IsIncluded = False,
         .VersionAllowAny = True,
@@ -179,7 +179,7 @@ Public Class Package
         .Filename = "qaac64.exe",
         .Filename32 = "qaac.exe",
         .Location = IO.Path.Combine("Audio", "qaac"),
-        .WebURL = "http://github.com/nu774/qaac",
+        .WebURL = "https://github.com/nu774/qaac",
         .DownloadURL = "https://github.com/nu774/qaac/releases",
         .HelpSwitch = "-h",
         .Keep = {"QTfiles64", "libsndfile-1.dll", "libFLAC_dynamic.dll"},
@@ -205,15 +205,15 @@ Public Class Package
         .IsIncluded = False,
         .VersionAllowAny = True,
         .Description = "Non-free AAC console encoder using libfdk-aac.",
-        .WebURL = "http://github.com/nu774/fdkaac",
+        .WebURL = "https://github.com/nu774/fdkaac",
         .RequiredFunc = Function() Audio.IsEncoderUsed(GuiAudioEncoder.fdkaac)})
 
     Shared Property eac3to As Package = Add(New Package With {
         .Name = "eac3to",
         .Filename = "eac3to.exe",
         .Location = IO.Path.Combine("Audio", "eac3to"),
-        .WebURL = "http://forum.doom9.org/showthread.php?t=125966",
-        .HelpURL = "http://en.wikibooks.org/wiki/Eac3to/How_to_Use",
+        .WebURL = "https://forum.doom9.org/showthread.php?t=125966",
+        .HelpURL = "https://en.wikibooks.org/wiki/Eac3to/How_to_Use",
         .HelpSwitch = "",
         .Description = "Audio convertor console app."})
 
@@ -231,7 +231,7 @@ Public Class Package
         .Filename = "MediaInfo.dll",
         .Location = IO.Path.Combine("Support", "MediaInfo.NET"),
         .SupportsAutoUpdate = False,
-        .WebURL = "http://mediaarea.net/en/MediaInfo",
+        .WebURL = "https://mediaarea.net/en/MediaInfo",
         .DownloadURL = "https://mediaarea.net/en/MediaInfo/Download/Windows",
         .Description = "Library to retrieve info from media files."})
 
@@ -280,8 +280,8 @@ Public Class Package
         .Name = "VapourSynth",
         .Filename = "vapoursynth.dll",
         .Description = "Video processing Python scripting library.",
-        .WebURL = "http://www.vapoursynth.com",
-        .HelpURL = "http://www.vapoursynth.com/doc",
+        .WebURL = "https://www.vapoursynth.com",
+        .HelpURL = "https://www.vapoursynth.com/doc",
         .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases",
         .SupportsAutoUpdate = False,
         .HelpFilename = IO.Path.Combine("doc", "index.html"),
@@ -293,8 +293,8 @@ Public Class Package
         .Name = "vspipe",
         .Filename = "vspipe.exe",
         .Description = "Console app that pipes VapourSynth scripts to video encoding console apps.",
-        .WebURL = "http://www.vapoursynth.com",
-        .HelpURL = "http://www.vapoursynth.com/doc/vspipe.html",
+        .WebURL = "https://www.vapoursynth.com",
+        .HelpURL = "https://www.vapoursynth.com/doc/vspipe.html",
         .DownloadURL = "https://github.com/vapoursynth/vapoursynth/releases",
         .HelpSwitch = "stderr",
         .SupportsAutoUpdate = False,
@@ -306,7 +306,7 @@ Public Class Package
         .Name = "Python",
         .Filename = "python.exe",
         .TreePath = "Runtimes",
-        .WebURL = "http://www.python.org",
+        .WebURL = "https://www.python.org",
         .HelpSwitch = "-h",
         .Description = "Scripting language used by VapourSynth.",
         .Exclude = {IO.Path.DirectorySeparatorChar + "WindowsApps" + IO.Path.DirectorySeparatorChar},
@@ -364,7 +364,7 @@ Public Class Package
         .Name = "Visual C++ 2012",
         .Filename = "msvcp110.dll",
         .Description = "Visual C++ 2012 Redistributable.",
-        .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
+        .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=30679",
         .Locations = {IO.Path.Combine("Support", "VC"), Folder.System},
         .VersionAllowAny = True,
         .TreePath = "Runtimes"})
@@ -373,7 +373,7 @@ Public Class Package
         .Name = "Visual C++ 2013",
         .Filename = "msvcp120.dll",
         .Description = "Visual C++ 2013 Redistributable.",
-        .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=40784",
+        .DownloadURL = "https://www.microsoft.com/en-US/download/details.aspx?id=40784",
         .VersionAllowAny = True,
         .Locations = {IO.Path.Combine("Support", "VC"), Folder.System},
         .TreePath = "Runtimes"})
@@ -407,7 +407,7 @@ Public Class Package
         .Filename32 = "AVSMeter.exe",
         .Description = "Console app that displays AviSynth script clip info.",
         .HelpFilename = IO.Path.Combine("doc", "AVSMeter.html"),
-        .WebURL = "http://forum.doom9.org/showthread.php?t=174797",
+        .WebURL = "https://forum.doom9.org/showthread.php?t=174797",
         .DownloadURL = "https://www.mediafire.com/folder/x6f7yqjufdg7c/Groucho%27s_Avisynth_Stuff",
         .HelpSwitch = ""})
 
@@ -424,8 +424,8 @@ Public Class Package
         .Filename = "SubtitleEdit.exe",
         .Location = IO.Path.Combine("Support", "SubtitleEdit"),
         .Exclude = {"-Setup.zip", "FI.zip", "PL.zip"},
-        .WebURL = "http://www.nikse.dk/SubtitleEdit",
-        .HelpURL = "http://www.nikse.dk/SubtitleEdit/Help",
+        .WebURL = "https://www.nikse.dk/SubtitleEdit",
+        .HelpURL = "https://www.nikse.dk/SubtitleEdit/Help",
         .DownloadURL = "https://github.com/SubtitleEdit/subtitleedit/releases",
         .Description = "Subtitle editor GUI app."})
 
@@ -475,14 +475,14 @@ Public Class Package
     Shared Property AutoAdjust As Package = Add(New PluginPackage With {
         .Name = "AutoAdjust",
         .Filename = "AutoAdjust.dll",
-        .WebURL = "http://forum.doom9.org/showthread.php?t=167573",
+        .WebURL = "https://forum.doom9.org/showthread.php?t=167573",
         .Description = "Automatic adjustment video filter plugin that calculates statistics of clip, stabilizes them temporally and uses them to adjust luminance gain & color balance.",
         .AvsFilterNames = {"AutoAdjust"}})
 
     Shared Property SmoothAdjust As Package = Add(New PluginPackage With {
         .Name = "SmoothAdjust",
         .Filename = "SmoothAdjust.dll",
-        .WebURL = "http://forum.doom9.org/showthread.php?t=154971",
+        .WebURL = "https://forum.doom9.org/showthread.php?t=154971",
         .Description = "SmoothAdjust is a video filter plugin to make YUV adjustments.",
         .AvsFilterNames = {"SmoothTweak", "SmoothCurve", "SmoothCustom", "SmoothTools"}})
 
@@ -511,8 +511,8 @@ Public Class Package
     Shared Property flash3kyuu_deband As Package = Add(New PluginPackage With {
         .Name = "flash3kyuu_deband",
         .Filename = "flash3kyuu_deband.dll",
-        .WebURL = "http://forum.doom9.org/showthread.php?t=161411",
-        .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",
+        .WebURL = "https://forum.doom9.org/showthread.php?t=161411",
+        .HelpURL = "https://f3kdb.readthedocs.io/en/latest/#",
         .DownloadURL = "https://gitlab.com/uvz/AviSynthPlus-Plugins-Scripts/-/tree/master/plugins64%2B",
         .Description = "Simple debanding filter that can be quite effective for some anime sources. Included is an independent build.",
         .VsFilterNames = {"f3kdb.Deband"},
@@ -522,7 +522,7 @@ Public Class Package
         .Name = "f3kdb Neo",
         .Filename = "neo-f3kdb.dll",
         .WebURL = "https://github.com/HomeOfAviSynthPlusEvolution/neo_f3kdb",
-        .HelpURL = "http://f3kdb.readthedocs.io/en/latest/#",
+        .HelpURL = "https://f3kdb.readthedocs.io/en/latest/#",
         .DownloadURL = "https://gitlab.com/uvz/AviSynthPlus-Plugins-Scripts/-/tree/master/plugins64%2B",
         .Description = "Debanding filter forked from flash3kyuu_deband. Included is an independent build.",
         .AvsFilterNames = {"neo_f3kdb"},
@@ -554,7 +554,7 @@ Public Class Package
         .Filename = "avs2pipemod64.exe",
         .Filename32 = "avs2pipemod.exe",
         .Location = IO.Path.Combine("Support", "avs2pipemod"),
-        .WebURL = "http://github.com/chikuzen/avs2pipemod",
+        .WebURL = "https://github.com/chikuzen/avs2pipemod",
         .DownloadURL = "https://github.com/chikuzen/avs2pipemod/releases",
         .HelpSwitch = "stderr",
         .Description = "Console app given an AviSynth script as input, avs2pipemod can send video, audio, or information of various types to stdout for consumption by command line encoders or other tools."})
@@ -576,7 +576,7 @@ Public Class Package
         .Filename = "x265.exe",
         .Locations = {IO.Path.Combine("Encoders", "x265"), IO.Path.Combine("FrameServer", "AviSynth")},
         .WebURL = "https://x265.com",
-        .HelpURL = "http://x265.readthedocs.org",
+        .HelpURL = "https://x265.readthedocs.org",
         .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x265",
         .AllowCustomPath = False,
         .SupportsAutoUpdate = False,
@@ -720,7 +720,7 @@ Public Class Package
         .Filename32 = "NVEncC.exe",
         .Location = IO.Path.Combine("Encoders", "NVEncC"),
         .HelpSwitch = "-h",
-        .WebURL = "http://github.com/rigaya/NVEnc",
+        .WebURL = "https://github.com/rigaya/NVEnc",
         .HelpURL = "https://github.com/rigaya/NVEnc/blob/master/NVEncC_Options.en.md",
         .DownloadURL = "https://github.com/rigaya/NVEnc/releases",
         .Description = "NVIDIA hardware video encoder."})
@@ -731,7 +731,7 @@ Public Class Package
         .Filename32 = "QSVEncC.exe",
         .Location = IO.Path.Combine("Encoders", "QSVEncC"),
         .Description = "Intel hardware video encoder.",
-        .WebURL = "http://github.com/rigaya/QSVEnc",
+        .WebURL = "https://github.com/rigaya/QSVEnc",
         .DownloadURL = "https://github.com/rigaya/QSVEnc/releases",
         .HelpURL = "https://github.com/rigaya/QSVEnc/blob/master/QSVEncC_Options.en.md",
         .HelpSwitch = "-h"})
@@ -743,13 +743,13 @@ Public Class Package
         .Location = IO.Path.Combine("Encoders", "VCEEncC"),
         .Description = "AMD hardware video encoder.",
         .HelpSwitch = "-h",
-        .WebURL = "http://github.com/rigaya/VCEEnc",
+        .WebURL = "https://github.com/rigaya/VCEEnc",
         .DownloadURL = "https://github.com/rigaya/VCEEnc/releases"})
 
     Shared Property FFT3DFilter As Package = Add(New PluginPackage With {
         .Name = "FFT3DFilter",
         .Filename = "fft3dfilter.dll",
-        .WebURL = "http://github.com/pinterf/fft3dfilter",
+        .WebURL = "https://github.com/pinterf/fft3dfilter",
         .DownloadURL = "https://github.com/pinterf/fft3dfilter/releases",
         .Description = "FFT3DFilter uses Fast Fourier Transform method for image processing in frequency domain.",
         .AvsFilterNames = {"FFT3DFilter"}})
@@ -867,15 +867,15 @@ Public Class Package
         .Location = IO.Path.Combine("Support", "FFTW"),
         .Filename = "libfftw3-3.dll",
         .Description = "Library required by various AviSynth and VapourSynth plugins.",
-        .WebURL = "http://www.fftw.org"})
+        .WebURL = "https://www.fftw.org"})
 
     Shared Property havsfunc As Package = Add(New PluginPackage With {
         .Name = "havsfunc",
         .Filename = "havsfunc.py",
         .Location = IO.Path.Combine("Plugins", "VS", "Scripts"),
-        .WebURL = "http://github.com/HomeOfVapourSynthEvolution/havsfunc",
+        .WebURL = "https://github.com/HomeOfVapourSynthEvolution/havsfunc",
         .DownloadURL = "https://github.com/HomeOfVapourSynthEvolution/havsfunc/releases",
-        .HelpURL = "http://forum.doom9.org/showthread.php?t=166582",
+        .HelpURL = "https://forum.doom9.org/showthread.php?t=166582",
         .Description = "Various popular AviSynth scripts ported To VapourSynth.",
         .Dependencies = {"DCTFilter.dll", "DFTTest.dll", "fmtconv.dll", "libfftw3f-3.dll", "libmvtools.dll", "libnnedi3.dll", "NNEDI3CL.dll", "RemoveGrainVS.dll", "vsznedi3.dll"},
         .VsFilterNames = {"havsfunc.aaf", "havsfunc.AverageFrames", "havsfunc.Bob", "havsfunc.ChangeFPS", "havsfunc.Clamp", "havsfunc.ContraSharpening", "havsfunc.daa", "havsfunc.Deblock_QED", "havsfunc.DeHalo_alpha", "havsfunc.DitherLumaRebuild", "havsfunc.EdgeCleaner", "havsfunc.FastLineDarkenMOD", "havsfunc.FineDehalo", "havsfunc.FixChromaBleedingMod", "havsfunc.GrainFactory3", "havsfunc.GrainStabilizeMC", "havsfunc.HQDeringmod", "havsfunc.InterFrame", "havsfunc.ivtc_txt60mc", "havsfunc.KNLMeansCL", "havsfunc.logoNR", "havsfunc.LSFmod", "havsfunc.LUTDeCrawl", "havsfunc.LUTDeRainbow", "havsfunc.MCTemporalDenoise", "havsfunc.MinBlur", "havsfunc.mt_deflate_multi", "havsfunc.mt_expand_multi", "havsfunc.mt_inflate_multi", "havsfunc.mt_inpand_multi", "havsfunc.Overlay", "havsfunc.Padding", "havsfunc.QTGMC", "havsfunc.Resize", "havsfunc.santiag", "havsfunc.sbr", "havsfunc.SCDetect", "havsfunc.SigmoidDirect", "havsfunc.SigmoidInverse", "havsfunc.smartfademod", "havsfunc.SMDegrain", "havsfunc.SmoothLevels", "havsfunc.srestore", "havsfunc.Stab", "havsfunc.STPresso", "havsfunc.TemporalDegrain", "havsfunc.Toon", "havsfunc.Vinverse", "havsfunc.Vinverse2", "havsfunc.Weave", "havsfunc.YAHR"}})
@@ -1235,7 +1235,7 @@ Public Class Package
     Shared Property TIVTC As Package = Add(New PluginPackage With {
         .Name = "TIVTC",
         .Filename = "TIVTC.dll",
-        .WebURL = "http://github.com/pinterf/TIVTC",
+        .WebURL = "https://github.com/pinterf/TIVTC",
         .DownloadURL = "https://github.com/pinterf/TIVTC/releases",
         .HelpURL = "https://github.com/pinterf/TIVTC/tree/master/Doc_TIVTC",
         .Description = "TIVTC is a plugin package containing 7 different filters and 3 conditional functions.",
@@ -1253,7 +1253,7 @@ Public Class Package
         .Name = "d2vsource",
         .Filename = "d2vsource.dll",
         .Description = "Source filter to open D2V index files created with DGIndex or D2V Witch.",
-        .WebURL = "http://github.com/dwbuiten/d2vsource",
+        .WebURL = "https://github.com/dwbuiten/d2vsource",
         .VsFilterNames = {"d2v.Source"}})
 
     Shared Property AVSLibPlacebo As Package = Add(New PluginPackage With {
@@ -1310,7 +1310,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "DSS2mod",
             .Filename = "avss.dll",
-            .WebURL = "http://code.google.com/p/xvid4psp/downloads/detail?name=DSS2%20mod%20%2B%20LAVFilters.7z&can=2&q=",
+            .WebURL = "https://code.google.com/p/xvid4psp/downloads/detail?name=DSS2%20mod%20%2B%20LAVFilters.7z&can=2&q=",
             .Description = "Direct Show source filter.",
             .AvsFilterNames = {"DSS2"}})
 
@@ -1358,7 +1358,7 @@ Public Class Package
             .Name = "mvtools2",
             .Filename = "mvtools2.dll",
             .Description = "MVTools is collection of functions for estimation and compensation of objects motion in video clips. Motion compensation may be used for strong temporal denoising, advanced framerate conversions, image restoration and other tasks.",
-            .WebURL = "http://github.com/pinterf/mvtools",
+            .WebURL = "https://github.com/pinterf/mvtools",
             .DownloadURL = "https://github.com/pinterf/mvtools/releases",
             .HelpURL = "http://avisynth.nl/index.php/MVTools",
             .AvsFilterNames = {"MSuper", "MAnalyse", "MCompensate", "MMask", "MSCDetection", "MShow", "MDepan", "MFlow", "MFlowInter", "MFlowFps", "MBlockFps", "MFlowBlur", "MDegrain1", "MDegrain2", "MDegrain3", "MDegrain4", "MDegrain5", "MDegrain6", "MDegrainN", "MRecalculate", "MVShow"}})
@@ -1770,7 +1770,7 @@ Public Class Package
             .Filename = "Deblock.dll",
             .Location = IO.Path.Combine("Plugins", "VS", "Deblock"),
             .Description = "Deblocking plugin using the deblocking filter of h264.",
-            .WebURL = "http://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Deblock",
             .VsFilterNames = {"deblock.Deblock"}})
 
         Add(New PluginPackage With {
@@ -1792,7 +1792,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "mClean",
             .Filename = "mClean.avsi",
-            .WebURL = "http://forum.doom9.org/showthread.php?t=174804",
+            .WebURL = "https://forum.doom9.org/showthread.php?t=174804",
             .Description = "Removes noise whilst retaining as much detail as possible.",
             .AvsFilterNames = {"mClean"}})
 
@@ -1807,7 +1807,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "RgTools",
             .Filename = "RgTools.dll",
-            .WebURL = "http://github.com/pinterf/RgTools",
+            .WebURL = "https://github.com/pinterf/RgTools",
             .DownloadURL = "https://github.com/pinterf/RgTools/releases",
             .HelpURL = "http://avisynth.nl/index.php/RgTools",
             .HelpFilename = "README.md",
@@ -1834,7 +1834,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "masktools2",
             .Filename = "masktools2.dll",
-            .WebURL = "http://github.com/pinterf/masktools",
+            .WebURL = "https://github.com/pinterf/masktools",
             .DownloadURL = "https://github.com/pinterf/masktools/releases",
             .Description = "MaskTools2 contain a set of filters designed to create, manipulate and use masks. Masks, in video processing, are a way to give a relative importance to each pixel. You can, for example, create a mask that selects only the green parts of the video, and then replace those parts with another video.",
             .AvsFilterNames = {"mt_adddiff", "mt_average", "mt_binarize", "mt_circle", "mt_clamp", "mt_convolution", "mt_diamond", "mt_edge", "mt_ellipse", "mt_expand", "mt_hysteresis", "mt_inflate", "mt_inpand", "mt_invert", "mt_logic", "mt_losange", "mt_lut", "mt_lutf", "mt_luts", "mt_lutxy", "mt_makediff", "mt_mappedblur", "mt_merge", "mt_motion", "mt_polish", "mt_rectangle", "mt_square"}})
@@ -1866,7 +1866,7 @@ Public Class Package
             .Name = "Yadifmod",
             .Filename = "Yadifmod.dll",
             .Description = "Modified version of Fizick's avisynth filter port of yadif from mplayer. This version doesn't internally generate spatial predictions, but takes them from an external clip.",
-            .WebURL = "http://github.com/HomeOfVapourSynthEvolution/VapourSynth-Yadifmod",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/VapourSynth-Yadifmod",
             .VsFilterNames = {"yadifmod.Yadifmod"}})
 
         Add(New PluginPackage With {
@@ -1915,14 +1915,14 @@ Public Class Package
             .Name = "nnedi3",
             .Filename = "libnnedi3.dll",
             .Location = IO.Path.Combine("Plugins", "VS", "nnedi3"),
-            .WebURL = "http://github.com/dubhater/vapoursynth-nnedi3",
+            .WebURL = "https://github.com/dubhater/vapoursynth-nnedi3",
             .Description = "nnedi3 is an intra-field only deinterlacer. It takes in a frame, throws away one field, and then interpolates the missing pixels using only information from the kept field.",
             .VsFilterNames = {"nnedi3.nnedi3"}})
 
         Add(New PluginPackage With {
             .Name = "FFT3DFilter",
             .Filename = "fft3dfilter.dll",
-            .WebURL = "http://github.com/VFR-maniac/VapourSynth-FFT3DFilter",
+            .WebURL = "https://github.com/VFR-maniac/VapourSynth-FFT3DFilter",
             .Description = "FFT3DFilter uses Fast Fourier Transform method for image processing in frequency domain.",
             .VsFilterNames = {"fft3dfilter.FFT3DFilter"}})
 
@@ -1936,7 +1936,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "mvtools",
             .Filename = "libmvtools.dll",
-            .WebURL = "http://github.com/dubhater/vapoursynth-mvtools",
+            .WebURL = "https://github.com/dubhater/vapoursynth-mvtools",
             .Description = "MVTools is a set of filters for motion estimation and compensation.",
             .VsFilterNames = {"mv.Super", "mv.Analyse", "mv.Recalculate", "mv.Compensate", "mv.Degrain1", "mv.Degrain2",
                 "mv.Degrain3", "mv.Mask", "mv.Finest", "mv.Flow", "mv.FlowBlur", "mv.FlowInter", "mv.FlowFPS", "mv.BlockFPS", "mv.SCDetection",
@@ -2008,7 +2008,7 @@ Public Class Package
             .Name = "mvmulti",
             .Filename = "mvmulti.py",
             .Location = IO.Path.Combine("Plugins", "VS", "Scripts"),
-            .WebURL = "http://github.com/dubhater/vapoursynth-mvtools",
+            .WebURL = "https://github.com/dubhater/vapoursynth-mvtools",
             .Description = "MVTools is a set of filters for motion estimation and compensation.",
             .VsFilterNames = {"mvmulti.StoreVect", "mvmulti.Analyse", "mvmulti.Recalculate", "mvmulti.Compensate", "mvmulti.Restore", "mvmulti.Flow", "mvmulti.DegrainN"}})
 
@@ -2102,7 +2102,7 @@ Public Class Package
             .Filename = "adjust.py",
             .Location = IO.Path.Combine("Plugins", "VS", "Scripts"),
             .Description = "very basic port of the built-in Avisynth filter Tweak.",
-            .WebURL = "http://github.com/dubhater/vapoursynth-adjust",
+            .WebURL = "https://github.com/dubhater/vapoursynth-adjust",
             .VsFilterNames = {"adjust.Tweak"}})
 
         Add(New PluginPackage With {
@@ -2149,8 +2149,8 @@ Public Class Package
             .Filename = "mvsfunc.py",
             .Location = IO.Path.Combine("Plugins", "VS", "mvsfunc"),
             .Description = "mawen1250's VapourSynth functions.",
-            .WebURL = "http://github.com/HomeOfVapourSynthEvolution/mvsfunc",
-            .HelpURL = "http://forum.doom9.org/showthread.php?t=172564",
+            .WebURL = "https://github.com/HomeOfVapourSynthEvolution/mvsfunc",
+            .HelpURL = "https://forum.doom9.org/showthread.php?t=172564",
             .Dependencies = {"BM3D.dll", "fmtconv.dll"},
             .VsFilterNames = {
                 "mvsfunc.Depth", "mvsfunc.ToRGB", "mvsfunc.ToYUV", "mvsfunc.BM3D", "mvsfunc.VFRSplice",
@@ -2183,7 +2183,7 @@ Public Class Package
             .Filename = "libfluxsmooth.dll",
             .VsFilterNames = {"flux.SmoothT", "flux.SmoothST"},
             .Description = "FluxSmooth is a filter for smoothing of fluctuations.",
-            .WebURL = "http://github.com/dubhater/vapoursynth-fluxsmooth"})
+            .WebURL = "https://github.com/dubhater/vapoursynth-fluxsmooth"})
 
         Add(New PluginPackage With {
             .Name = "CNR2",
@@ -2205,7 +2205,7 @@ Public Class Package
             .Filename = "libmsmoosh.dll",
             .VsFilterNames = {"msmoosh.MSmooth", "msmoosh.MSharpen"},
             .Description = "MSmooth is a spatial smoother that doesn't touch edges." + BR + "MSharpen is a sharpener that tries to sharpen only edges.",
-            .WebURL = "http://github.com/dubhater/vapoursynth-msmoosh"})
+            .WebURL = "https://github.com/dubhater/vapoursynth-msmoosh"})
 
         Add(New PluginPackage With {
             .Name = "SVPFlow 1",
@@ -2283,7 +2283,7 @@ Public Class Package
         Add(New PluginPackage With {
             .Name = "fmtconv",
             .Filename = "fmtconv.dll",
-            .WebURL = "http://github.com/EleonoreMizo/fmtconv",
+            .WebURL = "https://github.com/EleonoreMizo/fmtconv",
             .HelpFilename = IO.Path.Combine("doc", "fmtconv.html"),
             .Description = "Fmtconv is a format-conversion plug-in for the Vapoursynth video processing engine. It does resizing, bitdepth conversion with dithering and colorspace conversion.",
             .VsFilterNames = {"fmtc.bitdepth", "fmtc.convert", "fmtc.matrix", "fmtc.resample", "fmtc.transfer", "fmtc.primaries", "fmtc.matrix2020cl", "fmtc.nativetostack16", "fmtc.stack16tonative"}})
@@ -2293,7 +2293,7 @@ Public Class Package
             .Filename = "finesharp.py",
             .Location = IO.Path.Combine("Plugins", "VS", "Scripts"),
             .Description = "Port of Didée's FineSharp script to VapourSynth.",
-            .WebURL = "http://forum.doom9.org/showthread.php?p=1777860#post1777860",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=1777860#post1777860",
             .VsFilterNames = {"finesharp.sharpen"}})
 
         Add(New PluginPackage With {
@@ -2392,7 +2392,7 @@ Public Class Package
             .Filename = "DeRainbow.avsi",
             .Location = IO.Path.Combine("Plugins", "AVS", "Scripts"),
             .Description = "A simple script to reduce rainbows.",
-            .WebURL = "http://forum.doom9.org/showthread.php?p=398106#post398106",
+            .WebURL = "https://forum.doom9.org/showthread.php?p=398106#post398106",
             .HelpURL = "http://avisynth.nl/index.php/DeRainbow",
             .AvsFilterNames = {"DeRainbow", "DeRainbowYUY2"}})
 

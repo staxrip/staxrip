@@ -749,7 +749,7 @@ Public Class AudioForm
         cms.Add("Save Profile...", AddressOf SaveProfile, "Saves the current settings as profile").SetImage(Symbol.Save)
         cms.Add("-")
         cms.Add("Help", AddressOf ShowHelp).SetImage(Symbol.Help)
-        cms.Add("eac3to Help", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to"))
+        cms.Add("eac3to Help", Sub() g.ShellExecute("https://en.wikibooks.org/wiki/Eac3to"))
         cms.Add("ffmpeg Help", Sub() Package.ffmpeg.ShowHelp())
 
         TipProvider.SetTip("Defines which decoder to use and forces decoding even if not necessary.", laDecoder, mbDecoder)

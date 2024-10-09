@@ -552,7 +552,9 @@ Public Class AppsForm
         End If
 
         Contents("Status").Text = CurrentPackage.GetStatusDisplay()
-        Contents("Status").ForeColor = If(CurrentPackage.GetStatus <> "" AndAlso CurrentPackage.Required, ThemeManager.CurrentTheme.AppsForm.AttentionForeColor, ThemeManager.CurrentTheme.AppsForm.OkayForeColor)
+        Contents("Status").ForeColor = If(CurrentPackage.GetStatus <> "",
+                                                If(CurrentPackage.Required, ThemeManager.CurrentTheme.AppsForm.AttentionForeColor, ThemeManager.CurrentTheme.AppsForm.MinorForeColor),
+                                                ThemeManager.CurrentTheme.AppsForm.OkayForeColor)
         Contents("Status").Font = New Font("Segoe UI", 10 * s.UIScaleFactor)
 
         Headers("AviSynth Filters").Visible = False

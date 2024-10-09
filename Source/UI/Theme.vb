@@ -792,6 +792,7 @@ Public Class Theme
     <Serializable>
     Public Class AppsFormThemeColors
         Public Property AttentionForeColor As ColorHSL = New ColorHSL(358, 1, 0.3, 1)
+        Public Property MinorForeColor As ColorHSL = New ColorHSL(40, 1, 0.3, 1)
         Public Property OkayForeColor As ColorHSL = New ColorHSL(120, 1, 0.3, 1)
     End Class
 

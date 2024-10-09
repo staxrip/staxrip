@@ -406,6 +406,7 @@
 
             AppsForm = New AppsFormThemeColors() With {
                 .AttentionForeColor = _foreHighlightColor,
+                .MinorForeColor = _foreHighlightColor.AddHue(30),
                 .OkayForeColor = _accentColor
             }
 

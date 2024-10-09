@@ -444,15 +444,15 @@ Public Class AppsForm
         flp.Controls.Add(titleHeaderLabel)
         AddSection("Status")
         flp.Controls.Add(SetupButton)
-        AddSection("Location")
+        AddSection("Location", Sub() tsbOpenDir_Click(Nothing, Nothing))
         AddSection("Version")
         AddSection("AviSynth Filters")
         AddSection("VapourSynth Filters")
         AddSection("Filters")
         AddSection("Description")
-        AddSection("Website")
-        AddSection("Help")
-        AddSection("Download")
+        AddSection("Website", Sub() g.ShellExecute(CurrentPackage.WebURL))
+        AddSection("Help", Sub() g.ShellExecute(CurrentPackage.HelpURL))
+        AddSection("Download", Sub() g.ShellExecute(CurrentPackage.DownloadURL))
 
         ApplyTheme()
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
@@ -531,7 +531,7 @@ Public Class AppsForm
 
         Contents("Location").Text = If(path = "", "Not found", path)
         Contents("Description").Text = CurrentPackage.Description
-        
+
         Contents("Website").Text = CurrentPackage.WebURL
         Contents("Website").Visible = Not String.IsNullOrWhiteSpace(CurrentPackage.WebURL)
         Headers("Website").Visible = Contents("Website").Visible
@@ -593,7 +593,7 @@ Public Class AppsForm
         flp.ResumeLayout()
     End Sub
 
-    Sub AddSection(title As String)
+    Sub AddSection(title As String, Optional clickAction As Action = Nothing)
         Dim controlMargin = CInt(FontHeight / 10)
 
         Dim headerLabel = New LabelEx With {
@@ -602,9 +602,15 @@ Public Class AppsForm
             .AutoSize = True,
             .Margin = New Padding(controlMargin, controlMargin, 0, 0)}
 
-        Dim contentLabel = New LabelEx With {
-            .AutoSize = True,
-            .Margin = New Padding(controlMargin, CInt(controlMargin / 3), 0, 0)}
+        Dim contentLabel = If(clickAction IsNot Nothing,
+            New ButtonLabel With {
+                .AutoSize = True,
+                .ClickAction = clickAction,
+                .Cursor = Cursors.Hand,
+                .Margin = New Padding(controlMargin, CInt(controlMargin / 3), 0, 0)},
+            New LabelEx With {
+                .AutoSize = True,
+                .Margin = New Padding(controlMargin, CInt(controlMargin / 3), 0, 0)})
 
         Headers(title) = headerLabel
         Contents(title) = contentLabel

@@ -1356,7 +1356,7 @@ Namespace UI
     End Class
 
     Public Class ButtonLabel
-        Inherits Label
+        Inherits LabelEx
 
         Property LinkColor As Color
         Property LinkHoverColor As Color
@@ -1381,15 +1381,15 @@ Namespace UI
             Return LinkHoverColor <> Color.Empty
         End Function
 
-        Sub OnThemeChanged(theme As Theme)
+        Overloads Sub OnThemeChanged(theme As Theme)
             ApplyTheme(theme)
         End Sub
 
-        Sub ApplyTheme()
+        Overloads Sub ApplyTheme()
             ApplyTheme(ThemeManager.CurrentTheme)
         End Sub
 
-        Sub ApplyTheme(theme As Theme)
+        Overloads Sub ApplyTheme(theme As Theme)
             If DesignHelp.IsDesignMode Then
                 Exit Sub
             End If

@@ -451,6 +451,7 @@ Public Class AppsForm
         AddSection("Filters")
         AddSection("Description")
         AddSection("Website")
+        AddSection("Help")
         AddSection("Download")
 
         ApplyTheme()
@@ -534,6 +535,10 @@ Public Class AppsForm
         Contents("Website").Text = CurrentPackage.WebURL
         Contents("Website").Visible = Not String.IsNullOrWhiteSpace(CurrentPackage.WebURL)
         Headers("Website").Visible = Contents("Website").Visible
+
+        Contents("Help").Text = CurrentPackage.HelpURL
+        Contents("Help").Visible = Not String.IsNullOrWhiteSpace(CurrentPackage.HelpURL)
+        Headers("Help").Visible = Contents("Help").Visible
 
         Contents("Download").Text = CurrentPackage.DownloadURL
         Contents("Download").Visible = Not String.IsNullOrWhiteSpace(CurrentPackage.DownloadURL)

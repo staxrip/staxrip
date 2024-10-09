@@ -445,7 +445,7 @@ Public Class AppsForm
         AddSection("Status")
         flp.Controls.Add(SetupButton)
         AddSection("Location", Sub() tsbOpenDir_Click(Nothing, Nothing))
-        AddSection("Version")
+        AddSection("Version", Sub() tsbVersion_Click(Nothing, Nothing))
         AddSection("AviSynth Filters")
         AddSection("VapourSynth Filters")
         AddSection("Filters")

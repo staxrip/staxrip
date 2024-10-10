@@ -7650,6 +7650,8 @@ Public Class MainForm
         Dim lastChangelogVersion = If(lastChangelogVersionMatch.Success, New Version(lastChangelogVersionMatch.Value), Nothing)
         Dim readoutVersion As Version = Nothing
 
+        If Not force AndAlso (currentVersion.Minor Mod 2) = 1 Then Exit Sub
+
         Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("StaxRip.Changelog.md")
             Using reader As New StreamReader(stream)
                 Dim sb As New StringBuilder()

@@ -1310,12 +1310,21 @@ Public Class SvtAv1EncParams
 
     Property PsyTemporalFilteringStrength As New OptionParam With {
         .Switch = "--tf-strength",
-        .Text = "Temporal filtering strength",
+        .Text = "Temporal Filtering Strength",
         .Expanded = True,
         .IntegerValue = True,
         .Options = {"0", "1 (default)", "2", "3", "4"},
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
         .Init = 1}
+
+    Property PsyNoiseNormStrength As New OptionParam With {
+        .Switch = "--noise-norm-strength",
+        .Text = "Noise Norm Strength",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0 (default)", "1", "2", "3", "4"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 0}
 
 
     '   --------------------------------------------------------
@@ -1371,7 +1380,7 @@ Public Class SvtAv1EncParams
                 If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then
                     Add("PSY",
                         PsyHdr10PlusJson, PsyDolbyVisionRpu,
-                        PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain, PsyTemporalFilteringStrength,
+                        PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain, PsyTemporalFilteringStrength, PsyNoiseNormStrength,
                         PsyFrameLumaBias, PsyMinChromaQmLevel, PsyMaxChromaQmLevel
                     )
                 End If

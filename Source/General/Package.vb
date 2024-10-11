@@ -78,11 +78,13 @@ Public Class Package
 
     Shared Property Haali As Package = Add(New Package With {
         .Name = "Haali Splitter",
-        .Filename = "splitter.ax",
-        .WebURL = "http://haali.su/mkv",
+        .Filename = "splitter.x64.ax",
+        .Filename32 = "splitter.ax",
         .Description = "Haali Splitter is used by eac3to to write MKV files.",
         .Required = False,
         .IsIncluded = False,
+        .WebURL = "http://haali.su/mkv",
+        .DownloadURL = "http://haali.su/mkv",
         .Locations = {Registry.ClassesRoot.GetString("CLSID\" + GUIDS.HaaliMuxer.ToString + "\InprocServer32", Nothing).Dir}})
 
     Shared Property NicAudio As Package = Add(New PluginPackage With {

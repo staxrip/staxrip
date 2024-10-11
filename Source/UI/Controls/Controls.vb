@@ -1042,6 +1042,7 @@ Namespace UI
                 Return parms
             End Get
         End Property
+
         Sub InitMenu()
             If DesignHelp.IsDesignMode Then
                 Exit Sub
@@ -3016,6 +3017,8 @@ Namespace UI
 
         Public Shadows Event DoubleClick(sender As Object, e As EventArgs)
         Public Shadows Event KeyDown(sender As Object, e As KeyEventArgs)
+        Public Shadows Event KeyPress(sender As Object, e As KeyPressEventArgs)
+        Public Shadows Event KeyUp(sender As Object, e As KeyEventArgs)
         Public Shadows Event MouseDown(sender As Object, e As MouseEventArgs)
         Public Shadows Event MouseWheel(sender As Object, e As MouseEventArgs)
         Public Shadows Event TextChanged(sender As Object, e As EventArgs)
@@ -3125,6 +3128,8 @@ Namespace UI
 
             AddHandler TextBox.DoubleClick, Sub(sender As Object, e As EventArgs) RaiseEvent DoubleClick(sender, e)
             AddHandler TextBox.KeyDown, Sub(sender As Object, e As KeyEventArgs) RaiseEvent KeyDown(sender, e)
+            AddHandler TextBox.KeyPress, Sub(sender As Object, e As KeyPressEventArgs) RaiseEvent KeyPress(sender, e)
+            AddHandler TextBox.KeyUp, Sub(sender As Object, e As KeyEventArgs) RaiseEvent KeyUp(sender, e)
             AddHandler TextBox.MouseDown, Sub(sender As Object, e As MouseEventArgs) RaiseEvent MouseDown(sender, e)
             AddHandler TextBox.MouseWheel, Sub(sender As Object, e As MouseEventArgs) RaiseEvent MouseWheel(sender, e)
             AddHandler TextBox.TextChanged, Sub(sender As Object, e As EventArgs) RaiseEvent TextChanged(sender, e)

@@ -2823,7 +2823,7 @@ Public Class Package
     End Function
 
     Function VerifyOK(Optional showEvenIfNotRequired As Boolean = False) As Boolean
-        If (Required OrElse showEvenIfNotRequired) AndAlso (Required AndAlso GetStatus() <> "") Then
+        If (Required OrElse showEvenIfNotRequired) AndAlso GetStatus() <> "" Then
             Using form As New AppsForm
                 form.ShowPackage(Me)
                 form.ShowDialog()

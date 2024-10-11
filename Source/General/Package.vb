@@ -1368,25 +1368,27 @@ Public Class Package
             .Filename = "DePan.dll",
             .Location = IO.Path.Combine("Plugins", "AVS", "MVTools2"),
             .WebURL = "https://github.com/pinterf/mvtools",
+            .HelpURL = "https://raw.githack.com/pinterf/mvtools/mvtools-pfmod/Doc_Depan/depan.html",
             .DownloadURL = "https://github.com/pinterf/mvtools/releases",
             .AvsFilterNames = {"DePan", "DePanInterleave", "DePanStabilize", "DePanScenes"}})
-
-        Add(New PluginPackage With {
-            .Name = "RemoveDirt",
-            .Filename = "RemoveDirt.dll",
-            .Location = IO.Path.Combine("Plugins", "AVS", "RemoveDirt"),
-            .HelpURL = "http://avisynth.nl/index.php/RemoveDirt",
-            .WebURL = "https://github.com/pinterf/RemoveDirt",
-            .DownloadURL = "https://github.com/pinterf/RemoveDirt/releases",
-            .AvsFilterNames = {"RestoreMotionBlocks", "SCSelect"}})
 
         Add(New PluginPackage With {
             .Name = "DePanEstimate",
             .Location = IO.Path.Combine("Plugins", "AVS", "MVTools2"),
             .Filename = "DePanEstimate.dll",
             .WebURL = "https://github.com/pinterf/mvtools",
+            .HelpURL = "https://raw.githack.com/pinterf/mvtools/mvtools-pfmod/Doc_DepanEstimate/depan.html",
             .DownloadURL = "https://github.com/pinterf/mvtools/releases",
             .AvsFilterNames = {"DePanEstimate"}})
+
+        Add(New PluginPackage With {
+            .Name = "RemoveDirt",
+            .Filename = "RemoveDirt.dll",
+            .Location = IO.Path.Combine("Plugins", "AVS", "RemoveDirt"),
+            .WebURL = "https://github.com/pinterf/RemoveDirt",
+            .HelpURL = "http://avisynth.nl/index.php/RemoveDirt",
+            .DownloadURL = "https://github.com/pinterf/RemoveDirt/releases",
+            .AvsFilterNames = {"RestoreMotionBlocks", "SCSelect"}})
 
         Add(New PluginPackage With {
             .Name = "JincResize",

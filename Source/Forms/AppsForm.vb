@@ -3,6 +3,7 @@ Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
+Imports Microsoft.VisualBasic
 
 Imports StaxRip.UI
 
@@ -413,6 +414,7 @@ Public Class AppsForm
         SearchTextBox.Height = ToolStrip.Height - 2
 
         AddHandler SearchTextBox.Edit.TextBox.KeyDown, AddressOf SearchTextBoxKeyDown
+        AddHandler tv.KeyDown, AddressOf TreeViewKeyDown
 
         ToolStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
         g.SetRenderer(ToolStrip)
@@ -483,6 +485,15 @@ Public Class AppsForm
             e.Handled = True
         ElseIf e.KeyData = Keys.Up Then
             tv.MoveSelectionUp()
+            e.Handled = True
+        End If
+    End Sub
+
+    Sub TreeViewKeyDown(sender As Object, e As KeyEventArgs)
+        If Char.IsLetter(Chr(e.KeyCode)) Then
+            SearchTextBox.Text = If(e.Shift, ChrW(e.KeyCode), Char.ToLowerInvariant(Chr(e.KeyCode)))
+            SearchTextBox.Focus()
+            SearchTextBox.Edit.TextBox.Select(1, 0)            
             e.Handled = True
         End If
     End Sub

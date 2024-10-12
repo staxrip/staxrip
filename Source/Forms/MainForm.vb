@@ -1772,7 +1772,7 @@ Public Class MainForm
 
             SkipAssistant = False
 
-            Assistant()
+            Assistant(False)
             s.UpdateRecentProjects(path)
             UpdateRecentProjectsMenu()
             g.RaiseAppEvent(ApplicationEvent.AfterProjectLoaded)

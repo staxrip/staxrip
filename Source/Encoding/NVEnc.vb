@@ -156,14 +156,23 @@ Public Class NVEnc
     End Sub
 
     Overrides Function BeforeEncoding() As Boolean
-        Dim rpu = Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value
+        Dim rpu = Params.DolbyVisionRpu.Value
         If Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
             Dim offset = New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom)
             Dim rpuProfile = p.HdrDolbyVisionMetadataFile.ReadProfileFromRpu()
-            Dim profile = Params.GetOptionParam(Params.DolbyVisionProfile.Switch)?.ValueText
+            
+            Dim profile = "#"
+            If Params.DolbyVisionProfileH265.Visible Then profile = Params.DolbyVisionProfileH265.ValueText
+            If Params.DolbyVisionProfileAV1.Visible Then profile = Params.DolbyVisionProfileAV1.ValueText
+            If profile = "#" Then Return False
+
             Dim mode = DoviMode.Mode0
             If profile = "8.1" Then mode = DoviMode.Mode2
+            If profile = "8.2" Then mode = DoviMode.Mode2
             If profile = "8.4" Then mode = DoviMode.Mode4
+            If profile = "10.1" Then mode = DoviMode.Mode2
+            If profile = "10.2" Then mode = DoviMode.Mode2
+            If profile = "10.4" Then mode = DoviMode.Mode4
 
             p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(offset, mode, True)
             Dim newPath = p.HdrDolbyVisionMetadataFile.WriteModifiedRpu(True)
@@ -283,15 +292,20 @@ Public Class NVEnc
         End If
 
         If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+            Dim isAV1 = If( Params.DolbyVisionProfileAV1.Visible, True, False)
+            Dim profileParam = If(isAV1, Params.DolbyVisionProfileAV1, Params.DolbyVisionProfileH265)
             Dim rpuProfile = p.HdrDolbyVisionMetadataFile.ReadProfileFromRpu()
             Dim profile = ""
             If rpuProfile = 5 Then profile = "5"
             If rpuProfile = 7 Then profile = "8.1"
             If rpuProfile = 8 Then profile = "8.1"
-            If profile = "8.1" AndAlso transfer_characteristics = "HLG" Then
-                profile = "8.4"
-            End If
-            If Params.GetStringParam("--dolby-vision-profile")?.Value = "" AndAlso profile <> "" Then
+            If profile = "8.1" AndAlso transfer_characteristics = "HLG" Then profile = "8.4"
+            If isAV1 AndAlso profile = "5" Then profile = "10.0"
+            If isAV1 AndAlso profile = "8.1" Then profile = "10.1"
+            If isAV1 AndAlso profile = "8.2" Then profile = "10.2"
+            If isAV1 AndAlso profile = "8.4" Then profile = "10.4"
+
+            If profileParam.Value = 0 AndAlso profile <> "" Then
                 cl += $" --dolby-vision-profile {profile}"
             End If
 
@@ -568,17 +582,87 @@ Public Class NVEnc
             .BrowseFile = True,
             .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
 
-        Property DolbyVisionProfile As New OptionParam With {
+        Property DolbyVisionProfileH265 As New OptionParam With {
             .Switch = "--dolby-vision-profile",
             .Text = "Dolby Vision Profile",
             .Options = {"Undefined", "5", "8.1", "8.2", "8.4"},
-            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
+            .ValueChangedAction = Sub(index As Integer)
+                                      Select Case index
+                                          Case 1
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(0)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 2
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(16)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 3
+                                              ColorMatrix.ValueChangedUser(4)
+                                              ColorPrim.ValueChangedUser(4)
+                                              Transfer.ValueChangedUser(8)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 4
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(1)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(19)
+                                          Case Else
+                                      End Select
+                                  End Sub,
+            .VisibleFunc = Function() Codec.ValueText = "h265"}
+
+        Property DolbyVisionProfileAV1 As New OptionParam With {
+            .Switch = "--dolby-vision-profile",
+            .Text = "Dolby Vision Profile",
+            .Options = {"Undefined", "10.0", "10.1", "10.2", "10.4"},
+            .ValueChangedAction = Sub(index As Integer)
+                                      Select Case index
+                                          Case 1
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(0)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 2
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(16)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 3
+                                              ColorMatrix.ValueChangedUser(4)
+                                              ColorPrim.ValueChangedUser(4)
+                                              Transfer.ValueChangedUser(8)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 4
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(1)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(19)
+                                          Case Else
+                                      End Select
+                                  End Sub,
+            .VisibleFunc = Function() Codec.ValueText = "av1"}
 
         Property DolbyVisionRpu As New StringParam With {
             .Switch = "--dolby-vision-rpu",
             .Text = "Dolby Vision RPU",
             .BrowseFile = True,
             .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
+
+        Property ColorMatrix As New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}}
+        Property ColorPrim As New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}}
+        Property Transfer As New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-STD-B67", "Auto", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 2084", "SMPTE 428"}}
+        Property ColorRange As New OptionParam With {.Switch = "--colorrange", .Text = "Colorrange", .Options = {"Undefined", "Auto", "Limited", "TV", "Full", "PC"}}
+        Property AtcSei As New OptionParam With {.Switch = "--atc-sei", .Text = "ATC SEI", .Init = 1, .Options = {"Undef", "Unknown", "Auto", "Auto_Res", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}, .VisibleFunc = Function() Codec.ValueText = "h265"}
 
         Property MaxCLL As New NumParam With {
             .Switch = "--max-cll",
@@ -1042,13 +1126,9 @@ Public Class NVEnc
                     Add("VUI",
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
-                        DhdrInfo, DolbyVisionProfile, DolbyVisionRpu,
+                        DhdrInfo, DolbyVisionProfileH265, DolbyVisionProfileAV1, DolbyVisionRpu,
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
-                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "FCC", "GBR", "SMPTE 170 M", "SMPTE 240 M", "YCgCo"}},
-                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M"}},
-                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-STD-B67", "Auto", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 2084", "SMPTE 428"}},
-                        New OptionParam With {.Switch = "--atc-sei", .Text = "ATC SEI", .Init = 1, .Options = {"Undef", "Unknown", "Auto", "Auto_Res", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}, .VisibleFunc = Function() Codec.ValueText = "h265"},
-                        New OptionParam With {.Switch = "--colorrange", .Text = "Colorrange", .Options = {"Undefined", "Auto", "Limited", "TV", "Full", "PC"}},
+                        ColorMatrix, ColorPrim, Transfer, ColorRange, AtcSei,
                         New OptionParam With {.Switch = "--split-enc", .Text = "Split Enc", .Options = {"Split frame forced mode disabled, split frame auto mode enabled.", "Split frame forced mode enabled w/ no. of strips auto-selected by driver.", "Forced 2-strip split frame encoding (if NVENC <= 1 1-strip encode).", "Forced 3-strip split frame encoding (if NVENC > 2, NVENC no# of strips otherwise).", "Forced 4-strip split frame encoding (if NVENC > 3, NVENC no# of strips otherwise).", "Both split frame auto mode and forced mode are disabled."}, .Values = {"auto", "auto_forced", "forced_2", "forced_3", "forced_4", "disable"}})
                     Add("VUI 2",
                         MaxCLL, MaxFALL,

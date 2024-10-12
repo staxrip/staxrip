@@ -112,13 +112,14 @@ Public Class x265Enc
     End Sub
 
     Overrides Function BeforeEncoding() As Boolean
-        Dim rpu = Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value
+        Dim rpu = Params.DolbyVisionRpu.Value
         If Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
             Dim offset = New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom)
             Dim rpuProfile = p.HdrDolbyVisionMetadataFile.ReadProfileFromRpu()
-            Dim profile = Params.GetOptionParam(Params.DolbyVisionProfile.Switch)?.ValueText
+            Dim profile = Params.DolbyVisionProfile.ValueText
             Dim mode = DoviMode.Mode0
             If profile = "8.1" Then mode = DoviMode.Mode2
+            If profile = "8.2" Then mode = DoviMode.Mode2
             If profile = "8.4" Then mode = DoviMode.Mode4
 
             p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(offset, mode, True)
@@ -990,10 +991,11 @@ Public Class x265Params
         .Config = {0.5, 1.0, 0.1, 1},
         .Init = 1}
 
-    Property Range As New OptionParam With {
-        .Switch = "--range",
-        .Text = "Range",
-        .Options = {"Undefined", "Limited", "Full"}}
+    Property Range As New OptionParam With {.Switch = "--range", .Text = "Range", .Options = {"Undefined", "Limited", "Full"}}
+    Property ColorPrim As New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 428", "SMPTE 431", "SMPTE 432"}}
+    Property Transfer As New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-STD-B67", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}}
+    Property ColorMatrix As New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "Chroma-Derived-C", "Chroma-Derived-NC", "FCC", "GBR", "ICTCP", "SMPTE 170 M", "SMPTE 2085", "SMPTE 240 M", "YCgCo"}}
+    Property AtcSei As New NumParam With {.Switch = "--atc-sei", .Text = "Alternative transfer SEI:", .Init = -1, .Config = {-1, 99, 1}}
 
     Property Chromaloc As New OptionParam With {
         .Switch = "--chromaloc",
@@ -1024,7 +1026,36 @@ Public Class x265Params
     Property DolbyVisionProfile As New OptionParam With {
         .Switch = "--dolby-vision-profile",
         .Text = "Dolby Vision Profile",
-        .Options = {"Undefined", "5", "8.1", "8.2", "8.4"}}
+        .Options = {"Undefined", "5", "8.1", "8.2", "8.4"},
+        .ValueChangedAction = Sub(index As Integer)
+                                  Select Case index
+                                      Case 1
+                                          ColorMatrix.ValueChangedUser(2)
+                                          ColorPrim.ValueChangedUser(1)
+                                          Transfer.ValueChangedUser(0)
+                                          Range.ValueChangedUser(1)
+                                          AtcSei.Value = AtcSei.InitialValue
+                                      Case 2
+                                          ColorMatrix.ValueChangedUser(2)
+                                          ColorPrim.ValueChangedUser(1)
+                                          Transfer.ValueChangedUser(14)
+                                          Range.ValueChangedUser(1)
+                                          AtcSei.Value = AtcSei.InitialValue
+                                      Case 3
+                                          ColorMatrix.ValueChangedUser(4)
+                                          ColorPrim.ValueChangedUser(4)
+                                          Transfer.ValueChangedUser(7)
+                                          Range.ValueChangedUser(1)
+                                          AtcSei.Value = AtcSei.InitialValue
+                                      Case 4
+                                          ColorMatrix.ValueChangedUser(2)
+                                          ColorPrim.ValueChangedUser(1)
+                                          Transfer.ValueChangedUser(1)
+                                          Range.ValueChangedUser(1)
+                                          AtcSei.Value = 1
+                                      Case Else
+                                  End Select
+                              End Sub}
 
     Property DolbyVisionRpu As New StringParam With {
         .Switch = "--dolby-vision-rpu",
@@ -1397,11 +1428,7 @@ Public Class x265Params
                     New OptionParam With {.Switch = "--display-window", .Text = "Display Window", .Options = {"Undefined", "Left", "Top", "Right", "Bottom"}},
                     New OptionParam With {.Switch = "--overscan", .Text = "Overscan", .Options = {"Undefined", "Show", "Crop"}},
                     New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "Component", "PAL", "NTSC", "SECAM", "MAC"}},
-                    Range,
-                    New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "BT 2020", "BT 470 BG", "BT 470 M", "BT 709", "Film", "SMPTE 170 M", "SMPTE 240 M", "SMPTE 428", "SMPTE 431", "SMPTE 432"}},
-                    New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "ARIB-STD-B67", "BT 1361 E", "BT 2020-10", "BT 2020-12", "BT 470 BG", "BT 470 M", "BT 709", "IEC 61966-2-1", "IEC 61966-2-4", "Linear", "Log 100", "Log 316", "SMPTE 170 M", "SMPTE 2084", "SMPTE 240 M", "SMPTE 428"}},
-                    New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "BT 2020 C", "BT 2020 NC", "BT 470 BG", "BT 709", "Chroma-Derived-C", "Chroma-Derived-NC", "FCC", "GBR", "ICTCP", "SMPTE 170 M", "SMPTE 2085", "SMPTE 240 M", "YCgCo"}},
-                    Chromaloc
+                    Range, ColorPrim, Transfer, ColorMatrix, Chromaloc
                 )
                 Add("VUI 2",
                     MasterDisplay, MaxCLL, MaxFALL,
@@ -1420,8 +1447,7 @@ Public Class x265Params
                     New BoolParam With {.Switch = "--eos", .NoSwitch = "--no-eos", .Text = "Emit end of sequence nal unit"}
                 )
                 Add("Bitstream 2",
-                    Hash,
-                    New NumParam With {.Switch = "--atc-sei", .Text = "Alternative transfer SEI:", .Init = -1, .Config = {-1, 99, 1}},
+                    Hash, AtcSei,
                     New NumParam With {.Switch = "--pic-struct", .Text = "Picture structure in SEI:", .Init = -1, .Config = {-1, 12, 1}},
                     New NumParam With {.Switch = "--log2-max-poc-lsb", .Text = "Maximum Picture Order Count", .Init = 8},
                     New BoolParam With {.Switch = "--vui-timing-info", .NoSwitch = "--no-vui-timing-info", .Text = "VUI Timing Info", .Init = True},

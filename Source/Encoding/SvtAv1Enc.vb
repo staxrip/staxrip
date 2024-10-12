@@ -36,28 +36,28 @@ Public Class SvtAv1Enc
     Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
         Get
             If Not Params.PsyDolbyVisionRpu.Visible Then Return True
-            Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.PsyDolbyVisionRpu.Switch)?.Value)
+            Return String.IsNullOrWhiteSpace(Params.PsyDolbyVisionRpu.Value)
         End Get
     End Property
 
     Overrides ReadOnly Property IsUnequalResizingAllowed As Boolean
         Get
             If Not Params.PsyDolbyVisionRpu.Visible Then Return True
-            Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.PsyDolbyVisionRpu.Switch)?.Value)
+            Return String.IsNullOrWhiteSpace(Params.PsyDolbyVisionRpu.Value)
         End Get
     End Property
 
     Overrides ReadOnly Property DolbyVisionMetadataPath As String
         Get
             If Not Params.PsyDolbyVisionRpu.Visible Then Return Nothing
-            Return Params.GetStringParam(Params.PsyDolbyVisionRpu.Switch)?.Value
+            Return Params.PsyDolbyVisionRpu.Value
         End Get
     End Property
 
     Overrides ReadOnly Property Hdr10PlusMetadataPath As String
         Get
             If Not Params.PsyHdr10PlusJson.Visible Then Return Nothing
-            Return Params.GetStringParam(Params.PsyHdr10PlusJson.Switch)?.Value
+            Return Params.PsyHdr10PlusJson.Value
         End Get
     End Property
 
@@ -75,7 +75,7 @@ Public Class SvtAv1Enc
     End Property
 
     Overrides Function BeforeEncoding() As Boolean
-        Dim rpu = Params.GetStringParam(Params.PsyDolbyVisionRpu.Switch)?.Value
+        Dim rpu = Params.PsyDolbyVisionRpu.Value
         If Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
             Dim offset = New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom)
             Dim mode = CType(Params.PsyDolbyVisionRpuMode.Value, DoviMode)

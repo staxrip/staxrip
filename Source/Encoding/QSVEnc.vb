@@ -163,14 +163,23 @@ Public Class QSVEnc
     End Sub
 
     Overrides Function BeforeEncoding() As Boolean
-        Dim rpu = Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value
+        Dim rpu = Params.DolbyVisionRpu.Value
         If Not String.IsNullOrWhiteSpace(rpu) AndAlso rpu = p.HdrDolbyVisionMetadataFile?.Path AndAlso rpu.FileExists() Then
             Dim offset = New Padding(p.CropLeft, p.CropTop, p.CropRight, p.CropBottom)
             Dim rpuProfile = p.HdrDolbyVisionMetadataFile.ReadProfileFromRpu()
-            Dim profile = Params.GetOptionParam(Params.DolbyVisionProfile.Switch)?.ValueText
+
+            Dim profile = "#"
+            If Params.DolbyVisionProfileH265.Visible Then profile = Params.DolbyVisionProfileH265.ValueText
+            If Params.DolbyVisionProfileAV1.Visible Then profile = Params.DolbyVisionProfileAV1.ValueText
+            If profile = "#" Then Return False
+
             Dim mode = DoviMode.Mode0
             If profile = "8.1" Then mode = DoviMode.Mode2
+            If profile = "8.2" Then mode = DoviMode.Mode2
             If profile = "8.4" Then mode = DoviMode.Mode4
+            If profile = "10.1" Then mode = DoviMode.Mode2
+            If profile = "10.2" Then mode = DoviMode.Mode2
+            If profile = "10.4" Then mode = DoviMode.Mode4
 
             p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(offset, mode, True)
             Dim newPath = p.HdrDolbyVisionMetadataFile.WriteModifiedRpu(True)
@@ -290,15 +299,20 @@ Public Class QSVEnc
         End If
 
         If Not String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
+            Dim isAV1 = If( Params.DolbyVisionProfileAV1.Visible, True, False)
+            Dim profileParam = If(isAV1, Params.DolbyVisionProfileAV1, Params.DolbyVisionProfileH265)
             Dim rpuProfile = p.HdrDolbyVisionMetadataFile.ReadProfileFromRpu()
             Dim profile = ""
             If rpuProfile = 5 Then profile = "5"
             If rpuProfile = 7 Then profile = "8.1"
             If rpuProfile = 8 Then profile = "8.1"
-            If profile = "8.1" AndAlso transfer_characteristics = "HLG" Then
-                profile = "8.4"
-            End If
-            If Params.GetStringParam("--dolby-vision-profile")?.Value = "" AndAlso profile <> "" Then
+            If profile = "8.1" AndAlso transfer_characteristics = "HLG" Then profile = "8.4"
+            If isAV1 AndAlso profile = "5" Then profile = "10.0"
+            If isAV1 AndAlso profile = "8.1" Then profile = "10.1"
+            If isAV1 AndAlso profile = "8.2" Then profile = "10.2"
+            If isAV1 AndAlso profile = "8.4" Then profile = "10.4"
+
+            If profileParam.Value = 0 AndAlso profile <> "" Then
                 cl += $" --dolby-vision-profile {profile}"
             End If
 
@@ -476,15 +490,15 @@ Public Class QSVEnc
             .Config = {0, Integer.MaxValue, 1}}
 
         Property QPMaxAdvanced As New BoolParam With {.Text = "Show advanced Maximum QP settings", .Init = False}
-        Property QPMax8 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0, .ImportAction = AddressOf ImportQPMaxArgs}
+        Property QPMax8 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMax8I As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP I", .DefaultValue = -1, .Value = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0, .ArgsFunc = AddressOf GetQpMaxArgs, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMax8P As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP P", .DefaultValue = -1, .Value = 51, .Config = {0, 51, 1}, .VisibleFunc = QPMax8I.VisibleFunc}
         Property QPMax8B As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP B", .DefaultValue = -1, .Value = 51, .Config = {0, 51, 1}, .VisibleFunc = QPMax8I.VisibleFunc}
-        Property QPMax10 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1, .ImportAction = AddressOf ImportQPMaxArgs}
+        Property QPMax10 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMax10I As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP I", .DefaultValue = -1, .Value = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1, .ArgsFunc = AddressOf GetQpMaxArgs, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMax10P As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP P", .DefaultValue = -1, .Value = 63, .Config = {0, 63, 1}, .VisibleFunc = QPMax10I.VisibleFunc}
         Property QPMax10B As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP B", .DefaultValue = -1, .Value = 63, .Config = {0, 63, 1}, .VisibleFunc = QPMax10I.VisibleFunc}
-        Property QPMaxAV1 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value = 2, .ImportAction = AddressOf ImportQPMaxArgs}
+        Property QPMaxAV1 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value = 2, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMaxAV1I As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP I", .DefaultValue = -1, .Value = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() QPMaxAdvanced.Value AndAlso Codec.Value = 2, .ArgsFunc = AddressOf GetQpMaxArgs, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMaxAV1P As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP P", .DefaultValue = -1, .Value = 255, .Config = {0, 255, 1}, .VisibleFunc = QPMaxAV1I.VisibleFunc}
         Property QPMaxAV1B As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP B", .DefaultValue = -1, .Value = 255, .Config = {0, 255, 1}, .VisibleFunc = QPMaxAV1I.VisibleFunc}
@@ -525,19 +539,90 @@ Public Class QSVEnc
         Property DhdrInfo As New StringParam With {
             .Switch = "--dhdr10-info",
             .Text = "HDR10 Info File",
-            .BrowseFile = True}
+            .BrowseFile = True,
+            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
 
-        Property DolbyVisionProfile As New OptionParam With {
+        Property DolbyVisionProfileH265 As New OptionParam With {
             .Switch = "--dolby-vision-profile",
             .Text = "Dolby Vision Profile",
             .Options = {"Undefined", "5", "8.1", "8.2", "8.4"},
-            .VisibleFunc = Function() Codec.ValueText = "hevc"}
+            .ValueChangedAction = Sub(index As Integer)
+                                      Select Case index
+                                          Case 1
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(0)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 2
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(16)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 3
+                                              ColorMatrix.ValueChangedUser(4)
+                                              ColorPrim.ValueChangedUser(4)
+                                              Transfer.ValueChangedUser(8)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 4
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(1)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(19)
+                                          Case Else
+                                      End Select
+                                  End Sub,
+            .VisibleFunc = Function() Codec.ValueText = "h265"}
+
+        Property DolbyVisionProfileAV1 As New OptionParam With {
+            .Switch = "--dolby-vision-profile",
+            .Text = "Dolby Vision Profile",
+            .Options = {"Undefined", "10.0", "10.1", "10.2", "10.4"},
+            .ValueChangedAction = Sub(index As Integer)
+                                      Select Case index
+                                          Case 1
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(0)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 2
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(16)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 3
+                                              ColorMatrix.ValueChangedUser(4)
+                                              ColorPrim.ValueChangedUser(4)
+                                              Transfer.ValueChangedUser(8)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(AtcSei.InitialValue)
+                                          Case 4
+                                              ColorMatrix.ValueChangedUser(1)
+                                              ColorPrim.ValueChangedUser(1)
+                                              Transfer.ValueChangedUser(1)
+                                              ColorRange.ValueChangedUser(2)
+                                              AtcSei.ValueChangedUser(19)
+                                          Case Else
+                                      End Select
+                                  End Sub,
+            .VisibleFunc = Function() Codec.ValueText = "av1"}
 
         Property DolbyVisionRpu As New StringParam With {
             .Switch = "--dolby-vision-rpu",
             .Text = "Dolby Vision RPU",
             .BrowseFile = True,
-            .VisibleFunc = Function() Codec.ValueText = "hevc"}
+            .VisibleFunc = Function() Codec.ValueText = "h265" OrElse Codec.ValueText = "av1"}
+
+        Property ColorMatrix As New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 BG", "SMPTE 240 M", "YCgCo", "FCC", "GBR", "BT 2020 NC", "BT 2020 C"}}
+        Property ColorPrim As New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}}
+        Property Transfer As New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}}
+        Property ColorRange As New OptionParam With {.Switch = "--colorrange", .Text = "Colorrange", .Options = {"Limited", "Full", "Auto"}}
+        Property AtcSei As New OptionParam With {.Switch = "--atc-sei", .Text = "ATC SEI", .Init = 1, .Options = {"Undef", "Unknown", "Auto", "Auto_Res", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}}
 
         Property MaxCLL As New NumParam With {
             .Text = "Maximum CLL",
@@ -893,13 +978,9 @@ Public Class QSVEnc
                     Add("VUI",
                         New StringParam With {.Switch = "--master-display", .Text = "Master Display", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New StringParam With {.Switch = "--sar", .Text = "Sample Aspect Ratio", .Init = "auto", .Menu = s.ParMenu, .ArgsFunc = AddressOf GetSAR},
-                        DhdrInfo, DolbyVisionProfile, DolbyVisionRpu,
+                        DhdrInfo, DolbyVisionProfileH265, DolbyVisionProfileAV1, DolbyVisionRpu,
                         New OptionParam With {.Switch = "--videoformat", .Text = "Videoformat", .Options = {"Undefined", "NTSC", "Component", "PAL", "SECAM", "MAC"}},
-                        New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 BG", "SMPTE 240 M", "YCgCo", "FCC", "GBR", "BT 2020 NC", "BT 2020 C"}},
-                        New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}},
-                        New OptionParam With {.Switch = "--transfer", .Text = "Transfer", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}},
-                        New OptionParam With {.Switch = "--atc-sei", .Text = "ATC SEI", .Init = 1, .Options = {"Undef", "Unknown", "Auto", "Auto_Res", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Linear", "Log 100", "Log 316", "IEC 61966-2-4", "BT 1361 E", "IEC 61966-2-1", "BT 2020-10", "BT 2020-12", "SMPTE 2084", "SMPTE 428", "ARIB-STD-B67"}},
-                        New OptionParam With {.Switch = "--colorrange", .Text = "Colorrange", .Options = {"Limited", "Full", "Auto"}},
+                        ColorMatrix, ColorPrim, Transfer, ColorRange, AtcSei,
                         MaxCLL, MaxFALL, Chromaloc,
                         New BoolParam With {.Switch = "--pic-struct", .Text = "Set the picture structure and emits it in the picture timing SEI message"},
                         New BoolParam With {.Switch = "--fullrange", .Text = "Fullrange"},

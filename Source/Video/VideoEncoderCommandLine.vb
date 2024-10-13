@@ -452,11 +452,9 @@ Namespace VideoEncoderCommandLine
             Me.Params = params
         End Sub
 
-        Sub ValueChanged(ne As NumEdit)
-            If Config(3) = 0 Then
-                Value = CInt(ne.Value)
-            Else
-                Value = ne.Value
+        Sub ValueChanged(Optional ne As NumEdit = Nothing)
+            If ne IsNot Nothing Then
+                Value = If(Config(3) = 0, CInt(ne.Value), ne.Value)
             End If
 
             Params.RaiseValueChanged(Me)

@@ -753,6 +753,18 @@ Public Class NVEnc
         Property NgxTruehdrMiddleGray As New NumParam With {.Text = New String(" "c, 6) + "MiddleGray", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 44.0, .Config = {10, 100, 1, 0}}
         Property NgxTruehdrMaxLuminance As New NumParam With {.Text = New String(" "c, 6) + "Max Luminance", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 1000.0, .Config = {400, 2000, 1, 0}}
 
+        Property LibPlaceboDeband As New BoolParam With {.Text = "LibPlacebo-Deband", .Switch = "--vpp-libplacebo-deband", .ArgsFunc = AddressOf GetLibPlaceboDebandArgs}
+        Property LibPlaceboDebandIterations As New NumParam With {.Text = "     Iterations", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 1, .Config = {0, 255}}
+        Property LibPlaceboDebandThreshold As New NumParam With {.Text = "     Threshold", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 4, .Config = {0, 255, 0.5, 1}}
+        Property LibPlaceboDebandRadius As New NumParam With {.Text = "     Radius", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 16, .Config = {0, 255, 0.5, 1}}
+        Property LibPlaceboDebandGrainY As New NumParam With {.Text = "     Grain Y", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 6, .Config = {0, 255, 0.5, 1}, .ValueChangedAction = Sub(value)
+                                                                                                                                                                                                LibPlaceboDebandGrainC.DefaultValue = value
+                                                                                                                                                                                                LibPlaceboDebandGrainC.ValueChanged()
+                                                                                                                                                                                            End Sub}
+        Property LibPlaceboDebandGrainC As New NumParam With {.Text = "     Grain C", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 6, .Config = {0, 255, 0.5, 1}}
+        Property LibPlaceboDebandDither As New OptionParam With {.Text = "     Dither", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 1, .Options = {"None", "Blue Noise (default)", "Ordered LUT", "Ordered Fixed", "White Noise"}, .Values = {"none", "blue_noise", "ordered_lut", "ordered_fixed", "white_noise"}, .VisibleFunc = Function() OutputDepth.Value = 0}
+        Property LibPlaceboDebandLutSize As New OptionParam With {.Text = "     LUT Size", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 5, .Options = {"2", "4", "8", "16", "32", "64 (default)", "128", "256"}, .Values = {"2", "4", "8", "16", "32", "64", "128", "256"}}
+
         Property Deinterlacer As New OptionParam With {.Text = "Deinterlacing Method", .HelpSwitch = "", .Init = 0, .Options = {"None", "Hardware (HW Decoder must be set to work!)", "AFS (Activate Auto Field Shift)", "Decomb", "Nnedi", "Yadif"}, .ArgsFunc = AddressOf GetDeinterlacerArgs}
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -878,19 +890,7 @@ Public Class NVEnc
                         NgxTruehdr, NgxTruehdrContrast, NgxTruehdrSaturation, NgxTruehdrMiddleGray, NgxTruehdrMaxLuminance
                         )
                     Add("VPP | Deband",
-                        Deband,
-                        DebandRange,
-                        DebandSample,
-                        DebandThre,
-                        DebandThreY,
-                        DebandThreCB,
-                        DebandThreCR,
-                        DebandDither,
-                        DebandDitherY,
-                        DebandDitherC,
-                        DebandSeed,
-                        DebandBlurfirst,
-                        DebandRandEachFrame)
+                        Deband, DebandRange, DebandSample, DebandThre, DebandThreY, DebandThreCB, DebandThreCR, DebandDither, DebandDitherY, DebandDitherC, DebandSeed, DebandBlurfirst, DebandRandEachFrame)
                     Add("VPP | Deinterlace",
                         Deinterlacer,
                         New OptionParam With {.Switch = "--vpp-deinterlace", .Text = "Deinterlace Mode", .VisibleFunc = Function() Deinterlacer.Value = 1 AndAlso Decoder.ValueText.EqualsAny("avhw"), .AlwaysOn = True, .Options = {"Normal", "Adaptive", "Bob"}},
@@ -912,6 +912,8 @@ Public Class NVEnc
                         NvvfxDenoise, NvvfxDenoiseStrength,
                         NvvfxArtifactReduction, NvvfxArtifactReductionMode,
                         Nlmeans, NlmeansSigma, NlmeansH, NlmeansPatch, NlmeansSearch, NlmeansFp16)
+                    Add("VPP | LibPlacebo", 
+                        LibPlaceboDeband, LibPlaceboDebandIterations, LibPlaceboDebandThreshold, LibPlaceboDebandRadius, LibPlaceboDebandGrainY, LibPlaceboDebandGrainC, LibPlaceboDebandDither, LibPlaceboDebandLutSize)
                     Add("VPP | Resize",
                         Resize, ResizeAlgo, ResizeSuperresMode, ResizeSuperresStrength, ResizeVsrQuality,
                         ResizeLibplaceboFilter, ResizeLibplaceboPlRadius, ResizeLibplaceboPlClamp, ResizeLibplaceboPlTaper, ResizeLibplaceboPlBlur, ResizeLibplaceboPlAntiring)
@@ -1053,6 +1055,14 @@ Public Class NVEnc
                 NgxTruehdrSaturation.NumEdit.Enabled = NgxTruehdr.Value
                 NgxTruehdrMiddleGray.NumEdit.Enabled = NgxTruehdr.Value
                 NgxTruehdrMaxLuminance.NumEdit.Enabled = NgxTruehdr.Value
+
+                LibPlaceboDebandIterations.NumEdit.Enabled = LibPlaceboDeband.Value
+                LibPlaceboDebandThreshold.NumEdit.Enabled = LibPlaceboDeband.Value
+                LibPlaceboDebandRadius.NumEdit.Enabled = LibPlaceboDeband.Value
+                LibPlaceboDebandGrainY.NumEdit.Enabled = LibPlaceboDeband.Value
+                LibPlaceboDebandGrainC.NumEdit.Enabled = LibPlaceboDeband.Value
+                LibPlaceboDebandDither.MenuButton.Enabled = LibPlaceboDeband.Value
+                LibPlaceboDebandLutSize.MenuButton.Enabled = LibPlaceboDeband.Value
 
                 EdgelevelStrength.NumEdit.Enabled = Edgelevel.Value
                 EdgelevelThreshold.NumEdit.Enabled = Edgelevel.Value
@@ -1225,6 +1235,21 @@ Public Class NVEnc
                 If NgxTruehdrMiddleGray.Value <> NgxTruehdrMiddleGray.DefaultValue Then ret += ",middlegray=" & NgxTruehdrMiddleGray.Value.ToInvariantString()
                 If NgxTruehdrMaxLuminance.Value <> NgxTruehdrMaxLuminance.DefaultValue Then ret += ",maxluminance=" & NgxTruehdrMaxLuminance.Value.ToInvariantString()
                 Return "--vpp-ngx-truehdr " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetLibPlaceboDebandArgs() As String
+            If LibPlaceboDeband.Value Then
+                Dim ret = ""
+                If LibPlaceboDebandIterations.Value <> LibPlaceboDebandIterations.DefaultValue Then ret += ",iterations=" & LibPlaceboDebandIterations.Value.ToInvariantString()
+                If LibPlaceboDebandThreshold.Value <> LibPlaceboDebandThreshold.DefaultValue Then ret += ",threshold=" & LibPlaceboDebandThreshold.Value.ToInvariantString()
+                If LibPlaceboDebandRadius.Value <> LibPlaceboDebandRadius.DefaultValue Then ret += ",radius=" & LibPlaceboDebandRadius.Value.ToInvariantString()
+                If LibPlaceboDebandGrainY.Value <> LibPlaceboDebandGrainY.DefaultValue Then ret += ",grain_y=" & LibPlaceboDebandGrainY.Value.ToInvariantString()
+                If LibPlaceboDebandGrainC.Value <> LibPlaceboDebandGrainC.DefaultValue Then ret += ",grain_c=" & LibPlaceboDebandGrainC.Value.ToInvariantString()
+                If LibPlaceboDebandDither.Value <> LibPlaceboDebandDither.DefaultValue Then ret += ",dither=" & LibPlaceboDebandDither.ValueText.ToInvariantString()
+                If LibPlaceboDebandLutSize.Value <> LibPlaceboDebandLutSize.DefaultValue Then ret += ",lut_size=" & LibPlaceboDebandLutSize.ValueText.ToInvariantString()
+                Return "--vpp-libplacebo-deband " + ret.TrimStart(","c)
             End If
             Return ""
         End Function

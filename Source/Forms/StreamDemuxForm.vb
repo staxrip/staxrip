@@ -4,8 +4,20 @@ Imports System.Globalization
 Imports StaxRip.UI
 
 Public Class StreamDemuxForm
-    Property AudioStreams As List(Of AudioStream)
-    Property Subtitles As List(Of Subtitle)
+    Private _audioStreams As New List(Of AudioStream)
+    Private _subtitles As New List(Of Subtitle)
+
+    ReadOnly Property AudioStreams As List(Of AudioStream)
+        Get
+            Return lvAudio.Items.OfType(Of ListViewItem).Where(Function(x) x.Checked).Select(Function(x) DirectCast(x.Tag, AudioStream)).ToList()
+        End Get
+    End Property
+
+    ReadOnly Property Subtitles As List(Of Subtitle)
+        Get
+            Return lvSubtitles.Items.OfType(Of ListViewItem).Where(Function(x) x.Checked).Select(Function(x) DirectCast(x.Tag, Subtitle)).ToList()
+        End Get
+    End Property
 
     Sub New(sourceFile As String, attachments As List(Of Attachment))
         InitializeComponent()
@@ -38,33 +50,33 @@ Public Class StreamDemuxForm
 
         AddHandler Load, Sub() lvAudio.Columns(0).Width = lvAudio.ClientSize.Width
 
-        AudioStreams = MediaInfo.GetAudioStreams(sourceFile)
-        Subtitles = MediaInfo.GetSubtitles(sourceFile)
+        _audioStreams = MediaInfo.GetAudioStreams(sourceFile)
+        _subtitles = MediaInfo.GetSubtitles(sourceFile)
 
-        bnAudioEnglish.Enabled = AudioStreams.Where(Function(stream) stream.Language.TwoLetterCode = "en").Count > 0
+        bnAudioEnglish.Enabled = _audioStreams.Where(Function(stream) stream.Language.TwoLetterCode = "en").Count > 0
         bnAudioNative.Visible = CultureInfo.CurrentCulture.TwoLetterISOLanguageName <> "en"
         bnAudioNative.Text = CultureInfo.CurrentCulture.NeutralCulture.EnglishName
-        bnAudioNative.Enabled = AudioStreams.Where(Function(stream) stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).Count > 0
+        bnAudioNative.Enabled = _audioStreams.Where(Function(stream) stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).Count > 0
 
-        bnSubtitleEnglish.Enabled = Subtitles.Where(Function(stream) stream.Language.TwoLetterCode = "en").Count > 0
+        bnSubtitleEnglish.Enabled = _subtitles.Where(Function(stream) stream.Language.TwoLetterCode = "en").Count > 0
         bnSubtitleNative.Visible = CultureInfo.CurrentCulture.TwoLetterISOLanguageName <> "en"
         bnSubtitleNative.Text = CultureInfo.CurrentCulture.NeutralCulture.EnglishName
-        bnSubtitleNative.Enabled = Subtitles.Where(Function(stream) stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).Count > 0
+        bnSubtitleNative.Enabled = _subtitles.Where(Function(stream) stream.Language.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).Count > 0
 
-        For Each audioStream In AudioStreams
+        For Each audioStream In _audioStreams
             Dim item = lvAudio.Items.Add(audioStream.Name)
             item.Tag = audioStream
             item.Checked = audioStream.Enabled
         Next
 
-        For Each subtitle In Subtitles
+        For Each subtitle In _subtitles
             Dim text = subtitle.Language.ToString + " (" + subtitle.TypeName + ")" + If(subtitle.Title <> "", " - " + subtitle.Title, "")
             Dim item = lvSubtitles.Items.Add(text)
             item.Tag = subtitle
             item.Checked = subtitle.Enabled
         Next
 
-        If Not attachments Is Nothing Then
+        If attachments IsNot Nothing Then
             For Each attachment In attachments
                 Dim item = lvAttachments.Items.Add(attachment.Name)
                 item.Tag = attachment

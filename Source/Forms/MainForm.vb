@@ -1180,6 +1180,8 @@ Public Class MainForm
             control.BackColor = theme.General.Controls.TrackBar.BackColor
             control.ForeColor = theme.General.Controls.TrackBar.ForeColor
         Next
+
+        pnEncoder.BackColor = theme.General.Controls.ListView.BackColor
     End Sub
 
     Sub LoadSettings()

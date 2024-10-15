@@ -1,16 +1,16 @@
 ﻿Public NotInheritable Class ThemeManager
-    Private Const _defaultThemeName = "Darker | Blue"
+    Private Const _defaultThemeName = "Almost Black | Seagreen"
 
     Private Shared _current As Theme
     Private Shared _themes As List(Of Theme)
 
     Public Shared ReadOnly Property ColorCategories As Tuple(Of String, Integer, Integer)() = {
-        New Tuple(Of String, Integer, Integer)("Red", 358, -1),
+        New Tuple(Of String, Integer, Integer)("Red", 358, 50),
         New Tuple(Of String, Integer, Integer)("Orange", 25, 355),
         New Tuple(Of String, Integer, Integer)("Yellow", 48, 355),
         New Tuple(Of String, Integer, Integer)("YellowGreen", 80, 355),
-        New Tuple(Of String, Integer, Integer)("Lime", 105, 355),
-        New Tuple(Of String, Integer, Integer)("Green", 120, 355),
+        New Tuple(Of String, Integer, Integer)("Green", 100, 355),
+        New Tuple(Of String, Integer, Integer)("Lime", 120, 355),
         New Tuple(Of String, Integer, Integer)("Seagreen", 146, 355),
         New Tuple(Of String, Integer, Integer)("TurquoiseGreen", 163, 355),
         New Tuple(Of String, Integer, Integer)("Turquoise", 174, 355),
@@ -23,7 +23,7 @@
         New Tuple(Of String, Integer, Integer)("Purple", 281, 355),
         New Tuple(Of String, Integer, Integer)("Magenta", 292, 355),
         New Tuple(Of String, Integer, Integer)("Pink", 313, 10),
-        New Tuple(Of String, Integer, Integer)("Rose", 340, -1)
+        New Tuple(Of String, Integer, Integer)("Rose", 340, 40)
     }
 
     Public Shared ReadOnly Property LumaCategories As KeyValuePair(Of String, Single)() = {
@@ -122,20 +122,20 @@
         Private ReadOnly _backLuma As Single = 0
         Private ReadOnly _backLumaDefault As Single = 0.11
         Private ReadOnly _accentSat As Single = 0
-        Private ReadOnly _accentSatDefault As Single = 0.67
+        Private ReadOnly _accentSatDefault As Single = 0.55
 
         Public Sub New(name As String, Optional hue As Integer = 200, Optional highlightHue As Integer = -1, Optional backLuma As Single = 0.11)
             MyBase.New(name)
             MyBase._usesSystemColors = False
 
             _baseHue = hue
-            _highlightHue = Mathf.Clamp(If(highlightHue >= 0, highlightHue, If(highlightHue - 180 < 0, highlightHue + 180, highlightHue - 180)), 0, 359)
+            _highlightHue = Mathf.Clamp(If(highlightHue >= 0, highlightHue, If(_baseHue - 180 < 0, _baseHue + 180, _baseHue - 180)), 0, 359)
             _backLuma = Mathf.Clamp01(backLuma)
             _accentSat = _accentSatDefault
 
             Dim _backColor As ColorHSL = New ColorHSL(_baseHue, 0.01, _backLuma, 1)
             Dim _foreColor As ColorHSL = New ColorHSL(_baseHue, 0.03, 0.7D - (_backLumaDefault - _backLuma), 1)
-            Dim _accentColor As ColorHSL = New ColorHSL(_baseHue, _accentSat, 0.525D - (_backLumaDefault - _backLuma / 2), 1)
+            Dim _accentColor As ColorHSL = New ColorHSL(_baseHue, _accentSat, 0.5025D - (_backLumaDefault - _backLuma / 2), 1)
 
             Dim _backSelectedColor As ColorHSL = New ColorHSL(_baseHue, _accentColor.S - _backLuma / 1.5D, _accentColor.L - _backLumaDefault * 1.75D, 1)
 
@@ -360,7 +360,7 @@
                         .BackHighlightColor = _controlBackHighlightColor,
                         .BorderColor = _borderColor,
                         .BorderFocusedColor = .BorderColor.AddSaturation(0.3).AddLuminance(0.15),
-                        .BorderHoverColor = .BorderFocusedColor.AddSaturation(0.1).AddLuminance(0.1),
+                        .BorderHoverColor = .BorderFocusedColor.AddSaturation(0.15).AddLuminance(0.075),
                         .ForeColor = _foreColor,
                         .ForeHighlightColor = _controlForeHighlightColor
                     },

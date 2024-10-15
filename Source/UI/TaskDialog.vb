@@ -95,20 +95,22 @@ Public Class TaskDialog(Of T)
         TitleLabel.Text = Title
 
         If Content <> "" Then
-            ContentLabel = New LabelEx
-            ContentLabel.Margin = New Padding(0)
-            ContentLabel.BorderStyle = BorderStyle.None
-            ContentLabel.Text = Content
-            ContentLabel.Name = "Information"
+            ContentLabel = New LabelEx With {
+                .Margin = New Padding(0),
+                .BorderStyle = BorderStyle.None,
+                .Text = Content,
+                .Name = "Information"
+            }
             paMain.Controls.Add(ContentLabel)
         End If
 
         If ExpandedContent <> "" Then
-            ExpandedContentLabel = New LabelEx
-            ExpandedContentLabel.Margin = New Padding(0)
-            ExpandedContentLabel.BorderStyle = BorderStyle.None
-            ExpandedContentLabel.Text = ExpandedContent
-            ExpandedContentLabel.Name = "ExpandedInformation"
+            ExpandedContentLabel = New LabelEx With {
+                .Margin = New Padding(0),
+                .BorderStyle = BorderStyle.None,
+                .Text = ExpandedContent,
+                .Name = "ExpandedInformation"
+            }
             blDetails.Visible = True
             paMain.Controls.Add(ExpandedContentLabel)
         End If
@@ -116,10 +118,11 @@ Public Class TaskDialog(Of T)
         Dim firstCommandButton As CommandButton = Nothing
 
         For Each command In CommandDefinitions
-            Dim cb As New CommandButton
-            cb.Title = command.Text
-            cb.Description = command.Description
-            cb.Tag = command
+            Dim cb As New CommandButton With {
+                .Title = command.Text,
+                .Description = command.Description,
+                .Tag = command
+            }
 
             If TypeOf command.Value Is FontFamily Then
                 cb.Font = New Font(command.Text, Font.Size)
@@ -139,9 +142,10 @@ Public Class TaskDialog(Of T)
                 flpButtons.AutoSize = True
             End If
 
-            Dim b As New ButtonEx
-            b.Text = i.Text
-            b.Tag = i.Value
+            Dim b As New ButtonEx With {
+                .Text = i.Text,
+                .Tag = i.Value
+            }
 
             If AcceptButton Is Nothing AndAlso i.Text = "OK" Then
                 AcceptButton = b
@@ -193,14 +197,14 @@ Public Class TaskDialog(Of T)
 
             Dim ok = ButtonDefinitions.Where(Function(i) i.Value.Equals(DialogResult.OK)).FirstOrDefault
 
-            If Not ok Is Nothing Then
+            If ok IsNot Nothing Then
                 ActiveControl = ok.Button
             End If
 
             If ActiveControl Is Nothing Then
                 Dim yes = ButtonDefinitions.Where(Function(i) i.Value.Equals(DialogResult.Yes)).FirstOrDefault
 
-                If Not yes Is Nothing Then
+                If yes IsNot Nothing Then
                     ActiveControl = yes.Button
                 End If
             End If
@@ -211,11 +215,7 @@ Public Class TaskDialog(Of T)
         End If
 
         If ActiveControl Is Nothing Then
-            If firstCommandButton Is Nothing Then
-                ActiveControl = TitleLabel
-            Else
-                ActiveControl = firstCommandButton
-            End If
+            ActiveControl = If(firstCommandButton Is Nothing, TitleLabel, DirectCast(firstCommandButton, Control))
         End If
 
         If Owner = IntPtr.Zero Then

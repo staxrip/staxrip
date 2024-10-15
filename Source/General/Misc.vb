@@ -2027,10 +2027,10 @@ End Enum
 Public Enum ShowTemplateSelectionMode
     <DispName("Never")> Never = 0
     <DispName("Command Line only")> CommandLine = 1 << 0
-    <DispName("Command Line + Drag&&Drop")> CommandLine_DragDrop = 3
-    <DispName("Command Line + Opening Menu")> CommandLine_OpeningMenu = 5
+    <DispName("Command Line + Drag&&Drop")> CommandLine_DragDrop = CommandLine Or DragDrop
+    <DispName("Command Line + Opening Menu")> CommandLine_OpeningMenu = CommandLine Or OpeningMenu
     <DispName("Drag&&Drop only")> DragDrop = 1 << 1
-    <DispName("Drag&&Drop + Opening Menu")> DragDrop_OpeningMenu = 6
+    <DispName("Drag&&Drop + Opening Menu")> DragDrop_OpeningMenu = DragDrop Or OpeningMenu
     <DispName("Opening Menu only")> OpeningMenu = 1 << 2
     <DispName("Always")> Always = 1 << 16
 End Enum

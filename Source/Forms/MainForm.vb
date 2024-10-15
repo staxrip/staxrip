@@ -1513,16 +1513,16 @@ Public Class MainForm
         Next
     End Sub
 
-    Function LoadTemplateWithSelectionDialog(sources As IEnumerable(Of String), Optional templateFolder As String = "") As Boolean
-        Return LoadTemplateWithSelectionDialog(sources?.Join("; "), templateFolder)
+    Function LoadTemplateWithSelectionDialog(sources As IEnumerable(Of String), timeout As Integer, Optional templateFolder As String = "") As Boolean
+        Return LoadTemplateWithSelectionDialog(sources?.Join("; "), timeout, templateFolder)
     End Function
 
-    Function LoadTemplateWithSelectionDialog(sources As String(), Optional templateFolder As String = "") As Boolean
-        Return LoadTemplateWithSelectionDialog(sources?.Join("; "), templateFolder)
+    Function LoadTemplateWithSelectionDialog(sources As String(), timeout As Integer, Optional templateFolder As String = "") As Boolean
+        Return LoadTemplateWithSelectionDialog(sources?.Join("; "), timeout, templateFolder)
     End Function
 
     <Command("Loads a template that you can choose from via dialog.")>
-    Function LoadTemplateWithSelectionDialog(Optional source As String = "", Optional templateFolder As String = "") As Boolean
+    Function LoadTemplateWithSelectionDialog(source As String, timeout As Integer, Optional templateFolder As String = "") As Boolean
         If Not templateFolder.DirExists Then templateFolder = Folder.Template
         If Not templateFolder.DirExists Then Return False
         Dim directories = Directory.GetDirectories(templateFolder, "*", SearchOption.TopDirectoryOnly)
@@ -1530,6 +1530,7 @@ Public Class MainForm
         If Not templates?.Any() Then Return True
 
         Using td As New TaskDialog(Of String)
+            td.Timeout = timeout
             td.Title = "Select a template"
             td.Content = If(String.IsNullOrWhiteSpace(source),
                 "Please select a template you want to use:",
@@ -1537,7 +1538,7 @@ Public Class MainForm
             td.Icon = TaskIcon.Question
 
             If p.SourceFile = "" Then
-                td.AddCommand("Current Template", "CURRENT")
+                td.AddCommand("Current Template", "")
             Else
                 td.AddCommand("Last set Template", "LAST")
             End If
@@ -1559,20 +1560,21 @@ Public Class MainForm
                 td.AddCommand(text, directories(i))
             Next
 
-            td.AddButton("Abort", "")
+            td.AddButton("Current Template", "", True)
+            td.AddButton("Abort", "ABORT", False)
 
             Dim selection = td.Show()
 
             If selection = "" Then
-                Return False
-            ElseIf selection = "CURRENT" Then
                 Return True
+            ElseIf selection = "ABORT" Then
+                Return False
             ElseIf selection = "LAST" Then
                 Return OpenProject(g.LastModifiedTemplate)
             ElseIf selection = "UP" Then
-                Return LoadTemplateWithSelectionDialog(source, templateFolder.Dir())
+                Return LoadTemplateWithSelectionDialog(source, timeout, templateFolder.Dir())
             ElseIf selection.DirExists() Then
-                Return LoadTemplateWithSelectionDialog(source, selection)
+                Return LoadTemplateWithSelectionDialog(source, timeout, selection)
             Else
                 Return OpenProject(td.SelectedValue, True)
             End If
@@ -2208,12 +2210,13 @@ Public Class MainForm
         Next
     End Sub
 
-    Sub OpenAnyFile(files As IEnumerable(Of String), showTemplateSelection As Boolean, Optional timeout As Integer = 0)
+    Sub OpenAnyFile(files As IEnumerable(Of String), showTemplateSelection As Boolean, Optional errorTimeout As Integer = 0)
         If files Is Nothing Then Exit Sub
         If Not files.Any() Then Exit Sub
 
         SetLastModifiedTemplate()
 
+        Dim showTemplateSelectionTimeout = If(s.ShowTemplateSelection <> ShowTemplateSelectionMode.Never, s.ShowTemplateSelectionTimeout, 0)
         files = files.Select(Function(filePath) New FileInfo(filePath.TrimQuotes()).FullName)
 
         If files(0).Ext = "srip" Then
@@ -2221,13 +2224,13 @@ Public Class MainForm
         ElseIf FileTypes.Video.Contains(files(0).Ext.ToLowerInvariant) Then
             files = files.OrderBy(Function(x) FileTypes.Video.Contains(x.Ext)).ThenBy(Function(x) FileTypes.Audio.Contains(x.Ext))
             If showTemplateSelection Then
-                If LoadTemplateWithSelectionDialog(files.Join("; ")) Then
-                    OpenVideoSourceFiles(files, timeout)
+                If LoadTemplateWithSelectionDialog(files, showTemplateSelectionTimeout) Then
+                    OpenVideoSourceFiles(files, errorTimeout)
                 Else
                     Exit Sub
                 End If
             Else
-                OpenVideoSourceFiles(files, timeout)
+                OpenVideoSourceFiles(files, errorTimeout)
             End If
         ElseIf FileTypes.Audio.ContainsAny(files.Select(Function(s) s.Ext.ToLowerInvariant)) Then
             Dim audioFiles = files.Where(Function(x) FileTypes.Audio.Contains(x.Ext().ToLowerInvariant())).OrderBy(Function(x) x, New StringLogicalComparer())
@@ -2249,12 +2252,12 @@ Public Class MainForm
                              If files(0).DirExists() Then
                                  OpenBlurayFolder(files(0))
                              Else
-                                 OpenVideoSourceFiles(files, timeout)
+                                 OpenVideoSourceFiles(files, errorTimeout)
                              End If
                          End Sub
 
             If showTemplateSelection Then
-                If LoadTemplateWithSelectionDialog(files.Join("; ")) Then
+                If LoadTemplateWithSelectionDialog(files, showTemplateSelectionTimeout) Then
                     action()
                 Else
                     Exit Sub
@@ -2313,15 +2316,15 @@ Public Class MainForm
         Return True
     End Function
 
-    Sub OpenVideoSourceFile(fp As String, Optional timeout As Integer = 0)
-        OpenVideoSourceFiles({fp}, timeout)
+    Sub OpenVideoSourceFile(fp As String, Optional errorTimeout As Integer = 0)
+        OpenVideoSourceFiles({fp}, errorTimeout)
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), Optional timeout As Integer = 0)
-        OpenVideoSourceFiles(files, False, timeout)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), Optional errorTimeout As Integer = 0)
+        OpenVideoSourceFiles(files, False, errorTimeout)
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isEncoding As Boolean, Optional timeout As Integer = 0)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isEncoding As Boolean, Optional errorTimeout As Integer = 0)
         If p.SourceFile = "" Then SetLastModifiedTemplate()
 
         Dim recoverPath = g.ProjectPath
@@ -2644,7 +2647,7 @@ Public Class MainForm
                 p.Script.Filters.Add(New VideoFilter("Source", "VS Script Import", code))
             End If
 
-            ModifyFilters(timeout)
+            ModifyFilters(errorTimeout)
             FiltersListView.IsLoading = False
             FiltersListView.Load()
 
@@ -4206,9 +4209,20 @@ Public Class MainForm
             mb.Button.ShowPath = True
 
             Dim stsm = ui.AddMenu(Of ShowTemplateSelectionMode)()
+            Dim stst = ui.AddNum()
+
             stsm.Text = "Show template selection when loading files"
             stsm.Field = NameOf(s.ShowTemplateSelection)
             stsm.Expanded = True
+            stsm.Button.ValueChangedAction = Sub(value)
+                                                 stst.Enabled = value <> ShowTemplateSelectionMode.Never
+                                             End Sub
+            stsm.Button.ValueChangedAction.Invoke(s.ShowTemplateSelection)
+
+            stst.Text = "Show Template Selection Timeout"
+            stst.Help = "Timeout in seconds the Template Selection is shown befor the current template is used"
+            stst.Config = {0, Integer.MaxValue}
+            stst.Field = NameOf(s.ShowTemplateSelectionTimeout)
 
             Dim n = ui.AddNum()
             n.Text = "Number of log files to keep"
@@ -6899,9 +6913,10 @@ Public Class MainForm
 
             If dialog.ShowDialog() = DialogResult.OK Then
                 Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
+                Dim showTemplateSelectionTimeout = If(s.ShowTemplateSelection <> ShowTemplateSelectionMode.Never, s.ShowTemplateSelectionTimeout, 0)
 
                 If showTemplateSelection Then
-                    If LoadTemplateWithSelectionDialog(dialog.FileNames.Join("; ")) Then
+                    If LoadTemplateWithSelectionDialog(dialog.FileNames, showTemplateSelectionTimeout) Then
                         OpenVideoSourceFiles(dialog.FileNames)
                     Else
                         Exit Sub
@@ -6926,9 +6941,10 @@ Public Class MainForm
 
             If dialog.ShowDialog() = DialogResult.OK Then
                 Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
+                Dim showTemplateSelectionTimeout = If(s.ShowTemplateSelection <> ShowTemplateSelectionMode.Never, s.ShowTemplateSelectionTimeout, 0)
 
                 If showTemplateSelection Then
-                    If LoadTemplateWithSelectionDialog(dialog.FileNames.Join("; ")) Then
+                    If LoadTemplateWithSelectionDialog(dialog.FileNames, showTemplateSelectionTimeout) Then
                         OpenVideoSourceFiles(dialog.FileNames)
                     Else
                         Exit Sub
@@ -6956,9 +6972,10 @@ Public Class MainForm
 
                 Dim srcPath = dialog.SelectedPath.FixDir
                 Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
+                Dim showTemplateSelectionTimeout = If(s.ShowTemplateSelection <> ShowTemplateSelectionMode.Never, s.ShowTemplateSelectionTimeout, 0)
 
                 If showTemplateSelection Then
-                    If LoadTemplateWithSelectionDialog(srcPath) Then
+                    If LoadTemplateWithSelectionDialog(srcPath, showTemplateSelectionTimeout) Then
                         OpenBlurayFolder(srcPath)
                     Else
                         Exit Sub
@@ -7012,9 +7029,10 @@ Public Class MainForm
                                 Exit Sub
                             Else
                                 Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
+                                Dim showTemplateSelectionTimeout = If(s.ShowTemplateSelection <> ShowTemplateSelectionMode.Never, s.ShowTemplateSelectionTimeout, 0)
 
                                 If showTemplateSelection Then
-                                    If LoadTemplateWithSelectionDialog(outFile) Then
+                                    If LoadTemplateWithSelectionDialog(outFile, showTemplateSelectionTimeout) Then
                                         OpenVideoSourceFile(outFile)
                                     Else
                                         Exit Sub
@@ -7045,9 +7063,10 @@ Public Class MainForm
 
             If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
                 Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
+                Dim showTemplateSelectionTimeout = If(s.ShowTemplateSelection <> ShowTemplateSelectionMode.Never, s.ShowTemplateSelectionTimeout, 0)
 
                 If showTemplateSelection Then
-                    If LoadTemplateWithSelectionDialog(form.GetFiles().Join("; ")) Then
+                    If LoadTemplateWithSelectionDialog(form.GetFiles(), showTemplateSelectionTimeout) Then
                         For Each filepath In form.GetFiles()
                             AddBatchJob(filepath)
                         Next

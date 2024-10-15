@@ -512,7 +512,9 @@ Public Class GlobalCommands
 
     <Command("Loads a source file after asking for template that shall be used.")>
     Sub LoadSourceFileWithTemplateSelection(<DispName("Source File Path")> path As String)
-        If g.MainForm.LoadTemplateWithSelectionDialog(path) Then
+        Dim timeout = If(s.ShowTemplateSelection <> ShowTemplateSelectionMode.Never, s.ShowTemplateSelectionTimeout, 0)
+
+        If g.MainForm.LoadTemplateWithSelectionDialog(path, timeout) Then
             g.MainForm.OpenVideoSourceFile(path)
         End If
     End Sub
@@ -524,7 +526,9 @@ Public Class GlobalCommands
 
     <Command("Loads multiple source files after asking for template that shall be used.")>
     Sub LoadSourceFilesWithTemplateSelection(<DispName("Source File Paths")> paths As String())
-        If g.MainForm.LoadTemplateWithSelectionDialog(paths) Then
+        Dim timeout = If(s.ShowTemplateSelection <> ShowTemplateSelectionMode.Never, s.ShowTemplateSelectionTimeout, 0)
+
+        If g.MainForm.LoadTemplateWithSelectionDialog(paths, timeout) Then
             g.MainForm.OpenVideoSourceFiles(paths)
         End If
     End Sub

@@ -13,6 +13,7 @@ Public Class TaskDialog(Of T)
     Property SelectedText As String
     Property Title As String
     Property Timeout As Integer
+    Property TimeoutButton As ButtonEx
     Property Symbol As Symbol
     Property Content As String
     Property ContentLabel As LabelEx
@@ -146,6 +147,10 @@ Public Class TaskDialog(Of T)
                 AcceptButton = b
             End If
 
+            If i.TimeoutButton AndAlso TimeoutButton Is Nothing Then
+                TimeoutButton = b
+            End If
+
             flpButtons.Controls.Add(b)
             i.Button = b
             AddHandler b.Click, AddressOf ButtonClick
@@ -153,7 +158,7 @@ Public Class TaskDialog(Of T)
 
         If Timeout > 0 Then
             Dim originalWindowTitle = Text
-            Dim button = TryCast(AcceptButton, ButtonEx)
+            Dim button = If(TimeoutButton, TryCast(AcceptButton, ButtonEx))
             Dim originalButtonText = button?.Text
 
             g.RunTask(Sub()
@@ -199,6 +204,10 @@ Public Class TaskDialog(Of T)
                     ActiveControl = yes.Button
                 End If
             End If
+
+            If TimeoutButton IsNot Nothing Then
+                ActiveControl = TimeoutButton
+            End If
         End If
 
         If ActiveControl Is Nothing Then
@@ -236,16 +245,16 @@ Public Class TaskDialog(Of T)
         Next
     End Sub
 
-    Sub AddButton(text As String)
-        AddButton(text, CType(CObj(text), T))
+    Sub AddButton(text As String, Optional timeoutButton As Boolean = False)
+        AddButton(text, CType(CObj(text), T), timeoutButton)
     End Sub
 
-    Sub AddButton(text As String, value As T)
-        ButtonDefinitions.Add(New ButtonDefinition With {.Text = text, .Value = value})
+    Sub AddButton(value As T, Optional timeoutButton As Boolean = False)
+        AddButton(value.ToString, value, timeoutButton)
     End Sub
 
-    Sub AddButton(value As T)
-        ButtonDefinitions.Add(New ButtonDefinition With {.Text = value.ToString, .Value = value})
+    Sub AddButton(text As String, value As T, Optional timeoutButton As Boolean = False)
+        ButtonDefinitions.Add(New ButtonDefinition With {.Text = text, .Value = value, .TimeoutButton = timeoutButton})
     End Sub
 
     Sub AddButtons(values As IEnumerable(Of T))
@@ -482,6 +491,7 @@ Public Class TaskDialog(Of T)
     Public Class ButtonDefinition
         Property Text As String
         Property Value As T
+        Property TimeoutButton As Boolean
         Property Button As ButtonEx
     End Class
 End Class

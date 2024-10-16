@@ -1437,6 +1437,31 @@ Public Class GlobalClass
         End If
     End Sub
 
+    Sub CheckForLongPathSupport()
+        If Not s.LongPathSupportCheck Then Return
+
+        Try
+            Dim key = "SYSTEM\CurrentControlSet\Control\FileSystem"
+            Dim name = "LongPathsEnabled"
+            Dim enabled = Registry.LocalMachine.GetBoolean(key, name)
+            If Not enabled Then
+                Using td = New TaskDialog(Of DialogResult)
+                    td.Timeout = s.ErrorMessageTimeout
+                    td.Title = "Enable Long Path Support?"
+                    td.Content = $"The Long Path Support is disabled in your Registry under:{BR}LOCALMACHINE\{key}\{name}{BR2}Do you want to enable it?"
+                    td.AddButton("Yes", DialogResult.Yes)
+                    td.AddButton("No", DialogResult.No, True)
+                    td.Show()
+
+                    If td.SelectedValue = DialogResult.Yes Then
+                        Registry.LocalMachine.Write(key, name, 1)
+                    End If
+                End Using
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Async Sub PreloadValuesAsync()
         Await Task.Run(Sub()
                            Dim a = OS.Hardware.Cores

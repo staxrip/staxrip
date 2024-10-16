@@ -56,6 +56,7 @@ Public Class ApplicationSettings
     Public LastSourceDir As String
     Public LoadAviSynthPlugins As Boolean = True
     Public LoadVapourSynthPlugins As Boolean = True
+    Public LongPathSupportCheck As Boolean = True
     Public LogEventCommand As Boolean
     Public LogFileNum As Integer = 200
     Public MinimizeToTray As Boolean

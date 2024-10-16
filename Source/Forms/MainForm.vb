@@ -7779,6 +7779,7 @@ Public Class MainForm
         IsLoading = False
         Refresh()
         CheckForWindows7()
+        g.CheckForLongPathSupport()
         g.PreloadValuesAsync()
         ShowChangelog(False)
         ProcessCommandLine(Environment.CommandLine)

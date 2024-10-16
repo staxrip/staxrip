@@ -1024,7 +1024,7 @@ Public Class GlobalClass
                 p.TempDir = Macro.Expand(p.TempDir)
 
                 If p.TempDir = "" Then
-                    p.TempDir = If(New DirectoryInfo(p.SourceFile.Dir).Name.EndsWithEx("_temp"), p.SourceFile.Dir, Path.Combine(p.SourceFile.Dir, p.SourceFile.Base + "_temp"))
+                    p.TempDir = If(New DirectoryInfo(p.SourceFile.Dir).Name.EndsWithEx("_temp"), p.SourceFile.Dir, Path.Combine(p.SourceFile.Dir, p.SourceFile.Base + p.SourceFile.ExtFull + "_temp"))
                 End If
 
                 p.TempDir = p.TempDir.FixDir
@@ -1034,7 +1034,7 @@ Public Class GlobalClass
                         Directory.CreateDirectory(p.TempDir)
                     Catch
                         Try
-                            p.TempDir = p.SourceFile.DirAndBase + "_temp"
+                            p.TempDir = p.SourceFile.DirAndBase + p.SourceFile.ExtFull + "_temp"
 
                             If Not Directory.Exists(p.TempDir) Then
                                 Directory.CreateDirectory(p.TempDir)

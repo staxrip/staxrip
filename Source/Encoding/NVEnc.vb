@@ -1,4 +1,6 @@
 ﻿
+Imports System.Drawing.Imaging
+Imports System.Text
 Imports System.Text.RegularExpressions
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
@@ -765,6 +767,46 @@ Public Class NVEnc
         Property LibPlaceboDebandDither As New OptionParam With {.Text = "     Dither", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 1, .Options = {"None", "Blue Noise (default)", "Ordered LUT", "Ordered Fixed", "White Noise"}, .Values = {"none", "blue_noise", "ordered_lut", "ordered_fixed", "white_noise"}, .VisibleFunc = Function() OutputDepth.Value = 0}
         Property LibPlaceboDebandLutSize As New OptionParam With {.Text = "     LUT Size", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 5, .Options = {"2", "4", "8", "16", "32", "64 (default)", "128", "256"}, .Values = {"2", "4", "8", "16", "32", "64", "128", "256"}}
 
+        Property LibPlaceboTonemapping As New BoolParam With {.Text = "LibPlacebo-Tonemapping", .Switch = "--vpp-libplacebo-tonemapping", .ValueChangedAction = Sub(x) LibPlaceboTonemapping2.Value = x, .ArgsFunc = AddressOf GetLibPlaceboTonemappingArgs}
+        Property LibPlaceboTonemapping2 As New BoolParam With {.Text = "LibPlacebo-Tonemapping", .HelpSwitch = "--vpp-libplacebo-tonemapping", .ValueChangedAction = Sub(x) LibPlaceboTonemapping.Value = x}
+        Property LibPlaceboTonemappingSrcCsp As New OptionParam With {.Text = "     Source Colorspace", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Auto (default)", "SDR", "HDR10", "HLG", "Dolby Vision", "RGB"}, .Values = {"auto", "sdr", "hdr10", "hlg", "dovi", "rgb"}}
+        Property LibPlaceboTonemappingDstCsp As New OptionParam With {.Text = "     Destination Colorspace", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Auto (default)", "SDR", "HDR10", "HLG", "Dolby Vision", "RGB"}, .Values = {"auto", "sdr", "hdr10", "hlg", "dovi", "rgb"}}
+        Property LibPlaceboTonemappingDstPlTransfer As New OptionParam With {.Text = "     Output Transfer Function", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Unknown (default)", "SRGB", "BT1886", "Linear", "Gamma18", "Gamma20", "Gamma22", "Gamma24", "Gamma26", "Gamma28", "ProPhoto", "ST428", "PQ", "HLG", "Vlog", "Slog1", "Slog2"}, .Values = {"unknown", "srgb", "bt1886", "linear", "gamma18", "gamma20", "gamma22", "gamma24", "gamma26", "gamma28", "prophoto", "st428", "pq", "hlg", "vlog", "slog1", "slog2"}}
+        Property LibPlaceboTonemappingDstPlColorprim As New OptionParam With {.Text = "     Output Color Primaries", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Unknown (default)", "BT601_525", "BT601_625", "BT709", "BT470m", "EBU_3213", "BT2020", "Apple", "Adobe", "ProPhoto", "Cie 1931", "Dci P3", "Display P3", "V Gamut", "S Gamut", "Film C", "Aces AP0", "Aces AP1"}, .Values = {"unknown", "bt601_525", "bt601_625", "bt709", "bt470m", "ebu_3213", "bt2020", "apple", "adobe", "prophoto", "cie_1931", "dci_p3", "display_p3", "v_gamut", "s_gamut", "film_c", "aces_ap0", "aces_ap1"}}
+        Property LibPlaceboTonemappingSrcMax As New NumParam With {.Text = "     Source Max Luminance", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Config = {0, 8000, 1, 1}}
+        Property LibPlaceboTonemappingSrcMin As New NumParam With {.Text = "     Source Min Luminance", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Config = {0, 8000, 1, 1}}
+        Property LibPlaceboTonemappingDstMax As New NumParam With {.Text = "     Destination Max Luminance", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Config = {0, 8000, 1, 1}}
+        Property LibPlaceboTonemappingDstMin As New NumParam With {.Text = "     Destination Min Luminance", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Config = {0, 8000, 1, 1}}
+        Property LibPlaceboTonemappingDynPeakDetect As New OptionParam With {.Text = "     Dynamic Peak Detection", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 1, .Options = {"No", "Yes (default)"}, .Values = {"false", "true"}}
+        Property LibPlaceboTonemappingSmoothPeriod As New NumParam With {.Text = "     Smooth Period", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 20, .Config = {0, 10000, 0.5, 1}}
+        Property LibPlaceboTonemappingSceneThresholdLow As New NumParam With {.Text = "     Scene Threshold Low", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 1, .Config = {0, 100, 0.5, 1}}
+        Property LibPlaceboTonemappingSceneThresholdHigh As New NumParam With {.Text = "     Scene Threshold High", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 3, .Config = {0, 100, 0.5, 1}}
+        Property LibPlaceboTonemappingPercentile As New NumParam With {.Text = "     Percentile", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 99.995, .Config = {0, 100, 0.001, 3}}
+        Property LibPlaceboTonemappingBlackCutoff As New NumParam With {.Text = "     Black Cutoff", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 1, .Config = {0, 100, 0.5, 1}}
+        Property LibPlaceboTonemappingGamutMapping As New OptionParam With {.Text = "     Gamut Mapping", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 1, .Options = {"Clip", "Perceptual (default)", "Soft Clip", "Relative", "Saturation", "Absolute", "Desaturate", "Darken", "Highlight", "Linear"}, .Values = {"clip", "perceptual", "softclip", "relative", "saturation", "absolute", "desaturate", "darken", "highlight", "linear"}}
+        Property LibPlaceboTonemappingFunction As New OptionParam With {.Text = "     Function", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 3, .Options = {"Clip", "ST2094-40", "ST2094-10", "BT2390 (default)", "BT2446a", "Spline", "Reinhard", "Mobius", "Hable", "Gamma", "Linear", "Linear Light"}, .Values = {"clip", "st2094-40", "st2094-10", "bt2390", "bt2446a", "spline", "reinhard", "mobius", "hable", "gamma", "linear", "linearlight"}}
+        Property LibPlaceboTonemappingFunctionKneeAdaption As New NumParam With {.Text = "     Knee Adaption Speed", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0.4, .Config = {0, 1, 0.05, 2}, .VisibleFunc = Function() {"st2094-40", "st2094-10", "spline"}.Contains(LibPlaceboTonemappingFunction.ValueText)}
+        Property LibPlaceboTonemappingFunctionKneeMax As New NumParam With {.Text = "     Knee Max Point", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0.8, .Config = {0.5, 1, 0.05, 2}, .VisibleFunc = LibPlaceboTonemappingFunctionKneeAdaption.VisibleFunc}
+        Property LibPlaceboTonemappingFunctionKneeMin As New NumParam With {.Text = "     Knee Min Point", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0.1, .Config = {0, 0.5, 0.05, 2}, .VisibleFunc = LibPlaceboTonemappingFunctionKneeAdaption.VisibleFunc}
+        Property LibPlaceboTonemappingFunctionKneeDefault As New NumParam With {.Text = "     Knee Default Point", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0.4, .Config = {0, 1, 0.05, 2}, .VisibleFunc = LibPlaceboTonemappingFunctionKneeAdaption.VisibleFunc}
+        Property LibPlaceboTonemappingFunctionKneeOffset As New NumParam With {.Text = "     Knee Offset", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 1, .Config = {0.5, 2, 0.05, 2}, .VisibleFunc = Function() {"bt2390"}.Contains(LibPlaceboTonemappingFunction.ValueText)}
+        Property LibPlaceboTonemappingFunctionSlopeTuning As New NumParam With {.Text = "     Slope Tuning", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 1.5, .Config = {0, 10, 0.25, 2}, .VisibleFunc = Function() {"spline"}.Contains(LibPlaceboTonemappingFunction.ValueText)}
+        Property LibPlaceboTonemappingFunctionSlopeOffset As New NumParam With {.Text = "     Slope Offset", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0.2, .Config = {0, 1, 0.05, 2}, .VisibleFunc = LibPlaceboTonemappingFunctionSlopeTuning.VisibleFunc}
+        Property LibPlaceboTonemappingFunctionSplineContrast As New NumParam With {.Text = "     Spline Contrast", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0.5, .Config = {0, 1.5, 0.05, 2}, .VisibleFunc = LibPlaceboTonemappingFunctionSlopeTuning.VisibleFunc}
+        Property LibPlaceboTonemappingFunctionReinhardContrast As New NumParam With {.Text = "     Reinhard Contrast", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0.5, .Config = {0, 1, 0.05, 2}, .VisibleFunc = Function() {"reinhard"}.Contains(LibPlaceboTonemappingFunction.ValueText)}
+        Property LibPlaceboTonemappingFunctionLinearKnee As New NumParam With {.Text = "     Linear Knee Point", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0.3, .Config = {0, 1, 0.05, 2}, .VisibleFunc = Function() {"mobius", "gamma"}.Contains(LibPlaceboTonemappingFunction.ValueText)}
+        Property LibPlaceboTonemappingFunctionExposure As New NumParam With {.Text = "     Exposure", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 1.0, .Config = {0, 10, 0.05, 2}, .VisibleFunc = Function() {"linear", "linearlight"}.Contains(LibPlaceboTonemappingFunction.ValueText)}
+        Property LibPlaceboTonemappingFunctionMetadata As New OptionParam With {.Text = "     Metadata", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Any (default)", "None", "HDR10", "HDR10+", "CIE Y"}, .Values = {"any", "none", "hdr10", "hdr10plus", "cie_y"}}
+        Property LibPlaceboTonemappingFunctionContrastRecovery As New NumParam With {.Text = "     Contrast Recovery", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0.3, .Config = {0, 1, 0.05, 2}}
+        Property LibPlaceboTonemappingFunctionContrastSmoothness As New NumParam With {.Text = "     Contrast Smoothness", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 3.5, .Config = {0, 100, 0.25, 2}}
+        Property LibPlaceboTonemappingFunctionUseDolbyVision As New OptionParam With {.Text = "     Use Dolby Vision", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Auto (default)", "No", "Yes"}, .Values = {"auto", "false", "true"}}
+        Property LibPlaceboTonemappingFunctionShowClipping As New OptionParam With {.Text = "     Show Clipping", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"No (default)", "Yes"}, .Values = {"false", "true"}}
+        Property LibPlaceboTonemappingFunctionVisualizeLut As New OptionParam With {.Text = "     Visualize LUT", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"No (default)", "Yes"}, .Values = {"false", "true"}}
+        Property LibPlaceboTonemappingFunctionLutType As New OptionParam With {.Text = "     LUT Type", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Undefined (default)", "Native", "Normalized", "Conversion"}, .Values = {"", "native", "normalized", "conversion"}}
+        Property LibPlaceboTonemappingLut As New StringParam With {.Text = "     LUT File Path", .HelpSwitch = "--vpp-libplacebo-tonemapping-lut", .BrowseFile = True}
+
+
+
         Property Deinterlacer As New OptionParam With {.Text = "Deinterlacing Method", .HelpSwitch = "", .Init = 0, .Options = {"None", "Hardware (HW Decoder must be set to work!)", "AFS (Activate Auto Field Shift)", "Decomb", "Nnedi", "Yadif"}, .ArgsFunc = AddressOf GetDeinterlacerArgs}
 
         Overrides ReadOnly Property Items As List(Of CommandLineParam)
@@ -912,8 +954,22 @@ Public Class NVEnc
                         NvvfxDenoise, NvvfxDenoiseStrength,
                         NvvfxArtifactReduction, NvvfxArtifactReductionMode,
                         Nlmeans, NlmeansSigma, NlmeansH, NlmeansPatch, NlmeansSearch, NlmeansFp16)
-                    Add("VPP | LibPlacebo", 
+                    Add("VPP | LibPlacebo | Deband",
                         LibPlaceboDeband, LibPlaceboDebandIterations, LibPlaceboDebandThreshold, LibPlaceboDebandRadius, LibPlaceboDebandGrainY, LibPlaceboDebandGrainC, LibPlaceboDebandDither, LibPlaceboDebandLutSize)
+                    Add("VPP | LibPlacebo | Tonemapping",
+                        LibPlaceboTonemapping,
+                        LibPlaceboTonemappingSrcCsp, LibPlaceboTonemappingDstCsp, LibPlaceboTonemappingDstPlTransfer, LibPlaceboTonemappingDstPlColorprim,
+                        LibPlaceboTonemappingSrcMax, LibPlaceboTonemappingSrcMin, LibPlaceboTonemappingDstMax, LibPlaceboTonemappingDstMin,
+                        LibPlaceboTonemappingDynPeakDetect, LibPlaceboTonemappingSmoothPeriod, LibPlaceboTonemappingSceneThresholdLow, LibPlaceboTonemappingSceneThresholdHigh, LibPlaceboTonemappingPercentile, LibPlaceboTonemappingBlackCutoff, LibPlaceboTonemappingGamutMapping)
+                    Add("VPP | LibPlacebo | Tonemapping 2",
+                        LibPlaceboTonemapping2,
+                        LibPlaceboTonemappingFunction, LibPlaceboTonemappingFunctionKneeAdaption,
+                        LibPlaceboTonemappingFunctionKneeMax, LibPlaceboTonemappingFunctionKneeMin, LibPlaceboTonemappingFunctionKneeDefault, LibPlaceboTonemappingFunctionKneeOffset,
+                        LibPlaceboTonemappingFunctionSlopeTuning, LibPlaceboTonemappingFunctionSlopeOffset, LibPlaceboTonemappingFunctionSplineContrast, LibPlaceboTonemappingFunctionReinhardContrast,
+                        LibPlaceboTonemappingFunctionLinearKnee, LibPlaceboTonemappingFunctionExposure, LibPlaceboTonemappingFunctionMetadata,
+                        LibPlaceboTonemappingFunctionContrastRecovery, LibPlaceboTonemappingFunctionContrastSmoothness,
+                        LibPlaceboTonemappingFunctionUseDolbyVision, LibPlaceboTonemappingFunctionShowClipping,
+                        LibPlaceboTonemappingFunctionVisualizeLut, LibPlaceboTonemappingFunctionLutType, LibPlaceboTonemappingLut)
                     Add("VPP | Resize",
                         Resize, ResizeAlgo, ResizeSuperresMode, ResizeSuperresStrength, ResizeVsrQuality,
                         ResizeLibplaceboFilter, ResizeLibplaceboPlRadius, ResizeLibplaceboPlClamp, ResizeLibplaceboPlTaper, ResizeLibplaceboPlBlur, ResizeLibplaceboPlAntiring)
@@ -1063,6 +1119,42 @@ Public Class NVEnc
                 LibPlaceboDebandGrainC.NumEdit.Enabled = LibPlaceboDeband.Value
                 LibPlaceboDebandDither.MenuButton.Enabled = LibPlaceboDeband.Value
                 LibPlaceboDebandLutSize.MenuButton.Enabled = LibPlaceboDeband.Value
+
+                LibPlaceboTonemappingSrcCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDstCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDstPlTransfer.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDstPlColorprim.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingSrcMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingSrcMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDstMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDstMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingDynPeakDetect.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingSmoothPeriod.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingSceneThresholdLow.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingSceneThresholdHigh.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingPercentile.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingBlackCutoff.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingGamutMapping.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunction.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionKneeAdaption.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionKneeMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionKneeMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionKneeDefault.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionKneeOffset.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionSlopeTuning.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionSlopeOffset.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionSplineContrast.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionReinhardContrast.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionLinearKnee.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionExposure.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionMetadata.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionContrastRecovery.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionContrastSmoothness.NumEdit.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionUseDolbyVision.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionShowClipping.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionVisualizeLut.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingFunctionLutType.MenuButton.Enabled = LibPlaceboTonemapping.Value
+                LibPlaceboTonemappingLut.TextEdit.Enabled = LibPlaceboTonemapping.Value
 
                 EdgelevelStrength.NumEdit.Enabled = Edgelevel.Value
                 EdgelevelThreshold.NumEdit.Enabled = Edgelevel.Value
@@ -1250,6 +1342,48 @@ Public Class NVEnc
                 If LibPlaceboDebandDither.Value <> LibPlaceboDebandDither.DefaultValue Then ret += ",dither=" & LibPlaceboDebandDither.ValueText.ToInvariantString()
                 If LibPlaceboDebandLutSize.Value <> LibPlaceboDebandLutSize.DefaultValue Then ret += ",lut_size=" & LibPlaceboDebandLutSize.ValueText.ToInvariantString()
                 Return "--vpp-libplacebo-deband " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetLibPlaceboTonemappingArgs() As String
+            If LibPlaceboTonemapping.Value Then
+                Dim sb = New StringBuilder()
+                If Not LibPlaceboTonemappingSrcCsp.IsDefaultValue Then sb.Append($",src_csp={LibPlaceboTonemappingSrcCsp.ValueText.ToInvariantString()}")
+                If Not LibPlaceboTonemappingDstCsp.IsDefaultValue Then sb.Append($",dst_csp={LibPlaceboTonemappingDstCsp.ValueText.ToInvariantString()}")
+                If Not (LibPlaceboTonemappingDstPlTransfer.IsDefaultValue OrElse LibPlaceboTonemappingDstPlColorprim.IsDefaultValue) Then sb.Append($",dst_pl_transfer={LibPlaceboTonemappingDstPlTransfer.ValueText.ToInvariantString()},dst_pl_colorprim={LibPlaceboTonemappingDstPlColorprim.ValueText.ToInvariantString()}")
+                If Not LibPlaceboTonemappingSrcMax.IsDefaultValue Then sb.Append($",src_max={LibPlaceboTonemappingSrcMax.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingSrcMin.IsDefaultValue Then sb.Append($",src_min={LibPlaceboTonemappingSrcMin.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingDstMax.IsDefaultValue Then sb.Append($",dst_max={LibPlaceboTonemappingDstMax.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingDstMin.IsDefaultValue Then sb.Append($",dst_min={LibPlaceboTonemappingDstMin.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingDynPeakDetect.IsDefaultValue Then sb.Append($",dynamic_peak_detection={LibPlaceboTonemappingDynPeakDetect.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingSmoothPeriod.IsDefaultValue Then sb.Append($",smooth_period={LibPlaceboTonemappingSmoothPeriod.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingSceneThresholdLow.IsDefaultValue Then sb.Append($",scene_threshold_low={LibPlaceboTonemappingSceneThresholdLow.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingSceneThresholdHigh.IsDefaultValue Then sb.Append($",scene_threshold_high={LibPlaceboTonemappingSceneThresholdHigh.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingPercentile.IsDefaultValue Then sb.Append($",percentile={LibPlaceboTonemappingPercentile.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingBlackCutoff.IsDefaultValue Then sb.Append($",black_cutoff={LibPlaceboTonemappingBlackCutoff.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingGamutMapping.IsDefaultValue Then sb.Append($",gamut_mapping={LibPlaceboTonemappingGamutMapping.ValueText.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunction.IsDefaultValue Then sb.Append($",tonemapping_function={LibPlaceboTonemappingFunction.ValueText.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionKneeAdaption.IsDefaultValue AndAlso LibPlaceboTonemappingFunctionKneeAdaption.Visible Then sb.Append($",knee_adaptation={LibPlaceboTonemappingFunctionKneeAdaption.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionKneeMax.IsDefaultValue AndAlso LibPlaceboTonemappingFunctionKneeMax.Visible Then sb.Append($",knee_max={LibPlaceboTonemappingFunctionKneeMax.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionKneeMin.IsDefaultValue AndAlso LibPlaceboTonemappingFunctionKneeMin.Visible Then sb.Append($",knee_min={LibPlaceboTonemappingFunctionKneeMin.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionKneeDefault.IsDefaultValue AndAlso LibPlaceboTonemappingFunctionKneeDefault.Visible Then sb.Append($",knee_default={LibPlaceboTonemappingFunctionKneeDefault.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionKneeOffset.IsDefaultValue AndAlso LibPlaceboTonemappingFunctionKneeOffset.Visible Then sb.Append($",knee_offset={LibPlaceboTonemappingFunctionKneeOffset.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionSlopeTuning.IsDefaultValue AndAlso LibPlaceboTonemappingFunctionSlopeTuning.Visible Then sb.Append($",slope_tuning={LibPlaceboTonemappingFunctionSlopeTuning.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionSlopeOffset.IsDefaultValue AndAlso LibPlaceboTonemappingFunctionSlopeOffset.Visible Then sb.Append($",slope_offset={LibPlaceboTonemappingFunctionSlopeOffset.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionSplineContrast.IsDefaultValue AndAlso LibPlaceboTonemappingFunctionSplineContrast.Visible Then sb.Append($",spline_contrast={LibPlaceboTonemappingFunctionSplineContrast.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionReinhardContrast.IsDefaultValue AndAlso LibPlaceboTonemappingFunctionReinhardContrast.Visible Then sb.Append($",reinhard_contrast={LibPlaceboTonemappingFunctionReinhardContrast.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionLinearKnee.IsDefaultValue AndAlso LibPlaceboTonemappingFunctionLinearKnee.Visible Then sb.Append($",linear_knee={LibPlaceboTonemappingFunctionLinearKnee.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionExposure.IsDefaultValue AndAlso LibPlaceboTonemappingFunctionExposure.Visible Then sb.Append($",exposure={LibPlaceboTonemappingFunctionExposure.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionMetadata.IsDefaultValue Then sb.Append($",metadata={LibPlaceboTonemappingFunctionMetadata.ValueText.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionContrastRecovery.IsDefaultValue Then sb.Append($",contrast_recovery={LibPlaceboTonemappingFunctionContrastRecovery.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionContrastSmoothness.IsDefaultValue Then sb.Append($",contrast_smoothness={LibPlaceboTonemappingFunctionContrastSmoothness.Value.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionUseDolbyVision.IsDefaultValue Then sb.Append($",use_dovi={LibPlaceboTonemappingFunctionUseDolbyVision.ValueText.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionShowClipping.IsDefaultValue Then sb.Append($",show_clipping={LibPlaceboTonemappingFunctionShowClipping.ValueText.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionVisualizeLut.IsDefaultValue Then sb.Append($",visualize_lut={LibPlaceboTonemappingFunctionVisualizeLut.ValueText.ToInvariantString()}")
+                If Not (LibPlaceboTonemappingFunctionLutType.IsDefaultValue OrElse String.IsNullOrWhiteSpace(LibPlaceboTonemappingLut.Value)) Then sb.Append($",lut_type={LibPlaceboTonemappingFunctionLutType.ValueText.ToInvariantString()}")
+                If Not String.IsNullOrWhiteSpace(LibPlaceboTonemappingLut.Value) Then sb.Append($" {LibPlaceboTonemappingLut.HelpSwitch} {LibPlaceboTonemappingLut.Value.Escape()}")
+                Return $"{LibPlaceboTonemapping.Switch} {sb.ToString().TrimStart(","c)}"
             End If
             Return ""
         End Function

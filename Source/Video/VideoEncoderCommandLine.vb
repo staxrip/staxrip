@@ -291,6 +291,16 @@ Namespace VideoEncoderCommandLine
         Property IntegerValue As Boolean
         Property ValueChangedAction As Action(Of Boolean)
 
+        ReadOnly Property IsDefaultValue As Boolean
+            Get
+                Return Value = DefaultValue
+            End Get
+        End Property
+
+        Sub SetDefaultValue()
+            Value = DefaultValue
+        End Sub
+
         Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
             Me.Store = store
             Me.Params = params
@@ -417,6 +427,16 @@ Namespace VideoEncoderCommandLine
             End Set
         End Property
 
+        ReadOnly Property IsDefaultValue As Boolean
+            Get
+                Return Value = DefaultValue
+            End Get
+        End Property
+
+        Sub SetDefaultValue()
+            Value = DefaultValue
+        End Sub
+
         Overloads Sub InitParam(ne As NumEdit)
             NumEdit = ne
             NumEdit.Value = Value
@@ -512,6 +532,16 @@ Namespace VideoEncoderCommandLine
         Property Options As String()
         Property Values As String()
         Property ValueChangedAction As Action(Of Integer)
+
+        ReadOnly Property IsDefaultValue As Boolean
+            Get
+                Return Value = DefaultValue
+            End Get
+        End Property
+
+        Sub SetDefaultValue()
+            Value = DefaultValue
+        End Sub
 
         Sub ShowOption(value As Integer, visible As Boolean)
             If MenuButton IsNot Nothing Then

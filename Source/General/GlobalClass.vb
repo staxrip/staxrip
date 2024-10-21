@@ -874,6 +874,25 @@ Public Class GlobalClass
         Next
     End Function
 
+    Function ObfuscateLogFile(text As String, Optional proj As Project = Nothing, Optional folderReplacement As String = "x", Optional fileReplacement As String = "Source") As String
+        If String.IsNullOrWhiteSpace(text) Then Return ""
+        If proj Is Nothing Then proj = p
+        If String.IsNullOrWhiteSpace(p.SourceFile) Then Return text
+
+        Dim ret = text
+        Dim sourcePath = proj.SourceFile
+        Dim toReplace = sourcePath.DirAndBase()
+        Dim replaceBy = Regex.Replace(toReplace, $"[^{Path.VolumeSeparatorChar}\{Path.DirectorySeparatorChar}]+(?=\{Path.DirectorySeparatorChar})", folderReplacement)
+        replaceBy = Regex.Replace(replaceBy, $"(?<=\{Path.DirectorySeparatorChar})[^\{Path.DirectorySeparatorChar}]+$", fileReplacement)
+        ret = ret.Replace(toReplace, replaceBy)
+
+        toReplace = sourcePath.Base()
+        replaceBy = fileReplacement
+        ret = ret.Replace(toReplace, replaceBy)
+
+        Return ret
+    End Function
+
     Sub SaveSettings()
         Try
             Using mutex As New Mutex(False, "staxrip settings file")

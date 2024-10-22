@@ -62,8 +62,8 @@ Public Class Project
     Public DefaultSubtitle As DefaultSubtitleMode = DefaultSubtitleMode.Default
     Public DefaultTargetFolder As String = ""
     Public DefaultTargetName As String = ""
-    Public DeleteTempFilesMode As DeleteMode = DeleteMode.Disabled
-    Public DeleteTempFilesSelection As DeleteSelection = DeleteSelection.Everything
+    Public DeleteTempFilesMode As DeleteMode = DeleteMode.Permanent
+    Public DeleteTempFilesSelection As DeleteSelection = DeleteSelection.Selective
     Public DeleteTempFilesSelectionMode As SelectionMode = SelectionMode.Include
     Public DeleteTempFilesCustomSelection As String() = FileTypes.Video.Distinct().Sort().ToArray()
     Public DeleteTempFilesSelectiveSelection As DeleteSelectiveSelection = DeleteSelectiveSelection.Videos

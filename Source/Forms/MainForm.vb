@@ -4178,6 +4178,10 @@ Public Class MainForm
             b.Field = NameOf(s.CheckForUpdates)
 
             b = ui.AddBool
+            b.Text = "Check for Long Path Support on startup"
+            b.Field = NameOf(s.CheckForLongPathSupport)
+
+            b = ui.AddBool
             b.Text = "Save projects automatically"
             b.Field = NameOf(s.AutoSaveProject)
 

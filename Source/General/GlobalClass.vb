@@ -1457,23 +1457,45 @@ Public Class GlobalClass
     End Sub
 
     Sub CheckForLongPathSupport()
-        If Not s.LongPathSupportCheck Then Return
+        If Not s.CheckForLongPathSupport Then Return
 
         Try
+            Dim root = "HKLM"
             Dim key = "SYSTEM\CurrentControlSet\Control\FileSystem"
             Dim name = "LongPathsEnabled"
             Dim enabled = Registry.LocalMachine.GetBoolean(key, name)
             If Not enabled Then
                 Using td = New TaskDialog(Of DialogResult)
+                    td.Icon = TaskIcon.Question
                     td.Timeout = s.ErrorMessageTimeout
                     td.Title = "Enable Long Path Support?"
-                    td.Content = $"The Long Path Support is disabled in your Registry under:{BR}LOCALMACHINE\{key}\{name}{BR2}Do you want to enable it?"
+                    td.Content = $"Long Path Support is disabled in your Registry under:{BR}{root}\{key}\{name}{BR}This can cause issues with long paths as well as Unicode characters within the paths.{BR2}Do you want to enable it?"
                     td.AddButton("Yes", DialogResult.Yes)
                     td.AddButton("No", DialogResult.No, True)
+                    td.AddButton("No and disable the check", DialogResult.Ignore)
                     td.Show()
 
                     If td.SelectedValue = DialogResult.Yes Then
-                        Registry.LocalMachine.Write(key, name, 1)
+                        Try
+                            Dim psi As New ProcessStartInfo With {
+                                .FileName = "reg.exe",
+                                .Arguments = $"add {root}\{key} /v {name} /t REG_DWORD /d 1 /f",
+                                .Verb = "runas",
+                                .UseShellExecute = True
+                            }
+
+                            Using regProcess = Process.Start(psi)
+                                regProcess.WaitForExit()
+
+                                If regProcess.ExitCode <> 0 Then
+                                    MsgError("Something went wrong, the Long Path Support was not enabled!")
+                                End If
+                            End Using
+                        Catch ex As Exception
+                            MsgError("Something went wrong, the Long Path Support was not enabled!" + BR2 + ex.Message)
+                        End Try
+                    ElseIf td.SelectedValue = DialogResult.Ignore Then
+                        s.CheckForLongPathSupport = False
                     End If
                 End Using
             End If

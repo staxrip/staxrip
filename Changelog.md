@@ -14,6 +14,54 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.46.1 (not published yet)
+====================
+
+- General: Add Long Path Registry Check on Startup
+- General: Extend "Convert bit depth to 10-bit" option to make it possible to choose the bit depth
+- Command: Fix commands that receive an array of inputs ([#1627](/../../issues/1627))
+- General: Fix wrong template saving when opening Blurays
+- General: Fix opening multiple source files using the same template
+- Command: Make parameters comparison passed to "-ImportVideoEncoderCommandLine" case insensitive
+- Macro: Fix macros:
+    - %jobs%
+    - %jobs_active%
+    - %player%
+- Macro: Rename %source_video_format% to %source_mi_v:Format%
+- Macro: Remove macros:
+	- %media_info_audio:property%
+	- %media_info_video:property%
+- Macro: Add new macros to gather MediaInfo data from the source file:
+	- %source_mi_g:property% for data from the General section
+	- %source_mi_v[#]:property% for data from the Video section
+		- [#] is an optional track number and can be set to get information of a certain video track number - default is 0
+	- %source_mi_a[#]:property% for data from the Audio section
+		- [#] is an optional track number and can be set to get information of a certain audio track number - default is 0
+	- %source_mi_t[#]:property% for data from the Text section
+		- [#] is an optional track number and can be set to get information of a certain text track number - default is 0
+	- %source_mi_vc% to get the number of video tracks within the source file
+	- %source_mi_ac% to get the number of video tracks within the source file
+	- %source_mi_tc% to get the number of video tracks within the source file
+- UI: Fix not closing Thumbnailer after last job when trying to close StaxRip or shutdown the system
+- UI: Key down on Apps List on Apps Manager starts searching
+- UI: Adjust window sizes and save them in some cases
+- AviSynth: Fix Indexing for LWLibav ([#1619](/../../issues/1619))
+- NVEncC: Update multiple parameters ([#1631](/../../issues/1631))
+- QSVEncC: Fix advanced "--cqp" parameter ([#1624](/../../issues/1624))
+- SvtAv1EncApp: Fix altered default value for "--keyint" for PSY (only visual)
+- VCEEncC: Fix advanced "--cqp" parameter ([#1624](/../../issues/1624))
+- x265: Fix import of quality mode based parameters
+- Update tools
+    - MediaInfo v25.03
+    - MKVToolNix v91.0
+    - NVEncC v8.00 beta7
+    - QSVEncC v7.84
+    - vvencFFapp v1.13.1 r323-ca1af4a
+    - x265 v4.1+126+17-ba353d539-.Mod-by-Patman.-x64-avx2-clang1911
+- Update Dual plugins
+    - BestSource R11
+
+
 v2.46.0 (2025-03-22)
 ====================
 

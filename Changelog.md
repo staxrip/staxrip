@@ -14,6 +14,33 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.46.5 (2025-04-29)
+====================
+
+- General: Improve Check for Long Path Support
+    - Add possibility to disable that option when question is shown
+    - Make check optional via Settings
+    - Start process to change the value in Registry
+- General: Fix only 3-letter language codes are transmitted to mkvmerge ([#1649](/../../issues/1649))
+- UI: Sort languages in Subtitle dropdown by their English name ([#1650](/../../issues/1650))
+- UI: Fix possible crash on Task Dialog
+- UI: Improve Template Selection
+    - Add option to select the default action when timer runs out
+- SvtAv1EncApp: Update parameters to v3.0
+    - Brought temporarily forward from v2.48.0 due to urgency
+- VapourSynth: Fix commenting out of not fulfilled requirements
+- Update tools
+    - aomenc v3.12.1-108-gfc9e306915-x64-msvc1943
+    - MP4Box v2.5-DEV-rev1425-g7348f3ee0-x64-msvc1943
+    - MKVToolNix v92.0
+    - NVEncC v8.04
+    - QSVEncC v7.88
+    - rav1e v0.7.0-(p20250225)-x64-msvc1943
+    - SvtAv1EncApp v3.0.2-2+22-326d4b48-.Mod-by-Patman.-x64-msvc1943 [SVT-AV1-PSY]
+    - x264 v0.165.3215+11-6113017-.Mod-by-Patman.-x64-gcc14.2.0
+    - x265 v4.1+141+28-0dea3ce03-.Mod-by-Patman.-x64-avx2-clang2013
+
+
 v2.46.4 (2025-04-18)
 ====================
 

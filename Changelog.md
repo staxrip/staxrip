@@ -14,6 +14,33 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.46.4 (2025-04-18)
+====================
+
+- General: Let Log window save also obfuscated log file
+- General: Improve Dolby Vision Crop detection for Automatic Mode
+- General: Add "No Linguistic Content" Language ([#1599](/../../issues/1599))
+- General: Add "Chinese (Cantonese)" and "Chinese (Mandarin)" Languages ([#1312](/../../issues/1312))
+- Audio: Fix not working cutting of FLAC files ([#1575](/../../issues/1575))
+- Audio: Fix not working FLAC-to-FLAC encodes ([#1616](/../../issues/1616))
+- Audio: Fix not working encodes in case source and target use same codec ([#1616](/../../issues/1616))
+- Audio: Fix "Center/Speech Optimized Stereo" option ([#1617](/../../issues/1617))
+- UI: Improve Template Selection
+    - Add optional timeout
+- UI: Fix missing script data after opening existing project
+- UI: Add gaps between headers on Apps Manager
+- VCEEnc: Add "Slower" Preset for H264/HEVC
+- Update tools
+    - DoVi_Tool v2.2.0
+    - HDR10Plus_Tool v1.7.0
+    - NVEncC v8.03
+    - QSVEncC v7.86
+    - Subtitle Edit v4.0.12
+    - VCEEncC v8.35
+    - vvencFFapp v1.13.1 r334-ba2f57d
+    - x265 v4.1+140+19-eb0b7b0cd-.Mod-by-Patman.-x64-avx2-clang2012
+
+
 v2.46.3 (2025-04-06)
 ====================
 

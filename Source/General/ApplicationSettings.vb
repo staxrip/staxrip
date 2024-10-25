@@ -87,6 +87,7 @@ Public Class ApplicationSettings
     Public ShowPathsInCommandLine As Boolean
     Public ShowPreviewInfo As Boolean = True
     Public ShowTemplateSelection As ShowTemplateSelectionMode = ShowTemplateSelectionMode.CommandLine_DragDrop
+    Public ShowTemplateSelectionDefault As ShowTemplateSelectionDefaultMode = ShowTemplateSelectionDefaultMode.CurrentLast
     Public ShowTemplateSelectionTimeout As Integer = 120
     Public ShowWindows7Warning As Boolean = True
     Public ShutdownForce As Boolean

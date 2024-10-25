@@ -2071,6 +2071,13 @@ Public Enum ShowTemplateSelectionMode
     <DispName("Always")> Always = 1 << 16
 End Enum
 
+Public Enum ShowTemplateSelectionDefaultMode
+    <DispName("None")> None
+    <DispName("Abort")> Abort
+    <DispName("Current/Last Template")> CurrentLast
+    <DispName("Startup Template")> Startup
+End Enum
+
 Public Enum TimestampsMode
     Never
     <DispName("VFR only")> VfrOnly

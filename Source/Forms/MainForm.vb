@@ -1530,7 +1530,7 @@ Public Class MainForm
         If Not templates?.Any() Then Return True
 
         Using td As New TaskDialog(Of String)
-            td.Timeout = timeout
+            td.Timeout = If(s.ShowTemplateSelectionDefault = ShowTemplateSelectionDefaultMode.None, 0, timeout)
             td.Title = "Select a template"
             td.Content = If(String.IsNullOrWhiteSpace(source),
                 "Please select a template you want to use:",
@@ -1538,11 +1538,14 @@ Public Class MainForm
             td.Icon = TaskIcon.Question
 
             If p.SourceFile = "" Then
-                td.AddCommand("Current Template", "")
+                td.AddCommand("Current Template", "CURRENT")
             Else
                 td.AddCommand("Last set Template", "LAST")
             End If
-            td.AddCommand(g.StartupTemplatePath.Base() + " (Startup)", g.StartupTemplatePath)
+
+            If ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p) Then
+                td.AddCommand(g.StartupTemplatePath.Base() + " (Startup)", g.StartupTemplatePath)
+            End If
 
             If templateFolder.Contains(Folder.Template + Path.DirectorySeparatorChar) Then
                 td.AddCommand($". . {Path.DirectorySeparatorChar}", "UP")
@@ -1560,15 +1563,28 @@ Public Class MainForm
                 td.AddCommand(text, directories(i))
             Next
 
-            td.AddButton("Current Template", "", True)
-            td.AddButton("Abort", "ABORT", False)
+            If s.ShowTemplateSelectionDefault = ShowTemplateSelectionDefaultMode.None Then
+                td.AddButton("Abort", "", False)
+            ElseIf s.ShowTemplateSelectionDefault = ShowTemplateSelectionDefaultMode.Abort Then
+                td.AddButton("Abort", "", True)
+            ElseIf s.ShowTemplateSelectionDefault = ShowTemplateSelectionDefaultMode.CurrentLast Then
+                If p.SourceFile = "" Then
+                    td.AddButton("Current Template", "CURRENT", True)
+                Else
+                    td.AddButton("Last set Template", "LAST", True)
+                End If
+                td.AddButton("Abort", "", False)
+            ElseIf s.ShowTemplateSelectionDefault = ShowTemplateSelectionDefaultMode.Startup Then
+                td.AddButton("Startup Template", g.StartupTemplatePath, True)
+                td.AddButton("Abort", "", False)
+            End If
 
             Dim selection = td.Show()
 
             If selection = "" Then
-                Return True
-            ElseIf selection = "ABORT" Then
                 Return False
+            ElseIf selection = "CURRENT" Then
+                Return True
             ElseIf selection = "LAST" Then
                 Return OpenProject(g.LastModifiedTemplate)
             ElseIf selection = "UP" Then
@@ -4218,25 +4234,36 @@ Public Class MainForm
             mb.Button.ShowPath = True
 
             Dim stsm = ui.AddMenu(Of ShowTemplateSelectionMode)()
+            Dim stsd = ui.AddMenu(Of ShowTemplateSelectionDefaultMode)()
             Dim stst = ui.AddNum()
 
             stsm.Text = "Show template selection when loading files"
             stsm.Field = NameOf(s.ShowTemplateSelection)
             stsm.Expanded = True
             stsm.Button.ValueChangedAction = Sub(value)
-                                                 stst.Enabled = value <> ShowTemplateSelectionMode.Never
+                                                 Dim enabled = value <> ShowTemplateSelectionMode.Never
+                                                 stsd.Enabled = enabled
+                                                 stst.Enabled = enabled
                                              End Sub
             stsm.Button.ValueChangedAction.Invoke(s.ShowTemplateSelection)
 
+            stsd.Text = "Default action when time is up"
+            stsd.Field = NameOf(s.ShowTemplateSelectionDefault)
+            stsd.Expanded = True
+            stsd.Button.ValueChangedAction = Sub(value)
+                                                 stst.Enabled = value <> ShowTemplateSelectionDefaultMode.None
+                                             End Sub
+            stsd.Button.ValueChangedAction.Invoke(s.ShowTemplateSelectionDefault)
+
             stst.Text = "Show Template Selection Timeout"
             stst.Help = "Timeout in seconds the Template Selection is shown befor the current template is used"
-            stst.Config = {0, Integer.MaxValue}
+            stst.Config = {1, Integer.MaxValue}
             stst.Field = NameOf(s.ShowTemplateSelectionTimeout)
 
             Dim n = ui.AddNum()
             n.Text = "Number of log files to keep"
             n.Help = "Log files can be found at: Tools > Folders > Log Files"
-            n.Config = {0, Integer.MaxValue}
+            n.Config = {1, Integer.MaxValue}
             n.Field = NameOf(s.LogFileNum)
 
             n = ui.AddNum()

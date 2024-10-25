@@ -179,7 +179,11 @@ Public Class TaskDialog(Of T)
                           End While
 
                           If Not IsDisposingOrDisposed Then
-                              Invoke(Sub() Close())
+                              Invoke(Sub()
+                                         SelectedText = button.Text
+                                         SelectedValue = DirectCast(button.Tag, T)
+                                         Close()
+                                     End Sub)
                           End If
                       End Sub)
         End If

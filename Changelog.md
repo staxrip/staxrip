@@ -14,7 +14,23 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.46.1 (not published yet)
+v2.46.2 (2025-04-05)
+====================
+
+- General: Skip script synchronising on project opening
+- General: Fix template mix up when opening multiple files in a row, mostly visual
+- General: Fix Template Selection show up when using "-LoadTemplate" parameter
+- Command: Fix "AddBatchJobs" not taking quoted paths ([#1627](/../../issues/1627), [#1636](/../../issues/1636))
+- UI: Fix "Crop with High Contrast"
+- UI: Improve speed of Language menu buttons on Audio and Muxer windows a little bit
+- UI: Improve displaying of Status on Apps Manager
+- UI: Make Location, URLs and Version on Apps Manager clickable
+- UI: Show Help URL on Apps Manager
+- FrameServer: Fix Indexing for LWLibav ([#1619](/../../issues/1619))
+- SvtAv1EncApp: Fix Long Path issue
+
+
+v2.46.1 (2025-03-28)
 ====================
 
 - General: Add Long Path Registry Check on Startup

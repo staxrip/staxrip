@@ -15,6 +15,7 @@ Public Class ApplicationSettings
     Public AviSynthMode As FrameServerMode
     Public AviSynthProfiles As List(Of FilterCategory)
     Public BinaryPrefix As Boolean = False
+    Public CheckForLongPathSupport As Boolean = True
     Public CheckForUpdates As Boolean = True
     Public CheckForUpdatesDismissed As String
     Public CheckForUpdatesLastRequest As DateTime = DateTime.Now
@@ -56,7 +57,6 @@ Public Class ApplicationSettings
     Public LastSourceDir As String
     Public LoadAviSynthPlugins As Boolean = True
     Public LoadVapourSynthPlugins As Boolean = True
-    Public LongPathSupportCheck As Boolean = True
     Public LogEventCommand As Boolean
     Public LogFileNum As Integer = 200
     Public MinimizeToTray As Boolean

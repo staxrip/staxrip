@@ -4205,24 +4205,66 @@ Public Class MainForm
             Dim ui = form.SimpleUI
             ui.Store = s
 
+
             '################# General
-            ui.CreateFlowPage("General")
+            ui.CreateFlowPage("General", True)
 
-            Dim b = ui.AddBool()
-            b.Text = "Check for updates once per day"
-            b.Field = NameOf(s.CheckForUpdates)
-
-            b = ui.AddBool
-            b.Text = "Check for Long Path Support on startup"
-            b.Field = NameOf(s.CheckForLongPathSupport)
-
-            b = ui.AddBool
+            Dim b = ui.AddBool
             b.Text = "Save projects automatically"
             b.Field = NameOf(s.AutoSaveProject)
 
             b = ui.AddBool()
             b.Text = "Reverse mouse wheel video seek direction"
             b.Field = NameOf(s.ReverseVideoScrollDirection)
+
+            Dim n = ui.AddNum()
+            n.Text = "Number of most recently used projects to keep"
+            n.Help = "MRU list shown in the main menu under: File > Recent Projects"
+            n.Config = {0, 15}
+            n.Field = NameOf(s.ProjectsMruNum)
+
+            n = ui.AddNum()
+            n.Text = "Maximum number of parallel processes"
+            n.Help = "Maximum number of parallel processes used for audio and video processing. Chunk encoding can be enabled in the encoder options."
+            n.Config = {1, 16}
+            n.Field = NameOf(s.ParallelProcsNum)
+
+            n = ui.AddNum()
+            n.Text = "Timeout error messages on job processing"
+            n.Help = "Duration of error messages being shown if an error occures and before the next job shall start."
+            n.Config = {-1, 3600, 5, 0}
+            n.Field = NameOf(s.ErrorMessageTimeout)
+
+
+            '############### Generation
+            Dim generationPage = ui.CreateFlowPage("Generation", True)
+
+            ui.AddLabel("Position of frame number in file name:")
+
+            Dim previewFrameNumberPosition = ui.AddMenu(Of ImageFrameNumberPosition)()
+            previewFrameNumberPosition.Text = "Preview:"
+            previewFrameNumberPosition.Field = NameOf(s.SaveImagePreviewFrameNumberPosition)
+
+            Dim videoComparisonFrameNumberPosition = ui.AddMenu(Of ImageFrameNumberPosition)()
+            videoComparisonFrameNumberPosition.Text = "Video Comparison:"
+            videoComparisonFrameNumberPosition.Field = NameOf(s.SaveImageVideoComparisonFrameNumberPosition)
+
+            ui.AddLine(generationPage)
+
+            b = ui.AddBool()
+            b.Text = "Add line numbers to generated code"
+            b.Help = ""
+            b.Field = NameOf(s.CommandLinePreviewWithLineNumbers)
+
+
+            '################# Logs
+            ui.CreateFlowPage("Logs", True)
+
+            n = ui.AddNum()
+            n.Text = "Number of log files to keep"
+            n.Help = "Log files can be found at: Tools > Folders > Log Files"
+            n.Config = {1, Integer.MaxValue}
+            n.Field = NameOf(s.LogFileNum)
 
             b = ui.AddBool()
             b.Text = "Write Event Commands to log file"
@@ -4231,6 +4273,11 @@ Public Class MainForm
             b = ui.AddBool()
             b.Text = "Enable debug logging"
             b.Field = NameOf(s.WriteDebugLog)
+
+
+
+            '################# Startup
+            ui.CreateFlowPage("Startup", True)
 
             Dim mb = ui.AddMenu(Of String)()
             mb.Text = "Startup Template:"
@@ -4252,11 +4299,25 @@ Public Class MainForm
                                    End Sub
             mb.Button.ShowPath = True
 
+            b = ui.AddBool
+            b.Text = "Check for Long Path Support"
+            b.Field = NameOf(s.CheckForLongPathSupport)
+
+            b = ui.AddBool()
+            b.Text = "Check for updates approx. once per day"
+            b.Field = NameOf(s.CheckForUpdates)
+
+
+            '################# Source Opening
+            ui.CreateFlowPage("Source Opening", True)
+
+            ui.AddLabel("Template Selection:")
+
             Dim stsm = ui.AddMenu(Of ShowTemplateSelectionMode)()
             Dim stsd = ui.AddMenu(Of ShowTemplateSelectionDefaultMode)()
             Dim stst = ui.AddNum()
 
-            stsm.Text = "Show template selection when loading files"
+            stsm.Text = "Show when loading via"
             stsm.Field = NameOf(s.ShowTemplateSelection)
             stsm.Expanded = True
             stsm.Button.ValueChangedAction = Sub(value)
@@ -4266,7 +4327,7 @@ Public Class MainForm
                                              End Sub
             stsm.Button.ValueChangedAction.Invoke(s.ShowTemplateSelection)
 
-            stsd.Text = "Default action when time is up"
+            stsd.Text = "Default timeout action"
             stsd.Field = NameOf(s.ShowTemplateSelectionDefault)
             stsd.Expanded = True
             stsd.Button.ValueChangedAction = Sub(value)
@@ -4274,39 +4335,75 @@ Public Class MainForm
                                              End Sub
             stsd.Button.ValueChangedAction.Invoke(s.ShowTemplateSelectionDefault)
 
-            stst.Text = "Show Template Selection Timeout"
+            stst.Text = "Timeout"
             stst.Help = "Timeout in seconds the Template Selection is shown befor the current template is used"
             stst.Config = {1, Integer.MaxValue}
             stst.Field = NameOf(s.ShowTemplateSelectionTimeout)
 
-            Dim n = ui.AddNum()
-            n.Text = "Number of log files to keep"
-            n.Help = "Log files can be found at: Tools > Folders > Log Files"
-            n.Config = {1, Integer.MaxValue}
-            n.Field = NameOf(s.LogFileNum)
 
-            n = ui.AddNum()
-            n.Text = "Number of most recently used projects to keep"
-            n.Help = "MRU list shown in the main menu under: File > Recent Projects"
-            n.Config = {0, 15}
-            n.Field = NameOf(s.ProjectsMruNum)
+            '############# Video
+            Dim videoPage = ui.CreateFlowPage("Video", True)
 
-            n = ui.AddNum()
-            n.Text = "Maximum number of parallel processes"
-            n.Help = "Maximum number of parallel processes used for audio and video processing. Chunk encoding can be enabled in the encoder options."
-            n.Config = {1, 16}
-            n.Field = NameOf(s.ParallelProcsNum)
+            b = ui.AddBool
+            b.Text = "Add filter to automatically correct the frame rate."
+            b.Field = NameOf(s.FixFrameRate)
 
-            n = ui.AddNum()
-            n.Text = "Timeout error messages on job processing"
-            n.Help = "Duration of error messages being shown if an error occures and before the next job shall start."
-            n.Config = {-1, 3600, 5, 0}
-            n.Field = NameOf(s.ErrorMessageTimeout)
 
-            n = ui.AddNum()
-            n.Text = "Preview size compared to screen size (percent)"
-            n.Config = {10, 90, 5}
-            n.Field = NameOf(s.PreviewSize)
+            '############# Quality Definitions
+            Dim qualityDefinitionsPage = ui.CreateFlowPage("Quality Definitions", True)
+
+            Dim t = ui.AddText()
+            t.Text = "x264 quality definitions"
+            t.Help = "Create custom quality definitions for x264." + BR2 +
+                         "Use this format to create your custom values with optional description:" + BR +
+                         "number""text""" + BR +
+                         "number: can be used with optional decimal separator (, or .)" + BR +
+                         "text: description, optionally empty" + BR2 +
+                         "Example:" + BR +
+                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
+            t.Edit.Expand = True
+            t.Edit.Text = s.X264QualityDefinitions.ToSeparatedString()
+            t.Edit.SaveAction = Sub(value) s.X264QualityDefinitions = value.ToX264QualityItems()?.ToList()
+
+            t = ui.AddText()
+            t.Text = "x265 quality definitions"
+            t.Help = "Create custom quality definitions for x265." + BR2 +
+                         "Use this format to create your custom values with optional description:" + BR +
+                         "number""text""" + BR +
+                         "number: can be used with optional decimal separator (, or .)" + BR +
+                         "text: description, optionally empty" + BR2 +
+                         "Example:" + BR +
+                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
+            t.Edit.Expand = True
+            t.Edit.Text = s.X265QualityDefinitions.ToSeparatedString()
+            t.Edit.SaveAction = Sub(value) s.X265QualityDefinitions = value.ToX265QualityItems()?.ToList()
+
+            t = ui.AddText()
+            t.Text = "SvtAv1EncApp quality definitions"
+            t.Help = "Create custom quality definitions for SvtAv1EncApp." + BR2 +
+                         "Use this format to create your custom values with optional description:" + BR +
+                         "number""text""" + BR +
+                         "number: can be used with optional decimal separator (, or .)" + BR +
+                         "text: description, optionally empty" + BR2 +
+                         "Example:" + BR +
+                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
+            t.Edit.Expand = True
+            t.Edit.Text = s.SvtAv1EncAppQualityDefinitions.ToSeparatedString()
+            t.Edit.SaveAction = Sub(value) s.SvtAv1EncAppQualityDefinitions = value.ToSvtAv1EncAppQualityItems()?.ToList()
+
+            t = ui.AddText()
+            t.Text = "vccencFFapp quality definitions"
+            t.Help = "Create custom quality definitions for vccencFFapp." + BR2 +
+                         "Use this format to create your custom values with optional description:" + BR +
+                         "number""text""" + BR +
+                         "number: can be used with optional decimal separator (, or .)" + BR +
+                         "text: description, optionally empty" + BR2 +
+                         "Example:" + BR +
+                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
+            t.Edit.Expand = True
+            t.Edit.Text = s.VvencffappQualityDefinitions.ToSeparatedString()
+            t.Edit.SaveAction = Sub(value) s.VvencffappQualityDefinitions = value.ToVvencffappQualityItems()?.ToList()
+
 
             '############# System
             Dim systemPage = ui.CreateFlowPage("System", True)
@@ -4367,68 +4464,8 @@ Public Class MainForm
             b.Field = NameOf(s.PreferWindowsTerminal)
 
 
-            '############# Video
-            Dim videoPage = ui.CreateFlowPage("Video")
-
-            b = ui.AddBool
-            b.Text = "Add filter to automatically correct the frame rate."
-            b.Field = NameOf(s.FixFrameRate)
-
-            Dim t = ui.AddText()
-            t.Text = "x264 quality definitions"
-            t.Help = "Create custom quality definitions for x264." + BR2 +
-                         "Use this format to create your custom values with optional description:" + BR +
-                         "number""text""" + BR +
-                         "number: can be used with optional decimal separator (, or .)" + BR +
-                         "text: description, optionally empty" + BR2 +
-                         "Example:" + BR +
-                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
-            t.Edit.Expand = True
-            t.Edit.Text = s.X264QualityDefinitions.ToSeparatedString()
-            t.Edit.SaveAction = Sub(value) s.X264QualityDefinitions = value.ToX264QualityItems()?.ToList()
-
-            t = ui.AddText()
-            t.Text = "x265 quality definitions"
-            t.Help = "Create custom quality definitions for x265." + BR2 +
-                         "Use this format to create your custom values with optional description:" + BR +
-                         "number""text""" + BR +
-                         "number: can be used with optional decimal separator (, or .)" + BR +
-                         "text: description, optionally empty" + BR2 +
-                         "Example:" + BR +
-                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
-            t.Edit.Expand = True
-            t.Edit.Text = s.X265QualityDefinitions.ToSeparatedString()
-            t.Edit.SaveAction = Sub(value) s.X265QualityDefinitions = value.ToX265QualityItems()?.ToList()
-
-            t = ui.AddText()
-            t.Text = "SvtAv1EncApp quality definitions"
-            t.Help = "Create custom quality definitions for SvtAv1EncApp." + BR2 +
-                         "Use this format to create your custom values with optional description:" + BR +
-                         "number""text""" + BR +
-                         "number: can be used with optional decimal separator (, or .)" + BR +
-                         "text: description, optionally empty" + BR2 +
-                         "Example:" + BR +
-                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
-            t.Edit.Expand = True
-            t.Edit.Text = s.SvtAv1EncAppQualityDefinitions.ToSeparatedString()
-            t.Edit.SaveAction = Sub(value) s.SvtAv1EncAppQualityDefinitions = value.ToSvtAv1EncAppQualityItems()?.ToList()
-
-            t = ui.AddText()
-            t.Text = "vccencFFapp quality definitions"
-            t.Help = "Create custom quality definitions for vccencFFapp." + BR2 +
-                         "Use this format to create your custom values with optional description:" + BR +
-                         "number""text""" + BR +
-                         "number: can be used with optional decimal separator (, or .)" + BR +
-                         "text: description, optionally empty" + BR2 +
-                         "Example:" + BR +
-                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
-            t.Edit.Expand = True
-            t.Edit.Text = s.VvencffappQualityDefinitions.ToSeparatedString()
-            t.Edit.SaveAction = Sub(value) s.VvencffappQualityDefinitions = value.ToVvencffappQualityItems()?.ToList()
-
-
             '################# User Interface
-            ui.CreateFlowPage("User Interface", True)
+            Dim uiPage = ui.CreateFlowPage("User Interface", True)
 
             Dim theme = ui.AddMenu(Of String)
             theme.Text = "Theme"
@@ -4493,6 +4530,12 @@ Public Class MainForm
             t.Edit.Text = s.WindowPositionsRemembered.Join(", ")
             t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
 
+            n = ui.AddNum()
+            n.Text = "Preview size compared to screen size (percent)"
+            n.Label.Offset = 1
+            n.Config = {10, 90, 5}
+            n.Field = NameOf(s.PreviewSize)
+
             b = ui.AddBool()
             b.Text = "Expand Preview window automatically depending on its size"
             b.Help = ""
@@ -4525,10 +4568,6 @@ Public Class MainForm
             b.Help = "Tooltips can always be shown by right-clicking menu items."
             b.Field = NameOf(s.EnableTooltips)
 
-            b = ui.AddBool()
-            b.Text = "Add line numbers to generated code"
-            b.Help = ""
-            b.Field = NameOf(s.CommandLinePreviewWithLineNumbers)
 
             '################# Frameserver
             ui.CreateFlowPage("Frameserver", True)
@@ -4551,28 +4590,15 @@ Public Class MainForm
             b.Help = "Detects and adds necessary LoadPlugin calls."
             b.Field = NameOf(s.LoadVapourSynthPlugins)
 
+
             '############# Preprocessing
             ui.AddControlPage(New PreprocessingControl, "Preprocessing")
 
+
             '############# Source Filters
-            Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth",
-                    s.AviSynthFilterPreferences, s.AviSynthProfiles)
+            Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth", s.AviSynthFilterPreferences, s.AviSynthProfiles)
+            Dim bsVS = AddFilterPreferences(ui, "Source Filters | VapourSynth", s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
 
-            Dim bsVS = AddFilterPreferences(ui, "Source Filters | VapourSynth",
-                    s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
-
-            '############### Danger Zone
-            Dim miscPage = ui.CreateFlowPage("Misc", True)
-
-            ui.AddLabel("Position of frame number in file name:")
-
-            Dim previewFrameNumberPosition = ui.AddMenu(Of ImageFrameNumberPosition)()
-            previewFrameNumberPosition.Text = "Preview:"
-            previewFrameNumberPosition.Field = NameOf(s.SaveImagePreviewFrameNumberPosition)
-
-            Dim videoComparisonFrameNumberPosition = ui.AddMenu(Of ImageFrameNumberPosition)()
-            videoComparisonFrameNumberPosition.Text = "Video Comparison:"
-            videoComparisonFrameNumberPosition.Field = NameOf(s.SaveImageVideoComparisonFrameNumberPosition)
 
             '############### Danger Zone
             Dim dangerZonePage = ui.CreateFlowPage("Danger Zone", True)
@@ -5239,7 +5265,7 @@ Public Class MainForm
 
 
             '   ----------------------------------------------------------------
-            Dim cropPage = ui.CreateFlowPage("Image | Crop")
+            Dim cropPage = ui.CreateFlowPage("Image | Crop", True)
 
             b = ui.AddBool()
             b.Text = "Auto correct crop values"
@@ -5298,7 +5324,7 @@ Public Class MainForm
 
 
             '   ----------------------------------------------------------------
-            Dim autoCropPage = ui.CreateFlowPage("Image | Crop | Auto Crop")
+            Dim autoCropPage = ui.CreateFlowPage("Image | Crop | Auto Crop", True)
 
             Dim autoCropMode = ui.AddMenu(Of AutoCropMode)
 
@@ -5646,7 +5672,7 @@ Public Class MainForm
 
 
             '   ----------------------------------------------------------------
-            Dim chaptersPage = ui.CreateFlowPage("Chapters")
+            Dim chaptersPage = ui.CreateFlowPage("Chapters", True)
 
             b = ui.AddBool(chaptersPage)
             b.Text = "Demux Chapters"
@@ -5655,7 +5681,7 @@ Public Class MainForm
 
 
             '   ----------------------------------------------------------------
-            Dim timestampsPage = ui.CreateFlowPage("Timestamps")
+            Dim timestampsPage = ui.CreateFlowPage("Timestamps", True)
 
             Dim timestamps = ui.AddMenu(Of TimestampsMode)
             timestamps.Expanded = False
@@ -5664,7 +5690,7 @@ Public Class MainForm
 
 
             '   ----------------------------------------------------------------
-            Dim attachmentsPage = ui.CreateFlowPage("Attachments")
+            Dim attachmentsPage = ui.CreateFlowPage("Attachments", True)
 
             b = ui.AddBool(attachmentsPage)
             b.Text = "Demux Attachments"
@@ -5678,7 +5704,7 @@ Public Class MainForm
 
 
             '   ----------------------------------------------------------------
-            Dim tagsPage = ui.CreateFlowPage("Tags")
+            Dim tagsPage = ui.CreateFlowPage("Tags", True)
 
             b = ui.AddBool(tagsPage)
             b.Text = "Demux Tags"

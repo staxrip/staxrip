@@ -2486,7 +2486,7 @@ Public Class MainForm
                 p.Script.Filters.Add(New VideoFilter("Source", "VS Script Import", code))
             End If
 
-            ModifyFilters(-1)
+            ModifyFilters(timeout)
             FiltersListView.IsLoading = False
             FiltersListView.Load()
 
@@ -2671,6 +2671,9 @@ Public Class MainForm
 
         Try
             errorMsg = p.SourceScript.GetError
+        Catch ex As AbortException
+            errorMsg = ex.Message
+            timeout = -1
         Catch ex As Exception
             errorMsg = ex.Message
         End Try
@@ -2682,7 +2685,6 @@ Public Class MainForm
             Log.Save()
 
             MsgError("Script Error", errorMsg, Handle, timeout)
-            'p.Script.Synchronize()
             Throw New AbortException
         End If
 

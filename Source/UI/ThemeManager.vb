@@ -1,4 +1,6 @@
-﻿Public NotInheritable Class ThemeManager
+﻿Imports StaxRip.SimpleUI
+
+Public NotInheritable Class ThemeManager
     Private Const _defaultThemeName = "Almost Black | Seagreen"
 
     Private Shared _current As Theme
@@ -256,6 +258,12 @@
                         .ForeColor = _foreColor.AddLuminance(0.1),
                         .ProgressColor = _backSelectedColor.AddSaturation(0.25).AddLuminance(-0.125)
                     },
+                    .Line = New ControlsThemeColors.LineThemeColors() With {
+                        .BackColor = Color.Transparent,
+                        .ForeColor = _foreColor,
+                        .LineColor1 = .ForeColor,
+                        .LineColor2 = .ForeColor.AddLuminance(-0.2)
+                    },
                     .ListBox = New ControlsThemeColors.ListBoxThemeColors() With {
                         .BackColor = _controlBackColor,
                         .BackAlternateColor = .BackColor.AddLuminance(0.025),
@@ -443,7 +451,7 @@
                     .HeaderBackColor = General.Controls.RichTextBox.BackColor,
                     .HeaderForeColor = General.Controls.RichTextBox.ForeColor.AddLuminance(0.05),
                     .HeaderFontStyles = {FontStyle.Bold},
- _
+                                                         _
                     .EncoderTitleBackColor = General.Controls.RichTextBox.BackColor,
                     .EncoderTitleForeColor = _accentColor.AddLuminance(0.1),
                     .EncoderTitleFontStyles = {},
@@ -506,8 +514,8 @@
  _
                     .FrameServerBackColor = General.Controls.RichTextBox.BackColor,
                     .FrameServerForeColor = _outputHighlightingStrongForeColor.SetHue(300).AddSaturation(-0.2),
-                    .FrameServerFontStyles = {FontStyle.Italic, FontStyle.Bold},
- _
+.FrameServerFontStyles = {FontStyle.Italic, FontStyle.Bold},
+                                                            _
                     .EncoderBackColor = General.Controls.RichTextBox.BackColor,
                     .EncoderForeColor = _outputHighlightingStrongForeColor.SetHue(205).AddLuminance(0.05),
                     .EncoderFontStyles = {FontStyle.Italic, FontStyle.Bold}

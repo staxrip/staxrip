@@ -139,6 +139,7 @@ Public Class Theme
         Private _groupBoxThemeColors As GroupBoxThemeColors
         Private _labelThemeColors As LabelThemeColors
         Private _labelProgressBarThemeColors As LabelProgressBarThemeColors
+        Private _lineThemeColors As LineThemeColors
         Private _listBoxThemeColors As ListBoxThemeColors
         Private _listViewThemeColors As ListViewThemeColors
         Private _numEditThemeColors As NumEditThemeColors
@@ -273,6 +274,16 @@ Public Class Theme
             End Get
             Set(value As LabelProgressBarThemeColors)
                 _labelProgressBarThemeColors = value
+            End Set
+        End Property
+
+        Public Property Line As LineThemeColors
+            Get
+                _lineThemeColors = If(_lineThemeColors, New LineThemeColors())
+                Return _lineThemeColors
+            End Get
+            Set(value As LineThemeColors)
+                _lineThemeColors = value
             End Set
         End Property
 
@@ -560,6 +571,14 @@ Public Class Theme
             Public Property BackColor As ColorHSL = SystemColors.Control
             Public Property ForeColor As ColorHSL = SystemColors.ControlText
             Public Property ProgressColor As ColorHSL = New ColorHSL(_baseHue, 0.5, 0.75, 1)
+        End Class
+
+        <Serializable>
+        Public Class LineThemeColors
+            Public Property BackColor As ColorHSL = SystemColors.Window
+            Public Property ForeColor As ColorHSL = SystemColors.WindowText
+            Public Property LineColor1 As ColorHSL = SystemColors.WindowText
+            Public Property LineColor2 As ColorHSL = SystemColors.WindowText
         End Class
 
         <Serializable>

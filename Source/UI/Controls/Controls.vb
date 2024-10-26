@@ -489,13 +489,37 @@ Namespace UI
     Public Class LineControl
         Inherits Control
 
+        Private _lineColor1 As Color
+        Private _lineColor2 As Color
+
         Sub New()
             Margin = New Padding(4, 2, 5, 2)
             Padding = New Padding(5, 2, 5, 2)
             Anchor = AnchorStyles.Left Or AnchorStyles.Bottom Or AnchorStyles.Right
             SetStyle(ControlStyles.SupportsTransparentBackColor, True)
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
         End Sub
 
+        Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then
+                Exit Sub
+            End If
+
+            BackColor = theme.General.Controls.Line.BackColor
+            ForeColor = theme.General.Controls.Line.ForeColor
+            _lineColor1 = theme.General.Controls.Line.LineColor1
+            _lineColor2 = theme.General.Controls.Line.LineColor2
+        End Sub
         Protected Overrides Sub OnPaint(e As PaintEventArgs)
             MyBase.OnPaint(e)
 
@@ -514,8 +538,8 @@ Namespace UI
             End If
 
             If Enabled Then
-                e.Graphics.DrawLine(Pens.Silver, textOffset, lineHeight, Width, lineHeight)
-                e.Graphics.DrawLine(Pens.White, textOffset, lineHeight + 1, Width, lineHeight + 1)
+                e.Graphics.DrawLine(New Pen(_linecolor1), textOffset, lineHeight, Width, lineHeight)
+                e.Graphics.DrawLine(New Pen(_linecolor2), textOffset, lineHeight + 1, Width, lineHeight + 1)
             Else
                 e.Graphics.DrawLine(SystemPens.InactiveBorder, textOffset, lineHeight, Width, lineHeight)
             End If

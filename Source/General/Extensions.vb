@@ -1231,7 +1231,7 @@ Module ControlExtensions
 
         Dim fontCollection As New PrivateFontCollection()
         Dim family As FontFamily = Nothing
-        Dim legacy = OSVersion.Current < OSVersion.Windows10
+        Dim legacy = OSVersion.VersionInfo.dwMajorVersion < 10
 
         fontCollection.AddFontFile(awesomePath)
         If legacy Then fontCollection.AddFontFile(segoePath)

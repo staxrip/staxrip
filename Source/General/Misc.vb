@@ -1733,12 +1733,55 @@ Public Class FileTypes
     End Function
 End Class
 
+<StructLayout(LayoutKind.Sequential)>
+Public Structure OSVERSIONINFOEXW
+    Public dwOSVersionInfoSize As UInteger
+    Public dwMajorVersion As UInteger
+    Public dwMinorVersion As UInteger
+    Public dwBuildNumber As UInteger
+    Public dwPlatformId As UInteger
+    <MarshalAs(UnmanagedType.ByValTStr, SizeConst:=128)>
+    Public szCSDVersion As String
+    Public wServicePackMajor As UShort
+    Public wServicePackMinor As UShort
+    Public wSuiteMask As UShort
+    Public wProductType As Byte
+    Public wReserved As Byte
+End Structure
+
 Public Class OSVersion
-    Shared ReadOnly Property Windows7 As Single = 6.1
-    Shared ReadOnly Property Windows8 As Single = 6.2
-    Shared ReadOnly Property Windows10 As Single = 10.0
-    Shared ReadOnly Property Windows11 As Single = 11.0
-    Shared ReadOnly Property Current As Single = CSng(Environment.OSVersion.Version.Major + Environment.OSVersion.Version.Minor / 10)
+    <DllImport("ntdll.dll", CharSet:=CharSet.Auto)>
+    Private Shared Function RtlGetVersion(ByRef osVersionInfo As OSVERSIONINFOEXW) As Integer
+    End Function
+
+    Private Shared _osVersionInfo As New OSVERSIONINFOEXW()
+    Private Shared _osVersionInfoInitialized As Boolean = False
+    Private Shared _versionString As String
+
+    Public Shared Sub NOSVersion()
+        If Not _osVersionInfoInitialized Then
+            _osVersionInfo.dwOSVersionInfoSize = CUInt(Marshal.SizeOf(_osVersionInfo))
+            _osVersionInfoInitialized = True
+        End If
+    End Sub
+
+    Public Shared ReadOnly Property VersionInfo As OSVERSIONINFOEXW
+        Get
+            Return _osVersionInfo
+        End Get
+    End Property
+
+    Public Shared ReadOnly Property VersionString As String
+        Get
+            If String.IsNullOrWhiteSpace(_versionString) Then
+                Dim result = RtlGetVersion(_osVersionInfo)
+                Dim edition = Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "EditionID")
+                Dim display = Registry.LocalMachine.GetString("SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion")
+                _versionString = If(result = 0, $"Windows {_osVersionInfo.dwMajorVersion}.{_osVersionInfo.dwMinorVersion}.{_osVersionInfo.dwBuildNumber} {display} {edition}", "-?-").Trim()
+            End If
+            Return _versionString
+        End Get
+    End Property
 End Class
 
 Public Class OS

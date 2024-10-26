@@ -7840,7 +7840,7 @@ Public Class MainForm
     End Sub
 
     Sub CheckForWindows7()
-        If s.ShowWindows7Warning AndAlso OSVersion.Current = OSVersion.Windows7 Then
+        If s.ShowWindows7Warning AndAlso OSVersion.VersionInfo.dwMajorVersion = 7 Then
             MsgWarn("Compatibility problem!", "Whereas Windows 7 is supported by StaxRip itself, some tools don't do it anymore. This can cause tools denying to work correctly or at whole. Currently those tools are 'MKVToolNix (mkvmerge)' and 'Python', which you have to downgrade or try to avoid. For further help join our Discord server.")
         End If
         s.ShowWindows7Warning = False

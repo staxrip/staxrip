@@ -3961,7 +3961,7 @@ Public Class MainForm
             Else
                 g.ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
             End If
-        ElseIf codeLower.Contains("ffvideosource(") OrElse codeLower.Contains("ffms2.source") Then
+        ElseIf codeLower.Contains("ffvideosource(") OrElse codeLower.Contains("ffms2(") OrElse codeLower.Contains("ffms2.source") Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
                 p.SourceFile = p.LastOriginalSourceFile
                 BlockSourceTextBoxTextChanged = True

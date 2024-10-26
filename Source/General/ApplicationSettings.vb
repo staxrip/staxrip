@@ -74,7 +74,7 @@ Public Class ApplicationSettings
     Public PreviewSize As Integer = 70
     Public ProcessPriority As ProcessPriorityClass = ProcessPriorityClass.BelowNormal
     Public ProgressHighlighting As Boolean = True
-    Public ProgressHighlightingColorName As String = ThemeManager.ColorCategories(9).Item1
+    Public ProgressHighlightingColorName As String = ThemeManager.DefaultProgressHighlightingColorName
     Public ProgressReformatting As Boolean = True
     Public ProjectsMruNum As Integer = 15
     Public RecentFramePositions As List(Of String)

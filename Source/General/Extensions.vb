@@ -1184,6 +1184,12 @@ Module RegistryKeyExtensions
     End Function
 
     <Extension()>
+    Function GetLong(root As RegistryKey, path As String, name As String) As Long
+        Dim value = GetValue(Of Long)(root, path, name)
+        Return BitConverter.ToUInt32(BitConverter.GetBytes(value), 0)
+    End Function
+
+    <Extension()>
     Function GetBoolean(root As RegistryKey, path As String, name As String) As Boolean
         Return GetValue(Of Boolean)(root, path, name)
     End Function

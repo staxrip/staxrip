@@ -1,4 +1,6 @@
-﻿<Serializable>
+﻿Imports System.Globalization
+
+<Serializable>
 Public Structure ColorHSL
     Private ReadOnly _h As Integer
     Private ReadOnly _s As Single
@@ -157,6 +159,6 @@ Public Structure ColorHSL
     End Function
 
     Public Overrides Function ToString() As String
-        Return String.Format($"HSLA({H:0}, {S:0.00}, {L:0.00}, {A:0.00})")
+        Return String.Format($"HSLA({H:0}, {(S.ToInvariantString("0.00"))}, {(L.ToInvariantString("0.00"))}, {(A.ToInvariantString("0.00"))})")
     End Function
 End Structure

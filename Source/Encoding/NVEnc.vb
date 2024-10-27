@@ -805,6 +805,21 @@ Public Class NVEnc
         Property LibPlaceboDebandDither As New OptionParam With {.Text = "     Dither", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 1, .Options = {"None", "Blue Noise (default)", "Ordered LUT", "Ordered Fixed", "White Noise"}, .Values = {"none", "blue_noise", "ordered_lut", "ordered_fixed", "white_noise"}, .VisibleFunc = Function() OutputDepth.Value = 0}
         Property LibPlaceboDebandLutSize As New OptionParam With {.Text = "     LUT Size", .HelpSwitch = "--vpp-libplacebo-deband", .Init = 5, .Options = {"2", "4", "8", "16", "32", "64 (default)", "128", "256"}, .Values = {"2", "4", "8", "16", "32", "64", "128", "256"}}
 
+        Property LibPlaceboShader As New BoolParam With {.Text = "LibPlacebo-Shader", .Switch = "--vpp-libplacebo-shader", .ArgsFunc = AddressOf GetLibPlaceboShaderArgs}
+        Property LibPlaceboShaderShader As New StringParam With {.Text = "     Shader", .HelpSwitch = "--vpp-libplacebo-shader", .Init = "", .BrowseFile = True}
+        Property LibPlaceboShaderResWidth As New NumParam With {.Text = "     Resolution Width", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Config = {0, 7680, 1, 0}}
+        Property LibPlaceboShaderResHeight As New NumParam With {.Text = "     Resolution Height", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Config = {0, 4320, 1, 0}}
+        Property LibPlaceboShaderColorsystem As New OptionParam With {.Text = "     Colorsystem", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Options = {"Unknown (default)", "BT601", "BT709", "SMPTE240M", "BT2020NC", "BT2020C", "BT2100PQ", "BT2100HLG", "DolbyVision", "Ycgco", "RGB", "XYZ"}, .Values = {"unknown", "bt601", "bt709", "smpte240m", "bt2020nc", "bt2020c", "bt2100pq", "bt2100hlg", "dolbyvision", "ycgco", "rgb", "xyz"}}
+        Property LibPlaceboShaderTransfer As New OptionParam With {.Text = "     Transfer", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Options = {"Unknown (default)", "SRGB", "BT1886", "Linear", "Gamma18", "Gamma20", "Gamma22", "Gamma24", "Gamma26", "Gamma28", "ProPhoto", "ST428", "PQ", "HLG", "Vlog", "Slog1", "Slog2"}, .Values = {"unknown", "srgb", "bt1886", "linear", "gamma18", "gamma20", "gamma22", "gamma24", "gamma26", "gamma28", "prophoto", "st428", "pq", "hlg", "vlog", "slog1", "slog2"}}
+        Property LibPlaceboShaderResampler As New OptionParam With {.Text = "     Resampler", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 10, .Options = {"Spline16", "Spline36", "Spline64", "Nearest", "Bilinear", "Gaussian", "Sinc", "Lanczos", "Ginseng", "Ewa-Jinc", "Ewa-Lanczos (default)", "Ewa-Lanczossharp", "Ewa-Lanczos4sharpest", "Ewa-Ginseng", "Ewa-Hann", "Ewa-Hanning", "Bicubic", "Triangle", "Hermite", "Catmull-Rom", "Mitchell", "Mitchell-Clamp", "Robidoux", "Robidouxsharp", "Ewa-Robidoux", "Ewa-Robidouxsharp"}, .Values = {"libplacebo-spline16", "libplacebo-spline36", "libplacebo-spline64", "libplacebo-nearest", "libplacebo-bilinear", "libplacebo-gaussian", "libplacebo-sinc", "libplacebo-lanczos", "libplacebo-ginseng", "libplacebo-ewa-jinc", "libplacebo-ewa-lanczos", "libplacebo-ewa-lanczossharp", "libplacebo-ewa-lanczos4sharpest", "libplacebo-ewa-ginseng", "libplacebo-ewa-hann", "libplacebo-ewa-hanning", "libplacebo-bicubic", "libplacebo-triangle", "libplacebo-hermite", "libplacebo-catmull-rom", "libplacebo-mitchell", "libplacebo-mitchell-clamp", "libplacebo-robidoux", "libplacebo-robidouxsharp", "libplacebo-ewa-robidoux", "libplacebo-ewa-robidouxsharp"}}
+        Property LibPlaceboShaderRadius As New OptionParam With {.Text = "     Radius Mode", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Options = {"Auto (default)", "Manual"}, .Values = {"auto", "manual"}}
+        Property LibPlaceboShaderRadiusValue As New NumParam With {.Text = "     Radius", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Config = {0, 16, 0.1, 2}, .VisibleFunc = Function() Not LibPlaceboShaderRadius.IsDefaultValue}
+        Property LibPlaceboShaderClamp As New NumParam With {.Text = "     Clamp", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Config = {0, 1, 0.01, 2}}
+        Property LibPlaceboShaderTaper As New NumParam With {.Text = "     Taper", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Config = {0, 1, 0.01, 2}}
+        Property LibPlaceboShaderBlur As New NumParam With {.Text = "     Blur", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Config = {0, 100, 0.5, 1}}
+        Property LibPlaceboShaderAntiring As New NumParam With {.Text = "     Anti Ring", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Config = {0, 1, 0.01, 2}}
+        Property LibPlaceboShaderLinear As New OptionParam With {.Text = "     Linear", .HelpSwitch = "--vpp-libplacebo-shader", .Init = 0, .Options = {"Undefined (default)", "No", "Yes"}, .Values = {"", "false", "true"}}
+
         Property LibPlaceboTonemapping As New BoolParam With {.Text = "LibPlacebo-Tonemapping", .Switch = "--vpp-libplacebo-tonemapping", .ValueChangedAction = Sub(x) LibPlaceboTonemapping2.Value = x, .ArgsFunc = AddressOf GetLibPlaceboTonemappingArgs}
         Property LibPlaceboTonemapping2 As New BoolParam With {.Text = "LibPlacebo-Tonemapping", .HelpSwitch = "--vpp-libplacebo-tonemapping", .ValueChangedAction = Sub(x) LibPlaceboTonemapping.Value = x}
         Property LibPlaceboTonemappingSrcCsp As New OptionParam With {.Text = "     Source Colorspace", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Auto (default)", "SDR", "HDR10", "HLG", "Dolby Vision", "RGB"}, .Values = {"auto", "sdr", "hdr10", "hlg", "dovi", "rgb"}}
@@ -989,6 +1004,8 @@ Public Class NVEnc
                         Nlmeans, NlmeansSigma, NlmeansH, NlmeansPatch, NlmeansSearch, NlmeansFp16)
                     Add("VPP | LibPlacebo | Deband",
                         LibPlaceboDeband, LibPlaceboDebandIterations, LibPlaceboDebandThreshold, LibPlaceboDebandRadius, LibPlaceboDebandGrainY, LibPlaceboDebandGrainC, LibPlaceboDebandDither, LibPlaceboDebandLutSize)
+                    Add("VPP | LibPlacebo | Shader",
+                        LibPlaceboShader, LibPlaceboShaderShader, LibPlaceboShaderResWidth, LibPlaceboShaderResHeight, LibPlaceboShaderColorsystem, LibPlaceboShaderTransfer, LibPlaceboShaderResampler, LibPlaceboShaderRadius, LibPlaceboShaderRadiusValue, LibPlaceboShaderClamp, LibPlaceboShaderTaper, LibPlaceboShaderBlur, LibPlaceboShaderAntiring, LibPlaceboShaderLinear)
                     Add("VPP | LibPlacebo | Tonemapping",
                         LibPlaceboTonemapping,
                         LibPlaceboTonemappingSrcCsp, LibPlaceboTonemappingDstCsp, LibPlaceboTonemappingDstPlTransfer, LibPlaceboTonemappingDstPlColorprim,
@@ -1152,6 +1169,20 @@ Public Class NVEnc
                 LibPlaceboDebandGrainC.NumEdit.Enabled = LibPlaceboDeband.Value
                 LibPlaceboDebandDither.MenuButton.Enabled = LibPlaceboDeband.Value
                 LibPlaceboDebandLutSize.MenuButton.Enabled = LibPlaceboDeband.Value
+
+                LibPlaceboShaderShader.TextEdit.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderResWidth.NumEdit.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderResHeight.NumEdit.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderColorsystem.MenuButton.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderTransfer.MenuButton.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderResampler.MenuButton.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderRadius.MenuButton.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderRadiusValue.NumEdit.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderClamp.NumEdit.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderTaper.NumEdit.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderBlur.NumEdit.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderAntiring.NumEdit.Enabled = LibPlaceboShader.Value
+                LibPlaceboShaderLinear.MenuButton.Enabled = LibPlaceboShader.Value
 
                 LibPlaceboTonemappingSrcCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
                 LibPlaceboTonemappingDstCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
@@ -1375,6 +1406,25 @@ Public Class NVEnc
                 If LibPlaceboDebandDither.Value <> LibPlaceboDebandDither.DefaultValue Then ret += ",dither=" & LibPlaceboDebandDither.ValueText.ToInvariantString()
                 If LibPlaceboDebandLutSize.Value <> LibPlaceboDebandLutSize.DefaultValue Then ret += ",lut_size=" & LibPlaceboDebandLutSize.ValueText.ToInvariantString()
                 Return "--vpp-libplacebo-deband " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function GetLibPlaceboShaderArgs() As String
+            If LibPlaceboShader.Value Then
+                Dim sb = New StringBuilder()
+                If Not String.IsNullOrWhiteSpace(LibPlaceboShaderShader.Value) Then sb.Append($",shader={LibPlaceboShaderShader.Value}")
+                If Not LibPlaceboShaderResWidth.IsDefaultValue OrElse Not LibPlaceboShaderResHeight.IsDefaultValue Then sb.Append($",res={LibPlaceboShaderResWidth.Value.ToInvariantString()}x{LibPlaceboShaderResHeight.Value.ToInvariantString()}")
+                If Not LibPlaceboShaderColorsystem.IsDefaultValue Then sb.Append($",colorsystem={LibPlaceboShaderColorsystem.ValueText.ToInvariantString()}")
+                If Not LibPlaceboShaderTransfer.IsDefaultValue Then sb.Append($",transfer={LibPlaceboShaderTransfer.ValueText.ToInvariantString()}")
+                If Not LibPlaceboShaderResampler.IsDefaultValue Then sb.Append($",resampler={LibPlaceboShaderResampler.ValueText.ToInvariantString()}")
+                If Not LibPlaceboShaderRadius.IsDefaultValue Then sb.Append($",radius={LibPlaceboShaderRadiusValue.Value.ToInvariantString()}")
+                If Not LibPlaceboShaderClamp.IsDefaultValue Then sb.Append($",clamp={LibPlaceboShaderClamp.Value.ToInvariantString()}")
+                If Not LibPlaceboShaderTaper.IsDefaultValue Then sb.Append($",taper={LibPlaceboShaderTaper.Value.ToInvariantString()}")
+                If Not LibPlaceboShaderBlur.IsDefaultValue Then sb.Append($",blur={LibPlaceboShaderBlur.Value.ToInvariantString()}")
+                If Not LibPlaceboShaderAntiring.IsDefaultValue Then sb.Append($",antiring={LibPlaceboShaderAntiring.Value.ToInvariantString()}")
+                If Not LibPlaceboShaderLinear.IsDefaultValue Then sb.Append($",linear={LibPlaceboShaderLinear.ValueText.ToInvariantString()}")
+                Return $"{LibPlaceboShader.Switch} {sb.ToString().TrimStart(","c)}"
             End If
             Return ""
         End Function

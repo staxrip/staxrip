@@ -11,6 +11,7 @@ Public MustInherit Class VideoEncoder
 
     MustOverride Sub Encode()
 
+    MustOverride ReadOnly Property Codec As String
     MustOverride ReadOnly Property OutputExt As String
 
     Overridable Property Bitrate As Integer
@@ -524,6 +525,12 @@ Public Class BatchEncoder
 
     Property OutputFileTypeValue As String
 
+    Overrides ReadOnly Property Codec As String
+        Get
+            Return OutputFileTypeValue
+        End Get
+    End Property
+
     Overrides ReadOnly Property OutputExt As String
         Get
             Return OutputFileTypeValue
@@ -677,6 +684,12 @@ Public Class NullEncoder
             End If
 
             Return sourceFile
+        End Get
+    End Property
+
+    Overrides ReadOnly Property Codec As String
+        Get
+            Return OutputExt
         End Get
     End Property
 

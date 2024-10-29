@@ -551,6 +551,9 @@ Public Class Macro
         If value.Contains("%encoder_ext%") Then value = value.Replace("%encoder_ext%", proj.VideoEncoder.OutputExt)
         If Not value.Contains("%") Then Return value
 
+        If value.Contains("%encoder_codec%") Then value = value.Replace("%encoder_codec%", proj.VideoEncoder.Codec)
+        If Not value.Contains("%") Then Return value
+
         If value.Contains("%muxer_ext%") Then value = value.Replace("%muxer_ext%", proj.VideoEncoder.Muxer.OutputExt)
         If Not value.Contains("%") Then Return value
 

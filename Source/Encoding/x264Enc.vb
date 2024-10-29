@@ -34,6 +34,12 @@ Public Class x264Enc
         End Set
     End Property
 
+    Overrides ReadOnly Property Codec As String
+        Get
+            Return "h264"
+        End Get
+    End Property
+
     Overrides ReadOnly Property OutputExt As String
         Get
             If Params.Muxer.Value = 0 OrElse Params.Muxer.Value = 1 Then

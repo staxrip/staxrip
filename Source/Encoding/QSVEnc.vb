@@ -119,6 +119,12 @@ Public Class QSVEnc
         End Using
     End Sub
 
+    Overrides ReadOnly Property Codec As String
+        Get
+            Return Params.Codec.ValueText
+        End Get
+    End Property
+
     Overrides ReadOnly Property OutputExt() As String
         Get
             If Params.Codec.ValueText = "av1" Then

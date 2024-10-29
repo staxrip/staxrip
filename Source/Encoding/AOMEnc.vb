@@ -40,6 +40,12 @@ Public Class AOMEnc
         End Set
     End Property
 
+    Overrides ReadOnly Property Codec As String
+        Get
+            Return "av1"
+        End Get
+    End Property
+
     Overrides ReadOnly Property OutputExt As String
         Get
             If Params.OutputIvf.Value Then Return "ivf"

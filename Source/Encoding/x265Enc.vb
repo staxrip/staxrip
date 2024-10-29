@@ -63,6 +63,12 @@ Public Class x265Enc
         End Get
     End Property
 
+    Overrides ReadOnly Property Codec As String
+        Get
+            Return "hevc"
+        End Get
+    End Property
+
     Overrides ReadOnly Property OutputExt As String
         Get
             Return "hevc"

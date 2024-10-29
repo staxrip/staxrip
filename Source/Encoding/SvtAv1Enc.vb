@@ -62,6 +62,12 @@ Public Class SvtAv1Enc
     End Property
 
 
+    Overrides ReadOnly Property Codec As String
+        Get
+            Return "av1"
+        End Get
+    End Property
+
     Overrides ReadOnly Property OutputExt As String
         Get
             Return "ivf"

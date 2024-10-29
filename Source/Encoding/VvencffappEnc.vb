@@ -31,6 +31,12 @@ Public Class VvencffappEnc
         End Set
     End Property
 
+    Overrides ReadOnly Property Codec As String
+        Get
+            Return "vvc"
+        End Get
+    End Property
+
     Overrides ReadOnly Property OutputExt As String
         Get
             Return "vvc"

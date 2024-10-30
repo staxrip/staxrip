@@ -67,6 +67,8 @@ Public Class MainForm
     Public WithEvents blTargetParText As ButtonLabel
     Public WithEvents lAspectRatioError As LabelEx
     Public WithEvents lAspectRatioErrorText As LabelEx
+    Public WithEvents blCropText As ButtonLabel
+    Public WithEvents lCrop2 As LabelEx
     Public WithEvents gbAudio As GroupBoxEx
     Public WithEvents blSourceParText As ButtonLabel
     Public WithEvents lSourcePAR As LabelEx
@@ -126,6 +128,8 @@ Public Class MainForm
         Me.lPixel = New StaxRip.UI.LabelEx()
         Me.blTargetParText = New StaxRip.UI.ButtonLabel()
         Me.lAspectRatioErrorText = New StaxRip.UI.LabelEx()
+        Me.lCrop2 = New StaxRip.UI.LabelEx()
+        Me.blCropText = New StaxRip.UI.ButtonLabel()
         Me.lDAR = New StaxRip.UI.LabelEx()
         Me.lZoomText = New StaxRip.UI.LabelEx()
         Me.lPixelText = New StaxRip.UI.LabelEx()
@@ -583,17 +587,20 @@ Public Class MainForm
         Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(SizeType.Percent, 40.0!))
         Me.tlpResizeValues.Controls.Add(Me.blTargetDarText, 0, 1)
-        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioError, 3, 3)
-        Me.tlpResizeValues.Controls.Add(Me.lPAR, 1, 3)
-        Me.tlpResizeValues.Controls.Add(Me.lZoom, 3, 2)
-        Me.tlpResizeValues.Controls.Add(Me.lSarText, 0, 2)
-        Me.tlpResizeValues.Controls.Add(Me.lPixel, 3, 1)
-        Me.tlpResizeValues.Controls.Add(Me.blTargetParText, 0, 3)
-        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioErrorText, 2, 3)
         Me.tlpResizeValues.Controls.Add(Me.lDAR, 1, 1)
-        Me.tlpResizeValues.Controls.Add(Me.lZoomText, 2, 2)
         Me.tlpResizeValues.Controls.Add(Me.lPixelText, 2, 1)
+        Me.tlpResizeValues.Controls.Add(Me.lPixel, 3, 1)
+        Me.tlpResizeValues.Controls.Add(Me.lSarText, 0, 2)
         Me.tlpResizeValues.Controls.Add(Me.lSAR, 1, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lZoomText, 2, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lZoom, 3, 2)
+        Me.tlpResizeValues.Controls.Add(Me.blTargetParText, 0, 3)
+        Me.tlpResizeValues.Controls.Add(Me.lPAR, 1, 3)
+        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioErrorText, 2, 3)
+        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioError, 3, 3)
+        Me.tlpResizeValues.Controls.Add(Me.blCropText, 0, 4)
+        Me.tlpResizeValues.Controls.Add(Me.lCrop2, 1, 4)
+        Me.tlpResize.SetColumnSpan(Me.lCrop2, 3)
         Me.tlpResizeValues.Location = New System.Drawing.Point(0, 162)
         Me.tlpResizeValues.Margin = New System.Windows.Forms.Padding(0)
         Me.tlpResizeValues.Name = "tlpResizeValues"
@@ -619,16 +626,6 @@ Public Class MainForm
         Me.blTargetDarText.TabIndex = 23
         Me.blTargetDarText.Text = "DAR:"
         Me.blTargetDarText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lAspectRatioError
-        '
-        Me.lAspectRatioError.Anchor = System.Windows.Forms.AnchorStyles.Left
-        Me.lAspectRatioError.AutoSize = True
-        Me.lAspectRatioError.Location = New System.Drawing.Point(253, 46)
-        Me.lAspectRatioError.Margin = New System.Windows.Forms.Padding(0)
-        Me.lAspectRatioError.Size = New System.Drawing.Size(34, 24)
-        Me.lAspectRatioError.Text = "-"
-        Me.lAspectRatioError.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lPAR
         '
@@ -682,6 +679,16 @@ Public Class MainForm
         Me.blTargetParText.Text = "PAR:"
         Me.blTargetParText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
+        'lAspectRatioError
+        '
+        Me.lAspectRatioError.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lAspectRatioError.AutoSize = True
+        Me.lAspectRatioError.Location = New System.Drawing.Point(253, 46)
+        Me.lAspectRatioError.Margin = New System.Windows.Forms.Padding(0)
+        Me.lAspectRatioError.Size = New System.Drawing.Size(34, 24)
+        Me.lAspectRatioError.Text = "-"
+        Me.lAspectRatioError.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
         'lAspectRatioErrorText
         '
         Me.lAspectRatioErrorText.Anchor = System.Windows.Forms.AnchorStyles.Left
@@ -691,6 +698,27 @@ Public Class MainForm
         Me.lAspectRatioErrorText.Size = New System.Drawing.Size(106, 24)
         Me.lAspectRatioErrorText.Text = "Error:"
         Me.lAspectRatioErrorText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lCrop2
+        '
+        Me.lCrop2.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lCrop2.AutoSize = True
+        Me.lCrop2.Location = New System.Drawing.Point(253, 46)
+        Me.lCrop2.Margin = New System.Windows.Forms.Padding(0)
+        Me.lCrop2.Size = New System.Drawing.Size(34, 24)
+        Me.lCrop2.Text = "-"
+        Me.lCrop2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'blCropText
+        '
+        Me.blCropText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.blCropText.AutoSize = True
+        Me.blCropText.Location = New System.Drawing.Point(131, 46)
+        Me.blCropText.Margin = New System.Windows.Forms.Padding(0)
+        Me.blCropText.Size = New System.Drawing.Size(106, 24)
+        Me.blCropText.Text = "Crop:"
+        Me.blCropText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.blCropText.ClickAction = AddressOf ShowCropDialog
         '
         'lDAR
         '
@@ -3059,7 +3087,8 @@ Public Class MainForm
         End If
 
         lAspectRatioError.Text = Calc.GetAspectRatioError.ToString("f2") + "%"
-        lCrop.Text = If(isCropped, cropw.ToString() + "/" + croph.ToString(), "disabled")
+        lCrop.Text = If(isCropped, $"{cropw}/{croph}", "disabled")
+        lCrop2.Text = If(isCropped, $"{p.CropLeft}, {p.CropRight} / {p.CropTop}, {p.CropBottom}", "-")
 
         Dim widthZoom = p.TargetWidth / cropw * 100
         Dim heightZoom = p.TargetHeight / croph * 100

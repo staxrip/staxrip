@@ -335,21 +335,34 @@ Public Class SimpleUI
         Return ret
     End Function
 
-    Function AddEmptyBlock(parent As FlowLayoutPanelEx) As EmptyBlock
-        Dim ret As New EmptyBlock
-        ret.AutoSize = True
-        ret.UseParentWidth = True
+    Function AddEmptyBlock(Optional parent As FlowLayoutPanelEx = Nothing) As EmptyBlock
+        If parent Is Nothing Then
+            parent = GetActiveFlowPage()
+        End If
+
+        Dim ret As New EmptyBlock With {
+            .AutoSize = True,
+            .UseParentWidth = True
+        }
+
         parent.Controls.Add(ret)
         Return ret
     End Function
 
-    Sub AddLine(parent As FlowLayoutPanelEx, Optional text As String = "", Optional marginTop As Integer = 12, Optional marginBottom As Integer = 7)
-        Dim line As New SimpleUILineControl
-        line.Text = text
-        line.Expand = True
-        line.Margin = New Padding(0, marginTop, 0, marginBottom)
+    Function AddLine(Optional parent As FlowLayoutPanelEx = Nothing, Optional text As String = "", Optional marginTop As Integer = 12, Optional marginBottom As Integer = 7) As SimpleUILineControl
+        If parent Is Nothing Then
+            parent = GetActiveFlowPage()
+        End If
+
+        Dim line As New SimpleUILineControl With {
+            .Text = text,
+            .Expand = True,
+            .Margin = New Padding(0, marginTop, 0, marginBottom)
+        }
+
         parent.Controls.Add(line)
-    End Sub
+        Return line
+    End Function
 
     Function CreateFlowPage(Optional path As String = "-",
                             Optional autoSuspend As Boolean = False) As FlowPage

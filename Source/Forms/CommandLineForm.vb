@@ -196,7 +196,10 @@ Public Class CommandLineForm
                 SimpleUI.AddLabel(parent, param.Label).MarginTop = FontHeight \ 2
             End If
 
-            If TypeOf param Is BoolParam Then
+            If TypeOf param Is LineParam Then
+                Dim line = SimpleUI.AddLine(parent, "", 2, 2)
+                DirectCast(param, LineParam).InitParam(line)
+            ElseIf TypeOf param Is BoolParam Then
                 Dim checkBox = SimpleUI.AddBool(parent)
                 checkBox.Text = param.Text
 

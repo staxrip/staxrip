@@ -1,5 +1,6 @@
 ﻿
 Imports System.Text
+Imports StaxRip.SimpleUI
 
 Imports StaxRip.UI
 
@@ -279,6 +280,26 @@ Namespace VideoEncoderCommandLine
             End If
 
             Return Text
+        End Function
+    End Class
+
+    Public Class LineParam
+        Inherits CommandLineParam
+
+        Property Line As LineControl
+
+
+        Public Overrides Sub InitParam(store As PrimitiveStore, params As CommandLineParams)
+            Me.Store = store
+            Me.Params = params
+        End Sub
+
+        Public Overloads Sub InitParam(line As SimpleUILineControl)
+            Me.Line = line
+        End Sub
+
+        Public Overrides Function GetControl() As Control
+            Return Line
         End Function
     End Class
 

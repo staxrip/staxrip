@@ -3086,14 +3086,14 @@ Public Class MainForm
             End If
         End If
 
-        lAspectRatioError.Text = Calc.GetAspectRatioError.ToString("f2") + "%"
+        lAspectRatioError.Text = Calc.GetAspectRatioError.ToInvariantString("f2") + "%"
         lCrop.Text = If(isCropped, $"{cropw}/{croph}", "disabled")
         lCrop2.Text = If(isCropped, $"{p.CropLeft}, {p.CropRight} / {p.CropTop}, {p.CropBottom}", "-")
 
         Dim widthZoom = p.TargetWidth / cropw * 100
         Dim heightZoom = p.TargetHeight / croph * 100
 
-        lZoom.Text = widthZoom.ToString("f1") + "/" + heightZoom.ToString("f1")
+        lZoom.Text = widthZoom.ToInvariantString("f1") + "/" + heightZoom.ToInvariantString("f1")
         lPixel.Text = CInt(p.TargetWidth * p.TargetHeight).ToString
 
         SetSlider()
@@ -3106,9 +3106,9 @@ Public Class MainForm
         Dim par = Calc.GetTargetPAR
 
         lPAR.Text = If(Calc.IsARSignalingRequired OrElse (par.X = 1 AndAlso par.Y = 1), par.X & ":" & par.Y, "n/a")
-        lDAR.Text = Calc.GetTargetDAR.ToString.Shorten(8)
-        lSAR.Text = (p.TargetWidth / p.TargetHeight).ToString.Shorten(8)
-        lSourceDar.Text = Calc.GetSourceDAR.ToString.Shorten(8)
+        lDAR.Text = Calc.GetTargetDAR.ToInvariantString.Shorten(8)
+        lSAR.Text = (p.TargetWidth / p.TargetHeight).ToInvariantString.Shorten(8)
+        lSourceDar.Text = Calc.GetSourceDAR.ToInvariantString.Shorten(8)
         par = Calc.GetSimpleSourcePAR
         lSourcePAR.Text = par.X & ":" & par.Y
 
@@ -3123,8 +3123,8 @@ Public Class MainForm
             lSource1.Text = lSource1.GetMaxTextSpace(
                 g.GetTimeString(p.SourceSeconds),
                 sizeText,
-                If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToString("f1") + "Mb/s", ""),
-                p.SourceFrameRate.ToString.Shorten(9) + "fps",
+                If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToInvariantString("f1") + "Mb/s", ""),
+                p.SourceFrameRate.ToInvariantString.Shorten(9) + "fps",
                 p.SourceFrameRateMode)
 
             lSource2.Text = lSource1.GetMaxTextSpace(
@@ -3135,13 +3135,13 @@ Public Class MainForm
                 p.SourceVideoFormat, p.SourceVideoFormatProfile)
 
             lTarget1.Text = lSource1.GetMaxTextSpace(g.GetTimeString(p.TargetSeconds),
-                p.TargetFrameRate.ToString.Shorten(9) + "fps", p.Script.Info.Width & "x" & p.Script.Info.Height,
+                p.TargetFrameRate.ToInvariantString.Shorten(9) + "fps", p.Script.Info.Width & "x" & p.Script.Info.Height,
                 "Audio Bitrate: " & CInt(Calc.GetAudioBitrate))
 
             If p.VideoEncoder.IsCompCheckEnabled Then
                 laTarget2.Text = lSource1.GetMaxTextSpace(
-                    "Quality: " & CInt(Calc.GetPercent).ToString() + " %",
-                    "Compressibility: " + p.Compressibility.ToString("f2"))
+                    "Quality: " & CInt(Calc.GetPercent).ToInvariantString() + " %",
+                    "Compressibility: " + p.Compressibility.ToInvariantString("f2"))
             Else
                 Dim subtitles = p.VideoEncoder.Muxer.Subtitles.Where(Function(i) i.Enabled)
                 laTarget2.Text = "Subtitles: " & subtitles.Count & " " + subtitles.Select(Function(i) i.TypeName).Distinct.Join("/")

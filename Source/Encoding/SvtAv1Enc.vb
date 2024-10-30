@@ -1294,12 +1294,14 @@ Public Class SvtAv1EncParams
         .Config = {0, 100, 1},
         .Init = 0}
 
-    Property PsyMinChromaQmLevel As New NumParam With {
-        .Switch = "--chroma-qm-min",
-        .Text = "Min chroma quant matrix flatness",
-        .Config = {0, 15, 1},
-        .VisibleFunc = Function() EnableQmPsy.Visible AndAlso EnableQmPsy.Value,
-        .Init = 8}
+    Property PsyKeyframeTemporalFilteringStrength As New OptionParam With {
+        .Switch = "--kf-tf-strength",
+        .Text = "Keyframe Temporal Filtering Strength",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0", "1 (default)", "2", "3", "4"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 1}
 
     Property PsyMaxChromaQmLevel As New NumParam With {
         .Switch = "--chroma-qm-max",
@@ -1307,6 +1309,13 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() EnableQmPsy.Visible AndAlso EnableQmPsy.Value,
         .Config = {0, 15, 1},
         .Init = 15}
+
+    Property PsyMinChromaQmLevel As New NumParam With {
+        .Switch = "--chroma-qm-min",
+        .Text = "Min chroma quant matrix flatness",
+        .Config = {0, 15, 1},
+        .VisibleFunc = Function() EnableQmPsy.Visible AndAlso EnableQmPsy.Value,
+        .Init = 8}
 
     Property PsyTemporalFilteringStrength As New OptionParam With {
         .Switch = "--tf-strength",
@@ -1380,7 +1389,7 @@ Public Class SvtAv1EncParams
                 If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then
                     Add("PSY",
                         PsyHdr10PlusJson, PsyDolbyVisionRpu,
-                        PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain, PsyTemporalFilteringStrength, PsyNoiseNormStrength,
+                        PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain, PsyTemporalFilteringStrength, PsyKeyframeTemporalFilteringStrength, PsyNoiseNormStrength,
                         PsyFrameLumaBias, PsyMinChromaQmLevel, PsyMaxChromaQmLevel
                     )
                 End If

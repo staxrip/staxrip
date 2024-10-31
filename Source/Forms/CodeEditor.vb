@@ -544,7 +544,7 @@ Public Class CodeEditor
 
         ReadOnly Property MaxTextWidth As Integer
             Get
-                Return rtbScript.Font.Height * 50
+                Return rtbScript.Font.Height * 100
             End Get
         End Property
 

@@ -193,7 +193,9 @@ Friend Class JobsForm
 
     Sub New(theme As Theme)
         InitializeComponent()
-        RestoreClientSize(40, 20)
+        RestoreClientSize(55, 35)
+
+        SaveAndLoadSize = True
 
         lv.UpButton = bnUp
         lv.DownButton = bnDown

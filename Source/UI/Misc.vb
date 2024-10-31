@@ -12,6 +12,7 @@ Namespace UI
         Private FileDropValue As Boolean
         Private DefaultWidthScale As Single
         Private DefaultHeightScale As Single
+        Protected SaveAndLoadSize As Boolean = True
 
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Shadows Property FontHeight As Integer
@@ -118,8 +119,13 @@ Namespace UI
                 Dim defaultWidth = CInt(Font.Height * DefaultWidthScale)
                 Dim defaultHeight = CInt(Font.Height * DefaultHeightScale)
 
-                Dim w = s.Storage.GetInt(Me.GetType().Name + "width")
-                Dim h = s.Storage.GetInt(Me.GetType().Name + "height")
+                Dim w = 0
+                Dim h = 0
+
+                If SaveAndLoadSize Then
+                    w = s.Storage.GetInt(Me.GetType().Name + "width")
+                    h = s.Storage.GetInt(Me.GetType().Name + "height")
+                End If
 
                 Dim workingArea = Screen.FromControl(Me).WorkingArea
 
@@ -157,7 +163,7 @@ Namespace UI
                 s.WindowPositions.Save(Me)
             End If
 
-            If DefaultWidthScale <> 0 Then
+            If SaveAndLoadSize AndAlso DefaultWidthScale <> 0 Then
                 SaveClientSize()
             End If
         End Sub
@@ -194,6 +200,7 @@ Namespace UI
             HelpButton = True
             MaximizeBox = False
             MinimizeBox = False
+            SaveAndLoadSize = False
             ShowIcon = False
             ShowInTaskbar = False
             StartPosition = FormStartPosition.CenterParent

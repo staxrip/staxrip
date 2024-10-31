@@ -665,7 +665,7 @@ Public Class AudioForm
         Me.AcceptButton = Me.bnOK
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
-        Me.AutoSize = True
+        Me.AutoSize = False
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.CancelButton = Me.bnCancel
         Me.ClientSize = New System.Drawing.Size(1866, 1406)
@@ -700,6 +700,7 @@ Public Class AudioForm
     Sub New()
         MyBase.New()
         InitializeComponent()
+        RestoreClientSize(50, 33)
 
         rtbCommandLine.ReadOnly = True
 

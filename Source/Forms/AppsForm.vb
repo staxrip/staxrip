@@ -405,7 +405,7 @@ Public Class AppsForm
     Sub New()
         MyBase.New()
         InitializeComponent()
-        RestoreClientSize(45, 32)
+        RestoreClientSize(48, 32)
         tv.ItemHeight = CInt(FontHeight * 1.3)
         tv.Scrollable = True
 

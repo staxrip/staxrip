@@ -400,6 +400,7 @@ Public MustInherit Class BasicVideoEncoder
 
     Public Overrides Sub ImportCommandLine(commandLine As String)
         ImportCommandLine(commandLine, CommandLineParams)
+        OnStateChange()
     End Sub
 
     Overrides Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String

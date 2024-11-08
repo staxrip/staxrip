@@ -252,7 +252,7 @@ Public Class ffmpegDemuxer
         Dim subtitles As List(Of Subtitle) = Nothing
 
         Dim videoDemuxing = proj.DemuxVideo
-        Dim audioDemuxing = p.AudioTracks.Where(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile)?.Any() AndAlso MediaInfo.GetAudioCount(proj.SourceFile) > 0
+        Dim audioDemuxing = MediaInfo.GetAudioCount(proj.SourceFile) > 0
         Dim subtitlesDemuxing = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
 
         If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
@@ -471,7 +471,7 @@ Public Class MP4BoxDemuxer
         Dim audioStreams As List(Of AudioStream) = Nothing
         Dim subtitles As List(Of Subtitle) = Nothing
         Dim attachments = GetAttachments(proj.SourceFile)
-        Dim demuxAudio = p.AudioTracks.Where(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile)?.Any() AndAlso MediaInfo.GetAudioCount(proj.SourceFile) > 0
+        Dim demuxAudio = MediaInfo.GetAudioCount(proj.SourceFile) > 0
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim demuxChapters = proj.DemuxChapters
         Dim demuxAttachments = proj.DemuxAttachments
@@ -726,17 +726,13 @@ Public Class mkvDemuxer
         Dim subtitles As List(Of Subtitle) = Nothing
         Dim stdout = ProcessHelp.GetConsoleOutput(Package.mkvmerge.Path, "--identify --ui-language en " + proj.SourceFile.Escape)
         Dim attachments = GetAttachments(stdout)
-        Dim demuxAudio = p.AudioTracks.Where(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile)?.Any() AndAlso MediaInfo.GetAudioCount(proj.SourceFile) > 0
+        Dim demuxAudio = MediaInfo.GetAudioCount(proj.SourceFile) > 0
         Dim demuxSubtitles = MediaInfo.GetSubtitleCount(proj.SourceFile) > 0
         Dim demuxChapters = proj.DemuxChapters
         Dim demuxAttachments = proj.DemuxAttachments
         Dim _videoDemuxing = proj.DemuxVideo
 
-        If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso
-            ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse
-            (demuxSubtitles AndAlso proj.SubtitleMode = SubtitleMode.Dialog)) OrElse
-            Not proj Is p Then
-
+        If Not proj.NoDialogs AndAlso Not proj.BatchMode AndAlso ((demuxAudio AndAlso proj.DemuxAudio = DemuxMode.Dialog) OrElse (demuxSubtitles AndAlso proj.SubtitleMode = SubtitleMode.Dialog)) OrElse proj IsNot p Then
             Using form As New StreamDemuxForm(proj.SourceFile, attachments)
                 If form.ShowDialog() <> DialogResult.OK Then
                     Throw New AbortException

@@ -171,6 +171,7 @@ Public Class Macro
         ret.Add(New Macro("current_time24", "Current Time (24h)", GetType(String), "Returns the current time (24h)."))
         ret.Add(New Macro("dpi", "Main Dialog DPI", GetType(Integer), "DPI value of the main dialog."))
         ret.Add(New Macro("encoder", "Encoder", GetType(String), "Name of the active video encoder."))
+        ret.Add(New Macro("encoder_codec", "Encoder Codec", GetType(String), "Codec that is used by the active video encoder."))
         ret.Add(New Macro("encoder_ext", "Encoder File Extension", GetType(String), "File extension of the format the encoder of the active project outputs."))
         ret.Add(New Macro("encoder_out_file", "Encoder Output File", GetType(String), "Output file of the video encoder."))
         ret.Add(New Macro("encoder_profile", "Encoder Profile", GetType(String), "Name of the selected video encoder profile name."))

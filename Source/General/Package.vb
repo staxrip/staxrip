@@ -752,11 +752,21 @@ Public Class Package
         .Description = "FFT3DFilter uses Fast Fourier Transform method for image processing in frequency domain.",
         .AvsFilterNames = {"FFT3DFilter"}})
 
+    Shared Property AviSource As Package = Add(New PluginPackage With {
+        .Name = "AviSource",
+        .Filename = "avisource.dll",
+        .Description = "Pretty old source filter for AVI files.",
+        .WebURL = "https://github.com/vapoursynth/vs-avisource-obsolete/",
+        .DownloadURL = "https://github.com/vapoursynth/vs-avisource-obsolete/releases",
+        .HelpURL = "https://github.com/vapoursynth/vs-avisource-obsolete/blob/master/docs/avisource.rst",
+        .VsFilterNames = {"avisource.AVISource", "avisource.AVIFileSource", "avisource.OpenDMLSource"}})
+
     Shared Property BestSource As Package = Add(New PluginPackage With {
         .Name = "BestSource",
         .Filename = "BestSource.dll",
         .Description = "A super great audio/video source and FFmpeg wrapper.",
         .WebURL = "https://github.com/vapoursynth/bestsource",
+        .DownloadURL = "https://github.com/vapoursynth/bestsource/releases",
         .HelpURL = "https://github.com/vapoursynth/bestsource",
         .AvsFilterNames = {"BSAudioSource", "BSVideoSource", "BSSetDebugOutput", "BSSetFFmpegLogLevel"},
         .VsFilterNames = {"bs.AudioSource", "bs.VideoSource", "bs.TrackInfo", "bs.SetDebugOutput", "bs.SetFFmpegLogLevel"}})
@@ -766,6 +776,7 @@ Public Class Package
         .Filename = "ffms2.dll",
         .Description = "AviSynth+ and VapourSynth source filter supporting various input formats.",
         .WebURL = "https://github.com/FFMS/ffms2",
+        .DownloadURL = "https://github.com/FFMS/ffms2/releases",
         .HelpURL = "https://github.com/FFMS/ffms2/blob/master/doc/ffms2-avisynth.md",
         .AvsFilterNames = {"FFVideoSource", "FFAudioSource", "FFMS2"},
         .VsFilterNames = {"ffms2.Source"}})

@@ -352,24 +352,30 @@ Public Class MP4Muxer
             Next
         End If
 
+        Dim defaultsSet = p.AudioTracks.Where(Function(x) x.AudioProfile.Default).Any() OrElse p.AudioFiles.Where(Function(x) x.Default).Any()
+
         For Each track In p.AudioTracks
-            AddAudio(track.AudioProfile, args)
+            AddAudio(track.AudioProfile, args, defaultsSet)
         Next
 
         For Each ap In p.AudioFiles
-            AddAudio(ap, args)
+            AddAudio(ap, args, defaultsSet)
         Next
 
         ExpandMacros()
 
+        Dim subtitleDefaultsSet = Subtitles.Where(Function(x) x.Default).Any()
+
         For Each st In Subtitles
             If st.Enabled AndAlso File.Exists(st.Path) Then
+                Dim def = If(st.Default, ":tkhd=3:group=2", If(subtitleDefaultsSet, ":tkhd=0:group=2", ""))
+
                 If st.Path.Ext = "idx" Then
                     args.Append(" -add """ + st.Path + "#" & (st.IndexIDX + 1) &
-                                ":name=" + Macro.Expand(st.Title) + If(st.Default, ":group=1", "") + If(st.Forced, ":txtflags=0xC0000000", "") + """")
+                                ":name=" + Macro.Expand(st.Title) + def + If(st.Forced, ":txtflags=0xC0000000", "") + """")
                 Else
                     args.Append(" -add """ + st.Path + ":lang=" + st.Language.ThreeLetterCode +
-                                ":name=" + Macro.Expand(st.Title) + If(st.Default, ":group=1", "") + If(st.Forced, ":txtflags=0xC0000000", "") + """")
+                                ":name=" + Macro.Expand(st.Title) + def + If(st.Forced, ":txtflags=0xC0000000", "") + """")
                 End If
             End If
         Next
@@ -401,7 +407,7 @@ Public Class MP4Muxer
         Return args.ToString.Trim
     End Function
 
-    Sub AddAudio(ap As AudioProfile, args As StringBuilder)
+    Sub AddAudio(ap As AudioProfile, args As StringBuilder, forceDisabling As Boolean)
         If File.Exists(ap.File) AndAlso IsSupported(ap.File.Ext) AndAlso IsSupported(ap.OutputFileType) Then
             args.Append(" -add """ + ap.File)
 
@@ -424,7 +430,9 @@ Public Class MP4Muxer
             args.Append(":name=" + ap.ExpandMacros(ap.StreamName))
 
             If ap.Default Then
-                args.Append(":group=1")
+                args.Append(":tkhd=3:group=1")
+            ElseIf forceDisabling Then
+                args.Append(":tkhd=0:group=1")
             End If
 
             args.Append("""")

@@ -31,6 +31,15 @@ Public Class Rav1e
         End Set
     End Property
 
+    Overrides Property Bitrate As Integer
+        Get
+            Return CInt(Params.Bitrate.Value)
+        End Get
+        Set(value As Integer)
+            Params.Bitrate.Value = value
+        End Set
+    End Property
+
     Overrides ReadOnly Property Codec As String
         Get
             Return "av1"
@@ -271,7 +280,7 @@ Public Class Rav1eParams
                 ItemsValue = New List(Of CommandLineParam)
 
                 Add("Main",
-                    Tune, Passes, Mode, Speed, Bitrate, Quantizer,
+                    Tune, Mode, Passes, Speed, Bitrate, Quantizer,
                     New StringParam With {.Switch = "--mastering-display", .Path = "VUI", .Text = "Master Display"},
                     Keyint, MinKeyint, Threads, Limit, Light, MaxFALL, Prime, Matrix, Transfer, Range,
                     New BoolParam With {.Switch = "--low-latency", .Text = "Low Latency", .Path = "Basic"},

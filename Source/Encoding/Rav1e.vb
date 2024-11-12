@@ -55,6 +55,10 @@ Public Class Rav1e
     Overrides Sub Encode()
         p.Script.Synchronize()
         Encode("Video encoding", GetArgs(1, p.Script), s.ProcessPriority)
+
+        If Params.Passes.Visible AndAlso Params.Passes.Value = 1 Then
+            Encode("Video encoding", GetArgs(2, p.Script), s.ProcessPriority)
+        End If
     End Sub
 
     Overloads Sub Encode(passName As String, commandLine As String, priority As ProcessPriorityClass)
@@ -178,8 +182,8 @@ Public Class Rav1eParams
     Property Passes As New OptionParam With {
         .Text = "Passes",
         .Path = "Basic",
+        .Switches = {"--first-pass", "--second-pass"},
         .Options = {"One Pass", "Two Passes"},
-        .Values = {"--pass 1", "--pass 2"},
         .VisibleFunc = Function() Mode.Value = 1}
 
     Property Range As New OptionParam With {
@@ -315,6 +319,16 @@ Public Class Rav1eParams
 
         If includePaths AndAlso includeExecutable Then
             sb.Append(Package.ffmpeg.Path.Escape + $" -loglevel fatal -hide_banner{If(script.Path.Ext = "vpy", " -f vapoursynth", "")} -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 - | " + Package.Rav1e.Path.Escape)
+        End If
+
+        If includePaths AndAlso Passes.Visible AndAlso Passes.Value = 1 Then
+            Dim statsFile = (targetPath.DirAndBase + ".stats").Escape
+
+            If pass = 1 Then
+                sb.Append(" --first-pass " & statsFile)
+            Else
+                sb.Append(" --second-pass " & statsFile)
+            End If
         End If
 
         Dim q = From i In Items Where i.GetArgs <> ""

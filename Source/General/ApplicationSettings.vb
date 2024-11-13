@@ -22,6 +22,7 @@ Public Class ApplicationSettings
     Public CmdlPresetsEac3to As String
     Public CmdlPresetsMKV As String
     Public CmdlPresetsMP4 As String
+    Public CmdlVideoPresetsMP4 As String
     Public CmdlPresetsX264 As String
     Public CodeFont As String = "Consolas"
     Public CommandLineHighlighting As Boolean = True
@@ -254,6 +255,10 @@ Public Class ApplicationSettings
         If Check(CmdlPresetsMP4, "MP4 custom command line menu presets", 2) Then
             CmdlPresetsMP4 = "iPod = -ipod" + BR + 
                              "Streaming = -inter 500"
+        End If
+
+        If Check(CmdlVideoPresetsMP4, "MP4 custom video command line menu presets", 2) Then
+            CmdlVideoPresetsMP4 = "ForceSync = :forcesync"
         End If
 
         If Check(CmdlPresetsX264, "x264 custom command line menu presets", 8) OrElse CmdlPresetsX264 = "" Then

@@ -57,14 +57,25 @@ Public MustInherit Class Muxer
         End Get
     End Property
 
-    Private AdditionalSwitchesValue As String
+    Private AdditionalGeneralSwitchesValue As String
 
-    Property AdditionalSwitches As String
+    Property AdditionalGeneralSwitches As String
         Get
-            Return AdditionalSwitchesValue
+            Return AdditionalGeneralSwitchesValue
         End Get
         Set(Value As String)
-            AdditionalSwitchesValue = If(Value = "", Nothing, Value)
+            AdditionalGeneralSwitchesValue = If(Value = "", Nothing, Value)
+        End Set
+    End Property
+
+    Private AdditionalVideoSwitchesValue As String
+
+    Property AdditionalVideoSwitches As String
+        Get
+            Return AdditionalVideoSwitchesValue
+        End Get
+        Set(Value As String)
+            AdditionalVideoSwitchesValue = If(Value = "", Nothing, Value)
         End Set
     End Property
 
@@ -248,8 +259,8 @@ Public MustInherit Class Muxer
             Next
         Next
 
-        If AdditionalSwitches <> "" AndAlso AdditionalSwitches.StartsWith(" ") Then
-            AdditionalSwitches = AdditionalSwitches.TrimStart
+        If AdditionalGeneralSwitches <> "" AndAlso AdditionalGeneralSwitches.StartsWith(" ") Then
+            AdditionalGeneralSwitches = AdditionalGeneralSwitches.TrimStart
         End If
     End Sub
 
@@ -327,11 +338,8 @@ Public Class MP4Muxer
             End If
         End If
 
-        videoParams += ":name="
-
-        If VideoTrackName <> "" Then
-            videoParams += Macro.Expand(VideoTrackName)
-        End If
+        videoParams += ":name=" + If(VideoTrackName <> "", Macro.Expand(VideoTrackName), "")
+        videoParams += AdditionalVideoSwitches
 
         If p.VideoEncoder.GetChunks() = 1 Then
             args.Append(" -add " + (p.VideoEncoder.OutputPath + "#video" + videoParams).Escape)
@@ -370,8 +378,8 @@ Public Class MP4Muxer
             args.Append(" -chap " + ChapterFile.Escape)
         End If
 
-        If AdditionalSwitches <> "" Then
-            args.Append(" " + Macro.Expand(AdditionalSwitches))
+        If AdditionalGeneralSwitches <> "" Then
+            args.Append(" " + Macro.Expand(AdditionalGeneralSwitches))
         End If
 
         Dim tagList As New List(Of String)
@@ -607,13 +615,13 @@ Public Class MkvMuxer
                     Dim fp = Path.Combine(iDir, iBase + iExt)
 
                     If File.Exists(fp) Then
-                        AdditionalSwitches += " --attach-file " + fp.Escape
+                        AdditionalGeneralSwitches += " --attach-file " + fp.Escape
                     End If
                 Next
             Next
         Next
 
-        AdditionalSwitches = AdditionalSwitches?.Trim
+        AdditionalGeneralSwitches = AdditionalGeneralSwitches?.Trim
     End Sub
 
     Overrides Sub Mux()
@@ -825,8 +833,8 @@ Public Class MkvMuxer
 
         args += " --ui-language en"
 
-        If AdditionalSwitches <> "" Then
-            args += " " + Macro.Expand(AdditionalSwitches)
+        If AdditionalGeneralSwitches <> "" Then
+            args += " " + Macro.Expand(AdditionalGeneralSwitches)
         End If
 
         For Each i In Attachments

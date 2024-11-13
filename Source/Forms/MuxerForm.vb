@@ -12,12 +12,14 @@ Public Class MuxerForm
 #Region " Designer "
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
     Friend WithEvents bnCommandLinePreview As ButtonEx
-    Friend WithEvents CommandLineControl As StaxRip.CommandLineControl
+    Friend WithEvents clcGeneral As CommandLineControl
+    Friend WithEvents clcVideo As CommandLineControl
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
     Friend WithEvents tcMain As TabControlEx
     Friend WithEvents tpCommandLine As System.Windows.Forms.TabPage
     Friend WithEvents Label1 As LabelEx
+    Friend WithEvents Label2 As LabelEx
     Friend WithEvents tpOptions As System.Windows.Forms.TabPage
     Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents SimpleUI As StaxRip.SimpleUI
@@ -58,7 +60,8 @@ Public Class MuxerForm
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
-        Me.CommandLineControl = New StaxRip.CommandLineControl()
+        Me.clcGeneral = New CommandLineControl()
+        Me.clcVideo = New CommandLineControl()
         Me.bnCommandLinePreview = New ButtonEx()
         Me.bnCancel = New ButtonEx()
         Me.bnOK = New ButtonEx()
@@ -98,6 +101,7 @@ Public Class MuxerForm
         Me.tpCommandLine = New System.Windows.Forms.TabPage()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.Label1 = New LabelEx()
+        Me.Label2 = New LabelEx()
         Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         Me.pnTab = New PanelEx()
         Me.tcMain.SuspendLayout()
@@ -121,17 +125,29 @@ Public Class MuxerForm
         Me.pnTab.SuspendLayout()
         Me.SuspendLayout()
         '
-        'CommandLineControl
+        'clcGeneral
         '
-        Me.CommandLineControl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.clcGeneral.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.CommandLineControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.CommandLineControl.Location = New System.Drawing.Point(0, 48)
-        Me.CommandLineControl.Margin = New System.Windows.Forms.Padding(0)
-        Me.CommandLineControl.Name = "CommandLineControl"
-        Me.CommandLineControl.Size = New System.Drawing.Size(1598, 804)
-        Me.CommandLineControl.TabIndex = 0
+        Me.clcGeneral.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.clcGeneral.Location = New System.Drawing.Point(0, 48)
+        Me.clcGeneral.Margin = New System.Windows.Forms.Padding(0)
+        Me.clcGeneral.Name = "clcGeneral"
+        Me.clcGeneral.Size = New System.Drawing.Size(1598, 804)
+        Me.clcGeneral.TabIndex = 0
+        '
+        'clcVideo
+        '
+        Me.clcVideo.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.clcVideo.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.clcVideo.Location = New System.Drawing.Point(0, 48)
+        Me.clcVideo.Margin = New System.Windows.Forms.Padding(0)
+        Me.clcVideo.Name = "clcVideo"
+        Me.clcVideo.Size = New System.Drawing.Size(1598, 804)
+        Me.clcVideo.TabIndex = 1
         '
         'bnCommandLinePreview
         '
@@ -541,14 +557,18 @@ Public Class MuxerForm
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 36.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.Label1, 0, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.CommandLineControl, 0, 1)
+        Me.TableLayoutPanel1.Controls.Add(Me.clcGeneral, 0, 1)
+        Me.TableLayoutPanel1.Controls.Add(Me.Label2, 0, 2)
+        Me.TableLayoutPanel1.Controls.Add(Me.clcVideo, 0, 3)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(15, 14)
         Me.TableLayoutPanel1.Margin = New System.Windows.Forms.Padding(5)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
-        Me.TableLayoutPanel1.RowCount = 2
+        Me.TableLayoutPanel1.RowCount = 4
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.0!))
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(1598, 852)
         Me.TableLayoutPanel1.TabIndex = 2
         '
@@ -559,8 +579,16 @@ Public Class MuxerForm
         Me.Label1.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(460, 48)
-        Me.Label1.TabIndex = 1
-        Me.Label1.Text = "Additional custom switches:"
+        Me.Label1.Text = "Additional custom general switches:"
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(5, 0)
+        Me.Label2.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(460, 48)
+        Me.Label2.Text = "Additional custom video switches:"
         '
         'tlpMain
         '
@@ -648,7 +676,12 @@ Public Class MuxerForm
         Text += $" - {muxer.Name} - {g.DefaultCommands.GetApplicationDetails()}"
         Me.Muxer = muxer
         AddSubtitles(muxer.Subtitles)
-        CommandLineControl.tb.Text = muxer.AdditionalSwitches
+
+        clcGeneral.tb.Text = muxer.AdditionalGeneralSwitches
+        clcVideo.tb.Text = muxer.AdditionalVideoSwitches
+        clcVideo.Visible = TypeOf muxer Is MP4Muxer
+        Label2.Visible = TypeOf muxer Is MP4Muxer
+
         tcMain.SelectedIndex = s.Storage.GetInt("last selected muxer tab")
 
         lbAttachments.Items.AddRange(muxer.Attachments.Select(Function(val) New AttachmentContainer With {.Filepath = val}).ToArray)
@@ -895,7 +928,7 @@ Public Class MuxerForm
         mb.AddMenu("Edit with chapterEditor...", Sub() g.ShellExecute(Package.chapterEditor.Path, Muxer.ChapterFile.Escape))
 
         If TypeOf Muxer Is MkvMuxer Then
-            CommandLineControl.Presets = s.CmdlPresetsMKV
+            clcGeneral.Presets = s.CmdlPresetsMKV
 
             mb = UI.AddTextMenu()
             mb.Text = "Tags"
@@ -944,7 +977,8 @@ Public Class MuxerForm
         ElseIf TypeOf Muxer Is MP4Muxer Then
             tpAttachments.Enabled = False
 
-            CommandLineControl.Presets = s.CmdlPresetsMP4
+            clcGeneral.Presets = s.CmdlPresetsMP4
+            clcVideo.Presets = s.CmdlVideoPresetsMP4
 
             Dim txt = UI.AddText()
             txt.Text = "Video Track Name"
@@ -968,9 +1002,10 @@ Public Class MuxerForm
         MyBase.OnFormClosed(e)
 
         If TypeOf Muxer Is MkvMuxer Then
-            s.CmdlPresetsMKV = CommandLineControl.Presets
+            s.CmdlPresetsMKV = clcGeneral.Presets
         ElseIf TypeOf Muxer Is MP4Muxer Then
-            s.CmdlPresetsMP4 = CommandLineControl.Presets
+            s.CmdlPresetsMP4 = clcGeneral.Presets
+            s.CmdlVideoPresetsMP4 = clcVideo.Presets
         End If
 
         s.Storage.SetInt("last selected muxer tab", tcMain.SelectedIndex)
@@ -1071,7 +1106,8 @@ Public Class MuxerForm
         Next
 
         SimpleUI.Save()
-        Muxer.AdditionalSwitches = CommandLineControl.tb.Text
+        Muxer.AdditionalGeneralSwitches = clcGeneral.tb.Text
+        Muxer.AdditionalVideoSwitches = clcVideo.tb.Text
     End Sub
 
     Sub AddAttachment(paths As String())

@@ -400,13 +400,6 @@ Public Class NVEnc
             .VisibleFunc = Function() Codec.ValueText = "h265",
             .Options = {"Auto", "Main", "Main 10", "Main 444"}}
 
-        Property ProfileAV1 As New OptionParam With {
-            .Switch = "--profile",
-            .Text = "Profile",
-            .Name = "ProfileAV1",
-            .VisibleFunc = Function() Codec.ValueText = "av1",
-            .Options = {"Auto", "Main", "High"}}
-
         Property OutputDepth As New OptionParam With {
             .Switch = "--output-depth",
             .Text = "Output Depth",
@@ -783,15 +776,13 @@ Public Class NVEnc
 
                     Add("Basic",
                         Mode, Codec,
-                        New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Init = 6, .Options = {"Default", "Quality", "Performance", "P1 (Performance)", "P2", "P3", "P4 (Default)", "P5", "P6", "P7 (Quality)"}, .Values = {"default", "quality", "performance", "P1", "P2", "P3", "P4", "P5", "P6", "P7"}},
+                        New OptionParam With {.Switch = "--preset", .HelpSwitch = "-u", .Text = "Preset", .Init = 6, .Options = {"Default", "Quality", "Performance", "P1 (Performance)", "P2", "P3", "P4 (Default)", "P5", "P6", "P7 (Quality)"}, .Values = {"default", "quality", "performance", "p1", "p2", "p3", "p4", "p5", "p6", "p7"}},
                         OutputDepth,
                         New OptionParam With {.Switch = "--output-csp", .Text = "Colorspace", .Options = {"YUV420 (Default)", "YUV444", "RGB", "YUVA420"}, .Values = {"yuv420", "yuv444", "rgb", "yuva420"}},
-                        ProfileH264, ProfileH265, ProfileAV1,
+                        ProfileH264, ProfileH265,
                         New OptionParam With {.Name = "TierH265", .Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}},
-                        New OptionParam With {.Name = "TierAV1", .Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "av1", .Options = {"0", "1"}},
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Auto", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Auto", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
-                        New OptionParam With {.Name = "LevelAV1", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "av1", .Options = {"Auto", "2", "2.1", "2.2", "2.3", "3", "3.1", "3.2", "3.3", "4", "4.1", "4.2", "4.3", "5", "5.1", "5.2", "5.3", "6", "6.1", "6.2", "6.3", "7", "7.1", "7.2", "7.3"}},
                         ConstantQualityMode, Bitrate, VbrQuality, QVBR, QPAdvanced, QP, QPAV1, QPI, QPIAV1, QPP, QPPAV1, QPB, QPBAV1)
                     Add("Rate Control",
                         New StringParam With {.Switch = "--dynamic-rc", .Text = "Dynamic RC"},

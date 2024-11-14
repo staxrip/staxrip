@@ -1878,15 +1878,15 @@ Public Class MainForm
                 For j = 0 To groupedAudioFiles.Count() - 1
                     Dim item = groupedAudioFiles(j)
 
-                    If item IsNot Nothing Then
-                        If Not Regex.IsMatch(item.First().Base(), $"ID{id}\D") Then Continue For
+                    If item Is Nothing Then Continue For
 
-                        For k = 0 To item.Count()
-                            addAudioTrack(j, k)
-                        Next
+                    For k = 0 To item.Count() - 1
+                        If Not Regex.IsMatch(item(k).Base(), $"ID{id}\D") Then Continue For
 
-                        fileAdded = True
-                    End If
+                        addAudioTrack(j, k)
+                    Next
+
+                    fileAdded = True
                 Next
 
                 If Not fileAdded Then

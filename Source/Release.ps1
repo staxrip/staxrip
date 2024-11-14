@@ -9,7 +9,7 @@ $destinationDirectory   = 'A:\StaxRip-Releases'
 $targetDirectory         = $destinationDirectory + '\StaxRip'   # is extended after solution is build
 $includeProjectFiles    = @('*.config', '*.cpp', '*.h', '*.md', '*.ps1', '*.rc', '*.resx', '*.sln', '*.vb', '*.vbproj')
 $excludeBinPatterns = @(
-    '\\Settings'
+    '^\\[^\\]*Settings'
     '\\log\d+\.txt$',
     '.*recovery\.srip$',
     '.*\.log$',

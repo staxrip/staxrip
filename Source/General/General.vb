@@ -238,6 +238,7 @@ Public Class Folder
                     remux.AudioTracks.Add(New AudioTrack() With {
                                                 .AudioProfile = New MuxAudioProfile(),
                                                 .EditLabel = New AudioEditButtonLabel(index),
+                                                .LanguageLabel = New AudioLanguageLabel(index),
                                                 .NameLabel = New AudioNameButtonLabel(index),
                                                 .TextEdit = New AudioTextEdit(index)
                                           })

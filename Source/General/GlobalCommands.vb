@@ -302,12 +302,16 @@ Public Class GlobalCommands
         If includeVersion Then
             sb.Append($" v{version.Major}.{version.Minor}")
 
-            If version.Build > 0 Then
+            If version.Build > 0 OrElse version.Revision > 0 Then
                 sb.Append($".{version.Build}")
             End If
 
-            If includeSettingsVersion Then
-                If version.Minor <> s?.Version.Minor Then
+            If version.Revision > 0 Then
+                sb.Append($".{version.Revision}")
+            End If
+
+            If includeSettingsVersion AndAlso s?.Version IsNot Nothing Then
+                If version.Minor <> s.Version.Minor AndAlso version.Minor <> s.Version.Minor - 1 Then
                     sb.Append($" [v{s.Version.Major}.{s.Version.Minor}.{s.Version.Build}]")
                 End If
             End If

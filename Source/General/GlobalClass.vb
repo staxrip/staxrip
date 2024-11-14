@@ -1211,8 +1211,8 @@ Public Class GlobalClass
             Using td As New TaskDialog(Of String)
                 td.Title = If(title = "",
                     If(TypeOf ex Is ErrorAbortException,
-                        DirectCast(ex, ErrorAbortException).Title + $" (v{Application.ProductVersion})",
-                        ex.GetType.Name + $" (v{Application.ProductVersion})"),
+                        DirectCast(ex, ErrorAbortException).Title + $" ({g.DefaultCommands.GetApplicationDetails(False, True, True)})",
+                        ex.GetType.Name + $" ({g.DefaultCommands.GetApplicationDetails(False, True, True)})"),
                     title)
 
                 td.Timeout = timeout

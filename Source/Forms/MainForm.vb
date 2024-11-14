@@ -3407,7 +3407,7 @@ Public Class MainForm
             End If
 
             If p.Script.IsFilterActive("Cutting") AndAlso p.Ranges?.Any() AndAlso p.VideoEncoder.DolbyVisionMetadataPath IsNot Nothing Then
-                If ProcessTip($"Cutting is currently not supported for Dolby Vision encodes.{BR}Please turn the 'Cutting' filter off to get a valid Dolby Vision result.") Then
+                If ProcessTip($"Cutting is currently not supported for Dolby Vision encodes.{BR}Please remove the cut(s) or the RPU file from encoder options to get a valid Dolby Vision result.") Then
                     CanIgnoreTip = False
                     Return Warn("Cutting not allowed")
                 End If
@@ -7266,6 +7266,7 @@ Public Class MainForm
             .SetTip("Press Ctrl while using the slider to resize anamorphic.", tbResize)
             .SetTip("Aspect Ratio Error", lAspectRatioError, lAspectRatioErrorText)
             .SetTip("Cropped image size", lCrop, lCropText)
+            .SetTip("Cropped sides in format: Left, Right / Top, Bottom", blCropText, lCrop2)
             .SetTip("Source Display Aspect Ratio", lSourceDar, blSourceDarText)
             .SetTip("Source Pixel Aspect Ratio", lSourcePAR, blSourceParText)
             .SetTip("Target Video Bitrate in Kbps (Up/Down key)", tbBitrate, laBitrate)

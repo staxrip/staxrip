@@ -162,17 +162,35 @@ Public Class TaskDialog(Of T)
 
         If Timeout > 0 Then
             Dim originalWindowTitle = Text
+            Dim originalButtonText = ""
             Dim button = If(TimeoutButton, TryCast(AcceptButton, ButtonEx))
-            Dim originalButtonText = button?.Text
+
+            If button IsNot Nothing Then
+                originalButtonText = button.Text
+            End If
 
             g.RunTask(Sub()
+                          Dim buttonText = originalButtonText
+                          Dim windowTitle = originalWindowTitle
                           Dim counter = Timeout
 
                           While counter > 0 AndAlso Not IsDisposingOrDisposed
-                              If button IsNot Nothing Then
-                                  button.Text = $"{originalButtonText} ({counter})"
+                              If button IsNot Nothing AndAlso Not button.IsDisposed Then
+                                  If button.InvokeRequired Then
+                                      button.Invoke(Sub()
+                                                 If button IsNot Nothing AndAlso Not button.IsDisposed Then
+                                                     button.Text = $"{buttonText} ({counter})"
+                                                 End If
+                                             End Sub)
+                                  Else
+                                      button.Text = $"{buttonText} ({counter})"
+                                  End If
                               Else
-                                  Text = $"{originalWindowTitle} ({counter})"
+                                  If InvokeRequired Then
+                                      Invoke(Sub() Text = $"{windowTitle} ({counter})")
+                                  Else
+                                      Text = $"{windowTitle} ({counter})"
+                                  End If
                               End If
                               counter -= 1
                               Thread.Sleep(1000)

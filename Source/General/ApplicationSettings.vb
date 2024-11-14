@@ -254,7 +254,8 @@ Public Class ApplicationSettings
 
         If Check(CmdlPresetsMP4, "MP4 custom command line menu presets", 2) Then
             CmdlPresetsMP4 = "iPod = -ipod" + BR + 
-                             "Streaming = -inter 500"
+                             "Streaming = -inter 500" + BR +
+                             "Better Seeking = -tight"
         End If
 
         If Check(CmdlVideoPresetsMP4, "MP4 custom video command line menu presets", 2) Then

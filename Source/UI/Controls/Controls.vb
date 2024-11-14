@@ -2880,9 +2880,9 @@ Namespace UI
 
         Sub TextBox_KeyDown(sender As Object, e As KeyEventArgs) Handles TextEdit.KeyDown
             If e.KeyData = Keys.Up Then
-                Value += Increment
+                UpControl.ClickAction?.Invoke()
             ElseIf e.KeyData = Keys.Down Then
-                Value -= Increment
+                DownControl.ClickAction?.Invoke()
             End If
         End Sub
 

@@ -267,7 +267,7 @@ Public Class x264Enc
         Return Params.GetArgs(pass, script, OutputPath.DirAndBase + OutputExtFull, includePaths, True)
     End Function
 
-    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
+    Overrides Sub ShowConfigDialog(Optional param As CommandLineParam = Nothing)
         Dim newParams As New x264Params
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
@@ -289,8 +289,9 @@ Public Class x264Enc
 
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
-            If Not String.IsNullOrWhiteSpace(path) Then
-                form.SimpleUI.ShowPage(path)
+            If Not String.IsNullOrWhiteSpace(param?.Path) Then
+                form.SimpleUI.ShowPage(param?.Path)
+                form.cbGoTo.Text = param.GetSwitches().FirstOrDefault()
             End If
 
             If form.ShowDialog() = DialogResult.OK Then

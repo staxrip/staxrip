@@ -21,7 +21,7 @@ Public MustInherit Class VideoEncoder
     Property AutoCompCheckValue As Integer = 50
     Property Muxer As Muxer = New MkvMuxer
 
-    Public MustOverride Sub ShowConfigDialog(Optional path As String = Nothing)
+    Public MustOverride Sub ShowConfigDialog(Optional param As CommandLineParam = Nothing)
 
     Sub New()
         CanEditValue = True
@@ -542,7 +542,7 @@ Public Class BatchEncoder
         End Get
     End Property
 
-    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
+    Overrides Sub ShowConfigDialog(Optional param As CommandLineParam = Nothing)
         Using form As New CommandLineVideoEncoderForm(Me)
             If form.ShowDialog() = DialogResult.OK Then
                 OnStateChange()
@@ -721,6 +721,6 @@ Public Class NullEncoder
         Return ret
     End Function
 
-    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
+    Overrides Sub ShowConfigDialog(Optional param As CommandLineParam = Nothing)
     End Sub
 End Class

@@ -3542,8 +3542,7 @@ Public Class MainForm
 
                 If by > 0 Then
                     If ProcessTip($"You have cropped the {side} side by {by}px too much.{BR}Decrease the crop to continue and ensure a valid result.") Then
-                        CanIgnoreTip = False
-                        Return Warn("Overcropping", AddressOf ShowCropDialog)
+                        Return Block("Overcropping", AddressOf ShowCropDialog)
                     End If
                 End If
             End If
@@ -3557,28 +3556,25 @@ Public Class MainForm
 
             If p.Script.IsFilterActive("Resize") AndAlso widthZoom <> heightZoom AndAlso p.VideoEncoder?.IsResizingAllowed AndAlso Not p.VideoEncoder?.IsUnequalResizingAllowed Then
                 If ProcessTip("Resizing of that kind will interfere with the Dolby Vision metadata. Keep the original aspect ratio, disable the 'Resize' filter or remove the Dolby Vision RPU file.") Then
-                    CanIgnoreTip = False
-                    Return Warn("Wrong resizing", tbTargetWidth, tbTargetHeight, lSAR, lDAR, lZoom, lAspectRatioError)
+                    Return Block("Wrong resizing", tbTargetWidth, tbTargetHeight, lSAR, lDAR, lZoom, lAspectRatioError)
                 End If
             End If
 
             If TypeOf p.VideoEncoder Is x265Enc Then
                 Dim x265 = DirectCast(p.VideoEncoder, x265Enc)
-                Dim rpuParam = x265.CommandLineParams.GetStringParam(x265.Params.DolbyVisionRpu.Switch)
-                Dim bufsizeParam = x265.CommandLineParams.GetNumParam(x265.Params.VbvBufSize.Switch)
-                Dim maxrateParam = x265.CommandLineParams.GetNumParam(x265.Params.VbvMaxRate.Switch)
-
+                Dim rpuParam = x265.Params.DolbyVisionRpu
+                Dim bufsizeParam = x265.Params.VbvBufSize
+                Dim maxrateParam = x265.Params.VbvMaxRate
                 Dim optionsLabel = DirectCast(pnEncoder.Controls(0), x265Control).blConfigCodec
-                If Not String.IsNullOrWhiteSpace(rpuParam?.Value) Then
+
+                If Not String.IsNullOrWhiteSpace(rpuParam.Value) Then
                     If bufsizeParam?.Value < 1 Then
                         If ProcessTip("Dolby Vision requires VBV settings to enable HRD.") Then
-                            CanIgnoreTip = False
-                            Return Warn("Missing VBV settings", Sub() p.VideoEncoder.ShowConfigDialog(x265.Params.VbvBufSize.Path), optionsLabel)
+                            Return Block("Missing VBV settings", Sub() x265.ShowConfigDialog(bufsizeParam), optionsLabel)
                         End If
                     ElseIf maxrateParam?.Value < 1 Then
                         If ProcessTip("Dolby Vision requires VBV settings to enable HRD.") Then
-                            CanIgnoreTip = False
-                            Return Warn("Missing VBV settings", Sub() p.VideoEncoder.ShowConfigDialog(x265.Params.VbvMaxRate.Path), optionsLabel)
+                            Return Block("Missing VBV settings", Sub() x265.ShowConfigDialog(maxrateParam), optionsLabel)
                         End If
                     End If
                 End If

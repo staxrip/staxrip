@@ -373,7 +373,7 @@ Public Class SvtAv1Enc
         Return New SvtAv1EncAppControl(Me) With {.Dock = DockStyle.Fill}
     End Function
 
-    Overrides Sub ShowConfigDialog(Optional path As String = Nothing)
+    Overrides Sub ShowConfigDialog(Optional param As CommandLineParam = Nothing)
         Dim newParams As New SvtAv1EncParams
         Dim store = ObjectHelp.GetCopy(ParamsStore)
         newParams.Init(store)
@@ -395,8 +395,9 @@ Public Class SvtAv1Enc
 
             form.cms.Add("Save Profile...", a, Keys.Control Or Keys.S, Symbol.Save)
 
-            If Not String.IsNullOrWhiteSpace(path) Then
-                form.SimpleUI.ShowPage(path)
+            If Not String.IsNullOrWhiteSpace(param?.Path) Then
+                form.SimpleUI.ShowPage(param?.Path)
+                form.cbGoTo.Text = param.GetSwitches().FirstOrDefault()
             End If
 
             If form.ShowDialog() = DialogResult.OK Then

@@ -678,7 +678,7 @@ Public Class Audio
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.mkvmerge
             proc.Arguments = args2
-            proc.AllowedExitCodes = {0, 1, 2}
+            proc.AllowedExitCodes = {0, 1}
             proc.Start()
         End Using
 

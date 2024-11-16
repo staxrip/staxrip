@@ -505,6 +505,10 @@ Public Class GlobalCommands
         End If
     End Sub
 
+    <Command("Opens StaxRip without taking focus")>
+    Sub NoFocus()
+    End Sub
+
     <Command("Loads a source file.")>
     Sub LoadSourceFile(<DispName("Source File Path")> path As String)
         g.MainForm.OpenVideoSourceFile(path)

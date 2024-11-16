@@ -8001,6 +8001,7 @@ Public Class MainForm
             If g.IsAppStart Then
                 g.IsAppStart = False
                 If s.StartWithoutFocus Then Return True
+                If ParseCommandLine(Environment.CommandLine)?.Contains("-" & NameOf(GlobalCommands.NoFocus), StringComparer.OrdinalIgnoreCase) Then Return True
             End If
 
             If ProcController.BlockActivation Then

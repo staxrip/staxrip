@@ -14,6 +14,39 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.48.1 (2025-07-08)
+====================
+
+- General: Improve Dolby Vision treatment
+    - Don't block features when Dolby Vision file was removed from encoder settings
+    - In case of x265 a click on the VBV Assistant warning jumps directly to the parameter
+    - Fix Dolby Vision issue with disabled Crop filter ([#1698](/../../issues/1698))
+    - Fix muxing after chunking was reset because of included Dolby Vision metadata ([#1717](/../../issues/1717))
+    - Enhance resize aspect ratio check to allow tiny stretches ([#1698](/../../issues/1698))
+- General: Fix Import Command Line for parameter siblings ([#1687](/../../issues/1687))
+- General: Make Blu-ray demuxing required minimum disk space also be related on settings value ([#1712](/../../issues/1712))
+- Audio: Improve audio profile handling when removing and changing tracks ([#1703](/../../issues/1703))
+- UI: Add setting to open StaxRip without focus steal
+- UI: Increase max recent projects to 25
+- UI: Rework window activation and focus behaviour
+- UI: Catch rare exception on ListViews when scrolling via mouse wheel ([#1702](/../../issues/1702))
+- UI: Fix Template Selection ([#1689](/../../issues/1689))
+- UI: Fix random exceptions on Task Dialog ([#1715](/../../issues/1715))
+- QSVEncC: Fix missing Dolby Vision parameters ([#1699](/../../issues/1699))
+- QSVEncC: Fix skipped encodings with Dolby Vision parameters ([#1699](/../../issues/1699))
+- SvtAv1EncApp: Add SVT-AV1-HDR Support
+- SvtAv1EncApp: Fix wrong default preset ([#1705](/../../issues/1705))
+- Update Dual plugins
+    - BestSource R12
+    - L-SMASH-Works v1266
+- Update Tools
+    - NVEncC v8.07
+    - QSVEncC v7.91
+    - SvtAv1EncApp v3.0.2-27+19-54122e8e-.Mod-by-Patman.-x64-clang20.1.7 [SVT-AV1-HDR]
+    - VCEEncC v8.37
+    - vvencFFapp v1.13.1 r421-5c2b2cb
+
+
 v2.48.0 (2025-06-08)
 ====================
 

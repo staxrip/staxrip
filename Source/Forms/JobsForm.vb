@@ -411,6 +411,15 @@ Friend Class JobsForm
         End If
     End Sub
 
+    Protected Overrides Sub OnActivated(e As EventArgs)
+        MyBase.OnActivated(e)
+        UpdateControls()
+        If Not ProcController.BlockActivation Then
+            ProcController.SetLastActivation()
+            ProcController.BlockActivation = False
+        End If
+    End Sub
+
     Protected Overrides Sub OnFormClosing(args As FormClosingEventArgs)
         MyBase.OnFormClosing(args)
         RemoveHandler FileWatcher.Changed, AddressOf Reload

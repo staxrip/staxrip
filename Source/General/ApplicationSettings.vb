@@ -94,6 +94,7 @@ Public Class ApplicationSettings
     Public ShutdownForce As Boolean
     Public ShutdownTimeout As Integer = 90
     Public StartupTemplate As String
+    Public StartWithoutFocus As Boolean = False
     Public Storage As ObjectStorage
     Public StringDictionary As Dictionary(Of String, String)
     Public StringList As List(Of String)

@@ -306,10 +306,7 @@ Public Class ProcessingForm
     Protected Overrides Sub OnActivated(e As EventArgs)
         MyBase.OnActivated(e)
         UpdateControls()
-        If Not ProcController.BlockActivation Then
-            ProcController.SetLastActivation()
-            ProcController.BlockActivation = False
-        End If
+        ProcController.SetLastActivation()
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)
@@ -319,19 +316,13 @@ Public Class ProcessingForm
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
             If ProcController.BlockActivation Then
-                'ProcController.BlockActivation = False
-
-                If s.PreventFocusStealUntil >= 0 AndAlso ProcController.SecondsSinceLastActivation <= s.PreventFocusStealUntil Then
-                    Return True
-                ElseIf s.PreventFocusStealAfter >= 0 AndAlso ProcController.SecondsSinceLastActivation >= s.PreventFocusStealAfter Then
-                    Return True
-                End If
+                ProcController.BlockActivation = False
+                Return True
             End If
 
-            Return MyBase.ShowWithoutActivation
+            Return False
         End Get
     End Property
-
 
     Shared Property WasHandleCreated As Boolean
 
@@ -368,6 +359,7 @@ Public Class ProcessingForm
     Sub Abort()
         If MsgOK("Abort processing?") Then
             Log.Save()
+            ProcController.SetLastActivation()
             ProcController.Abort()
         End If
     End Sub
@@ -375,6 +367,7 @@ Public Class ProcessingForm
     Sub Skip()
         If MsgOK("Skip current process?") Then
             Log.Save()
+            ProcController.SetLastActivation()
             ProcController.Skip()
         End If
     End Sub

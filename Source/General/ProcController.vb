@@ -25,6 +25,7 @@ Public Class ProcController
     Private _triggerWhileProcessing As Boolean = False
     Private _lastTriggerWhileProcessing As Date = Date.Now
     Private _ffmpegDuration As TimeSpan = TimeSpan.Zero
+    Private Shared _blockActivation As Boolean = False
     Private Shared _lastActivation As Date = Date.UtcNow
 
     Property Proc As Proc
@@ -42,12 +43,22 @@ Public Class ProcController
             Return _projectScriptFrameRate
         End Get
     End Property
-    
+
     Shared Property Procs As New List(Of ProcController)
     Shared Property Aborted As Boolean = False
-    Shared Property BlockActivation As Boolean = False
 
-    ReadOnly Shared Property LastActivation As Date
+    Shared Property BlockActivation As Boolean
+        Get
+            Return _blockActivation OrElse
+                (s.PreventFocusStealUntil >= 0 AndAlso SecondsSinceLastActivation <= s.PreventFocusStealUntil) OrElse
+                (s.PreventFocusStealAfter >= 0 AndAlso SecondsSinceLastActivation >= s.PreventFocusStealAfter)
+        End Get
+        Set(value As Boolean)
+            _blockActivation = value
+        End Set
+    End Property
+
+    Shared ReadOnly Property LastActivation As Date
         Get
             Return _lastActivation
         End Get
@@ -842,10 +853,7 @@ Public Class ProcController
         End If
 
         Dim mainSub = Sub()
-                          If Not Aborted Then
-                              BlockActivation = True
-                          End If
-
+                          BlockActivation = False
                           g.MainForm.Show()
                           g.MainForm.Refresh()
                           Aborted = False
@@ -917,7 +925,6 @@ Public Class ProcController
                               If Not g.ProcForm.WindowState = FormWindowState.Minimized OrElse Not BlockActivation Then
                                   g.ProcForm.Show()
                                   g.ProcForm.WindowState = FormWindowState.Normal
-                                  g.ProcForm.Activate()
                               End If
 
                               AddProc(proc)

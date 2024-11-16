@@ -32,6 +32,17 @@ Public Class GlobalClass
     Property StopAfterCurrentJob As Boolean
     Property ActiveForm As Form
 
+    Private _isAppStart As Boolean = True
+
+    Property IsAppStart As Boolean
+        Get
+            Return _isAppStart
+        End Get
+        Set(value As Boolean)
+            _isAppStart = value
+        End Set
+    End Property
+
     Event AfterJobAdded()
     Event AfterJobFailed()
     Event AfterJobMuxed()
@@ -243,6 +254,11 @@ Public Class GlobalClass
         Dim projectPath = g.ProjectPath
         Dim mainFormText = g.MainForm.Text
         Dim targetFile = p.TargetFile
+
+        If Not ProcController.BlockActivation Then
+            ProcController.SetLastActivation()
+            ProcController.BlockActivation = False
+        End If
 
         FrameServerHelp.AviSynthToolPath()
         g.StopAfterCurrentJob = False

@@ -4265,6 +4265,10 @@ Public Class MainForm
             mb.Button.ShowPath = True
 
             b = ui.AddBool
+            b.Text = "Start without focus"
+            b.Field = NameOf(s.StartWithoutFocus)
+
+            b = ui.AddBool
             b.Text = "Check for Long Path Support"
             b.Field = NameOf(s.CheckForLongPathSupport)
 
@@ -7989,14 +7993,14 @@ Public Class MainForm
 
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
+            If g.IsAppStart Then
+                g.IsAppStart = False
+                If s.StartWithoutFocus Then Return True
+            End If
+
             If ProcController.BlockActivation Then
                 ProcController.BlockActivation = False
-
-                If s.PreventFocusStealUntil >= 0 AndAlso ProcController.SecondsSinceLastActivation <= s.PreventFocusStealUntil Then
-                    Return True
-                ElseIf s.PreventFocusStealAfter >= 0 AndAlso ProcController.SecondsSinceLastActivation >= s.PreventFocusStealAfter Then
-                    Return True
-                End If
+                Return True
             End If
 
             Return MyBase.ShowWithoutActivation

@@ -309,7 +309,7 @@ Public Class GlobalClass
                 End If
             Else
                 If Process.GetCurrentProcess.PrivateMemorySize64 / 1024 ^ 2 > 1500 Then
-                    g.ShellExecute(Application.ExecutablePath, "-StartJobs")
+                    g.ShellExecute(Application.ExecutablePath, "-StartJobs -NoFocus")
                     g.MainForm.SetSavedProject()
                     g.MainForm.Close()
                 Else

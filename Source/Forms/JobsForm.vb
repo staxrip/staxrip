@@ -394,7 +394,7 @@ Friend Class JobsForm
         Close()
 
         If g.IsJobProcessing Then
-            g.ShellExecute(Application.ExecutablePath, "-StartJobs")
+            g.ShellExecute(Application.ExecutablePath, "-StartJobs -NoFocus")
         Else
             Task.Run(Sub()
                          Thread.Sleep(500)

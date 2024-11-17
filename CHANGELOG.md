@@ -14,6 +14,20 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.48.2 (2025-07-20)
+====================
+
+- General: Adjust Temp File Deletion to exclude video index files from video types ([#1723](/../../issues/1723))
+- Audio: Fix retaining of audio languages when demuxed via eac3to ([#1729](/../../issues/1729))
+- Audio: Fix empty track name after resetting the audio track/profile ([#1729](/../../issues/1729))
+- CommandLine: Add "-NoFocus" command line parameter
+- CommandLine: Fix Import of quoted parameters with values ([#1726](/../../issues/1726))
+- UI: Rework window activation and focus behaviour
+- UI: Adjust Macros window layout ([#1727](/../../issues/1727))
+- NVEncC: Fix "--vpp-libplacebo-tonemapping" parameter regarding "dynamic_peak_detection" ([#1728](/../../issues/1728))
+- SvtAv1EncApp: Fix missing "--kf-tf-strength" parameter ([#1734](/../../issues/1734))
+
+
 v2.48.1 (2025-07-08)
 ====================
 

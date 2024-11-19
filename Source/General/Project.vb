@@ -131,6 +131,7 @@ Public Class Project
     Public SourceWidth As Integer = 1920
     Public SubtitleMode As SubtitleMode
     Public SubtitleName As String = ""
+    Public TakeOverVideoLanguage As Boolean = False
     Public TargetFrames As Integer
     Public TargetFrameRate As Double
     Public TargetHeight As Integer = 1080

@@ -2510,8 +2510,13 @@ Public Class MainForm
 
             Dim mkvMuxer = TryCast(p.VideoEncoder.Muxer, MkvMuxer)
 
-            If mkvMuxer IsNot Nothing AndAlso mkvMuxer.Title = "" Then
-                mkvMuxer.Title = MediaInfo.GetGeneral(p.LastOriginalSourceFile, "Movie")
+            If mkvMuxer IsNot Nothing Then
+                If p.TakeOverVideoLanguage AndAlso Not mkvMuxer.VideoTrackLanguage?.IsDetermined Then
+                    mkvMuxer.VideoTrackLanguage = New Language(MediaInfo.GetVideo(p.LastOriginalSourceFile, "Language"))
+                End If
+                If mkvMuxer.Title = "" Then
+                    mkvMuxer.Title = MediaInfo.GetGeneral(p.LastOriginalSourceFile, "Movie")
+                End If
             End If
 
             If Not isEncoding AndAlso p.BatchMode Then
@@ -5326,6 +5331,7 @@ Public Class MainForm
 
             Dim videoExist = ui.AddMenu(Of FileExistMode)
             Dim demuxVideo = ui.AddBool()
+            Dim takeOverVideoLanguage = ui.AddBool()
             Dim extractHdrmetadata = ui.AddMenu(Of HdrmetadataMode)
             Dim doviMode = ui.AddMenu(Of DoviMode)
 
@@ -5338,6 +5344,10 @@ Public Class MainForm
             demuxVideo.Text = "Demux Video"
             demuxVideo.Checked = p.DemuxVideo
             demuxVideo.SaveAction = Sub(value) p.DemuxVideo = value
+
+            takeOverVideoLanguage.Text = "Take over language"
+            takeOverVideoLanguage.Checked = p.TakeOverVideoLanguage
+            takeOverVideoLanguage.SaveAction = Sub(value) p.TakeOverVideoLanguage = value
 
             extractHdrmetadata.Text = "Extract HDR metadata"
             extractHdrmetadata.Help = "Extract dynamic HDR10+ and DolbyVision metadata if available"

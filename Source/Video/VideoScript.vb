@@ -67,6 +67,10 @@ Public Class VideoScript
             End If
         Next
 
+        If p.CodeAtBottom <> "" Then
+            sb.AppendLine(p.CodeAtBottom)
+        End If
+
         Return sb.ToString
     End Function
 

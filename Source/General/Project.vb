@@ -40,6 +40,7 @@ Public Class Project
     Public AutoSmartOvercrop As Double
     Public BatchMode As Boolean
     Public BitrateIsFixed As Boolean = True
+    Public CodeAtBottom As String = ""
     Public CodeAtTop As String = ""
     Public CompCheckAction As CompCheckAction = CompCheckAction.AdjustImageSize
     Public CompCheckPercentage As Double = 5.0

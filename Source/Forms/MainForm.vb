@@ -6056,6 +6056,18 @@ Public Class MainForm
             t.Edit.Text = p.CodeAtTop
             t.Edit.SaveAction = Sub(value) p.CodeAtTop = value
 
+            l = ui.AddLabel(filtersPage, "Code inserted at bottom of scripts:")
+            l.Help = "Code inserted at the bottom of every script StaxRip generates."
+            l.MarginTop = Font.Height \ 2
+
+            t = ui.AddText(filtersPage)
+            t.Label.Visible = False
+            t.Edit.Expand = True
+            t.Edit.TextBox.Multiline = True
+            t.Edit.UseMacroEditor = True
+            t.Edit.Text = p.CodeAtBottom
+            t.Edit.SaveAction = Sub(value) p.CodeAtBottom = value
+
 
             '   ----------------------------------------------------------------
             Dim miscPage = ui.CreateFlowPage("Misc")

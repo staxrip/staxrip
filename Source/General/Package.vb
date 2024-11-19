@@ -2881,7 +2881,11 @@ Public Class Package
 
     Function GetStatusLocation() As String
         If Path = "" Then
-            Return $"App not found, choose:{BR}Tools > Download (Ctrl+D){BR}Tools > Edit Path (Ctrl+P)"
+            Dim dl = If(Not String.IsNullOrWhiteSpace(DownloadURL), $"{BR}Tools > Download (Ctrl+D)", "")
+            Dim ep = If(Not String.IsNullOrWhiteSpace(Path), $"{BR}Tools > Edit Path (Ctrl+P)", "")
+            Dim choose = If(dl <> "" OrElse ep <> "", ", choose:", "")
+
+            Return $"App not found{choose}{dl}{ep}"
         End If
     End Function
 

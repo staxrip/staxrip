@@ -97,6 +97,7 @@ Public Class x265Enc
             proc.Header = passName
             proc.Encoding = Encoding.UTF8
             proc.Priority = priority
+            proc.FrameCount = p.Script.GetFrameCount
             proc.SkipString = "%] "
 
             If commandLine.Contains("|") Then

@@ -498,10 +498,12 @@ Public Class AppsForm
         SetupButton.Visible = CurrentPackage.SetupAction IsNot Nothing AndAlso CurrentPackage.GetStatus <> ""
 
         tsbExplore.Enabled = path <> ""
+        miExplore.Enabled = tsbExplore.Enabled
         miCopyPath.Enabled = path <> ""
         tsbLaunch.Enabled = CurrentPackage.LaunchAction IsNot Nothing AndAlso CurrentPackage.Path <> ""
         miLaunch.Enabled = tsbLaunch.Enabled
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
+        miDownload.Enabled = tsbDownload.Enabled
         miAutoUpdate.Enabled = tsbDownload.Enabled AndAlso CurrentPackage.SupportsAutoUpdate
         tsbWebsite.Enabled = CurrentPackage.URL <> ""
 

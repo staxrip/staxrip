@@ -486,6 +486,39 @@ Public Class ProcController
                     Else
                         _progressReformattingFailCounter += 1
                     End If
+                ElseIf Proc.Package Is Package.ffmpeg OrElse Proc.Package Is Package.DoViTool OrElse Proc.Package Is Package.HDR10PlusTool Then
+                    pattern = "^frame=\s*(\d+)\s+fps=\s*(\d+)\s+.*size=\s*(\d+)(\w{3})\s+time=\s*(\d+:\d+:\d+(?:\.\d+)?)\s+bitrate=\s*(\d+(?:\.\d+))kbits/s\s+speed=\s*(\d+(?:\.\d+)?)x"
+                    match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
+
+                    If match.Success Then
+                        Dim frame = 0
+                        Dim frameParse = Integer.TryParse($"{match.Groups(1).Value}", NumberStyles.Integer, CultureInfo.InvariantCulture, frame)
+                        Dim fps = 0.0F
+                        Dim fpsParse = Single.TryParse($"{match.Groups(2).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, fps)
+                        Dim size = 0.0F
+                        Dim sizeParse = Single.TryParse($"{match.Groups(3).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, size)
+                        Dim sizeUnit = match.Groups(4).Value
+                        Dim time = TimeSpan.Zero
+                        Dim timeParse = TimeSpan.TryParse($"{match.Groups(5).Value}", time)
+                        Dim bitrate = 0.0F
+                        Dim bitrateParse = Single.TryParse($"{match.Groups(6).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, bitrate)
+                        Dim speed = 0.0F
+                        Dim speedParse = Single.TryParse($"{match.Groups(7).Value}", NumberStyles.Float, CultureInfo.InvariantCulture, speed)
+                        Dim frames = Proc.FrameCount
+                        Dim percentString = ""
+
+                        If frameParse AndAlso frames > 0 Then
+                            Dim percent = frame / frames * 100
+                            percentString = $"[{percent.ToString("0.0", CultureInfo.InvariantCulture),4}%] "
+                        ElseIf timeParse AndAlso _ffmpegDuration <> TimeSpan.Zero Then
+                            Dim percent = CSng(time.Ticks / _ffmpegDuration.Ticks * 100)
+                            percentString = $"[{percent.ToString("0.0", CultureInfo.InvariantCulture),4}%] "
+                        End If
+
+                        value = $"{percentString}{match.Groups(1).Value.PadLeft(frames.ToString().Length)}/{frames} frames @ {fps.ToInvariantString()} fps ({speed.ToInvariantString("0.0")}x){_progressSeparator}{bitrate.ToInvariantString("0"),4} kb/s"
+                    Else
+                        _progressReformattingFailCounter += 1
+                    End If
                 End If
             End If
         Else

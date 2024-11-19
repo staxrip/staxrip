@@ -143,12 +143,21 @@ Public Class ProcController
                 Proc.Log.WriteLine(ret.Data)
             End If
 
-            If _ffmpegDuration = TimeSpan.Zero AndAlso (Proc.Package Is Package.ffmpeg OrElse Proc.Package Is Package.DoViTool OrElse Proc.Package Is Package.HDR10PlusTool) Then
-                Dim match = Regex.Match(value, "DURATION\s*:\s+((\d+):(\d+):(\d+))", RegexOptions.IgnoreCase)
-                If match.Success Then
-                    Dim t As TimeSpan
-                    If TimeSpan.TryParse(match.Groups(1).Value, t) Then
-                        _ffmpegDuration = t
+            If Proc.Package Is Package.ffmpeg OrElse Proc.Package Is Package.DoViTool OrElse Proc.Package Is Package.HDR10PlusTool Then
+                If Proc.FrameCount <= 0 Then
+                    Dim match = Regex.Match(value, "NUMBER_OF_FRAMES\s*:\s+(\d+)", RegexOptions.IgnoreCase)
+                    If match.Success Then
+                        Proc.FrameCount = match.Groups(1).Value.ToInt()
+                    End If
+                End If
+
+                If _ffmpegDuration = TimeSpan.Zero Then
+                    Dim match = Regex.Match(value, "DURATION\s*:\s+((\d+):(\d+):(\d+))", RegexOptions.IgnoreCase)
+                    If match.Success Then
+                        Dim t As TimeSpan
+                        If TimeSpan.TryParse(match.Groups(1).Value, t) Then
+                            _ffmpegDuration = t
+                        End If
                     End If
                 End If
             End If
@@ -576,7 +585,7 @@ Public Class ProcController
                 progress = match.Groups(1).Value.ToSingle()
             Else
                 match = Regex.Match(value, "frame(?:(?:=\s*)|\s+)(\d+)(?:\s|\/)", RegexOptions.IgnoreCase)
-                If match.Success Then
+                If match.Success AndAlso frames > 0 Then
                     frame = match.Groups(1).Value.ToInt()
                 Else
                     match = Regex.Match(value, "\s(\d+)(?:\s?\/\s?(\d+))?\sframes", RegexOptions.IgnoreCase)

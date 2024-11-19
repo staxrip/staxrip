@@ -2514,8 +2514,9 @@ Public Class MainForm
                 If p.TakeOverVideoLanguage AndAlso Not mkvMuxer.VideoTrackLanguage?.IsDetermined Then
                     mkvMuxer.VideoTrackLanguage = New Language(MediaInfo.GetVideo(p.LastOriginalSourceFile, "Language"))
                 End If
-                If mkvMuxer.Title = "" Then
-                    mkvMuxer.Title = MediaInfo.GetGeneral(p.LastOriginalSourceFile, "Movie")
+                If p.TakeOverTitle Then 
+                    If mkvMuxer.Title = "" Then mkvMuxer.Title = MediaInfo.GetGeneral(p.LastOriginalSourceFile, "Title")
+                    If mkvMuxer.Title = "" Then mkvMuxer.Title = MediaInfo.GetGeneral(p.LastOriginalSourceFile, "Movie")
                 End If
             End If
 
@@ -5324,6 +5325,17 @@ Public Class MainForm
             doviThresholdEnd.Help = "Number of frames at the ending of the video, that are ignored when setting the crop values."
             doviThresholdEnd.Config = doviThresholdBegin.Config
             doviThresholdEnd.Field = NameOf(p.AutoCropDolbyVisionThresholdEnd)
+
+
+            '   ----------------------------------------------------------------
+            Dim generalPage = ui.CreateFlowPage("General", True)
+
+            Dim takeOverTitle = ui.AddBool()
+
+            takeOverTitle.Text = "Take over title"
+            takeOverTitle.Help = "Take over title from source file - Title Name in container options must be empty!"
+            takeOverTitle.Checked = p.TakeOverTitle
+            takeOverTitle.SaveAction = Sub(value) p.TakeOverTitle = value
 
 
             '   ----------------------------------------------------------------

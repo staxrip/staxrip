@@ -1054,6 +1054,7 @@ Public Class NVEnc
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"},
                         New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"})
                     Add("Statistic",
+                        New StringParam With {.Switch = "--log", .Text = "Log File", .BrowseFile = True},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error", "Quiet"}},
                         New OptionParam With {.Switch = "--disable-nvml", .Text = "NVML GPU Monitoring", .Options = {"Enabled NVML (default)", "Disable NVML when system has one CUDA devices", "Always disable NVML"}, .IntegerValue = True},
                         New BoolParam With {.Switch = "--ssim", .Text = "SSIM"},

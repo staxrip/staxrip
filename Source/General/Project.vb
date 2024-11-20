@@ -80,6 +80,7 @@ Public Class Project
     Public FileExistAudio As FileExistMode
     Public FileExistVideo As FileExistMode
     Public FirstOriginalSourceFile As String
+    Public FixFrameRate As Boolean = True
     Public ForcedOutputMod As Integer = 2
     Public ForcedOutputModDirection As ForceOutputModDirection = ForceOutputModDirection.Increase
     Public ForcedOutputModIgnorable As Boolean = False

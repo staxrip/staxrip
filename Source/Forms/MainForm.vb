@@ -2869,7 +2869,7 @@ Public Class MainForm
 
         Dim sourceInfo = p.SourceScript.Info
 
-        If s.FixFrameRate Then
+        If p.FixFrameRate Then
             Dim fixedFrameRate = FixFrameRate(sourceInfo.FrameRateNum, sourceInfo.FrameRateDen)
 
             If fixedFrameRate.num <> sourceInfo.FrameRateNum OrElse fixedFrameRate.den <> sourceInfo.FrameRateDen Then
@@ -4341,14 +4341,6 @@ Public Class MainForm
             stst.Field = NameOf(s.ShowTemplateSelectionTimeout)
 
 
-            '############# Video
-            Dim videoPage = ui.CreateFlowPage("Video", True)
-
-            b = ui.AddBool
-            b.Text = "Add filter to automatically correct the frame rate."
-            b.Field = NameOf(s.FixFrameRate)
-
-
             '############# Quality Definitions
             Dim qualityDefinitionsPage = ui.CreateFlowPage("Quality Definitions", True)
 
@@ -5475,6 +5467,7 @@ Public Class MainForm
 
             Dim videoExist = ui.AddMenu(Of FileExistMode)
             Dim demuxVideo = ui.AddBool()
+            Dim fixFramerate = ui.AddBool()
             Dim takeOverVideoLanguage = ui.AddBool()
             Dim extractHdrmetadata = ui.AddMenu(Of HdrmetadataMode)
 
@@ -5484,12 +5477,13 @@ Public Class MainForm
             videoExist.Field = NameOf(p.FileExistVideo)
 
             demuxVideo.Text = "Demux Video"
-            demuxVideo.Checked = p.DemuxVideo
-            demuxVideo.SaveAction = Sub(value) p.DemuxVideo = value
+            demuxVideo.Field = NameOf(p.DemuxVideo)
 
             takeOverVideoLanguage.Text = "Take over language"
-            takeOverVideoLanguage.Checked = p.TakeOverVideoLanguage
-            takeOverVideoLanguage.SaveAction = Sub(value) p.TakeOverVideoLanguage = value
+            takeOverVideoLanguage.Field = NameOf(p.TakeOverVideoLanguage)
+
+            fixFramerate.Text = "Add filter to automatically correct the frame rate."
+            fixFramerate.Field = NameOf(p.FixFrameRate)
 
             extractHdrmetadata.Text = "Extract HDR metadata"
             extractHdrmetadata.Help = "Extract dynamic HDR10+ and DolbyVision metadata if available"

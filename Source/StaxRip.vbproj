@@ -478,8 +478,11 @@
     <EmbeddedResource Include="UI\TaskDialogBaseForm.resx">
       <DependentUpon>TaskDialogBaseForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Changelog.md">
-      <Link>Changelog.md</Link>
+    <EmbeddedResource Include="..\CHANGELOG.md">
+      <Link>CHANGELOG.md</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\CHANGELOG-SUPPORTER.md">
+      <Link>CHANGELOG-SUPPORTER.md</Link>
     </EmbeddedResource>
     <None Include="..\README.md">
       <Link>README.md</Link>

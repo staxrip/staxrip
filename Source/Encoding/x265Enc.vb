@@ -227,8 +227,8 @@ Public Class x265Enc
 
                 If Params.Level.Value > 0 AndAlso Params.HighTier.Value > 0 Then
                     Dim m = GetH265MaxBitrate(Params.Level.ValueText.ToSingle(), Params.HighTier.Value = 1)
-                    cl += $" {Params.VbvMaxRate.Switch} {m}"
-                    cl += $" {Params.VbvBufSize.Switch} {m}"
+                    If Params.VbvMaxRate.Value = 0 Then cl += $" {Params.VbvMaxRate.Switch} {m}"
+                    If Params.VbvBufSize.Value = 0 Then cl += $" {Params.VbvBufSize.Switch} {m}"
                 End If
 
                 If Not String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) AndAlso p.Hdr10PlusMetadataFile.FileExists() Then

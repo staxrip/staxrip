@@ -45,33 +45,43 @@ Public Class QSVEnc
         End Set
     End Property
 
+    Overrides ReadOnly Property IsDolbyVisionSet As Boolean
+        Get
+            If Not Params.DolbyVisionRpu.Visible Then Return False
+            If Params.DolbyVisionProfileH265.Visible AndAlso Params.DolbyVisionProfileH265.Value <> 0 Then Return Not String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value)
+            If Params.DolbyVisionProfileAV1.Visible AndAlso Params.DolbyVisionProfileAV1.Value <> 0 Then Return Not String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value)
+            Return False
+        End Get
+    End Property
+
     Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
         Get
             If Not Params.DolbyVisionRpu.Visible Then Return True
-            Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
+            Return String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value)
         End Get
     End Property
 
     Overrides ReadOnly Property IsUnequalResizingAllowed As Boolean
         Get
             If Not Params.DolbyVisionRpu.Visible Then Return True
-            Return String.IsNullOrWhiteSpace(Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value)
+            Return String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value)
         End Get
     End Property
 
     Overrides ReadOnly Property DolbyVisionMetadataPath As String
         Get
             If Not Params.DolbyVisionRpu.Visible Then Return Nothing
-            Return Params.GetStringParam(Params.DolbyVisionRpu.Switch)?.Value
+            Return Params.DolbyVisionRpu.Value
         End Get
     End Property
 
     Overrides ReadOnly Property Hdr10PlusMetadataPath As String
         Get
             If Not Params.DhdrInfo.Visible Then Return Nothing
-            Return Params.GetStringParam(Params.DhdrInfo.Switch)?.Value
+            Return Params.DhdrInfo.Value
         End Get
     End Property
+
 
     Public Sub New()
         MyBase.New()

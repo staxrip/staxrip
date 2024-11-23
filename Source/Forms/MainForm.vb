@@ -2966,7 +2966,7 @@ Public Class MainForm
         If p.AutoCropMode = AutoCropMode.DolbyVisionOnly OrElse p.AutoCropMode = AutoCropMode.Always Then
             p.SourceScript.Synchronize(True, True, True)
 
-            If p.HdrDolbyVisionMetadataFile IsNot Nothing Then
+            If p.HdrDolbyVisionMetadataFile IsNot Nothing AndAlso p.VideoEncoder.IsDolbyVisionSet Then
                 Dim c = p.HdrDolbyVisionMetadataFile.Crop
                 g.SetCrop(c.Left, c.Top, c.Right, c.Bottom, ForceOutputModDirection.Decrease, True)
             ElseIf p.AutoCropMode = AutoCropMode.Always Then
@@ -3514,10 +3514,9 @@ Public Class MainForm
                         Return Warn("Changed Frame Rate", lSource1, lTarget1)
                     End If
                 End If
-
             End If
 
-            If p.Script.IsFilterActive("Crop") AndAlso Not p.VideoEncoder?.IsOvercroppingAllowed AndAlso p.HdrDolbyVisionMetadataFile IsNot Nothing Then
+            If p.Script.IsFilterActive("Crop") AndAlso p.VideoEncoder?.IsDolbyVisionSet AndAlso Not p.VideoEncoder?.IsOvercroppingAllowed Then
                 Dim side = ""
                 Dim by = 0
                 Dim c = p.HdrDolbyVisionMetadataFile.Crop

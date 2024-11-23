@@ -1648,7 +1648,7 @@ Public Class GlobalClass
 
         p.SourceScript.Synchronize(True, True, True)
 
-        If p.HdrDolbyVisionMetadataFile IsNot Nothing Then
+        If p.HdrDolbyVisionMetadataFile IsNot Nothing AndAlso p.VideoEncoder.IsDolbyVisionSet Then
             Dim c = p.HdrDolbyVisionMetadataFile.Crop
             SetCrop(c.Left, c.Top, c.Right, c.Bottom, ForceOutputModDirection.Decrease, True)
         Else

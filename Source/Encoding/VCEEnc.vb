@@ -44,6 +44,15 @@ Public Class VCEEnc
         End Set
     End Property
 
+    Overrides ReadOnly Property IsDolbyVisionSet As Boolean
+        Get
+            If Not Params.DolbyVisionRpu.Visible Then Return False
+            If Params.DolbyVisionProfileH265.Visible AndAlso Params.DolbyVisionProfileH265.Value <> 0 Then Return Not String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value)
+            If Params.DolbyVisionProfileAV1.Visible AndAlso Params.DolbyVisionProfileAV1.Value <> 0 Then Return Not String.IsNullOrWhiteSpace(Params.DolbyVisionRpu.Value)
+            Return False
+        End Get
+    End Property
+
     Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
         Get
             If Not Params.DolbyVisionRpu.Visible Then Return True
@@ -71,6 +80,7 @@ Public Class VCEEnc
             Return Params.DhdrInfo.Value
         End Get
     End Property
+
 
     Public Sub New()
         MyBase.New()

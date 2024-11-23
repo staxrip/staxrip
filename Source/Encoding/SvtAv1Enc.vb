@@ -33,6 +33,17 @@ Public Class SvtAv1Enc
         End Set
     End Property
 
+    Overrides ReadOnly Property IsDolbyVisionSet As Boolean
+        Get
+            If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then
+                If Not Params.PsyDolbyVisionRpu.Visible Then Return False
+                Return Not String.IsNullOrWhiteSpace(Params.PsyDolbyVisionRpu.Value)
+            End If
+
+            Return False
+        End Get
+    End Property
+
     Overrides ReadOnly Property IsOvercroppingAllowed As Boolean
         Get
             If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then

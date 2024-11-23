@@ -27,6 +27,12 @@ Public MustInherit Class VideoEncoder
         CanEditValue = True
     End Sub
 
+    Public Overridable ReadOnly Property IsDolbyVisionSet As Boolean
+        Get
+            Return False
+        End Get
+    End Property
+
     Public Overridable ReadOnly Property IsOvercroppingAllowed As Boolean
         Get
             Return True

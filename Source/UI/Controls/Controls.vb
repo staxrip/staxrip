@@ -634,8 +634,8 @@ Namespace UI
             End If
 
             If Enabled Then
-                e.Graphics.DrawLine(New Pen(_linecolor1), textOffset, lineHeight, Width, lineHeight)
-                e.Graphics.DrawLine(New Pen(_linecolor2), textOffset, lineHeight + 1, Width, lineHeight + 1)
+                e.Graphics.DrawLine(New Pen(_lineColor1), textOffset, lineHeight, Width, lineHeight)
+                e.Graphics.DrawLine(New Pen(_lineColor2), textOffset, lineHeight + 1, Width, lineHeight + 1)
             Else
                 e.Graphics.DrawLine(SystemPens.InactiveBorder, textOffset, lineHeight, Width, lineHeight)
             End If
@@ -1545,6 +1545,96 @@ Namespace UI
         Protected Overrides Sub OnClick(e As EventArgs)
             MyBase.OnClick(e)
             ClickAction?.Invoke
+        End Sub
+    End Class
+
+    Public Class ToggleButtonLabel
+        Inherits LabelEx
+
+        Private _state As Boolean = False
+
+        Property State As Boolean
+            Get
+                Return _state
+            End Get
+            Set(value As Boolean)
+                If _state <> value Then
+                    _state = value
+                End If
+                ForeColor = If(_state, LinkOnColor, LinkOffColor)
+            End Set
+        End Property
+
+        Property LinkOnColor As Color
+        Property LinkOffColor As Color
+        Property LinkHoverColor As Color
+        Property ClickAction As Action(Of Boolean)
+
+        Sub New()
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Sub New(state As Boolean)
+            _state = state
+            ApplyTheme()
+
+            AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
+            MyBase.Dispose(disposing)
+        End Sub
+
+        Private Function ShouldSerializeLinkOnColor() As Boolean
+            Return LinkOnColor <> Color.Empty
+        End Function
+
+        Private Function ShouldSerializeLinkOffColor() As Boolean
+            Return LinkOffColor <> Color.Empty
+        End Function
+
+        Private Function ShouldSerializeLinkHoverColor() As Boolean
+            Return LinkHoverColor <> Color.Empty
+        End Function
+
+        Overloads Sub OnThemeChanged(theme As Theme)
+            ApplyTheme(theme)
+        End Sub
+
+        Overloads Sub ApplyTheme()
+            ApplyTheme(ThemeManager.CurrentTheme)
+        End Sub
+
+        Overloads Sub ApplyTheme(theme As Theme)
+            If DesignHelp.IsDesignMode Then Exit Sub
+
+            SuspendLayout()
+            BackColor = theme.General.Controls.ToggleButtonLabel.BackColor
+            ForeColor = theme.General.Controls.ToggleButtonLabel.ForeColor
+            LinkOnColor = theme.General.Controls.ToggleButtonLabel.LinkOnForeColor
+            LinkOffColor = theme.General.Controls.ToggleButtonLabel.LinkOffForeColor
+            LinkHoverColor = theme.General.Controls.ToggleButtonLabel.LinkForeHoverColor
+            ForeColor = If(_state, LinkOnColor, LinkOffColor)
+            ResumeLayout()
+        End Sub
+
+        Protected Overrides Sub OnMouseEnter(e As EventArgs)
+            ForeColor = LinkHoverColor
+            MyBase.OnMouseEnter(e)
+        End Sub
+
+        Protected Overrides Sub OnMouseLeave(e As EventArgs)
+            ForeColor = If(_state, LinkOnColor, LinkOffColor)
+            MyBase.OnMouseLeave(e)
+        End Sub
+
+        Protected Overrides Sub OnClick(e As EventArgs)
+            State = Not State
+            MyBase.OnClick(e)
+            ClickAction?.Invoke(State)
         End Sub
     End Class
 

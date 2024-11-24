@@ -373,6 +373,7 @@ Public Class x264Enc
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
+                UpdateTargetFile()
             End If
         End Using
     End Sub

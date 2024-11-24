@@ -425,6 +425,7 @@ Public Class SvtAv1PsyexEnc
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
+                UpdateTargetFile()
             End If
         End Using
     End Sub

@@ -121,6 +121,7 @@ Public Class Rav1e
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
+                UpdateTargetFile()
             End If
         End Using
     End Sub

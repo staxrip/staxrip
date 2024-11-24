@@ -105,6 +105,7 @@ Public Class ffmpegEnc
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
+                UpdateTargetFile()
             End If
         End Using
     End Sub

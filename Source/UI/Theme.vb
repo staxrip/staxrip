@@ -151,6 +151,7 @@ Public Class Theme
         Private _tabPageThemeColors As TabPageThemeColors
         Private _textBoxThemeColors As TextBoxThemeColors
         Private _textEditThemeColors As TextEditThemeColors
+        Private _toggleButtonLabelThemeColors As ToggleButtonLabelThemeColors
         Private _toolStripThemeColors As ToolStripThemeColors
         Private _toolStripButtonThemeColors As ToolStripButtonThemeColors
         Private _trackBarThemeColors As TrackBarThemeColors
@@ -395,6 +396,16 @@ Public Class Theme
             End Get
             Set(value As TextEditThemeColors)
                 _textEditThemeColors = value
+            End Set
+        End Property
+
+        Public Property ToggleButtonLabel As ToggleButtonLabelThemeColors
+            Get
+                _toggleButtonLabelThemeColors = If(_toggleButtonLabelThemeColors, New ToggleButtonLabelThemeColors())
+                Return _toggleButtonLabelThemeColors
+            End Get
+            Set(value As ToggleButtonLabelThemeColors)
+                _toggleButtonLabelThemeColors = value
             End Set
         End Property
 
@@ -725,6 +736,18 @@ Public Class Theme
             Public Property ForeColor As ColorHSL = SystemColors.ControlText
             Public Property ForeHighlightColor As ColorHSL = ForeColor
             Public Property ForeReadonlyColor As ColorHSL = SystemColors.ControlText
+        End Class
+
+        <Serializable>
+        Public Class ToggleButtonLabelThemeColors
+            Public Property BackColor As ColorHSL = SystemColors.Control
+            Public Property BackHighlightColor As ColorHSL = _defaultBackHighlightColor
+            Public Property ForeColor As ColorHSL = New ColorHSL(_baseHue, 0.75, 0.5, 1)
+            Public Property ForeHighlightColor As ColorHSL = New ColorHSL(_highlightHue, 0.75, 0.5, 1)
+            Public Property LinkOnForeColor As ColorHSL = ForeColor
+            Public Property LinkOffForeColor As ColorHSL = Color.Gray
+            Public Property LinkForeHoverColor As ColorHSL = LinkOnForeColor.AddSaturation(0.5).AddLuminance(0.2)
+            Public Property LinkForeHighlightHoverColor As ColorHSL = ForeHighlightColor.AddSaturation(0.5).AddLuminance(0.2)
         End Class
 
         <Serializable>

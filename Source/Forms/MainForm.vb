@@ -1136,6 +1136,11 @@ Partial Public Class MainForm
             control.BackColor = If(TypeOf control.Parent Is UserControl, theme.General.Controls.ListView.BackColor, theme.General.Controls.ButtonLabel.BackColor)
         Next
 
+        For Each control In controls.OfType(Of ToggleButtonLabel)
+            control.ApplyTheme(theme)
+            control.BackColor = If(TypeOf control.Parent Is UserControl, theme.General.Controls.ListView.BackColor, theme.General.Controls.ToggleButtonLabel.BackColor)
+        Next
+
         For Each control In controls.OfType(Of ButtonEx)
             control.ApplyTheme(theme)
         Next
@@ -1780,11 +1785,15 @@ Partial Public Class MainForm
             If p.SourceFile = "" AndAlso p.SourceFiles.Any() Then p.SourceFile = p.SourceFiles(0)
             If p.SourceFile <> "" Then s.LastSourceDir = p.SourceFile.Dir
 
-            p.VideoEncoder.OnStateChange()
-
             BlockSourceTextBoxTextChanged = True
             tbSourceFile.Text = p.SourceFile
             BlockSourceTextBoxTextChanged = False
+
+            p.VideoEncoder.OnStateChange()
+            If p.TargetFile = "" Then
+                p.VideoEncoder.UpdateTargetFile(True)
+            End If
+            tbTargetFile.TextBox.SelectionStart = tbTargetFile.Text.Length
 
             SetAudioTracks(p)
 

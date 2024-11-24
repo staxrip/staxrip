@@ -11,6 +11,7 @@ Public Class SvtAv1EncAppHdrControl
     Friend WithEvents blConfigCodec As ButtonLabel
     Friend WithEvents blConfigContainer As ButtonLabel
     Friend WithEvents blCompCheck As ButtonLabel
+    Friend WithEvents tblOverrideName As ToggleButtonLabel
 
     Private components As System.ComponentModel.IContainer
 
@@ -19,6 +20,7 @@ Public Class SvtAv1EncAppHdrControl
         Me.blConfigCodec = New StaxRip.UI.ButtonLabel()
         Me.blConfigContainer = New StaxRip.UI.ButtonLabel()
         Me.blCompCheck = New StaxRip.UI.ButtonLabel()
+        Me.tblOverrideName = New StaxRip.UI.ToggleButtonLabel()
         Me.lv = New StaxRip.UI.ListViewEx()
         Me.SuspendLayout()
         '
@@ -34,6 +36,18 @@ Public Class SvtAv1EncAppHdrControl
         Me.blConfigCodec.TabStop = True
         Me.blConfigCodec.Text = "Options"
         '
+        'blOverrideName
+        '
+        Me.tblOverrideName.Anchor = CType((AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
+        Me.tblOverrideName.AutoSize = True
+        Me.tblOverrideName.Location = New System.Drawing.Point(3, 223)
+        Me.tblOverrideName.Margin = New Padding(3)
+        Me.tblOverrideName.Name = "blOverrideName"
+        Me.tblOverrideName.Size = New System.Drawing.Size(128, 37)
+        Me.tblOverrideName.TabIndex = 2
+        Me.tblOverrideName.TabStop = True
+        Me.tblOverrideName.Text = "Name Override"
+        '
         'llConfigContainer
         '
         Me.blConfigContainer.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -42,7 +56,7 @@ Public Class SvtAv1EncAppHdrControl
         Me.blConfigContainer.Margin = New System.Windows.Forms.Padding(3)
         Me.blConfigContainer.Name = "llConfigContainer"
         Me.blConfigContainer.Size = New System.Drawing.Size(276, 37)
-        Me.blConfigContainer.TabIndex = 2
+        Me.blConfigContainer.TabIndex = 3
         Me.blConfigContainer.TabStop = True
         Me.blConfigContainer.Text = "Container Options"
         '
@@ -54,7 +68,7 @@ Public Class SvtAv1EncAppHdrControl
         Me.blCompCheck.Margin = New System.Windows.Forms.Padding(3)
         Me.blCompCheck.Name = "llCompCheck"
         Me.blCompCheck.Size = New System.Drawing.Size(399, 37)
-        Me.blCompCheck.TabIndex = 3
+        Me.blCompCheck.TabIndex = 4
         Me.blCompCheck.TabStop = True
         Me.blCompCheck.Text = "Run Compressibility Check"
         '
@@ -73,6 +87,7 @@ Public Class SvtAv1EncAppHdrControl
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.Controls.Add(Me.blConfigContainer)
+        Me.Controls.Add(Me.tblOverrideName)
         Me.Controls.Add(Me.blConfigCodec)
         Me.Controls.Add(Me.blCompCheck)
         Me.Controls.Add(Me.lv)
@@ -125,17 +140,24 @@ Public Class SvtAv1EncAppHdrControl
         lv.ContextMenuStrip = cms
         lv.ShowContextMenuOnLeftClick = True
 
+        tblOverrideName.ClickAction = Sub(value)
+                                          Params.OverrideTargetFileName.Value = value
+                                          If value Then Encoder.UpdateTargetFile()
+                                          UpdateControls()
+                                      End Sub
+
+        AddHandler Params.ValueChanged, AddressOf ParamsValueChanged
+        AddHandler lv.UpdateContextMenu, AddressOf UpdateMenu
+
         UpdateControls()
         ApplyTheme()
 
-        AddHandler lv.UpdateContextMenu, AddressOf UpdateMenu
-        AddHandler Params.ValueChanged, AddressOf UpdateControls
         AddHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
     End Sub
 
     Protected Overrides Sub Dispose(disposing As Boolean)
         RemoveHandler ThemeManager.CurrentThemeChanged, AddressOf OnThemeChanged
-        RemoveHandler Params.ValueChanged, AddressOf UpdateControls
+        RemoveHandler Params.ValueChanged, AddressOf ParamsValueChanged
         RemoveHandler lv.UpdateContextMenu, AddressOf UpdateMenu
         components?.Dispose()
         MyBase.Dispose(disposing)
@@ -155,9 +177,9 @@ Public Class SvtAv1EncAppHdrControl
         SuspendLayout()
 
         For Each i In {blCompCheck, blConfigContainer, blConfigCodec}
-            i.ForeColor = theme.General.Controls.ButtonLabel.ForeColor
-            i.LinkColor = theme.General.Controls.ButtonLabel.LinkForeColor
-            i.LinkHoverColor = theme.General.Controls.ButtonLabel.LinkForeHoverColor
+            i.BackColor = theme.General.Controls.ListView.BackColor
+        Next
+        For Each i In {tblOverrideName}
             i.BackColor = theme.General.Controls.ListView.BackColor
         Next
 
@@ -174,15 +196,36 @@ Public Class SvtAv1EncAppHdrControl
         lv.Columns(0).Width = CInt(Width * (32 / 100))
         lv.Columns(1).Width = CInt(Width * (66 / 100))
 
-        Dim fh = FontHeight
-        blConfigCodec.Left = fh \ 4
-        blConfigCodec.Top = Height - blConfigCodec.Height - fh \ 4
+        Dim fh = FontHeight \ 4
 
-        blCompCheck.Left = fh \ 4
-        blCompCheck.Top = Height - blConfigCodec.Height - blCompCheck.Height - (fh \ 4) * 2
+        blConfigCodec.Left = fh
+        blConfigCodec.Top = Height - blConfigCodec.Height - fh
 
-        blConfigContainer.Left = Width - blConfigContainer.Width - fh \ 4
-        blConfigContainer.Top = Height - blConfigContainer.Height - fh \ 4
+        blCompCheck.Left = fh
+        blCompCheck.Top = Height - blConfigCodec.Height - blCompCheck.Height - fh * 2
+
+        blConfigContainer.Left = Width - blConfigContainer.Width - fh
+        blConfigContainer.Top = Height - blConfigContainer.Height - fh
+
+        Dim right = blConfigContainer.Left - blConfigCodec.Left
+        Dim left = blConfigCodec.Left + blConfigCodec.Width + blConfigCodec.Left
+        Dim adjustedText = "Target Name Override"
+
+        If (right - left) < 125 Then
+            adjustedText = "Override"
+        ElseIf (right - left) < 185 Then
+            adjustedText = "Name Override"
+        End If
+
+        tblOverrideName.Text = adjustedText
+        tblOverrideName.Left = (right - left - tblOverrideName.Width) \ 2 + left
+        tblOverrideName.Top = Height - tblOverrideName.Height - fh
+    End Sub
+
+    Sub ParamsValueChanged(item As CommandLineParam)
+        If item Is Params.OverrideTargetFileName Then
+            tblOverrideName.State = DirectCast(item, BoolParam).Value
+        End If
     End Sub
 
     Sub UpdateMenu()
@@ -250,9 +293,12 @@ Public Class SvtAv1EncAppHdrControl
     Sub SetQuality(index As Integer, v As Double)
         Params.ConstantRateFactor.Value = v
         Params.QuantizationParameter.Value = v
+
         lv.Items(index).SubItems(1).Text = GetQualityCaption(v)
         lv.Items(index).Selected = False
+
         UpdateControls()
+        Encoder.UpdateTargetFile()
     End Sub
 
     Sub SetPreset(index As Integer, value As Integer)
@@ -264,6 +310,7 @@ Public Class SvtAv1EncAppHdrControl
         lv.Items(index).Selected = False
 
         UpdateControls()
+        Encoder.UpdateTargetFile()
     End Sub
 
     Sub SetTune(index As Integer, value As Integer)
@@ -273,6 +320,7 @@ Public Class SvtAv1EncAppHdrControl
         lv.Items(index).Selected = False
 
         UpdateControls()
+        Encoder.UpdateTargetFile()
     End Sub
 
     Sub SetFastDecode(index As Integer, value As Integer)
@@ -282,6 +330,7 @@ Public Class SvtAv1EncAppHdrControl
         lv.Items(index).Selected = False
 
         UpdateControls()
+        Encoder.UpdateTargetFile()
     End Sub
 
     Sub SetLookahead(index As Integer, value As Integer)
@@ -291,6 +340,7 @@ Public Class SvtAv1EncAppHdrControl
         lv.Items(index).Selected = False
 
         UpdateControls()
+        Encoder.UpdateTargetFile()
     End Sub
 
     Sub SetFilmGrain(index As Integer, value As Integer)
@@ -300,6 +350,7 @@ Public Class SvtAv1EncAppHdrControl
         lv.Items(index).Selected = False
 
         UpdateControls()
+        Encoder.UpdateTargetFile()
     End Sub
 
     Function GetQualityCaption(value As Double) As String
@@ -329,7 +380,10 @@ Public Class SvtAv1EncAppHdrControl
         lv.Items.Add(New ListViewItem({"Lookahead", Params.Lookahead.Value.ToInvariantString() + If(Params.Lookahead.Value = Params.Lookahead.InitialValue, " (default)", "")}))
         lv.Items.Add(New ListViewItem({"Film Grain", Params.FilmGrain.Value.ToInvariantString() + If(Params.FilmGrain.Value = Params.FilmGrain.InitialValue, " (default)", "")}))
 
+        tblOverrideName.State = Encoder.OverridesTargetFileName
         blCompCheck.Visible = Params.RateControlMode.Value <> SvtAv1EncAppRateMode.Quality
+
+        g.MainForm.UpdateEncoderStateRelatedControls()
     End Sub
 
     Sub llConfigCodec_Click(sender As Object, e As EventArgs) Handles blConfigCodec.Click
@@ -343,4 +397,17 @@ Public Class SvtAv1EncAppHdrControl
     Sub llCompCheck_Click(sender As Object, e As EventArgs) Handles blCompCheck.Click
         Encoder.RunCompCheck()
     End Sub
+
+    <Serializable>
+    Public Class QualityItem
+        Property Value As Double
+        Property Text As String
+        Property Tooltip As String
+
+        Sub New(value As Double, text As String, tooltip As String)
+            Me.Value = value
+            Me.Text = text
+            Me.Tooltip = tooltip
+        End Sub
+    End Class
 End Class

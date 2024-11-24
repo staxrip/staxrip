@@ -254,6 +254,7 @@ Public Class VvencffappEnc
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
+                UpdateTargetFile()
             End If
         End Using
     End Sub

@@ -216,7 +216,7 @@ Public NotInheritable Class ThemeManager
                     .ButtonLabel = New ControlsThemeColors.ButtonLabelThemeColors() With {
                         .BackColor = _backColor,
                         .BackHighlightColor = _controlBackHighlightColor,
-                        .ForeColor = _accentColor.AddLuminance(0.1),
+                        .ForeColor = _accentColor.AddLuminance(0.075),
                         .ForeHighlightColor = _controlForeHighlightColor,
                         .LinkForeColor = .ForeColor,
                         .LinkForeHoverColor = .LinkForeColor.SetSaturation(1).AddLuminance(0.1)
@@ -407,6 +407,15 @@ Public NotInheritable Class ThemeManager
                         .ForeColor = _foreColor,
                         .ForeHighlightColor = _controlForeHighlightColor
                     },
+                    .ToggleButtonLabel = New ControlsThemeColors.ToggleButtonLabelThemeColors() With {
+                        .BackColor = _backColor,
+                        .BackHighlightColor = _controlBackHighlightColor,
+                        .ForeColor = _accentColor.AddLuminance(0.075),
+                        .ForeHighlightColor = _controlForeHighlightColor,
+                        .LinkOnForeColor = .ForeColor,
+                        .LinkOffForeColor = .ForeColor.SetSaturation(0.05).AddLuminance(-0.1),
+                        .LinkForeHoverColor = .LinkOnForeColor.SetSaturation(1).AddLuminance(0.1)
+                    },
                     .ToolStrip = New ControlsThemeColors.ToolStripThemeColors() With {
                         .MenuStripBackgroundDefaultColor = _controlBackColor.AddLuminance(-0.01),
                         .MenuStripBackgroundSelectedColor = _backSelectedColor,
@@ -547,11 +556,11 @@ Public NotInheritable Class ThemeManager
                     .FramesCuttedFontStyles = {},
                     .FramesCuttedNumberBackColor = General.Controls.RichTextBox.BackColor,
                     .FramesCuttedNumberForeColor = New ColorHSL(.FramesCuttedForeColor.H - 20, .FramesCuttedForeColor.S + 0.33D, .FramesCuttedForeColor.L - 0.075D),
-.FramesCuttedNumberFontStyles = {FontStyle.Bold},
+                    .FramesCuttedNumberFontStyles = {FontStyle.Bold},
                                                  _
                     .FrameServerBackColor = General.Controls.RichTextBox.BackColor,
                     .FrameServerForeColor = _outputHighlightingStrongForeColor.SetHue(300).AddSaturation(-0.2),
-.FrameServerFontStyles = {FontStyle.Italic, FontStyle.Bold},
+                    .FrameServerFontStyles = {FontStyle.Italic, FontStyle.Bold},
                                                             _
                     .EncoderBackColor = General.Controls.RichTextBox.BackColor,
                     .EncoderForeColor = _outputHighlightingStrongForeColor.SetHue(205).AddLuminance(0.05),

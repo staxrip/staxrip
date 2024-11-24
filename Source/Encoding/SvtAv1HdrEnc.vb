@@ -425,6 +425,7 @@ Public Class SvtAv1HdrEnc
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
+                UpdateTargetFile()
             End If
         End Using
     End Sub

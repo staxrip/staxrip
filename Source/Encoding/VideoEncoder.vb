@@ -328,7 +328,7 @@ Public MustInherit Class VideoEncoder
     Overridable Function GetError() As String
     End Function
 
-    Sub OnStateChange(Optional forceTargetWipe As Boolean = False)
+    Sub OnStateChange()
         g.MainForm.UpdateEncoderStateRelatedControls()
         g.MainForm.SetEncoderControl(CreateEditControl)
         g.MainForm.lgbEncoder.Tag = Name
@@ -347,7 +347,6 @@ Public MustInherit Class VideoEncoder
         End If
 
         g.MainForm.UpdateSizeOrBitrate()
-        UpdateTargetFile(forceTargetWipe)
     End Sub
 
     Public Enum Modes
@@ -505,6 +504,7 @@ Public MustInherit Class BasicVideoEncoder
     Public Overrides Sub ImportCommandLine(commandLine As String)
         ImportCommandLine(commandLine, CommandLineParams)
         OnStateChange()
+        UpdateTargetFile()
     End Sub
 
     Overrides Function GetCommandLine(includePaths As Boolean, includeExecutable As Boolean) As String
@@ -664,6 +664,7 @@ Public Class BatchEncoder
         Using form As New CommandLineVideoEncoderForm(Me)
             If form.ShowDialog() = DialogResult.OK Then
                 OnStateChange()
+                UpdateTargetFile()
             End If
         End Using
     End Sub

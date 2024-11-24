@@ -1148,8 +1148,9 @@ Public Class GlobalClass
             p.VideoEncoder.Muxer.Init()
         End If
 
-        p.VideoEncoder.OnStateChange(True)
         p.VideoEncoder.SetMetaData(p.LastOriginalSourceFile)
+        p.VideoEncoder.OnStateChange()
+        p.VideoEncoder.UpdateTargetFile(p.VideoEncoder.OverridesTargetFileName)
         MainForm.RecalcBitrate()
         MainForm.Assistant()
     End Sub

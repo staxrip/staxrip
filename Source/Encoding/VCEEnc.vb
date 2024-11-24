@@ -147,6 +147,7 @@ Public Class VCEEnc
                 Params = params1
                 ParamsStore = store
                 OnStateChange()
+                UpdateTargetFile()
             End If
         End Using
     End Sub

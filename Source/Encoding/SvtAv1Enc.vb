@@ -400,6 +400,7 @@ Public Class SvtAv1Enc
                 Params = newParams
                 ParamsStore = store
                 OnStateChange()
+                UpdateTargetFile()
             End If
         End Using
     End Sub

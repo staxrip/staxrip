@@ -762,9 +762,9 @@ Public Class NVEnc
         Property ColorspaceHdr2sdrReinhardPeak As New NumParam With {.Text = New String(" "c, 6) + "Peak", .HelpSwitch = "--vpp-colorspace", .Init = 1.0, .Config = {0, 100, 0.05, 2}, .VisibleFunc = Function() ColorspaceHdr2sdr.Value = 3, .Name = "ReinhardPeak"}
 
         Property NgxTruehdr As New BoolParam With {.Text = New String(" "c, 0) + "AI enhanced SDR to HDR conversion using RTX Video SDK:", .Switch = "--vpp-ngx-truehdr", .ArgsFunc = AddressOf GetNgxTruehdrArgs}
-        Property NgxTruehdrContrast As New NumParam With {.Text = New String(" "c, 6) + "Contrast", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 100.0, .Config = {0, 200, 1, 0}}
-        Property NgxTruehdrSaturation As New NumParam With {.Text = New String(" "c, 6) + "Saturation", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 100.0, .Config = {0, 200, 1, 0}}
-        Property NgxTruehdrMiddleGray As New NumParam With {.Text = New String(" "c, 6) + "MiddleGray", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 50.0, .Config = {10, 100, 1, 0}}
+        Property NgxTruehdrContrast As New NumParam With {.Text = New String(" "c, 6) + "Contrast", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 125.0, .Config = {0, 200, 1, 0}}
+        Property NgxTruehdrSaturation As New NumParam With {.Text = New String(" "c, 6) + "Saturation", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 75.0, .Config = {0, 200, 1, 0}}
+        Property NgxTruehdrMiddleGray As New NumParam With {.Text = New String(" "c, 6) + "MiddleGray", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 44.0, .Config = {10, 100, 1, 0}}
         Property NgxTruehdrMaxLuminance As New NumParam With {.Text = New String(" "c, 6) + "Max Luminance", .HelpSwitch = "--vpp-ngx-truehdr", .Init = 1000.0, .Config = {400, 2000, 1, 0}}
 
         Property Deinterlacer As New OptionParam With {.Text = "Deinterlacing Method", .HelpSwitch = "", .Init = 0, .Options = {"None", "Hardware (HW Decoder must be set to work!)", "AFS (Activate Auto Field Shift)", "Decomb", "Nnedi", "Yadif"}, .ArgsFunc = AddressOf GetDeinterlacerArgs}

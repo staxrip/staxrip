@@ -3209,6 +3209,11 @@ Public Class MainForm
 
         If refreshScript Then
             p.Script.Synchronize(False, False)
+        ElseIf p.Script.Info.FrameCount = 0 Then
+            Using server = FrameServerFactory.Create(p.Script.Path)
+                p.Script.Info = server.Info
+                p.script.Error = server.Error
+            End Using
         End If
 
         g.CheckForModifiedDolbyVisionLevel5Data()

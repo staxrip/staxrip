@@ -31,6 +31,20 @@ Public Class VvencffappEnc
         End Set
     End Property
 
+    Public Overrides ReadOnly Property OverridesTargetFileName As Boolean
+        Get
+            Return Params.OverrideTargetFileName.Value
+        End Get
+    End Property
+
+    Public Overrides ReadOnly Property OverridingTargetFileName As String
+        Get
+            Dim value = Macro.ExpandParamValues(Params.TargetFileName.Value, Params.Items)
+            value = value.Replace(Environment.NewLine, "")
+            Return value
+        End Get
+    End Property
+
     Overrides ReadOnly Property Codec As String
         Get
             Return "vvc"
@@ -275,6 +289,32 @@ Public Class VvencffappParams
         Title = "vvencFFapp Options"
     End Sub
 
+    Property OverrideTargetFileName As New BoolParam() With {
+        .Text = "Override Target File Name",
+        .Init = False}
+
+    Property TargetFileName As New StringParam With {
+        .Text = "Target File Name",
+        .Quotes = QuotesMode.Never,
+        .TextChangedAction = Sub(text) TargetFileNamePreview.Value = Macro.ExpandParamValues(text, Items),
+        .Init = "%source_name%_new",
+        .InitAction = Sub(tb)
+                          tb.Edit.MultilineHeightFactor = 6
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                      End Sub}
+
+    Property TargetFileNamePreview As New StringParam With {
+        .Text = "Preview",
+        .Quotes = QuotesMode.Never,
+        .InitAction = Sub(tb)
+                          tb.Edit.MultilineHeightFactor = 3
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                          tb.Edit.TextBox.ReadOnly = True
+                          BlockValueChanged = True
+                          .Value = Macro.ExpandParamValues(TargetFileName.Value, Items)
+                          BlockValueChanged = False
+                      End Sub}
+
     Property Decoder As New OptionParam With {
         .Text = "Decoder",
         .Options = {"AviSynth/VapourSynth", "QSVEnc (Intel)", "ffmpeg (Intel)", "ffmpeg (DXVA2)"},
@@ -390,9 +430,7 @@ Public Class VvencffappParams
                     New OptionParam() With {.Switch = "--Level", .Name = "Level", .Text = "Level", .Options = {"Automatic", "1.0", "2.0", "2.1", "3.0", "3.1", "4.0", "4.1", "5.0", "5.1", "5.2", "6.0", "6.1", "6.2", "6.3", "15.5"}},
                     New OptionParam() With {.Switch = "--Tier", .Name = "Tier", .Text = "Tier", .Options = {"Main", "High"}},
                     New OptionParam() With {.Switch = "--Verbosity", .Name = "Verbosity", .Text = "Verbosity", .Options = {"0: Silent", "1: Error", "2: Warning", "3: Info", "4: Notice", "5: Verbose (Default)", "6: Debug"}, .Init = 5, .IntegerValue = True},
-                    New OptionParam() With {.Switch = "--SIMD", .Name = "SIMD", .Text = "SIMD", .Options = {"Automatic", "SCALAR", "SSE41", "SSE42", "AVX", "AVX2", "AVX512"}},
-                    CompCheck, CompCheckAimedQuality,
-                    Chunks
+                    New OptionParam() With {.Switch = "--SIMD", .Name = "SIMD", .Text = "SIMD", .Options = {"Automatic", "SCALAR", "SSE41", "SSE42", "AVX", "AVX2", "AVX512"}}
                 )
                 Add("I/O",
                     New OptionParam() With {.Switch = "--OutputBitDepth", .Name = "OutputBitDepth", .Text = "Output Bit-Depth", .Options = {"Automatic", "8", "10", "12"}},
@@ -412,6 +450,12 @@ Public Class VvencffappParams
 
                 ')
                 Add("Custom", Custom, CustomFirstPass, CustomSecondPass)
+                Add("Other",
+                    OverrideTargetFileName, TargetFileName, TargetFileNamePreview,
+                    New LineParam(),
+                    Chunks,
+                    CompCheck, CompCheckAimedQuality
+                )
 
                 'ItemsValue = ItemsValue.OrderBy(Function(i) i.Weight).ToList
             End If
@@ -452,15 +496,15 @@ Public Class VvencffappParams
     Private BlockValueChanged As Boolean
 
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-        If BlockValueChanged Then
-            Exit Sub
-        End If
+        If BlockValueChanged Then Exit Sub
 
         If item Is Preset Then
             BlockValueChanged = True
             ApplyPresetValues()
             BlockValueChanged = False
         End If
+
+        If item IsNot TargetFileName AndAlso item IsNot TargetFileNamePreview Then TargetFileName.TextChangedAction?.Invoke(TargetFileName.Value)
 
         MyBase.OnValueChanged(item)
     End Sub

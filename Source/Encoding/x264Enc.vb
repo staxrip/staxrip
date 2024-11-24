@@ -59,6 +59,20 @@ Public Class x264Enc
         End Set
     End Property
 
+    Public Overrides ReadOnly Property OverridesTargetFileName As Boolean
+        Get
+            Return Params.OverrideTargetFileName.Value
+        End Get
+    End Property
+
+    Public Overrides ReadOnly Property OverridingTargetFileName As String
+        Get
+            Dim value = Macro.ExpandParamValues(Params.TargetFileName.Value, Params.Items)
+            value = value.Replace(Environment.NewLine, "")
+            Return value
+        End Get
+    End Property
+
     Overrides Sub Encode()
         Encode("Video encoding", GetArgs(1, 0, 0, Nothing, p.Script), s.ProcessPriority)
 
@@ -391,6 +405,32 @@ Public Class x264Params
     Sub New()
         Title = "x264 Options"
     End Sub
+
+    Property OverrideTargetFileName As New BoolParam() With {
+        .Text = "Override Target File Name",
+        .Init = False}
+
+    Property TargetFileName As New StringParam With {
+        .Text = "Target File Name",
+        .Quotes = QuotesMode.Never,
+        .TextChangedAction = Sub(text) TargetFileNamePreview.Value = Macro.ExpandParamValues(text, Items),
+        .Init = "%source_name%_new",
+        .InitAction = Sub(tb)
+                          tb.Edit.MultilineHeightFactor = 6
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                      End Sub}
+
+    Property TargetFileNamePreview As New StringParam With {
+        .Text = "Preview",
+        .Quotes = QuotesMode.Never,
+        .InitAction = Sub(tb)
+                          tb.Edit.MultilineHeightFactor = 3
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                          tb.Edit.TextBox.ReadOnly = True
+                          BlockValueChanged = True
+                          .Value = Macro.ExpandParamValues(TargetFileName.Value, Items)
+                          BlockValueChanged = False
+                      End Sub}
 
     Property Mode As New OptionParam With {
         .Name = "Mode",
@@ -1115,23 +1155,28 @@ Public Class x264Params
                     New BoolParam With {.Switch = "--verbose", .Switches = {"-v"}, .Text = "Print stats for each frame"},
                     New BoolParam With {.Switch = "--dts-compress", .Text = "Eliminate initial delay with container DTS hack"},
                     New BoolParam With {.Switch = "--progress-header", .NoSwitch = "--no-progress-header", .Text = "Show progress header", .Init = True, .VisibleFunc = Function() Package.x264Type <> x264Type.Patman})
-                Add("Other",
+                Add("Misc",
                     New StringParam With {.Switch = "--video-filter", .Switches = {"--vf"}, .Text = "Video Filter"},
                     New OptionParam With {.Switches = {"--tff", "--bff"}, .Text = "Interlaced", .Options = {"Progressive ", "Top Field First", "Bottom Field First"}, .Values = {"", "--tff", "--bff"}},
                     New OptionParam With {.Switch = "--frame-packing", .Text = "Frame Packing", .IntegerValue = True, .Options = {"Checkerboard", "Column Alternation", "Row Alternation", "Side By Side", "Top Bottom", "Frame Alternation", "Mono", "Tile Format"}},
                     Deblock,
                     DeblockA,
                     DeblockB,
-                    Chunks,
-                    CompCheck,
-                    CompCheckAimedQuality,
                     SlowFirstpass,
                     New BoolParam With {.Switch = "--constrained-intra", .Text = "Constrained Intra Prediction"},
-                    Cabac)
+                    Cabac
+                )
                 Add("Custom",
                     Custom,
                     CustomFirstPass,
-                    CustomSecondPass)
+                    CustomSecondPass
+                )
+                Add("Other",
+                    OverrideTargetFileName, TargetFileName, TargetFileNamePreview,
+                    New LineParam(),
+                    Chunks,
+                    CompCheck, CompCheckAimedQuality
+                )
             End If
 
             Return ItemsValue
@@ -1160,9 +1205,7 @@ Public Class x264Params
     Private BlockValueChanged As Boolean
 
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-        If BlockValueChanged Then
-            Exit Sub
-        End If
+        If BlockValueChanged Then Exit Sub
 
         If item Is Preset OrElse item Is Tune OrElse item Is Profile Then
             BlockValueChanged = True
@@ -1170,13 +1213,15 @@ Public Class x264Params
             BlockValueChanged = False
         End If
 
-        If Not DeblockA.NumEdit Is Nothing Then
+        If DeblockA.NumEdit IsNot Nothing Then
             DeblockA.NumEdit.Enabled = Deblock.Value
             DeblockB.NumEdit.Enabled = Deblock.Value
 
             PsyRD.NumEdit.Enabled = Psy.Value
             PsyTrellis.NumEdit.Enabled = Psy.Value
         End If
+
+        If item IsNot TargetFileName AndAlso item IsNot TargetFileNamePreview Then TargetFileName.TextChangedAction?.Invoke(TargetFileName.Value)
 
         MyBase.OnValueChanged(item)
     End Sub
@@ -1352,7 +1397,7 @@ Public Class x264Params
                 sb.Append(" --output " + (targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape)
             End If
 
-            sb.Append( " " & If(pipeTool = "none", script.Path.Escape, "-") )
+            sb.Append(" " & If(pipeTool = "none", script.Path.Escape, "-"))
         End If
 
         Return Macro.Expand(sb.ToString.Trim.FixBreak.Replace(BR, " "))

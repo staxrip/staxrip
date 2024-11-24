@@ -1120,17 +1120,12 @@ Public Class MainForm
         Next
 
         For Each control In controls.OfType(Of ButtonLabel)
+            control.ApplyTheme(theme)
             control.BackColor = If(TypeOf control.Parent Is UserControl, theme.General.Controls.ListView.BackColor, theme.General.Controls.ButtonLabel.BackColor)
-            control.ForeColor = theme.General.Controls.ButtonLabel.ForeColor
-            control.LinkColor = theme.General.Controls.ButtonLabel.LinkForeColor
-            control.LinkHoverColor = theme.General.Controls.ButtonLabel.LinkForeHoverColor
         Next
 
         For Each control In controls.OfType(Of ButtonEx)
-            control.BackColor = theme.General.Controls.Button.BackColor
-            control.ForeColor = theme.General.Controls.Button.ForeColor
-            control.BackDisabledColor = theme.General.Controls.Button.BackDisabledColor
-            control.ForeDisabledColor = theme.General.Controls.Button.ForeDisabledColor
+            control.ApplyTheme(theme)
         Next
 
         For Each control In controls.OfType(Of GroupBox)
@@ -2608,39 +2603,6 @@ Public Class MainForm
             End If
 
             Log.WriteEnvironment()
-
-            Dim targetDir As String = Nothing
-
-            If p.DefaultTargetFolder <> "" Then
-                targetDir = Macro.Expand(p.DefaultTargetFolder).FixDir
-
-                If Not Directory.Exists(targetDir) Then
-                    Try
-                        Directory.CreateDirectory(targetDir)
-                    Catch ex As Exception
-                    End Try
-                End If
-            End If
-
-            If Not Directory.Exists(targetDir) Then
-                targetDir = p.SourceFile.Dir
-            End If
-
-            Dim targetName = Macro.Expand(p.DefaultTargetName)
-
-            If Not targetName.IsValidFileSystemName Then
-                targetName = p.SourceFile.Base
-            End If
-
-            tbTargetFile.Text = Path.Combine(targetDir, targetName + p.VideoEncoder.Muxer.OutputExtFull)
-
-            If p.SourceFile = p.TargetFile OrElse
-                (FileTypes.VideoIndex.Contains(p.SourceFile.Ext) AndAlso
-                p.SourceFile.ReadAllText.Contains(p.TargetFile)) Then
-
-                tbTargetFile.Text = p.TargetFile.DirAndBase + "_new" + p.TargetFile.ExtFull
-            End If
-
             Log.WriteHeader("Media Info Source File")
 
             For Each i In p.SourceFiles
@@ -2658,6 +2620,7 @@ Public Class MainForm
                 End If
             Next
 
+            p.VideoEncoder.UpdateTargetFile(True)
             Demux()
 
             If String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
@@ -2765,6 +2728,7 @@ Public Class MainForm
             DemuxVobSubSubtitles()
             ConvertBluRaySubtitles()
             ExtractForcedVobSubSubtitles()
+            p.VideoEncoder.UpdateTargetFile(True)
             g.RaiseAppEvent(ApplicationEvent.BeforeMuxingWhenSourceOpening)
             p.VideoEncoder.Muxer.Init()
 

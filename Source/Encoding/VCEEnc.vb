@@ -44,6 +44,20 @@ Public Class VCEEnc
         End Set
     End Property
 
+    Public Overrides ReadOnly Property OverridesTargetFileName As Boolean
+        Get
+            Return Params.OverrideTargetFileName.Value
+        End Get
+    End Property
+
+    Public Overrides ReadOnly Property OverridingTargetFileName As String
+        Get
+            Dim value = Macro.ExpandParamValues(Params.TargetFileName.Value, Params.Items)
+            value = value.Replace(Environment.NewLine, "")
+            Return value
+        End Get
+    End Property
+
     Overrides ReadOnly Property IsDolbyVisionSet As Boolean
         Get
             If Not Params.DolbyVisionRpu.Visible Then Return False
@@ -178,7 +192,7 @@ Public Class VCEEnc
 
             If p.HdrDolbyVisionMetadataFile.HasToBeTrimmed Then
                 newPath = p.HdrDolbyVisionMetadataFile.TrimRpu()
-            End If            
+            End If
 
             If Not String.IsNullOrWhiteSpace(newPath) Then
                 Params.DolbyVisionRpu.Value = newPath
@@ -374,6 +388,37 @@ Public Class VCEEnc
             Title = "VCEEncC Options"
         End Sub
 
+        Property OverrideTargetFileName As New BoolParam() With {
+            .Text = "Override Target File Name",
+            .Init = False}
+
+        Property TargetFileName As New StringParam With {
+            .Text = "Target File Name",
+            .Quotes = QuotesMode.Never,
+            .TextChangedAction = Sub(text) TargetFileNamePreview.Value = Macro.ExpandParamValues(text, Items),
+            .Init = "%source_name%_new",
+            .InitAction = Sub(tb)
+                              tb.Edit.MultilineHeightFactor = 6
+                              tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                          End Sub}
+
+        Property TargetFileNamePreview As New StringParam With {
+            .Text = "Preview",
+            .Quotes = QuotesMode.Never,
+            .InitAction = Sub(tb)
+                              tb.Edit.MultilineHeightFactor = 3
+                              tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                              tb.Edit.TextBox.ReadOnly = True
+                              BlockValueChanged = True
+                              .Value = Macro.ExpandParamValues(TargetFileName.Value, Items)
+                              BlockValueChanged = False
+                          End Sub}
+
+        Property Custom As New StringParam With {
+            .Text = "Custom",
+            .Quotes = QuotesMode.Never,
+            .AlwaysOn = True}
+
         Property Codec As New OptionParam With {
             .Switch = "--codec",
             .Text = "Codec",
@@ -477,15 +522,15 @@ Public Class VCEEnc
             .Config = {0, 255}}
 
         Property QPMaxAdvanced As New BoolParam With {.Text = "Show advanced Maximum QP settings", .Init = False}
-        Property QPMax8 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0, .ImportAction = AddressOf ImportQPMaxArgs}
+        Property QPMax8 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMax8I As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP I", .DefaultValue = -1, .Value = 51, .Config = {0, 51, 1}, .VisibleFunc = Function() QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 0, .ArgsFunc = AddressOf GetQpMaxArgs, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMax8P As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP P", .DefaultValue = -1, .Value = 51, .Config = {0, 51, 1}, .VisibleFunc = QPMax8I.VisibleFunc}
         Property QPMax8B As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP B", .DefaultValue = -1, .Value = 51, .Config = {0, 51, 1}, .VisibleFunc = QPMax8I.VisibleFunc}
-        Property QPMax10 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1, .ImportAction = AddressOf ImportQPMaxArgs}
+        Property QPMax10 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMax10I As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP I", .DefaultValue = -1, .Value = 63, .Config = {0, 63, 1}, .VisibleFunc = Function() QPMaxAdvanced.Value AndAlso Codec.Value <> 2 AndAlso OutputDepth.Value = 1, .ArgsFunc = AddressOf GetQpMaxArgs, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMax10P As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP P", .DefaultValue = -1, .Value = 63, .Config = {0, 63, 1}, .VisibleFunc = QPMax10I.VisibleFunc}
         Property QPMax10B As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP B", .DefaultValue = -1, .Value = 63, .Config = {0, 63, 1}, .VisibleFunc = QPMax10I.VisibleFunc}
-        Property QPMaxAV1 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value = 2, .ImportAction = AddressOf ImportQPMaxArgs}
+        Property QPMaxAV1 As New NumParam With {.Switch = "--qp-max", .Text = "Maximum QP", .Init = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() Not QPMaxAdvanced.Value AndAlso Codec.Value = 2, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMaxAV1I As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP I", .DefaultValue = -1, .Value = 255, .Config = {0, 255, 1}, .VisibleFunc = Function() QPMaxAdvanced.Value AndAlso Codec.Value = 2, .ArgsFunc = AddressOf GetQpMaxArgs, .ImportAction = AddressOf ImportQpMaxArgs}
         Property QPMaxAV1P As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP P", .DefaultValue = -1, .Value = 255, .Config = {0, 255, 1}, .VisibleFunc = QPMaxAV1I.VisibleFunc}
         Property QPMaxAV1B As New NumParam With {.HelpSwitch = "--qp-max", .Text = "Maximum QP B", .DefaultValue = -1, .Value = 255, .Config = {0, 255, 1}, .VisibleFunc = QPMaxAV1I.VisibleFunc}
@@ -992,8 +1037,7 @@ Public Class VCEEnc
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option", .VisibleFunc = Function() Decoder.ValueText.EqualsAny("avhw", "avsw")},
                         Decoder, Interlace,
                         New NumParam With {.Switch = "--input-analyze", .Text = "Input Analyze", .Init = 5, .Config = {1, 600, 0.1, 1}})
-                    Add("Other",
-                        New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
+                    Add("Misc",
                         New StringParam With {.Switch = "--chapter", .Text = "Chapters", .BrowseFile = True},
                         New StringParam With {.Switch = "--log", .Text = "Log File", .BrowseFile = True},
                         New StringParam With {.Switch = "--timecode", .Text = "Timecode File", .BrowseFile = True},
@@ -1003,7 +1047,13 @@ Public Class VCEEnc
                         New BoolParam With {.Switch = "--vbaq", .Text = "Adaptive quantization in frame"},
                         New BoolParam With {.Switch = "--no-deblock", .Text = "Disable deblock filter"},
                         New BoolParam With {.Switch = "--filler", .Text = "Use filler data"},
-                        New StringParam With {.Switch = "--thread-affinity", .Text = "Thread Affinity"})
+                        New StringParam With {.Switch = "--thread-affinity", .Text = "Thread Affinity"}
+                    )
+                    Add("Other",
+                        OverrideTargetFileName, TargetFileName, TargetFileNamePreview,
+                        New LineParam(),
+                        Custom
+                    )
                 End If
 
                 Return ItemsValue
@@ -1011,7 +1061,11 @@ Public Class VCEEnc
         End Property
 
 
+        Private BlockValueChanged As Boolean
+
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
+            If BlockValueChanged Then Exit Sub
+
             If Decoder.MenuButton IsNot Nothing AndAlso (item Is Decoder OrElse item Is Nothing) Then
                 Dim isIntelPresent = OS.VideoControllers.Where(Function(val) val.Contains("Intel")).Count > 0
 

@@ -31,7 +31,18 @@ Public Class JobManager
             Dim name = p.TargetFile.Base
 
             If name = "" Then
-                name = Macro.Expand(p.DefaultTargetName)
+                Dim enc = TryCast(p.VideoEncoder, BasicVideoEncoder)
+                Dim temp = enc?.OverridingTargetFileName
+                If enc?.OverridesTargetFileName AndAlso temp <> "" AndAlso temp.IsValidFileSystemName() Then
+                    name = temp
+                End If
+            End If
+
+            If name = "" Then
+                Dim temp = Macro.Expand(p.DefaultTargetName)
+                If temp.IsValidFileSystemName() Then
+                    name = temp
+                End If
             End If
 
             If name = "" Then
@@ -140,7 +151,7 @@ Public Class JobManager
             Try
                 If Native.GetDiskFreeSpaceEx(jobsDir, availableNumberOfBytes, totalNumberOfBytes, totalNumberOfFreeBytes) Then
                     If availableNumberOfBytes < 600000 Then Throw New AbortException()
-                End If                
+                End If
 
                 Using stream As New FileStream(jobsPath, FileMode.Create, FileAccess.Write, FileShare.None)
                     formatter.Serialize(stream, jobs)

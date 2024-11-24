@@ -3,6 +3,7 @@ Imports System.Globalization
 Imports System.Text.RegularExpressions
 Imports Microsoft.VisualBasic
 Imports StaxRip.UI
+Imports StaxRip.VideoEncoderCommandLine
 
 <Serializable()>
 Public Class Macro
@@ -684,6 +685,91 @@ Public Class Macro
         If value.Contains("%progress%") Then value = value.Replace("%progress%", progress.ToInvariantString("0.0"))
         If value.Contains("%progressline%") Then value = value.Replace("%progressline%", progressline.Trim())
 
+        Return value
+    End Function
+
+    Shared Function ExpandParamValues(value As String, params As IEnumerable(Of CommandLineParam), Optional proj As Project = Nothing) As String
+        If value = "" Then Return ""
+        If Not value.ContainsAny("%") Then Return value
+        If params Is Nothing Then Return value
+        If Not params.Any() Then Return value
+        If proj Is Nothing Then proj = p
+
+        For Each param In params.Where(Function(x) x.Path <> "" AndAlso x.Visible)
+            Dim switches = param.GetSwitches().Select(Function(x) $"{x.ToLowerEx()}")
+
+            For Each sw In switches
+                If value.Contains(sw) Then
+                    If TypeOf param Is BoolParam Then
+                        Dim castedParam = DirectCast(param, BoolParam)
+                        Dim v = ""
+                        If castedParam.ArgsFunc Is Nothing Then
+                            v = castedParam.Value.ToInvariantString()
+                        Else
+                            v = castedParam.ArgsFunc.Invoke()
+                            If v = "" Then
+                                v = castedParam.Value.ToString()
+                            End If
+                            v = v.ReplaceAll(switches, "").Replace(" ", "")
+                        End If
+                        If value.Contains($"%{sw}%") Then value = value.Replace($"%{sw}%", v)
+                    ElseIf TypeOf param Is NumParam Then
+                        Dim castedParam = DirectCast(param, NumParam)
+                        Dim v = ""
+                        If castedParam.ArgsFunc Is Nothing Then
+                            v = castedParam.Value.ToInvariantString()
+                        Else
+                            v = castedParam.ArgsFunc.Invoke()
+                            If v = "" Then
+                                v = castedParam.Value.ToString()
+                            End If
+                            v = v.ReplaceAll(switches, "").Replace(" ", "")
+                        End If
+                        If value.Contains($"%{sw}%") Then value = value.Replace($"%{sw}%", v)
+                    ElseIf TypeOf param Is OptionParam Then
+                        Dim castedParam = DirectCast(param, OptionParam)
+                        Dim v = ""
+                        If castedParam.ArgsFunc Is Nothing Then
+                            If castedParam.Values.NothingOrEmpty() Then
+                                If castedParam.IntegerValue Then
+                                    v = castedParam.Value.ToInvariantString()
+                                Else 
+                                    v = castedParam.OptionText.Replace(" ", "")
+                                End If
+                            Else
+                                v = castedParam.ValueText
+                            End If
+                        Else
+                            v = castedParam.ArgsFunc.Invoke()
+                            If v = "" Then
+                                v = castedParam.Value.ToString()
+                            End If
+                            v = v.ReplaceAll(switches, "").Replace(" ", "")
+                        End If
+                        If value.Contains($"%{sw}%") Then value = value.Replace($"%{sw}%", v.ToInvariantString())
+                    ElseIf TypeOf param Is StringParam Then
+                        Dim castedParam = DirectCast(param, StringParam)
+                        Dim v = ""
+                        If castedParam.ArgsFunc Is Nothing Then
+                            v = castedParam.Value.ToInvariantString()
+                        Else
+                            v = castedParam.ArgsFunc.Invoke()
+                            If v = "" Then
+                                v = castedParam.Value.ToInvariantString()
+                            End If
+                            v = v.ReplaceAll(switches, "").Replace(" ", "")
+                        End If
+                        If value.Contains($"%{sw}%") Then value = value.Replace($"%{sw}%", v)
+                    End If
+                    Exit For
+                End If
+            Next
+
+            value = value.ReplaceInvalidFileSystemName("-"c)
+            If Not value.ContainsAny("%") Then Return value
+        Next
+
+        value = Expand(value, proj)
         Return value
     End Function
 End Class

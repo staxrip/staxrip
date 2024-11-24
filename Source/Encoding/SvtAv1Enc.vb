@@ -33,6 +33,20 @@ Public Class SvtAv1Enc
         End Set
     End Property
 
+    Public Overrides ReadOnly Property OverridesTargetFileName As Boolean
+        Get
+            Return Params.OverrideTargetFileName.Value
+        End Get
+    End Property
+
+    Public Overrides ReadOnly Property OverridingTargetFileName As String
+        Get
+            Dim value = Macro.ExpandParamValues(Params.TargetFileName.Value, Params.Items)
+            value = value.Replace(Environment.NewLine, "")
+            Return value
+        End Get
+    End Property
+
     Overrides ReadOnly Property IsDolbyVisionSet As Boolean
         Get
             If {SvtAv1EncAppType.Psy, SvtAv1EncAppType.Hdr}.Contains(Package.SvtAv1EncAppType) Then
@@ -459,6 +473,32 @@ Public Class SvtAv1EncParams
         Title = "SvtAv1EncApp Options"
     End Sub
 
+
+    Property OverrideTargetFileName As New BoolParam() With {
+        .Text = "Override Target File Name",
+        .Init = False}
+
+    Property TargetFileName As New StringParam With {
+        .Text = "Target File Name",
+        .Quotes = QuotesMode.Never,
+        .TextChangedAction = Sub(text) TargetFileNamePreview.Value = Macro.ExpandParamValues(text, Items),
+        .Init = "%source_name%_new",
+        .InitAction = Sub(tb)
+                          tb.Edit.MultilineHeightFactor = 6
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                      End Sub}
+
+    Property TargetFileNamePreview As New StringParam With {
+        .Text = "Preview",
+        .Quotes = QuotesMode.Never,
+        .InitAction = Sub(tb)
+                          tb.Edit.MultilineHeightFactor = 3
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                          tb.Edit.TextBox.ReadOnly = True
+                          BlockValueChanged = True
+                          .Value = Macro.ExpandParamValues(TargetFileName.Value, Items)
+                          BlockValueChanged = False
+                      End Sub}
 
     Property Decoder As New OptionParam With {
         .Text = "Decoder",
@@ -1592,8 +1632,6 @@ Public Class SvtAv1EncParams
 
                 Add("Input/Output",
                     Decoder, PipingToolAVS, PipingToolVS,
-                    CompCheck, CompCheckAimedQuality,
-                    Chunks,
                     Progress, ProgressPatman,
                     FramesToBeEncoded, FramesToBeSkipped,
                     EncoderColorFormat,
@@ -1644,6 +1682,12 @@ Public Class SvtAv1EncParams
                     EnableVarianceBoost, VarianceBoostStrength, VarianceOctile, VarianceOctilePsy, VarianceBoostCurve, VarianceBoostCurveHdr
                 )
                 Add("Custom", Custom, CustomFirstPass, CustomSecondPass, CustomThirdPass)
+                Add("Other",
+                    OverrideTargetFileName, TargetFileName, TargetFileNamePreview,
+                    New LineParam(),
+                    Chunks,
+                    CompCheck, CompCheckAimedQuality
+                )
 
                 'ItemsValue = ItemsValue.OrderBy(Function(i) i.Weight).ToList
             End If
@@ -1672,15 +1716,15 @@ Public Class SvtAv1EncParams
     Private BlockValueChanged As Boolean
 
     Protected Overrides Sub OnValueChanged(item As CommandLineParam)
-        If BlockValueChanged Then
-            Exit Sub
-        End If
+        If BlockValueChanged Then Exit Sub
 
         If item Is Preset Then
             BlockValueChanged = True
             ApplyPresetValues()
             BlockValueChanged = False
         End If
+
+        If item IsNot TargetFileName AndAlso item IsNot TargetFileNamePreview Then TargetFileName.TextChangedAction?.Invoke(TargetFileName.Value)
 
         MyBase.OnValueChanged(item)
     End Sub

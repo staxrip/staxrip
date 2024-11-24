@@ -706,6 +706,20 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function ReplaceInvalidFileSystemName(instance As String, Optional replaceWith As Char = "_"c) As String
+        If instance = "" Then Return ""
+        Dim ret = instance
+
+        Dim chars = Path.GetInvalidFileNameChars()
+
+        For Each c In chars
+            ret = ret.Replace(c, replaceWith)
+        Next
+
+        Return ret
+    End Function
+
+    <Extension()>
     Function IsSameBase(instance As String, b As String) As Boolean
         Return instance.Base.IsEqualIgnoreCase(b.Base)
     End Function
@@ -788,6 +802,30 @@ Module StringExtensions
     <Extension()>
     Function DeleteRight(value As String, count As Integer) As String
         Return Left(value, value.Length - count)
+    End Function
+
+    <Extension()>
+    Function ReplaceAll(instance As String, values As String(), replace As String) As String
+        If instance = "" Then Return ""
+        If values Is Nothing OrElse Not values.Any() Then Return instance
+
+        For Each value In values
+            instance = instance.Replace(value, replace)
+        Next
+
+        Return instance
+    End Function
+
+    <Extension()>
+    Function ReplaceAll(instance As String, values As IEnumerable(Of String), replace As String) As String
+        If instance = "" Then Return ""
+        If values Is Nothing OrElse Not values.Any() Then Return instance
+
+        For Each value In values
+            instance = instance.Replace(value, replace)
+        Next
+
+        Return instance
     End Function
 
     <Extension()>

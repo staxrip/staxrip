@@ -36,13 +36,18 @@ Public Class QSVEnc
         End Set
     End Property
 
-    Overrides Property Bitrate As Integer
+    Public Overrides ReadOnly Property OverridesTargetFileName As Boolean
         Get
-            Return CInt(Params.Bitrate.Value)
+            Return Params.OverrideTargetFileName.Value
         End Get
-        Set(value As Integer)
-            Params.Bitrate.Value = value
-        End Set
+    End Property
+
+    Public Overrides ReadOnly Property OverridingTargetFileName As String
+        Get
+            Dim value = Macro.ExpandParamValues(Params.TargetFileName.Value, Params.Items)
+            value = value.Replace(Environment.NewLine, "")
+            Return value
+        End Get
     End Property
 
     Overrides ReadOnly Property IsDolbyVisionSet As Boolean
@@ -82,6 +87,14 @@ Public Class QSVEnc
         End Get
     End Property
 
+    Overrides Property Bitrate As Integer
+        Get
+            Return CInt(Params.Bitrate.Value)
+        End Get
+        Set(value As Integer)
+            Params.Bitrate.Value = value
+        End Set
+    End Property
 
     Public Sub New()
         MyBase.New()
@@ -197,7 +210,7 @@ Public Class QSVEnc
 
             If p.HdrDolbyVisionMetadataFile.HasToBeTrimmed Then
                 newPath = p.HdrDolbyVisionMetadataFile.TrimRpu()
-            End If            
+            End If
 
             If Not String.IsNullOrWhiteSpace(newPath) Then
                 Params.DolbyVisionRpu.Value = newPath
@@ -397,6 +410,32 @@ Public Class QSVEnc
         Sub New()
             Title = "QSVEncC Options"
         End Sub
+
+        Property OverrideTargetFileName As New BoolParam() With {
+            .Text = "Override Target File Name",
+            .Init = False}
+
+        Property TargetFileName As New StringParam With {
+            .Text = "Target File Name",
+            .Quotes = QuotesMode.Never,
+            .TextChangedAction = Sub(text) TargetFileNamePreview.Value = Macro.ExpandParamValues(text, Items),
+            .Init = "%source_name%_new",
+            .InitAction = Sub(tb)
+                              tb.Edit.MultilineHeightFactor = 6
+                              tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                          End Sub}
+
+        Property TargetFileNamePreview As New StringParam With {
+            .Text = "Preview",
+            .Quotes = QuotesMode.Never,
+            .InitAction = Sub(tb)
+                              tb.Edit.MultilineHeightFactor = 3
+                              tb.Edit.TextBox.Font = FontManager.GetCodeFont()
+                              tb.Edit.TextBox.ReadOnly = True
+                              BlockValueChanged = True
+                              .Value = Macro.ExpandParamValues(TargetFileName.Value, Items)
+                              BlockValueChanged = False
+                          End Sub}
 
         Property Device As New OptionParam With {
             .Switch = "--device",
@@ -633,6 +672,11 @@ Public Class QSVEnc
             .Text = "Dolby Vision RPU",
             .BrowseFile = True,
             .VisibleFunc = Function() Codec.ValueText = "hevc" OrElse Codec.ValueText = "av1"}
+
+        Property Custom As New StringParam With {
+            .Text = "Custom",
+            .Quotes = QuotesMode.Never,
+            .AlwaysOn = True}
 
         Property ColorMatrix As New OptionParam With {.Switch = "--colormatrix", .Text = "Colormatrix", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 BG", "SMPTE 240 M", "YCgCo", "FCC", "GBR", "BT 2020 NC", "BT 2020 C"}}
         Property ColorPrim As New OptionParam With {.Switch = "--colorprim", .Text = "Colorprim", .Options = {"Undefined", "Auto", "BT 709", "SMPTE 170 M", "BT 470 M", "BT 470 BG", "SMPTE 240 M", "Film", "BT 2020"}}
@@ -1006,19 +1050,19 @@ Public Class QSVEnc
                         New StringParam With {.Switch = "--input-option", .Text = "Input Option"},
                         Decoder, Interlace,
                         New OptionParam With {.Switch = "--input-csp", .Text = "Input CSP", .Init = 2, .Options = {"Invalid", "NV12", "YV12", "YUV420P", "YUV422P", "YUV444P", "YUV420P9LE", "YUV420P10LE", "YUV420P12LE", "YUV420P14LE", "YUV420P16LE", "P010", "YUV422P9LE", "YUV422P10LE", "YUV422P12LE", "YUV422P14LE", "YUV422P16LE", "YUV444P9LE", "YUV444P10LE", "YUV444P12LE", "YUV444P14LE", "YUV444P16LE"}})
-                    Add("Other",
-                        New StringParam With {.Text = "Custom", .Quotes = QuotesMode.Never, .AlwaysOn = True},
+                    Add("Misc",
                         New StringParam With {.Switch = "--data-copy", .Text = "Data Copy"},
                         New StringParam With {.Switch = "--thread-affinity", .Text = "Thread Affinity"},
                         New OptionParam With {.Switches = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Text = "D3D", .Options = {"Disabled", "D3D9", "D3D11", "D3D9/D3D11"}, .Values = {"--disable-d3d", "--d3d9", "--d3d11", "--d3d"}, .Init = 3},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error", "Quiet"}},
-                        New OptionParam With {.Switch = "--sao", .Text = "SAO", .Options = {"Auto", "None", "Luma", "Chroma", "All"}, .VisibleFunc = Function() Codec.ValueText = "hevc"})
-                    Add("Other 2",
+                        New OptionParam With {.Switch = "--sao", .Text = "SAO", .Options = {"Auto", "None", "Luma", "Chroma", "All"}, .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New NumParam With {.Switch = "--max-framesize", .Text = "Max frame size in bytes", .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Bitrate.Visible},
                         New NumParam With {.Switch = "--max-framesize-i", .Text = "Max frame size in bytes for I-frames", .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Bitrate.Visible},
                         New NumParam With {.Switch = "--max-framesize-p", .Text = "Max frame size in bytes for P/B frames", .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Bitrate.Visible},
                         New NumParam With {.Switch = "--tile-row", .Text = "Number of tile rows", .Init = 2, .DefaultValue = 1, .Config = {0, Integer.MaxValue}, .VisibleFunc = Function() Codec.ValueText = "av1"},
-                        New NumParam With {.Switch = "--tile-col", .Text = "Number of tile columns", .Init = 1, .Config = {0, 100}, .VisibleFunc = Function() Codec.ValueText = "av1"},
+                        New NumParam With {.Switch = "--tile-col", .Text = "Number of tile columns", .Init = 1, .Config = {0, 100}, .VisibleFunc = Function() Codec.ValueText = "av1"}
+                    )
+                    Add("Misc 2",
                         New BoolParam With {.Switch = "--no-deblock", .Text = "No Deblock", .VisibleFunc = Function() Codec.ValueText = "h264"},
                         New BoolParam With {.Switch = "--fallback-rc", .Text = "Enable fallback for unsupported modes", .Init = True},
                         New BoolParam With {.Switch = "--timer-period-tuning", .NoSwitch = "--no-timer-period-tuning", .Text = "Timer Period Tuning", .Init = True},
@@ -1028,7 +1072,13 @@ Public Class QSVEnc
                         New BoolParam With {.Switch = "--tskip", .Text = "Transform Skip", .VisibleFunc = Function() Codec.ValueText = "hevc"},
                         New BoolParam With {.Switch = "--fade-detect", .Text = "Fade Detection"},
                         New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"},
-                        New BoolParam With {.Switch = "--timecode", .Text = "Output timecode file"})
+                        New BoolParam With {.Switch = "--timecode", .Text = "Output timecode file"}
+                    )
+                    Add("Other",
+                        OverrideTargetFileName, TargetFileName, TargetFileNamePreview,
+                        New LineParam(),
+                        Custom
+                    )
                 End If
 
                 Return ItemsValue
@@ -1039,7 +1089,11 @@ Public Class QSVEnc
             ShowConsoleHelp(Package.QSVEncC, options)
         End Sub
 
+        Private BlockValueChanged As Boolean
+
         Protected Overrides Sub OnValueChanged(item As CommandLineParam)
+            If BlockValueChanged Then Exit Sub
+
             For i = 0 To Interlace.Values.Length - 1
                 If Interlace.Values(i).ToLowerInvariant().Contains("auto") Then
                     Dim enabled = Decoder.ValueText.EqualsAny("avhw", "avsw")

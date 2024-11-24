@@ -982,8 +982,7 @@ Public Class GlobalClass
             p.VideoEncoder.Muxer.Init()
         End If
 
-        MainForm.tbTargetFile.Text = p.TargetFile.ChangeExt(p.VideoEncoder.Muxer.OutputExt)
-        p.VideoEncoder.OnStateChange()
+        p.VideoEncoder.OnStateChange(True)
         p.VideoEncoder.SetMetaData(p.LastOriginalSourceFile)
         MainForm.RecalcBitrate()
         MainForm.Assistant()

@@ -27,6 +27,19 @@ Public MustInherit Class VideoEncoder
         CanEditValue = True
     End Sub
 
+    Public Overridable ReadOnly Property OverridesTargetFileName As Boolean
+        Get
+            Return False
+        End Get
+    End Property
+
+    Public Overridable ReadOnly Property OverridingTargetFileName As String
+        Get
+            Return "%source_name%"
+        End Get
+    End Property
+
+
     Public Overridable ReadOnly Property IsDolbyVisionSet As Boolean
         Get
             Return False
@@ -196,6 +209,68 @@ Public MustInherit Class VideoEncoder
         End Select
     End Function
 
+    Sub UpdateTargetFile(Optional forceWipe As Boolean = False)
+        Dim sourceFile = p.SourceFile
+        If String.IsNullOrWhiteSpace(sourceFile) AndAlso p.SourceFiles.Any() Then sourceFile = p.SourceFiles(0)
+
+        Try
+            If sourceFile <> "" AndAlso (forceWipe OrElse p.TargetFile = "" OrElse p.TargetFile.FileExists() OrElse OverridesTargetFileName) Then
+                Dim oldTargetFileName = ""
+                Dim finalName = ""
+                Dim targetDir = ""
+
+                If p.TargetFile = "" Then
+                    If p.DefaultTargetFolder <> "" Then
+                        targetDir = Macro.Expand(p.DefaultTargetFolder).FixDir()
+
+                        If Not Directory.Exists(targetDir) Then
+                            Try
+                                Directory.CreateDirectory(targetDir)
+                            Catch ex As Exception
+                            End Try
+                        End If
+                    End If
+
+                    If Not Directory.Exists(targetDir) Then
+                        targetDir = sourceFile.Dir()
+                    End If
+                Else
+                    targetDir = p.TargetFile.Dir()
+                    If Not forceWipe Then oldTargetFileName = p.TargetFile.Base()
+                End If
+
+
+                Dim name = OverridingTargetFileName
+                If OverridesTargetFileName AndAlso name.IsValidFileSystemName() Then
+                    finalName = name
+                End If
+
+                name = Macro.Expand(p.DefaultTargetName)
+                If Not OverridesTargetFileName AndAlso name <> oldTargetFileName AndAlso name.IsValidFileSystemName() Then
+                    finalName = name
+                End If
+
+                name = sourceFile.Base()
+                Dim newPath = Path.Combine(targetDir, name & p.VideoEncoder.Muxer.OutputExtFull)
+                Dim alreadyExists = newPath.FileExists()
+                If name <> oldTargetFileName AndAlso Not alreadyExists AndAlso Not (FileTypes.VideoIndex.Contains(sourceFile.Ext) AndAlso sourceFile.ReadAllText.Contains(newPath)) Then
+                    finalName = name
+                End If
+
+                name = sourceFile.Base() + "_new"
+                If name <> oldTargetFileName AndAlso String.IsNullOrEmpty(finalName) Then
+                    finalName = name
+                End If
+
+                If Not String.IsNullOrEmpty(finalName) AndAlso p.TargetFile.Base() <> finalName Then
+                    g.MainForm.tbTargetFile.Text = Path.Combine(targetDir, finalName & p.VideoEncoder.Muxer.OutputExtFull)
+                End If
+            End If
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
+    End Sub
+
     Sub AutoSetImageSize()
         If p.VideoEncoder.AutoCompCheckValue > 0 AndAlso Calc.GetPercent <> 0 AndAlso p.Script.IsFilterActive("Resize") Then
             Dim oldWidth = p.TargetWidth
@@ -238,7 +313,7 @@ Public MustInherit Class VideoEncoder
     Overridable Function GetError() As String
     End Function
 
-    Sub OnStateChange()
+    Sub OnStateChange(Optional forceTargetWipe As Boolean = False)
         g.MainForm.UpdateEncoderStateRelatedControls()
         g.MainForm.SetEncoderControl(p.VideoEncoder.CreateEditControl)
         g.MainForm.lgbEncoder.Text = g.ConvertPath(p.VideoEncoder.Name).Shorten(38)
@@ -253,6 +328,7 @@ Public MustInherit Class VideoEncoder
         End If
 
         g.MainForm.UpdateSizeOrBitrate()
+        UpdateTargetFile(forceTargetWipe)
     End Sub
 
     Public Enum Modes
@@ -531,6 +607,19 @@ Public Class BatchEncoder
         Muxer = New MkvMuxer()
     End Sub
 
+
+    Public Overrides ReadOnly Property OverridesTargetFileName As Boolean
+        Get
+            Return False
+        End Get
+    End Property
+
+    Public Overrides ReadOnly Property OverridingTargetFileName As String
+        Get
+            Return ""
+        End Get
+    End Property
+
     Property CommandLines As String = ""
     Property CompCheckCommandLines As String = ""
 
@@ -669,13 +758,18 @@ Public Class NullEncoder
         QualityMode = True
     End Sub
 
-    Function GetSourceFile() As String
-        If FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
-            Return p.LastOriginalSourceFile
-        Else
-            Return p.SourceFile
-        End If
-    End Function
+
+    Public Overrides ReadOnly Property OverridesTargetFileName As Boolean
+        Get
+            Return False
+        End Get
+    End Property
+
+    Public Overrides ReadOnly Property OverridingTargetFileName As String
+        Get
+            Return ""
+        End Get
+    End Property
 
     Overrides ReadOnly Property OutputPath As String
         Get
@@ -709,6 +803,14 @@ Public Class NullEncoder
             Return OutputPath.Ext
         End Get
     End Property
+
+    Function GetSourceFile() As String
+        If FileTypes.VideoText.Contains(p.SourceFile.Ext) Then
+            Return p.LastOriginalSourceFile
+        Else
+            Return p.SourceFile
+        End If
+    End Function
 
     Overrides Sub Encode()
         Dim sourceFile = GetSourceFile()

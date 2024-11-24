@@ -596,7 +596,7 @@ Namespace VideoEncoderCommandLine
         ReadOnly Property ValueText As String
             Get
                 If Values Is Nothing Then
-                    Return Options(Value).ToLowerInvariant
+                    Return Options(Value).ToLowerInvariant.Replace(" ", "")
                 Else
                     Return Values(Value)
                 End If
@@ -700,6 +700,7 @@ Namespace VideoEncoderCommandLine
         Property Quotes As QuotesMode
         Property RemoveSpace As Boolean
         Property TextEdit As TextEdit
+        Property TextChangedAction As Action(Of String)
 
         WriteOnly Property BrowseFile As Boolean
             Set(value As Boolean)
@@ -739,6 +740,7 @@ Namespace VideoEncoderCommandLine
         Sub TextChanged(sender As Object, e As EventArgs)
             Value = TextEdit.Text
             Params.RaiseValueChanged(Me)
+            TextChangedAction?.Invoke(Value)
         End Sub
 
         Overrides Function GetArgs() As String

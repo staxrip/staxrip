@@ -1,4 +1,4 @@
-
+﻿
 Imports System.Reflection
 Imports StaxRip.UI
 
@@ -225,6 +225,10 @@ Public Class ApplicationSettings
 
         If Check(StartupTemplate, "Startup Template", 5) Then
             StartupTemplate = "Automatic Workflow"
+        End If
+
+        If Check(ThemeName, "Theme Name", 1) Then
+            ThemeManager.SetCurrentTheme()
         End If
 
         If Check(Fonts, "Fonts", 1) Then

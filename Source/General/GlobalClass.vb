@@ -353,7 +353,7 @@ Public Class GlobalClass
                     Exit Sub
                 End If
 
-                g.MainForm.OpenVideoSourceFiles(p.SourceFiles, True, s.ErrorMessageTimeout)
+                g.MainForm.OpenVideoSourceFiles(p.SourceFiles, True, True, s.ErrorMessageTimeout)
                 g.ProjectPath = Path.Combine(p.TempDir, p.TargetFile.Base + ".srip")
                 p.BatchMode = False
                 g.MainForm.SaveProjectPath(g.ProjectPath)
@@ -562,7 +562,7 @@ Public Class GlobalClass
 
         If proj.DeleteTempFilesMode = DeleteMode.Disabled Then Return
         If String.IsNullOrWhiteSpace(proj.TempDir) OrElse Not proj.TempDir.DirExists() OrElse Not New DirectoryInfo(proj.TempDir).Name.EndsWith("_temp") Then Return
-        If JobManager.GetJobs()?.Where(Function(a) a.Path.Contains(proj.TempDir))?.Any() Then Return
+        If JobManager.GetJobs().Any(Function(a) a.Path.Contains(proj.TempDir)) Then Return
 
         Dim excludeSourcefile = True
         Dim extensions As IEnumerable(Of String) = {}

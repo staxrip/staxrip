@@ -1,4 +1,4 @@
-
+﻿
 Imports StaxRip.UI
 
 Public Class EventCommandsEditor
@@ -231,7 +231,7 @@ Public Class EventCommandsEditor
         lv.SingleSelectionButtons = {bnEdit, bnClone}
         lv.UpdateControls()
         lv.EnableListBoxMode()
-        lv.Scrollable = False
+        lv.Scrollable = True
         lv.CheckBoxes = True
         lv.MultiSelect = False
         lv.ItemCheckProperty = NameOf(EventCommand.Enabled)

@@ -736,7 +736,7 @@ Public Class MkvMuxer
         End If
 
         args += " "
-        If p.VideoEncoder.GetChunks() = 1 Then
+        If Not p.VideoEncoder.CanChunkEncode() OrElse p.VideoEncoder.GetChunks() = 1 Then
             args += p.VideoEncoder.OutputPath.LongPathPrefix.Escape
         Else
             For x = 1 To p.VideoEncoder.GetChunks()

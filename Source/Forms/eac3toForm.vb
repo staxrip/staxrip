@@ -1,4 +1,4 @@
-
+﻿
 Imports System.ComponentModel
 Imports System.Globalization
 Imports System.Text.RegularExpressions
@@ -583,7 +583,7 @@ Public Class eac3toForm
     Property Streams As New BindingList(Of M2TSStream)
 
     Private Output As String
-    Private ReadOnly AudioOutputFormats As String() = {"m4a", "ac3", "dts", "flac", "wav", "dtsma", "dtshr", "eac3", "thd"}
+    Private ReadOnly AudioOutputFormats As String() = {"m4a", "ac3", "dts", "flac", "pcm", "wav", "dtsma", "dtshr", "eac3", "thd"}
 
     Private Project As Project
 
@@ -882,7 +882,7 @@ Public Class eac3toForm
                             Case "DTS Hi-Res"
                                 ms.OutputType = "dtshr"
                             Case "RAW/PCM"
-                                ms.OutputType = "flac"
+                                ms.OutputType = "pcm"
                             Case "AAC"
                                 ms.OutputType = "m4a"
                             Case "Subtitle (ASS)"

@@ -366,7 +366,7 @@ Public Class ProcController
         If _lastProgressText = value Then Exit Sub
         If _lastProgressSet >= Date.Now.AddMilliseconds(-200) Then Exit Sub
 
-        _lastHighlightedText = value
+        _lastProgressText = value
         _lastProgressSet = Date.Now
 
         SetProgressText(value, ThemeManager.CurrentTheme)

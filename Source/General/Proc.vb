@@ -337,7 +337,7 @@ Public Class Proc
                     l = Regex.Replace(l, "^-+\s+-+\s*$", "", RegexOptions.Multiline)
                     l = Regex.Replace(l, "^\s*", "", RegexOptions.Singleline)
                     l = Regex.Replace(l, "\s*$", "", RegexOptions.Singleline)
-                    l.Trim()
+                    l = l.Trim()
                     Log.Clear()
 
                     Dim ec = $"{Header} returned exit code: {ExitCode} (0x{ExitCode:X})"

@@ -311,7 +311,7 @@ Public Class MainForm
         Me.tbTargetFile.Anchor = CType((AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
         Me.tlpTarget.SetColumnSpan(Me.tbTargetFile, 4)
         Me.tbTargetFile.Location = New System.Drawing.Point(6, 10)
-        Me.tbTargetFile.Margin = New Padding(6, FontHeight \ 4, 6, FontHeight \ 4)
+        Me.tbTargetFile.Margin = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
         Me.tbTargetFile.Name = "tbTargetFile"
         Me.tbTargetFile.ReadOnly = False
         Me.tbTargetFile.Size = New System.Drawing.Size(987, 55)
@@ -513,7 +513,7 @@ Public Class MainForm
         '
         Me.tbSourceFile.Anchor = CType((AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
         Me.tbSourceFile.Location = New System.Drawing.Point(6, 10)
-        Me.tbSourceFile.Margin = New Padding(6, FontHeight \ 4, 6, FontHeight \ 4)
+        Me.tbSourceFile.Margin = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
         Me.tbSourceFile.Name = "tbSourceFile"
         Me.tbSourceFile.ReadOnly = False
         Me.tbSourceFile.Size = New System.Drawing.Size(984, 55)
@@ -571,33 +571,31 @@ Public Class MainForm
         Me.tlpResize.RowStyles.Add(New RowStyle(SizeType.Percent, 100.0!))
         Me.tlpResize.Size = New System.Drawing.Size(658, 232)
         Me.tlpResize.TabIndex = 63
+        Me.tlpResize.SetColumnSpan(Me.tlpResizeValues, 4)
         '
         'tlpResizeValues
         '
-        Me.tlpResizeValues.Anchor = CType((((AnchorStyles.Top Or AnchorStyles.Bottom) _
-            Or AnchorStyles.Left) _
-            Or AnchorStyles.Right), AnchorStyles)
+        Me.tlpResizeValues.Anchor = CType((((AnchorStyles.Top Or AnchorStyles.Bottom) Or AnchorStyles.Left) Or AnchorStyles.Right), AnchorStyles)
         Me.tlpResizeValues.ColumnCount = 4
-        Me.tlpResize.SetColumnSpan(Me.tlpResizeValues, 4)
         Me.tlpResizeValues.ColumnStyles.Add(New ColumnStyle())
         Me.tlpResizeValues.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 33.0!))
         Me.tlpResizeValues.ColumnStyles.Add(New ColumnStyle())
         Me.tlpResizeValues.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40.0!))
-        Me.tlpResizeValues.Controls.Add(Me.blTargetDarText, 0, 1)
-        Me.tlpResizeValues.Controls.Add(Me.lDAR, 1, 1)
-        Me.tlpResizeValues.Controls.Add(Me.lPixelText, 2, 1)
-        Me.tlpResizeValues.Controls.Add(Me.lPixel, 3, 1)
-        Me.tlpResizeValues.Controls.Add(Me.lSarText, 0, 2)
-        Me.tlpResizeValues.Controls.Add(Me.lSAR, 1, 2)
-        Me.tlpResizeValues.Controls.Add(Me.lZoomText, 2, 2)
-        Me.tlpResizeValues.Controls.Add(Me.lZoom, 3, 2)
-        Me.tlpResizeValues.Controls.Add(Me.blTargetParText, 0, 3)
-        Me.tlpResizeValues.Controls.Add(Me.lPAR, 1, 3)
-        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioErrorText, 2, 3)
-        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioError, 3, 3)
-        Me.tlpResizeValues.Controls.Add(Me.blCropText, 0, 4)
-        Me.tlpResizeValues.Controls.Add(Me.lCrop2, 1, 4)
-        Me.tlpResize.SetColumnSpan(Me.lCrop2, 3)
+        Me.tlpResizeValues.Controls.Add(Me.blCropText, 0, 1)
+        Me.tlpResizeValues.Controls.Add(Me.lCrop2, 1, 1)
+        Me.tlpResizeValues.SetColumnSpan(Me.lCrop2, 3)
+        Me.tlpResizeValues.Controls.Add(Me.blTargetDarText, 0, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lDAR, 1, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lPixelText, 2, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lPixel, 3, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lSarText, 0, 3)
+        Me.tlpResizeValues.Controls.Add(Me.lSAR, 1, 3)
+        Me.tlpResizeValues.Controls.Add(Me.lZoomText, 2, 3)
+        Me.tlpResizeValues.Controls.Add(Me.lZoom, 3, 3)
+        Me.tlpResizeValues.Controls.Add(Me.blTargetParText, 0, 4)
+        Me.tlpResizeValues.Controls.Add(Me.lPAR, 1, 4)
+        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioErrorText, 2, 4)
+        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioError, 3, 4)
         Me.tlpResizeValues.Location = New System.Drawing.Point(0, 162)
         Me.tlpResizeValues.Margin = New Padding(0)
         Me.tlpResizeValues.Name = "tlpResizeValues"
@@ -822,7 +820,7 @@ Public Class MainForm
         Me.lgbFilters.Location = New System.Drawing.Point(9, 438)
         Me.lgbFilters.Margin = New Padding(9, 0, 6, 0)
         Me.lgbFilters.Name = "lgbFilters"
-        Me.lgbFilters.Padding = New Padding(9, 3, 9, 9)
+        Me.lgbFilters.Padding = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
         Me.lgbFilters.Size = New System.Drawing.Size(667, _filterHeight)
         Me.lgbFilters.TabIndex = 53
         Me.lgbFilters.TabStop = False
@@ -837,10 +835,12 @@ Public Class MainForm
         Me.FiltersListView.HeaderStyle = ColumnHeaderStyle.None
         Me.FiltersListView.HideSelection = False
         Me.FiltersListView.IsLoading = False
-        Me.FiltersListView.Location = New System.Drawing.Point(9, 51)
+        Me.FiltersListView.Location = New System.Drawing.Point(9, 81)
+        Me.FiltersListView.Margin = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
         Me.FiltersListView.MultiSelect = False
         Me.FiltersListView.Name = "FiltersListView"
         Me.FiltersListView.OwnerDraw = True
+        Me.FiltersListView.Padding = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
         Me.FiltersListView.Size = New System.Drawing.Size(649, 226)
         Me.FiltersListView.TabIndex = 0
         Me.FiltersListView.UseCompatibleStateImageBehavior = False
@@ -876,6 +876,8 @@ Public Class MainForm
         Me.pnEncoder.Dock = DockStyle.Fill
         Me.pnEncoder.Location = New System.Drawing.Point(9, 51)
         Me.pnEncoder.Name = "pnEncoder"
+        Me.pnEncoder.Margin = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
+        Me.pnEncoder.Padding = New Padding(6, FontHeight \ 2, 6, FontHeight \ 4)
         Me.pnEncoder.Size = New System.Drawing.Size(652, 226)
         Me.pnEncoder.TabIndex = 0
         '
@@ -1010,7 +1012,7 @@ Public Class MainForm
         g.DPI = DeviceDpi
 
         InitializeComponent()
-        RestoreClientSize(55, 36)
+        RestoreClientSize(60, 36)
         SetStyle(ControlStyles.SupportsTransparentBackColor, True)
 
         If components Is Nothing Then
@@ -2119,6 +2121,7 @@ Public Class MainForm
         End If
 
         audioTrack.LanguageLabel?.Refresh()
+        audioTrack.NameLabel.Text = g.ConvertPath(audioTrack.AudioProfile.Name)
     End Sub
 
     Sub AudioTextEditDoubleClick(audioTrack As AudioTrack)
@@ -2231,12 +2234,12 @@ Public Class MainForm
             files = files.OrderBy(Function(x) FileTypes.Video.Contains(x.Ext)).ThenBy(Function(x) FileTypes.Audio.Contains(x.Ext))
             If showTemplateSelection Then
                 If LoadTemplateWithSelectionDialog(files, showTemplateSelectionTimeout) Then
-                    OpenVideoSourceFiles(files, errorTimeout)
+                    OpenVideoSourceFiles(files, True, errorTimeout)
                 Else
                     Exit Sub
                 End If
             Else
-                OpenVideoSourceFiles(files, errorTimeout)
+                OpenVideoSourceFiles(files, True, errorTimeout)
             End If
         ElseIf FileTypes.IsoImage.ContainsAny(files.Select(Function(s) s.Ext.ToLowerInvariant)) Then
             files = files.Where(Function(x) FileTypes.IsoImage.Contains(x.Ext().ToLowerInvariant())).OrderBy(Function(x) x, New StringLogicalComparer())
@@ -2269,7 +2272,7 @@ Public Class MainForm
                              If files(0).DirExists() Then
                                  OpenBlurayFolder(files(0))
                              Else
-                                 OpenVideoSourceFiles(files, errorTimeout)
+                                 OpenVideoSourceFiles(files, True, errorTimeout)
                              End If
                          End Sub
 
@@ -2396,15 +2399,15 @@ Public Class MainForm
         End Try
     End Function
 
-    Sub OpenVideoSourceFile(fp As String, Optional errorTimeout As Integer = 0)
-        OpenVideoSourceFiles({fp}, errorTimeout)
+    Sub OpenVideoSourceFile(fp As String, Optional demux As Boolean = True, Optional errorTimeout As Integer = 0)
+        OpenVideoSourceFiles({fp}, demux, errorTimeout)
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), Optional errorTimeout As Integer = 0)
-        OpenVideoSourceFiles(files, False, errorTimeout)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), Optional demux As Boolean = True, Optional errorTimeout As Integer = 0)
+        OpenVideoSourceFiles(files, demux, False, errorTimeout)
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isEncoding As Boolean, Optional errorTimeout As Integer = 0)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), demuxSource As Boolean, isEncoding As Boolean, Optional errorTimeout As Integer = 0)
         If p.SourceFile = "" Then SetLastModifiedTemplate()
 
         Dim recoverPath = g.ProjectPath
@@ -2415,13 +2418,15 @@ Public Class MainForm
         If saveCurrent AndAlso Not IsLoading Then
             If IsSaveCanceled() Then
                 Return
-            Else
-                saveCurrent = False
             End If
         End If
 
-        SafeSerialization.Serialize(p, recoverProjectPath)
-        AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
+        Try
+            SafeSerialization.Serialize(p, recoverProjectPath)
+            AddHandler Disposed, Sub() FileHelp.Delete(recoverProjectPath)
+        Catch ex As Exception
+            MsgWarn("Recovery not saved!", $"The recovery project could not be saved at:{BR}{recoverProjectPath}")
+        End Try
 
         SkipAssistant = True
 
@@ -2651,7 +2656,7 @@ Public Class MainForm
             Next
 
             p.VideoEncoder.UpdateTargetFile(True)
-            Demux()
+            If demuxSource Then Demux()
 
             If String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
                 Dim metadatas = Task.Run(Async Function() Await FindHdrMetadataAsync(p)).Result
@@ -3383,13 +3388,11 @@ Public Class MainForm
             End If
         End If
 
-        If TypeOf p.VideoEncoder Is BasicVideoEncoder Then
-            Dim enc = DirectCast(p.VideoEncoder, BasicVideoEncoder)
+        Dim enc = TryCast(p.VideoEncoder, BasicVideoEncoder)
+        If enc IsNot Nothing Then
             Dim param = enc.CommandLineParams.GetOptionParam("--vpp-resize")
 
-            If param IsNot Nothing AndAlso param.Value > 0 AndAlso
-                Not p.Script.IsFilterActive("Resize", "Hardware Encoder") Then
-
+            If param IsNot Nothing AndAlso param.Value > 0 AndAlso Not p.Script.IsFilterActive("Resize", "Hardware Encoder") Then
                 If ProcessTip("In order to use a resize filter of the hardware encoder select 'Hardware Encoder' as resize filter from the filters menu.") Then
                     Return Block("Invalid Filter Setting")
                 End If
@@ -3426,7 +3429,7 @@ Public Class MainForm
             End If
 
             If p.WarnNoAudio Then
-                If Not p.AudioTracks.Where(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile AndAlso track.AudioProfile.File <> "")?.Any() Then
+                If Not p.AudioTracks.Any(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile AndAlso track.AudioProfile.File <> "") Then
                     If ProcessTip("There will be no audio in the output file.") Then
                         Return Warn("No audio", p.AudioTracks.Select(Function(x) x.TextEdit).ToArray())
                     End If
@@ -3434,14 +3437,14 @@ Public Class MainForm
             End If
 
             If p.WarnIdenticalAudio Then
-                Dim fileGroups = p.AudioTracks.Where(Function(x) x.TextEdit.Text <> "" AndAlso x.AudioProfile.Stream Is Nothing).GroupBy(Function(g) g.AudioProfile.File).Where(Function(x) x.Count() > 1)
+                Dim fileGroups = p.AudioTracks.Where(Function(x) x.TextEdit.Text <> "" AndAlso x.AudioProfile.Stream Is Nothing).GroupBy(Function(g) g.AudioProfile.File).Where(Function(x) x.Count() > 1).ToList()
                 If fileGroups.Any() Then
                     If ProcessTip($"Some audio source files are identical.") Then
                         Return Warn("Suspicious Audio Settings", fileGroups.SelectMany(Function(x) x.AsEnumerable().Select(Function(s) s.TextEdit)).ToArray())
                     End If
                 End If
 
-                Dim streamGroups = p.AudioTracks.Where(Function(x) x.AudioProfile.Stream IsNot Nothing).GroupBy(Function(g) g.AudioProfile.Stream.Index).Where(Function(x) x.Count() > 1)
+                Dim streamGroups = p.AudioTracks.Where(Function(x) x.AudioProfile.Stream IsNot Nothing).GroupBy(Function(g) g.AudioProfile.Stream.Index).Where(Function(x) x.Count() > 1).ToList()
                 If streamGroups.Any() Then
                     If ProcessTip($"Some audio source streams are identical.") Then
                         Return Warn("Suspicious Audio Settings", streamGroups.SelectMany(Function(x) x.AsEnumerable().Select(Function(s) s.TextEdit)).ToArray())
@@ -3585,6 +3588,12 @@ Public Class MainForm
             End If
 
             If p.Script.IsFilterActive("Crop") AndAlso p.VideoEncoder?.IsDolbyVisionSet AndAlso Not p.VideoEncoder?.IsOvercroppingAllowed Then
+                If p.HdrDolbyVisionMetadataFile Is Nothing Then
+                    If ProcessTip($"You have set a Dolby Vision metadata file, that is unknown to StaxRip, while cropping the video. Please make sure it is extracted with the source file.") Then
+                        Return Block("Unknown RPU File", AddressOf p.VideoEncoder.ShowConfigDialog)
+                    End If
+                End If
+
                 Dim side = ""
                 Dim by = 0
                 Dim c = p.HdrDolbyVisionMetadataFile.Crop
@@ -4871,7 +4880,7 @@ Public Class MainForm
         p.VideoEncoder.RunCompCheck()
     End Sub
 
-    <Command("Launches a new instance of StaxRip")>
+    <Command("Launches a new instance of StaxRip.")>
     Sub StartNewInstance()
         Using p As New Process()
             p.StartInfo.FileName = Application.ExecutablePath
@@ -4879,7 +4888,7 @@ Public Class MainForm
         End Using
     End Sub
 
-    <Command("Exits StaxRip")>
+    <Command("Exits StaxRip.")>
     Sub [Exit]()
         Close()
     End Sub
@@ -5166,9 +5175,9 @@ Public Class MainForm
                 End If
             End If
 
-            If p.AudioTracks.Where(Function(track) track.AudioProfile.File <> "" AndAlso
-                                       (TypeOf track.AudioProfile Is GUIAudioProfile OrElse TypeOf track.AudioProfile Is BatchAudioProfile) AndAlso
-                                       File.Exists(track.AudioProfile.GetOutputFile()))?.Any() Then
+            If p.AudioTracks.Any(Function (track) track.AudioProfile.File <> "" AndAlso
+                                                  (TypeOf track.AudioProfile Is GUIAudioProfile OrElse TypeOf track.AudioProfile Is BatchAudioProfile) AndAlso
+                                                  File.Exists(track.AudioProfile.GetOutputFile())) Then
                 Select Case p.FileExistAudio
                     Case FileExistMode.Ask
                         Using td As New TaskDialog(Of String)
@@ -5501,7 +5510,7 @@ Public Class MainForm
             Dim doviThresholdEnd = ui.AddNumeric(doviThresholdEb)
 
 
-            autoCropDVMode.Text = "Mode"
+            autoCropDVMode.Text = "Threshold Mode"
             autoCropDVMode.Help = "Decide between an automatic mode and a manual threshold to ignore a number of frames at the beginning and/or end."
             autoCropDVMode.Expanded = True
             autoCropDVMode.Field = NameOf(p.AutoCropDolbyVisionMode)
@@ -6011,9 +6020,9 @@ Public Class MainForm
             l = ui.AddLabel(pathPage, "Default Target Folder:")
             l.Help = "Leave empty to use the source file folder."
 
-            Dim macroAction = Function() As Object
+            Dim macroAction = Sub()
                                   MacrosForm.ShowDialogForm()
-                              End Function
+                              End Sub
 
             Dim tm = ui.AddTextMenu(pathPage)
             tm.Label.Visible = False
@@ -7443,7 +7452,7 @@ Public Class MainForm
 
                     If File.Exists(fs) Then
                         p.TempDir = form.OutputFolder
-                        OpenVideoSourceFile(fs)
+                        OpenVideoSourceFile(fs, False)
                     End If
                 Catch
                 End Try
@@ -7946,7 +7955,7 @@ Public Class MainForm
         cms.Add("Explore", Sub() g.SelectFileWithExplorer(ap.File), exist, "Open the audio source file directory with File Explorer.").SetImage(Symbol.FileExplorer)
         cms.Add("-")
         cms.Add("Execute", Sub() ExecuteAudio(ap), exist, "Processes the audio profile.").SetImage(Symbol.LightningBolt)
-        cms.Add("Execute All", Sub() ExecuteAllAudio(), Function() If(p.AudioTracks?.Where(Function(x) x.TextEdit.Text <> "" AndAlso TypeOf x.AudioProfile IsNot NullAudioProfile)?.Any(), True, False), "Processes all audio profiles.")
+        cms.Add("Execute All", Sub() ExecuteAllAudio(), p.AudioTracks.Any(Function (x) x.TextEdit.Text <> "" AndAlso TypeOf x.AudioProfile IsNot NullAudioProfile), "Processes all audio profiles.")
         cms.Add("-")
         cms.Add("Copy Path", Sub() Clipboard.SetText(ap.File), te.Text <> "")
         cms.Add("Copy Selection", Sub() Clipboard.SetText(te.TextBox.SelectedText), te.Text <> "").SetImage(Symbol.Copy)
@@ -7965,7 +7974,7 @@ Public Class MainForm
                     cleanTemp = True
                 End If
 
-                ap = ObjectHelp.GetCopy(Of AudioProfile)(ap)
+                ap = ObjectHelp.GetCopy(ap)
                 Audio.Process(ap)
                 ap.Encode()
             Catch
@@ -7988,7 +7997,7 @@ Public Class MainForm
                         cleanTemp = True
                     End If
 
-                    Dim ap = ObjectHelp.GetCopy(Of AudioProfile)(track.AudioProfile)
+                    Dim ap = ObjectHelp.GetCopy(track.AudioProfile)
                     Audio.Process(ap)
                     ap.Encode()
                 Catch
@@ -8199,7 +8208,7 @@ Public Class MainForm
     Sub SetFormBoundaries(ateHeight As Integer)
         Dim h = MainMenuStrip.Height + lgbSource.Height + lgbFilters.Height + ateHeight * p.AudioTracksAvailable + (gbAssistant.Height << 1) - Font.Height \ 3
         MinimumSize = New Size(Font.Height * 48, CInt(h))
-        MaximumSize = New Size(Font.Height * 75, CInt(h))
+        MaximumSize = New Size(Font.Height * 80, CInt(h))
     End Sub
 
     Sub CheckForWindows7()

@@ -14,6 +14,45 @@ v2.5x.0 (not published yet)
 -->
 
 
+v2.52.0 (2026-03-01)
+====================
+
+- General: Let "Check for Updates" also check for update releases
+    - Changelog is not fetched anymore
+- General: Fix Dolby Vision croppping in case of changing aspect ratios without cropping
+- General: Add separate process priorities for encoders and tools ([#1759](/../../issues/1759))
+- General: Fix ExecuteCommandLine command when using "Show Process Window" without "Wait For Exit" ([#1927](/../../issues/1927))
+- General: Handle frame server exceptions when opening scripts, that can potentially shut down StaxRip
+- General: Strengthen setting file savings and loadings towards simultaneous usage
+- General: Make fmtconv a dual plugin ([#1926](/../../issues/1926))
+- Assistant: Fix Assistant not being executed when filters are (de-)activated
+- Assistant: Optimize Assistant execution to prevent multiple calls
+- Audio: Allow duplicates in preferred audio languages
+    - Gives the opportunity to assign an audio track twice for different encodings like Surround and Stereo
+- Audio: Add AC4 support for DeeZy
+- Audio: Extend "Center/Speech optimized Stereo" with 7.1 configuration
+- Demux: Fix wrong ffmpeg format selection due to MediaInfo when demuxing audio tracks ([#1925](/../../issues/1925))
+- Template: Raise AutoCrop Luminance Threshold to 14.0%
+- UI: Add a few more theme colors
+- UI: Remove UI Fallback for checkboxes
+    - Only relevant for Windows 7 and Linux/WINE users
+- UI: Improve Template Selection visually
+- UI: Improve Encoder Editing Controls
+- UI: Improve Progress Update Interval and Output
+    - Will help on some rare systems with freezing Processing windows
+    - Thanks to @Rafmib and @FreaQ for excessive testing different approaches to solve this
+- UI: Rearrange Project Options
+- UI: Add Project name to Processing window title
+- UI: Add numbering for audio tracks ([#1854](/../../issues/1854))
+    - Only in case more than 5 are shown
+- NVEncC: Add Editing Control to main window
+- Update tools
+    - OpusEnc v0.2-39-g9b1ca51 (using libopus 1.6.1-6-ga3f0ec0)
+    - x264 v0.165.3223+26-ed3d55b-[Mod-by-Patman]-x64-gcc15.2.0
+- Add VapourSynth plugins
+    - VSHIP 4.1.0
+
+
 v2.50.8 (2026-02-16)
 ====================
 

@@ -13,6 +13,42 @@ v2.5x.0 (not published yet)
     - ...
 -->
 
+v2.53.5 (2026-01-07)
+====================
+
+- General: Improve Vulkan-Support-Check
+- Audio: Fix wrong audio command line with optimized stereo
+- Audio: Fix display of sampling rate when opening audio options ([#1887](/../../issues/1887))
+- VapourSynth: Fix plugin dependency order
+- VapourSynth: Fix TAAmbk package and profile
+- Update tools
+    - HDR10Plus_Tool v1.7.2
+    - MKVToolNix v97.0
+    - NVEncC v9.09
+    - QSVEncC v8.04
+    - VCEEncC v9.03
+
+
+v2.53.4 (2025-12-25)
+====================
+
+- Audio: Add AC4 support for DeeZy
+- SvtAv1EncApp-HDR: Add "--noise-adaptive-filtering" parameter
+- AviSynth: Add QTGMC+ filter profile
+- VapourSynth: Alter plugin dependency order
+- Update tools
+    - aomenc v3.13.1-171-g36d919cd32-x64-msvc1944
+    - MP4Box v2.5-DEV-rev2094-g8bdc218e3-x64-msvc1944
+    - rav1e v0.8.0-(p20250624-3-g564ae3b)-x64-msvc1944
+    - SvtAv1EncApp v3.1.2-291+59-a93fb1f4-[Mod-by-Patman]-x64-clang21.1.7 [SVT-AV1]
+    - SvtAv1EncApp v3.1.3-5+26-98670dc79-[Mod by Patman]-x64-clang21.1.7 [SVT-AV1-HDR]
+    - x264 v0.165.3223+18-2d8d2cc-[Mod-by-Patman]-x64-gcc15.2.0
+    - x265 v4.1+212+35-87f5a69a8-[Mod-by-Patman]-x64-avx-clang2117
+- Add AviSynth+ plugins
+    - QTGMC+ v4.6
+- Update AviSynth+ plugins
+    - QTGMC v3.387s
+
 
 v2.53.3 (2025-12-09)
 ====================

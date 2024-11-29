@@ -1,5 +1,5 @@
 ﻿<!--
-v2.4x.0 (not published yet)
+v2.5x.0 (not published yet)
 ====================
 
 - ...
@@ -12,6 +12,42 @@ v2.4x.0 (not published yet)
 - Update VapourSynth plugins
     - ...
 -->
+
+
+v2.50.4 (2025-11-01)
+====================
+
+- General: Fix cover images not being added to the container ([#1829](/../../issues/1829))
+- General: Add some more custom languages
+- General: Fix wrong paths for compressibility checks for multiple encoders
+- Audio: Don't add audio streams when demuxing with eac3to
+- Audio: Fix bit rate calculation when data is missing
+- Log: Fix wrong Configuration written after first job
+- UI: Adjust size of TaskDialog
+- UI: Fix misalignment of some controls
+- UI: Fix Search-ComboBox on Encoder Options not showing any parameters
+- UI: Set `flac` as default output format for PCM audio tracks when demuxing Blu-rays ([#1736](/../../issues/1736))
+- NVEncC: Add missing "--profile" parameter for AV1 encodes
+- NVEncC: Adjust "--ref" parameter default values according to v9.05
+- NVEncC: Add new "--tune" parameter
+- NVEncC: Add new "--unidirectb" parameter
+- SvtAv1EncApp: Add new "--ac-bias" parameter
+- SvtAv1EncApp: Extend "--crf" parameter to `70`
+- Update tools
+    - DeeZy v1.3.11
+    - MediaInfo v25.09
+    - mpv.net v7.1.1.4-beta
+    - NVEncC v9.06
+    - QSVEncC v8.02
+    - Subtitle Edit v4.0.14
+    - SvtAv1EncApp v3.1.2-185+56_b6c6dda6-.Mod-by-Patman.-x64-clang21.1.4 [SVT-AV1]
+    - SvtAv1EncApp v3.1.2-0+23_f2b141f4-.Mod.by.Patman.-x64-clang21.1.4 [SVT-AV1-HDR]
+    - VCEEncC v9.01
+    - x264 v0.165.3222+17-93998b2-[Mod-by-Patman]-x64-gcc15.2.0
+- Update Dual plugins
+    - BestSource R14
+- Update VapourSynth plugins
+    - VapourSynth-BM3DCUDA R2.15
 
 
 v2.50.3 (2025-09-30)

@@ -33,10 +33,12 @@ Public MustInherit Class VideoEncoder
         End Get
     End Property
 
-    Public Overridable ReadOnly Property OverridesTargetFileName As Boolean
+    Public Overridable Property OverridesTargetFileName As Boolean
         Get
             Return False
         End Get
+        Set(value As Boolean)
+        End Set
     End Property
 
     Public Overridable ReadOnly Property OverridingTargetFileName As String
@@ -268,7 +270,10 @@ Public MustInherit Class VideoEncoder
                 finalName = name
 
                 If Not String.IsNullOrEmpty(finalName) AndAlso p.TargetFile.Base() <> finalName Then
-                    g.MainForm.tbTargetFile.Text = Path.Combine(targetDir, finalName & p.VideoEncoder.Muxer.OutputExtFull)
+                    newPath = Path.Combine(targetDir, finalName & p.VideoEncoder.Muxer.OutputExtFull)
+                    g.MainForm.LastTbTargetFileText = newPath
+                    g.MainForm.tbTargetFile.Text = newPath
+                    g.MainForm.tbTargetFile.TextBox.SelectionStart = g.MainForm.tbTargetFile.Text.Length
                 End If
             End If
         Catch ex As Exception
@@ -620,10 +625,12 @@ Public Class BatchEncoder
     End Sub
 
 
-    Public Overrides ReadOnly Property OverridesTargetFileName As Boolean
+    Public Overrides Property OverridesTargetFileName As Boolean
         Get
             Return False
         End Get
+        Set(value As Boolean)
+        End Set
     End Property
 
     Public Overrides ReadOnly Property OverridingTargetFileName As String
@@ -771,10 +778,12 @@ Public Class NullEncoder
     End Sub
 
 
-    Public Overrides ReadOnly Property OverridesTargetFileName As Boolean
+    Public Overrides Property OverridesTargetFileName As Boolean
         Get
             Return False
         End Get
+        Set(value As Boolean)
+        End Set
     End Property
 
     Public Overrides ReadOnly Property OverridingTargetFileName As String

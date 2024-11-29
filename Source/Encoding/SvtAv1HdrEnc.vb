@@ -39,10 +39,16 @@ Public Class SvtAv1HdrEnc
         End Set
     End Property
 
-    Public Overrides ReadOnly Property OverridesTargetFileName As Boolean
+    Public Overrides Property OverridesTargetFileName As Boolean
         Get
             Return Params.OverrideTargetFileName.Value
         End Get
+        Set(value As Boolean)
+            If Params.OverrideTargetFileName.Value <> value Then
+                Params.OverrideTargetFileName.Value = value
+                Params.RaiseValueChanged(Params.OverrideTargetFileName)
+            End If
+        End Set
     End Property
 
     Public Overrides ReadOnly Property OverridingTargetFileName As String

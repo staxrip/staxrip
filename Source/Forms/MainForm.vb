@@ -966,7 +966,8 @@ Partial Public Class MainForm
     Public AssistantPassed As Boolean
     Public CommandManager As New CommandManager
 
-    Property PreviewScript As VideoScript
+    Public Property LastTbTargetFileText As String = ""
+    Public Property PreviewScript As VideoScript
 
     Private TargetAspectRatioMenu As ContextMenuStripEx
     Private SizeContextMenuStrip As ContextMenuStripEx
@@ -2654,7 +2655,7 @@ Partial Public Class MainForm
                 End If
             Next
 
-            p.VideoEncoder.UpdateTargetFile(True)
+            If Not p.BatchMode Then p.VideoEncoder.UpdateTargetFile(True)
             If demuxSource Then Demux()
 
             If String.IsNullOrWhiteSpace(p.Hdr10PlusMetadataFile) OrElse String.IsNullOrWhiteSpace(p.HdrDolbyVisionMetadataFile?.Path) Then
@@ -5752,6 +5753,13 @@ Partial Public Class MainForm
                 p.TargetFile = If(dialog.FileName.Ext = ext, dialog.FileName, dialog.FileName + ext)
             End If
         End Using
+    End Sub
+
+    Sub tbTargetFile_TextChanged(sender As Object, e As EventArgs) Handles tbTargetFile.TextChanged
+        If LastTbTargetFileText <> tbTargetFile.Text Then
+            LastTbTargetFileText = tbTargetFile.Text
+            If Not p.BatchMode AndAlso Not String.IsNullOrWhiteSpace(tbTargetFile.Text) Then p.VideoEncoder.OverridesTargetFileName = False
+        End If
     End Sub
 
     Sub tbTargetFile_MouseDown(sender As Object, e As MouseEventArgs) Handles tbTargetFile.MouseDown

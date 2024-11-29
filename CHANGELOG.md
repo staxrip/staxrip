@@ -14,6 +14,74 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.50.2 (2025-09-24)
+====================
+
+- General: Add support to auto crop only horizontal/vertical bars ([#1746](/../../issues/1746))
+- General: Fix Tool AutoUpdate feature ([#1808](/../../issues/1808))
+- General: Fix wild behavior when "Copy/Mux" is selected along with "No Muxing" ([#1805](/../../issues/1805))
+- General: Fix Container Configuration not opening for some old templates
+    - Old templates with wrong data will be fixed and overwritten
+- General: Optionally save video encoder profiles additionally in a separate file
+    - `VideoEncoderProfiles.dat` in the `Settings` folder
+    - Enabled by default
+- General: Optionally save audio profiles additionally in a separate file
+    - `AudioProfiles.dat` in the `Settings` folder
+    - Enabled by default
+- General: Optionally save events additionally in a separate file
+    - `Events.dat` in the `Settings` folder
+    - Enabled by default
+- General: Disable Target Override when target file is manually modified
+- Event: Add parameter macros to the list of available macros ([#1733](/../../issues/1733))
+- Event: Add criteria input text field for parameter macros ([#1733](/../../issues/1733))
+    - Gives you the opportunity to add a criteria like  
+        `MediaInfo Video Property` | `FrameRate` | `Is` | `25.000`
+- Log: Always write Configuration section when starting a job
+- Log: Extend Configuration section with audio tracks
+- Macro: Fix some source file related macros when using File Batch ([#1799](/../../issues/1799))
+- Macro: Add `%target_bitdepth%`
+- Macro: Remove `%app:name%`
+- Macro: Make some macros proper parameter macros
+    - Rename `%audio_bitrateX%` to `%audio_bitrate:X%`
+    - Rename `%audio_channelsX%` to `%audio_channels:X%`
+    - Rename `%audio_codecX%` to `%audio_codec:X%`
+    - Rename `%audio_delayX%` to `%audio_delay:X%`
+    - Rename `%audio_fileX%` to `%audio_file:X%`
+- UI: Hide data when no item is chosen on Apps Manager
+- UI: Colorize Version on Apps Manager if wrong version is detected
+- UI: Optimize Search-ComboBox on Encoder Options ([#1797](/../../issues/1797))
+- UI: Improve size of main window
+- UI: Fix crash on Processing window when opening the menu when having processes at RealTime priority ([#1751](/../../issues/1751))
+- VapourSynth: Add "BM3Dv2" filter name to VapourSynth-BM3DCUDA packages
+- VapourSynth: Fix "AssumeFPS" profile ([#1807](/../../issues/1807))
+- SvtAv1EncApp: Fix "--qp-scale-compress-strength" parameter ([#1812](/../../issues/1812))
+- SvtAv1EncApp: Update parameters and defaults
+- SvtAv1EncApp-Essential: Alter "--speed" and "--preset" parameters and the encoder control
+- SvtAv1EncApp-Essential: Fix "--qp-scale-compress-strength" parameter
+- SvtAv1EncApp-HDR: Remove deprecated "--rmv" parameter ([#1797](/../../issues/1797))
+- SvtAv1EncApp-PSYEX: Adjust parameters and their defaults ([#1796](/../../issues/1796))
+- SvtAv1EncApp-PSYEX: Update parameters and defaults
+- Update tools
+    - aomenc v3.13.1-50-gd459fa9018-x64-msvc1944
+    - DeeZy v1.3.2
+    - ffmpeg v8.1-dev-N-121146-x64-gcc15.2.0
+    - MKVToolNix v95.0
+    - MP4Box v2.5-DEV-rev1818-g5145187d2-x64-msvc1944
+    - NVEncC v9.03
+    - rav1e v0.8.0-(p20250624)-x64-msvc1944
+    - SvtAv1EncApp v3.1.2-113+46-7786086f-.Mod-by-Patman.-x64-clang21.1.1 [SVT-AV1]
+    - SvtAv1EncApp v3.1.2-Essential-2+17-548cdd45-.Mod-by-Patman.-x64-clang21.1.1 [SVT-AV1-Essential]
+    - SvtAv1EncApp v3.1.0-16+15-07ebe8ad-.Mod.by.Patman.-x64-clang21.1.1 [SVT-AV1-HDR]
+    - SvtAv1EncApp v3.0.2-A-5+16-15894686-.Mod-by-Patman.-x64-clang21.1.1 [SVT-AV1-PSYEX]
+    - vvencFFapp v1.13.1 r491-c802434
+    - x264 v0.165.3222+13-b815e33-.Mod-by-Patman.-x64-gcc15.2.0
+    - x265 v4.1+191+33-61d0a57b3-.Mod-by-Patman.-x64-avx2-clang2111
+- Update AviSynth+ plugins
+    - JPSDR v4.0.0 (clang W7 AVX2)
+- Add Dual plugins
+    - EEDI2CUDA v2021
+
+
 v2.50.1 (2025-09-09)
 ====================
 

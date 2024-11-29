@@ -14,6 +14,135 @@ v2.5x.0 (not published yet)
 -->
 
 
+v2.51.5 (2025-09-23)
+====================
+
+- General: Update Target File Name when bitrate is changed on Main window
+- General: Fix Tool AutoUpdate feature ([#1808](/../../issues/1808))
+- General: Fix wild behavior when "Copy/Mux" is selected along with "No Muxing" ([#1805](/../../issues/1805))
+- General: Improve Override Target File Name in terms of extensions
+- Log: Always write Configuration section when starting a job
+- Log: Extend Configuration section with audio tracks
+- Macro: Remove `%app:name%`
+- Macro: Extend encoder macros with a new modifier:
+    - `%parameter_Z%`: Returns a `1` in case it is active/visible, otherwise `0`
+        - Example: `%--preset_Z%` -> `1`
+    - Documentation: https://github.com/staxrip/staxrip/blob/master/Docs/Usage/Macros.md#encoder-macros
+- Macro: Add `%isfilteractive:%` macro
+    - Expects the name of the filter you want to check
+    - Returns `1` in case the filter is active, otherwise `0`
+    - Example: `%isfilteractive:DFTTest%` -> `1`
+- UI: Optimize Search-ComboBox on Encoder Options even more ([#1797](/../../issues/1797))
+- NVEncC: Improve supported codec check before encoding
+- QSVEncC: Improve supported codec check before encoding
+- SvtAv1EncApp: Fix "--qp-scale-compress-strength" parameter ([#1812](/../../issues/1812))
+- SvtAv1EncApp: Update parameters and defaults
+- SvtAv1EncApp-Essential: Fix "--qp-scale-compress-strength" parameter
+- SvtAv1EncApp-PSYEX: Update parameters and defaults
+- VCEEncC: Improve supported codec check before encoding
+- Update tools
+    - aomenc v3.13.1-50-gd459fa9018-x64-msvc1944
+    - DeeZy v1.3.2
+    - ffmpeg v8.1-dev-N-121146-x64-gcc15.2.0
+    - MP4Box v2.5-DEV-rev1818-g5145187d2-x64-msvc1944
+    - NVEncC v9.03
+    - rav1e v0.8.0-(p20250624)-x64-msvc1944
+    - SvtAv1EncApp v3.1.2-113+46-7786086f-.Mod-by-Patman.-x64-clang21.1.1 [SVT-AV1]
+    - SvtAv1EncApp v3.1.2-Essential-2+17-548cdd45-.Mod-by-Patman.-x64-clang21.1.1 [SVT-AV1-Essential]
+    - SvtAv1EncApp v3.0.2-A-5+16-15894686-.Mod-by-Patman.-x64-clang21.1.1 [SVT-AV1-PSYEX]
+- Add Dual plugins
+    - EEDI2CUDA v2021
+
+
+v2.51.4 (2025-09-15)
+====================
+
+- General: Optionally save video encoder profiles additionally in a separate file
+    - `VideoEncoderProfiles.dat` in the `Settings` folder
+- General: Optionally save audio profiles additionally in a separate file
+    - `AudioProfiles.dat` in the `Settings` folder
+- General: Make saving of events in a separate file also optional
+- Macro: Add `%target_bitdepth%`
+- Macro: Fix some source file related macros when using File Batch ([#1799](/../../issues/1799))
+- Macro: Reformat encoder macro modifiers:
+    - `%parameterD%` => `%parameter_D%`
+    - `%parameterL%` => `%parameter_L%`
+    - `%parameterT%` => `%parameter_T%`
+    - `%parameterU%` => `%parameter_U%`
+    - `%parameterV%` => `%parameter_V%`
+- UI: Optimize Search-ComboBox on Encoder Options ([#1797](/../../issues/1797))
+- UI: Improve size of main window
+- UI: Fix crash on Processing window when opening the menu when having processes at RealTime priority ([#1751](/../../issues/1751))
+- VapourSynth: Add "BM3Dv2" filter name to VapourSynth-BM3DCUDA packages
+- VapourSynth: Fix "AssumeFPS" profile ([#1807](/../../issues/1807))
+- SvtAv1EncApp-Essential: Fix UI crash under some circumstances
+- SvtAv1EncApp-Essential: Alter `--speed` and `--preset` parameters and the encoder control
+- SvtAv1EncApp-HDR: Remove deprecated `--rmv` parameter ([#1797](/../../issues/1797))
+- SvtAv1EncApp-PSYEX: Adjust parameters and their defaults ([#1796](/../../issues/1796))
+- Update tools
+    - MKVToolNix v95.0
+    - NVEncC v9.02
+    - SvtAv1EncApp v3.1.2-95+43-325066ce-.Mod-by-Patman.-x64-clang21.1.1 [SVT-AV1]
+    - SvtAv1EncApp v3.1.2-Essential-2+15-c518181d-.Mod-by-Patman.-x64-clang21.1.1 [SVT-AV1-Essential]
+    - SvtAv1EncApp v3.1.0-16+15-07ebe8ad-.Mod.by.Patman.-x64-clang21.1.1 [SVT-AV1-HDR]
+    - SvtAv1EncApp v3.0.2-A-1+13-59a94dc9-.Mod-by-Patman.-x64-clang21.1.1 [SVT-AV1-PSYEX]
+    - vvencFFapp v1.13.1 r491-c802434
+    - x264 v0.165.3222+13-b815e33-.Mod-by-Patman.-x64-gcc15.2.0
+    - x265 v4.1+191+33-61d0a57b3-.Mod-by-Patman.-x64-avx2-clang2111
+- Update AviSynth+ plugins
+    - JPSDR v4.0.0 (clang W7 AVX2)
+
+
+v2.51.3 (2025-09-08)
+====================
+
+- General: Fix broken File Batch mode
+- General: Optimize Long Path Prefix check and usage with quotes
+- Audio: Fix audio demuxing of PCM and DTS tracks ([#1780](/../../issues/1780))
+- CommandLine: Fix command line parameter parsing ([#1788](/../../issues/1788))
+- Macro: Extend encoder macros with some modifiers:
+    - `%parameter%`: Normal value without spaces
+        - Example: `%--preset%` -> `VeryFast`
+    - `%parameterD%`: `True` if the default value is set, otherwise `False`
+        - Example: `%--presetD%` -> `True`
+    - `%parameterL%`: Value in lowercase without spaces
+        - Example: `%--presetL%` -> `veryfast`
+    - `%parameterT%`: Value in Title-case (First letter only in uppercase) without spaces
+        - Example: `%--presetT%` -> `Veryfast`
+    - `%parameterU%`: Value in uppercase without spaces
+        - Example: `%--presetU%` -> `VERYFAST`
+    - `%parameterV%`: Returns the numeric value
+        - Only available for checkboxes and option lists
+        - Example: 
+            - `%--preset%` -> `VeryFast`
+            - `%--presetV%` -> `2`
+        - Example: 
+            - `%--open-gop%` -> `True`
+            - `%--open-gopV%` -> `1`
+- UI: Adjust size of TaskDialog
+- UI: Multiple improvements
+- UI: Improve Template Selection by marking the current and startup template differently
+- UI: Improve restoring of window positions on multi-display systems ([#1724](/../../issues/1724))
+- UI: Improve vertical ScrollBars next to Trees/Lists ([#1782](/../../issues/1782))
+- UI: Fix disabling of Target File Name Override when target file is manually modified
+- UI: Fix Override Target File Name giving the wrong file name under rare circumstances
+- SvtAv1EncApp-Essential: Block Assistant, if bit-depth is not 10-bit 
+- VvencFFapp: Fix encoder control causing crash on preset selection
+- Update tools
+    - NVEncC v9.01
+    - SvtAv1EncApp v3.1.2-69+31-bb6d9b6d-.Mod.by.Patman.-x64-clang21.1.0 [SVT-AV1]
+    - SvtAv1EncApp v3.1.2-Essential-2+11-03ac7823-.Mod.by.Patman.-x64-clang21.1.0 [SVT-AV1-Essential]
+    - SvtAv1EncApp v3.1.0-14+7-51647873-.Mod.by.Patman.-x64-clang21.1.0 [SVT-AV1-HDR]
+    - SvtAv1EncApp v3.0.2-A-1+8-63e8a0a4-.Mod.by.Patman.-x64-clang21.1.0 [SVT-AV1-PSYEX]
+    - VCEEncC v9.00
+    - vvencFFapp v1.13.1 r484-a169666
+- Update Dual plugins
+    - Neo_f3kdb r10
+- Update VapourSynth plugins
+    - VapourSynth-BM3DCUDA R2.16
+    - VS-DFTTest2 v9
+
+
 v2.51.2 (2025-09-02)
 ====================
 

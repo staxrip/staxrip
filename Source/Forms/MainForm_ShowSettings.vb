@@ -145,57 +145,47 @@ Partial Public Class MainForm
             '############# Quality Definitions
             Dim qualityDefinitionsPage = ui.CreateFlowPage("Quality Definitions", True)
 
+            Dim helpAddition = "Use this format to create your custom values with optional description:" + BR +
+                                "number""text""" + BR +
+                                "number: can be used with optional decimal separator (, or .)" + BR +
+                                "text: description, optionally empty" + BR2 +
+                                "Example:" + BR +
+                                "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
+
             Dim t = ui.AddText()
-            t.Text = "x264 quality definitions"
-            t.Help = "Create custom quality definitions for x264." + BR2 +
-                         "Use this format to create your custom values with optional description:" + BR +
-                         "number""text""" + BR +
-                         "number: can be used with optional decimal separator (, or .)" + BR +
-                         "text: description, optionally empty" + BR2 +
-                         "Example:" + BR +
-                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
+            t.Text = "NVEncC"
+            t.Help = "Create custom quality definitions for NVEncC." + BR2 + helpAddition
             t.Edit.Expand = True
-            t.Edit.Text = s.X264QualityDefinitions.ToSeparatedString()
-            t.Edit.SaveAction = Sub(value) s.X264QualityDefinitions = value.ToX264QualityItems()?.ToList()
+            t.Edit.Text = s.NVEncCQualityDefinitions.ToSeparatedString()
+            t.Edit.SaveAction = Sub(value) s.NVEncCQualityDefinitions = value.ToNvEncQualityItems()?.ToList()
 
             t = ui.AddText()
-            t.Text = "x265 quality definitions"
-            t.Help = "Create custom quality definitions for x265." + BR2 +
-                         "Use this format to create your custom values with optional description:" + BR +
-                         "number""text""" + BR +
-                         "number: can be used with optional decimal separator (, or .)" + BR +
-                         "text: description, optionally empty" + BR2 +
-                         "Example:" + BR +
-                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
-            t.Edit.Expand = True
-            t.Edit.Text = s.X265QualityDefinitions.ToSeparatedString()
-            t.Edit.SaveAction = Sub(value) s.X265QualityDefinitions = value.ToX265QualityItems()?.ToList()
-
-            t = ui.AddText()
-            t.Text = "SvtAv1EncApp quality definitions"
-            t.Help = "Create custom quality definitions for SvtAv1EncApp." + BR2 +
-                         "Use this format to create your custom values with optional description:" + BR +
-                         "number""text""" + BR +
-                         "number: can be used with optional decimal separator (, or .)" + BR +
-                         "text: description, optionally empty" + BR2 +
-                         "Example:" + BR +
-                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
+            t.Text = "SvtAv1EncApp"
+            t.Help = "Create custom quality definitions for SvtAv1EncApp." + BR2 + helpAddition
             t.Edit.Expand = True
             t.Edit.Text = s.SvtAv1EncAppQualityDefinitions.ToSeparatedString()
             t.Edit.SaveAction = Sub(value) s.SvtAv1EncAppQualityDefinitions = value.ToSvtAv1EncAppQualityItems()?.ToList()
 
             t = ui.AddText()
-            t.Text = "vccencFFapp quality definitions"
-            t.Help = "Create custom quality definitions for vccencFFapp." + BR2 +
-                         "Use this format to create your custom values with optional description:" + BR +
-                         "number""text""" + BR +
-                         "number: can be used with optional decimal separator (, or .)" + BR +
-                         "text: description, optionally empty" + BR2 +
-                         "Example:" + BR +
-                         "8""Crazy""_19.5""Personal Default"" 21,5""Why not?!"" 22.0 44,3"
+            t.Text = "vccencFFapp"
+            t.Help = "Create custom quality definitions for vccencFFapp." + BR2 + helpAddition
             t.Edit.Expand = True
             t.Edit.Text = s.VvencffappQualityDefinitions.ToSeparatedString()
             t.Edit.SaveAction = Sub(value) s.VvencffappQualityDefinitions = value.ToVvencffappQualityItems()?.ToList()
+
+            t = ui.AddText()
+            t.Text = "x264"
+            t.Help = "Create custom quality definitions for x264." + BR2 + helpAddition
+            t.Edit.Expand = True
+            t.Edit.Text = s.X264QualityDefinitions.ToSeparatedString()
+            t.Edit.SaveAction = Sub(value) s.X264QualityDefinitions = value.ToX264QualityItems()?.ToList()
+
+            t = ui.AddText()
+            t.Text = "x265"
+            t.Help = "Create custom quality definitions for x265." + BR2 + helpAddition
+            t.Edit.Expand = True
+            t.Edit.Text = s.X265QualityDefinitions.ToSeparatedString()
+            t.Edit.SaveAction = Sub(value) s.X265QualityDefinitions = value.ToX265QualityItems()?.ToList()
 
 
             '############### Generation

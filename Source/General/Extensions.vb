@@ -1075,6 +1075,13 @@ Module MiscExtensions
     End Function
 
     <Extension()>
+    Function ToSeparatedString(list As IEnumerable(Of NVEncControl.QualityItem)) As String
+        If list Is Nothing OrElse Not list.Any() Then Return ""
+
+        Return String.Join("_", s.NVEncCQualityDefinitions.OrderBy(Function(x) x.Value).Select(Function(x) $"{x.Value:0.#}{If(String.IsNullOrWhiteSpace(x.Text), "", $"""{x.Text.Trim()}""")}"))
+    End Function
+
+    <Extension()>
     Function ToSeparatedString(list As IEnumerable(Of VvencffappControl.QualityItem)) As String
         If list Is Nothing OrElse Not list.Any() Then Return ""
 
@@ -1178,6 +1185,47 @@ Module MiscExtensions
                 If value >= qualityConfig(0) AndAlso value <= qualityConfig(1) AndAlso Not result.Where(Function(x) x.Value = value).Any() Then
                     text = If(match.Groups.Count > 4, match.Groups(4).Value.Trim(), text)
                     result.Add(New SvtAv1EncAppControl.QualityItem(value, text, ""))
+                End If
+            End If
+        Next
+
+        Return result
+    End Function
+
+    <Extension()>
+    Function ToNvEncQualityItems(input As String) As IEnumerable(Of NVEncControl.QualityItem)
+        Dim result = New List(Of NVEncControl.QualityItem)
+
+        If String.IsNullOrWhiteSpace(input) Then Return result
+
+        Dim pattern = "(\d{1,2}([\.,]\d{1,3})?)(""([^""]*)"")?"
+        Dim matches = Regex.Matches(input, pattern, RegexOptions.IgnoreCase)
+
+        If matches.Count = 0 Then Return result
+
+
+        Dim qualityConfig As Double() = {0, 63, 0, 1}
+
+        If TypeOf p.VideoEncoder Is NVEnc Then
+            Dim params = DirectCast(p.VideoEncoder, NVEnc).Params
+            qualityConfig = If(params.QVBR.Visible, params.QVBR.Config, qualityConfig)
+            qualityConfig = If(params.QP.Visible, params.QP.Config, qualityConfig)
+            qualityConfig = If(params.VbrQuality.Visible, params.VbrQuality.Config, qualityConfig)
+        End If
+
+        For Each match As Match In matches
+            If Not match.Success Then Continue For
+
+            Dim value = 0.0
+            Dim text = ""
+
+            If Double.TryParse(Regex.Replace(match.Groups(1).Value, "\.|,", NumberFormatInfo.CurrentInfo.NumberDecimalSeparator), value) Then
+                Dim powed = Math.Pow(10, qualityConfig(3))
+                value = CInt(Math.Floor(value * powed)) / powed
+
+                If value >= qualityConfig(0) AndAlso value <= qualityConfig(1) AndAlso Not result.Where(Function(x) x.Value = value).Any() Then
+                    text = If(match.Groups.Count > 4, match.Groups(4).Value.Trim(), text)
+                    result.Add(New NVEncControl.QualityItem(value, text, ""))
                 End If
             End If
         Next

@@ -351,7 +351,7 @@ Public Class x265Control
             End If
         Next
 
-        Return value.ToString
+        Return value.ToInvariantString()
     End Function
 
     Sub UpdateControls()

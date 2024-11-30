@@ -171,6 +171,9 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\NVEncControl.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\PreprocessingControl.vb">
       <SubType>UserControl</SubType>
     </Compile>

@@ -112,6 +112,7 @@ Public Class SvtAv1EncAppEssentialControl
         QualityDefinitions = If(s.SvtAv1EncAppQualityDefinitions IsNot Nothing AndAlso s.SvtAv1EncAppQualityDefinitions.Any(),
             s.SvtAv1EncAppQualityDefinitions,
             New List(Of SvtAv1EncAppControl.QualityItem) From {
+                New SvtAv1EncAppControl.QualityItem(15, "Incredible High", "Incredible high quality and file size"),
                 New SvtAv1EncAppControl.QualityItem(20, "Ultra High", "Ultra high quality and file size"),
                 New SvtAv1EncAppControl.QualityItem(25, "Extreme High", "Extreme high quality and file size"),
                 New SvtAv1EncAppControl.QualityItem(30, "Super High", "Super high quality and file size"),
@@ -390,11 +391,11 @@ Public Class SvtAv1EncAppEssentialControl
     Function GetQualityCaption(value As Double) As String
         For Each def In QualityDefinitions
             If def.Value = value Then
-                Return value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}", "")
+                Return value.ToInvariantString() & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}", "")
             End If
         Next
 
-        Return value.ToString
+        Return value.ToInvariantString()
     End Function
 
     Sub UpdateControls(item As CommandLineParam)

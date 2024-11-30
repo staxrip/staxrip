@@ -292,11 +292,11 @@ Public Class x264Control
     Function GetQualityCaption(value As Double) As String
         For Each def In QualityDefinitions
             If def.Value = value Then
-                Return value & If(Not String.IsNullOrWhiteSpace(def.Text), $" - {def.Text}", "")
+                Return value.ToInvariantString() & If(Not String.IsNullOrWhiteSpace(def.Text), $" - {def.Text}", "")
             End If
         Next
 
-        Return value.ToString
+        Return value.ToInvariantString()
     End Function
 
     Sub UpdateControls()

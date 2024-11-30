@@ -3,7 +3,7 @@ Imports System.Web.UI.WebControls.WebParts
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
-Public Class SvtAv1EncAppHdrControl
+Public Class NVEncControl
     Inherits UserControl
 
 #Region " Designer "
@@ -82,7 +82,7 @@ Public Class SvtAv1EncAppHdrControl
         Me.lv.TabIndex = 0
         Me.lv.UseCompatibleStateImageBehavior = False
         '
-        'SvtAv1EncAppHdrControl
+        'NVEncControl
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
@@ -91,7 +91,7 @@ Public Class SvtAv1EncAppHdrControl
         Me.Controls.Add(Me.blConfigCodec)
         Me.Controls.Add(Me.blCompCheck)
         Me.Controls.Add(Me.lv)
-        Me.Name = "SvtAv1EncAppHdrControl"
+        Me.Name = "NVEncControl"
         Me.Size = New System.Drawing.Size(625, 448)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -100,32 +100,30 @@ Public Class SvtAv1EncAppHdrControl
 
 #End Region
 
-    Private ReadOnly Encoder As SvtAv1HdrEnc
-    Private ReadOnly Params As SvtAv1HdrEncParams
+    Private ReadOnly Encoder As NVEnc
+    Private ReadOnly Params As NVEncParams
     Private ReadOnly cms As ContextMenuStripEx
-    Private ReadOnly QualityDefinitions As List(Of SvtAv1EncAppControl.QualityItem)
+    Private ReadOnly QualityDefinitions As List(Of QualityItem)
 
-    Sub New(enc As SvtAv1HdrEnc)
+    Sub New(enc As NVEnc)
         InitializeComponent()
         components = New ComponentModel.Container()
 
-        QualityDefinitions = If(s.SvtAv1EncAppQualityDefinitions IsNot Nothing AndAlso s.SvtAv1EncAppQualityDefinitions.Any(),
-            s.SvtAv1EncAppQualityDefinitions,
-            New List(Of SvtAv1EncAppControl.QualityItem) From {
-                New SvtAv1EncAppControl.QualityItem(15, "Incredible High", "Incredible high quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(20, "Ultra High", "Ultra high quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(25, "Extreme High", "Extreme high quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(30, "Super High", "Super high quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(33, "Very High", "Very high quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(35, "Higher (default)", "Higher quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(38, "High", "High quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(40, "Medium", "Medium quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(42, "Low", "Low quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(45, "Lower", "Lower quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(47, "Very Low", "Very low quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(50, "Super Low", "Super low quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(55, "Extreme Low", "Extreme low quality and file size"),
-                New SvtAv1EncAppControl.QualityItem(60, "Ultra Low", "Ultra low quality and file size")})
+        QualityDefinitions = If(s.NVEncCQualityDefinitions IsNot Nothing AndAlso s.NVEncCQualityDefinitions.Any(),
+            s.NVEncCQualityDefinitions,
+            New List(Of QualityItem) From {
+                New QualityItem(10, "Super High", "Super high quality and file size"),
+                New QualityItem(12, "Very High", "Very high quality and file size"),
+                New QualityItem(14, "Higher", "Higher quality and file size"),
+                New QualityItem(16, "High", "High quality and file size"),
+                New QualityItem(18, "Medium", "Medium quality and file size"),
+                New QualityItem(20, "Low", "Low quality and file size"),
+                New QualityItem(22, "Lower", "Lower quality and file size"),
+                New QualityItem(24, "Very Low", "Very low quality and file size"),
+                New QualityItem(26, "Super Low", "Super low quality and file size"),
+                New QualityItem(28, "Giga Low", "Giga low quality and file size"),
+                New QualityItem(30, "Extreme Low", "Extreme low quality and file size"),
+                New QualityItem(33, "Ultra Low", "Ultra low quality and file size")})
 
         Encoder = enc
         Params = Encoder.Params
@@ -231,59 +229,65 @@ Public Class SvtAv1EncAppHdrControl
 
     Sub UpdateMenu()
         cms.Items.ClearAndDisplose
-        Dim offset = If(Params.RateControlMode.Value = SvtAv1EncAppRateMode.Quality, 0, 1)
+        Dim offset = If(Encoder.QualityMode, 0, 1)
 
         If lv.SelectedItems.Count > 0 Then
             Dim selectedIndex = lv.SelectedIndices(0)
             Select Case selectedIndex
                 Case 0 - offset
-                    Dim param = Params.QuantizationParameter
-                    For Each def In QualityDefinitions
-                        Dim item = MenuItemEx.Add(cms.Items, def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}  ", "  "), Sub() SetQuality(selectedIndex, def.Value), def.Tooltip)
-                        item.Font = If(param.Value = def.Value, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
-                    Next
+                    Dim param As NumParam
+                    If Params.QVBR.Visible Then param = Params.QVBR
+                    If Params.QP.Visible Then param = Params.QP
+                    If Params.QPAV1.Visible Then param = Params.QPAV1
+                    If Params.VbrQuality.Visible Then param = Params.VbrQuality
+                    If param IsNot Nothing Then
+                        For Each def In QualityDefinitions
+                            Dim item = MenuItemEx.Add(cms.Items, def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}  ", "  "), Sub() SetQuality(selectedIndex, def.Value), def.Tooltip)
+                            item.Font = If(param.Value = def.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        Next
+                    End If
                 Case 1 - offset
+                    Dim param = Params.Mode
+                    For x = 0 To param.Options.Length - 1
+                        Dim temp = x
+                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetMode(selectedIndex, temp))
+                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                    Next
+                Case 2 - offset
                     Dim param = Params.Preset
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
                         Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetPreset(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
                     Next
-                Case 2 - offset
+                Case 3 - offset
                     Dim param = Params.Tune
+                    If Params.TuneH264.Visible Then param = Params.TuneH264
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
                         Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetTune(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
-                    Next
-                Case 3 - offset
-                    Dim param = Params.FastDecode
-                    For x = 0 To param.Options.Length - 1
-                        Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetFastDecode(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
                     Next
                 Case 4 - offset
-                    Dim param = Params.Lookahead
-                    For x = param.Config(0) To param.Config(1) Step param.Config(2)
-                        Dim temp = CInt(x)
-                        Dim lowerBound = Math.Floor((temp - 1) / 10) * 10 + 1
-                        Dim upperBound = lowerBound + 9
-                        Dim category = If(temp <= 0, "", $"{lowerBound:00} - {upperBound:00} | ")
-                        Dim def = If(temp = CInt(param.InitialValue), "  (default)", "")
-                        Dim item = MenuItemEx.Add(cms.Items, category + temp.ToInvariantString() + def + "  ", Sub() SetLookahead(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                    Dim param = Params.OutputDepth
+                    For x = 0 To param.Options.Length - 1
+                        Dim temp = x
+                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetOutputDepth(selectedIndex, temp))
+                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
                     Next
                 Case 5 - offset
-                    Dim param = Params.FilmGrain
-                    For x = param.Config(0) To param.Config(1) Step param.Config(2)
-                        Dim temp = CInt(x)
-                        Dim lowerBound = Math.Floor((temp - 1) / 10) * 10 + 1
-                        Dim upperBound = lowerBound + 9
-                        Dim category = If(temp = 0, "", $"{lowerBound:00} - {upperBound:00} | ")
-                        Dim def = If(temp = CInt(param.InitialValue), "  (default)", "")
-                        Dim item = MenuItemEx.Add(cms.Items, category + temp.ToInvariantString() + def + "  ", Sub() SetFilmGrain(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                    Dim param = If(Params.DolbyVisionProfileAV1.Visible, Params.DolbyVisionProfileAV1, Params.DolbyVisionProfileH265)
+                    For x = 0 To param.Options.Length - 1
+                        Dim temp = x
+                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetDolbyVisionProfile(param, selectedIndex, temp))
+                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                    Next
+                Case 6 - offset
+                    Dim param = Params.ColorRange
+                    For x = 0 To param.Options.Length - 1
+                        Dim temp = x
+                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetColorRange(selectedIndex, temp))
+                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
                     Next
                 Case Else
                     Throw New NotSupportedException(NameOf(selectedIndex))
@@ -291,9 +295,20 @@ Public Class SvtAv1EncAppHdrControl
         End If
     End Sub
 
+    Sub SetMode(index As Integer, value As Integer)
+        Params.Mode.Value = value
+
+        lv.Items(index).SubItems(1).Text = value.ToString()
+        lv.Items(index).Selected = False
+
+        UpdateControls()
+        Encoder.UpdateTargetFile()
+    End Sub
+
     Sub SetQuality(index As Integer, v As Double)
-        Params.ConstantRateFactor.Value = v
-        Params.QuantizationParameter.Value = v
+        If Params.QVBR.Visible Then Params.QVBR.Value = v
+        If Params.QP.Visible Then Params.QP.Value = v
+        If Params.VbrQuality.Visible Then Params.VbrQuality.Value = v
 
         lv.Items(index).SubItems(1).Text = GetQualityCaption(v)
         lv.Items(index).Selected = False
@@ -305,9 +320,7 @@ Public Class SvtAv1EncAppHdrControl
     Sub SetPreset(index As Integer, value As Integer)
         Params.Preset.Value = value
 
-        Params.ApplyPresetValues()
-
-        lv.Items(index).SubItems(1).Text = value.ToString
+        lv.Items(index).SubItems(1).Text = value.ToString()
         lv.Items(index).Selected = False
 
         UpdateControls()
@@ -315,7 +328,28 @@ Public Class SvtAv1EncAppHdrControl
     End Sub
 
     Sub SetTune(index As Integer, value As Integer)
-        Params.Tune.Value = value
+        If Params.Tune.Visible Then Params.Tune.Value = value
+        If Params.TuneH264.Visible Then Params.TuneH264.Value = value
+
+        lv.Items(index).SubItems(1).Text = value.ToString()
+        lv.Items(index).Selected = False
+
+        UpdateControls()
+        Encoder.UpdateTargetFile()
+    End Sub
+
+    Sub SetOutputDepth(index As Integer, value As Integer)
+        Params.OutputDepth.Value = value
+
+        lv.Items(index).SubItems(1).Text = value.ToString()
+        lv.Items(index).Selected = False
+
+        UpdateControls()
+        Encoder.UpdateTargetFile()
+    End Sub
+
+    Sub SetDolbyVisionProfile(param As OptionParam, index As Integer, value As Integer)
+        param.Value = value
 
         lv.Items(index).SubItems(1).Text = value.ToString
         lv.Items(index).Selected = False
@@ -324,8 +358,8 @@ Public Class SvtAv1EncAppHdrControl
         Encoder.UpdateTargetFile()
     End Sub
 
-    Sub SetFastDecode(index As Integer, value As Integer)
-        Params.FastDecode.Value = value
+    Sub SetColorRange(index As Integer, value As Integer)
+        Params.ColorRange.Value = value
 
         lv.Items(index).SubItems(1).Text = value.ToString
         lv.Items(index).Selected = False
@@ -334,24 +368,36 @@ Public Class SvtAv1EncAppHdrControl
         Encoder.UpdateTargetFile()
     End Sub
 
-    Sub SetLookahead(index As Integer, value As Integer)
-        Params.Lookahead.Value = value
-
-        lv.Items(index).SubItems(1).Text = value.ToString
-        lv.Items(index).Selected = False
-
+    Sub UpdateControls(item As CommandLineParam)
         UpdateControls()
-        Encoder.UpdateTargetFile()
     End Sub
 
-    Sub SetFilmGrain(index As Integer, value As Integer)
-        Params.FilmGrain.Value = value
+    Sub UpdateControls()
+        lv.Items.Clear()
+        If Encoder.QualityMode Then
+            Dim val = -1.0
+            val = If(Params.QVBR.Visible, Params.QVBR.Value, val)
+            val = If(Params.QP.Visible, Params.QP.Value, val)
+            val = If(Params.QPAV1.Visible, Params.QPAV1.Value, val)
+            val = If(Params.VbrQuality.Visible, Params.VbrQuality.Value, val)
+            If val >= 0 Then
+                lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(val)}))
+            End If
+        End If
+        lv.Items.Add(New ListViewItem({"Mode", Params.Mode.OptionText}))
+        lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
+        Dim tuneParam = Params.Tune
+        If Params.TuneH264.Visible Then tuneParam = Params.TuneH264
+        lv.Items.Add(New ListViewItem({"Tune", tuneParam.OptionText}))
+        lv.Items.Add(New ListViewItem({"Output Depth", Params.OutputDepth.OptionText}))
+        lv.Items.Add(New ListViewItem({"DV Profile", If(Params.DolbyVisionProfileAV1.Visible, Params.DolbyVisionProfileAV1.OptionText, Params.DolbyVisionProfileH265.OptionText)}))
+        lv.Items.Add(New ListViewItem({"Color Range", Params.ColorRange.OptionText}))
 
-        lv.Items(index).SubItems(1).Text = value.ToString
-        lv.Items(index).Selected = False
+        tblOverrideName.State = Encoder.OverridesTargetFileName
+        'blCompCheck.Visible = Not Encoder.QualityMode AndAlso Params.Decoder.Value = 0
+        blCompCheck.Visible = False
 
-        UpdateControls()
-        Encoder.UpdateTargetFile()
+        g.MainForm.UpdateEncoderStateRelatedControls()
     End Sub
 
     Function GetQualityCaption(value As Double) As String
@@ -363,29 +409,6 @@ Public Class SvtAv1EncAppHdrControl
 
         Return value.ToInvariantString()
     End Function
-
-    Sub UpdateControls(item As CommandLineParam)
-        UpdateControls()
-    End Sub
-
-    Sub UpdateControls()
-        Dim offset = If(Params.RateControlMode.Value = SvtAv1EncAppRateMode.Quality, 0, 1)
-
-        lv.Items.Clear()
-        If Params.RateControlMode.Value = SvtAv1EncAppRateMode.Quality Then
-            lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.QuantizationParameter.Value)}))
-        End If
-        lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
-        lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
-        lv.Items.Add(New ListViewItem({"Fast Decode", Params.FastDecode.OptionText}))
-        lv.Items.Add(New ListViewItem({"Lookahead", Params.Lookahead.Value.ToInvariantString() + If(Params.Lookahead.Value = Params.Lookahead.InitialValue, " (default)", "")}))
-        lv.Items.Add(New ListViewItem({"Film Grain", Params.FilmGrain.Value.ToInvariantString() + If(Params.FilmGrain.Value = Params.FilmGrain.InitialValue, " (default)", "")}))
-
-        tblOverrideName.State = Encoder.OverridesTargetFileName
-        blCompCheck.Visible = Params.RateControlMode.Value <> SvtAv1EncAppRateMode.Quality
-
-        g.MainForm.UpdateEncoderStateRelatedControls()
-    End Sub
 
     Sub llConfigCodec_Click(sender As Object, e As EventArgs) Handles blConfigCodec.Click
         Encoder.ShowConfigDialog()

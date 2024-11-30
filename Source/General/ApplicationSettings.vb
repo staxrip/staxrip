@@ -115,6 +115,7 @@ Public Class ApplicationSettings
     Public WriteDebugLog As Boolean
     Public X264QualityDefinitions As List(Of x264Control.QualityItem)
     Public X265QualityDefinitions As List(Of x265Control.QualityItem)
+    Public NVEncCQualityDefinitions As List(Of NVEncControl.QualityItem)
     Public SvtAv1EncAppQualityDefinitions As List(Of SvtAv1EncAppControl.QualityItem)
     Public VvencffappQualityDefinitions As List(Of VvencffappControl.QualityItem)
 

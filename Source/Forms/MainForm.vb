@@ -4639,6 +4639,7 @@ Partial Public Class MainForm
                     tbTargetSize.Text = $"{CInt(Calc.GetSizeInBytes \ PrefixedSize(2).Factor)}"
                 End If
 
+                p.VideoEncoder.UpdateTargetFile()
                 BlockBitrate = False
                 Assistant()
             End If

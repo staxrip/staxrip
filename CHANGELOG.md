@@ -14,6 +14,49 @@ v2.5x.0 (not published yet)
 -->
 
 
+v2.50.6 (2026-01-22)
+====================
+
+- General: FFmpeg as decoder for various encoders reads source files in 10-bit if necessary or wanted
+- General: Improve Vulkan-Support-Check
+- General: Improve muxing AV1 encodes with better Aspect Ratio setting
+- General: Limit HDR10+ extraction to HEVC format ([#1876](/../../issues/1876))
+- Audio: Fix display of sampling rate when opening audio options ([#1887](/../../issues/1887))
+- Macro: Add `%isfilteractive:%` macro
+    - Expects the name of the filter you want to check
+    - Returns `1` in case the filter is active, otherwise `0`
+    - Example: `%isfilteractive:DFTTest%` -> `1`
+- UI: Update Progress Reformatting for SVT-AV1 forks
+- FFmpeg: Add prores_ks codec
+- MP4Box: Unquote "-itags" inner values
+- SvtAv1EncApp: Extend "--tune" with "4: MS-SSIM/SSIMULACRA2" value
+- SvtAv1EncApp-HDR: Add "--cdef-scaling" parameter
+- SvtAv1EncApp-HDR: Update new default values
+- SvtAv1EncApp-HDR: Add new parameters taken over from Essential fork
+    - Add "--auto-tiling" parameter
+    - Extend "--enable-dlf" parameter with value "3: Maximum accuracy"
+    - Set "--scd" default value to 1
+- x264: Unlock direct read out / no piping again
+- x264: Fix logging parameters
+- x265: Fix logging parameters
+- VapourSynth: Fix plugin dependency order
+- VapourSynth: Fix TAAmbk package and profile
+- Update tools
+    - HDR10Plus_Tool v1.7.2
+    - MKVToolNix v97.0
+    - mpv.net v7.1.2
+    - NVEncC v9.10
+    - QSVEncC v8.04
+    - SvtAv1EncApp v3.1.2-332+64-7b35df00-[Mod-by-Patman]-x64-clang21.1.8 [SVT-AV1]
+    - SvtAv1EncApp v3.1.3-14+47-181c8e664-[Mod by Patman]-x64-clang21.1.8 [SVT-AV1-HDR]
+    - VCEEncC v9.03
+    - x265 v4.1+212+37-b634c865b-[Mod-by-Patman]-x64-avx2-clang21.1.8
+- Update AviSynth+ plugins
+    - avs_libplacebo v1.6.0
+- Update Dual plugins
+    - BestRource R16
+
+
 v2.50.5 (2025-12-26)
 ====================
 

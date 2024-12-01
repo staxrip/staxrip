@@ -14,6 +14,72 @@ v2.5x.0 (not published yet)
 -->
 
 
+v2.53.3 (2025-12-09)
+====================
+
+- General: Add some more custom languages
+- MP4Box: Quote MP4Box "-itags" parameter value
+- SvtAv1EncApp-HDR: Add "--max-tx-size" parameter
+- SvtAv1EncApp-HDR: Remove "--progress 3" parameter value
+- SvtAv1EncApp-HDR: Rename "--spy-rd" to "--tx-bias"
+- SvtAv1EncApp-HDR: Swap "--tune 3" and "--tune 4"
+- AviSynth: Add libplacebo Resize filter profile (thanks to @ame0011 ([#1863](/../../pull/1863)))
+- VapourSynth: Add libplacebo Resize filter profile (thanks to @ame0011 ([#1863](/../../pull/1863)))
+- Update tools
+    - chapterEditor v1.45
+    - DeeZy v1.3.13
+    - eac3to v3.54
+    - MediaInfo v25.10
+    - MKVToolNix v96.0
+    - NVEncC v9.08
+    - Python v3.13.9
+    - QSVEncC v8.03
+    - SvtAv1EncApp v3.1.2-221+58-bdd0e876-.Mod-by-Patman.-x64-clang21.1.7 [SVT-AV1]
+    - SvtAv1EncApp v3.1.3-1+25-e91dd47d2-.Mod.by.Patman.-x64-clang21.1.7 [SVT-AV1-HDR]
+    - VapourSynth R73
+    - VCEEncC v9.02
+- Update Dual plugins
+    - BestSource R15
+
+
+v2.53.2 (2025-11-02)
+====================
+
+- General: Save settings after showing Changelog
+    - Prevents Changelogs popping up when starting multiple instances after updating
+- General: FFmpeg as decoder for various encoders reads source files in 10-bit if necessary or wanted
+- Assistant: Optimize Assistant execution to prevent multiple calls
+- UI: Add a few more theme colors
+- UI: Fix Search-ComboBox on Encoder Options not showing any parameters
+- NVEncC: Adjust "--ref" parameter default values according to v9.05
+- NVEncC: Add new "--tune" parameter
+- NVEncC: Add new "--tune" parameter to editing control
+- NVEncC: Add new "--unidirectb" parameter
+- SvtAv1EncApp: Add new "--ac-bias" parameter
+- SvtAv1EncApp: Extend "--crf" parameter to `70`
+- Update tools
+    - DeeZy v1.3.11
+    - NVEncC v9.06
+    - QSVEncC v8.02
+    - Subtitle Edit v4.0.14
+    - SvtAv1EncApp v3.1.2-185+56-b6c6dda6-.Mod-by-Patman.-x64-clang21.1.4 [SVT-AV1]
+    - SvtAv1EncApp v3.1.2-0+23-f2b141f4-.Mod.by.Patman.-x64-clang21.1.4 [SVT-AV1-HDR]
+- Update Dual plugins
+    - BestSource R14
+
+
+v2.53.1 (2025-10-12)
+====================
+
+- General: Fix wrong paths for compressibility checks for multiple encoders
+- General: Fix light level related MediaInfo calls due to new update in v2.53.0
+- NVEncC: Remove "Run Compressibility Check" from Editing Control
+- NVEncC: Add missing "--profile" parameter for AV1 encodes
+- Update tools
+    - eac3to v3.52
+    - x264 v0.165.3222+17-93998b2-[Mod-by-Patman]-x64-gcc15.2.0
+
+
 v2.53.0 (2025-10-08)
 ====================
 
@@ -21,7 +87,7 @@ v2.53.0 (2025-10-08)
     - Changelog is not fetched anymore
 - General: Handle frame server exceptions when opening scripts, that can potentially shut down StaxRip
 - General: Fix cover images not being added to the container ([#1829](/../../issues/1829))
-- General: Add separate process priorities for encoders and tools
+- General: Add separate process priorities for encoders and tools ([#1759](/../../issues/1759))
 - General: Add some more custom languages
 - Assistant: Fix Assistant not being executed when filters are (de-)activated
 - Audio: Don't add audio streams when demuxing with eac3to

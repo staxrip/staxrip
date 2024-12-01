@@ -709,7 +709,7 @@ Public Class Macro
         If Not params.Any() Then Return value
         If proj Is Nothing Then proj = p
 
-        For Each param In params.Where(Function(x) x.Path <> "" AndAlso x.Visible)
+        For Each param In params.Where(Function(x) x.Path <> "")
             Dim switches = param.GetSwitches().Select(Function(x) $"{x.ToLowerEx()}")
 
             For Each sw In switches
@@ -727,6 +727,12 @@ Public Class Macro
                             v = v.ReplaceAll(switches, "").Replace(" ", "")
                         End If
                         If value.Contains($"%{sw}%") Then value = value.Replace($"%{sw}%", v)
+                        If value.Contains($"%{sw}_D%") Then value = value.Replace($"%{sw}_D%", castedParam.IsDefaultValue.ToInvariantString())
+                        If value.Contains($"%{sw}_L%") Then value = value.Replace($"%{sw}_L%", v.ToLowerInvariant())
+                        If value.Contains($"%{sw}_T%") Then value = value.Replace($"%{sw}_T%", v.ToTitleCase())
+                        If value.Contains($"%{sw}_U%") Then value = value.Replace($"%{sw}_U%", v.ToUpperInvariant())
+                        If value.Contains($"%{sw}_V%") Then value = value.Replace($"%{sw}_V%", If(castedParam.Value, "1", "0"))
+                        If value.Contains($"%{sw}_Z%") Then value = value.Replace($"%{sw}_Z%", If(castedParam.Visible, "1", "0"))
                     ElseIf TypeOf param Is NumParam Then
                         Dim castedParam = DirectCast(param, NumParam)
                         Dim v = ""
@@ -740,6 +746,11 @@ Public Class Macro
                             v = v.ReplaceAll(switches, "").Replace(" ", "")
                         End If
                         If value.Contains($"%{sw}%") Then value = value.Replace($"%{sw}%", v)
+                        If value.Contains($"%{sw}_D%") Then value = value.Replace($"%{sw}_D%", castedParam.IsDefaultValue.ToInvariantString())
+                        If value.Contains($"%{sw}_L%") Then value = value.Replace($"%{sw}_L%", v.ToLowerInvariant())
+                        If value.Contains($"%{sw}_T%") Then value = value.Replace($"%{sw}_T%", v.ToTitleCase())
+                        If value.Contains($"%{sw}_U%") Then value = value.Replace($"%{sw}_U%", v.ToUpperInvariant())
+                        If value.Contains($"%{sw}_Z%") Then value = value.Replace($"%{sw}_Z%", If(castedParam.Visible, "1", "0"))
                     ElseIf TypeOf param Is OptionParam Then
                         Dim castedParam = DirectCast(param, OptionParam)
                         Dim v = ""
@@ -761,6 +772,12 @@ Public Class Macro
                             v = v.ReplaceAll(switches, "").Replace(" ", "")
                         End If
                         If value.Contains($"%{sw}%") Then value = value.Replace($"%{sw}%", v.ToInvariantString())
+                        If value.Contains($"%{sw}_D%") Then value = value.Replace($"%{sw}_D%", castedParam.IsDefaultValue.ToInvariantString())
+                        If value.Contains($"%{sw}_L%") Then value = value.Replace($"%{sw}_L%", v.ToInvariantString().ToLowerInvariant())
+                        If value.Contains($"%{sw}_T%") Then value = value.Replace($"%{sw}_T%", v.ToInvariantString().ToTitleCase())
+                        If value.Contains($"%{sw}_U%") Then value = value.Replace($"%{sw}_U%", v.ToInvariantString().ToUpperInvariant())
+                        If value.Contains($"%{sw}_V%") Then value = value.Replace($"%{sw}_V%", castedParam.Value.ToInvariantString())
+                        If value.Contains($"%{sw}_Z%") Then value = value.Replace($"%{sw}_Z%", If(castedParam.Visible, "1", "0"))
                     ElseIf TypeOf param Is StringParam Then
                         Dim castedParam = DirectCast(param, StringParam)
                         Dim v = ""
@@ -774,6 +791,11 @@ Public Class Macro
                             v = v.ReplaceAll(switches, "").Replace(" ", "")
                         End If
                         If value.Contains($"%{sw}%") Then value = value.Replace($"%{sw}%", v)
+                        If value.Contains($"%{sw}_D%") Then value = value.Replace($"%{sw}_D%", castedParam.IsDefaultValue.ToInvariantString())
+                        If value.Contains($"%{sw}_L%") Then value = value.Replace($"%{sw}_L%", v.ToLowerInvariant())
+                        If value.Contains($"%{sw}_T%") Then value = value.Replace($"%{sw}_T%", v.ToTitleCase())
+                        If value.Contains($"%{sw}_U%") Then value = value.Replace($"%{sw}_U%", v.ToUpperInvariant())
+                        If value.Contains($"%{sw}_Z%") Then value = value.Replace($"%{sw}_Z%", If(castedParam.Visible, "1", "0"))
                     End If
                     Exit For
                 End If

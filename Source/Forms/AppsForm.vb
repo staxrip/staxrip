@@ -533,19 +533,19 @@ Public Class AppsForm
         Contents("Description").Text = CurrentPackage.Description
 
         Dim visible = Not String.IsNullOrWhiteSpace(CurrentPackage.WebURL)
+        Headers("Website").Visible = visible
         Contents("Website").Text = CurrentPackage.WebURL
         Contents("Website").Visible = visible
-        Headers("Website").Visible = visible
 
         visible = Not String.IsNullOrWhiteSpace(CurrentPackage.HelpURL)
+        Headers("Help").Visible = visible
         Contents("Help").Text = CurrentPackage.HelpURL
         Contents("Help").Visible = visible
-        Headers("Help").Visible = visible
 
         visible = Not String.IsNullOrWhiteSpace(CurrentPackage.DownloadURL)
+        Headers("Download").Visible = visible
         Contents("Download").Text = CurrentPackage.DownloadURL
         Contents("Download").Visible = visible
-        Headers("Download").Visible = visible
 
         If File.Exists(CurrentPackage.Path) Then
             Contents("Version").Text = If(CurrentPackage.IsVersionCorrect, CurrentPackage.Version, "Unknown")
@@ -598,7 +598,10 @@ Public Class AppsForm
         flp.ResumeLayout()
     End Sub
 
+    <STAThread()>
     Sub AddSection(title As String, Optional clickAction As Action = Nothing)
+        If String.IsNullOrWhiteSpace(title) Then Return
+
         Dim controlMargin = CInt(FontHeight / 10)
         Dim headerPadding = CInt(FontHeight / 3)
 
@@ -608,6 +611,9 @@ Public Class AppsForm
             .AutoSize = True,
             .Margin = New Padding(controlMargin, controlMargin, 0, 0),
             .Padding = New Padding(0, headerPadding, 0, 0)}
+
+        Headers(title) = headerLabel
+        flp.Controls.Add(headerLabel)
 
         Dim contentLabel = If(clickAction IsNot Nothing,
             New ButtonLabel With {
@@ -619,10 +625,7 @@ Public Class AppsForm
                 .AutoSize = True,
                 .Margin = New Padding(controlMargin, CInt(controlMargin / 3), 0, 0)})
 
-        Headers(title) = headerLabel
         Contents(title) = contentLabel
-
-        flp.Controls.Add(headerLabel)
         flp.Controls.Add(contentLabel)
     End Sub
 

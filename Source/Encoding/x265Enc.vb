@@ -1912,10 +1912,11 @@ Public Class x265Params
                 AMP.Value = False
                 BAdapt.Value = 2
                 BFrames.Value = 4
-                BIntra.Value = False
+                BIntra.Value = True
                 EarlySkip.Value = True
                 FastIntra.Value = False
-                MaxMerge.Value = 2
+                LimitRefs.Value = 1
+                MaxMerge.Value = 3
                 MErange.Value = 57
                 RCLookahead.Value = 20
                 RD.Value = 3
@@ -2193,10 +2194,11 @@ Public Class x265Params
                 AMP.DefaultValue = False
                 BAdapt.DefaultValue = 2
                 BFrames.DefaultValue = 4
-                BIntra.DefaultValue = False
+                BIntra.DefaultValue = True
                 EarlySkip.DefaultValue = True
                 FastIntra.DefaultValue = False
-                MaxMerge.DefaultValue = 2
+                LimitRefs.DefaultValue = 1
+                MaxMerge.DefaultValue = 3
                 MErange.DefaultValue = 57
                 RCLookahead.DefaultValue = 20
                 RD.DefaultValue = 3

@@ -14,6 +14,63 @@ v2.5x.0 (not published yet)
 -->
 
 
+v2.52.2 (2026-04-06)
+====================
+
+- General: Strengthen setting file savings and loadings towards simultaneous usage
+- General: Update Target File Name when filters are (de-)activated
+- General: Run AutoCrop only if needed
+    - In case you open a source file again after AutoCrop has done its job,  
+        another run is not needed and the old determined values will be used
+- Macro: Extend macros with functions:
+    - if() function
+        - Insert a value/macro depending on a condition
+        - Syntax: `<if(<expression>;<true>;<false>)>`
+    - replace() function
+        - Replaces all occurrences of X in a string
+        - Syntax: `<replace(<input>;<oldText>;<newText>)>`
+    - trim() function
+        - Removes all leading and trailing white-space characters
+        - Syntax: `<trim(<input>)>`
+    - lower() function
+        - Converts all characters to lower case
+        - Syntax: `<lower(<input>)>`
+    - title() function
+        - Converts all characters to Title case
+        - Syntax: `<title(<input>)>`
+    - upper() function
+        - Converts all characters to UPPER case
+        - Syntax: `<upper(<input>)>`
+    - Documentation: https://github.com/staxrip/staxrip/blob/master/Docs/Usage/Macros.md#function-macros
+- UI: Extend Language button on Audio Settings window
+- eac3to: Fix DTS recognition as valid audio track ([#1943](/../../issues/1943))
+- SvtAv1EncApp-Essential: Update to v4
+    - Too many changes to list them all
+- SvtAv1EncApp-HDR: Rename "--photon-noise*" parameters to "--noise*"
+- SvtAv1EncApp-HDR: Add new "--noise-chroma-from-luma" parameter
+- SvtAv1EncApp-HDR: Add new "--noise-size" parameter
+- SvtAv1EncApp-Tritium: Add new "--noise*" parameters
+- Update tools
+    - DGMPGDec v3.0.0.1
+    - NVEncC v9.14
+    - QSVEncC v8.08
+    - SvtAv1EncApp v4.1.0-7+75-ec30d718f-[Mod-by-Patman]-x64-clang22.1.2 [SVT-AV1]
+    - SvtAv1EncApp v4.0.1-1+11-2f04393ca-[Mod by Patman]-x64-clang22.1.2 [SVT-AV1-Essential]
+    - SvtAv1EncApp v4.0.1-18+65-6b7f4a4fe-[Mod by Patman]-x64-clang22.1.2 [SVT-AV1-HDR]
+    - SvtAv1EncApp v4.0.1-32+10-00b360c14-[Mod by Patman]-x64-clang22.1.2 [SVT-AV1-Tritium]
+    - VCEEncC v9.05
+    - x264 v0.165.3223+28-cfee1f8-[Mod-by-Patman]-x64-gcc15.2.0
+    - x265 v4.1+242+51-a267d1509-[Mod-by-Patman]-x64-avx2-clang22.1.2
+- Add AviSynth+ plugins
+    - EDI3CL v1.1.1
+- Update AviSynth+ plugins
+    - NNEDI3CL v1.0.9
+    - TDeint v1.11
+    - TIVTC v1.0.31
+- Update VapourSynth plugins
+    - NNEDI3CL r8
+
+
 v2.52.1 (2026-03-10)
 ====================
 
@@ -52,7 +109,7 @@ v2.52.0 (2026-03-01)
     - Gives the opportunity to assign an audio track twice for different encodings like Surround and Stereo
 - Audio: Add AC4 support for DeeZy
 - Audio: Extend "Center/Speech optimized Stereo" with 7.1 configuration
-- Demux: Fix wrong ffmpeg format selection due to MediaInfo when demuxing audio tracks ([#1925](/../../issues/1925))
+- Demux: Fix wrong ffmpeg PCM format selection due to MediaInfo when demuxing audio tracks ([#1925](/../../issues/1925))
 - Template: Raise AutoCrop Luminance Threshold to 14.0%
 - UI: Add a few more theme colors
 - UI: Remove UI Fallback for checkboxes
@@ -2041,7 +2098,7 @@ v2.18.0 (2023-05-22)
 
 - Set timestamp extraction for VFR MKV files only as default project option ([#817](/../../issues/817), [#1006](/../../issues/1006))
 - Fix minor issue with TransformsPack package definition
-- Fix UI issues especially with hidden checkbox texts on some machines by adding UI Fallback setting [Settings » User Interface » UI Fallback] ([#978](/../../issues/978))
+- Fix UI issues especially with hidden checkbox texts on some machines by adding UI Fallback setting [Settings � User Interface � UI Fallback] ([#978](/../../issues/978))
 - NVEncC: Adjust some codec dependent parameters
 - NVEncC: AV1 support ([#949](/../../issues/949))
 - SVTAV1: Set "--key-init" to default value of -2 (thanks to samkatakouzinos ([#1011](/../../pull/1011)))

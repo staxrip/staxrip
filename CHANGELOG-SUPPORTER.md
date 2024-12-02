@@ -13,6 +13,128 @@ v2.5x.0 (not published yet)
     - ...
 -->
 
+
+v2.53.9 (not published yet)
+====================
+
+- General: Fix Dolby Vision croppping in case of changing aspect ratios without cropping
+- General: Fix ExecuteCommandLine command when using "Show Process Window" without "Wait For Exit" ([#1927](/../../issues/1927))
+- General: Make fmtconv a dual plugin ([#1926](/../../issues/1926))
+- Demux: Fix wrong ffmpeg format selection due to MediaInfo when demuxing audio tracks ([#1925](/../../issues/1925))
+- Update tools
+    - OpusEnc v0.2-39-g9b1ca51 (using libopus 1.6.1-6-ga3f0ec0)
+    - x264 v0.165.3223+26-ed3d55b-[Mod-by-Patman]-x64-gcc15.2.0
+- Update AviSynth+ plugins
+    - ...
+- Update Dual plugins
+    - ...
+- Update VapourSynth plugins
+    - ...
+
+
+v2.53.8 (2026-02-16)
+====================
+
+- General: Fix bug in latest change of Dolby Vision treatment, that didn't crop on some Dolby Vision setups
+- General: Improve integration of custom encoder parameters
+- Audio: Allow duplicates in preferred audio languages
+    - Gives the opportunity to assign an audio track twice for different encodings like Surround and Stereo
+- SvtAv1EncApp-HDR: Set "--preset 4" as default
+- SvtAv1EncApp-HDR: Add new "--tune 4" parameter while move the existing one to "--tune 5"
+- Update tools
+    - MediaInfo v26.01
+    - Subtitle Edit v4.0.15
+    - SvtAv1EncApp v4.0.1-56+67-6b9334ab-[Mod-by-Patman]-x64-clang21.1.8 [SVT-AV1]
+    - SvtAv1EncApp v4.0.1-3+52-7d1495d5e-[Mod by Patman]-x64-clang21.1.8 [SVT-AV1-HDR]
+    - x264 v0.165.3223+25-2d47345-[Mod-by-Patman]-x64-gcc15.2.0
+    - x265 v4.1+223+43-5b546048f-[Mod-by-Patman]-x64-avx2-clang21.1.8
+- Update Dual plugins
+    - L-SMASH-Works v1278
+
+
+v2.53.7 (2026-02-04)
+====================
+
+- General: Improve Dolby Vision treatment
+    - Adjust Assistant warnings
+    - Loosen Crop restrictions
+- General: Strengthen setting file savings and loadings towards simultaneous usage
+- Audio: Add SPF setting for ffmpeg with eac3 codec
+- UI: Improve Progress Update Interval and Output
+    - Will help on some rare systems with freezing Processing windows
+    - Thanks to @Rafmib and @FreaQ for excessive testing different approaches to solve this
+- UI: Add numbering for audio tracks ([#1854](/../../issues/1854))
+    - Only in case more than 5 are shown
+- AutoCrop: Fix AutoCrop not able to run on some systems
+- MP4Box: Improve muxing of AV1 encodes with Dolby Vision metadata ([#1874](/../../issues/1874))
+- Update tools
+    - DeeZy v1.3.14
+    - vvencFFapp v1.14.0 r557-169a86c
+    - x264 v0.165.3223+20-c2cf1b6-[Mod-by-Patman]-x64-gcc15.2.0
+    - x265 v4.1+223+40-2684addb1-[Mod-by-Patman]-x64-avx2-clang21.1.8
+- Update VapourSynth plugins
+    - VS-DFTTest2 v10
+
+
+v2.53.6 (2026-01-22)
+====================
+
+- General: Run AutoCrop only if needed
+    - In case you open a source file again after AutoCrop has done its job,  
+        another run is not needed and the old determined values will be used
+- General: Limit HDR10+ extraction to HEVC format ([#1876](/../../issues/1876))
+- General: Improve muxing AV1 encodes with better Aspect Ratio setting
+- Macro: Extend macros with functions:
+    - if() function
+        - Insert a value/macro depending on a condition
+        - Syntax: `<if(<expression>;<true>;<false>)>`
+    - replace() function
+        - Replaces all occurrences of X in a string
+        - Syntax: `<replace(<input>;<oldText>;<newText>)>`
+    - trim() function
+        - Removes all leading and trailing white-space characters
+        - Syntax: `<trim(<input>)>`
+    - lower() function
+        - Converts all characters to lower case
+        - Syntax: `<lower(<input>)>`
+    - title() function
+        - Converts all characters to Title case
+        - Syntax: `<title(<input>)>`
+    - upper() function
+        - Converts all characters to UPPER case
+        - Syntax: `<upper(<input>)>`
+    - Documentation: https://github.com/staxrip/staxrip/blob/master/Docs/Usage/Macros.md#function-macros
+- UI: Extend Language button on Audio Settings window
+- UI: Fix Template Selection in rare cases
+- UI: Fix Assistant is not called after Encoder Options closed
+- UI: Update Progress Reformatting for SVT-AV1 forks
+- UI: Add Project name to Processing window title
+- Template: Raise AutoCrop Luminance Threshold to 14.0%
+- FFmpeg: Add prores_ks codec
+- MP4Box: Unquote "-itags" inner values
+- SvtAv1EncApp: Extend "--tune" with "4: MS-SSIM/SSIMULACRA2" value
+- SvtAv1EncApp-HDR: Add "--cdef-scaling" parameter
+- SvtAv1EncApp-HDR: Update new default values
+- SvtAv1EncApp-HDR: Add new parameters taken over from Essential fork
+    - Add "--auto-tiling" parameter
+    - Extend "--enable-dlf" parameter with value "3: Maximum accuracy"
+    - Set "--scd" default value to 1
+- x264: Fix logging parameters
+- x265: Fix logging parameters
+- Update tools
+    - mpv.net v7.1.2
+    - NVEncC v9.10
+    - SvtAv1EncApp v3.1.2-332+64-7b35df00-[Mod-by-Patman]-x64-clang21.1.8 [SVT-AV1]
+    - SvtAv1EncApp v3.1.3-14+47-181c8e664-[Mod by Patman]-x64-clang21.1.8 [SVT-AV1-HDR]
+    - x265 v4.1+212+37-b634c865b-[Mod-by-Patman]-x64-avx2-clang21.1.8
+- Update AviSynth+ plugins
+    - avs_libplacebo v1.6.0
+- Update Dual plugins
+    - BestSource R16
+- Update VapourSynth plugins
+    - VSHIP 4.1.0
+
+
 v2.53.5 (2026-01-07)
 ====================
 
@@ -34,6 +156,9 @@ v2.53.4 (2025-12-25)
 
 - Audio: Add AC4 support for DeeZy
 - SvtAv1EncApp-HDR: Add "--noise-adaptive-filtering" parameter
+- NVEncC: Fix supported codec check before encoding
+- QSVEncC: Fix supported codec check before encoding
+- VCEEncC: Fix supported codec check before encoding
 - AviSynth: Add QTGMC+ filter profile
 - VapourSynth: Alter plugin dependency order
 - Update tools

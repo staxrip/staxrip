@@ -675,8 +675,64 @@ Public Class Macro
             End If
         End If
 
+        If value.Contains("<lower(") Then
+            Const pattern = "<lower\(((?:(?!<\w+?\().)+?)\)>"
+
+            While Regex.IsMatch(value, pattern)
+                matches = Regex.Matches(value, pattern)
+
+                For i = matches.Count - 1 To 0 Step -1
+                    Dim match = matches(i)
+                    Dim replaced = match.Groups(1).Value.ToLower()
+                    value = value.Replace(match.Value, replaced)
+                Next
+            End While
+        End If
+
+        If value.Contains("<title(") Then
+            Const pattern = "<title\(((?:(?!<\w+?\().)+?)\)>"
+
+            While Regex.IsMatch(value, pattern)
+                matches = Regex.Matches(value, pattern)
+
+                For i = matches.Count - 1 To 0 Step -1
+                    Dim match = matches(i)
+                    Dim replaced = match.Groups(1).Value.ToTitleCase()
+                    value = value.Replace(match.Value, replaced)
+                Next
+            End While
+        End If
+
+        If value.Contains("<upper(") Then
+            Const pattern = "<upper\(((?:(?!<\w+?\().)+?)\)>"
+
+            While Regex.IsMatch(value, pattern)
+                matches = Regex.Matches(value, pattern)
+
+                For i = matches.Count - 1 To 0 Step -1
+                    Dim match = matches(i)
+                    Dim replaced = match.Groups(1).Value.ToUpper()
+                    value = value.Replace(match.Value, replaced)
+                Next
+            End While
+        End If
+
+        If value.Contains("<trim(") Then
+            Const pattern = "<trim\(((?:(?!<\w+?\().)+?)\)>"
+
+            While Regex.IsMatch(value, pattern)
+                matches = Regex.Matches(value, pattern)
+
+                For i = matches.Count - 1 To 0 Step -1
+                    Dim match = matches(i)
+                    Dim replaced = match.Groups(1).Value.Trim()
+                    value = value.Replace(match.Value, replaced)
+                Next
+            End While
+        End If
+
         If value.Contains("<if(") Then
-            Dim pattern = "<if\(((?:(?!<if\().)+?);((?:(?!<if\().)+?);((?:(?!<if\().)+?)\)>"
+            Const pattern = "<if\(((?:(?!<if\().)+?);((?:(?!<if\().)+?);((?:(?!<if\().)+?)\)>"
 
             While Regex.IsMatch(value, pattern)
                 matches = Regex.Matches(value, pattern)
@@ -697,6 +753,27 @@ Public Class Macro
 
                     newValue = newValue.Replace("''", "")
                     value = value.Substring(0, match.Index) & newValue & value.Substring(match.Index + match.Length)
+                Next
+            End While
+        End If
+
+        If value.Contains("<replace(") Then
+            Const pattern = "<replace\(((?:(?!<if\().)+?);((?:(?!<if\().)+?);((?:(?!<if\().)+?)\)>"
+
+            While Regex.IsMatch(value, pattern)
+                matches = Regex.Matches(value, pattern)
+
+                For i = matches.Count - 1 To 0 Step -1
+                    Dim match = matches(i)
+                    Dim input = match.Groups(1).Value.Trim()
+                    Dim oldValue = New String(match.Groups(2).Value.SkipWhile(Function(x, y) y = 0 AndAlso Char.IsWhiteSpace(x)).ToArray())
+                    Dim newValue = New String(match.Groups(3).Value.SkipWhile(Function(x, y) y = 0 AndAlso Char.IsWhiteSpace(x)).ToArray())
+                    Dim output = ""
+
+                    If Not String.IsNullOrEmpty(input) AndAlso Not String.IsNullOrEmpty(oldValue) Then
+                        Dim replaced = input.Replace(oldValue, newValue)
+                        value = value.Replace(match.Value, replaced)
+                    End If
                 Next
             End While
         End If

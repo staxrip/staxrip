@@ -285,7 +285,7 @@ Public Class Package
         .HelpFilename = IO.Path.Combine("doc", "index.html"),
         .Siblings = {"vspipe"},
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthHintDir})
+        .HintDirFunc = Function() Package.VapourSynth.GetVapourSynthDllHintDir})
 
     Shared Property vspipe As Package = Add(New Package With {
         .Name = "vspipe",
@@ -298,7 +298,7 @@ Public Class Package
         .SupportsAutoUpdate = False,
         .Siblings = {"VapourSynth"},
         .RequiredFunc = Function() p.Script.Engine = ScriptEngine.VapourSynth,
-        .HintDirFunc = Function() Package.VapourSynth.Path.Dir})
+        .HintDirFunc = Function() Package.vspipe.GetVapourSynthPipeHintDir})
 
     Shared Property Python As Package = Add(New Package With {
         .Name = "Python",
@@ -3044,7 +3044,19 @@ Public Class Package
         Return GetPathFromLocation(IO.Path.Combine("FrameServer", "AviSynth")).Dir
     End Function
 
-    Function GetVapourSynthHintDir() As String
+    Function GetVapourSynthDllHintDir() As String
+        If s.VapourSynthMode <> FrameServerMode.Portable Then
+            Dim dllPath = FrameServerHelp.GetVapourSynthInstallPath
+
+            If dllPath <> "" Then
+                Return dllPath.Dir
+            End If
+        End If
+
+        Return GetPathFromLocation(IO.Path.Combine("FrameServer", "VapourSynth", "lib", "site-packages")).Dir
+    End Function
+
+    Function GetVapourSynthPipeHintDir() As String
         If s.VapourSynthMode <> FrameServerMode.Portable Then
             Dim dllPath = FrameServerHelp.GetVapourSynthInstallPath
 

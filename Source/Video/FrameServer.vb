@@ -427,7 +427,7 @@ End Class
 
 Public Class FrameServerHelp
     Shared Function GetSynthPath() As String
-        Return If(IsAviSynth(), Package.AviSynth.Path, Path.Combine(Package.VapourSynth.Directory, "VSScript.dll"))
+        Return If(IsAviSynth(), Package.AviSynth.Path, Path.Combine(Package.vspipe.Directory, "VSScript.dll"))
     End Function
 
     Shared Function GetAviSynthInstallPath() As String

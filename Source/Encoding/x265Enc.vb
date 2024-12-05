@@ -455,7 +455,7 @@ Public Class x265Enc
         tester.IgnoredSwitches = "crop-rectfast-cbf frame-skip help lavf no-scenecut
             ratetol recon-y4m-exec input input-res lft total-frames version pbration
             no-progress progress -hrd-concat fullhelp hdr-opt analysis-reuse-level
-            masking-strength"
+            masking-strength pme pmode"
 
         tester.UndocumentedSwitches = "numa-pools rdoq cip qblur cplxblur cu-stats
             dhdr10-info opt-qp-pps opt-ref-list-length-pps single-sei hrd-concat 
@@ -890,16 +890,6 @@ Public Class x265Params
         .Text = "Wavefront Parallel Processing",
         .Init = True}
 
-    Property Pmode As New BoolParam With {
-        .Switch = "--pmode",
-        .NoSwitch = "--no-pmode",
-        .Text = "Parallel Mode Decision"}
-
-    Property PME As New BoolParam With {
-        .Switch = "--pme",
-        .NoSwitch = "--no-pme",
-        .Text = "Parallel Motion Estimation"}
-
     Property minLuma As New NumParam With {
         .Switch = "--min-luma",
         .Text = "Minimum Luma"}
@@ -1323,7 +1313,7 @@ Public Class x265Params
                 Add("Performance",
                     New StringParam With {.Switch = "--pools", .Switches = {"--numa-pools"}, .Text = "Pools"},
                     New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},
-                    FrameThreads, WPP, Pmode, PME,
+                    FrameThreads, WPP,
                     New BoolParam With {.Switch = "--asm", .NoSwitch = "--no-asm", .Text = "ASM", .Help = "For AVX512 Vector CPU's, Experiential Feature", .Init = True},
                     New BoolParam With {.Switch = "--asm avx512", .Text = "AVX 512"},
                     Slowpass,

@@ -13,7 +13,7 @@ $excludeBinPatterns = @(
     '\\log\d+\.txt$',
     '.*recovery\.srip$',
     '.*\.log$',
-    '.*\.ini$',
+    '.*(?<!eac3to)\.ini$',
     '.*help\.txt$',
     '.*\\eac3to\\log\.txt$',
     '.*\\qaac\\QTfiles.*',

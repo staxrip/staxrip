@@ -497,6 +497,16 @@ Public Class SvtAv1EncParams
         .Expanded = True,
         .Options = {"-1: Debug Option", "0: Slowest", "1: Extreme Slow", "2: Ultra Slow", "3: Very Slow", "4: Slower", "5: Slow", "6: Medium", "7: Fast", "8: Faster", "9: Very Fast", "10: Mega Fast (default)", "11: Ultra Fast", "12: Extreme Fast", "13: Fastest"},
         .Values = {"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"},
+        .ValueChangedAction = Sub(v)
+                                  Dim hlv = If(v <= 13, 3, 2)
+                                  If HierarchicalLevels.Value = HierarchicalLevels.DefaultValue Then
+                                      HierarchicalLevels.DefaultValue = hlv
+                                      HierarchicalLevels.ValueChangedUser(hlv)
+                                  Else
+                                      HierarchicalLevels.DefaultValue = hlv
+                                      HierarchicalLevels.ValueChangedUser(HierarchicalLevels.Value)
+                                  End If
+                              End Sub,
         .Init = 11}
 
     '   --------------------------------------------------------
@@ -580,10 +590,10 @@ Public Class SvtAv1EncParams
         .Values = {"c", "mmx", "sse", "sse2", "sse3", "ssse3", "sse4_1", "sse4_2", "avx", "avx2", "avx512", "max"},
         .Init = 11}
 
-    Property LogicalProcessors As New NumParam With {
+    Property LevelOfParallelism As New NumParam With {
         .HelpSwitch = "--lp",
-        .Text = "Logical Cores",
-        .Config = {0, Environment.ProcessorCount, 1},
+        .Text = "Level Of Parallelism",
+        .Config = {0, 6, 1},
         .Init = 0}
 
     Property PinnedExecution As New OptionParam With {
@@ -598,7 +608,7 @@ Public Class SvtAv1EncParams
         .Switch = "--fast-decode",
         .Text = "Fast Decode",
         .Expanded = True,
-        .Options = {"0: Off (default)", "1: On"},
+        .Options = {"0: Off (default)", "1: On", "2: On (Fastest)"},
         .IntegerValue = True,
         .Init = 0}
 
@@ -884,9 +894,9 @@ Public Class SvtAv1EncParams
         .Switch = "--hierarchical-levels",
         .Text = "Hierarchical Levels",
         .Expanded = True,
-        .Options = {"2: 3 temporal layers", "3: 4 temporal layers", "4: 5 temporal layers (default)", "5: 6 temporal layers"},
+        .Options = {"2: 3 temporal layers", "3: 4 temporal layers", "4: 5 temporal layers", "5: 6 temporal layers (default)"},
         .Values = {"2", "3", "4", "5"},
-        .Init = 2}
+        .Init = 3}
 
     Property PredStructure As New OptionParam With {
         .Switch = "--pred-struct",
@@ -1357,7 +1367,7 @@ Public Class SvtAv1EncParams
                     FramesToBeEncoded, FramesToBeSkipped,
                     EncoderColorFormat,
                     HighDynamicRangeInput, StatReport,
-                    Asm, LogicalProcessors, PinnedExecution
+                    Asm, LevelOfParallelism, PinnedExecution
                 )
                 Add("Basic",
                     Preset, Profile, Level, Tune, TunePsy, FastDecode

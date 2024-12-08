@@ -1836,15 +1836,13 @@ Public Class MainForm
 
         Dim preferredAudios = p.PreferredAudio.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ").Distinct()
 
-        Dim audioTracks(p.AudioTracksAvailable - 1) As (FilePath As String, Language As Language, Title As String, Stream As AudioStream)
-        Dim audioTrackId = 0
+        Dim audioTracks As New List(Of (FilePath As String, Language As Language, Title As String, Stream As AudioStream))
 
         Dim addAudioTrack = Sub(groupIndex As Integer, pathIndex As Integer)
                                 If groupedAudioFiles.Count <= groupIndex Then Exit Sub
                                 If groupedAudioFiles(groupIndex) Is Nothing Then Exit Sub
                                 If groupedAudioFiles(groupIndex).Count() <= pathIndex Then Exit Sub
                                 If groupedAudioFiles(groupIndex)(pathIndex) = "" Then Exit Sub
-                                If audioTrackId >= p.AudioTracksAvailable Then Exit Sub
 
                                 Dim filePath = groupedAudioFiles(groupIndex)(pathIndex)
                                 Dim baseName = UnescapeIllegalFileSysChars(filePath.Base)
@@ -1852,8 +1850,7 @@ Public Class MainForm
                                 Dim title = If(titleMatch.Success, titleMatch.Groups(1).Value, "")
 
                                 If Not audioTracks?.Where(Function(x) x.FilePath = filePath)?.Any() Then
-                                    audioTracks(audioTrackId) = (filePath, groupedAudioFiles(groupIndex).Key, title, Nothing)
-                                    audioTrackId += 1
+                                    audioTracks.Add((filePath, groupedAudioFiles(groupIndex).Key, title, Nothing))
                                 End If
                             End Sub
 
@@ -1861,11 +1858,9 @@ Public Class MainForm
         Dim addAudioStream = Sub(index As Integer)
                                  If index >= audioStreams.Count Then Exit Sub
                                  If audioStreams(index) Is Nothing Then Exit Sub
-                                 If audioTrackId >= p.AudioTracksAvailable Then Exit Sub
 
                                  If Not audioTracks?.Where(Function(x) x.Stream?.Name = audioStreams(index).Name)?.Any() Then
-                                     audioTracks(audioTrackId) = (audioStreams(index).Name, audioStreams(index).Language, audioStreams(index).Title, audioStreams(index))
-                                     audioTrackId += 1
+                                     audioTracks.Add((audioStreams(index).Name, audioStreams(index).Language, audioStreams(index).Title, audioStreams(index)))
                                  End If
                              End Sub
 
@@ -1945,7 +1940,7 @@ Public Class MainForm
                            dest.LanguageLabel.Refresh()
                        End Sub
 
-        For index = 0 To audioTracks.Length - 1
+        For index = 0 To audioTracks.Count - 1
             Dim i = index
             If String.IsNullOrWhiteSpace(audioTracks(i).FilePath) Then Continue For
 

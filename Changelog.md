@@ -14,6 +14,64 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.44.0 (2024-12-20)
+====================
+
+- Audio: Add "Center/Speech Optimized Stereo" option
+- Audio: Demux audio even if all tracks are set to "No Audio" ([#1529](/../../issues/1529))
+- Audio: Fix broken audio file addition of demuxed files under some circumstances
+- Audio: Fix Normalize ([#1484](/../../issues/1484))
+- Audio: Improve Normalize
+- Macro: Fix %encoder_codec% is not shown on Macro List
+- MP4Box: Add custom switches for video tracks ([#1532](/../../issues/1532))
+- MP4Box: Add "Better Seeking" general preset ([#1535](/../../issues/1535))
+- NVEncC: Add new value "libplacebo" for "--vpp-resize" parameter
+- NVEncC: Adjust default values for "--vpp-ngx-truehdr" parameter
+- NVEncC: Always show "--vbr-quality" parameter in VBR mode
+- NVEncC: Remove parameters "--level", "--profile" and "--tier" for AV1 codec ([#1534](/../../issues/1534))
+- Rav1e: Fix 2-pass execution ([#1531](/../../issues/1531))
+- Rav1e: Fix bitrate not being synced with main window
+- Rav1e: Reorganize options
+- SvtAv1EncApp: Set default value for "--chroma-qm-min" to 8
+- SvtAv1EncApp: Adjust default value for "--hierarchical-levels" ([#1546](/../../issues/1546))
+- SvtAv1EncApp: Add value "2" to "--fast-decode" parameter
+- SvtAv1EncApp: Add "--noise-norm-strength" parameter
+- SvtAv1EncApp: Add "--kf-tf-strength" parameter
+- SvtAv1EncApp: Rename "Logical Processors" to "Level Of Parallelism"
+- x265: Fix overwriting of set up VBV values when loading a source file ([#1539](/../../issues/1539))
+- x265: Adjust new default values for Medium Preset
+- x265: Fix default value for "--limit-tu" for VerySlow Preset
+- x265: Remove deprecated parameters ([#1544](/../../issues/1544))
+- Update tools
+    - aomenc v3.11.0-145-gc1bcb109d4-x64-msvc1942
+    - DoVi_Tool v2.1.3
+    - FFmpeg v7.2-dev-N-118074-x64-gcc14.2.0
+    - HDR10Plus_Tool v1.6.1
+    - MediaInfo v24.12
+    - MKVToolNix v88.0
+    - MP4Box v2.5-DEV-rev964-ga3c626300-x64-msvc1942
+    - NVEncC v7.77
+    - Python v3.12.7
+    - qaac v2.83
+    - QSVEncC v7.75
+    - rav1e v0.7.0 (p20241015)-x64-msvc1942
+    - Subtitle Edit v4.0.8
+    - SvtAv1EncApp v2.3.0-1+12-7ae833c2-.Mod-by-Patman.-x64-msvc1942 [SVT-AV1-PSY]
+    - VapourSynth R70
+    - VCEEncC v8.24
+    - vvencFFapp v1.13.0 r295-0c2c21e
+    - x264 v0.164.3198+7-bf259fa-.Mod-by-Patman.-x64-gcc14.2.0
+    - x265 v4.1+54+9-0c07fe364-.Mod-by-Patman.-x64-avx2-msvc1942
+- Update AviSynth+ plugins
+    - DePan v2.7.46
+    - DePanEstimate v2.7.46
+    - MVTools2 v2.7.46
+- Update Dual plugins
+    - BestSource R8
+- Update VapourSynth plugins
+    - AVISource R1
+
+
 v2.42.2 (2024-11-08)
 ====================
 

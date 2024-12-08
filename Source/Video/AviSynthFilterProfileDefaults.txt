@@ -6,7 +6,7 @@ AviSource = AviSource("%source_file%", audio=false)
 BestSource = 
     tcFile = "%temp_file%_timestamps.txt" # timestamps file path
     # hwdevice: The interface to use for hardware decoding. Depends on OS and hardware. On windows d3d11va, cuda and vulkan (H264, HEVC and AV1) are probably the ones most likely to work. Defaults to CPU decoding. Will throw errors for formats where hardware decoding isn't possible.
-    Exist(tcFile) ? BSVideoSource("%source_file%", track=-1, fpsnum=-1, fpsden=1, rff=False, threads=0, seekpreroll=20, enable_drefs=False, use_absolute_path=False, cachemode=1, cachepath="%source_temp_file%.ffindex", cachesize=1000, hwdevice="", extrahwframes=9, timecodes=tcFile) : BSVideoSource("%source_file%", track=-1, fpsnum=-1, fpsden=1, rff=False, threads=0, seekpreroll=20, enable_drefs=False, use_absolute_path=False, cachemode=1, cachepath="", cachesize=1000, hwdevice="", extrahwframes=9)
+    Exist(tcFile) ? BSVideoSource("%source_file%", track=-1, fpsnum=-1, fpsden=1, rff=False, threads=0, seekpreroll=20, enable_drefs=False, use_absolute_path=False, cachemode=3, cachepath="%source_temp_file%.0.bsindex", cachesize=1000, hwdevice="", extrahwframes=9, timecodes=tcFile) : BSVideoSource("%source_file%", track=-1, fpsnum=-1, fpsden=1, rff=False, threads=0, seekpreroll=20, enable_drefs=False, use_absolute_path=False, cachemode=1, cachepath="%source_temp_file%.0.bsindex", cachesize=1000, hwdevice="", extrahwframes=9)
 
 D2VSource = D2VSource("%source_file%")
 DirectShowSource = DirectShowSource("%source_file%", audio=false) # specify the frame rate with fps=... for wmv or mov files

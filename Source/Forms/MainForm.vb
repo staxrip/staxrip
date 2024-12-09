@@ -2264,11 +2264,13 @@ Public Class MainForm
             Return False
         End If
 
+        Dim minDuration = If(p.MinBdmvPlaylistDuration >= 0, $" -minDuration={p.MinBdmvPlaylistDuration}", "")
+
         Log.WriteEnvironment()
-        Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + BR2)
+        Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + minDuration + BR2)
         Log.WriteLine("Source Drive Type: " + New DriveInfo(srcPath).DriveType.ToString + BR)
 
-        Dim output = ProcessHelp.GetConsoleOutput(Package.eac3to.Path, srcPath.Escape).Replace(VB6.vbBack, "")
+        Dim output = ProcessHelp.GetConsoleOutput(Package.eac3to.Path, srcPath.Escape & minDuration).Replace(VB6.vbBack, "")
         Log.WriteLine(output)
 
         Dim a = Regex.Split(output, "^\d+\)", RegexOptions.Multiline).ToList
@@ -4212,7 +4214,7 @@ Public Class MainForm
             videoComparisonFrameNumberPosition.Text = "Video Comparison:"
             videoComparisonFrameNumberPosition.Field = NameOf(s.SaveImageVideoComparisonFrameNumberPosition)
 
-            ui.AddLine(generationPage)
+            ui.AddLine()
 
             b = ui.AddBool()
             b.Text = "Add line numbers to generated code"
@@ -5530,6 +5532,14 @@ Public Class MainForm
             b.Text = "Auto-rotate video after loading when possible"
             b.Help = "Auto-rotate video after loading when the source file/container supports it."
             b.Field = NameOf(p.AutoRotation)
+
+            ui.AddLine()
+
+            n = ui.AddNum()
+            n.Text = "Min. duration for BDMV playlists:"
+            n.Help = "Duration in seconds. A value of '-1' will bypass the custom value and take eac3to's default value instead."
+            n.Config = {-1, 3600, 1, 0}
+            n.Field = NameOf(p.MinBdmvPlaylistDuration)
 
             n = ui.AddNum()
             n.Text = "Film Threshold for D2V files:"

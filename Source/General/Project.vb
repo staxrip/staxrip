@@ -93,6 +93,7 @@ Public Class Project
     Public LastOriginalSourceFile As String
     Public Log As New LogBuilder
     Public MaxAspectRatioError As Double = 2
+    Public MinBdmvPlaylistDuration As Integer = 300
     Public NoDialogs As Boolean
     Public NoTempDir As Boolean
     Public PreferredAudio As String

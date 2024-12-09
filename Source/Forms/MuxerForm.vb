@@ -1018,54 +1018,39 @@ Public Class MuxerForm
         End If
     End Sub
 
-    Sub PopulateLanguage(menuButton As MenuButton, path As String, obj As Object)
+    Sub PopulateLanguages(menuButton As MenuButton)
         If IsDisposingOrDisposed Then Return
         If menuButton Is Nothing Then Return
 
         If InvokeRequired Then
             Try
-                Invoke(New MethodInvoker(Sub() PopulateLanguage(menuButton, path, obj)))
+                Invoke(New MethodInvoker(Sub() PopulateLanguages(menuButton)))
             Catch ex As Exception
             End Try
         Else
             Try
-                menuButton.Add(path, obj)
+                menuButton.Menu.Enabled = False
+                menuButton.Enabled = False
+                menuButton.Menu.SuspendLayout()
+                menuButton.SuspendLayout()
+
+                For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
+                    If IsDisposingOrDisposed Then Return
+
+                    If lng.IsCommon Then
+                        menuButton.Add(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
+                    Else
+                        menuButton.Add("More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
+                    End If
+                Next
             Catch ex As Exception
+            Finally
+                menuButton.Menu.ResumeLayout()
+                menuButton.ResumeLayout()
+                menuButton.Menu.Enabled = True
+                menuButton.Enabled = True
             End Try
         End If
-    End Sub
-
-    Sub PopulateLanguages(menuButton As MenuButton)
-        If IsDisposingOrDisposed Then Return
-
-        Try
-            menuButton.Invoke(Sub()
-                                  menuButton.Menu.Enabled = False
-                                  menuButton.Enabled = False
-                                  menuButton.Menu.SuspendLayout()
-                                  menuButton.SuspendLayout()
-                              End Sub)
-
-            For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
-                If IsDisposingOrDisposed Then Return
-
-                If lng.IsCommon Then
-                    PopulateLanguage(menuButton, lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
-                Else
-                    PopulateLanguage(menuButton, "More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
-                End If
-            Next
-        Catch ex As Exception
-        Finally
-            If Not IsDisposingOrDisposed Then
-                menuButton.Invoke(Sub()
-                                      menuButton.Menu.ResumeLayout()
-                                      menuButton.ResumeLayout()
-                                      menuButton.Menu.Enabled = True
-                                      menuButton.Enabled = True
-                                  End Sub)
-            End If
-        End Try
     End Sub
 
     Async Sub PopulateLanguagesAsync(menuButton As MenuButton)

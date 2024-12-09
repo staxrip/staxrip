@@ -800,53 +800,39 @@ Public Class AudioForm
         PopulateLanguagesAsync()
     End Sub
 
-    Sub PopulateLanguage(path As String, obj As Object)
+    Sub PopulateLanguages()
         If IsDisposingOrDisposed Then Return
 
         If InvokeRequired Then
             Try
-                Invoke(New MethodInvoker(Sub() PopulateLanguage(path, obj)))
+                Invoke(New MethodInvoker(Sub() PopulateLanguages()))
             Catch ex As Exception
             End Try
         Else
             Try
-                mbLanguage.Add(path, obj)
+                mbLanguage.Menu.Enabled = False
+                mbLanguage.Enabled = False
+                mbLanguage.Menu.SuspendLayout()
+                mbLanguage.SuspendLayout()
+
+                For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
+                    If IsDisposingOrDisposed Then Return
+
+                    If lng.IsCommon Then
+                        mbLanguage.Add(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
+
+                    Else
+                        mbLanguage.Add("More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
+                    End If
+                Next
             Catch ex As Exception
+            Finally
+                mbLanguage.Menu.ResumeLayout()
+                mbLanguage.ResumeLayout()
+                mbLanguage.Menu.Enabled = True
+                mbLanguage.Enabled = True
             End Try
         End If
-    End Sub
-
-    Sub PopulateLanguages()
-        If IsDisposingOrDisposed Then Return
-
-        Try
-            mbLanguage.Invoke(Sub()
-                                  mbLanguage.Menu.Enabled = False
-                                  mbLanguage.Enabled = False
-                                  mbLanguage.Menu.SuspendLayout()
-                                  mbLanguage.SuspendLayout()
-                              End Sub)
-
-            For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
-                If IsDisposingOrDisposed Then Return
-
-                If lng.IsCommon Then
-                    PopulateLanguage(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
-                Else
-                    PopulateLanguage("More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
-                End If
-            Next
-        Catch ex As Exception
-        Finally
-            If Not IsDisposingOrDisposed Then
-                mbLanguage.Invoke(Sub()
-                                      mbLanguage.Menu.ResumeLayout()
-                                      mbLanguage.ResumeLayout()
-                                      mbLanguage.Menu.Enabled = True
-                                      mbLanguage.Enabled = True
-                                  End Sub)
-            End If
-        End Try
     End Sub
 
     Async Sub PopulateLanguagesAsync()

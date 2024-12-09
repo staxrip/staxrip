@@ -969,7 +969,7 @@ Public Class MuxerForm
             ml.Help = "Optional language of the video stream."
             ml.Property = NameOf(MkvMuxer.VideoTrackLanguage)
 
-            PopulateLanguagesAsync(ml.Button)
+            g.PopulateLanguagesAsync(ml.Button)
 
             Dim compression = UI.AddMenu(Of CompressionMode)()
             compression.Text = "Subtitle Compression"
@@ -1016,59 +1016,6 @@ Public Class MuxerForm
             Muxer.Attachments.Clear()
             Muxer.Attachments.AddRange(lbAttachments.Items.OfType(Of AttachmentContainer).Select(Function(val) val.Filepath))
         End If
-    End Sub
-
-    Sub PopulateLanguages(menuButton As MenuButton)
-        If IsDisposingOrDisposed Then Return
-        If menuButton Is Nothing Then Return
-
-        If InvokeRequired Then
-            Try
-                Invoke(New MethodInvoker(Sub() PopulateLanguages(menuButton)))
-            Catch ex As Exception
-            End Try
-        Else
-            Try
-                menuButton.Menu.Enabled = False
-                menuButton.Enabled = False
-                menuButton.Menu.SuspendLayout()
-                menuButton.SuspendLayout()
-
-                For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
-                    If IsDisposingOrDisposed Then Return
-
-                    If lng.IsCommon Then
-                        menuButton.Add(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
-                    Else
-                        menuButton.Add("More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
-                    End If
-                Next
-            Catch ex As Exception
-            Finally
-                menuButton.Menu.ResumeLayout()
-                menuButton.ResumeLayout()
-                menuButton.Menu.Enabled = True
-                menuButton.Enabled = True
-            End Try
-        End If
-    End Sub
-
-    Async Sub PopulateLanguagesAsync(menuButton As MenuButton)
-        If IsDisposingOrDisposed Then Return
-
-        Dim task As Task
-
-        Try
-            SyncLock menuButton
-                task = Task.Run(Sub() PopulateLanguages(menuButton))
-            End SyncLock
-        Catch ex As Exception
-        Finally
-        End Try
-
-        If IsDisposingOrDisposed Then Return
-
-        Await task
     End Sub
 
     Sub SetValues()

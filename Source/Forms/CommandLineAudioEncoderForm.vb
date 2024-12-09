@@ -225,13 +225,13 @@ Public Class CommandLineAudioEncoderForm
         '
         'mbLanguage
         '
-        Me.mbLanguage.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.mbLanguage.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right),System.Windows.Forms.AnchorStyles)
         Me.mbLanguage.Location = New System.Drawing.Point(586, 41)
         Me.mbLanguage.Margin = New System.Windows.Forms.Padding(2)
         Me.mbLanguage.Padding = New System.Windows.Forms.Padding(2, 0, 0, 0)
         Me.mbLanguage.ShowMenuSymbol = true
         Me.mbLanguage.ShowPath = false
-        Me.mbLanguage.Size = New System.Drawing.Size(168, 34)
+        Me.mbLanguage.Size = New System.Drawing.Size(287, 28)
         Me.mbLanguage.Symbol = StaxRip.Symbol.None
         Me.mbLanguage.Text2 = ""
         '
@@ -623,14 +623,7 @@ End Sub
 
     Sub CommandLineAudioEncoderForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         Refresh()
-
-        For Each i In Language.Languages
-            If i.IsCommon Then
-                mbLanguage.Add(i.ToString, i)
-            Else
-                mbLanguage.Add("More | " + i.ToString.Substring(0, 1).ToUpperInvariant + " | " + i.ToString, i)
-            End If
-        Next
+        g.PopulateLanguages(mbLanguage)
 
         mbLanguage.Value = TempProfile.Language
     End Sub

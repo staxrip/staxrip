@@ -676,13 +676,7 @@ Public Class MuxAudioProfile
             mbi.Button.Value = Language
             mbi.Button.SaveAction = Sub(value) Language = value
 
-            For Each i In Language.Languages.OrderBy(Function(x) x.EnglishName)
-                If i.IsCommon Then
-                    mbi.Button.Add(i.ToString, i)
-                Else
-                    mbi.Button.Add("More | " + i.ToString.Substring(0, 1).ToUpperInvariant + " | " + i.ToString, i)
-                End If
-            Next
+            g.PopulateLanguagesAsync(mbi.Button)
 
             Dim cb = ui.AddBool(page)
             cb.Text = "Default"

@@ -964,6 +964,72 @@ Public Class GlobalClass
         g.MainForm.Assistant()
     End Sub
 
+    Sub PopulateLanguages(menuButton As MenuButton)
+        If menuButton Is Nothing Then Return
+
+        Try
+            If menuButton.InvokeRequired Then
+                menuButton.Invoke(Sub()
+                                      menuButton.Menu.Enabled = False
+                                      menuButton.Enabled = False
+                                      menuButton.Menu.SuspendLayout()
+                                      menuButton.SuspendLayout()
+                                  End Sub)
+            Else
+                menuButton.Menu.Enabled = False
+                menuButton.Enabled = False
+                menuButton.Menu.SuspendLayout()
+                menuButton.SuspendLayout()
+            End If
+
+            Dim tsic = New ToolStripItemCollection(New ToolStrip(), {})
+
+            For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
+                If menuButton?.IsDisposed Then Return
+
+                Dim path = If(lng.IsCommon,
+                    $"{lng} ({lng.TwoLetterCode}, {lng.ThreeLetterCode})",
+                    $"More | {lng.ToString().Substring(0, 1).ToUpperInvariant()} | {lng} ({lng.TwoLetterCode}, {lng.ThreeLetterCode})")
+
+                MenuItemEx.Add(Of Language)(tsic, path, Sub(l As Language)
+                                                            menuButton.OnAction(l.ToString(), l)
+                                                        End Sub, lng, Nothing)
+            Next
+
+            menuButton.Menu.Items.Clear()
+            menuButton.Menu.Items.AddRange(tsic)
+        Catch ex As Exception
+        Finally
+            If menuButton.InvokeRequired Then
+                menuButton.Invoke(Sub()
+                                      menuButton.Menu.ResumeLayout()
+                                      menuButton.ResumeLayout()
+                                      menuButton.Menu.Enabled = True
+                                      menuButton.Enabled = True
+                                  End Sub)
+            Else
+                menuButton.Menu.ResumeLayout()
+                menuButton.ResumeLayout()
+                menuButton.Menu.Enabled = True
+                menuButton.Enabled = True
+            End If
+        End Try
+    End Sub
+
+    Async Sub PopulateLanguagesAsync(menuButton As MenuButton)
+        Dim task As Task
+
+        Try
+            SyncLock menuButton
+                task = Task.Run(Sub() PopulateLanguages(menuButton))
+            End SyncLock
+        Catch ex As Exception
+        Finally
+        End Try
+
+        Await task
+    End Sub
+
     Sub RaiseAppEvent(ae As ApplicationEvent, Optional commandline As String = Nothing, Optional progress As Single = -1.0F, Optional progressline As String = Nothing)
         Select Case ae
             Case ApplicationEvent.AfterJobAdded

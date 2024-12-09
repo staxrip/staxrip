@@ -695,8 +695,6 @@ Public Class AudioForm
 
     Private CommandLineHighlightingMenuItem As MenuItemEx
 
-    Private mbLanguageLock As New Object()
-
     Sub New()
         MyBase.New()
         InitializeComponent()
@@ -794,63 +792,9 @@ Public Class AudioForm
     End Sub
 
     Protected Overrides Sub OnShown(e As EventArgs)
+        g.PopulateLanguagesAsync(mbLanguage)
         UpdateControls()
         Refresh()
-        ActiveControl = mbCodec
-        PopulateLanguagesAsync()
-    End Sub
-
-    Sub PopulateLanguages()
-        If IsDisposingOrDisposed Then Return
-
-        If InvokeRequired Then
-            Try
-                Invoke(New MethodInvoker(Sub() PopulateLanguages()))
-            Catch ex As Exception
-            End Try
-        Else
-            Try
-                mbLanguage.Menu.Enabled = False
-                mbLanguage.Enabled = False
-                mbLanguage.Menu.SuspendLayout()
-                mbLanguage.SuspendLayout()
-
-                For Each lng In Language.Languages.OrderBy(Function(x) x.EnglishName)
-                    If IsDisposingOrDisposed Then Return
-
-                    If lng.IsCommon Then
-                        mbLanguage.Add(lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
-
-                    Else
-                        mbLanguage.Add("More | " + lng.ToString.Substring(0, 1).ToUpperInvariant + " | " + lng.ToString + " (" + lng.TwoLetterCode + ", " + lng.ThreeLetterCode + ")", lng)
-                    End If
-                Next
-            Catch ex As Exception
-            Finally
-                mbLanguage.Menu.ResumeLayout()
-                mbLanguage.ResumeLayout()
-                mbLanguage.Menu.Enabled = True
-                mbLanguage.Enabled = True
-            End Try
-        End If
-    End Sub
-
-    Async Sub PopulateLanguagesAsync()
-        If IsDisposingOrDisposed Then Return
-
-        Dim task As Task
-
-        Try
-            SyncLock mbLanguageLock
-                task = Task.Run(AddressOf PopulateLanguages)
-            End SyncLock
-        Catch ex As Exception
-        Finally
-        End Try
-
-        If IsDisposingOrDisposed Then Return
-
-        Await task
     End Sub
 
     Sub SetValues(gap As GUIAudioProfile)
@@ -973,7 +917,7 @@ Public Class AudioForm
         mbChannels.Enabled = Not TempProfile.ExtractCore AndAlso enc <> GuiAudioEncoder.opusenc AndAlso enc <> GuiAudioEncoder.deezy
         mbSamplingRate.Enabled = Not TempProfile.ExtractCore AndAlso enc <> GuiAudioEncoder.opusenc
         cbNormalize.Enabled = Not TempProfile.ExtractCore
-        cbCenterOptimizedStereo.Enabled = Not TempProfile.ExtractCore AndAlso {AudioDecoderMode.ffmpeg, AudioDecoderMode.Automatic}.Contains(TempProfile.Decoder) AndAlso ((Tempprofile.Params.Codec <> AudioCodec.Opus AndAlso Tempprofile.Params.ChannelsMode = ChannelsMode._2) OrElse (Tempprofile.Params.Codec = AudioCodec.Opus AndAlso Tempprofile.Params.OpusencDownmix = OpusDownmix.Stereo)) 
+        cbCenterOptimizedStereo.Enabled = Not TempProfile.ExtractCore AndAlso {AudioDecoderMode.ffmpeg, AudioDecoderMode.Automatic}.Contains(TempProfile.Decoder) AndAlso ((TempProfile.Params.Codec <> AudioCodec.Opus AndAlso TempProfile.Params.ChannelsMode = ChannelsMode._2) OrElse (TempProfile.Params.Codec = AudioCodec.Opus AndAlso TempProfile.Params.OpusencDownmix = OpusDownmix.Stereo))
         numGain.Enabled = Not TempProfile.ExtractCore
         numBitrate.Increment = If({AudioCodec.AC3, AudioCodec.EAC3}.Contains(TempProfile.Params.Codec), If(CInt(numBitrate.Value) >= 320, 64, 32), 1D)
         numBitrate.Maximum = If({AudioCodec.AC3, AudioCodec.EAC3}.Contains(TempProfile.Params.Codec), 1664D, 10000D)

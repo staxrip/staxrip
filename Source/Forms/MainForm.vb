@@ -4201,27 +4201,6 @@ Public Class MainForm
             n.Field = NameOf(s.ErrorMessageTimeout)
 
 
-            '############### Generation
-            Dim generationPage = ui.CreateFlowPage("Generation", True)
-
-            ui.AddLabel("Position of frame number in file name:")
-
-            Dim previewFrameNumberPosition = ui.AddMenu(Of ImageFrameNumberPosition)()
-            previewFrameNumberPosition.Text = "Preview:"
-            previewFrameNumberPosition.Field = NameOf(s.SaveImagePreviewFrameNumberPosition)
-
-            Dim videoComparisonFrameNumberPosition = ui.AddMenu(Of ImageFrameNumberPosition)()
-            videoComparisonFrameNumberPosition.Text = "Video Comparison:"
-            videoComparisonFrameNumberPosition.Field = NameOf(s.SaveImageVideoComparisonFrameNumberPosition)
-
-            ui.AddLine()
-
-            b = ui.AddBool()
-            b.Text = "Add line numbers to generated code"
-            b.Help = ""
-            b.Field = NameOf(s.CommandLinePreviewWithLineNumbers)
-
-
             '################# Logs
             ui.CreateFlowPage("Logs", True)
 
@@ -4238,7 +4217,6 @@ Public Class MainForm
             b = ui.AddBool()
             b.Text = "Enable debug logging"
             b.Field = NameOf(s.WriteDebugLog)
-
 
 
             '################# Startup
@@ -4364,6 +4342,27 @@ Public Class MainForm
             t.Edit.Expand = True
             t.Edit.Text = s.VvencffappQualityDefinitions.ToSeparatedString()
             t.Edit.SaveAction = Sub(value) s.VvencffappQualityDefinitions = value.ToVvencffappQualityItems()?.ToList()
+
+
+            '############### Generation
+            Dim generationPage = ui.CreateFlowPage("Generation", True)
+
+            ui.AddLabel("Position of frame number in file name:")
+
+            Dim previewFrameNumberPosition = ui.AddMenu(Of ImageFrameNumberPosition)()
+            previewFrameNumberPosition.Text = "Preview:"
+            previewFrameNumberPosition.Field = NameOf(s.SaveImagePreviewFrameNumberPosition)
+
+            Dim videoComparisonFrameNumberPosition = ui.AddMenu(Of ImageFrameNumberPosition)()
+            videoComparisonFrameNumberPosition.Text = "Video Comparison:"
+            videoComparisonFrameNumberPosition.Field = NameOf(s.SaveImageVideoComparisonFrameNumberPosition)
+
+            ui.AddLine()
+
+            b = ui.AddBool()
+            b.Text = "Add line numbers to generated code"
+            b.Help = ""
+            b.Field = NameOf(s.CommandLinePreviewWithLineNumbers)
 
 
             '############# System

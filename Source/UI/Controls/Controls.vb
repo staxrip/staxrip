@@ -13,9 +13,11 @@ Namespace UI
         Inherits TreeView
 
         Private _backAlternateColor As Color
+        Private _backExpandableColor As Color
         Private _backExpandedColor As Color
         Private _backHighlightColor As Color
         Private _backSelectedColor As Color
+        Private _foreExpandableColor As Color
         Private _foreExpandedColor As Color
         Private _foreHighlightColor As Color
         Private _foreSelectedColor As Color
@@ -40,6 +42,19 @@ Namespace UI
 
         Private Function ShouldSerializeBackAlternateColor() As Boolean
             Return BackAlternateColor <> Color.Empty
+        End Function
+
+        Public Property BackExpandableColor As Color
+            Get
+                Return _backExpandableColor
+            End Get
+            Set(value As Color)
+                _backExpandableColor = value
+            End Set
+        End Property
+
+        Private Function ShouldSerializeBackExpandableColor() As Boolean
+            Return BackExpandableColor <> Color.Empty
         End Function
 
         Public Property BackExpandedColor As Color
@@ -81,6 +96,20 @@ Namespace UI
 
         Private Function ShouldSerializeBackSelectedColor() As Boolean
             Return BackSelectedColor <> Color.Empty
+        End Function
+
+        Public Property ForeExpandableColor As Color
+            Get
+                Return _foreExpandableColor
+            End Get
+            Set(value As Color)
+                _foreExpandableColor = value
+                Invalidate()
+            End Set
+        End Property
+
+        Private Function ShouldSerializeForeExpandableColor() As Boolean
+            Return ForeExpandableColor <> Color.Empty
         End Function
 
         Public Property ForeExpandedColor As Color
@@ -155,10 +184,12 @@ Namespace UI
             SuspendLayout()
             BackColor = theme.General.Controls.TreeView.BackColor
             BackAlternateColor = theme.General.Controls.TreeView.BackAlternateColor
+            BackExpandableColor = theme.General.Controls.TreeView.BackExpandableColor
             BackExpandedColor = theme.General.Controls.TreeView.BackExpandedColor
             BackHighlightColor = theme.General.Controls.TreeView.BackHighlightColor
             BackSelectedColor = theme.General.Controls.TreeView.BackSelectedColor
             ForeColor = theme.General.Controls.TreeView.ForeColor
+            ForeExpandableColor = theme.General.Controls.TreeView.ForeExpandableColor
             ForeExpandedColor = theme.General.Controls.TreeView.ForeExpandedColor
             ForeHighlightColor = theme.General.Controls.TreeView.ForeHighlightColor
             ForeSelectedColor = theme.General.Controls.TreeView.ForeSelectedColor
@@ -173,8 +204,18 @@ Namespace UI
             Dim font = If(e.Node.NodeFont, e.Node.TreeView.Font)
             Dim state = e.State
             Dim text = New String(" "c, e.Node.Level * 4) + e.Node.Text
+            Dim textSize = TextRenderer.MeasureText(text, font)
             Dim bounds = e.Bounds
             Dim textFlags = TextFormatFlags.GlyphOverhangPadding Or TextFormatFlags.VerticalCenter Or TextFormatFlags.SingleLine
+
+            Dim triangleIndent = textSize.Width
+            Dim triangleOffset = New Point(e.Bounds.Left + triangleIndent, e.Bounds.Height \ 6)
+            Dim triangleSize = CInt(e.Bounds.Height / 2.3)
+            Dim trianglePoints = {
+                New Point(triangleOffset.X, e.Bounds.Bottom - triangleOffset.Y),
+                New Point(triangleOffset.X + triangleSize, e.Bounds.Bottom - triangleOffset.Y),
+                New Point(triangleOffset.X + triangleSize, e.Bounds.Bottom - triangleOffset.Y - triangleSize)
+            }
 
             If e.Node.IsSelected Then
                 e.Graphics.FillRectangle(New SolidBrush(BackSelectedColor), bounds)
@@ -183,6 +224,10 @@ Namespace UI
             ElseIf e.Node.IsExpanded Then
                 e.Graphics.FillRectangle(New SolidBrush(BackExpandedColor), bounds)
                 TextRenderer.DrawText(e.Graphics, text, font, bounds, ForeExpandedColor, BackExpandedColor, textFlags)
+            ElseIf Not e.Node.IsExpanded AndAlso e.Node.Nodes.Count > 0 Then
+                e.Graphics.FillRectangle(New SolidBrush(BackExpandableColor), bounds)
+                e.Graphics.FillPolygon(New SolidBrush(BackSelectedColor), trianglePoints)
+                TextRenderer.DrawText(e.Graphics, text, font, bounds, ForeExpandableColor, BackExpandableColor, textFlags)
             Else
                 e.Graphics.FillRectangle(New SolidBrush(BackColor), bounds)
                 TextRenderer.DrawText(e.Graphics, text, font, bounds, ForeColor, BackColor, textFlags)

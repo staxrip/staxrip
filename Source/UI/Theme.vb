@@ -769,10 +769,12 @@ Public Class Theme
         Public Class TreeViewThemeColors
             Public Property BackColor As ColorHSL = SystemColors.Window
             Public Property BackAlternateColor As ColorHSL = BackColor.AddLuminance(-0.05)
+            Public Property BackExpandableColor As ColorHSL = SystemColors.Control
             Public Property BackExpandedColor As ColorHSL = SystemColors.Control
             Public Property BackHighlightColor As ColorHSL = _defaultBackHighlightColor
             Public Property BackSelectedColor As ColorHSL = SystemColors.ControlLight
             Public Property ForeColor As ColorHSL = SystemColors.WindowText
+            Public Property ForeExpandableColor As ColorHSL = ForeColor
             Public Property ForeExpandedColor As ColorHSL = ForeColor
             Public Property ForeHighlightColor As ColorHSL = ForeColor
             Public Property ForeSelectedColor As ColorHSL = SystemColors.ControlText

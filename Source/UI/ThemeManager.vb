@@ -433,10 +433,12 @@ Public NotInheritable Class ThemeManager
                     .TreeView = New ControlsThemeColors.TreeViewThemeColors() With {
                         .BackColor = _controlBackColor,
                         .BackAlternateColor = .BackColor.AddLuminance(0.025),
+                        .BackExpandableColor = _backSelectedColor.AddSaturation(-0.33).AddLuminance(-0.125),
                         .BackExpandedColor = _backSelectedColor.AddSaturation(-0.2).AddLuminance(-0.1),
                         .BackHighlightColor = _controlBackHighlightColor,
                         .BackSelectedColor = _backSelectedColor,
                         .ForeColor = _foreColor,
+                        .ForeExpandableColor = _foreColor.AddLuminance(0),
                         .ForeExpandedColor = _foreColor.AddLuminance(0),
                         .ForeHighlightColor = _controlForeHighlightColor,
                         .ForeSelectedColor = _foreColor.AddLuminance(0.25)

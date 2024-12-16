@@ -71,6 +71,8 @@ This is the way to go if you have questions regarding settings, usage, etc.
     - https://www.techpowerup.com/download/visual-c-redistributable-runtime-package-all-in-one
 
 - OS limitations: **Windows 7** users can use StaxRip only partly. The following tools are included and don't have official **Windows 7** support anymore. You in case you don't want to upgrade your system, you can replace these tools with an older, compatible, version, which should work, but of course with some limited usability:
+    - StaxRip itself
+        - The new Blu-ray ISO image opening and mounting feature requires at least Windows 8 to work, so in case of Windows 7 you should avoid that feature.
     - MKVToolNix
         - Latest working version is reported to be `v64.0`. Last (complete) working StaxRip version is *StaxRip v2.10.0 (2021-10-06)* including *MKVToolNix v61.0*
         - Nevertheless `mkvtoolnix-64-bit-68.0.0-revision-001-g6a55c58d2` is reported to work, you can download it here: https://mkvtoolnix.download/windows/continuous/64-bit/68.0.0/

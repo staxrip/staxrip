@@ -1779,6 +1779,7 @@ Public Class FileTypes
     Shared Property Logs As String() = {"log"}
     Shared Property Scripts As String() = {"avs", "vpy", "vs"}
     Shared Property Indexes As String() = {"ffindex", "lwi"}
+    Shared Property IsoImage As String() = {"iso"}
     Shared Property VideoComparisonInput As String() = {"264", "265", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2ts", "m2t", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vdr", "vob", "vpy", "webm", "wmv", "y4m", "3gp"}
     Shared Property Video As String() = {"264", "265", "3gp", "avc", "avi", "avs", "d2v", "dgi", "dgim", "divx", "flv", "h264", "h265", "hevc", "hvc", "ivf", "m2ts", "m2t", "m2v", "mkv", "mov", "mp4", "m4v", "mpeg", "mpg", "mpv", "mts", "ogg", "ogm", "pva", "rmvb", "ts", "vc1", "vdr", "vob", "vpy", "webm", "wmv", "y4m"}
     Shared Property VideoIndex As String() = {"d2v", "dgi", "dga", "dgim"}

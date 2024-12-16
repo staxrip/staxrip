@@ -2213,6 +2213,17 @@ Public Class MainForm
             Else
                 OpenVideoSourceFiles(files, errorTimeout)
             End If
+        ElseIf FileTypes.IsoImage.ContainsAny(files.Select(Function(s) s.Ext.ToLowerInvariant)) Then
+            files = files.Where(Function(x) FileTypes.IsoImage.Contains(x.Ext().ToLowerInvariant())).OrderBy(Function(x) x, New StringLogicalComparer())
+            If showTemplateSelection Then
+                If LoadTemplateWithSelectionDialog(files(0), showTemplateSelectionTimeout) Then
+                    OpenBlurayImage(files(0))
+                Else
+                    Exit Sub
+                End If
+            Else
+                OpenBlurayImage(files(0))
+            End If
         ElseIf FileTypes.Audio.ContainsAny(files.Select(Function(s) s.Ext.ToLowerInvariant)) Then
             Dim audioFiles = files.Where(Function(x) FileTypes.Audio.Contains(x.Ext().ToLowerInvariant())).OrderBy(Function(x) x, New StringLogicalComparer())
             Dim fileIndex = 0
@@ -2297,6 +2308,67 @@ Public Class MainForm
         End Using
 
         Return True
+    End Function
+
+    Function OpenBlurayImage(isoPath As String) As Boolean
+        If String.IsNullOrWhiteSpace(isoPath) Then Return False
+        If Not isoPath.FileExists() Then Return False
+
+        Try
+            Dim drive = IsoHelp.Mount(isoPath)
+            Dim srcPath = drive & Path.VolumeSeparatorChar & Path.DirectorySeparatorChar
+
+            If Directory.Exists(Path.Combine(srcPath, "BDMV")) Then
+                srcPath = Path.Combine(srcPath, "BDMV")
+            End If
+            If Directory.Exists(Path.Combine(srcPath, "PLAYLIST")) Then
+                srcPath = Path.Combine(srcPath, "PLAYLIST")
+            End If
+            If New DirectoryInfo(srcPath).Name <> "PLAYLIST" Then
+                MsgWarn("No playlist directory found.")
+                Return False
+            End If
+
+            Dim minDuration = If(p.MinBdmvPlaylistDuration >= 0, $" -minDuration={p.MinBdmvPlaylistDuration}", "")
+
+            Log.WriteEnvironment()
+            Log.Write("Process mounted Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + minDuration + BR2)
+            Log.WriteLine("Source Drive Type: " + New DriveInfo(srcPath).DriveType.ToString + BR)
+            Log.WriteLine("Mounted ISO File:  " + isoPath.Escape() + BR)
+
+            Dim output = ProcessHelp.GetConsoleOutput(Package.eac3to.Path, srcPath.Escape & minDuration).Replace(VB6.vbBack, "")
+            Log.WriteLine(output)
+
+            Dim a = Regex.Split(output, "^\d+\)", RegexOptions.Multiline).ToList
+            If a(0) = "" Then a.RemoveAt(0)
+
+            Using td As New TaskDialog(Of Integer)
+                td.Title = "Please select a playlist."
+
+                For Each i In a
+                    If Not i.Contains(BR) Then Continue For
+                    Dim match = Regex.Match(i, "(\+\d+)\1{8,}", RegexOptions.Multiline)
+                    If match.Success AndAlso match.Groups.Count > 1 Then Continue For
+
+                    Dim value = a.IndexOf(i) + 1
+                    Dim text = value & ")  " & i.Left(BR).Trim()
+                    Dim description = i.Right(BR).TrimEnd()
+
+                    td.AddCommand(text, description, value)
+                Next
+
+                If td.Show() <> 0 Then
+                    OpenEac3toDemuxForm(srcPath, td.SelectedValue)
+                End If
+            End Using
+
+            Return True
+        Catch ex As Exception
+            g.ShowException(ex)
+            Return False
+        Finally
+            IsoHelp.Dismount(isoPath)
+        End Try
     End Function
 
     Sub OpenVideoSourceFile(fp As String, Optional errorTimeout As Integer = 0)
@@ -7094,6 +7166,33 @@ Public Class MainForm
         End Using
     End Sub
 
+    <Command("Dialog to open a Blu-ray ISO image.")>
+    Sub ShowOpenSourceBlurayImageDialog()
+        SetLastModifiedTemplate()
+        If p.SourceFile <> "" AndAlso IsSaveCanceled() Then Exit Sub
+
+        Using dialog As New OpenFileDialog
+            dialog.SetFilter(FileTypes.IsoImage)
+            dialog.SetInitDir(s.LastSourceDir)
+
+            If dialog.ShowDialog = DialogResult.OK Then
+                Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.OpeningMenu)) <> 0
+                Dim showTemplateSelectionTimeout = If(s.ShowTemplateSelection <> ShowTemplateSelectionMode.Never, s.ShowTemplateSelectionTimeout, 0)
+
+                If showTemplateSelection Then
+                    If LoadTemplateWithSelectionDialog(dialog.FileName, showTemplateSelectionTimeout) Then
+                        OpenBlurayImage(dialog.FileName)
+                    Else
+                        Exit Sub
+                    End If
+                Else
+                    OpenProject(g.LastModifiedTemplate)
+                    OpenBlurayImage(dialog.FileName)
+                End If
+            End If
+        End Using
+    End Sub
+
     <Command("Dialog to open a merged files source.")>
     Sub ShowOpenSourceMergeFilesDialog()
         SetLastModifiedTemplate()
@@ -7198,9 +7297,10 @@ Public Class MainForm
             td.Title = "Select a method for opening a source:"
             td.AddCommand("Single File")
             td.AddCommand("Multiple Files")
-            td.AddCommand("Blu-ray Folder")
             td.AddCommand("Merge Files")
             td.AddCommand("File Batch")
+            td.AddCommand("Blu-ray Folder")
+            td.AddCommand("Blu-ray Image File")
 
             Select Case td.Show
                 Case "Single File"
@@ -7213,6 +7313,8 @@ Public Class MainForm
                     ShowOpenSourceBatchFilesDialog()
                 Case "Blu-ray Folder"
                     ShowOpenSourceBlurayFolderDialog()
+                Case "Blu-ray Image File"
+                    ShowOpenSourceBlurayImageDialog()
             End Select
         End Using
     End Sub

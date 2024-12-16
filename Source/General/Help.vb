@@ -2,9 +2,11 @@
 Imports System.ComponentModel
 Imports System.Globalization
 Imports System.Management
+Imports System.Management.Automation
 Imports System.Reflection
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Text
+Imports System.Threading
 
 Imports Microsoft.VisualBasic.FileIO
 
@@ -247,4 +249,65 @@ Public Class CommandLineHelp
         If val = "" Then Return ""
         Return Macro.Expand(val).Replace("""", "'").Trim
     End Function
+End Class
+
+Public Class IsoHelp
+    Private Const _wmiScope = "root\Microsoft\Windows\Storage"
+    Private Const _maxRepeats = 50
+    Private Const _repeatSleep = 100
+
+    Private Shared Function GetImagePath(isoPath As String) As String
+        Return $"MSFT_DiskImage.ImagePath=""{isoPath.Replace("\", "\\")}"",StorageType=1"
+    End Function
+
+    Shared Function Mount(isoPath As String) As Char
+        If String.IsNullOrWhiteSpace(isoPath) Then Return Nothing
+
+        Try
+            Dim isoImagePath = GetImagePath(isoPath)
+            Dim query = "ASSOCIATORS OF {" & isoImagePath & "} WHERE AssocClass = MSFT_DiskImageToVolume ResultClass = MSFT_Volume"
+            Dim drive = Microsoft.VisualBasic.ChrW(0)
+            Dim counter = 0
+
+            Using mo = New ManagementObject(_wmiScope, isoImagePath, Nothing)
+                Using inParams = mo.GetMethodParameters("Mount")
+                    mo.InvokeMethod("Mount", inParams, Nothing)
+                End Using
+            End Using                        
+
+            Using searcher = New ManagementObjectSearcher(_wmiScope, query)
+                While Not Char.IsLetter(drive) AndAlso counter < _maxRepeats
+                    Thread.Sleep(_repeatSleep)
+
+                    Using moc = searcher.Get()
+                        For Each mbo In moc
+                            drive = mbo.Item("DriveLetter").ToString()(0)
+                        Next
+                    End Using
+
+                    counter += 1
+                End While
+            End Using
+
+            Return Char.ToUpper(drive)
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
+    End Function
+
+    Shared Sub Dismount(isoPath As String)
+        If String.IsNullOrWhiteSpace(isoPath) Then Return
+
+        Try
+            Dim isoImagePath = GetImagePath(isoPath)
+
+            Using mo = New ManagementObject(_wmiScope, isoImagePath, Nothing)
+                Using inParams = mo.GetMethodParameters("Dismount")
+                    mo.InvokeMethod("Dismount", inParams, Nothing)
+                End Using
+            End Using                        
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
+    End Sub
 End Class

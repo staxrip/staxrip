@@ -308,7 +308,7 @@ Public Class NVEnc
 
     Overrides Property QualityMode() As Boolean
         Get
-            Return Params.Mode.Value = 0 OrElse Params.Mode.Value = 1 OrElse Params.Mode.Value = 3 AndAlso Params.ConstantQualityMode.Value
+            Return Params.Mode.Value = 0 OrElse Params.Mode.Value = 1
         End Get
         Set(Value As Boolean)
         End Set
@@ -371,10 +371,6 @@ Public Class NVEnc
                                 If Mode.Switches.Contains(param) Then
                                     Mode.Value = Array.IndexOf(Mode.Switches.ToArray, param)
                                 End If
-
-                                If param = "--vbr" AndAlso arg = "0" Then
-                                    ConstantQualityMode.Value = True
-                                End If
                             End Sub}
 
         Property Codec As New OptionParam With {
@@ -407,17 +403,19 @@ Public Class NVEnc
             .Values = {"8", "10"},
             .Init = 0}
 
-        Property ConstantQualityMode As New BoolParam With {
-            .Switches = {"--vbr-quality"},
-            .Text = "Constant Quality Mode",
-            .VisibleFunc = Function() Mode.Value = 3}
-
         Property Bitrate As New NumParam With {
             .Switches = {"--cbr", "--vbr"},
             .Text = "Bitrate",
             .Init = 5000,
-            .VisibleFunc = Function() Mode.Value > 1 AndAlso Not ConstantQualityMode.Value,
+            .VisibleFunc = Function() Mode.Value > 1,
             .Config = {0, 1000000, 100}}
+
+        Property VbrQuality As New NumParam With {
+            .Switch = "--vbr-quality",
+            .Text = "VBR Quality",
+            .Config = {0, 51, 0.5, 1},
+            .Init = 0,
+            .VisibleFunc = Function() Mode.Value = 3}
 
         Property QPAdvanced As New BoolParam With {
             .Text = "Show advanced QP settings",
@@ -485,18 +483,6 @@ Public Class NVEnc
             .Init = 100,
             .VisibleFunc = Function() Codec.Value = 2 AndAlso QPAdvanced.Value AndAlso QPAdvanced.Visible,
             .Config = {0, 255}}
-
-        Property VbrQuality As New NumParam With {
-            .Switch = "--vbr-quality",
-            .Text = "VBR Quality",
-            .Config = {0, 51, 0.5, 1},
-            .Value = 18,
-            .VisibleFunc = Function() Mode.Value = 3 AndAlso ConstantQualityMode.Value,
-            .ArgsFunc = Function()
-                            Return If(ConstantQualityMode.Value AndAlso VbrQuality.Value <> VbrQuality.DefaultValue,
-                                "--vbr-quality " & VbrQuality.Value.ToInvariantString,
-                                "")
-                        End Function}
 
         Property VbvBufSize As New NumParam With {
             .Switch = "--vbv-bufsize",
@@ -783,7 +769,7 @@ Public Class NVEnc
                         New OptionParam With {.Name = "TierH265", .Switch = "--tier", .Text = "Tier", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Main", "High"}},
                         New OptionParam With {.Name = "LevelH264", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h264", .Options = {"Auto", "1", "1.1", "1.2", "1.3", "2", "2.1", "2.2", "3", "3.1", "3.2", "4", "4.1", "4.2", "5", "5.1", "5.2"}},
                         New OptionParam With {.Name = "LevelH265", .Switch = "--level", .Text = "Level", .VisibleFunc = Function() Codec.ValueText = "h265", .Options = {"Auto", "1", "2", "2.1", "3", "3.1", "4", "4.1", "5", "5.1", "5.2", "6", "6.1", "6.2"}},
-                        ConstantQualityMode, Bitrate, VbrQuality, QVBR, QPAdvanced, QP, QPAV1, QPI, QPIAV1, QPP, QPPAV1, QPB, QPBAV1)
+                        Bitrate, VbrQuality, QVBR, QPAdvanced, QP, QPAV1, QPI, QPIAV1, QPP, QPPAV1, QPB, QPBAV1)
                     Add("Rate Control",
                         New StringParam With {.Switch = "--dynamic-rc", .Text = "Dynamic RC"},
                         New OptionParam With {.Switch = "--multipass", .Text = "Multipass", .Options = {"None", "2Pass-Quarter", "2Pass-Full"}, .VisibleFunc = Function() Mode.Value = 0 OrElse Mode.Value > 1},
@@ -1474,18 +1460,16 @@ Public Class NVEnc
         End Function
 
         Function GetModeArgs() As String
-            Dim rate = If(ConstantQualityMode.Value, 0, Bitrate.Value)
-
             Select Case Mode.Value
                 Case 0
                     Return "--qvbr " & QVBR.Value.ToInvariantString()
                 Case 1
-                    If Codec.Value = 2 Then Return If(QPAdvanced.Value, $"--cqp {QPIAV1.Value}:{QPPAV1.Value}:{QPBAV1.Value}", $" --cqp {QPAV1.Value}")
-                    Return If(QPAdvanced.Value, $"--cqp {QPI.Value}:{QPP.Value}:{QPB.Value}", $" --cqp {QP.Value}")
+                    If Codec.Value = 2 Then Return If(QPAdvanced.Value, $"--cqp {QPIAV1.Value.ToInvariantString()}:{QPPAV1.Value.ToInvariantString()}:{QPBAV1.Value.ToInvariantString()}", $" --cqp {QPAV1.Value.ToInvariantString()}")
+                    Return If(QPAdvanced.Value, $"--cqp {QPI.Value.ToInvariantString()}:{QPP.Value.ToInvariantString()}:{QPB.Value.ToInvariantString()}", $" --cqp {QP.Value.ToInvariantString()}")
                 Case 2
-                    Return "--cbr " & rate
+                    Return "--cbr " & Bitrate.Value.ToInvariantString()
                 Case 3
-                    Return "--vbr " & rate
+                    Return "--vbr " & Bitrate.Value.ToInvariantString()
             End Select
             Return ""
         End Function

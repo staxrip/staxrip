@@ -396,17 +396,17 @@ Public Class AppsForm
 #End Region
 
     Private CurrentPackage As Package
-    Private Nodes As New List(Of TreeNode)
-    Private Headers As New Dictionary(Of String, LabelEx)
-    Private Contents As New Dictionary(Of String, LabelEx)
-    Private SetupButton As New ButtonEx
+    Private ReadOnly Nodes As New List(Of TreeNode)
+    Private ReadOnly Headers As New Dictionary(Of String, LabelEx)
+    Private ReadOnly Contents As New Dictionary(Of String, LabelEx)
+    Private ReadOnly SetupButton As New ButtonEx
     Private ToolUpdate As ToolUpdate
 
     Sub New()
         MyBase.New()
         InitializeComponent()
         RestoreClientSize(45, 32)
-        tv.ItemHeight = CInt(FontHeight * 1.5)
+        tv.ItemHeight = CInt(FontHeight * 1.3)
         tv.Scrollable = True
 
         SearchTextBox_TextChanged()
@@ -486,20 +486,18 @@ Public Class AppsForm
     End Sub
 
     Sub ShowActivePackage()
-        If Disposing OrElse IsDisposed Then
-            Exit Sub
-        End If
+        If Disposing OrElse IsDisposed Then Exit Sub
 
         Dim path = CurrentPackage.Path
 
         Headers("Title").Text = CurrentPackage.Name
 
         SetupButton.Text = "Install " + CurrentPackage.Name
-        SetupButton.Visible = Not CurrentPackage.SetupAction Is Nothing AndAlso CurrentPackage.GetStatus <> ""
+        SetupButton.Visible = CurrentPackage.SetupAction IsNot Nothing AndAlso CurrentPackage.GetStatus <> ""
 
         tsbExplore.Enabled = path <> ""
         miCopyPath.Enabled = path <> ""
-        tsbLaunch.Enabled = Not CurrentPackage.LaunchAction Is Nothing AndAlso CurrentPackage.Path <> ""
+        tsbLaunch.Enabled = CurrentPackage.LaunchAction IsNot Nothing AndAlso CurrentPackage.Path <> ""
         miLaunch.Enabled = tsbLaunch.Enabled
         tsbDownload.Enabled = CurrentPackage.DownloadURL <> ""
         miAutoUpdate.Enabled = tsbDownload.Enabled AndAlso CurrentPackage.SupportsAutoUpdate
@@ -541,9 +539,7 @@ Public Class AppsForm
         If TypeOf CurrentPackage Is PluginPackage Then
             Dim plugin = DirectCast(CurrentPackage, PluginPackage)
 
-            If Not plugin.AvsFilterNames Is Nothing AndAlso
-                Not plugin.VsFilterNames Is Nothing Then
-
+            If plugin.AvsFilterNames IsNot Nothing AndAlso plugin.VsFilterNames IsNot Nothing Then
                 Headers("AviSynth Filters").Visible = True
                 Contents("AviSynth Filters").Text = plugin.AvsFilterNames.Join(", ")
                 Contents("AviSynth Filters").Visible = True
@@ -551,13 +547,13 @@ Public Class AppsForm
                 Headers("VapourSynth Filters").Visible = True
                 Contents("VapourSynth Filters").Text = plugin.VsFilterNames.Join(", ")
                 Contents("VapourSynth Filters").Visible = True
-            ElseIf Not plugin.AvsFilterNames Is Nothing Then
+            ElseIf plugin.AvsFilterNames IsNot Nothing Then
                 Headers("Filters").Visible = True
                 Contents("Filters").Text = plugin.AvsFilterNames.Join(", ")
                 Contents("Filters").AutoEllipsis = True
                 Contents("Filters").MaximumSize = New Size(Contents("Filters").Parent.Width - Contents("Filters").Left - Contents("Filters").Padding.Left, 333)
                 Contents("Filters").Visible = True
-            ElseIf Not plugin.VsFilterNames Is Nothing Then
+            ElseIf plugin.VsFilterNames IsNot Nothing Then
                 Headers("Filters").Visible = True
                 Contents("Filters").Text = plugin.VsFilterNames.Join(", ")
                 Contents("Filters").AutoEllipsis = True

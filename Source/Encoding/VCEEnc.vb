@@ -712,7 +712,7 @@ Public Class VCEEnc
                     Add("Pre...",
                         New BoolParam With {.Switch = "--pe", .Text = "Pre-Encode assisted rate control"},
                         Pa, PaSc, PaSs, PaActivityType, PaCaqStrength, PaInitqpsc, PaFskipMaxqp, PaLookahead, PaLtr, PaPaq, PaTaq, PaMotionQuality)
-                    Add("AV1 Specific",
+                    Add("Codec Specific",
                         Tiles, TemporalLayers, AqMode, CdefMode, CdfUpdate, CdfFrameEndUpdate)
                     Add("VPP | Misc",
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},

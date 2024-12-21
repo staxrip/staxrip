@@ -1093,7 +1093,7 @@ Public Class MainForm
 
     Sub OnThemeChanged(theme As Theme)
         ApplyTheme()
-        Assistant()
+        Assistant(False)
     End Sub
 
     Sub ApplyTheme()
@@ -2867,7 +2867,7 @@ Public Class MainForm
                 Dim vfw = If(FrameServerHelp.IsVfwUsed, 1, 0)
 
                 If p.AutoCropFrameRangeMode = AutoCropFrameRangeMode.Automatic Then
-                    Dim threshold = CInt(VB6.Conversion.Fix(info.FrameCount * 0.05))
+                    Dim threshold = CInt(Conversion.Fix(info.FrameCount * 0.05))
                     considerationThresholdBegin = threshold
                     considerationThresholdEnd = threshold
                 ElseIf p.AutoCropFrameRangeMode = AutoCropFrameRangeMode.ManualThreshold Then

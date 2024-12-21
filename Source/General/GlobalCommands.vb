@@ -808,7 +808,7 @@ Public Class GlobalCommands
                             "The thumbnail sheets are generated in the background. Do you want to get informed when all thumbnail sheets are processed?")
                         reportTD.AddButton(DialogResult.Yes)
                         reportTD.AddButton(DialogResult.No)
-                        reportWhenFinished = reportTD.ShowDialog() = DialogResult.Yes
+                        reportWhenFinished = reportTD.Show() = DialogResult.Yes
                     End Using
 
                     If reportWhenFinished Then
@@ -839,7 +839,7 @@ Public Class GlobalCommands
 
                             summaryTD.ExpandedContent += $"Duration: {sw.ElapsedMilliseconds} ms"
                             summaryTD.AddButton(DialogResult.OK)
-                            summaryTD.ShowDialog()
+                            summaryTD.Show()
                         End Using
                     End If
                 End If

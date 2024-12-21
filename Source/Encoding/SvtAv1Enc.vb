@@ -596,12 +596,10 @@ Public Class SvtAv1EncParams
         .Config = {0, 6, 1},
         .Init = 0}
 
-    Property PinnedExecution As New OptionParam With {
+    Property PinnedExecution As New NumParam With {
         .Switch = "--pin",
         .Text = "Pinned Execution",
-        .Expanded = True,
-        .Options = {"0: Off (default)", "1: On"},
-        .IntegerValue = True,
+        .Config = {0, OS.Hardware.Threads, 1, 0},
         .Init = 0}
 
     Property FastDecode As New OptionParam With {

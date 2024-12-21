@@ -8,6 +8,7 @@ Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading.Tasks
+Imports System.Web
 Imports Microsoft.Win32
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoder
@@ -1760,6 +1761,32 @@ Public Class OS
             Return VideoControllersValue
         End Get
     End Property
+
+    Public Class Hardware
+        Private Shared _cores As Integer = 0
+
+        Public Shared ReadOnly Property Cores As Integer
+            Get
+                If _cores > 0 Then
+                    Return _cores
+                Else
+                    _cores = 0
+                    Using moc = New ManagementObjectSearcher("Select * from Win32_Processor").Get()
+                        For Each mbo In moc
+                            _cores += Integer.Parse(mbo("NumberOfCores").ToString())
+                        Next
+                    End Using
+                    Return _cores
+                End If
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property Threads As Integer
+            Get
+                Return Environment.ProcessorCount
+            End Get
+        End Property
+    End Class
 End Class
 
 <Serializable>

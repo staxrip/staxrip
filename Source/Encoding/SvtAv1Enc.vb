@@ -591,9 +591,9 @@ Public Class SvtAv1EncParams
         .Init = 11}
 
     Property LevelOfParallelism As New NumParam With {
-        .HelpSwitch = "--lp",
+        .Switch = "--lp",
         .Text = "Level Of Parallelism",
-        .Config = {0, 6, 1},
+        .Config = {0, 6, 1, 0},
         .Init = 0}
 
     Property PinnedExecution As New NumParam With {

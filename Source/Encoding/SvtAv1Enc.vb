@@ -602,6 +602,12 @@ Public Class SvtAv1EncParams
         .Config = {0, OS.Hardware.Threads, 1, 0},
         .Init = 0}
 
+    Property TargetSocket As New NumParam With {
+        .Switch = "--ss",
+        .Text = "Target Socket",
+        .Config = {-1, 1, 1, 0},
+        .Init = -1}
+
     Property FastDecode As New OptionParam With {
         .Switch = "--fast-decode",
         .Text = "Fast Decode",
@@ -1365,7 +1371,7 @@ Public Class SvtAv1EncParams
                     FramesToBeEncoded, FramesToBeSkipped,
                     EncoderColorFormat,
                     HighDynamicRangeInput, StatReport,
-                    Asm, LevelOfParallelism, PinnedExecution
+                    Asm, LevelOfParallelism, PinnedExecution, TargetSocket
                 )
                 Add("Basic",
                     Preset, Profile, Level, Tune, TunePsy, FastDecode

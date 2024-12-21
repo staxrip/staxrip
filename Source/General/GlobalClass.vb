@@ -1430,6 +1430,12 @@ Public Class GlobalClass
         End If
     End Sub
 
+    Async Sub PreloadValuesAsync()
+        Await Task.Run(Sub()
+                           Dim a = OS.Hardware.Cores
+                       End Sub)
+    End Sub
+
     Sub SetCrop(left As Integer, top As Integer, right As Integer, bottom As Integer, direction As ForceOutputModDirection, Optional force As Boolean = False)
         p.CropLeft = Math.Max(0, left)
         p.CropTop = Math.Max(0, top)

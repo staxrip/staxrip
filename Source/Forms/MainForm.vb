@@ -7566,6 +7566,7 @@ Public Class MainForm
         IsLoading = False
         Refresh()
         CheckForWindows7()
+        g.PreloadValuesAsync()
         ShowChangelog(False)
         ProcessCommandLine(Environment.CommandLine)
         StaxRipUpdate.SetFirstRunOnCurrentVersion()

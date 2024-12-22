@@ -3749,6 +3749,9 @@ Public Class MainForm
             isEL = True
         End If
 
+        Dim format = MediaInfo.GetVideoFormat(sourcePath)
+        If format <> "HEVC" Then Return
+
         Dim fileHdrFormat = MediaInfo.GetVideo(sourcePath, "HDR_Format/String")
         If isEL OrElse (Regex.IsMatch(fileHdrFormat, "Dolby Vision.*Profile|HDR10+ Profile B")) Then
             Dim mode = If(proj.HdrDolbyVisionMode < 0, "", " -m " + (proj.HdrDolbyVisionMode + 0).ToString())

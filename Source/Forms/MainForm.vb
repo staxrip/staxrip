@@ -3213,7 +3213,7 @@ Public Class MainForm
             End If
 
             If p.WarnNoAudio Then
-                If Not p.AudioTracks.Where(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile OrElse track.AudioProfile.File <> "")?.Any() Then
+                If Not p.AudioTracks.Where(Function(track) TypeOf track.AudioProfile IsNot NullAudioProfile AndAlso track.AudioProfile.File <> "")?.Any() Then
                     If ProcessTip("There will be no audio in the output file.") Then
                         Return Warn("No audio", p.AudioTracks.Select(Function(x) x.TextEdit).ToArray())
                     End If

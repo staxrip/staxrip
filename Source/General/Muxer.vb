@@ -210,6 +210,7 @@ Public MustInherit Class Muxer
         Next
 
         If p.PreferredSubtitles <> "" AndAlso Subtitles.Count = 0 AndAlso
+            p.SubtitleMode <> SubtitleMode.Dialog AndAlso
             p.FirstOriginalSourceFile.Ext.EqualsAny("mkv", "mp4", "m2ts") AndAlso
             MediaInfo.GetSubtitleCount(p.FirstOriginalSourceFile) > 0 AndAlso
             TypeOf Me Is MkvMuxer Then

@@ -268,10 +268,6 @@ Public Class ffmpegDemuxer
                     videoDemuxing = form.cbDemuxVideo.Checked
                     audioStreams = form.AudioStreams
                     subtitles = form.Subtitles
-
-                    If proj Is p Then
-                        p.PreferredSubtitles = subtitles.Select(Function(i) i.Language.ThreeLetterCode).Join(", ")
-                    End If
                 Else
                     Throw New AbortException
                 End If
@@ -489,10 +485,6 @@ Public Class MP4BoxDemuxer
                     demuxChapters = form.cbDemuxChapters.Checked
                     audioStreams = form.AudioStreams
                     subtitles = form.Subtitles
-
-                    If proj Is p Then
-                        p.PreferredSubtitles = subtitles.Select(Function(i) i.Language.ThreeLetterCode).Join(", ")
-                    End If
                 Else
                     Throw New AbortException
                 End If
@@ -744,10 +736,6 @@ Public Class mkvDemuxer
                 demuxChapters = form.cbDemuxChapters.Checked
                 audioStreams = form.AudioStreams
                 subtitles = form.Subtitles
-
-                If proj Is p Then
-                    p.PreferredSubtitles = subtitles.Select(Function(i) i.Language.ThreeLetterCode).Join(", ")
-                End If
             End Using
         End If
 

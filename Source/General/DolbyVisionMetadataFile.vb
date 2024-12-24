@@ -31,10 +31,11 @@ End Class
 
 <Serializable>
 Public Class DolbyVisionMetadataFile
-    Private _autoCropThresholdBegin As Integer = 1000
-    Private _autoCropThresholdEnd As Integer = 1000
+    <NonSerialized> Private Shared ReadOnly _autoCropThresholdBegin As Integer = 1000
+    <NonSerialized> Private Shared ReadOnly _autoCropThresholdEnd As Integer = 1000
     Private _lastWriteTime As DateTime = Nothing
     Private _lastWriteTimeL5 As DateTime = Nothing
+    Private _trimRanges As List(Of Range) = Nothing
 
     Public ReadOnly Property Path As String = Nothing
     Public ReadOnly Property Edits As New List(Of RpuEdit)
@@ -71,6 +72,12 @@ Public Class DolbyVisionMetadataFile
         End Get
     End Property
 
+    Public ReadOnly Property TrimmedRpuFilePath As String
+        Get
+            Return If(String.IsNullOrWhiteSpace(Path), "", $"{Path.DirAndBase()}_Trimmed.rpu")
+        End Get
+    End Property
+
     Public ReadOnly Property HasPathChanged As Boolean
         Get
             Return Path.FileExists() AndAlso _lastWriteTime <> File.GetLastWriteTimeUtc(Path)
@@ -80,6 +87,23 @@ Public Class DolbyVisionMetadataFile
     Public ReadOnly Property HasLevel5Changed As Boolean
         Get
             Return Level5JsonFilePath.FileExists() AndAlso _lastWriteTimeL5 <> File.GetLastWriteTimeUtc(Level5JsonFilePath)
+        End Get
+    End Property
+
+    Public ReadOnly Property HasToBeTrimmed As Boolean
+        Get
+            If p.Ranges Is Nothing OrElse Not p.Ranges.Any() Then Return False
+            If _trimRanges Is Nothing OrElse Not _trimRanges.Any() Then Return True
+            If p.Ranges.Count <> _trimRanges.Count Then Return True
+
+            p.Ranges.Sort()
+            _trimRanges.Sort()
+
+            For i = 0 To p.Ranges.Count - 1
+                If p.Ranges(i).CompareTo(_trimRanges(i)) <> 0 Then Return True
+            Next
+
+            Return False
         End Get
     End Property
 
@@ -359,5 +383,41 @@ Public Class DolbyVisionMetadataFile
         End Try
 
         Return ModifiedRpuFilePath
+    End Function
+
+    Public Function TrimRpu(Optional overwrite As Boolean = True) As String
+        If Not Path?.FileExists() Then Return Nothing
+        If Not HasToBeTrimmed Then Return Nothing
+        If Not overwrite AndAlso TrimmedRpuFilePath.FileExists() Then Return Nothing
+
+        Dim inputFilePath = If(ModifiedRpuFilePath.FileExists(), ModifiedRpuFilePath, Path)
+        _trimRanges = New List(Of Range)(p.Ranges)
+
+        Try
+            Dim frames = Edits.Max(Function(x) x.EndFrame) + 1
+            Dim ranges = String.Join(";", _trimRanges.Select(Function(x) $"{x.Start}-{x.End}"))
+            Dim arguments = $"--input ""{inputFilePath}"" --output ""{TrimmedRpuFilePath}"" --frames {frames} --ranges {ranges}"
+            Using proc As New Proc
+                proc.Package = Package.DoViSplit
+                proc.Project = p
+                proc.Header = "Trimming RPU metadata file"
+                proc.Encoding = Encoding.UTF8
+                proc.Arguments = arguments
+                proc.AllowedExitCodes = {0}
+                proc.OutputFiles = {TrimmedRpuFilePath}
+                proc.Start()
+            End Using
+        Catch ex As AbortException
+            _trimRanges = Nothing
+            Throw ex
+        Catch ex As Exception
+            _trimRanges = Nothing
+            g.ShowException(ex)
+            Throw New AbortException
+        Finally
+            Log.Save()
+        End Try
+   
+        Return TrimmedRpuFilePath
     End Function
 End Class

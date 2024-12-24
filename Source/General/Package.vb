@@ -691,6 +691,13 @@ Public Class Package
         .DownloadURL = "https://github.com/quietvoid/dovi_tool/releases",
         .Description = "CLI tool combining multiple utilities for working with Dolby Vision."})
 
+    Shared Property DoViSplit As Package = Add(New Package With {
+        .Name = "DoViSplit",
+        .Filename = "DoViSplit.exe",
+        .Location = IO.Path.Combine("Support", "DoViSplit"),
+        .HelpSwitch = "",
+        .Description = "Dolby Vision trimming and splitting console app by Dendraspis."})
+
     Shared Property AutoCrop As Package = Add(New Package With {
         .Name = "AutoCrop",
         .Filename = "AutoCrop.exe",

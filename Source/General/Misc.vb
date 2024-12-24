@@ -80,7 +80,9 @@ Public Class Range
     End Function
 
     Function CompareTo(other As Range) As Integer Implements System.IComparable(Of Range).CompareTo
-        Return Start.CompareTo(other.Start)
+        Dim sc = Start.CompareTo(other.Start)
+        If sc <> 0 Then Return sc
+        Return [End].CompareTo(other.End)
     End Function
 End Class
 

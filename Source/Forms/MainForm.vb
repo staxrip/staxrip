@@ -3546,13 +3546,6 @@ Public Class MainForm
                 End If
             End If
 
-            If p.Script.IsFilterActive("Cutting") AndAlso p.Ranges?.Any() AndAlso p.VideoEncoder.DolbyVisionMetadataPath IsNot Nothing Then
-                If ProcessTip($"Cutting is currently not supported for Dolby Vision encodes.{BR}Please remove the cut(s) or the RPU file from encoder options to get a valid Dolby Vision result.") Then
-                    CanIgnoreTip = False
-                    Return Warn("Cutting not allowed")
-                End If
-            End If
-
             If p.Script.IsFilterActive("Resize") AndAlso widthZoom <> heightZoom AndAlso p.VideoEncoder?.IsResizingAllowed AndAlso Not p.VideoEncoder?.IsUnequalResizingAllowed Then
                 Dim arw = p.TargetWidth / cropw
                 Dim h = croph * arw

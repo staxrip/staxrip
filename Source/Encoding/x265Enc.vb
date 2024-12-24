@@ -132,6 +132,11 @@ Public Class x265Enc
 
             p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(offset, mode, True)
             Dim newPath = p.HdrDolbyVisionMetadataFile.WriteModifiedRpu(True)
+
+            If p.HdrDolbyVisionMetadataFile.HasToBeTrimmed Then
+                newPath = p.HdrDolbyVisionMetadataFile.TrimRpu()
+            End If            
+
             If Not String.IsNullOrWhiteSpace(newPath) Then
                 Params.DolbyVisionRpu.Value = newPath
             Else

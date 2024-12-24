@@ -111,6 +111,11 @@ Public Class SvtAv1Enc
 
                 p.HdrDolbyVisionMetadataFile.WriteEditorConfigFile(offset, mode, True)
                 Dim newPath = p.HdrDolbyVisionMetadataFile.WriteModifiedRpu(True)
+
+                If p.HdrDolbyVisionMetadataFile.HasToBeTrimmed Then
+                    newPath = p.HdrDolbyVisionMetadataFile.TrimRpu()
+                End If            
+
                 If Not String.IsNullOrWhiteSpace(newPath) Then
                     Params.SpecificDolbyVisionRpu.Value = newPath
                 Else
@@ -118,7 +123,6 @@ Public Class SvtAv1Enc
                 End If
             End If
         End If
-
         Return True
     End Function
 

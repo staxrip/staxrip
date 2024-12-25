@@ -1362,6 +1362,17 @@ Public Class GlobalClass
         Next
     End Function
 
+    Function AddResizeFilter() As Boolean
+        If Not g.EnableFilter("Resize") Then
+            If p.Script.IsAviSynth Then
+                p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
+            Else
+                p.Script.AddFilter(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)"))
+            End If
+        End If
+        Return True
+    End Function
+
     Function BrowseFile(filter As String) As String
         Using dialog As New OpenFileDialog
             dialog.Filter = filter

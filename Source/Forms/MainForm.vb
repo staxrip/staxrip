@@ -6270,15 +6270,7 @@ Public Class MainForm
 
     Sub tbResize_Scroll() Handles tbResize.Scroll
         SkipAssistant = True
-
-        If Not g.EnableFilter("Resize") Then
-            If p.Script.IsAviSynth Then
-                p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
-            Else
-                p.Script.AddFilter(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)"))
-            End If
-        End If
-
+        g.AddResizeFilter()
         tbTargetWidth.Text = CInt(p.SourceWidth \ 2 + tbResize.Value * Math.Max(TrackBarInterval, p.ForcedOutputMod)).ToString
         SetImageHeight()
         SkipAssistant = False
@@ -6489,9 +6481,7 @@ Public Class MainForm
 
     <Command("Sets the target image size.")>
     Sub SetTargetImageSize(width As Integer, height As Integer)
-        If Not g.EnableFilter("Resize") Then
-            p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
-        End If
+        g.AddResizeFilter()
 
         If height = 0 AndAlso width > 0 Then
             tbTargetWidth.Text = width.ToString
@@ -6509,9 +6499,7 @@ Public Class MainForm
 
     <Command("Sets the target image size by pixels (width x height).")>
     Sub SetTargetImageSizeByPixel(pixel As Integer)
-        If Not g.EnableFilter("Resize") Then
-            p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
-        End If
+        g.AddResizeFilter()
 
         Dim cropw = p.SourceWidth - p.CropLeft - p.CropRight
         Dim ar = Calc.GetTargetDAR()

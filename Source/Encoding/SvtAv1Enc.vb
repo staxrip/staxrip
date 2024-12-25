@@ -979,11 +979,23 @@ Public Class SvtAv1EncParams
         .Config = {-1, 1, 1},
         .Init = -1}
 
-    Property EnableTF As New BoolParam With {
+    Property EnableTF As New OptionParam With {
         .Switch = "--enable-tf",
         .Text = "ALT-REF Frames",
+        .Expanded = True,
         .IntegerValue = True,
-        .Init = True}
+        .Options = {"0: Off", "1: On (default)"},
+        .Init = 1,
+        .VisibleFunc = Function() Package.SvtAv1EncAppType <> SvtAv1EncAppType.Psy}
+
+    Property EnableTFPsy As New OptionParam With {
+        .Switch = "--enable-tf",
+        .Text = "ALT-REF Frames",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off", "1: On (default)", "2: Aadaptive"},
+        .Init = 1,
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy}
 
     Property EnableOverlays As New BoolParam With {
         .Switch = "--enable-overlays",
@@ -1269,10 +1281,10 @@ Public Class SvtAv1EncParams
         .Switch = "--sharpness",
         .Text = "Sharpness",
         .Expanded = True,
-        .Options = {"-7", "-6", "-5", "-4", "-3", "-2", "-1", "0 (default)", "1", "2", "3", "4", "5", "6", "7"},
+        .Options = {"-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "1 (default)", "2", "3", "4", "5", "6", "7"},
         .Values = {"-7", "-6", "-5", "-4", "-3", "-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7"},
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
-        .Init = 7}
+        .Init = 8}
 
     Property PsyQpScaleCompressStrength As New OptionParam With {
         .Switch = "--qp-scale-compress-strength",
@@ -1330,6 +1342,13 @@ Public Class SvtAv1EncParams
         .Config = {0, 15, 1},
         .VisibleFunc = Function() EnableQmPsy.Visible AndAlso EnableQmPsy.Value,
         .Init = 8}
+
+    Property PsyPsyRd As New NumParam With {
+        .Switch = "--psy-rd",
+        .Text = "Psychovisual Rate Distortion Optimization",
+        .Config = {0, 6, 0.05, 2},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 0}
 
     Property PsyTemporalFilteringStrength As New OptionParam With {
         .Switch = "--tf-strength",
@@ -1389,7 +1408,7 @@ Public Class SvtAv1EncParams
                 )
                 Add("AV1 Specific 1",
                     TileRow, TileCol, LoopFilterEnable, LoopFilterEnablePsy,
-                    CDEFLevel, EnableRestoration, EnableTPLModel, Mfmv, EnableTF, EnableOverlays, ScreenContentMode, RestrictedMotionVector,
+                    CDEFLevel, EnableRestoration, EnableTPLModel, Mfmv, EnableTF, EnableTFPsy, EnableOverlays, ScreenContentMode, RestrictedMotionVector,
                     FilmGrain, FilmGrainDenoise, FGSTable
                 )
                 Add("AV1 Specific 2",
@@ -1404,7 +1423,7 @@ Public Class SvtAv1EncParams
                     Add("PSY",
                         PsyHdr10PlusJson, PsyDolbyVisionRpu,
                         PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain, PsyTemporalFilteringStrength, PsyKeyframeTemporalFilteringStrength, PsyNoiseNormStrength,
-                        PsyFrameLumaBias, PsyMinChromaQmLevel, PsyMaxChromaQmLevel
+                        PsyFrameLumaBias, PsyMinChromaQmLevel, PsyMaxChromaQmLevel, PsyPsyRd
                     )
                 End If
 

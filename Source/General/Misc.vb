@@ -75,7 +75,7 @@ Public Class Range
         Me.End = endPosition
     End Sub
 
-    Function GetLenght() As Integer
+    Function GetLength() As Integer
         Return Me.End - Start
     End Function
 

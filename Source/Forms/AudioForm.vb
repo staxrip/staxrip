@@ -668,7 +668,7 @@ Public Class AudioForm
         Me.AutoSize = True
         Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(1866, 1306)
+        Me.ClientSize = New System.Drawing.Size(1866, 1406)
         Me.Controls.Add(Me.tlpMain)
         Me.Controls.Add(Me.FlowLayoutPanel1)
         Me.KeyPreview = True

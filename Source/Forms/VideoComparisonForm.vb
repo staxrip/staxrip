@@ -121,7 +121,9 @@ Public Class VideoComparisonForm
     Sub TabControlOnSelected(sender As Object, e As TabControlEventArgs)
         Dim tab = DirectCast(e.TabPage, VideoTab)
 
-        laFilePath.Text = tab.SourceFilePath
+        If tab IsNot Nothing
+            laFilePath.Text = tab.SourceFilePath
+        End If
     End Sub
 
     Sub Add()

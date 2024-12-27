@@ -120,7 +120,6 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
         else if (id == pfYUV420P8)     m_Info.ColorSpace = VideoInfo::CS_YV12;
         else if (id == pfYUV410P8)     m_Info.ColorSpace = VideoInfo::CS_YUV9;
         else if (id == pfYUV411P8)     m_Info.ColorSpace = VideoInfo::CS_YV411;
-        else if (id == pfGray8)        m_Info.ColorSpace = VideoInfo::CS_Y8;
         else if (id == pfYUV444P10)    m_Info.ColorSpace = VideoInfo::CS_YUV444P10;
         else if (id == pfYUV422P10)    m_Info.ColorSpace = VideoInfo::CS_YUV422P10;
         else if (id == pfYUV420P10)    m_Info.ColorSpace = VideoInfo::CS_YUV420P10;
@@ -133,13 +132,13 @@ HRESULT __stdcall VapourSynthServer::OpenFile(WCHAR* file)
         else if (id == pfYUV444P16)    m_Info.ColorSpace = VideoInfo::CS_YUV444P16;
         else if (id == pfYUV422P16)    m_Info.ColorSpace = VideoInfo::CS_YUV422P16;
         else if (id == pfYUV420P16)    m_Info.ColorSpace = VideoInfo::CS_YUV420P16;
-        else if (id == pfGray16)       m_Info.ColorSpace = VideoInfo::CS_Y16;
         else if (id == pfYUV444PS)     m_Info.ColorSpace = VideoInfo::CS_YUV444PS;
+        else if (id == pfGray8)        m_Info.ColorSpace = VideoInfo::CS_Y8;
+        else if (id == pfGray16)       m_Info.ColorSpace = VideoInfo::CS_Y16;
         else if (id == pfGrayS)        m_Info.ColorSpace = VideoInfo::CS_Y32;
         else if (id == pfRGB24)        m_Info.ColorSpace = VideoInfo::CS_RGBP;
         else if (id == pfRGB30)        m_Info.ColorSpace = VideoInfo::CS_RGBP10;
         else if (id == pfRGB48)        m_Info.ColorSpace = VideoInfo::CS_RGBP16;
-        else if (id == pfGrayS)        m_Info.ColorSpace = VideoInfo::CS_Y32;
         else if (format.bitsPerSample == 12 && format.colorFamily == cfRGB)
             m_Info.ColorSpace = VideoInfo::CS_RGBP12;
         else if (format.bitsPerSample == 14 && format.colorFamily == cfRGB)

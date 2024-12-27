@@ -74,11 +74,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\</OutDir>
-    <IncludePath>..\bin\Apps\FrameServer\VapourSynth\sdk\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\bin\Apps\FrameServer\VapourSynth\sdk\include\vapoursynth;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\bin\Apps\FrameServer\VapourSynth\sdk\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\bin\Apps\FrameServer\VapourSynth\sdk\include\vapoursynth;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin-x86\</OutDir>
@@ -86,13 +86,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\bin\Apps\FrameServer\VapourSynth\sdk\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\bin\Apps\FrameServer\VapourSynth\sdk\include\vapoursynth;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <OutDir>..\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\bin\Apps\FrameServer\VapourSynth\sdk\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\bin\Apps\FrameServer\VapourSynth\sdk\include\vapoursynth;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
     <OutDir>..\bin-x86\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>

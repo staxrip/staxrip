@@ -158,6 +158,7 @@ Public Class FrameServerFactory
         g.AddToPath(
             Package.Python.Directory,
             Package.VapourSynth.Directory,
+            Package.vspipe.Directory,
             Package.AviSynth.Directory,
             Package.FFTW.Directory,
             IO.Path.Combine(Folder.Startup, "Apps", "Support", "VC"))

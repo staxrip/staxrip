@@ -673,6 +673,7 @@ Public Class VCEEnc
                         New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Init = 0, .Config = {0, 16}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--ltr", .Text = "LTR Frames", .Config = {0, Integer.MaxValue, 1}},
+                        New BoolParam With {.Switch = "--adapt-minigop", .Text = "Adapt MiniGop", .VisibleFunc = Function() Codec.ValueText = "h264" OrElse Codec.ValueText = "av1"},
                         New BoolParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid"})
                     Add("Rate Control",
                         New NumParam With {.Switch = "--max-bitrate", .Text = "Max Bitrate", .Init = 0, .Config = {0, Integer.MaxValue, 1}},

@@ -2741,6 +2741,8 @@ Public Class MainForm
             End If
         End If
 
+        Dim bitDepthAdjusted = False
+
         If p.SourceChromaSubsampling <> "4:2:0" AndAlso p.ConvertChromaSubsampling Then
             Dim interlaced = p.SourceScanType.EqualsAny("Interlaced", "MBAFF")
 
@@ -2748,6 +2750,10 @@ Public Class MainForm
                 Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
                 Dim matrix = If(sourceHeight = 0 OrElse sourceHeight > 576, "709", "470bg")
                 Dim format = If(p.SourceVideoBitDepth = 10, "YUV420P10", "YUV420P8")
+                If p.ConvertTo10Bit AndAlso p.SourceVideoBitDepth <> 10 Then
+                    format = "YUV420P10"
+                    bitDepthAdjusted = True
+                End If
                 Dim category = "Color"
                 Dim name = $"Convert To {format}"
                 Dim script = $"clip = clip.resize.Bicubic(format = vs.{format})"
@@ -2767,6 +2773,20 @@ Public Class MainForm
                 Else
                     p.Script.Filters.Insert(1, New VideoFilter(category, name, script, True))
                 End If
+            End If
+        End If
+
+        If p.ConvertTo10Bit AndAlso p.SourceVideoBitDepth <> 10 AndAlso Not bitDepthAdjusted Then
+            Dim bits = 10
+            Dim category = "BitDepth"
+            Dim name = $"Convert To {bits}-bit"
+
+            If editVS Then
+                Dim script = $"clip = core.fmtc.bitdepth(clip, bits={bits})"
+                p.Script.Filters.Add(New VideoFilter(category, name, script, True))
+            ElseIf editAVS Then
+                Dim script = $"ConvertBits({bits})"
+                p.Script.Filters.Add(New VideoFilter(category, name, script, True))
             End If
         End If
     End Sub
@@ -5252,6 +5272,11 @@ Public Class MainForm
             b.Text = "Add filter to convert chroma subsampling to 4:2:0"
             b.Help = "After a source is loaded, automatically add a filter to convert chroma subsampling to 4:2:0"
             b.Field = NameOf(p.ConvertChromaSubsampling)
+
+            b = ui.AddBool
+            b.Text = "Add filter to convert bit depth to 10-bit"
+            b.Help = "After a source is loaded, automatically add a filter to convert bit-depth to 10-bit"
+            b.Field = NameOf(p.ConvertTo10Bit)
 
             b = ui.AddBool
             b.Text = "Auto-rotate video after loading when possible"

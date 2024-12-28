@@ -48,7 +48,7 @@ Public Class Project
     Public Compressibility As Double
     Public ConvertChromaSubsampling As Boolean = True
     Public ConvertSup2Sub As Boolean
-    Public ConvertTo10Bit As Boolean = False
+    Public ConvertToBits As ConvertTo420BitDepth = ConvertTo420BitDepth.None
     Public CropWithTonemapping As Boolean = Vulkan.IsSupported
     Public CropWithHighContrast As Boolean = False
     Public CustomSourceDAR As String = ""

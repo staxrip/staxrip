@@ -2874,8 +2874,8 @@ Public Class MainForm
                 Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
                 Dim matrix = If(sourceHeight = 0 OrElse sourceHeight > 576, "709", "470bg")
                 Dim format = If(p.SourceVideoBitDepth = 10, "YUV420P10", "YUV420P8")
-                If p.ConvertTo10Bit AndAlso p.SourceVideoBitDepth <> 10 Then
-                    format = "YUV420P10"
+                If p.ConvertToBits <> ConvertTo420BitDepth.None AndAlso p.ConvertToBits <> p.SourceVideoBitDepth Then
+                    format = "YUV420P" & (p.ConvertToBits + 0)
                     bitDepthAdjusted = True
                 End If
                 Dim category = "Color"
@@ -2900,8 +2900,8 @@ Public Class MainForm
             End If
         End If
 
-        If p.ConvertTo10Bit AndAlso p.SourceVideoBitDepth <> 10 AndAlso Not bitDepthAdjusted Then
-            Dim bits = 10
+        If p.ConvertToBits <> ConvertTo420BitDepth.None AndAlso p.ConvertToBits <> p.SourceVideoBitDepth AndAlso Not bitDepthAdjusted Then
+            Dim bits = (p.ConvertToBits + 0)
             Dim category = "BitDepth"
             Dim name = $"Convert To {bits}-bit"
 
@@ -5361,7 +5361,6 @@ Public Class MainForm
             videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
             videoExist.Expanded = True
             videoExist.Field = NameOf(p.FileExistVideo)
-            videoExist.Expanded = True
 
             demuxVideo.Text = "Demux Video"
             demuxVideo.Checked = p.DemuxVideo
@@ -5395,10 +5394,11 @@ Public Class MainForm
             b.Help = "After a source is loaded, automatically add a filter to convert chroma subsampling to 4:2:0"
             b.Field = NameOf(p.ConvertChromaSubsampling)
 
-            b = ui.AddBool
-            b.Text = "Add filter to convert bit depth to 10-bit"
-            b.Help = "After a source is loaded, automatically add a filter to convert bit-depth to 10-bit"
-            b.Field = NameOf(p.ConvertTo10Bit)
+            Dim cb = ui.AddMenu(Of ConvertTo420BitDepth)
+            cb.Text = "Add filter to convert bit depth to"
+            cb.Help = "After a source is loaded, automatically add a filter to convert bit-depth to x-bit"
+            cb.Expanded = True
+            cb.Field = NameOf(p.ConvertToBits)
 
             b = ui.AddBool
             b.Text = "Auto-rotate video after loading when possible"

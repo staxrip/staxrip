@@ -1975,6 +1975,15 @@ Public Enum ForceOutputModDirection
     Increase
 End Enum
 
+Public Enum ConvertTo420BitDepth
+    <DispName("None")> None = 0
+    <DispName("8")> _8 = 8
+    <DispName("10")> _10 = 10
+    <DispName("12")> _12 = 12
+    <DispName("14")> _14 = 14
+    <DispName("16")> _16 = 16
+End Enum
+
 Public Enum HdrmetadataMode
     None
     <DispName("HDR10+ only")> HDR10Plus

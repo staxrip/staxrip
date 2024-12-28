@@ -670,7 +670,7 @@ Public Class VCEEnc
                     Add("Slice Decision",
                         New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1, .VisibleFunc = Function() Codec.ValueText <> "av1"},
                         New NumParam With {.Switch = "--bframes", .Text = "B-Frames", .Config = {0, 16}},
-                        New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Init = 2, .Config = {0, 16}},
+                        New NumParam With {.Switch = "--ref", .Text = "Ref Frames", .Init = 0, .Config = {0, 16}},
                         New NumParam With {.Switch = "--gop-len", .Text = "GOP Length", .Config = {0, Integer.MaxValue, 1}},
                         New NumParam With {.Switch = "--ltr", .Text = "LTR Frames", .Config = {0, Integer.MaxValue, 1}},
                         New BoolParam With {.Switch = "--b-pyramid", .Text = "B-Pyramid"})

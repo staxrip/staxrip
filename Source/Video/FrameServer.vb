@@ -91,6 +91,29 @@ Public Structure ServerInfo
         End Get
     End Property
 
+    ReadOnly Property BitDepth As Integer
+        Get
+            Select Case ColorSpace
+                Case ColorSpace.BGR32, ColorSpace.Y32, ColorSpace.YUV420PS, ColorSpace.YUV422PS, ColorSpace.YUV444PS
+                    Return 32
+                Case ColorSpace.BGR24
+                    Return 24
+                Case ColorSpace.RGBP16, ColorSpace.Y16, ColorSpace.YUV420P16, ColorSpace.YUV422P16, ColorSpace.YUV444P16
+                    Return 16
+                Case ColorSpace.RGBP14, ColorSpace.Y14, ColorSpace.YUV420P14, ColorSpace.YUV422P14, ColorSpace.YUV444P14
+                    Return 14
+                Case ColorSpace.RGBP12, ColorSpace.Y12, ColorSpace.YUV420P12, ColorSpace.YUV422P12, ColorSpace.YUV444P12
+                    Return 12
+                Case ColorSpace.RGBP10, ColorSpace.Y10, ColorSpace.YUV420P10, ColorSpace.YUV422P10, ColorSpace.YUV444P10
+                    Return 10
+                Case ColorSpace.RGBP8, ColorSpace.Y8, ColorSpace.YUV410P8, ColorSpace.YUV411P8, ColorSpace.YUV420P8, ColorSpace.YUV420P8_, ColorSpace.YUV422P8, ColorSpace.YUV444P8, ColorSpace.YUY2
+                    Return 8
+                Case Else
+                    Return 0
+            End Select
+        End Get
+    End Property
+
     Function GetInfoText(position As Integer) As String
         If FrameRateDen = 0 Then Return ""
 

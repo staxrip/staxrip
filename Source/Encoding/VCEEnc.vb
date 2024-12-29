@@ -475,7 +475,7 @@ Public Class VCEEnc
         Property CdefMode As New OptionParam With {.Switch = "--cdef-mode", .Text = "CDEF Mode", .Init = 0, .Options = {"Off", "On"}, .Values = {"off", "on"}, .VisibleFunc = Function() Codec.Value = 2}
         Property CdfUpdate As New BoolParam With {.Switch = "--cdf-update", .Text = "CDF Update", .Init = False, .VisibleFunc = Function() Codec.Value = 2}
         Property CdfFrameEndUpdate As New BoolParam With {.Switch = "--cdf-frame-end-update", .Text = "CDF Frame End Update", .Init = False, .VisibleFunc = Function() Codec.Value = 2}
-        Property TemporalLayers As New NumParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers", .Value = 0, .Config = {0, 1000}, .VisibleFunc = Function() Codec.Value = 2}
+        Property TemporalLayers As New NumParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers", .Value = 0, .Config = {0, 1000}, .VisibleFunc = Function() Codec.Value = 1 OrElse Codec.Value = 2}
         Property AqMode As New OptionParam With {.Switch = "--aq-mode", .Text = "AQ Mode", .Init = 0, .Options = {"None", "CAQ"}, .Values = {"none", "caq"}, .VisibleFunc = Function() Codec.Value = 2}
 
         Property Pa As New BoolParam With {.Switch = "--pa", .Text = "Pre-Analysis to enhance quality", .VisibleFunc = Function() Mode.Value > 0 AndAlso OutputDepth.Value = 0, .ArgsFunc = AddressOf GetPaArgs}

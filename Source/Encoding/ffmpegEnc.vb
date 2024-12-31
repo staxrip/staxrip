@@ -1,5 +1,6 @@
 ﻿
 Imports System.Text
+Imports System.Web
 Imports StaxRip.UI
 
 Imports StaxRip.VideoEncoderCommandLine
@@ -142,21 +143,28 @@ Public Class ffmpegEnc
         Params.RaiseValueChanged(Nothing)
 
         If Params.Mode.OptionText = "Two Pass" Then
-            Encode(Params.GetCommandLine(True, False, 1))
-            Encode(Params.GetCommandLine(True, False, 2))
+            Encode(Params.GetCommandLine(True, True, 1), s.ProcessPriority)
+            Encode(Params.GetCommandLine(True, True, 2), s.ProcessPriority)
         Else
-            Encode(Params.GetCommandLine(True, False))
+            Encode(Params.GetCommandLine(True, True), s.ProcessPriority)
         End If
     End Sub
 
-    Overloads Sub Encode(args As String)
+    Overloads Sub Encode(commandLine As String, priority As ProcessPriorityClass)
         Using proc As New Proc
             proc.Header = "Video encoding " + Params.Codec.OptionText
             proc.SkipStrings = {"frame=", "size="}
             proc.FrameCount = p.Script.GetFrameCount
             proc.Encoding = Encoding.UTF8
             proc.Package = Package.ffmpeg
-            proc.Arguments = args
+
+            If commandLine.Contains("|") Then
+                proc.File = "cmd.exe"
+                proc.Arguments = "/S /C """ + commandLine + """"
+            Else
+                proc.CommandLine = commandLine
+            End If
+
             proc.Start()
         End Using
     End Sub
@@ -217,6 +225,18 @@ Public Class ffmpegEnc
             .Options = {"AviSynth/VapourSynth", "Software", "Intel", "DXVA2", "Nvidia"},
             .Values = {"-", "sw", "qsv", "dxva2", "cuda"}}
 
+        Property PipingToolAVS As New OptionParam With {
+            .Text = "Pipe",
+            .Name = "PipingToolAVS",
+            .VisibleFunc = Function() p.Script.IsAviSynth AndAlso Decoder.Value = 0,
+            .Options = {"Automatic", "avs2pipemod", "ffmpeg"}}
+
+        Property PipingToolVS As New OptionParam With {
+            .Text = "Pipe",
+            .Name = "PipingToolVS",
+            .VisibleFunc = Function() p.Script.IsVapourSynth AndAlso Decoder.Value = 0,
+            .Options = {"Automatic", "vspipe", "ffmpeg"}}
+
         Property h264_nvenc_rc As New OptionParam With {
             .Name = "h264_nvenc rc",
             .Switch = "-rc",
@@ -235,7 +255,7 @@ Public Class ffmpegEnc
                     ItemsValue = New List(Of CommandLineParam)
 
                     Add("Main",
-                        Decoder, Codec, Mode,
+                        Decoder, PipingToolAVS, PipingToolVS, Codec, Mode,
                         New OptionParam With {.Name = "x264/x265 preset", .Text = "Preset", .Switch = "-preset", .Init = 5, .Options = {"Ultrafast", "Superfast", "Veryfast", "Faster", "Fast", "Medium", "Slow", "Slower", "Veryslow", "Placebo"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
                         New OptionParam With {.Name = "x264/x265 tune", .Text = "Tune", .Switch = "-tune", .Options = {"None", "Film", "Animation", "Grain", "Stillimage", "Psnr", "Ssim", "Fastdecode", "Zerolatency"}, .VisibleFunc = Function() Codec.OptionText.EqualsAny("x264", "x265")},
                         New OptionParam With {.Switch = "-profile:v", .Text = "Profile", .VisibleFunc = Function() Codec.OptionText = "ProRes", .Init = 2, .IntegerValue = True, .Options = {"Proxy", "LT", "Standard", "HQ"}},
@@ -268,33 +288,71 @@ Public Class ffmpegEnc
             includeExecutable As Boolean,
             Optional pass As Integer = 1) As String
 
-            Dim sourcePath = p.Script.Path
+            Dim pipeTool = If(p.Script.IsAviSynth, PipingToolAVS, PipingToolVS).ValueText.ToLowerInvariant()
             Dim sb As New StringBuilder
+            Dim sourcePath = p.Script.Path
 
             If includePaths AndAlso includeExecutable Then
-                sb.Append(Package.ffmpeg.Path.Escape)
-            End If
+                Select Case Decoder.ValueText.ToLowerInvariant()
+                    Case "-"
+                        Dim pipeString = ""
 
-            Select Case Decoder.ValueText
-                Case "sw"
-                    sourcePath = p.LastOriginalSourceFile
-                Case "qsv"
-                    sourcePath = p.LastOriginalSourceFile
-                    sb.Append(" -hwaccel qsv")
-                Case "dxva2"
-                    sourcePath = p.LastOriginalSourceFile
-                    sb.Append(" -hwaccel dxva2")
-                Case "cuda"
-                    sourcePath = p.LastOriginalSourceFile
-                    sb.Append(" -hwaccel cuda -hwaccel_output_format cuda")
-            End Select
+                        If pipeTool = "automatic" Then
+                            pipeTool = If(p.Script.IsAviSynth, "avs2pipemod", "vspipe")
+                        End If
 
-            If sourcePath.Ext = "vpy" Then
-                sb.Append(" -f vapoursynth")
-            End If
-
-            If includePaths Then
-                sb.Append(" -i " + sourcePath.Escape)
+                        Select Case pipeTool
+                            Case "avs2pipemod"
+                                sb.Append(Package.avs2pipemod.Path.Escape())
+                                sb.Append(If(FrameServerHelp.IsPortable, $" -dll={Package.AviSynth.Path.Escape}", ""))
+                                sb.Append(" -y4mp ")
+                                'sb.Append($" --frames {endFrame - startFrame + 1}")
+                                sb.Append(sourcePath.Escape())
+                                sb.Append(" | ")
+                                sb.Append(Package.ffmpeg.Path.Escape())
+                                sb.Append(" -i -")
+                            Case "vspipe"
+                                sb.Append(Package.vspipe.Path.Escape())
+                                sb.Append(" ")
+                                sb.Append(sourcePath.Escape())
+                                sb.Append(" - --container y4m")
+                                'sb.Append($" --start {startFrame} --end {endFrame}")
+                                sb.Append(" | ")
+                                sb.Append(Package.ffmpeg.Path.Escape())
+                                sb.Append(" -i -")
+                            Case "ffmpeg"
+                                sb.Append(Package.ffmpeg.Path.Escape())
+                                sb.Append(If(sourcePath.Ext = "vpy", " -f vapoursynth", ""))
+                                sb.Append(" -i ")
+                                sb.Append(sourcePath.Escape())
+                                sb.Append(" -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | ")
+                                sb.Append(Package.ffmpeg.Path.Escape())
+                                sb.Append(" -i -")
+                        End Select
+                    Case "sw"
+                        sourcePath = p.LastOriginalSourceFile
+                        sb.Append(Package.ffmpeg.Path.Escape())
+                        sb.Append(" -i ")
+                        sb.Append(sourcePath.Escape())
+                    Case "qsv"
+                        sourcePath = p.LastOriginalSourceFile
+                        sb.Append(Package.ffmpeg.Path.Escape())
+                        sb.Append(" -hwaccel qsv")
+                        sb.Append(" -i ")
+                        sb.Append(sourcePath.Escape())
+                    Case "dxva2"
+                        sourcePath = p.LastOriginalSourceFile
+                        sb.Append(Package.ffmpeg.Path.Escape())
+                        sb.Append(" -hwaccel dxva2")
+                        sb.Append(" -i ")
+                        sb.Append(sourcePath.Escape())
+                    Case "cuda"
+                        sourcePath = p.LastOriginalSourceFile
+                        sb.Append(Package.ffmpeg.Path.Escape())
+                        sb.Append(" -hwaccel cuda -hwaccel_output_format cuda")
+                        sb.Append(" -i ")
+                        sb.Append(sourcePath.Escape())
+                End Select
             End If
 
             Dim items = From i In Me.Items Where i.GetArgs <> "" AndAlso Not IsCustom(i.Switch)
@@ -302,34 +360,27 @@ Public Class ffmpegEnc
             If items.Count > 0 Then
                 sb.Append(" " + items.Select(Function(item) item.GetArgs).Join(" "))
             End If
-
             If Calc.IsARSignalingRequired Then
                 sb.Append(" -aspect " + Calc.GetTargetDAR.ToInvariantString.Shorten(8))
             End If
-
             Select Case Mode.Value
                 Case EncodingMode.TwoPass
                     sb.Append(" -pass " & pass)
                     sb.Append($" -b:v {p.VideoBitrate}k")
-
                     If pass = 1 Then
                         sb.Append(" -f rawvideo")
                     End If
-
                     If includePaths Then
                         sb.Append(" -passlogfile " + (Path.Combine(p.TempDir, p.TargetFile.Base + "_2pass")).Escape)
                     End If
                 Case EncodingMode.OnePass
                     sb.Append($" -b:v {p.VideoBitrate}k")
             End Select
-
             Select Case Codec.OptionText
                 Case "XviD"
                     sb.Append(" -tag:v xvid")
             End Select
-
             Dim targetPath As String
-
             If Mode.OptionText = "Two Pass" AndAlso pass = 1 Then
                 targetPath = "NUL"
             Else

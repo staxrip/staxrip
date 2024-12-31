@@ -1937,10 +1937,10 @@ Public Enum AudioDownMixMode
 End Enum
 
 Public Enum ChannelsMode
-    Original
-    <DispName("1 (Mono)")> _1
-    <DispName("2 (Stereo)")> _2
-    <DispName("5.1")> _6
-    <DispName("6.1")> _7
-    <DispName("7.1")> _8
+    Original = 0
+    <DispName("1 (Mono)")> _1 = 1
+    <DispName("2 (Stereo)")> _2 = 2
+    <DispName("5.1")> _6 = 6
+    <DispName("6.1")> _7 = 7
+    <DispName("7.1")> _8 = 8
 End Enum

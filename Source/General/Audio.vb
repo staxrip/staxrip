@@ -376,6 +376,14 @@ Public Class Audio
             gap.Params.ChannelsMode = ChannelsMode.Original
             gap.Params.OpusencDownmix = OpusDownmix.Original
             cancel = False
+        ElseIf gap.Params.ChannelsMode <> ChannelsMode.Original Then
+            args += " -ac " & CInt(gap.Params.ChannelsMode)
+            gap.Params.ChannelsMode = ChannelsMode.Original
+            gap.Params.OpusencDownmix = OpusDownmix.Original
+        ElseIf gap.Params.Codec = AudioCodec.Opus AndAlso gap.Params.OpusencDownmix <> OpusDownmix.Original Then
+            args += " -ac " & CInt(gap.Params.OpusencDownmix)
+            gap.Params.ChannelsMode = ChannelsMode.Original
+            gap.Params.OpusencDownmix = OpusDownmix.Original
         Else
             If Not force Then
                 args += " -ac " & ap.Channels

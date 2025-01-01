@@ -4184,7 +4184,7 @@ Public Class MainForm
             Dim n = ui.AddNum()
             n.Text = "Number of most recently used projects to keep"
             n.Help = "MRU list shown in the main menu under: File > Recent Projects"
-            n.Config = {0, 15}
+            n.Config = {0, 25}
             n.Field = NameOf(s.ProjectsMruNum)
 
             n = ui.AddNum()

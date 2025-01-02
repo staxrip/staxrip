@@ -170,6 +170,7 @@ Public Class Macro
         ret.Add(New Macro("current_time", "Current Time (12h)", GetType(String), "Returns the current time (12h)."))
         ret.Add(New Macro("current_time24", "Current Time (24h)", GetType(String), "Returns the current time (24h)."))
         ret.Add(New Macro("dpi", "Main Dialog DPI", GetType(Integer), "DPI value of the main dialog."))
+        ret.Add(New Macro("empty", "Empty/Nothing", GetType(String), "Empty character for special use like removing transferred values."))
         ret.Add(New Macro("encoder", "Encoder", GetType(String), "Name of the active video encoder."))
         ret.Add(New Macro("encoder_codec", "Encoder Codec", GetType(String), "Codec that is used by the active video encoder."))
         ret.Add(New Macro("encoder_ext", "Encoder File Extension", GetType(String), "File extension of the format the encoder of the active project outputs."))
@@ -345,6 +346,7 @@ Public Class Macro
 
         Dim matches As MatchCollection = Nothing
 
+        If value.Contains("%empty%") Then value = value.Replace("%empty%", "")
         If Not value.Contains("%") Then Return value
 
         If value.Contains("%current_date%") Then value = value.Replace("%current_date%", Date.Now.ToString("yyyy-MM-dd"))

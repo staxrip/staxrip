@@ -952,6 +952,11 @@ Module MiscExtensions
     End Function
 
     <Extension()>
+    Function ToOnOffString(instance As Boolean) As String
+        Return If(instance, "On", "Off")
+    End Function
+
+    <Extension()>
     Function NeutralCulture(ci As CultureInfo) As CultureInfo
         Return If(ci.IsNeutralCulture, ci, ci.Parent)
     End Function

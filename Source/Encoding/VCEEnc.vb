@@ -501,6 +501,9 @@ Public Class VCEEnc
 
         Property Tiles As New NumParam With {.Switch = "--tiles", .Text = "Tiles", .Init = 0, .Config = {0, 64}, .VisibleFunc = Function() Codec.Value = 2}
         Property CdefMode As New OptionParam With {.Switch = "--cdef-mode", .Text = "CDEF Mode", .Init = 0, .Options = {"Off", "On"}, .Values = {"off", "on"}, .VisibleFunc = Function() Codec.Value = 2}
+        Property ScreenContentTools As New BoolParam With {.Switch = "--screen-content-tools", .Text = "Screen Content Tools", .Init = False, .VisibleFunc = Function() Codec.Value = 2, .ArgsFunc = AddressOf GetScreenContentToolsArgs, .ImportAction = AddressOf ImportScreenContentToolsArgs}
+        Property ScreenContentToolsPaletteMode As New BoolParam With {.HelpSwitch = "--screen-content-tools", .LeftMargin = g.MainForm.FontHeight * 1.3, .Text = "Palette Mode", .Init = False, .VisibleFunc = Function() ScreenContentTools.Visible AndAlso ScreenContentTools.Value}
+        Property ScreenContentToolsForceIntegerMv As New BoolParam With {.HelpSwitch = "--screen-content-tools", .LeftMargin = g.MainForm.FontHeight * 1.3, .Text = "Force Integer MV", .Init = False, .VisibleFunc = Function() ScreenContentTools.Visible AndAlso ScreenContentTools.Value}
         Property CdfUpdate As New BoolParam With {.Switch = "--cdf-update", .Text = "CDF Update", .Init = False, .VisibleFunc = Function() Codec.Value = 2}
         Property CdfFrameEndUpdate As New BoolParam With {.Switch = "--cdf-frame-end-update", .Text = "CDF Frame End Update", .Init = False, .VisibleFunc = Function() Codec.Value = 2}
         Property TemporalLayers As New NumParam With {.Switch = "--temporal-layers", .Text = "Temporal Layers", .Value = 0, .Config = {0, 1000}, .VisibleFunc = Function() Codec.Value = 1 OrElse Codec.Value = 2}
@@ -787,7 +790,7 @@ Public Class VCEEnc
                         New BoolParam With {.Switch = "--pe", .Text = "Pre-Encode assisted rate control"},
                         Pa, PaSc, PaSs, PaActivityType, PaCaqStrength, PaInitqpsc, PaFskipMaxqp, PaLookahead, PaLtr, PaPaq, PaTaq, PaMotionQuality)
                     Add("Codec Specific",
-                        Tiles, TemporalLayers, AqMode, CdefMode, CdfUpdate, CdfFrameEndUpdate)
+                        Tiles, TemporalLayers, AqMode, CdefMode, ScreenContentTools, ScreenContentToolsPaletteMode, ScreenContentToolsForceIntegerMv, CdfUpdate, CdfFrameEndUpdate)
                     Add("VPP | Misc",
                         New StringParam With {.Switch = "--vpp-subburn", .Text = "Subburn"},
                         New OptionParam With {.Switch = "--vpp-rotate", .Text = "Rotate", .Options = {"Disabled", "90", "180", "270"}})
@@ -1448,6 +1451,28 @@ Public Class VCEEnc
                 Return Resize.Switch & " " & ret.TrimStart(","c)
             End If
             Return ""
+        End Function
+
+        Function GetScreenContentToolsArgs() As String
+            If ScreenContentTools.Value Then
+                Dim ret = ""
+                If ScreenContentToolsPaletteMode.Value <> ScreenContentToolsPaletteMode.DefaultValue Then ret += ",palette-mode=" & ScreenContentToolsPaletteMode.Value.ToOnOffString().ToLowerInvariant()
+                If ScreenContentToolsForceIntegerMv.Value <> ScreenContentToolsForceIntegerMv.DefaultValue Then ret += ",force-integer-mv=" & ScreenContentToolsForceIntegerMv.Value.ToOnOffString().ToLowerInvariant()
+                Return ScreenContentTools.Switch + " " + ret.TrimStart(","c)
+            End If
+            Return ""
+        End Function
+
+        Function ImportScreenContentToolsArgs(param As String, arg As String) As String
+            Dim match1 = Regex.Match(arg, "(?:^|,)palette-mode=(on|off)?")
+            Dim match2 = Regex.Match(arg, "(?:^|,)force-integer-mv=(on|off)?")
+
+            ScreenContentTools.Value = True
+            ScreenContentToolsPaletteMode.Value = ScreenContentToolsPaletteMode.DefaultValue
+            ScreenContentToolsForceIntegerMv.Value = ScreenContentToolsForceIntegerMv.DefaultValue
+
+            If match1.Success AndAlso match1.Groups(1).Value.ToLowerInvariant() = "on" Then ScreenContentToolsPaletteMode.Value = True
+            If match2.Success AndAlso match2.Groups(1).Value.ToLowerInvariant() = "on" Then ScreenContentToolsForceIntegerMv.Value = True
         End Function
 
         Function GetLibPlaceboDebandArgs() As String

@@ -183,7 +183,7 @@ Public Class ApplicationSettings
                 {"*:VP9", "LWLibavVideoSource"},
                 {"264 h264 avc", "LWLibavVideoSource"},
                 {"265 h265 hevc hvc", "LWLibavVideoSource"},
-                {"d2v", "MPEG2Source"},
+                {"d2v", "D2VSource"},
                 {"mp4 m4v mov", "LSMASHVideoSource"},
                 {"ts m2ts mts m2t m2v", "LWLibavVideoSource"},
                 {"vdr", "AviSource"},
@@ -198,7 +198,7 @@ Public Class ApplicationSettings
                 {"264 h264 avc", "LWLibavSource"},
                 {"265 h265 hevc hvc", "LWLibavSource"},
                 {"avs vdr", "AVISource"},
-                {"d2v", "MPEG2Source"},
+                {"d2v", "d2vSource"},
                 {"mp4 m4v mov", "LibavSMASHSource"},
                 {"ts m2ts mts m2t m2v", "LWLibavSource"}
             }

@@ -19,6 +19,7 @@ Public Class AppsForm
     Friend WithEvents tsbLaunch As ToolStripButton
     Friend WithEvents tsbHelp As ToolStripButton
     Friend WithEvents flp As FlowLayoutPanel
+    Friend WithEvents flpOuter As FlowLayoutPanel
     Friend WithEvents SearchTextBox As StaxRip.SearchTextBox
     Friend WithEvents tsbWebsite As ToolStripButton
     Friend WithEvents tlpMain As TableLayoutPanel
@@ -74,6 +75,7 @@ Public Class AppsForm
         Me.miHelp = New StaxRip.UI.MenuItemEx()
         Me.tsbHelp = New ToolStripButton()
         Me.flp = New FlowLayoutPanel()
+        Me.flpOuter = New FlowLayoutPanel()
         Me.SearchTextBox = New StaxRip.SearchTextBox()
         Me.tlpMain = New TableLayoutPanel()
         Me.ToolStrip.SuspendLayout()
@@ -335,16 +337,27 @@ Public Class AppsForm
         '
         'flp
         '
-        Me.flp.Anchor = CType((((AnchorStyles.Top Or AnchorStyles.Bottom) _
-            Or AnchorStyles.Left) _
-            Or AnchorStyles.Right), AnchorStyles)
-        Me.flp.BorderStyle = BorderStyle.FixedSingle
+        Me.flp.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        Me.flp.AutoSize = True
+        Me.flp.BorderStyle = BorderStyle.None
+        Me.flp.Dock = DockStyle.Fill
         Me.flp.FlowDirection = FlowDirection.TopDown
-        Me.flp.Location = New System.Drawing.Point(473, 101)
-        Me.flp.Margin = New Padding(0, 10, 10, 10)
+        Me.flp.Location = New System.Drawing.Point(173, 101)
+        Me.flp.Margin = New Padding(0, 0, 0, 0)
         Me.flp.Name = "flp"
-        Me.flp.Size = New System.Drawing.Size(1411, 933)
-        Me.flp.TabIndex = 2
+        Me.flp.TabIndex = 0
+        '
+        'flpOuter
+        '
+        Me.flpOuter.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
+        Me.flpOuter.BorderStyle = BorderStyle.FixedSingle
+        Me.flpOuter.Controls.Add(Me.flp)
+        Me.flpOuter.FlowDirection = FlowDirection.TopDown
+        Me.flpOuter.Location = New System.Drawing.Point(473, 101)
+        Me.flpOuter.Margin = New Padding(0, 10, 10, 10)
+        Me.flpOuter.Name = "flpOuter"
+        Me.flpOuter.Size = New System.Drawing.Size(1411, 933)
+        Me.flpOuter.TabIndex = 2
         '
         'SearchTextBox
         '
@@ -360,10 +373,10 @@ Public Class AppsForm
         Me.tlpMain.ColumnCount = 2
         Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 25.0!))
         Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 75.0!))
-        Me.tlpMain.Controls.Add(Me.tv, 0, 1)
-        Me.tlpMain.Controls.Add(Me.flp, 1, 1)
-        Me.tlpMain.Controls.Add(Me.ToolStrip, 1, 0)
         Me.tlpMain.Controls.Add(Me.SearchTextBox, 0, 0)
+        Me.tlpMain.Controls.Add(Me.ToolStrip, 1, 0)
+        Me.tlpMain.Controls.Add(Me.tv, 0, 1)
+        Me.tlpMain.Controls.Add(Me.flpOuter, 1, 1)
         Me.tlpMain.Dock = DockStyle.Fill
         Me.tlpMain.Location = New System.Drawing.Point(0, 0)
         Me.tlpMain.Name = "tlpMain"
@@ -494,7 +507,7 @@ Public Class AppsForm
         If Char.IsLetter(Chr(e.KeyCode)) Then
             SearchTextBox.Text = If(e.Shift, ChrW(e.KeyCode), Char.ToLowerInvariant(Chr(e.KeyCode)))
             SearchTextBox.Focus()
-            SearchTextBox.Edit.TextBox.Select(1, 0)            
+            SearchTextBox.Edit.TextBox.Select(1, 0)
             e.Handled = True
         End If
     End Sub
@@ -764,7 +777,7 @@ Public Class AppsForm
         End If
 
         ToolStrip.Enabled = tv.Nodes.Count > 0
-        flp.Enabled = tv.Nodes.Count > 0
+        flp.Visible = tv.Nodes.Count > 0
 
         If SearchTextBox.Text <> "" Then
             tv.ExpandAll()

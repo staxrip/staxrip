@@ -542,6 +542,35 @@ Public Class AppsForm
 
         flp.SuspendLayout()
 
+        Dim status = CurrentPackage.GetStatus()
+        Contents("Status").Text = CurrentPackage.GetStatusDisplay()
+        Contents("Status").ForeColor = If(status <> "",
+                                                If(CurrentPackage.Required, ThemeManager.CurrentTheme.AppsForm.AttentionForeColor, ThemeManager.CurrentTheme.AppsForm.MinorForeColor),
+                                                ThemeManager.CurrentTheme.AppsForm.OkayForeColor)
+        Contents("Status").Font = FontManager.GetDefaultFont(10, FontStyle.Bold)
+
+        Dim correctVersion = CurrentPackage.IsVersionCorrect()
+        Contents("Version").Text = "-"
+        Contents("Version").ForeColor = ThemeManager.CurrentTheme.General.Controls.ButtonLabel.ForeColor
+
+        If File.Exists(CurrentPackage.Path) Then
+            Contents("Version").Text = If(correctVersion, CurrentPackage.Version, "Unknown")
+            Contents("Version").Text += " (" + File.GetLastWriteTimeUtc(CurrentPackage.Path).ToShortDateString() + ")"
+            If correctVersion Then
+                Contents("Version").ApplyTheme()
+                If TypeOf Contents("Version") Is ButtonLabel Then
+                    CType(Contents("Version"), ButtonLabel).ApplyTheme()
+                End If
+            Else
+                Dim col = If(CurrentPackage.Required, ThemeManager.CurrentTheme.AppsForm.AttentionForeColor, ThemeManager.CurrentTheme.AppsForm.MinorForeColor)
+                Contents("Version").ForeColor = col
+                If TypeOf Contents("Version") Is ButtonLabel Then
+                    CType(Contents("Version"), ButtonLabel).LinkColor = col
+                    CType(Contents("Version"), ButtonLabel).LinkHoverColor = col.SetSaturation(1).AddLuminance(0.1)
+                End If
+            End If
+        End If
+
         Contents("Location").Text = If(path = "", "Not found", path)
         Contents("Description").Text = CurrentPackage.Description
 
@@ -559,19 +588,6 @@ Public Class AppsForm
         Headers("Download").Visible = visible
         Contents("Download").Text = CurrentPackage.DownloadURL
         Contents("Download").Visible = visible
-
-        If File.Exists(CurrentPackage.Path) Then
-            Contents("Version").Text = If(CurrentPackage.IsVersionCorrect, CurrentPackage.Version, "Unknown")
-            Contents("Version").Text += " (" + File.GetLastWriteTimeUtc(CurrentPackage.Path).ToShortDateString() + ")"
-        Else
-            Contents("Version").Text = "-"
-        End If
-
-        Contents("Status").Text = CurrentPackage.GetStatusDisplay()
-        Contents("Status").ForeColor = If(CurrentPackage.GetStatus <> "",
-                                                If(CurrentPackage.Required, ThemeManager.CurrentTheme.AppsForm.AttentionForeColor, ThemeManager.CurrentTheme.AppsForm.MinorForeColor),
-                                                ThemeManager.CurrentTheme.AppsForm.OkayForeColor)
-        Contents("Status").Font = FontManager.GetDefaultFont(10)
 
         Headers("AviSynth Filters").Visible = False
         Contents("AviSynth Filters").Visible = False

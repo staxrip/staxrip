@@ -4174,6 +4174,7 @@ Public Enum ApplicationEvent
     <DispName("Before Job Adding")> BeforeJobAdding
     <DispName("Before Job Processed")> BeforeJobProcessed
     <DispName("Before Processing")> BeforeProcessing
+    <DispName("Before Muxing When Source Opening")> BeforeMuxingWhenSourceOpening
     <DispName("While Processing")> WhileProcessing
 End Enum
 

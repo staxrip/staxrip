@@ -44,6 +44,7 @@ Public Class GlobalClass
     Event ApplicationExit()
     Event BeforeJobAdding()
     Event BeforeJobProcessed()
+    Event BeforeMuxing()
     Event BeforeProcessing()
     Event WhileProcessing(commandLine As String, percentage As Single, lastProgress As String)
 
@@ -967,6 +968,8 @@ Public Class GlobalClass
                 RaiseEvent BeforeJobAdding()
             Case ApplicationEvent.BeforeJobProcessed
                 RaiseEvent BeforeJobProcessed()
+            Case ApplicationEvent.BeforeMuxingWhenSourceOpening
+                RaiseEvent BeforeMuxing()
             Case ApplicationEvent.BeforeProcessing
                 RaiseEvent BeforeProcessing()
             Case ApplicationEvent.WhileProcessing

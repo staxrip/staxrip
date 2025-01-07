@@ -2593,6 +2593,7 @@ Public Class MainForm
             DemuxVobSubSubtitles()
             ConvertBluRaySubtitles()
             ExtractForcedVobSubSubtitles()
+            g.RaiseAppEvent(ApplicationEvent.BeforeMuxingWhenSourceOpening)
             p.VideoEncoder.Muxer.Init()
 
             If p.HardcodedSubtitle Then

@@ -1760,10 +1760,11 @@ Public Class x265Params
         FrameThreads.Value = 0
         IPRatio.Value = 1.4
         LimitModes.Value = False
-        LimitRefs.Value = 3
+        LimitRefs.Value = 1
         LimitTU.Value = 0
         LookaheadSlices.Value = 8
         MaxCuSize.Value = 0
+        MErange.Value = 57
         MinCuSize.Value = 2
         PBRatio.Value = 1.3
         PsyRD.Value = 2.0
@@ -1786,7 +1787,6 @@ Public Class x265Params
                 LimitRefs.Value = 0
                 MaxCuSize.Value = 1
                 MaxMerge.Value = 2
-                MErange.Value = 25
                 MinCuSize.Value = 1
                 RCLookahead.Value = 5
                 RD.Value = 2
@@ -1814,7 +1814,6 @@ Public Class x265Params
                 LimitRefs.Value = 0
                 MaxCuSize.Value = 1
                 MaxMerge.Value = 2
-                MErange.Value = 44
                 RCLookahead.Value = 10
                 RD.Value = 2
                 rdoqLevel.Value = 0
@@ -1836,8 +1835,8 @@ Public Class x265Params
                 BIntra.Value = False
                 EarlySkip.Value = True
                 FastIntra.Value = True
+                LimitRefs.Value = 3
                 MaxMerge.Value = 2
-                MErange.Value = 57
                 RCLookahead.Value = 15
                 RD.Value = 2
                 rdoqLevel.Value = 0
@@ -1859,8 +1858,8 @@ Public Class x265Params
                 BIntra.Value = False
                 EarlySkip.Value = True
                 FastIntra.Value = True
+                LimitRefs.Value = 3
                 MaxMerge.Value = 2
-                MErange.Value = 57
                 RCLookahead.Value = 15
                 RD.Value = 2
                 rdoqLevel.Value = 0
@@ -1882,8 +1881,8 @@ Public Class x265Params
                 BIntra.Value = False
                 EarlySkip.Value = False
                 FastIntra.Value = True
+                LimitRefs.Value = 3
                 MaxMerge.Value = 2
-                MErange.Value = 57
                 RCLookahead.Value = 15
                 RD.Value = 2
                 rdoqLevel.Value = 0
@@ -1905,9 +1904,7 @@ Public Class x265Params
                 BIntra.Value = True
                 EarlySkip.Value = True
                 FastIntra.Value = False
-                LimitRefs.Value = 1
                 MaxMerge.Value = 3
-                MErange.Value = 57
                 RCLookahead.Value = 20
                 RD.Value = 3
                 rdoqLevel.Value = 0
@@ -1930,9 +1927,9 @@ Public Class x265Params
                 EarlySkip.Value = False
                 FastIntra.Value = False
                 LimitModes.Value = True
+                LimitRefs.Value = 3
                 LookaheadSlices.Value = 4
                 MaxMerge.Value = 3
-                MErange.Value = 57
                 PsyRDOQ.Value = 1
                 RCLookahead.Value = 25
                 RD.Value = 4
@@ -1956,11 +1953,9 @@ Public Class x265Params
                 EarlySkip.Value = False
                 FastIntra.Value = False
                 LimitModes.Value = True
-                LimitRefs.Value = 1
                 LimitTU.Value = 4
                 LookaheadSlices.Value = 0
                 MaxMerge.Value = 4
-                MErange.Value = 57
                 PsyRDOQ.Value = 1
                 RCLookahead.Value = 40
                 RD.Value = 6
@@ -1986,7 +1981,6 @@ Public Class x265Params
                 LimitRefs.Value = 0
                 LookaheadSlices.Value = 0
                 MaxMerge.Value = 5
-                MErange.Value = 57
                 PsyRDOQ.Value = 1
                 RCLookahead.Value = 40
                 RD.Value = 6
@@ -2045,6 +2039,7 @@ Public Class x265Params
         LimitTU.DefaultValue = 0
         LookaheadSlices.DefaultValue = 8
         MaxCuSize.DefaultValue = 0
+        MErange.DefaultValue = 57
         MinCuSize.DefaultValue = 2
         PBRatio.DefaultValue = 1.3
         PsyRD.DefaultValue = 2.0
@@ -2067,7 +2062,6 @@ Public Class x265Params
                 LimitRefs.DefaultValue = 0
                 MaxCuSize.DefaultValue = 1
                 MaxMerge.DefaultValue = 2
-                MErange.DefaultValue = 25
                 MinCuSize.DefaultValue = 1
                 RCLookahead.DefaultValue = 5
                 RD.DefaultValue = 2
@@ -2095,7 +2089,6 @@ Public Class x265Params
                 LimitRefs.DefaultValue = 0
                 MaxCuSize.DefaultValue = 1
                 MaxMerge.DefaultValue = 2
-                MErange.DefaultValue = 44
                 RCLookahead.DefaultValue = 10
                 RD.DefaultValue = 2
                 rdoqLevel.DefaultValue = 0
@@ -2118,7 +2111,6 @@ Public Class x265Params
                 EarlySkip.DefaultValue = True
                 FastIntra.DefaultValue = True
                 MaxMerge.DefaultValue = 2
-                MErange.DefaultValue = 57
                 RCLookahead.DefaultValue = 15
                 RD.DefaultValue = 2
                 rdoqLevel.DefaultValue = 0
@@ -2141,7 +2133,6 @@ Public Class x265Params
                 EarlySkip.DefaultValue = True
                 FastIntra.DefaultValue = True
                 MaxMerge.DefaultValue = 2
-                MErange.DefaultValue = 57
                 RCLookahead.DefaultValue = 15
                 RD.DefaultValue = 2
                 rdoqLevel.DefaultValue = 0
@@ -2164,7 +2155,6 @@ Public Class x265Params
                 EarlySkip.DefaultValue = False
                 FastIntra.DefaultValue = True
                 MaxMerge.DefaultValue = 2
-                MErange.DefaultValue = 57
                 RCLookahead.DefaultValue = 15
                 RD.DefaultValue = 2
                 rdoqLevel.DefaultValue = 0
@@ -2188,7 +2178,6 @@ Public Class x265Params
                 FastIntra.DefaultValue = False
                 LimitRefs.DefaultValue = 1
                 MaxMerge.DefaultValue = 3
-                MErange.DefaultValue = 57
                 RCLookahead.DefaultValue = 20
                 RD.DefaultValue = 3
                 rdoqLevel.DefaultValue = 0
@@ -2213,7 +2202,6 @@ Public Class x265Params
                 LimitModes.DefaultValue = True
                 LookaheadSlices.DefaultValue = 4
                 MaxMerge.DefaultValue = 3
-                MErange.DefaultValue = 57
                 PsyRDOQ.DefaultValue = 1
                 RCLookahead.DefaultValue = 25
                 RD.DefaultValue = 4
@@ -2241,7 +2229,6 @@ Public Class x265Params
                 LimitTU.DefaultValue = 4
                 LookaheadSlices.DefaultValue = 0
                 MaxMerge.DefaultValue = 4
-                MErange.DefaultValue = 57
                 PsyRDOQ.DefaultValue = 1
                 RCLookahead.DefaultValue = 40
                 RD.DefaultValue = 6
@@ -2267,7 +2254,6 @@ Public Class x265Params
                 LimitRefs.DefaultValue = 0
                 LookaheadSlices.DefaultValue = 0
                 MaxMerge.DefaultValue = 5
-                MErange.DefaultValue = 57
                 PsyRDOQ.DefaultValue = 1
                 RCLookahead.DefaultValue = 40
                 RD.DefaultValue = 6

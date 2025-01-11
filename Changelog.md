@@ -14,6 +14,20 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.44.2 (2025-01-11)
+====================
+
+- VapourSynth: Fix wrong Resize filter addition when choosing fixed values from menu
+- NVEncC: Fix SuperRes default values ([#1572](/../../issues/1572))
+- x265: Fix "--merange" default preset value
+- Update tools
+    - MP4Box v2.5-DEV-rev1021-g49a598895-x64-msvc1942
+    - NVEncC v7.81
+    - QSVEncC v7.78
+    - VCEEncC v8.27
+    - x265 v4.1+79+12-81640d428-.Mod-by-Patman.-x64-avx2-msvc1942
+
+
 v2.44.1 (2025-01-01)
 ====================
 

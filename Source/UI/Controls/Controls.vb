@@ -1623,6 +1623,7 @@ Namespace UI
         Property ShowPath As Boolean
 
         Sub New()
+            Menu.ShowCheckMargin = True
             Menu.ShowImageMargin = False
             ShowMenuSymbol = True
             Padding = New Padding(4, 0, 0, 0)
@@ -1633,15 +1634,32 @@ Namespace UI
             Menu.MinimumSize = New Size(Width, 0)
             Dim minItemSize As Integer = Menu.MinimumSize.Width
 
-            For Each mi As MenuItemEx In Menu.Items
-                mi.Font = FontManager.GetDefaultFont(9, If(Value IsNot Nothing AndAlso Value.Equals(mi.Tag), FontStyle.Bold, FontStyle.Regular))
-                mi.AutoSize = True
-                minItemSize = Math.Max(minItemSize, mi.Width)
+            Dim allItems = Menu.GetItems().OfType(Of MenuItemEx)
+            Dim selectedItem = allItems.Where(Function(x) Value IsNot Nothing AndAlso Value.Equals(x.Tag)).OrderBy(Function(x) x.Path.Length).FirstOrDefault()
+            Dim selectedSubPath = If(selectedItem IsNot Nothing, selectedItem.Path.LeftLast(" | "), "")
+            Dim selectedSubSubPath = selectedSubPath.LeftLast(" | ")
+            Dim selectedPathLevel = If(selectedItem IsNot Nothing, Regex.Matches(selectedItem.Path, " \| ").Count, 0)
+
+            For Each item As MenuItemEx In allItems.Where(Function(x) Not String.IsNullOrEmpty(x.Path))
+                Dim sameLevel = Regex.Matches(item.Path, " \| ").Count = selectedPathLevel
+
+                item.CheckState = CheckState.Unchecked
+                item.CheckState = If(Not sameLevel AndAlso (selectedSubPath.Equals(item.Path) OrElse (selectedPathLevel > 1 AndAlso selectedSubSubPath.StartsWith(item.Path))), CheckState.Indeterminate, item.CheckState)
+                item.CheckState = If(item.Path = selectedItem?.Path, CheckState.Checked, item.CheckState)
+
+                Dim desiredFont = New Font(item.Font, If(item.CheckState = CheckState.Checked, FontStyle.Bold, FontStyle.Regular))
+
+                If Not item.Font.Equals(desiredFont) Then item.Font = desiredFont
             Next
 
-            For Each mi As MenuItemEx In Menu.Items
-                mi.AutoSize = False
-                mi.Width = minItemSize
+            For Each item As MenuItemEx In Menu.Items
+                item.AutoSize = True
+                minItemSize = Math.Max(minItemSize, item.Width)
+            Next
+
+            For Each item As MenuItemEx In Menu.Items
+                item.AutoSize = False
+                item.Width = minItemSize
             Next
         End Sub
 

@@ -449,33 +449,26 @@ Namespace UI
             value As T,
             Optional help As String = Nothing) As MenuItemEx
 
-            Return Add(items, path, Sub() action(value), help)
+            Return Add(items, path, value, Sub() action(value), help)
         End Function
 
-        Shared Function Add(items As ToolStripItemCollection, path As String) As MenuItemEx
-            Return Add(items, path, Nothing)
+        Shared Function Add(items As ToolStripItemCollection, path As String, Optional help As String = Nothing) As MenuItemEx
+            Return Add(items, path, path, help)
         End Function
 
-        Shared Function Add(items As ToolStripItemCollection, path As String, action As Action) As MenuItemEx
-            Return Add(items, path, action, Symbol.None, Nothing)
+        Shared Function Add(items As ToolStripItemCollection, path As String, tag As Object, Optional help As String = Nothing) As MenuItemEx
+            Return Add(items, path, tag, Nothing, help)
         End Function
 
-        Shared Function Add(
-            items As ToolStripItemCollection,
-            path As String,
-            action As Action,
-            tip As String) As MenuItemEx
-
-            Return Add(items, path, action, Symbol.None, tip)
+        Shared Function Add(items As ToolStripItemCollection, path As String, action As Action, Optional help As String = Nothing) As MenuItemEx
+            Return Add(items, path, path, action, help)
         End Function
 
-        Shared Function Add(
-            items As ToolStripItemCollection,
-            path As String,
-            action As Action,
-            symbol As Symbol,
-            Optional tip As String = Nothing) As MenuItemEx
+        Shared Function Add(items As ToolStripItemCollection, path As String, tag As Object, action As Action, Optional help As String = Nothing) As MenuItemEx
+            Return Add(items, path, tag, action, Symbol.None, help)
+        End Function
 
+        Shared Function Add(items As ToolStripItemCollection, path As String, tag As Object, action As Action, symbol As Symbol, Optional help As String = Nothing) As MenuItemEx
             Dim a = path.SplitNoEmpty(" | ")
             Dim l = items
             Dim p = ""
@@ -499,8 +492,9 @@ Namespace UI
                         If a(x) = "-" Then
                             l.Add(New ToolStripSeparator)
                         Else
-                            Dim item As New MenuItemEx(a(x), action, tip)
+                            Dim item As New MenuItemEx(a(x), action, help)
                             item.Path = p
+                            item.Tag = tag
                             item.SetImage(symbol)
                             l.Add(item)
                             l = item.DropDownItems
@@ -510,6 +504,7 @@ Namespace UI
                         Dim item As New MenuItemEx()
                         item.Text = a(x)
                         item.Path = p
+                        item.Tag = Nothing
                         l.Add(item)
                         l = item.DropDownItems
                     End If

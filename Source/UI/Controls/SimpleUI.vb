@@ -1374,7 +1374,7 @@ Public Class SimpleUI
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
             If Button IsNot Nothing Then
                 Button.Height = CInt(FontHeight * 1.5)
-                Button.Width = FontHeight * 10
+                Button.Width = FontHeight * 12
             End If
 
             MyBase.OnLayout(levent)

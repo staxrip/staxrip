@@ -861,10 +861,12 @@ Public Class GlobalClass
         loadAction As Action(Of Profile))
 
         For Each iProfile As Profile In profiles
-            Dim a = iProfile.Name.SplitNoEmpty("|")
+            Dim a = iProfile.Name.SplitNoEmpty(" | ")
             Dim l = ic
+            Dim p = ""
 
             For i = 0 To a.Length - 1
+                p += If(i = 0, "", " | ") + a(i)
                 Dim found = False
 
                 For Each iItem As ToolStripItem In l
@@ -879,10 +881,14 @@ Public Class GlobalClass
                 If Not found Then
                     If i = a.Length - 1 Then
                         Dim item As New MenuItemEx(a(i) + "     ", Sub() loadAction(iProfile))
+                        item.Path = p
+                        item.Tag = p
                         l.Add(item)
                         l = item.DropDownItems
                     Else
                         Dim item As New MenuItemEx(a(i) + "     ")
+                        item.Path = p
+                        item.Tag = p
                         l.Add(item)
                         l = item.DropDownItems
                     End If

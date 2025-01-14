@@ -791,7 +791,7 @@ Public Class MainForm
         Me.tbTargetWidth.Location = New System.Drawing.Point(167, 13)
         Me.tbTargetWidth.Name = "tbTargetWidth"
         Me.tbTargetWidth.ReadOnly = False
-        Me.tbTargetWidth.Size = New System.Drawing.Size(130, 55)
+        Me.tbTargetWidth.Size = New System.Drawing.Size(145, 55)
         Me.tbTargetWidth.TabIndex = 39
         Me.tbTargetWidth.TextBox.TextAlign = HorizontalAlignment.Center
         '
@@ -811,7 +811,7 @@ Public Class MainForm
         Me.tbTargetHeight.Location = New System.Drawing.Point(495, 13)
         Me.tbTargetHeight.Name = "tbTargetHeight"
         Me.tbTargetHeight.ReadOnly = False
-        Me.tbTargetHeight.Size = New System.Drawing.Size(130, 55)
+        Me.tbTargetHeight.Size = New System.Drawing.Size(145, 55)
         Me.tbTargetHeight.TabIndex = 40
         Me.tbTargetHeight.TextBox.TextAlign = HorizontalAlignment.Center
         '
@@ -1022,7 +1022,9 @@ Public Class MainForm
         TargetAspectRatioMenu = New ContextMenuStripEx(components)
         SizeContextMenuStrip = New ContextMenuStripEx(components)
         EncoderMenu = New ContextMenuStripEx(components)
+        AddHandler EncoderMenu.Opening, Sub(sender As Object, e As CancelEventArgs) MenuOpening(sender, lgbEncoder.Tag)
         ContainerMenu = New ContextMenuStripEx(components)
+        AddHandler ContainerMenu.Opening, Sub(sender As Object, e As CancelEventArgs) MenuOpening(sender, llMuxer.Tag)
         SourceAspectRatioMenu = New ContextMenuStripEx(components)
         TargetFileMenu = New ContextMenuStripEx(components)
         SourceFileMenu = New ContextMenuStripEx(components)
@@ -1166,6 +1168,34 @@ Public Class MainForm
         Next
 
         pnEncoder.BackColor = theme.General.Controls.ListView.BackColor
+    End Sub
+
+    Sub MenuOpening(sender As Object, tag As Object)
+        Dim menu = TryCast(sender, ContextMenuStripEx)
+
+        If menu Is Nothing Then Return
+        If tag Is Nothing Then Return
+
+        Dim allItems = menu.GetItems().OfType(Of MenuItemEx)
+        Dim selectedItem = allItems.Where(Function(x) tag IsNot Nothing AndAlso tag.Equals(x.Tag)).OrderBy(Function(x) x.Path.Length).FirstOrDefault()
+
+        If selectedItem Is Nothing Then Return
+
+        Dim selectedSubPath = If(selectedItem IsNot Nothing, selectedItem.Path.LeftLast(" | "), "")
+        Dim selectedSubSubPath = selectedSubPath.LeftLast(" | ")
+        Dim selectedPathLevel = If(selectedItem IsNot Nothing, Regex.Matches(selectedItem.Path, " \| ").Count, 0)
+
+        For Each item As MenuItemEx In allItems.Where(Function(x) Not String.IsNullOrEmpty(x.Path))
+            Dim sameLevel = Regex.Matches(item.Path, " \| ").Count = selectedPathLevel
+
+            item.CheckState = CheckState.Unchecked
+            item.CheckState = If(Not sameLevel AndAlso (selectedSubPath.Equals(item.Path) OrElse (selectedPathLevel > 1 AndAlso selectedSubSubPath.StartsWith(item.Path))), CheckState.Indeterminate, item.CheckState)
+            item.CheckState = If(item.Path = selectedItem?.Path, CheckState.Checked, item.CheckState)
+
+            Dim desiredFont = New Font(item.Font, If(item.CheckState = CheckState.Checked, FontStyle.Bold, FontStyle.Regular))
+
+            If Not item.Font.Equals(desiredFont) Then item.Font = desiredFont
+        Next
     End Sub
 
     Function GetIfoFile() As String
@@ -4486,7 +4516,7 @@ Public Class MainForm
             uiFallback.Text = "UI Fallback"
             uiFallback.Expanded = True
             uiFallback.Field = NameOf(s.UIFallback)
-            uiFallback.Add(New String() {"False", "True"})
+            uiFallback.Add({False, True})
             uiFallback.Button.ShowPath = True
             uiFallback.Button.SaveAction = Sub(value) s.UIFallback = value
             uiFallback.Button.ValueChangedAction = Sub(value) s.UIFallback = value

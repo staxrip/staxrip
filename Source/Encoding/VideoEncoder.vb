@@ -316,7 +316,9 @@ Public MustInherit Class VideoEncoder
     Sub OnStateChange(Optional forceTargetWipe As Boolean = False)
         g.MainForm.UpdateEncoderStateRelatedControls()
         g.MainForm.SetEncoderControl(p.VideoEncoder.CreateEditControl)
+        g.MainForm.lgbEncoder.Tag = p.VideoEncoder.Name
         g.MainForm.lgbEncoder.Text = g.ConvertPath(p.VideoEncoder.Name).Shorten(38)
+        g.MainForm.llMuxer.Tag = p.VideoEncoder.Muxer.Name
         g.MainForm.llMuxer.Text = p.VideoEncoder.Muxer.OutputExt.ToUpperInvariant
 
         If Not QualityMode Then
@@ -342,6 +344,7 @@ Public MustInherit Class VideoEncoder
 
         If muxer.Edit = DialogResult.OK Then
             Me.Muxer = muxer
+            g.MainForm.llMuxer.Tag = Me.Muxer.Name
             g.MainForm.llMuxer.Text = Me.Muxer.OutputExt.ToUpperInvariant
             g.MainForm.Refresh()
             g.MainForm.UpdateSizeOrBitrate()
@@ -360,6 +363,7 @@ Public MustInherit Class VideoEncoder
     Sub LoadMuxer(profile As Profile)
         Muxer = DirectCast(ObjectHelp.GetCopy(profile), Muxer)
         Muxer.Init()
+        g.MainForm.llMuxer.Tag = Muxer.Name
         g.MainForm.llMuxer.Text = Muxer.OutputExt.ToUpperInvariant
         Dim newPath = p.TargetFile.ChangeExt(Muxer.OutputExt)
 

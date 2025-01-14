@@ -131,19 +131,31 @@ Public Class ToolStripRendererEx
         Dim rect = New Rectangle(Point.Empty, e.Item.Size)
         Dim gx = e.Graphics
 
-        If Not TypeOf e.Item.Owner Is MenuStrip Then
+        If TypeOf e.Item.Owner IsNot MenuStrip Then
             gx.Clear(DropdownBackgroundDefaultColor)
         End If
 
-        If e.Item.Selected AndAlso e.Item.Enabled Then
-            If TypeOf e.Item.Owner Is MenuStrip Then
+        If TypeOf e.Item.Owner Is MenuStrip Then
+            If e.Item.Selected AndAlso e.Item.Enabled Then
                 DrawButton(e)
-            Else
-                Dim rect2 = New Rectangle(rect.X + 2, rect.Y, rect.Width - 3, rect.Height)
+            End If
+        Else
+            Dim rect2 = New Rectangle(rect.X + 2, rect.Y, rect.Width - 3, rect.Height)
 
+            If e.Item.Selected Then
                 Using brush As New SolidBrush(DropdownBackgroundSelectedColor)
                     gx.FillRectangle(brush, rect2)
                 End Using
+            Else
+                Dim item = TryCast(e.Item, MenuItemEx)
+
+                If item IsNot Nothing Then
+                    If item.CheckState <> CheckState.Unchecked Then
+                        Using brush As New SolidBrush(BoxColor)
+                            gx.FillRectangle(brush, rect2)
+                        End Using
+                    End If
+                End If
             End If
         End If
     End Sub
@@ -172,37 +184,70 @@ Public Class ToolStripRendererEx
     End Sub
 
     Protected Overrides Sub OnRenderItemCheck(e As ToolStripItemImageRenderEventArgs)
-        Dim item = TryCast(e.Item, ToolStripMenuItem)
+        Dim item = TryCast(e.Item, MenuItemEx)
 
-        If item Is Nothing OrElse Not item.Checked Then
-            Exit Sub
-        End If
+        If item Is Nothing Then Return
+        If item.CheckState = CheckState.Unchecked Then Return
 
         Dim gx = e.Graphics
         gx.SmoothingMode = SmoothingMode.AntiAlias
         Dim h = item.Height
 
         Dim rect = New Rectangle(2, 0, h, h)
-        Dim col = If(item.Selected, BoxSelectedColor, BoxColor)
 
-        Using brush As New SolidBrush(col)
-            gx.FillRectangle(brush, rect)
-        End Using
+        If item.Selected Then
+            Using brush As New SolidBrush(BoxSelectedColor)
+                gx.FillRectangle(brush, rect)
+            End Using
+        Else
+            If item.CheckState = CheckState.Checked Then
+                Using brush As New LinearGradientBrush(rect, BoxSelectedColor, BoxColor, LinearGradientMode.Horizontal)
+                    gx.FillRectangle(brush, rect)
+                End Using
+            Else
+                Using brush As New LinearGradientBrush(rect, BoxSelectedColor, BoxColor, LinearGradientMode.Horizontal)
+                    gx.FillRectangle(brush, rect)
+                End Using
+            End If
+        End If
 
-        Dim x1 = CInt(2 + h * 0.4)
-        Dim y1 = CInt(h * 0.7)
+        If item.CheckState = CheckState.Checked Then
+            Dim x1 = CInt(2 + h * 0.4)
+            Dim y1 = CInt(h * 0.7)
 
-        Dim x2 = CInt(x1 - h * 0.2)
-        Dim y2 = CInt(y1 - h * 0.2)
+            Dim x2 = CInt(x1 - h * 0.2)
+            Dim y2 = CInt(y1 - h * 0.2)
 
-        Dim x3 = CInt(x1 + h * 0.37)
-        Dim y3 = CInt(y1 - h * 0.37)
+            Dim x3 = CInt(x1 + h * 0.37)
+            Dim y3 = CInt(y1 - h * 0.37)
 
-        Dim penColor = If(item.Selected, CheckmarkSelectedColor, CheckmarkColor)
-        Using pen = New Pen(penColor, e.Item.Font.Height / 16.0F)
-            gx.DrawLine(pen, x1, y1, x2, y2)
-            gx.DrawLine(pen, x1, y1, x3, y3)
-        End Using
+            Using pen = New Pen(CheckmarkSelectedColor, e.Item.Font.Height / 16.0F)
+                gx.DrawLine(pen, x1, y1, x2, y2)
+                gx.DrawLine(pen, x1, y1, x3, y3)
+            End Using
+        Else
+            Dim x11 = CSng(h / 2.0)
+            Dim y1 = CSng(h / 2)
+            Dim x21 = CSng(x11 - h / 10)
+            Dim y2 = CSng(h / 2.8)
+            Dim x31 = CSng(x21)
+            Dim y3 = CSng(h - y2)
+
+            Dim offset2 = CSng(h / 5)
+            Dim x12 = CSng(x11 + offset2)
+            Dim x22 = CSng(x21 + offset2)
+            Dim x32 = CSng(x31 + offset2)
+
+            Using pen = New Pen(CheckmarkColor, e.Item.Font.Height / 16.0F)
+                gx.DrawLine(pen, x11, y1, x21, y2)
+                gx.DrawLine(pen, x11, y1, x31, y3)
+            End Using
+
+            Using pen = New Pen(CheckmarkColor.AddLuminance(0.1), e.Item.Font.Height / 16.0F)
+                gx.DrawLine(pen, x12, y1, x22, y2)
+                gx.DrawLine(pen, x12, y1, x32, y3)
+            End Using
+        End If
     End Sub
 
     Protected Overloads Overrides Sub OnRenderArrow(e As ToolStripArrowRenderEventArgs)

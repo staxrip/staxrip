@@ -2,6 +2,7 @@
 Imports System.Text
 Imports System.Threading
 Imports System.Threading.Tasks
+Imports Microsoft.VisualBasic
 Imports StaxRip.UI
 
 Public Class TaskDialog(Of T)
@@ -63,9 +64,12 @@ Public Class TaskDialog(Of T)
             Next
         End If
 
-        If Content?.Length > 1000 OrElse ExpandedContent?.Length > 1000 Then
-            Width = FontHeight * 46
-        End If
+        Dim t = If(Not String.IsNullOrWhiteSpace(Content), Content, "")
+        t = If(Not String.IsNullOrWhiteSpace(ExpandedContent) AndAlso ExpandedContent.Length > Content?.Length, ExpandedContent, t)
+        Dim lines = t.Split({BR}, StringSplitOptions.RemoveEmptyEntries)
+        Dim maxLength = If(lines.Any(), lines.Max(Function(x) x.Length), 0)
+        Width = Math.Max(Width, FontHeight * maxLength \ 3)
+        If t.Length > 1000 Then Width = Math.Max(Width, FontHeight * 50)
 
         ShowIcon = False
         StartPosition = FormStartPosition.CenterScreen
@@ -360,22 +364,24 @@ Public Class TaskDialog(Of T)
         Dim nonClientHeight = Height - ClientSize.Height
         Dim workingArea = Screen.FromControl(Me).WorkingArea
         Dim maxHeight = workingArea.Height
-        Dim predictedWidth = GetXthLongestLineWidth(1)
+        Dim minWidth = fh * 35
+        Dim maxWidth = fh * 80
+        Dim predictedWidth = GetWidth()
 
         If GetType(T) Is GetType(FontFamily) Then
             predictedWidth = CInt(predictedWidth * 1.5D)
         End If
 
-        Dim w = CInt(predictedWidth + fh * 3)
+        Dim w = CInt(predictedWidth + fh * 2)
 
         If predictedWidth > Width Then
             w = predictedWidth
         End If
 
-        If w < fh * 35 Then
-            w = fh * 35
-        ElseIf w > fh * 80 Then
-            w = fh * 80
+        If w < minWidth Then
+            w = minWidth
+        ElseIf w > maxWidth Then
+            w = maxWidth
         End If
 
         Dim ncx = Width - ClientSize.Width
@@ -394,8 +400,9 @@ Public Class TaskDialog(Of T)
         Native.SetWindowPos(Handle, IntPtr.Zero, x, y, w, h, 64)
     End Sub
 
-    Function GetXthLongestLineWidth(lineNumber As Integer) As Integer
+    Function GetWidth() As Integer
         Dim list As New List(Of String)()
+        Dim font = FontManager.GetDefaultFont()
 
         If Title.Trim() <> "" Then
             list.Add(Title)
@@ -427,13 +434,21 @@ Public Class TaskDialog(Of T)
             End If
         Next
 
-        If list.Count = 0 Then Return TextRenderer.MeasureText(New String("x"c, 55), FontManager.GetDefaultFont()).Width
-        If lineNumber < 1 Then lineNumber = 1
-        If lineNumber > list.Count Then lineNumber = list.Count
+        list = list.Where(Function(x) Not String.IsNullOrWhiteSpace(x)).ToList()
+        If list.Count = 0 Then Return TextRenderer.MeasureText(New String("x"c, 55), font).Width
 
-        list = list.OrderByDescending(Function(x) x.Length).ToList()
+        Dim ml As List(Of (Text As String, Width As Integer)) = list.Select(Function(x) (x, TextRenderer.MeasureText(x, font).Width)).OrderByDescending(Function(x) x.Width).ToList()
+        Dim longestWidth = ml(0).Width
+        Dim ret = longestWidth
 
-        Return TextRenderer.MeasureText(list(lineNumber - 1), FontManager.GetDefaultFont()).Width
+        If list.Count < 50 Then
+            Dim averageWidth = CInt(ml.Take(Math.Max(1, ml.Count \ 2)).Average(Function(x) x.Width))
+            ret = longestWidth - (longestWidth - averageWidth) \ 3
+        ElseIf list.Count > 100
+            ret += FontHeight * 2
+        End If        
+
+        Return ret
     End Function
 
     WriteOnly Property ShowCopyButton As Boolean

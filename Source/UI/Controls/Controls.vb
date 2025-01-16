@@ -31,6 +31,28 @@ Namespace UI
         <DefaultValue(False)>
         Property SelectOnMouseDown() As Boolean
 
+        <DefaultValue(True)>
+        Property UseSystemScrollBars As Boolean
+
+        ReadOnly Property MaxVisibleNodes As Integer
+            Get
+                Return ClientSize.Height \ ItemHeight
+            End Get
+        End Property
+
+        Private _wheelScrollLines As Integer
+
+        ReadOnly Property WheelScrollLines() As Integer
+            Get
+                If _wheelScrollLines < 1 Then
+                    _wheelScrollLines = OS.Hardware.Mouse.WheelScrollLines
+                End If
+
+                Return _wheelScrollLines
+            End Get
+        End Property
+
+
         Public Property BackAlternateColor As Color
             Get
                 Return _backAlternateColor
@@ -265,6 +287,10 @@ Namespace UI
                 End If
             End If
 
+            If Not UseSystemScrollBars AndAlso m.Msg = &H83 Then 'WM_NCCALCSIZE
+                Exit Sub
+            End If
+
             MyBase.WndProc(m)
         End Sub
 
@@ -380,7 +406,7 @@ Namespace UI
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
             MyBase.OnHandleCreated(e)
-            'Native.SetWindowTheme(Handle, "explorer", Nothing)
+            Native.SetWindowTheme(Handle, "explorer", Nothing)
         End Sub
 
         Function AddNode(path As String) As TreeNode
@@ -429,6 +455,31 @@ Namespace UI
                 AddNodesRecursive(i.Nodes, returnList)
             Next
         End Sub
+
+        Public Function GetAllVisibleNodes() As List(Of TreeNode)
+            Dim list As New List(Of TreeNode)
+
+            For Each node As TreeNode In Nodes
+                GetVisibleNodes(list, node)
+            Next
+
+            Return list
+        End Function
+
+        Shared Sub GetVisibleNodes(ByRef list As List(Of TreeNode), node As TreeNode)
+            list.Add(node)
+
+            If node.IsExpanded Then
+                For Each subNode As TreeNode In node.Nodes
+                    GetVisibleNodes(list, subNode)
+                Next
+            End If
+        End Sub
+    End Class
+
+    Public Class VScrollBarEx
+        Inherits VScrollBar
+
     End Class
 
     Public Enum TreeNodeExpandMode

@@ -9,6 +9,7 @@ Public Class Native
 
     Public Const SC_CLOSE As Integer = &HF060
     Public Const SC_MINIMIZE As Integer = &HF020
+    Public Const SPI_GETWHEELSCROLLLINES As Integer = 104
 
     <DllImport("dwmapi.dll")>
     Shared Function DwmSetWindowAttribute(
@@ -163,6 +164,10 @@ Public Class Native
         pszExtra As String,
         pszOut As StringBuilder,
         ByRef pcchOut As UInteger) As UInteger
+    End Function
+
+    <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
+    Shared Function SystemParametersInfo(uAction As Integer, uParam As Integer, ByRef lpvParam As Integer, fuWinIni As Integer) As Boolean
     End Function
 
     Public Structure RECT

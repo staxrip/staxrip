@@ -1629,6 +1629,7 @@ Public Class GlobalClass
     Async Sub PreloadValuesAsync()
         Await Task.Run(Sub()
                            Dim a = OS.Hardware.Cores
+                           Dim b = OS.Hardware.Mouse.WheelScrollLines
                        End Sub)
     End Sub
 

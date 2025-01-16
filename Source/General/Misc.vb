@@ -1929,6 +1929,19 @@ Public Class OS
                 Return Environment.ProcessorCount
             End Get
         End Property
+
+        Public Class Mouse
+            Public Shared ReadOnly Property WheelScrollLines As Integer
+                Get
+                    Dim lines = 3
+                    Dim ret As Integer
+
+                    If Native.SystemParametersInfo(Native.SPI_GETWHEELSCROLLLINES, 0, ret, 0) Then lines = ret
+
+                    Return lines
+                End Get
+            End Property
+        End Class
     End Class
 End Class
 

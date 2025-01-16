@@ -1,10 +1,12 @@
 ﻿
+Imports System.Reflection
 Imports StaxRip.UI
 
 Public Class SimpleUI
     Inherits Control
 
     Public WithEvents Tree As New TreeViewEx
+    Public WithEvents VScrollBar As New VScrollBarEx
 
     Public Host As New PanelEx
 
@@ -50,7 +52,8 @@ Public Class SimpleUI
 
 
     Sub InitControls()
-        Tree.Scrollable = False
+        Tree.UseSystemScrollBars = False
+        Tree.Scrollable = True
         Tree.SelectOnMouseDown = True
         Tree.ShowLines = False
         Tree.HideSelection = False
@@ -59,7 +62,12 @@ Public Class SimpleUI
         Tree.AutoCollaps = True
         Tree.ExpandMode = TreeNodeExpandMode.InclusiveChilds
 
+        VScrollBar.Minimum = 0
+        VScrollBar.SmallChange = 1
+        VScrollBar.LargeChange = 1
+
         Controls.Add(Tree)
+        Controls.Add(VScrollBar)
         Controls.Add(Host)
     End Sub
 
@@ -81,21 +89,33 @@ Public Class SimpleUI
     End Sub
 
     Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
+        Dim fh = FontHeight
+        Dim nodes = Tree.GetNodes()
+        Dim nodesCount = nodes.Count
+        Dim gap = CInt(fh / 1.5)
+
         Tree.Top = 0
         Tree.Left = 0
         Tree.Width = 0
         Tree.Height = Height
 
-        Dim fh = FontHeight
+        If nodesCount > 1 Then
+            Tree.Width = (Aggregate i In nodes Into Max(i.Bounds.Right)) + fh
+        End If
 
-        If Tree.Nodes.Count > 1 Then
-            Tree.Width = (Aggregate i In Tree.GetNodes Into Max(i.Bounds.Right)) + fh
+        VScrollBar.Top = Tree.Top
+        VScrollBar.Left = Tree.Right + CInt(fh / 3)
+        VScrollBar.Height = Height
+        VScrollBar.Width = 0
+
+        If Tree.Width <> 0 AndAlso nodesCount > Tree.Nodes.Count AndAlso nodesCount > Tree.MaxVisibleNodes Then
+            VScrollBar.Width = CInt(fh \ 3)
         End If
 
         Host.Top = 0
-        Host.Left = Tree.Right + CInt(fh / 3)
+        Host.Left = Tree.Right + VScrollBar.Width + gap
         Host.Height = Height
-        Host.Width = Width - Tree.Width - CInt(fh / 3)
+        Host.Width = Width - VScrollBar.Right - gap
 
         MyBase.OnLayout(levent)
     End Sub
@@ -138,6 +158,55 @@ Public Class SimpleUI
             If node.Nodes.Count > 0 Then
                 Tree.SelectedNode = node.Nodes(0)
             End If
+        End If
+
+        UpdateVScrollBar()
+    End Sub
+
+    Private Sub Tree_AfterCollapse(sender As Object, e As TreeViewEventArgs) Handles Tree.AfterCollapse
+        UpdateVScrollBar()
+    End Sub
+
+    Private Sub Tree_AfterExpand(sender As Object, e As TreeViewEventArgs) Handles Tree.AfterExpand
+        UpdateVScrollBar()
+    End Sub
+
+    Private Sub Tree_MouseWheel(sender As Object, e As MouseEventArgs) Handles Tree.MouseWheel
+        Dim visibleNodes = Tree.GetAllVisibleNodes()
+        Dim delta = e.Delta \ 120
+        Dim scrollLength = delta * Tree.WheelScrollLines
+        Dim value = VScrollBar.Value - scrollLength
+        value = Math.Max(VScrollBar.Minimum, value)
+        value = Math.Min(VScrollBar.Maximum, value)
+        VScrollBar.Value = value
+    End Sub
+
+    Private Sub Tree_Resize(sender As Object, e As EventArgs) Handles Tree.Resize
+        UpdateVScrollBar()
+    End Sub
+
+    Private Sub VScrollBar_Scroll(sender As Object, e As ScrollEventArgs) Handles VScrollBar.Scroll
+        Dim visibleNodes = Tree.GetAllVisibleNodes()
+        Dim value = e.NewValue
+
+        If value >= 0 AndAlso value < visibleNodes.Count Then
+            Tree.TopNode = visibleNodes(value)
+        End If
+    End Sub
+
+    Private Sub UpdateVScrollBar()
+        Dim visibleNodes = Tree.GetAllVisibleNodes()
+        Dim visibleNodesCount = visibleNodes.Count
+        Dim maxVisibleNodes = Tree.MaxVisibleNodes
+
+        VScrollBar.Value = Math.Max(0, visibleNodes.IndexOf(Tree.TopNode))
+
+        If visibleNodesCount > maxVisibleNodes Then
+            VScrollBar.Maximum = Math.Max(0, visibleNodesCount - maxVisibleNodes)
+            VScrollBar.LargeChange = 1
+            VScrollBar.Enabled = True
+        Else
+            VScrollBar.Enabled = False
         End If
     End Sub
 

@@ -69,13 +69,13 @@ Public Class SimpleUI
         If Not DesignMode Then
             AddHandler FindForm.Load,
                 Sub()
-                    If Tree.Nodes.Count > 0 Then
-                        Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 1
-                    End If
+                    Dim nodes = Tree.GetNodes()
+                    Dim minItemHeight = CInt(Tree.Font.Height * 1.0)
+                    Dim maxItemHeight = CInt(Tree.Font.Height * 1.3)
 
-                    If Tree.ItemHeight > CInt(Tree.Font.Height * 1.3) Then
-                        Tree.ItemHeight = CInt(Tree.Font.Height * 1.3)
-                    End If
+                    If nodes.Count > 0 Then Tree.ItemHeight = CInt(Tree.Height / nodes.Count)
+                    If Tree.ItemHeight < minItemHeight Then Tree.ItemHeight = minItemHeight
+                    If Tree.ItemHeight > maxItemHeight Then Tree.ItemHeight = maxItemHeight
                 End Sub
         End If
     End Sub

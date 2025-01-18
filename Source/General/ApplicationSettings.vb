@@ -102,7 +102,6 @@ Public Class ApplicationSettings
     Public StringDictionary As Dictionary(Of String, String)
     Public TargetImageSizeMenu As String
     Public ThemeName As String = ThemeManager.DefaultThemeName
-    Public UIFallback As Boolean = False
     Public UIScaleFactor As Single = 1.0F
     Public VapourSynthFilterPreferences As StringPairList
     Public VapourSynthMode As FrameServerMode

@@ -939,21 +939,20 @@ Namespace UI
         Protected Overrides Sub OnPaint(pevent As PaintEventArgs)
             InvokePaintBackground(Me, pevent)
 
-            pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias
+            pevent.Graphics.SmoothingMode = SmoothingMode.HighQuality
             Dim state As CheckBoxState = If(CheckState = CheckState.Checked, CheckBoxState.CheckedNormal, CheckBoxState.UncheckedNormal)
             Dim glyphSize As Size = CheckBoxRendererEx.GetGlyphSize(pevent.Graphics, state)
             Dim vPos As Integer = (Height - glyphSize.Height) \ 2
-            Dim hPos As Integer = 1
-            Dim measuredStringHeight As Single = pevent.Graphics.MeasureString(Text, Font).Height
+            Const hPos As Integer = 1
             Dim glyphLocation As New Point(hPos, vPos)
-            Dim textLocation As New Point(hPos + glyphSize.Width + hPos, If(s.UIFallback, CInt(Height / 2.0F - measuredStringHeight / 2.0F), 1 + Height - (Height - CInt(measuredStringHeight)) \ 3))
-            Dim textFlags As TextFormatFlags = TextFormatFlags.SingleLine Or TextFormatFlags.VerticalCenter
+            Dim textLocation As New Point(hPos + glyphSize.Width + hPos, If(g.IsRunningUnderWine, CInt(Height / 2.0F - pevent.Graphics.MeasureString(Text, Font).Height / 2.0F), Height))
+            Const textFlags As TextFormatFlags = TextFormatFlags.SingleLine Or TextFormatFlags.VerticalCenter
             Dim fColor As ColorHSL = If(Checked, _theme.General.Controls.CheckBox.ForeCheckedColor, _theme.General.Controls.CheckBox.ForeColor)
             fColor = If(Enabled, fColor, _theme.General.Controls.CheckBox.ForeDisabledColor)
 
             CheckBoxRendererEx.DrawCheckBox(pevent.Graphics, glyphLocation, state)
 
-            If s.UIFallback Then
+            If g.IsRunningUnderWine Then
                 pevent.Graphics.DrawString(Text, Font, New SolidBrush(fColor), textLocation)
             Else
                 TextRenderer.DrawText(pevent.Graphics, Text, Font, textLocation, fColor, textFlags)

@@ -44,6 +44,28 @@ Public Class GlobalClass
         End Set
     End Property
 
+    Private _isRunningUnderWine As Boolean?
+
+    ReadOnly Property IsRunningUnderWine As Boolean
+        Get
+            If Not _isRunningUnderWine.HasValue Then
+                Try
+                    Using wineKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Wine")
+                        If wineKey IsNot Nothing Then
+                            _isRunningUnderWine = True
+                        Else
+                            _isRunningUnderWine = False
+                        End If
+                    End Using
+                Catch ex As Exception
+                    _isRunningUnderWine = False
+                End Try
+            End If
+
+            Return _isRunningUnderWine.Value
+        End Get
+    End Property
+
     Event AfterJobAdded()
     Event AfterJobFailed()
     Event AfterJobMuxed()

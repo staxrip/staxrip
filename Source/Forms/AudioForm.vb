@@ -237,6 +237,7 @@ Public Class AudioForm
         'mbLanguage
         '
         Me.mbLanguage.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpBasic.SetColumnSpan(Me.mbLanguage, 3)
         Me.mbLanguage.Location = New System.Drawing.Point(250, 405)
         Me.mbLanguage.Margin = New System.Windows.Forms.Padding(5)
         Me.mbLanguage.ShowMenuSymbol = True
@@ -1147,7 +1148,7 @@ Public Class AudioForm
 
     Sub mbLanguage_ValueChanged() Handles mbLanguage.ValueChangedUser
         TempProfile.Language = mbLanguage.GetValue(Of Language)()
-        mbLanguage.Text = TempProfile.Language.Name
+        mbLanguage.Text = TempProfile.Language.ToString()
         If Not BlockUpdate Then UpdateControls()
     End Sub
 
@@ -1200,7 +1201,7 @@ Public Class AudioForm
         mbDecoder.Value = TempProfile.Decoder
 
         mbLanguage.Value = TempProfile.Language
-        mbLanguage.Text = TempProfile.Language.Name
+        mbLanguage.Text = TempProfile.Language.ToString()
 
         SetQuality(TempProfile.Params.Quality)
 

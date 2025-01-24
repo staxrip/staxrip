@@ -491,7 +491,7 @@ Public Class GlobalClass
 
         If proj.DeleteTempFilesMode = DeleteMode.Disabled Then Return
         If String.IsNullOrWhiteSpace(proj.TempDir) OrElse Not proj.TempDir.DirExists() OrElse Not New DirectoryInfo(proj.TempDir).Name.EndsWith("_temp") Then Return
-        If JobManager.GetJobs()?.Where(Function(a) a.Active AndAlso a.Path.Contains(proj.TempDir))?.Any() Then Return
+        If JobManager.GetJobs()?.Where(Function(a) a.Path.Contains(proj.TempDir))?.Any() Then Return
 
         Dim excludeSourcefile = True
         Dim extensions As IEnumerable(Of String) = {}

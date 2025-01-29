@@ -224,6 +224,7 @@ Public Class Macro
             ret.Add(New Macro("app_version:name", "Application Version", GetType(String), "Returns the version of a given tool, it can be any type of tool found in the Apps dialog. Example: %app_version:x265%"))
             ret.Add(New Macro("eval:expression", "Eval Math Expression", GetType(String), "Evaluates a PowerShell expression which may contain macros."))
             ret.Add(New Macro("filter:name", "Filter", GetType(String), "Returns the script code of a filter of the active project that matches the specified name."))
+            ret.Add(New Macro("isfilteractive:name", "Active Filter Check", GetType(String), "Returns `1` if the filter is active, otherwise `0`."))
             ret.Add(New Macro("random:digits", "Random Number", GetType(Integer), "Returns a 'digits' long random number, whereas 'digits' is clamped between `1` and `10`."))
             ret.Add(New Macro("source_mi_g:property", "MediaInfo General Property", GetType(String), "Returns the given MediaInfo property from the General section for the source file."))
             ret.Add(New Macro("source_mi_v:property", "MediaInfo Video Property", GetType(String), "Returns the given MediaInfo property from the Video section for the source file. Before `:` you can add a zero-based index for the track number of that section."))
@@ -651,6 +652,23 @@ Public Class Macro
             Next
         End If
 
+        If value.Contains("%isfilteractive:") Then
+            Dim mc = Regex.Matches(value, "%isfilteractive:(.+?)%")
+
+            For Each i As Match In mc
+                For Each i2 In proj.Script.Filters
+                    If i2.Active AndAlso i2.Path.ToUpperInvariant = i.Groups(1).Value.ToUpperInvariant Then
+                        value = value.Replace(i.Value, "1")
+                        Exit For
+                    End If
+                Next
+
+                value = value.Replace(i.Value, "0")
+
+                If Not value.Contains("%") Then Exit For
+            Next
+        End If
+
         If value.Contains("%eval:") Then
             If Not value.Contains("%eval:<expression>%") AndAlso Not value.Contains("%eval:expression%") Then
                 matches = Regex.Matches(value, "%eval:(.+?)%")
@@ -758,7 +776,7 @@ Public Class Macro
                             If castedParam.Values.NothingOrEmpty() Then
                                 If castedParam.IntegerValue Then
                                     v = castedParam.Value.ToInvariantString()
-                                Else 
+                                Else
                                     v = castedParam.OptionText.Replace(" ", "")
                                 End If
                             Else

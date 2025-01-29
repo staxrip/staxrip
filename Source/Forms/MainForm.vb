@@ -7673,6 +7673,7 @@ Public Class MainForm
                 Dim sb As New StringBuilder()
                 Dim sbNotEmpty = False
                 Dim relevant = False
+                Dim abortAfter = False
                 Dim versions = 0
 
                 Do While Not reader.EndOfStream
@@ -7711,6 +7712,7 @@ Public Class MainForm
                         Continue Do
                     End If
 
+                    If abortAfter AndAlso String.IsNullOrWhiteSpace(line) Then Exit Do
                     If Not relevant Then Continue Do
                     If String.IsNullOrWhiteSpace(line) Then
                         If lines > 0 AndAlso readoutVersion.Build = currentVersion.Build AndAlso NOT sb.ToString().EndsWith(BR2) Then sb.AppendLine()
@@ -7718,9 +7720,11 @@ Public Class MainForm
                     End If
                     If versions > 1 AndAlso currentVersion.Build > 0 AndAlso line.StartsWithEx("- Update ") Then
                         sb.AppendLine("---- Tool and Plugin updates are not shown! ----")
+                        abortAfter = True
                         relevant = False
                     ElseIf lines > 35 AndAlso line.StartsWithEx("- Update ") Then
                         sb.AppendLine("---- Tool and Plugin updates are not shown! ----")
+                        abortAfter = True
                         relevant = False
                     End If
                     If Not relevant Then Continue Do

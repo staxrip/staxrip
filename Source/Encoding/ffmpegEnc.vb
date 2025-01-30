@@ -193,14 +193,14 @@ Public Class ffmpegEnc
             .Text = "Codec",
             .AlwaysOn = True,
             .Options = {"x264", "x265", "AOM-AV1", "XviD", "MPEG-4", "Theora", "ProRes",
-                        "R210", "V210", "UT Video", "FFV1", 
+                        "R210", "V210", "UT Video", "GoPro CineForm HD", "FFV1",
                         "AMD | AMD AMF H.264", "AMD | AMD AMF H.265", "AMD | AMD AMF AV1",
                         "Intel | Intel H.264", "Intel | Intel H.265", "Intel | Intel AV1",
                         "Nvidia | Nvidia H.264", "Nvidia | Nvidia H.265", "Nvidia | Nvidia AV1",
                         "VP | VP8", "VP | VP9"},
             .Values = {"libx264", "libx265", "libaom-av1", "libxvid", "mpeg4", "libtheora", "prores",
-"r210", "v210", "utvideo", "ffv1", 
-                       "h264_amf", "hevc_amf", "av1_amf", 
+                       "r210", "v210", "utvideo", "cfhd", "ffv1",
+                       "h264_amf", "hevc_amf", "av1_amf",
                        "h264_qsv", "hevc_qsv", "av1_qsv",
                        "h264_nvenc", "hevc_nvenc", "av1_nvenc",
                        "libvpx", "libvpx-vp9"}}
@@ -208,7 +208,7 @@ Public Class ffmpegEnc
         Property Mode As New OptionParam With {
             .Name = "Mode",
             .Text = "Mode",
-            .VisibleFunc = Function() Not Codec.ValueText.EqualsAny("prores", "utvideo", "ffv1"),
+            .VisibleFunc = Function() Not Codec.ValueText.EqualsAny("prores", "utvideo", "cfhd", "ffv1"),
             .Options = {"Quality", "One Pass", "Two Pass"}}
 
         Property Decoder As New OptionParam With {
@@ -247,7 +247,7 @@ Public Class ffmpegEnc
                         h264_nvenc_rc,
                         New OptionParam With {.Name = "utVideoPred", .Switch = "-pred", .Text = "Prediction", .Init = 3, .Options = {"None", "Left", "Gradient", "Median"}, .VisibleFunc = Function() Codec.ValueText = "utvideo"},
                         New OptionParam With {.Name = "utVideoPixFmt", .Switch = "-pix_fmt", .Text = "Pixel Format", .Options = {"YUV420P", "YUV422P", "YUV444P", "RGB24", "RGBA"}, .VisibleFunc = Function() Codec.ValueText = "utvideo"},
-                        New NumParam With {.Name = "Quality", .Text = "Quality", .Init = -1, .VisibleFunc = Function() Mode.Value = EncodingMode.Quality AndAlso Not Codec.ValueText.EqualsAny("prores", "utvideo", "ffv1"), .ArgsFunc = AddressOf GetQualityArgs, .Config = {-1, 63, 0.5, 1}},
+                        New NumParam With {.Name = "Quality", .Text = "Quality", .Init = -1, .VisibleFunc = Function() Mode.Value = EncodingMode.Quality AndAlso Not Codec.ValueText.EqualsAny("prores", "utvideo", "cfhd", "ffv1"), .ArgsFunc = AddressOf GetQualityArgs, .Config = {-1, 63, 0.5, 1}},
                         New NumParam With {.Switch = "-threads", .Text = "Threads", .Config = {0, 64}},
                         New NumParam With {.Switch = "-tile-columns", .Text = "Tile Columns", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 6, .DefaultValue = -1},
                         New NumParam With {.Switch = "-frame-parallel", .Text = "Frame Parallel", .VisibleFunc = Function() Codec.OptionText = "VP9", .Value = 1, .DefaultValue = -1},

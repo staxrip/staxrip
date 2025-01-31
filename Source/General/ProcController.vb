@@ -709,7 +709,7 @@ Public Class ProcController
         For Each procButton In Procs.ToArray
             If procButton.Proc.Process.ProcessName = "cmd" Then
                 For Each process In ProcessHelp.GetChilds(procButton.Proc.Process)
-                    If {"conhost", "vspipe"}.Contains(process.ProcessName) Then
+                    If {"conhost", Package.avs2pipemod.Filename.Base(), Package.vspipe.Filename.Base()}.Contains(process.ProcessName) Then
                         Continue For
                     End If
 

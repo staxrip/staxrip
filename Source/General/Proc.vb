@@ -198,7 +198,7 @@ Public Class Proc
             If Not Process.HasExited Then
                 If Process.ProcessName = "cmd" Then
                     For Each i In ProcessHelp.GetChilds(Process)
-                        If {"conhost", "vspipe", "avs2pipemod64"}.Contains(i.ProcessName) Then
+                        If {"conhost", Package.avs2pipemod.Filename.Base(), Package.vspipe.Filename.Base()}.Contains(i.ProcessName) Then
                             Continue For
                         End If
 

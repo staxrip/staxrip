@@ -1350,6 +1350,15 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
         .Init = 0}
 
+    Property PsySpyRd As New OptionParam With {
+        .Switch = "--spy-rd",
+        .Text = "Alternate Psychovisual Rate Distortion Optimization",
+        .Expanded = True,
+        .IntegerValue = True,
+        .Options = {"0: Off (default)", "1: On"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy,
+        .Init = 0}
+
     Property PsyTemporalFilteringStrength As New OptionParam With {
         .Switch = "--tf-strength",
         .Text = "Temporal Filtering Strength",
@@ -1416,17 +1425,18 @@ Public Class SvtAv1EncParams
                     SframeInterval, SframeMode,
                     ResizeMode, ResizeDenom, ResizeKfDenom, ResizeFrameEvents, ResizeFrameDenoms, ResizeFrameKfDenoms
                 )
+                If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then
+                    Add("PSY Specific 1",
+                        PsyHdr10PlusJson, PsyDolbyVisionRpu,
+                        PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain, PsyTemporalFilteringStrength, PsyKeyframeTemporalFilteringStrength, PsyNoiseNormStrength
+                    )
+                    Add("PSY Specific 2",
+                        PsyFrameLumaBias, PsyMinChromaQmLevel, PsyMaxChromaQmLevel, PsyPsyRd, PsySpyRd
+                    )
+                End If
                 Add("Color Description",
                     ColorPrimaries, TransferCharacteristics, MatrixCoefficients, ColorRange, ChromaSamplePosition, MasteringDisplay, MaxCLL, MaxFALL
                 )
-                If Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy Then
-                    Add("PSY",
-                        PsyHdr10PlusJson, PsyDolbyVisionRpu,
-                        PsyEnableAltCurve, PsySharpness, PsyQpScaleCompressStrength, PsyMax32TxSize, PsyAdaptiveFilmGrain, PsyTemporalFilteringStrength, PsyKeyframeTemporalFilteringStrength, PsyNoiseNormStrength,
-                        PsyFrameLumaBias, PsyMinChromaQmLevel, PsyMaxChromaQmLevel, PsyPsyRd
-                    )
-                End If
-
                 Add("Custom", Custom, CustomFirstPass, CustomSecondPass, CustomThirdPass)
 
                 'ItemsValue = ItemsValue.OrderBy(Function(i) i.Weight).ToList

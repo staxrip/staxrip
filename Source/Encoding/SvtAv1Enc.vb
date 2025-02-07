@@ -765,6 +765,15 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() (EnableVarianceBoost.Visible AndAlso EnableVarianceBoost.Value = 1) OrElse (EnableVarianceBoostPsy.Visible AndAlso EnableVarianceBoostPsy.Value = 1),
         .Init = 5}
 
+    Property VarianceBoostCurve As New OptionParam With {
+        .Switch = "--variance-boost-curve",
+        .Text = "Variance Boost Curve",
+        .Expanded = True,
+        .Options = {"0: Gentle (default)", "1: Low-Medium Contrast Boost Curve", "2: Still Picture Curve, tuned for SSIMULACRA2"},
+        .Values = {"0", "1", "2"},
+        .VisibleFunc = Function() (EnableVarianceBoost.Visible AndAlso EnableVarianceBoost.Value = 1),
+        .Init = 0}
+
     Property AqMode As New OptionParam With {
         .Switch = "--aq-mode",
         .Text = "Adaptive Quantization",
@@ -1404,7 +1413,7 @@ Public Class SvtAv1EncParams
                 )
                 Add("Rate Control",
                     RateControlMode, ConstantRateFactor, QuantizationParameter, TargetBitrate, MaximumBitrate, MaxQp, MinQp,
-                    EnableVarianceBoost, EnableVarianceBoostPsy, VarianceBoostStrength, VarianceOctile,
+                    EnableVarianceBoost, EnableVarianceBoostPsy, VarianceBoostStrength, VarianceOctile, VarianceBoostCurve,
                     PassesVBR, PassesCBR,
                     AqMode, RecodeLoop,
                     EnableQm, EnableQmPsy, QmMax, QmMin, QmMinPsy

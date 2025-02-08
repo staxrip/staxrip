@@ -275,7 +275,7 @@ Public Class CropForm
             If p.Script.Engine = ScriptEngine.AviSynth Then
                 script.Filters.Add(New VideoFilter("Levels", "Levels", "Levels(0, 2.2, 255, 0, 255, coring=true)"))
             Else
-                script.Filters.Add(New VideoFilter("Levels", "Levels", "clip = core.std.Levels(clip, gamma=2.2, planes=0)"))
+                script.Filters.Add(New VideoFilter("Levels", "Levels", "clip = adjust.Tweak(clip, hue=0, sat=1.75, bright=10, cont=1.75)"))
             End If
         End If
 

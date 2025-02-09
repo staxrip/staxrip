@@ -597,12 +597,14 @@ Public Class AppsForm
 
     Sub AddSection(title As String, Optional clickAction As Action = Nothing)
         Dim controlMargin = CInt(FontHeight / 10)
+        Dim headerPadding = CInt(FontHeight / 3)
 
         Dim headerLabel = New LabelEx With {
             .Text = title,
             .Font = New Font(flp.Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold),
             .AutoSize = True,
-            .Margin = New Padding(controlMargin, controlMargin, 0, 0)}
+            .Margin = New Padding(controlMargin, controlMargin, 0, 0),
+            .Padding = New Padding(0, headerPadding, 0, 0)}
 
         Dim contentLabel = If(clickAction IsNot Nothing,
             New ButtonLabel With {

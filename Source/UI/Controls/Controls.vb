@@ -1666,7 +1666,7 @@ Namespace UI
 
             If s.CommandLineHighlighting Then
                 Dim th = ThemeManager.CurrentTheme.General.Controls.CommandLineRichTextBox
-                Dim matches = Regex.Matches(Me.Text, "(?<=\s|^)(--?\w[^\s=]*)([\s=]((?!--?)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
+                Dim matches = Regex.Matches(Me.Text, "(?<=\s|^)(--?\w[^\s=]*)([\s=]((?!--?\D)[^""\s]+|""[^""\n]*"")?)?", RegexOptions.IgnoreCase)
                 For Each m As Match In matches
                     Me.SelectionFormat(m.Groups(1).Index, m.Groups(1).Length, th.ParameterBackColor, th.ParameterForeColor, th.ParameterFontStyles)
 

@@ -356,7 +356,7 @@ Public Class Package
         .Filename = "msvcp100.dll",
         .Description = "Visual C++ 2010 Redistributable.",
         .DownloadURL = "https://www.microsoft.com/en-us/download/details.aspx?id=14632",
-        .Locations = {Folder.System, IO.Path.Combine("Support", "VC")},
+        .Locations = {IO.Path.Combine("Support", "VC"), Folder.System},
         .VersionAllowAny = True,
         .TreePath = "Runtimes"})
 
@@ -365,7 +365,7 @@ Public Class Package
         .Filename = "msvcp110.dll",
         .Description = "Visual C++ 2012 Redistributable.",
         .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=30679",
-        .Locations = {Folder.System, IO.Path.Combine("Support", "VC")},
+        .Locations = {IO.Path.Combine("Support", "VC"), Folder.System},
         .VersionAllowAny = True,
         .TreePath = "Runtimes"})
 
@@ -375,7 +375,7 @@ Public Class Package
         .Description = "Visual C++ 2013 Redistributable.",
         .DownloadURL = "http://www.microsoft.com/en-US/download/details.aspx?id=40784",
         .VersionAllowAny = True,
-        .Locations = {Folder.System, IO.Path.Combine("Support", "VC")},
+        .Locations = {IO.Path.Combine("Support", "VC"), Folder.System},
         .TreePath = "Runtimes"})
 
     Shared Property VisualCpp2022 As Package = Add(New Package With {
@@ -384,7 +384,7 @@ Public Class Package
         .Description = "Visual C++ 2015-2022 Redistributable.",
         .DownloadURL = "https://support.microsoft.com/en-gb/help/2977003/the-latest-supported-visual-c-downloads",
         .VersionAllowAny = True,
-        .Locations = {Folder.System, IO.Path.Combine("Support", "VC")},
+        .Locations = {IO.Path.Combine("Support", "VC"), Folder.System},
         .TreePath = "Runtimes"})
 
     Shared Property Decomb As Package = Add(New PluginPackage With {

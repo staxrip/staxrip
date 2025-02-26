@@ -419,7 +419,7 @@ Public Class GlobalClass
 
                         Dim proceededSources = Await Thumbnailer.RunAsync(cts.Token, p, p.TargetFile)
 
-                        If closingTD?.IsDisposingOrDisposed Then
+                        If closingTD IsNot Nothing AndAlso Not closingTD.IsDisposingOrDisposed Then
                             closingTD.Close()
                         End If
 

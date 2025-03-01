@@ -552,6 +552,39 @@ Public Structure VideoFormat
 End Structure
 
 <Serializable()>
+Public Class CustomCultureInfo
+    Inherits CultureInfo
+
+    Protected Sub New(baseCultureName As String)
+        MyBase.New(baseCultureName)
+    End Sub
+
+    Public Sub New(baseCultureName As String, twoLetterCode As String, threeLetterCode As String, name As String)
+        MyBase.New(baseCultureName)
+
+        Dim cultureField = GetType(CultureInfo).GetField("m_name", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
+        If cultureField IsNot Nothing Then
+            cultureField.SetValue(Me, threeLetterCode)
+        End If
+
+        Dim displayNameField = GetType(CultureInfo).GetField("m_cultureData", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
+        If displayNameField IsNot Nothing Then
+            Dim cultureData = displayNameField.GetValue(Me)
+            Dim displayNameProp = cultureData.GetType().GetField("sLocalizedDisplayName", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
+            displayNameProp?.SetValue(cultureData, name)
+            displayNameProp = cultureData.GetType().GetField("sEnglishDisplayName", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
+            displayNameProp?.SetValue(cultureData, name)
+            displayNameProp = cultureData.GetType().GetField("sISO639Language", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
+            displayNameProp?.SetValue(cultureData, twoLetterCode)
+            displayNameProp = cultureData.GetType().GetField("sISO639Language2", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
+            displayNameProp?.SetValue(cultureData, threeLetterCode)
+            displayNameProp = cultureData.GetType().GetField("sName", Reflection.BindingFlags.NonPublic Or Reflection.BindingFlags.Instance)
+            displayNameProp?.SetValue(cultureData, threeLetterCode)
+        End If
+    End Sub
+End Class
+
+<Serializable()>
 Public Class Language
     Implements IComparable(Of Language)
 
@@ -709,7 +742,10 @@ Public Class Language
                     New Language("pa", True, True),
                     New Language("ms", True, True),
                     New Language("ko", True, True),
-                    New Language(CultureInfo.InvariantCulture, True, True)
+                    New Language(CultureInfo.InvariantCulture, True, True),
+                    New Language(New CustomCultureInfo("zxx", "xx", "zxx", "No Linguistic Content"), False, True),
+                    New Language(New CustomCultureInfo("yue", "zh", "yue", "Chinese (Cantonese)"), False, True),
+                    New Language(New CustomCultureInfo("cmn", "zh", "cmn", "Chinese (Mandarin)"), False, True)
                 }
 
                 Dim current = l.Where(Function(a) a.TwoLetterCode = CultureInfo.CurrentCulture.TwoLetterISOLanguageName).FirstOrDefault
@@ -722,7 +758,7 @@ Public Class Language
 
                 Dim l2 As New List(Of Language)
 
-                For Each i In CultureInfo.GetCultures(CultureTypes.AllCultures)
+                For Each i In CultureInfo.GetCultures(CultureTypes.AllCultures).Where(Function(x) x IsNot CultureInfo.InvariantCulture)
                     l2.Add(New Language(i, False, True))
                 Next
 

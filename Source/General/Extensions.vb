@@ -329,8 +329,11 @@ Module StringExtensions
         If instance = "" Then Return ""
 
         Dim prefix = "\\?\"
+        Dim isEscaped = instance(0) = """"c
 
-        Return If(instance.Length > GlobalClass.MAX_PATH AndAlso Not instance.StartsWith(prefix), prefix + instance, instance)
+        Return If(instance.Length > GlobalClass.MAX_PATH AndAlso Not instance.TrimQuotes().StartsWith(prefix),
+                        If(isEscaped, (prefix + instance.TrimQuotes()).Escape(), prefix + instance),
+                        instance)
     End Function
 
     <Extension()>

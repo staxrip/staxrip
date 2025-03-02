@@ -1579,10 +1579,10 @@ Public Class SvtAv1EncParams
         End If
 
         If includePaths Then
-            Dim input = If(Decoder.Value = 0 AndAlso pipeTool = "automatic", script.Path.Escape.LongPathPrefix, "-")
+            Dim input = If(Decoder.Value = 0 AndAlso pipeTool = "automatic", script.Path.LongPathPrefix.Escape, "-")
 
             sb.Append($" --input {input}")
-            sb.Append($" --output {(targetPath.DirAndBase + chunkName + targetPath.ExtFull).Escape.LongPathPrefix}")
+            sb.Append($" --output {(targetPath.DirAndBase + chunkName + targetPath.ExtFull).LongPathPrefix.Escape}")
             If Decoder.Value = 0 Then sb.Append($" --width {p.Script.Info.Width} --height {p.Script.Info.Height}")
         End If
 

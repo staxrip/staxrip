@@ -3095,43 +3095,62 @@ Partial Public Class MainForm
                     considerationThresholdEnd = p.AutoCropFrameRangeThresholdEnd
                 End If
 
-                Try
-                    g.AddToPath(
-                        Package.Python.Directory,
-                        Package.VapourSynth.Directory,
-                        Package.vspipe.Directory,
-                        Package.AviSynth.Directory,
-                        Package.FFTW.Directory,
-                        Path.Combine(Folder.Startup, "Apps", "Support", "VC"))
+                Dim parameters = $"{selectionMode} {selectionValue} {considerationThresholdBegin} {considerationThresholdEnd} {luminanceThreshold.ToInvariantString()} {vfw}"
+                Dim savingFilePath = Path.Combine(p.TempDir, "autocrop.tmp")
+                Dim fileLines = If(savingFilePath.FileExists(), File.ReadAllLines(savingFilePath), {""})
+                Dim fileParameters = If(fileLines.Length > 0, fileLines(0), "")
+                Dim values = If(fileLines.Length > 1, fileLines(1), "")
+                Dim valuesPattern = "(\d+),(\d+),(\d+),(\d+)"
+                Dim redo = Not (Regex.IsMatch(values, valuesPattern) AndAlso parameters.Equals(fileParameters))
 
-                    Using proc As New Proc
-                        proc.Header = "Auto Crop"
-                        proc.SkipString = "%"
-                        proc.Package = Package.AutoCrop
-                        proc.Arguments = $"{p.SourceScript.Path.Escape} {selectionMode} {selectionValue} {considerationThresholdBegin} {considerationThresholdEnd} {luminanceThreshold.ToInvariantString()} {vfw}"
-                        proc.Start()
+                If redo Then
+                    Try
+                        g.AddToPath(
+                            Package.Python.Directory,
+                            Package.VapourSynth.Directory,
+                            Package.vspipe.Directory,
+                            Package.AviSynth.Directory,
+                            Package.FFTW.Directory,
+                            Path.Combine(Folder.Startup, "Apps", "Support", "VC"))
 
-                        Dim match = Regex.Match(proc.Log.ToString, "(\d+),(\d+),(\d+),(\d+)")
+                        Using proc As New Proc
+                            proc.Header = "Auto Crop"
+                            proc.SkipString = "%"
+                            proc.Package = Package.AutoCrop
+                            proc.Arguments = $"{p.SourceScript.Path.Escape} {parameters}"
+                            proc.Start()
 
-                        If match.Success Then
-                            g.SetCrop(match.Groups(1).Value.ToInt, match.Groups(2).Value.ToInt, match.Groups(3).Value.ToInt, match.Groups(4).Value.ToInt, p.AutoCropSideMode, p.ForcedOutputModDirection, False)
-                        End If
-                    End Using
-                Catch ex As SkipException
-                    Log.WriteLine("AutoCrop skipped...")
-                    Log.Save()
-                    ProcController.Aborted = False
-                Catch ex As AbortException
-                    Log.WriteLine("AutoCrop aborted...")
-                    Log.Save()
-                    ProcController.Aborted = False
-                Catch ex As ErrorAbortException
-                    Log.WriteLine("AutoCrop aborted...")
-                    Log.Save()
-                    ProcController.Aborted = False
-                Catch ex As Exception
-                    Throw ex
-                End Try
+                            Dim m = Regex.Match(proc.Log.ToString(), valuesPattern)
+                            If m.Success Then
+                                Try
+                                    values = m.Value
+                                    Dim content = parameters & Environment.NewLine & values
+                                    content.WriteFileUTF8(savingFilePath)
+                                Catch ex As Exception
+                                End Try
+                            End If
+                        End Using
+                    Catch ex As SkipException
+                        Log.WriteLine("AutoCrop skipped...")
+                        Log.Save()
+                        ProcController.Aborted = False
+                    Catch ex As AbortException
+                        Log.WriteLine("AutoCrop aborted...")
+                        Log.Save()
+                        ProcController.Aborted = False
+                    Catch ex As ErrorAbortException
+                        Log.WriteLine("AutoCrop aborted...")
+                        Log.Save()
+                        ProcController.Aborted = False
+                    Catch ex As Exception
+                        Throw ex
+                    End Try
+                End If
+
+                Dim match = Regex.Match(values, valuesPattern)
+                If match.Success Then
+                    g.SetCrop(match.Groups(1).Value.ToInt, match.Groups(2).Value.ToInt, match.Groups(3).Value.ToInt, match.Groups(4).Value.ToInt, p.AutoCropSideMode, p.ForcedOutputModDirection, False)
+                End If
             End If
 
             SetCropFilter()

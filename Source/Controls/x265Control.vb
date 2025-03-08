@@ -229,6 +229,11 @@ Public Class x265Control
     Sub UpdateMenu()
         cms.Items.ClearAndDisplose
         Dim offset = If(Encoder.QualityMode, 0, 1)
+        Dim add = Sub(path As String, action As Action, isSelected As Boolean, help As String)
+                      Dim item = MenuItemEx.Add(cms.Items, path & "  ", action, help)
+                      'item.Font = New Font(item.Font, If(isSelected, FontStyle.Bold, FontStyle.Regular))
+                      item.CheckState = If(isSelected, CheckState.Checked, CheckState.Unchecked)
+                  End Sub
 
         If lv.SelectedItems.Count > 0 Then
             Dim selectedIndex = lv.SelectedIndices(0)
@@ -236,52 +241,48 @@ Public Class x265Control
                 Case 0 - offset
                     Dim param = Params.Quant
                     For Each def In QualityDefinitions
-                        Dim item = MenuItemEx.Add(cms.Items, def.Value.ToInvariantString() & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}  ", "  "), Sub() SetQuality(selectedIndex, def.Value), def.Tooltip)
-                        item.Font = If(param.Value = def.Value, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        Dim p = def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}", "")
+                        add(p, Sub() SetQuality(selectedIndex, def.Value), param.Value = def.Value, def.Tooltip)
                     Next
                 Case 1 - offset
                     Dim param = Params.Preset
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetPreset(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        add(param.Options(temp), Sub() SetPreset(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 2 - offset
                     Dim param = Params.Tune
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetTune(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        add(param.Options(temp), Sub() SetTune(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 3 - offset
                     Dim param = Params.AQmode
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetAqMode(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        add(param.Options(temp), Sub() SetAqMode(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 4 - offset
                     Dim param = Params.DolbyVisionProfile
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetDolbyVisionProfile(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        add(param.Options(temp), Sub() SetDolbyVisionProfile(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 5 - offset
                     Dim param = Params.Range
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetRange(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        add(param.Options(temp), Sub() SetRange(selectedIndex, temp), param.Value = temp, "")
                     Next
             End Select
         End If
     End Sub
 
-    Sub SetQuality(index As Integer, v As Double)
-        Params.Quant.Value = v
+    Sub SetQuality(index As Integer, value As Double)
+        Params.Quant.Value = value
 
-        lv.Items(index).SubItems(1).Text = GetQualityCaption(v)
+        lv.Items(index).SubItems(1).Tag = GetQualityCaption(value)
+        lv.Items(index).SubItems(1).Text = GetQualityCaption(value)
         lv.Items(index).Selected = False
 
         UpdateControls()
@@ -294,6 +295,7 @@ Public Class x265Control
         Params.ApplyPresetValues()
         Params.ApplyTuneValues()
 
+        lv.Items(index).SubItems(1).Tag = value.ToString
         lv.Items(index).SubItems(1).Text = value.ToString
         lv.Items(index).Selected = False
 
@@ -307,6 +309,7 @@ Public Class x265Control
         Params.ApplyPresetValues()
         Params.ApplyTuneValues()
 
+        lv.Items(index).SubItems(1).Tag = value.ToString
         lv.Items(index).SubItems(1).Text = value.ToString
         lv.Items(index).Selected = False
 
@@ -317,6 +320,7 @@ Public Class x265Control
     Sub SetAqMode(index As Integer, value As Integer)
         Params.AQmode.Value = value
 
+        lv.Items(index).SubItems(1).Tag = value.ToString
         lv.Items(index).SubItems(1).Text = value.ToString
         lv.Items(index).Selected = False
 

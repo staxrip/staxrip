@@ -232,6 +232,11 @@ Public Class SvtAv1EncAppControl
     Sub UpdateMenu()
         cms.Items.ClearAndDisplose
         Dim offset = If(Params.RateControlMode.Value = SvtAv1EncAppRateMode.Quality, 0, 1)
+        Dim add = Sub(path As String, action As Action, isSelected As Boolean, help As String)
+                      Dim item = MenuItemEx.Add(cms.Items, path & "  ", action, help)
+                      'item.Font = New Font(item.Font, If(isSelected, FontStyle.Bold, FontStyle.Regular))
+                      item.CheckState = If(isSelected, CheckState.Checked, CheckState.Unchecked)
+                  End Sub
 
         If lv.SelectedItems.Count > 0 Then
             Dim selectedIndex = lv.SelectedIndices(0)
@@ -239,29 +244,26 @@ Public Class SvtAv1EncAppControl
                 Case 0 - offset
                     Dim param = Params.QuantizationParameter
                     For Each def In QualityDefinitions
-                        Dim item = MenuItemEx.Add(cms.Items, def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}  ", "  "), Sub() SetQuality(selectedIndex, def.Value), def.Tooltip)
-                        item.Font = If(param.Value = def.Value, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        Dim p = def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}", "")
+                        add(p, Sub() SetQuality(selectedIndex, def.Value), param.Value = def.Value, def.Tooltip)
                     Next
                 Case 1 - offset
                     Dim param = Params.Preset
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetPreset(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        add(param.Options(temp), Sub() SetPreset(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 2 - offset
                     Dim param = Params.Tune
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetTune(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        add(param.Options(temp), Sub() SetTune(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 3 - offset
                     Dim param = Params.FastDecode
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetFastDecode(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        add(param.Options(temp), Sub() SetFastDecode(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 4 - offset
                     Dim param = Params.Lookahead
@@ -271,8 +273,8 @@ Public Class SvtAv1EncAppControl
                         Dim upperBound = lowerBound + 9
                         Dim category = If(temp <= 0, "", $"{lowerBound:00} - {upperBound:00} | ")
                         Dim def = If(temp = CInt(param.InitialValue), "  (default)", "")
-                        Dim item = MenuItemEx.Add(cms.Items, category + temp.ToInvariantString() + def + "  ", Sub() SetLookahead(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        Dim p = category + temp.ToInvariantString() + def
+                        add(p, Sub() SetLookahead(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 5 - offset
                     Dim param = Params.FilmGrain
@@ -282,8 +284,8 @@ Public Class SvtAv1EncAppControl
                         Dim upperBound = lowerBound + 9
                         Dim category = If(temp = 0, "", $"{lowerBound:00} - {upperBound:00} | ")
                         Dim def = If(temp = CInt(param.InitialValue), "  (default)", "")
-                        Dim item = MenuItemEx.Add(cms.Items, category + temp.ToInvariantString() + def + "  ", Sub() SetFilmGrain(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
+                        Dim p = category + temp.ToInvariantString() + def
+                        add(p, Sub() SetFilmGrain(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case Else
                     Throw New NotSupportedException(NameOf(selectedIndex))
@@ -291,11 +293,11 @@ Public Class SvtAv1EncAppControl
         End If
     End Sub
 
-    Sub SetQuality(index As Integer, v As Double)
-        Params.ConstantRateFactor.Value = CInt(v)
-        Params.QuantizationParameter.Value = CInt(v)
+    Sub SetQuality(index As Integer, value As Double)
+        Params.ConstantRateFactor.Value = CInt(value)
+        Params.QuantizationParameter.Value = CInt(value)
 
-        lv.Items(index).SubItems(1).Text = GetQualityCaption(v)
+        lv.Items(index).SubItems(1).Text = GetQualityCaption(value)
         lv.Items(index).Selected = False
 
         UpdateControls()

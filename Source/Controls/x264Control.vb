@@ -1,4 +1,5 @@
 ﻿
+Imports System.Web.UI.WebControls.WebParts
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
 
@@ -230,60 +231,71 @@ Public Class x264Control
     Sub UpdateMenu()
         cms.Items.ClearAndDisplose
         Dim offset = If(Encoder.QualityMode, 0, 1)
+        Dim add = Sub(path As String, action As Action, isSelected As Boolean, help As String)
+                      Dim item = MenuItemEx.Add(cms.Items, path & "  ", action, help)
+                      'item.Font = New Font(item.Font, If(isSelected, FontStyle.Bold, FontStyle.Regular))
+                      item.CheckState = If(isSelected, CheckState.Checked, CheckState.Unchecked)
+                  End Sub
 
         If lv.SelectedItems.Count > 0 Then
-            Select Case lv.SelectedIndices(0)
+            Dim selectedIndex = lv.SelectedIndices(0)
+            Select Case selectedIndex
                 Case 0 - offset
+                    Dim param = Params.Quant
                     For Each def In QualityDefinitions
-                        cms.Items.Add(New MenuItemEx(def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $" - {def.Text}      ", "      "), Sub() SetQuality(def.Value), def.Tooltip) With {.Font = If(Params.Quant.Value = def.Value, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())})
+                        Dim p = def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}", "")
+                        add(p, Sub() SetQuality(selectedIndex, def.Value), param.Value = def.Value, def.Tooltip)
                     Next
                 Case 1 - offset
-                    For x = 0 To Params.Preset.Options.Length - 1
+                    Dim param = Params.Preset
+                    For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        cms.Items.Add(New MenuItemEx(Params.Preset.Options(x) + "      ", Sub() SetPreset(temp), "x264 slower compares to x265 medium") With {.Font = If(Params.Preset.Value = x, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())})
+                        add(param.Options(temp), Sub() SetPreset(selectedIndex, temp), param.Value = temp, "x264 slower compares to x265 medium")
                     Next
                 Case 2 - offset
-                    For x = 0 To Params.Tune.Options.Length - 1
+                    Dim param = Params.Tune
+                    For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        cms.Items.Add(New MenuItemEx(Params.Tune.Options(x) + "      ", Sub() SetTune(temp)) With {.Font = If(Params.Tune.Value = x, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())})
+                        add(param.Options(temp), Sub() SetTune(selectedIndex, temp), param.Value = temp, "")
                     Next
             End Select
         End If
     End Sub
 
-    Sub SetQuality(v As Double)
-        Params.Quant.Value = v
+    Sub SetQuality(index As Integer, value As Double)
+        Params.Quant.Value = value
 
-        lv.Items(0).SubItems(1).Text = GetQualityCaption(v)
-        lv.Items(0).Selected = False
+        lv.Items(index).SubItems(1).Tag = GetQualityCaption(value)
+        lv.Items(index).SubItems(1).Text = GetQualityCaption(value)
+        lv.Items(index).Selected = False
 
         UpdateControls()
         Encoder.UpdateTargetFile()
     End Sub
 
-    Sub SetPreset(value As Integer)
-        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
-
+    Sub SetPreset(index As Integer, value As Integer)
         Params.Preset.Value = value
+
         Params.ApplyValues(True)
         Params.ApplyValues(False)
 
-        lv.Items(1 - offset).SubItems(1).Text = value.ToString
-        lv.Items(1 - offset).Selected = False
+        lv.Items(index).SubItems(1).Tag = value.ToString
+        lv.Items(index).SubItems(1).Text = value.ToString
+        lv.Items(index).Selected = False
 
         UpdateControls()
         Encoder.UpdateTargetFile()
     End Sub
 
-    Sub SetTune(value As Integer)
-        Dim offset = If(Params.Mode.Value = x264RateMode.Quality, 0, 1)
-
+    Sub SetTune(index As Integer, value As Integer)
         Params.Tune.Value = value
+
         Params.ApplyValues(True)
         Params.ApplyValues(False)
 
-        lv.Items(2 - offset).SubItems(1).Text = value.ToString
-        lv.Items(2 - offset).Selected = False
+        lv.Items(index).SubItems(1).Tag = value.ToString
+        lv.Items(index).SubItems(1).Text = value.ToString
+        lv.Items(index).Selected = False
 
         UpdateControls()
         Encoder.UpdateTargetFile()

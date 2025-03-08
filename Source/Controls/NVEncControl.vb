@@ -1,4 +1,5 @@
 ﻿
+Imports System.Security.Cryptography
 Imports System.Web.UI.WebControls.WebParts
 Imports StaxRip.UI
 Imports StaxRip.VideoEncoderCommandLine
@@ -230,6 +231,11 @@ Public Class NVEncControl
     Sub UpdateMenu()
         cms.Items.ClearAndDisplose
         Dim offset = If(Encoder.QualityMode, 0, 1)
+        Dim add = Sub(path As String, action As Action, isSelected As Boolean, help As String)
+                      Dim item = MenuItemEx.Add(cms.Items, path & "  ", action, help)
+                      'item.Font = New Font(item.Font, If(isSelected, FontStyle.Bold, FontStyle.Regular))
+                      item.CheckState = If(isSelected, CheckState.Checked, CheckState.Unchecked)
+                  End Sub
 
         If lv.SelectedItems.Count > 0 Then
             Dim selectedIndex = lv.SelectedIndices(0)
@@ -242,52 +248,46 @@ Public Class NVEncControl
                     If Params.VbrQuality.Visible Then param = Params.VbrQuality
                     If param IsNot Nothing Then
                         For Each def In QualityDefinitions
-                            Dim item = MenuItemEx.Add(cms.Items, def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}  ", "  "), Sub() SetQuality(selectedIndex, def.Value), def.Tooltip)
-                            item.Font = If(param.Value = def.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                            Dim p = def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}", "")
+                            add(p, Sub() SetQuality(selectedIndex, def.Value), param.Value = def.Value, def.Tooltip)
                         Next
                     End If
                 Case 1 - offset
                     Dim param = Params.Mode
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetMode(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        add(param.Options(temp), Sub() SetMode(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 2 - offset
                     Dim param = Params.Preset
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetPreset(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        add(param.Options(temp), Sub() SetPreset(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 3 - offset
                     Dim param = Params.Tune
                     If Params.TuneH264.Visible Then param = Params.TuneH264
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetTune(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        add(param.Options(temp), Sub() SetTune(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 4 - offset
                     Dim param = Params.OutputDepth
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetOutputDepth(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        add(param.Options(temp), Sub() SetOutputDepth(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 5 - offset
                     Dim param = If(Params.DolbyVisionProfileAV1.Visible, Params.DolbyVisionProfileAV1, Params.DolbyVisionProfileH265)
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetDolbyVisionProfile(param, selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        add(param.Options(temp), Sub() SetDolbyVisionProfile(param, selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case 6 - offset
                     Dim param = Params.ColorRange
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
-                        Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetColorRange(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        add(param.Options(temp), Sub() SetColorRange(selectedIndex, temp), param.Value = temp, "")
                     Next
                 Case Else
                     Throw New NotSupportedException(NameOf(selectedIndex))
@@ -298,6 +298,7 @@ Public Class NVEncControl
     Sub SetMode(index As Integer, value As Integer)
         Params.Mode.Value = value
 
+        lv.Items(index).SubItems(1).Tag = value.ToString()
         lv.Items(index).SubItems(1).Text = value.ToString()
         lv.Items(index).Selected = False
 
@@ -310,6 +311,7 @@ Public Class NVEncControl
         If Params.QP.Visible Then Params.QP.Value = v
         If Params.VbrQuality.Visible Then Params.VbrQuality.Value = v
 
+        lv.Items(index).SubItems(1).Tag = GetQualityCaption(v)
         lv.Items(index).SubItems(1).Text = GetQualityCaption(v)
         lv.Items(index).Selected = False
 
@@ -320,6 +322,7 @@ Public Class NVEncControl
     Sub SetPreset(index As Integer, value As Integer)
         Params.Preset.Value = value
 
+        lv.Items(index).SubItems(1).Tag = value.ToString()
         lv.Items(index).SubItems(1).Text = value.ToString()
         lv.Items(index).Selected = False
 
@@ -331,6 +334,7 @@ Public Class NVEncControl
         If Params.Tune.Visible Then Params.Tune.Value = value
         If Params.TuneH264.Visible Then Params.TuneH264.Value = value
 
+        lv.Items(index).SubItems(1).Tag = value.ToString()
         lv.Items(index).SubItems(1).Text = value.ToString()
         lv.Items(index).Selected = False
 
@@ -341,6 +345,7 @@ Public Class NVEncControl
     Sub SetOutputDepth(index As Integer, value As Integer)
         Params.OutputDepth.Value = value
 
+        lv.Items(index).SubItems(1).Tag = value.ToString()
         lv.Items(index).SubItems(1).Text = value.ToString()
         lv.Items(index).Selected = False
 
@@ -351,6 +356,7 @@ Public Class NVEncControl
     Sub SetDolbyVisionProfile(param As OptionParam, index As Integer, value As Integer)
         param.Value = value
 
+        lv.Items(index).SubItems(1).Tag = value.ToString()
         lv.Items(index).SubItems(1).Text = value.ToString
         lv.Items(index).Selected = False
 
@@ -361,6 +367,7 @@ Public Class NVEncControl
     Sub SetColorRange(index As Integer, value As Integer)
         Params.ColorRange.Value = value
 
+        lv.Items(index).SubItems(1).Tag = value.ToString()
         lv.Items(index).SubItems(1).Text = value.ToString
         lv.Items(index).Selected = False
 

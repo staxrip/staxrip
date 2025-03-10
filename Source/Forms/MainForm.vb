@@ -3959,10 +3959,10 @@ Public Class MainForm
                 BlockSourceTextBoxTextChanged = False
             End If
 
-            If codeLower.Contains("cachefile") AndAlso p.TempDir <> "" AndAlso New DirectoryInfo(p.TempDir)?.Name?.EndsWithEx("_temp") Then
-                g.ffmsindex(p.SourceFile, Path.Combine(p.TempDir, g.GetSourceBase + ".ffindex"))
-            Else
-                g.ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
+            Dim cachePath = If(codeLower.Contains("cachefile") AndAlso p.TempDir <> "", Path.Combine(p.TempDir, g.GetSourceBase + ".ffindex"), p.SourceFile + ".ffindex")
+
+            If Not cachePath.FileExists() Then
+                g.ffmsindex(p.SourceFile, cachePath)
             End If
         ElseIf codeLower.Contains("lwlibavvideosource(") OrElse codeLower.Contains("lwlibavsource(") Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then

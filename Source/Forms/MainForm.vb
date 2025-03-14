@@ -2064,7 +2064,7 @@ Public Class MainForm
 
                 If FileTypes.Audio.Contains(ap.File.Ext) Then
                     If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
-                        ap.Delay = g.ExtractDelay(ap.File)
+                        ap.Delay += g.ExtractDelay(ap.File)
                     End If
 
                     If ap.StreamName = "" AndAlso ap.File.Contains("{") Then

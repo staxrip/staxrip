@@ -1159,7 +1159,7 @@ Public Class MuxerForm
         ap.File = path
 
         If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
-            ap.Delay = g.ExtractDelay(ap.File)
+            ap.Delay += g.ExtractDelay(ap.File)
         End If
 
         Dim trackname = g.ExtractTrackNameFromFilename(path)

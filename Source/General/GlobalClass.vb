@@ -923,9 +923,9 @@ Public Class GlobalClass
 
         Dim commentary = audioTrack.AudioProfile.Commentary
         Dim [default] = audioTrack.AudioProfile.Default
+        'Dim delay = audioTrack.AudioProfile.Delay
         Dim file = audioTrack.AudioProfile.File
         Dim forced = audioTrack.AudioProfile.Forced
-        Dim delay = audioTrack.AudioProfile.Delay
         Dim language = audioTrack.AudioProfile.Language
         Dim stream = audioTrack.AudioProfile.Stream
         Dim streamName = audioTrack.AudioProfile.StreamName
@@ -939,7 +939,7 @@ Public Class GlobalClass
         audioTrack.AudioProfile.Stream = stream
         audioTrack.AudioProfile.StreamName = If(audioTrack.AudioProfile.StreamName = "", streamName, audioTrack.AudioProfile.StreamName)
         audioTrack.AudioProfile.Streams = streams
-        audioTrack.AudioProfile.Delay = delay
+        audioTrack.AudioProfile.Delay += g.ExtractDelay(file)
 
         audioTrack.NameLabel.Refresh()
         g.MainForm.UpdateSizeOrBitrate()

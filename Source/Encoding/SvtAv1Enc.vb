@@ -513,7 +513,7 @@ Public Class SvtAv1EncParams
     Property FramesToBeEncoded As New NumParam With {
         .HelpSwitch = "--frames",
         .Text = "Frames To Be Encoded",
-        .Config = {0, Integer.MaxValue, 100},
+        .Config = {Integer.MinValue, Integer.MaxValue, 100},
         .Init = 0}
 
     Property FramesToBeSkipped As New NumParam With {
@@ -1615,10 +1615,10 @@ Public Class SvtAv1EncParams
                 sb.Append($" --skip {FramesToBeSkipped.Value}")
             End If
 
-            If includePaths AndAlso Not IsCustom(pass, "--frames") Then
+            If Not IsCustom(pass, "--frames") Then
                 Dim n = If(FramesToBeEncoded.Value > 0,
-                    Math.Min(p.TargetFrames - FramesToBeSkipped.Value, FramesToBeEncoded.Value),
-                    p.TargetFrames - FramesToBeSkipped.Value)
+                           Math.Min(p.TargetFrames - FramesToBeSkipped.Value, FramesToBeEncoded.Value),
+                           Math.Max(p.TargetFrames - FramesToBeSkipped.Value + FramesToBeEncoded.Value, 0))
 
                 sb.Append($" --frames {n}")
             End If

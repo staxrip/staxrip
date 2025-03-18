@@ -1121,14 +1121,14 @@ Public Class CommandManager
         For Each i As Command In Commands.Values
             Dim switch = i.MethodInfo.Name.Replace(" ", "")
             switch = switch.ToUpperInvariant
-            Dim test = value.ToUpperInvariant
+            Dim preparedValue = value.ToUpperInvariant.Unescape()
 
-            If test = "-" + switch Then
+            If preparedValue = "-" + switch Then
                 Process(i.MethodInfo.Name, New List(Of Object))
                 Return True
             Else
-                If test.StartsWith("-" + switch + ":") Then
-                    Dim args As New List(Of Object)(g.MainForm.ParseCommandLine(value.Right(":"), ","c))
+                If preparedValue.StartsWith("-" + switch + ":") Then
+                    Dim args As New List(Of Object)(g.MainForm.ParseCommandLine(value.Unescape().Right(":"), ","c))
                     Dim params = i.MethodInfo.GetParameters
 
                     For x = 0 To params.Length - 1

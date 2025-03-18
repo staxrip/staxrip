@@ -222,6 +222,13 @@ Module StringExtensions
     End Function
 
     <Extension()>
+    Function Unescape(instance As String) As String
+        If instance.Length < 2 Then Return instance
+        If instance(0) <> """" AndAlso instance(instance.Length - 1) <> """" Then Return instance
+        Return instance.Substring(1, instance.Length - 2)
+    End Function
+
+    <Extension()>
     Function ExistingParent(instance As String) As String
         Dim ret = instance.Parent
 

@@ -423,7 +423,7 @@ Public MustInherit Class BasicVideoEncoder
             For x = 0 To a.Length - 1
                 Application.DoEvents()
                 For Each param In params.Items
-                    If param.ImportAction IsNot Nothing AndAlso param.GetSwitches.Contains(a(x)) Then
+                    If param.ImportAction IsNot Nothing AndAlso param.GetSwitches.Contains(a(x), StringComparer.OrdinalIgnoreCase) Then
                         If a.Length - 1 > x Then
                             param.ImportAction.Invoke(a(x), a(x + 1))
                         Else
@@ -436,7 +436,7 @@ Public MustInherit Class BasicVideoEncoder
                     If TypeOf param Is BoolParam Then
                         Dim boolParam = DirectCast(param, BoolParam)
 
-                        If boolParam.GetSwitches.Contains(a(x)) Then
+                        If boolParam.GetSwitches.Contains(a(x), StringComparer.OrdinalIgnoreCase) Then
                             Dim b = boolParam.DefaultValue
                             Dim i = 0
 
@@ -455,7 +455,7 @@ Public MustInherit Class BasicVideoEncoder
                     ElseIf TypeOf param Is NumParam Then
                         Dim numParam = DirectCast(param, NumParam)
 
-                        If numParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x AndAlso a(x + 1).IsDouble Then
+                        If numParam.GetSwitches.Contains(a(x), StringComparer.OrdinalIgnoreCase) AndAlso a.Length - 1 > x AndAlso a(x + 1).IsDouble Then
                             numParam.Value = a(x + 1).ToDouble
                             params.RaiseValueChanged(param)
                             Exit For
@@ -463,7 +463,7 @@ Public MustInherit Class BasicVideoEncoder
                     ElseIf TypeOf param Is OptionParam Then
                         Dim optionParam = DirectCast(param, OptionParam)
 
-                        If optionParam.GetSwitches.Contains(a(x)) Then
+                        If optionParam.GetSwitches.Contains(a(x), StringComparer.OrdinalIgnoreCase) Then
                             If a.Length - 1 > x Then
                                 If optionParam.IntegerValue Then
                                     For xOpt = 0 To optionParam.Options.Length - 1
@@ -500,7 +500,7 @@ Public MustInherit Class BasicVideoEncoder
                     ElseIf TypeOf param Is StringParam Then
                         Dim stringParam = DirectCast(param, StringParam)
 
-                        If stringParam.GetSwitches.Contains(a(x)) AndAlso a.Length - 1 > x Then
+                        If stringParam.GetSwitches.Contains(a(x), StringComparer.OrdinalIgnoreCase) AndAlso a.Length - 1 > x Then
                             stringParam.Value = a(x + 1).Trim(""""c)
                             params.RaiseValueChanged(param)
                             Exit For

@@ -865,8 +865,18 @@ Public Class SvtAv1EncParams
         .Expanded = True,
         .Options = {"-2: ~5 seconds", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
         .Values = {"-2", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
-        .VisibleFunc = Function() Not ConstantRateFactor.Visible,
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla AndAlso Not ConstantRateFactor.Visible,
         .ValueChangedAction = Sub(x) KeyIntCrf.Value = x,
+        .Init = 0}
+
+    Property KeyIntPsy As New OptionParam With {
+        .Switch = "--keyint",
+        .Text = "Keyint / GOP Size",
+        .Expanded = True,
+        .Options = {"-2: ~10 seconds", "0: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+        .Values = {"-2", "0", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy AndAlso Not ConstantRateFactor.Visible,
+        .ValueChangedAction = Sub(x) KeyIntCrfPsy.Value = x,
         .Init = 0}
 
     Property KeyIntCrf As New OptionParam With {
@@ -875,8 +885,18 @@ Public Class SvtAv1EncParams
         .Expanded = True,
         .Options = {"-2: ~5 seconds", "-1: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
         .Values = {"-2", "-1", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
-        .VisibleFunc = Function() ConstantRateFactor.Visible,
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Vanilla AndAlso ConstantRateFactor.Visible,
         .ValueChangedAction = Sub(x) KeyInt.Value = x,
+        .Init = 0}
+
+    Property KeyIntCrfPsy As New OptionParam With {
+        .Switch = "--keyint",
+        .Text = "Keyint / GOP Size",
+        .Expanded = True,
+        .Options = {"-2: ~10 seconds", "-1: ""infinite""", "1 second", "2 seconds", "3 seconds", "4 seconds", "5 seconds", "6 seconds", "7 seconds", "8 seconds", "9 seconds", "10 seconds"},
+        .Values = {"-2", "-1", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "10s"},
+        .VisibleFunc = Function() Package.SvtAv1EncAppType = SvtAv1EncAppType.Psy AndAlso ConstantRateFactor.Visible,
+        .ValueChangedAction = Sub(x) KeyIntPsy.Value = x,
         .Init = 0}
 
     Property IntraRefreshRate As New OptionParam With {
@@ -1419,7 +1439,7 @@ Public Class SvtAv1EncParams
                     EnableQm, EnableQmPsy, QmMax, QmMin, QmMinPsy
                 )
                 Add("GOP size/type",
-                    KeyInt, KeyIntCrf,
+                    KeyInt, KeyIntCrf, KeyIntPsy, KeyIntCrfPsy,
                     IntraRefreshRate, SceneChangeDetection, Lookahead, HierarchicalLevels, PredStructure, EnableDg, StartupMgSize
                 )
                 Add("AV1 Specific 1",

@@ -481,7 +481,7 @@ Public Class x265Params
     Property Mode As New OptionParam With {
         .Name = "Mode",
         .Text = "Mode",
-        .Switches = {"--bitrate", "--qp", "--crf", "--pass", "--stats"},
+        .Switches = {""},
         .Options = {"Bitrate", "Quantizer", "Quality", "Two Pass", "Three Pass"},
         .Value = 2}
 

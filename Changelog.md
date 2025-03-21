@@ -25,7 +25,7 @@ v2.46.0 (2025-03-22)
     - Before it was always taken over when title in template was empty
 - General: Add "Code at bottom" option box additional to existing "Code at top" option ([#1468](/../../issues/1468))
 - Audio: Preserve delay from template when opening source files ([#1614](/../../issues/1614))
-- Audio: Preserve delay when changine profiles ([#1614](/../../issues/1614))
+- Audio: Preserve delay when changing profiles ([#1614](/../../issues/1614))
 - Command: Add new "LoadTemplateWithSelectionDialog" command
 - CommandLine: Add new "-LoadSourceFilesWithTemplateSelection" parameter
 - CommandLine: Fix mishandling parameters in quotes
@@ -44,7 +44,7 @@ v2.46.0 (2025-03-22)
         - Drag&Drop operations on main window and/or...
         - Opening Menu on main window
     - Template Subfolders are supported
-    - The current (or last) template can alo be selected from the list
+    - The current (or last) template can also be selected from the list
 - UI: Add "Warn on identical audio" to switchable Assistant options
 - UI: Add ffmpeg Progress Highlighting
 - UI: Improve error message if invalid commands shall be executed ([#1595](/../../issues/1595))

@@ -1518,8 +1518,8 @@ Partial Public Class MainForm
     Function LoadTemplateWithSelectionDialog(source As String, timeout As Integer, Optional templateFolder As String = "") As Boolean
         If Not templateFolder.DirExists Then templateFolder = Folder.Template
         If Not templateFolder.DirExists Then Return False
-        Dim directories = Directory.GetDirectories(templateFolder, "*", SearchOption.TopDirectoryOnly)
-        Dim templates = Directory.GetFiles(templateFolder, "*.srip", SearchOption.TopDirectoryOnly)?.Where(Function(x) x <> g.StartupTemplatePath)?.OrderBy(Function(x) x)
+        Dim directories = Directory.GetDirectories(templateFolder, "*", SearchOption.TopDirectoryOnly).ToList()
+        Dim templates = Directory.GetFiles(templateFolder, "*.srip", SearchOption.TopDirectoryOnly)?.Where(Function(x) x <> g.StartupTemplatePath)?.OrderBy(Function(x) x).ToList()
         If Not templates?.Any() Then Return True
 
         Using td As New TaskDialog(Of String)
@@ -1534,7 +1534,9 @@ Partial Public Class MainForm
             Dim isStartup = Not isModified AndAlso p.TemplateName = s.StartupTemplate
 
             If p.SourceFile = "" Then
-                td.AddCommand("Current Template", "CURRENT")
+                Dim postfix = If(isStartup, "(Startup and Current Template)", "(Current Template)")
+                Dim name = If(isModified, "Current Template", $"{p.TemplateName}  {postfix}")
+                td.AddCommand(name, "CURRENT")
             Else
                 td.AddCommand("Last set Template", "LAST")
             End If
@@ -1550,7 +1552,10 @@ Partial Public Class MainForm
             For i = 0 To templates.Count() - 1
                 Dim text = templates(i).Replace(Folder.Template, "").Trim(Path.DirectorySeparatorChar).Replace(Path.DirectorySeparatorChar, $" {Path.DirectorySeparatorChar} ")
                 text = text.Substring(0, text.LastIndexOf(".srip"))
-                td.AddCommand(text, templates(i))
+
+                If text <> p.TemplateName OrElse isModified Then
+                    td.AddCommand(text, templates(i))
+                End If
             Next
 
             For i = 0 To directories.Count() - 1

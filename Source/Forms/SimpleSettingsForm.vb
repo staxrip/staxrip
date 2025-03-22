@@ -118,7 +118,8 @@ Public Class SimpleSettingsForm
 
     Sub New(title As String, ParamArray helpParagraphs As String())
         InitializeComponent()
-        ScaleClientSize(40, 28)
+        SetMinimumSize(33, 25)
+        ScaleClientSize(40, 32.75)
         Text = $"{title} - {g.DefaultCommands.GetApplicationDetails()}"
         Me.HelpParagraphs = helpParagraphs
         SimpleUI.Tree.Select()

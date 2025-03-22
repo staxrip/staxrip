@@ -7,7 +7,7 @@ Imports System.Threading.Tasks
 Imports StaxRip.UI
 
 Public Class eac3toForm
-    Inherits DialogBase
+    Inherits SizeSavingDialogBase
 
 #Region " Designer "
     Friend WithEvents CommandLink1 As StaxRip.UI.CommandLink
@@ -547,7 +547,6 @@ Public Class eac3toForm
         Me.CancelButton = Me.bnCancel
         Me.ClientSize = New System.Drawing.Size(1301, 1033)
         Me.Controls.Add(Me.tlpMain)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.HelpButton = False
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(10)
@@ -591,8 +590,8 @@ Public Class eac3toForm
     Sub New(proj As Project)
         MyBase.New()
         InitializeComponent()
+        RestoreClientSize(40, 30)
         Project = proj
-        ScaleClientSize(40, 30)
         Owner = g.MainForm
 
         cbAudioOutput.Sorted = True

@@ -213,6 +213,16 @@ Namespace UI
         End Sub
     End Class
 
+    Public Class SizeSavingDialogBase
+        Inherits DialogBase
+
+        Sub New()
+            MyBase.New()
+            SaveAndLoadSize = True
+            FormBorderStyle = FormBorderStyle.Sizable
+        End Sub
+    End Class
+
     Public Class ListBag(Of T)
         Implements IComparable(Of ListBag(Of T))
 

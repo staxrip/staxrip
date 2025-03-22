@@ -4134,8 +4134,6 @@ Public Class MainForm
         Dim restartID = GetRestartID()
 
         Using form As New SimpleSettingsForm("Settings")
-            form.ScaleClientSize(38, 26)
-
             Dim ui = form.SimpleUI
             ui.Store = s
 
@@ -5057,7 +5055,7 @@ Public Class MainForm
             "In order to select a template to be loaded on program startup go to:",
             "Tools > Settings > General > Templates > Default Template")
 
-            form.ScaleClientSize(38, 28)
+            form.ScaleClientSize(38, 30)
 
             Dim ui = form.SimpleUI
             ui.Store = p

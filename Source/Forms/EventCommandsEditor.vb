@@ -223,7 +223,7 @@ Public Class EventCommandsEditor
         MyBase.New()
         InitializeComponent()
 
-        ScaleClientSize(25, 20)
+        ScaleClientSize(40, 23)
 
         lv.UpButton = bnUp
         lv.DownButton = bnDown

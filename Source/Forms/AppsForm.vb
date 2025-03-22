@@ -7,7 +7,7 @@ Imports System.Threading.Tasks
 Imports StaxRip.UI
 
 Public Class AppsForm
-    Inherits DialogBase
+    Inherits SizeSavingDialogBase
     Implements IUpdateUI
 
 #Region " Designer "

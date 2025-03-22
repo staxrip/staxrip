@@ -7,7 +7,7 @@ Imports System.Threading.Tasks
 Imports StaxRip.UI
 
 Public Class MuxerForm
-    Inherits DialogBase
+    Inherits SizeSavingDialogBase
 
 #Region " Designer "
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider

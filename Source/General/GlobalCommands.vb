@@ -518,14 +518,14 @@ Public Class GlobalCommands
     End Sub
 
     <Command("Loads multiple source files.")>
-    Sub LoadSourceFiles(<DispName("Source File Paths")> paths As String)
-        g.MainForm.OpenVideoSourceFiles(paths.Split({";"}, StringSplitOptions.RemoveEmptyEntries))
+    Sub LoadSourceFiles(<DispName("Source File Paths")> paths As String())
+        g.MainForm.OpenVideoSourceFiles(paths)
     End Sub
 
     <Command("Loads multiple source files after asking for template that shall be used.")>
-    Sub LoadSourceFilesWithTemplateSelection(<DispName("Source File Paths")> paths As String)
+    Sub LoadSourceFilesWithTemplateSelection(<DispName("Source File Paths")> paths As String())
         If g.MainForm.LoadTemplateWithSelectionDialog(paths) Then
-            g.MainForm.OpenVideoSourceFiles(paths.Split({";"}, StringSplitOptions.RemoveEmptyEntries))
+            g.MainForm.OpenVideoSourceFiles(paths)
         End If
     End Sub
 

@@ -1513,6 +1513,14 @@ Public Class MainForm
         Next
     End Sub
 
+    Function LoadTemplateWithSelectionDialog(sources As IEnumerable(Of String), Optional templateFolder As String = "") As Boolean
+        Return LoadTemplateWithSelectionDialog(sources?.Join("; "), templateFolder)
+    End Function
+
+    Function LoadTemplateWithSelectionDialog(sources As String(), Optional templateFolder As String = "") As Boolean
+        Return LoadTemplateWithSelectionDialog(sources?.Join("; "), templateFolder)
+    End Function
+
     <Command("Loads a template that you can choose from via dialog.")>
     Function LoadTemplateWithSelectionDialog(Optional source As String = "", Optional templateFolder As String = "") As Boolean
         If Not templateFolder.DirExists Then templateFolder = Folder.Template

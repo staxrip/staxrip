@@ -943,9 +943,10 @@ Public Class Command
 
         For Each iParameterInfo In MethodInfo.GetParameters
             If Not iParameterInfo.ParameterType.IsValueType AndAlso
-                Not iParameterInfo.ParameterType Is GetType(String) Then
+                Not iParameterInfo.ParameterType Is GetType(String) AndAlso
+                Not iParameterInfo.ParameterType.IsArray Then
 
-                Throw New Exception("Methods must have string or value type params.")
+                Throw New Exception("Methods must have string, value type and array params.")
             End If
 
             Dim a = DirectCast(iParameterInfo.GetCustomAttributes(GetType(DefaultValueAttribute), False), DefaultValueAttribute())
@@ -957,6 +958,8 @@ Public Class Command
                     l.Add("")
                 ElseIf iParameterInfo.ParameterType.IsValueType Then
                     l.Add(Activator.CreateInstance(iParameterInfo.ParameterType))
+                ElseIf iParameterInfo.ParameterType.IsArray Then
+                    l.Add(Array.CreateInstance(iParameterInfo.ParameterType.GetElementType(), 0))
                 End If
             End If
         Next
@@ -1128,12 +1131,34 @@ Public Class CommandManager
                 Return True
             Else
                 If preparedValue.StartsWith("-" + switch + ":") Then
-                    Dim args As New List(Of Object)(g.MainForm.ParseCommandLine(value.Unescape().Right(":"), ","c))
+                    Dim strippedLine = value.Unescape().Right(":")
+                    Dim args As New List(Of Object)(g.MainForm.ParseCommandLine(strippedLine, ","c))
                     Dim params = i.MethodInfo.GetParameters
 
                     For x = 0 To params.Length - 1
                         If args.Count > x Then
-                            args(x) = TypeDescriptor.GetConverter(params(x).ParameterType).ConvertFrom(args(x))
+                            Dim pt = params(x).ParameterType
+                            Dim stringArg = TryCast(args(x), String)
+
+                            If pt.IsArray AndAlso stringArg IsNot Nothing Then
+                                'Dim splits = stringArg.Split(";"c)
+                                Dim splits = g.MainForm.ParseCommandLine(stringArg, ";"c)
+                                Dim et = pt.GetElementType()
+                                Dim tc = TypeDescriptor.GetConverter(et)
+
+                                If tc IsNot Nothing AndAlso tc.CanConvertFrom(GetType(String)) Then
+                                    Dim a = Array.CreateInstance(et, splits.Length)
+                                    For y = 0 To splits.Length - 1
+                                        a.SetValue(tc.ConvertFromString(splits(y).Trim()), y)
+                                    Next
+
+                                    args(x) = a
+                                Else
+                                    Throw New InvalidOperationException($"Cannot convert from String to {et}.")
+                                End If
+                            Else
+                                args(x) = TypeDescriptor.GetConverter(pt).ConvertFrom(args(x))
+                            End If
                         End If
                     Next
 

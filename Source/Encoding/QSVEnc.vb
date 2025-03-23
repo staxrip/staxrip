@@ -1146,7 +1146,7 @@ Public Class QSVEnc
                 Case "icq", "la-icq"
                     ret += " --" + Mode.ValueText + " " & CInt(Quality.Value)
                 Case "cqp"
-                    ret += If(QPAdvanced.Value, $"--cqp {QPI.Value.ToInvariantString()}:{QPP.Value.ToInvariantString()}:{QPB.Value.ToInvariantString()}", $" --cqp {QP.Value.ToInvariantString()}")
+                    ret += If(QPAdvanced.Value, $" --cqp {QPI.Value.ToInvariantString()}:{QPP.Value.ToInvariantString()}:{QPB.Value.ToInvariantString()}", $" --cqp {QP.Value.ToInvariantString()}")
 
                     If QPOffsetI.Value <> QPOffsetI.DefaultValue OrElse
                         QPOffsetP.Value <> QPOffsetP.DefaultValue OrElse

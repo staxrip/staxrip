@@ -1743,9 +1743,9 @@ Public Class VCEEnc
             Select Case Mode.Value
                 Case 0
                     If Codec.Value = 2 Then
-                        ret += If(QPAdvanced.Value, $"--cqp {QPIAV1.Value.ToInvariantString()}:{QPPAV1.Value.ToInvariantString()}:{QPBAV1.Value.ToInvariantString()}", $" --cqp {QPAV1.Value.ToInvariantString()}")
+                        ret += If(QPAdvanced.Value, $" --cqp {QPIAV1.Value.ToInvariantString()}:{QPPAV1.Value.ToInvariantString()}:{QPBAV1.Value.ToInvariantString()}", $" --cqp {QPAV1.Value.ToInvariantString()}")
                     Else
-                        ret += If(QPAdvanced.Value, $"--cqp {QPI.Value.ToInvariantString()}:{QPP.Value.ToInvariantString()}:{QPB.Value.ToInvariantString()}", $" --cqp {QP.Value.ToInvariantString()}")
+                        ret += If(QPAdvanced.Value, $" --cqp {QPI.Value.ToInvariantString()}:{QPP.Value.ToInvariantString()}:{QPB.Value.ToInvariantString()}", $" --cqp {QP.Value.ToInvariantString()}")
                     End If
                 Case 1
                     ret += " --cbr " & rate

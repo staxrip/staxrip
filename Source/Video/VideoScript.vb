@@ -492,10 +492,15 @@ clipname.set_output()" + BR
 
                                 If Not plugin.Dependencies.NothingOrEmpty Then
                                     For Each iDependency In plugin.Dependencies
-                                        Dim fp2 = Package.Items.Values.OfType(Of PluginPackage).Where(Function(pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx()).FirstOrDefault()?.Path
+                                        Dim dep = Package.Items.Values.OfType(Of PluginPackage).FirstOrDefault(Function (pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx())
+                                        Dim fp2 = dep?.Path
 
                                         If fp2.Ext = "dll" Then
                                             load = "LoadPlugin(""" + fp2 + """)" + BR
+
+                                            If Not dep.RequirementsFulfilled Then
+                                                load = "# !! The following line is commented out by StaxRip, because the system does not fulfill all requirements to execute it !!" & BR & "# " & load
+                                            End If
 
                                             If Not scriptLower.Contains(load.ToLowerInvariant) AndAlso
                                                 Not loadCode.ToLowerInvariant.Contains(load.ToLowerInvariant) AndAlso
@@ -528,10 +533,15 @@ clipname.set_output()" + BR
 
                                 If Not plugin.Dependencies.NothingOrEmpty Then
                                     For Each iDependency In plugin.Dependencies
-                                        Dim fp2 = Package.Items.Values.OfType(Of PluginPackage).Where(Function(pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx()).FirstOrDefault()?.Path
+                                        Dim dep = Package.Items.Values.OfType(Of PluginPackage).FirstOrDefault(Function (pack) pack.Filename.ToLowerEx() = iDependency.ToLowerEx())
+                                        Dim fp2 = dep?.Path
 
                                         If fp2.Ext = "dll" Then
                                             Dim load = "LoadPlugin(""" + fp2 + """)" + BR
+
+                                            If Not dep.RequirementsFulfilled Then
+                                                load = "# !! The following line is commented out by StaxRip, because the system does not fulfill all requirements to execute it !!" & BR & "# " & load
+                                            End If
 
                                             If Not scriptLower.Contains(load.ToLowerInvariant) AndAlso
                                                 Not loadCode.ToLowerInvariant.Contains(load.ToLowerInvariant) AndAlso

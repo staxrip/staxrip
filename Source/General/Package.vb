@@ -599,12 +599,12 @@ Public Class Package
         .Name = "SvtAv1EncApp",
         .Location = IO.Path.Combine("Encoders", "SvtAv1EncApp"),
         .Filename = "SvtAv1EncApp.exe",
-        .WebURL = "https://github.com/gianni-rosato/svt-av1-psy",
-        .HelpURL = "https://github.com/gianni-rosato/svt-av1-psy/blob/master/Docs/Parameters.md",
+        .WebURL = "https://github.com/BlueSwordM/svt-av1-psyex",
+        .HelpURL = "https://github.com/BlueSwordM/svt-av1-psyex/blob/master/Docs/Parameters.md",
         .DownloadURL = "https://github.com/Patman86/SVT-AV1-Mod-by-Patman/releases",
         .RequiredFunc = Function() TypeOf p.VideoEncoder Is SvtAv1Enc,
         .HelpSwitch = "--help",
-        .Description = "Intel AV1 encoder."})
+        .Description = "The Scalable Video Technology for AV1 (SVT-AV1 Encoder and Decoder) with perceptual enhancements for psychovisually optimal AV1 encoding."})
 
     Shared Property Rav1e As Package = Add(New Package With {
         .Name = "rav1e",

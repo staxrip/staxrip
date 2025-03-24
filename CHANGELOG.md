@@ -14,6 +14,29 @@ v2.5x.0 (not published yet)
 -->
 
 
+v2.52.6 (2026-09-27)
+====================
+
+- Audio: Add Project Options to take over title as well as default and forced flags ([#1741](/../../issues/1741))
+- x264: Add "--tune touhou" parameter value
+- Update tools
+    - DeeZy v1.3.15
+    - DoVi_Tool v2.3.4
+    - eac3to v3.66
+    - MKVToolNix v102.0
+    - NVEncC v9.35
+    - Python v3.14.7
+    - QSVEncC v8.30
+    - TrueHDD v0.6.2
+    - VapourSynth R79
+    - VCEEncC v9.19
+    - vvencFFapp v1.14.0 r734-b1cfb2a
+- Update Dual plugins
+    - BestSource R21
+    - ffms2 r2415
+    - L-SMASH-Works v1310
+
+
 v2.52.5 (2026-08-08)
 ====================
 

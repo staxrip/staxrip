@@ -224,8 +224,8 @@ Module StringExtensions
     <Extension()>
     Function Unescape(instance As String) As String
         If instance.Length < 2 Then Return instance
-        If instance(0) <> """" AndAlso instance(instance.Length - 1) <> """" Then Return instance
-        Return instance.Substring(1, instance.Length - 2)
+        If instance(0) = """" AndAlso instance(instance.Length - 1) = """" Then Return instance.Substring(1, instance.Length - 2)
+        Return instance
     End Function
 
     <Extension()>

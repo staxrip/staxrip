@@ -1696,7 +1696,11 @@ Public Class MainForm
                 path = g.StartupTemplatePath
             End If
 
-            p = If(proj, SafeSerialization.Deserialize(New Project(), path))
+            If proj IsNot Nothing AndAlso g.LastModifiedTemplate IsNot Nothing AndAlso ObjectHelp.GetCompareString(proj).Equals(ObjectHelp.GetCompareString(g.LastModifiedTemplate)) Then
+                proj = ObjectHelp.GetCopy(g.LastModifiedTemplate)
+            End If
+
+            p = If(proj IsNot Nothing, proj, SafeSerialization.Deserialize(New Project(), path))
             Log = p.Log
 
             FileHelp.Delete(IO.Path.Combine(Folder.Temp, "staxrip.log"))
@@ -1789,7 +1793,7 @@ Public Class MainForm
     End Sub
 
     Sub SetLastModifiedTemplate()
-        If p.SourceFile <> "" Then Exit Sub
+        If p.SourceFile <> "" OrElse Not p.Log.IsEmpty Then Exit Sub
 
         g.LastModifiedTemplate = ObjectHelp.GetCopy(Of Project)(p)
     End Sub

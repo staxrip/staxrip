@@ -2716,7 +2716,7 @@ Public Class MainForm
             Dim nonDvdFiles = files.Where(Function(x) Not Regex.IsMatch(x, ".*VTS_\d\d_\d\.vob", RegexOptions.IgnoreCase))
 
             If nonDvdFiles.Count() > 1 Then
-                Dim psi = New ProcessStartInfo(Application.ExecutablePath, "-LoadSourceFiles:""" + nonDvdFiles.Skip(1).Join(""";""", False) + """") With {
+                Dim psi = New ProcessStartInfo(Application.ExecutablePath, $"-LoadTemplate:""{p.TemplateName}"" -LoadSourceFiles:""{nonDvdFiles.Skip(1).Join(""";""", False)}""") With {
                     .UseShellExecute = False,
                     .CreateNoWindow = True
                 }

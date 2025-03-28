@@ -4074,7 +4074,7 @@ Public Class MainForm
 
                     If p.Script.IsAviSynth Then
                         proc.File = Package.ffmpeg.Path
-                        proc.Arguments = "-i " + p.SourceFile.LongPathPrefix.Escape + " -hide_banner"
+                        proc.Arguments = "-i " + p.Script.Path.LongPathPrefix.Escape + " -hide_banner"
                     Else
                         proc.File = Package.vspipe.Path
                         proc.Arguments = p.Script.Path.Escape + " NUL -i"

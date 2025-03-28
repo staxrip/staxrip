@@ -6812,7 +6812,7 @@ Public Class MainForm
 
         Dim files As New List(Of String)
         Dim showTemplateSelection = (s.ShowTemplateSelection And (ShowTemplateSelectionMode.Always Or ShowTemplateSelectionMode.CommandLine)) <> 0
-        Dim forcedTemplateLoading = args.Where(Function(s) s.ToLowerInvariant().StartsWith("-" & NameOf(LoadTemplate).ToLowerInvariant())).Any()
+        Dim forcedTemplateLoading = args.Where(Function(s) s.ToLowerInvariant().Unescape().StartsWith("-" & NameOf(LoadTemplate).ToLowerInvariant())).Any()
 
         For Each arg In args.Skip(1)
             Try

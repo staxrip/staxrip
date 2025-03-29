@@ -761,8 +761,7 @@ Public Class VCEEnc
 
                     Add("Basic", Codec, Mode,
                         OutputDepth,
-                        New OptionParam With {.Switch = "--preset", .Text = "Preset", .Options = {"Fast", "Balanced", "Slow"}, .Init = 1, .VisibleFunc = Function() Codec.ValueText <> "av1"},
-                        New OptionParam With {.Switch = "--preset", .Text = "Preset", .Options = {"Fast", "Balanced", "Slow", "Slower"}, .Init = 1, .VisibleFunc = Function() Codec.ValueText = "av1"},
+                        New OptionParam With {.Switch = "--preset", .Text = "Preset", .Options = {"Fast", "Balanced", "Slow", "Slower"}, .Init = 1},
                         New OptionParam With {.Switch = "--profile", .Name = "profile264", .VisibleFunc = Function() Codec.ValueText = "h264", .Text = "Profile", .Options = {"Automatic", "Baseline", "Main", "High", "High444"}},
                         New OptionParam With {.Switch = "--profile", .Name = "profile265", .VisibleFunc = Function() Codec.ValueText = "hevc", .Text = "Profile", .Options = {"Automatic", "Main", "Main10", "Main444"}},
                         New OptionParam With {.Switch = "--profile", .Name = "profile265", .VisibleFunc = Function() Codec.ValueText = "av1", .Text = "Profile", .Options = {"Automatic", "Main"}},

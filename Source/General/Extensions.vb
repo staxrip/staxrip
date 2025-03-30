@@ -7,6 +7,8 @@ Imports System.Runtime.CompilerServices
 Imports System.Security.Cryptography
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports System.Threading
+Imports System.Threading.Tasks
 
 Imports Microsoft.Win32
 Imports StaxRip.UI
@@ -606,11 +608,22 @@ Module StringExtensions
 
     <Extension()>
     Sub WriteFile(instance As String, path As String, encoding As Encoding)
-        Try
-            File.WriteAllText(path, instance, encoding)
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
+        Dim counter = 0
+
+        While True
+            Try
+                File.WriteAllText(path, instance, encoding)
+                Exit While
+            Catch ex As Exception
+                Thread.Sleep(150)
+                counter += 1
+
+                If counter > 9 Then
+                    g.ShowException(ex)
+                    Exit While
+                End If
+            End Try
+        End While
     End Sub
 
     <Extension()>

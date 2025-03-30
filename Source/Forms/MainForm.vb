@@ -1598,6 +1598,7 @@ Public Class MainForm
 
         g.RaiseAppEvent(ApplicationEvent.BeforeJobAdding)
 
+        sourcefile = sourcefile.TrimQuotes()
         Dim batchProject = ObjectHelp.GetCopy(Of Project)(p)
         batchProject.BatchMode = True
         batchProject.SourceFiles = {sourcefile}.ToList

@@ -318,7 +318,7 @@ Module StringExtensions
     Function Dir(instance As String) As String
         If instance = "" Then Return ""
 
-        Return Path.GetDirectoryName(instance)
+        Return Path.GetDirectoryName(instance.TrimQuotes())
     End Function
 
     <Extension()>

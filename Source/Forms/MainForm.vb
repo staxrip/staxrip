@@ -4052,6 +4052,7 @@ Public Class MainForm
 
     Sub Indexing()
         If p.SourceFile.Ext.EqualsAny("avs", "vpy") Then Exit Sub
+        If Not p.Script.Path.FileExists Then p.Script.Synchronize(False, False)
 
         Dim codeLower = p.Script.GetFilter("Source").Script.ToLowerInvariant
 

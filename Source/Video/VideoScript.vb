@@ -422,10 +422,10 @@ clipname.set_output()" + BR
                     "core.std.LoadPlugin(r""" + plugin.Path + """, altsearchpath=True)")
 
                 If Not plugin.RequirementsFulfilled Then
-                    code += "# !! The following line is commented out by StaxRip, because the system does not fulfill all requirements to execute it !!" & BR & "#"
+                    code += "# !! The following line is commented out by StaxRip, because the system does not fulfill all requirements to execute it !!" & BR & "# "
                 End If
 
-                code = line + BR + code
+                code += line + BR
             End If
         End If
     End Sub

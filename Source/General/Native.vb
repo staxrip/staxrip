@@ -238,7 +238,10 @@ Public Class Taskbar
     End Sub
 
     Sub SetValue(progressValue As Double, progressMax As Double)
-        Taskbar.SetProgressValue(Handle, CULng(Math.Max(1, Math.Truncate(progressValue))), CULng(Math.Truncate(progressMax)))
+        If progressValue < 1 Then progressValue = 1
+        If progressValue > progressMax Then progressValue = progressMax
+
+        Taskbar.SetProgressValue(Handle, CULng(Math.Truncate(progressValue)), CULng(Math.Truncate(progressMax)))
     End Sub
 End Class
 

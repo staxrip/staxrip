@@ -703,7 +703,7 @@ Public Class ProcController
                 Dim eventProgress = Fix(progress * 10) / 10
                 Dim eventLastProgress = Fix(LastProgress * 10) / 10
                 Dim now = Date.Now
-                If eventProgress > eventLastProgress AndAlso eventProgress < 100.0F AndAlso _lastTriggerWhileProcessing < now.AddSeconds(-s.EventWhileProcessingCooldown) Then
+                If eventProgress > eventLastProgress AndAlso eventProgress < 100.0F AndAlso _lastTriggerWhileProcessing.AddSeconds(s.EventWhileProcessingCooldown) < now Then
                     _lastTriggerWhileProcessing = Date.Now
                     Task.Run(Sub() g.RaiseAppEvent(ApplicationEvent.WhileProcessing, Proc.CommandLine, eventProgress, value))
                 End If

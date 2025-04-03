@@ -44,11 +44,11 @@ Public Class StaxRipUpdate
         SetFirstRunOnCurrentVersion()
 
         Dim hours = Conversion.Fix((DateTime.Now - s.FirstRunOnVersion.Value).TotalHours)
-        Dim diffHoursToCheck = 12
-        diffHoursToCheck = If(hours < 96, 6, diffHoursToCheck)
-        diffHoursToCheck = If(hours < 72, 4, diffHoursToCheck)
-        diffHoursToCheck = If(hours < 48, 2, diffHoursToCheck)
-        diffHoursToCheck = If(hours < 24, 1, diffHoursToCheck)
+        Dim diffHoursToCheck = 24
+        diffHoursToCheck = If(hours < 96, 12, diffHoursToCheck)
+        diffHoursToCheck = If(hours < 72, 9, diffHoursToCheck)
+        diffHoursToCheck = If(hours < 48, 6, diffHoursToCheck)
+        diffHoursToCheck = If(hours < 24, 3, diffHoursToCheck)
 
         Dim proceed = False
         proceed = (Date.Now - s.CheckForUpdatesLastRequest).TotalHours >= diffHoursToCheck OrElse proceed

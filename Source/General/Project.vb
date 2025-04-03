@@ -142,6 +142,7 @@ Public Class Project
     Public TargetWidth As Integer = 1920
     Public TempDir As String
     Public TemplateName As String = ""
+    Public TemplatePath As String = ""
     Public Thumbnailer As Boolean = False
     Public ThumbnailerSettings As ObjectStorage
     Public TrimCode As String = ""

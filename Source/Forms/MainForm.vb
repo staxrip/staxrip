@@ -1701,12 +1701,22 @@ Public Class MainForm
         Try
             SetLastModifiedTemplate()
 
-            If String.IsNullOrWhiteSpace(path) OrElse Not File.Exists(path) Then
-                path = g.StartupTemplatePath
-            End If
-
             If proj IsNot Nothing AndAlso g.LastModifiedTemplate IsNot Nothing AndAlso ObjectHelp.GetCompareString(proj).Equals(ObjectHelp.GetCompareString(g.LastModifiedTemplate)) Then
                 proj = ObjectHelp.GetCopy(g.LastModifiedTemplate)
+                If String.IsNullOrWhiteSpace(path) Then path = proj.TemplatePath
+
+                If path = "" Then
+                    Dim templates = Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories).Where(Function(x) x.Base() = proj.TemplateName).ToList()
+                    If templates.Count = 0 Then
+                        g.ShowException(New FileNotFoundException(), "Template not found", $"'{proj.TemplateName}' was not found")
+                    ElseIf templates.Count = 1 Then
+                        path = templates.First()
+                    Else
+                        g.ShowException(New Exception("Too many templates with the same name found and could not choose."))
+                    End If
+                End If
+            ElseIf String.IsNullOrWhiteSpace(path) OrElse Not File.Exists(path) Then
+                path = g.StartupTemplatePath
             End If
 
             p = If(proj IsNot Nothing, proj, SafeSerialization.Deserialize(New Project(), path))
@@ -1727,6 +1737,7 @@ Public Class MainForm
             If path.StartsWith(Folder.Template) Then
                 g.ProjectPath = Nothing
                 p.TemplateName = path.Base
+                p.TemplatePath = path
                 p.BatchMode = False
             Else
                 g.ProjectPath = path
@@ -4641,8 +4652,10 @@ Public Class MainForm
             }
 
             If box.Show = DialogResult.OK Then
+                Dim tp = Path.Combine(Folder.Template, p.TemplateName + ".srip")
                 p.TemplateName = box.Value.RemoveChars(Path.GetInvalidFileNameChars)
-                SaveProjectPath(Path.Combine(Folder.Template, p.TemplateName + ".srip"))
+                p.TemplatePath = tp
+                SaveProjectPath(tp)
                 UpdateTemplatesMenuAsync()
 
                 If box.Checked Then

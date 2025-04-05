@@ -2,7 +2,7 @@
 Imports StaxRip.UI
 
 Public Class CommandLineAudioEncoderForm
-    Inherits DialogBase
+    Inherits SizeSavingDialogBase
 
 #Region " Designer "
     Friend WithEvents EditControl As StaxRip.MacroEditorControl
@@ -446,6 +446,7 @@ End Sub
 
     Sub New(profile As BatchAudioProfile)
         InitializeComponent()
+        RestoreClientSize(50, 30)
 
         Me.Profile = profile
         TempProfile = ObjectHelp.GetCopy(Of BatchAudioProfile)(profile)

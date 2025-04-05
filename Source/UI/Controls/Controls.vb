@@ -1847,6 +1847,10 @@ Namespace UI
                     DisabledImage = ImageHelp.GetSymbolImage(value, ControlPaint.DarkDark(ForeDisabledColor))
                     Image = DisabledImage
                 End If
+
+                If value = Symbol.None Then
+                    Image = Nothing
+                End If
             End Set
         End Property
 

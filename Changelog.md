@@ -14,6 +14,13 @@ v2.4x.0 (not published yet)
 -->
 
 
+v2.46.3 (2025-04-06)
+====================
+
+- General: Fix "Save as Template" overwriting the old template instead of creating a new file ([#1640](/../../issues/1640))
+- UI: Fix showing empty icons on buttons
+
+
 v2.46.2 (2025-04-05)
 ====================
 

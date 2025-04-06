@@ -169,6 +169,15 @@ Public MustInherit Class AudioProfile
         End Get
     End Property
 
+    Public Overrides Sub Clean()
+        MyBase.Clean()
+        CommandLines = ""
+        DisplayName = ""
+        File = ""
+        Stream = Nothing
+        Streams.Clear()
+    End Sub
+
     Overridable Sub Reset()
         File = ""
         Language = New Language()

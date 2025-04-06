@@ -364,6 +364,7 @@ Public MustInherit Class VideoEncoder
 
         If name <> "" Then
             encoder.Name = name
+            encoder.Clean()
 
             For Each i In From prof In s.VideoEncoderProfiles.ToArray
                           Where prof.GetType Is encoder.GetType

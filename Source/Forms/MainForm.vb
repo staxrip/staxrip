@@ -4652,10 +4652,9 @@ Public Class MainForm
             }
 
             If box.Show = DialogResult.OK Then
-                Dim tp = Path.Combine(Folder.Template, p.TemplateName + ".srip")
                 p.TemplateName = box.Value.RemoveChars(Path.GetInvalidFileNameChars)
-                p.TemplatePath = tp
-                SaveProjectPath(tp)
+                p.TemplatePath = Path.Combine(Folder.Template, p.TemplateName + ".srip")
+                SaveProjectPath(p.TemplatePath)
                 UpdateTemplatesMenuAsync()
 
                 If box.Checked Then

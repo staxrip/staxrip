@@ -450,11 +450,13 @@ Public Class CodeEditor
         Dim filterTables = MainFlowLayoutPanel.Controls.OfType(Of FilterTable)
         If filterTables.Count = 0 Then Exit Sub
 
+        Dim div = FontHeight * 3
         Dim maxTextWidth = Aggregate i In filterTables Into Max(i.TrimmedTextSize.Width)
+        maxTextWidth = CInt(Math.Ceiling(maxTextWidth / div)) * div
 
         For Each table In filterTables
             Dim sizeRTB As Size
-            sizeRTB.Width = maxTextWidth + FontHeight
+            sizeRTB.Width = maxTextWidth
             sizeRTB.Height = table.TrimmedTextSize.Height
             sizeRTB.Height += If(table.TextSize.Height < table.MaxTextHeight, CInt(table.rtbScript.Font.Height * 1.1), 0)
             table.rtbScript.Size = sizeRTB
@@ -544,13 +546,13 @@ Public Class CodeEditor
 
         ReadOnly Property MaxTextWidth As Integer
             Get
-                Return rtbScript.Font.Height * 100
+                Return CInt(rtbScript.Font.Height * 100 / s.UIScaleFactor)
             End Get
         End Property
 
         ReadOnly Property MaxTextHeight As Integer
             Get
-                Return rtbScript.Font.Height * 15
+                Return CInt(rtbScript.Font.Height * 15 / s.UIScaleFactor)
             End Get
         End Property
 

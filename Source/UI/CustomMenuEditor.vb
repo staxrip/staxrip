@@ -206,7 +206,7 @@ Namespace UI
             '
             'cmsCommand
             '
-            Me.cmsCommand.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+            Me.cmsCommand.Font = FontManager.GetDefaultFont()
             Me.cmsCommand.ImageScalingSize = New System.Drawing.Size(24, 24)
             Me.cmsCommand.Name = "cmsCommand"
             Me.cmsCommand.Size = New System.Drawing.Size(61, 4)
@@ -554,7 +554,7 @@ Namespace UI
             ScaleClientSize(32, 30)
             g.SetRenderer(ToolStrip)
             IsComposited = False
-            ToolStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+            ToolStrip.Font = FontManager.GetDefaultFont()
 
             tsbNew.Image = ImageHelp.GetSymbolImage(Symbol.Page)
             tsbCopy.Image = ImageHelp.GetSymbolImage(Symbol.Copy)

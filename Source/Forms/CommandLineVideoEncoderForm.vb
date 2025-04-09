@@ -76,7 +76,7 @@ Public Class CommandLineVideoEncoderForm
         'CompCheckControl
         '
         Me.CompCheckControl.Dock = DockStyle.Fill
-        Me.CompCheckControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.CompCheckControl.Font = FontManager.GetDefaultFont()
         Me.CompCheckControl.Location = New System.Drawing.Point(15, 422)
         Me.CompCheckControl.Margin = New Padding(15, 15, 15, 0)
         Me.CompCheckControl.Name = "CompCheckControl"
@@ -87,7 +87,7 @@ Public Class CommandLineVideoEncoderForm
         'EncodingControl
         '
         Me.EncodingControl.Dock = DockStyle.Fill
-        Me.EncodingControl.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.EncodingControl.Font = FontManager.GetDefaultFont()
         Me.EncodingControl.Location = New System.Drawing.Point(15, 106)
         Me.EncodingControl.Margin = New Padding(15, 0, 15, 0)
         Me.EncodingControl.Name = "EncodingControl"
@@ -192,7 +192,7 @@ Public Class CommandLineVideoEncoderForm
         Me.AutoScaleMode = AutoScaleMode.Dpi
         Me.ClientSize = New System.Drawing.Size(1393, 809)
         Me.Controls.Add(Me.tlpMain)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Font = FontManager.GetDefaultFont()
         Me.FormBorderStyle = FormBorderStyle.Sizable
         Me.KeyPreview = True
         Me.Margin = New Padding(6)

@@ -111,7 +111,7 @@ Public Class x265Control
         Params = Encoder.Params
 
         cms = New ContextMenuStripEx(components)
-        cms.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        cms.Font = FontManager.GetDefaultFont()
 
         lv.View = View.Details
         lv.HeaderStyle = ColumnHeaderStyle.None
@@ -191,42 +191,42 @@ Public Class x265Control
                     Dim param = Params.Quant
                     For Each def In QualityDefinitions
                         Dim item = MenuItemEx.Add(cms.Items, def.Value.ToInvariantString() & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}  ", "  "), Sub() SetQuality(selectedIndex, def.Value), def.Tooltip)
-                        item.Font = If(param.Value = def.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = def.Value, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 1 - offset
                     Dim param = Params.Preset
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
                         Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetPreset(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 2 - offset
                     Dim param = Params.Tune
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
                         Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetTune(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 3 - offset
                     Dim param = Params.AQmode
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
                         Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetAqMode(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 4 - offset
                     Dim param = Params.DolbyVisionProfile
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
                         Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetDolbyVisionProfile(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 5 - offset
                     Dim param = Params.Range
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
                         Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetRange(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
             End Select
         End If

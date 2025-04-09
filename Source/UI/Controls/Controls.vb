@@ -1008,6 +1008,8 @@ Namespace UI
         End Sub
 
         Sub New(createMenu As Boolean, transparent As Boolean)
+            Font = FontManager.GetCodeFont()
+
             If createMenu Then
                 InitMenu()
             End If
@@ -1536,7 +1538,7 @@ Namespace UI
             Dim minItemSize As Integer = Menu.MinimumSize.Width
 
             For Each mi As MenuItemEx In Menu.Items
-                mi.Font = New Font("Segoe UI", 9 * s.UIScaleFactor, If(Value IsNot Nothing AndAlso Value.Equals(mi.Tag), FontStyle.Bold, FontStyle.Regular))
+                mi.Font = FontManager.GetDefaultFont(9, If(Value IsNot Nothing AndAlso Value.Equals(mi.Tag), FontStyle.Bold, FontStyle.Regular))
                 mi.AutoSize = True
                 minItemSize = Math.Max(minItemSize, mi.Width)
             Next
@@ -1719,7 +1721,7 @@ Namespace UI
 
         Sub CommandLineRichTextBox_HandleCreated(sender As Object, e As EventArgs) Handles Me.HandleCreated
             If Not DesignMode Then
-                Font = g.GetCodeFont
+                Font = FontManager.GetCodeFont()
             End If
         End Sub
 
@@ -3454,7 +3456,7 @@ Namespace UI
             Rtb = New RichTextBoxEx(False, True) With {
                 .BorderStyle = BorderStyle.None,
                 .Dock = DockStyle.Fill,
-                .Font = g.GetCodeFont(9),
+                .Font = FontManager.GetCodeFont(9),
                 .Padding = New Padding(5, 5, 5, 0)
             }
 

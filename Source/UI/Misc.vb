@@ -18,7 +18,7 @@ Namespace UI
         Shadows Property FontHeight As Integer
 
         Sub New()
-            Font = New Font("Segoe UI", 9)
+            Font = FontManager.GetDefaultFont()
             FontHeight = Font.Height
         End Sub
 

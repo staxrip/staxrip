@@ -276,7 +276,7 @@ Public Class AV1Params
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = g.GetCodeFont
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
                       End Sub}
 
     Property CustomSecondPass As New StringParam With {
@@ -284,7 +284,7 @@ Public Class AV1Params
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = g.GetCodeFont
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
                       End Sub}
 
     Property OutputIvf As New BoolParam With {

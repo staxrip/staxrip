@@ -14,7 +14,7 @@ Public Class CodeForm
 
         rtb.ReadOnly = True
         rtb.WordWrap = wordwrap
-        rtb.Font = g.GetCodeFont
+        rtb.Font = FontManager.GetCodeFont()
         rtb.Text = text
 
         Me.Find = find

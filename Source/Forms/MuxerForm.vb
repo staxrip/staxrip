@@ -130,7 +130,7 @@ Public Class MuxerForm
         Me.clcGeneral.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.clcGeneral.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.clcGeneral.Font = FontManager.GetDefaultFont()
         Me.clcGeneral.Location = New System.Drawing.Point(0, 48)
         Me.clcGeneral.Margin = New System.Windows.Forms.Padding(0)
         Me.clcGeneral.Name = "clcGeneral"
@@ -142,7 +142,7 @@ Public Class MuxerForm
         Me.clcVideo.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.clcVideo.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.clcVideo.Font = FontManager.GetDefaultFont()
         Me.clcVideo.Location = New System.Drawing.Point(0, 48)
         Me.clcVideo.Margin = New System.Windows.Forms.Padding(0)
         Me.clcVideo.Name = "clcVideo"

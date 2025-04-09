@@ -1244,13 +1244,18 @@ Module ControlExtensions
     End Sub
 
     <Extension()>
+    Sub ReplaceFontFamily(instance As Control, newFamily As FontFamily)
+        instance.Font = New Font(newFamily, instance.Font.Size, instance.Font.Style, instance.Font.Unit, instance.Font.GdiCharSet)
+    End Sub
+
+    <Extension()>
     Sub SetFontStyle(instance As Control, style As FontStyle)
         instance.Font = New Font(instance.Font.FontFamily, instance.Font.Size, style)
     End Sub
 
     <Extension()>
     Sub SetFontSize(instance As Control, fontSize As Single)
-        instance.Font = New Font(instance.Font.FontFamily, fontSize)
+        instance.Font = New Font(instance.Font.FontFamily, fontSize * s.UIScaleFactor)
     End Sub
 
     <Extension()>
@@ -1276,8 +1281,8 @@ Module ControlExtensions
 
     <Extension()>
     Function SetSymbolAsText(instance As ButtonEx, symbol As Symbol) As ButtonEx
-        Dim awesomePath As String = Path.Combine(Folder.Apps, "Fonts", "FontAwesome.ttf")
-        Dim segoePath As String = Path.Combine(Folder.Apps, "Fonts", "Segoe-MDL2-Assets.ttf")
+        Dim awesomePath As String = Path.Combine(Folder.Fonts, "Icons", "FontAwesome.ttf")
+        Dim segoePath As String = Path.Combine(Folder.Fonts, "Icons", "Segoe-MDL2-Assets.ttf")
 
         Dim fontFilesExist As Boolean = File.Exists(awesomePath) AndAlso File.Exists(segoePath)
         If Not fontFilesExist Then Return Nothing

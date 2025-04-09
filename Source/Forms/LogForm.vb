@@ -9,7 +9,7 @@ Public Class LogForm
         RestoreClientSize(50, 35)
         Text += " - " + p.Log.GetPath
         lb.ItemHeight = FontHeight * 2
-        rtb.Font = g.GetCodeFont
+        rtb.Font = FontManager.GetCodeFont()
         rtb.ReadOnly = True
         rtb.Text = p.Log.GetPath.ReadAllText
         rtb.DetectUrls = False

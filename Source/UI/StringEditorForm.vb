@@ -107,7 +107,7 @@ Namespace UI
             MyBase.New()
             InitializeComponent()
             cbWrap.Checked = True
-            rtb.Font = g.GetCodeFont
+            rtb.Font = FontManager.GetCodeFont()
             ScaleClientSize(41, 24)
             ApplyTheme()
 

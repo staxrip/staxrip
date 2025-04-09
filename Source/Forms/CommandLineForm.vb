@@ -376,7 +376,7 @@ Public Class CommandLineForm
 
     Sub cbGoTo_TextChanged(sender As Object, e As EventArgs) Handles cbGoTo.TextChanged
         If HighlightedControl IsNot Nothing Then
-            HighlightedControl.Font = New Font(HighlightedControl.Font.FontFamily, HighlightedControl.Font.Size, FontStyle.Regular)
+            HighlightedControl.Font = FontManager.GetDefaultFont(HighlightedControl.Font.Size)
             HighlightedControl = Nothing
         End If
 
@@ -478,7 +478,7 @@ Public Class CommandLineForm
 
                 Dim control = visibleItems(SearchIndex).Control
                 SimpleUI.ShowPage(visibleItems(SearchIndex).Page)
-                control.Font = New Font(control.Font.FontFamily, control.Font.Size, FontStyle.Bold)
+                control.Font = FontManager.GetDefaultFont(control.Font.Size, FontStyle.Bold)
                 HighlightedControl = control
                 Exit Sub
             End If

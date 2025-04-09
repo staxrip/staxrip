@@ -774,7 +774,7 @@ Namespace UI
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
             MyBase.OnHandleCreated(e)
             g.SetRenderer(Me)
-            Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+            Font = FontManager.GetDefaultFont()
         End Sub
 
         <DefaultValue(GetType(Form), Nothing)>

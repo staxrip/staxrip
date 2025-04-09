@@ -987,10 +987,10 @@ Public Class MainForm
     Private Const TrackBarInterval As Integer = 16
     Private Const TrackBarTicks As Integer = 4
 
-    Sub New()
+    Sub New(loadSettings As Boolean)
         AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
         g.MainForm = Me
-        LoadSettings()
+        If loadSettings Then g.LoadSettings()
 
         PowerShell.InitCode =
             "Using namespace StaxRip;" + BR +
@@ -1042,7 +1042,7 @@ Public Class MainForm
         tbTargetFile.TextBox.SendMessageCue(rc, False)
 
         MenuStrip.SuspendLayout()
-        MenuStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        MenuStrip.Font = FontManager.GetDefaultFont()
 
         CommandManager.AddCommandsFromObject(Me)
         CommandManager.AddCommandsFromObject(g.DefaultCommands)
@@ -1177,39 +1177,6 @@ Public Class MainForm
         Next
 
         pnEncoder.BackColor = theme.General.Controls.ListView.BackColor
-    End Sub
-
-    Sub LoadSettings()
-        Try
-            Using mutex As New Mutex(False, "staxrip settings file")
-                mutex.WaitOne()
-                s = SafeSerialization.Deserialize(New ApplicationSettings, g.SettingsFile)
-                mutex.ReleaseMutex()
-            End Using
-        Catch ex As Exception
-            Using td As New TaskDialog(Of String)
-                td.Title = "The settings failed to load!"
-                td.Content = ex.Message
-                td.Icon = TaskIcon.Error
-                td.AddButton("Retry")
-                td.AddButton("Reset")
-                td.AddButton("Exit")
-
-                Select Case td.Show
-                    Case "Retry"
-                        LoadSettings()
-                    Case "Reset"
-                        If MsgQuestion("Are you sure you want to reset your settings? Your current settings will be lost!") = DialogResult.OK Then
-                            s = New ApplicationSettings
-                            s.Init()
-                        Else
-                            LoadSettings()
-                        End If
-                    Case Else
-                        Process.GetCurrentProcess.Kill()
-                End Select
-            End Using
-        End Try
     End Sub
 
     Function GetIfoFile() As String
@@ -3189,9 +3156,9 @@ Public Class MainForm
         If Not p.SkippedAssistantTips.Contains(CurrentAssistantTipKey) Then
             If message <> "" Then
                 If message.Length > 130 Then
-                    laTip.SetFontSize(8 * s.UIScaleFactor)
+                    laTip.SetFontSize(8)
                 Else
-                    laTip.SetFontSize(9 * s.UIScaleFactor)
+                    laTip.SetFontSize(9)
                 End If
             End If
 
@@ -3693,8 +3660,8 @@ Public Class MainForm
             gbAssistant.Text = "Add Job"
         End If
 
-        If laTip.Font.Size <> (9 * s.UIScaleFactor) Then
-            laTip.SetFontSize(9 * s.UIScaleFactor)
+        If laTip.Font.Size <> 9 Then
+            laTip.SetFontSize(9)
         End If
 
         laTip.Text = "Click on the button to the right to add a job to the job list."
@@ -4478,15 +4445,15 @@ Public Class MainForm
             uiFallback.Button.ValueChangedAction = Sub(value) s.UIFallback = value
 
             Dim codeFont = ui.AddTextButton()
-            codeFont.Text = "Console Font"
+            codeFont.Text = "Code Font"
             codeFont.Expanded = True
-            codeFont.Field = NameOf(s.CodeFont)
+            codeFont.Edit.Text = s.Fonts(FontCategory.Code)
             codeFont.ClickAction = Sub()
                                        Using td As New TaskDialog(Of FontFamily)
                                            td.Title = "Choose a monospaced font"
                                            td.Symbol = Symbol.Font
 
-                                           For Each ff In FontFamily.Families.Where(Function(x) Not x.Name.ToLowerEx().ContainsAny(" mdl2", " assets", "marlett", "ms outlook", "mt extra", "wingdings 2") AndAlso x.IsStyleAvailable(FontStyle.Regular) AndAlso x.IsMonospace())
+                                           For Each ff In FontManager.GetFontFamilies(FontCategory.Code, True)
                                                td.AddCommand(ff.Name, ff)
                                            Next
 
@@ -4495,6 +4462,48 @@ Public Class MainForm
                                            End If
                                        End Using
                                    End Sub
+            codeFont.Edit.SaveAction = Sub(value As String)
+                                           s.Fonts(FontCategory.Code) = value
+                                           FontManager.Reset()
+                                       End Sub
+
+            Dim defaultFontfamilies = FontManager.GetFontFamilies(FontCategory.Default, True)
+            Dim defaultFont = ui.AddTextButton()
+            defaultFont.Text = "Default Font"
+            defaultFont.Expanded = True
+            defaultFont.Edit.Text = s.Fonts(FontCategory.Default)
+            defaultFont.ClickAction = Sub()
+                                          Using td As New TaskDialog(Of FontFamily)
+                                              td.Title = "Choose a default font"
+                                              td.Symbol = Symbol.Font
+
+                                              For Each ff In defaultFontfamilies
+                                                  td.AddCommand(ff.Name, ff)
+                                              Next
+
+                                              If td.Show IsNot Nothing Then
+                                                  defaultFont.Edit.Text = td.SelectedText
+                                                  Dim family = defaultFontfamilies.FirstOrDefault(Function(x) x.Name = td.SelectedText)
+                                                  If family IsNot Nothing Then
+                                                      For Each control As Control In form.GetAllControls()
+                                                          control.ReplaceFontFamily(family)
+                                                      Next
+                                                  End If
+                                              End If
+                                          End Using
+                                      End Sub
+            defaultFont.Edit.TextChangedAction = Sub(value As String)
+                                                      Dim family = defaultFontfamilies.FirstOrDefault(Function(x) x.Name = value)
+                                                      If family IsNot Nothing Then
+                                                          For Each control As Control In form.GetAllControls()
+                                                              control.ReplaceFontFamily(family)
+                                                          Next
+                                                      End If
+                                                  End Sub
+            defaultFont.Edit.SaveAction = Sub(value As String)
+                                              s.Fonts(FontCategory.Default) = value
+                                              FontManager.Reset()
+                                          End Sub
 
             n = ui.AddNum()
             n.Text = "Scale Factor"
@@ -4507,7 +4516,7 @@ Public Class MainForm
 
             Dim tb = ui.AddTextButton
             tb.Label.Visible = False
-            tb.BrowseFile("ico|*.ico", Path.Combine(Folder.Startup, "Apps", "Icons"))
+            tb.BrowseFile("ico|*.ico", Folder.Icons)
             tb.Edit.Expand = True
             tb.Edit.Text = s.IconFile
             tb.Edit.SaveAction = Sub(value) s.IconFile = value
@@ -4633,6 +4642,11 @@ Public Class MainForm
                 If Icon IsNot g.Icon Then
                     Icon = g.Icon
                 End If
+
+                Dim newFont = FontManager.GetDefaultFont()
+                For Each control As Control In GetAllControls()
+                    control.ReplaceFontFamily(newFont.FontFamily)
+                Next
 
                 FrameServerHelp.AviSynthToolPath()
                 g.SaveSettings()

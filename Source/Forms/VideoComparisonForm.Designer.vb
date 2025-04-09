@@ -53,7 +53,7 @@ Partial Class VideoComparisonForm
         'laFilePath
         '
         Me.laFilePath.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.laFilePath.Font = New Font(g.GetCodeFont(10), FontStyle.Regular)
+        Me.laFilePath.Font = FontManager.GetCodeFont(10)
         Me.laFilePath.Location = New System.Drawing.Point(123, 964)
         Me.laFilePath.Name = "laFilePath"
         Me.laFilePath.Size = New System.Drawing.Size(1330, 48)
@@ -63,7 +63,7 @@ Partial Class VideoComparisonForm
         'laInfo
         '
         Me.laInfo.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.laInfo.Font = New Font(g.GetCodeFont(10), FontStyle.Bold)
+        Me.laInfo.Font = FontManager.GetCodeFont(10, FontStyle.Bold)
         Me.laInfo.Location = New System.Drawing.Point(123, 924)
         Me.laInfo.Name = "laInfo"
         Me.laInfo.Size = New System.Drawing.Size(1330, 48)

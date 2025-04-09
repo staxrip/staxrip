@@ -25,10 +25,9 @@ Public Class ApplicationSettings
     Public CmdlPresetsMP4 As String
     Public CmdlVideoPresetsMP4 As String
     Public CmdlPresetsX264 As String
-    Public CodeFont As String = "Consolas"
     Public CommandLineHighlighting As Boolean = True
     Public CommandLinePreviewMouseUpSearch As Boolean = True
-    Public CommandLinePreviewViaCodeForm As Boolean = True    
+    Public CommandLinePreviewViaCodeForm As Boolean = True
     Public CommandLinePreview As CommandLinePreview = CommandLinePreview.CodePreview
     Public CommandLinePreviewWithLineNumbers As Boolean = True
     Public CropColor As Color
@@ -48,6 +47,9 @@ Public Class ApplicationSettings
     Public ExpandPreviewWindow As Boolean = True
     Public FilterSetupProfiles As List(Of TargetVideoScript)
     Public FirstRunOnVersion As KeyValuePair(Of String, DateTime) = New KeyValuePair(Of String, Date)(g.DefaultCommands.GetApplicationDetails(), DateTime.Now)
+    Public Fonts As Dictionary(Of FontCategory, String) = New Dictionary(Of FontCategory, String) From {
+                                                            {FontCategory.Code, "Roboto Mono"},
+                                                            {FontCategory.Default, "Anuphan"}}
     Public HidePreviewButtons As Boolean
     Public IconFile As String
     Public InvertCtrlKeyOnNextButton As Boolean = False
@@ -224,6 +226,13 @@ Public Class ApplicationSettings
             StartupTemplate = "Automatic Workflow"
         End If
 
+        If Check(Fonts, "Fonts", 1) Then
+            Fonts = New Dictionary(Of FontCategory, String) From {
+                {FontCategory.Code, "Roboto Mono"},
+                {FontCategory.Default, "Anuphan"}
+                }
+        End If
+
         If PackagePaths Is Nothing Then
             PackagePaths = New Dictionary(Of String, String)
         End If
@@ -256,7 +265,7 @@ Public Class ApplicationSettings
         End If
 
         If Check(CmdlPresetsMP4, "MP4 custom command line menu presets", 2) Then
-            CmdlPresetsMP4 = "iPod = -ipod" + BR + 
+            CmdlPresetsMP4 = "iPod = -ipod" + BR +
                              "Streaming = -inter 500" + BR +
                              "Better Seeking = -tight"
         End If

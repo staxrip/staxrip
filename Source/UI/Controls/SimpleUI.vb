@@ -691,6 +691,7 @@ Public Class SimpleUI
         Implements ISimpleUIControl
 
         Property Expand As Boolean Implements ISimpleUIControl.Expand
+        Property TextChangedAction As Action(Of String)
         Property SaveAction As Action(Of String)
         Property WidthFactor As Integer = 10
         Property SimpleUI As SimpleUI
@@ -698,6 +699,7 @@ Public Class SimpleUI
         Sub New(ui As SimpleUI)
             SimpleUI = ui
             AddHandler TextBox.TextChanged, Sub() SimpleUI.RaiseChangeEvent()
+            AddHandler TextBox.TextChanged, Sub() TextChangedAction?.Invoke(TextBox.Text)
             AddHandler SimpleUI.SaveValues, AddressOf Save
         End Sub
 
@@ -952,7 +954,7 @@ Public Class SimpleUI
         Inherits FlowLayoutPanelEx
 
         Sub New()
-            Font = New Font("Segoe UI", 9.0! * s.UIScaleFactor)
+            Font = FontManager.GetDefaultFont()
         End Sub
 
         Protected Overrides Sub OnLayout(levent As LayoutEventArgs)
@@ -1102,7 +1104,7 @@ Public Class SimpleUI
             MyBase.New(ui)
             Button.AutoSizeMode = AutoSizeMode.GrowOnly
             Button.AutoSize = True
-            Button.Font = New Font("Segoe UI", 9.0! * s.UIScaleFactor)
+            Button.Font = FontManager.GetDefaultFont()
             Button.Text = ""
             Button.Height = CInt(Edit.Height / s.UIScaleFactor)
             Button.Width = Button.Height
@@ -1242,7 +1244,7 @@ Public Class SimpleUI
             MyBase.New(ui)
             Button.AutoSizeMode = AutoSizeMode.GrowAndShrink
             Button.AutoSize = True
-            Button.Font = New Font("Segoe UI", 9.0! * s.UIScaleFactor)
+            Button.Font = FontManager.GetDefaultFont()
             Button.Text = "..."
             Controls.Add(Button)
             AddHandler Edit.EnabledChanged, Sub() Button.Enabled = Edit.Enabled

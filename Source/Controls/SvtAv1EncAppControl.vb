@@ -115,7 +115,7 @@ Public Class SvtAv1EncAppControl
         Params = Encoder.Params
 
         cms = New ContextMenuStripEx(components) With {
-            .Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+            .Font = FontManager.GetDefaultFont()
         }
 
         lv.View = View.Details
@@ -196,28 +196,28 @@ Public Class SvtAv1EncAppControl
                     Dim param = Params.QuantizationParameter
                     For Each def In QualityDefinitions
                         Dim item = MenuItemEx.Add(cms.Items, def.Value & If(Not String.IsNullOrWhiteSpace(def.Text), $": {def.Text}  ", "  "), Sub() SetQuality(selectedIndex, def.Value), def.Tooltip)
-                        item.Font = If(param.Value = def.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = def.Value, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 1 - offset
                     Dim param = Params.Preset
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
                         Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetPreset(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 2 - offset
                     Dim param = Params.Tune
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
                         Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetTune(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 3 - offset
                     Dim param = Params.FastDecode
                     For x = 0 To param.Options.Length - 1
                         Dim temp = x
                         Dim item = MenuItemEx.Add(cms.Items, param.Options(temp) + "  ", Sub() SetFastDecode(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 4 - offset
                     Dim param = Params.Lookahead
@@ -228,7 +228,7 @@ Public Class SvtAv1EncAppControl
                         Dim category = If(temp <= 0, "", $"{lowerBound:00} - {upperBound:00} | ")
                         Dim def = If(temp = CInt(param.InitialValue), "  (default)", "")
                         Dim item = MenuItemEx.Add(cms.Items, category + temp.ToInvariantString() + def + "  ", Sub() SetLookahead(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case 5 - offset
                     Dim param = Params.FilmGrain
@@ -239,7 +239,7 @@ Public Class SvtAv1EncAppControl
                         Dim category = If(temp = 0, "", $"{lowerBound:00} - {upperBound:00} | ")
                         Dim def = If(temp = CInt(param.InitialValue), "  (default)", "")
                         Dim item = MenuItemEx.Add(cms.Items, category + temp.ToInvariantString() + def + "  ", Sub() SetFilmGrain(selectedIndex, temp))
-                        item.Font = If(param.Value = temp, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))
+                        item.Font = If(param.Value = temp, FontManager.GetDefaultFont(9, FontStyle.Bold), FontManager.GetDefaultFont())
                     Next
                 Case Else
                     Throw New NotSupportedException(NameOf(selectedIndex))

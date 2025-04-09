@@ -213,6 +213,7 @@
     <Compile Include="Forms\CodeForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="UI\FontManager.vb" />
     <Compile Include="General\AsyncStreamReader.vb" />
     <Compile Include="General\Documentation.vb" />
     <Compile Include="General\DolbyVisionMetadataFile.vb" />
@@ -472,10 +473,6 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
-    <None Include="Fonts\DejaVu Serif.ttf" />
-    <None Include="Fonts\FontAwesome.ttf" />
-    <None Include="Fonts\mikadan.ttf" />
-    <None Include="Fonts\Segoe-MDL2-Assets.ttf" />
     <None Include="packages.config" />
     <None Include="Resources\arrow.png" />
     <None Include="Resources\X.png" />

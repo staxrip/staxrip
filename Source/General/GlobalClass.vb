@@ -49,6 +49,59 @@ Public Class GlobalClass
     Event BeforeProcessing()
     Event WhileProcessing(commandLine As String, percentage As Single, lastProgress As String)
 
+    Sub SaveSettings()
+        Try
+            Using mutex As New Mutex(False, "staxrip settings file")
+                mutex.WaitOne()
+                SafeSerialization.Serialize(s, g.SettingsFile)
+                mutex.ReleaseMutex()
+            End Using
+
+            Dim backupPath = Path.Combine(Folder.Settings, "Backup")
+
+            If Not Directory.Exists(backupPath) Then
+                Directory.CreateDirectory(backupPath)
+            End If
+
+            FileHelp.Copy(g.SettingsFile, Path.Combine(backupPath, "Settings(v" + Application.ProductVersion + ").dat"))
+        Catch ex As Exception
+            g.ShowException(ex)
+        End Try
+    End Sub
+
+    Sub LoadSettings()
+        Try
+            Using mutex As New Mutex(False, "staxrip settings file")
+                mutex.WaitOne()
+                s = SafeSerialization.Deserialize(New ApplicationSettings, SettingsFile)
+                mutex.ReleaseMutex()
+            End Using
+        Catch ex As Exception
+            Using td As New TaskDialog(Of String)
+                td.Title = "The settings failed to load!"
+                td.Content = ex.Message
+                td.Icon = TaskIcon.Error
+                td.AddButton("Retry")
+                td.AddButton("Reset")
+                td.AddButton("Exit")
+
+                Select Case td.Show
+                    Case "Retry"
+                        LoadSettings()
+                    Case "Reset"
+                        If MsgQuestion("Are you sure you want to reset your settings? Your current settings will be lost!") = DialogResult.OK Then
+                            s = New ApplicationSettings
+                            s.Init()
+                        Else
+                            LoadSettings()
+                        End If
+                    Case Else
+                        Process.GetCurrentProcess.Kill()
+                End Select
+            End Using
+        End Try
+    End Sub
+
     Sub WriteDebugLog(value As String)
         If s?.WriteDebugLog Then
             Trace.TraceInformation(value)
@@ -550,6 +603,12 @@ Public Class GlobalClass
         End Get
     End Property
 
+    ReadOnly Property SettingsFolderExists As Boolean
+        Get
+            Return Not String.IsNullOrWhiteSpace(Registry.CurrentUser.GetString("Software\StaxRip\SettingsLocation", Folder.Startup))
+        End Get
+    End Property
+
     Function BrowseFolder(defaultFolder As String) As String
         Using dialog As New FolderBrowserDialog
             dialog.SetSelectedPath(defaultFolder)
@@ -892,26 +951,6 @@ Public Class GlobalClass
 
         Return ret
     End Function
-
-    Sub SaveSettings()
-        Try
-            Using mutex As New Mutex(False, "staxrip settings file")
-                mutex.WaitOne()
-                SafeSerialization.Serialize(s, g.SettingsFile)
-                mutex.ReleaseMutex()
-            End Using
-
-            Dim backupPath = Path.Combine(Folder.Settings, "Backup")
-
-            If Not Directory.Exists(backupPath) Then
-                Directory.CreateDirectory(backupPath)
-            End If
-
-            FileHelp.Copy(g.SettingsFile, Path.Combine(backupPath, "Settings(v" + Application.ProductVersion + ").dat"))
-        Catch ex As Exception
-            g.ShowException(ex)
-        End Try
-    End Sub
 
     Sub LoadVideoEncoder(profile As Profile)
         Dim currentMuxer = p.VideoEncoder.Muxer
@@ -1999,9 +2038,5 @@ Public Class GlobalClass
         Next
 
         Return ret
-    End Function
-
-    Function GetCodeFont(Optional size As Single = 10.0) As Font
-        Return New Font(If(s.CodeFont = "", "Consolas", s.CodeFont), size * s.UIScaleFactor)
     End Function
 End Class

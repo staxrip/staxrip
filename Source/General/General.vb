@@ -21,7 +21,7 @@ Public Class Folder
         End Get
     End Property
 
-    Shared ReadOnly Property Fonts As String
+    Shared ReadOnly Property WindowsFonts As String
         Get
             Return Environment.GetFolderPath(Environment.SpecialFolder.Fonts)
         End Get
@@ -90,6 +90,24 @@ Public Class Folder
     Shared ReadOnly Property Apps As String
         Get
             Return Path.Combine(Folder.Startup, "Apps")
+        End Get
+    End Property
+
+    Shared ReadOnly Property Fonts As String
+        Get
+            Return Path.Combine(Folder.Startup, "Fonts")
+        End Get
+    End Property
+
+    Shared ReadOnly Property UserFonts As String
+        Get
+            Return Path.Combine(Folder.Settings, "Fonts")
+        End Get
+    End Property
+
+    Shared ReadOnly Property Icons As String
+        Get
+            Return Path.Combine(Folder.Startup, "Icons")
         End Get
     End Property
 
@@ -165,11 +183,14 @@ Public Class Folder
                         End Try
                     End If
 
-                    Dim scriptDir = Path.Combine(dir, "Scripts")
+                    For Each categoryName As String In [Enum].GetNames(GetType(FontCategory)).Skip(1)
+                        Directory.CreateDirectory(Path.Combine(dir, "Fonts", categoryName))
+                    Next
 
+                    Dim scriptDir = Path.Combine(dir, "Scripts")
                     If Not scriptDir.DirExists Then
                         Directory.CreateDirectory(scriptDir)
-                        Dim code = "[MainModule]::MsgInfo('Hello World')"
+                        Const code = "[MainModule]::MsgInfo('Hello World')"
                         code.WriteFileUTF8BOM(Path.Combine(scriptDir, "Hello World.ps1"))
                         Directory.CreateDirectory(Path.Combine(scriptDir, "Auto Load"))
                     End If

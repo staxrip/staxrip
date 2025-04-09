@@ -1324,7 +1324,7 @@ Public Class SvtAv1EncParams
         .AlwaysOn = True,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = g.GetCodeFont
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
                       End Sub}
 
     Property CustomFirstPass As New StringParam With {
@@ -1333,7 +1333,7 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() Passes > 1,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = g.GetCodeFont
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
                       End Sub}
 
     Property CustomSecondPass As New StringParam With {
@@ -1342,7 +1342,7 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() Passes > 1,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = g.GetCodeFont
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
                       End Sub}
 
     Property CustomThirdPass As New StringParam With {
@@ -1351,7 +1351,7 @@ Public Class SvtAv1EncParams
         .VisibleFunc = Function() Passes > 2,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = g.GetCodeFont
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
                       End Sub}
 
     '   --------------------------------------------------------

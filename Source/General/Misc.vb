@@ -1134,7 +1134,9 @@ Public Class Startup
         AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
         Application.EnableVisualStyles()
         Application.SetCompatibleTextRenderingDefault(False)
-        Application.Run(New MainForm())
+        Dim loadSettings = g.SettingsFile.FileExists()
+        If loadSettings Then g.LoadSettings()
+        Application.Run(New MainForm(Not loadSettings))
     End Sub
 End Class
 

@@ -159,7 +159,7 @@ Public Class PreviewForm
         Me.bnLeft3.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.bnLeft3.BackColor = System.Drawing.Color.WhiteSmoke
         Me.bnLeft3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
-        Me.bnLeft3.Font = New System.Drawing.Font("Segoe UI", 4.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.bnLeft3.Font = FontManager.GetDefaultFont(4)
         Me.bnLeft3.Location = New System.Drawing.Point(15, 629)
         Me.bnLeft3.Margin = New System.Windows.Forms.Padding(6)
         Me.bnLeft3.Size = New System.Drawing.Size(70, 70)
@@ -190,7 +190,7 @@ Public Class PreviewForm
         '
         'cmsMain
         '
-        Me.cmsMain.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.cmsMain.Font = FontManager.GetDefaultFont()
         Me.cmsMain.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.cmsMain.Name = "cmsMain"
         Me.cmsMain.Size = New System.Drawing.Size(61, 4)

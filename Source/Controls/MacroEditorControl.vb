@@ -122,7 +122,7 @@ Public Class MacroEditorControl
         Me.flpButtons.AutoSizeMode = AutoSizeMode.GrowAndShrink
         Me.flpButtons.Controls.Add(Me.llMacros)
         Me.flpButtons.Controls.Add(Me.llHelp)
-        Me.flpButtons.Font = New System.Drawing.Font("Segoe UI", 10.0!)
+        Me.flpButtons.Font = FontManager.GetDefaultFont(10)
         Me.flpButtons.Location = New System.Drawing.Point(0, 466)
         Me.flpButtons.Margin = New Padding(0)
         Me.flpButtons.Name = "flpButtons"
@@ -221,7 +221,7 @@ Public Class MacroEditorControl
         MyBase.New()
         InitializeComponent()
         rtbEdit.EnableAutoDragDrop = True
-        rtbEdit.Font = g.GetCodeFont
+        rtbEdit.Font = FontManager.GetCodeFont()
         rtbPreview.Font = rtbEdit.Font
         rtbDefaults.Font = rtbEdit.Font
         llHelp.Visible = False

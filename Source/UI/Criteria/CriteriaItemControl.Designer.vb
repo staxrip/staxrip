@@ -83,7 +83,7 @@ Namespace UI
             Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
             Me.AutoScroll = True
             Me.Controls.Add(Me.LayoutPanel)
-            Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+            Me.Font = FontManager.GetDefaultFont()
             Me.Margin = New System.Windows.Forms.Padding(0)
             Me.Name = "CriteriaItemControl"
             Me.Size = New System.Drawing.Size(911, 175)

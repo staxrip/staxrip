@@ -80,7 +80,7 @@ Partial Class CommandLineForm
         '
         'cms
         '
-        Me.cms.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.cms.Font = FontManager.GetDefaultFont()
         Me.cms.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.cms.Name = "cms"
         Me.cms.Size = New System.Drawing.Size(61, 4)
@@ -132,6 +132,7 @@ Partial Class CommandLineForm
         '
         Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.rtbCommandLine.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.rtbCommandLine.Font = FontManager.GetCodeFont()
         Me.rtbCommandLine.LastCommandLine = Nothing
         Me.rtbCommandLine.Location = New System.Drawing.Point(0, 0)
         Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(0)

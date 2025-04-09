@@ -24,7 +24,7 @@ Public Class FiltersListView
         Columns.Add("")
         Columns.Add("Type")
         Columns.Add("Name")
-        Menu.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        Menu.Font = FontManager.GetDefaultFont()
         ContextMenuStrip = Menu
         HideFocusRectange()
         AddHandler VideoScript.Changed, Sub(script As VideoScript)

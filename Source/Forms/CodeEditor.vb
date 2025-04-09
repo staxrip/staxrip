@@ -596,7 +596,7 @@ Public Class CodeEditor
             rtbScript.ScrollBars = RichTextBoxScrollBars.Vertical
             rtbScript.AcceptsTab = True
             rtbScript.Margin = New Padding(0)
-            rtbScript.Font = g.GetCodeFont
+            rtbScript.Font = FontManager.GetCodeFont()
 
             AddHandler cbActive.CheckedChanged, Sub()
                                                     SetColor()

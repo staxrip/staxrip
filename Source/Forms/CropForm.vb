@@ -123,7 +123,7 @@ Public Class CropForm
         Me.Controls.Add(Me.pnBottomActive)
         Me.Controls.Add(Me.pnTopActive)
         Me.Controls.Add(Me.pnLeftActive)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Font = FontManager.GetDefaultFont()
         Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.MinimumSize = New System.Drawing.Size(200, 200)
         Me.Name = "CropForm"
@@ -167,7 +167,7 @@ Public Class CropForm
         CustomMenu.AddKeyDownHandler(Me)
         CustomMenu.BuildMenu()
 
-        StatusStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        StatusStrip.Font = FontManager.GetDefaultFont()
 
         Dim offset = CInt(FontHeight * 0.6)
 

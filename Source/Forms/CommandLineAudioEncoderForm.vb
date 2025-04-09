@@ -266,7 +266,7 @@ Public Class CommandLineAudioEncoderForm
         '
         'cms
         '
-        Me.cms.Font = New System.Drawing.Font("Segoe UI", 9!)
+        Me.cms.Font = FontManager.GetDefaultFont()
         Me.cms.ImageScalingSize = New System.Drawing.Size(48, 48)
         Me.cms.Name = "cms"
         Me.cms.Size = New System.Drawing.Size(61, 4)

@@ -91,74 +91,84 @@ Public Class TaskDialog(Of T)
             pbIcon.Image = ImageHelp.GetSymbolImage(Symbol, Nothing, 20)
         End If
 
-        TitleLabel.Font = New Font("Segoe UI", 11 * s.UIScaleFactor)
+        TitleLabel.Font = FontManager.GetDefaultFont(11)
         TitleLabel.Text = Title
-
-        If Content <> "" Then
-            ContentLabel = New LabelEx With {
-                .Margin = New Padding(0),
-                .BorderStyle = BorderStyle.None,
-                .Text = Content,
-                .Name = "Information"
-            }
-            paMain.Controls.Add(ContentLabel)
-        End If
-
-        If ExpandedContent <> "" Then
-            ExpandedContentLabel = New LabelEx With {
-                .Margin = New Padding(0),
-                .BorderStyle = BorderStyle.None,
-                .Text = ExpandedContent,
-                .Name = "ExpandedInformation"
-            }
-            blDetails.Visible = True
-            paMain.Controls.Add(ExpandedContentLabel)
-        End If
 
         Dim firstCommandButton As CommandButton = Nothing
 
-        For Each command In CommandDefinitions
-            Dim cb As New CommandButton With {
-                .Title = command.Text,
-                .Description = command.Description,
-                .Tag = command
-            }
+        Try
+            paMain.SuspendLayout()
 
-            If TypeOf command.Value Is FontFamily Then
-                cb.Font = New Font(command.Text, Font.Size)
+            If Content <> "" Then
+                ContentLabel = New LabelEx With {
+                    .Margin = New Padding(0),
+                    .BorderStyle = BorderStyle.None,
+                    .Text = Content,
+                    .Name = "Information"
+                }
+                paMain.Controls.Add(ContentLabel)
             End If
 
-            AddHandler cb.Click, AddressOf CommandClick
-            paMain.Controls.Add(cb)
-
-            If firstCommandButton Is Nothing Then
-                firstCommandButton = cb
-            End If
-        Next
-
-        For Each i In ButtonDefinitions
-            If Not flpButtons.Visible Then
-                flpButtons.Visible = True
-                flpButtons.AutoSize = True
+            If ExpandedContent <> "" Then
+                ExpandedContentLabel = New LabelEx With {
+                    .Margin = New Padding(0),
+                    .BorderStyle = BorderStyle.None,
+                    .Text = ExpandedContent,
+                    .Name = "ExpandedInformation"
+                }
+                blDetails.Visible = True
+                paMain.Controls.Add(ExpandedContentLabel)
             End If
 
-            Dim b As New ButtonEx With {
-                .Text = i.Text,
-                .Tag = i.Value
-            }
+            For Each command In CommandDefinitions
+                Dim cb As New CommandButton With {
+                    .Title = command.Text,
+                    .Description = command.Description,
+                    .Tag = command
+                }
 
-            If AcceptButton Is Nothing AndAlso i.Text = "OK" Then
-                AcceptButton = b
-            End If
+                If TypeOf command.Value Is FontFamily Then
+                    cb.ReplaceFontFamily(FontManager.GetFontFamily(FontCategory.All, command.Text))
+                End If
 
-            If i.TimeoutButton AndAlso TimeoutButton Is Nothing Then
-                TimeoutButton = b
-            End If
+                AddHandler cb.Click, AddressOf CommandClick
+                paMain.Controls.Add(cb)
 
-            flpButtons.Controls.Add(b)
-            i.Button = b
-            AddHandler b.Click, AddressOf ButtonClick
-        Next
+                If firstCommandButton Is Nothing Then
+                    firstCommandButton = cb
+                End If
+            Next
+
+            For i = 0 To ButtonDefinitions.Count - 1
+                Dim bd = ButtonDefinitions(i)
+
+                If Not flpButtons.Visible Then
+                    flpButtons.Visible = True
+                    flpButtons.AutoSize = True
+                End If
+
+                Dim b As New ButtonEx With {
+                    .Text = bd.Text,
+                    .Tag = bd.Value,
+                    .TabStop = True,
+                    .TabIndex = i
+                }
+
+                If AcceptButton Is Nothing AndAlso bd.Text = "OK" Then
+                    AcceptButton = b
+                End If
+
+                If bd.TimeoutButton AndAlso TimeoutButton Is Nothing Then
+                    TimeoutButton = b
+                End If
+
+                flpButtons.Controls.Add(b)
+                bd.Button = b
+                AddHandler b.Click, AddressOf ButtonClick
+            Next
+        Finally
+            paMain.ResumeLayout()
+        End Try
 
         If Timeout > 0 Then
             Dim originalWindowTitle = Text
@@ -454,7 +464,7 @@ Public Class TaskDialog(Of T)
 
     Protected Overrides Sub OnLoad(args As EventArgs)
         MyBase.OnLoad(args)
-        Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        Font = FontManager.GetDefaultFont()
         Dim fh = FontHeight
 
         For Each i As ButtonEx In flpButtons.Controls

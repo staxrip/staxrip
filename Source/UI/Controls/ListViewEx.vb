@@ -158,6 +158,7 @@ Namespace UI
         Sub New()
             DoubleBuffered = True
             OwnerDraw = True
+            Font = FontManager.GetDefaultFont()
 
             ApplyTheme()
 
@@ -443,7 +444,7 @@ Namespace UI
                     Catch
                     End Try
                 End If
-                
+
                 If SelectedItems.Count > maxToDisplay AndAlso names.Length > 4 Then
                     names = names + BR + "... and more ..."
                 End If

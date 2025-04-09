@@ -1137,7 +1137,7 @@ Public Class x265Params
         .AlwaysOn = True,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = g.GetCodeFont
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
                       End Sub}
 
     Property CustomFirstPass As New StringParam With {
@@ -1145,7 +1145,7 @@ Public Class x265Params
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = g.GetCodeFont
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
                       End Sub}
 
     Property CustomLastPass As New StringParam With {
@@ -1153,7 +1153,7 @@ Public Class x265Params
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = g.GetCodeFont
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
                       End Sub}
 
     Property CustomNthPass As New StringParam With {
@@ -1161,7 +1161,7 @@ Public Class x265Params
         .Quotes = QuotesMode.Never,
         .InitAction = Sub(tb)
                           tb.Edit.MultilineHeightFactor = 6
-                          tb.Edit.TextBox.Font = g.GetCodeFont
+                          tb.Edit.TextBox.Font = FontManager.GetCodeFont()
                       End Sub}
 
     Property Deblock As New BoolParam With {

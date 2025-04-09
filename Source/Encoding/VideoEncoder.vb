@@ -120,7 +120,7 @@ Public MustInherit Class VideoEncoder
             .Dock = DockStyle.Fill,
             .LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow,
             .ShowControlBorder = True,
-            .Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+            .Font = FontManager.GetDefaultFont()
         }
 
         Dim pad = ret.Font.Height \ 9

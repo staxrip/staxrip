@@ -416,7 +416,7 @@ Public Class AppsForm
         AddHandler SearchTextBox.Edit.TextBox.KeyDown, AddressOf SearchTextBoxKeyDown
         AddHandler tv.KeyDown, AddressOf TreeViewKeyDown
 
-        ToolStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        ToolStrip.Font = FontManager.GetDefaultFont()
         g.SetRenderer(ToolStrip)
 
         miEditChangelog.Visible = g.IsDevelopmentPC
@@ -429,14 +429,14 @@ Public Class AppsForm
         SetupButton.ForeColor = Color.Red
         SetupButton.TextImageRelation = TextImageRelation.ImageBeforeText
         SetupButton.Image = StockIcon.GetSmallImage(StockIconIdentifier.Shield)
-        SetupButton.Font = New Font("Segoe UI", 10)
+        SetupButton.Font = FontManager.GetDefaultFont(10)
         SetupButton.Margin = New Padding(FontHeight \ 3)
         SetupButton.Padding = New Padding(FontHeight \ 5)
         SetupButton.AutoSizeMode = AutoSizeMode.GrowAndShrink
         SetupButton.AutoSize = True
 
         Dim titleHeaderLabel = New LabelEx With {
-            .Font = New Font(flp.Font.FontFamily, 14 * s.UIScaleFactor, FontStyle.Bold),
+            .Font = FontManager.GetDefaultFont(14, FontStyle.Bold),
             .AutoSize = True
         }
 
@@ -558,7 +558,7 @@ Public Class AppsForm
         Contents("Status").ForeColor = If(CurrentPackage.GetStatus <> "",
                                                 If(CurrentPackage.Required, ThemeManager.CurrentTheme.AppsForm.AttentionForeColor, ThemeManager.CurrentTheme.AppsForm.MinorForeColor),
                                                 ThemeManager.CurrentTheme.AppsForm.OkayForeColor)
-        Contents("Status").Font = New Font("Segoe UI", 10 * s.UIScaleFactor)
+        Contents("Status").Font = FontManager.GetDefaultFont(10)
 
         Headers("AviSynth Filters").Visible = False
         Contents("AviSynth Filters").Visible = False
@@ -604,7 +604,7 @@ Public Class AppsForm
 
         Dim headerLabel = New LabelEx With {
             .Text = title,
-            .Font = New Font(flp.Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold),
+            .Font = FontManager.GetDefaultFont(9, FontStyle.Bold),
             .AutoSize = True,
             .Margin = New Padding(controlMargin, controlMargin, 0, 0),
             .Padding = New Padding(0, headerPadding, 0, 0)}

@@ -96,11 +96,11 @@ Namespace UI
         End Sub
 
         Sub SetMaximumSize(w As Single, h As Single)
-            MaximumSize = New Size(CInt(Font.Height * w / ((s.UIScaleFactor - 1) / 1.5 + 1)), CInt(Font.Height * h / ((s.UIScaleFactor - 1) / 1.5 + 1)))
+            MaximumSize = New Size(CInt(Font.Height * w), CInt(Font.Height * h ))
         End Sub
 
         Sub SetMinimumSize(w As Single, h As Single)
-            MinimumSize = New Size(CInt(Font.Height * w / ((s.UIScaleFactor - 1) / 1.5 + 1)), CInt(Font.Height * h / ((s.UIScaleFactor - 1) / 1.5 + 1)))
+            MinimumSize = New Size(CInt(Font.Height * w), CInt(Font.Height * h ))
         End Sub
 
         Protected Overrides Sub OnLoad(args As EventArgs)

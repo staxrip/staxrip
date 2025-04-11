@@ -11,9 +11,7 @@ Imports System.Text.RegularExpressions
 Imports System.Threading
 Imports System.Threading.Tasks
 Imports Microsoft.VisualBasic
-
 Imports StaxRip.UI
-
 Imports VB6 = Microsoft.VisualBasic
 
 Public Class MainForm
@@ -21,7 +19,7 @@ Public Class MainForm
 
 #Region " Designer "
     Private components As IContainer
-    Private Const filterHeight As Integer = 604
+    Private Const _filterHeight As Integer = 640
 
     Public WithEvents bnNext As ButtonEx
     Public WithEvents tbSourceFile As TextEdit
@@ -159,6 +157,7 @@ Public Class MainForm
         Me.lgbEncoder.SuspendLayout()
         Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
+
         '
         'bnNext
         '
@@ -175,9 +174,7 @@ Public Class MainForm
         '
         'gbAssistant
         '
-        Me.gbAssistant.Anchor = CType((((AnchorStyles.Bottom) _
-            Or AnchorStyles.Left) _
-            Or AnchorStyles.Right), AnchorStyles)
+        Me.gbAssistant.Anchor = CType((((AnchorStyles.Top) Or AnchorStyles.Left) Or AnchorStyles.Right), AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.gbAssistant, 4)
         Me.gbAssistant.Controls.Add(Me.tlpAssistant)
         Me.gbAssistant.Location = New System.Drawing.Point(9, 1534)
@@ -191,6 +188,7 @@ Public Class MainForm
         '
         'tlpAssistant
         '
+        Me.tlpAssistant.Anchor = CType((((AnchorStyles.Top) Or AnchorStyles.Left) Or AnchorStyles.Right), AnchorStyles)
         Me.tlpAssistant.ColumnCount = 2
         Me.tlpAssistant.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0!))
         Me.tlpAssistant.ColumnStyles.Add(New ColumnStyle())
@@ -217,8 +215,7 @@ Public Class MainForm
         '
         'gbAudio
         '
-        Me.gbAudio.Anchor = CType((((AnchorStyles.Top Or AnchorStyles.Bottom) _
-            Or AnchorStyles.Left) _
+        Me.gbAudio.Anchor = CType(((AnchorStyles.Top Or AnchorStyles.Left) _
             Or AnchorStyles.Right), AnchorStyles)
         Me.tlpMain.SetColumnSpan(Me.gbAudio, 4)
         Me.gbAudio.Controls.Add(Me.tlpAudio)
@@ -227,6 +224,8 @@ Public Class MainForm
         Me.gbAudio.Name = "gbAudio"
         Me.gbAudio.Padding = New Padding(6, 0, 6, 6)
         Me.gbAudio.Size = New System.Drawing.Size(2031, 510)
+        Me.gbAudio.AutoSize = True
+        Me.gbAudio.AutoSizeMode = AutoSizeMode.GrowAndShrink
         Me.gbAudio.TabIndex = 59
         Me.gbAudio.TabStop = False
         Me.gbAudio.Text = "Audio"
@@ -245,6 +244,8 @@ Public Class MainForm
         Me.tlpAudio.RowCount = 0
         Me.tlpAudio.Size = New System.Drawing.Size(2019, 456)
         Me.tlpAudio.TabIndex = 62
+        Me.tlpAudio.AutoSize = True
+        Me.tlpAudio.AutoSizeMode = AutoSizeMode.GrowAndShrink
         '
         'MenuStrip
         '
@@ -543,7 +544,7 @@ Public Class MainForm
         Me.lgbResize.Margin = New Padding(6, 0, 6, 0)
         Me.lgbResize.Name = "lgbResize"
         Me.lgbResize.Padding = New Padding(6, 0, 6, 6)
-        Me.lgbResize.Size = New System.Drawing.Size(670, filterHeight)
+        Me.lgbResize.Size = New System.Drawing.Size(670, _filterHeight)
         Me.lgbResize.TabIndex = 55
         Me.lgbResize.TabStop = False
         Me.lgbResize.Text = "Resize"
@@ -822,7 +823,7 @@ Public Class MainForm
         Me.lgbFilters.Margin = New Padding(9, 0, 6, 0)
         Me.lgbFilters.Name = "lgbFilters"
         Me.lgbFilters.Padding = New Padding(9, 3, 9, 9)
-        Me.lgbFilters.Size = New System.Drawing.Size(667, filterHeight)
+        Me.lgbFilters.Size = New System.Drawing.Size(667, _filterHeight)
         Me.lgbFilters.TabIndex = 53
         Me.lgbFilters.TabStop = False
         '
@@ -854,7 +855,7 @@ Public Class MainForm
         Me.lgbEncoder.Margin = New Padding(6, 0, 9, 0)
         Me.lgbEncoder.Name = "lgbEncoder"
         Me.lgbEncoder.Padding = New Padding(9, 3, 9, 9)
-        Me.lgbEncoder.Size = New System.Drawing.Size(670, filterHeight)
+        Me.lgbEncoder.Size = New System.Drawing.Size(670, _filterHeight)
         Me.lgbEncoder.TabIndex = 51
         Me.lgbEncoder.TabStop = False
         '
@@ -883,8 +884,8 @@ Public Class MainForm
         Me.tlpMain.AutoSize = False
         Me.tlpMain.ColumnCount = 4
         Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 33.33!))
-        Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 350.0!))
-        Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 350.0!))
+        Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 375.0!))
+        Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 375.0!))
         Me.tlpMain.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 33.33!))
         Me.tlpMain.Controls.Add(Me.MenuStrip, 0, 0)
         Me.tlpMain.Controls.Add(Me.lgbSource, 0, 1)
@@ -901,8 +902,8 @@ Public Class MainForm
         Me.tlpMain.RowCount = 5
         Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Absolute, 81.0!))
         Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Absolute, 357.0!))
-        Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Absolute, filterHeight))
-        Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Percent, 250.0!))
+        Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Absolute, _filterHeight))
+        Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.AutoSize))
         Me.tlpMain.RowStyles.Add(New RowStyle(SizeType.Absolute, 200.0!))
         Me.tlpMain.Size = New System.Drawing.Size(2049, 2334)
         Me.tlpMain.TabIndex = 61
@@ -948,13 +949,6 @@ Public Class MainForm
         Me.lgbEncoder.PerformLayout()
         Me.tlpMain.ResumeLayout(False)
         Me.ResumeLayout(False)
-
-        'Me.MinimumSize = New Size(1000, 740)
-        'Me.MaximumSize = New Size(1300, 1600)
-        'Me.Size = New Size(1110, 958)
-
-        Me.SetMinimumSize(42, 31.25)
-        Me.SetMaximumSize(59, 80)
         Me.ScaleSize(44, 44)
     End Sub
 
@@ -1013,11 +1007,11 @@ Public Class MainForm
 
         MenuItemEx.UseTooltips = s.EnableTooltips
         Icon = g.Icon
+        g.DPI = DeviceDpi
 
         InitializeComponent()
         RestoreClientSize(55, 36)
         SetStyle(ControlStyles.SupportsTransparentBackColor, True)
-        g.DPI = DeviceDpi
 
         If components Is Nothing Then
             components = New Container()
@@ -1806,6 +1800,7 @@ Public Class MainForm
         Dim availableAudioTracks = Mathf.Clamp(proj.AudioTracksAvailable, 1, 25)
         Dim sourceFile = p.LastOriginalSourceFile
         Dim streams = If(sourceFile.FileExists(), MediaInfo.GetAudioStreams(sourceFile), New List(Of AudioStream))
+        Dim ateHeight = -1
 
         'tlpAudio.SuspendLayout()
         Try
@@ -1892,11 +1887,13 @@ Public Class MainForm
             tlpAudio.RowCount = availableAudioTracks
 
             For Each ate In tlpAudio.Controls.OfType(Of AudioTextEdit)
+                ateHeight = ate.Height + ate.Margin.Vertical
                 ate.TextBox.SendMessageCue("right-click", False)
                 tlpAudio.RowStyles.Add(New RowStyle(SizeType.AutoSize))
             Next
 
             'tlpAudio.ResumeLayout()
+            SetFormBoundaries(ateHeight)
             UpdateAudioMenus()
             PopulateProfileMenu(DynamicMenuItemID.AudioProfiles)
         End Try
@@ -4167,6 +4164,7 @@ Public Class MainForm
     <Command("Shows the settings dialog.")>
     Sub ShowSettingsDialog()
         Dim restartID = GetRestartID()
+        Dim oldDefaultFont = FontManager.GetDefaultFont()
 
         Using form As New SimpleSettingsForm("Settings")
             Dim ui = form.SimpleUI
@@ -4493,13 +4491,13 @@ Public Class MainForm
                                           End Using
                                       End Sub
             defaultFont.Edit.TextChangedAction = Sub(value As String)
-                                                      Dim family = defaultFontfamilies.FirstOrDefault(Function(x) x.Name = value)
-                                                      If family IsNot Nothing Then
-                                                          For Each control As Control In form.GetAllControls()
-                                                              control.ReplaceFontFamily(family)
-                                                          Next
-                                                      End If
-                                                  End Sub
+                                                     Dim family = defaultFontfamilies.FirstOrDefault(Function(x) x.Name = value)
+                                                     If family IsNot Nothing Then
+                                                         For Each control As Control In form.GetAllControls()
+                                                             control.ReplaceFontFamily(family)
+                                                         Next
+                                                     End If
+                                                 End Sub
             defaultFont.Edit.SaveAction = Sub(value As String)
                                               s.Fonts(FontCategory.Default) = value
                                               FontManager.Reset()
@@ -4643,10 +4641,13 @@ Public Class MainForm
                     Icon = g.Icon
                 End If
 
-                Dim newFont = FontManager.GetDefaultFont()
-                For Each control As Control In GetAllControls()
-                    control.ReplaceFontFamily(newFont.FontFamily)
-                Next
+                Dim newDefaultFont = FontManager.GetDefaultFont()
+                If Not oldDefaultFont.FontFamily.Equals(newDefaultFont.FontFamily) Then
+                    For Each control As Control In GetAllControls()
+                        control.ReplaceFontFamily(newDefaultFont.FontFamily)
+                    Next
+                    SetAudioTracks()
+                End If
 
                 FrameServerHelp.AviSynthToolPath()
                 g.SaveSettings()
@@ -7911,6 +7912,10 @@ Public Class MainForm
                                End Sub))
     End Sub
 
+    Protected Overrides Sub OnLoad(args As EventArgs)
+        MyBase.OnLoad(args)
+    End Sub
+
     Protected Overrides Sub OnShown(e As EventArgs)
         MyBase.OnShown(e)
         UpdateDynamicMenuAsync()
@@ -8022,6 +8027,12 @@ Public Class MainForm
         If e.Button = MouseButtons.Right AndAlso AssistantPassed AndAlso CanIgnoreTip Then
             NextContextMenuStrip.Show(bnNext, New Point(bnNext.Width, 0), ToolStripDropDownDirection.AboveLeft)
         End If
+    End Sub
+
+    Sub SetFormBoundaries(ateHeight As Integer)
+        Dim h = MainMenuStrip.Height + lgbSource.Height + lgbFilters.Height + ateHeight * p.AudioTracksAvailable + (gbAssistant.Height << 1) - Font.Height \ 3
+        MinimumSize = New Size(Font.Height * 48, CInt(h))
+        MaximumSize = New Size(Font.Height * 75, CInt(h))
     End Sub
 
     Sub CheckForWindows7()

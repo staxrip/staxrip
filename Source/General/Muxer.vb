@@ -846,6 +846,7 @@ Public Class MkvMuxer
             args += " --global-tags " + TagFile.Escape
         End If
 
+        args += " --engage append_and_split_flac"
         args += " --ui-language en"
 
         If AdditionalGeneralSwitches <> "" Then

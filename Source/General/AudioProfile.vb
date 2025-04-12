@@ -371,7 +371,7 @@ Public MustInherit Class AudioProfile
         Dim outfile = Path.Combine(p.TempDir, base + "." + OutputFileType.ToLowerInvariant)
 
         If File = outfile Then
-            outfile = outfile.Base + "_new." + OutputFileType.ToLowerInvariant
+            outfile = Path.Combine(p.TempDir, outfile.Base + "_new." + OutputFileType.ToLowerInvariant)
         End If
 
         Return outfile
@@ -1361,7 +1361,7 @@ Public Class GUIAudioProfile
 
         If Params.ChannelsMode <> ChannelsMode.Original OrElse Params.Codec = AudioCodec.Opus Then
             If Params.CenterOptimizedStereo AndAlso ((Params.Codec <> AudioCodec.Opus AndAlso Params.ChannelsMode = ChannelsMode._2) OrElse (Params.Codec = AudioCodec.Opus AndAlso Params.OpusencDownmix = OpusDownmix.Stereo)) Then
-                sb.Append(" -af pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5")
+                sb.Append(" -af ""pan=stereo|c0=c2+0.30*c0+0.30*c4|c1=c2+0.30*c1+0.30*c5""")
             Else
                 sb.Append(" -ac " & Channels)
             End If
@@ -1384,8 +1384,7 @@ Public Class GUIAudioProfile
 
     Function GetffmpegCommandLine(includePaths As Boolean) As String
         Dim sb As New StringBuilder
-        Dim pack = If(Params.Codec = AudioCodec.AAC AndAlso Params.ffmpegLibFdkAAC,
-            Package.ffmpeg_non_free, Package.ffmpeg)
+        Dim pack = If(Params.Codec = AudioCodec.AAC AndAlso Params.ffmpegLibFdkAAC, Package.ffmpeg_non_free, Package.ffmpeg)
 
         If includePaths AndAlso File <> "" Then
             sb.Append(pack.Path.Escape)
@@ -1560,6 +1559,8 @@ Public Class GUIAudioProfile
             concated = " -af " + concated.Trim(","c)
             ret = ret.Insert(matches(0).Index, concated)
         End If
+
+        ret = Regex.Replace(ret, " -af ([^ ]+)", " -af ""$1""")
 
         Return ret
     End Function

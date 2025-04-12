@@ -7707,15 +7707,20 @@ Public Class MainForm
 
     Sub ExecuteAudio(ap As AudioProfile)
         If MsgQuestion("Confirm to process the track.") = DialogResult.OK Then
+            Dim cleanTemp = False
+
             Try
                 If p.TempDir = "" Then
                     p.TempDir = ap.File.Dir
+                    cleanTemp = True
                 End If
 
                 ap = ObjectHelp.GetCopy(Of AudioProfile)(ap)
                 Audio.Process(ap)
                 ap.Encode()
             Catch
+            Finally
+                If cleanTemp Then p.TempDir = ""
             End Try
         End If
     End Sub
@@ -7723,15 +7728,22 @@ Public Class MainForm
     Sub ExecuteAllAudio()
         If MsgQuestion("Confirm to process ALL audio tracks.") = DialogResult.OK Then
             For Each track In p.AudioTracks
+                Dim cleanTemp = False
+
                 Try
                     If track.TextEdit.Text = "" Then Continue For
                     If TypeOf track.AudioProfile Is NullAudioProfile Then Continue For
-                    If p.TempDir = "" Then p.TempDir = track.AudioProfile.File.Dir()
+                    If p.TempDir = "" Then
+                        p.TempDir = track.AudioProfile.File.Dir()
+                        cleanTemp = True
+                    End If
 
                     Dim ap = ObjectHelp.GetCopy(Of AudioProfile)(track.AudioProfile)
                     Audio.Process(ap)
                     ap.Encode()
                 Catch
+                Finally
+                    If cleanTemp Then p.TempDir = ""
                 End Try
             Next
         End If

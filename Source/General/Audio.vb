@@ -65,7 +65,7 @@ Public Class Audio
         Cut(ap)
 
         If TypeOf ap IsNot MuxAudioProfile AndAlso ap.NeedConvert Then
-            Convert(ap)
+            Convert(ap, True)
         End If
     End Sub
 
@@ -125,7 +125,7 @@ Public Class Audio
         Dim gap = TryCast(ap, GUIAudioProfile)
         Dim renormalize = isGUIAP AndAlso gap.Params.Normalize AndAlso
                                 (gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm OrElse
-                                (gap.Params.ChannelsMode <> ChannelsMode.Original OrElse (gap.Params.Codec = AudioCodec.Opus AndAlso gap.Params.OpusencDownmix <> OpusDownmix.Original)))
+                                (gap.Params.ChannelsMode <> ChannelsMode.Original OrElse gap.GetEncoder() = GuiAudioEncoder.opusenc))
 
         Select Case ap.Decoder
             Case AudioDecoderMode.ffmpeg, AudioDecoderMode.Automatic
@@ -410,6 +410,7 @@ Public Class Audio
             args = args.Insert(matches(0).Index, concated)
         End If
 
+        args = Regex.Replace(args, " -af ([^ ]+)", " -af ""$1""")
         args += " " + outPath.Escape
 
         Using proc As New Proc
@@ -678,7 +679,7 @@ Public Class Audio
 
         Dim args2 = "-o " + mkvPath.Escape + " " + aviPath.Escape + " " + ap.File.Escape
         args2 += " --split parts-frames:" + p.Ranges.Select(Function(v) v.Start & "-" & (v.End + 1)).Join(",+")
-        args2 += " --ui-language en"
+        args2 += " --engage append_and_split_flac --ui-language en"
 
         Using proc As New Proc
             proc.Header = "Cut Audio " & (ap.GetTrackIndex + 1)

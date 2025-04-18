@@ -14,7 +14,7 @@ v2.4x.0 (not published yet)
 -->
 
 
-v2.46.4 (not published yet)
+v2.46.4 (2025-04-18)
 ====================
 
 - General: Let Log window save also obfuscated log file

@@ -700,7 +700,7 @@ Public Class MkvMuxer
         End If
 
         If VideoTrackLanguage.ThreeLetterCode IsNot Nothing AndAlso VideoTrackLanguage.ThreeLetterCode <> "und" Then
-            args += " --language " & id & ":" + VideoTrackLanguage.ThreeLetterCode
+            args += " --language " & id & ":" + VideoTrackLanguage.Name
         End If
 
         If VideoTrackName <> "" Then

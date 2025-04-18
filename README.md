@@ -60,6 +60,7 @@ Any contribution is highly appreciated!
 This is the way to go if you have questions regarding settings, usage, etc.
 - Usage questions can also be asked on the *StaxRip threads* on
   - [VideoHelp](https://forum.videohelp.com/threads/369913-StaxRip-support-thread)
+  - [Doom9](https://forum.doom9.org/showthread.php?t=172068)
 
   although no developer or contributor is active there anymore.
 
@@ -73,7 +74,9 @@ This is the way to go if you have questions regarding settings, usage, etc.
              
      Alternatively you can download an old StaxRip release, but then you don't benefit from new functions and bug fixes.
 
-- Some tools and filters might need a specific version of Microsoft Visual C++ Redistributable Runtimes. Due to the frequent changing and replacing of tools and filters, it is impossible to provide precise details about the right dependency. So if you get error messages to due to missing runtime files, we recommend to download and install the [Microsoft Visual C++ Redistributable Runtimes All-in-One](https://www.techpowerup.com/download/visual-c-redistributable-runtime-package-all-in-one/).
+- Some tools and filters might need a specific version of Microsoft Visual C++ Redistributable Runtimes. Due to the frequent changing and replacing of tools and filters, it is impossible to provide precise details about the right dependency. So if you get error messages to due to missing runtime files, we recommend to download and install the Microsoft Visual C++ Redistributable Runtimes from:
+    - https://github.com/abbodi1406/vcredist/releases
+    - https://www.techpowerup.com/download/visual-c-redistributable-runtime-package-all-in-one
 
 # Extraction / Usage
 

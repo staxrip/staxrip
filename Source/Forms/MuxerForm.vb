@@ -765,7 +765,7 @@ Public Class MuxerForm
 
         Dim languageColumn As New DataGridViewComboBoxColumn
         languageColumn.HeaderText = "Language"
-        languageColumn.Items.AddRange(Language.Languages.ToArray)
+        languageColumn.Items.AddRange(Language.Languages.OrderByDescending(Function(x) x.IsCommon).ThenBy(Function(x)x.EnglishName).Distinct().ToArray())
         languageColumn.DataPropertyName = "Language"
         dgvSubtitles.Columns.Add(languageColumn)
 

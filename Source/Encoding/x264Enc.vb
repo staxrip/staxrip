@@ -658,7 +658,7 @@ Public Class x264Params
         .Options = {"Automatic", "RAW", "MKV", "FLV", "MP4"}}
 
     Property Demuxer As New OptionParam With {
-        .Switch = "--demuxer",
+        .HelpSwitch = "--demuxer",
         .Text = "Demuxer",
         .Options = {"Automatic", "RAW", "Y4M", "AVS", "LAVF", "FFMS"}}
 
@@ -1156,9 +1156,9 @@ Public Class x264Params
             If pipeTool = "automatic" Then
                 If p.Script.IsAviSynth Then
                     'pipeTool = If(Package.x264Type = x264Type.Vanilla, "avs2pipemod y4m", "none")
-                    pipeTool = "avs2pipemod y4m"
+                    pipeTool = "avs2pipemody4m"
                 ElseIf p.Script.IsVapourSynth Then
-                    pipeTool = "vspipe y4m"
+                    pipeTool = "vspipey4m"
                 End If
                 'If p.Script.IsAviSynth OrElse Package.x264.Version.ToLowerInvariant.ContainsAny("amod", "djatom", "patman") Then
                 '    pipeTool = "none"
@@ -1168,11 +1168,11 @@ Public Class x264Params
             End If
 
             Select Case pipeTool
-                Case "vspipe y4m"
+                Case "vspipey4m"
                     pipeCmd = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - --container y4m | "
-                Case "vspipe raw"
+                Case "vspiperaw"
                     pipeCmd = Package.vspipe.Path.Escape + " " + script.Path.Escape + " - | "
-                Case "avs2pipemod y4m"
+                Case "avs2pipemody4m"
                     Dim dll As String = ""
 
                     If FrameServerHelp.IsPortable Then
@@ -1180,7 +1180,7 @@ Public Class x264Params
                     End If
 
                     pipeCmd = Package.avs2pipemod.Path.Escape + dll + " -y4mp " + script.Path.Escape + " | "
-                Case "avs2pipemod raw"
+                Case "avs2pipemodraw"
                     Dim dll As String = ""
 
                     If FrameServerHelp.IsPortable Then
@@ -1188,9 +1188,9 @@ Public Class x264Params
                     End If
 
                     pipeCmd = Package.avs2pipemod.Path.Escape + dll + " -rawvideo " + script.Path.Escape + " | "
-                Case "ffmpeg y4m"
+                Case "ffmpegy4m"
                     pipeCmd = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.Escape + " -f yuv4mpegpipe -strict -1 -loglevel fatal -hide_banner - | "
-                Case "ffmpeg raw"
+                Case "ffmpegraw"
                     pipeCmd = Package.ffmpeg.Path.Escape + If(p.Script.IsVapourSynth, " -f vapoursynth", "") + " -i " + script.Path.Escape + " -f rawvideo -strict -1 -loglevel fatal -hide_banner - | "
             End Select
 
@@ -1242,9 +1242,9 @@ Public Class x264Params
             If dmx = "automatic" Then
                 If pipeTool = "none" Then
                     dmx = ""
-                ElseIf pipeTool.EndsWith(" y4m") Then
+                ElseIf pipeTool.EndsWith("y4m") Then
                     dmx = "y4m"
-                ElseIf pipeTool.EndsWith(" raw") Then
+                ElseIf pipeTool.EndsWith("raw") Then
                     dmx = "raw"
                 End If
             End If

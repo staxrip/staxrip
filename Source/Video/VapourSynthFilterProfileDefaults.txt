@@ -46,7 +46,7 @@ Dither | To RGB / YUV = clip = $select:To RGB|mvsfunc.ToRGB;To YUV|mvsfunc.ToYUV
 
 Tonemap | Placebo =
     clip = core.fmtc.bitdepth(clip, bits=16)
-    clip = core.placebo.Tonemap(clip, src_csp=$select:msg:Select Source Color Space;SDR|0;HDR10 (Default)|1;HLG|2;Dolby Vision|3$, dst_csp=$select:msg:Select Target Color Space;SDR (Default)|0;HDR10|1;HLG|2;Dolby Vision|3$, dynamic_peak_detection=$select:msg:Dynamic Peak Detection?;Yes (Default)|1;No|0$, tone_mapping_function=$select:msg:Tonemapping Function;Auto (Default)|0;Clip|1;ST2094_40|2;ST2094_10|3;BT2390|4;BT2446a|5;Spline|6;Reinhard|7;Mobius|8;Hable|9;Gamma|10;Linear|11$, tone_mapping_mode=$select:msg:Tonemapping Mode;Auto (Default)|0;RGB|1;MAX|2;HYBRID|3;LUMA|4$)
+    clip = core.placebo.Tonemap(clip, src_csp=$select:msg:Select Source Color Space;SDR|0;HDR10 (Default)|1;HLG|2;Dolby Vision|3$, dst_csp=$select:msg:Select Target Color Space;SDR (Default)|0;HDR10|1;HLG|2;Dolby Vision|3$, dynamic_peak_detection=$select:msg:Dynamic Peak Detection?;Yes (Default)|1;No|0$, gamut_mapping=$select:msg:Gamut Mapping Function;Clip|0;Perceptual (Default)|1;Softclip|2;Relative|3;Saturation|4;Absolute|5;Desaturate|6;Darken|7;Highlight|8;Linear|9$, tone_mapping_function=$select:msg:Tonemapping Function;Clip|0;Spline (Default)|1;ST2094_40|2;ST2094_10|3;BT2390|4;BT2446a|5;Reinhard|6;Mobius|7;Hable|8;Gamma|9;Linear|10;LinearLight|11$, metadata=$select:msg:Metadata;Auto (Default)|0;None (Disabled)|1;HDR10 (Static)|2;HDR10+ (MaxRGB)|3;Luminance (CIE Y)|4$, contrast_recovery=0.0, smoothing_period=20.0, percentile=100.0)
     # clip = clip.resize.Bicubic(format = vs.YUV420P10)
 
 [Crop]

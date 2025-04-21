@@ -1271,9 +1271,9 @@ Public Class Package
         .Filename = "libvs_placebo.dll",
         .RequirementsFunc = Function() StaxRip.Vulkan.IsSupported,
         .Description = "A VapourSynth plugin interface to libplacebo - a reusable library for Vulkan GPU-accelerated image/video processing primitives and shaders.",
-        .DownloadURL = "https://github.com/Lypheo/vs-placebo/releases",
-        .WebURL = "https://github.com/Lypheo/vs-placebo",
-        .HelpURL = "https://github.com/Lypheo/vs-placebo/blob/master/README.md",
+        .DownloadURL = "https://github.com/sgt0/vs-placebo/releases",
+        .WebURL = "https://github.com/sgt0/vs-placebo",
+        .HelpURL = "https://github.com/sgt0/vs-placebo/blob/master/README.md",
         .VsFilterNames = {"placebo.Deband", "placebo.Resample", "placebo.Shader", "placebo.Tonemap"}})
 
     Shared Property LibHistogram As Package = Add(New PluginPackage With {

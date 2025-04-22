@@ -478,17 +478,29 @@ Public Class Macro
         If value.Contains("%hdr10plus_path%") Then value = value.Replace("%hdr10plus_path%", p.Hdr10PlusMetadataFile)
         If value.Contains("%hdrdv_path%") Then value = value.Replace("%hdrdv_path%", p.HdrDolbyVisionMetadataFile?.Path)
 
-        Dim jobs = JobManager.GetJobs()
-        If value.Contains("%jobs%") Then value = value.Replace("%jobs%", jobs?.Count.ToString())
-        If value.Contains("%jobs_active%") Then value = value.Replace("%jobs_active%", jobs?.Where(Function(x) x.Active).Count().ToString())
+        Dim jobs As List(Of Job)
+        Dim getJobs = Function() As List(Of Job)
+                            If jobs Is Nothing Then jobs = JobManager.GetJobs()
+                            Return jobs
+                        End Function
+        If value.Contains("%jobs%") Then value = value.Replace("%jobs%", getJobs().Count.ToString())
+        If value.Contains("%jobs_active%") Then value = value.Replace("%jobs_active%", getJobs().AsEnumerable().Count(Function(x) x.Active).ToString())
 
-        Dim sourcePar = Calc.GetSourcePAR
-        If value.Contains("%source_par_x%") Then value = value.Replace("%source_par_x%", sourcePar.X.ToString)
-        If value.Contains("%source_par_y%") Then value = value.Replace("%source_par_y%", sourcePar.Y.ToString)
+        Dim sourcePar As Point
+        Dim getSourcePar = Function() As Point
+            If sourcePar = Point.Empty Then sourcePar = Calc.GetSourcePAR()
+            Return sourcePar
+        End Function
+        If value.Contains("%source_par_x%") Then value = value.Replace("%source_par_x%", getSourcePar().X.ToString)
+        If value.Contains("%source_par_y%") Then value = value.Replace("%source_par_y%", getSourcePar().Y.ToString)
 
-        Dim targetPar = Calc.GetTargetPAR
-        If value.Contains("%target_par_x%") Then value = value.Replace("%target_par_x%", targetPar.X.ToString)
-        If value.Contains("%target_par_y%") Then value = value.Replace("%target_par_y%", targetPar.Y.ToString)
+        Dim targetPar As Point
+        Dim getTargetPar = Function() As Point
+            If targetPar = Point.Empty Then targetPar = Calc.GetTargetPAR()
+            Return targetPar
+        End Function
+        If value.Contains("%target_par_x%") Then value = value.Replace("%target_par_x%", getTargetPar().X.ToString)
+        If value.Contains("%target_par_y%") Then value = value.Replace("%target_par_y%", getTargetPar().Y.ToString)
 
         If value.Contains("%source_dar%") Then value = value.Replace("%source_dar%", Calc.GetSourceDAR.ToString("f9", CultureInfo.InvariantCulture))
         If value.Contains("%target_dar%") Then value = value.Replace("%target_dar%", Calc.GetTargetDAR.ToString("f9", CultureInfo.InvariantCulture))

@@ -949,6 +949,7 @@ Public Class NVEnc
         Property LibPlaceboTonemappingFunctionContrastRecovery As New NumParam With {.Text = "     Contrast Recovery", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0.3, .Config = {0, 1, 0.05, 2}}
         Property LibPlaceboTonemappingFunctionContrastSmoothness As New NumParam With {.Text = "     Contrast Smoothness", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 3.5, .Config = {0, 100, 0.25, 2}}
         Property LibPlaceboTonemappingFunctionUseDolbyVision As New OptionParam With {.Text = "     Use Dolby Vision", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Auto (default)", "No", "Yes"}, .Values = {"auto", "false", "true"}}
+        Property LibPlaceboTonemappingFunctionInverseToneMapping As New OptionParam With {.Text = "     Inverse Tone Mapping", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"No (default)", "Yes"}, .Values = {"false", "true"}}
         Property LibPlaceboTonemappingFunctionShowClipping As New OptionParam With {.Text = "     Show Clipping", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"No (default)", "Yes"}, .Values = {"false", "true"}}
         Property LibPlaceboTonemappingFunctionVisualizeLut As New OptionParam With {.Text = "     Visualize LUT", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"No (default)", "Yes"}, .Values = {"false", "true"}}
         Property LibPlaceboTonemappingFunctionLutType As New OptionParam With {.Text = "     LUT Type", .HelpSwitch = "--vpp-libplacebo-tonemapping", .Init = 0, .Options = {"Undefined (default)", "Native", "Normalized", "Conversion"}, .Values = {"", "native", "normalized", "conversion"}}
@@ -1114,7 +1115,7 @@ Public Class NVEnc
                         LibPlaceboTonemappingFunctionSlopeTuning, LibPlaceboTonemappingFunctionSlopeOffset, LibPlaceboTonemappingFunctionSplineContrast, LibPlaceboTonemappingFunctionReinhardContrast,
                         LibPlaceboTonemappingFunctionLinearKnee, LibPlaceboTonemappingFunctionExposure, LibPlaceboTonemappingFunctionMetadata,
                         LibPlaceboTonemappingFunctionContrastRecovery, LibPlaceboTonemappingFunctionContrastSmoothness,
-                        LibPlaceboTonemappingFunctionUseDolbyVision, LibPlaceboTonemappingFunctionShowClipping,
+                        LibPlaceboTonemappingFunctionUseDolbyVision, LibPlaceboTonemappingFunctionInverseToneMapping, LibPlaceboTonemappingFunctionShowClipping,
                         LibPlaceboTonemappingFunctionVisualizeLut, LibPlaceboTonemappingFunctionLutType, LibPlaceboTonemappingLut)
                     Add("VPP | Resize",
                         Resize, ResizeAlgo, ResizeSuperresMode, ResizeSuperresStrength, ResizeVsrQuality,
@@ -1278,41 +1279,42 @@ Public Class NVEnc
                 LibPlaceboShaderAntiring.NumEdit.Enabled = LibPlaceboShader.Value
                 LibPlaceboShaderLinear.MenuButton.Enabled = LibPlaceboShader.Value
 
-                LibPlaceboTonemappingSrcCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingDstCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingDstPlTransfer.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingDstPlColorprim.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingSrcMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingSrcMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingDstMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingDstMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingDynPeakDetect.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingSmoothPeriod.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingSceneThresholdLow.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingSceneThresholdHigh.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingPercentile.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingBlackCutoff.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingGamutMapping.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunction.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionKneeAdaption.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionKneeMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionKneeMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionKneeDefault.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionKneeOffset.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionSlopeTuning.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionSlopeOffset.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionSplineContrast.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionReinhardContrast.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionLinearKnee.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionExposure.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionMetadata.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionContrastRecovery.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionContrastSmoothness.NumEdit.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionUseDolbyVision.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionShowClipping.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionVisualizeLut.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingFunctionLutType.MenuButton.Enabled = LibPlaceboTonemapping.Value
-                LibPlaceboTonemappingLut.TextEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingSrcCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingDstCsp.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingDstPlTransfer.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingDstPlColorprim.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingSrcMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingSrcMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingDstMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingDstMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingDynPeakDetect.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingSmoothPeriod.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingSceneThresholdLow.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingSceneThresholdHigh.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingPercentile.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingBlackCutoff.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingGamutMapping.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunction.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionKneeAdaption.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionKneeMax.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionKneeMin.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionKneeDefault.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionKneeOffset.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionSlopeTuning.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionSlopeOffset.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionSplineContrast.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionReinhardContrast.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionLinearKnee.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionExposure.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionMetadata.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionContrastRecovery.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionContrastSmoothness.NumEdit.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionUseDolbyVision.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionInverseToneMapping.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionShowClipping.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionVisualizeLut.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingFunctionLutType.MenuButton.Enabled = LibPlaceboTonemapping.Value
+            LibPlaceboTonemappingLut.TextEdit.Enabled = LibPlaceboTonemapping.Value
 
                 EdgelevelStrength.NumEdit.Enabled = Edgelevel.Value
                 EdgelevelThreshold.NumEdit.Enabled = Edgelevel.Value
@@ -1654,6 +1656,7 @@ Public Class NVEnc
                 If Not LibPlaceboTonemappingFunctionContrastRecovery.IsDefaultValue Then sb.Append($",contrast_recovery={LibPlaceboTonemappingFunctionContrastRecovery.Value.ToInvariantString()}")
                 If Not LibPlaceboTonemappingFunctionContrastSmoothness.IsDefaultValue Then sb.Append($",contrast_smoothness={LibPlaceboTonemappingFunctionContrastSmoothness.Value.ToInvariantString()}")
                 If Not LibPlaceboTonemappingFunctionUseDolbyVision.IsDefaultValue Then sb.Append($",use_dovi={LibPlaceboTonemappingFunctionUseDolbyVision.ValueText.ToInvariantString()}")
+                If Not LibPlaceboTonemappingFunctionInverseToneMapping.IsDefaultValue Then sb.Append($",inverse_tone_mapping={LibPlaceboTonemappingFunctionInverseToneMapping.ValueText.ToInvariantString()}")
                 If Not LibPlaceboTonemappingFunctionShowClipping.IsDefaultValue Then sb.Append($",show_clipping={LibPlaceboTonemappingFunctionShowClipping.ValueText.ToInvariantString()}")
                 If Not LibPlaceboTonemappingFunctionVisualizeLut.IsDefaultValue Then sb.Append($",visualize_lut={LibPlaceboTonemappingFunctionVisualizeLut.ValueText.ToInvariantString()}")
                 If Not (LibPlaceboTonemappingFunctionLutType.IsDefaultValue OrElse String.IsNullOrWhiteSpace(LibPlaceboTonemappingLut.Value)) Then sb.Append($",lut_type={LibPlaceboTonemappingFunctionLutType.ValueText.ToInvariantString()}")
@@ -1714,6 +1717,7 @@ Public Class NVEnc
             setDouble(LibPlaceboTonemappingFunctionContrastRecovery, Regex.Match(arg, "(?:^|,)contrast_recovery=(\d+(\.\d+)?)?"))
             setDouble(LibPlaceboTonemappingFunctionContrastSmoothness, Regex.Match(arg, "(?:^|,)contrast_smoothness=(\d+(\.\d+)?)?"))
             setOption(LibPlaceboTonemappingFunctionUseDolbyVision, Regex.Match(arg, "(?:^|,)use_dovi=([^,]*)"))
+            setOption(LibPlaceboTonemappingFunctionInverseToneMapping, Regex.Match(arg, "(?:^|,)inverse_tone_mapping=([^,]*)"))
             setOption(LibPlaceboTonemappingFunctionShowClipping, Regex.Match(arg, "(?:^|,)show_clipping=([^,]*)"))
             setOption(LibPlaceboTonemappingFunctionVisualizeLut, Regex.Match(arg, "(?:^|,)visualize_lut=([^,]*)"))
             setOption(LibPlaceboTonemappingFunctionLutType, Regex.Match(arg, "(?:^|,)lut_type=([^,]*)"))

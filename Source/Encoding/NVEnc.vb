@@ -1144,7 +1144,8 @@ Public Class NVEnc
                         New OptionParam With {.Switch = "--output-thread", .Text = "Output Thread", .Options = {"Automatic", "Disabled", "One Thread"}, .Values = {"-1", "0", "1"}},
                         New NumParam With {.Switch = "--perf-monitor-interval", .Init = 500, .Config = {50, Integer.MaxValue}, .Text = "Perf. Mon. Interval"},
                         New BoolParam With {.Switch = "--max-procfps", .Text = "Limit performance to lower resource usage"},
-                        New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"})
+                        New BoolParam With {.Switch = "--lowlatency", .Text = "Low Latency"},
+                        New BoolParam With {.Switch = "--task-perf-monitor", .Text = "Task Perf Monitor"})
                     Add("Statistic",
                         New StringParam With {.Switch = "--log", .Text = "Log File", .BrowseFile = True},
                         New OptionParam With {.Switch = "--log-level", .Text = "Log Level", .Options = {"Info", "Debug", "Warn", "Error", "Quiet"}},

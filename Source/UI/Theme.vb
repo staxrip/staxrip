@@ -19,6 +19,20 @@ Public Class Theme
         End Get
     End Property
 
+    Public Overridable ReadOnly Property BaseHue As Integer
+        Get
+            Return _baseHue
+        End Get
+    End Property
+
+    Public Overridable ReadOnly Property HighlightHue As Integer
+        Get
+            Return _highlightHue
+        End Get
+    End Property
+
+
+
 
     Private _generalThemeColors As GeneralThemeColors
     Private _appsFormThemeColors As AppsFormThemeColors
@@ -968,6 +982,17 @@ Public Class Theme
         Public Property ForeColor As ColorHSL = SystemColors.ControlText
 
 
+        Private _button As ButtonThemeColors
+        Public Property Button As ButtonThemeColors
+            Get
+                _button = If(_button, New ButtonThemeColors())
+                Return _button
+            End Get
+            Set
+                _button = Value
+            End Set
+        End Property
+
         Private _commandButton As CommandButtonThemeColors
         Public Property CommandButton As CommandButtonThemeColors
             Get
@@ -978,6 +1003,15 @@ Public Class Theme
                 _commandButton = Value
             End Set
         End Property
+
+        <Serializable>
+        Public Class ButtonThemeColors
+            Public Property BackColor As ColorHSL = SystemColors.ScrollBar
+            Public Property BorderColor As ColorHSL = SystemColors.ActiveBorder
+            Public Property ForeColor As ColorHSL = SystemColors.ControlText
+            Public Property TimeoutBackColor As ColorHSL = SystemColors.ScrollBar
+            Public Property TimeoutForeColor As ColorHSL = SystemColors.ControlText
+        End Class
 
         <Serializable>
         Public Class CommandButtonThemeColors

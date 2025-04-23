@@ -64,12 +64,12 @@ Public Class TaskDialog(Of T)
             Next
         End If
 
-        Dim t = If(Not String.IsNullOrWhiteSpace(Content), Content, "")
-        t = If(Not String.IsNullOrWhiteSpace(ExpandedContent) AndAlso ExpandedContent.Length > Content?.Length, ExpandedContent, t)
-        Dim lines = t.Split({BR}, StringSplitOptions.RemoveEmptyEntries)
+        Dim c = If(Not String.IsNullOrWhiteSpace(Content), Content, "")
+        c = If(Not String.IsNullOrWhiteSpace(ExpandedContent) AndAlso ExpandedContent.Length > Content?.Length, ExpandedContent, c)
+        Dim lines = c.Split({BR}, StringSplitOptions.RemoveEmptyEntries)
         Dim maxLength = If(lines.Any(), lines.Max(Function(x) x.Length), 0)
         Width = Math.Max(Width, FontHeight * maxLength \ 3)
-        If t.Length > 1000 Then Width = Math.Max(Width, FontHeight * 50)
+        If c.Length > 1000 Then Width = Math.Max(Width, FontHeight * 65)
 
         ShowIcon = False
         StartPosition = FormStartPosition.CenterScreen
@@ -130,25 +130,6 @@ Public Class TaskDialog(Of T)
                 paMain.Controls.Add(ExpandedContentLabel)
             End If
 
-            For Each command In CommandDefinitions
-                Dim cb As New CommandButton With {
-                    .Title = command.Text,
-                    .Description = command.Description,
-                    .Tag = command
-                }
-
-                If TypeOf command.Value Is FontFamily Then
-                    cb.ReplaceFontFamily(FontManager.GetFontFamily(FontCategory.All, command.Text))
-                End If
-
-                AddHandler cb.Click, AddressOf CommandClick
-                paMain.Controls.Add(cb)
-
-                If firstCommandButton Is Nothing Then
-                    firstCommandButton = cb
-                End If
-            Next
-
             For i = 0 To ButtonDefinitions.Count - 1
                 Dim bd = ButtonDefinitions(i)
 
@@ -170,11 +151,40 @@ Public Class TaskDialog(Of T)
 
                 If bd.TimeoutButton AndAlso TimeoutButton Is Nothing Then
                     TimeoutButton = b
+                    TimeoutButton.BackColor = ThemeManager.CurrentTheme.TaskDialog.Button.TimeoutBackColor
+                    TimeoutButton.ForeColor = ThemeManager.CurrentTheme.TaskDialog.Button.TimeoutForeColor
                 End If
 
                 flpButtons.Controls.Add(b)
                 bd.Button = b
                 AddHandler b.Click, AddressOf ButtonClick
+            Next
+
+            For Each command In CommandDefinitions
+                Dim cb As New CommandButton With {
+                    .Title = command.Text,
+                    .Description = command.Description,
+                    .Tag = command
+                }
+
+                If TimeoutButton IsNot Nothing AndAlso TypeOf TimeoutButton.Tag Is T AndAlso TimeoutButton.Tag.Equals(command.Value) Then
+                    cb.BackColor = ThemeManager.CurrentTheme.TaskDialog.Button.TimeoutBackColor
+                    cb.ForeColor = ThemeManager.CurrentTheme.TaskDialog.Button.TimeoutForeColor
+                Else
+                    If command.BackColor.HasValue Then cb.BackColor = command.BackColor.Value
+                    If command.ForeColor.HasValue Then cb.ForeColor = command.ForeColor.Value
+                End If
+
+                If TypeOf command.Value Is FontFamily Then
+                    cb.ReplaceFontFamily(FontManager.GetFontFamily(FontCategory.All, command.Text))
+                End If
+
+                AddHandler cb.Click, AddressOf CommandClick
+                paMain.Controls.Add(cb)
+
+                If firstCommandButton Is Nothing Then
+                    firstCommandButton = cb
+                End If
             Next
         Finally
             paMain.ResumeLayout()
@@ -274,16 +284,16 @@ Public Class TaskDialog(Of T)
         AddCommand(value.ToString, Nothing, value)
     End Sub
 
-    Sub AddCommand(text As String, Optional value As T = Nothing)
-        AddCommand(text, Nothing, value)
+    Sub AddCommand(text As String, Optional value As T = Nothing, Optional backColor As ColorHSL? = Nothing, Optional foreColor As ColorHSL? = Nothing)
+        AddCommand(text, Nothing, value, backColor, foreColor)
     End Sub
 
-    Sub AddCommand(text As String, description As String, value As T)
+    Sub AddCommand(text As String, description As String, value As T, Optional backColor As ColorHSL? = Nothing, Optional foreColor As ColorHSL? = Nothing)
         If value Is Nothing Then
             value = CType(CObj(text), T)
         End If
 
-        CommandDefinitions.Add(New CommandDefinition With {.Text = text, .Description = description, .Value = value})
+        CommandDefinitions.Add(New CommandDefinition With {.Text = text, .Description = description, .Value = value, .BackColor = backColor, .ForeColor = foreColor})
     End Sub
 
     Sub AddCommands(values As IEnumerable(Of T))
@@ -564,6 +574,8 @@ Public Class TaskDialog(Of T)
     End Function
 
     Public Class CommandDefinition
+        Property BackColor As ColorHSL?
+        Property ForeColor As ColorHSL?
         Property Text As String
         Property Description As String
         Property Value As T

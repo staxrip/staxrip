@@ -1547,7 +1547,7 @@ Partial Public Class MainForm
             End If
 
             If isModified OrElse Not isStartup Then
-                td.AddCommand(g.StartupTemplatePath.Base() + " (Startup)", g.StartupTemplatePath)
+                td.AddCommand(g.StartupTemplatePath.Base() + " (Startup)", g.StartupTemplatePath, ThemeManager.CurrentTheme.TaskDialog.Button.TimeoutBackColor.SetHue(ThemeManager.CurrentTheme.HighlightHue))
             End If
 
             If templateFolder.Contains(Folder.Template + Path.DirectorySeparatorChar) Then

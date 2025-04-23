@@ -164,6 +164,18 @@ Public NotInheritable Class ThemeManager
         Private ReadOnly _accentSat As Single = 0
         Private ReadOnly _accentSatDefault As Single = 0.55
 
+        Public Overrides ReadOnly Property BaseHue As Integer
+            Get
+                Return _baseHue
+            End Get
+        End Property
+
+        Public Overrides ReadOnly Property HighlightHue As Integer
+            Get
+                Return _highlightHue
+            End Get
+        End Property
+
         Public Sub New(name As String, Optional hue As Integer = 200, Optional highlightHue As Integer = -1, Optional backLuma As Single = 0.11)
             MyBase.New(name)
             MyBase._usesSystemColors = False
@@ -574,6 +586,13 @@ Public NotInheritable Class ThemeManager
             TaskDialog = New TaskDialogThemeColors() With {
                 .BackColor = _controlBackColor.AddLuminance(-0.005),
                 .ForeColor = _foreColor.AddLuminance(0.1),
+                .Button = New TaskDialogThemeColors.ButtonThemeColors() With {
+                    .BackColor = _controlBackColor.AddLuminance(0.005),
+                    .BorderColor = .BackColor.AddLuminance(0.05),
+                    .ForeColor = _foreColor.AddLuminance(0.1),
+                    .TimeoutBackColor = _controlBackColor.AddSaturation(0.3).AddLuminance(0.1),
+                    .TimeoutForeColor = .ForeColor.AddLuminance(0.1)
+                },
                 .CommandButton = New TaskDialogThemeColors.CommandButtonThemeColors() With {
                     .BackColor = _controlBackColor.AddLuminance(0.005),
                     .BorderColor = .BackColor.AddLuminance(0.05),

@@ -60,10 +60,16 @@ Any contribution is highly appreciated!
 This is the way to go if you have questions regarding settings, usage, etc.
 - Usage questions can also be asked on the *StaxRip threads* on
   - [VideoHelp](https://forum.videohelp.com/threads/369913-StaxRip-support-thread)
+  - [Doom9](https://forum.doom9.org/showthread.php?t=172068)
 
   although no developer or contributor is active there anymore.
 
 # Prerequirements
+
+- Many tools and filters need a specific version of Microsoft Visual C++ Redistributable Runtimes. Due to the frequent changing and replacing of tools and filters, it is impossible to provide precise details about the right dependency. So if StaxRip doesn't start or you get error messages due to missing runtime files or dependencies, we recommend to download and install the Microsoft Visual C++ Redistributable Runtimes from:
+    - https://github.com/abbodi1406/vcredist/releases or
+    - https://www.techpowerup.com/download/visual-c-redistributable-runtime-package-all-in-one
+
 - OS limitations: **Windows 7** users can use StaxRip only partly. The following tools are included and don't have official **Windows 7** support anymore. You in case you don't want to upgrade your system, you can replace these tools with an older, compatible, version, which should work, but of course with some limited usability:
     - MKVToolNix
         - Latest working version is reported to be `v64.0`. Last (complete) working StaxRip version is *StaxRip v2.10.0 (2021-10-06)* including *MKVToolNix v61.0*
@@ -72,8 +78,6 @@ This is the way to go if you have questions regarding settings, usage, etc.
         - Needed for VapourSynth. Last **Windows 7** compatible version was used in *StaxRip v2.25.0 (2023-08-02)*. As of now using VapourSynth R63 it could be possible to downgrade Python to `v3.8.*`that is **Windows 7** compatible, but requires experienced users.
              
      Alternatively you can download an old StaxRip release, but then you don't benefit from new functions and bug fixes.
-
-- Some tools and filters might need a specific version of Microsoft Visual C++ Redistributable Runtimes. Due to the frequent changing and replacing of tools and filters, it is impossible to provide precise details about the right dependency. So if you get error messages to due to missing runtime files, we recommend to download and install the [Microsoft Visual C++ Redistributable Runtimes All-in-One](https://www.techpowerup.com/download/visual-c-redistributable-runtime-package-all-in-one/).
 
 # Extraction / Usage
 

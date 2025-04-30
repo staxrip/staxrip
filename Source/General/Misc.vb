@@ -780,7 +780,7 @@ Public Class Language
                     New Language(CultureInfo.InvariantCulture, True, True)
                 }
 
-                If OSVersion.VersionInfo.dwMajorVersion > 7 Then
+                If Not g.IsRunningUnderWine AndAlso OSVersion.VersionInfo.dwMajorVersion > 7 Then
                     l.AddRange({
                                    New Language(New CustomCultureInfo("cmn-Hans-CN", "cmn-Hans-CN", "Chinese (Mandarin, Simplified, China)", "zh", "cmn"), False, False),
                                    New Language(New CustomCultureInfo("cmn-Hant-CN", "cmn-Hant-CN", "Chinese (Mandarin, Traditional, China)", "zh", "cmn"), False, False),

@@ -246,13 +246,13 @@ Public Class SourceFilesForm
                             Dim subfolders = Directory.GetDirectories(dialog.SelectedPath)
                             Dim opt = SearchOption.TopDirectoryOnly
 
-                            If Directory.GetDirectories(dialog.SelectedPath).Count > 0 Then
+                            If subfolders.Count > 0 Then
                                 If MsgQuestion("Include sub folders?", TaskButton.YesNo) = DialogResult.Yes Then
                                     opt = SearchOption.AllDirectories
                                 End If
                             End If
 
-                            lb.Items.AddRange(Directory.GetFiles(dialog.SelectedPath, "*.*", opt).Where(Function(val) FileTypes.Video.Contains(val.Ext)).ToArray)
+                            lb.Items.AddRange(Directory.GetFiles(dialog.SelectedPath, "*.*", opt).Where(Function(val) FileTypes.Video.Contains(val.Ext)).OrderBy(Function(x) x, New StringLogicalComparer()).ToArray)
                             lb.SelectedIndex = lb.Items.Count - 1
                         End If
                     End Using

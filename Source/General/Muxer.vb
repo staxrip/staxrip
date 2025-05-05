@@ -469,6 +469,7 @@ Public Class MP4Muxer
         Get
             Return {"ts", "m2ts", "ivf", "obu",
                     "mpg", "m2v",
+                    "flac",
                     "avi", "opus",
                     "ac3", "ec3", "eac3", "thd",
                     "mp4", "m4a", "aac", "mov",

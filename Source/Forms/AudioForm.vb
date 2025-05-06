@@ -916,8 +916,8 @@ Public Class AudioForm
         mbDecoder.Enabled = Not TempProfile.ExtractCore
         mbChannels.Enabled = Not TempProfile.ExtractCore AndAlso enc <> GuiAudioEncoder.opusenc AndAlso enc <> GuiAudioEncoder.deezy
         mbSamplingRate.Enabled = Not TempProfile.ExtractCore AndAlso enc <> GuiAudioEncoder.opusenc
-        cbNormalize.Enabled = Not TempProfile.ExtractCore
-        cbCenterOptimizedStereo.Enabled = Not TempProfile.ExtractCore AndAlso {AudioDecoderMode.ffmpeg, AudioDecoderMode.Automatic}.Contains(TempProfile.Decoder) AndAlso ((TempProfile.Params.Codec <> AudioCodec.Opus AndAlso TempProfile.Params.ChannelsMode = ChannelsMode._2) OrElse (TempProfile.Params.Codec = AudioCodec.Opus AndAlso TempProfile.Params.OpusencDownmix = OpusDownmix.Stereo))
+        cbNormalize.Enabled = Not TempProfile.ExtractCore AndAlso enc <> GuiAudioEncoder.deezy
+        cbCenterOptimizedStereo.Enabled = Not TempProfile.ExtractCore AndAlso {AudioDecoderMode.ffmpeg, AudioDecoderMode.Automatic}.Contains(TempProfile.Decoder) AndAlso enc <> GuiAudioEncoder.deezy AndAlso ((TempProfile.Params.Codec <> AudioCodec.Opus AndAlso TempProfile.Params.ChannelsMode = ChannelsMode._2) OrElse (TempProfile.Params.Codec = AudioCodec.Opus AndAlso TempProfile.Params.OpusencDownmix = OpusDownmix.Stereo))
         numGain.Enabled = Not TempProfile.ExtractCore
         numBitrate.Increment = If({AudioCodec.AC3, AudioCodec.EAC3}.Contains(TempProfile.Params.Codec), If(CInt(numBitrate.Value) >= 320, 64, 32), 1D)
         numBitrate.Maximum = If({AudioCodec.AC3, AudioCodec.EAC3}.Contains(TempProfile.Params.Codec), 1664D, 10000D)
@@ -1524,7 +1524,13 @@ Public Class AudioForm
     End Sub
 
     Sub mbEncoder_ValueChangedUser(value As Object) Handles mbEncoder.ValueChangedUser
-        TempProfile.Params.Encoder = mbEncoder.GetValue(Of GuiAudioEncoder)()
+        Dim enc = mbEncoder.GetValue(Of GuiAudioEncoder)()
+        TempProfile.Params.Encoder = enc
+
+        If enc = GuiAudioEncoder.deezy Then
+            cbNormalize.Checked = False
+            cbCenterOptimizedStereo.Checked = False
+        End If
         mbCodec_ValueChangedUser()
     End Sub
 

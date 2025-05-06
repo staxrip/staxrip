@@ -894,8 +894,8 @@ Public Class GUIAudioProfile
         End If
     End Sub
 
-    Sub NormalizeFF()
-        If Not Params.Normalize OrElse ExtractCore OrElse Not {ffmpegNormalizeMode.loudnorm, ffmpegNormalizeMode.volumedetect}.Contains(Params.ffmpegNormalizeMode) Then Exit Sub
+    Function NormalizeFF() As Boolean
+        If Not Params.Normalize OrElse ExtractCore OrElse Params.Encoder = GuiAudioEncoder.deezy OrElse Not {ffmpegNormalizeMode.loudnorm, ffmpegNormalizeMode.volumedetect}.Contains(Params.ffmpegNormalizeMode) Then Return False
 
         Dim args = "-i " + File.Escape
 
@@ -941,7 +941,9 @@ Public Class GUIAudioProfile
             match = Regex.Match(proc.Log.ToString, "Input Threshold:\s*([-\.0-9]+)")
             If match.Success Then Params.ffmpegLoudnormThresholdMeasured = match.Groups(1).Value.ToDouble
         End Using
-    End Sub
+
+        Return True
+    End Function
 
     Overrides Function Edit() As DialogResult
         Using form As New AudioForm()
@@ -1057,7 +1059,6 @@ Public Class GUIAudioProfile
         If Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyChannelsDdp <> DeezyChannelsDdp.Original Then sb.Append($" --channels={Params.DeezyChannelsDdp.ToString().TrimStart("_"c)}")
         If ((Params.Codec = AudioCodec.AC3 AndAlso Params.DeezyChannelsDd = DeezyChannelsDd._2) OrElse (Params.Codec = AudioCodec.EAC3 AndAlso Params.DeezyChannelsDdp = DeezyChannelsDdp._2)) AndAlso Params.DeezyStereodownmix <> DeezyStereodownmix.Standard Then sb.Append($" --stereo-down-mix={CInt(Params.DeezyStereodownmix)}")
         If Params.DeezyDynamicrangecompression <> DeezyDynamicrangecompression.Music_Light Then sb.Append($" --dynamic-range-compression={CInt(Params.DeezyDynamicrangecompression)}")
-        If Params.Normalize AndAlso Params.Codec = AudioCodec.EAC3 Then sb.Append(" --normalize")
         If Params.CustomSwitches <> "" Then sb.Append(" " + Params.CustomSwitches)
         If includePaths Then sb.Append($" --output={GetOutputFile.LongPathPrefix.Escape} {File.Escape}")
 

@@ -23,8 +23,7 @@ Public Class Audio
         Dim gap = TryCast(ap, GUIAudioProfile)
 
         If isGUIAP AndAlso gap.ContainsCommand("ffmpeg") Then
-            gap.NormalizeFF()
-            normalized = True
+            normalized = gap.NormalizeFF()
         End If
 
         Dim extractCore = isGUIAP AndAlso gap.ExtractCore
@@ -123,7 +122,7 @@ Public Class Audio
 
         Dim isGUIAP = TypeOf ap Is GUIAudioProfile
         Dim gap = TryCast(ap, GUIAudioProfile)
-        Dim renormalize = isGUIAP AndAlso gap.Params.Normalize AndAlso
+        Dim renormalize = isGUIAP AndAlso gap.Params.Normalize AndAlso gap.GetEncoder() <> GuiAudioEncoder.deezy AndAlso
                                 (gap.Params.ffmpegNormalizeMode = ffmpegNormalizeMode.dynaudnorm OrElse
                                 (gap.Params.ChannelsMode <> ChannelsMode.Original OrElse gap.GetEncoder() = GuiAudioEncoder.opusenc))
 

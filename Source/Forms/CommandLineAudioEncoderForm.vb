@@ -1,4 +1,4 @@
-
+﻿
 Imports StaxRip.UI
 
 Public Class CommandLineAudioEncoderForm
@@ -617,7 +617,7 @@ End Sub
                             macroList)
 
         form.Doc.WriteTable("Global Macros", "Global macros are passed to the process as environment variables.",
-                            Macro.GetTips(False, True, True))
+                            Macro.GetTips(True, False, True, True))
         form.Show()
     End Sub
 

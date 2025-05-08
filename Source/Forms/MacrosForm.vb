@@ -285,7 +285,7 @@ Public Class MacrosForm
 
         Dim macros As New StringPairList
 
-        For Each mac In Macro.GetMacros(True, True, True)
+        For Each mac In Macro.GetMacros(True, True, True, True)
             macros.Add(mac.Name, mac.Description)
         Next
 

@@ -9,7 +9,7 @@ Public Class Documentation
     Shared Sub GenerateWikiContent()
         Dim outDir = Path.Combine(Folder.Settings, "Wiki Pages")
         FolderHelp.Create(outDir)
-        GetCommands(True).WriteFileUTF8(Path.Combine(outDir, "CLI.md"))
+        GetCommands(True).WriteFileUTF8(Path.Combine(outDir, "Command-Line-Interface.md"))
         GetCommands(False).WriteFileUTF8(Path.Combine(outDir, "Commands.md"))
         GetMacros.WriteFileUTF8(Path.Combine(outDir, "Macros.md"))
         GetTools.WriteFileUTF8(Path.Combine(outDir, "Tools.md"))
@@ -107,10 +107,60 @@ Public Class Documentation
     End Function
 
     Shared Function GetMacros() As String
-        Dim sb As New StringBuilder("| Name | Description |" + BR + "|---|---|" + BR)
+        Dim sb As New StringBuilder()
+        sb.AppendLine("# [Documentation](../README.md) / [Usage](README.md) / Macros")
+        sb.AppendLine()
+        sb.AppendLine("## Global Macros")
+        sb.AppendLine("| Name | Description |")
+        sb.AppendLine("|---|---|")
 
-        For Each tip In Macro.GetTips(False, True, True)
-            sb.AppendLine("| " + tip.Name + " | " + tip.Value + " |")
+        For Each tip In Macro.GetTips(True, False, False, False)
+            sb.AppendLine($"| `{tip.Name}` | {tip.Value} |")
+        Next
+
+        sb.AppendLine()
+        sb.AppendLine("## Parameter Included Macros")
+        sb.AppendLine("| Name | Description |")
+        sb.AppendLine("|---|---|")
+
+        For Each tip In Macro.GetTips(False, False, True, False)
+            sb.AppendLine($"| `{tip.Name}` | {tip.Value} |")
+        Next
+
+        sb.AppendLine()
+        sb.AppendLine("## Interactive Macros")
+        sb.AppendLine("Interactive macros can be used in certain menus like the filter profiles menu. They give you the ability to pop up dialogs in which you have to put values in or select an option.")
+        sb.AppendLine("| Name | Description |")
+        sb.AppendLine("|---|---|")
+
+        For Each tip In Macro.GetTips(False, True, False, False)
+            sb.AppendLine($"| `{tip.Name}` | {tip.Value} |")
+        Next
+
+        sb.AppendLine()
+        sb.AppendLine("## Special Macros")
+
+        sb.AppendLine()
+        sb.AppendLine("### Encoder Macros")
+        sb.AppendLine("When choosing the option to override the target file name via the encoder options, you have the possibility to extend the normal macros with encoder specific ones.  ")
+        sb.AppendLine("The syntax is: `%parameter%`  ")
+        sb.AppendLine("**Note**: There are some special parameters, that might be not supported (yet). In such cases you can open a feature request.")
+        sb.AppendLine()
+        sb.AppendLine("Examples:")
+        sb.AppendLine("| Encoder | Example | Result |")
+        sb.AppendLine("|---|---|---|")
+        sb.AppendLine("| x265 | `%source_name%_CRF%--crf%_AQ-Mode%--aq-mode%` | `%source_name%_CRF23_AQ-Mode2` |")
+        sb.AppendLine("| SvtAv1EncApp | `%source_name%_CRF%--crf%_Predict%--pred-struct%` | `%source_name%_CRF35_Predict2` |")
+        sb.AppendLine("| SvtAv1EncApp | `%source_name%_CRF%--crf%_VBoost%--enable-variance-boost%` | `%source_name%_CRF35_VBoost1` |")
+
+        sb.AppendLine()
+        sb.AppendLine("### While Processing Macros")
+        sb.AppendLine("These macros are only available while a process is running. They can be used for the `While Processing` event, for example to call an API.")
+        sb.AppendLine("| Name | Description |")
+        sb.AppendLine("|---|---|")
+
+        For Each tip In Macro.GetTips(False, False, False, True)
+            sb.AppendLine($"| `{tip.Name}` | {tip.Value} |")
         Next
 
         Return sb.ToString

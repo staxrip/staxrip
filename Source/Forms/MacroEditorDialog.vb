@@ -1,4 +1,4 @@
-
+﻿
 Imports StaxRip.UI
 
 Public Class MacroEditorDialog
@@ -161,7 +161,7 @@ Public Class MacroEditorDialog
         form.Doc.WriteStart(Text)
         form.Doc.WriteParagraph(HelpText)
         form.Doc.WriteTips(MacroEditorControl.TipProvider.GetTips)
-        form.Doc.WriteTable("Macros", Macro.GetTips(False, True, True))
+        form.Doc.WriteTable("Macros", Macro.GetTips(True, False, True, True))
         form.Show()
     End Sub
 

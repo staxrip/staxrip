@@ -70,7 +70,7 @@ Public Class SimpleUI
             AddHandler FindForm.Load,
                 Sub()
                     If Tree.Nodes.Count > 0 Then
-                        Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 2
+                        Tree.ItemHeight = CInt(Tree.Height / (Tree.Nodes.Count)) - 1
                     End If
 
                     If Tree.ItemHeight > CInt(Tree.Font.Height * 1.3) Then
@@ -1227,7 +1227,7 @@ Public Class SimpleUI
 
         Sub New(ui As SimpleUI)
             MyBase.New(ui)
-            Button.AutoSizeMode = AutoSizeMode.GrowOnly
+            Button.AutoSizeMode = AutoSizeMode.GrowAndShrink
             Button.AutoSize = True
             Button.Font = New Font("Segoe UI", 9.0! * s.UIScaleFactor)
             Button.Text = "..."

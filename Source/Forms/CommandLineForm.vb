@@ -121,7 +121,6 @@ Public Class CommandLineForm
         rtbCommandLine.SetText(Params.GetCommandLine(False, False))
         rtbCommandLine.SelectionLength = 0
         rtbCommandLine.UpdateHeight()
-        UpdateSearchComboBox()
     End Sub
 
     Sub InitUI()
@@ -308,6 +307,8 @@ Public Class CommandLineForm
                 Items.Add(item)
             End If
         Next
+
+        UpdateSearchComboBox()
 
         For Each panel In flowPanels
             panel.ResumeLayout()

@@ -934,8 +934,7 @@ Public Class GlobalClass
         If profile Is Nothing Then Exit Sub
         If index < 0 Then Exit Sub
         If index > p.AudioTracksAvailable - 1 Then Exit Sub
-        If p.AudioTracks Is Nothing Then Exit Sub
-        If p.AudioTracks.Count < 1 Then Exit Sub
+        If Not p.AudioTracks?.Any() Then Exit Sub
         If p.AudioTracks(index).AudioProfile Is Nothing Then Exit Sub
 
         Dim audioTrack = p.AudioTracks(index)

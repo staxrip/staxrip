@@ -153,9 +153,7 @@ Public MustInherit Class Muxer
     End Function
 
     Overridable Sub Init()
-        If Not File.Exists(p.SourceFile) Then
-            Exit Sub
-        End If
+        If Not p.SourceFile.FileExists() Then Exit Sub
 
         Dim files = g.GetFilesInTempDirAndParent
         files.Sort(New StringLogicalComparer)

@@ -3617,7 +3617,7 @@ Namespace UI
             Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
             BorderStyle = BorderStyle.None
             Location = New Point(1687, 7)
-            Margin = New Padding(0, FontHeight \ 3, 0, FontHeight \ 7)
+            Margin = New Padding(0, FontHeight \ 6, 0, FontHeight \ 4)
             TabStop = True
             Text = "Audio Language"
             TextAlign = Drawing.ContentAlignment.BottomLeft
@@ -3647,7 +3647,7 @@ Namespace UI
             Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
             BorderStyle = BorderStyle.None
             Location = New Point(1887, 7)
-            Margin = New Padding(0, FontHeight \ 3, 0, FontHeight \ 7)
+            Margin = New Padding(0, FontHeight \ 6, 0, FontHeight \ 4)
             TabStop = True
             Text = "Audio Profile"
             TextAlign = Drawing.ContentAlignment.BottomLeft
@@ -3667,7 +3667,7 @@ Namespace UI
             Anchor = AnchorStyles.Left Or AnchorStyles.Top Or AnchorStyles.Right
             BorderStyle = BorderStyle.None
             Location = New Point(1933, 7)
-            Margin = New Padding(FontHeight \ 3, FontHeight \ 3, FontHeight \ 3, FontHeight \ 7)
+            Margin = New Padding(FontHeight \ 3, FontHeight \ 6, FontHeight \ 3, FontHeight \ 4)
             TabStop = True
             Text = "Edit"
             TextAlign = Drawing.ContentAlignment.BottomLeft

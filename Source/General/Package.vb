@@ -632,7 +632,7 @@ Public Class Package
         .Location = IO.Path.Combine("Support", "MKVToolNix"),
         .WebURL = "https://mkvtoolnix.download",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
+        .DownloadURL = "https://mkvtoolnix.download/downloads.html#windows",
         .HelpSwitch = "",
         .Siblings = {"mkvextract", "mkvinfo", "MKVToolnix GUI"},
         .Exclude = {"-setup"},
@@ -644,7 +644,7 @@ Public Class Package
         .Location = IO.Path.Combine("Support", "MKVToolNix"),
         .WebURL = "https://mkvtoolnix.download",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
+        .DownloadURL = "https://mkvtoolnix.download/downloads.html#windows",
         .HelpSwitch = "",
         .Exclude = {"-setup"},
         .Siblings = {"mkvinfo", "MKVToolnix GUI", "mkvmerge"},
@@ -656,7 +656,7 @@ Public Class Package
         .Location = IO.Path.Combine("Support", "MKVToolNix"),
         .WebURL = "https://mkvtoolnix.download",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
+        .DownloadURL = "https://mkvtoolnix.download/downloads.html#windows",
         .HelpSwitch = "",
         .Exclude = {"-setup"},
         .Siblings = {"mkvextract", "MKVToolnix GUI", "mkvmerge"},
@@ -670,7 +670,7 @@ Public Class Package
         .Exclude = {"-setup"},
         .WebURL = "https://mkvtoolnix.download",
         .HelpURL = "https://mkvtoolnix.download/docs.html",
-        .DownloadURL = "https://www.videohelp.com/software/MKVToolNix",
+        .DownloadURL = "https://mkvtoolnix.download/downloads.html#windows",
         .Description = "MKV muxing/demuxing GUI app."})
 
     Shared Property HDR10PlusTool As Package = Add(New Package With {

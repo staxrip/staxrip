@@ -459,7 +459,7 @@ Public Class ProcController
                     End If
                 ElseIf Proc.Package Is Package.SvtAv1EncApp Then
                     'Mod by Patman
-                    pattern = "^Encoding:\s+(\d+)/(\s*\d+)\sFrames\s@\s(\d+\.\d+)\sfps\s\|\s(\d+)\.\d+\skb[p/]s\s\|\sTime:\s(\d+:\d\d:\d\d)\s\[(-?\d+:\d\d:\d\d)\]\s\|\sSize:\s(-?\d+\.\d+)\s(.B)\s\[(-?\d+)\.\d+\s(.B)\]"
+                    pattern = "^Encoding:\s+(\d+)/(\s*\d+)\sFrames\s@\s(\d+\.\d+)\s(fp[s|m])\s\|\s(\d+)\.\d+\skb[p/]s\s\|\sTime:\s(\d+:\d\d:\d\d)\s\[(-?\d+:\d\d:\d\d)\]\s\|\sSize:\s(-?\d+\.\d+)\s(.B)\s\[(-?\d+)\.\d+\s(.B)\]"
                     match = Regex.Match(value, pattern, RegexOptions.IgnoreCase)
 
                     If match.Success Then
@@ -482,7 +482,7 @@ Public Class ProcController
                             speedString = $" ({speed.ToString("0.00", CultureInfo.InvariantCulture)}x)"
                         End If
 
-                        value = $"{percentString} {match.Groups(1).Value.PadLeft(match.Groups(2).Value.Length)}/{match.Groups(2).Value.Trim()} frames @ {match.Groups(3).Value} fps{speedString}{_progressSeparator}{match.Groups(4).Value,4} kb/s{_progressSeparator}{match.Groups(7).Value,5} {match.Groups(8).Value} ({match.Groups(9).Value} {match.Groups(10).Value}){_progressSeparator}{match.Groups(5).Value} ({match.Groups(6).Value})"
+                        value = $"{percentString} {match.Groups(1).Value.PadLeft(match.Groups(2).Value.Length)}/{match.Groups(2).Value.Trim()} frames @ {match.Groups(3).Value} {match.Groups(4).Value}{speedString}{_progressSeparator}{match.Groups(5).Value,4} kb/s{_progressSeparator}{match.Groups(8).Value,5} {match.Groups(9).Value} ({match.Groups(10).Value} {match.Groups(11).Value}){_progressSeparator}{match.Groups(6).Value} ({match.Groups(7).Value})"
                     Else
                         _progressReformattingFailCounter += 1
                     End If

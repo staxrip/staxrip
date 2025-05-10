@@ -217,7 +217,7 @@ Public Class ApplicationSettings
             WindowPositionsRemembered = {"StaxRip", "Crop", "Jobs", "Processing", "Preview", "Code Preview", "Help"}
         End If
 
-        If Check(WindowPositions, "Window Positions", 5) Then
+        If Check(WindowPositions, "Window Positions", 6) Then
             WindowPositions = New WindowPositions
         End If
 

@@ -96,11 +96,11 @@ Namespace UI
         End Sub
 
         Sub SetMaximumSize(w As Single, h As Single)
-            MaximumSize = New Size(CInt(Font.Height * w), CInt(Font.Height * h))
+            MaximumSize = New Size(CInt(Font.Height * w / ((s.UIScaleFactor - 1) / 1.5 + 1)), CInt(Font.Height * h / ((s.UIScaleFactor - 1) / 1.5 + 1)))
         End Sub
 
         Sub SetMinimumSize(w As Single, h As Single)
-            MinimumSize = New Size(CInt(Font.Height * w), CInt(Font.Height * h))
+            MinimumSize = New Size(CInt(Font.Height * w / ((s.UIScaleFactor - 1) / 1.5 + 1)), CInt(Font.Height * h / ((s.UIScaleFactor - 1) / 1.5 + 1)))
         End Sub
 
         Protected Overrides Sub OnLoad(args As EventArgs)
@@ -111,13 +111,12 @@ Namespace UI
             SetTabIndexes(Me)
 
             If s.UIScaleFactor <> 1 Then
-                Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
                 Scale(New SizeF(1 * s.UIScaleFactor, 1 * s.UIScaleFactor))
             End If
 
             If DefaultWidthScale <> 0 Then
-                Dim defaultWidth = CInt(Font.Height * DefaultWidthScale)
-                Dim defaultHeight = CInt(Font.Height * DefaultHeightScale)
+                Dim defaultWidth = CInt(Font.Height * DefaultWidthScale * ((s.UIScaleFactor - 1) / 1.5 + 1))
+                Dim defaultHeight = CInt(Font.Height * DefaultHeightScale * ((s.UIScaleFactor - 1) / 1.5 + 1))
 
                 Dim w = 0
                 Dim h = 0
@@ -318,19 +317,24 @@ Namespace UI
         End Sub
 
         Function GetKey(form As Form) As String
-            Return form.Name + form.GetType().FullName + GetText(form)
+            Return $"{form.Name}_{form.GetType().FullName}_{GetText(form)}"
         End Function
 
         Function GetText(form As Form) As String
             If TypeOf form Is HelpForm Then
                 Return "Help"
-            ElseIf TypeOf form Is PreviewForm Then
-                Return "Preview"
+            ElseIf TypeOf form Is JobsForm Then
+                Return "Jobs"
             ElseIf TypeOf form Is MainForm Then
                 Return "StaxRip"
+            ElseIf TypeOf form Is PreviewForm Then
+                Return "Preview"
+            ElseIf TypeOf form Is ProcessingForm Then
+                Return "Processing"
             End If
 
-            Return form.Text
+            Dim text = form.Text.Replace(g.DefaultCommands.GetApplicationDetails(), "").Trim()
+            Return text
         End Function
     End Class
 

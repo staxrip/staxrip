@@ -347,7 +347,7 @@ Public Class ffmpegDemuxer
         End If
 
         Dim streamIndex = stream.StreamOrder
-        Dim args = "-y -hide_banner -probesize 10M -i " + sourcefile.Escape
+        Dim args = "-y -hide_banner -probesize 20M -i " + sourcefile.Escape
 
         If MediaInfo.GetAudioCount(sourcefile) > 1 Then
             args += " -map 0:a:" & stream.Index
@@ -356,7 +356,7 @@ Public Class ffmpegDemuxer
         args += " -vn -sn"
 
         If outPath.Ext = "wav" Then
-            args += " -c:a pcm_s16le"
+            args += " -c:a pcm_s24le"
         Else
             args += " -c:a copy"
 

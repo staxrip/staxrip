@@ -1229,7 +1229,7 @@ End Module
 Module ControlExtensions
     <Extension()>
     Sub ScaleClientSize(instance As Control, width As Single, height As Single)
-        instance.ClientSize = New Size(CInt(instance.Font.Height * width), CInt(instance.Font.Height * height))
+        instance.ClientSize = New Size(CInt(instance.Font.Height * width / s.UIScaleFactor), CInt(instance.Font.Height * height / s.UIScaleFactor))
     End Sub
 
     <Extension()>

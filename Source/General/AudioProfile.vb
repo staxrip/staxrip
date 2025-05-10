@@ -1516,7 +1516,7 @@ Public Class GUIAudioProfile
                     End If
                 End If
             Case AudioCodec.W64, AudioCodec.WAV
-                If Depth = 24 Then
+                If Depth >= 24 Then
                     sb.Append(" -c:a pcm_s24le")
                 Else
                     sb.Append(" -c:a pcm_s16le")

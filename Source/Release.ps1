@@ -1,4 +1,4 @@
-$solution               = $PSScriptRoot + '\StaxRip.sln'
+﻿$solution               = $PSScriptRoot + '\StaxRip.sln'
 $binDirectory           = $PSScriptRoot + '\bin'
 $appExe                 = $binDirectory + '\StaxRip.exe'
 $7zDirectory            = ''
@@ -35,6 +35,7 @@ $projectFiles = Get-ChildItem -Path $PSScriptRoot -Recurse -File -Include $inclu
 foreach( $file in $projectFiles ) {
     if( $file.FullName.Contains('\Apps\') ) { continue }
     if( $file.FullName.EndsWith('.vb') ) { continue }
+    if( $file.FullName.EndsWith('.md') ) { continue }
 
     $lines = Get-Content $file
 

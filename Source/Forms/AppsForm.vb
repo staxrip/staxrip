@@ -532,17 +532,20 @@ Public Class AppsForm
         Contents("Location").Text = If(path = "", "Not found", path)
         Contents("Description").Text = CurrentPackage.Description
 
+        Dim visible = Not String.IsNullOrWhiteSpace(CurrentPackage.WebURL)
         Contents("Website").Text = CurrentPackage.WebURL
-        Contents("Website").Visible = Not String.IsNullOrWhiteSpace(CurrentPackage.WebURL)
-        Headers("Website").Visible = Contents("Website").Visible
+        Contents("Website").Visible = visible
+        Headers("Website").Visible = visible
 
+        visible = Not String.IsNullOrWhiteSpace(CurrentPackage.HelpURL)
         Contents("Help").Text = CurrentPackage.HelpURL
-        Contents("Help").Visible = Not String.IsNullOrWhiteSpace(CurrentPackage.HelpURL)
-        Headers("Help").Visible = Contents("Help").Visible
+        Contents("Help").Visible = visible
+        Headers("Help").Visible = visible
 
+        visible = Not String.IsNullOrWhiteSpace(CurrentPackage.DownloadURL)
         Contents("Download").Text = CurrentPackage.DownloadURL
-        Contents("Download").Visible = Not String.IsNullOrWhiteSpace(CurrentPackage.DownloadURL)
-        Headers("Download").Visible = Contents("Download").Visible
+        Contents("Download").Visible = visible
+        Headers("Download").Visible = visible
 
         If File.Exists(CurrentPackage.Path) Then
             Contents("Version").Text = If(CurrentPackage.IsVersionCorrect, CurrentPackage.Version, "Unknown")

@@ -1,4 +1,4 @@
-<!--
+ï»¿<!--
 v2.4x.0 (not published yet)
 ====================
 
@@ -1442,7 +1442,7 @@ v2.18.0 (2023-05-22)
 
 - Set timestamp extraction for VFR MKV files only as default project option ([#817](/../../issues/817), [#1006](/../../issues/1006))
 - Fix minor issue with TransformsPack package definition
-- Fix UI issues especially with hidden checkbox texts on some machines by adding UI Fallback setting [Settings » User Interface » UI Fallback] ([#978](/../../issues/978))
+- Fix UI issues especially with hidden checkbox texts on some machines by adding UI Fallback setting [Settings Â» User Interface Â» UI Fallback] ([#978](/../../issues/978))
 - NVEncC: Adjust some codec dependent parameters
 - NVEncC: AV1 support ([#949](/../../issues/949))
 - SVTAV1: Set "--key-init" to default value of -2 (thanks to samkatakouzinos ([#1011](/../../pull/1011)))

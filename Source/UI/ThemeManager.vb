@@ -235,7 +235,7 @@ Public NotInheritable Class ThemeManager
                         .ForeHighlightColor = _controlForeHighlightColor
                     },
                     .GridView = New ControlsThemeColors.GridviewThemeColors() With {
-                        .BackColor = _backColor,
+                        .BackColor = _controlBackColor,
                         .BackHighlightColor = _controlBackHighlightColor,
                         .ForeColor = _foreColor.AddLuminance(-1),
                         .ForeHighlightColor = _controlForeHighlightColor,

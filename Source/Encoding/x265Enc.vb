@@ -1473,7 +1473,7 @@ Public Class x265Params
                 )
                 Add("Performance",
                     New StringParam With {.Switch = "--asm", .NoSwitch = "--no-asm", .Text = "ASM"},
-                    New StringParam With {.Switch = "--pools", .Switches = {"--numa-pools"}, .Text = "Pools"},
+                    New StringParam With {.Switch = "--pools", .Text = "Pools"},
                     New NumParam With {.Switch = "--slices", .Text = "Slices", .Init = 1},
                     FrameThreads, WPP
                 )

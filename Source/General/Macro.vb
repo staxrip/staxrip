@@ -151,16 +151,11 @@ Public Class Macro
         End If
 
         ret.Add(New Macro("audio_bitrate", "Audio Bitrate", GetType(Integer), "Overall audio bitrate."))
-        ret.Add(New Macro("audio_bitrate1", "Audio Bitrate 1", GetType(Integer), "Audio bitrate of the first audio track."))
-        ret.Add(New Macro("audio_bitrate2", "Audio Bitrate 2", GetType(Integer), "Audio bitrate of the second audio track."))
-        ret.Add(New Macro("audio_channels1", "Audio Channels 1", GetType(Integer), "Audio channels of the first audio track."))
-        ret.Add(New Macro("audio_channels2", "Audio Channels 2", GetType(Integer), "Audio channels of the second audio track."))
-        ret.Add(New Macro("audio_codec1", "Audio Codec 1", GetType(String), "Audio codec of the first audio track."))
-        ret.Add(New Macro("audio_codec2", "Audio Codec 2", GetType(String), "Audio codec of the second audio track."))
-        ret.Add(New Macro("audio_delay1", "Audio Delay 1", GetType(Integer), "Audio delay of the first audio track."))
-        ret.Add(New Macro("audio_delay2", "Audio Delay 2", GetType(Integer), "Audio delay of the second audio track."))
-        ret.Add(New Macro("audio_file1", "First Audio File", GetType(String), "File path of the first audio file."))
-        ret.Add(New Macro("audio_file2", "Second Audio File", GetType(String), "File path of the second audio file."))
+        ret.Add(New Macro("audio_bitrateX", "Audio Bitrate X", GetType(Integer), "Audio bitrate of the X'th audio track."))
+        ret.Add(New Macro("audio_channelsX", "Audio Channels X", GetType(Integer), "Audio channels of the X'th audio track."))
+        ret.Add(New Macro("audio_codecX", "Audio Codec X", GetType(String), "Audio codec of the X'th audio track."))
+        ret.Add(New Macro("audio_delayX", "Audio Delay X", GetType(Integer), "Audio delay of the X'th audio track."))
+        ret.Add(New Macro("audio_fileX", "X'th Audio File", GetType(String), "File path of the X'th audio file."))
         ret.Add(New Macro("compressibility", "Compressibility", GetType(Integer), "Compressibility value."))
         ret.Add(New Macro("crop_bottom", "Crop Bottom", GetType(Integer), "Bottom crop value."))
         ret.Add(New Macro("crop_height", "Crop Height", GetType(Integer), "Crop height."))
@@ -202,7 +197,8 @@ Public Class Macro
         ret.Add(New Macro("source_file", "Source File Path", GetType(String), "File path of the source video."))
         ret.Add(New Macro("source_files", "Source Files Blank", GetType(String), "Source files in quotes separated by a blank."))
         ret.Add(New Macro("source_files_comma", "Source Files Comma", GetType(String), "Source files in quotes separated by comma."))
-        ret.Add(New Macro("source_framerate", "Source Framerate", GetType(Integer), "Frame rate returned by the source filter AviSynth section."))
+        ret.Add(New Macro("source_framerate", "Source Framerate", GetType(Integer), "Frame rate returned by the Source filter section with up to 6 decimal places, depending on digits, with no trailing zeros."))
+        ret.Add(New Macro("source_framerate6", "Source Framerate (6 fixed decimal places)", GetType(Integer), "Frame rate returned by the Source filter section with 6 fixed decimal places."))
         ret.Add(New Macro("source_frames", "Source Frames", GetType(Integer), "Length in frames of the source video."))
         ret.Add(New Macro("source_height", "Source Image Height", GetType(Integer), "Image height of the source video."))
         ret.Add(New Macro("source_name", "Source Filename Without Extension", GetType(String), "The name of the source file without file extension."))
@@ -220,7 +216,8 @@ Public Class Macro
         ret.Add(New Macro("target_dar", "Target Display Aspect Ratio", GetType(String), "Target display aspect ratio."))
         ret.Add(New Macro("target_dir", "Target Directory", GetType(String), "Directory of the target file."))
         ret.Add(New Macro("target_file", "Target File Path", GetType(String), "File path of the target file."))
-        ret.Add(New Macro("target_framerate", "Target Framerate", GetType(Integer), "Frame rate of the target video."))
+        ret.Add(New Macro("target_framerate", "Target Framerate", GetType(Integer), "Frame rate of the target video with up to 6 decimal places, depending on digits, with no trailing zeros."))
+        ret.Add(New Macro("target_framerate6", "Target Framerate (6 fixed decimal places)", GetType(Integer), "Frame rate of the target video with 6 fixed decimal places."))
         ret.Add(New Macro("target_frames", "Target Frames", GetType(Integer), "Length in frames of the target video."))
         ret.Add(New Macro("target_height", "Target Image Height", GetType(Integer), "Image height of the target video."))
         ret.Add(New Macro("target_name", "Target Filename Without Extension", GetType(String), "Name of the target file without file extension."))
@@ -235,7 +232,7 @@ Public Class Macro
         ret.Add(New Macro("template_name", "Template Name", GetType(String), "Name of the template the active project is based on."))
         ret.Add(New Macro("text_editor", "Text Editor", GetType(String), "Path of the application currently associated with TXT files."))
         ret.Add(New Macro("version", "Version", GetType(String), "StaxRip version."))
-        ret.Add(New Macro("video_bitrate", "Video Bitrate", GetType(Integer), "Video bitrate in Kbps"))
+        ret.Add(New Macro("video_bitrate", "Video Bitrate", GetType(Integer), "Video bitrate in Kbps."))
         ret.Add(New Macro("working_dir", "Working Directory", GetType(String), "Directory of the source file or the temp directory if enabled."))
 
         ret.Sort()
@@ -355,41 +352,43 @@ Public Class Macro
         If value.Contains("%source_height%") Then value = value.Replace("%source_height%", proj.SourceHeight.ToString)
         If value.Contains("%source_seconds%") Then value = value.Replace("%source_seconds%", proj.SourceSeconds.ToString)
         If value.Contains("%source_frames%") Then value = value.Replace("%source_frames%", proj.SourceFrames.ToString)
-        If value.Contains("%source_framerate%") Then value = value.Replace("%source_framerate%", proj.SourceFrameRate.ToString("f6", CultureInfo.InvariantCulture))
+        If value.Contains("%source_framerate%") Then value = value.Replace("%source_framerate%", proj.SourceFrameRate.ToString("0.######", CultureInfo.InvariantCulture))
+        If value.Contains("%source_framerate6%") Then value = value.Replace("%source_framerate6%", proj.SourceFrameRate.ToString("f6", CultureInfo.InvariantCulture))
         If value.Contains("%source_dir%") Then value = value.Replace("%source_dir%", proj.SourceFile.Dir)
         If value.Contains("%source_dir_parent%") Then value = value.Replace("%source_dir_parent%", proj.SourceFile.Dir.Parent)
         If value.Contains("%source_dir_name%") Then value = value.Replace("%source_dir_name%", proj.SourceFile.Dir.DirName)
 
+        If value.Contains("%source_mi_") Then
+            Dim miFile = If(proj.FirstOriginalSourceFile.FileExists(), proj.FirstOriginalSourceFile, proj.SourceFile)
+
+            If value.Contains("%source_mi_v:Format%") Then value = value.Replace("%source_mi_v:Format%", MediaInfo.GetVideo(miFile, "Format"))
+
+            If value.Contains("%source_mi_vc%") Then value = value.Replace("%source_mi_vc%", If(miFile.FileExists(), MediaInfo.GetVideoCount(miFile).ToInvariantString(), ""))
+            If value.Contains("%source_mi_ac%") Then value = value.Replace("%source_mi_ac%", If(miFile.FileExists(), MediaInfo.GetAudioCount(miFile).ToInvariantString(), ""))
+            If value.Contains("%source_mi_tc%") Then value = value.Replace("%source_mi_tc%", If(miFile.FileExists(), MediaInfo.GetSubtitleCount(miFile).ToInvariantString(), ""))
+
             If value.Contains("%source_mi_") Then
-                Dim miFile = If(proj.FirstOriginalSourceFile.FileExists(), proj.FirstOriginalSourceFile, proj.SourceFile)
-
-                If value.Contains("%source_mi_v:Format%") Then value = value.Replace("%source_mi_v:Format%", MediaInfo.GetVideo(miFile, "Format"))
-
-                If value.Contains("%source_mi_vc%") Then value = value.Replace("%source_mi_vc%", If(miFile.FileExists(), MediaInfo.GetVideoCount(miFile).ToInvariantString(), ""))
-                If value.Contains("%source_mi_ac%") Then value = value.Replace("%source_mi_ac%", If(miFile.FileExists(), MediaInfo.GetAudioCount(miFile).ToInvariantString(), ""))
-                If value.Contains("%source_mi_tc%") Then value = value.Replace("%source_mi_tc%", If(miFile.FileExists(), MediaInfo.GetSubtitleCount(miFile).ToInvariantString(), ""))
-
-                If value.Contains("%source_mi_") Then
-                    For Each match As Match In Regex.Matches(value, "%source_mi_g:(.+?)%")
-                        value = value.Replace(match.Value, MediaInfo.GetGeneral(miFile, match.Groups(1).Value))
-                    Next
-                    For Each match As Match In Regex.Matches(value, "%source_mi_v(\d*):(.+?)%")
-                        value = value.Replace(match.Value, MediaInfo.GetVideo(miFile, If(match.Groups(1).Success, match.Groups(1).Value.ToInt(), 0), match.Groups(2).Value))
-                    Next
-                    For Each match As Match In Regex.Matches(value, "%source_mi_a(\d*):(.+?)%")
-                        value = value.Replace(match.Value, MediaInfo.GetAudio(miFile, If(match.Groups(1).Success, match.Groups(1).Value.ToInt(), 0), match.Groups(2).Value))
-                    Next
-                    For Each match As Match In Regex.Matches(value, "%source_mi_t(\d*):(.+?)%")
-                        value = value.Replace(match.Value, MediaInfo.GetText(miFile, If(match.Groups(1).Success, match.Groups(1).Value.ToInt(), 0), match.Groups(2).Value))
-                    Next
-                End If
+                For Each match As Match In Regex.Matches(value, "%source_mi_g:(.+?)%")
+                    value = value.Replace(match.Value, MediaInfo.GetGeneral(miFile, match.Groups(1).Value))
+                Next
+                For Each match As Match In Regex.Matches(value, "%source_mi_v(\d*):(.+?)%")
+                    value = value.Replace(match.Value, MediaInfo.GetVideo(miFile, If(match.Groups(1).Success, match.Groups(1).Value.ToInt(), 0), match.Groups(2).Value))
+                Next
+                For Each match As Match In Regex.Matches(value, "%source_mi_a(\d*):(.+?)%")
+                    value = value.Replace(match.Value, MediaInfo.GetAudio(miFile, If(match.Groups(1).Success, match.Groups(1).Value.ToInt(), 0), match.Groups(2).Value))
+                Next
+                For Each match As Match In Regex.Matches(value, "%source_mi_t(\d*):(.+?)%")
+                    value = value.Replace(match.Value, MediaInfo.GetText(miFile, If(match.Groups(1).Success, match.Groups(1).Value.ToInt(), 0), match.Groups(2).Value))
+                Next
             End If
+        End If
 
         If value.Contains("%target_width%") Then value = value.Replace("%target_width%", proj.TargetWidth.ToString)
         If value.Contains("%target_height%") Then value = value.Replace("%target_height%", proj.TargetHeight.ToString)
         If value.Contains("%target_seconds%") Then value = value.Replace("%target_seconds%", proj.TargetSeconds.ToString)
         If value.Contains("%target_frames%") Then value = value.Replace("%target_frames%", proj.Script.Info.FrameCount.ToString)
-        If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", proj.Script.GetCachedFrameRate.ToString("f6", CultureInfo.InvariantCulture))
+        If value.Contains("%target_framerate%") Then value = value.Replace("%target_framerate%", proj.Script.GetCachedFrameRate.ToString("0.######", CultureInfo.InvariantCulture))
+        If value.Contains("%target_framerate6%") Then value = value.Replace("%target_framerate6%", proj.Script.GetCachedFrameRate.ToString("f6", CultureInfo.InvariantCulture))
         If value.Contains("%target_size%") Then value = value.Replace("%target_size%", (proj.TargetSize * SizePrefix.Base).ToString)
         If value.Contains("%target_file%") Then value = value.Replace("%target_file%", proj.TargetFile)
         If value.Contains("%target_dir%") Then value = value.Replace("%target_dir%", proj.TargetFile.Dir)

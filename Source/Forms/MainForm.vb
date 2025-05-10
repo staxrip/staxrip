@@ -310,7 +310,7 @@ Public Class MainForm
         Me.tbTargetFile.Anchor = CType((AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
         Me.tlpTarget.SetColumnSpan(Me.tbTargetFile, 4)
         Me.tbTargetFile.Location = New System.Drawing.Point(6, 10)
-        Me.tbTargetFile.Margin = New Padding(6, 0, 6, 0)
+        Me.tbTargetFile.Margin = New Padding(6, FontHeight \ 4, 6, FontHeight \ 4)
         Me.tbTargetFile.Name = "tbTargetFile"
         Me.tbTargetFile.ReadOnly = False
         Me.tbTargetFile.Size = New System.Drawing.Size(987, 55)
@@ -512,7 +512,7 @@ Public Class MainForm
         '
         Me.tbSourceFile.Anchor = CType((AnchorStyles.Left Or AnchorStyles.Right), AnchorStyles)
         Me.tbSourceFile.Location = New System.Drawing.Point(6, 10)
-        Me.tbSourceFile.Margin = New Padding(6, 0, 6, 0)
+        Me.tbSourceFile.Margin = New Padding(6, FontHeight \ 4, 6, FontHeight \ 4)
         Me.tbSourceFile.Name = "tbSourceFile"
         Me.tbSourceFile.ReadOnly = False
         Me.tbSourceFile.Size = New System.Drawing.Size(984, 55)
@@ -977,9 +977,6 @@ Public Class MainForm
     Private TargetFileMenu As ContextMenuStripEx
     Private SourceFileMenu As ContextMenuStripEx
     Private NextContextMenuStrip As ContextMenuStripEx
-    Private BlockAviSynthItemCheck As Boolean
-    Private CanChangeSize As Boolean = True
-    Private CanChangeBitrate As Boolean = True
     Private CanIgnoreTip As Boolean = True
     Private IsLoading As Boolean = True
     Private BlockBitrate, BlockSize As Boolean

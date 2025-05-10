@@ -107,10 +107,10 @@ Public Class ffmpegEnc
         End Get
     End Property
 
-    Overrides ReadOnly Property OutputExt() As String
+    Overrides ReadOnly Property OutputExt As String
         Get
             Select Case Params.Codec.OptionText
-                Case "Xvid", "MPEG-4", "UT Video", "FFV1"
+                Case "Xvid", "MPEG-4", "FFV1"
                     Return "avi"
                 Case "ProRes", "R210", "V210"
                     Return "mov"

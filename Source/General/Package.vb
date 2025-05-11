@@ -1,4 +1,4 @@
-
+﻿
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.IO
@@ -599,8 +599,8 @@ Public Class Package
         .Name = "SvtAv1EncApp",
         .Location = IO.Path.Combine("Encoders", "SvtAv1EncApp"),
         .Filename = "SvtAv1EncApp.exe",
-        .WebURL = "https://github.com/BlueSwordM/svt-av1-psyex",
-        .HelpURL = "https://github.com/BlueSwordM/svt-av1-psyex/blob/master/Docs/Parameters.md",
+        .WebURL = "https://github.com/juliobbv-p/svt-av1-hdr",
+        .HelpURL = "https://github.com/juliobbv-p/svt-av1-hdr/blob/master/Docs/Parameters.md",
         .DownloadURL = "https://github.com/Patman86/SVT-AV1-Mod-by-Patman/releases",
         .RequiredFunc = Function() TypeOf p.VideoEncoder Is SvtAv1Enc,
         .HelpSwitch = "--help",
@@ -2994,12 +2994,13 @@ Public Class Package
 
             If filePath <> "" Then
                 Dim size = New FileInfo(filePath).Length
-                Dim type As SvtAv1EncAppType
+                Dim type = SvtAv1EncAppType.Vanilla
 
                 If s.Storage Is Nothing OrElse size <> s.Storage.GetInt("SvtAv1EncApp size") Then
                     Dim output = ProcessHelp.GetConsoleOutput(filePath, "--version", False)
 
-                    type = If(output.Contains("SVT-AV1-PSY"), SvtAv1EncAppType.Psy, SvtAv1EncAppType.Vanilla)
+                    If output.Contains("SVT-AV1-PSY") Then type = SvtAv1EncAppType.Psy
+                    If output.Contains("SVT-AV1-HDR") Then type = SvtAv1EncAppType.Hdr
 
                     s.Storage?.SetInt("SvtAv1EncApp size", CInt(size))
                     s.Storage?.SetInt("SvtAv1EncApp type", type)

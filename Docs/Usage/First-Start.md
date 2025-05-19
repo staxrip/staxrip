@@ -40,4 +40,4 @@ as all decisions have been made and stored:
 
 > [!TIP]
 > For a better understanding of what you see, what you can use and most important *how*,
-I recommend reading about the [Workflow](Workflow/README.md) and [User Interface](User-Interface/README.md).
+I recommend reading about the [Workflow](Workflow.md) and [User Interface](User-Interface/README.md).

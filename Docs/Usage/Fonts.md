@@ -11,6 +11,7 @@ To change them go to: `Tools » Settings » User Interface`:
 > You can also add you own fonts.  
 > Make sure you use `.ttf` font files and put them into your Settings folder:
 > - `.\Settings\Fonts\Code\` for *Code Fonts*
-> - `.\Settings\Fonts\Default\` for *Defauls Fonts*
+> - `.\Settings\Fonts\Default\` for *Default Fonts*
+> - `.\Settings\Fonts\Thumbnail\` for *Thumbnail Fonts* (see [Project Options](User-Interface/Project-Options#User-Interface.md))
 > 
 > Folder hierarchy doesn't matter as all subfolders are included for searching.

@@ -601,24 +601,13 @@ End Sub
         form.Doc.WriteH2("Options")
         form.Doc.WriteTips(TipProvider.GetTips, EditControl.TipProvider.GetTips)
 
-        Dim macroList As New StringPairList From {
-            {"%input%", "Audio source file"},
-            {"%output%", "Audio target File"},
-            {"%bitrate%", "Audio bitrate"},
-            {"%delay%", "Audio delay"},
-            {"%channels%", "Audio channels count"},
-            {"%language_native%", "Native language name"},
-            {"%language_english%", "English language name"},
-            {"%streamid0%", "ID of the stream (starts with 0)"},
-            {"%streamid1%", "ID of the stream (starts with 1)"}
-        }
+        Dim macroList = Macro.GetTips(False, False, False, False, True)
 
         form.Doc.WriteTable("Command Line Audio Macros",
                             "The following macros are available in the command line audio dialog and override global macros with the same name.",
                             macroList)
 
-        form.Doc.WriteTable("Global Macros", "Global macros are passed to the process as environment variables.",
-                            Macro.GetTips(True, False, True, True))
+        form.Doc.WriteTable("Global Macros", "Global macros are passed to the process as environment variables.", Macro.GetTips(True, False, True, True, False))
         form.Show()
     End Sub
 

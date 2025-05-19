@@ -6,7 +6,7 @@
 > This documentation is under development and therefore incomplete.
 
 > [!NOTE]
-> This documentation is based on StaxRip **`v2.50.0`**.
+> This documentation is based on StaxRip **`v2.54`**.
 
 ## [Introduction](Introduction/README.md)
 - [Overview](Introduction/Overview.md)
@@ -29,10 +29,11 @@
         - [Target](Usage/User-Interface/Main.md#target)
         - [Filter](Usage/User-Interface/Main.md#filter)
         - [Resize](Usage/User-Interface/Main.md#resize)
-        - [Encoder/Container](Usage/User-Interface/Main.md#encodercontainer) :x:
-        - [Audio](Usage/User-Interface/Main.md#audio) :x:
+        - [Encoder/Container](Usage/User-Interface/Main.md#encodercontainer)
+        - [Audio](Usage/User-Interface/Main.md#audio)
         - [Assistant](Usage/User-Interface/Main.md#assistant)
     - [Open Video Source File(s)](Usage/User-Interface/Opening.md) :x:
+        - [eac3to Demuxing](Usage/User-Interface/Opening#eac3to-demuxing.md) :x:
     - [Template Selection](Usage/User-Interface/Template-Selection.md) :x:
     - [Save Template](Usage/User-Interface/Save-Template.md)
     - [Crop](Usage/User-Interface/Crop.md) :x:
@@ -64,8 +65,9 @@
         - [Danger Zone](Usage/User-Interface/Settings.md#danger-zone) :x:
 - [Frame Servers](Usage/Frame-Servers.md) :x:
 - [Cropping](Usage/Cropping.md) :x:
-- [Workflow](Usage/Workflow/README.md) :x:
+- [Workflow](Usage/Workflow.md) :x:
 - [Fonts](Usage/Fonts.md)
+- [Events](Usage/Events.md) :x:
 - [Macros](Usage/Macros.md)
     - [Global Macros](Usage/Macros.md#global-macros)
     - [Parameter Included Macros](Usage/Macros.md#parameter-included-macros)
@@ -73,6 +75,9 @@
     - [Special Macros](Usage/Macros.md#special-macros)
         - [Encoder Macros](Usage/Macros.md#encoder-macros)
         - [While Processing Macros](Usage/Macros.md#while-processing-macros)
+    - [Function Macros](Usage/Macros.md#function-macros)
+    - [Appendix](Usage/Macros.md#appendix)
+        - [Appendix A: DataColumn Expression Syntax](Usage/Macros.md#appendix-a-datacolumn-expression-syntax)
 - [Commands](Usage/Commands.md)
 - [Command Line Interface](Usage/Command-Line-Interface.md)
 - [Filter Profiles](Usage/Filter-Profiles.md) :x:

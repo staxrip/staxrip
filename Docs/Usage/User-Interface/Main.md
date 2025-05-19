@@ -260,9 +260,47 @@ Then you get some information about the target image/video:
 
 ## Encoder/Container
 
+This panel comes in 2 outfits: A more complex variant, that let's you see/check and set certain parameters (see left image),
+and a basic panel with two options to open the [Encoder Options](Encoder-Options.md) as well the [Container Options](Container-Options.md).  
+
+<img width=300 src="../../../Images/Screenshots/MainWindowEncoderContainer.png">  <img width=300 src="../../../Images/Screenshots/MainWindowEncoderContainer2.png">  
+
+What both have in common is a button on the upper left side, that shows the name of the current selected encoder.
+When you click on it, you get a context menu, where you can choose all encoder profiles from.  
+In the upper right corner there is another button, indicating the file extension of the target file.
+This is `MKV` or `MP4` in most cases, but can be something else, especially when `No Muxing` is selected.  
+By clicking on `Edit Profiles...` you can open a dialog,
+where you can edit these lists as well as the encoder/muxer themselves.
+
+<img width=300 src="../../../Images/Screenshots/MainWindowEncoderMenu.png">  
+
+So let's go back and concentrate on the more advanced variant (left image):  
+At the bottom left there is a button saying `Options`, where you can open the [Encoder Options](Encoder-Options.md) and
+at the bottom right there is one saying `Container Options`, where you open the [Container Options](Container-Options.md).  
+In between a button saying `Target Name Override` indicates whether the [Override Target File Name](Encoder-Options.md)
+feature is enabled or not. By clicking on it you can toggle its status.
 
 ## Audio
 
+Each row represents one audio track. The text field contains the stream or file name of the source.
+Right next to it, a label is showing the name of the language, that is assigned to that audio track.  
+Next to the language name is a button with the name of the current set audio profile.
+When clicked on it a menu with all available audio profiles opens and by clicking on `Edit Profiles...` you can open a dialog,
+where you can edit this list as well as the audio profiles themselves.  
+At the very right an `Edit` button lets you open and edit the current audio profile.
+
+> :information_source: The profile `No Audio` lets the audio track being ignored and not muxed to the final result.  
+> :information_source: The number of available audio tracks is optional and can be set in [Project Options](Project-Options.md).
+
+> [!NOTE]
+> TODO: How are the tracks filled? Menus?
+
+<img width=600 src="../../../Images/Screenshots/MainWindowAudio.png">  
+
+> [!NOTE]
+> TODO: Right-Click-Menu
+
+<img width=300 src="../../../Images/Screenshots/MainWindowAudioMenu.png">  
 
 ## Assistant
 

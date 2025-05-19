@@ -9,10 +9,22 @@ There you will find everything, that is globally relevant, means not bound to a 
 <img width=600 src="../../../Images/Screenshots/SettingsGeneral.png">  
 
 - **Save projects automatically**  
-Whenever a project is modified and an action is performed, that will close the current project, 
-StaxRip will ask you, if you want to save the latest changes so they don't get lost.
-With this option enabled StaxRip will automatically save the project and don't bother you.  
-:warning: ***They will always overwrite the last configuration, even if you just want to test something out. So be careful!***
+    Whenever a project is modified and an action is performed, that will close the current project, 
+    StaxRip will ask you, if you want to save the latest changes so they don't get lost.
+    With this option enabled StaxRip will automatically save the project and don't bother you.  
+    :warning: ***They will always overwrite the last configuration, even if you just want to test something out. So be careful!***
+- **In addition save video encoder profiles separately**  
+    Save video encoder profiles in a separate file called `VideoEncoderProfiles.dat` in the `Settings` folder,
+    additional to being saved in `Settings.dat`. Once loaded all information will also be saved to `Settings.dat`.  
+    :information_source: If disabled, the separate file will be ignored completely.
+- **In addition save audio profiles separately**  
+    Save audio profiles in a separate file called `AudioProfiles.dat` in the `Settings` folder,
+    additional to being saved in `Settings.dat`. Once loaded all information will also be saved to `Settings.dat`.  
+    :information_source: If disabled, the separate file will be ignored completely.
+- **In addition save events separately**  
+    Save events in a separate file called `Events.dat` in the `Settings` folder,
+    additional to being saved in `Settings.dat`. Once loaded all information will also be saved to `Settings.dat`.  
+    :information_source: If disabled, the separate file will be ignored completely.
 - **Reverse mouse wheel video seek direction**  
 - **Number of most recently used projects to keep**
 - **Maximum number of parallel processes**

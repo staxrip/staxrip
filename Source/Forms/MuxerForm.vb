@@ -1303,7 +1303,7 @@ Public Class MuxerForm
             "A muxer merges different video, audio and subtitle files " +
             "into a single container file which is the actual output file.")
         form.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
-        form.Doc.WriteTable("Macros", Macro.GetTips(True, False, True, True))
+        form.Doc.WriteTable("Macros", Macro.GetTips(True, False, True, True, False))
         form.Show()
     End Sub
 

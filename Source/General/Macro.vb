@@ -89,10 +89,10 @@ Public Class Macro
         End Set
     End Property
 
-    Shared Function GetTips(includeGlobals As Boolean, includeInteractive As Boolean, includeParam As Boolean, includeWhileProcessing As Boolean) As StringPairList
+    Shared Function GetTips(includeGlobals As Boolean, includeInteractive As Boolean, includeParam As Boolean, includeWhileProcessing As Boolean, includeAudioSpecific As Boolean) As StringPairList
         Dim ret As New StringPairList
 
-        For Each macro In GetMacros(includeGlobals, includeInteractive, includeParam, includeWhileProcessing)
+        For Each macro In GetMacros(includeGlobals, includeInteractive, includeParam, includeWhileProcessing, includeAudioSpecific)
             ret.Add(macro.Name, macro.Description)
         Next
 
@@ -102,7 +102,7 @@ Public Class Macro
     Shared Function GetTipsFriendly(convertHTMLChars As Boolean) As StringPairList
         Dim ret As New StringPairList
 
-        For Each mac As Macro In GetMacros(True, False, False, True)
+        For Each mac As Macro In GetMacros(True, False, False, True, False)
             If convertHTMLChars Then
                 ret.Add(HelpDocument.ConvertChars(mac.FriendlyName), mac.Description)
             Else
@@ -121,7 +121,7 @@ Public Class Macro
         Return Name.CompareTo(other.Name)
     End Function
 
-    Shared Function GetMacros(includeGlobals As Boolean, includeInteractive As Boolean, includeParam As Boolean, includeWhileProcessing As Boolean) As List(Of Macro)
+    Shared Function GetMacros(includeGlobals As Boolean, includeInteractive As Boolean, includeParam As Boolean, includeWhileProcessing As Boolean, includeAudioSpecific As Boolean) As List(Of Macro)
         Dim ret As New List(Of Macro)
 
         If includeGlobals Then
@@ -235,6 +235,18 @@ Public Class Macro
             ret.Add(New Macro("commandline", "Command Line", GetType(String), "Returns the command line used for the running app."))
             ret.Add(New Macro("progress", "Progress", GetType(Integer), "Returns the current progress as Integer value."))
             ret.Add(New Macro("progressline", "Progress Line", GetType(String), "Returns the progress line received from the running app."))
+        End If
+
+        If includeAudioSpecific Then
+            ret.Add(New Macro("input", "Input", GetType(String), "Audio source file."))
+            ret.Add(New Macro("output", "Output", GetType(String), "Audio target file."))
+            ret.Add(New Macro("bitrate", "Bitrate", GetType(String), "Audio bitrate."))
+            ret.Add(New Macro("channels", "Channels", GetType(String), "Audio channels count."))
+            ret.Add(New Macro("delay", "Delay", GetType(String), "Audio delay."))
+            ret.Add(New Macro("language_native", "Language Native", GetType(String), "Native language name."))
+            ret.Add(New Macro("language_english", "Language English", GetType(String), "English language name."))
+            ret.Add(New Macro("streamid0", "0-based Stream ID", GetType(String), "ID of the stream (starts with 0)."))
+            ret.Add(New Macro("streamid1", "1-based Stream ID", GetType(String), "ID of the stream (starts with 1)."))
         End If
 
         ret.Sort()

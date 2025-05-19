@@ -26,8 +26,10 @@ Users are encouraged to visit those [communities](Community.md) for help and mor
 
 ## Target Group
 
-Everyone, who wants to encode videos safely and in a controlled and transparent way and who is not afraid to
-invest some time in getting to know StaxRip, testing things out, reading the documentation and asking questions if necessary.
+Everyone, who wants to encode videos safely and in a controlled and transparent way,
+especially by the usage of [AviSynth+](../Usage/Frame-Servers.md) or [VapourSynth](../Usage/Frame-Servers.md),
+and who is not afraid to invest some time in getting to know StaxRip,
+testing things out, reading the documentation and asking questions if necessary.
 
 ## License
 

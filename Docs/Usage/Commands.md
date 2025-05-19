@@ -191,7 +191,7 @@ Executes a PowerShell script file.
 
 ### Exit
 
-Exits StaxRip
+Exits StaxRip.
 
 ### ExitWithoutSaving
 
@@ -662,7 +662,7 @@ Runs all active jobs of the job list.
 
 ### StartNewInstance
 
-Launches a new instance of StaxRip
+Launches a new instance of StaxRip.
 
 ### StartSmartCrop
 

@@ -419,7 +419,7 @@ Public Class Proc
 
         Dim keys = dic.Keys.OfType(Of String).Select(Function(key) key.ToLowerInvariant)
 
-        For Each mac In Macro.GetMacros(True, False, False, True)
+        For Each mac In Macro.GetMacros(True, False, False, True, False)
             Dim name = mac.Name.Trim("%"c)
 
             If Not keys.Contains(name) Then

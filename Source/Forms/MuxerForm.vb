@@ -180,8 +180,8 @@ Public Class MuxerForm
         '
         'tcMain
         '
-        Me.tcMain.Controls.Add(Me.tpSubtitles)
         Me.tcMain.Controls.Add(Me.tpAudio)
+        Me.tcMain.Controls.Add(Me.tpSubtitles)
         Me.tcMain.Controls.Add(Me.tpAttachments)
         Me.tcMain.Controls.Add(Me.tpTags)
         Me.tcMain.Controls.Add(Me.tpOptions)
@@ -190,7 +190,7 @@ Public Class MuxerForm
         Me.tcMain.Location = New System.Drawing.Point(0, 0)
         Me.tcMain.Margin = New System.Windows.Forms.Padding(0)
         Me.tcMain.Name = "tcMain"
-        Me.tcMain.SelectedIndex = 0
+        Me.tcMain.SelectedIndex = 1
         Me.tcMain.Size = New System.Drawing.Size(1652, 961)
         Me.tcMain.TabIndex = 5
         '
@@ -202,7 +202,7 @@ Public Class MuxerForm
         Me.tpSubtitles.Name = "tpSubtitles"
         Me.tpSubtitles.Padding = New System.Windows.Forms.Padding(5)
         Me.tpSubtitles.Size = New System.Drawing.Size(1628, 880)
-        Me.tpSubtitles.TabIndex = 3
+        Me.tpSubtitles.TabIndex = 4
         Me.tpSubtitles.Text = " Subtitles "
         '
         'tlpSubtitles
@@ -334,7 +334,7 @@ Public Class MuxerForm
         Me.tpAudio.Name = "tpAudio"
         Me.tpAudio.Padding = New System.Windows.Forms.Padding(5)
         Me.tpAudio.Size = New System.Drawing.Size(1628, 880)
-        Me.tpAudio.TabIndex = 4
+        Me.tpAudio.TabIndex = 3
         Me.tpAudio.Text = "   Audio   "
         '
         'tlpAudio

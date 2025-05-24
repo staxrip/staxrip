@@ -1,4 +1,4 @@
-
+﻿
 Imports System.ComponentModel
 Imports System.Globalization
 Imports System.Runtime.CompilerServices
@@ -212,8 +212,6 @@ Public Class Project
         '                        .TextEdit = New AudioTextEdit(1)
         '                    })
         'End If
-
-        If Check(Script, "Filter Setup", 50) Then Script = VideoScript.GetDefaults()(0)
 
         Migrate()
     End Sub

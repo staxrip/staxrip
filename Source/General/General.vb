@@ -1,4 +1,4 @@
-
+﻿
 Imports System.Runtime.Serialization
 Imports System.ComponentModel
 Imports System.Runtime.Serialization.Formatters.Binary
@@ -236,14 +236,15 @@ Public Class Folder
 
                 Dim auto As New Project
                 auto.Init()
-                auto.Script.Filters(0) = VideoFilter.GetDefault("Source", "Automatic", ScriptEngine.AviSynth)
-                auto.DemuxAudio = DemuxMode.All
+                auto.Script = VideoScript.GetDefaults()(1)
+                auto.Script.Filters(0) = VideoFilter.GetDefault("Source", "Automatic", ScriptEngine.VapourSynth)
+                auto.DemuxAudio = DemuxMode.Preferred
                 auto.SubtitleMode = SubtitleMode.Preferred
                 SafeSerialization.Serialize(auto, Path.Combine(ret, "Automatic Workflow.srip"))
 
                 Dim manual As New Project
                 manual.Init()
-                manual.Script = VideoScript.GetDefaults()(0)
+                manual.Script = VideoScript.GetDefaults()(1)
                 manual.Script.Filters(0) = VideoFilter.GetDefault("Source", "Manual")
                 manual.DemuxAudio = DemuxMode.Dialog
                 manual.SubtitleMode = SubtitleMode.Dialog
@@ -251,6 +252,7 @@ Public Class Folder
 
                 Dim remux As New Project
                 remux.Init()
+                remux.Script = VideoScript.GetDefaults()(0)
                 remux.Script.Filters(0) = New VideoFilter("Source", "DSS2/L-Smash", $"srcFile = ""%source_file%""{BR}ext = LCase(RightStr(srcFile, 3)){BR}(ext == ""mp4"") ? LSMASHVideoSource(srcFile, format = ""YUV420P8"") : DSS2(srcFile)")
                 remux.DemuxAudio = DemuxMode.None
                 remux.SubtitleMode = SubtitleMode.Disabled

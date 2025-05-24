@@ -1916,7 +1916,8 @@ Public Class MainForm
         Dim orderedAudioFiles = hqAudioFiles.Concat(normalAudioFiles).Distinct()
         Dim groupedAudioFiles = orderedAudioFiles.GroupBy(Function(x) g.ExtractLanguageFromPath(x)).ToList()
 
-        Dim preferredAudios = p.PreferredAudio.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ").Distinct()
+        Dim setLanguages = p.AudioTracks.Select(Function(x) x.AudioProfile.Language).Where(Function(x) x.IsDetermined).Select(Function(x) x.ThreeLetterCode)
+        Dim preferredAudios = p.PreferredAudio.ToLowerInvariant.SplitNoEmptyAndWhiteSpace(",", ";", " ").Union(setLanguages).Distinct()
 
         Dim audioTracks As New List(Of (FilePath As String, Language As Language, Title As String, Stream As AudioStream))
 

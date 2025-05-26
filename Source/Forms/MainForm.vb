@@ -1,4 +1,4 @@
-
+﻿
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Drawing.Drawing2D
@@ -5060,7 +5060,7 @@ Public Class MainForm
             End If
 
             If TypeOf p.VideoEncoder IsNot NullEncoder Then
-                Dim op = If(p.VideoEncoder.GetChunks() = 1, p.VideoEncoder.OutputPath, p.VideoEncoder.OutputPath.DirAndBase() + "_chunk1" + p.VideoEncoder.OutputPath.ExtFull)
+                Dim op = If(p.VideoEncoder.CanChunkEncode(), p.VideoEncoder.OutputPath.DirAndBase() + "_chunk1" + p.VideoEncoder.OutputPath.ExtFull(), p.VideoEncoder.OutputPath)
 
                 If op.FileExists() Then
                     Select Case p.FileExistVideo
@@ -7256,9 +7256,19 @@ Public Class MainForm
                 Try
                     Dim di As New DriveInfo(form.OutputFolder)
 
-                    If di.AvailableFreeSpace / PrefixedSize(3).Factor < 50 Then
-                        MsgError("The target drive has not enough free disk space.")
-                        Exit Sub
+                    If di.AvailableFreeSpace / PrefixedSize(3).Factor < s.MinimumDiskSpace Then
+                        Using td As New TaskDialog(Of String)
+                            td.Title = "Low Disk Space"
+                            td.Content = $"The target drive {Path.GetPathRoot(p.TargetFile)} has only " +
+                                         $"{(di.AvailableFreeSpace / PrefixedSize(3).Factor):f2} {PrefixedSize(3).Unit} free disk space."
+                            td.Icon = TaskIcon.Warning
+                            td.AddButton("Continue")
+                            td.AddButton("Abort")
+
+                            If td.Show <> "Continue" Then
+                                Exit Sub
+                            End If
+                        End Using
                     End If
 
                     Using pr As New Proc

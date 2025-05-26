@@ -186,15 +186,18 @@ Public Class TaskDialog(Of T)
 
                           While counter > 0 AndAlso Not IsDisposingOrDisposed
                               If button IsNot Nothing AndAlso Not button.IsDisposed Then
-                                  If button.InvokeRequired Then
-                                      button.Invoke(Sub()
-                                                 If button IsNot Nothing AndAlso Not button.IsDisposed Then
-                                                     button.Text = $"{buttonText} ({counter})"
-                                                 End If
-                                             End Sub)
-                                  Else
-                                      button.Text = $"{buttonText} ({counter})"
-                                  End If
+                                  Try
+                                      If button.InvokeRequired Then
+                                          button.Invoke(Sub()
+                                                            If button IsNot Nothing AndAlso Not button.IsDisposed Then
+                                                                button.Text = $"{buttonText} ({counter})"
+                                                            End If
+                                                        End Sub)
+                                      Else
+                                          button.Text = $"{buttonText} ({counter})"
+                                      End If
+                                  Catch ex As Exception
+                                  End Try
                               Else
                                   If InvokeRequired Then
                                       Invoke(Sub() Text = $"{windowTitle} ({counter})")

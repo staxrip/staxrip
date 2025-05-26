@@ -545,7 +545,14 @@ Namespace UI
                     End If
             End Select
 
-            MyBase.WndProc(m)
+            Try
+                MyBase.WndProc(m)
+            Catch ex As DivideByZeroException
+                If m.Msg = &H20A Then 'WM_MOUSEWHEEL
+                Else
+                    Throw ex
+                End If
+            End Try
         End Sub
 
         Protected Overrides Sub OnMouseUp(e As MouseEventArgs)

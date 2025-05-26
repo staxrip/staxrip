@@ -566,8 +566,8 @@ Public Class Package
         .Description = "H.264 video encoding console app.",
         .SupportsAutoUpdate = False,
         .AllowCustomPath = False,
-        .WebURL = "https://github.com/staxrip/staxrip/wiki/x264",
-        .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x264",
+        .WebURL = "https://x264.org",
+        .DownloadURL = "https://github.com/Patman86/x264-Mod-by-Patman/releases",
         .HelpURL = "http://www.chaneru.com/Roku/HLS/X264_Settings.htm",
         .HelpSwitch = "--fullhelp"})
 
@@ -577,7 +577,7 @@ Public Class Package
         .Locations = {IO.Path.Combine("Encoders", "x265"), IO.Path.Combine("FrameServer", "AviSynth")},
         .WebURL = "https://x265.com",
         .HelpURL = "https://x265.readthedocs.org",
-        .DownloadURL = "https://github.com/staxrip/staxrip/wiki/x265",
+        .DownloadURL = "https://github.com/Patman86/x265-Mod-by-Patman/releases",
         .AllowCustomPath = False,
         .SupportsAutoUpdate = False,
         .HelpSwitch = "--fullhelp",
@@ -771,7 +771,7 @@ Public Class Package
         .DownloadURL = "https://github.com/vapoursynth/bestsource/releases",
         .HelpURL = "https://github.com/vapoursynth/bestsource",
         .AvsFilterNames = {"BSAudioSource", "BSVideoSource", "BSSetDebugOutput", "BSSetFFmpegLogLevel"},
-        .VsFilterNames = {"bs.AudioSource", "bs.VideoSource", "bs.TrackInfo", "bs.SetDebugOutput", "bs.SetFFmpegLogLevel"}})
+        .VsFilterNames = {"bs.AudioSource", "bs.VideoSource", "bs.TrackInfo", "bs.Metadata", "bs.SetDebugOutput", "bs.SetFFmpegLogLevel"}})
 
     Shared Property ffms2 As Package = Add(New PluginPackage With {
         .Name = "ffms2",

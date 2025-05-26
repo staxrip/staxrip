@@ -1,4 +1,4 @@
-
+﻿
 Imports System.Text.RegularExpressions
 
 Imports StaxRip.UI
@@ -98,7 +98,7 @@ Public MustInherit Class VideoEncoder
     End Function
 
     Overridable Function AfterEncoding() As Boolean
-        Dim op = If(GetChunks() = 1, OutputPath, OutputPath.DirAndBase() + "_chunk1" + OutputPath.ExtFull)
+        Dim op = If(CanChunkEncode(), OutputPath.DirAndBase() + "_chunk1" + OutputPath.ExtFull(), OutputPath)
 
         If Not g.FileExists(op) Then Throw New ErrorAbortException("Encoder output file is missing", op)
 

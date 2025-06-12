@@ -438,7 +438,7 @@ Public MustInherit Class BasicVideoEncoder
                             param.ImportAction.Invoke(a(x), "")
                         End If
                         params.RaiseValueChanged(param)
-                        Exit For
+                        'Exit For
                     End If
 
                     If TypeOf param Is BoolParam Then
@@ -458,7 +458,7 @@ Public MustInherit Class BasicVideoEncoder
 
                             boolParam.Value = b
                             params.RaiseValueChanged(param)
-                            Exit For
+                            'Exit For
                         End If
                     ElseIf TypeOf param Is NumParam Then
                         Dim numParam = DirectCast(param, NumParam)
@@ -466,7 +466,7 @@ Public MustInherit Class BasicVideoEncoder
                         If numParam.GetSwitches.Contains(a(x), StringComparer.OrdinalIgnoreCase) AndAlso a.Length - 1 > x AndAlso a(x + 1).IsDouble Then
                             numParam.Value = a(x + 1).ToDouble
                             params.RaiseValueChanged(param)
-                            Exit For
+                            'Exit For
                         End If
                     ElseIf TypeOf param Is OptionParam Then
                         Dim optionParam = DirectCast(param, OptionParam)
@@ -511,7 +511,7 @@ Public MustInherit Class BasicVideoEncoder
                         If stringParam.GetSwitches.Contains(a(x), StringComparer.OrdinalIgnoreCase) AndAlso a.Length - 1 > x Then
                             stringParam.Value = a(x + 1).Trim(""""c)
                             params.RaiseValueChanged(param)
-                            Exit For
+                            'Exit For
                         End If
                     End If
                 Next

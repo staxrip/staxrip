@@ -1495,13 +1495,16 @@ Public Class MainForm
                 $"Please select a template you want to use for:{BR}{source}")
             td.Icon = TaskIcon.Question
 
+            Dim isModified = ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p)
+            Dim isStartup = Not isModified AndAlso p.TemplateName = s.StartupTemplate
+
             If p.SourceFile = "" Then
                 td.AddCommand("Current Template", "CURRENT")
             Else
                 td.AddCommand("Last set Template", "LAST")
             End If
 
-            If ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p) Then
+            If isModified OrElse Not isStartup Then
                 td.AddCommand(g.StartupTemplatePath.Base() + " (Startup)", g.StartupTemplatePath)
             End If
 
